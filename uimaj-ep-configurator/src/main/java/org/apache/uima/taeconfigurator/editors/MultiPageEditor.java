@@ -38,9 +38,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.Vector;
 
 import org.apache.uima.UIMAFramework;
@@ -462,6 +464,15 @@ public class MultiPageEditor extends FormEditor {
   protected boolean isPageChangeRecursion = false;
 
   public static final TypeDescription[] typeDescriptionArray0 = new TypeDescription[0];
+  
+  private List typeSystemsToMerge;
+  
+  private List typePrioritiesToMerge;
+  
+  private List fsIndexesToMerge;
+  
+  private Map failedRemotes = new TreeMap();
+  private Set failedRemotesAlreadyKnown = new TreeSet();
 
   public MultiPageEditor() {
     super();
@@ -1274,6 +1285,7 @@ public class MultiPageEditor extends FormEditor {
     }
 
     setMergedTypeSystemDescription();
+      
     // setImportedTypeSystemDescription(); // done in above call
 
     if (aeDescription == null)
@@ -2300,7 +2312,7 @@ public class MultiPageEditor extends FormEditor {
   public void setMergedTypeSystemDescription() throws ResourceInitializationException {
     mergedTypesAddingFeatures.clear();
     if (isAggregate())
-      mergedTypeSystemDescription = CasCreationUtils.mergeDelegateAnalysisEngineTypeSystems(
+      mergedTypeSystemDescription = mergeDelegateAnalysisEngineTypeSystems(
               (AnalysisEngineDescription) aeDescription.clone(), createResourceManager(),
               mergedTypesAddingFeatures);
     else {
@@ -2330,7 +2342,7 @@ public class MultiPageEditor extends FormEditor {
   }
 
   public void setMergedFsIndexCollection() throws ResourceInitializationException {
-    mergedFsIndexCollection = CasCreationUtils.mergeDelegateAnalysisEngineFsIndexCollections(
+    mergedFsIndexCollection = mergeDelegateAnalysisEngineFsIndexCollections(
             (AnalysisEngineDescription) aeDescription.clone(), createResourceManager());
   }
 
@@ -2344,7 +2356,8 @@ public class MultiPageEditor extends FormEditor {
 
   // full merge - including locally defined and imported ones
   public void setMergedTypePriorities() throws ResourceInitializationException {
-    mergedTypePriorities = CasCreationUtils.mergeDelegateAnalysisEngineTypePriorities(
+    
+    mergedTypePriorities = mergeDelegateAnalysisEngineTypePriorities(
             (AnalysisEngineDescription) aeDescription.clone(), createResourceManager());
   }
 
@@ -2410,7 +2423,7 @@ public class MultiPageEditor extends FormEditor {
   private void setImportedTypePriorities() throws ResourceInitializationException {
     AnalysisEngineDescription localAe = (AnalysisEngineDescription) aeDescription.clone();
     localAe.getAnalysisEngineMetaData().setTypePriorities(null);
-    importedTypePriorities = CasCreationUtils.mergeDelegateAnalysisEngineTypePriorities(localAe,
+    importedTypePriorities = mergeDelegateAnalysisEngineTypePriorities(localAe,
             createResourceManager());
   }
 
@@ -2606,5 +2619,94 @@ public class MultiPageEditor extends FormEditor {
       throw new InternalErrorCDE("unexpected exception", e);
     }
     return null;
+  }
+  
+  private TypeSystemDescription mergeDelegateAnalysisEngineTypeSystems(
+          AnalysisEngineDescription aAeDescription, ResourceManager aResourceManager,
+          Map aOutputMergedTypes) throws ResourceInitializationException {
+    
+    getMergeInput(aAeDescription, aResourceManager);
+    return CasCreationUtils.mergeTypeSystems(typeSystemsToMerge, aResourceManager, aOutputMergedTypes);
+  }
+  
+  private TypePriorities mergeDelegateAnalysisEngineTypePriorities(
+          AnalysisEngineDescription aAeDescription, ResourceManager aResourceManager) 
+        throws ResourceInitializationException {
+    
+    getMergeInput(aAeDescription, aResourceManager);    
+    return CasCreationUtils.mergeTypePriorities(typePrioritiesToMerge, aResourceManager);
+  }
+
+  private FsIndexCollection mergeDelegateAnalysisEngineFsIndexCollections(
+          AnalysisEngineDescription aAeDescription, ResourceManager aResourceManager) 
+            throws ResourceInitializationException {
+    
+    getMergeInput(aAeDescription, aResourceManager);
+    return CasCreationUtils.mergeFsIndexes(fsIndexesToMerge, aResourceManager);
+  }
+
+  private void getMergeInput (
+          AnalysisEngineDescription aAggregateDescription, 
+          ResourceManager aResourceManager) 
+               throws ResourceInitializationException {
+    
+    // expand the aggregate AE description into the individual delegates
+    ArrayList l = new ArrayList();
+    l.add(aAggregateDescription);
+    List mdList = CasCreationUtils.getMetaDataList(l, aResourceManager, failedRemotes);
+    
+    maybeShowRemoteFailure();
+    
+    // extract type systems and merge
+    typeSystemsToMerge = new ArrayList();
+    typePrioritiesToMerge = new ArrayList();
+    fsIndexesToMerge = new ArrayList();
+    Iterator it = mdList.iterator();
+    while (it.hasNext()) {
+      ProcessingResourceMetaData md = (ProcessingResourceMetaData) it.next();
+      if (md.getTypeSystem() != null)
+        typeSystemsToMerge.add(md.getTypeSystem());
+      if (md.getTypePriorities() != null)
+        typePrioritiesToMerge.add(md.getTypePriorities());
+      if (md.getFsIndexCollection() != null)
+        fsIndexesToMerge.add(md.getFsIndexCollection());
+    }
+  }
+  
+  private void maybeShowRemoteFailure() {
+    if (failedRemotes.size() == 0) {
+      return;
+    }
+    
+    List names = new ArrayList();
+    List exceptions = new ArrayList();
+    
+    for (Iterator it = failedRemotes.entrySet().iterator(); it.hasNext();) {
+      Map.Entry entry = (Map.Entry) it.next();
+      String component = (String)entry.getKey();
+      
+      if (failedRemotesAlreadyKnown.contains(component)) {
+        continue;
+      }
+      
+      failedRemotesAlreadyKnown.add(component);
+      names.add(component);
+      exceptions.add(entry.getValue());
+    }
+    
+    if (names.size() == 0) {
+      return;
+    }
+    
+    StringBuffer sb = new StringBuffer(100);
+    for (int i = 0; i < names.size(); i++) {
+      sb.append(names.get(i))
+        .append(": ")
+        .append(getMessagesToRootCause((Exception)exceptions.get(i)))
+        .append("\n");
+    }
+    
+    Utility.popMessage("Remotes Unavailable", "Note: This message only shown once.\n\nThe following Remote components could not be accessed.\n" +
+          "Types, Type Priorities, and Index merging may be incomplete.\n" + sb, MessageDialog.WARNING);
   }
 }
