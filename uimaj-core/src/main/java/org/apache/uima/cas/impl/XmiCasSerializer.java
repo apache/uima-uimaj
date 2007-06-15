@@ -298,12 +298,12 @@ public class XmiCasSerializer {
         String nsUri = (String) entry.getKey();
         String prefix = (String) entry.getValue();
         // write attribute
-        workAttrs.addAttribute(null, prefix, "xmlns:" + prefix, "CDATA", nsUri);
+        workAttrs.addAttribute(XMLNS_NS_URI, prefix, "xmlns:" + prefix, "CDATA", nsUri);
       }
       // also add schemaLocation if specified
       if (nsUriToSchemaLocationMap != null) {
         // write xmlns:xsi attribute
-        workAttrs.addAttribute(null, "xsi", "xmlns:xsi", "CDATA", XSI_NS_URI);
+        workAttrs.addAttribute(XMLNS_NS_URI, "xsi", "xmlns:xsi", "CDATA", XSI_NS_URI);
 
         // write xsi:schemaLocation attributaiton
         StringBuffer buf = new StringBuffer();
@@ -312,7 +312,7 @@ public class XmiCasSerializer {
           Map.Entry entry = (Map.Entry) it.next();
           buf.append(entry.getKey()).append(' ').append(entry.getValue()).append(' ');
         }
-        workAttrs.addAttribute(null, "xsi", "xsi:schemaLocation", "CDATA", buf.toString());
+        workAttrs.addAttribute(XSI_NS_URI, "xsi", "xsi:schemaLocation", "CDATA", buf.toString());
       }
     }
 
@@ -1177,6 +1177,8 @@ public class XmiCasSerializer {
       }
     } 
   }
+
+  public static final String XMLNS_NS_URI = "http://www.w3.org/2000/xmlns/";
 
   public static final String XMI_NS_URI = "http://www.omg.org/XMI";
 
