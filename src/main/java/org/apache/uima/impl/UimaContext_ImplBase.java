@@ -25,7 +25,6 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -551,7 +550,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
     else if (aCAS instanceof CASImpl) {
       baseCas = ((CASImpl)aCAS).getBaseCAS();
     }
-    mOutstandingCASes.remove(aCAS);
+    mOutstandingCASes.remove(baseCas);
   }
 
   /*
