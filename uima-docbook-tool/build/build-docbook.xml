@@ -122,6 +122,10 @@
           unless="init_once_done" 
           description="sets properties, once">
 
+  	<available property="isJava5orHigher" classname="java.util.concurrent.atomic.AtomicBoolean"/>
+  	<fail message="This script requires Java level 5 or better, and won't run on earlier JVM versions"
+  	      unless="isJava5orHigher"/>
+  	
     <property name="init_once_done" value="ignored"/>
     
     <path id="docbook.tool.project" location="${ant.file.build-docbook}/../.."/>
@@ -150,7 +154,7 @@
     
     <condition property="saxon.main.class" value="net.sf.saxon.Transform">
       <equals arg1="8.9" arg2="${saxon.version}"/></condition>
-        
+  	
     <!-- computed defaults -->
 
     <property name="css.dir" value="${docbook.tool.project}/styles/uima-style/css"/>
