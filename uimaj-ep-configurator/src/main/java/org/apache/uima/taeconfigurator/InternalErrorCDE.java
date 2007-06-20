@@ -34,7 +34,7 @@ public class InternalErrorCDE extends RuntimeException {
    * @param message
    */
   public InternalErrorCDE(String message) {
-    super(message);
+    super(message + " - Please see Eclipse Error Log for more information.");
   }
 
   /**
@@ -42,7 +42,7 @@ public class InternalErrorCDE extends RuntimeException {
    * @param cause
    */
   public InternalErrorCDE(String message, Throwable cause) {
-    super(message, cause);
+    super(message + " - Please see Eclipse Error Log for more information.", cause);
   }
 
   /**
