@@ -40,6 +40,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -2645,6 +2646,21 @@ public class MultiPageEditor extends FormEditor {
     return CasCreationUtils.mergeFsIndexes(fsIndexesToMerge, aResourceManager);
   }
 
+  public CAS createCas(AnalysisEngineDescription aAeDescription,
+          Properties aPerformanceTuningSettings, ResourceManager aResourceManager)
+          throws ResourceInitializationException {
+    
+    getMergeInput(aAeDescription, aResourceManager);
+
+    // merge
+    TypeSystemDescription aggTypeDesc = CasCreationUtils.mergeTypeSystems(typeSystemsToMerge, aResourceManager);
+    TypePriorities aggTypePriorities = CasCreationUtils.mergeTypePriorities(typePrioritiesToMerge, aResourceManager);
+    FsIndexCollection aggIndexColl = CasCreationUtils.mergeFsIndexes(fsIndexesToMerge, aResourceManager);
+
+    return CasCreationUtils.createCas(aggTypeDesc, aggTypePriorities, aggIndexColl.getFsIndexes(),
+            aPerformanceTuningSettings, aResourceManager);
+  }
+  
   private void getMergeInput (
           AnalysisEngineDescription aAggregateDescription, 
           ResourceManager aResourceManager) 

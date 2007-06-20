@@ -45,8 +45,6 @@ public class DescriptorTCAS extends AbstractModelPart {
 
   public void validate() throws ResourceInitializationException {
 
-    Collection aes = new ArrayList(1);
-
     AnalysisEngineDescription ae = (AnalysisEngineDescription) modelRoot.getAeDescription().clone();
     // speedup = replace typeSystem with resolved imports version
     if (ae.isPrimitive()) {
@@ -57,12 +55,10 @@ public class DescriptorTCAS extends AbstractModelPart {
     }
     ae.getAnalysisEngineMetaData().setFsIndexCollection(modelRoot.getMergedFsIndexCollection());
     ae.getAnalysisEngineMetaData().setTypePriorities(modelRoot.getMergedTypePriorities());
-    aes.add(ae);
     try {
       // long time = System.currentTimeMillis();
       // System.out.println("Creating TCas model");
-      cachedResult = CasCreationUtils.createCas(aes, casCreateProperties, modelRoot
-              .createResourceManager());
+      cachedResult = modelRoot.createCas(ae, casCreateProperties, modelRoot.createResourceManager());
       // System.out.println("Finished Creating TCas model; time= " +
       // (System.currentTimeMillis() - time));
       if (null == cachedResult)
@@ -93,7 +89,7 @@ public class DescriptorTCAS extends AbstractModelPart {
     try {
       validate();
     } catch (ResourceInitializationException e) {
-      throw new InternalErrorCDE("Invalid Exception", e);
+      throw new InternalErrorCDE("Unexpected Exception", e);
     }
   }
 }
