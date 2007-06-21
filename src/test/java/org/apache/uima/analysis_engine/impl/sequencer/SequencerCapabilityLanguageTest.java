@@ -1014,4 +1014,47 @@ public class SequencerCapabilityLanguageTest extends TestCase {
     }
   }
 
+  public void testSequencerCapabilityLanguageResultSpecSetByFlowController() throws Exception {
+    AnalysisEngine ae = null;
+    try {
+      // create TempFile for test
+      File outputReferenceFile = new File(this.testBaseDir, "SequencerTest.txt");
+      outputReferenceFile.delete(); // delete file if exist
+      outputReferenceFile.createNewFile(); // create new file
+      outputReferenceFile.deleteOnExit(); // delete file after closing VM
+
+      // Create an XML input source from the specifier file.
+      XMLInputSource in = new XMLInputSource(JUnitExtension
+              .getFile("SequencerTest/SequencerCapabilityLanguageAggregateResultSpec.xml"));
+      // Parse the specifier.
+      ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
+      // Create the Text Analysis Engine.
+      ae = UIMAFramework.produceAnalysisEngine(specifier, null, null);
+      // Create a new CAS.
+      CAS cas = ae.newCAS();
+      // Our sample text.
+      String text = "Hello world!";
+      // System.out.println("Processing text: \"" + text + "\"");
+      // Set the document text on the CAS.
+      cas.setDocumentText(text);
+      cas.setDocumentLanguage("en");
+      // Process the sample document.
+      ResultSpecification resultSpec = UIMAFramework.getResourceSpecifierFactory()
+              .createResultSpecification();
+      resultSpec.addCapabilities(ae.getAnalysisEngineMetaData().getCapabilities());
+      ae.process(cas, resultSpec);
+      // check fileoutput
+      Assert.assertTrue(FileCompare.compare(outputReferenceFile, JUnitExtension
+              .getFile("SequencerTest/SequencerCapabilityLanguageExpectedResultSpecSetByFlowController.txt")));
+      outputReferenceFile.delete();
+    } catch (Exception ex) {
+      JUnitExtension.handleException(ex);
+    } finally {
+      // Destroy the CAS, releasing resources.
+      if (ae != null) {
+        ae.destroy();
+      }
+    }
+  }
+
 }
