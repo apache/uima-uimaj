@@ -34,6 +34,7 @@ import org.apache.uima.cas.text.Language;
 import org.apache.uima.flow.CasFlow_ImplBase;
 import org.apache.uima.flow.FinalStep;
 import org.apache.uima.flow.SimpleStep;
+import org.apache.uima.flow.SimpleStepWithResultSpec;
 import org.apache.uima.flow.Step;
 
 /**
@@ -218,7 +219,7 @@ public class CapabilityLanguageFlowObject extends CasFlow_ImplBase implements Cl
           node.setResultSpec(currentAnalysisResultSpec);
 
           // return current analysis engine node
-          return new SimpleStep(node.getCasProcessorKey());
+          return new SimpleStepWithResultSpec(node.getCasProcessorKey(), currentAnalysisResultSpec);
         } else // no engine left which can be called
         {
           return new FinalStep();
@@ -259,7 +260,7 @@ public class CapabilityLanguageFlowObject extends CasFlow_ImplBase implements Cl
         }
       }
       if (node != null) {
-        return new SimpleStep(node.getCasProcessorKey());
+        return new SimpleStepWithResultSpec(node.getCasProcessorKey(), node.getResultSpec());
       }
     }
     return new FinalStep();

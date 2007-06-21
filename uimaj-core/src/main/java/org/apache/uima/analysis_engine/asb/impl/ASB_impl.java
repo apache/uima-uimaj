@@ -37,6 +37,7 @@ import org.apache.uima.UimaContextAdmin;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.analysis_engine.CasIterator;
+import org.apache.uima.analysis_engine.ResultSpecification;
 import org.apache.uima.analysis_engine.asb.ASB;
 import org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase;
 import org.apache.uima.analysis_engine.impl.AnalysisEngineManagementImpl;
@@ -51,6 +52,7 @@ import org.apache.uima.flow.FinalStep;
 import org.apache.uima.flow.FlowControllerContext;
 import org.apache.uima.flow.ParallelStep;
 import org.apache.uima.flow.SimpleStep;
+import org.apache.uima.flow.SimpleStepWithResultSpec;
 import org.apache.uima.flow.Step;
 import org.apache.uima.flow.impl.FlowControllerContext_impl;
 import org.apache.uima.resource.Resource;
@@ -540,6 +542,13 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
               String nextAeKey = ((SimpleStep) nextStep).getAnalysisEngineKey();
               AnalysisEngine nextAe = (AnalysisEngine) mComponentAnalysisEngineMap.get(nextAeKey);
               if (nextAe != null) {
+                //check if we have to set result spec, to support capability language flow
+                if (nextStep instanceof SimpleStepWithResultSpec) {
+                  ResultSpecification rs = ((SimpleStepWithResultSpec)nextStep).getResultSpecification();
+                  if (rs != null) {
+                    nextAe.setResultSpecification(rs);
+                  }
+                }
                 // invoke next AE in flow
                 CasIterator casIter = null;
                 CAS outputCas = null; //used if the AE we call outputs a new CAS
