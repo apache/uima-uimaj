@@ -1291,7 +1291,7 @@ descriptors\collection_processing_engine\MeetingFinderCPE_Integrated.xml</litera
       
       <orderedlist><listitem><para>Start a VNS service by running the
         <literal>startVNS</literal> script in the <literal>/bin</literal>
-        directory, or using the Eclipse launcher <quote>UIMA Start Vinci Service</quote>.</para></listitem>
+        directory, or using the Eclipse launcher <quote>UIMA Start VNS</quote>.</para></listitem>
         
         <listitem><para>Deploy the Meeting Detector Analysis Engine as a Vinci service, by
           running the <literal>startVinciService</literal> script in the

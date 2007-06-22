@@ -1383,7 +1383,7 @@ SimpleTokenAndSentenceAnnotator.xml</literallayout></para>
           <literal>bin</literal> directory of the UIMA installation, 
         or launch it from Eclipse.  If you've installed the <literal>uimaj-examples</literal> project,
         it will supply a pre-configured launch script you can access in Eclipse by selecting
-        Menu &rarr; Run &rarr; Run... and picking <quote>UIMA Start Vinci Service</quote>.</para>
+        Menu &rarr; Run &rarr; Run... and picking <quote>UIMA Start VNS</quote>.</para>
         <note><para>VNS runs on port 9000 by default so please make sure this port is
         available. If you see the following exception:
         
