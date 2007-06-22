@@ -35,6 +35,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.ListIterator;
 
 import org.apache.uima.cas.AbstractCas_ImplBase;
@@ -3754,4 +3756,48 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 		}
 		return this;
 	}
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.cas.CAS#getViewIterator()
+   */
+  public Iterator getViewIterator() {
+    List viewList = new ArrayList();
+    //add initial view if it has no sofa
+    if (!((CASImpl)getInitialView()).mySofaIsValid()) {
+      viewList.add(getInitialView());
+    }
+    //add views with Sofas
+    FSIterator sofaIter = getSofaIterator();
+    while(sofaIter.hasNext()) {
+      viewList.add(getView((SofaFS)sofaIter.next()));
+    }
+    return viewList.iterator();
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.cas.CAS#getViewIterator(java.lang.String)
+   */
+  public Iterator getViewIterator(String localViewNamePrefix) {
+    // do sofa mapping for current component
+    String absolutePrefix = null;
+    if (getCurrentComponentInfo() != null) {
+      absolutePrefix = getCurrentComponentInfo().mapToSofaID(localViewNamePrefix);
+    }
+    if (absolutePrefix == null) {
+      absolutePrefix = localViewNamePrefix;
+    }    
+    absolutePrefix += '.';
+    
+    //find Sofas with this prefix
+    List viewList = new ArrayList();
+    FSIterator sofaIter = getSofaIterator();
+    while(sofaIter.hasNext()) {
+      SofaFS sofa = (SofaFS)sofaIter.next();
+      if (sofa.getSofaID().startsWith(absolutePrefix))
+        viewList.add(getView(sofa));
+    }
+    return viewList.iterator();
+  }
+  
+  
 }

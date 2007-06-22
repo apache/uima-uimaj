@@ -28,10 +28,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import junit.framework.TestCase;
 
+import org.apache.uima.UIMAFramework;
+import org.apache.uima.UimaContextAdmin;
+import org.apache.uima.analysis_engine.AnalysisEngine;
+import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.ByteArrayFS;
 import org.apache.uima.cas.CAS;
@@ -59,6 +66,7 @@ import org.apache.uima.impl.SofaID_impl;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
+import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLSerializer;
 import org.xml.sax.SAXException;
 
@@ -560,6 +568,37 @@ public class SofaTest extends TestCase {
     SofaFS testSofa = this.cas.createSofa(id, "text");
     CAS newView = this.cas.getView(testSofa);
     assertTrue( newView.getViewName().equals("TestView"));
+  }
+  
+  public void testGetViewIterator() throws Exception {
+    this.cas.reset();
+    CAS view1 = this.cas.createView("View1");
+    CAS view2 = this.cas.createView("View2");
+    Iterator iter = this.cas.getViewIterator();
+    assertEquals(this.cas, iter.next());
+    assertEquals(view1, iter.next());
+    assertEquals(view2, iter.next());
+    assertFalse(iter.hasNext());
+    
+    CAS viewE1 = this.cas.createView("EnglishDocument.1");
+    CAS viewE2 = this.cas.createView("EnglishDocument.2");
+    iter = this.cas.getViewIterator("EnglishDocument");
+    assertEquals(viewE1, iter.next());
+    assertEquals(viewE2, iter.next());
+    assertFalse(iter.hasNext());
+    
+    //try with Sofa mappings
+    UimaContextAdmin rootCtxt = UIMAFramework.newUimaContext(
+            UIMAFramework.getLogger(), UIMAFramework.newDefaultResourceManager(),
+            UIMAFramework.newConfigurationManager());
+    Map sofamap = new HashMap();
+    sofamap.put("SourceDocument","EnglishDocument");
+    UimaContextAdmin childCtxt = rootCtxt.createChild("test", sofamap);
+    cas.setCurrentComponentInfo(childCtxt.getComponentInfo());
+    iter = this.cas.getViewIterator("SourceDocument");
+    assertEquals(viewE1, iter.next());
+    assertEquals(viewE2, iter.next());
+    assertFalse(iter.hasNext());    
   }
   
   public static void main(String[] args) {
