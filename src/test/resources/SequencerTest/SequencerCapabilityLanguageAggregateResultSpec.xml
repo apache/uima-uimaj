@@ -44,8 +44,8 @@
 
       <flowConstraints>
          <capabilityLanguageFlow>
-            <node>annotator2</node>
             <node>annotator1</node>
+            <node>annotator2</node>
          </capabilityLanguageFlow>
       </flowConstraints>
 
