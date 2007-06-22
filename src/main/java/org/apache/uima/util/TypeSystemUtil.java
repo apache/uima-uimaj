@@ -24,6 +24,7 @@ import java.util.Iterator;
 
 import org.apache.uima.ResourceSpecifierFactory;
 import org.apache.uima.UIMAFramework;
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
@@ -49,7 +50,8 @@ public class TypeSystemUtil {
     ArrayList typeDescs = new ArrayList();
     while (typeIter.hasNext()) {
       Type type = (Type) typeIter.next();
-      if (!type.getName().startsWith("uima.cas") && !type.getName().equals("uima.tcas.Annotation")) {
+      if (!type.getName().startsWith("uima.cas") && !type.getName().equals("uima.tcas.Annotation") &&
+          !type.isArray()) {
         typeDescs.add(type2TypeDescription(type, aTypeSystem));
       }
     }
@@ -112,7 +114,19 @@ public class TypeSystemUtil {
     FeatureDescription featDesc = UIMAFramework.getResourceSpecifierFactory()
             .createFeatureDescription();
     featDesc.setName(aFeature.getShortName());
-    featDesc.setRangeTypeName(aFeature.getRange().getName());
+    Type rangeType = aFeature.getRange();
+    //special check for array range types, which are represented in the CAS as
+    //elementType[] but in the descriptor as an FSArray with an <elementType>
+    if (rangeType.isArray() && !rangeType.getComponentType().isPrimitive()) {
+      featDesc.setRangeTypeName(CAS.TYPE_NAME_FS_ARRAY);
+      String elementTypeName = rangeType.getComponentType().getName();
+      if (!CAS.TYPE_NAME_TOP.equals(elementTypeName)) {
+        featDesc.setElementType(elementTypeName);
+      }
+    }
+    else {
+      featDesc.setRangeTypeName(rangeType.getName());
+    }
     return featDesc;
   }
 
