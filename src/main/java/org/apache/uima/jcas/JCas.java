@@ -20,6 +20,7 @@
 package org.apache.uima.jcas;
 
 import java.io.InputStream;
+import java.util.Iterator;
 
 import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CAS;
@@ -574,4 +575,30 @@ public interface JCas extends AbstractCas {
    */
   AnnotationIndex getAnnotationIndex(int type) throws CASRuntimeException;
 
+  /**
+   * Get iterator over all views in this JCas.  Each view provides access to Sofa data
+   * and the index repository that contains metadata (annotations and other feature 
+   * structures) pertaining to that Sofa.
+   * 
+   * @return an iterator which returns all views.  Each object returned by
+   *   the iterator is of type JCas.
+   */
+  Iterator getViewIterator() throws CASException;  
+  
+  /**
+   * Get iterator over all views with the given name prefix.  Each view provides access to Sofa data
+   * and the index repository that contains metadata (annotations and other feature 
+   * structures) pertaining to that Sofa.
+   * <p>
+   * When passed the prefix <i>namePrefix</i>, the iterator will return all views who 
+   * name is either exactly equal to <i>namePrefix</i> or is of the form 
+   * <i>namePrefix</i><code>.</code><i>suffix</i>, where <i>suffix</i> can be any String.
+   * 
+   * @param localViewNamePrefix  the local name prefix, before any sofa name mapping 
+   *   is done, for this view (note: this is the same as the associated Sofa name prefix).
+   * 
+   * @return an iterator which returns all views with the given name prefix.  
+   *   Each object returned by the iterator is of type JCas.
+   */
+  Iterator getViewIterator(String localViewNamePrefix) throws CASException;
 }

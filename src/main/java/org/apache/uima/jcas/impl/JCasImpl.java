@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -1473,5 +1474,31 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
 	public AnnotationIndex getAnnotationIndex(int type) throws CASRuntimeException {
 		return casImpl.getAnnotationIndex(this.getCasType(type));
 	}
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.JCas#getViewIterator()
+   */
+  public Iterator getViewIterator() throws CASException {
+    List viewList = new ArrayList();
+    Iterator casViewIter = casImpl.getViewIterator();
+    while(casViewIter.hasNext()) {
+      viewList.add(((CAS)casViewIter.next()).getJCas());
+    }
+    return viewList.iterator();
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.JCas#getViewIterator(java.lang.String)
+   */
+  public Iterator getViewIterator(String localViewNamePrefix) throws CASException {
+    List viewList = new ArrayList();
+    Iterator casViewIter = casImpl.getViewIterator(localViewNamePrefix);
+    while(casViewIter.hasNext()) {
+      viewList.add(((CAS)casViewIter.next()).getJCas());
+    }
+    return viewList.iterator();
+  }
+  
+  
 
 }

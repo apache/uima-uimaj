@@ -3785,16 +3785,19 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
     if (absolutePrefix == null) {
       absolutePrefix = localViewNamePrefix;
-    }    
-    absolutePrefix += '.';
+    }
     
     //find Sofas with this prefix
     List viewList = new ArrayList();
     FSIterator sofaIter = getSofaIterator();
     while(sofaIter.hasNext()) {
       SofaFS sofa = (SofaFS)sofaIter.next();
-      if (sofa.getSofaID().startsWith(absolutePrefix))
-        viewList.add(getView(sofa));
+      String sofaId = sofa.getSofaID();
+      if (sofaId.startsWith(absolutePrefix)) {
+        if (sofaId.length() == absolutePrefix.length() || sofaId.charAt(absolutePrefix.length()) == '.') {
+           viewList.add(getView(sofa));
+        }
+      }
     }
     return viewList.iterator();
   }
