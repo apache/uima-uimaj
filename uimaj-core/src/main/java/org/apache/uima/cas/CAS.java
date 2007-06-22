@@ -1011,9 +1011,9 @@ public interface CAS extends AbstractCas {
    * and the index repository that contains metadata (annotations and other feature 
    * structures) pertaining to that Sofa.
    * <p>
-   * If passed the prefix <i>namePrefix</i>, the iterator will return all views who 
-   * name is of the form <i>namePrefix</i><code>.</code><i>suffix</i>, where
-   * <i>suffix</i> can be any String.
+   * When passed the prefix <i>namePrefix</i>, the iterator will return all views who 
+   * name is either exactly equal to <i>namePrefix</i> or is of the form 
+   * <i>namePrefix</i><code>.</code><i>suffix</i>, where <i>suffix</i> can be any String.
    * 
    * @param localViewNamePrefix  the local name prefix, before any sofa name mapping 
    *   is done, for this view (note: this is the same as the associated Sofa name prefix).

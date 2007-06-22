@@ -63,6 +63,7 @@ import org.apache.uima.cas.impl.XCASDeserializer;
 import org.apache.uima.cas.impl.XCASSerializer;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.impl.SofaID_impl;
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
@@ -580,7 +581,7 @@ public class SofaTest extends TestCase {
     assertEquals(view2, iter.next());
     assertFalse(iter.hasNext());
     
-    CAS viewE1 = this.cas.createView("EnglishDocument.1");
+    CAS viewE1 = this.cas.createView("EnglishDocument");
     CAS viewE2 = this.cas.createView("EnglishDocument.2");
     iter = this.cas.getViewIterator("EnglishDocument");
     assertEquals(viewE1, iter.next());
@@ -598,7 +599,34 @@ public class SofaTest extends TestCase {
     iter = this.cas.getViewIterator("SourceDocument");
     assertEquals(viewE1, iter.next());
     assertEquals(viewE2, iter.next());
-    assertFalse(iter.hasNext());    
+    assertFalse(iter.hasNext());  
+    this.cas.setCurrentComponentInfo(null);
+    
+    //repeat with JCas
+    this.cas.reset();
+    JCas jcas = this.cas.getJCas();
+    JCas jview1 = jcas.createView("View1");
+    JCas jview2 = jcas.createView("View2");
+    iter = jcas.getViewIterator();
+    assertEquals(jcas, iter.next());
+    assertEquals(jview1, iter.next());
+    assertEquals(jview2, iter.next());
+    assertFalse(iter.hasNext());
+    
+    JCas jviewE1 = jcas.createView("EnglishDocument");
+    JCas jviewE2 = jcas.createView("EnglishDocument.2");
+    iter = jcas.getViewIterator("EnglishDocument");
+    assertEquals(jviewE1, iter.next());
+    assertEquals(jviewE2, iter.next());
+    assertFalse(iter.hasNext());
+    
+    //try with Sofa mappings
+    cas.setCurrentComponentInfo(childCtxt.getComponentInfo());
+    iter = jcas.getViewIterator("SourceDocument");
+    assertEquals(jviewE1, iter.next());
+    assertEquals(jviewE2, iter.next());
+    assertFalse(iter.hasNext());  
+    this.cas.setCurrentComponentInfo(null);
   }
   
   public static void main(String[] args) {
