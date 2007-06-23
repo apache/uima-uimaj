@@ -686,9 +686,8 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * never instantiated. But it is a very slight performance boost, and it may be safer given
    * possible future changes to these types' implementations.
    */
-	private static Collection builtInsWithNoJCas = new ArrayList();
-	{
-		if (builtInsWithNoJCas.size() == 0) {
+	private static final Collection builtInsWithNoJCas = new ArrayList();
+	static {
 			builtInsWithNoJCas.add(CAS.TYPE_NAME_BOOLEAN);
 			builtInsWithNoJCas.add(CAS.TYPE_NAME_BYTE);
 			builtInsWithNoJCas.add(CAS.TYPE_NAME_SHORT);
@@ -699,12 +698,10 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
 			builtInsWithNoJCas.add(CAS.TYPE_NAME_STRING);
 			builtInsWithNoJCas.add(CAS.TYPE_NAME_ARRAY_BASE);
 			builtInsWithNoJCas.add(CAS.TYPE_NAME_LIST_BASE);
-		}
 	}
 
-	private static Collection builtInsWithAltNames = new ArrayList();
-	{ // initialization code
-		if (builtInsWithAltNames.size() == 0) {
+	private static final Collection builtInsWithAltNames = new ArrayList();
+	static { // initialization code
 			builtInsWithAltNames.add(CAS.TYPE_NAME_TOP);
 			builtInsWithAltNames.add(CAS.TYPE_NAME_STRING_ARRAY);
 			builtInsWithAltNames.add(CAS.TYPE_NAME_BOOLEAN_ARRAY);
@@ -731,7 +728,6 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
 			builtInsWithAltNames.add(CAS.TYPE_NAME_ANNOTATION_BASE);
 			builtInsWithAltNames.add(CAS.TYPE_NAME_ANNOTATION);
 			builtInsWithAltNames.add(CAS.TYPE_NAME_DOCUMENT_ANNOTATION);
-		}
 	}
 
   
@@ -1498,7 +1494,4 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
     }
     return viewList.iterator();
   }
-  
-  
-
 }
