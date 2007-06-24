@@ -25,6 +25,6 @@
   
   <property name="book_name" value="name of book to build"/>
   
-  <import file="${basedir}/../uima-docbook-tool/build/build-docbook.xml}"/>  
+  <import file="${basedir}/../uima-docbook-tool/build/build-docbook.xml"/>  
   
 </project>
