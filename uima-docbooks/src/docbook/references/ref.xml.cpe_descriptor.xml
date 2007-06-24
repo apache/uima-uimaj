@@ -923,12 +923,12 @@ vinci.VinciAnalysisEngineService_impl</arg>
             specified by the <literal>action</literal> attribute is taken. The possible
             actions and their meaning are the same as described above for the
             <literal>&lt;maxConsecutiveRestarts&gt;</literal> element:
-            <simplelist>
-              <member><literal>continue</literal></member>
-              <member><literal>disable</literal></member>
-              <member><literal>terminate</literal></member>
-            </simplelist></para>
-          
+            <itemizedlist spacing="compact">
+              <listitem><para><literal>continue</literal></para></listitem>
+              <listitem><para><literal>disable</literal></para></listitem>
+              <listitem><para><literal>terminate</literal></para></listitem>
+            </itemizedlist></para>
+         
           <para>The <literal>dropCasOnException="true"</literal> attribute of the
             <literal>&lt;casProcessors&gt;</literal> element modifies the action
             taken for continue and disable, in the same manner as above. For example:
