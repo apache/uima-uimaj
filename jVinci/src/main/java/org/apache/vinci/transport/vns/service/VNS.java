@@ -291,7 +291,7 @@ public class VNS extends VinciServableAdapter {
     } catch (Throwable e) {
       Debug.reportException(e);
     } finally {
-      Debug.p("Exitting.");
+      Debug.p("Exiting.");
       System.exit(0);
     }
   }
@@ -1277,7 +1277,7 @@ public class VNS extends VinciServableAdapter {
   }
 
   public void cleanExit() {
-    Debug.p("Exitting now ...");
+    Debug.p("Exiting now ...");
     quitFile.delete();
     try {
       backupThreadRunnable.stop = true;
