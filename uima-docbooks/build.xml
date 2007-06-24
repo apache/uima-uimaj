@@ -29,44 +29,46 @@
   <!-- ==                                                                    == -->
   <!-- ======================================================================== -->
   
+  <!--  Sequence and flow:
+          The main script is "imported" so we can share setup
+            change to only import that which needs sharing:
+               a) reading of external properties 
+               b) setup of version of fop / docbook / output dirs
+               c) check of Java version
+               d) anything in init-everytime is a candidate for not including in this.
+    
+          Top
+             - calls build_all_books, parm = olink_work
+               - calls all, parm = book_name
+          
+          Only top-level files should do imports; and should avoid ant-calls
+            (which re-do the imports) (use <ant ... > instead
+    -->
+          
   <import file="../uima-docbook-tool/build/build-docbook.xml"/>
   
   <target name="all-books" description="--> Build all documentation"
-    depends="init_once, do_olinks, do_build_given_olinks, copy-index.html"/>
+    depends="prepare, copy-docbook-images, do_olinks, do_build_given_olinks, copy-index.html"/>
   
   <target name="do_olinks"
     description="--> for all books, compute the cross reference databases needed for linking">
-    <antcall target="build_all_books">
-      <param name="olink_work" value="only"/>
-    </antcall>
+    <ant antfile="build-all-books.xml">
+      <reference refid="saxon_and_fop.classpath"/>
+      <property name="olink_work" value="only"/>
+    </ant>
   </target>
   
   <target name="do_build_given_olinks"
     description="--> build all books using precomputed olink database information">
-    <antcall target="build_all_books">
-      <param name="olink_work" value="no"/>
-    </antcall>
+    <ant antfile="build-all-books.xml">
+      <reference refid="saxon_and_fop.classpath"/>
+      <property name="olink_work" value="no"/>
+    </ant>
   </target>
   
-  <target name="copy-index.html" depends="init_once">
+  <target name="copy-index.html" depends="prepare">
     <!--copy html overview index.html to the target directory -->
     <copy todir="${target.dir}/" file="${src.dir}/index.html"/>
   </target>
-  
-  <target name="build_all_books" description="internal - build all books">
-    <!--  Build the UIMA books  -->
-    <antcall target="all">
-      <param name="book_name" value="overview_and_setup"/>
-    </antcall>
-    <antcall target="all">
-      <param name="book_name" value="tutorials_and_users_guides"/>
-    </antcall>
-    <antcall target="all">
-      <param name="book_name" value="tools"/>
-    </antcall>
-    <antcall target="all">
-      <param name="book_name" value="references"/>
-    </antcall>
-  </target>
-  
+    
 </project>
