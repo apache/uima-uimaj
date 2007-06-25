@@ -57,19 +57,17 @@ public class SequencerCapabilityLanguageTest extends TestCase {
     this.testBaseDir = JUnitExtension.getFile("SequencerTest");
   }
 
-  public void testSequencerCapabilityLanguageEsEn() throws Exception {
+  public void runTest(String desc, String language, String refFile, boolean doResultSpec)
+          throws Exception {
     AnalysisEngine ae = null;
     try {
       // create TempFile for test
-
       File outputReferenceFile = new File(this.testBaseDir, "SequencerTest.txt");
       outputReferenceFile.delete(); // delete file if exist
       outputReferenceFile.createNewFile(); // create new file
-      outputReferenceFile.deleteOnExit(); // delete file after closing VM
 
       // Create an XML input source from the specifier file.
-      XMLInputSource in = new XMLInputSource(JUnitExtension
-              .getFile("SequencerTest/SequencerCapabilityLanguageAggregateES.xml"));
+      XMLInputSource in = new XMLInputSource(JUnitExtension.getFile(desc));
       // Parse the specifier.
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
@@ -81,13 +79,22 @@ public class SequencerCapabilityLanguageTest extends TestCase {
       // System.out.println("Processing text: \"" + text + "\"");
       // Set the document text on the CAS.
       cas.setDocumentText(text);
-      cas.setDocumentLanguage("en");
+      cas.setDocumentLanguage(language);
       // Process the sample document.
-      ae.process(cas);
+      if (doResultSpec) {
+        ResultSpecification resultSpec = UIMAFramework.getResourceSpecifierFactory()
+                .createResultSpecification();
+        resultSpec.addCapabilities(ae.getAnalysisEngineMetaData().getCapabilities());
+        ae.process(cas, resultSpec);
+      } else {
+        ae.process(cas);
+      }
       // check fileoutput
-      Assert.assertTrue(FileCompare.compare(outputReferenceFile, JUnitExtension
-              .getFile("SequencerTest/SequencerCapabilityLanguageExpectedEsEn.txt")));
-      outputReferenceFile.delete();
+      boolean compare = FileCompare.compare(outputReferenceFile, JUnitExtension.getFile(refFile));
+      Assert.assertTrue(compare);
+      if (compare) {
+        outputReferenceFile.delete();
+      }
     } catch (Exception ex) {
       JUnitExtension.handleException(ex);
     } finally {
@@ -96,965 +103,129 @@ public class SequencerCapabilityLanguageTest extends TestCase {
         ae.destroy();
       }
     }
+  }
+
+  public void testSequencerCapabilityLanguageEsEn() throws Exception {
+
+    runTest("SequencerTest/SequencerCapabilityLanguageAggregateES.xml", "en",
+            "SequencerTest/SequencerCapabilityLanguageExpectedEsEn.txt", false);
+
   }
 
   public void testSequencerCapabilityLanguageEsEnResultSpec() throws Exception {
-    AnalysisEngine ae = null;
-    try {
-      // create TempFile for test
-      File outputReferenceFile = new File(this.testBaseDir, "SequencerTest.txt");
-      outputReferenceFile.delete(); // delete file if exist
-      outputReferenceFile.createNewFile(); // create new file
-      outputReferenceFile.deleteOnExit(); // delete file after closing VM
 
-      // Create an XML input source from the specifier file.
-      XMLInputSource in = new XMLInputSource(JUnitExtension
-              .getFile("SequencerTest/SequencerCapabilityLanguageAggregateES.xml"));
-      // Parse the specifier.
-      ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
-      // Create the Text Analysis Engine.
-      ae = UIMAFramework.produceAnalysisEngine(specifier, null, null);
-      // Create a new CAS.
-      CAS cas = ae.newCAS();
-      // Our sample text.
-      String text = "Hello world!";
-      // System.out.println("Processing text: \"" + text + "\"");
-      // Set the document text on the CAS.
-      cas.setDocumentText(text);
-      cas.setDocumentLanguage("en");
-      // Process the sample document.
-      ResultSpecification resultSpec = UIMAFramework.getResourceSpecifierFactory()
-              .createResultSpecification();
-      resultSpec.addCapabilities(ae.getAnalysisEngineMetaData().getCapabilities());
-      ae.process(cas, resultSpec);
-      // check fileoutput
-      Assert.assertTrue(FileCompare.compare(outputReferenceFile, JUnitExtension
-              .getFile("SequencerTest/SequencerCapabilityLanguageExpectedEsEnResultSpec.txt")));
-      outputReferenceFile.delete();
-    } catch (Exception ex) {
-      JUnitExtension.handleException(ex);
-    } finally {
-      // Destroy the CAS, releasing resources.
-      if (ae != null) {
-        ae.destroy();
-      }
-    }
+    runTest("SequencerTest/SequencerCapabilityLanguageAggregateES.xml", "en",
+            "SequencerTest/SequencerCapabilityLanguageExpectedEsEnResultSpec.txt", true);
+
   }
 
   public void testSequencerCapabilityLanguageEsEnUS() throws Exception {
-    AnalysisEngine ae = null;
-    try {
-      // create TempFile for test
-      File outputReferenceFile = new File(this.testBaseDir, "SequencerTest.txt");
-      outputReferenceFile.delete(); // delete file if exist
-      outputReferenceFile.createNewFile(); // create new file
-      outputReferenceFile.deleteOnExit(); // delete file after closing VM
-
-      // Create an XML input source from the specifier file.
-      XMLInputSource in = new XMLInputSource(JUnitExtension
-              .getFile("SequencerTest/SequencerCapabilityLanguageAggregateES.xml"));
-      // Parse the specifier.
-      ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
-      // Create the Text Analysis Engine.
-      ae = UIMAFramework.produceAnalysisEngine(specifier, null, null);
-      // Create a new CAS.
-      CAS cas = ae.newCAS();
-      // Our sample text.
-      String text = "Hello world!";
-      // System.out.println("Processing text: \"" + text + "\"");
-      // Set the document text on the CAS.
-      cas.setDocumentText(text);
-      cas.setDocumentLanguage("en-US");
-      // Process the sample document.
-      ae.process(cas);
-      // check fileoutput
-      Assert.assertTrue(FileCompare.compare(outputReferenceFile, JUnitExtension
-              .getFile("SequencerTest/SequencerCapabilityLanguageExpectedEsEn.txt")));
-      outputReferenceFile.delete();
-    } catch (Exception ex) {
-      JUnitExtension.handleException(ex);
-    } finally {
-      // Destroy the CAS, releasing resources.
-      if (ae != null) {
-        ae.destroy();
-      }
-    }
+    runTest("SequencerTest/SequencerCapabilityLanguageAggregateES.xml", "en-US",
+            "SequencerTest/SequencerCapabilityLanguageExpectedEsEnUS.txt", false);
   }
 
   public void testSequencerCapabilityLanguageEsEnUSResultSpec() throws Exception {
-    AnalysisEngine ae = null;
-    try {
-      // create TempFile for test
-      File outputReferenceFile = new File(this.testBaseDir, "SequencerTest.txt");
-      outputReferenceFile.delete(); // delete file if exist
-      outputReferenceFile.createNewFile(); // create new file
-      outputReferenceFile.deleteOnExit(); // delete file after closing VM
-
-      // Create an XML input source from the specifier file.
-      XMLInputSource in = new XMLInputSource(JUnitExtension
-              .getFile("SequencerTest/SequencerCapabilityLanguageAggregateES.xml"));
-      // Parse the specifier.
-      ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
-      // Create the Text Analysis Engine.
-      ae = UIMAFramework.produceAnalysisEngine(specifier, null, null);
-      // Create a new CAS.
-      CAS cas = ae.newCAS();
-      // Our sample text.
-      String text = "Hello world!";
-      // System.out.println("Processing text: \"" + text + "\"");
-      // Set the document text on the CAS.
-      cas.setDocumentText(text);
-      cas.setDocumentLanguage("en-US");
-      // Process the sample document.
-      ResultSpecification resultSpec = UIMAFramework.getResourceSpecifierFactory()
-              .createResultSpecification();
-      resultSpec.addCapabilities(ae.getAnalysisEngineMetaData().getCapabilities());
-      ae.process(cas, resultSpec);
-      // check fileoutput
-      Assert.assertTrue(FileCompare.compare(outputReferenceFile, JUnitExtension
-              .getFile("SequencerTest/SequencerCapabilityLanguageExpectedEsEn.txt")));
-      outputReferenceFile.delete();
-    } catch (Exception ex) {
-      JUnitExtension.handleException(ex);
-    } finally {
-      // Destroy the CAS, releasing resources.
-      if (ae != null) {
-        ae.destroy();
-      }
-    }
+    runTest("SequencerTest/SequencerCapabilityLanguageAggregateES.xml", "en-US",
+            "SequencerTest/SequencerCapabilityLanguageExpectedEsEnResultSpec.txt", true);
   }
 
   public void testSequencerCapabilityLanguageEsAr() throws Exception {
-    AnalysisEngine ae = null;
-    try {
-      // create TempFile for test
-      File outputReferenceFile = new File(this.testBaseDir, "SequencerTest.txt");
-      outputReferenceFile.delete(); // delete file if exist
-      outputReferenceFile.createNewFile(); // create new file
-      outputReferenceFile.deleteOnExit(); // delete file after closing VM
-
-      // Create an XML input source from the specifier file.
-      XMLInputSource in = new XMLInputSource(JUnitExtension
-              .getFile("SequencerTest/SequencerCapabilityLanguageAggregateES.xml"));
-      // Parse the specifier.
-      ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
-      // Create the Text Analysis Engine.
-      ae = UIMAFramework.produceAnalysisEngine(specifier, null, null);
-      // Create a new CAS.
-      CAS cas = ae.newCAS();
-      // Our sample text.
-      String text = "Hello world!";
-      // System.out.println("Processing text: \"" + text + "\"");
-      // Set the document text on the CAS.
-      cas.setDocumentText(text);
-      cas.setDocumentLanguage("ar");
-      // Process the sample document.
-      ae.process(cas);
-      // check fileoutput
-      Assert.assertTrue(FileCompare.compare(outputReferenceFile, JUnitExtension
-              .getFile("SequencerTest/SequencerCapabilityLanguageExpectedEsAr.txt")));
-      outputReferenceFile.delete();
-    } catch (Exception ex) {
-      JUnitExtension.handleException(ex);
-    } finally {
-      // Destroy the CAS, releasing resources.
-      if (ae != null) {
-        ae.destroy();
-      }
-    }
+    runTest("SequencerTest/SequencerCapabilityLanguageAggregateES.xml", "ar",
+            "SequencerTest/SequencerCapabilityLanguageExpectedEsAr.txt", false);
   }
 
   public void testSequencerCapabilityLanguageEsArResultSpec() throws Exception {
-    AnalysisEngine ae = null;
-    try {
-      // create TempFile for test
-      File outputReferenceFile = new File(this.testBaseDir, "SequencerTest.txt");
-      outputReferenceFile.delete(); // delete file if exist
-      outputReferenceFile.createNewFile(); // create new file
-      outputReferenceFile.deleteOnExit(); // delete file after closing VM
-
-      // Create an XML input source from the specifier file.
-      XMLInputSource in = new XMLInputSource(JUnitExtension
-              .getFile("SequencerTest/SequencerCapabilityLanguageAggregateES.xml"));
-      // Parse the specifier.
-      ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
-      // Create the Text Analysis Engine.
-      ae = UIMAFramework.produceAnalysisEngine(specifier, null, null);
-      // Create a new CAS.
-      CAS cas = ae.newCAS();
-      // Our sample text.
-      String text = "Hello world!";
-      // System.out.println("Processing text: \"" + text + "\"");
-      // Set the document text on the CAS.
-      cas.setDocumentText(text);
-      cas.setDocumentLanguage("ar");
-      // Process the sample document.
-      ResultSpecification resultSpec = UIMAFramework.getResourceSpecifierFactory()
-              .createResultSpecification();
-      resultSpec.addCapabilities(ae.getAnalysisEngineMetaData().getCapabilities());
-      ae.process(cas, resultSpec);
-      // check fileoutput
-      Assert.assertTrue(FileCompare.compare(outputReferenceFile, JUnitExtension
-              .getFile("SequencerTest/SequencerCapabilityLanguageExpectedEsAr.txt")));
-      outputReferenceFile.delete();
-    } catch (Exception ex) {
-      JUnitExtension.handleException(ex);
-    } finally {
-      // Destroy the CAS, releasing resources.
-      if (ae != null) {
-        ae.destroy();
-      }
-    }
+    runTest("SequencerTest/SequencerCapabilityLanguageAggregateES.xml", "ar",
+            "SequencerTest/SequencerCapabilityLanguageExpectedEsAr.txt", true);
   }
 
   public void testSequencerCapabilityLanguageEsUnkown() throws Exception {
-    AnalysisEngine ae = null;
-    try {
-      // create TempFile for test
-      File outputReferenceFile = new File(this.testBaseDir, "SequencerTest.txt");
-      outputReferenceFile.delete(); // delete file if exist
-      outputReferenceFile.createNewFile(); // create new file
-      outputReferenceFile.deleteOnExit(); // delete file after closing VM
-
-      // Create an XML input source from the specifier file.
-      XMLInputSource in = new XMLInputSource(JUnitExtension
-              .getFile("SequencerTest/SequencerCapabilityLanguageAggregateES.xml"));
-      // Parse the specifier.
-      ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
-      // Create the Text Analysis Engine.
-      ae = UIMAFramework.produceAnalysisEngine(specifier, null, null);
-      // Create a new CAS.
-      CAS cas = ae.newCAS();
-      // Our sample text.
-      String text = "Hello world!";
-      // System.out.println("Processing text: \"" + text + "\"");
-      // Set the document text on the CAS.
-      cas.setDocumentText(text);
-      cas.setDocumentLanguage("unknown");
-      // Process the sample document.
-      ae.process(cas);
-      // check fileoutput
-      Assert.assertTrue(FileCompare.compare(outputReferenceFile, JUnitExtension
-              .getFile("SequencerTest/SequencerCapabilityLanguageExpectedEsUnknown.txt")));
-      outputReferenceFile.delete();
-    } catch (Exception ex) {
-      JUnitExtension.handleException(ex);
-    } finally {
-      // Destroy the CAS, releasing resources.
-      if (ae != null) {
-        ae.destroy();
-      }
-    }
+    runTest("SequencerTest/SequencerCapabilityLanguageAggregateES.xml", "unknown",
+            "SequencerTest/SequencerCapabilityLanguageExpectedEsUnknown.txt", false);
   }
 
   public void testSequencerCapabilityLanguageEsUnkownResultSpec() throws Exception {
-    AnalysisEngine ae = null;
-    try {
-      // create TempFile for test
-      File outputReferenceFile = new File(this.testBaseDir, "SequencerTest.txt");
-      outputReferenceFile.delete(); // delete file if exist
-      outputReferenceFile.createNewFile(); // create new file
-      outputReferenceFile.deleteOnExit(); // delete file after closing VM
-
-      // Create an XML input source from the specifier file.
-      XMLInputSource in = new XMLInputSource(JUnitExtension
-              .getFile("SequencerTest/SequencerCapabilityLanguageAggregateES.xml"));
-      // Parse the specifier.
-      ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
-      // Create the Text Analysis Engine.
-      ae = UIMAFramework.produceAnalysisEngine(specifier, null, null);
-      // Create a new CAS.
-      CAS cas = ae.newCAS();
-      // Our sample text.
-      String text = "Hello world!";
-      // System.out.println("Processing text: \"" + text + "\"");
-      // Set the document text on the CAS.
-      cas.setDocumentText(text);
-      cas.setDocumentLanguage("unknown");
-      // Process the sample document.
-      ResultSpecification resultSpec = UIMAFramework.getResourceSpecifierFactory()
-              .createResultSpecification();
-      resultSpec.addCapabilities(ae.getAnalysisEngineMetaData().getCapabilities());
-      ae.process(cas, resultSpec);
-      // check fileoutput
-      Assert.assertTrue(FileCompare.compare(outputReferenceFile, JUnitExtension
-              .getFile("SequencerTest/SequencerCapabilityLanguageExpectedEsUnknown.txt")));
-      outputReferenceFile.delete();
-    } catch (Exception ex) {
-      JUnitExtension.handleException(ex);
-    } finally {
-      // Destroy the CAS, releasing resources.
-      if (ae != null) {
-        ae.destroy();
-      }
-    }
+    runTest("SequencerTest/SequencerCapabilityLanguageAggregateES.xml", "unknown",
+            "SequencerTest/SequencerCapabilityLanguageExpectedEsUnknown.txt", true);
   }
 
   public void testSequencerCapabilityLanguageEsZhCN() throws Exception {
-    AnalysisEngine ae = null;
-    try {
-      // create TempFile for test
-      File outputReferenceFile = new File(this.testBaseDir, "SequencerTest.txt");
-      outputReferenceFile.delete(); // delete file if exist
-      outputReferenceFile.createNewFile(); // create new file
-      outputReferenceFile.deleteOnExit(); // delete file after closing VM
-
-      // Create an XML input source from the specifier file.
-      XMLInputSource in = new XMLInputSource(JUnitExtension
-              .getFile("SequencerTest/SequencerCapabilityLanguageAggregateES.xml"));
-      // Parse the specifier.
-      ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
-      // Create the Text Analysis Engine.
-      ae = UIMAFramework.produceAnalysisEngine(specifier, null, null);
-      // Create a new CAS.
-      CAS cas = ae.newCAS();
-      // Our sample text.
-      String text = "Hello world!";
-      // System.out.println("Processing text: \"" + text + "\"");
-      // Set the document text on the CAS.
-      cas.setDocumentText(text);
-      cas.setDocumentLanguage("zh-CN");
-      // Process the sample document.
-      ae.process(cas);
-      // check fileoutput
-      Assert.assertTrue(FileCompare.compare(outputReferenceFile, JUnitExtension
-              .getFile("SequencerTest/SequencerCapabilityLanguageExpectedEsZhCN.txt")));
-      outputReferenceFile.delete();
-    } catch (Exception ex) {
-      JUnitExtension.handleException(ex);
-    } finally {
-      // Destroy the CAS, releasing resources.
-      if (ae != null) {
-        ae.destroy();
-      }
-    }
+    runTest("SequencerTest/SequencerCapabilityLanguageAggregateES.xml", "zh-CN",
+            "SequencerTest/SequencerCapabilityLanguageExpectedEsZhCN.txt", false);
   }
 
   public void testSequencerCapabilityLanguageEsZhCNResultSpec() throws Exception {
-    AnalysisEngine ae = null;
-    try {
-      // create TempFile for test
-      File outputReferenceFile = new File(this.testBaseDir, "SequencerTest.txt");
-      outputReferenceFile.delete(); // delete file if exist
-      outputReferenceFile.createNewFile(); // create new file
-      outputReferenceFile.deleteOnExit(); // delete file after closing VM
-
-      // Create an XML input source from the specifier file.
-      XMLInputSource in = new XMLInputSource(JUnitExtension
-              .getFile("SequencerTest/SequencerCapabilityLanguageAggregateES.xml"));
-      // Parse the specifier.
-      ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
-      // Create the Text Analysis Engine.
-      ae = UIMAFramework.produceAnalysisEngine(specifier, null, null);
-      // Create a new CAS.
-      CAS cas = ae.newCAS();
-      // Our sample text.
-      String text = "Hello world!";
-      // System.out.println("Processing text: \"" + text + "\"");
-      // Set the document text on the CAS.
-      cas.setDocumentText(text);
-      cas.setDocumentLanguage("zh-CN");
-      // Process the sample document.
-      ResultSpecification resultSpec = UIMAFramework.getResourceSpecifierFactory()
-              .createResultSpecification();
-      resultSpec.addCapabilities(ae.getAnalysisEngineMetaData().getCapabilities());
-      ae.process(cas, resultSpec);
-      // check fileoutput
-      Assert.assertTrue(FileCompare.compare(outputReferenceFile, JUnitExtension
-              .getFile("SequencerTest/SequencerCapabilityLanguageExpectedEsZhCNResultSpec.txt")));
-      outputReferenceFile.delete();
-    } catch (Exception ex) {
-      JUnitExtension.handleException(ex);
-    } finally {
-      // Destroy the CAS, releasing resources.
-      if (ae != null) {
-        ae.destroy();
-      }
-    }
+    runTest("SequencerTest/SequencerCapabilityLanguageAggregateES.xml", "zh-CN",
+            "SequencerTest/SequencerCapabilityLanguageExpectedEsZhCNResultSpec.txt", true);
   }
 
   public void testSequencerCapabilityLanguageEsXunSpec() throws Exception {
-    AnalysisEngine ae = null;
-    try {
-      // create TempFile for test
-      File outputReferenceFile = new File(this.testBaseDir, "SequencerTest.txt");
-      outputReferenceFile.delete(); // delete file if exist
-      outputReferenceFile.createNewFile(); // create new file
-      outputReferenceFile.deleteOnExit(); // delete file after closing VM
-
-      // Create an XML input source from the specifier file.
-      XMLInputSource in = new XMLInputSource(JUnitExtension
-              .getFile("SequencerTest/SequencerCapabilityLanguageAggregateES.xml"));
-      // Parse the specifier.
-      ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
-      // Create the Text Analysis Engine.
-      ae = UIMAFramework.produceAnalysisEngine(specifier, null, null);
-      // Create a new CAS.
-      CAS cas = ae.newCAS();
-      // Our sample text.
-      String text = "Hello world!";
-      // System.out.println("Processing text: \"" + text + "\"");
-      // Set the document text on the CAS.
-      cas.setDocumentText(text);
-      cas.setDocumentLanguage("x-unspecified");
-      // Process the sample document.
-      ae.process(cas);
-      // check fileoutput
-      Assert.assertTrue(FileCompare.compare(outputReferenceFile, JUnitExtension
-              .getFile("SequencerTest/SequencerCapabilityLanguageExpectedEsUnknown.txt")));
-      outputReferenceFile.delete();
-    } catch (Exception ex) {
-      JUnitExtension.handleException(ex);
-    } finally {
-      // Destroy the CAS, releasing resources.
-      if (ae != null) {
-        ae.destroy();
-      }
-    }
+    runTest("SequencerTest/SequencerCapabilityLanguageAggregateES.xml", "x-unspecified",
+            "SequencerTest/SequencerCapabilityLanguageExpectedEsUnknown.txt", false);
   }
 
   public void testSequencerCapabilityLanguageEsXunSpecResultSpec() throws Exception {
-    AnalysisEngine ae = null;
-    try {
-      // create TempFile for test
-      File outputReferenceFile = new File(this.testBaseDir, "SequencerTest.txt");
-      outputReferenceFile.delete(); // delete file if exist
-      outputReferenceFile.createNewFile(); // create new file
-      outputReferenceFile.deleteOnExit(); // delete file after closing VM
-
-      // Create an XML input source from the specifier file.
-      XMLInputSource in = new XMLInputSource(JUnitExtension
-              .getFile("SequencerTest/SequencerCapabilityLanguageAggregateES.xml"));
-      // Parse the specifier.
-      ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
-      // Create the Text Analysis Engine.
-      ae = UIMAFramework.produceAnalysisEngine(specifier, null, null);
-      // Create a new CAS.
-      CAS cas = ae.newCAS();
-      // Our sample text.
-      String text = "Hello world!";
-      // System.out.println("Processing text: \"" + text + "\"");
-      // Set the document text on the CAS.
-      cas.setDocumentText(text);
-      cas.setDocumentLanguage("x-unspecified");
-      // Process the sample document.
-      ResultSpecification resultSpec = UIMAFramework.getResourceSpecifierFactory()
-              .createResultSpecification();
-      resultSpec.addCapabilities(ae.getAnalysisEngineMetaData().getCapabilities());
-      ae.process(cas, resultSpec);
-      // check fileoutput
-      Assert.assertTrue(FileCompare.compare(outputReferenceFile, JUnitExtension
-              .getFile("SequencerTest/SequencerCapabilityLanguageExpectedEsUnknown.txt")));
-      outputReferenceFile.delete();
-    } catch (Exception ex) {
-      JUnitExtension.handleException(ex);
-    } finally {
-      // Destroy the CAS, releasing resources.
-      if (ae != null) {
-        ae.destroy();
-      }
-    }
+    runTest("SequencerTest/SequencerCapabilityLanguageAggregateES.xml", "x-unspecified",
+            "SequencerTest/SequencerCapabilityLanguageExpectedEsUnknown.txt", true);
   }
 
   public void testSequencerCapabilityLanguageEn() throws Exception {
-    AnalysisEngine ae = null;
-    try {
-      // create TempFile for test
-      File outputReferenceFile = new File(this.testBaseDir, "SequencerTest.txt");
-      outputReferenceFile.delete(); // delete file if exist
-      outputReferenceFile.createNewFile(); // create new file
-      outputReferenceFile.deleteOnExit(); // delete file after closing VM
-
-      // Create an XML input source from the specifier file.
-      XMLInputSource in = new XMLInputSource(JUnitExtension
-              .getFile("SequencerTest/SequencerCapabilityLanguageAggregate.xml"));
-      // Parse the specifier.
-      ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
-      // Create the Text Analysis Engine.
-      ae = UIMAFramework.produceAnalysisEngine(specifier, null, null);
-      // Create a new CAS.
-      CAS cas = ae.newCAS();
-      // Our sample text.
-      String text = "Hello world!";
-      // System.out.println("Processing text: \"" + text + "\"");
-      // Set the document text on the CAS.
-      cas.setDocumentText(text);
-      cas.setDocumentLanguage("en");
-      // Process the sample document.
-      ae.process(cas);
-      // check fileoutput
-      Assert.assertTrue(FileCompare.compare(outputReferenceFile, JUnitExtension
-              .getFile("SequencerTest/SequencerCapabilityLanguageExpectedEn.txt")));
-      outputReferenceFile.delete();
-    } catch (Exception ex) {
-      JUnitExtension.handleException(ex);
-    } finally {
-      // Destroy the CAS, releasing resources.
-      if (ae != null) {
-        ae.destroy();
-      }
-    }
+    runTest("SequencerTest/SequencerCapabilityLanguageAggregate.xml", "en",
+            "SequencerTest/SequencerCapabilityLanguageExpectedEn.txt", false);
   }
 
   public void testSequencerCapabilityLanguageEnResultSpec() throws Exception {
-    AnalysisEngine ae = null;
-    try {
-      // create TempFile for test
-      File outputReferenceFile = new File(this.testBaseDir, "SequencerTest.txt");
-      outputReferenceFile.delete(); // delete file if exist
-      outputReferenceFile.createNewFile(); // create new file
-      outputReferenceFile.deleteOnExit(); // delete file after closing VM
-
-      // Create an XML input source from the specifier file.
-      XMLInputSource in = new XMLInputSource(JUnitExtension
-              .getFile("SequencerTest/SequencerCapabilityLanguageAggregate.xml"));
-      // Parse the specifier.
-      ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
-      // Create the Text Analysis Engine.
-      ae = UIMAFramework.produceAnalysisEngine(specifier, null, null);
-      // Create a new CAS.
-      CAS cas = ae.newCAS();
-      // Our sample text.
-      String text = "Hello world!";
-      // System.out.println("Processing text: \"" + text + "\"");
-      // Set the document text on the CAS.
-      cas.setDocumentText(text);
-      cas.setDocumentLanguage("en");
-      // Process the sample document.
-      ResultSpecification resultSpec = UIMAFramework.getResourceSpecifierFactory()
-              .createResultSpecification();
-      resultSpec.addCapabilities(ae.getAnalysisEngineMetaData().getCapabilities());
-      ae.process(cas, resultSpec);
-      // check fileoutput
-      Assert.assertTrue(FileCompare.compare(outputReferenceFile, JUnitExtension
-              .getFile("SequencerTest/SequencerCapabilityLanguageExpectedEnResultSpec.txt")));
-      outputReferenceFile.delete();
-    } catch (Exception ex) {
-      JUnitExtension.handleException(ex);
-    } finally {
-      // Destroy the CAS, releasing resources.
-      if (ae != null) {
-        ae.destroy();
-      }
-    }
+    runTest("SequencerTest/SequencerCapabilityLanguageAggregate.xml", "en",
+            "SequencerTest/SequencerCapabilityLanguageExpectedEnResultSpec.txt", true);
   }
 
   public void testSequencerCapabilityLanguageEnResultSpecCapital() throws Exception {
-    AnalysisEngine ae = null;
-    try {
-      // create TempFile for test
-      File outputReferenceFile = new File(this.testBaseDir, "SequencerTest.txt");
-      outputReferenceFile.delete(); // delete file if exist
-      outputReferenceFile.createNewFile(); // create new file
-      outputReferenceFile.deleteOnExit(); // delete file after closing VM
-
-      // Create an XML input source from the specifier file.
-      XMLInputSource in = new XMLInputSource(JUnitExtension
-              .getFile("SequencerTest/SequencerCapabilityLanguageAggregate.xml"));
-      // Parse the specifier.
-      ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
-      // Create the Text Analysis Engine.
-      ae = UIMAFramework.produceAnalysisEngine(specifier, null, null);
-      // Create a new CAS.
-      CAS cas = ae.newCAS();
-      // Our sample text.
-      String text = "Hello world!";
-      // System.out.println("Processing text: \"" + text + "\"");
-      // Set the document text on the CAS.
-      cas.setDocumentText(text);
-      cas.setDocumentLanguage("EN");
-      // Process the sample document.
-      ResultSpecification resultSpec = UIMAFramework.getResourceSpecifierFactory()
-              .createResultSpecification();
-      resultSpec.addCapabilities(ae.getAnalysisEngineMetaData().getCapabilities());
-      ae.process(cas, resultSpec);
-      // check fileoutput
-      Assert.assertTrue(FileCompare.compare(outputReferenceFile, JUnitExtension
-              .getFile("SequencerTest/SequencerCapabilityLanguageExpectedEnResultSpec.txt")));
-      outputReferenceFile.delete();
-    } catch (Exception ex) {
-      JUnitExtension.handleException(ex);
-    } finally {
-      // Destroy the CAS, releasing resources.
-      if (ae != null) {
-        ae.destroy();
-      }
-    }
+    runTest("SequencerTest/SequencerCapabilityLanguageAggregate.xml", "EN",
+            "SequencerTest/SequencerCapabilityLanguageExpectedEnResultSpec.txt", true);
   }
 
   public void testSequencerCapabilityLanguageJa() throws Exception {
-    AnalysisEngine ae = null;
-    try {
-      // create TempFile for test
-      File outputReferenceFile = new File(this.testBaseDir, "SequencerTest.txt");
-      outputReferenceFile.delete(); // delete file if exist
-      outputReferenceFile.createNewFile(); // create new file
-      outputReferenceFile.deleteOnExit(); // delete file after closing VM
-
-      // Create an XML input source from the specifier file.
-      XMLInputSource in = new XMLInputSource(JUnitExtension
-              .getFile("SequencerTest/SequencerCapabilityLanguageAggregate.xml"));
-      // Parse the specifier.
-      ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
-      // Create the Text Analysis Engine.
-      ae = UIMAFramework.produceAnalysisEngine(specifier, null, null);
-      // Create a new CAS.
-      CAS cas = ae.newCAS();
-      // Our sample text.
-      String text = "Hello world!";
-      // System.out.println("Processing text: \"" + text + "\"");
-      // Set the document text on the CAS.
-      cas.setDocumentText(text);
-      cas.setDocumentLanguage("ja");
-      // Process the sample document.
-      ae.process(cas);
-      // check fileoutput
-      Assert.assertTrue(FileCompare.compare(outputReferenceFile, JUnitExtension
-              .getFile("SequencerTest/SequencerCapabilityLanguageExpectedJa.txt")));
-      outputReferenceFile.delete();
-    } catch (Exception ex) {
-      JUnitExtension.handleException(ex);
-    } finally {
-      // Destroy the CAS, releasing resources.
-      if (ae != null) {
-        ae.destroy();
-      }
-    }
+    runTest("SequencerTest/SequencerCapabilityLanguageAggregate.xml", "ja",
+            "SequencerTest/SequencerCapabilityLanguageExpectedJa.txt", false);
   }
 
   public void testSequencerCapabilityLanguageJaResultSpec() throws Exception {
-    AnalysisEngine ae = null;
-    try {
-      // create TempFile for test
-      File outputReferenceFile = new File(this.testBaseDir, "SequencerTest.txt");
-      outputReferenceFile.delete(); // delete file if exist
-      outputReferenceFile.createNewFile(); // create new file
-      outputReferenceFile.deleteOnExit(); // delete file after closing VM
-
-      // Create an XML input source from the specifier file.
-      XMLInputSource in = new XMLInputSource(JUnitExtension
-              .getFile("SequencerTest/SequencerCapabilityLanguageAggregate.xml"));
-      // Parse the specifier.
-      ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
-      // Create the Text Analysis Engine.
-      ae = UIMAFramework.produceAnalysisEngine(specifier, null, null);
-      // Create a new CAS.
-      CAS cas = ae.newCAS();
-      // Our sample text.
-      String text = "Hello world!";
-      // System.out.println("Processing text: \"" + text + "\"");
-      // Set the document text on the CAS.
-      cas.setDocumentText(text);
-      cas.setDocumentLanguage("ja");
-      // Process the sample document.
-      ResultSpecification resultSpec = UIMAFramework.getResourceSpecifierFactory()
-              .createResultSpecification();
-      resultSpec.addCapabilities(ae.getAnalysisEngineMetaData().getCapabilities());
-      ae.process(cas, resultSpec);
-      // check fileoutput
-      Assert.assertTrue(FileCompare.compare(outputReferenceFile, JUnitExtension
-              .getFile("SequencerTest/SequencerCapabilityLanguageExpectedJaResultSpec.txt")));
-      outputReferenceFile.delete();
-    } catch (Exception ex) {
-      JUnitExtension.handleException(ex);
-    } finally {
-      // Destroy the CAS, releasing resources.
-      if (ae != null) {
-        ae.destroy();
-      }
-    }
+    runTest("SequencerTest/SequencerCapabilityLanguageAggregate.xml", "ja",
+            "SequencerTest/SequencerCapabilityLanguageExpectedJaResultSpec.txt", true);
   }
 
   public void testSequencerCapabilityLanguageXunSpec() throws Exception {
-    AnalysisEngine ae = null;
-    try {
-      // create TempFile for test
-      File outputReferenceFile = new File(this.testBaseDir, "SequencerTest.txt");
-      outputReferenceFile.delete(); // delete file if exist
-      outputReferenceFile.createNewFile(); // create new file
-      outputReferenceFile.deleteOnExit(); // delete file after closing VM
-
-      // Create an XML input source from the specifier file.
-      XMLInputSource in = new XMLInputSource(JUnitExtension
-              .getFile("SequencerTest/SequencerCapabilityLanguageAggregate.xml"));
-      // Parse the specifier.
-      ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
-      // Create the Text Analysis Engine.
-      ae = UIMAFramework.produceAnalysisEngine(specifier, null, null);
-      // Create a new CAS.
-      CAS cas = ae.newCAS();
-      // Our sample text.
-      String text = "Hello world!";
-      // System.out.println("Processing text: \"" + text + "\"");
-      // Set the document text on the CAS.
-      cas.setDocumentText(text);
-      cas.setDocumentLanguage("x-unspecified");
-      // Process the sample document.
-      ae.process(cas);
-      // check fileoutput
-      Assert.assertTrue(FileCompare.compare(outputReferenceFile, JUnitExtension
-              .getFile("SequencerTest/SequencerCapabilityLanguageExpectedXunSpec.txt")));
-      outputReferenceFile.delete();
-    } catch (Exception ex) {
-      JUnitExtension.handleException(ex);
-    } finally {
-      // Destroy the CAS, releasing resources.
-      if (ae != null) {
-        ae.destroy();
-      }
-    }
+    runTest("SequencerTest/SequencerCapabilityLanguageAggregate.xml", "x-unspecified",
+            "SequencerTest/SequencerCapabilityLanguageExpectedXunSpec.txt", false);
   }
 
   public void testSequencerCapabilityLanguageXunSpecResultSpec() throws Exception {
-    AnalysisEngine ae = null;
-    try {
-      // create TempFile for test
-      File outputReferenceFile = new File(this.testBaseDir, "SequencerTest.txt");
-      outputReferenceFile.delete(); // delete file if exist
-      outputReferenceFile.createNewFile(); // create new file
-      outputReferenceFile.deleteOnExit(); // delete file after closing VM
-
-      // Create an XML input source from the specifier file.
-      XMLInputSource in = new XMLInputSource(JUnitExtension
-              .getFile("SequencerTest/SequencerCapabilityLanguageAggregate.xml"));
-      // Parse the specifier.
-      ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
-      // Create the Text Analysis Engine.
-      ae = UIMAFramework.produceAnalysisEngine(specifier, null, null);
-      // Create a new CAS.
-      CAS cas = ae.newCAS();
-      // Our sample text.
-      String text = "Hello world!";
-      // System.out.println("Processing text: \"" + text + "\"");
-      // Set the document text on the CAS.
-      cas.setDocumentText(text);
-      cas.setDocumentLanguage("x-unspecified");
-      // Process the sample document.
-      ResultSpecification resultSpec = UIMAFramework.getResourceSpecifierFactory()
-              .createResultSpecification();
-      resultSpec.addCapabilities(ae.getAnalysisEngineMetaData().getCapabilities());
-      ae.process(cas, resultSpec);
-      // check fileoutput
-      Assert.assertTrue(FileCompare.compare(outputReferenceFile, JUnitExtension
-              .getFile("SequencerTest/SequencerCapabilityLanguageExpectedXunSpec.txt")));
-      outputReferenceFile.delete();
-    } catch (Exception ex) {
-      JUnitExtension.handleException(ex);
-    } finally {
-      // Destroy the CAS, releasing resources.
-      if (ae != null) {
-        ae.destroy();
-      }
-    }
+    runTest("SequencerTest/SequencerCapabilityLanguageAggregate.xml", "x-unspecified",
+            "SequencerTest/SequencerCapabilityLanguageExpectedXunSpec.txt", true);
   }
 
   public void testSequencerCapabilityLanguageEsFooBar() throws Exception {
-    AnalysisEngine ae = null;
-    try {
-      // create TempFile for test
-      File outputReferenceFile = new File(this.testBaseDir, "SequencerTest.txt");
-      outputReferenceFile.delete(); // delete file if exist
-      outputReferenceFile.createNewFile(); // create new file
-      outputReferenceFile.deleteOnExit(); // delete file after closing VM
-
-      // Create an XML input source from the specifier file.
-      XMLInputSource in = new XMLInputSource(JUnitExtension
-              .getFile("SequencerTest/SequencerCapabilityLanguageAggregateES.xml"));
-      // Parse the specifier.
-      ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
-      // Create the Text Analysis Engine.
-      ae = UIMAFramework.produceAnalysisEngine(specifier, null, null);
-      // Create a new CAS.
-      CAS cas = ae.newCAS();
-      // Our sample text.
-      String text = "Hello world!";
-      // System.out.println("Processing text: \"" + text + "\"");
-      // Set the document text on the CAS.
-      cas.setDocumentText(text);
-      cas.setDocumentLanguage("foo-BAR");
-      // Process the sample document.
-      ae.process(cas);
-      // check fileoutput
-      Assert.assertTrue(FileCompare.compare(outputReferenceFile, JUnitExtension
-              .getFile("SequencerTest/SequencerCapabilityLanguageExpectedEsUnknown.txt")));
-      outputReferenceFile.delete();
-    } catch (Exception ex) {
-      JUnitExtension.handleException(ex);
-    } finally {
-      // Destroy the CAS, releasing resources.
-      if (ae != null) {
-        ae.destroy();
-      }
-    }
+    runTest("SequencerTest/SequencerCapabilityLanguageAggregateES.xml", "foo-BAR",
+            "SequencerTest/SequencerCapabilityLanguageExpectedEsUnknown.txt", false);
   }
 
   public void testSequencerCapabilityLanguageEsFooBarResultSpec() throws Exception {
-    AnalysisEngine ae = null;
-    try {
-      // create TempFile for test
-      File outputReferenceFile = new File(this.testBaseDir, "SequencerTest.txt");
-      outputReferenceFile.delete(); // delete file if exist
-      outputReferenceFile.createNewFile(); // create new file
-      outputReferenceFile.deleteOnExit(); // delete file after closing VM
-
-      // Create an XML input source from the specifier file.
-      XMLInputSource in = new XMLInputSource(JUnitExtension
-              .getFile("SequencerTest/SequencerCapabilityLanguageAggregateES.xml"));
-      // Parse the specifier.
-      ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
-      // Create the Text Analysis Engine.
-      ae = UIMAFramework.produceAnalysisEngine(specifier, null, null);
-      // Create a new CAS.
-      CAS cas = ae.newCAS();
-      // Our sample text.
-      String text = "Hello world!";
-      // System.out.println("Processing text: \"" + text + "\"");
-      // Set the document text on the CAS.
-      cas.setDocumentText(text);
-      cas.setDocumentLanguage("foo-BAR");
-      // Process the sample document.
-      ResultSpecification resultSpec = UIMAFramework.getResourceSpecifierFactory()
-              .createResultSpecification();
-      resultSpec.addCapabilities(ae.getAnalysisEngineMetaData().getCapabilities());
-      ae.process(cas, resultSpec);
-      // check fileoutput
-      Assert.assertTrue(FileCompare.compare(outputReferenceFile, JUnitExtension
-              .getFile("SequencerTest/SequencerCapabilityLanguageExpectedEsUnknown.txt")));
-      outputReferenceFile.delete();
-    } catch (Exception ex) {
-      JUnitExtension.handleException(ex);
-    } finally {
-      // Destroy the CAS, releasing resources.
-      if (ae != null) {
-        ae.destroy();
-      }
-    }
+    runTest("SequencerTest/SequencerCapabilityLanguageAggregateES.xml", "foo-BAR",
+            "SequencerTest/SequencerCapabilityLanguageExpectedEsUnknown.txt", true);
   }
 
   public void testSequencerCapabilityLanguageEsZhCNSmall() throws Exception {
-    AnalysisEngine ae = null;
-    try {
-      // create TempFile for test
-      File outputReferenceFile = new File(this.testBaseDir, "SequencerTest.txt");
-      outputReferenceFile.delete(); // delete file if exist
-      outputReferenceFile.createNewFile(); // create new file
-      outputReferenceFile.deleteOnExit(); // delete file after closing VM
-
-      // Create an XML input source from the specifier file.
-      XMLInputSource in = new XMLInputSource(JUnitExtension
-              .getFile("SequencerTest/SequencerCapabilityLanguageAggregateES.xml"));
-      // Parse the specifier.
-      ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
-      // Create the Text Analysis Engine.
-      ae = UIMAFramework.produceAnalysisEngine(specifier, null, null);
-      // Create a new CAS.
-      CAS cas = ae.newCAS();
-      // Our sample text.
-      String text = "Hello world!";
-      // System.out.println("Processing text: \"" + text + "\"");
-      // Set the document text on the CAS.
-      cas.setDocumentText(text);
-      cas.setDocumentLanguage("zh-cn");
-      // Process the sample document.
-      ae.process(cas);
-      // check fileoutput
-      Assert.assertTrue(FileCompare.compare(outputReferenceFile, JUnitExtension
-              .getFile("SequencerTest/SequencerCapabilityLanguageExpectedEsZhCN.txt")));
-      outputReferenceFile.delete();
-    } catch (Exception ex) {
-      JUnitExtension.handleException(ex);
-    } finally {
-      // Destroy the CAS, releasing resources.
-      if (ae != null) {
-        ae.destroy();
-      }
-    }
+    runTest("SequencerTest/SequencerCapabilityLanguageAggregateES.xml", "zh-cn",
+            "SequencerTest/SequencerCapabilityLanguageExpectedEsZhCN.txt", false);
   }
 
   public void testSequencerCapabilityLanguageEsZhCNResultSpecSmall() throws Exception {
-    AnalysisEngine ae = null;
-    try {
-      // create TempFile for test
-      File outputReferenceFile = new File(this.testBaseDir, "SequencerTest.txt");
-      outputReferenceFile.delete(); // delete file if exist
-      outputReferenceFile.createNewFile(); // create new file
-      outputReferenceFile.deleteOnExit(); // delete file after closing VM
-
-      // Create an XML input source from the specifier file.
-      XMLInputSource in = new XMLInputSource(JUnitExtension
-              .getFile("SequencerTest/SequencerCapabilityLanguageAggregateES.xml"));
-      // Parse the specifier.
-      ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
-      // Create the Text Analysis Engine.
-      ae = UIMAFramework.produceAnalysisEngine(specifier, null, null);
-      // Create a new CAS.
-      CAS cas = ae.newCAS();
-      // Our sample text.
-      String text = "Hello world!";
-      // System.out.println("Processing text: \"" + text + "\"");
-      // Set the document text on the CAS.
-      cas.setDocumentText(text);
-      cas.setDocumentLanguage("zh-cn");
-      // Process the sample document.
-      ResultSpecification resultSpec = UIMAFramework.getResourceSpecifierFactory()
-              .createResultSpecification();
-      resultSpec.addCapabilities(ae.getAnalysisEngineMetaData().getCapabilities());
-      ae.process(cas, resultSpec);
-      // check fileoutput
-      Assert.assertTrue(FileCompare.compare(outputReferenceFile, JUnitExtension
-              .getFile("SequencerTest/SequencerCapabilityLanguageExpectedEsZhCNResultSpec.txt")));
-      outputReferenceFile.delete();
-    } catch (Exception ex) {
-      JUnitExtension.handleException(ex);
-    } finally {
-      // Destroy the CAS, releasing resources.
-      if (ae != null) {
-        ae.destroy();
-      }
-    }
+    runTest("SequencerTest/SequencerCapabilityLanguageAggregateES.xml", "zh-cn",
+            "SequencerTest/SequencerCapabilityLanguageExpectedEsZhCNResultSpec.txt", true);
   }
 
   public void testSequencerCapabilityLanguageResultSpecSetByFlowController() throws Exception {
-    AnalysisEngine ae = null;
-    try {
-      // create TempFile for test
-      File outputReferenceFile = new File(this.testBaseDir, "SequencerTest.txt");
-      outputReferenceFile.delete(); // delete file if exist
-      outputReferenceFile.createNewFile(); // create new file
-      outputReferenceFile.deleteOnExit(); // delete file after closing VM
-
-      // Create an XML input source from the specifier file.
-      XMLInputSource in = new XMLInputSource(JUnitExtension
-              .getFile("SequencerTest/SequencerCapabilityLanguageAggregateResultSpec.xml"));
-      // Parse the specifier.
-      ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
-      // Create the Text Analysis Engine.
-      ae = UIMAFramework.produceAnalysisEngine(specifier, null, null);
-      // Create a new CAS.
-      CAS cas = ae.newCAS();
-      // Our sample text.
-      String text = "Hello world!";
-      // System.out.println("Processing text: \"" + text + "\"");
-      // Set the document text on the CAS.
-      cas.setDocumentText(text);
-      cas.setDocumentLanguage("en");
-      // Process the sample document.
-      ResultSpecification resultSpec = UIMAFramework.getResourceSpecifierFactory()
-              .createResultSpecification();
-      resultSpec.addCapabilities(ae.getAnalysisEngineMetaData().getCapabilities());
-      ae.process(cas, resultSpec);
-      // check fileoutput
-      Assert.assertTrue(FileCompare.compare(outputReferenceFile, JUnitExtension
-              .getFile("SequencerTest/SequencerCapabilityLanguageExpectedResultSpecSetByFlowController.txt")));
-      outputReferenceFile.delete();
-    } catch (Exception ex) {
-      JUnitExtension.handleException(ex);
-    } finally {
-      // Destroy the CAS, releasing resources.
-      if (ae != null) {
-        ae.destroy();
-      }
-    }
+    runTest("SequencerTest/SequencerCapabilityLanguageAggregateResultSpec.xml", "en",
+            "SequencerTest/SequencerCapabilityLanguageExpectedResultSpecSetByFlowController.txt", false);
   }
-
 }
