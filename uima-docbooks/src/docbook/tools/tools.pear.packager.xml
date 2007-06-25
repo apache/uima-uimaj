@@ -209,13 +209,13 @@ under the License.
             <listitem><para>Required JDK version, if applicable.</para></listitem>
             
             <listitem><para>Required Environment variable settings.  This is where
-              you specify special ClassPath paths.  You do not need to specify this for
-              any Jars in the <literal>lib</literal> directory; those are automatically
-              put into the generated ClassPath.  Nor should you include paths to the
+              you specify special CLASSPATH paths.  You do not need to specify this for
+              any Jar that is listed in the your eclipse project classpath settings; those are automatically
+              put into the generated CLASSPATH.  Nor should you include paths to the
               UIMA Framework itself, here.  Doing so may cause class loading problems.
             </para>
               
-            <para>ClassPath segments are written here using a semicolon ";" as the separator;
+            <para>CLASSPATH segments are written here using a semicolon ";" as the separator;
               during PEAR installation, these will be adjusted to be the correct character for the
               target Operating System.</para>
             
