@@ -58,6 +58,7 @@
                <type>uima.tt.TokenAnnotation</type>
                <type>uima.tt.SentenceAnnotation</type>
                <type>uima.tt.ParagraphAnnotation</type>
+               <type>uima.tt.DummyAnnotation</type>
             </outputs>
             <languagesSupported>
                 <language>x-unspecified</language>

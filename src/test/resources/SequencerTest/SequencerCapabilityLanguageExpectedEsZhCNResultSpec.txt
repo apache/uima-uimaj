@@ -5,3 +5,6 @@ uima.tt.Lemma
 uima.tt.ParagraphAnnotation
 uima.tt.SentenceAnnotation
 uima.tt.TokenAnnotation
+
+ResultSpec for annotator Whitespace tokenizer:
+uima.tt.DummyAnnotation
