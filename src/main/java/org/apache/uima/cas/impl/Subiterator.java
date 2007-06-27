@@ -21,11 +21,13 @@ package org.apache.uima.cas.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.NoSuchElementException;
 
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.text.AnnotationFS;
+import org.apache.uima.cas.text.AnnotationIndex;
 
 /**
  * Subiterator implementation.
@@ -35,9 +37,28 @@ import org.apache.uima.cas.text.AnnotationFS;
 
 public class Subiterator extends FSIteratorImplBase {
 
+  // Jira UIMA-464: add annotation comparator to be able to use Collections.binarySearch() on
+  // annotation list.
+  private static class AnnotationComparator implements Comparator {
+
+    AnnotationIndex index;
+
+    private AnnotationComparator(AnnotationIndex index) {
+      super();
+      this.index = index;
+    }
+
+    public int compare(Object fs1, Object fs2) {
+      return this.index.compare((FeatureStructure) fs1, (FeatureStructure) fs2);
+    }
+
+  }
+
   private ArrayList list;
 
   private int pos;
+
+  private Comparator annotationComparator = null;
 
   /**
    * 
@@ -215,13 +236,20 @@ public class Subiterator extends FSIteratorImplBase {
     this.pos = this.list.size() - 1;
   }
 
+  private final Comparator getAnnotationComparator(FeatureStructure fs) {
+    if (this.annotationComparator == null) {
+      this.annotationComparator = new AnnotationComparator(fs.getCAS().getAnnotationIndex());
+    }
+    return this.annotationComparator;
+  }
+
   /*
    * (non-Javadoc)
    * 
    * @see org.apache.uima.cas.FSIterator#moveTo(org.apache.uima.cas.FeatureStructure)
    */
   public void moveTo(FeatureStructure fs) {
-    final int found = Collections.binarySearch(this.list, fs);
+    final int found = Collections.binarySearch(this.list, fs, getAnnotationComparator(fs));
     if (found >= 0) {
       this.pos = found;
     } else {
