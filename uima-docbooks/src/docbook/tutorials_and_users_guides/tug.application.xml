@@ -1747,8 +1747,29 @@ Exception: Connection refused: connect</programlisting>
       that the JVM remains running after processing completes, waiting for some user signal before
       terminating.</para>
     
+    <para>It is possible to override the default JMX MBean names UIMA uses, for
+      example to better organize the UIMA MBeans with respect to MBeans exposed by
+      other parts of your application.  This is done using the
+      <literal>AnalysisEngine.PARAM_MBEAN_NAME_PREFIX</literal> additional parameter 
+      when creating your AnalysisEngine:
+        
+        <programlisting>  //set up Map with custom JMX MBean name prefix
+  Map paramMap = new HashMap();
+  paramMap.put(AnalysisEngine.PARAM_MBEAN_NAME_PREFIX,
+               "org.myorg:category=MyApp");
+        
+  // create Analysis Engine
+  AnalysisEngine ae = 
+      UIMAFramework.produceAnalysisEngine(specifier, paramMap);
+</programlisting>    
+    </para>
+    <para>Similary, you can use the <literal>AnalysisEngine.PARAM_MBEAN_SERVER</literal>
+      parameter to specify a particular instance of a JMX MBean Server with which UIMA
+      should register the MBeans.  If no specified then the default is to register with
+      the platform MBeanServer (Java 5+ only).</para>
+        
     <para>For information on JMX can be found in the <ulink
         url="http://java.sun.com/j2se/1.5.0/docs/api/javax/management/package-summary.html#package_description">
-      Java 5 documentation</ulink>.</para>
+      Java 5 documentation</ulink>.</para>    
   </section>
 </chapter>
