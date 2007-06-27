@@ -2036,7 +2036,7 @@ catch (PatternSyntaxException e) {
         directories on the class path.</para>
       
       <para>If you need to include files on the class path, the scripts will add anything you
-        specify in the environment variable UIMA_CLASSPATH to the classpath. So, for
+        specify in the environment variables CLASSPATH or UIMA_CLASSPATH to the classpath. So, for
         example, if you are running the document analyzer, and wanted it to find a Java class
         file named (on Windows) c:\a\b\c\myProject\myJarFile.jar, you could first issue a
         <literal>set</literal> command to set the UIMA_CLASSPATH to this file, followed by
@@ -2063,19 +2063,18 @@ documentAnalyzer</programlisting>
             <tbody>
               <row>
                 <entry>UIMA_HOME</entry>
-                <entry>Path where the UIMA SDK was installed. Set automatically if
-                  installing via the InstallShield installer.</entry>
+                <entry>Path where the UIMA SDK was installed.</entry>
               </row>
               <row>
                 <entry>JAVA_HOME</entry>
                 <entry>(Optional) Path to a Java Runtime Environment. If not set, the Java
-                  JRE that is shipped with the UIMA SDK (InstallShield versions) is
-                  used.</entry>
+                  JRE that is in your system PATH is used.</entry>
               </row>
               <row>
                 <entry>UIMA_CLASSPATH</entry>
                 <entry>(Optional) if specified, a path specification to use as the default
-                  ClassPath.</entry>
+                  ClassPath.  You can also set the CLASSPATH variable.  If you set both, they
+                  will be concatenated.</entry>
               </row>
               <row>
                 <entry>UIMA_DATAPATH</entry>
@@ -2084,11 +2083,15 @@ documentAnalyzer</programlisting>
                     targetptr="ugr.ref.xml.component_descriptor.datapath"/>)</entry>
               </row>
               <row>
-                <entry>VNS_HOST</entry>
-                <entry>(Optional) if specified, the network IP name of the host running the
-                  Vinci Name Server (VNS) (see <olink
-                    targetdoc="&uima_docs_tutorial_guides;"
-                    targetptr="ugr.tug.application.vns"/>)</entry>
+                <entry>UIMA_LOGGER_CONFIG_FILE</entry>
+                <entry>(Optional) if specified, a path to a Java Logger properties file
+                  (see <xref linkend="ugr.tug.aae.configuration_logging"/>)</entry>
+              </row>
+              <row>
+                <entry>UIMA_JVM_OPTS</entry>
+                <entry>(Optional) if specified, the JVM arguments to be used when the Java
+                  process is started.  This can be used for example to set the maximum Java
+                  heap size or to define system properties.</entry>
               </row>
               <row>
                 <entry>VNS_PORT</entry>
