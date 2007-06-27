@@ -148,6 +148,39 @@ under the License.
       uses the <literal>UimaTypeSystem2Ecore</literal> converter, to compile it you must
       add to your classpath the EMF jars common.jar, ecore.jar, and ecore.xmi.jar &ndash;
       see ecore_src/readme.txt for instructions.</para>
+
+    <section id="ugr.tug.xmi_emf.xml_character_issues">
+    <title>Character Encoding Issues with XML Serialization</title>
+    
+    <para>Note that not all valid Unicode characters are valid XML characters, at least not in XML
+      1.0.  Moreover, it is possible to create characters in Java that are not even valid Unicode
+      characters, let alone XML characters.  As UIMA character data is translated directly into XML
+      character data on serialization, this may lead to issues.  UIMA will therefore check that the
+      character data that is being serialized is valid for the version of XML being used.  If 
+      non-serializable character data is encountered during serialization, an exception is thrown
+      and serialization fails (to avoid creating invalid XML data).  UIMA does not simply replace
+      the offending characters with some valid replacement character; the assumption being that
+      most applications would not like to have their data modified automatically.
+    </para>
+    
+    <para>If you know you are going to use XML serialization, and you would like to avoid such issues
+      on serialization, you should check any character data you create in UIMA ahead of time.  Issues
+      most often arise with the document text, as documents may originate at various sources, and
+      may be of varying quality.  So it's a particularly good idea to check the document text for
+      characters that will cause issues for serialization.
+    </para>
+    
+    <para>UIMA provides a handful of functions to assist you in checking Java character data.  Those
+      methods are located in 
+      <literal>org.apache.uima.internal.util.XMLUtils.checkForNonXmlCharacters()</literal>, with
+      several overloads.  Please check the javadocs for further information.
+    </para>
+    
+    <para>Please note that these issues are not specific to XMI serialization, they apply to the
+      older XCAS format in the same way.
+    </para>
+  
+    </section>
   </section>
   
 </chapter>
