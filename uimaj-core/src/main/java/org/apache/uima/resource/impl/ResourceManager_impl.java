@@ -419,12 +419,12 @@ public class ResourceManager_impl implements ResourceManager {
             UIMAFramework.getLogger().logrb(Level.CONFIG, ResourceManager_impl.class.getName(),
                     "initializeExternalResources", LOG_RESOURCE_BUNDLE,
                     "UIMA_overridden_resource__CONFIG",
-                    new Object[] { name, registration.definingContext, aQualifiedContextName });
+                    new Object[] { name, aQualifiedContextName, registration.definingContext});
           } else {
             UIMAFramework.getLogger().logrb(Level.WARNING, ResourceManager_impl.class.getName(),
                     "initializeExternalResources", LOG_RESOURCE_BUNDLE,
                     "UIMA_duplicate_resource_name__WARNING",
-                    new Object[] { name, aQualifiedContextName, registration.definingContext });
+                    new Object[] { name, registration.definingContext, aQualifiedContextName});
           }
         }
       }
