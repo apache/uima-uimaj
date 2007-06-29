@@ -346,8 +346,7 @@
    <title>The Edit Menu</title>
    <para>
 
-    <figure id="cvd.figure.editMenu">
-     <title>The Edit menu</title>
+   <screenshot>
      <mediaobject>
       <imageobject>  <!-- was 2.15in -->
        <imagedata scale="100" format="JPG" fileref="&imgroot;EditMenu.jpg" />
@@ -356,7 +355,7 @@
        <phrase>The Edit menu</phrase>
       </textobject>
      </mediaobject>
-    </figure>
+    </screenshot>
 
     The &quot;Edit&quot; menu provides a standard text editing menu with
     Cut, Copy and Paste, as well as unlimited Undo.
@@ -374,8 +373,7 @@
    <title>The Run Menu</title>
    <para>
 
-    <figure id="cvd.figure.runMenu">
-     <title>The Run menu</title>
+    <screenshot>
      <mediaobject>
       <imageobject> <!-- was width="2.225in" -->
        <imagedata scale="100" format="JPG" fileref="&imgroot;RunMenu.jpg" />
@@ -384,7 +382,7 @@
        <phrase>The Run menu</phrase>
       </textobject>
      </mediaobject>
-     </figure>
+     </screenshot>
 
      In the Run menu, you can load and run text analysis engines.
    </para>
@@ -482,17 +480,13 @@
     <title>View Type System</title>
     <para>
 
-     <figure id="cvd.figure.typeSystemViewer">
-      <title>The type system viewer</title>
-      <screenshot>
+     <screenshot>
        <mediaobject>
         <imageobject>  
-         <imagedata width="5.31in" format="JPG"
-          fileref="&imgroot;TypeSystemViewer.jpg" />
+         <imagedata scale="100" format="JPG" fileref="&imgroot;TypeSystemViewer.jpg" />
         </imageobject>
        </mediaobject>
       </screenshot>
-     </figure>
 
      Brings up a new window that displays the type system. This menu
      item is disabled until the first time you have run an analysis
