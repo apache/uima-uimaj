@@ -1,0 +1,272 @@
+	Apache UIMA (Unstructured Information Management Architecture) v2.1.0
+                               Release Notes
+   -----------------------------------------------------------------------
+
+CONTENTS
+1. What is UIMA?
+2. Major Changes in this Release
+3. Migrating from IBM UIMA to Apache UIMA
+4. How to Get Involved
+5. How to Report Issues
+6. List of JIRA Issues Fixed in this Release   
+   
+   
+1. What is UIMA?
+
+Unstructured Information Management applications are software systems that 
+analyze large volumes of unstructured information in order to discover knowledge
+that is relevant to an end user. UIMA is a framework and SDK for developing such
+applications. An example UIM application might ingest plain text and identify 
+entities, such as persons, places, organizations; or relations, such as 
+works-for or located-at. UIMA enables such an application to be decomposed into 
+components, for example "language identification" -> 
+"language specific segmentation" -> "sentence boundary detection" -> 
+"entity detection (person/place names etc.)". Each component must implement 
+interfaces defined by the framework and must provide self-describing metadata 
+via XML descriptor files. The framework manages these components and the data 
+flow between them. Components are written in Java or C++; the data that 
+flows between components is designed for efficient mapping between these 
+languages. UIMA additionally provides capabilities to wrap components as 
+network services, and can scale to very large volumes by replicating processing 
+pipelines over a cluster of networked nodes.
+
+Apache UIMA is an Apache-licensed open source implementation of the UIMA 
+specification (that specification is, in turn, being developed concurrently by 
+a technical committee within OASIS , a standards organization). We invite and 
+encourage you to participate in both the implementation and specification 
+efforts.
+
+UIMA is a component framework for analysing unstructured content such as text, 
+audio and video. It comprises an SDK and tooling for composing and running 
+analytic components written in Java and C++, with some support for Perl, 
+Python and TCL.
+
+
+2. Major Changes in this Release
+
+This section describes what has changed between version 2.1 and version 2.2 of 
+Apache UIMA.
+
+2.1 Pear Runtime
+
+It is now possible to run installed Pear files directly, without any manual setup.
+When you package a Pear file with Apache UIMA 2.2, a descriptor will be created
+from which you can create an analysis engine.  You no longer need to worry about
+classpath setup for the Pear, this is now handled by the framework.  You can also
+refer to several Pears from an aggregate analysis engine descriptor, without
+additional setup.
+
+2.2 Class Loading Improvements for JCas Cover Classes
+
+The JCas cover classes are now loaded with the analysis engine's class loader (used
+to be loaded by the framework class loader).  So if you package your analysis in a
+Pear, you can now be sure that the correct version of the JCas cover classes will
+be used in your annotator.  This fixes a long-standing issue where different,
+incompatible versions of JCas cover classes would be present on the classpath.  In
+particular, you can now add new features to the document annotation and use the JCas
+to access them.
+
+
+3. Migrating from IBM UIMA to Apache UIMA
+
+This section describes how to move from pre-Apache versions of UIMA to the
+Apache version (starting with Apache UIMA 2.1).
+
+Note: Before running the migration utility, be sure to back up your files, just 
+in case you encounter any problems, because the migration tool updates the 
+files in place in the directories where it finds them.
+
+The migration utility is run by executing the script file 
+apache-uima/bin/ibmUimaToApacheUima.bat (Windows) or 
+apache-uima/bin/ibmUimaToApacheUima.sh (UNIX). You must pass one argument: the 
+directory containing the files that you want to be migrated. Subdirectories 
+will be processed recursively.
+
+The script scans your files and applies the necessary updates, for example 
+replacing the com.ibm package names with the new org.apache package names. 
+
+The script will only attempt to modify files with the extensions: java, xml, 
+xmi, wsdd, properties, launch, bat, cmd, sh, ksh, or csh; and files with no 
+extension. Also, files with size greater than 1,000,000 bytes will be skipped. 
+(If you want the script to modify files with other extensions, you can edit 
+the script file and change the -ext argument appropriately.)
+
+If the migration tool reports warnings, there may be a few additional steps to 
+take. The following two sections explain some simple manual changes that you
+might need to make to your code.
+
+3.1. JCas Cover Classes for DocumentAnnotation
+
+If you have run JCasGen it is likely that you have the classes 
+com.ibm.uima.jcas.tcas.DocumentAnnotation and 
+com.ibm.uima.jcas.tcas.DocumentAnnotation_Type as part of your code. This 
+package name is no longer valid, and the migration utility does not move your 
+files between directories so it is unable to fix this.
+
+If you have not made manual modifications to these classes, the best solution 
+is usually to just delete these two classes (and their containing package). 
+There is a default version in the uima-document-annotation.jar file that is 
+included in Apache UIMA. If you have made custom changes, then you should not 
+delete the file but instead move it to the correct package 
+org.apache.uima.jcas.tcas. For more information about JCas and 
+DocumentAnnotation please see Section 5.5.4, 
+"Adding Features to DocumentAnnotation" in the UIMA References manual
+(docs/html/references/references.html).
+
+3.2. JCas.getDocumentAnnotation
+
+The deprecated method JCas.getDocumentAnnotation has been removed. Its use 
+must be replaced with JCas.getDocumentAnnotationFs. The method 
+JCas.getDocumentAnnotationFs() returns type TOP, so your code must cast this to 
+type DocumentAnnotation. The reasons for this are described in Section 
+5.5.4, "Adding Features to DocumentAnnotation" in the UIMA References manual
+(docs/html/references/references.html).
+
+3.3. Rare Cases Where Additional Manual Migration is Necessary
+
+For most users there should not be any additional migration steps necessary.
+However, if the migration tool reported an additional warning or if you are 
+having trouble getting your code to compile or run after running the migration, 
+please see Section 1.4.2. "Rare Cases Where Additional Manual Migration is 
+Necessary," in the Overview and Setup manual 
+(docs/html/overview_and_setup/overview_and_setup.html).
+
+
+4. How to Get Involved
+
+The Apache UIMA project really needs and appreciates any contributions, 
+including documentation help, source code and feedback.  If you are interested
+in contributing, please visit http://incubator.apache.org/uima/get-involved.html.
+
+
+5. How to Report Issues
+
+The Apache UIMA project uses JIRA for issue tracking.  Please report any 
+issues you find at http://issues.apache.org/jira/browse/uima.
+
+
+6. List of JIRA Issues Fixed in this Release
+
+** Sub-task
+    * [UIMA-326] - Add Out-of-typesystem Data Support to XMI Serialization
+    * [UIMA-343] - Framework support for import in CPE descriptor
+    * [UIMA-344] - CPE GUI should create <import> elements instead of <include> 
+    * [UIMA-345] - Documentation for <import> in CPE Descriptor
+
+** Bug
+    * [UIMA-32] - CPE GUI doesn't parse ${CPM_HOME} variable
+    * [UIMA-194] - Tools highlight incorrect annotation offsets due to XML serialization bug in Sun Java 1.4.2
+    * [UIMA-269] - Test PEAR Files don't run
+    * [UIMA-270] - When CVD run with -desc option, status bar still says "(No AE Loaded)"
+    * [UIMA-271] - PEAR Installer doesn't enable "Install" button if PEAR file name is input by keyboard
+    * [UIMA-303] - Problems with BoundedQueue.dequeue(timeout)
+    * [UIMA-329] - extractAndBuild scripts need to check for presence of JAI libraries
+    * [UIMA-330] - Calling reconfigure() on aggregate AE doesn't call reconfigure() on FlowController.
+    * [UIMA-336] - Schema validation fails for service client descriptors
+    * [UIMA-347] - Custom indexes defined in C++ annotators are ignored
+    * [UIMA-356] - fix IBM dependency in CVD log properties file
+    * [UIMA-359] - Blob serialization problems
+    * [UIMA-362] - CVD UIMA about box is editable
+    * [UIMA-364] - CDE add type button and other actions broken
+    * [UIMA-365] - call tae.destroy() in AnalysisEngine_implTest to close open file handles 
+    * [UIMA-367] - Deadlock can occur in MultiprocessingAnalysisEngine_impl.setResultSpecification
+    * [UIMA-370] - Migration tool gets ProgressImpl wrong
+    * [UIMA-374] - CPE GUI left in bad state if you open a CPE descriptor that refers to a nonexistent component descriptor
+    * [UIMA-376] - README refers to outdated GUI label
+    * [UIMA-383] - Duplicate operationalProperties element in example descriptor ex2/RoomNumberAnnotator.xml
+    * [UIMA-385] - setUimaClasspath script has extra space at end of set PATH command, making last path entry invalid
+    * [UIMA-387] - XMI Serializer can write invalid control characters
+    * [UIMA-389] - AnnotationBase.getSofa() throws ClassCastException
+    * [UIMA-392] - Eclipse Plugin packaging not working correctly
+    * [UIMA-393] - ibmUimaToApacheUIMA.sh migration script doesn't work
+    * [UIMA-394] - sofa2jcasMap not be consistenly set
+    * [UIMA-396] - Javadoc for Feature.isMultipleReferencesAllowed is incorrect
+    * [UIMA-397] - JSR47Logger_implTest failing with Sun Java 6
+    * [UIMA-400] - Fix Eclipse plugin
+    * [UIMA-402] - Adding Remote SOAP AE to Aggregate in CDE causes validation error
+    * [UIMA-404] - try to cast NoClassDefFoundError to Exception
+    * [UIMA-410] - Type priority test case failing with IBM JDK 1.5.0_5ea
+    * [UIMA-411] - PearInstallerTest fails when running from mvn install target - caused by class loading issues in the PEAR verification code
+    * [UIMA-414] - Component Descriptor Editor not marking editor as "changed" if an override is added to an existing parameter having overrides.
+    * [UIMA-415] - Component Descriptor Editor fails when removing parameter override
+    * [UIMA-421] - CVD broken after restructuring
+    * [UIMA-422] - update UIMA DocBook version and Date
+    * [UIMA-424] - update UIMA Framework version to 2.2
+    * [UIMA-426] - Component Descriptor Editor feature to edit parts which require other parts for context is broken - CDE wont start up
+    * [UIMA-427] - CVD throws NPE when descriptor file should be loaded
+    * [UIMA-429] - Running an AE in CVD resets the document text (making it scroll to the end).
+    * [UIMA-433] - CAS Editor changing documents does not always sets dirty flag
+    * [UIMA-435] - Update runtime plugin manifest package list for CVD package name change
+    * [UIMA-437] - Annotators are not prevented from calling CAS.release() 
+    * [UIMA-440] - CAS heap doesn't grow correctly when first page exceeded
+    * [UIMA-442] - FileUtilsTest fail on Linux
+    * [UIMA-443] - fix flow ResultSpec handling
+    * [UIMA-449] - XMI serialization does not work with Sun Java 1.5.0_12
+    * [UIMA-452] - Cas Editor: Actions to modify annotations spans do not check bounds
+    * [UIMA-455] - Unused import com.sun.org.apache.bcel.internal.generic.ISTORE in CasEditor causes build break with IBM JVM
+    * [UIMA-459] - References html file has 0 bytes after clean build
+    * [UIMA-462] - CDE: when saving a remote delegate, where the remote is registered but not running, gets an internal CDE error
+    * [UIMA-464] - ClassCastException thrown when using subiterator and moveTo()
+    * [UIMA-467] - TypeSystemUtils.typeSystem2TypeSystemDescription produces invalid output for arrays with elementType specified
+    * [UIMA-468] - race condition in JCasImpl  initializing static array
+    * [UIMA-469] - not all jars in the lib directory of a PEAR project are added to the PEAR CLASSPATH automatically
+    * [UIMA-474] - Log messages for duplicate resource declarations have their arguments switched
+
+** Improvement
+    * [UIMA-53] - Add Flow.aborted() method
+    * [UIMA-125] - Apache UIMA client should be able to communicate with IBM UIMA (1.x or 2.0) service
+    * [UIMA-236] - Part of getting better results from Docbook - upgrade to current version (4.5 and 1.72.0) and FOP 0.93
+    * [UIMA-238] - make docbook build script skip build if output exists and target date is later than dependent source dates (normal "make" behavior)
+    * [UIMA-307] - Fix CVD screenshots
+    * [UIMA-337] - Should log process begin/end for service adapters
+    * [UIMA-338] - Add method XMLParser.parseFlowControllerDescription
+    * [UIMA-339] - Support MBean Name Prefix in the additional parameters map passed to produceAE
+    * [UIMA-348] - CollectionProcessComplete should execute in fixedFlow order if there is a fixedFlow
+    * [UIMA-353] - Expose ResourceManager.setCasManager
+    * [UIMA-354] - UIMA datapath support for pear files
+    * [UIMA-355] - Eclipse PDE nature for org.apache.uima.runtime project
+    * [UIMA-358] - Add JMX MBeans for CAS Pools
+    * [UIMA-363] - add log level configuration possibility for CVD
+    * [UIMA-366] - Rename plugin directories from xxxxx.version to xxxx_version
+    * [UIMA-368] - Allow setting logger config file and other JVM system properties in scripts/bat files
+    * [UIMA-372] - remove deprecated methods in testcases
+    * [UIMA-375] - Paragraph on "Eclipse has a steep learning curve..." repeated inside one section
+    * [UIMA-378] - CDE plugin: change some private members to protected that derived classes can work with them
+    * [UIMA-380] - runCPE utility should report initilazation time and processing time separately
+    * [UIMA-381] - Rename CVD packages to more intuitive name
+    * [UIMA-386] - Switching to use correct class loader
+    * [UIMA-388] - When CollectionReader wrapped as CAS Multiplier, if a second process call comes in, call reconfigure
+    * [UIMA-401] - Make DocBook build work out of the box in Eclipse
+    * [UIMA-406] - Continue restructuring of CVD code
+    * [UIMA-408] - Make more CASImpl methods private, have clients use ll APIs.
+    * [UIMA-409] - Reorganization of TypeSystemImpl, CASImpl, FSClassRegistry, adding new CASMetadata class
+    * [UIMA-419] - Reduce space used for casAddr to JCas object map by a factor of 4 or more
+    * [UIMA-425] - CVD should have close method that doesn't shut down JVM
+    * [UIMA-436] - Eclipse Runtime Plugin:  add line to permit Fragments to add to API for other tooling
+    * [UIMA-439] - Docbooks: support scale= in pdfs, convert to 0.93 FOP, fix scaling of many images 
+    * [UIMA-445] - add CasEditor abstract to the Sandbox web page.
+    * [UIMA-460] - Change CAS Editor Docs project to be a general sandbox docs project
+    * [UIMA-461] - Have docbuild ant script check for JVM version 5 or better
+    * [UIMA-465] - Need getViewIterator() method to work with a variable number of views
+
+** New Feature
+    * [UIMA-325] - Enhance XMI Serializer to support merging multiple XMI documents into a single CAS
+    * [UIMA-327] - Flow Controller API extensions in support of more complex flow options
+    * [UIMA-331] - Provide/extend a built-in flow controller that can be configured to do ParallellStep or to continue after error
+    * [UIMA-341] - Support <import> in CPE Descriptor
+    * [UIMA-342] - make jcasgen able to used other templates
+    * [UIMA-351] - UIMA pear runtime
+    * [UIMA-352] - Allow custom service adapters to be plugged in
+    * [UIMA-371] - XMI serialization to UIMA C++
+    * [UIMA-377] - add API to build PEAR packages
+    * [UIMA-416] - CVD should be able to read and write XMI documents
+    * [UIMA-418] - add new UIMA analysis example descriptor
+    * [UIMA-446] - Create FS variables project in sandbox
+
+
+
+** Task
+    * [UIMA-309] - Change version number to 2.2-SNAPSHOT (post-2.1.0 release)
+    * [UIMA-369] - Use same test data as Java project
+    * [UIMA-473] - Update README and RELEASE_NOTES
+
