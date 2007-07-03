@@ -67,6 +67,11 @@ long-standing issue where Analysis Engines that used different, incompatible
 versions of JCas cover classes could not be combined into an Aggregate.  In particular, 
 you can now add new features to the document annotation and use the JCas to access them.
 
+2.3 CPE Descriptors now support <import>
+
+You can now use <import location="..."/> or <import name="..."/> in CPE Descriptors, 
+and these will be resolved in the same way as in other component descriptors.
+
 
 3. Migrating from IBM UIMA to Apache UIMA
 
