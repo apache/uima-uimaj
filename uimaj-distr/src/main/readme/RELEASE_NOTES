@@ -49,22 +49,23 @@ Apache UIMA.
 
 2.1 Pear Runtime
 
-It is now possible to run installed Pear files directly, without any manual setup.
-When you package a Pear file with Apache UIMA 2.2, a descriptor will be created
+It is now possible to run installed PEAR files directly, without any manual setup.
+When you package a PEAR file with Apache UIMA 2.2, a descriptor will be created
 from which you can create an analysis engine.  You no longer need to worry about
-classpath setup for the Pear, this is now handled by the framework.  You can also
-refer to several Pears from an aggregate analysis engine descriptor, without
+classpath setup for the PEAR, this is now handled by the framework.  You can also
+refer to several PEARs from an aggregate analysis engine descriptor, without
 additional setup.
 
 2.2 Class Loading Improvements for JCas Cover Classes
 
-The JCas cover classes are now loaded with the analysis engine's class loader (used
-to be loaded by the framework class loader).  So if you package your analysis in a
-Pear, you can now be sure that the correct version of the JCas cover classes will
-be used in your annotator.  This fixes a long-standing issue where different,
-incompatible versions of JCas cover classes would be present on the classpath.  In
-particular, you can now add new features to the document annotation and use the JCas
-to access them.
+When an aggregate analysis engine contains one or more PEARs, each with their
+own classpath, the JCAS will handle the class loading so that each annotator
+will see the set of cover classes that were loaded with its own class loader.
+So if you package your analysis in a PEAR, you can now be sure that the correct 
+version of the JCas cover classes will be used in your annotator.  This fixes a 
+long-standing issue where Analysis Engines that used different, incompatible 
+versions of JCas cover classes could not be combined into an Aggregate.  In particular, 
+you can now add new features to the document annotation and use the JCas to access them.
 
 
 3. Migrating from IBM UIMA to Apache UIMA
