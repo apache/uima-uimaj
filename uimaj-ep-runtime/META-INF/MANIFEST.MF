@@ -3,15 +3,15 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Apache UIMA Runtime Plugin
 Bundle-SymbolicName: org.apache.uima.runtime
 Bundle-Version: 2.2.0.incubating-SNAPSHOT
-Bundle-ClassPath:  uimaj-adapter-soap-2.2-incubating-SNAPSHOT.jar,
- uimaj-adapter-vinci-2.2-incubating-SNAPSHOT.jar,
- uimaj-core-2.2-incubating-SNAPSHOT.jar,
- uimaj-cpe-2.2-incubating-SNAPSHOT.jar,
- uimaj-document-annotation-2.2-incubating-SNAPSHOT.jar,
- uimaj-examples-2.2-incubating-SNAPSHOT.jar,
+Bundle-ClassPath:  uimaj-adapter-soap-2.2-incubating.jar,
+ uimaj-adapter-vinci-2.2-incubating.jar,
+ uimaj-core-2.2-incubating.jar,
+ uimaj-cpe-2.2-incubating.jar,
+ uimaj-document-annotation-2.2-incubating.jar,
+ uimaj-examples-2.2-incubating.jar,
  uima-jcas-builtin-types.jar,
- uimaj-tools-2.2-incubating-SNAPSHOT.jar,
- jVinci-2.2-incubating-SNAPSHOT.jar
+ uimaj-tools-2.2-incubating.jar,
+ jVinci-2.2-incubating.jar
 Bundle-Vendor: The Apache Software Foundation
 Bundle-Localization: plugin
 Eclipse-BuddyPolicy: registered
