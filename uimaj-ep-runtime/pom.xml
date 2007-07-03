@@ -103,7 +103,7 @@
 								<descriptor>
 									src/main/assembly/assemble-plugin.xml</descriptor>
 							</descriptors>
-							<finalName>org.apache.uima.runtime_2.2.0.incubating-SNAPSHOT</finalName>
+							<finalName>org.apache.uima.runtime_2.2-incubating</finalName>
 							<appendAssemblyId>false</appendAssemblyId>
 						</configuration>
 					</execution>
