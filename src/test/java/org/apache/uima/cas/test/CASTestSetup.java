@@ -188,9 +188,4 @@ public class CASTestSetup extends TestCase implements AnnotatorInitializer {
     irm.createIndex(comp, ANNOT_SORT_INDEX, FSIndex.SORTED_INDEX);
 
   }
-
-  // keep a null test here to avoid having suite complain there are no tests here
-  public void testNothing() {
-    assertTrue(true);
-  }
 }
