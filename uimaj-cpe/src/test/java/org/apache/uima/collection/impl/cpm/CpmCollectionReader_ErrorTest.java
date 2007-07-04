@@ -60,10 +60,10 @@ import org.apache.uima.test.junit_extension.ManageOutputDevice;
  * 
  * Also have a look at <br>
  * 
- * @see org.apache.uima.collection.impl.cpm.CpmAE_ErrorTests
- * @see org.apache.uima.collection.impl.cpm.CpmCasConsumer_ErrorTests
+ * @see org.apache.uima.collection.impl.cpm.CpmAE_ErrorTest
+ * @see org.apache.uima.collection.impl.cpm.CpmCasConsumer_ErrorTest
  */
-public class CpmCollectionReader_ErrorTests extends TestCase {
+public class CpmCollectionReader_ErrorTest extends TestCase {
 
   private static final String FS = System.getProperties().getProperty("file.separator");
 

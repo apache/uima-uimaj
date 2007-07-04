@@ -44,7 +44,7 @@ import org.apache.uima.collection.metadata.CpeTimer;
  * values or something else. The parameters are only set to be comparable for unit testing.
  * 
  */
-public class CpeCasProcessorAPI_Tests extends TestCase {
+public class CpeCasProcessorAPI_Test extends TestCase {
 
   private static final String confLocation = "c://cpm/conf/";
 

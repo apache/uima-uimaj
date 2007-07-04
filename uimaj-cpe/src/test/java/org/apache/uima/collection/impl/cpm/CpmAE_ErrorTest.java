@@ -66,14 +66,14 @@ import org.apache.uima.test.junit_extension.ManageOutputDevice;
  * 
  * Also have a look at <br>
  * 
- * @see org.apache.uima.collection.impl.cpm.CpmCasConsumer_ErrorTests
- * @see org.apache.uima.collection.impl.cpm.CpmCollectionReader_ErrorTests
+ * @see org.apache.uima.collection.impl.cpm.CpmCasConsumer_ErrorTest
+ * @see org.apache.uima.collection.impl.cpm.CpmCollectionReader_ErrorTest
  */
-public class CpmAE_ErrorTests extends TestCase {
+public class CpmAE_ErrorTest extends TestCase {
 
   private static final String FS = System.getProperties().getProperty("file.separator");
 
-  public CpmAE_ErrorTests() {
+  public CpmAE_ErrorTest() {
     System.gc();
   }
 
@@ -875,7 +875,7 @@ public class CpmAE_ErrorTests extends TestCase {
    * 
    * @return Object[] with the cpe-Descriptor at index 0 and the integratedProcessor at index 1
    * 
-   * @see CpmAE_ErrorTests#setupConfigurableCpm(int, String, int , String)
+   * @see CpmAE_ErrorTest#setupConfigurableCpm(int, String, int , String)
    */
   private Object[] setupConfigurableCpm(int documentCount) {
     return setupConfigurableCpm(documentCount, null, 0, null);
