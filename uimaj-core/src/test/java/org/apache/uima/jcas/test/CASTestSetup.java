@@ -231,8 +231,4 @@ public class CASTestSetup extends TestCase implements AnnotatorInitializer {
     irm.createIndex(comp, "all", FSIndex.BAG_INDEX);
 
   }
-
-  public void testNothing() {
-    //do nothing
-  } // to avoid junit warning about no tests found
 }
