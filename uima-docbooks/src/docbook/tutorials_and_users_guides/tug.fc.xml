@@ -331,18 +331,22 @@ under the License.
     
     <para>When your Flow Controller routes a CAS to a CAS Multiplier, the CAS Multiplier may produce new CASes that
       then will also need to be routed by the Flow Controller. When a new output CAS is produced, the framework will call
-      the method:
-      
-      
-      <programlisting>protected Flow newCasProduced(AbstractCas newOutputCas, String producedBy)</programlisting>
-      on the Flow object that was managing the flow of the parent CAS (the one that was input to the CAS Multiplier). The
-      <literal>newCasProduced</literal> method must create a new Flow object that will be responsible for routing
-      the new output CAS.</para>
+      the <literal>newCasProduced</literal> method on the Flow object that was managing the flow of the parent CAS 
+      (the one that was input to the CAS Multiplier). The <literal>newCasProduced</literal> method must create a new Flow 
+      object that will be responsible for routing the new output CAS.</para>
     
     <para>In the <literal>CasFlow_ImplBase</literal> and <literal>JCasFlow_ImplBase</literal> classes, the
       <literal>newCasProduced</literal> method is defined to throw an exception indicating that the Flow
       Controller does not handle CAS Multipliers. If you want your Flow Controller to properly deal with CAS
       Multipliers you must override this method.</para>
+        
+    <para>If your Flow class extends <literal>CasFlow_ImplBase</literal>, the method signature to override is:           
+      <programlisting>protected Flow newCasProduced(CAS newOutputCas, String producedBy)</programlisting>
+    </para>
+    
+    <para>If your Flow class extends <literal>JCasFlow_ImplBase</literal>, the method signature to override is:
+      <programlisting>protected Flow newCasProduced(JCas newOutputCas, String producedBy)</programlisting>
+    </para>  
     
     <para>Also, there is a variant of <literal>FinalStep</literal> which can only be specified for output CASes
       produced by CAS Multipliers within the Aggregate Analysis Engine containing the Flow Controller. This
@@ -354,6 +358,10 @@ under the License.
       <literal>&lt;outputsNewCASes&gt;false&lt;/outputsNewCASes&gt;</literal> in your Aggregate Analysis
       Engine Descriptor as described in <olink targetdoc="&uima_docs_tutorial_guides;"
         targetptr="ugr.tug.cm.aggregate_cms"/>.</para>
+    
+    <para>For more information on how CAS Multipliers interact with Flow Controllers, see 
+      <olink targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.cm.cm_and_fc"/>.
+    </para>
   </section>
   
   <section id="ugr.tug.fc.continuing_when_exceptions_occur">
