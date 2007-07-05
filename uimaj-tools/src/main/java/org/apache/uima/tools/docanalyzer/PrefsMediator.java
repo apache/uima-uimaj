@@ -311,9 +311,9 @@ public class PrefsMediator {
       if (t2.length() > 0) {
         enableView = true;
       }
-      if ((t1.length() > 0) && (t2.length() > 0)) {
+      if ((t2.length() > 0) && (t3.length() > 0)) {
         enableInter = true;
-        if (t3.length() > 0) {
+        if (t1.length() > 0) {
           enableRun = true;
         }
       }
