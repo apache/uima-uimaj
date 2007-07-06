@@ -32,7 +32,7 @@ import org.apache.uima.cas.admin.FSIndexRepositoryMgr;
 import org.apache.uima.cas.admin.LinearTypeOrderBuilder;
 import org.apache.uima.cas.admin.TypeSystemMgr;
 
-public class CASTestSetup extends TestCase implements AnnotatorInitializer {
+public class CASTestSetup  implements AnnotatorInitializer {
 
   // Type system constants.
   public static final String TOKEN_TYPE = "Token";
@@ -154,18 +154,18 @@ public class CASTestSetup extends TestCase implements AnnotatorInitializer {
     try {
       tsm.addType("some.new.Name", group1);
     } catch (CASAdminException e) {
-      assertTrue(e.getError() == CASAdminException.TYPE_IS_INH_FINAL);
+      TestCase.assertTrue(e.getError() == CASAdminException.TYPE_IS_INH_FINAL);
       exc = true;
     }
-    assertTrue(exc);
+    TestCase.assertTrue(exc);
     exc = false;
     try {
       tsm.addFeature("some.new.Name", group1, stringType);
     } catch (CASAdminException e) {
-      assertTrue(e.getError() == CASAdminException.TYPE_IS_FEATURE_FINAL);
+      TestCase.assertTrue(e.getError() == CASAdminException.TYPE_IS_FEATURE_FINAL);
       exc = true;
     }
-    assertTrue(exc);
+    TestCase.assertTrue(exc);
   }
 
   public void initIndexes(FSIndexRepositoryMgr irm, TypeSystem ts) {
@@ -181,7 +181,7 @@ public class CASTestSetup extends TestCase implements AnnotatorInitializer {
       tob.add(new String[] { CAS.TYPE_NAME_ANNOTATION, SENT_TYPE, TOKEN_TYPE });
       comp.addKey(tob.getOrder(), FSIndexComparator.STANDARD_COMPARE);
     } catch (CASException e) {
-      assertTrue(false);
+      TestCase.assertTrue(false);
     }
     irm.createIndex(comp, ANNOT_BAG_INDEX, FSIndex.BAG_INDEX);
     irm.createIndex(comp, ANNOT_SET_INDEX, FSIndex.SET_INDEX);
