@@ -981,7 +981,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     
     //don't touch URLs with protocol other than file:
     if ("file".equals(descUrl.getProtocol())) {
-      File descFile = new File(new URI(descUrl.toString()));
+      File descFile = urlToFile(descUrl);
       //try to find relative path from cpeDescSaveFile to descFile
       String relPath = FileUtils.findRelativePath(descFile, cpeDescSaveFile.getParentFile());
       if (relPath != null) {
@@ -992,6 +992,17 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
         descriptor.setImport(newImport);
       }
     }    
+  }
+
+  /**
+   * Utility method for convertion a URL to a File name, taking care of
+   * proper escaping.
+   * @param url a URL
+   * @return File corresponding to that URL
+   */
+  private File urlToFile(URL url) throws URISyntaxException {
+    String urlString = url.toString().replaceAll(" ", "%20");
+    return new File(new URI(urlString));
   }
 
   private void displayProgress() {
@@ -1238,7 +1249,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
           return false;
         }  
         try {
-          specifierFile = new File(new URI(specifierUrl.toString())).toString();
+          specifierFile = urlToFile(specifierUrl).toString();
         } catch (URISyntaxException e) {
           displayError(e);
           return false;
@@ -1298,7 +1309,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
           return false;
         }  
         try {
-          specifierFile = new File(new URI(specifierUrl.toString())).toString();
+          specifierFile = urlToFile(specifierUrl).toString();
         } catch (URISyntaxException e) {
           displayError(e);
           return false;
@@ -1372,7 +1383,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     }  
     File f;
     try {
-      f = new File(new URI(aeSpecifierUrl.toString()));
+      f = urlToFile(aeSpecifierUrl);
     } catch (URISyntaxException e) {
       displayError(e);
       return false;
@@ -1428,7 +1439,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     }  
     File f;
     try {
-      f = new File(new URI(consumerSpecifierUrl.toString()));
+      f = urlToFile(consumerSpecifierUrl);
     } catch (URISyntaxException e) {
       displayError(e);
       return false;
