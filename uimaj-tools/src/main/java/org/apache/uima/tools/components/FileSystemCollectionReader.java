@@ -108,7 +108,9 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
     mEncoding = (String) getConfigParameterValue(PARAM_ENCODING);
     mLanguage = (String) getConfigParameterValue(PARAM_LANGUAGE);
     mXCAS = (String) getConfigParameterValue(PARAM_XCAS);
-    mTEXT = !("xcas".equalsIgnoreCase(mXCAS) || "xmi".equalsIgnoreCase(mXCAS));
+    //XCAS parameter can be set to "xcas" or "xmi", as well as "true" (which for historical reasons
+    //means the same as "xcas").  Any other value will cause the input file to be treated as a text document.
+    mTEXT = !("xcas".equalsIgnoreCase(mXCAS) || "xmi".equalsIgnoreCase(mXCAS) || "true".equalsIgnoreCase(mXCAS));
     String mLenient = (String) getConfigParameterValue(PARAM_LENIENT);
     lenient = "true".equalsIgnoreCase(mLenient);
 
@@ -187,11 +189,11 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
     // XCAS input files
     else {
       try {
-        if (mXCAS.equalsIgnoreCase("XCAS")) {
-          XCASDeserializer.deserialize(fis, aCAS, lenient);
+        if (mXCAS.equalsIgnoreCase("xmi")) {
+          XmiCasDeserializer.deserialize(fis, aCAS, lenient);
         }
         else {
-          XmiCasDeserializer.deserialize(fis, aCAS, lenient);
+          XCASDeserializer.deserialize(fis, aCAS, lenient);
         }
       } catch (SAXException e) {
         UIMAFramework.getLogger(FileSystemCollectionReader.class).log(Level.WARNING,
