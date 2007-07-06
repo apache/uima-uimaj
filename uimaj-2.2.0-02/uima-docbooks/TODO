@@ -1,0 +1,14 @@
+* Do testing on non-windows platforms to find out whether the
+  framework actually works on Windows. It should, but all testing was
+  done on Linux.
+
+* Document the customizations in the custom.xsl files better
+
+* Don't blindly add all the images from the docbook XSL distribution to
+  the HTML directories. 
+
+* Get better images for admonition and callouts.
+
+* Maybe use SVG for PDF image rendering so the images scale.
+
+* Force the examples (<computeroutput>) to be kept on one page.
