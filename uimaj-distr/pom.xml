@@ -24,84 +24,84 @@
 	<groupId>org.apache.uima</groupId>
 	<artifactId>uimaj-distr</artifactId>
 	<packaging>jar</packaging>
-	<version>2.2-incubating</version>
+	<version>2.2.0-incubating</version>
 	<name>Apache UIMA Java SDK - Resources and Assembly Descriptor for building the distribution</name>
 	<url>http://incubator.apache.org/uima</url>
 	<organization><name>The Apache Software Foundation</name></organization>
 	<parent>
 		<groupId>org.apache.uima</groupId>
 		<artifactId>uimaj</artifactId>
-		<version>2.2-incubating</version>
+		<version>2.2.0-incubating</version>
 	</parent>
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-adapter-vinci</artifactId>
-			<version>2.2-incubating</version>
+			<version>2.2.0-incubating</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-adapter-soap</artifactId>
-			<version>2.2-incubating</version>
+			<version>2.2.0-incubating</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-core</artifactId>
-			<version>2.2-incubating</version>
+			<version>2.2.0-incubating</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-cpe</artifactId>
-			<version>2.2-incubating</version>
+			<version>2.2.0-incubating</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-examples</artifactId>
-			<version>2.2-incubating</version>
+			<version>2.2.0-incubating</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-tools</artifactId>
-			<version>2.2-incubating</version>
+			<version>2.2.0-incubating</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-ep-configurator</artifactId>
-			<version>2.2-incubating</version>
+			<version>2.2.0-incubating</version>
 			<scope>compile</scope>
 			<type>zip</type>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-ep-debug</artifactId>
-			<version>2.2-incubating</version>
+			<version>2.2.0-incubating</version>
 			<scope>compile</scope>
 			<type>zip</type>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-ep-jcasgen</artifactId>
-			<version>2.2-incubating</version>
+			<version>2.2.0-incubating</version>
 			<scope>compile</scope>
 			<type>zip</type>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-ep-pear-packager</artifactId>
-			<version>2.2-incubating</version>
+			<version>2.2.0-incubating</version>
 			<scope>compile</scope>
 			<type>zip</type>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-ep-runtime</artifactId>
-			<version>2.2-incubating</version>
+			<version>2.2.0-incubating</version>
 			<scope>compile</scope>
 			<type>zip</type>
 		</dependency>		
