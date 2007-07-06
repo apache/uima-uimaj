@@ -30,7 +30,7 @@ import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.cas.admin.FSIndexRepositoryMgr;
 import org.apache.uima.cas.admin.TypeSystemMgr;
 
-public class CASTestSetup extends TestCase implements AnnotatorInitializer {
+public class CASTestSetup implements AnnotatorInitializer {
 
   // selectors for generating various bad setups to force error checking
   public final int bad;
@@ -201,18 +201,18 @@ public class CASTestSetup extends TestCase implements AnnotatorInitializer {
     try {
       tsm.addType("some.new.Name", group1);
     } catch (CASAdminException e) {
-      assertTrue(e.getError() == CASAdminException.TYPE_IS_INH_FINAL);
+      TestCase.assertTrue(e.getError() == CASAdminException.TYPE_IS_INH_FINAL);
       exc = true;
     }
-    assertTrue(exc);
+    TestCase.assertTrue(exc);
     exc = false;
     try {
       tsm.addFeature("some.new.Name", group1, typeString);
     } catch (CASAdminException e) {
-      assertTrue(e.getError() == CASAdminException.TYPE_IS_FEATURE_FINAL);
+      TestCase.assertTrue(e.getError() == CASAdminException.TYPE_IS_FEATURE_FINAL);
       exc = true;
     }
-    assertTrue(exc);
+    TestCase.assertTrue(exc);
   }
 
   public void initIndexes(FSIndexRepositoryMgr irm, TypeSystem ts) {
