@@ -470,12 +470,12 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     // note: not using this.top - until we can confirm this is set
         // in all cases
         (ll_getTypeForCode(componentType).getName().equals(CAS.TYPE_NAME_TOP))) {
-      return ll_getCodeForTypeName(CAS.TYPE_NAME_ARRAY_BASE);
+      return this.arrayBaseTypeCode;
     }
     // is a subtype of FSArray.
     // note: not using this.fsArray - until we can confirm this is set in
     // all cases
-    return ll_getCodeForTypeName(CAS.TYPE_NAME_FS_ARRAY);
+    return this.fsArrayTypeCode;
     // return ll_getArrayType(ll_getParentType(componentType));
   }
 
@@ -546,6 +546,14 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     // return (String) arrayComponentTypeNameMap.get(typeName);
     // }
     // return typeName + arrayTypeSuffix;
+  }
+  
+  static final String getArrayComponentName(String arrayTypeName) {
+  	return arrayTypeName.substring(0, arrayTypeName.length() - 2);
+  }
+  
+  static boolean isArrayTypeNameButNotBuiltIn(String typeName) {
+  	return typeName.endsWith(arrayTypeSuffix);
   }
 
   private static final String getBuiltinArrayComponent(String typeName) {
@@ -1277,7 +1285,10 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     if (typeCode == this.doubleTypeCode) {
       return LowLevelCAS.TYPE_CLASS_DOUBLE;
     }
-    if (ll_subsumes(this.stringTypeCode, typeCode)) {
+    // false if string type code not yet set up (during initialization)
+    //   need this to avoid NPE in subsumes
+    if ((this.stringTypeCode != LowLevelTypeSystem.UNKNOWN_TYPE_CODE) &&
+          ll_subsumes(this.stringTypeCode, typeCode)) {
       return LowLevelCAS.TYPE_CLASS_STRING;
     }
     if (typeCode == this.booleanArrayTypeCode) {
@@ -1345,8 +1356,8 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     // to the inheritance tree. This sucks. Assumptions about the base
     // array are all over the place. Would be nice to just remove it.
     // Add an edge to the tree.
-    if (!isCommitted()) {
-      final int arrayBaseTypeCodeBeforeCommitted = ll_getCodeForTypeName(CAS.TYPE_NAME_ARRAY_BASE);
+    if (!isCommitted() && motherCode != fsArrayTypeCode ) {
+      final int arrayBaseTypeCodeBeforeCommitted = this.arrayBaseTypeCode;
       ((IntVector) this.tree.get(arrayBaseTypeCodeBeforeCommitted)).add(arrayTypeCode);
       // Update subsumption relation.
       updateSubsumption(arrayTypeCode, this.arrayBaseTypeCode);

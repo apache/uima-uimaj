@@ -406,47 +406,49 @@ public class CASMgrSerializer implements Serializable {
 //    ts.addTopType(CAS.TYPE_NAME_TOP);  // does nothing, top type already there
     // HashMap nameMap = null;
     // Temporary. The name map will go away completely.
-    HashMap nameMap = new HashMap();
+//    HashMap nameMap = new HashMap();
     // if (source == SOURCE_TAF) {
     // nameMap = cas.mapTafTypesToCASTypes();
     // }
     String name;
-    int parent;
+//    int parent;
     // Now add all the other types.
-    if (this.source == SOURCE_TAF) {
-      for (int i = 2; i < this.typeNames.length; i++) {
-        parent = this.typeInheritance[i];
-        name = CASImpl.mapName(this.typeNames[i], nameMap);
-        // Check if the type we're adding is a subtype of string, in
-        // which case
-        // we need to call a different type system api.
-        int pos = isStringSubtype(i);
-        if (pos >= 0) {
-          ts.addStringSubtype(name, getStringArray(pos));
-        } else {
-          ts.addType(name, parent);
-        }
-      }
-    } else {
+//    if (this.source == SOURCE_TAF) {
+//      for (int i = 2; i < this.typeNames.length; i++) {
+//        parent = this.typeInheritance[i];
+//        name = CASImpl.mapName(this.typeNames[i], nameMap);
+//        // Check if the type we're adding is a subtype of string, in
+//        // which case
+//        // we need to call a different type system api.
+//        int pos = isStringSubtype(i);
+//        if (pos >= 0) {
+//          ts.addStringSubtype(name, getStringArray(pos));
+//        } else {
+//          ts.addType(name, parent);
+//        }
+//      }
+//    } else {
       for (int i = 2; i < this.typeNames.length; i++) {
         name = this.typeNames[i];
         int pos = isStringSubtype(i);
         if (pos >= 0) {
           ts.addStringSubtype(name, getStringArray(pos));
+        } else if (TypeSystemImpl.isArrayTypeNameButNotBuiltIn(name)) {
+        	  ts.getArrayType(ts.getType(TypeSystemImpl.getArrayComponentName(name)));
         } else {
-          ts.addType(name, this.typeInheritance[i]);
+            ts.addType(name, this.typeInheritance[i]);
         }
       }
-    }
+//    }
 
     // Add feature declarations.
     final int max = this.featureNames.length;
     for (int i = 1; i < max; i++) {
-      if (this.source == SOURCE_TAF) {
-        name = CASImpl.mapName(this.featureNames[i], nameMap);
-      } else {
+//      if (this.source == SOURCE_TAF) {
+//        name = CASImpl.mapName(this.featureNames[i], nameMap);
+//      } else {
         name = this.featureNames[i];
-      }
+//      }
       ts.addFeature(name, this.featDecls[i * 2], this.featDecls[(i * 2) + 1]);
     }
     return ts;

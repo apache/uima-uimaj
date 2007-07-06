@@ -2004,7 +2004,27 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       return;
     }
     ts.areBuiltInTypesSetup = true;
+    		
+		// W A R N I N G  (July 2007) 
+		
+    // C++ code has "hard-wired" the type code numbers for the 
+		//   built-in types, so you cannot change the order of the types
+    // Also, the complete serialization depends on the type-code numbers
+    //   for the client and the server for the built-in types being
+    //   the same.
     
+    // The initialization code for types cannot depend on the type system
+    //  having already been set up, because, obviously, it isn't set up (yet).
+
+    // It is important to add types in a particular order and to set
+		//   ts.xxx<type-name> and ts.xxx<type-name>code values so they are
+		//     set before they're used.  Some of the add-type logic is written
+		//     to depend on the built-in types already having these values set.
+		//     For example:  addType ( ARRAY_BASE ) calls, eventually, 
+		//        ts.ll_isPrimitiveType -> ll_isRefType ->ll_getTypeClass -> ll_subsumes
+		//        and along the way these are testing / comparing against type codes
+		//        for built-in types which need to have been set.
+		
 		// Create top type.
 		Type top = ts.addTopType(CAS.TYPE_NAME_TOP);
 		// Add basic data types.
@@ -2013,7 +2033,11 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 		Type stringT = ts.addType(CAS.TYPE_NAME_STRING, top);
 		// Add arrays.
 		Type array = ts.addType(CAS.TYPE_NAME_ARRAY_BASE, top);
+		ts.arrayBaseType = (TypeImpl)array;         // do here - used in next
+		ts.arrayBaseTypeCode = ts.arrayBaseType.getCode();
 		TypeImpl fsArray = (TypeImpl) ts.addType(CAS.TYPE_NAME_FS_ARRAY, array);
+		ts.fsArrayType = fsArray;                   // do here - used in next 
+		ts.fsArrayTypeCode = fsArray.getCode();
 		TypeImpl floatArray = (TypeImpl) ts.addType(CAS.TYPE_NAME_FLOAT_ARRAY, array);
 		TypeImpl intArray = (TypeImpl) ts.addType(CAS.TYPE_NAME_INTEGER_ARRAY, array);
 		TypeImpl stringArray = (TypeImpl) ts.addType(CAS.TYPE_NAME_STRING_ARRAY, array);
@@ -2050,6 +2074,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 		Type longT = ts.addType(CAS.TYPE_NAME_LONG, top);
 		Type doubleT = ts.addType(CAS.TYPE_NAME_DOUBLE, top);
 
+		// array type initialization must follow the component type it's based on
 		TypeImpl booleanArray = (TypeImpl) ts.addType(CAS.TYPE_NAME_BOOLEAN_ARRAY, array);
 		TypeImpl byteArray = (TypeImpl) ts.addType(CAS.TYPE_NAME_BYTE_ARRAY, array);
 		TypeImpl shortArray = (TypeImpl) ts.addType(CAS.TYPE_NAME_SHORT_ARRAY, array);
