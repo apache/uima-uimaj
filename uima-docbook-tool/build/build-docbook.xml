@@ -143,9 +143,12 @@
 	<!-- ==                                                                       == -->
 	<!-- =========================================================================== -->
 	<target name="prepare" depends="setup-common-properties-per-build, setup-availables, 
-		     test-saxon-available, test-docbook-available, test-jai-available">
-		<mkdir dir="${tmp.dir}"/>
+		make-temp-dir, test-saxon-available, test-docbook-available, test-jai-available">
 	</target>
+	
+	<target name="make-temp-dir">
+		<mkdir dir="${tmp.dir}"/>
+  </target>
 	
 	<target name="setup-availables">
 		<available file="${saxon.dir}/saxon.jar" property="saxon.available"/>
