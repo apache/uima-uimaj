@@ -117,6 +117,18 @@ public class CASTestSetup  implements AnnotatorInitializer {
   /**
    * @see org.apache.uima.cas.test.AnnotatorInitializer#initTypeSystem(TypeSystemMgr)
    */
+  
+  /* Types:
+   * TOP
+   *   Token  TOKEN_TYPE
+   *     Word
+   *     Separator
+   *     EndOfSentence
+   *   ArrayFSwithSubtype
+   *   Annotation
+   *     Sentence
+   *   
+   */
   public void initTypeSystem(TypeSystemMgr tsm) {
     // Add new types and features.
     Type topType = tsm.getTopType();
