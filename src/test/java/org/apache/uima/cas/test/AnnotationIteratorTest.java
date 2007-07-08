@@ -265,6 +265,14 @@ public class AnnotationIteratorTest extends TestCase {
       caughtException = true;
     }
     assertTrue(caughtException);
+    
+    caughtException = false;
+    try {
+    	AnnotationIndex ai = this.cas.getAnnotationIndex(ts.getType(CASTestSetup.TOKEN_TYPE_TYPE));
+    } catch (CASRuntimeException e) {
+    	caughtException = true;
+    }
+    assertTrue(caughtException);
     try {
       this.cas.getAnnotationIndex(this.tokenType);
     } catch (CASRuntimeException e) {
