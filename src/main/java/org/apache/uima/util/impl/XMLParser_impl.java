@@ -20,6 +20,7 @@
 package org.apache.uima.util.impl;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
@@ -916,6 +917,15 @@ public class XMLParser_impl implements XMLParser {
               "getSchemaURL", LOG_RESOURCE_BUNDLE,
               "UIMA_resource_specifier_schema_not_found__WARNING");
     }
+    String urlString = schemaURL.toString();
+    if (0 <= urlString.indexOf(" ")) {
+    	urlString = urlString.replaceAll(" ", "%20");
+    	try {
+				schemaURL = new URL(urlString);
+			} catch (MalformedURLException e) {
+			}
+    }
+//    System.out.println("*** " + schemaURL);
     return schemaURL;
   }
 
