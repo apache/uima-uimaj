@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cpeDescription xmlns="http://uima.apache.org/resourceSpecifier">
+    <collectionReader>
+        <collectionIterator>
+            <descriptor>
+                <import name="test.ErrorTestCollectionReader"/>
+            </descriptor>
+        </collectionIterator>
+    </collectionReader>
+    <casProcessors casPoolSize="1" processingUnitThreadCount="1">
+        <casProcessor deployment="integrated" name="ErrorTestAnnotator">
+            <descriptor>
+                <import name="test.ErrorTestAnnotator"/>
+            </descriptor>
+            <deploymentParameters/>
+            <errorHandling>
+                <errorRateThreshold action="terminate" value="100/1000"/>
+                <maxConsecutiveRestarts action="terminate" value="30"/>
+                <timeout max="100000" default="-1"/>
+            </errorHandling>
+            <checkpoint batch="1" time="1000ms"/>
+        </casProcessor>
+        <casProcessor deployment="integrated" name="ErrorTest CasConsumer">
+            <descriptor>
+                <import name="test.ErrorTestCasConsumer"/>
+            </descriptor>
+            <deploymentParameters/>
+            <errorHandling>
+                <errorRateThreshold action="terminate" value="100/1000"/>
+                <maxConsecutiveRestarts action="terminate" value="30"/>
+                <timeout max="100000" default="-1"/>
+            </errorHandling>
+            <checkpoint batch="1" time="1000ms"/>
+        </casProcessor>
+    </casProcessors>
+    <cpeConfig>
+        <numToProcess>-1</numToProcess>
+        <deployAs>immediate</deployAs>
+        <checkpoint batch="0" time="300000ms"/>
+        <timerImpl></timerImpl>
+    </cpeConfig>
+</cpeDescription>
