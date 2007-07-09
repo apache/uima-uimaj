@@ -560,18 +560,17 @@ public class MainFrame extends JFrame {
   }
 
   protected void handleException(Throwable e, StringBuffer msg) {
-    if (e.getMessage() == null) {
-      msg.append(e.getClass().getName());
-    } else {
+    msg.append(e.getClass().getName() + ": ");
+    if (e.getMessage() != null) {
       msg.append(e.getMessage());
     }
     if (this.log != null) {
       if (e instanceof Exception) {
         this.log.log(Level.SEVERE, ((Exception) e).getLocalizedMessage(), e);
-        msg.append("\nMore detailed information is in the log file.");
-      } else if (e instanceof Error) {
-        this.log.log(Level.SEVERE, ((Error) e).getMessage(), e);
+      } else {
+        this.log.log(Level.SEVERE, e.getMessage(), e);
       }
+      msg.append("\nMore detailed information is in the log file.");
     }
     boolean hasAsserts = false;
     // assert(hasAsserts = true);
@@ -1571,6 +1570,11 @@ public class MainFrame extends JFrame {
       this.sofaSelectionPanel.setVisible(nonDefaultSofaFound);
     } catch (Exception e) {
       handleException(e);
+    } catch (Error e) {
+      StringBuffer buf = new StringBuffer();
+      buf.append("A severe error has occured:\n");
+      handleException(e, buf);
+      throw e;
     }
   }
 
