@@ -33,8 +33,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import javax.security.auth.callback.LanguageCallback;
-
 import org.apache.uima.Constants;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -728,7 +726,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
           ResourceManager aResourceManager) throws InvalidXMLException {
     // add our own URL, if known, to the collection of already imported URLs
     if (getSourceUrl() != null) {
-      aAlreadyImportedDelegateAeUrls.add(getSourceUrl());
+      aAlreadyImportedDelegateAeUrls.add(getSourceUrl().toString());
     }
     // resolve delegate AE imports (and recursively resolve imports therein)
     resolveDelegateAnalysisEngineImports(aAlreadyImportedDelegateAeUrls, aResourceManager, true);
@@ -761,7 +759,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
     // add our own URL, if known, to the collection of enclosing aggregate URLs
     Set urls = new HashSet();
     if (getSourceUrl() != null) {
-      urls.add(getSourceUrl());
+      urls.add(getSourceUrl().toString());
     }   
     resolveDelegateAnalysisEngineImports(urls, aResourceManager, aRecursive);
   }  
@@ -800,7 +798,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
         URL url = aeImport.findAbsoluteUrl(aResourceManager);
 
         // check for resursive import
-        if (aEnclosingAggregateAeUrls.contains(url)) {
+        if (aEnclosingAggregateAeUrls.contains(url.toString())) {
           String name = getMetaData() == null ? "<null>" : getMetaData().getName();
           throw new InvalidXMLException(InvalidXMLException.CIRCULAR_AE_IMPORT, new Object[] {
               name, url });
@@ -825,7 +823,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
         // now resolve imports in ths delegate
         if (spec instanceof AnalysisEngineDescription) {
           Set alreadyImportedUrls = new HashSet(aEnclosingAggregateAeUrls);
-          alreadyImportedUrls.add(url);
+          alreadyImportedUrls.add(url.toString());
           ((AnalysisEngineDescription) spec).resolveImports(alreadyImportedUrls, aResourceManager);
         }
       } else {
