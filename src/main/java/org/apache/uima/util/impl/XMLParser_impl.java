@@ -916,6 +916,7 @@ public class XMLParser_impl implements XMLParser {
       UIMAFramework.getLogger(CLASS_NAME).logrb(Level.WARNING, CLASS_NAME.getName(),
               "getSchemaURL", LOG_RESOURCE_BUNDLE,
               "UIMA_resource_specifier_schema_not_found__WARNING");
+      return null;
     }
     String urlString = schemaURL.toString();
     if (0 <= urlString.indexOf(" ")) {
