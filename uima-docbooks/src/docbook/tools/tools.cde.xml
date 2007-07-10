@@ -29,8 +29,8 @@ under the License.
   
   <para>The Component Descriptor Editor is an Eclipse plug-in that provides a forms-based
     interface for creating and editing UIMA XML descriptors. It supports most of the
-    descriptor formats, except the Collection Processing Engine descriptor and
-    some remote deployment descriptors.</para>
+    descriptor formats, except the Collection Processing Engine descriptor, the PEAR
+    package descriptor and some remote deployment descriptors.</para>
   
   <section id="ugr.tools.cde.launching">
     <title>Launching the Component Descriptor Editor</title>
@@ -1353,9 +1353,13 @@ under the License.
       requires additional information, other than what is available in just the importable
       part. For instance, when you create or edit an Indexes import, the facility for adding
       new indexes needs the type information, which is not present in this part when it is
-      edited alone. To overcome this, when you edit these descriptors, you will be asked to
+      edited alone. </para>
+      
+    <para>To overcome this, when you edit these descriptors, you will be asked to
       specify a context descriptor, usually a descriptor which would import the part being
-      edited, which would have the additional information needed. Various methods are used
+      edited, which would have the additional information needed. </para>
+    
+    <para>Various methods are used
       to guess what the context descriptor should be - and if the guess is correct, you can just
       press the Enter key to confirm. The last successful context file is remembered and will
       be suggested as the context file to use at the next edit session</para>

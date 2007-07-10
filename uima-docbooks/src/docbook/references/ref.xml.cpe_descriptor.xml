@@ -178,13 +178,13 @@ under the License.
   <section id="&tp;imports">
     <title>Imports</title>
     
-    <para>As of version 2.2, a CPE Descriptor can use the same <literal>import</literal> mecanism
+    <para>As of version 2.2, a CPE Descriptor can use the same <literal>import</literal> mechanism
       as other component descriptors.  This allows referring to component
       descriptors using either relative paths (resolved relative to the location of the CPE descriptor)
       or the classpath/datapath.  For details see <olink targetdoc="&uima_docs_ref;"
       targetptr="ugr.ref.xml.component_descriptor"/>.</para>
      
-    <para>The follwing older syntax is still supported, but not recommended:
+    <para>The follwing older syntax is still supported, but <emphasis>not recommended</emphasis>:
       
       <programlisting><![CDATA[<descriptor>
     <include href="[URL or File]"/>

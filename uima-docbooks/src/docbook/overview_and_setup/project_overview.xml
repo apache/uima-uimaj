@@ -36,7 +36,7 @@ under the License.
   <para>The <emphasis>Apache UIMA</emphasis> framework is an Apache licensed, open source implementation of the
     UIMA Architecture, and provides a run-time environment in which developers can plug in
     and run their UIMA component implementations and with which they can build and deploy UIM applications. The
-    framework is not specific to any IDE or platform.</para>
+    framework itself is not specific to any IDE or platform.</para>
   
   <para>It includes an all-Java implementation of the
     UIMA framework for the development, description, composition and deployment of UIMA components and
@@ -101,7 +101,7 @@ under the License.
       </itemizedlist> </para>
     
     <para>
-    The first 2 parts make up the book <quote>overview_and_setup</quote>; the last 3 have individual 
+    The first 2 parts make up this book; the last 3 have individual 
     books.  The books are provided both as
     (somewhat large) html files, viewable in browsers, and also as PDF files.  
     The documentation is fully hyperlinked, with tables of contents.  The PDF versions are set up to 
@@ -404,7 +404,7 @@ under the License.
       </listitem>
       <listitem>
         <para> Set up Apache UIMA in your Eclipse environment. To do this, follow the instructions in <xref
-            linkend="ugr.project_overview_setup"/>. </para>
+            linkend="ugr.ovv.eclipse_setup"/>. </para>
       </listitem>
       <listitem>
         <para> Develop sample UIMA annotators, run them and explore the results. Read <olink

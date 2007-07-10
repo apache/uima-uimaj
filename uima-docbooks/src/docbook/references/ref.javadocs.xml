@@ -56,7 +56,8 @@ under the License.
     OpenExternalJavaDoc, or open the Javadoc view (Window &rarr; Show View &rarr; Other
     &rarr; Java &rarr; Javadoc).</para>
   
-  <para>In a similar manner, you can attach the source for the UIMA framework. The source is, of course, available from
-    the Apache UIMA website (<ulink url="http://incubator.apache.org/uima"/>).</para>
+  <para>In a similar manner, you can attach the source for the UIMA framework. The source corresponding to particular
+    releases is available from the Apache UIMA web site (<ulink url="http://incubator.apache.org/uima"/>) on the
+    downloads page.</para>
   
 </chapter>

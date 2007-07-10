@@ -109,7 +109,7 @@ under the License.
   </section>
   
   <section id="ugr.ref.jcas.use_of_description">
-    <title>The XML description element is copied into generated Java code</title>
+    <title>XML description element</title>
     <titleabbrev>Use of XML Description</titleabbrev>
     
     <para>Each XML type specification can have &lt;description ...
@@ -264,8 +264,9 @@ uima.cas.String  &rarr; String</programlisting>
   </section>
   
   <section id="ugr.ref.jcas.merging_types_from_other_specs">
-    <title>Merging types from different type system specifications</title>
+    <title>Merging types</title>
     <titleabbrev>Merging Types</titleabbrev>
+    <para>Type definitions are merged by the framework from all the components being run together.</para>
     
     <section id="ugr.ref.jcas.merging_types.aggregates_and_cpes">
       <title>Aggregate AEs and CPEs as sources of types</title>
@@ -273,7 +274,8 @@ uima.cas.String  &rarr; String</programlisting>
       <para>When running aggregate AEs (Analysis Engines), or a set of AEs in a collection processing engine, the
         UIMA framework will build a merged type system (Note: this <quote>merge</quote> is merging types, not to be
         confused with merging Java source code, discussed above). This merged type system has all the types of every
-        component used in the application.</para>
+        component used in the application.  In addition, application code can use UIMA Framework APIs to read and merge
+        type descriptions, manually.</para>
       
       <para>In most cases, each type system can have its own Java Class Models generated individually, perhaps at an
         earlier time, and the resulting class files (or .jar files containing these class files) can be put in the
@@ -284,14 +286,17 @@ uima.cas.String  &rarr; String</programlisting>
         all the defined features for a particular type into that type&apos;s type definition. However, the JCas
         classes for these types are not automatically merged, which can create some issues for JCas users, as
         discussed in the next section.</para>
+
     </section>
     
     <section id="ugr.ref.jcas.merging_types.jcasgen_support">
       <title>JCasGen support for type merging</title>
       
       <para>When there are multiple definitions of the same CAS type with different features defined, then JCasGen
-        must be re-run on the merged type system. Directions for running JCasGen can be found in <olink
-          targetdoc="&uima_docs_tools;" targetptr="ugr.tools.jcasgen"/>. This must be done by the person who
+        can be re-run on the merged type system, to create one set of JCas Class definitions for the merged types,
+        which can then be shared by all the components. 
+        Directions for running JCasGen can be found in <olink
+          targetdoc="&uima_docs_tools;" targetptr="ugr.tools.jcasgen"/>. This is typically done by the person who
         is assembling the Aggregate Analysis Engine or Collection Processing Engine. The resulting merged Java
         Class Model will then contain get and set methods for the complete set of features. These Java classes must
         then be made available in the class path, <emphasis>replacing</emphasis> the pre-merge versions of the
@@ -300,10 +305,15 @@ uima.cas.String  &rarr; String</programlisting>
       <para>If hand-modifications were done to the pre-merge versions of the classes, these must be applied to the
         merged versions, as described in section <xref
           linkend="ugr.ref.jcas.keeping_augmentations_when_regenerating"/>, above. If just one of the
-        pre-merge versions had hand-modifications, the source for this hand-modified version must be put into the
-        file system where the generated output will go, and the -merge option must be used. If
+        pre-merge versions had hand-modifications, the source for this hand-modified version can be put into the
+        file system where the generated output will go, and the -merge option for JCasGen will automatically
+        merge the hand-modifications with the generated code. If
         <emphasis>both</emphasis> pre-merged versions had hand-modifications, then these modifications must
         be manually merged.</para>
+      
+      <para>An alternative to this is packaging the components as individual PEAR files, each with their own
+      version of the JCas generated Classes.  The Framework (as of release 2.2) can run PEAR files using the 
+      pear file descriptor, and supply each component with its particular version of the JCas generated class.</para>
       
     </section>
     
@@ -317,9 +327,10 @@ uima.cas.String  &rarr; String</programlisting>
       
       <para>If you do choose to create a JCas Annotator that relies on Type Merging (meaning that your annotator
         redefines a Type that is already in use elsewhere, and adds its own features), this can negatively impact the
-        reusability of your annotator.</para>
+        reusability of your annotator, unless your component is used as a PEAR file.</para>
       
-      <para>Whenever anyone wants to combine your annotator with another annotator that uses a different version of
+      <para>If not using PEAR file packaging isolation capability, whenever 
+        anyone wants to combine your annotator with another annotator that uses a different version of
         the same Type, they will need to be aware of all of the issues described in the previous section. They will need
         to have the know-how to re-run JCasGen and appropriately set up their classpath to include the merged Java
         classes and to not include the pre-merge classes. (To enable this, you should package these classes
@@ -504,6 +515,24 @@ myInstance.removeFromIndexes(anotherJCas)</programlisting>
       <programlisting>myInstance.addToIndexes();  // index in the JCas used with the new operator
 myView1.addFsToIndexes(myInstance); // index myInstance in myView1
 myView2.addFsToIndexes(myInstance); // index myInstance in myView2</programlisting>
+      
+      <para>
+        The rules for determining which index to use with a particular JCas object are designed to
+        behave the way most would think they should; if you need specific behavior, you can always 
+        explicitly designate which view the index adding and removing operations should work on.
+      </para>
+      
+      <para>
+        The rules are:
+        If the instance is a subtype of AnnotationBase, then the view is the view associated with the 
+        annotation as specified in the feature holding the view reference in AnnotationBase.
+        Otherwise, if the instance was created using the "new" operator, then the view is the view passed to the 
+        instance's constructor.
+        Otherwise, if the instance was created by getting a feature value from some other instance, whose range
+        type is a feature structure, then the view is the same as the referring instance.
+        Otherwise, if the instance was created by any of the Feature Structure Iterator operations over some index,
+        then it is the view associated with the index.
+      </para>
     </section>
     
     <section id="ugr.ref.jcas.using_iterators">
@@ -570,18 +599,14 @@ FSIterator myIterator = myIndex.iterator();</programlisting>
       <title>Issues accessing JCas objects outside of UIMA Engine Components</title>
       
       <para>If you are using the ExtensionClassPaths, the JCas cover classes are loaded
-        under a class loader created by the ResourceManager part of the UIMA Framework. 
+        under a class loader created by the ResourceManager part of the UIMA Framework.
         If you reference the same JCas
         classes outside of any UIMA component, for instance, in top level application code,
-        the JCas classes used by that top level application code must be loaded under the same
-        class loader, in order to avoid class cast exceptions. Currently, there is no
-        supported way to do this if you are using ExtensionClassPaths.</para>
+        the JCas classes used by that top level application code also must be in the class path
+        for the application code.</para>
       
-      <para>The workaround is to do all the JCas processing inside a UIMA component (no
-        processing using JCas outside of the UIMA pipeline), or to put the JCas classes only in
-        the main classpath for the UIMA Framework, and insure they are not findable in the
-        ExtensionClassPaths. This latter approach of course limits you to one set of JCas
-        class definitions per UIMA framework.</para>
+      <para>Alternatively, you could do all the JCas processing inside a UIMA component (and do no
+        processing using JCas outside of the UIMA pipeline).</para>
       
     </section>
   </section>
@@ -596,6 +621,19 @@ FSIterator myIterator = myIndex.iterator();</programlisting>
       This is most conveniently done by opening the top level descriptor used by the
       application in the Component Descriptor Editor tool, and pressing the Run-JCasGen
       button on the Type System Definition page.</para>
+    
+  </section>
+  
+  <section id="ugr.ref.jcas.pear_support">
+    <title>PEAR isolation</title>
+    <para>
+      As of version 2.2, the framework supports component descriptors which are PEAR descriptors. 
+      These descriptors define components plus include information on the class path needed to 
+      run them.  The framework uses the class path information to set up a localized class path, just
+      for code running within the PEAR context.  This allows PEAR files requiring different 
+      versions of common code to work well together, even if the class names in the different versions
+      have the same names. 
+    </para>
     
   </section>
   
