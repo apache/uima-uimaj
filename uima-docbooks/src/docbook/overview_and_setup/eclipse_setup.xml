@@ -93,7 +93,7 @@ under the License.
       <para> The exact way to install EMF changes from time to time. In the next few paragraphs,
         we try to give instructions that should work for most versions. Please see the end of
         this section for shortcut instructions for the current version of Eclipse at the time
-        of this writing, Eclipse 3.2.1. </para>
+        of this writing, Eclipse 3.3. </para>
       
       <para>Activate the software feature finding by using the menu: Help &rarr; Software
         Updates &rarr; Find and Install. Select <quote>Search for new features to
@@ -136,13 +136,14 @@ under the License.
       
       <section id="ugr.ovv.eclipse_setup.install_emf_shortcut">
         <title>EMF Installation Shortcut for Eclipse 3.2</title>
-        <para> In Eclipse 3.2, all major Eclipse sub-projects have coordinated their
-          release timeframes and published the consolidated "Callisto" release. You can
-          easily install EMF via the Callisto discovery site as follows.
+        <para>Since Eclipse 3.2, all major Eclipse sub-projects coordinate their
+          release timeframes and publish the consolidated releases. The code name
+          for 3.2 was Callisto, the one for 3.3 is Europa.  You can
+          easily install EMF via the release discovery site as follows.
           <orderedlist>
             <listitem><para> From the Eclipse menu, select Help/Software Updates/Find
               and Install.../Search for new features to install. </para></listitem>
-            <listitem><para> Check the "Callisto discovery site", push "Next". </para>
+            <listitem><para> Check the "[release name] discovery site", push "Next". </para>
               </listitem>
             <listitem><para> Select a convenient mirror site. </para></listitem>
             <listitem><para> Check the EMF box under "Models and model development"
