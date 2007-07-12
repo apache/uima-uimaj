@@ -30,6 +30,11 @@ import java.util.NoSuchElementException;
  * standard <code>hasNext</code> and <code>next</code> methods. If finer control, including
  * reverse iteration, is needed, see below.
  * 
+ * <p>Note: do not use the APIs described below *together* with the standard Java iterator methods
+ * <code>next()</code> and <code>hasNext()</code>.  On any given iterator, use either the one or the
+ * other, but not both together.  Otherwise, <code>next/hasNext</code> may exhibit incorrect
+ * behavior.
+ * 
  * <p>
  * The <code>FSIterator</code> interface introduces the methods {@link #get()},
  * {@link #moveToNext()}, {@link #moveToPrevious()} methods. With these methods, retrieving the
