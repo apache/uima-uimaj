@@ -628,6 +628,10 @@ local_root_directory_for_1st_delegate_component/resources/dict/
     datapath and the system property settings of the PEAR package to verify the PEAR content. Necessary Java library 
     path settings for native libararies, PATH variable settings or system environment variables cannot be recognized 
     automatically and the use must take care of that manually.</para>
+
+    <note><para>By default the PEAR packages are not installed directly to the specified installation directory. For each PEAR
+    a subdirectory with the name of the PEAR's ID is created where the PEAR package is installed to. If the PEAR installation 
+    directory already exists, the old content is automatically deleted before the new content is installed.</para></note>
       
     <section id="ugr.ref.pear.installing_pear_using_API">
       <title>Installing a PEAR file using the PEAR APIs</title>

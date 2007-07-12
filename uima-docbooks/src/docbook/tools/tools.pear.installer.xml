@@ -55,7 +55,12 @@ under the License.
   <para>PEAR Installer is a simple GUI based Java application that helps installing UIMA
     compliant components (analysis engines) from PEAR packages in a local file system. To
     install a desired UIMA component the user needs to select the appropriate PEAR file in a
-    local file system and specify the installation directory (optional). During the
+    local file system and specify the installation directory (optional). If no installation
+    directory is specified, the PEAR file is installed to the current working directory. 
+	By default the PEAR packages are not installed directly to the specified installation directory. 
+	For each PEAR a subdirectory with the name of the PEAR's ID is created where the PEAR package is 
+	installed to. If the PEAR installation directory already exists, the old content is automatically 
+	deleted before the new content is installed. During the
     component installation the user can read messages printed by the installation program in
     the message area of the application window. If the installation fails, appropriate error
     message is printed to help identifying and fixing the problem.</para>
