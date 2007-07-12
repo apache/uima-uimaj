@@ -52,7 +52,9 @@ under the License.
       </varlistentry>
       <varlistentry id="ugr.faqs.pronounce">
         <term><emphasis role="bold">How do you pronounce UIMA?</emphasis></term>
-        <listitem><para>You &ndash; eee &ndash; muh</para></listitem>
+        <listitem><para>You &ndash; eee &ndash; muh. 
+        <!-- Or, in IPA notation, /juːiːmə/ (which does not
+        display correctly in our PDF documentation, so it's commented out). --></para></listitem>
       </varlistentry>
       <varlistentry id="ugr.faqs.difference_apache_uima">
         <term><emphasis role="bold">What&apos;s the difference between UIMA and the Apache UIMA?</emphasis></term>
