@@ -29,6 +29,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 import java.util.Stack;
 
 import javax.xml.parsers.FactoryConfigurationError;
@@ -55,12 +56,15 @@ import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas_data.impl.CasComparer;
 import org.apache.uima.internal.util.XmlAttribute;
 import org.apache.uima.internal.util.XmlElementNameAndContents;
+import org.apache.uima.resource.CasManager;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.TypeDescription;
+import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
+import org.apache.uima.util.CasCopier;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.FileUtils;
 import org.apache.uima.util.XMLInputSource;
@@ -160,6 +164,88 @@ public class XmiCasDeserializerTest extends TestCase {
     xmlReader.setContentHandler(deserHandler3);
     xmlReader.parse(new InputSource(new StringReader(xml)));
   }
+  
+  public void testMultiThreadedSerialize() throws Exception {
+    try {
+      File tsWithNoMultiRefs = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
+      doTestMultiThreadedSerialize(tsWithNoMultiRefs);
+      File tsWithMultiRefs = JUnitExtension.getFile("ExampleCas/testTypeSystem_withMultiRefs.xml");
+      doTestMultiThreadedSerialize(tsWithMultiRefs);
+    } catch (Exception e) {
+      JUnitExtension.handleException(e);
+    }
+  }
+
+  private static class DoSerialize implements Runnable{
+  	private CAS cas;
+  	
+  	DoSerialize(CAS aCas) {
+  		cas = aCas;
+  	}
+  	
+		public void run() {
+			try {
+				serialize(cas, null);
+//				serialize(cas, null);
+//				serialize(cas, null);
+//				serialize(cas, null);
+			} catch (IOException e) {
+			
+				e.printStackTrace();
+			} catch (SAXException e) {
+				
+				e.printStackTrace();
+			}
+		}
+  }
+  
+  private static int MAX_THREADS = 16;
+  // do as sequence 1, 2, 4, 8, 16 and measure elapsed time
+  private static int [] threadsToUse = new int[] {1, 2, 4, 8, 16/*, 32, 64*/};
+
+  private void doTestMultiThreadedSerialize(File typeSystemDescriptor) throws Exception {
+    // deserialize a complex CAS from XCAS
+    CAS cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
+
+    InputStream serCasStream = new FileInputStream(JUnitExtension.getFile("ExampleCas/cas.xml"));
+    XCASDeserializer deser = new XCASDeserializer(cas.getTypeSystem());
+    ContentHandler deserHandler = deser.getXCASHandler(cas);
+    SAXParserFactory fact = SAXParserFactory.newInstance();
+    SAXParser parser = fact.newSAXParser();
+    XMLReader xmlReader = parser.getXMLReader();
+    xmlReader.setContentHandler(deserHandler);
+    xmlReader.parse(new InputSource(serCasStream));
+    serCasStream.close();
+
+    // make n copies of the cas, so they all share
+    // the same type system
+    
+    final CAS [] cases = new CAS[MAX_THREADS];
+    
+    for (int i = 0; i < MAX_THREADS; i++) {
+    	cases[i] = CasCreationUtils.createCas(cas.getTypeSystem(), new TypePriorities_impl(),	indexes, null);
+    	CasCopier.copyCas(cas, cases[i], true);
+    }
+    
+    // start n threads, serializing as XMI   
+    
+    for (int i = 0; i < threadsToUse.length; i++) {
+    	Thread [] threads = new Thread[MAX_THREADS];
+    	long startTime = System.nanoTime();
+    	for (int ti = 0; ti < threadsToUse[i]; ti++) {
+    		threads[ti] = new Thread(new DoSerialize(cases[ti]));
+    		
+    		threads[ti].start();
+    	}
+    	for (int ti = 0; ti < threadsToUse[i]; ti++) {
+    		threads[ti].join();
+    		//System.out.print(" "+ ti);
+    	}
+    	System.out.println("\nNumber of threads serializing: " + threadsToUse[i] + 
+    			               "  Normalized microsecs (should be close to the same): " + (System.nanoTime() - startTime) / 1000 / threadsToUse[i]);
+    }
+  }
+
 
   public void testMultipleSofas() throws Exception {
     try {
@@ -816,7 +902,7 @@ public class XmiCasDeserializerTest extends TestCase {
 
   /** Utility method for serializing a CAS to an XMI String 
    * */
-  private String serialize(CAS cas, XmiSerializationSharedData serSharedData) throws IOException, SAXException {
+  private static String serialize(CAS cas, XmiSerializationSharedData serSharedData) throws IOException, SAXException {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();    
     XmiCasSerializer.serialize(cas, null, baos, false, serSharedData);
     baos.close();
@@ -855,7 +941,7 @@ public class XmiCasDeserializerTest extends TestCase {
    * modify our test case to account for this.
    * @return true if XML serialization of CRs behave properly in the current JRE
    */
-  private boolean builtInXmlSerializationSupportsCRs() {
+  private static boolean builtInXmlSerializationSupportsCRs() {
     String javaVendor = System.getProperty("java.vendor");
     if( javaVendor.startsWith("Sun") ) {
         String javaVersion = System.getProperty("java.version");
