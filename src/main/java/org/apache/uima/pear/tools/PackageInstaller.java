@@ -63,6 +63,32 @@ public class PackageInstaller {
    */
   public static PackageBrowser installPackage(File installDir, File pearPackage, boolean verify)
           throws PackageInstallerException {
+    return PackageInstaller.installPackage(installDir, pearPackage, verify, true);
+    
+  }
+  /**
+   * Installs the specified PEAR package to the specified install location.
+   * After the installation is completed, an optional installation verification
+   * step can be executed. This verification uses the main component descriptor
+   * to instantiate the UIMA resource, encapsulated in the PEAR package, and may
+   * run some additional tests, if applicable
+   * 
+   * @param installDir
+   *          PEAR package install location
+   * @param pearPackage
+   *          PEAR package file location to install
+   * @param verify
+   *          If true the PEAR package verification is done after the installation
+   * @param cleanInstallDir
+   *          If <code>true</code>, the target installation directory will be cleaned before the
+   *          PEAR file is installed.
+   * @return Returns a <code>PackageBrowser</code> object containing all PEAR package install settings
+   * 
+   * @throws PackageInstallerException
+   *           If an error occured during the pear installation or verification.
+   */
+  public static PackageBrowser installPackage(File installDir, File pearPackage, boolean verify, boolean cleanInstallDir)
+          throws PackageInstallerException {
 
     // componentId for the given pear pacakge
     String componentId;
@@ -105,7 +131,7 @@ public class PackageInstaller {
 
     // create installation controller and to install the pear package
     InstallationController controller = new InstallationController(componentId, pearPackage,
-            installDir, false, msgListener);
+            installDir, false, msgListener, cleanInstallDir);
 
     // install main component
     if (controller.installComponent() == null) {

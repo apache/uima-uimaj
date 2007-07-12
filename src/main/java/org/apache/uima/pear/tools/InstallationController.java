@@ -42,10 +42,12 @@ import java.util.Set;
 import java.util.jar.JarFile;
 
 import org.apache.uima.UIMAFramework;
+import org.apache.uima.internal.util.I18nUtil;
 import org.apache.uima.pear.util.FileUtil;
 import org.apache.uima.pear.util.MessageRouter;
 import org.apache.uima.pear.util.StringUtil;
 import org.apache.uima.resource.PearSpecifier;
+import org.apache.uima.util.FileUtils;
 import org.xml.sax.SAXException;
 
 /**
@@ -303,6 +305,8 @@ public class InstallationController {
 
   private File _installationDir;
 
+  private boolean _cleanInstallDir = true;
+
   private String _mainComponentRootPath;
 
   private File _mainComponentRoot;
@@ -322,7 +326,7 @@ public class InstallationController {
   private String _installationMsg;
 
   private String _verificationMsg;
-
+  
   private MessageRouter _msgRouter = null;
 
   private MessageRouter.StdChannelListener _defaultMsgListener = null;
@@ -451,7 +455,7 @@ public class InstallationController {
   public static String buildComponentClassPath(String compRootDirPath,
           InstallationDescriptor insdObject) throws IOException {
     // create list of JAR files in lib dir.
-    File compLibDir = new File(compRootDirPath + "/" + PACKAGE_LIB_DIR);
+    File compLibDir = new File(compRootDirPath, PACKAGE_LIB_DIR);
     StringBuffer cpBuffer = new StringBuffer();
     cpBuffer = addListOfJarFiles(compLibDir, cpBuffer);
     // append all specified CLASSPATH env.var. settings
@@ -486,7 +490,7 @@ public class InstallationController {
    */
   public static String buildComponentPath(String compRootDirPath, InstallationDescriptor insdObject) {
     // append 'bin' directory to component path
-    File compBinDir = new File(compRootDirPath + "/" + PACKAGE_BIN_DIR);
+    File compBinDir = new File(compRootDirPath, PACKAGE_BIN_DIR);
     StringBuffer pBuffer = new StringBuffer();
     if (compBinDir.isDirectory()) {
       pBuffer.append(compBinDir.getAbsolutePath().replace('\\', '/'));
@@ -676,13 +680,15 @@ public class InstallationController {
    *          The given filename extension.
    * @param targetDir
    *          The given target directory.
+   * @param cleanTarget
+   *          If true, the target directory is cleaned before the PEAR file is installed to it.
    * @return The path to the new component root directory.
    * @throws IOException
    *           if any I/O exception occurred.
    */
   public static String extractFilesFromPEARFile(String pearFileLocation, String fileExt,
-          File targetDir) throws IOException {
-    return extractFilesFromPEARFile(pearFileLocation, fileExt, targetDir, null);
+          File targetDir, boolean cleanTarget) throws IOException {
+    return extractFilesFromPEARFile(pearFileLocation, fileExt, targetDir, null, cleanTarget);
   }
 
   /**
@@ -699,17 +705,43 @@ public class InstallationController {
    *          The given target directory.
    * @param controller
    *          The instance of the <code>InstallationController<code> class that provides OUT and ERR 
+   * @param cleanTarget
+   *          If true, the target directory is cleaned before the PEAR file is installed to it. 
    * message routing, or <code>null</code>.
    * @return The path to the new component root directory.
    * @throws IOException if any I/O exception occurred.
    */
   protected static String extractFilesFromPEARFile(String pearFileLocation, String fileExt,
-          File targetDir, InstallationController controller) throws IOException {
+          File targetDir, InstallationController controller, boolean cleanTarget)
+          throws IOException {
     // get PEAR file size
     long fileSize = FileUtil.getFileSize(pearFileLocation);
     // create root directory
-    if (!targetDir.isDirectory() && !targetDir.mkdirs())
-      throw new IOException("cannot create directory " + targetDir.getAbsolutePath());
+    if (!targetDir.isDirectory() && !targetDir.mkdirs()) {
+      //create localized error message
+      String message = I18nUtil.localizeMessage(PEAR_MESSAGE_RESOURCE_BUNDLE,
+              "installation_controller_error_creating_install_dir", new Object[] { targetDir
+                      .getAbsolutePath() });
+      throw new IOException(message);
+    }
+    // clean target directory
+    if (cleanTarget) {
+      if (FileUtils.deleteRecursive(targetDir)) {
+        if (!targetDir.mkdirs()) {
+          //create localized error message
+          String message = I18nUtil.localizeMessage(PEAR_MESSAGE_RESOURCE_BUNDLE,
+                  "installation_controller_error_creating_install_dir", new Object[] { targetDir
+                          .getAbsolutePath() });
+          throw new IOException(message);
+        }
+      } else {
+        //create localized error message
+        String message = I18nUtil.localizeMessage(PEAR_MESSAGE_RESOURCE_BUNDLE,
+                "installation_controller_error_cleaning_install_dir", new Object[] { targetDir
+                        .getAbsolutePath() });
+        throw new IOException(message);
+      }
+    }
     // specify local PEAR file
     File pearFile = null;
     boolean removeLocalCopy = false;
@@ -776,13 +808,15 @@ public class InstallationController {
    *          The given PEAR file location.
    * @param installationDir
    *          The given target directory.
+   * @param cleanTarget
+   *          If true, the target directory is cleaned before the PEAR file is installed to it.
    * @return The path to the new component root directory.
    * @throws IOException
    *           if any I/O exception occurred.
    */
-  public static String extractPEARFile(String pearFileLocation, File installationDir)
-          throws IOException {
-    return extractFilesFromPEARFile(pearFileLocation, null, installationDir);
+  public static String extractPEARFile(String pearFileLocation, File installationDir,
+          boolean cleanTarget) throws IOException {
+    return extractFilesFromPEARFile(pearFileLocation, null, installationDir, cleanTarget);
   }
 
   /**
@@ -798,12 +832,15 @@ public class InstallationController {
    * @param controller
    *          The instance of the <code>InstallationController<code> class that provides OUT and ERR 
    * message routing, or <code>null</code>.
+   * @param cleanTarget
+   *          If true, the target directory is cleaned before the PEAR file is installed to it. 
    * @return The path to the new component root directory.
    * @throws IOException if any I/O exception occurred.
    */
   protected static String extractPEARFile(String pearFileLocation, File installationDir,
-          InstallationController controller) throws IOException {
-    return extractFilesFromPEARFile(pearFileLocation, null, installationDir, controller);
+          InstallationController controller, boolean cleanTarget) throws IOException {
+    return extractFilesFromPEARFile(pearFileLocation, null, installationDir, controller,
+            cleanTarget);
   }
 
   /**
@@ -1104,7 +1141,8 @@ public class InstallationController {
    * @param installInRootDir
    *          If <code>true</code>, the component will be installed in the given root directory,
    *          otherwise it will be installed in the <code>component_id</code> subdirectory of the
-   *          root directory.
+   *          root directory. Note: the installation directory will be cleaned before the PEAR file is 
+   *          installed to it.
    */
   public InstallationController(String componentId, String rootDirPath, boolean installInRootDir) {
     this(componentId, rootDirPath, installInRootDir, null);
@@ -1127,13 +1165,14 @@ public class InstallationController {
    * @param installInRootDir
    *          If <code>true</code>, the component will be installed in the given root directory,
    *          otherwise it will be installed in the <code>component_id</code> subdirectory of the
-   *          root directory.
+   *          root directory. Note: the installation directory will be cleaned before the PEAR file is 
+   *          installed to it.
    * @param msgListener
    *          The given custom message listener or <code>null</code>.
    */
   public InstallationController(String componentId, String rootDirPath, boolean installInRootDir,
           MessageRouter.StdChannelListener msgListener) {
-    this(componentId, rootDirPath, installInRootDir, null, msgListener);
+    this(componentId, rootDirPath, installInRootDir, null, msgListener, true);
     // print program information
     getOutMsgWriter().println(
             "[InstallationController]: " + "OS - " + __osName + ", Host - " + _hostIpAddress);
@@ -1167,10 +1206,13 @@ public class InstallationController {
    *          The given custom <code>MessageRouter</code> object or <code>null</code>.
    * @param msgListener
    *          The given custom message listener object or <code>null</code>.
+   * @param cleanInstallDir
+   *          If <code>true</code>, the target installation directory will be cleaned before the
+   *          PEAR file is installed.
    */
   protected InstallationController(String componentId, String rootDirPath,
           boolean installInRootDir, MessageRouter msgRouter,
-          MessageRouter.StdChannelListener msgListener) {
+          MessageRouter.StdChannelListener msgListener, boolean cleanInstallDir) {
     if (msgRouter == null)
       _msgRouter = new MessageRouter();
     else
@@ -1196,6 +1238,7 @@ public class InstallationController {
       _msgRouter.start();
     // initialize attributes
     _mainComponentId = componentId;
+    _cleanInstallDir = cleanInstallDir;
     if (installInRootDir) {
       _mainComponentRootPath = rootDirPath;
       _mainComponentRoot = new File(_mainComponentRootPath);
@@ -1233,9 +1276,10 @@ public class InstallationController {
    *          The given local root directory for installation.
    */
   public InstallationController(String componentId, File localPearFile, File rootDir) {
-    this(componentId, localPearFile, rootDir, false);
+    this(componentId, rootDir.getAbsolutePath(), false, null, null, true);
+    _mainPearFileLocation = localPearFile.getAbsolutePath();
   }
-
+  
   /**
    * Constructor for the 'local' mode, which specifies component ID, local PEAR file and a local
    * root directory where the component will be installed. If the <code>installInRootDir</code>
@@ -1255,10 +1299,41 @@ public class InstallationController {
    *          If <code>true</code>, the component will be installed in the given root directory,
    *          otherwise it will be installed in the <code>component_id</code> subdirectory of the
    *          root directory.
+   * @param cleanInstallDir
+   *          If <code>true</code>, the target installation directory will be cleaned before the
+   *          PEAR file is installed.
+   */
+  public InstallationController(String componentId, File localPearFile, File rootDir,
+          boolean installInRootDir, boolean cleanInstallDir) {
+    this(componentId, rootDir.getAbsolutePath(), installInRootDir, null, null, cleanInstallDir);
+    _mainPearFileLocation = localPearFile.getAbsolutePath();
+  }
+
+
+  /**
+   * Constructor for the 'local' mode, which specifies component ID, local PEAR file and a local
+   * root directory where the component will be installed. If the <code>installInRootDir</code>
+   * flag is <code>true</code>, the component code and resources will be installed in the
+   * specified root directory, otherwise the <code>InstallationController</code> will create a
+   * <code>component_id</code> subdirectory for the component code and resources. By default, the
+   * <code>InstallationController</code> class sends all stdout and stderr messages to the default
+   * message listener, which prints them to the standard console streams.
+   * 
+   * @param componentId
+   *          The given component ID.
+   * @param localPearFile
+   *          The given local PEAR file.
+   * @param rootDir
+   *          The given local root directory for installation.
+   * @param installInRootDir
+   *          If <code>true</code>, the component will be installed in the given root directory,
+   *          otherwise it will be installed in the <code>component_id</code> subdirectory of the
+   *          root directory. Note: the installation directory will be cleaned before the PEAR file is 
+   *          installed to it. 
    */
   public InstallationController(String componentId, File localPearFile, File rootDir,
           boolean installInRootDir) {
-    this(componentId, rootDir.getAbsolutePath(), installInRootDir);
+    this(componentId, rootDir.getAbsolutePath(), installInRootDir, null, null, true);
     _mainPearFileLocation = localPearFile.getAbsolutePath();
   }
 
@@ -1287,7 +1362,41 @@ public class InstallationController {
    */
   public InstallationController(String componentId, File localPearFile, File rootDir,
           boolean installInRootDir, MessageRouter.StdChannelListener msgListener) {
-    this(componentId, rootDir.getAbsolutePath(), installInRootDir, msgListener);
+    this(componentId, rootDir.getAbsolutePath(), installInRootDir, null, msgListener, true);
+    _mainPearFileLocation = localPearFile.getAbsolutePath();
+  }
+
+  /**
+   * Constructor for the 'local' mode, which specifies component ID, local PEAR file and a local
+   * root directory where the component will be installed. If the <code>installInRootDir</code>
+   * flag is <code>true</code>, the component code and resources will be installed in the
+   * specified root directory, otherwise the <code>InstallationController</code> will create a
+   * <code>component_id</code> subdirectory for the component code and resources. If the custom
+   * message listener is not <code>null</code>, the <code>InstallationController</code> class
+   * sends all stdout and stderr messages to this message listener, otherwise these messages are
+   * sent to the default message listener, which prints them to the standard console streams.
+   * 
+   * @param componentId
+   *          The given component ID.
+   * @param localPearFile
+   *          The given local PEAR file.
+   * @param rootDir
+   *          The given local root directory for installation.
+   * @param installInRootDir
+   *          If <code>true</code>, the component will be installed in the given root directory,
+   *          otherwise it will be installed in the <code>component_id</code> subdirectory of the
+   *          root directory.
+   * @param msgListener
+   *          The given custom message listener or <code>null</code>.
+   * @param cleanInstallDir
+   *          If <code>true</code>, the target installation directory will be cleaned before the
+   *          PEAR file is installed.
+   */
+  public InstallationController(String componentId, File localPearFile, File rootDir,
+          boolean installInRootDir, MessageRouter.StdChannelListener msgListener,
+          boolean cleanInstallDir) {
+    this(componentId, rootDir.getAbsolutePath(), installInRootDir, null, msgListener,
+            cleanInstallDir);
     _mainPearFileLocation = localPearFile.getAbsolutePath();
   }
 
@@ -1427,7 +1536,7 @@ public class InstallationController {
       if (_mainPearFileLocation == null) // get PEAR file location
         _mainPearFileLocation = getPEARFileLocation(_mainComponentId, _packageSelector);
       // extract PEAR file in a specified directory
-      if (extractPEARFile(_mainPearFileLocation, _mainComponentRoot, this) == null) {
+      if (extractPEARFile(_mainPearFileLocation, _mainComponentRoot, this, _cleanInstallDir) == null) {
         // PEAR extraction failed
         // set error message
         setInstallationError(new IOException("PEAR extraction failed"));
@@ -1493,7 +1602,8 @@ public class InstallationController {
       if (_mainPearFileLocation == null) // get PEAR file location
         _mainPearFileLocation = getPEARFileLocation(_mainComponentId, _packageSelector);
       // extract main XML descriptors in a specified directory
-      if (extractFilesFromPEARFile(_mainPearFileLocation, ".xml", _mainComponentRoot, this) == null) {
+      if (extractFilesFromPEARFile(_mainPearFileLocation, ".xml", _mainComponentRoot, this,
+              _cleanInstallDir) == null) {
         // PEAR extraction failed
         // set error message
         setInstallationError(new IOException("PEAR extraction failed"));
@@ -1546,7 +1656,8 @@ public class InstallationController {
       if (componentRootPath == null) {
         // install next separate delegate component
         InstallationController dlgController = new InstallationController(componentId,
-                _installationDirPath, false, this._msgRouter, this._defaultMsgListener);
+                _installationDirPath, false, this._msgRouter, this._defaultMsgListener,
+                _cleanInstallDir);
         dlgController.setPackageSelector(this._packageSelector);
         InstallationDescriptor dlgInsdObject = dlgController.installComponent();
         if (dlgInsdObject == null) {
@@ -1585,7 +1696,8 @@ public class InstallationController {
       String componentId = (String) dlgList.nextElement();
       // install XML descriptors of the next delegate component
       InstallationController dlgController = new InstallationController(componentId,
-              _installationDirPath, false, this._msgRouter, this._defaultMsgListener);
+              _installationDirPath, false, this._msgRouter, this._defaultMsgListener,
+              _cleanInstallDir);
       dlgController.setPackageSelector(this._packageSelector);
       InstallationDescriptor dlgInsdObject = dlgController.installComponentDescriptors();
       if (dlgInsdObject == null) {
