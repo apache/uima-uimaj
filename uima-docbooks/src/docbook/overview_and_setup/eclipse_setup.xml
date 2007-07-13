@@ -308,7 +308,21 @@ under the License.
     <para>Do this with every jar you think you might be interested in.  It makes most sense
       for the uima-core.jar, you'll probably use the core APIs most of all.
     </para>
+    
+    <para>Here's a screenshot of what you should see when you hover your mouse pointer over the
+    class name <quote>CAS</quote> in the source code.
+    </para>
 
+      <informalfigure>
+        <mediaobject>
+          <imageobject>
+            <imagedata scale="100" format="JPG" fileref="&imgroot;image004.jpg"/>
+          </imageobject>
+          <textobject><phrase>Screenshot of mouse-over for UIMA APIs</phrase>
+          </textobject>
+        </mediaobject>
+      </informalfigure>
+      
   </section>
   
   <section id="ugr.ovv.eclipse_setup.running_external_tools_from_eclipse">
