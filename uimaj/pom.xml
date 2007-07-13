@@ -93,7 +93,22 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>			
+			</plugin>
+			<plugin>
+			 <groupId>org.apache.maven.plugins</groupId>
+			 <artifactId>maven-source-plugin</artifactId>
+			 <configuration>
+			  <outputDirectory>../uimaj-distr/target/src</outputDirectory>
+			  <attach>true</attach>
+			 </configuration>
+			 <executions>
+               <execution>
+                <goals>
+                 <goal>jar</goal>
+                </goals>
+               </execution>
+			 </executions>
+			</plugin>
 		</plugins>
 	</build>
 	<reporting>
@@ -168,6 +183,7 @@
 			  </archive>
 			 </configuration>
 			</plugin>
+
 		</plugins>
 	</reporting>	
 	<modules>
