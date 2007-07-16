@@ -1353,6 +1353,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     if (!isCommitted())
       this.numCommittedTypes = this.types.size();
     this.arrayCodeToTypeMap.put(arrayTypeCode, arrayType);
+//    System.out.println("*** adding to arrayCodeToTypeMap: " + arrayType.getName() + ", committed=" + isCommitted());
     // For built-in arrays, we need to add the abstract base array as parent
     // to the inheritance tree. This sucks. Assumptions about the base
     // array are all over the place. Would be nice to just remove it.
@@ -1372,9 +1373,9 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   }
 
   public boolean ll_isArrayType(int typeCode) {
-    if (!ll_isValidTypeCode(typeCode)) {
-      return false;
-    }
+//    if (!ll_isValidTypeCode(typeCode)) {
+//      return false;
+//    }
     return this.arrayCodeToTypeMap.containsKey(typeCode);
   }
 
@@ -1391,9 +1392,9 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   }
 
   public String[] ll_getStringSet(int typeCode) {
-    if (!ll_isValidTypeCode(typeCode)) {
-      return null;
-    }
+//    if (!ll_isValidTypeCode(typeCode)) {
+//      return null;
+//    }
     if (!ll_isStringSubtype(typeCode)) {
       return null;
     }
