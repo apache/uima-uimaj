@@ -2722,7 +2722,16 @@ public class MultiPageEditor extends FormEditor {
         .append("\n");
     }
     
-    Utility.popMessage("Remotes Unavailable", "Note: This message only shown once.\n\nThe following Remote components could not be accessed.\n" +
-          "Types, Type Priorities, and Index merging may be incomplete.\n" + sb, MessageDialog.WARNING);
+    Utility.popMessage("Remotes Unavailable", "Note: This message is only shown once.\n\n" +
+    		"Some Remote components (see error message below) could not be accessed.\n" +
+        "This is not an error; perhaps the remote components are not currently running.\n\n" +
+        "WARNING: The Types, Type Priorities, and Indexes created by \"merging\"\n" +
+        "information from the imported remote types may be incomplete\n" +
+        "(because the editor can't read this information at the moment).\n" +
+        "However, this doesn't affect the editing operations; you can continue\n" +
+        "(but with perhaps less complete error checking in the editor,\n" +
+        "and JCasGen, if used, may be missing some type information that\n" +
+        "would have come from the remote components, had they been available.\n\n" +
+        sb, MessageDialog.WARNING);
   }
 }
