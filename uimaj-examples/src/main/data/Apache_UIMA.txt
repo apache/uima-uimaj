@@ -23,7 +23,7 @@ Developers - uima-dev@incubator.apache.org
 Commits - uima-commits@incubator.apache.org
 
 
-Initial UIMA project committers:
+Apache UIMA project committers:
 
 Michael Baessler
 Edward Epstein
@@ -32,7 +32,7 @@ Adam Lally
 Marshall Schor
 
 
-UIMA project Mentors:
+Apache UIMA project Mentors:
 
 Ken Coar (ASF member and Vice President)
 Sam Ruby (ASF member)
