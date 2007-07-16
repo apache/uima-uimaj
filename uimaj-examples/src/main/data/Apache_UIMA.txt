@@ -16,14 +16,14 @@ UIMA is a component framework for analysing unstructured content such as text, a
 It comprises an SDK and tooling for composing and running analytic components written in Java and C++, with some support for Perl, Python and TCL. 
 
 
-The Apache UIMA mailing lists are:
+Apache UIMA mailing lists:
 
 Users - uima-user@incubator.apache.org
 Developers - uima-dev@incubator.apache.org
 Commits - uima-commits@incubator.apache.org
 
 
-The initial UIMA project committers are:
+Initial UIMA project committers:
 
 Michael Baessler
 Edward Epstein
@@ -32,7 +32,7 @@ Adam Lally
 Marshall Schor
 
 
-The UIMA project Mentors are:
+UIMA project Mentors:
 
 Ken Coar (ASF member and Vice President)
 Sam Ruby (ASF member)
