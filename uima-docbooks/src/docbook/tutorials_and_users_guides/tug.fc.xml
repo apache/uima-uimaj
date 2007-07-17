@@ -120,8 +120,10 @@ under the License.
         <title>The WhiteboardFlowController Class</title>
         
         
-        <programlisting>public class WhiteboardFlowController extends CasFlowController_ImplBase {
-  public Flow computeFlow(CAS aCAS) throws AnalysisEngineProcessException {
+        <programlisting>public class WhiteboardFlowController 
+          extends CasFlowController_ImplBase {
+  public Flow computeFlow(CAS aCAS) 
+          throws AnalysisEngineProcessException {
     WhiteboardFlow flow = new WhiteboardFlow();
     flow.setCas(aCAS);
     return flow;

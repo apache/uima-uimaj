@@ -2231,7 +2231,7 @@ documentAnalyzer</programlisting>
       <title>Header and Annotator Class Identification</title>
       
       
-      <programlisting><![CDATA[<?xml version="1.0" encoding="UTF-8" ?> 
+      <programlisting><?db-font-size 80% ?><![CDATA[<?xml version="1.0" encoding="UTF-8" ?> 
 <!--  Descriptor for the example RoomNumberAnnotator. --> 
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation> 
@@ -2425,7 +2425,7 @@ documentAnalyzer</programlisting>
         <title>Aggregate Analysis Engine Descriptor</title>
         
         
-        <programlisting><![CDATA[<?xml version="1.0" encoding="UTF-8" ?> 
+        <programlisting><?db-font-size 80% ?><![CDATA[<?xml version="1.0" encoding="UTF-8" ?> 
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation> 
   <primitive>false</primitive> 

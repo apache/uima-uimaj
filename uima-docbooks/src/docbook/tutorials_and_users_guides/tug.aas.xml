@@ -99,7 +99,7 @@ under the License.
         that the variable <quote>aCas</quote> holds a reference to a CAS:</para>
       
       
-      <programlisting>aCas.<emphasis role="bold">setSofaDataString</emphasis>(document_text_string, mime_type_string);
+      <programlisting><?db-font-size 80% ?>aCas.<emphasis role="bold">setSofaDataString</emphasis>(document_text_string, mime_type_string);
 aCas.<emphasis role="bold">setSofaDataArray</emphasis>(feature_structure_primitive_array, mime_type_string);
 aCas.<emphasis role="bold">setSofaDataURI</emphasis>(uri_string, mime_type_string);</programlisting>
       
