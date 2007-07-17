@@ -512,7 +512,7 @@ myInstance.removeFromIndexes(anotherJCas)</programlisting>
         other JCas (or CAS) objects. For instance, if you had 2 other CAS views (myView1 and
         myView2), in which you wanted to index myInstance, you could write:</para>
       
-      <programlisting>myInstance.addToIndexes();  // index in the JCas used with the new operator
+      <programlisting>myInstance.addToIndexes(); //addToIndexes used with the new operator
 myView1.addFsToIndexes(myInstance); // index myInstance in myView1
 myView2.addFsToIndexes(myInstance); // index myInstance in myView2</programlisting>
       

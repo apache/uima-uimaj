@@ -645,12 +645,14 @@ vinci.VinciAnalysisEngineService_impl</arg>
             
             
             <programlisting>java -DVNS_HOST=localhost -DVNS_PORT=9099 
-  org.apache.uima.reference_impl.analysis_engine.service.vinci.VinciAnalysisEngineService_impl 
+  org.apache.uima.reference_impl.analysis_engine.service.vinci.\\
+              VinciAnalysisEngineService_impl 
   C:uimadescdeployCasProcessor.xml</programlisting></para>
           
           <para>The first argument specifies that the Vinci Naming Service is running on the
             <literal>localhost</literal>. The second argument specifies that the Vinci
             Naming Service port number is <literal>9099</literal>. The third argument
+            (split over 2 lines in this documentation) 
             identifies the UIMA implementation of the Vinci service wrapper. This class
             contains the <literal>main</literal> method that will execute. That main
             method in turn takes a single argument &ndash; the filename for the CAS Processor

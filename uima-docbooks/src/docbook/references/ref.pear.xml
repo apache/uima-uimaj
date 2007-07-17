@@ -597,8 +597,9 @@ local_root_directory_for_1st_delegate_component/resources/dict/
     annotatorProperties.setProperty("sysProperty1", "value1");</programlisting>
   	    
   	    To create a complete PEAR package in one step call:
-  	    <programlisting>PackageCreator.generatePearPackage(componentID, mainComponentDesc,
-   classpath, datapath, mainComponentRoot, targetDir, annotatorProperties);</programlisting>
+  	    <programlisting>PackageCreator.generatePearPackage(
+   componentID, mainComponentDesc, classpath, datapath, 
+   mainComponentRoot, targetDir, annotatorProperties);</programlisting>
         The created PEAR package has the file name &lt;componentID>.pear and is located in the &lt;targetDir>.
         </para>      
         <para>
