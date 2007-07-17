@@ -44,6 +44,9 @@
 			<isset property="chapter_name" />
 		</condition>
 
+    <!-- if olink_work is not set, set it to yes -->
+    <property name="olink_work" value="yes"/>
+
 		<!-- skip some steps if olink_work value is "only" -->
 		<condition property="do_olinkdb_only">
 			<equals arg1="${olink_work}" arg2="only" />

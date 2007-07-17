@@ -95,6 +95,7 @@
   
   <target name="transform-source-pdf" description="--> internal transform source for pdf output">
     <!--echo message="docbook.xsl.root = file:///${docbook.xsl.dir}"/-->
+    <!--echo message="olink work = ${olink_work}"/-->
     <saxon input="${docbook.src.dir}/${book_name}/${chapter_name}.xml"
       output="${target.dir.path}/${chapter_name}/${docbook.outname}.pdf_src.xml"
       style="${styles.dir}/top/pdf.xsl"
