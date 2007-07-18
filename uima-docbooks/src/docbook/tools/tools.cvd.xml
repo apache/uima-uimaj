@@ -72,7 +72,9 @@
  </para>
  <para>
    In Eclipse, you have a ready to use launch configuration available when you have installed the
-   UIMA sample project (see ).  Below is a screenshot of the the Eclipse Run dialog with the CVD
+   UIMA sample project (see <olink targetdoc="&uima_docs_overview;" 
+   targetptr="ugr.ovv.eclipse_setup.example_code"/>).  Below is a screenshot of the the Eclipse Run 
+   dialog with the CVD
    run configuration selected.
    <screenshot>
     <mediaobject>
@@ -563,10 +565,12 @@
   <para>
    The main display area has three sub-areas.  In the upper left-hand
    corner is the
-   <emphasis role="bold">index display</emphasis>, which shows the indexes that were defined in the TAE, as well as
+   <emphasis role="bold">index display</emphasis>, which shows the indexes that were defined in the 
+   AE, as well as
    the types of the indexes and their subtypes.  In the lower left-hand
-   corner, the content of indexes and sub-indexes is displayed (
-   <emphasis role="bold">FS display</emphasis>).  Clicking on any node in the index display will show the
+   corner, the content of indexes and sub-indexes is displayed 
+   (<emphasis role="bold">FS display</emphasis>).  Clicking on any node in the index display will 
+   show the
    corresponding feature structures in the FS display.  You can explore
    those structures by expanding the tree nodes.  When you click on a
    node that represents an annotation, clicking on it will cause the
@@ -577,7 +581,7 @@
    <figure id="Main1Figure">
     <title>State of GUI after running an analysis engine</title>
     <mediaobject>
-     <imageobject>  <!-- next width was 6.423 -->
+     <imageobject>
       <imagedata scale="100" format="JPG" fileref="&imgroot;Main1.jpg" />
      </imageobject>
     </mediaobject>
@@ -585,8 +589,8 @@
   </para>
   <para>
    <xref linkend="Main1Figure"></xref>
-   shows the state after running a simple lemmatizer example from the
-   CAS tutorial.  There are two indexes in the index display, and the
+   shows the state after running the UIMA_Analysis_Example.xml aggregate from the
+   uimaj-examples project.  There are two indexes in the index display, and the
    annotation index has been selected.  Note that the number of
    structures in an index is displayed in square brackets after the
    index name.
@@ -597,17 +601,15 @@
    more than 100 sister nodes, they are displayed next to each other.
   </para>
   <para>
-   In our example, a token annotation has been selected, and the
+   In our example, a name annotation has been selected, and the
    corresponding token text is highlighted in the text area.  We have
-   also expanded the token node to display its structure.
+   also expanded the token node to display its structure (not much to see in this simple example).
   </para>
   <para>
-   In
-   <xref linkend="Main1Figure"></xref>
-   , we selected an annotation in the FS display to find the
+   In <xref linkend="Main1Figure"/>, we selected an annotation in the FS display to find the
    corresponding text.  We can also do the reverse and find out what
    annotations cover a certain point in the text.  Let's go back to the
-   named entity recognizer for an example.
+   name recognizer for an example.
   </para>
   <para>
    <figure id="Main2Figure">
@@ -622,8 +624,8 @@
    </figure>
   </para>
   <para>
-   We would like to know if the General Accounting Office has been
-   correctly recognized.  So we position the cursor in the corresponding
+   We would like to know if the Michael Baessler has been
+   recognized as a name.  So we position the cursor in the corresponding
    text span somewhere, then right-click to bring up the context menu
    telling us which annotations exist at this point. An example is shown
    in
@@ -644,16 +646,18 @@
   </para>
 
   <para>
-   At this point (
-   <xref linkend="Main2Figure" />), we only know that somewhere around the text cursor position (not
-   visible in the picture), we discovered an organiztion. 
+   At this point (<xref linkend="Main2Figure" />), 
+   we only know that somewhere around the text cursor position (not
+   visible in the picture), we discovered a name.  When we select the corresponding entry in the
+   context menu, the name annotation is selected in the FS display, and its covered text is
+   highlighted.
    <xref linkend="Main3Figure" /> shows the display after 
-   the organization node has been selected in
+   the name node has been selected in
    the popup menu.
   </para>
   <para>
-   We're glad to see that, indeed, the General Accounting Office is
-   considered to be an organization.  Note that in the FS display, the
+   We're glad to see that, indeed, Michael Baessler is
+   considered to be a name.  Note that in the FS display, the
    corresponding annotation node has been selected, and the tree has
    been expanded to make the node visible.
   </para>
