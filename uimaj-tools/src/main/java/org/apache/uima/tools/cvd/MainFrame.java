@@ -1681,6 +1681,9 @@ public class MainFrame extends JFrame {
     List types = ts.getDirectSubtypes(type);
     final int max = types.size();
     for (int i = 0; i < max; i++) {
+      if (ir.getIndex(label, (Type) types.get(i)) == null) {
+	continue;
+      }
       DefaultMutableTreeNode child = createTypeTree((Type) types.get(i), ts, label, ir);
       node.add(child);
     }
