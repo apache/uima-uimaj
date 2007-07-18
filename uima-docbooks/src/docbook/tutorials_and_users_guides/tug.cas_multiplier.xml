@@ -712,7 +712,9 @@ AnalysisEngine myAE = UIMAFramework.produceAnalysisEngine(
     mDocBuf.append(docText);
 
     // copy specified annotation types
-    CasCopier copier = new CasCopier(mMergedCas.getCas());
+    // CasCopier takes two args: the CAS to copy from.
+    //                           the CAS to copy into.
+    CasCopier copier = new CasCopier(aJCas.getCas(), mMergedCas.getCas());
     
     // needed in case one annotation is in two indexes (could    
     // happen if specified annotation types overlap)
