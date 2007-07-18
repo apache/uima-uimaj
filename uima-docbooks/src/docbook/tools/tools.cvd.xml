@@ -475,7 +475,8 @@
    <title>The tools menu</title>
    <para>
     The tools menu contains some assorted utilities, such as the log
-    file viewer. A more detailed description of some of the menu items
+    file viewer. Here you can also set the log level for UIMA.  
+    A more detailed description of some of the menu items
     follows below.
    </para>
    <section id="cvd.viewTypeSystem">
