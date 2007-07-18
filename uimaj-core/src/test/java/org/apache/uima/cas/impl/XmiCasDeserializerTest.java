@@ -231,7 +231,7 @@ public class XmiCasDeserializerTest extends TestCase {
     
     for (int i = 0; i < threadsToUse.length; i++) {
     	Thread [] threads = new Thread[MAX_THREADS];
-    	long startTime = System.nanoTime();
+    	long startTime = System.currentTimeMillis();
     	for (int ti = 0; ti < threadsToUse[i]; ti++) {
     		threads[ti] = new Thread(new DoSerialize(cases[ti]));
     		
@@ -242,7 +242,7 @@ public class XmiCasDeserializerTest extends TestCase {
     		//System.out.print(" "+ ti);
     	}
     	System.out.println("\nNumber of threads serializing: " + threadsToUse[i] + 
-    			               "  Normalized microsecs (should be close to the same): " + (System.nanoTime() - startTime) / 1000 / threadsToUse[i]);
+    			               "  Normalized millisecs (should be close to the same): " + (System.currentTimeMillis() - startTime) / threadsToUse[i]);
     }
   }
 
