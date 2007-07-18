@@ -307,14 +307,27 @@
 
     <listitem>
      <formalpara>
-      <title>Write XCAS File</title>
+      <title>Read XMI CAS File</title>
       <para>
-       Writes the current analysis out as an XCAS file. This menu item
-       is disabled until after the first time a TAE has run
-       successfully.
+       Read an XMI CAS file. Important: XMI CAS is a serialization format that
+       serializes a CAS without type system and index information. It is
+       therefore impossible to read in a stand-alone XMI CAS file. XMI CAS
+       files can only be interpreted in the context of an existing type
+       system. Consequently, you need to load the TAE that was used to
+       create the XCAS file to be able to load it.
       </para>
      </formalpara>
     </listitem>
+
+    <listitem>
+     <formalpara>
+      <title>Write XMI CAS File</title>
+      <para>
+       Writes the current analysis out as an XMI CAS file.
+      </para>
+     </formalpara>
+    </listitem>
+
 
     <listitem>
      <formalpara>
@@ -329,6 +342,15 @@
        without loading the TAE may produce strange errors. You may get
        syntax errors on loading the XCAS file, or worse, everything may
        appear to go smoothly but in reality your CAS may be corrupted.
+      </para>
+     </formalpara>
+    </listitem>
+
+    <listitem>
+     <formalpara>
+      <title>Write XCAS File</title>
+      <para>
+       Writes the current analysis out as an XCAS file.
       </para>
      </formalpara>
     </listitem>
