@@ -191,6 +191,13 @@ under the License.
         If you also use <literal>moveTo(FeatureStructure fs)</literal> and 
         <literal>moveToPrevious()</literal>, it is better to use the special FS iterator style.
       </para>
+      <note><para>The reason to not mix these styles is that you might be thinking that
+        next() followed by moveToPrevious() would always work.  This is not true, because
+        next() returns the "current" element, and advances to the next position, which might be
+        beyond the last element.  At that point, the interator becomes "invalid", and by the iterator
+        contracts, moveToNext and moveToPrevious are not allowed on "invalid" iterators; 
+        when an iterator is not valid, all bets are off.  But you can
+        call these methods on the iterator &mdash; moveToFirst(), moveToLast(), or moveTo(FS) &mdash; to reset it.</para></note>
       
       <para>Indexes are created by specifying them in the annotator&apos;s or
         aggregate&apos;s resource descriptor. An index specification includes its name,
