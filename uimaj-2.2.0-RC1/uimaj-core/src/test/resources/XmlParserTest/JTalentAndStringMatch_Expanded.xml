@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ -->
+
+<taeDescription xmlns="http://uima.apache.org/resourceSpecifier">
+<frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+<primitive>false</primitive>
+
+<delegateAnalysisEngineSpecifiers>
+<delegateAnalysisEngine key="JTalent">
+<taeDescription>
+<primitive>true</primitive>
+<frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+<annotatorImplementationName>org.apache.research.talentuima.annotations.JTalentAnnotator_Enhanced</annotatorImplementationName>
+ 
+<analysisEngineMetaData>
+<name>JTalent Annotator</name>
+<description> Calls JTalentUIMA to identify document structure, syntax, and vocabulary items.
+</description>
+
+<configurationParameters> 
+
+<configurationParameter>
+<name>ConfigFileName</name>
+<description>Name of talent .ini file.  This may be either an absolute path to the .ini file or a relative path, which is searched for in the CLASSPATH.
+</description>
+<type>String</type>
+<mandatory>true</mandatory>
+</configurationParameter>
+
+</configurationParameters>
+
+<configurationParameterSettings>
+<nameValuePair>
+<name>ConfigFileName</name><value><string>Talent.ini</string></value>
+</nameValuePair>
+</configurationParameterSettings>
+
+<typeSystemDescription>
+  <types>
+    <typeDescription>
+      <name>ANNOTITEM_TYPE</name>
+      <supertypeName>uima.tcas.Annotation</supertypeName>
+      <features>
+        <featureDescription>
+          <name>ANNOTATION_INTEGER_TYPE</name>
+          <rangeTypeName>uima.cas.Integer</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>ANNOTATION_INTEGER_SUB_TYPE</name>
+          <rangeTypeName>uima.cas.Integer</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>CATEGORY_STRING</name>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>SEQUENCE_NUMBER</name>
+          <rangeTypeName>uima.cas.Integer</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+    <typeDescription>
+      <name>DOCSTRUCT_ANNOT_TYPE</name>
+      <supertypeName>ANNOTITEM_TYPE</supertypeName>
+      <features>
+        <featureDescription>
+          <name>ANT_TYPE</name>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>DOCSTRUCT_RANK</name>
+          <rangeTypeName>uima.cas.Integer</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>DOC_SEQ_NO</name>
+          <rangeTypeName>uima.cas.Integer</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+    <typeDescription>
+      <name>VOCAB_ANNOT_TYPE</name>
+      <supertypeName>ANNOTITEM_TYPE</supertypeName>
+      <features>
+        <featureDescription>
+          <name>CANON_STRING</name>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>CANON_CATEGORY</name>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>TOKEN</name>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>TOKEN_CASE</name>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>FORM_LIST</name>
+          <rangeTypeName>uima.cas.StringArray</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>FORM_TYPES</name>
+          <rangeTypeName>uima.cas.StringArray</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>STAG_ATTRIBUTES</name>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>IS_LEMMA</name>
+          <rangeTypeName>uima.cas.Integer</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>IS_STOP_WORD</name>
+          <rangeTypeName>uima.cas.Integer</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>IN_LEXICON</name>
+          <rangeTypeName>uima.cas.Integer</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+    <typeDescription>
+      <name>ORG_VOCAB_ANNOT_TYPE</name>
+      <supertypeName>VOCAB_ANNOT_TYPE</supertypeName>
+    </typeDescription>
+    <typeDescription>
+      <name>PERSON_VOCAB_ANNOT_TYPE</name>
+      <supertypeName>VOCAB_ANNOT_TYPE</supertypeName>
+    </typeDescription>
+    <typeDescription>
+      <name>PLACE_VOCAB_ANNOT_TYPE</name>
+      <supertypeName>VOCAB_ANNOT_TYPE</supertypeName>
+    </typeDescription>
+    <typeDescription>
+      <name>DATE_VOCAB_ANNOT_TYPE</name>
+      <supertypeName>VOCAB_ANNOT_TYPE</supertypeName>
+    </typeDescription>
+    <typeDescription>
+      <name>CARDINAL_VOCAB_ANNOT_TYPE</name>
+      <supertypeName>VOCAB_ANNOT_TYPE</supertypeName>
+    </typeDescription>
+    <typeDescription>
+      <name>UTERM_VOCAB_ANNOT_TYPE</name>
+      <supertypeName>VOCAB_ANNOT_TYPE</supertypeName>
+    </typeDescription>
+    <typeDescription>
+      <name>UNAME_VOCAB_ANNOT_TYPE</name>
+      <supertypeName>VOCAB_ANNOT_TYPE</supertypeName>
+    </typeDescription>
+    <typeDescription>
+      <name>UWORD_VOCAB_ANNOT_TYPE</name>
+      <supertypeName>VOCAB_ANNOT_TYPE</supertypeName>
+    </typeDescription>
+    <typeDescription>
+      <name>MONEY_VOCAB_ANNOT_TYPE</name>
+      <supertypeName>VOCAB_ANNOT_TYPE</supertypeName>
+    </typeDescription>
+    <typeDescription>
+      <name>OTHER_VOCAB_ANNOT_TYPE</name>
+      <supertypeName>VOCAB_ANNOT_TYPE</supertypeName>
+    </typeDescription>
+    <typeDescription>
+      <name>XML_ANNOT_TYPE</name>
+      <supertypeName>ANNOTITEM_TYPE</supertypeName>
+      <features>
+        <featureDescription>
+          <name>XML_TAG_NAME</name>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>XML_NAMES</name>
+          <rangeTypeName>uima.cas.StringArray</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>XML_VALUES</name>
+          <rangeTypeName>uima.cas.StringArray</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>XML_NAME0</name>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>XML_NAME1</name>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>XML_NAME2</name>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>XML_VALUE0</name>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>XML_VALUE1</name>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>XML_VALUE2</name>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>XML_ATTRIB_COUNT</name>
+          <rangeTypeName>uima.cas.Integer</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+    <typeDescription>
+      <name>SYNTAX_ANNOT_TYPE</name>
+      <supertypeName>ANNOTITEM_TYPE</supertypeName>
+      <features>
+        <featureDescription>
+          <name>SYNTAX_LABEL_STRING</name>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+    <typeDescription>
+      <name>VOCAB_ITEM_TYPE</name>
+      <supertypeName>ANNOTITEM_TYPE</supertypeName>
+      <features>
+        <featureDescription>
+          <name>VOCAB_TERM</name>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>VOCAB_CANON</name>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>VOCAB_CANON_CATEGORY</name>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>VOCAB_FREQ</name>
+          <rangeTypeName>uima.cas.Integer</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>VOCAB_OFFSET</name>
+          <rangeTypeName>uima.cas.Integer</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>VOCAB_TFIDF</name>
+          <rangeTypeName>uima.cas.Float</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>VOCAB_IQ</name>
+          <rangeTypeName>uima.cas.Float</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>VOCAB_CONF</name>
+          <rangeTypeName>uima.cas.Float</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>VOCAB_VARIANTS</name>
+          <rangeTypeName>uima.cas.StringArray</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+  </types>
+</typeSystemDescription>
+
+<fsIndexes>
+        <fsIndexDescription>
+        <label>ANNOT_ITEM_INDEX</label>
+        <typeName>ANNOTITEM_TYPE</typeName>
+        <keys>
+                <fsIndexKey>
+                <featureName>SEQUENCE_NUMBER</featureName>
+                <comparator>standard</comparator>
+                </fsIndexKey>
+        </keys>
+        </fsIndexDescription>
+        
+        <fsIndexDescription>
+        <label>VOCAB_ITEM_INDEX</label>
+        <typeName>VOCAB_ITEM_TYPE</typeName>
+        <keys>
+                <fsIndexKey>
+                <featureName>VOCAB_TERM</featureName>
+                <comparator>standard</comparator>
+                </fsIndexKey>
+        </keys>
+        </fsIndexDescription>
+
+
+</fsIndexes>
+<capabilities>
+<capability>
+<inputs/>
+<outputs>
+<type>DOCSTRUCT_ANNOT_TYPE</type>
+<type>XML_ANNOT_TYPE</type>
+<type>SYNTAX_ANNOT_TYPE</type>
+<type>VOCAB_ITEM_TYPE</type>
+<type>ORG_VOCAB_ANNOT_TYPE</type>
+<type>PERSON_VOCAB_ANNOT_TYPE</type>
+<type>PLACE_VOCAB_ANNOT_TYPE</type>
+<type>DATE_VOCAB_ANNOT_TYPE</type>
+<type>UTERM_VOCAB_ANNOT_TYPE</type>
+<type>UNAME_VOCAB_ANNOT_TYPE</type>
+<type>UWORD_VOCAB_ANNOT_TYPE</type>
+<type>MONEY_VOCAB_ANNOT_TYPE</type>
+<type>VOCAB_ANNOT_TYPE</type>
+</outputs>
+</capability>
+</capabilities>
+ 
+</analysisEngineMetaData>
+</taeDescription>
+
+</delegateAnalysisEngine>
+
+<delegateAnalysisEngine key="StringMatch">
+<taeDescription>
+<frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+<primitive>true</primitive>
+<annotatorImplementationName>org.apache.uima.examples.StringMatchAnnotator</annotatorImplementationName>
+ 
+<analysisEngineMetaData>
+<name>String Match Annotator</name>
+<description>Finds annotations by simple string matching.</description>
+<version>1.0</version>
+<vendor>The Apache Software Foundation</vendor>
+ 
+<!-- Configuration Parameter Definitions -->
+<configurationParameters> 
+
+<configurationParameter>
+<name>Substrings</name>
+<description>Substrings to match</description>
+<type>String</type>
+<multiValued>true</multiValued>
+<mandatory>true</mandatory>
+</configurationParameter>
+
+<configurationParameter>
+<name>TypeName</name>
+<description>Name of CAS Type to create for the substrings found</description>
+<type>String</type>
+<multiValued>false</multiValued>
+<mandatory>true</mandatory>
+</configurationParameter>
+
+<configurationParameter>
+<name>ContainingAnnotationTypes</name>
+<description>Names of CAS Input Types within which annotations should be created</description>
+<type>String</type>
+<multiValued>true</multiValued>
+<mandatory>false</mandatory>
+</configurationParameter>
+
+</configurationParameters>
+
+
+<!-- Values for the configuration parameters -->
+<configurationParameterSettings>
+
+<nameValuePair>
+<name>Substrings</name>
+<value><array>
+<string>Mr.</string>
+<string>Mrs.</string>
+<string>Ms.</string>
+<string>Dr.</string>
+</array></value>
+</nameValuePair>
+
+<nameValuePair>
+<name>TypeName</name>
+<value>
+<string>PersonTitle</string>
+</value>
+</nameValuePair>
+
+
+<nameValuePair>
+<name>ContainingAnnotationTypes</name>
+<value><array>
+<string>PERSON_VOCAB_ANNOT_TYPE</string>
+</array></value>
+</nameValuePair>
+
+</configurationParameterSettings>
+
+<!-- TypeSystem Definition -->
+<typeSystemDescription>
+<types>
+
+<typeDescription>
+<name>PersonTitle</name>
+<supertypeName>uima.tcas.Annotation</supertypeName>
+</typeDescription>
+
+<typeDescription>
+<name>PERSON_VOCAB_ANNOT_TYPE</name>
+<supertypeName>uima.tcas.Annotation</supertypeName>
+</typeDescription>
+
+</types>
+</typeSystemDescription>
+
+<!-- Capabilities: Inputs and Outputs -->
+<capabilities>
+<capability>
+<inputs>
+<type>PERSON_VOCAB_ANNOT_TYPE</type>
+</inputs>
+<outputs>
+<type>PersonTitle</type>
+</outputs>
+<languagesSupported>
+<language>en</language>
+</languagesSupported>
+</capability>
+</capabilities>
+
+</analysisEngineMetaData>
+</taeDescription>
+</delegateAnalysisEngine>
+</delegateAnalysisEngineSpecifiers>
+
+<analysisEngineMetaData>
+<name>Aggregate TAE - JTalent plus StringMatch</name>
+<description>Invokes JTalent followed by the StringMatch Annotator</description>
+
+<flowConstraints>
+<fixedFlow>
+<node>JTalent</node>
+<node>StringMatch</node>
+</fixedFlow>
+</flowConstraints>
+
+<capabilities>
+<capability>
+<inputs/>
+<outputs>
+<type>PERSON_VOCAB_ANNOT_TYPE</type>
+<type>ORG_VOCAB_ANNOT_TYPE</type>
+<type>PLACE_VOCAB_ANNOT_TYPE</type>
+<type>UTERM_VOCAB_ANNOT_TYPE</type>
+<type>UNAME_VOCAB_ANNOT_TYPE</type>
+<type>PersonTitle</type>
+</outputs>
+<languagesSupported>
+<language>en</language>
+</languagesSupported>
+</capability>
+</capabilities>
+
+</analysisEngineMetaData>
+</taeDescription>

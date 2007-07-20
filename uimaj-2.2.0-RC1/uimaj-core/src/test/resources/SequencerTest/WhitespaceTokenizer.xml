@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taeDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+  <primitive>true</primitive>
+  <annotatorImplementationName>org.apache.uima.analysis_engine.impl.sequencer.SequencerTestAnnotator</annotatorImplementationName>
+  <analysisEngineMetaData>
+    <name>SequencerTestAnnotator</name>
+    <description>The simplest possible annotator.</description>
+    <version>1.0</version>
+    <vendor>The Apache Software Foundation Corporation</vendor>
+    <configurationParameters>
+      <configurationParameter>
+        <name>AnnotatorName</name>
+        <description>name of the annotator</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+    </configurationParameters>
+    <configurationParameterSettings>
+      <nameValuePair>
+        <name>AnnotatorName</name>
+        <value>
+          <string>Whitespace tokenizer</string>
+        </value>
+      </nameValuePair>
+    </configurationParameterSettings>
+    <typeSystemDescription>
+      <types>
+        <typeDescription>
+          <name>uima.tt.DummyAnnotation</name>
+          <description/>
+          <supertypeName>uima.tcas.Annotation</supertypeName>
+        </typeDescription>
+      </types>
+    </typeSystemDescription>
+    <fsIndexCollection/>
+    <capabilities>
+      <capability>
+        <inputs/>
+        <outputs>
+          <type>uima.tt.TokenAnnotation</type>
+          <type>uima.tt.SentenceAnnotation</type>
+          <type>uima.tt.ParagraphAnnotation</type>
+          <type>uima.tt.DummyAnnotation</type>
+        </outputs>
+        <languagesSupported>
+          <language>x-unspecified</language>
+        </languagesSupported>
+      </capability>
+    </capabilities>
+    <operationalProperties>
+      <modifiesCas>true</modifiesCas>
+      <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+      <outputsNewCASes>false</outputsNewCASes>
+    </operationalProperties>
+  </analysisEngineMetaData>
+</taeDescription>
