@@ -56,7 +56,8 @@ under the License.
         <exclude>lib/**</exclude>
         <exclude>Source_UIMA_SDK_Guide_Ref/**</exclude>
         <exclude>.*</exclude>   
-        <exclude>LICENSE.txt</exclude>     
+        <exclude>LICENSE.txt</exclude>
+        <exclude>src/styles/titlepage/*.xsl</exclude>     
       </excludes>
     </fileSet>   
     <fileSet>
