@@ -230,7 +230,18 @@ aView.removeFsFromIndexes(aFeatureStructure)</programlisting>
     <para>Sofa name mapping must not use the <quote>.</quote> (period) character. Runtime Sofa
       mapping maps names up to the <quote>.</quote> and appends the period and the following
       characters to the mapped name.</para>
+    
+    <para>To get a Java Iterator for all the views in a CAS:</para>
+    
+    <programlisting>Iterator allViews = cas.getViewIterator();</programlisting>
+    
+    <para>To get a Java Iterator for selected views in a CAS, for example, views whose name 
+      is either exactly equal to namePrefix or is of the form namePrefix.suffix, where suffix 
+      can be any String:</para>
+    
+    <programlisting>Iterator someViews = cas.getViewIterator(String namePrefix);</programlisting>
 
+      <note><para>Sofa name mapping is applied to namePrefix.</para></note>
     
     <para>Sofa name mappings are not currently supported for remote Analysis Engines.
       See <xref linkend="ugr.tug.mvs.name_mapping_remote_services"/>.</para>
@@ -628,7 +639,9 @@ CAS  newView = aCAS .createView(String localNameOfTheViewBeforeMapping);</progra
     
     
     <programlisting>JCas myView = aJCas.getView(String localNameOfTheViewBeforeMapping);
-CAS  myView = aCAS .getView(String localNameOfTheViewBeforeMapping);</programlisting>
+CAS  myView = aCAS .getView(String localNameOfTheViewBeforeMapping);
+Iterator allViews = aCasOrJCas.getViewIterator();
+Iterator someViews = aCasOrJCas.getViewIterator(String localViewNamePrefix);</programlisting>
     
     <para>The following methods are useful for all annotators and applications:</para>
     
