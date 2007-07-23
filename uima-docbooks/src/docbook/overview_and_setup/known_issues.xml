@@ -37,6 +37,16 @@ under the License.
         CR characters. </para>
         </listitem>
       </varlistentry>
+    <varlistentry id="ugr.issues.jcasgen_java_1.4">
+      <term><emphasis role="bold">JCasGen merge facility supports Java levels 1.4 or earlier</emphasis></term>
+      <listitem>
+        <para>JCasGen has a facility to merge in user (hand-coded) changes with the code generated
+          by JCasGen.  This merging supports Java 1.4 constructs only.  JCasGen generates Java 1.4 code, 
+      so as long as any code you change here also onlu uses Java 1.4 constructs, the 
+      merge will work.  If you use Java 5 or later specific syntax or constructs, the merge
+        operation will likely fail to merge properly.</para>
+      </listitem>
+    </varlistentry>
       <!--
       <varlistentry>
       <term><emphasis role="bold"></emphasis></term>
