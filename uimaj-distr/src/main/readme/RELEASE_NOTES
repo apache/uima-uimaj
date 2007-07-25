@@ -166,6 +166,7 @@ issues you find at http://issues.apache.org/jira/browse/uima.
     * [UIMA-270] - When CVD run with -desc option, status bar still says "(No AE Loaded)"
     * [UIMA-271] - PEAR Installer doesn't enable "Install" button if PEAR file name is input by keyboard
     * [UIMA-303] - Problems with BoundedQueue.dequeue(timeout)
+    * [UIMA-316] - CVD does not display auto-indexes correctly
     * [UIMA-329] - extractAndBuild scripts need to check for presence of JAI libraries
     * [UIMA-330] - Calling reconfigure() on aggregate AE doesn't call reconfigure() on FlowController.
     * [UIMA-336] - Schema validation fails for service client descriptors
@@ -217,6 +218,19 @@ issues you find at http://issues.apache.org/jira/browse/uima.
     * [UIMA-468] - race condition in JCasImpl  initializing static array
     * [UIMA-469] - not all jars in the lib directory of a PEAR project are added to the PEAR CLASSPATH automatically
     * [UIMA-474] - Log messages for duplicate resource declarations have their arguments switched
+    * [UIMA-476] - FSArray causes error in SOAP service
+    * [UIMA-479] - fix test class names that do not end with "Test"
+    * [UIMA-480] - DocumentAnalyzer interactive mode only eligible if an input data directory is specified
+    * [UIMA-484] - Clean build fails on Saxon download (tmp dir does not exist)
+    * [UIMA-486] - CVD error message box cannot be closed with OK button
+    * [UIMA-488] - CVD doesn't handle Errors that are thrown by an AE
+    * [UIMA-489] - Windows .bat files should use "endlocal" command
+    * [UIMA-490] - release number in wrong format
+    * [UIMA-491] - CPE GUI doesn't handle spaces in component descriptor file paths
+    * [UIMA-492] - uimaj-cpe test failures on some machines when run from maven
+    * [UIMA-494] - AnalysisEngineDescription_impl indirectly uses promletatic method URL.equals()
+    * [UIMA-496] - PEAR API does not delete the PEAR ID subdirectory before the new content is installed
+    * [UIMA-508] - Docbook build tool - not updating the olink databases unless running the full 4-book build
 
 ** Improvement
     * [UIMA-53] - Add Flow.aborted() method
@@ -254,6 +268,10 @@ issues you find at http://issues.apache.org/jira/browse/uima.
     * [UIMA-460] - Change CAS Editor Docs project to be a general sandbox docs project
     * [UIMA-461] - Have docbuild ant script check for JVM version 5 or better
     * [UIMA-465] - Need getViewIterator() method to work with a variable number of views
+    * [UIMA-499] - Add source jars to binary distribution
+    * [UIMA-500] - Reduce excessive synch lock contention caused by calls to ll_isValidTypeCode that are not needed
+    * [UIMA-501] - Cas Editor: Finish the about dialog
+    * [UIMA-507] - Remove ref to gutenberg.org to avoid licensing entanglement possibility
 
 ** New Feature
     * [UIMA-325] - Enhance XMI Serializer to support merging multiple XMI documents into a single CAS
@@ -265,6 +283,7 @@ issues you find at http://issues.apache.org/jira/browse/uima.
     * [UIMA-352] - Allow custom service adapters to be plugged in
     * [UIMA-371] - XMI serialization to UIMA C++
     * [UIMA-377] - add API to build PEAR packages
+    * [UIMA-413] - Allow RunAE to use XMI format XML CAS for input and output
     * [UIMA-416] - CVD should be able to read and write XMI documents
     * [UIMA-418] - add new UIMA analysis example descriptor
     * [UIMA-446] - Create FS variables project in sandbox
@@ -275,4 +294,3 @@ issues you find at http://issues.apache.org/jira/browse/uima.
     * [UIMA-309] - Change version number to 2.2-SNAPSHOT (post-2.1.0 release)
     * [UIMA-369] - Use same test data as Java project
     * [UIMA-473] - Update README and RELEASE_NOTES
-
