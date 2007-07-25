@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY imgroot "../images/overview_and_setup/eclipse_setup_files/" >
+<!ENTITY % uimaents SYSTEM "../entities.ent" >  
+%uimaents;
+]>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<chapter id="ugr.ovv.eclipse_setup">
+  <title>Setting up the Eclipse IDE to work with UIMA</title>
+  <titleabbrev>Eclipse IDE setup for UIMA</titleabbrev>
+  
+  <para>This chapter describes how to set up the UIMA SDK to work with Eclipse. Eclipse (<ulink
+      url="&url_eclipse;"/>) is a popular open-source Integrated Development
+    Environment for many things, including Java. The UIMA SDK does not require that you use
+    Eclipse. However, we recommend that you do use Eclipse because some useful UIMA SDK tools
+    run as plug-ins to the Eclipse platform and because the UIMA SDK examples are provided in a
+    form that's easy to import into your Eclipse environment.</para>
+  
+  <para>If you are not planning on using the UIMA SDK with Eclipse, you may skip this chapter and
+    read <olink targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.aae"/>
+    next.</para>
+  
+  <para>This chapter provides instructions for
+    
+    <itemizedlist spacing="compact"><listitem><para>installing Eclipse, </para>
+      </listitem>
+      
+      <listitem><para>installing the UIMA SDK's Eclipse plugins into your Eclipse
+        environment, and </para></listitem>
+      
+      <listitem><para>importing the example UIMA code into an Eclipse project. </para>
+        </listitem></itemizedlist></para>
+  
+  <para>The UIMA Eclipse plugins are designed to be used with Eclipse version 3.1 or
+    later.</para>
+  
+  <section id="ugr.ovv.eclipse_setup.installation">
+    <title>Installation</title>
+    <section id="ugr.ovv.eclipse_setup.install_eclipse">
+      <title>Install Eclipse</title>
+      
+      <itemizedlist spacing="compact"><listitem><para>Go to <ulink
+          url="&url_eclipse;"/> and follow the instructions there to download Eclipse.
+        </para></listitem>
+        
+        <listitem><para>We recommend using the latest release level (not an
+          <quote>Integration level</quote>). Navigate to the Eclipse Release version you
+          want and download the archive for your platform.</para></listitem>
+        
+        <listitem><para>Unzip the archive to install Eclipse somewhere, e.g., c:\</para>
+          </listitem>
+        
+        <listitem><para>Eclipse has a bit of a learning curve. If you plan to make
+          significant use of Eclipse, check out the tutorial under the help menu. It is well
+          worth the effort. There are also books you can get that describe Eclipse and its
+        use.</para></listitem></itemizedlist>
+      
+    </section>
+    
+    <section id="ugr.ovv.eclipse_setup.install_emf">
+      <title>Install additional Eclipse component: EMF</title>
+      <warning><para>EMF comes in many versions; <emphasis role="bold">you must install
+      the version that corresponds to the level of Eclipse that you are running.</emphasis>
+      This is automatically done for you if you install it using the Eclipse update mechanism,
+      described below. If you separately download an EMF package, you will need to verify it is
+      the version that corresponds to the level of Eclipse you are running, before installing
+      it.</para></warning>
+      
+      <para>EMF stands for Eclipse Modeling Framework. It is an add-on to Eclipse, and is used
+        by the UIMA Eclipse tooling. Before installing it, please go to <ulink
+          url="&url_emf;"/> and read the installation instructions, and then click on the
+        "Update Manager" link to see what url to use in the next step, where you use the built-in
+        facilities in Eclipse to find and install new features. </para>
+      
+      <para> The exact way to install EMF changes from time to time. In the next few paragraphs,
+        we try to give instructions that should work for most versions. Please see the end of
+        this section for shortcut instructions for the current version of Eclipse at the time
+        of this writing, Eclipse 3.3. </para>
+      
+      <para>Activate the software feature finding by using the menu: Help &rarr; Software
+        Updates &rarr; Find and Install. Select <quote>Search for new features to
+        install</quote>, push <quote>Next</quote>. Specify the update sites to use to
+        search for EMF, making sure the <quote>Ignore features not applicable to this
+        environment</quote> box is checked (at the bottom of the dialog), and push
+        <quote>Finish</quote>. A good site to use is the Callisto Discovery Site - which has a
+        collection of Eclipse components. </para>
+      
+      <para> If your computer is on an internet connection which uses a proxy server, you can
+        configure Eclipse to know about that. Put your proxy settings into Ecluse using the
+        Eclipse preferences by accessing the menus: Window &rarr; Preferences... &rarr;
+        Install/Update, and Enable HTTP proxy connection under the Proxy Settings with the
+        information about your proxy. </para>
+      
+      <para>This will launch a search for updates to Eclipse; it may show a list of update site
+        mirrors &ndash; click OK. When it finishes, it shows a list of possible updates in an
+        expandable tree. Expand the tree nodes to find EMF SDK. The specific level may vary
+        from the level shown below as newer versions are released.</para>
+      
+      <informalfigure>
+        <mediaobject>
+          <imageobject>
+            <imagedata width="4in" format="JPG" fileref="&imgroot;image002.jpg"/>
+          </imageobject>
+          <textobject><phrase>Screenshot showing search results for EMF</phrase>
+          </textobject>
+        </mediaobject>
+      </informalfigure>
+      
+      <para>Click <quote>Next</quote>. Then pick Eclipse Modeling Framework (EMF), and
+        push <quote>Next</quote>, accept any licensing agreements, etc., until it
+        finishes the installation. It may say it's an <quote>unsigned feature</quote>;
+        proceed by clicking <quote>Install</quote>. If it recommends restarting, you may
+        do that.</para>
+      
+      <para>This will install EMF, without any extras. (If you want the whole EMF system,
+        including source and documentation, you can pick the <quote>EMF SDK</quote> and the
+        <quote>Examples for Eclipse Modeling Framework</quote>.)</para>
+      
+      <section id="ugr.ovv.eclipse_setup.install_emf_shortcut">
+        <title>EMF Installation Shortcut for Eclipse 3.2</title>
+        <para>Since Eclipse 3.2, all major Eclipse sub-projects coordinate their
+          release timeframes and publish the consolidated releases. The code name
+          for 3.2 was Callisto, the one for 3.3 is Europa.  You can
+          easily install EMF via the release discovery site as follows.
+          <orderedlist>
+            <listitem><para> From the Eclipse menu, select Help/Software Updates/Find
+              and Install.../Search for new features to install. </para></listitem>
+            <listitem><para> Check the "[release name] discovery site", push "Next". </para>
+              </listitem>
+            <listitem><para> Select a convenient mirror site. </para></listitem>
+            <listitem><para> Check the EMF box under "Models and model development"
+              </para></listitem>
+            <listitem><para> Follow the instructions for the rest of the install. </para>
+              </listitem>
+          </orderedlist> </para>
+      </section>
+      
+    </section>
+    
+    <section id="ugr.ovv.eclipse_setup.install_uima_sdk">
+      <title>Install the UIMA SDK</title>
+      <para>If you haven't already done so, please download and install the UIMA SDK from
+          <ulink url="&url_apache_uima_download;"/>.  Be sure to set the environmental variable
+          UIMA_HOME pointing to the root of the installed UIMA SDK and run the
+          <literal>adjustExamplePaths.bat</literal> or <literal>adjustExamplePaths.sh</literal>
+          script, as explained in the README.</para>
+
+      <para>The environmental parameter UIMA_HOME is used by the command-line scripts in the
+          %UIMA_HOME%/bin directory as well as by eclipse run configurations in the uimaj-examples
+          sample project.</para>
+
+    </section>
+    
+    <section id="ugr.ovv.eclipse_setup.install_uima_eclipse_plugins">
+      <title>Install the UIMA Eclipse Plugins</title>
+      
+      <para>In the directory %UIMA_HOME%/eclipsePlugins (The environment variable
+        %UIMA_HOME% is where you installed the UIMA SDK), you will see a set of folders. Copy these
+        to your %ECLIPSE_HOME%/eclipse/plugins directory (%ECLIPSE_HOME% is where you
+        installed Eclipse).</para>
+      
+    </section>
+    
+    <section id="ugr.ovv.eclipse_setup.start_eclipse">
+      <title>Start Eclipse</title>
+      <para>If you have Eclipse running, restart it (shut it down, and start it again) using
+        the
+        <code>-clean</code> option; you can do this by running the command
+        <command>eclipse -clean</command> (see explanation in the next section) in the
+        directory where you installed Eclipse. You may want to set up a desktop shortcut at
+        this point for Eclipse.</para>
+      
+      <para>The first time Eclipse starts up it will take a bit longer as it completes its
+        installation. A <quote>welcome</quote> page will come up. After you are through
+        reading the welcome information, click on the arrow to exit the welcome page and get to
+        the main Eclipse screens.</para>
+      
+      <section id="ugr.ovv.eclipse_setup.special_startup_parameter_clean">
+        <title>Special startup parameter for Eclipse: -clean</title>
+        <para>If you have modified the plugin structure (by copying or files directly in the
+          file system) in Eclipse 3.x after you started it for the first time, please include
+          the <quote>-clean</quote> parameter in the startup arguments to Eclipse,
+          <emphasis>one time</emphasis> (after any plugin modifications were done). This
+          is needed because Eclipse may not notice the changes you made, otherwise. This
+          parameter forces Eclipse to reexamine all of its plugins at startup and recompute
+          any cached information about them.</para>
+      </section>
+      
+    </section>
+  </section>
+  <section id="ugr.ovv.eclipse_setup.example_code">
+    <title>Setting up Eclipse to view Example Code</title>
+    <para>Later chapters refer to example code. You can create a special project in Eclipse to
+      hold the examples. Here's how:</para>
+    
+    <itemizedlist spacing="compact"><listitem><para>In Eclipse, if the Java
+      perspective is not already open, switch to it by going to Window &rarr; Open Perspective
+      &rarr; Java.</para></listitem>
+      
+      <listitem><para>Set up a class path variable named UIMA_HOME, whose value is the
+        directory where you installed the UIMA SDK. This is done as follows:
+        
+        <itemizedlist><listitem><para>Go to Window &rarr; Preferences &rarr; Java
+          &rarr; Build Path &rarr; Classpath Variables.</para></listitem>
+          
+          <listitem><para>Click <quote>New</quote></para></listitem>
+          
+          <listitem><para>Enter UIMA_HOME (all capitals, exactly as written) in the
+            <quote>Name</quote> field.</para></listitem>
+          
+          <listitem><para>Enter your installation directory (e.g. <literal>C:/Program
+            Files/apache-uima</literal>) in the <quote>Path</quote> field</para>
+            </listitem>
+          
+          <listitem><para>Click <quote>OK</quote> in the <quote>New Variable
+            Entry</quote> dialog</para></listitem>
+          
+          <listitem><para>Click <quote>OK</quote> in the <quote>Preferences</quote>
+            dialog</para></listitem>
+          
+          <listitem><para>If it asks you if you want to do a full build, click
+            <quote>Yes</quote> </para></listitem></itemizedlist></para>
+        </listitem>
+      
+      <listitem><para>Select the File &rarr; Import menu option</para></listitem>
+      
+      <listitem><para>Select <quote>General/Existing Project into Workspace</quote> and click
+        the <quote>Next</quote> button.</para></listitem>
+      
+      <listitem><para>Click <quote>Browse</quote> and browse to the
+        %UIMA_HOME%/ directory</para></listitem>
+      
+      <listitem><para>Click <quote>Finish.</quote> This will create a new project called
+        <quote>uimaj-examples</quote> in your Eclipse workspace. There should be no
+        compilation errors. </para></listitem></itemizedlist>
+    
+    <para>To verify that you have set up the project correctly, check that there are no error
+      messages in the <quote>Problems</quote> view.</para>
+    
+  </section>
+  
+  <section id="ugr.ovv.eclipse_setup.linking_uima_source_code">
+    <title>Attaching UIMA source code</title>
+    
+    <para>The binary distribution also includes the UIMA Java source code.  This makes it easy to
+      inspect the source code and step through it with the debugger.  All you need to do is to
+      attach the source jars to the binary jars in Eclipse.  You only need to do this once for each
+      jar file.
+    </para>
+    
+    <para>Attaching the source code is not only interesting for looking at the code itself, or for
+    debugging.  It also enables javadoc help for UIMA APIs.  All you need to do is hover your mouse
+    over a certain element, and the corresponding javadoc will appear.  Click on an element and
+    press <quote>F3</quote> to jump to the definition of that element.
+    </para>
+  
+      <informalfigure>
+        <mediaobject>
+          <imageobject>
+            <imagedata scale="100" format="JPG" fileref="&imgroot;image003.jpg"/>
+          </imageobject>
+          <textobject><phrase>Screenshot of uimaj-examples project</phrase>
+          </textobject>
+        </mediaobject>
+      </informalfigure>
+      
+    <para>This is a screenshot of the uimaj-examples project in Eclipse 3.3 with the "Referenced
+      Libraries" section expanded.  If you look closely, you can see that in this instance, the
+      uimaj-core.jar file already has source code or javadoc attached.  The icon is slightly 
+      different from the others.
+    </para>
+    
+    <para>To attach source code to one of the other jars, for example, uima-tools.jar, proceed as
+      follows.
+    </para>
+    
+    <itemizedlist spacing="compact">
+      <listitem><para>Right-click uima-tools.jar and select <quote>Properties</quote>.
+      </para></listitem>
+      <listitem><para>Select <quote>Java Source Attachment</quote> and click the <quote>Variable...</quote>
+      button.
+      </para></listitem>
+      <listitem><para>Select <quote>UIMA_HOME</quote> and click <quote>OK</quote>.
+      </para></listitem>
+      <listitem><para>Now click the <quote>Extension...</quote> button, select <quote>src/uima-tools-sources.jar</quote>
+      and click <quote>OK</quote>, and <quote>OK</quote> again.
+      </para></listitem>
+    </itemizedlist>
+    
+    <para>Do this with every jar you think you might be interested in.  It makes most sense
+      for the uima-core.jar, you'll probably use the core APIs most of all.
+    </para>
+    
+    <para>Here's a screenshot of what you should see when you hover your mouse pointer over the
+    class name <quote>CAS</quote> in the source code.
+    </para>
+
+      <informalfigure>
+        <mediaobject>
+          <imageobject>
+            <imagedata scale="100" format="JPG" fileref="&imgroot;image004.jpg"/>
+          </imageobject>
+          <textobject><phrase>Screenshot of mouse-over for UIMA APIs</phrase>
+          </textobject>
+        </mediaobject>
+      </informalfigure>
+      
+  </section>
+  
+  <section id="ugr.ovv.eclipse_setup.running_external_tools_from_eclipse">
+    <title>Running external tools from Eclipse</title>
+    
+    <para>You can run many tools without using Eclipse at all, by using the shell scripts in the
+      UIMA SDK's bin directory. In addition, many tools can be run from inside Eclipse;
+      examples are the Document Analyzer, CPE Configurator, CAS Visual Debugger, 
+      and JCasGen. The uimaj-examples project provides Eclipse launch
+      configurations that make this easy to do.</para>
+    
+    <para>To run these tools from Eclipse:</para>
+    
+    <itemizedlist spacing="compact"><listitem><para>If the Java perspective is not
+      already open, switch to it by going to Window &rarr; Open Perspective &rarr;
+      Java.</para></listitem>
+      
+      <listitem><para>Go to Run &rarr; Run... </para></listitem>
+      
+      <listitem><para>In the window that appears, select <quote>UIMA CPE GUI</quote>,
+        <quote>UIMA CAS Visual Debugger</quote>, <quote>UIMA JCasGen</quote>, or 
+        <quote>UIMA Document Analyzer</quote>
+        from the list of run configurations on the left. (If you don't see, these, please
+        select the uimaj-examples project and do a Menu &rarr; File
+        &rarr; Refresh).</para></listitem>
+      
+      <listitem><para>Press the <quote>Run</quote> button. The tools should start. Close
+        the tools by clicking the <quote>X</quote> in the upper right corner on the GUI.
+        </para></listitem></itemizedlist>
+    
+    <para>For instructions on using the Document Analyzer and CPE Configurator, see <olink
+        targetdoc="&uima_docs_tools;" targetptr="ugr.tools.doc_analyzer"/>, and
+        <olink targetdoc="&uima_docs_tools;" targetptr="ugr.tools.cpe"/> For
+      instructions on using the CAS Visual Debugger and JCasGen, see <olink
+        targetdoc="&uima_docs_tools;" targetptr="ugr.tools.cvd"/> and
+        <olink targetdoc="&uima_docs_tools;" targetptr="ugr.tools.jcasgen"/></para>
+    
+  </section>
+  
+</chapter>
