@@ -54,7 +54,7 @@ under the License.
     views, which are regular CASes.</para>
   
   <section id="ugr.ref.cas.javadocs">
-    <title>JavaDocs</title>
+    <title>Javadocs</title>
     
     <para>The subdirectory <literal>docs/api</literal> contains the documentation
       details of all the classes, methods, and constants for the APIs discussed here. Please
@@ -481,7 +481,7 @@ private void indent(int level) {
         with TypeSystem.getTopType and by retrieving subtypes with
         <literal>TypeSystem.getDirectlySubsumedTypes()</literal>.</para>
       
-      <para>The JavaDocs also have APIs that allow you to access the features, as well as what
+      <para>The Javadocs also have APIs that allow you to access the features, as well as what
         the allowed value type is for that feature. Here is sample code which prints out all the
         features of all the types, together with the allowed value types (the feature
         <quote>range</quote>). Each feature has a <quote>domain</quote> which is the type
@@ -698,7 +698,7 @@ String lastName = aPerson.getStringValue(lastNameFeature);
 // set the lastNameFeature value
 aPerson.setStringValue(lastNameFeature, newStringValueForLastName);</programlisting>
     
-    <para>The getters and setters for each of the primitive types are defined in the JavaDocs
+    <para>The getters and setters for each of the primitive types are defined in the Javadocs
       as methods of the FeatureStructure interface.</para>
     
   </section>
@@ -801,7 +801,7 @@ AnnotationIndex idx = aCAS.getAnnotationIndex(aType); </programlisting></para>
       <para>There is also a method which produces an <literal>AnnotationTree</literal>
         object, which contains nodes representing the results of doing a strict,
         unambiguous subiterator over the span of some controlling annotation. For more
-        details, please refer to the JavaDocs for the
+        details, please refer to the Javadocs for the
         <literal>org.apache.uima.cas.text</literal> package.</para>
       
     </section>
@@ -846,7 +846,7 @@ AnnotationIndex idx = aCAS.getAnnotationIndex(aType); </programlisting></para>
       
       <para>Each test may be combined with a path &ndash; to get to the value to test. Tests that
         start from a feature structure instance can be combined with and and or connectors.
-        The JavaDocs for these are in the package org.apache.uima.cas in the classes that end
+        The Javadocs for these are in the package org.apache.uima.cas in the classes that end
         in Constraint, plus the classes ConstraintFactory, FeaturePath and CAS.
         Here&apos;s an example; assume the variable cas holds a reference to a CAS instance.
         
@@ -900,8 +900,8 @@ FSIterator it = cas.createFilteredIterator(annotIt, nounTokenCons);</programlist
         </para></section></section>
   
   <section id="ugr.ref.cas.guide_to_javadocs">
-    <title>The CAS API&apos;s &ndash; a guide to the JavaDocs</title>
-    <titleabbrev>CAS API&apos;s JavaDocs</titleabbrev>
+    <title>The CAS API&apos;s &ndash; a guide to the Javadocs</title>
+    <titleabbrev>CAS API&apos;s Javadocs</titleabbrev>
     
     <para>The CAS APIs are organized into 3 Java packages: cas, cas.impl, and cas.text. Most
       of the APIs described here are in the cas package. The cas.impl package contains classes

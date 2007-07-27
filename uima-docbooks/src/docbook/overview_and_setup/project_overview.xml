@@ -334,9 +334,9 @@ under the License.
           <colspec colnum="2" colname="col2" colwidth="2.5*"/>
           <tbody>
             <row id="ugr.project_overview_javadocs">
-              <entry><emphasis>Introduction to the UIMA API JavaDocs</emphasis>
+              <entry><emphasis>Introduction to the UIMA API Javadocs</emphasis>
               </entry>
-              <entry>JavaDocs detailing the UIMA programming interfaces  See 
+              <entry>Javadocs detailing the UIMA programming interfaces  See 
                 <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.javadocs"/></entry>
             </row>
             <row id="ugr.project_overview_xml_ref_component_descriptor">
@@ -829,7 +829,7 @@ under the License.
         <title>Use of Undocumented Methods from the com.ibm.uima.util package</title>
         <titleabbrev>Undocumented Methods</titleabbrev>
         <para>Previous UIMA versions has some methods in the <literal>com.ibm.uima.util</literal> package that
-          were for internal use and were not documented in the JavaDoc. (There are also many methods in that package
+          were for internal use and were not documented in the Javadoc. (There are also many methods in that package
           which are documented, and there is no issue with using these.) It is not recommended that you use any of the
           undocumented methods. If you do, the migration script will not handle them correctly. These have now been
           moved to <literal>org.apache.uima.internal.util</literal>, and you will have to manually update your

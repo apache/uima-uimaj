@@ -384,7 +384,7 @@ mCPE.process();</programlisting></para>
         code.</para>
       
       <para>If you need more control over the information in the CPE descriptor, you can
-        manually configure it via its API. See the JavaDocs for package
+        manually configure it via its API. See the Javadocs for package
         <literal>org.apache.uima.collection</literal> for more details.</para>
       
     </section>
@@ -459,7 +459,7 @@ mCPE.process();</programlisting></para>
           <literal>org.apache.uima.examples.cpe.FileSystemCollectionReader</literal>
           . If you must inherit from a different superclass, you must ensure that your
           Collection Reader implements the <literal>CollectionReader</literal>
-          interface &ndash; see the JavaDocs for <literal>CollectionReader</literal>
+          interface &ndash; see the Javadocs for <literal>CollectionReader</literal>
           for more details.</para>
       </section>
       

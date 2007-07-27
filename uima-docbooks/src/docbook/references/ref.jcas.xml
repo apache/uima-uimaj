@@ -114,15 +114,15 @@ under the License.
     
     <para>Each XML type specification can have &lt;description ...
       &gt; tags. The description for a type will be copied into the generated Java code, as a
-      JavaDoc style comment for the class. When writing these descriptions in the XML type
-      specification file, you might want to use html tags, as allowed in JavaDocs.</para>
+      Javadoc style comment for the class. When writing these descriptions in the XML type
+      specification file, you might want to use html tags, as allowed in Javadocs.</para>
     
     <para>If you use the Component Description Editor, you can write the html tags normally,
       for instance, <quote>&lt;h1&gt;My Title&lt;/h1&gt;</quote>. The Component
       Descriptor Editor will take care of coverting the actual descriptor source so that it
       has the leading <quote>&lt;</quote> character written as <quote>&amp;lt;</quote>,
       to avoid confusing the XML type specification. For example, &lt;p&gt; would be written
-      in the source of the descriptor as &amp;lt;p&gt;. Any characters used in the JavaDoc
+      in the source of the descriptor as &amp;lt;p&gt;. Any characters used in the Javadoc
       comment must of course be from the character set allowed by the XML type specification.
       These specifications often start with the line &lt;?xml version=<quote>1.0</quote>
       encoding=<quote>UTF-8</quote> ?&gt;, which means you can use any of the UTF-8

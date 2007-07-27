@@ -38,7 +38,7 @@ under the License.
     <para>An application developer's starting point for accessing UIMA framework functionality is the
       <literal>org.apache.uima.UIMAFramework</literal> class. The following is a short introduction to some
       important methods on this class. Several of these methods are used in examples in the rest of this chapter. For
-      more details, see the JavaDocs (in the docs/api directory of the UIMA SDK).
+      more details, see the Javadocs (in the docs/api directory of the UIMA SDK).
       
       <itemizedlist>
         <listitem>
@@ -71,7 +71,7 @@ under the License.
               </listitem>
             </itemizedlist>
             There are other variations of each of these methods that take additional, optional arguments. See the
-            JavaDocs for details. </para>
+            Javadocs for details. </para>
         </listitem>
         
         <listitem>
@@ -256,7 +256,7 @@ ae.destroy();</programlisting></para>
           </listitem>
           
           <listitem>
-            <para>The JavaDocs for <literal>org.apache.uima.jcas.JCas</literal>. </para>
+            <para>The Javadocs for <literal>org.apache.uima.jcas.JCas</literal>. </para>
           </listitem>
         </itemizedlist>
         
@@ -278,7 +278,7 @@ ae.destroy();</programlisting></para>
           </listitem>
           
           <listitem>
-            <para>The JavaDocs for the <literal>org.apache.uima.cas</literal> and
+            <para>The Javadocs for the <literal>org.apache.uima.cas</literal> and
               <literal>org.apache.uima.cas.text</literal> packages. </para>
           </listitem>
         </itemizedlist>
@@ -463,13 +463,13 @@ ae.destroy();</programlisting></para>
       
       <para>To save an XMI representation of a CAS, use the <literal>serialize</literal> method of the class
         <literal>org.apache.uima.util.XmlCasSerializer</literal>. To save an XCAS representation of a CAS,
-        use the class <literal>org.apache.uima.cas.impl.XCASSerializer</literal> instead; see the JavaDocs
+        use the class <literal>org.apache.uima.cas.impl.XCASSerializer</literal> instead; see the Javadocs
         for details.</para>
       
       <para>Both of these external forms can be read back in, using the <literal>deserialize</literal> method of
         the class <literal>org.apache.uima.util.XmlCasDeserializer</literal>. This method deserializes
         into a pre-existing CAS, which you must create ahead of time, pre-set-up with the proper type system. See the
-        JavaDocs for details.</para>
+        Javadocs for details.</para>
     </section>
   </section>
   
@@ -505,7 +505,7 @@ ae.destroy();</programlisting></para>
         redefine default behavior related to error handling for each component, turn-on check-pointing, change
         performance characteristics of the CPE, and plug-in a custom timer.</para>
       
-      <para>Below is some example code that illustrates how this works. See the JavaDocs for package
+      <para>Below is some example code that illustrates how this works. See the Javadocs for package
         org.apache.uima.collection.metadata for more details.</para>
       
       
@@ -834,8 +834,8 @@ consumerParamSettings.setParameterValue(
         <para>More information on the syntax of these kinds of queries, called XML Fragments, can be found in
           documentation for the semantic search engine component on <ulink
             url="http://www.alphaworks.ibm.com/tech/uima"/>. For more information on the Index Build
-          Specification format, see the UIMA JavaDocs for class
-          <literal>org.apache.uima.search.IndexBuildSpecification</literal>. Accessing the JavaDocs is
+          Specification format, see the UIMA Javadocs for class
+          <literal>org.apache.uima.search.IndexBuildSpecification</literal>. Accessing the Javadocs is
           described <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.javadocs"/>.</para>
         
       </section>

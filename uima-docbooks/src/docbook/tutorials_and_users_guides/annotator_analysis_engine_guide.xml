@@ -145,12 +145,20 @@ under the License.
       be imported into your Eclipse workspace; see <olink
         targetdoc="&uima_docs_overview;"
         targetptr="ugr.ovv.eclipse_setup.example_code"/> for instructions on how to do
-      this. Also you may wish to refer to the UIMA SDK JavaDocs located in the <ulink
+      this. 
+      See <olink  targetdoc="&uima_docs_overview;"
+        targetptr="ugr.ovv.eclipse_setup.linking_uima_javadocs"/> for how to attach the UIMA 
+        Javadocs to the jar files.
+      Also you may wish to refer to the UIMA SDK Javadocs located in the <ulink
         url="file:../../api/index.html">docs/api</ulink> directory.</para>
-    <note><para>In Eclipse 3.1, if you highlight a UIMA class or method defined in the UIMA SDK
-    JavaDocs, you can conveniently have Eclipse open the corresponding JavaDoc for that
-    class or method in a browser, by pressing Shift + F2.</para></note>
     
+        <note><para>In Eclipse 3.1, if you highlight a UIMA class or method defined in the UIMA SDK
+    Javadocs, you can conveniently have Eclipse open the corresponding Javadoc for that
+    class or method in a browser, by pressing Shift + F2.</para></note>
+    <note><para>If you downloaded the source distribution for UIMA, you can attach that as
+    well to the library Jar files; for information on how to do this, see
+    <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.javadocs"/>.</para></note>
+
     <para>The example annotator that we are going to walk through will detect room numbers for
       rooms where the room numbering scheme follows some simple conventions. In our example,
       there are two kinds of patterns we want to find; here are some examples, together with
@@ -377,7 +385,7 @@ under the License.
           which the user would have to implement to return <literal>JCas.class</literal>. Then in the
           <literal>process(AbstractCas cas)</literal> method, they would need to typecast
           <literal>cas</literal> to type <literal>JCas</literal>.</para></footnote> This allows you to have
-        your annotator inherit from some other superclass if necessary. If you would like to do this, see the JavaDocs
+        your annotator inherit from some other superclass if necessary. If you would like to do this, see the Javadocs
         for JCasAnnotator for descriptions of the methods you must implement.</para>
       
       <para>Annotator classes need to be public, cannot be declared abstract, and must have public, 0-argument 
@@ -853,7 +861,7 @@ public void initialize(UimaContext aContext)
       <section id="ugr.tug.aae.supporting_reconfiguration">
         <title>Supporting Reconfiguration</title>
         
-        <para>If you take a look at the JavaDocs (located in the <ulink
+        <para>If you take a look at the Javadocs (located in the <ulink
             url="api/index.html">docs/api</ulink> directory) for
           <literal>org.apache.uima.analysis_component.AnaysisComponent</literal>
           (which our annotator implements indirectly through JCasAnnotator_ImplBase),
@@ -1030,7 +1038,7 @@ public void initialize(UimaContext aContext)
         
         <para>These levels are defined by the Java logging framework, which was
           incorporated into Java as of the 1.4 release level. The levels are defined in the
-          JavaDocs for java.util.logging.Level, and include both logging and tracing
+          Javadocs for java.util.logging.Level, and include both logging and tracing
           levels:
           <itemizedlist spacing="compact">
             <listitem><para>OFF is a special level that can be used to turn off
@@ -1415,7 +1423,7 @@ while (timeIter.hasNext()) {
                 method on the analysis engine, which is then delegated by the framework to
                 all the annotators in the engine. For Collection Processing application,
                 the CPM calls the process method. If the application creates and manages
-                your own Collection Processing Engine via API calls (see JavaDocs), the
+                your own Collection Processing Engine via API calls (see Javadocs), the
                 application calls this on the Collection Processing Engine, and it is
                 delegated by the framework to the components.</entry>
               <entry>Process the CAS, adding and/or modifying elements in it</entry>
@@ -1489,7 +1497,7 @@ while (timeIter.hasNext()) {
         message string. This allows the message string to be easily translated later by
         modifying the message digest file, not the Java code. Also, message strings in the
         digest can contain parameters that are filled in when the exception is thrown. The
-        format of the message digest file is described in the JavaDocs for the Java class
+        format of the message digest file is described in the Javadocs for the Java class
         <literal>java.util.PropertyResourceBundle</literal> and in the load method of
         <literal>java.util.Properties</literal>.</para>
       
@@ -1584,7 +1592,7 @@ catch (PatternSyntaxException e) {
       <para>Create a file with the .properties extension, where you declare message keys and
         their associated messages, using the same syntax as shown above for the
         regex_syntax_error exception. The properties file syntax is more completely
-        described in the JavaDocs for the <ulink 
+        described in the Javadocs for the <ulink 
           url="http://java.sun.com/j2se/1.4.1/docs/api/java/util/Properties.html#load(java.io.InputStream)">
         load</ulink> method of the java.util.Properties class.</para>
       
@@ -1598,7 +1606,7 @@ catch (PatternSyntaxException e) {
         String constant should have the value
         <literal>org.myorg.myannotator.Messages</literal>. Do not include the
         .properties extension. In Java Internationalization terminology, this is called
-        the Resource Bundle name. For more information see the JavaDocs for the <ulink
+        the Resource Bundle name. For more information see the Javadocs for the <ulink
           url="http://java.sun.com/j2se/1.4.1/docs/api/java/util/PropertyResourceBundle.html">
         PropertyResourceBundle</ulink> class.</para>
       
@@ -1608,7 +1616,7 @@ catch (PatternSyntaxException e) {
     MESSAGE_DIGEST, "your_message_name",
     new Object[]{param1,param2,...});</programlisting></para>
       
-      <para>You may also wish to look at the JavaDocs for the UIMAException class.</para>
+      <para>You may also wish to look at the Javadocs for the UIMAException class.</para>
       
       <para>For more information on Java&apos;s internationalization features, see the 
        <ulink url="http://java.sun.com/j2se/1.4/docs/guide/intl/index.html">
@@ -1948,7 +1956,7 @@ catch (PatternSyntaxException e) {
         names, which are expected to be output from (produced by) the
         annotator. Annotators may use this to optimize their operations, when possible, for
         those cases where only particular outputs are wanted. The interface to the Result
-        Specification object (see the JavaDocs) allows querying both types and particular
+        Specification object (see the Javadocs) allows querying both types and particular
         features of types.</para>
       
       <para>Sometimes you can specify the Result Specification; othertimes, you cannot

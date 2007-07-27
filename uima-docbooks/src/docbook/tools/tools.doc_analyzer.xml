@@ -114,7 +114,7 @@ here must be an ISO language identifier, the list of which can be found here:
   The character encoding of the input files.  The default, UTF-8, also works fine for ASCII
 text files.  If you have a different
 encoding, enter it here.  For more
-information on character sets and their names, see the JavaDocs for 
+information on character sets and their names, see the Javadocs for 
   <literal>java.nio.charset.Charset</literal>.</para>
 
 <para>Once you&apos;ve filled in the appropriate values, press the

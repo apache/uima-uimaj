@@ -257,6 +257,56 @@ under the License.
     
   </section>
    
+  <section id="ugr.ovv.eclipse_setup.linking_uima_javadocs">
+     <title>Attaching UIMA Javadocs</title>
+     
+     <para>The binary distribution also includes the UIMA Javadocs.  They are
+       attached to the UIMA library Jar files in the uima-examples project described
+       above.  You can attach the Javadocs to your own project as well.  
+     </para>
+     
+     <para>Attaching the Javadocs enables javadoc help for UIMA APIs.  After they are 
+       attached, if you hover your mouse
+     over a certain UIMA api element, the corresponding javadoc will appear.  
+       You can then press <quote>F2</quote> to make the hover "stick", or 
+       <quote>Shift-F2</quote> to open the default 
+       web-browser on your system to let you browse the entire Javadoc information 
+       for that element.
+     </para>
+     <para>If this pop-up behavior is something you don't want, you can turn it off
+     in the Eclipse preferences, in the menu Window &rarr; Preferences &rarr;
+       Java &rarr; Editors &rarr; hovers.
+     </para>
+    
+     <para>Eclipse also has a Javadoc "view" which you can show, using the Window &rarr;
+     Show View &rarr; Javadoc.</para>
+   
+     <para>See <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.javadocs.libraries"/>
+     for information on how to set up a UIMA "library" with the Javadocs attached, which
+     can be reused for other projects in your Eclipse workspace.</para>
+                
+     <para>You can attach the Javadocs to each UIMA library jar you think you might be 
+       interested in.  It makes most sense
+       for the uima-core.jar, you'll probably use the core APIs most of all.
+     </para>
+     
+     <para>Here's a screenshot of what you should see when you hover your mouse pointer over the
+     class name <quote>CAS</quote> in the source code.
+     </para>
+
+       <informalfigure>
+         <mediaobject>
+           <imageobject>
+             <imagedata scale="100" format="JPG" fileref="&imgroot;image004.jpg"/>
+           </imageobject>
+           <textobject><phrase>Screenshot of mouse-over for UIMA APIs</phrase>
+           </textobject>
+         </mediaobject>
+       </informalfigure>
+       
+   </section>
+  
+  
   <section id="ugr.ovv.eclipse_setup.running_external_tools_from_eclipse">
     <title>Running external tools from Eclipse</title>
     

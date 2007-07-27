@@ -639,7 +639,7 @@ local_root_directory_for_1st_delegate_component/resources/dict/
     
       <para>The example below shows how to use the PEAR APIs to install a 
       PEAR package and access the installed PEAR package data. For more details about the PackageBrowser API, 
-      please refer to the JavaDocs for the org.apache.uima.pear.tools package.
+      please refer to the Javadocs for the org.apache.uima.pear.tools package.
       
       <programlisting>File installDir = new File("/home/user/uimaApp/installedPears");
 File pearFile = new File("/home/user/uimaApp/testpear.pear");
@@ -685,7 +685,7 @@ try {
 	  <para>
 	    To run a PEAR package after it was installed using the PEAR API see the example below. It use the 
 	    generated PEAR specifier that was automatically created during the PEAR installation. 
-	    For more details about the APIs please refer to the JavaDocs.
+	    For more details about the APIs please refer to the Javadocs.
 	  
 
       <programlisting>File installDir = new File("/home/user/uimaApp/installedPears");
