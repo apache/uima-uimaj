@@ -151,15 +151,6 @@ under the License.
       </excludes>
     </fileSet>
     <fileSet>
-      <directory>target/src</directory>
-      <outputDirectory>/apache-uima/src</outputDirectory>
-      <excludes>
-        <exclude>uimaj-component-test-util*</exclude>
-        <exclude>uimaj-test-util*</exclude>
-        <exclude>uimaj-distr*</exclude>
-      </excludes>
-    </fileSet>
-    <fileSet>
       <directory>../uima-docbooks/target</directory>
       <outputDirectory>/apache-uima/docs/html</outputDirectory>
       <includes>
