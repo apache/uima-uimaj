@@ -145,11 +145,7 @@ under the License.
       be imported into your Eclipse workspace; see <olink
         targetdoc="&uima_docs_overview;"
         targetptr="ugr.ovv.eclipse_setup.example_code"/> for instructions on how to do
-      this.  See <olink
-        targetdoc="&uima_docs_overview;"
-        targetptr="ugr.ovv.eclipse_setup.linking_uima_source_code"/> for how to attach the UIMA 
-        source code to the jar files.
-      Also you may wish to refer to the UIMA SDK JavaDocs located in the <ulink
+      this. Also you may wish to refer to the UIMA SDK JavaDocs located in the <ulink
         url="file:../../api/index.html">docs/api</ulink> directory.</para>
     <note><para>In Eclipse 3.1, if you highlight a UIMA class or method defined in the UIMA SDK
     JavaDocs, you can conveniently have Eclipse open the corresponding JavaDoc for that

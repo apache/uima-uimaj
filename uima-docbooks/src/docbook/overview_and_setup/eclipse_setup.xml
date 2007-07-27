@@ -256,75 +256,7 @@ under the License.
       messages in the <quote>Problems</quote> view.</para>
     
   </section>
-  
-  <section id="ugr.ovv.eclipse_setup.linking_uima_source_code">
-    <title>Attaching UIMA source code</title>
-    
-    <para>The binary distribution also includes the UIMA Java source code.  This makes it easy to
-      inspect the source code and step through it with the debugger.  All you need to do is to
-      attach the source jars to the binary jars in Eclipse.  You only need to do this once for each
-      jar file.
-    </para>
-    
-    <para>Attaching the source code is not only interesting for looking at the code itself, or for
-    debugging.  It also enables javadoc help for UIMA APIs.  All you need to do is hover your mouse
-    over a certain element, and the corresponding javadoc will appear.  Click on an element and
-    press <quote>F3</quote> to jump to the definition of that element.
-    </para>
-  
-      <informalfigure>
-        <mediaobject>
-          <imageobject>
-            <imagedata scale="100" format="JPG" fileref="&imgroot;image003.jpg"/>
-          </imageobject>
-          <textobject><phrase>Screenshot of uimaj-examples project</phrase>
-          </textobject>
-        </mediaobject>
-      </informalfigure>
-      
-    <para>This is a screenshot of the uimaj-examples project in Eclipse 3.3 with the "Referenced
-      Libraries" section expanded.  If you look closely, you can see that in this instance, the
-      uimaj-core.jar file already has source code or javadoc attached.  The icon is slightly 
-      different from the others.
-    </para>
-    
-    <para>To attach source code to one of the other jars, for example, uima-tools.jar, proceed as
-      follows.
-    </para>
-    
-    <itemizedlist spacing="compact">
-      <listitem><para>Right-click uima-tools.jar and select <quote>Properties</quote>.
-      </para></listitem>
-      <listitem><para>Select <quote>Java Source Attachment</quote> and click the <quote>Variable...</quote>
-      button.
-      </para></listitem>
-      <listitem><para>Select <quote>UIMA_HOME</quote> and click <quote>OK</quote>.
-      </para></listitem>
-      <listitem><para>Now click the <quote>Extension...</quote> button, select <quote>src/uima-tools-sources.jar</quote>
-      and click <quote>OK</quote>, and <quote>OK</quote> again.
-      </para></listitem>
-    </itemizedlist>
-    
-    <para>Do this with every jar you think you might be interested in.  It makes most sense
-      for the uima-core.jar, you'll probably use the core APIs most of all.
-    </para>
-    
-    <para>Here's a screenshot of what you should see when you hover your mouse pointer over the
-    class name <quote>CAS</quote> in the source code.
-    </para>
-
-      <informalfigure>
-        <mediaobject>
-          <imageobject>
-            <imagedata scale="100" format="JPG" fileref="&imgroot;image004.jpg"/>
-          </imageobject>
-          <textobject><phrase>Screenshot of mouse-over for UIMA APIs</phrase>
-          </textobject>
-        </mediaobject>
-      </informalfigure>
-      
-  </section>
-  
+   
   <section id="ugr.ovv.eclipse_setup.running_external_tools_from_eclipse">
     <title>Running external tools from Eclipse</title>
     
