@@ -172,7 +172,14 @@ public class CASRuntimeException extends UIMARuntimeException {
    *
    */
   public static final String DISALLOW_CREATE_ANNOTATION_IN_BASE_CAS = "DISALLOW_CREATE_ANNOTATION_IN_BASE_CAS";
-
+  
+  /**
+   * SofaFS may not be cloned.
+   *
+   */
+  public static final String CANNOT_CLONE_SOFA = "CANNOT_CLONE_SOFA";
+  
+  
 	public CASRuntimeException() {
 		super();
 	}

@@ -642,10 +642,7 @@ public abstract class FeatureStructureImpl implements FeatureStructure, Cloneabl
 
 	public Object clone() throws CASRuntimeException {
 		if (getType().getName().equals(CAS.TYPE_NAME_SOFA)) {
-			throw new CASRuntimeException(CASRuntimeException.INAPPROP_TYPE);
-			// WTF? Internationlization?
-			// TODO: fix this exception
-			// e.addArgument("SofaFS may not be cloned");
+			throw new CASRuntimeException(CASRuntimeException.CANNOT_CLONE_SOFA);
 		}
 
 		CASImpl casImpl = this.getCASImpl();
