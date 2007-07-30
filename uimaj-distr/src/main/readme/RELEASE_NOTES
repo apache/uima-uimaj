@@ -153,6 +153,9 @@ issues you find at http://issues.apache.org/jira/browse/uima.
 
 6. List of JIRA Issues Fixed in this Release
 
+
+Release Notes - UIMA - Version 2.2
+
 ** Sub-task
     * [UIMA-326] - Add Out-of-typesystem Data Support to XMI Serialization
     * [UIMA-343] - Framework support for import in CPE descriptor
@@ -231,6 +234,8 @@ issues you find at http://issues.apache.org/jira/browse/uima.
     * [UIMA-494] - AnalysisEngineDescription_impl indirectly uses promletatic method URL.equals()
     * [UIMA-496] - PEAR API does not delete the PEAR ID subdirectory before the new content is installed
     * [UIMA-508] - Docbook build tool - not updating the olink databases unless running the full 4-book build
+    * [UIMA-514] - remove souce jars from binary distribution
+    * [UIMA-517] - CDE has internal bug - shows up in Error log when using the Add delegate to an aggregate when picking top level project
 
 ** Improvement
     * [UIMA-53] - Add Flow.aborted() method
@@ -268,7 +273,6 @@ issues you find at http://issues.apache.org/jira/browse/uima.
     * [UIMA-460] - Change CAS Editor Docs project to be a general sandbox docs project
     * [UIMA-461] - Have docbuild ant script check for JVM version 5 or better
     * [UIMA-465] - Need getViewIterator() method to work with a variable number of views
-    * [UIMA-499] - Add source jars to binary distribution
     * [UIMA-500] - Reduce excessive synch lock contention caused by calls to ll_isValidTypeCode that are not needed
     * [UIMA-501] - Cas Editor: Finish the about dialog
     * [UIMA-507] - Remove ref to gutenberg.org to avoid licensing entanglement possibility
@@ -281,7 +285,6 @@ issues you find at http://issues.apache.org/jira/browse/uima.
     * [UIMA-342] - make jcasgen able to used other templates
     * [UIMA-351] - UIMA pear runtime
     * [UIMA-352] - Allow custom service adapters to be plugged in
-    * [UIMA-371] - XMI serialization to UIMA C++
     * [UIMA-377] - add API to build PEAR packages
     * [UIMA-413] - Allow RunAE to use XMI format XML CAS for input and output
     * [UIMA-416] - CVD should be able to read and write XMI documents
@@ -292,5 +295,8 @@ issues you find at http://issues.apache.org/jira/browse/uima.
 
 ** Task
     * [UIMA-309] - Change version number to 2.2-SNAPSHOT (post-2.1.0 release)
-    * [UIMA-369] - Use same test data as Java project
     * [UIMA-473] - Update README and RELEASE_NOTES
+
+
+
+
