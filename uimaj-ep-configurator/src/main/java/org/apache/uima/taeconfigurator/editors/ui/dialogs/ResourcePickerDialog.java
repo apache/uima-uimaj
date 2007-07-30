@@ -30,6 +30,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -118,10 +119,11 @@ public class ResourcePickerDialog extends AbstractDialog {
   public void copyValuesFromGUI() {
     if (resourcesUI.getSelectionCount() > 0) {
       pickedResource = (IResource)resourcesUI.getSelection()[0].getData();
-      result = (null == pickedResource) ? null 
-                                        : new IFile[] { 
-        TAEConfiguratorPlugin.getWorkspace().getRoot().getFile(
-                pickedResource.getFullPath())};        
+      IPath ipath = (null == pickedResource) ? null : pickedResource.getFullPath();
+      result = (null == ipath ||
+      		      (2 > ipath.segmentCount())) // project name alone cant be given to getFile
+      	 ? null 
+         : new IFile[] {TAEConfiguratorPlugin.getWorkspace().getRoot().getFile(ipath)};        
     }
   }
 
