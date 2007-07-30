@@ -156,8 +156,9 @@ public class AnnotationIndexImpl implements FSIndex, AnnotationIndex {
   public AnnotationTree tree(AnnotationFS annot) {
     AnnotationTreeImpl tree = new AnnotationTreeImpl();
     AnnotationTreeNodeImpl root = new AnnotationTreeNodeImpl();
+    tree.setRoot(root);
     root.set(annot);
-    addChildren(root, subiterator(annot));
+    addChildren(root, subiterator(annot, false, true));
     return tree;
   }
 
@@ -166,10 +167,11 @@ public class AnnotationIndexImpl implements FSIndex, AnnotationIndex {
     AnnotationFS annot;
     while (it.isValid()) {
       annot = (AnnotationFS) it.get();
+      it.moveToNext();
       dtr = new AnnotationTreeNodeImpl();
       dtr.set(annot);
       node.addChild(dtr);
-      addChildren(dtr, subiterator(annot));
+      addChildren(dtr, subiterator(annot, false, true));
     }
   }
 
