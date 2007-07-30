@@ -25,18 +25,17 @@ import java.io.IOException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import junit.framework.TestCase;
+
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.impl.XCASDeserializer;
-import org.apache.uima.cas.text.AnnotationTree;
 import org.apache.uima.cas.text.AnnotationTreeNode;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
-
-import junit.framework.TestCase;
 
 public class AnnotationTreeTest extends TestCase {
 
