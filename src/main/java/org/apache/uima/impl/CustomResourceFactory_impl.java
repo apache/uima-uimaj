@@ -49,7 +49,7 @@ public class CustomResourceFactory_impl implements ResourceFactory {
         resMgr = (ResourceManager)aAdditionalParams.get(Resource.PARAM_RESOURCE_MANAGER);
       }
       if (resMgr != null) {
-        resMgr.getExtensionClassLoader();
+        loader = resMgr.getExtensionClassLoader();
       }
       if (loader == null) {
         loader = this.getClass().getClassLoader();
