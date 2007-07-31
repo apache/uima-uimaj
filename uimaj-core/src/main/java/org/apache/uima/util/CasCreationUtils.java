@@ -61,6 +61,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.URISpecifier;
+import org.apache.uima.resource.impl.ResourceManager_impl;
 import org.apache.uima.resource.metadata.AllowedValue;
 import org.apache.uima.resource.metadata.FeatureDescription;
 import org.apache.uima.resource.metadata.FsIndexCollection;
@@ -1639,9 +1640,11 @@ public class CasCreationUtils {
       } else if (current instanceof ResourceSpecifier) {
         //try to instantiate the resource
         Resource resource = null;
+        Map resourceMgrInMap = new HashMap();
+        resourceMgrInMap.put(Resource.PARAM_RESOURCE_MANAGER, aResourceManager);
         try {
           resource = UIMAFramework.produceResource((ResourceSpecifier) current,
-                  Collections.EMPTY_MAP);
+          		(null == aResourceManager) ? Collections.EMPTY_MAP : resourceMgrInMap);
         } catch (Exception e) {
           //failed.  If aOutputFailedRemotes is non-null, add an entry to it to it, else throw the exception.
           if (aOutputFailedRemotes != null) {
