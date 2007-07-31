@@ -1,6 +1,12 @@
 For instructions on building Apache UIMA please refer to:
 http://incubator.apache.org/uima/svn.html#building.with.maven
 
+If you have installed both the Apache UIMA binary distribution and the
+Apache UIMA source distribution, you can run the addSourceJars.bat 
+(or .sh) script to add the source code to the jar files in the 
+UIMA_HOME/lib directory.  This may make it more convenient to access
+the UIMA Source Code (and JavaDocs) from an IDE such as Eclipse.
+
 See the NOTICE file for licensing information.
 
 Apache UIMA is an effort undergoing incubation at The Apache Software
