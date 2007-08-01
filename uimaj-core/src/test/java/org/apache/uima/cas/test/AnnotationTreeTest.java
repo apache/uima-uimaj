@@ -81,9 +81,6 @@ public class AnnotationTreeTest extends TestCase {
       assertTrue(root.getChild(0).getChildCount() == 19);
       for (int i = 1; i < root.getChildCount(); i++) {
 	assertTrue(root.getChild(i).getChildCount() == 1);
-	// Make sure they're all sentences.
-	assertTrue(root.getChild(i).getChild(0).get().getType().getName().equals(
-	    "uima.tt.SentenceAnnotation"));
       }
       // First sentence contains 8 tokens.
       assertTrue(root.getChild(0).getChild(0).getChildCount() == 8);
