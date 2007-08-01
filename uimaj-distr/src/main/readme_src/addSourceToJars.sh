@@ -1,3 +1,5 @@
+#!/bin/sh
+
 cd jVinci/src/main/java
 jar -uvf $UIMA_HOME/lib/jVinci.jar *
 
