@@ -305,6 +305,46 @@ under the License.
        </informalfigure>
        
    </section>
+   
+  <section>
+    <title>Adding the UIMA source code to the jar files</title>
+    
+    <para>If you would like to be able to jump to the UIMA source code in Eclipse or to step
+    through it with the debugger, you can add the UIMA source code to the jar files.  This is
+    done via a shell script that comes with the source distribution.  To add the source code
+    to the jars, you need to:
+    </para>
+    
+    <itemizedlist>
+    
+    <listitem>
+    <para>
+    Download and unpack the UIMA source distribution.
+    </para>
+    </listitem>
+    
+    <listitem>
+    <para>
+    Download and install the UIMA binary distribution (the UIMA_HOME environment variable needs
+    to be set).    
+    </para>
+    </listitem>
+    
+    <listitem>
+    <para>
+    Execute the <command>addSourceToJars</command> script in the root directory of the 
+    source distribution.
+    </para>
+    </listitem>
+    
+    </itemizedlist>
+    
+    <para>
+    This adds the source code to the jar files, and it will then be automatically be available
+    from Eclipse.  There is no further Eclipse setup required.
+    </para>
+  
+  </section>
   
   
   <section id="ugr.ovv.eclipse_setup.running_external_tools_from_eclipse">
