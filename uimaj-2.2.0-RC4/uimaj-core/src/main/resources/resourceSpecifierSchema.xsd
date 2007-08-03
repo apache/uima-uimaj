@@ -1,0 +1,675 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<!--
+	 ***************************************************************
+	 * Licensed to the Apache Software Foundation (ASF) under one
+	 * or more contributor license agreements.  See the NOTICE file
+	 * distributed with this work for additional information
+	 * regarding copyright ownership.  The ASF licenses this file
+	 * to you under the Apache License, Version 2.0 (the
+	 * "License"); you may not use this file except in compliance
+	 * with the License.  You may obtain a copy of the License at
+     *
+	 *   http://www.apache.org/licenses/LICENSE-2.0
+	 * 
+	 * Unless required by applicable law or agreed to in writing,
+	 * software distributed under the License is distributed on an
+	 * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+	 * KIND, either express or implied.  See the License for the
+	 * specific language governing permissions and limitations
+	 * under the License.
+	 ***************************************************************
+   -->
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+  targetNamespace="http://uima.apache.org/resourceSpecifier"
+  xmlns:rs="http://uima.apache.org/resourceSpecifier" 
+  elementFormDefault="qualified">
+ 
+  <annotation>
+    <documentation xml:lang="en">
+      Schema for UIMA Resource Specifiers.  This includes Analysis Engine Descriptors,
+      Collection Processing Component Descriptors, and Service Specifiers (client descriptors).
+      CPE Descriptors are currently not covered by this schema.
+    </documentation>
+  </annotation>
+
+	<!-- Top Level Element Definitions -->
+
+	<element name="resourceSpecifier" abstract="true" />
+
+	<element name="taeDescription" substitutionGroup="rs:resourceSpecifier" type="rs:AnalysisEngineDescriptionType" />
+
+	<element name="analysisEngineDescription" substitutionGroup="rs:resourceSpecifier" type="rs:AnalysisEngineDescriptionType" />
+
+  <element name="resourceMetaData" type="rs:ResourceMetaDataType"/>
+  
+	<complexType name="AnalysisEngineDescriptionType">
+		<sequence>
+			<element name="frameworkImplementation" type="string" />
+			<element name="primitive" type="boolean" />
+			<choice>
+				<element name="annotatorImplementationName" type="rs:EnvVarType" />
+				<element name="delegateAnalysisEngineSpecifiers">
+					<complexType>
+						<sequence>
+							<element name="delegateAnalysisEngine" type="rs:DelegateAnalysisEngineType" minOccurs="0" maxOccurs="unbounded"/>
+						</sequence>
+					</complexType>
+				</element>
+			</choice>
+			<element name="flowController" type="rs:FlowControllerDeclarationType" minOccurs="0"/>
+			<element name="analysisEngineMetaData" type="rs:ProcessingResourceMetaDataType" />
+			<element name="externalResourceDependencies" type="rs:ExternalResourceDependenciesType" minOccurs="0" />
+			<element name="resourceManagerConfiguration" type="rs:ResourceManagerConfigurationType" minOccurs="0" />
+			<element name="sofaMappings" type="rs:SofaMappingsType" minOccurs="0" />
+		</sequence>
+	</complexType>
+
+
+	<element name="fileResourceSpecifier" substitutionGroup="rs:resourceSpecifier">
+		<complexType>
+			<sequence>
+				<element name="fileUrl" type="rs:EnvVarType" />
+				<element name="localCache" type="rs:EnvVarType" minOccurs="0" />
+			</sequence>
+		</complexType>
+	</element>
+
+	<element name="fileLanguageResourceSpecifier" substitutionGroup="rs:resourceSpecifier">
+		<complexType>
+			<sequence>
+				<element name="fileUrlPrefix" type="rs:EnvVarType" />
+				<element name="fileUrlSuffix" type="rs:EnvVarType" />
+			</sequence>
+		</complexType>
+	</element>
+
+	<element name="configurableDataResourceSpecifier" substitutionGroup="rs:resourceSpecifier">
+		<complexType>
+			<sequence>
+				<element name="url" type="rs:EnvVarType" />
+				<element name="resourceMetaData" type="rs:ResourceMetaDataType" />
+			</sequence>
+		</complexType>
+	</element>
+
+	<element name="typeSystemDescription" type="rs:TypeSystemDescriptionType" />
+
+	<element name="typePriorities" type="rs:TypePriorityType" />
+
+	<element name="fsIndexes" type="rs:FsIndexCollectionType" />
+	<element name="fsIndexCollection" type="rs:FsIndexCollectionType" />
+	<element name="resourceManagerConfiguration" type="rs:ResourceManagerConfigurationType" />
+
+	<!-- Type Definitions -->
+
+	<complexType name="ResourceMetaDataType">
+		<sequence>
+			<element name="name" type="rs:EnvVarType" />
+			<element name="description" type="string" minOccurs="0" />
+			<element name="version" type="string" minOccurs="0" />
+			<element name="vendor" type="string" minOccurs="0" />
+			<element name="configurationParameters" type="rs:ConfigurationParametersType" minOccurs="0" />
+			<element name="configurationParameterSettings" type="rs:ConfigurationParameterSettingsType" minOccurs="0" />
+		</sequence>
+	</complexType>
+
+	<complexType name="ProcessingResourceMetaDataType">
+		<complexContent>
+			<extension base="rs:ResourceMetaDataType">
+				<sequence>
+					<element name="flowConstraints" type="rs:FlowConstraintsType" minOccurs="0" />
+					<element name="typeSystemDescription" type="rs:TypeSystemDescriptionType" minOccurs="0" />
+					<element name="typePriorities" type="rs:TypePriorityType" minOccurs="0" />
+					<choice>
+						<element name="fsIndexes" type="rs:FsIndexCollectionType" minOccurs="0" />
+						<element name="fsIndexCollection" type="rs:FsIndexCollectionType" minOccurs="0" />
+					</choice>
+					<element name="capabilities" type="rs:CapabilitiesType" minOccurs="0"/>
+					<element name="operationalProperties" type="rs:OperationalPropertiesType" minOccurs="0"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="DelegateAnalysisEngineType">
+		<choice>
+			<element ref="rs:resourceSpecifier" />
+ 			<element name="import" type="rs:ImportType" />
+		</choice>
+		<attribute name="key" type="Name" />
+	</complexType>
+
+	<complexType name="FlowControllerDeclarationType">
+		<choice>
+			<element ref="rs:resourceSpecifier" />
+ 			<element name="import" type="rs:ImportType" />
+		</choice>
+		<attribute name="key" type="Name" />
+	</complexType>
+	
+	<complexType name="EnvVarType" mixed="true">
+		<sequence>
+			<element name="envVarRef" type="string" minOccurs="0" maxOccurs="unbounded" />
+		</sequence>
+	</complexType>
+
+	<complexType name="FlowConstraintsType">
+		<sequence>
+			<choice minOccurs="0" maxOccurs="1">
+				<element name="fixedFlow" minOccurs="0" maxOccurs="1">
+					<complexType>
+						<sequence>
+							<element name="node" type="Name" minOccurs="0" maxOccurs="unbounded" />
+						</sequence>
+					</complexType>
+				</element>
+				<element name="capabilityLanguageFlow" minOccurs="0" maxOccurs="1">
+					<complexType>
+						<sequence>
+							<element name="node" type="Name" minOccurs="0" maxOccurs="unbounded" />
+						</sequence>
+					</complexType>
+				</element>
+			</choice>
+		</sequence>
+	</complexType>
+
+	<complexType name="ConfigurationParametersType">
+		<sequence>
+			<element name="configurationParameter" type="rs:ConfigurationParameterType" minOccurs="0" maxOccurs="unbounded" />
+			<element name="commonParameters" type="rs:CommonParametersType" minOccurs="0" maxOccurs="1" />
+			<element name="configurationGroup" type="rs:ConfigurationGroupType" minOccurs="0" maxOccurs="unbounded" />
+		</sequence>
+		<attribute name="defaultGroup" type="Name" />
+		<attribute name="searchStrategy" type="Name" />
+	</complexType>
+
+	<complexType name="CommonParametersType">
+		<sequence>
+			<element name="configurationParameter" type="rs:ConfigurationParameterType" minOccurs="0" maxOccurs="unbounded" />
+		</sequence>
+	</complexType>
+
+	<complexType name="ConfigurationGroupType">
+		<sequence>
+			<element name="configurationParameter" type="rs:ConfigurationParameterType" minOccurs="0" maxOccurs="unbounded" />
+		</sequence>
+		<attribute name="names" type="string" />
+	</complexType>
+
+	<complexType name="ConfigurationParameterType">
+		<sequence>
+			<element name="name" type="Name" />
+			<element name="description" type="string" minOccurs="0" />
+			<element name="type" type="rs:CfgParamDataType" />
+			<element name="multiValued" type="boolean" minOccurs="0" />
+			<element name="mandatory" type="boolean" minOccurs="0" />
+			<element name="overrides" minOccurs="0">
+				<complexType>
+					<choice>
+						<sequence>
+							<element name="parameter" type="string" minOccurs="0" maxOccurs="unbounded" />
+	  					</sequence>
+						<!-- Use of tag "param" is deprectated but permitted for backwards compatibility -->
+						<sequence>
+							<element name="param" type="string" minOccurs="0" maxOccurs="unbounded" />
+	  					</sequence>
+					</choice>
+				</complexType>
+			</element>
+		</sequence>
+	</complexType>
+
+	<simpleType name="CfgParamDataType">
+		<restriction base="string">
+			<enumeration value="String" />
+			<enumeration value="Integer" />
+			<enumeration value="Float" />
+			<enumeration value="Boolean" />
+		</restriction>
+	</simpleType>
+
+	<complexType name="ConfigurationParameterSettingsType">
+		<sequence>
+			<element name="nameValuePair" type="rs:NameValuePairType" minOccurs="0" maxOccurs="unbounded" />
+			<element name="settingsForGroup" type="rs:SettingsForGroupType" minOccurs="0" maxOccurs="unbounded" />
+		</sequence>
+	</complexType>
+
+	<complexType name="SettingsForGroupType">
+		<sequence>
+			<element name="nameValuePair" type="rs:NameValuePairType" minOccurs="0" maxOccurs="unbounded" />
+		</sequence>
+		<attribute name="name" type="string" />
+	</complexType>
+
+	<complexType name="NameValuePairType">
+		<sequence>
+			<element name="name" type="Name" />
+			<element name="value">
+				<complexType>
+					<group ref="rs:ValueElement" />
+				</complexType>
+			</element>
+		</sequence>
+	</complexType>
+
+	<group name="ValueElement">
+		<choice>
+			<group ref="rs:BasicValueElement" />
+			<element name="array">
+				<complexType>
+					<sequence>
+						<group ref="rs:BasicValueElement" minOccurs="0" maxOccurs="unbounded" />
+					</sequence>
+				</complexType>
+			</element>
+		</choice>
+	</group>
+
+	<group name="BasicValueElement">
+		<choice>
+			<element name="string" type="rs:EnvVarType" />
+			<element name="integer" type="int" />
+			<element name="float" type="float" />
+			<element name="boolean" type="boolean" />
+		</choice>
+	</group>
+
+	<complexType name="TypeSystemDescriptionType">
+		<sequence>
+			<element name="name" type="string" minOccurs="0" />
+			<element name="description" type="string" minOccurs="0" />
+			<element name="version" type="string" minOccurs="0" />
+			<element name="vendor" type="string" minOccurs="0" />
+			<element name="imports" type="rs:ImportSequenceType" minOccurs="0" />
+			<element name="types" minOccurs="0">
+				<complexType>
+					<sequence>
+						<element name="typeDescription" type="rs:TypeDescriptionType" minOccurs="0" maxOccurs="unbounded" />
+					</sequence>
+				</complexType>
+			</element>
+		</sequence>
+	</complexType>
+
+	<complexType name="ImportSequenceType">
+		<sequence>
+			<element name="import" type="rs:ImportType" minOccurs="0" maxOccurs="unbounded" />
+		</sequence>
+	</complexType>
+
+	<complexType name="ImportType">
+		<attribute name="location" type="string" />
+		<attribute name="name" type="Name" />
+	</complexType>
+
+	<complexType name="TypeDescriptionType">
+		<sequence>
+			<element name="name" type="Name" />
+			<element name="description" type="string" minOccurs="0"/>
+			<element name="supertypeName" type="Name" />
+			<choice>
+				<element name="allowedValues" minOccurs="0">
+					<complexType>
+						<sequence>
+							<element name="value" maxOccurs="unbounded">
+								<complexType>
+									<sequence>
+										<element name="string" type="string" />
+										<element name="description" type="string" minOccurs="0"/>
+									</sequence>
+								</complexType>
+							</element>
+						</sequence>
+					</complexType>
+				</element>
+				<element name="features" minOccurs="0">
+					<complexType>
+						<sequence>
+							<element name="featureDescription" minOccurs="0" maxOccurs="unbounded">
+								<complexType>
+									<sequence>
+										<element name="name" type="Name" />
+										<element name="description" type="string" minOccurs="0"/>
+										<element name="rangeTypeName" type="Name" />
+										<element name="elementType" type="string" minOccurs="0" />
+										<element name="multipleReferencesAllowed" type="boolean" minOccurs="0" />
+									</sequence>
+								</complexType>
+							</element>
+						</sequence>
+					</complexType>
+				</element>
+			</choice>
+		</sequence>
+	</complexType>
+
+	<complexType name="TypePriorityType">
+		<sequence>
+			<element name="name" type="string" minOccurs="0" />
+			<element name="description" type="string" minOccurs="0" />
+			<element name="version" type="string" minOccurs="0" />
+			<element name="vendor" type="string" minOccurs="0" />
+			<element name="imports" type="rs:ImportSequenceType" minOccurs="0" />
+			<choice>
+				<element name="priorityLists">
+					<complexType>
+						<sequence>
+							<element name="priorityList" type="rs:PriorityListType" minOccurs="0" maxOccurs="unbounded" />
+						</sequence>
+					</complexType>
+				</element>
+				<element name="priorityList" type="rs:PriorityListType" minOccurs="0" maxOccurs="unbounded" />
+			</choice>
+		</sequence>
+	</complexType>
+
+	<complexType name="PriorityListType">
+		<sequence>
+			<element name="type" type="Name" minOccurs="0" maxOccurs="unbounded" />
+		</sequence>
+	</complexType>
+
+	<complexType name="FsIndexCollectionType">
+		<sequence>
+			<element name="name" type="string" minOccurs="0" />
+			<element name="description" type="string" minOccurs="0" />
+			<element name="version" type="string" minOccurs="0" />
+			<element name="vendor" type="string" minOccurs="0" />
+			<element name="imports" type="rs:ImportSequenceType" minOccurs="0" />
+			<choice>
+				<element name="fsIndexes">
+					<complexType>
+						<sequence>
+							<element name="fsIndexDescription" type="rs:FsIndexType" minOccurs="0" maxOccurs="unbounded" />
+						</sequence>
+					</complexType>
+				</element>
+				<element name="fsIndexDescription" type="rs:FsIndexType" minOccurs="0" maxOccurs="unbounded" />
+			</choice>
+		</sequence>
+	</complexType>
+
+	<complexType name="FsIndexType">
+		<sequence>
+			<element name="label" type="Name" />
+			<element name="typeName" type="Name" />
+			<element name="kind" minOccurs="0" maxOccurs="1">
+				<simpleType>
+					<restriction base="string">
+						<enumeration value="sorted" />
+						<enumeration value="bag" />
+						<enumeration value="set" />
+					</restriction>
+				</simpleType>
+			</element>
+			<element name="keys" minOccurs="0" maxOccurs="1">
+				<complexType>
+					<sequence>
+						<element name="fsIndexKey" type="rs:FSIndexKeyType" minOccurs="0" maxOccurs="unbounded" />
+					</sequence>
+				</complexType>
+			</element>
+		</sequence>
+	</complexType>
+
+
+	<complexType name="FSIndexKeyType">
+		<choice>
+			<element name="typePriority" />
+			<sequence>
+				<element name="featureName" type="Name" />
+				<element name="comparator" minOccurs="0">
+					<simpleType>
+						<restriction base="string">
+							<enumeration value="standard" />
+							<enumeration value="reverse" />
+						</restriction>
+					</simpleType>
+				</element>
+			</sequence>
+		</choice>
+	</complexType>
+
+	<complexType name="CapabilitiesType">
+		<sequence>
+			<element name="capability" minOccurs="0" maxOccurs="unbounded">
+				<complexType>
+					<sequence>
+						<element name="description" type="string" minOccurs="0"/>
+						<element name="inputs" type="rs:TypeOrFeatureNameListType" minOccurs="0" />
+						<element name="outputs" type="rs:TypeOrFeatureNameListType" minOccurs="0" />
+						<element name="inputSofas" type="rs:SofaListType" minOccurs="0" />
+						<element name="outputSofas" type="rs:SofaListType" minOccurs="0" />
+						<element name="languagesSupported" type="rs:LanguageListType" minOccurs="0" />
+						<element name="mimeTypesSupported" type="rs:MimeTypeListType" minOccurs="0" />
+					</sequence>
+				</complexType>
+			</element>
+		</sequence>
+	</complexType>
+
+	<complexType name="TypeOrFeatureNameListType">
+		<sequence>
+			<group ref="rs:TypeOrFeature" minOccurs="0" maxOccurs="unbounded" />
+		</sequence>
+	</complexType>
+
+	<group name="TypeOrFeature">
+		<choice>
+			<element name="type" type="rs:TypeNameType" />
+			<element name="feature" type="Name" />
+		</choice>
+	</group>
+
+	<complexType name="TypeNameType">
+		<simpleContent>
+			<extension base="Name">
+				<attribute name="allAnnotatorFeatures" type="boolean" />
+			</extension>
+		</simpleContent>
+	</complexType>
+
+	<complexType name="LanguageListType">
+		<sequence>
+			<element name="language" type="string" minOccurs="0" maxOccurs="unbounded" />
+		</sequence>
+	</complexType>
+
+	<complexType name="MimeTypeListType">
+		<sequence>
+			<element name="mimeType" type="string" minOccurs="0" maxOccurs="unbounded" />
+		</sequence>
+	</complexType>
+
+
+	<complexType name="SofaListType">
+		<sequence>
+			<element name="sofaName" type="string" minOccurs="0" maxOccurs="unbounded" />
+		</sequence>
+	</complexType>
+
+	<complexType name="OperationalPropertiesType">
+		<sequence>
+			<element name="modifiesCas" minOccurs="0" type="boolean"/>
+			<element name="multipleDeploymentAllowed" minOccurs="0" type="boolean"/>
+			<element name="outputsNewCASes" minOccurs="0" type="boolean"/>
+		</sequence>
+	</complexType>
+	
+	<complexType name="ExternalResourceDependenciesType">
+		<sequence>
+			<element name="externalResourceDependency" minOccurs="0" maxOccurs="unbounded">
+				<complexType>
+					<sequence>
+						<element name="key" type="string" />
+						<element name="description" type="string" />
+						<element name="interfaceName" type="string" minOccurs="0" />
+						<element name="optional" type="boolean" minOccurs="0" />
+					</sequence>
+				</complexType>
+			</element>
+		</sequence>
+	</complexType>
+
+	<complexType name="ResourceManagerConfigurationType">
+		<sequence>
+			<element name="name" type="string" minOccurs="0" />
+			<element name="description" type="string" minOccurs="0" />
+			<element name="vendor" type="string" minOccurs="0" />
+			<element name="version" type="string" minOccurs="0" />
+			<element name="imports" type="rs:ImportSequenceType" minOccurs="0" />
+			<element name="import" type="rs:ImportType" minOccurs="0"/> <!-- Old Style -->
+			<element name="externalResources" type="rs:ExternalResourcesType" minOccurs="0" />
+			<element name="externalResourceBindings" type="rs:ExternalResourceBindingsType" minOccurs="0" />
+		</sequence>
+	</complexType>
+
+	<complexType name="ExternalResourcesType">
+		<sequence>
+			<element name="externalResource" minOccurs="0" maxOccurs="unbounded">
+				<complexType>
+					<sequence>
+						<element name="name" type="string" />
+						<element name="description" type="string" />
+						<element ref="rs:resourceSpecifier" />
+						<element name="implementationName" type="string" minOccurs="0" />
+					</sequence>
+				</complexType>
+			</element>
+		</sequence>
+	</complexType>
+
+	<complexType name="ExternalResourceBindingsType">
+		<sequence>
+			<element name="externalResourceBinding" minOccurs="0" maxOccurs="unbounded">
+				<complexType>
+					<sequence>
+						<element name="key" type="string" />
+						<element name="resourceName" type="string" />
+					</sequence>
+				</complexType>
+			</element>
+		</sequence>
+	</complexType>
+
+	<complexType name="SofaMappingsType">
+		<sequence>
+			<element name="sofaMapping" minOccurs="0" maxOccurs="unbounded">
+				<complexType>
+					<sequence>
+						<element name="componentKey" type="string" />
+						<element name="componentSofaName" type="string" minOccurs="0" />
+						<element name="aggregateSofaName" type="string" />
+					</sequence>
+				</complexType>
+			</element>
+		</sequence>
+	</complexType>
+        
+
+<!-- Top Level Element Definitions for Collection Processing Component Specifiers -->
+
+  <element name="collectionReaderDescription" type="rs:CollectionProcessingComponentDescriptionType"/>
+  <element name="casInitializerDescription" type="rs:CollectionProcessingComponentDescriptionType"/>
+  <element name="casConsumerDescription" type="rs:CollectionProcessingComponentDescriptionType"/>
+  
+  <complexType name="CollectionProcessingComponentDescriptionType">
+    <sequence>
+      <element name="frameworkImplementation" type="string" />
+      <element name="implementationName" type="rs:EnvVarType"/>
+      <element name="processingResourceMetaData" type="rs:ProcessingResourceMetaDataType"/>
+      <element name="externalResourceDependencies" type="rs:ExternalResourceDependenciesType" minOccurs="0"/>
+      <element name="resourceManagerConfiguration" type="rs:ResourceManagerConfigurationType" minOccurs="0"/>
+    </sequence>  
+  </complexType>
+
+<!-- Top Level Element Definitions for FlowController Specifier 
+	(currently same as a Collection Processing Component Specifier -->
+  <element name="flowControllerDescription" type="rs:CollectionProcessingComponentDescriptionType"/>
+  
+  <!-- Top Level Element Definitions for Service Specifiers -->
+
+  <element name="uriSpecifier" substitutionGroup="rs:resourceSpecifier">
+    <complexType>
+      <sequence>
+        <element name="resourceType" minOccurs="0">
+         <simpleType>
+            <restriction base="string">
+               <enumeration value="AnalysisEngine"/>
+               <enumeration value="CasConsumer"/>
+            </restriction>
+         </simpleType>
+        </element> 
+        <element name="uri" type="string"/>
+        <element name="protocol">
+          <simpleType>
+            <restriction base="string">
+              <enumeration value="SOAP"/>
+              <enumeration value="SOAPwithAttachments"/>
+              <enumeration value="Vinci"/>
+            </restriction>
+          </simpleType>
+        </element>
+        <element name="timeout" type="integer" minOccurs="0"/>
+        <element name="parameters" minOccurs="0">
+          <complexType>
+            <sequence>
+              <element name="parameter" minOccurs="0" maxOccurs="unbounded">
+                <complexType>
+                  <attribute name="name" type="string"/>
+                  <attribute name="value" type="string"/>
+                </complexType>
+              </element>
+            </sequence>
+          </complexType>
+        </element>
+      </sequence>
+    </complexType>
+  </element>
+  
+  <!-- Top Level Element Definitions for Custom ResourceSpecifiers -->
+
+  <element name="customResourceSpecifier" substitutionGroup="rs:resourceSpecifier">
+    <complexType>
+      <sequence>
+        <element name="resourceClassName" type="string"/>
+        <element name="parameters" minOccurs="0">
+          <complexType>
+            <sequence>
+              <element name="parameter" minOccurs="0" maxOccurs="unbounded">
+                <complexType>
+                  <attribute name="name" type="string"/>
+                  <attribute name="value" type="string"/>
+                </complexType>
+              </element>
+            </sequence>
+          </complexType>
+        </element>
+      </sequence>
+    </complexType>
+  </element>  
+
+  <!-- Top Level Element Definitions for PEAR ResourceSpecifiers -->
+
+  <element name="pearSpecifier" substitutionGroup="rs:resourceSpecifier">
+    <complexType>
+      <sequence>
+        <element name="pearPath" type="string"/>
+        <element name="parameters" minOccurs="0">
+          <complexType>
+            <sequence>
+              <element name="parameter" minOccurs="0" maxOccurs="unbounded">
+                <complexType>
+                  <attribute name="name" type="string"/>
+                  <attribute name="value" type="string"/>
+                </complexType>
+              </element>
+            </sequence>
+          </complexType>
+        </element>
+      </sequence>
+    </complexType>
+  </element>  
+</schema>
