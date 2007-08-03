@@ -154,6 +154,7 @@ issues you find at http://issues.apache.org/jira/browse/uima.
 6. List of JIRA Issues Fixed in this Release
 
 
+
 Release Notes - UIMA - Version 2.2
 
 ** Sub-task
@@ -236,6 +237,8 @@ Release Notes - UIMA - Version 2.2
     * [UIMA-508] - Docbook build tool - not updating the olink databases unless running the full 4-book build
     * [UIMA-514] - remove souce jars from binary distribution
     * [UIMA-517] - CDE has internal bug - shows up in Error log when using the Add delegate to an aggregate when picking top level project
+    * [UIMA-519] - Infinite Loop in AnnotationIndexImpl tree()
+    * [UIMA-520] - Calling CasCreationUtils to produce a custom resource is ignoring the passed in ResourceManager in some cases
 
 ** Improvement
     * [UIMA-53] - Add Flow.aborted() method
@@ -273,6 +276,7 @@ Release Notes - UIMA - Version 2.2
     * [UIMA-460] - Change CAS Editor Docs project to be a general sandbox docs project
     * [UIMA-461] - Have docbuild ant script check for JVM version 5 or better
     * [UIMA-465] - Need getViewIterator() method to work with a variable number of views
+    * [UIMA-499] - Make it easier for users to view UIMA JavaDocs from Eclipse
     * [UIMA-500] - Reduce excessive synch lock contention caused by calls to ll_isValidTypeCode that are not needed
     * [UIMA-501] - Cas Editor: Finish the about dialog
     * [UIMA-507] - Remove ref to gutenberg.org to avoid licensing entanglement possibility
@@ -296,7 +300,5 @@ Release Notes - UIMA - Version 2.2
 ** Task
     * [UIMA-309] - Change version number to 2.2-SNAPSHOT (post-2.1.0 release)
     * [UIMA-473] - Update README and RELEASE_NOTES
-
-
 
 
