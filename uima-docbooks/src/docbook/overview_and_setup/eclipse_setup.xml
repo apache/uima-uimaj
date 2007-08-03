@@ -257,7 +257,7 @@ under the License.
     
   </section>
    
-  <section>
+  <section id="ugr.ovv.eclipse_setup.adding_source">
     <title>Adding the UIMA source code to the jar files</title>
     
     <para>If you would like to be able to jump to the UIMA source code in Eclipse or to step
@@ -277,7 +277,7 @@ under the License.
     <listitem>
     <para>
     Download and install the UIMA binary distribution (the UIMA_HOME environment variable needs
-    to be set).    
+    to be set to point to where you installed the UIMA binary distribution).    
     </para>
     </listitem>
     
@@ -303,15 +303,15 @@ under the License.
      
      <para>The binary distribution also includes the UIMA Javadocs.  They are
        attached to the UIMA library Jar files in the uima-examples project described
-       above.  You can attach the Javadocs to your own project as well.  Note that this
-       is not necessary when you have added the source code as described in the previous
-       section: you will
-       then have the javadocs available automatically as well.
+       above.  You can attach the Javadocs to your own project as well.  
      </para>
+    
+     <note><para>If you attached the source as described in the previous section, you 
+     don't need to attach the Javadocs because the source includes the Javadoc comments.</para></note>
      
-     <para>Attaching the Javadocs enables javadoc help for UIMA APIs.  After they are 
+     <para>Attaching the Javadocs enables Javadoc help for UIMA APIs.  After they are 
        attached, if you hover your mouse
-     over a certain UIMA api element, the corresponding javadoc will appear.  
+     over a certain UIMA api element, the corresponding Javadoc will appear.  
        You can then press <quote>F2</quote> to make the hover "stick", or 
        <quote>Shift-F2</quote> to open the default 
        web-browser on your system to let you browse the entire Javadoc information 
