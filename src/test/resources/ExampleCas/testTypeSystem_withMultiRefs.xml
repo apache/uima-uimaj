@@ -555,5 +555,19 @@
         </featureDescription>
       </features>
     </typeDescription>
+    <typeDescription>
+      <name>org.apache.uima.testTypeSystem.AnnotationArrayTest</name>
+      <description></description>
+      <supertypeName>uima.tcas.Annotation</supertypeName>
+      <features>
+        <featureDescription>
+          <name>arrayOfAnnotations</name>
+          <description></description>
+          <rangeTypeName>uima.cas.FSArray</rangeTypeName>
+          <elementType>uima.tcas.Annotation</elementType>
+          <multipleReferencesAllowed>true</multipleReferencesAllowed>
+        </featureDescription>
+      </features>
+    </typeDescription>    
   </types>
 </typeSystemDescription>

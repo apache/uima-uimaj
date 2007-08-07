@@ -8008,4 +8008,20 @@
     _ref_from="332" _ref_to="1417"/>
   <uima.cas.NonEmptyFSList _id="8921" _ref_head="42507"
     _ref_tail="8920"/>
+  <org.apache.uima.testTypeSystem.AnnotationArrayTest _id="100000" _indexed="1"
+    _ref_arrayOfAnnotations="100001"/>
+  <uima.cas.FSArray _id="100001" size="3">
+    <i>100002</i>
+    <i>100003</i>
+    <i>100004</i>
+  </uima.cas.FSArray>
+  <org.apache.uima.testTypeSystem.GPE _id="100002" _ref_sofa="1" begin="128"
+    end="135" confidence="0.0" componentId="ACE"
+    mentionType="NAME"/>
+  <org.apache.uima.testTypeSystem.GPE _id="100003" _ref_sofa="1"
+    begin="4340" end="4346" confidence="0.0" 
+    componentId="ACE" mentionType="NAME"/>
+  <org.apache.uima.testTypeSystem.GPE _id="100004" _ref_sofa="1" begin="0"
+    end="24" confidence="0.0" componentId="ACE"
+    mentionType="NAME"/>  
 </CAS>

@@ -129,6 +129,7 @@ public class XmiCasDeserializerTest extends TestCase {
 
     // reserialize as XMI
     String xml = serialize(cas, null);
+    System.out.println(xml);
     
     // deserialize into another CAS
     CAS cas2 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
@@ -155,7 +156,19 @@ public class XmiCasDeserializerTest extends TestCase {
         assertNotNull(arrayFS.get(i));
       }
     }
-
+    Type annotArrayTestType = cas2.getTypeSystem().getType("org.apache.uima.testTypeSystem.AnnotationArrayTest");
+    Feature annotArrayFeat = annotArrayTestType.getFeatureByBaseName("arrayOfAnnotations");
+    Iterator iter2 = cas2.getAnnotationIndex(annotArrayTestType).iterator();
+    assertTrue(iter2.hasNext());
+    while (iter2.hasNext()) {
+      FeatureStructure fs = (FeatureStructure) iter2.next();
+      ArrayFS arrayFS = (ArrayFS) fs.getFeatureValue(annotArrayFeat);
+      assertNotNull(arrayFS);
+      for (int i = 0; i < arrayFS.size(); i++) {
+        assertNotNull(arrayFS.get(i));
+      }
+    }
+    
     // test that lenient mode does not report errors
     CAS cas3 = CasCreationUtils.createCas(new TypeSystemDescription_impl(),
             new TypePriorities_impl(), new FsIndexDescription[0]);
