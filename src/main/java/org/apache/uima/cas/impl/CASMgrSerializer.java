@@ -129,9 +129,10 @@ public class CASMgrSerializer implements Serializable {
   public int[] typeInheritance;
 
   /**
-   * Feature declarations. For each feature code <code>i</code>, <code>featDecls[(i-1)*2]</code>
-   * is the domain type code, and <code>featDecls[i*2-1]</code> is the range type code (since
-   * feature codes start at <code>1</code>).
+   * Feature declarations. For each feature code <code>i</code> (which is an integer >= 1), 
+   * <code>featDecls[(i-1)*3]</code> is the domain type code, <code>featDecls[(i-1)*3+1]</code> is 
+   * the range type code, and <code>featDecls[(i-1)*3+2]</code> is the multipleReferencesAllowed 
+   * flag (0 or 1).
    */
   public int[] featDecls;
 
@@ -349,13 +350,14 @@ public class CASMgrSerializer implements Serializable {
   private void encodeFeatureDecls(TypeSystemImpl ts) {
     final int max = ts.getSmallestFeature() + ts.getNumberOfFeatures();
     this.featureNames = new String[max];
-    this.featDecls = new int[max * 2];
+    this.featDecls = new int[max * 3];
     Feature f;
     for (int i = ts.getSmallestFeature(); i < max; i++) {
       f = ts.ll_getFeatureForCode(i);
       this.featureNames[i] = f.getShortName();
-      this.featDecls[i * 2] = ((TypeImpl) f.getDomain()).getCode();
-      this.featDecls[(i * 2) + 1] = ((TypeImpl) f.getRange()).getCode();
+      this.featDecls[i * 3] = ((TypeImpl) f.getDomain()).getCode();
+      this.featDecls[(i * 3) + 1] = ((TypeImpl) f.getRange()).getCode();
+      this.featDecls[(i * 3) + 2] = f.isMultipleReferencesAllowed() ? 1 : 0;
     }
   }
 
@@ -449,7 +451,8 @@ public class CASMgrSerializer implements Serializable {
 //      } else {
         name = this.featureNames[i];
 //      }
-      ts.addFeature(name, this.featDecls[i * 2], this.featDecls[(i * 2) + 1]);
+      ts.addFeature(name, this.featDecls[i * 3], this.featDecls[(i * 3) + 1],
+                    this.featDecls[(i * 3) + 2] == 1);
     }
     return ts;
   }
