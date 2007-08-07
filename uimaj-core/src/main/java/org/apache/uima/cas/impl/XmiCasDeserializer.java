@@ -835,7 +835,13 @@ public class XmiCasDeserializer {
     private int createArray(int arrayType, List values, int xmiId) {
 
       FeatureStructureImplC fs;
-      if (casBeingFilled.isBooleanArrayType(arrayType)) {
+      if (casBeingFilled.isIntArrayType(arrayType)) {
+        fs = (FeatureStructureImplC) casBeingFilled.createIntArrayFS(values.size());
+      } else if (casBeingFilled.isFloatArrayType(arrayType)) {
+        fs = (FeatureStructureImplC) casBeingFilled.createFloatArrayFS(values.size());        
+      } else if (casBeingFilled.isStringArrayType(arrayType)) {
+        fs = (FeatureStructureImplC) casBeingFilled.createStringArrayFS(values.size());                
+      } else if (casBeingFilled.isBooleanArrayType(arrayType)) {
         fs = (FeatureStructureImplC) casBeingFilled.createBooleanArrayFS(values.size());
       } else if (casBeingFilled.isByteArrayType(arrayType)) {
         fs = (FeatureStructureImplC) casBeingFilled.createByteArrayFS(values.size());
@@ -846,8 +852,7 @@ public class XmiCasDeserializer {
       } else if (casBeingFilled.isDoubleArrayType(arrayType)) {
         fs = (FeatureStructureImplC) casBeingFilled.createDoubleArrayFS(values.size());
       } else {
-        int addr = casBeingFilled.createTempArray(arrayType, values.size());
-        fs = new FeatureStructureImplC(casBeingFilled, addr);
+        fs = (FeatureStructureImplC) casBeingFilled.createArrayFS(values.size());
       }
       int casArray = fs.getAddress();
       for (int i = 0; i < values.size(); i++) {

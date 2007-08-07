@@ -413,8 +413,8 @@ public class XmiCasSerializer {
       enqueueFeatures(addr, typeCode);
 
       // Also, for FSArrays enqueue the elements
-      if (cas.isFSArrayType(typeCode)) {
-        enqueueFSListElements(addr);
+      if (cas.isFSArrayType(typeCode)) { //TODO: won't get parameterized arrays??
+        enqueueFSArrayElements(addr);
       }
     }
 

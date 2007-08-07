@@ -221,14 +221,6 @@ public class XCasToCasDataSaxHandlerTest extends TestCase {
         FeatureValue endVal = fs.getFeatureValue("end");
         Assert.assertTrue(endVal instanceof PrimitiveValue);
         Assert.assertTrue(((PrimitiveValue) endVal).toInt() >= 0);
-
-        // all annotations should be indexed (not a general requirement, but good
-        // for these test CASes)
-        Assert.assertTrue(fs.getIndexed().length > 0);
-      } else if (typeSystem.subsumes(arrayType, type)) {
-        // all non-annotations should not be indexed (not a general requirement, but good
-        // for these test CASes)
-        Assert.assertFalse(fs.getIndexed().length > 0);
       }
     }
   }

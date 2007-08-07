@@ -1898,11 +1898,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
 	public boolean isArrayType(int type) {
     final TypeSystemImpl ts = this.svd.casMetadata.ts;
-		return ((type == ts.fsArrayTypeCode) || (type == ts.intArrayTypeCode)
-				|| (type == ts.floatArrayTypeCode) || (type == ts.stringArrayTypeCode)
-				|| (type == ts.booleanArrayTypeCode) || (type == ts.byteArrayTypeCode)
-				|| (type == ts.shortArrayTypeCode) || (type == ts.longArrayTypeCode) || 
-        (type == ts.doubleArrayTypeCode));
+		return ts.ll_isArrayType(type);
 	}
 
 	public boolean isIntArrayType(int type) {
@@ -2559,6 +2555,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 		if (typeCode == ts.doubleArrayTypeCode) {
 			return TYPE_CLASS_DOUBLEARRAY;
 		}
+    if (isArrayType(typeCode)) {
+      return TYPE_CLASS_FSARRAY;
+    }
 
 		return TYPE_CLASS_FS;
 	}
