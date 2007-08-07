@@ -47,6 +47,23 @@
 		</dependency>
 	</dependencies>
 	<build>
+   <resources>
+			<!-- Add the LICENSE, NOTICE, and DISCLAIMER files from uimaj-distr/README
+        as resources to be included in the jars of all components.  This is so 
+        we don't need to have copies of these files in SVN for every component. -->     
+     <resource>
+       <directory>../uimaj-distr/src/main/readme</directory>
+       <includes>
+         <include>LICENSE</include>
+         <include>NOTICE</include>
+         <include>DISCLAIMER</include>
+       </includes>
+       <targetPath>META-INF</targetPath>
+     </resource>
+     <resource>
+       <directory>src/main/resources</directory>
+     </resource>
+   </resources>    
 		<pluginManagement>
 			<plugins>
 				<!-- v2.1 of the javadoc plugin needed for muilti-module javadoc build to work properly -->
@@ -70,29 +87,6 @@
 					<source>1.4</source>
 					<target>1.4</target>
 				</configuration>
-			</plugin>
-			<!-- We use and ant task to copy the LICENSE, NOTICE, and DISCLAIMER files
-				from a single location in uimaj-distr into the target/classes/META-INF
-				directory of all components.  In theory the Maven resources plugin is
-				supposed to do this, but we have not been able to get it to work. -->
-			<plugin>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>process-resources</phase>
-						<configuration>
-							<tasks>
-								<copy todir="target/classes/META-INF">
-									<fileset dir="../uimaj-distr/src/main/readme"
-										includes="LICENSE NOTICE DISCLAIMER"/>
-								</copy>
-							</tasks>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 	</build>
