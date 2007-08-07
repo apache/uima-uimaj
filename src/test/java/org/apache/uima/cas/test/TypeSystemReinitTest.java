@@ -26,6 +26,7 @@ import junit.framework.TestCase;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
@@ -104,9 +105,11 @@ public class TypeSystemReinitTest extends TestCase {
       
       TypeSystemImpl ts = (TypeSystemImpl)cas2.getTypeSystem();
       Type arrayType = ts.getType("Test.ArrayType");
-      TypeImpl featRange = (TypeImpl)arrayType.getFeatureByBaseName("arrayFeature").getRange();
+      Feature arrayFeat = arrayType.getFeatureByBaseName("arrayFeature");
+      TypeImpl featRange = (TypeImpl)(arrayFeat.getRange());
      
       assertTrue(ts.ll_isArrayType(featRange.getCode()));
+      assertFalse(arrayFeat.isMultipleReferencesAllowed());
       
     } catch (Exception e) {
       JUnitExtension.handleException(e);
