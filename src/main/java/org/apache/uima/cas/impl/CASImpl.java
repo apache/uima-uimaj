@@ -174,7 +174,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     // to load the CASImpl class.
     private ClassLoader jcasClassLoader = this.getClass().getClassLoader();
     
-    private ClassLoader previousJCasClassLoader = jcasClassLoader;
+    private ClassLoader previousJCasClassLoader = this.jcasClassLoader;
 
     // If this CAS can be flushed (reset) or not.
     //   often, the framework disables this before calling users code
@@ -765,7 +765,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
         FSClassRegistry fscr = getFSClassRegistry();
         // save for the case of non=jcas pipeline with a jcas pear in the middle - this
         //  allows subsequent downstream annotators to run without jcas
-        fscr.saveGeneratorsForClassLoader(svd.previousJCasClassLoader, fscr.getBaseGenerators());      
+        fscr.saveGeneratorsForClassLoader(this.svd.previousJCasClassLoader, fscr.getBaseGenerators());      
       }
     }
     setLocalFsGenerators(this.svd.casMetadata.fsClassRegistry.getBaseGenerators());
@@ -3137,31 +3137,32 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     if (null == newClassLoader) { // is null if no cl set 
       return;
     }
-    if (newClassLoader != svd.jcasClassLoader) {
+    if (newClassLoader != this.svd.jcasClassLoader) {
 //      System.out.println("Switching to new class loader");
-      svd.jcasClassLoader = newClassLoader;
+      this.svd.jcasClassLoader = newClassLoader;
       if (null != this.jcas) {
-        ((JCasImpl)jcas).switchClassLoader(newClassLoader);
+        ((JCasImpl)this.jcas).switchClassLoader(newClassLoader);
       }
     }
   }  
 
   // internal use, public for cross-package ref
   public boolean usingBaseClassLoader() {
-    return (svd.jcasClassLoader == svd.previousJCasClassLoader);
+    return (this.svd.jcasClassLoader == this.svd.previousJCasClassLoader);
   }
   
   public void restoreClassLoaderUnlockCas() {
     // unlock CAS functions
     enableReset(true);
     // this might be called without the switch ever being called
-    if (null == svd.previousJCasClassLoader)
+    if (null == this.svd.previousJCasClassLoader) {
       return;
-    if (svd.previousJCasClassLoader != svd.jcasClassLoader) {
+    }
+    if (this.svd.previousJCasClassLoader != this.svd.jcasClassLoader) {
 //      System.out.println("Switching back to previous class loader");
-      svd.jcasClassLoader = svd.previousJCasClassLoader;
+      this.svd.jcasClassLoader = this.svd.previousJCasClassLoader;
       if (null != this.jcas) {
-        ((JCasImpl)jcas).switchClassLoader(svd.previousJCasClassLoader);
+        ((JCasImpl)this.jcas).switchClassLoader(this.svd.previousJCasClassLoader);
       }
     }
 
@@ -3818,7 +3819,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       SofaFS sofa = (SofaFS)sofaIter.next();
       String sofaId = sofa.getSofaID();
       if (sofaId.startsWith(absolutePrefix)) {
-        if (sofaId.length() == absolutePrefix.length() || sofaId.charAt(absolutePrefix.length()) == '.') {
+        if ((sofaId.length() == absolutePrefix.length()) || (sofaId.charAt(absolutePrefix.length()) == '.')) {
            viewList.add(getView(sofa));
         }
       }
