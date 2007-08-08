@@ -30,17 +30,21 @@ REM Run with -notest to skip the unit tests
 @:trunk
 @set level=trunk
 @set leveldir=trunk
-@goto checktest
+@goto checkargs
 
-@:checktest
+@:checkargs
 @set jvmarg=
+@set mvnCommand=install
+@if not "%3"=="" goto usage
 @if "%~2"=="" goto execute
 @if "%~2"=="-notest" goto notest
+@if "%~2"=="-deploy" goto deploy
 @goto usage
 
 @:usage
 @echo off
-echo Usage: extractAndBuild.bat <level> [-notest]
+echo Usage: extractAndBuild.bat level [-notest] [-deploy]
+echo            (-notest and -deploy cannot be used together)
 @echo on
 @goto exit
 
@@ -48,11 +52,15 @@ echo Usage: extractAndBuild.bat <level> [-notest]
 @set jvmarg="-Dmaven.test.skip=true"
 @goto execute
 
+@:deploy
+@set mvnCommand="source:jar deploy"
+@goto execute
+
 @:execute
 svn checkout -r HEAD http://svn.apache.org/repos/asf/incubator/uima/uimaj/%level%
 cd %leveldir%
 cd uimaj
-call mvn %jvmarg%  -Duima.build.date="%date% %time%" install
+call mvn %jvmarg%  -Duima.build.date="%date% %time%" %mvnCommand%
 cd ..
 cd uimaj-distr
 call mvn assembly:assembly

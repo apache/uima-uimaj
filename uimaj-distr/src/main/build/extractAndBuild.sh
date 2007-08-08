@@ -20,16 +20,21 @@
 # Bourne shell syntax, this should hopefully run on pretty much anything.
 
 usage() {
-  echo "Usage: extractAndBuild.sh [-notest]"
+  echo "Usage: extractAndBuild.sh [-notest] [-deploy]"
+  echo "           (-notest and -deploy cannot be used together)"
 }
 
 vmargs=""
+mvnCommand=install
 # Check for -notest switch.  If present, add the no-test define to the mvn command line.
 if [ -n $1 ]
   then
   if [ $1 = "-notest" ]
   then
     vmargs="-Dmaven.test.skip=true"
+  elif [ $1 = "-deploy" ]
+  then
+    mvnCommand="source:jar deploy"
   else
     usage
     exit 1
@@ -38,7 +43,7 @@ fi
 
 svn checkout http://svn.apache.org/repos/asf/incubator/uima/uimaj/trunk
 cd trunk/uimaj
-mvn ${vmargs} -Duima.build.date="`date`" install
+mvn ${vmargs} -Duima.build.date="`date`" $mvnCommand
 cd ..
 cd uimaj-distr
 mvn assembly:assembly
