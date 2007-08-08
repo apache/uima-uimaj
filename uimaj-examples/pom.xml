@@ -27,6 +27,16 @@
 	<version>2.2.0-incubating</version>
 	<name>Apache UIMA Java SDK Examples</name>
 	<url>http://incubator.apache.org/uima</url>
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+  <scm>
+    <url>http://svn.apache.org/viewvc/incubator/uima</url>
+  </scm>    
 	<parent>
 		<groupId>org.apache.uima</groupId>
 		<artifactId>uimaj</artifactId>
