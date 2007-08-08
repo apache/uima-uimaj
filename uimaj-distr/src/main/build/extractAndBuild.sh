@@ -20,19 +20,43 @@
 # Bourne shell syntax, this should hopefully run on pretty much anything.
 
 usage() {
-  echo "Usage: extractAndBuild.sh [-notest] [-deploy]"
+  echo "Usage: extractAndBuild.sh <level> [-notest] [-deploy]"
   echo "           (-notest and -deploy cannot be used together)"
 }
 
 vmargs=""
 mvnCommand=install
+
+# Check arguments
+if [ $# = 0 ]
+then
+  usage
+  exit 1
+fi
+
+if [ "$1" = "trunk" ]
+then
+  level=trunk
+  leveldir=trunk
+else
+  level=tags/$1
+  leveldir=$1
+fi
+
+if [ $# -gt "2" ]
+then
+  usage
+  exit 1
+fi
+
+if [ -n "$2" ]
+then
 # Check for -notest switch.  If present, add the no-test define to the mvn command line.
-if [ -n $1 ]
-  then
-  if [ $1 = "-notest" ]
+  if [ "$2" = "-notest" ]
   then
     vmargs="-Dmaven.test.skip=true"
-  elif [ $1 = "-deploy" ]
+# Check for -deploy switch.  If present, change maven command to deploy artifacts to remote Maven repo
+  elif [ "$2" = "-deploy" ]
   then
     mvnCommand="source:jar deploy"
   else
@@ -41,8 +65,8 @@ if [ -n $1 ]
   fi
 fi
 
-svn checkout http://svn.apache.org/repos/asf/incubator/uima/uimaj/trunk
-cd trunk/uimaj
+svn checkout http://svn.apache.org/repos/asf/incubator/uima/uimaj/$level
+cd $leveldir/uimaj
 mvn ${vmargs} -Duima.build.date="`date`" $mvnCommand
 cd ..
 cd uimaj-distr
