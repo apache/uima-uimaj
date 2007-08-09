@@ -1,0 +1,5 @@
+- avalon-framework, batik, fop, xercesImpl, xml-resolver are distributed unter the
+  Apache Software License 2.0. See APACHE.license for information
+
+- saxon is distributed under the Mozilla Public License 1.0. See
+  SAXON.license for information

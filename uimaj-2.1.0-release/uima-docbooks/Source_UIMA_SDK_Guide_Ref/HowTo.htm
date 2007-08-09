@@ -1,0 +1,166 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Put your title here - it&rsquo;s required</title>
+<link rel="stylesheet" href="../UIMA_SDK_Guide_Ref/uima_sdk_ugr.css" type="text/css" />
+</head>
+<body>
+<!--
+    The lines above (use view source :-) are required for XHTML 1.1 files.
+     First line (DOCTYPE...) switches on CSS compatibility in IE 6
+
+     The Title is required - it will display in the browser's title bar
+
+     Use the offical xhtml entity variables (starting with an ampersand)for special punctuation, including
+     quotes.  Google "html entities" to see tables of these.  Also - check ones you're using in several browsers
+        IE, Firefox, Opera, Konquerer (Suse Linux)
+
+     Some arrows (e.g. double right  &rArr; ) don't display well in FireFox 1.5 , are OK in IE 6
+
+     XHTML RULES:
+
+     1) use id= attribute (not name= atribute) in <a .. > tags
+     2) all attribute values must be enclosed in quotes (single or double)
+     3) all tags must be closed.  e.g. instead of <br> write <br />
+           Note space before /> - its required by some browsers
+
+     BASIC Rules:
+     1) Use <p>..</p> for all paragraphs, not <br/>
+     2) Use <ul>, <ol>, <li>,  etc.  It is not legal to put a <list-start-tag, eg.ul>
+        directly inside another <list start tag>.
+        Instead, put it inside a <li> tag of the above item.
+
+     3) Use <code> ... </code> for mono-spaced code things, including xml samples and java code
+     4) use <p class="code"> for a whole paragraph of code, where you want the line breaks preserved
+
+     5) Footnotes: Type <span class="footnote">footnote text</span>
+        Put the footnote right in line in the main text where the footnote marker would go.
+        Do not enclose the footnote in a <p>.. </p>.
+        
+        If footnotes exist in a chapter, the printing program will properly format the footnote.     
+
+     6) The <q>xxx</q> construct doesn't work in IE.
+
+     Tables
+
+     Use <table>
+           <thead>   (optional )
+             <tr>    row of the header
+               <td>.. </td>    col in row
+               <td>.. </td>
+             </tr>
+             ....
+           </thead>
+           <tr> ... </tr>
+           <tr> ... </tr>
+            ...
+           <tfoot> (optional)
+             ... like thead
+           </tfoot>
+         </table>
+         
+        (Optional:) add a caption.  Captioned tables will be auto-numbered by the printing process, and
+        the original file will be updated. 
+        
+        Use the same format for this as figure captions, except the class name
+        is "tableCaption" instead of "figCaption".  
+        (Optional) Use id="table_uniqueID" to identify
+        the table, if you intend to refer to it elseware.
+        
+        <a class="tableCaption" id="table_uniqueID">Kinds of operations</a>
+        
+        
+        Referring: Use
+        <a class="tableReference" href="#_table_uniqueID"></a> or 
+        <a class="tableReference" href="relFileName.html#_table_uniqueID"></a> 
+         to refer to the table in the text.  This will be replaced with 
+        <a class="tableReference" href="#_table_uniqueID">Table nnn</a> by the printing program.
+
+   Add a class="xxxx" to the table if you have special formating needs, 
+   and then add that class to the CSSes (both web and print).
+
+   Images
+        set width and height to desired
+                                
+   <img src="../UIMA_SDK_Guide_Ref/Dir/file.png"  alt="this is required in XHTML"  width="576" height="376" />
+   
+        add a caption.  Figures will be auto-numbered by the printing process, and
+        the original file will be updated. 
+
+        (Optional) Use id="fig_uniqueID" to identify
+        the table, if you intend to refer to it elseware.
+        
+        <a class="figCaption" id="_fig_uniqueID">UIMA helps you build the bridge between 
+        the unstructured and structured worlds</a>
+        
+        Referring:
+        ID your captions for future ref if you want to refer to the figure in the text
+        by adding the unique id.  You can refer to that id in other parts of the doc using:
+ 
+          <a class="figReference" href="#_fig_uniqueID"></a>  
+ 
+        Note: if the ref is to another file, use "relativenameOfFile.html#_fig_uniqueID"
+        This will be replaced with 
+        <a class="figReference" href="#_fig_uniqueID">Figure ch-nnn</a> by the printing program
+-->
+
+
+<div class="chapter">    <!-- use if this is a chapter in a book -->
+<div>   <!-- inner Div separates content from footnote -->
+
+<!-- all headings need to have a unique id.  
+     Many have been generated from original word files and look like _crossRefnnn.
+     Headings need to be globally unique.  
+     You can use something like _crossRef_chapterName_Nbr.
+     h1, 2, and 3 must have imbedded <a.. > text </a> tags.
+       The "id" is used in the generated TOC to hot link to the item, and
+       the text inside the <a..>text</a> appears in the TOC.
+-->
+
+<h1><a id="_crossRef77">Sample H1</a></h1>
+
+<!-- You can identify any object to be a link target by wrapping
+     <a id="unique_name">something to enable linking to</a>
+-->
+
+<p><a id="_crossRef78">Sample paragraph wrapped inside an Anchor so it
+can be jumpped to via another href</a></p>
+
+
+</div>  <!-- end of inner Div -->
+
+<div class="footnotesHere"></div>
+
+</div>  <!-- end of chapter div -->
+</body>
+</html>
+
+<!--
+    Rationale for this design
+    
+  1.  Many kinds browsers are used; many of them do not support CSS well;
+      many may have javaScript disabled.  The goal is to produce XHTML that 
+      can be viewed by all.  
+    
+        To this end - where there is an XHTML tag that sort of does the right formatting,
+        it is used (like <code>...</code> rather than <span class="example">...</span>)
+  
+  2.  The source should be easy to mark up with a single construct where possible for a concept.
+      For previewing, we can depend on CSS (and maybe javaScript).
+      
+  3.  The source should not be modified by the build process except where required.
+        (Required to generate the toc from the h1, h2, h3 entries).
+      
+      (Delete the big html - it's only an artifact of the build procss) 
+      
+  4.  The individual html files shipped with the distribution will be created from the
+      originals during the build process by the build process. 
+      
+         Captions for figures and tables are numbered; refs are changed to include the number.
+         (Maybe in future: TOC is numbered)
+         Footnotes are converted so they work without JavaScript.  <p> tags handled better.
+         
+         buildDocumentation also shrinks the images in the bigDoc using ghostscript.
+           
+    
+-->
