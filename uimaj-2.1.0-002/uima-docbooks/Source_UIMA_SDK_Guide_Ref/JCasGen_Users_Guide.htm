@@ -1,0 +1,146 @@
+<document>
+  <properties>
+    <title>JCasGen User Guide</title>
+  </properties>
+<body>
+
+
+
+<div class="chapter">
+<div class="Section1">
+
+
+
+<section name="JCasGen User Guide"><a id="_crossRef222"> </a>
+
+
+
+<p>JCasGen reads a descriptor for an application, creates the
+merged type system specification by merging all the type system information
+from all the components referred to in the descriptor, and then uses this
+merged type system to create Java source files for classes that enable JCas
+access to the CAS.  Java classes are not
+produced for the built-in types, except for the <code>uima.tcas.DocumentAnnotation</code>
+built-in type, which is the only built-in type that can be extended by users by
+adding features to it.</p>
+
+<p>There are several versions of JCasGen.  The basic version reads an XML descriptor
+which contains a type system descriptor, and generates the corresponding Java
+Class Models for those types.  Variants
+exist for the Eclipse environment that allow merging the newly generated Java
+source code with previously augmented versions; see page <a class="crossrefPage" href="JCas_Reference.htm#_crossRef230">27-369</a> for a discussion of how the Java Class Models can be
+augmented by adding additional methods and fields.  </p>
+
+<p>Input to JCasGen needs to be mostly self-contained.  In particular, any types that are defined to
+depend on user-defined supertypes must have that supertype defined, if the
+supertype is <code>uima.tcas.Annotation </code>or a subtype of
+it.  Any features referencing ranges
+which are subtypes of uima.cas.String must have those subtypes included.  If this is not followed, a warning message is
+given stating that the resulting generation may be inaccurate.  </p>
+
+<p>JCasGen is typically invoked using a shell script.  These scripts can take 0, 1, or 2 arguments.  The first argument is the location of the
+file containing the input XML descriptor.  The second argument specifies where the generated Java source code
+should go.  If it isn&rsquo;t given, JCasGen
+generates its output into a subfolder called JCas (or sometimes JCasNew &ndash; see
+below), of the first argument&rsquo;s path.  </p>
+
+<p>If no arguments are given to JCasGen, then it launches a
+GUI to interact with the user and ask for the same input.  The GUI will remember the arguments you
+previously used.  Here&rsquo;s what it looks
+like:</p>
+
+<p><img alt="" width="576" height="334"
+src="../UIMA_SDK_Guide_Ref/JCasGen_Users_Guide_files/image002.jpg"/></p>
+
+<p>When running with automatic merging of the generated Java
+source with previously augmented versions, the output location is where the
+merge function obtains the source for the merge operation.</p>
+
+<p>As is customary for Java, the generated class source files
+are placed in the appropriate subdirectory structure according to Java
+conventions that correspond to the package (name space) name.</p>
+
+<p>The Java classes must be compiled and the resulting class
+files included in the class path of your application; you make these classes
+available for other annotator writers using your types, perhaps packaged as an
+xxx.jar file.  If the xxx.jar file is
+made to contain only the Java Class Models for the CAS types, it can be reused
+by any users of these types.</p>
+
+<h4><a id="_crossRef223">Running stand-alone without Eclipse</a></h4>
+
+<p>There is no capability to automatically merge the
+generated Java source with previous versions, unless running with Eclipse.  If run without Eclipse, no automatic merging
+of the generated Java source is done with any previous versions.  In this case, the output is put in a folder
+called &quot;JCasNew&quot; unless overridden by specifying a second argument.</p>
+
+<p>The distribution includes a shell script/bat file to run
+the stand-alone version, called jcasgen.</p>
+
+<h4><a id="_crossRef224">Running stand-alone with Eclipse</a></h4>
+
+<p>If you have Eclipse and EMF (EMF = Eclipse Modeling
+Framework; both of these are available from <a href="http://www.eclipse.org/">http://www.eclipse.org</a>)
+installed (version 2.1 or later) JCasGen can merge the Java code it generates
+with previous versions, picking up changes you might have inserted by
+hand.  The output (and source of the
+merge input) is in a folder &quot;JCas&quot; under the same path as the input
+XML file, unless overridden by specifying a second argument.</p>
+
+<p>You must install the UIMA plug-ins into Eclipse to enable
+this function.</p>
+
+<p>The distribution includes a shell script/bat file to run
+the stand-alone with Eclipse version, called jcasgen_merge.  This works
+by starting Eclipse in &quot;headless&quot; mode (no GUI) and invoking JCasGen
+within Eclipse.  You will need to set the
+ECLIPSE_HOME environment variable or modify the jcasgen_merge shell script to specify where to find
+Eclipse.  The version of Eclipse needed
+is 2.1 or higher, with the EMF plug-in and the UIMA runtime plug-in
+installed.  A temporary workspace is used;
+the name/location of this is customizable in the shell script.</p>
+
+<p>Log and error messages are written to the UIMA log.  This file is called uima.log, and is located
+in the default working directory, which if not overridden, is the startup
+directory of Eclipse.</p>
+
+<h4><a id="_crossRef225">Running within Eclipse</a></h4>
+
+<p>There are two ways to run JCasGen within Eclipse, with
+this release.  The first way is to
+configure an Eclipse external tools launcher, and use it to run the stand-alone
+shell scripts, with the arguments filled in. Here&rsquo;s a picture of a typical
+launcher configuration screen (you get here by navigating from the top menu:
+Run &ndash;&gt;
+External Tools &ndash;&gt;
+External tools...).  </p>
+
+<p><img alt="" width="503" height="547"
+src="../UIMA_SDK_Guide_Ref/JCasGen_Users_Guide_files/image004.jpg"/></p>
+
+<p>The second way to run within Eclipse is to use the
+Analysis Engine Configurator tool <i>Chapter 7. The UIMA Component Descriptor
+Editor User&rsquo;s Guide</i>. This tool can be configured to automatically launch
+JCasGen whenever the descriptor is modified.  In this release, this operation completely regenerates the files, even
+if just a small thing changed. So you probably don&rsquo;t want to enable this all
+the time.  The configurator tool has an
+option to enable/disable this function.</p>
+
+</div>
+
+<br/>
+
+
+<div class="Section2">
+
+
+
+</div>
+<div class="footnotesHere"></div>
+</div>
+
+
+
+</section>
+</body>
+</document>

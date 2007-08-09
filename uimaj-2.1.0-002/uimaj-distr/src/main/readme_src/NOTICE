@@ -1,0 +1,12 @@
+Apache UIMA
+Copyright 2006, 2007 The Apache Software Foundation
+
+This product includes software developed at
+The Apache Software Foundation (http://www.apache.org/).
+
+The file uima-docbooks/lib/saxon-6.5.5.jar is distributed under the 
+Mozilla Public License 1.0.  The source code for saxon can be obtained at
+http://saxon.sourceforge.net/.  See uima-docbooks/lib/SAXON.license for 
+more information.  Note this file is only included in the Apache UIMA source
+distribution for the purposes of building the UIMA documentation,
+and it is not included in binary distributions of Apache UIMA.
