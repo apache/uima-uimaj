@@ -1,0 +1,1154 @@
+<document>
+  <properties>
+    <title>Component Descriptor Editor User&rsquo;s Guide</title>
+  </properties>
+<body>
+
+
+
+<div class="chapter">
+<div class="Section1">
+
+
+
+<section name="Component Descriptor Editor User&rsquo;s Guide"><a id="_crossRef96"> </a>
+
+
+
+<p>The Component Descriptor Editor is an Eclipse plug-in that
+provides a forms-based interface for creating and editing UIMA XML
+descriptors.  It supports most of the
+descriptor formats, except the Collection Processing Engine descriptor.</p>
+
+
+
+<subsection name="Launching the Component Descriptor Editor"><a id="_crossRef97"> </a>
+
+
+
+<p>Here's how to launch this tool on a descriptor contained
+in the examples.  This presumes you have
+installed the examples as described in the SDK Installation and Setup chapter.</p>
+
+<ul class="compact"><li>Expand the uima_examples project
+in the Eclipse Navigator or Package Explorer view</li>
+
+
+<li>Within this project, browse to the
+file descriptors/tutorial/ex1/RoomNumberAnnotator.xml.</li>
+
+
+<li>Right-click on this file and
+select Open With &ndash;&gt; Component Descriptor
+Editor.  (If this option is not present,
+check to make sure you installed the plug-ins as described <a class="crossrefPage" href="UIMA_SDK_Installation_and_Setup.htm#_crossRef377"></a>, <b><a class="crossrefText" href="UIMA_SDK_Installation_and_Setup.htm#_crossRef377">Install
+the UIMA Eclipse Plugins</a></b>.  The
+EMF plugin is also required.).</li>
+
+
+<li>This should open a graphical editor
+and display the contents of the RoomNumberAnnotator descriptor.
+</li></ul>
+
+
+
+
+  </subsection>
+<subsection name="Creating a New AE Descriptor"><a id="_crossRef98"> </a>
+
+
+
+<p>A new AE descriptor file may be created by selecting the
+File-&gt;New-&gt;Other... menu.  This
+brings up the following dialog:</p>
+
+<p><img alt="" width="531" height="402"
+src="../UIMA_SDK_Guide_Ref/Component_Descriptor_Editor_Users_Guide_files/image002.jpg"/></p>
+
+<p>If the user then selects UIMA and Analysis Engine Descriptor
+File, and clicks the Next &gt; button, the following dialog is displayed.  We will cover creating other kinds of
+components later in the documentation.  </p>
+
+<p><img alt="" width="324" height="261"
+src="../UIMA_SDK_Guide_Ref/Component_Descriptor_Editor_Users_Guide_files/image004.jpg"/> </p>
+
+<p>After entering the appropriate parent folder and file
+name, and clicking Finish, an initial AE descriptor file is created with the
+given name, and the descriptor is opened up within the Component Descriptor
+Editor.</p>
+
+<p>At this point, the display inside the Component Descriptor
+Editor is the same whether one started by creating a new AE descriptor, as in
+the preceding paragraph, or one merely opened a previously created AE
+descriptor from, say, the Package Explorer view.  We show a previously created AE in the figure
+below:</p>
+
+<p><img alt="" width="563" height="456"
+src="../UIMA_SDK_Guide_Ref/Component_Descriptor_Editor_Users_Guide_files/image006.jpg"/></p>
+
+<p>To see all the information shown in the main editor pane
+with less scrolling, double click the title tab to toggle between the &quot;full
+screen&quot; and normal views. </p>
+
+<p>It is possible to set the Component Descriptor Editor as
+the default editor for all .xml files by going to Window-&gt;Preferences, and
+then selecting File Associations on the left, and *.xml on the right, and
+finally by clicking on Component Descriptor Editor, the Default button and then
+OK.  If AE and Type System descriptors
+are not the primary .xml files you work with within the Eclipse environment, we
+recommend not setting the Component Descriptor Editor as your default editor
+for all .xml files.  To open an .xml file
+using the Component Descriptor Editor, if the Component Descriptor Editor is
+not set as your default editor, right click on the file in the Package
+Explorer, or other navigational view, and select Open With-&gt; Component
+Descriptor Editor.  This choice is
+remembered by Eclipse for subsequent open operations.</p>
+
+
+
+
+  </subsection>
+<subsection name="Pages within the Editor"><a id="_crossRef99"> </a>
+
+
+
+<p>The Component Descriptor Editor follows a
+standard Eclipse paradigm for these kinds of editors.  There are several pages in the editor; each
+one can be selected, one at a time, by clicking on the bottom tabs. The last
+page contains the actual XML source file being edited, and is displayed as
+plain text. </p>
+
+<p>The same set of tabs appear at the bottom of
+each page in the Component Descriptor Editor.  The Component Descriptor Editor uses this &quot;multi-page editor&quot;
+paradigm to give the user a view of conceptually distinct portions of the Descriptor
+metadata in separate pages. At any point in time the user may click on the
+Source tab to view the actual XML source.  The Component Descriptor Editor is, in a way,  just a fancy GUI for editing the XML.  The tabs provide quick access to the
+following pages: Overview, Aggregate, Parameters, Parameter Settings, Type
+System, Capabilities, Indexes, Resources, and Source.  We discuss each of these pages in turn.</p>
+
+<h3><a id="_crossRef100">Adjusting the display of pages</a></h3>
+
+<p>Most pages in the editor have a
+&quot;sash&quot; bar.  This is a light
+gray bar which separates sub-sections of the page.  This bar can be dragged with the mouse to
+adjust how the display area is split between the two sash panes.  You can also change the orientation of the
+Sash so it splits vertically, instead of horizontally, by clicking on the small
+icons at the top right of of the page that look like this: <img alt="" width="51" height="30"
+src="../UIMA_SDK_Guide_Ref/Component_Descriptor_Editor_Users_Guide_files/image008.jpg"/></p>
+
+<p>All of the sections on a page have subtitles,
+with an indicator to the left which you can click to collapse or expand that
+particular section.  Collapsing sections
+can sometimes be useful to free up screen area for other sections.</p>
+
+
+
+
+  </subsection>
+<subsection name="Overview Page"><a id="_crossRef101"> </a>
+
+
+
+<p>Normally, the first page displayed in the Component
+Descriptor Editor is the Overview page (the name of the page is shown in the
+GUI panel at the top left).  If there is
+an error reading and parsing the source, the Source page is shown instead,
+giving you the opportunity to correct the problem. For many components, the
+Overview page contains three sections: Implementation Details, Runtime
+Information and overall Identification Information.  </p>
+
+<h4>Implementation
+Details</h4>
+
+<p>In the Implementation Details section you specify the
+Implementation Language and Engine Type.  There are two kinds of Engines: Aggregate, and non-Aggregate (also
+called Primitive).  An Aggregate engine
+is one which is composed of additional component engines and contains no code,
+itself.  Several of the pages in the
+Component Descriptor Editor have different formats, depending on the engine
+type. </p>
+
+<h4>Runtime
+Information</h4>
+
+<p>Runtime information is only applicable for primitive
+engines and is disabled for aggregates.  This is where you specify the class name of the annotator
+implementation, if you are doing a Java implementation.  This documentation   always assumes you are doing a Java
+implementation.  Most Analysis Engines
+will specify that they update the CAS, and that they can be replicated when
+deployed for performance.  If a
+particular Analysis Engine must see every CAS (for instance, if it is counting
+the number of CASes), then uncheck the &quot;multiple deployment allowed&quot;
+box.  If the Analysis Engine doesn't
+update the CAS, uncheck the &quot;updates the CAS&quot; box.  (Most CAS Consumers do not update the CAS).</p>
+
+<p>Analysis engines can create additional CASes for
+analysis.  To specify that they do this,
+check the &quot;returns new artifacts&quot;.</p>
+
+<h4>Overall
+Identification Information</h4>
+
+<p>The Name should be a human-readable name that describes
+this component.  The Version, Vendor, and
+Description fields are optional, and are arbitrary strings.  </p>
+
+
+
+
+  </subsection>
+<subsection name="Aggregate Page"><a id="_crossRef102"> </a>
+
+
+
+<p>For primitive Analysis Engines, Flow Controllers or
+Collection Processing components, the Aggregate page is not used.  For aggregate engines, the page looks like
+this:</p>
+
+<p><img alt="" width="609" height="271"
+src="../UIMA_SDK_Guide_Ref/Component_Descriptor_Editor_Users_Guide_files/image010.jpg"/></p>
+
+<p>On the left we see a list of component engines, and on the
+right information about the flow.  If you
+hover the mouse over an item in the list of component engines, that engine's
+description meta data will be shown.   If
+you right-click on one of these items, you get an option to open that delegate
+descriptor in another editor instance. Any changes you make, however, won't be
+seen until you close and reopen the editor on the importing file.</p>
+
+<p>Engines can be added to the list on the left by clicking
+the Add button at the bottom of the Component Engine section.  This brings up the following dialog:</p>
+
+<p><img alt="" width="473" height="459"
+src="../UIMA_SDK_Guide_Ref/Component_Descriptor_Editor_Users_Guide_files/image012.jpg"/></p>
+
+<p>This is a rather complex dialog, but the basic idea is
+that it enables you to select multiple descriptors from various levels of your
+workspace.  As you select descriptors,
+highlight the appropriate directory on the left, and select, or multi-select
+descriptors on the right.  To select all
+descriptors in a particular directory, you may place a checkmark next to the
+directory on the left.  It is also
+possible to add descriptors that are not part of your Eclipse workspace by
+clicking the Browse file system... button.  It is only possible to add one descriptor at a time when picking from
+outside of the Eclipse workspace. </p>
+
+<p>You can specify that the import should be by Name (the
+name is looked up using both the Project's class path, and DataPath), or by
+location.  If it is by name, it may
+contain part of the path within the name.  For instance, if the file name picked is <code>c:/project/subproject/src/com/company/prod/xyz.xml</code>,
+and the class path includes <code>c:/project/subproject/src</code>,
+the name in the descriptor will be &quot;<code>com.company.prod.xyz&quot;</code>.    If it is by location, the file reference is
+converted to a relative reference if possible, in the descriptor.</p>
+
+<p>The final selection at the bottom tells whether or not the
+selected engine(s) should automatically be added to the end of the flow section
+(the right section on the Aggregate page).  The OK button does not become activated until at least one descriptor
+file is selected.</p>
+
+<p>To remove an analysis engine from the component engine
+list simply select an engine and click the Remove button, or press the delete
+key.  If the engine is already in the
+flow list you will be warned that deletion will also delete the specified
+engine from this list.</p>
+
+<h4>Adding components
+more than once</h4>
+
+<p>Components may be added to the left panel more than
+once.  Each of these components will be
+given a key which is unique.  A typical
+reason this might be done is to use a component in a flow several times, but
+have each use be associated with different configuration parameters (different
+configuration parameters can be associated with each instance).</p>
+
+<h4>Adding or Removing
+components in a flow</h4>
+
+<p>The button in-between the Component Engines and the Flow
+List, labeled <code>&gt;&gt;,</code> adds a chosen engine to the
+flow list and the button labeled <code>&lt;&lt;</code> removes an
+engine from the flow list.  To add an
+engine to the flow list you must first select an engine from the left hand
+list, and then press the <code>&gt;&gt;</code> button.  Engines may appear any number of times in the
+flow list.  To remove an engine from the
+flow list, select an engine from the right hand list and press the <code>&lt;&lt;</code> button.  </p>
+
+<h4>Adding remote
+Analysis Engines</h4>
+
+<p>There are two ways to add remote engines:  add an existing descriptor, which specifies a
+remote engine (just as if you were adding a non-remote engine) or use the Add
+Remote button which will create a remote descriptor, save it, and then import
+it, all in one operation.  The Add Remote
+button enables you to easily specify the information needed to create a Service
+Client descriptor for a remote AE  - one
+that runs on a different computer connected over the network.  The Service Client descriptor is described <a class="crossrefPage" href="Component_Descriptor_Reference.htm#_crossRef151"></a>.  The Add
+Remote button creates this descriptor, saves it as a file in the workspace, and
+imports it into the aggregate.  </p>
+
+<p>Of course, if you already have a Service Client
+descriptor, you can add it to the set of delegates, just like adding other
+kinds of analysis engines.</p>
+
+<p>After clicking on Add Remote, the following dialog is
+displayed:</p>
+
+<p><img alt="" width="576" height="518"
+src="../UIMA_SDK_Guide_Ref/Component_Descriptor_Editor_Users_Guide_files/image014.jpg"/></p>
+
+<p>To define a remote service you specify the Service Kind,
+Protocol Service Type, URI and Key.  You can
+also specify a Timeout in milliseconds, used by the SOAP service, and a VNS
+Host and Port used by the Vinci Service.  Just like when one adds an engine from the file system, you have the
+option of adding the engine to the end of the flow.  The Component Descriptor Editor currently
+only supports Vinci and SOAP services using this dialog.  </p>
+
+<p>Remote engines are added to the descriptor using the
+&lt;import ... &gt; syntax.  The
+information you specify here is saved in the Eclipse project as a file, using a
+generated name, &lt;key-name&gt;.xml, where &lt;key-name&gt; is the name you
+listed as the Key.  Because of this, the
+key-name must be a valid file name.  If
+you want a different name, you can change the path information in the dialog
+box.</p>
+
+<h4>Connecting to
+Remote Services</h4>
+
+<p>If you are using the Vinci protocol, it requires that you
+specify the location of the Vinci Name Server (an IP address and a Port
+number).  You can specify these in the
+service descriptor, or globally, for your Eclipse workspace, using the Eclipse
+menu item: Window -&gt; Preferences... -&gt; UIMA Preferences.  If the remote service is available (up and
+running), additional operations become possible.  For instance, hovering the mouse over the
+remote descriptor will show the description metadata from the remote service. </p>
+
+<h4>Finding Analysis
+Engines by searching</h4>
+
+<p>The next button that appears between the component engine
+list and the flow list is the Find AE button.  When this button is pressed the following dialog is displayed, which
+allows one to search for AEs by name, by input or output types, or by a
+combination of these criteria.  This
+function searches the existing Eclipse workspace for matching *.xml descriptor
+source files; it does not look inside Jar files.</p>
+
+<p><img alt="" width="518" height="312"
+src="../UIMA_SDK_Guide_Ref/Component_Descriptor_Editor_Users_Guide_files/image016.jpg"/></p>
+
+<p>The search automatically adds a &quot;match any
+characters&quot; - style (*) wildcard at the beginning and end of anything
+entered.  Thus, if person is specified
+for an output type, a &quot;<b>*</b>person*&quot; search is performed. Such a
+search would match such things as &quot;my.namespace.person&quot; and &quot;person.governmentOfficial.&quot;  One can search in all projects or one
+particular project.  The search does an
+implicit <i>and</i> on all fields which are left non-blank.</p>
+
+<h4>Component Engine
+Flow</h4>
+
+<p>The UIMA SDK currently supports three kinds of sequencing
+flows:  Fixed, CapabilityLanguageFlow
+(see <b><a class="crossrefText" href="Component_Descriptor_Reference.htm#_crossRef142"><i>Capability Language Flow</i></a></b> <a class="crossrefPage" href="Component_Descriptor_Reference.htm#_crossRef142"></a>), and user-defined.  The first two require specification of a linear flow sequence; this
+linear flow sequence can also be read by a user-defined flow controller.  The Component Engine Flow section allows
+specification of these items.</p>
+
+<p>The pull-down labeled Flow Kind picks between the three
+flow models.  When the user-defined flow
+is selected, the Browse and Search buttons become enabled to let you pick the
+flow controller XML descriptor to import.  </p>
+
+<p><img alt="" width="402" height="209"
+src="../UIMA_SDK_Guide_Ref/Component_Descriptor_Editor_Users_Guide_files/image018.jpg"/> </p>
+
+<p>The key name value is set automatically from the XML
+descriptor being imported, and enables parameters to be overridden for that
+descriptor (see following sections).</p>
+
+<p>The Up and Down buttons to the right in the Flow section
+are activated when an engine in the flow is selected.  The Up button moves the selected engine up
+one place in the execution order, and down moves the selected engine down one
+place in the execution order.  Remember
+that engines can appear multiple times in the flow (or not at all).</p>
+
+
+
+
+  </subsection>
+<subsection name="Parameters Definition Page"><a id="_crossRef103"> </a>
+
+
+
+<p>There are two pages for parameters: the first one is where
+parameters are defined, and the second one is where the parameter settings are
+configured.  The first page is the
+Parameter Definition page and  has two
+alternatives, depending on whether or not the descriptor is an Aggregate or
+not.  We start with a description of
+parameter definitions for Primitive engines, CAS Consumers, Collection Readers,
+CAS Initializers, and Flow Controllers.  Here is an example:</p>
+
+<p><img alt="" width="495" height="380"
+src="../UIMA_SDK_Guide_Ref/Component_Descriptor_Editor_Users_Guide_files/image020.jpg"/></p>
+
+<p>The first checkbox at the top simplifies things if you are
+not using Parameter Groups (see the following section for a discussion of
+groups).  In this case, leave the check
+box unchecked.  The main area shows a
+list of parameter definitions.  Each
+parameter has a name, which must be unique for this Analysis Engine.  The other three attributes specify whether
+the parameter can have a single or multiple values (an array of values),
+whether it is Optional or Mandatory, and what the value type it can hold
+(String, Integer, Float, and Boolean).</p>
+
+<p>In addition to using the buttons on the right to edit this
+information, you can double-click a parameter to edit it, or remove (delete) a
+selected parameter by pressing the delete key.  Use the Add button to add a new parameter to the list.</p>
+
+<p>Parameters have an additional description field, which you
+can specify when you add or edit a parameter.  To see the value of the description, hover the mouse over the item, as
+shown in the picture below:</p>
+
+<p><img alt="" width="488" height="339"
+src="../UIMA_SDK_Guide_Ref/Component_Descriptor_Editor_Users_Guide_files/image022.jpg"/></p>
+
+<h4>Using groups</h4>
+
+<p>The group concept for parameters arose from the
+observation that sets of parameters were sometimes associated with different
+configuration needs.  As an example, you
+might have an Analysis Engine which needed different configuration based on the
+language of a document.</p>
+
+<p>To use groups, you check the &quot;Use Parameter Groups&quot;
+box.  When you do this, you get the
+ability to add groups, and to define parameters within these groups.  You also get a capability to define
+&quot;Common&quot; parameters, which are parameters which are defined for all
+groups.  Here is a screen shot showing some
+parameter groups in use:</p>
+
+<p><img alt="" width="466" height="383"
+src="../UIMA_SDK_Guide_Ref/Component_Descriptor_Editor_Users_Guide_files/image024.jpg"/></p>
+
+<p>You can see the &quot;&lt;Common&gt;&quot; parameters as
+well as two different sets of groups.</p>
+
+<p>The Default Group is an optional specification of what
+Group to use if the parameter is not available for the group requested.</p>
+
+<p>The Search strategy specifies what to do when a parameter
+is not available for the group requested.  It can have the values of None, language_fallback, or
+default_fallback.  These are more fully described
+in the section <b><a class="crossrefText" href="Component_Descriptor_Reference.htm#_crossRef129"><i>Configuration Parameter Declaration</i></a></b> <a class="crossrefPage" href="Component_Descriptor_Reference.htm#_crossRef129"></a>.</p>
+
+<p>Groups are added using the Add Group button.  Once added, they can be edited or removed,
+using the buttons to the right, or the standard gestures for editing
+(double-clicking the item) and removing (pressing the delete key after an item
+is selected).  Removing a group removes
+all the parameter definitions in the group.  If you try and remove the &quot;&lt;Common&gt;&quot; group, it just
+removes the parameters in the group.</p>
+
+<p>Each entry for a group in the table specifies one or more
+group names.  For example, the
+highlighted entry above, specifies two groups: &quot;myNewGroup2&quot; and
+&quot;mg3&quot;.  The parameter
+definition underneath is considered to be in both groups.</p>
+
+<h3><a id="_crossRef104">Parameter declarations for
+Aggregates</a></h3>
+
+<p>Aggregates declare parameters which always must override a
+parameter setting for a component making up the aggregate.  They do this using the version of this page
+which is shown when the descriptor is an Aggregate; here's an example:</p>
+
+<p><img alt="" width="575" height="319"
+src="../UIMA_SDK_Guide_Ref/Component_Descriptor_Editor_Users_Guide_files/image026.jpg"/></p>
+
+<p>There is an additional panel shown (on the right) which
+lists all of the components by their key names, and shows for each of them
+their defined parameters.  To add a new
+override for one or more of these parameters to the aggregate, select the
+component parameter you wish to override and push the Create Override button
+(or, you can just double-click the component parameter).  This will automatically add a parameter of
+the same name (by default &ndash; you can change the name if you like) to the
+aggregate, putting it into the same group(s) (if groups are being used in the
+component &ndash; this is required), and setting the properties of the parameter to
+match those of the component (this is required).</p>
+
+<ul class="note"><li>If the name of the parameter being added already is in use in the
+aggregate, and the parameters are not compatible, a new parameter name is
+generated by suffixing the name with a number.  If the parameters are compatible, the selected component parameter is
+added to the existing aggregate parameter, as an additional override.   If you don't want this behavior, but want to
+have a new name generated in this case, push the Create non-shared Override
+button instead, or hold down the &quot;shift&quot; key when double clicking the
+component parameter.</li>
+
+
+<li>The required / optional setting in the aggregate parameter is set to
+match that of the parameter being overridden.  You may want to make an optional delegate parameter required.  You can do this by changing that value
+manually in the source editor view.
+</li></ul>
+
+<p>In the above example, the user has just double-clicked the
+&quot;TypeNames&quot; parameter in the &quot;NameRecognizer&quot;
+component.  This added that parameter to
+this aggregate under the &quot;&lt;Not in any group&gt;&quot; section &ndash; since
+it wasn't part of a group.   </p>
+
+<p>Once you have added a parameter definition to the
+aggregate, you can use the buttons on the right side of the left panel to add
+additional overrides or remove parameters or their overrides.  <a id="_crossRef105">You can also remove
+groups; removing a group is like removing all the parameter definitions in the
+group.</a></p>
+
+<p>In addition to adding one parameter at a time from a component,
+you can also add all the parameters for a group within a component, or all the
+parameters in the component, by selecting those items.</p>
+
+<p>If you double-click (or push Create Override) the
+&quot;&lt;Common&gt;&quot; group or a parameter in the &lt;Common&gt; group in
+a component, a special group is created in the Aggregate consisting of all of
+the groups in that component, and the overriding parameter (or parameters) are
+added to that.  This is done because each
+component can have different groups belonging to the Common group notion; the
+Common group for a component is just shorthand for all the groups in that
+component.</p>
+
+<p>The Aggregate's specification of the default group and
+search strategy override any specifications contained in the components.</p>
+
+
+
+
+  </subsection>
+<subsection name="Parameter Settings Page"><a id="_crossRef106"> </a>
+
+
+
+<p>The Parameter Settings page is rather straightforward; it
+is where the user defines parameter settings for their engines.  An example of such a page is given below:</p>
+
+<p><img alt="" width="576" height="337"
+src="../UIMA_SDK_Guide_Ref/Component_Descriptor_Editor_Users_Guide_files/image028.jpg"/></p>
+
+<p>For single valued attributes, the user simply types the
+default value into the Value box on the right hand side.  For multi-valued parameters the user should
+use the Add, Edit and Remove buttons to manage the list of multiple parameter
+values.</p>
+
+<p>Values within groups are shown with each group separately
+displayed, to allow configuring different values for each group.</p>
+
+<p>Values are checked for validity.  For Boolean values in a list, use the words <code>true</code> or <code>false</code>.</p>
+
+<ul class="note"><li>If you specify a value in a single-valued parameter, and then delete
+all the characters in the value, the CDE will treat this as if you wanted to
+not specify any setting for this parameter.  In order to specify a 0 length string setting for a String-valued
+parameter, you will have to manually edit the XML using the &quot;Source&quot;
+tab.  <br/>
+<br/>
+For array valued parameters, if you remove all of the entries for a particular
+array parameter setting, the XML will reflect a 0-length array.  To change this to an unspecified parameter
+setting, you will have to manually edit the XML using the &quot;Source&quot;
+tab.
+</li></ul>
+
+
+
+
+  </subsection>
+<subsection name="Type System Page"><a id="_crossRef107"> </a>
+
+
+
+<p>This page declares the type system used by the
+annotator.  For aggregates it is derived
+by merging the type systems of all constituent AEs. The types used by the AE
+constitute the language in which the inputs and outputs are described in the
+Capabilities page and also affect the choice of indexes on the Indexes
+page.  The Type System page looks like
+the following:</p>
+
+<p><img alt="" width="618" height="364"
+src="../UIMA_SDK_Guide_Ref/Component_Descriptor_Editor_Users_Guide_files/image030.jpg"/></p>
+
+<p>Before discussing this page in detail, it is important to
+note that there are two settings that affect the operation of this page.  These are accessed by selecting the
+UIMA-&gt;Settings (or by going to the Eclipse Window -&gt; Preferences -&gt;
+UIMA Preferences) and checking or unchecking one of the following: &quot;Auto
+generate .java files when defining types&quot; and &quot;Display fully
+qualified type names.&quot;  </p>
+
+<p>When the Auto generate option is checked and the development
+language for the AE is Java, any time a change is made to a type and the change
+is saved, the corresponding .java files are generated using the JCasGen
+tool.  The results are stored in the
+primary source directory defined for the project.  The primary source directory is that listed
+first when you right click on your project and select Properties-&gt;Java Build
+Path, click on the Source tab and look in the list box under the text that
+reads: &quot;Source folder on build path.&quot;  If no source folders are defined, you will get a warning that you have
+no source folders defined and JCasGen will not be run. (For information on
+JCasGen see <a class="crossrefText" href="JCasGen_Users_Guide.htm#_crossRef222">Chapter 19, <b>JCasGen User Guide</b></a>)   When JCasGen is run, you can monitor the
+progress of the generation by observing the status on the Eclipse status line
+(normally at the bottom of the Eclipse window).  JCasGen runs on the fully-merged type system, consisting of the type
+specification plus any imported type system, plus (for aggregates) the merged
+type systems of all the components in an aggregate.</p>
+
+<ul class="note"><li>In addition to running automatically, you can manually run JCasGen on
+the fully merged type system by clicking the JCasGen button, or by selecting
+Run JCasGen from the UIMA pulldown menu:
+</li></ul>
+
+<p><img alt="" width="594" height="127"
+src="../UIMA_SDK_Guide_Ref/Component_Descriptor_Editor_Users_Guide_files/image032.jpg"/></p>
+
+<p>When &quot;Display fully qualified type names&quot; is
+left unchecked, the namespace of types is not displayed, i.e. if a fully
+qualified type name is my.namespace.person, only the abbreviated type name
+person will be displayed.  In the Type
+page diagram shown above, &quot;Display fully qualified type names&quot; is in
+fact unchecked.</p>
+
+<p>To add, edit, or remove types the buttons on the top left
+section are used. When adding or editing types, fully qualified type names
+should of course be used, regardless of whether the &quot;Display fully
+qualified type names&quot; is unchecked.  Removing or editing a type will have a cascading effect in that the type
+removal/edit will effect inputs, outputs, indexes and type priorities in the
+natural way. </p>
+
+<p>When a type is added, this dialog is shown:</p>
+
+<p><img alt="" width="452" height="378"
+src="../UIMA_SDK_Guide_Ref/Component_Descriptor_Editor_Users_Guide_files/image034.jpg"/></p>
+
+<p>Type names should be specified using a namespace.  The namespace is like a Java package name,
+and serves to insure type names are unique.  It also serves as the package name for the generated JCas classes.  The namespace name is the set of names up to
+the last period in the string.  </p>
+
+<p>The supertype must be picked from an existing type.  The entry field for the supertype supports
+Eclipse-style content assist.  To use it,
+put the cursor in the supertype field, and type a letter or two of the
+supertype name (lower case is fine), either starting with the name space, or
+just with the type name (without the name space), and hold down the Control key
+and then press the spacebar.    When you
+do this, you can see a list of suitable matching types.  You can then type more letters to narrow down
+your choices, or pick the right entry with the mouse. </p>
+
+<p>To see the available types and pick one, press the Browse
+button.  This will show the available
+types, and as you type letters for the type name (in lower case &ndash;
+capitalization is ignored), the available types that match are narrowed.  When you've typed enough to specify the type
+you want, press Enter.  Or you can use
+the list of matching type names and pick the one you want with the mouse.</p>
+
+<p>Once you've added the type, you can add features to it by
+highlighting the type, and pressing the Add button.  </p>
+
+<p>If the type being defined is a subtype of uima.cas.String,
+the Add button allows you to add allowed values for the string, instead of
+adding features.</p>
+
+<p>To edit a type or feature, you can double click the entry,
+or highlight the entry and press the Edit button.  To delete a type or feature, you highlight
+the entry to be deleted, and click the delete button or push the delete key.</p>
+
+<p>If the range of a feature is an array or one of the
+built-in list types, an additional specification allows you to specify if
+multiple references to the object referenced by this feature are allowed.  If they are not allowed then the XMI
+serialization of instances of this type use a more efficient format.  </p>
+
+<p>If the range of a feature is an array of Feature
+Structures, then it is possible to specify an element type for the array.  This information is used in the XMI
+serialization and also by the JCas generation routines to generate more
+efficient code.</p>
+
+<p><img alt="" width="444" height="408"
+src="../UIMA_SDK_Guide_Ref/Component_Descriptor_Editor_Users_Guide_files/image036.jpg"/></p>
+
+<p>It is also possible to import type systems for inclusion
+in your descriptor.  To do this, use the
+Type Import panel's<code> Add...</code> button.  This allows you to import a type system
+descriptor.  </p>
+
+<p>When importing by name, the name is resolved using the
+class path for the Eclipse project containing the descriptor file being edited,
+or by looking up this name in the UIMA DataPath.  The DataPath can be set by pushing the Set
+DataPath button.  It will be remembered
+for this Eclipse project, as a project Property, so you only have to set it
+once (per project).  The value of the
+DataPath setting is written just like a class path, and can include directories
+or JAR files, just as is true for class paths.</p>
+
+<p>The following dialog allows you to pick one or more files
+from the Eclipse workspace, or one file (at a time) from the file system:</p>
+
+<p><img alt="" width="473" height="416"
+src="../UIMA_SDK_Guide_Ref/Component_Descriptor_Editor_Users_Guide_files/image038.jpg"/></p>
+
+<p>This is essentially the same dialog as was used to add
+component engines to an aggregate.  This
+dialog supports multi-selection &ndash; all selected items will be imported.  To import from a type system descriptor that
+is not part of your Eclipse workspace, click the Browse the file system....
+button.  </p>
+
+<p>Imported types are validated, and if OK, they are added to
+the list in the Imported Type Systems section of the Type System page.  Any types they define are merged with the
+existing type system.  </p>
+
+<p>Imported types and features which are only defined in
+imports are shown in the Type System section, but in a grayed-out font; these
+type cannot be edited here.  To change
+them, open up the imported type system descriptor, and change them there.</p>
+
+<p>If you hover the mouse over an import specification, it
+will show more information about the import.  If you right-click, it will bring up a context menu that allows opening
+the imported file in the Editor, if the imported file is part of the Eclipse
+workspace.  Changes you make, however,
+won't be seen until you close and reopen the editor on the importing file.</p>
+
+<p>It is not possible to define types for an aggregate
+analysis engine.  In this case the type
+system is computed from the component AEs.  The Type System information is shown in a grayed-out font.</p>
+
+<h3><a id="_crossRef108">Exporting</a></h3>
+
+<p>In addition to importing type specifications, you can
+export as well.  When you push the
+Export... button, the editor will create a new importable XML descriptor for
+the types in this type system, and change the existing descriptor to import
+that newly created one.  </p>
+
+<p><img alt="" width="453" height="377"
+src="../UIMA_SDK_Guide_Ref/Component_Descriptor_Editor_Users_Guide_files/image040.jpg"/></p>
+
+<p>The  base file name
+you type is inserted into the path in the line below automatically.  You can change the path where the generated
+part descriptor is stored by overtyping the lower text box.  When you click OK, the new part descriptor
+will be generated, and the current descriptor will be changed to import that
+part.</p>
+
+
+
+
+  </subsection>
+<subsection name="Capabilities Page"><a id="_crossRef109"> </a>
+
+
+
+<p>Capabilities come in &quot;sets&quot;.  You can have multiple sets of capabilities;
+each one specifies languages supported, plus inputs and outputs of the Analysis
+Engine.  The idea behind having multiple
+sets is the concept that different inputs can result in different outputs.  Many Analysis Engines, though, will probably
+define just one set of capabilities.  A
+sample Capabilities page is given below:</p>
+
+<p><img alt="" width="529" height="429"
+src="../UIMA_SDK_Guide_Ref/Component_Descriptor_Editor_Users_Guide_files/image042.jpg"/></p>
+
+<p>When defining the capabilities of a primitive analysis
+engine, input and output types can be any type defined in the type system.  When defining the capabilities of an
+aggregate the inputs must be a subset of the union of the inputs in the
+constituent analysis engines and the outputs must be a subset of the union of
+the outputs of the constituent analysis engines.  </p>
+
+<p>To add a type, first select something in the set you wish
+to add the type to, and press Add Type.  The following dialog appears presenting the user with a list of types
+which are candidates for additional inputs:</p>
+
+<p><img alt="" width="434" height="249"
+src="../UIMA_SDK_Guide_Ref/Component_Descriptor_Editor_Users_Guide_files/image044.jpg"/></p>
+
+<p>Follow the instructions to mark the types as input and /
+or output (a type can be both).  By
+default, the &lt;all features&gt; flag is set to true.  If you want to specify a subset of features
+of a type, read on.</p>
+
+<p>When types have features, you can specify what features
+are input and / or output.  A type
+doesn't have to be an output to have an output feature.  For example, an Analysis Engine might be
+passed as input a type Token, and it adds (outputs) a feature to the existing
+Token types.  If no new Token instances
+were created, it would not be an output Type, but it would have features which
+are output.  </p>
+
+<p>To specify features as input and / or output (they can be
+both), select a type, and press Add.  The
+following dialog box appears:</p>
+
+<p><img alt="" width="428" height="230"
+src="../UIMA_SDK_Guide_Ref/Component_Descriptor_Editor_Users_Guide_files/image046.jpg"/></p>
+
+<p>To mark a feature as being input and / or output, click
+the mouse in the input and / or output column for the feature.  If you select &lt;all features&gt;, it
+unmarks any individual feature you selected, since &lt;all features&gt;
+subsumes all the features.</p>
+
+<p>The Languages part of the capability is where you specify
+what languages are supported by the Analysis Engine.  Supported languages should be listed using
+either a two letter ISO-639 language code, or an ISO-639 language code followed
+by a two-letter ISO-3166 country code. Add a language by selecting Languages
+and pressing the Add button.  The dialog
+for adding languages is given below.</p>
+
+<p><img alt="" width="444" height="168"
+src="../UIMA_SDK_Guide_Ref/Component_Descriptor_Editor_Users_Guide_files/image048.jpg"/></p>
+
+<p>The Sofa part of the capability is optional; it allows
+defining Sofa names that this component uses, and whether they are input
+(meaning they are created outside of this component, and passed into it), or
+output (meaning that they are created by this component).  Note that a Sofa can be either input or
+output, but can't be both.</p>
+
+<p>To add a Sofa name, press the Add Sofa button, and this
+dialog appears:</p>
+
+<p><img alt="" width="452" height="280"
+src="../UIMA_SDK_Guide_Ref/Component_Descriptor_Editor_Users_Guide_files/image050.jpg"/></p>
+
+<h3><a id="_crossRef110">Sofa name mappings</a></h3>
+
+<p>Sofa names, once created, are used in Sofa Mappings.  These are optional mappings, done in an
+aggregate, that specify which Sofas are the same ones but with different
+names.  The Sofa Mappings section is
+minimized unless you are editing an Aggregate descriptor, and have one or more
+Sofa names defined for the aggregate.  In
+that case, the Sofa Mappings section will look like this:</p>
+
+<p><img alt="" width="528" height="626"
+src="../UIMA_SDK_Guide_Ref/Component_Descriptor_Editor_Users_Guide_files/image052.jpg"/></p>
+
+<p>Here the aggregate has defined two input Sofas, named
+&quot;MyInputSofa&quot;, and &quot;AnotherSofa&quot;.  Any named sofas in the aggregate's
+capabilities will appear in the Sofa Mapping section, listed either under
+Inputs or Outputs.  Each name in the
+Mappings has 0 or more delegate (component) sofa names mapped to it.  A delegate may have multiple Sofas, as in
+this example, where the GovernmentOfficialRecognizer delegate has Sofas named
+&quot;so1&quot; and &quot;so2&quot;.  </p>
+
+<p>Delegate components may be written as Single-View
+components.  In this case, they have one
+implicit, default Sofa (&quot;_InitialView&quot;), and to map to it you use the
+form shown for the &quot;NameRecognizer&quot; &ndash; you map to the delegate's key
+name in the aggregate, without specifying a Sofa name.  You can also specify the sofa name
+explicitly, e.g., NameRecognizer/_InitialView.</p>
+
+<p>To add a new mapping, select the Aggregate Sofa name you
+wish to add the mapping for, and press the Add button.  This brings up a window like this, showing
+all available delegates and their Sofas; select one or more (use the normal
+multi-select methods) of these and press OK to add them.  </p>
+
+<p><img alt="" width="657" height="233"
+src="../UIMA_SDK_Guide_Ref/Component_Descriptor_Editor_Users_Guide_files/image054.jpg"/></p>
+
+<p>To edit an existing mapping, select the mapping and press
+Edit.  This will show the existing
+mapping with all mapped items &quot;selected&quot;, and other available items
+unselected.  Change the items selected to
+match what you want, deselecting some, and perhaps selecting others, and press
+OK.</p>
+
+
+
+
+  </subsection>
+<subsection name="Indexes Page"><a id="_crossRef111"> </a>
+
+
+
+<p>The Indexes page is where the user declares what indexes
+and type priority lists are used by the analysis engine.  Indexes are used to determine the order in
+which Feature Structures of a particular type are fetched, using an iterator in
+the UIMA API. An unpopulated Indexes page is displayed below:</p>
+
+<p><img alt="" width="568" height="652"
+src="../UIMA_SDK_Guide_Ref/Component_Descriptor_Editor_Users_Guide_files/image056.jpg"/></p>
+
+<p>Both indexes and type priority lists can have
+imports.  These imports work just like
+the type system imports, described above.  Both indexes and type priority lists can be exported to new component descriptors,
+using the Export... button, just like the type system export operation
+described above.</p>
+
+<p>The built-in Annotation Index is always present.  It is based on the built-in type <code>uima.tcas.Annotation </code>and has keys begin (Ascending), end (Descending)
+and TYPE_PRIORITY.  There are no built-in
+type priorities, so this last sort item does not play a role in the index unless
+type priorities are specified.  </p>
+
+<p>Type priority may be combined with other keys.  Type priorities are defined in the Priority
+Lists section, using one or more priority list.  A given priority list gives an ordering among a group of types.  Types that appear higher in the priority list
+are given higher priority, in other words, they sort first when TYPE_PRIORITY
+is specified as the index key.  Subtypes
+of these types are also ordered in a consistent manner, unless overridden by
+another specific type priority specification.  To get the ordering used among all the types, all of the type priority
+lists are merged.  This gives a partial
+ordering among the types.  Ties are
+resolved in an unspecified fashion.  The
+Component Descriptor Editor checks for incompatible orderings, and informs the
+user if they exist, so they can be corrected.</p>
+
+<p>To create a new index, use the Add Index button in the top
+left section.  This brings up this
+dialog:</p>
+
+<p><img alt="" width="409" height="377"
+src="../UIMA_SDK_Guide_Ref/Component_Descriptor_Editor_Users_Guide_files/image058.jpg"/></p>
+
+<p>Each index needs a globally unique index name.  Every index indexes one CAS type (and its
+subtypes).  The entry field for this has
+content assist (start typing the type name and press Control &ndash; Spacebar to get
+help, or press the Browse button to pick a type).  </p>
+
+<p>Indexes can be sorted, in which case you need to specify
+one or more keys to sort on. Sort keys are selected from features whose range
+type is Integer, Float, or String.  Some
+elements will be disabled if they are not relevant.  For instance, if the index kind is
+&quot;bag&quot;, you cannot provide sort keys.  The order of sort keys can be adjusted using the up and down buttons, if
+necessary.  </p>
+
+<p>A set index will contain no duplicates of the same type,
+where a duplicate is defined by the indexing comparator.  That is, if you commit two feature structures
+of the same type that are equal with respect to the indexing comparator, only
+the first one will be entered into the index.  Note that you can still have duplicates with respect to the indexing
+order, if they are of a different type.  A set index is not guaranteed to be sorted.  If no keys are specified for a set index,
+then all instances are considered by default to be equal, so only the first
+instance (for a particular type or subtype of the type being indexed) is
+indexed.  On the other hand, &quot;bag&quot;
+indicates that all annotation instances are indexed, including duplicates. </p>
+
+<p>The Priority Lists section of the Indexes page is used to
+specify Priority Lists of types.  Priority Lists are unnamed ordered sets of type names.  Add a new priority list by clicking the Add
+Set button.  Add a type to an existing
+priority list by first selecting the set, and then clicking Add.  You can use the up and down buttons to adjust
+the order as necessary; these buttons move the selected item up or down. </p>
+
+<p>Although it is possible to import self-contained index and
+type priority files, the creation of such files is not yet supported by the
+Component Descriptor Editor.  If you
+create these files using another editor, they can be imported using the
+corresponding Import panels, shown on the right.  Imports are specified in the same manner as
+they are for Type System imports.</p>
+
+
+
+
+  </subsection>
+<subsection name="Resources Page"><a id="_crossRef112"> </a>
+
+
+
+<p>The resources page describes resource
+dependencies (for primitive Analysis Engines) and external Resource
+specification and their bindings to the resource dependencies.</p>
+
+<p>Only primitive Analysis Engines define
+resource dependencies.  Primitive and
+Aggregate Analysis Engines can define external resources and connect them (bind
+them) to resource dependencies.</p>
+
+<p>When an Aggregate is providing an external
+resource to be bound to a dependency, the binding is specified using a possibly
+multi-level path, starting at the Aggregate, and specify which component (by
+its key name), and then if that component is, in turn, an Aggregate, which
+component (again by its key name), and so on until you reach a primitive.  The sequence of key names is made into the
+binding specification by joining the parts with a &quot;/&quot; character.  All of this is done for you by the Component
+Descriptor Editor.</p>
+
+<p>Any external resource provided by an
+Aggregate will override any binding provided by any lower level component for
+the same resource dependency.</p>
+
+<p>There are two views of the Resources page,
+depending on whether the Analysis Engine is an Aggregate or Primitive.  Here's the view for a Primitive:</p>
+
+<p><img alt="" width="515" height="515"
+src="../UIMA_SDK_Guide_Ref/Component_Descriptor_Editor_Users_Guide_files/image060.jpg"/></p>
+
+<p>To declare a resource dependency, click the
+Add button in the right hand panel.  This
+puts up the dialog:</p>
+
+<p><img alt="" width="396" height="325"
+src="../UIMA_SDK_Guide_Ref/Component_Descriptor_Editor_Users_Guide_files/image062.jpg"/></p>
+
+<p>The Key must be unique within the descriptor
+declaring it.  The Interface, if present,
+is the name of a Java interface the Analysis Engine uses to access the
+resource.</p>
+
+<p>Declare actual External resource on the left
+side of the page.  Clicking
+&quot;Add&quot; brings up this dialog:</p>
+
+<p><img alt="" width="396" height="393"
+src="../UIMA_SDK_Guide_Ref/Component_Descriptor_Editor_Users_Guide_files/image064.jpg"/></p>
+
+<p>The Name must be unique within this Analysis
+Engine.  The URL identifies a file
+resource.  If both the URL and URL suffix
+are used, the file resource is formed by combining the first URL part with the
+language-identifier, followed by the URL suffix; see <b><a class="crossrefText" href="Component_Descriptor_Reference.htm#_crossRef136">Resource
+Manager Configuration</a></b> <a class="crossrefPage" href="Component_Descriptor_Reference.htm#_crossRef136"></a>.  URLs may be
+written as &quot;relative&quot; URLs; in this case they are resolved by looking
+them up relative to the classpath and/or datapath.  A relative URL has the path part starting
+without an intial &quot;/&quot;; for example: file:my/directory/file.  An absolute URL starts with file:/ or file:///
+or file://some.network.address/.  For
+more information about URLs, please read the javaDoc information for the Java
+class &quot;URL&quot;.</p>
+
+<p>The Implementation is optional, and if given,
+must be a Java class that implements the interface specified in any Resource
+Dependencies this resource is bound to.</p>
+
+<h3><a id="_crossRef113">Binding</a></h3>
+
+<p>Once you have an external resource
+definition, and a Resource Dependency, you can bind them together. To do this,
+you select the two things (an external resource definition, and a Resource
+Dependency) that you want to bind together, and click Bind. </p>
+
+<h3><a id="_crossRef114">Resources with Aggregates</a></h3>
+
+<p>When editing an Aggregate Descriptor, the
+Resource definitions panel will show all the resources at the primitive level,
+with paths down through the components (multiple levels, if needed) to get to
+the primitives.  The Aggregate can define
+external resources, and bind them to one or more uses by the primitives.</p>
+
+<h3><a id="_crossRef115">Imports and Exports</a></h3>
+
+<p>Resource definitions and their bindings can
+be imported, just like other imports.  Existing Resource definitions and their bindings can be exported to a
+new importable part, and replaced with an import for that importable part,
+using the &quot;Export...&quot; button, just like the similar function on the
+Type System page.</p>
+
+
+
+
+  </subsection>
+<subsection name="Source Page"><a id="_crossRef116"> </a>
+
+
+
+<p>The Source page is a text view of the xml content of the
+Analysis Engine or Type System being configured.  An example of this page is displayed below:</p>
+
+<p><img alt="" width="576" height="284"
+src="../UIMA_SDK_Guide_Ref/Component_Descriptor_Editor_Users_Guide_files/image066.jpg"/></p>
+
+<p>Changes made in the GUI are immediately reflected in the
+xml source, and changes made in the xml source are immediately reflected back
+in the GUI.  The thought here is that the
+GUI view and the Source view are just two ways of looking at the same data.  When the data is in an unsaved state the file
+name is prefaced with an asterisk in the currently selected file tab in the
+editor pane inside Eclipse (as in the example above).</p>
+
+<p>You may accidentally create invalid descriptors or XML by
+editing directly in the Source view.  If
+you do this, when you try and save or when you switch to a different view, the
+error will be detected and reported.  In
+the case of saving, the file will be saved, even if it is in an error
+state.  </p>
+
+<h3><a id="_crossRef117">Source formating &ndash; indentation</a></h3>
+
+<p>The XML is indented using an indentation amount saved as a
+global UIMA preference.  To change this
+preference, use the Eclipse menu item: Windows -&gt; Preferences -&gt; UIMA
+Preferences.</p>
+
+
+
+
+  </subsection>
+<subsection name="Creating a Self-Contained Type System"><a id="_crossRef118"> </a>
+
+
+
+<p>It is also possible to use the Component Descriptor Editor
+to create or edit self-contained type systems.  To create a self-contained type system, select the menu item
+File-&gt;New-&gt;Other and then select Type System Descriptor File.  From the next page of the selection wizard specify
+a Parent Folder and File name and click Finish.  </p>
+
+<p><img alt="" width="377" height="417"
+src="../UIMA_SDK_Guide_Ref/Component_Descriptor_Editor_Users_Guide_files/image068.jpg"/></p>
+
+<p><img alt="" width="330" height="265"
+src="../UIMA_SDK_Guide_Ref/Component_Descriptor_Editor_Users_Guide_files/image070.jpg"/></p>
+
+<p>This will take you to a version of the Component
+Descriptor Editor for editing a type system file which contains just three
+pages: an overview page, a type system page, and a source page.  The overview page is a bit more spartan than
+in the case of an AE.  It looks like the
+following:</p>
+
+<p><img alt="" width="372" height="304"
+src="../UIMA_SDK_Guide_Ref/Component_Descriptor_Editor_Users_Guide_files/image072.jpg"/></p>
+
+<p>Just like an AE has an associated name, version, vendor
+and description, the same is true of a self-contained type system.  The Type System page is identical to that in
+an AE descriptor file, as is the Source page.  Note that a self-contained type system can import type systems just like
+the type system associated with an AE.</p>
+
+<p>A type system component can also be created from an
+existing descriptor which contains a type system definition section, by
+clicking on the Export... button on the Type System page.</p>
+
+
+
+
+  </subsection>
+<subsection name="Creating Other Descriptor Components"><a id="_crossRef119"> </a>
+
+
+
+<p>The new wizard can create several other kinds of
+components: Collection Processing Management (CPM) components, flow
+controllers, and importable parts (besides Type Systems, described above,
+Indexes, Type Priorities, and Resource Manager Configuration imports).</p>
+
+<p>The CPM components supported by this editor include the
+Collection Reader, CAS Initializer, and CAS Consumer descriptors.  Each of these is basically treated just like
+a primitive AE descriptor, with small changes to accommodate the different
+semantics.  For instance, a CAS Consumer
+can't declare in its capabilities section that it outputs types or features.</p>
+
+<p>Flow controllers are components that control the flow of
+CASes within an aggregate, an are edited in a similar fashion as a primitive
+Analysis Engine.</p>
+
+<p>The importable part support requires context information
+to enable the editor to work, because much of the power of this editor comes
+from extensive checking that requires additional information, other than what
+is available in just the importable part.  For instance, when you create or edit an Indexes import, the facility
+for adding new indexes needs the type information, which is not present in this
+part when it is edited alone.  To
+overcome this, when you edit these descriptors, you will be asked to specify a
+context descriptor, usually a descriptor which would import the part being
+edited, which would have the additional information needed.  Various methods are used to guess what the
+context descriptor should be - and if the guess is correct, you can just press
+the Enter key to confirm.  The last
+successful context file is remembered and will be suggested as the context file
+to use at the next edit session</p>
+
+</div>
+
+<br/>
+
+
+<div class="Section2">
+
+
+
+</div>
+<div class="footnotesHere"></div>
+</div>
+
+
+
+  </subsection>
+
+</section>
+</body>
+</document>

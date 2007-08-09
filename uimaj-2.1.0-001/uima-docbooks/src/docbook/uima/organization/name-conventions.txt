@@ -1,0 +1,26 @@
+xml id's must be unique.
+
+We construct them hierarchically, with periods in between parts
+
+ugr = users guide and reference
+    = prefix of id's
+    = first part of names
+    = allows imbedding of these xmls within other documentation
+ 
+ovv = overview and setup book   
+tug = tutorial and user's guide book
+tools = tools book
+ref = reference book
+
+tug.aas  aas= Annotations, Artifacts, and Sofas
+tug.mvs  mvs= multiple views
+tug.fc   fc = flow contoller
+tug.cpe  cpe = collection processing engine 
+
+ref.xml     = xml references
+ref.xml.cd  = component descriptor
+ref.xml.cpe = collection processing engine descriptor
+
+
+
+
