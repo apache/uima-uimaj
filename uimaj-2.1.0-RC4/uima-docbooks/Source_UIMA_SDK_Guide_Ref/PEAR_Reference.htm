@@ -1,0 +1,577 @@
+<document>
+  <properties>
+    <title>PEAR Reference</title>
+  </properties>
+<body>
+
+
+
+<div class="chapter">
+<div class="Section1">
+
+
+
+<section name="PEAR Reference"><a id="_crossRef259"> </a>
+
+
+
+
+
+<p>A PEAR (Processing Engine ARchive) file is a standard
+package for UIMA (Unstructured Information Management Architecture)
+components.  This chapter describes the
+PEAR 1.0 structure and specification. </p>
+
+<p>The PEAR package can be used for distribution and reuse by
+other components or applications. It also allows applications and tools to
+manage UIMA components automatically for verification, deployment, invocation,
+testing, etc.</p>
+
+<p>Currently, the PEAR Eclipse Plugin is available as a tool
+to create PEAR files for standard UIMA components. Please refer to <a class="crossrefText" href="PEAR_Packager.htm#_crossRef251">Chapter 14, <b>PEAR Packager
+User's Guide</b></a> for more information about this tool.</p>
+
+
+
+<subsection name="Packaging a UIMA component"><a id="_crossRef261"> </a>
+
+
+
+<p>For the purpose of describing the process of creating a
+PEAR file and its internal structure, this section describes the steps used to
+package a UIMA component as a valid PEAR file. The PEAR packaging process
+consists of the following steps:</p>
+
+<ul><li><a class="crossrefText" href="PEAR_Reference.htm#_crossRef262">Creating
+the PEAR structure</a></li>
+
+
+<li><a class="crossrefText" href="PEAR_Reference.htm#_crossRef263">Populating
+the PEAR structure</a></li>
+
+
+<li><a class="crossrefText" href="PEAR_Reference.htm#_crossRef267">Creating
+the installation descriptor</a></li>
+
+
+<li><a class="crossrefText" href="PEAR_Reference.htm#_crossRef271">Packaging
+the PEAR structure into one file</a>
+</li></ul>
+
+
+
+<h3><a id="_crossRef262">Creating the PEAR structure</a></h3>
+
+<p>The first step in the PEAR creation process is to create a
+PEAR structure. The PEAR structure is a structured tree of folders and files,
+including the following elements:</p>
+
+<ul><li>Required Elements:
+
+
+<ul><li>The <b>metadata</b> folder which contains the PEAR installation
+descriptor and properties files.</li>
+
+
+<li>The installation descriptor (<b>metadata/install.xml</b>)  </li>
+
+
+<li>A UIMA analysis engine descriptor
+and its required code, delegates (if any), and resources
+</li></ul></li>
+
+
+<li>Optional Elements:
+
+
+<ul><li>The desc folder to contain
+descriptor files of analysis engines, delegates analysis engines (all levels),
+and other components (Collection Readers, CAS Consumers, etc).</li>
+
+
+<li>The src folder to contain the
+source code</li>
+
+
+<li>The bin folder to contain
+executables, scripts, class files, dlls, shared libraries, etc. </li>
+
+
+<li>The lib folder to contain jar
+files. </li>
+
+
+<li>The doc folder containing
+documentation materials, preferably accessible through an index.html.</li>
+
+
+<li>The data folder to contain data
+files (e.g. for testing).</li>
+
+
+<li>The conf folder to contain
+configuration files.</li>
+
+
+<li>The resources folder to contain
+other resources and dependencies.</li>
+
+
+<li>Other user-defined folders or
+files are allowed, but should be avoided.
+</li></ul>
+</li></ul>
+
+<p><img alt="" width="303" height="394"
+src="../UIMA_SDK_Guide_Ref/PEAR_Reference_files/image002.jpg"/></p>
+
+<a class="figCaption" id="_crossRef254">The PEAR Structure</a>
+
+<h3><a id="_crossRef263">Populating the PEAR structure</a></h3>
+
+<p>After creating the PEAR structure, the component&rsquo;s descriptor files,
+code files, resources files, and any other files and folders are copied into
+the corresponding folders of the PEAR structure. The developer should make sure
+that the code would work with this layout of files and folders, and that there are
+no broken links. Although it is strongly discouraged, the optional elements of
+the PEAR structure can be replaced by other user defined files and folder, if
+required for the component to work properly.</p>
+
+<ul class="note"><li>The PEAR
+structure must be self-contained. For example, this means that the component
+must run properly independently from the PEAR root folder location. If the
+developer needs to use an absolute path in configuration or descriptor files,
+then he/she should put these files in the &quot;conf&quot; or &quot;desc&quot;
+and replace the path of the PEAR root folder with the string &quot;$main_root&quot;.
+The tools that deploy and use PEAR files should localize the files in the &quot;conf&quot;
+and &quot;desc&quot; folders by replacing the string &quot;$main_root&quot;
+with the local absolute path of the PEAR root folder. The &quot;$main_root&quot;
+macro can also be used in the Installation descriptor (install.xml)
+</li></ul>
+
+<p>Currently there are three types of component packages
+depending on their deployment:</p>
+
+<h4><a id="_crossRef264">Standard type</a></h4>
+
+<p>A component package with the <b>standard</b> type must be
+a valid Analysis Engine, and all the required files to deploy it locally must
+be included in the PEAR package. </p>
+
+<h4><a id="_crossRef265">Service type</a></h4>
+
+<p>A component package with the <b>service </b>type must be
+deployable locally as a supported UIMA service (e.g. Vinci). In this case, all
+the required files to deploy it locally must be included in the PEAR package.</p>
+
+<h4><a id="_crossRef266">Network Type</a></h4>
+
+<p>A component package with the network type is not deployed
+locally but rather in the &quot;remote&quot; environment. It&rsquo;s accessed as a
+network AE (e.g. Vinci Service). The component owner has the responsibility to
+start the service and make sure it&rsquo;s up and running before it&rsquo;s used by others
+(like a webmaster that makes sure the web site is up and running). In this
+case, the PEAR package does not have to contain files required for deployment,
+but must contain the network AE descriptor (see <a class="crossrefText" href="Annotator_and_Analysis_Engine_Developers_Guide.htm#_crossRef7">4.1.4, <b>Creating the XML
+Descriptor</b></a>) and the &lt;DESC&gt; tag in the installation
+descriptor must point to the network TAE descriptor. For more information about
+Network Analysis Engines, please refer to <i>Section </i><a class="crossrefText" href="Application_Developers_Guide.htm#_crossRef64">6.6, <b>Working with Analysis
+Engine and CAS Consumer Services</b></a>.</p>
+
+<h3><a id="_crossRef267">Creating the installation
+descriptor</a></h3>
+
+<p>The installation descriptor is an xml file called
+install.xml under the metadata folder of the PEAR structure. It&rsquo;s also called
+InsD. The InsD XML file should be created in the UTF-8 file encoding. The InsD
+should contain the following sections:</p>
+
+<ul><li>&lt;OS&gt;:  This section is used to specify supported
+operating systems</li>
+
+
+<li>&lt;TOOLKITS&gt;: This section is
+used to specify toolkits, such as JDK, needed by the component.</li>
+
+
+<li>&lt;SUBMITTED_COMPONENT&gt;: This
+is the most important section in the InsD. It&rsquo;s used to specify required
+information about the component. See section 2.3.2 for detailed information
+about this section.</li>
+
+
+<li>&lt;INSTALLATION&gt;: This section
+is explained in section <a class="crossrefText" href="PEAR_Reference.htm#_crossRef272">29.1.5
+</a>.
+</li></ul>
+
+<h4><a id="_crossRef268">Documented template for the installation descriptor:</a></h4>
+
+<p>The following is &quot;documented template&quot; for the
+content of the installation descriptor install.xml:</p>
+
+<p class="xmp">&lt;? xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!-- Installation Descriptor Template --&gt;
+&lt;COMPONENT_INSTALLATION_DESCRIPTOR&gt;
+  &lt;!-- Specifications of OS names, including version, etc. --&gt;
+  &lt;OS&gt;
+    &lt;NAME&gt;OS_Name_1&lt;/NAME&gt;
+    &lt;NAME&gt;OS_Name_2&lt;/NAME&gt;
+  &lt;/OS&gt;
+  &lt;!-- Specifications of required standard toolkits --&gt;
+  &lt;TOOLKITS&gt;
+    &lt;JDK_VERSION&gt;JDK_Version&lt;/JDK_VERSION&gt;
+  &lt;/TOOLKITS&gt;</p>
+
+<p class="xmp">  &lt;!-- There are 2 types of variables that are used in the InsD:
+       a) $main_root , which will be substituted with the real path to the
+                 main component root directory after installing the
+                 main (submitted) component
+       b) $component_id$root, which will be substituted with the real path
+          to the root directory of a given delegate component after
+          installing the given delegate component --&gt;</p>
+
+<p class="xmp">  &lt;!-- Specification of submitted component (TAE)             --&gt;
+  &lt;!-- Note: submitted_component_id is assigned by developer; --&gt;
+  &lt;!--       XML descriptor file name is set by developer.    --&gt;
+  &lt;!-- Important: ID element should be the first in the       --&gt;
+  &lt;!--            SUBMITTED_COMPONENT section.                --&gt;
+  &lt;!-- Submitted component may include optional specification --&gt;
+  &lt;!-- of Collection Reader that can be used for testing the  --&gt;
+  &lt;!-- submitted component.                                   --&gt;
+  &lt;!-- Submitted component may include optional specification --&gt;
+  &lt;!-- of CAS Consumer that can be used for testing the       --&gt;
+  &lt;!-- submitted component.                                   --&gt;</p>
+
+<p class="xmp">  &lt;SUBMITTED_COMPONENT&gt;
+    &lt;ID&gt;submitted_component_id&lt;/ID&gt;
+    &lt;NAME&gt;Submitted component name&lt;/NAME&gt;
+    &lt;DESC&gt;$main_root/desc/ComponentDescriptor.xml&lt;/DESC&gt;</p>
+
+<p class="xmp">    &lt;!-- deployment options:                                   --&gt;
+    &lt;!-- a) ©standard© is deploying AE locally                 --&gt;
+    &lt;!-- b) ©service©  is deploying AE locally as a service,   --&gt;
+    &lt;!--    using specified command (script)                   --&gt;
+    &lt;!-- c) ©network©  is deploying a pure network AE, which   --&gt;
+    &lt;!--    is running somewhere on the network                --&gt;</p>
+
+<p class="xmp">    &lt;DEPLOYMENT&gt;standard | service | network&lt;/DEPLOYMENT&gt;</p>
+
+<p class="xmp">    &lt;!-- Specifications for ©service© deployment option only   --&gt;
+    &lt;SERVICE_COMMAND&gt;$main_root/bin/startService.bat&lt;/SERVICE_COMMAND&gt;
+    &lt;SERVICE_WORKING_DIR&gt;$main_root&lt;/SERVICE_WORKING_DIR&gt;
+    &lt;SERVICE_COMMAND_ARGS&gt;</p>
+
+<p class="xmp">      &lt;ARGUMENT&gt;
+        &lt;VALUE&gt;1st_parameter_value&lt;/VALUE&gt;
+        &lt;COMMENTS&gt;1st parameter description&lt;/COMMENTS&gt;
+      &lt;/ARGUMENT&gt;</p>
+
+<p class="xmp">      &lt;ARGUMENT&gt;
+        &lt;VALUE&gt;2nd_parameter_value&lt;/VALUE&gt;
+        &lt;COMMENTS&gt;2nd parameter description&lt;/COMMENTS&gt;
+      &lt;/ARGUMENT&gt;</p>
+
+<p class="xmp">    &lt;/SERVICE_COMMAND_ARGS&gt;</p>
+
+<p class="xmp">    &lt;!-- Specifications for ©network© deployment option only   --&gt;</p>
+
+<p class="xmp">    &lt;NETWORK_PARAMETERS&gt;
+      &lt;VNS_SPECS VNS_HOST=&quot;vns_host_IP&quot; VNS_PORT=&quot;vns_port_No&quot; /&gt;
+    &lt;/NETWORK_PARAMETERS&gt;</p>
+
+<p class="xmp">    &lt;!-- General specifications                                --&gt;</p>
+
+<p class="xmp">    &lt;COMMENTS&gt;Main component description&lt;/COMMENTS&gt;</p>
+
+<p class="xmp">    &lt;COLLECTION_READER&gt;
+      &lt;COLLECTION_ITERATOR_DESC&gt;
+        $main_root/desc/CollIterDescriptor.xml
+      &lt;/COLLECTION_ITERATOR_DESC&gt;</p>
+
+<p class="xmp">      &lt;CAS_INITIALIZER_DESC&gt;
+        $main_root/desc/CASInitializerDescriptor.xml
+      &lt;/CAS_INITIALIZER_DESC&gt;
+    &lt;/COLLECTION_READER&gt;</p>
+
+<p class="xmp">    &lt;CAS_CONSUMER&gt;
+      &lt;DESC&gt;$main_root/desc/CASConsumerDescriptor.xml&lt;/DESC&gt;
+    &lt;/CAS_CONSUMER&gt;</p>
+
+<p class="xmp">  &lt;/SUBMITTED_COMPONENT&gt;
+  &lt;!-- Specifications of the component installation process --&gt;
+  &lt;INSTALLATION&gt;
+    &lt;!-- List of delegate components that should be installed together --&gt;
+    &lt;!-- with the main submitted component (for aggregate components)  --&gt;
+    &lt;!-- Important: ID element should be the first in each             --&gt;</p>
+
+<p class="xmp">    &lt;!--            DELEGATE_COMPONENT section.                        --&gt;
+    &lt;DELEGATE_COMPONENT&gt;
+      &lt;ID&gt;first_delegate_component_id&lt;/ID&gt;
+      &lt;NAME&gt;Name of first required separate component&lt;/NAME&gt;
+    &lt;/DELEGATE_COMPONENT&gt;</p>
+
+<p class="xmp">    &lt;DELEGATE_COMPONENT&gt;
+      &lt;ID&gt;second_delegate_component_id&lt;/ID&gt;
+      &lt;NAME&gt;Name of second required separate component&lt;/NAME&gt;
+    &lt;/DELEGATE_COMPONENT&gt;</p>
+
+<p class="xmp">    &lt;!-- Specifications of local path names that should be replaced --&gt;
+    &lt;!-- with real path names after the main component as well as   --&gt;
+    &lt;!-- all required delegate (library) components are installed.  --&gt;
+    &lt;!-- &lt;FILE&gt; and &lt;REPLACE_WITH&gt; values may use the $main_root or --&gt;
+    &lt;!-- one of the $component_id$root variables.                   --&gt;
+    &lt;!-- Important: ACTION element should be the first in each      --&gt;
+    &lt;!--            PROCESS section.                                --&gt;</p>
+
+<p class="xmp">    &lt;PROCESS&gt;
+      &lt;ACTION&gt;find_and_replace_path&lt;/ACTION&gt;
+      &lt;PARAMETERS&gt;
+        &lt;FILE&gt;$main_root/desc/ComponentDescriptor.xml&lt;/FILE&gt;
+        &lt;FIND_STRING&gt;../resources/dict/&lt;/FIND_STRING&gt;
+        &lt;REPLACE_WITH&gt;$main_root/resources/dict/&lt;/REPLACE_WITH&gt;
+        &lt;COMMENTS&gt;Specify actual dictionary location in XML component
+          descriptor
+        &lt;/COMMENTS&gt;
+      &lt;/PARAMETERS&gt;
+    &lt;/PROCESS&gt;</p>
+
+<p class="xmp">    &lt;PROCESS&gt;
+      &lt;ACTION&gt;find_and_replace_path&lt;/ACTION&gt;
+      &lt;PARAMETERS&gt;
+        &lt;FILE&gt;$main_root/desc/DelegateComponentDescriptor.xml&lt;/FILE&gt;
+        &lt;FIND_STRING&gt;
+local_root_directory_for_1st_delegate_component/resources/dict/
+        &lt;/FIND_STRING&gt;
+        &lt;REPLACE_WITH&gt;
+          $first_delegate_component_id$root/resources/dict/
+        &lt;/REPLACE_WITH&gt;
+        &lt;COMMENTS&gt;
+          Specify actual dictionary location in the descriptor of the 1<sup>st
+</sup>          delegate component
+        &lt;/COMMENTS&gt;
+      &lt;/PARAMETERS&gt;
+    &lt;/PROCESS&gt;</p>
+
+<p class="xmp">    &lt;!-- Specifications of environment variables that should be set prior
+         to running the main component and all other reused components.
+         &lt;VAR_VALUE&gt; values may use the $main_root or one of the
+         $component_id$root variables. --&gt;</p>
+
+<p class="xmp">    &lt;PROCESS&gt;
+      &lt;ACTION&gt;set_env_variable&lt;/ACTION&gt;
+      &lt;PARAMETERS&gt;
+        &lt;VAR_NAME&gt;env_variable_name&lt;/VAR_NAME&gt;
+        &lt;VAR_VALUE&gt;env_variable_value&lt;/VAR_VALUE&gt;
+        &lt;COMMENTS&gt;Set environment variable value&lt;/COMMENTS&gt;
+      &lt;/PARAMETERS&gt;
+    &lt;/PROCESS&gt;</p>
+
+<p class="xmp">  &lt;/INSTALLATION&gt;
+&lt;/COMPONENT_INSTALLATION_DESCRIPTOR&gt;</p>
+
+<h4><a id="_crossRef269">The SUBMITTED_COMPONENT section</a></h4>
+
+<p>The SUBMITTED_COMPONENT section of the installation
+descriptor (install.xml) is the most important. It's used to specify required
+information about the UIMA component. Before explaining the details, let's
+clarify the concept of component ID and &quot;macros&quot; used in the
+installation descriptor. The component ID element should be the <b>first
+element </b>in the SUBMITTED_COMPONENT section. </p>
+
+<p>The component id is a string that uniquely identifies the
+component. It should use the JAVA naming convention (e.g.
+ibm.uima.mycomponent). </p>
+
+<p>Macros are variables such as $main_root, used to represent
+a string such as the full path of a certain directory.</p>
+
+<p>These macros should be defined in the PEAR.properties file
+using the local values. The tools and applications that use and deploy PEAR
+files should replace these macros with the corresponding values in the local
+environment as part of the deployment process in the files included in the conf
+and desc folders.</p>
+
+<p>Currently, there are two types of  macros: </p>
+
+<ul><li>$main_root, which represents the
+local absolute path of the main component root directory after deployment. </li>
+
+
+<li>$<i>component_id</i>$root, which
+represents the local absolute path to the root directory of the component which
+has <i>component_id </i> as component ID.
+This component could be, for instance, a delegate component.
+</li></ul>
+
+<p>For example, if some part of a descriptor needed to have a
+path to the data subdirectory of the PEAR, you would write <code>$main_root/data</code>.  If your PEAR refers to a delegate component having the ID &quot;<code>my.comp.Dictionary</code>&quot;, and you need to specify a path
+to one of this component's subdirectories, say <code>resource/dict</code>,
+you would write <code>$my.comp.Dictionary$root/resources/dict</code>.
+</p>
+
+<h4><i>The ID, NAME, and DESC tags</i></h4>
+
+<p>These tags are used to specify the component ID, Name, and
+descriptor path using the corresponding tags as follows:</p>
+
+<p class="xmp">&lt;SUBMITTED_COMPONENT&gt;</p>
+
+<p class="xmp">  &lt;ID&gt;submitted_component_id&lt;/ID&gt;</p>
+
+<p class="xmp">  &lt;NAME&gt;Submitted component name&lt;/NAME&gt;</p>
+
+<p class="xmp">  &lt;DESC&gt;$main_root/desc/ComponentDescriptor.xml&lt;/DESC&gt;</p>
+
+<h4><i>Tags related to deployment types</i></h4>
+
+<p>As mentioned before, there are currently three types of
+PEAR packages, depending on the following deployment types:</p>
+
+<p><b>Standard type</b></p>
+
+<p>A component package with the <b>standard</b> type must be
+a valid UIMA Analysis Engine, and all the required files to deploy it must be
+included in the PEAR package. This deployment type should be specified as
+follows:</p>
+
+<p class="xmp">&lt;DEPLOYMENT&gt;standard&lt;/DEPLOYMENT&gt; </p>
+
+<p><b>Service type</b></p>
+
+<p>A component package with the <b>service </b>type must be
+deployable locally as a supported UIMA service (e.g. Vinci). The installation
+descriptor must include the path for the executable or script to start the
+service including its arguments, and the working directory from where to launch
+it, following this template:</p>
+
+<p class="xmp">&lt;DEPLOYMENT&gt;service&lt;/DEPLOYMENT&gt;</p>
+
+<p class="xmp">&lt;SERVICE_COMMAND&gt;$main_root/bin/startService.bat&lt;/SERVICE_COMMAND&gt;</p>
+
+<p class="xmp">&lt;SERVICE_WORKING_DIR&gt;$main_root&lt;/SERVICE_WORKING_DIR&gt;</p>
+
+<p class="xmp">&lt;SERVICE_COMMAND_ARGS&gt;</p>
+
+<p class="xmp">&lt;ARGUMENT&gt;</p>
+
+<p class="xmp">&lt;VALUE&gt;1st_parameter_value&lt;/VALUE&gt;</p>
+
+<p class="xmp">&lt;COMMENTS&gt;1st parameter description&lt;/COMMENTS&gt;</p>
+
+<p class="xmp">&lt;/ARGUMENT&gt;</p>
+
+<p class="xmp">&lt;ARGUMENT&gt;</p>
+
+<p class="xmp">&lt;VALUE&gt;2nd_parameter_value&lt;/VALUE&gt;</p>
+
+<p class="xmp">&lt;COMMENTS&gt;2nd parameter description&lt;/COMMENTS&gt;</p>
+
+<p class="xmp">&lt;/ARGUMENT&gt;</p>
+
+<p class="xmp">&lt;/SERVICE_COMMAND_ARGS&gt;</p>
+
+<p><b>Network Type</b></p>
+
+<p>A component package with the network type is not deployed
+locally, but rather in a &quot;remote&quot; environment. It&rsquo;s accessed as a
+network AE (e.g. Vinci Service). In this case, the PEAR package does not have
+to contain files required for deployment, but must contain the network AE
+descriptor. The &lt;DESC&gt; tag in the installation descriptor (See section
+2.3.2.1) must point to the network AE descriptor. Here is a template in the
+case of Vinci services:</p>
+
+<p class="xmp">&lt;DEPLOYMENT&gt;network&lt;/DEPLOYMENT&gt;</p>
+
+<p class="xmp">&lt;NETWORK_PARAMETERS&gt;</p>
+
+<p class="xmp">&lt;VNS_SPECS VNS_HOST=&quot;vns_host_IP&quot; VNS_PORT=&quot;vns_port_No&quot; /&gt;</p>
+
+<p class="xmp">&lt;/NETWORK_PARAMETERS&gt;</p>
+
+<h4><i>The Collection Reader and CAS Consumer tags</i></h4>
+
+<p>These sections of the installation descriptor are used by any
+specific Collection Reader or CAS Consumer to be used with the packaged
+analysis engine. See the template in section 2.3.1.</p>
+
+<h4><a id="_crossRef270">The INSTALLATION section</a></h4>
+
+<p>The &lt;INSTALLATION&gt; section specifies the external
+dependencies of the component and the operations that should be performed
+during the PEAR package installation. </p>
+
+<p>The component dependencies are specified in the
+&lt;DELEGATE_COMPONENT&gt; sub-sections, as shown in the installation
+descriptor template above.</p>
+
+<p>Important: The ID element should be the first element in
+each &lt;DELEGATE_COMPONENT&gt; sub-section.</p>
+
+<p>The &lt;INSTALLATION&gt; section may specify the following
+operations:</p>
+
+<ul><li>Setting environment variables that
+are required to run the installed component.</li>
+
+
+<li>Note that you can use &quot;macros&quot;, like $main_root or
+$component_id$root in the VAR_VALUE element of the &lt;PARAMETERS&gt;
+sub-section.</li>
+
+
+<li>Finding and replacing string
+expressions in files.</li>
+
+
+<li>Note that you can use the &quot;macros&quot; in the FILE and
+REPLACE_WITH elements of the &lt;PARAMETERS&gt; sub-section.
+</li></ul>
+
+<p>Important: the ACTION element always should be the 1st element
+in each &lt;PROCESS&gt; sub-section.</p>
+
+<p>By default, the PEAR Installer will try to process every
+file in the desc and conf directories of the PEAR package in order to find the
+&quot;macros&quot; and replace them with actual path expressions. In addition
+to this, the installer will process the files specified in the
+&lt;INSTALLATION&gt; section. </p>
+
+<p>Important: all XML files which are going to be processed
+should be created using UTF-8 or UTF-16 file encoding. All other text files
+which are going to be processed should be created using the ASCII file
+encoding.</p>
+
+<h3><a id="_crossRef271">Packaging the PEAR structure into
+one file</a></h3>
+
+<p>The last step of the PEAR process is to simply <b>zip</b>
+the content of the PEAR root folder (<b>not including the root folder itself</b>).
+The PEAR file must have a &quot;.pear&quot; extension.</p>
+
+<h3><a id="_crossRef272">Installing a PEAR file</a></h3>
+
+<p>For information about the installation of a PEAR file and
+the PEAR Installer tool, please refer to the &quot;PEAR Installer&quot;
+Chapter. </p>
+
+</div>
+
+<br/>
+
+
+<div class="Section2">
+
+
+
+</div>
+<div class="footnotesHere"></div>
+</div>
+
+
+
+  </subsection>
+
+</section>
+</body>
+</document>
