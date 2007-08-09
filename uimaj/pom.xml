@@ -114,7 +114,7 @@
 						<configuration>
 							<tasks>
 								<delete dir="src/main/resources/META-INF" deleteOnExit="true">
-									<fileset dir="../uimaj-distr/src/main/readme"
+									<fileset dir="src/main/resources/META-INF"
 										includes="LICENSE NOTICE DISCLAIMER"/>
 								</delete>
 							</tasks>
@@ -130,7 +130,7 @@
 						<configuration>
 							<tasks>
 								<delete dir="src/main/resources/META-INF" deleteOnExit="true">
-									<fileset dir="../uimaj-distr/src/main/readme"
+									<fileset dir="src/main/resources/META-INF"
 										includes="LICENSE NOTICE DISCLAIMER"/>
 								</delete>
 							</tasks>
