@@ -1,0 +1,12 @@
+Running the build with IBM Java 1.4.2 fails - xerces issue with XInclude.
+Please use Java 5.0 or later.
+
+To get the images into the PDF output, you must have the "Java Advanced
+Imaging" Library from Sun.  The tooling will obtain this for you the 
+first time it is run, 
+but your Company may have other places than "Sun" to obtain this library
+from, perhaps under alternative licensing arrangements.  
+If so, you can obtain the library from those places, unzip the archive, and put the two files:
+   jai_codec.jar   and jai_core.jar
+in the uima-docbook-tool project, under tools/jai-versions/jai-1.1.3/  
+

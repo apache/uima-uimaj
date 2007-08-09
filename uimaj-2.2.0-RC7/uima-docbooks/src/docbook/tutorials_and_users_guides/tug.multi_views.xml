@@ -1,0 +1,696 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd"[
+<!ENTITY % uimaents SYSTEM "../entities.ent">  
+%uimaents;
+]>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<chapter id="ugr.tug.mvs">
+  <title>Multiple CAS Views of an Artifact</title>
+  <titleabbrev>Multiple CAS Views</titleabbrev>
+  
+  <para>UIMA provides an extension to the basic model of the CAS which supports analysis of
+    multiple views of the same artifact, all contained with the CAS. This chapter describes
+    the concepts, terminology, and the API and XML extensions that enable this.</para>
+  
+  <para>Multiple CAS Views can simplify things when different versions of the artifact are
+    needed at different stages of the analysis. They are also key to enabling multimodal
+    analysis where the initial artifact is transformed from one modality to another, or where
+    the artifact itself is multimodal, such as the audio, video and closed-captioned text
+    associated with an MPEG object. Each representation of the artifact can be analyzed
+    independently with the standard UIMA programming model; in addition, multi-view
+    components and applications can be constructed.</para>
+  
+  <para>UIMA supports this by augmenting the CAS with additional light-weight CAS objects,
+    one for each view, where these objects share most of the same underlying CAS, except for two
+    things: each view has its own set of indexed Feature Structures, and each view has its own
+    subject of analysis (Sofa) - its own version of the artifact being analyzed. The Feature
+    Structure instances themselves are in the shared part of the CAS; only the entries in the
+    indexes are unique for each CAS view.</para>
+  
+  <para>All of these CAS view objects are kept together with the CAS, and passed as a unit
+    between components in a UIMA application. APIs exist which allow components and
+    applications to switch among the various view objects, as needed.</para>
+  
+  <para>Feature Structures may be indexed in multiple views, if necessary. New methods on CAS
+    Views facilitate adding or removing Feature Structures to or from their index
+    repositories:</para>
+  
+  
+  <programlisting>aView.addFsToIndexes(aFeatureStructure) 
+aView.removeFsFromIndexes(aFeatureStructure)</programlisting>
+  
+  <para>specify the view in which this Feature Structure should be added to or removed from the
+    indexes.</para>
+  
+  <section id="ugr.tug.mvs.cas_views_and_sofas">
+    <title>CAS Views and Sofas</title>
+    
+    <para>Sofas (see <olink targetdoc="&uima_docs_tutorial_guides;"
+        targetptr="ugr.tug.aas.sofa"/>) and CAS Views are linked. In this implementation,
+      every CAS view has one associated Sofa, and every Sofa has one associated CAS
+      View.</para>
+    
+    <section id="ugr.tug.mvs.naming_views_sofas">
+      <title>Naming CAS Views and Sofas</title>
+      
+      <para>The developer assigns a name to the View / Sofa, which is a simple string
+        (following the rules for Java identifiers, usually without periods, but see special
+        exception below). These names are declared in the component XML metadata, and are
+        used during assembly and by the runtime to enable switching among multiple Views of
+        the CAS at the same time.</para>
+      <note><para>The name is called the Sofa name, for historical reasons, but it applies
+      equally to the View. In the rest of this chapter, we&apos;ll refer to it as the Sofa
+      name.</para></note>
+      
+      <para>Some applications contain components that expect a variable number of Sofas as
+        input or output. An example of a component that takes a variable number of input Sofas
+        could be one that takes several translations of a document and merges them, where each
+        translation was in a separate Sofa. </para>
+      
+      <para> You can specify a variable number of input or output sofa names, where each name
+        has the same base part, by writing the base part of the name (with no periods), followed
+        by a period character and an asterisk character (.*). These denote sofas that have
+        names matching the base part up to the period; for example, names such as
+        <literal>base_name_part.TTX_3d</literal> would match a specification of
+        <literal>base_name_part.*</literal>.</para>
+      
+    </section>
+    
+    <section id="ugr.tug.mvs.multi_view_and_single_view">
+      <title>Multi-View, Single-View components &amp; applications</title>
+      <titleabbrev>Multi/Single View parts in Applications</titleabbrev>
+      
+      <para>Components and applications can be written to be Multi-View or Single-View.
+        Most components used as primitive building blocks are expected to be Single-View.
+        UIMA provides capabilities to combine these kinds of components with Multi-View
+        components when assembling analysis aggregates or applications.</para>
+      
+      <para>Single-View components and applications use only one subject of analysis, and
+        one CAS View. The code and descriptors for these components do not use the facilities
+        described in this chapter.</para>
+      
+      <para>Conversely, Multi-View components and applications are aware of the
+        possibility of multiple Views and Sofas, and have code and XML descriptors that
+        create and manipulate them.</para>
+      
+    </section>
+  </section>
+  
+  <section id="ugr.tug.mvs.multi_view_components">
+    <title>Multi-View Components</title>
+    <section id="ugr.tug.mvs.deciding_multi_view">
+      <title>How UIMA decides if a component is Multi-View</title>
+      <titleabbrev>Deciding: Multi-View</titleabbrev>
+      
+      <para>Every UIMA component has an associated XML Component Descriptor. Multi-View
+        components are identified simply as those whose descriptors declare one or more Sofa
+        names in their Capability sections, as inputs or outputs. If a Component Descriptor
+        does not mention any input or output Sofa names, the framework treats that component
+        as a Single-View component.</para>
+      
+      <para>A Multi-View component is passed a special kind of a CAS object, called a base CAS,
+        which it must use to switch to the particular view it wishes to process. The base CAS
+        object itself has no Sofa and no ability to use Indexes; only the views have that
+        capability.</para>
+      
+    </section>
+    
+    <section id="ugr.tug.mvs.additional_capabilities">
+      <title>Multi-View: additional capabilities</title>
+      
+      <para>Additional capabilities provided for components and applications aware of the
+        possibilities of multiple Views and Sofas include:</para>
+      
+      <itemizedlist spacing="compact"><listitem><para>Creating new Views, and for
+        each, setting up the associated Sofa data</para></listitem>
+        
+        <listitem><para>Getting a reference to an existing View and its associated Sofa, by
+          name </para></listitem>
+        
+        <listitem><para>Specifying a view in which to index a particular Feature Structure
+          instance </para></listitem></itemizedlist>
+      
+    </section>
+    
+    <section id="ugr.tug.mvs.component_xml_metadata">
+      <title>Component XML metadata</title>
+      
+      <para>Each Multi-View component that creates a Sofa or wants to switch to a specific
+        previously created Sofa must declare the name for the Sofa in the capabilities
+        section. For example, a component expecting as input a web document in html format and
+        creating a plain text document for further processing might declare:</para>
+      
+      
+      <programlisting>&lt;capabilities&gt;
+  &lt;capability&gt;
+    &lt;inputs/&gt;
+    &lt;outputs/&gt;
+    &lt;inputSofas&gt;
+<emphasis role="bold">      &lt;sofaName&gt;rawContent&lt;/sofaName&gt;</emphasis>
+    &lt;/inputSofas&gt;
+    &lt;outputSofas&gt;
+<emphasis role="bold">      &lt;sofaName&gt;detagContent&lt;/sofaName&gt;</emphasis>
+    &lt;/outputSofas&gt;
+  &lt;/capability&gt;
+&lt;/capabilities&gt;</programlisting>
+      
+      <para>Details on this specification are found in <olink
+          targetdoc="&uima_docs_ref;"
+          targetptr="ugr.ref.xml.component_descriptor"/>. The Component Descriptor
+        Editor supports Sofa declarations on the <olink targetdoc="&uima_docs_tools;"
+          targetptr="ugr.tools.cde.capabilities"/>.</para>
+      
+    </section>
+  </section>
+  
+  <section id="ugr.tug.mvs.sofa_capabilities_and_apis_for_apps">
+    <title>Sofa Capabilities and APIs for Applications</title>
+    <titleabbrev>Sofa Capabilities &amp; APIs for Apps</titleabbrev>
+    
+    <para>In addition to components, applications can make use of these capabilities. When
+      an application creates a new CAS, it also creates the initial view of that CAS - and this
+      view is the object that is returned from the create call. Additional views beyond this
+      first one can be dynamically created at any time. The application can use the Sofa APIs
+      described in <olink targetdoc="&uima_docs_tutorial_guides;"
+        targetptr="ugr.tug.aas"/> to specify the data to be analyzed.</para>
+    
+    <para>If an Application creates a new CAS, the initial CAS that is created will be a view
+      named <quote>_InitialView</quote>. This name can be used in the application and in
+      Sofa Mapping (see the next section) to refer to this otherwise unnamed view.</para>
+    
+  </section>
+  
+  <section id="ugr.tug.mvs.sofa_name_mapping">
+    <title>Sofa Name Mapping</title>
+    
+    <para>Sofa Name mapping is the mechanism which enables UIMA component developers to
+      choose locally meaningful Sofa names in their source code and let aggregate,
+      collection processing engine developers, and application developers connect output
+      Sofas created in one component to input Sofas required in another.</para>
+    
+    <para>At a given aggregation level, the assembler or application developer defines
+      names for all the Sofas, and then specifies how these names map to the contained
+      components, using the Sofa Map.</para>
+    
+    <para>Consider annotator code to create a new CAS view:</para>
+    
+    
+    <programlisting>CAS viewX = cas.createView("X");</programlisting>
+    
+    <para>Or code to get an existing CAS view:</para>
+    
+    <programlisting>CAS viewX = cas.getView("X");</programlisting>
+    
+    <para>Without Sofa name mapping the SofaID for the new Sofa will be <quote>X</quote>.
+      However, if a name mapping for <quote>X</quote> has been specified by the aggregate or
+      CPE calling this annotator, the actual SofaID in the CAS can be different.</para>
+    
+    <para>All Sofas in a CAS must have unique names. This is accomplished by mapping all
+      declared Sofas as described in the following sections. An attempt to create a Sofa with a
+      SofaID already in use will throw an exception.</para>
+    
+    <para>Sofa name mapping must not use the <quote>.</quote> (period) character. Runtime Sofa
+      mapping maps names up to the <quote>.</quote> and appends the period and the following
+      characters to the mapped name.</para>
+    
+    <para>To get a Java Iterator for all the views in a CAS:</para>
+    
+    <programlisting>Iterator allViews = cas.getViewIterator();</programlisting>
+    
+    <para>To get a Java Iterator for selected views in a CAS, for example, views whose name 
+      is either exactly equal to namePrefix or is of the form namePrefix.suffix, where suffix 
+      can be any String:</para>
+    
+    <programlisting>Iterator someViews = cas.getViewIterator(String namePrefix);</programlisting>
+
+      <note><para>Sofa name mapping is applied to namePrefix.</para></note>
+    
+    <para>Sofa name mappings are not currently supported for remote Analysis Engines.
+      See <xref linkend="ugr.tug.mvs.name_mapping_remote_services"/>.</para>
+               
+    <section id="ugr.tug.mvs.name_mapping_aggregate">
+      <title>Name Mapping in an Aggregate Descriptor</title>
+      
+      <para>For each component of an Aggregate, name mapping specifies the conversion
+        between component Sofa names and names at the aggregate level.</para>
+      
+      <para>Here&apos;s an example. Consider two Multi-View annotators to be assembled
+        into an aggregate which takes an audio segment consisting of spoken English and
+        produces a German text translation.</para>
+      
+      <para>The first annotator takes an audio segment as input Sofa and produces a text
+        transcript as output Sofa. The annotator designer might choose these Sofa names to be
+        <quote>AudioInput</quote> and <quote>TranscribedText</quote>.</para>
+      
+      <para>The second annotator is designed to translate text from English to German. This
+        developer might choose the input and output Sofa names to be
+        <quote>EnglishDocument</quote> and <quote>GermanDocument</quote>,
+        respectively.</para>
+      
+      <para>In order to hook these two annotators together, the following section would be
+        added to the top level of the aggregate descriptor:</para>
+      
+      
+      <programlisting><![CDATA[<sofaMappings>
+  <sofaMapping>
+    <componentKey>SpeechToText</componentKey>
+    <componentSofaName>AudioInput</componentSofaName>
+    <aggregateSofaName>SegementedAudio</aggregateSofaName>
+  </sofaMapping>
+  <sofaMapping>
+    <componentKey>SpeechToText</componentKey>
+    <componentSofaName>TranscribedText</componentSofaName>
+    <aggregateSofaName>EnglishTranscript</aggregateSofaName>
+  </sofaMapping>
+  <sofaMapping>
+    <componentKey>EnglishToGermanTranslator</componentKey>
+    <componentSofaName>EnglishDocument</componentSofaName>
+    <aggregateSofaName>EnglishTranscript</aggregateSofaName>
+  </sofaMapping>
+  <sofaMapping>
+    <componentKey>EnglishToGermanTranslator</componentKey>
+    <componentSofaName>GermanDocument</componentSofaName>
+    <aggregateSofaName>GermanTranslation</aggregateSofaName>
+  </sofaMapping>
+</sofaMappings>]]></programlisting>
+      
+      <para>The Component Descriptor Editor supports Sofa name mapping in aggregates and
+        simplifies the task. See <olink targetdoc="&uima_docs_tools;"
+          targetptr="ugr.tools.cde.capabilities.sofa_name_mapping"/> for details.</para> 
+    </section>
+    
+    <section id="ugr.tug.mvs.name_mapping_cpe"><title>Name Mapping in a CPE
+      Descriptor</title>
+      
+      <para>The CPE descriptor aggregates together a Collection Reader and CAS Processors
+        (Annotators and CAS Consumers). Sofa mappings can be added to the following elements
+        of CPE descriptors: <literal>&lt;collectionIterator&gt;</literal>,
+        <literal>&lt;casInitializer&gt;</literal> and the
+        <literal>&lt;casProcessor&gt;</literal>. To be consistent with the
+        organization of CPE descriptors, the maps for the CPE descriptor are distributed
+        among the XML markup for each of the parts (collectionIterator, casInitializer,
+        casProcessor). Because of this the<literal>
+        &lt;componentKey&gt;</literal> element is not needed. Finally, rather than
+        sub-elements for the parts, the XML markup for these uses attributes. See <olink
+          targetdoc="&uima_docs_ref;"
+          targetptr="ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.individual.sofa_name_mappings"/>.</para>
+      
+      <para>Here&apos;s an example. Let&apos;s use the aggregate from the previous section
+        in a collection processing engine. Here we will add a Collection Reader that outputs
+        audio segments in an output Sofa named <quote>nextSegment</quote>. Remember to
+        declare an output Sofa nextSegment in the collection reader description.
+        We&apos;ll add a CAS Consumer in the next section.</para>
+      
+      
+      <programlisting>&lt;collectionReader&gt;
+  &lt;collectionIterator&gt;
+    &lt;descriptor&gt;
+    . . .
+    &lt;/descriptor&gt;
+    &lt;configurationParameterSettings&gt;...&lt;/configurationParameterSettings&gt;
+<emphasis role="bold">    &lt;sofaNameMappings&gt;
+      &lt;sofaNameMapping componentSofaName="nextSegment"
+                       cpeSofaName="SegementedAudio"/&gt;
+      &lt;/sofaNameMappings&gt;
+</emphasis>  &lt;/collectionIterator&gt;
+  &lt;casInitializer/&gt;
+&lt;collectionReader&gt;</programlisting>
+      
+      <para>At this point the CAS Processor section for the aggregate does not need any Sofa
+        mapping because the aggregate input Sofa has the same name,
+        <quote>SegementedAudio</quote>, as is being produced by the Collection
+        Reader.</para>
+      
+    </section>
+    
+    <section id="ugr.tug.mvs.specifying_cas_view_for_single_view">
+      <title>Specifying the CAS View for a Single-View Component</title>
+      <titleabbrev>CAS View for Single-View Parts</titleabbrev>
+      
+      <para>Single-View components receive a Sofa named <quote>_InitialView</quote>, or
+        a Sofa that is mapped to this name.</para>
+      
+      <para>For example, assume that the CAS Consumer to be used in our CPE is a Single-View
+        component that expects the analysis results associated with the input CAS, and that
+        we want it to use the results from the translated German text Sofa. The following
+        mapping added to the CAS Processor section for the CPE will instruct the CPE to get the
+        CAS view for the German text Sofa and pass it to the CAS Consumer:</para>
+      
+      
+      <programlisting>&lt;casProcessor&gt;
+  . . .
+  <emphasis role="bold">&lt;sofaNameMappings&gt;
+    &lt;sofaNameMapping componentSofaName="_InitialView"
+                           cpeSofaName="GermanTranslation"/&gt;
+  &lt;sofaNameMappings&gt;
+</emphasis>&lt;/casProcessor&gt;</programlisting>
+      
+      <para id="ugr.tug.mvs.sofa_mapping_leav_out_name">An alternative syntax for
+        this kind of mapping is to simply leave out the component sofa name in this
+        case.</para>
+      
+    </section>
+    
+    <section id="ugr.tug.mvs.name_mapping_application">
+      <title>Name Mapping in a UIMA Application</title>
+      
+      <para>Applications which instantiate UIMA components directly using the
+        UIMAFramework methods can also create a top level Sofa mapping using the
+        <quote>additional parameters</quote> capability.</para>
+      
+      
+      <programlisting>//create a "root" UIMA context for your whole application
+
+UimaContextAdmin rootContext =
+   UIMAFramework.newUimaContext(UIMAFramework.getLogger(),
+      UIMAFramework.newDefaultResourceManager(),
+      UIMAFramework.newConfigurationManager());
+
+input = new XMLInputSource("test.xml");
+desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(input);
+
+//setup sofa name mappings using the api
+
+HashMap sofamappings = new HashMap();
+sofamappings.put("localName1", "globalName1");
+sofamappings.put("localName2", "globalName2");
+  
+//create a UIMA Context for the new AE we are about to create
+
+//first argument is unique key among all AEs used in the application
+UimaContextAdmin childContext = rootContext.createChild("myAE", sofamap);
+
+//instantiate AE, passing the UIMA Context through the additional
+//parameters map
+
+Map additionalParams = new HashMap();
+additionalParams.put(Resource.PARAM_UIMA_CONTEXT, childContext);
+
+AnalysisEngine ae = 
+        UIMAFramework.produceAnalysisEngine(desc,additionalParams);</programlisting>
+      
+      <para>Sofa mappings are applied from the inside out, i.e., local to global. First, any
+        aggregate mappings are applied, then any CPE mappings, and finally, any specified
+        using this <quote>additional parameters</quote> capability.</para>
+      
+    </section>
+    
+    <section id="ugr.tug.mvs.name_mapping_remote_services">
+      <title>Name Mapping for Remote Services</title>
+      
+      <para>Currently, no client-side Sofa mapping information is passed from a UIMA client
+        to a remote service. This can cause complications for UIMA services in a Multi-View
+        application.</para>
+      
+      <para>Remote Multi-View services will work only if the service is Single-View, or if the 
+        Sofa names expected by the service exactly match the Sofa names produced by the client.</para>
+      
+      <para>If your application requires Sofa mappings for a remote Analysis Engine, you
+        can wrap your remotely deployed AE in an aggregate (on the remote side), and specify
+        the necessary Sofa mappings in the descriptor for that aggregate.</para>
+    </section>
+  </section>
+  
+  <section id="ugr.tug.mvs.jcas_extensions_for_multi_views">
+    <title>JCas extensions for Multiple Views</title>
+    
+    <para>The JCas interface to the CAS can be used with any / all views, as well as the base CAS
+      sent to Multi-View components. You can always get a JCas object from an existing CAS
+      object by using the method getJCas(); this call will create the JCas if it doesn&apos;t
+      already exist. If it does exist, it just returns the existing JCas that corresponds to
+      the CAS.</para>
+    
+    <para>JCas implements the getView(...) method, enabling switching to other named
+      views, just like the corresponding method on the CAS. The JCas version, however,
+      returns JCas objects, instead of CAS objects, corresponding to the view.</para>
+  </section>
+  
+  <section id="ugr.tug.mvs.sample_application">
+    <title>Sample Multi-View Application</title>
+    
+    <para>The UIMA SDK contains a simple Sofa example application which demonstrates many
+      Sofa specific concepts and methods. The source code for the application driver is in
+      <literal>examples/src/org/apache/uima/examples/SofaExampleApplication.java</literal>
+      and the Multi-View annotator is given in
+      <literal>SofaExampleAnnotator.java</literal> in the same directory.</para>
+    
+    <para>This sample application demonstrates a language translator annotator which
+      expects an input text Sofa with an English document and creates an output text Sofa
+      containing a German translation. Some of the key Sofa concepts illustrated here
+      include:</para>
+    
+    <itemizedlist spacing="compact"><listitem><para>Sofa creation.</para>
+      </listitem>
+      
+      <listitem><para>Access of multiple CAS views.</para></listitem>
+      
+      <listitem><para>Unique feature structure index space for each view.</para>
+        </listitem>
+      
+      <listitem><para>Feature structures containing cross references between
+        annotations in different CAS views.</para></listitem>
+      
+      <listitem><para>The strong affinity of annotations with a specific Sofa. </para>
+        </listitem></itemizedlist>
+    
+    <section id="ugr.tug.mvs.sample_application.descriptor">
+      <title>Annotator Descriptor</title>
+      
+      <para>The annotator descriptor in
+        <literal>examples/descriptors/analysis_engine/SofaExampleAnnotator.xml</literal>
+        declares an input Sofa named <quote>EnglishDocument</quote> and an output Sofa
+        named <quote>GermanDocument</quote>. A custom type
+        <quote>CrossAnnotation</quote> is also defined:</para>
+      
+      
+      <programlisting><![CDATA[<typeDescription>
+  <name>sofa.test.CrossAnnotation</name>
+  <description/>
+  <supertypeName>uima.tcas.Annotation</supertypeName>
+  <features>
+    <featureDescription>
+      <name>otherAnnotation</name>
+      <description/>
+      <rangeTypeName>uima.tcas.Annotation</rangeTypeName>
+    </featureDescription>
+  </features>
+</typeDescription>]]></programlisting>
+      
+      <para>The <literal>CrossAnnotation</literal> type is derived from
+        <literal>uima.tcas.Annotation </literal>and includes one new feature: a
+        reference to another annotation.</para>
+      
+    </section>
+    
+    <section id="ugr.tug.mvs.sample_application.setup">
+      <title>Application Setup</title>
+      
+      <para>The application driver instantiates an analysis engine,
+        <literal>seAnnotator</literal>, from the annotator descriptor, obtains a new
+        base CAS using that engine&apos;s CAS definition, and creates the expected input
+        Sofa using:</para>
+      
+      
+      <programlisting>CAS cas = seAnnotator.newCAS();
+CAS aView = cas.createView("EnglishDocument");</programlisting>
+      
+      <para>Since <literal>seAnnotator</literal> is a primitive component, and no Sofa
+        mapping has been defined, the SofaID will be <quote>EnglishDocument</quote>.
+        Local Sofa data is set using:</para>
+      
+      
+      <programlisting>aView.setDocumentText("this beer is good");</programlisting>
+      
+      <para>At this point the CAS contains all necessary inputs for the translation
+        annotator and its process method is called.</para>
+      
+    </section>
+    
+    <section id="ugr.tug.mvs.sample_application.annotator_processing">
+      <title>Annotator Processing</title>
+      
+      <para>Annotator processing consists of parsing the English document into individual
+        words, doing word-by-word translation and concatenating the translations into a
+        German translation. Analysis metadata on the English Sofa will be an annotation for
+        each English word. Analysis metadata on the German Sofa will be a
+        <literal>CrossAnnotation</literal> for each German word, where the
+        <literal>otherAnnotation</literal> feature will be a reference to the associated
+        English annotation.</para>
+      
+      <para>Code of interest includes two CAS views:</para>
+      
+      
+      <programlisting>// get View of the English text Sofa
+englishView = aCas.getView("EnglishDocument");
+
+// Create the output German text Sofa
+germanView = aCas.createView("GermanDocument");</programlisting>
+      
+      <para>the indexing of annotations with the appropriate view:</para>
+      
+      
+      <programlisting>englishView.addFsToIndexes(engAnnot);
+. . .
+germanView.addFsToIndexes(germAnnot);</programlisting>
+      
+      <para>and the combining of metadata belonging to different Sofas in the same feature
+        structure:</para>
+      
+      
+      <programlisting>// add link to English text
+germAnnot.setFeatureValue(other, engAnnot);</programlisting>
+      
+    </section>
+    
+    <section id="ugr.tug.mvs.sample_application.accessing_results">
+      <title>Accessing the results of analysis</title>
+      
+      <para>The application needs to get the results of analysis, which may be in different
+        views. Analysis results for each Sofa are dumped independently by iterating over all
+        annotations for each associated CAS view. For the English Sofa:</para>
+      
+      
+      <programlisting>//get annotation iterator for this CAS
+FSIndex anIndex = aView.getAnnotationIndex();
+FSIterator anIter = anIndex.iterator();
+while (anIter.isValid()) {
+  AnnotationFS annot = (AnnotationFS) anIter.get();
+  System.out.println(" " + annot.getType().getName()
+                         + ": " + annot.getCoveredText());
+  anIter.moveToNext();
+}</programlisting>
+      
+      <para>Iterating over all German annotations looks the same, except for the
+        following:</para>
+      
+      
+      <programlisting>if (annot.getType() == cross) {
+  AnnotationFS crossAnnot =
+          (AnnotationFS) annot.getFeatureValue(other);
+  System.out.println("   other annotation feature: "
+          + crossAnnot.getCoveredText());
+}</programlisting>
+      
+      <para>Of particular interest here is the built-in Annotation type method
+        <literal>getCoveredText()</literal>. This method uses the
+        <quote>begin</quote> and <quote>end</quote> features of the annotation to create
+        a substring from the CAS document. The SofaRef feature of the annotation is used to
+        identify the correct Sofa&apos;s data from which to create the substring.</para>
+      
+      <para>The example program output is:</para>
+      
+      
+      <programlisting>---Printing all annotations for English Sofa---
+uima.tcas.DocumentAnnotation: this beer is good
+uima.tcas.Annotation: this
+uima.tcas.Annotation: beer
+uima.tcas.Annotation: is
+uima.tcas.Annotation: good
+      
+---Printing all annotations for German Sofa---
+uima.tcas.DocumentAnnotation: das bier ist gut
+sofa.test.CrossAnnotation: das
+ other annotation feature: this
+sofa.test.CrossAnnotation: bier
+ other annotation feature: beer
+sofa.test.CrossAnnotation: ist
+ other annotation feature: is
+sofa.test.CrossAnnotation: gut
+ other annotation feature: good</programlisting>
+      
+    </section>
+  </section>
+  
+  <section id="ugr.tug.mvs.views_api_summary">
+    <title>Views API Summary</title>
+    
+    <para>The recommended way to deliver a particular CAS view to a <emphasis role="bold-italic">Single-View</emphasis> component is to use by Sofa-mapping in
+      the CPE and/or aggregate descriptors.</para>
+    
+    <para>For <emphasis role="bold-italic">Multi-View </emphasis> components or
+      applications, the following methods are used to create or get a reference to a CAS view
+      for a particular Sofa:</para>
+    
+    <para>Creating a new View:</para>
+    
+    
+    <programlisting>JCas newView = aJCas.createView(String localNameOfTheViewBeforeMapping);
+CAS  newView = aCAS .createView(String localNameOfTheViewBeforeMapping);</programlisting>
+    
+    <para>Getting a View from a CAS or JCas:</para>
+    
+    
+    <programlisting>JCas myView = aJCas.getView(String localNameOfTheViewBeforeMapping);
+CAS  myView = aCAS .getView(String localNameOfTheViewBeforeMapping);
+Iterator allViews = aCasOrJCas.getViewIterator();
+Iterator someViews = aCasOrJCas.getViewIterator(String localViewNamePrefix);</programlisting>
+    
+    <para>The following methods are useful for all annotators and applications:</para>
+    
+    <para>Setting Sofa data for a CAS or JCas:</para>
+    
+    
+    <programlisting>aCasOrJCas.setDocumentText(String docText);
+aCasOrJCas.setSofaDataString(String docText, String mimeType);
+aCasOrJCas.setSofaDataArray(FeatureStructure array, String mimeType);
+aCasOrJCas.setSofaDataURI(String uri, String mimeType);</programlisting>
+    
+    <para>Getting Sofa data for a particular CAS or JCas:</para>
+    
+    
+    <programlisting>String doc = aCasOrJCas.getDocumentText();
+String doc = aCasOrJCas.getSofaDataString();
+FeatureStructure array = aCasOrJCas.getSofaDataArray();
+String uri = aCasOrJCas.getSofaDataURI();
+InputStream is = aCasOrJCas.getSofaDataStream();</programlisting>
+    
+  </section>
+  
+  <section id="ugr.tug.mvs.sofa_incompatibilities_v1_v2">
+    <title>Sofa Incompatibilities between UIMA version 1 and version 2</title>
+    <titleabbrev>Sofa Incompatibilities: V1 and V2</titleabbrev>
+    
+    <para>A major change in version 2 is related to the support of Single-View components
+      and applications. Given an analysis engine, <literal>ae</literal>, the API
+      
+      <programlisting>CAS cas = ae.newCas();</programlisting>
+      used to return the base CAS. Now it returns a view of the Sofa named
+      <quote>_InitialView</quote>. This Sofa will actually only be created if any Sofa data
+      is set for this view. The initial view is used for Single-View applications and
+      Multi-View annotators with no Sofa mapping.</para>
+    
+    <para>The process method of Multi-View annotators receive the base CAS, however the base
+      CAS no longer has an index repository to hold <quote>global</quote> data. Global data
+      needs to be put in a specific named CAS view of your choice.</para>
+    
+    <para>Because of these changes, the following scenarios will break with v2.0 clients:
+      
+      <itemizedlist spacing="compact"><listitem><para>Any version 1.x services (you
+        must migrate the services to version 2).</para></listitem>
+        
+        <listitem><para>Applications or components explicitly referencing
+          <quote>_DefaultTextSofaName</quote> in code or descriptors.</para>
+          </listitem>
+        
+        <listitem><para>Multi-View applications using the Base CAS index repository.
+          </para></listitem></itemizedlist></para>
+  </section>
+</chapter>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd"[
+<!ENTITY imgroot "../images/tools/tools.pear.installer/" >
+<!ENTITY % uimaents SYSTEM "../entities.ent" >  
+%uimaents;
+]>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<chapter id="ugr.tools.pear.installer">
+  <title>PEAR Installer User&apos;s Guide</title>
+  
+  <para>PEAR (Processing Engine ARchive) is a new standard for packaging UIMA compliant
+    components. This standard defines several service elements that should be included in
+    the archive package to enable automated installation of the encapsulated UIMA
+    component. The major PEAR service element is an XML Installation Descriptor that
+    specifies installation platform, component attributes, custom installation
+    procedures and environment variables. </para>
+  
+  <para>The installation of a UIMA compliant component includes 2 steps: (1) installation of
+    the component code and resources in a local file system, and (2) verification of the
+    serviceability of the installed component. Installation of the component code and
+    resources involves extracting component files from the archive (PEAR) package in a
+    designated directory and localizing file references in component descriptors and other
+    configuration files. Verification of the component serviceability is accomplished
+    with the help of standard UIMA mechanisms for instantiating analysis engines.
+    
+    
+    <screenshot>
+    <mediaobject>
+      <imageobject>
+        <imagedata width="5.8in" format="JPG" fileref="&imgroot;image002.jpg"/>
+      </imageobject>
+      <textobject><phrase>PEAR Installer GUI</phrase>
+      </textobject>
+    </mediaobject>
+  </screenshot></para>
+  
+  <para>PEAR Installer is a simple GUI based Java application that helps installing UIMA
+    compliant components (analysis engines) from PEAR packages in a local file system. To
+    install a desired UIMA component the user needs to select the appropriate PEAR file in a
+    local file system and specify the installation directory (optional). If no installation
+    directory is specified, the PEAR file is installed to the current working directory. 
+	By default the PEAR packages are not installed directly to the specified installation directory. 
+	For each PEAR a subdirectory with the name of the PEAR's ID is created where the PEAR package is 
+	installed to. If the PEAR installation directory already exists, the old content is automatically 
+	deleted before the new content is installed. During the
+    component installation the user can read messages printed by the installation program in
+    the message area of the application window. If the installation fails, appropriate error
+    message is printed to help identifying and fixing the problem.</para>
+  
+  <para>After the desired UIMA component is successfully installed, the PEAR Installer
+    allows testing this component in the CAS Visual Debugger (CVD) application, which is
+    provided with the UIMA package. The CVD application will load your UIMA component using
+    its XML descriptor file. If the component is loaded successfully, you&apos;ll be able to
+    run it either with sample documents provided in the
+    <literal>&lt;UIMA_HOME&gt;/examples/data</literal> directory, or with any other
+    sample documents. See <olink targetdoc="&uima_docs_tools;"
+      targetptr="ugr.tools.cvd"/> for more information about the CVD application.
+    Running your component in the CVD application helps to make sure the component will run in
+    other UIMA applications. If the CVD application fails to load or run your component, or
+    throws an exception, you can find more information about the problem in the uima.log file
+    in the current working directory. The log file can be viewed with the CVD.</para>
+  
+  <para>PEAR Installer creates a file named <literal>setenv.txt</literal> in the
+    <literal>&lt;component_root&gt;/metadata</literal> directory. This file contains
+    environment variables required to run your component in any UIMA application. 
+    It also creates a PEAR descriptor (see also <olink targetdoc="&uima_docs_ref;"
+      targetptr="ugr.ref.pear.specifier"/>)
+    file named <literal>&lt;componentID&gt;_pear.xml</literal> 
+    in the <literal>&lt;component_root&gt;</literal> directory that can be used to directly run
+    the installed pear file in your application.
+    </para>
+  
+</chapter>

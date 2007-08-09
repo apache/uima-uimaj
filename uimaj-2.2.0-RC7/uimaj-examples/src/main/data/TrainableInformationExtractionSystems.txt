@@ -1,0 +1,11 @@
+﻿Adventurous Research Summer Seminar Series - Trainable Information Extraction Systems
+
+August 19, 2003   02:00 PM - 03:30 PM  
+David Johnson, Frank Oles, Tong Zhang(IBM Research)    
+Hawthorne GN-F15 
+Availability: Open  
+
+The technical objective of the TIES project is to build customizable systems that can identify named entities in text, such as persons, organizations, and locations, as well as identifying relations between those entities. The technical approach is to develop new statistical and symbolic machine learning algorithms in service of the technical objective. Also, we are working on combining statistical with symbolic techniques. The first part of this talk, given by David E. Johnson, will provide a general overview of the goals of the TIES project. The second part, given by Tong Zhang, will provide background on applying statistical machine learning to this problem domain. Tong will also describe the particular statistical approach taken, which is termed Robust Risk Minimization (RMM). The final part will be given by Frank J. Oles. Frank will introduce his theory of precedence-inclusion patterns. Precedence-inclusion patterns are mathematical structures possessing multiple interacting strict partial orders that satisfy axioms generalizing the familiar properties of irreflexivity and transitivity. This very general theory provides a radically new approach to symbolic, as opposed to statistical, pattern generalization that can be applied to relational learning in a number of settings, including learning based on text, on images, or on videos. 
+ 
+
+ 
