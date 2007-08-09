@@ -58,23 +58,6 @@
     </repository>
   </distributionManagement>
   <build>
-    <resources>
-      <!-- Add the LICENSE, NOTICE, and DISCLAIMER files from uimaj-distr/README
-      as resources to be included in the jars of all components.  This is so 
-      we don't need to have copies of these files in SVN for every component. -->
-      <resource>
-        <directory>../uimaj-distr/src/main/readme</directory>
-        <includes>
-          <include>LICENSE</include>
-          <include>NOTICE</include>
-          <include>DISCLAIMER</include>
-        </includes>
-        <targetPath>META-INF</targetPath>
-      </resource>
-      <resource>
-        <directory>src/main/resources</directory>
-      </resource>
-    </resources>
     <pluginManagement>
       <plugins>
         <!-- v2.1 of the javadoc plugin needed for muilti-module javadoc build to work properly -->
@@ -99,19 +82,65 @@
           <target>1.4</target>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-gpg-plugin</artifactId>  
-        <executions>
-          <execution>
-            <id>sign-artifacts</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>sign</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>		
+
+			<!-- We use an ant task to copy the LICENSE, NOTICE, and DISCLAIMER files
+				from a single location in uimaj-distr into the src/main/resources/META-INF
+				directory of all components.  We tried using the Maven resources plugin for 
+				this, but the Maven eclipse plugin does not seem to accept resource directories 
+				that are external to the component. -->
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>CopyLicenseNoticeDisclaimer</id>
+						<phase>generate-sources</phase>
+						<configuration>
+							<tasks>
+								<copy todir="src/main/resources/META-INF">
+									<fileset dir="../uimaj-distr/src/main/readme"
+										includes="LICENSE NOTICE DISCLAIMER"/>
+								</copy>
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+					<!-- after compilation has been done and the files have been copied to the
+						 target directory, delete them from the source directory. -->
+					<execution>
+						<id>DeleteLicenseNoticeDisclaimer</id>
+						<phase>package</phase>
+						<configuration>
+							<tasks>
+								<delete dir="src/main/resources/META-INF" deleteOnExit="true">
+									<fileset dir="../uimaj-distr/src/main/readme"
+										includes="LICENSE NOTICE DISCLAIMER"/>
+								</delete>
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>	
+					<!-- also delete on clean. -->
+					<execution>
+						<id>CleanLicenseNoticeDisclaimer</id>
+						<phase>clean</phase>
+						<configuration>
+							<tasks>
+								<delete dir="src/main/resources/META-INF" deleteOnExit="true">
+									<fileset dir="../uimaj-distr/src/main/readme"
+										includes="LICENSE NOTICE DISCLAIMER"/>
+								</delete>
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>		          				
+				</executions>
+			</plugin>			
     </plugins>
   </build>
   <reporting>
@@ -189,6 +218,35 @@
       
     </plugins>
   </reporting>
+	<profiles>
+		<profile>
+			<id>signArtifacts</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+				<property>
+					<name>signArtifacts</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
   <modules>
     <module>../uimaj-core</module>
     <module>../uimaj-cpe</module>
