@@ -53,6 +53,7 @@ echo            (-notest and -deploy cannot be used together)
 @goto execute
 
 @:deploy
+@set jvmarg="-DsignArtifacts=true"
 @set mvnCommand="source:jar deploy"
 @goto execute
 

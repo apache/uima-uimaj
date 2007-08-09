@@ -58,6 +58,7 @@ then
 # Check for -deploy switch.  If present, change maven command to deploy artifacts to remote Maven repo
   elif [ "$2" = "-deploy" ]
   then
+    vmargs="-DsignArtifacts=true"
     mvnCommand="source:jar deploy"
   else
     usage
