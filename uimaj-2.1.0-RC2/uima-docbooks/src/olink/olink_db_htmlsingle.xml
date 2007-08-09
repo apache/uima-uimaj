@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE targetset SYSTEM "http://docbook.sourceforge.net/release/xsl/current/common/targetdatabase.dtd" [
+<!ENTITY % uimaents SYSTEM "../docbook/entities.ent" >  
+%uimaents;
+<!ENTITY otarget_overview SYSTEM "overview_and_setup/htmlsingle-target.db">
+<!ENTITY otarget_tug      SYSTEM "tutorials_and_users_guides/htmlsingle-target.db">
+<!ENTITY otarget_refs     SYSTEM "references/htmlsingle-target.db">
+<!ENTITY otarget_tools    SYSTEM "tools/htmlsingle-target.db">
+]>
+<targetset>
+  <targetsetinfo>UIMA books olinks</targetsetinfo>
+  
+  <!-- Site map for generating relative paths between documents -->
+  <sitemap>
+    <dir name="target">
+      <dir name="overview_and_setup">
+        <document targetdoc="&uima_docs_overview;"
+                  baseuri="overview_and_setup.html">
+          &otarget_overview;
+        </document>
+      </dir>
+      <dir name="tutorials_and_users_guides">
+        <document targetdoc="&uima_docs_tutorial_guides;"
+                  baseuri="tutorials_and_users_guides.html">
+          &otarget_tug;
+        </document>
+      </dir>
+      <dir name="tools">
+        <document targetdoc="&uima_docs_tools;"
+                  baseuri="tools.html">
+          &otarget_tools;
+        </document>
+      </dir>
+      <dir name="references">
+        <document targetdoc="&uima_docs_ref;"
+                  baseuri="references.html">
+          &otarget_refs;
+        </document>
+      </dir>  
+    </dir>  
+  </sitemap>
+</targetset>

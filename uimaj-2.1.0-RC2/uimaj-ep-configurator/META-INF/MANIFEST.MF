@@ -1,0 +1,35 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Apache UIMA Component Descriptor Editor
+Bundle-SymbolicName: org.apache.uima.desceditor; singleton:=true
+Bundle-Version: 2.1.0.incubating
+Bundle-ClassPath: uima-ep-configurator.jar
+Bundle-Activator: org.eclipse.core.internal.compatibility.PluginActivator
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Localization: plugin
+Export-Package: org.apache.uima.taeconfigurator,
+ org.apache.uima.taeconfigurator.editors,
+ org.apache.uima.taeconfigurator.editors.ui,
+ org.apache.uima.taeconfigurator.editors.ui.dialogs,
+ org.apache.uima.taeconfigurator.editors.xml,
+ org.apache.uima.taeconfigurator.files,
+ org.apache.uima.taeconfigurator.model,
+ org.apache.uima.taeconfigurator.wizards
+Require-Bundle: org.eclipse.core.runtime.compatibility,
+ org.eclipse.ui.ide,
+ org.eclipse.jface.text,
+ org.eclipse.ui.workbench.texteditor,
+ org.eclipse.ui.editors,
+ org.eclipse.core.resources,
+ org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.apache.uima.runtime,
+ org.eclipse.ui.forms,
+ org.eclipse.jdt.core,
+ org.eclipse.jdt.ui,
+ org.eclipse.pde.ui,
+ org.apache.uima.jcas.jcasgenp,
+ org.eclipse.jdt.launching,
+ org.eclipse.search
+Eclipse-AutoStart: true
+Plugin-Class: org.apache.uima.taeconfigurator.TAEConfiguratorPlugin
