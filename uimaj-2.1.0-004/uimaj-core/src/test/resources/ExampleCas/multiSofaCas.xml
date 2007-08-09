@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+* Licensed to the Apache Software Foundation (ASF) under one
+* or more contributor license agreements.  See the NOTICE file
+* distributed with this work for additional information
+* regarding copyright ownership.  The ASF licenses this file
+* to you under the Apache License, Version 2.0 (the
+* "License"); you may not use this file except in compliance
+* with the License.  You may obtain a copy of the License at
+* 
+*   http://www.apache.org/licenses/LICENSE-2.0
+* 
+* Unless required by applicable law or agreed to in writing,
+* software distributed under the License is distributed on an
+* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+* KIND, either express or implied.  See the License for the
+* specific language governing permissions and limitations
+* under the License.
+-->
+<CAS>
+  <uima.cas.Sofa _indexed="0" _id="1" sofaNum="1" sofaID="_InitialView" mimeType="text"
+    sofaString="some text for the default text sofa."/>
+  <uima.cas.Sofa _indexed="0" _id="13" sofaNum="2" sofaID="EnglishDocument"
+    sofaString="this beer is good"/>
+  <uima.cas.Sofa _indexed="0" _id="41" sofaNum="3" sofaID="GermanDocument"
+    sofaString="das bier ist gut"/>
+  <uima.cas.Sofa _indexed="0" _id="89" sofaNum="4" sofaID="FrenchDocument"
+    sofaString="cette biere est bonne"/>
+  <uima.tcas.DocumentAnnotation _indexed="1" _id="8" _ref_sofa="1" begin="0" end="36"
+    language="x-unspecified"/>
+  <uima.tcas.Annotation _indexed="2" _id="25" _ref_sofa="13" begin="0" end="4"/>
+  <uima.tcas.Annotation _indexed="2" _id="29" _ref_sofa="13" begin="5" end="9"/>
+  <uima.tcas.Annotation _indexed="2" _id="33" _ref_sofa="13" begin="10" end="12"/>
+  <uima.tcas.Annotation _indexed="2" _id="37" _ref_sofa="13" begin="13" end="17"/>
+  <uima.tcas.DocumentAnnotation _indexed="2" _id="20" _ref_sofa="13" begin="0" end="17"
+    language="x-unspecified"/>
+  <uima.tcas.DocumentAnnotation _indexed="3" _id="48" _ref_sofa="41" begin="0" end="16"
+    language="x-unspecified"/>
+  <sofa.test.CrossAnnotation _indexed="3" _id="53" _ref_sofa="41" begin="0" end="3"
+    _ref_otherAnnotation="58"/>
+  <sofa.test.CrossAnnotation _indexed="3" _id="62" _ref_sofa="41" begin="4" end="8"
+    _ref_otherAnnotation="67"/>
+  <sofa.test.CrossAnnotation _indexed="3" _id="71" _ref_sofa="41" begin="9" end="12"
+    _ref_otherAnnotation="76"/>
+  <sofa.test.CrossAnnotation _indexed="3" _id="80" _ref_sofa="41" begin="13" end="16"
+    _ref_otherAnnotation="85"/>
+  <uima.tcas.Annotation _indexed="4" _id="101" _ref_sofa="89" begin="0" end="5"/>
+  <uima.tcas.Annotation _indexed="4" _id="105" _ref_sofa="89" begin="6" end="11"/>
+  <uima.tcas.Annotation _indexed="4" _id="109" _ref_sofa="89" begin="12" end="15"/>
+  <uima.tcas.Annotation _indexed="4" _id="113" _ref_sofa="89" begin="16" end="21"/>
+  <uima.tcas.DocumentAnnotation _indexed="4" _id="96" _ref_sofa="89" begin="0" end="21"
+    language="x-unspecified"/>
+  <uima.tcas.Annotation _id="85" _ref_sofa="13" begin="13" end="17"/>
+  <uima.tcas.Annotation _id="76" _ref_sofa="13" begin="10" end="12"/>
+  <uima.tcas.Annotation _id="67" _ref_sofa="13" begin="5" end="9"/>
+  <uima.tcas.Annotation _id="58" _ref_sofa="13" begin="0" end="4"/>
+</CAS>
