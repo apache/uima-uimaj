@@ -1,0 +1,187 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one
+   or more contributor license agreements.  See the NOTICE file
+   distributed with this work for additional information
+   regarding copyright ownership.  The ASF licenses this file
+   to you under the Apache License, Version 2.0 (the
+   "License"); you may not use this file except in compliance
+   with the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied.  See the License for the
+   specific language governing permissions and limitations
+   under the License.    
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.apache.uima</groupId>
+	<artifactId>uimaj-distr</artifactId>
+	<packaging>jar</packaging>
+	<version>2.1.0-incubating</version>
+	<name>Apache UIMA Java SDK - Resources and Assembly Descriptor for building the distribution</name>
+	<url>http://incubator.apache.org/uima</url>
+	<organization><name>The Apache Software Foundation</name></organization>
+	<parent>
+		<groupId>org.apache.uima</groupId>
+		<artifactId>uimaj</artifactId>
+		<version>2.1.0-incubating</version>
+	</parent>
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.uima</groupId>
+			<artifactId>uimaj-adapter-vinci</artifactId>
+			<version>2.1.0-incubating</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.uima</groupId>
+			<artifactId>uimaj-adapter-soap</artifactId>
+			<version>2.1.0-incubating</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.uima</groupId>
+			<artifactId>uimaj-core</artifactId>
+			<version>2.1.0-incubating</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.uima</groupId>
+			<artifactId>uimaj-cpe</artifactId>
+			<version>2.1.0-incubating</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.uima</groupId>
+			<artifactId>uimaj-examples</artifactId>
+			<version>2.1.0-incubating</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.uima</groupId>
+			<artifactId>uimaj-tools</artifactId>
+			<version>2.1.0-incubating</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.uima</groupId>
+			<artifactId>uimaj-ep-configurator</artifactId>
+			<version>2.1.0-incubating</version>
+			<scope>compile</scope>
+			<type>zip</type>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.uima</groupId>
+			<artifactId>uimaj-ep-debug</artifactId>
+			<version>2.1.0-incubating</version>
+			<scope>compile</scope>
+			<type>zip</type>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.uima</groupId>
+			<artifactId>uimaj-ep-jcasgen</artifactId>
+			<version>2.1.0-incubating</version>
+			<scope>compile</scope>
+			<type>zip</type>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.uima</groupId>
+			<artifactId>uimaj-ep-pear-packager</artifactId>
+			<version>2.1.0-incubating</version>
+			<scope>compile</scope>
+			<type>zip</type>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.uima</groupId>
+			<artifactId>uimaj-ep-runtime</artifactId>
+			<version>2.1.0-incubating</version>
+			<scope>compile</scope>
+			<type>zip</type>
+		</dependency>		
+	</dependencies>
+	<build>
+		<pluginManagement>
+			<plugins>
+				<!-- For some reason v2.1 doesn't seem to work with the "sourcepath"
+					 option, so require v2.0 here. -->
+				<plugin>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>2.0</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>		
+		<plugins>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptors>
+						<descriptor>src/main/assembly/bin.xml</descriptor>
+            <descriptor>src/main/assembly/src.xml</descriptor>
+					</descriptors>
+					<finalName>uimaj-${pom.version}</finalName>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>javadoc</id>
+						<phase>package</phase>
+						<goals>
+							<goal>javadoc</goal>
+						</goals>
+						<configuration>
+							<aggregate>false</aggregate>
+							<source>1.4</source>
+							<groups>
+								<group>
+									<title>Packages</title>
+									<packages>*</packages>
+								</group>
+							</groups>
+							<sourcepath>../uimaj-core/src/main/java;../uimaj-document-annotation/src/main/java</sourcepath>
+							<excludePackageNames>*.internal.*:*.impl.*</excludePackageNames>
+							<!-- add a few classes in impl packages that are directly used by user code -->
+							<additionalparam>
+								${basedir}/../uimaj-core/src/main/java/org/apache/uima/cas/impl/XCASDeserializer.java
+								${basedir}/../uimaj-core/src/main/java/org/apache/uima/cas/impl/XCASParsingException.java
+								${basedir}/../uimaj-core/src/main/java/org/apache/uima/cas/impl/XCASSerializer.java
+								${basedir}/../uimaj-core/src/main/java/org/apache/uima/cas/impl/XmiCasDeserializer.java
+								${basedir}/../uimaj-core/src/main/java/org/apache/uima/cas/impl/XmiCasSerializer.java
+								${basedir}/../uimaj-core/src/main/java/org/apache/uima/cas/impl/XmiSerializationSharedData.java
+								${basedir}/../uimaj-cpe/src/main/java/org/apache/uima/collection/impl/metadata/cpe/CpeDescriptorFactory.java
+								${basedir}/../uimaj-cpe/src/main/java/org/apache/uima/collection/impl/cpm/engine/CPMChunkTimeoutException.java
+							</additionalparam>
+							<doctitle>Apache UIMA Java SDK ${pom.version} User-Level API Documentation</doctitle>
+							<windowtitle>Apache UIMA Java SDK ${pom.version} User-Level API Documentation</windowtitle>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <configuration>
+              <tasks>
+                <!-- Build documentation -->
+                <ant dir="../uima-docbooks"/>                
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+		</plugins>
+	</build>	
+</project>
