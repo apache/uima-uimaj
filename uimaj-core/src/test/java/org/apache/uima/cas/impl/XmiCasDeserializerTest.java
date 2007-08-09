@@ -113,9 +113,11 @@ public class XmiCasDeserializerTest extends TestCase {
     }
   }
 
-  private void doTestDeserializeAndReserialize(File typeSystemDescriptor) throws Exception {
+  private void doTestDeserializeAndReserialize(File typeSystemDescriptorFile) throws Exception {
     // deserialize a complex CAS from XCAS
-    CAS cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
+    TypeSystemDescription typeSystemDescription = UIMAFramework.getXMLParser().parseTypeSystemDescription(
+            new XMLInputSource(typeSystemDescriptorFile));
+    CAS cas = CasCreationUtils.createCas(typeSystemDescription, new TypePriorities_impl(), indexes);
 
     InputStream serCasStream = new FileInputStream(JUnitExtension.getFile("ExampleCas/cas.xml"));
     XCASDeserializer deser = new XCASDeserializer(cas.getTypeSystem());
@@ -132,7 +134,7 @@ public class XmiCasDeserializerTest extends TestCase {
     System.out.println(xml);
     
     // deserialize into another CAS
-    CAS cas2 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
+    CAS cas2 = CasCreationUtils.createCas(typeSystemDescription, new TypePriorities_impl(), indexes);
     XmiCasDeserializer deser2 = new XmiCasDeserializer(cas2.getTypeSystem());
     ContentHandler deserHandler2 = deser2.getXmiCasHandler(cas2);
     xmlReader.setContentHandler(deserHandler2);
