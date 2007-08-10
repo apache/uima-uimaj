@@ -1825,9 +1825,18 @@ catch (PatternSyntaxException e) {
         
         <para>When the Analysis Engine is initialized, it creates a single instance of
           <literal>StringMapResource_impl</literal> and loads it with the contents of
-          the data file. The UimaAcronymAnnotator then accesses the data through the
+          the data file.  This means that the framework calls the instance's <literal>load</literal>
+          method, passing it an instance of DataResource, from which you can obtain 
+          a stream or URI/URL of the external resource that was declared in the external resource; 
+          for resources where
+          loading does not make sense, you can implement a <literal>load</literal> method
+          which ignores its argument and just returns.  See the Javadocs for SharedResourceObject for
+          details on this. 
+          The UimaAcronymAnnotator then accesses the data through the
           <literal>StringMapResource</literal> interface. This single instance could
-          be shared among multiple annotators, as will be explained later.</para>
+          be shared among multiple annotators, as will be explained later.
+          Because of this, you should insure your implementation is thread-safe, as it 
+          could be called multiple times on multiple threads.</para>
         
         <para>Note that all resource implementation classes (e.g.
           StringMapResource_impl in the provided example) must be declared public
@@ -1940,6 +1949,26 @@ catch (PatternSyntaxException e) {
           bindings so that they referred to two different resources. The Resource Manager
           gives us the flexibility to make this decision at deployment time, without
           changing any Java code.</para>
+        
+      </section>
+      
+      <section id="ugr.tug.aae.resources.threading">
+        <title>Threading and Shared Resources</title>
+        <para>Sharing can also occur when multiple instances of an annotator are 
+        created by the framework in response to run-time deployment specifications.
+        If an implementation class is specified in the external resource, 
+        only one instance of that implementation class  
+          is created for a given binding, and is shared among all
+        annotators.  Because of this, the implementation of that shared instance must be written to be
+        thread-safe - that is, to operate correctly when called at arbitrary times
+        by multiple threads.  Writing thread-safe code in Java is addressed in several
+        books, such as Brian Goetz's <emphasis>Java Concurrency in Practice</emphasis>.</para>
+        
+        <para>
+          If no implementation class is specified, then the getResource method returns a
+          DataResource object, from which each annotator instance can obtain their
+          own (non-shared) input stream; so threading is not an issue in this case.
+        </para>
         
       </section>
     </section>
