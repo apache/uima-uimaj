@@ -1,0 +1,859 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd"[
+<!ENTITY imgroot "../images/tools/tools.cvd/" >
+<!ENTITY % uimaents SYSTEM "../entities.ent" >  
+%uimaents;
+]>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+ 
+ http://www.apache.org/licenses/LICENSE-2.0
+ 
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+-->
+<chapter id="ugr.tools.cvd">
+ <title>CAS Visual Debugger</title>
+ <section id="ugr.tools.cvd.introduction">
+ <title>Introduction</title>
+ <para>
+  The CAS Visual Debugger is a tool to run text analysis engines in UIMA
+  and view the results. The tool is implemented as a stand-alone GUI 
+  tool using Java's Swing library.
+ </para>
+ <para>
+  This is a developer's tool.  It is intended to support you in writing
+  text analysis annotators for UIMA (Unstructured Information Management
+  Architecture).  As a development tool, the emphasis is not so much on
+  pretty pictures, but rather on navigability.  It is intended to show
+  you all the information you need, and show it to you quickly (at least
+  on a fast machine ;-).
+ </para>
+ <para>
+  The main purpose of this application is to let you browse all the data
+  that was created when you ran an analysis engine over some text.  The
+  display mimics the access methods you have in the CAS API in terms of
+  indexes, types, feature structures and feature values.
+ </para>
+ <para>
+  As in the CAS, there is special support for annotations.  Clicking on
+  an annotation will select the corresponding text, and conversely, you
+  can display all annotations that cover a given position in the text.
+  This will be explained in more detail in the section on the main
+  display area.
+ </para>
+ <para>
+  As usual, the graphics in this manual are for illustrative purposes
+  and may not look 100% like the actual version of CVD you are running.
+  This depends on your operating system, your version of Java, and a
+  variety of other factors.
+ </para>
+ <section id="ugr.cvd.introduction.running">
+ <title>Running CVD</title>
+ <para>
+  You will usually want to start CVD from the command line, or from Eclipse.  To start CVD from the
+  command line, you minimally need the uima-core and uima-tools jars.  Below is a sample command
+  line for sh and its offspring.
+  <programlisting>java -cp ${UIMA_HOME}/lib/uima-core.jar:${UIMA_HOME}/lib/uima-tools.jar 
+    org.apache.uima.tools.cvd.CVD</programlisting>
+  However, there is no need to type this.  The ${UIMA_HOME}/bin directory contains a cvd.sh and
+  cvd.bat file for Windows and *nix operating systems.
+ </para>
+ <para>
+   In Eclipse, you have a ready to use launch configuration available when you have installed the
+   UIMA sample project (see <olink targetdoc="&uima_docs_overview;" 
+   targetptr="ugr.ovv.eclipse_setup.example_code"/>).  Below is a screenshot of the the Eclipse Run 
+   dialog with the CVD
+   run configuration selected.
+   <screenshot>
+    <mediaobject>
+     <imageobject>
+      <imagedata scale="100" format="JPG" fileref="&imgroot;eclipse-cvd-launch.jpg"/>
+     </imageobject>
+     <textobject>
+      <phrase>Sample error dialog</phrase>
+     </textobject>
+    </mediaobject>
+   </screenshot>
+ </para>
+ </section>
+ </section>
+ <section id="cvd.errorHandling">
+  <title>Error Handling</title>
+  <para>
+   On encountering
+   an error, CVD will pop up an error dialog with a short,
+   usually incomprehensible message.  Often, the error message will
+   claim that there is more information available in the log file, and
+   sometimes, this is actually true; so do go and check the log.  You
+   can view the log file by selecting the appropriate item in the
+   &quot;Tools&quot; menu.
+
+   <screenshot>
+    <mediaobject>
+     <imageobject>
+      <imagedata scale="100" format="JPG" fileref="&imgroot;ErrorExample.jpg"/>
+     </imageobject>
+     <textobject>
+      <phrase>Sample error dialog</phrase>
+     </textobject>
+    </mediaobject>
+   </screenshot>
+
+  </para>
+ </section>
+
+ <section id="cvd.preferencesFile">
+  <title>Preferences File</title>
+  <para>
+   The program will attempt to read on startup and save on exit a file
+   called annotViewer.pref in your home directory.  This file contains
+   information about choices you made while running the program:
+   directories (such as where your data files are) and window sizes. 
+   These settings will be used the next time you use the program. There
+   is no user control over this process, but the file format is
+   reasonably transparent, in case you feel like changing it.  Note,
+   however, that the file will be overwritten every time you exit the
+   program.
+  </para>
+ </section>
+
+ <section id="cvd.theMenus">
+  <title>The Menus</title>
+  <para>
+   We give a brief description of the various menus. All menu items come
+   with mnemonics (e.g., Alt-F X will exit the program). In addition,
+   some menu items have their own keyboard accelerators that you can use
+   anywhere in the program. For example, Ctrl-S will save the text
+   you've been editing.
+  </para>
+  <section id="cvd.fileMenu">
+   <title>The File Menu</title>
+   <para>
+    The File menu lets you load, create and save text, load and save
+    color settings, and import and export the XCAS format. Here's a
+    screenshot.
+
+   <screenshot> 
+    <mediaobject>
+      <imageobject>
+       <imagedata scale="100" format="JPG" fileref="&imgroot;FileMenu.jpg"/>
+      </imageobject>
+      <textobject>
+       <phrase>The File menu</phrase>
+      </textobject>
+     </mediaobject>
+    </screenshot>
+   </para>
+
+   <itemizedlist>
+    <para>
+     Below is a list of the menu items, together with an explanation.
+    </para>
+
+    <listitem>
+     <formalpara>
+      <title>New Text...</title>
+      <para>
+       Clears the text area. Text you type is written to an anonymous
+       buffer. You can use &quot;Save Text As...&quot; to save the text
+       you typed to a file. Note: whenever you modify the text, be it
+       through typing, loading a file or using the &quot;New
+       Text...&quot; menu item, previous analysis results will be lost.
+       Since the previous analysis is specific to the text, modifying
+       the text invalidates the analysis.
+      </para>
+     </formalpara>
+    </listitem>
+
+    <listitem>
+     <formalpara>
+      <title>Open Text File</title>
+      <para>
+       Loads a new text file into the viewer.  The next time you run an
+       analysis engine, it will run the text you loaded last.  Depending
+       on the annotator you're using, the program may run slow with very
+       large text files, so you may want to experiment.
+      </para>
+     </formalpara>
+    </listitem>
+
+    <listitem>
+     <formalpara>
+      <title>Save Text File</title>
+      <para>
+       Saves the currently open text file. If no file is currently
+       loaded (either because you haven't loaded a file, or you've used
+       the &quot;New Text...&quot; menu item), this menu item is
+       disabled (and Ctrl-S will do nothing).
+      </para>
+     </formalpara>
+    </listitem>
+
+    <listitem>
+     <formalpara>
+      <title>Save Text As...</title>
+      <para>
+       Save the text to a file of your choosing. This can be an existing
+       file, which is then overwritten, or it can be a new file that
+       you're creating.
+      </para>
+     </formalpara>
+    </listitem>
+
+    <listitem>
+     <formalpara>
+      <title>Change Code Page</title>
+      <para>
+       Allows you to change the code page that is used to load and save
+       text files. If you're sure the text you're loading is in ASCII or
+       one of the 8-bit extensions such as ISO-8859-1 (ISO Latin1),
+       there is probably nothing you need to do. Just load the text and
+       look at the display. If you see no funny characters or square
+       boxes, chances are your selected code page is compatible with
+       your text file.
+
+       Note that the code page setting is also in effect when you save
+       files. You can observe the effects with a hex editor or by just
+       looking at the file size. For example, if you save the default
+       text
+       <computeroutput>This is where the text goes.</computeroutput>
+       to a file on Windows using the default code page, the size of the
+       file will be 28 bytes. If you now change the code page to UTF-16
+       and save the file again, the file size will be 58 bytes: two
+       bytes for each character, plus two bytes for the byte-order mark.
+       Now switch the code page back to the default Windows code page
+       and reload the UTF-16 file to see the difference in the editor.
+
+       By default, the code page options include all code pages that any
+       Java implementation must support: US-ASCII, ISO-8859-1, UTF-8,
+       UTF-16BE (big-endian), UTF-16LE (little endian) and UTF-16 (with
+       magic marker). Also included is the system code page, if it is
+       not among the built-in ones. Prior to Java 1.4, there is no
+       programmatic way to determine what the complete list of supported
+       code pages is. Therefore, you can add your own code page in the
+       corresponding submenu. All this amounts to is adding a string.
+       The new code page is automatically selected as the current code
+       page. The way to find out if the code page you entered is
+       supported in your Java implementation is to try and load a text
+       file. If you see an error ``Unsupported text encoding'', the code
+       page is not supported.
+      </para>
+     </formalpara>
+    </listitem>
+
+    <listitem>
+     <formalpara>
+      <title>Load Color Settings</title>
+      <para>
+       Load previously saved color settings from a file (see
+       Tools/Customize Annotation Display).  It is highly recommended
+       that you only load automatically generated files.  Strange things
+       may happen if you try to load the wrong file format. On startup,
+       the program attempts to load the last color settings file that
+       you loaded or saved during a previous session. If you intend to
+       use the same color settings as the last time you ran the program,
+       there is therefore no need to manually load a color settings
+       file.
+      </para>
+     </formalpara>
+    </listitem>
+
+    <listitem>
+     <formalpara>
+      <title>Save Color Settings</title>
+      <para>
+       Save your customized color settings (see Tools/Customize
+       Annotation Display).  The file is a Java properties file, and as
+       such, reasonably transparent.  What is not transparent is the
+       encoding of the colors (integer encoding of 24-bit RGB values),
+       so changing the file by hand is not really recommended.
+      </para>
+     </formalpara>
+    </listitem>
+
+    <listitem>
+     <formalpara>
+      <title>Read Type System File</title>
+      <para>
+       Load a type system file. This allows you to load an XCAS file
+       without having to have access to the corresponding annotator.
+      </para>
+     </formalpara>
+    </listitem>
+
+    <listitem>
+     <formalpara>
+      <title>Write Type System File</title>
+      <para>
+       Create a type system file from the currently loaded type
+       definitions. In addition, you can save the current CAS as a XCAS
+       file (see below). This allows you to later load the type system
+       and XCAS to view the CAS without having to rerun the annotator.
+      </para>
+     </formalpara>
+    </listitem>
+
+    <listitem>
+     <formalpara>
+      <title>Read XMI CAS File</title>
+      <para>
+       Read an XMI CAS file. Important: XMI CAS is a serialization format that
+       serializes a CAS without type system and index information. It is
+       therefore impossible to read in a stand-alone XMI CAS file. XMI CAS
+       files can only be interpreted in the context of an existing type
+       system. Consequently, you need to load the TAE that was used to
+       create the XCAS file to be able to load it.
+      </para>
+     </formalpara>
+    </listitem>
+
+    <listitem>
+     <formalpara>
+      <title>Write XMI CAS File</title>
+      <para>
+       Writes the current analysis out as an XMI CAS file.
+      </para>
+     </formalpara>
+    </listitem>
+
+
+    <listitem>
+     <formalpara>
+      <title>Read XCAS File</title>
+      <para>
+       Read an XCAS file. Important: XCAS is a serialization format that
+       serializes a CAS without type system and index information. It is
+       therefore impossible to read in a stand-alone XCAS file. XCAS
+       files can only be interpreted in the context of an existing type
+       system. Consequently, you need to load the TAE that was used to
+       create the XCAS file to be able to load it. Loading a XCAS file
+       without loading the TAE may produce strange errors. You may get
+       syntax errors on loading the XCAS file, or worse, everything may
+       appear to go smoothly but in reality your CAS may be corrupted.
+      </para>
+     </formalpara>
+    </listitem>
+
+    <listitem>
+     <formalpara>
+      <title>Write XCAS File</title>
+      <para>
+       Writes the current analysis out as an XCAS file.
+      </para>
+     </formalpara>
+    </listitem>
+
+    <listitem>
+     <formalpara>
+      <title>Exit</title>
+      <para>Exits the program. Your preferences will be saved.</para>
+     </formalpara>
+    </listitem>
+
+   </itemizedlist>
+
+  </section>
+
+  <section id="cvd.editMenu">
+   <title>The Edit Menu</title>
+   <para>
+
+   <screenshot>
+     <mediaobject>
+      <imageobject>  <!-- was 2.15in -->
+       <imagedata scale="100" format="JPG" fileref="&imgroot;EditMenu.jpg" />
+      </imageobject>
+      <textobject>
+       <phrase>The Edit menu</phrase>
+      </textobject>
+     </mediaobject>
+    </screenshot>
+
+    The &quot;Edit&quot; menu provides a standard text editing menu with
+    Cut, Copy and Paste, as well as unlimited Undo.
+   </para>
+   <para>
+    Note that standard keyboard accelerators Ctrl-X, Ctrl-C, Ctrl-V and
+    Ctrl-Z can be used for Cut, Copy, Paste and Undo, respectively. The
+    text area supports other standard keyboard operations such as
+    navigation HOME, Ctrl-HOME etc., as well as marking text with Shift-
+    &lt;ArrowKey&gt;.
+   </para>
+  </section>
+
+  <section id="cvd.runMenu">
+   <title>The Run Menu</title>
+   <para>
+
+    <screenshot>
+     <mediaobject>
+      <imageobject> <!-- was width="2.225in" -->
+       <imagedata scale="100" format="JPG" fileref="&imgroot;RunMenu.jpg" />
+      </imageobject>
+      <textobject>
+       <phrase>The Run menu</phrase>
+      </textobject>
+     </mediaobject>
+     </screenshot>
+
+     In the Run menu, you can load and run text analysis engines.
+   </para>
+
+   <itemizedlist>
+
+    <listitem>
+     <formalpara>
+      <title>Load AE</title>
+      <para>
+       Loads and initializes a text analysis engine. Choosing this menu
+       item will display a file open dialog where you should choose an
+       XML descriptor of a Text Analysis Engine to process the current
+       text.  Even if the analysis engine runs fast, this will take a
+       while, since there is a lot of setup work to do when a new TAE is
+       created.  So be patient.
+
+       When you develop a new annotator, you will often need to
+       recompile your code. Gladis will not reload your annotator code.
+       When you recompile your code, you need to terminate the GUI and
+       restart it. If you only make changes to the XML descriptor, you
+       don't need to restart the GUI. Simply reload the XML file.
+      </para>
+     </formalpara>
+    </listitem>
+
+    <listitem>
+     <formalpara>
+      <title>Run AE</title>
+      <para>
+       Before you have (successfully) loaded a TAE, this menu item will
+       be disabled. After you have loaded a TAE, it will be enabled, and
+       the name changes according to the name of the TAE you have
+       loaded. For example, if you've loaded &quot;The World's Fastest
+       Parser&quot;, you will have a menu item called &quot;Run The
+       World's Fastest Parser&quot;. When you choose the item, the TAE
+       is run on whatever text you have currently loaded.
+
+       After a TAE has run successfully, the index window in the upper
+       left-hand corner of the screen should be updated and show the
+       indexes that were created by this run.  We will have more to say
+       about indexes and what to do with them later.
+      </para>
+     </formalpara>
+    </listitem>
+
+    <listitem>
+     <formalpara>
+      <title>Run AE on CAS</title>
+      <para>
+       This allows you to run an analysis engine on the current CAS.
+       This is useful if you have loaded a CAS from an XCAS file, and
+       would like to run further analysis on it.
+      </para>
+     </formalpara>
+    </listitem>
+
+    <listitem>
+     <formalpara>
+      <title>Recently used</title>
+      <para>
+       Collects a list of recently used analysis engines as a short-cut
+       for loading.
+      </para>
+     </formalpara>
+    </listitem>
+
+    <listitem>
+     <formalpara>
+      <title>Language</title>
+      <para>
+       Some annotators do language specific processing. For example, if
+       you run lexical analysis, the results may be quite different
+       depending on what the analysis engine thinks the language of the
+       document is. With this menu item, you can manually set the
+       document language. Alternatively, you can use an automatic
+       language identification annotator. If the analysis engines you're
+       working with are language agnostic, there is no need to set the
+       language.
+      </para>
+     </formalpara>
+    </listitem>
+
+   </itemizedlist>
+  </section>
+
+  <section id="cvd.toolsMenu">
+   <title>The tools menu</title>
+   <para>
+    The tools menu contains some assorted utilities, such as the log
+    file viewer. Here you can also set the log level for UIMA.  
+    A more detailed description of some of the menu items
+    follows below.
+   </para>
+   <section id="cvd.viewTypeSystem">
+    <title>View Type System</title>
+    <para>
+
+     <screenshot>
+       <mediaobject>
+        <imageobject>  
+         <imagedata scale="100" format="JPG" fileref="&imgroot;TypeSystemViewer.jpg" />
+        </imageobject>
+       </mediaobject>
+      </screenshot>
+
+     Brings up a new window that displays the type system. This menu
+     item is disabled until the first time you have run an analysis
+     engine, since there is no type system to display until then. An
+     example is shown above.
+    </para>
+    <para>
+     You can view the inheritance tree on the left by expanding and
+     collapsing nodes.  When you select a type, the features defined on
+     that type are displayed in the table on the right.  The feature
+     table has three columns.  The first gives the name of the feature,
+     the second one the type of the feature (i.e., what values it
+     takes), and the third column displays the highest type this feature
+     is defined on.  In this example, the features &quot;begin&quot; and
+     &quot;end&quot; are inherited from the built-in annotation type.
+    </para>
+    <para>
+     In the options menu, you can configure if you want to see inherited
+     features or not (not yet implemented).
+    </para>
+   </section>
+
+   <section id="cvd.showSelectedAnnotations">
+    <title>Show Selected Annotations</title>
+    <para>
+     <figure id="AnnotationViewerFigure">
+      <title>
+       Annotations produced by a statistical named entity tagger
+      </title>
+      <mediaobject>
+       <imageobject> <!-- was width="5.82in" -->
+        <imagedata scale="100" format="JPG" fileref="&imgroot;AnnotationViewer.jpg" />
+       </imageobject>
+      </mediaobject>
+     </figure>
+    </para>
+
+    <para>
+     To enable this menu, you must have run an analysis engine and
+     selected the ``AnnotationIndex'' or one of its subnodes in the
+     upper left hand corncer of the screen.  It will bring up a new text
+     window with all selected annotations marked up in the text. 
+    </para>
+    <para>
+     <xref linkend="AnnotationViewerFigure" />
+     shows the results of applying a statistical named entity tagger to
+     a newspaper article.  Some annotation colors have been customized:
+     countries are in reverse video, organizations have a turquois
+     background, person names are green, and occupations have a maroon
+     background.  The default background color is yellow.  This color is
+     also used if there is more than one annotation spanning a certain
+     text.  Clearly, this display is only useful if you don't have any
+     overlapping annotations, or at least not too many.
+    </para>
+    <para>
+     This menu item is also available as a context menu in the Index
+     Tree area of the main window. To use it, select the annotation
+     index or one of its subnodes, right-click to bring up a popup menu,
+     and select the only item in the popup menu. The popup menu is
+     actually a better way to invoke the annotation display, since it
+     changes according to the selection in the Index Tree area, and will
+     tell you if what you've selected can be displayed or not.
+    </para>
+
+
+   </section>
+
+  </section>
+
+ </section>
+
+ <section id="cvd.mainDisplayArea">
+  <title>The Main Display Area</title>
+  <para>
+   The main display area has three sub-areas.  In the upper left-hand
+   corner is the
+   <emphasis role="bold">index display</emphasis>, which shows the indexes that were defined in the 
+   AE, as well as
+   the types of the indexes and their subtypes.  In the lower left-hand
+   corner, the content of indexes and sub-indexes is displayed 
+   (<emphasis role="bold">FS display</emphasis>).  Clicking on any node in the index display will 
+   show the
+   corresponding feature structures in the FS display.  You can explore
+   those structures by expanding the tree nodes.  When you click on a
+   node that represents an annotation, clicking on it will cause the
+   corresponding text span to marked in the
+   <emphasis role="bold">text display</emphasis>.
+  </para>
+  <para>
+   <figure id="Main1Figure">
+    <title>State of GUI after running an analysis engine</title>
+    <mediaobject>
+     <imageobject>
+      <imagedata scale="100" format="JPG" fileref="&imgroot;Main1.jpg" />
+     </imageobject>
+    </mediaobject>
+   </figure>
+  </para>
+  <para>
+   <xref linkend="Main1Figure"></xref>
+   shows the state after running the UIMA_Analysis_Example.xml aggregate from the
+   uimaj-examples project.  There are two indexes in the index display, and the
+   annotation index has been selected.  Note that the number of
+   structures in an index is displayed in square brackets after the
+   index name.
+  </para>
+  <para>
+   Since displaying thousands of sister nodes is both confusing and
+   slow, nodes are grouped in powers of 10.  As soon as there are no
+   more than 100 sister nodes, they are displayed next to each other.
+  </para>
+  <para>
+   In our example, a name annotation has been selected, and the
+   corresponding token text is highlighted in the text area.  We have
+   also expanded the token node to display its structure (not much to see in this simple example).
+  </para>
+  <para>
+   In <xref linkend="Main1Figure"/>, we selected an annotation in the FS display to find the
+   corresponding text.  We can also do the reverse and find out what
+   annotations cover a certain point in the text.  Let's go back to the
+   name recognizer for an example.
+  </para>
+  <para>
+   <figure id="Main2Figure">
+    <title>
+     Finding annotations for a specific location in the text
+    </title>
+    <mediaobject>
+     <imageobject>  <!-- next width was 6.39in -->
+      <imagedata scale="100" format="JPG" fileref="&imgroot;Main2.jpg" />
+     </imageobject>
+    </mediaobject>
+   </figure>
+  </para>
+  <para>
+   We would like to know if the Michael Baessler has been
+   recognized as a name.  So we position the cursor in the corresponding
+   text span somewhere, then right-click to bring up the context menu
+   telling us which annotations exist at this point. An example is shown
+   in
+   <xref linkend="Main2Figure" />.
+  </para>
+  <para>
+   <figure id="Main3Figure">
+    <title>
+     Selecting an annotation from the context menu will highlight that
+     annotation in the FS display
+    </title>
+    <mediaobject>
+     <imageobject> <!-- width was 6.39in -->
+      <imagedata scale="100" format="JPG" fileref="&imgroot;Main3.jpg" />
+     </imageobject>
+    </mediaobject>
+   </figure>
+  </para>
+
+  <para>
+   At this point (<xref linkend="Main2Figure" />), 
+   we only know that somewhere around the text cursor position (not
+   visible in the picture), we discovered a name.  When we select the corresponding entry in the
+   context menu, the name annotation is selected in the FS display, and its covered text is
+   highlighted.
+   <xref linkend="Main3Figure" /> shows the display after 
+   the name node has been selected in
+   the popup menu.
+  </para>
+  <para>
+   We're glad to see that, indeed, Michael Baessler is
+   considered to be a name.  Note that in the FS display, the
+   corresponding annotation node has been selected, and the tree has
+   been expanded to make the node visible.
+  </para>
+  <para>
+   NB that the annotations displayed in the popup menu come from the
+   annotations currently displayed in the FS display.  If you didn't
+   select the annotation index or one of its sub-nodes, no annotations
+   can be displayed and the popup menu will be empty.
+  </para>
+
+  <section id="cvd.statusBar">
+   <title>The Status Bar</title>
+   <para>
+    At the bottom of the screen, some useful information is displayed in
+    the
+    <emphasis role="bold">status bar</emphasis>. The left-most area shows the most recent major event, with the
+    time when the event terminated in square brackets. The next area
+    shows the file name of the currently loaded XML descriptor. This
+    area supports a tool tip that will show the full path to the file.
+    The right-most area shows the current cursor position, or the extent
+    of the selection, if a portion of the text has been selected. The
+    numbers correspond to the character offsets that are used for
+    annotations.
+   </para>
+  </section>
+
+  <section id="cvd.keyboardNavigation">
+   <title>Keyboard Navigation and Shortcuts</title>
+   <para>
+    The GUI can be completely navigated and operated through the
+    keyboard. All menus and menu items support keyboard mnemonics, and
+    some common operations are accessible through keyboard accelerators.
+   </para>
+   <para>
+    You can move the focus between the three main areas using
+    <computeroutput>Tab</computeroutput>
+    (clockwise) and
+    <computeroutput>Shift-Tab</computeroutput>
+    (counterclockwise). When the focus is on the text area, the
+    <computeroutput>Tab</computeroutput>
+    key will insert the corresponding character into the text, so you
+    will need to use
+    <computeroutput>Ctrl-Tab</computeroutput>
+    and
+    <computeroutput>Ctrl-Shift-Tab</computeroutput>
+    instead. Alternatively, you can use the following key bindings to
+    jump directly to one of the areas:
+    <computeroutput>Ctrl-T</computeroutput>
+    to focus the text area,
+    <computeroutput>Ctrl-I</computeroutput>
+    for the index repository frame and
+    <computeroutput>Ctrl-F</computeroutput>
+    for the feature structure area.
+   </para>
+   <para>
+    Some additional keyboard shortcuts are available only in the text
+    area, such as
+    <computeroutput>Ctrl-X</computeroutput>
+    for Cut,
+    <computeroutput>Ctrl-C</computeroutput>
+    for Copy,
+    <computeroutput>Ctrl-V</computeroutput>
+    for Paste and
+    <computeroutput>Ctrl-Z</computeroutput>
+    for Undo. The context menu in the text area can be evoke through the
+    <computeroutput>Alt-Enter</computeroutput>
+    shortcut. Text can be selected using the arrow keys while holding
+    the
+    <computeroutput>Shift</computeroutput>
+    key.
+   </para>
+   <para>
+    The following table shows the supported keyboard shortcuts.
+   </para>
+   <table frame="none" id="cvd.table.keyboardShortcuts">
+    <title>Keyboard shortcuts</title>
+    <tgroup cols="3">
+     <thead>
+      <row>
+       <entry>Shortcut</entry>
+       <entry>Action</entry>
+       <entry>Scope</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>
+        <computeroutput>Ctrl-O</computeroutput>
+       </entry>
+       <entry>Open text file</entry>
+       <entry>Global</entry>
+      </row>
+      <row>
+       <entry>
+        <computeroutput>Ctrl-S</computeroutput>
+       </entry>
+       <entry>Save text file</entry>
+       <entry>Global</entry>
+      </row>
+      <row>
+       <entry>
+        <computeroutput>Ctrl-L</computeroutput>
+       </entry>
+       <entry>Load AE descriptor</entry>
+       <entry>Global</entry>
+      </row>
+      <row>
+       <entry>
+        <computeroutput>Ctrl-R</computeroutput>
+       </entry>
+       <entry>Run current AE</entry>
+       <entry>Global</entry>
+      </row>
+      <row>
+       <entry>
+        <computeroutput>Ctrl-I</computeroutput>
+       </entry>
+       <entry>Switch focus to index repository</entry>
+       <entry>Global</entry>
+      </row>
+      <row>
+       <entry>
+        <computeroutput>Ctrl-T</computeroutput>
+       </entry>
+       <entry>Switch focus to text area</entry>
+       <entry>Global</entry>
+      </row>
+      <row>
+       <entry>
+        <computeroutput>Ctrl-F</computeroutput>
+       </entry>
+       <entry>Switch focus to FS area</entry>
+       <entry>Global</entry>
+      </row>
+      <row>
+       <entry>
+        <computeroutput>Ctrl-X</computeroutput>
+       </entry>
+       <entry>Cut selection</entry>
+       <entry>Text</entry>
+      </row>
+      <row>
+       <entry>
+        <computeroutput>Ctrl-C</computeroutput>
+       </entry>
+       <entry>Copy selection</entry>
+       <entry>Text</entry>
+      </row>
+      <row>
+       <entry>
+        <computeroutput>Ctrl-V</computeroutput>
+       </entry>
+       <entry>Paste selection</entry>
+       <entry>Text</entry>
+      </row>
+      <row>
+       <entry>
+        <computeroutput>Ctrl-Z</computeroutput>
+       </entry>
+       <entry>Undo</entry>
+       <entry>Text</entry>
+      </row>
+      <row>
+       <entry>
+        <computeroutput>Alt-Enter</computeroutput>
+       </entry>
+       <entry>Show context menu</entry>
+       <entry>Text</entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+  </section>
+
+ </section>
+</chapter>
