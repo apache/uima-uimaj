@@ -154,7 +154,6 @@ issues you find at http://issues.apache.org/jira/browse/uima.
 6. List of JIRA Issues Fixed in this Release
 
 
-
 Release Notes - UIMA - Version 2.2
 
 ** Sub-task
@@ -239,6 +238,7 @@ Release Notes - UIMA - Version 2.2
     * [UIMA-517] - CDE has internal bug - shows up in Error log when using the Add delegate to an aggregate when picking top level project
     * [UIMA-519] - Infinite Loop in AnnotationIndexImpl tree()
     * [UIMA-520] - Calling CasCreationUtils to produce a custom resource is ignoring the passed in ResourceManager in some cases
+    * [UIMA-522] - XMI Serialization fails for parameterized arrays
 
 ** Improvement
     * [UIMA-53] - Add Flow.aborted() method
@@ -300,5 +300,6 @@ Release Notes - UIMA - Version 2.2
 ** Task
     * [UIMA-309] - Change version number to 2.2-SNAPSHOT (post-2.1.0 release)
     * [UIMA-473] - Update README and RELEASE_NOTES
-
+    * [UIMA-521] - Add LICENSE, DISCLAIMER, and NOTICES files to source jars produced by Maven
+    * [UIMA-524] - Prepare for distribution of UIMA artifacts in Maven repository
 
