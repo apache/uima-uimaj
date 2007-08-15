@@ -61,7 +61,6 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.URISpecifier;
-import org.apache.uima.resource.impl.ResourceManager_impl;
 import org.apache.uima.resource.metadata.AllowedValue;
 import org.apache.uima.resource.metadata.FeatureDescription;
 import org.apache.uima.resource.metadata.FsIndexCollection;
@@ -1506,7 +1505,7 @@ public class CasCreationUtils {
    *           if an incompatibility exists
    */
   protected static void mergeFeatures(TypeDescription aType, FeatureDescription[] aFeatures)
-          throws ResourceInitializationException {
+      throws ResourceInitializationException {
     FeatureDescription[] existingFeatures = aType.getFeatures();
     if (existingFeatures == null) {
       existingFeatures = new FeatureDescription[0];
@@ -1530,56 +1529,91 @@ public class CasCreationUtils {
       if (feat == null) {
         // doesn't exist; add it
         FeatureDescription featDesc = aType.addFeature(featName, aFeatures[i].getDescription(),
-                rangeTypeName, elementTypeName, multiRefsAllowed);
+            rangeTypeName, elementTypeName, multiRefsAllowed);
         featDesc.setSourceUrl(aFeatures[i].getSourceUrl());
-      } else // feature does exist
-      {
+      } else  {// feature does exist
         // check that the range types match
         if (!feat.getRangeTypeName().equals(rangeTypeName)) {
           throw new ResourceInitializationException(
-                  ResourceInitializationException.INCOMPATIBLE_RANGE_TYPES, new Object[] {
-                      aType.getName() + ":" + feat.getName(), rangeTypeName,
-                      feat.getRangeTypeName(), aType.getSourceUrlString() });
+              ResourceInitializationException.INCOMPATIBLE_RANGE_TYPES, new Object[] {
+                  aType.getName() + ":" + feat.getName(), rangeTypeName, feat.getRangeTypeName(),
+                  aType.getSourceUrlString() });
+        }
+        Boolean mra1 = feat.getMultipleReferencesAllowed();
+        Boolean mra2 = multiRefsAllowed;
+        
+        // the logic here: 
+        //    OK if both null
+        //    OK if both not-null, and are equals()
+        //    OK if one is null, the other has boolean-value of false (false is the default)
+        //    not ok otherwise
+        
+        if (! (
+                ( (mra1 == null) && (mra2 == null) ) ||
+                ( (mra1 != null) && mra1.equals(mra2) ) ||
+                ( (mra1 == null) && (mra2.booleanValue() == false) ) ||
+                ( (mra2 == null) && (mra1.booleanValue() == false) ) 
+              ) 
+            ) {
+          throw new ResourceInitializationException(
+              ResourceInitializationException.INCOMPATIBLE_MULTI_REFS, new Object[] {
+                  aType.getName() + ":" + feat.getName(), 
+                  aType.getSourceUrlString() });
+        }
+      
+        if (!equalsOrBothNull(feat.getElementType(), elementTypeName)) {
+          throw new ResourceInitializationException(
+              ResourceInitializationException.INCOMPATIBLE_ELEMENT_RANGE_TYPES, new Object[] {
+                  aType.getName() + ":" + feat.getName(), elementTypeName, feat.getElementType(),
+                  aType.getSourceUrlString() });
         }
       }
     }
   }
 
+  private static boolean equalsOrBothNull(Object o1, Object o2) {
+    return ( (null == o1) && (null == o2) )  ||
+           ( (null != o1) && o1.equals(o2) );
+  }
   /**
-   * Gets a list of ProcessingResourceMetadata objects from a list containing either
-   * ResourceSpecifiers, ProcessingResourceMetadata objects, or subparts of
-   * ProcessingResourceMetadata objects (type sypstems, indexes, or type priorities). Subparts will
-   * be wrapped inside a ProcessingResourceMetadata object. All objects will be cloned, so that
-   * further processing (such as import resolution) does not affect the caller.
+   * Gets a list of ProcessingResourceMetadata objects from a list containing
+   * either ResourceSpecifiers, ProcessingResourceMetadata objects, or subparts
+   * of ProcessingResourceMetadata objects (type sypstems, indexes, or type
+   * priorities). Subparts will be wrapped inside a ProcessingResourceMetadata
+   * object. All objects will be cloned, so that further processing (such as
+   * import resolution) does not affect the caller.
    * <p>
    * If you pass this method objects of type {@link AnalysisEngineDescription},
-   * {@link CollectionReaderDescription}, {@link CasInitializerDescription}, or
-   * {@link CasConsumerDescription}, it will not instantiate the components. It will just extract
-   * the type system information from the descriptor. For any other kind of
-   * {@link ResourceSpecifier}, it will call
-   * {@link UIMAFramework#produceResource(org.apache.uima.resource.ResourceSpecifier, Map)}. For
-   * example, if a {@link URISpecifier} is passed, a remote connection will be established and the
-   * service will be queries for its metadata. An exception will be thrown if the connection can not
-   * be opened.
+   * {@link CollectionReaderDescription}, {@link CasInitializerDescription},
+   * or {@link CasConsumerDescription}, it will not instantiate the components.
+   * It will just extract the type system information from the descriptor. For
+   * any other kind of {@link ResourceSpecifier}, it will call
+   * {@link UIMAFramework#produceResource(org.apache.uima.resource.ResourceSpecifier, Map)}.
+   * For example, if a {@link URISpecifier} is passed, a remote connection will
+   * be established and the service will be queries for its metadata. An
+   * exception will be thrown if the connection can not be opened.
    * 
    * @param aComponentDescriptionsOrMetaData
-   *          a collection of {@link ResourceSpecifier}, {@link ProcessingResourceMetaData},
-   *          {@link TypeSystemDescription}, {@link FsIndexCollection}, or {@link TypePriorities}
-   *          objects.
+   *            a collection of {@link ResourceSpecifier},
+   *            {@link ProcessingResourceMetaData},
+   *            {@link TypeSystemDescription}, {@link FsIndexCollection}, or
+   *            {@link TypePriorities} objects.
    * @param aResourceManager
-   *          used to resolve delegate analysis engine imports
+   *            used to resolve delegate analysis engine imports
    * @param aOutputFailedRemotes
-   *          If this paramter is non-null, and if a remote AE could not be contacted, then
-   *          the context name (e.g. /myDelegate1/nestedRemoteDelegate) of the failed remote will 
-   *          be added to this collection.  If this parameter is null, an exception will be thrown
-   *          if a remote AE could not be contacted.
-   *           
-   * @return a List containing the ProcessingResourceMetaData objects containing all of the
-   *         information in all of the objects in <code>aComponentDescriptionOrMetaData</code>
-   *         (including all components of aggregate AnalysisEngines)
+   *            If this paramter is non-null, and if a remote AE could not be
+   *            contacted, then the context name (e.g.
+   *            /myDelegate1/nestedRemoteDelegate) of the failed remote will be
+   *            added to this collection. If this parameter is null, an
+   *            exception will be thrown if a remote AE could not be contacted.
+   * 
+   * @return a List containing the ProcessingResourceMetaData objects containing
+   *         all of the information in all of the objects in
+   *         <code>aComponentDescriptionOrMetaData</code> (including all
+   *         components of aggregate AnalysisEngines)
    * 
    * @throws ResourceInitialziationException
-   *           if a failure occurs because an import could not be resolved
+   *             if a failure occurs because an import could not be resolved
    */
   public static List getMetaDataList(Collection aComponentDescriptionOrMetaData,
           ResourceManager aResourceManager, Map aOutputFailedRemotes) throws ResourceInitializationException {

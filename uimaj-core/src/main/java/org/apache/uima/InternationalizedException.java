@@ -244,8 +244,7 @@ public class InternationalizedException extends Exception {
    * Checks if this exception, or any of its root causes,
    * has a particular UIMA message key.  This allows checking for
    * particular error condition
-   * @param t
-   * @param sofa_mapping_not_supported_for_remote
+   * @param messageKey to search for in the exception chain
    * @return
    */
   public boolean hasMessageKey(String messageKey) {
