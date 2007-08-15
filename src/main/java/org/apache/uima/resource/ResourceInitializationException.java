@@ -74,16 +74,28 @@ public class ResourceInitializationException extends UIMAException {
   public static final String ANNOTATOR_INITIALIZATION_FAILED = "annotator_initialization_failed";
 
   /**
-   * Message key for a standard UIMA exception message: "The feature {0} is declared twice, with
-   * incompatible range types {1} and {2}."
+   * Message key for a standard UIMA exception message: "The feature {0} is declared twice, with 
+   * incompatible range types {1} and {2}. (Descriptor: {3})"
    */
   public static final String INCOMPATIBLE_RANGE_TYPES = "incompatible_range_types";
+
+  /**
+   * Message key for a standard UIMA exception message: "The feature {0} is declared twice, with 
+   * incompatible element range types {1} and {2}. (Descriptor: {3})."
+   */
+  public static final String INCOMPATIBLE_ELEMENT_RANGE_TYPES = "incompatible_element_range_types";
 
   /**
    * Message key for a standard UIMA exception message: "The Type {0} is declared twice, with
    * incompatible supertypes {1} and {2}."
    */
   public static final String INCOMPATIBLE_SUPERTYPES = "incompatible_supertypes";
+
+  /**
+   * Message key for a standard UIMA exception message: "The feature {0} is declared twice, with 
+   * incompatible multipleReferencesAllowed specifications. (Descriptor: {1})"
+   */
+  public static final String INCOMPATIBLE_MULTI_REFS = "incompatible_multi_refs";
 
   /**
    * Message key for a standard UIMA exception message: "Undefined type "{0}", referenced in feature
