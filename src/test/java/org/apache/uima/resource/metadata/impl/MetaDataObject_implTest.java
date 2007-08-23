@@ -21,6 +21,7 @@ package org.apache.uima.resource.metadata.impl;
 
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.util.HashSet;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -29,19 +30,22 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.w3c.dom.Document;
-
 import org.apache.uima.UIMAFramework;
+import org.apache.uima.impl.UIMAFramework_impl;
 import org.apache.uima.internal.util.SerializationUtils;
-import org.apache.uima.resource.metadata.impl.MetaDataObject_impl;
+import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
+import org.apache.uima.resource.metadata.MetaDataObject;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLParser;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * Tests the MetaDataObject_impl class.
  * 
  */
 public class MetaDataObject_implTest extends TestCase {
+
   /**
    * Constructor for MetaDataObject_implTest.
    * 
@@ -58,7 +62,7 @@ public class MetaDataObject_implTest extends TestCase {
     super.setUp();
     // create an object that can represent a fruit
     unknownFruit = new TestFruitObject();
-
+  
     // create two identical apples and an orange
     apple1 = new TestFruitObject();
     apple1.setAttributeValue("name", "Apple");
@@ -122,6 +126,21 @@ public class MetaDataObject_implTest extends TestCase {
       Assert.assertEquals(apple1, apple1.clone());
       Assert.assertEquals(fruitBag, fruitBag.clone());
       Assert.assertTrue(!apple1.equals(orange.clone()));
+      
+      // test with maps
+      ConfigurationParameterSettings cps1 = UIMAFramework.getResourceSpecifierFactory().createConfigurationParameterSettings();
+      cps1.getSettingsForGroups().put("k1", new NameValuePair_impl("s1", "o1"));
+      cps1.getSettingsForGroups().put("k2", new NameValuePair_impl("s2", "o2"));
+      ConfigurationParameterSettings cps2 = UIMAFramework.getResourceSpecifierFactory().createConfigurationParameterSettings();
+      cps2.getSettingsForGroups().put("k1", new NameValuePair_impl("s1", "o1"));
+      cps2.getSettingsForGroups().put("k2", new NameValuePair_impl("s2", "o2"));
+      
+      Assert.assertEquals(cps1, cps2);
+      Assert.assertEquals(cps1, cps2.clone());
+      
+      cps2.getSettingsForGroups().put("k2", new NameValuePair_impl("s2", "ox2"));
+      Assert.assertFalse(cps1.equals(cps2));
+           
     } catch (RuntimeException e) {
       JUnitExtension.handleException(e);
     }
@@ -148,7 +167,7 @@ public class MetaDataObject_implTest extends TestCase {
    * excercise the {@link MetaDataObject#getAttributeValue(String)} and
    * {@link MetaDataObject#setAttributeValue(String,Object)} methods.
    */
-  public void testXMLization() throws Exception {
+  public void bestXMLization() throws Exception {
     try {
       // write objects to XML
 
@@ -235,7 +254,7 @@ public class MetaDataObject_implTest extends TestCase {
     }
   }
 
-  public void testSerialization() throws Exception {
+  public void bestSerialization() throws Exception {
     try {
       byte[] apple1Bytes = SerializationUtils.serialize(apple1);
       TestFruitObject apple1a = (TestFruitObject) SerializationUtils.deserialize(apple1Bytes);
@@ -271,4 +290,5 @@ public class MetaDataObject_implTest extends TestCase {
   private TestFruitObject orange;
 
   private TestFruitBagObject fruitBag;
+
 }

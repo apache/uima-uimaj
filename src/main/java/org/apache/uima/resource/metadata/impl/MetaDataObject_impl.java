@@ -414,43 +414,76 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
       // get values and test equivalency
       Object val1 = this.getAttributeValue(ncp.getName());
       Object val2 = mdo.getAttributeValue(ncp.getName());
-      if (val1 == null) {
-        if (val2 != null)
-          return false;
-      } else if (val1 instanceof Object[]) {
-        if (!(val2 instanceof Object[]))
-          return false;
-        if (!Arrays.equals((Object[]) val1, (Object[]) val2))
-          return false;
-      } else if (val1 instanceof Map) // only need this to handle Maps w/ array vals
-      {
-        if (!(val2 instanceof Map))
-          return false;
-        Set entrySet1 = ((Map) val1).entrySet();
-        Iterator it = entrySet1.iterator();
-        while (it.hasNext()) {
-          Map.Entry entry = (Map.Entry) it.next();
-          Object subval1 = ((Map) val1).get(entry.getKey());
-          Object subval2 = ((Map) val2).get(entry.getKey());
-          if (subval1 == null) {
-            if (subval2 != null)
-              return false;
-          } else if (subval1 instanceof Object[]) {
-            if (!(subval2 instanceof Object[]))
-              return false;
-            if (!Arrays.equals((Object[]) subval1, (Object[]) subval2))
-              return false;
-          } else
-            return subval1.equals(subval2);
-        }
-      } else {
-        if (!val1.equals(val2))
-          return false;
+      if (!valuesEqual(val1, val2)) {
+        return false;
       }
     }
-
     // if we get this far, objects are equal
     return true;
+  }
+  
+  /**
+   * Compare 2 values for equality.  
+   * Reason val1.equals(val2) is not used:
+   *   If val1 is of type Object[], the equal test is object identity equality, not
+   *      element by element identity.
+   *   So we use Arrays.equals or deepEquals instead.
+   *   
+   * @param val1
+   * @param val2
+   * @return
+   */
+  private boolean valuesEqual(Object val1, Object val2) {
+    if (val1 == null) {
+      return val2 == null;
+    }
+    
+    if (val1.getClass().isArray()) {
+      if (val2.getClass() != val1.getClass()) {
+        return false;
+      }
+      // some of this may not be necessary - it depends what kind of array values are actually used
+      // The "if" statements below are in guessed order of frequency of occurance
+      if (val1 instanceof String[])  return Arrays.equals((String[])val1,  (String[])val2);
+      // deepEquals handles arrays whose elements are arrays
+      if (val1 instanceof Object[])  return Arrays.deepEquals((Object[])val1, (Object[])val2);
+      if (val1 instanceof int[])     return Arrays.equals((int[])val1,     (int[])val2);
+      if (val1 instanceof float[])   return Arrays.equals((float[])val1,   (float[])val2);
+      if (val1 instanceof double[])  return Arrays.equals((double[])val1,  (double[])val2);
+      if (val1 instanceof boolean[]) return Arrays.equals((boolean[])val1, (boolean[])val2);
+      if (val1 instanceof byte[])    return Arrays.equals((byte[])val1,    (byte[])val2);
+      if (val1 instanceof short[])   return Arrays.equals((short[])val1,   (short[])val2);
+      if (val1 instanceof long[])    return Arrays.equals((long[])val1,    (long[])val2);
+                                     return Arrays.equals((char[])val1,    (char[])val2);
+    }
+    
+    if (val1 instanceof Map) {// only need this to handle Maps w/ array vals 
+      if (!(val2 instanceof Map)) {
+        return false;
+      }
+      if (((Map)val1).size() != ((Map)val2).size()) {
+        return false;
+      }
+      
+      if (val1.getClass() != val2.getClass()) {
+        return false;
+      }
+      
+      Set entrySet1 = ((Map) val1).entrySet();
+      Iterator it = entrySet1.iterator();
+      while (it.hasNext()) {
+        Map.Entry entry = (Map.Entry) it.next();
+        Object subval1 = ((Map) val1).get(entry.getKey());
+        Object subval2 = ((Map) val2).get(entry.getKey());
+        if (!valuesEqual(subval1, subval2)) {
+          return false;
+        }
+      }
+      // for Map values, get here if all values in the map are equal
+      return true;    
+    }
+    // not an instance of Map
+    return val1.equals(val2);
   }
 
   /**
