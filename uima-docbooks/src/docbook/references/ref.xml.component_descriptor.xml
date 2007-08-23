@@ -1285,7 +1285,7 @@ uima.tcas.Annotation.</programlisting>
             <title>Resource Manager Configuration</title>
             
             
-            <programlisting><![CDATA[</programlisting><resourceManagerConfiguration>
+            <programlisting><![CDATA[<resourceManagerConfiguration>
 
   <name>[String]</name>
   <description>[String]</description>
