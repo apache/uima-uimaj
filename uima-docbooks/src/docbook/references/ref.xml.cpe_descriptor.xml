@@ -1074,7 +1074,7 @@ vinci.VinciAnalysisEngineService_impl</arg>
       
       <para>The UIMA SDK provides a second implementation for the Output Queue that can be
         plugged in to the CPM, named <quote>
-        <literal>org.apache.uima.reference_impl.collection.cpm.engine.SequencedQueue</literal>
+        <literal>org.apache.uima.collection.impl.cpm.engine.SequencedQueue</literal>
         </quote>.</para>
       
       <para>This implementation supports handling very large documents that are split into
@@ -1131,7 +1131,7 @@ vinci.VinciAnalysisEngineService_impl</arg>
         
         
         <programlisting>&lt;outputQueue dequeueTimeout="100000" queueClass=
-"org.apache.uima.reference_impl.collection.cpm.engine.SequencedQueue"/&gt;</programlisting>
+"org.apache.uima.collection.impl.cpm.engine.SequencedQueue"/&gt;</programlisting>
         
         where the mandatory <literal>queueClass</literal> attribute defines the name of
         the class and the second mandatory attribute, <literal>dequeueTimeout</literal>
