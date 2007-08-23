@@ -17,10 +17,19 @@ REM   KIND, either express or implied.  See the License for the
 REM   specific language governing permissions and limitations
 REM   under the License.
 
-@echo on
+if not defined UIMA_HOME goto USAGE_UIMA
+goto RUN
 
+:USAGE_UIMA
+echo UIMA_HOME environment variable is not set 
+goto EXIT
+
+:RUN
+@echo on
+setlocal
 if "%JAVA_HOME%"=="" (set UIMA_JAVA_CALL=java) else (set UIMA_JAVA_CALL=%JAVA_HOME%\bin\java)
 "%UIMA_JAVA_CALL%" -cp "%UIMA_HOME%/lib/uima-core.jar" org.apache.uima.internal.util.ReplaceStringInFiles "%UIMA_HOME%/examples" .xml "C:/Program Files/apache-uima" "%UIMA_HOME%" -ignorecase
 "%UIMA_JAVA_CALL%" -cp "%UIMA_HOME%/lib/uima-core.jar" org.apache.uima.internal.util.ReplaceStringInFiles "%UIMA_HOME%/examples" .classpath "C:/Program Files/apache-uima" "%UIMA_HOME%" -ignorecase
 "%UIMA_JAVA_CALL%" -cp "%UIMA_HOME%/lib/uima-core.jar" org.apache.uima.internal.util.ReplaceStringInFiles "%UIMA_HOME%/examples" .launch "C:/Program Files/apache-uima" "%UIMA_HOME%" -ignorecase
 "%UIMA_JAVA_CALL%" -cp "%UIMA_HOME%/lib/uima-core.jar" org.apache.uima.internal.util.ReplaceStringInFiles "%UIMA_HOME%/examples" .wsdd "C:/Program Files/apache-uima" "%UIMA_HOME%" -ignorecase
+:EXIT

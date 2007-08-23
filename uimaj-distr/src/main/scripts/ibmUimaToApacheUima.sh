@@ -17,6 +17,12 @@
 #   specific language governing permissions and limitations
 #   under the License.
 
+if [ "$UIMA_HOME" == "" ]
+then
+  echo UIMA_HOME environment variable is not set
+  exit 1
+fi
+
 if [ "$JAVA_HOME" = "" ]
 then
   UIMA_JAVA_CALL=java

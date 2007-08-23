@@ -17,6 +17,12 @@
 #   specific language governing permissions and limitations
 #   under the License.
 
+if [ "$UIMA_HOME" == "" ]
+then
+  echo UIMA_HOME environment variable is not set
+  exit 1
+fi
+
 if [ "$1" = "" ];
 then
   echo "Usage: startVinciService.sh svcdescriptor [vns_host]"

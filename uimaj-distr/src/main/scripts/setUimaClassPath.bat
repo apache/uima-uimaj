@@ -17,8 +17,15 @@ REM   KIND, either express or implied.  See the License for the
 REM   specific language governing permissions and limitations
 REM   under the License.
 
-@echo on
+if not defined UIMA_HOME goto USAGE_UIMA
+goto RUN
 
+:USAGE_UIMA
+echo UIMA_HOME environment variable is not set 
+goto EXIT
+
+:RUN
+@echo on
 @rem All this nonsense is necessary to remove quotes from the CLASSPATH and also handle the case where there is no CLASSPATH
 @set _NOQUOTES=%CLASSPATH:"=%
 @set _REALLYNOQUOTES=%_NOQUOTES:"=%
@@ -33,3 +40,4 @@ set PATH=%PATH%;%UIMA_HOME%\uimacpp\bin;%UIMA_HOME%\uimacpp\examples\tutorial\sr
 @if "%UIMA_LOGGER_CONFIG_FILE%"=="" set UIMA_LOGGER_CONFIG_FILE=%UIMA_HOME%\config\Logger.properties
 @rem Set default JVM opts
 @if "%UIMA_JVM_OPTS%"=="" set UIMA_JVM_OPTS=-Xms128M -Xmx800M
+:EXIT

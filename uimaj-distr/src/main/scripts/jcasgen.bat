@@ -17,8 +17,15 @@ REM   KIND, either express or implied.  See the License for the
 REM   specific language governing permissions and limitations
 REM   under the License.
 
-@echo on
+if not defined UIMA_HOME goto USAGE_UIMA
+goto RUN
 
+:USAGE_UIMA
+echo UIMA_HOME environment variable is not set 
+goto EXIT
+
+:RUN
+@echo on
 @setlocal
 @if "%~1"=="" goto next1 
 @set firstarg=-jcasgeninput "%~1"
@@ -30,3 +37,4 @@ REM   under the License.
 @echo Running JCasGen with no Java CAS Model merging.  To run with merging, use jcasgen_merge (requires Eclipse, plus UIMA and EMF plugins).
 @if "%JAVA_HOME%"=="" (set UIMA_JAVA_CALL=java) else (set UIMA_JAVA_CALL=%JAVA_HOME%\bin\java)
 "%UIMA_JAVA_CALL%" "%LOGGER%" -cp "%UIMA_CLASSPATH%" %UIMA_JVM_OPTS% org.apache.uima.tools.jcasgen.Jg %firstarg% %secondarg%
+:EXIT

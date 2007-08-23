@@ -17,8 +17,14 @@ REM   KIND, either express or implied.  See the License for the
 REM   specific language governing permissions and limitations
 REM   under the License.
 
-@echo on
+if not defined UIMA_HOME goto USAGE_UIMA
+goto RUN
 
+:USAGE_UIMA
+echo UIMA_HOME environment variable is not set 
+goto exit1
+
+:RUN
 @setlocal
 @rem sample setting of ECLIPSE_HOME in next line
 @rem @set ECLIPSE_HOME=C:\p\wswb\eclipse
