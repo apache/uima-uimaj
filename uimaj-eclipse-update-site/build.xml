@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one
+   or more contributor license agreements.  See the NOTICE file
+   distributed with this work for additional information
+   regarding copyright ownership.  The ASF licenses this file
+   to you under the Apache License, Version 2.0 (the
+   "License"); you may not use this file except in compliance
+   with the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied.  See the License for the
+   specific language governing permissions and limitations
+   under the License.    
+-->
+
+<!-- set the basedir value to point to the top level of the project -->
+
+<project name="build update site" default="all" basedir=".">
+  
+  <target name="all" depends="init, build-runtime, build-tools"/>
+	
+  <target name="init">
+  	<!-- this next line needs to be updated with each release. 
+  	     We cannot use the pom's version string, because that pom is the
+  	     uimaj-distr's pom and that version string ends in
+  	     -incubating  whereas, we need it to end in .incubating   
+  	   TODO change the whole project to use the . form, if possible, and then
+  	     pass in the value from the pom -->
+  	<property name="project.version" value="2.2.0.incubating"/>
+  	<delete dir="target"/>
+  	<delete dir="work"/>
+  	<mkdir dir="work"/>
+  	<mkdir dir="target"/>
+  	<mkdir dir="target/features"/>
+  	<mkdir dir="target/plugins"/>
+  	<copy  todir="target/web">
+  		<fileset dir="web"/>
+    </copy>
+    <copy  todir="target" file="index.html"/>
+    <copy  todir="target" file="site.xml"/>
+  </target>	
+	
+  <target name="build-runtime">
+  	<copy todir="../uimaj-eclipse-feature-runtime/META-INF">
+  		<fileset dir="../uimaj-distr/src/main/readme"
+  	           includes="LICENSE NOTICE DISCLAIMER"/>
+  	</copy>
+  	<jar destfile="target/features/org.apache.uima.runtime_${project.version}.jar"
+  	  basedir="../uimaj-eclipse-feature-runtime"
+  		includes="feature.xml META-INF/*"/>
+  	<unzip dest="work" 
+  		     src="../uimaj-ep-runtime/target/org.apache.uima.runtime_${project.version}.zip" />
+  	<copy todir="work/org.apache.uima.runtime_${project.version}/META-INF">
+  		<fileset dir="../uimaj-distr/src/main/readme"
+  	           includes="LICENSE NOTICE DISCLAIMER"/>
+  	</copy>
+  	<jar destfile="target/plugins/org.apache.uima.runtime_${project.version}.jar"
+  		   basedir="work/org.apache.uima.runtime_${project.version}"
+  	     manifest="work/org.apache.uima.runtime_${project.version}/META-INF/MANIFEST.MF"/>
+  </target>
+
+  <target name="build-tools">
+  	<copy todir="../uimaj-eclipse-feature-tools/META-INF">
+  		<fileset dir="../uimaj-distr/src/main/readme"
+  	           includes="LICENSE NOTICE DISCLAIMER"/>
+  	</copy>
+  	<jar destfile="target/features/org.apache.uima.tools_${project.version}.jar"
+      basedir="../uimaj-eclipse-feature-tools"
+	    includes="feature.xml META-INF/*"/>
+   	<unzip dest="work" 
+    		     src="../uimaj-ep-configurator/target/org.apache.uima.desceditor_${project.version}.zip" />
+  	<copy todir="work/org.apache.uima.desceditor_${project.version}/META-INF">
+  		<fileset dir="../uimaj-distr/src/main/readme"
+  	           includes="LICENSE NOTICE DISCLAIMER"/>
+  	</copy>  	
+  	<jar destfile="target/plugins/org.apache.uima.desceditor_${project.version}.jar"
+    		   basedir="work/org.apache.uima.desceditor_${project.version}"
+ 	        manifest="work/org.apache.uima.desceditor_${project.version}/META-INF/MANIFEST.MF"/>
+   	<unzip dest="work" 
+    		     src="../uimaj-ep-jcasgen/target/org.apache.uima.jcas.jcasgenp_${project.version}.zip" />
+  	<copy todir="work/org.apache.uima.jcas.jcasgenp_${project.version}/META-INF">
+  		<fileset dir="../uimaj-distr/src/main/readme"
+  	           includes="LICENSE NOTICE DISCLAIMER"/>
+  	</copy>  	
+   	<jar destfile="target/plugins/org.apache.uima.jcas.jcasgenp_${project.version}.jar"
+    		   basedir="work/org.apache.uima.jcas.jcasgenp_${project.version}"
+          manifest="work/org.apache.uima.jcas.jcasgenp_${project.version}/META-INF/MANIFEST.MF"/>
+  	<unzip dest="work" 
+    		     src="../uimaj-ep-debug/target/org.apache.uima.debug_${project.version}.zip" />
+  	<copy todir="work/org.apache.uima.debug_${project.version}/META-INF">
+  		<fileset dir="../uimaj-distr/src/main/readme"
+  	           includes="LICENSE NOTICE DISCLAIMER"/>
+  	</copy>
+    <jar destfile="target/plugins/org.apache.uima.debug_${project.version}.jar"
+    		   basedir="work/org.apache.uima.debug_${project.version}"
+          manifest="work/org.apache.uima.debug_${project.version}/META-INF/MANIFEST.MF"/>  	
+   	<unzip dest="work" 
+    		     src="../uimaj-ep-pear-packager/target/org.apache.uima.pear_${project.version}.zip" />
+  	<copy todir="work/org.apache.uima.pear_${project.version}/META-INF">
+  		<fileset dir="../uimaj-distr/src/main/readme"
+  	           includes="LICENSE NOTICE DISCLAIMER"/>
+  	</copy>
+    <jar destfile="target/plugins/org.apache.uima.pear_${project.version}.jar"
+    		   basedir="work/org.apache.uima.pear_${project.version}"
+          manifest="work/org.apache.uima.pear_${project.version}/META-INF/MANIFEST.MF"/>
+  </target>
+
+</project>
