@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ -->
+
+<!-- For testing only. -->
+
+<taeDescription xmlns="http://uima.apache.org/resourceSpecifier">
+<frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+<primitive>true</primitive>
+<annotatorImplementationName>org.apache.uima.analysis_engine.impl.NewlineResegmenter</annotatorImplementationName>
+ 
+<analysisEngineMetaData>
+<name>Newline Resegmenter</name>
+<description>Given a stream of input CASes containing text documents, outputs a 
+different stream of CASes where the CASes are divided at newline characters.
+For example, if CASes A, B, and C are input, and there are only 2 newline characters,
+one in the middle of B and one at the end of C, then two new CASes A' and B' will be output, '
+where A' contains all of the text from A plus the portion of the text from B before the newline,
+and B' contains the portion of the text from B after the newline plus all of the text from C.
+
+We also record a SourceDocumentInformation annotation for each input CAS (so an output CAS
+may have multiple SourceDocumentInformation annotations), indicating the source of
+each piece of text.</description>
+<version>1.0</version>
+<vendor>The Apache Software Foundation</vendor>
+
+<typeSystemDescription>
+	<imports>
+		<import name="org.apache.uima.examples.SourceDocumentInformation"/>
+	</imports>
+</typeSystemDescription>
+	
+<capabilities>
+<capability>
+<outputs/>
+</capability>
+</capabilities>
+
+<operationalProperties>
+	<modifiesCas>false</modifiesCas>
+	<multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+	<outputsNewCASes>true</outputsNewCASes>
+</operationalProperties>
+	
+</analysisEngineMetaData>
+</taeDescription>

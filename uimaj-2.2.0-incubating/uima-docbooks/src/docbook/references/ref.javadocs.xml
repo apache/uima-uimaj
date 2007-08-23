@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd"[
+<!ENTITY imgroot "../images/references/ref.javadocs/">
+<!ENTITY tp "ugr.ref.javadocs.">
+<!ENTITY % uimaents SYSTEM "../entities.ent" >  
+%uimaents;
+]>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<chapter id="ugr.ref.javadocs">
+  <title>Javadocs</title>
+  
+  <para>The details of all the public APIs for UIMA are contained in the API Javadocs. These are located in the docs/api
+    directory; the top level to open in your browser is called <ulink url="api/index.html"/>.</para>
+  
+  <para>Eclipse supports the ability to attach the Javadocs to your project. The Javadoc should already be attached
+    to the <literal>uimaj-examples</literal> project, if you followed the setup instructions in <olink
+      targetdoc="&uima_docs_overview;" targetptr="ugr.ovv.eclipse_setup.example_code"/>. To attach
+    Javadocs to your own Eclipse project, use the following instructions.</para>
+  
+  <note><para>As an alternative, you can add the UIMA source to the UIMA binary distribution; if you
+  do this you not only will have the Javadocs automatically available (you can skip the following
+  setup), you will have the ability to step through the UIMA framework code while debugging.
+  To add the source, follow the instructions as described in the setup chapter: 
+  <olink targetdoc="&uima_docs_overview;" targetptr="ugr.ovv.eclipse_setup.adding_source"/>.</para></note>
+  
+  <para>To add the Javadocs, open a project which is referring to the UIMA APIs in its class path, and open the project properties. Then pick
+    Java Build Path. Pick the "Libraries" tab and select one of the UIMA library entries (if you don't have, for
+    instance, uima-core.jar in this list, it's unlikely your code will compile). Each library entry has a small "+"
+    sign on its left - click that to expand the view to see the Javadoc location. If you highlight that and press edit - you
+    can add a reference to the Javadocs, in the following dialog:
+    
+    
+    <screenshot>
+    <mediaobject>
+      <imageobject>
+        <imagedata width="5.8in" format="JPG" fileref="&imgroot;image002.jpg"/>
+      </imageobject>
+      <textobject><phrase>Screenshot of attaching Javadoc to source in Eclipse</phrase></textobject>
+    </mediaobject>
+  </screenshot></para>
+  
+  <para>Once you do this, Eclipse can show you Javadocs for UIMA APIs as you work. To see the Javadoc for a UIMA API, you
+    can hover over the API class or method, or select it and press shift-F2, or use the menu Navigate &rarr;
+    Open External Javadoc, or open the Javadoc view (Window &rarr; Show View &rarr; Other
+    &rarr; Java &rarr; Javadoc).</para>
+  
+  <para>In a similar manner, you can attach the source for the UIMA framework, if you download the source
+    distribution. The source corresponding to particular
+    releases is available from the Apache UIMA web site (<ulink url="http://incubator.apache.org/uima"/>) on the
+    downloads page.</para>
+  
+  <section id="ugr.ref.javadocs.libraries">
+    <title>Using named Eclipse User Libraries</title>
+  <para>You can also create a named "user library" in Eclipse containing the UIMA Jars, and attach the Javadocs (or
+  optionally, the sources); this named library is saved in the Eclipse workspace.  Once created, it can be
+  added to the classpath of newly created Eclipse projects.</para> 
+  
+  <para>Use the menu option Project &rarr; Properties
+  &rarr; Java Build Path, and then pick the Libraries tab, and click the Add Library button. Then select
+  User Libraries, click "Next", and pick the library you created for the UIMA Jars.</para> 
+  
+  <para>To create this library in the workspace,
+    use the same menu picks as above, but after you select the User Libraries and click "Next", you can click the "New Library..."
+    button to define your new library.  You use the "Add Jars" button and multi-select all the Jars in the lib directory
+    of the UIMA binary distribution.  Then you add the Javadoc attachment for each Jar.  The path to use is
+    file:/ -- insert the path to your install of UIMA -- /docs/api.  After you do this for the first Jar, you can
+    copy this string to the clipboard and paste it into the rest of the Jars.</para>
+    </section>
+</chapter>
