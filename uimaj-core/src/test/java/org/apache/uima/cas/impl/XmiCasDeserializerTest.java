@@ -29,7 +29,6 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
 import java.util.Stack;
 
 import javax.xml.parsers.FactoryConfigurationError;
@@ -56,10 +55,8 @@ import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas_data.impl.CasComparer;
 import org.apache.uima.internal.util.XmlAttribute;
 import org.apache.uima.internal.util.XmlElementNameAndContents;
-import org.apache.uima.resource.CasManager;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.TypeDescription;
-import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
@@ -105,19 +102,25 @@ public class XmiCasDeserializerTest extends TestCase {
   public void testDeserializeAndReserialize() throws Exception {
     try {
       File tsWithNoMultiRefs = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
-      doTestDeserializeAndReserialize(tsWithNoMultiRefs);
+      doTestDeserializeAndReserialize(tsWithNoMultiRefs,false);
       File tsWithMultiRefs = JUnitExtension.getFile("ExampleCas/testTypeSystem_withMultiRefs.xml");
-      doTestDeserializeAndReserialize(tsWithMultiRefs);
+      doTestDeserializeAndReserialize(tsWithMultiRefs,false);
+      //also test with JCas initialized
+      doTestDeserializeAndReserialize(tsWithNoMultiRefs,true);
+      doTestDeserializeAndReserialize(tsWithMultiRefs,true);
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
   }
 
-  private void doTestDeserializeAndReserialize(File typeSystemDescriptorFile) throws Exception {
+  private void doTestDeserializeAndReserialize(File typeSystemDescriptorFile, boolean useJCas) throws Exception {
     // deserialize a complex CAS from XCAS
     TypeSystemDescription typeSystemDescription = UIMAFramework.getXMLParser().parseTypeSystemDescription(
             new XMLInputSource(typeSystemDescriptorFile));
     CAS cas = CasCreationUtils.createCas(typeSystemDescription, new TypePriorities_impl(), indexes);
+    if (useJCas) {
+      cas.getJCas();
+    }
 
     InputStream serCasStream = new FileInputStream(JUnitExtension.getFile("ExampleCas/cas.xml"));
     XCASDeserializer deser = new XCASDeserializer(cas.getTypeSystem());
@@ -135,6 +138,9 @@ public class XmiCasDeserializerTest extends TestCase {
     
     // deserialize into another CAS
     CAS cas2 = CasCreationUtils.createCas(typeSystemDescription, new TypePriorities_impl(), indexes);
+    if (useJCas) {
+      cas2.getJCas();
+    }
     XmiCasDeserializer deser2 = new XmiCasDeserializer(cas2.getTypeSystem());
     ContentHandler deserHandler2 = deser2.getXmiCasHandler(cas2);
     xmlReader.setContentHandler(deserHandler2);
@@ -174,6 +180,9 @@ public class XmiCasDeserializerTest extends TestCase {
     // test that lenient mode does not report errors
     CAS cas3 = CasCreationUtils.createCas(new TypeSystemDescription_impl(),
             new TypePriorities_impl(), new FsIndexDescription[0]);
+    if (useJCas) {
+      cas3.getJCas();
+    }
     XmiCasDeserializer deser3 = new XmiCasDeserializer(cas3.getTypeSystem());
     ContentHandler deserHandler3 = deser3.getXmiCasHandler(cas3, true);
     xmlReader.setContentHandler(deserHandler3);

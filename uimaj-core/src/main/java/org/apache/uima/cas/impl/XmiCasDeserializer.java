@@ -834,25 +834,25 @@ public class XmiCasDeserializer {
      */
     private int createArray(int arrayType, List values, int xmiId) {
 
-      FeatureStructureImplC fs;
+      FeatureStructureImpl fs;
       if (casBeingFilled.isIntArrayType(arrayType)) {
-        fs = (FeatureStructureImplC) casBeingFilled.createIntArrayFS(values.size());
+        fs = (FeatureStructureImpl) casBeingFilled.createIntArrayFS(values.size());
       } else if (casBeingFilled.isFloatArrayType(arrayType)) {
-        fs = (FeatureStructureImplC) casBeingFilled.createFloatArrayFS(values.size());        
+        fs = (FeatureStructureImpl) casBeingFilled.createFloatArrayFS(values.size());        
       } else if (casBeingFilled.isStringArrayType(arrayType)) {
-        fs = (FeatureStructureImplC) casBeingFilled.createStringArrayFS(values.size());                
+        fs = (FeatureStructureImpl) casBeingFilled.createStringArrayFS(values.size());                
       } else if (casBeingFilled.isBooleanArrayType(arrayType)) {
-        fs = (FeatureStructureImplC) casBeingFilled.createBooleanArrayFS(values.size());
+        fs = (FeatureStructureImpl) casBeingFilled.createBooleanArrayFS(values.size());
       } else if (casBeingFilled.isByteArrayType(arrayType)) {
-        fs = (FeatureStructureImplC) casBeingFilled.createByteArrayFS(values.size());
+        fs = (FeatureStructureImpl) casBeingFilled.createByteArrayFS(values.size());
       } else if (casBeingFilled.isShortArrayType(arrayType)) {
-        fs = (FeatureStructureImplC) casBeingFilled.createShortArrayFS(values.size());
+        fs = (FeatureStructureImpl) casBeingFilled.createShortArrayFS(values.size());
       } else if (casBeingFilled.isLongArrayType(arrayType)) {
-        fs = (FeatureStructureImplC) casBeingFilled.createLongArrayFS(values.size());
+        fs = (FeatureStructureImpl) casBeingFilled.createLongArrayFS(values.size());
       } else if (casBeingFilled.isDoubleArrayType(arrayType)) {
-        fs = (FeatureStructureImplC) casBeingFilled.createDoubleArrayFS(values.size());
+        fs = (FeatureStructureImpl) casBeingFilled.createDoubleArrayFS(values.size());
       } else {
-        fs = (FeatureStructureImplC) casBeingFilled.createArrayFS(values.size());
+        fs = (FeatureStructureImpl) casBeingFilled.createArrayFS(values.size());
       }
       int casArray = fs.getAddress();
       for (int i = 0; i < values.size(); i++) {
