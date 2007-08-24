@@ -47,6 +47,16 @@ under the License.
         operation will likely fail to merge properly.</para>
       </listitem>
     </varlistentry>
+    <varlistentry id="ugr.issues.libgcj.4.1.2">
+      <term><emphasis role="bold">Descriptor editor in Eclipse tooling does not work with libgcj 4.1.2</emphasis></term>
+      <listitem>
+        <para>The descriptor editor in the Eclipse tooling does not work with libgcj 4.1.2, and
+        possibly other versions of libgcj.  This is apparently due to a bug in the implementation of
+        their XML library, which results in a class cast error.  libgcj is used as the default
+        JVM for Eclipse in Ubuntu (and other Linux distributions?).  The workaround is to use a
+        different JVM to start Eclipse.</para>
+      </listitem>
+    </varlistentry>
       <!--
       <varlistentry>
       <term><emphasis role="bold"></emphasis></term>
