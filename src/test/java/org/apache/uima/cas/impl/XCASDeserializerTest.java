@@ -120,9 +120,16 @@ public class XCASDeserializerTest extends TestCase {
   }
 
   public void testDeserializeAndReserialize() throws Exception {
+    doTestDeserializeAndReserialize(false);
+    doTestDeserializeAndReserialize(true);
+  }
+
+  private void doTestDeserializeAndReserialize(boolean useJCas) throws Exception {
     // deserialize a complex CAS
     CAS cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
-
+    if (useJCas) {
+      cas.getJCas();
+    }
     InputStream serCasStream = new FileInputStream(JUnitExtension.getFile("ExampleCas/cas.xml"));
     XCASDeserializer deser = new XCASDeserializer(cas.getTypeSystem());
     ContentHandler deserHandler = deser.getXCASHandler(cas);
@@ -155,6 +162,9 @@ public class XCASDeserializerTest extends TestCase {
     String xml = sw.getBuffer().toString();
 
     CAS cas2 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
+    if (useJCas) {
+      cas2.getJCas();
+    }
 
     // deserialize into another CAS
     XCASDeserializer deser2 = new XCASDeserializer(cas2.getTypeSystem());

@@ -314,10 +314,6 @@ public class XCASDeserializer {
     private void readFS(final int addr, Attributes attrs, boolean toIndex) throws SAXParseException {
       // Hang on address for setting content feature
       this.currentAddr = addr;
-      /**
-       * if (this.currentFS==null) { this.currentFS = new FeatureStructureImplC(cas,addr); } else
-       * this.currentFS.setUp(cas,addr);
-       */
       int id = -1;
       IntVector indexRep = new IntVector(); // empty means not indexed
       String attrName, attrValue;
@@ -516,20 +512,25 @@ public class XCASDeserializer {
           throw createException(XCASParsingException.ILLEGAL_ARRAY_ATTR, attrName);
         }
       }
-      FeatureStructureImplC fs;
-      if (cas.isBooleanArrayType(type)) {
-        fs = (FeatureStructureImplC) cas.createBooleanArrayFS(size);
+      FeatureStructureImpl fs;
+      if (cas.isIntArrayType(type)) {
+        fs = (FeatureStructureImpl) cas.createIntArrayFS(size);        
+      } else if (cas.isFloatArrayType(type)) {
+        fs = (FeatureStructureImpl) cas.createFloatArrayFS(size);                
+      } else if (cas.isStringArrayType(type)) {
+        fs = (FeatureStructureImpl) cas.createStringArrayFS(size);                
+      } else if (cas.isBooleanArrayType(type)) {
+        fs = (FeatureStructureImpl) cas.createBooleanArrayFS(size);
       } else if (cas.isByteArrayType(type)) {
-        fs = (FeatureStructureImplC) cas.createByteArrayFS(size);
+        fs = (FeatureStructureImpl) cas.createByteArrayFS(size);
       } else if (cas.isShortArrayType(type)) {
-        fs = (FeatureStructureImplC) cas.createShortArrayFS(size);
+        fs = (FeatureStructureImpl) cas.createShortArrayFS(size);
       } else if (cas.isLongArrayType(type)) {
-        fs = (FeatureStructureImplC) cas.createLongArrayFS(size);
+        fs = (FeatureStructureImpl) cas.createLongArrayFS(size);
       } else if (cas.isDoubleArrayType(type)) {
-        fs = (FeatureStructureImplC) cas.createDoubleArrayFS(size);
+        fs = (FeatureStructureImpl) cas.createDoubleArrayFS(size);
       } else {
-        int addr = cas.createTempArray(type.getCode(), size);
-        fs = new FeatureStructureImplC(cas, addr);
+        fs = (FeatureStructureImpl) cas.createArrayFS(size);
       }
 
       final int addr = fs.getAddress();

@@ -125,9 +125,6 @@ public class XCASSerializer {
       this.indexReps = new IntVector();
       this.sofaTypeCode = cas.ll_getTypeSystem().ll_getCodeForType(
               cas.getTypeSystem().getType(CAS.TYPE_NAME_SOFA));
-
-      // Why was this here? Was never being read anywhere:
-      // fs = new FeatureStructureImplC(cas, 0);
     }
 
     /**
