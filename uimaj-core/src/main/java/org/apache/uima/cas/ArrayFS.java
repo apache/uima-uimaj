@@ -25,7 +25,7 @@ package org.apache.uima.cas;
  * 
  * 
  */
-public interface ArrayFS extends FeatureStructure {
+public interface ArrayFS extends CommonArrayFS {
 
   /**
    * Return the size of the array.

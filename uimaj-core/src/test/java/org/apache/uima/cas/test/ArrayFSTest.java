@@ -75,6 +75,7 @@ public class ArrayFSTest extends TestCase {
     }
     assertTrue(exceptionCaught);
     ArrayFS array = this.cas.createArrayFS(0);
+    assertTrue(array.size() == 0);
     assertTrue(array != null);
     assertTrue(array.size() == 0);
     exceptionCaught = false;
@@ -92,6 +93,11 @@ public class ArrayFSTest extends TestCase {
       array.set(0, fs1);
       array.set(1, fs2);
       array.set(2, fs3);
+      String[] stringArray = array.toStringArray();
+      assertTrue(stringArray.length == 3);
+      for (int i = 0; i < array.size(); i++) {
+	assertNotNull(stringArray[i]);
+      }
     } catch (ArrayIndexOutOfBoundsException e) {
       assertTrue(false);
     }

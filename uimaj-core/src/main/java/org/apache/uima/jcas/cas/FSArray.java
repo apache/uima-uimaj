@@ -127,4 +127,23 @@ public final class FSArray extends TOP implements ArrayFS {
     return outArray;
   }
 
+  public void copyFromArray(String[] src, int srcOffset, int destOffset, int length)
+      throws ArrayIndexOutOfBoundsException, NumberFormatException {
+    // TODO Auto-generated method stub
+    
+  }
+
+  public void copyToArray(int srcOffset, String[] dest, int destOffset, int length)
+      throws ArrayIndexOutOfBoundsException {
+    // TODO Auto-generated method stub
+    
+  }
+
+  public String[] toStringArray() {
+    final int size = size();
+    String[] strArray = new String[size];
+    copyToArray(0, strArray, 0, size);
+    return strArray;
+  }
+
 }
