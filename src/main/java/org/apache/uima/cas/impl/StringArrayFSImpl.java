@@ -27,7 +27,7 @@ import org.apache.uima.cas.StringArrayFS;
  * 
  * 
  */
-public class StringArrayFSImpl extends FeatureStructureImplC implements StringArrayFS {
+public class StringArrayFSImpl extends CommonArrayFSImpl implements StringArrayFS {
 
   private static class StringArrayGenerator implements FSGenerator {
 

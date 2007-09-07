@@ -27,9 +27,10 @@ import org.apache.uima.cas.FeatureStructure;
  * 
  * 
  */
-public class ArrayFSImpl extends FeatureStructureImplC implements ArrayFS {
+public class ArrayFSImpl extends CommonArrayFSImpl implements ArrayFS {
 
   private ArrayFSImpl() {
+    super();
     // not used
   }
 
@@ -62,10 +63,11 @@ public class ArrayFSImpl extends FeatureStructureImplC implements ArrayFS {
   }
 
   /**
-   * @see org.apache.uima.cas.ArrayFS#copyFromArray(FeatureStructure[], int, int, int)
+   * @see org.apache.uima.cas.ArrayFS#copyFromArray(FeatureStructure[], int,
+   *      int, int)
    */
   public void copyFromArray(FeatureStructure[] src, int srcOffset, int destOffset, int length)
-          throws ArrayIndexOutOfBoundsException {
+      throws ArrayIndexOutOfBoundsException {
     if ((destOffset < 0) || ((destOffset + length) > size())) {
       throw new ArrayIndexOutOfBoundsException();
     }
@@ -80,10 +82,11 @@ public class ArrayFSImpl extends FeatureStructureImplC implements ArrayFS {
   }
 
   /**
-   * @see org.apache.uima.cas.ArrayFS#copyToArray(int, FeatureStructure[], int, int)
+   * @see org.apache.uima.cas.ArrayFS#copyToArray(int, FeatureStructure[], int,
+   *      int)
    */
   public void copyToArray(int srcOffset, FeatureStructure[] dest, int destOffset, int length)
-          throws ArrayIndexOutOfBoundsException {
+      throws ArrayIndexOutOfBoundsException {
     if ((srcOffset < 0) || ((srcOffset + length) > size())) {
       throw new ArrayIndexOutOfBoundsException();
     }
@@ -103,6 +106,22 @@ public class ArrayFSImpl extends FeatureStructureImplC implements ArrayFS {
     FeatureStructure[] outArray = new FeatureStructure[size];
     copyToArray(0, outArray, 0, size);
     return outArray;
+  }
+
+  public void copyToArray(int srcOffset, String[] dest, int destOffset, int length) {
+    if ((srcOffset < 0) || ((srcOffset + length) > size())) {
+      throw new ArrayIndexOutOfBoundsException();
+    }
+    final int max = srcOffset + length;
+    int valueAddr;
+    for (int i = srcOffset; i < max; i++) {
+      valueAddr = this.casImpl.ll_getRefArrayValue(this.addr, i);
+      dest[i] = this.casImpl.ll_getFSForRef(valueAddr).toString();
+    }
+  }
+
+  public void copyFromArray(String[] src, int srcOffset, int destOffset, int length) {
+    throw new UnsupportedOperationException();
   }
 
 }

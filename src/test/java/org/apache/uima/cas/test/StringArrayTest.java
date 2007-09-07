@@ -84,6 +84,11 @@ public class StringArrayTest extends TestCase {
     } catch (ArrayIndexOutOfBoundsException e) {
       assertTrue(false);
     }
+    String[] stringArray = array.toStringArray();
+    assertTrue(array.size() == stringArray.length);
+    for (int i = 0; i < stringArray.length; i++) {
+      assertTrue(stringArray[i].equals(array.get(i)));
+    }
     exceptionCaught = false;
     try {
       array.set(-1, "1");

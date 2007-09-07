@@ -26,6 +26,7 @@ package org.apache.uima.cas.impl;
 public abstract class CommonArrayFSImpl extends FeatureStructureImplC {
 
   protected CommonArrayFSImpl() {
+    super();
   }
 
   protected CommonArrayFSImpl(CASImpl cas, int addr) {
@@ -33,7 +34,7 @@ public abstract class CommonArrayFSImpl extends FeatureStructureImplC {
   }
 
   public int size() {
-    return casImpl.ll_getArraySize(addr);
+    return this.casImpl.ll_getArraySize(this.addr);
   }
 
   public abstract void copyToArray(int srcOffset, String[] dest, int destOffset, int length);
