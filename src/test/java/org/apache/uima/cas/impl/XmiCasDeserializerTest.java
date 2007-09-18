@@ -608,7 +608,7 @@ public class XmiCasDeserializerTest extends TestCase {
     int annotStart1 = sofaText1.indexOf(annotText);
     AnnotationFS annot1 = newView1.createAnnotation(orgType, annotStart1, annotStart1 + annotText.length());
     newView1.addFsToIndexes(annot1);
-    CAS newView2 = newCas1.createView("newSofa2");
+    CAS newView2 = newCas2.createView("newSofa2");
     final String sofaText2 = "This is another new Sofa, created in CAS 2.";
     newView2.setDocumentText(sofaText2);
     int annotStart2 = sofaText2.indexOf(annotText);
