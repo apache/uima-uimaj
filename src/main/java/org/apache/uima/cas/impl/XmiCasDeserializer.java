@@ -223,7 +223,7 @@ public class XmiCasDeserializer {
         //new Sofas start at 2
         this.nextSofaNum = 2;
       } else {
-        this.nextSofaNum = ((CASImpl)this.casBeingFilled).getBaseSofaCount() + 1; //TODO: check with Eddie
+        this.nextSofaNum = ((CASImpl)this.casBeingFilled).getBaseSofaCount() + 1; 
       }
       this.deserializedFsAddrs = new IntVector();
       this.fsListNodesFromMultivaluedProperties = new IntVector();
