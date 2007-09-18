@@ -24,7 +24,7 @@
 	<groupId>org.apache.uima</groupId>
 	<artifactId>uimaj-ep-jcasgen</artifactId>
 	<packaging>jar</packaging>
-	<version>2.2.0.incubating</version>
+	<version>2.3.0.incubating</version>
 	<name>Apache UIMA JCasGen Eclipse Plugin</name>
 	<url>http://incubator.apache.org/uima</url>
 	<licenses>
@@ -92,7 +92,7 @@
 									src/main/assembly/assemble-plugin.xml</descriptor>
 							</descriptors>
 							<finalName>
-								org.apache.uima.jcas.jcasgenp_2.2.0.incubating</finalName>
+								org.apache.uima.jcas.jcasgenp_2.3.0.incubating</finalName>
 							<appendAssemblyId>false</appendAssemblyId>
 						</configuration>
 					</execution>
