@@ -134,7 +134,7 @@ public class XmiCasDeserializerTest extends TestCase {
 
     // reserialize as XMI
     String xml = serialize(cas, null);
-    System.out.println(xml);
+//    System.out.println(xml);
     
     // deserialize into another CAS
     CAS cas2 = CasCreationUtils.createCas(typeSystemDescription, new TypePriorities_impl(), indexes);
@@ -831,7 +831,7 @@ public class XmiCasDeserializerTest extends TestCase {
     
     //serialize to XMI
     String xmiStr = serialize(cas, null);
-    System.out.println(xmiStr);
+//    System.out.println(xmiStr);
     
     //deserialize into a CAS that's missing the Organization type
     File partialTypeSystemFile = JUnitExtension.getFile("ExampleCas/partialTestTypeSystem.xml");
@@ -858,7 +858,7 @@ public class XmiCasDeserializerTest extends TestCase {
     
     //reserialize along with out of type system data
     String xmiStr2 = serialize(partialTsCas, sharedData);
-    System.out.println(xmiStr2);
+//    System.out.println(xmiStr2);
     
     //deserialize into a new CAS and compare
     CAS cas2 = CasCreationUtils.createCas(typeSystem, null, null);
