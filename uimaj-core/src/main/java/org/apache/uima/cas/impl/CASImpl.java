@@ -871,11 +871,11 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
         ((CASImpl) tcas).mySofaRef = (1 == view) ? -1 : 0;
       }
     }
-    if (this.getHeap().getCurrentTempSize() > CASImpl.resetHeapSize) {
-      this.getHeap().resetTempHeap(true);
+    if (this.getHeap().getHeapSize() > CASImpl.resetHeapSize) {
+      this.getHeap().reset(true);
       resetStringTable(true);
     } else {
-      this.getHeap().resetTempHeap(false);
+      this.getHeap().reset(false);
       resetStringTable(false);
     }
 
@@ -1597,23 +1597,6 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
             + this.svd.casMetadata.featureOffset[featCode]);
       }
     }
-  }
-
-  /**
-   * Create a permanent array on the heap.
-   * 
-   * @param type
-   *                The type of the array.
-   * @param len
-   *                The length of the array.
-   * @return The address of the new FS. This is an int <code>&gt;=0</code>.
-   *         If it is <code>0</code>, something went wrong; <code>0</code>
-   *         is not a valid address.
-   */
-  public int createPermArray(int type, int len) {
-    final int addr = this.getHeap().addToHeap(this.svd.casMetadata.fsSpaceReq[type] + len, type);
-    this.getHeap().heap[(addr + arrayLengthFeatOffset)] = len;
-    return addr;
   }
 
   /**
@@ -2597,7 +2580,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   public final int ll_createFS(int typeCode) {
-    return this.getHeap().addToTempHeap(this.svd.casMetadata.fsSpaceReq[typeCode], typeCode);
+    return this.getHeap().add(this.svd.casMetadata.fsSpaceReq[typeCode], typeCode);
   }
 
   public final int ll_createFS(int typeCode, boolean doCheck) {
@@ -2650,7 +2633,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    *                    If <code>type</code> is not a type.
    */
   public int createTempArray(int type, int len) {
-    final int addr = this.getHeap().addToTempHeap(arrayContentOffset + len, type);
+    final int addr = this.getHeap().add(arrayContentOffset + len, type);
     this.getHeap().heap[(addr + arrayLengthFeatOffset)] = len;
     return addr;
   }
@@ -2661,13 +2644,13 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * @see org.apache.uima.cas.impl.LowLevelCAS#ll_createArray(int, int)
    */
   public int ll_createArray(int typeCode, int arrayLength) {
-    final int addr = this.getHeap().addToTempHeap(arrayContentOffset + arrayLength, typeCode);
+    final int addr = this.getHeap().add(arrayContentOffset + arrayLength, typeCode);
     this.getHeap().heap[(addr + arrayLengthFeatOffset)] = arrayLength;
     return addr;
   }
 
   public int ll_createAuxArray(int typeCode, int arrayLength) {
-    final int addr = this.getHeap().addToTempHeap(arrayContentOffset + 1, typeCode);
+    final int addr = this.getHeap().add(arrayContentOffset + 1, typeCode);
     this.getHeap().heap[(addr + arrayLengthFeatOffset)] = arrayLength;
     return addr;
   }

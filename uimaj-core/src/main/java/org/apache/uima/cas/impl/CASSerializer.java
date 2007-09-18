@@ -99,7 +99,7 @@ public class CASSerializer implements Serializable {
    */
 	public void addCAS(CASImpl cas, boolean addMetaData) {
 		this.fsIndex = cas.getIndexedFSs();
-		final int heapSize = cas.getHeap().getCurrentTempSize();
+		final int heapSize = cas.getHeap().getCellsUsed();
 		this.heapArray = new int[heapSize];
 		System.arraycopy(cas.getHeap().heap, 0, this.heapArray, 0, heapSize);
 		if (addMetaData) {
@@ -181,7 +181,7 @@ public class CASSerializer implements Serializable {
 			dos.writeInt(version);
 
 			// output the FS heap
-			final int heapSize = cas.getHeap().getCurrentTempSize();
+			final int heapSize = cas.getHeap().getCellsUsed();
 			dos.writeInt(heapSize);
 			for (int i = 0; i < heapSize; i++) {
 				dos.writeInt(cas.getHeap().heap[i]);
