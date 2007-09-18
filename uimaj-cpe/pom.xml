@@ -24,7 +24,7 @@
 	<groupId>org.apache.uima</groupId>
 	<artifactId>uimaj-cpe</artifactId>
 	<packaging>jar</packaging>
-	<version>2.2.0-incubating</version>
+	<version>2.3.0-SNAPSHOT</version>
 	<name>Apache UIMA Java Collection Processing Engine</name>
 	<url>http://incubator.apache.org/uima</url>
 	<licenses>
@@ -40,31 +40,31 @@
 	<parent>
 		<groupId>org.apache.uima</groupId>
 		<artifactId>uimaj</artifactId>
-		<version>2.2.0-incubating</version>
+		<version>2.3.0-SNAPSHOT</version>
 	</parent>
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-core</artifactId>
-			<version>2.2.0-incubating</version>
+			<version>2.3.0-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-adapter-vinci</artifactId>
-			<version>2.2.0-incubating</version>
+			<version>2.3.0-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>jVinci</artifactId>
-			<version>2.2.0-incubating</version>
+			<version>2.3.0-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-test-util</artifactId>
-			<version>2.2.0-incubating</version>
+			<version>2.3.0-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
