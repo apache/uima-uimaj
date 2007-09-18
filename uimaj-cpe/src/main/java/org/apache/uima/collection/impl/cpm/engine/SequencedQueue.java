@@ -470,6 +470,7 @@ public class SequencedQueue extends BoundedWorkQueue {
         // Timeout
         return null;
       }
+      else break;
     }
 
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
