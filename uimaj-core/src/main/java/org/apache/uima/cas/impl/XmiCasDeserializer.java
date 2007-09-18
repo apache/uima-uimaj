@@ -220,6 +220,10 @@ public class XmiCasDeserializer {
         
         // clear ID mappings stored in the SharedData (from previous deserializations)
         this.sharedData.clearIdMap();
+        //new Sofas start at 2
+        this.nextSofaNum = 2;
+      } else {
+        this.nextSofaNum = ((CASImpl)this.casBeingFilled).getBaseSofaCount() + 1; //TODO: check with Eddie
       }
       this.deserializedFsAddrs = new IntVector();
       this.fsListNodesFromMultivaluedProperties = new IntVector();
@@ -245,7 +249,6 @@ public class XmiCasDeserializer {
       this.sofaTypeCode = tsOfReceivingCas.ll_getCodeForTypeName(CAS.TYPE_NAME_SOFA);
       this.sofaNumFeatCode = tsOfReceivingCas.ll_getCodeForFeatureName(CAS.FEATURE_FULL_NAME_SOFANUM);
       this.sofaFeatCode = tsOfReceivingCas.ll_getCodeForFeatureName(CAS.FEATURE_FULL_NAME_SOFA);
-      this.nextSofaNum = 2;
       this.listUtils = new ListUtils(casBeingFilled, UIMAFramework.getLogger(XmiCasDeserializer.class), null);
 
       // populate feature type table
