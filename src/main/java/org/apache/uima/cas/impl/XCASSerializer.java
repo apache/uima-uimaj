@@ -249,7 +249,7 @@ public class XCASSerializer {
       enqueueFeaturesOfIndexed();
       if (outOfTypeSystemData != null) {
         // Queues out of type system data.
-        int nextId = cas.getHeap().getCurrentTempSize();
+        int nextId = cas.getHeap().getCellsUsed();
         Iterator it = outOfTypeSystemData.fsList.iterator();
         while (it.hasNext()) {
           FSData fs = (FSData) it.next();

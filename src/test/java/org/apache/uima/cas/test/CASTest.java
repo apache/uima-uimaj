@@ -94,7 +94,7 @@ public class CASTest extends TestCase {
     final int arraySize = 1000000;
     // Make sure that the structure we're trying to create is actually larger
     // than the page size we're testing with.
-    assertTrue(arraySize > Heap.DEFAULT_PAGE_SIZE);
+    assertTrue(arraySize > Heap.DEFAULT_SIZE);
     IntArrayFS array = null;
     try {
       array = this.cas.createIntArrayFS(arraySize);

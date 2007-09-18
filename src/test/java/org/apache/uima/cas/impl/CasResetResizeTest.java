@@ -51,7 +51,7 @@ public class CasResetResizeTest extends TestCase {
       // check default setting
       TextAnalysisEngine taeDefault = UIMAFramework.produceTAE(testDescriptor);
       CAS cas = taeDefault.newCAS();
-      int heapSize = ((CASImpl) cas).getHeap().getCurrentTempSize();
+      int heapSize = ((CASImpl) cas).getHeap().getHeapSize();
       int bufSize = ((CASImpl)cas).getHeap().heap.length;
       //System.out.println("Heap size: " + heapSize + ", buffer size: " + bufSize);       
       Assert.assertTrue(bufSize < CASImpl.DEFAULT_RESET_HEAP_SIZE);
@@ -63,7 +63,7 @@ public class CasResetResizeTest extends TestCase {
         cas.createAnnotation(annotType, i, i);
       }
       
-      heapSize = ((CASImpl) cas).getHeap().getCurrentTempSize();
+      heapSize = ((CASImpl) cas).getHeap().getHeapSize();
       bufSize = ((CASImpl)cas).getHeap().heap.length;
       //System.out.println("Heap size: " + heapSize + ", buffer size: " + bufSize);      
       assertTrue(heapSize <= bufSize);
@@ -71,7 +71,7 @@ public class CasResetResizeTest extends TestCase {
       
       //reset the CAS - it should shrink
       cas.reset();
-      heapSize = ((CASImpl) cas).getHeap().getCurrentTempSize();
+      heapSize = ((CASImpl) cas).getHeap().getHeapSize();
       bufSize = ((CASImpl)cas).getHeap().heap.length;
       //System.out.println("Heap size: " + heapSize + ", buffer size: " + bufSize);
       assertTrue(heapSize <= bufSize);
@@ -85,7 +85,7 @@ public class CasResetResizeTest extends TestCase {
           cas.createAnnotation(annotType, i, i);
         }
         
-        heapSize = ((CASImpl) cas).getHeap().getCurrentTempSize();
+        heapSize = ((CASImpl) cas).getHeap().getHeapSize();
         bufSize = ((CASImpl)cas).getHeap().heap.length;
         //System.out.println("Heap size: " + heapSize + ", buffer size: " + bufSize);      
         assertTrue(heapSize <= bufSize);
