@@ -24,7 +24,7 @@
 	<groupId>org.apache.uima</groupId>
 	<artifactId>uimaj-ep-runtime</artifactId>
 	<packaging>jar</packaging>
-	<version>2.2.0.incubating</version>
+	<version>2.3.0.incubating</version>
 	<name>Apache UIMA Runtime Plugin</name>
 	<url>http://incubator.apache.org/uima</url>
 	<licenses>
@@ -113,7 +113,7 @@
 								<descriptor>
 									src/main/assembly/assemble-plugin.xml</descriptor>
 							</descriptors>
-							<finalName>org.apache.uima.runtime_2.2.0.incubating</finalName>
+							<finalName>org.apache.uima.runtime_2.3.0.incubating</finalName>
 							<appendAssemblyId>false</appendAssemblyId>
 						</configuration>
 					</execution>
