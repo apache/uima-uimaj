@@ -43,12 +43,15 @@
 		<version>2.3.0-SNAPSHOT</version>
 	</parent>
 	<dependencies>
+    <!-- UIMA dependencies -->
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-core</artifactId>
 			<version>2.3.0-SNAPSHOT</version>
 			<scope>compile</scope>
-		</dependency>			
+		</dependency>
+    			
+    <!-- Eclipse dependencies -->
 		<dependency>
 			<groupId>org.eclipse.core</groupId>
 			<artifactId>org.eclipse.core.runtime</artifactId>
@@ -61,24 +64,34 @@
 			<version>3.2.0</version>
 			<scope>provided</scope>
 		</dependency>	
-		<dependency>
-			<groupId>org.eclipse.jdt</groupId>
-			<artifactId>org.eclipse.jdt.ui</artifactId>
-			<version>3.2.0</version>
-			<scope>provided</scope>
-		</dependency>																		
-		<dependency>
-			<groupId>org.eclipse.jface</groupId>
-			<artifactId>org.eclipse.jface.text</artifactId>
-			<version>3.2.0</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.swt</groupId>
-			<artifactId>org.eclipse.swt.win32.win32.x86</artifactId>
-			<version>3.2.0</version>
-			<scope>provided</scope>
-		</dependency>		
+    <dependency>
+      <groupId>org.eclipse.core</groupId>
+      <artifactId>org.eclipse.core.resources</artifactId>
+      <version>3.2.0</version>      
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.ui</groupId>
+      <artifactId>org.eclipse.ui.ide</artifactId>
+      <version>3.2.0</version>      
+      <scope>provided</scope>
+    </dependency>
+    <!-- next one causes NPE with maven 2.0.7.  Might be related to http://jira.codehaus.org/browse/MNG-3086 -->   
+    <!--dependency>
+      <groupId>org.eclipse.ui</groupId>
+      <artifactId>org.eclipse.ui</artifactId>
+      <version>3.2.0</version>
+    </dependency-->
+    
+    <!-- the need for this one may go away when the ui dependency 
+         can be included -->
+    <dependency>
+      <groupId>org.eclipse.swt</groupId>
+      <artifactId>org.eclipse.swt.win32.win32.x86</artifactId>
+      <version>3.2.0</version>
+      <scope>provided</scope>
+    </dependency>   
+
 	</dependencies>
 	<build>
 		<finalName>uima-ep-pear-packager</finalName>	
