@@ -31,7 +31,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * FileCompare class provides a method, which compares two files.
+ * FileCompare class provides a several methods, which compare two files or input streams.
+ * Most methods are static.
+ * 
+ * It has a facility to incorporate a regex ignore-differences filter
  * 
  */
 public class FileCompare {
@@ -39,9 +42,14 @@ public class FileCompare {
   /**
    * TODO Currently only tags containing word characters [a-zA-Z_0-9] are recognised.
    */
+  // match "<" followed by 1 or more word_chars followed by ">" followed by "</" followed by
+  //   (presumably) the same 1 or more word_chars followed by ">"
   private static final String EMPTY_TAG_REGEX = "(<([\\w]+)>[\\s]*</[\\w]+>)";
 
   private static Pattern emptyTagPattern = Pattern.compile(EMPTY_TAG_REGEX);
+  
+  // matches cr if it is followed by a new-line, will be repl with just a new line
+  private static Pattern crnlPattern = Pattern.compile("\\r(?=\\n)");
 
   /**
    * compares two files and return true if the files have the same content.
@@ -161,6 +169,7 @@ public class FileCompare {
     return true;
   }
 
+
   /**
    * Compares two XML files and returns true, if both have the same content. Different notations for
    * empty tags are considered equal.
@@ -207,6 +216,103 @@ public class FileCompare {
     }
   }
 
+  /**
+   * Compares two files and returns true, if both have the same content, after
+   * filtering using the supplied Pattern.  
+   * In addition, 
+   *   \r\n is normalized to \n,
+   *   multiple spaces and tabs are normalized to a single space 
+   * 
+   * @param filename1
+   *          Filename of the first XML file.
+   * @param filename2
+   *          Filename of the second XML file.
+   * @param pattern 
+   *          an instance of Pattern which matches all substrings which should be filtered out of the match
+   * @return
+   * @throws IOException
+   */
+  public static boolean compareWithFilter(String filename1, String filename2, Pattern pattern)
+      throws IOException {
+    File file1 = null;
+    File file2 = null;
+
+    String s1 = null;
+    String s2 = null;
+
+    file1 = new File(filename1);
+    file2 = new File(filename2);
+
+    // read files into strings
+    s1 = file2String(file1);
+    s2 = file2String(file2);
+ 
+    return compareStringsWithFilter(s1, s2, pattern);
+  }  
+
+  // match at least 2 spaces
+  private static final Pattern multipleWhiteSpace = Pattern.compile("[ \\t]{2,}");
+  
+  // match nl space nl
+  private static final Pattern emptyLinePattern = Pattern.compile("(?m)^ $");
+  
+  /**
+   * Compare 2 strings, showing where they differ in output to system.out, after
+   * doing filtering:
+   *   normalize cr nl to nl
+   *   normalize <xmltag>   </xmltag>  to <xmltag/>
+   *   normalize by applying supplied Pattern and deleting anything it matches
+   *   normalize by converting all 2 or more spaces/tabs to just 1 space
+   * @param s1
+   * @param s2
+   * @param pattern
+   * @return
+   */
+
+  public static boolean compareStringsWithFilter(String s1, String s2, Pattern pattern) {
+    // apply cr + nl --> nl
+    s1 = crnlPattern.matcher(s1).replaceAll("");
+    s2 = crnlPattern.matcher(s2).replaceAll("");
+
+    // apply empty xml tag conversion
+    s1 = emptyTagPattern.matcher(s1).replaceAll("<$2/>");
+    s2 = emptyTagPattern.matcher(s2).replaceAll("<$2/>");
+
+    // apply filter
+    s1 = pattern.matcher(s1).replaceAll("");
+    s2 = pattern.matcher(s2).replaceAll("");
+
+    // ignore different white space outside of strings
+    s1 = multipleWhiteSpace.matcher(s1).replaceAll(" ");
+    s2 = multipleWhiteSpace.matcher(s2).replaceAll(" ");
+
+    // apply nl + spaces + nl -> nl nl
+    s1 = emptyLinePattern.matcher(s1).replaceAll("");
+    s2 = emptyLinePattern.matcher(s2).replaceAll("");
+
+    return compareStringsWithMsg(s1, s2);
+  }
+  
+  /**
+   * Compare two strings, give message indicating where they miscompare, including
+   *   approx 10 chars before and after the first miscompare, for context
+   * @param s1  first string to compare
+   * @param s2  second string to compare
+   * @return  true if strings have the same charactersS
+   */
+  public static boolean compareStringsWithMsg(String s1, String s2) {
+    final int maxI = Math.min(s1.length(), s2.length());
+    for (int i = 0; i < maxI; i++) {
+      if (s1.charAt(i) != s2.charAt(i)) {
+        System.out.println("Error: files differ starting at char: " + i);
+        System.out.println("Error:   file1 ... " + s1.substring(Math.max(0, i-10), Math.min(s1.length(), i+10)));
+        System.out.println("Error:   file2 ... " + s2.substring(Math.max(0, i-10), Math.min(s2.length(), i+10)));
+        return false;
+      }
+    }
+    return true;
+  }
+  
   /**
    * Helper method that replaces empty XML tags in long notation with the corresponding short form.
    * 
