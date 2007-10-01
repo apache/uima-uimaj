@@ -37,6 +37,7 @@ import org.apache.uima.collection.metadata.CpeIntegratedCasProcessor;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.test.junit_extension.ManageOutputDevice;
+import org.apache.uima.util.Level;
 
 /**
  * Test CollectionReader Error Handling<br>
@@ -66,6 +67,18 @@ import org.apache.uima.test.junit_extension.ManageOutputDevice;
 public class CpmCollectionReader_ErrorTest extends TestCase {
 
   private static final String FS = System.getProperties().getProperty("file.separator");
+
+  private void cpeProcessNoMsg(CollectionProcessingEngine cpe, TestStatusCallbackListener listener) throws Exception {
+    UIMAFramework.getLogger().setLevel(Level.OFF);
+    try {
+      cpe.process();
+      while (!listener.isFinished() && !listener.isAborted()) {
+        Thread.sleep(5);
+      }
+    } finally {
+      UIMAFramework.getLogger().setLevel(Level.INFO);
+    }
+  }
 
   /**
    * <b>testcase:</b> the getNext method throws an OutOfMemoryError.<br>
@@ -125,12 +138,7 @@ public class CpmCollectionReader_ErrorTest extends TestCase {
     TestStatusCallbackListener listener = new CollectionReaderStatusCallbackListener(cpe);
     cpe.addStatusCallbackListener(listener);
 
-    cpe.process();
-
-    // wait until cpm has finished
-    while (!listener.isFinished() && !listener.isAborted()) {
-      Thread.sleep(5);
-    }
+    cpeProcessNoMsg(cpe, listener);
 
     ManageOutputDevice.setAllSystemOutputToDefault();
     // check the results, if everything worked as expected
@@ -218,12 +226,7 @@ public class CpmCollectionReader_ErrorTest extends TestCase {
     TestStatusCallbackListener listener = new CollectionReaderStatusCallbackListener(cpe);
     cpe.addStatusCallbackListener(listener);
 
-    cpe.process();
-
-    // wait until cpm has finished
-    while (!listener.isFinished() && !listener.isAborted()) {
-      Thread.sleep(5);
-    }
+    cpeProcessNoMsg(cpe, listener);
 
     ManageOutputDevice.setAllSystemOutputToDefault();
     // check the results, if everything worked as expected
@@ -259,12 +262,7 @@ public class CpmCollectionReader_ErrorTest extends TestCase {
             cpe);
     cpe.addStatusCallbackListener(listener);
 
-    cpe.process();
-
-    // wait until cpm has finished
-    while (!listener.isFinished() && !listener.isAborted()) {
-      Thread.sleep(5);
-    }
+    cpeProcessNoMsg(cpe, listener);
 
     ManageOutputDevice.setAllSystemOutputToDefault();
     // check the results, if everything worked as expected

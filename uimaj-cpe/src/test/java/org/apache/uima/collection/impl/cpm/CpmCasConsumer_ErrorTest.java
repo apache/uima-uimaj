@@ -35,6 +35,7 @@ import org.apache.uima.collection.metadata.CpeDescription;
 import org.apache.uima.collection.metadata.CpeIntegratedCasProcessor;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.test.junit_extension.ManageOutputDevice;
+import org.apache.uima.util.Level;
 
 /**
  * Test CasConsumer Error Handling<br>
@@ -69,6 +70,18 @@ public class CpmCasConsumer_ErrorTest extends TestCase {
 
   private static final String FS = System.getProperties().getProperty("file.separator");
 
+  private void cpeProcessNoMsg(CollectionProcessingEngine cpe, TestStatusCallbackListener listener) throws Exception {
+    UIMAFramework.getLogger().setLevel(Level.OFF);
+    try {
+      cpe.process();
+      while (!listener.isFinished() && !listener.isAborted()) {
+        Thread.sleep(5);
+      }
+    } finally {
+      UIMAFramework.getLogger().setLevel(Level.INFO);
+    }
+  }
+
   /**
    * <b>testcase:</b> the initialize method throws a ResourceInitializationException.<br>
    * <b>expected behaviour:</b><br>
@@ -91,11 +104,7 @@ public class CpmCasConsumer_ErrorTest extends TestCase {
       // Create and register a Status Callback Listener
       listener = new CollectionReaderStatusCallbackListener(cpe);
       cpe.addStatusCallbackListener(listener);
-      cpe.process();
-      // wait until cpm has finished
-      while (!listener.isFinished() && !listener.isAborted()) {
-        Thread.sleep(5);
-      }
+      cpeProcessNoMsg(cpe, listener);
     } catch (NullPointerException e) {
       exceptionThrown = true;
     } finally {
@@ -134,11 +143,7 @@ public class CpmCasConsumer_ErrorTest extends TestCase {
       // Create and register a Status Callback Listener
       listener = new CollectionReaderStatusCallbackListener(cpe);
       cpe.addStatusCallbackListener(listener);
-      cpe.process();
-      // wait until cpm has finished
-      while (!listener.isFinished() && !listener.isAborted()) {
-        Thread.sleep(5);
-      }
+      cpeProcessNoMsg(cpe, listener);
     } catch (NullPointerException e) {
       // e.printStackTrace();
       exceptionThrown = true;
@@ -178,11 +183,7 @@ public class CpmCasConsumer_ErrorTest extends TestCase {
       // Create and register a Status Callback Listener
       listener = new CollectionReaderStatusCallbackListener(cpe);
       cpe.addStatusCallbackListener(listener);
-      cpe.process();
-      // wait until cpm has finished
-      while (!listener.isFinished() && !listener.isAborted()) {
-        Thread.sleep(5);
-      }
+      cpeProcessNoMsg(cpe, listener);
     } catch (OutOfMemoryError er) {
       errorThrown = true;
     } finally {
@@ -217,11 +218,7 @@ public class CpmCasConsumer_ErrorTest extends TestCase {
     // Create and register a Status Callback Listener
     TestStatusCallbackListener listener = new CollectionReaderStatusCallbackListener(cpe);
     cpe.addStatusCallbackListener(listener);
-    cpe.process();
-    // wait until cpm has finished
-    while (!listener.isFinished() && !listener.isAborted()) {
-      Thread.sleep(5);
-    }
+    cpeProcessNoMsg(cpe, listener);
     // check the results, if everything worked as expected
     ManageOutputDevice.setAllSystemOutputToDefault();
     assertEquals(
@@ -254,11 +251,7 @@ public class CpmCasConsumer_ErrorTest extends TestCase {
     // Create and register a Status Callback Listener
     TestStatusCallbackListener listener = new CollectionReaderStatusCallbackListener(cpe);
     cpe.addStatusCallbackListener(listener);
-    cpe.process();
-    // wait until cpm has finished
-    while (!listener.isFinished() && !listener.isAborted()) {
-      Thread.sleep(5);
-    }
+    cpeProcessNoMsg(cpe, listener);
     // check the results, if everything worked as expected
     ManageOutputDevice.setAllSystemOutputToDefault();
     assertEquals("The cpm did not call the listener, that the cpm has finished.", true, listener
@@ -291,11 +284,7 @@ public class CpmCasConsumer_ErrorTest extends TestCase {
     // Create and register a Status Callback Listener
     listener = new CollectionReaderStatusCallbackListener(cpe);
     cpe.addStatusCallbackListener(listener);
-    cpe.process();
-    // wait until cpm has finished
-    while (!listener.isAborted() && !listener.isFinished()) {
-      Thread.sleep(500);
-    }
+    cpeProcessNoMsg(cpe, listener);
 
     // check the results, if everything worked as expected
     ManageOutputDevice.setAllSystemOutputToDefault();
@@ -323,11 +312,7 @@ public class CpmCasConsumer_ErrorTest extends TestCase {
     // Create and register a Status Callback Listener
     TestStatusCallbackListener listener = new CollectionReaderStatusCallbackListener(cpe);
     cpe.addStatusCallbackListener(listener);
-    cpe.process();
-    // wait until cpm has finished
-    while (!listener.isFinished() && !listener.isAborted()) {
-      Thread.sleep(5);
-    }
+    cpeProcessNoMsg(cpe, listener);
     // check the results, if everything worked as expected
     ManageOutputDevice.setAllSystemOutputToDefault();
     assertEquals("The cpm did not call the listener, that the cpm has finished.", true, listener

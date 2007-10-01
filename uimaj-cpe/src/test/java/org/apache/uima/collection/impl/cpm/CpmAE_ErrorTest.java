@@ -32,6 +32,7 @@ import org.apache.uima.collection.metadata.CpeDescription;
 import org.apache.uima.collection.metadata.CpeIntegratedCasProcessor;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.test.junit_extension.ManageOutputDevice;
+import org.apache.uima.util.Level;
 
 /**
  * The TestCase aims to test the behaviour of the cpm faced with different error scenarios<br>
@@ -77,6 +78,18 @@ public class CpmAE_ErrorTest extends TestCase {
     System.gc();
   }
 
+  private void cpeProcessNoMsg(CollectionProcessingEngine cpe, TestStatusCallbackListener listener) throws Exception {
+    UIMAFramework.getLogger().setLevel(Level.OFF);
+    try {
+      cpe.process();
+      while (!listener.isFinished() && !listener.isAborted()) {
+        Thread.sleep(5);
+      }
+    } finally {
+      UIMAFramework.getLogger().setLevel(Level.INFO);
+    }
+  }
+  
   /**
    * <b>testcase:</b> the process method throws multiple AnnotatorProcessException.<br>
    * <b>expected behaviour:</b><br>
@@ -96,11 +109,7 @@ public class CpmAE_ErrorTest extends TestCase {
     // Create and register a Status Callback Listener
     TestStatusCallbackListener listener = new CollectionReaderStatusCallbackListener(cpe);
     cpe.addStatusCallbackListener(listener);
-    cpe.process();
-    // wait until cpm has finished
-    while (!listener.isFinished() && !listener.isAborted()) {
-      Thread.sleep(5);
-    }
+    cpeProcessNoMsg(cpe, listener);
 
     ManageOutputDevice.setAllSystemOutputToDefault();
     // check the results, if everything worked as expected
@@ -135,11 +144,7 @@ public class CpmAE_ErrorTest extends TestCase {
     // Create and register a Status Callback Listener
     TestStatusCallbackListener listener = new CollectionReaderStatusCallbackListener(cpe);
     cpe.addStatusCallbackListener(listener);
-    cpe.process();
-    // wait until cpm has finished
-    while (!listener.isFinished() && !listener.isAborted()) {
-      Thread.sleep(5);
-    }
+    cpeProcessNoMsg(cpe, listener);
 
     ManageOutputDevice.setAllSystemOutputToDefault();
     // check the results, if everything worked as expected
@@ -174,11 +179,7 @@ public class CpmAE_ErrorTest extends TestCase {
     // Create and register a Status Callback Listener
     TestStatusCallbackListener listener = new CollectionReaderStatusCallbackListener(cpe);
     cpe.addStatusCallbackListener(listener);
-    cpe.process();
-    // wait until cpm has finished
-    while (!listener.isFinished() && !listener.isAborted()) {
-      Thread.sleep(5);
-    }
+    cpeProcessNoMsg(cpe, listener);
 
     ManageOutputDevice.setAllSystemOutputToDefault();
     // check the results, if everything worked as expected
@@ -216,11 +217,7 @@ public class CpmAE_ErrorTest extends TestCase {
       // Create and register a Status Callback Listener
       listener = new CollectionReaderStatusCallbackListener(cpe);
       cpe.addStatusCallbackListener(listener);
-      cpe.process();
-      // wait until cpm has finished
-      while (!listener.isFinished() && !listener.isAborted()) {
-        Thread.sleep(5);
-      }
+      cpeProcessNoMsg(cpe, listener);
     } catch (NullPointerException e) {
       // e.printStackTrace();
       exceptionThrown = true;
@@ -260,11 +257,7 @@ public class CpmAE_ErrorTest extends TestCase {
     // Create and register a Status Callback Listener
     listener = new CollectionReaderStatusCallbackListener(cpe);
     cpe.addStatusCallbackListener(listener);
-    cpe.process();
-    // wait until cpm has finished
-    while (!listener.isFinished() && !listener.isAborted()) {
-      Thread.sleep(5);
-    }
+    cpeProcessNoMsg(cpe, listener);
 
     ManageOutputDevice.setAllSystemOutputToDefault();
     // check the results, if everything worked as expected
@@ -302,11 +295,7 @@ public class CpmAE_ErrorTest extends TestCase {
       // Create and register a Status Callback Listener
       listener = new CollectionReaderStatusCallbackListener(cpe);
       cpe.addStatusCallbackListener(listener);
-      cpe.process();
-      // wait until cpm has finished
-      while (!listener.isFinished() && !listener.isAborted()) {
-        Thread.sleep(5);
-      }
+      cpeProcessNoMsg(cpe, listener);
     } catch (NullPointerException e) {
       // e.printStackTrace();
       exceptionThrown = true;
@@ -348,11 +337,7 @@ public class CpmAE_ErrorTest extends TestCase {
       // Create and register a Status Callback Listener
       listener = new CollectionReaderStatusCallbackListener(cpe);
       cpe.addStatusCallbackListener(listener);
-      cpe.process();
-      // wait until cpm has finished
-      while (!listener.isFinished() && !listener.isAborted()) {
-        Thread.sleep(5);
-      }
+      cpeProcessNoMsg(cpe, listener);
     } catch (NullPointerException e) {
       // e.printStackTrace();
       exceptionThrown = true;
@@ -478,11 +463,7 @@ public class CpmAE_ErrorTest extends TestCase {
 
     // register a Status Callback Listener
     cpe.addStatusCallbackListener(listener);
-    cpe.process();
-    // wait until cpm has finished
-    while (!listener.isFinished() && !listener.isAborted()) {
-      Thread.sleep(5);
-    }
+    cpeProcessNoMsg(cpe, listener);
 
     ManageOutputDevice.setAllSystemOutputToDefault();
     // check the results, if everything worked as expected
@@ -527,11 +508,7 @@ public class CpmAE_ErrorTest extends TestCase {
     // Create and register a Status Callback Listener
     // listener = new CollectionReaderStatusCallbackListener(cpe);
     cpe.addStatusCallbackListener(listener);
-    cpe.process();
-    // wait until cpm has finished
-    while (!listener.isFinished() && !listener.isAborted()) {
-      Thread.sleep(5);
-    }
+    cpeProcessNoMsg(cpe, listener);
 
     ManageOutputDevice.setAllSystemOutputToDefault();
     // check the results, if everything worked as expected
@@ -576,11 +553,7 @@ public class CpmAE_ErrorTest extends TestCase {
     // Create and register a Status Callback Listener
     // listener = new CollectionReaderStatusCallbackListener(cpe);
     cpe.addStatusCallbackListener(listener);
-    cpe.process();
-    while (!listener.isFinished() && !listener.isAborted()) {
-      Thread.sleep(5);
-
-    }
+    cpeProcessNoMsg(cpe, listener);
 
     ManageOutputDevice.setAllSystemOutputToDefault();
     // check the results, if everything worked as expected
@@ -626,11 +599,7 @@ public class CpmAE_ErrorTest extends TestCase {
     // Create and register a Status Callback Listener
     // listener = new CollectionReaderStatusCallbackListener(cpe);
     cpe.addStatusCallbackListener(listener);
-    cpe.process();
-    // wait until cpm has finished
-    while (!listener.isFinished() && !listener.isAborted()) {
-      Thread.sleep(5);
-    }
+    cpeProcessNoMsg(cpe, listener);
 
     ManageOutputDevice.setAllSystemOutputToDefault();
     // check the results, if everything worked as expected
@@ -676,11 +645,7 @@ public class CpmAE_ErrorTest extends TestCase {
     // Create and register a Status Callback Listener
     // listener = new CollectionReaderStatusCallbackListener(cpe);
     cpe.addStatusCallbackListener(listener);
-    cpe.process();
-    // wait until cpm has finished
-    while (!listener.isFinished() && !listener.isAborted()) {
-      Thread.sleep(5);
-    }
+    cpeProcessNoMsg(cpe, listener);
 
     ManageOutputDevice.setAllSystemOutputToDefault();
     // check the results, if everything worked as expected
@@ -716,11 +681,7 @@ public class CpmAE_ErrorTest extends TestCase {
 
     // Create and register a Status Callback Listener
     cpe.addStatusCallbackListener(listener);
-    cpe.process();
-    // wait until cpm has finished
-    while (!listener.isFinished() && !listener.isAborted()) {
-      Thread.sleep(5);
-    }
+    cpeProcessNoMsg(cpe, listener);
     // enable System.out
     ManageOutputDevice.setAllSystemOutputToDefault();
     // check the results, if everything worked as expected
@@ -762,11 +723,7 @@ public class CpmAE_ErrorTest extends TestCase {
     // Create and register a Status Callback Listener
     // listener = new CollectionReaderStatusCallbackListener(cpe);
     cpe.addStatusCallbackListener(listener);
-    cpe.process();
-    // wait until cpm has finished
-    while (!listener.isFinished() && !listener.isAborted()) {
-      Thread.sleep(5);
-    }
+    cpeProcessNoMsg(cpe, listener);
 
     ManageOutputDevice.setAllSystemOutputToDefault();
     // check the results, if everything worked as expected
