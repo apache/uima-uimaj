@@ -256,6 +256,9 @@ public class FileCompare {
   // match nl space nl
   private static final Pattern emptyLinePattern = Pattern.compile("(?m)^ $");
   
+  // match 2 or more nl's in a row
+  private static final Pattern multipleNlPattern = Pattern.compile("\\n{2,}");
+  
   /**
    * Compare 2 strings, showing where they differ in output to system.out, after
    * doing filtering:
@@ -289,8 +292,26 @@ public class FileCompare {
     // apply nl + spaces + nl -> nl nl
     s1 = emptyLinePattern.matcher(s1).replaceAll("");
     s2 = emptyLinePattern.matcher(s2).replaceAll("");
+    
+    // apply nl nl -> nl
+    
+    s1 = multipleNlPattern.matcher(s1).replaceAll("\n");
+    s2 = multipleNlPattern.matcher(s2).replaceAll("\n");
+    
+    // apply get rid of trailing nl
+    
+    s1 = removeTrailingNl(s1);
+    s2 = removeTrailingNl(s2);
 
     return compareStringsWithMsg(s1, s2);
+  }
+  
+  private static String removeTrailingNl(String s) {
+    int i = s.length() - 1;
+    if (i >= 0 && s.charAt(i) == '\n') {
+      return s.substring(0, i);
+    }
+    return s;
   }
   
   /**
@@ -301,15 +322,25 @@ public class FileCompare {
    * @return  true if strings have the same charactersS
    */
   public static boolean compareStringsWithMsg(String s1, String s2) {
+
     final int maxI = Math.min(s1.length(), s2.length());
     for (int i = 0; i < maxI; i++) {
       if (s1.charAt(i) != s2.charAt(i)) {
-        System.out.println("Error: files differ starting at char: " + i);
-        System.out.println("Error:   file1 ... " + s1.substring(Math.max(0, i-10), Math.min(s1.length(), i+10)));
-        System.out.println("Error:   file2 ... " + s2.substring(Math.max(0, i-10), Math.min(s2.length(), i+10)));
+        System.out.println("Error: strings differ starting at char: " + i);
+        System.out.println("Error:   string 1 = " + s1.substring(Math.max(0, i-10), Math.min(s1.length(), i+10)));
+        System.out.println("Error:   string 2 = " + s2.substring(Math.max(0, i-10), Math.min(s2.length(), i+10)));
         return false;
       }
     }
+    
+    
+    
+    
+    if (s1.length() != s2.length()) {
+      System.out.println("Error: strings are different length");
+      System.out.println("  s1 length = " + s1.length() + "; s2 length = " + s2.length());
+      return false;
+    } 
     return true;
   }
   
