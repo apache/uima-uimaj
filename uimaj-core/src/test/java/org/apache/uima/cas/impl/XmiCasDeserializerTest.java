@@ -630,7 +630,11 @@ public class XmiCasDeserializerTest extends TestCase {
     assertEquals(numAnnotations + 5, cas.getAnnotationIndex().size());
     
     assertEquals(docText, cas.getDocumentText());
-    
+
+    // Serialize/deserialize again in case merge created duplicate ids
+    String newSerCasMerged = serialize(cas, deserSharedData3);
+    deserialize(newSerCasMerged, cas, deserSharedData3, false, -1);
+        
     //check covered text of annotations
     FSIterator iter = cas.getAnnotationIndex().iterator();
     while (iter.hasNext()) {
