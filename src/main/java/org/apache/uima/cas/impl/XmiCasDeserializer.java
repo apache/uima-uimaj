@@ -50,6 +50,7 @@ import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.internal.util.XmlAttribute;
 import org.apache.uima.internal.util.XmlElementName;
 import org.apache.uima.internal.util.XmlElementNameAndContents;
+import org.apache.uima.internal.util.rb_trees.RedBlackTree;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
@@ -190,6 +191,10 @@ public class XmiCasDeserializer {
     //Current out-of-typesystem element, if any
     private OotsElementData outOfTypeSystemElement = null;
 
+    //local map from xmi:id to FS address, used when merging multiple XMI CASes
+    //into one CAS object.
+    private RedBlackTree localXmiIdToFsAddrMap = new RedBlackTree();
+    
     /**
      * Creates a SAX handler used for deserializing an XMI CAS.
      * @param aCAS CAS to deserialize into
@@ -481,6 +486,8 @@ public class XmiCasDeserializer {
             continue;
           }
           // have to map each ID to its "real" address (TODO: optimize?)
+          //TODO: currently broken, can't use XmiSerializationSharedData for
+          //this id mapping when merging, need local map
           try {
             int addr = getFsAddrForXmiId(id);
             indexRep.addFS(addr);
@@ -559,9 +566,7 @@ public class XmiCasDeserializer {
         views.add(view);
       }
       deserializedFsAddrs.add(addr);
-      if (id > 0) {
-        sharedData.addIdMapping(addr, id);
-      }
+      addFsAddrXmiIdMapping(addr, id);
     }
 
     // The definition of a null value. Any other value must be in the expected
@@ -864,9 +869,7 @@ public class XmiCasDeserializer {
       }
 
       deserializedFsAddrs.add(casArray);
-      if (xmiId > 0) {
-        sharedData.addIdMapping(casArray, xmiId);
-      }
+      addFsAddrXmiIdMapping(casArray, xmiId);
       return casArray;
     }
 
@@ -891,9 +894,7 @@ public class XmiCasDeserializer {
 
       int arrayAddr = ((FeatureStructureImpl) fs).getAddress();
       deserializedFsAddrs.add(arrayAddr);
-      if (xmiId > 0) {
-        sharedData.addIdMapping(arrayAddr, xmiId);
-      }
+      addFsAddrXmiIdMapping(arrayAddr, xmiId);
       return arrayAddr;
     }
 
@@ -1260,22 +1261,51 @@ public class XmiCasDeserializer {
       return casBeingFilled.ll_getTypeClass(type);
     }
     
+    private void addFsAddrXmiIdMapping(int fsAddr, int xmiId) {
+      if (xmiId > 0) {
+        if (mergePoint < 0) {
+          //if we are not doing a merge, update the map in the XmiSerializationSharedData
+          sharedData.addIdMapping(fsAddr, xmiId);
+        } else {
+          //if we're doing a merge, we can't update the shared map because we could
+          //have duplicate xmi:id values in the different parts of the merge.
+          //instead we keep a local mapping used only within this deserialization.
+          localXmiIdToFsAddrMap.put(xmiId, new Integer(fsAddr));
+        }
+      }
+    }
+    
     /**
      * Gets the FS address into which the XMI element with the given ID
      * was deserialized.  This method supports merging multiple XMI documents
      * into a single CAS, by checking the XmiSerializationSharedData
-     * structure to get the address of elements that were skipped during this
-     * deserialization but were deserialized during a previous deserialization.
+     * structure to get the address of elements that are below the mergePoint
+     * and are expected to already be present in the CAS.
      * 
      * @param xmiId
      * @return
      */
     private int getFsAddrForXmiId(int xmiId) {
-      int addr = sharedData.getFsAddrForXmiId(xmiId);
-      if (addr > 0)
-        return addr;
-      else
-        throw new java.util.NoSuchElementException();
+      //first check shared data (but if we're doing a merge, do so only
+      //for xmi:ids below the merge point)
+      if (mergePoint < 0 || xmiId <= mergePoint) {
+        int addr = sharedData.getFsAddrForXmiId(xmiId);
+        if (addr > 0) {
+          return addr;
+        } else {
+          throw new java.util.NoSuchElementException();
+        }
+      } else {
+        //if we're merging, then we use a local id map for FSs above the
+        //merge point, since each of the different XMI CASes being merged
+        //can use these same ids for different FSs.
+        Integer localAddr = (Integer)localXmiIdToFsAddrMap.get(xmiId);
+        if (localAddr != null) {
+          return localAddr.intValue();
+        } else {
+          throw new java.util.NoSuchElementException();
+        }
+      }
     }
     
     /**
