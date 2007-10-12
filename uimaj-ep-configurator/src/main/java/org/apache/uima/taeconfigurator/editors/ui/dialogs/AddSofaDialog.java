@@ -77,7 +77,10 @@ public class AddSofaDialog extends AbstractDialogKeyVerify {
   protected Control createDialogArea(Composite parent) {
     Composite mainArea = (Composite) super.createDialogArea(parent, existingSofa);
     createWideLabel(mainArea, "Sofa names must be unique within a Capability Set, and are"
-            + " simple names without name spaces (no dots in the name).\n\n"
+            + " simple names without name spaces (no dots in the name).\n\n" +
+            		" As a special case, they may end in .*\n" +
+            		"   - Use this form to designate a class of sofa names, where the class\n" +
+            		"     is all names that match the part up to the dot.\n\n" 
             + "Type the name in the box below, and specify if it is an input Sofa\n"
             + "(created outside of this component), or an output Sofa (created by this component).");
 
@@ -143,6 +146,12 @@ public class AddSofaDialog extends AbstractDialogKeyVerify {
         return false;
       }
     }
+    if ((sofaName.contains(".") || sofaName.contains("*")) &&
+        (sofaName.indexOf('.') != (sofaName.length() - 2) ||
+         sofaName.indexOf('*') != (sofaName.length() - 1))) {
+      setErrorMessage("Sofa Name cannot have the characters '.' or '*' except as the last 2 characters");
+      return false;
+    }
     return true;
   }
 
@@ -191,7 +200,9 @@ public class AddSofaDialog extends AbstractDialogKeyVerify {
   public boolean verifyKeyChecks(VerifyEvent event) {
     if (event.keyCode == SWT.CR || event.keyCode == SWT.TAB)
       return true;
-    if (Character.isJavaIdentifierPart(event.character))
+    if (Character.isJavaIdentifierPart(event.character) ||
+        event.character == '*' ||
+        event.character == '.')
       return true;
     return false;
   }
