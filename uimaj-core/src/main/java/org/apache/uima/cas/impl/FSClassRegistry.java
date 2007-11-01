@@ -20,6 +20,7 @@
 package org.apache.uima.cas.impl;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -143,7 +144,8 @@ public class FSClassRegistry {
    *   Generators can be switched by calling loadGeneratorsForClassLoader
    *   
    */
-  private final Map generatorsByClassLoader = new HashMap(4);
+  // This map can be accessed on different threads at the same time
+  private final Map generatorsByClassLoader = Collections.synchronizedMap(new HashMap(4));
 
   // private final RedBlackTree rbt;
   // private final TreeMap map;
@@ -246,9 +248,13 @@ public class FSClassRegistry {
    
   /* 
    * Internal Use only
+   * All callers must by synchronized
+   *   although may not be strictly necessary if you can prove that
+   *   no updates to the generators array could be occuring in 
+   *   another thread
    */
   
-  public synchronized FSGenerator [] getBaseGenerators() {
+  public FSGenerator [] getBaseGenerators() {
     return this.generators;
   }
   
@@ -262,6 +268,8 @@ public class FSClassRegistry {
    */
   
   public FSGenerator [] getNewFSGeneratorSet() {
-    return (FSGenerator [])this.generators.clone();
+    synchronized (generators) {
+      return (FSGenerator [])this.generators.clone();
+    }
   }
 }
