@@ -20,9 +20,13 @@ package org.apache.uima.analysis_engine.impl;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
+import java.util.WeakHashMap;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -46,9 +50,82 @@ import org.apache.uima.util.XMLInputSource;
  * 
  */
 public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
+  
+  
+  // a hash map where the entries will be reclaimed when the keys are no longer
+  //   referenced by anything (other than this hash map)
+  //   key = resourceManager instance associated with to this class
+  //   value = map <String_Pair, ResourceManager> 
+  //           value = resourceManager instance created by this class
 
+  static private class StringPair {
+    private String classPath;
+    private String dataPath;
+    public StringPair(String classPath, String dataPath) {
+      this.classPath = classPath;
+      this.dataPath = dataPath;
+    }
+
+    public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((classPath == null) ? 0 : classPath.hashCode());
+      result = prime * result + ((dataPath == null) ? 0 : dataPath.hashCode());
+      return result;
+    }
+
+    public boolean equals(Object obj) {
+      if (this == obj)
+        return true;
+      if (obj == null)
+        return false;
+      if (getClass() != obj.getClass())
+        return false;
+      final StringPair other = (StringPair) obj;
+      if (classPath == null) {
+        if (other.classPath != null)
+          return false;
+      } else if (!classPath.equals(other.classPath))
+        return false;
+      if (dataPath == null) {
+        if (other.dataPath != null)
+          return false;
+      } else if (!dataPath.equals(other.dataPath))
+        return false;
+      return true;
+    }
+  }
+  
+  static private Map cachedResourceManagers = Collections.synchronizedMap(new WeakHashMap(4));
+  
   private AnalysisEngine ae = null;
 
+  private Map createRMmap(StringPair sp, ResourceManager rm) {
+    Map result = new HashMap(4);
+    result.put(sp, rm);
+    UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(),
+        "createRMmap", LOG_RESOURCE_BUNDLE, "UIMA_pear_runtime_create_RM_map",
+        new Object[] {sp.classPath, sp.dataPath});
+    return result;
+  }
+  
+  private ResourceManager createRM(StringPair sp, PackageBrowser pkgBrowser) throws MalformedURLException {
+    // create UIMA resource manager and apply pear settings
+    ResourceManager rsrcMgr = UIMAFramework.newDefaultResourceManager();
+    rsrcMgr.setExtensionClassPath(sp.classPath, true);
+    UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(),
+            "createRM", LOG_RESOURCE_BUNDLE, "UIMA_pear_runtime_set_classpath__CONFIG",
+            new Object[] { sp.classPath, pkgBrowser.getRootDirectory().getName() });
+
+    // get and set uima.datapath if specified
+    if (sp.dataPath != null) {
+      rsrcMgr.setDataPath(sp.dataPath);
+      UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(),
+              "createRM", LOG_RESOURCE_BUNDLE, "UIMA_pear_runtime_set_datapath__CONFIG",
+              new Object[] { sp.dataPath, pkgBrowser.getRootDirectory().getName() });
+    }
+    return rsrcMgr;
+  }
   /*
    * (non-Javadoc)
    * 
@@ -106,24 +183,27 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
                 new Object[] { key + "=" + value, pkgBrowser.getRootDirectory().getName() });
 
       }
-
-      // create UIMA resource manager and apply pear settings
-      ResourceManager rsrcMgr = UIMAFramework.newDefaultResourceManager();
-      String classpath = pkgBrowser.buildComponentClassPath();
-      rsrcMgr.setExtensionClassPath(classpath, true);
-      UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(),
-              "initialize", LOG_RESOURCE_BUNDLE, "UIMA_pear_runtime_set_classpath__CONFIG",
-              new Object[] { classpath, pkgBrowser.getRootDirectory().getName() });
-
-      // get and set uima.datapath if specified
+      ResourceManager applicationRM = this.getResourceManager();
+      String classPath = pkgBrowser.buildComponentClassPath();
       String dataPath = pkgBrowser.getComponentDataPath();
-      if (dataPath != null) {
-        rsrcMgr.setDataPath(dataPath);
-        UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(),
-                "initialize", LOG_RESOURCE_BUNDLE, "UIMA_pear_runtime_set_datapath__CONFIG",
-                new Object[] { dataPath, pkgBrowser.getRootDirectory().getName() });
+      StringPair sp = new StringPair(classPath, dataPath);
+      ResourceManager innerRM;
+      
+      Map c1 = (Map)cachedResourceManagers.get(applicationRM);
+      if (null == c1) {
+        innerRM = createRM(sp, pkgBrowser);
+        cachedResourceManagers.put(applicationRM, createRMmap(sp, innerRM));
+      } else {
+        innerRM = (ResourceManager)c1.get(sp);
+        if (null == innerRM) {
+          innerRM = createRM(sp, pkgBrowser);
+          c1.put(sp, innerRM);
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(),
+              "initialize", LOG_RESOURCE_BUNDLE, "UIMA_pear_runtime_add_RM_map",
+              new Object[] {sp.classPath, sp.dataPath});
+        }        
       }
-
+      
       // Create an XML input source from the specifier file
       XMLInputSource in = new XMLInputSource(pkgBrowser.getInstallationDescriptor()
               .getMainComponentDesc());
@@ -132,7 +212,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
 
       // create analysis engine
-      this.ae = UIMAFramework.produceAnalysisEngine(specifier, rsrcMgr, null);
+      this.ae = UIMAFramework.produceAnalysisEngine(specifier, innerRM, null);
     } catch (IOException ex) {
       throw new ResourceInitializationException(ex);
     } catch (InvalidXMLException ex) {
