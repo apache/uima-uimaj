@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<COMPONENT_INSTALLATION_DESCRIPTOR>
+	<OS>
+		<NAME>Windows</NAME>
+	</OS>
+	<TOOLKITS>
+		<JDK_VERSION>1.4.0</JDK_VERSION>
+	</TOOLKITS>
+	<UIMA_FRAMEWORK>
+	</UIMA_FRAMEWORK>
+	<SUBMITTED_COMPONENT>
+		<ID>uimaj-pear-forTesting</ID>
+		<NAME></NAME>
+		<DESC>src/test/resources/pearTests/installedSimpleTokenPear/uimaj-pear-forTesting/desc/SimpleTokenAndSentenceAnnotator.xml</DESC>
+		<DEPLOYMENT>standard</DEPLOYMENT>
+		<SERVICE_COMMAND></SERVICE_COMMAND>
+		<SERVICE_WORKING_DIR></SERVICE_WORKING_DIR>
+		<SERVICE_COMMAND_ARGS>
+		</SERVICE_COMMAND_ARGS>
+	</SUBMITTED_COMPONENT>
+	<INSTALLATION>
+		<PROCESS>
+			<ACTION>set_env_variable</ACTION>
+			<PARAMETERS>
+				<VAR_VALUE>src/test/resources/pearTests/installedSimpleTokenPear/uimaj-pear-forTesting/bin;</VAR_VALUE>
+				<COMMENTS></COMMENTS>
+				<VAR_NAME>CLASSPATH</VAR_NAME>
+			</PARAMETERS>
+		</PROCESS>
+	</INSTALLATION>
+</COMPONENT_INSTALLATION_DESCRIPTOR>

@@ -1,0 +1,6 @@
+### Add the following environment variables
+### to appropriate existing environment variables
+### to run the uimaj-pear-forTesting component
+
+CLASSPATH=src/test/resources/pearTests/installedSimpleTokenPear/uimaj-pear-forTesting/bin;
+PATH=src/test/resources/pearTests/installedSimpleTokenPear/uimaj-pear-forTesting/bin

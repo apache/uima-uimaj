@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+  <primitive>true</primitive>
+  <annotatorImplementationName>org.apache.uima.test.pear.tokenizer.SimpleTokenAndSentenceAnnotator</annotatorImplementationName>
+  <analysisEngineMetaData>
+    <name>Simple Token and Sentence Annotator</name>
+    <description>Annotates tokens and sentences.</description>
+    <version>1.0</version>
+    <vendor>The Apache Software Foundation</vendor>
+    <configurationParameters/>
+    <configurationParameterSettings/>
+    <typeSystemDescription>
+      <types>
+        <typeDescription>
+          <name>org.apache.uima.test.pear.tokenizer.Token</name>
+          <description/>
+          <supertypeName>uima.tcas.Annotation</supertypeName>
+        </typeDescription>
+        <typeDescription>
+          <name>org.apache.uima.test.pear.tokenizer.Sentence</name>
+          <description/>
+          <supertypeName>uima.tcas.Annotation</supertypeName>
+        </typeDescription>
+      </types>
+    </typeSystemDescription>
+    <capabilities>
+      <capability>
+        <inputs/>
+        <outputs>
+          <type allAnnotatorFeatures="true">org.apache.uima.test.pear.tokenizer.Sentence</type>
+          <type allAnnotatorFeatures="true">org.apache.uima.test.pear.tokenizer.Token</type>
+        </outputs>
+        <languagesSupported>
+          <language>en</language>
+        </languagesSupported>
+      </capability>
+    </capabilities>
+    <operationalProperties>
+      <modifiesCas>true</modifiesCas>
+      <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+      <outputsNewCASes>false</outputsNewCASes>
+    </operationalProperties>
+  </analysisEngineMetaData>
+</analysisEngineDescription>
