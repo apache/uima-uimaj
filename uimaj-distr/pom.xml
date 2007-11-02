@@ -150,6 +150,8 @@
 						</goals>
 						<configuration>
               <quiet>true</quiet>
+              <!-- according to the docs, http://maven.apache.org/plugins/maven-javadoc-plugin/javadoc-mojo.html 
+               this only needs to be 1.4, even for more recent levels -->
 							<source>1.4</source>
 							<groups>
 								<group>
