@@ -1593,7 +1593,7 @@ catch (PatternSyntaxException e) {
         their associated messages, using the same syntax as shown above for the
         regex_syntax_error exception. The properties file syntax is more completely
         described in the Javadocs for the <ulink 
-          url="http://java.sun.com/j2se/1.4.1/docs/api/java/util/Properties.html#load(java.io.InputStream)">
+          url="http://java.sun.com/j2se/1.5.0/docs/api/java/util/Properties.html#load(java.io.InputStream)">
         load</ulink> method of the java.util.Properties class.</para>
       
       <para>Put your properties file somewhere in your class path (it can be in your
@@ -1607,7 +1607,7 @@ catch (PatternSyntaxException e) {
         <literal>org.myorg.myannotator.Messages</literal>. Do not include the
         .properties extension. In Java Internationalization terminology, this is called
         the Resource Bundle name. For more information see the Javadocs for the <ulink
-          url="http://java.sun.com/j2se/1.4.1/docs/api/java/util/PropertyResourceBundle.html">
+          url="http://java.sun.com/j2se/1.5.0/docs/api/java/util/PropertyResourceBundle.html">
         PropertyResourceBundle</ulink> class.</para>
       
       <para>In your annotator code, throw an exception like this:
@@ -1619,7 +1619,7 @@ catch (PatternSyntaxException e) {
       <para>You may also wish to look at the Javadocs for the UIMAException class.</para>
       
       <para>For more information on Java&apos;s internationalization features, see the 
-       <ulink url="http://java.sun.com/j2se/1.4/docs/guide/intl/index.html">
+       <ulink url="http://java.sun.com/j2se/1.5.0/docs/guide/intl/index.html">
         Java Internationalization Guide</ulink>.</para>
     </section>
     

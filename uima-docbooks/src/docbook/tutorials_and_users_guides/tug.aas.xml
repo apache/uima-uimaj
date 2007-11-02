@@ -165,7 +165,7 @@ String           aCas.getSofaMimeType();</programlisting>
           <quote>FTP:</quote> and has an extensible mechanism,
           <literal>URLStreamHandlerFactory</literal>, for customizing access to an
           arbitrary URI. See more details at <ulink
-            url="http://java.sun.com/j2se/1.4.2/docs/api/java/net/URLStreamHandlerFactory.html"/>
+            url="http://java.sun.com/j2se/1.5.0/docs/api/java/net/URLStreamHandlerFactory.html"/>
           . </para></listitem></itemizedlist>
       
     </section>

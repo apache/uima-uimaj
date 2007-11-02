@@ -192,9 +192,9 @@ uima.cas.String  &rarr; String</programlisting>
         <emphasis>not</emphasis> delete classes in the target corresponding to deleted CAS types, which no longer
         are in the source &ndash; you should delete these by hand.</para>
       
-      <warning><para>The merging supports Java 1.4 constructs only.  JCasGen generates Java 1.4 code, 
-      so as long as any code you change here also sticks to only Java 1.4 constructs, the 
-      merge will work.  If you use Java 5 or later specific syntax or constructs, the merge
+      <warning><para>The merging supports Java 1.4 syntactic constructs only.  
+        JCasGen generates Java 1.4 code, so as long as any code you change here also sticks to 
+        only Java 1.4 constructs, the merge will work.  If you use Java 5 or later specific syntax or constructs, the merge
         operation will likely fail to merge properly.</para></warning>
     </section>
     
