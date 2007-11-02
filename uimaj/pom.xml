@@ -78,8 +78,8 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <source>1.4</source>
-          <target>1.4</target>
+          <source>1.5</source>
+          <target>1.5</target>
         </configuration>
       </plugin>
 
@@ -149,12 +149,14 @@
         <artifactId>maven-javadoc-plugin</artifactId>
         <configuration>
           <aggregate>true</aggregate>
+          <!-- according to the docs, http://maven.apache.org/plugins/maven-javadoc-plugin/javadoc-mojo.html 
+               this only needs to be 1.4, even for more recent levels -->
           <source>1.4</source>
           <doctitle>Apache UIMA Java SDK ${pom.version} API Documentation</doctitle>
           <windowtitle>Apache UIMA Java SDK ${pom.version} API Documentation</windowtitle>
           <maxmemory>512M</maxmemory>
           <links>
-            <link>http://java.sun.com/j2se/1.4.2/docs/api/</link>
+            <link>http://java.sun.com/j2se/1.5.0/docs/api/</link>
           </links>
           <excludePackageNames>org.apache.uima.test.junit_extension</excludePackageNames>
           <groups>
