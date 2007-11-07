@@ -26,7 +26,7 @@ package org.apache.uima.flow;
  */
 public class SimpleStep extends Step {
   /**
-   * Cretes a new SimpleStep
+   * Creates a new SimpleStep
    * 
    * @param aAnalysisEngineKey
    *          The key of the Analysis Engine to which the CAS should be routed. This must be one of

@@ -32,7 +32,7 @@ import java.util.Collections;
  */
 public class ParallelStep extends Step {
   /**
-   * Cretes a new SimpleStep
+   * Creates a new ParallelStep
    * 
    * @param aAnalysisEngineKeys
    *          A Collection of Strings, where each String is the key of an Analysis Engine to which the CAS
