@@ -6,217 +6,405 @@
 %uimaents;
 ]>
 <!--
-Licensed to the Apache Software Foundation (ASF) under one
-or more contributor license agreements.  See the NOTICE file
-distributed with this work for additional information
-regarding copyright ownership.  The ASF licenses this file
-to you under the Apache License, Version 2.0 (the
-"License"); you may not use this file except in compliance
-with the License.  You may obtain a copy of the License at
-
-   http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing,
-software distributed under the License is distributed on an
-"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, either express or implied.  See the License for the
-specific language governing permissions and limitations
-under the License.
+	Licensed to the Apache Software Foundation (ASF) under one
+	or more contributor license agreements.  See the NOTICE file
+	distributed with this work for additional information
+	regarding copyright ownership.  The ASF licenses this file
+	to you under the Apache License, Version 2.0 (the
+	"License"); you may not use this file except in compliance
+	with the License.  You may obtain a copy of the License at
+	
+	http://www.apache.org/licenses/LICENSE-2.0
+	
+	Unless required by applicable law or agreed to in writing,
+	software distributed under the License is distributed on an
+	"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+	KIND, either express or implied.  See the License for the
+	specific language governing permissions and limitations
+	under the License.
 -->
 <chapter id="ugr.ref.pear">
-  <title>PEAR Reference</title>
-  
-  <para>A PEAR (Processing Engine ARchive) file is a standard package for UIMA (Unstructured
-    Information Management Architecture) components. This chapter describes the PEAR 1.0
-    structure and specification.</para>
-  
-  <para>The PEAR package can be used for distribution and reuse by other components or
-    applications. It also allows applications and tools to manage UIMA components
-    automatically for verification, deployment, invocation, testing, etc.</para>
-  
-  <para>Currently, there is an Eclipse plugin and a command line tool available to create PEAR packages for
-    standard UIMA components. Please refer to <olink targetdoc="&uima_docs_tools;"
-      targetptr="ugr.tools.pear.packager"/> for more information about these tools.</para>
-  
-  <section id="ugr.ref.pear.packaging_a_component">
-    <title>Packaging a UIMA component</title>
-    
-    <para>For the purpose of describing the process of creating a PEAR file and its internal
-      structure, this section describes the steps used to package a UIMA component as a valid
-      PEAR file. The PEAR packaging process consists of the following steps:
-      
-      <itemizedlist><listitem><para> <xref
-          linkend="ugr.ref.pear.creating_pear_structure"/></para></listitem>
-        
-        <listitem><para> <xref linkend="ugr.ref.pear.populating_pear_structure"/>
-          </para></listitem>
-        
-        <listitem><para> <xref
-            linkend="ugr.ref.pear.creating_installation_descriptor"/></para>
-          </listitem>
-        
-        <listitem><para> <xref linkend="ugr.ref.pear.packaging_into_1_file"/>
-          </para></listitem>
-      </itemizedlist></para>
-    
-    <section id="ugr.ref.pear.creating_pear_structure">
-      <title>Creating the PEAR structure</title>
-      
-      <para>The first step in the PEAR creation process is to create a PEAR structure. The PEAR
-        structure is a structured tree of folders and files, including the following
-        elements:
-        
-        <itemizedlist><listitem><para>Required Elements:
-          
-          <itemizedlist><listitem><para>The <emphasis role="bold">
-            metadata</emphasis> folder which contains the PEAR installation descriptor
-            and properties files.</para></listitem>
-            
-            <listitem><para>The installation descriptor (<emphasis role="bold">
-              metadata/install.xml</emphasis>)</para></listitem>
-            
-            <listitem><para>A UIMA analysis engine descriptor and its required code,
-              delegates (if any), and resources </para></listitem></itemizedlist>
-          </para></listitem>
-          
-          <listitem><para>Optional Elements:
-            
-            <itemizedlist><listitem><para>The desc folder to contain descriptor files
-              of analysis engines, delegates analysis engines (all levels), and other
-              components (Collection Readers, CAS Consumers, etc).</para></listitem>
-              
-              <listitem><para>The src folder to contain the source code</para>
-                </listitem>
-              
-              <listitem><para>The bin folder to contain executables, scripts, class
-                files, dlls, shared libraries, etc. </para></listitem>
-              
-              <listitem><para>The lib folder to contain jar files. </para></listitem>
-              
-              <listitem><para>The doc folder containing documentation materials,
-                preferably accessible through an index.html.</para></listitem>
-              
-              <listitem><para>The data folder to contain data files (e.g. for
-                testing).</para></listitem>
-              
-              <listitem><para>The conf folder to contain configuration files.</para>
-                </listitem>
-              
-              <listitem><para>The resources folder to contain other resources and
-                dependencies.</para></listitem>
-              
-              <listitem><para>Other user-defined folders or files are allowed, but
-                should be avoided. </para></listitem></itemizedlist> </para>
-            </listitem></itemizedlist></para>
-      
-      <figure id="ugr.ref.pear.fig.pear_structure">
-        <title>The PEAR Structure</title>
-        <mediaobject>
-          <imageobject>
-            <imagedata width="3in" format="JPG"
-              fileref="&imgroot;image002.jpg"/>
-          </imageobject>
-          <textobject><phrase>diagram of the PEAR structure</phrase></textobject>
-        </mediaobject>
-      </figure>
-      
-    </section>
-    <section id="ugr.ref.pear.populating_pear_structure">
-      <title>Populating the PEAR structure</title>
-      
-      <para>After creating the PEAR structure, the component&apos;s descriptor files,
-        code files, resources files, and any other files and folders are copied into the
-        corresponding folders of the PEAR structure. The developer should make sure that the
-        code would work with this layout of files and folders, and that there are no broken
-        links. Although it is strongly discouraged, the optional elements of the PEAR
-        structure can be replaced by other user defined files and folder, if required for the
-        component to work properly.</para>
-      <note><para>The PEAR structure must be self-contained. For example, this means that
-      the component must run properly independently from the PEAR root folder location. If
-      the developer needs to use an absolute path in configuration or descriptor files, then
-      he/she should put these files in the <quote>conf</quote> or <quote>desc</quote> and
-      replace the path of the PEAR root folder with the string <quote>$main_root</quote>.
-      The tools that deploy and use PEAR files should localize the files in the
-      <quote>conf</quote> and <quote>desc</quote> folders by replacing the string
-      <quote>$main_root</quote> with the local absolute path of the PEAR root folder. The
-      <quote>$main_root</quote> macro can also be used in the Installation descriptor
-      (install.xml) </para></note>
-      
-      <para>Currently there are three types of component packages depending on their
-        deployment:</para>
-      
-      <section id="ugr.ref.pear.package_type.standard">
-        <title>Standard Type</title>
-        
-        <para>A component package with the <emphasis role="bold">standard</emphasis>
-          type must be a valid Analysis Engine, and all the required files to deploy it locally
-          must be included in the PEAR package.</para>
-        
-      </section>
-      <section id="ugr.ref.pear.package_type.service">
-        <title>Service Type</title>
-        
-        <para>A component package with the <emphasis role="bold">service </emphasis>
-          type must be deployable locally as a supported UIMA service (e.g. Vinci). In this
-          case, all the required files to deploy it locally must be included in the PEAR
-          package.</para>
-        
-      </section>
-      <section id="ugr.ref.pear.package_type.network">
-        <title>Network Type</title>
-        
-        <para>A component package with the network type is not deployed locally but rather in
-          the <quote>remote</quote> environment. It&apos;s accessed as a network AE (e.g.
-          Vinci Service). The component owner has the responsibility to start the service
-          and make sure it&apos;s up and running before it&apos;s used by others (like a
-          webmaster that makes sure the web site is up and running). In this case, the PEAR
-          package does not have to contain files required for deployment, but must contain
-          the network AE descriptor (see <olink
-            targetdoc="&uima_docs_tutorial_guides;"
-            targetptr="ugr.tug.aae.creating_xml_descriptor"/>) and the &lt;DESC&gt;
-          tag in the installation descriptor must point to the network AE descriptor. For
-          more information about Network Analysis Engines, please refer to <olink
-            targetdoc="&uima_docs_tutorial_guides;"
-            targetptr="ugr.tug.application.remote_services"/>.</para>
-        
-      </section>
-    </section>
-    
-    <section id="ugr.ref.pear.creating_installation_descriptor">
-      <title>Creating the installation descriptor</title>
-      
-      <para>The installation descriptor is an xml file called install.xml under the
-        metadata folder of the PEAR structure. It&apos;s also called InsD. The InsD XML file
-        should be created in the UTF-8 file encoding. The InsD should contain the following
-        sections:</para>
-      
-      <itemizedlist><listitem><para>&lt;OS&gt;: This section is used to specify
-        supported operating systems</para></listitem>
-        
-        <listitem><para>&lt;TOOLKITS&gt;: This section is used to specify toolkits, such
-          as JDK, needed by the component.</para></listitem>
-        
-        <listitem><para>&lt;SUBMITTED_COMPONENT&gt;: This is the most important
-          section in the Installation Descriptor. It&apos;s used to specify required
-          information about the component. See <xref
-            linkend="ugr.ref.pear.installation_descriptor"/> for detailed
-          information about this section.</para></listitem>
-        
-        <listitem><para>&lt;INSTALLATION&gt;: This section is explained in section
-            <xref linkend="ugr.ref.pear.installing"/>.</para></listitem>
-      </itemizedlist>
-      
-    </section>
-    
-    <section id="ugr.ref.pear.installation_descriptor">
-      <title>Documented template for the installation descriptor:</title>
-      <titleabbrev>Installation Descriptor: template</titleabbrev>
-      
-      <para>The following is a sample <quote>documented template</quote> which describes
-        content of the installation descriptor install.xml:</para>
-      
-      
-      <programlisting><![CDATA[<? xml version="1.0" encoding="UTF-8"?>
+	<title>PEAR Reference</title>
+
+	<para>
+		A PEAR (Processing Engine ARchive) file is a standard package
+		for UIMA (Unstructured Information Management Architecture)
+		components. This chapter describes the PEAR 1.0 structure and
+		specification.
+	</para>
+
+	<para>
+		The PEAR package can be used for distribution and reuse by other
+		components or applications. It also allows applications and
+		tools to manage UIMA components automatically for verification,
+		deployment, invocation, testing, etc.
+	</para>
+
+	<para>
+		Currently, there is an Eclipse plugin and a command line tool
+		available to create PEAR packages for standard UIMA components.
+		Please refer to
+		<olink targetdoc="&uima_docs_tools;"
+			targetptr="ugr.tools.pear.packager" />
+		for more information about these tools.
+	</para>
+
+	<section id="ugr.ref.pear.packaging_a_component">
+		<title>Packaging a UIMA component</title>
+
+		<para>
+			For the purpose of describing the process of creating a PEAR
+			file and its internal structure, this section describes the
+			steps used to package a UIMA component as a valid PEAR file.
+			The PEAR packaging process consists of the following steps:
+
+			<itemizedlist>
+				<listitem>
+					<para>
+						<xref
+							linkend="ugr.ref.pear.creating_pear_structure" />
+					</para>
+				</listitem>
+
+				<listitem>
+					<para>
+						<xref
+							linkend="ugr.ref.pear.populating_pear_structure" />
+					</para>
+				</listitem>
+
+				<listitem>
+					<para>
+						<xref
+							linkend="ugr.ref.pear.creating_installation_descriptor" />
+					</para>
+				</listitem>
+
+				<listitem>
+					<para>
+						<xref
+							linkend="ugr.ref.pear.packaging_into_1_file" />
+					</para>
+				</listitem>
+			</itemizedlist>
+		</para>
+
+		<section id="ugr.ref.pear.creating_pear_structure">
+			<title>Creating the PEAR structure</title>
+
+			<para>
+				The first step in the PEAR creation process is to create
+				a PEAR structure. The PEAR structure is a structured
+				tree of folders and files, including the following
+				elements:
+
+				<itemizedlist>
+					<listitem>
+						<para>
+							Required Elements:
+
+							<itemizedlist>
+								<listitem>
+									<para>
+										The
+										<emphasis role="bold">
+											metadata
+										</emphasis>
+										folder which contains the PEAR
+										installation descriptor and
+										properties files.
+									</para>
+								</listitem>
+
+								<listitem>
+									<para>
+										The installation descriptor (
+										<emphasis role="bold">
+											metadata/install.xml
+										</emphasis>
+										)
+									</para>
+								</listitem>
+
+								<listitem>
+									<para>
+										A UIMA analysis engine
+										descriptor and its required
+										code, delegates (if any), and
+										resources
+									</para>
+								</listitem>
+							</itemizedlist>
+						</para>
+					</listitem>
+
+					<listitem>
+						<para>
+							Optional Elements:
+
+							<itemizedlist>
+								<listitem>
+									<para>
+										The desc folder to contain
+										descriptor files of analysis
+										engines, delegates analysis
+										engines (all levels), and other
+										components (Collection Readers,
+										CAS Consumers, etc).
+									</para>
+								</listitem>
+
+								<listitem>
+									<para>
+										The src folder to contain the
+										source code
+									</para>
+								</listitem>
+
+								<listitem>
+									<para>
+										The bin folder to contain
+										executables, scripts, class
+										files, dlls, shared libraries,
+										etc.
+									</para>
+								</listitem>
+
+								<listitem>
+									<para>
+										The lib folder to contain jar
+										files.
+									</para>
+								</listitem>
+
+								<listitem>
+									<para>
+										The doc folder containing
+										documentation materials,
+										preferably accessible through an
+										index.html.
+									</para>
+								</listitem>
+
+								<listitem>
+									<para>
+										The data folder to contain data
+										files (e.g. for testing).
+									</para>
+								</listitem>
+
+								<listitem>
+									<para>
+										The conf folder to contain
+										configuration files.
+									</para>
+								</listitem>
+
+								<listitem>
+									<para>
+										The resources folder to contain
+										other resources and
+										dependencies.
+									</para>
+								</listitem>
+
+								<listitem>
+									<para>
+										Other user-defined folders or
+										files are allowed, but should be
+										avoided.
+									</para>
+								</listitem>
+							</itemizedlist>
+						</para>
+					</listitem>
+				</itemizedlist>
+			</para>
+
+			<figure id="ugr.ref.pear.fig.pear_structure">
+				<title>The PEAR Structure</title>
+				<mediaobject>
+					<imageobject>
+						<imagedata width="3in" format="JPG"
+							fileref="&imgroot;image002.jpg" />
+					</imageobject>
+					<textobject>
+						<phrase>diagram of the PEAR structure</phrase>
+					</textobject>
+				</mediaobject>
+			</figure>
+
+		</section>
+		<section id="ugr.ref.pear.populating_pear_structure">
+			<title>Populating the PEAR structure</title>
+
+			<para>
+				After creating the PEAR structure, the component&apos;s
+				descriptor files, code files, resources files, and any
+				other files and folders are copied into the
+				corresponding folders of the PEAR structure. The
+				developer should make sure that the code would work with
+				this layout of files and folders, and that there are no
+				broken links. Although it is strongly discouraged, the
+				optional elements of the PEAR structure can be replaced
+				by other user defined files and folder, if required for
+				the component to work properly.
+			</para>
+			<note>
+				<para>
+					The PEAR structure must be self-contained. For
+					example, this means that the component must run
+					properly independently from the PEAR root folder
+					location. If the developer needs to use an absolute
+					path in configuration or descriptor files, then
+					he/she should put these files in the
+					<quote>conf</quote>
+					or
+					<quote>desc</quote>
+					and replace the path of the PEAR root folder with
+					the string
+					<quote>$main_root</quote>
+					. The tools that deploy and use PEAR files should
+					localize the files in the
+					<quote>conf</quote>
+					and
+					<quote>desc</quote>
+					folders by replacing the string
+					<quote>$main_root</quote>
+					with the local absolute path of the PEAR root
+					folder. The
+					<quote>$main_root</quote>
+					macro can also be used in the Installation
+					descriptor (install.xml)
+				</para>
+			</note>
+
+			<para>
+				Currently there are three types of component packages
+				depending on their deployment:
+			</para>
+
+			<section id="ugr.ref.pear.package_type.standard">
+				<title>Standard Type</title>
+
+				<para>
+					A component package with the
+					<emphasis role="bold">standard</emphasis>
+					type must be a valid Analysis Engine, and all the
+					required files to deploy it locally must be included
+					in the PEAR package.
+				</para>
+
+			</section>
+			<section id="ugr.ref.pear.package_type.service">
+				<title>Service Type</title>
+
+				<para>
+					A component package with the
+					<emphasis role="bold">service</emphasis>
+					type must be deployable locally as a supported UIMA
+					service (e.g. Vinci). In this case, all the required
+					files to deploy it locally must be included in the
+					PEAR package.
+				</para>
+
+			</section>
+			<section id="ugr.ref.pear.package_type.network">
+				<title>Network Type</title>
+
+				<para>
+					A component package with the network type is not
+					deployed locally but rather in the
+					<quote>remote</quote>
+					environment. It&apos;s accessed as a network AE
+					(e.g. Vinci Service). The component owner has the
+					responsibility to start the service and make sure
+					it&apos;s up and running before it&apos;s used by
+					others (like a webmaster that makes sure the web
+					site is up and running). In this case, the PEAR
+					package does not have to contain files required for
+					deployment, but must contain the network AE
+					descriptor (see
+					<olink targetdoc="&uima_docs_tutorial_guides;"
+						targetptr="ugr.tug.aae.creating_xml_descriptor" />
+					) and the &lt;DESC&gt; tag in the installation
+					descriptor must point to the network AE descriptor.
+					For more information about Network Analysis Engines,
+					please refer to
+					<olink targetdoc="&uima_docs_tutorial_guides;"
+						targetptr="ugr.tug.application.remote_services" />
+					.
+				</para>
+
+			</section>
+		</section>
+
+		<section id="ugr.ref.pear.creating_installation_descriptor">
+			<title>Creating the installation descriptor</title>
+
+			<para>
+				The installation descriptor is an xml file called
+				install.xml under the metadata folder of the PEAR
+				structure. It&apos;s also called InsD. The InsD XML file
+				should be created in the UTF-8 file encoding. The InsD
+				should contain the following sections:
+			</para>
+
+			<itemizedlist>
+				<listitem>
+					<para>
+						&lt;OS&gt;: This section is used to specify
+						supported operating systems
+					</para>
+				</listitem>
+
+				<listitem>
+					<para>
+						&lt;TOOLKITS&gt;: This section is used to
+						specify toolkits, such as JDK, needed by the
+						component.
+					</para>
+				</listitem>
+
+				<listitem>
+					<para>
+						&lt;SUBMITTED_COMPONENT&gt;: This is the most
+						important section in the Installation
+						Descriptor. It&apos;s used to specify required
+						information about the component. See
+						<xref
+							linkend="ugr.ref.pear.installation_descriptor" />
+						for detailed information about this section.
+					</para>
+				</listitem>
+
+				<listitem>
+					<para>
+						&lt;INSTALLATION&gt;: This section is explained
+						in section
+						<xref linkend="ugr.ref.pear.installing" />
+						.
+					</para>
+				</listitem>
+			</itemizedlist>
+
+		</section>
+
+		<section id="ugr.ref.pear.installation_descriptor">
+			<title>
+				Documented template for the installation descriptor:
+			</title>
+			<titleabbrev>Installation Descriptor: template</titleabbrev>
+
+			<para>
+				The following is a sample
+				<quote>documented template</quote>
+				which describes content of the installation descriptor
+				install.xml:
+			</para>
+
+
+			<programlisting><![CDATA[<? xml version="1.0" encoding="UTF-8"?>
 <!-- Installation Descriptor Template -->
 <COMPONENT_INSTALLATION_DESCRIPTOR>
   <!-- Specifications of OS names, including version, etc. -->
@@ -728,23 +916,40 @@ try {
     <section id="ugr.ref.pear.specifier">
     <title>PEAR package descriptor</title>
     
-    <para>To run an installed PEAR package directly in the UIMA framework the <literal>pearSpecifier</literal> 
-    XML descriptor can be used. Typically during the PEAR installation such an specifier is automatically generated 
-    and contains all the necessary information to run the installed PEAR package. Settings for system environment
-    variables, system PATH settings or Java library path settings cannot be recognized
-    automatically and must be set manually when the JVM is started. 
+    <para>
+       To run an installed PEAR package directly in the UIMA framework the <literal>pearSpecifier</literal> 
+       XML descriptor can be used. Typically during the PEAR installation such an specifier is automatically generated 
+       and contains all the necessary information to run the installed PEAR package. Settings for system environment
+       variables, system PATH settings or Java library path settings cannot be recognized
+       automatically and must be set manually when the JVM is started. 
     </para>
     <para>
-    The generated PEAR descriptor
-    is located in the component root directory of the installed PEAR package and has a filename like 
-    &lt;componentID&gt;_pear.xml.</para>
-    <para>The PEAR package descriptor looks like:</para>
+       The generated PEAR descriptor
+       is located in the component root directory of the installed PEAR package and has a filename like 
+       &lt;componentID&gt;_pear.xml.
+    </para>
+    <para>
+       The PEAR package descriptor looks like:
+    </para>
     <programlisting><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <pearSpecifier xmlns="http://uima.apache.org/resourceSpecifier">
    <pearPath>/home/user/uimaApp/installedPears/testpear</pearPath>
 </pearSpecifier>]]></programlisting>
-    <para>The <literal>pearPath</literal> setting in the descriptor must point to the component root directory 
-    of the installed PEAR package.</para>
+    <para>
+       The <literal>pearPath</literal> setting in the descriptor must point to the component root directory 
+       of the installed PEAR package.
+    </para>
+    <note>
+      <para>
+         When a PEAR descriptor is used within an aggregate AE as primitive AE, it is not possible to 
+         override the PEAR AE configuration parameter settings with the aggregate AE descriptor. 
+      </para>
+      <para>
+         Furthermore it is also not possible to share resources between PEAR AE that are instantiated using the PEAR
+         descriptor. The PEAR runtime that is used in case of a PEAR descriptor creates an own internal ResourceManager for each
+         PEAR engine that is start up.
+      </para>
+    </note>
   </section>
   
 </chapter>
