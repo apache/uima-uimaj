@@ -19,6 +19,9 @@
 
 package org.apache.uima.collection.impl.cpm;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
@@ -33,15 +36,26 @@ import org.apache.uima.collection.impl.cpm.utils.TestStatusCallbackListener;
 import org.apache.uima.collection.impl.metadata.cpe.CpeDescriptorFactory;
 import org.apache.uima.collection.metadata.CpeDescription;
 import org.apache.uima.collection.metadata.CpeIntegratedCasProcessor;
+import org.apache.uima.pear.tools.PackageBrowser;
+import org.apache.uima.pear.tools.PackageInstaller;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
 /**
  * This test insures that Pear compoents run in a cas pool switch classloaders properly
  * 
+ * It installs a pear every time it runs, to insure the test works on Linux and Windows
+ *   Note: install handles converting classpath separator characters, etc.
+ * 
  */
 public class PearCasPoolTest extends TestCase {
   private static final String separator = System.getProperties().getProperty("file.separator");
+  
+  // Temporary working directory, used to install the pear package
+  private File pearInstallDir = null;
+  private final String PEAR_INSTALL_DIR = "target/pearInCPM_install_dir";
+  private PackageBrowser installedPear;
+
 
   /**
    * @see junit.framework.TestCase#setUp()
@@ -50,6 +64,10 @@ public class PearCasPoolTest extends TestCase {
     // disable schema validation -- this test uses descriptors
     // that don't validate, for some reason
     UIMAFramework.getXMLParser().enableSchemaValidation(false);
+    
+    // create pear install directory in the target
+    pearInstallDir = new File(PEAR_INSTALL_DIR);
+    pearInstallDir.mkdirs();
   }
 
   /**
@@ -69,6 +87,22 @@ public class PearCasPoolTest extends TestCase {
    */
   public void testCasPool() throws Exception {
     ResourceManager rm = UIMAFramework.newDefaultResourceManager();
+    
+    // check temporary working directory
+    if (this.pearInstallDir == null)
+      throw new FileNotFoundException("PEAR install directory not found");
+    
+    // get pear files to install 
+    // relative resolved using class loader
+    File pearFile = JUnitExtension.getFile("pearTests/pearForCPMtest.pear");
+    Assert.assertNotNull(pearFile);
+    
+    // Install PEAR packages
+    installedPear = PackageInstaller.installPackage(this.pearInstallDir, pearFile, false);
+    Assert.assertNotNull(installedPear);
+
+    
+   
     core(10, 2, 3, null);
     core(10, 2, 2, null);
     core(10, 3, 3, null);
@@ -83,6 +117,7 @@ public class PearCasPoolTest extends TestCase {
     core(10, 3, 5, rm);
     core(10, 4, 4, rm);
     core(10, 4, 5, rm);
+    System.out.println("");  //final new line
   }
 
   private void core(int documentCount, int threadCount, int poolSize, 

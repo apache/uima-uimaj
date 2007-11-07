@@ -4,7 +4,7 @@
   <primitive>false</primitive>
   <delegateAnalysisEngineSpecifiers>
     <delegateAnalysisEngine key="imbeddedPearSentenceTokenAnnotator">
-      <import name="pearTests.installedSimpleTokenPear.uimaj-pear-forTesting.uimaj-pear-forTesting_pear"/>
+      <import location="../../../target/pearInCPM_install_dir/uimaj-pear-forTesting/uimaj-pear-forTesting_pear.xml"/>      
     </delegateAnalysisEngine>
   </delegateAnalysisEngineSpecifiers>
   <analysisEngineMetaData>
