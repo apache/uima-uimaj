@@ -106,7 +106,9 @@ public class CollectionReaderDescription_impl extends ResourceCreationSpecifier_
     // try to create a CAS
     ArrayList metadata = new ArrayList();
     metadata.add(getCollectionReaderMetaData());
-    CasCreationUtils.createCas(metadata);
+    CasCreationUtils.createCas(metadata, 
+        UIMAFramework.getDefaultPerformanceTuningProperties(),
+        aResourceManager);
   }
 
   /**
