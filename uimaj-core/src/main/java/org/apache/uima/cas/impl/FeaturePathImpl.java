@@ -19,7 +19,7 @@
 
 package org.apache.uima.cas.impl;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeaturePath;
@@ -27,16 +27,14 @@ import org.apache.uima.cas.FeaturePath;
 /**
  * Implements a feature path (finite sequence of features).
  * 
- * 
- * @version $Revision: 1.2 $
  */
 class FeaturePathImpl implements FeaturePath {
 
-  private Vector path;
+  private ArrayList<Feature> path;
 
   FeaturePathImpl() {
     super();
-    this.path = new Vector();
+    this.path = new ArrayList<Feature>();
   }
 
   public int size() {
@@ -44,7 +42,7 @@ class FeaturePathImpl implements FeaturePath {
   }
 
   public Feature getFeature(int i) {
-    return (Feature) this.path.get(i);
+    return this.path.get(i);
   }
 
   public void addFeature(Feature feat) {
