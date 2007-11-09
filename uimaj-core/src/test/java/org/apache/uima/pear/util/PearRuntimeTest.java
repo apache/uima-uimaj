@@ -38,7 +38,7 @@ import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
 /**
- * The PEAR runtime tests installes two pears files that both use JCas classes 
+ * The PEAR runtime tests installs two pears files that both use JCas classes 
  * in their processing.
  */
 public class PearRuntimeTest extends TestCase {
@@ -135,7 +135,7 @@ public class PearRuntimeTest extends TestCase {
 
     // import main pear descriptor
     Import impPear2 = UIMAFramework.getResourceSpecifierFactory().createImport();
-    File import2 = new File(instPear1.getComponentPearDescPath());
+    File import2 = new File(instPear2.getComponentPearDescPath());
     impPear2.setLocation(import2.toURI().getPath());
 
     // add delegates as imports
