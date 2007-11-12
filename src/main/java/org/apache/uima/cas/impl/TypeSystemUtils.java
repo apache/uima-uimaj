@@ -233,7 +233,7 @@ abstract class TypeSystemUtils {
 
   }
 
-  static boolean isIdentifier(String s) {
+  public static boolean isIdentifier(String s) {
     if (s == null) {
       return false;
     }
