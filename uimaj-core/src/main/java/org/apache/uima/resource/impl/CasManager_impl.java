@@ -21,6 +21,7 @@ package org.apache.uima.resource.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -65,6 +66,8 @@ public class CasManager_impl implements CasManager {
   private Object mMBeanServer;
 
   private String mMBeanNamePrefix;
+  
+  private List<CasPoolManagementImpl> casPoolMBeans = new ArrayList<CasPoolManagementImpl>();
 
   public CasManager_impl(ResourceManager aResourceManager) {
     mResourceManager = aResourceManager;
@@ -260,6 +263,7 @@ public class CasManager_impl implements CasManager {
       String mbeanName = mMBeanNamePrefix + "casPoolContextName=" + aRequestorContextName;
       CasPoolManagementImpl mbean = new CasPoolManagementImpl(pool, mbeanName);
       JmxMBeanAgent.registerMBean(mbean, mMBeanServer);
+      casPoolMBeans.add(mbean);
     }
   }  
   
@@ -277,4 +281,16 @@ public class CasManager_impl implements CasManager {
     return aMinimumSize;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#finalize()
+   */
+  protected void finalize() throws Throwable {
+    // unregister MBeans from MBeanServer when GC occurs.
+    for (CasPoolManagementImpl mbean : casPoolMBeans) {
+      JmxMBeanAgent.unregisterMBean(mbean, mMBeanServer);
+    }
+    super.finalize();
+  }
 }
