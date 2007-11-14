@@ -32,7 +32,7 @@
   	     -incubating  whereas, we need it to end in .incubating   
   	   TODO change the whole project to use the . form, if possible, and then
   	     pass in the value from the pom -->
-  	<property name="project.version" value="2.3.0.incubating"/>
+  	<property name="project.version" value="2.2.1.incubating"/>
   	<delete dir="target"/>
   	<delete dir="work"/>
   	<mkdir dir="work"/>
