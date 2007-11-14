@@ -423,10 +423,13 @@ public interface UimaContext {
   /**
    * Returns the Session object, which can be used to store data that pertains to a particular
    * client session. All data that must persist across requests must be stored in the Session object
-   * and NOT in component instance variables. In some deployments, a single component instance may
-   * serve multiple clients. In such deployments, the framework will ensure that the appropriate
-   * Session object is returned from this method, so that information pertaining to different
-   * clients can be kept separate.
+   * and NOT in component instance variables. In some service deployments, a single component instance may
+   * serve multiple clients.  In that case, the service wrapper may provide a different Session object
+   * for each client, and this method would return the appropriate Session object for the component to use
+   * for the current call.
+   * <p>
+   * Note that Session support is NOT implemented in any of the service wrappers (Vinci, SOAP) currently
+   * provided in the UIMA SDK.  
    * 
    * @return the current Session object
    */
