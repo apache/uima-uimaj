@@ -28,7 +28,7 @@ import org.apache.uima.cas.TypeSystem;
  * 
  * 
  */
-abstract class TypeSystemUtils {
+public abstract class TypeSystemUtils {
 
   static abstract class TypeSystemParse {
 
