@@ -1,9 +1,9 @@
 <html>
 <head>
-  <title>Apache UIMA v2.3.0 Releate Notes</title>
+  <title>Apache UIMA v2.2.1 Release Notes</title>
 </head>
 <body>
-<h1>Apache UIMA (Unstructured Information Management Architecture) v2.3.0 Release Notes</h1>
+<h1>Apache UIMA (Unstructured Information Management Architecture) v2.2.1 Release Notes</h1>
 
 <h2>Contents</h2>
 <p>
@@ -62,39 +62,11 @@
 
 <h2><a name="major.changes">2. Major Changes in this Release</a></h2>
 <p>
-This section describes what has changed between version 2.1 and version 2.2 of 
-Apache UIMA.
-
+The Apache UIMA release version 2.2.1 is just a bugfix release and has no major 
+release changes. For a list of all JIRA issues fixed with this release, 
+please refer to chapter <a href="#list.issues">6. List of JIRA Issues Fixed in this Release</a>. 
 </p> 
   
-<h3>2.1 Pear Runtime</h3>
-<p>
-It is now possible to run installed PEAR files directly, without any manual setup.
-When you package a PEAR file with Apache UIMA 2.2, a descriptor will be created
-from which you can create an analysis engine.  You no longer need to worry about
-classpath setup for the PEAR, this is now handled by the framework.  You can also
-refer to several PEARs from an aggregate analysis engine descriptor, without
-additional setup.
-</p>
-  
-<h3>2.2 Class Loading Improvements for JCas Cover Classes</h3>
-<p>
-When an aggregate analysis engine contains one or more PEARs, each with their
-own classpath, the JCAS will handle the class loading so that each annotator
-will see the set of cover classes that were loaded with its own class loader.
-So if you package your analysis in a PEAR, you can now be sure that the correct 
-version of the JCas cover classes will be used in your annotator.  This fixes a 
-long-standing issue where Analysis Engines that used different, incompatible 
-versions of JCas cover classes could not be combined into an Aggregate.  In particular, 
-you can now add new features to the document annotation and use the JCas to access them.
-</p>
-
-<h3>2.3 CPE Descriptors now support &lt;import></h3>
-<p>
-You can now use &lt;import location="..."/> or &lt;import name="..."/> in CPE Descriptors, 
-and these will be resolved in the same way as in other component descriptors.
-</p>
-
 <h2><a name="migrating">3. Migrating from IBM UIMA to Apache UIMA</a></h2>
 
 <p>
@@ -190,302 +162,100 @@ issues you find at
 <h2><a name="list.issues">6. List of JIRA Issues Fixed in this Release</a></h2>
     
 
-        Release Notes - UIMA - Version 2.2
-    
-<h2>        Sub-task
-</h2>
-<ul>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-326'>UIMA-326</a>] -         Add Out-of-typesystem Data Support to XMI Serialization
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-343'>UIMA-343</a>] -         Framework support for import in CPE descriptor
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-344'>UIMA-344</a>] -         CPE GUI should create &lt;import&gt; elements instead of &lt;include&gt; 
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-345'>UIMA-345</a>] -         Documentation for &lt;import&gt; in CPE Descriptor
-</li>
-</ul>
+        Release Notes - UIMA - Version 2.2.1
     
 <h2>        Bug
 </h2>
 <ul>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-32'>UIMA-32</a>] -         CPE GUI doesn't parse ${CPM_HOME} variable
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-527'>UIMA-527</a>] -         script file syntax does not correct if UIMA_HOME is not set
 </li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-194'>UIMA-194</a>] -         Tools highlight incorrect annotation offsets due to XML serialization bug in Sun Java 1.4.2
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-529'>UIMA-529</a>] -         Type System Merging not checking for compatible element types, nor compatible multipleReferencesAllowed settings
 </li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-269'>UIMA-269</a>] -         Test PEAR Files don't run
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-534'>UIMA-534</a>] -         The equals() method in MetaDataObject_impl doesn't compare elements in a Map properly.
 </li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-270'>UIMA-270</a>] -         When CVD run with -desc option, status bar still says &quot;(No AE Loaded)&quot;
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-544'>UIMA-544</a>] -         check JavaDoc for class ParsingException
 </li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-271'>UIMA-271</a>] -         PEAR Installer doesn't enable &quot;Install&quot; button if PEAR file name is input by keyboard
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-545'>UIMA-545</a>] -         DescEditor plugin exception with GNU libgcj 4.1.2
 </li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-303'>UIMA-303</a>] -         Problems with BoundedQueue.dequeue(timeout)
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-547'>UIMA-547</a>] -         XmiCasDeserializer fails to deserialize arrays if JCAS has been initialized
 </li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-316'>UIMA-316</a>] -         CVD does not display auto-indexes correctly
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-549'>UIMA-549</a>] -         Extra jar listed in runtime plugin manifest
 </li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-329'>UIMA-329</a>] -         extractAndBuild scripts need to check for presence of JAI libraries
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-574'>UIMA-574</a>] -         CAS heap size is just increased by the initial heap size and is not doubled until a threshold is reached
 </li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-330'>UIMA-330</a>] -         Calling reconfigure() on aggregate AE doesn't call reconfigure() on FlowController.
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-575'>UIMA-575</a>] -         CPM Cas reordering broken with multiple threads
 </li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-336'>UIMA-336</a>] -         Schema validation fails for service client descriptors
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-578'>UIMA-578</a>] -         XmiCasDeserializer &quot;merge&quot; functionality doesn't support Sofas properly
 </li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-347'>UIMA-347</a>] -         Custom indexes defined in C++ annotators are ignored
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-579'>UIMA-579</a>] -         Maven build failing for Eclipse plugins - apparently including incorrectly Eclipse 3.3 versions
 </li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-356'>UIMA-356</a>] -         fix IBM dependency in CVD log properties file
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-583'>UIMA-583</a>] -         update documentation for adding PEARs to aggregate AEs
 </li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-359'>UIMA-359</a>] -         Blob serialization problems
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-589'>UIMA-589</a>] -         The AnalysisEngine Descriptor editor disallows certain chars in Sofa names which documentation says are valid
 </li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-362'>UIMA-362</a>] -         CVD UIMA about box is editable
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-598'>UIMA-598</a>] -         Memory leak from CAS pool
 </li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-364'>UIMA-364</a>] -         CDE add type button and other actions broken
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-599'>UIMA-599</a>] -         Typo in JavaDocs for ParallelStep and SimpleStep 
 </li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-365'>UIMA-365</a>] -         call tae.destroy() in AnalysisEngine_implTest to close open file handles 
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-606'>UIMA-606</a>] -         CDE shows error &quot;Invalid descriptor&quot; when saving a valid collection reader descriptor that imports a type by name
 </li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-367'>UIMA-367</a>] -         Deadlock can occur in MultiprocessingAnalysisEngine_impl.setResultSpecification
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-607'>UIMA-607</a>] -         Running PEAR class path switching code broken in multi-threading case (CPM)
 </li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-370'>UIMA-370</a>] -         Migration tool gets ProgressImpl wrong
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-619'>UIMA-619</a>] -         Wrong error message when loading type system
 </li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-374'>UIMA-374</a>] -         CPE GUI left in bad state if you open a CPE descriptor that refers to a nonexistent component descriptor
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-623'>UIMA-623</a>] -         test case for UIMA-607 fails on Linux
 </li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-376'>UIMA-376</a>] -         README refers to outdated GUI label
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-628'>UIMA-628</a>] -         PearRuntimeTest use the wrong PEAR files for testing
 </li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-383'>UIMA-383</a>] -         Duplicate operationalProperties element in example descriptor ex2/RoomNumberAnnotator.xml
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-633'>UIMA-633</a>] -         Class loading issue with ResourceBundle when using the UIMAClassloader
 </li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-385'>UIMA-385</a>] -         setUimaClasspath script has extra space at end of set PATH command, making last path entry invalid
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-387'>UIMA-387</a>] -         XMI Serializer can write invalid control characters
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-389'>UIMA-389</a>] -         AnnotationBase.getSofa() throws ClassCastException
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-392'>UIMA-392</a>] -         Eclipse Plugin packaging not working correctly
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-393'>UIMA-393</a>] -         ibmUimaToApacheUIMA.sh migration script doesn't work
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-394'>UIMA-394</a>] -         sofa2jcasMap not be consistenly set
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-396'>UIMA-396</a>] -         Javadoc for Feature.isMultipleReferencesAllowed is incorrect
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-397'>UIMA-397</a>] -         JSR47Logger_implTest failing with Sun Java 6
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-400'>UIMA-400</a>] -         Fix Eclipse plugin
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-402'>UIMA-402</a>] -         Adding Remote SOAP AE to Aggregate in CDE causes validation error
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-404'>UIMA-404</a>] -         try to cast NoClassDefFoundError to Exception
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-410'>UIMA-410</a>] -         Type priority test case failing with IBM JDK 1.5.0_5ea
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-411'>UIMA-411</a>] -         PearInstallerTest fails when running from mvn install target - caused by class loading issues in the PEAR verification code
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-414'>UIMA-414</a>] -         Component Descriptor Editor not marking editor as &quot;changed&quot; if an override is added to an existing parameter having overrides.
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-415'>UIMA-415</a>] -         Component Descriptor Editor fails when removing parameter override
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-421'>UIMA-421</a>] -         CVD broken after restructuring
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-422'>UIMA-422</a>] -         update UIMA DocBook version and Date
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-424'>UIMA-424</a>] -         update UIMA Framework version to 2.2
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-426'>UIMA-426</a>] -         Component Descriptor Editor feature to edit parts which require other parts for context is broken - CDE wont start up
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-427'>UIMA-427</a>] -         CVD throws NPE when descriptor file should be loaded
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-429'>UIMA-429</a>] -         Running an AE in CVD resets the document text (making it scroll to the end).
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-433'>UIMA-433</a>] -         CAS Editor changing documents does not always sets dirty flag
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-435'>UIMA-435</a>] -         Update runtime plugin manifest package list for CVD package name change
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-437'>UIMA-437</a>] -         Annotators are not prevented from calling CAS.release() 
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-440'>UIMA-440</a>] -         CAS heap doesn't grow correctly when first page exceeded
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-442'>UIMA-442</a>] -         FileUtilsTest fail on Linux
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-443'>UIMA-443</a>] -         fix flow ResultSpec handling
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-449'>UIMA-449</a>] -         XMI serialization does not work with Sun Java 1.5.0_12
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-452'>UIMA-452</a>] -         Cas Editor: Actions to modify annotations spans do not check bounds
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-455'>UIMA-455</a>] -         Unused import com.sun.org.apache.bcel.internal.generic.ISTORE in CasEditor causes build break with IBM JVM
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-459'>UIMA-459</a>] -         References html file has 0 bytes after clean build
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-462'>UIMA-462</a>] -         CDE: when saving a remote delegate, where the remote is registered but not running, gets an internal CDE error
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-464'>UIMA-464</a>] -         ClassCastException thrown when using subiterator and moveTo()
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-467'>UIMA-467</a>] -         TypeSystemUtils.typeSystem2TypeSystemDescription produces invalid output for arrays with elementType specified
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-468'>UIMA-468</a>] -         race condition in JCasImpl  initializing static array
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-469'>UIMA-469</a>] -         not all jars in the lib directory of a PEAR project are added to the PEAR CLASSPATH automatically
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-474'>UIMA-474</a>] -         Log messages for duplicate resource declarations have their arguments switched
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-476'>UIMA-476</a>] -         FSArray causes error in SOAP service
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-479'>UIMA-479</a>] -         fix test class names that do not end with &quot;Test&quot;
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-480'>UIMA-480</a>] -         DocumentAnalyzer interactive mode only eligible if an input data directory is specified
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-484'>UIMA-484</a>] -         Clean build fails on Saxon download (tmp dir does not exist)
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-486'>UIMA-486</a>] -         CVD error message box cannot be closed with OK button
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-488'>UIMA-488</a>] -         CVD doesn't handle Errors that are thrown by an AE
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-489'>UIMA-489</a>] -         Windows .bat files should use &quot;endlocal&quot; command
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-490'>UIMA-490</a>] -         release number in wrong format
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-491'>UIMA-491</a>] -         CPE GUI doesn't handle spaces in component descriptor file paths
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-492'>UIMA-492</a>] -         uimaj-cpe test failures on some machines when run from maven
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-494'>UIMA-494</a>] -         AnalysisEngineDescription_impl indirectly uses promletatic method URL.equals()
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-496'>UIMA-496</a>] -         PEAR API does not delete the PEAR ID subdirectory before the new content is installed
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-508'>UIMA-508</a>] -         Docbook build tool - not updating the olink databases unless running the full 4-book build
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-514'>UIMA-514</a>] -         remove souce jars from binary distribution
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-517'>UIMA-517</a>] -         CDE has internal bug - shows up in Error log when using the Add delegate to an aggregate when picking top level project
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-519'>UIMA-519</a>] -         Infinite Loop in AnnotationIndexImpl tree()
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-520'>UIMA-520</a>] -         Calling CasCreationUtils to produce a custom resource is ignoring the passed in ResourceManager in some cases
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-522'>UIMA-522</a>] -         XMI Serialization fails for parameterized arrays
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-639'>UIMA-639</a>] -         udpate ReleaseNotes for release 2.2.1
 </li>
 </ul>
     
 <h2>        Improvement
 </h2>
 <ul>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-53'>UIMA-53</a>] -         Add Flow.aborted() method
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-74'>UIMA-74</a>] -         make Eclipse plugins into features that can be installed by Eclipse update mechanism
 </li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-125'>UIMA-125</a>] -         Apache UIMA client should be able to communicate with IBM UIMA (1.x or 2.0) service
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-582'>UIMA-582</a>] -         improve FileCompare used in JUnit Tests
 </li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-236'>UIMA-236</a>] -         Part of getting better results from Docbook - upgrade to current version (4.5 and 1.72.0) and FOP 0.93
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-608'>UIMA-608</a>] -         Move to Java 1.5
 </li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-238'>UIMA-238</a>] -         make docbook build script skip build if output exists and target date is later than dependent source dates (normal &quot;make&quot; behavior)
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-626'>UIMA-626</a>] -         Bring FeaturePathImpl to the 3rd millenium
 </li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-307'>UIMA-307</a>] -         Fix CVD screenshots
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-337'>UIMA-337</a>] -         Should log process begin/end for service adapters
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-338'>UIMA-338</a>] -         Add method XMLParser.parseFlowControllerDescription
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-339'>UIMA-339</a>] -         Support MBean Name Prefix in the additional parameters map passed to produceAE
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-348'>UIMA-348</a>] -         CollectionProcessComplete should execute in fixedFlow order if there is a fixedFlow
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-353'>UIMA-353</a>] -         Expose ResourceManager.setCasManager
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-354'>UIMA-354</a>] -         UIMA datapath support for pear files
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-355'>UIMA-355</a>] -         Eclipse PDE nature for org.apache.uima.runtime project
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-358'>UIMA-358</a>] -         Add JMX MBeans for CAS Pools
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-363'>UIMA-363</a>] -         add log level configuration possibility for CVD
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-366'>UIMA-366</a>] -         Rename plugin directories from xxxxx.version to xxxx_version
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-368'>UIMA-368</a>] -         Allow setting logger config file and other JVM system properties in scripts/bat files
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-372'>UIMA-372</a>] -         remove deprecated methods in testcases
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-375'>UIMA-375</a>] -         Paragraph on &quot;Eclipse has a steep learning curve...&quot; repeated inside one section
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-378'>UIMA-378</a>] -         CDE plugin: change some private members to protected that derived classes can work with them
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-380'>UIMA-380</a>] -         runCPE utility should report initilazation time and processing time separately
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-381'>UIMA-381</a>] -         Rename CVD packages to more intuitive name
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-386'>UIMA-386</a>] -         Switching to use correct class loader
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-388'>UIMA-388</a>] -         When CollectionReader wrapped as CAS Multiplier, if a second process call comes in, call reconfigure
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-401'>UIMA-401</a>] -         Make DocBook build work out of the box in Eclipse
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-406'>UIMA-406</a>] -         Continue restructuring of CVD code
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-408'>UIMA-408</a>] -         Make more CASImpl methods private, have clients use ll APIs.
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-409'>UIMA-409</a>] -         Reorganization of TypeSystemImpl, CASImpl, FSClassRegistry, adding new CASMetadata class
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-419'>UIMA-419</a>] -         Reduce space used for casAddr to JCas object map by a factor of 4 or more
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-425'>UIMA-425</a>] -         CVD should have close method that doesn't shut down JVM
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-436'>UIMA-436</a>] -         Eclipse Runtime Plugin:  add line to permit Fragments to add to API for other tooling
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-439'>UIMA-439</a>] -         Docbooks: support scale= in pdfs, convert to 0.93 FOP, fix scaling of many images 
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-445'>UIMA-445</a>] -         add CasEditor abstract to the Sandbox web page.
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-460'>UIMA-460</a>] -         Change CAS Editor Docs project to be a general sandbox docs project
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-461'>UIMA-461</a>] -         Have docbuild ant script check for JVM version 5 or better
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-465'>UIMA-465</a>] -         Need getViewIterator() method to work with a variable number of views
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-499'>UIMA-499</a>] -         Make it easier for users to view UIMA JavaDocs from Eclipse
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-500'>UIMA-500</a>] -         Reduce excessive synch lock contention caused by calls to ll_isValidTypeCode that are not needed
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-501'>UIMA-501</a>] -         Cas Editor: Finish the about dialog
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-507'>UIMA-507</a>] -         Remove ref to gutenberg.org to avoid licensing entanglement possibility
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-630'>UIMA-630</a>] -         Make TypeSystemUtils.isIdentifier() public so it can be accessed by client code
 </li>
 </ul>
     
 <h2>        New Feature
 </h2>
 <ul>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-325'>UIMA-325</a>] -         Enhance XMI Serializer to support merging multiple XMI documents into a single CAS
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-327'>UIMA-327</a>] -         Flow Controller API extensions in support of more complex flow options
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-331'>UIMA-331</a>] -         Provide/extend a built-in flow controller that can be configured to do ParallellStep or to continue after error
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-341'>UIMA-341</a>] -         Support &lt;import&gt; in CPE Descriptor
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-342'>UIMA-342</a>] -         make jcasgen able to used other templates
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-351'>UIMA-351</a>] -         UIMA pear runtime
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-352'>UIMA-352</a>] -         Allow custom service adapters to be plugged in
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-377'>UIMA-377</a>] -         add API to build PEAR packages
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-413'>UIMA-413</a>] -         Allow RunAE to use XMI format XML CAS for input and output
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-416'>UIMA-416</a>] -         CVD should be able to read and write XMI documents
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-418'>UIMA-418</a>] -         add new UIMA analysis example descriptor
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-446'>UIMA-446</a>] -         Create FS variables project in sandbox
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-580'>UIMA-580</a>] -         Make the CDE plugin extensible
 </li>
 </ul>
             
 <h2>        Task
 </h2>
 <ul>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-309'>UIMA-309</a>] -         Change version number to 2.2-SNAPSHOT (post-2.1.0 release)
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-473'>UIMA-473</a>] -         Update README and RELEASE_NOTES
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-521'>UIMA-521</a>] -         Add LICENSE, DISCLAIMER, and NOTICES files to source jars produced by Maven
-</li>
-<li>[<a href='https://issues.apache.org/jira/browse/UIMA-524'>UIMA-524</a>] -         Prepare for distribution of UIMA artifacts in Maven repository
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-576'>UIMA-576</a>] -         Change version number to 2.3-SNAPSHOT
 </li>
 </ul>
+        
+<h2>        Test
+</h2>
+<ul>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-585'>UIMA-585</a>] -         Reduce noisy output when running some CPE tests when run in Maven
+</li>
+</ul>
+    
+<h2>        Wish
+</h2>
+<ul>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-301'>UIMA-301</a>] -         CAS APIs should make it easier to deal with arrays of unknown element type
+</li>
+</ul>
+
                         
 </body>
 </html>
