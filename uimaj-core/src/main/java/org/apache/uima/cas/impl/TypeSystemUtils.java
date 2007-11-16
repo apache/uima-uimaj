@@ -344,7 +344,10 @@ public abstract class TypeSystemUtils {
    */
   public static final PathValid isPathValid(Type type, List<String> path) {
     Stack<String> fStack = new Stack<String>();
-    fStack.addAll(path);
+    // Note: addAll() adds elements to the stack in the wrong order.
+    for (int i = (path.size() - 1); i >= 0; i--) {
+      fStack.push(path.get(i));
+    }
     return isPathValid(type, fStack, PathValid.ALWAYS);
   }
 
@@ -366,7 +369,10 @@ public abstract class TypeSystemUtils {
     List<Type> subtypes = new ArrayList<Type>();
     getFeatureDefiningSubtypes(type, fName, subtypes);
     for (int i = 0; i < subtypes.size(); i++) {
-      PathValid newStatus = isPathValid(subtypes.get(i), path, PathValid.POSSIBLE);
+      // Retrieve the feature value type
+      Type nextType = subtypes.get(i).getFeatureByBaseName(fName).getRange();
+      // Call isPathValid() on next type in chain.
+      PathValid newStatus = isPathValid(nextType, path, PathValid.POSSIBLE);
       if (newStatus == PathValid.POSSIBLE) {
         // If we found one, we can stop here and return.
         return PathValid.POSSIBLE;
