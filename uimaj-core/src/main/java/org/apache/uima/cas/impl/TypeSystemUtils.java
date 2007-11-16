@@ -19,7 +19,9 @@
 
 package org.apache.uima.cas.impl;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 import java.util.StringTokenizer;
 
 import org.apache.uima.cas.Feature;
@@ -319,13 +321,83 @@ public abstract class TypeSystemUtils {
   }
 
   /**
+   * Checks if a feature path is valid for a given type.
+   * 
+   * <p>
+   * We distinguish three cases:
+   * <ol>
+   * <li><code>PathValid.NEVER</code>: there is no object of <code>type</code> on which
+   * <code>path</code> can ever be defined.</li>
+   * <li><code>PathValid.ALWAYS</code>: if all intermediate objects are non-null, this
+   * <code>path</code> will always be defined on any object of <code>type</code>. </li>
+   * <li><code>PathValid.POSSIBLE: some objects of <code>type</code> will have<code>path</code> 
+   * defined, while others may not.</li>
+   * </ol>
+   * <b>Note:</b> we always assume that all references are not null.  A return value of ALWAYS
+   * can of course not guarantee that all intermediate objects will always exist; only that if they
+   * exist, the path will be defined.
+   * 
+   * @param type The type.
+   * @param path The path to check.
+   * @return One of {@link PathValid#ALWAYS ALWAYS}, {@link PathValid#POSSIBLE POSSIBLE}, or
+   * {@link PathValid#NEVER NEVER}.
+   */
+  public static final PathValid isPathValid(Type type, List<String> path) {
+    Stack<String> fStack = new Stack<String>();
+    fStack.addAll(path);
+    return isPathValid(type, fStack, PathValid.ALWAYS);
+  }
+
+  private static final PathValid isPathValid(Type type, Stack<String> path, 
+      PathValid status) {
+    // If the path is empty, return the input status.
+    if (path.isEmpty()) {
+      return status;
+    }
+    // Pop the next feature name from the stack and check if it's defined for the current type.
+    String fName = path.pop();
+    Feature feat = type.getFeatureByBaseName(fName);
+    if (feat != null) {
+      // If feature is defined, we can continue directly.
+      return isPathValid(feat.getRange(), path, status);
+    }
+    // If feature is not defined for type, check to see if there are any subtypes for which the
+    // path is defined (possible).
+    List<Type> subtypes = new ArrayList<Type>();
+    getFeatureDefiningSubtypes(type, fName, subtypes);
+    for (int i = 0; i < subtypes.size(); i++) {
+      PathValid newStatus = isPathValid(subtypes.get(i), path, PathValid.POSSIBLE);
+      if (newStatus == PathValid.POSSIBLE) {
+        // If we found one, we can stop here and return.
+        return PathValid.POSSIBLE;
+      }
+    }
+    // No subtype was found for which the path was defined.
+    return PathValid.NEVER;
+  }
+  
+  // Find subtypes that define the feature.  Add subtypes to list.
+  private static final void getFeatureDefiningSubtypes(Type type, String fName, List<Type> types) {
+    TypeSystem ts = ((TypeImpl) type).getTypeSystem();
+    List<?> subtypes = ts.getDirectSubtypes(type);
+    for (int i = 0; i < subtypes.size(); i++) {
+      Type subtype = (Type) subtypes.get(i);
+      if (subtype.getFeatureByBaseName(fName) != null) {
+        types.add((Type) subtypes.get(i));
+      } else {
+        getFeatureDefiningSubtypes(subtype, fName, types);
+      }
+    }
+  }
+
+  /**
    * Classify types into FS type, array type etc. For the full list of return types, see the
    * <code>LowLevelCAS.TYPE_CLASS*</code> constants, as well as the documentation for
    * {@link LowLevelCAS#ll_getTypeClass(int) LowLevelCAS.ll_getTypeClass(int)}.
    * 
    * @param type
    *                The type to classify.
-   * @return An integer encoding the the type class.  See above.
+   * @return An integer encoding the the type class. See above.
    */
   public static final int classifyType(Type type) {
     LowLevelTypeSystem llts = ((TypeImpl) type).getTypeSystem().getLowLevelTypeSystem();
