@@ -48,11 +48,6 @@ public class TypeSystemUtilsTest extends TestCase {
 
   private CAS cas;
 
-  /**
-   * Constructor for FilteredIteratorTest.
-   * 
-   * @param arg0
-   */
   public TypeSystemUtilsTest(String arg0) {
     super(arg0);
   }
