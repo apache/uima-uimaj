@@ -19,8 +19,11 @@
 
 package org.apache.uima.cas.impl;
 
+import java.util.List;
 import java.util.StringTokenizer;
 
+import org.apache.uima.cas.Feature;
+import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 
 /**
@@ -29,6 +32,11 @@ import org.apache.uima.cas.TypeSystem;
  * 
  */
 public abstract class TypeSystemUtils {
+
+  // Return value constants for feature path checking on type system
+  public static enum PathValid {
+    NEVER, POSSIBLE, ALWAYS
+  }
 
   static abstract class TypeSystemParse {
 
@@ -55,7 +63,7 @@ public abstract class TypeSystemUtils {
      * Sets the error.
      * 
      * @param error
-     *          The error to set
+     *                The error to set
      */
     void setError(ParsingError error) {
       this.error = error;
@@ -84,7 +92,7 @@ public abstract class TypeSystemUtils {
      * Sets the name.
      * 
      * @param name
-     *          The name to set
+     *                The name to set
      */
     void setName(String name) {
       this.name = name;
@@ -123,7 +131,7 @@ public abstract class TypeSystemUtils {
      * Sets the name.
      * 
      * @param name
-     *          The name to set
+     *                The name to set
      */
     public void setName(String name) {
       this.name = name;
@@ -133,7 +141,7 @@ public abstract class TypeSystemUtils {
      * Sets the nameSpace.
      * 
      * @param nameSpace
-     *          The nameSpace to set
+     *                The nameSpace to set
      */
     public void setNameSpace(NameSpaceParse nameSpace) {
       this.nameSpace = nameSpace;
@@ -169,7 +177,7 @@ public abstract class TypeSystemUtils {
      * Sets the name.
      * 
      * @param name
-     *          The name to set
+     *                The name to set
      */
     public void setName(String name) {
       this.name = name;
@@ -179,7 +187,7 @@ public abstract class TypeSystemUtils {
      * Sets the type.
      * 
      * @param type
-     *          The type to set
+     *                The type to set
      */
     public void setType(TypeParse type) {
       this.type = type;
@@ -215,7 +223,7 @@ public abstract class TypeSystemUtils {
      * Sets the errorCode.
      * 
      * @param errorCode
-     *          The errorCode to set
+     *                The errorCode to set
      */
     public void setErrorCode(int errorCode) {
       this.errorCode = errorCode;
@@ -225,7 +233,7 @@ public abstract class TypeSystemUtils {
      * Sets the errorPosition.
      * 
      * @param errorPosition
-     *          The errorPosition to set
+     *                The errorPosition to set
      */
     public void setErrorPosition(int errorPosition) {
       this.errorPosition = errorPosition;
@@ -275,7 +283,7 @@ public abstract class TypeSystemUtils {
    * exists!
    * 
    * @param name
-   *          The name to check.
+   *                The name to check.
    * @return <code>true</code> iff <code>name</code> is a possible type name.
    */
   static boolean isTypeName(String name) {
@@ -308,6 +316,20 @@ public abstract class TypeSystemUtils {
     // Syntactically, there is no difference between a type name and a name
     // space name.
     return isTypeName(name);
+  }
+
+  /**
+   * Classify types into FS type, array type etc. For the full list of return types, see the
+   * <code>LowLevelCAS.TYPE_CLASS*</code> constants, as well as the documentation for
+   * {@link LowLevelCAS#ll_getTypeClass(int) LowLevelCAS.ll_getTypeClass(int)}.
+   * 
+   * @param type
+   *                The type to classify.
+   * @return An integer encoding the the type class.  See above.
+   */
+  public static final int classifyType(Type type) {
+    LowLevelTypeSystem llts = ((TypeImpl) type).getTypeSystem().getLowLevelTypeSystem();
+    return llts.ll_getTypeClass(llts.ll_getCodeForType(type));
   }
 
 }
