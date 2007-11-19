@@ -469,14 +469,23 @@ public class Ecore2UimaTypeSystem {
     // Our convention is that the UIMA namespace is the URI path, with leading slashes
     // removed, trailing ".ecore" removed, and internal slashes converted to dots
     java.net.URI uri = new java.net.URI(nsUri);
-    String path = uri.getPath();
-    while (path.startsWith("/")) {
-      path = path.substring(1);
+    String uimaNs = uri.getPath();
+    if (uimaNs == null) {
+      // The URI is a URN
+      uimaNs = uri.getSchemeSpecificPart();
+      uimaNs = uimaNs.replace(':', '.');
+    } else {
+      // The URI is a URL
+      while (uimaNs.startsWith("/")) {
+	uimaNs = uimaNs.substring(1);
+      }
+      if (uimaNs.endsWith(".ecore")) {
+	uimaNs = uimaNs.substring(0, uimaNs.length() - 6);
+      }
+      uimaNs = uimaNs.replace('/', '.');
     }
-    if (path.endsWith(".ecore")) {
-      path = path.substring(0, path.length() - 6);
-    }
-    return path.replace('/', '.');
+    uimaNs = uimaNs.replace('-', '_');
+    return uimaNs;
   }
 
   /**
