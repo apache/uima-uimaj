@@ -108,9 +108,9 @@ public class FSNode extends FSTreeNode {
     CASImpl cas = this.fSTreeModel.getCas();
     if (this.fSTreeModel.getCas().isArrayType(type)) {
       int arrayLength = cas.ll_getArraySize((int) this.addr);
-      if (arrayLength > 20) {
-        arrayLength = 20;
-      }
+//      if (arrayLength > 20) {
+//        arrayLength = 20;
+//      }
       FSNode node = null;
       int arrayPos = cas.getArrayStartAddress((int) this.addr);
       int nodeClass1;
