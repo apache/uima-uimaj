@@ -21,6 +21,7 @@ package org.apache.uima.cas;
 
 import java.io.InputStream;
 import java.util.Iterator;
+import java.util.ListIterator;
 
 import org.apache.uima.cas.admin.CASAdminException;
 import org.apache.uima.cas.impl.LowLevelCAS;
@@ -707,6 +708,7 @@ public interface CAS extends AbstractCas {
    * @param type
    *          The annotation type the index is restricted to.
    * @return The standard annotation index, restricted to <code>type</code>.
+   * @exception CASRuntimeException When <code>type</code> is not an annotation type.
    */
   AnnotationIndex getAnnotationIndex(Type type) throws CASRuntimeException;
 
@@ -819,7 +821,7 @@ public interface CAS extends AbstractCas {
    *          The <code>FSListIterator</code> to be wrapped.
    * @return An equivalent <code>ListIterator</code>.
    */
-  java.util.ListIterator fs2listIterator(FSIterator it);
+  ListIterator fs2listIterator(FSIterator it);
 
   /**
    * Reset the CAS, emptying it of all content. Feature structures and iterators will no longer be

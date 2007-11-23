@@ -45,8 +45,8 @@ public interface FSIndexRepository {
    *          The name of the index.
    * @param type
    *          A subtype of the type of the index.
-   * @return The specified, or <code>null</code> if an index with that name doesn't exist, or it
-   *         exists but <code>type</code> is not a subtype of the index's type.
+   * @return The specified, or <code>null</code> if an index with that name doesn't exist.
+   * @exception CASRuntimeException When <code>type</code> is not a subtype of the index's type.
    */
   FSIndex getIndex(String label, Type type) throws CASRuntimeException;
 
