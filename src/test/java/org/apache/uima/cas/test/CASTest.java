@@ -28,6 +28,7 @@ import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.admin.CASFactory;
 import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.cas.impl.Heap;
+import org.apache.uima.cas.text.AnnotationIndex;
 
 /**
  * Class comment for CASTest.java goes here.
@@ -64,6 +65,19 @@ public class CASTest extends TestCase {
 
   public void testGetTypeSystem() {
     assertTrue(this.cas.getTypeSystem() != null);
+  }
+  
+  public void testGetAnnotationIndex() {
+    AnnotationIndex index = this.cas.getAnnotationIndex();
+    assertNotNull(index);
+    assertTrue(index.iterator() != null);
+    boolean caughtException = false;
+    try {
+      this.cas.getAnnotationIndex(this.cas.getTypeSystem().getType(CAS.TYPE_NAME_TOP));
+    } catch (CASRuntimeException e) {
+      caughtException = true;
+    }
+    assertTrue(caughtException);
   }
 
   public void testCreateFS() {

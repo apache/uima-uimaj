@@ -30,6 +30,7 @@ import junit.framework.TestCase;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIndexRepository;
 import org.apache.uima.cas.FSIterator;
@@ -630,6 +631,16 @@ public class IteratorTest extends TestCase {
     assertFalse(setIt.isValid());
     sortedIt.moveToFirst();
     assertFalse(sortedIt.isValid());
+  }
+  
+  public void testInvalidIndexRequest() {
+    boolean exc = false;
+    try {
+      this.cas.getIndexRepository().getIndex(CASTestSetup.ANNOT_BAG_INDEX, this.stringType);
+    } catch (CASRuntimeException e) {
+      exc = true;
+    }
+    assertTrue(exc);
   }
 
   public static void main(String[] args) {
