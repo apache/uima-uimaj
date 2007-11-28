@@ -17,18 +17,22 @@ using this extension point to extend the CDE&apos;s editing capability.
     &lt;li&gt;&lt;code&gt;org.apache.uima.taeconfigurator.editors.point.IUimaMultiPageEditor&lt;/code&gt;.&lt;/li&gt;
 &lt;/ol&gt;&lt;/p&gt;
 
-&lt;p&gt;When the CDE is instantiated, it uses this extension point and calls the 
+&lt;p&gt;When the CDE is instantiated, it will load the information in the XML spec
+for all contributors to the extension point.  When an attempt is made to edit
+a top-most element which the CDE doesn&apos;t know how to handle, this XML info is
+scanned to see if some contributor can handle this.  All this is done without
+loading any classes.  If it finds one, it loads the class and calls the 
 &lt;code&gt;init&lt;/code&gt; method of the &lt;code&gt;IUimaEditorExtension&lt;/code&gt; 
 interface; this allows all extensions to do whatever initialization they may need to do.
 For instance, the extension could register a factory class for the new descriptor&apos;s type
-(see below) with UIMA&apos;s general ResourceSpecifier support.
+(see below) with UIMA&apos;s general ResourceSpecifier support.  
 &lt;/p&gt;
-&lt;p&gt;
-When the CDE is asked to edit a descriptor, but doesn&apos;t recognize it as an XML descriptor it can edit, 
-it calls the method &lt;code&gt;canEdit&lt;/code&gt; of the 
-&lt;code&gt;IUimaEditorExtension&lt;/code&gt; interface 
-looking for an editor extension that can edit that descriptor.
-&lt;/p&gt;
+
+&lt;p&gt;If the parser can&apos;t parse the descriptor, this same scan code is used to see
+if some editor can possibly contribute a parser for the particular top-level
+element.  If so, the &lt;code&gt;init&lt;/code&gt; method is called, as above, in the hopes that
+the editor will cause some additional parser to get &quot;registered&quot;, and then the parsing
+is retried. &lt;/p&gt;
 &lt;p&gt; 
 The &lt;code&gt;IUimaMultiPageEditor&lt;/code&gt; 
 interface is used by CDE to redirect the editing functions to the external editor.
@@ -159,8 +163,12 @@ interface is used by CDE to redirect the editing functions to the external edito
       &lt;editor
             class=&quot;org.apache.uima.dde.internal.DeploymentDescriptorEditor&quot;
             id=&quot;org.apache.uima.dde&quot;
-            init=&quot;true&quot;
-            name=&quot;Deployment Descriptor Editor&quot;/&gt;
+            name=&quot;Deployment Descriptor Editor&quot;&gt;
+         &lt;handlesElement
+               class=&quot;org.apache.uima.aae.deployment.AEService&quot;
+               elementName=&quot;analysisEngineDeploymentDescription&quot;
+               internalParseClass=&quot;org.apache.uima.aae.deployment.impl.AEDeploymentDescription_Impl&quot;/&gt;
+      &lt;/editor&gt;
    &lt;/extension&gt;
 &lt;/pre&gt;
 &lt;/p&gt;
