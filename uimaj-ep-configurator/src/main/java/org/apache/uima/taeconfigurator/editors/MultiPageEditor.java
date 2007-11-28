@@ -79,6 +79,8 @@ import org.apache.uima.taeconfigurator.CDEpropertyPage;
 import org.apache.uima.taeconfigurator.InternalErrorCDE;
 import org.apache.uima.taeconfigurator.Messages;
 import org.apache.uima.taeconfigurator.TAEConfiguratorPlugin;
+import org.apache.uima.taeconfigurator.editors.point.IUimaEditorExtension;
+import org.apache.uima.taeconfigurator.editors.point.IUimaMultiPageEditor;
 import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 import org.apache.uima.taeconfigurator.editors.ui.AggregatePage;
 import org.apache.uima.taeconfigurator.editors.ui.CapabilityPage;
@@ -112,6 +114,9 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
@@ -145,6 +150,7 @@ import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
+import org.osgi.framework.Bundle;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
@@ -189,7 +195,7 @@ import org.xml.sax.SAXException;
  * its place, the handlers directly update the model, rather than marking Dirty and letting someone
  * call commit.
  */
-public class MultiPageEditor extends FormEditor {
+public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor {
 
   // ******************************
   // * Tuning Parameters
@@ -203,7 +209,7 @@ public class MultiPageEditor extends FormEditor {
   // M O D E L
   // the following are only populated based on what type
   // of descriptor is being edited
-  protected AnalysisEngineDescription aeDescription = null;
+  private AnalysisEngineDescription aeDescription = null;
 
   private TypeSystemDescription typeSystemDescription = null;
 
@@ -329,7 +335,7 @@ public class MultiPageEditor extends FormEditor {
   // type files upon saving (this has a problem if user edited xml
   // directly...)
 
-  private int m_nSaveAsStatus = SAVE_AS_NOT_IN_PROGRESS;
+  public int m_nSaveAsStatus = SAVE_AS_NOT_IN_PROGRESS;
 
   public static final int SAVE_AS_NOT_IN_PROGRESS = -1;
 
@@ -475,9 +481,22 @@ public class MultiPageEditor extends FormEditor {
   private Map failedRemotes = new TreeMap();
   private Set failedRemotesAlreadyKnown = new TreeSet();
 
+  private static List<IConfigurationElement> externalEditorConfigurations = null;
+  
+  private IUimaMultiPageEditor currentEditor; // can be CDE or another editor
+  
   public MultiPageEditor() {
     super();
-
+    currentEditor = this; // default
+    initCDE (); // specific for CDE
+  }
+  
+  /**
+   * 
+   * Note: Try to move these codes out of constructor MultiPageEditor().
+   *       Too much of impacts. Put it back into constructor MultiPageEditor()
+   */
+  private void initCDE () {
     // Model initialization
     fileDirty = false;
     dirtyTypeNameHash = new HashSet();
@@ -496,6 +515,126 @@ public class MultiPageEditor extends FormEditor {
     mergedTypePriorities = aeDescription.getAnalysisEngineMetaData().getTypePriorities();
   }
 
+  private static final String EXTENSION_TAG_CLASS_ATTRIB  = "class";
+
+  
+  private IUimaEditorExtension getRequiredEditor(XMLizable parsedResult) {
+    return getRequiredEditor(null, parsedResult.getClass().getName());
+  }
+ 
+  private IUimaEditorExtension getRequiredEditor(String topElementName) {
+    return getRequiredEditor(topElementName, null);
+  }
+
+  // returns null if no matching editor found
+  // otherwise instantiates a new editor
+  private  IUimaEditorExtension getRequiredEditor(String topElementName, String parsedResultClassName) {
+    IUimaEditorExtension editor;
+    // load external editor configurations if not already loaded
+    if (null == externalEditorConfigurations) {
+      getExternalEditorConfigurations();
+    }
+    
+    for (IConfigurationElement xeditor : externalEditorConfigurations) {
+      for (IConfigurationElement canEdit : xeditor.getChildren()) {
+        String elementName = canEdit.getAttribute("elementName");
+        String parseResultName = canEdit.getAttribute("internalParseClass");
+        if ( ( (null != topElementName) && topElementName.equals(elementName)) |
+             ( (null != parsedResultClassName) && parsedResultClassName.equals(parseResultName)) ) {            
+          try {
+            editor = (IUimaEditorExtension) xeditor.createExecutableExtension(EXTENSION_TAG_CLASS_ATTRIB); 
+          } catch (CoreException e) {
+            Utility.popMessage("Unexpected Exception", "While trying to load an editor extension"
+                + getMessagesToRootCause(e), Utility.ERROR);
+            return null;
+          }
+          editor.init();
+          return editor;
+        }
+      }
+    }
+    return null;
+  }
+    
+  private static final String EXTENSION_POINT_ID         = "externalEditor";
+ 
+  // load all of the external editor xml data
+  //   (but don't load the actual editors, yet)
+  private void getExternalEditorConfigurations () {
+    // Get extension point from Registry
+    IExtensionPoint point = Platform.getExtensionRegistry()
+                .getExtensionPoint(TAEConfiguratorPlugin.pluginId, EXTENSION_POINT_ID);
+    
+    externalEditorConfigurations = new ArrayList<IConfigurationElement>();
+    
+    // check: Any <extension> tags for our extension-point?
+    if (point != null) {
+      for (IExtension extension : point.getExtensions()) {
+        Bundle b = Platform.getBundle(extension.getContributor().getName());
+        if (b == null) {
+          Utility.popMessage(
+              "Problem with Editor Extension",
+              "Editor '" + extension.getContributor().getName() + "' is present, but can't be loaded, probably because of unsatisfied dependencies\n",
+              Utility.ERROR);
+          continue;
+        }
+        for (IConfigurationElement ces : extension.getConfigurationElements()) {
+          externalEditorConfigurations.add(ces);
+        }
+      }
+    } else {
+      // Error - no such extension point
+      Utility.popMessage(
+          "Internal Error",
+          "CDE's extension point is missing",
+          Utility.ERROR);
+    }
+  }
+
+  /***************************************************************************/
+  /*            Expose "protected" methods and methods from Super            */
+  /***************************************************************************/  
+  
+  public void initSuper(IEditorSite site, IEditorInput editorInput) throws PartInitException {
+    super.init(site, editorInput);
+  }
+  
+  public int getCurrentPageSuper () {
+    return getCurrentPage();
+  }
+  
+  public void setPartNameSuper(String partName) {
+    super.setPartName(partName);
+  }
+
+  public void setPageTextSuper(int pageIndex, String text) {
+    super.setPageText(pageIndex, text);
+  }
+  
+  public void pageChangeSuper(int newPageIndex) {
+    super.pageChange(newPageIndex);
+  }
+
+  public void setActivePageSuper (int pageIndex) {
+    super.setActivePage(pageIndex);
+  }
+  
+  public void firePropertyChangeSuper(final int propertyId) {
+    super.firePropertyChange(propertyId);
+  }
+  
+  public void setInputSuper(IEditorInput input) {
+    super.setInput(input);
+  }
+  
+  // XML source editor is opened by CDE when the source is "initially" invalid.
+  // Called by DDE when the source becomes valid and it is DD.
+  public XMLEditor getSourceEditor () {
+    return sourceTextEditor;
+  }
+  
+  /***************************************************************************/
+  
   /**
    * override the createToolkit method in FormEditor - to use a shared colors resource.
    * 
@@ -537,11 +676,15 @@ public class MultiPageEditor extends FormEditor {
    * @see org.eclipse.ui.forms.editor.FormEditor#addPages()
    */
   protected void addPages() {
+    currentEditor.addPagesForCurrentEditor();
+  }
+  
+  public void addPagesForCurrentEditor() {
     boolean allPages = isLocalProcessingDescriptor();
     try {
-      overviewIndex = addPageAndSetTabTitle(overviewPage = new OverviewPage(this), Messages
+        overviewIndex = addPageAndSetTabTitle(overviewPage = new OverviewPage(this), Messages
               .getString("MultiPageEditor.overviewTab")); //$NON-NLS-1$
-
+      
       if (allPages) {
         if (isAeDescriptor())
           aggregateIndex = addPageAndSetTabTitle(aggregatePage = new AggregatePage(this), Messages
@@ -708,6 +851,10 @@ public class MultiPageEditor extends FormEditor {
    * Saves the multi-page editor's document.
    */
   public void doSave(IProgressMonitor monitor) {
+    currentEditor.doSaveForCurrentEditor(monitor);
+  }
+  
+  public void doSaveForCurrentEditor(IProgressMonitor monitor) {
     boolean modelOK = syncSourceBeforeSavingToFile();
     sourceTextEditor.doSave(monitor);
     finishSave(monitor, modelOK);
@@ -731,6 +878,10 @@ public class MultiPageEditor extends FormEditor {
    * This is not implemented correctly: filename isn't switched to new filename, etc.
    */
   public void doSaveAs() {
+    currentEditor.doSaveAsForCurrentEditor();
+  }
+  
+  public void doSaveAsForCurrentEditor() {
     boolean modelOK = syncSourceBeforeSavingToFile();
     setSaveAsStatus(SAVE_AS_STARTED);
     sourceTextEditor.doSaveAs();
@@ -768,6 +919,11 @@ public class MultiPageEditor extends FormEditor {
       this.firePropertyChange(ISaveablePart.PROP_DIRTY);
     }
   }
+  
+  // Called by External Editor extensions when doSave or doSaveAs is called
+  public void setFileDirtyFlag(boolean value) {
+    fileDirty = value;
+  }
 
   /*
    * (non-Javadoc)
@@ -793,6 +949,8 @@ public class MultiPageEditor extends FormEditor {
       throw new PartInitException(m);
     }
 
+    super.init(site, editorInput); // to allow other editors to get site and editorInput
+        
     // leaves isBadXML set, if it can't parse but isn't throwing
     isContextLoaded = false;
     try {
@@ -803,7 +961,7 @@ public class MultiPageEditor extends FormEditor {
 
     isContextLoaded = true;
 
-    super.init(site, editorInput);
+    // super.init(site, editorInput);
     setPartName(editorInput.getName());
     setContentDescription(editorInput.getName());
     // setContentDescription(1 line summary); TODO
@@ -811,9 +969,17 @@ public class MultiPageEditor extends FormEditor {
     m_bIsInited = true;
   }
 
+  private IUimaEditorExtension extensionEditor;
+  
   private void parseSource(XMLInputSource input, String filePathName) throws PartInitException {
+    extensionEditor = null;
+    parseSourceInner(input, filePathName);
+  }
+  
+  private void parseSourceInner(XMLInputSource input, String filePathName) throws PartInitException {
+    XMLizable inputDescription = null;
     try {
-      XMLizable inputDescription = AbstractSection.parseDescriptor(input);
+      inputDescription = AbstractSection.parseDescriptor(input);
       if (inputDescription instanceof AnalysisEngineDescription) {
         validateDescriptorType(DESCRIPTOR_AE);
         setAeDescription((AnalysisEngineDescription) inputDescription);
@@ -842,19 +1008,50 @@ public class MultiPageEditor extends FormEditor {
         validateDescriptorType(DESCRIPTOR_FLOWCONTROLLER);
         setFlowControllerDescription((FlowControllerDescription) inputDescription);
       } else {
-        throw new PartInitException(Messages.getFormattedString(
-                "MultiPageEditor.unrecognizedDescType", //$NON-NLS-1$
-                new String[] { AbstractSection.maybeShortenFileName(filePathName) })
-                + Messages.getString("MultiPageEditor.11")); //$NON-NLS-1$
+        if (null == extensionEditor) {
+          extensionEditor = getRequiredEditor(inputDescription);
+        }
+        if (null == extensionEditor) {
+          throw new PartInitException(Messages.getFormattedString(
+                  "MultiPageEditor.unrecognizedDescType", //$NON-NLS-1$
+                  new String[] { AbstractSection.maybeShortenFileName(filePathName) })
+                  + Messages.getString("MultiPageEditor.11")); //$NON-NLS-1$
+        } else {
+          extensionEditor.activateEditor(getEditorSite(), getEditorInput(), this, inputDescription);
+          currentEditor = (IUimaMultiPageEditor)extensionEditor;
+        }
       }
       isBadXML = false;
     } catch (InvalidXMLException e) {
+      if (InvalidXMLException.INVALID_DESCRIPTOR_FILE.equals(e.getMessageKey())) {
+        Throwable cause = e.getCause();
+        if ((cause instanceof InvalidXMLException) &&
+            InvalidXMLException.UNKNOWN_ELEMENT.equals(((InvalidXMLException)cause).getMessageKey()) &&
+            (null == extensionEditor)) {
+          // try loading extension editors and reparsing
+          extensionEditor = getRequiredEditor((String)((InvalidXMLException)cause).getArguments()[0]);
+          if (null != extensionEditor) {
+            // the act of finding the right editor calls that editors init() method
+            // which could install another parse target result, which would make this
+            // exception go away - so try reparsing.
+                        
+            try {
+              parseSourceInner(new XMLInputSource(input.getURL()), filePathName);
+            } catch (IOException e1) {
+              Utility.popMessage(
+                  "Internal Error",
+                  "While parsing input for extension editor: " + getMessagesToRootCause(e1),
+                  Utility.ERROR);
+              throw new InternalErrorCDE(e1);
+            }
+            return;
+          }
+        }
+      }
       e.printStackTrace();
-      Utility
-              .popMessage(
-                      Messages.getString("MultiPageEditor.XMLerrorInDescriptorTitle"), //$NON-NLS-1$
-                      Messages.getString("MultiPageEditor.XMLerrorInDescriptor") + "\n" + getMessagesToRootCause(e), //$NON-NLS-1$ //$NON-NLS-2$
-                      MessageDialog.ERROR);
+      Utility.popMessage(Messages.getString("MultiPageEditor.XMLerrorInDescriptorTitle"), //$NON-NLS-1$
+              Messages.getString("MultiPageEditor.XMLerrorInDescriptor") + "\n" + getMessagesToRootCause(e), //$NON-NLS-1$ //$NON-NLS-2$
+              MessageDialog.ERROR);
 
     } catch (ResourceInitializationException e) {
       // occurs if bad xml
@@ -915,6 +1112,10 @@ public class MultiPageEditor extends FormEditor {
   }
 
   protected void pageChange(int newPageIndex) {
+    currentEditor.pageChangeForCurrentEditor(newPageIndex);
+  }
+  
+  public void pageChangeForCurrentEditor(int newPageIndex) {
     if (isPageChangeRecursion)
       return;
     isRevertingIndex = false;
@@ -1024,7 +1225,7 @@ public class MultiPageEditor extends FormEditor {
     return true;
   }
 
-  private String getCharSet(String text) {
+  public String getCharSet(String text) {
     final String key = Messages.getString("MultiPageEditor.16"); //$NON-NLS-1$
     int i = text.indexOf(key);
     if (i == -1)

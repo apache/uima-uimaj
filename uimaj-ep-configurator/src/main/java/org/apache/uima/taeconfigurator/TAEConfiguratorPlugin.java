@@ -121,12 +121,15 @@ public class TAEConfiguratorPlugin extends AbstractUIPlugin {
 
   private static URL installURL = null;
 
+  public static String pluginId;
+
   /**
    * The constructor.
    */
   public TAEConfiguratorPlugin(IPluginDescriptor descriptor) {
     super(descriptor);
     plugin = this;
+    pluginId = descriptor.getUniqueIdentifier();
     try {
       resourceBundle = ResourceBundle.getBundle("org.apache.uima.taeconfigurator.taeconfigurator");
     } catch (MissingResourceException x) {

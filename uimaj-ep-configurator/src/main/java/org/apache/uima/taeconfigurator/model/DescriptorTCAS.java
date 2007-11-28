@@ -19,17 +19,13 @@
 
 package org.apache.uima.taeconfigurator.model;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
-import org.apache.uima.cas.admin.CASAdminException;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.admin.CASAdminException;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.taeconfigurator.InternalErrorCDE;
 import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
-import org.apache.uima.util.CasCreationUtils;
 
 /**
  * Model part: CAS corresponding to the descriptor being edited

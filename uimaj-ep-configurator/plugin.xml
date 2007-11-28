@@ -22,6 +22,7 @@
 	-->
 
 <plugin>
+   <extension-point id="externalEditor" name="UIMA External Editor" schema="schema/editorContribution.exsd"/>
      <extension
          point="org.eclipse.ui.editors">
       <editor
