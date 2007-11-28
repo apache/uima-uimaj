@@ -539,7 +539,7 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
       for (IConfigurationElement canEdit : xeditor.getChildren()) {
         String elementName = canEdit.getAttribute("elementName");
         String parseResultName = canEdit.getAttribute("internalParseClass");
-        if ( ( (null != topElementName) && topElementName.equals(elementName)) |
+        if ( ( (null != topElementName) && topElementName.equals(elementName)) ||
              ( (null != parsedResultClassName) && parsedResultClassName.equals(parseResultName)) ) {            
           try {
             editor = (IUimaEditorExtension) xeditor.createExecutableExtension(EXTENSION_TAG_CLASS_ATTRIB); 
