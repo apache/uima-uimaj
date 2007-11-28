@@ -54,6 +54,17 @@
           <rangeTypeName>uima.cas.FSList</rangeTypeName>
           <elementType>uima.tcas.Annotation</elementType>
         </featureDescription>
+        <featureDescription>
+          <name>arrayTop</name>
+          <description/>
+          <rangeTypeName>uima.cas.FSArray</rangeTypeName>
+          <elementType>uima.cas.TOP</elementType>
+        </featureDescription>
+        <featureDescription>
+          <name>arrayNoElementType</name>
+          <description/>
+          <rangeTypeName>uima.cas.FSArray</rangeTypeName>
+        </featureDescription>
       </features>
     </typeDescription>
   </types>

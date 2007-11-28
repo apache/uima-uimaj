@@ -126,7 +126,13 @@ public class CasCreationUtilsTest extends TestCase {
           ResourceInitializationException.INCOMPATIBLE_MULTI_REFS);
 
       checkMergeTypeSystem(ts1desc, "TypeSystemMergeOkMultiRef.xml", null);
-
+      
+      checkMergeTypeSystem(ts1desc, "TypeSystemMergeNoElementType.xml", null);
+      
+      checkMergeTypeSystem(ts1desc, "TypeSystemMergeTopElementType.xml", null);
+      
+      checkMergeTypeSystem(ts1desc, "TypeSystemMergeWrongElementTypeWithNone.xml",
+          ResourceInitializationException.INCOMPATIBLE_ELEMENT_RANGE_TYPES);
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }

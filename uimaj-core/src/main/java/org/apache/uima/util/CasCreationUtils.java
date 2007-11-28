@@ -1583,7 +1583,7 @@ public class CasCreationUtils {
                   aType.getName() + ":" + feat.getName(), aType.getSourceUrlString() });
         }
 
-        if (!equalsOrBothNull(feat.getElementType(), elementTypeName)) {
+        if (!elementTypesCompatible(feat.getElementType(), elementTypeName)) {
           throw new ResourceInitializationException(
               ResourceInitializationException.INCOMPATIBLE_ELEMENT_RANGE_TYPES, new Object[] {
                   aType.getName() + ":" + feat.getName(), elementTypeName, feat.getElementType(),
@@ -1593,8 +1593,12 @@ public class CasCreationUtils {
     }
   }
 
-  private static boolean equalsOrBothNull(Object o1, Object o2) {
-    return ((null == o1) && (null == o2)) || ((null != o1) && o1.equals(o2));
+  private static boolean elementTypesCompatible(Object o1, Object o2) {
+    return ((null == o1) && (null == o2)) || ((null != o1) && o1.equals(o2)) ||
+      // allow missing types to be equal to TOP
+      (o1 != null && o1.equals("uima.cas.TOP") && o2 == null) ||
+      (o2 != null && o2.equals("uima.cas.TOP") && o1 == null)
+    ;
   }
 
   /**
