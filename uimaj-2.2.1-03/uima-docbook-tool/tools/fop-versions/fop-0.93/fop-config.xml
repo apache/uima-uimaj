@@ -1,0 +1,60 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one
+   or more contributor license agreements.  See the NOTICE file
+   distributed with this work for additional information
+   regarding copyright ownership.  The ASF licenses this file
+   to you under the Apache License, Version 2.0 (the
+   "License"); you may not use this file except in compliance
+   with the License.  You may obtain a copy of the License at
+   
+     http://www.apache.org/licenses/LICENSE-2.0
+   
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied.  See the License for the
+   specific language governing permissions and limitations
+   under the License.
+-->
+<fop version="1.0">
+  <!-- relative base used for URL resolution -->
+  <!-- set to ${target.dir}/${chapter_name} -->
+  <!-- the base value is used for resolving relative urls in the input text
+       including src="xyz.png" images
+       Therefore, must be set to the target dir where the output is going -->
+  
+  <base>.</base>
+  <!-- relative base used for font URL resolution
+       expressed relative to the FOP base dir -->
+  <font-base>../../../uima-docbook-tool/tools/fop-versions/fop-0.93/fonts</font-base>
+  <!-- Source resolution in dpi (dots/pixels per inch) for determining the size of pixels in SVG and bitmap images, default: 72dpi -->
+  <source-resolution>96</source-resolution>
+  <!-- Target resolution in dpi (dots/pixels per inch) for specifying the target resolution for generated bitmaps, default: 72dpi -->
+  <target-resolution>96</target-resolution>
+  <renderers>
+  <renderer mime="application/pdf">
+  <fonts>
+    <font metrics-url="palatino.xml"
+      kerning="yes"
+      embed-url="file:///c:/WINDOWS/Fonts/pala.TTF">
+      <font-triplet name="Palatino" style="normal" weight="normal"/>
+    </font>
+    <font metrics-url="palatino-bold.xml" 
+      kerning="yes"
+      embed-url="file:///c:/WINDOWS/Fonts/palab.TTF">
+      <font-triplet name="Palatino" style="normal" weight="bold"/>
+    </font>
+    <font metrics-url="palatino-italic.xml" 
+      kerning="yes"
+      embed-url="file:///c:/WINDOWS/Fonts/palai.TTF">
+      <font-triplet name="Palatino" style="italic" weight="normal"/>
+    </font>
+    <font metrics-url="palatino-bold-italic.xml" 
+      kerning="yes"
+      embed-url="file:///c:/WINDOWS/Fonts/palabi.TTF">
+      <font-triplet name="Palatino" style="italic" weight="bold"/>
+    </font>
+  </fonts>
+    </renderer>
+  </renderers>
+</fop>
