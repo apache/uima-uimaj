@@ -156,6 +156,7 @@ Release Notes - UIMA - Version 2.2.1
     * [UIMA-639] - udpate ReleaseNotes for release 2.2.1
     * [UIMA-641] - CPM test case fails with Sun JVM
     * [UIMA-649] - CAS.getAnnotationIndex(Type) does creates invalid index objects
+    * [UIMA-654] - add missing license header 
 
 ** Improvement
     * [UIMA-74] - make Eclipse plugins into features that can be installed by Eclipse update mechanism
