@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one
+   or more contributor license agreements.  See the NOTICE file
+   distributed with this work for additional information
+   regarding copyright ownership.  The ASF licenses this file
+   to you under the Apache License, Version 2.0 (the
+   "License"); you may not use this file except in compliance
+   with the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied.  See the License for the
+   specific language governing permissions and limitations
+   under the License.    
+-->
+
+<project name="FOP Font Metric Generation" default="gen" basedir="../">
+
+  <!-- ======================================================================== -->
+  <!-- ==                                                                    == -->
+  <!-- == Generate the Font Metrics - Windows                                == -->
+  <!-- ==                                                                    == -->
+  <!-- ======================================================================== -->
+  <path id="fop.classpath">
+		<fileset dir="${basedir}/fop-0.93/lib">
+      <include name="fop.jar"/>
+      <include name="avalon-framework.jar"/>
+      <include name="commons-logging.jar"/>
+      <include name="commons-io.jar"/>
+    </fileset>
+	</path>
+
+  <target name="gen" >
+    <antcall target="gen1">
+      <param name="fontName" value="pala"/>
+      <param name="longFontName" value="palatino"/>
+    </antcall>
+        <antcall target="gen1">
+      <param name="fontName" value="palai"/>
+      <param name="longFontName" value="palatino-italic"/>
+    </antcall>
+    <antcall target="gen1">
+      <param name="fontName" value="palab"/>
+      <param name="longFontName" value="palatino-bold"/>
+    </antcall>
+    <antcall target="gen1">
+      <param name="fontName" value="palabi"/>
+      <param name="longFontName" value="palatino-bold-italic"/>
+    </antcall>
+
+  </target> 
+
+ <!--   <target name="gen" >
+    <antcall target="gen1">
+      <param name="fontName" value="ARIAL"/>
+      <param name="longFontName" value="palatino"/>
+    </antcall>
+        <antcall target="gen1">
+      <param name="fontName" value="ARIALI"/>
+      <param name="longFontName" value="palatino-italic"/>
+    </antcall>
+    <antcall target="gen1">
+      <param name="fontName" value="ARIALBD"/>
+      <param name="longFontName" value="palatino-bold"/>
+    </antcall>
+    <antcall target="gen1">
+      <param name="fontName" value="ARIALBI"/>
+      <param name="longFontName" value="palatino-bold-italic"/>
+    </antcall>
+
+  </target> -->
+  
+  <target name="gen1" description="--> generate one font metric">
+
+    <java classpathref="fop.classpath"  classname="org.apache.fop.fonts.apps.TTFReader"
+      fork="true" maxmemory="256m" dir="${basedir}">
+      <arg value="-enc"/>  
+      <arg value="ansi"/> 
+			<arg value="c:\Windows\fonts\${fontName}.ttf"/>
+      <arg value="${basedir}/fop-0.93/lib/${longFontName}.xml"/>      
+    </java>
+  </target>
+
+</project>
