@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one
+   or more contributor license agreements.  See the NOTICE file
+   distributed with this work for additional information
+   regarding copyright ownership.  The ASF licenses this file
+   to you under the Apache License, Version 2.0 (the
+   "License"); you may not use this file except in compliance
+   with the License.  You may obtain a copy of the License at
+   
+     http://www.apache.org/licenses/LICENSE-2.0
+   
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied.  See the License for the
+   specific language governing permissions and limitations
+   under the License.
+-->
+
+<project name="get-components">
+
+  <!-- ======================================================================== -->
+  <!-- ==                                                                    == -->
+  <!-- == Subroutines                                                        == -->
+  <!-- ==                                                                    == -->
+  <!-- ======================================================================== -->
+  <!-- ======================================================================== -->
+  <!-- == Subroutine: Copy the docbook system images                         == -->
+  <!-- ======================================================================== -->
+  
+  <target name="copy-docbook-images">
+    
+    <copy todir="${target.dir.path}/images">
+      <fileset dir="${docbook.xsl.dir}/images/"/>
+    </copy>
+       
+  </target>
+  
+  <!-- ======================================================================== -->
+  <!-- == Subroutine: Download Saxon                                         == -->
+  <!-- ======================================================================== -->
+  
+  <target name="get-saxon" unless="saxon.available">
+    <input
+      message="Downloading and unzipping (one time) Saxon's free XSLT package,&#xA;
+licensed under the Mozilla Public License Version 1.0;&#xA;
+you may not use this package except in compliance with the License.&#xA;&#xA; 
+You may obtain a copy of the License at http://www.mozilla.org/MPL/&#xA;&#xA;Ok to download?"
+      validargs="y,n" addproperty="ok.download.saxon"/>
+    <condition property="do.download.saxon">
+      <equals arg1="y" arg2="${ok.download.saxon}"/>
+    </condition>
+    <fail unless="do.download.saxon" message="Download aborted by user."/>
+    
+    <get src="http://prdownloads.sourceforge.net/saxon/saxon6-5-5.zip" dest="${tmp.dir}/saxon.zip"/>
+    <unzip src="${tmp.dir}/saxon.zip" dest="${tmp.dir}/saxon"/>
+    <copy file="${tmp.dir}/saxon/saxon.jar" tofile="${saxon.dir}/saxon.jar"/>
+  </target>
+  
+  <!-- ======================================================================== -->
+  <!-- == Subroutine: Download jai                                           == -->
+  <!-- ======================================================================== -->
+  
+  <target name="get-jai" unless="jai.available">
+    <input
+      message="Downloading and unzipping (one time) Java Advanced Imaging package (JAI),&#xA;
+licensed under the specific Sun license for JAI;&#xA;
+You may not use this package except in compliance with the License.&#xA;&#xA; 
+The license is contained in the download.&#xA;&#xA;Ok to download?"
+      validargs="y,n" addproperty="ok.download.jai"/>
+    <condition property="do.download.jai">
+      <equals arg1="y" arg2="${ok.download.jai}"/>
+    </condition>
+    <fail unless="do.download.jai" message="Download aborted by user."/>
+    
+    <get src="http://download.java.net/media/jai/builds/release/1_1_3/jai-1_1_3-lib.zip"
+      dest="${tmp.dir}/jai.zip"/>
+    <unzip src="${tmp.dir}/jai.zip" dest="${tmp.dir}"/>
+    <copy todir="${jai.dir}">
+      <fileset dir="${tmp.dir}/jai-1_1_3/lib">
+        <include name="jai_codec.jar"/>
+        <include name="jai_core.jar"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <!-- ======================================================================== -->
+  <!-- == Subroutine: Unzip the docbook xml and xslt transformations         == -->
+  <!-- ======================================================================== -->
+  <target name="get-docbook" description="internal: gets and unzips docbook xml and xsl style sheets"
+    unless="docbook.available">
+    
+    <input
+      message="Downloading and unzipping (one time) the free docbook DTDs and XSLT packages.&#xA;
+The DTDs are copyrighted with the following permissions granted:
+  Copyright 1992-2004 HaL Computer Systems, Inc.,&#xA;
+  O'Reilly &amp; Associates, Inc., ArborText, Inc., Fujitsu Software&#xA;
+  Corporation, Norman Walsh, Sun Microsystems, Inc., and the&#xA;
+  Organization for the Advancement of Structured Information&#xA;
+  Standards (OASIS).&#xA;&#xA;
+  Permission to use, copy, modify and distribute the DocBook DTD&#xA;
+  and its accompanying documentation for any purpose and without fee&#xA;
+  is hereby granted in perpetuity, provided that the above copyright&#xA;
+  notice and this paragraph appear in all copies. The copyright&#xA;
+  holders make no representation about the suitability of the DTD for&#xA;
+  any purpose. It is provided &quot;as is&quot; without expressed or implied&#xA;
+  warranty.&#xA;&#xA;
+  If you modify the DocBook DTD in any way, except for declaring and&#xA;
+  referencing additional sets of general entities and declaring&#xA;
+  additional notations, label your DTD as a variant of DocBook. See&#xA;
+  the maintenance documentation for more information. &#xA;&#xA;
+The XSLT transforms come with the following copyright and permissions:&#xA;
+  Permission is hereby granted, free of charge, to any person&#xA;
+  obtaining a copy of this software and associated documentation&#xA;
+  files (the ``Software''), to deal in the Software without&#xA;
+  restriction, including without limitation the rights to use,&#xA;
+  copy, modify, merge, publish, distribute, sublicense, and/or&#xA;
+  sell copies of the Software, and to permit persons to whom the&#xA;
+  Software is furnished to do so, subject to the following&#xA;
+  conditions:&#xA;&#xA;
+  The above copyright notice and this permission notice shall be&#xA;
+  included in all copies or substantial portions of the Software.&#xA;
+ 	Except as contained in this notice, the names of individuals&#xA;
+ 	credited with contribution to this software shall not be used in&#xA;
+ 	advertising or otherwise to promote the sale, use or other&#xA;
+ 	dealings in this Software without prior written authorization&#xA;
+ 	from the individuals in question.&#xA;&#xA;
+ 	Any stylesheet derived from this Software that is publically&#xA;
+ 	distributed will be identified with a different name and the&#xA;
+ 	version strings in any derived Software will be changed so that&#xA;
+ 	no possibility of confusion between the derived package and this&#xA;
+ 	Software will exist.&#xA;&#xA;
+ 	Warranty&#xA;
+ 	--------&#xA;&#xA;
+ 	THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND,&#xA;
+ 	EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES&#xA;
+ 	OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND&#xA;
+ 	NONINFRINGEMENT. IN NO EVENT SHALL NORMAN WALSH OR ANY OTHER&#xA;
+ 	CONTRIBUTOR BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,&#xA;
+ 	WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING&#xA;
+ 	FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR&#xA;
+ 	OTHER DEALINGS IN THE SOFTWARE.&#xA;
+ &#xA;&#xA;Ok to download?"
+      validargs="y,n" addproperty="ok.download.docbooks"/>
+    
+    <condition property="do.download.docbooks">
+      <equals arg1="y" arg2="${ok.download.docbooks}"/>
+    </condition>
+    <fail unless="do.download.docbooks" message="Download aborted by user."/>
+    
+    <mkdir dir="${docbook.xml.dir}"/>
+    <echo message="Downloading and unzipping (one time) docbook-xml-${docbook.xml.version}.zip"/>
+    <get
+      src="http://www.docbook.org/xml/${docbook.xml.version}/docbook-xml-${docbook.xml.version}.zip"
+      dest="${tmp.dir}/docbook-system-xml.zip"/>
+    <unzip src="${tmp.dir}/docbook-system-xml.zip" dest="${docbook.xml.dir}"/>
+    
+    <mkdir dir="${docbook.xsl.dir}"/>
+    <echo message="Downloading and unzipping (one time) docbook-xsl-${docbook.xsl.version}.zip"/>
+    <get src="http://downloads.sourceforge.net/docbook/docbook-xsl-${docbook.xsl.version}.zip"
+      dest="${tmp.dir}/docbook-system-xsl.zip"/>
+    
+    <unzip src="${tmp.dir}/docbook-system-xsl.zip" dest="${docbook.ref.dir}"/>
+  </target>
+
+</project>
