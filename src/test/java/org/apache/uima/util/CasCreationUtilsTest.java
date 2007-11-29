@@ -129,7 +129,7 @@ public class CasCreationUtilsTest extends TestCase {
       
       checkMergeTypeSystem(ts1desc, "TypeSystemMergeNoElementType.xml", null);
       
-      checkMergeTypeSystem(ts1desc, "TypeSystemMergeTopElementType.xml", null);
+      checkMergeTypeSystem(ts1desc, "typeSystemMergeTopElementType.xml", null);
       
       checkMergeTypeSystem(ts1desc, "TypeSystemMergeWrongElementTypeWithNone.xml",
           ResourceInitializationException.INCOMPATIBLE_ELEMENT_RANGE_TYPES);
@@ -139,35 +139,35 @@ public class CasCreationUtilsTest extends TestCase {
   }
   
   private void checkMergeTypeSystem(TypeSystemDescription ts1desc, String typeFile, String msgKey)
-			throws Exception {
-		try {
-			
+  throws Exception {
+    try {
 
-			TypeSystemDescription ts2desc = UIMAFramework
-					.getXMLParser()
-					.parseTypeSystemDescription(
-							new XMLInputSource(
-									JUnitExtension
-											.getFile("CasCreationUtilsTest/" + typeFile)));
-			
 
-			ArrayList tsList = new ArrayList();
-			tsList.add(ts1desc);
-			tsList.add(ts2desc);
+      TypeSystemDescription ts2desc = UIMAFramework
+      .getXMLParser()
+      .parseTypeSystemDescription(
+          new XMLInputSource(
+              JUnitExtension
+              .getFile("CasCreationUtilsTest/" + typeFile)));
 
-			boolean rightExceptionThrown = (null != msgKey) ? false : true;
-			try {
-				CasCreationUtils.mergeTypeSystems(
-						tsList, UIMAFramework.newDefaultResourceManager(), new HashMap());
-			} catch (ResourceInitializationException rie) {
-				rightExceptionThrown = (null != msgKey) && rie.hasMessageKey(msgKey);
-			}
-			assertTrue(rightExceptionThrown);
 
-		} catch (Exception e) {
-			JUnitExtension.handleException(e);
-		}
-	}
+      ArrayList tsList = new ArrayList();
+      tsList.add(ts1desc);
+      tsList.add(ts2desc);
+
+      boolean rightExceptionThrown = (null != msgKey) ? false : true;
+      try {
+        CasCreationUtils.mergeTypeSystems(
+            tsList, UIMAFramework.newDefaultResourceManager(), new HashMap());
+      } catch (ResourceInitializationException rie) {
+        rightExceptionThrown = (null != msgKey) && rie.hasMessageKey(msgKey);
+      }
+      assertTrue(rightExceptionThrown);
+
+    } catch (Exception e) {
+      JUnitExtension.handleException(e);
+    }
+  }
 
   public void testAggregateWithImports() throws Exception {
     try {
