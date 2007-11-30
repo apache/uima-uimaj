@@ -73,10 +73,50 @@ under the License.
           worth the effort. There are also books you can get that describe Eclipse and its
         use.</para></listitem></itemizedlist>
       
+      <para>The first time Eclipse starts up it will take a bit longer as it completes its
+        installation. A <quote>welcome</quote> page will come up. After you are through
+        reading the welcome information, click on the arrow to exit the welcome page and get to
+        the main Eclipse screens.</para>
+    </section>
+    
+    <section id="ugr.ovv.eclipse_setup.install_uima_eclipse_plugins">
+      <title>Installing the UIMA Eclipse Plugins</title>
+      
+      <para>The best way to do this is to use the Eclipse Update mechanism, because that will 
+        insure that all needed prerequisites are also installed.  See below for an alternative,
+        manual approach.</para>
+      
+        <note><para>If your computer is on an internet connection which uses a proxy server, you can
+        configure Eclipse to know about that. Put your proxy settings into Ecluse using the
+        Eclipse preferences by accessing the menus: Window &rarr; Preferences... &rarr;
+        Install/Update, and Enable HTTP proxy connection under the Proxy Settings with the
+        information about your proxy. </para></note>
+
+      
+      <para>To use the Eclipse Update mechanism, start Eclipse, and then pick the menu 
+        <command>Help &rarr; Software Updates &rarr; Find and Install...</command>.
+      On the next page, select the option to Search for new features to install, and press the
+        <command>Next</command> button.  On the next panel, update sites to visit, press the "Add a new
+        remote site" button and enter the URL 
+        http://www.apache.org/dist/incubator/uima/eclipse-update-site, and press OK.  On the previous
+        page will now appear this new Site, and it should be checked.</para>
+      
+      <para>Also check the Europa (or Callisto) 
+        Discovery Site, which is where the EMF core plugins are (EMF stands for Eclipse Modeling Framework; 
+        it is an add-on to Eclipse, and is used
+        by some of the UIMA Eclipse tooling).</para>
+      <para>Now click finish, and follow the 
+        remaining panels to install the UIMA plugins.  If
+        you do not have a compatible level of EMF installed, when you select the UIMA plugins, you will get a
+        message saying it needs EMF.  To add EMF to the list of plugins to be downloaded, just expand the
+        Discovery Site entry by clicking it's little "plus" sign and then push the "Select Required" button on the right
+        of the panel.  This will select the part of EMF that is needed.</para>
     </section>
     
     <section id="ugr.ovv.eclipse_setup.install_emf">
-      <title>Install additional Eclipse component: EMF</title>
+      <title>Manual Install additional Eclipse component: EMF</title>
+      <para>You can skip this section if you installed EMF using the above process.</para>
+      
       <warning><para>EMF comes in many versions; <emphasis role="bold">you must install
       the version that corresponds to the level of Eclipse that you are running.</emphasis>
       This is automatically done for you if you install it using the Eclipse update mechanism,
@@ -84,8 +124,7 @@ under the License.
       the version that corresponds to the level of Eclipse you are running, before installing
       it.</para></warning>
       
-      <para>EMF stands for Eclipse Modeling Framework. It is an add-on to Eclipse, and is used
-        by the UIMA Eclipse tooling. Before installing it, please go to <ulink
+      <para>Before installing EMF using these instructions, please go to <ulink
           url="&url_emf;"/> and read the installation instructions, and then click on the
         "Update Manager" link to see what url to use in the next step, where you use the built-in
         facilities in Eclipse to find and install new features. </para>
@@ -100,15 +139,9 @@ under the License.
         install</quote>, push <quote>Next</quote>. Specify the update sites to use to
         search for EMF, making sure the <quote>Ignore features not applicable to this
         environment</quote> box is checked (at the bottom of the dialog), and push
-        <quote>Finish</quote>. A good site to use is the Callisto Discovery Site - which has a
-        collection of Eclipse components. </para>
-      
-      <para> If your computer is on an internet connection which uses a proxy server, you can
-        configure Eclipse to know about that. Put your proxy settings into Ecluse using the
-        Eclipse preferences by accessing the menus: Window &rarr; Preferences... &rarr;
-        Install/Update, and Enable HTTP proxy connection under the Proxy Settings with the
-        information about your proxy. </para>
-      
+        <quote>Finish</quote>. A good site to use is one of the Discovery Sites (e.g. Callisto or Europa) - which has a
+        collection of Eclipse components including EMF. </para>
+            
       <para>This will launch a search for updates to Eclipse; it may show a list of update site
         mirrors &ndash; click OK. When it finishes, it shows a list of possible updates in an
         expandable tree. Expand the tree nodes to find EMF SDK. The specific level may vary
@@ -169,10 +202,13 @@ under the License.
 
     </section>
     
-    <section id="ugr.ovv.eclipse_setup.install_uima_eclipse_plugins">
-      <title>Install the UIMA Eclipse Plugins</title>
+    <section id="ugr.ovv.eclipse_setup.install_uima_eclipse_plugins_manually">
+      <title>Installing the UIMA Eclipse Plugins, manually</title>
       
-      <para>In the directory %UIMA_HOME%/eclipsePlugins (The environment variable
+      <para>If you installed the UIMA plugins using the update mechanism above, please skip this section.</para>
+      
+      <para>If you are unable to use the Eclipse Update mechanism to install the UIMA plugins, you 
+        can do this manually.  In the directory %UIMA_HOME%/eclipsePlugins (The environment variable
         %UIMA_HOME% is where you installed the UIMA SDK), you will see a set of folders. Copy these
         to your %ECLIPSE_HOME%/eclipse/plugins directory (%ECLIPSE_HOME% is where you
         installed Eclipse).</para>
@@ -187,11 +223,6 @@ under the License.
         <command>eclipse -clean</command> (see explanation in the next section) in the
         directory where you installed Eclipse. You may want to set up a desktop shortcut at
         this point for Eclipse.</para>
-      
-      <para>The first time Eclipse starts up it will take a bit longer as it completes its
-        installation. A <quote>welcome</quote> page will come up. After you are through
-        reading the welcome information, click on the arrow to exit the welcome page and get to
-        the main Eclipse screens.</para>
       
       <section id="ugr.ovv.eclipse_setup.special_startup_parameter_clean">
         <title>Special startup parameter for Eclipse: -clean</title>
