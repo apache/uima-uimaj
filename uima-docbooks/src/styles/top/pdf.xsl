@@ -33,6 +33,10 @@
   <!-- import the standard uima-style of formatting from the shared uima-docbook-tool project -->
   <xsl:import href="../../../../uima-docbook-tool/styles/uima-style/top/pdf.xsl" />  
     
+    <!-- width specifications: inside, center, outside -->
+    <!-- OVERRIDE:  inside is large to accommodate large version strings without overflowing -->
+    <xsl:param name="footer.column.widths">6 8 1</xsl:param>
+  
   <!-- The script will generate a title page in ${local.titlepage.dir} -->
   <!-- this generate xsl file needs to be included here -->
   <!-- Make sure the path agrees with your setting of ${local.titlepage.dir} in local.docbook.properties -->
