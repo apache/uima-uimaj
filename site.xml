@@ -17,15 +17,16 @@
    specific language governing permissions and limitations
    under the License.    
 -->
-<site>
+<site
+      mirrorsURL="http://incubator.apache.org/mirrors-support/uima-eclipse-update--xml.cgi">
    <description url="http://incubator.apache.org/uima/downloads/eclipse-update-site">
       Eclipse update site for Apache UIMA.
    </description>
    <feature url="features/org.apache.uima.tools_2.2.1.incubating.jar" id="org.apache.uima.tools" version="2.2.1.incubating">
-      <category name="UIMA-2.2.1.incubating"/>
+      <category name="uima-tooling-and-runtimes"/>
    </feature>
    <feature url="features/org.apache.uima.runtime_2.2.1.incubating.jar" id="org.apache.uima.runtime" version="2.2.1.incubating">
-      <category name="UIMA-2.2.1.incubating"/>
+      <category name="uima-tooling-and-runtimes"/>
    </feature>
-   <category-def name="UIMA-2.2.1.incubating" label="Apache UIMA Eclipse tooling and runtime support"/>
+   <category-def name="uima-tooling-and-runtimes" label="Apache UIMA Eclipse tooling and runtime support"/>
 </site>
