@@ -19,7 +19,7 @@
 -->
 <site
       mirrorsURL="http://incubator.apache.org/mirrors-support/uima-eclipse-update--xml.cgi">
-   <description url="http://incubator.apache.org/uima/downloads/eclipse-update-site">
+   <description url="http://www.apache.org/dist/incubator/uima/eclipse-update-site">
       Eclipse update site for Apache UIMA.
    </description>
    <feature url="features/org.apache.uima.tools_2.2.1.incubating.jar" id="org.apache.uima.tools" version="2.2.1.incubating">
