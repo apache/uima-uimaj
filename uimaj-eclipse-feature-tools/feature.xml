@@ -53,7 +53,7 @@ under the License.
    </license>
 
    <url>
-      <discovery label="UIMA Eclipse Plugins update site" url="http://incubator.apache.org/uima/downloads/eclipse-update-site"/>
+      <discovery label="UIMA Eclipse Plugins update site" url="http://www.apache.org/dist/incubator/uima/eclipse-update-site"/>
    </url>
 
    <includes
