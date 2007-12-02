@@ -30,6 +30,7 @@ import org.apache.uima.resource.ResourceCreationSpecifier;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.impl.ExternalResourceDependency_impl;
 import org.apache.uima.resource.metadata.ExternalResourceBinding;
+import org.apache.uima.resource.metadata.ResourceManagerConfiguration;
 import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
 import org.apache.uima.taeconfigurator.editors.ui.dialogs.AddExternalResourceDependencyDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -158,8 +159,11 @@ public class ResourceDependencySection extends AbstractSection {
   }
 
   private boolean isBound(String key) {
-    ExternalResourceBinding[] xrb = editor.getResolvedExternalResourcesAndBindings()
-            .getExternalResourceBindings();
+    ResourceManagerConfiguration rmc = editor.getResolvedExternalResourcesAndBindings();
+    if (null == rmc) { // happens if there is no such xml element in the descriptor
+      return false;
+    }
+    ExternalResourceBinding[] xrb = rmc.getExternalResourceBindings();
     if (null != xrb)
       for (int i = 0; i < xrb.length; i++) {
         if (key.equals(xrb[i].getKey()))
