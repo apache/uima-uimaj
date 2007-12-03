@@ -456,6 +456,18 @@ public class ResourceInitializationException extends UIMAException {
   public static final String FLOW_CONTROLLER_REQUIRES_FLOW_CONSTRAINTS = "flow_controller_requires_flow_constraints";
 
   /**
+   * Message key for a standard UIMA exception message: 
+   * Unexpected Exception thrown when initializing Custom Resource "{0}" from descriptor "{1}". 
+   */
+  public static final String EXCEPTION_WHEN_INITIALIZING_CUSTOM_RESOURCE = "exception_when_initializing_custom_resource";
+
+  /**
+   * Message key for a standard UIMA exception message: 
+   * Unexpected Throwable or Error thrown when initializing Custom Resource "{0}" from descriptor "{1}". 
+   */
+  public static final String THROWABLE_WHEN_INITIALIZING_CUSTOM_RESOURCE = "throwable_when_initializing_custom_resource";
+
+  /**
    * Creates a new exception with a null message.
    */
   public ResourceInitializationException() {

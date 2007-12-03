@@ -87,7 +87,21 @@ public class CustomResourceFactory_impl implements ResourceFactory {
                     aSpecifier.getSourceUrlString() }, e);
       }
       // attempt to initialize it
-      if (resource.initialize(aSpecifier, aAdditionalParams)) {
+      boolean initializeOK = false;
+      try {
+        initializeOK = resource.initialize(aSpecifier, aAdditionalParams);
+      } catch (Exception e) {
+        throw new ResourceInitializationException(
+            ResourceInitializationException.EXCEPTION_WHEN_INITIALIZING_CUSTOM_RESOURCE, 
+            new Object[] { className, aSpecifier.getSourceUrlString() },
+            e);
+      } catch (Throwable e) {
+        throw new ResourceInitializationException(
+            ResourceInitializationException.THROWABLE_WHEN_INITIALIZING_CUSTOM_RESOURCE, 
+            new Object[] { className, aSpecifier.getSourceUrlString() },
+            e);
+      }
+      if (initializeOK) {
         // success!
         return resource;
       } else
