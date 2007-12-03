@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % uimaents SYSTEM "../entities.ent" >  
+%uimaents;
+]>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<chapter id="ugr.issues">
+  <title>Known Issues</title>
+  <titleabbrev>Known Issues</titleabbrev>
+
+  <variablelist>
+    <varlistentry id="ugr.issues.cr_to_xml">
+    <term><emphasis role="bold">Sun Java 1.4.2_12 doesn't serialize CR characters to XML</emphasis></term>
+        <listitem>
+        <para>The XML serialization support in Sun Java 1.4.2_12 doesn't serialize CR characters to 
+        XML. As a result, if the document text contains CR characters, XCAS or XMI serialization 
+        will cause them to be lost, resulting in incorrect annotation offsets. This is exposed in 
+        the DocumentAnalyzer, with the highlighting being incorrect if the input document contains 
+        CR characters. </para>
+        </listitem>
+      </varlistentry>
+    <varlistentry id="ugr.issues.jcasgen_java_1.4">
+      <term><emphasis role="bold">JCasGen merge facility supports Java levels 1.4 or earlier</emphasis></term>
+      <listitem>
+        <para>JCasGen has a facility to merge in user (hand-coded) changes with the code generated
+          by JCasGen.  This merging supports Java 1.4 constructs only.  JCasGen generates Java 1.4 
+          compliant code, so as long as any code you change here also only uses Java 1.4 constructs, the 
+      merge will work, even if you're using Java 5 or later.  
+          If you use syntactic structures particular to Java 5 or later, the merge
+        operation will likely fail to merge properly.</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry id="ugr.issues.libgcj.4.1.2">
+      <term><emphasis role="bold">Descriptor editor in Eclipse tooling does not work with libgcj 4.1.2</emphasis></term>
+      <listitem>
+        <para>The descriptor editor in the Eclipse tooling does not work with libgcj 4.1.2, and
+        possibly other versions of libgcj.  This is apparently due to a bug in the implementation of
+        their XML library, which results in a class cast error.  libgcj is used as the default
+        JVM for Eclipse in Ubuntu (and other Linux distributions?).  The workaround is to use a
+        different JVM to start Eclipse.</para>
+      </listitem>
+    </varlistentry>
+      <!--
+      <varlistentry>
+      <term><emphasis role="bold"></emphasis></term>
+      <listitem><para></para></listitem>
+      </varlistentry>
+      -->
+ </variablelist>
+</chapter>
