@@ -2373,11 +2373,19 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
     boolean wantStackTrace = false;
     StringBuffer b = new StringBuffer(200);
     String messagePart = e.getMessage();
+    
+    // messages for noClassDef found and NPE don't say what the problem was,
+    // so always include the exception class also
+    
+    formatMessageWithClass(e, b, messagePart);
     if (null == messagePart) {
-      b.append(e.getClass().getName());
       wantStackTrace = true;
-    } else
-      b.append(messagePart);
+    }
+//    if (null == messagePart) {
+//      b.append(e.getClass().getName());
+//      wantStackTrace = true;
+//    } else
+//      b.append(messagePart);
     Throwable cur = e;
     Throwable next;
 
@@ -2389,7 +2397,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
         wantStackTrace = true;
       }
       if (null != message && !message.equals(messagePart)) {
-        b.append(Messages.getString("MultiPageEditor.causedBy")).append(message); //$NON-NLS-1$
+        b.append(Messages.getString("MultiPageEditor.causedBy"));
+        formatMessageWithClass(next, b, message);
         messagePart = message;
       }
       cur = next;
@@ -2405,6 +2414,21 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
     return b.toString();
   }
 
+  private void formatMessageWithClass(Throwable e, StringBuffer b, String messagePart) {
+    String name = e.getClass().getName();
+    //because this is a message for ordinary users, and
+    // because the exceptions are more easily readable without their package prefixes,
+    //  remove the package prefix from the displayed name
+    int lastDot = name.lastIndexOf('.');
+    if (lastDot >= 0) {
+      name = name.substring(lastDot + 1);
+    }
+    b.append(name);
+    if (null != messagePart) {
+      b.append(": ").append(messagePart);
+    }
+  }
+  
   public static class JCasGenProgressMonitor implements
           org.apache.uima.tools.jcasgen.IProgressMonitor {
     IProgressMonitor m_progressMonitor;
@@ -2917,7 +2941,7 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
     
     StringBuffer sb = new StringBuffer(100);
     for (int i = 0; i < names.size(); i++) {
-      sb.append(names.get(i))
+      sb.append("Component key-name(s): ").append(names.get(i))
         .append(": ")
         .append(getMessagesToRootCause((Exception)exceptions.get(i)))
         .append("\n");
