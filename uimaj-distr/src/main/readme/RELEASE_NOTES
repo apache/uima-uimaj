@@ -157,6 +157,11 @@ Release Notes - UIMA - Version 2.2.1
     * [UIMA-641] - CPM test case fails with Sun JVM
     * [UIMA-649] - CAS.getAnnotationIndex(Type) does creates invalid index objects
     * [UIMA-654] - add missing license header 
+    * [UIMA-655] - testMergeTypeSystemElementType(org.apache.uima.util.CasCreationUtilsTest) fails on Linux
+    * [UIMA-656] - Eclipse update site not working - nothing shows up as selectable
+    * [UIMA-659] - Conform Eclipse update site to Apache Distribution location requirements
+    * [UIMA-663] - CDE Resource Dependency page throwing NPE if XML missing <resourceManagerConfiguration> element
+    * [UIMA-665] - sometimes the test testHasNextWithOutOfMemoryError() for test class CpmCollectionReader_ErrorTest fails
 
 ** Improvement
     * [UIMA-74] - make Eclipse plugins into features that can be installed by Eclipse update mechanism
@@ -166,10 +171,14 @@ Release Notes - UIMA - Version 2.2.1
     * [UIMA-630] - Make TypeSystemUtils.isIdentifier() public so it can be accessed by client code
     * [UIMA-636] - Improve CDE to allow other tools to re-use its functionality to edit a new UIMA Xml descriptor
     * [UIMA-638] - CVD should allow viewing FSArrays longer than 20 elements
+    * [UIMA-661] - update docs for Eclipse Update Site install
+    * [UIMA-662] - Fix running footer in PDF docs having text overflow
+    * [UIMA-664] - CustomResourceFactory_impl not catching exceptions when calling out to initialize method
 
 ** New Feature
     * [UIMA-580] - Make the CDE plugin extensible
     * [UIMA-640] - Add more convenience methods to TypeSystemUtils
+    * [UIMA-660] - Add mirrors support to our website for use by Eclipse Update Site
 
 ** Task
     * [UIMA-576] - Change version number to 2.3-SNAPSHOT
