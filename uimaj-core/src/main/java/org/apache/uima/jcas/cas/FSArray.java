@@ -21,6 +21,7 @@ package org.apache.uima.jcas.cas;
 
 import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.LowLevelCAS;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
@@ -127,16 +128,17 @@ public final class FSArray extends TOP implements ArrayFS {
     return outArray;
   }
 
-  public void copyFromArray(String[] src, int srcOffset, int destOffset, int length)
-      throws ArrayIndexOutOfBoundsException, NumberFormatException {
-    // TODO Auto-generated method stub
-    
+  public void copyFromArray(String[] src, int srcOffset, int destOffset, int length) {
+    throw new UnsupportedOperationException();
   }
-
-  public void copyToArray(int srcOffset, String[] dest, int destOffset, int length)
-      throws ArrayIndexOutOfBoundsException {
-    // TODO Auto-generated method stub
     
+
+  public void copyToArray(int srcOffset, String[] dest, int destOffset, int length) {
+    CASImpl ll = jcasType.casImpl;
+    ll.checkArrayBounds(addr, srcOffset, length);
+    for (int i = 0; i < length; i++) {
+      dest[i + destOffset] = ll.ll_getFSForRef(ll.ll_getRefArrayValue(this.addr, i + srcOffset)).toString();
+    }
   }
 
   public String[] toStringArray() {

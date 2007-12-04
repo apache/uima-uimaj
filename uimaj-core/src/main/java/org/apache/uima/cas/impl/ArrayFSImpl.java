@@ -109,14 +109,10 @@ public class ArrayFSImpl extends CommonArrayFSImpl implements ArrayFS {
   }
 
   public void copyToArray(int srcOffset, String[] dest, int destOffset, int length) {
-    if ((srcOffset < 0) || ((srcOffset + length) > size())) {
-      throw new ArrayIndexOutOfBoundsException();
-    }
-    final int max = srcOffset + length;
-    int valueAddr;
-    for (int i = srcOffset; i < max; i++) {
-      valueAddr = this.casImpl.ll_getRefArrayValue(this.addr, i);
-      dest[i] = this.casImpl.ll_getFSForRef(valueAddr).toString();
+    final CASImpl ll = this.casImpl;
+    ll.checkArrayBounds(this.addr, srcOffset, length);
+    for (int i = 0; i < length; i++) {
+      dest[i + destOffset] = ll.ll_getFSForRef(ll.ll_getRefArrayValue(this.addr, i + srcOffset)).toString();
     }
   }
 
