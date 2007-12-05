@@ -144,6 +144,7 @@ Release Notes - UIMA - Version 2.2.1
     * [UIMA-578] - XmiCasDeserializer "merge" functionality doesn't support Sofas properly
     * [UIMA-579] - Maven build failing for Eclipse plugins - apparently including incorrectly Eclipse 3.3 versions
     * [UIMA-583] - update documentation for adding PEARs to aggregate AEs
+    * [UIMA-586] - Bug when merging CASes using XmiDeserialization
     * [UIMA-589] - The AnalysisEngine Descriptor editor disallows certain chars in Sofa names which documentation says are valid
     * [UIMA-598] - Memory leak from CAS pool
     * [UIMA-599] - Typo in JavaDocs for ParallelStep and SimpleStep 
@@ -188,3 +189,4 @@ Release Notes - UIMA - Version 2.2.1
 
 ** Wish
     * [UIMA-301] - CAS APIs should make it easier to deal with arrays of unknown element type
+
