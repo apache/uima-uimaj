@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one
+   or more contributor license agreements.  See the NOTICE file
+   distributed with this work for additional information
+   regarding copyright ownership.  The ASF licenses this file
+   to you under the Apache License, Version 2.0 (the
+   "License"); you may not use this file except in compliance
+   with the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied.  See the License for the
+   specific language governing permissions and limitations
+   under the License.    
+-->
+<feature
+      id="org.apache.uima.runtime"
+      label="UIMA Runtime"
+      version="2.2.1.incubating"
+      provider-name="Apache Software Foundation">
+
+   <description url="http://incubator.apache.org/uima">
+      This feature packages the UIMA runtime libraries plugin.
+   </description>
+
+   <copyright url="http://www.apache.org/licenses/LICENSE-2.0">
+      Copyright the Apache Software Foundation and others; see License
+and NOTICE files
+   </copyright>
+
+   <license url="http://www.apache.org/licenses/LICENSE-2.0">
+      Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+&quot;License&quot;); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+&quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+   </license>
+
+   <url>
+      <discovery label="UIMA Eclipse Plugins update site" url="http://www.apache.org/dist/incubator/uima/eclipse-update-site"/>
+   </url>
+
+   <plugin
+         id="org.apache.uima.runtime"
+         download-size="0"
+         install-size="0"
+         version="2.2.1.incubating"/>
+
+</feature>
