@@ -42,9 +42,11 @@ public class RunnableApplication {
 
   protected Execute exec;
 
-  protected ArrayList environment = new ArrayList();
+  protected ArrayList<String> environment = new ArrayList<String>();
 
   protected List argList = new ArrayList();
+  
+  private Properties sysEnvVars = null;
 
   /**
    * Sets up command line used to launch Cas Processor in a seperate process. Combines environment
@@ -74,13 +76,12 @@ public class RunnableApplication {
                   "+++++++++++++++++++++++++++++++++++++++++++++++++");
         }
         executable = rip.getExecutable().getExecutable();
-        List envList = rip.getExecutable().getEnvs();
+        List<CasProcessorRuntimeEnvParam> descrptrEnvVars = rip.getExecutable().getEnvs();
 
         exec = new Execute();
 
-        Properties sysEnv = null;
         try {
-          sysEnv = SystemEnvReader.getEnvVars();
+          sysEnvVars = SystemEnvReader.getEnvVars();
           if (System.getProperty("DEBUG") != null) {
             printSysEnvironment();
           }
@@ -88,59 +89,64 @@ public class RunnableApplication {
           e.printStackTrace();
         }
 
-        if (envList != null) {
-          // Make sure the env array has sufficient capacity
-          environment.clear();
+        environment.clear();
+        boolean pathDone = false;
+        boolean classpathDone = false;
+        
+        if (descrptrEnvVars != null) {
+
           // First copy all env vars from the CPE Descriptor treating PATH and CLASSPATH as special
           // cases
-          int i = 0; // need this here so that we know where to append vars from the env Property
-          // object
-          for (; envList != null && i < envList.size(); i++) {
-            CasProcessorRuntimeEnvParam envType = (CasProcessorRuntimeEnvParam) envList.get(i);
-            String key = envType.getEnvParamName();
-            String value = envType.getEnvParamValue();
+          
+          for (CasProcessorRuntimeEnvParam descrptrEv : descrptrEnvVars) {
+            String key = descrptrEv.getEnvParamName();
+            String value = descrptrEv.getEnvParamValue();
 
             // Special Cases for PATH and CLASSPATH
             if (key.equalsIgnoreCase("PATH")) {
-              String path = getEnvVarValue(key);
+              String path = getSysEnvVarValue(key);
               if (path != null) {
                 environment.add(key + "=" + value + System.getProperty("path.separator") + path);
               } else {
                 environment.add(key + "=" + value + System.getProperty("path.separator"));
               }
+              pathDone = true;
               continue;
             }
 
-            if (key.equalsIgnoreCase("CLASSPATH") && sysEnv != null) {
-              String classpath = getEnvVarValue(key);
+            if (key.equalsIgnoreCase("CLASSPATH")) {
+              String classpath = getSysEnvVarValue(key);
               if (classpath != null) {
                 environment.add(key + "=" + value + System.getProperty("path.separator")
                         + classpath);
               } else {
                 environment.add(key + "=" + value + System.getProperty("path.separator"));
               }
+              classpathDone = true;
               continue;
             }
             environment.add(key + "=" + value);
           }
 
-          // Now, copy all env vars from the current environment
-          if (sysEnv != null) {
-            Enumeration envKeys = sysEnv.keys();
-
-            while (envKeys.hasMoreElements()) {
-              String key = (String) envKeys.nextElement();
-              // Skip those vars that we've already setup above
-              if (key.equalsIgnoreCase("PATH") || key.equalsIgnoreCase("CLASSPATH")) {
-                continue;
-              }
-              environment.add(key + "=" + sysEnv.getProperty(key));
-            }
-          }
-          String[] envArray = new String[environment.size()];
-          environment.toArray(envArray);
-          exec.setEnvironment(envArray);
         }
+        // Now, copy all env vars from the current environment
+        if (sysEnvVars != null) {
+          Enumeration envKeys = sysEnvVars.keys();
+
+          while (envKeys.hasMoreElements()) {
+            String key = (String) envKeys.nextElement();
+            // Skip those vars that we've already setup above
+            if ((key.equalsIgnoreCase("PATH") && pathDone) || 
+                (key.equalsIgnoreCase("CLASSPATH") && classpathDone)) {
+              continue;
+            }
+            environment.add(key + "=" + sysEnvVars.getProperty(key));
+          }
+        }
+        String[] envArray = new String[environment.size()];
+        environment.toArray(envArray);
+        exec.setEnvironment(envArray);
+        
         CasProcessorExecArg[] args = rip.getExecutable().getAllCasProcessorExecArgs();
         for (int i = 0; args != null && i < args.length; i++) {
           argList.add(args[i]);
@@ -182,16 +188,15 @@ public class RunnableApplication {
    *          name of the environment variable
    * @return - value correspnding to environment variable
    */
-  protected String getEnvVarValue(String aKey) {
-    Properties sysEnv = null;
+  protected String getSysEnvVarValue(String aKey) {
     try {
       // Retrieve all env variables
-      sysEnv = SystemEnvReader.getEnvVars();
-      Enumeration sysKeys = sysEnv.keys();
+//      sysEnv = SystemEnvReader.getEnvVars();  // already done, do only once
+      Enumeration sysKeys = sysEnvVars.keys();
       while (sysKeys.hasMoreElements()) {
         String key = (String) sysKeys.nextElement();
         if (aKey.equalsIgnoreCase(key)) {
-          return sysEnv.getProperty(key);
+          return sysEnvVars.getProperty(key);
         }
       }
     } catch (Throwable e) {
@@ -199,5 +204,4 @@ public class RunnableApplication {
     }
     return null;
   }
-
 }

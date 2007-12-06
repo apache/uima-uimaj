@@ -134,7 +134,7 @@ public class JavaApplication extends RunnableApplication {
       // the classpath
       // string
       {
-        String systemClasspath = getEnvVarValue("CLASSPATH");
+        String systemClasspath = getSysEnvVarValue("CLASSPATH");
         if (systemClasspath == null) {
           systemClasspath = "";
         }
