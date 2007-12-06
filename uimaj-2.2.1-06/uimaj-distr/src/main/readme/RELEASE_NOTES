@@ -1,0 +1,194 @@
+	Apache UIMA (Unstructured Information Management Architecture) v2.2.1
+                               Release Notes
+   -----------------------------------------------------------------------
+
+CONTENTS
+1. What is UIMA?
+2. Major Changes in this Release
+3. Migrating from IBM UIMA to Apache UIMA
+4. How to Get Involved
+5. How to Report Issues
+6. List of JIRA Issues Fixed in this Release   
+   
+   
+1. What is UIMA?
+
+Unstructured Information Management applications are software systems that 
+analyze large volumes of unstructured information in order to discover knowledge
+that is relevant to an end user. UIMA is a framework and SDK for developing such
+applications. An example UIM application might ingest plain text and identify 
+entities, such as persons, places, organizations; or relations, such as 
+works-for or located-at. UIMA enables such an application to be decomposed into 
+components, for example "language identification" -> 
+"language specific segmentation" -> "sentence boundary detection" -> 
+"entity detection (person/place names etc.)". Each component must implement 
+interfaces defined by the framework and must provide self-describing metadata 
+via XML descriptor files. The framework manages these components and the data 
+flow between them. Components are written in Java or C++; the data that 
+flows between components is designed for efficient mapping between these 
+languages. UIMA additionally provides capabilities to wrap components as 
+network services, and can scale to very large volumes by replicating processing 
+pipelines over a cluster of networked nodes.
+
+Apache UIMA is an Apache-licensed open source implementation of the UIMA 
+specification (that specification is, in turn, being developed concurrently by 
+a technical committee within OASIS , a standards organization). We invite and 
+encourage you to participate in both the implementation and specification 
+efforts.
+
+UIMA is a component framework for analysing unstructured content such as text, 
+audio and video. It comprises an SDK and tooling for composing and running 
+analytic components written in Java and C++, with some support for Perl, 
+Python and TCL.
+
+
+2. Major Changes in this Release
+
+The Apache UIMA release version 2.2.1 is just a bugfix release and has no major 
+release changes. For a list of all JIRA issues fixed with this release, 
+please refer to chapter 6. "List of JIRA Issues Fixed in this Release". 
+
+3. Migrating from IBM UIMA to Apache UIMA
+
+This section describes how to move from pre-Apache versions of UIMA to the
+Apache version (starting with Apache UIMA 2.1).
+
+Note: Before running the migration utility, be sure to back up your files, just 
+in case you encounter any problems, because the migration tool updates the 
+files in place in the directories where it finds them.
+
+The migration utility is run by executing the script file 
+apache-uima/bin/ibmUimaToApacheUima.bat (Windows) or 
+apache-uima/bin/ibmUimaToApacheUima.sh (UNIX). You must pass one argument: the 
+directory containing the files that you want to be migrated. Subdirectories 
+will be processed recursively.
+
+The script scans your files and applies the necessary updates, for example 
+replacing the com.ibm package names with the new org.apache package names. 
+
+The script will only attempt to modify files with the extensions: java, xml, 
+xmi, wsdd, properties, launch, bat, cmd, sh, ksh, or csh; and files with no 
+extension. Also, files with size greater than 1,000,000 bytes will be skipped. 
+(If you want the script to modify files with other extensions, you can edit 
+the script file and change the -ext argument appropriately.)
+
+If the migration tool reports warnings, there may be a few additional steps to 
+take. The following two sections explain some simple manual changes that you
+might need to make to your code.
+
+3.1. JCas Cover Classes for DocumentAnnotation
+
+If you have run JCasGen it is likely that you have the classes 
+com.ibm.uima.jcas.tcas.DocumentAnnotation and 
+com.ibm.uima.jcas.tcas.DocumentAnnotation_Type as part of your code. This 
+package name is no longer valid, and the migration utility does not move your 
+files between directories so it is unable to fix this.
+
+If you have not made manual modifications to these classes, the best solution 
+is usually to just delete these two classes (and their containing package). 
+There is a default version in the uima-document-annotation.jar file that is 
+included in Apache UIMA. If you have made custom changes, then you should not 
+delete the file but instead move it to the correct package 
+org.apache.uima.jcas.tcas. For more information about JCas and 
+DocumentAnnotation please see Section 5.5.4, 
+"Adding Features to DocumentAnnotation" in the UIMA References manual
+(docs/html/references/references.html).
+
+3.2. JCas.getDocumentAnnotation
+
+The deprecated method JCas.getDocumentAnnotation has been removed. Its use 
+must be replaced with JCas.getDocumentAnnotationFs. The method 
+JCas.getDocumentAnnotationFs() returns type TOP, so your code must cast this to 
+type DocumentAnnotation. The reasons for this are described in Section 
+5.5.4, "Adding Features to DocumentAnnotation" in the UIMA References manual
+(docs/html/references/references.html).
+
+3.3. Rare Cases Where Additional Manual Migration is Necessary
+
+For most users there should not be any additional migration steps necessary.
+However, if the migration tool reported an additional warning or if you are 
+having trouble getting your code to compile or run after running the migration, 
+please see Section 1.4.2. "Rare Cases Where Additional Manual Migration is 
+Necessary," in the Overview and Setup manual 
+(docs/html/overview_and_setup/overview_and_setup.html).
+
+
+4. How to Get Involved
+
+The Apache UIMA project really needs and appreciates any contributions, 
+including documentation help, source code and feedback.  If you are interested
+in contributing, please visit http://incubator.apache.org/uima/get-involved.html.
+
+
+5. How to Report Issues
+
+The Apache UIMA project uses JIRA for issue tracking.  Please report any 
+issues you find at http://issues.apache.org/jira/browse/uima.
+
+
+6. List of JIRA Issues Fixed in this Release
+
+
+Release Notes - UIMA - Version 2.2.1
+
+** Bug
+    * [UIMA-527] - script file syntax does not correct if UIMA_HOME is not set
+    * [UIMA-529] - Type System Merging not checking for compatible element types, nor compatible multipleReferencesAllowed settings
+    * [UIMA-534] - The equals() method in MetaDataObject_impl doesn't compare elements in a Map properly.
+    * [UIMA-544] - check JavaDoc for class ParsingException
+    * [UIMA-545] - DescEditor plugin exception with GNU libgcj 4.1.2
+    * [UIMA-547] - XmiCasDeserializer fails to deserialize arrays if JCAS has been initialized
+    * [UIMA-549] - Extra jar listed in runtime plugin manifest
+    * [UIMA-574] - CAS heap size is just increased by the initial heap size and is not doubled until a threshold is reached
+    * [UIMA-575] - CPM Cas reordering broken with multiple threads
+    * [UIMA-578] - XmiCasDeserializer "merge" functionality doesn't support Sofas properly
+    * [UIMA-579] - Maven build failing for Eclipse plugins - apparently including incorrectly Eclipse 3.3 versions
+    * [UIMA-583] - update documentation for adding PEARs to aggregate AEs
+    * [UIMA-586] - Bug when merging CASes using XmiDeserialization
+    * [UIMA-589] - The AnalysisEngine Descriptor editor disallows certain chars in Sofa names which documentation says are valid
+    * [UIMA-598] - Memory leak from CAS pool
+    * [UIMA-599] - Typo in JavaDocs for ParallelStep and SimpleStep 
+    * [UIMA-606] - CDE shows error "Invalid descriptor" when saving a valid collection reader descriptor that imports a type by name
+    * [UIMA-607] - Running PEAR class path switching code broken in multi-threading case (CPM)
+    * [UIMA-619] - Wrong error message when loading type system
+    * [UIMA-623] - test case for UIMA-607 fails on Linux
+    * [UIMA-628] - PearRuntimeTest use the wrong PEAR files for testing
+    * [UIMA-633] - Class loading issue with ResourceBundle when using the UIMAClassloader
+    * [UIMA-639] - udpate ReleaseNotes for release 2.2.1
+    * [UIMA-641] - CPM test case fails with Sun JVM
+    * [UIMA-649] - CAS.getAnnotationIndex(Type) does creates invalid index objects
+    * [UIMA-654] - add missing license header 
+    * [UIMA-655] - testMergeTypeSystemElementType(org.apache.uima.util.CasCreationUtilsTest) fails on Linux
+    * [UIMA-656] - Eclipse update site not working - nothing shows up as selectable
+    * [UIMA-659] - Conform Eclipse update site to Apache Distribution location requirements
+    * [UIMA-663] - CDE Resource Dependency page throwing NPE if XML missing <resourceManagerConfiguration> element
+    * [UIMA-665] - sometimes the test testHasNextWithOutOfMemoryError() for test class CpmCollectionReader_ErrorTest fails
+    * [UIMA-667] - CPE Managed (aka "Local") deployment mode on Linux has undocumented dependency on ksh
+    * [UIMA-668] - CPM descriptors using local managed deployment fail on Linux if no PATH supplied in descriptor
+
+** Improvement
+    * [UIMA-74] - make Eclipse plugins into features that can be installed by Eclipse update mechanism
+    * [UIMA-582] - improve FileCompare used in JUnit Tests
+    * [UIMA-608] - Move to Java 1.5
+    * [UIMA-626] - Bring FeaturePathImpl to the 3rd millenium
+    * [UIMA-630] - Make TypeSystemUtils.isIdentifier() public so it can be accessed by client code
+    * [UIMA-636] - Improve CDE to allow other tools to re-use its functionality to edit a new UIMA Xml descriptor
+    * [UIMA-638] - CVD should allow viewing FSArrays longer than 20 elements
+    * [UIMA-661] - update docs for Eclipse Update Site install
+    * [UIMA-662] - Fix running footer in PDF docs having text overflow
+    * [UIMA-664] - CustomResourceFactory_impl not catching exceptions when calling out to initialize method
+
+** New Feature
+    * [UIMA-580] - Make the CDE plugin extensible
+    * [UIMA-640] - Add more convenience methods to TypeSystemUtils
+    * [UIMA-660] - Add mirrors support to our website for use by Eclipse Update Site
+
+** Task
+    * [UIMA-576] - Change version number to 2.3-SNAPSHOT
+
+** Test
+    * [UIMA-585] - Reduce noisy output when running some CPE tests when run in Maven
+
+** Wish
+    * [UIMA-301] - CAS APIs should make it easier to deal with arrays of unknown element type
+
