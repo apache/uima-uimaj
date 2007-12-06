@@ -462,7 +462,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
 
       String[] execCommand = new String[3];
       if (System.getProperty("os.name").equalsIgnoreCase("linux")) {
-        execCommand[0] = "/bin/ksh";
+        execCommand[0] = "/bin/sh";
         execCommand[1] = "-c";
       }
       StringBuffer sb = new StringBuffer();
