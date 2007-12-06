@@ -58,11 +58,7 @@ public class FSIndexComparatorImpl implements FSIndexComparator {
   }
 
   private boolean checkType(Type t) {
-    if (this.cas.isIntType(t) || this.cas.isFloatType(t) || this.cas.isStringType(t)
-            || this.cas.isDoubleType(t) || this.cas.isLongType(t) || this.cas.isShortType(t)) {
-      return true;
-    }
-    return false;
+    return t.isPrimitive();
   }
 
   public void setType(Type type) {
