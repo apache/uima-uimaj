@@ -175,7 +175,8 @@ public interface LowLevelTypeSystem {
 
   /**
    * Checks if the type code is that of a reference type (anything that's not a basic type,
-   * currently Integer, String and Float).
+   * currently Integer, String and Float, Boolean, Byte, Short, Long, Double, or a subtype of String
+   *   specifying allowed-values).
    * 
    * @param typeCode
    *          The type code to check.
