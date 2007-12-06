@@ -163,6 +163,8 @@ Release Notes - UIMA - Version 2.2.1
     * [UIMA-659] - Conform Eclipse update site to Apache Distribution location requirements
     * [UIMA-663] - CDE Resource Dependency page throwing NPE if XML missing <resourceManagerConfiguration> element
     * [UIMA-665] - sometimes the test testHasNextWithOutOfMemoryError() for test class CpmCollectionReader_ErrorTest fails
+    * [UIMA-667] - CPE Managed (aka "Local") deployment mode on Linux has undocumented dependency on ksh
+    * [UIMA-668] - CPM descriptors using local managed deployment fail on Linux if no PATH supplied in descriptor
 
 ** Improvement
     * [UIMA-74] - make Eclipse plugins into features that can be installed by Eclipse update mechanism
