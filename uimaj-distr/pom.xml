@@ -204,6 +204,43 @@
               <goal>run</goal>
             </goals>
           </execution>
+          <execution>
+            <id>checksum</id>
+            <phase>install</phase>
+            <configuration>
+              <tasks>
+                <checksum algorithm="sha1">
+                  <fileset dir="target">
+                    <include name="*.gz" />
+                    <include name="*.bz2" />
+                    <include name="*.zip" />
+                  </fileset>
+                  <fileset dir="../uimaj-eclipse-update-site/target/features">
+                    <include name="*.jar" />
+                  </fileset>
+                  <fileset dir="../uimaj-eclipse-update-site/target/plugins">
+                    <include name="*.jar" />
+                  </fileset>
+                </checksum>
+                <checksum algorithm="md5">
+                  <fileset dir="target">
+                    <include name="*.gz" />
+                    <include name="*.bz2" />
+                    <include name="*.zip" />
+                  </fileset>
+                  <fileset dir="../uimaj-eclipse-update-site/target/features">
+                    <include name="*.jar" />
+                  </fileset>
+                  <fileset dir="../uimaj-eclipse-update-site/target/plugins">
+                    <include name="*.jar" />
+                  </fileset>
+                </checksum>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
         </executions>
       </plugin>
 		</plugins>
