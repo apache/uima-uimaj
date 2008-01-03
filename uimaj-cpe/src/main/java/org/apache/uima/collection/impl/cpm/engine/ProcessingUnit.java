@@ -443,9 +443,9 @@ public class ProcessingUnit extends Thread {
       if (cpm.getThreadCount() > 1) {
         // Put EOF Token back to queue to ensure that all PUs get it
         workQueue.enqueue(artifact);
-        synchronized (workQueue) {
-          workQueue.notifyAll();
-        }
+//        synchronized (workQueue) { redundant - the above enqueue call does this
+//          workQueue.notifyAll();
+//        }
       }
       if (outputQueue != null) {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
@@ -494,9 +494,9 @@ public class ProcessingUnit extends Thread {
       if (artifact[j] != null) {
         // Release CASes that timed out back to the pool
         casPool.releaseCas((CAS) artifact[j]);
-        synchronized (casPool) {
-          casPool.notifyAll();
-        }
+//        synchronized (casPool) { // redundant - the above releaseCas call does this
+//          casPool.notifyAll();
+//        }
         artifact[j] = null;
       }
     }
@@ -745,9 +745,9 @@ public class ProcessingUnit extends Thread {
                     new Object[] { Thread.currentThread().getName() });
           }
           casPool.releaseCas(casCache[index]);
-          synchronized (casPool) {
-            casPool.notifyAll();
-          }
+//          synchronized (casPool) { // redundant - the above releaseCas call does this
+//            casPool.notifyAll();
+//          }
 
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
@@ -1752,9 +1752,9 @@ public class ProcessingUnit extends Thread {
 
         casCache = null;
 
-        synchronized (outputQueue) {
-          outputQueue.notifyAll();
-        }
+//        synchronized (outputQueue) { // redundant - the above enqueue call does this
+//          outputQueue.notifyAll();
+//        }
 
       }
       return;

@@ -328,9 +328,9 @@ public class ArtifactProducer extends Thread {
             notifyListeners((CAS) casObjectList[i], e);
             casPool.releaseCas(casList[i]);
             casList[i] = null;
-            synchronized (casPool) {
-              casPool.notifyAll();
-            }
+//            synchronized (casPool) {  // removed - redundant, because done as part of releaseCas
+//              casPool.notifyAll();
+//            }
 
           } else {
             notifyListeners(null, e);
@@ -414,9 +414,9 @@ public class ArtifactProducer extends Thread {
           for (int listCounter = 0; casList != null && casList[i] != null
                   && listCounter < casList.length; listCounter++) {
             casPool.releaseCas(casList[listCounter]);
-            synchronized (casPool) {
-              casPool.notifyAll();
-            }
+//            synchronized (casPool) { // redundant - releaseCas call does this
+//              casPool.notifyAll();
+//            }
           }
           if (cpmStatTable != null) {
             Progress[] progress = collectionReader.getProgress();
@@ -721,9 +721,9 @@ public class ArtifactProducer extends Thread {
                                     + " Sequence:" + meta.getSequence())));
 
                     casPool.releaseCas((CAS) casObjectList[i]);
-                    synchronized (casPool) {
-                      casPool.notifyAll();
-                    }
+//                    synchronized (casPool) {  // redundant, releaseCas call does this
+//                      casPool.notifyAll();
+//                    }
                     releasedCas = true;
                   }
                 }
@@ -751,9 +751,9 @@ public class ArtifactProducer extends Thread {
                     || (cpm.isRunning() == false && cpm.isHardKilled() == false)) {
               threadState = 1005; // Entering enqueue
               workQueue.enqueue(casObjectList);
-              synchronized (workQueue) {
-                workQueue.notifyAll();
-              }
+//              synchronized (workQueue) { // redundant, enqueue does this
+//                workQueue.notifyAll();
+//              }
               threadState = 1006; // Done Entering enqueue
               entityCount += casObjectList.length;
               if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
@@ -827,9 +827,9 @@ public class ArtifactProducer extends Thread {
               notifyListeners(casList[i], e);
               casPool.releaseCas(casList[i]);
               casList[i] = null;
-              synchronized (casPool) {
-                casPool.notifyAll();
-              }
+//              synchronized (casPool) { // redundant, releaseCas does this
+//                casPool.notifyAll();
+//              }
 
             } else {
               notifyListeners(null, e);
@@ -918,9 +918,9 @@ public class ArtifactProducer extends Thread {
                 new Object[] { Thread.currentThread().getName(), String.valueOf(cpm.isRunning()) });
 
       }
-      synchronized (workQueue) {
-        workQueue.notifyAll();
-      }
+//      synchronized (workQueue) { // redundant, the enqueue call above does this
+//        workQueue.notifyAll();
+//      }
     } catch (Exception e) {
       e.printStackTrace();
       if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {

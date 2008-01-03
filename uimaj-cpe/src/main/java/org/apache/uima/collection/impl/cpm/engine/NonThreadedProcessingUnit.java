@@ -651,9 +651,9 @@ public class NonThreadedProcessingUnit {
 
         casCache = null;
 
-        synchronized (outputQueue) {
-          outputQueue.notifyAll();
-        }
+//        synchronized (outputQueue) { // redundant - the above enqueue call does this
+//          outputQueue.notifyAll();
+//        }
 
       }
       return;
@@ -1340,9 +1340,9 @@ public class NonThreadedProcessingUnit {
                     new Object[] { Thread.currentThread().getName() });
           }
           casPool.releaseCas(casCache[index]);
-          synchronized (casPool) {
-            casPool.notifyAll();
-          }
+//          synchronized (casPool) { // redundant - the above releaseCas call does this
+//            casPool.notifyAll();
+//          }
 
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
