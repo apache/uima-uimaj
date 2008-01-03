@@ -24,7 +24,7 @@
 	<groupId>org.apache.uima</groupId>
 	<artifactId>uimaj-ep-configurator</artifactId>
 	<packaging>jar</packaging>
-	<version>2.2.1.incubating</version>
+	<version>${uimaj-release-eclipse-version}</version>
 	<name>Apache UIMA Configurator Eclipse Plugin</name>
 	<url>http://incubator.apache.org/uima</url>
 	<licenses>
@@ -40,26 +40,26 @@
 	<parent>
 		<groupId>org.apache.uima</groupId>
 		<artifactId>uimaj</artifactId>
-		<version>2.2.1-incubating</version>
+		<version>2.3.0-incubating-SNAPSHOT</version>
 	</parent>
 	<dependencies>
     <!-- UIMA dependencies -->
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-core</artifactId>
-			<version>2.2.1-incubating</version>
+			<version>${uimaj-release-version}</version>
 			<scope>compile</scope>
 		</dependency>		
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-tools</artifactId>
-			<version>2.2.1-incubating</version>
+			<version>${uimaj-release-version}</version>
 			<scope>compile</scope>
 		</dependency>	
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-ep-jcasgen</artifactId>
-			<version>2.2.1.incubating</version>
+			<version>${uimaj-release-eclipse-version}</version>
 			<scope>compile</scope>
 		</dependency>			
 		
@@ -171,7 +171,7 @@
 								<descriptor>
 									src/main/assembly/assemble-plugin.xml</descriptor>
 							</descriptors>
-							<finalName>org.apache.uima.desceditor_2.2.1.incubating</finalName>
+							<finalName>org.apache.uima.desceditor_${uimaj-release-eclipse-version}</finalName>
 							<appendAssemblyId>false</appendAssemblyId>
 						</configuration>
 					</execution>
