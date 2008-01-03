@@ -26,14 +26,7 @@
   <target name="all" depends="init, build-runtime, build-tools"/>
 	
   <target name="init">
-  	<!-- this next line needs to be updated with each release. 
-  	     We cannot use the pom's version string, because that pom is the
-  	     uimaj-distr's pom and that version string ends in
-  	     -incubating  whereas, we need it to end in .incubating   
-  	   TODO change the whole project to use the . form, if possible, and then
-  	     pass in the value from the pom -->
-  	<property name="project.version" value="2.2.1.incubating"/>
-  	<delete dir="target"/>
+   	<delete dir="target"/>
   	<delete dir="work"/>
   	<mkdir dir="work"/>
   	<mkdir dir="target"/>
