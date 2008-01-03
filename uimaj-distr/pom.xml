@@ -193,10 +193,7 @@
                        even if you set inheritAll="true"
                        
                        Setting the property explicitly does work, though -->
-                  
-                  <!-- don't pass this in - it has the wrong punctuation - the 
-                       version ends in -incubating, and we need .incubating -->
-                  <!-- property name="project.version" value="${project.version}"/-->   
+                  <property name="project.version" value="${uimaj-release-eclipse-version}"/>   
                 </ant>            
               </tasks>
             </configuration>
