@@ -24,13 +24,13 @@
 	<groupId>org.apache.uima</groupId>
 	<artifactId>uimaj-internal-tools</artifactId>
 	<packaging>jar</packaging>
-	<version>2.2.1-incubating</version>
+	<version>${uimaj-release-version}</version>
 	<name>Apache UIMA internal Tools</name>
 	<url>http://incubator.apache.org/uima</url>
 	<parent>
 		<groupId>org.apache.uima</groupId>
 		<artifactId>uimaj</artifactId>
-		<version>2.2.1-incubating</version>
+		<version>2.3.0-incubating-SNAPSHOT</version>
 	</parent>
 	<dependencies>
 
