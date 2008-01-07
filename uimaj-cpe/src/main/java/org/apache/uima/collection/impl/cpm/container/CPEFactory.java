@@ -426,7 +426,7 @@ public class CPEFactory {
       }
       // Provide CollectionReader with the number of documents to process
       ((ConfigurableResource_ImplBase) colreader).setConfigParameterValue("processSize",
-              new Integer(new Long(numDocs2Process).intValue()));
+              new Integer((int)numDocs2Process));
       CpeConfiguration cpeType = getCpeDescriptor().getCpeConfiguration();
       if (cpeType != null && cpeType.getStartingEntityId() != null
               && cpeType.getStartingEntityId().trim().length() > 0) {

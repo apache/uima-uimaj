@@ -237,11 +237,26 @@ public class BoundedWorkQueue {
    */
   public synchronized Object dequeue(long aTimeout) {
     Object resource = dequeue();
-    if (resource == null && cpm.isRunning()) {
+    // next 5 lines commented out - was old method of waiting.  -- Jan 2008 MIS
+    // changes include waiting a little (WAIT_TIMEOUT) if !cpm.isRunning, to prevent
+    //   100% CPU utilization while waiting for existing processes to finish
+    // also, System.currentTimeMillis only called once in revised version.
+//    if (resource == null && cpm.isRunning()) {
+//      try {
+//        // add 1 millisecond to expire time to account for "rounding" issues
+//        long timeExpire = (0 == aTimeout)? Long.MAX_VALUE : (System.currentTimeMillis() + aTimeout + 1);
+//        long timeLeft = timeExpire - System.currentTimeMillis();
+    if (resource == null) {
       try {
         // add 1 millisecond to expire time to account for "rounding" issues
-        long timeExpire = (0 == aTimeout)? Long.MAX_VALUE : (System.currentTimeMillis() + aTimeout + 1);
-        long timeLeft = timeExpire - System.currentTimeMillis();
+        long timeNow = System.currentTimeMillis();
+        long timeExpire =
+          (! cpm.isRunning()) ? 
+              timeNow + WAIT_TIMEOUT :  // a value to avoid 100% cpu 
+              ((0 == aTimeout) ? 
+                  Long.MAX_VALUE : 
+                  timeNow + aTimeout + 1);
+        long timeLeft = timeExpire - timeNow;
         while (timeLeft > 0) {
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
@@ -269,7 +284,6 @@ public class BoundedWorkQueue {
       }
       resource = dequeue();
     }
-
     return resource;
   }
 

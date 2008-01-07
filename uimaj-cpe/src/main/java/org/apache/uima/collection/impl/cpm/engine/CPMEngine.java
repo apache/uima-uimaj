@@ -570,9 +570,9 @@ public class CPMEngine extends Thread {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
               "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_terminate_pipelines__INFO",
               new Object[] { Thread.currentThread().getName(), String.valueOf(killed) });
-      synchronized (workQueue) {
-        workQueue.notifyAll();
-      }
+//      synchronized (workQueue) { // redundant - enqueue call above does this
+//        workQueue.notifyAll();
+//      }
     }
 
   }
@@ -729,7 +729,7 @@ public class CPMEngine extends Thread {
       // Already stopped
       return;
     }
-    try {
+//    try {
       // Change global status
       isRunning = false;
       // terminate this thread if the thread has been previously suspended
@@ -743,6 +743,19 @@ public class CPMEngine extends Thread {
       // stop we should try to clean things up as best as we can. First empty process queue or work
       // queue, dump result of analysis into output queue and let the consumers process that.
       // When all queues are empty we are done.
+      
+      // The logic below (now commented out) has a race condition - 
+      //   The workQueue / outputQueue can become (temporarily) empty, but then 
+      //      can be filled with the eof token
+      //     But this code proceeds to stop all the CAS processors, 
+      //      which results in a hang because the pool isn't empty and the process thread waits for 
+      //      an available cas processor forever.
+      
+      //   Fix is to not kill the cas processors.  Just let them finish normally.  The artifact producer
+      //     will stop sending new CASes and send through an eof token, which causes normal shutdown to
+      //     occur for all the threads.
+
+      /*
       if (workQueue != null) {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(
@@ -797,6 +810,7 @@ public class CPMEngine extends Thread {
                   new Object[] { Thread.currentThread().getName() });
         }
       }
+
       for (int i = 0; processingUnits != null && i < processingUnits.length
               && processingUnits[i] != null; i++) {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
@@ -806,6 +820,7 @@ public class CPMEngine extends Thread {
         }
         processingUnits[i].stopCasProcessors(false);
       }
+    
     } catch (Exception e) {
       if (UIMAFramework.getLogger().isLoggable(Level.FINER)) {
         e.printStackTrace();
@@ -814,6 +829,7 @@ public class CPMEngine extends Thread {
               "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_exception__FINER",
               new Object[] { Thread.currentThread().getName(), e.getMessage() });
     }
+    */
   }
 
   /**
@@ -2206,9 +2222,9 @@ public class CPMEngine extends Thread {
                     "UIMA_CPM_done_placed_eof_in_queue__FINEST",
                     new Object[] { Thread.currentThread().getName(), outputQueue.getName() });
           }
-          synchronized (outputQueue) {
-            outputQueue.notifyAll();
-          }
+//          synchronized (outputQueue) { // redundant, the above enqueue does this
+//            outputQueue.notifyAll();
+//          }
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
                     "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
@@ -2471,9 +2487,9 @@ public class CPMEngine extends Thread {
                     "UIMA_CPM_done_placed_eof_in_queue__FINEST",
                     new Object[] { Thread.currentThread().getName(), outputQueue.getName() });
           }
-          synchronized (outputQueue) {
-            outputQueue.notifyAll();
-          }
+//          synchronized (outputQueue) { // redundant - the above enqueue does this
+//            outputQueue.notifyAll();
+//          }
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
                     "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
@@ -2568,9 +2584,9 @@ public class CPMEngine extends Thread {
                 "UIMA_CPM_done_placed_eof_in_queue__FINEST",
                 new Object[] { Thread.currentThread().getName(), workQueue.getName() });
       }
-      synchronized (workQueue) {
-        workQueue.notifyAll();
-      }
+//      synchronized (workQueue) { // redundant - the above enqueue does this
+//        workQueue.notifyAll();
+//      }
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
                 "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
@@ -2818,9 +2834,9 @@ public class CPMEngine extends Thread {
       throw new ResourceInitializationException(e);
     } finally {
       casPool.releaseCas(cas);
-      synchronized (casPool) {
-        casPool.notifyAll();
-      }
+//      synchronized (casPool) { // redundant, the above releaseCas call does this
+//        casPool.notifyAll();
+//      }
     }
   }
 
@@ -2949,9 +2965,9 @@ public class CPMEngine extends Thread {
       if (aCASList[i] != null) {
         // aCASList[i].reset();
         casPool.releaseCas(aCASList[i]);
-        synchronized (casPool) {
-          casPool.notifyAll();
-        }
+//        synchronized (casPool) {  // redundant - the above releaseCas call does this
+//          casPool.notifyAll();
+//        }
 
       } else {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
@@ -3010,8 +3026,15 @@ public class CPMEngine extends Thread {
       eofToken[0] = new EOFToken();
 
       outputQueue.enqueue(eofToken);
-      synchronized (outputQueue) {
-        outputQueue.notifyAll();
+//      synchronized (outputQueue) { // redundant - the above enqueue call does this
+//        outputQueue.notifyAll();
+//      }
+     
+      if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+        UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+            "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+            "UIMA_CPM_done_placed_eof_in_queue__FINEST",
+            new Object[] { Thread.currentThread().getName(), outputQueue.getName() });
       }
     }
 
@@ -3056,9 +3079,9 @@ public class CPMEngine extends Thread {
         if (this.isRunning() == false) {
           readerState = 1009;
           casPool.releaseCas(casList[0]);
-          synchronized (casPool) {
-            casPool.notifyAll();
-          }
+//          synchronized (casPool) { // redundant - the above releaseCas call does this
+//            casPool.notifyAll();
+//          }
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
                     "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
