@@ -87,7 +87,7 @@ under the License.
         manual approach.</para>
       
         <note><para>If your computer is on an internet connection which uses a proxy server, you can
-        configure Eclipse to know about that. Put your proxy settings into Ecluse using the
+        configure Eclipse to know about that. Put your proxy settings into Eclipse using the
         Eclipse preferences by accessing the menus: Window &rarr; Preferences... &rarr;
         Install/Update, and Enable HTTP proxy connection under the Proxy Settings with the
         information about your proxy. </para></note>
