@@ -18,7 +18,7 @@
    under the License.    
 -->
 <site
-      mirrorsURL="http://incubator.apache.org/mirrors-support/uima-eclipse-update--xml.cgi">
+      mirrorsURL="http://incubator.apache.org/uima/mirrors-support/uima-eclipse-update--xml.cgi">
    <description url="http://www.apache.org/dist/incubator/uima/eclipse-update-site">
       Eclipse update site for Apache UIMA.
    </description>
