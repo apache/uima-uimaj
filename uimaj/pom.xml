@@ -91,6 +91,65 @@
           <target>1.5</target>
         </configuration>
       </plugin>
+
+			<!-- We use an ant task to copy the LICENSE, NOTICE, and DISCLAIMER files
+				from a single location in uimaj-distr into the src/main/resources/META-INF
+				directory of all components.  We tried using the Maven resources plugin for 
+				this, but the Maven eclipse plugin does not seem to accept resource directories 
+				that are external to the component. -->
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>CopyLicenseNoticeDisclaimer</id>
+						<phase>generate-sources</phase>
+						<configuration>
+							<tasks>
+								<copy todir="src/main/resources/META-INF">
+									<fileset dir="../uimaj-distr/src/main/readme"
+										includes="LICENSE NOTICE DISCLAIMER"/>
+								</copy>
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+					<!-- after compilation has been done and the files have been copied to the
+						 target directory, delete them from the source directory. -->
+					<execution>
+						<id>DeleteLicenseNoticeDisclaimer</id>
+						<phase>package</phase>
+						<configuration>
+							<tasks>
+								<delete dir="src/main/resources/META-INF" deleteOnExit="true" failOnError="false">
+									<fileset dir="src/main/resources/META-INF"
+										includes="LICENSE NOTICE DISCLAIMER"/>
+								</delete>
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>	
+					<!-- also delete on clean. -->
+					<execution>
+						<id>CleanLicenseNoticeDisclaimer</id>
+						<phase>clean</phase>
+						<configuration>
+							<tasks>
+								<delete dir="src/main/resources/META-INF" deleteOnExit="true" failOnError="false">
+									<fileset dir="src/main/resources/META-INF"
+										includes="LICENSE NOTICE DISCLAIMER"/>
+								</delete>
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>		          				
+				</executions>
+			</plugin>
       
       <!-- something to get the timestamp -->
       <!-- this plugin sets the output string into the variable buildNumber -->
@@ -114,16 +173,6 @@
       </plugin>
     
     </plugins>
-    <resources>
-      <resource>
-        <directory>../uimaj-distr/src/main/readme/</directory>
-        <includes>
-          <include>META-INF/LICENSE</include>
-          <include>META-INF/NOTICE</include>
-          <include>META-INF/DISCLAIMER</include>
-        </includes>
-      </resource>
-    </resources>
   </build>
   <reporting>
     <plugins>
