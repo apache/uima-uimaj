@@ -47,45 +47,46 @@
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-core</artifactId>
 			<version>${uimaj-release-version}</version>
-			<scope>compile</scope>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-cpe</artifactId>
 			<version>${uimaj-release-version}</version>
-			<scope>compile</scope>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-tools</artifactId>
 			<version>${uimaj-release-version}</version>
-			<scope>compile</scope>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-examples</artifactId>
 			<version>${uimaj-release-version}</version>
-			<scope>compile</scope>
+			<scope>runtime</scope>
 		</dependency>		
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-adapter-vinci</artifactId>
 			<version>${uimaj-release-version}</version>
-			<scope>compile</scope>
+			<scope>runtime</scope>
 		</dependency>	
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-adapter-soap</artifactId>
 			<version>${uimaj-release-version}</version>
-			<scope>compile</scope>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>jVinci</artifactId>
 			<version>${uimaj-release-version}</version>
-			<scope>compile</scope>
+			<scope>runtime</scope>
 		</dependency>	
 	</dependencies>
+  
 	<build>
 		<finalName>uima-ep-runtime</finalName>	
 		<plugins>
@@ -119,6 +120,7 @@
 					</execution>
 				</executions>
 			</plugin>
+      
 		</plugins>
 	</build>
 </project>
