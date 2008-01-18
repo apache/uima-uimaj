@@ -91,24 +91,39 @@
           <target>1.5</target>
         </configuration>
       </plugin>
-
+      
 			<!-- We use an ant task to copy the LICENSE, NOTICE, and DISCLAIMER files
 				from a single location in uimaj-distr into the src/main/resources/META-INF
 				directory of all components.  We tried using the Maven resources plugin for 
-				this, but the Maven eclipse plugin does not seem to accept resource directories 
-				that are external to the component. -->
+				this, but then the Maven eclipse plugin (which runs the lifecycle up thru
+        generate-resources) seeing the <resources> element,
+        adds a classpath src entry for this which references the path outside
+        the project, which eclipse doesn't want.  
+        
+        Solution is to run this in a life-cycle phase after generate-resources
+        (i.e., process-resources), but before compile, so the 
+        eclipse plugin doesn't do this action. 
+        
+        We copy to the src directory so that it is there for the source jar
+        builds (for Maven repo).  We also copy to the target/classes/META-INF
+        directory so it gets picked up by the binary jar as well.-->
+      
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<executions>
 					<execution>
 						<id>CopyLicenseNoticeDisclaimer</id>
-						<phase>generate-sources</phase>
+						<phase>process-resources</phase>
 						<configuration>
 							<tasks>
 								<copy todir="src/main/resources/META-INF">
 									<fileset dir="../uimaj-distr/src/main/readme"
 										includes="LICENSE NOTICE DISCLAIMER"/>
 								</copy>
+                <copy todir="target/classes/META-INF">
+                  <fileset dir="../uimaj-distr/src/main/readme"
+                    includes="LICENSE NOTICE DISCLAIMER"/>
+                </copy>
 							</tasks>
 						</configuration>
 						<goals>
@@ -158,7 +173,7 @@
         <artifactId>buildnumber-maven-plugin</artifactId>
         <executions>
           <execution>
-            <phase>validate</phase>
+            <phase>process-classes</phase>
             <goals>
               <goal>create</goal>
             </goals>
