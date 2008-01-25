@@ -19,7 +19,7 @@
  -->
 
 <typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
-  <name>FrostImitationTypeSystem</name>
+  <name>FeaturePathTestTypeSystem</name>
   <description></description>
   <version>1.0</version>
   <vendor></vendor>
