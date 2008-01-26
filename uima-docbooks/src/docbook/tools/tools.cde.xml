@@ -928,7 +928,7 @@ under the License.
     
     <para>The Languages part of the capability is where you specify what languages are
       supported by the Analysis Engine. Supported languages should be listed using either a
-      two letter ISO-639 language code, or an ISO-639 language code followed by a two-letter
+      two letter ISO-639 language code, or an ISO-639 language code followed by a hyphen and then a two-letter
       ISO-3166 country code. Add a language by selecting Languages and pressing the Add
       button. The dialog for adding languages is given below.
       
