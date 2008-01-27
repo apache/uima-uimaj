@@ -50,6 +50,11 @@ public interface LanguagePrecondition extends SimplePrecondition {
    * {@link #setDefault(boolean) default} property determines whether this precondition is
    * satisfied.
    * 
+   * The ISO language identifiers are cannonicalized by lower-casing them and replacing
+   * underscores with hyphens.  Also, if any of the identifiers are x-unspecified, the array
+   * is replaced with an array of just one element: x-unspecified, since all languages are defined
+   * to match that one.
+   * 
    * @param aLanguages
    *          the languages that satisfy this precondition
    * 
