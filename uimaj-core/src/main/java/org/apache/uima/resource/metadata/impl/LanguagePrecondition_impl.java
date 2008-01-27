@@ -27,6 +27,7 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.ConstraintFactory;
 import org.apache.uima.cas.FSMatchConstraint;
 import org.apache.uima.cas.FSTypeConstraint;
+import org.apache.uima.cas.text.Language;
 import org.apache.uima.resource.metadata.LanguagePrecondition;
 
 /**
@@ -70,7 +71,18 @@ public class LanguagePrecondition_impl extends SimplePrecondition_impl implement
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
               new Object[] { aValue, "aValue", "setComparisonValue" });
     }
-    super.setComparisonValue(aValue);
+    String [] languages = (String []) aValue;
+    String [] normalizedLanguages = new String[languages.length];
+    int i = 0;
+    for (String language : languages) {
+      normalizedLanguages[i++] = Language.normalize(language);
+      if (Language.UNSPECIFIED_LANGUAGE.equals(normalizedLanguages[i-1])) {
+        // return new object to guard against modifications
+        super.setComparisonValue(new String[]{Language.UNSPECIFIED_LANGUAGE});
+        return;
+      }
+    }
+    super.setComparisonValue(normalizedLanguages);
   }
 
   /**
