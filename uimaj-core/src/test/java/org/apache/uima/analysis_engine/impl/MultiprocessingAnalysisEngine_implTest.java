@@ -35,6 +35,7 @@ import org.apache.uima.analysis_engine.ResultSpecification;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.analysis_engine.metadata.impl.FixedFlow_impl;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.resource.metadata.Capability;
 import org.apache.uima.resource.metadata.ConfigurationParameter;
 import org.apache.uima.resource.metadata.NameValuePair;
@@ -51,6 +52,8 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
   private AnalysisEngineDescription mSimpleDesc;
 
   private AnalysisEngineDescription mAggDesc;
+
+  public volatile TypeSystem mLastTypeSystem;
 
   /**
    * Constructor for MultiprocessingAnalysisEngine_implTest.
@@ -233,7 +236,7 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
       //we can't test from the threads themsleves since the state of
       //these fields is nondeterministic during the multithreaded processing.
       assertEquals("testing...", TestAnnotator.getLastDocument());
-      ResultSpecification resultSpec = new ResultSpecification_impl();
+      ResultSpecification resultSpec = new ResultSpecification_impl(mLastTypeSystem);
       resultSpec.addResultType("NamedEntity", true);
       assertEquals(resultSpec, TestAnnotator.getLastResultSpec());
 
@@ -337,7 +340,7 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
     tcas.reset();
 
     // process(CAS,ResultSpecification)
-    ResultSpecification resultSpec = new ResultSpecification_impl();
+    ResultSpecification resultSpec = new ResultSpecification_impl(tcas.getTypeSystem());
     resultSpec.addResultType("NamedEntity", true);
 
     tcas.setDocumentText("testing...");
@@ -364,12 +367,13 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
 
         // process(CAS)
         CAS tcas = mAE.newCAS();
+        mLastTypeSystem = tcas.getTypeSystem();
         tcas.setDocumentText("new test");
         mAE.process(tcas);
         tcas.reset();
 
         // process(CAS,ResultSpecification)
-        ResultSpecification resultSpec = new ResultSpecification_impl();
+        ResultSpecification resultSpec = new ResultSpecification_impl(tcas.getTypeSystem());
         resultSpec.addResultType("NamedEntity", true);
 
         tcas.setDocumentText("testing...");

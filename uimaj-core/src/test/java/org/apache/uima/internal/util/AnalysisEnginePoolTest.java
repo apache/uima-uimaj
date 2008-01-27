@@ -33,6 +33,7 @@ import org.apache.uima.analysis_engine.impl.TestAnnotator;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.analysis_engine.metadata.impl.FixedFlow_impl;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.resource.metadata.Capability;
 import org.apache.uima.resource.metadata.ConfigurationParameter;
 import org.apache.uima.resource.metadata.NameValuePair;
@@ -43,6 +44,8 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 
 
 public class AnalysisEnginePoolTest extends TestCase {
+
+  private TypeSystem mLastTypeSystem;
 
   /**
    * Constructor for MultithreadableAnalysisEngine_implTest.
@@ -138,7 +141,7 @@ public class AnalysisEnginePoolTest extends TestCase {
       //we can't test from the threads themsleves since the state of
       //these fields is nondeterministic during the multithreaded processing.
       assertEquals("testing...", TestAnnotator.getLastDocument());
-      ResultSpecification resultSpec = new ResultSpecification_impl();
+      ResultSpecification resultSpec = new ResultSpecification_impl(mLastTypeSystem);
       resultSpec.addResultType("NamedEntity", true);
       assertEquals(resultSpec, TestAnnotator.getLastResultSpec());
 
@@ -208,12 +211,13 @@ public class AnalysisEnginePoolTest extends TestCase {
 
       // process(CAS)
       CAS tcas = tae.newCAS();
+      mLastTypeSystem = tcas.getTypeSystem();
       tcas.setDocumentText("new test");
       tae.process(tcas);
       tcas.reset();
 
       // process(CAS,ResultSpecification)
-      ResultSpecification resultSpec = new ResultSpecification_impl();
+      ResultSpecification resultSpec = new ResultSpecification_impl(tcas.getTypeSystem());
       resultSpec.addResultType("NamedEntity", true);
 
       tcas.setDocumentText("testing...");

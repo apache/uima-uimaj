@@ -401,7 +401,7 @@ public class AnalysisEngine_implTest extends TestCase {
     tcas.reset();
 
     // process(CAS,ResultSpecification)
-    ResultSpecification resultSpec = new ResultSpecification_impl();
+    ResultSpecification resultSpec = new ResultSpecification_impl(tcas.getTypeSystem());
     resultSpec.addResultType("NamedEntity", true);
 
     tcas.setDocumentText("testing...");
@@ -1285,7 +1285,7 @@ public class AnalysisEngine_implTest extends TestCase {
       CAS cas = ae.newCAS();
       ResultSpecification resultSpec = new ResultSpecification_impl();
       resultSpec.addResultType("uima.tt.TokenLikeAnnotation", true);
-      resultSpec.compile(cas.getTypeSystem());
+      resultSpec.setTypeSystem(cas.getTypeSystem());
       ResultSpecification acResultSpec = ae.computeAnalysisComponentResultSpec(resultSpec, ae
               .getAnalysisEngineMetaData().getCapabilities());
       assertTrue(acResultSpec.containsType("uima.tt.TokenAnnotation"));

@@ -466,7 +466,7 @@ public class ResultSpecification_implTest extends TestCase {
       tsMgr.addType("SubType", fakeType);
 
       // compile
-      rs.compile(tsMgr);
+      rs.setTypeSystem(tsMgr);
 
       // check
       Assert.assertTrue(rs.containsType("FakeType"));
