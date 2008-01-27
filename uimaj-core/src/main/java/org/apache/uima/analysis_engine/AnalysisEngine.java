@@ -24,6 +24,7 @@ import java.util.Properties;
 
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.collection.base_cpm.CasObjectProcessor;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ConfigurableResource;
@@ -510,13 +511,26 @@ public interface AnalysisEngine extends ConfigurableResource, CasObjectProcessor
   public void collectionProcessComplete() throws AnalysisEngineProcessException;
 
   /**
+   * <p>A factory method used to create an instance of {@link ResultSpecification} for use with this
+   * AnalysisEngine. Applications use this method to construct <code>ResultSpecification</code>s
+   * to pass to this AnalysisEngine's {@link #setResultSpecification(ResultSpecification)} method.
+   * 
+   * <p>
+   * See also {@link #createResultSpecification(TypeSystem)} which should be used if the
+   * type system associated with this result specification is known at this point in time.
+   * 
+   * @return a new instance of <code>ResultSpecification</code>
+   */
+  public ResultSpecification createResultSpecification();
+
+  /**
    * A factory method used to create an instance of {@link ResultSpecification} for use with this
    * AnalysisEngine. Applications use this method to construct <code>ResultSpecification</code>s
    * to pass to this AnalysisEngine's {@link #setResultSpecification(ResultSpecification)} method.
    * 
    * @return a new instance of <code>ResultSpecification</code>
    */
-  public ResultSpecification createResultSpecification();
+  public ResultSpecification createResultSpecification(TypeSystem aTypeSystem);
 
   /**
    * Gets the {@link ResourceManager} used by this AnalysisEngine.

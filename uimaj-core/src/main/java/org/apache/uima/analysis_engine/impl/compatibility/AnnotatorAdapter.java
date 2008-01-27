@@ -139,12 +139,15 @@ public class AnnotatorAdapter implements AnalysisComponent {
       if (mAnnotator instanceof TextAnnotator) {
         CAS cas = (CAS) aCAS;
         ResultSpecification rs = getResultSpecForLanguage(cas.getDocumentLanguage());
+        rs.setTypeSystem(cas.getTypeSystem());
         ((TextAnnotator) mAnnotator).process(cas, rs);
       } else if (mAnnotator instanceof JTextAnnotator) {
         JCas jcas = (JCas) aCAS;
         ResultSpecification rs = getResultSpecForLanguage(jcas.getDocumentLanguage());
+        rs.setTypeSystem(jcas.getTypeSystem());
         ((JTextAnnotator) mAnnotator).process(jcas, rs);
       } else if (mAnnotator instanceof GenericAnnotator) {
+        mDefaultResultSpecification.setTypeSystem(((CAS) aCAS).getTypeSystem());
         ((GenericAnnotator) mAnnotator).process((CAS) aCAS, mDefaultResultSpecification);
       }
     } catch (AnnotatorProcessException e) {

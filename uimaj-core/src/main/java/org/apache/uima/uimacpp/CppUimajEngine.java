@@ -191,7 +191,7 @@ public class CppUimajEngine {
       // 2. create result spec
       if (ae != null) {
 
-        ResultSpecification rs = ae.createResultSpecification();
+        ResultSpecification rs = ae.createResultSpecification(casImpl.getTypeSystem());
         for (int i = 0; i < resultSpecTypes.length; ++i) {
           // allAnnotatorFeatures is not considere here! (TODO)
           rs

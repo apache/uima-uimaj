@@ -26,6 +26,7 @@ import java.util.Properties;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UimaContextAdmin;
+import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineManagement;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.analysis_engine.CasIterator;
@@ -294,6 +295,13 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    */
   public ResultSpecification createResultSpecification() {
     return new ResultSpecification_impl();
+  }
+
+  /**
+   * @see AnalysisEngine#createResultSpecification(TypeSystem)
+   */
+  public ResultSpecification createResultSpecification(TypeSystem aTypeSystem) {
+    return new ResultSpecification_impl(aTypeSystem);
   }
 
   /**

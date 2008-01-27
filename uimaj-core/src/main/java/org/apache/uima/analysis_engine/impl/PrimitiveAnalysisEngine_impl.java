@@ -19,7 +19,9 @@
 
 package org.apache.uima.analysis_engine.impl;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.Constants;
@@ -62,6 +64,10 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
    * current class
    */
   private static final Class CLASS_NAME = PrimitiveAnalysisEngine_impl.class;
+ 
+  private static final String [] X_UNSPECIFIED = new String [] {"x-unspecified"};
+ 
+  private static final String [] EMPTY_STRING_ARRAY = new String [0];
 
   private ResultSpecification mCurrentResultSpecification;
 
@@ -349,18 +355,16 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
         AbstractCas casToPass = getCasManager().getCasInterface(view, requiredInterface);
 
         // check if there was a change in the ResultSpecification or in
-        // the TypeSystem. If so, recompile the ResultSpecification and
+        // the TypeSystem. If so, set the changed type system into the ResultSpecification and
         // inform the component
         if (mResultSpecChanged || mLastTypeSystem != view.getTypeSystem()) {
           mLastTypeSystem = view.getTypeSystem();
-          mCurrentResultSpecification.compile(mLastTypeSystem);
+          mCurrentResultSpecification.setTypeSystem(mLastTypeSystem);
           // the actual ResultSpec we send to the component is formed by
           // looking at this primitive AE's declared output types and eliminiating
           // any that are not in mCurrentResultSpecification.
           ResultSpecification analysisComponentResultSpec = computeAnalysisComponentResultSpec(
                   mCurrentResultSpecification, getAnalysisEngineMetaData().getCapabilities());
-          // compile result spec - necessary to get type subsumption to work properly
-          analysisComponentResultSpec.compile(mLastTypeSystem);
           mAnalysisComponent.setResultSpecification(analysisComponentResultSpec);
           mResultSpecChanged = false;
         }
@@ -415,29 +419,60 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
    */
   protected ResultSpecification computeAnalysisComponentResultSpec(
           ResultSpecification inputResultSpec, Capability[] capabilities) {
-    ResultSpecification newResultSpec = new ResultSpecification_impl();
-    for (int i = 0; i < capabilities.length; i++) {
-      Capability cap = capabilities[i];
-      TypeOrFeature[] outputs = cap.getOutputs();
-      String[] languages = cap.getLanguagesSupported();
-      if (languages.length == 0) {
-        languages = new String[] { "x-unspecified" };
+    ResultSpecification newResultSpec = new ResultSpecification_impl(inputResultSpec.getTypeSystem());
+    List<String> languagesToAdd = new ArrayList<String>();
+ 
+    for (Capability capability : capabilities) {
+      TypeOrFeature[] outputs = capability.getOutputs();
+      String[] languages = capability.getLanguagesSupported();
+      if (null == languages || languages.length == 0) {
+        languages = X_UNSPECIFIED;
       }
-      for (int j = 0; j < outputs.length; j++) {
-        for (int k = 0; k < languages.length; k++) {
-          if (outputs[j].isType()
-                  && inputResultSpec.containsType(outputs[j].getName(), languages[k])) {
-            newResultSpec.addResultType(outputs[j].getName(), outputs[j].isAllAnnotatorFeatures(),
-                    new String[] { languages[k] });
-          } else if (!outputs[j].isType()
-                  && inputResultSpec.containsFeature(outputs[j].getName(), languages[k])) {
-            newResultSpec.addResultFeature(outputs[j].getName(), new String[] { languages[k] });
+      
+      for (TypeOrFeature tof : outputs) {
+        String tofName = tof.getName();
+        languagesToAdd.clear();
+        for (String language : languages) {
+          if ((tof.isType() && inputResultSpec.containsType(tofName, language)) ||
+              (!tof.isType() && inputResultSpec.containsFeature(tofName, language))) {
+            languagesToAdd.add(language);
           }
+        }
+        if (0 < languagesToAdd.size()) {
+          if (tof.isType()) {
+            newResultSpec.addResultType(tofName, tof.isAllAnnotatorFeatures(), 
+                languagesToAdd.toArray(EMPTY_STRING_ARRAY));
+          } else {
+            newResultSpec.addResultFeature(tofName, languagesToAdd.toArray(EMPTY_STRING_ARRAY));
+          }  
         }
       }
     }
-    return newResultSpec;
+    return newResultSpec;    
   }
+    
+//    for (int i = 0; i < capabilities.length; i++) {
+//      Capability cap = capabilities[i];
+//      TypeOrFeature[] outputs = cap.getOutputs();
+//      String[] languages = cap.getLanguagesSupported();
+//      if (languages.length == 0) {
+//        languages = X_UNSPECIFIED;
+//      }
+//      for (int j = 0; j < outputs.length; j++) {
+//        for (int k = 0; k < languages.length; k++) {
+//          if (outputs[j].isType()
+//                  && inputResultSpec.containsType(outputs[j].getName(), languages[k])) {
+//            newResultSpec.addResultType(outputs[j].getName(), outputs[j].isAllAnnotatorFeatures(),
+//                    new String[] { languages[k] });
+//          } else if (!outputs[j].isType()
+//                  && inputResultSpec.containsFeature(outputs[j].getName(), languages[k])) {
+//            newResultSpec.addResultFeature(outputs[j].getName(), new String[] { languages[k] });
+//          }
+//        }
+//      }
+//    }
+//    return newResultSpec;
+//  }
 
   /**
    * Calls the Analysis Component's next() method.
