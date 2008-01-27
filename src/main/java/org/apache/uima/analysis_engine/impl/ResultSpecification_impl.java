@@ -19,19 +19,17 @@
 
 package org.apache.uima.analysis_engine.impl;
 
+import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.Vector;
 
 import org.apache.uima.analysis_engine.ResultSpecification;
 import org.apache.uima.analysis_engine.TypeOrFeature;
-import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.cas.text.Language;
 import org.apache.uima.resource.metadata.Capability;
 import org.apache.uima.resource.metadata.impl.MetaDataObject_impl;
 import org.apache.uima.resource.metadata.impl.PropertyXmlInfo;
@@ -40,137 +38,427 @@ import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 /**
  * Reference implementaion of {@link ResultSpecification}.
  * 
+ * Notes on the implementation
  * 
+ * There are two ways this data is used:  with and without "compiling"
+ *   Compiling means: adding subtypes of types and adding all features of a type
+ *   Uncompiled form is called ORIGINAL.
+ *   
+ *   Compiling is deferred - until the first reference to containsType or Feature.
+ *   
+ * Many instances of this class are made, sometimes via cloning.
+ * 
+ * Sometimes types and features are deleted - the intent is to do this operation on the
+ * uncompiled form, and then "recompile" it.
+ * 
+ * Types and Features are kept on a per-language basis.  Language can include a special value,
+ * x-unspecified, which "matches" any other language.
+ * 
+ * Language specifications are simplified to eliminate the country part.  All refs to 
+ * test if a type or feature is in the result spec for a language uses the simplified language.
+ * 
+ * Set operations are done to combine, for a particular type or feature, the languages for which it is valid.
+ * This is a Union operation
+ * Set operations are done to union the input types/features with the output types/features when computing the default
+ * result-spec for an aggregate.
+ * Set operations are done to intersect the result spec with the output capabilities of a component.
+ * 
+ * Languages are represented as integers; there is a hash table from the string to the integer, and
+ * an array to go from integer to lang string.
+ * 
+ * A result set of ORIGINALs consists of types/features with associated language sets. 
  */
 public final class ResultSpecification_impl extends MetaDataObject_impl implements
         ResultSpecification {
 
+//  private enum AddMode {ORIGINAL, COMPILED};
+//  private AddMode addMode = AddMode.ORIGINAL;
+//  
   private static final long serialVersionUID = 8516517600467270594L;
 
-  static final String UNSPECIFIED_LANGUAGE = "x-unspecified";
+  static final int UNSPECIFIED_LANGUAGE_INDEX = 0;
 
   /**
    * main language separator e.g 'en' and 'en-US'
    */
   private static final char LANGUAGE_SEPARATOR = '-';
+  
+  /**
+   * 
+   */
+  private boolean needsCompilation = true;
+  
+  private final Map<String, Integer> lang2int; 
+  
+  private int getLanguageWithoutCountryIndex(String language) {
+    return getLanguageIndex(getLanguageWithoutCountry(language));
+  }
+  
+  private int getLanguageIndex(String language) {
+    Integer r = lang2int.get(language);
+    if (null == r) {
+      int i = lang2int.size();
+      lang2int.put(language, Integer.valueOf(i));
+      return i;
+    }
+    return r.intValue();
+  }
+
+  private class ToF_Languages {
+    public TypeOrFeature tof;
+    public BitSet languages;
+    
+    ToF_Languages(TypeOrFeature aTof, String[] aLanguages) {
+      tof = aTof;
+      languages = new BitSet();
+      for (String lang : aLanguages) {
+        languages.set(getLanguageIndex(lang));
+      }
+    }
+    
+    ToF_Languages(TypeOrFeature aTof, BitSet aLanguages) {
+      tof = aTof;
+      languages = aLanguages;
+    }
+    
+    public Object clone() {
+      return new ToF_Languages((TypeOrFeature) tof.clone(), (BitSet)languages.clone());
+    }
+  }
+  
+  /**
+   * hash map used to map fully qualified type and feature names to associated
+   * ToF_Languages instances.  This used for ORIGINAL types and features.
+   * 
+   * Another hash map is used for compiled types and features - these include
+   * the subtypes of the ORIGINAL types.  We keep the originals because the
+   * operations of adding and removing types and features are done with respect
+   * to the originals, only, and then the other map for compiled types is recomputed.
+   * 
+   * A case in particular: we need to be able to distinguish which types were
+   * originally marked allAnnotatorFeatures, versus those types which were
+   * added because they were subtypes.  The corner case happens when a type is both
+   * an original and is also an added-via-subtype, where the allAnnotatorFeatures
+   * flag of the original is not set but the subtype version is set.
+   * 
+   */
+  private final Map<String, ToF_Languages> name2tof_langs;
 
   /**
-   * Map from TypeOrFeature objects to HashSets that include the language codes (Strings) for which
-   * that type or feature should be produced.
+   * hash map used to map fully qualified type and feature names to associated
+   * ToF_Languages instances.  This used for COMPILED types and features.
    */
-  private Map mTypesAndFeatures = new HashMap();
 
-  /**
-   * Map from String type or feature names to HashSets that include the language codes (Strings) for
-   * which that type or feature should be produced. This is populated by the compile() method, and
-   * includes subtypes as well as the individual feature names for types that have
-   * allAnnotatorFeatures=true.
-   */
-  private Map mCompiledNameToLanguageMap = new HashMap();
-
+  private final Map<String, ToF_Languages> withSubtypesName2tof_langs;
+  
+//  /**
+//   * Map from TypeOrFeature objects to HashSets that include the language codes (Strings) for which
+//   * that type or feature should be produced.
+//   */
+//  private Map<TypeOrFeature, Set<String>> mTypesAndFeatures = new HashMap<TypeOrFeature, Set<String>>();
+//
+//  /**
+//   * Map from String type or feature names to HashSets that include the language codes (Strings) for
+//   * which that type or feature should be produced. This is populated by the compile() method, and
+//   * includes subtypes as well as the individual feature names for types that have
+//   * allAnnotatorFeatures=true.
+//   */
+//  private final Map<String, Set<String>> mCompiledNameToLanguageMap = 
+//                                   new HashMap<String, Set<String>>();
+  
   /**
    * Default language set to use if nothing else is specified
    */
-  private HashSet mDefaultLanguage = new HashSet();
+  private static final String[] mDefaultLanguage = new String[] {Language.UNSPECIFIED_LANGUAGE};
 
   /**
-   * constructor init the default languge set with the language x-unspecified
+   * The type system used to compute the subtypes and allAnnotatorFeatures of types
+   */
+  private TypeSystem mTypeSystem;
+
+  /**
+   * constructor:  init the default languge set with the language x-unspecified
    */
   public ResultSpecification_impl() {
-    mDefaultLanguage.add(UNSPECIFIED_LANGUAGE);
+    name2tof_langs = new HashMap<String, ToF_Languages>();
+    withSubtypesName2tof_langs = new HashMap<String, ToF_Languages>();
+    lang2int = new HashMap<String, Integer>();
+    lang2int.put(Language.UNSPECIFIED_LANGUAGE, 0); 
   }
 
+  /**
+   * Constructor specifying the type system
+   *   this should always be used in preference to the 0 argument version
+   *   if the type system is available.  Otherwise, the type system *must*
+   *   be set via a method call prior to querying the result spec, with the
+   *   one exception of the method getResultTypesAndFeaturesWithoutCompiling
+   * @param aTypeSystem
+   */
+  public ResultSpecification_impl(TypeSystem aTypeSystem) {
+    this();
+    mTypeSystem = aTypeSystem;
+  }
+  
+  private ResultSpecification_impl(ResultSpecification_impl original) {
+    name2tof_langs = new HashMap<String, ToF_Languages>(original.name2tof_langs.size());
+    withSubtypesName2tof_langs = new HashMap<String, ToF_Languages>(original.withSubtypesName2tof_langs.size());
+    lang2int = original.lang2int;  // shared hash map - to save space.
+    for (Map.Entry<String, ToF_Languages> entry : original.name2tof_langs.entrySet()) {
+      ToF_Languages tof_langs = entry.getValue();
+      
+      // note: TypeOrFeature instances are not cloned, but shared
+      //   If they are modified, things may break
+      name2tof_langs.put(entry.getKey(), 
+          new ToF_Languages(tof_langs.tof, (BitSet)(tof_langs.languages.clone())));
+    }
+    mTypeSystem = original.mTypeSystem;
+  }
+
+  private void compileIfNeeded() {
+    if (needsCompilation) {
+      compile();
+    }
+  }
+  
+  private String getLanguageWithoutCountry(String language) {
+    String baseLanguage = language;
+    int index = language.indexOf(LANGUAGE_SEPARATOR);
+    if (index > -1) {
+      baseLanguage = language.substring(0, index);
+    }
+    return baseLanguage;
+  }
+  
   /**
    * @see org.apache.uima.analysis_engine.ResultSpecification#getResultTypesAndFeatures()
    */
   public TypeOrFeature[] getResultTypesAndFeatures() {
-    TypeOrFeature[] arr = new TypeOrFeature[mTypesAndFeatures.size()];
-    mTypesAndFeatures.keySet().toArray(arr);
+    TypeOrFeature[] arr = new TypeOrFeature[name2tof_langs.size()];
+    int i = 0;
+    for (ToF_Languages tof_langs : name2tof_langs.values()) {
+      arr[i++] = tof_langs.tof;
+    }
     return arr;
+  }
+  
+  private Map<String, ToF_Languages> availName2tof_langs() {
+    if (needsCompilation) {
+      return name2tof_langs;
+    }
+    return withSubtypesName2tof_langs;
   }
 
   /**
    * @see org.apache.uima.analysis_engine.ResultSpecification#getResultTypesAndFeatures(java.lang.String)
    */
   public TypeOrFeature[] getResultTypesAndFeatures(String language) {
-    // get language without country if applicable
-    String baseLanguage = null;
-    int index = language.indexOf(LANGUAGE_SEPARATOR);
-    if (index > -1) {
-      baseLanguage = language.substring(0, index);
-    }
+    
+    int languageIndex = getLanguageIndex(language);
+    int baseLanguageIndex = getLanguageWithoutCountryIndex(language);
 
     // holds the found ToFs for the specified language
-    Vector vec = new Vector();
+    List<TypeOrFeature> foundToF = new ArrayList<TypeOrFeature>();
 
-    Iterator it = mTypesAndFeatures.keySet().iterator();
-    while (it.hasNext()) {
-      // get current key
-      TypeOrFeature tof = (TypeOrFeature) it.next();
-      // get value for the current key
-      Set values = (HashSet) mTypesAndFeatures.get(tof);
-      if (values.contains(language) || values.contains(UNSPECIFIED_LANGUAGE)
-              || values.contains(baseLanguage)) {
-        // add tof to the TypeOfFeature array
-        vec.add(tof);
+    for (Map.Entry<String, ToF_Languages> entry : name2tof_langs.entrySet()) {
+      if (languageMatches(entry.getValue(), languageIndex, baseLanguageIndex)) {
+        foundToF.add(entry.getValue().tof);
+      }
+    }
+    return foundToF.toArray(new TypeOrFeature[foundToF.size()]);
+  }
+
+  // private helper functions
+  
+//  private boolean sameLanguages(String [] s, BitSet b) {
+//    if (s.length != b.cardinality()) {
+//      return false;
+//    }
+//    for (String lang : s) {
+//      if ( ! b.get(getLanguageIndex(lang))) {
+//        return false;
+//      }
+//    }
+//    return true;
+//  }
+  
+  /**
+   * change null languages to the unspecified language
+   * change a set of languages that includes the unspecified language to
+   *   just the unspecified language.  
+   *   This is OK when storing things into a result spec, since
+   *     the unspecified language will match any query.
+   *   This doesn't apply for querying because the queries only 
+   *     specify one language, not a set 
+   */
+  private String [] normalizeLanguages(String [] languages) {   
+    if (null == languages) {
+      return mDefaultLanguage;
+    } else {
+      for (String lang : languages) {
+        if (lang.equals(Language.UNSPECIFIED_LANGUAGE)) {
+          return mDefaultLanguage;
+        }
+      }
+    }
+    // normalization is expensive - so do this once as part of parsing capabilities
+//    int i = 0;
+//    for (String language : languages) {
+//      languages[i++] = normalizeLanguage(language);
+//    }
+    return languages;  
+  }
+  
+//  private String normalizeLanguage(String language) {
+//    String result = language.toLowerCase(Locale.ENGLISH);  // language specs are in English locale
+//    return result.replace('_', '-');
+//  }
+  
+  private void setNeedsCompilation() {
+    needsCompilation = true;
+    if (0 != withSubtypesName2tof_langs.size()) {
+      withSubtypesName2tof_langs.clear();
+    }
+  }
+  
+  private void addTypeOrFeatureInternal(TypeOrFeature tof, String[] languages) {
+    languages = normalizeLanguages(languages);
+    
+    ToF_Languages tof_langs = name2tof_langs.get(tof.getName());
+    if (null == tof_langs) {
+      name2tof_langs.put(tof.getName(), new ToF_Languages(tof, languages));
+      setNeedsCompilation();
+      return;
+    }
+    tof_langs.tof.setAllAnnotatorFeatures(tof.isAllAnnotatorFeatures());
+    BitSet langBitSet = tof_langs.languages;
+    langBitSet.clear();
+    for (String lang : languages) {
+      langBitSet.set(getLanguageIndex(lang));
+    }
+    setNeedsCompilation();
+  }
+
+  private TypeOrFeature createTypeOrFeature(String name, boolean isType, boolean aAllAnnotatorFeatures) {
+    TypeOrFeature r = new TypeOrFeature_impl();
+    r.setType(isType);
+    r.setName(name);
+    if (isType) {
+      r.setAllAnnotatorFeatures(aAllAnnotatorFeatures);
+    }
+    return r;
+  }
+
+  private void addResultTypeOrFeatureAddLanguage(String name, boolean isType, boolean allAnnotatorFeatures, String[] languages) {
+
+    ToF_Languages tof_langs = name2tof_langs.get(name);
+    
+    if (null == tof_langs) {
+      addTypeOrFeatureInternal(createTypeOrFeature(name, isType, allAnnotatorFeatures), languages);
+      setNeedsCompilation();
+      return;
+    }
+    
+    // tof_langs entry for this name exists, so update it
+    addResultTypeOrFeatureAddLanguageCommon(tof_langs, allAnnotatorFeatures, languages);
+  } 
+  
+  private void addResultTypeOrFeatureAddLanguage(TypeOrFeature tof, String[] languages) {
+
+    ToF_Languages tof_langs = name2tof_langs.get(tof.getName());
+    
+    if (null == tof_langs) {
+      addTypeOrFeatureInternal(tof, languages);
+      setNeedsCompilation();
+      return;
+    }
+    
+    addResultTypeOrFeatureAddLanguageCommon(tof_langs, tof.isAllAnnotatorFeatures(), languages);
+  }
+  
+  private void addResultTypeOrFeatureAddLanguageCommon(
+      ToF_Languages tof_langs, boolean allAnnotatorFeatures, String [] languages) {
+
+    // tof_langs entry for this name exists, so update it
+    if (allAnnotatorFeatures) {
+      if (!tof_langs.tof.isAllAnnotatorFeatures()) {
+        tof_langs.tof.setAllAnnotatorFeatures(true);
+        setNeedsCompilation();
       }
     }
 
-    // create array for return
-    TypeOrFeature[] arr = new TypeOrFeature[vec.size()];
+    // update the languages by adding the new languages passed in
+    languages = normalizeLanguages(languages);
+    BitSet langBitSet = tof_langs.languages;
+    
+    // "==" ok here due to normalizeLanguages call above
+    if (languages == mDefaultLanguage) {
+      if ( ! langBitSet.get(UNSPECIFIED_LANGUAGE_INDEX)) {
+        langBitSet.clear();
+        langBitSet.set(UNSPECIFIED_LANGUAGE_INDEX);
+        setNeedsCompilation();
+      }
+      return;
+    } 
+ 
+    // languages set already exists; add new ones to existing set
+    for (String lang : languages) {
+      langBitSet.set(getLanguageIndex(lang));
+    }
+    setNeedsCompilation();
+  }
+  
+  /**
+   * version used by compile to add subtypes
+   * @param aTypeName
+   * @param aAllAnnotatorFeatures
+   * @param languages
+   */
+  private void addResultType(String name, boolean allAnnotatorFeatures, BitSet languages) {
+    ToF_Languages tof_langs = withSubtypesName2tof_langs.get(name);
+    
+    if (null == tof_langs) {
+      withSubtypesName2tof_langs.put(
+          name, 
+          new ToF_Languages(createTypeOrFeature(name, true, allAnnotatorFeatures), (BitSet)languages.clone()));
+      return;
+    }
 
-    // convert vector to TypeOrFeature[]
-    vec.toArray(arr);
+    // tof_langs entry for this name exists, so update it
+    if (allAnnotatorFeatures) {
+      if (!tof_langs.tof.isAllAnnotatorFeatures()) {
+        tof_langs.tof.setAllAnnotatorFeatures(true);
+      }
+    }
 
-    return arr;
+    // update the languages by adding the new languages passed in
+    tof_langs.languages.or(languages); 
   }
 
+   
   /**
    * @see org.apache.uima.analysis_engine.ResultSpecification#setResultTypesAndFeatures(org.apache.uima.analysis_engine.TypeOrFeature[])
    */
   public void setResultTypesAndFeatures(TypeOrFeature[] aTypesAndFeatures) {
-    mTypesAndFeatures.clear();
-    for (int i = 0; i < aTypesAndFeatures.length; i++) {
-      mTypesAndFeatures.put(aTypesAndFeatures[i], mDefaultLanguage);
-    }
-    // revert to uncompiled state
-    mCompiledNameToLanguageMap.clear();
+    setResultTypesAndFeatures(aTypesAndFeatures, mDefaultLanguage);
   }
-
+  
   /**
    * @see org.apache.uima.analysis_engine.ResultSpecification#setResultTypesAndFeatures(org.apache.uima.analysis_engine.TypeOrFeature[],
    *      java.lang.String[])
    */
   public void setResultTypesAndFeatures(TypeOrFeature[] aTypesAndFeatures, String[] aLanguageIDs) {
-    if (aLanguageIDs != null) {
-      // create HashSet for the aLanguageIDs with the initial capacity of the aLanguageIDs size
-      HashSet languagesSupported = new HashSet(aLanguageIDs.length);
-      // add all supported languages to at HashSet
-      for (int x = 0; x < aLanguageIDs.length; x++) {
-        // add current language to the HashSet
-        languagesSupported.add(aLanguageIDs[x]);
-      }
-
-      mTypesAndFeatures.clear();
-      for (int i = 0; i < aTypesAndFeatures.length; i++) {
-        mTypesAndFeatures.put(aTypesAndFeatures[i], languagesSupported);
-      }
-      // revert to uncompiled state
-      mCompiledNameToLanguageMap.clear();
-    } else {
-      // if aLangugeIDs is null set ToFs for the default language
-      setResultTypesAndFeatures(aTypesAndFeatures);
-    }
-
+    name2tof_langs.clear();
+    for (TypeOrFeature tof : aTypesAndFeatures) {
+      name2tof_langs.put(tof.getName(), new ToF_Languages(tof, normalizeLanguages(aLanguageIDs)));
+    }    
+    setNeedsCompilation();
   }
 
   /**
    * @see org.apache.uima.analysis_engine.ResultSpecification#addResultTypeOrFeature(org.apache.uima.analysis_engine.TypeOrFeature)
    */
   public void addResultTypeOrFeature(TypeOrFeature aTypeOrFeature) {
-    mTypesAndFeatures.put(aTypeOrFeature, mDefaultLanguage);
-    // revert to uncompiled state
-    mCompiledNameToLanguageMap.clear();
+    addTypeOrFeatureInternal(aTypeOrFeature, mDefaultLanguage);
   }
 
   /**
@@ -178,80 +466,30 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
    *      java.lang.String[])
    */
   public void addResultTypeOrFeature(TypeOrFeature aTypeOrFeature, String[] aLanguageIDs) {
-    if (aLanguageIDs != null) {
-      // create HashSet for the aLanguageIDs with the initial capacity of the aLanguageIDs size
-      HashSet languagesSupported = new HashSet(aLanguageIDs.length);
-      // add all supported languages to at HashSet
-      for (int x = 0; x < aLanguageIDs.length; x++) {
-        // add current language to the HashSet
-        languagesSupported.add(aLanguageIDs[x]);
-      }
-
-      mTypesAndFeatures.put(aTypeOrFeature, languagesSupported);
-      // revert to uncompiled state
-      mCompiledNameToLanguageMap.clear();
-    } else {
-      // if aLangugeIDs is null add ToF with the default language
-      addResultTypeOrFeature(aTypeOrFeature);
-    }
+    addTypeOrFeatureInternal(aTypeOrFeature, aLanguageIDs);
   }
-
+  
   /**
    * @see org.apache.uima.analysis_engine.ResultSpecification#addResultType(java.lang.String,
    *      boolean)
    */
   public void addResultType(String aTypeName, boolean aAllAnnotatorFeatures) {
-    TypeOrFeature t = new TypeOrFeature_impl();
-    t.setType(true);
-    t.setName(aTypeName);
-    t.setAllAnnotatorFeatures(aAllAnnotatorFeatures);
-    mTypesAndFeatures.put(t, mDefaultLanguage);
-    // revert to uncompiled state
-    mCompiledNameToLanguageMap.clear();
+    addTypeOrFeatureInternal(createTypeOrFeature(aTypeName, true, aAllAnnotatorFeatures), mDefaultLanguage);
   }
-
+  
   /**
    * @see org.apache.uima.analysis_engine.ResultSpecification#addResultType(java.lang.String,
    *      boolean, java.lang.String[])
    */
   public void addResultType(String aTypeName, boolean aAllAnnotatorFeatures, String[] aLanguageIDs) {
-    if (aLanguageIDs != null) {
-      // create HashSet for the aLanguageIDs with the initial capacity of the aLanguageIDs size
-      HashSet languagesSupported = new HashSet(aLanguageIDs.length);
-      // add all supported languages to at HashSet
-      for (int x = 0; x < aLanguageIDs.length; x++) {
-        // add current language to the HashSet
-        languagesSupported.add(aLanguageIDs[x]);
-      }
-
-      TypeOrFeature t = new TypeOrFeature_impl();
-      t.setType(true);
-      t.setName(aTypeName);
-      t.setAllAnnotatorFeatures(aAllAnnotatorFeatures);
-      HashSet existingLanguages = (HashSet) mTypesAndFeatures.get(t);
-      if (existingLanguages != null) {
-        existingLanguages.addAll(languagesSupported);
-      } else {
-        mTypesAndFeatures.put(t, languagesSupported);
-      }
-      // revert to uncompiled state
-      mCompiledNameToLanguageMap.clear();
-    } else {
-      // if aLangugeIDs is null add type with the default language
-      addResultType(aTypeName, aAllAnnotatorFeatures);
-    }
+    addResultTypeOrFeatureAddLanguage(aTypeName, true, aAllAnnotatorFeatures, aLanguageIDs);
   }
-
+  
   /**
    * @see org.apache.uima.analysis_engine.ResultSpecification#addResultFeature(java.lang.String)
    */
   public void addResultFeature(String aFullFeatureName) {
-    TypeOrFeature f = new TypeOrFeature_impl();
-    f.setType(false);
-    f.setName(aFullFeatureName);
-    mTypesAndFeatures.put(f, mDefaultLanguage);
-    // revert to uncompiled state
-    mCompiledNameToLanguageMap.clear();
+    addTypeOrFeatureInternal(createTypeOrFeature(aFullFeatureName, false, false), mDefaultLanguage);
   }
 
   /**
@@ -259,76 +497,110 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
    *      java.lang.String[])
    */
   public void addResultFeature(String aFullFeatureName, String[] aLanguageIDs) {
-    if (aLanguageIDs != null) {
-      // create HashSet for the aLanguageIDs with the initial capacity of the aLanguageIDs size
-      HashSet languagesSupported = new HashSet(aLanguageIDs.length);
-      // add all supported languages to at HashSet
-      for (int x = 0; x < aLanguageIDs.length; x++) {
-        // add current language to the HashSet
-        languagesSupported.add(aLanguageIDs[x]);
-      }
-
-      TypeOrFeature f = new TypeOrFeature_impl();
-      f.setType(false);
-      f.setName(aFullFeatureName);
-      HashSet existingLanguages = (HashSet) mTypesAndFeatures.get(f);
-      if (existingLanguages != null) {
-        existingLanguages.addAll(languagesSupported);
-      } else {
-        mTypesAndFeatures.put(f, languagesSupported);
-      }
-      // revert to uncompiled state
-      mCompiledNameToLanguageMap.clear();
-    } else {
-      // if aLangugeIDs is null add type with the default language
-      addResultFeature(aFullFeatureName);
-    }
+    addResultTypeOrFeatureAddLanguage(aFullFeatureName, false, false, aLanguageIDs);
   }
 
   /**
    * @see org.apache.uima.analysis_engine.ResultSpecification#compile(org.apache.uima.cas.TypeSystem)
    */
   public void compile(TypeSystem aTypeSystem) {
-    mCompiledNameToLanguageMap.clear();
-    Iterator it = mTypesAndFeatures.entrySet().iterator();
-    while (it.hasNext()) {
-      Map.Entry elem = (Map.Entry) it.next();
-      TypeOrFeature tof = (TypeOrFeature) elem.getKey();
-      if (tof.isType()) {
-        Type t = aTypeSystem.getType(tof.getName());
-        if (t != null) {
-          addTypeRecursive(t, aTypeSystem, (HashSet) elem.getValue(), tof.isAllAnnotatorFeatures());
-        }
-      } else // feature
-      {
-        mCompiledNameToLanguageMap.put(tof.getName(), elem.getValue());
-      }
-    }
-    // TODO: process the set of intersections
+    setTypeSystem(aTypeSystem);
+    compileIfNeeded();
   }
+  
+//  private static class TypeToCompile {
+//    String name;
+//    boolean allFeatures;
+//    String[] languages;
+//    TypeToCompile(String aName, boolean aAllFeatures, String[] aLanguages) {
+//      name = aName;
+//      allFeatures = aAllFeatures;
+//      languages = aLanguages;
+//    }
+//  }
+  
+  private void compile() { 
+    if (null == mTypeSystem) {
+      return;
+    }
+    
+    needsCompilation = false;
+    // get set of current type names
+    // for each name, get set of implied additional names (allAnnotatorFeatures and subtypes), recursively
+    // add with languages
+    
+    // issue:  can a result spec hold for language 1 types a b c, for language 2 types a b? yes
+    //         can it hold for lang 1 type a(allfeats) and for lang 2 type a(not all feat)? no
+    
+//    Map<String, TypeToCompile> typesToCompile = new HashMap<String, TypeToCompile>(mNameToTofLang.size());
+//    for (ToF_Languages tof_langs : mNameToTofLang.values()) {
+//      TypeOrFeature tof = tof_langs.tof;
+//      if (tof.isType()) {
+//        String typeName = tof.getName();
+//        typesToCompile.put(typeName, new TypeToCompile(typeName, tof.isAllAnnotatorFeatures(), tof_langs.languages));
+//      }
+//    }
 
-  /**
-   * @param t
-   */
-  private void addTypeRecursive(Type type, TypeSystem typeSystem, HashSet languages,
-          boolean allFeatures) {
-    mCompiledNameToLanguageMap.put(type.getName(), languages);
-    if (allFeatures) {
-      List features = type.getFeatures();
-      Iterator featIt = features.iterator();
-      while (featIt.hasNext()) {
-        Feature f = (Feature) featIt.next();
-        mCompiledNameToLanguageMap.put(f.getName(), languages);
-      }
-    }
-    // recurse on subtypes
-    List subtypes = typeSystem.getDirectSubtypes(type);
-    Iterator typeIt = subtypes.iterator();
-    while (typeIt.hasNext()) {
-      Type subtype = (Type) typeIt.next();
-      addTypeRecursive(subtype, typeSystem, languages, allFeatures);
+    for (ToF_Languages tof_langs : name2tof_langs.values()) {
+        TypeOrFeature tof = tof_langs.tof;
+        // copy type or feature to other map
+        withSubtypesName2tof_langs.put(tof.getName(), (ToF_Languages) tof_langs.clone());
+        if (tof.isType()) {
+          compileTypeRecursively(mTypeSystem.getType(tof.getName()), tof.isAllAnnotatorFeatures(), tof_langs.languages);
+        }
     }
   }
+    
+//    mCompiledNameToLanguageMap.clear();
+//    for (Map.Entry<TypeOrFeature, Set<String>> elem : mTypesAndFeatures.entrySet()) {
+//      TypeOrFeature tof = elem.getKey();
+//      if (tof.isType()) {
+//        Type t = aTypeSystem.getType(tof.getName());
+//        if (t != null) {
+//          addTypeRecursive(t, aTypeSystem, elem.getValue(), tof.isAllAnnotatorFeatures());
+//        }
+//      } else { // feature
+//        mCompiledNameToLanguageMap.put(tof.getName(), elem.getValue());
+//      }
+//    }
+//    // TODO: process the set of intersections
+//  }
+
+  private void compileTypeRecursively(Type type, boolean allFeatures, BitSet languages) {
+
+    if (null != type) {
+//      if (allFeatures) {
+//        for (Feature f : (List<Feature>) type.getFeatures()) {
+//          addResultFeature(f.getName(), languages); // this add "merges"
+//                                                    // langauges with existing
+//                                                    // ones
+//        }
+//      }
+      
+      for (Type subType : (List<Type>) mTypeSystem.getDirectSubtypes(type)) {
+        String subTypeName = subType.getName();
+        addResultType(subTypeName, allFeatures, languages);
+        compileTypeRecursively(subType, allFeatures, languages);
+      }
+    }
+  }
+  
+// /**
+// * @param t
+// */
+//  private void addTypeRecursive(Type type, TypeSystem typeSystem, Set<String> languages,
+//          boolean allFeatures) {
+//    mCompiledNameToLanguageMap.put(type.getName(), languages);
+//    if (allFeatures) {
+//      for (Feature f : (List<Feature>)type.getFeatures()) {
+//        mCompiledNameToLanguageMap.put(f.getName(), languages);
+//      }
+//    }
+//    // recurse on subtypes
+//    for (Type subtype : (List<Type>)typeSystem.getDirectSubtypes(type)) {
+//      addTypeRecursive(subtype, typeSystem, languages, allFeatures);
+//    }
+//  }
 
   /**
    * @see org.apache.uima.analysis_engine.ResultSpecification#containsType(java.lang.String)
@@ -336,171 +608,123 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
   public boolean containsType(String aTypeName) {
     if (aTypeName.indexOf(TypeSystem.FEATURE_SEPARATOR) != -1)
       return false; // check against someone passing a feature name here
-    // if compile() has been called can be done by a hash lookup
-    if (!mCompiledNameToLanguageMap.isEmpty()) {
-      return mCompiledNameToLanguageMap.containsKey(aTypeName);
-    } else {
-      // brute force search
-      Iterator it = mTypesAndFeatures.keySet().iterator();
-      while (it.hasNext()) {
-        TypeOrFeature elem = (TypeOrFeature) it.next();
-        if (elem.isType() && aTypeName.equals(elem.getName())) {
-          return true;
-        }
-      }
-      return false;
-    }
+    compileIfNeeded();
+    return availName2tof_langs().containsKey(aTypeName);
   }
+    
 
   /**
    * @see org.apache.uima.analysis_engine.ResultSpecification#containsType(java.lang.String,java.lang.String)
    */
   public boolean containsType(String aTypeName, String language) {
-    if (language == null) {
+    if (language == null || language.equals(Language.UNSPECIFIED_LANGUAGE)) {
       return containsType(aTypeName);
     }
     if (aTypeName.indexOf(TypeSystem.FEATURE_SEPARATOR) != -1)
       return false; // check against someone passing a feature name here
-
-    // get language without country if applicable
-    String baseLanguage = null;
-    int index = language.indexOf(LANGUAGE_SEPARATOR);
-    if (index > -1) {
-      baseLanguage = language.substring(0, index);
-    }
-
-    boolean found = false;
-
-    if (!mCompiledNameToLanguageMap.isEmpty()) {
-      // if compile() has been called can be done by a hash lookup
-      HashSet languages = (HashSet) mCompiledNameToLanguageMap.get(aTypeName);
-      if (languages != null) {
-        // check if tof is supported for the current language
-        if (UNSPECIFIED_LANGUAGE.equals(language) || languages.contains(language)
-                || languages.contains(UNSPECIFIED_LANGUAGE) || languages.contains(baseLanguage)) {
-          // mark item found
-          found = true;
-        }
-      }
-    } else {
-      // brute force search
-      Iterator it = mTypesAndFeatures.keySet().iterator();
-      while (it.hasNext()) {
-        TypeOrFeature elem = (TypeOrFeature) it.next();
-        if (elem.isType() && aTypeName.equals(elem.getName())) {
-          HashSet languages = (HashSet) mTypesAndFeatures.get(elem);
-          if (languages != null) {
-            // check if tof is supported for the current language
-            if (UNSPECIFIED_LANGUAGE.equals(language) || languages.contains(language)
-                    || languages.contains(UNSPECIFIED_LANGUAGE) || languages.contains(baseLanguage)) {
-              // mark item found
-              return true;
-            }
-          }
-        }
-      }
-    }
-
-    return found;
+    
+    compileIfNeeded();
+    return languageMatches(availName2tof_langs().get(aTypeName), language);
   }
 
   /**
    * @see org.apache.uima.analysis_engine.ResultSpecification#containsFeature(java.lang.String)
    */
   public boolean containsFeature(String aFullFeatureName) {
-    if (aFullFeatureName.indexOf(TypeSystem.FEATURE_SEPARATOR) == -1)
+    int typeEndPosition = aFullFeatureName.indexOf(TypeSystem.FEATURE_SEPARATOR);
+    if (typeEndPosition == -1)
       return false; // check against someone passing a type name here
 
-    // if compile() has been called can be done by a hash lookup
-    if (!mCompiledNameToLanguageMap.isEmpty()) {
-      return mCompiledNameToLanguageMap.containsKey(aFullFeatureName);
-    } else {
-      // brute force search
-      // (also need to consider Types with allAnnotatorFeatures = true)
-      String typeName = "";
-      int typeSeparatorIndex = aFullFeatureName.indexOf(':');
-      if (typeSeparatorIndex > 0) {
-        typeName = aFullFeatureName.substring(0, typeSeparatorIndex);
-      }
-
-      Iterator it = mTypesAndFeatures.keySet().iterator();
-      while (it.hasNext()) {
-        TypeOrFeature elem = (TypeOrFeature) it.next();
-        if ((!elem.isType() && aFullFeatureName.equals(elem.getName()))
-                || (elem.isType() && elem.isAllAnnotatorFeatures() && typeName.equals(elem
-                        .getName()))) {
-          return true;
-        }
-      }
-
-      return false;
+    compileIfNeeded();
+    if (availName2tof_langs().containsKey(aFullFeatureName)) {
+      return true;
     }
+    
+    // special code here to return true if the allAnnotatorFeatures flag is set for the type
+    String typeName = aFullFeatureName.substring(0, typeEndPosition);
+    ToF_Languages tof_langs = availName2tof_langs().get(typeName);
+    if (null != tof_langs && tof_langs.tof.isAllAnnotatorFeatures()) {
+      if (null != mTypeSystem) {
+        return null != mTypeSystem.getFeatureByFullName(aFullFeatureName);  // verify feature is there
+      }
+      return true;
+    }
+    return false;
   }
 
   /**
    * @see org.apache.uima.analysis_engine.ResultSpecification#containsFeature(java.lang.String,java.lang.String)
    */
   public boolean containsFeature(String aFullFeatureName, String language) {
-    if (language == null) {
+    if (language == null || language.equals(Language.UNSPECIFIED_LANGUAGE)) {
       return containsFeature(aFullFeatureName);
     }
-    if (aFullFeatureName.indexOf(TypeSystem.FEATURE_SEPARATOR) == -1)
+    int typeEndPosition = aFullFeatureName.indexOf(TypeSystem.FEATURE_SEPARATOR);
+    if (typeEndPosition == -1)
       return false; // check against someone passing a type name here
 
-    // get language without country if applicable
-    String baseLanguage = null;
-    int index = language.indexOf(LANGUAGE_SEPARATOR);
-    if (index > -1) {
-      baseLanguage = language.substring(0, index);
+    compileIfNeeded();
+    ToF_Languages tof_langs = name2tof_langs.get(aFullFeatureName);
+    if (languageMatches(tof_langs, language)) {
+      return true;
     }
-
-    boolean found = false;
-
-    // if compile() has been called can be done by a hash lookup
-    if (!mCompiledNameToLanguageMap.isEmpty()) {
-      HashSet languages = (HashSet) mCompiledNameToLanguageMap.get(aFullFeatureName);
-      if (languages != null) {
-        // check if tof is supported for the current language
-        if (UNSPECIFIED_LANGUAGE.equals(language) || languages.contains(language)
-                || languages.contains(UNSPECIFIED_LANGUAGE) || languages.contains(baseLanguage)) {
-          // mark item found
-          found = true;
-        }
+    
+    // special code for allAnnotatorFeatures: return true if type name is found and
+    // has all annotator features set
+    tof_langs = availName2tof_langs().get(aFullFeatureName.substring(0, typeEndPosition));
+    if (null != tof_langs && tof_langs.tof.isAllAnnotatorFeatures() && languageMatches(tof_langs, language)) {
+      if (null != mTypeSystem) {
+        return null != mTypeSystem.getFeatureByFullName(aFullFeatureName);  // verify feature is there
       }
-    } else {
-      // brute force search
-      // (also need to consider Types with allAnnotatorFeatures = true)
-      String typeName = "";
-      int typeSeparatorIndex = aFullFeatureName.indexOf(':');
-      if (typeSeparatorIndex > 0) {
-        typeName = aFullFeatureName.substring(0, typeSeparatorIndex);
-      }
-
-      Iterator it = mTypesAndFeatures.keySet().iterator();
-      while (it.hasNext()) {
-        TypeOrFeature elem = (TypeOrFeature) it.next();
-        if ((!elem.isType() && aFullFeatureName.equals(elem.getName()))
-                || (elem.isType() && elem.isAllAnnotatorFeatures() && typeName.equals(elem
-                        .getName()))) {
-          HashSet languages = (HashSet) mTypesAndFeatures.get(elem);
-          if (languages != null) {
-            // check if tof is supported for the current language
-            if (UNSPECIFIED_LANGUAGE.equals(language) || languages.contains(language)
-                    || languages.contains(UNSPECIFIED_LANGUAGE) || languages.contains(baseLanguage)) {
-              // mark item found
-              return true;
-            }
-          }
-        }
-      }
+      return true;
     }
-
-    return found;
+    return false;
   }
+
+  /**
+   * Languages matches if the query language is xxx-yyy and
+   *    result spec languages contains:
+   *       x-unspecified
+   *       xxx-yyy
+   *       xxx  
+   *    or if query language is x-unspecified
+   *    
+   * @param tof_langs
+   * @param language
+   * @return
+   */
+  private boolean languageMatches(ToF_Languages tof_langs, String language) {
+    if (null == tof_langs) {
+      return false;
+    }    
+    BitSet languages = tof_langs.languages;
+    if (languages.get(UNSPECIFIED_LANGUAGE_INDEX) ||
+        languages.get(getLanguageIndex(language))) {
+      return true;
+    }
+    String baseLanguage = getLanguageWithoutCountry(language);
+    return baseLanguage != language && 
+           languages.get(getLanguageIndex(baseLanguage));
+  }
+
+  private boolean languageMatches(ToF_Languages tof_langs, int languageIndex, int baseLanguageIndex) {
+    if (null == tof_langs) {
+      return false;
+    }    
+    BitSet languages = tof_langs.languages;
+    if (languages.get(UNSPECIFIED_LANGUAGE_INDEX) ||
+        languages.get(languageIndex)) {
+      return true;
+    }
+    return baseLanguageIndex != languageIndex && 
+           languages.get(baseLanguageIndex);
+  }
+  
 
   /**
    * @see org.apache.uima.resource.impl.MetaDataObject_impl#getXmlizationInfo()
    */
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return new XmlizationInfo("resultSpecification", null,
             new PropertyXmlInfo[] { new PropertyXmlInfo("resultTypesAndFeatures", null) });
@@ -518,45 +742,29 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
    *      boolean)
    */
   public void addCapabilities(Capability[] capabilities, boolean outputs) {
-    if (capabilities != null) {
-      for (int i = 0; i < capabilities.length; i++) {
-        TypeOrFeature[] tofs = outputs ? capabilities[i].getOutputs() : capabilities[i].getInputs();
-
-        // get supported languages
-        String[] supportedLanguagesArr = capabilities[i].getLanguagesSupported();
-
-        HashSet supportedLanguages = null;
-        if (supportedLanguagesArr != null && supportedLanguagesArr.length > 0) {
-          // create new HashSet with the initial capacity of the supportedLanguageArr
-          supportedLanguages = new HashSet(supportedLanguagesArr.length);
-          // add all supported languages to at HashSet
-          for (int x = 0; x < supportedLanguagesArr.length; x++) {
-            // add current language to the HashSet
-            supportedLanguages.add(supportedLanguagesArr[x]);
-          }
-        } else {
-          // if no languages are set, set default language
-          supportedLanguages = mDefaultLanguage;
-        }
-
-        for (int y = 0; y < tofs.length; y++) {
-          mTypesAndFeatures.put(tofs[y], supportedLanguages);
-        }
-
+    if (null == capabilities) {
+      return;
+    }
+    for (Capability capability : capabilities) {
+      TypeOrFeature[] tofs = outputs ? capability.getOutputs() : capability.getInputs();
+      String[] supportedLanguages = capability.getLanguagesSupported();
+      if (null == supportedLanguages) {
+        supportedLanguages = mDefaultLanguage;
+      }
+      for (TypeOrFeature tof : tofs) {
+        addResultTypeOrFeatureAddLanguage(tof, supportedLanguages);
       }
     }
-    // revert to uncompiled state
-    mCompiledNameToLanguageMap.clear();
+    setNeedsCompilation();
   }
 
   /**
    * @see org.apache.uima.analysis_engine.ResultSpecification#removeTypeOrFeature(org.apache.uima.analysis_engine.TypeOrFeature)
    */
   public void removeTypeOrFeature(TypeOrFeature aTypeOrFeature) {
-    // reomve Type or Feature from the
-    mTypesAndFeatures.remove(aTypeOrFeature);
-    // revert to uncompiled state
-    mCompiledNameToLanguageMap.clear();
+    // remove Type or Feature from the
+    name2tof_langs.remove(aTypeOrFeature.getName());
+    setNeedsCompilation();  // may have removed something which had subtypes
   }
 
   /**
@@ -564,18 +772,26 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
    * 
    * @return Object copy of the current object
    */
+  @Override
   public Object clone() {
     // create new result specification
     // NOTE: we don't use super.clone here, since for performance reasons
     // we want to do a faster clone that what the general-purpose logic in
     // MetaDataObject_impl does. This class is marked final so that
     // this can't cause a problem if ResultSpecification_impl is subclassed.
-    ResultSpecification_impl newResultSpec = new ResultSpecification_impl();
-
-    // clone HashMaps
-    newResultSpec.mTypesAndFeatures = new HashMap(this.mTypesAndFeatures);
-    newResultSpec.mDefaultLanguage = new HashSet(this.mDefaultLanguage);
-
-    return newResultSpec;
+    return new ResultSpecification_impl(this);
   }
+
+  public void setTypeSystem(TypeSystem ts) {
+    if (mTypeSystem == ts) {
+      return;
+    }
+    mTypeSystem = ts;
+    setNeedsCompilation();
+  }
+  
+  public TypeSystem getTypeSystem() {
+    return mTypeSystem;
+  }
+
 }
