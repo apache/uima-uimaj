@@ -4285,7 +4285,7 @@
   <testTypeSystem:HasOccurrence xmi:id="12186" componentId="ACE" from="5274"
     to="2493"/>
   <testTypeSystem:AnnotationArrayTest xmi:id="100000" 
-    arrayOfAnnotations="100002 100003 100004"/>
+    sofa="1" arrayOfAnnotations="100002 100003 100004"/>
   <testTypeSystem:GPE xmi:id="100002" sofa="1" begin="128"
     end="135" confidence="0.0" componentId="ACE"
     mentionType="NAME"/>
