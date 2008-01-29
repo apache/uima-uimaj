@@ -79,6 +79,7 @@ import org.apache.uima.cas.impl.LowLevelTypeSystem;
  * <li>Depending on the leaf type, call the appropriate <coce>evaluateAs </code> methods
  * </ol>
  * 
+ * @deprecated use {@link org.apache.uima.cas.FeaturePath FeaturePath}
  */
 public interface FeatureValuePath {
 
