@@ -31,7 +31,9 @@ import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.LowLevelCAS;
 import org.apache.uima.cas.impl.XCASDeserializer;
+import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas_data.impl.CasComparer;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.TypeDescription;
@@ -61,7 +63,8 @@ public class CasCopierTest extends TestCase {
   public void testCopyCas() throws Exception {
     // create a source CAS by deserializing from XCAS
     CAS srcCas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
-    InputStream serCasStream = new FileInputStream(JUnitExtension.getFile("ExampleCas/multiSofaCas.xml"));
+    InputStream serCasStream = new FileInputStream(JUnitExtension
+            .getFile("ExampleCas/multiSofaCas.xml"));
     XCASDeserializer.deserialize(serCasStream, srcCas);
     serCasStream.close();
 
@@ -70,30 +73,31 @@ public class CasCopierTest extends TestCase {
 
     // do the copy
     CasCopier.copyCas(srcCas, destCas, true);
-    //XCASSerializer.serialize(destCas, System.out);
+    // XCASSerializer.serialize(destCas, System.out);
 
     // verify copy
-    CasComparer.assertEquals(srcCas, destCas);    
-    
-    //try with type systems are not identical (dest. a superset of src.)
+    CasComparer.assertEquals(srcCas, destCas);
+
+    // try with type systems are not identical (dest. a superset of src.)
     TypeSystemDescription additionalTypes = new TypeSystemDescription_impl();
-    TypeDescription fooType = additionalTypes.addType("test.Foo", "Test Type", "uima.tcas.Annotation");
-    fooType.addFeature("bar", "Test Feature", "uima.cas.String");    
+    TypeDescription fooType = additionalTypes.addType("test.Foo", "Test Type",
+            "uima.tcas.Annotation");
+    fooType.addFeature("bar", "Test Feature", "uima.cas.String");
     ArrayList destTypeSystems = new ArrayList();
     destTypeSystems.add(additionalTypes);
     destTypeSystems.add(typeSystem);
     CAS destCas2 = CasCreationUtils.createCas(destTypeSystems);
     CasCopier.copyCas(srcCas, destCas2, true);
     CasComparer.assertEquals(srcCas, destCas);
-    
-    //try with base CAS rather than initial view
-    CAS srcCasBase = ((CASImpl)srcCas).getBaseCAS();
+
+    // try with base CAS rather than initial view
+    CAS srcCasBase = ((CASImpl) srcCas).getBaseCAS();
     destCas.reset();
-    CAS destCasBase = ((CASImpl)destCas).getBaseCAS();
+    CAS destCasBase = ((CASImpl) destCas).getBaseCAS();
     CasCopier.copyCas(srcCasBase, destCasBase, true);
-    CasComparer.assertEquals(srcCasBase, destCasBase);        
+    CasComparer.assertEquals(srcCasBase, destCasBase);
   }
-  
+
   public void testCopyCasView() throws Exception {
     // create a source CAS by deserializing from XCAS
     CAS srcCas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
@@ -139,13 +143,35 @@ public class CasCopierTest extends TestCase {
     FeatureStructure relCopy = copier.copyFs(relFS);
     // verify copy
     CasComparer.assertEquals(relFS, relCopy);
-    
-    //test null array element
+
+    // test null array element
     ArrayFS arrFS = srcCas.createArrayFS(3);
     arrFS.set(0, annot);
     arrFS.set(1, null);
     arrFS.set(2, relFS);
     FeatureStructure copyArrFS = copier.copyFs(arrFS);
-    CasComparer.assertEquals(arrFS, copyArrFS);     
+    CasComparer.assertEquals(arrFS, copyArrFS);
+  }
+
+  public void testAnnotationWithNullSofaRef() throws Exception {
+    CAS srcCas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
+    CAS srcCasView = srcCas.createView("TestView");
+    srcCasView.setDocumentText("This is a test");
+    CAS destCas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
+    LowLevelCAS lowLevelSrcCasView = srcCasView.getLowLevelCAS();
+    int typeCode = lowLevelSrcCasView.ll_getTypeSystem().ll_getCodeForType(
+            srcCas.getAnnotationType());
+    int destFsAddr = lowLevelSrcCasView.ll_createFS(typeCode);
+    AnnotationFS fs = (AnnotationFS) lowLevelSrcCasView.ll_getFSForRef(destFsAddr);
+    fs.setIntValue(srcCas.getBeginFeature(), 0);
+    fs.setIntValue(srcCas.getEndFeature(), 4);
+    assertEquals("This", fs.getCoveredText());
+    srcCasView.addFsToIndexes(fs);
+    CasCopier.copyCas(srcCas, destCas, true);
+    CAS destCasView = destCas.getView("TestView");
+    Iterator annotIter = destCasView.getAnnotationIndex().iterator();
+    annotIter.next(); // document annotation
+    AnnotationFS copiedFs = (AnnotationFS) annotIter.next();
+    assertEquals("This", copiedFs.getCoveredText());
   }
 }

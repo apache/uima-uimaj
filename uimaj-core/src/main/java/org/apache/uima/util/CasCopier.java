@@ -56,6 +56,7 @@ public class CasCopier {
   private CAS mSrcCas;
   private CAS mDestCas;
   private LowLevelCAS mLowLevelDestCas;
+  private Feature mDestSofaFeature;
 
   private Map mFsMap = new HashMap();
 
@@ -73,6 +74,7 @@ public class CasCopier {
     mSrcCas = aSrcCas;
     mDestCas = aDestCas;
     mLowLevelDestCas = aDestCas.getLowLevelCAS();
+    mDestSofaFeature = aDestCas.getTypeSystem().getFeatureByFullName(CAS.FEATURE_FULL_NAME_SOFA);    
   }
   
   /**
@@ -138,6 +140,16 @@ public class CasCopier {
         FeatureStructure fs = (FeatureStructure) iter.next();
         if (!indexedFs.contains(fs)) {
           FeatureStructure copyOfFs = copyFs(fs);
+          //check for annotations with null Sofa reference - this can happen
+          //if the annotations were created with the Low Level CAS API.  If the
+          //Sofa reference isn't set, attempting to add the FS to the indexes
+          //will fail.
+          if (fs instanceof AnnotationFS) {
+              FeatureStructure sofa =((AnnotationFS)copyOfFs).getFeatureValue(mDestSofaFeature);
+              if (sofa == null) {
+                copyOfFs.setFeatureValue(mDestSofaFeature, targetView.getSofa());               
+              }
+          }
           // also don't index the DocumentAnnotation (it's indexed by default)
           if (!isDocumentAnnotation(copyOfFs)) {
             targetView.addFsToIndexes(copyOfFs);
