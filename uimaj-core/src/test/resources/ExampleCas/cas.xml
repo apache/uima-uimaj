@@ -8122,7 +8122,7 @@
   <uima.cas.NonEmptyFSList _id="9392" _ref_head="12186"
     _ref_tail="9389"/>
   <org.apache.uima.testTypeSystem.AnnotationArrayTest _id="100000" _indexed="1"
-    _ref_arrayOfAnnotations="100001"/>
+    sofa="1" _ref_arrayOfAnnotations="100001"/>
   <uima.cas.FSArray _id="100001" size="3">
     <i>100002</i>
     <i>100003</i>
