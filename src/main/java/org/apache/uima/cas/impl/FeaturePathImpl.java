@@ -835,8 +835,7 @@ class FeaturePathImpl implements FeaturePath {
             // check current FS type for FeaturePath base type
             if (this.featurePathBaseTypeCode > 0) {
                isInitSubType = llCas.ll_getTypeSystem()
-                     .ll_subsumes(this.featurePathBaseTypeCode,
-                           llCas.ll_getFSRefType(fsRef));
+                     .ll_subsumes(this.featurePathBaseTypeCode, llCas.ll_getFSRefType(fsRef));
             }
             // get the Feature for the current featurePath element. If the
             // featurePath is always valid the featurePath Feature elements are

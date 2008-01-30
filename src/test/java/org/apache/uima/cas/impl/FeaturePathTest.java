@@ -298,6 +298,21 @@ public class FeaturePathTest extends TestCase {
       featurePath.typeInit(cas.getDocumentAnnotation().getType());
       assertEquals(null, featurePath.getValueAsString(cas
             .getDocumentAnnotation()));
+      
+      // check init() with super type and call getValue() with subtype
+      featurePath = new FeaturePathImpl();
+      featurePath.initialize("/stringFeature");
+      Type testAnnotType = cas.getTypeSystem()
+            .getType("uima.tt.TestAnnotation");
+      featurePath.typeInit(testAnnotType);
+
+      Type testAnnotSubType = cas.getTypeSystem().getType(
+            "uima.tt.TestAnnotSub");
+      AnnotationFS fs = cas.createAnnotation(testAnnotSubType, 0, 1);
+      cas.addFsToIndexes(fs);
+
+      featurePath.getValueAsString(fs);
+
    }
 
    /**
@@ -481,7 +496,7 @@ public class FeaturePathTest extends TestCase {
       } catch (CASRuntimeException ex) {
          assertTrue(ex.getMessage().indexOf("refFeature") > -1);
       }
-      
+
       // use featurePath object with an different type than used for typeInit()
       // and the case that type used for typeInit() has and featurePath that is
       // not always valid
@@ -489,11 +504,12 @@ public class FeaturePathTest extends TestCase {
       try {
          featurePath.initialize("/refFeature/stringFeature");
          featurePath.typeInit(cas.getDocumentAnnotation().getType());
-         
-         Type testAnnotType = cas.getTypeSystem().getType("uima.tt.TestAnnotation");
+
+         Type testAnnotType = cas.getTypeSystem().getType(
+               "uima.tt.TestAnnotation");
          AnnotationFS fs = cas.createAnnotation(testAnnotType, 0, 1);
          cas.addFsToIndexes(fs);
-         
+
          featurePath.getValueAsString(fs);
       } catch (CASRuntimeException ex) {
          assertTrue(ex.getMessage().indexOf("uima.tt.TestAnnotation") > -1);
@@ -506,16 +522,16 @@ public class FeaturePathTest extends TestCase {
       try {
          featurePath.initialize("/stringFeature");
          featurePath.typeInit(cas.getDocumentAnnotation().getType());
-         
-         Type testAnnotType = cas.getTypeSystem().getType("uima.tt.TestAnnotation");
+
+         Type testAnnotType = cas.getTypeSystem().getType(
+               "uima.tt.TestAnnotation");
          AnnotationFS fs = cas.createAnnotation(testAnnotType, 0, 1);
          cas.addFsToIndexes(fs);
-         
+
          featurePath.getValueAsString(fs);
       } catch (CASRuntimeException ex) {
          assertTrue(ex.getMessage().indexOf("uima.tt.TestAnnotation") > -1);
       }
-
    }
 
    /**

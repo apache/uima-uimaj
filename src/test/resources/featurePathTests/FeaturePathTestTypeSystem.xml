@@ -28,7 +28,27 @@
       <name>uima.tt.TestAnnotation</name>
       <description></description>
       <supertypeName>uima.tcas.Annotation</supertypeName>
+      <features>
+        <featureDescription>
+          <name>stringFeature</name>
+          <description></description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+      </features>
   	 </typeDescription>
+     <typeDescription>
+      <name>uima.tt.TestAnnotSub</name>
+      <description></description>
+      <supertypeName>uima.tt.TestAnnotation</supertypeName>
+      <features>
+        <featureDescription>
+          <name>testFeature</name>
+          <description></description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+      </features>
+  	 </typeDescription>
+
      <typeDescription>
       <name>uima.tcas.DocumentAnnotation</name>
       <description></description>
