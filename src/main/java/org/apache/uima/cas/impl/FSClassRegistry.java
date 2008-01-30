@@ -254,7 +254,7 @@ public class FSClassRegistry {
    *   another thread
    */
   
-  public FSGenerator [] getBaseGenerators() {
+  public synchronized FSGenerator [] getBaseGenerators() {
     return this.generators;
   }
   
