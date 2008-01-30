@@ -92,7 +92,12 @@ public class ArrayFSImpl extends CommonArrayFSImpl implements ArrayFS {
     }
     srcOffset += this.casImpl.getArrayStartAddress(this.addr);
     for (int i = 0; i < length; i++) {
-      dest[destOffset] = this.casImpl.createFS(this.casImpl.getHeap().heap[srcOffset]);
+      FeatureStructure fs = null;
+      final int address = this.casImpl.getHeap().heap[srcOffset];
+      if (address != LowLevelCAS.NULL_FS_REF) {
+        fs = this.casImpl.createFS(address);
+      }
+      dest[destOffset] = fs;
       ++destOffset;
       ++srcOffset;
     }
