@@ -180,16 +180,22 @@ public class ArrayFSTest extends TestCase {
     final int destinationOffset = 2;
     final int destiniationSize = 10;
     FeatureStructure[] fsArray = new FeatureStructure[destiniationSize];
+    String[] stringArray = new String[destiniationSize];
     // Copy to array, skipping first element
     // This must not throw an NPE, see UIMA-726
     array.copyToArray(1, fsArray, destinationOffset, array.size() - 1);
+    array.copyToArray(1, stringArray, destinationOffset, array.size() - 1);
     assertTrue(fs2.equals(fsArray[destinationOffset]));
     assertTrue(fs3.equals(fsArray[destinationOffset+1]));
+    assertNotNull(stringArray[destinationOffset]);
+    assertNotNull(stringArray[destinationOffset+1]);
     for (int i = 0; i < destinationOffset; i++) {
       assertNull(fsArray[i]);
+      assertNull(stringArray[i]);
     }
     for (int i = (destinationOffset + 2); i < destiniationSize; i++) {
       assertNull(fsArray[i]);
+      assertNull(stringArray[i]);
     }
   }
   

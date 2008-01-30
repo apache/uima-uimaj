@@ -117,7 +117,12 @@ public class ArrayFSImpl extends CommonArrayFSImpl implements ArrayFS {
     final CASImpl ll = this.casImpl;
     ll.checkArrayBounds(this.addr, srcOffset, length);
     for (int i = 0; i < length; i++) {
-      dest[i + destOffset] = ll.ll_getFSForRef(ll.ll_getRefArrayValue(this.addr, i + srcOffset)).toString();
+      final int address = ll.ll_getRefArrayValue(this.addr, i + srcOffset);
+      String value = null;
+      if (address != LowLevelCAS.NULL_FS_REF) {
+        value = ll.ll_getFSForRef(address).toString();
+      }
+      dest[i + destOffset] = value;
     }
   }
 
