@@ -36,7 +36,9 @@ import org.apache.uima.cas.IntArrayFS;
 import org.apache.uima.cas.LongArrayFS;
 import org.apache.uima.cas.ShortArrayFS;
 import org.apache.uima.cas.StringArrayFS;
+import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeClass;
+import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
@@ -479,6 +481,41 @@ public class FeaturePathTest extends TestCase {
       } catch (CASRuntimeException ex) {
          assertTrue(ex.getMessage().indexOf("refFeature") > -1);
       }
+      
+      // use featurePath object with an different type than used for typeInit()
+      // and the case that type used for typeInit() has and featurePath that is
+      // not always valid
+      featurePath = new FeaturePathImpl();
+      try {
+         featurePath.initialize("/refFeature/stringFeature");
+         featurePath.typeInit(cas.getDocumentAnnotation().getType());
+         
+         Type testAnnotType = cas.getTypeSystem().getType("uima.tt.TestAnnotation");
+         AnnotationFS fs = cas.createAnnotation(testAnnotType, 0, 1);
+         cas.addFsToIndexes(fs);
+         
+         featurePath.getValueAsString(fs);
+      } catch (CASRuntimeException ex) {
+         assertTrue(ex.getMessage().indexOf("uima.tt.TestAnnotation") > -1);
+      }
+
+      // use featurePath object with an different type than used for typeInit()
+      // and the case that type used for typeInit() has and featurePath that is
+      // always valid
+      featurePath = new FeaturePathImpl();
+      try {
+         featurePath.initialize("/stringFeature");
+         featurePath.typeInit(cas.getDocumentAnnotation().getType());
+         
+         Type testAnnotType = cas.getTypeSystem().getType("uima.tt.TestAnnotation");
+         AnnotationFS fs = cas.createAnnotation(testAnnotType, 0, 1);
+         cas.addFsToIndexes(fs);
+         
+         featurePath.getValueAsString(fs);
+      } catch (CASRuntimeException ex) {
+         assertTrue(ex.getMessage().indexOf("uima.tt.TestAnnotation") > -1);
+      }
+
    }
 
    /**

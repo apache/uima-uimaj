@@ -25,6 +25,11 @@
   <vendor></vendor>
   <types>
      <typeDescription>
+      <name>uima.tt.TestAnnotation</name>
+      <description></description>
+      <supertypeName>uima.tcas.Annotation</supertypeName>
+  	 </typeDescription>
+     <typeDescription>
       <name>uima.tcas.DocumentAnnotation</name>
       <description></description>
       <supertypeName>uima.tcas.Annotation</supertypeName>

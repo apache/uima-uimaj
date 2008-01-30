@@ -82,6 +82,8 @@ class FeaturePathImpl implements FeaturePath {
 
    private Type featurePathBaseType;
 
+   private int featurePathBaseTypeCode;
+
    /**
     * Constructor to create a new featurePath object
     */
@@ -90,6 +92,7 @@ class FeaturePathImpl implements FeaturePath {
       this.featurePathElements = new ArrayList<Feature>();
       this.ll_featurePathElements = null;
       this.featurePathBaseType = null;
+      this.featurePathBaseTypeCode = 0;
    }
 
    /*
@@ -103,8 +106,7 @@ class FeaturePathImpl implements FeaturePath {
       if (this.builtInFunction > 0) {
          throw new CASRuntimeException(MESSAGE_DIGEST,
                "INVALID_FEATURE_PATH_SYNTAX_ADD", new Object[] {
-                     this.featurePathString,
-                     feat.getShortName() });
+                     this.featurePathString, feat.getShortName() });
       }
 
       // add feature to feature path
@@ -227,8 +229,13 @@ class FeaturePathImpl implements FeaturePath {
     */
    public void typeInit(Type featurePathType) throws CASException {
 
+      LowLevelTypeSystem llTypeSystem = ((TypeImpl) featurePathType)
+            .getTypeSystem().getLowLevelTypeSystem();
+
       // store featurePathType
       this.featurePathBaseType = featurePathType;
+      this.featurePathBaseTypeCode = llTypeSystem
+            .ll_getCodeForType(featurePathType);
 
       // validate featurePath for given type
       PathValid pathValid = TypeSystemUtils.isPathValid(featurePathType,
@@ -242,8 +249,6 @@ class FeaturePathImpl implements FeaturePath {
       } else if (PathValid.ALWAYS == pathValid) {
          // the featurePath is always valid, so we can resolve and cache the
          // path elements
-         LowLevelTypeSystem llTypeSystem = ((TypeImpl) featurePathType)
-               .getTypeSystem().getLowLevelTypeSystem();
          this.ll_featurePathElements = new ArrayList<Integer>();
          this.featurePathElements = new ArrayList<Feature>(); // reset object
          Type currentType = featurePathType;
@@ -825,17 +830,26 @@ class FeaturePathImpl implements FeaturePath {
                               this.featurePathElementNames.get(i - 1) });
                }
             }
+            boolean isInitSubType = false;
 
+            // check current FS type for FeaturePath base type
+            if (this.featurePathBaseTypeCode > 0) {
+               isInitSubType = llCas.ll_getTypeSystem()
+                     .ll_subsumes(this.featurePathBaseTypeCode,
+                           llCas.ll_getFSRefType(fsRef));
+            }
             // get the Feature for the current featurePath element. If the
             // featurePath is always valid the featurePath Feature elements are
             // cached, otherwise the feature names must be resolved by name
-
-            if (this.ll_featurePathElements == null) {
-
+            if (isInitSubType && (this.ll_featurePathElements != null)) {
+               // use cached Feature element
+               currentFeatureTypeCode = this.ll_featurePathElements.get(i);
+            } else {
                // get current Type from feature type code
                int fsRefTypeCode = llCas.ll_getFSRefType(fsRef);
                Type currentType = llCas.ll_getTypeSystem().ll_getTypeForCode(
                      fsRefTypeCode);
+
                // resolve Feature by name
                Feature feature = currentType
                      .getFeatureByBaseName(this.featurePathElementNames.get(i));
@@ -844,14 +858,13 @@ class FeaturePathImpl implements FeaturePath {
                   throw new CASRuntimeException(MESSAGE_DIGEST,
                         "INVALID_FEATURE_PATH_FEATURE_NOT_DEFINED",
                         new Object[] { this.featurePathString,
-                              this.featurePathElementNames.indexOf(i) });
+                              currentType.getName(),
+                              this.featurePathElementNames.get(i) });
                }
                // get feature type and type code
                currentFeatureTypeCode = llCas.ll_getTypeSystem()
                      .ll_getCodeForFeature(feature);
 
-            } else { // use cached Feature element
-               currentFeatureTypeCode = this.ll_featurePathElements.get(i);
             }
 
             // switch feature type class
