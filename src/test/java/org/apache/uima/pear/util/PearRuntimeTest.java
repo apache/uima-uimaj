@@ -76,8 +76,15 @@ public class PearRuntimeTest extends TestCase {
 
     CAS cas = this.runPearRuntimeTestcase("pearTests/DateTime.pear", "pearTests/RoomNumber.pear");
     
-    //check if 5 annotations are available in the CAS index
-    Assert.assertEquals(cas.getAnnotationIndex().size(), 5);
+    //check if 3 annotations are available in the CAS index
+    // The 3 annotations are the doc annotation, plus 2 room numbers
+    //  The date-time annotators are skipped because the default result spec is "en"
+    //    and is missing the "x-unspecified"
+    Assert.assertEquals(cas.getAnnotationIndex().size(), 3);
+//    FSIterator i = cas.getAnnotationIndex().iterator();
+//    while (i.hasNext()) {
+//      System.out.println(i.next());
+//    }
    }
 
   /**

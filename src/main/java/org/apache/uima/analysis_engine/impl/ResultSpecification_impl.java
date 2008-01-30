@@ -68,42 +68,19 @@ import org.apache.uima.resource.metadata.impl.XmlizationInfo;
  * 
  * A result set of ORIGINALs consists of types/features with associated language sets. 
  */
+
 public final class ResultSpecification_impl extends MetaDataObject_impl implements
         ResultSpecification {
 
-//  private enum AddMode {ORIGINAL, COMPILED};
-//  private AddMode addMode = AddMode.ORIGINAL;
-//  
   private static final long serialVersionUID = 8516517600467270594L;
 
-  static final int UNSPECIFIED_LANGUAGE_INDEX = 0;
+  private static final int UNSPECIFIED_LANGUAGE_INDEX = 0;
 
   /**
    * main language separator e.g 'en' and 'en-US'
    */
   private static final char LANGUAGE_SEPARATOR = '-';
   
-  /**
-   * 
-   */
-  private boolean needsCompilation = true;
-  
-  private final Map<String, Integer> lang2int; 
-  
-  private int getLanguageWithoutCountryIndex(String language) {
-    return getLanguageIndex(getLanguageWithoutCountry(language));
-  }
-  
-  private int getLanguageIndex(String language) {
-    Integer r = lang2int.get(language);
-    if (null == r) {
-      int i = lang2int.size();
-      lang2int.put(language, Integer.valueOf(i));
-      return i;
-    }
-    return r.intValue();
-  }
-
   private class ToF_Languages {
     public TypeOrFeature tof;
     public BitSet languages;
@@ -125,6 +102,11 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
       return new ToF_Languages((TypeOrFeature) tof.clone(), (BitSet)languages.clone());
     }
   }
+
+  private boolean needsCompilation = true;
+  
+  private final Map<String, Integer> lang2int; 
+  
   
   /**
    * hash map used to map fully qualified type and feature names to associated
@@ -202,7 +184,10 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
   private ResultSpecification_impl(ResultSpecification_impl original) {
     name2tof_langs = new HashMap<String, ToF_Languages>(original.name2tof_langs.size());
     withSubtypesName2tof_langs = new HashMap<String, ToF_Languages>(original.withSubtypesName2tof_langs.size());
-    lang2int = original.lang2int;  // shared hash map - to save space.
+    
+    // don't share this - unless prove there are no multi-tasking interlocks possible
+    lang2int = new HashMap<String, Integer>(original.lang2int);
+    
     for (Map.Entry<String, ToF_Languages> entry : original.name2tof_langs.entrySet()) {
       ToF_Languages tof_langs = entry.getValue();
       
@@ -214,13 +199,27 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
     mTypeSystem = original.mTypeSystem;
   }
 
+  private int getBaseLanguageIndex(String language) {
+    return getLanguageIndex(getBaseLanguage(language));
+  }
+  
+  private int getLanguageIndex(String language) {
+    Integer r = lang2int.get(language);
+    if (null == r) {
+      int i = lang2int.size();
+      lang2int.put(language, Integer.valueOf(i));
+      return i;
+    }
+    return r.intValue();
+  }
+
   private void compileIfNeeded() {
     if (needsCompilation) {
       compile();
     }
   }
   
-  private String getLanguageWithoutCountry(String language) {
+  private String getBaseLanguage(String language) {
     String baseLanguage = language;
     int index = language.indexOf(LANGUAGE_SEPARATOR);
     if (index > -1) {
@@ -254,7 +253,7 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
   public TypeOrFeature[] getResultTypesAndFeatures(String language) {
     
     int languageIndex = getLanguageIndex(language);
-    int baseLanguageIndex = getLanguageWithoutCountryIndex(language);
+    int baseLanguageIndex = getBaseLanguageIndex(language);
 
     // holds the found ToFs for the specified language
     List<TypeOrFeature> foundToF = new ArrayList<TypeOrFeature>();
@@ -489,7 +488,7 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
    * @see org.apache.uima.analysis_engine.ResultSpecification#addResultFeature(java.lang.String)
    */
   public void addResultFeature(String aFullFeatureName) {
-    addTypeOrFeatureInternal(createTypeOrFeature(aFullFeatureName, false, false), mDefaultLanguage);
+    addResultFeature(aFullFeatureName, mDefaultLanguage);
   }
 
   /**
@@ -606,20 +605,15 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
    * @see org.apache.uima.analysis_engine.ResultSpecification#containsType(java.lang.String)
    */
   public boolean containsType(String aTypeName) {
-    if (aTypeName.indexOf(TypeSystem.FEATURE_SEPARATOR) != -1)
-      return false; // check against someone passing a feature name here
-    compileIfNeeded();
-    return availName2tof_langs().containsKey(aTypeName);
+    return containsType(aTypeName, Language.UNSPECIFIED_LANGUAGE);
   }
-    
 
   /**
    * @see org.apache.uima.analysis_engine.ResultSpecification#containsType(java.lang.String,java.lang.String)
    */
   public boolean containsType(String aTypeName, String language) {
-    if (language == null || language.equals(Language.UNSPECIFIED_LANGUAGE)) {
-      return containsType(aTypeName);
-    }
+    language = Language.normalize(language);
+
     if (aTypeName.indexOf(TypeSystem.FEATURE_SEPARATOR) != -1)
       return false; // check against someone passing a feature name here
     
@@ -631,34 +625,36 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
    * @see org.apache.uima.analysis_engine.ResultSpecification#containsFeature(java.lang.String)
    */
   public boolean containsFeature(String aFullFeatureName) {
-    int typeEndPosition = aFullFeatureName.indexOf(TypeSystem.FEATURE_SEPARATOR);
-    if (typeEndPosition == -1)
-      return false; // check against someone passing a type name here
-
-    compileIfNeeded();
-    if (availName2tof_langs().containsKey(aFullFeatureName)) {
-      return true;
-    }
+    return containsFeature(aFullFeatureName, Language.UNSPECIFIED_LANGUAGE);
+  }
+  
+  
+//    int typeEndPosition = aFullFeatureName.indexOf(TypeSystem.FEATURE_SEPARATOR);
+//    if (typeEndPosition == -1)
+//      return false; // check against someone passing a type name here
+//
+//    compileIfNeeded();
+//    if (availName2tof_langs().containsKey(aFullFeatureName)) {
+//      return true;
+//    }
     
     // special code here to return true if the allAnnotatorFeatures flag is set for the type
-    String typeName = aFullFeatureName.substring(0, typeEndPosition);
-    ToF_Languages tof_langs = availName2tof_langs().get(typeName);
-    if (null != tof_langs && tof_langs.tof.isAllAnnotatorFeatures()) {
-      if (null != mTypeSystem) {
-        return null != mTypeSystem.getFeatureByFullName(aFullFeatureName);  // verify feature is there
-      }
-      return true;
-    }
-    return false;
-  }
+//    String typeName = aFullFeatureName.substring(0, typeEndPosition);
+//    ToF_Languages tof_langs = availName2tof_langs().get(typeName);
+//    if (null != tof_langs && tof_langs.tof.isAllAnnotatorFeatures()) {
+//      if (null != mTypeSystem) {
+//        return null != mTypeSystem.getFeatureByFullName(aFullFeatureName);  // verify feature is there
+//      }
+//      return true;
+//    }
+//    return false;
+//  }
 
   /**
    * @see org.apache.uima.analysis_engine.ResultSpecification#containsFeature(java.lang.String,java.lang.String)
    */
   public boolean containsFeature(String aFullFeatureName, String language) {
-    if (language == null || language.equals(Language.UNSPECIFIED_LANGUAGE)) {
-      return containsFeature(aFullFeatureName);
-    }
+    language = Language.normalize(language);
     int typeEndPosition = aFullFeatureName.indexOf(TypeSystem.FEATURE_SEPARATOR);
     if (typeEndPosition == -1)
       return false; // check against someone passing a type name here
@@ -687,7 +683,6 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
    *       x-unspecified
    *       xxx-yyy
    *       xxx  
-   *    or if query language is x-unspecified
    *    
    * @param tof_langs
    * @param language
@@ -702,7 +697,7 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
         languages.get(getLanguageIndex(language))) {
       return true;
     }
-    String baseLanguage = getLanguageWithoutCountry(language);
+    String baseLanguage = getBaseLanguage(language);
     return baseLanguage != language && 
            languages.get(getLanguageIndex(baseLanguage));
   }
@@ -792,6 +787,17 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
   
   public TypeSystem getTypeSystem() {
     return mTypeSystem;
+  }
+  
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("org.apache.uima.analysis_engine.impl.ResultSpecification_impl:\n);");
+    sb.append("needsCompilation = ").append(needsCompilation).append("\n");
+    sb.append("lang2int = ").append(lang2int).append("\n");
+    sb.append("name2tof_langs = ").append(name2tof_langs).append("\n");
+    sb.append("withSubtypesName2tof_langs = ").append(withSubtypesName2tof_langs).append("\n");
+    sb.append("mTypeSystem = ").append(mTypeSystem).append("\n");
+    return sb.toString();
   }
 
 }

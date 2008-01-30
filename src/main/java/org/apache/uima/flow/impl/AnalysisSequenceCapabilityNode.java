@@ -20,6 +20,7 @@
 package org.apache.uima.flow.impl;
 
 import org.apache.uima.analysis_engine.ResultSpecification;
+import org.apache.uima.analysis_engine.impl.ResultSpecification_impl;
 import org.apache.uima.collection.base_cpm.CasObjectProcessor;
 import org.apache.uima.resource.metadata.Capability;
 
@@ -28,7 +29,7 @@ import org.apache.uima.resource.metadata.Capability;
  * {@link CapabilityLanguageFlowObject}. A <code>AnalysisSequenceCapabilityNode</code> has a
  * <code>AnalysisEngine</code>, a <code>ResultSpecification</code> which should be processed
  * from the <code>AnalysisEngine</code>. Also a <code>AnalysisSequenceCapabilityNode</code> has
- * a {@link CapabilityContainer} which inculdes the capabilities of the <code>AnalysisEngine</code>.
+ * a {@link ResultSpecification} which inculdes the capabilities of the <code>AnalysisEngine</code>.
  * 
  */
 public class AnalysisSequenceCapabilityNode implements Cloneable {
@@ -54,9 +55,11 @@ public class AnalysisSequenceCapabilityNode implements Cloneable {
 
   /**
    * The mCapabilityContainer hold the capabilities of the current AnalyseEngine. The capabilities
-   * are hold in hash maps for the quick search for ToFs or languages
+   * are held in a ResultSpecification for quick access to ToFs or languages
    */
-  private CapabilityContainer mCapabilityContainer;
+//  private CapabilityContainer mCapabilityContainer;
+  
+  private ResultSpecification mCapabilityContainer;
 
   /**
    * Creates a new AnalysisSequenceCapabilityNode from an AnalysisEngine reference
@@ -81,9 +84,10 @@ public class AnalysisSequenceCapabilityNode implements Cloneable {
       Capability[] capabilities = mCasProcessor.getProcessingResourceMetaData().getCapabilities();
 
       // create capability container and compile only output capabilities
-      mCapabilityContainer = new CapabilityContainer(capabilities, false, true);
+//      mCapabilityContainer = new CapabilityContainer(capabilities, false, true);
+      mCapabilityContainer = new ResultSpecification_impl();
+      mCapabilityContainer.addCapabilities(capabilities);
     }
-
   }
 
   /**
@@ -104,7 +108,9 @@ public class AnalysisSequenceCapabilityNode implements Cloneable {
     mCasProcessor = null;
 
     // analysis engine is not set, so we cannot create capabilityContainer
-    mCapabilityContainer = new CapabilityContainer(aCasProcessorCapabilities, false, true);
+//    mCapabilityContainer = new CapabilityContainer(aCasProcessorCapabilities, false, true);
+    mCapabilityContainer = new ResultSpecification_impl();
+    mCapabilityContainer.addCapabilities(aCasProcessorCapabilities);
   }
 
   public String getCasProcessorKey() {
@@ -145,7 +151,8 @@ public class AnalysisSequenceCapabilityNode implements Cloneable {
    * 
    * @return CapabilityContainer - returns the reference to the capability container
    */
-  public CapabilityContainer getCapabilityContainer() {
+//  public CapabilityContainer getCapabilityContainer() {
+  public ResultSpecification getCapabilityContainer() {
     return mCapabilityContainer;
   }
 
