@@ -91,35 +91,38 @@ public class SequencerTestAnnotator extends Annotator_ImplBase implements
     */
    public void process(CAS tcas, ResultSpecification resultSpec)
          throws AnnotatorProcessException {
-     if (true) {
-      try {
-         // use standard output file
-         File fp = new File(this.testBaseDir, "SequencerTest.txt");
-         if (fp.canWrite()) {
-            // write result specification to the output file
-            OutputStreamWriter writer = new OutputStreamWriter(
-                  new FileOutputStream(fp, true), "UTF-8");
-            writer.write("\nResultSpec for annotator " + this.name + ":\n");
-            TypeOrFeature[] tofs = resultSpec.getResultTypesAndFeatures();
-            // sort by name to ensure consistent output for testing purposes
-            Arrays.sort(tofs, new Comparator() {
-               public int compare(Object o1, Object o2) {
-                  return ((TypeOrFeature) o1).getName().compareTo(
-                        ((TypeOrFeature) o2).getName());
-               }
-            });
-            for (int i = 0; i < tofs.length; i++) {
-               writer.write(tofs[i].getName() + "\n");
+      if (true) {
+         try {
+            // use standard output file
+            File fp = new File(this.testBaseDir, "SequencerTest.txt");
+            if (!fp.exists()) {
+               fp.createNewFile();
             }
-            writer.flush();
-            writer.close();
-         } else {
-            throw new IOException("Cannot write to " + fp.getAbsolutePath());
+            if (fp.canWrite()) {
+               // write result specification to the output file
+               OutputStreamWriter writer = new OutputStreamWriter(
+                     new FileOutputStream(fp, true), "UTF-8");
+               writer.write("\nResultSpec for annotator " + this.name + ":\n");
+               TypeOrFeature[] tofs = resultSpec.getResultTypesAndFeatures();
+               // sort by name to ensure consistent output for testing purposes
+               Arrays.sort(tofs, new Comparator() {
+                  public int compare(Object o1, Object o2) {
+                     return ((TypeOrFeature) o1).getName().compareTo(
+                           ((TypeOrFeature) o2).getName());
+                  }
+               });
+               for (int i = 0; i < tofs.length; i++) {
+                  writer.write(tofs[i].getName() + "\n");
+               }
+               writer.flush();
+               writer.close();
+            } else {
+               throw new IOException("Cannot write to " + fp.getAbsolutePath());
+            }
+         } catch (IOException e) {
+            // If an error occurs, throw new annotator exception
+            throw new AnnotatorProcessException(e);
          }
-      } catch (IOException e) {
-         // If an error occurs, throw new annotator exception
-         throw new AnnotatorProcessException(e);
       }
-   }
    }
 }
