@@ -311,6 +311,11 @@ public class CapabilityLanguageFlowObject extends CasFlow_ImplBase implements Cl
   protected void recompileFlowTable() {
 
     if (mFlowTable != null) {
+      
+      // drop any caching that may be happening
+      //   to force sending new result specs down
+      mParentController.getLastResultSpecForComponent().clear();
+
       // get all language key from the table
       Set keys = mFlowTable.keySet();
 

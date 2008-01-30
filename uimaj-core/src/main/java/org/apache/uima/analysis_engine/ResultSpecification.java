@@ -55,10 +55,13 @@ import org.apache.uima.util.XMLizable;
  * language parameter is an array of strings. The functions to retrieve a ResultSpecification
  * specify one particular language.
  * 
- * <p>The language x-unspecified is used like a wild-card, in that it matches any language.
- * Result Specifications for particular types or features have an associated set of languages
+ * <p>Result Specifications for particular types or features have an associated set of languages
  * which they are set for.  That associated set of languages can include the "x-unspecified"
  * language; if it does, then a query for that feature for any language will match.
+ * 
+ * <p>If a type or feature's set of languages does not include "x-unspecified", then 
+ * a query using "x-unspecified" (either as the language passed, or by default, if 
+ * no language is passed) returns false.
  * 
  * <p>A result specification entry having a language set may contain languages with country codes, such as
  * zh-cn for example.  A query for zh-cn would match, but a query for zh would not match, 

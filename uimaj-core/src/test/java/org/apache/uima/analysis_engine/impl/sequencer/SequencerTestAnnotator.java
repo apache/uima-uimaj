@@ -91,7 +91,7 @@ public class SequencerTestAnnotator extends Annotator_ImplBase implements
     */
    public void process(CAS tcas, ResultSpecification resultSpec)
          throws AnnotatorProcessException {
-
+     if (true) {
       try {
          // use standard output file
          File fp = new File(this.testBaseDir, "SequencerTest.txt");
@@ -120,5 +120,6 @@ public class SequencerTestAnnotator extends Annotator_ImplBase implements
          // If an error occurs, throw new annotator exception
          throw new AnnotatorProcessException(e);
       }
+   }
    }
 }

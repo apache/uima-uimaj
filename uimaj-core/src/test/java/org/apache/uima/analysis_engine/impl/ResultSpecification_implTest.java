@@ -466,22 +466,26 @@ public class ResultSpecification_implTest extends TestCase {
       tsMgr.addType("SubType", fakeType);
 
       // compile
-      rs.setTypeSystem(tsMgr);
+      rs.compile(tsMgr);
 
       // check
-      Assert.assertTrue(rs.containsType("FakeType"));
+      Assert.assertFalse(rs.containsType("FakeType"));
+      Assert.assertTrue(rs.containsType("FakeType", "en"));
+      Assert.assertTrue(rs.containsType("FakeType", "en-us"));      
+      Assert.assertTrue(rs.containsType("FakeType", "EN_US"));
       Assert.assertFalse(rs.containsType("NotThere"));
       Assert.assertTrue(rs.containsType("AnotherType"));
       Assert.assertFalse(rs.containsType("FakeType:FakeFeature"));
       Assert.assertFalse(rs.containsType("AnotherType:AnotherFeature"));
-      Assert.assertTrue(rs.containsFeature("FakeType:FakeFeature"));
+      Assert.assertFalse(rs.containsFeature("FakeType:FakeFeature"));
       Assert.assertFalse(rs.containsType("FakeType:FakeFeature2"));
       Assert.assertTrue(rs.containsFeature("AnotherType:AnotherFeature"));
       Assert.assertTrue(rs.containsFeature("AnotherType:YetAnotherFeature"));
       Assert.assertFalse(rs.containsFeature("AnotherType:asdfghjkl"));
       Assert.assertFalse(rs.containsType("NotThere:FakeFeature"));
       Assert.assertFalse(rs.containsFeature("NotThere:FakeFeature"));
-      Assert.assertTrue(rs.containsType("SubType"));
+      Assert.assertFalse(rs.containsType("SubType"));
+      Assert.assertTrue(rs.containsType("SubType", "en"));
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }

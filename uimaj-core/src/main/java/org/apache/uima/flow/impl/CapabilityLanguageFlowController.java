@@ -145,11 +145,11 @@ public class CapabilityLanguageFlowController extends CasFlowController_ImplBase
     language = Language.normalize(language);  // lower-cases, replaces _ with -, changes null to x-unspecified
 
     // create resultSpec from the current aggregate capabilities
-    ResultSpecification resultSpec = UIMAFramework.getResourceSpecifierFactory()
+    ResultSpecification aggrResultsToProduce = UIMAFramework.getResourceSpecifierFactory()
             .createResultSpecification();
 
     if (aCapabilities != null) {
-      resultSpec.addCapabilities(aCapabilities);
+      aggrResultsToProduce.addCapabilities(aCapabilities);
     } else {
       return null;
     }
@@ -161,7 +161,7 @@ public class CapabilityLanguageFlowController extends CasFlowController_ImplBase
     // In this loop we will gradually reduce the set of output capabilities 
     for (int sequenceIndex = 0; sequenceIndex < mStaticSequence.size(); sequenceIndex++) {
       // get array of output capabilities for the current language from the current result spec
-      TypeOrFeature[] outputCapabilities = resultSpec.getResultTypesAndFeatures(language);
+      TypeOrFeature[] tofsNeeded = aggrResultsToProduce.getResultTypesAndFeatures(language);
 
       // Augment these outputCapabilities if the language-spec is for a country, to 
       // include the outputCapabilities for the language without the country-spec.
@@ -177,26 +177,26 @@ public class CapabilityLanguageFlowController extends CasFlowController_ImplBase
         // add language with country extension removed, 
         // to the existing output capabilities (or if non exist, just use
         // the capabilities for the language without the country extension)
-        if (outputCapabilities.length > 0) {
+        if (tofsNeeded.length > 0) {
           // copy all existing capabilities to the Set
-          for (TypeOrFeature outputCapability : outputCapabilities) {
+          for (TypeOrFeature outputCapability : tofsNeeded) {
             outputSpec.add(outputCapability);
           }
 
           // get array of output capabilities only for the language without country extension
-          outputCapabilities = resultSpec.getResultTypesAndFeatures(language.substring(0, index));
+          tofsNeeded = aggrResultsToProduce.getResultTypesAndFeatures(language.substring(0, index));
 
           // add language output capabilities to the Set
-          for (TypeOrFeature outputCapability : outputCapabilities) {
+          for (TypeOrFeature outputCapability : tofsNeeded) {
             outputSpec.add(outputCapability);
           }
 
           // convert all output capabilities to a outputCapabilities array
-          outputCapabilities = new TypeOrFeature[outputSpec.size()];
-          outputSpec.toArray(outputCapabilities);
+          tofsNeeded = new TypeOrFeature[outputSpec.size()];
+          outputSpec.toArray(tofsNeeded);
         } else { // for language with country extension was noting found        
           // get array of output capabilities with the new main language without country extension
-          outputCapabilities = resultSpec.getResultTypesAndFeatures(language.substring(0, index));
+          tofsNeeded = aggrResultsToProduce.getResultTypesAndFeatures(language.substring(0, index));
         }
       }
 
@@ -215,7 +215,7 @@ public class CapabilityLanguageFlowController extends CasFlowController_ImplBase
       node = mStaticSequence.get(sequenceIndex);
 
       // get capability container from the current analysis engine
-      CapabilityContainer capabilityContainer = node.getCapabilityContainer();
+      ResultSpecification delegateProduces = node.getCapabilityContainer();
 
       // create current analysis result spec without any language information
       currentAnalysisResultSpec = UIMAFramework.getResourceSpecifierFactory()
@@ -225,12 +225,14 @@ public class CapabilityLanguageFlowController extends CasFlowController_ImplBase
       //   loop over all remaining ouput capabilities of the aggregate's result spec
       //     to see if this component of the aggregate produces that type or feature,
       //     for this language
-      for (TypeOrFeature tof : outputCapabilities) {
-        if (capabilityContainer.hasOutputTypeOrFeature(tof, language, true)) {
+      for (TypeOrFeature tof : tofsNeeded) {
+        if ((tof.isType() && delegateProduces.containsType(tof.getName(), language)) ||
+            (!tof.isType() && delegateProduces.containsFeature(tof.getName(), language))) {
+//        if (capabilityContainer.hasOutputTypeOrFeature(tof, language, true)) {
           currentAnalysisResultSpec.addResultTypeOrFeature(tof);
           shouldEngineBeCalled = true;
           // remove current ToF from the result spec
-          resultSpec.removeTypeOrFeature(tof);
+          aggrResultsToProduce.removeTypeOrFeature(tof);
         }
       }
       
