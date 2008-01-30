@@ -168,6 +168,31 @@ public class ArrayFSTest extends TestCase {
     assertTrue(array.get(0) == null);
   }
 
+  public void testCopyToArray() {
+    FeatureStructure fs1 = this.cas.createFS(this.ts.getType(CAS.TYPE_NAME_ANNOTATION));
+    FeatureStructure fs2 = this.cas.createFS(this.ts.getType(CAS.TYPE_NAME_TOP));
+    FeatureStructure fs3 = this.cas.createFS(this.ts.getType(CASTestSetup.TOKEN_TYPE));
+    ArrayFS array = this.cas.createArrayFS(4);
+    array.set(0, fs1);
+    array.set(1, fs2);
+    array.set(2, fs3);
+    // We now have an FS array with the last element being null
+    final int destinationOffset = 2;
+    final int destiniationSize = 10;
+    FeatureStructure[] fsArray = new FeatureStructure[destiniationSize];
+    // Copy to array, skipping first element
+    // This must not throw an NPE, see UIMA-726
+    array.copyToArray(1, fsArray, destinationOffset, array.size() - 1);
+    assertTrue(fs2.equals(fsArray[destinationOffset]));
+    assertTrue(fs3.equals(fsArray[destinationOffset+1]));
+    for (int i = 0; i < destinationOffset; i++) {
+      assertNull(fsArray[i]);
+    }
+    for (int i = (destinationOffset + 2); i < destiniationSize; i++) {
+      assertNull(fsArray[i]);
+    }
+  }
+  
   public void testArraysOfArrays() {
     Type annotationType = this.ts.getType(CAS.TYPE_NAME_ANNOTATION);
     AnnotationFS annot = this.cas.createAnnotation(annotationType, 0, 5);
