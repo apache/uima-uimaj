@@ -101,6 +101,39 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
     public Object clone() {
       return new ToF_Languages((TypeOrFeature) tof.clone(), (BitSet)languages.clone());
     }
+
+    @Override
+    public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((languages == null) ? 0 : languages.hashCode());
+      result = prime * result + ((tof == null) ? 0 : tof.hashCode());
+      return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj)
+        return true;
+      if (obj == null)
+        return false;
+      if (getClass() != obj.getClass())
+        return false;
+      final ToF_Languages other = (ToF_Languages) obj;
+      if (languages == null) {
+        if (other.languages != null)
+          return false;
+      } else if (!languages.equals(other.languages))
+        return false;
+      if (tof == null) {
+        if (other.tof != null)
+          return false;
+      } else if (!tof.equals(other.tof))
+        return false;
+      return true;
+    }
+    
+    
   }
 
   private boolean needsCompilation = true;
