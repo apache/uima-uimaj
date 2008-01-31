@@ -89,7 +89,7 @@ public class StringToIntMap {
     } else {
       rc = i.intValue();
     }
-    i = new Integer(value);
+    i = Integer.valueOf(value);
     this.map.put(key, i);
     return rc;
   }

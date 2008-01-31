@@ -496,7 +496,7 @@ public class AnalysisEngine_implTest extends TestCase {
       aggDesc2.getMetaData().getConfigurationParameterDeclarations().setConfigurationParameters(
               new ConfigurationParameter[] { p3 });
       aggDesc2.getMetaData().getConfigurationParameterSettings().setParameterSettings(
-              new NameValuePair[] { new NameValuePair_impl("IntParam", new Integer(42)) });
+              new NameValuePair[] { new NameValuePair_impl("IntParam", Integer.valueOf(42)) });
       // instantiate TextAnalysisEngine
       AggregateAnalysisEngine_impl aggAe2 = new AggregateAnalysisEngine_impl();
       aggAe2.initialize(aggDesc2, null);
@@ -505,7 +505,7 @@ public class AnalysisEngine_implTest extends TestCase {
       // to the value of StringParam
       assertEquals("Test1", TestAnnotator.stringParamValue);
       // reconfigure
-      aggAe2.setConfigParameterValue("IntParam", new Integer(0));
+      aggAe2.setConfigParameterValue("IntParam", Integer.valueOf(0));
       aggAe2.reconfigure();
       // test again - should not have changed
       assertEquals("Test1", TestAnnotator.stringParamValue);

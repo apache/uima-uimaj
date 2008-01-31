@@ -118,8 +118,8 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
 
       // initialize a new TAE with parameters
       HashMap map = new HashMap();
-      map.put(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS, new Integer(5));
-      map.put(AnalysisEngine.PARAM_TIMEOUT_PERIOD, new Integer(60000));
+      map.put(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS, Integer.valueOf(5));
+      map.put(AnalysisEngine.PARAM_TIMEOUT_PERIOD, Integer.valueOf(60000));
       MultiprocessingAnalysisEngine_impl mtae2 = new MultiprocessingAnalysisEngine_impl();
       result = mtae2.initialize(mSimpleDesc, map);
       Assert.assertTrue(result);
@@ -196,7 +196,7 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
       // multiple threads!
       MultiprocessingAnalysisEngine_impl ae = new MultiprocessingAnalysisEngine_impl();
       Map params = new HashMap();
-      params.put(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS, new Integer(3));
+      params.put(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS, Integer.valueOf(3));
       ae.initialize(mAggDesc, params);
       
       final int NUM_THREADS = 4;

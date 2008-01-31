@@ -528,7 +528,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   FSIndexRepository getSofaIndexRepository(int aSofaRef) {
-    return (FSIndexRepositoryImpl) this.svd.sofa2indexMap.get(new Integer(aSofaRef));
+    return (FSIndexRepositoryImpl) this.svd.sofa2indexMap.get(Integer.valueOf(aSofaRef));
   }
 
   void setSofaIndexRepository(SofaFS aSofa, FSIndexRepository indxRepos) {
@@ -536,7 +536,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   void setSofaIndexRepository(int aSofaRef, FSIndexRepository indxRepos) {
-    this.svd.sofa2indexMap.put(new Integer(aSofaRef), indxRepos);
+    this.svd.sofa2indexMap.put(Integer.valueOf(aSofaRef), indxRepos);
   }
 
   /**
@@ -1039,7 +1039,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
     // freshen the initial view
     ((CASImpl) initialView).refreshView(this.svd.baseCAS, null);
-    this.svd.sofaNbr2ViewMap.put(new Integer(1), initialView);
+    this.svd.sofaNbr2ViewMap.put(Integer.valueOf(1), initialView);
     this.svd.viewCount = 1;
 
     // deserialize heap
@@ -1661,7 +1661,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   // byte
   public void setFeatureValue(int addr, int feat, byte v) {
-    Byte bytevalue = new Byte(v);
+    Byte bytevalue = Byte.valueOf(v);
     setFeatureValue(addr, feat, bytevalue.intValue());
   }
 
@@ -2193,7 +2193,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   // For internal use only
   public CAS getView(int sofaNum) {
-    return (CAS) this.svd.sofaNbr2ViewMap.get(new Integer(sofaNum));
+    return (CAS) this.svd.sofaNbr2ViewMap.get(Integer.valueOf(sofaNum));
   }
 
   /**
@@ -2230,10 +2230,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return getView(aSofa).getJCas();
     /*
      * // If a JCas already exists for this Sofa, return it JCas aJCas = (JCas)
-     * this.svd.baseCAS.sofa2jcasMap.get(new Integer(aSofa.getSofaRef())); if
+     * this.svd.baseCAS.sofa2jcasMap.get(Integer.valueOf(aSofa.getSofaRef())); if
      * (null != aJCas) { return aJCas; } // Get view of aSofa CASImpl view =
      * (CASImpl) getView(aSofa); // wrap in JCas aJCas = view.getJCas();
-     * this.sofa2jcasMap.put(new Integer(aSofa.getSofaRef()), aJCas); return
+     * this.sofa2jcasMap.put(Integer.valueOf(aSofa.getSofaRef()), aJCas); return
      * aJCas;
      */
   }
@@ -2253,13 +2253,13 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   // For internal platform use only
   CAS getInitialView() {
-    CAS couldBeThis = (CAS) this.svd.sofaNbr2ViewMap.get(new Integer(1));
+    CAS couldBeThis = (CAS) this.svd.sofaNbr2ViewMap.get(Integer.valueOf(1));
     if (couldBeThis != null) {
       return couldBeThis;
     }
     // create the initial view, without a Sofa
     CAS aView = new CASImpl(this.svd.baseCAS, null);
-    this.svd.sofaNbr2ViewMap.put(new Integer(1), aView);
+    this.svd.sofaNbr2ViewMap.put(Integer.valueOf(1), aView);
     assert (this.svd.viewCount <= 1);
     this.svd.viewCount = 1;
     return aView;
@@ -2335,7 +2335,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    */
   public CAS getView(SofaFS aSofa) {
     final int sofaNbr = aSofa.getSofaRef();
-    final Integer sofaNbrInteger = new Integer(sofaNbr);
+    final Integer sofaNbrInteger = Integer.valueOf(sofaNbr);
 
     CASImpl aView = (CASImpl) this.svd.sofaNbr2ViewMap.get(sofaNbrInteger);
     if (null == aView) {
@@ -3669,7 +3669,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   public String getViewName() {
-    if (this == this.svd.sofaNbr2ViewMap.get(new Integer(1))) {
+    if (this == this.svd.sofaNbr2ViewMap.get(Integer.valueOf(1))) {
       return CAS.NAME_DEFAULT_SOFA;
     } else if (this.mySofaRef > 0) {
       return this.getSofa().getSofaID();

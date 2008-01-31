@@ -104,7 +104,7 @@ class FSFloatConstraintImpl implements FSFloatConstraint {
    */
   public void eq(float f) {
     this.codes.add(EQ);
-    this.values.add(new Float(f));
+    this.values.add(Float.valueOf(f));
   }
 
   /**
@@ -115,7 +115,7 @@ class FSFloatConstraintImpl implements FSFloatConstraint {
    */
   public void lt(float f) {
     this.codes.add(LT);
-    this.values.add(new Float(f));
+    this.values.add(Float.valueOf(f));
   }
 
   /**
@@ -126,7 +126,7 @@ class FSFloatConstraintImpl implements FSFloatConstraint {
    */
   public void leq(float f) {
     this.codes.add(LEQ);
-    this.values.add(new Float(f));
+    this.values.add(Float.valueOf(f));
   }
 
   /**
@@ -137,7 +137,7 @@ class FSFloatConstraintImpl implements FSFloatConstraint {
    */
   public void gt(float f) {
     this.codes.add(GT);
-    this.values.add(new Float(f));
+    this.values.add(Float.valueOf(f));
   }
 
   /**
@@ -148,7 +148,7 @@ class FSFloatConstraintImpl implements FSFloatConstraint {
    */
   public void geq(float f) {
     this.codes.add(GEQ);
-    this.values.add(new Float(f));
+    this.values.add(Float.valueOf(f));
   }
 
   public String toString() {

@@ -102,7 +102,7 @@ public class XmiSerializationSharedData {
 
   void addIdMapping(int fsAddr, int xmiId) {
     fsAddrToXmiIdMap.put(fsAddr, Integer.toString(xmiId));
-    xmiIdToFsAddrMap.put(xmiId, new Integer(fsAddr));
+    xmiIdToFsAddrMap.put(xmiId, Integer.valueOf(fsAddr));
     if (xmiId > maxXmiId)
       maxXmiId = xmiId;
   }
@@ -117,7 +117,7 @@ public class XmiSerializationSharedData {
       // to be sure we get a unique Id, increment maxXmiId and use that
       String idStr = Integer.toString(++maxXmiId);
       fsAddrToXmiIdMap.put(fsAddr, idStr);
-      xmiIdToFsAddrMap.put(maxXmiId, new Integer(fsAddr));
+      xmiIdToFsAddrMap.put(maxXmiId, Integer.valueOf(fsAddr));
       return idStr;
     }
   }
@@ -212,7 +212,7 @@ public class XmiSerializationSharedData {
    * @param featVal value of the feature, as a string
    */
   public void addOutOfTypeSystemAttribute(int addr, String featName, String featVal) {
-    Integer key = new Integer(addr);
+    Integer key = Integer.valueOf(addr);
     OotsElementData oed = (OotsElementData)this.ootsFeatures.get(key);
     if (oed == null) {
       oed = new OotsElementData();
@@ -229,7 +229,7 @@ public class XmiSerializationSharedData {
    * @param featVal values of the feature, as a List of strings
    */
   public void addOutOfTypeSystemChildElements(int addr, String featName, List featVals) {
-    Integer key = new Integer(addr);
+    Integer key = Integer.valueOf(addr);
     OotsElementData oed = (OotsElementData)this.ootsFeatures.get(key);
     if (oed == null) {
       oed = new OotsElementData();
@@ -250,7 +250,7 @@ public class XmiSerializationSharedData {
    *   (both attributes and child elements)
    */
   public OotsElementData getOutOfTypeSystemFeatures(int addr) {
-    Integer key = new Integer(addr);
+    Integer key = Integer.valueOf(addr);
     return (OotsElementData)this.ootsFeatures.get(key);
   }
   
@@ -270,7 +270,7 @@ public class XmiSerializationSharedData {
    *   reference to an out-of-typesystem FS.
    */
   public List getOutOfTypeSystemArrayElements(int addr) {
-    return (List)this.ootsArrayElements.get(new Integer(addr));
+    return (List)this.ootsArrayElements.get(Integer.valueOf(addr));
   }
   
 
@@ -281,7 +281,7 @@ public class XmiSerializationSharedData {
    * @param xmiId xmi:id of the out-of-typesystem element that is the value at the given index
    */
   public void addOutOfTypeSystemArrayElement(int addr, int index, int xmiId) {
-    Integer key = new Integer(addr);
+    Integer key = Integer.valueOf(addr);
     List list = (List)this.ootsArrayElements.get(key);
     if (list == null) {
       list = new ArrayList();

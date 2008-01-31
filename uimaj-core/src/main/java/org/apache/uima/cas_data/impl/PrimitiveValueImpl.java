@@ -37,11 +37,11 @@ public class PrimitiveValueImpl implements PrimitiveValue {
   }
 
   public PrimitiveValueImpl(int aValue) {
-    aValueObject = new Integer(aValue);
+    aValueObject = Integer.valueOf(aValue);
   }
 
   public PrimitiveValueImpl(float aValue) {
-    aValueObject = new Float(aValue);
+    aValueObject = Float.valueOf(aValue);
   }
 
   public String toString() {

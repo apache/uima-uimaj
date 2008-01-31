@@ -347,7 +347,7 @@ public class LevelTest extends TestCase {
 
   public void testEquals() throws Exception {
     Level level = Level.SEVERE;
-    Integer myInt = new Integer(70000);
+    Integer myInt = Integer.valueOf(70000);
 
     // check if level is equal to "SEVERE"
     Assert.assertTrue(level.equals(Level.SEVERE));
@@ -359,7 +359,7 @@ public class LevelTest extends TestCase {
 
   public void testisGreaterOrEqual() throws Exception {
     Level level = Level.INFO;
-    Integer myInt = new Integer(20000);
+    Integer myInt = Integer.valueOf(20000);
 
     // check if level "ALL" is greater or equal to "INFO"
     Assert.assertFalse(level.isGreaterOrEqual(Level.ALL));

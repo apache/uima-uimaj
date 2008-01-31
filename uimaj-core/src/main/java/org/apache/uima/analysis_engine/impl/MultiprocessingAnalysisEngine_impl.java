@@ -107,7 +107,7 @@ public class MultiprocessingAnalysisEngine_impl extends AnalysisEngineImplBase i
       if (ae == null) // timeout elapsed
       {
         throw new AnalysisEngineProcessException(AnalysisEngineProcessException.TIMEOUT_ELAPSED,
-                new Object[] { new Integer(getTimeout()) });
+                new Object[] { Integer.valueOf(getTimeout()) });
       }       
       return ae.process(aCAS, aResultSpec);
     } finally {
@@ -129,7 +129,7 @@ public class MultiprocessingAnalysisEngine_impl extends AnalysisEngineImplBase i
       if (ae == null) // timeout elapsed
       {
         throw new AnalysisEngineProcessException(AnalysisEngineProcessException.TIMEOUT_ELAPSED,
-                new Object[] { new Integer(getTimeout()) });
+                new Object[] { Integer.valueOf(getTimeout()) });
       }       
       ae.process(aCAS, aResultSpec);
       buildProcessTraceFromMBeanStats(aTrace);
@@ -149,7 +149,7 @@ public class MultiprocessingAnalysisEngine_impl extends AnalysisEngineImplBase i
       if (ae == null) // timeout elapsed
       {
         throw new AnalysisEngineProcessException(AnalysisEngineProcessException.TIMEOUT_ELAPSED,
-                new Object[] { new Integer(getTimeout()) });
+                new Object[] { Integer.valueOf(getTimeout()) });
       }       
       return ae.processAndOutputNewCASes(aCAS);
     } finally {

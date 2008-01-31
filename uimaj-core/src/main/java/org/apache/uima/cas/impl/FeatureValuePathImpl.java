@@ -270,7 +270,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 			switch (typeClass) {
 			case LowLevelCAS.TYPE_CLASS_FLOATARRAY:
 				int position = getArrayIndex(arraySize);
-				return new Float(cas.ll_getFloatArrayValue(arrayFS, position, false));
+				return Float.valueOf(cas.ll_getFloatArrayValue(arrayFS, position, false));
 			case LowLevelCAS.TYPE_CLASS_FSARRAY:
 				int childFS = getFsAtIndex(arrayFS, cas, arraySize);
 				return this.childPath.evaluateAsFloat(childFS, cas);
@@ -310,7 +310,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 			int typeClass = cas.ll_getTypeClass(this.featureRangeType);
 			switch (typeClass) {
 			case LowLevelCAS.TYPE_CLASS_FLOAT:
-				return new Float(cas.ll_getFloatValue(currentFS, this.featureCode, CAS_TYPE_CHECKS));
+				return Float.valueOf(cas.ll_getFloatValue(currentFS, this.featureCode, CAS_TYPE_CHECKS));
 			default:
 				throw new IllegalStateException("feature path does not denote a float");
 			}
@@ -356,7 +356,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 				} else {
 					// this snippet denotes a float array, just collect it
 					for (int i = 0; i < arraySize; i++) {
-						result[i] = new Float(cas.ll_getFloatArrayValue(arrayFS, i));
+						result[i] = Float.valueOf(cas.ll_getFloatArrayValue(arrayFS, i));
 					}
 				}
 				return result;
@@ -427,7 +427,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 			switch (typeClass) {
 			case LowLevelCAS.TYPE_CLASS_INTARRAY:
 				int position = getArrayIndex(arraySize);
-				return new Integer(cas.ll_getIntArrayValue(arrayFS, position, false));
+				return Integer.valueOf(cas.ll_getIntArrayValue(arrayFS, position, false));
 			case LowLevelCAS.TYPE_CLASS_FSARRAY:
 				int childFS = getFsAtIndex(arrayFS, cas, arraySize);
 				return this.childPath.evaluateAsInt(childFS, cas);
@@ -463,14 +463,14 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 		} else if (this.isCoveredTextFeature || this.isTypeNameFeature) {
 			throw new IllegalStateException("feature path does not denote an int");
 		} else if (this.isFsIdFeature) {
-			return new Integer(currentFS);
+			return Integer.valueOf(currentFS);
 		} else if (this.isUniqueIdFeature) {
-			return new Integer(currentFS); // TODO: return currentFs + chunkId
+			return Integer.valueOf(currentFS); // TODO: return currentFs + chunkId
 		} else {
 			int typeClass = cas.ll_getTypeClass(this.featureRangeType);
 			switch (typeClass) {
 			case LowLevelCAS.TYPE_CLASS_INT:
-				return new Integer(cas.ll_getIntValue(currentFS, this.featureCode, CAS_TYPE_CHECKS));
+				return Integer.valueOf(cas.ll_getIntValue(currentFS, this.featureCode, CAS_TYPE_CHECKS));
 			default:
 				throw new IllegalStateException("feature path does not denote an int");
 			}
@@ -516,7 +516,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 				} else {
 					// this snippet denotes an int array, just collect it
 					for (int i = 0; i < arraySize; i++) {
-						result[i] = new Integer(cas.ll_getIntArrayValue(arrayFS, i));
+						result[i] = Integer.valueOf(cas.ll_getIntArrayValue(arrayFS, i));
 					}
 				}
 				return result;
@@ -1092,11 +1092,11 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 		case TYPE_CLASS_STRINGLIST:
 			return cas.ll_getStringValue(listFS, this.headFeature);
 		case TYPE_CLASS_INTEGERLIST:
-			return new Integer(cas.ll_getIntValue(listFS, this.headFeature));
+			return Integer.valueOf(cas.ll_getIntValue(listFS, this.headFeature));
 		case TYPE_CLASS_FLOATLIST:
-			return new Float(cas.ll_getFloatValue(listFS, this.headFeature));
+			return Float.valueOf(cas.ll_getFloatValue(listFS, this.headFeature));
 		case TYPE_CLASS_FSLIST:
-			return new Integer(cas.ll_getRefValue(listFS, this.headFeature));
+			return Integer.valueOf(cas.ll_getRefValue(listFS, this.headFeature));
 		default:
 			return null;
 		}

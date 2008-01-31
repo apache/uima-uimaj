@@ -283,19 +283,19 @@ public class DebugFSLogicalStructure {
       DebugNameValuePair nv = new DebugNameValuePair(feat.getShortName(), null);
       String rangeTypeName = feat.getRange().getName();
       if ("uima.cas.Integer".equals(rangeTypeName))
-        nv.setValue(new Integer(fs.getIntValue(feat)));
+        nv.setValue(Integer.valueOf(fs.getIntValue(feat)));
       else if ("uima.cas.Float".equals(rangeTypeName))
-        nv.setValue(new Float(fs.getFloatValue(feat)));
+        nv.setValue(Float.valueOf(fs.getFloatValue(feat)));
       else if ("uima.cas.Boolean".equals(rangeTypeName))
-        nv.setValue(new Boolean(fs.getBooleanValue(feat)));
+        nv.setValue(Boolean.valueOf(fs.getBooleanValue(feat)));
       else if ("uima.cas.Byte".equals(rangeTypeName))
-        nv.setValue(new Byte(fs.getByteValue(feat)));
+        nv.setValue(Byte.valueOf(fs.getByteValue(feat)));
       else if ("uima.cas.Short".equals(rangeTypeName))
-        nv.setValue(new Short(fs.getShortValue(feat)));
+        nv.setValue(Short.valueOf(fs.getShortValue(feat)));
       else if ("uima.cas.Long".equals(rangeTypeName))
-        nv.setValue(new Long(fs.getLongValue(feat)));
+        nv.setValue(Long.valueOf(fs.getLongValue(feat)));
       else if ("uima.cas.Double".equals(rangeTypeName))
-        nv.setValue(new Double(fs.getDoubleValue(feat)));
+        nv.setValue(Double.valueOf(fs.getDoubleValue(feat)));
       else if ("uima.cas.String".equals(rangeTypeName))
         nv.setValue(fs.getStringValue(feat));
       else
@@ -447,7 +447,7 @@ public class DebugFSLogicalStructure {
     Set alreadySeen = new HashSet();
     FeatureStructure nextFs;
     for (FeatureStructure currentFs = fs; currentFs.getType() != emptyFSList; currentFs = nextFs) {
-      list.add(new Float(currentFs.getFloatValue(headFeature)));
+      list.add(Float.valueOf(currentFs.getFloatValue(headFeature)));
       nextFs = currentFs.getFeatureValue(tailFeature);
       if (alreadySeen.contains(nextFs)) {
         return loopInList(list);
@@ -471,7 +471,7 @@ public class DebugFSLogicalStructure {
     Set alreadySeen = new HashSet();
     FeatureStructure nextFs;
     for (FeatureStructure currentFs = fs; currentFs.getType() != emptyFSList; currentFs = nextFs) {
-      list.add(new Integer(currentFs.getIntValue(headFeature)));
+      list.add(Integer.valueOf(currentFs.getIntValue(headFeature)));
       nextFs = currentFs.getFeatureValue(tailFeature);
       if (alreadySeen.contains(nextFs)) {
         return loopInList(list);

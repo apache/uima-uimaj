@@ -1270,7 +1270,7 @@ public class XmiCasDeserializer {
           //if we're doing a merge, we can't update the shared map because we could
           //have duplicate xmi:id values in the different parts of the merge.
           //instead we keep a local mapping used only within this deserialization.
-          localXmiIdToFsAddrMap.put(xmiId, new Integer(fsAddr));
+          localXmiIdToFsAddrMap.put(xmiId, Integer.valueOf(fsAddr));
         }
       }
     }

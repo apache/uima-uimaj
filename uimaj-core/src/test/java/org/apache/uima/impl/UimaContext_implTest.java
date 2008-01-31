@@ -135,12 +135,12 @@ public class UimaContext_implTest extends TestCase {
       String[] strArr = (String[]) mContext.getConfigParameterValue("StringArrayParam");
       Assert.assertEquals(Arrays.asList(new String[] { "one", "two" }), Arrays.asList(strArr));
       Integer integer = (Integer) mContext.getConfigParameterValue("IntegerParam");
-      Assert.assertEquals(new Integer(42), integer);
+      Assert.assertEquals(Integer.valueOf(42), integer);
       Integer[] intArr = (Integer[]) mContext.getConfigParameterValue("IntegerArrayParam");
-      Assert.assertEquals(Arrays.asList(new Integer[] { new Integer(1), new Integer(2),
-          new Integer(3) }), Arrays.asList(intArr));
+      Assert.assertEquals(Arrays.asList(new Integer[] { Integer.valueOf(1), Integer.valueOf(2),
+          Integer.valueOf(3) }), Arrays.asList(intArr));
       Float flt = (Float) mContext.getConfigParameterValue("FloatParam");
-      Assert.assertEquals(new Float(3.14), flt);
+      Assert.assertEquals(Float.valueOf(3.14F), flt);
 
       // default fallback
       String str2 = (String) mContext2.getConfigParameterValue("StringParam");

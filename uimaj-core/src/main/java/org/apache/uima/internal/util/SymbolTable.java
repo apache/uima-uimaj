@@ -136,7 +136,7 @@ public class SymbolTable {
       abs = this.hashtable.size();
       rel = abs2rel(abs);
       // System.out.println("Adding symbol " + symbol + " at pos: " + i);
-      this.hashtable.put(symbol, new Integer(rel));
+      this.hashtable.put(symbol, Integer.valueOf(rel));
       this.symbols.insertElementAt(symbol, abs);
     }
     return rel;
