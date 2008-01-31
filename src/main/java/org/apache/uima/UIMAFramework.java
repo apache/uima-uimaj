@@ -419,9 +419,9 @@ public abstract class UIMAFramework {
     // add parameters to the aAdditionalParams map
     Map aAdditionalParams = new HashMap();
 
-    aAdditionalParams.put(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS, new Integer(
+    aAdditionalParams.put(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS, Integer.valueOf(
             aMaxSimultaneousRequests));
-    aAdditionalParams.put(AnalysisEngine.PARAM_TIMEOUT_PERIOD, new Integer(aTimeoutPeriod));
+    aAdditionalParams.put(AnalysisEngine.PARAM_TIMEOUT_PERIOD, Integer.valueOf(aTimeoutPeriod));
 
     return (AnalysisEngine) produceResource(AnalysisEngine.class, aSpecifier, aAdditionalParams);
   }
@@ -555,9 +555,9 @@ public abstract class UIMAFramework {
     // add parameters to the aAdditionalParams map
     Map aAdditionalParams = new HashMap();
 
-    aAdditionalParams.put(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS, new Integer(
+    aAdditionalParams.put(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS, Integer.valueOf(
             aMaxSimultaneousRequests));
-    aAdditionalParams.put(AnalysisEngine.PARAM_TIMEOUT_PERIOD, new Integer(aTimeoutPeriod));
+    aAdditionalParams.put(AnalysisEngine.PARAM_TIMEOUT_PERIOD, Integer.valueOf(aTimeoutPeriod));
 
     return (TextAnalysisEngine) produceResource(TextAnalysisEngine.class, aSpecifier,
             aAdditionalParams);

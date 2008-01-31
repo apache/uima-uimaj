@@ -806,7 +806,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
       if (null != fs) {
         fs.jcasType = jcasView.getType(type);
       } else {
-        initargs[0] = new Integer(addr);
+        initargs[0] = Integer.valueOf(addr);
         initargs[1] = jcasView.getType(type);
         try {
           fs = (TOP) c.newInstance(initargs);

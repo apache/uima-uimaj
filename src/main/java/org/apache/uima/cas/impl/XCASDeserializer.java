@@ -593,7 +593,7 @@ public class XCASDeserializer {
       if (feat == null) { // feature does not exist in typesystem
         if (outOfTypeSystemData != null) {
           // Add to Out-Of-Typesystem data (APL)
-          Integer addrInteger = new Integer(addr);
+          Integer addrInteger = Integer.valueOf(addr);
           List ootsAttrs = (List) outOfTypeSystemData.extraFeatureValues.get(addrInteger);
           if (ootsAttrs == null) {
             ootsAttrs = new ArrayList();
@@ -817,7 +817,7 @@ public class XCASDeserializer {
             // this feature may be a ref to an out-of-typesystem FS.
             // add it to the Out-of-typesystem features list (APL)
             if (featVal != 0 && outOfTypeSystemData != null) {
-              Integer addrInteger = new Integer(addr);
+              Integer addrInteger = Integer.valueOf(addr);
               List ootsAttrs = (List) outOfTypeSystemData.extraFeatureValues.get(addrInteger);
               if (ootsAttrs == null) {
                 ootsAttrs = new ArrayList();
@@ -850,7 +850,7 @@ public class XCASDeserializer {
           // this element may be a ref to an out-of-typesystem FS.
           // add it to the Out-of-typesystem array elements list (APL)
           if (arrayVal != 0 && outOfTypeSystemData != null) {
-            Integer arrayAddrInteger = new Integer(addr);
+            Integer arrayAddrInteger = Integer.valueOf(addr);
             List ootsElements = (List) outOfTypeSystemData.arrayElements.get(arrayAddrInteger);
             if (ootsElements == null) {
               ootsElements = new ArrayList();

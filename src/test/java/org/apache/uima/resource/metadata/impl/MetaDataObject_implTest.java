@@ -31,7 +31,6 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;
-import org.apache.uima.impl.UIMAFramework_impl;
 import org.apache.uima.internal.util.SerializationUtils;
 import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
 import org.apache.uima.resource.metadata.MetaDataObject;
@@ -67,25 +66,25 @@ public class MetaDataObject_implTest extends TestCase {
     apple1 = new TestFruitObject();
     apple1.setAttributeValue("name", "Apple");
     apple1.setAttributeValue("color", "red");
-    apple1.setAttributeValue("avgWeightLbs", new Float(0.3));
-    apple1.setAttributeValue("avgCostCents", new Integer(40));
-    apple1.setAttributeValue("citrus", new Boolean(false));
+    apple1.setAttributeValue("avgWeightLbs", Float.valueOf(0.3F));
+    apple1.setAttributeValue("avgCostCents", Integer.valueOf(40));
+    apple1.setAttributeValue("citrus", Boolean.valueOf(false));
     apple1.setAttributeValue("commonUses", new String[] { "baking", "snack" });
 
     apple2 = new TestFruitObject();
     apple2.setAttributeValue("name", "Apple");
     apple2.setAttributeValue("color", "red");
-    apple2.setAttributeValue("avgWeightLbs", new Float(0.3));
-    apple2.setAttributeValue("avgCostCents", new Integer(40));
-    apple2.setAttributeValue("citrus", new Boolean(false));
+    apple2.setAttributeValue("avgWeightLbs", Float.valueOf(0.3F));
+    apple2.setAttributeValue("avgCostCents", Integer.valueOf(40));
+    apple2.setAttributeValue("citrus", Boolean.valueOf(false));
     apple2.setAttributeValue("commonUses", new String[] { "baking", "snack" });
 
     orange = new TestFruitObject();
     orange.setAttributeValue("name", "Orange");
     orange.setAttributeValue("color", "orange");
-    orange.setAttributeValue("avgWeightLbs", new Float(0.2));
-    orange.setAttributeValue("avgCostCents", new Integer(50));
-    orange.setAttributeValue("citrus", new Boolean(true));
+    orange.setAttributeValue("avgWeightLbs", Float.valueOf(0.2F));
+    orange.setAttributeValue("avgCostCents", Integer.valueOf(50));
+    orange.setAttributeValue("citrus", Boolean.valueOf(true));
     orange.setAttributeValue("commonUses", new String[] { "snack", "juice" });
 
     // create a fruit bag containing these three objects

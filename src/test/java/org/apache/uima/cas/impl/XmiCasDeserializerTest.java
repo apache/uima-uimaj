@@ -985,7 +985,7 @@ public class XmiCasDeserializerTest extends TestCase {
     
     GetNumChildrenTestHandler(XmiCasSerializer xmiSer) {
       this.xmiSer = xmiSer;
-      childCountStack.push(new Integer(1));
+      childCountStack.push(Integer.valueOf(1));
     }
 
     /* (non-Javadoc)
@@ -994,7 +994,7 @@ public class XmiCasDeserializerTest extends TestCase {
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
       // TODO Auto-generated method stub
       super.startElement(uri, localName, qName, attributes);
-      childCountStack.push(new Integer(xmiSer.getNumChildren()));
+      childCountStack.push(Integer.valueOf(xmiSer.getNumChildren()));
     }
 
     /* (non-Javadoc)
@@ -1010,7 +1010,7 @@ public class XmiCasDeserializerTest extends TestCase {
       
       //decremenet child count of our parent
       count = (Integer)childCountStack.pop();
-      childCountStack.push(new Integer(count.intValue() - 1));
+      childCountStack.push(Integer.valueOf(count.intValue() - 1));
     }
 
     /* (non-Javadoc)
@@ -1020,7 +1020,7 @@ public class XmiCasDeserializerTest extends TestCase {
       // text node is considered a child
       if (length > 0) {
         Integer count = (Integer)childCountStack.pop();
-        childCountStack.push(new Integer(count.intValue() - 1));
+        childCountStack.push(Integer.valueOf(count.intValue() - 1));
       }
     }
     

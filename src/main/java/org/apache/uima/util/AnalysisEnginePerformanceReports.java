@@ -72,7 +72,7 @@ public class AnalysisEnginePerformanceReports {
     if (ProcessTraceEvent.ANALYSIS.equals(aEvent.getType())) {
       mAnalysisTime += aEvent.getDuration();
       String componentName = aEvent.getComponentName();
-      mAnnotatorAnalysisTimes.put(componentName, new Integer(aEvent.getDuration()));
+      mAnnotatorAnalysisTimes.put(componentName, Integer.valueOf(aEvent.getDuration()));
     } else if (ProcessTraceEvent.ANALYSIS_ENGINE.equals(aEvent.getType())) {
       // framework overhead is difference between this event's duration and
       // combined duration of all ANLAYSIS or ANALYSIS_ENGINE subevents

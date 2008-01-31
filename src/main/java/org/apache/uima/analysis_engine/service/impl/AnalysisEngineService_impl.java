@@ -64,7 +64,7 @@ public class AnalysisEngineService_impl extends ResourceService_impl {
     Integer numInstances = (Integer) aResourceInitParams
             .get(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS);
     if (numInstances == null) {
-      numInstances = new Integer(1);
+      numInstances = Integer.valueOf(1);
     }
     mCasPool = new CasPool(numInstances.intValue(), getAnalysisEngine());
 
@@ -84,9 +84,9 @@ public class AnalysisEngineService_impl extends ResourceService_impl {
   public void initialize(ResourceSpecifier aResourceSpecifier, int aNumSimultaneousRequests,
           int aTimeout) throws ResourceInitializationException {
     Map initParams = new HashMap();
-    initParams.put(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS, new Integer(
+    initParams.put(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS, Integer.valueOf(
             aNumSimultaneousRequests));
-    initParams.put(AnalysisEngine.PARAM_TIMEOUT_PERIOD, new Integer(aTimeout));
+    initParams.put(AnalysisEngine.PARAM_TIMEOUT_PERIOD, Integer.valueOf(aTimeout));
     this.initialize(aResourceSpecifier, initParams);
   }
 

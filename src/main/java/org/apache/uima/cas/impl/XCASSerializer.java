@@ -562,7 +562,7 @@ public class XCASSerializer {
         if (heapVal == CASImpl.NULL && mOutOfTypeSystemData != null) {
           // This array element may have been a reference to an OOTS
           // FS.
-          List ootsElems = (List) mOutOfTypeSystemData.arrayElements.get(new Integer(addr));
+          List ootsElems = (List) mOutOfTypeSystemData.arrayElements.get(Integer.valueOf(addr));
           if (ootsElems != null) {
             Iterator iter = ootsElems.iterator();
             while (iter.hasNext()) // TODO: iteration could be slow
@@ -670,7 +670,7 @@ public class XCASSerializer {
      * @param addr
      */
     private void encodeOutOfTypeSystemFeatures(int addr, AttributesImpl attrs) {
-      List attrList = (List) mOutOfTypeSystemData.extraFeatureValues.get(new Integer(addr));
+      List attrList = (List) mOutOfTypeSystemData.extraFeatureValues.get(Integer.valueOf(addr));
       if (attrList != null) {
         Iterator it = attrList.iterator();
         while (it.hasNext()) {
@@ -693,7 +693,7 @@ public class XCASSerializer {
      * @param addr
      */
     private void enqueueOutOfTypeSystemFeatures(int addr) {
-      List attrList = (List) mOutOfTypeSystemData.extraFeatureValues.get(new Integer(addr));
+      List attrList = (List) mOutOfTypeSystemData.extraFeatureValues.get(Integer.valueOf(addr));
       if (attrList != null) {
         Iterator it = attrList.iterator();
         while (it.hasNext()) {

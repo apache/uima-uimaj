@@ -89,7 +89,7 @@ public class FeaturePathTest extends TestCase {
       featurePath.initialize(path);
       assertEquals(path, featurePath.getFeaturePath());
       featurePath.typeInit(cas.getDocumentAnnotation().getType());
-      assertEquals(new Short((short) 12), featurePath.getShortValue(cas
+      assertEquals(Short.valueOf((short) 12), featurePath.getShortValue(cas
             .getDocumentAnnotation()));
       assertEquals("12", featurePath.getValueAsString(cas
             .getDocumentAnnotation()));
@@ -107,7 +107,7 @@ public class FeaturePathTest extends TestCase {
       featurePath.initialize(path);
       assertEquals(path, featurePath.getFeaturePath());
       featurePath.typeInit(cas.getDocumentAnnotation().getType());
-      assertEquals(new Float(1.12f), featurePath.getFloatValue(cas
+      assertEquals(Float.valueOf(1.12f), featurePath.getFloatValue(cas
             .getDocumentAnnotation()));
       assertEquals("1.12", featurePath.getValueAsString(cas
             .getDocumentAnnotation()));
@@ -125,7 +125,7 @@ public class FeaturePathTest extends TestCase {
       featurePath.initialize(path);
       assertEquals(path, featurePath.getFeaturePath());
       featurePath.typeInit(cas.getDocumentAnnotation().getType());
-      assertEquals(new Double(100.5), featurePath.getDoubleValue(cas
+      assertEquals(Double.valueOf(100.5), featurePath.getDoubleValue(cas
             .getDocumentAnnotation()));
       assertEquals("100.5", featurePath.getValueAsString(cas
             .getDocumentAnnotation()));
@@ -143,7 +143,7 @@ public class FeaturePathTest extends TestCase {
       featurePath.initialize(path);
       assertEquals(path, featurePath.getFeaturePath());
       featurePath.typeInit(cas.getDocumentAnnotation().getType());
-      assertEquals(new Long(2000), featurePath.getLongValue(cas
+      assertEquals(Long.valueOf(2000), featurePath.getLongValue(cas
             .getDocumentAnnotation()));
       assertEquals("2000", featurePath.getValueAsString(cas
             .getDocumentAnnotation()));
@@ -161,7 +161,7 @@ public class FeaturePathTest extends TestCase {
       featurePath.initialize(path);
       assertEquals(path, featurePath.getFeaturePath());
       featurePath.typeInit(cas.getDocumentAnnotation().getType());
-      assertEquals(new Integer(5), featurePath.getIntValue(cas
+      assertEquals(Integer.valueOf(5), featurePath.getIntValue(cas
             .getDocumentAnnotation()));
       assertEquals("5", featurePath.getValueAsString(cas
             .getDocumentAnnotation()));
@@ -179,7 +179,7 @@ public class FeaturePathTest extends TestCase {
       featurePath.initialize(path);
       assertEquals(path, featurePath.getFeaturePath());
       featurePath.typeInit(cas.getDocumentAnnotation().getType());
-      assertEquals(new Boolean(true), featurePath.getBooleanValue(cas
+      assertEquals(Boolean.valueOf(true), featurePath.getBooleanValue(cas
             .getDocumentAnnotation()));
       assertEquals("true", featurePath.getValueAsString(cas
             .getDocumentAnnotation()));
@@ -197,7 +197,7 @@ public class FeaturePathTest extends TestCase {
       featurePath.initialize(path);
       assertEquals(path, featurePath.getFeaturePath());
       featurePath.typeInit(cas.getDocumentAnnotation().getType());
-      assertEquals(new Byte((byte) 127), featurePath.getByteValue(cas
+      assertEquals(Byte.valueOf((byte) 127), featurePath.getByteValue(cas
             .getDocumentAnnotation()));
       assertEquals("127", featurePath.getValueAsString(cas
             .getDocumentAnnotation()));
