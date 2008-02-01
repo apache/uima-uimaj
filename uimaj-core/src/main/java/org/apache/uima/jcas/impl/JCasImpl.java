@@ -294,6 +294,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
 
     private JCasSharedView(CASImpl aCAS) {
       cAddr2JfsByClassLoader.put(aCAS.getJCasClassLoader(), cAddr2Jfs);
+      currentClassLoader = aCAS.getJCasClassLoader();
     }
   }
   

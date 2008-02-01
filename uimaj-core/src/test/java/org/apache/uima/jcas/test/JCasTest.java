@@ -19,6 +19,8 @@
 
 package org.apache.uima.jcas.test;
 
+import java.util.Iterator;
+
 import junit.framework.TestCase;
 
 import org.apache.uima.cas.CAS;
@@ -51,9 +53,12 @@ import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.TOP_Type;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.jcas.tcas.Annotation_Type;
+import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
+import org.apache.uima.util.CasCreationUtils;
 
 import x.y.z.EndOfSentence;
+import x.y.z.Sentence;
 import x.y.z.Token;
 import aa.ConcreteType;
 import aa.MissingFeatureInCas;
@@ -727,6 +732,25 @@ public class JCasTest extends TestCase {
 			JUnitExtension.handleException(e);
 		}
 	}
+  
+  public void testUndefinedType() throws Exception {
+    //create jcas with no type system
+    JCas jcas = CasCreationUtils.createCas(new TypeSystemDescription_impl(), null, null).getJCas();
+    jcas.setDocumentText("This is a test.");
+    try {
+      //this should throw an exception
+      jcas.getType(Sentence.type);
+      fail(); 
+    } catch(CASRuntimeException e) {
+    }
+    //check that this does not leave JCAS in an inconsistent state
+    //(a check for bug UIMA-738)
+    Iterator iter = jcas.getAnnotationIndex().iterator();
+    assertTrue(iter.hasNext());
+    Annotation annot = (Annotation)iter.next();
+    assertEquals("This is a test.", annot.getCoveredText());
+  }
+  
 
 	/*
    * skip this - takes too long private static final int largeN = 10000; public void testPerf()
