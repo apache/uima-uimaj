@@ -20,7 +20,7 @@
 <feature
       id="org.apache.uima.runtime"
       label="UIMA Runtime"
-      version="2.2.1.incubating"
+      version="2.3.0.incubating-SNAPSHOT"
       provider-name="Apache Software Foundation">
 
    <description url="http://incubator.apache.org/uima">
@@ -50,13 +50,14 @@ under the License.
    </license>
 
    <url>
-      <discovery label="UIMA Eclipse Plugins update site" url="http://www.apache.org/dist/incubator/uima/eclipse-update-site"/>
+      <!-- note: following url must end in slash per tip #1 at http://www.eclipse.org/articles/Article-Update/keeping-up-to-date.html -->
+      <discovery label="UIMA Eclipse Plugins update site" url="http://www.apache.org/dist/incubator/uima/eclipse-update-site/"/>
    </url>
 
    <plugin
          id="org.apache.uima.runtime"
          download-size="0"
          install-size="0"
-         version="2.2.1.incubating"/>
+         version="2.3.0.incubating-SNAPSHOT"/>
 
 </feature>
