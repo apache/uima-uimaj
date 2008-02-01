@@ -193,15 +193,20 @@
     
     </plugins>
   </build>
+  
+  <!-- This section configures what happens when the site life-cycle is done -->
+  <!-- This is currently not part of our build/release practice - so is never done -->
+  
+  <!-- The Java Doc configuration here is for "developers" - and includes more packages, such as the internal ones -->
+  <!-- There is another JavaDoc configuration in the uimaj-distr POM, for doing javadocs for external APIs in the bin distr -->
   <reporting>
     <plugins>
       <plugin>
         <artifactId>maven-javadoc-plugin</artifactId>
         <configuration>
           <aggregate>true</aggregate>
-          <!-- according to the docs, http://maven.apache.org/plugins/maven-javadoc-plugin/javadoc-mojo.html 
-               this only needs to be 1.4, even for more recent levels -->
-          <source>1.4</source>
+          <!-- needs to be 5 to process enums -->
+          <source>5</source>
           <doctitle>Apache UIMA Java SDK ${pom.version} API Documentation</doctitle>
           <windowtitle>Apache UIMA Java SDK ${pom.version} API Documentation</windowtitle>
           <maxmemory>512M</maxmemory>
