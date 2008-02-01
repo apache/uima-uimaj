@@ -139,6 +139,13 @@
           <tarLongFileMode>gnu</tarLongFileMode>
 				</configuration>
 			</plugin>
+      
+      <!-- This java doc config is for building the ones distributed with the bin packaging, and also 
+           posted on our website.
+        
+           There is another javadoc config in the parent POM that builds all the java docs - intended
+           for use by developers (currently not used) -->
+      
 			<plugin>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<executions>
@@ -150,9 +157,8 @@
 						</goals>
 						<configuration>
               <quiet>true</quiet>
-              <!-- according to the docs, http://maven.apache.org/plugins/maven-javadoc-plugin/javadoc-mojo.html 
-               this only needs to be 1.4, even for more recent levels -->
-							<source>1.4</source>
+              <!-- needs to be 5 to process enums -->
+							<source>5</source>
 							<groups>
 								<group>
 									<title>Packages</title>
