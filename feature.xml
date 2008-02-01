@@ -20,7 +20,7 @@
 <feature
       id="org.apache.uima.tools"
       label="UIMA tools (includes Runtime)"
-      version="2.2.1.incubating"
+      version="2.3.0.incubating-SNAPSHOT"
       provider-name="Apache Software Foundation">
 
    <description url="http://incubator.apache.org/uima">
@@ -53,12 +53,13 @@ under the License.
    </license>
 
    <url>
-      <discovery label="UIMA Eclipse Plugins update site" url="http://www.apache.org/dist/incubator/uima/eclipse-update-site"/>
+      <!-- note: following url must end in slash per tip #1 at http://www.eclipse.org/articles/Article-Update/keeping-up-to-date.html -->
+      <discovery label="UIMA Eclipse Plugins update site" url="http://www.apache.org/dist/incubator/uima/eclipse-update-site/"/>
    </url>
 
    <includes
          id="org.apache.uima.runtime"
-         version="2.2.1.incubating"
+         version="2.3.0.incubating-SNAPSHOT"
          name="UIMA Runtime plugin feature"/>
 
    <requires>
@@ -87,24 +88,24 @@ under the License.
          id="org.apache.uima.debug"
          download-size="0"
          install-size="0"
-         version="2.2.1.incubating"/>
+         version="2.3.0.incubating-SNAPSHOT"/>
 
    <plugin
          id="org.apache.uima.desceditor"
          download-size="0"
          install-size="0"
-         version="2.2.1.incubating"/>
+         version="2.3.0.incubating-SNAPSHOT"/>
 
    <plugin
          id="org.apache.uima.jcas.jcasgenp"
          download-size="0"
          install-size="0"
-         version="2.2.1.incubating"/>
+         version="2.3.0.incubating-SNAPSHOT"/>
 
    <plugin
          id="org.apache.uima.pear"
          download-size="0"
          install-size="0"
-         version="2.2.1.incubating"/>
+         version="2.3.0.incubating-SNAPSHOT"/>
 
 </feature>
