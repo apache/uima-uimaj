@@ -93,11 +93,13 @@ public class PackageInstaller {
     // componentId for the given pear pacakge
     String componentId;
 
+    JarFile jarFile = null;
+    
     // get componentId from the given pear package, componentId needed to install the package
     // correctly
     try {
       // get installDescriptor from pear file
-      JarFile jarFile = new JarFile(pearPackage);
+      jarFile = new JarFile(pearPackage);
       InstallationDescriptorHandler insdHandler = new InstallationDescriptorHandler();
       insdHandler.parseInstallationDescriptor(jarFile);
       InstallationDescriptor instObj = insdHandler.getInstallationDescriptor();
@@ -113,6 +115,13 @@ public class PackageInstaller {
     } catch (SAXException ex) {
       throw new PackageInstallerException(PEAR_MESSAGE_RESOURCE_BUNDLE,
               "error_parsing_pear_package_desc", new Object[] { pearPackage.getAbsolutePath() }, ex);
+    } finally {
+        if(jarFile != null) 
+            try{
+                jarFile.close();
+            } catch(IOException ioe) {
+                throw new PackageInstallerException(PEAR_MESSAGE_RESOURCE_BUNDLE, "Can't close open PEAR file : " + jarFile.getName());
+            }
     }
 
     // create message listener for the pear installer

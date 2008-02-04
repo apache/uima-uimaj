@@ -746,6 +746,8 @@ public class InstallationController {
     File pearFile = null;
     boolean removeLocalCopy = false;
     boolean done = false;
+    JarFile jarFile = null;
+    
     try {
       // try to find PEAR file in the local file system
       pearFile = new File(pearFileLocation);
@@ -773,7 +775,8 @@ public class InstallationController {
       else
         // print message to console
         System.out.println("[InstallationController]: extracting " + pearFile.getAbsolutePath());
-      JarFile jarFile = new JarFile(pearFile);
+      
+      jarFile = new JarFile(pearFile);
       long totalBytes = (fileExt == null) ? FileUtil.extractFilesFromJar(jarFile, targetDir) : // all
               // files
               FileUtil.extractFilesWithExtFromJar( // files with extension
@@ -796,6 +799,15 @@ public class InstallationController {
       throw ioExc;
     } catch (Throwable err) {
       throw new IOException(err.toString());
+    } finally {
+        if(jarFile != null) 
+            try{
+                jarFile.close();
+            } catch(IOException ioe) {
+                IOException e = new IOException("Can't close open PEAR file :" + jarFile.getName());
+                e.initCause(ioe);
+                throw e;
+            }
     }
     return done ? targetDir.getAbsolutePath() : null;
   }
@@ -1732,7 +1744,20 @@ public class InstallationController {
     PearSpecifier pearSpec = UIMAFramework.getResourceSpecifierFactory().createPearSpecifier();
     pearSpec.setPearPath(mainComponentRootPath);
     File outputFile = new File(mainComponentRootPath, mainComponentId + PEAR_DESC_FILE_POSTFIX);
-    pearSpec.toXML(new FileOutputStream(outputFile));
+    FileOutputStream fos = null;
+
+    try
+    {
+        fos = new FileOutputStream(outputFile);
+        pearSpec.toXML(fos);
+    }
+    finally
+    {
+        if (fos != null)
+        {
+            fos.close();
+        }
+    }
   }
 
   /**

@@ -20,6 +20,7 @@
 package org.apache.uima.pear.tools;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Properties;
@@ -208,36 +209,48 @@ public class InstallationTester {
     setSystemProperties(this.pkgBrowser);
 
     // create analysis engine
-    XMLInputSource xmlIn = new XMLInputSource(this.pkgBrowser.getInstallationDescriptor()
-            .getMainComponentDesc());
-    ResourceSpecifier aeSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(xmlIn);
-    AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(aeSpecifier,
-            getResourceManager(this.pkgBrowser), null);
+    XMLInputSource xmlIn = null;
+
+    try
+    {
+        xmlIn = new XMLInputSource(this.pkgBrowser.getInstallationDescriptor().getMainComponentDesc());
+        ResourceSpecifier aeSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(xmlIn);
+
+        AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(aeSpecifier,
+                getResourceManager(this.pkgBrowser), null);
+        
+        //create CAS from the analysis engine
+        CAS cas = null;
+        if (ae != null) {
+          cas = ae.newCAS();
+        }
+        
+        // create Test status object
+        TestStatus status = new TestStatus();
     
-    //create CAS from the analysis engine
-    CAS cas = null;
-    if (ae != null) {
-      cas = ae.newCAS();
-    }
+        //check test result
+        if (ae != null && cas != null) {
+          status.setRetCode(TestStatus.TEST_SUCCESSFUL);
+        } else {
+          status.setRetCode(TestStatus.TEST_NOT_SUCCESSFUL);
+          status.setMessage(I18nUtil.localizeMessage(PEAR_MESSAGE_RESOURCE_BUNDLE,
+                  "installation_verification_ae_not_created", new Object[] { this.pkgBrowser
+                          .getInstallationDescriptor().getMainComponentId() }, null));
+        }
     
-    // create Test status object
-    TestStatus status = new TestStatus();
-
-    //check test result
-    if (ae != null && cas != null) {
-      status.setRetCode(TestStatus.TEST_SUCCESSFUL);
-    } else {
-      status.setRetCode(TestStatus.TEST_NOT_SUCCESSFUL);
-      status.setMessage(I18nUtil.localizeMessage(PEAR_MESSAGE_RESOURCE_BUNDLE,
-              "installation_verification_ae_not_created", new Object[] { this.pkgBrowser
-                      .getInstallationDescriptor().getMainComponentId() }, null));
+        // reset system properties
+        this.resetSystemProperties();
+    
+        // return status object
+        return status;
     }
-
-    // reset system properties
-    this.resetSystemProperties();
-
-    // return status object
-    return status;
+    finally
+    {
+        if (xmlIn != null)
+        {
+            xmlIn.close();
+        }
+    }
 
   }
 
@@ -259,28 +272,40 @@ public class InstallationTester {
     // set system properties
     setSystemProperties(this.pkgBrowser);
 
-    XMLInputSource xmlIn = new XMLInputSource(this.pkgBrowser.getInstallationDescriptor()
-            .getMainComponentDesc());
-    ResourceSpecifier ccSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(xmlIn);
-    CasConsumer cc = UIMAFramework.produceCasConsumer(ccSpecifier,
-            getResourceManager(this.pkgBrowser), null);
-    // create Test status object
-    TestStatus status = new TestStatus();
+    XMLInputSource xmlIn = null;
 
-    if (cc != null) {
-      status.setRetCode(TestStatus.TEST_SUCCESSFUL);
-    } else {
-      status.setRetCode(TestStatus.TEST_NOT_SUCCESSFUL);
-      status.setMessage(I18nUtil.localizeMessage(PEAR_MESSAGE_RESOURCE_BUNDLE,
-              "installation_verification_cc_not_created", new Object[] { this.pkgBrowser
-                      .getInstallationDescriptor().getMainComponentId() }, null));
+    try
+    {
+        xmlIn = new XMLInputSource(this.pkgBrowser.getInstallationDescriptor().getMainComponentDesc());
+        ResourceSpecifier ccSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(xmlIn);
+
+        CasConsumer cc = UIMAFramework.produceCasConsumer(ccSpecifier,
+                getResourceManager(this.pkgBrowser), null);
+        // create Test status object
+        TestStatus status = new TestStatus();
+    
+        if (cc != null) {
+          status.setRetCode(TestStatus.TEST_SUCCESSFUL);
+        } else {
+          status.setRetCode(TestStatus.TEST_NOT_SUCCESSFUL);
+          status.setMessage(I18nUtil.localizeMessage(PEAR_MESSAGE_RESOURCE_BUNDLE,
+                  "installation_verification_cc_not_created", new Object[] { this.pkgBrowser
+                          .getInstallationDescriptor().getMainComponentId() }, null));
+        }
+    
+        // reset system properties
+        this.resetSystemProperties();
+    
+        // return status object
+        return status;
     }
-
-    // reset system properties
-    this.resetSystemProperties();
-
-    // return status object
-    return status;
+    finally
+    {
+        if (xmlIn != null)
+        {
+            xmlIn.close();
+        }
+    }
   }
 
   /**
@@ -300,28 +325,41 @@ public class InstallationTester {
     // set system properties
     setSystemProperties(this.pkgBrowser);
 
-    XMLInputSource xmlIn = new XMLInputSource(this.pkgBrowser.getInstallationDescriptor()
-            .getMainComponentDesc());
-    ResourceSpecifier ciSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(xmlIn);
-    CasInitializer ci = UIMAFramework.produceCasInitializer(ciSpecifier,
-            getResourceManager(this.pkgBrowser), null);
-    // create Test status object
-    TestStatus status = new TestStatus();
+    XMLInputSource xmlIn = null;
 
-    if (ci != null) {
-      status.setRetCode(TestStatus.TEST_SUCCESSFUL);
-    } else {
-      status.setRetCode(TestStatus.TEST_NOT_SUCCESSFUL);
-      status.setMessage(I18nUtil.localizeMessage(PEAR_MESSAGE_RESOURCE_BUNDLE,
-              "installation_verification_ci_not_created", new Object[] { this.pkgBrowser
-                      .getInstallationDescriptor().getMainComponentId() }, null));
+    try
+    {
+        xmlIn = new XMLInputSource(this.pkgBrowser.getInstallationDescriptor()
+                .getMainComponentDesc());
+        ResourceSpecifier ciSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(xmlIn);
+        
+        CasInitializer ci = UIMAFramework.produceCasInitializer(ciSpecifier,
+                getResourceManager(this.pkgBrowser), null);
+        // create Test status object
+        TestStatus status = new TestStatus();
+    
+        if (ci != null) {
+          status.setRetCode(TestStatus.TEST_SUCCESSFUL);
+        } else {
+          status.setRetCode(TestStatus.TEST_NOT_SUCCESSFUL);
+          status.setMessage(I18nUtil.localizeMessage(PEAR_MESSAGE_RESOURCE_BUNDLE,
+                  "installation_verification_ci_not_created", new Object[] { this.pkgBrowser
+                          .getInstallationDescriptor().getMainComponentId() }, null));
+        }
+    
+        // reset system properties
+        this.resetSystemProperties();
+    
+        // return status object
+        return status;
     }
-
-    // reset system properties
-    this.resetSystemProperties();
-
-    // return status object
-    return status;
+    finally
+    {
+        if (xmlIn != null)
+        {
+            xmlIn.close();
+        }
+    }
   }
 
   /**
@@ -341,29 +379,42 @@ public class InstallationTester {
     // set system properties
     setSystemProperties(this.pkgBrowser);
 
-    XMLInputSource xmlIn = new XMLInputSource(this.pkgBrowser.getInstallationDescriptor()
-            .getMainComponentDesc());
-    ResourceSpecifier crSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(xmlIn);
-    CollectionReader cr = UIMAFramework.produceCollectionReader(crSpecifier,
-            getResourceManager(this.pkgBrowser), null);
+    XMLInputSource xmlIn = null;
 
-    // create Test status object
-    TestStatus status = new TestStatus();
-
-    if (cr != null) {
-      status.setRetCode(TestStatus.TEST_SUCCESSFUL);
-    } else {
-      status.setRetCode(TestStatus.TEST_NOT_SUCCESSFUL);
-      status.setMessage(I18nUtil.localizeMessage(PEAR_MESSAGE_RESOURCE_BUNDLE,
-              "installation_verification_cr_not_created", new Object[] { this.pkgBrowser
-                      .getInstallationDescriptor().getMainComponentId() }, null));
+    try
+    {
+        xmlIn = new XMLInputSource(this.pkgBrowser.getInstallationDescriptor()
+                .getMainComponentDesc());
+        ResourceSpecifier crSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(xmlIn);
+    
+        CollectionReader cr = UIMAFramework.produceCollectionReader(crSpecifier,
+                getResourceManager(this.pkgBrowser), null);
+    
+        // create Test status object
+        TestStatus status = new TestStatus();
+    
+        if (cr != null) {
+          status.setRetCode(TestStatus.TEST_SUCCESSFUL);
+        } else {
+          status.setRetCode(TestStatus.TEST_NOT_SUCCESSFUL);
+          status.setMessage(I18nUtil.localizeMessage(PEAR_MESSAGE_RESOURCE_BUNDLE,
+                  "installation_verification_cr_not_created", new Object[] { this.pkgBrowser
+                          .getInstallationDescriptor().getMainComponentId() }, null));
+        }
+    
+        // reset system properties
+        this.resetSystemProperties();
+    
+        // return status object
+        return status;
     }
-
-    // reset system properties
-    this.resetSystemProperties();
-
-    // return status object
-    return status;
+    finally
+    {
+        if (xmlIn != null)
+        {
+            xmlIn.close();
+        }
+    }
   }
 
   /**
@@ -384,29 +435,42 @@ public class InstallationTester {
     // set system properties
     setSystemProperties(this.pkgBrowser);
 
-    XMLInputSource xmlIn = new XMLInputSource(this.pkgBrowser.getInstallationDescriptor()
-            .getMainComponentDesc());
-    CpeDescription cpeDescription = UIMAFramework.getXMLParser().parseCpeDescription(xmlIn);
-    CollectionProcessingEngine cpe = UIMAFramework.produceCollectionProcessingEngine(
-            cpeDescription, getResourceManager(this.pkgBrowser), null);
+    XMLInputSource xmlIn = null;
 
-    // create Test status object
-    TestStatus status = new TestStatus();
-
-    if (cpe != null) {
-      status.setRetCode(TestStatus.TEST_SUCCESSFUL);
-    } else {
-      status.setRetCode(TestStatus.TEST_NOT_SUCCESSFUL);
-      status.setMessage(I18nUtil.localizeMessage(PEAR_MESSAGE_RESOURCE_BUNDLE,
-              "installation_verification_cpe_not_created", new Object[] { this.pkgBrowser
-                      .getInstallationDescriptor().getMainComponentId() }, null));
+    try
+    {
+        xmlIn = new XMLInputSource(this.pkgBrowser.getInstallationDescriptor()
+                .getMainComponentDesc());
+        CpeDescription cpeDescription = UIMAFramework.getXMLParser().parseCpeDescription(xmlIn);
+    
+        CollectionProcessingEngine cpe = UIMAFramework.produceCollectionProcessingEngine(
+                cpeDescription, getResourceManager(this.pkgBrowser), null);
+    
+        // create Test status object
+        TestStatus status = new TestStatus();
+    
+        if (cpe != null) {
+          status.setRetCode(TestStatus.TEST_SUCCESSFUL);
+        } else {
+          status.setRetCode(TestStatus.TEST_NOT_SUCCESSFUL);
+          status.setMessage(I18nUtil.localizeMessage(PEAR_MESSAGE_RESOURCE_BUNDLE,
+                  "installation_verification_cpe_not_created", new Object[] { this.pkgBrowser
+                          .getInstallationDescriptor().getMainComponentId() }, null));
+        }
+    
+        // reset system properties
+        this.resetSystemProperties();
+    
+        // return status object
+        return status;
     }
-
-    // reset system properties
-    this.resetSystemProperties();
-
-    // return status object
-    return status;
+    finally
+    {
+        if (xmlIn != null)
+        {
+            xmlIn.close();
+        }
+    }
   }
 
   /**
@@ -427,31 +491,44 @@ public class InstallationTester {
     // set system properties
     setSystemProperties(this.pkgBrowser);
 
-    XMLInputSource xmlIn = new XMLInputSource(this.pkgBrowser.getInstallationDescriptor()
-            .getMainComponentDesc());
-    TypeSystemDescription tsDescription = UIMAFramework.getXMLParser().parseTypeSystemDescription(
-            xmlIn);
-    TypePriorities tPriorities = UIMAFramework.getResourceSpecifierFactory().createTypePriorities();
-    FsIndexDescription[] fsIndexes = new FsIndexDescription[0];
-    CAS cas = CasCreationUtils.createCas(tsDescription, tPriorities, fsIndexes);
+    XMLInputSource xmlIn = null;
 
-    // create Test status object
-    TestStatus status = new TestStatus();
-
-    if (cas != null) {
-      status.setRetCode(TestStatus.TEST_SUCCESSFUL);
-    } else {
-      status.setRetCode(TestStatus.TEST_NOT_SUCCESSFUL);
-      status.setMessage(I18nUtil.localizeMessage(PEAR_MESSAGE_RESOURCE_BUNDLE,
-              "installation_verification_cas_not_created", new Object[] { this.pkgBrowser
-                      .getInstallationDescriptor().getMainComponentId() }, null));
+    try
+    {
+        xmlIn = new XMLInputSource(this.pkgBrowser.getInstallationDescriptor()
+                .getMainComponentDesc());
+        TypeSystemDescription tsDescription = UIMAFramework.getXMLParser().parseTypeSystemDescription(
+                xmlIn);
+    
+        TypePriorities tPriorities = UIMAFramework.getResourceSpecifierFactory().createTypePriorities();
+        FsIndexDescription[] fsIndexes = new FsIndexDescription[0];
+        CAS cas = CasCreationUtils.createCas(tsDescription, tPriorities, fsIndexes);
+    
+        // create Test status object
+        TestStatus status = new TestStatus();
+    
+        if (cas != null) {
+          status.setRetCode(TestStatus.TEST_SUCCESSFUL);
+        } else {
+          status.setRetCode(TestStatus.TEST_NOT_SUCCESSFUL);
+          status.setMessage(I18nUtil.localizeMessage(PEAR_MESSAGE_RESOURCE_BUNDLE,
+                  "installation_verification_cas_not_created", new Object[] { this.pkgBrowser
+                          .getInstallationDescriptor().getMainComponentId() }, null));
+        }
+    
+        // reset system properties
+        this.resetSystemProperties();
+    
+        // return status object
+        return status;
     }
-
-    // reset system properties
-    this.resetSystemProperties();
-
-    // return status object
-    return status;
+    finally
+    {
+        if (xmlIn != null)
+        {
+            xmlIn.close();
+        }
+    }
   }
 
 }
