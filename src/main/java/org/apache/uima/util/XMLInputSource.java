@@ -144,4 +144,20 @@ public class XMLInputSource {
   public URL getURL() {
     return mURL;
   }
+
+  /**
+   * Closes the underlying <code>InputStream</code>.
+   *
+   * @throws IOException if an I/O error occurs.
+   */
+  public void close()
+      throws IOException
+  {
+      if (mInputStream != null)
+      {
+          mInputStream.close();
+      }
+
+      mURL = null;
+  }
 }
