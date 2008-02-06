@@ -296,7 +296,7 @@ class FeaturePathImpl implements FeaturePath {
                llCas);
 
          if ((featurePathValue != null)
-               && (featurePathValue.getTypeCode() == LowLevelCAS.TYPE_CLASS_BOOLEAN)) {
+               && (featurePathValue.getTypeClass() == LowLevelCAS.TYPE_CLASS_BOOLEAN)) {
             return featurePathValue.getBooleanValue();
          }
       }
@@ -315,7 +315,7 @@ class FeaturePathImpl implements FeaturePath {
                llCas);
 
          if ((featurePathValue != null)
-               && (featurePathValue.getTypeCode() == LowLevelCAS.TYPE_CLASS_BYTE)) {
+               && (featurePathValue.getTypeClass() == LowLevelCAS.TYPE_CLASS_BYTE)) {
             return featurePathValue.getByteValue();
          }
       }
@@ -334,7 +334,7 @@ class FeaturePathImpl implements FeaturePath {
                llCas);
 
          if ((featurePathValue != null)
-               && (featurePathValue.getTypeCode() == LowLevelCAS.TYPE_CLASS_DOUBLE)) {
+               && (featurePathValue.getTypeClass() == LowLevelCAS.TYPE_CLASS_DOUBLE)) {
             return featurePathValue.getDoubleValue();
          }
       }
@@ -353,7 +353,7 @@ class FeaturePathImpl implements FeaturePath {
                llCas);
 
          if ((featurePathValue != null)
-               && (featurePathValue.getTypeCode() == LowLevelCAS.TYPE_CLASS_FLOAT)) {
+               && (featurePathValue.getTypeClass() == LowLevelCAS.TYPE_CLASS_FLOAT)) {
             return featurePathValue.getFloatValue();
          }
       }
@@ -372,16 +372,16 @@ class FeaturePathImpl implements FeaturePath {
                llCas);
 
          if ((featurePathValue != null)
-               && ((featurePathValue.getTypeCode() == LowLevelCAS.TYPE_CLASS_FS)
-                     || (featurePathValue.getTypeCode() == LowLevelCAS.TYPE_CLASS_BYTEARRAY)
-                     || (featurePathValue.getTypeCode() == LowLevelCAS.TYPE_CLASS_DOUBLEARRAY)
-                     || (featurePathValue.getTypeCode() == LowLevelCAS.TYPE_CLASS_FLOATARRAY)
-                     || (featurePathValue.getTypeCode() == LowLevelCAS.TYPE_CLASS_FSARRAY)
-                     || (featurePathValue.getTypeCode() == LowLevelCAS.TYPE_CLASS_INTARRAY)
-                     || (featurePathValue.getTypeCode() == LowLevelCAS.TYPE_CLASS_LONGARRAY)
-                     || (featurePathValue.getTypeCode() == LowLevelCAS.TYPE_CLASS_SHORTARRAY)
-                     || (featurePathValue.getTypeCode() == LowLevelCAS.TYPE_CLASS_STRINGARRAY) || (featurePathValue
-                     .getTypeCode() == LowLevelCAS.TYPE_CLASS_BOOLEANARRAY))) {
+               && ((featurePathValue.getTypeClass() == LowLevelCAS.TYPE_CLASS_FS)
+                     || (featurePathValue.getTypeClass() == LowLevelCAS.TYPE_CLASS_BYTEARRAY)
+                     || (featurePathValue.getTypeClass() == LowLevelCAS.TYPE_CLASS_DOUBLEARRAY)
+                     || (featurePathValue.getTypeClass() == LowLevelCAS.TYPE_CLASS_FLOATARRAY)
+                     || (featurePathValue.getTypeClass() == LowLevelCAS.TYPE_CLASS_FSARRAY)
+                     || (featurePathValue.getTypeClass() == LowLevelCAS.TYPE_CLASS_INTARRAY)
+                     || (featurePathValue.getTypeClass() == LowLevelCAS.TYPE_CLASS_LONGARRAY)
+                     || (featurePathValue.getTypeClass() == LowLevelCAS.TYPE_CLASS_SHORTARRAY)
+                     || (featurePathValue.getTypeClass() == LowLevelCAS.TYPE_CLASS_STRINGARRAY) || (featurePathValue
+                     .getTypeClass() == LowLevelCAS.TYPE_CLASS_BOOLEANARRAY))) {
             return featurePathValue.getFs();
          }
       }
@@ -400,7 +400,7 @@ class FeaturePathImpl implements FeaturePath {
                llCas);
 
          if ((featurePathValue != null)
-               && (featurePathValue.getTypeCode() == LowLevelCAS.TYPE_CLASS_INT)) {
+               && (featurePathValue.getTypeClass() == LowLevelCAS.TYPE_CLASS_INT)) {
             return featurePathValue.getIntValue();
          }
       }
@@ -419,7 +419,7 @@ class FeaturePathImpl implements FeaturePath {
                llCas);
 
          if ((featurePathValue != null)
-               && (featurePathValue.getTypeCode() == LowLevelCAS.TYPE_CLASS_LONG)) {
+               && (featurePathValue.getTypeClass() == LowLevelCAS.TYPE_CLASS_LONG)) {
             return featurePathValue.getLongValue();
          }
       }
@@ -438,7 +438,7 @@ class FeaturePathImpl implements FeaturePath {
                llCas);
 
          if ((featurePathValue != null)
-               && (featurePathValue.getTypeCode() == LowLevelCAS.TYPE_CLASS_SHORT)) {
+               && (featurePathValue.getTypeClass() == LowLevelCAS.TYPE_CLASS_SHORT)) {
             return featurePathValue.getShortValue();
          }
       }
@@ -457,7 +457,7 @@ class FeaturePathImpl implements FeaturePath {
                llCas);
 
          if ((featurePathValue != null)
-               && (featurePathValue.getTypeCode() == LowLevelCAS.TYPE_CLASS_STRING)) {
+               && (featurePathValue.getTypeClass() == LowLevelCAS.TYPE_CLASS_STRING)) {
             return featurePathValue.getStringValue();
          }
       }
@@ -494,7 +494,7 @@ class FeaturePathImpl implements FeaturePath {
                llCas);
 
          if (featurePathValue != null) {
-            switch (featurePathValue.getTypeCode()) {
+            switch (featurePathValue.getTypeClass()) {
             case LowLevelCAS.TYPE_CLASS_STRING:
                return TypeClass.TYPE_CLASS_STRING;
             case LowLevelCAS.TYPE_CLASS_INT:
@@ -562,7 +562,7 @@ class FeaturePathImpl implements FeaturePath {
    public String ll_getValueAsString(int fsRef, LowLevelCAS llCas) {
       FeaturePathValue featurePathValue = getValue(fsRef, llCas);
       if (featurePathValue != null) {
-         switch (featurePathValue.getTypeCode()) {
+         switch (featurePathValue.getTypeClass()) {
          case LowLevelCAS.TYPE_CLASS_STRING:
             // check if we have a built-in function
             if (this.builtInFunction > NO_BUILT_IN_FUNCTION) {
@@ -848,8 +848,7 @@ class FeaturePathImpl implements FeaturePath {
          } else {
             featurePathValue.setFs(fsRef, llCas);
             int typeCode = llCas.ll_getFSRefType(fsRef);
-            featurePathValue.setTypeCode(llCas.ll_getTypeSystem()
-                  .ll_getRangeType(typeCode));
+            featurePathValue.setTypeClass(llCas.ll_getTypeClass(typeCode));
             featurePathValue.setFeatureType(llCas.ll_getTypeSystem()
                   .ll_getTypeForCode(typeCode));
             return featurePathValue;
@@ -862,8 +861,8 @@ class FeaturePathImpl implements FeaturePath {
 
          // set current FS values
          int currentFsRef = fsRef;
-         int currentFeatureTypeCode = 0;
-         int currentRangeType = 0;
+         int currentFeatureCode = 0;
+         int currentRangeTypeCode = 0;
 
          // resolve feature path value
          for (int i = 0; i < this.featurePathElementNames.size(); i++) {
@@ -897,7 +896,7 @@ class FeaturePathImpl implements FeaturePath {
             // cached, otherwise the feature names must be resolved by name
             if (isInitSubType && (this.ll_featurePathElements != null)) {
                // use cached Feature element
-               currentFeatureTypeCode = this.ll_featurePathElements.get(i);
+               currentFeatureCode = this.ll_featurePathElements.get(i);
             } else {
                // get current Type from feature type code
                int fsRefTypeCode = llCas.ll_getFSRefType(fsRef);
@@ -916,53 +915,53 @@ class FeaturePathImpl implements FeaturePath {
                               this.featurePathElementNames.get(i) });
                }
                // get feature type and type code
-               currentFeatureTypeCode = llCas.ll_getTypeSystem()
+               currentFeatureCode = llCas.ll_getTypeSystem()
                      .ll_getCodeForFeature(feature);
 
             }
 
             // switch feature type class
-            currentRangeType = llCas.ll_getTypeSystem().ll_getRangeType(
-                  currentFeatureTypeCode);
-            switch (llCas.ll_getTypeClass(currentRangeType)) {
+            currentRangeTypeCode = llCas.ll_getTypeSystem().ll_getRangeType(
+                  currentFeatureCode);
+            switch (llCas.ll_getTypeClass(currentRangeTypeCode)) {
             case LowLevelCAS.TYPE_CLASS_STRING:
                featurePathValue.setStringValue(llCas.ll_getStringValue(
-                     currentFsRef, currentFeatureTypeCode, true));
+                     currentFsRef, currentFeatureCode, true));
                noFurtherElementsPossible = true;
                break;
             case LowLevelCAS.TYPE_CLASS_INT:
                featurePathValue.setIntValue(llCas.ll_getIntValue(currentFsRef,
-                     currentFeatureTypeCode, false));
+                     currentFeatureCode, false));
                noFurtherElementsPossible = true;
                break;
             case LowLevelCAS.TYPE_CLASS_BOOLEAN:
                featurePathValue.setBooleanValue(llCas.ll_getBooleanValue(
-                     currentFsRef, currentFeatureTypeCode, false));
+                     currentFsRef, currentFeatureCode, false));
                noFurtherElementsPossible = true;
                break;
             case LowLevelCAS.TYPE_CLASS_BYTE:
                featurePathValue.setByteValue(llCas.ll_getByteValue(
-                     currentFsRef, currentFeatureTypeCode, false));
+                     currentFsRef, currentFeatureCode, false));
                noFurtherElementsPossible = true;
                break;
             case LowLevelCAS.TYPE_CLASS_DOUBLE:
                featurePathValue.setDoubleValue(llCas.ll_getDoubleValue(
-                     currentFsRef, currentFeatureTypeCode, false));
+                     currentFsRef, currentFeatureCode, false));
                noFurtherElementsPossible = true;
                break;
             case LowLevelCAS.TYPE_CLASS_FLOAT:
                featurePathValue.setFloatValue(llCas.ll_getFloatValue(
-                     currentFsRef, currentFeatureTypeCode, false));
+                     currentFsRef, currentFeatureCode, false));
                noFurtherElementsPossible = true;
                break;
             case LowLevelCAS.TYPE_CLASS_LONG:
                featurePathValue.setLongValue(llCas.ll_getLongValue(
-                     currentFsRef, currentFeatureTypeCode, false));
+                     currentFsRef, currentFeatureCode, false));
                noFurtherElementsPossible = true;
                break;
             case LowLevelCAS.TYPE_CLASS_SHORT:
                featurePathValue.setShortValue(llCas.ll_getShortValue(
-                     currentFsRef, currentFeatureTypeCode, false));
+                     currentFsRef, currentFeatureCode, false));
                noFurtherElementsPossible = true;
                break;
             case LowLevelCAS.TYPE_CLASS_INVALID:
@@ -970,7 +969,7 @@ class FeaturePathImpl implements FeaturePath {
                break;
             case LowLevelCAS.TYPE_CLASS_FS:
                currentFsRef = llCas.ll_getRefValue(currentFsRef,
-                     currentFeatureTypeCode, false);
+                     currentFeatureCode, false);
                if (currentFsRef == LowLevelCAS.NULL_FS_REF) {
                   // FS value not set - feature path cannot return a valid value
                   noFurtherElementsPossible = true;
@@ -989,7 +988,7 @@ class FeaturePathImpl implements FeaturePath {
             case LowLevelCAS.TYPE_CLASS_SHORTARRAY:
             case LowLevelCAS.TYPE_CLASS_STRINGARRAY:
                currentFsRef = llCas.ll_getRefValue(currentFsRef,
-                     currentFeatureTypeCode, false);
+                     currentFeatureCode, false);
                featurePathValue.setFs(currentFsRef, llCas);
                noFurtherElementsPossible = true;
                break;
@@ -997,9 +996,9 @@ class FeaturePathImpl implements FeaturePath {
          } // end of loop
 
          // set feature path value meta data
-         featurePathValue.setTypeCode(llCas.ll_getTypeClass(currentRangeType));
+         featurePathValue.setTypeClass(llCas.ll_getTypeClass(currentRangeTypeCode));
          featurePathValue.setFeatureType(llCas.ll_getTypeSystem()
-               .ll_getTypeForCode(currentRangeType));
+               .ll_getTypeForCode(currentRangeTypeCode));
          return featurePathValue;
       }
    }
@@ -1026,7 +1025,7 @@ class FeaturePathValue {
 
    private String stringValue = null;
 
-   private int featureTypeCode = 0;
+   private int featureTypeClass = 0;
 
    private Type featureType = null;
 
@@ -1099,16 +1098,16 @@ class FeaturePathValue {
    }
 
    /**
-    * Returns the type code of the feature path value.
+    * Returns the type class of the feature path value.
     * 
     * @return Returns the type code of the feature path value
     */
-   public int getTypeCode() {
-      return this.featureTypeCode;
+   public int getTypeClass() {
+      return this.featureTypeClass;
    }
 
-   public void setTypeCode(int typeCode) {
-      this.featureTypeCode = typeCode;
+   public void setTypeClass(int typeClass) {
+      this.featureTypeClass = typeClass;
    }
 
    public FeatureStructure getFs() {
