@@ -430,6 +430,10 @@ public class FeaturePathTest extends TestCase {
       featurePath.typeInit(cas.getDocumentAnnotation().getType());
       assertEquals(cas.getDocumentText(), featurePath.getValueAsString(cas
             .getDocumentAnnotation()));
+      assertEquals(cas.getDocumentText(), featurePath.ll_getValueAsString(cas.getLowLevelCAS().ll_getFSRef(
+            cas.getDocumentAnnotation()), cas.getLowLevelCAS()));
+      assertEquals(cas.getDocumentAnnotation().getType(), featurePath.getType(cas.getDocumentAnnotation()));
+      assertEquals(TypeClass.TYPE_CLASS_FS, featurePath.getTypClass(cas.getDocumentAnnotation()));
 
       // test fsId() on root
       path = "/:fsId()";
