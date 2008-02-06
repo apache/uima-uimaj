@@ -847,7 +847,7 @@ class FeaturePathImpl implements FeaturePath {
             return null;
          } else {
             featurePathValue.setFs(fsRef, llCas);
-            int typeCode = llCas.ll_getFSRefType(fsRef);
+            int typeCode = llCas.ll_getFSRefType(fsRef, true);
             featurePathValue.setTypeClass(llCas.ll_getTypeClass(typeCode));
             featurePathValue.setFeatureType(llCas.ll_getTypeSystem()
                   .ll_getTypeForCode(typeCode));
@@ -889,7 +889,7 @@ class FeaturePathImpl implements FeaturePath {
             if (this.featurePathBaseTypeCode > 0) {
                isInitSubType = llCas.ll_getTypeSystem()
                      .ll_subsumes(this.featurePathBaseTypeCode,
-                           llCas.ll_getFSRefType(fsRef));
+                           llCas.ll_getFSRefType(fsRef, true));
             }
             // get the Feature for the current featurePath element. If the
             // featurePath is always valid the featurePath Feature elements are
@@ -899,7 +899,7 @@ class FeaturePathImpl implements FeaturePath {
                currentFeatureCode = this.ll_featurePathElements.get(i);
             } else {
                // get current Type from feature type code
-               int fsRefTypeCode = llCas.ll_getFSRefType(fsRef);
+               int fsRefTypeCode = llCas.ll_getFSRefType(fsRef, true);
                Type currentType = llCas.ll_getTypeSystem().ll_getTypeForCode(
                      fsRefTypeCode);
 
@@ -914,7 +914,7 @@ class FeaturePathImpl implements FeaturePath {
                               currentType.getName(),
                               this.featurePathElementNames.get(i) });
                }
-               // get feature type and type code
+               // get feature code
                currentFeatureCode = llCas.ll_getTypeSystem()
                      .ll_getCodeForFeature(feature);
 
@@ -931,37 +931,37 @@ class FeaturePathImpl implements FeaturePath {
                break;
             case LowLevelCAS.TYPE_CLASS_INT:
                featurePathValue.setIntValue(llCas.ll_getIntValue(currentFsRef,
-                     currentFeatureCode, false));
+                     currentFeatureCode, true));
                noFurtherElementsPossible = true;
                break;
             case LowLevelCAS.TYPE_CLASS_BOOLEAN:
                featurePathValue.setBooleanValue(llCas.ll_getBooleanValue(
-                     currentFsRef, currentFeatureCode, false));
+                     currentFsRef, currentFeatureCode, true));
                noFurtherElementsPossible = true;
                break;
             case LowLevelCAS.TYPE_CLASS_BYTE:
                featurePathValue.setByteValue(llCas.ll_getByteValue(
-                     currentFsRef, currentFeatureCode, false));
+                     currentFsRef, currentFeatureCode, true));
                noFurtherElementsPossible = true;
                break;
             case LowLevelCAS.TYPE_CLASS_DOUBLE:
                featurePathValue.setDoubleValue(llCas.ll_getDoubleValue(
-                     currentFsRef, currentFeatureCode, false));
+                     currentFsRef, currentFeatureCode, true));
                noFurtherElementsPossible = true;
                break;
             case LowLevelCAS.TYPE_CLASS_FLOAT:
                featurePathValue.setFloatValue(llCas.ll_getFloatValue(
-                     currentFsRef, currentFeatureCode, false));
+                     currentFsRef, currentFeatureCode, true));
                noFurtherElementsPossible = true;
                break;
             case LowLevelCAS.TYPE_CLASS_LONG:
                featurePathValue.setLongValue(llCas.ll_getLongValue(
-                     currentFsRef, currentFeatureCode, false));
+                     currentFsRef, currentFeatureCode, true));
                noFurtherElementsPossible = true;
                break;
             case LowLevelCAS.TYPE_CLASS_SHORT:
                featurePathValue.setShortValue(llCas.ll_getShortValue(
-                     currentFsRef, currentFeatureCode, false));
+                     currentFsRef, currentFeatureCode, true));
                noFurtherElementsPossible = true;
                break;
             case LowLevelCAS.TYPE_CLASS_INVALID:
@@ -969,7 +969,7 @@ class FeaturePathImpl implements FeaturePath {
                break;
             case LowLevelCAS.TYPE_CLASS_FS:
                currentFsRef = llCas.ll_getRefValue(currentFsRef,
-                     currentFeatureCode, false);
+                     currentFeatureCode, true);
                if (currentFsRef == LowLevelCAS.NULL_FS_REF) {
                   // FS value not set - feature path cannot return a valid value
                   noFurtherElementsPossible = true;
@@ -988,7 +988,7 @@ class FeaturePathImpl implements FeaturePath {
             case LowLevelCAS.TYPE_CLASS_SHORTARRAY:
             case LowLevelCAS.TYPE_CLASS_STRINGARRAY:
                currentFsRef = llCas.ll_getRefValue(currentFsRef,
-                     currentFeatureCode, false);
+                     currentFeatureCode, true);
                featurePathValue.setFs(currentFsRef, llCas);
                noFurtherElementsPossible = true;
                break;
