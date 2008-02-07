@@ -1089,6 +1089,30 @@ public void initialize(UimaContext aContext)
           supports this). If not specified, the name of the returned logger instance is
           <quote>org.apache.uima</quote>.</para>
       </section>
+      
+      <section id="ugr.tug.aae.logging.change_logger_implementation">
+        <title>Changing the underlying UIMA logging implementation</title>
+        
+        <para>By default the UIMA framework use, under the hood of the UIMA Logger interface, the Java logging framework 
+        to do logging. But it is possible to change the logging implementation that UIMA use from Java logging to 
+        an arbitrary logging system when specifying the system property  
+          <programlisting>-Dorg.apache.uima.logger.class=&lt;loggerClass></programlisting>
+        when the UIMA framework is started.
+        </para>
+        <para>
+          The specified logger class must be available in the classpath and have to implement the 
+          <code>org.apache.uima.util.Logger</code> interface. 
+        </para>
+        
+        <para>
+          UIMA also provides a logging implementation that use Apache Log4j instead of Java logging. To
+          use Log4j you have to provide the Log4j jars in the classpath and your application 
+          must specify the logging configuration as shown below. 
+          <programlisting>-Dorg.apache.uima.logger.class=&lt;org.apache.uima.util.impl.Log4jLogger_impl></programlisting>
+        </para>
+      </section>
+      
+      
     </section>
   </section>  
   <section id="ugr.tug.aae.building_aggregates">
