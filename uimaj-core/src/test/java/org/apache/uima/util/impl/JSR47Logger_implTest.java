@@ -20,7 +20,6 @@
 package org.apache.uima.util.impl;
 
 import java.util.HashMap;
-import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 import junit.framework.Assert;
@@ -34,7 +33,7 @@ import org.apache.uima.util.Level;
  */
 public class JSR47Logger_implTest extends TestCase {
 
-  private static HashMap logLevels = new HashMap(9);
+  private static HashMap<String, Level> logLevels = new HashMap<String, Level>(9);
   static {
     logLevels.put("OFF", Level.OFF);
     logLevels.put("SEVERE", Level.SEVERE);
@@ -74,7 +73,7 @@ public class JSR47Logger_implTest extends TestCase {
       jsrLogger = jsrLogger.getParent(); 
     }
         
-    Level defaultLogLevel = (Level) logLevels.get(jsrLogger.getLevel().toString());
+    Level defaultLogLevel = logLevels.get(jsrLogger.getLevel().toString());
     
     // check message logging for root logger based on default log level
     Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.ALL), uimaLogger
