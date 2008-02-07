@@ -77,34 +77,35 @@ public class UIMAFramework_impl extends UIMAFramework {
    * resource bundle for log messages
    */
   private static final String LOG_RESOURCE_BUNDLE = "org.apache.uima.impl.log_messages";
-
+  
+  private static final String LOGGER_CLASS_SYSTEM_PROPERTY = "org.apache.uima.logger.class";
   /**
    * current class
    */
   private static final Class CLASS_NAME = UIMAFramework_impl.class;
 
   /**
-   * The <code>ResourceFactory</code> used by the UIMA reference implemenation.
+   * The <code>ResourceFactory</code> used by the UIMA reference implementation.
    */
   private CompositeResourceFactory mResourceFactory;
 
   /**
-   * The <code>ResourceSpecifierFactory</code> used by the UIMA reference implemenation.
+   * The <code>ResourceSpecifierFactory</code> used by the UIMA reference implementation.
    */
   private ResourceSpecifierFactory mResourceSpecifierFactory;
 
   /**
-   * The <code>XMLParser</code> used by the UIMA reference implemenation.
+   * The <code>XMLParser</code> used by the UIMA reference implementation.
    */
   private XMLParser mXMLParser;
 
   /**
-   * The class of the <code>Logger</code> used by the UIMA reference implemenation.
+   * The class of the <code>Logger</code> used by the UIMA reference implementation.
    */
   private Class mLoggerClass;
 
   /**
-   * The default <code>Logger</code> instance used by the UIMA reference implemenation.
+   * The default <code>Logger</code> instance used by the UIMA reference implementation.
    */
   private Logger mDefaultLogger;
 
@@ -127,18 +128,18 @@ public class UIMAFramework_impl extends UIMAFramework {
   private String mConfigurationManagerImplClassName;
 
   /**
-   * The class of the <code>UimaContext</code> used by the UIMA reference implemenation.
+   * The class of the <code>UimaContext</code> used by the UIMA reference implementation.
    */
   private String mUimaContextImplClassName;
 
   /**
    * The class of the <code>CollectionProcessingEngine</code> used by the UIMA reference
-   * implemenation.
+   * implementation.
    */
   private String mCpeClassName;
 
   /**
-   * The class of the <code>Timer</code> used by the UIMA reference implemenation.
+   * The class of the <code>Timer</code> used by the UIMA reference implementation.
    */
   private String mTimerClassName;
 
@@ -481,7 +482,13 @@ public class UIMAFramework_impl extends UIMAFramework {
         }
         try {
           // get logger class
-          mLoggerClass = Class.forName(attributes.getValue("class"));
+          // check first if a system property for the logger class was specified
+          String loggerClass = System.getProperty(LOGGER_CLASS_SYSTEM_PROPERTY);
+          if(loggerClass == null) {
+             //no system property was specified, use factoryConfig.xml setting
+             loggerClass = attributes.getValue("class");
+          }
+          mLoggerClass = Class.forName(loggerClass);
           // get static method getInstance()
           Method instanceMethod = mLoggerClass.getMethod("getInstance", new Class[0]);
           // invoke getInstance() method and retrieve default logger object
