@@ -568,6 +568,8 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
       updateCpeDescriptionParameterOverrides();
 
       // intantiate CPE
+      mCPE = null;  // to allow GC of previous ae's that may
+                    // hold onto lots of memory e.g. OpenNLP
       mCPE = UIMAFramework.produceCollectionProcessingEngine(currentCpeDesc);
 
       // attach callback listener
