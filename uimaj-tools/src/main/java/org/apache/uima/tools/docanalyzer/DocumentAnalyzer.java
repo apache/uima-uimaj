@@ -167,8 +167,6 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
 
   private int numDocsProcessed = 0;
 
-  private AnalysisEngine ae;
-
   /** Directory in which this program will write its output files. */
   private File outputDirectory;
 
@@ -1164,7 +1162,9 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
       progressMonitor.setProgress(1);
 
       // instantiate AE
-      ae = UIMAFramework.produceAnalysisEngine(aggDesc);
+      // keep this a local variable - so it doesn't hang on to the ae object
+      //   preventing gc (some ae objects are huge)
+      AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(aggDesc);
       mCPM.setAnalysisEngine(ae);
 
       progressMonitor.setProgress(2);
