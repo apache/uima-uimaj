@@ -616,11 +616,11 @@ public class XCASSerializer {
       int[] feats = ts.ll_getAppropriateFeatures(heapValue);
       int featAddr, featVal;
       String featName, attrValue;
-      boolean nameMapping = false;
-      if (sofaTypeCode == heapValue) {
-        // set flag for SofaID mapping
-        nameMapping = true;
-      }
+//      boolean nameMapping = false;
+//      if (sofaTypeCode == heapValue) {
+//        // set flag for SofaID mapping
+//        nameMapping = true;
+//      }
 
       for (int i = 0; i < feats.length; i++) {
         featAddr = addr + cas.getFeatureOffset(feats[i]);
@@ -628,10 +628,10 @@ public class XCASSerializer {
         featName = featureNames[feats[i]];
         if (!cas.ll_isRefType(ts.range(feats[i]))) {
           attrValue = cas.getFeatureValueAsString(addr, feats[i]);
-          if (nameMapping && featName.equals(CAS.FEATURE_BASE_NAME_SOFAID) && uimaContext != null) {
-            // map absolute SofaID to that expected by Component
-            attrValue = uimaContext.mapSofaIDToComponentSofaName(attrValue);
-          }
+//          if (nameMapping && featName.equals(CAS.FEATURE_BASE_NAME_SOFAID) && uimaContext != null) {
+//            // map absolute SofaID to that expected by Component
+//            attrValue = uimaContext.mapSofaIDToComponentSofaName(attrValue);
+//          }
         } else {
           if (featVal == CASImpl.NULL) {
             attrValue = null;
