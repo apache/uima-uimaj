@@ -331,10 +331,10 @@ public class XCASDeserializer {
         if (sofaID.equals("_DefaultTextSofaName")) {
           sofaID = CAS.NAME_DEFAULT_SOFA;
         }
-        if (uimaContext != null) {
-          // Map incoming SofaIDs
-          sofaID = uimaContext.mapToSofaID(sofaID).getSofaID();
-        }
+//        if (uimaContext != null) {
+//          // Map incoming SofaIDs
+//          sofaID = uimaContext.mapToSofaID(sofaID).getSofaID();
+//        }
         if (sofaID.equals(CAS.NAME_DEFAULT_SOFA)) {
           isInitialView = true;
         }
@@ -435,10 +435,10 @@ public class XCASDeserializer {
                 // First change old default Sofa name into the new one
                 attrValue = CAS.NAME_DEFAULT_SOFA;
               }
-              if (uimaContext != null) {
-                // Map incoming SofaIDs
-                attrValue = uimaContext.mapToSofaID(attrValue).getSofaID();
-              }
+//              if (uimaContext != null) {
+//                // Map incoming SofaIDs
+//                attrValue = uimaContext.mapToSofaID(attrValue).getSofaID();
+//              }
             }
           }
           handleFeature(type, addr, attrName, attrValue, false);
