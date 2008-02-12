@@ -25,7 +25,7 @@ REM Run with -notest to skip the unit tests
 @if "%~1"=="trunk" goto trunk
 @set level=tags/%~1
 @set leveldir=%~1
-@goto checktest
+@goto checkargs
 
 @:trunk
 @set level=trunk
@@ -34,7 +34,7 @@ REM Run with -notest to skip the unit tests
 
 @:checkargs
 @set jvmarg=
-@set mvnCommand=install
+@set mvnCommand=clean install
 @if not "%3"=="" goto usage
 @if "%~2"=="" goto execute
 @if "%~2"=="-notest" goto notest
@@ -64,6 +64,6 @@ cd uimaj
 call mvn %jvmarg%  -Duima.build.date="%date% %time%" %mvnCommand%
 cd ..
 cd uimaj-distr
-call mvn assembly:assembly
+call mvn clean assembly:assembly
 
 @:exit
