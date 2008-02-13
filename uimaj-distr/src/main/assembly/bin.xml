@@ -110,16 +110,16 @@ under the License.
     </dependencySet>
     
     
-    <!-- Unpack the zip files for each eclipse plugin into the /eclipsePlugins dir of the distribution -->
+    <!-- Copy each eclipse plugin into the /eclipsePlugins dir of the distribution -->
     <dependencySet>
       <includes>
-        <include>org.apache.uima:uimaj-ep-configurator:zip</include>
-        <include>org.apache.uima:uimaj-ep-debug:zip</include>
-        <include>org.apache.uima:uimaj-ep-jcasgen:zip</include>
-        <include>org.apache.uima:uimaj-ep-pear-packager:zip</include>
-        <include>org.apache.uima:uimaj-ep-runtime:zip</include>
+        <include>org.apache.uima:uimaj-ep-configurator</include>
+        <include>org.apache.uima:uimaj-ep-debug</include>
+        <include>org.apache.uima:uimaj-ep-jcasgen</include>
+        <include>org.apache.uima:uimaj-ep-pear-packager</include>
+        <include>org.apache.uima:uimaj-ep-runtime</include>
       </includes>
-      <unpack>true</unpack>
+      <unpack>false</unpack>
       <scope>runtime</scope>
       <outputDirectory>/apache-uima/eclipsePlugins</outputDirectory>
     </dependencySet>
