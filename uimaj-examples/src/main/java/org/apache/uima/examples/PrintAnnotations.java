@@ -19,9 +19,7 @@
 
 package org.apache.uima.examples;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.PrintStream;
 import java.util.Iterator;
 import java.util.List;
@@ -250,7 +248,7 @@ public class PrintAnnotations {
       // build ResultSpec if Type and Feature names were specified on commandline
       ResultSpecification resultSpec = null;
       if (args.length > 2) {
-        resultSpec = ae.createResultSpecification();
+        resultSpec = ae.createResultSpecification(cas.getTypeSystem());
         for (int i = 2; i < args.length; i++) {
           if (args[i].indexOf(':') > 0) // feature name
           {

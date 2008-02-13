@@ -21,7 +21,6 @@ package org.apache.uima.examples;
 
 import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 
 import org.apache.uima.UIMAFramework;

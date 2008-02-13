@@ -19,9 +19,7 @@
 
 package org.apache.uima.examples.casMultiplier;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.PrintStream;
 
 import org.apache.uima.UIMAFramework;
