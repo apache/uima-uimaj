@@ -22,86 +22,205 @@
 <!-- set the basedir value to point to the top level of the project -->
 
 <project name="build update site" default="all" basedir=".">
-  
-  <target name="all" depends="init, build-runtime, build-tools"/>
+	
+	<!-- will be overridden by maven caller -->
+	<property name="project.version" value="2.3.0.incubating-SNAPSHOT"/>
+
+  <condition property="eclipse.home" value="${uima-maven-build-eclipse-home}">
+  	<isset property="uima-maven-build-eclipse-home"/>
+  </condition>
+  	
+	<property environment="envVar"/>
+	
+	<condition property="eclipse.home" value="${envVar.ECLIPSE_HOME}">
+		<isset property="envVar.ECLIPSE_HOME"/>
+	</condition>
+		
+	<fail unless="eclipse.home" message="please set up and use a maven profile with the property uima-maven-build-eclipse-home set to an Eclipse installation at level 3.3 or later"/>
+	
+	<property name="eclipse.home" location="${uima-maven-build-eclipse-home}"/>
+
+  <target name="all" depends="init, 
+  	build-runtime, 
+  	build-tools, 
+  	pack-jars,
+  	sign-jars,
+  	build-digest"/>
 	
   <target name="init">
    	<delete dir="target"/>
   	<delete dir="work"/>
   	<mkdir dir="work"/>
   	<mkdir dir="target"/>
-  	<mkdir dir="target/features"/>
-  	<mkdir dir="target/plugins"/>
-  	<copy  todir="target/web">
+  	<mkdir dir="target/eclipse-update-site"/>
+  	<mkdir dir="target/eclipse-update-site/features"/>
+  	<mkdir dir="target/eclipse-update-site/plugins"/>
+  	<copy  todir="target/eclipse-update-site/web">
   		<fileset dir="web"/>
     </copy>
-    <copy  todir="target" file="index.html"/>
-    <copy  todir="target" file="site.xml"/>
+    <copy  todir="target/eclipse-update-site" file="index.html"/>
+    <copy  todir="target/eclipse-update-site" file="site.xml"/>
+  	
+    <!--  get path to equinox jar inside ${eclipse.home} folder (copy/rename actual jar) -->
+    <copy tofile="${eclipse.home}/eclipse/plugins/org.eclipse.equinox.launcher.jar">
+      <fileset dir="${eclipse.home}/eclipse/plugins"
+        includes="**/org.eclipse.equinox.launcher_*.jar"/>
+    </copy>
+
   </target>	
+
+	<macrodef name="makeFeatureJar">
+		<attribute name="org-name"/>
+		<attribute name="project-name"/>
+		<sequential>
+			<copy todir="work/features/@{org-name}_${project.version}">
+			   <fileset dir="../@{project-name}" includes="feature.xml feature.properties"/>
+			</copy>
+			<copy todir="work/features/@{org-name}_${project.version}/META-INF">
+				<fileset dir="../uimaj-distr/src/main/readme"
+		             includes="LICENSE NOTICE DISCLAIMER"/>
+		  </copy>
+			<jar destfile="target/eclipse-update-site/features/@{org-name}_${project.version}.jar"
+			  basedir="work/features/@{org-name}_${project.version}"/>
+		</sequential>
+  </macrodef>
+	
+	<macrodef name="makePluginJar">
+		<attribute name="project-name"/>
+		<attribute name="org-name"/>
+		<sequential>
+			<!--unzip dest="work/plugins"
+			       src="../@{project-name}/target/@{org-name}_${project.version}.zip"/>
+      <copy todir="work/plugins/@{org-name}_${project.version}/META-INF">
+        <fileset dir="../uimaj-distr/src/main/readme"
+                 includes="LICENSE NOTICE DISCLAIMER"/>
+      </copy>
+      <jar destfile="target/eclipse-update-site/plugins/@{org-name}_${project.version}.jar"
+        basedir="work/plugins/@{org-name}_${project.version}" 
+      	manifest="work/plugins/@{org-name}_${project.version}/META-INF/MANIFEST.MF"/-->
+			<copy todir="target/eclipse-update-site/plugins"
+			      file="../@{project-name}/target/@{org-name}_${project.version}.jar"/>
+	  </sequential>
+	</macrodef>
 	
   <target name="build-runtime">
-  	<copy todir="../uimaj-eclipse-feature-runtime/META-INF">
-  		<fileset dir="../uimaj-distr/src/main/readme"
-  	           includes="LICENSE NOTICE DISCLAIMER"/>
-  	</copy>
-  	<jar destfile="target/features/org.apache.uima.runtime_${project.version}.jar"
-  	  basedir="../uimaj-eclipse-feature-runtime"
-  		includes="feature.xml META-INF/*"/>
-  	<unzip dest="work" 
-  		     src="../uimaj-ep-runtime/target/org.apache.uima.runtime_${project.version}.zip" />
-  	<copy todir="work/org.apache.uima.runtime_${project.version}/META-INF">
-  		<fileset dir="../uimaj-distr/src/main/readme"
-  	           includes="LICENSE NOTICE DISCLAIMER"/>
-  	</copy>
-  	<jar destfile="target/plugins/org.apache.uima.runtime_${project.version}.jar"
-  		   basedir="work/org.apache.uima.runtime_${project.version}"
-  	     manifest="work/org.apache.uima.runtime_${project.version}/META-INF/MANIFEST.MF"/>
+  	<makeFeatureJar project-name="uimaj-eclipse-feature-runtime" org-name="org.apache.uima.runtime"/>
+    <makePluginJar  project-name="uimaj-ep-runtime"              org-name="org.apache.uima.runtime"/>  	
   </target>
 
   <target name="build-tools">
-  	<copy todir="../uimaj-eclipse-feature-tools/META-INF">
-  		<fileset dir="../uimaj-distr/src/main/readme"
-  	           includes="LICENSE NOTICE DISCLAIMER"/>
-  	</copy>
-  	<jar destfile="target/features/org.apache.uima.tools_${project.version}.jar"
-      basedir="../uimaj-eclipse-feature-tools"
-	    includes="feature.xml META-INF/*"/>
-   	<unzip dest="work" 
-    		     src="../uimaj-ep-configurator/target/org.apache.uima.desceditor_${project.version}.zip" />
-  	<copy todir="work/org.apache.uima.desceditor_${project.version}/META-INF">
-  		<fileset dir="../uimaj-distr/src/main/readme"
-  	           includes="LICENSE NOTICE DISCLAIMER"/>
-  	</copy>  	
-  	<jar destfile="target/plugins/org.apache.uima.desceditor_${project.version}.jar"
-    		   basedir="work/org.apache.uima.desceditor_${project.version}"
- 	        manifest="work/org.apache.uima.desceditor_${project.version}/META-INF/MANIFEST.MF"/>
-   	<unzip dest="work" 
-    		     src="../uimaj-ep-jcasgen/target/org.apache.uima.jcas.jcasgenp_${project.version}.zip" />
-  	<copy todir="work/org.apache.uima.jcas.jcasgenp_${project.version}/META-INF">
-  		<fileset dir="../uimaj-distr/src/main/readme"
-  	           includes="LICENSE NOTICE DISCLAIMER"/>
-  	</copy>  	
-   	<jar destfile="target/plugins/org.apache.uima.jcas.jcasgenp_${project.version}.jar"
-    		   basedir="work/org.apache.uima.jcas.jcasgenp_${project.version}"
-          manifest="work/org.apache.uima.jcas.jcasgenp_${project.version}/META-INF/MANIFEST.MF"/>
-  	<unzip dest="work" 
-    		     src="../uimaj-ep-debug/target/org.apache.uima.debug_${project.version}.zip" />
-  	<copy todir="work/org.apache.uima.debug_${project.version}/META-INF">
-  		<fileset dir="../uimaj-distr/src/main/readme"
-  	           includes="LICENSE NOTICE DISCLAIMER"/>
-  	</copy>
-    <jar destfile="target/plugins/org.apache.uima.debug_${project.version}.jar"
-    		   basedir="work/org.apache.uima.debug_${project.version}"
-          manifest="work/org.apache.uima.debug_${project.version}/META-INF/MANIFEST.MF"/>  	
-   	<unzip dest="work" 
-    		     src="../uimaj-ep-pear-packager/target/org.apache.uima.pear_${project.version}.zip" />
-  	<copy todir="work/org.apache.uima.pear_${project.version}/META-INF">
-  		<fileset dir="../uimaj-distr/src/main/readme"
-  	           includes="LICENSE NOTICE DISCLAIMER"/>
-  	</copy>
-    <jar destfile="target/plugins/org.apache.uima.pear_${project.version}.jar"
-    		   basedir="work/org.apache.uima.pear_${project.version}"
-          manifest="work/org.apache.uima.pear_${project.version}/META-INF/MANIFEST.MF"/>
+  	<makeFeatureJar project-name="uimaj-eclipse-feature-tools" org-name="org.apache.uima.tools" />
+  	<makePluginJar  project-name="uimaj-ep-jcasgen"            org-name="org.apache.uima.jcas.jcasgenp"/>
+    <makePluginJar  project-name="uimaj-ep-debug"              org-name="org.apache.uima.debug"/>
+    <makePluginJar  project-name="uimaj-ep-pear-packager"      org-name="org.apache.uima.pear"/>
+    <makePluginJar  project-name="uimaj-ep-configurator"       org-name="org.apache.uima.desceditor"/>  	
   </target>
+	
+	<target name="normalize-jars">
+    <java jar="${eclipse.home}/eclipse/plugins/org.eclipse.equinox.launcher.jar"
+                fork="true" failonerror="true"  maxmemory="256m" >
+              <arg line="-application org.eclipse.update.core.siteOptimizer"/>
+              <arg line="-jarProcessor -processAll -repack"/>
+              <arg line="-outputDir target/eclipse-update-site/plugins"/>
+              <arg line="target/eclipse-update-site/plugins"/> 
+    </java>
+	</target>
+
+  <target name="sign-jars">
+    <checksum algorithm="md5">
+    	<fileset dir="target/eclipse-update-site" includes="*/*.jar */*.jar.pack.gz"/> 
+    </checksum>
+    <checksum algorithm="sha1">
+  	  <fileset dir="target/eclipse-update-site" includes="*/*.jar */*.jar.pack.gz"/> 
+  	</checksum>
+  </target>
+  
+  <target name="pack-jars">
+    <java jar="${eclipse.home}/eclipse/plugins/org.eclipse.equinox.launcher.jar"
+                fork="true" failonerror="true"  maxmemory="256m" >
+              <arg line="-application org.eclipse.update.core.siteOptimizer"/>
+              <arg line="-jarProcessor -verbose -processAll -pack"/>
+              <arg line="-outputDir target/eclipse-update-site/plugins"/>
+              <arg line="target/eclipse-update-site/plugins"/> 
+    </java>
+	</target>
+
+	<target name="build-digest">
+ 		<!-- see http://wiki.eclipse.org/Update_Site_Optimization -->
+	  <java jar="${eclipse.home}/eclipse/plugins/org.eclipse.equinox.launcher.jar"
+	              fork="true" failonerror="true" maxmemory="256m">
+	  	        <arg line="-application org.eclipse.update.core.siteOptimizer"/>
+	            <arg line="-digestBuilder -digestOutputDir=target/eclipse-update-site"/>
+	            <arg line="-siteXML=target/eclipse-update-site/site.xml"/>	  	
+	  </java>
+  </target>
+
+  <!--jar destfile="target/eclipse-update-site/features/org.apache.uima.runtime_${project.version}.jar"
+     basedir="../uimaj-eclipse-feature-runtime"
+     includes="feature.xml META-INF/*"/>
+   <checksum file="target/eclipse-update-site/features/org.apache.uima.runtime_${project.version}.jar"
+     algorithm="md5" />
+   <checksum file="target/eclipse-update-site/features/org.apache.uima.runtime_${project.version}.jar"
+     algorithm="sha1" />
+   
+   <unzip dest="work" 
+          src="../uimaj-ep-runtime/target/org.apache.uima.runtime_${project.version}.zip" />
+   <copy todir="work/org.apache.uima.runtime_${project.version}/META-INF">
+     <fileset dir="../uimaj-distr/src/main/readme"
+              includes="LICENSE NOTICE DISCLAIMER"/>
+   </copy>
+   <jar destfile="target/eclipse-update-site/plugins/org.apache.uima.runtime_${project.version}.jar"
+        basedir="work/org.apache.uima.runtime_${project.version}"
+        manifest="work/org.apache.uima.runtime_${project.version}/META-INF/MANIFEST.MF"/ -->
+  
+  
+  <!--copy todir="../uimaj-eclipse-feature-tools/META-INF">
+    <fileset dir="../uimaj-distr/src/main/readme"
+             includes="LICENSE NOTICE DISCLAIMER"/>
+  </copy>
+  <jar destfile="target/eclipse-update-site/features/org.apache.uima.tools_${project.version}.jar"
+    basedir="../uimaj-eclipse-feature-tools"
+    includes="feature.xml META-INF/*"/>
+  <unzip dest="work" 
+           src="../uimaj-ep-configurator/target/org.apache.uima.desceditor_${project.version}.zip" />
+  <copy todir="work/org.apache.uima.desceditor_${project.version}/META-INF">
+    <fileset dir="../uimaj-distr/src/main/readme"
+             includes="LICENSE NOTICE DISCLAIMER"/>
+  </copy>   
+  <jar destfile="target/eclipse-update-site/plugins/org.apache.uima.desceditor_${project.version}.jar"
+         basedir="work/org.apache.uima.desceditor_${project.version}"
+        manifest="work/org.apache.uima.desceditor_${project.version}/META-INF/MANIFEST.MF"/>
+  <unzip dest="work" 
+           src="../uimaj-ep-jcasgen/target/org.apache.uima.jcas.jcasgenp_${project.version}.zip" />
+  <copy todir="work/org.apache.uima.jcas.jcasgenp_${project.version}/META-INF">
+    <fileset dir="../uimaj-distr/src/main/readme"
+             includes="LICENSE NOTICE DISCLAIMER"/>
+  </copy>   
+  <jar destfile="target/eclipse-update-site/plugins/org.apache.uima.jcas.jcasgenp_${project.version}.jar"
+         basedir="work/org.apache.uima.jcas.jcasgenp_${project.version}"
+        manifest="work/org.apache.uima.jcas.jcasgenp_${project.version}/META-INF/MANIFEST.MF"/>
+  <unzip dest="work" 
+           src="../uimaj-ep-debug/target/org.apache.uima.debug_${project.version}.zip" />
+  <copy todir="work/org.apache.uima.debug_${project.version}/META-INF">
+    <fileset dir="../uimaj-distr/src/main/readme"
+             includes="LICENSE NOTICE DISCLAIMER"/>
+  </copy>
+  <jar destfile="target/eclipse-update-site/plugins/org.apache.uima.debug_${project.version}.jar"
+         basedir="work/org.apache.uima.debug_${project.version}"
+        manifest="work/org.apache.uima.debug_${project.version}/META-INF/MANIFEST.MF"/>   
+  <unzip dest="work" 
+           src="../uimaj-ep-pear-packager/target/org.apache.uima.pear_${project.version}.zip" />
+  <copy todir="work/org.apache.uima.pear_${project.version}/META-INF">
+    <fileset dir="../uimaj-distr/src/main/readme"
+             includes="LICENSE NOTICE DISCLAIMER"/>
+  </copy>
+        <checksum file="target/eclipse-update-site/plugins/@{org-name}_${project.version}.jar"
+        algorithm="md5" />
+      <checksum file="target/eclipse-update-site/plugins/@{org-name}_${project.version}.jar"
+        algorithm="sha1" />
+  
+  <jar destfile="target/eclipse-update-site/plugins/org.apache.uima.pear_${project.version}.jar"
+         basedir="work/org.apache.uima.pear_${project.version}"
+        manifest="work/org.apache.uima.pear_${project.version}/META-INF/MANIFEST.MF"/-->
 
 </project>
