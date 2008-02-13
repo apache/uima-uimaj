@@ -319,6 +319,9 @@
     <repository>
       <id>eclipsePlugins</id>
       <url>http://repo1.maven.org/eclipse</url>
+      <releases>
+        <updatePolicy>never</updatePolicy>
+      </releases>
     </repository>
   </repositories>
 </project>
