@@ -23,7 +23,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.apache.uima</groupId>
 	<artifactId>uimaj-ep-debug</artifactId>
-	<packaging>jar</packaging>
+	<packaging>bundle</packaging>
 	<version>${uimaj-release-eclipse-version}</version>
 	<name>Apache UIMA Debug Eclipse Plugin</name>
 	<url>http://incubator.apache.org/uima</url>
@@ -42,13 +42,29 @@
 		<artifactId>uimaj</artifactId>
 		<version>2.3.0-incubating-SNAPSHOT</version>
 	</parent>
+  
 	<dependencies>
-		<dependency>
-			<groupId>org.eclipse.core</groupId>
-			<artifactId>org.eclipse.core.runtime</artifactId>
-			<version>3.2.0</version>
-			<scope>provided</scope>
-		</dependency>
+    <!-- depending on the ep-runtime doesn't work without manual intervention because
+         eclipse:eclipse on the ep-runtime doesn't mark the embedded things as "exported".
+         It doesn't matter which scope - compile or provided - is used, both fail
+      
+         Other posts indicate that plugins should have explicit dependencies, anyway.
+         And, it lets these plugins work when the library plugin is "open" in the same workspace.
+      -->
+    <!--dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-ep-runtime</artifactId>
+      <version>${uimaj-release-eclipse-version}</version>
+      <scope>compile</scope>       
+    </dependency-->
+    
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-core</artifactId>
+      <version>${uimaj-release-version}</version>
+      <scope>compile</scope>
+    </dependency>
+    
     <!-- next dependency is commented out due to Maven 2.0.7 throwing NPE 
          Might be related to http://jira.codehaus.org/browse/MNG-3086 -->
 		<!--dependency>
@@ -65,10 +81,26 @@
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
+  
 	<build>
-		<finalName>uima-ep-debug</finalName>	
+    
+		<finalName>org.apache.uima.debug_${uimaj-release-eclipse-version}</finalName>
+    	
+    <!-- needed to copy resources and the plugin.xml to the result -->
+    <resources>
+      <resource>   <!-- copy the license, notices, disclaimer -->
+        <directory>src/main/resources</directory>
+      </resource>
+      <resource>
+        <directory>.</directory>
+        <includes>
+          <include>plugin.xml</include>
+        </includes>
+      </resource>
+    </resources>
+    
 		<plugins>
-			<plugin>
+			<!--plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<executions>
 					<execution>
@@ -88,17 +120,41 @@
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin-->
+      
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-eclipse-plugin</artifactId>
-				<version>2.3</version>
+				<version>2.4</version>
 				<configuration>
 					<manifest>.ignore</manifest>
 					<pde>true</pde>
 				</configuration>
 			</plugin>
-			
+      
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <manifestLocation>META-INF</manifestLocation>
+          <instructions>
+            <Export-Package>
+              org.apache.uima.ep_debug
+            </Export-Package>
+            
+            <Import-Package>*,
+              org.eclipse.ui.plugin
+            </Import-Package>  
+
+            <Bundle-Activator>org.apache.uima.ep_debug.DebugPlugin</Bundle-Activator>
+            <Bundle-SymbolicName>org.apache.uima.debug;singleton:=true</Bundle-SymbolicName>
+            
+            <Eclipse-AutoStart>true</Eclipse-AutoStart>
+          </instructions>
+        </configuration>
+      </plugin>
+      		
 		</plugins>
 	</build>
 </project>
