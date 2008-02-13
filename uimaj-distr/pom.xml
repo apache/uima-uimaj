@@ -194,12 +194,16 @@
                 <!-- Build documentation -->
                 <ant dir="../uima-docbooks" inheritAll="false"/>
                 <!-- build eclipse update site -->
+                  
                 <ant dir="../uimaj-eclipse-update-site">
                   <!-- surprise! the ant call here does not pass any parms,
                        even if you set inheritAll="true"
                        
                        Setting the property explicitly does work, though -->
-                  <property name="project.version" value="${uimaj-release-eclipse-version}"/>   
+                  <property name="uima-maven-build-eclipse-home" value="${uima-maven-build-eclipse-home}"/>
+                  
+                  <property name="project.version" value="${uimaj-release-eclipse-version}"/>
+                     
                 </ant>            
               </tasks>
             </configuration>
