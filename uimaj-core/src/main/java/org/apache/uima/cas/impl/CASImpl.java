@@ -3145,8 +3145,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   // protected as needed with try - finally blocks.
   //   
   // Special handling is needed for CAS Mulipliers - they can modify a cas up to
-  // the
-  // point they no longer "own" it.
+  // the point they no longer "own" it. 
+  // So the try / finally approach doesn't fit
 
   public void switchClassLoaderLockCas(Object userCode) {
     switchClassLoaderLockCasCL(userCode.getClass().getClassLoader());
