@@ -375,20 +375,24 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
         mAnalysisComponent.process(casToPass);
         getMBean().incrementCASesProcessed();
         
-        //note we do not clear the CAS's currentComponentInfo at this time.  The AnalysisComponents still
+        //note we do not clear the CAS's currentComponentInfo at this time
+        // nor do we unlock the cas and switch it back (class loader-wise).  The AnalysisComponents still
         //can access the CAS until such time as its hasNext method returns false.  Thus is is the
         //AnalysisComponentCasIterator that knows when it is time to clear the currentComponentInfo.
       } catch (Exception e) {
+        // catching Throwable to catch out-of-memory errors too, which are not Exceptions
         aCAS.setCurrentComponentInfo(null);
         ((CASImpl)aCAS).restoreClassLoaderUnlockCas();
         if (e instanceof AnalysisEngineProcessException) {
-          throw e;
+          throw (AnalysisEngineProcessException) e;
         } else {
           throw new AnalysisEngineProcessException(
                   AnalysisEngineProcessException.ANNOTATOR_EXCEPTION, null, e);
         }
-      } finally {
-        
+      } catch (Error e) {  // out of memory error, for instance
+        aCAS.setCurrentComponentInfo(null);
+        ((CASImpl)aCAS).restoreClassLoaderUnlockCas();
+        throw e;
       }
 
       // log end of event
