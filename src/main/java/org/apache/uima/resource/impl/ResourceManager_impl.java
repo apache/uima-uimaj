@@ -30,6 +30,7 @@ import java.util.Map;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMA_IllegalStateException;
+import org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase;
 import org.apache.uima.internal.util.UIMAClassLoader;
 import org.apache.uima.resource.CasManager;
 import org.apache.uima.resource.DataResource;
@@ -527,7 +528,10 @@ public class ResourceManager_impl implements ResourceManager {
     Map initParams = (aResourceInitParams == null) ? new HashMap() : new HashMap(
             aResourceInitParams);
     initParams.put(DataResource.PARAM_RELATIVE_PATH_RESOLVER, mRelativePathResolver);
-
+    
+    // determine if verification mode is on.  If so, we don't want to load the resource data
+    boolean verificationMode = initParams.containsKey(AnalysisEngineImplBase.PARAM_VERIFICATION_MODE);
+    
     // create the initial resource using the resource factory
     Object r = UIMAFramework.produceResource(aResourceDescription.getResourceSpecifier(),
             initParams);
@@ -566,7 +570,9 @@ public class ResourceManager_impl implements ResourceManager {
       if (implClass != null) {
         try {
           SharedResourceObject sro = (SharedResourceObject) implClass.newInstance();
-          sro.load((DataResource) r);
+          if (!verificationMode) {
+            sro.load((DataResource) r);
+          }
           r = sro;
         } catch (InstantiationException e) {
           throw new ResourceInitializationException(
