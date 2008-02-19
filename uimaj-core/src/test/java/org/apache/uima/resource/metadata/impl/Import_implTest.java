@@ -119,7 +119,7 @@ public class Import_implTest extends TestCase {
       Import_impl importObj = new Import_impl();
       importObj.setLocation("foo/bar/MyFile.xml");
       URL absUrl = importObj.findAbsoluteUrl(UIMAFramework.newDefaultResourceManager());
-      URL expectedUrl = new File(System.getProperty("user.dir"), "foo/bar/MyFile.xml").toURL();
+      URL expectedUrl = new File(System.getProperty("user.dir"), "foo/bar/MyFile.xml").getCanonicalFile().toURL();
       assertEquals(expectedUrl, absUrl);
 
       // name import
