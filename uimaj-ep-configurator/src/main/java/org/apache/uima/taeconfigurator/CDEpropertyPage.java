@@ -42,6 +42,8 @@ public class CDEpropertyPage extends PropertyPage {
 
   private static final String BY_DEFAULT_PROPERTY_KEY = "CDEByDefault";
 
+  private static final String ADD_TO_FLOW_PROPERTY_KEY = "CDEAddToFlow";
+
   // private static final int TEXT_FIELD_WIDTH = 50;
 
   private Text dataPathUI;
@@ -146,6 +148,26 @@ public class CDEpropertyPage extends PropertyPage {
   public static void setImportByDefault(IProject project, String byDefault) {
     try {
       project.setPersistentProperty(new QualifiedName("", BY_DEFAULT_PROPERTY_KEY), byDefault);
+    } catch (CoreException e) {
+      throw new InternalErrorCDE("unhandled exception", e);
+    }
+  }
+
+  public static String getAddToFlow(IProject project) {
+    String byDefault;
+    try {
+      byDefault = project.getPersistentProperty(new QualifiedName("", ADD_TO_FLOW_PROPERTY_KEY));
+    } catch (CoreException e) {
+      byDefault = "";
+    }
+    if (null == byDefault)
+      byDefault = "";
+    return byDefault;
+  }
+
+  public static void setAddToFlow(IProject project, String byDefault) {
+    try {
+      project.setPersistentProperty(new QualifiedName("", ADD_TO_FLOW_PROPERTY_KEY), byDefault);
     } catch (CoreException e) {
       throw new InternalErrorCDE("unhandled exception", e);
     }

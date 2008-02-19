@@ -51,7 +51,7 @@ public class MultiResourceSelectionDialog extends ResourcePickerDialog {
 
   public boolean isImportByName;
 
-  private MultiPageEditor editor;
+  protected MultiPageEditor editor;
 
   public MultiResourceSelectionDialog(Shell parentShell, IAdaptable rootElement, String message,
           IPath aExcludeDescriptor, MultiPageEditor aEditor) {

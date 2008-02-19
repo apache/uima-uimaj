@@ -29,6 +29,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
+import org.apache.uima.taeconfigurator.CDEpropertyPage;
 import org.apache.uima.taeconfigurator.Messages;
 import org.apache.uima.taeconfigurator.TAEConfiguratorPlugin;
 import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
@@ -61,6 +62,7 @@ public class MultiResourceSelectionDialogWithFlowOption extends MultiResourceSel
             parent.getDisplay()));
 
     autoAddToFlowButton = factory.createButton(composite, sAddToFlowPrompt, SWT.CHECK);
+    m_bAutoAddToFlow = "false".equals(CDEpropertyPage.getAddToFlow(editor.getProject())) ? false : true;
     autoAddToFlowButton.setSelection(m_bAutoAddToFlow);
     autoAddToFlowButton.setBackground(null);
 
@@ -69,6 +71,7 @@ public class MultiResourceSelectionDialogWithFlowOption extends MultiResourceSel
 
   protected void okPressed() {
     m_bAutoAddToFlow = autoAddToFlowButton.getSelection();
+    CDEpropertyPage.setAddToFlow(editor.getProject(), m_bAutoAddToFlow ? "true" : "false");
     super.okPressed();
   }
 
