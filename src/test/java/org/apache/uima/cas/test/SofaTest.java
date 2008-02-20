@@ -24,6 +24,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -37,8 +38,6 @@ import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UimaContextAdmin;
-import org.apache.uima.analysis_engine.AnalysisEngine;
-import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.ByteArrayFS;
 import org.apache.uima.cas.CAS;
@@ -67,7 +66,6 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
-import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLSerializer;
 import org.xml.sax.SAXException;
 
@@ -542,6 +540,32 @@ public class SofaTest extends TestCase {
     testView.setSofaDataURI(TEST_URI, TEST_MIME);
     assertEquals(TEST_URI, testView.getSofa().getSofaURI());
     assertEquals(TEST_MIME, testView.getSofa().getSofaMime());
+  }
+  
+  public void testSetSofaDataURIonInitialView() throws Exception {
+    String someText="remote text.";
+    String someTextFile="./someUriText.txt";
+    FileWriter output = new FileWriter(someTextFile);
+    output.write(someText);
+    output.close();
+
+    final String TEST_URI = "file:" + someTextFile;
+    final String TEST_MIME = "text/plain";
+    this.cas.setSofaDataURI(TEST_URI, TEST_MIME);
+    assertEquals(TEST_URI, this.cas.getSofa().getSofaURI());
+    assertEquals(TEST_MIME, this.cas.getSofa().getSofaMime());
+    
+    InputStream is = this.cas.getSofaDataStream();
+    assertTrue(is != null);
+    byte[] dest = new byte[1];
+    StringBuffer buf = new StringBuffer();
+    while (is.read(dest) != -1) {
+      buf.append((char) dest[0]);
+    }
+    is.close();
+    assertTrue(buf.toString().equals(someText));
+    File testFile = new File(someTextFile);
+    assertTrue(testFile.delete());
   }
   
   public void testSetSofaDataArray() {
