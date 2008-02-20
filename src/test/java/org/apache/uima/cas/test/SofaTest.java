@@ -532,6 +532,15 @@ public class SofaTest extends TestCase {
     assertEquals(TEST_MIME, testView.getSofa().getSofaMime());
     assertEquals(TEST_TEXT, testView.getSofaDataString());
   }
+  
+  public void testSetSofaDataStringOnInitialView() {
+    final String TEST_TEXT = "this is a test";
+    final String TEST_MIME = "text/plain";
+    this.cas.setSofaDataString(TEST_TEXT, TEST_MIME);
+    assertEquals(TEST_TEXT, this.cas.getSofa().getLocalStringData());
+    assertEquals(TEST_MIME, this.cas.getSofa().getSofaMime());
+    assertEquals(TEST_TEXT, this.cas.getSofaDataString());
+  }
 
   public void testSetSofaDataURI() {
     final String TEST_URI = "file:/test";
@@ -577,6 +586,16 @@ public class SofaTest extends TestCase {
     testView.setSofaDataArray(sofaDataArray, TEST_MIME);
     assertEquals(sofaDataArray, testView.getSofa().getLocalFSData());
     assertEquals(TEST_MIME, testView.getSofa().getSofaMime());
+  }
+  
+  public void testSetSofaDataArrayOnInitialView() {
+    final String TEST_MIME = "text/plain";    
+    ByteArrayFS sofaDataArray = this.cas.createByteArrayFS(2);
+    sofaDataArray.set(0, (byte)0);
+    sofaDataArray.set(1, (byte)42);
+    this.cas.setSofaDataArray(sofaDataArray, TEST_MIME);
+    assertEquals(sofaDataArray, this.cas.getSofa().getLocalFSData());
+    assertEquals(TEST_MIME, this.cas.getSofa().getSofaMime());
   }
   
   public void testReset() {

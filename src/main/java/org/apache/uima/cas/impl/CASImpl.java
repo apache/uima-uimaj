@@ -3737,7 +3737,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       throw e;
     }
     if (!mySofaIsValid()) {
-      this.svd.baseCAS.createInitialSofa(null);
+      this.createInitialSofa(null);
     }
     // try to put the document into the SofaString ...
     // ... will fail if previously set
@@ -3753,7 +3753,6 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       throw e;
     }
     if (!mySofaIsValid()) {
-//      this.svd.baseCAS.createInitialSofa(null);
       this.createInitialSofa(null);
     }
     // try to put the document into the SofaString ...
