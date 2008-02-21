@@ -102,6 +102,7 @@
       <version>${uimaj-release-version}</version>
       <scope>compile</scope>
     </dependency>
+    
   </dependencies>
 
 
@@ -238,6 +239,8 @@
                org.apache.vinci.transport.vns.service
             </_exportcontents>
 
+            <Import-Package>org.apache.log4j;resolution:=optional,*
+            </Import-Package>
             <!-- causes the other Jars from the maven
                  dependencies, at the proper version, to be
                  included in this, and also sets up the bundle
@@ -245,7 +248,8 @@
             <Embed-Dependency>*;scope=compile</Embed-Dependency>
 
             <!-- These just get made into the corresponding manifest entries -->
-             <Bundle-SymbolicName>org.apache.uima.runtime;singleton:=true</Bundle-SymbolicName>
+            <Bundle-SymbolicName>org.apache.uima.runtime;singleton:=true</Bundle-SymbolicName>
+            <Bundle-RequiredExecutionEnvironment>J2SE-1.5</Bundle-RequiredExecutionEnvironment>            
             <Eclipse-ExtensibleAPI>true</Eclipse-ExtensibleAPI>
             <Eclipse-BuddyPolicy>registered</Eclipse-BuddyPolicy>
           </instructions>
