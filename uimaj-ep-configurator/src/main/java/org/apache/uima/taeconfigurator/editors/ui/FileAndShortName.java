@@ -33,7 +33,11 @@ public class FileAndShortName {
       IFile file = (IFile) o;
       fileName = file.getLocation().toString();
       shortName = file.getName();
-    } else {
+    } else if (o instanceof String) {
+        fileName = (String)o;
+        int lastSlash = fileName.lastIndexOf('/');
+        shortName = (lastSlash >= 0) ? fileName.substring(lastSlash + 1) : fileName;
+      } else {
       IPath path = (IPath) o;
       fileName = path.toString();
       shortName = path.toFile().getName();
