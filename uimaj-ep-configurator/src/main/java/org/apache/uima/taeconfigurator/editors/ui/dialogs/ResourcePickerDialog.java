@@ -38,13 +38,16 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
 public class ResourcePickerDialog extends AbstractDialog {
 
   protected Tree resourcesUI;
+  protected TreeColumn resourcesUIc1;
+  protected TreeColumn resourcesUIc2;
   public IResource pickedResource;
-  private Object [] result;
+  protected Object [] result;
     
   public ResourcePickerDialog(Shell shell) {
     super(shell, "Select a File", "Use this panel to select a file in the Workspace");
@@ -76,6 +79,22 @@ public class ResourcePickerDialog extends AbstractDialog {
     
     resourcesUI = newTree(mainArea, SWT.SINGLE);
     ((GridData)resourcesUI.getLayoutData()).heightHint = 400;
+    
+    resourcesUIc1 = new TreeColumn(resourcesUI, SWT.LEFT);
+    resourcesUIc2 = new TreeColumn(resourcesUI, SWT.LEFT);
+        
+    setupResourcesByLocation();
+    return mainArea;
+  }
+  
+  protected void setupResourcesByLocation() {
+    resourcesUI.removeAll();
+    resourcesUI.removeListener(SWT.Expand, this);    // remove to prevent triggering while setting up
+    resourcesUI.removeListener(SWT.Selection, this); // remove to prevent triggering while setting up
+    resourcesUIc1.setWidth(500);
+    resourcesUIc2.setWidth(0);
+    resourcesUI.setHeaderVisible(false);
+    
     TreeItem topItem = new TreeItem(resourcesUI, SWT.NONE);
     topItem.setText("Workspace");
     IWorkspaceRoot root = TAEConfiguratorPlugin.getWorkspace().getRoot().getWorkspace().getRoot();
@@ -88,7 +107,6 @@ public class ResourcePickerDialog extends AbstractDialog {
     topItem.setExpanded(true);
     resourcesUI.addListener(SWT.Expand, this);
     resourcesUI.addListener(SWT.Selection, this);
-    return mainArea;
   }
   
   /* (non-Javadoc)
