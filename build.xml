@@ -63,8 +63,15 @@
   	
     <!--  get path to equinox jar inside ${eclipse.home} folder (copy/rename actual jar) -->
     <copy tofile="${eclipse.home}/eclipse/plugins/org.eclipse.equinox.launcher.jar">
-      <fileset dir="${eclipse.home}/eclipse/plugins"
-        includes="**/org.eclipse.equinox.launcher_*.jar"/>
+    	<!-- the first -> sort -> date picks the latest instance of the set of files
+    	     that match the pattern of the contained fileset, if there is more than one -->
+    	<first>
+    		<sort>
+    			<date xmlns="antlib:org.apache.tools.ant.types.resources.comparators"/>
+          <fileset dir="${eclipse.home}/eclipse/plugins"
+            includes="**/org.eclipse.equinox.launcher_*.jar"/>
+    	  </sort>
+      </first>
     </copy>
 
   </target>	
