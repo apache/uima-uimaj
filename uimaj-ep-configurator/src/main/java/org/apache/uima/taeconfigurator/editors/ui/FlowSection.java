@@ -650,7 +650,9 @@ public class FlowSection extends AbstractSection {
                     .getFile().getLocation(), editor);
     dialog.setTitle("Flow Controller Selection");
     dialog.setMessage("Select a Flow Controller descriptor from the workspace:");
-    dialog.open();
+    if (Window.CANCEL  == dialog.open()) {
+      return;
+    }
     Object[] files = dialog.getResult();
 
     if (files != null && checkForOneSelection(files.length)) {

@@ -256,7 +256,9 @@ public class AggregateSection extends AbstractSection {
             "Component Engine Selection", editor.getFile().getLocation(), editor);
     dialog.setTitle("Component Engine Selection");
     dialog.setMessage("Select one or more component engines from the workspace:");
-    dialog.open();
+    if (Window.CANCEL == dialog.open()) {
+      return;
+    }
     Object[] files = dialog.getResult();
 
     if (files != null && files.length > 0) {
