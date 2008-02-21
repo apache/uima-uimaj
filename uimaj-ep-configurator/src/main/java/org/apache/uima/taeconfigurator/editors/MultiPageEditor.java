@@ -1094,7 +1094,10 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
     try {
       if (null == classPath)
         classPath = getProjectClassPath();
-      resourceManager.setExtensionClassPath(this.getClass().getClassLoader(), classPath, true);
+      // first arg in next is the parent of the class loader.  Make it be the
+      //   uima framework's class loader (not this class's class loader)
+      //   so the validation tests work properly (that test isAssignableFrom)
+      resourceManager.setExtensionClassPath(UIMAFramework.class.getClassLoader(), classPath, true);
       resourceManager.setDataPath(CDEpropertyPage.getDataPath(getProject()));
     } catch (MalformedURLException e1) {
       throw new InternalErrorCDE(Messages.getString("MultiPageEditor.14"), e1); //$NON-NLS-1$
