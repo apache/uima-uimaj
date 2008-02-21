@@ -263,7 +263,7 @@ public class MultiResourceSelectionDialog extends ResourcePickerDialog {
   private CandidateAndSource [] computeByNameCandidates() {
     String cp;
     try {
-      cp = editor.getProjectClassPath();
+      cp = editor.getFilteredProjectClassPath(false);
     } catch (CoreException e) {
       throw new InternalErrorCDE("unhandled CoreException while getting classpaths to populate by-location list", e);
     }
@@ -321,8 +321,9 @@ public class MultiResourceSelectionDialog extends ResourcePickerDialog {
     if (null == subdirs) {
       return;
     }
-    String nextPrefix = prefix + dir.getName() + "/"; 
+ 
     for (File subdir : subdirs) {
+      String nextPrefix = prefix + subdir.getName() + "/"; 
       addClassCandidates(subdir, candidates, nextPrefix, source);
     }
   }

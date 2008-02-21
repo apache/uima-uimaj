@@ -2127,6 +2127,10 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   private String cachedClassPath = null;
 
   public String getProjectClassPath() throws CoreException {
+    return getFilteredProjectClassPath(true);
+  }
+  
+  public String getFilteredProjectClassPath(boolean filterCoreResources) throws CoreException {
     IProject project = getProject();
 
     if (null == project || !project.isNatureEnabled("org.eclipse.jdt.core.javanature")) { //$NON-NLS-1$
@@ -2137,9 +2141,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
 
     IResource classFileResource = projectRoot.findMember(".classpath"); //$NON-NLS-1$
     long stamp = classFileResource.getModificationStamp();
-    if (stamp == cachedStamp)
+    if (stamp == cachedStamp && filterCoreResources)  // only filtered is cached
       return cachedClassPath;
-    cachedStamp = stamp;
 
     StringBuffer result = new StringBuffer(1000);
 
@@ -2147,27 +2150,34 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
 
     for (int i = 0; i < classPaths.length; i++) {
       String classPath = classPaths[i];
+      if (filterCoreResources) {
+        URLClassLoader checker = null;
+        try {
+          // ignore this entry if it is the Java JVM path
+          checker = new URLClassLoader(new URL[] { new File(classPath).toURL() });
 
-      URLClassLoader checker = null;
-      try {
-        // ignore this entry if it is the Java JVM path
-        checker = new URLClassLoader(new URL[] { new File(classPath).toURL() });
-
-      } catch (MalformedURLException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
+        } catch (MalformedURLException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
+        if (null == checker ||
+        // || null != checker.findResource("java/lang/Object.class")
+        // //$NON-NLS-1$
+            null != checker.findResource("org/apache/uima/impl/UIMAFramework_impl.class")) { //$NON-NLS-1$
+          continue;
+        }
       }
-      if (null == checker
-      // || null != checker.findResource("java/lang/Object.class") //$NON-NLS-1$
-              || null != checker.findResource("org/apache/uima/impl/UIMAFramework_impl.class")) //$NON-NLS-1$
-        continue;
       if (result.length() > 0)
         result = result.append(PATH_SEPARATOR);
       result = result.append(classPath);
     }
-    cachedStamp = stamp;
-    cachedClassPath = result.toString();
-    return cachedClassPath;
+    if (filterCoreResources) {
+      cachedStamp = stamp;
+      cachedClassPath = result.toString();
+      return cachedClassPath;
+    }
+    return result.toString();
+    
   }
 
   public IResource getPrimarySourceFolder() {

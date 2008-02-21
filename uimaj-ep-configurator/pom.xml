@@ -270,6 +270,7 @@
             </Export-Package>
             <Bundle-Activator>org.eclipse.core.internal.compatibility.PluginActivator</Bundle-Activator>
             <Bundle-SymbolicName>org.apache.uima.desceditor;singleton:=true</Bundle-SymbolicName>
+            <Bundle-RequiredExecutionEnvironment>J2SE-1.5</Bundle-RequiredExecutionEnvironment>
 
             <!-- these determined to be needed empiracally, due to a flaw in the bundle resolver -
                  it works from the .class files, so references to things like org.eclipse.swt.SWT.ABORT
