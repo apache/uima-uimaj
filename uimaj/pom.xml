@@ -120,13 +120,34 @@
 						<phase>process-resources</phase>
 						<configuration>
 							<tasks>
-								<copy todir="src/main/resources/META-INF">
-									<fileset dir="../uimaj-distr/src/main/readme"
-										includes="LICENSE NOTICE DISCLAIMER"/>
-								</copy>
+                
+                <!-- turn off copying if this pom is not at the top level -->
+                <available property="sourceForLicenseNoticeDisclaimer"
+                  file="../uimaj-distr/src/main/readme"
+                  value="LICENSE NOTICE DISCLAIMER"/>
+                
+                <condition property="sourceForLicenseNoticeDisclaimer"
+                  value="skip">  <!-- value must be a non-existant file name 
+                                      blank doesn't work (copies everything) -->
+                  <not><isset property="sourceForLicenseNoticeDisclaimer"/></not>
+                </condition>
+                
+                <!-- support POMs nested one deep -->
+                <available property="dirSourceForLicenseNoticeDisclaimer"
+                  file="../uimaj-distr/src/main/readme"
+                  value="../uimaj-distr/src/main/readme"/>
+                <condition property="dirSourceForLicenseNoticeDisclaimer"
+                  value="../../uimaj-distr/src/main/readme">
+                  <not><isset property="dirSourceForLicenseNoticeDisclaimer"/></not>
+                </condition>
+                
+                <copy todir="src/main/resources/META-INF">
+                  <fileset dir="${dirSourceForLicenseNoticeDisclaimer}"
+                    includes="${sourceForLicenseNoticeDisclaimer}"/>
+                </copy>
                 <copy todir="target/classes/META-INF">
-                  <fileset dir="../uimaj-distr/src/main/readme"
-                    includes="LICENSE NOTICE DISCLAIMER"/>
+                  <fileset dir="${dirSourceForLicenseNoticeDisclaimer}"
+                    includes="${sourceForLicenseNoticeDisclaimer}"/>
                 </copy>
 							</tasks>
 						</configuration>
@@ -141,7 +162,7 @@
 						<phase>package</phase>
 						<configuration>
 							<tasks>
-								<delete dir="src/main/resources/META-INF" deleteOnExit="true" failOnError="false">
+								<delete dir="src/main/resources/META-INF" deleteOnExit="true" quiet="true" failOnError="false">
 									<fileset dir="src/main/resources/META-INF"
 										includes="LICENSE NOTICE DISCLAIMER"/>
 								</delete>
@@ -157,7 +178,7 @@
 						<phase>clean</phase>
 						<configuration>
 							<tasks>
-								<delete dir="src/main/resources/META-INF" deleteOnExit="true" failOnError="false">
+								<delete dir="src/main/resources/META-INF" deleteOnExit="true" quiet="true" failOnError="false">
 									<fileset dir="src/main/resources/META-INF"
 										includes="LICENSE NOTICE DISCLAIMER"/>
 								</delete>
