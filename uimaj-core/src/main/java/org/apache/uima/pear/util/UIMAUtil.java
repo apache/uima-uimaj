@@ -31,6 +31,7 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CasConsumerDescription;
 import org.apache.uima.collection.CasInitializerDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
+import org.apache.uima.resource.CustomResourceSpecifier;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
@@ -182,7 +183,7 @@ public class UIMAUtil {
       } catch (UIMARuntimeException exc) {
 				__errTableByUri.put( xmlDescUri, exc );
       }
-      if (resourceSpec != null) { // AE | CR | CI | CC ?
+      if (resourceSpec != null) { // AE | CR | CI | CC | CustomResourceSpecifier ?
         // identify UIMA resource category
         if (resourceSpec instanceof AnalysisEngineDescription) {
           uimaCompCtg = ANALYSIS_ENGINE_CTG;
@@ -192,6 +193,9 @@ public class UIMAUtil {
           uimaCompCtg = CAS_INITIALIZER_CTG;
         } else if (resourceSpec instanceof CasConsumerDescription) {
           uimaCompCtg = CAS_CONSUMER_CTG;
+        } else if (resourceSpec instanceof CustomResourceSpecifier) {
+           // try to treat custom resource specifiers as AE
+           uimaCompCtg = ANALYSIS_ENGINE_CTG;
         }
       }
       if (uimaCompCtg == null) { // CPE ?
