@@ -21,10 +21,10 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.apache.uima</groupId>
+  <!-- groupId omitted - inherited from parent -->
 	<artifactId>uimaj-ep-debug</artifactId>
 	<packaging>bundle</packaging>
-	<version>${uimaj-release-eclipse-version}</version>
+  <!-- version omitted - inherited from parent-->
 	<name>Apache UIMA Debug Eclipse Plugin</name>
 	<url>http://incubator.apache.org/uima</url>
 	<licenses>
@@ -39,8 +39,8 @@
   </scm>    
 	<parent>
 		<groupId>org.apache.uima</groupId>
-		<artifactId>uimaj</artifactId>
-		<version>2.3.0-incubating-SNAPSHOT</version>
+		<artifactId>uimaj-eclipse-plugins</artifactId>
+		<version>2.3.0.incubating-SNAPSHOT</version>
 	</parent>
   
 	<dependencies>
@@ -85,52 +85,10 @@
 	<build>
     
 		<finalName>org.apache.uima.debug_${uimaj-release-eclipse-version}</finalName>
-    	
-    <!-- needed to copy resources and the plugin.xml to the result -->
-    <resources>
-      <resource>   <!-- copy the license, notices, disclaimer -->
-        <directory>src/main/resources</directory>
-      </resource>
-      <resource>
-        <directory>.</directory>
-        <includes>
-          <include>plugin.xml</include>
-        </includes>
-      </resource>
-    </resources>
-    
+    	    
 		<plugins>
-			<!--plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>bin</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-						<configuration>
-							<descriptors>
-								<descriptor>
-									src/main/assembly/assemble-plugin.xml</descriptor>
-							</descriptors>
-							<finalName>
-								org.apache.uima.debug_${uimaj-release-eclipse-version}</finalName>
-							<appendAssemblyId>false</appendAssemblyId>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin-->
       
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<version>2.4</version>
-				<configuration>
-					<manifest>.ignore</manifest>
-					<pde>true</pde>
-				</configuration>
-			</plugin>
+
       
       <plugin>
         <groupId>org.apache.felix</groupId>
