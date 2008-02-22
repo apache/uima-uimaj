@@ -27,204 +27,238 @@ import org.apache.uima.pear.util.MessageRouter;
 import org.apache.uima.util.Level;
 import org.xml.sax.SAXException;
 
-
-
 /**
- * The <code>PackageInstaller</code> class is the main user API for installing PEAR packages.
- * The class has a static method <code>installPackage</code> to install PEAR packages that returns a 
- * <code>PackageBrowser</code> object containing all the needed information about the installed
- * PEAR package. 
+ * The <code>PackageInstaller</code> class is the main user API for installing
+ * PEAR packages. The class has a static method <code>installPackage</code> to
+ * install PEAR packages that returns a <code>PackageBrowser</code> object
+ * containing all the needed information about the installed PEAR package.
  * 
  * @see org.apache.uima.pear.tools.PackageBrowser
- *
+ * 
  */
 public class PackageInstaller {
 
-  private static final String PEAR_MESSAGE_RESOURCE_BUNDLE = "org.apache.uima.pear.pear_messages";
+   private static final String PEAR_MESSAGE_RESOURCE_BUNDLE = "org.apache.uima.pear.pear_messages";
 
-  /**
-   * Installs the specified PEAR package to the specified install location.
-   * After the installation is completed, an optional installation verification
-   * step can be executed. This verification uses the main component descriptor
-   * to instantiate the UIMA resource, encapsulated in the PEAR package, and may
-   * run some additional tests, if applicable
-   * 
-   * @param installDir
-   *          PEAR package install location
-   * @param pearPackage
-   *          PEAR package file location to install
-   * @param verify
-   *          If true the PEAR package verification is done after the installation
-   * 
-   * @return Returns a <code>PackageBrowser</code> object containing all PEAR package install settings
-   * 
-   * @throws PackageInstallerException
-   *           If an error occured during the pear installation or verification.
-   */
-  public static PackageBrowser installPackage(File installDir, File pearPackage, boolean verify)
-          throws PackageInstallerException {
-    return PackageInstaller.installPackage(installDir, pearPackage, verify, true);
-    
-  }
-  /**
-   * Installs the specified PEAR package to the specified install location.
-   * After the installation is completed, an optional installation verification
-   * step can be executed. This verification uses the main component descriptor
-   * to instantiate the UIMA resource, encapsulated in the PEAR package, and may
-   * run some additional tests, if applicable
-   * 
-   * @param installDir
-   *          PEAR package install location
-   * @param pearPackage
-   *          PEAR package file location to install
-   * @param verify
-   *          If true the PEAR package verification is done after the installation
-   * @param cleanInstallDir
-   *          If <code>true</code>, the target installation directory will be cleaned before the
-   *          PEAR file is installed.
-   * @return Returns a <code>PackageBrowser</code> object containing all PEAR package install settings
-   * 
-   * @throws PackageInstallerException
-   *           If an error occured during the pear installation or verification.
-   */
-  public static PackageBrowser installPackage(File installDir, File pearPackage, boolean verify, boolean cleanInstallDir)
-          throws PackageInstallerException {
+   /**
+    * Installs the specified PEAR package to the specified install location.
+    * After the installation is completed, an optional installation verification
+    * step can be executed. This verification uses the main component descriptor
+    * to instantiate the UIMA resource, encapsulated in the PEAR package, and
+    * may run some additional tests, if applicable
+    * 
+    * @param installDir
+    *           PEAR package install location
+    * @param pearPackage
+    *           PEAR package file location to install
+    * @param verify
+    *           If true the PEAR package verification is done after the
+    *           installation
+    * 
+    * @return Returns a <code>PackageBrowser</code> object containing all PEAR
+    *         package install settings
+    * 
+    * @throws PackageInstallerException
+    *            If an error occurred during the pear installation or
+    *            verification.
+    */
+   public static PackageBrowser installPackage(File installDir,
+         File pearPackage, boolean verify) throws PackageInstallerException {
+      return PackageInstaller.installPackage(installDir, pearPackage, verify,
+            true);
 
-    // componentId for the given pear pacakge
-    String componentId;
+   }
 
-    JarFile jarFile = null;
-    
-    // get componentId from the given pear package, componentId needed to install the package
-    // correctly
-    try {
-      // get installDescriptor from pear file
-      jarFile = new JarFile(pearPackage);
-      InstallationDescriptorHandler insdHandler = new InstallationDescriptorHandler();
-      insdHandler.parseInstallationDescriptor(jarFile);
-      InstallationDescriptor instObj = insdHandler.getInstallationDescriptor();
-      if (instObj != null) {
-        componentId = instObj.getMainComponentId();
-      } else {
-        throw new PackageInstallerException(PEAR_MESSAGE_RESOURCE_BUNDLE,
-                "error_parsing_pear_package_desc", new Object[] { pearPackage.getAbsolutePath() });
-      }
-    } catch (IOException ex) {
-      throw new PackageInstallerException(PEAR_MESSAGE_RESOURCE_BUNDLE,
-              "error_parsing_pear_package_desc", new Object[] { pearPackage.getAbsolutePath() }, ex);
-    } catch (SAXException ex) {
-      throw new PackageInstallerException(PEAR_MESSAGE_RESOURCE_BUNDLE,
-              "error_parsing_pear_package_desc", new Object[] { pearPackage.getAbsolutePath() }, ex);
-    } finally {
-        if(jarFile != null) 
-            try{
-                jarFile.close();
-            } catch(IOException ioe) {
-                throw new PackageInstallerException(PEAR_MESSAGE_RESOURCE_BUNDLE, "Can't close open PEAR file : " + jarFile.getName());
+   /**
+    * Installs the specified PEAR package to the specified install location.
+    * After the installation is completed, an optional installation verification
+    * step can be executed. This verification uses the main component descriptor
+    * to instantiate the UIMA resource, encapsulated in the PEAR package, and
+    * may run some additional tests, if applicable
+    * 
+    * @param installDir
+    *           PEAR package install location
+    * @param pearPackage
+    *           PEAR package file location to install
+    * @param verify
+    *           If true the PEAR package verification is done after the
+    *           installation
+    * @param cleanInstallDir
+    *           If <code>true</code>, the target installation directory will
+    *           be cleaned before the PEAR file is installed.
+    * @return Returns a <code>PackageBrowser</code> object containing all PEAR
+    *         package install settings
+    * 
+    * @throws PackageInstallerException
+    *            If an error occurred during the pear installation or
+    *            verification.
+    */
+   public static PackageBrowser installPackage(File installDir,
+         File pearPackage, boolean verify, boolean cleanInstallDir)
+         throws PackageInstallerException {
+
+      // componentId for the given pear package
+      String componentId;
+
+      JarFile jarFile = null;
+
+      // get componentId from the given pear package, componentId needed to
+      // install the package
+      // correctly
+      try {
+         // check if pear file exists
+         if (!pearPackage.canRead()) {
+            throw new PackageInstallerException(PEAR_MESSAGE_RESOURCE_BUNDLE,
+                  "error_pear_package_path_invalid", new Object[] { pearPackage
+                        .getAbsolutePath() });
+         }
+
+         // get installDescriptor from pear file
+         jarFile = new JarFile(pearPackage);
+         InstallationDescriptorHandler insdHandler = new InstallationDescriptorHandler();
+         insdHandler.parseInstallationDescriptor(jarFile);
+         InstallationDescriptor instObj = insdHandler
+               .getInstallationDescriptor();
+         if (instObj != null) {
+            componentId = instObj.getMainComponentId();
+         } else {
+            throw new PackageInstallerException(PEAR_MESSAGE_RESOURCE_BUNDLE,
+                  "error_parsing_pear_package_desc", new Object[] { pearPackage
+                        .getAbsolutePath() });
+         }
+      } catch (IOException ex) {
+         throw new PackageInstallerException(PEAR_MESSAGE_RESOURCE_BUNDLE,
+               "error_parsing_pear_package_desc", new Object[] { pearPackage
+                     .getAbsolutePath() }, ex);
+      } catch (SAXException ex) {
+         throw new PackageInstallerException(PEAR_MESSAGE_RESOURCE_BUNDLE,
+               "error_parsing_pear_package_desc", new Object[] { pearPackage
+                     .getAbsolutePath() }, ex);
+      } finally {
+         if (jarFile != null)
+            try {
+               jarFile.close();
+            } catch (IOException ioe) {
+               throw new PackageInstallerException(
+                     PEAR_MESSAGE_RESOURCE_BUNDLE,
+                     "Can't close open PEAR file : " + jarFile.getName());
             }
-    }
-
-    // create message listener for the pear installer
-    MessageRouter.StdChannelListener msgListener = new MessageRouter.StdChannelListener() {
-      public void errMsgPosted(String errMsg) {
-        UIMAFramework.getLogger(PackageInstaller.class).logrb(Level.SEVERE, "PackageInstaller",
-                "installPackage", PEAR_MESSAGE_RESOURCE_BUNDLE, "package_installer_error", errMsg);
       }
 
-      public void outMsgPosted(String outMsg) {
-        UIMAFramework.getLogger(PackageInstaller.class)
-                .logrb(Level.INFO, "PackageInstaller", "installPackage",
-                        PEAR_MESSAGE_RESOURCE_BUNDLE, "package_installer_message", outMsg);
+      // create message listener for the pear installer
+      MessageRouter.StdChannelListener msgListener = new MessageRouter.StdChannelListener() {
+         public void errMsgPosted(String errMsg) {
+            UIMAFramework.getLogger(PackageInstaller.class).logrb(Level.SEVERE,
+                  "PackageInstaller", "installPackage",
+                  PEAR_MESSAGE_RESOURCE_BUNDLE, "package_installer_error",
+                  errMsg);
+         }
+
+         public void outMsgPosted(String outMsg) {
+            UIMAFramework.getLogger(PackageInstaller.class).logrb(Level.INFO,
+                  "PackageInstaller", "installPackage",
+                  PEAR_MESSAGE_RESOURCE_BUNDLE, "package_installer_message",
+                  outMsg);
+         }
+      };
+
+      // create installation controller and to install the pear package
+      InstallationController controller = new InstallationController(
+            componentId, pearPackage, installDir, false, msgListener,
+            cleanInstallDir);
+
+      // install main component
+      if (controller.installComponent() == null) {
+
+         // installation failed
+         String errorMessage = controller.getInstallationMsg();
+
+         // stop controller messaging service
+         controller.terminate();
+
+         if (errorMessage != null) {
+            throw new PackageInstallerException(PEAR_MESSAGE_RESOURCE_BUNDLE,
+                  "error_installing_main_component", new Object[] {
+                        componentId, errorMessage });
+         } else {
+            throw new PackageInstallerException(PEAR_MESSAGE_RESOURCE_BUNDLE,
+                  "error_installing_main_component_unknown",
+                  new Object[] { componentId });
+         }
       }
-    };
 
-    // create installation controller and to install the pear package
-    InstallationController controller = new InstallationController(componentId, pearPackage,
-            installDir, false, msgListener, cleanInstallDir);
+      // installation now complete !!
 
-    // install main component
-    if (controller.installComponent() == null) {
+      // save modified installation descriptor file
+      try {
+         controller.saveInstallationDescriptorFile();
+      } catch (IOException ex) {
 
-      // installation failed
-      String errorMessage = controller.getInstallationMsg();
+         // stop controller messaging service
+         controller.terminate();
+
+         throw new PackageInstallerException(PEAR_MESSAGE_RESOURCE_BUNDLE,
+               "error_installing_main_component", new Object[] { componentId,
+                     ex.getMessage() }, ex);
+      }
+
+      // create package browser object with the installed pear
+      PackageBrowser pkgBrowser = null;
+
+      try {
+         // initialize package browser object
+         pkgBrowser = new PackageBrowser(new File(installDir, componentId));
+
+         // check if package browser could be initialized
+         if (pkgBrowser == null) {
+
+            // stop controller messaging service
+            controller.terminate();
+
+            throw new PackageInstallerException(PEAR_MESSAGE_RESOURCE_BUNDLE,
+                  "error_reading_installed_pear_settings",
+                  new Object[] { componentId });
+         }
+      } catch (IOException ex) {
+         // stop controller messaging service
+         controller.terminate();
+
+         throw new PackageInstallerException(PEAR_MESSAGE_RESOURCE_BUNDLE,
+               "error_reading_installed_pear_settings",
+               new Object[] { componentId }, ex);
+      }
+
+      // installation verification
+      if (verify) {
+         if (!controller.verifyComponent()) {
+
+            // verification failed
+            String errorMessage = controller.getVerificationMsg();
+
+            // stop controller messaging service
+            controller.terminate();
+
+            if (errorMessage != null) {
+               throw new PackageInstallerException(
+                     PEAR_MESSAGE_RESOURCE_BUNDLE, "error_verify_installation",
+                     new Object[] { componentId, errorMessage });
+            } else {
+               throw new PackageInstallerException(
+                     PEAR_MESSAGE_RESOURCE_BUNDLE,
+                     "error_verify_installation_unknown",
+                     new Object[] { componentId });
+            }
+         } else {
+            UIMAFramework.getLogger(PackageInstaller.class).logrb(Level.INFO,
+                  "PackageInstaller", "installPackage",
+                  PEAR_MESSAGE_RESOURCE_BUNDLE,
+                  "installation_verification_completed", componentId);
+         }
+      }
 
       // stop controller messaging service
       controller.terminate();
 
-      if (errorMessage != null) {
-        throw new PackageInstallerException(PEAR_MESSAGE_RESOURCE_BUNDLE,
-                "error_installing_main_component", new Object[] { componentId, errorMessage });
-      } else {
-        throw new PackageInstallerException(PEAR_MESSAGE_RESOURCE_BUNDLE,
-                "error_installing_main_component_unknown", new Object[] { componentId });
-      }
-    }
-
-    // installation now complete !!
-
-    // save modified installation descriptor file
-    try {
-      controller.saveInstallationDescriptorFile();
-    } catch (IOException ex) {
-
-      // stop controller messaging service
-      controller.terminate();
-
-      throw new PackageInstallerException(PEAR_MESSAGE_RESOURCE_BUNDLE,
-              "error_installing_main_component", new Object[] { componentId, ex.getMessage() }, ex);
-    }
-
-    // create package browser object with the installed pear
-    PackageBrowser pkgBrowser = null;
-
-    try {
-      // initialze package browser object
-      pkgBrowser = new PackageBrowser(new File(installDir, componentId));
-
-      // check if package browser could be initialized
-      if (pkgBrowser == null) {
-        
-        // stop controller messaging service
-        controller.terminate();
-
-        throw new PackageInstallerException(PEAR_MESSAGE_RESOURCE_BUNDLE,
-                "error_reading_installed_pear_settings", new Object[] { componentId });
-      }
-    } catch (IOException ex) {
-      // stop controller messaging service
-      controller.terminate();
-
-      throw new PackageInstallerException(PEAR_MESSAGE_RESOURCE_BUNDLE,
-              "error_reading_installed_pear_settings", new Object[] { componentId }, ex);
-    }
-
-    // installation verification
-    if (verify) {
-      if (!controller.verifyComponent()) {
-
-        // verification failed
-        String errorMessage = controller.getVerificationMsg();
-        
-        // stop controller messaging service
-        controller.terminate();
-
-        if (errorMessage != null) {
-          throw new PackageInstallerException(PEAR_MESSAGE_RESOURCE_BUNDLE,
-                  "error_verify_installation", new Object[] { componentId, errorMessage });
-        } else {
-          throw new PackageInstallerException(PEAR_MESSAGE_RESOURCE_BUNDLE,
-                  "error_verify_installation_unknown", new Object[] { componentId });
-        }
-      } else {
-        UIMAFramework.getLogger(PackageInstaller.class).logrb(Level.INFO, "PackageInstaller",
-                "installPackage", PEAR_MESSAGE_RESOURCE_BUNDLE,
-                "installation_verification_completed", componentId);
-      }
-    }
-
-    // stop controller messaging service
-    controller.terminate();
-
-    return pkgBrowser;
-  }
+      return pkgBrowser;
+   }
 }
