@@ -21,10 +21,10 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.apache.uima</groupId>
+  <!-- groupId omitted - inherited from parent -->
   <artifactId>uimaj-ep-runtime</artifactId>
   <packaging>bundle</packaging>
-  <version>${uimaj-release-eclipse-version}</version>
+  <!-- version omitted - inherited from parent-->
   <name>Apache UIMA Runtime Plugin</name>
   <url>http://incubator.apache.org/uima</url>
   <licenses>
@@ -39,8 +39,8 @@
   </scm>
   <parent>
     <groupId>org.apache.uima</groupId>
-    <artifactId>uimaj</artifactId>
-    <version>2.3.0-incubating-SNAPSHOT</version>
+    <artifactId>uimaj-eclipse-plugins</artifactId>
+    <version>2.3.0.incubating-SNAPSHOT</version>
   </parent>
 
   <!-- These dependencies should just be all the jars that
@@ -108,22 +108,9 @@
 
   <build>
 
-    <!-- no resource copying needed - the plugin.xml file is empty -->
     <finalName>org.apache.uima.runtime_${uimaj-release-eclipse-version}</finalName>
 
     <plugins>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-eclipse-plugin</artifactId>
-            <version>2.4</version>
-        <configuration>
-          <!-- manifest is set up by the maven-bundle-plugin -->
-          <manifest>.ignore</manifest>
-          <pde>true</pde>
-        </configuration>
-      </plugin>
-
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
@@ -255,99 +242,6 @@
           </instructions>
         </configuration>
       </plugin>
-
-      <!--plugin>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>copy-dependencies</id>
-            <phase>package</phase>
-            <configuration>
-              <stripVersion>false</stripVersion>
-            </configuration>
-            <goals>
-              <goal>copy-dependencies</goal-->
-              <!-- copies by default to target/dependency -->
-            <!--/goals>
-          </execution>
-        </executions>
-      </plugin-->
-
-      <!--plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>bin</id>
-            <phase>package</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-            <configuration>
-              <descriptors>
-                <descriptor>
-                  src/main/assembly/assemble-plugin.xml</descriptor>
-              </descriptors>
-              <finalName>org.apache.uima.runtime_${uimaj-release-eclipse-version}</finalName>
-              <appendAssemblyId>false</appendAssemblyId>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifestEntries>
-              <Project-Title>Apache UIMA</Project-Title>
-              <Implementation-Title>${pom.name}</Implementation-Title>
-              <Implementation-Version>${pom.version}</Implementation-Version>
-              <Implementation-Vendor>Apache Software Foundation</Implementation-Vendor>
-              <Implementation-Url>${pom.url}</Implementation-Url>
-              <Implementation-License>http://www.apache.org/licenses/LICENSE-2.0.txt</Implementation-License>
-              <Build-Date>${buildNumber}</Build-Date>
-            </manifestEntries>
-            <manifestFile>META-INF/MANIFEST.MF</manifestFile>
-          </archive>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>AddJars</id>
-            <phase>package</phase>
-            <configuration>
-              <tasks>
-                <!jar update="yes"  duplicate="fail"
-                     destfile="target/uima-ep-runtime.jar">
-                  <fileset dir="../uimaj-core/target/" includes="uima-core.jar"/>
-                  <fileset dir="../uimaj-cpe/target/" includes="uima-cpe.jar"/>
-                  <fileset dir="../uimaj-tools/target/" includes="uima-tools.jar"/>
-                  <fileset dir="../uimaj-examples/target/" includes="uima-examples.jar"/>
-                  <fileset dir="../uimaj-adapter-soap/target/" includes="uima-adapter-soap.jar"/>
-                  <fileset dir="../uimaj-adapter-vinci/target/" includes="uima-adapter-vinci.jar"/>
-                  <fileset dir="../jVinci/target/" includes="jVinci.jar"/>
-                  <fileset dir="../uimaj-document-annotation/target/" includes="uima-document-annotation.jar"/>
-                </jar>
-                <unzip dest="target/classes" src="../uimaj-core/target/uima-core.jar"/>
-                <unzip dest="target/classes" src="../uimaj-cpe/target/uima-cpe.jar"/>
-                <unzip dest="target/classes" src="../uimaj-tools/target/uima-tools.jar"/>
-                <unzip dest="target/classes" src="../uimaj-examples/target/uima-examples.jar"/>
-                <unzip dest="target/classes" src="../uimaj-adapter-soap/target/uima-adapter-soap.jar"/>
-                <unzip dest="target/classes" src="../uimaj-adapter-vinci/target/uima-adapter-vinci.jar"/>
-                <unzip dest="target/classes" src="../jVinci/target/jVinci.jar"/>
-              </tasks>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin-->
-
     </plugins>
   </build>
 </project>
