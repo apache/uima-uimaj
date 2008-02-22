@@ -52,14 +52,59 @@ under the License.
       <outputDirectory>/uima-docbooks</outputDirectory>
       <excludes>
         <exclude>target/**</exclude>
-        <exclude>docbook/**</exclude>
-        <exclude>lib/**</exclude>
-        <exclude>Source_UIMA_SDK_Guide_Ref/**</exclude>
+        <!-- Directories does not exist -->
+        <!-- <exclude>docbook/**</exclude>  -->
+        <!-- <exclude>lib/**</exclude> -->
+        <!-- <exclude>Source_UIMA_SDK_Guide_Ref/**</exclude> -->
         <exclude>.*</exclude>   
         <exclude>LICENSE.txt</exclude>
         <exclude>src/styles/titlepage/*.xsl</exclude>     
       </excludes>
     </fileSet>   
+    <fileSet>
+      <directory>../uima-docbook-tool</directory>
+      <outputDirectory>/uima-docbook-tool</outputDirectory>
+      <includes>
+        <include>build/**</include>
+        <include>catalog/**</include>
+        <include>properties/**</include>
+        <include>styles/**</include>
+        <include>tools/**</include>
+        <include>xinclude.mod</include> 
+        <include>README</include>
+        <include>README.FIRST</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>../uimaj-eclipse-update-site</directory>
+      <outputDirectory>/uimaj-eclipse-update-site</outputDirectory>
+      <includes>
+        <include>features/**</include>
+        <include>plugins/**</include>
+        <include>web/**</include>
+        <include>build.xml</include>
+        <include>index.html</include>
+        <include>site.xml</include>
+      </includes>
+    </fileSet>    
+    <fileSet>
+      <directory>../uimaj-eclipse-feature-runtime</directory>
+      <outputDirectory>/uimaj-eclipse-feature-runtime</outputDirectory>
+      <includes>
+        <include>build.properties</include>
+        <include>feature.properties</include>
+        <include>feature.xml</include>
+      </includes>
+    </fileSet>    
+    <fileSet>
+      <directory>../uimaj-eclipse-feature-tools</directory>
+      <outputDirectory>/uimaj-eclipse-feature-tools</outputDirectory>
+      <includes>
+        <include>build.properties</include>
+        <include>feature.properties</include>
+        <include>feature.xml</include>
+      </includes>
+    </fileSet>    
     <fileSet>
       <directory>../uimaj</directory>
       <outputDirectory>/uimaj</outputDirectory>
