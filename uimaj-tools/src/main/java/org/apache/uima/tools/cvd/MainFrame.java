@@ -98,6 +98,7 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.internal.util.Timer;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.ResourceSpecifier;
+import org.apache.uima.tools.cpm.PerformanceReportDialog;
 import org.apache.uima.tools.cvd.control.AboutHandler;
 import org.apache.uima.tools.cvd.control.AboutUimaHandler;
 import org.apache.uima.tools.cvd.control.AddCPHandler;
@@ -153,6 +154,7 @@ import org.apache.uima.tools.cvd.control.XmiCasSaveHandler;
 import org.apache.uima.util.FileUtils;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
+import org.apache.uima.util.ProcessTrace;
 import org.apache.uima.util.XMLInputSource;
 
 /**
@@ -277,6 +279,8 @@ public class MainFrame extends JFrame {
   private JMenuItem reRunMenu;
 
   private JMenuItem runOnCasMenuItem;
+  
+  private JMenuItem showPerfReportItem;
 
   private JPopupMenu textPopup;
 
@@ -361,6 +365,8 @@ public class MainFrame extends JFrame {
   private static final Color selectionColor = Color.orange;
 
   private Properties preferences;
+  
+  private ProcessTrace lastRunProcessTrace = null;
 
   public static final String textDirPref = "dir.open.text";
 
@@ -1149,6 +1155,19 @@ public class MainFrame extends JFrame {
     runMenu.add(this.runOnCasMenuItem);
     this.runOnCasMenuItem.addActionListener(new AnnotatorRunOnCasEventHandler(this));
     this.runOnCasMenuItem.setEnabled(false);
+    this.showPerfReportItem = new JMenuItem("Perf. report");
+    this.showPerfReportItem.setEnabled(false);
+    this.showPerfReportItem.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        if (MainFrame.this.lastRunProcessTrace == null) {
+          MainFrame.this.showError("No performance report to show.");
+        } else {
+          PerformanceReportDialog prd = new PerformanceReportDialog(MainFrame.this);
+          prd.displayStats(MainFrame.this.lastRunProcessTrace, 1, "Process trace");
+        }
+      }
+    });
+    runMenu.add(this.showPerfReportItem);
     runMenu.addSeparator();
     this.recentDescFileMenu = new JMenu("Recently used ...");
     this.recentDescFileMenu.setMnemonic(KeyEvent.VK_U);
@@ -1546,7 +1565,9 @@ public class MainFrame extends JFrame {
 //        this.disableSofaListener = true;
         this.sofaSelectionComboBox.setSelectedIndex(0);
       }
-      this.ae.process(this.cas);
+      this.lastRunProcessTrace = this.ae.process(this.cas);
+      this.showPerfReportItem.setEnabled(true);
+      this.log.log(Level.INFO, "Process trace of AE run:\n" + this.lastRunProcessTrace.toString());
       // Update sofacombobox here
 //      this.disableSofaListener = true;
       int currentViewID = this.sofaSelectionComboBox.getSelectedIndex();
