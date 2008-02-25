@@ -380,7 +380,7 @@ uima.tcas.Annotation.</programlisting>
     <value>
       <string>VB</string>
       <description>Verb, base form.</description>
-    </value></programlisting>
+    </value>
     ...
   </allowedValues>
 </typeDescription>]]></programlisting>
@@ -891,7 +891,7 @@ uima.tcas.Annotation.</programlisting>
             <title>Type Priority Definition</title>
             
             
-            <programlisting><![CDATA[</programlisting><typePriorities>
+            <programlisting><![CDATA[<typePriorities>
   <name> [String] </name>
   <description>[String]</description>
   <version>[String]</version>
@@ -1252,7 +1252,7 @@ uima.tcas.Annotation.</programlisting>
 
   <externalResourceDependency>
     ...
-  </externalResourceDependency></programlisting>
+  </externalResourceDependency>
 
   ...
 
