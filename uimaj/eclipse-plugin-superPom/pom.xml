@@ -67,6 +67,10 @@
           <include>icons/*.*</include>
         </includes>
       </resource>
+      <!-- need the following, is not "merged" from the overall maven superPom -->
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
     </resources>
 
     
