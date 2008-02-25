@@ -26,7 +26,9 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <!-- groupId omitted - inherited from parent -->
+  <!-- thru testing, discovered that "inheriting" the groupId isn't done
+       when scanning for projects -->
+  <groupId>org.apache.uima</groupId>
   <artifactId>uimaj-eclipse-plugins</artifactId>
   <packaging>pom</packaging>
   <name>Apache UIMA Java SDK common Eclipse plugin settings</name>
@@ -54,7 +56,8 @@
        in that it has a "." instead of a "-" before the "incubating" 
        word.  In Maven, the "-" is the convention, but in Eclipse,
        a "." is required -->
-  <version>${uimaj-release-eclipse-version}</version>
+  <!-- thru testing, discovered that $ { } vars are not substituted, when "scanning for projects" -->
+  <version>2.3.0.incubating-SNAPSHOT</version>
    
   <build>
     <!-- resources are "merged" -->
