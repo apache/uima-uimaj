@@ -41,6 +41,13 @@
 		<groupId>org.apache.uima</groupId>
 		<artifactId>uimaj-eclipse-plugins</artifactId>
 		<version>2.3.0.incubating-SNAPSHOT</version>
+    <!-- this relative path is used the first time mvn is run on the uimaj pom
+         to find the uimaj/eclipse-plugin-superPom
+      If at some point, a different child pom other than this one becomes the 
+      first child in the eclipse-plugin-superPom, this relative link needs to
+      be put there. Once it is resolved, it is cached, apparently. 
+      -->
+    <relativePath>../uimaj/eclipse-plugin-superPom</relativePath>
 	</parent>
   
 	<dependencies>
