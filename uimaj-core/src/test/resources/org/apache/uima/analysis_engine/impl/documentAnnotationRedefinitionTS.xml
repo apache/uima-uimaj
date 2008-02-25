@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <name>documentAnnotationRedefinitionTS</name>
+  <description/>
+  <version>1.0</version>
+  <vendor/>
+  <types>
+    <typeDescription>
+      <name>org.apache.uima.test.MyAnnotation</name>
+      <description/>
+      <supertypeName>uima.tcas.Annotation</supertypeName>
+    </typeDescription>
+    <typeDescription>
+      <name>uima.tcas.DocumentAnnotation</name>
+      <description/>
+      <supertypeName>org.apache.uima.test.MyAnnotation</supertypeName>
+    </typeDescription>
+    <typeDescription>
+      <name>my.new.Annotation</name>
+      <description/>
+      <supertypeName>uima.cas.TOP</supertypeName>
+    </typeDescription>
+    <typeDescription>
+      <name>uima.tcas.Annotation</name>
+      <description/>
+      <supertypeName>my.new.Annotation</supertypeName>
+    </typeDescription>
+  </types>
+</typeSystemDescription>

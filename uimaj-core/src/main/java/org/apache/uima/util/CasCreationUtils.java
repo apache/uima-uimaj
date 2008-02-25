@@ -680,6 +680,16 @@ public class CasCreationUtils {
                   ResourceInitializationException.NO_SUPERTYPE, new Object[] { typeName,
                       curTypeDesc.getSourceUrlString() });
             }
+            // Check if it's a built-in type: must not change supertype!
+            Type builtIn = typeSystemMgr.getType(typeName);
+            if (builtIn != null) {
+              if (!superTypeName.equals(typeSystemMgr.getParent(builtIn).getName())) {
+                throw new ResourceInitializationException(
+                    ResourceInitializationException.REDEFINING_BUILTIN_TYPE, new Object[] {
+                        typeSystemMgr.getParent(builtIn), typeName, superTypeName,
+                        curTypeDesc.getSourceUrlString() });
+              }
+            }
             Type supertype = typeSystemMgr.getType(superTypeName);
             if (supertype != null) {
               // supertype is defined, so add to CAS type system

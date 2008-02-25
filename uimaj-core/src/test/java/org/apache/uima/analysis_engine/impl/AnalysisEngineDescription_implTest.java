@@ -74,8 +74,10 @@ import org.apache.uima.resource.metadata.impl.NameValuePair_impl;
 import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
+import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
+import org.apache.uima.util.XMLParser;
 
 /**
  * Test the AnalysisEngineDescription_impl class.
@@ -492,6 +494,27 @@ public class AnalysisEngineDescription_implTest extends TestCase {
       JUnitExtension.handleException(e);
     }
 
+  }
+  
+  public void testDocumentAnnotationRedefine() {
+    final String tsDescriptor = 
+      "org/apache/uima/analysis_engine/impl/documentAnnotationRedefinitionTS.xml";
+    File file = JUnitExtension.getFile(tsDescriptor);
+    XMLParser parser = UIMAFramework.getXMLParser();
+    boolean resourceInitExc = false;
+    try {
+      TypeSystemDescription tsd = (TypeSystemDescription) parser.parse(new XMLInputSource(file));
+      CasCreationUtils.createCas(tsd, null, new FsIndexDescription[0]);
+    } catch (InvalidXMLException e) {
+      e.printStackTrace();
+      assertTrue(false);
+    } catch (IOException e) {
+      e.printStackTrace();
+      assertTrue(false);
+    } catch (ResourceInitializationException e) {
+      resourceInitExc = true;
+    }
+    assertTrue(resourceInitExc);
   }
 
   protected void _testInvalidDescriptor(File aFile) throws IOException {

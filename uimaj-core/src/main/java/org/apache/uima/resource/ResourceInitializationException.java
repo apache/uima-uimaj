@@ -466,6 +466,8 @@ public class ResourceInitializationException extends UIMAException {
    * Unexpected Throwable or Error thrown when initializing Custom Resource "{0}" from descriptor "{1}". 
    */
   public static final String THROWABLE_WHEN_INITIALIZING_CUSTOM_RESOURCE = "throwable_when_initializing_custom_resource";
+  
+  public static final String REDEFINING_BUILTIN_TYPE = "redefining_builtin_type";
 
   /**
    * Creates a new exception with a null message.
