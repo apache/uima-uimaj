@@ -51,6 +51,10 @@ public class Descriptor extends DefaultHandler {
   private String namingServiceHost = "localhost";
 
   private int serverSocketTimeout = 300000; // 5 minute timeout on the service socket
+  
+  private int threadPoolMinSize = 1;
+  
+  private int threadPoolMaxSize = 20;
 
   /**
    * Constructor responsible for parsing the descriptor file named in filePath.
@@ -143,9 +147,37 @@ public class Descriptor extends DefaultHandler {
         } catch (NumberFormatException nbe) {
           setNamingServiceHost("localhost");
         }
+      } else if ("threadPoolMinSize".equals(att)) {
+        try {
+          setThreadPoolMinSize(Integer.parseInt(value));
+        } catch (NumberFormatException nbe) {
+          setThreadPoolMinSize(1);
+        }
+      } else if ("threadPoolMaxSize".equals(att)) {
+        try {
+          setThreadPoolMaxSize(Integer.parseInt(value));
+        } catch (NumberFormatException nbe) {
+          setThreadPoolMaxSize(20);
+        }
       }
     }
     // if none of the above, it is an unexpected element. we ignore these for now
+  }
+
+  public int getThreadPoolMaxSize() {
+    return threadPoolMaxSize;
+  }
+
+  public void setThreadPoolMaxSize(int threadPoolMaxSize) {
+    this.threadPoolMaxSize = threadPoolMaxSize;
+  }
+
+  public int getThreadPoolMinSize() {
+    return threadPoolMinSize;
+  }
+
+  public void setThreadPoolMinSize(int threadPoolMinSize) {
+    this.threadPoolMinSize = threadPoolMinSize;
   }
 
   /**

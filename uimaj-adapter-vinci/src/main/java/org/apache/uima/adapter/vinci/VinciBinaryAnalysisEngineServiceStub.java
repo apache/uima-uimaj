@@ -59,6 +59,11 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
    */
   private int mTimeout;
   
+  /**
+   * Timeout to use for getMetaData calls.
+   */
+  private int mGetMetaDataTimeout;  
+  
   public VinciBinaryAnalysisEngineServiceStub(String endpointURI, AnalysisEngineServiceAdapter owner)
           throws ResourceInitializationException {
     this(endpointURI, null, owner, null);
@@ -75,11 +80,13 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
       // Override vinci default VNS settings
       String vnsHost = null;
       String vnsPort = null; 
+      String getMetaDataTimeout = null; 
       if (parameters != null) {
          vnsHost = 
           VinciBinaryAnalysisEngineServiceStub.getParameterValueFor("VNS_HOST", parameters); 
          vnsPort = VinciBinaryAnalysisEngineServiceStub.getParameterValueFor("VNS_PORT",
                 parameters);
+         getMetaDataTimeout = VinciBinaryAnalysisEngineServiceStub.getParameterValueFor("GetMetaDataTimeout", parameters);
       }
       if (vnsHost == null) {
         vnsHost = System.getProperty("VNS_HOST");
@@ -111,6 +118,11 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
       } else {
        mTimeout = mVinciClient.getSocketTimeout(); //default
       }
+      if (getMetaDataTimeout != null) {
+        mGetMetaDataTimeout = Integer.parseInt(getMetaDataTimeout);
+      } else {
+        mGetMetaDataTimeout = mVinciClient.getSocketTimeout(); //default
+      }      
       
       if (debug) {
         System.out.println("Success");
@@ -147,7 +159,7 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
       }
 
       mVinciClient.setTransportableFactory(AFrame.getAFrameFactory());
-      VinciFrame resultFrame = mVinciClient.rpc(queryFrame);
+      VinciFrame resultFrame = mVinciClient.rpc(queryFrame, mGetMetaDataTimeout);
 
       if (debug) {
         System.out.println("Success");

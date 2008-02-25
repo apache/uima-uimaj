@@ -289,6 +289,7 @@ public class VinciAnalysisEngineService_impl extends VinciServableAdapter {
               .println("VinciAnalysisEngineService_impl: Starting Server with Socket Timeout:"
                       + descriptor.getServerSocketTimeout());
       _server.setSocketTimeout(descriptor.getServerSocketTimeout());
+      _server.setThreadPoolSize(descriptor.getThreadPoolMinSize(), descriptor.getThreadPoolMaxSize());
 
       _server.serve();
     } catch (ServiceDownException e) {

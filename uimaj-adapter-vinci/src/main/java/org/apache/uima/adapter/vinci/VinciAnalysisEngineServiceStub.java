@@ -57,6 +57,11 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
    * Timeout to use for process and collectionProcessComplete calls.
    */
   private int mTimeout;
+  
+  /**
+   * Timeout to use for getMetaData calls.
+   */
+  private int mGetMetaDataTimeout;
 
   private static final boolean debug = System.getProperty("DEBUG") != null;
   
@@ -82,11 +87,13 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
       // Override vinci default VNS settings
       String vnsHost = null;
       String vnsPort = null; 
+      String getMetaDataTimeout = null; 
       if (parameters != null) {
          vnsHost = 
           VinciBinaryAnalysisEngineServiceStub.getParameterValueFor("VNS_HOST", parameters); 
          vnsPort = VinciBinaryAnalysisEngineServiceStub.getParameterValueFor("VNS_PORT",
                 parameters);
+         getMetaDataTimeout = VinciBinaryAnalysisEngineServiceStub.getParameterValueFor("GetMetaDataTimeout", parameters);
       }
       if (vnsHost == null) {
         vnsHost = System.getProperty("VNS_HOST");
@@ -118,6 +125,11 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
       } else {
        mTimeout = mVinciClient.getSocketTimeout(); //default
       }
+      if (getMetaDataTimeout != null) {
+        mGetMetaDataTimeout = Integer.parseInt(getMetaDataTimeout);
+      } else {
+        mGetMetaDataTimeout = mVinciClient.getSocketTimeout(); //default
+      }
       
       if (debug) {
         System.out.println("Success");
@@ -143,7 +155,7 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
         System.out.println("Calling GetMeta");
       }
 
-      VinciFrame resultFrame = mVinciClient.rpc(queryFrame);
+      VinciFrame resultFrame = mVinciClient.rpc(queryFrame, mGetMetaDataTimeout);
 
       if (debug) {
         System.out.println("Success");

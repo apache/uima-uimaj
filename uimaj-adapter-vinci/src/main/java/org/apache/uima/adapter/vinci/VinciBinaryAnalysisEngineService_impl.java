@@ -311,6 +311,7 @@ public class VinciBinaryAnalysisEngineService_impl extends VinciServableAdapter 
               .println("VinciBinaryAnalysisEngineService_impl: Starting Server with Socket Timeout:"
                       + descriptor.getServerSocketTimeout());
       _server.setSocketTimeout(descriptor.getServerSocketTimeout());
+      _server.setThreadPoolSize(descriptor.getThreadPoolMinSize(), descriptor.getThreadPoolMaxSize());
       _server.serve();
     } catch (ServiceDownException e) {
       UIMAFramework.getLogger().log(Level.SEVERE, e.getMessage());
