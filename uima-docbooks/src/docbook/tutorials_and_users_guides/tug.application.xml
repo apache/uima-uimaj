@@ -1231,6 +1231,18 @@ SimpleTokenAndSentenceAnnotator.xml</literallayout></para>
         time, the server will presume the client may have gone away - and it <quote>cleans up</quote>, releasing any
         resources it is holding. The next call to process on the service will result in a cycle which will cause the
         client to re-establish its connection with the service (some additional overhead).</para>
+
+      <para>There are two additional parameters that you can add to your deployment descriptor:
+        </para>
+      <itemizedlist>
+        <listitem><para><literal>&lt;parameter name="threadPoolMinSize" value="[Integer]"/></literal>:
+          Specifies the number of threads that the Vinci service creates on startup in order to
+          serve clients' requests.</para></listitem>
+        <listitem><para><literal>&lt;parameter name="threadPoolMaxSize" value="[Integer]"/></literal>:
+          Specifies the maximum number of threads that the Vinci service will create.  When the number of
+          concurrent requests exceeds the <literal>threadPoolMinSize</literal>, additional threads will be
+          created to serve requests, until the <literal>threadPoolMaxSize</literal> is reached.</para></listitem>
+      </itemizedlist>
       
       <para>The <literal>startVinciService</literal> script takes two additional optional parameters. The
         first one overrides the value of the VNS_HOST environment variable, allowing you to specify the name server
@@ -1590,6 +1602,13 @@ Exception: Connection refused: connect</programlisting>
             <olink targetdoc="&uima_docs_ref;"
             targetptr="ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.individual.error_handling"/>
           ) for details. </para>
+        
+        <para>Note that the client timeout does not apply to the <literal>GetMetaData</literal>
+          request that is made when the client first connects to the service.  This call is typically
+          very fast and does not need a large timeout (the default is 60 seconds).  However, if many
+          clients are competing for a small number of services, it may be necessary to increase this
+          value.  See <olink targetdoc="&uima_docs_ref;"
+            targetptr="ugr.ref.xml.component_descriptor.service_client"/></para>
       </section>
       
       <section id="ugr.tug.setting_server_socket_timeout">

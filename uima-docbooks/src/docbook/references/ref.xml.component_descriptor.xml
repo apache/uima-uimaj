@@ -2142,6 +2142,7 @@ uima.tcas.Annotation.</programlisting>
   <parameters>
     <parameter name="VNS_HOST" value="some.internet.ip.name-or-address"/>
     <parameter name="VNS_PORT" value="9000"/>
+    <parameter name="GetMetaDataTimeout" value="[Integer]"/>
   </parameters> 
 </uriSpecifier>]]></programlisting>
     
@@ -2163,8 +2164,22 @@ uima.tcas.Annotation.</programlisting>
       thrown. A value of zero or less will wait forever. If no timeout is specified, a default
       value (currently 60 seconds) will be used.</para>
     
-    <para>The parameter element is optional. If present, it specifies the Vinci naming
-      service host and/or port number. If not present, the value used for these comes from
+    <para>The parameters element is optional. If present, it can specify values for each
+      of the following:
+    </para>
+    <itemizedlist>
+      <listitem><para><literal>VNS_HOST</literal>: host name for the Vinci naming service.
+      </para></listitem>
+      <listitem><para><literal>VNS_PORT</literal>: port number for the Vinci naming service.
+      </para></listitem>
+      <listitem><para><literal>GetMetaDataTimeout</literal>: timeout period (in milliseconds) for
+          the GetMetaData call.  If not specified, the default is 60 seconds.  This may need
+          to be set higher if there are a lot of clients competing for connections to the service.
+      </para></listitem>      
+    </itemizedlist>
+   
+    <para>If the <literal>VNS_HOST</literal> and <literal>VNS_PORT</literal> are not specified
+      in the descriptor, the values used for these comes from
       parameters passed on the Java command line using the
       <literal>-DVNS_HOST=&lt;host&gt;</literal> and/or
       <literal>-DVNS_PORT=&lt;port&gt;</literal> system arguments. If not present, and
