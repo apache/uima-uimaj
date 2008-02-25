@@ -301,9 +301,9 @@
 				</property>
 			</activation>
 			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
+          <plugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-gpg-plugin</artifactId>
 						<executions>
 							<execution>
@@ -329,11 +329,7 @@
     <module>../uimaj-test-util</module>
     <module>../uimaj-component-test-util</module>
     <module>../jVinci</module>
-    <module>../uimaj-ep-debug</module>
-    <module>../uimaj-ep-jcasgen</module>
-    <module>../uimaj-ep-configurator</module>
-    <module>../uimaj-ep-pear-packager</module>
-    <module>../uimaj-ep-runtime</module>
+    <module>eclipse-plugin-superPom</module>
     <module>../uimaj-document-annotation</module>
   </modules>
   <repositories>
