@@ -114,7 +114,7 @@
 			<version>${uimaj-release-eclipse-version}</version>
 			<scope>compile</scope>
 			<type>zip</type>
-		</dependency>		
+		</dependency>
 	</dependencies>
 	<build>
 		<pluginManagement>
@@ -152,6 +152,7 @@
 					<execution>
 						<id>javadoc</id>
 						<phase>package</phase>
+                        <!--phase>deploy</phase-->   <!-- comment above and uncomment to disable javadocs, for testing/experimentation, with assembly:assembly-->
 						<goals>
 							<goal>javadoc</goal>
 						</goals>
@@ -209,14 +210,12 @@
                 <!-- build eclipse update site -->
                   
                 <ant dir="../uimaj-eclipse-update-site">
-                  <!-- surprise! the ant call here does not pass any parms,
-                       even if you set inheritAll="true"
-                       
-                       Setting the property explicitly does work, though -->
-                  <property name="uima-maven-build-eclipse-home" value="${uima-maven-build-eclipse-home}"/>
-                  
+                  <!-- property values from maven must be passed in 
+                       using what looks like a redundant <property> statement.
+                       See http://cwiki.apache.org/UIMA/maven-tips.html 
+                         section on passing parameters to ant scripts -->
+                  <property name="uima-maven-build-eclipse-home" value="${uima-maven-build-eclipse-home}"/>                 
                   <property name="project.version" value="${uimaj-release-eclipse-version}"/>
-                     
                 </ant>            
               </tasks>
             </configuration>
