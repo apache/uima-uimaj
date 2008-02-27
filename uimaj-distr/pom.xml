@@ -23,6 +23,12 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.apache.uima</groupId>
 	<artifactId>uimaj-distr</artifactId>
+  
+  <!-- packaging is set to jar even though it causes an extraneous jar to be built
+       and deployed to the maven repos.
+       This is because of some issue with getting the assembly to work; see
+       http://article.gmane.org/gmane.comp.apache.uima.devel/3228/match=should+uimaj+distr+packaging
+    -->
 	<packaging>jar</packaging>
 	<version>${uimaj-release-version}</version>
 	<name>Apache UIMA Java SDK - Resources and Assembly Descriptor for building the distribution</name>
