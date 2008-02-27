@@ -182,7 +182,6 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
     }
   }
 
-  /*
   public void testProcess() throws Exception {
     try {
       // test simple primitive MultiprocessingTextAnalysisEngine
@@ -237,15 +236,15 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
       //we can't test from the threads themsleves since the state of
       //these fields is nondeterministic during the multithreaded processing.
       assertEquals("testing...", TestAnnotator.getLastDocument());
-      ResultSpecification resultSpec = new ResultSpecification_impl(mLastTypeSystem);
+      ResultSpecification lastResultSpec = TestAnnotator.getLastResultSpec();
+      ResultSpecification resultSpec = new ResultSpecification_impl(lastResultSpec.getTypeSystem());
       resultSpec.addResultType("NamedEntity", true);
-      assertEquals(resultSpec, TestAnnotator.getLastResultSpec());
+      assertEquals(resultSpec, lastResultSpec);
 
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
   }
-  */
 
   public void testReconfigure() throws Exception {
     try {
