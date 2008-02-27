@@ -46,6 +46,7 @@ import org.apache.uima.analysis_engine.metadata.SofaMapping;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.resource.ExternalResourceDependency;
 import org.apache.uima.resource.ExternalResourceDescription;
+import org.apache.uima.resource.PearSpecifier;
 import org.apache.uima.resource.ResourceCreationSpecifier;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
@@ -1186,8 +1187,9 @@ implements Listener, StandardStrings {
       AnalysisEngineMetaData aemd = ae.getAnalysisEngineMetaData();
       ae.destroy();
       return aemd;
-    } else
-      throw new InternalErrorCDE("invalid call");
+    }
+    
+    throw new InternalErrorCDE("invalid call");
   }
 
   public static void setVnsHostAndPort(String vnsHost, String vnsPort) {
@@ -1546,15 +1548,19 @@ implements Listener, StandardStrings {
       return lastDescriptionFromDescriptor;
     } else {
       sDesc = fileRef + ":\n";
-      ResourceMetaData resourceMetaData = getMetaDataFromDescription(rs);
-      if (null == resourceMetaData) {
-        sDesc += "(Remote service is not responding)";
+      if (rs instanceof PearSpecifier) {
+        sDesc += " (Pear descriptor)";
       } else {
-        String description = resourceMetaData.getDescription();
-        if (null != description && !description.equals("")) {
-          sDesc += parseToFitInToolTips(description);
-        } else
-          sDesc += "(No Description)";
+        ResourceMetaData resourceMetaData = getMetaDataFromDescription(rs);
+        if (null == resourceMetaData) {
+          sDesc += "(Remote service is not responding)";
+        } else {
+          String description = resourceMetaData.getDescription();
+          if (null != description && !description.equals("")) {
+            sDesc += parseToFitInToolTips(description);
+          } else
+            sDesc += "(No Description)";
+        }
       }
       lastResourceForDescription = rs;
       lastTimeDescriptionRequested = System.currentTimeMillis();

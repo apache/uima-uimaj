@@ -30,6 +30,7 @@ import java.util.Vector;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CasConsumerDescription;
+import org.apache.uima.resource.PearSpecifier;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.URISpecifier;
 import org.apache.uima.resource.metadata.ConfigurationParameter;
@@ -563,7 +564,8 @@ public class AggregateSection extends AbstractSection {
 
     if (!(inputDescription instanceof AnalysisEngineDescription)
             && !(inputDescription instanceof CasConsumerDescription)
-            && !(inputDescription instanceof URISpecifier)) {
+            && !(inputDescription instanceof URISpecifier)
+            && !(inputDescription instanceof PearSpecifier)) {
       Utility
               .popMessage(
                       "Invalid kind of descriptor",
