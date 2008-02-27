@@ -182,6 +182,7 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
     }
   }
 
+  /*
   public void testProcess() throws Exception {
     try {
       // test simple primitive MultiprocessingTextAnalysisEngine
@@ -244,6 +245,7 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
       JUnitExtension.handleException(e);
     }
   }
+  */
 
   public void testReconfigure() throws Exception {
     try {
