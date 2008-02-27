@@ -85,35 +85,30 @@
 			<artifactId>uimaj-ep-configurator</artifactId>
 			<version>${uimaj-release-eclipse-version}</version>
 			<scope>compile</scope>
-			<type>zip</type>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-ep-debug</artifactId>
 			<version>${uimaj-release-eclipse-version}</version>
 			<scope>compile</scope>
-			<type>zip</type>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-ep-jcasgen</artifactId>
 			<version>${uimaj-release-eclipse-version}</version>
 			<scope>compile</scope>
-			<type>zip</type>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-ep-pear-packager</artifactId>
 			<version>${uimaj-release-eclipse-version}</version>
 			<scope>compile</scope>
-			<type>zip</type>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-ep-runtime</artifactId>
 			<version>${uimaj-release-eclipse-version}</version>
 			<scope>compile</scope>
-			<type>zip</type>
 		</dependency>
 	</dependencies>
 	<build>
