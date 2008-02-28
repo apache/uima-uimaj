@@ -1037,8 +1037,18 @@ public class CasCreationUtils {
     // also build a Map from Type names to Types
     Map typeNameMap = new HashMap();
 
-    // Now iterate through all type systems - if a new type is found, add it.
-    // If an existing type is found, merge features.
+    // Iterate through all type systems and add types to the merged TypeSystem.
+    // If a type is defined more than once, we need to check if the superType
+    // declarations are compatible (one inherits from another), and merge the
+    // features.
+    
+    // In order to propertly handle the supertype merging, we need to make sure
+    // that we process the supertype definitions before the subtypes. To do this,
+    // we build a linked list of type descriptions, and make multiple passes
+    // over this, adding types to the merged type system when their supertypes
+    // become defined.  We continue until the list is empty or we cannot make any
+    // progress.
+    LinkedList typeList = new LinkedList();
     Iterator it = aTypeSystems.iterator();
     while (it.hasNext()) {
       TypeSystemDescription ts = (TypeSystemDescription) it.next();
@@ -1049,63 +1059,86 @@ public class CasCreationUtils {
           throw new ResourceInitializationException(e);
         }
         TypeDescription[] types = ts.getTypes();
-        if (types != null) {
-          for (int i = 0; i < types.length; i++) {
-            String typeName = types[i].getName();
-            TypeDescription existingType = (TypeDescription) typeNameMap.get(typeName);
-            if (existingType == null) {
-              // create new type
-              existingType = result.addType(types[i].getName(), types[i].getDescription(), types[i]
-                  .getSupertypeName());
-              existingType.setAllowedValues(types[i].getAllowedValues());
-              existingType.setSourceUrl(types[i].getSourceUrl());
-              typeNameMap.put(types[i].getName(), existingType);
-              FeatureDescription[] features = types[i].getFeatures();
-              if (features != null) {
-                mergeFeatures(existingType, types[i].getFeatures());
-              }
-            } else {
-              // type already existed - check that supertypes are compatible
-              String supertypeName = types[i].getSupertypeName();
-              String existingSupertypeName = existingType.getSupertypeName();
-              if (!existingSupertypeName.equals(supertypeName)) {
-                // supertypes are not identical - check if one subsumes the other
-                if (subsumes(existingSupertypeName, supertypeName, typeNameMap)) {
-                  // existing supertype subsumes newly specified supertype -
-                  // reset supertype to the new, more specific type
-                  existingType.setSupertypeName(supertypeName);
-                  // report that a merge occurred
-                  reportMerge(aOutputMergedTypes, types[i], existingType);
-                } else if (subsumes(supertypeName, existingSupertypeName, typeNameMap)) {
-                  // newly specified supertype subsumes old type, this is OK and we don't
-                  // need to do anything except report this
-                  reportMerge(aOutputMergedTypes, types[i], existingType);
-                } else {
-                  // error
-                  throw new ResourceInitializationException(
-                      ResourceInitializationException.INCOMPATIBLE_SUPERTYPES, new Object[] {
-                          typeName, supertypeName, existingSupertypeName,
-                          types[i].getSourceUrlString() });
-                }
-
-              }
-              // merge features
-              int prevNumFeatures = existingType.getFeatures().length;
-              FeatureDescription[] features = types[i].getFeatures();
-              if (features != null) {
-                mergeFeatures(existingType, types[i].getFeatures());
-                // if feature-merged occurred, the number of features on the type will have
-                // changed. Report this by adding to the aOutputMergedTypeNames collection.
-                if (existingType.getFeatures().length != prevNumFeatures) {
-                  reportMerge(aOutputMergedTypes, types[i], existingType);
-                }
-              }
-            }
-          }
-        }
+        typeList.addAll(Arrays.asList(types));
       }
     }
+    int lastNumTypes;
+    do {
+      lastNumTypes = typeList.size();
+      Iterator typeIter = typeList.iterator();
+      while (typeIter.hasNext()) {
+        TypeDescription type = (TypeDescription)typeIter.next();
+        String supertypeName = type.getSupertypeName();
+        if (supertypeName.startsWith("uima.") || typeNameMap.containsKey(supertypeName)) {
+          //supertype is defined, ok to proceed
+          //check if type is already defined 
+          addTypeToMergedTypeSystem(aOutputMergedTypes, result, typeNameMap, type);
+          typeIter.remove();
+        }
+      }
+    } while (typeList.size() > 0 && typeList.size() != lastNumTypes);
+      
+    //At this point, if the typeList is not empty, then we either have a type with an undefined supertype, or a cycle.
+    //We go ahead and merge the type definitions anway - these problems will be caught at CAS creation time. Undefined supertypes 
+    //may be OK at this stage - this type system will have to be further merged before it can be used.
+    Iterator typeIter = typeList.iterator();
+    while (typeIter.hasNext()) {
+      TypeDescription type = (TypeDescription)typeIter.next();
+      addTypeToMergedTypeSystem(aOutputMergedTypes, result, typeNameMap, type);
+    }    
     return result;
+  }
+
+  private static void addTypeToMergedTypeSystem(Map aOutputMergedTypes, TypeSystemDescription result, Map typeNameMap, TypeDescription type) throws ResourceInitializationException {
+    String typeName = type.getName();
+    String supertypeName = type.getSupertypeName();
+    TypeDescription existingType = (TypeDescription) typeNameMap.get(typeName);
+    if (existingType == null) {
+      // create new type
+      existingType = result.addType(typeName, type.getDescription(), supertypeName);
+      existingType.setAllowedValues(type.getAllowedValues());
+      existingType.setSourceUrl(type.getSourceUrl());
+      typeNameMap.put(type.getName(), existingType);
+      FeatureDescription[] features = type.getFeatures();
+      if (features != null) {
+        mergeFeatures(existingType, type.getFeatures());
+      }
+    } else {
+      // type already existed - check that supertypes are compatible
+      String existingSupertypeName = existingType.getSupertypeName();
+      if (!existingSupertypeName.equals(supertypeName)) {
+        // supertypes are not identical - check if one subsumes the other
+        if (subsumes(existingSupertypeName, supertypeName, typeNameMap)) {
+          // existing supertype subsumes newly specified supertype -
+          // reset supertype to the new, more specific type
+          existingType.setSupertypeName(supertypeName);
+          // report that a merge occurred
+          reportMerge(aOutputMergedTypes, type, existingType);
+        } else if (subsumes(supertypeName, existingSupertypeName, typeNameMap)) {
+          // newly specified supertype subsumes old type, this is OK and we don't
+          // need to do anything except report this
+          reportMerge(aOutputMergedTypes, type, existingType);
+        } else {
+          // error
+          throw new ResourceInitializationException(
+              ResourceInitializationException.INCOMPATIBLE_SUPERTYPES, new Object[] {
+                  typeName, supertypeName, existingSupertypeName,
+                  type.getSourceUrlString() });
+        }
+      }
+      // merge features
+      int prevNumFeatures = existingType.getFeatures().length;
+      FeatureDescription[] features = type.getFeatures();
+      if (features != null) {
+        mergeFeatures(existingType, type.getFeatures());
+        // if feature-merged occurred, the number of features on the type will have
+        // changed. Report this by adding to the aOutputMergedTypeNames collection.
+        if (existingType.getFeatures().length != prevNumFeatures) {
+          reportMerge(aOutputMergedTypes, type, existingType);
+        }
+      }
+      
+    }
   }
 
   /**
