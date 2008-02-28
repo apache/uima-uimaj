@@ -22,7 +22,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
   <!-- groupId omitted - inherited from parent -->
-	<artifactId>pear-packager</artifactId>
+	<artifactId>uimaj-ep-pear-packager</artifactId>
 	<packaging>bundle</packaging>
   <!-- version omitted - inherited from parent-->
 	<name>Apache UIMA PEAR Packager Eclipse Plugin</name>
