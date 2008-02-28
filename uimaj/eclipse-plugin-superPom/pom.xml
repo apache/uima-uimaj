@@ -44,7 +44,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj</artifactId>
-    <version>2.3.0-incubating-SNAPSHOT</version>
+    <version>2.2.2-incubating-SNAPSHOT</version> <!-- this comment is a flag for changeVersion -->
   </parent>
   
   <properties>
@@ -57,7 +57,7 @@
        word.  In Maven, the "-" is the convention, but in Eclipse,
        a "." is required -->
   <!-- thru testing, discovered that $ { } vars are not substituted, when "scanning for projects" -->
-  <version>2.3.0.incubating-SNAPSHOT</version>
+  <version>2.2.2.incubating-SNAPSHOT</version> <!-- this comment is a flag for changeVersion -->
    
   <build>
     <!-- resources are "merged" -->
