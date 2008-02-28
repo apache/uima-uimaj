@@ -252,7 +252,7 @@ public interface ResultSpecification extends XMLizable, Serializable, Cloneable 
   * 
    * @param aTypeSystem
    *          the Type System used to determine which features belong to each Type
-   * @deprecated as of 2.3.0  Now called automatically internally when needed
+   * @deprecated as of 2.2.2  Now called automatically internally when needed
    */
   public void compile(TypeSystem aTypeSystem);
 
