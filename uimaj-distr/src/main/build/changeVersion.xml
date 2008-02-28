@@ -67,7 +67,8 @@
   
   <target name="normal-modules">
     <replace dir="${wksp}" includes=
-      "uimaj-adapter-soap/pom.xml,
+      "jVinci/pom.xml,
+       uimaj-adapter-soap/pom.xml,
        uimaj-adapter-vinci/pom.xml,
        uimaj-component-test-util/pom.xml,
        uimaj-core/pom.xml,
