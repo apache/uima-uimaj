@@ -29,7 +29,7 @@
 <project name="build update site" default="all" basedir=".">
 	
 	<!-- will be overridden by maven caller -->
-	<property name="project.version" value="x.x.x.incubating-SNAPSHOT"/>
+	<property name="project.version" value="2.2.2.incubating-SNAPSHOT"/>
  
   <condition property="eclipse.home" value="${uima-maven-build-eclipse-home}">
     <not><equals arg1="${uima-maven-build-eclipse-home}" arg2="$${uima-maven-build-eclipse-home}"/></not>
@@ -159,4 +159,11 @@
 	  </java>
   </target>
 
+	<!--target name="move-to-uimaj-distr-target">
+		<delete dir="../uimaj-distr/target/eclipse-update-site" quiet="true"/>
+		<mkdir dir="../uimaj-distr/target/eclipse-update-site"/>
+		<copy todir="../uimaj-distr/target/eclipse-update-site">
+			<fileset dir="target/eclipse-update-site"/>
+	  </copy>
+	</target-->
 </project>
