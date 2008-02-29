@@ -27,15 +27,12 @@ import java.util.ResourceBundle;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPluginDescriptor;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.PluginVersionIdentifier;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.FormColors;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -64,8 +61,10 @@ import org.osgi.framework.BundleContext;
 
 public class TAEConfiguratorPlugin extends AbstractUIPlugin {
 
-  public static final boolean is30version;
+  // no longer include support for < 3.1
+  public static final boolean is30version = false;
 
+  /*
   public static final int eclipseVersionMajor;
 
   public static final int eclipseVersionMinor;
@@ -78,6 +77,7 @@ public class TAEConfiguratorPlugin extends AbstractUIPlugin {
     eclipseVersionMinor = version.getMinorComponent();
     is30version = eclipseVersionMajor == 3 && eclipseVersionMinor == 0;
   }
+  */
 
   // The shared instance.
   private static TAEConfiguratorPlugin plugin;
