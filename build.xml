@@ -49,6 +49,7 @@
   	build-runtime, 
   	build-tools, 
   	pack-jars,
+  	copy-features,
   	build-digest"/>
 	
   <target name="init">
@@ -127,17 +128,6 @@
               <arg line="target/eclipse-update-site/plugins"/> 
     </java>
 	</target>
-
-
-	<!-- not done here; see uimaj-distr pom -->
-	<!-- target name="sign-jars">
-    <checksum algorithm="md5">
-    	<fileset dir="target/eclipse-update-site" includes="*/*.jar */*.jar.pack.gz"/> 
-    </checksum>
-    <checksum algorithm="sha1">
-  	  <fileset dir="target/eclipse-update-site" includes="*/*.jar */*.jar.pack.gz"/> 
-  	</checksum>
-  </target-->
   
   <target name="pack-jars">
     <java jar="${eclipse.home}/eclipse/plugins/org.eclipse.equinox.launcher.jar"
@@ -149,6 +139,18 @@
     </java>
 	</target>
 
+	<target name="copy-features">
+		<!-- copy the new features built above to features, so they
+		     can be saved in SVN for use when next version is built -->
+		<copy todir="features">
+      <fileset dir="target/eclipse-update-site/features"/>
+    </copy>
+		<!-- copy all the features to the work area for the build-digest step -->
+		<copy todir="target/eclipse-update-site/features">
+			<fileset dir="features"/>
+		</copy>
+	</target>
+	
 	<target name="build-digest">
  		<!-- see http://wiki.eclipse.org/Update_Site_Optimization -->
 	  <java jar="${eclipse.home}/eclipse/plugins/org.eclipse.equinox.launcher.jar"
