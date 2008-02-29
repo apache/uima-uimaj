@@ -50,7 +50,8 @@
   	build-tools, 
   	pack-jars,
   	copy-features,
-  	build-digest"/>
+  	build-digest,
+  	clean-snapshots"/>
 	
   <target name="init">
    	<delete dir="target"/>
@@ -161,6 +162,10 @@
 	  </java>
   </target>
 
+	<target name="clean-snapshots">
+		<delete dir="features" includes="*-SNAPSHOT.jar"/>
+	</target>
+	
 	<!--target name="move-to-uimaj-distr-target">
 		<delete dir="../uimaj-distr/target/eclipse-update-site" quiet="true"/>
 		<mkdir dir="../uimaj-distr/target/eclipse-update-site"/>
