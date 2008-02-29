@@ -1666,6 +1666,11 @@ uima.tcas.Annotation.</programlisting>
                 <literal>org.myorg.TokenAnnotation</literal> feature structures for
                 the same language, these feature structures will only be produced by the
                 first annotator in the list.</para>
+              
+              <note><para>The flow analysis uses the specific types that are specified in the
+              output capabilities, without any expansion for subtypes.  So, if you expect
+              a type TT and another type SubTT (which is a subtype of TT) in the output, you
+              must include both of them in the output capabilities.</para></note>
             </section>
           </section>
           
