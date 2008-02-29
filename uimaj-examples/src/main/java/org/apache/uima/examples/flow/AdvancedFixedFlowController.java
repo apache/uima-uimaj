@@ -117,7 +117,7 @@ public class AdvancedFixedFlowController extends CasFlowController_ImplBase {
   /* (non-Javadoc)
    * @see org.apache.uima.flow.FlowController_ImplBase#addAnalysisEngines(java.util.Collection)
    */
-  public void addAnalysisEngines(Collection aKeys) {
+  public synchronized void addAnalysisEngines(Collection aKeys) {
     // Append new keys as a ParallelStep at end of Sequence
     mSequence.add(new ParallelStep(new ArrayList(aKeys)));
   }
@@ -125,26 +125,23 @@ public class AdvancedFixedFlowController extends CasFlowController_ImplBase {
   /* (non-Javadoc)
    * @see org.apache.uima.flow.FlowController_ImplBase#removeAnalysisEngines(java.util.Collection)
    */
-  public void removeAnalysisEngines(Collection aKeys) throws AnalysisEngineProcessException {
-    //Remove keys from Sequence
-    int i = 0;
-    while (i < mSequence.size()) {
+  public synchronized void removeAnalysisEngines(Collection aKeys) throws AnalysisEngineProcessException {
+    // Remove keys from Sequence ... replace with null so step indices are still valid
+    for (int i = 0; i < mSequence.size(); ++i) {
       Step step = (Step)mSequence.get(i);
       if (step instanceof SimpleStep && aKeys.contains(((SimpleStep)step).getAnalysisEngineKey())) {
-        mSequence.remove(i);
+        mSequence.set(i, null);
       }
       else if (step instanceof ParallelStep) {
         Collection keys = new ArrayList(((ParallelStep)step).getAnalysisEngineKeys());
         keys.removeAll(aKeys);
         if (keys.isEmpty()) {
-          mSequence.remove(i);
+          mSequence.set(i, null);
         }
         else {
-          mSequence.set(i++, new ParallelStep(keys));
+          mSequence.set(i, new ParallelStep(keys));
         }
       }
-      else
-        i++;
     }
   }
 
@@ -209,12 +206,18 @@ public class AdvancedFixedFlowController extends CasFlowController_ImplBase {
         casMultiplierProducedNewCas = false;
       }
 
-      if (currentStep >= mSequence.size()) {
-        return new FinalStep(); // this CAS has finished the sequence
+      // Get next in sequence, skipping any disabled ones
+      Step nextStep;
+      synchronized (AdvancedFixedFlowController.this) {
+        do {
+          if (currentStep >= mSequence.size()) {
+            return new FinalStep(); // this CAS has finished the sequence
+          }
+          nextStep = (Step) mSequence.get(currentStep++);
+        } while (nextStep == null);
       }
 
       // if next step is a CasMultiplier, set wasPassedToCasMultiplier to true for next time
-      Step nextStep = (Step)mSequence.get(currentStep++);
       if (stepContainsCasMultiplier(nextStep))
         wasPassedToCasMultiplier = true;
 
@@ -254,7 +257,7 @@ public class AdvancedFixedFlowController extends CasFlowController_ImplBase {
      * 
      * @see org.apache.uima.flow.CasFlow_ImplBase#newCasProduced(CAS, String)
      */
-    public Flow newCasProduced(CAS newCas, String producedBy) throws AnalysisEngineProcessException {
+    public synchronized Flow newCasProduced(CAS newCas, String producedBy) throws AnalysisEngineProcessException {
       // record that the input CAS has been segmented (affects its subsequent flow)
       casMultiplierProducedNewCas = true;
       // start the new output CAS from the next node after the CasMultiplier that produced it
