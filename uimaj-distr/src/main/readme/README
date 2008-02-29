@@ -6,6 +6,7 @@ Supported Platforms
 --------------------
 
 Apache UIMA requires Java level 1.5; it has been tested with Sun Java SDK v5.0 and v6.0.
+Running the Eclipse plugin tooling for UIMA requires you start Eclipse using a Java 1.5 or later, as well.
 The supported platforms are: Windows, Linux, Solaris, AIX and Mac OS X.  Other platforms and Java (1.5+) implementations
 should work, but have not been significantly tested.
 
