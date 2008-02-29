@@ -354,12 +354,18 @@ ae.destroy();</programlisting></para>
     ResourceSpecifier specifier = 
       UIMAFramework.getXMLParser().parseResourceSpecifier(in);
  
-    //create multithreadable AE that will 
-    //accept 3 simultaneous requests
-    mAnalysisEngine = UIMAFramework.produceAnalysisEngine(specifier,3);
+    //Create multithreadable AE that will 
+    //Accept 3 simultaneous requests
+    //The 3rd parameter specifies a timeout.
+    //When the number of simultaneous requests exceeds 3,
+    // additional requests will wait for other requests to finish. 
+    // This parameter determines the maximum number of milliseconds 
+    // that a new request should wait before throwing an
+    // - a value of 0 will cause them to wait forever.
+    mAnalysisEngine = UIMAFramework.produceAnalysisEngine(specifier,3,0);
 
     //create CAS pool with 3 CAS instances
-    mCasPool = new CasPool(mAnalysisEngine,3);
+    mCasPool = new CasPool(3, mAnalysisEngine);
   }
 
   public void analyzeDocument(String aDoc) {
