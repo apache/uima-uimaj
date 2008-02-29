@@ -246,15 +246,15 @@ under the License.
       on the importing file.</para>
     
     <para>Engines can be added to the list on the left by clicking the Add button at the bottom of
-      the Component Engine section. This brings up the following dialog:
+      the Component Engine section. This brings up one of the following two dialogs:
       
       
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="3.2in" format="JPG" fileref="&imgroot;delegate-chooser.jpg"/>
+          <imagedata width="3.875in" format="JPG" fileref="&imgroot;import-by-location.jpg"/>
         </imageobject>
-        <textobject><phrase>Adding an Analysis Engine to an Aggregate</phrase>
+        <textobject><phrase>Adding an Analysis Engine to an Aggregate, by location</phrase>
         </textobject>
       </mediaobject>
     </screenshot></para>
@@ -263,12 +263,30 @@ under the License.
       a descriptor from your workspace, or browse the file system to select a descriptor. 
       </para>
     
+    <para>Or, if you have selected to import by name, this dialog is shown:
+      <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata width="5.296875in" format="JPG" fileref="&imgroot;import-by-name.jpg"/>
+        </imageobject>
+        <textobject><phrase>Adding an Analysis Engine to an Aggregate, by name</phrase>
+        </textobject>
+      </mediaobject>
+    </screenshot></para>
+        
     <para>You can specify that the import should be by Name (the name is looked up using both the
-      Project&apos;s class path, and DataPath), or by location. If it is by name, it may
-      contain part of the path within the name. For instance, if the file name picked is
-      <literal>c:/project/subproject/src/com/company/prod/xyz.xml</literal>, and
-      the class path includes <literal>c:/project/subproject/src</literal>, the name in
+      Project&apos;s class path, and DataPath), or by location. If it is by name, 
+      the dialog shows the available xml files on the class path, to pick from.  If the
+      one you want isn't showing, this means it isn't on the enclosing Eclipse Java Project's
+      classpath, nor on the datapath, and one of those needs to be updated to include the 
+      path to the resource.  If the name picked is
+      <literal>com/company/prod/xyz.xml</literal>, the name in
       the descriptor will be <quote><literal>com.company.prod.xyz</literal></quote>.
+      The "Browse the file system..." button is disabled when import by name is checked, because
+      the file system is not the source of the imports - rather, its the resources on the 
+      classpath or datapath that are.</para>
+    
+    <para>
       If it is by location, the file reference is converted to a relative reference if
       possible, in the descriptor.</para>
     
