@@ -119,6 +119,8 @@ public class AdvancedFixedFlowController extends CasFlowController_ImplBase {
    */
   public synchronized void addAnalysisEngines(Collection aKeys) {
     // Append new keys as a ParallelStep at end of Sequence
+    // This is just an example of what could be done.
+    // Note that in general, a "Collection" is unordered
     mSequence.add(new ParallelStep(new ArrayList(aKeys)));
   }
 
