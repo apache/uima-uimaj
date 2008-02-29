@@ -40,7 +40,7 @@
     <isset property="envVar.ECLIPSE_HOME"/>
   </condition>
 	
-	<fail unless="eclipse.home" message="********** Please set up and use a maven profile with the property uima-maven-build-eclipse-home set to an Eclipse installation at level 3.3 or later, e.g. c:/eclipses/3.3 (a directory containing the 'eclipse' directory"/>
+	<fail unless="eclipse.home" message="********** Please set up and use a maven profile with the property uima-maven-build-eclipse-home set to an Eclipse installation at level 3.3 or later, e.g. c:/eclipses/3.3/eclipse"/>
 	
 	<property name="eclipse.home" location="${uima-maven-build-eclipse-home}"/>
 
