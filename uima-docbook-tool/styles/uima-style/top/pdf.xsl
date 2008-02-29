@@ -204,7 +204,18 @@
 
           <xsl:choose>
             <xsl:when test="//releaseinfo">
-              <xsl:value-of select="//releaseinfo"/>
+              <xsl:variable name="releaseInfo" select="//releaseinfo"/>
+              <xsl:choose>
+                <xsl:when test="contains($releaseInfo, '-incubating-SNAPSHOT')">
+                  <xsl:value-of select="substring-before($releaseInfo, '-incubating-SNAPSHOT')"/>
+                </xsl:when>
+                <xsl:when test="contains($releaseInfo, '-incubating')">
+                  <xsl:value-of select="substring-before($releaseInfo, '-incubating')"/>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:value-of select="$releaseInfo"/>
+                </xsl:otherwise>
+              </xsl:choose>
             </xsl:when>
             <xsl:otherwise>
                 <!-- nop -->
