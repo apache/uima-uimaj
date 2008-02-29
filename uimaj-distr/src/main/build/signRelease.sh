@@ -20,7 +20,8 @@
 # Bourne shell syntax, this should hopefully run on pretty much anything.
 
 usage() {
-  echo "Usage: signRelease.sh <version> <passphrase> (e.g., signRelease.sh uimaj-2.2.0-incubating-SNAPSHOT \"Your passphrase\")"
+  echo "run on Windows inside Cygwin, or on Linux"
+  echo "Usage: cd to uimaj-distr, then do signRelease.sh <version> <passphrase> (e.g., signRelease.sh uimaj-2.2.0-incubating-SNAPSHOT \"Your passphrase\")"
 }
 
 if [ -n "$2" ]
@@ -33,17 +34,10 @@ else
 fi
 
 # Create PGP signatures
-for i in ${release}*.zip; do gpg --passphrase "$passphrase" --output $i.asc --detach-sig --armor $i; done
-for i in ${release}*.gz;  do gpg --passphrase "$passphrase" --output $i.asc --detach-sig --armor $i; done
-for i in ${release}*.bz2; do gpg --passphrase "$passphrase" --output $i.asc --detach-sig --armor $i; done
-
-# Create MD5 checksums
-for i in ${release}*.zip; do gpg --print-md MD5 $i > $i.md5; done
-for i in ${release}*.gz; do gpg --print-md MD5 $i > $i.md5; done
-for i in ${release}*.bz2; do gpg --print-md MD5 $i > $i.md5; done
-
-# Create SHA1 checksums
-for i in ${release}*.zip; do gpg --print-md SHA1 $i > $i.sha1; done
-for i in ${release}*.gz; do gpg --print-md SHA1 $i > $i.sha1; done
-for i in ${release}*.bz2; do gpg --print-md SHA1 $i > $i.sha1; done
-
+for i in target/${release}*.zip; do gpg --passphrase "$passphrase" --output $i.asc --detach-sig --armor $i; done
+for i in target/${release}*.gz;  do gpg --passphrase "$passphrase" --output $i.asc --detach-sig --armor $i; done
+for i in target/${release}*.bz2; do gpg --passphrase "$passphrase" --output $i.asc --detach-sig --armor $i; done
+# for eclipse update site
+for i in ../uimaj-eclipse-update-site/target/eclipse-update-site/features/org.apache.uima.*.jar; do gpg --passphrase "$passphrase" --output $i.asc --detach-sig --armor $i; done
+for i in ../uimaj-eclipse-update-site/target/eclipse-update-site/plugins/org.apache.uima.*.jar;  do gpg --passphrase "$passphrase" --output $i.asc --detach-sig --armor $i; done
+for i in ../uimaj-eclipse-update-site/target/eclipse-update-site/plugins/org.apache.uima.*.jar.pack.gz;  do gpg --passphrase "$passphrase" --output $i.asc --detach-sig --armor $i; done
