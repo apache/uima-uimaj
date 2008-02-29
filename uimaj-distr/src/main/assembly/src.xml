@@ -110,6 +110,7 @@ under the License.
       <outputDirectory>/uimaj</outputDirectory>
       <includes>
         <include>pom.xml</include>
+        <include>eclipse-plugin-superPom/**</include>
       </includes>
     </fileSet>
     <fileSet>
