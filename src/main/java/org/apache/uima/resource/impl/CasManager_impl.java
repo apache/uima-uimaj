@@ -117,14 +117,22 @@ public class CasManager_impl implements CasManager {
    * @see org.apache.uima.resource.CasManager#releaseCAS(org.apache.uima.cas.CAS)
    */
   public void releaseCas(AbstractCas aCAS) {
-    CasPool pool = (CasPool) mCasToCasPoolMap.get(aCAS);
+    if (!(aCAS instanceof CASImpl) &&
+        !(aCAS instanceof JCas)) {
+      throw new UIMARuntimeException(UIMARuntimeException.UNSUPPORTED_CAS_INTERFACE,
+          new Object[] {aCAS.getClass()});
+    }
+    CASImpl baseCas = (aCAS instanceof JCas) ? ((JCas)aCAS).getCasImpl().getBaseCAS() 
+                                             : ((CASImpl)aCAS).getBaseCAS();
+
+    CasPool pool = (CasPool) mCasToCasPoolMap.get(baseCas);
     if (pool == null) {
       // CAS doesn't belong to this CasManager!
       throw new UIMARuntimeException(UIMARuntimeException.CAS_RELEASED_TO_WRONG_CAS_MANAGER,
               new Object[0]);
     } else {
       //see if we have a UimaContext that we can notify that CAS was release
-      UimaContextAdmin uc = (UimaContextAdmin)mCasToUimaContextMap.get(aCAS);
+      UimaContextAdmin uc = (UimaContextAdmin)mCasToUimaContextMap.get(baseCas);
       if (uc != null) {
         uc.returnedCAS(aCAS);
       }
