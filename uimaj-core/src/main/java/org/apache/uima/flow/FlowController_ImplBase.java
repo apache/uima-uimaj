@@ -27,7 +27,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 
 /**
  * Implementation base class for FlowControllers. Normally developers do not extend this class
- * directly. Instead use {@link JCasFlowController_ImplBase} or {@link JCasFlowController_ImplBase},
+ * directly. Instead use {@link JCasFlowController_ImplBase} or {@link CasFlowController_ImplBase},
  * depending on which CAS interface you would like to use.
  * <p>
  * This class implements the {@link #initialize(FlowControllerContext)} method and stores the
