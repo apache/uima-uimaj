@@ -68,13 +68,13 @@
     <copy  todir="target/eclipse-update-site" file="site.xml"/>
   	
     <!--  get path to equinox jar inside ${eclipse.home} folder (copy/rename actual jar) -->
-    <copy tofile="${eclipse.home}/eclipse/plugins/org.eclipse.equinox.launcher.jar">
+    <copy tofile="${eclipse.home}/plugins/org.eclipse.equinox.launcher.jar">
     	<!-- the first -> sort -> date picks the latest instance of the set of files
     	     that match the pattern of the contained fileset, if there is more than one -->
     	<first>
     		<sort>
     			<date xmlns="antlib:org.apache.tools.ant.types.resources.comparators"/>
-          <fileset dir="${eclipse.home}/eclipse/plugins"
+          <fileset dir="${eclipse.home}/plugins"
             includes="**/org.eclipse.equinox.launcher_*.jar"/>
     	  </sort>
       </first>
@@ -121,7 +121,7 @@
   </target>
 	
 	<target name="normalize-jars">
-    <java jar="${eclipse.home}/eclipse/plugins/org.eclipse.equinox.launcher.jar"
+    <java jar="${eclipse.home}/plugins/org.eclipse.equinox.launcher.jar"
                 fork="true" failonerror="true"  maxmemory="256m" >
               <arg line="-application org.eclipse.update.core.siteOptimizer"/>
               <arg line="-jarProcessor -processAll -repack"/>
@@ -131,7 +131,7 @@
 	</target>
   
   <target name="pack-jars">
-    <java jar="${eclipse.home}/eclipse/plugins/org.eclipse.equinox.launcher.jar"
+    <java jar="${eclipse.home}/plugins/org.eclipse.equinox.launcher.jar"
                 fork="true" failonerror="true"  maxmemory="256m" >
               <arg line="-application org.eclipse.update.core.siteOptimizer"/>
               <arg line="-jarProcessor -verbose -processAll -pack"/>
@@ -154,7 +154,7 @@
 	
 	<target name="build-digest">
  		<!-- see http://wiki.eclipse.org/Update_Site_Optimization -->
-	  <java jar="${eclipse.home}/eclipse/plugins/org.eclipse.equinox.launcher.jar"
+	  <java jar="${eclipse.home}/plugins/org.eclipse.equinox.launcher.jar"
 	              fork="true" failonerror="true" maxmemory="256m">
 	  	        <arg line="-application org.eclipse.update.core.siteOptimizer"/>
 	            <arg line="-digestBuilder -digestOutputDir=target/eclipse-update-site"/>
