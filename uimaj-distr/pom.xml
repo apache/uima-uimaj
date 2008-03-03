@@ -190,6 +190,14 @@
         <artifactId>maven-antrun-plugin</artifactId>
         <dependencies>
         	<!-- Ant -->
+            <!-- these next 2 dependencies don't seem to be a reliable way to
+                 set the Ant dependency.  To do it for sure, go to the 
+                 org\apache\maven\plugins\maven-antrun-plugin\1.1\maven-antrun-plugin-1.1.pom 
+                 entry in your local repo, and change the
+                 dependency on ant from 1.6.5 to 1.7.0 - 
+                 NOTE YOU ALSO HAVE TO
+                 change the groupId from "ant" to "org.apache.ant"
+              -->
             <dependency>
             	<groupId>org.apache.ant</groupId>
                 <artifactId>ant</artifactId>
