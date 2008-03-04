@@ -69,7 +69,8 @@ under the License.
         <include>catalog/**</include>
         <include>properties/**</include>
         <include>styles/**</include>
-        <include>tools/**</include>
+        <include>tools/common-lib/**</include>
+        <include>tools/fop-versions/**</include>
         <include>xinclude.mod</include> 
         <include>README</include>
         <include>README.FIRST</include>
