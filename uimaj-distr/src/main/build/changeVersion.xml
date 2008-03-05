@@ -42,9 +42,14 @@
   <property name="wksp" location="../../../../"/>
   
   <target name="all" depends=
-    "uimaj, normal-modules, uima-framework,
-    eclipse-plugins, eclipse-features, eclipse-update,  
-    docbooks, readme"/> 
+   "uimaj, 
+    normal-modules, 
+    uima-framework,
+    eclipse-plugins, 
+    eclipse-features, 
+    eclipse-update,  
+    docbooks, 
+    readme"/> 
                           <!-- uimaj, normal-modules, uima-framework, 
     eclipse-plugins, eclipse-features, eclipse-update,  
     docbooks, readme -->
@@ -126,7 +131,11 @@
     <replace dir="${wksp}" includes="uima-docbooks/src/docbook/common_book_info.xml"
       summary="yes"
       token="&lt;releaseinfo>Version ${uima.prev.version}&lt;/releaseinfo>"
-      value="&lt;releaseinfo>Version ${uima.version}&lt;/releaseinfo>" />     
+      value="&lt;releaseinfo>Version ${uima.version}&lt;/releaseinfo>" />
+    <replace dir="${wksp}" includes="uima-docbooks/src/index.html"
+      summary="yes"
+      token='&lt;p class="releaseinfo">Version ${uima.prev.version}&lt;/p>'
+      value='&lt;p class="releaseinfo">Version ${uima.version}&lt;/p>' />    
   </target>
 
 </project>
