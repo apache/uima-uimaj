@@ -141,7 +141,7 @@ public class AnalysisEnginePoolTest extends TestCase {
       //we can't test from the threads themsleves since the state of
       //these fields is nondeterministic during the multithreaded processing.
       assertEquals("testing...", TestAnnotator.getLastDocument());
-      ResultSpecification resultSpec = new ResultSpecification_impl(mLastTypeSystem);
+      ResultSpecification resultSpec = new ResultSpecification_impl(TestAnnotator.getLastResultSpec().getTypeSystem());
       resultSpec.addResultType("NamedEntity", true);
       assertEquals(resultSpec, TestAnnotator.getLastResultSpec());
 
