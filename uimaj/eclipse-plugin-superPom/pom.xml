@@ -47,17 +47,12 @@
     <version>2.2.2-incubating-SNAPSHOT</version> <!-- this comment is a flag for changeVersion -->
   </parent>
   
-  <properties>
-      <uimaj-release-eclipse-version>${uimaj-version}.incubating-SNAPSHOT</uimaj-release-eclipse-version>
-  </properties>
-
-  
   <!-- note this version is different from the rest of the versions
        in that it has a "." instead of a "-" before the "incubating" 
        word.  In Maven, the "-" is the convention, but in Eclipse,
        a "." is required -->
   <!-- thru testing, discovered that $ { } vars are not substituted, when "scanning for projects" -->
-  <version>2.2.2.incubating-SNAPSHOT</version> <!-- this comment is a flag for changeVersion -->
+  <version>2.2.2.incubating-SNAPSHOT</version> <!-- this comment is a flag for changeVersion - eclipse -->
    
   <build>
     <!-- resources are "merged" -->

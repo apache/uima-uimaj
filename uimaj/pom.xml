@@ -26,9 +26,8 @@
   <packaging>pom</packaging>
   <version>2.2.2-incubating-SNAPSHOT</version> <!-- this comment is a flag for changeVersion -->
   <properties>
-      <uimaj-version>2.2.2</uimaj-version>
-      <uimaj-release-version>${uimaj-version}-incubating-SNAPSHOT</uimaj-release-version>
-      <uimaj-release-eclipse-version>${uimaj-version}.incubating-SNAPSHOT</uimaj-release-eclipse-version>
+      <uimaj-release-version>2.2.2-incubating-SNAPSHOT</uimaj-release-version>
+      <uimaj-release-eclipse-version>2.2.2.incubating-SNAPSHOT</uimaj-release-eclipse-version>
   </properties>
   <name>Apache UIMA Java SDK</name>
   <url>http://incubator.apache.org/uima</url>
