@@ -31,7 +31,11 @@
    <feature url="features/org.apache.uima.runtime_2.2.2.incubating-SNAPSHOT.jar" id="org.apache.uima.runtime" version="2.2.2.incubating-SNAPSHOT">
       <category name="uima-tooling-and-runtimes"/>
    </feature>
-      <feature url="features/org.apache.uima.tools_2.2.1.incubating.jar" id="org.apache.uima.tools" version="2.2.1.incubating-SNAPSHOT">
+   <feature url="features/org.apache.uima.as.deployeditor_2.2.2.incubating-SNAPSHOT.jar" id="org.apache.uima.as.deployeditor" version="2.2.2.incubating-SNAPSHOT">
+      <category name="uima-as-tooling-and-runtimes"/>
+   </feature>
+   
+   <feature url="features/org.apache.uima.tools_2.2.1.incubating.jar" id="org.apache.uima.tools" version="2.2.1.incubating-SNAPSHOT">
       <category name="uima-tooling-and-runtimes"/>
    </feature>
    <feature url="features/org.apache.uima.runtime_2.2.1.incubating.jar" id="org.apache.uima.runtime" version="2.2.1.incubating-SNAPSHOT">
@@ -39,4 +43,5 @@
    </feature>
    
    <category-def name="uima-tooling-and-runtimes" label="Apache UIMA Eclipse tooling and runtime support"/>
+   <category-def name="uima-as-tooling-and-runtimes" label="Apache UIMA-AS (Asynchronous Scaleout) Eclipse tooling and runtime support"/>
 </site>

@@ -117,7 +117,11 @@
   	<makePluginJar  project-name="uimaj-ep-jcasgen"            org-name="org.apache.uima.jcas.jcasgenp"/>
     <makePluginJar  project-name="uimaj-ep-debug"              org-name="org.apache.uima.debug"/>
     <makePluginJar  project-name="uimaj-ep-pear-packager"      org-name="org.apache.uima.pear"/>
-    <makePluginJar  project-name="uimaj-ep-configurator"       org-name="org.apache.uima.desceditor"/>  	
+    <makePluginJar  project-name="uimaj-ep-configurator"       org-name="org.apache.uima.desceditor"/>
+  	
+  	<makeFeatureJar project-name="uimaj-eclipse-feature-deployeditor" org-name="org.apache.uima.as.deployeditor" />
+  	<makePluginJar  project-name="uimaj-ep-deployeditor"         org-name="org.apache.uima.deployeditor"/>
+    <makePluginJar  project-name="uimaj-ep-runtime-deployeditor" org-name="org.apache.uima.runtime-deployeditor"/>	
   </target>
 	
 	<target name="normalize-jars">
