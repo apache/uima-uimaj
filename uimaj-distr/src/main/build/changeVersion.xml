@@ -58,14 +58,16 @@
     <replace file="${wksp}/uimaj/pom.xml" summary="yes">
       <replacefilter token="&lt;version&gt;${uima.prev.version}&lt;/version&gt; &lt;!-- this comment is a flag for changeVersion -->"
                      value="&lt;version&gt;${uima.version}&lt;/version&gt; &lt;!-- this comment is a flag for changeVersion -->"/>
-      <replacefilter token="&lt;uimaj-version&gt;${uima.prev.version.base}&lt;/uimaj-version&gt;"
-                     value="&lt;uimaj-version&gt;${uima.version.base}&lt;/uimaj-version&gt;"/>
+      <replacefilter token="&lt;uimaj-release-version&gt;${uima.prev.version}&lt;/uimaj-release-version&gt;"
+                     value="&lt;uimaj-release-version&gt;${uima.version}&lt;/uimaj-release-version&gt;"/>
+      <replacefilter token="&lt;uimaj-release-eclipse-version&gt;${uima.eclipse.prev.version}&lt;/uimaj-release-eclipse-version&gt;"
+                     value="&lt;uimaj-release-eclipse-version&gt;${uima.eclipse.version}&lt;/uimaj-release-eclipse-version&gt;"/>
     </replace>
     <replace file="${wksp}/uimaj/eclipse-plugin-superPom/pom.xml" summary="yes">
        <replacefilter token="&lt;version&gt;${uima.prev.version}&lt;/version&gt; &lt;!-- this comment is a flag for changeVersion -->"
                      value="&lt;version&gt;${uima.version}&lt;/version&gt; &lt;!-- this comment is a flag for changeVersion -->"/>
-       <replacefilter token="&lt;version&gt;${uima.eclipse.prev.version}&lt;/version&gt; &lt;!-- this comment is a flag for changeVersion -->"
-                     value="&lt;version&gt;${uima.eclipse.version}&lt;/version&gt; &lt;!-- this comment is a flag for changeVersion -->"/>
+       <replacefilter token="&lt;version&gt;${uima.eclipse.prev.version}&lt;/version&gt; &lt;!-- this comment is a flag for changeVersion - eclipse -->"
+                     value="&lt;version&gt;${uima.eclipse.version}&lt;/version&gt; &lt;!-- this comment is a flag for changeVersion - eclipse -->"/>
      
     </replace>
   </target>
