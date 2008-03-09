@@ -1726,7 +1726,9 @@ catch (PatternSyntaxException e) {
         <programlisting><![CDATA[<externalResourceDependency>
   <key>AcronymTable</key> 
   <description>Table of acronyms and their expanded forms.</description> 
-  <interfaceName>org.apache.uima.tutorial.ex6.StringMapResource</interfaceName> 
+  <interfaceName>
+    org.apache.uima.tutorial.ex6.StringMapResource
+  </interfaceName> 
 </externalResourceDependency>
 ]]></programlisting>
         
