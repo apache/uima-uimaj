@@ -138,7 +138,8 @@
       summary="yes"
       token='&lt;p class="releaseinfo">Version ${uima.prev.version}&lt;/p>'
       value='&lt;p class="releaseinfo">Version ${uima.version}&lt;/p>' />    
-    <echo message="Manually update the uima-docbooks/src/docbook/common_book_info.xml: &lt;pubdate>December, 2007&lt;/pubdate>" />
+    <echo message="Manually update the uima-docbooks/src/docbook/common_book_info.xml: &lt;pubdate>March, 2008&lt;/pubdate>" />
+  	<echo message='Manually update the uima-docbooks/src/index.html: &lt;p class="pubdate">March, 2008&lt;/p>' />
   </target>
 
 </project>
