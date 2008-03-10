@@ -226,16 +226,17 @@
               <tasks>
                 <!-- Build documentation -->
                 <ant dir="../uima-docbooks" inheritAll="false"/>
-                <!-- build eclipse update site -->
+                <!-- build eclipse update site 
+                     Deleted from here, moved to a "deploy" step -->
                   
-                <ant dir="../uimaj-eclipse-update-site">
+                <!--ant dir="../uimaj-eclipse-update-site"-->
                   <!-- property values from maven must be passed in 
                        using what looks like a redundant <property> statement.
                        See http://cwiki.apache.org/UIMA/maven-tips.html 
                          section on passing parameters to ant scripts -->
-                  <property name="uima-maven-build-eclipse-home" value="${uima-maven-build-eclipse-home}"/>                 
+                  <!--property name="uima-maven-build-eclipse-home" value="${uima-maven-build-eclipse-home}"/>                 
                   <property name="project.version" value="${uimaj-release-eclipse-version}"/>
-                </ant>            
+                </ant-->            
               </tasks>
             </configuration>
             <goals>
