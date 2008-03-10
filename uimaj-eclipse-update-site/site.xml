@@ -25,20 +25,20 @@
    </description>
    
    <!-- keep old features listed here - to permit the update site to provide the older features -->
-   <feature url="features/org.apache.uima.tools_2.2.2.incubating-SNAPSHOT.jar" id="org.apache.uima.tools" version="2.2.2.incubating-SNAPSHOT">
+   <feature url="features/org.apache.uima.tools_2.2.2.incubating.jar" id="org.apache.uima.tools" version="2.2.2.incubating">
       <category name="uima-tooling-and-runtimes"/>
    </feature>
-   <feature url="features/org.apache.uima.runtime_2.2.2.incubating-SNAPSHOT.jar" id="org.apache.uima.runtime" version="2.2.2.incubating-SNAPSHOT">
+   <feature url="features/org.apache.uima.runtime_2.2.2.incubating.jar" id="org.apache.uima.runtime" version="2.2.2.incubating">
       <category name="uima-tooling-and-runtimes"/>
    </feature>
-   <feature url="features/org.apache.uima.as.deployeditor_2.2.2.incubating-SNAPSHOT.jar" id="org.apache.uima.as.deployeditor" version="2.2.2.incubating-SNAPSHOT">
+   <feature url="features/org.apache.uima.as.deployeditor_2.2.2.incubating.jar" id="org.apache.uima.as.deployeditor" version="2.2.2.incubating">
       <category name="uima-as-tooling-and-runtimes"/>
    </feature>
    
-   <feature url="features/org.apache.uima.tools_2.2.1.incubating.jar" id="org.apache.uima.tools" version="2.2.1.incubating-SNAPSHOT">
+   <feature url="features/org.apache.uima.tools_2.2.1.incubating.jar" id="org.apache.uima.tools" version="2.2.1.incubating">
       <category name="uima-tooling-and-runtimes"/>
    </feature>
-   <feature url="features/org.apache.uima.runtime_2.2.1.incubating.jar" id="org.apache.uima.runtime" version="2.2.1.incubating-SNAPSHOT">
+   <feature url="features/org.apache.uima.runtime_2.2.1.incubating.jar" id="org.apache.uima.runtime" version="2.2.1.incubating">
       <category name="uima-tooling-and-runtimes"/>
    </feature>
    
