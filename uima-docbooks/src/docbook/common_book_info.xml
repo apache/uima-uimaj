@@ -21,7 +21,7 @@ under the License.
 -->  
 <bookinfo>
 
-    <releaseinfo>Version 2.2.2-incubating-SNAPSHOT</releaseinfo>
+    <releaseinfo>Version 2.2.2-incubating</releaseinfo>
 
     <productname>UIMA</productname>
 
@@ -90,5 +90,5 @@ under the License.
       <year>2006</year>     
       <holder>International Business Machines Corporation</holder>
     </copyright>
-    <pubdate>December, 2007</pubdate>
+    <pubdate>March, 2008</pubdate>
   </bookinfo>
