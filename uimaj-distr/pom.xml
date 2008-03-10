@@ -129,18 +129,7 @@
 			</plugins>
 		</pluginManagement>		
 		<plugins>
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<configuration>
-					<descriptors>
-						<descriptor>src/main/assembly/bin.xml</descriptor>
-            <descriptor>src/main/assembly/src.xml</descriptor>
-					</descriptors>
-					<finalName>uimaj-${uimaj-release-version}</finalName>
-          <tarLongFileMode>gnu</tarLongFileMode>
-				</configuration>
-			</plugin>
-      
+     
       <!-- This java doc config is for building the ones distributed with the bin packaging, and also 
            posted on our website.
         
@@ -152,7 +141,7 @@
 				<executions>
 					<execution>
 						<id>javadoc</id>
-						<phase>package</phase>
+						<phase>compile</phase>
                         <!--phase>deploy</phase-->   <!-- comment above and uncomment to disable javadocs, for testing/experimentation, with assembly:assembly-->
 						<goals>
 							<goal>javadoc</goal>
@@ -186,7 +175,28 @@
 					</execution>
 				</executions>
 			</plugin>
-      <plugin>
+      			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptors>
+						<descriptor>src/main/assembly/bin.xml</descriptor>
+            <descriptor>src/main/assembly/src.xml</descriptor>
+					</descriptors>
+					<finalName>uimaj-${uimaj-release-version}</finalName>
+          <tarLongFileMode>gnu</tarLongFileMode>
+				</configuration>
+				<executions>
+          			<execution>
+            			<id>make-assembly</id> <!-- this is used for inheritance merges -->
+            			<phase>package</phase> <!-- append to the packaging phase. -->
+			            <goals>
+			              <goal>attached</goal> <!-- goals == mojos -->
+			            </goals>
+       				</execution>
+        		</executions>
+			</plugin>
+			
+            <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
         <dependencies>
         	<!-- Ant -->
@@ -211,7 +221,7 @@
 		      </dependencies>
         <executions>
           <execution>
-            <phase>package</phase>
+            <phase>compile</phase>
             <configuration>
               <tasks>
                 <!-- Build documentation -->
@@ -232,6 +242,7 @@
               <goal>run</goal>
             </goals>
           </execution>
+          <!-- 
           <execution>
             <id>checksum</id>
             <phase>package</phase>
@@ -240,8 +251,7 @@
                 <checksum algorithm="sha1">
                   <fileset dir="target" includes="*.gz *.bz2 *.zip" />
                   <fileset dir="../uimaj-eclipse-update-site/target/eclipse-update-site/features"
-                           includes="*.jar"/> <!-- the features are tiny, and not packed, so 
-                                                   no need for *.pack.gz -->
+                           includes="*.jar"/> 
                   <fileset dir="../uimaj-eclipse-update-site/target/eclipse-update-site/plugins"
                            includes="*.jar *.pack.gz"/>
                 </checksum>
@@ -258,8 +268,10 @@
               <goal>run</goal>
             </goals>
           </execution>
+           -->
         </executions>
       </plugin>
+      
 		</plugins>
 	</build>	
 </project>

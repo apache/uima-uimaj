@@ -37,6 +37,17 @@ fi
 for i in target/${release}*.zip; do gpg --passphrase "$passphrase" --output $i.asc --detach-sig --armor $i; done
 for i in target/${release}*.gz;  do gpg --passphrase "$passphrase" --output $i.asc --detach-sig --armor $i; done
 for i in target/${release}*.bz2; do gpg --passphrase "$passphrase" --output $i.asc --detach-sig --armor $i; done
+
+# Create MD5 checksums
+for i in target/${release}*.zip; do md5sum --binary $i > $i.md5; done
+for i in target/${release}*.gz; do md5sum --binary $i > $i.md5; done
+for i in target/${release}*.bz2; do md5sum --binary $i > $i.md5; done
+
+# Create SHA1 checksums
+for i in target/${release}*.zip; do sha1sum --binary $i > $i.sha1; done
+for i in target/${release}*.gz; do sha1sum --binary $i > $i.sha1; done
+for i in target/${release}*.bz2; do sha1sum --binary $i > $i.sha1; done
+
 # for eclipse update site
 for i in ../uimaj-eclipse-update-site/target/eclipse-update-site/features/org.apache.uima.*.jar; do gpg --passphrase "$passphrase" --output $i.asc --detach-sig --armor $i; done
 for i in ../uimaj-eclipse-update-site/target/eclipse-update-site/plugins/org.apache.uima.*.jar;  do gpg --passphrase "$passphrase" --output $i.asc --detach-sig --armor $i; done
