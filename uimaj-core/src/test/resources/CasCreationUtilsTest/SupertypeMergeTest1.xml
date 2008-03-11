@@ -23,7 +23,7 @@
 
 <types>
 <typeDescription>
-<name>Sub</name>
+<name>uima.test.Sub</name>
 <description>Example type.</description>
 <supertypeName>uima.tcas.Annotation</supertypeName>
 </typeDescription>

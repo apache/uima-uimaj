@@ -23,12 +23,12 @@
 
 <types>
 <typeDescription>
-<name>Sub</name>
+<name>uima.test.Sub</name>
 <description>Example type.</description>
-<supertypeName>Super</supertypeName>
+<supertypeName>uima.test.Super</supertypeName>
 </typeDescription>
 <typeDescription>
-<name>Super</name>
+<name>uima.test.Super</name>
 <description>Example type.</description>
 <supertypeName>uima.tcas.Annotation</supertypeName>
 </typeDescription>

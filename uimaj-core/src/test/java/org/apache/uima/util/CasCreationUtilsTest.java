@@ -173,17 +173,17 @@ public class CasCreationUtilsTest extends TestCase {
     try {
       TypeSystemDescription ts1desc = UIMAFramework.getXMLParser().parseTypeSystemDescription(
               new XMLInputSource(JUnitExtension.getFile("CasCreationUtilsTest/SupertypeMergeTest1.xml")));
-      assertEquals("uima.tcas.Annotation", ts1desc.getType("Sub").getSupertypeName());
+      assertEquals("uima.tcas.Annotation", ts1desc.getType("uima.test.Sub").getSupertypeName());
       TypeSystemDescription ts2desc = UIMAFramework.getXMLParser().parseTypeSystemDescription(
               new XMLInputSource(JUnitExtension.getFile("CasCreationUtilsTest/SupertypeMergeTest2.xml")));
-      assertEquals("Super", ts2desc.getType("Sub").getSupertypeName());
+      assertEquals("uima.test.Super", ts2desc.getType("uima.test.Sub").getSupertypeName());
 
       ArrayList tsList = new ArrayList();
       tsList.add(ts1desc);
       tsList.add(ts2desc);
       TypeSystemDescription merged = CasCreationUtils.mergeTypeSystems(tsList, UIMAFramework
               .newDefaultResourceManager());
-      assertEquals("Super", merged.getType("Sub").getSupertypeName());
+      assertEquals("uima.test.Super", merged.getType("uima.test.Sub").getSupertypeName());
 
       // try merging in the other order - bug UIMA-826 was an order depenency in the behavior of
       // this kind of merging
@@ -192,7 +192,7 @@ public class CasCreationUtilsTest extends TestCase {
       tsList.add(ts1desc);
       merged = CasCreationUtils.mergeTypeSystems(tsList, UIMAFramework
               .newDefaultResourceManager());
-      assertEquals("Super", merged.getType("Sub").getSupertypeName());
+      assertEquals("uima.test.Super", merged.getType("uima.test.Sub").getSupertypeName());
 
     } catch (Exception e) {
       JUnitExtension.handleException(e);
