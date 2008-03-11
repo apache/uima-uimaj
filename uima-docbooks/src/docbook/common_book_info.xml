@@ -82,13 +82,13 @@ under the License.
       </formalpara>
     </legalnotice>
     <copyright>
-      <year>2006, 2008</year>
-      <holder>The Apache Software Foundation</holder>
-    </copyright>
-    <copyright>
       <year>2004</year>
       <year>2006</year>     
       <holder>International Business Machines Corporation</holder>
     </copyright>
-    <pubdate>March, 2008</pubdate>
+    <copyright>
+      <year>2006, 2008</year>
+      <holder>The Apache Software Foundation</holder>
+    </copyright>
+    <pubdate>April, 2008</pubdate>
   </bookinfo>
