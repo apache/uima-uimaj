@@ -1,0 +1,2235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd"[
+<!ENTITY % uimaents SYSTEM "../entities.ent" > 
+<!ENTITY tp "ugr.ref.xml.component_descriptor."> 
+%uimaents;
+]>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<chapter id="ugr.ref.xml.component_descriptor">
+  <title>Component Descriptor Reference</title>
+  
+  <para>This chapter is the reference guide for the UIMA SDK&apos;s Component Descriptor XML
+    schema. A <emphasis>Component Descriptor</emphasis> (also sometimes called a
+    <emphasis>Resource Specifier</emphasis> in the code) is an XML file that either (a)
+    completely describes a component, including all information needed to construct the
+    component and interact with it, or (b) specifies how to connect to and interact with an
+    existing component that has been published as a remote service.
+    <emphasis>Component</emphasis> (also called <emphasis>Resource</emphasis>) is a
+    general term for modules produced by UIMA developers and used by UIMA applications. The
+    types of Components are: Analysis Engines, Collection Readers, CAS
+    Initializers<footnote><para>This component is deprecated and should not be use in new
+    development.</para></footnote>, CAS Consumers, and Collection Processing Engines.
+    However, Collection Processing Engine Descriptors are significantly different in
+    format and are covered in a separate chapter, <olink targetdoc="&uima_docs_ref;"
+      targetptr="ugr.ref.xml.cpe_descriptor"/>.</para>
+  
+  <para><xref linkend="&tp;notation"/> describes the notation used in this
+    chapter.</para>
+  
+  <para><xref linkend="&tp;imports"/> describes the UIMA SDK&apos;s
+    <emphasis>import</emphasis> syntax, used to allow XML descriptors to import
+    information from other XML files, to allow sharing of information between several XML
+    descriptors.</para>
+  
+  <para><xref linkend="&tp;aes"/> describes the XML format for <emphasis>Analysis Engine
+    Descriptors</emphasis>. These are descriptors that completely describe Analysis
+    Engines, including all information needed to construct and interact with them.</para>
+  
+  <para><xref linkend="&tp;collection_processing_parts"/> describes the XML format for
+    <emphasis>Collection Processing Component Descriptors</emphasis>. This includes
+    Collection Iterator, CAS Initializer, and CAS Consumer Descriptors.</para>
+  
+  <para><xref linkend="&tp;service_client"/> describes the XML format for
+    <emphasis>Service Client Descriptors</emphasis>, which specify how to connect to and
+    interact with resources deployed as remote services.</para>
+
+   <para><xref linkend="&tp;custom_resource_specifiers"/> describes the XML format for
+    <emphasis>Custom Resource Specifiers</emphasis>, which allow you to plug in your
+    own Java class as a UIMA Resource.</para>
+	  
+  <section id="&tp;notation">
+    <title>Notation</title>
+    
+    <para>This chapter uses an informal notation to specify the syntax of Component
+      Descriptors. The formal syntax is defined by an XML schema definition, which is
+      contained in the file <literal>resourceSpecifierSchema.xsd</literal>,  
+      located in the <literal>uima-core.jar</literal> file.</para>
+    
+    <para>The notation used in this chapter is:</para>
+    
+    <itemizedlist><listitem><para>An ellipsis (...) inside an element body indicates
+      that the substructure of that element has been omitted (to be described in another
+      section of this chapter). An example of this would be:
+      
+      
+      <programlisting>&lt;analysisEngineMetaData&gt;
+...
+&lt;/analysisEngineMetaData&gt;</programlisting>
+      An ellipsis immediately after an element indicates that the element type may be may be
+      repeated arbitrarily many times. For example:
+      
+      
+      <programlisting>&lt;parameter&gt;[String]&lt;/parameter&gt;
+&lt;parameter&gt;[String]&lt;/parameter&gt;
+...</programlisting>
+      indicates that there may be arbitrarily many parameter elements in this
+      context.</para></listitem>
+      
+      <listitem><para>Bracketed expressions (e.g. <literal>[String]</literal>)
+        indicate the type of value that may be used at that location.</para></listitem>
+      
+      <listitem><para>A vertical bar, as in <literal>true|false</literal>, indicates
+        alternatives. This can be applied to literal values, bracketed type names, and
+        elements.</para></listitem>
+      
+      <listitem><para>Which elements are optional and which are required is specified in
+        prose, not in the syntax definition. </para></listitem></itemizedlist>
+  </section>
+  
+  <section id="&tp;imports">
+    <title>Imports</title>
+    
+    <para>The UIMA SDK defines a particular syntax for XML descriptors to import information
+      from other XML files. When one of the following appears in an XML descriptor:
+      
+      
+      <programlisting>&lt;import location="[URL]" /&gt; or
+&lt;import name="[Name]" /&gt;</programlisting>
+      it indicates that information from a separate XML file is being imported. Note that
+      imports are allowed only in certain places in the descriptor. In the remainder of this
+      chapter, it will be indicated at which points imports are allowed.</para>
+    
+    <para>If an import specifies a <literal>location</literal> attribute, the value of
+      that attribute specifies the URL at which the XML file to import will be found. This can be
+      a relative URL, which will be resolved relative to the descriptor containing the
+      <literal>import</literal> element, or an absolute URL. Relative URLs can be written
+      without a protocol/scheme (e.g., <quote>file:</quote>), and without a host machine
+      name. In this case the relative URL might look something like
+      <literal>org/apache/myproj/MyTypeSystem.xml.</literal></para>
+    
+    <para>An absolute URL is written with one of the following prefixes, followed by a path
+      such as <literal>org/apache/myproj/MyTypeSystem.xml</literal>:
+      
+      <itemizedlist spacing="compact"><listitem><para>file:/ &larr; has no network
+        address</para></listitem>
+        <listitem><para>file:/// &larr; has an empty network address</para></listitem>
+        <listitem><para>file://some.network.address/</para></listitem>
+        </itemizedlist></para>
+    
+    <para>For more information about URLs, please read the javadoc information for the Java
+      class <quote>URL</quote>.</para>
+    
+    <para>If an import specifies a <literal>name</literal> attribute, the value of that
+      attribute should take the form of a Java-style dotted name (e.g.
+      <literal>org.apache.myproj.MyTypeSystem</literal>). An .xml file with this name
+      will be searched for in the classpath or datapath (described below). As in Java, the dots
+      in the name will be converted to file path separators. So an import specifying the
+      example name in this paragraph will result in a search for
+      <literal>org/apache/myproj/MyTypeSystem.xml</literal> in the classpath or
+      datapath.</para>
+    
+    <para id="&tp;datapath">The datapath works similarly to the classpath but can be set programmatically
+      through the resource manager API. Application developers can specify a datapath
+      during initialization, using the following code:
+      
+      
+      <programlisting>
+ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
+resMgr.setDataPath(yourPathString);
+AnalysisEngine ae = UIMAFramework.produceAE(desc, resMgr, null);
+</programlisting></para>
+    
+    <para>The default datapath for the entire JVM can be set via the
+      <literal>uima.datapath</literal> Java system property, but this feature should
+      only be used for standalone applications that don&apos;t need to run in the same JVM as
+      other code that may need a different datapath.</para>
+    <para>Previous versions of UIMA also supported XInclude. That support didn't work in
+      many situations, and it is no longer supported. To include other files, please use
+      &lt;import&gt;.</para>
+    <!--
+    <para>The UIMA SDK also supports XInclude, a W3C candidate recommendation,
+    to include XML files within other XML files.  However, it is recommended that the import syntax be used instead, as it
+    is more flexible and better supports tool developers.</para>
+    
+    <note><para>UIMA tools for editing XML
+    descriptors do not support the use of xi:include because they cannot correctly
+    determine what parts of a descriptor are updatable, and what parts are included
+    from other files.  They do support the
+    use of &lt;import&gt;.
+    </para></note>
+    
+    <para>To use XInclude, you first must include the XInclude
+    namespace in your document&apos;s root element, e.g.:</para>
+    
+    <programlisting>&lt;analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier" xmlns:xi="http://www.w3.org/2001/XInclude"&gt;</programlisting>
+    
+    <para>Then, you can include a file using the syntax <literal>&lt;xi:include
+    href="[URL]"/&gt;</literal></para>
+    
+    <para>where [URL] can be any relative or absolute URL referring
+    to another XML document.  The referred-to
+    document must be a valid XML document, meaning that it must consist of exactly
+    one root element and must define all of the namespace prefixes that it uses.  The default namespace (generally <literal>http://uima.apache.org/resourceSpecifier</literal>) will be
+    inherited from the parent document.   When UIMA parses the XML document, it will automatically replace the <literal>&lt;xi:include&gt; </literal>element with the entire XML document
+    referred to by the href.  For more
+    information on XInclude see 
+    <a href="http://www.w3.org/TR/xinclude/">http://www.w3.org/TR/xinclude/</a>.</para>
+    -->
+    
+  </section>
+  
+  <section id="&tp;type_system">
+    <title>Type System Descriptors</title>
+    
+    <para>A Type System Descriptor is used to define the types and features that can be
+      represented in the CAS. A Type System Descriptor can be imported into an Analysis Engine
+      or Collection Processing Component Descriptor.</para>
+    
+    <para>The basic structure of a Type System Descriptor is as follows:
+      
+      
+      <programlisting><![CDATA[<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
+
+  <name> [String] </name>
+  <description>[String]</description>
+  <version>[String]</version>
+  <vendor>[String]</vendor> 
+
+  <imports>
+    <import ...>
+    ...
+  </imports> 
+
+  <types>
+    <typeDescription>
+      ...
+    </typeDescription>
+
+    ...
+
+  </types>
+
+</typeSystemDescription>]]></programlisting></para>
+    
+    <para>All of the subelements are optional.</para>
+    
+    <section id="&tp;type_system.imports">
+      <title>Imports</title>
+      
+      <para>The <literal>imports</literal> section allows this descriptor to import
+        types from other type system descriptors. The import syntax is described in <xref
+          linkend="&tp;imports"/>. A type system may import any number of other type
+        systems and then define additional types which refer to imported types. Circular
+        imports are allowed.</para>
+    </section>
+    
+    <section id="&tp;type_system.types">
+      <title>Types</title>
+      
+      <para>The <literal>types</literal> element contains zero or more
+        <literal>typeDescription</literal> elements. Each
+        <literal>typeDescription</literal> has the form:
+        
+        
+        <programlisting><![CDATA[<typeDescription>
+  <name>[TypeName]</name>
+  <description>[String]</description>
+  <supertypeName>[TypeName]</supertypeName>
+  <features>
+    ...
+  </features>
+</typeDescription>]]></programlisting></para>
+      
+      <para>The name element contains the name of the type. A
+        <literal>[TypeName]</literal> is a dot-separated list of names, where each name
+        consists of a letter followed by any number of letters, digits, or underscores.
+        <literal>TypeNames</literal> are case sensitive. Letter and digit are as defined
+        by Java; therefore, any Unicode letter or digit may be used (subject to the character
+        encoding defined by the descriptor file&apos;s XML header). The name following the
+        final dot is considered to be the <quote>short name</quote> of the type; the
+        preceding portion is the namespace (analogous to the package.class syntax used in
+        Java). Namespaces beginning with uima are reserved and should not be used. Examples
+        of valid type names are:</para>
+      
+      <itemizedlist spacing="compact"><listitem><para>test.TokenAnnotation</para>
+        </listitem>
+        
+        <listitem><para>org.myorg.TokenAnnotation</para></listitem>
+        
+        <listitem><para>com.my_company.proj123.TokenAnnotation </para></listitem>
+        </itemizedlist>
+      
+      <para>These would all be considered distinct types since they have different
+        namespaces. Best practice here is to follow the normal Java naming conventions of
+        having namespaces be all lowercase, with the short type names having an initial
+        capital, but this is not mandated, so <literal>ABC.mYtyPE</literal> is an allowed
+        type name. While type names without namespaces (e.g.
+        <literal>TokenAnnotation</literal> alone) are allowed, but discouraged because
+        naming conflicts can then result when combining annotators that use different
+        type systems.</para>
+      
+      <para>The <literal>description</literal> element contains a textual description
+        of the type. The <literal>supertypeName</literal> element contains the name of the
+        type from which it inherits (this can be set to the name of another user-defined type,
+        or it may be set to any built-in type which may be subclassed, such as
+        <literal>uima.tcas.Annotation</literal> for a new annotation
+        type or <literal>uima.cas.TOP</literal> for a new type that is not
+        an annotation). All three of these elements are required.</para>
+      
+    </section>
+    
+    <section id="&tp;type_system.features">
+      <title>Features</title>
+      
+      <para>The <literal>features</literal> element of a
+        <literal>typeDescription</literal> is required only if the type we are specifying
+        introduces new features. If the <literal>features</literal> element is present,
+        it contains zero or more <literal>featureDescription</literal> elements, each of
+        which has the form:</para>
+      
+      
+      <programlisting><![CDATA[<featureDescription>
+  <name>[Name]</name>
+  <description>[String]</description>
+  <rangeTypeName>[Name]</rangeTypeName>
+  <elementType>[Name]</elementType>
+  <multipleReferencesAllowed>true|false</multipleReferencesAllowed>
+</featureDescription>]]></programlisting>
+      
+      <para>A feature&apos;s name follows the same rules as a type short name &ndash; a letter
+        followed by any number of letters, digits, or underscores. Feature names are case
+        sensitive.</para>
+      
+      <para>The feature&apos;s <literal>rangeTypeName</literal> specifies the type of
+        value that the feature can take. This may be the name of any type defined in your type
+        system, or one of the predefined types. All of the predefined types have names that are
+        prefixed with <literal>uima.cas</literal> or <literal>uima.tcas</literal>,
+        for example:
+        
+        
+        <programlisting>uima.cas.TOP 
+uima.cas.String
+uima.cas.Long 
+uima.cas.FSArray
+uima.cas.StringList
+uima.tcas.Annotation.</programlisting>
+        For a complete list of predefined types, see the CAS API documentation.</para>
+      
+      <para>The <literal>elementType</literal> of a feature is optional, and applies only
+        when the <literal>rangeTypeName</literal> is
+        <literal>uima.cas.FSArray</literal> or <literal>uima.cas.FSList</literal>
+        The <literal>elementType</literal> specifies what type of value can be assigned as
+        an element of the array or list. This must be the name of a non-primitive type. If
+        omitted, it defaults to <literal>uima.cas.TOP</literal>, meaning that any
+        FeatureStructure can be assigned as an element the array or list. Note: depending on
+        the CAS Interface that you use in your code, this constraint may or may not be
+        enforced.</para>
+      
+      <para>The <literal>multipleReferencesAllowed</literal> feature is optional, and
+        applies only when the <literal>rangeTypeName</literal> is an array or list type (it
+        applies to arrays and lists of primitive as well as non-primitive types). Setting
+        this to false (the default) indicates that this feature has exclusive ownership of
+        the array or list, so changes to the array or list are localized. Setting this to true
+        indicates that the array or list may be shared, so changes to it may affect other
+        objects in the CAS. Note: there is currently no guarantee that the framework will
+        enforce this restriction. However, this setting may affect how the CAS is
+        serialized.</para>
+      
+    </section>
+    
+    <section id="&tp;type_system.string_subtypes">
+      <title>String Subtypes</title>
+      
+      <para>There is one other special type that you can declare &ndash; a subset of the String
+        type that specifies a restricted set of allowed values. This is useful for features
+        that can have only certain String values, such as parts of speech. Here is an example of
+        how to declare such a type:</para>
+      
+      
+      <programlisting><![CDATA[<typeDescription>
+  <name>PartOfSpeech</name>
+  <description>A part of speech.</description>
+  <supertypeName>uima.cas.String</supertypeName>
+  <allowedValues>
+    <value>
+      <string>NN</string>
+      <description>Noun, singular or mass.</description>
+    </value>
+    <value>
+      <string>NNS</string>
+      <description>Noun, plural.</description>
+    </value>
+    <value>
+      <string>VB</string>
+      <description>Verb, base form.</description>
+    </value>
+    ...
+  </allowedValues>
+</typeDescription>]]></programlisting>
+      
+    </section>
+  </section>
+  
+  <section id="&tp;aes">
+    <title>Analysis Engine Descriptors</title>
+    
+    <para>Analysis Engine (AE) descriptors completely describe Analysis Engines. There
+      are two basic types of Analysis Engines &ndash; <emphasis>Primitive</emphasis> and
+      <emphasis>Aggregate</emphasis>. A <emphasis>Primitive</emphasis> Analysis
+      Engine is a container for a single <emphasis>annotator</emphasis>, where as an
+      <emphasis>Aggregate</emphasis> Analysis Engine is composed of a collection of other
+      Analysis Engines. (For more information on this and other terminology, see <olink
+        targetdoc="&uima_docs_overview;" targetptr="ugr.ovv.conceptual"/>).</para>
+    
+    <para>Both Primitive and Aggregate Analysis Engines have descriptors, and the two types
+      of descriptors have some similarities and some differences. <xref linkend="&tp;aes.primitive"/>
+      discusses Primitive Analysis Engine descriptors.  <xref linkend="&tp;aes.aggregate"/> then 
+      describes how Aggregate Analysis Engine descriptors are different.</para>
+    
+    <section id="&tp;aes.primitive">
+      <title>Primitive Analysis Engine Descriptors</title>
+      
+      <section id="&tp;aes.primitive.basic">
+        <title>Basic Structure</title>
+        
+        
+        <programlisting><![CDATA[<?xml version="1.0" encoding="UTF-8" ?>
+<analysisEngineDescription 
+        xmlns="http://uima.apache.org/resourceSpecifier">
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation> 
+
+  <primitive>true</primitive>
+  <annotatorImplementationName> [String] </annotatorImplementationName>
+
+  <analysisEngineMetaData>
+    ...
+  </analysisEngineMetaData>
+
+  <externalResourceDependencies>
+    ...
+  </externalResourceDependencies>
+
+  <resourceManagerConfiguration>
+    ...
+  </resourceManagerConfiguration>
+
+</analysisEngineDescription>]]></programlisting>
+        
+        <para>The document begins with a standard XML header. The recommended root tag is
+          <literal>&lt;analysisEngineDescription&gt;</literal>, although
+          <literal>&lt;taeDescription&gt;</literal> is also allowed for backwards
+          compatibility.</para>
+        
+        <para>Within the root element we declare that we are using the XML namespace
+          <literal>http://uima.apache.org/resourceSpecifier.</literal> It is
+          required that this namespace be used; otherwise, the descriptor will not be able to
+          be validated for errors.</para>
+        
+        <para> The first subelement,
+          <literal>&lt;frameworkImplementation&gt;,</literal> currently must have
+          the value <literal>org.apache.uima.java</literal>, or
+          <literal>org.apache.uima.cpp</literal>. In future versions, there may be
+          other framework implementations, or perhaps implementations produced by other
+          vendors.</para>
+        
+        <para>The second subelement, <literal>&lt;primitive&gt;,</literal> contains
+          the Boolean value <literal>true</literal>, indicating that this XML document
+          describes a <emphasis>Primitive</emphasis> Analysis Engine.</para>
+        
+        <para>The next subelement,<literal>
+          &lt;annotatorImplementationName&gt;</literal> is how the UIMA framework
+          determines which annotator class to use. This should contain a fully-qualified
+          Java class name for Java implementations, or the name of a .dll or .so file for C++
+          implementations.</para>
+        
+        <para>The <literal>&lt;analysisEngineMetaData&gt;</literal> object contains
+          descriptive information about the analysis engine and what it does. It is
+          described in <xref linkend="&tp;aes.metadata"/>.</para>
+        
+        <para>The <literal>&lt;externalResourceDependencies&gt;</literal> and
+          <literal>&lt;resourceManagerConfiguration&gt;</literal> elements declare
+          the external resource files that the analysis engine relies
+          upon. They are optional and are described in <xref
+            linkend="&tp;aes.primitive.external_resource_dependencies"/> and <xref
+            linkend="&tp;aes.primitive.resource_manager_configuration"/>.</para>
+        
+        </section>
+      
+        <section id="&tp;aes.metadata">
+          <title>Analysis Engine MetaData</title>
+          
+          
+          <programlisting><![CDATA[<analysisEngineMetaData>
+  <name> [String] </name>
+  <description>[String]</description>
+  <version>[String]</version>
+  <vendor>[String]</vendor>
+
+  <configurationParameters> ...  </configurationParameters>
+
+  <configurationParameterSettings>
+    ...
+  </configurationParameterSettings> 
+
+  <typeSystemDescription> ... </typeSystemDescription> 
+
+  <typePriorities> ... </typePriorities> 
+
+  <fsIndexCollection> ... </fsIndexCollection>
+
+  <capabilities> ... </capabilities>
+
+  <operationalProperties> ... </operationalProperties>
+
+</analysisEngineMetaData>]]></programlisting>
+          
+          <para>The <literal>analysisEngineMetaData</literal> element contains four
+            simple string fields &ndash; <literal>name</literal>,
+            <literal>description</literal>, <literal>version</literal>, and
+            <literal>vendor</literal>. Only the <literal>name</literal> field is
+            required, but providing values for the other fields is recommended. The
+            <literal>name</literal> field is just a descriptive name meant to be read by
+            users; it does not need to be unique across all Analysis Engines.</para>
+          
+          <para>The other sub-elements &ndash;
+            <literal>configurationParameters</literal>,
+            <literal>configurationParameterSettings</literal>,
+            <literal>typeSystemDescription</literal>,
+            <literal>typePriorities</literal>, <literal>fsIndexes</literal>,
+            <literal>capabilities</literal> and
+            <literal>operationalProperties</literal> are described in the following
+            sections. The only one of these that is required is
+            <literal>capabilities</literal>; the others are optional.</para>
+          
+        </section>
+        
+        <section id="&tp;aes.configuration_parameter_declaration">
+          <title>Configuration Parameter Declaration</title>
+          
+          <para>Configuration Parameters are made available to annotator
+            implementations and applications by the following interfaces:
+            <literal>AnnotatorContext</literal> <footnote><para>Deprecated; use
+            UimaContext instead.</para></footnote> (passed as an argument to the
+            initialize() method of a version 1 annotator),
+            <literal>ConfigurableResource</literal> (every Analysis Engine
+            implements this interface), and the <literal>UimaContext</literal> (passed
+            as an argument to the initialize() method of a version 2 annotator) (you can get
+            this from any resource, including Analysis Engines, using the method
+            <literal>getUimaContext</literal>()).</para>
+          
+          <para>Use AnnotatorContext within version 1 annotators and UimaContext for
+            version 2 annotators and outside of annotators (for instance, in CasConsumers,
+            or the containing application) to access configuration parameters.</para>
+          
+          <para>Configuration parameters are set from the corresponding elements in the
+            XML descriptor for the application. If you need to programmatically change
+            parameter settings within an application, you can use methods in
+            ConfigurableResource; if you do this, you need to call reconfigure()
+            afterwards to have the UIMA framework notify all the contained analysis
+            components that the parameter configuration has changed (the analysis
+            engine&apos;s reinitialize() methods will be called). Note that in the current
+            implementation, only integrated deployment components have configuration
+            parameters passed to them; remote components obtain their parameters from
+            their remote startup environment. This will likely change in the
+            future.</para>
+          
+          <para>There are two ways to specify the
+            <literal>&lt;configurationParameters&gt;</literal> section &ndash; as a
+            list of configuration parameters or a list of groups. A list of parameters, which
+            are not part of any group, looks like this:
+            
+            
+            <programlisting><![CDATA[<configurationParameters>
+  <configurationParameter>
+    <name>[String]</name> 
+    <description>[String]</description> 
+    <type>String|Integer|Float|Boolean</type> 
+    <multiValued>true|false</multiValued> 
+    <mandatory>true|false</mandatory>
+    <overrides>
+      <parameter>[String]</parameter>
+      <parameter>[String]</parameter>
+        ...
+    </overrides>
+  </configurationParameter>
+  <configurationParameter>
+    ...
+  </configurationParameter>
+    ...
+</configurationParameters>]]></programlisting></para>
+          
+          <para>For each configuration parameter, the following are specified:</para>
+          
+          <itemizedlist><listitem><para><emphasis role="bold">name</emphasis>
+            &ndash; the name by which the annotator code refers to the parameter. All
+            parameters declared in an analysis engine descriptor must have distinct names.
+            (required). The name is composed of normal Java identifier characters.</para>
+            </listitem>
+            
+            <listitem><para><emphasis role="bold">description</emphasis> &ndash; a
+              natural language description of the intent of the parameter
+              (optional)</para></listitem>
+            
+            <listitem><para><emphasis role="bold">type</emphasis> &ndash; the data
+              type of the parameter&apos;s value &ndash; must be one of
+              <literal>String</literal>, <literal>Integer</literal>,
+              <literal>Float</literal>, or <literal>Boolean</literal>
+              (required).</para></listitem>
+            
+            <listitem><para><emphasis role="bold">multiValued</emphasis> &ndash;
+              <literal>true</literal> if the parameter can take multiple-values (an
+              array), <literal>false</literal> if the parameter takes only a single value
+              (optional, defaults to false).</para></listitem>
+            
+            <listitem><para><emphasis role="bold">mandatory</emphasis> &ndash;
+              <literal>true</literal> if a value must be provided for the parameter
+              (optional, defaults to false).</para></listitem>
+            
+            <listitem><para><emphasis role="bold">overrides</emphasis> &ndash; this
+              is used only in aggregate Analysis Engines, but is included here for
+              completeness. See <xref
+                linkend="&tp;aes.aggregate.configuration_parameter_overrides"/>
+              for a discussion of configuration parameter overriding in aggregate
+              Analysis Engines. (optional) </para></listitem></itemizedlist>
+          
+          <para>A list of groups looks like this:
+            
+            
+            <programlisting><![CDATA[<configurationParameters defaultGroup="[String]"
+    searchStrategy="none|default_fallback|language_fallback" >
+
+  <commonParameters>
+    [zero or more parameters]
+  </commonParameters>
+
+  <configurationGroup names="name1 name2 name3 ...">
+    [zero or more parameters]
+  </configurationGroup>
+
+  <configurationGroup names="name4 name5 ...">
+    [zero or more parameters]
+  </configurationGroup>
+
+  ...
+
+</configurationParameters>]]></programlisting></para>
+          
+          <para>Both the<literal> &lt;commonParameters&gt;</literal> and
+            <literal>&lt;configurationGroup&gt;</literal> elements contain zero or
+            more <literal>&lt;configurationParameter&gt;</literal> elements, with
+            the same syntax described above.</para>
+          
+          <para>The <literal>&lt;commonParameters&gt;</literal> element declares
+            parameters that exist in all groups. Each
+            <literal>&lt;configurationGroup&gt;</literal> element has a names
+            attribute, which contains a list of group names separated by whitespace (space
+            or tab characters). Names consist of any number of non-whitespace characters;
+            however the Component Descriptor Editor tool restricts this to be normal Java
+            identifiers, including the period (.) and the dash (-). One configuration group
+            will be created for each name, and all of the groups will contain the same set of
+            parameters.</para>
+          
+          <para>The <literal>defaultGroup</literal> attribute specifies the name of the
+            group to be used in the case where an annotator does a lookup for a configuration
+            parameter without specifying a group name. It may also be used as a fallback if the
+            annotator specifies a group that does not exist &ndash; see below.</para>
+          
+          <para>The <literal>searchStrategy</literal> attribute determines the action
+            to be taken when the context is queried for the value of a parameter belonging to a
+            particular configuration group, if that group does not exist or does not contain
+            a value for the requested parameter. There are currently three possible values:
+            
+            <itemizedlist><listitem><para><emphasis role="bold">none</emphasis>
+              &ndash; there is no fallback; return null if there is no value in the exact group
+              specified by the user.</para></listitem>
+              
+              <listitem><para><emphasis role="bold">default_fallback</emphasis>
+                &ndash; if there is no value found in the specified group, look in the default
+                group (as defined by the <literal>default</literal> attribute)</para>
+                </listitem>
+              
+              <listitem><para><emphasis role="bold">language_fallback</emphasis>
+                &ndash; this setting allows for a specific use of configuration parameter
+                groups where the groups names correspond to ISO language and country codes
+                (for an example, see below). The fallback sequence is:
+                <literal>&lt;lang&gt;_&lt;country&gt;_&lt;region&gt; &rarr;
+                &lt;lang&gt;_&lt;country&gt; &rarr; &lt;lang&gt; &rarr;
+                &lt;default&gt;.</literal> </para></listitem></itemizedlist>
+            </para>
+          
+          <section id="&tp;aes.configuration_parameter_declaration.example">
+            <title>Example</title>
+            
+            
+            <programlisting><![CDATA[<configurationParameters defaultGroup="en"
+        searchStrategy="language_fallback">
+
+  <commonParameters>
+    <configurationParameter>
+      <name>DictionaryFile</name>
+      <description>Location of dictionary for this
+           language</description>
+      <type>String</type>
+      <multiValued>false</multiValued>
+      <mandatory>false</mandatory>
+    </configurationParameter>
+  </commonParameters>
+
+  <configurationGroup names="en de en-US"/>
+
+  <configurationGroup names="zh">
+    <configurationParameter>
+      <name>DBC_Strategy</name>
+      <description>Strategy for dealing with double-byte
+          characters.</description>
+      <type>String</type>
+      <multiValued>false</multiValued>
+      <mandatory>false</mandatory>
+    </configurationParameter>
+  </configurationGroup>
+
+</configurationParameters>]]></programlisting>
+            
+            <para>In this example, we are declaring a <literal>DictionaryFile</literal>
+              parameter that can have a different value for each of the languages that our AE
+              supports
+              &ndash; English (general), German, U.S. English, and Chinese. For Chinese
+              only, we also declare a <literal>DBC_Strategy</literal>
+              parameter.</para>
+            
+            <para>We are using the <literal>language_fallback</literal> search
+              strategy, so if an annotator requests the dictionary file for the
+              <literal>en-GB</literal> (British English) group, we will fall back to the
+              more general <literal>en</literal> group.</para>
+            
+            <para>Since we have defined <literal>en</literal> as the default group, this
+              value will be returned if the context is queried for the
+              <literal>DictionaryFile</literal> parameter without specifying any
+              group name, or if a nonexistent group name is specified.</para>
+          </section>
+        </section>
+        
+        <section id="&tp;aes.configuration_parameter_settings">
+          <title>Configuration Parameter Settings</title>
+          
+          <para>If no configuration groups were declared, the
+            <literal>&lt;configurationParameterSettings&gt;</literal> element
+            looks like this:
+            
+            
+            <programlisting><![CDATA[<configurationParameterSettings>
+  <nameValuePair>
+    <name>[String]</name> 
+    <value>
+      <string>[String]</string>  | 
+      <integer>[Integer]</integer> |
+      <float>[Float]</float> |
+      <boolean>true|false</boolean>  |
+      <array> ... </array>
+    </value>
+  </nameValuePair>
+
+  <nameValuePair>
+    ...
+  </nameValuePair>
+  ...
+</configurationParameterSettings>]]></programlisting></para>
+          
+          <para>There are zero or more <literal>nameValuePair</literal> elements. Each
+            <literal>nameValuePair</literal> contains a name (which refers to one of the
+            configuration parameters) and a value for that parameter.</para>
+          
+          <para>The <literal>value</literal> element contains an element that matches
+            the type of the parameter. For single-valued parameters, this is either
+            <literal>&lt;string&gt;</literal>, <literal>&lt;integer&gt;</literal>
+            , <literal>&lt;float&gt;</literal>, or
+            <literal>&lt;boolean&gt;</literal>. For multi-valued parameters, this is
+            an <literal>&lt;array&gt;</literal> element, which then contains zero or
+            more instances of the appropriate type of primitive value, e.g.:
+            
+            
+            <programlisting>&lt;array&gt;&lt;string&gt;One&lt;/string&gt;&lt;string&gt;Two&lt;/string&gt;&lt;/array&gt;</programlisting></para>
+          
+          <para>If configuration groups were declared, then the
+            <literal>&lt;configurationParameterSettings&gt;</literal> element
+            looks like this:
+            
+            
+            <programlisting><![CDATA[<configurationParameterSettings>
+
+  <settingsForGroup name="[String]">
+    [one or more <nameValuePair> elements]
+  </settingsForGroup>
+
+  <settingsForGroup name="[String]">
+    [one or more <nameValuePair> elements]
+  </settingsForGroup>
+
+...
+
+</configurationParameterSettings>]]></programlisting>
+            where each <literal>&lt;settingsForGroup&gt;</literal> element has a name
+            that matches one of the configuration groups declared under the
+            <literal>&lt;configurationParameters&gt;</literal> element and contains
+            the parameter settings for that group.</para>
+          
+          <section id="&tp;aes.configuration_parameter_settings.example">
+            <title>Example</title>
+            
+            <para>Here are the settings that correspond to the parameter declarations in
+              the previous example:
+              
+              
+              <programlisting><![CDATA[<configurationParameterSettings>
+
+  <settingsForGroup name="en">
+    <nameValuePair>
+      <name>DictionaryFile</name>
+      <value><string>resourcesEnglishdictionary.dat></string></value>
+    </nameValuePair>
+  </settingsForGroup>     
+
+  <settingsForGroup name="en-US">
+    <nameValuePair>
+      <name>DictionaryFile</name>
+      <value><string>resourcesEnglish_USdictionary.dat</string></value>
+    </nameValuePair>
+  </settingsForGroup>
+
+  <settingsForGroup name="de">
+    <nameValuePair>
+      <name>DictionaryFile</name>
+      <value><string>resourcesDeutschdictionary.dat</string></value>
+    </nameValuePair>
+  </settingsForGroup>
+
+  <settingsForGroup name="zh">
+    <nameValuePair>
+      <name>DictionaryFile</name>
+      <value><string>resourcesChinesedictionary.dat</string></value>
+    </nameValuePair>
+
+    <nameValuePair>
+      <name>DBC_Strategy</name>
+      <value><string>default</string></value>
+    </nameValuePair>
+
+  </settingsForGroup>
+
+</configurationParameterSettings>]]></programlisting></para>
+          </section>
+          </section>
+      
+          <section id="&tp;aes.type_system">
+            <title>Type System Definition</title>
+            
+            
+            <programlisting><![CDATA[<typeSystemDescription>
+
+  <name> [String] </name>
+  <description>[String]</description>
+  <version>[String]</version>
+  <vendor>[String]</vendor> 
+
+  <imports>
+    <import ...>
+    ...
+  </imports> 
+
+  <types>
+    <typeDescription>
+      ...
+    </typeDescription>
+
+    ...
+
+  </types>
+
+</typeSystemDescription>]]></programlisting>
+            
+            <para>A <literal>typeSystemDescription</literal> element defines a type
+              system for an Analysis Engine. The syntax for the element is described in <xref
+                linkend="&tp;type_system"/>.</para>
+            
+            <para>The recommended usage is to <literal>import</literal> an external type
+              system, using the import syntax described in <xref linkend="&tp;imports"/>
+              of this chapter. For example:
+              
+              
+              <programlisting>&lt;typeSystemDescription&gt;
+  &lt;imports&gt;
+    &lt;import location="MySharedTypeSystem.xml"&gt;
+  &lt;/imports&gt;
+&lt;/typeSystemDescription&gt;</programlisting></para>
+            
+            <para>This allows several AEs to share a single type system definition. The file
+              <literal>MySharedTypeSystem.xml</literal> would then contain the full
+              type system information, including the <literal>name</literal>,
+              <literal>description</literal>, <literal>vendor</literal>,
+              <literal>version</literal>, and <literal>types</literal>.</para>
+            
+          </section>
+          <section id="&tp;aes.type_priority">
+            <title>Type Priority Definition</title>
+            
+            
+            <programlisting><![CDATA[<typePriorities>
+  <name> [String] </name>
+  <description>[String]</description>
+  <version>[String]</version>
+  <vendor>[String]</vendor>
+
+  <imports>
+    <import ...>
+    ...
+  </imports> 
+
+  <priorityLists>
+    <priorityList>
+      <type>[TypeName]</type>
+      <type>[TypeName]</type>
+        ...
+    </priorityList>
+
+    ...
+
+  </priorityLists>
+</typePriorities>]]></programlisting>
+            
+            <para>The <literal>&lt;typePriorities&gt;</literal> element contains
+              zero or more <literal>&lt;priorityList&gt;</literal> elements; each
+              <literal>&lt;priorityList&gt;</literal> contains zero or more types.
+              Like a type system, a type priorities definition may also declare a name,
+              description, version, and vendor, and may import other type priorities. See
+                <xref linkend="&tp;imports"/> for the import syntax.</para>
+            
+            <para>Type priority is used when iterating over feature structures in the CAS.
+              For example, if the CAS contains a <literal>Sentence</literal> annotation
+              and a <literal>Paragraph</literal> annotation with the same span of text
+              (i.e. a one-sentence paragraph), which annotation should be returned first
+              by an iterator? Probably the Paragraph, since it is conceptually
+              <quote>bigger,</quote> but the framework does not know that and must be
+              explicitly told that the Paragraph annotation has priority over the Sentence
+              annotation, like this:
+              
+              
+              <programlisting>&lt;typePriorities&gt;
+  &lt;priorityList&gt;
+    &lt;type&gt;org.myorg.Paragraph&lt;/type&gt;
+    &lt;type&gt;org.myorg.Sentence&lt;/type&gt;
+  &lt;/priorityList&gt;
+&lt;/typePriorities&gt;</programlisting></para>
+            
+            <para>All of the <literal>&lt;priorityList&gt;</literal> elements defined
+              in the descriptor (and in all component descriptors of an aggregate analysis
+              engine descriptor) are merged to produce a single priority list.</para>
+            
+            <para>Subtypes of types specified here are also ordered, unless overridden by
+              another user-specified type ordering. For example, if you specify type A
+              comes before type B, then subtypes of A will come before subtypes of B, unless
+              there is an overriding specification which declares some subtype of B comes
+              before some subtype of A.</para>
+            
+            <para>If there are inconsistencies between the priority list (type A declared
+              before type B in one priority list, and type B declared before type A in
+              another), the framework will throw an exception.</para>
+            
+            <para>User defined indexes may declare if they wish to use the type priority or
+              not; see the next section.</para>
+          </section>
+          
+          <section id="&tp;aes.index">
+            <title>Index Definition</title>
+            
+            
+            <programlisting><![CDATA[<fsIndexCollection>
+
+  <name>[String]</name>
+  <description>[String]</description>
+  <version>[String]</version>
+  <vendor>[String]</vendor> 
+
+  <imports>
+    <import ...>
+    ...
+  </imports>
+
+  <fsIndexes> 
+
+    <fsIndexDescription>
+      ...
+    </fsIndexDescription>
+
+    <fsIndexDescription>
+      ...
+    </fsIndexDescription>
+
+  </fsIndexes>
+
+</fsIndexCollection>]]></programlisting>
+            
+            <para>The <literal>fsIndexCollection</literal> element declares<emphasis> Feature Structure
+              Indexes</emphasis>, each of which defined an index that holds feature structures of a given type.
+              Information in the CAS is always accessed through an index. There is a built-in default annotation
+              index declared which can be used to access instances of type
+              <literal>uima.tcas.Annotation</literal> (or its subtypes), sorted based on their
+              <literal>begin</literal> and <literal>end</literal> features. For all other types, there is a
+              default, unsorted (bag) index. If there is a need for a specialized index it must be declared in this
+              element of the descriptor. See <olink targetdoc="&uima_docs_ref;"
+                targetptr="ugr.ref.cas.indexes_and_iterators"/> for details on FS indexes.</para>
+            
+            <para>Like type systems and type priorities, an
+              <literal>fsIndexCollection</literal> can declare a
+              <literal>name</literal>, <literal>description</literal>,
+              <literal>vendor</literal>, and <literal>version</literal>, and may
+              import other <literal>fsIndexCollection</literal>s. The import syntax is
+              described in <xref linkend="&tp;imports"/>.</para>
+            
+            <para>An <literal>fsIndexCollection</literal> may also define zero or more
+              <literal>fsIndexDescription</literal> elements, each of which defines a
+              single index. Each <literal>fsIndexDescription</literal> has the form:
+              
+              
+              <programlisting><![CDATA[<fsIndexDescription>
+
+  <label>[String]</label>
+  <typeName>[TypeName]</typeName>
+  <kind>sorted|bag|set</kind>
+
+  <keys>
+
+    <fsIndexKey>
+      <featureName>[Name]</featureName>
+      <comparator>standard|reverse</comparator>
+    </fsIndexKey>
+
+    <fsIndexKey>
+      <typePriority/>
+    </fsIndexKey>
+
+    ...
+
+  </keys>
+</fsIndexDescription>]]></programlisting></para>
+            
+            <para>The <literal>label</literal> element defines the name by which
+              applications and annotators refer to this index. The
+              <literal>typeName</literal> element contains the name of the type that will
+              be contained in this index. This must match one of the type names defined in the
+              <literal>&lt;typeSystemDescription&gt;</literal>.</para>
+            
+            <para>There are three possible values for the
+              <literal>&lt;kind&gt;</literal> of index. Sorted indexes enforce an
+              ordering of feature structures, and may contain duplicates. Bag indexes do
+              not enforce ordering, and also may contain duplicates. Set indexes do not
+              enforce ordering and may not contain duplicates.  If the <literal>&lt;kind&gt;</literal>element is omitted, it will default to
+              sorted, which is the most common type of index.</para>
+            
+            <note><para>There is usually no need to explicitly declare a Bag index in your descriptor.  
+              As of UIMA v2.1, if you do not declare any index for a type (or any of its 
+              supertypes), a Bag index will be automatically created.</para></note>
+                        
+            <para>An index may define one or more <emphasis>keys</emphasis>. These keys
+              determine the sort order of the feature structures within a sorted index, and
+              determine equality for set indexes. Bag indexes do not use keys. Keys are
+              ordered by precedence &ndash; the first key is evaluated first, and
+              subsequent keys are evaluated only if necessary.</para>
+            
+            <para>Each key is represented by an <literal>fsIndexKey</literal> element.
+              Most <literal>fsIndexKeys</literal> contains a
+              <literal>featureName</literal> and a <literal>comparator</literal>.
+              The <literal>featureName</literal> must match the name of one of the
+              features for the type specified in the
+              <literal>&lt;typeName&gt;</literal> element for this index. The
+              comparator defines how the features will be compared &ndash; a value of
+              <literal>standard</literal> means that features will be compared using the
+              standard comparison for their data type (e.g. for numerical types, smaller
+              values precede larger values, and for string types, Unicode string
+              comparison is performed). A value of <literal>reverse</literal> means that
+              features will be compared using the reverse of the standard comparison (e.g.
+              for numerical types, larger values precede smaller values, etc.). For Set
+              indexes, the comparator direction is ignored &ndash; the keys are only used
+              for the equality testing.</para>
+            
+            <para>Each key used in comparisons must refer to a feature whose range type is
+              String, Float, or Integer.</para>
+            
+            <para>There is a second type of a key, one which contains only the
+              <literal>&lt;typePriority/&gt;</literal>. When this key is used, it
+              indicates that Feature Structures will be compared using the type priorities
+              declared in the <literal>&lt;typePriorities&gt;</literal> section of the
+              descriptor.</para>
+            
+          </section>
+          
+          <section id="&tp;aes.capabilities">
+            <title>Capabilities</title>
+            
+            
+            <programlisting><![CDATA[<capabilities>
+  <capability>
+
+    <inputs>
+      <type allAnnotatorFeatures="true|false"[TypeName]</type>
+      ...
+      <feature>[TypeName]:[Name]</feature>
+      ...
+    </inputs>
+
+    <outputs>
+      <type allAnnotatorFeatures="true|false"[TypeName]</type>
+      ...
+      <feature>[TypeName]:[Name]</feature>
+      ...
+    </output>
+
+    <languagesSupported>
+      <language>[ISO Language ID]</language>
+        ...
+    </languagesSupported>
+
+    <inputSofas>
+      <sofaName>[name]</sofaName>
+      ...
+    </inputSofas>
+
+    <outputSofas>
+      <sofaName>[name]</sofaName>
+      ...
+    </outputSofas>
+  </capability>
+
+  <capability>
+    ...
+  </capability>
+
+  ...
+
+</capabilities>]]></programlisting>
+            
+            <para>The capabilities definition is used by the UIMA Framework in several
+              ways, including setting up the Results Specification for process calls,
+              routing control for aggregates based on language, and as part of the Sofa
+              mapping function.</para>
+            
+            <para>The <literal>capabilities</literal> element contains one or more
+              <literal>capability</literal> elements. In Version 2 and onwards, only one
+              capability set should be used (multiple sets will continue to work for a while,
+              but they're not logically consistently supported).
+              <!-- Because you can therefore
+              declare multiple capability sets, you can use this to model component behavior
+              
+              that for a given set of inputs, produces a particular set of outputs. --></para>
+            
+            <para>Each <literal>capability</literal> contains
+              <literal>inputs</literal>, <literal>outputs</literal>,
+              <literal>languagesSupported, inputSofas, and outputSofas</literal>.
+              Inputs and outputs element are required (though they may be empty);
+              <literal>&lt;languagesSupported&gt;, &lt;inputSofas</literal>&gt;,
+              and <literal>&lt;outputSofas&gt;</literal> are optional.</para>
+            
+            <para>Both inputs and outputs may contain a mixture of type and feature
+              elements.</para>
+            
+            <para><literal>&lt;type...&gt;</literal> elements contain the name of one
+              of the types defined in the type system or one of the built in types. Declaring a
+              type as an input means that this component expects instances of this type to be
+              in the CAS when it receives it to process. Declaring a type as an output means
+              that this component creates new instances of this type in the CAS.</para>
+            
+            <para>There is an optional attribute
+              <literal>allAnnotatorFeatures</literal>, which defaults to false if
+              omitted. The Component Descriptor Editor tool defaults this to true when a new
+              type is added to the list of inputs and/or outputs. When this attribute is true,
+              it specifies that all of the type&apos;s features are also declared as input or
+              output. Otherwise, the features that are required as inputs or populated as
+              outputs must be explicitly specified in feature elements.</para>
+            
+            <para><literal>&lt;feature...&gt;</literal> elements contain the
+              <quote>fully-qualified</quote> feature name, which is the type name
+              followed by a colon, followed by the feature name, e.g.
+              <literal>org.myorg.TokenAnnotation:lemma</literal>.
+              <literal>&lt;feature...&gt;</literal> elements in the
+              <literal>&lt;inputs&gt;</literal> section must also have a corresponding
+              type declared as an input. In output sections, this is not required. If the type
+              is not specified as an output, but a feature for that type is, this means that
+              existing instances of the type have the values of the specified features
+              updated. Any type mentioned in a <literal>&lt;feature&gt;</literal>
+              element must be either specified as an input or an output or both.</para>
+            
+            <para><literal>language </literal>elements contain one of the ISO language
+              identifiers, such as <literal>en</literal> for English, or
+              <literal>en-US</literal> for the United States dialect of English.</para>
+            
+            <para>The list of language codes can be found here: <ulink
+                url="http://www.ics.uci.edu/pub/ietf/http/related/iso639.txt"/>
+              and the country codes here:
+              <ulink
+                url="http://www.chemie.fu-berlin.de/diverse/doc/ISO_3166.html"/>
+              </para>
+            
+            <para><literal>&lt;inputSofas&gt;</literal> and
+              <literal>&lt;outputSofas&gt;</literal> declare sofa names used by this
+              component. All Sofa names must be unique within a particular capability set. A
+              Sofa name must be an input or an output, and cannot be both. It is an error to have a
+              Sofa name declared as an input in one capability set, and also have it declared
+              as an output in another capability set.</para>
+            
+            <para>A <literal>&lt;sofaName&gt;</literal> is written as a simple
+              Java-style identifier, without any periods in the name, except that it may be
+              written to end in <quote><literal>.*</literal></quote>. If written in this
+              manner, it specifies a set of Sofa names, all of which start with the base name
+              (the part before the .*) followed by a period and then an arbitrary Java
+              identifier (without periods). This form is used to specify in the descriptor
+              that the component could generate an arbitrary number of Sofas, the exact
+              names and numbers of which are unknown before the component is run.</para>
+            
+          </section>
+          
+          <section id="&tp;aes.operational_properties">
+            <title>OperationalProperties</title>
+            
+            <para>Components can specify specific operational properties that can be
+              useful in deployment. The following are available:</para>
+            
+            
+            <programlisting><![CDATA[<operationalProperties>
+  <modifiesCas> true|false </modifiesCas>
+  <multipleDeploymentAllowed> true|false </multipleDeploymentAllowed>
+  <outputsNewCASes> true|false </outputsNewCASes>
+</operationalProperties>]]></programlisting>
+            
+            <para><literal>ModifiesCas</literal>, if false, indicates that this
+              component does not modify the CAS. If it is not specified, the default value is
+              true except for CAS Consumer components.</para>
+                       
+            <para><literal>multipleDeploymentAllowed</literal>, if true, allows the
+              component to be deployed multiple times to increase performance throught
+              scale-out techniques. If it is not specified, the default value is true,
+              except for CAS Consumer and Collection Reader components.</para>
+
+            <note><para>If you wrap one or more CAS Consumers inside an aggregate as the only
+            components, you must explicitly specify in the aggregate the 
+            <literal>multipleDeploymentAllowed</literal> property as false (assuming the CAS Consumer 
+            components take the default here); otherwise the framework will complain about inconsistent 
+            settings for these.</para></note>
+                        
+            <para><literal>outputsNewCASes</literal>, if true, allows the component to
+              create new CASes during processing, for example to break a large artifact into
+              smaller pieces. See <olink targetdoc="&uima_docs_tutorial_guides;"
+                targetptr="ugr.tug.cm"/> for details.</para>
+          </section>
+          
+          <section id="&tp;aes.primitive.external_resource_dependencies">
+            <title>External Resource Dependencies</title>
+            
+            
+            <programlisting><![CDATA[<externalResourceDependencies>
+  <externalResourceDependency>
+    <key>[String]</key>
+    <description>[String] </description>
+    <interfaceName>[String]</interfaceName>
+    <optional>true|false</optional>
+  </externalResourceDependency>
+
+  <externalResourceDependency>
+    ...
+  </externalResourceDependency>
+
+  ...
+
+</externalResourceDependencies>]]></programlisting>
+            
+            <para>A primitive annotator may declare zero or more
+              <literal>&lt;externalResourceDependency&gt;</literal> elements. Each
+              dependency has the following elements:
+              
+              <itemizedlist><listitem><para><literal>key</literal> &ndash; the
+                string by which the annotator code will attempt to access the resource. Must
+                be unique within this annotator.</para></listitem>
+                
+                <listitem><para><literal>description</literal> &ndash; a textual
+                  description of the dependency</para></listitem>
+                
+                <listitem><para><literal>interfaceName</literal> &ndash; the
+                  fully-qualified name of the Java interface through which the annotator
+                  will access the data. This is optional. If not specified, the annotator
+                  can only get an InputStream to the data.</para></listitem>
+                
+                <listitem><para><literal>optional</literal> &ndash; whether the
+                  resource is optional. If false, an exception will be thrown if no resource
+                  is assigned to satisfy this dependency. Defaults to false. </para>
+                  </listitem></itemizedlist></para>
+            
+          </section>
+          
+          <section id="&tp;aes.primitive.resource_manager_configuration">
+            <title>Resource Manager Configuration</title>
+            
+            
+            <programlisting><![CDATA[<resourceManagerConfiguration>
+
+  <name>[String]</name>
+  <description>[String]</description>
+  <version>[String]</version>
+  <vendor>[String]</vendor> 
+
+  <imports>
+    <import ...>
+    ...
+  </imports>
+
+  <externalResources>
+
+    <externalResource>
+      <name>[String]</name>
+      <description>[String]</description>
+      <fileResourceSpecifier>
+        <fileUrl>[URL]</fileUrl>
+      </fileResourceSpecifier>
+      <implementationName>[String]</implementationName>
+    </externalResource>
+    ...
+  </externalResources>
+
+  <externalResourceBindings>
+    <externalResourceBinding>
+      <key>[String]</key>
+      <resourceName>[String]</resourceName>
+    </externalResourceBinding>
+    ...
+  </externalResourceBindings>
+
+</resourceManagerConfiguration>]]></programlisting>
+            
+            <para>This element declares external resources and binds them to
+              annotators&apos; external resource dependencies.</para>
+            
+            <para>The <literal>resourceManagerConfiguration</literal> element may
+              optionally contain an <literal>import</literal>, which allows resource
+              definitions to be stored in a separate (shareable) file. See <xref
+                linkend="&tp;imports"/> for details.</para>
+            
+            <para>The <literal>externalResources</literal> element contains zero or
+              more <literal>externalResource</literal> elements, each of which
+              consists of:
+              
+              <itemizedlist><listitem><para><literal>name</literal> &ndash; the
+                name of the resource. This name is referred to in the bindings (see below).
+                Resource names need to be unique within any Aggregate Analysis Engine or
+                Collection Processing Engine, so the Java-like
+                <literal>org.myorg.mycomponent.MyResource</literal> syntax is
+                recommended.</para></listitem>
+                
+                <listitem><para><literal>description</literal> &ndash; English
+                  description of the resource</para></listitem>
+                
+                <listitem><para>Resource Specifier &ndash;
+                  Declares the location of the resource. There are different
+                  possibilities for how this is done (see below).</para></listitem>
+                
+                <listitem><para><literal>implementationName</literal> &ndash; The
+                  fully-qualified name of the Java class that will be instantiated from the
+                  resource data. This is optional; if not specified, the resource will be
+                  accessible as an input stream to the raw data. If specified, the Java class
+                  must implement the <literal>interfaceName</literal> that is
+                  specified in the External Resource Dependency to which it is bound.
+                  </para></listitem></itemizedlist></para>
+            
+            <para>One possibility for the resource specifier is a
+              <literal>&lt;fileResourceSpecifier&gt;</literal>, as shown above. This
+              simply declares a URL to the resource data. This support is built on the Java
+              class URL and its method URL.openStream(); it supports the protocols
+              <quote>file</quote>, <quote>http</quote> and <quote>jar</quote> (for
+              referring to files in jars) by default, and you can plug in handlers for other
+              protocols. The URL has to start with file: (or some other protocol). It is
+              relative to either the classpath or the <quote>data path</quote>. The data
+              path works like the classpath but can be set programmatically via
+              <literal>ResourceManager.setDataPath()</literal>. Setting the Java
+              System property <literal>uima.datapath</literal> also works.</para>
+            
+            <para><literal>file:com/apache.d.txt</literal> is a relative path;
+              relative paths for resources are resolved using the classpath and/or the
+              datapath. For the file protocol, URLs starting with file:/ or file:/// are
+              absolute. Note that <literal>file://org/apache/d.txt</literal> is NOT an
+              absolute path starting with <quote>org</quote>. The <quote>//</quote>
+              indicates that what follows is a host name. Therefore if you try to use this URL
+              it will complain that it can&apos;t connect to the host <quote>org</quote>
+              </para>
+            
+            <para>Another option is a
+              <literal>&lt;fileLanguageResourceSpecifier&gt;</literal>, which is
+              intended to support resources, such as dictionaries, that depend on the
+              language of the document being processed. Instead of a single URL, a prefix and
+              suffix are specified, like this:
+              
+              
+              <programlisting><![CDATA[<fileLanguageResourceSpecifier>
+  <fileUrlPrefix>file:FileLanguageResource_implTest_data_</fileUrlPrefix>
+  <fileUrlSuffix>.dat</fileUrlSuffix>
+</fileLanguageResourceSpecifier>]]></programlisting></para>
+            
+            <para>The URL of the actual resource is then formed by concatenating the prefix,
+              the language of the document (as an ISO language code, e.g.
+              <literal>en</literal> or <literal>en-US</literal>
+              &ndash; see <xref linkend="&tp;aes.capabilities"/> for more
+              information), and the suffix.</para>
+            
+		    <para>A third option is a <literal>customResourceSpecifier</literal>, which allows
+			  you to plug in an arbitrary Java class.  See <xref linkend="&tp;custom_resource_specifiers"/>
+			  for more information.</para>
+			  
+            <para>The <literal>externalResourceBindings</literal> element declares
+              which resources are bound to which dependencies. Each
+              <literal>externalResourceBinding</literal> consists of:
+              
+              <itemizedlist><listitem><para><literal>key</literal> &ndash;
+                identifies the dependency. For a binding declared in a primitive analysis
+                engine descriptor, this must match the value of the
+                <literal>key</literal> element of one of the
+                <literal>externalResourceDependency</literal> elements. Bindings
+                may also be specified in aggregate analysis engine descriptors, in which
+                case a compound key is used
+                &ndash; see <xref
+                  linkend="&tp;aes.aggregate.external_resource_bindings"/>
+                .</para></listitem>
+                
+                <listitem><para><literal>resourceName</literal> &ndash; the name of
+                  the resource satisfying the dependency. This must match the value of the
+                  <literal>name</literal> element of one of the
+                  <literal>externalResource</literal> declarations. </para>
+                  </listitem></itemizedlist></para>
+            
+            <para>A given resource dependency may only be bound to one external resource;
+              one external resource may be bound to many dependencies &ndash; to allow
+              resource sharing.</para>
+          </section>
+          
+          <section id="&tp;aes.environment_variable_references">
+            <title>Environment Variable References</title>
+            
+            <para>In several places throughout the descriptor, it is possible to reference
+              environment variables. In Java, these are actually references to Java system
+              properties. To reference system environment variables from a Java analysis
+              engine you must pass the environment variables into the Java virtual machine
+              by using the <literal>-D</literal> option on the <literal>java</literal>
+              command line.</para>
+            
+            <para>The syntax for environment variable references is
+              <literal>&lt;envVarRef&gt;[VariableName]&lt;/envVarRef&gt;</literal>
+              , where [VariableName] is any valid Java system property name. Environment
+              variable references are valid in the following places:
+              
+              <itemizedlist spacing="compact"><listitem><para>The value of a
+                configuration parameter (String-valued parameters only)</para>
+                </listitem>
+                
+                <listitem><para>The
+                  <literal>&lt;annotatorImplementationName&gt;</literal> element
+                  of a primitive AE descriptor</para></listitem>
+                
+                <listitem><para>The <literal>&lt;name&gt;</literal> element within
+                  <literal>&lt;analysisEngineMetaData&gt;</literal></para>
+                  </listitem>
+                
+                <listitem><para>Within a
+                  <literal>&lt;fileResourceSpecifier&gt;</literal> or
+                  <literal>&lt;fileLanguageResourceSpecifier&gt;</literal>
+                  </para></listitem></itemizedlist></para>
+            
+            <para>For example, if the value of a configuration parameter were specified as:
+              <literal>&lt;string&gt;&lt;envVarRef&gt;TEMP_DIR&lt;/envVarRef&gt;/temp.dat&lt;/string&gt;</literal>
+              , and the value of the <literal>TEMP_DIR</literal> Java System property were
+              <literal>c:/temp</literal>, then the configuration parameter&apos;s
+              value would evaluate to <literal>c:/temp/temp.dat</literal>.</para>
+            
+          </section>
+        </section>
+        <section id="&tp;aes.aggregate">
+          <title>Aggregate Analysis Engine Descriptors</title>
+          
+          <para>Aggregate Analysis Engines do not contain an annotator, but instead
+            contain one or more component (also called <emphasis>delegate</emphasis>)
+            analysis engines.</para>
+          
+          <para>Aggregate Analysis Engine Descriptors maintain most of the same structure
+            as Primitive Analysis Engine Descriptors. The differences are:</para>
+          
+          <itemizedlist><listitem><para>An Aggregate Analysis Engine Descriptor
+            contains the element
+            <literal>&lt;primitive&gt;false&lt;/primitive&gt;</literal> rather
+            than <literal>&lt;primitive&gt;true&lt;/primitive&gt;</literal>.
+            </para></listitem>
+            
+            <listitem><para>An Aggregate Analysis Engine Descriptor must not include a
+              <literal>&lt;annotatorImplementationName&gt;</literal>
+              element.</para></listitem>
+            
+            <listitem><para>In place of the
+              <literal>&lt;annotatorImplementationName&gt;</literal>, an Aggregate
+              Analysis Engine Descriptor must have a
+              <literal>&lt;delegateAnalysisEngineSpecifiers&gt;</literal>
+              element. See <xref linkend="&tp;aes.aggregate.delegates"/>.</para>
+              </listitem>
+            
+            <listitem><para>An Aggregate Analysis Engine Descriptor may provide a
+              <literal>&lt;flowController&gt;</literal> element immediately
+              following the
+              <literal>&lt;delegateAnalysisEngineSpecifiers&gt;</literal>. <xref
+                linkend="&tp;aes.aggregate.flow_controller"/>.</para></listitem>
+            
+            <listitem><para>Under the analysisEngineMetaData element, an Aggregate
+              Analysis Engine Descriptor may specify an additional element --
+              <literal>&lt;flowConstraints&gt;</literal>. See <xref
+                linkend="&tp;aes.aggregate.flow_constraints"/>. Typically only one
+              of <literal>&lt;flowController&gt;</literal> and
+              <literal>&lt;flowConstraints&gt;</literal> are specified. If both are
+              specified, the <literal>&lt;flowController&gt;</literal> takes
+              precedence, and the flow controller implementation can use the information
+              in specified in the <literal>&lt;flowConstraints&gt;</literal> as part of
+              its configuration input.</para></listitem>
+            
+            <listitem><para>An aggregate Analysis Engine Descriptors must not contain a
+              <literal>&lt;typeSystemDescription&gt;</literal> element. The Type
+              System of the Aggregate Analysis Engine is derived by merging the Type System
+              of the Analysis Engines that the aggregate contains.</para></listitem>
+            
+            <listitem><para>Within aggregate Analysis Engine Descriptors,
+              <literal>&lt;configurationParameter&gt;</literal> elements may define
+              <literal>&lt;overrides&gt;</literal>. See <xref
+                linkend="&tp;aes.aggregate.configuration_parameter_overrides"/>
+              .</para></listitem>
+            
+            <listitem><para>External Resource Bindings can bind resources to
+              dependencies declared by any delegate AE within the aggregate. See <xref
+                linkend="&tp;aes.aggregate.external_resource_bindings"/>.</para>
+              </listitem>
+            
+            <listitem><para>An additional optional element,
+              <literal>&lt;sofaMappings&gt;</literal>, may be included. </para>
+              </listitem></itemizedlist>
+          
+          <section id="&tp;aes.aggregate.delegates">
+            <title>Delegate Analysis Engine Specifiers</title>
+            
+            
+            <programlisting><![CDATA[<delegateAnalysisEngineSpecifiers>
+
+  <delegateAnalysisEngine key="[String]">
+    <analysisEngineDescription>...</analysisEngineDescription> |
+    <import .../> 
+  </delegateAnalysisEngine>
+
+  <delegateAnalysisEngine key="[String]">
+    ...
+  </delegateAnalysisEngine>
+
+  ...
+
+</delegateAnalysisEngineSpecifiers>]]></programlisting>
+            
+            <para>The <literal>delegateAnalysisEngineSpecifiers</literal> element
+              contains one or more <literal>delegateAnalysisEngine</literal>
+              elements. Each of these must have a unique key, and must contain
+              either:</para>
+            
+            <itemizedlist><listitem><para>A complete
+              <literal>analysisEngineDescription</literal> element describing the
+              delegate analysis engine <emphasis role="bold">OR</emphasis></para>
+              </listitem>
+              
+              <listitem><para>An <literal>import</literal> element giving the name or
+                location of the XML descriptor for the delegate analysis engine (see <xref
+                  linkend="&tp;imports"/>).</para></listitem></itemizedlist>
+            
+            <para>The latter is the much more common usage, and is the only form supported by
+              the Component Descriptor Editor tool.</para>
+          </section>
+          <section id="&tp;aes.aggregate.flow_controller">
+            <title>FlowController</title>
+            
+            
+            <programlisting><![CDATA[<flowController key="[String]">
+    <flowControllerDescription>...</flowControllerDescription> |
+    <import .../>
+  </flowController>]]></programlisting>
+            
+            <para>The optional <literal>flowController</literal> element identifies
+              the descriptor of the FlowController component that will be used to determine
+              the order in which delegate Analysis Engine are called.</para>
+            
+            <para>The <literal>key</literal> attribute is optional, but recommended; it
+              assigns the FlowController an identifier that can be used for configuration
+              parameter overrides, Sofa mappings, or external resource bindings. The key
+              must not be the same as any of the delegate analysis engine keys.</para>
+            
+            <para>As with the <literal>delegateAnalysisEngine</literal> element, the
+              <literal>flowController</literal> element may contain either a complete
+              <literal>flowControllerDescription</literal> or an
+              <literal>import</literal>, but the import is recommended. The Component
+              Descriptor Editor tool only supports imports here.</para>
+            
+          </section>
+          <section id="&tp;aes.aggregate.flow_constraints">
+            <title>FlowConstraints</title>
+            
+            <para>If a <literal>&lt;flowController&gt;</literal> is not specified, the
+              order in which delegate Analysis Engines are called within the aggregate
+              Analysis Engine is specified using the
+              <literal>&lt;flowConstraints&gt;</literal> element, which must occur
+              immediately following the
+              <literal>configurationParameterSettings</literal> element. If a
+              <literal>&lt;flowController&gt;</literal> is specified, then the
+              <literal>&lt;flowConstraints&gt;</literal> are optional. They can be
+              used to pass an ordering of delegate keys to the
+              <literal>&lt;flowController&gt;</literal>.</para>
+            
+            <para>There are two options for flow constraints --
+              <literal>&lt;fixedFlow&gt;</literal> or
+              <literal>&lt;capabilityLanguageFlow&gt;</literal>. Each is discussed
+              in a separate section below.</para>
+            
+            <section id="&tp;aes.aggregate.flow_constraints.fixed_flow">
+              <title>Fixed Flow</title>
+              
+              
+              <programlisting><![CDATA[<flowConstraints>
+  <fixedFlow>
+    <node>[String]</node>
+    <node>[String]</node>
+    ...
+  </fixedFlow>
+</flowConstraints>]]></programlisting>
+              
+              <para>The <literal>flowConstraints</literal> element must be included
+                immediately following the
+                <literal>configurationParameterSettings</literal> element.</para>
+              
+              <para>Currently the <literal>flowConstraints</literal> element must
+                contain a <literal>fixedFlow</literal> element. Eventually, other
+                types of flow constraints may be possible.</para>
+              
+              <para>The <literal>fixedFlow</literal> element contains one or more
+                <literal>node</literal> elements, each of which contains an identifier
+                which must match the key of a delegate analysis engine specified in the
+                <literal>delegateAnalysisEngineSpecifiers</literal>
+                element.</para>
+              
+            </section>
+            <section
+              id="&tp;aes.aggregate.flow_constraints.capability_language_flow">
+              <title>Capability Language Flow</title>
+              
+              
+              <programlisting><![CDATA[<flowConstraints>
+  <capabilityLanguageFlow>
+    <node>[String]</node>
+    <node>[String]</node>
+    ...
+  </capabilityLanguageFlow>
+</flowConstraints>]]></programlisting>
+              
+              <para>If you use <literal>&lt;capabilityLanguageFlow&gt;</literal>,
+                the delegate Analysis Engines named by the
+                <literal>&lt;node&gt;</literal> elements are called in the given order,
+                except that a delegate Analysis Engine is skipped if any of the following are
+                true (according to that Analysis Engine&apos;s declared output
+                capabilities):</para>
+              
+              <itemizedlist><listitem><para>It cannot produce any of the aggregate
+                Analysis Engine&apos;s output capabilities for the language of the
+                current document.</para></listitem>
+                
+                <listitem><para>All of the output capabilities have already been
+                  produced by an earlier Analysis Engine in the flow. </para></listitem>
+                </itemizedlist>
+              
+              <para>For example, if two annotators produce
+                <literal>org.myorg.TokenAnnotation</literal> feature structures for
+                the same language, these feature structures will only be produced by the
+                first annotator in the list.</para>
+              
+              <note><para>The flow analysis uses the specific types that are specified in the
+              output capabilities, without any expansion for subtypes.  So, if you expect
+              a type TT and another type SubTT (which is a subtype of TT) in the output, you
+              must include both of them in the output capabilities.</para></note>
+            </section>
+          </section>
+          
+          <section id="&tp;aes.aggregate.configuration_parameter_overrides">
+            <title>Configuration Parameter Overrides</title>
+            
+            <para>In an aggregate Analysis Engine Descriptor, each
+              <literal>&lt;configurationParameter&gt; </literal>element should
+              contain an <literal>&lt;overrides&gt;</literal> element, with the
+              following syntax:</para>
+            
+            
+            <programlisting><![CDATA[<overrides>
+
+  <parameter>
+    [delegateAnalysisEngineKey]/[parameterName]
+  </parameter>
+
+  <parameter>
+    [delegateAnalysisEngineKey]/[parameterName]
+  </parameter>
+  ...
+
+</overrides>]]></programlisting>
+            
+            <para>Since aggregate Analysis Engines have no code associated with them, the
+              only way in which their configuration parameters can affect their processing
+              is by overriding the parameter values of one or more delegate analysis
+              engines. The <literal>&lt;overrides&gt; </literal>element determines
+              which parameters, in which delegate Analysis Engines, are overridden by this
+              configuration parameter.</para>
+            
+            <para>For example, consider an aggregate Analysis Engine Descriptor that
+              contains delegate Analysis Engines with keys
+              <literal>annotator1</literal> and <literal>annotator2</literal> (as
+              declared in the &lt;delegateAnalysisEngine&gt; element &ndash; see <xref
+                linkend="&tp;aes.aggregate.delegates"/>) and also declares a
+              configuration parameter as follows:
+              
+              
+              <programlisting><![CDATA[<configurationParameter>
+  <name>AggregateParam</name>
+  <type>String</type>
+  <overrides>
+    <parameter>annotator1/param1</parameter>
+    <parameter>annotator2/param2</parameter>
+  </overrides>
+</configurationParameter>]]></programlisting></para>
+            
+            <para>The value of the <literal>AggregateParam</literal> parameter
+              (whether assigned in the aggregate descriptor or at runtime by an
+              application) will override the value of parameter
+              <literal>param1</literal> in <literal>annotator1</literal> and also
+              override the value of parameter <literal>param2</literal> in
+              <literal>annotator2</literal>. No other parameters will be
+              affected.</para>
+            
+            <para>For historical reasons only, if an aggregate Analysis Engine descriptor
+              declares a configuration parameter with no explicit overrides, that
+              parameter will override any parameters having the same name within any
+              delegate analysis engine. This usage is strongly discouraged. The UIMA SDK
+              currently supports this usage but logs a warning message to the log file. This
+              support may be dropped in future versions.</para>
+            
+          </section>
+          
+          <section id="&tp;aes.aggregate.external_resource_bindings">
+            <title>External Resource Bindings</title>
+            
+            <para>Aggregate analysis engine descriptors can declare resource bindings
+              that bind resources to dependencies declared in any of the delegate analysis
+              engines (or their subcomponents, recursively) within that aggregate. This
+              allows resource sharing. Any binding at this level overrides (supersedes)
+              any binding specified by a contained component or their subcomponents,
+              recursively.</para>
+            
+            <para>For example, consider an aggregate Analysis Engine Descriptor that
+              contains delegate Analysis Engines with keys
+              <literal>annotator1</literal> and <literal>annotator2</literal> (as
+              declared in the <literal>&lt;delegateAnalysisEngine&gt;</literal>
+              element &ndash; see <xref linkend="&tp;aes.aggregate.delegates"/>),
+              where <literal>annotator1</literal> declares a resource dependency with
+              key <literal>myResource</literal> and <literal>annotator2</literal>
+              declares a resource dependency with key <literal>someResource</literal>
+              .</para>
+            
+            <para>Within that aggregate Analysis Engine Descriptor, the following
+              <literal>resourceManagerConfiguration</literal> would bind both of
+              those dependencies to a single external resource file.</para>
+            
+            
+            <programlisting><![CDATA[<resourceManagerConfiguration>
+
+  <externalResources>
+    <externalResource>
+      <name>ExampleResource</name>
+      <fileResourceSpecifier>
+        <fileUrl>file:MyResourceFile.dat</fileUrl>
+      </fileResourceSpecifier>
+    </externalResource>
+  </externalResources>  
+
+  <externalResourceBindings>
+    <externalResourceBinding>
+      <key>annotator1/myResource</key>
+      <resourceName>ExampleResource</resourceName>
+    </externalResourceBinding>
+    <externalResourceBinding>
+      <key>annotator2/someResource</key>
+      <resourceName>ExampleResource</resourceName>
+    </externalResourceBinding>
+  </externalResourceBindings>
+
+</resourceManagerConfiguration>]]></programlisting>
+            
+            <para>The syntax for the <literal>externalResources</literal> declaration
+              is exactly the same as described previously. In the resource bindings note the
+              use of the compound keys, e.g. <literal>annotator1/myResource</literal>.
+              This identifies the resource dependency key
+              <literal>myResource</literal> within the annotator with key
+              <literal>annotator1</literal>. Compound resource dependencies can be
+              multiple levels deep to handle nested aggregate analysis engines.</para>
+          </section>
+          
+          <section id="&tp;aes.aggregate.sofa_mappings">
+            <title>Sofa Mappings</title>
+            
+            <para>Sofa mappings are specified between Sofa names declared in this
+              aggregate descriptor as part of the
+              <literal>&lt;capability&gt;</literal> section, and the Sofa names
+              declared in the delegate components. For purposes of the mapping, all the
+              declarations of Sofas in any of the capability sets contained within the
+              <literal>&lt;capabilities&gt; </literal>element are considered
+              together.</para>
+            
+            
+            <programlisting><![CDATA[<sofaMappings>
+  <sofaMapping>
+    <componentKey>[keyName]</componentKey>
+    <componentSofaName>[sofaName]</componentSofaName>
+    <aggregateSofaName>[sofaName]</aggregateSofaName>
+  </sofaMapping>
+  ...
+</sofaMappings>]]></programlisting>
+            
+            <para>The &lt;componentSofaName&gt; may be omitted in the case where the
+              component is not aware of Multiple Views or Sofas. In this case, the UIMA
+              framework will arrange for the specified &lt;aggregateSofaName&gt; to be
+              the one visible to the delegate component.</para>
+            
+            <para>The &lt;componentKey&gt; is the key name for the component as specified
+              in the list of delegate components for this aggregate.</para>
+            
+            <para>The sofaNames used must be declared as input or output sofas in some
+              capability set.</para>
+          </section>
+        </section>
+      </section>
+ 
+  
+  <section id="&tp;flow_controller">
+    <title>Flow Controller Descriptors</title>
+    
+    <para>The basic structure of a Flow Controller Descriptor is as follows:
+      
+      
+      <programlisting><![CDATA[<?xml version="1.0" ?> 
+<flowControllerDescription 
+    xmlns="http://uima.apache.org/resourceSpecifier">
+
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation> 
+
+  <implementationName>[ClassName]</implementationName> 
+
+  <processingResourceMetaData>
+    ...
+  </processingResourceMetaData>
+
+  <externalResourceDependencies>
+    ...
+  </externalResourceDependencies>
+
+  <resourceManagerConfiguration>
+    ...
+  </resourceManagerConfiguration>
+
+</flowControllerDescription>]]></programlisting></para>
+    
+    <para>The <literal>frameworkImplementation</literal> element must always be set to
+      the value <literal>org.apache.uima.java</literal>.</para>
+    
+    <para>The <literal>implementationName</literal> element must contain the
+      fully-qualified class name of the Flow Controller implementation. This must name a
+      class that implements the <literal>FlowController</literal> interface.</para>
+    
+    <para>The <literal>processingResourceMetaData</literal> element contains
+      essentially the same information as a Primitive Analysis Engine Descriptor&apos;s
+      <literal>analysisEngineMetaData</literal> element, described in <xref
+        linkend="&tp;aes.metadata"/>.</para>
+    
+    <para>The <literal>externalResourceDependencies</literal> and
+      <literal>resourceManagerConfiguration</literal> elements are exactly the same as
+      in Primitive Analysis Engine Descriptors (see <xref
+        linkend="&tp;aes.primitive.external_resource_dependencies"/> and <xref
+        linkend="&tp;aes.primitive.resource_manager_configuration"/>.</para>
+    
+  </section>
+  
+  <section id="&tp;collection_processing_parts">
+    <title>Collection Processing Component Descriptors</title>
+    
+    <para>There are three types of Collection Processing Components &ndash; Collection
+      Readers, CAS Initializers (deprecated as of UIMA Version 2), and CAS Consumers. Each
+      type of component has a corresponding descriptor. The structure of these descriptors
+      is very similar to that of primitive Analysis Engine Descriptors.</para>
+    
+    <section id="&tp;collection_processing_parts.collection_reader">
+      <title>Collection Reader Descriptors</title>
+      
+      <para>The basic structure of a Collection Reader descriptor is as follows:
+        
+        
+        <programlisting><![CDATA[<?xml version="1.0" ?> 
+<collectionReaderDescription
+    xmlns="http://uima.apache.org/resourceSpecifier">
+
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+  <implementationName>[ClassName]</implementationName> 
+
+  <processingResourceMetaData>
+    ...
+  </processingResourceMetaData>
+
+  <externalResourceDependencies>
+   ...
+  </externalResourceDependencies>
+
+  <resourceManagerConfiguration>
+
+   ...
+
+  </resourceManagerConfiguration>
+
+</collectionReaderDescription>]]></programlisting></para>
+      
+      <para>The <literal>frameworkImplementation</literal> element must always be set
+        to the value <literal>org.apache.uima.java</literal>.</para>
+      
+      <para>The <literal>implementationName</literal> element contains the
+        fully-qualified class name of the Collection Reader implementation. This must name
+        a class that implements the <literal>CollectionReader</literal>
+        interface.</para>
+      
+      <para>The <literal>processingResourceMetaData</literal> element contains
+        essentially the same information as a Primitive Analysis Engine
+        Descriptor&apos;s&apos; <literal>analysisEngineMetaData</literal> element:
+        
+        
+        <programlisting><![CDATA[<processingResourceMetaData>
+
+  <name> [String] </name>
+  <description>[String]</description>
+  <version>[String]</version>
+  <vendor>[String]</vendor>
+
+  <configurationParameters>
+     ...
+  </configurationParameters>
+
+  <configurationParameterSettings>
+    ...
+  </configurationParameterSettings> 
+
+  <typeSystemDescription>
+   ...
+  </typeSystemDescription> 
+
+  <typePriorities>
+   ...
+  </typePriorities> 
+
+  <fsIndexes>
+   ...
+  </fsIndexes>
+
+  <capabilities>
+   ...
+  </capabilities> 
+
+</processingResourceMetaData>]]></programlisting></para>
+      
+      <para>The contents of these elements are the same as that described in <xref
+          linkend="&tp;aes.metadata"/>, with the exception that the capabilities
+        section should not declare any inputs (because the Collection Reader is always the
+        first component to receive the CAS).</para>
+      
+      <para>The <literal>externalResourceDependencies</literal> and
+        <literal>resourceManagerConfiguration</literal> elements are exactly the same
+        as in the Primitive Analysis Engine Descriptors (see <xref
+          linkend="&tp;aes.primitive.external_resource_dependencies"/> and <xref
+          linkend="&tp;aes.primitive.resource_manager_configuration"/>.</para>
+      
+    </section>
+    <section id="&tp;collection_processing_parts.cas_initializer">
+      <title>CAS Initializer Descriptors (deprecated)</title>
+      
+      <para>The basic structure of a CAS Initializer Descriptor is as follows:
+        
+        
+        <programlisting><![CDATA[<?xml version="1.0" encoding="UTF-8" ?> 
+<casInitializerDescription
+    xmlns="http://uima.apache.org/resourceSpecifier">
+
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+  <implementationName>[ClassName] </implementationName>
+
+  <processingResourceMetaData>
+    ...
+  </processingResourceMetaData>
+
+  <externalResourceDependencies>
+    ...
+  </externalResourceDependencies>
+
+  <resourceManagerConfiguration>
+    ...
+  </resourceManagerConfiguration>
+
+</casInitializerDescription>]]></programlisting></para>
+      
+      <para>The <literal>frameworkImplementation</literal> element must always be set
+        to the value <literal>org.apache.uima.java</literal>.</para>
+      
+      <para>The <literal>implementationName</literal> element contains the
+        fully-qualified class name of the CAS Initializer implementation. This must name a
+        class that implements the <literal>CasInitializer</literal> interface.</para>
+      
+      <para>The <literal>processingResourceMetaData</literal> element contains
+        essentially the same information as a Primitive Analysis Engine
+        Descriptor&apos;s&apos; <literal>analysisEngineMetaData</literal> element,
+        as described in <xref linkend="&tp;aes.metadata"/>, with the exception of some
+        changes to the capabilities section. A CAS Initializer&apos;s capabilities
+        element looks like this:
+        
+        
+        <programlisting><![CDATA[<capabilities>
+  <capability>
+    <outputs>
+      <type allAnnotatorFeatures="true|false">[String]</type>
+      <type>[TypeName]</type>
+      ...
+      <feature>[TypeName]:[Name]</feature>
+      ...
+    </outputs>
+
+    <outputSofas>
+      <sofaName>[name]</sofaName>
+      ...
+    </outputSofas>
+
+    <mimeTypesSupported>
+      <mimeType>[MIME Type]</mimeType>
+      ...
+    </mimeTypesSupported>
+  </capability>
+
+  <capability>
+    ...
+  </capability>
+  ...
+</capabilities>]]></programlisting></para>
+      
+      <para>The differences between a CAS Initializer&apos;s capabilities declaration
+        and an Analysis Engine&apos;s capabilities declaration are that the CAS Initializer does not
+        declare any input CAS types and features or input Sofas (because it is always the first
+        to operate on a CAS), it doesn&apos;t have a language specifier, and that the CAS
+        Initializer may declare a set of MIME types that it supports for its input documents.
+        Examples include: text/plain, text/html, and application/pdf. For a list of MIME
+        types see <ulink url="http://www.iana.org/assignments/media-types/"/>. This
+        information is currently only for users&apos; information, the framework does not
+        use it for anything. This may change in future versions.</para>
+      
+      <para>The <literal>externalResourceDependencies</literal> and
+        <literal>resourceManagerConfiguration</literal> elements are exactly the same
+        as in the Primitive Analysis Engine Descriptors (see <xref
+          linkend="&tp;aes.primitive.external_resource_dependencies"/> and <xref
+          linkend="&tp;aes.primitive.resource_manager_configuration"/>).</para>
+      
+    </section>
+    <section id="&tp;collection_processing_parts.cas_consumer">
+      <title>CAS Consumer Descriptors</title>
+      
+      <para>The basic structure of a CAS Consumer Descriptor is as follows:
+        
+        
+        <programlisting><![CDATA[<?xml version="1.0" encoding="UTF-8" ?> 
+<casConsumerDescription 
+    xmlns="http://uima.apache.org/resourceSpecifier">
+
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation> 
+
+  <implementationName>[ClassName]</implementationName> 
+
+  <processingResourceMetaData>
+    ...
+  </processingResourceMetaData>
+
+  <externalResourceDependencies>
+    ...
+  </externalResourceDependencies>
+
+  <resourceManagerConfiguration>
+    ...
+  </resourceManagerConfiguration>
+</casConsumerDescription>]]></programlisting></para>
+
+        <para>The <literal>frameworkImplementation</literal> element currently must 
+          have the value <literal>org.apache.uima.java</literal>, or
+           <literal>org.apache.uima.cpp</literal>.</para>
+               
+        <para>The next subelement,<literal>
+          &lt;annotatorImplementationName&gt;</literal> is how the UIMA framework
+          determines which annotator class to use. This should contain a fully-qualified
+          Java class name for Java implementations, or the name of a .dll or .so file for C++
+          implementations.</para>      
+      <para>The <literal>frameworkImplementation</literal> element must always be set
+        to the value <literal>org.apache.uima.java</literal>.</para>
+      
+      <para>The <literal>implementationName</literal> element must contain the
+        fully-qualified class name of the CAS Consumer implementation, or the name 
+        of a .dll or .so file for C++ implementations.  For Java, the named class must
+        implement the <literal>CasConsumer</literal> interface.</para>
+      
+      <para>The <literal>processingResourceMetaData</literal> element contains
+        essentially the same information as a Primitive Analysis Engine Descriptor&apos;s
+        <literal>analysisEngineMetaData</literal> element, described in <xref
+          linkend="&tp;aes.metadata"/>, except that the CAS Consumer Descriptor&apos;s
+        <literal>capabilities</literal> element should not declare outputs or
+        outputSofas (since CAS Consumers do not modify the CAS).</para>
+      
+      <para>The <literal>externalResourceDependencies</literal> and
+        <literal>resourceManagerConfiguration</literal> elements are exactly the same
+        as in Primitive Analysis Engine Descriptors (see <xref
+          linkend="&tp;aes.primitive.external_resource_dependencies"/> and <xref
+          linkend="&tp;aes.primitive.resource_manager_configuration"/>.</para>
+      
+    </section>
+  </section>
+  
+  <section id="&tp;service_client">
+    <title>Service Client Descriptors</title>
+    
+    <para>Service Client Descriptors specify only a location of a remote service. They are
+      therefore much simpler in structure. In the UIMA SDK, a Service Client Descriptor that
+      refers to a valid Analysis Engine or CAS Consumer service can be used in place of the
+      actual Analysis Engine or CAS Consumer Descriptor. The UIMA SDK will handle the details
+      of calling the remote service. (For details on <emphasis>deploying</emphasis> an
+      Analysis Engine or CAS Consumer as a service, see <olink targetdoc="&uima_docs_tutorial_guides;"
+        targetptr="ugr.tug.application.remote_services"/>.</para>
+    
+    <para>The UIMA SDK is extensible to support different types of remote services. In future
+      versions, there may be different variations of service client descriptors that cater
+      to different types of services. For now, the only type of service client descriptor is
+      the <literal>uriSpecifier</literal>, which supports the SOAP and Vinci
+      protocols.</para>
+    
+    
+    <programlisting><![CDATA[<?xml version="1.0" encoding="UTF-8" ?>
+<uriSpecifier xmlns="http://uima.apache.org/resourceSpecifier">
+  <resourceType>AnalysisEngine | CasConsumer </resourceType>
+  <uri>[URI]</uri> 
+  <protocol>SOAP | SOAPwithAttachments | Vinci</protocol> 
+  <timeout>[Integer]</timeout>
+  <parameters>
+    <parameter name="VNS_HOST" value="some.internet.ip.name-or-address"/>
+    <parameter name="VNS_PORT" value="9000"/>
+    <parameter name="GetMetaDataTimeout" value="[Integer]"/>
+  </parameters> 
+</uriSpecifier>]]></programlisting>
+    
+    <para>The <literal>resourceType</literal> element is required for new descriptors,
+      but is currently allowed to be omitted for backward compatibility. It specifies the
+      type of component (Analysis Engine or CAS Consumer) that is implemented by the service
+      endpoint described by this descriptor.</para>
+    
+    <para>The <literal>uri</literal> element contains the URI for the web service. (Note
+      that in the case of Vinci, this will be the service name, which is looked up in the Vinci
+      Naming Service.)</para>
+    
+    <para>The <literal>protocol</literal> element may be set to SOAP,
+      SOAPwithAttachments, or Vinci; other protocols may be added later. These specify the
+      particular data transport format that will be used.</para>
+    
+    <para>The <literal>timeout</literal> element is optional. If present, it specifies
+      the number of milliseconds to wait for a request to be processed before an exception is
+      thrown. A value of zero or less will wait forever. If no timeout is specified, a default
+      value (currently 60 seconds) will be used.</para>
+    
+    <para>The parameters element is optional. If present, it can specify values for each
+      of the following:
+    </para>
+    <itemizedlist>
+      <listitem><para><literal>VNS_HOST</literal>: host name for the Vinci naming service.
+      </para></listitem>
+      <listitem><para><literal>VNS_PORT</literal>: port number for the Vinci naming service.
+      </para></listitem>
+      <listitem><para><literal>GetMetaDataTimeout</literal>: timeout period (in milliseconds) for
+          the GetMetaData call.  If not specified, the default is 60 seconds.  This may need
+          to be set higher if there are a lot of clients competing for connections to the service.
+      </para></listitem>      
+    </itemizedlist>
+   
+    <para>If the <literal>VNS_HOST</literal> and <literal>VNS_PORT</literal> are not specified
+      in the descriptor, the values used for these comes from
+      parameters passed on the Java command line using the
+      <literal>-DVNS_HOST=&lt;host&gt;</literal> and/or
+      <literal>-DVNS_PORT=&lt;port&gt;</literal> system arguments. If not present, and
+      a system argument is also not present, the values for these default to
+      <literal>localhost</literal> for the <literal>VNS_HOST</literal> and
+      <literal>9000</literal> for the <literal>VNS_PORT</literal>.</para>
+    
+    <para>For details on how to deploy and call Analysis Engine and CAS Consumer services, see
+        <olink targetdoc="&uima_docs_tutorial_guides;"
+        targetptr="ugr.tug.application.remote_services"/>.</para>
+    
+  </section>
+
+  <section id="&tp;custom_resource_specifiers">
+    <title>Custom Resource Specifiers</title>
+	<para>A Custom Resource Specifier allows you to plug in your own Java class as a UIMA Resource.
+		For example you can support a new service protocol by plugging in a Java class that implements
+		the UIMA <literal>AnalysisEngine</literal> interface and communicates with the remote service.</para>
+	
+	<para>A Custom Resource Specifier has the following format:</para>
+    <programlisting><![CDATA[<?xml version="1.0" encoding="UTF-8" ?>
+<customResourceSpecifier xmlns="http://uima.apache.org/resourceSpecifier">
+  <resourceClassName>[Java Class Name]</resourceClassName>
+  <parameters>
+    <parameter name="[String]" value="[String]"/>
+    <parameter name="[String]" value="[String]"/>
+  </parameters> 
+</customResourceSpecifier>]]></programlisting>	
+	  
+	<para>The <literal>resourceClassName</literal> element must contain the fully-qualified name of a Java class
+	that can be found in the classpath (including the UIMA extension classpath, if you have specified one using
+	the <literal>ResourceManager.setExtensionClassPath</literal> method).  This class must implement the
+	UIMA <literal>Resource</literal> interface.</para>    
+	  
+	<para>When an application calls the <literal>UIMAFramework.produceResource</literal> method and passes a
+	<literal>CustomResourceSpecifier</literal>, the UIMA framework will load the named class and call its
+	<literal>initialize(ResourceSpecifier,Map)</literal> method, passing the <literal>CustomResourceSpecifier</literal>
+	as the first argument.  Your class can override the <literal>initialize</literal> method and use the
+	<literal>CustomResourceSpecifier</literal> API to get access to the <literal>parameter</literal> names and values 
+	specified in the XML.</para>  
+	  
+	<para>If you are using a custom resource specifier to plug in a class that implements a new service protocol,
+	your class must also implement the <literal>AnalysisEngine</literal> interface.  Generally it should also
+	extend <literal>AnalysisEngineImplBase</literal>.  The key methods that should be implemented are 
+	<literal>getMetaData</literal>, <literal>processAndOutputNewCASes</literal>, 
+	<literal>collectionProcessComplete</literal>, and <literal>destroy</literal>.</para>  
+  </section>	  
+</chapter>

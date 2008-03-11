@@ -1,0 +1,343 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one
+   or more contributor license agreements.  See the NOTICE file
+   distributed with this work for additional information
+   regarding copyright ownership.  The ASF licenses this file
+   to you under the Apache License, Version 2.0 (the
+   "License"); you may not use this file except in compliance
+   with the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied.  See the License for the
+   specific language governing permissions and limitations
+   under the License.    
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.apache.uima</groupId>
+  <artifactId>uimaj</artifactId>
+  <packaging>pom</packaging>
+  <version>2.2.2-incubating</version> <!-- this comment is a flag for changeVersion -->
+  <properties>
+      <uimaj-release-version>2.2.2-incubating</uimaj-release-version>
+      <uimaj-release-eclipse-version>2.2.2.incubating</uimaj-release-eclipse-version>
+  </properties>
+  <name>Apache UIMA Java SDK</name>
+  <url>http://incubator.apache.org/uima</url>
+  <description>A framework and SDK supporting components for analyzing unstructured content such as text, audio
+    and video.</description>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <url>http://svn.apache.org/viewvc/incubator/uima</url>
+  </scm>
+  <organization>
+    <name>The Apache Software Foundation</name>
+    <url>http://www.apache.org/</url>
+  </organization>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+ 
+ <!-- to deploy the artifacts to a Maven saticing-repository you have to configure
+      the settings.xml file in your local Maven repository -->
+  <distributionManagement>
+    <repository>
+      <id>staging-repository</id>
+      <url>scpexe://people.apache.org/www/people.apache.org/repo/m2-incubating-repository/</url>
+    </repository>
+    <snapshotRepository>
+      <id>snapshot-repository</id>
+      <url>scpexe://people.apache.org/www/people.apache.org/repo/m2-snapshot-repository/</url>
+    </snapshotRepository>
+  </distributionManagement>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <!-- v2.1 of the javadoc plugin needed for muilti-module javadoc build to work properly -->
+        <plugin>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>2.1</version>
+        </plugin>
+        <!-- Require v2.1 of assembly plugin because v2.2 doesn't seem to correctly unpack zip files.
+        It creates an extra top-level directory with the same name as the zip file. -->
+        <plugin>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>2.1</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+      
+			<!-- We use an ant task to copy the LICENSE, NOTICE, and DISCLAIMER files
+				from a single location in uimaj-distr into the src/main/resources/META-INF
+				directory of all components.  We tried using the Maven resources plugin for 
+				this, but then the Maven eclipse plugin (which runs the lifecycle up thru
+        generate-resources) seeing the <resources> element,
+        adds a classpath src entry for this which references the path outside
+        the project, which eclipse doesn't want.  
+        
+        Solution is to run this in a life-cycle phase after generate-resources
+        (i.e., process-resources), but before compile, so the 
+        eclipse plugin doesn't do this action. 
+        
+        We copy to the src directory so that it is there for the source jar
+        builds (for Maven repo).  We also copy to the target/classes/META-INF
+        directory so it gets picked up by the binary jar as well.-->
+      
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>CopyLicenseNoticeDisclaimer</id>
+						<phase>process-resources</phase>
+						<configuration>
+							<tasks>
+                
+                <!-- turn off copying if this pom is not at the top level -->
+                <available property="sourceForLicenseNoticeDisclaimer"
+                  file="../uimaj-distr/src/main/readme"
+                  value="LICENSE NOTICE DISCLAIMER"/>
+                
+                <condition property="sourceForLicenseNoticeDisclaimer"
+                  value="skip">  <!-- value must be a non-existant file name 
+                                      blank doesn't work (copies everything) -->
+                  <not><isset property="sourceForLicenseNoticeDisclaimer"/></not>
+                </condition>
+                
+                <!-- support POMs nested one deep -->
+                <available property="dirSourceForLicenseNoticeDisclaimer"
+                  file="../uimaj-distr/src/main/readme"
+                  value="../uimaj-distr/src/main/readme"/>
+                <condition property="dirSourceForLicenseNoticeDisclaimer"
+                  value="../../uimaj-distr/src/main/readme">
+                  <not><isset property="dirSourceForLicenseNoticeDisclaimer"/></not>
+                </condition>
+                
+                <copy todir="src/main/resources/META-INF">
+                  <fileset dir="${dirSourceForLicenseNoticeDisclaimer}"
+                    includes="${sourceForLicenseNoticeDisclaimer}"/>
+                </copy>
+                <copy todir="target/classes/META-INF">
+                  <fileset dir="${dirSourceForLicenseNoticeDisclaimer}"
+                    includes="${sourceForLicenseNoticeDisclaimer}"/>
+                </copy>
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+					<!-- after compilation has been done and the files have been copied to the
+						 target directory, delete them from the source directory. -->
+					<execution>
+						<id>DeleteLicenseNoticeDisclaimer</id>
+						<phase>package</phase>
+						<configuration>
+							<tasks>
+								<delete dir="src/main/resources/META-INF" deleteOnExit="true" quiet="true" failOnError="false">
+									<fileset dir="src/main/resources/META-INF"
+										includes="LICENSE NOTICE DISCLAIMER"/>
+								</delete>
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>	
+					<!-- also delete on clean. -->
+					<execution>
+						<id>CleanLicenseNoticeDisclaimer</id>
+						<phase>clean</phase>
+						<configuration>
+							<tasks>
+								<delete dir="src/main/resources/META-INF" deleteOnExit="true" quiet="true" failOnError="false">
+									<fileset dir="src/main/resources/META-INF"
+										includes="LICENSE NOTICE DISCLAIMER"/>
+								</delete>
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>		          				
+				</executions>
+			</plugin>
+      
+      <!-- something to get the timestamp -->
+      <!-- this plugin sets the output string into the variable buildNumber -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>buildnumber-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>create</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <format>{0,date,yyyy-MM-dd HH:mm:ss}</format>
+          <items>
+            <item>timestamp</item>
+          </items>
+        </configuration>
+      </plugin>
+    
+    </plugins>
+  </build>
+  
+  <!-- This section configures what happens when the site life-cycle is done -->
+  <!-- This is currently not part of our build/release practice - so is never done -->
+  
+  <!-- The Java Doc configuration here is for "developers" - and includes more packages, such as the internal ones -->
+  <!-- There is another JavaDoc configuration in the uimaj-distr POM, for doing javadocs for external APIs in the bin distr -->
+  <reporting>
+    <plugins>
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <aggregate>true</aggregate>
+          <!-- needs to be 5 to process enums -->
+          <source>5</source>
+          <doctitle>Apache UIMA Java SDK ${pom.version} API Documentation</doctitle>
+          <windowtitle>Apache UIMA Java SDK ${pom.version} API Documentation</windowtitle>
+          <maxmemory>512M</maxmemory>
+          <links>
+            <link>http://java.sun.com/j2se/1.5.0/docs/api/</link>
+          </links>
+          <excludePackageNames>org.apache.uima.test.junit_extension</excludePackageNames>
+          <groups>
+            <group>
+              <title>Core Framework</title>
+							<packages>org.apache.uima:org.apache.uima.impl:org.apache.uima.analysis_component:org.apache.uima.analysis_engine*:org.apache.uima.cas*:org.apache.uima.collection*:org.apache.uima.ecore:org.apache.uima.flow*:org.apache.uima.internal*:org.apache.uima.jcas*:org.apache.uima.pear.tools:org.apache.uima.pear.util:org.apache.uima.resource*:org.apache.uima.search*:org.apache.uima.tttypesystem:org.apache.uima.uimacpp:org.apache.uima.util*</packages>
+            </group>
+            <group>
+              <title>Collection Processing Engine</title>
+							<packages>org.apache.uima.collection.impl*:org.apache.uima.cas_data.impl.vinci</packages>							
+            </group>
+            <group>
+              <title>SOAP Adapter</title>
+              <packages>org.apache.uima.adapter.soap*</packages>
+            </group>
+            <group>
+              <title>Vinci Adapter</title>
+              <packages>org.apache.uima.adapter.vinci*</packages>
+            </group>
+            <group>
+              <title>Tools</title>
+              <packages>org.apache.uima.tools*:org.apache.uima.klt</packages>
+            </group>
+            <group>
+              <title>Eclipse Plugins</title>
+							<packages>org.apache.uima.taeconfigurator*:org.apache.uima.typesystem*:org.apache.uima.ep_debug:org.apache.uima.jcas.jcasgenp:org.apache.uima.pear:org.apache.uima.pear.actions:org.apache.uima.pear.generate:org.apache.uima.pear.insd*:org.apache.uima.pear.nature</packages>							
+            </group>
+            <group>
+              <title>Examples</title>
+              <packages>org.apache.uima.examples*:org.apache.uima.tutorial*:example*</packages>
+            </group>
+            <group>
+              <title>JVinci</title>
+              <packages>org.apache.vinci*</packages>
+            </group>
+          </groups>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Project-Title>Apache UIMA</Project-Title>
+              <Implementation-Title>${pom.name}</Implementation-Title>
+              <Implementation-Version>${pom.version}</Implementation-Version>
+              <Implementation-Vendor>Apache Software Foundation</Implementation-Vendor>
+              <Implementation-Url>${pom.url}</Implementation-Url>
+			        <Implementation-License>http://www.apache.org/licenses/LICENSE-2.0.txt</Implementation-License>
+              <Build-Date>${buildNumber}</Build-Date>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>     
+    </plugins>
+  </reporting>
+	<profiles>
+		<profile>
+			<id>signArtifacts</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+				<property>
+					<name>signArtifacts</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<build>
+          <plugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+  <modules>
+    <module>../uimaj-core</module>
+    <module>../uimaj-cpe</module>
+    <module>../uimaj-examples</module>
+    <module>../uimaj-tools</module>
+    <module>../uimaj-adapter-vinci</module>
+    <module>../uimaj-adapter-soap</module>
+    <module>../uimaj-test-util</module>
+    <module>../uimaj-component-test-util</module>
+    <module>../jVinci</module>
+    <module>eclipse-plugin-superPom</module>
+    <module>../uimaj-document-annotation</module>
+  </modules>
+  <repositories>
+    <repository>
+      <id>eclipsePlugins</id>
+      <url>http://repo1.maven.org/eclipse</url>
+      <releases>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+    </repository>
+  </repositories>
+</project>
