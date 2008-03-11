@@ -122,6 +122,7 @@ under the License.
       <unpack>false</unpack>
       <scope>runtime</scope>
       <outputDirectory>/apache-uima/eclipsePlugins</outputDirectory>
+      <outputFileNameMapping>${artifact.build.finalName}.jar</outputFileNameMapping>
     </dependencySet>
   </dependencySets>
   
@@ -231,24 +232,24 @@ under the License.
       <source>../uimaj-examples/src/main/eclipseProject/project</source>
       <outputDirectory>/apache-uima/examples</outputDirectory>
       <destName>.project</destName>
-      <fileMode>420</fileMode> <!-- workaround for bug MASSEMBLY-173 -->
+      <fileMode>644</fileMode> 
     </file>
     <file>
       <source>../uimaj-examples/src/main/eclipseProject/classpath</source>
       <outputDirectory>/apache-uima/examples</outputDirectory>
       <destName>.classpath</destName>
-      <fileMode>420</fileMode> <!-- workaround for bug MASSEMBLY-173 -->
+      <fileMode>644</fileMode> 
     </file>
     <file>
       <source> ../uimaj-examples/src/main/eclipseProject/ecore_src_readme.txt</source>
       <outputDirectory>/apache-uima/examples/ecore_src</outputDirectory>
       <destName>readme.txt</destName>
-      <fileMode>420</fileMode> <!-- workaround for bug MASSEMBLY-173 -->
+      <fileMode>644</fileMode> 
     </file>
     <file>
       <source>../uimaj-examples/src/main/java/org/apache/uima/examples/xmi/XmiEcoreCasConsumer.java</source>
       <outputDirectory>/apache-uima/examples/ecore_src/org/apache/uima/examples/xmi</outputDirectory>
-      <fileMode>420</fileMode> <!-- workaround for bug MASSEMBLY-173 -->
+      <fileMode>644</fileMode> 
     </file>
   </files>
 </assembly>
