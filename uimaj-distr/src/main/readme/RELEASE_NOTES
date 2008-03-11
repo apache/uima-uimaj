@@ -200,6 +200,7 @@ Release Notes - UIMA - Version 2.2.2
     * [UIMA-824] - document on website what needs to be set for running uimaj-distr assembly:assembly to specify Eclipse location
     * [UIMA-825] - for Eclipse Update Site, remove checksum generation - it's done elsewhere, and improve specifying eclipse-home
     * [UIMA-837] - Docbook tooling PDF footer overflows with long version name
+    * [UIMA-877] - Reverse multiple copyright statements in docbooks, per request at previous release vote
 
 ** New Feature
     * [UIMA-718] - add featurePath helper class 
