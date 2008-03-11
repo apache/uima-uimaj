@@ -280,7 +280,7 @@ public class CasCreationUtils {
     TypePriorities aggTypePriorities = mergeTypePriorities(typePriorities, aResourceManager);
     FsIndexCollection aggIndexColl = mergeFsIndexes(fsIndexes, aResourceManager);
 
-    return createCas(aggTypeDesc, aggTypePriorities, aggIndexColl.getFsIndexes(),
+    return doCreateCas(null, aggTypeDesc, aggTypePriorities, aggIndexColl.getFsIndexes(),
         aPerformanceTuningSettings, aResourceManager);
   }
 
@@ -449,12 +449,12 @@ public class CasCreationUtils {
 
     if (aTypeSystem != null) // existing type system object was specified; use that
     {
-      return createCas(aTypeSystem, aggTypePriorities, aggIndexColl.getFsIndexes(),
+      return doCreateCas(aTypeSystem, null, aggTypePriorities, aggIndexColl.getFsIndexes(),
           aPerformanceTuningSettings, aResourceManager);
     } else {
       // no type system object specified; merge type system descriptions in metadata
       TypeSystemDescription aggTypeDesc = mergeTypeSystems(typeSystems);
-      return createCas(aggTypeDesc, aggTypePriorities, aggIndexColl.getFsIndexes(),
+      return doCreateCas(null, aggTypeDesc, aggTypePriorities, aggIndexColl.getFsIndexes(),
           aPerformanceTuningSettings, aResourceManager);
     }
   }
@@ -541,6 +541,11 @@ public class CasCreationUtils {
     try {
       if (aTypeSystemDesc != null) {
         aTypeSystemDesc.resolveImports(aResourceManager);
+        //even though there's only one Type System, we still need to do a merge, to handle the
+        //case where this TypeSystem defines the same type more than once (or has imports that do)
+        List tsList = new ArrayList();
+        tsList.add(aTypeSystemDesc);
+        aTypeSystemDesc = mergeTypeSystems(tsList, aResourceManager, null);        
       }
       if (aTypePriorities != null) {
         aTypePriorities.resolveImports(aResourceManager);

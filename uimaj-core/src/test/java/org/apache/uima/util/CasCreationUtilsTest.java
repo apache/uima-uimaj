@@ -523,6 +523,26 @@ public class CasCreationUtilsTest extends TestCase {
     }
   }
 
+  public void testCreateCasTypeSystemDescription() throws Exception {
+    try {
+      //parse type system description
+      TypeSystemDescription tsDesc = UIMAFramework.getXMLParser().parseTypeSystemDescription(
+              new XMLInputSource(JUnitExtension.getFile("CasCreationUtilsTest/SupertypeMergeTestMaster.xml")));
+
+      // call method
+      CAS cas = CasCreationUtils.createCas(tsDesc, null, null);
+      
+      //check that imports were resolved and supertype merged properly
+      Type subType = cas.getTypeSystem().getType("uima.test.Sub");
+      assertNotNull(subType);
+      Type superType = cas.getTypeSystem().getType("uima.test.Super");
+      assertNotNull(superType);
+      assertTrue(cas.getTypeSystem().subsumes(superType,subType));      
+    } catch (Exception e) {
+      JUnitExtension.handleException(e);
+    }
+  }
+
   public void testMergeDelegateAnalysisEngineMetaData() throws Exception {
     try {
       File descFile = JUnitExtension
