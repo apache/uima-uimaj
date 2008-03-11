@@ -1069,7 +1069,7 @@ public class CasCreationUtils {
       while (typeIter.hasNext()) {
         TypeDescription type = (TypeDescription)typeIter.next();
         String supertypeName = type.getSupertypeName();
-        if (supertypeName.startsWith("uima.") || typeNameMap.containsKey(supertypeName)) {
+        if (supertypeName.startsWith("uima.cas") || supertypeName.startsWith("uima.tcas") || typeNameMap.containsKey(supertypeName)) {
           //supertype is defined, ok to proceed
           //check if type is already defined 
           addTypeToMergedTypeSystem(aOutputMergedTypes, result, typeNameMap, type);
