@@ -198,19 +198,23 @@ public class MultiResourceSelectionDialog extends ResourcePickerDialog {
     }
     importByLocationUI.addListener(SWT.Selection, new Listener() {
       public void handleEvent(Event event) {
-        isImportByName = false;
-        CDEpropertyPage.setImportByDefault(editor.getProject(), "location");
+        if (importByLocationUI.getSelection()) {
+          isImportByName = false;
+          CDEpropertyPage.setImportByDefault(editor.getProject(), "location");
 
-        MultiResourceSelectionDialog.this.setupResourcesByLocation();
-        browseButton.setEnabled(true);
+          MultiResourceSelectionDialog.this.setupResourcesByLocation();
+          browseButton.setEnabled(true);
+        }
       }   
     });
     
     importByNameUI.addListener(SWT.Selection, new Listener() {
       public void handleEvent(Event event) {
-        isImportByName = true;
-        CDEpropertyPage.setImportByDefault(editor.getProject(), "name");
-        MultiResourceSelectionDialog.this.setupResourcesByName();
+        if (importByNameUI.getSelection()) {
+          isImportByName = true;
+          CDEpropertyPage.setImportByDefault(editor.getProject(), "name");
+          MultiResourceSelectionDialog.this.setupResourcesByName();
+        }
       }   
     });
 
