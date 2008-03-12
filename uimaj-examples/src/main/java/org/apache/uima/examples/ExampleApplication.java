@@ -101,7 +101,7 @@ public class ExampleApplication {
    */
   private static void printUsageMessage() {
     System.err.println("Usage: java org.apache.uima.example.ExampleApplication "
-            + "<TAE descriptor or TEAR file name> <input dir> <output dir>");
+            + "<Analysis Engine descriptor or PEAR file name> <input dir>");
   }
 
   /**
