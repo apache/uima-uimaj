@@ -53,12 +53,20 @@
         <outputs>
           <type allAnnotatorFeatures="true">org.apache.uima.examples.tokenizer.Sentence</type>
           <type allAnnotatorFeatures="true">org.apache.uima.examples.tokenizer.Token</type>
-          <type>example.Name</type>
           <type allAnnotatorFeatures="true">example.PersonTitle</type>
-          <type>example.EmailAddress</type>
         </outputs>
         <languagesSupported>
           <language>en</language>
+        </languagesSupported>
+      </capability>
+      <capability>
+        <inputs/>
+        <outputs>
+          <type>example.Name</type>
+          <type>example.EmailAddress</type>
+        </outputs>
+        <languagesSupported>
+          <language>x-unspecified</language>
         </languagesSupported>
       </capability>
     </capabilities>
