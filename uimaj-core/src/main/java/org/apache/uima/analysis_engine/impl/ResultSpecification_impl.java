@@ -776,7 +776,8 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
     for (Capability capability : capabilities) {
       TypeOrFeature[] tofs = outputs ? capability.getOutputs() : capability.getInputs();
       String[] supportedLanguages = capability.getLanguagesSupported();
-      if (null == supportedLanguages) {
+      if (null == supportedLanguages ||
+          supportedLanguages.length == 0) {
         supportedLanguages = mDefaultLanguage;
       }
       for (TypeOrFeature tof : tofs) {
