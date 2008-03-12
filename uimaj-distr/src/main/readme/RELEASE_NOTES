@@ -46,7 +46,14 @@ Python and TCL.
 
 The Apache UIMA release version 2.2.2 is just a bugfix release and has no major 
 release changes. For a list of all JIRA issues fixed with this release, 
-please refer to chapter 6. "List of JIRA Issues Fixed in this Release". 
+please refer to chapter 6. "List of JIRA Issues Fixed in this Release".
+
+The computation of the default result specification was corrected, and may
+impact users if you are running annotators that test the result specification.
+For aggregates, if the aggregate does not specify in its capability specifications
+that it needs a certain type, and non of the delegates of that aggregate have
+that type as an input, then the default result specification will not include
+that type, since no one needs it.   
 
 3. Migrating from IBM UIMA to Apache UIMA
 
