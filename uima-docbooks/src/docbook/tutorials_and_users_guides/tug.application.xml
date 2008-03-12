@@ -1089,7 +1089,7 @@ SimpleTokenAndSentenceAnnotator.xml</literallayout></para>
           
           <listitem>
             <para>All the Java classes for the UIMA Examples are packaged in the
-              <literal>uimaj-examples.jar</literal> file which is included in the
+              <literal>uima-examples.jar</literal> file which is included in the
               <literal>%UIMA_HOME%/lib</literal> folder.</para>
           </listitem>
           
