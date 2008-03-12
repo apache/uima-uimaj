@@ -127,6 +127,30 @@ public class ResultSpecification_implTest extends TestCase {
     }
   }
 
+  public void testAddCapabilitiesWithoutLanguage() throws Exception {
+     try {
+       
+        TypeOrFeature t4 = new TypeOrFeature_impl();
+        t4.setType(true);
+        t4.setName("AnotherFakeType");
+        t4.setAllAnnotatorFeatures(false);
+
+        // capability 4 - using t4 but now language
+        Capability cap4 = new Capability_impl();
+        TypeOrFeature[] tofs4 = { t4 };
+        cap4.setOutputs(tofs4);
+
+        // create ResultSpecification with capabilities
+       ResultSpecification_impl resultSpec = new ResultSpecification_impl();
+       // add capabilities to the result spec
+       resultSpec.addCapabilities(new Capability[] { cap4 });
+
+       assertTrue(resultSpec.containsType("AnotherFakeType"));
+     } catch (Exception e) {
+       JUnitExtension.handleException(e);
+     }
+   }
+
   public void testSetResultTypesAndFeatures() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
