@@ -60,6 +60,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 
 public class MultiResourceSelectionDialog extends ResourcePickerDialog {
   
+  private final static String PATH_SEPARATOR = System.getProperty("path.separator");
   private static class CandidateAndSource implements Comparable<CandidateAndSource> {
     String candidate;
     String source;
@@ -267,7 +268,7 @@ public class MultiResourceSelectionDialog extends ResourcePickerDialog {
     } catch (CoreException e) {
       throw new InternalErrorCDE("unhandled CoreException while getting classpaths to populate by-location list", e);
     }
-    String [] cps = cp.split(";");
+    String [] cps = cp.split(PATH_SEPARATOR);
     List<CandidateAndSource> candidates = new ArrayList<CandidateAndSource>(100);
     
     for (String jarOrDir : cps) {
