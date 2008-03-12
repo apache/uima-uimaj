@@ -130,13 +130,13 @@ public class TutorialDateTime extends JCasAnnotator_ImplBase {
 
     // Create Annotations
     ResultSpecification resultSpec = getResultSpecification();
-    if (resultSpec.containsType("org.apache.uima.tutorial.TimeAnnot"))
+    if (resultSpec.containsType("org.apache.uima.tutorial.TimeAnnot","en"))
       makeAnnotations(timeAnnotationMaker, hoursMinutesPattern, dfTimeShort);
-    if (resultSpec.containsType("org.apache.uima.tutorial.DateAnnot"))
+    if (resultSpec.containsType("org.apache.uima.tutorial.DateAnnot","en"))
       makeAnnotations(dateAnnotationMaker, numericDatePattern, dfDateShort);
-    if (resultSpec.containsType("org.apache.uima.tutorial.DateAnnot"))
+    if (resultSpec.containsType("org.apache.uima.tutorial.DateAnnot","en"))
       makeAnnotations(dateAnnotationMaker, mediumDatePattern, dfDateMedium);
-    if (resultSpec.containsType("org.apache.uima.tutorial.DateAnnot"))
+    if (resultSpec.containsType("org.apache.uima.tutorial.DateAnnot","en"))
       makeAnnotations(dateAnnotationMaker, longDatePattern, dfDateLong);
   }
 
