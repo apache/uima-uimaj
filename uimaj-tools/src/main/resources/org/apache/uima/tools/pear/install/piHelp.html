@@ -41,15 +41,6 @@ under the License.
       components using the UIMA CAS Visual Debugger application.
       
     </div>
-    <h4 style="margin-left: 40px; text-decoration: underline;">Checking PEAR Installer
-      prerequisites and files: </h4>
-    <ul>
-      <li>Make sure you have J2SE 1.4.2 or later JRE installed
-      </li>
-      <li>Make sure UIMA is properly installed and <code>UIMA_HOME</code> environment variable
-        is set
-      </li>
-    </ul>
     <h4 style="margin-left: 40px; text-decoration: underline;"> Running PEAR Installer
       application: </h4>
     <ol>
@@ -63,7 +54,7 @@ under the License.
       </li>
       <li>Select the installation directory by using the "Browse Dir ..." button on the right of the
         "Installation Directory" text field. Alternatively, you can type the installation directory path in the
-         "Installation Directory" text field a nd press 'Enter'.
+         "Installation Directory" text field and press 'Enter'.
         Selected directory path will appear in both the text field and the message area. By
         default, PEAR Installer will use current working directory as the installation directory.
         
@@ -76,13 +67,16 @@ under the License.
         
         <span style="font-weight: bold; font-style: italic;"> Note</span>: PEAR Installer creates the
         <code>setenv.txt</code> file in the <code>&lt;component_root&gt;/metadata</code> directory. This
-        file contains environment variables required by the component.
+        file contains environment variables required by the component. The PEAR Installer also creates 
+        a <code>&lt;component_id&gt;_pear.xml</code> pear descriptor in the 
+        <code>&lt;component_root&gt;</code> directory that can be used to run the installed 
+        PEAR component. 
       </li>
       <li>If the installation and verification steps completed successfully, you can run your
         component in the UIMA CAS Visual Debugger application by using the "Run your AE in the CAS Visual Debugger"
         button. The CAS Visual Debugger application will load your UIMA component using its XML descriptor file. If
         the component is loaded successfully, you'll we able to run it either with sample documents provided in the
-        <code>%UIMA_HOME%/docs/examples/data</code> directory, or with any other sample documents. See UIMA
+        <code>%UIMA_HOME%/examples/data</code> directory, or with any other sample documents. See UIMA
         documentation for more information about the UIMA CAS Visual Debugger application. 
       </li>
     </ol>
