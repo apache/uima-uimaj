@@ -114,6 +114,7 @@
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
+        <version>1.4.0</version>
         <extensions>true</extensions>
         <configuration>
           <manifestLocation>META-INF</manifestLocation>
@@ -125,8 +126,6 @@
             <_exportcontents>
                example,
                org.apache.uima,
-               org.apache.uima.adapter.soap,
-               org.apache.uima.adapter.soap.axis11,
                org.apache.uima.adapter.vinci,
                org.apache.uima.adapter.vinci.util,
                org.apache.uima.analysis_component,
@@ -226,13 +225,17 @@
                org.apache.vinci.transport.vns.service
             </_exportcontents>
 
+            <!-- excluded packages:
+               org.apache.uima.adapter.soap,
+               org.apache.uima.adapter.soap.axis11,
+             -->
             <Import-Package>org.apache.log4j;resolution:=optional,*
             </Import-Package>
             <!-- causes the other Jars from the maven
                  dependencies, at the proper version, to be
                  included in this, and also sets up the bundle
                  classpath to include them -->
-            <Embed-Dependency>*;scope=compile</Embed-Dependency>
+            <Embed-Dependency>*;scope=compile;inline=true</Embed-Dependency>
 
             <!-- These just get made into the corresponding manifest entries -->
             <Bundle-SymbolicName>org.apache.uima.runtime;singleton:=true</Bundle-SymbolicName>
