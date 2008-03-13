@@ -198,6 +198,10 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
     // Select documents via filter. JMP
     FilenameFilter iFilter = new InteractiveFilter();
     String[] documents = dir.list(iFilter);
+    //create an empty array to display
+    if(documents == null) {
+       documents = new String[] {};
+    }
     analyzedResultsList = new JList(documents);
     /*
      * File[] documents = dir.listFiles(); Vector docVector = new Vector(); for (int i = 0; i <
