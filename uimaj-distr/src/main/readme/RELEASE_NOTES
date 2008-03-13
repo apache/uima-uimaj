@@ -187,6 +187,16 @@ Release Notes - UIMA - Version 2.2.2
     * [UIMA-863] - update release notes for release 2.2.2-incubating
     * [UIMA-864] - update version from 2.2.2-incubating-SNAPSHOT to 2.2.2-incubating
     * [UIMA-865] - UIMA core distribution build only works if the UIMA AS plugins are available
+    * [UIMA-878] - fix missing license headers
+    * [UIMA-879] - Eclipse plugin jar files do not have the right names
+    * [UIMA-888] - fix documentation for SOAP deployment
+    * [UIMA-889] - fix PearInstaller help file
+    * [UIMA-890] - Capabilities with no language spec do not cause proper ResultSpec to be set up
+    * [UIMA-891] - uima example annotator does not work with the new Result spec design
+    * [UIMA-892] - annoation viewer help dialog mention TAEs
+    * [UIMA-893] - annotation viewer throws FileNotFoundException
+    * [UIMA-894] - CDE import by name broken on Linux
+    * [UIMA-897] - users of uimaj-ep-runtime plugin having trouble due to jar inside jar structure
 
 ** Improvement
     * [UIMA-477] - CDE function for import by name uses file system browser; should instead show appropriate items in classpath
@@ -226,4 +236,3 @@ Release Notes - UIMA - Version 2.2.2
 ** Wish
     * [UIMA-282] - Work well with Apache logging (Log4J)
     * [UIMA-749] - add performance report to CVD
-
