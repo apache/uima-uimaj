@@ -148,7 +148,7 @@ public class PersonTitleAnnotator extends CasAnnotator_ImplBase {
     try {
       // If the ResultSpec doesn't include the PersonTitle type, we have
       // nothing to do.
-      if (!getResultSpecification().containsType("example.PersonTitle","en")) {
+      if (!getResultSpecification().containsType("example.PersonTitle",aCAS.getDocumentLanguage())) {
         return;
       }
 
@@ -255,7 +255,7 @@ public class PersonTitleAnnotator extends CasAnnotator_ImplBase {
   protected void createAnnotation(CAS aCAS, int aBeginPos, int aEndPos, String aTitleType) {
     AnnotationFS title = aCAS.createAnnotation(mPersonTitleType, aBeginPos, aEndPos);
     // Set the "kind" feature if it's part of the ResultSpec
-    if (getResultSpecification().containsFeature("example.PersonTitle:Kind","en")) {
+    if (getResultSpecification().containsFeature("example.PersonTitle:Kind",aCAS.getDocumentLanguage())) {
       title.setStringValue(mPersonTitleKindFeature, aTitleType);
     }
     // Add the annotation to the index.

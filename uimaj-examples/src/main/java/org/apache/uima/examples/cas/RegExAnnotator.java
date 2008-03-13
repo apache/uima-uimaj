@@ -278,7 +278,7 @@ public class RegExAnnotator extends CasAnnotator_ImplBase {
         // iterate over all annotation types for which we have patterns
         for (int j = 0; j < mCASTypes.length; j++) {
           // see if the ResultSpec contains this type
-          if (getResultSpecification().containsType(mCASTypes[j].getName(),"en") || getResultSpecification().containsType(mCASTypes[j].getName())) {
+          if (getResultSpecification().containsType(mCASTypes[j].getName(),aCAS.getDocumentLanguage()) || getResultSpecification().containsType(mCASTypes[j].getName())) {
             // try to match each pattern that we have for this annotation type
             for (int k = 0; k < mPatterns[j].length; k++) {
               int pos = 0;
