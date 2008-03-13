@@ -1,0 +1,255 @@
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.    
+-->
+
+<assembly>
+  <id>bin</id>
+  <formats>
+    <format>tar.gz</format>
+    <format>tar.bz2</format>
+    <format>zip</format>
+  </formats>
+  
+  <includeBaseDirectory>false</includeBaseDirectory>
+  
+  <!-- This tag is only supported in assembly plugin v2.2, which is
+  still in SNAPSHOT releases at this time.  Instead of having a dependency
+  on a SNAPSHOT, I've added apache-uima separately to each of the 
+  outputDirectory elements in this file.
+  <baseDirectory>apache-uima</baseDirectory>
+  -->
+  
+  <dependencySets>
+    <!-- Because our artifactIds are uimaj-xxx but our jars are uima-xxx,
+    I need a separate dependency set for each module so that I can
+    specify the jar file name.  If we didn't have this inconsistency
+    we could have a single dependencySet that included all modules
+    and had an outputFileNameMapping of ${artifactId}.jar -->
+    <dependencySet>
+      <includes>
+        <include>org.apache.uima:uimaj-core</include>
+      </includes>
+      <unpack>false</unpack>
+      <outputFileNameMapping>uima-core.jar</outputFileNameMapping>
+      <outputDirectory>/apache-uima/lib</outputDirectory>
+    </dependencySet>
+    <dependencySet>
+      <includes>
+        <include>org.apache.uima:uimaj-cpe</include>
+      </includes>
+      <unpack>false</unpack>
+      <outputFileNameMapping>uima-cpe.jar</outputFileNameMapping>
+      <outputDirectory>/apache-uima/lib</outputDirectory>
+    </dependencySet>
+    <dependencySet>
+      <includes>
+        <include>org.apache.uima:uimaj-document-annotation</include>
+      </includes>
+      <unpack>false</unpack>
+      <outputFileNameMapping>uima-document-annotation.jar</outputFileNameMapping>
+      <outputDirectory>/apache-uima/lib</outputDirectory>
+    </dependencySet>
+    <dependencySet>
+      <includes>
+        <include>org.apache.uima:uimaj-examples</include>
+      </includes>
+      <unpack>false</unpack>
+      <outputFileNameMapping>uima-examples.jar</outputFileNameMapping>
+      <outputDirectory>/apache-uima/lib</outputDirectory>
+    </dependencySet>
+    <dependencySet>
+      <includes>
+        <include>org.apache.uima:uimaj-tools</include>
+      </includes>
+      <unpack>false</unpack>
+      <scope>runtime</scope>
+      <outputFileNameMapping>uima-tools.jar</outputFileNameMapping>
+      <outputDirectory>/apache-uima/lib</outputDirectory>
+    </dependencySet>
+    <dependencySet>
+      <includes>
+        <include>org.apache.uima:uimaj-adapter-soap</include>
+      </includes>
+      <unpack>false</unpack>
+      <scope>runtime</scope>
+      <outputFileNameMapping>uima-adapter-soap.jar</outputFileNameMapping>
+      <outputDirectory>/apache-uima/lib</outputDirectory>
+    </dependencySet>
+    <dependencySet>
+      <includes>
+        <include>org.apache.uima:uimaj-adapter-vinci</include>
+      </includes>
+      <unpack>false</unpack>
+      <scope>runtime</scope>
+      <outputFileNameMapping> uima-adapter-vinci.jar</outputFileNameMapping>
+      <outputDirectory>/apache-uima/lib</outputDirectory>
+    </dependencySet>
+    <dependencySet>
+      <includes>
+        <include>org.apache.uima:jVinci</include>
+      </includes>
+      <unpack>false</unpack>
+      <scope>runtime</scope>
+      <outputFileNameMapping>jVinci.jar</outputFileNameMapping>
+      <outputDirectory>/apache-uima/lib</outputDirectory>
+    </dependencySet>
+    
+    
+    <!-- Copy each eclipse plugin into the /eclipsePlugins dir of the distribution -->
+    <dependencySet>
+      <includes>
+        <include>org.apache.uima:uimaj-ep-configurator</include>
+        <include>org.apache.uima:uimaj-ep-debug</include>
+        <include>org.apache.uima:uimaj-ep-jcasgen</include>
+        <include>org.apache.uima:uimaj-ep-pear-packager</include>
+        <include>org.apache.uima:uimaj-ep-runtime</include>
+      </includes>
+      <unpack>false</unpack>
+      <scope>runtime</scope>
+      <outputDirectory>/apache-uima/eclipsePlugins</outputDirectory>
+      <outputFileNameMapping>${artifact.build.finalName}.jar</outputFileNameMapping>
+    </dependencySet>
+  </dependencySets>
+  
+  <!-- Add other files - scripts, documentation, examples -->
+  <fileSets>
+    <fileSet>
+      <directory>src/main/scripts</directory>
+      <outputDirectory>/apache-uima/bin</outputDirectory>
+      <fileMode>755</fileMode>
+    </fileSet>
+    <fileSet>
+      <directory>src/main/properties</directory>
+      <outputDirectory>/apache-uima/config</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>src/main/readme</directory>
+      <outputDirectory>/apache-uima/</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>target/site/apidocs</directory>
+      <outputDirectory>/apache-uima/docs/api</outputDirectory>
+      <excludes>
+        <exclude>options</exclude>
+        <exclude>packages</exclude>
+        <exclude>files</exclude>
+        <exclude>argfile</exclude>        
+      </excludes>
+    </fileSet>
+    <fileSet>
+      <directory>../uima-docbooks/target</directory>
+      <outputDirectory>/apache-uima/docs/html</outputDirectory>
+      <includes>
+        <include>images/**</include>
+        <include>index.html</include>
+        <include>overview_and_setup/overview_and_setup.html</include>
+        <include>overview_and_setup/css/**</include>
+        <include>tutorials_and_users_guides/tutorials_and_users_guides.html</include>
+        <include>tutorials_and_users_guides/css/**</include>
+        <include>tools/tools.html</include>
+        <include>tools/css/**</include>
+        <include>references/references.html</include>
+        <include>references/css/**</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>../uima-docbooks/target/overview_and_setup</directory>
+      <outputDirectory>/apache-uima/docs/pdf</outputDirectory>
+      <includes>
+        <include>overview_and_setup.pdf</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>../uima-docbooks/target/tutorials_and_users_guides</directory>
+      <outputDirectory>/apache-uima/docs/pdf</outputDirectory>
+      <includes>
+        <include>tutorials_and_users_guides.pdf</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>../uima-docbooks/target/tools</directory>
+      <outputDirectory>/apache-uima/docs/pdf</outputDirectory>
+      <includes>
+        <include>tools.pdf</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>../uima-docbooks/target/references</directory>
+      <outputDirectory>/apache-uima/docs/pdf</outputDirectory>
+      <includes>
+        <include>references.pdf</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>../uimaj-examples/src/main/java</directory>
+      <outputDirectory>/apache-uima/examples/src</outputDirectory>
+      <excludes>
+        <exclude> org/apache/uima/examples/xmi/XmiEcoreCasConsumer.java</exclude>
+      </excludes>
+    </fileSet>
+    <fileSet>
+      <directory>../uimaj-examples/src/main/data</directory>
+      <outputDirectory>/apache-uima/examples/data</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>../uimaj-examples/src/main/deploy</directory>
+      <outputDirectory>/apache-uima/examples/deploy</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>../uimaj-examples/src/main/descriptors</directory>
+      <outputDirectory>/apache-uima/examples/descriptors</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>../uimaj-examples/src/main/opennlp_wrappers</directory>
+      <outputDirectory>/apache-uima/examples/opennlp_wrappers</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>../uimaj-examples/src/main/resources</directory>
+      <outputDirectory>/apache-uima/examples/resources</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>../uimaj-examples/src/main/run_configuration</directory>
+      <outputDirectory>/apache-uima/examples/run_configuration</outputDirectory>
+    </fileSet>
+  </fileSets>
+  <files>
+    <file>
+      <source>../uimaj-examples/src/main/eclipseProject/project</source>
+      <outputDirectory>/apache-uima/examples</outputDirectory>
+      <destName>.project</destName>
+      <fileMode>644</fileMode> 
+    </file>
+    <file>
+      <source>../uimaj-examples/src/main/eclipseProject/classpath</source>
+      <outputDirectory>/apache-uima/examples</outputDirectory>
+      <destName>.classpath</destName>
+      <fileMode>644</fileMode> 
+    </file>
+    <file>
+      <source> ../uimaj-examples/src/main/eclipseProject/ecore_src_readme.txt</source>
+      <outputDirectory>/apache-uima/examples/ecore_src</outputDirectory>
+      <destName>readme.txt</destName>
+      <fileMode>644</fileMode> 
+    </file>
+    <file>
+      <source>../uimaj-examples/src/main/java/org/apache/uima/examples/xmi/XmiEcoreCasConsumer.java</source>
+      <outputDirectory>/apache-uima/examples/ecore_src/org/apache/uima/examples/xmi</outputDirectory>
+      <fileMode>644</fileMode> 
+    </file>
+  </files>
+</assembly>

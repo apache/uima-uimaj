@@ -1,0 +1,27 @@
+added things to output DOCTYPE to make IE operate not in quirks mode.
+
+reorganized the docbook zip / unzip versions into a new folder at the same
+level as lib, called docbook.
+  - changed unzip to only unzip the first time, skip the rest of the time
+  - changed xml-catalog.xml to point to new location
+  
+treatment of images:
+  - leave as is: put all under images
+
+
+  - start in src/docbook/uima/arbitrary-structure/xxx.xml
+                         |_____ docbook.dir_____|
+  
+    images:                                     |___ filesets___|
+    css:                                        |___ filepath___|
+                           
+                         |------docbook.dir-----|                         
+  -               target/uima/arbitrary-structure/html/xxx.html etc
+                                                 /htmlsingle
+                                                 /pdf
+    images:                                      |___ filesets___|
+     css:                                        |___ filepath___|
+                                                 
+images and css are shared among both html and htmlsingle.
+images are incorporated into pdf
+image refs are written as ../filepath

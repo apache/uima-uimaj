@@ -1,0 +1,572 @@
+	<!--
+	 ***************************************************************
+	 * Licensed to the Apache Software Foundation (ASF) under one
+	 * or more contributor license agreements.  See the NOTICE file
+	 * distributed with this work for additional information
+	 * regarding copyright ownership.  The ASF licenses this file
+	 * to you under the Apache License, Version 2.0 (the
+	 * "License"); you may not use this file except in compliance
+	 * with the License.  You may obtain a copy of the License at
+     *
+	 *   http://www.apache.org/licenses/LICENSE-2.0
+	 * 
+	 * Unless required by applicable law or agreed to in writing,
+	 * software distributed under the License is distributed on an
+	 * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+	 * KIND, either express or implied.  See the License for the
+	 * specific language governing permissions and limitations
+	 * under the License.
+	 ***************************************************************
+   -->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<meta http-equiv="Content-Language" content="en-us">
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<title>Apache UIMA OpenNLP Wrapper Examples</title>
+
+<style>
+<!--
+code         { font-family: Courier New }
+-->
+</style>
+
+</head>
+<body>
+
+<table width="718" border="0" cellspacing="8" cellpadding="8">
+<tr><td width="684">
+<h1>Apache UIMA Example Wrappers for the OpenNLP Tools</h1>
+
+
+<p><font size="2">Copyright 2006 The Apache Software Foundation.</font></p>
+
+
+<h2>Introduction</h2>
+
+<p><a href="http://opennlp.sourceforge.net/">OpenNLP Tools</a> is an open
+source package of natural language processing components written in pure
+Java.&nbsp; The tools are based on Adwait Ratnaparkhi's Ph.D. dissertation (<a
+href="ftp://ftp.cis.upenn.edu/pub/ircs/tr/98-15/98-15.ps.gz">UPenn, 1998</a>),
+which shows how to apply Maximum Entropy models to various language ambiguity
+problems.&nbsp; The OpenNLP Tools rely on the <a
+href="http://maxent.sourceforge.net/">OpenNLP MAXENT</a> package, a mature
+Java package for training and using maximum entropy models.</p>
+
+<p>The OpenNLP Tools package (as of Version 1.3) includes a sentence detector,
+tokenizer, part-of-speech tagger, noun phrase chunker, shallow parser, named
+entity detector, and co-reference resolver.&nbsp; All together these tools provide
+a rich and powerful set of text analysis capabilities.
+</p>
+
+<p>The Apache UIMA Example Wrappers for OpenNLP provides UIMA annotators for most
+of the OpenNLP Tools components, allowing you to run the OpenNLP Tools as UIMA
+annotators.&nbsp; The wrapper annotators were written to be very simple examples
+of how pre-existing analysis components can be deployed using the UIMA
+framework.&nbsp; The wrappers provide a thin layer over the OpenNLP classes and
+use the &quot;outermost&quot; APIs to those classes.&nbsp; As such, most of the
+work performed by the wrappers involves translating the contents of the CAS
+(i.e., the document and any annotations) into the input format required by the
+OpenNLP API, then translating the result returned by the OpenNLP API into new
+annotations in the CAS.
+</p>
+
+<p>The wrappers are not meant to represent an optimal integration of the OpenNLP
+Tools into the UIMA framework.&nbsp; In fact, it is quite likely that a more
+efficient integration could be achieved, e.g., by moving some of the OpenNLP
+data structures into the CAS and avoiding much of the copying and translating
+performed by the current implementation.
+
+<p>This version of the example wrappers requires version 1.3.0 of the OpenNLP
+Tools and only supports the English version of the tools (and, correspondingly,
+the English version of the models).
+</p>
+
+<p>The rest of this Readme will show you how to compile and use the OpenNLP Wrappers.
+</p>
+
+<h2>Prerequisites</h2>
+
+<p>To get started, you need to download OpenNLP Tools V1.3.0 from
+SourceForge.net, compile the OpenNLP Tools package, create or download from
+SourceForge.net the model files for the components you wish to run, and
+finally compile the UIMA Wrappers for OpenNLP.
+</p>
+
+<ol>
+<li><b>Download OpenNLP Tools</b></li>
+
+Go to the OpenNLP homepage (<a
+href="http://opennlp.sourceforge.net/">opennlp.sourceforge.net</a>) and follow
+the link there to download the latest release of the OpenNLP Tools package, <i>opennlp-tools-1.3.0.tgz</i>.&nbsp;
+  Note that the &quot;Download&quot; link at the bottom of
+this page might not point to the latest release, so be sure you get version
+1.3.0 or later.&nbsp; This package contains the source code for the OpenNLP Tools,
+a few jar files required by OpenNLP, the OpenNLP documentation, and an Ant build
+script (among other things).
+
+<li><b>Compile OpenNLP Tools</b></li>
+
+Follow the instructions in the README file distributed in the OpenNLP Tools
+package to compile the OpenNLP Tools and build the OpenNLP Tools jar file, <i>opennlp-tools-1.3.0.jar</i>.&nbsp;
+  The easiest way to do this is to run
+Ant.
+
+<li><b>Download the Model files</b></li>
+
+Go to the OpenNLP homepage (<a
+href="http://opennlp.sourceforge.net/">opennlp.sourceforge.net</a>) and follow
+the &quot;Models&quot; link at the bottom of the page to download English model files for the
+OpenNLP Tools components that you plan to run.  You'll find more details about
+the model files in the README file for the OpenNLP Tools package.
+
+<li><b>Compile the UIMA Wrappers for OpenNLP</b></li>
+
+The UIMA Wrappers package for OpenNLP is in the opennlp_wrappers sub-directory of the
+uima_examples project distributed with the UIMA SDK (the
+directory where you found this Readme file).&nbsp; To compile the wrappers, first
+import the UIMA SDK uima_examples project into Eclipse using the instructions
+in Section 3.2 of the <i> UIMA SDK User's Guide and Reference </i>(assuming you
+  haven't already done this).&nbsp; Next, add the wrappers source
+directory to the build path of the uima_examples project:<p>
+
+<ol type="a">
+<li> Open the Properties dialog for the uima_examples project.  You can either
+"right click" on the exmple project and select "Properties" from the menu, or
+select (highlight) the examples project then click "Project-&gt;Properties"
+from the main menu.<p>
+
+<li> Click on "Java Build Path" to open the build path panel.<p>
+
+<li> Click on the "Source" tab to see the source folders on the build path.<p>
+
+<li> Click "Add Folder..." and add "opennlp_wrappers/src" to the source
+folders build path.<p>
+</ol>
+
+After adding the wrappers source directory, you should get compilation errors.
+You now need to add the OpenNLP jar files to the build path for the
+uima_examples project.  Open the "Java Build Path" panel for the uima_examples
+project again (as above), click on the "Libraries" tab, and add the following
+OpenNLP jar files to the build path:
+
+<ul>
+<li>maxent-2.4.0.jar</li>
+<li>trove.jar</li>
+<li>opennlp-tools-1.3.0.jar</li>
+</ul>
+
+  maxent-2.4.0.jar and trove.jar can be found in the &quot;lib&quot; folder of
+  the OpenNLP Tools package, and opennlp-tools-1.3.0.jar is the jar file you
+  built in step 2 above.&nbsp; The exact location of these jar files will depend on where you downloaded and
+compiled the OpenNLP Tools.<p>
+
+At this point, your wrappers should compile and you are now ready to run the
+OpenNLP Tools as UIMA Annotators.<h4>Quick Test</h4>
+<p>For a quick test, open the descriptor file for the sentence detector wrapper<p>opennlp_wrappers/descriptors/OpenNLPSentenceDetector.xml&nbsp;<p>using
+the Component Descriptor Editor plugin for Eclipse (see Chapter 8 of the <i>UIMA
+SDK User's Guide and Reference</i>).&nbsp; Click on the &quot;Parameter
+Settings&quot; tab and set the value of the &quot;ModelFile&quot; parameter to
+point to the English sentence detector model you downloaded in step 3 above,
+e.g.:<p>&nbsp;C:\opennlp-models-1.3.0\english\sentdetect\EnglishSD.bin.gz<p>Save
+the descriptor.&nbsp; Start the UIMA Document Analyzer from Eclipse as described in
+Chapeter 12 of the <i>UIMA SDK User's Guide and Reference</i>.&nbsp; Set the <b>Input</b>
+and <b>Output</b> directories as shown in Section 12.2.&nbsp; For the <b>Location
+of TAE XML Descriptor</b>, specify:<p>opennlp_wrappers/descriptors/OpenNLPSentenceDetector.xml<p>Note
+that the opennlp_wrappers folder is in the examples folder of the UIMA
+SDK.&nbsp; Leave the remaining input fields alone and press
+&quot;Run&quot;.&nbsp; This will run the OpenNLP sentence detector on the UIMA
+SDK sample data.&nbsp;&nbsp;<p>Double click on a document in the results list to
+bring up the Java annotation viewer.&nbsp; You should see Sentence annotations (though
+since the spans are contiguous, it may appear that an entire paragraph is
+highlighted).&nbsp; Click on a Sentence annotation to see the annotation details
+in the right-hand pane.&nbsp; When you expand the details, you should see
+reasonable begin and end values.
+</ol>
+<h2>
+
+Using the Example Wrappers</h2>
+<p>The OpenNLP Example Wrappers package includes source code for the wrapper annotator
+classes, source code for the JCasGen-generated type classes, and descriptor files for the analysis engines and type system.&nbsp;&nbsp;<p> The
+source code is in &quot;opennlp_wrappers/src&quot;, which you should now be
+somewhat familiar with after following the instructions in the previous section
+to compile the code.&nbsp; The Analysis Engine descriptors are in
+&quot;opennlp_wrappers/descriptors&quot;.&nbsp;&nbsp;<p>The following table
+summarizes the wrapper annotator classes and their corresponding descriptor
+files (note that all of the wrapper annotators are in the
+org.apache.uima.examples.opennlp.annotator package):<p>&nbsp;
+<table border="1" width="100%" height="190">
+  <tr>
+    <th valign="top" height="22"><b>Java Class</b></th>
+    <th valign="top" height="22"><b>Descriptor File</b></th>
+    <th valign="top" height="22"><b>Description</b></th>
+  </tr>
+  <tr>
+    <td valign="top" height="44">NEDetector.java</td>
+    <td valign="top" height="44">OpenNLPNEDetector.xml</td>
+    <td valign="top" height="44">Named entity detector (called name finder in
+      OpenNLP)</td>
+  </tr>
+  <tr>
+    <td valign="top" height="22">Parser.java</td>
+    <td valign="top" height="22">OpenNLPParser.xml</td>
+    <td valign="top" height="22">Shallow parser</td>
+  </tr>
+  <tr>
+    <td valign="top" height="22">POSTagger.java</td>
+    <td valign="top" height="22">OpenNLPPOSTagger.xml</td>
+    <td valign="top" height="22">Part-of-speech tagger</td>
+  </tr>
+  <tr>
+    <td valign="top" height="22">SentenceDetector.java</td>
+    <td valign="top" height="22">OpenNLPSentenceDetector.xml</td>
+    <td valign="top" height="22">Sentence detector</td>
+  </tr>
+  <tr>
+    <td valign="top" height="22">Tokenizer.java</td>
+    <td valign="top" height="22">OpenNLPTokenizer.xml</td>
+    <td valign="top" height="22">Tokenizer</td>
+  </tr>
+</table>
+
+&nbsp;
+<p>The descriptors folder also contains an aggregate analysis engine descriptor,
+OpenNLPAggregate.xml, which can be used to run one or more wrapper components.</p>
+<p>
+
+The type system descriptor, OpenNLPExampleTypes.xml, can be found in the
+org.apache.uima.examples.opennlp package in the &quot;src&quot; folder.&nbsp; The
+type system descriptor is located here so that the analysis engine descriptors
+can import it by name.&nbsp; </p>
+<p>All of the annotators use the JCas interface to the CAS, so JCasGen has been
+run on the type system.&nbsp; All of the JCasGen-generated type classes are in
+the org.apache.uima.examples.opennlp package.&nbsp; </p>
+<h3>OpenNLP Wrapper Type System</h3>
+<p>The OpenNLP Wrapper type system defines UIMA annotation types for the various
+annotations produced by each of the OpenNLP Tools components.&nbsp; You can view
+the type system in detail by using the Component Descriptor Editor plug-in for
+Eclipse and loading the type system descriptor.&nbsp; </p>
+<p>All of the types reside in the org.apache.uima.examples.opennlp namespace.&nbsp;
+The types are summarized in this table:</p>
+<table border="1" width="684">
+  <tr>
+    <td width="126">Sentence</td>
+    <td width="542">Spans a sentence, produced by OpenNLPSentenceDetector.</td>
+  </tr>
+  <tr>
+    <td width="126">Token</td>
+    <td width="542">Spans a token, produced by OpenNLPTokenizer.&nbsp; If
+      OpenNLPPOSTagger has been run, the the posTag field of the Token will
+      contain the part-of-speech tag.</td>
+  </tr>
+  <tr>
+    <td width="126">Person</td>
+    <td width="542">Spans a Person entity, produced by OpenNLPNEDetector.</td>
+  </tr>
+  <tr>
+    <td width="126">Organization</td>
+    <td width="542">Spans an Organization entity, produced by OpenNLPNEDetector.</td>
+  </tr>
+  <tr>
+    <td width="126">Time</td>
+    <td width="542">Spans a Time entity, produced by OpenNLPNEDetector.</td>
+  </tr>
+  <tr>
+    <td width="126">Date</td>
+    <td width="542">Spans a Date entity, produced by OpenNLPNEDetector.</td>
+  </tr>
+  <tr>
+    <td width="126">Location</td>
+    <td width="542">Spans a Location entity, produced by OpenNLPNEDetector.</td>
+  </tr>
+  <tr>
+    <td width="126">Percentage</td>
+    <td width="542">Spans a Percentage entity, produced by OpenNLPNEDetector.</td>
+  </tr>
+  <tr>
+    <td width="126">Money</td>
+    <td width="542">Spans a Money entity, produced by OpenNLPNEDetector.</td>
+  </tr>
+  <tr>
+    <td width="126">Clause</td>
+    <td width="542">Supertype for all of the Clause annotations produced by
+      OpenNLPParser.</td>
+  </tr>
+  <tr>
+    <td width="126">Phrase</td>
+    <td width="542">Supertype for all of the Phrase annotations produced by
+      OpenNLPParser.</td>
+  </tr>
+</table>
+
+<h3>
+
+OpenNLPSentenceDetector</h3>
+<p>The OpenNLPSentenceDetector detects sentence boundaries and creates Sentence annotations that span these boundaries.&nbsp;
+The sentence detection is performed by opennlp.tools.lang.english.SentenceDetector.&nbsp;</p>
+<ul>
+  <li>Inputs
+    <ul>
+      <li>none - The analysis engine operates directly on the document in the
+        CAS</li>
+    </ul>
+  </li>
+  <li>Outputs
+    <ul>
+      <li>Sentence - one Sentence annotation for each detected sentence in the
+        document.</li>
+    </ul>
+  </li>
+  <li>Parameters
+    <table border="1" width="684">
+      <tr>
+        <th width="114">Name</th>
+        <th width="69">Type</th>
+        <th width="479">Description</th>
+      </tr>
+      <tr>
+        <td width="114">ModelFile</td>
+        <td width="69">String</td>
+        <td width="479">Path to the OpenNLP model file for the English sentence
+          detector</td>
+      </tr>
+    </table>
+  </li>
+</ul>
+<h3>OpenNLPTokenizer</h3>
+<p>The OpenNLPTokenizer tokenizes the text and creates token annotations that span the tokens.&nbsp;
+The tokenization is performed with opennlp.tools.lang.english.Tokenizer, which tokenizes according to the  Penn Tree Bank tokenization standard.&nbsp;
+In general, tokens are separated by white space, but punctuation marks (e.g., ".", ",", "!", "?", etc.) and
+apostrophe endings (e.g., "'s", "'nt", etc.) are separate tokens.</p>
+<ul>
+  <li>Inputs
+    <ul>
+      <li>Sentence - The analysis engine requires Sentence annotations in the
+        CAS</li>
+    </ul>
+  </li>
+  <li>Outputs
+    <ul>
+      <li>Token - one Token annotation for each detected token in the document.</li>
+    </ul>
+  </li>
+  <li>Parameters
+    <table border="1" width="684">
+      <tr>
+        <th width="114">Name</th>
+        <th width="69">Type</th>
+        <th width="479">Description</th>
+      </tr>
+      <tr>
+        <td width="114">ModelFile</td>
+        <td width="69">String</td>
+        <td width="479">Path to the OpenNLP model file for the English sentence
+          tokenizer</td>
+      </tr>
+    </table>
+  </li>
+</ul>
+<h3>OpenNLPPOSTagger</h3>
+<p>The OpenNLPPOSTagger assigns part-of-speech tags to tokens using opennlp.tools.lang.english.PosTagger.&nbsp; This annotator requires that sentence and token annotations have been created in the
+CAS.&nbsp; The annotator updates the POS field of each token annotation with the part-of-speech tag.</p>
+<ul>
+  <li>Inputs
+    <ul>
+      <li>Sentence - The analysis engine requires Sentence annotations in the
+        CAS</li>
+      <li>Token - The analysis engine requires Token annotations in the CAS</li>
+    </ul>
+  </li>
+  <li>Outputs
+    <ul>
+      <li>Token.posTag - the posTag field in each Token annotation is updated
+        with the part-of-speech tag for the corresponding word.</li>
+    </ul>
+  </li>
+  <li>Parameters
+    <table border="1" width="684">
+      <tr>
+        <th width="114">Name</th>
+        <th width="69">Type</th>
+        <th width="479">Description</th>
+      </tr>
+      <tr>
+        <td width="114">ModelFile</td>
+        <td width="69">String</td>
+        <td width="479">Path to the OpenNLP model file for the English POS
+          tagger.&nbsp; Note that as of OpenNLP Tools 1.3.0, the POS tagger
+          model file can be found in the parser model files folder.</td>
+      </tr>
+    </table>
+  </li>
+</ul>
+<h3>OpenNLPNEDetector</h3>
+<p>The OpenNLPNEDetector detects named entities in the text and creates corresponding entity annotations that span the found entities.&nbsp;
+The annotator uses opennlp.tools.lang.english.NameFinder, instantiating one
+NameFinder for each entity class to be detected.&nbsp; Each entity class has a separate MaxEnt model file.&nbsp;
+All model files must be stored in a single model file directory and use the following naming convention:
+&quot;<i>class</i>.bin.gz&quot;, where &quot;<i>class</i>&quot; is the entity class name and ".bin.gz" must appear as shown, e.g., "person.bin.gz".&nbsp;<br>
+<br>
+This analysis engine takes a parameter called "EntityTypeMapping" which maps each entity class name to an entity annotation type.&nbsp;
+The entity class name must match a model file in the model file directory, and the entity annotation type must be defined in the type system and have a corresponding JCas Java class.&nbsp;
+This allows the actual annotation types produced by the analysis engine to be
+specified as a run-time parameter.</p>
+<ul>
+  <li>Inputs
+    <ul>
+      <li>Sentence - The analysis engine requires Sentence annotations in the
+        CAS</li>
+      <li>Token - The analysis engine requires Token annotations in the CAS</li>
+    </ul>
+  </li>
+  <li>Outputs
+    <ul>
+      <li>EntityAnnotation - The analysis engine creates an EntityAnnotation for
+        each entity detected in the document.&nbsp; The actual annotation is
+        typically a sub-type of EntityAnnotation specialized for the particular
+        entity class found, e.g., Person, Organizatoin, etc.&nbsp; See the
+        EntityTypeMapping parameter for more details.</li>
+    </ul>
+  </li>
+  <li>Parameters
+    <table border="1" width="687">
+      <tr>
+        <th width="148">Name</th>
+        <th width="71">Type</th>
+        <th width="446">Description</th>
+      </tr>
+      <tr>
+        <td width="148">ModelDirectory</td>
+        <td width="71">String</td>
+        <td width="446">Path to the directory that contains the OpenNLP model
+          files for the English name finder.&nbsp; All model files must be stored in a single model file directory and use the following naming convention:
+&quot;<i>class</i>.bin.gz&quot;, where &quot;<i>class</i>&quot; is the entity class name and ".bin.gz" must appear as shown, e.g., "person.bin.gz".&nbsp;</td>
+      </tr>
+      <tr>
+        <td width="148">EntityTypeMappings</td>
+        <td width="71">String Array</td>
+        <td width="446">Mapping from entity names (obtained from the model
+          filename) to the JCas class for the corresponding annotation.&nbsp;
+          Each mapping string is of the form &quot;name,class&quot;, i.e., the
+          entity type name followed by a comma followed by the annotation class.</td>
+      </tr>
+    </table>
+  </li>
+</ul>
+<h3>OpenNLPParser</h3>
+<p>The OpenNLPParser parses the document and creates phrasal and clausal annotations over the
+text using opennlp.tools.lang.english.TreebankParser.<br>
+<br>
+This analysis engine takes a parameter called "ParseTagMapping" which maps each parse tag to a syntax annotation type.&nbsp;
+The parse tags come from the standard Penn Tree Bank phrase and clause tags (produced by the OpenNLP parser), and each syntax annotation type must be defined in the type system and have a corresponding JCas Java class.</p>
+<ul>
+  <li>Inputs
+    <ul>
+      <li>Sentence - The analysis engine requires Sentence annotations in the
+        CAS</li>
+      <li>Token - The analysis engine requires Token annotations in the CAS</li>
+    </ul>
+  </li>
+  <li>Outputs
+    <ul>
+      <li>Phrase - The analysis engine creates a Phrase for each phrase tag
+        produced by the TreebankParser.&nbsp; The actual annotations created are
+        sub-types of Phrase, specific to the actual phrase tag.&nbsp; See the
+        ParseTagMapping parameter for more details.</li>
+      <li>Clause - The analysis engine creates a Clause for each clause tag
+        produced by the TreebankParser.&nbsp; The actual annotations created are
+        sub-types of Clause, specific to the actual clause tag.&nbsp; See the
+        ParseTagMapping parameter for more details.</li>
+    </ul>
+  </li>
+  <li>Parameters
+    <table border="1" width="687">
+      <tr>
+        <th width="148">Name</th>
+        <th width="71">Type</th>
+        <th width="446">Description</th>
+      </tr>
+      <tr>
+        <td width="148">ModelDirectory</td>
+        <td width="71">String</td>
+        <td width="446">Path to the directory that contains the OpenNLP model
+          files for the English parser.</td>
+      </tr>
+      <tr>
+        <td width="148">UseTagDictionary</td>
+        <td width="71">Boolean</td>
+        <td width="446">Flag indicating whether or not to use the tag dictionary</td>
+      </tr>
+      <tr>
+        <td width="148">CaseSensitiveTagDictionary</td>
+        <td width="71">Boolean</td>
+        <td width="446">Flag indicating whether or not the tag dictionary is
+          case sensitive</td>
+      </tr>
+      <tr>
+        <td width="148">BeamSize</td>
+        <td width="71">Integer</td>
+        <td width="446">The beam size for the parse search</td>
+      </tr>
+      <tr>
+        <td width="148">AdvancePercentage</td>
+        <td width="71">Float</td>
+        <td width="446">The probability mass percentage threshold for advancing
+          outcomes</td>
+      </tr>
+      <tr>
+        <td width="148">ParseTagMappings</td>
+        <td width="71">String Array</td>
+        <td width="446">Mapping from parse result tags produced by the
+          TreeBankParser to the JCas class for the corresponding
+          annotation.&nbsp; Each mapping string is of the form &quot;tag,class&quot;,
+          i.e., the tag name followed by a comma followed by the annotation
+          class name.</td>
+      </tr>
+    </table>
+  </li>
+</ul>
+<h1>Tips and Traps</h1>
+<ul>
+  <li>The OpenNLP Tools can require a lot of Java heap memory, especially if you
+    run multiple annotators simultaneously.&nbsp; You'll likely want to increase
+    your maximum heap size with the -Xmx<i>Size</i> command line argument to the
+    JVM.&nbsp; Try -Xmx1024M just to be safe.&nbsp; If you are using an Eclipse run configuration for the UIMA SDK tools
+    (Document Analyzer and CPE Configurator), you can specify this VM argument
+    on the &quot;Arguments&quot; tab of the run configuration.<p></li>
+    <li>The jar files that come with the OpenNLP Tools package may have been
+      compiled with Java 1.5.&nbsp; Although you can compile the UIMA wrappers
+      with Java 1.4, if you try to run your UIMA application (e.g., the Document
+      Analyzer) with Java 1.4 and you get a &quot;java.lang.UnsupportedClassVersionError:
+      ... (Unsupported major.minor version 49.0)&quot;, try running your
+      application with Java 1.5.<p>
+    </li>
+    <li>To train new models for the OpenNLP components, see the README file
+      distributed with the OpenNLP Tools package.<p>
+    </li>
+    <li>Note that OpenNLPTokenizer requires Sentence annotations, and
+      OpenNLPPOSTagger, OpenNLPNEDetector, and OpenNLPParser require Sentence
+      and Token annotations, so in most cases you will be running an aggregate
+      that minimally includes OpenNLPSentenceDetector and OpenNLPTokenizer.<p>
+    </li>
+    <li>The models for the OpenNLP name finder and parser were created using a
+      tokenization produced by the OpenNLP tokenizer.&nbsp; If you use a
+      different sentence detector and tokenizer that produce a tokenziation
+      diffenrent from the Penn Tree Bank standard, you may not get the best
+      possible performance from the name finder and parser.
+    </li>
+</ul>
+
+<h1>To Dos</h1>
+<ol>
+  <li>Wrap the new OpenNLP co-reference resolution component.</li>
+</ol>
+
+</td>
+</tr>
+</table>
+</body>
+</html>
