@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+	<!--
+	 ***************************************************************
+	 * Licensed to the Apache Software Foundation (ASF) under one
+	 * or more contributor license agreements.  See the NOTICE file
+	 * distributed with this work for additional information
+	 * regarding copyright ownership.  The ASF licenses this file
+	 * to you under the Apache License, Version 2.0 (the
+	 * "License"); you may not use this file except in compliance
+	 * with the License.  You may obtain a copy of the License at
+	 * 
+	 *   http://www.apache.org/licenses/LICENSE-2.0
+	 * 
+	 * Unless required by applicable law or agreed to in writing,
+	 * software distributed under the License is distributed on an
+	 * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+	 * KIND, either express or implied.  See the License for the
+	 * specific language governing permissions and limitations
+	 * under the License.
+	 ***************************************************************
+	-->
+
+<plugin>
+   <extension-point id="externalEditor" name="UIMA External Editor" schema="schema/editorContribution.exsd"/>
+     <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            name="Component Descriptor Editor"
+            default="false"
+            icon="icons/editor.gif"
+            extensions="xml"
+            contributorClass="org.apache.uima.taeconfigurator.editors.MultiPageEditorContributor"
+            class="org.apache.uima.taeconfigurator.editors.MultiPageEditor"
+            id="taeconfigurator.editors.MultiPageEditor">
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            name="UIMA"
+            id="org.apache.uima.cpe.UIMA">
+      </category>
+      <category
+            parentCategory="org.apache.uima.cpe.UIMA"
+            name="Collection Processing Components"
+            id="org.apache.uima.cpe.cpmComponents"/>
+      <category
+            parentCategory="org.apache.uima.cpe.UIMA"
+            name="Importable Parts"
+            id="org.apache.uima.cpe.importParts"/>
+      <wizard
+            name="Analysis Engine Descriptor File"
+            icon="icons/editor.gif"
+            category="org.apache.uima.cpe.UIMA"
+            class="org.apache.uima.taeconfigurator.wizards.TAEConfiguratorNewWizard"
+            id="taeconfigurator.wizards.TAEConfiguratorNewWizard">
+      </wizard>
+      <wizard
+            name="Type System Descriptor File"
+            icon="icons/t_s.gif"
+            category="org.apache.uima.cpe.UIMA"
+            class="org.apache.uima.taeconfigurator.wizards.TypeSystemNewWizard"
+            id="taeconfigurator.wizards.TypeSystemNewWizard">
+      </wizard>
+      <wizard
+            name="Type Priorities Descriptor File"
+            icon="icons/t_s.gif"
+            category="org.apache.uima.cpe.UIMA/org.apache.uima.cpe.importParts"
+            class="org.apache.uima.taeconfigurator.wizards.TypePrioritiesNewWizard"
+            id="taeconfigurator.wizards.TypePrioritiesNewWizard">
+      </wizard>
+      <wizard
+            name="Index Collection Descriptor File"
+            icon="icons/t_s.gif"
+            category="org.apache.uima.cpe.UIMA/org.apache.uima.cpe.importParts"
+            class="org.apache.uima.taeconfigurator.wizards.FsIndexCollectionNewWizard"
+            id="taeconfigurator.wizards.FsIndexCollectionNewWizard">
+      </wizard>
+      <wizard
+            name="External Resource and Bindings (Resource Manager Configuration) Descriptor File"
+            icon="icons/editor.gif"
+            category="org.apache.uima.cpe.UIMA/org.apache.uima.cpe.importParts"
+            class="org.apache.uima.taeconfigurator.wizards.ResourceManagerConfigurationNewWizard"
+            id="taeconfigurator.wizards.ResourceManagerConfigurationNewWizard">
+      </wizard>
+      <wizard
+            name="Cas Consumer Descriptor File"
+            icon="icons/editor.gif"
+            category="org.apache.uima.cpe.UIMA/org.apache.uima.cpe.cpmComponents"
+            class="org.apache.uima.taeconfigurator.wizards.CasConsumerNewWizard"
+            id="taeconfigurator.wizards.CasConsumerNewWizard">
+      </wizard>
+      <wizard
+            name="Cas Initializer Descriptor File"
+            icon="icons/editor.gif"
+            category="org.apache.uima.cpe.UIMA/org.apache.uima.cpe.cpmComponents"
+            class="org.apache.uima.taeconfigurator.wizards.CasInitializerNewWizard"
+            id="taeconfigurator.wizards.CasInitializerNewWizard">
+      </wizard>
+      <wizard
+            name="Collection Reader Descriptor File"
+            icon="icons/editor.gif"
+            category="org.apache.uima.cpe.UIMA/org.apache.uima.cpe.cpmComponents"
+            class="org.apache.uima.taeconfigurator.wizards.CollectionReaderNewWizard"
+            id="taeconfigurator.wizards.CollectionReaderNewWizard">
+      </wizard>
+      <wizard
+            category="org.apache.uima.cpe.UIMA/org.apache.uima.cpe.importParts"
+            class="org.apache.uima.taeconfigurator.wizards.FlowControllerNewWizard"
+            icon="icons/editor.gif"
+            id="taeconfigurator.wizards.FlowControllerNewWizard"
+            name="Flow Controller Descriptor File"/>
+ 
+   </extension>
+   <extension
+         id="UIMA_DataPath"
+         name="DataPath"
+         point="org.eclipse.core.resources.markers">
+         <persistent value="true"/> 
+         <attribute name="path"/>
+   </extension>
+   <extension
+         id="UIMA_Preferences"
+         name="UIMA Preferences"
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="org.apache.uima.taeconfigurator.PreferencePage"
+            name="UIMA Preferences"
+            id="org.apache.uima.taeconfigurator.PreferencePage"/>
+   </extension>
+   <extension
+         id="org.apache.uima.taeconfigurator.projectProperties"
+         name="UIMA Component Descriptor Editor Properties"
+         point="org.eclipse.ui.propertyPages">
+      <page
+            adaptable="true"
+            objectClass="org.eclipse.core.resources.IProject"
+            class="org.apache.uima.taeconfigurator.CDEpropertyPage"
+            name="UIMA CDE Property Page"
+            id="org.apache.uima.taeconfigurator.CDEpropertyPage"/>
+   </extension>
+   
+</plugin>
