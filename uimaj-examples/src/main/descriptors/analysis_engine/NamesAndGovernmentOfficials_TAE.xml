@@ -49,11 +49,19 @@
       <capability>
         <inputs/>
         <outputs>
-          <type>example.Name</type>
           <type>example.GovernmentOfficial</type>
         </outputs>
         <languagesSupported>
           <language>en</language>
+        </languagesSupported>
+      </capability>
+      <capability>
+        <inputs/>
+        <outputs>
+          <type>example.Name</type>
+        </outputs>
+        <languagesSupported>
+          <language>x-unspecified</language>
         </languagesSupported>
       </capability>
     </capabilities>
