@@ -189,9 +189,11 @@ public class MultiResourceSelectionDialog extends ResourcePickerDialog {
     if (importByStickySetting.equals("location")) {
       importByNameUI.setSelection(false);
       importByLocationUI.setSelection(true);
+      isImportByName = false;
     } else {
       importByNameUI.setSelection(true);
       importByLocationUI.setSelection(false);
+      isImportByName = true;
     }
     if (importByNameUI.getSelection()) {
       setupResourcesByName();
@@ -391,9 +393,7 @@ public class MultiResourceSelectionDialog extends ResourcePickerDialog {
           okButton.setEnabled(true);
         }
       } else { // import by name
-        if (resourcesUI.getSelection()[0] != resourcesUI.getItems()[0]) {
-          okButton.setEnabled(true);
-        }
+        okButton.setEnabled(true); 
       }
     }
   }
