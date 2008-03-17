@@ -2008,11 +2008,37 @@ catch (PatternSyntaxException e) {
         <literal>getResultSpecification()</literal> method.</para>
       
       <para>A Result Specification is a list of output types and / or type:feature
-        names, which are expected to be output from (produced by) the
+        names, catagorized by language(s), which are expected to be output from (produced by) the
         annotator. Annotators may use this to optimize their operations, when possible, for
         those cases where only particular outputs are wanted. The interface to the Result
         Specification object (see the Javadocs) allows querying both types and particular
         features of types.</para>
+      
+      <para>The languages specifications used by Result Specifications are the same that are
+      specifiable in Capability Specifications; examples include "en" for English, "en-uk" for
+      British English, etc.  There is also a language type, "x-unspecified", which is presumed
+      if no language specification(s) are given.</para>
+      
+      <para>Result Specifications can be queryed by the Annotator code, and the query may 
+      include the language.  If it doesn't include the language, it is treated as if the 
+      language "x-unspecified" was specified.  Language matching is hierarchically defaulted,
+      in one direction: if a query asks about a type T for language "en-uk", it will match
+        for languages "en-uk", "en", or "x-unspecified".  However the reverse is not true:
+        If the query asks about a type T for language "x-unspecified", then it only 
+        matches Result Specifications with no language (or "x-unspecified", which is equivalent).
+        </para>
+      
+      <para>
+      The effect of this is that if the Result Specification indicates it wants output
+      produced for "en-uk", but the annotator is given a language which is unknown, 
+        or one that is known, but isn't "en-uk", then the query (using the language 
+        of the document) will 
+      return false.   This is true even if the language is "en".  
+        However, if the Result Specification indicates it wants output for "en", 
+      and the query is for "en-uk" (presumably because that's the language of the document
+      and the annotator can handle that especially well), then the query will return true.
+    </para> 
+      
       
       <para>Sometimes you can specify the Result Specification; othertimes, you cannot
         (for instance, inside a Collection Processing Engine, you cannot). When you cannot
@@ -2026,9 +2052,14 @@ catch (PatternSyntaxException e) {
         <para>The default Result Specification is taken from the Engine&apos;s output
           Capability Specification. Remember that a Capability Specification has both
           inputs and outputs, can specify types and / or features, and there can be more than one
-          Capability Set. If there is more than one set, the logical union of these sets is used.
-          The default Result Specification is exactly what&apos;s included in the output
-          Capability Specification.</para>
+          Capability Set. If there is more than one set, the logical union by language of these sets is used.
+          Each set can have a different "language(s)" specified; the default Result Specification 
+          will have the outputs by language(s), so that the annotator can query which outputs 
+          should be provided for particular languages.  The methods to query the Result Specification
+          take a type and (optionally) a feature, and optionally, a language.  If the queried type is
+          a subtype of some otherwise matching type in the Result Specification, it will match the query.  
+          See the Javadocs for more details on this.
+          </para>
         
       </section>
       
