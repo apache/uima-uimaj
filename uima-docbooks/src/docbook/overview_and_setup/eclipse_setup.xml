@@ -50,7 +50,11 @@ under the License.
         </listitem></itemizedlist></para>
   
   <para>The UIMA Eclipse plugins are designed to be used with Eclipse version 3.1 or
-    later.</para>
+    later.
+  </para>
+  
+  <note><para>You will need to run Eclipse using a Java at the 1.5 or later level, in order
+  to use the UIMA Eclipse plugins.</para></note>
   
   <section id="ugr.ovv.eclipse_setup.installation">
     <title>Installation</title>
