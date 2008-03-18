@@ -82,6 +82,11 @@ under the License.
     
     <para>The URI form holds a URI specification String.</para>
     
+    <note><para>Sofa data can be "serialized" using an XML format; when it is, the String data 
+      being serialized must not include invalid XML characters.  See
+      <xref linkend="ugr.tug.xmi_emf.xml_character_issues"/>.
+      </para></note>
+    
   </section>
   
   <section id="ugr.tug.aas.setting_accessing_sofa_data">
