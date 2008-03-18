@@ -289,12 +289,12 @@ under the License.
             because the PEAR installation
           tools will presume this folder contains binary executable files, and will adds this folder to 
           the PATH environment variable.
-          </para>          
+          </para>  </note>        
           <figure id="ugr.tools.pear.packager.fig.wizard.export">
             <title>The PEAR File Export Page</title>
             <mediaobject>
               <imageobject>
-                <imagedata width="5.8in" format="JPG"
+                <imagedata width="5.7in" format="JPG"
                   fileref="&imgroot;image010.jpg"/>
               </imageobject>
               <textobject><phrase>Pear Wizard - File Export Page</phrase>
@@ -302,7 +302,7 @@ under the License.
             </mediaobject>
           </figure>
           
-          </note>
+          
         
       </section>
     </section>

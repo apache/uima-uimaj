@@ -954,7 +954,7 @@ SimpleTokenAndSentenceAnnotator.xml</literallayout></para>
         <screenshot>
     <mediaobject>
       <imageobject>
-        <imagedata width="5.84in" format="JPG" fileref="&imgroot;image002.jpg"/>
+        <imagedata width="5.7in" format="JPG" fileref="&imgroot;image002.jpg"/>
       </imageobject>
       <textobject><phrase>Screenshot of the Semantic Search tool set up to run 
         semantic queries against a semantic search index</phrase></textobject>
@@ -1415,26 +1415,26 @@ JVM_Bind</programlisting>
         <para>When started, the VNS produces output similar to the following:
           
           
-          <programlisting>[10/6/04 3:44 PM | main] WARNING: Config file doesn't exist, 
+          <programlisting><?db-font-size 80% ?>[10/6/04 3:44 PM | main] WARNING: Config file doesn't exist, 
             creating a new empty config file!
 [10/6/04 3:44 PM | main] Loading config file : .vns.services
 [10/6/04 3:44 PM | main] Loading workspaces file : .vns.workspaces
 [10/6/04 3:44 PM | main] ====================================
 (WARNING) Unexpected exception:
-java.io.FileNotFoundException: .vns.workspaces (The system cannot find 
+java.io.FileNotFoundException: .vns.workspaces (The system cannot find
 the file specified)
   at java.io.FileInputStream.open(Native Method)
   at java.io.FileInputStream.&lt;init&gt;(Unknown Source)
   at java.io.FileInputStream.&lt;init&gt;(Unknown Source)
   at java.io.FileReader.&lt;init&gt;(Unknown Source)
-  at org.apache.vinci.transport.vns.service.VNS.loadWorkspaces(VNS.java:339)        
+  at org.apache.vinci.transport.vns.service.VNS.loadWorkspaces(VNS.java:339
   at org.apache.vinci.transport.vns.service.VNS.startServing(VNS.java:237)
   at org.apache.vinci.transport.vns.service.VNS.main(VNS.java:179)
 [10/6/04 3:44 PM | main] WARNING: failed to load workspace.
 [10/6/04 3:44 PM | main] VNS Workspace : null
 [10/6/04 3:44 PM | main] Loading counter file : .vns.counter
 [10/6/04 3:44 PM | main] Could not load the counter file : .vns.counter
-[10/6/04 3:44 PM | main] Starting backup thread, 
+[10/6/04 3:44 PM | main] Starting backup thread,
             using files .vns.services.bak
 and .vns.services
 [10/6/04 3:44 PM | main] Serving on port : 9000
@@ -1745,7 +1745,7 @@ Exception: Connection refused: connect</programlisting>
       <screenshot>
     <mediaobject>
       <imageobject>
-        <imagedata width="5.84in" format="JPG" fileref="&imgroot;image006.jpg"/>
+        <imagedata width="5.7in" format="JPG" fileref="&imgroot;image006.jpg"/>
       </imageobject>
       <textobject><phrase>Screenshot of JMX console monitoring UIMA components</phrase></textobject>
     </mediaobject>

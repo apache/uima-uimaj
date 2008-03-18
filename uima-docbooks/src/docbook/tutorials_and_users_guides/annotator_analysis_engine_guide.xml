@@ -310,7 +310,7 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="5.84in" format="JPG" fileref="&imgroot;image004.jpg"/>
+          <imagedata width="5.7in" format="JPG" fileref="&imgroot;image004.jpg"/>
         </imageobject>
         <textobject><phrase>Screenshot of enabling automatic running of JCasGen</phrase></textobject>
       </mediaobject>
@@ -331,7 +331,7 @@ under the License.
       <screenshot>
         <mediaobject>
         <imageobject>
-          <imagedata width="5.84in" format="JPG" fileref="&imgroot;image006.jpg"/>
+          <imagedata width="5.7in" format="JPG" fileref="&imgroot;image006.jpg"/>
         </imageobject>
         <textobject><phrase>Screenshot of JCasGen</phrase></textobject>
       </mediaobject>
@@ -555,7 +555,7 @@ annotation.setBuilding("Yorktown");</programlisting>
       <screenshot>
   <mediaobject>
     <imageobject>
-      <imagedata width="5.84in" format="JPG" fileref="&imgroot;image008.jpg"/>
+      <imagedata width="5.7in" format="JPG" fileref="&imgroot;image008.jpg"/>
     </imageobject>
     <textobject><phrase>Screenshot of Component Descriptor Editor overview page</phrase>      
     </textobject>
@@ -584,7 +584,7 @@ annotation.setBuilding("Yorktown");</programlisting>
       <screenshot>
    <mediaobject>
      <imageobject>
-       <imagedata width="5.84in" format="JPG" fileref="&imgroot;image010.jpg"/>
+       <imagedata width="5.7in" format="JPG" fileref="&imgroot;image010.jpg"/>
      </imageobject>
      <textobject><phrase>Screenshot of CDE Type System page</phrase></textobject>
    </mediaobject>
@@ -642,7 +642,7 @@ annotation.setBuilding("Yorktown");</programlisting>
       <screenshot>
    <mediaobject>
      <imageobject>
-       <imagedata width="5.84in" format="JPG" fileref="&imgroot;image014.jpg"/>
+       <imagedata width="5.7in" format="JPG" fileref="&imgroot;image014.jpg"/>
      </imageobject>
      <textobject><phrase>Screenshot of UIMA Document Analyzer GUI</phrase></textobject>
    </mediaobject>       
@@ -699,7 +699,7 @@ annotation.setBuilding("Yorktown");</programlisting>
       <screenshot>
    <mediaobject>
      <imageobject>
-       <imagedata width="5.84in" format="JPG" fileref="&imgroot;image018.jpg"/>
+       <imagedata width="5.7in" format="JPG" fileref="&imgroot;image018.jpg"/>
      </imageobject>
      <textobject><phrase>Screenshot of UIMA CAS Annotation Viewer GUI</phrase></textobject>
    </mediaobject>       
@@ -751,7 +751,7 @@ annotation.setBuilding("Yorktown");</programlisting>
         <screenshot>
    <mediaobject>
      <imageobject>
-       <imagedata width="5.84in" format="JPG" fileref="&imgroot;image020.jpg"/>
+       <imagedata width="5.7in" format="JPG" fileref="&imgroot;image020.jpg"/>
      </imageobject>
      <textobject><phrase>Screenshot of UIMA Component Descriptor Editor (CDE) Parameters page</phrase></textobject>
    </mediaobject>       
@@ -789,7 +789,7 @@ annotation.setBuilding("Yorktown");</programlisting>
         <screenshot>
    <mediaobject>
      <imageobject>
-       <imagedata width="5.84in" format="JPG" fileref="&imgroot;image022.jpg"/>
+       <imagedata width="5.7in" format="JPG" fileref="&imgroot;image022.jpg"/>
      </imageobject>
      <textobject><phrase>Screenshot of UIMA Component Descriptor Editor (CDE) Parameter Settings page</phrase></textobject>
    </mediaobject>       
@@ -965,12 +965,12 @@ public void initialize(UimaContext aContext)
         
         <para>When running your own Java application, you can specify the location of the
           logging configuration file on your Java command line by setting the Java system
-          property <literal>java.util.logging.config.file</literal>to be the logging
+          property <literal>java.util.logging.config.file</literal> to be the logging
           configuration filename. This file specification can be either absolute or
           relative to the working directory. For example:
           
           
-          <programlisting><?db-font-size 70% ?>java "-Djava.util.logging.config.file=C:/Program Files/apache-uima/config/Logger.properties"</programlisting>
+          <programlisting><?db-font-size 65% ?>java "-Djava.util.logging.config.file=C:/Program Files/apache-uima/config/Logger.properties"</programlisting>
           <note><para>In a shell script, you can use environment variables such as
           UIMA_HOME if convenient.</para></note> </para>
                
@@ -1108,7 +1108,7 @@ public void initialize(UimaContext aContext)
           UIMA also provides a logging implementation that use Apache Log4j instead of Java logging. To
           use Log4j you have to provide the Log4j jars in the classpath and your application 
           must specify the logging configuration as shown below. 
-          <programlisting>-Dorg.apache.uima.logger.class=&lt;org.apache.uima.util.impl.Log4jLogger_impl></programlisting>
+          <programlisting><?db-font-size 80% ?>-Dorg.apache.uima.logger.class=&lt;org.apache.uima.util.impl.Log4jLogger_impl></programlisting>
         </para>
       </section>
       
@@ -1142,7 +1142,7 @@ public void initialize(UimaContext aContext)
           <title>Combining Annotators to form an Aggregate Analysis Engine</title>
           <mediaobject>
             <imageobject>
-              <imagedata width="5.84in" format="PNG"
+              <imagedata width="5.7in" format="PNG"
                 fileref="&imgroot;image024.png"/>
             </imageobject>
             <textobject> <phrase>Combining Annotators to form an Aggregate Analysis
@@ -1166,7 +1166,7 @@ public void initialize(UimaContext aContext)
         <screenshot>
   <mediaobject>
     <imageobject>
-      <imagedata width="5.84in" format="JPG" fileref="&imgroot;image026.jpg"/>
+      <imagedata width="5.7in" format="JPG" fileref="&imgroot;image026.jpg"/>
     </imageobject>
     <textobject>
       <phrase>Aggregate page of the Component Descriptor Editor (CDE)</phrase>
@@ -1219,7 +1219,7 @@ public void initialize(UimaContext aContext)
           <screenshot>
      <mediaobject>
        <imageobject>
-         <imagedata width="5.84in" format="JPG" fileref="&imgroot;image028.jpg"/>
+         <imagedata width="5.7in" format="JPG" fileref="&imgroot;image028.jpg"/>
        </imageobject>
        <textobject><phrase>Screen shot of the Capabilities page of the Component Descriptor Editor
        </phrase></textobject>
@@ -1241,7 +1241,7 @@ public void initialize(UimaContext aContext)
         <screenshot>
      <mediaobject>
        <imageobject>
-         <imagedata width="5.84in" format="JPG" fileref="&imgroot;image030.jpg"/>
+         <imagedata width="5.7in" format="JPG" fileref="&imgroot;image030.jpg"/>
        </imageobject>
        <textobject><phrase>Screen shot results of running the Document Analyzer
        </phrase></textobject>
@@ -1330,7 +1330,7 @@ while (timeIter.hasNext()) {
       <screenshot>
      <mediaobject>
        <imageobject>
-         <imagedata width="5.84in" format="JPG" fileref="&imgroot;image032.jpg"/>
+         <imagedata width="5.7in" format="JPG" fileref="&imgroot;image032.jpg"/>
        </imageobject>
        <textobject><phrase>Screen shot of Capabilities page of the Component Descriptor Editor
        </phrase></textobject>
@@ -1350,7 +1350,7 @@ while (timeIter.hasNext()) {
             engines</title>
           <mediaobject>
             <imageobject>
-              <imagedata width="5.84in" format="PNG" fileref="&imgroot;image034.png"/>
+              <imagedata width="5.7in" format="PNG" fileref="&imgroot;image034.png"/>
             </imageobject>
             <textobject><phrase>An Aggregate Analysis Engine where an internal component uses output from
               previous engines. </phrase>
@@ -1687,7 +1687,7 @@ catch (PatternSyntaxException e) {
         <screenshot>
        <mediaobject>
        <imageobject>
-         <imagedata width="5.84in" format="JPG" fileref="&imgroot;image036.jpg"/>
+         <imagedata width="5.7in" format="JPG" fileref="&imgroot;image036.jpg"/>
        </imageobject>
        <textobject><phrase>Screen shot of Component Descriptor Editor page for configuring External Resources
        </phrase></textobject>
@@ -1705,7 +1705,7 @@ catch (PatternSyntaxException e) {
         <screenshot>
        <mediaobject>
        <imageobject>
-         <imagedata width="5.84in" format="JPG" fileref="&imgroot;image038.jpg"/>
+         <imagedata width="5.7in" format="JPG" fileref="&imgroot;image038.jpg"/>
        </imageobject>
        <textobject><phrase>Screen shot of Component Descriptor Editor page for configuring External Resources after
          adjusting the layout
@@ -1923,7 +1923,7 @@ catch (PatternSyntaxException e) {
             <title>Component engines of an aggregate share a common resource</title>
             <mediaobject>
               <imageobject>
-                <imagedata width="5.84in" format="PNG"
+                <imagedata width="5.7in" format="PNG"
                   fileref="&imgroot;image042.png"/>
               </imageobject>
               <textobject><phrase>Picture of Component engines of an aggregate sharing a
@@ -1942,7 +1942,7 @@ catch (PatternSyntaxException e) {
           <screenshot>
      <mediaobject>
       <imageobject>
-        <imagedata width="5.84in" format="JPG" fileref="&imgroot;image044.jpg"/>
+        <imagedata width="5.7in" format="JPG" fileref="&imgroot;image044.jpg"/>
       </imageobject>
       <textobject><phrase>UimaMeetingDetectorAE.xml binding a common resource</phrase></textobject>
     </mediaobject>
@@ -2264,7 +2264,7 @@ documentAnalyzer</programlisting>
       <screenshot>
      <mediaobject>
       <imageobject>
-        <imagedata width="5.84in" format="JPG" fileref="&imgroot;image046.jpg"/>
+        <imagedata width="5.7in" format="JPG" fileref="&imgroot;image046.jpg"/>
       </imageobject>
       <textobject><phrase>Screenshot of Eclipse debugger showing non-logical-structure display of 
       a feature structure</phrase></textobject>
@@ -2291,7 +2291,7 @@ documentAnalyzer</programlisting>
       <screenshot>
      <mediaobject>
       <imageobject>
-        <imagedata width="5.84in" format="JPG" fileref="&imgroot;image050.jpg"/>
+        <imagedata width="5.7in" format="JPG" fileref="&imgroot;image050.jpg"/>
       </imageobject>
       <textobject><phrase>Screenshot of Eclipse debugger showing logical structure display of 
       an annotation</phrase></textobject>

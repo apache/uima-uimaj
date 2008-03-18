@@ -79,7 +79,7 @@
    <screenshot>
     <mediaobject>
      <imageobject>
-      <imagedata scale="100" format="JPG" fileref="&imgroot;eclipse-cvd-launch.jpg"/>
+      <imagedata width="5.7in" format="JPG" fileref="&imgroot;eclipse-cvd-launch.jpg"/>
      </imageobject>
      <textobject>
       <phrase>Sample error dialog</phrase>

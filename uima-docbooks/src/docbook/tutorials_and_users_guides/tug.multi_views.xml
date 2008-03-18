@@ -638,7 +638,7 @@ CAS  newView = aCAS .createView(String localNameOfTheViewBeforeMapping);</progra
     <para>Getting a View from a CAS or JCas:</para>
     
     
-    <programlisting>JCas myView = aJCas.getView(String localNameOfTheViewBeforeMapping);
+    <programlisting><?db-font-size 80% ?>JCas myView = aJCas.getView(String localNameOfTheViewBeforeMapping);
 CAS  myView = aCAS .getView(String localNameOfTheViewBeforeMapping);
 Iterator allViews = aCasOrJCas.getViewIterator();
 Iterator someViews = aCasOrJCas.getViewIterator(String localViewNamePrefix);</programlisting>

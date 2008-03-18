@@ -102,7 +102,7 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="5.84in" format="JPG" fileref="&imgroot;image006.jpg"/>
+          <imagedata width="5.7in" format="JPG" fileref="&imgroot;image006.jpg"/>
         </imageobject>
         <textobject><phrase>Screenshot of CDE showing overview page</phrase>
         </textobject>
@@ -231,7 +231,7 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="5.84in" format="JPG" fileref="&imgroot;image010.jpg"/>
+          <imagedata width="5.7in" format="JPG" fileref="&imgroot;image010.jpg"/>
         </imageobject>
         <textobject><phrase>CDE Aggregate page</phrase>
         </textobject>
@@ -346,7 +346,7 @@ under the License.
         <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="5.84in" format="JPG" fileref="&imgroot;image014.jpg"/>
+          <imagedata width="5.7in" format="JPG" fileref="&imgroot;image014.jpg"/>
         </imageobject>
         <textobject><phrase>Adding a remote client to an aggregate</phrase>
         </textobject>
@@ -559,7 +559,7 @@ under the License.
         <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="5.84in" format="JPG" fileref="&imgroot;image026.jpg"/>
+          <imagedata width="5.7in" format="JPG" fileref="&imgroot;image026.jpg"/>
         </imageobject>
         <textobject><phrase>Aggregate parameters</phrase>
         </textobject>
@@ -628,7 +628,7 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="5.84in" format="JPG" fileref="&imgroot;image028.jpg"/>
+          <imagedata width="5.7in" format="JPG" fileref="&imgroot;image028.jpg"/>
         </imageobject>
         <textobject><phrase>Parameter settings page</phrase>
         </textobject>
@@ -669,7 +669,7 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="5.84in" format="JPG" fileref="&imgroot;image030.jpg"/>
+          <imagedata width="5.7in" format="JPG" fileref="&imgroot;image030.jpg"/>
         </imageobject>
         <textobject><phrase>Type System declaration page</phrase>
         </textobject>
@@ -1025,7 +1025,7 @@ under the License.
         <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="5.84in" format="JPG" fileref="&imgroot;image054.jpg"/>
+          <imagedata width="5.7in" format="JPG" fileref="&imgroot;image054.jpg"/>
         </imageobject>
         <textobject><phrase>Adding a Sofa mapping</phrase>
         </textobject>
@@ -1264,7 +1264,7 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="5.84in" format="JPG" fileref="&imgroot;image066.jpg"/>
+          <imagedata width="5.7in" format="JPG" fileref="&imgroot;image066.jpg"/>
         </imageobject>
         <textobject><phrase>Source page</phrase>
         </textobject>

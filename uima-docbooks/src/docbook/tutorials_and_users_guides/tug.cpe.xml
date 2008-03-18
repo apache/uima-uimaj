@@ -96,7 +96,7 @@ under the License.
       <title>CPE Components</title>
       <mediaobject>
         <imageobject>
-          <imagedata width="5.84in" format="PNG"
+          <imagedata width="5.7in" format="PNG"
             fileref="&imgroot;image002.png"/>
         </imageobject>
         <textobject><phrase>CPE Components and flow between them</phrase>
@@ -164,7 +164,7 @@ under the License.
         <screenshot>
           <mediaobject>
             <imageobject>
-              <imagedata width="5.84in" format="JPG" fileref="&imgroot;image004.jpg"/>
+              <imagedata width="5.7in" format="JPG" fileref="&imgroot;image004.jpg"/>
             </imageobject>
             <textobject><phrase>Screenshot of CPE GUI</phrase></textobject>
           </mediaobject>
@@ -198,7 +198,7 @@ CAS Consumer:
       <screenshot>
      <mediaobject>
       <imageobject>
-        <imagedata width="5.84in" format="JPG" fileref="&imgroot;image006.jpg"/>
+        <imagedata width="5.7in" format="JPG" fileref="&imgroot;image006.jpg"/>
       </imageobject>
       <textobject><phrase>Screenshot of CPE GUI after fields filled in</phrase></textobject>
     </mediaobject>
@@ -280,7 +280,7 @@ CAS Consumer:
         <screenshot>
     <mediaobject>
       <imageobject>
-        <imagedata width="5.84in" format="JPG" fileref="&imgroot;image012.jpg"/>
+        <imagedata width="5.7in" format="JPG" fileref="&imgroot;image012.jpg"/>
       </imageobject>
       <textobject><phrase>Screenshot of Document and Annotation Viewer</phrase></textobject>
     </mediaobject>
@@ -700,7 +700,7 @@ mCPE.process();</programlisting></para>
             Engine descriptor:</para>
           
           
-          <programlisting><![CDATA[<collectionReaderDescription 
+          <programlisting><?db-font-size 80% ?><![CDATA[<collectionReaderDescription 
           xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
   <implementationName>
@@ -873,7 +873,7 @@ mCPE.process();</programlisting></para>
             Consumer reads its configuration parameters and sets up the output directory:
             
             
-            <programlisting>public void initialize() throws ResourceInitializationException {
+            <programlisting><?db-font-size 80% ?>public void initialize() throws ResourceInitializationException {
   mDocNum = 0;
   mOutputDir = new File((String) getConfigParameterValue(PARAM_OUTPUTDIR));
   if (!mOutputDir.exists()) {
@@ -1007,7 +1007,7 @@ mCPE.process();</programlisting></para>
       <title>CPE Instantiation</title>
       <mediaobject>
         <imageobject>
-          <imagedata width="5.84in" format="PNG"
+          <imagedata width="5.7in" format="PNG"
             fileref="&imgroot;image018.png"/>
         </imageobject>
         <textobject><phrase>Picture of deployment of a CPE</phrase></textobject>
