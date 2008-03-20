@@ -542,10 +542,12 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
   class AnalysisComponentCasIterator implements CasIterator {
     private AnalysisComponent mMyAnalysisComponent;
     private CAS mInputCas;
+    private boolean casAvailable;
 
     AnalysisComponentCasIterator(AnalysisComponent aAnalysisComponent, CAS aInputCas) {
       mMyAnalysisComponent = aAnalysisComponent;
       mInputCas = aInputCas;
+      casAvailable = false;
     }
 
     /*
@@ -555,16 +557,18 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
      */
     public boolean hasNext() throws AnalysisEngineProcessException {
       enterProcess();
+      if (casAvailable)
+        return true;
       try {
-        boolean result = mMyAnalysisComponent.hasNext();
-        if (!result) {
+        casAvailable = mMyAnalysisComponent.hasNext();
+        if (!casAvailable) {
           //when hasNext returns false, by contract the AnalysisComponent is done processing its
           //input CAS.  Now is the time to clear the currentComponentInfo to indicate that the
           //CAS is no longer being processed.
           mInputCas.setCurrentComponentInfo(null);
           ((CASImpl)mInputCas).restoreClassLoaderUnlockCas();
         }
-        return result;
+        return casAvailable;
       } finally {
         exitProcess();
       }
@@ -579,11 +583,12 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       enterProcess();
       try {
         // Make sure that the AnalysisComponent has a next CAS to return
-        boolean analysisComponentHasNext = mMyAnalysisComponent.hasNext();
-        if (!analysisComponentHasNext) {
+        // Use the saved value so hasNext not called twice before next
+        if (!casAvailable) {
           throw new UIMA_IllegalStateException(UIMA_IllegalStateException.NO_NEXT_CAS,
                   new Object[0]);
         }
+        casAvailable = false;
         // call AnalysisComponent.next method to populate CAS
         try {
           CAS cas = callAnalysisComponentNext();

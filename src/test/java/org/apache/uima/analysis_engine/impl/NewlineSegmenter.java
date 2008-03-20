@@ -31,6 +31,7 @@ import org.apache.uima.cas.CAS;
  */
 public class NewlineSegmenter extends CasMultiplier_ImplBase {
   StringTokenizer mStringTok;
+  private boolean casAvailable;
 
   /*
    * (non-Javadoc)
@@ -40,6 +41,7 @@ public class NewlineSegmenter extends CasMultiplier_ImplBase {
   public void process(CAS aCAS) throws AnalysisEngineProcessException {
     String doc = aCAS.getCurrentView().getDocumentText();
     mStringTok = new StringTokenizer(doc, "\n");
+    casAvailable = false;
   }
 
   /*
@@ -48,7 +50,11 @@ public class NewlineSegmenter extends CasMultiplier_ImplBase {
    * @see org.apache.uima.analysis_component.AnalysisComponent#hasNext()
    */
   public boolean hasNext() throws AnalysisEngineProcessException {
-    return mStringTok.hasMoreTokens();
+    // Check if have already returned true without an intervening next()  
+    if (casAvailable) {
+      throw new RuntimeException("CasMultiplier's hasNext() called twice");
+    }
+    return (casAvailable = mStringTok.hasMoreTokens());
   }
 
   /*
@@ -60,6 +66,7 @@ public class NewlineSegmenter extends CasMultiplier_ImplBase {
     String nextSeg = mStringTok.nextToken();
     CAS cas = (CAS) getContext().getEmptyCas(CAS.class);
     cas.getCurrentView().setDocumentText(nextSeg);
+    casAvailable = false;
     return cas;
   }
 
