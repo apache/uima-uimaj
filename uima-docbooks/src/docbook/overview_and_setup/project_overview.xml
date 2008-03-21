@@ -491,12 +491,16 @@ under the License.
   </section>
   
   <section id="ugr.project_overview_changes_from_previous">
-      <title>Changes from Previous Versions</title>
+      <title>Changes from Previous Major Versions</title>
     <para> There are two previous version of UIMA, available from IBM's alphaWorks: version 1.4.x and version 2.0
       (the 2.0 version was a "beta" only release). This section describes the changes relative to both of these
       releases. A migration utility is provided which updates your Java code and descriptors as needed for this
       release. See <xref linkend="ugr.project_overview_migrating_from_ibm_uima"/> for instructions on how to
       run the migration utility. </para>
+    
+     <note><para>Each Apache UIMA release includes RELEASE_NOTES and RELEASE_NOTES.html files that
+        describe the changes that have occurred in each release.
+        Please refer to those files for specific changes for each Apache UIMA release.</para></note>
 
     <section id="ugr.project_overview_changes_from_2_0">
     <title>Changes from IBM UIMA 2.0 to Apache UIMA 2.1</title>
@@ -621,11 +625,11 @@ under the License.
  
     <section id="ugr.ovv.other_changes">
       <title>Other Changes</title>
-      
+            
       <formalpara>
         <title>New additional Annotator API ImplBase</title>
         <para>
-          Version 2.1 has a new set of Annotator interfaces. Annotators should now 
+          As of version 2.1, UIMA has a new set of Annotator interfaces. Annotators should now 
           extend CasAnnotator_ImplBase or JCasAnnotator_ImplBase instead of the v1.x 
           TextAnnotator_ImplBase and JTextAnnotator_ImplBase.  The v1.x annotator 
           interfaces are unchanged and are still supported for backwards compatibility.
@@ -639,7 +643,7 @@ under the License.
     <formalpara id="ugr.ovv.exceptions_rationalized">
       <title>UIMA Exceptions rationalized</title>
       
-      <para> In version 1 there were different exceptions for the methods of an
+      <para>In version 1 there were different exceptions for the methods of an
         AnalysisEngine and for the corresponding methods of an Annotator; these were merged
         in version 2.
         
