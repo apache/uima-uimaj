@@ -30,7 +30,7 @@ under the License.
     <varlistentry id="ugr.issues.cr_to_xml">
     <term><emphasis role="bold">Sun Java 1.4.2_12 doesn't serialize CR characters to XML</emphasis></term>
         <listitem>
-        <para>The XML serialization support in Sun Java 1.4.2_12 doesn't serialize CR characters to 
+        <para>(Note: Apache UIMA now requires Java 1.5, so this issue is moot.) The XML serialization support in Sun Java 1.4.2_12 doesn't serialize CR characters to 
         XML. As a result, if the document text contains CR characters, XCAS or XMI serialization 
         will cause them to be lost, resulting in incorrect annotation offsets. This is exposed in 
         the DocumentAnalyzer, with the highlighting being incorrect if the input document contains 
@@ -38,7 +38,7 @@ under the License.
         </listitem>
       </varlistentry>
     <varlistentry id="ugr.issues.jcasgen_java_1.4">
-      <term><emphasis role="bold">JCasGen merge facility supports Java levels 1.4 or earlier</emphasis></term>
+      <term><emphasis role="bold">JCasGen merge facility only supports Java levels 1.4 or earlier</emphasis></term>
       <listitem>
         <para>JCasGen has a facility to merge in user (hand-coded) changes with the code generated
           by JCasGen.  This merging supports Java 1.4 constructs only.  JCasGen generates Java 1.4 
