@@ -1155,7 +1155,7 @@ public class MainFrame extends JFrame {
     runMenu.add(this.runOnCasMenuItem);
     this.runOnCasMenuItem.addActionListener(new AnnotatorRunOnCasEventHandler(this));
     this.runOnCasMenuItem.setEnabled(false);
-    this.showPerfReportItem = new JMenuItem("Perf. report");
+    this.showPerfReportItem = new JMenuItem("Performance report");
     this.showPerfReportItem.setEnabled(false);
     this.showPerfReportItem.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
