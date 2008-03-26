@@ -181,6 +181,9 @@ final class StringHeap {
   // Setters
 
   int addString(String s) {
+    if (s == null) {
+      return LowLevelCAS.NULL_FS_REF;
+    }
     // Get and remember pointer at next free refHeap cell.
     final int cellRef = this.refHeapPos;
     // Increment pos and ensure sufficient space.
@@ -191,9 +194,7 @@ final class StringHeap {
     // Set the string list reference to the code point of the string being
     // added.
     this.refHeap[cellRef + STRING_LIST_ADDR_OFFSET] = stringRef;
-    if (s != null) {
-      this.refHeap[cellRef + CHAR_HEAP_STRLEN_OFFSET] = s.length();
-    }
+    this.refHeap[cellRef + CHAR_HEAP_STRLEN_OFFSET] = s.length();
     // Add the string to the list, at the position corresponding to
     // stringRef.
     this.stringList.add(s);

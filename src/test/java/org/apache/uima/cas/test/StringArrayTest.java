@@ -33,6 +33,7 @@ import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.CASSerializer;
+import org.apache.uima.cas.impl.LowLevelCAS;
 import org.apache.uima.cas.impl.XCASSerializer;
 
 /**
@@ -186,7 +187,7 @@ public class StringArrayTest extends TestCase {
     assertTrue(((StringArrayFS) token.getFeatureValue(lemmaList)).get(0) == hello);
   }
   
-  /*
+
   public void testStringArrayNullValue() throws Exception{
      String lemmaListName = CASTestSetup.TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR
     + CASTestSetup.LEMMA_LIST_FEAT;
@@ -202,9 +203,8 @@ public class StringArrayTest extends TestCase {
      this.cas.addFsToIndexes(token);
      assertTrue(((StringArrayFS) token.getFeatureValue(lemmaList)).get(0) == "1");
      assertTrue(((StringArrayFS) token.getFeatureValue(lemmaList)).get(1) == null);
-     CASSerializer serializer = new CASSerializer();
-     serializer.addCAS((CASImpl)this.cas, new ByteArrayOutputStream());
+     LowLevelCAS llc = casArray.getCAS().getLowLevelCAS();
+     assertTrue(llc.ll_getIntArrayValue(llc.ll_getFSRef(casArray), 1) == LowLevelCAS.NULL_FS_REF);
   }
-  */
 
 }
