@@ -19,6 +19,10 @@
 
 package org.apache.uima.cas.test;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+
 import junit.framework.TestCase;
 
 import org.apache.uima.cas.CAS;
@@ -27,6 +31,9 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.CASSerializer;
+import org.apache.uima.cas.impl.XCASSerializer;
 
 /**
  * Class comment for StringArrayTest.java goes here.
@@ -178,5 +185,26 @@ public class StringArrayTest extends TestCase {
     casArray.set(0, hello);
     assertTrue(((StringArrayFS) token.getFeatureValue(lemmaList)).get(0) == hello);
   }
+  
+  /*
+  public void testStringArrayNullValue() throws Exception{
+     String lemmaListName = CASTestSetup.TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR
+    + CASTestSetup.LEMMA_LIST_FEAT;
+     final Feature lemmaList = this.ts.getFeatureByFullName(lemmaListName);
+     assertTrue(lemmaList != null);
+     StringArrayFS casArray = this.cas.createStringArrayFS(3);
+     casArray.set(0, "1");
+     casArray.set(1, null);
+     casArray.set(2, "3");
+     FeatureStructure token = this.cas.createFS(this.ts.getType(CASTestSetup.TOKEN_TYPE));
+     assertTrue(token.getFeatureValue(lemmaList) == null);
+     token.setFeatureValue(lemmaList, casArray);
+     this.cas.addFsToIndexes(token);
+     assertTrue(((StringArrayFS) token.getFeatureValue(lemmaList)).get(0) == "1");
+     assertTrue(((StringArrayFS) token.getFeatureValue(lemmaList)).get(1) == null);
+     CASSerializer serializer = new CASSerializer();
+     serializer.addCAS((CASImpl)this.cas, new ByteArrayOutputStream());
+  }
+  */
 
 }
