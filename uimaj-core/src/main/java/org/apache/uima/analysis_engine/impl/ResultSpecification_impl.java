@@ -575,8 +575,9 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
 
     for (ToF_Languages tof_langs : name2tof_langs.values()) {
         TypeOrFeature tof = tof_langs.tof;
-        // copy type or feature to other map
-        withSubtypesName2tof_langs.put(tof.getName(), (ToF_Languages) tof_langs.clone());
+        
+        addResultType(tof.getName(), tof.isAllAnnotatorFeatures(), tof_langs.languages);
+        
         if (tof.isType()) {
           compileTypeRecursively(mTypeSystem.getType(tof.getName()), tof.isAllAnnotatorFeatures(), tof_langs.languages);
         }
