@@ -139,7 +139,6 @@ issues you find at http://issues.apache.org/jira/browse/uima.
 
 6. List of JIRA Issues Fixed in this Release
 
-
 Release Notes - UIMA - Version 2.2.2
 
 
@@ -197,6 +196,12 @@ Release Notes - UIMA - Version 2.2.2
     * [UIMA-893] - annotation viewer throws FileNotFoundException
     * [UIMA-894] - CDE import by name broken on Linux
     * [UIMA-897] - users of uimaj-ep-runtime plugin having trouble due to jar inside jar structure
+    * [UIMA-898] - documentAnalyzer throws NPE
+    * [UIMA-899] - DocumentAnalyzer does not creat all output types for UIMA Analysis example
+    * [UIMA-906] - SOAP deployment does not work properly
+    * [UIMA-913] - cleanup and simplify C++ service wrapper implementation
+    * [UIMA-923] - update the run examples scripts to use XMI format of CAS.
+    * [UIMA-936] - NPE when serializing a CAS with a String array that contains a null value element
 
 ** Improvement
     * [UIMA-477] - CDE function for import by name uses file system browser; should instead show appropriate items in classpath
@@ -222,6 +227,8 @@ Release Notes - UIMA - Version 2.2.2
     * [UIMA-825] - for Eclipse Update Site, remove checksum generation - it's done elsewhere, and improve specifying eclipse-home
     * [UIMA-837] - Docbook tooling PDF footer overflows with long version name
     * [UIMA-877] - Reverse multiple copyright statements in docbooks, per request at previous release vote
+    * [UIMA-920] - remove extraneous LICENSE files in uima-docbook-tool lib directory
+    * [UIMA-933] - [CDE] In CDE GUI, the border of some tables and combobox is not visible 
 
 ** New Feature
     * [UIMA-718] - add featurePath helper class 
