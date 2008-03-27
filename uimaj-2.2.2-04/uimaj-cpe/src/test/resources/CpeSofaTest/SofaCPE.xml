@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ -->
+
+<cpeDescription>
+	<collectionReader>
+		<!-- Name the Collection Iterator and CAS Initializer descriptors -->
+		<collectionIterator>
+			<descriptor>
+         			<include href="${CPM_HOME}/CpeSofaTest/SofaCollectionReader.xml"/> 
+			</descriptor>
+		</collectionIterator>
+		<casInitializer>
+			<descriptor>
+				<include href="${CPM_HOME}/CpeSofaTest/SofaCasInitializer.xml"/>
+			</descriptor>
+			<!-- Map sofa names specified as input/output sofa of this cas initializer to -->
+			<!-- the sofa name assigned by this cpe.  -->		
+			<sofaNameMappings>
+				<sofaNameMapping componentSofaName="InputText" cpeSofaName="cpeSourceText"/>								
+			</sofaNameMappings>
+		</casInitializer>
+	</collectionReader>
+
+   	<casProcessors inputQueueSize="5" outputQueueSize="15" processingUnitThreadCount="1">    
+    		<casProcessor deployment="integrated" name="TransAnnotatorAggregate">
+			<!-- Name the Analysis Engine descriptor                            -->
+			<!-- deploymeNt attribute is one from the set [ local | remote | integrated ]  -->
+			<descriptor>
+				<include href="${CPM_HOME}/CpeSofaTest/TransAnnotatorAggregate.xml"/>
+			</descriptor>
+			<!-- Map sofa names specified as input/output sofa of this cas processor to -->
+			<!-- the sofa name assigned by this cpe.  -->			
+			<sofaNameMappings>
+				<!--sofaNameMapping componentSofaName="EnglishDocument" cpeSofaName="cpeOriginal"/>
+				<sofaNameMapping componentSofaName="GermanDocument" cpeSofaName="cpeTranslation1"/-->
+				<sofaNameMapping componentSofaName="SourceDocument" cpeSofaName="cpeSourceText"/>
+				<sofaNameMapping componentSofaName="OutputTranslator1" cpeSofaName="cpeTranslation1"/>
+				<sofaNameMapping componentSofaName="OutputTranslator2" cpeSofaName="cpeTranslation2"/>
+			</sofaNameMappings>	
+			<!-- Define filter which allows the CPE to filter CASs. The following -->
+			<!-- syntax is supported:  -->
+			<!--     keyname - send the CAS to the CASProcessor if the CAS feature=keyname   -->
+			<!--     keyname! - send the CAS to the CASProcessor if the keyname NOT in CAS Feature list  -->
+			<!--     keyname=value - send the CAS to the CASProcessor if the CAS feature=keyname and CAS feature value=value  -->
+			<!--     keyname!=value - send the CAS to the CASProcessor if the CAS feature=keyname and CAS feature value NOT equal value  -->
+			
+			<filter></filter>
+			<!-- Define error policy for this CASProcessor -->
+			<errorHandling>
+				<!--     maxConsecutiveRestarts - maximum allowable consecutive restarts   -->
+				<!--           possible actions when exceeded above:                       -->
+				<!--                1) continue - continue despite failure to restart      -->
+				<!-- 		      2) disable - disable this CASProcessor and continue    -->
+				<!--                3) terminate - terminate the CPE                       -->
+				<maxConsecutiveRestarts value="3" action="terminate"/>
+				<!-- ..................................................................... -->
+				<!--     errorRateThreshold - error rate within threshold window           -->
+				<!--           possible actions when exceeded above:                       -->
+				<!--                1) continue - continue despite failure to restart      -->
+				<!-- 		      2) disable - disable this CASProcessor and continue    -->
+				<!--                3) terminate - terminate the CPE                       -->
+				<errorRateThreshold value="3/1000" action="disable"/>
+				<!-- ..................................................................... -->
+				<!--     timeout - maximum processing time per CASProcessor per CAS        -->
+				<timeout default="3000" max="60000"/>
+			</errorHandling>
+			<!-- Optional directive indicating naming the file and the frequency of checkpoints -->
+			<!-- performed by this CASProcessor. Frequency is either:   			      -->
+			<!--     1) time based (using units defined ( s - seconds, ms - milliseconds )      -->
+			<!--     2) counter (eg. every 1000 entities)                          -->
+			<!-- <checkpoint file="" time="3000ms" batch="2"/> -->
+			<checkpoint file="" batch="2"/>
+		</casProcessor>
+         <casProcessor deployment="integrated" name="SofaCasConsumer">
+			<!-- Name the Analysis Engine descriptor                            -->
+			<!-- deploymeNt attribute is one from the set [ local | remote | integrated ]  -->
+			<descriptor>
+				<include href="${CPM_HOME}/CpeSofaTest/SofaCasConsumer.xml"/>
+			</descriptor>
+			<!-- Map sofa names specified as input/output sofa of this cas processor to -->
+			<!-- the sofa name assigned by this cpe.  							 -->
+			<sofaNameMappings>
+				<!--sofaNameMapping componentSofaName="EnglishDocument" cpeSofaName="cpeOriginal"/>
+				<sofaNameMapping componentSofaName="GermanDocument" cpeSofaName="cpeTranslation1"/-->
+				<sofaNameMapping componentSofaName="SourceDocument" cpeSofaName="cpeSourceText"/>
+				<sofaNameMapping componentSofaName="TranslatedDocument" cpeSofaName="cpeTranslation1"/>				
+			</sofaNameMappings>	
+			<!-- Define filter which allows the CPE to filter CASs. The following -->
+			<!-- syntax is supported:  -->
+			<!--     keyname - send the CAS to the CASProcessor if the CAS feature=keyname   -->
+			<!--     keyname! - send the CAS to the CASProcessor if the keyname NOT in CAS Feature list  -->
+			<!--     keyname=value - send the CAS to the CASProcessor if the CAS feature=keyname and CAS feature value=value  -->
+			<!--     keyname!=value - send the CAS to the CASProcessor if the CAS feature=keyname and CAS feature value NOT equal value  -->
+			
+			<filter></filter>
+			<!-- Define error policy for this CASProcessor -->
+			<errorHandling>
+				<!--     maxConsecutiveRestarts - maximum allowable consecutive restarts   -->
+				<!--           possible actions when exceeded above:                       -->
+				<!--                1) continue - continue despite failure to restart      -->
+				<!-- 		      2) disable - disable this CASProcessor and continue    -->
+				<!--                3) terminate - terminate the CPE                       -->
+				<maxConsecutiveRestarts value="3" action="terminate"/>
+				<!-- ..................................................................... -->
+				<!--     errorRateThreshold - error rate within threshold window           -->
+				<!--           possible actions when exceeded above:                       -->
+				<!--                1) continue - continue despite failure to restart      -->
+				<!-- 		      2) disable - disable this CASProcessor and continue    -->
+				<!--                3) terminate - terminate the CPE                       -->
+				<errorRateThreshold value="3/1000" action="disable"/>
+				<!-- ..................................................................... -->
+				<!--     timeout - maximum processing time per CASProcessor per CAS        -->
+				<timeout default="3000" max="60000"/>
+			</errorHandling>
+			<!-- Optional directive indicating naming the file and the frequency of checkpoints -->
+			<!-- performed by this CASProcessor. Frequency is either:   			      -->
+			<!--     1) time based (using units defined ( s - seconds, ms - milliseconds )      -->
+			<!--     2) counter (eg. every 1000 entities)                          -->
+			<!-- <checkpoint file="" time="3000ms" batch="2"/> -->
+			<checkpoint file="" batch="2"/>
+		</casProcessor>
+    </casProcessors>
+
+	<cpeConfig>
+		<!-- Optionally, define starting entity number. If not present, the -->
+		<!-- CPE starts with the first entity retrieved from the CollectionReader -->
+		<startAt>1</startAt>
+		<!-- ..................................................................... -->
+		<!-- Optionaly, define number of entities to process. If not defined, the number of entities to process will  -->
+		<!-- be taken from the CollectionReader configuration. If present, this value overrides the count in the      -->
+		<!-- CollectionReader configuration -->
+		<numToProcess>10</numToProcess>
+		<!-- Define CPE checkpoint file, frequency and strategy for checkpoints (time or count based). The CPE saves  -->
+		<!-- status information and Statistics. -->
+		<!-- ..................................................................... -->
+		<checkpoint file="checkpoint.dat" time="3000s" batch="1000"/>
+		<!-- ..................................................................... -->
+		<!-- Optional, custom timer plugin class to generate time stamps during the CPE execution   -->
+		<timerImpl>org.apache.uima.internal.util.JavaTimer</timerImpl>
+		<!-- Type of CPM Deployment -->
+		<!--  a) vinciService - vinci service exposing API facilitating stop, pause, resume, getStats -->
+		<!--  b) interactive - command line menus (start,stop, pause, resume) -->
+		<!--  c) immediate - runs CPM without menus or service API            -->
+<!--		<deployAs>vinciService=uima.cpm.wfCpm</deployAs> -->
+		<deployAs>immediate</deployAs>
+
+	</cpeConfig>
+</cpeDescription>

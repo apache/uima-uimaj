@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+	<!--
+	 ***************************************************************
+	 * Licensed to the Apache Software Foundation (ASF) under one
+	 * or more contributor license agreements.  See the NOTICE file
+	 * distributed with this work for additional information
+	 * regarding copyright ownership.  The ASF licenses this file
+	 * to you under the Apache License, Version 2.0 (the
+	 * "License"); you may not use this file except in compliance
+	 * with the License.  You may obtain a copy of the License at
+         *
+	 *   http://www.apache.org/licenses/LICENSE-2.0
+	 * 
+	 * Unless required by applicable law or agreed to in writing,
+	 * software distributed under the License is distributed on an
+	 * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+	 * KIND, either express or implied.  See the License for the
+	 * specific language governing permissions and limitations
+	 * under the License.
+	 ***************************************************************
+   -->
+   
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+  <primitive>true</primitive>
+  <annotatorImplementationName>org.apache.uima.examples.cas.PersonTitleAnnotator</annotatorImplementationName>
+  <analysisEngineMetaData>
+    <name>Person Title Annotator</name>
+    <description>An example annotator that discovers Person Titles in text and classifies them
+    into three categories - Civilian (e.g. Mr.,Ms.), Military (e.g. Lt. Col.) , and 
+    Government (e.g. Gov., Sen.).  This annotator can be configured to only look for 
+    titles within existing annotations of a particular type (for example, Person Name 
+    annotations).</description>
+    <version>1.0</version>
+    <vendor>The Apache Software Foundation</vendor>
+    <configurationParameters>
+      <configurationParameter>
+        <name>CivilianTitles</name>
+        <description>List of Civilian Titles to be annotated.</description>
+        <type>String</type>
+        <multiValued>true</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>MilitaryTitles</name>
+        <description>List of Military Titles to be annotated.</description>
+        <type>String</type>
+        <multiValued>true</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>GovernmentTitles</name>
+        <description>List of Government Titles to be annotated.</description>
+        <type>String</type>
+        <multiValued>true</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>ContainingAnnotationType</name>
+        <description>Annotation type within which to search for Person Titles.  If no value is specified,
+        the entire document will be searched.</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+    </configurationParameters>
+    <configurationParameterSettings>
+      <nameValuePair>
+        <name>CivilianTitles</name>
+        <value>
+          <array>
+            <string>Mr.</string>
+            <string>Ms.</string>
+            <string>Mrs.</string>
+            <string>Dr.</string>
+          </array>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>MilitaryTitles</name>
+        <value>
+          <array>
+            <string>Gen.</string>
+            <string>Col.</string>
+            <string>Maj.</string>
+            <string>Capt.</string>
+            <string>Lt. Gen.</string>
+            <string>Lt Col.</string>
+            <string>Lt.</string>
+          </array>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>GovernmentTitles</name>
+        <value>
+          <array>
+            <string>Vice President</string>
+            <string>President</string>
+            <string>Vice Pres.</string>
+            <string>Pres.</string>
+            <string>Governor</string>
+            <string>Lt. Governor</string>
+            <string>Gov.</string>
+            <string>Lt. Gov.</string>
+            <string>Senator</string>
+            <string>Sen.</string>
+          </array>
+        </value>
+      </nameValuePair>
+    </configurationParameterSettings>
+    <typeSystemDescription>
+      <types>
+        <typeDescription>
+          <name>example.PersonTitle</name>
+          <description>A Personal Title.</description>
+          <supertypeName>uima.tcas.Annotation</supertypeName>
+          <features>
+            <featureDescription>
+              <name>Kind</name>
+              <description>The kind of title - Civilian, Military, or Government.</description>
+              <rangeTypeName>example.PersonTitleKind</rangeTypeName>
+            </featureDescription>
+          </features>
+        </typeDescription>
+        <typeDescription>
+          <name>example.PersonTitleKind</name>
+          <description>A kind of person title - Civilian, Military, or Government.</description>
+          <supertypeName>uima.cas.String</supertypeName>
+          <allowedValues>
+            <value>
+              <string>Civilian</string>
+              <description>Title of a person not in military or government service.</description>
+            </value>
+            <value>
+              <string>Military</string>
+              <description>Title of a person in the military.</description>
+            </value>
+            <value>
+              <string>Government</string>
+              <description>Title of a government official.</description>
+            </value>
+          </allowedValues>
+        </typeDescription>
+      </types>
+    </typeSystemDescription>
+    <capabilities>
+      <capability>
+        <inputs/>
+        <outputs>
+          <type>example.PersonTitle</type>
+          <feature>example.PersonTitle:Kind</feature>
+        </outputs>
+        <languagesSupported>
+          <language>en</language>
+        </languagesSupported>
+      </capability>
+    </capabilities>
+	<operationalProperties>
+		<modifiesCas>true</modifiesCas>
+		<multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+		<outputsNewCASes>false</outputsNewCASes>
+	</operationalProperties>	  
+  </analysisEngineMetaData>
+</analysisEngineDescription>
