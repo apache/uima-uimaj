@@ -359,6 +359,10 @@ implements Listener, StandardStrings {
     ccombo.setToolTipText(tip);
     ccombo.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
     ccombo.addListener(SWT.Selection, this);
+    // Make the CCombo's border visible since CCombo is NOT a widget supported
+    // by FormToolkit.
+    // needed apparently by RedHat Linux 
+    ccombo.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
     return ccombo;
   }
 
@@ -507,6 +511,10 @@ implements Listener, StandardStrings {
     tt.getTable().addListener(SWT.MouseDoubleClick, this); // for edit
     tt.addListener(SWT.Expand, this);
     tt.addListener(SWT.Collapse, this);
+ 
+    // Make the TableTree's border visible since TableTree is NOT a widget supported
+    // by FormToolkit.  Needed by RedHat Linux
+    tt.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
     return tt;
   }
 
