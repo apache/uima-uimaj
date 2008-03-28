@@ -130,12 +130,40 @@
               org.apache.uima.pear.nature
             </Export-Package>
             
-            <Import-Package>*,
+            <!-- handle split packages in Eclipse.
+               There are 4 packages in org.eclipse.jface.* that are "split" between bundles 
+                  org.eclipse.jface.text and org.eclipse.text.
+               org.eclipse.ui.texteditor is split between 
+                 org.eclipse.ui.editors and org.eclipse.ui.workbench.texteditor.
+               There are 5 packages in org.eclipse.ui.*  that are split between 
+                 org.eclipse.ui.ide and org.eclipse.ui.workbench.  
+                 The Notes say not to require org.eclipse.ui.workbench, but instead just require
+                    org.eclipse.ui (which imports and reexports org.eclipse.ui.workbench packages).
+                    But that didn't work on one linux version, so importing both the ui and the ui.workbench
+               org.eclipse.core.runtime has combined apis (that were split in later 
+                 point releases of 3.x)
+            -->
+            <Require-Bundle>
+              org.eclipse.jface.text,
+              org.eclipse.text,
+              org.eclipse.ui.editors,
+              org.eclipse.ui.workbench.texteditor,
+              org.eclipse.ui.ide,
+              org.eclipse.ui,
+              org.eclipse.ui.workbench,
+              org.eclipse.core.runtime
+            </Require-Bundle>
+            <Import-Package>
+              *, 
+              org.eclipse.jdt.launching,
+              org.eclipse.core.runtime.jobs
+            </Import-Package>
+            <!--Import-Package>*,
               org.eclipse.core.runtime.jobs,
               org.eclipse.core.commands.common,
               org.eclipse.swt,
               org.eclipse.jface.window
-            </Import-Package>  
+            </Import-Package-->  
 
             <Bundle-Activator>org.apache.uima.pear.PearPlugin</Bundle-Activator>
             <Bundle-SymbolicName>org.apache.uima.pear;singleton:=true</Bundle-SymbolicName>
