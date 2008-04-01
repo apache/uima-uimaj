@@ -281,7 +281,9 @@
               !org.eclipse.ui.dialogs,
               !org.eclipse.ui.model,
               !org.eclipse.ui.part, 
-              *
+              *,
+              org.apache.uima.jcas.jcasgenp,
+              org.eclipse.jdt.ui
             </Import-Package>
 
             
