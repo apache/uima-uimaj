@@ -100,10 +100,14 @@
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
+        <!-- version 1.4.0 to support _nouses instruction -->
+        <version>1.4.0</version>
         <extensions>true</extensions>
         <configuration>
           <manifestLocation>META-INF</manifestLocation>
           <instructions>
+            <!-- turn off "uses" generation because Eclipse 3.2.x doesn't work with them -->
+            <_nouses>true</_nouses>
             <Export-Package>
               org.apache.uima.ep_debug
             </Export-Package>
