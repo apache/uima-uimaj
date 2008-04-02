@@ -201,7 +201,10 @@ Release Notes - UIMA - Version 2.2.2
     * [UIMA-906] - SOAP deployment does not work properly
     * [UIMA-913] - cleanup and simplify C++ service wrapper implementation
     * [UIMA-923] - update the run examples scripts to use XMI format of CAS.
+    * [UIMA-935] - [UIMA eclipse plugins] Possible WRONG wiring of imported packages for UIMA Eclipse plugins
     * [UIMA-936] - NPE when serializing a CAS with a String array that contains a null value element
+    * [UIMA-939] - PEAR packaging eclipse plugin not visible after installation
+    * [UIMA-951] - Eclipse split packages not handled well - causing plugin ClassNotFound failures
 
 ** Improvement
     * [UIMA-477] - CDE function for import by name uses file system browser; should instead show appropriate items in classpath
