@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd"[
+<!ENTITY imgroot "../images/tools/tools.pear.packager/" >
+<!ENTITY % uimaents SYSTEM "../entities.ent" >  
+%uimaents;
+]>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<chapter id="ugr.tools.pear.packager">
+  <title>PEAR Packager User&apos;s Guide</title>
+  
+  <para>A PEAR (Processing Engine ARchive) file is a standard package for UIMA (Unstructured
+    Information Management Architecture) components. The PEAR package can be used for
+    distribution and reuse by other components or applications. It also allows applications
+    and tools to manage UIMA components automatically for verification, deployment,
+    invocation, testing, etc. Please refer to <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.pear"/>
+    for more information about the internal structure of a PEAR file.</para>
+  
+  <para>This chapter describes how to use the PEAR Eclipse plugin or the PEAR command line packager 
+  to create PEAR files for standard UIMA components.</para>
+  
+  <section id="ugr.tools.pear.packager.using_eclipse_plugin">
+    <title>Using the PEAR Eclipse Plugin</title>
+    
+    <para>The PEAR Eclipse plugin is automatically installed if you followed the directions in
+      <olink targetdoc="&uima_docs_overview;" targetptr="ugr.ovv.eclipse_setup"/>. The use of the 
+      plugin involves the following two steps:</para>
+    
+    <itemizedlist spacing="compact"><listitem><para>Add the UIMA nature to your project
+      </para></listitem>
+      
+      <listitem><para>Create a PEAR file using the PEAR generation wizard </para>
+        </listitem></itemizedlist>
+    
+    <section id="ugr.tools.pear.packager.add_uima_nature">
+      <title>Add UIMA Nature to your project</title>
+      
+      <para>First, create a project for your UIMA component:</para>
+      
+      <itemizedlist spacing="compact"><listitem><para>Create a Java project, which
+        would contain all the files and folders needed for your UIMA component.</para>
+        </listitem>
+        
+        <listitem><para>Create a source folder called <quote>src</quote> in your
+          project, and make it the only source folder, by clicking on
+          <quote>Properties</quote> in your project&apos;s context menu (right-click),
+          then select <quote>Java Build Path</quote>, then add the <quote>src</quote>
+          folder to the source folders list, and remove any other folder from the
+          list.</para></listitem>
+        
+        <listitem><para>Specify an output folder for your project called bin, by clicking
+          on <quote>Properties</quote> in your project&apos;s context menu
+          (right-click), then select <quote>Java Build Path</quote>, and specify
+          <quote><emphasis>your_project_name</emphasis>/bin</quote> as the default
+          output folder. </para></listitem></itemizedlist>
+      
+      <para>Then, add the UIMA nature to your project by clicking on <quote>Add UIMA
+        Nature</quote> in the context menu (right-click) of your project. Click
+        <quote>Yes</quote> on the <quote>Adding UIMA custom Nature</quote> dialog box.
+        Click <quote>OK</quote> on the confirmation dialog box.
+        
+        
+        <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata width="5.8in" format="JPG" fileref="&imgroot;image002.jpg"/>
+        </imageobject>
+        <textobject><phrase>Screenshot of Adding the UIMA Nature to your project</phrase>
+        </textobject>
+      </mediaobject>
+    </screenshot></para>
+      
+      <para>Adding the UIMA nature to your project creates the PEAR structure in your
+        project. The PEAR structure is a structured tree of folders and files, including the
+        following elements:
+        
+        <itemizedlist><listitem><para><emphasis role="bold">Required
+          Elements:</emphasis>
+          
+          <itemizedlist><listitem><para>The <emphasis role="bold">
+            metadata</emphasis> folder which contains the PEAR installation descriptor
+            and properties files.</para></listitem>
+            
+            <listitem><para>The installation descriptor (<emphasis role="bold">
+              metadata/install.xml</emphasis>)
+              </para></listitem></itemizedlist></para></listitem>
+          
+          <listitem><para><emphasis role="bold">Optional Elements:</emphasis>
+            
+            <itemizedlist><listitem><para>The <emphasis role="bold">
+              desc</emphasis> folder to contain descriptor files of analysis engines,
+              component analysis engines (all levels), and other component (Collection
+              Readers, CAS Consumers, etc).</para></listitem>
+              
+              <listitem><para>The <emphasis role="bold">src </emphasis>folder to
+                contain the source code</para></listitem>
+              
+              <listitem><para>The <emphasis role="bold">bin</emphasis> folder to
+                contain executables, scripts, class files, dlls, shared libraries,
+                etc.</para></listitem>
+              
+              <listitem><para>The <emphasis role="bold">lib</emphasis> folder to
+                contain jar files. </para></listitem>
+              
+              <listitem><para>The <emphasis role="bold">doc </emphasis>folder
+                containing documentation materials, preferably accessible through an
+                index.html.</para></listitem>
+              
+              <listitem><para>The <emphasis role="bold">data</emphasis> folder to
+                contain data files (e.g. for testing).</para></listitem>
+              
+              <listitem><para>The <emphasis role="bold">conf</emphasis> folder to
+                contain configuration files.</para></listitem>
+              
+              <listitem><para>The <emphasis role="bold">resources</emphasis> folder
+                to contain other resources and dependencies.</para></listitem>
+              
+              <listitem><para>Other user-defined folders or files are allowed, but
+                <emphasis>should be avoided</emphasis>. </para></listitem>
+              </itemizedlist> </para></listitem></itemizedlist></para>
+      
+      <para>For more information about the PEAR structure, please refer to the
+        <quote>Processing Engine Archive</quote> section.
+        
+        <figure id="ugr.tools.pear.packager.fig.pear_structure">
+          <title>The Pear Structure</title>
+          <mediaobject>
+            <imageobject>
+              <imagedata width="3in" format="JPG"
+                fileref="&imgroot;image004.jpg"/>
+            </imageobject>
+            <textobject><phrase>Pear structure</phrase>
+            </textobject>
+          </mediaobject>
+        </figure></para>
+      
+    </section>
+    <section id="ugr.tools.pear.packager.using_pear_generation_wizard">
+      <title>Using the PEAR Generation Wizard</title>
+      
+      <para>Before using the PEAR Generation Wizard, add all the files needed to
+        run your component including descriptors, jars, external libraries, resources,
+        and component analysis engines (in the case of an aggregate analysis engine), etc.
+        <emphasis>Do not</emphasis> add Jars for the UIMA framework, however.  Doing so will
+        cause class loading problems at run time.</para>
+      <para>
+        If you're using a Java IDE like Eclipse, instead of using the output folder (usually 
+        <literal>bin</literal> as the source of your classes, it&apos;s recommended that 
+        you generate a Jar file containing these classes.</para>
+      
+      <para>Then, click on <quote>Generate PEAR file</quote> from the context menu
+        (right-click) of your project, to open the PEAR Generation wizard, and follow the
+        instructions on the wizard to generate the PEAR file.</para>
+      
+      <section id="ugr.tools.pear.packager.wizard.component_information">
+        <title>The Component Information page</title>
+        
+        <para>The first page of the PEAR generation wizard is the component information
+          page. Specify in this page a component ID for your PEAR and select the main Analysis
+          Engine descriptor. The descriptor must be specified using a pathname relative to
+          the project&apos;s root (e.g. <quote>desc/MyAE.xml</quote>). The component id
+          is a string that uniquely identifies the component. It should use the JAVA naming
+          convention (e.g. org.apache.uima.mycomponent).</para>
+        
+        <para>Optionally, you can include specific Collection Iterator, CAS Initializer (deprecated
+          as of Version 2.1),
+          or CAS Consumers. In this case, specify the corresponding descriptors in this
+          page.
+          
+          <figure id="ugr.tools.pear.packager.fig.wizard.component_information">
+            <title>The Component Information Page</title>
+            <mediaobject>
+              <imageobject>
+                <imagedata width="5.8in" format="JPG"
+                  fileref="&imgroot;image006.jpg"/>
+              </imageobject>
+              <textobject><phrase>Pear Wizard - component information page</phrase>
+              </textobject>
+            </mediaobject>
+          </figure></para>
+        
+      </section>
+      
+      <section id="ugr.tools.pear.packager.wizard.install_environment">
+        <title>The Installation Environment page</title>
+        
+        <para>The installation environment page is used to specify the following:
+          
+          <itemizedlist spacing="compact"><listitem><para>Preferred operating
+            system</para></listitem>
+            
+            <listitem><para>Required JDK version, if applicable.</para></listitem>
+            
+            <listitem><para>Required Environment variable settings.  This is where
+              you specify special CLASSPATH paths.  You do not need to specify this for
+              any Jar that is listed in the your eclipse project classpath settings; those are automatically
+              put into the generated CLASSPATH.  Nor should you include paths to the
+              UIMA Framework itself, here.  Doing so may cause class loading problems.
+            </para>
+              
+            <para>CLASSPATH segments are written here using a semicolon ";" as the separator;
+              during PEAR installation, these will be adjusted to be the correct character for the
+              target Operating System.</para>
+            
+            <para>In order to specify the UIMA datapath for your component you have to create an environment
+            variable with the property name <literal>uima.datapath</literal>. The value of this property 
+            must contain the UIMA datapath settings.</para>
+              
+              </listitem></itemizedlist></para>
+        
+        <para>Path names should be specified using macros (see below), instead of
+          hard-coded absolute paths that might work locally, but probably won&apos;t if the
+          PEAR is deployed in a different machine and environment.</para>
+        
+        <para>Macros are variables such as $main_root, used to represent a string such as the
+          full path of a certain directory.</para>
+        
+        <para>These macros should be defined in the PEAR.properties file using the local
+          values. The tools and applications that use and deploy PEAR files should replace
+          these macros (in the files included in the conf and desc folders) with the
+          corresponding values in the local environment as part of the deployment
+          process.</para>
+        
+        <para>Currently, there are two types of macros:</para>
+        
+        <itemizedlist><listitem><para>$main_root, which represents the local absolute
+          path of the main component root directory after deployment.</para></listitem>
+          
+          <listitem><para><emphasis>$component_id$root</emphasis>, which
+            represents the local absolute path to the root directory of the component which
+            has <emphasis>component_id</emphasis> as component ID. This component could
+            be, for instance, a delegate component. </para></listitem></itemizedlist>
+        
+        <figure id="ugr.tools.pear.packager.fig.wizard.install_environment">
+          <title>The Installation Environment Page</title>
+          <mediaobject>
+            <imageobject>
+              <imagedata width="5.8in" format="JPG"
+                fileref="&imgroot;image008.jpg"/>
+            </imageobject>
+            <textobject><phrase>Pear Wizard - install environment page</phrase>
+            </textobject>
+          </mediaobject>
+        </figure>
+        
+      </section>
+      
+      <section id="ugr.tools.pear.packager.wizard.file_content">
+        <title>The PEAR file content page</title>
+        
+        <para>The last page of the wizard is the <quote>PEAR file Export</quote> page, which
+          allows the user to select the files to include in the PEAR file. The metadata folder
+          and all its content is mandatory. Make sure you include all the files needed to run
+          your component including descriptors, jars, external libraries, resources, and
+          component analysis engines (in the case of an aggregate analysis engine), etc.
+          It&apos;s recommended to generate a jar file from your code as an alternative to
+          building the project and making sure the output folder (bin) contains the required
+          class files.</para>
+        
+        <para>Eclipse compiles your class files into some output directory, often named
+        "bin" when you take the usual defaults in Eclipse.  The recommended practice is to
+        take all these files and put them into a Jar file, perhaps using the Eclipse Export 
+        wizard.  You would place that Jar file into the PEAR <literal>lib</literal> directory.</para>
+        
+        <note><para>If you are relying on the class files generated in the output folder
+          (usually called bin) to run your code, then make sure the project is built properly,
+          and all the required class files are generated without errors, and then put the
+          output folder (e.g. $main_root/bin) in the classpath using the option to set
+          environment variables, by setting the CLASSPATH variable to include this folder (see the
+          <quote>Installation Environment</quote> page.
+          Beware that using a Java output folder named "bin" in this case is a poor practice, 
+            because the PEAR installation
+          tools will presume this folder contains binary executable files, and will adds this folder to 
+          the PATH environment variable.
+          </para>  </note>        
+          <figure id="ugr.tools.pear.packager.fig.wizard.export">
+            <title>The PEAR File Export Page</title>
+            <mediaobject>
+              <imageobject>
+                <imagedata width="5.7in" format="JPG"
+                  fileref="&imgroot;image010.jpg"/>
+              </imageobject>
+              <textobject><phrase>Pear Wizard - File Export Page</phrase>
+              </textobject>
+            </mediaobject>
+          </figure>
+          
+          
+        
+      </section>
+    </section>
+  </section>
+  
+  <section id="ugr.tools.pear.packager.using_command_line">
+    <title>Using the PEAR command line packager</title>
+     <para>The PEAR command line packager takes some PEAR package parameter settings on the command line to create an 
+     UIMA PEAR file.</para>
+     
+     <para>To run the PEAR command line packager you can use the provided runPearPackager (.bat for Windows, and .sh for Unix) 
+     scripts. The packager can be used in three different modes.</para>
+     <para><itemizedlist>
+     <listitem> 
+     	<para>Mode 1: creates a complete PEAR package with the provided information (default mode)</para>
+     	<para><programlisting>runPearPackager -compID &lt;componentID> 
+  -mainCompDesc &lt;mainComponentDesc> [-classpath &lt;classpath>] 
+  [-datapath &lt;datapath>] -mainCompDir &lt;mainComponentDir> 
+  -targetDir &lt;targetDir> [-envVars &lt;propertiesFilePath>]</programlisting></para>   
+     	<para> The created PEAR file has the file name &lt;componentID>.pear and is located in the &lt;targetDir>.</para>
+     </listitem>
+     
+     <listitem> 
+     	<para>Mode 2: creates a PEAR installation descriptor without packaging the PEAR file</para>
+     	<para><programlisting>runPearPackager -create -compID &lt;componentID> 
+  -mainCompDesc &lt;mainComponentDesc> [-classpath &lt;classpath>]
+  [-datapath &lt;datapath>] -mainCompDir &lt;mainComponentDir> 
+  [-envVars &lt;propertiesFilePath>]</programlisting></para>
+     	<para> The PEAR installation descriptor is created in the &lt;mainComponentDir>/metadata directory.</para>
+     </listitem>
+
+     <listitem>
+     	<para>Mode 3: creates a PEAR package with an existing PEAR installation descriptor</para>
+     	<para><programlisting>runPearPackager -package -compID &lt;componentID> 
+  -mainCompDir &lt;mainComponentDir> -targetDir &lt;targetDir></programlisting></para>
+      	<para> The created PEAR file has the file name &lt;componentID>.pear and is located in the &lt;targetDir>.</para>
+     </listitem>
+     	 
+     </itemizedlist>
+     </para>          
+     <para>The modes 2 and 3 should be used when you want to manipulate the PEAR installation descriptor before packaging
+     the PEAR file. </para>
+     
+     <para>Some more details about the PearPackager parameters is provided in the list below:</para>
+     <para><itemizedlist>
+     <listitem> 
+     	<simpara><literal>&lt;componentID></literal>: PEAR package component ID.</simpara>
+     </listitem>
+     
+     <listitem> 
+     	<simpara><literal>&lt;mainComponentDesc></literal>: Main component descriptor of the PEAR package.</simpara>
+     </listitem>
+
+     <listitem>
+     	<simpara><literal>&lt;classpath></literal>: PEAR classpath settings. Use $main_root macros to specify
+     	path entries. Use <literal>;</literal> to separate the entries.</simpara>
+     </listitem>
+
+     <listitem>
+     	<simpara><literal>&lt;datapath></literal>: PEAR datapath settings. Use $main_root macros to specify
+     	path entries. Use <literal>;</literal> to separate the path entries.</simpara>
+     </listitem>
+
+     <listitem>
+     	<simpara><literal>&lt;mainComponentDir></literal>: Main component directory that contains the PEAR package content.</simpara>
+     </listitem>
+
+     <listitem>
+     	<simpara><literal>&lt;targetDir></literal>: Target directory where the created PEAR file is written to.</simpara>
+     </listitem>
+
+     <listitem>
+     	<simpara><literal>&lt;propertiesFilePath></literal>: Path name to a properties file that contains environment variables that must be
+     	set to run the PEAR content.</simpara>
+     </listitem>
+          	 
+     </itemizedlist>
+     
+     </para>
+   </section>
+  
+</chapter>

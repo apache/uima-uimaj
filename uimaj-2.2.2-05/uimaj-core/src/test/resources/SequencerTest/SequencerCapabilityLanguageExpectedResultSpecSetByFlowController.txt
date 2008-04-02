@@ -1,0 +1,8 @@
+
+ResultSpec for annotator Whitespace tokenizer:
+uima.tt.ParagraphAnnotation
+uima.tt.SentenceAnnotation
+uima.tt.TokenAnnotation
+
+ResultSpec for annotator Token Lemma annotator:
+uima.tt.Lemma
