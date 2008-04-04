@@ -91,6 +91,7 @@ public class XmlDetagger extends CasAnnotator_ImplBase {
     // create the plain text view and set its document text
     CAS plainTextView = aCAS.createView("plainTextDocument");
     plainTextView.setDocumentText(handler.getDetaggedText());
+    plainTextView.setDocumentLanguage(aCAS.getView("_InitialView").getDocumentLanguage());
 
     // Index the SourceDocumentInformation object, if there is one, in the new sofa.
     // This is needed by the SemanticSearchCasIndexer
