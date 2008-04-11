@@ -33,8 +33,12 @@ import java.io.InputStream;
  * data outside the CAS.
  * </ul>
  * <p>
- * To create a Sofa FS, use {@link org.apache.uima.cas.CAS#createSofa CAS.createSofa()}. This
- * interface provides methods to set the values of the features of the Sofa FS. Generic CAS APIs
+ * SofaFS (the feature structure that represents a sofa) are created as a side effect of
+ * creating a new CAS view.  To create a new CAS view, use 
+ * {@link org.apache.uima.cas.CAS#createView CAS.createView(string-view-name)}. 
+ * From the returned CAS view, you can get the associated SofaFS instance, using
+ * {@link org.apache.uima.cas.CAS#getSofa CAS.getSofa()}.  
+ * The SofaFS interface provides methods to set the values of the features of the Sofa FS. Generic CAS APIs
  * should never be used to create Sofas or set their features.
  * <p>
  * Sofa data can be contained locally in the CAS itself or it can be remote from CAS. To set the
