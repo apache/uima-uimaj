@@ -20,6 +20,7 @@
 package org.apache.uima.tools.cvd;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.ImageIcon;
 import javax.swing.UIManager;
@@ -35,8 +36,8 @@ import org.apache.uima.tools.images.Images;
  * 
  */
 public class CVD {
-	
-	public static final String MAN_PATH_PROPERTY = "uima.tools.cvd.manpath";
+
+  public static final String MAN_PATH_PROPERTY = "uima.tools.cvd.manpath";
 
   private static final String TEXT_FILE_PARAM = "-text";
 
@@ -45,7 +46,7 @@ public class CVD {
   private static final String EXECUTE_SWITCH = "-exec";
 
   private static final String DATA_PATH_PARAM = "-datapath";
-  
+
   private static final String LOOK_AND_FEEL_PARAM = "-lookandfeel";
 
   private CVD() {
@@ -59,13 +60,20 @@ public class CVD {
     if (icon != null) {
       frame.setIconImage(icon.getImage());
     }
-    javax.swing.SwingUtilities.invokeLater(new Runnable() {
+    try {
+    javax.swing.SwingUtilities.invokeAndWait(new Runnable() {
 
       public void run() {
         frame.pack();
         frame.setVisible(true);
       }
     });
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    } catch (InvocationTargetException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
     return frame;
   }
 
@@ -81,7 +89,7 @@ public class CVD {
 
   private static final void printUsage() {
     System.out
-            .println("Usage: java org.apache.uima.cvd.CVD [-text <TextFile>] [-desc <XmlDescriptor>] [-datapath <DataPath>] [-exec]");
+        .println("Usage: java org.apache.uima.cvd.CVD [-text <TextFile>] [-desc <XmlDescriptor>] [-datapath <DataPath>] [-exec]");
     System.out.println("Additional optional parameters:");
     System.out.println("  -lookandfeel <LookAndFeelClassName>");
   }
@@ -114,12 +122,12 @@ public class CVD {
       }
       String lookAndFeel = null;
       if (clp.isInArgsList(LOOK_AND_FEEL_PARAM)) {
-	lookAndFeel = clp.getParamArgument(LOOK_AND_FEEL_PARAM);
-	try {
-	  UIManager.setLookAndFeel(lookAndFeel);
-	} catch (UnsupportedLookAndFeelException e) {
-	  System.err.println(e.getMessage());
-	}
+        lookAndFeel = clp.getParamArgument(LOOK_AND_FEEL_PARAM);
+        try {
+          UIManager.setLookAndFeel(lookAndFeel);
+        } catch (UnsupportedLookAndFeelException e) {
+          System.err.println(e.getMessage());
+        }
       }
       MainFrame frame = createMainFrame();
       if (clp.isInArgsList(TEXT_FILE_PARAM)) {
