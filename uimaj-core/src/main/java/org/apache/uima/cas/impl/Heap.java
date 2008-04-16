@@ -49,7 +49,7 @@ public final class Heap {
   // The array that represents the actual heap is package private and
   // can be directly addressed by the LowLevelCAS.
   int[] heap;
-
+  
   // Next free position on the heap.
   private int pos;
 
@@ -202,7 +202,7 @@ public final class Heap {
     if (doFullReset) {
       this.initHeap();
     } else {
-      Arrays.fill(this.heap, 0, this.heap.length, 0);
+      Arrays.fill(this.heap, 0, this.pos, 0);
       this.pos = 1;
     }
   }
