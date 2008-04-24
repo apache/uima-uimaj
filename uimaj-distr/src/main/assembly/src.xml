@@ -43,8 +43,23 @@ under the License.
 		  <exclude>README</exclude>
       </excludes>
     </fileSet>
+    <!-- Copy .bat/.sh files as executable -->
+    <fileSet>
+      <fileMode>755</fileMode>
+      <directory>src/main/readme_src</directory>
+      <includes>
+        <include>*.bat</include>
+        <include>*.sh</include>
+      </includes>
+      <outputDirectory>/</outputDirectory>
+    </fileSet>
+    <!-- Copy everything else as non-executable -->
     <fileSet>
       <directory>src/main/readme_src</directory>
+      <excludes>
+        <exclude>*.bat</exclude>
+        <exclude>*.sh</exclude>
+      </excludes>
       <outputDirectory>/</outputDirectory>
     </fileSet>
     <fileSet>
