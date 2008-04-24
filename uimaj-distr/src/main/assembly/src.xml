@@ -28,6 +28,7 @@ under the License.
   <includeBaseDirectory>true</includeBaseDirectory>
   
   <fileSets>
+    <!-- Leave out .sh/.bat files, include them in the next step as executable -->
     <fileSet>
       <directory>.</directory>
       <outputDirectory>/uimaj-distr</outputDirectory>
@@ -35,12 +36,26 @@ under the License.
         <include>src/**</include>
         <include>pom.xml</include>
       </includes>
+      <excludes>
+        <exclude>src/**/*.bat</exclude>
+        <exclude>src/**/*.sh</exclude>
+      </excludes>
+    </fileSet>
+    <!-- Copy .bat/.sh files as executable -->
+    <fileSet>
+      <fileMode>755</fileMode>
+      <directory>.</directory>
+      <outputDirectory>/uimaj-distr</outputDirectory>
+      <includes>
+        <include>src/**/*.bat</include>
+        <include>src/**/*.sh</include>
+      </includes>
     </fileSet>
     <fileSet>
       <directory>src/main/readme</directory>
       <outputDirectory>/</outputDirectory>
       <excludes>
-		  <exclude>README</exclude>
+          <exclude>README</exclude>
       </excludes>
     </fileSet>
     <!-- Copy .bat/.sh files as executable -->
