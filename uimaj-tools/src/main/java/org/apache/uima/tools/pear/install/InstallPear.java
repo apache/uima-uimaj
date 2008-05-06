@@ -32,6 +32,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.jar.JarFile;
 import java.util.prefs.Preferences;
@@ -319,7 +320,7 @@ public class InstallPear extends JFrame {
       message = localPearFile.getAbsolutePath() + "file not found \n";
       printInConsole(errorFlag, message);
     } else {
-      if(localPearFile != null) {
+      if (localPearFile != null) {
         pearConsole.append("PEAR file to install is => " + localPearFile.getAbsolutePath() + "\n");
       }
     }
@@ -422,36 +423,45 @@ public class InstallPear extends JFrame {
    *           If any I/O exception occurred.
    */
   private void runCVD() {
-    try {
 
-      // create PackageBrowser object
-      PackageBrowser pkgBrowser = new PackageBrowser(new File(mainComponentRootPath));
+    
+    Runnable runCVD = new Runnable() {
 
-      // get pear descriptor
-      String pearDesc = pkgBrowser.getComponentPearDescPath();
+      public void run() {
+        try {
+          // create PackageBrowser object
+          PackageBrowser pkgBrowser = new PackageBrowser(new File(mainComponentRootPath));
 
-      // start CVD
-      MainFrame frame = CVD.createMainFrame();
-      
-      // Prevent CVD from shutting down JVM after exit
-      frame.setExitOnClose(false);
+          // get pear descriptor
+          String pearDesc = pkgBrowser.getComponentPearDescPath();
 
-      // load pear descriptor
-      frame.loadAEDescriptor(new File(pearDesc));
+          // start CVD
+          MainFrame frame = CVD.createMainFrame();
 
-      // run CVD
-      frame.runAE(true);
+          // Prevent CVD from shutting down JVM after exit
+          frame.setExitOnClose(false);
 
-    } catch (Throwable e) {
-      pearConsole.append(" Error in runCVD() " + e.toString());
-      StringWriter strWriter = new StringWriter();
-      PrintWriter printWriter = new PrintWriter(strWriter, true);
-      e.printStackTrace(printWriter);
-      printWriter.flush();
-      strWriter.flush();
-      pearConsole.setForeground(new Color(0xFF0000));
-      pearConsole.append(strWriter.toString());
-    }
+          // load pear descriptor
+          frame.loadAEDescriptor(new File(pearDesc));
+
+          // run CVD
+          frame.runAE(true);
+        } catch (Throwable e) {
+          pearConsole.append(" Error in runCVD() " + e.toString());
+          StringWriter strWriter = new StringWriter();
+          PrintWriter printWriter = new PrintWriter(strWriter, true);
+          e.printStackTrace(printWriter);
+          printWriter.flush();
+          strWriter.flush();
+          pearConsole.setForeground(new Color(0xFF0000));
+          pearConsole.append(strWriter.toString());
+        }
+
+      }
+    };
+    
+    Thread th = new Thread(runCVD);
+    th.start();
   }
 
   /**
@@ -555,7 +565,7 @@ public class InstallPear extends JFrame {
           }
         }
       });
-      
+
       installDirTextField.getDocument().addDocumentListener(new DocumentListener() {
         public void changedUpdate(DocumentEvent e) {
           // do nothing
@@ -563,10 +573,11 @@ public class InstallPear extends JFrame {
 
         public void insertUpdate(DocumentEvent e) {
           runButton.setEnabled(false);
-         }
+        }
 
         public void removeUpdate(DocumentEvent e) {
-          runButton.setEnabled(false);        }
+          runButton.setEnabled(false);
+        }
       });
 
     }
