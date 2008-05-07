@@ -58,6 +58,7 @@ under the License.
          id="org.apache.uima.runtime"
          download-size="0"
          install-size="0"
-         version="2.2.2.incubating"/>
+         version="2.2.2.incubating"
+         unpack="false"/>
 
 </feature>
