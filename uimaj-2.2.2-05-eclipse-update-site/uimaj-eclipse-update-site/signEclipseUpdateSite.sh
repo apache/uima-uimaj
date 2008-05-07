@@ -34,11 +34,15 @@ fi
 # Create PGP signatures
 for i in target/eclipse-update-site/features/org.apache.uima.*.incubating.jar; do gpg --passphrase "$passphrase" --output $i.asc --detach-sig --armor $i; done
 for i in  target/eclipse-update-site/plugins/org.apache.uima.*.incubating.jar;  do gpg --passphrase "$passphrase" --output $i.asc --detach-sig --armor $i; done
+gpg --passphrase "$passphrase" --output target/eclipse-update-site/digest.zip.asc --detach-sig --armor target/eclipse-update-site/digest.zip
+
 
 # Create MD5 checksums
 for i in target/eclipse-update-site/features/org.apache.uima.*.incubating.jar; do md5sum --binary $i > $i.md5; done
 for i in  target/eclipse-update-site/plugins/org.apache.uima.*.incubating.jar;  do md5sum --binary $i > $i.md5; done
+md5sum --binary target/eclipse-update-site/digest.zip > target/eclipse-update-site/digest.zip.md5
 
 # Create SHA1 checksums
 for i in target/eclipse-update-site/features/org.apache.uima.*.incubating.jar; do sha1sum --binary $i > $i.sha1; done
 for i in  target/eclipse-update-site/plugins/org.apache.uima.*.incubating.jar;  do sha1sum --binary $i > $i.sha1; done
+sha1sum --binary target/eclipse-update-site/digest.zip > target/eclipse-update-site/digest.zip.sha1
