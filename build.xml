@@ -19,17 +19,30 @@
    under the License.    
 -->
 
-<!-- This script can be run "stand alone" for testing, but
-     normally is called from the uimaj-distr POM when assembly:assembly
-     goal is being run 
+<!-- This script is run from ant and builds a new update site.
+     Parameters:
+       a target naming the feature set to build
+       a release number (e.g. 2.2.2) to be used in the generated jars
+         and to speicfy the jar version 
+       
+       The jars are obtained from the local maven repo.  
      -->
 
 <!-- set the basedir value to point to the top level of the project -->
 
 <project name="build update site" default="all" basedir=".">
 	
-	<!-- will be overridden by maven caller -->
-	<property name="project.version" value="2.2.2.incubating-SNAPSHOT"/>
+	<!-- set this to the version being built -->
+	<property name="project.version.base" value="2.2.2"/>
+  
+  <!-- uncomment one or more of these lines to indicate
+       the new feature sets being added with this build -->
+	
+	<!--property name="feature.uima-as" value=""/-->
+	<property name="feature.uima-base" value="" />
+	
+	
+	<property name="project.full.eclipse.version" value="${project.version.base}.incubating"/>
  
   <condition property="eclipse.home" value="${uima-maven-build-eclipse-home}">
     <not><equals arg1="${uima-maven-build-eclipse-home}" arg2="$${uima-maven-build-eclipse-home}"/></not>
@@ -44,10 +57,9 @@
 	
 	<property name="eclipse.home" location="${uima-maven-build-eclipse-home}"/>
 
-	<!-- note: jar signing not done here, but rather as part of uimaj-distr POM processing -->
-  <target name="all" depends="init, 
-  	build-runtime, 
-  	build-tools, 
+	<target name="all" depends="init, 
+  	build-uima-base,
+		build-uima-as, 
   	pack-jars,
   	copy-features,
   	build-digest,
@@ -86,15 +98,15 @@
 		<attribute name="org-name"/>
 		<attribute name="project-name"/>
 		<sequential>
-			<copy todir="work/features/@{org-name}_${project.version}">
+			<copy todir="work/features/@{org-name}_${project.full.eclipse.version}">
 			   <fileset dir="../@{project-name}" includes="feature.xml feature.properties"/>
 			</copy>
-			<copy todir="work/features/@{org-name}_${project.version}/META-INF">
+			<copy todir="work/features/@{org-name}_${project.full.eclipse.version}/META-INF">
 				<fileset dir="../uimaj-distr/src/main/readme"
 		             includes="LICENSE NOTICE DISCLAIMER"/>
 		  </copy>
-			<jar destfile="target/eclipse-update-site/features/@{org-name}_${project.version}.jar"
-			  basedir="work/features/@{org-name}_${project.version}"/>
+			<jar destfile="target/eclipse-update-site/features/@{org-name}_${project.full.eclipse.version}.jar"
+			  basedir="work/features/@{org-name}_${project.full.eclipse.version}"/>
 		</sequential>
   </macrodef>
 	
@@ -102,23 +114,23 @@
 		<attribute name="project-name"/>
 		<attribute name="org-name"/>
 		<sequential>
-			<copy todir="target/eclipse-update-site/plugins"
-			      file="../@{project-name}/target/@{org-name}_${project.version}.jar"/>
+			<copy tofile="target/eclipse-update-site/plugins/@{org-name}_${project.full.eclipse.version}.jar"
+			      file="${envVar.HOMEPATH}/.m2/repository/org/apache/uima/@{project-name}/${project.full.eclipse.version}/@{project-name}-${project.full.eclipse.version}.jar"/>
 	  </sequential>
 	</macrodef>
 	
-  <target name="build-runtime">
+	<target name="build-uima-base" if="feature.uima-base">
   	<makeFeatureJar project-name="uimaj-eclipse-feature-runtime" org-name="org.apache.uima.runtime"/>
     <makePluginJar  project-name="uimaj-ep-runtime"              org-name="org.apache.uima.runtime"/>  	
-  </target>
-
-  <target name="build-tools">
-  	<makeFeatureJar project-name="uimaj-eclipse-feature-tools" org-name="org.apache.uima.tools" />
+ 
+		<makeFeatureJar project-name="uimaj-eclipse-feature-tools" org-name="org.apache.uima.tools" />
   	<makePluginJar  project-name="uimaj-ep-jcasgen"            org-name="org.apache.uima.jcas.jcasgenp"/>
     <makePluginJar  project-name="uimaj-ep-debug"              org-name="org.apache.uima.debug"/>
     <makePluginJar  project-name="uimaj-ep-pear-packager"      org-name="org.apache.uima.pear"/>
     <makePluginJar  project-name="uimaj-ep-configurator"       org-name="org.apache.uima.desceditor"/>
-  	
+  </target>
+	
+	<target name="build-uima-as" if="feature.uima-as">
   	<makeFeatureJar project-name="uimaj-eclipse-feature-deployeditor" org-name="org.apache.uima.as.deployeditor" />
   	<makePluginJar  project-name="uimaj-ep-deployeditor"         org-name="org.apache.uima.deployeditor"/>
     <makePluginJar  project-name="uimaj-ep-runtime-deployeditor" org-name="org.apache.uima.runtime-deployeditor"/>	
@@ -170,11 +182,4 @@
 		<delete dir="features" includes="*-SNAPSHOT.jar"/>
 	</target>
 	
-	<!--target name="move-to-uimaj-distr-target">
-		<delete dir="../uimaj-distr/target/eclipse-update-site" quiet="true"/>
-		<mkdir dir="../uimaj-distr/target/eclipse-update-site"/>
-		<copy todir="../uimaj-distr/target/eclipse-update-site">
-			<fileset dir="target/eclipse-update-site"/>
-	  </copy>
-	</target-->
 </project>
