@@ -88,24 +88,28 @@ under the License.
          id="org.apache.uima.debug"
          download-size="0"
          install-size="0"
-         version="2.2.2.incubating"/>
+         version="2.2.2.incubating"
+         unpack="false"/>
 
    <plugin
          id="org.apache.uima.desceditor"
          download-size="0"
          install-size="0"
-         version="2.2.2.incubating"/>
+         version="2.2.2.incubating"
+         unpack="false"/>
 
    <plugin
          id="org.apache.uima.jcas.jcasgenp"
          download-size="0"
          install-size="0"
-         version="2.2.2.incubating"/>
+         version="2.2.2.incubating"
+         unpack="false"/>
 
    <plugin
          id="org.apache.uima.pear"
          download-size="0"
          install-size="0"
-         version="2.2.2.incubating"/>
+         version="2.2.2.incubating"
+         unpack="false"/>
 
 </feature>
