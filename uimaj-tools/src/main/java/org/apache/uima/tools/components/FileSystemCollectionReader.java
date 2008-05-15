@@ -36,13 +36,11 @@ import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.collection.CollectionReader_ImplBase;
 import org.apache.uima.examples.SourceDocumentInformation;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.tcas.DocumentAnnotation;
 import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.FileUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.Level;
-import org.apache.uima.util.Logger;
 import org.apache.uima.util.Progress;
 import org.apache.uima.util.ProgressImpl;
 import org.apache.uima.util.XMLInputSource;
@@ -171,7 +169,7 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
 
       // set language if it was explicitly specified as a configuration parameter
       if (mLanguage != null) {
-        ((DocumentAnnotation) jcas.getDocumentAnnotationFs()).setLanguage(mLanguage);
+        jcas.setDocumentLanguage(mLanguage);
       }
 
       // Also store location of source document in CAS. This information is critical
