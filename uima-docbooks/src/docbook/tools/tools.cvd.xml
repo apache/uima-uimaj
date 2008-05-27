@@ -68,7 +68,7 @@
   <programlisting>java -cp ${UIMA_HOME}/lib/uima-core.jar:${UIMA_HOME}/lib/uima-tools.jar 
     org.apache.uima.tools.cvd.CVD</programlisting>
   However, there is no need to type this.  The ${UIMA_HOME}/bin directory contains a cvd.sh and
-  cvd.bat file for Windows and *nix operating systems.
+  cvd.bat file for Unix/Linux/MacOS and Windows, respectively.
  </para>
  <para>
    In Eclipse, you have a ready to use launch configuration available when you have installed the
@@ -82,12 +82,74 @@
       <imagedata scale="100" format="JPG" fileref="&imgroot;eclipse-cvd-launch.jpg"/>
      </imageobject>
      <textobject>
-      <phrase>Sample error dialog</phrase>
+      <phrase>Eclipse run dialog with CVD selected</phrase>
      </textobject>
     </mediaobject>
    </screenshot>
  </para>
  </section>
+ 
+ <section id="cvd.introduction.commandline">
+ <title>Command line parameters</title>
+ <para>
+ You can provide some command line parameters to influence the startup behavior of CVD.  For
+ example, if you want to run a certain analysis engine on a certain text over and over again
+ (for debugging, say), you can make CVD load the annotator and text at startup and execute
+ the annotator.  Here's a list of the supported command line options.
+ </para>
+ 
+    <table frame="none" id="cvd.table.commandline">
+    <title>Command line options</title>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>Option</entry>
+       <entry>Description</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>
+        <computeroutput>-text &lt;textFile></computeroutput>
+       </entry>
+       <entry>Loads the text file <computeroutput>&lt;textFile></computeroutput></entry>
+      </row>
+      <row>
+       <entry>
+        <computeroutput>-desc &lt;descriptorFile></computeroutput>
+       </entry>
+       <entry>Loads the descriptor <computeroutput>&lt;descriptorFile></computeroutput></entry>
+      </row>
+      <row>
+       <entry>
+        <computeroutput>-exec</computeroutput>
+       </entry>
+       <entry>Runs the pre-loaded annotator; only allowed in conjunction with <computeroutput>-desc</computeroutput> </entry>
+      </row>
+      <row>
+       <entry>
+        <computeroutput>-datapath &lt;datapath></computeroutput>
+       </entry>
+       <entry>Sets the data path to <computeroutput>&lt;datapath></computeroutput></entry>
+      </row>
+      <row>
+       <entry>
+        <computeroutput>-ini &lt;iniFile></computeroutput>
+       </entry>
+       <entry>Makes CVD use alternative ini file <computeroutput>&lt;textFile></computeroutput> (default is ~/annotViewer.pref)</entry>
+      </row>
+      <row>
+       <entry>
+        <computeroutput>-lookandfeel &lt;lnfClass></computeroutput>
+       </entry>
+       <entry>Uses alternative look-and-feel <computeroutput>&lt;lnfClass></computeroutput></entry>
+      </row>
+      </tbody>
+      </tgroup>
+      </table>
+ 
+ </section>
+ 
  </section>
  <section id="cvd.errorHandling">
   <title>Error Handling</title>
@@ -126,6 +188,13 @@
    reasonably transparent, in case you feel like changing it.  Note,
    however, that the file will be overwritten every time you exit the
    program.
+  </para>
+  
+  <para>
+  If you use CVD for several projects, it may be convenient to use a different
+  ini files for each project.  You can specify the ini file CVD should use
+  with the <programlisting>-ini &lt;iniFile></programlisting> parameter on the
+  command line.
   </para>
  </section>
 
