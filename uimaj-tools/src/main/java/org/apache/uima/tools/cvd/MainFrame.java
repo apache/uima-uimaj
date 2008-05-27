@@ -256,7 +256,7 @@ public class MainFrame extends JFrame {
   private JScrollPane fsTreeScrollPane;
 
   // Menus
-  private  JMenu fileMenu = null;
+  private JMenu fileMenu = null;
 
   private JMenuItem fileSaveItem = null;
 
@@ -279,7 +279,7 @@ public class MainFrame extends JFrame {
   private JMenuItem reRunMenu;
 
   private JMenuItem runOnCasMenuItem;
-  
+
   private JMenuItem showPerfReportItem;
 
   private JPopupMenu textPopup;
@@ -287,9 +287,9 @@ public class MainFrame extends JFrame {
   private JMenuItem xcasReadItem;
 
   private JMenuItem xcasWriteItem;
-  
+
   private JMenuItem xmiCasReadItem;
-  
+
   private JMenuItem xmiCasWriteItem;
 
   private JMenuItem typeSystemWriteItem;
@@ -365,7 +365,7 @@ public class MainFrame extends JFrame {
   private static final Color selectionColor = Color.orange;
 
   private Properties preferences;
-  
+
   private ProcessTrace lastRunProcessTrace = null;
 
   public static final String textDirPref = "dir.open.text";
@@ -419,19 +419,15 @@ public class MainFrame extends JFrame {
   private HashMap styleMap = new HashMap();
 
   // For recently used text and descriptor files.
-  private ArrayList textFileNameList = new ArrayList();
-
-  private int numRecentTextFiles = 0;
-
-  private int nextToReplaceTextFile = 0;
-
-  private ArrayList descFileNameList = new ArrayList();
-
-  private int numRecentDescFiles = 0;
-
-  private int nextToReplaceDescFile = 0;
-
   private static final int maxRecentSize = 8;
+
+  private final RecentFilesList recentTextFiles = new RecentFilesList(maxRecentSize);
+
+  private final List<String> textFileNameList = new ArrayList<String>();
+
+  private final RecentFilesList recentDescFiles = new RecentFilesList(maxRecentSize);
+
+  private final List<String> descFileNameList = new ArrayList<String>();
 
   // For cursor handling (busy cursor). Is there a better way?
   private ArrayList cursorOwningComponents = new ArrayList();
@@ -443,10 +439,10 @@ public class MainFrame extends JFrame {
   private JComboBox sofaSelectionComboBox;
 
   private JPanel sofaSelectionPanel;
-  
+
   private boolean exitOnClose = true;
 
-//  private boolean disableSofaListener = false;
+  // private boolean disableSofaListener = false;
 
   /**
    * Constructor for MainFrame.
@@ -513,6 +509,7 @@ public class MainFrame extends JFrame {
   }
 
   public void loadAEDescriptor(File descriptorFile) {
+    addRecentDescFile(descriptorFile);
     setWaitCursor();
     if (descriptorFile.exists() && descriptorFile.isFile()) {
       this.annotOpenDir = descriptorFile.getParentFile();
@@ -529,7 +526,6 @@ public class MainFrame extends JFrame {
       handleException(e);
     }
     time.stop();
-    addRecentDescFile(descriptorFile);
     if (!success) {
       setStatusbarMessage("Failed to load AE specifier: " + descriptorFile.getName());
       this.reRunMenu.setText("Run AE");
@@ -650,24 +646,31 @@ public class MainFrame extends JFrame {
   }
 
   private void addRecentTextFile(File file) {
-    if (this.textFileNameList.contains(file.getAbsolutePath())) {
-      return;
+    this.recentTextFiles.addFile(file);
+    this.recentTextFileMenu.removeAll();
+    List<File> textFiles = this.recentTextFiles.getFileList();
+    for (int i = 0; i < textFiles.size(); i++) {
+      JMenuItem menuItem = createRecentTextFileItem(i + 1, textFiles.get(i));
+      this.recentTextFileMenu.add(menuItem);
     }
-    if (this.numRecentTextFiles < maxRecentSize) {
-      ++this.numRecentTextFiles;
-      ++this.nextToReplaceTextFile;
-      this.recentTextFileMenu.add(createRecentTextFileItem(this.numRecentTextFiles, file));
-      this.textFileNameList.add(file.getAbsolutePath());
-    } else {
-      if (this.nextToReplaceTextFile >= maxRecentSize) {
-        this.nextToReplaceTextFile = 0;
-      }
-      this.textFileNameList.set(this.nextToReplaceTextFile, file.getAbsolutePath());
-      JMenuItem item = createRecentTextFileItem(this.nextToReplaceTextFile + 1, file);
-      this.recentTextFileMenu.remove(this.nextToReplaceTextFile);
-      this.recentTextFileMenu.insert(item, this.nextToReplaceTextFile);
-      ++this.nextToReplaceTextFile;
-    }
+    // if (this.textFileNameList.contains(file.getAbsolutePath())) {
+    // return;
+    // }
+    // if (this.numRecentTextFiles < maxRecentSize) {
+    // ++this.numRecentTextFiles;
+    // ++this.nextToReplaceTextFile;
+    // this.recentTextFileMenu.add(createRecentTextFileItem(this.numRecentTextFiles, file));
+    // this.textFileNameList.add(file.getAbsolutePath());
+    // } else {
+    // if (this.nextToReplaceTextFile >= maxRecentSize) {
+    // this.nextToReplaceTextFile = 0;
+    // }
+    // this.textFileNameList.set(this.nextToReplaceTextFile, file.getAbsolutePath());
+    // JMenuItem item = createRecentTextFileItem(this.nextToReplaceTextFile + 1, file);
+    // this.recentTextFileMenu.remove(this.nextToReplaceTextFile);
+    // this.recentTextFileMenu.insert(item, this.nextToReplaceTextFile);
+    // ++this.nextToReplaceTextFile;
+    // }
   }
 
   private final JMenuItem createRecentDescFileItem(int num, File file) {
@@ -679,31 +682,38 @@ public class MainFrame extends JFrame {
   }
 
   private void addRecentDescFile(File file) {
-    if (this.descFileNameList.contains(file.getAbsolutePath())) {
-      return;
+    this.recentDescFiles.addFile(file);
+    this.recentDescFileMenu.removeAll();
+    List<File> descFiles = this.recentDescFiles.getFileList();
+    for (int i = 0; i < descFiles.size(); i++) {
+      JMenuItem menuItem = createRecentDescFileItem(i + 1, descFiles.get(i));
+      this.recentDescFileMenu.add(menuItem);
     }
-    if (this.numRecentDescFiles < maxRecentSize) {
-      ++this.numRecentDescFiles;
-      ++this.nextToReplaceDescFile;
-      this.recentDescFileMenu.add(createRecentDescFileItem(this.numRecentDescFiles, file));
-      this.descFileNameList.add(file.getAbsolutePath());
-    } else {
-      if (this.nextToReplaceDescFile >= maxRecentSize) {
-        this.nextToReplaceDescFile = 0;
-      }
-      this.descFileNameList.set(this.nextToReplaceDescFile, file.getAbsolutePath());
-      JMenuItem item = createRecentDescFileItem(this.nextToReplaceDescFile + 1, file);
-      this.recentDescFileMenu.remove(this.nextToReplaceDescFile);
-      this.recentDescFileMenu.insert(item, this.nextToReplaceDescFile);
-      ++this.nextToReplaceDescFile;
-    }
+    // if (this.descFileNameList.contains(file.getAbsolutePath())) {
+    // return;
+    // }
+    // if (this.numRecentDescFiles < maxRecentSize) {
+    // ++this.numRecentDescFiles;
+    // ++this.nextToReplaceDescFile;
+    // this.recentDescFileMenu.add(createRecentDescFileItem(this.numRecentDescFiles, file));
+    // this.descFileNameList.add(file.getAbsolutePath());
+    // } else {
+    // if (this.nextToReplaceDescFile >= maxRecentSize) {
+    // this.nextToReplaceDescFile = 0;
+    // }
+    // this.descFileNameList.set(this.nextToReplaceDescFile, file.getAbsolutePath());
+    // JMenuItem item = createRecentDescFileItem(this.nextToReplaceDescFile + 1, file);
+    // this.recentDescFileMenu.remove(this.nextToReplaceDescFile);
+    // this.recentDescFileMenu.insert(item, this.nextToReplaceDescFile);
+    // ++this.nextToReplaceDescFile;
+    // }
   }
 
   /**
    * Set the text to be analyzed.
    * 
    * @param text
-   *          The text.
+   *                The text.
    */
   public void setText(String text) {
     this.textFile = null;
@@ -715,7 +725,7 @@ public class MainFrame extends JFrame {
    * Load a text file.
    * 
    * @param textFile1
-   *          The text file.
+   *                The text file.
    */
   public void loadTextFile(File textFile1) {
     this.textFile = textFile1;
@@ -728,7 +738,7 @@ public class MainFrame extends JFrame {
     this.textArea.getCaret().setDot(0);
     this.isDirty = false;
   }
-  
+
   public void setTitle() {
     StringBuffer buf = new StringBuffer();
     buf.append(titleText);
@@ -809,7 +819,7 @@ public class MainFrame extends JFrame {
     this.undoItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_MASK));
     this.editMenu.add(this.undoItem);
     this.editMenu.addSeparator();
-    HashMap actionMap = createEditActionMap();
+    HashMap<Object, Action> actionMap = createEditActionMap();
     // Cut
     this.cutAction = (Action) actionMap.get(DefaultEditorKit.cutAction);
     this.cutAction.putValue(Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_T));
@@ -838,8 +848,8 @@ public class MainFrame extends JFrame {
     this.editMenu.add(pasteItem);
   }
 
-  private HashMap createEditActionMap() {
-    HashMap map = new HashMap();
+  private HashMap<Object, Action> createEditActionMap() {
+    HashMap<Object, Action> map = new HashMap<Object, Action>();
     Action[] ar = this.textArea.getActions();
     for (int i = 0; i < ar.length; i++) {
       Action a = ar[i];
@@ -887,7 +897,7 @@ public class MainFrame extends JFrame {
 
   private void createFileMenu() {
     this.fileMenu = new JMenu("File");
-    
+
     // Standard text file menu items.
     JMenuItem newTextItem = new JMenuItem("New Text...", KeyEvent.VK_N);
     newTextItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
@@ -914,7 +924,7 @@ public class MainFrame extends JFrame {
     this.recentTextFileMenu.setMnemonic(KeyEvent.VK_U);
     this.fileMenu.add(this.recentTextFileMenu);
     this.fileMenu.addSeparator();
-    
+
     // Color preferences
     JMenuItem colorPrefsOpenItem = new JMenuItem("Load Color Settings", KeyEvent.VK_L);
     colorPrefsOpenItem.addActionListener(new ColorPrefsOpenHandler(this));
@@ -923,7 +933,7 @@ public class MainFrame extends JFrame {
     colorPrefsSaveItem.addActionListener(new ColorPrefsSaveHandler(this));
     this.fileMenu.add(colorPrefsSaveItem);
     this.fileMenu.addSeparator();
-    
+
     // Reading and writing type system files.
     this.typeSystemReadItem = new JMenuItem("Read Type System File");
     this.typeSystemReadItem.setEnabled(true);
@@ -942,7 +952,7 @@ public class MainFrame extends JFrame {
     this.xmiCasWriteItem.addActionListener(new XmiCasSaveHandler(this));
     this.fileMenu.add(this.xmiCasWriteItem);
     this.fileMenu.addSeparator();
-    
+
     // Reading and writing old-style XCAS files.
     this.xcasReadItem = new JMenuItem("Read XCAS File", KeyEvent.VK_R);
     this.xcasReadItem.addActionListener(new XCASFileOpenEventHandler(this));
@@ -954,7 +964,7 @@ public class MainFrame extends JFrame {
     JMenuItem exit = new JMenuItem("Exit", KeyEvent.VK_X);
     exit.addActionListener(new SystemExitHandler(this));
     this.fileMenu.add(exit);
-    
+
     // Disable menu items that can't be executed yet.
     this.typeSystemWriteItem.setEnabled(false);
     setEnableCasFileReadingAndWriting();
@@ -967,7 +977,7 @@ public class MainFrame extends JFrame {
     this.xcasWriteItem.setEnabled(enable);
     this.xmiCasWriteItem.setEnabled(enable);
   }
-  
+
   private final void addCursorOwningComponent(Component comp) {
     this.cursorOwningComponents.add(comp);
   }
@@ -1282,7 +1292,7 @@ public class MainFrame extends JFrame {
     this.caretStatus.setEditable(false);
     this.caretStatus.setToolTipText("Position of cursor or extent of selection");
     this.statusPanel.add(this.caretStatus);
-//    setCaretStatus(0, 0);
+    // setCaretStatus(0, 0);
     // setFileStatusMessage();
     setAEStatusMessage();
   }
@@ -1477,14 +1487,16 @@ public class MainFrame extends JFrame {
     int numFiles = this.textFileNameList.size();
     int max = (numFiles < maxRecentSize) ? numFiles : maxRecentSize;
     for (int i = 0; i < max; i++) {
-      this.recentTextFileMenu.add(createRecentTextFileItem(i + 1, new File(
-          (String) this.textFileNameList.get(i))));
+      File file = new File(this.textFileNameList.get(i));
+      this.recentTextFileMenu.add(createRecentTextFileItem(i + 1, file));
+      this.recentTextFiles.appendFile(file);
     }
     numFiles = this.descFileNameList.size();
     max = (numFiles < maxRecentSize) ? numFiles : maxRecentSize;
     for (int i = 0; i < max; i++) {
-      this.recentDescFileMenu.add(createRecentDescFileItem(i + 1, new File(
-          (String) this.descFileNameList.get(i))));
+      File file = new File(this.descFileNameList.get(i));
+      this.recentDescFileMenu.add(createRecentDescFileItem(i + 1, file));
+      this.recentDescFiles.appendFile(file);
     }
   }
 
@@ -1537,11 +1549,11 @@ public class MainFrame extends JFrame {
       this.reRunMenu.setEnabled(true);
 
       // reset sofa combo box with just the initial view
-//      this.disableSofaListener = true;
+      // this.disableSofaListener = true;
       this.sofaSelectionComboBox.removeAllItems();
       this.sofaSelectionComboBox.addItem(CAS.NAME_DEFAULT_SOFA);
       this.sofaSelectionPanel.setVisible(false);
-//      this.disableSofaListener = false;
+      // this.disableSofaListener = false;
       MainFrame.this.updateIndexTree(true);
     } catch (Exception e) {
       handleException(e);
@@ -1549,7 +1561,7 @@ public class MainFrame extends JFrame {
     }
     return true;
   }
-  
+
   private final void initCas() {
     this.cas.setDocumentLanguage(this.language);
     this.cas.setDocumentText(this.textArea.getText());
@@ -1562,14 +1574,14 @@ public class MainFrame extends JFrame {
         this.cas = this.cas.getView(CAS.NAME_DEFAULT_SOFA);
         this.cas.reset();
         initCas();
-//        this.disableSofaListener = true;
+        // this.disableSofaListener = true;
         this.sofaSelectionComboBox.setSelectedIndex(0);
       }
       this.lastRunProcessTrace = this.ae.process(this.cas);
       this.showPerfReportItem.setEnabled(true);
       this.log.log(Level.INFO, "Process trace of AE run:\n" + this.lastRunProcessTrace.toString());
       // Update sofacombobox here
-//      this.disableSofaListener = true;
+      // this.disableSofaListener = true;
       int currentViewID = this.sofaSelectionComboBox.getSelectedIndex();
       this.sofaSelectionComboBox.removeAllItems();
       this.sofaSelectionComboBox.addItem(CAS.NAME_DEFAULT_SOFA);
@@ -1703,7 +1715,7 @@ public class MainFrame extends JFrame {
     final int max = types.size();
     for (int i = 0; i < max; i++) {
       if (ir.getIndex(label, (Type) types.get(i)) == null) {
-	continue;
+        continue;
       }
       DefaultMutableTreeNode child = createTypeTree((Type) types.get(i), ts, label, ir);
       node.add(child);
@@ -1758,15 +1770,13 @@ public class MainFrame extends JFrame {
       setPreferredSize(this.fsTreeScrollPane, fsTreeSizePref);
     }
     if (this.preferences != null) {
-      ArrayList list = stringToArrayList(this.preferences.getProperty(textFileListPref, ""));
+      List<String> list = stringToArrayList(this.preferences.getProperty(textFileListPref, ""));
       for (int i = 0; i < list.size(); i++) {
         this.textFileNameList.add(list.get(i));
-        ++this.numRecentTextFiles;
       }
       list = stringToArrayList(this.preferences.getProperty(descFileListPref, ""));
       for (int i = 0; i < list.size(); i++) {
         this.descFileNameList.add(list.get(i));
-        ++this.numRecentDescFiles;
       }
     }
     // System.out.println("Home dir: " + System.getProperty("user.home"));
@@ -1803,21 +1813,21 @@ public class MainFrame extends JFrame {
     return d;
   }
 
-  private static final String arrayListToString(ArrayList list) {
+  private static final String stringListToString(List<String> list) {
     if (list.size() < 1) {
       return "";
     }
     StringBuffer buf = new StringBuffer();
-    buf.append(list.get(0).toString());
+    buf.append(list.get(0));
     for (int i = 1; i < list.size(); i++) {
       buf.append(',');
-      buf.append(list.get(i).toString());
+      buf.append(list.get(i));
     }
     return buf.toString();
   }
 
-  private static final ArrayList stringToArrayList(String s) {
-    ArrayList list = new ArrayList();
+  private static final List<String> stringToArrayList(String s) {
+    List<String> list = new ArrayList<String>();
     if (s.length() > 0) {
       StringTokenizer tok = new StringTokenizer(s, ",");
       while (tok.hasMoreTokens()) {
@@ -1886,8 +1896,10 @@ public class MainFrame extends JFrame {
       }
       this.preferences.setProperty(langListPref, buf.toString());
     }
-    this.preferences.setProperty(textFileListPref, arrayListToString(this.textFileNameList));
-    this.preferences.setProperty(descFileListPref, arrayListToString(this.descFileNameList));
+    this.preferences.setProperty(textFileListPref, stringListToString(this.recentTextFiles
+        .toStringList()));
+    this.preferences.setProperty(descFileListPref, stringListToString(this.recentDescFiles
+        .toStringList()));
     // Write out preferences to file.
     FileOutputStream out = new FileOutputStream(prefFile);
     this.preferences.store(out, "Automatically generated preferences file for Annotation Viewer");
@@ -2110,7 +2122,7 @@ public class MainFrame extends JFrame {
   public void setTypeSystemViewerEnabled(boolean enabled) {
     this.tsViewerItem.setEnabled(enabled);
   }
-  
+
   public File getColorSettingsDir() {
     return this.colorSettingsDir;
   }
@@ -2180,7 +2192,7 @@ public class MainFrame extends JFrame {
   }
 
   /**
-   *  
+   * 
    */
   public void handleSofas() {
     // Populate sofa combo box with the names of all text
@@ -2189,8 +2201,8 @@ public class MainFrame extends JFrame {
     this.sofaSelectionComboBox.removeAllItems();
     this.sofaSelectionComboBox.addItem(CAS.NAME_DEFAULT_SOFA);
     Iterator sofas = ((CASImpl) getCas()).getBaseCAS().getSofaIterator();
-    Feature sofaIdFeat = getCas().getTypeSystem().getFeatureByFullName(
-        CAS.FEATURE_FULL_NAME_SOFAID);
+    Feature sofaIdFeat = getCas().getTypeSystem()
+        .getFeatureByFullName(CAS.FEATURE_FULL_NAME_SOFAID);
     boolean nonDefaultSofaFound = false;
     while (sofas.hasNext()) {
       SofaFS sofa = (SofaFS) sofas.next();
@@ -2214,7 +2226,7 @@ public class MainFrame extends JFrame {
     // than the default was found
     this.sofaSelectionPanel.setVisible(nonDefaultSofaFound);
     setCas(getCas().getView(newView));
-  
+
     this.sofaSelectionComboBox.setSelectedIndex(newIndex);
     String text = getCas().getDocumentText();
     if (text == null) {
@@ -2223,8 +2235,7 @@ public class MainFrame extends JFrame {
         text = "SofaURI = " + text;
       } else {
         if (getCas().getSofaDataArray() != null) {
-          text = "Sofa array with mime type = "
-              + getCas().getSofa().getSofaMime();
+          text = "Sofa array with mime type = " + getCas().getSofa().getSofaMime();
         }
       }
     }
@@ -2239,14 +2250,14 @@ public class MainFrame extends JFrame {
   }
 
   /**
-   * Set exit-on-close behavior.  Normally, CVD will shut down the JVM it's running in when it's
-   * main window is being closed.  Calling <code>setExitOnClose(false)</code> prevents that.  It
-   * is then the caller's task to shut down the JVM.
+   * Set exit-on-close behavior. Normally, CVD will shut down the JVM it's running in when it's main
+   * window is being closed. Calling <code>setExitOnClose(false)</code> prevents that. It is then
+   * the caller's task to shut down the JVM.
+   * 
    * @param exitOnClose
    */
   public void setExitOnClose(boolean exitOnClose) {
     this.exitOnClose = exitOnClose;
   }
-
 
 }
