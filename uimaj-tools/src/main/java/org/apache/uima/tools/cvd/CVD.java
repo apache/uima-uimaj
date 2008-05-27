@@ -47,6 +47,8 @@ public class CVD {
 
   private static final String DATA_PATH_PARAM = "-datapath";
 
+  private static final String INI_FILE_PARAM = "-ini";
+
   private static final String LOOK_AND_FEEL_PARAM = "-lookandfeel";
 
   private CVD() {
@@ -54,20 +56,24 @@ public class CVD {
   }
 
   public static MainFrame createMainFrame() {
-    final MainFrame frame = new MainFrame();
+    return createMainFrame(null);
+  }
+
+  public static MainFrame createMainFrame(File iniFile) {
+    final MainFrame frame = new MainFrame(iniFile);
     // Set icon.
     ImageIcon icon = Images.getImageIcon(Images.MICROSCOPE);
     if (icon != null) {
       frame.setIconImage(icon.getImage());
     }
     try {
-    javax.swing.SwingUtilities.invokeAndWait(new Runnable() {
+      javax.swing.SwingUtilities.invokeAndWait(new Runnable() {
 
-      public void run() {
-        frame.pack();
-        frame.setVisible(true);
-      }
-    });
+        public void run() {
+          frame.pack();
+          frame.setVisible(true);
+        }
+      });
     } catch (InterruptedException e) {
       e.printStackTrace();
     } catch (InvocationTargetException e) {
@@ -84,6 +90,7 @@ public class CVD {
     parser.addParameter(DATA_PATH_PARAM, true);
     parser.addParameter(LOOK_AND_FEEL_PARAM, true);
     parser.addParameter(EXECUTE_SWITCH);
+    parser.addParameter(INI_FILE_PARAM, true);
     return parser;
   }
 
@@ -129,7 +136,12 @@ public class CVD {
           System.err.println(e.getMessage());
         }
       }
-      MainFrame frame = createMainFrame();
+      File iniFile = null;
+      if (clp.isInArgsList(INI_FILE_PARAM)) {
+        String iniFileName = clp.getParamArgument(INI_FILE_PARAM);
+        iniFile = new File(iniFileName);
+      }
+      MainFrame frame = createMainFrame(iniFile);
       if (clp.isInArgsList(TEXT_FILE_PARAM)) {
         frame.loadTextFile(new File(clp.getParamArgument(TEXT_FILE_PARAM)));
       }

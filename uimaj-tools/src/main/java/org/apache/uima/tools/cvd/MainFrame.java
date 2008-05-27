@@ -300,6 +300,9 @@ public class MainFrame extends JFrame {
 
   private JMenu recentDescFileMenu;
 
+  // Ini file
+  private File iniFile = null;
+
   // Code page support
   private String codePagePrefsList = null;
 
@@ -449,40 +452,9 @@ public class MainFrame extends JFrame {
    * 
    * @throws HeadlessException
    */
-  public MainFrame() {
+  public MainFrame(File iniFile) {
     super();
-    init();
-  }
-
-  /**
-   * Constructor for MainFrame.
-   * 
-   * @param arg0
-   */
-  public MainFrame(GraphicsConfiguration arg0) {
-    super(arg0);
-    init();
-  }
-
-  /**
-   * Constructor for MainFrame.
-   * 
-   * @param arg0
-   * @throws HeadlessException
-   */
-  public MainFrame(String arg0) {
-    super(arg0);
-    init();
-  }
-
-  /**
-   * Constructor for MainFrame.
-   * 
-   * @param arg0
-   * @param arg1
-   */
-  public MainFrame(String arg0, GraphicsConfiguration arg1) {
-    super(arg0, arg1);
+    this.iniFile = iniFile;
     init();
   }
 
@@ -1341,7 +1313,7 @@ public class MainFrame extends JFrame {
     File homeDir = new File(System.getProperty("user.home"));
     this.logFile = new File(homeDir, "uima.log");
 
-    // delete file if exist
+    // delete file if it exists
     this.logFile.delete();
 
     // initialize log framework
@@ -1688,10 +1660,12 @@ public class MainFrame extends JFrame {
   }
 
   private void loadProgramPreferences() throws IOException {
-    File home = new File(System.getProperty("user.home"));
-    File prefFile = new File(home, "annotViewer.pref");
-    if (prefFile.exists() && prefFile.isFile() && prefFile.canRead()) {
-      FileInputStream in = new FileInputStream(prefFile);
+    if (this.iniFile == null) {
+      File home = new File(System.getProperty("user.home"));
+      this.iniFile = new File(home, "annotViewer.pref");
+    }
+    if (this.iniFile.exists() && this.iniFile.isFile() && this.iniFile.canRead()) {
+      FileInputStream in = new FileInputStream(this.iniFile);
       this.preferences = new Properties();
       this.preferences.load(in);
       String fileOpenDirName = this.preferences.getProperty(textDirPref);
@@ -1803,8 +1777,6 @@ public class MainFrame extends JFrame {
 
   public void saveProgramPreferences() throws IOException {
     // File open dialog preferences.
-    File home = new File(System.getProperty("user.home"));
-    File prefFile = new File(home, "annotViewer.pref");
     if (this.preferences == null) {
       this.preferences = new Properties();
     }
@@ -1865,7 +1837,7 @@ public class MainFrame extends JFrame {
     this.preferences.setProperty(descFileListPref, stringListToString(this.recentDescFiles
         .toStringList()));
     // Write out preferences to file.
-    FileOutputStream out = new FileOutputStream(prefFile);
+    FileOutputStream out = new FileOutputStream(this.iniFile);
     this.preferences.store(out, "Automatically generated preferences file for Annotation Viewer");
   }
 
