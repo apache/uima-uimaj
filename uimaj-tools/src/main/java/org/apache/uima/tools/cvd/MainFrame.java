@@ -653,24 +653,6 @@ public class MainFrame extends JFrame {
       JMenuItem menuItem = createRecentTextFileItem(i + 1, textFiles.get(i));
       this.recentTextFileMenu.add(menuItem);
     }
-    // if (this.textFileNameList.contains(file.getAbsolutePath())) {
-    // return;
-    // }
-    // if (this.numRecentTextFiles < maxRecentSize) {
-    // ++this.numRecentTextFiles;
-    // ++this.nextToReplaceTextFile;
-    // this.recentTextFileMenu.add(createRecentTextFileItem(this.numRecentTextFiles, file));
-    // this.textFileNameList.add(file.getAbsolutePath());
-    // } else {
-    // if (this.nextToReplaceTextFile >= maxRecentSize) {
-    // this.nextToReplaceTextFile = 0;
-    // }
-    // this.textFileNameList.set(this.nextToReplaceTextFile, file.getAbsolutePath());
-    // JMenuItem item = createRecentTextFileItem(this.nextToReplaceTextFile + 1, file);
-    // this.recentTextFileMenu.remove(this.nextToReplaceTextFile);
-    // this.recentTextFileMenu.insert(item, this.nextToReplaceTextFile);
-    // ++this.nextToReplaceTextFile;
-    // }
   }
 
   private final JMenuItem createRecentDescFileItem(int num, File file) {
@@ -689,24 +671,6 @@ public class MainFrame extends JFrame {
       JMenuItem menuItem = createRecentDescFileItem(i + 1, descFiles.get(i));
       this.recentDescFileMenu.add(menuItem);
     }
-    // if (this.descFileNameList.contains(file.getAbsolutePath())) {
-    // return;
-    // }
-    // if (this.numRecentDescFiles < maxRecentSize) {
-    // ++this.numRecentDescFiles;
-    // ++this.nextToReplaceDescFile;
-    // this.recentDescFileMenu.add(createRecentDescFileItem(this.numRecentDescFiles, file));
-    // this.descFileNameList.add(file.getAbsolutePath());
-    // } else {
-    // if (this.nextToReplaceDescFile >= maxRecentSize) {
-    // this.nextToReplaceDescFile = 0;
-    // }
-    // this.descFileNameList.set(this.nextToReplaceDescFile, file.getAbsolutePath());
-    // JMenuItem item = createRecentDescFileItem(this.nextToReplaceDescFile + 1, file);
-    // this.recentDescFileMenu.remove(this.nextToReplaceDescFile);
-    // this.recentDescFileMenu.insert(item, this.nextToReplaceDescFile);
-    // ++this.nextToReplaceDescFile;
-    // }
   }
 
   /**
