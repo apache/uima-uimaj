@@ -40,6 +40,7 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.MalformedURLException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -101,7 +102,6 @@ import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.tools.cpm.PerformanceReportDialog;
 import org.apache.uima.tools.cvd.control.AboutHandler;
 import org.apache.uima.tools.cvd.control.AboutUimaHandler;
-import org.apache.uima.tools.cvd.control.AddCPHandler;
 import org.apache.uima.tools.cvd.control.AddLanguageHandler;
 import org.apache.uima.tools.cvd.control.AnnotatorOpenEventHandler;
 import org.apache.uima.tools.cvd.control.AnnotatorRerunEventHandler;
@@ -127,9 +127,7 @@ import org.apache.uima.tools.cvd.control.ManualHandler;
 import org.apache.uima.tools.cvd.control.NewTextEventHandler;
 import org.apache.uima.tools.cvd.control.PopupHandler;
 import org.apache.uima.tools.cvd.control.PopupListener;
-import org.apache.uima.tools.cvd.control.RemoveCodePageHandler;
 import org.apache.uima.tools.cvd.control.RemoveLanguageHandler;
-import org.apache.uima.tools.cvd.control.RestoreCPDefaultsHandler;
 import org.apache.uima.tools.cvd.control.RestoreLangDefaultsHandler;
 import org.apache.uima.tools.cvd.control.SetCodePageHandler;
 import org.apache.uima.tools.cvd.control.SetDataPathHandler;
@@ -179,40 +177,9 @@ public class MainFrame extends JFrame {
     logLevels.add(Level.ALL);
   }
 
-  // private static class WindowClosingMouseListener implements MouseListener {
-  //
-  // private JWindow window;
-  //
-  // private WindowClosingMouseListener(JWindow window) {
-  // this.window = window;
-  // }
-  //
-  // public void mouseClicked(MouseEvent e) {
-  // this.window.dispose();
-  // }
-  //
-  // public void mousePressed(MouseEvent e) {
-  // // does nothing
-  // }
-  //
-  // public void mouseReleased(MouseEvent e) {
-  // // does nothing
-  // }
-  //
-  // public void mouseEntered(MouseEvent e) {
-  // // does nothing
-  // }
-  //
-  // public void mouseExited(MouseEvent e) {
-  // // does nothing
-  // }
-  //
-  // }
-
   private static final String loggerPropertiesFileName = "org/apache/uima/tools/annot_view/Logger.properties";
 
   private static final String defaultText =
-  // "Load a text file and/or edit text here.";
   "Load or edit text here.";
 
   private static final String titleText = "CAS Visual Debugger (CVD)";
@@ -223,8 +190,6 @@ public class MainFrame extends JFrame {
 
   private static final String noIndexReposLabel = "<html><b>" + htmlGrayColor
       + "CAS Index Repository</b></html>";
-
-  // private static final String noIndexReposLabel = indexReposRootLabel;
 
   // The content areas.
   private JTextArea textArea;
@@ -303,8 +268,7 @@ public class MainFrame extends JFrame {
   // Ini file
   private File iniFile = null;
 
-  // Code page support
-  private String codePagePrefsList = null;
+  // Code pages
 
   private List<String> codePages = null;
 
@@ -313,8 +277,6 @@ public class MainFrame extends JFrame {
   private JMenu cpMenu;
 
   private ButtonGroup cpButtons;
-
-  private static final String defaultCodePages = "US-ASCII,ISO-8859-1,UTF-8,UTF-16BE,UTF-16LE,UTF-16";
 
   // Language support
   String languagePrefsList = null;
@@ -349,8 +311,6 @@ public class MainFrame extends JFrame {
 
   private boolean isAnnotationIndex = false;
 
-  // private ArrayList runConfigs;
-
   private CAS cas = null;
 
   private File aeDescriptorFile = null;
@@ -358,8 +318,6 @@ public class MainFrame extends JFrame {
   private AnalysisEngine ae = null;
 
   private File logFile = null;
-
-  // private PrintStream logStream = null;
 
   private Logger log = null;
 
@@ -398,8 +356,6 @@ public class MainFrame extends JFrame {
   private static final String colorDirPref = "colors.dir";
 
   private static final String cpCurrentPref = "cp.selected";
-
-  private static final String cpListPref = "cp.list";
 
   private static final String langCurrentPref = "lang.selected";
 
@@ -444,8 +400,6 @@ public class MainFrame extends JFrame {
   private JPanel sofaSelectionPanel;
 
   private boolean exitOnClose = true;
-
-  // private boolean disableSofaListener = false;
 
   /**
    * Constructor for MainFrame.
@@ -939,42 +893,22 @@ public class MainFrame extends JFrame {
     this.setEnabled(true);
   }
 
-  public void addCodePage(String codePage1) {
-    this.codePage = codePage1;
-    if (!this.codePages.contains(codePage1)) {
-      this.codePages.add(codePage1);
-    }
-    resetCPMenu();
-  }
-
   public void createCodePages() {
+    // Get supported encodings from JVM
+    Map<String, Charset> charsetMap = Charset.availableCharsets();
+    String sysCodePage = Charset.defaultCharset().name();
+    
     this.codePages = new ArrayList<String>();
-    if (this.codePagePrefsList == null) {
-      this.codePagePrefsList = defaultCodePages;
-    }
-    // Add the system code page and use it as default. This is super klunky.
-    String sysCodePage = null;
-    try {
-      File tmpFile = File.createTempFile("uima", "tmp");
-      FileOutputStream fos = new FileOutputStream(tmpFile);
-      OutputStreamWriter writer = new OutputStreamWriter(fos);
-      sysCodePage = writer.getEncoding();
-      writer.close();
-    } catch (IOException e) {
-      // do nothing
-    }
+
     if (sysCodePage != null) {
       this.codePages.add(sysCodePage);
       if (this.codePage == null) {
         this.codePage = sysCodePage;
       }
     }
-    StringTokenizer tok = new StringTokenizer(this.codePagePrefsList, ",");
-    String cp;
-    while (tok.hasMoreTokens()) {
-      cp = tok.nextToken();
-      if (!this.codePages.contains(cp)) {
-        this.codePages.add(cp);
+    for (String charsetName : charsetMap.keySet()) {
+      if (!this.codePages.contains(charsetName)) {
+        this.codePages.add(charsetName);
       }
     }
   }
@@ -985,7 +919,7 @@ public class MainFrame extends JFrame {
 
   private void createCPMenu() {
     createCodePages();
-    this.cpMenu = new JMenu("Code Page");
+    this.cpMenu = new AutoFoldingMenu("Code Page", 20);
     resetCPMenu();
   }
 
@@ -1004,20 +938,7 @@ public class MainFrame extends JFrame {
       this.cpButtons.add(item);
       this.cpMenu.add(item);
     }
-    this.cpMenu.addSeparator();
-    JMenuItem addCPItem = new JMenuItem("Add code page");
-    addCPItem.addActionListener(new AddCPHandler(this));
-    this.cpMenu.add(addCPItem);
-    JMenu removeMenu = new JMenu("Remove code page");
-    for (int i = 0; i < this.codePages.size(); i++) {
-      JMenuItem rmItem = new JMenuItem(this.codePages.get(i));
-      rmItem.addActionListener(new RemoveCodePageHandler(this));
-      removeMenu.add(rmItem);
-    }
-    this.cpMenu.add(removeMenu);
-    JMenuItem restoreDefaultsItem = new JMenuItem("Restore defaults");
-    restoreDefaultsItem.addActionListener(new RestoreCPDefaultsHandler(this));
-    this.cpMenu.add(restoreDefaultsItem);
+    
   }
 
   public void addLanguage(String language1) {
@@ -1696,7 +1617,6 @@ public class MainFrame extends JFrame {
         this.colorSettingsDir = new File(colorDirName);
       }
       this.codePage = this.preferences.getProperty(cpCurrentPref);
-      this.codePagePrefsList = this.preferences.getProperty(cpListPref);
       this.language = this.preferences.getProperty(langCurrentPref);
       this.languagePrefsList = this.preferences.getProperty(langListPref);
       this.dataPathName = this.preferences.getProperty(dataPathPref);
@@ -1812,15 +1732,6 @@ public class MainFrame extends JFrame {
     }
     if (this.codePage != null) {
       this.preferences.setProperty(cpCurrentPref, this.codePage);
-    }
-    if (this.codePages != null && this.codePages.size() > 0) {
-      StringBuffer buf = new StringBuffer();
-      buf.append(this.codePages.get(0));
-      for (int i = 1; i < this.codePages.size(); i++) {
-        buf.append(",");
-        buf.append(this.codePages.get(i));
-      }
-      this.preferences.setProperty(cpListPref, buf.toString());
     }
     if (this.language != null) {
       this.preferences.setProperty(langCurrentPref, this.language);
@@ -2124,10 +2035,6 @@ public class MainFrame extends JFrame {
 
   public void setLanguagePrefsList(String languagePrefsList) {
     this.languagePrefsList = languagePrefsList;
-  }
-
-  public void setCodePagePrefsList(String codePagePrefsList) {
-    this.codePagePrefsList = codePagePrefsList;
   }
 
   /**
