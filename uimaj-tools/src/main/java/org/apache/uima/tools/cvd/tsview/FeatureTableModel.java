@@ -87,7 +87,7 @@ public class FeatureTableModel extends AbstractTableModel {
     if (this.type == null) {
       return null;
     }
-    List feats = this.type.getFeatures();
+    List<?> feats = this.type.getFeatures();
     if (rowIndex < 0 || rowIndex >= feats.size()) {
       return null;
     }

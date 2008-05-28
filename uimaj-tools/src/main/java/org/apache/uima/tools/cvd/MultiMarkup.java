@@ -20,7 +20,8 @@
 package org.apache.uima.tools.cvd;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.swing.text.Style;
 import javax.swing.text.StyleContext;
@@ -64,8 +65,8 @@ public abstract class MultiMarkup {
   }
 
   public static AnnotationExtent[] createAnnotationMarkups(FSIterator it, int textLen,
-          HashMap styleMap) {
-    ArrayList list = new ArrayList();
+          Map<String, Style> styleMap) {
+    List<AnnotExtent> list = new ArrayList<AnnotExtent>();
     list.add(new AnnotExtent(0, textLen, 0, null));
     AnnotationFS fs;
     AnnotExtent ext;
@@ -76,11 +77,11 @@ public abstract class MultiMarkup {
       if (fs.getEnd() == fs.getBegin()) {
         continue;
       }
-      ext = (AnnotExtent) list.get(pos);
+      ext = list.get(pos);
       // Skip extents until we have overlap with the current annotation.
       while (fs.getBegin() >= ext.end) {
         ++pos;
-        ext = (AnnotExtent) list.get(pos);
+        ext = list.get(pos);
       }
       // If the extent starts before the annotation, split the current
       // extent.
@@ -89,7 +90,7 @@ public abstract class MultiMarkup {
         list.add(pos,
                 new AnnotExtent(fs.getBegin(), ext.end, ext.depth + 1, fs.getType().getName()));
         ext.end = fs.getBegin();
-        ext = (AnnotExtent) list.get(pos);
+        ext = list.get(pos);
       } else {
         // Start at same point.
         ++ext.depth;
@@ -110,7 +111,7 @@ public abstract class MultiMarkup {
         tmp = pos;
         while (ext.end < fs.getEnd()) {
           ++tmp;
-          ext = (AnnotExtent) list.get(tmp);
+          ext = list.get(tmp);
           ++ext.depth;
         }
         // We now have an extent that finishes at or after the
@@ -132,20 +133,20 @@ public abstract class MultiMarkup {
     }
     Style unmarkedStyle = StyleContext.getDefaultStyleContext()
             .getStyle(StyleContext.DEFAULT_STYLE);
-    Style annotStyle = (Style) styleMap.get(CAS.TYPE_NAME_ANNOTATION);
+    Style annotStyle = styleMap.get(CAS.TYPE_NAME_ANNOTATION);
     // Copy our internal extents to the public representation.
     final int size = list.size();
     AnnotationExtent[] extentArray = new AnnotationExtent[size];
     Style style;
     for (int i = 0; i < size; i++) {
-      ext = (AnnotExtent) list.get(i);
+      ext = list.get(i);
       switch (ext.depth) {
         case 0: {
           extentArray[i] = new AnnotationExtent(ext.start, ext.end, unmarkedStyle);
           break;
         }
         case 1: {
-          style = (Style) styleMap.get(ext.annotName);
+          style = styleMap.get(ext.annotName);
           if (style == null) {
             style = annotStyle;
           }
@@ -163,7 +164,7 @@ public abstract class MultiMarkup {
 
   public static MarkupExtent[] createMarkupExtents(FSIterator it, int textLen) {
 
-    ArrayList list = new ArrayList();
+    List<Extent> list = new ArrayList<Extent>();
     list.add(new Extent(0, textLen, 0));
     AnnotationFS fs;
     Extent ext;
@@ -174,11 +175,11 @@ public abstract class MultiMarkup {
       if (fs.getEnd() == fs.getBegin()) {
         continue;
       }
-      ext = (Extent) list.get(pos);
+      ext = list.get(pos);
       // Skip extents until we have overlap with the current annotation.
       while (fs.getBegin() >= ext.end) {
         ++pos;
-        ext = (Extent) list.get(pos);
+        ext = list.get(pos);
       }
       // If the extent starts before the annotation, split the current
       // extent.
@@ -186,7 +187,7 @@ public abstract class MultiMarkup {
         ++pos;
         list.add(pos, new Extent(fs.getBegin(), ext.end, ext.depth + 1));
         ext.end = fs.getBegin();
-        ext = (Extent) list.get(pos);
+        ext = list.get(pos);
       } else {
         // Start at same point.
         ++ext.depth;
@@ -207,7 +208,7 @@ public abstract class MultiMarkup {
         tmp = pos;
         while (ext.end < fs.getEnd()) {
           ++tmp;
-          ext = (Extent) list.get(tmp);
+          ext = list.get(tmp);
           ++ext.depth;
         }
         // We now have an extent that finishes at or after the
@@ -231,7 +232,7 @@ public abstract class MultiMarkup {
     final int size = list.size();
     MarkupExtent[] extentArray = new MarkupExtent[size];
     for (int i = 0; i < size; i++) {
-      ext = (Extent) list.get(i);
+      ext = list.get(i);
       extentArray[i] = new MarkupExtent(ext.start, ext.end, ext.depth);
     }
     return extentArray;

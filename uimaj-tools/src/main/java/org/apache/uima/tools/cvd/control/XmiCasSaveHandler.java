@@ -42,6 +42,7 @@ public class XmiCasSaveHandler implements ActionListener {
   private final MainFrame main;
   
   // Default constructor
+  @SuppressWarnings("unused")
   private XmiCasSaveHandler() {
     super();
     this.main = null;

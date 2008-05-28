@@ -20,6 +20,7 @@
 package org.apache.uima.tools.cvd;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * TODO: add type comment for <code>FSTreeNode</code>.
@@ -28,7 +29,7 @@ import java.util.ArrayList;
  */
 public abstract class FSTreeNode {
 
-  protected ArrayList children = null;
+  protected List<FSTreeNode> children = null;
 
   /**
    * 
@@ -39,14 +40,14 @@ public abstract class FSTreeNode {
   }
 
   void removeAllChildren() {
-    this.children = new ArrayList();
+    this.children = new ArrayList<FSTreeNode>();
   }
 
-  void setChildren(ArrayList children) {
+  void setChildren(List<FSTreeNode> children) {
     this.children = children;
   }
 
-  ArrayList getChildren() {
+  List<FSTreeNode> getChildren() {
     return this.children;
   }
 

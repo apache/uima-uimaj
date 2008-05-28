@@ -24,8 +24,8 @@ import java.awt.GraphicsConfiguration;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
@@ -66,7 +66,7 @@ public class AnnotationDisplayCustomizationFrame extends JFrame {
      */
     public void valueChanged(TreeSelectionEvent event) {
       DefaultMutableTreeNode node = (DefaultMutableTreeNode) AnnotationDisplayCustomizationFrame.this.tree
-              .getLastSelectedPathComponent();
+          .getLastSelectedPathComponent();
       String typeName = (String) node.getUserObject();
       if (typeName.equals(AnnotationDisplayCustomizationFrame.this.currentTypeName)) {
         return;
@@ -80,7 +80,7 @@ public class AnnotationDisplayCustomizationFrame extends JFrame {
 
     public void actionPerformed(ActionEvent event) {
       Color color = JColorChooser.showDialog(AnnotationDisplayCustomizationFrame.this,
-              "Choose color", AnnotationDisplayCustomizationFrame.this.bgColor);
+          "Choose color", AnnotationDisplayCustomizationFrame.this.bgColor);
       if (color != null) {
         AnnotationDisplayCustomizationFrame.this.bgColor = color;
         AnnotationDisplayCustomizationFrame.this.bgIcon.setColor(color);
@@ -97,7 +97,7 @@ public class AnnotationDisplayCustomizationFrame extends JFrame {
 
     public void actionPerformed(ActionEvent event) {
       Color color = JColorChooser.showDialog(AnnotationDisplayCustomizationFrame.this,
-              "Choose color", AnnotationDisplayCustomizationFrame.this.fgColor);
+          "Choose color", AnnotationDisplayCustomizationFrame.this.fgColor);
       if (color != null) {
         AnnotationDisplayCustomizationFrame.this.fgColor = color;
         AnnotationDisplayCustomizationFrame.this.fgIcon.setColor(color);
@@ -113,20 +113,19 @@ public class AnnotationDisplayCustomizationFrame extends JFrame {
   private class AcceptButtonHandler implements ActionListener {
 
     public void actionPerformed(ActionEvent event) {
-      Style style = (Style) AnnotationDisplayCustomizationFrame.this.styleMap
-              .get(AnnotationDisplayCustomizationFrame.this.currentTypeName);
+      Style style = AnnotationDisplayCustomizationFrame.this.styleMap
+          .get(AnnotationDisplayCustomizationFrame.this.currentTypeName);
       if (style == null) {
         style = AnnotationDisplayCustomizationFrame.this.textPane.addStyle(
-                AnnotationDisplayCustomizationFrame.this.currentTypeName,
-                (Style) AnnotationDisplayCustomizationFrame.this.styleMap
-                        .get(CAS.TYPE_NAME_ANNOTATION));
+            AnnotationDisplayCustomizationFrame.this.currentTypeName,
+            AnnotationDisplayCustomizationFrame.this.styleMap.get(CAS.TYPE_NAME_ANNOTATION));
       }
       StyleConstants.setForeground(style, StyleConstants
-              .getForeground(AnnotationDisplayCustomizationFrame.this.currentStyle));
+          .getForeground(AnnotationDisplayCustomizationFrame.this.currentStyle));
       StyleConstants.setBackground(style, StyleConstants
-              .getBackground(AnnotationDisplayCustomizationFrame.this.currentStyle));
+          .getBackground(AnnotationDisplayCustomizationFrame.this.currentStyle));
       AnnotationDisplayCustomizationFrame.this.styleMap.put(
-              AnnotationDisplayCustomizationFrame.this.currentTypeName, style);
+          AnnotationDisplayCustomizationFrame.this.currentTypeName, style);
       enableButtons(false);
       AnnotationDisplayCustomizationFrame.this.repaint();
     }
@@ -136,19 +135,18 @@ public class AnnotationDisplayCustomizationFrame extends JFrame {
   private class CancelButtonHandler implements ActionListener {
 
     public void actionPerformed(ActionEvent event) {
-      Style style = (Style) AnnotationDisplayCustomizationFrame.this.styleMap
-              .get(AnnotationDisplayCustomizationFrame.this.currentTypeName);
+      Style style = AnnotationDisplayCustomizationFrame.this.styleMap
+          .get(AnnotationDisplayCustomizationFrame.this.currentTypeName);
       if (style == null) {
-        style = (Style) AnnotationDisplayCustomizationFrame.this.styleMap
-                .get(CAS.TYPE_NAME_ANNOTATION);
+        style = AnnotationDisplayCustomizationFrame.this.styleMap.get(CAS.TYPE_NAME_ANNOTATION);
       }
       // assert(style != null);
       AnnotationDisplayCustomizationFrame.this.fgColor = StyleConstants.getForeground(style);
       AnnotationDisplayCustomizationFrame.this.fgIcon
-              .setColor(AnnotationDisplayCustomizationFrame.this.fgColor);
+          .setColor(AnnotationDisplayCustomizationFrame.this.fgColor);
       AnnotationDisplayCustomizationFrame.this.bgColor = StyleConstants.getBackground(style);
       AnnotationDisplayCustomizationFrame.this.bgIcon
-              .setColor(AnnotationDisplayCustomizationFrame.this.bgColor);
+          .setColor(AnnotationDisplayCustomizationFrame.this.bgColor);
       setCurrentStyle(style);
       setTextPane();
       enableButtons(false);
@@ -185,7 +183,7 @@ public class AnnotationDisplayCustomizationFrame extends JFrame {
 
   private JButton cancelButton;
 
-  private HashMap styleMap;
+  private Map<String, Style> styleMap;
 
   private JTree tree;
 
@@ -231,7 +229,7 @@ public class AnnotationDisplayCustomizationFrame extends JFrame {
     this.cancelButton.setEnabled(flag);
   }
 
-  public void init(HashMap styleMap1, CAS cas) {
+  public void init(Map<String, Style> styleMap1, CAS cas) {
     this.styleMap = styleMap1;
     this.splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
     this.setContentPane(this.splitPane);
@@ -245,11 +243,11 @@ public class AnnotationDisplayCustomizationFrame extends JFrame {
   private JPanel createCustomizationPanel(String typeName) {
     this.currentTypeName = typeName;
     String defaultAnnotStyleName = CAS.TYPE_NAME_ANNOTATION;
-    Style defaultAnnotStyle = (Style) this.styleMap.get(defaultAnnotStyleName);
+    Style defaultAnnotStyle = this.styleMap.get(defaultAnnotStyleName);
     GridLayout layout = new GridLayout(0, 1);
     JPanel topPanel = new JPanel(layout);
     this.textPane = new JTextPane();
-    Style style = (Style) this.styleMap.get(typeName);
+    Style style = this.styleMap.get(typeName);
     if (style == null) {
       style = defaultAnnotStyle;
     }
@@ -272,8 +270,8 @@ public class AnnotationDisplayCustomizationFrame extends JFrame {
 
   private void setCustomizationPanel(String typeName) {
     this.currentTypeName = typeName;
-    Style defaultAnnotStyle = (Style) this.styleMap.get(CAS.TYPE_NAME_ANNOTATION);
-    Style style = (Style) this.styleMap.get(typeName);
+    Style defaultAnnotStyle = this.styleMap.get(CAS.TYPE_NAME_ANNOTATION);
+    Style style = this.styleMap.get(typeName);
     if (style == null) {
       style = defaultAnnotStyle;
     }
@@ -344,12 +342,13 @@ public class AnnotationDisplayCustomizationFrame extends JFrame {
     return treeModel;
   }
 
+  @SuppressWarnings("unchecked")
   private static void addChildren(DefaultMutableTreeNode node, Type type, TypeSystem ts) {
-    List dtrs = ts.getDirectSubtypes(type);
+    List<Type> dtrs = ts.getDirectSubtypes(type);
     DefaultMutableTreeNode dtrNode;
     Type dtrType;
     for (int i = 0; i < dtrs.size(); i++) {
-      dtrType = (Type) dtrs.get(i);
+      dtrType = dtrs.get(i);
       dtrNode = new DefaultMutableTreeNode(dtrType.getName());
       node.add(dtrNode);
       addChildren(dtrNode, dtrType, ts);

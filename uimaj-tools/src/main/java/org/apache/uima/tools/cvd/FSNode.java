@@ -133,7 +133,7 @@ public class FSNode extends FSTreeNode {
       } else {
         nodeClass1 = FSNode.STD_FS;
       }
-      ArrayList arrayNodes = new ArrayList(arrayLength);
+      List<FSNode> arrayNodes = new ArrayList<FSNode>(arrayLength);
       if (nodeClass1 == INT_FS || nodeClass1 == FLOAT_FS || nodeClass1 == STRING_FS
               || nodeClass1 == STD_FS) {
         for (int i = 0; i < arrayLength; i++) {
@@ -179,8 +179,8 @@ public class FSNode extends FSTreeNode {
       }
       this.children = FSTreeModel.createArrayChildren(0, arrayLength, arrayNodes, this.fSTreeModel);
     } else {
-      this.children = new ArrayList();
-      List feats = type.getFeatures();
+      this.children = new ArrayList<FSTreeNode>();
+      List<?> feats = type.getFeatures();
       for (int i = 0; i < feats.size(); i++) {
         FeatureImpl feat1 = (FeatureImpl) feats.get(i);
         long featAddr = cas.getHeapValue((int) this.addr + cas.getFeatureOffset(feat1.getCode()));

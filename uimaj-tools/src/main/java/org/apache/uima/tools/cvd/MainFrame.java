@@ -24,7 +24,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.GraphicsConfiguration;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -46,6 +45,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.logging.LogManager;
@@ -166,7 +166,7 @@ public class MainFrame extends JFrame {
 
   private static final long serialVersionUID = -1357410768440678886L;
 
-  public static ArrayList logLevels = new ArrayList(9);
+  public static List<Level> logLevels = new ArrayList<Level>(9);
   static {
     logLevels.add(Level.OFF);
     logLevels.add(Level.SEVERE);
@@ -306,7 +306,7 @@ public class MainFrame extends JFrame {
   // Code page support
   private String codePagePrefsList = null;
 
-  private ArrayList codePages = null;
+  private List<String> codePages = null;
 
   private String codePage = null;
 
@@ -320,7 +320,7 @@ public class MainFrame extends JFrame {
   String languagePrefsList = null;
 
   // private String defaultLanguagePref = null;
-  private ArrayList languages = null;
+  private List<String> languages = null;
 
   private JMenu langMenu;
 
@@ -419,7 +419,7 @@ public class MainFrame extends JFrame {
 
   public static final String DEFAULT_STYLE_NAME = "defaultStyle";
 
-  private HashMap styleMap = new HashMap();
+  private Map<String, Style> styleMap = new HashMap<String, Style>();
 
   // For recently used text and descriptor files.
   private static final int maxRecentSize = 8;
@@ -433,9 +433,9 @@ public class MainFrame extends JFrame {
   private final List<String> descFileNameList = new ArrayList<String>();
 
   // For cursor handling (busy cursor). Is there a better way?
-  private ArrayList cursorOwningComponents = new ArrayList();
+  private List<Component> cursorOwningComponents = new ArrayList<Component>();
 
-  private ArrayList cursorCache = null;
+  private List<Cursor> cursorCache = null;
 
   private String dataPathName;
 
@@ -757,7 +757,7 @@ public class MainFrame extends JFrame {
     this.editMenu.addSeparator();
     HashMap<Object, Action> actionMap = createEditActionMap();
     // Cut
-    this.cutAction = (Action) actionMap.get(DefaultEditorKit.cutAction);
+    this.cutAction = actionMap.get(DefaultEditorKit.cutAction);
     this.cutAction.putValue(Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_T));
     this.cutAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_X,
         InputEvent.CTRL_MASK));
@@ -766,7 +766,7 @@ public class MainFrame extends JFrame {
     cutItem.setText("Cut");
     this.editMenu.add(cutItem);
     // Copy
-    this.copyAction = (Action) actionMap.get(DefaultEditorKit.copyAction);
+    this.copyAction = actionMap.get(DefaultEditorKit.copyAction);
     this.copyAction.putValue(Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_C));
     this.copyAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_C,
         InputEvent.CTRL_MASK));
@@ -775,7 +775,7 @@ public class MainFrame extends JFrame {
     copyItem.setText("Copy");
     this.editMenu.add(copyItem);
     // Paste
-    Action pasteAction = (Action) actionMap.get(DefaultEditorKit.pasteAction);
+    Action pasteAction = actionMap.get(DefaultEditorKit.pasteAction);
     pasteAction.putValue(Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_P));
     pasteAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_V,
         InputEvent.CTRL_MASK));
@@ -907,7 +907,7 @@ public class MainFrame extends JFrame {
   }
 
   public final void setEnableCasFileReadingAndWriting() {
-    final boolean enable = (this.cas != null);
+    final boolean enable = this.cas != null;
     this.xcasReadItem.setEnabled(enable);
     this.xmiCasReadItem.setEnabled(enable);
     this.xcasWriteItem.setEnabled(enable);
@@ -920,9 +920,9 @@ public class MainFrame extends JFrame {
 
   private final void setWaitCursor() {
     this.setEnabled(false);
-    this.cursorCache = new ArrayList();
+    this.cursorCache = new ArrayList<Cursor>();
     for (int i = 0; i < this.cursorOwningComponents.size(); i++) {
-      Component comp = (Component) this.cursorOwningComponents.get(i);
+      Component comp = this.cursorOwningComponents.get(i);
       this.cursorCache.add(comp.getCursor());
       comp.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
     }
@@ -933,8 +933,8 @@ public class MainFrame extends JFrame {
       return;
     }
     for (int i = 0; i < this.cursorOwningComponents.size(); i++) {
-      Component comp = (Component) this.cursorOwningComponents.get(i);
-      comp.setCursor((Cursor) this.cursorCache.get(i));
+      Component comp = this.cursorOwningComponents.get(i);
+      comp.setCursor(this.cursorCache.get(i));
     }
     this.setEnabled(true);
   }
@@ -948,7 +948,7 @@ public class MainFrame extends JFrame {
   }
 
   public void createCodePages() {
-    this.codePages = new ArrayList();
+    this.codePages = new ArrayList<String>();
     if (this.codePagePrefsList == null) {
       this.codePagePrefsList = defaultCodePages;
     }
@@ -995,7 +995,7 @@ public class MainFrame extends JFrame {
     JRadioButtonMenuItem item;
     String cp;
     for (int i = 0; i < this.codePages.size(); i++) {
-      cp = (String) this.codePages.get(i);
+      cp = this.codePages.get(i);
       item = new JRadioButtonMenuItem(cp);
       if (cp.equals(this.codePage)) {
         item.setSelected(true);
@@ -1010,7 +1010,7 @@ public class MainFrame extends JFrame {
     this.cpMenu.add(addCPItem);
     JMenu removeMenu = new JMenu("Remove code page");
     for (int i = 0; i < this.codePages.size(); i++) {
-      JMenuItem rmItem = new JMenuItem((String) this.codePages.get(i));
+      JMenuItem rmItem = new JMenuItem(this.codePages.get(i));
       rmItem.addActionListener(new RemoveCodePageHandler(this));
       removeMenu.add(rmItem);
     }
@@ -1040,7 +1040,7 @@ public class MainFrame extends JFrame {
     JRadioButtonMenuItem item;
     String lang;
     for (int i = 0; i < this.languages.size(); i++) {
-      lang = (String) this.languages.get(i);
+      lang = this.languages.get(i);
       item = new JRadioButtonMenuItem(lang);
       if (lang.equals(this.language)) {
         item.setSelected(true);
@@ -1055,7 +1055,7 @@ public class MainFrame extends JFrame {
     this.langMenu.add(addLangItem);
     JMenu removeMenu = new JMenu("Remove language");
     for (int i = 0; i < this.languages.size(); i++) {
-      JMenuItem rmItem = new JMenuItem((String) this.languages.get(i));
+      JMenuItem rmItem = new JMenuItem(this.languages.get(i));
       rmItem.addActionListener(new RemoveLanguageHandler(this));
       removeMenu.add(rmItem);
     }
@@ -1066,7 +1066,7 @@ public class MainFrame extends JFrame {
   }
 
   public void createLanguages() {
-    this.languages = new ArrayList();
+    this.languages = new ArrayList<String>();
     if (this.languagePrefsList == null) {
       this.languagePrefsList = defaultLanguages;
     }
@@ -1154,9 +1154,9 @@ public class MainFrame extends JFrame {
     String curLogLevel = LogManager.getLogManager().getProperty(".level");
 
     // create log config menu with available log levels
-    Iterator levelIt = MainFrame.logLevels.iterator();
+    Iterator<Level> levelIt = MainFrame.logLevels.iterator();
     while (levelIt.hasNext()) {
-      Level level = (Level) levelIt.next();
+      Level level = levelIt.next();
       JRadioButtonMenuItem item = new JRadioButtonMenuItem(level.toString());
       // select current log level
       if (level.toString().equals(curLogLevel)) {
@@ -1248,7 +1248,7 @@ public class MainFrame extends JFrame {
       this.caretStatus.setText("Selection: " + from + " - " + to);
     }
     this.statusPanel.revalidate();
-    boolean enable = (dot != mark);
+    boolean enable = dot != mark;
     this.cutAction.setEnabled(enable);
     this.copyAction.setEnabled(enable);
   }
@@ -1421,14 +1421,14 @@ public class MainFrame extends JFrame {
 
   private final void initFileLists() {
     int numFiles = this.textFileNameList.size();
-    int max = (numFiles < maxRecentSize) ? numFiles : maxRecentSize;
+    int max = numFiles < maxRecentSize ? numFiles : maxRecentSize;
     for (int i = 0; i < max; i++) {
       File file = new File(this.textFileNameList.get(i));
       this.recentTextFileMenu.add(createRecentTextFileItem(i + 1, file));
       this.recentTextFiles.appendFile(file);
     }
     numFiles = this.descFileNameList.size();
-    max = (numFiles < maxRecentSize) ? numFiles : maxRecentSize;
+    max = numFiles < maxRecentSize ? numFiles : maxRecentSize;
     for (int i = 0; i < max; i++) {
       File file = new File(this.descFileNameList.get(i));
       this.recentDescFileMenu.add(createRecentDescFileItem(i + 1, file));
@@ -1521,7 +1521,7 @@ public class MainFrame extends JFrame {
       int currentViewID = this.sofaSelectionComboBox.getSelectedIndex();
       this.sofaSelectionComboBox.removeAllItems();
       this.sofaSelectionComboBox.addItem(CAS.NAME_DEFAULT_SOFA);
-      Iterator sofas = ((CASImpl) MainFrame.this.cas).getBaseCAS().getSofaIterator();
+      Iterator<?> sofas = ((CASImpl) MainFrame.this.cas).getBaseCAS().getSofaIterator();
       Feature sofaIdFeat = MainFrame.this.cas.getTypeSystem().getFeatureByFullName(
           CAS.FEATURE_FULL_NAME_SOFAID);
       boolean nonDefaultSofaFound = false;
@@ -1585,6 +1585,7 @@ public class MainFrame extends JFrame {
     ((FSTreeModel) this.fsTree.getModel()).reset();
   }
 
+  @SuppressWarnings("unchecked")
   public void updateIndexTree(boolean useCAS) {
     deleteFSTree();
     DefaultMutableTreeNode root = (DefaultMutableTreeNode) this.indexTree.getModel().getRoot();
@@ -1596,9 +1597,9 @@ public class MainFrame extends JFrame {
     root.removeAllChildren();
     if (this.cas != null && useCAS) {
       FSIndexRepository ir = this.cas.getIndexRepository();
-      Iterator it = ir.getLabels();
+      Iterator<String> it = ir.getLabels();
       while (it.hasNext()) {
-        String label = (String) it.next();
+        String label = it.next();
         FSIndex index1 = ir.getIndex(label);
         IndexTreeNode nodeObj = new IndexTreeNode(label, index1.getType(), index1.size());
         DefaultMutableTreeNode node = new DefaultMutableTreeNode(nodeObj);
@@ -1626,12 +1627,12 @@ public class MainFrame extends JFrame {
     treeModel.update(indexName, index1, this.cas);
   }
 
-  private ArrayList getAnnotationsAtPos(int pos, ArrayList annots) {
-    ArrayList res = new ArrayList();
+  private ArrayList<FSNode> getAnnotationsAtPos(int pos, List<FSNode> annots) {
+    ArrayList<FSNode> res = new ArrayList<FSNode>();
     FSNode annot;
     final int max = annots.size();
     for (int i = 0; i < max; i++) {
-      annot = (FSNode) annots.get(i);
+      annot = annots.get(i);
       if (annot.getStart() > pos) {
         break;
       }
@@ -1642,18 +1643,19 @@ public class MainFrame extends JFrame {
     return res;
   }
 
+  @SuppressWarnings("unchecked")
   private DefaultMutableTreeNode createTypeTree(Type type, TypeSystem ts, String label,
       FSIndexRepository ir) {
     int size = ir.getIndex(label, type).size();
     TypeTreeNode typeNode = new TypeTreeNode(type, label, size);
     DefaultMutableTreeNode node = new DefaultMutableTreeNode(typeNode);
-    List types = ts.getDirectSubtypes(type);
+    List<Type> types = ts.getDirectSubtypes(type);
     final int max = types.size();
     for (int i = 0; i < max; i++) {
-      if (ir.getIndex(label, (Type) types.get(i)) == null) {
+      if (ir.getIndex(label, types.get(i)) == null) {
         continue;
       }
-      DefaultMutableTreeNode child = createTypeTree((Type) types.get(i), ts, label, ir);
+      DefaultMutableTreeNode child = createTypeTree(types.get(i), ts, label, ir);
       node.add(child);
     }
     return node;
@@ -1734,7 +1736,7 @@ public class MainFrame extends JFrame {
     }
     final String width = this.preferences.getProperty(propPrefix + widthSuffix);
     final String height = this.preferences.getProperty(propPrefix + heightSuffix);
-    if ((height == null) || (width == null)) {
+    if (height == null || width == null) {
       return null;
     }
     double x = 0.0;
@@ -1813,10 +1815,10 @@ public class MainFrame extends JFrame {
     }
     if (this.codePages != null && this.codePages.size() > 0) {
       StringBuffer buf = new StringBuffer();
-      buf.append((String) this.codePages.get(0));
+      buf.append(this.codePages.get(0));
       for (int i = 1; i < this.codePages.size(); i++) {
         buf.append(",");
-        buf.append((String) this.codePages.get(i));
+        buf.append(this.codePages.get(i));
       }
       this.preferences.setProperty(cpListPref, buf.toString());
     }
@@ -1825,10 +1827,10 @@ public class MainFrame extends JFrame {
     }
     if (this.languages != null && this.languages.size() > 0) {
       StringBuffer buf = new StringBuffer();
-      buf.append((String) this.languages.get(0));
+      buf.append(this.languages.get(0));
       for (int i = 1; i < this.languages.size(); i++) {
         buf.append(",");
-        buf.append((String) this.languages.get(i));
+        buf.append(this.languages.get(i));
       }
       this.preferences.setProperty(langListPref, buf.toString());
     }
@@ -1843,13 +1845,13 @@ public class MainFrame extends JFrame {
 
   public void saveColorPreferences(File file) throws IOException {
     Properties prefs1 = new Properties();
-    Iterator it = this.styleMap.keySet().iterator();
+    Iterator<String> it = this.styleMap.keySet().iterator();
     String type;
     Style style;
     Color fg, bg;
     while (it.hasNext()) {
-      type = (String) it.next();
-      style = (Style) this.styleMap.get(type);
+      type = it.next();
+      style = this.styleMap.get(type);
       fg = StyleConstants.getForeground(style);
       bg = StyleConstants.getBackground(style);
       prefs1.setProperty(type, Integer.toString(fg.getRGB()) + "+" + Integer.toString(bg.getRGB()));
@@ -1859,7 +1861,7 @@ public class MainFrame extends JFrame {
   }
 
   public void loadColorPreferences(File file) throws IOException {
-    Style parent = (Style) this.styleMap.get(CAS.TYPE_NAME_ANNOTATION);
+    Style parent = this.styleMap.get(CAS.TYPE_NAME_ANNOTATION);
     StyleContext sc = StyleContext.getDefaultStyleContext();
     Properties prefs1 = new Properties();
     FileInputStream in = new FileInputStream(file);
@@ -1868,7 +1870,7 @@ public class MainFrame extends JFrame {
     Style style;
     Color color;
     int pos;
-    Iterator it = prefs1.keySet().iterator();
+    Iterator<?> it = prefs1.keySet().iterator();
     while (it.hasNext()) {
       typeName = (String) it.next();
       value = prefs1.getProperty(typeName);
@@ -1914,6 +1916,7 @@ public class MainFrame extends JFrame {
     this.textArea.getActionMap().put(textContextActionName, textContextAction);
   }
 
+  @SuppressWarnings("unchecked")
   public void showTextPopup(int x, int y) {
     final int pos = this.textArea.getCaretPosition();
     this.textPopup.removeAll();
@@ -1922,10 +1925,10 @@ public class MainFrame extends JFrame {
     this.textPopup.add(item);
     FSNode posAnnot;
     if (this.isAnnotationIndex) {
-      ArrayList annots = ((FSTreeModel) this.fsTree.getModel()).getFSs();
-      ArrayList selAnnots = getAnnotationsAtPos(pos, annots);
+      List<FSNode> annots = ((FSTreeModel) this.fsTree.getModel()).getFSs();
+      ArrayList<FSNode> selAnnots = getAnnotationsAtPos(pos, annots);
       for (int i = 0; i < selAnnots.size(); i++) {
-        posAnnot = (FSNode) selAnnots.get(i);
+        posAnnot = selAnnots.get(i);
         item = new JMenuItem("[" + posAnnot.getArrayPos() + "] = " + posAnnot.getType().getName());
         item.addActionListener(new PopupHandler(this, posAnnot.getArrayPos()));
         this.textPopup.add(item);
@@ -1970,7 +1973,7 @@ public class MainFrame extends JFrame {
     return this.index;
   }
 
-  public HashMap getStyleMap() {
+  public Map<String, Style> getStyleMap() {
     return this.styleMap;
   }
 
@@ -2040,7 +2043,7 @@ public class MainFrame extends JFrame {
 
   public void setRunOnCasEnabled() {
     // Enable the "Run on CAS" menu item when we have both an AE and a CAS.
-    this.runOnCasMenuItem.setEnabled((this.ae != null) && (this.cas != null));
+    this.runOnCasMenuItem.setEnabled(this.ae != null && this.cas != null);
   }
 
   public void destroyAe() {
@@ -2099,7 +2102,7 @@ public class MainFrame extends JFrame {
     this.codePage = codePage;
   }
 
-  public ArrayList getCodePages() {
+  public List<String> getCodePages() {
     return this.codePages;
   }
 
@@ -2111,7 +2114,7 @@ public class MainFrame extends JFrame {
     this.language = language;
   }
 
-  public ArrayList getLanguages() {
+  public List<String> getLanguages() {
     return this.languages;
   }
 
@@ -2136,7 +2139,7 @@ public class MainFrame extends JFrame {
     String currentView = (String) this.sofaSelectionComboBox.getSelectedItem();
     this.sofaSelectionComboBox.removeAllItems();
     this.sofaSelectionComboBox.addItem(CAS.NAME_DEFAULT_SOFA);
-    Iterator sofas = ((CASImpl) getCas()).getBaseCAS().getSofaIterator();
+    Iterator<?> sofas = ((CASImpl) getCas()).getBaseCAS().getSofaIterator();
     Feature sofaIdFeat = getCas().getTypeSystem()
         .getFeatureByFullName(CAS.FEATURE_FULL_NAME_SOFAID);
     boolean nonDefaultSofaFound = false;

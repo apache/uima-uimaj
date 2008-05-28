@@ -183,7 +183,7 @@ public class MainFrame extends JFrame {
 
   private DefaultMutableTreeNode createTypeTree(Type type) {
     DefaultMutableTreeNode node = new DefaultMutableTreeNode(type);
-    List types = this.ts.getDirectSubtypes(type);
+    List<?> types = this.ts.getDirectSubtypes(type);
     final int max = types.size();
     for (int i = 0; i < max; i++) {
       DefaultMutableTreeNode child = createTypeTree((Type) types.get(i));
@@ -200,7 +200,7 @@ public class MainFrame extends JFrame {
     rootNode.removeAllChildren();
     Type top = this.ts.getTopType();
     rootNode.setUserObject(top);
-    List types = this.ts.getDirectSubtypes(top);
+    List<?> types = this.ts.getDirectSubtypes(top);
     for (int i = 0; i < types.size(); i++) {
       rootNode.add(createTypeTree((Type) types.get(i)));
     }
@@ -219,14 +219,7 @@ public class MainFrame extends JFrame {
   }
 
   public static TreeModelListener[] getTreeModelListeners(DefaultTreeModel model) {
-    ClassLoader cl = ClassLoader.getSystemClassLoader();
-    Class tmlClass = null;
-    try {
-      tmlClass = cl.loadClass("javax.swing.event.TreeModelListener");
-    } catch (ClassNotFoundException e) {
-      return new TreeModelListener[0];
-    }
-    EventListener[] eventListeners = model.getListeners(tmlClass);
+    EventListener[] eventListeners = model.getListeners(TreeModelListener.class);
     TreeModelListener[] modelListeners = new TreeModelListener[eventListeners.length];
     for (int i = 0; i < modelListeners.length; i++) {
       modelListeners[i] = (TreeModelListener) eventListeners[i];

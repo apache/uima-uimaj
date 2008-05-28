@@ -39,7 +39,7 @@ public class SetLogConfigHandler implements ActionListener {
 
     // set UIMA framework log level with the given value
     for (int i = 0; i < MainFrame.logLevels.size(); i++) {
-      Level level = (Level) MainFrame.logLevels.get(i);
+      Level level = MainFrame.logLevels.get(i);
       // search for selected log level
       if (level.toString().equals(item.getText())) {
         UIMAFramework.getLogger().setLevel(level);

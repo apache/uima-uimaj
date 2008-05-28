@@ -20,6 +20,7 @@
 package org.apache.uima.tools.cvd;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
@@ -32,8 +33,8 @@ import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
-import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.FeatureImpl;
 
 /**
  * Insert comment for enclosing_type here.
@@ -46,9 +47,9 @@ public class FSTreeModel implements TreeModel {
 
   private CASImpl cas;
 
-  private ArrayList treeModelListeners = new ArrayList();
+  private List<TreeModelListener> treeModelListeners = new ArrayList<TreeModelListener>();
 
-  private ArrayList fss;
+  private List<FSNode> fss;
 
   private static final String defaultRootString = "<html><b>" + MainFrame.htmlGrayColor
           + "FS List - no selection</b></html>";
@@ -61,7 +62,7 @@ public class FSTreeModel implements TreeModel {
   public FSTreeModel() {
     super();
     this.root = new FSNode(this, FSNode.DISPLAY_NODE, 0, null);
-    this.root.setChildren(new ArrayList());
+    this.root.setChildren(new ArrayList<FSTreeNode>());
   }
 
   public void update(String indexName, FSIndex index, CAS cas1) {
@@ -71,7 +72,7 @@ public class FSTreeModel implements TreeModel {
     this.rootString = "<html><font color=green>" + indexName + "</font> - <font color=blue>"
             + index.getType().getName() + "</font> [" + size + "]</html>";
     this.root = new FSNode(this, FSNode.DISPLAY_NODE, 0, null);
-    this.fss = new ArrayList();
+    this.fss = new ArrayList<FSNode>();
     FSIterator it = index.iterator();
     int count = 0;
     for (it.moveToFirst(); it.isValid(); it.moveToNext()) {
@@ -79,13 +80,13 @@ public class FSTreeModel implements TreeModel {
       this.fss.add(new FSNode(this, getNodeType(fs.getType()), fs.hashCode(), count));
       ++count;
     }
-    ArrayList kids = createArrayChildren(0, size, this.fss, this);
+    List<FSTreeNode> kids = createArrayChildren(0, size, this.fss, this);
     this.root.setChildren(kids);
     Object[] path = new Object[1];
     path[0] = this.root;
     TreeModelEvent event = new TreeModelEvent(this.root, path);
     for (int i = 0; i < this.treeModelListeners.size(); i++) {
-      ((TreeModelListener) this.treeModelListeners.get(i)).treeStructureChanged(event);
+      this.treeModelListeners.get(i).treeStructureChanged(event);
     }
   }
 
@@ -96,12 +97,12 @@ public class FSTreeModel implements TreeModel {
     path[0] = this.root;
     TreeModelEvent event = new TreeModelEvent(this.root, path);
     for (int i = 0; i < this.treeModelListeners.size(); i++) {
-      ((TreeModelListener) this.treeModelListeners.get(i)).treeStructureChanged(event);
+      this.treeModelListeners.get(i).treeStructureChanged(event);
     }
 
   }
 
-  public ArrayList getFSs() {
+  public List<FSNode> getFSs() {
     return this.fss;
   }
 
@@ -231,8 +232,8 @@ public class FSTreeModel implements TreeModel {
     return this.rootString;
   }
 
-  static ArrayList createArrayChildren(int start, int end, ArrayList array, FSTreeModel model) {
-    ArrayList kids = new ArrayList();
+  static List<FSTreeNode> createArrayChildren(int start, int end, List<FSNode> array, FSTreeModel model) {
+    ArrayList<FSTreeNode> kids = new ArrayList<FSTreeNode>();
     final int size = end - start;
     if (size <= ArrayNode.CUTOFF) {
       kids.ensureCapacity(size);
@@ -249,7 +250,7 @@ public class FSTreeModel implements TreeModel {
         start_i = (start + (i * divisor));
         end_i = start_i + divisor;
         ArrayNode node = new ArrayNode(start_i, end_i - 1);
-        ArrayList grandkids = createArrayChildren(start_i, end_i, array, model);
+        List<FSTreeNode> grandkids = createArrayChildren(start_i, end_i, array, model);
         node.setChildren(grandkids);
         kids.add(node);
       }
@@ -270,21 +271,21 @@ public class FSTreeModel implements TreeModel {
   }
 
   public TreePath pathToNode(int fsNum) {
-    ArrayList p = new ArrayList();
+    List<FSTreeNode> p = new ArrayList<FSTreeNode>();
     p.add(this.root);
     getPathToNode(fsNum, this.root.getChildren(), p);
     TreePath path = new TreePath(p.toArray());
     return path;
   }
 
-  private void getPathToNode(int n, ArrayList dtrs, ArrayList path) {
+  private void getPathToNode(int n, List<FSTreeNode> dtrs, List<FSTreeNode> path) {
     // Do a linear search. The branching factor is small, so this should not
     // be a problem.
     FSTreeNode node;
     ArrayNode arrayNode;
     FSNode fsNode;
     for (int i = 0; i < dtrs.size(); i++) {
-      node = (FSTreeNode) dtrs.get(i);
+      node = dtrs.get(i);
       if (node instanceof ArrayNode) {
         arrayNode = (ArrayNode) node;
         if (arrayNode.getEnd() >= n) {
