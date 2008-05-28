@@ -20,6 +20,7 @@
 package org.apache.uima.internal.util;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 
 /**
  * The <code>BrowserUtil</code> class provides one static method -
@@ -36,7 +37,7 @@ public class BrowserUtil {
   private static int __osId;
 
   /** The command that launches system browser */
-  private static String __browserLauncher;
+  private static String[] __browserLauncher;
 
   /** JVM constant for any Windows NT JVM */
   private static final int WINDOWS_NT = 0;
@@ -44,11 +45,11 @@ public class BrowserUtil {
   /** JVM constant for any Windows 9x JVM */
   private static final int WINDOWS_9x = 1;
 
-  /** JVM constant for Linux JVM */
-  private static final int LINUX = 2;
+  /** JVM constant for MacOS JVM */
+  private static final int MAC_OS = 2;
 
   /** JVM constant for any other platform */
-  private static final int OTHER = -1;
+  private static final int OTHER = 3;
 
   /**
    * The first parameter that needs to be passed into Runtime.exec() to open the default web browser
@@ -66,25 +67,6 @@ public class BrowserUtil {
   private static final String THIRD_WINDOWS_PARAMETER = "\"\"";
 
   /**
-   * The shell parameters for Mozilla, which assumes that the 'default' Mozilla profile exists.
-   */
-  private static final String MOZILLA_REMOTE_PARAMETER = "-remote";
-
-  private static final String MOZILLA_OPEN_PARAMETER_START = "openURL(";
-
-  private static final String MOZILLA_OPEN_PARAMETER_END = ")";
-
-  /**
-   * The shell parameters for Netscape that opens a given URL in an already-open copy of Netscape on
-   * many command-line systems.
-   */
-  private static final String NETSCAPE_REMOTE_PARAMETER = "-remote";
-
-  private static final String NETSCAPE_OPEN_PARAMETER_START = "'openURL(";
-
-  private static final String NETSCAPE_OPEN_PARAMETER_END = ")'";
-
-  /**
    * An initialization block that determines the operating system and the browser launcher command.
    */
   static {
@@ -92,17 +74,17 @@ public class BrowserUtil {
     if (osName.startsWith("Windows")) {
       if (osName.indexOf("9") > -1) {
         __osId = WINDOWS_9x;
-        __browserLauncher = "command.com";
+        __browserLauncher = new String[] { "command.com" };
       } else {
         __osId = WINDOWS_NT;
-        __browserLauncher = "cmd.exe";
+        __browserLauncher = new String[] { "cmd.exe" };
       }
-    } else if (osName.startsWith("Linux")) {
-      __osId = LINUX;
-      __browserLauncher = "mozilla";
+    } else if (osName.startsWith("Mac OS")) {
+      __osId = MAC_OS;
+      __browserLauncher = null;
     } else {
       __osId = OTHER;
-      __browserLauncher = "netscape";
+      __browserLauncher = new String[] { "mozilla", "firefox", "konqueror", "opera", "netscape" };
     }
   }
 
@@ -134,10 +116,13 @@ public class BrowserUtil {
    * 
    * @param url
    *          The URL to open
-   * @throws IOException
-   *           If the web browser could not be located or does not run
+   * @return
+   *        Returns the process browser object or null if no browser could be found
+   *        
+   * @throws Exception
+   *           If the available web browser does not run
    */
-  public static Process openUrlInDefaultBrowser(String url) throws IOException {
+  public static Process openUrlInDefaultBrowser(String url) throws Exception {
 
     Process process = null;
 
@@ -147,7 +132,7 @@ public class BrowserUtil {
         // Add quotes around the URL to allow ampersands and other
         // special characters to work.
         process = Runtime.getRuntime().exec(
-                new String[] { __browserLauncher, FIRST_WINDOWS_PARAMETER,
+                new String[] { __browserLauncher[0], FIRST_WINDOWS_PARAMETER,
                     SECOND_WINDOWS_PARAMETER, THIRD_WINDOWS_PARAMETER, '"' + url + '"' });
         // This avoids a memory leak on some versions of Java on
         // Windows. That's hinted at in
@@ -159,49 +144,33 @@ public class BrowserUtil {
           throw new IOException("InterruptedException while launching browser: " + ie.getMessage());
         }
         break;
-      case LINUX:
-        // Assume that Mozilla is installed
-        // First, attempt to open the URL in a currently running
-        // session of Mozilla
-        process = Runtime.getRuntime().exec(
-                new String[] { __browserLauncher, MOZILLA_REMOTE_PARAMETER,
-                    MOZILLA_OPEN_PARAMETER_START + url + MOZILLA_OPEN_PARAMETER_END });
-        try {
-          int exitCode = process.waitFor();
-          if (exitCode != 0) {
-            // Mozilla was not open
-            // Try opening new browser window
-            process = Runtime.getRuntime().exec(new String[] { __browserLauncher, url });
-            /*
-             * // Attempt to open the URL using 'default' Mozilla // profile process =
-             * Runtime.getRuntime().exec( new String[] { (String)browser, MOZILLA_PROFILE_OPTION,
-             * MOZILLA_DEFAULT_PROFILE, url } );
-             */
-          }
-        } catch (InterruptedException ie) {
-          throw new IOException("InterruptedException while launching browser: " + ie.getMessage());
-        }
+      case MAC_OS:
+        Class fileMgr = Class.forName("com.apple.eio.FileManager");
+        Method openURL = fileMgr.getDeclaredMethod("openURL", new Class[] { String.class });
+        openURL.invoke(null, new Object[] { url });
         break;
       case OTHER:
-        // Assume that we're on Unix and that Netscape is installed
-        // First, attempt to open the URL in a currently running
-        // session of Netscape
-        process = Runtime.getRuntime().exec(
-                new String[] { __browserLauncher, NETSCAPE_REMOTE_PARAMETER,
-                    NETSCAPE_OPEN_PARAMETER_START + url + NETSCAPE_OPEN_PARAMETER_END });
-        try {
-          int exitCode = process.waitFor();
-          if (exitCode != 0) { // if Netscape was not open
-            Runtime.getRuntime().exec(new String[] { __browserLauncher, url });
+        // check for available browsers
+        boolean browserAvailableBrowser = false;
+        int i = 0;
+        while (i < __browserLauncher.length && browserAvailableBrowser == false) {
+          // check if current browser is available
+          process = Runtime.getRuntime().exec(new String[] { "which", __browserLauncher[i] });
+          try {
+            int exitCode = process.waitFor();
+            if (exitCode == 0) {
+              browserAvailableBrowser = true;
+              process = Runtime.getRuntime().exec(new String[] { __browserLauncher[i], url });
+            }
+          } catch (InterruptedException ie) {
+            throw new IOException("InterruptedException while launching browser: "
+                    + ie.getMessage());
           }
-        } catch (InterruptedException ie) {
-          throw new IOException("InterruptedException while launching browser: " + ie.getMessage());
         }
-        break;
-      default:
-        // This should never occur, but if it does, we'll try the
-        // simplest thing possible
-        process = Runtime.getRuntime().exec(new String[] { __browserLauncher, url });
+        // no browser found, return null
+        if(browserAvailableBrowser == false) {
+          process = null;
+        }
         break;
     }
     return process;
