@@ -292,7 +292,7 @@
        look at the display. If you see no funny characters or square
        boxes, chances are your selected code page is compatible with
        your text file.
-
+       
        Note that the code page setting is also in effect when you save
        files. You can observe the effects with a hex editor or by just
        looking at the file size. For example, if you save the default
@@ -304,20 +304,13 @@
        bytes for each character, plus two bytes for the byte-order mark.
        Now switch the code page back to the default Windows code page
        and reload the UTF-16 file to see the difference in the editor.
-
-       By default, the code page options include all code pages that any
-       Java implementation must support: US-ASCII, ISO-8859-1, UTF-8,
-       UTF-16BE (big-endian), UTF-16LE (little endian) and UTF-16 (with
-       magic marker). Also included is the system code page, if it is
-       not among the built-in ones. Prior to Java 1.4, there is no
-       programmatic way to determine what the complete list of supported
-       code pages is. Therefore, you can add your own code page in the
-       corresponding submenu. All this amounts to is adding a string.
-       The new code page is automatically selected as the current code
-       page. The way to find out if the code page you entered is
-       supported in your Java implementation is to try and load a text
-       file. If you see an error ``Unsupported text encoding'', the code
-       page is not supported.
+       
+       CVD will display all code pages that are available in the JVM
+       you're running it on.  The first code page in the list is the
+       default code page of your system.  This is also CVD's default if
+       you don't make a specific choice.
+       
+       Your code page selection will be remembered in CVD's ini file.
       </para>
      </formalpara>
     </listitem>
