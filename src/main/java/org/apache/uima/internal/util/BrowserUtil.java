@@ -98,7 +98,9 @@ public class BrowserUtil {
     String url = (args.length > 0) ? args[0] : "http://apache.org";
     try {
       Process process = BrowserUtil.openUrlInDefaultBrowser(url);
-      process.waitFor();
+      if(process != null) {
+        process.waitFor();
+      }
     } catch (Exception e) {
       System.err.println("Error in BrowserUtil.main():");
       e.printStackTrace(System.err);
@@ -117,7 +119,8 @@ public class BrowserUtil {
    * @param url
    *          The URL to open
    * @return
-   *        Returns the process browser object or null if no browser could be found
+   *        Returns the process browser object or null if no browser could be found. 
+   *        On MacOs null is returned in any case.
    *        
    * @throws Exception
    *           If the available web browser does not run
