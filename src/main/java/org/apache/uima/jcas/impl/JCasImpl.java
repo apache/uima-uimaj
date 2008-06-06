@@ -261,7 +261,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
      */
     private int prevCaddr2JfsSize = INITIAL_HASHMAP_SIZE;
 
-    private JCasHashMap cAddr2Jfs = new JCasHashMap(INITIAL_HASHMAP_SIZE);
+    private JCasHashMap cAddr2Jfs;
 
     private final Map cAddr2JfsByClassLoader = new HashMap();
 
@@ -281,10 +281,12 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
 
     public ClassLoader currentClassLoader = null;
 
-    private JCasSharedView(CASImpl aCAS) {
+    private JCasSharedView(CASImpl aCAS, boolean useJcasCache) {
+      this.cAddr2Jfs = new JCasHashMap(INITIAL_HASHMAP_SIZE, useJcasCache);
       cAddr2JfsByClassLoader.put(aCAS.getJCasClassLoader(), cAddr2Jfs);
       currentClassLoader = aCAS.getJCasClassLoader();
     }
+    
   }
 
   // *******************
@@ -301,6 +303,8 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   private final LowLevelIndexRepository ll_IndexRepository;
 
   private final JFSIndexRepository jfsIndexRepository;
+  
+  private final boolean isUsedCache;
 
   /*
    * typeArray is one per CAS because holds pointers to instances of _Type objects, per CAS Not in
@@ -445,6 +449,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
     sharedView = null;
     casImpl = null;
     ll_IndexRepository = null;
+    isUsedCache = false;
     throw new RuntimeException("JCas constructor with no args called, should never be called.");
   }
 
@@ -467,11 +472,12 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
     // * that will be loaded.
 
     this.casImpl = cas;
+    this.isUsedCache = cas.doUseJcasCache();
     if (casImpl != casImpl.getBaseCAS()) {
       sharedView = ((JCasImpl) casImpl.getBaseCAS().getJCas()).sharedView;
       sharedView.errorSet.clear();
     } else {
-      sharedView = new JCasSharedView(cas);
+      sharedView = new JCasSharedView(cas, this.isUsedCache);
     }
 
     this.ll_IndexRepository = casImpl.ll_getIndexRepository();
@@ -505,7 +511,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
     final JCasSharedView sv = this.sharedView;
     sv.cAddr2Jfs = (JCasHashMap) sv.cAddr2JfsByClassLoader.get(cl);
     if (null == sv.cAddr2Jfs) {
-      sv.cAddr2Jfs = new JCasHashMap(INITIAL_HASHMAP_SIZE);
+      sv.cAddr2Jfs = new JCasHashMap(INITIAL_HASHMAP_SIZE, this.isUsedCache);
       sv.cAddr2JfsByClassLoader.put(cl, sv.cAddr2Jfs);
     }
     sv.currentClassLoader = cl;
@@ -1019,7 +1025,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
         // System.out.println("JCas Shrinking Hashtable from " +
         // jcas.prevCaddr2JfsSize);
         sv.prevCaddr2JfsSize = hashSize;
-        sv.cAddr2Jfs = new JCasHashMap(hashSize);
+        sv.cAddr2Jfs = new JCasHashMap(hashSize, jcas.isUsedCache);
         sv.cAddr2JfsByClassLoader.put(e.getKey(), sv.cAddr2Jfs);
       } else {
         sv.prevCaddr2JfsSize = Math.max(hashSize, sv.prevCaddr2JfsSize);
