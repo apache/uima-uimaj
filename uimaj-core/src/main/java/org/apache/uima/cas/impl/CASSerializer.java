@@ -172,27 +172,19 @@ public class CASSerializer implements Serializable {
       }
 
       // output the strings
-      // strings in the StringList will be serialized out as if the
-      // were in the string heap.
-
-      // local array to hold ref heap to be serialized
-      // String list reference in this local ref heap will be updated to be string heap references.
-      int[] refheap = new int[cas.getStringHeap().refHeapPos];
-      for (int i = 0; i < refheap.length; i++) {
-        refheap[i] = cas.getStringHeap().refHeap[i];
-      }
+      StringHeapDeserializationHelper shdh = cas.getStringHeap().serialize();
 
       // compute the number of total size of data in stringHeap
       // total size = char buffer length + length of strings in the string list;
-      int stringHeapLength = cas.getStringHeap().charHeapPos;
+      int stringHeapLength = shdh.charHeapPos;
       int stringListLength = 0;
-      for (int i = 0; i < refheap.length; i += 3) {
-        int ref = refheap[i + StringHeap.STRING_LIST_ADDR_OFFSET];
+      for (int i = 0; i < shdh.refHeap.length; i += 3) {
+        int ref = shdh.refHeap[i + StringHeapDeserializationHelper.STRING_LIST_ADDR_OFFSET];
         // this is a string in the string list
         // get length and add to total string heap length
         if (ref != 0) {
           // terminate each string with a null
-          stringListLength += 1 + ((String) cas.getStringHeap().stringList.get(ref)).length();
+          stringListLength += 1 + cas.getStringHeap().getStringForCode(ref).length();
         }
       }
 
@@ -206,33 +198,13 @@ public class CASSerializer implements Serializable {
 
       // write the data in the stringheap, if there is any
       if (stringTotalLength > 0) {
-        if (cas.getStringHeap().charHeapPos > 0) {
-          dos.writeChars(String.valueOf(cas.getStringHeap().stringHeap, 0,
-              cas.getStringHeap().charHeapPos));
+        if (shdh.charHeapPos > 0) {
+          dos.writeChars(String.valueOf(shdh.charHeap, 0, shdh.charHeapPos));
         } else {
           // no stringheap data
           // if there is data in the string lists, write a leading 0
           if (stringListLength > 0) {
             dos.writeChar(0);
-          }
-        }
-
-        // write out the data in the StringList and update the
-        // reference in the local ref heap.
-        if (stringListLength > 0) {
-          int pos = cas.getStringHeap().charHeapPos > 0 ? cas.getStringHeap().charHeapPos : 1;
-          for (int i = 0; i < refheap.length; i += 3) {
-            int ref = refheap[i + StringHeap.STRING_LIST_ADDR_OFFSET];
-            // this is a string in the string list
-            if (ref != 0) {
-              // update the ref
-              refheap[i + StringHeap.CHAR_HEAP_POINTER_OFFSET] = pos;
-              // write out the chars in the string
-              dos.writeChars((String) cas.getStringHeap().stringList.get(ref));
-              dos.writeChar(0); // null terminate each string
-              // update pos
-              pos += 1 + ((String) cas.getStringHeap().stringList.get(ref)).length();
-            }
           }
         }
 
@@ -244,13 +216,13 @@ public class CASSerializer implements Serializable {
 
       // write out the string ref heap
       // each reference consist of a offset into stringheap and a length
-      int refheapsz = ((refheap.length - StringHeap.FIRST_CELL_REF) / StringHeap.REF_HEAP_CELL_SIZE) * 2;
+      int refheapsz = ((shdh.refHeap.length - StringHeapDeserializationHelper.FIRST_CELL_REF) / StringHeapDeserializationHelper.REF_HEAP_CELL_SIZE) * 2;
       refheapsz++;
       dos.writeInt(refheapsz);
       dos.writeInt(0);
-      for (int i = StringHeap.FIRST_CELL_REF; i < refheap.length; i += 3) {
-        dos.writeInt(refheap[i + StringHeap.CHAR_HEAP_POINTER_OFFSET]);
-        dos.writeInt(refheap[i + StringHeap.CHAR_HEAP_STRLEN_OFFSET]);
+      for (int i = StringHeapDeserializationHelper.FIRST_CELL_REF; i < shdh.refHeap.length; i += 3) {
+        dos.writeInt(shdh.refHeap[i + StringHeapDeserializationHelper.CHAR_HEAP_POINTER_OFFSET]);
+        dos.writeInt(shdh.refHeap[i + StringHeapDeserializationHelper.CHAR_HEAP_STRLEN_OFFSET]);
       }
 
       // output the index FSs
@@ -304,11 +276,11 @@ public class CASSerializer implements Serializable {
    * @param arrayList
    * @return String[]
    */
-  private String[] stringArrayListToArray(ArrayList arrayList) {
+  private String[] stringArrayListToArray(ArrayList<String> arrayList) {
     final int max = arrayList.size();
     String[] ar = new String[max];
     for (int i = 0; i < max; i++) {
-      ar[i] = (String) arrayList.get(i);
+      ar[i] = arrayList.get(i);
     }
     return ar;
   }

@@ -227,8 +227,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   private JCas jcas = null;
 
-  private final ArrayList getStringList() {
-    ArrayList stringList = new ArrayList();
+  private final ArrayList<String> getStringList() {
+    ArrayList<String> stringList = new ArrayList<String>();
     stringList.add(null);
     int pos = this.getStringHeap().getLeastStringCode();
     final int end = this.getStringHeap().getLargestStringCode();
@@ -871,13 +871,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
         ((CASImpl) tcas).mySofaRef = (1 == view) ? -1 : 0;
       }
     }
-    if (this.getHeap().getHeapSize() > CASImpl.resetHeapSize) {
-      this.getHeap().reset(true);
-      resetStringTable(true);
-    } else {
-      this.getHeap().reset(false);
-      resetStringTable(false);
-    }
+    this.getHeap().reset(this.getHeap().getHeapSize() > CASImpl.resetHeapSize);
+
+    resetStringTable();
 
     this.getByteHeap().reset();
     this.getShortHeap().reset();
@@ -963,11 +959,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   void resetStringTable() {
-    this.resetStringTable(false);
-  }
-
-  void resetStringTable(boolean doFullReset) {
-    this.getStringHeap().reset(doFullReset);
+    this.getStringHeap().reset();
   }
 
   // public void setFSClassRegistry(FSClassRegistry fsClassReg) {
@@ -1143,15 +1135,17 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
         stringheapsz = dis.readInt();
       }
 
-      this.getStringHeap().stringHeap = new char[stringheapsz];
+      final StringHeapDeserializationHelper shdh = new StringHeapDeserializationHelper();
+      
+      shdh.charHeap = new char[stringheapsz];
       for (int i = 0; i < stringheapsz; i++) {
         if (swap) {
-          this.getStringHeap().stringHeap[i] = swap2(dis, bytebuf);
+          shdh.charHeap[i] = swap2(dis, bytebuf);
         } else {
-          this.getStringHeap().stringHeap[i] = dis.readChar();
+          shdh.charHeap[i] = dis.readChar();
         }
       }
-      this.getStringHeap().charHeapPos = stringheapsz;
+      shdh.charHeapPos = stringheapsz;
 
       // word alignment
       if (stringheapsz % 2 != 0) {
@@ -1172,21 +1166,23 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
       // read back into references consisting to three ints
       // --stringheap offset,length, stringlist offset
-      this.getStringHeap().refHeap = new int[StringHeap.FIRST_CELL_REF + refheapsz];
+      shdh.refHeap = new int[StringHeapDeserializationHelper.FIRST_CELL_REF + refheapsz];
 
       dis.readInt(); // 0
-      for (int i = this.getStringHeap().refHeapPos; i < this.getStringHeap().refHeap.length; i += StringHeap.REF_HEAP_CELL_SIZE) {
+      for (int i = shdh.refHeapPos; i < shdh.refHeap.length; i += StringHeapDeserializationHelper.REF_HEAP_CELL_SIZE) {
         if (swap) {
-          this.getStringHeap().refHeap[i + StringHeap.CHAR_HEAP_POINTER_OFFSET] = swap4(dis,
+          shdh.refHeap[i + StringHeapDeserializationHelper.CHAR_HEAP_POINTER_OFFSET] = swap4(dis,
               bytebuf);
-          this.getStringHeap().refHeap[i + StringHeap.CHAR_HEAP_STRLEN_OFFSET] = swap4(dis, bytebuf);
+          shdh.refHeap[i + StringHeapDeserializationHelper.CHAR_HEAP_STRLEN_OFFSET] = swap4(dis, bytebuf);
         } else {
-          this.getStringHeap().refHeap[i + StringHeap.CHAR_HEAP_POINTER_OFFSET] = dis.readInt();
-          this.getStringHeap().refHeap[i + StringHeap.CHAR_HEAP_STRLEN_OFFSET] = dis.readInt();
+          shdh.refHeap[i + StringHeapDeserializationHelper.CHAR_HEAP_POINTER_OFFSET] = dis.readInt();
+          shdh.refHeap[i + StringHeapDeserializationHelper.CHAR_HEAP_STRLEN_OFFSET] = dis.readInt();
         }
-        this.getStringHeap().refHeap[i + StringHeap.STRING_LIST_ADDR_OFFSET] = 0;
+        shdh.refHeap[i + StringHeapDeserializationHelper.STRING_LIST_ADDR_OFFSET] = 0;
       }
-      this.getStringHeap().refHeapPos = refheapsz + StringHeap.FIRST_CELL_REF;
+      shdh.refHeapPos = refheapsz + StringHeapDeserializationHelper.FIRST_CELL_REF;
+      
+      this.getStringHeap().reinit(shdh);
 
       // indexed FSs
       int fsindexsz = 0;
@@ -2183,7 +2179,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     this.indexRepository.createIndex(comp, CAS.STD_ANNOTATION_INDEX);
   }
 
-  ArrayList getStringTable() {
+  ArrayList<String> getStringTable() {
     // return this.stringList;
     return this.svd.baseCAS.getStringList();
   }
