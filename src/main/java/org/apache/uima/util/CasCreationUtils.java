@@ -562,7 +562,7 @@ public class CasCreationUtils {
     }
     
     // Check Jcas cache performance setting.  Defaults to true.
-    boolean useJcasCache = false;
+    boolean useJcasCache = true;
     if (aPerformanceTuningSettings != null) {
       String useJcasCacheString = aPerformanceTuningSettings.getProperty(
           UIMAFramework.JCAS_CACHE_ENABLED, "true");
