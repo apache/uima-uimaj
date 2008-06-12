@@ -72,7 +72,7 @@ public class JCasHashMap {
   private final boolean useCache;
   
   JCasHashMap(int initialSize, boolean doUseCache) {
-    this.useCache = true;
+    this.useCache = doUseCache;
     // round initialSize to a power of 2
     int n = initialSize;
     int i = 0;
