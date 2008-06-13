@@ -61,12 +61,29 @@ public class GrowingTheCasTestNoJcasCache extends TestCase {
       XMLParser parser = UIMAFramework.getXMLParser();
       ResourceSpecifier spec = parser.parseResourceSpecifier(new XMLInputSource(
           descriptorFile));
+      // Create a new properties object to hold the settings.
       Properties performanceTuningSettings = new Properties();
-      performanceTuningSettings.setProperty(UIMAFramework.CAS_INITIAL_HEAP_SIZE, "0");
-      performanceTuningSettings.setProperty(UIMAFramework.JCAS_CACHE_ENABLED, "false");
+      // Set the initial CAS heap size.
+      performanceTuningSettings.setProperty(
+            UIMAFramework.CAS_INITIAL_HEAP_SIZE, 
+            "1000000");
+      // Disable JCas cache.
+      performanceTuningSettings.setProperty(
+            UIMAFramework.JCAS_CACHE_ENABLED, 
+            "false");
+      // Create a wrapper properties object that can
+      // be passed to the framework.
       Properties additionalParams = new Properties();
-      additionalParams.put(Resource.PARAM_PERFORMANCE_TUNING_SETTINGS, performanceTuningSettings);
-      this.ae = UIMAFramework.produceAnalysisEngine(spec, null, additionalParams);
+      // Set the performance tuning properties as value to
+      // the appropriate parameter.
+      additionalParams.put(
+            Resource.PARAM_PERFORMANCE_TUNING_SETTINGS, 
+            performanceTuningSettings);
+      // Create the analysis engine with the parameters.
+      // The second, unused argument here is a custom 
+      // resource manager.
+      this.ae = UIMAFramework.produceAnalysisEngine(
+          spec, null, additionalParams);
       this.smallHeapCas = this.ae.newJCas();
     } catch (IOException e) {
       e.printStackTrace();
