@@ -27,11 +27,11 @@ import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
-import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.FileUtils;
 import org.apache.uima.util.InvalidXMLException;
@@ -59,7 +59,7 @@ public class GrowingTheCasTestNoJcasCache extends TestCase {
 
     try {
       XMLParser parser = UIMAFramework.getXMLParser();
-      AnalysisEngineDescription spec = (AnalysisEngineDescription) parser.parse(new XMLInputSource(
+      ResourceSpecifier spec = parser.parseResourceSpecifier(new XMLInputSource(
           descriptorFile));
       Properties performanceTuningSettings = new Properties();
       performanceTuningSettings.setProperty(UIMAFramework.CAS_INITIAL_HEAP_SIZE, "0");
