@@ -1023,13 +1023,15 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
             }
           }
 
-          int value = (int) progress[FILE_ENTITY_PROGRESS_INDEX].getCompleted();
-          progressBar.setValue(value);
+          if (FILE_ENTITY_PROGRESS_INDEX >= 0) {  // uima-1086
+            int value = (int) progress[FILE_ENTITY_PROGRESS_INDEX].getCompleted();
+            progressBar.setValue(value);
 
-          if (progressBar.isIndeterminate())
-            statusLabel.setText("Processed " + value);
-          else
-            statusLabel.setText("Processed " + value + " of " + progressBar.getMaximum());
+            if (progressBar.isIndeterminate())
+              statusLabel.setText("Processed " + value);
+            else
+              statusLabel.setText("Processed " + value + " of " + progressBar.getMaximum());
+          }
         }
       } catch (Exception e) {
         displayError(e);
