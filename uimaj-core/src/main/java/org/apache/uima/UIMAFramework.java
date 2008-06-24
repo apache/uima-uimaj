@@ -82,6 +82,15 @@ public abstract class UIMAFramework {
   public static final Object SOCKET_KEEPALIVE_ENABLED = "socket_keepalive_enabled";
 
   /**
+   * Key to be used in the Properties object returned by
+   * {@link #getDefaultPerformanceTuningProperties()}. The value of this key indicates whether the
+   * JCas object cache should be used (significant memory overhead, but may have performance
+   * benefits). The default is true. A value of "false" (case insensitive) for this property
+   * disables the cache; any other value leaves the default setting of true.
+   */
+  public static final String JCAS_CACHE_ENABLED = "jcas_cache_enabled";
+
+  /**
    * To be implemented by subclasses; this should return a Properties object representing the
    * default performance tuning settings for the framework. It must return a new Properties object
    * each time it is called.

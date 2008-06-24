@@ -36,6 +36,8 @@ import org.apache.uima.cas.impl.TypeSystemImpl;
  * 
  */
 public abstract class CASFactory {
+  
+  public static final boolean USE_JCAS_CACHE_DEFAULT = true;
 
   /**
    * Create a new CASMgr object.
@@ -56,7 +58,11 @@ public abstract class CASFactory {
    * @return A new CASMgr object.
    */
   public static CASMgr createCAS(int initialHeapSize) {
-    return new CASImpl(initialHeapSize);
+    return createCAS(initialHeapSize, USE_JCAS_CACHE_DEFAULT);
+  }
+  
+  public static CASMgr createCAS(int initialHeapSize, boolean useJcasCache) {
+    return new CASImpl(initialHeapSize, useJcasCache);
   }
 
   /**
@@ -71,10 +77,14 @@ public abstract class CASFactory {
    * @return A new CASMgr object.
    */
   public static CASMgr createCAS(int initialHeapSize, TypeSystem ts) {
+    return createCAS(initialHeapSize, ts, USE_JCAS_CACHE_DEFAULT);
+  }
+  
+  public static CASMgr createCAS(int initialHeapSize, TypeSystem ts, boolean useJcasCache) {
     if (ts == null) {
       throw new NullPointerException("TypeSystem");
     }
-    return new CASImpl((TypeSystemImpl) ts, initialHeapSize);
+    return new CASImpl((TypeSystemImpl) ts, initialHeapSize, useJcasCache);
   }
 
   /**
@@ -85,10 +95,15 @@ public abstract class CASFactory {
    * @return A new CASMgr object.
    */
   public static CASMgr createCAS(TypeSystem ts) {
+    return createCAS(ts, USE_JCAS_CACHE_DEFAULT);
+  }
+  
+  
+  public static CASMgr createCAS(TypeSystem ts, boolean useJcasCache) {
     if (ts == null) {
       throw new NullPointerException("TypeSystem");
     }
-    return new CASImpl((TypeSystemImpl) ts, CASImpl.DEFAULT_INITIAL_HEAP_SIZE);
+    return new CASImpl((TypeSystemImpl) ts, CASImpl.DEFAULT_INITIAL_HEAP_SIZE, useJcasCache);
   }
 
   /**

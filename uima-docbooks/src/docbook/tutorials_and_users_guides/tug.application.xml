@@ -1793,8 +1793,93 @@ Exception: Connection refused: connect</programlisting>
       should register the MBeans.  If no specified then the default is to register with
       the platform MBeanServer (Java 5+ only).</para>
         
-    <para>For information on JMX can be found in the <ulink
+    <para>More information on JMX can be found in the <ulink
         url="http://java.sun.com/j2se/1.5.0/docs/api/javax/management/package-summary.html#package_description">
       Java 5 documentation</ulink>.</para>    
   </section>
+  
+  <section id="tug.application.pto">
+  <title>Performance Tuning Options</title>
+
+  <para>
+  	There is a small number of performance tuning options available to
+  	influence the runtime behavior of UIMA applications. Performance
+  	tuning options need to be set programmatically when an analysis
+  	engine is created. You simply create a Java Properties object with
+  	the relevant options and pass it to the UIMA framework on the call
+  	to create an analysis engine. Below is an example.
+  	
+  	<programlisting>
+  	  XMLParser parser = UIMAFramework.getXMLParser();
+      ResourceSpecifier spec = parser.parseResourceSpecifier(
+            new XMLInputSource(descriptorFile));
+      // Create a new properties object to hold the settings.
+      Properties performanceTuningSettings = new Properties();
+      // Set the initial CAS heap size.
+      performanceTuningSettings.setProperty(
+            UIMAFramework.CAS_INITIAL_HEAP_SIZE, 
+            "1000000");
+      // Disable JCas cache.
+      performanceTuningSettings.setProperty(
+            UIMAFramework.JCAS_CACHE_ENABLED, 
+            "false");
+      // Create a wrapper properties object that can
+      // be passed to the framework.
+      Properties additionalParams = new Properties();
+      // Set the performance tuning properties as value to
+      // the appropriate parameter.
+      additionalParams.put(
+            Resource.PARAM_PERFORMANCE_TUNING_SETTINGS, 
+            performanceTuningSettings);
+      // Create the analysis engine with the parameters.
+      // The second, unused argument here is a custom 
+      // resource manager.
+      this.ae = UIMAFramework.produceAnalysisEngine(
+          spec, null, additionalParams);
+  	
+  	</programlisting>
+  </para>
+  
+  <para>
+  The following options are supported:
+  <itemizedlist>
+  <listitem>
+  <para><literal>UIMAFramework.JCAS_CACHE_ENABLED</literal>: allows you to disable
+  the JCas cache (true/false).  The JCas cache is an internal datastructure that caches any JCas 
+  object created
+  by the CAS.  This may result in better performance for applications that make extensive use of
+  the JCas, but also incurs a steep memory overhead.  If you're processing large documents and have
+  memory issues, you should disable this option.  In general, just try running a few experiments to
+  see what setting works better for your application.  The JCas cache is enabled by default.  
+  </para>
+  </listitem>
+  <listitem>
+  <para><literal>UIMAFramework.CAS_INITIAL_HEAP_SIZE</literal>: set the initial CAS heap size in
+  number of cells (integer valued).  The CAS uses 32bit integer cells, so four times the initial 
+  size is the
+  approximate minimum size of the CAS in bytes.  This is another space/time trade-off as growing
+  the CAS heap is relatively expensive.  On the other hand, setting the initial size too high is
+  wasting memory.  Unless you know you are processing very small or very large documents, you should
+  probably leave this option unchanged.
+  </para>
+  </listitem>
+  <listitem>
+  <para><literal>UIMAFramework.PROCESS_TRACE_ENABLED</literal>: enable the process trace mechanism
+  (true/false).  When enabled, UIMA tracks the time spent in individual components of an aggregate 
+  AE or CPE.  For more information, see the API documentation of 
+  <literal>org.apache.uima.util.ProcessTrace</literal>.
+  </para>
+  </listitem>
+  <listitem>
+  <para><literal>UIMAFramework.SOCKET_KEEPALIVE_ENABLED</literal>: enable socket KeepAlive
+  (true/false).  This setting is currently only supported by Vinci clients.  Defaults to 
+  <literal>true</literal>.
+  </para>
+  </listitem>
+  </itemizedlist>
+  </para>
+  
+
+  </section>
+  
 </chapter>

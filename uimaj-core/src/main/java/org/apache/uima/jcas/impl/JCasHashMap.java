@@ -69,7 +69,10 @@ public class JCasHashMap {
   private int bitsMask;  // 1's to "and" with result to keep in range
   private int casAddr;  
   
-  JCasHashMap(int initialSize) {
+  private final boolean useCache;
+  
+  JCasHashMap(int initialSize, boolean doUseCache) {
+    this.useCache = doUseCache;
     // round initialSize to a power of 2
     int n = initialSize;
     int i = 0;
@@ -100,11 +103,17 @@ public class JCasHashMap {
   }
     
   public void clear() {
+    if (!this.useCache) {
+      return;
+    }
     Arrays.fill(table, null);
     size = 0;
   }
 
   public FeatureStructureImpl get(int key) {
+    if (!this.useCache) {
+      return null;
+    }
     FeatureStructureImpl maybe = table[probe(key)];
     while ((null != maybe) && (maybe.getAddress() != key)) {
       maybe = table[nextProbe()];
@@ -117,6 +126,9 @@ public class JCasHashMap {
   }
 
   public void put(FeatureStructureImpl value) {
+    if (!this.useCache) {
+      return;
+    }
     final int key = value.getAddress();
     int probeAddr = probe(key);
     if (TUNE) {

@@ -69,6 +69,7 @@ import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.admin.CASAdminException;
+import org.apache.uima.cas.admin.CASFactory;
 import org.apache.uima.cas.admin.CASMgr;
 import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.cas.admin.FSIndexRepositoryMgr;
@@ -226,6 +227,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   private int mySofaRef = 0;
 
   private JCas jcas = null;
+  
+  private final boolean isUsedJcasCache;
 
   private final ArrayList<String> getStringList() {
     ArrayList<String> stringList = new ArrayList<String>();
@@ -267,8 +270,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   // initTypeVariables();
   // }
 
-  public CASImpl(TypeSystemImpl typeSystem, int initialHeapSize) {
-    this(typeSystem, initialHeapSize, DEFAULT_USE_FS_CACHE);
+  public CASImpl(TypeSystemImpl typeSystem, int initialHeapSize, boolean useJcasCache) {
+    this(typeSystem, initialHeapSize, DEFAULT_USE_FS_CACHE, useJcasCache);
   }
 
   /*
@@ -279,8 +282,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * by calling
    */
 
-  CASImpl(TypeSystemImpl typeSystem, int initialHeapSize, boolean useFSCache) {
+  CASImpl(TypeSystemImpl typeSystem, int initialHeapSize, boolean useFSCache, boolean useJcasCache) {
     super();
+    this.isUsedJcasCache = useJcasCache;
     TypeSystemImpl ts;
     final boolean externalTypeSystem = (typeSystem != null);
 
@@ -318,18 +322,18 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * Constructor. Use only if you want to use the low-level APIs.
    */
   public CASImpl() {
-    this(DEFAULT_INITIAL_HEAP_SIZE);
+    this(DEFAULT_INITIAL_HEAP_SIZE, CASFactory.USE_JCAS_CACHE_DEFAULT);
   }
 
-  public CASImpl(int initialHeapSize) {
-    this((TypeSystemImpl) null, initialHeapSize);
+  public CASImpl(int initialHeapSize, boolean useJcasCache) {
+    this((TypeSystemImpl) null, initialHeapSize, useJcasCache);
   }
 
   // In May 2007, appears to have 1 caller, createCASMgr in Serialization class,
   // could have
   // out-side the framework callers because it is public.
   public CASImpl(CASMgrSerializer ser) {
-    this(ser.getTypeSystem(), DEFAULT_INITIAL_HEAP_SIZE);
+    this(ser.getTypeSystem(), DEFAULT_INITIAL_HEAP_SIZE, CASFactory.USE_JCAS_CACHE_DEFAULT);
     checkInternalCodes(ser);
     // assert(ts != null);
     // assert(getTypeSystem() != null);
@@ -337,7 +341,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   // Use this when creating a CAS view
-  CASImpl(CASImpl cas, SofaFS aSofa) {
+  CASImpl(CASImpl cas, SofaFS aSofa, boolean useJcasCache) {
+    this.isUsedJcasCache = useJcasCache;
+    
     // these next fields are final and must be set in the constructor
     this.svd = cas.svd;
 
@@ -2254,7 +2260,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       return couldBeThis;
     }
     // create the initial view, without a Sofa
-    CAS aView = new CASImpl(this.svd.baseCAS, null);
+    CAS aView = new CASImpl(this.svd.baseCAS, null, this.isUsedJcasCache);
     this.svd.sofaNbr2ViewMap.put(Integer.valueOf(1), aView);
     assert (this.svd.viewCount <= 1);
     this.svd.viewCount = 1;
@@ -2340,7 +2346,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       // which is now creating the associated view
 
       // create a new CAS view
-      aView = new CASImpl(this.svd.baseCAS, aSofa);
+      aView = new CASImpl(this.svd.baseCAS, aSofa, this.isUsedJcasCache);
       this.svd.sofaNbr2ViewMap.put(sofaNbrInteger, aView);
       verifySofaNameUniqueIfDeserializedViewAdded(sofaNbr, aSofa);
       return aView;
@@ -3857,6 +3863,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       }
     }
     return viewList.iterator();
+  }
+  
+  public final boolean doUseJcasCache() {
+    return this.isUsedJcasCache;
   }
 
 }

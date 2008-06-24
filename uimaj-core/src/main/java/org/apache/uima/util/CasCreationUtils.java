@@ -560,19 +560,29 @@ public class CasCreationUtils {
       initialHeapSizeStr = aPerformanceTuningSettings
           .getProperty(UIMAFramework.CAS_INITIAL_HEAP_SIZE);
     }
+    
+    // Check Jcas cache performance setting.  Defaults to true.
+    boolean useJcasCache = true;
+    if (aPerformanceTuningSettings != null) {
+      String useJcasCacheString = aPerformanceTuningSettings.getProperty(
+          UIMAFramework.JCAS_CACHE_ENABLED, "true");
+      if ("false".equalsIgnoreCase(useJcasCacheString)) {
+        useJcasCache = false;
+      }
+    }
 
     // create CAS using either aTypeSystem or aTypeSystemDesc
     CASMgr casMgr;
     if (aTypeSystem != null) {
       if (initialHeapSizeStr != null) {
-        casMgr = CASFactory.createCAS(Integer.parseInt(initialHeapSizeStr), aTypeSystem);
+        casMgr = CASFactory.createCAS(Integer.parseInt(initialHeapSizeStr), aTypeSystem, useJcasCache);
       } else {
-        casMgr = CASFactory.createCAS(aTypeSystem);
+        casMgr = CASFactory.createCAS(aTypeSystem, useJcasCache);
       }
     } else // no TypeSystem to reuse - create a new one
     {
       if (initialHeapSizeStr != null) {
-        casMgr = CASFactory.createCAS(Integer.parseInt(initialHeapSizeStr));
+        casMgr = CASFactory.createCAS(Integer.parseInt(initialHeapSizeStr), useJcasCache);
       } else {
         casMgr = CASFactory.createCAS();
       }
