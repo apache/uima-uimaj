@@ -36,11 +36,16 @@
     -->
   
   <property name="uima.version" value="${uima.version.base}-incubating${uima.version.snapshot}"/>
+  <echo>uima.version: ${uima.version}</echo>
   <property name="uima.eclipse.version" value="${uima.version.base}.incubating${uima.version.snapshot}"/>
+  <echo>uima.eclipse.version: ${uima.eclipse.version}</echo>
   <property name="uima.prev.version" value="${uima.prev.version.base}-incubating${uima.prev.version.snapshot}"/>
+  <echo>uima.prev.version: ${uima.prev.version}</echo>
   <property name="uima.eclipse.prev.version" value="${uima.prev.version.base}.incubating${uima.prev.version.snapshot}"/>
+  <echo>uima.eclipse.prev.version: ${uima.eclipse.prev.version}</echo>
   <property name="wksp" location="../../../../"/>
-  
+  <echo>workspace location: ${wksp}</echo>  
+	
   <target name="all" depends=
    "uimaj, 
     normal-modules, 
