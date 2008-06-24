@@ -40,7 +40,7 @@
 	<parent>
 		<groupId>org.apache.uima</groupId>
 		<artifactId>uimaj-eclipse-plugins</artifactId>
-		<version>2.2.2.incubating</version> <!-- this comment is a flag for changeVersion -->
+		<version>2.3.0.incubating-SNAPSHOT</version> <!-- this comment is a flag for changeVersion -->
     <!-- this relative path is used the first time mvn is run on the uimaj pom
          to find the uimaj/eclipse-plugin-superPom
       If at some point, a different child pom other than this one becomes the 
