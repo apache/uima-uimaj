@@ -24,10 +24,10 @@
   <groupId>org.apache.uima</groupId>
   <artifactId>uimaj</artifactId>
   <packaging>pom</packaging>
-  <version>2.2.2-incubating</version> <!-- this comment is a flag for changeVersion -->
+  <version>2.2.2-01-incubating</version> <!-- this comment is a flag for changeVersion -->
   <properties>
-      <uimaj-release-version>2.2.2-incubating</uimaj-release-version>
-      <uimaj-release-eclipse-version>2.2.2.incubating</uimaj-release-eclipse-version>
+      <uimaj-release-version>2.2.2-01-incubating</uimaj-release-version>
+      <uimaj-release-eclipse-version>2.2.2-01.incubating</uimaj-release-eclipse-version>
   </properties>
   <name>Apache UIMA Java SDK</name>
   <url>http://incubator.apache.org/uima</url>
