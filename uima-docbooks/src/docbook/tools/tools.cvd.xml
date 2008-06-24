@@ -375,8 +375,8 @@
        serializes a CAS without type system and index information. It is
        therefore impossible to read in a stand-alone XMI CAS file. XMI CAS
        files can only be interpreted in the context of an existing type
-       system. Consequently, you need to load the TAE that was used to
-       create the XCAS file to be able to load it.
+       system. Consequently, you need to first load the Analysis Engine that was used to
+       create the XMI file, to be able to load that XMI file.
       </para>
      </formalpara>
     </listitem>
@@ -399,9 +399,9 @@
        serializes a CAS without type system and index information. It is
        therefore impossible to read in a stand-alone XCAS file. XCAS
        files can only be interpreted in the context of an existing type
-       system. Consequently, you need to load the TAE that was used to
+       system. Consequently, you need to load the Analysis Engine that was used to
        create the XCAS file to be able to load it. Loading a XCAS file
-       without loading the TAE may produce strange errors. You may get
+       without loading the Analysis Engine may produce strange errors. You may get
        syntax errors on loading the XCAS file, or worse, everything may
        appear to go smoothly but in reality your CAS may be corrupted.
       </para>
