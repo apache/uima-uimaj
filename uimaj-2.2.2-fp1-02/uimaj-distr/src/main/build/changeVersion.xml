@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one
+   or more contributor license agreements.  See the NOTICE file
+   distributed with this work for additional information
+   regarding copyright ownership.  The ASF licenses this file
+   to you under the Apache License, Version 2.0 (the
+   "License"); you may not use this file except in compliance
+   with the License.  You may obtain a copy of the License at
+   
+     http://www.apache.org/licenses/LICENSE-2.0
+   
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied.  See the License for the
+   specific language governing permissions and limitations
+   under the License.
+-->
+
+<!-- Run this with ant to change the version number.
+     Input (new version number, previous one, and a history)
+     is kept in the file "versions.properties" - so edit
+     this file before running the script
+  -->
+
+<project name="set-version-string" basedir="." default="all">
+    
+  
+  <property file="versions.properties"/>
+  <!-- sets uima.version.snapshot to -SNAPSHOT or nothing
+       sets uima.version.base to x.y.z 
+       sets uima.prev.version.snapshot
+       sets uima.prev.version.base
+    -->
+  
+  <property name="uima.version" value="${uima.version.base}-incubating${uima.version.snapshot}"/>
+  <property name="uima.eclipse.version" value="${uima.version.base}.incubating${uima.version.snapshot}"/>
+  <property name="uima.prev.version" value="${uima.prev.version.base}-incubating${uima.prev.version.snapshot}"/>
+  <property name="uima.eclipse.prev.version" value="${uima.prev.version.base}.incubating${uima.prev.version.snapshot}"/>
+  <property name="wksp" location="../../../../"/>
+  
+  <target name="all" depends=
+   "uimaj, 
+    normal-modules, 
+    uima-framework,
+    eclipse-plugins, 
+    eclipse-features, 
+    eclipse-update,  
+    docbooks, 
+    readme"/> 
+                          <!-- uimaj, normal-modules, uima-framework, 
+    eclipse-plugins, eclipse-features, eclipse-update,  
+    docbooks, readme -->
+
+  <target name="uimaj">
+    <replace file="${wksp}/uimaj/pom.xml" summary="yes">
+      <replacefilter token="&lt;version&gt;${uima.prev.version}&lt;/version&gt; &lt;!-- this comment is a flag for changeVersion -->"
+                     value="&lt;version&gt;${uima.version}&lt;/version&gt; &lt;!-- this comment is a flag for changeVersion -->"/>
+      <replacefilter token="&lt;uimaj-release-version&gt;${uima.prev.version}&lt;/uimaj-release-version&gt;"
+                     value="&lt;uimaj-release-version&gt;${uima.version}&lt;/uimaj-release-version&gt;"/>
+      <replacefilter token="&lt;uimaj-release-eclipse-version&gt;${uima.eclipse.prev.version}&lt;/uimaj-release-eclipse-version&gt;"
+                     value="&lt;uimaj-release-eclipse-version&gt;${uima.eclipse.version}&lt;/uimaj-release-eclipse-version&gt;"/>
+    </replace>
+    <replace file="${wksp}/uimaj/eclipse-plugin-superPom/pom.xml" summary="yes">
+       <replacefilter token="&lt;version&gt;${uima.prev.version}&lt;/version&gt; &lt;!-- this comment is a flag for changeVersion -->"
+                     value="&lt;version&gt;${uima.version}&lt;/version&gt; &lt;!-- this comment is a flag for changeVersion -->"/>
+       <replacefilter token="&lt;version&gt;${uima.eclipse.prev.version}&lt;/version&gt; &lt;!-- this comment is a flag for changeVersion - eclipse -->"
+                     value="&lt;version&gt;${uima.eclipse.version}&lt;/version&gt; &lt;!-- this comment is a flag for changeVersion - eclipse -->"/>
+     
+    </replace>
+  </target>
+  
+  <target name="normal-modules">
+    <replace dir="${wksp}" includes=
+      "jVinci/pom.xml,
+       uimaj-adapter-soap/pom.xml,
+       uimaj-adapter-vinci/pom.xml,
+       uimaj-component-test-util/pom.xml,
+       uimaj-core/pom.xml,
+       uimaj-cpe/pom.xml,
+       uimaj-distr/pom.xml,
+       uimaj-document-annotation/pom.xml,
+       uimaj-examples/pom.xml,
+       uimaj-internal-tools/pom.xml,
+       uimaj-test-util/pom.xml,
+       uimaj-tools/pom.xml
+-       " summary="yes"
+      token="&lt;version&gt;${uima.prev.version}&lt;/version&gt; &lt;!-- this comment is a flag for changeVersion -->"
+      value="&lt;version&gt;${uima.version}&lt;/version&gt; &lt;!-- this comment is a flag for changeVersion -->"/>     
+  </target>
+  
+  <target name="uima-framework">
+    <replace file="${wksp}/uimaj-core/src/main/java/org/apache/uima/impl/UIMAFramework_impl.java" summary="yes">
+      <replacefilter token="return ${uima.prev.version.major}; // major version"
+                     value="return ${uima.version.major}; // major version"/>
+      <replacefilter token="return ${uima.prev.version.minor}; // minor version"
+                     value="return ${uima.version.minor}; // minor version"/>
+      <replacefilter token="return ${uima.prev.version.buildRevision}; // build revision"
+                     value="return ${uima.version.buildRevision}; // build revision"/>
+    </replace>
+  </target>
+  
+  <target name="eclipse-plugins">
+    <replace dir="${wksp}" includes=
+      "uimaj-ep-configurator/pom.xml,
+       uimaj-ep-debug/pom.xml,
+       uimaj-ep-jcasgen/pom.xml,
+       uimaj-ep-pear-packager/pom.xml,
+       uimaj-ep-runtime/pom.xml
+-       " summary="yes"
+      token="&lt;version&gt;${uima.eclipse.prev.version}&lt;/version&gt; &lt;!-- this comment is a flag for changeVersion -->"
+      value="&lt;version&gt;${uima.eclipse.version}&lt;/version&gt; &lt;!-- this comment is a flag for changeVersion -->"/>    
+  </target>
+
+  <target name="eclipse-features">
+    <replace dir="${wksp}" includes="uimaj-eclipse-feature-*/feature.xml"
+      summary="yes"
+      token='version="${uima.eclipse.prev.version}"'
+      value='version="${uima.eclipse.version}"'/>      
+  </target>
+
+  <target name="eclipse-update">
+    <echo message="Manually update the uimaj-eclipse-update/site.xml"/>
+  </target>
+  
+  <target name="readme">
+    <echo message="Manually update the uimaj-distr/src/main/readme/RELEASE_NOTES and RELEASE_NOTES.html"/>
+  </target>
+  
+  <target name="docbooks">
+    <replace dir="${wksp}" includes="uima-docbooks/src/docbook/common_book_info.xml"
+      summary="yes"
+      token="&lt;releaseinfo>Version ${uima.prev.version}&lt;/releaseinfo>"
+      value="&lt;releaseinfo>Version ${uima.version}&lt;/releaseinfo>" />
+    <replace dir="${wksp}" includes="uima-docbooks/src/index.html"
+      summary="yes"
+      token='&lt;p class="releaseinfo">Version ${uima.prev.version}&lt;/p>'
+      value='&lt;p class="releaseinfo">Version ${uima.version}&lt;/p>' />    
+    <echo message="Manually update the uima-docbooks/src/docbook/common_book_info.xml: &lt;pubdate>March, 2008&lt;/pubdate>" />
+  	<echo message='Manually update the uima-docbooks/src/index.html: &lt;p class="pubdate">March, 2008&lt;/p>' />
+  </target>
+
+</project>

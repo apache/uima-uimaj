@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one
+   or more contributor license agreements.  See the NOTICE file
+   distributed with this work for additional information
+   regarding copyright ownership.  The ASF licenses this file
+   to you under the Apache License, Version 2.0 (the
+   "License"); you may not use this file except in compliance
+   with the License.  You may obtain a copy of the License at
+   
+     http://www.apache.org/licenses/LICENSE-2.0
+   
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied.  See the License for the
+   specific language governing permissions and limitations
+   under the License.
+-->
+
+
+<project name="Build all Apache UIMA DocBooks" default="all-books" basedir=".">
+  
+  <!-- ======================================================================== -->
+  <!-- ==                                                                    == -->
+  <!-- == Build all the Docbook Documentation under src/docbook              == -->
+  <!-- ==                                                                    == -->
+  <!-- ==   Built 2 times - first time updates the olinks, 2nd time builds   == -->
+  <!-- ==                                                                    == -->
+  <!-- ======================================================================== -->
+  
+  <!--  Sequence and flow:
+          The main script is "imported" so we can share setup
+            change to only import that which needs sharing:
+               a) reading of external properties 
+               b) setup of version of fop / docbook / output dirs
+               c) check of Java version
+               d) anything in init-everytime is a candidate for not including in this.
+    
+          Top
+             - calls build_all_books, parm = olink_work
+               - calls all, parm = book_name
+          
+          Only top-level files should do imports; and should avoid ant-calls
+            (which re-do the imports) (use <ant ... > instead
+    -->
+          
+  <import file="../uima-docbook-tool/build/build-docbook.xml"/>
+  
+  <target name="all-books" description="--> Build all documentation"
+    depends="prepare, copy-docbook-images, do_olinks, do_build_given_olinks, copy-index.html"/>
+  
+  <target name="do_olinks"
+    description="--> for all books, compute the cross reference databases needed for linking">
+    <ant antfile="build-all-books.xml">
+      <reference refid="saxon_and_fop.classpath"/>
+      <property name="olink_work" value="only"/>
+    </ant>
+  </target>
+  
+  <target name="do_build_given_olinks"
+    description="--> build all books using precomputed olink database information">
+    <ant antfile="build-all-books.xml">
+      <reference refid="saxon_and_fop.classpath"/>
+      <property name="olink_work" value="no"/>
+    </ant>
+  </target>
+  
+  <target name="copy-index.html" depends="prepare">
+    <!--copy html overview index.html to the target directory -->
+    <copy todir="${target.dir}/" file="${src.dir}/index.html"/>
+  </target>
+    
+</project>

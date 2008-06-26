@@ -1,0 +1,238 @@
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.    
+-->
+
+<assembly>
+  <id>src</id>
+  <formats>
+    <format>tar.gz</format>
+    <format>tar.bz2</format>
+    <format>zip</format>
+  </formats>
+  
+  <includeBaseDirectory>true</includeBaseDirectory>
+  
+  <fileSets>
+    <fileSet>
+      <directory>.</directory>
+      <outputDirectory>/uimaj-distr</outputDirectory>
+      <includes>
+        <include>src/**</include>
+        <include>pom.xml</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>src/main/readme</directory>
+      <outputDirectory>/</outputDirectory>
+      <excludes>
+		  <exclude>README</exclude>
+      </excludes>
+    </fileSet>
+    <fileSet>
+      <directory>src/main/readme_src</directory>
+      <outputDirectory>/</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>../uima-docbooks</directory>
+      <outputDirectory>/uima-docbooks</outputDirectory>
+      <excludes>
+        <exclude>target/**</exclude>
+        <!-- Directories does not exist -->
+        <!-- <exclude>docbook/**</exclude>  -->
+        <!-- <exclude>lib/**</exclude> -->
+        <!-- <exclude>Source_UIMA_SDK_Guide_Ref/**</exclude> -->
+        <exclude>.*</exclude>   
+        <exclude>LICENSE.txt</exclude>
+        <exclude>src/styles/titlepage/*.xsl</exclude>     
+      </excludes>
+    </fileSet>   
+    <fileSet>
+      <directory>../uima-docbook-tool</directory>
+      <outputDirectory>/uima-docbook-tool</outputDirectory>
+      <includes>
+        <include>build/**</include>
+        <include>catalog/**</include>
+        <include>properties/**</include>
+        <include>styles/**</include>
+        <include>tools/common-lib/**</include>
+        <include>tools/fop-versions/**</include>
+        <include>xinclude.mod</include> 
+        <include>README</include>
+        <include>README.FIRST</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>../uimaj-eclipse-update-site</directory>
+      <outputDirectory>/uimaj-eclipse-update-site</outputDirectory>
+      <includes>
+        <include>features/**</include>
+        <include>plugins/**</include>
+        <include>web/**</include>
+        <include>build.xml</include>
+        <include>index.html</include>
+        <include>site.xml</include>
+      </includes>
+    </fileSet>    
+    <fileSet>
+      <directory>../uimaj-eclipse-feature-runtime</directory>
+      <outputDirectory>/uimaj-eclipse-feature-runtime</outputDirectory>
+      <includes>
+        <include>build.properties</include>
+        <include>feature.properties</include>
+        <include>feature.xml</include>
+      </includes>
+    </fileSet>    
+    <fileSet>
+      <directory>../uimaj-eclipse-feature-tools</directory>
+      <outputDirectory>/uimaj-eclipse-feature-tools</outputDirectory>
+      <includes>
+        <include>build.properties</include>
+        <include>feature.properties</include>
+        <include>feature.xml</include>
+      </includes>
+    </fileSet>    
+    <fileSet>
+      <directory>../uimaj</directory>
+      <outputDirectory>/uimaj</outputDirectory>
+      <includes>
+        <include>pom.xml</include>
+        <include>eclipse-plugin-superPom/**</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>../jVinci</directory>
+      <outputDirectory>/jVinci</outputDirectory>
+      <includes>
+        <include>src/**</include>
+        <include>pom.xml</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>../uimaj-adapter-soap</directory>
+      <outputDirectory>/uimaj-adapter-soap</outputDirectory>
+      <includes>
+        <include>src/**</include>
+        <include>pom.xml</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>../uimaj-adapter-vinci</directory>
+      <outputDirectory>/uimaj-adapter-vinci</outputDirectory>
+      <includes>
+        <include>src/**</include>
+        <include>pom.xml</include>
+      </includes>
+    </fileSet>    
+    <fileSet>
+      <directory>../uimaj-component-test-util</directory>
+      <outputDirectory>/uimaj-component-test-util</outputDirectory>
+      <includes>
+        <include>src/**</include>
+        <include>pom.xml</include>
+      </includes>
+    </fileSet>  
+    <fileSet>
+      <directory>../uimaj-core</directory>
+      <outputDirectory>/uimaj-core</outputDirectory>
+      <includes>
+        <include>src/**</include>
+        <include>pom.xml</include>
+      </includes>
+    </fileSet>  
+    <fileSet>
+      <directory>../uimaj-cpe</directory>
+      <outputDirectory>/uimaj-cpe</outputDirectory>
+      <includes>
+        <include>src/**</include>
+        <include>pom.xml</include>
+      </includes>
+    </fileSet>      
+    <fileSet>
+      <directory>../uimaj-document-annotation</directory>
+      <outputDirectory>/uimaj-document-annotation</outputDirectory>
+      <includes>
+        <include>src/**</include>
+        <include>pom.xml</include>
+      </includes>
+    </fileSet>   
+    <fileSet>
+      <directory>../uimaj-ep-configurator</directory>
+      <outputDirectory>/uimaj-ep-configurator</outputDirectory>
+      <includes>
+        <include>src/**</include>
+        <include>pom.xml</include>
+      </includes>
+    </fileSet>      
+    <fileSet>
+      <directory>../uimaj-ep-debug</directory>
+      <outputDirectory>/uimaj-ep-debug</outputDirectory>
+      <includes>
+        <include>src/**</include>
+        <include>pom.xml</include>
+      </includes>
+    </fileSet>       
+    <fileSet>
+      <directory>../uimaj-ep-jcasgen</directory>
+      <outputDirectory>/uimaj-ep-jcasgen</outputDirectory>
+      <includes>
+        <include>src/**</include>
+        <include>pom.xml</include>
+      </includes>
+    </fileSet> 
+    <fileSet>
+      <directory>../uimaj-ep-pear-packager</directory>
+      <outputDirectory>/uimaj-ep-pear-packager</outputDirectory>
+      <includes>
+        <include>src/**</include>
+        <include>pom.xml</include>
+      </includes>
+    </fileSet>     
+    <fileSet>
+      <directory>../uimaj-ep-runtime</directory>
+      <outputDirectory>/uimaj-ep-runtime</outputDirectory>
+      <includes>
+        <include>src/**</include>
+        <include>pom.xml</include>
+      </includes>
+    </fileSet>      
+    <fileSet>
+      <directory>../uimaj-examples</directory>
+      <outputDirectory>/uimaj-examples</outputDirectory>
+      <includes>
+        <include>src/**</include>
+        <include>pom.xml</include>
+      </includes>
+    </fileSet>      
+    <fileSet>
+      <directory>../uimaj-test-util</directory>
+      <outputDirectory>/uimaj-test-util</outputDirectory>
+      <includes>
+        <include>src/**</include>
+        <include>pom.xml</include>
+      </includes>
+    </fileSet>     
+    <fileSet>
+      <directory>../uimaj-tools</directory>
+      <outputDirectory>/uimaj-tools</outputDirectory>
+      <includes>
+        <include>src/**</include>
+        <include>pom.xml</include>
+      </includes>
+    </fileSet>       
+  </fileSets>  
+</assembly>

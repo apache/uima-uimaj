@@ -1,0 +1,248 @@
+	Apache UIMA (Unstructured Information Management Architecture) v2.2.2
+                               Release Notes
+   -----------------------------------------------------------------------
+
+CONTENTS
+1. What is UIMA?
+2. Major Changes in this Release
+3. Migrating from IBM UIMA to Apache UIMA
+4. How to Get Involved
+5. How to Report Issues
+6. List of JIRA Issues Fixed in this Release   
+   
+   
+1. What is UIMA?
+
+Unstructured Information Management applications are software systems that 
+analyze large volumes of unstructured information in order to discover knowledge
+that is relevant to an end user. UIMA is a framework and SDK for developing such
+applications. An example UIM application might ingest plain text and identify 
+entities, such as persons, places, organizations; or relations, such as 
+works-for or located-at. UIMA enables such an application to be decomposed into 
+components, for example "language identification" -> 
+"language specific segmentation" -> "sentence boundary detection" -> 
+"entity detection (person/place names etc.)". Each component must implement 
+interfaces defined by the framework and must provide self-describing metadata 
+via XML descriptor files. The framework manages these components and the data 
+flow between them. Components are written in Java or C++; the data that 
+flows between components is designed for efficient mapping between these 
+languages. UIMA additionally provides capabilities to wrap components as 
+network services, and can scale to very large volumes by replicating processing 
+pipelines over a cluster of networked nodes.
+
+Apache UIMA is an Apache-licensed open source implementation of the UIMA 
+specification (that specification is, in turn, being developed concurrently by 
+a technical committee within OASIS , a standards organization). We invite and 
+encourage you to participate in both the implementation and specification 
+efforts.
+
+UIMA is a component framework for analysing unstructured content such as text, 
+audio and video. It comprises an SDK and tooling for composing and running 
+analytic components written in Java and C++, with some support for Perl, 
+Python and TCL.
+
+
+2. Major Changes in this Release
+
+The Apache UIMA release version 2.2.2 is just a bugfix release and has no major 
+release changes. For a list of all JIRA issues fixed with this release, 
+please refer to chapter 6. "List of JIRA Issues Fixed in this Release".
+
+The computation of the default result specification was corrected, and may
+impact users if you are running annotators that test the result specification.
+For aggregates, if the aggregate does not specify in its capability specifications
+that it needs a certain type, and non of the delegates of that aggregate have
+that type as an input, then the default result specification will not include
+that type, since no one needs it.  
+
+The "soap" adapter code was removed from the Eclipse runtime plugin for uima tooling, because 
+it depended on the axis jars, which were not available.  If this functionality is
+needed, please post to the uima-dev list.  
+
+3. Migrating from IBM UIMA to Apache UIMA
+
+This section describes how to move from pre-Apache versions of UIMA to the
+Apache version (starting with Apache UIMA 2.1).
+
+Note: Before running the migration utility, be sure to back up your files, just 
+in case you encounter any problems, because the migration tool updates the 
+files in place in the directories where it finds them.
+
+The migration utility is run by executing the script file 
+apache-uima/bin/ibmUimaToApacheUima.bat (Windows) or 
+apache-uima/bin/ibmUimaToApacheUima.sh (UNIX). You must pass one argument: the 
+directory containing the files that you want to be migrated. Subdirectories 
+will be processed recursively.
+
+The script scans your files and applies the necessary updates, for example 
+replacing the com.ibm package names with the new org.apache package names. 
+
+The script will only attempt to modify files with the extensions: java, xml, 
+xmi, wsdd, properties, launch, bat, cmd, sh, ksh, or csh; and files with no 
+extension. Also, files with size greater than 1,000,000 bytes will be skipped. 
+(If you want the script to modify files with other extensions, you can edit 
+the script file and change the -ext argument appropriately.)
+
+If the migration tool reports warnings, there may be a few additional steps to 
+take. The following two sections explain some simple manual changes that you
+might need to make to your code.
+
+3.1. JCas Cover Classes for DocumentAnnotation
+
+If you have run JCasGen it is likely that you have the classes 
+com.ibm.uima.jcas.tcas.DocumentAnnotation and 
+com.ibm.uima.jcas.tcas.DocumentAnnotation_Type as part of your code. This 
+package name is no longer valid, and the migration utility does not move your 
+files between directories so it is unable to fix this.
+
+If you have not made manual modifications to these classes, the best solution 
+is usually to just delete these two classes (and their containing package). 
+There is a default version in the uima-document-annotation.jar file that is 
+included in Apache UIMA. If you have made custom changes, then you should not 
+delete the file but instead move it to the correct package 
+org.apache.uima.jcas.tcas. For more information about JCas and 
+DocumentAnnotation please see Section 5.5.4, 
+"Adding Features to DocumentAnnotation" in the UIMA References manual
+(docs/html/references/references.html).
+
+3.2. JCas.getDocumentAnnotation
+
+The deprecated method JCas.getDocumentAnnotation has been removed. Its use 
+must be replaced with JCas.getDocumentAnnotationFs. The method 
+JCas.getDocumentAnnotationFs() returns type TOP, so your code must cast this to 
+type DocumentAnnotation. The reasons for this are described in Section 
+5.5.4, "Adding Features to DocumentAnnotation" in the UIMA References manual
+(docs/html/references/references.html).
+
+3.3. Rare Cases Where Additional Manual Migration is Necessary
+
+For most users there should not be any additional migration steps necessary.
+However, if the migration tool reported an additional warning or if you are 
+having trouble getting your code to compile or run after running the migration, 
+please see Section 1.4.2. "Rare Cases Where Additional Manual Migration is 
+Necessary," in the Overview and Setup manual 
+(docs/html/overview_and_setup/overview_and_setup.html).
+
+
+4. How to Get Involved
+
+The Apache UIMA project really needs and appreciates any contributions, 
+including documentation help, source code and feedback.  If you are interested
+in contributing, please visit http://incubator.apache.org/uima/get-involved.html.
+
+
+5. How to Report Issues
+
+The Apache UIMA project uses JIRA for issue tracking.  Please report any 
+issues you find at http://issues.apache.org/jira/browse/uima.
+
+
+6. List of JIRA Issues Fixed in this Release
+
+Release Notes - UIMA - Version 2.2.2
+
+
+** Bug
+    * [UIMA-475] - Document Analyzer and CPE GUI have trouble running AE's multiple times
+    * [UIMA-498] - TAEConfiguratorPlugin throws NullPointer during activation
+    * [UIMA-552] - Documentation for applications has non-working examples of API use (wrong number of args, reversed args)
+    * [UIMA-591] - In uimaj-examples the AdvancedFixedFlowController method removeAnalysisEngines is incorrect
+    * [UIMA-643] - TypeSystemUtil.type2TypeDescription() throws NPE when the superType is null
+    * [UIMA-672] - Wrong URL for mirrors support in the Eclipse update site
+    * [UIMA-677] - improve MD5 and SHA1 checksum generation
+    * [UIMA-680] - CAS is not unlocked on Errors
+    * [UIMA-686] - Deadlocks in CPM tests:CPM shutdown tests failing (hanging) intermittantly
+    * [UIMA-698] - wrong eclipse update site top level name - fix to match documentation
+    * [UIMA-722] - Fix parsing of language specifications to normalize them
+    * [UIMA-726] - ArrayFSImpl.copyToArray will throw NPE when array element is null
+    * [UIMA-727] - Result Specifications not being passed to imbedded Pears
+    * [UIMA-729] - CasCopier doesn't work with Annotations produced with LowLevelCAS API, which don't have their sofa feature set
+    * [UIMA-730] - Fix definition of containsType/Feature for Resut Spec for corner case involving x-unspecified language
+    * [UIMA-732] - featurePath object  throws LowLevelCASException if FS is not valid for feature path.
+    * [UIMA-733] - it is possible to load a type system descriptor that redefines the super type of the DocumentAnnotation
+    * [UIMA-735] - ResultSpecification_impl missing equals and hashCode for inner class - causing intermittant test case failure
+    * [UIMA-738] - Calling jcas.getType for a type that is not defined in the descriptor leaves the JCAS in an inconsitent state
+    * [UIMA-740] - change FeaturePath implementation for empty featurePath strings
+    * [UIMA-741] - File streams are not closed
+    * [UIMA-747] - addSourceToJars.sh contains windows EOL characters, making it unusable out of the box
+    * [UIMA-761] - udpate build script to do a clean build
+    * [UIMA-764] - Source distribution is incomplete: documentation can't be built
+    * [UIMA-780] - CDE hangs when processing AEs with very high initialization time (adding the AE to the aggregate or saving the descriptor)
+    * [UIMA-794] - Extra </programmlisting> in component descriptor documentation
+    * [UIMA-805] - cas.setSofaDataURI() fails on _InitialView
+    * [UIMA-807] - Eclipse update site build fails if there are more than 1 launcher.jar kind of plugin in the plugins directory
+    * [UIMA-810] - uimaj-ep-runtime missing import of log4j package
+    * [UIMA-813] - improve PEAR error message for the installation of a non-existing PEAR package
+    * [UIMA-814] - PEAR verification should be able to treat customResoruceSpecifiers
+    * [UIMA-821] - Vinci Services have getMetaData timeout problems when there are a large number of clients
+    * [UIMA-822] - eclipse plugins build broken - the messages resources are not found
+    * [UIMA-823] - Building is broken - message is failed to resolve artifact uimaj-eclipse-plugins
+    * [UIMA-826] - Type System Merging does not work consistently when a type is declared twice with different supertypes
+    * [UIMA-828] - MultiprocessingAnalysisEngine_implTest.java fails intermittently
+    * [UIMA-835] - src distribution build does not work
+    * [UIMA-836] - The maven property that points to the eclipse installation for build the eclipse update site points to the parent directory and expects to find a directory called eclipse
+    * [UIMA-858] - AnalysisEnginePoolTest intermittant failure - same issue as MultiprocessingAnalysisEngine_implTest
+    * [UIMA-859] - changeVersion scripts not handling transition from SNAPSHOT to non-SNAPSHOT properly
+    * [UIMA-863] - update release notes for release 2.2.2-incubating
+    * [UIMA-864] - update version from 2.2.2-incubating-SNAPSHOT to 2.2.2-incubating
+    * [UIMA-865] - UIMA core distribution build only works if the UIMA AS plugins are available
+    * [UIMA-878] - fix missing license headers
+    * [UIMA-879] - Eclipse plugin jar files do not have the right names
+    * [UIMA-888] - fix documentation for SOAP deployment
+    * [UIMA-889] - fix PearInstaller help file
+    * [UIMA-890] - Capabilities with no language spec do not cause proper ResultSpec to be set up
+    * [UIMA-891] - uima example annotator does not work with the new Result spec design
+    * [UIMA-892] - annoation viewer help dialog mention TAEs
+    * [UIMA-893] - annotation viewer throws FileNotFoundException
+    * [UIMA-894] - CDE import by name broken on Linux
+    * [UIMA-897] - users of uimaj-ep-runtime plugin having trouble due to jar inside jar structure
+    * [UIMA-898] - documentAnalyzer throws NPE
+    * [UIMA-899] - DocumentAnalyzer does not creat all output types for UIMA Analysis example
+    * [UIMA-906] - SOAP deployment does not work properly
+    * [UIMA-913] - cleanup and simplify C++ service wrapper implementation
+    * [UIMA-923] - update the run examples scripts to use XMI format of CAS.
+    * [UIMA-935] - [UIMA eclipse plugins] Possible WRONG wiring of imported packages for UIMA Eclipse plugins
+    * [UIMA-936] - NPE when serializing a CAS with a String array that contains a null value element
+    * [UIMA-939] - PEAR packaging eclipse plugin not visible after installation
+    * [UIMA-951] - Eclipse split packages not handled well - causing plugin ClassNotFound failures
+
+** Improvement
+    * [UIMA-477] - CDE function for import by name uses file system browser; should instead show appropriate items in classpath
+    * [UIMA-553] - casManager.releaseCas(aCas) should switch to the base view of the argument; otherwise fails to release
+    * [UIMA-657] - Eclipse Update site should keep previous versions
+    * [UIMA-687] - Remove redundant notifyAll when calling casPool.releaseCas(...)
+    * [UIMA-694] - Make Manifest Build-date work
+    * [UIMA-709] - eclipse plugins won't compile if uimaj-ep-runtime project is open
+    * [UIMA-721] - Improve performance of ResultSpecification, especially for Capability Language Flows
+    * [UIMA-731] - check if output file must be created while running the capabilityLanguageFlow tests
+    * [UIMA-734] - Check and possibly update docs for capability language flow to say not to depend on subtyping
+    * [UIMA-739] - Use compressed form of eclipse update site, and support multiple releases
+    * [UIMA-746] - add additional type checking for featurePath implementation
+    * [UIMA-774] - maven build improvements
+    * [UIMA-782] - Document Java 1.5 requirement for running Eclipse to use CDE, and mark runtime plugin (and others) as needing 1.5 level
+    * [UIMA-792] - CDE's Add "Component Engine Selection" dialog does not remember the setting for "Add selected AEs to end of flow"
+    * [UIMA-802] - CDE is unable to create PEAR descriptor as delegate
+    * [UIMA-811] - Document import-by-name CDE change
+    * [UIMA-816] - maven build - Eclipse plugin build improvements
+    * [UIMA-817] - uimaj-distr pom has wrong dependencies, due to changing eclipse plugin poms
+    * [UIMA-818] - Improve Signing artifacts for deployment, and update also website signing topic
+    * [UIMA-824] - document on website what needs to be set for running uimaj-distr assembly:assembly to specify Eclipse location
+    * [UIMA-825] - for Eclipse Update Site, remove checksum generation - it's done elsewhere, and improve specifying eclipse-home
+    * [UIMA-837] - Docbook tooling PDF footer overflows with long version name
+    * [UIMA-877] - Reverse multiple copyright statements in docbooks, per request at previous release vote
+    * [UIMA-920] - remove extraneous LICENSE files in uima-docbook-tool lib directory
+    * [UIMA-933] - [CDE] In CDE GUI, the border of some tables and combobox is not visible 
+
+** New Feature
+    * [UIMA-718] - add featurePath helper class 
+
+** Task
+    * [UIMA-681] - change UIMA version from 2.2.1-incubating to 2.3.0-incubating-SNAPSHOT
+    * [UIMA-832] - Update version of UIMAJ to 2.2.2 from 2.3.0
+
+** Test
+    * [UIMA-796] - update org.apache.uima.resource.metadata.impl.Import_implTest test to create canonical URLs
+
+** Wish
+    * [UIMA-282] - Work well with Apache logging (Log4J)
+    * [UIMA-749] - add performance report to CVD

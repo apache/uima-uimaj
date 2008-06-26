@@ -1,0 +1,2592 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd"[
+<!ENTITY imgroot "../images/tutorials_and_users_guides/tug.aae/">
+<!ENTITY % uimaents SYSTEM "../entities.ent">  
+%uimaents;
+]>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<chapter id="ugr.tug.aae">
+  <title>Annotator and Analysis Engine Developer&apos;s Guide</title>
+  <titleabbrev>Annotator &amp; AE Developer&apos;s Guide</titleabbrev>
+  
+  <para>This chapter describes how to develop UIMA <emphasis>type systems</emphasis>,
+    <emphasis>Annotators</emphasis> and <emphasis>Analysis Engines</emphasis> using
+    the UIMA SDK. It is helpful to read the UIMA Conceptual Overview chapter for a review on
+    these concepts.</para>
+  
+  <para>An <emphasis>Analysis Engine (AE)</emphasis> is a program that analyzes artifacts
+    (e.g. documents) and infers information from them.</para>
+  
+  <para>Analysis Engines are constructed from building blocks called
+    <emphasis>Annotators</emphasis>. An annotator is a component that contains analysis
+    logic. Annotators analyze an artifact (for example, a text document) and create
+    additional data (metadata) about that artifact. It is a goal of UIMA that annotators need
+    not be concerned with anything other than their analysis logic &ndash; for example the
+    details of their deployment or their interaction with other annotators.</para>
+  
+  <para>An Analysis Engine (AE) may contain a single annotator (this is referred to as a
+    <emphasis>Primitive AE)</emphasis>, or it may be a composition of others and therefore
+    contain multiple annotators (this is referred to as an <emphasis>Aggregate
+    AE</emphasis>). Primitive and aggregate AEs implement the same interface and can be used
+    interchangeably by applications.</para>
+  
+  <para>Annotators produce their analysis results in the form of typed <emphasis>Feature
+    Structures</emphasis>, which are simply data structures that have a type and a set of
+    (attribute, value) pairs. An <emphasis>annotation</emphasis> is a particular type of
+    Feature Structure that is attached to a region of the artifact being analyzed (a span of
+    text in a document, for example).</para>
+  
+  <para>For example, an annotator may produce an Annotation over the span of text
+    <literal>President Bush</literal>, where the type of the Annotation is
+    <literal>Person</literal> and the attribute <literal>fullName</literal> has the
+    value <literal>George W. Bush</literal>, and its position in the artifact is character
+    position 12 through character position 26.</para>
+  
+  <para>It is also possible for annotators to record information associated with the entire
+    document rather than a particular span (these are considered Feature Structures but not
+    Annotations).</para>
+  
+  <para>All feature structures, including annotations, are represented in the UIMA
+    <emphasis>Common Analysis Structure(CAS)</emphasis>. The CAS is the central data
+    structure through which all UIMA components communicate. Included with the UIMA SDK is an
+    easy-to-use, native Java interface to the CAS called the <emphasis>JCas</emphasis>.
+    The JCas represents each feature structure as a Java object; the example feature
+    structure from the previous paragraph would be an instance of a Java class Person with
+    getFullName() and setFullName() methods. Though the examples in this guide all use the
+    JCas, it is also possible to directly access the underlying CAS system; for more
+    information see <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.cas"/>
+    .</para>
+  
+  <para>The remainder of this chapter will refer to the analysis of text documents and the
+    creation of annotations that are attached to spans of text in those documents. Keep in mind
+    that the CAS can represent arbitrary types of feature structures, and feature structures
+    can refer to other feature structures. For example, you can use the CAS to represent a parse
+    tree for a document. Also, the artifact that you are analyzing need not be a text
+    document.</para>
+  
+  <para>This guide is organized as follows:</para>
+  
+  <itemizedlist>
+    <listitem>
+      <para><emphasis role="bold-italic"><xref linkend="ugr.tug.aae.getting_started"/></emphasis> is a
+        tutorial with step-by-step instructions for how to develop and test a simple UIMA annotator.</para>
+    </listitem>
+    <listitem>
+      <para><emphasis role="bold-italic"><xref linkend="ugr.tug.aae.configuration_logging"/>
+        </emphasis> discusses how to make your UIMA annotator configurable, and how it can write messages to the UIMA
+        log file.</para>
+    </listitem>
+    <listitem>
+      <para> <emphasis role="bold-italic"><xref linkend="ugr.tug.aae.building_aggregates"/></emphasis>
+        describes how annotators can be combined into aggregate analysis engines. It also describes how one
+        annotator can make use of the analysis results produced by an annotator that has run previously.</para>
+    </listitem>
+    <listitem>
+      <para><emphasis role="bold-italic"><xref linkend="ugr.tug.aae.other_examples"/></emphasis>
+        describes several other examples you may find interesting, including</para>
+      
+      <itemizedlist spacing="compact">
+        <listitem>
+          <para>SimpleTokenAndSentenceAnnotator
+            &ndash; a simple tokenizer and sentence annotator.</para>
+        </listitem>
+        
+        <listitem>
+          <para>PersonTitleDBWriterCasConsumer &ndash; a sample CAS Consumer which populates a relational
+            database with some annotations. It uses JDBC and in this example, hooks up with the Open Source Apache
+            Derby database. </para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+    <listitem>
+      <para><emphasis role="bold-italic"><xref linkend="ugr.tug.aae.additional_topics"/></emphasis>
+        describes additional features of the UIMA SDK that may help you in building your own annotators and analysis
+        engines.</para>
+    </listitem>
+    <listitem>
+      <para><emphasis role="bold-italic"><xref linkend="ugr.tug.aae.common_pitfalls"/> </emphasis>
+        contains some useful guidelines to help you ensure that your annotators will work correctly in any UIMA
+        application.</para>
+    </listitem>
+  </itemizedlist>
+  
+  <para>This guide does not discuss how to build UIMA Applications, which are programs that
+    use Analysis Engines, along with other components, e.g. a search engine, document store,
+    and user interface, to deliver a complete package of functionality to an end-user. For
+    information on application development, see <olink
+      targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.application"
+       xrefstyle="select: label quotedtitle"/>
+    .</para>
+  
+  <section id="ugr.tug.aae.getting_started">
+    <title>Getting Started</title>
+    
+    <para>This section is a step-by-step tutorial that will get you started developing UIMA
+      annotators. All of the files referred to by the examples in this chapter are in the
+      <literal>examples</literal> directory of the UIMA SDK. This directory is designed to
+      be imported into your Eclipse workspace; see <olink
+        targetdoc="&uima_docs_overview;"
+        targetptr="ugr.ovv.eclipse_setup.example_code"/> for instructions on how to do
+      this. 
+      See <olink  targetdoc="&uima_docs_overview;"
+        targetptr="ugr.ovv.eclipse_setup.linking_uima_javadocs"/> for how to attach the UIMA 
+        Javadocs to the jar files.
+      Also you may wish to refer to the UIMA SDK Javadocs located in the <ulink
+        url="file:../../api/index.html">docs/api</ulink> directory.</para>
+    
+        <note><para>In Eclipse 3.1, if you highlight a UIMA class or method defined in the UIMA SDK
+    Javadocs, you can conveniently have Eclipse open the corresponding Javadoc for that
+    class or method in a browser, by pressing Shift + F2.</para></note>
+    <note><para>If you downloaded the source distribution for UIMA, you can attach that as
+    well to the library Jar files; for information on how to do this, see
+    <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.javadocs"/>.</para></note>
+
+    <para>The example annotator that we are going to walk through will detect room numbers for
+      rooms where the room numbering scheme follows some simple conventions. In our example,
+      there are two kinds of patterns we want to find; here are some examples, together with
+      their corresponding regular expression patterns:
+      <variablelist>
+        <varlistentry>
+          <term>Yorktown patterns:</term>
+          <listitem><para>20-001, 31-206, 04-123(Regular Expression Pattern:
+            ##-[0-2]##)</para></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Hawthorne patterns:</term>
+          <listitem><para>GN-K35, 1S-L07, 4N-B21 (Regular Expression Pattern:
+            [G1-4][NS]-[A-Z]##)</para></listitem>
+        </varlistentry>
+      </variablelist> </para>
+    
+    <para>There are several steps to develop and test a simple UIMA annotator.</para>
+    
+    <orderedlist spacing="compact"><listitem><para>Define the CAS types that the
+      annotator will use.</para></listitem>
+      
+      <listitem><para>Generate the Java classes for these types.</para></listitem>
+      
+      <listitem><para>Write the actual annotator Java code.</para></listitem>
+      
+      <listitem><para>Create the Analysis Engine descriptor.</para></listitem>
+      
+      <listitem><para>Test the annotator. </para></listitem></orderedlist>
+    
+    <para>These steps are discussed in the next sections.</para>
+    
+    <section id="ugr.tug.aae.defining_types">
+      <title>Defining Types</title>
+      
+      <para>The first step in developing an annotator is to define the CAS Feature Structure
+        types that it creates. This is done in an XML file called a <emphasis>Type System
+        Descriptor</emphasis>. UIMA defines basic primitive types such as
+        Boolean, Byte, Short, Integer, Long, Float, and Double, as well as Arrays of these primitive
+        types.  UIMA also defines the built-in types <literal>TOP</literal>, which is the root 
+        of the type system, analogous to Object in Java; <literal>FSArray</literal>, which is 
+        an array of Feature Structures (i.e. an array of instances of TOP); and
+        <literal>Annotation</literal>, which we will discuss in more detail in this section.</para>
+      
+      <para>UIMA includes an Eclipse plug-in that will help you edit Type System
+        Descriptors, so if you are using Eclipse you will not need to worry about the details of
+        the XML syntax. See <olink targetdoc="&uima_docs_overview;"
+          targetptr="ugr.ovv.eclipse_setup"/> for instructions on setting up Eclipse and
+        installing the plugin.</para>
+      
+      <para>The Type System Descriptor for our annotator is located in the file
+        <literal>descriptors/tutorial/ex1/TutorialTypeSystem.xml.</literal> (This
+        and all other examples are located in the <literal>examples</literal> directory of
+        the installation of the UIMA SDK, which can be imported into an Eclipse project for
+        your convenience, as described in <olink targetdoc="&uima_docs_overview;"
+          targetptr="ugr.ovv.eclipse_setup.example_code"/>.)</para>
+      
+      <para>In Eclipse, expand the <literal>uimaj-examples</literal> project in the
+        Package Explorer view, and browse to the file
+        <literal>descriptors/tutorial/ex1/TutorialTypeSystem.xml</literal>.
+        Right-click on the file in the navigator and select Open With &rarr; Component
+        Descriptor Editor. Once the editor opens, click on the <quote>Type System</quote>
+        tab at the bottom of the editor window. You should see a view such as the
+        following:</para>
+      
+      
+      <screenshot>
+ <mediaobject>
+        <imageobject>
+          <imagedata scale="100" format="JPG" fileref="&imgroot;image002.jpg"/>
+        </imageobject>
+        <textobject><phrase>Screenshot of editor for Type System Definitions</phrase></textobject>
+      </mediaobject>
+  </screenshot>
+      
+      <para>Our annotator will need only one type &ndash;
+        <literal>org.apache.uima.tutorial.RoomNumber</literal>. (We use the same
+        namespace conventions as are used for Java classes.) Just as in Java, types have
+        supertypes. The supertype is listed in the second column of the left table. In this
+        case our RoomNumber annotation extends from the built-in type
+        <literal>uima.tcas.Annotation</literal>.</para>
+      
+      <para>Descriptions can be included with types and features. In this example, there is a
+        description associated with the <literal>building</literal> feature. To see it,
+        hover the mouse over the feature.</para>
+      
+      <para>The bottom tab labeled <quote>Source</quote> will show you the XML source file
+        associated with this descriptor.</para>
+      
+      <para>The built-in Annotation type declares three fields (called
+        <emphasis>Features</emphasis> in CAS terminology).  The features <literal>begin</literal>
+        and <literal>end</literal> store the character offsets of the span of text to which the 
+        annotation refers.  The feature <literal>sofa</literal> (Subject of Analysis) indicates
+        which document the begin and end offsets point into.  The <literal>sofa</literal> feature
+        can be ignored for now since we assume in this tutorial that the CAS contains only one
+        subject of analysis (document).</para>
+      <para>Our RoomNumber type will inherit these three features from
+        <literal>uima.tcas.Annotation</literal>, its supertype; they are not visible in
+        this view because inherited features are not shown. One additional feature,
+        <literal>building</literal>, is declared. It takes a String as its value. Instead
+        of String, we could have declared the range-type of our feature to be any other CAS type
+        (defined or built-in).</para>
+      
+      <para>If you are not using Eclipse, if you need to edit the type system, do so using any XML
+        or text editor, directly. The following is the actual XML representation of the Type
+        System displayed above in the editor:</para>
+      
+      
+      <programlisting><![CDATA[<?xml version="1.0" encoding="UTF-8" ?>
+  <typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
+    <name>TutorialTypeSystem</name>
+    <description>Type System Definition for the tutorial examples - 
+        as of Exercise 1</description>
+    <vendor>Apache Software Foundation</vendor>
+    <version>1.0</version>
+    <types>
+      <typeDescription>
+        <name>org.apache.uima.tutorial.RoomNumber</name>
+        <description></description>
+        <supertypeName>uima.tcas.Annotation</supertypeName>
+        <features>
+          <featureDescription>
+            <name>building</name>
+            <description>Building containing this room</description>
+            <rangeTypeName>uima.cas.String</rangeTypeName>
+          </featureDescription>
+        </features>
+      </typeDescription>
+    </types>
+  </typeSystemDescription>]]></programlisting>
+      
+    </section>
+    
+    <section id="ugr.tug.aae.generating_jcas_sources">
+      <title>Generating Java Source Files for CAS Types</title>
+      
+      <para>When you save a descriptor that you have modified, the Component Descriptor
+        Editor will automatically generate Java classes corresponding to the types that are
+        defined in that descriptor (unless this has been disabled), using a utility called
+        JCasGen. These Java classes will have the same name (including package) as the CAS
+        types, and will have get and set methods for each of the features that you have
+        defined.</para>
+      
+      <para>This feature is enabled/disabled using the UIMA menu pulldown (or the Eclipse
+        Preferences &rarr; UIMA). If automatic running of JCasGen is not happening, please
+        make sure the option is checked:</para>
+      
+      
+      <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata width="5.7in" format="JPG" fileref="&imgroot;image004.jpg"/>
+        </imageobject>
+        <textobject><phrase>Screenshot of enabling automatic running of JCasGen</phrase></textobject>
+      </mediaobject>
+  </screenshot>
+      
+      <para>The Java class for the example org.apache.uima.tutorial.RoomNumber type can
+        be found in <literal>src/org/apache/uima/tutorial/RoomNumber.java</literal>
+        . You will see how to use these generated classes in the next section.</para>
+      
+      <para>If you are not using the Component Descriptor Editor, you will need to generate
+        these Java classes by using the <emphasis>JCasGen</emphasis> tool. JCasGen reads a
+        Type System Descriptor XML file and generates the corresponding Java classes that
+        you can then use in your annotator code. To launch JCasGen, run the jcasgen shell
+        script located in the <literal>/bin</literal> directory of the UIMA SDK
+        installation. This should launch a GUI that looks something like this:</para>
+      
+      
+      <screenshot>
+        <mediaobject>
+        <imageobject>
+          <imagedata width="5.7in" format="JPG" fileref="&imgroot;image006.jpg"/>
+        </imageobject>
+        <textobject><phrase>Screenshot of JCasGen</phrase></textobject>
+      </mediaobject>
+</screenshot>
+      
+      <para>Use the <quote>Browse</quote> buttons to select your input file
+        (TutorialTypeSystem.xml) and output directory (the root of the source tree into
+        which you want the generated files placed). Then click the <quote>Go</quote>
+        button. If the Type System Descriptor has no errors, new Java source files will be
+        generated under the specified output directory.</para>
+      
+      <para>There are some additional options to choose from when running JCasGen; please
+        refer to the <olink targetdoc="&uima_docs_tools;"
+          targetptr="ugr.tools.jcasgen"/> for details.</para>
+    </section>
+    
+    <section id="ugr.tug.aae.developing_annotator_code">
+      <title>Developing Your Annotator Code</title>
+      
+      <para>Annotator implementations all implement a standard interface (AnalysisComponent), having several
+        methods, the most important of which are:
+        
+        <itemizedlist spacing="compact">
+          <listitem>
+            <para><literal>initialize</literal>, </para>
+          </listitem>
+          
+          <listitem>
+            <para><literal>process</literal>, and </para>
+          </listitem>
+          
+          <listitem>
+            <para><literal>destroy</literal>. </para>
+          </listitem>
+        </itemizedlist></para>
+      
+      <para><literal>initialize</literal> is called by the framework once when it first creates an instance of the
+        annotator class. <literal>process</literal> is called once per item being processed.
+        <literal>destroy</literal> may be called by the application when it is done using your annotator. There is a 
+        default implementation of this interface for annotators using the JCas, called JCasAnnotator_ImplBase, which 
+        has implementations of all required methods except for the process method.</para>
+      
+      <para>Our annotator class extends the JCasAnnotator_ImplBase; most annotators that use the JCas will extend
+        from this class, so they only have to implement the process method. This class is not restricted to handling
+        just text; see <olink targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.aas"/>.</para>
+      
+      <para>Annotators are not required to extend from the JCasAnnotator_ImplBase class; they may instead
+        directly implement the AnalysisComponent interface, and provide all method implementations themselves.
+        <footnote>
+        <para>Note that AnalysisComponent is not specific to JCAS. There is a method getRequiredCasInterface()
+          which the user would have to implement to return <literal>JCas.class</literal>. Then in the
+          <literal>process(AbstractCas cas)</literal> method, they would need to typecast
+          <literal>cas</literal> to type <literal>JCas</literal>.</para></footnote> This allows you to have
+        your annotator inherit from some other superclass if necessary. If you would like to do this, see the Javadocs
+        for JCasAnnotator for descriptions of the methods you must implement.</para>
+      
+      <para>Annotator classes need to be public, cannot be declared abstract, and must have public, 0-argument 
+        constructors, so that they can be instantiated by the framework. <footnote>
+        <para> Although Java classes in which you do not define any constructor will, by default, have a 0-argument
+          constructor that doesn&apos;t do anything, a class in which you have defined at least one constructor does
+          not get a default 0-argument constructor.</para> </footnote> .</para>
+      
+      <para>The class definition for our RoomNumberAnnotator implements the process method, and is shown here. You
+        can find the source for this in the
+        <literal>uimaj-examples/src/org/apache/uima/tutorial/ex1/RoomNumberAnnotator.java</literal> .
+        <note>
+        <para>In Eclipse, in the <quote>Package Explorer</quote> view, this will appear by default in the project
+          <literal>uimaj-examples</literal>, in the folder <literal>src</literal>, in the package
+          <literal>org.apache.uima.tutorial.ex1</literal>.</para></note> In Eclipse, open the
+        RoomNumberAnnotator.java in the uimaj-examples project, under the src directory.</para>
+      
+      
+      <programlisting>package org.apache.uima.tutorial.ex1;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.tutorial.RoomNumber;
+
+/**
+ * Example annotator that detects room numbers using 
+ * Java 1.4 regular expressions.
+ */
+public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
+  private Pattern mYorktownPattern = 
+        Pattern.compile("\\b[0-4]\\d-[0-2]\\d\\d\\b");
+
+  private Pattern mHawthornePattern = 
+        Pattern.compile("\\b[G1-4][NS]-[A-Z]\\d\\d\\b");
+
+  public void process(JCas aJCas) {
+    // Discussed Later
+  }
+}</programlisting>
+      
+      <para>The two Java class fields, mYorktownPattern and mHawthornePattern, hold regular expressions that
+        will be used in the process method. Note that these two fields are part of the Java implementation of the
+        annotator code, and not a part of the CAS type system. We are using the regular expression facility that is
+        built into Java 1.4. It is not critical that you know the details of how this works, but if you are curious the
+        details can be found in the Java API docs for the java.util.regex package.</para>
+      
+      <para>The only method that we are required to implement is <literal>process</literal>. This method is typically 
+        called once for each document that is being analyzed. This method takes one argument, which is a JCas instance; 
+        this holds the document to be analyzed and all of the analysis results. <footnote>
+        <para>Version 1 of UIMA specified an additional parameter, the ResultSpecification. This provides a
+          specification of which types and features are desired to be computed and "output" from this annotator. Its
+          use is optional; many annotators ignore it.</para>
+        <para> This parameter has been replaced by specific set/getResultSpecification() methods, which allow
+          the annotator to receive a signal (a method call) when the result specification changes.</para>
+        </footnote></para>
+      
+      
+      <programlisting>public void process(JCas aJCas) {
+  // get document text
+  String docText = aJCas.getDocumentText();
+  // search for Yorktown room numbers
+  Matcher matcher = mYorktownPattern.matcher(docText);
+  int pos = 0;
+  while (matcher.find(pos)) {
+    // found one - create annotation
+    RoomNumber annotation = new RoomNumber(aJCas);
+    annotation.setBegin(matcher.start());
+    annotation.setEnd(matcher.end());
+    annotation.setBuilding("Yorktown");
+    annotation.addToIndexes();
+    pos = matcher.end();
+  }
+  // search for Hawthorne room numbers
+  matcher = mHawthornePattern.matcher(docText);
+  pos = 0;
+  while (matcher.find(pos)) {
+    // found one - create annotation
+    RoomNumber annotation = new RoomNumber(aJCas);
+    annotation.setBegin(matcher.start());
+    annotation.setEnd(matcher.end());
+    annotation.setBuilding("Hawthorne");
+    annotation.addToIndexes();
+    pos = matcher.end();
+  }
+}</programlisting>
+      
+      <para>The Matcher class is part of the java.util.regex package and is used to find the room numbers in the
+        document text. When we find one, recording the annotation is as simple as creating a new Java object and
+        calling some set methods:</para>
+      
+      
+      <programlisting>RoomNumber annotation = new RoomNumber(aJCas);
+annotation.setBegin(matcher.start());
+annotation.setEnd(matcher.end());
+annotation.setBuilding("Yorktown");</programlisting>
+      
+      <para>The <literal>RoomNumber</literal> class was generated from the type system description by the
+        Component Descriptor Editor or the JCasGen tool, as discussed in the previous section.</para>
+      
+      <para>Finally, we call <literal>annotation.addToIndexes()</literal> to add the new annotation to the
+        indexes maintained in the CAS. By default, the CAS implementation used for analysis of text documents keeps
+        an index of all annotations in their order from beginning to end of the document. Subsequent annotators or
+        applications use the indexes to iterate over the annotations. </para>
+      
+      <note>
+      <para> If you don&apos;t add the instance to the indexes, it cannot be retrieved by down-stream annotators,
+        using the indexes. </para></note>
+      
+      <note>
+      <para>You can also call <literal>addToIndexes()</literal> on Feature Structures that are not subtypes of
+        <literal>uima.tcas.Annotation</literal>, but these will not be sorted in any particular way. If you want
+        to specify a sort order, you can define your own custom indexes in the CAS: see <olink
+          targetdoc="&uima_docs_ref;" targetptr="ugr.ref.cas"/> and <olink targetdoc="&uima_docs_ref;"
+          targetptr="ugr.ref.xml.component_descriptor.aes.index"/> for details.</para></note>
+      
+      <para>We&apos;re almost ready to test the RoomNumberAnnotator. There is just one more step
+        remaining.</para>
+    </section>
+    <section id="ugr.tug.aae.creating_xml_descriptor">
+      <title>Creating the XML Descriptor</title>
+      
+      <para>The UIMA architecture requires that descriptive information about an
+        annotator be represented in an XML file and provided along with the annotator class
+        file(s) to the UIMA framework at run time. This XML file is called an
+        <emphasis>Analysis Engine Descriptor</emphasis>. The descriptor includes:
+        
+        <itemizedlist><listitem><para>Name, description, version, and vendor</para>
+          </listitem>
+          
+          <listitem><para>The annotator&apos;s inputs and outputs, defined in terms of
+            the types in a Type System Descriptor</para></listitem>
+          
+          <listitem><para>Declaration of the configuration parameters that the
+            annotator accepts </para></listitem></itemizedlist> </para>
+      
+      <para>The <emphasis>Component Descriptor Editor</emphasis> plugin, which we
+        previously used to edit the Type System descriptor, can also be used to edit Analysis
+        Engine Descriptors.</para>
+      
+      <para>A descriptor for our RoomNumberAnnotator is provided with the UIMA
+        distribution under the name
+        <literal>descriptors/tutorial/ex1/RoomNumberAnnotator.xml.</literal> To
+        edit it in Eclipse, right-click on that file in the navigator and select Open With
+        &rarr; Component Descriptor Editor.</para> <tip><para>In Eclipse, you can double
+      click on the tab at the top of the Component Descriptor Editor&apos;s window
+      identifying the currently selected editor, and the window will
+      <quote>Maximize</quote>. Double click it again to restore the original size.</para>
+      </tip>
+      
+      <para>If you are not using Eclipse, you will need to edit Analysis Engine descriptors
+        manually. See <xref linkend="ugr.tug.aae.xml_intro_ae_descriptor"/> for an
+        introduction to the Analysis Engine descriptor XML syntax. The remainder of this
+        section assumes you are using the Component Descriptor Editor plug-in to edit the
+        Analysis Engine descriptor.</para>
+      
+      <para>The Component Descriptor Editor consists of several tabbed pages; we will only
+        need to use a few of them here. For more information on using this editor, see <olink
+          targetdoc="&uima_docs_tools;" targetptr="ugr.tools.cde"/>.</para>
+      
+      <para>The initial page of the Component Descriptor Editor is the Overview page, which
+        appears as follows:</para>
+      
+      
+      <screenshot>
+  <mediaobject>
+    <imageobject>
+      <imagedata width="5.7in" format="JPG" fileref="&imgroot;image008.jpg"/>
+    </imageobject>
+    <textobject><phrase>Screenshot of Component Descriptor Editor overview page</phrase>      
+    </textobject>
+  </mediaobject>
+</screenshot>
+      
+      <para>This presents an overview of the RoomNumberAnnotator Analysis Engine (AE). The
+        left side of the page shows that this descriptor is for a
+        <emphasis>Primitive</emphasis> AE (meaning it consists of a single annotator),
+        and that the annotator code is developed in Java. Also, it specifies the Java class
+        that implements our logic (the code which was discussed in the previous section).
+        Finally, on the right side of the page are listed some descriptive attributes of our
+        annotator.</para>
+      
+      <para>The other two pages that need to be filled out are the Type System page and the
+        Capabilities page. You can switch to these pages using the tabs at the bottom of the
+        Component Descriptor Editor. In the tutorial, these are already filled out for
+        you.</para>
+      
+      <para>The RoomNumberAnnotator will be using the TutorialTypeSystem we looked at in
+        Section <xref linkend="ugr.tug.aae.defining_types"/>. To specify this, we add
+        this type system to the Analysis Engine&apos;s list of Imported Type Systems, using
+        the Type System page&apos;s right side panel, as shown here:</para>
+      
+      
+      <screenshot>
+   <mediaobject>
+     <imageobject>
+       <imagedata width="5.7in" format="JPG" fileref="&imgroot;image010.jpg"/>
+     </imageobject>
+     <textobject><phrase>Screenshot of CDE Type System page</phrase></textobject>
+   </mediaobject>
+ </screenshot>
+      
+      <para>On the Capabilities page, we define our annotator&apos;s inputs and outputs, in
+        terms of the types in the type system. The Capabilities page is shown below:</para>
+      
+      
+      <screenshot>
+   <mediaobject>
+     <imageobject>
+       <imagedata width="5.3in" format="JPG" fileref="&imgroot;image012.jpg"/>
+     </imageobject>
+     <textobject><phrase>Screenshot of CDE Capabilities page</phrase></textobject>
+   </mediaobject>
+ </screenshot>
+      
+      <para>Although capabilities come in sets, having multiple sets is deprecated; here
+        we&apos;re just using one set. The RoomNumberAnnotator is very simple. It requires
+        no input types, as it operates directly on the document text -- which is supplied as a
+        part of the CAS initialization (and which is always assumed to be present). It
+        produces only one output type (RoomNumber), and it sets the value of the
+        <literal>building</literal> feature on that type. This is all represented on the
+        Capabilities page.</para>
+      
+      <para>The Capabilities page has two other parts for specifying languages and Sofas.
+        The languages section allows you to specify which languages your Analysis Engine
+        supports. The RoomNumberAnnotator happens to be language-independent, so we can
+        leave this blank. The Sofas section allows you to specify the names of additional
+        subjects of analysis. This capability and the Sofa Mappings at the bottom are
+        advanced topics, described in <olink targetdoc="&uima_docs_tutorial_guides;"
+          targetptr="ugr.tug.aas"/>. </para>
+      
+      <para>This is all of the information we need to provide for a simple annotator. If you
+        want to peek at the XML that this tool saves you from having to write, click on the
+        <quote>Source</quote> tab at the bottom to view the generated XML.</para>
+    </section>
+    
+    <section id="ugr.tug.aae.testing_your_annotator">
+      <title>Testing Your Annotator</title>
+      
+      <para>Having developed an annotator, we need a way to try it out on some example
+        documents. The UIMA SDK includes a tool called the Document Analyzer that will allow
+        us to do this. To run the Document Analyzer, execute the documentAnalyzer shell
+        script that is in the <literal>bin</literal> directory of your UIMA SDK
+        installation, or, if you are using the example Eclipse project, execute the
+        <quote>UIMA Document Analyzer</quote> run configuration supplied with that
+        project. (To do this, click on the menu bar Run &rarr; Run ... &rarr; and under Java
+        Applications in the left box, click on UIMA Document Analyzer.)</para>
+      
+      <para>You should see a screen that looks like this:</para>
+      
+      
+      <screenshot>
+   <mediaobject>
+     <imageobject>
+       <imagedata width="5.7in" format="JPG" fileref="&imgroot;image014.jpg"/>
+     </imageobject>
+     <textobject><phrase>Screenshot of UIMA Document Analyzer GUI</phrase></textobject>
+   </mediaobject>       
+      </screenshot>
+      
+      <para>There are six options on this screen:</para>
+      
+      <orderedlist><listitem><para>Directory containing documents to analyze</para>
+        </listitem>
+        
+        <listitem><para>Directory where analysis results will be written</para>
+        </listitem>
+        
+        <listitem><para>The XML descriptor for the Analysis Engine (AE) you want to
+          run</para></listitem>
+        
+        <listitem><para>(Optional) an XML tag, within the input documents, that contains
+          the text to be analyzed. For example, the value TEXT would cause the AE to only
+          analyze the portion of the document enclosed within
+          &lt;TEXT&gt;...&lt;/TEXT&gt; tags.</para></listitem>
+        
+        <listitem><para>Language of the document </para></listitem>
+        
+        <listitem><para>Character encoding </para></listitem></orderedlist>
+      
+      <para>Use the Browse button next to the third item to set the <quote>Location of AE XML
+        Descriptor</quote> field to the descriptor we&apos;ve just been discussing
+        &mdash;
+        <literal>&lt;where-you-installed-uima-e.g.UIMA_HOME&gt; 
+          /examples/descriptors/tutorial/ex1/RoomNumberAnnotator.xml</literal>
+        . Set the other fields to the values shown in the screen shot above (which should be the
+        default values if this is the first time you&apos;ve run the Document Analyzer). Then
+        click the <quote>Run</quote> button to start processing.</para>
+      
+      <para>When processing completes, an <quote>Analysis Results</quote> window should
+        appear.</para>
+      
+      
+      <screenshot>
+   <mediaobject>
+     <imageobject>
+       <imagedata width="3.5in" format="JPG" fileref="&imgroot;image016.jpg"/>
+     </imageobject>
+     <textobject><phrase>Screenshot of UIMA Document Analyzer Results GUI</phrase></textobject>
+   </mediaobject>       
+      </screenshot>
+      
+      <para>Make sure <quote>Java Viewer</quote> is selected as the Results Display
+        Format, and <emphasis role="bold">double-click</emphasis> on the document
+        UIMASummerSchool2003.txt to view the annotations that were discovered. The view
+        should look something like this:</para>
+      
+      
+      <screenshot>
+   <mediaobject>
+     <imageobject>
+       <imagedata width="5.7in" format="JPG" fileref="&imgroot;image018.jpg"/>
+     </imageobject>
+     <textobject><phrase>Screenshot of UIMA CAS Annotation Viewer GUI</phrase></textobject>
+   </mediaobject>       
+      </screenshot>
+      
+      <para>You can click the mouse on one of the highlighted annotations to see a list of all
+        its features in the frame on the right.</para> <note><para>The legend will only show
+      those types which have at least one instance in the CAS, and are declared as outputs in the
+      capabilities section of the descriptor (see <xref
+        linkend="ugr.tug.aae.creating_xml_descriptor"/>. </para></note>
+      
+      <para>You can use the DocumentAnalyzer to test any UIMA annotator
+        &mdash; just make sure that the annotator&apos;s classes are in the class
+        path.</para>
+    </section>
+  </section>
+  
+  <section id="ugr.tug.aae.configuration_logging">
+    <title>Configuration and Logging</title>
+    
+    <section id="ugr.tug.aae.configuration_parameters">
+      <title>Configuration Parameters</title>
+      
+      <para>The example RoomNumberAnnotator from the previous section used hardcoded
+        regular expressions and location names, which is obviously not very flexible. For
+        example, you might want to have the patterns of room numbers be supplied by a
+        configuration parameter, rather than having to redo the annotator&apos;s Java code
+        to add additional patterns. Rather than add a new hardcoded regular expression for a
+        new pattern, a better solution is to use configuration parameters.</para>
+      
+      <para>UIMA allows annotators to declare configuration parameters in their
+        descriptors. The descriptor also specifies default values for the parameters,
+        though these can be overridden at runtime.</para>
+      
+      <section id="ugr.tug.aae.declaring_parameters_in_the_descriptor">
+        <title>Declaring Parameters in the Descriptor</title>
+        
+        <para>The example descriptor
+          <literal>descriptors/tutorial/ex2/RoomNumberAnnotator.xml</literal> is
+          the same as the descriptor from the previous section except that information has
+          been filled in for the Parameters and Parameter Settings pages of the Component
+          Descriptor Editor.</para>
+        
+        <para>First, in Eclipse, open example two&apos;s RoomNumberAnnotator in the
+          Component Descriptor Editor, and then go to the Parameters page (click on the
+          parameters tab at the bottom of the window), which is shown below:</para>
+        
+        
+        <screenshot>
+   <mediaobject>
+     <imageobject>
+       <imagedata width="5.7in" format="JPG" fileref="&imgroot;image020.jpg"/>
+     </imageobject>
+     <textobject><phrase>Screenshot of UIMA Component Descriptor Editor (CDE) Parameters page</phrase></textobject>
+   </mediaobject>       
+      </screenshot>
+        
+        <para>Two parameters &ndash; Patterns and Locations -- have been declared. In this
+          screen shot, the mouse (not shown) is hovering over Patterns to show its
+          description in the small popup window. Every parameter has the following
+          information associated with it:</para>
+        
+        <itemizedlist><listitem><para>name &ndash; the name by which the annotator code
+          refers to the parameter</para></listitem>
+          
+          <listitem><para>description &ndash; a natural language description of the
+            intent of the parameter</para></listitem>
+          
+          <listitem><para>type &ndash; the data type of the parameter&apos;s value
+            &ndash; must be one of String, Integer, Float, or Boolean.</para></listitem>
+          
+          <listitem><para>multiValued &ndash; true if the parameter can take
+            multiple-values (an array), false if the parameter takes only a single value.
+            Shown above as <literal>Multi</literal>.</para></listitem>
+          
+          <listitem><para>mandatory &ndash; true if a value must be provided for the
+            parameter. Shown above as <literal>Req</literal> (for required). </para>
+          </listitem></itemizedlist>
+        
+        <para>Both of our parameters are mandatory and accept an array of Strings as their
+          value.</para>
+        
+        <para>Next, default values are assigned to the parameters on the Parameter Settings
+          page:</para>
+        
+        
+        <screenshot>
+   <mediaobject>
+     <imageobject>
+       <imagedata width="5.7in" format="JPG" fileref="&imgroot;image022.jpg"/>
+     </imageobject>
+     <textobject><phrase>Screenshot of UIMA Component Descriptor Editor (CDE) Parameter Settings page</phrase></textobject>
+   </mediaobject>       
+      </screenshot>
+        
+        <para>Here the <quote>Patterns</quote> parameter is selected, and the right pane
+          shows the list of values for this parameter, in this case the regular expressions
+          that match particular room numbering conventions. Notice the third pattern is
+          new, for matching the style of room numbers in the third building, which has room
+          numbers such as <literal>J2-A11</literal>.</para>
+      </section>
+      <section id="ugr.tug.aae.accessing_parameter_values_from_annotator">
+        <title>Accessing Parameter Values from the Annotator Code</title>
+        
+        <para>The class
+          <literal>org.apache.uima.tutorial.ex2.RoomNumberAnnotator</literal> has
+          overridden the initialize method. The initialize method is called by the UIMA
+          framework when the annotator is instantiated, so it is a good place to read
+          configuration parameter values. The default initialize method does nothing with
+          configuration parameters, so you have to override it. To see the code in Eclipse,
+          switch to the src folder, and open
+          <literal>org.apache.uima.tutorial.ex2</literal>. Here is the method
+          body:</para>
+        
+        
+        <programlisting>/**
+* @see AnalysisComponent#initialize(UimaContext)
+*/
+public void initialize(UimaContext aContext) 
+        throws ResourceInitializationException {
+  super.initialize(aContext);
+  
+  // Get config. parameter values  
+  String[] patternStrings = 
+        (String[]) aContext.getConfigParameterValue("Patterns");
+  mLocations = 
+        (String[]) aContext.getConfigParameterValue("Locations");
+
+  // compile regular expressions
+  mPatterns = new Pattern[patternStrings.length];
+  for (int i = 0; i &lt; patternStrings.length; i++) {
+    mPatterns[i] = Pattern.compile(patternStrings[i]);
+  }
+}</programlisting>
+        
+        <para>Configuration parameter values are accessed through the UimaContext. As you
+          will see in subsequent sections of this chapter, the UimaContext is the
+          annotator&apos;s access point for all of the facilities provided by the UIMA
+          framework &ndash; for example logging and external resource access.</para>
+        
+        <para>The UimaContext&apos;s <literal>getConfigParameterValue</literal>
+          method takes the name of the parameter as an argument; this must match one of the
+          parameters declared in the descriptor. The return value of this method is a Java
+          Object, whose type corresponds to the declared type of the parameter. It is up to the
+          annotator to cast it to the appropriate type, String[] in this case.</para>
+        
+        <para>If there is a problem retrieving the parameter values, the framework throws an
+          exception. Generally annotators don&apos;t handle these, and just let them
+          propagate up.</para>
+        
+        <para>To see the configuration parameters working, run the Document Analyzer
+          application and select the descriptor
+          <literal>examples/descriptors/tutorial/ex2/RoomNumberAnnotator.xml</literal>
+          . In the example document <literal>WatsonConferenceRooms.txt</literal>, you
+          should see some examples of Hawthorne II room numbers that would not have been
+          detected by the ex1 version of RoomNumberAnnotator.</para>
+      </section>
+      
+      <section id="ugr.tug.aae.supporting_reconfiguration">
+        <title>Supporting Reconfiguration</title>
+        
+        <para>If you take a look at the Javadocs (located in the <ulink
+            url="api/index.html">docs/api</ulink> directory) for
+          <literal>org.apache.uima.analysis_component.AnaysisComponent</literal>
+          (which our annotator implements indirectly through JCasAnnotator_ImplBase),
+          you will see that there is a reconfigure() method, which is called by the containing
+          application through the UIMA framework, if the configuration parameter values
+          are changed.</para>
+        
+        <para>The AnalysisComponent_ImplBase class provides a default implementation
+          that just calls the annotator&apos;s destroy method followed by its initialize
+          method. This works fine for our annotator. The only situation in which you might
+          want to override the default reconfigure() is if your annotator has very expensive
+          initialization logic, and you don&apos;t want to reinitialize everything if just
+          one configuration parameter has changed. In that case, you can provide a more
+          intelligent implementation of reconfigure() for your annotator.</para>
+        
+      </section>
+      
+      <section id="ugr.tug.aae.configuration_parameter_groups">
+        <title>Configuration Parameter Groups</title>
+        
+        <para>For annotators with many sets of configuration parameters, UIMA supports
+          organizing them into groups. It is possible to define a parameter with the same name
+          in multiple groups; one common use for this is for annotators that can process
+          documents in several languages and which want to have different parameter
+          settings for the different languages.</para>
+        
+        <para>The syntax for defining parameter groups in your descriptor is fairly
+          straightforward &ndash; see <olink targetdoc="&uima_docs_ref;"
+            targetptr="ugr.ref.xml.component_descriptor"/> for details. Values of
+          parameters defined within groups are accessed through the two-argument version
+          of <literal>UimaContext.getConfigParameterValue</literal>, which takes
+          both the group name and the parameter name as its arguments.</para>
+      </section>
+    </section>
+    
+    <section id="ugr.tug.aae.logging">
+      <title>Logging</title>
+      
+      <para>The UIMA SDK provides a logging facility, which is very similar to the
+        java.util.logging.Logger class that was introduced in Java 1.4.</para>
+      
+      <para>In the Java architecture, each logger instance is associated with a name. By
+        convention, this name is often the fully qualified class name of the component
+        issuing the logging call. The name can be referenced in a configuration file when
+        specifying which kinds of log messages to actually log, and where they should
+        go.</para>
+      
+      <para>The UIMA framework supports this convention using the
+        <literal>UimaContext</literal> object. If you access a logger instance using
+        <literal>getContext().getLogger()</literal> within an Annotator, the logger
+        name will be the fully qualified name of the Annotator implementation class.</para>
+      
+      <para>Here is an example from the process method of
+        <literal>org.apache.uima.tutorial.ex2.RoomNumberAnnotator</literal>:
+        
+        
+        <programlisting>getContext().getLogger().log(Level.FINEST,"Found: " + annotation);</programlisting>
+        </para>
+      
+      <para>The first argument to the log method is the level of the log output. Here, a value of
+        FINEST indicates that this is a highly-detailed tracing message. While useful for
+        debugging, it is likely that real applications will not output log messages at this
+        level, in order to improve their performance. Other defined levels, from lowest to
+        highest importance, are FINER, FINE, CONFIG, INFO, WARNING, and SEVERE.</para>
+      
+      <para>If no logging configuration file is provided (see next section), the Java
+        Virtual Machine defaults would be used, which typically set the level to INFO and
+        higher messages, and direct output to the console.</para>
+      
+      <para>If you specify the standard UIMA SDK <literal>Logger.properties,</literal>
+        the output will be directed to a file named uima.log, in the current working directory
+        (often the <quote>project</quote> directory when running from Eclipse, for
+        instance).</para> <note><para>When using Eclipse, the uima.log file, if written
+      into the Eclipse workspace in the project uimaj-examples, for example, may not appear
+      in the Eclipse package explorer view until you right-click the uimaj-examples project
+      with the mouse, and select <quote>Refresh</quote>. This operation refreshes the
+      Eclipse display to conform to what may have changed on the file system. Also, you can set
+      the Eclipse preferences for the workspace to automatically refresh (Window &rarr;
+      Preferences &rarr; General &rarr; Workspace, then click the <quote>refresh
+      automatically</quote> checkbox.</para></note>
+      
+      <section id="ugr.tug.aae.logging.configuring">
+        <title>Specifying the Logging Configuration</title>
+        
+        <para>The standard UIMA logger uses the underlying Java 1.4 logging mechanism. You
+          can use the APIs that come with that to configure the logging. In addition, the
+          standard Java 1.4 logging initialization mechanisms will look for a Java System
+          Property named <literal>java.util.logging.config.file</literal> and if
+          found, will use the value of this property as the name of a standard
+          <quote>properties</quote> file, for setting the logging level. Please refer to
+          the Java 1.4. documentation for more information on the format and use of this
+          file.</para>
+        
+        <para>Two sample logging specification property files can be found in the UIMA_HOME
+          directory where the UIMA SDK is installed:
+          <literal>config/Logger.properties</literal>, and
+          <literal>config/FileConsoleLogger.properties</literal>. These specify the same
+          logging, except the first logs just to a file, while the second logs both to a file and
+          to the console. You can edit these files, or create additional ones, as described
+          below, to change the logging behavior.</para>
+        
+        <para>When running your own Java application, you can specify the location of the
+          logging configuration file on your Java command line by setting the Java system
+          property <literal>java.util.logging.config.file</literal> to be the logging
+          configuration filename. This file specification can be either absolute or
+          relative to the working directory. For example:
+          
+          
+          <programlisting><?db-font-size 65% ?>java "-Djava.util.logging.config.file=C:/Program Files/apache-uima/config/Logger.properties"</programlisting>
+          <note><para>In a shell script, you can use environment variables such as
+          UIMA_HOME if convenient.</para></note> </para>
+               
+        <para>If you are using Eclipse to launch your application, you can set this property
+          in the VM arguments section of the Arguments tab of the run configuration screen. If
+          you&apos;ve set an environment variable UIMA_HOME, you could for example, use the
+          string:
+          <literal>"-Djava.util.logging.config.file=${env_var:UIMA_HOME}/config/Logger.properties".</literal>
+          </para>
+        
+        <para>If you running the .bat or .sh files in the UIMA SDK's <literal>bin</literal> directory, you can specify the location of your
+           logger configuration file by setting the <literal>UIMA_LOGGER_CONFIG_FILE</literal> environment variable prior to running the script,
+           for example (on Windows): 
+
+           <programlisting><?db-font-size 70% ?>set UIMA_LOGGER_CONFIG_FILE=C:/myapp/MyLogger.properties</programlisting>        
+        </para>        
+      </section>
+      
+      <section id="ugr.tug.aae.logging.setting_logging_levels">
+        <title>Setting Logging Levels</title>
+        
+        <para>Within the logging control file, the default global logging level specifies
+          which kinds of events are logged across all loggers. For any given facility this
+          global level can be overridden by a facility specific level. Multiple handlers are
+          supported. This allows messages to be directed to a log file, as well as to a
+          <quote>console</quote>. Note that the ConsoleHandler also has a separate level
+          setting to limit messages printed to the console. For example: <literal>.level=
+          INFO</literal> </para>
+        
+        <para>The properties file can change where the log is written, as well.</para>
+        
+        <para>Facility specific properties allow different logging for each class, as
+          well. For example, to set the com.xyz.foo logger to only log SEVERE messages:
+          <literal>com.xyz.foo.level = SEVERE</literal></para>
+        
+        <para>If you have a sample annotator in the package
+          <literal>org.apache.uima.SampleAnnotator</literal> you can set the log level
+          by specifying: <literal>org.apache.uima.SampleAnnotator.level =
+          ALL</literal></para>
+        
+        <para>There are other logging controls; for a full discussion, please read the
+          contents of the <literal>Logger.properties</literal> file and the Java
+          specification for logging in Java 1.4.</para>
+      </section>
+      
+      <section id="ugr.tug.aae.logging.output_format">
+        <title>Format of logging output</title>
+        
+        <para>The logging output is formatted by handlers specified in the properties file
+          for configuring logging, described above. The default formatter that comes with
+          the UIMA SDK formats logging output as follows:</para>
+        
+        <para><literal>Timestamp - threadID: sourceInfo: Message level:
+          message</literal></para>
+        
+        <para> Here&apos;s an example:</para>
+        
+        <para><literal>7/12/04 2:15:35 PM - 10:
+          org.apache.uima.util.TestClass.main(62): INFO: You are not logged
+          in!</literal></para>
+      </section>
+      
+      <section id="ugr.tug.aae.logging.meaning_of_severity_levels">
+        <title>Meaning of the logging severity levels</title>
+        
+        <para>These levels are defined by the Java logging framework, which was
+          incorporated into Java as of the 1.4 release level. The levels are defined in the
+          Javadocs for java.util.logging.Level, and include both logging and tracing
+          levels:
+          <itemizedlist spacing="compact">
+            <listitem><para>OFF is a special level that can be used to turn off
+              logging.</para></listitem>
+            
+            <listitem><para>ALL indicates that all messages should be logged. </para>
+            </listitem>
+            
+            <listitem><para>CONFIG is a message level for configuration messages. These
+              would typically occur once (during configuration) in methods like
+              <literal>initialize()</literal>. </para></listitem>
+            
+            <listitem><para>INFO is a message level for informational messages, for
+              example, connected to server IP: 192.168.120.12 </para></listitem>
+            
+            <listitem><para>WARNING is a message level indicating a potential
+              problem.</para></listitem>
+            
+            <listitem><para>SEVERE is a message level indicating a serious
+              failure.</para></listitem>
+          </itemizedlist></para>
+        
+        <para> Tracing levels, typically used for debugging:
+          <itemizedlist>
+            
+            <listitem><para>FINE is a message level providing tracing information,
+              typically at a collection level (messages occurring once per collection).
+              </para></listitem>
+            
+            <listitem><para>FINER indicates a fairly detailed tracing message,
+              typically at a document level (once per document).</para></listitem>
+            
+            <listitem><para>FINEST indicates a highly detailed tracing message. </para>
+            </listitem></itemizedlist></para>
+      </section>
+      
+      <section id="ugr.tug.aae.logging.using_outside_of_an_annotator">
+        <title>Using the logger outside of an annotator</title>
+        
+        <para>An application using UIMA may want to log its messages using the same logging
+          framework. This can be done by getting a reference to the UIMA logger, as follows:
+          
+          
+          <programlisting>Logger logger = UIMAFramework.getLogger(TestClass.class);</programlisting>
+          </para>
+        
+        <para>The optional class argument allows filtering by class (if the log handler
+          supports this). If not specified, the name of the returned logger instance is
+          <quote>org.apache.uima</quote>.</para>
+      </section>
+      
+      <section id="ugr.tug.aae.logging.change_logger_implementation">
+        <title>Changing the underlying UIMA logging implementation</title>
+        
+        <para>By default the UIMA framework use, under the hood of the UIMA Logger interface, the Java logging framework 
+        to do logging. But it is possible to change the logging implementation that UIMA use from Java logging to 
+        an arbitrary logging system when specifying the system property  
+          <programlisting>-Dorg.apache.uima.logger.class=&lt;loggerClass></programlisting>
+        when the UIMA framework is started.
+        </para>
+        <para>
+          The specified logger class must be available in the classpath and have to implement the 
+          <code>org.apache.uima.util.Logger</code> interface. 
+        </para>
+        
+        <para>
+          UIMA also provides a logging implementation that use Apache Log4j instead of Java logging. To
+          use Log4j you have to provide the Log4j jars in the classpath and your application 
+          must specify the logging configuration as shown below. 
+          <programlisting><?db-font-size 80% ?>-Dorg.apache.uima.logger.class=&lt;org.apache.uima.util.impl.Log4jLogger_impl></programlisting>
+        </para>
+      </section>
+      
+      
+    </section>
+  </section>  
+  <section id="ugr.tug.aae.building_aggregates">
+    <title>Building Aggregate Analysis Engines</title>
+    
+    <section id="ugr.tug.aae.combining_annotators">
+      <title>Combining Annotators</title>
+      
+      <para>The UIMA SDK makes it very easy to combine any sequence of Analysis Engines to
+        form an <emphasis>Aggregate Analysis Engine</emphasis>. This is done through an
+        XML descriptor; no Java code is required!</para>
+      
+      <para>If you go to the <literal>examples/descriptors/tutorial/ex3</literal>
+        folder (in Eclipse, it&apos;s in your uimaj-examples project, under the
+        <literal>descriptors/tutorial/ex3</literal> folder), you will find a
+        descriptor for a TutorialDateTime annotator. This annotator detects dates and
+        times (and also sentences and words). To see what this annotator can do, try it out
+        using the Document Analyzer. If you are curious as to how this annotator works, the
+        source code is included, but it is not necessary to understand the code at this
+        time.</para>
+      
+      <para>We are going to combine the TutorialDateTime annotator with the
+        RoomNumberAnnotator to create an aggregate Analysis Engine. This is illustrated
+        in the following figure:
+        
+        <figure id="ugr.tug.aae.fig.combining_annotators">
+          <title>Combining Annotators to form an Aggregate Analysis Engine</title>
+          <mediaobject>
+            <imageobject>
+              <imagedata width="5.7in" format="PNG"
+                fileref="&imgroot;image024.png"/>
+            </imageobject>
+            <textobject> <phrase>Combining Annotators to form an Aggregate Analysis
+              Engine</phrase>
+            </textobject>
+          </mediaobject>
+        </figure> </para>
+      
+      <para>The descriptor that does this is named
+        <literal>RoomNumberAndDateTime.xml</literal>, which you can open in the
+        Component Descriptor Editor plug-in. This is in the uimaj-examples project in the
+        folder <literal>descriptors/tutorial/ex3</literal>. </para>
+      
+      <para>The <quote>Aggregate</quote> page of the Component Descriptor Editor is
+        used to define which components make up the aggregate. A screen shot is shown below.
+        (If you are not using Eclipse, see <xref
+          linkend="ugr.tug.aae.xml_intro_ae_descriptor"/> for the actual XML syntax
+        for Aggregate Analysis Engine Descriptors.)</para>
+      
+      
+        <screenshot>
+  <mediaobject>
+    <imageobject>
+      <imagedata width="5.7in" format="JPG" fileref="&imgroot;image026.jpg"/>
+    </imageobject>
+    <textobject>
+      <phrase>Aggregate page of the Component Descriptor Editor (CDE)</phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+        
+      <para>On the left side of the screen is the list of component engines that make up the
+        aggregate &ndash; in this case, the TutorialDateTime annotator and the
+        RoomNumberAnnotator. To add a component, you can click the <quote>Add</quote>
+        button and browse to its descriptor. You can also click the <quote>Find AE</quote>
+        button and search for an Analysis Engine in your Eclipse workspace.
+        <note><para>The <quote>AddRemote</quote> button is used for adding components
+        which run remotely (for example, on another machine using a remote networking
+        connection). This capability is described in section <olink
+          targetdoc="&uima_docs_tutorial_guides;"
+          targetptr="ugr.tug.application.how_to_call_a_uima_service"/>,</para>
+        </note> </para>
+      
+      <para>The order of the components in the left pane does not imply an order of
+        execution. The order of execution, or <quote>flow</quote> is determined in the
+        <quote>Component Engine Flow</quote> section on the right. UIMA supports
+        different types of algorithms (including user-definable) for determining the
+        flow. Here we pick the simplest: <literal>FixedFlow</literal>. We have chosen to
+        have the RoomNumberAnnotator execute first, although in this case it
+        doesn&apos;t really matter, since the RoomNumber and DateTime annotators do not
+        have any dependencies on one another.</para>
+      
+      <para>If you look at the <quote>Type System</quote> page of the Component
+        Descriptor Editor, you will see that it displays the type system but is not
+        editable. The Type System of an Aggregate Analysis Engine is automatically
+        computed by merging the Type Systems of all of its components.</para>
+      
+      <warning><para>If the components have different definitions for the same type name,
+        The Component Descriptor Editor will show a warning.  It is possible to continue past
+        this warning, in which case your aggregate's type system will have the correct
+        <quote>merged</quote>
+        type definition that contains all of the features defined on that type by all of your
+        components.  However, it is not recommended to use this feature in conjunction with JCAS,
+        since the JCAS Java Class definitions cannot be so easily merged.  See
+        <olink
+          targetdoc="&uima_docs_ref;"
+          targetptr="ugr.ref.jcas.merging_types_from_other_specs"/> for more information.
+      </para></warning>
+      
+      <para>The Capabilities page is where you explicitly declare the aggregate Analysis
+        Engine&apos;s inputs and outputs. Sofas and Languages are described later.
+        
+          
+          <screenshot>
+     <mediaobject>
+       <imageobject>
+         <imagedata width="5.7in" format="JPG" fileref="&imgroot;image028.jpg"/>
+       </imageobject>
+       <textobject><phrase>Screen shot of the Capabilities page of the Component Descriptor Editor
+       </phrase></textobject>
+     </mediaobject>
+   </screenshot>
+          </para>
+        <para>Note that it is not automatically assumed that all outputs of each component
+          Analysis Engine (AE) are passed through as outputs of the aggregate AE. In this
+          case, for example, we have decided to suppress the Word and Sentence annotations
+          that are produced by the TutorialDateTime annotator.</para>
+        
+        <para>You can run this AE using the Document Analyzer in the same way that you run any
+          other AE. Just select the <literal>examples/descriptors/tutorial/ex3/
+          RoomNumberAndDateTime.xml</literal> descriptor and click the Run button. You
+          should see that RoomNumbers, Dates, and Times are all shown but that Words and
+          Sentences are not:</para>
+        
+        
+        <screenshot>
+     <mediaobject>
+       <imageobject>
+         <imagedata width="5.7in" format="JPG" fileref="&imgroot;image030.jpg"/>
+       </imageobject>
+       <textobject><phrase>Screen shot results of running the Document Analyzer
+       </phrase></textobject>
+     </mediaobject>
+   </screenshot>
+        
+    </section>
+    
+    <section id="ugr.tug.aae.aaes_can_contain_cas_consumers">
+      <title>AEs can also contain CAS Consumers</title>
+      
+      <para>In addition to aggregating Analysis Engines, Aggregates can also contain CAS
+        Consumers (see <olink targetdoc="&uima_docs_tutorial_guides;"
+          targetptr="ugr.tug.cpe"/>, or even a mixture of these components with regular
+        Analysis Engines. The UIMA Examples has an example of an Aggregate which contains
+        both an analysis engine and a CAS consumer, in
+        <literal>examples/descriptors/MixedAggregate.xml.</literal></para>
+      
+      <para>Analysis Engines support the <literal>collectionProcessComplete</literal>
+        method, which is particularly important for many CAS Consumers.  If
+        an application (or a Collection Processing Engine) calls 
+        <literal>collectionProcessComplete</literal> no an aggregate, the framework
+        will deliver that call to all of the components of the aggregate.  If you use
+        one of the built-in flow types (fixedFlow or capabilityLanguageFlow), then the
+        order specified in that flow will be the same order in which the
+        <literal>collectionProcessComplete</literal> calls are made to the components.
+        If a custom flow is used, then the calls will be made in arbitrary order.
+      </para>
+    </section>
+    
+    <section id="ugr.tug.aae.reading_results_previous_annotators">
+      <title>Reading the Results of Previous Annotators</title>
+      
+      <para>So far, we have been looking at annotators that look directly at the document text. However, annotators
+        can also use the results of other annotators. One useful thing we can do at this point is look for the
+        co-occurrence of a Date, a RoomNumber, and two Times &ndash; and annotate that as a Meeting.</para>
+      
+      <para>The CAS maintains <emphasis>indexes</emphasis> of annotations, and from an index you can obtain an
+        iterator that allows you to step through all annotations of a particular type. Here&apos;s some example code
+        that would iterate over all of the TimeAnnot annotations in the JCas:
+        
+        
+        <programlisting>FSIndex timeIndex = aJCas.getAnnotationIndex(TimeAnnot.type);
+Iterator timeIter = timeIndex.iterator();   
+while (timeIter.hasNext()) {
+  TimeAnnot time = (TimeAnnot)timeIter.next();
+
+  //do something
+}</programlisting></para>
+      
+      <note>
+      <para>You can also use the method
+        <literal>JCAS.getJFSIndexRepository().getAllIndexedFS(YourClass.type)</literal>, which returns an iterator
+        over all instances of <literal>YourClass</literal> in no particular order. This can be useful for types
+        that are not subtypes of the built-in Annotation type and which therefore have no default sort order.</para>
+        
+      <para>Also, if you've defined your own custom index as described in <olink targetdoc="&uima_docs_ref;"
+          targetptr="ugr.ref.xml.component_descriptor.aes.index"/>, you can get an iterator over that
+        specific index by calling <literal>aJCas.getJFSIndexRepository().getIndex(label)</literal>.
+        The <literal>getIndex(...)</literal> method has also a 2 argument form; the second argument, 
+      if used, specialized the index to subtype of the type the index was declared to index.  For instance,
+      if you defined an index called "allEvents" over the type <literal>Event</literal>, and wanted 
+      to get an index over just a particular subtype of event, say, <literal>TimeEvent</literal>,
+      you can ask for that index using 
+        <literal>aJCas.getJFSIndexRepository().getIndex("allEvents", TimeEvent.type)</literal>.</para></note>
+      
+      <para>Now that we&apos;ve explained the basics, let&apos;s take a look at the process method for
+        <literal>org.apache.uima.tutorial.ex4.MeetingAnnotator</literal>. Since we&apos;re looking for a
+        combination of a RoomNumber, a Date, and two Times, there are four nested iterators. (There&apos;s surely a
+        better algorithm for doing this, but to keep things simple we&apos;re just going to look at every combination
+        of the four items.)</para>
+      
+      <para>For each combination of the four annotations, we compute the span of text that includes all of them, and
+        then we check to see if that span is smaller than a <quote>window</quote> size, a configuration parameter.
+        There are also some checks to make sure that we don&apos;t annotate the same span of text multiple times. If all
+        the checks pass, we create a Meeting annotation over the whole span. There&apos;s really nothing to
+        it!</para>
+      
+      <para>The XML descriptor, located in
+        <literal>examples/descriptors/tutorial/ex4/MeetingAnnotator.xml</literal> , is also very
+        straightforward. An important difference from previous descriptors is that this is the first annotator
+        we&apos;ve discussed that has input requirements. This can be seen on the <quote>Capabilities</quote>
+        page of the Component Descriptor Editor:</para>
+      
+      
+      <screenshot>
+     <mediaobject>
+       <imageobject>
+         <imagedata width="5.7in" format="JPG" fileref="&imgroot;image032.jpg"/>
+       </imageobject>
+       <textobject><phrase>Screen shot of Capabilities page of the Component Descriptor Editor
+       </phrase></textobject>
+     </mediaobject>
+   </screenshot>
+      
+      <para>If we were to run the MeetingAnnotator on its own, it wouldn&apos;t detect anything because it
+        wouldn&apos;t have any input annotations to work with. The required input annotations can be produced by the
+        RoomNumber and DateTime annotators. So, we create an aggregate Analysis Engine containing these two
+        annotators, followed by the Meeting annotator. This aggregate is illustrated in <xref
+          linkend="ugr.tug.aae.fig.aggregate_for_meeting_annotator"/>. The descriptor for this is in
+        <literal>examples/descriptors/tutorial/ex4/MeetingDetectorAE.xml</literal> . Give it a try in the
+        Document Analyzer.
+        
+        <figure id="ugr.tug.aae.fig.aggregate_for_meeting_annotator">
+          <title>An Aggregate Analysis Engine where an internal component uses output from previous
+            engines</title>
+          <mediaobject>
+            <imageobject>
+              <imagedata width="5.7in" format="PNG" fileref="&imgroot;image034.png"/>
+            </imageobject>
+            <textobject><phrase>An Aggregate Analysis Engine where an internal component uses output from
+              previous engines. </phrase>
+            </textobject>
+          </mediaobject>
+        </figure> </para>
+      
+    </section>
+  </section>
+  
+  <section id="ugr.tug.aae.other_examples">
+    <title>Other examples</title>
+    
+    <para>The UIMA SDK include several other examples you may find interesting,
+      including</para>
+    
+    <itemizedlist spacing="compact">
+      <listitem><para>SimpleTokenAndSentenceAnnotator &ndash; a simple tokenizer and
+        sentence annotator.</para></listitem>
+      
+      <listitem><para>XmlDetagger &ndash; A multi-sofa annotator that does XML
+        detagging. Multiple Sofas (Subjects of Analysis) are described in a later &ndash;
+        see <olink targetdoc="&uima_docs_tutorial_guides;"
+          targetptr="ugr.tug.mvs"/>.  Reads XML data from the input Sofa
+        (named "xmlDocument"); this data can be stored in the CAS as a string or array, or it can
+        be a URI to a remote file. The XML is parsed using the JVM's default parser, and the
+        plain-text content is written to a new sofa called "plainTextDocument".</para>
+      </listitem>
+      
+      <listitem><para>PersonTitleDBWriterCasConsumer &ndash; a sample CAS Consumer
+        which populates a relational database with some annotations. It uses JDBC and in this
+        example, hooks up with the Open Source Apache Derby database. </para></listitem>
+    </itemizedlist>
+  </section>
+  
+  <section id="ugr.tug.aae.additional_topics">
+    <title>Additional Topics</title>
+    
+    <section id="ugr.tug.aae.contract_for_annotator_methods">
+      <title>Contract: Annotator Methods Called by the Framework</title>
+      <titleabbrev>Annotator Methods</titleabbrev>
+      
+      <para>The UIMA framework ensures that an Annotator instance is called by only one
+        thread at a time.  An instance never has to worry about running some method on one 
+        thread, and then asynchronously being called using another thread. This approach 
+        simplifies the design of annotators &ndash; they do not have to be designed to support
+        multi-threading. When multiple threading is wanted, for performance, multiple
+        instances of the Annotator are created, each one running on just one thread.</para>
+      
+      <para>The following table defines the methods called by the framework, when they are
+        called, and the requirements annotator implementations must follow.</para>
+      
+      <informaltable frame="all">
+        <tgroup cols="3" colsep="1" rowsep="1">
+          <colspec colname="c1"/>
+          <colspec colname="c2"/>
+          <colspec colname="c3"/>
+          <thead>
+            <row>
+              <entry align="center">Method</entry>
+              <entry align="center">When Called by Framework</entry>
+              <entry align="center">Requirements</entry>
+            </row>
+          </thead>
+          <tbody>
+            <row>
+              <entry>initialize</entry>
+              <entry>Typically only called once, when instance is created. Can be called
+                again if application does a reinitialize call and the default behavior
+                isn't overridden (the default behavior for reinitialize is to call
+                <literal>destroy</literal> followed by
+                <literal>initialize</literal></entry>
+              <entry>Normally does one-time initialization, including reading of
+                configuration parameters. If the application changes the parameters, it
+                can call initialize to have the annotator re-do its
+                initialization.</entry>
+            </row>
+            <row>
+              <entry>typeSystemInit</entry>
+              <entry>Called before <literal>process</literal> whenever the type system
+                in the CAS being passed in differs from what was previously passed in a
+                <literal>process</literal> call (and called for the first CAS passed in,
+                too). The Type System being passed to an annotator only changes in the case of
+                remote annotators that are active as servers, receiving possibly
+                different type systems to operate on.</entry>
+              <entry>Typically, users of JCas do not implement any method for this. An
+                annotator can use this call to read the CAS type system and setup any instance
+                variables that make accessing the types and features convenient.</entry>
+            </row>
+            <row>
+              <entry>process</entry>
+              <entry>Called once for each CAS. Called by the application if not using
+                Collection Processing Manager (CPM); the application calls the process
+                method on the analysis engine, which is then delegated by the framework to
+                all the annotators in the engine. For Collection Processing application,
+                the CPM calls the process method. If the application creates and manages
+                your own Collection Processing Engine via API calls (see Javadocs), the
+                application calls this on the Collection Processing Engine, and it is
+                delegated by the framework to the components.</entry>
+              <entry>Process the CAS, adding and/or modifying elements in it</entry>
+            </row>
+            <row>
+              <entry>destroy</entry>
+              <entry>This method can be called by applications, and is also called by the
+                Collection Processing Manager framework when the collection processing
+                completes. If called by an application on the Engine object, it is
+                propagated to all contained annotators.</entry>
+              <entry>An annotator should release all resources, close files, close
+                database connections, etc., and return to a state where another initialize
+                call could be received to restart. Typically, after a destroy call, no
+                further calls will be made to an annotator instance.</entry>
+            </row>
+            <row>
+              <entry>reconfigure</entry>
+              <entry><para>This method is never called by the framework, unless an
+                application calls it on the Engine object &ndash; in which case it the
+                framework propagates it to all annotators contained in the Engine.</para>
+                <para>Its purpose is to signal that the configuration parameters have
+                  changed.</para></entry>
+              <entry>A default implementation of this calls destroy, followed by
+                initialize. This is the only case where initialize would be called more than
+                once. Users should implement whatever logic is needed to return the
+                annotator to an initialized state, including re-reading the
+                configuration parameter data.</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+      
+    </section>
+    
+    <section id="ugr.tug.aae.reporting_errors_from_annotators">
+      <title>Reporting errors from Annotators</title>
+      
+      <para>There are two broad classes of errors that can occur: recoverable and
+        unrecoverable. Because Annotators are often expected to process very large numbers
+        of artifacts (for example, text documents), they should be written to recover where
+        possible.</para>
+      
+      <para>For example, if an upstream annotator created some input for an annotator which
+        is invalid, the annotator may want to log this event, ignore the bad input and
+        continue. It may include a notification of this event in the CAS, for further
+        downstream annotators to consider. Or, it may throw an exception (see next section)
+        &ndash; but in this case, it cannot do any further processing on that
+        document.</para> <note><para>The choice of what to do can be made configurable,
+      using the configuration parameters. </para></note>
+      
+    </section>
+    
+    <section id="ugr.tug.aae.throwing_exceptions_from_annotators">
+      <title>Throwing Exceptions from Annotators</title>
+      
+      <para>Let&apos;s say an invalid regular expression was passed as a parameter to the
+        RoomNumberAnnotator. Because this is an error related to the overall
+        configuration, and not something we could expect to ignore, we should throw an
+        appropriate exception, and most Java programmers would expect to do so like
+        this:</para>
+      
+      
+      <programlisting>throw new ResourceInitializationException(
+    "The regular expression " + x + " is not valid.");</programlisting>
+      
+      <para>UIMA, however, does not do it this way. All UIMA exceptions are
+        <emphasis>internationalized</emphasis>, meaning that they support translation
+        into other languages. This is accomplished by eliminating hardcoded message
+        strings and instead using external message digests. Message digests are files
+        containing (key, value) pairs. The key is used in the Java code instead of the actual
+        message string. This allows the message string to be easily translated later by
+        modifying the message digest file, not the Java code. Also, message strings in the
+        digest can contain parameters that are filled in when the exception is thrown. The
+        format of the message digest file is described in the Javadocs for the Java class
+        <literal>java.util.PropertyResourceBundle</literal> and in the load method of
+        <literal>java.util.Properties</literal>.</para>
+      
+      <para>The first thing an annotator developer must choose is what Exception class to
+        use. There are three to choose from:
+        
+        <orderedlist><listitem><para>ResourceConfigurationException should be
+          thrown from the annotator&apos;s initialize() method if invalid configuration
+          parameter values have been specified.</para></listitem>
+          
+          <listitem><para>ResourceInitializationException should be thrown from the
+            annotator&apos;s initialize() method if initialization fails for some other
+            reason.</para></listitem>
+          
+          <listitem><para>AnalysisEngineProcessException should be thrown from the
+            annotator&apos;s process() method if the processing of a particular document
+            fails for any reason. </para></listitem></orderedlist></para>
+      
+      <para>Generally you will not need to define your own custom exception classes, but if
+        you do they must extend one of these three classes, which are the only types of
+        Exceptions that the annotator interface permits annotators to throw.</para>
+      
+      <para>All of the UIMA Exception classes share common constructor varieties. There are
+        four possible arguments:</para>
+      
+      <para>The name of the message digest to use (optional &ndash; if not specified the
+        default UIMA message digest is used).</para>
+      
+      <para>The key string used to select the message in the message digest.</para>
+      
+      <para>An object array containing the parameters to include in the message. Messages
+        can have substitutable parts. When the message is given, the string representation
+        of the objects passed are substituted into the message. The object array is often
+        created using the syntax new Object[]{x, y}.</para>
+      
+      <para>Another exception which is the <quote>cause</quote> of the exception you are
+        throwing. This feature is commonly used when you catch another exception and rethrow
+        it. (optional)</para>
+      
+      <para>If you look at source file (folder: src in Eclipse)
+        <literal>org.apache.uima.tutorial.ex5.RoomNumberAnnotator</literal>, you
+        will see the following code:
+        
+        
+        <programlisting>try {
+  mPatterns[i] = Pattern.compile(patternStrings[i]);
+} 
+catch (PatternSyntaxException e) {
+  throw new ResourceInitializationException(
+     MESSAGE_DIGEST, "regex_syntax_error",
+     new Object[]{patternStrings[i]}, e);
+}</programlisting>
+        where the MESSAGE_DIGEST constant has the value <literal>
+        "org.apache.uima.tutorial.ex5.RoomNumberAnnotator_Messages". </literal>
+        </para>
+      
+      <para>Message digests are specified using a dotted name, just like Java classes. This
+        file, with the .properties extension, must be present in the class path. In Eclipse,
+        you find this file under the src folder, in the package
+        org.apache.uima.tutorial.ex5, with the name
+        RoomNumberAnnotator_Messages.properties. Outside of Eclipse, you can find this
+        in the <literal>uimaj-examples.jar</literal> with the name
+        <literal>org/apache/uima/tutorial/ex5/RoomNumberAnnotator_Messages.properties.</literal>
+        If you look in this file you will see the line:
+        
+        
+        <programlisting>regex_syntax_error = {0} is not a valid regular expression.</programlisting>
+        which is the error message for the example exception we showed above. The placeholder
+        {0} will be filled by the toString() value of the argument passed to the exception
+        constructor &ndash; in this case, the regular expression pattern that didn&apos;t
+        compile. If there were additional arguments, their locations in the message would be
+        indicated as {1}, {2}, and so on.</para>
+      
+      <para>If a message digest is not specified in the call to the exception constructor, the
+        default is <literal>UIMAException.STANDARD_MESSAGE_CATALOG</literal> (whose
+        value is <quote><literal>org.apache.uima.UIMAException_Messages</literal>
+        </quote> in the current release but may change). This message digest is located in the
+        <literal>uima-core.jar</literal> file at
+        <literal>org/apache/uima/UIMAException_messages.properties</literal>
+        &ndash; you can take a look to see if any of these exception messages are useful to
+        use.</para>
+      
+      <para>To try out the regex_syntax_error exception, just use the Document Analyzer to
+        run
+        <literal>examples/descriptors/tutorial/ex5/RoomNumberAnnotator.xml</literal>
+        , which happens to have an invalid regular expression in its configuration parameter
+        settings.</para>
+      
+      <para>To summarize, here are the steps to take if you want to define your own exception
+        message:</para>
+      
+      <para>Create a file with the .properties extension, where you declare message keys and
+        their associated messages, using the same syntax as shown above for the
+        regex_syntax_error exception. The properties file syntax is more completely
+        described in the Javadocs for the <ulink 
+          url="http://java.sun.com/j2se/1.5.0/docs/api/java/util/Properties.html#load(java.io.InputStream)">
+        load</ulink> method of the java.util.Properties class.</para>
+      
+      <para>Put your properties file somewhere in your class path (it can be in your
+        annotator&apos;s .jar file).</para>
+      
+      <para>Define a String constant (called MESSAGE_DIGEST for example) in your annotator
+        code whose value is the dotted name of this properties file. For example, if your
+        properties file is inside your jar file at the location
+        <literal>org/myorg/myannotator/Messages.properties</literal>, then this
+        String constant should have the value
+        <literal>org.myorg.myannotator.Messages</literal>. Do not include the
+        .properties extension. In Java Internationalization terminology, this is called
+        the Resource Bundle name. For more information see the Javadocs for the <ulink
+          url="http://java.sun.com/j2se/1.5.0/docs/api/java/util/PropertyResourceBundle.html">
+        PropertyResourceBundle</ulink> class.</para>
+      
+      <para>In your annotator code, throw an exception like this:
+        
+        <programlisting>throw new ResourceConfigurationException(
+    MESSAGE_DIGEST, "your_message_name",
+    new Object[]{param1,param2,...});</programlisting></para>
+      
+      <para>You may also wish to look at the Javadocs for the UIMAException class.</para>
+      
+      <para>For more information on Java&apos;s internationalization features, see the 
+       <ulink url="http://java.sun.com/j2se/1.5.0/docs/guide/intl/index.html">
+        Java Internationalization Guide</ulink>.</para>
+    </section>
+    
+    <section id="ugr.tug.aae.accessing_external_resource_files">
+      <title>Accessing External Resource Files</title>
+      
+      <para>Sometimes you may want an annotator to read from an external file &ndash; for
+        example, a long list of keys and values that you are going to build into a HashMap. You
+        could, of course, just introduce a configuration parameter that holds the absolute
+        path to this resource file, and build the HashMap in your annotator&apos;s
+        initialize method. However, this is not the best solution for three reasons:</para>
+      
+      <orderedlist><listitem><para>Including an absolute path in your descriptor makes
+        your annotator difficult for others to use. Each user will need to edit this
+        descriptor and set the absolute path to a value appropriate for his or her
+        installation.</para></listitem>
+        
+        <listitem><para>You cannot share the HashMap between multiple annotators. Also,
+          in some deployment scenarios there may be more than one instance of your annotator,
+          and you would like to have the option for them to use the same HashMap
+          instance.</para></listitem>
+        
+        <listitem><para>Your annotator would become dependent on a particular data
+          representation &ndash; the word list would have to come from a file on the local disk
+          and it would have to be in a particular format. It would be better if this were
+          decoupled. </para></listitem></orderedlist>
+      
+      <para>A better way to access external resources is through the ResourceManager
+        component. In this section we are going to show an example of how to use the Resource
+        Manager.</para>
+      
+      <para>This example annotator will annotate UIMA acronyms (e.g. UIMA, AE, CAS, JCas)
+        and store the acronym&apos;s expanded form as a feature of the annotation. The
+        acronyms and their expanded forms are stored in an external file.</para>
+      
+      <para>First, look at the
+        <literal>examples/descriptors/tutorial/ex6/UimaAcronymAnnotator.xml</literal>
+        descriptor.
+        
+        
+        <screenshot>
+       <mediaobject>
+       <imageobject>
+         <imagedata width="5.7in" format="JPG" fileref="&imgroot;image036.jpg"/>
+       </imageobject>
+       <textobject><phrase>Screen shot of Component Descriptor Editor page for configuring External Resources
+       </phrase></textobject>
+     </mediaobject>
+
+</screenshot></para>
+      
+      <para>The values of the rows in the two tables are longer than can be easily shown. You can
+        click the small button at the top right to shift the layout from two side-by-side
+        tables, to a vertically stacked layout. You can also click the small twisty on the
+        <quote>Imports for External Resources and Bindings</quote> to collapse this
+        section, because it&apos;s not used here. Then the same screen will appear like this:
+        
+        
+        <screenshot>
+       <mediaobject>
+       <imageobject>
+         <imagedata width="5.7in" format="JPG" fileref="&imgroot;image038.jpg"/>
+       </imageobject>
+       <textobject><phrase>Screen shot of Component Descriptor Editor page for configuring External Resources after
+         adjusting the layout
+       </phrase></textobject>
+     </mediaobject>
+</screenshot>
+        </para>
+      
+      <para>The top window has a scroll bar allowing you to see the rest of the line.</para>
+      
+      <section id="ugr.tug.aae.resources.declaring_dependencies">
+        <title>Declaring Resource Dependencies</title>
+        
+        <para>The bottom window is where an annotator declares an external resource
+          dependency. The XML for this is as follows:</para>
+        
+        
+        <programlisting><![CDATA[<externalResourceDependency>
+  <key>AcronymTable</key> 
+  <description>Table of acronyms and their expanded forms.</description> 
+  <interfaceName>
+    org.apache.uima.tutorial.ex6.StringMapResource
+  </interfaceName> 
+</externalResourceDependency>
+]]></programlisting>
+        
+        <para>The &lt;key&gt; value (AcronymTable) is the name by which the annotator
+          identifies this resource. The key must be unique for all resources that this
+          annotator accesses, but the same key could be used by different annotators to mean
+          different things. The interface name
+          (<literal>org.apache.uima.tutorial.ex6.StringMapResource</literal>) is
+          the Java interface through which the annotator accesses the data. Specifying an
+          interface name is optional. If you do not specify an interface name, annotators
+          will get direct access to the data file.</para>
+      </section>
+      
+      <section id="ugr.tug.aae.resources.accessing_from_uimacontext">
+        <title>Accessing the Resource from the UimaContext</title>
+        
+        <para> If you look at the
+          <literal>org.apache.uima.tutorial.ex6.UimaAcronymAnnotator</literal>
+          source, you will see that the annotator accesses this resource from the
+          UimaContext by calling:
+          
+          
+          <programlisting>StringMapResource mMap = 
+  (StringMapResource)getContext().getResourceObject("AcronymTable");</programlisting>
+          </para>
+        
+        <para>The object returned from the <literal>getResourceObject</literal> method
+          will implement the interface declared in the
+          <literal>&lt;interfaceName&gt;</literal> section of the descriptor,
+          <literal>StringMapResource</literal> in this case. The annotator code does not
+          need to know the location of the data nor the Java class that is being used to read the
+          data and implement the <literal>StringMapResource</literal>
+          interface.</para>
+        
+        <para>Note that if we did not specify a Java interface in our descriptor, our
+          annotator could directly access the resource data as follows:
+          
+          
+          <programlisting>InputStream stream = getContext().getResourceAsStream("AcronymTable");</programlisting></para>
+        
+        <para>If necessary, the annotator could also determine the location of the resource
+          file, by calling:
+          
+          
+          <programlisting>URI uri = getContext().getResourceURI("AcronymTable");</programlisting></para>
+        
+        <para>These last two options are only available in the case where the descriptor does
+          not declare a Java interface.</para>
+        
+        <note><para>The methods for getting access to resources include <literal>getResourceURL</literal>.  That 
+        method returns a URL, which may contain spaces encoded as %20.  url.getPath() would
+        return the path without decoding these %20 into spaces.  <literal>getResourceURI</literal>
+        on the other hand, returns a URI, and the uri.getPath() <emphasis>does</emphasis>
+        do the conversion of %20 into spaces.  See also <literal>getResourceFilePath</literal>,
+          which does a getResourceURI followed by uri.getPath().</para></note>
+        
+      </section>
+      
+      <section id="ugr.tug.aae.resources.declaring_and_bindings">
+        <title>Declaring Resources and Bindings</title>
+        
+        <para>Refer back to the top window in the Resources page of the Component Descriptor
+          Editor. This is where we specify the location of the resource data, and the Java
+          class used to read the data. For the example, this corresponds to the following
+          section of the descriptor:
+          
+          
+          <programlisting><![CDATA[<resourceManagerConfiguration>
+  <externalResources>
+    <externalResource>
+      <name>UimaAcronymTableFile</name> 
+      <description>
+         A table containing UIMA acronyms and their expanded forms.
+      </description> 
+      <fileResourceSpecifier>
+        <fileUrl>file:org/apache/uima/tutorial/ex6/uimaAcronyms.txt
+        </fileUrl> 
+      </fileResourceSpecifier>
+      <implementationName>
+         org.apache.uima.tutorial.ex6.StringMapResource_impl
+      </implementationName> 
+    </externalResource>
+  </externalResources>
+
+  <externalResourceBindings>
+    <externalResourceBinding>
+      <key>AcronymTable</key>    
+      <resourceName>UimaAcronymTableFile</resourceName> 
+    </externalResourceBinding>
+  </externalResourceBindings>
+</resourceManagerConfiguration>
+]]></programlisting></para>
+        
+        <para>The first section of this XML declares an externalResource, the
+          <literal>UimaAcronymTableFile</literal>. With this, the fileUrl element
+          specifies the path to the data file. This can be an absolute URL (e.g. one that starts
+          with file:/ or file:///, or file://my.host.org/), but that is not recommended
+          because it makes installation of your component more difficult, as noted earlier.
+          Better is a relative URL, which will be looked up within the classpath (and/or
+          datapath), as used in this example. In this case, the file
+          <literal>org/apache/uima/tutorial/ex6/uimaAcronyms.txt</literal> is
+          located in <literal>uimaj-examples.jar</literal>, which is in the classpath.
+          If you look in this file you will see the definitions of several UIMA
+          acronyms.</para>
+        
+        <para>The second section of the XML declares an externalResourceBinding, which
+          connects the key <literal>AcronymTable</literal>, declared in the
+          annotator&apos;s external resource dependency, to the actual resource name
+          <literal>UimaAcronymTableFile</literal>. This is rather trivial in this case;
+          for more on bindings see the example
+          <literal>UimaMeetingDetectorAE.xml</literal> below. There is no global
+          repository for external resources; it is up to the user to define each resource
+          needed by a particular set of annotators.</para>
+        
+        <para>In the Component Descriptor Editor, bindings are indicated below the
+          external resource. To create a new binding, you select an external resource (which
+          must have previously been defined), and an external resource dependency, and then
+          click the <literal>Bind</literal> button, which only enables if you have
+          selected two things to bind together.</para>
+        
+        <para>When the Analysis Engine is initialized, it creates a single instance of
+          <literal>StringMapResource_impl</literal> and loads it with the contents of
+          the data file.  This means that the framework calls the instance's <literal>load</literal>
+          method, passing it an instance of DataResource, from which you can obtain 
+          a stream or URI/URL of the external resource that was declared in the external resource; 
+          for resources where
+          loading does not make sense, you can implement a <literal>load</literal> method
+          which ignores its argument and just returns.  See the Javadocs for SharedResourceObject for
+          details on this. 
+          The UimaAcronymAnnotator then accesses the data through the
+          <literal>StringMapResource</literal> interface. This single instance could
+          be shared among multiple annotators, as will be explained later.
+          Because of this, you should insure your implementation is thread-safe, as it 
+          could be called multiple times on multiple threads.</para>
+        
+        <para>Note that all resource implementation classes (e.g.
+          StringMapResource_impl in the provided example) must be declared public
+          must not be declared abstract, and must have public, 0-argument constructors, so 
+          that they can be instantiated by the framework. (Although Java classes in which 
+          you do not define any constructor will, by default, have a 0-argument constructor
+          that doesn&apos;t do anything, a class in which you have defined at least one
+          constructor does not get a default 0-argument constructor.)</para>
+        
+        <para>This annotator is illustrated in <xref
+            linkend="ugr.tug.aae.fig.external_resource_binding"/>. To see it in
+          action, just run it using the Document Analyzer. When it finishes, open up the
+          UIMA_Seminars document in the processed results window, (double-click it), and
+          then left-click on one of the highlighted terms, to see the expandedForm
+          feature&apos;s value.
+          <figure id="ugr.tug.aae.fig.external_resource_binding">
+            <title>External Resource Binding</title>
+            <mediaobject>
+              <imageobject>
+                <imagedata width="3.7in" format="PNG"
+                  fileref="&imgroot;image040.png"/>
+              </imageobject>
+              <textobject><phrase>External Resource Binding</phrase></textobject>
+            </mediaobject>
+          </figure> </para>
+        
+        <para>By designing our annotator in this way, we have gained some flexibility. We can
+          freely replace the StringMapResource_impl class with any other implementation
+          that implements the simple StringMapResource interface. (For example, for very
+          large resources we might not be able to have the entire map in memory.) We have also
+          made our external resource dependencies explicit in the descriptor, which will
+          help others to deploy our annotator.</para>
+      </section>
+      <section id="ugr.tug.aae.resources.sharing_among_annotators">
+        <title>Sharing Resources among Annotators</title>
+        
+        <para>Another advantage of the Resource Manager is that it allows our data to be
+          shared between annotators. To demonstrate this we have developed another
+          annotator that will use the same acronym table. The UimaMeetingAnnotator will
+          iterate over Meeting annotations discovered by the Meeting Detector we
+          previously developed and attempt to determine whether the topic of the meeting is
+          related to UIMA. It will do this by looking for occurrences of UIMA acronyms in close
+          proximity to the meeting annotation. We could implement this by using the
+          UimaAcronymAnnotator, of course, but for the sake of this example we will have the
+          UimaMeetingAnnotator access the acronym map directly.</para>
+        
+        <para>The Java code for the UimaMeetingAnnotator in example 6 creates a new type,
+          UimaMeeting, if it finds a meeting within 50 characters of the UIMA
+          acronym.</para>
+        
+        <para>We combine three analysis engines, the UimaAcronymAnnotator to annotate
+          UIMA acronyms, the MeetingDectector from example 4 to find meetings and finally
+          the UimaMeetingAnnotator to annotate just meetings about UIMA. Together these
+          are assembled to form the new aggregate analysis engine, UimaMeetingDectector.
+          This aggregate and the sharing of a common resource are illustrated in <xref
+            linkend="ugr.tug.aae.fig.sharing_common_resource"/>.
+          <figure id="ugr.tug.aae.fig.sharing_common_resource">
+            <title>Component engines of an aggregate share a common resource</title>
+            <mediaobject>
+              <imageobject>
+                <imagedata width="5.7in" format="PNG"
+                  fileref="&imgroot;image042.png"/>
+              </imageobject>
+              <textobject><phrase>Picture of Component engines of an aggregate sharing a
+                common resource</phrase></textobject>
+            </mediaobject>
+          </figure> The important thing to notice is in the
+          <literal>UimaMeetingDetectorAE.xml</literal> aggregate descriptor. It
+          includes both the UimaMeetingAnnotator and the UimaAcronymAnnotator, and
+          contains a single declaration of the UimaAcronymTableFile resource. (The actual
+          example has the order of the first two annotators reversed versus the above
+          picture, which is OK since they do not depend on one another).</para>
+        
+        <para>It also binds the resources as follows:
+          
+          
+          <screenshot>
+     <mediaobject>
+      <imageobject>
+        <imagedata width="5.7in" format="JPG" fileref="&imgroot;image044.jpg"/>
+      </imageobject>
+      <textobject><phrase>UimaMeetingDetectorAE.xml binding a common resource</phrase></textobject>
+    </mediaobject>
+  </screenshot>
+          
+          
+          <programlisting><![CDATA[<externalResourceBindings>
+  <externalResourceBinding>
+    <key>UimaAcronymAnnotator/AcronymTable</key> 
+    <resourceName>UimaAcronymTableFile</resourceName> 
+  </externalResourceBinding>
+
+  <externalResourceBinding>
+    <key>UimaMeetingAnnotator/UimaTermTable</key> 
+    <resourceName>UimaAcronymTableFile</resourceName> 
+  </externalResourceBinding>
+</externalResourceBindings>
+]]></programlisting>
+          </para>
+        
+        <para>This binds the resource dependencies of both the UimaAcronymAnnotator
+          (which uses the name AcronymTable) and UimaMeetingAnnotator (which uses
+          UimaTermTable) to the single declared resource named UimaAcronymFile.
+          Therefore they will share the same instance. Resource bindings in the aggregate
+          descriptor <emphasis role="bold-italic">override</emphasis> any resource
+          declarations in individual annotator descriptors.</para>
+        
+        <para>If we wanted to have the annotators use different acronym tables, we could
+          easily do that. We would simply have to change the resourceName elements in the
+          bindings so that they referred to two different resources. The Resource Manager
+          gives us the flexibility to make this decision at deployment time, without
+          changing any Java code.</para>
+        
+      </section>
+      
+      <section id="ugr.tug.aae.resources.threading">
+        <title>Threading and Shared Resources</title>
+        <para>Sharing can also occur when multiple instances of an annotator are 
+        created by the framework in response to run-time deployment specifications.
+        If an implementation class is specified in the external resource, 
+        only one instance of that implementation class  
+          is created for a given binding, and is shared among all
+        annotators.  Because of this, the implementation of that shared instance must be written to be
+        thread-safe - that is, to operate correctly when called at arbitrary times
+        by multiple threads.  Writing thread-safe code in Java is addressed in several
+        books, such as Brian Goetz's <emphasis>Java Concurrency in Practice</emphasis>.</para>
+        
+        <para>
+          If no implementation class is specified, then the getResource method returns a
+          DataResource object, from which each annotator instance can obtain their
+          own (non-shared) input stream; so threading is not an issue in this case.
+        </para>
+        
+      </section>
+    </section>
+    <section id="ugr.tug.aae.result_specification_setting">
+      <title>Result Specifications</title>
+      
+      <para>The Result Specification is passed to the annotator instance by calling its
+        setResultSpecificaiton method. When called, the default implementation saves the
+        result specification in an instance variable of the Annotator instance, which can be
+        accessed by the annotator using the protected
+        <literal>getResultSpecification()</literal> method.</para>
+      
+      <para>A Result Specification is a list of output types and / or type:feature
+        names, catagorized by language(s), which are expected to be output from (produced by) the
+        annotator. Annotators may use this to optimize their operations, when possible, for
+        those cases where only particular outputs are wanted. The interface to the Result
+        Specification object (see the Javadocs) allows querying both types and particular
+        features of types.</para>
+      
+      <para>The languages specifications used by Result Specifications are the same that are
+      specifiable in Capability Specifications; examples include "en" for English, "en-uk" for
+      British English, etc.  There is also a language type, "x-unspecified", which is presumed
+      if no language specification(s) are given.</para>
+      
+      <para>Result Specifications can be queryed by the Annotator code, and the query may 
+      include the language.  If it doesn't include the language, it is treated as if the 
+      language "x-unspecified" was specified.  Language matching is hierarchically defaulted,
+      in one direction: if a query asks about a type T for language "en-uk", it will match
+        for languages "en-uk", "en", or "x-unspecified".  However the reverse is not true:
+        If the query asks about a type T for language "x-unspecified", then it only 
+        matches Result Specifications with no language (or "x-unspecified", which is equivalent).
+        </para>
+      
+      <para>
+      The effect of this is that if the Result Specification indicates it wants output
+      produced for "en-uk", but the annotator is given a language which is unknown, 
+        or one that is known, but isn't "en-uk", then the query (using the language 
+        of the document) will 
+      return false.   This is true even if the language is "en".  
+        However, if the Result Specification indicates it wants output for "en", 
+      and the query is for "en-uk" (presumably because that's the language of the document
+      and the annotator can handle that especially well), then the query will return true.
+    </para> 
+      
+      
+      <para>Sometimes you can specify the Result Specification; othertimes, you cannot
+        (for instance, inside a Collection Processing Engine, you cannot). When you cannot
+        specify it, or choose not to specify it (for example, using the form of the
+        process(...) call on an Analysis Engine that doesn&apos;t include the Result
+        Specification), a <quote>Default</quote> Result Specification is used.</para>
+          
+      <section id="ugr.tug.aae.result_spec.default">
+        <title>Default ResultSpecification</title>
+        
+        <para>The default Result Specification is taken from the Engine&apos;s output
+          Capability Specification. Remember that a Capability Specification has both
+          inputs and outputs, can specify types and / or features, and there can be more than one
+          Capability Set. If there is more than one set, the logical union by language of these sets is used.
+          Each set can have a different "language(s)" specified; the default Result Specification 
+          will have the outputs by language(s), so that the annotator can query which outputs 
+          should be provided for particular languages.  The methods to query the Result Specification
+          take a type and (optionally) a feature, and optionally, a language.  If the queried type is
+          a subtype of some otherwise matching type in the Result Specification, it will match the query.  
+          See the Javadocs for more details on this.
+          </para>
+        
+      </section>
+      
+      <section id="ugr.tug.aae.result_spec.passing_to_annotators">
+        <title>Passing Result Specifications to Annotators</title>
+        
+        <para>If you are not using a Collection Processing Engine, you can specify a Result
+          Specification for your AnalysisEngine(s) by calling the
+          <literal>AnalysisEngine.setResultSpecification(ResultSpecification)</literal>
+          method.</para>
+        <para>It is also possible to pass a Result Specification on each call to
+          <literal>AnalysisEngine.process(CAS, ResultSpecification)</literal>. However,
+          this is not recommended if your Result Specification will stay constant across
+          multiple calls to
+          <literal>process</literal>. In that case it will be more efficient to call
+          <literal>AnalysisEngine.setResultSpecification(ResultSpecification)</literal>
+          only when the Result Specification changes.</para>
+        <para> For primitive Analysis Engines, whatever Result Specification you pass in is
+          passed along to the annotator's
+          <literal>setResultSpecification(ResultSpecification)</literal> method. For
+          aggregate Analysis Engines, see below.</para>
+      </section>
+      
+      <section id="ugr.tug.aae.result_spec.aggregates">
+        <title>Aggregates</title>
+        
+        <para>For aggregate engines, the Result Specification passed to the
+          <code>AnalysisEngine.setResultSpecification(ResultSpecification)</code>
+          method is intended to specify the set of output types/features that the aggregate
+          should produce. This is not necessarily equivalent to the set of output
+          types/features that each annotator should produce. For example, an annotator may
+          need to produce an intermediate type that is then consumed by a downstream annotator,
+          even though that intermediate type is not part of the Result Specification.</para>
+        <para>To handle this situation, when
+          <code>AnalysisEngine.setResultSpecification(ResultSpecification)</code>
+          is called on an aggregate, the framework computes the union of the passed Result
+          Specification with the set of
+          <emphasis>all</emphasis> input types and features of
+          <emphasis>all</emphasis> component AnalysisEngines within that aggregate. This forms the
+          complete set of types and features that any component of the aggregate might need to
+          produce. This derived Result Specification is then passed to the
+          <code>AnalysisEngine.setResultSpecification(ResultSpecification)</code>
+          of each component AnalysisEngine. In the case of nested aggregates, this procedure
+          is applied recursively.</para>
+      </section>  
+      <section id="ugr.tug.aae.result_spec.aggregates.cpes">
+        <title>Collection Proessing Engines</title>
+          
+        <para>The Default Result Specification is always used for all components of a
+          Collection Processing Engine.</para>        
+      </section>
+    </section>
+    
+    <section id="ugr.tug.aae.classpath_when_using_jcas">
+      <title>Class path setup when using JCas</title>
+      
+      <para>JCas provides Java classes that correspond to each CAS type in an application.
+        These classes are generated by the JCasGen utility (which can be automatically
+        invoked from the Component Descriptor Editor).</para>
+      
+      <para>The Java source classes generated by the JCasGen utility are typically compiled
+        and packaged into a JAR file. This JAR file must be present in the classpath of the UIMA
+        application.</para>
+      
+      <para>For more details on issues around setting up this class path, including
+        deployment issues where class loaders are being used to isolate multiple UIMA
+        applications inside a single running Java Virtual Machine, please see <olink
+          targetdoc="&uima_docs_ref;" targetptr="ugr.ref.jcas.class_loaders"/>
+        .</para>
+      
+    </section>
+    <section id="ugr.tug.aae.using_shell_scripts">
+      <title>Using the Shell Scripts</title>
+      
+      <para>The SDK includes a <literal>/bin</literal> subdirectory containing shell
+        scripts, for Windows (.bat files) and Unix (.sh files). Many of these scripts invoke
+        sample Java programs which require a class path; they call a common shell script,
+        <literal>setUimaClassPath</literal> to set up the UIMA required files and
+        directories on the class path.</para>
+      
+      <para>If you need to include files on the class path, the scripts will add anything you
+        specify in the environment variables CLASSPATH or UIMA_CLASSPATH to the classpath. So, for
+        example, if you are running the document analyzer, and wanted it to find a Java class
+        file named (on Windows) c:\a\b\c\myProject\myJarFile.jar, you could first issue a
+        <literal>set</literal> command to set the UIMA_CLASSPATH to this file, followed by
+        the documentAnalyzer script:
+        
+        
+        <programlisting>set UIMA_CLASSPATH=c:\a\b\c\myProject\myJarFile.jar
+documentAnalyzer</programlisting>
+      </para>
+      
+      <para>Other environment variables are used by the shell scripts, as follows:
+        
+        <table frame="all" id="ugr.aae.tbl.env_vars_used_by_shell_scripts">
+          <title>Environment variables used by the shell scripts</title>
+          <tgroup cols="2" rowsep="1" colsep="1">
+            <colspec colname="c1"/>
+            <colspec colname="c2"/>
+            <thead>
+              <row>
+                <entry align="center">Environment Variable</entry>
+                <entry align="center">Description</entry>
+              </row>
+            </thead>
+            <tbody>
+              <row>
+                <entry>UIMA_HOME</entry>
+                <entry>Path where the UIMA SDK was installed.</entry>
+              </row>
+              <row>
+                <entry>JAVA_HOME</entry>
+                <entry>(Optional) Path to a Java Runtime Environment. If not set, the Java
+                  JRE that is in your system PATH is used.</entry>
+              </row>
+              <row>
+                <entry>UIMA_CLASSPATH</entry>
+                <entry>(Optional) if specified, a path specification to use as the default
+                  ClassPath.  You can also set the CLASSPATH variable.  If you set both, they
+                  will be concatenated.</entry>
+              </row>
+              <row>
+                <entry>UIMA_DATAPATH</entry>
+                <entry>(Optional) if specified, a path specification to use as the default
+                  DataPath (see <olink targetdoc="&uima_docs_ref;"
+                    targetptr="ugr.ref.xml.component_descriptor.datapath"/>)</entry>
+              </row>
+              <row>
+                <entry>UIMA_LOGGER_CONFIG_FILE</entry>
+                <entry>(Optional) if specified, a path to a Java Logger properties file
+                  (see <xref linkend="ugr.tug.aae.configuration_logging"/>)</entry>
+              </row>
+              <row>
+                <entry>UIMA_JVM_OPTS</entry>
+                <entry>(Optional) if specified, the JVM arguments to be used when the Java
+                  process is started.  This can be used for example to set the maximum Java
+                  heap size or to define system properties.</entry>
+              </row>
+              <row>
+                <entry>VNS_PORT</entry>
+                <entry>(Optional) if specified, the network IP port number of the Vinci
+                  Name Server (VNS) (see <olink
+                    targetdoc="&uima_docs_tutorial_guides;"
+                    targetptr="ugr.tug.application.vns"/>)</entry>
+              </row>
+              <row>
+                <entry>ECLIPSE_HOME</entry>
+                <entry>(Optional) Needs to be set to the root of your Eclipse installation
+                  when using shell scripts that invoke Eclipse (e.g.
+                  jcasgen_merge)</entry>
+              </row>
+            </tbody>
+          </tgroup>
+          
+        </table> </para>
+      
+    </section>
+  </section>
+  
+  <section id="ugr.tug.aae.common_pitfalls">
+    <title>Common Pitfalls</title>
+    
+    <para>Here are some things to avoid doing in your annotator code:</para>
+    
+    <para><emphasis role="bold">Retaining references to JCas objects between calls to
+      process()</emphasis></para>
+    
+    <para>The JCas will be cleared between calls to your annotator&apos;s process() method.
+      All of the analysis results related to the previous document will be deleted to make way
+      for analysis of a new document. Therefore, you should never save a reference to a JCas
+      Feature Structure object (i.e. an instance of a class created using JCasGen) and
+      attempt to reuse it in a future invocation of the process() method. If you do so, the
+      results will be undefined.</para>
+    
+    <para><emphasis role="bold">Careless use of static data</emphasis></para>
+    
+    <para>Always keep in mind that an application that uses your annotator may create
+      multiple instances of your annotator class. A multithreaded application may attempt
+      to use two instances of your annotator to process two different documents
+      simultaneously. This will generally not cause any problems as long as your annotator
+      instances do not share static data.</para>
+    
+    <para>In general, you should not use static variables other than static final constants
+      of primitive data types (String, int, float, etc). Other types of static variables may
+      allow one annotator instance to set a value that affects another annotator instance,
+      which can lead to unexpected effects. Also, static references to classes that
+      aren&apos;t thread-safe are likely to cause errors in multithreaded
+      applications.</para>
+    
+  </section>
+  <section id="ugr.tug.aae.viewing_UIMA_objects_in_eclipse_debugger">
+    <title>Viewing UIMA objects in the Eclipse debugger</title>
+    <titleabbrev>UIMA Objects in Eclipse Debugger</titleabbrev>
+    
+    <para>Eclipse (as of version 3.1 or later) has a new feature for viewing Java Logical
+      Structures. When enabled, it will permit you to see a view of UIMA objects (such as
+      feature structure instances, CAS or JCas instances, etc.) which displays the logical
+      subparts. For example, here is a view of a feature structure for the RoomNumber
+      annotation, from the tutorial example 1:
+      
+      
+      <screenshot>
+     <mediaobject>
+      <imageobject>
+        <imagedata width="5.7in" format="JPG" fileref="&imgroot;image046.jpg"/>
+      </imageobject>
+      <textobject><phrase>Screenshot of Eclipse debugger showing non-logical-structure display of 
+      a feature structure</phrase></textobject>
+    </mediaobject>
+  </screenshot></para>
+    
+    <para>The <quote>annotation</quote> object in Java shows as a 2 element object, not very
+      convenient for seeing the features or the part of the input that is being annotatoed. But
+      if you turn on the Java Logical Structure mode by pushing this button:
+      
+      
+      <screenshot>
+     <mediaobject>
+      <imageobject>
+        <imagedata width="5.6in" format="JPG" fileref="&imgroot;image048.jpg"/>
+      </imageobject>
+      <textobject><phrase>Screenshot of Eclipse debugger showing button to push to 
+        enable viewing logical structures</phrase></textobject>
+    </mediaobject>
+  </screenshot>
+      the features of the FeatureStructure instance will be shown:
+      
+      
+      <screenshot>
+     <mediaobject>
+      <imageobject>
+        <imagedata width="5.7in" format="JPG" fileref="&imgroot;image050.jpg"/>
+      </imageobject>
+      <textobject><phrase>Screenshot of Eclipse debugger showing logical structure display of 
+      an annotation</phrase></textobject>
+    </mediaobject>
+  </screenshot></para>
+    
+  </section>
+  
+  <section id="ugr.tug.aae.xml_intro_ae_descriptor">
+    <title>Introduction to Analysis Engine Descriptor XML Syntax</title>
+    <titleabbrev>Analysis Engine XML Descriptor</titleabbrev>
+    
+    <para>This section is an introduction to the syntax used for Analysis Engine
+      Descriptors. Most users do not need to understand these details; they can use the
+      Component Descriptor Editor Eclipse plugin to edit Analysis Engine Descriptors
+      rather than editing the XML directly.</para>
+    
+    <para>This section walks through the actual XML descriptor for the RoomNumberAnnotator
+      example introduced in section <xref linkend="ugr.tug.aae.getting_started"/>. The
+      discussion is divided into several logical sections of the descriptor.</para>
+    
+    <para>The full specification for Analysis Engine Descriptors is defined in <olink
+        targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.component_descriptor"/>
+      .</para>
+    
+    <section id="ugr.tug.aae.header_annotator_class_identification">
+      <title>Header and Annotator Class Identification</title>
+      
+      
+      <programlisting><?db-font-size 80% ?><![CDATA[<?xml version="1.0" encoding="UTF-8" ?> 
+<!--  Descriptor for the example RoomNumberAnnotator. --> 
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation> 
+  <primitive>true</primitive> 
+  <annotatorImplementationName>
+    org.apache.uima.tutorial.ex1.RoomNumberAnnotator
+  </annotatorImplementationName>
+]]></programlisting>
+      
+      <para>The document begins with a standard XML header and a comment. The root element of
+        the document is named <literal>&lt;analysisEngineDescription&gt;,</literal>
+        and must specify the XML namespace
+        <literal>http://uima.apache.org/resourceSpecifier</literal>.</para>
+      
+      <para>The first subelement,
+        <literal>&lt;frameworkImplementation&gt;</literal>, must contain the value
+        <literal>org.apache.uima.java</literal>. The second subelement,
+        <literal>&lt;primitive&gt;</literal>, contains the Boolean value true,
+        indicating that this XML document describes a <emphasis>Primitive</emphasis>
+        Analysis Engine. A Primitive Analysis Engine is comprised of a single annotator. It
+        is also possible to construct XML descriptors for non-primitive or
+        <emphasis>Aggregate</emphasis> Analysis Engines; this is covered later.</para>
+      
+      <para>The next element,
+        <literal>&lt;annotatorImplementationName&gt;</literal>, contains the
+        fully-qualified class name of our annotator class. This is how the UIMA framework
+        determines which annotator class to instantiate.</para>
+    </section>
+    
+    <section id="ugr.tug.aae.xml_intro_simple_metadata_attributes">
+      <title>Simple Metadata Attributes</title>
+      
+      
+      <programlisting><![CDATA[<analysisEngineMetaData>
+  <name>Room Number Annotator</name> 
+  <description>An example annotator that searches for room numbers in
+     the IBM Watson research buildings.</description> 
+  <version>1.0</version> 
+  <vendor>The Apache Software Foundation</vendor></para>
+]]></programlisting>
+      
+      <para>Here are shown four simple metadata fields &ndash; name, description, version,
+        and vendor. Providing values for these fields is optional, but recommended.</para>
+      
+    </section>
+    
+    <section id="ugr.tug.aae.xml_intro_type_system_definition">
+      <title>Type System Definition</title>
+      
+      
+      <programlisting><![CDATA[<typeSystemDescription>
+  <imports>
+    <import location="TutorialTypeSystem.xml"/>
+  </imports>
+</typeSystemDescription>
+]]></programlisting>
+      
+      <para>This section of the XML descriptor defines which types the annotator works with.
+        The recommended way to do this is to <emphasis>import</emphasis> the type system
+        definition from a separate file, as shown here. The location specified here should be
+        a relative path, and it will be resolved relative to the location of the aggregate
+        descriptor. It is also possible to define types directly in the Analysis Engine
+        descriptor, but these types will not be easily shareable by others.</para>
+      
+    </section>
+    
+    <section id="ugr.tug.aae.xml_intro_capabilities">
+      <title>Capabilities</title>
+      
+      
+      <programlisting><![CDATA[<capabilities>
+  <capability>
+    <inputs /> 
+    <outputs>
+      <type>org.apache.uima.tutorial.RoomNumber</type> 
+      <feature>org.apache.uima.tutorial.RoomNumber:building</feature> 
+    </outputs>
+  </capability>
+</capabilities>
+]]></programlisting>
+      
+      <para>The last section of the descriptor describes the
+        <emphasis>Capabilities</emphasis> of the annotator &ndash; the Types/Features
+        it consumes (input) and the Types/Features that it produces (output). These must be
+        the names of types and features that exist in the ANALYSIS ENGINE descriptor&apos;s
+        type system definition.</para>
+      
+      <para>Our annotator outputs only one Type, RoomNumber and one feature,
+        RoomNumber:building. The fully-qualified names (including namespace) are
+        needed.</para>
+      
+      <para>The building feature is listed separately here, but clearly specifying every
+        feature for a complex type would be cumbersome. Therefore, a shortcut syntax exists.
+        The &lt;outputs&gt; section above could be replaced with the equivalent section:
+        
+        
+        <programlisting><![CDATA[<outputs>
+  <type allAnnotatorFeatures ="true">
+     org.apache.uima.tutorial.RoomNumber
+  </type> 
+</outputs>]]></programlisting></para>
+      
+    </section>
+    
+    <section id="ugr.tug.aae.xml_intro.configuration_parameters">
+      <title>Configuration Parameters (Optional)</title>
+      
+      <section id="ugr.tug.aae.xml_intro.configuration_parameters_declarations">
+        <title>Configuration Parameter Declarations</title>
+        
+        
+        <programlisting><![CDATA[<configurationParameters>
+  <configurationParameter>
+    <name>Patterns</name> 
+    <description>List of room number regular expression patterns.
+    </description> 
+    <type>String</type> 
+    <multiValued>true</multiValued> 
+    <mandatory>true</mandatory> 
+  </configurationParameter>
+  <configurationParameter>
+    <name>Locations</name> 
+    <description>List of locations corresponding to the room number
+       expressions specified by the Patterns parameter.
+    </description> 
+    <type>String</type> 
+    <multiValued>true</multiValued> 
+    <mandatory>true</mandatory> 
+  </configurationParameter>
+</configurationParameters>]]></programlisting>
+        
+        <para>The <literal>&lt;configurationParameters&gt;</literal> element
+          contains the definitions of the configuration parameters that our annotator
+          accepts. We have declared two parameters. For each configuration parameter, the
+          following are specified:
+          
+          <itemizedlist><listitem><para><emphasis role="bold">name</emphasis>
+            &ndash; the name that the annotator code uses to refer to the parameter</para>
+            </listitem>
+            
+            <listitem><para><emphasis role="bold">description</emphasis>
+              &ndash; a natural language description of the intent of the parameter</para>
+            </listitem>
+            
+            <listitem><para><emphasis role="bold">type</emphasis> &ndash; the data
+              type of the parameter&apos;s value &ndash; must be one of String, Integer,
+              Float, or Boolean.</para></listitem>
+            
+            <listitem><para><emphasis role="bold">multiValued</emphasis>
+              &ndash; true if the parameter can take multiple-values (an array), false if
+              the parameter takes only a single value. </para></listitem>
+            
+            <listitem><para><emphasis role="bold">mandatory</emphasis> &ndash; true
+              if a value must be provided for the parameter </para></listitem>
+          </itemizedlist></para>
+        
+        <para>Both of our parameters are mandatory and accept an array of Strings as their
+          value.</para>
+      </section>
+      
+      <section id="ugr.tug.aae.xml_intro_configuration_parameter_settings">
+        <title>Configuration Parameter Settings</title>
+        
+        
+        <programlisting><![CDATA[<configurationParameterSettings>
+  <nameValuePair>
+    <name>Patterns</name> 
+    <value>
+      <array>
+        <string>b[0-4]d-[0-2]ddb</string> 
+        <string>b[G1-4][NS]-[A-Z]ddb</string> 
+        <string>bJ[12]-[A-Z]ddb</string> 
+      </array>
+    </value>
+  </nameValuePair>
+  <nameValuePair>
+    <name>Locations</name> 
+    <value>
+      <array>
+        <string>Watson - Yorktown</string> 
+        <string>Watson - Hawthorne I</string> 
+        <string>Watson - Hawthorne II</string> 
+      </array>
+    </value>
+  </nameValuePair>
+</configurationParameterSettings>]]></programlisting>
+        
+      </section>
+      
+      <section id="ugr.tug.aae.xml_intro.aggregate">
+        <title>Aggregate Analysis Engine Descriptor</title>
+        
+        
+        <programlisting><?db-font-size 80% ?><![CDATA[<?xml version="1.0" encoding="UTF-8" ?> 
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation> 
+  <primitive>false</primitive> 
+
+  <delegateAnalysisEngineSpecifiers>
+    <delegateAnalysisEngine key="RoomNumber">
+      <import location="../ex2/RoomNumberAnnotator.xml"/> 
+    </delegateAnalysisEngine>
+    <delegateAnalysisEngine key="DateTime">
+      <import location="TutorialDateTime.xml" /> 
+    </delegateAnalysisEngine>
+  </delegateAnalysisEngineSpecifiers>]]></programlisting>
+        
+        <para>The first difference between this descriptor and an individual
+          annotator&apos;s descriptor is that the
+          <literal>&lt;primitive&gt;</literal> element contains the value
+          <literal>false</literal>. This indicates that this Analysis Engine (AE) is an
+          aggregate AE rather than a primitive AE.</para>
+        
+        <para>Then, instead of a single annotator class name, we have a list of
+          <literal>delegateAnalysisEngineSpecifiers</literal>. Each specifies one of
+          the components that constitute our Aggregate . We refer to each component by the
+          relative path from this XML descriptor to the component AE&apos;s XML
+          descriptor.</para>
+        
+        <para>This list of component AEs does not imply an ordering of them in the execution
+          pipeline. Ordering is done by another section of the descriptor:
+          
+          
+          <programlisting><![CDATA[<analysisEngineMetaData>
+  <name>Aggregate AE - Room Number and DateTime Annotators</name> 
+  <description>Detects Room Numbers, Dates, and Times</description> 
+  <flowConstraints>
+    <fixedFlow>
+      <node>RoomNumber</node> 
+      <node>DateTime</node> 
+    </fixedFlow>
+  </flowConstraints>]]></programlisting></para>
+        
+        <para>Here, a fixedFlow is adequate, and we specify the exact ordering in which the
+          AEs will be executed. In this case, it doesn&apos;t really matter, since the
+          RoomNumber and DateTime annotators do not have any dependencies on one
+          another.</para>
+        
+        <para>Finally, the descriptor has a capabilities section, which has exactly the
+          same syntax as a primitive AE&apos;s capabilities section:
+          
+          
+          <programlisting><![CDATA[<capabilities>
+  <capability>
+    <inputs /> 
+    <outputs>
+      <type allAnnotatorFeatures="true">
+        org.apache.uima.tutorial.RoomNumber
+      </type> 
+      <type allAnnotatorFeatures="true">
+        org.apache.uima.tutorial.DateAnnot
+      </type> 
+      <type allAnnotatorFeatures="true">
+        org.apache.uima.tutorial.TimeAnnot
+      </type> 
+    </outputs>
+    <languagesSupported>
+      <language>en</language> 
+    </languagesSupported>
+  </capability>
+</capabilities>]]></programlisting>
+          </para>
+        
+      </section>
+      
+    </section>
+  </section>
+</chapter>
