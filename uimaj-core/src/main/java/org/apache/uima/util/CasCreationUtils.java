@@ -584,7 +584,7 @@ public class CasCreationUtils {
       if (initialHeapSizeStr != null) {
         casMgr = CASFactory.createCAS(Integer.parseInt(initialHeapSizeStr), useJcasCache);
       } else {
-        casMgr = CASFactory.createCAS();
+        casMgr = CASFactory.createCAS(CASImpl.DEFAULT_INITIAL_HEAP_SIZE, useJcasCache);
       }
       // install type system
       setupTypeSystem(casMgr, aTypeSystemDesc);
