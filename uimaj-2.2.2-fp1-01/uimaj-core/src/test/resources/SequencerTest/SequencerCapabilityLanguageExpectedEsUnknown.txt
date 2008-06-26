@@ -1,5 +1,0 @@
-
-ResultSpec for annotator Whitespace tokenizer:
-uima.tt.ParagraphAnnotation
-uima.tt.SentenceAnnotation
-uima.tt.TokenAnnotation
