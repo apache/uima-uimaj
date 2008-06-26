@@ -1,0 +1,313 @@
+<document>
+  <properties>
+    <title>Glossary of Key Terms and Concepts</title>
+  </properties>
+<body>
+
+
+
+<div class="glossary">
+<div class="Section1">
+
+
+
+<section name="Glossary of Key Terms and Concepts"><a id="_crossRef344"> </a>
+
+
+
+<p><a id="_crossRef345"><span class="Heading4Char">Analysis Engine:</span></a>
+A program that analyzes artifacts (e.g. documents) and infers information about
+them, and which implements the UIMA Analysis Engine interface Specification. It
+does not matter how the program is built, with what framework or whether or not
+it contains component (&quot;sub&quot;) Analysis Engines.</p>
+
+<p><span class="Heading4Char">Annotation:</span>
+The association of a metadata, such as a label, with a region of text (or other
+type of artifact). For example, the label &quot;Person&quot; associated with a
+region of text &quot;John Doe&quot; constitutes an annotation. We say
+&quot;Person&quot; annotates the span of text from X to Y containing exactly
+&quot;John Doe&quot;. An annotation is represented as a special <a href="UIMA Glossary.htm#_crossRef354">type</a>
+in a UIMA <a href="UIMA Glossary.htm#_crossRef355">type system</a>. It is the type used to record
+the labeling of regions of a <a href="UIMA Glossary.htm#_crossRef353">subject of analysis</a>.</p>
+
+<p><a id="_crossRef346"><span class="Heading4Char">Annotator:</span></a> A software
+component that implements the UIMA annotator interface. Annotators are
+implemented to produce and record annotations over regions of an artifact
+(e.g., text document, audio, and video).</p>
+
+<p><a id="_crossRef347"><span class="Heading4Char">Aggregate Analysis Engine</span><b>:</b></a> An
+<a href="UIMA Glossary.htm#_crossRef345">Analysis Engine</a> made up of multiple subcomponent
+Analysis Engines arranged in a flow.  The
+flow can be one of the built-in flows, or a custom flow provided by the user.</p>
+
+<p><a id="_crossRef348"><span class="Heading4Char">CAS:</span></a><span class="Heading4Char"> </span>The UIMA Common Analysis Structure is
+the primary data structure which UIMA analysis components use to represent and
+share analysis results.  It contains:</p>
+
+<ul><li>The artifact. This is the object
+being analyzed such as a text document or audio or video stream. The CAS
+projects one or more views of the artifact. Each view is referred to as a <a
+href="UIMA Glossary.htm#_crossRef353">Subject of Analysis</a>. </li>
+
+
+<li>A type system description &ndash;
+indicating the types, subtypes, and their features. </li>
+
+
+<li>Analysis metadata &ndash; &quot;standoff&quot;
+annotations describing the artifact or a region of the artifact </li>
+
+
+<li>An index repository to support
+efficient access to and iteration over the results of analysis.
+</li></ul>
+
+<p>UIMA&rsquo;s primary interface to this structure is provided by
+a class called the Common Analysis System. We use &quot;CAS&quot; to refer to
+both the structure and system. Where the common analysis structure is used
+through a different interface, the particular implementation of the structure
+is indicated, For example, the <a href="JCAS">JCas </a>is a native Java object
+representation of the contents of the common analysis structure.  </p>
+
+<p>A CAS can have multiple views; each view has a unique
+representation of the artifact, and has its own index repository, representing
+results of analysis for that representation of the artifact.</p>
+
+<p><a id="_crossRef349"><span class="Heading4Char">CAS Consumer:</span></a> A component that
+receives each CAS in the collection, usually after it has been processed by an <a
+href="UIMA Glossary.htm#_crossRef345">Analysis Engine</a>.  It is responsible for taking the results from
+the CAS and using them for some purpose, perhaps storing selected results into
+a database, for instance.  The CAS
+Consumer may also perform collection-level analysis, saving these results in an
+application-specific, aggregate data structure.</p>
+
+<p><a id="_crossRef350"><span class="Heading4Char">CAS Initializer:</span></a> An optional
+component, that works together with a Collection Reader component, to populate
+a CAS from a raw document. For example, if the document is HTML, a CAS
+Initializer might store a detagged version of the document in the CAS and also
+create inline annotations derived from the tags. For example &lt;p&gt; tags
+might be translated into inline Paragraph annotations in the CAS.</p>
+
+<p><span class="Heading4Char">CAS
+Multiplier:</span> A component, implemented by a UIMA developer,
+that takes a CAS as input and produces new CASes as output.  A common use case for a CAS Multiplier is to
+break a large input CAS into smaller pieces, each of which is emitted as a
+separate output CAS.  There are other
+uses, however, such as aggregating input CASes into a single output CAS.</p>
+
+<p><span class="Heading4Char">CAS
+Processor:</span> A component of a Collection Processing Engine (CPE) that
+takes a CAS as input and returns a CAS as output. There are two types of CAS
+Processors: Analysis Engines and CAS Consumers. </p>
+
+<p><span class="Heading4Char">CAS
+View:</span> A CAS Object which shares the base CAS and type system
+definition and index specifications, but has a unique index repository and a
+particular <a href="UIMA Glossary.htm#_crossRef353">Subject of Analysis</a>.   Views are named, and applications and
+annotators can dynamically create additional views whenever they are needed.
+Annotations are made with respect to one view.  Feature structures can have references to other feature structures in
+other views, as needed.</p>
+
+<p><span class="Heading4Char">CDE:</span>
+The Component Descriptor Editor .  This
+is the Eclipse tool that lets you conveniently edit the UIMA descriptors; see <a class="crossrefText" href="Component_Descriptor_Editor_Users_Guide.htm#_crossRef96">Chapter
+12, <b><i>Component
+Descriptor Editor User&rsquo;s Guide</i></b></a><a class="crossrefPage" href="Component_Descriptor_Editor_Users_Guide.htm#_crossRef96"></a>.</p>
+
+<p><span class="Heading4Char">Collection
+Processing Engine (CPE):</span>  Performs Collection Processing
+through the combination of a <a href="UIMA Glossary.htm#_crossRef351">Collection Reader</a>,
+an optional <a href="UIMA Glossary.htm#_crossRef350">CAS Initializer</a>, an <a
+href="UIMA Glossary.htm#_crossRef345">Analysis Engine</a>, and zero or more <a
+href="UIMA Glossary.htm#_crossRef349">CAS Consumers</a>. The Collection Processing Manager (CPM)
+manages the execution of the engine.</p>
+
+<p><span class="Heading4Char">Collection
+Processing Manager (CPM):</span>  A module in the framework that
+manages the execution of collection processing, routing CASs from the <a
+href="UIMA Glossary.htm#_crossRef351">Collection Reader</a> to an <a href="UIMA Glossary.htm#_crossRef345">Analysis
+Engine</a> and then to the <a href="UIMA Glossary.htm#_crossRef349">CAS Consumers</a>. The CPM
+provides feedback such as performance statistics and error reporting and can
+implement other features such as parallelization.</p>
+
+<p><a id="_crossRef351"><span class="Heading4Char">Collection Reader:</span></a><span class="Heading4Char"> </span>A component
+that reads documents from some source, for example a file system or database.
+Each document is returned as a CAS that may then be processed by <a
+href="UIMA Glossary.htm#_crossRef345">Analysis Engines</a>. If the task of populating a CAS
+from the document is complex, a Collection Reader may choose to use a <a
+href="UIMA Glossary.htm#_crossRef350">CAS Initializer</a> for this purpose.</p>
+
+<p><span class="Heading4Char">Fact
+Search:</span> A search that given a fact pattern, returns facts
+extracted from a collection of documents by a set of analysis engines that
+match the fact pattern.</p>
+
+<p><span class="Heading4Char">Feature:</span>
+A data member or attribute of a type.  Each feature itself has an
+associated range type, the type of the value that it can hold.  In the
+database analogy where types are tables, features are columns.</p>
+
+<p><a id="_crossRef352"><span class="Heading4Char">Flow Controller:</span></a> A component very
+similar to a primitive analysis engine, which implements the interfaces needed
+to specify a custom flow within an Aggregate Analysis Engine.</p>
+
+<p><span class="Heading4Char">Hybrid
+Analysis Engine:</span> An <a href="UIMA Glossary.htm#_crossRef347">Aggregate Analysis
+Engine</a> where more than one of its component Analysis Engines are deployed
+the same address space and one or more are deployed remotely (part tightly and
+part loosely-coupled).</p>
+
+<p><span class="Heading4Char">Index:</span>
+Data in the CAS can only be retrieved using Indexes.  Indexes are analogous to the indexes that are
+specified on tables of a database.  Indexes belong to Index Repositories;
+there is one Repository for the base CAS as well as additional ones for each
+view of the CAS.  Indexes are specified
+to retrieve instances of some CAS Type (including its subtypes), and can be
+sorted in a user-definable way. For example, all types derived from the UIMA
+built-in type <code>uima.tcas.annotation</code> contain begin
+and end features, which mark the begin and end offsets in the text where this
+annotation occurs.  One may then specify that types should be retrieved
+sequentially by begin (ascending) and end (descending).  In this case,
+iterating over the annotations, one first obtains annotations that come
+sequentially first in the text, while favoring shorter annotations, in the case
+where two annotations start at the same offset.</p>
+
+<p><span class="Heading4Char">JCas:</span>
+A Java object interface to the contents of the CAS, where each type in the CAS
+is represented as a Java class, each feature is represented as a property with
+a getter and setter method, and each instance of a type is represented as a
+Java object.</p>
+
+<p><span class="Heading4Char">Keyword
+Search:</span> The standard search method where one supplies words (or &quot;keywords&quot;)
+and candidate documents are returned.</p>
+
+<p><span class="Heading4Char">Knowledge
+Base:</span> A collection of data that may be interpreted as a
+set of facts and rules considered true in a possible world.</p>
+
+<p><span class="Heading4Char">Loosely-Coupled
+Analysis Engine:</span>  An <a href="UIMA Glossary.htm#_crossRef347">Aggregate
+Analysis Engine</a> where no two of its component Analysis Engines run in the
+same address space but where each is remote with respect to the others that
+make up the aggregate. Ideal for using remote Analysis Engine services that are
+not locally available, or for quickly assembling and testing functionality in
+cross-language, cross-platform distributed environments. Also better enables
+distributed scaleable implementations where quick recoverability may have a
+greater impact on overall throughput than analysis speed.</p>
+
+<p><span class="Heading4Char">Ontology:</span>
+The part of a knowledge base that defines the semantics of the data
+axiomatically.</p>
+
+<p><span class="Heading4Char">PEAR:
+</span>An archive file that packages up a UIMA component with its code,
+descriptor files and other resources required to install and run it in another
+environment. You can generate PEAR files using utilities that come with the
+UIMA SDK.</p>
+
+<p><span class="Heading4Char">Primitive
+Analysis Engine:</span>  An <a href="UIMA Glossary.htm#_crossRef345">Analysis
+Engine</a> that is composed of a single <a href="UIMA Glossary.htm#_crossRef346">Annotator </a>having
+no component (or &quot;sub&quot;) Analysis Engines inside of it. </p>
+
+<p><span class="Heading4Char">Semantic
+Search:</span> A search where the semantic intent of the query is
+specified using one or more entity or relation specifiers.  For example,
+one could specify that they are looking for a person (named) &quot;Bush.&quot;
+Such a query would then not return results about the kind of bushes that grow
+in your garden but rather just persons named bush.</p>
+
+<p><span class="Heading4Char">Structured
+Information:</span> Items stored in structured resources such as
+search engine indices, databases or knowledge bases. The canonical example of
+structured information is the database table. Each element of information in
+the database is associated with a precisely defined schema where each table
+column heading indicates its precise semantics, defining exactly how the
+information should be interpreted by a computer program or end-user.</p>
+
+<p><a id="_crossRef353"><span class="Heading4Char">Subject of Analysis (Sofa)</span></a><span class="Heading4Char">: </span>A piece of
+data (e.g., text document, image, audio segment, or video segment), which is intended
+for analysis by UIMA analysis components.  It belongs to a CAS View.  There can be multiple Sofas contained within
+one CAS, each representing a different view of the original artificat &ndash; for example,
+an audio file could be the original artifact, and also be one Sofa, and another
+could be the output of a voice-recognition component, where the Sofa would be
+the corresponding text. document. Sofas maybe analyzed independently or
+simultaneously; they all co-exist within the CAS.  </p>
+
+<p><span class="Heading4Char">Tightly-Coupled
+Analysis Engine:</span>  An <a href="UIMA Glossary.htm#_crossRef347">Aggregate
+Analysis Engine</a> where all of its component Analysis Engines run in the same
+address space.</p>
+
+<p><a id="_crossRef354"><span class="Heading4Char">Type:</span></a><span class="Heading4Char"> </span>An object used to store the results of
+analysis.  Types are defined using inheritance, so some types may be
+defined purely for the sake of defining other types, and are in this sense &quot;abstract
+types.&quot;  Types usually contain features, which are attributes or
+properties of the type.  A type is roughly equivalent to a class in an
+object oriented programming language, or a table in a database.  Types may
+be indexed for fast retrieval.</p>
+
+<p><a id="_crossRef355"><span class="Heading4Char">Type System:</span></a> A collection of related
+<a href="UIMA Glossary.htm#_crossRef354">types</a>.  All components that can access the CAS,
+including <a href="UIMA Glossary.htm#_crossRef345">Analysis Engine</a>s, <a
+href="UIMA Glossary.htm#_crossRef351">Collection Readers</a>, <a href="UIMA Glossary.htm#_crossRef352">Flow
+Controllers</a>, or <a href="UIMA Glossary.htm#_crossRef349">CAS Consumer</a>s have their own
+type system.  Type systems are often shared across Analysis Engines.
+A type system is roughly analogous to a set of related classes in object
+oriented programming, or a set of related tables in a database.  The type
+system / type / feature terminology comes from computational linguistics.</p>
+
+<p><span class="Heading4Char">Unstructured
+Information:</span> The canonical example of unstructured
+information is the natural language text document. The intended meaning of a
+document's content is only implicit and its precise interpretation by a
+computer program requires some degree of analysis to explicate the document's
+semantics. Other examples include audio, video and images. Unstructured
+information is contrasted with <i>structured information</i>. The canonical
+example of structured information is the database table. Each element of information
+in the database is associated with a precisely defined schema where each table
+column heading indicates its precise semantics, defining exactly how the
+information elements should be interpreted by a computer program or end-user.</p>
+
+<p><span class="Heading4Char">UIMA:</span>
+<b><u>U</u></b>nstructured <b><u>I</u></b>nformation <b><u>M</u></b>anagement <b><u>A</u></b>rchitecture:
+a software architecture which specifies component interfaces, design patterns
+and development roles for creating, describing, discovering, composing and
+deploying multi-modal analysis capabilities.</p>
+
+<p><span class="Heading4Char">UIMA
+Framework:</span> A Java-based implementation of the UIMA architecture. It
+provides a run-time environment in which developers can plug in and run their
+UIMA component implementations and with which they can build and deploy UIM
+applications. The framework is not specific to any IDE or platform. The
+original design for the framework was largely inspired by the original TAF and
+Talent systems developed in IBM Watson Research labs and IBM Software Group.</p>
+
+<p><span class="Heading4Char">UIMA
+Software Development Kit (SDK):</span> includes an all-Java
+implementation of the UIMA framework for the implementation, description,
+composition and deployment of UIMA components and applications. It also
+provides the developer with an Eclipse-based (<a href="http://www.eclipse.org/">www.eclipse.org</a>)
+development environment that includes a set of tools and utilities for using
+UIMA.</p>
+
+<p><span class="Heading4Char">XCAS:
+</span>An XML representation of the CAS. The XCAS can be used for saving
+and restoring CASs to and from streams. The UIMA SDK provides serialization and
+de-serialization methods for the XCAS format.</p>
+
+<p><span class="Heading4Char">XML
+Metadata Interchange (XMI): </span>An OMG standard for reprsenting
+object graphs in XML, which UIMA uses to serialize analysis results from the
+CAS to an XML representation. </p>
+
+</div>
+<div class="footnotesHere"></div>
+</div>
+
+
+
+</section>
+</body>
+</document>
