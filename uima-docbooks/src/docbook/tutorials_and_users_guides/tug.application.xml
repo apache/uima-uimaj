@@ -1802,7 +1802,7 @@ Exception: Connection refused: connect</programlisting>
   <title>Performance Tuning Options</title>
 
   <para>
-  	There is a small number of performance tuning options available to
+  	There are a small number of performance tuning options available to
   	influence the runtime behavior of UIMA applications. Performance
   	tuning options need to be set programmatically when an analysis
   	engine is created. You simply create a Java Properties object with
