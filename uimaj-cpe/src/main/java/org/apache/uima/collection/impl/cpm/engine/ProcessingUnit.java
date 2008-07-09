@@ -885,6 +885,11 @@ public class ProcessingUnit extends Thread {
               } else {
                 casList[casIndex] = (CAS) aCasObjectList[casIndex];
               }
+              //	Set the type from CasData to CasObject. When an error occurs in the proces()
+              //	we need to know what type of object we deal with. 
+              isCasObject = true;
+              aCasObjectList = casList;
+
               if (processor instanceof AnalysisEngine) {
                 maybeLogFinest("UIMA_CPM_call_process__FINEST", container, processor);
                 threadState = 2005;
@@ -900,8 +905,6 @@ public class ProcessingUnit extends Thread {
                 pTrTemp.endEvent(container.getName(), "Process", "success");
               }
             }
-            isCasObject = true;
-            aCasObjectList = casList;
           }
 
           // Release the CAS and notify listeners if the end of the
