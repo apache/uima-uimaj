@@ -205,7 +205,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
 
          // create analysis engine
          this.ae = UIMAFramework
-               .produceAnalysisEngine(specifier, innerRM, null);
+               .produceAnalysisEngine(specifier, innerRM, aAdditionalParams);
       } catch (IOException ex) {
          throw new ResourceInitializationException(ex);
       } catch (InvalidXMLException ex) {
