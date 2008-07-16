@@ -213,17 +213,23 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   // *************************************************
   private final static int INITIAL_HASHMAP_SIZE = 256;
 
-  // keys = class loader,
-  // values = Maps: keys = string = fully qualified java type names of _Type classes
-  // values = instances of LoadedJCasType
+  // key = typeSystemImpl instance, value = Maps:
+  //   key = class loader instance, value = Maps:
+  //     key = string = fully qualified java type names of _Type classes, 
+  //     value = instances of LoadedJCasType:
+  //       fully-qualified-name-of-CAS-type
+  //       the _Type class for this (specific to class loader)
+  //       the class loader instance
+  
 
   // Note: cannot use treemap here because keys (class loaders) are not comparable (have no sort
   // order)
-  // To use: first look up with key = typeSystemImpl instance (uses == test)
-  // Then use value and look up using class loader (uses == test)
-  // These are Weak maps so that they don't hold onto their keys (class loader or type system) if
-  // these
-  // are no longer in use
+  // To use: first look up with key = typeSystemImpl instance (uses object identity ("==") test)
+  // Then use value and look up using class loader (uses object identity ("==") test)
+  
+  // The first two maps (with keys typeSystemImpl and classLoader) are 
+  // Weak maps so that they don't hold onto their keys (class loader or type system) if
+  // these are no longer in use
   //
   // This is a static map - effectively indexed by all loaded type systems and all classloaders
 
@@ -606,7 +612,9 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   public void instantiateJCas_Types(ClassLoader cl) {
     Map loadedJCasTypes = null;
     FSClassRegistry fscr = casImpl.getFSClassRegistry();
-    boolean alreadyLoaded;
+    boolean alreadyLoaded;  // means the "classes" have been loaded, but doesn't mean
+                            // the _Type instances of those classes have been created.
+    boolean anyNewInstances = false;  // true if any new instances of _Type are generated
     FSGenerator[] newFSGeneratorSet;
     synchronized (JCasImpl.class) {
       Map classLoaderToLoadedJCasTypes = (Map) typeSystemToLoadedJCasTypesByClassLoader.get(casImpl
@@ -620,10 +628,25 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
       }
 
       expandTypeArrayIfNeeded();
+      // if already loaded, can skip making new generators - 
+      //   in this case newFSGeneratorSet is never referenced
+      //   Set it to null for "safety"
       newFSGeneratorSet = alreadyLoaded ? null : fscr.getNewFSGeneratorSet();
       for (Iterator it = loadedJCasTypes.entrySet().iterator(); it.hasNext();) {
-        makeInstanceOf_Type((LoadedJCasType) ((Map.Entry) it.next()).getValue(), alreadyLoaded,
-            newFSGeneratorSet);
+        
+        // Explanation for this logic:
+        //   Instances of _Types are kept per class loader, per Cas (e.g., in the cas pool)
+        //   When switching class loaders (e.g. a pear in the pipeline), some of the 
+        //     _Type instances (e.g. the built-ins) might be already instantiated, but others are not
+        //   
+        boolean madeNewInstance = makeInstanceOf_Type((LoadedJCasType) ((Map.Entry) it.next()).getValue(), alreadyLoaded,
+            newFSGeneratorSet); 
+        anyNewInstances = madeNewInstance || anyNewInstances;
+      }
+      
+      // speed up - skip rest if nothing to do
+      if (!anyNewInstances) {
+        return;
       }
       if (!alreadyLoaded) {
         copyDownSuperGenerators(loadedJCasTypes, newFSGeneratorSet);
@@ -849,13 +872,33 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   /**
    * Make the instance of the JCas xxx_Type class for this CAS. Note: not all types will have
    * xxx_Type. Instance creation does the typeSystemInit kind of function, as well.
+   * 
+   * returns true if a new instance of a _Type class was created
    */
 
-  private void makeInstanceOf_Type(LoadedJCasType jcasTypeInfo, boolean alreadyLoaded,
+  private boolean makeInstanceOf_Type(LoadedJCasType jcasTypeInfo, boolean alreadyLoaded,
       FSGenerator[] fsGenerators) {
+    
+    // return without doing anything if the _Type instance is already existing
+    //   this happens when a JCas has some _Type instances made (e.g, the
+    //     built-in ones) but the class loader was switched.  Some of the
+    //     _Type instances for the new class loader can share previously 
+    //     instantiated _Type instances, but others may be different
+    //     (due to different impls of the _Type class loaded by the different
+    //     class loader).
+    //   This can also happen in the case where
+    //   JCasImpl.getType is called for a non-existing class
+    //     What happens in this case is that the getType code has to assume that
+    //     perhaps none of the _Type instances were made for this JCas (yet), because
+    //     these are created lazily - so it calls instantiateJCas_Types to make them.
+    //     If they were already made, this next test short circuits this.
+    int typeIndex = jcasTypeInfo.index;
+    if (typeArray[typeIndex] != null) {
+      return false;
+    }
+    
     Constructor c_Type = jcasTypeInfo.constructorFor_Type;
     Constructor cType = jcasTypeInfo.constructorForType;
-    int typeIndex = jcasTypeInfo.index;
     TypeImpl casType = (TypeImpl) casImpl.getTypeSystem().getType(jcasTypeInfo.typeName);
 
     try {
@@ -884,6 +927,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
     } catch (ArrayIndexOutOfBoundsException e) {
       logAndThrow(e);
     }
+    return true;
   }
 
   /**
