@@ -211,14 +211,14 @@ under the License.
   </target>
       
   <target name="build-site" depends="init">
-    <copy todir="target/eclipse-update-site/web">
+    <copy todir="target/eclipse-update-site/web" preservelastmodified="true">
       <fileset dir="web"/>
     </copy>
-    <copy todir="target/eclipse-update-site" file="index.html"/>
-    <copy todir="target/eclipse-update-site" file="site.xml"/>
+    <copy todir="target/eclipse-update-site" file="index.html" preservelastmodified="true"/>
+    <copy todir="target/eclipse-update-site" file="site.xml" preservelastmodified="true"/>
 
     <!-- copy all the features to the target -->
-    <copy todir="target/eclipse-update-site/features">
+    <copy todir="target/eclipse-update-site/features" preservelastmodified="true" >
       <fileset dir="features"/>
     </copy>
 
