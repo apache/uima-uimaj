@@ -52,7 +52,6 @@
     uima-framework,
     eclipse-plugins, 
     eclipse-features, 
-    eclipse-update,  
     docbooks, 
     readme"/> 
                           <!-- uimaj, normal-modules, uima-framework, 
@@ -124,10 +123,6 @@
       summary="yes"
       token='version="${uima.eclipse.prev.version}"'
       value='version="${uima.eclipse.version}"'/>      
-  </target>
-
-  <target name="eclipse-update">
-    <echo message="Manually update the uimaj-eclipse-update/site.xml"/>
   </target>
   
   <target name="readme">
