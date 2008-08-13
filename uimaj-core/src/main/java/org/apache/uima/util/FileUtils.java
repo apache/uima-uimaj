@@ -24,11 +24,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -161,7 +161,7 @@ public class FileUtils {
   }
 
   /**
-   * Write a string to a file. If the file exists, it is overwritten.
+   * Write a string to a file, using platform encoding. If the file exists, it is overwritten.
    * 
    * @param fileContents
    *          The file contents.
@@ -171,13 +171,11 @@ public class FileUtils {
    *           If for any reason the file can't be written.
    */
   public static void saveString2File(String fileContents, File file) throws IOException {
-    BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-    writer.write(fileContents);
-    writer.close();
+    saveString2File(fileContents, file, Charset.defaultCharset().name());
   }
 
   /**
-   * Write a string to a file. If the file exists, it is overwritten.
+   * Write a string to a file using the specified encoding. If the file exists, it is overwritten.
    * 
    * @param s
    *          The file contents.
@@ -189,10 +187,16 @@ public class FileUtils {
    *           If for any reason the file can't be written.
    */
   public static void saveString2File(String s, File file, String encoding) throws IOException {
-    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file),
-        encoding));
-    writer.write(s);
-    writer.close();
+    BufferedWriter writer = null;
+    try {
+      writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), encoding));
+      writer.write(s);
+      writer.close();
+    } finally {
+      if (writer != null) {
+        writer.close();
+      }
+    }
   }
 
   /**
@@ -289,9 +293,9 @@ public class FileUtils {
   }
 
   /**
-   * Copy file <code>file</code> to location <code>dir</code>. This method will not fail
-   * silently. Anything that prevents the copy from happening will be treated as an error condition.
-   * If the method does not throw an exception, the copy was successful.
+   * Copy file <code>file</code> to location <code>dir</code>. This method will not fail silently.
+   * Anything that prevents the copy from happening will be treated as an error condition. If the
+   * method does not throw an exception, the copy was successful.
    * 
    * <p>
    * <b>Note: </b> this is a completely brain-dead implementation of file copy. The complete file is
@@ -328,23 +332,29 @@ public class FileUtils {
 
       while (true) {
         int count = is.read(bytes);
-        if (0 > count)
+        if (0 > count) {
           break;
+        }
         os.write(bytes, 0, count);
       }
     } finally {
-      if (null != is)
+      if (null != is) {
         is.close();
-      if (null != os)
+      }
+      if (null != os) {
         os.close();
+      }
     }
   }
-  
+
   /**
    * Finds a relative path to a given file, relative to a specified directory.
-   * @param file file that the relative path should resolve to
-   * @param relativeToDir directory that the path should be relative to
-   * @return a relative path.  This always uses / as the separator character.
+   * 
+   * @param file
+   *          file that the relative path should resolve to
+   * @param relativeToDir
+   *          directory that the path should be relative to
+   * @return a relative path. This always uses / as the separator character.
    */
   public static String findRelativePath(File file, File relativeToDir) throws IOException {
     String canonicalFile = file.getCanonicalPath();
@@ -352,8 +362,8 @@ public class FileUtils {
     String[] filePathComponents = getPathComponents(canonicalFile);
     String[] relToPathComponents = getPathComponents(canonicalRelTo);
     int i = 0;
-    while(i < filePathComponents.length && i < relToPathComponents.length &&
-          filePathComponents[i].equals(relToPathComponents[i])) {
+    while (i < filePathComponents.length && i < relToPathComponents.length
+        && filePathComponents[i].equals(relToPathComponents[i])) {
       i++;
     }
     StringBuffer buf = new StringBuffer();
@@ -363,16 +373,16 @@ public class FileUtils {
     for (int j = i; j < filePathComponents.length - 1; j++) {
       buf.append(filePathComponents[j]).append('/');
     }
-    buf.append(filePathComponents[filePathComponents.length-1]);
+    buf.append(filePathComponents[filePathComponents.length - 1]);
     return buf.toString();
   }
-      
 
-    
   /**
-   * Splits a path into components using the OS file separator character.
-   * This can be used on the results of File.getCanonicalPath().
-   * @param canonicalPath a file path that uses the OS file separator character
+   * Splits a path into components using the OS file separator character. This can be used on the
+   * results of File.getCanonicalPath().
+   * 
+   * @param canonicalPath
+   *          a file path that uses the OS file separator character
    * @return an array of strings, one for each component of the path
    */
   public static String[] getPathComponents(String canonicalPath) {
@@ -380,6 +390,6 @@ public class FileUtils {
     if (regex.equals("\\"))
       regex = "\\\\";
     return canonicalPath.split(regex);
-  }  
+  }
 
 }
