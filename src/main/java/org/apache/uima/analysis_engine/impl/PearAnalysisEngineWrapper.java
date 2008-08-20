@@ -29,17 +29,17 @@ import java.util.Properties;
 import java.util.WeakHashMap;
 
 import org.apache.uima.UIMAFramework;
+import org.apache.uima.UimaContextAdmin;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.analysis_engine.CasIterator;
-import org.apache.uima.analysis_engine.JCasIterator;
 import org.apache.uima.analysis_engine.ResultSpecification;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.TypeSystem;
-import org.apache.uima.jcas.JCas;
 import org.apache.uima.pear.tools.PackageBrowser;
 import org.apache.uima.resource.PearSpecifier;
+import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.ResourceProcessException;
@@ -60,7 +60,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
 
    // a hash map where the entries will be reclaimed when the keys are no longer
    // referenced by anything (other than this hash map)
-   // key = resourceManager instance associated with to this class
+   // key = resourceManager instance associated with this call
    // value = map <String_Pair, ResourceManager>
    // value = resourceManager instance created by this class
 
@@ -173,7 +173,19 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
                         pkgBrowser.getRootDirectory().getName() });
 
          }
-         ResourceManager applicationRM = this.getResourceManager();
+         
+         // Caller's Resource Manager obtained from the additional parameters
+         // Note: UimaContext can be null for a top level call to produceAnalysisEngine,
+         //       where the descriptor is a Pear Resource.
+         
+         ResourceManager applicationRM = (ResourceManager) aAdditionalParams.get(Resource.PARAM_RESOURCE_MANAGER);
+         if (null == applicationRM) {  
+           UimaContextAdmin uimaContext = (UimaContextAdmin)aAdditionalParams.get(Resource.PARAM_UIMA_CONTEXT);
+           if (null != uimaContext) {
+             applicationRM = uimaContext.getResourceManager();
+           }
+         }
+         
          String classPath = pkgBrowser.buildComponentClassPath();
          String dataPath = pkgBrowser.getComponentDataPath();
          StringPair sp = new StringPair(classPath, dataPath);
@@ -204,14 +216,18 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
                .parseResourceSpecifier(in);
 
          // create analysis engine
+         Map clonedAdditionalParameters = new HashMap(aAdditionalParams);
+         clonedAdditionalParameters.remove(Resource.PARAM_UIMA_CONTEXT);
+         clonedAdditionalParameters.remove(Resource.PARAM_RESOURCE_MANAGER);
          this.ae = UIMAFramework
-               .produceAnalysisEngine(specifier, innerRM, aAdditionalParams);
+               .produceAnalysisEngine(specifier, innerRM, clonedAdditionalParameters);
       } catch (IOException ex) {
          throw new ResourceInitializationException(ex);
       } catch (InvalidXMLException ex) {
          throw new ResourceInitializationException(ex);
       }
 
+      // note - this call must follow the setting of this.ae to a non-null value.
       super.initialize(aSpecifier, aAdditionalParams);
 
       UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG,

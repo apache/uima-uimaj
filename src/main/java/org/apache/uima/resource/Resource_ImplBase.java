@@ -109,7 +109,7 @@ public abstract class Resource_ImplBase implements Resource {
       mUimaContextAdmin.setLogger(logger);
     }
 
-    // if this is a local resource (instantaited from a ResourceCreationSpedcifier),
+    // if this is a local resource (instantaited from a ResourceCreationSpecifier),
     // initialize the ResourceManager and UIMA Context.
     if (aSpecifier instanceof ResourceCreationSpecifier) {
       // resolve imports in the metadata
@@ -120,7 +120,7 @@ public abstract class Resource_ImplBase implements Resource {
       } catch (InvalidXMLException e) {
         throw new ResourceInitializationException(e);
       }
-      // store Resoure metadata so it can be retrieved via getMetaData() method
+      // store Resource metadata so it can be retrieved via getMetaData() method
       setMetaData(metadata);
 
       // initialize configuration
