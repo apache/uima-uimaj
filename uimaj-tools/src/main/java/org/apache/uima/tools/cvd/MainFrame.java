@@ -85,6 +85,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeSelectionModel;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -96,6 +98,7 @@ import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.XmiCasDeserializer;
 import org.apache.uima.internal.util.Timer;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.ResourceSpecifier;
@@ -537,6 +540,30 @@ public class MainFrame extends JFrame {
       handleException(e);
     }
   }
+
+  public void loadXmiFile(File xmiCasFile) {
+    try {
+      setXcasFileOpenDir(xmiCasFile.getParentFile());
+      Timer time = new Timer();
+      time.start();
+      SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
+      XmiCasDeserializer xmiCasDeserializer = new XmiCasDeserializer(getCas().getTypeSystem());
+      getCas().reset();
+      parser.parse(xmiCasFile, xmiCasDeserializer.getXmiCasHandler(getCas()));
+      time.stop();
+      handleSofas();
+
+      setTitle("XMI CAS");
+      updateIndexTree(true);
+      setRunOnCasEnabled();
+      setEnableCasFileReadingAndWriting();
+      setStatusbarMessage("Done loading XMI CAS file in " + time.getTimeSpan() + ".");
+    } catch (Exception e) {
+      e.printStackTrace();
+      handleException(e);
+    }
+  }
+
 
   private static final int getMnemonic(int i) {
     switch (i) {

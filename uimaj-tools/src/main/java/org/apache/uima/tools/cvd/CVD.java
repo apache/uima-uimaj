@@ -50,6 +50,8 @@ public class CVD {
   private static final String INI_FILE_PARAM = "-ini";
 
   private static final String LOOK_AND_FEEL_PARAM = "-lookandfeel";
+  
+  private static final String XMI_FILE_PARAM = "-xmi"; 
 
   private CVD() {
     super();
@@ -90,6 +92,7 @@ public class CVD {
     parser.addParameter(DATA_PATH_PARAM, true);
     parser.addParameter(LOOK_AND_FEEL_PARAM, true);
     parser.addParameter(EXECUTE_SWITCH);
+    parser.addParameter(XMI_FILE_PARAM, true); 
     parser.addParameter(INI_FILE_PARAM, true);
     return parser;
   }
@@ -114,6 +117,10 @@ public class CVD {
     }
     if (clp.isInArgsList(EXECUTE_SWITCH) && !clp.isInArgsList(DESC_FILE_PARAM)) {
       System.err.println("Error parsing CVD command line: -exec switch requires -desc parameter.");
+      return false;
+    }
+    if (clp.isInArgsList(XMI_FILE_PARAM) && !clp.isInArgsList(DESC_FILE_PARAM)) {
+      System.err.println("Error parsing CVD command line: -xmi switch requires -desc parameter.");
       return false;
     }
     return true;
@@ -155,6 +162,11 @@ public class CVD {
       }
       if (clp.isInArgsList(DESC_FILE_PARAM)) {
         frame.loadAEDescriptor(new File(clp.getParamArgument(DESC_FILE_PARAM)));
+      }
+      if (clp.isInArgsList(TEXT_FILE_PARAM)) {
+	frame.loadTextFile(new File(clp.getParamArgument(TEXT_FILE_PARAM)));
+      } else if (clp.isInArgsList(XMI_FILE_PARAM)) {
+	frame.loadXmiFile(new File(clp.getParamArgument(XMI_FILE_PARAM)));
       }
       if (clp.isInArgsList(EXECUTE_SWITCH)) {
         frame.runAE(true);

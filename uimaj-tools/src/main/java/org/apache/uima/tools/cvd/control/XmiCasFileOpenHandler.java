@@ -24,11 +24,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 
 import javax.swing.JFileChooser;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
-import org.apache.uima.cas.impl.XmiCasDeserializer;
-import org.apache.uima.internal.util.Timer;
 import org.apache.uima.tools.cvd.MainFrame;
 
 /**
@@ -63,27 +59,7 @@ public class XmiCasFileOpenHandler implements ActionListener {
     if (rc == JFileChooser.APPROVE_OPTION) {
       File xmiCasFile = fileChooser.getSelectedFile();
       if (xmiCasFile.exists() && xmiCasFile.isFile()) {
-        try {
-          this.main.setXcasFileOpenDir(xmiCasFile.getParentFile());
-          Timer time = new Timer();
-          time.start();
-          SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
-          XmiCasDeserializer xmiCasDeserializer = new XmiCasDeserializer(this.main.getCas()
-              .getTypeSystem());
-          this.main.getCas().reset();
-          parser.parse(xmiCasFile, xmiCasDeserializer.getXmiCasHandler(this.main.getCas()));
-          time.stop();
-          this.main.handleSofas();
-
-          this.main.setTitle("XMI CAS");
-          this.main.updateIndexTree(true);
-          this.main.setRunOnCasEnabled();
-          this.main.setEnableCasFileReadingAndWriting();
-          this.main.setStatusbarMessage("Done loading XMI CAS file in " + time.getTimeSpan() + ".");
-        } catch (Exception e) {
-          e.printStackTrace();
-          this.main.handleException(e);
-        }
+        this.main.loadXmiFile(xmiCasFile);
       }
     }
   }
