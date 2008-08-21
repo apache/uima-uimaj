@@ -549,7 +549,7 @@ public class MainFrame extends JFrame {
       SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
       XmiCasDeserializer xmiCasDeserializer = new XmiCasDeserializer(getCas().getTypeSystem());
       getCas().reset();
-      parser.parse(xmiCasFile, xmiCasDeserializer.getXmiCasHandler(getCas()));
+      parser.parse(xmiCasFile, xmiCasDeserializer.getXmiCasHandler(getCas(), true));
       time.stop();
       handleSofas();
 
