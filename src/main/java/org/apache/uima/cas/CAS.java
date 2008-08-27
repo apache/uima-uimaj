@@ -1024,5 +1024,18 @@ public interface CAS extends AbstractCas {
    *   Each object returned by the iterator is of type CAS.
    */
   Iterator getViewIterator(String localViewNamePrefix);   
-
+  
+  /**
+   * Sets a mark and returns the marker object set with the current mark which can be used to query when certain FSs 
+   * were created.  This can then be used to identify FSs as added before or after the mark was set and
+   * to identify FSs modified after the mark is set.
+   * 
+   * Note: this method may only be called from an application. Calling it from an annotator
+   * will trigger a runtime exception.
+   *    
+   * 
+   * @return a marker object.
+   */
+  Marker createMarker();
+  
 }

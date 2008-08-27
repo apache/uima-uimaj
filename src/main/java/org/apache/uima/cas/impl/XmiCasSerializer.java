@@ -35,6 +35,7 @@ import org.apache.uima.cas.ByteArrayFS;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CommonArrayFS;
 import org.apache.uima.cas.FSIndex;
+import org.apache.uima.cas.Marker;
 import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.XmiSerializationSharedData.OotsElementData;
@@ -146,6 +147,11 @@ public class XmiCasSerializer {
     private Map nsUriToPrefixMap = new HashMap();
 
     private Set nsPrefixesUsed = new HashSet();
+    
+    /**
+     * Used to tell if a FS was created before or after mark.
+     */
+    private MarkerImpl marker;
 
     /**
      * Whether the serializer neeeds to check for filtered-out types/features. Set to true if type
@@ -153,8 +159,16 @@ public class XmiCasSerializer {
      */
     boolean isFiltering;
 
+    /**
+     * Whether the serializer needs to serialize only the deltas, that is, new FSs created after
+     * mark represented by Marker object and preexisting FSs and Views that have been
+     * modified. Set to true if Marker object is not null and CASImpl object of this serialize
+     * matches the CASImpl in Marker object.
+     */
+    boolean isDelta;
+    
     private XmiCasDocSerializer(ContentHandler ch, ErrorHandler eh, CASImpl cas,
-            XmiSerializationSharedData sharedData) {
+            XmiSerializationSharedData sharedData, MarkerImpl marker) {
       super();
       this.ch = ch;
       this.eh = eh;
@@ -168,6 +182,9 @@ public class XmiCasSerializer {
       this.arrayAndListFSs = new IntRedBlackTree();
       this.sharedData = sharedData;
       this.isFiltering = filterTypeSystem != null && filterTypeSystem != cas.getTypeSystemImpl();
+      this.marker = marker;
+      this.isDelta = false;
+      if (this.marker != null) this.isDelta = true;
     }
 
     // TODO: internationalize
@@ -206,11 +223,21 @@ public class XmiCasSerializer {
       iElementCount += queue.size();
 
       FSIndex sofaIndex = cas.getBaseCAS().indexRepository.getIndex(CAS.SOFA_INDEX_NAME);
-      iElementCount += (sofaIndex.size()); // one View element per sofa
-      if (this.sharedData != null) {
-        iElementCount += this.sharedData.getOutOfTypeSystemElements().size();
+      if (!isDelta) {
+    	iElementCount += (sofaIndex.size()); // one View element per sofa
+    	if (this.sharedData != null) {
+    	  iElementCount += this.sharedData.getOutOfTypeSystemElements().size();
+    	}
+      } else {
+    	int numViews = cas.getBaseSofaCount();
+        for (int sofaNum = 1; sofaNum <= numViews; sofaNum++) {
+            FSIndexRepositoryImpl loopIR = (FSIndexRepositoryImpl) cas.getBaseCAS()
+                    .getSofaIndexRepository(sofaNum);
+            if (loopIR != null && loopIR.isModified()) {
+            	iElementCount++;
+            }
+         }
       }
-      
       workAttrs.clear();
       computeNamespaceDeclarationAttrs(workAttrs);
       workAttrs.addAttribute(XMI_NS_URI, XMI_VERSION_LOCAL_NAME, XMI_VERSION_QNAME, "CDATA",
@@ -220,7 +247,9 @@ public class XmiCasSerializer {
       writeNullObject(); // encodes 1 element
       encodeIndexed(); // encodes indexedFSs.size() element
       encodeQueued(); // encodes queue.size() elements
-      serializeOutOfTypeSystemElements(); //encodes sharedData.getOutOfTypeSystemElements().size() elements
+      if (!isDelta) {
+    	serializeOutOfTypeSystemElements(); //encodes sharedData.getOutOfTypeSystemElements().size() elements
+      }
       writeViews(); // encodes cas.sofaCount + 1 elements
       endElement(XMI_TAG);
     }
@@ -237,8 +266,18 @@ public class XmiCasSerializer {
           sofaXmiId = getXmiId((sofa).getAddress());
         }
         if (loopIR != null) {
-          int[] fsarray = loopIR.getIndexedFSs();
-          writeView(sofaXmiId, fsarray);
+          if (!isDelta) {
+            int[] fsarray = loopIR.getIndexedFSs();
+            writeView(sofaXmiId, fsarray);
+          } else {
+        	FeatureStructureImpl sofa = (FeatureStructureImpl) cas.getView(sofaNum).getSofa();
+        	if (this.marker.isNew(sofa.getAddress())) {
+        	  int[] fsarray = loopIR.getIndexedFSs();
+              writeView(sofaXmiId, fsarray);
+        	} else if (loopIR.isModified()) {
+        	  writeView(sofaXmiId,loopIR.getAddedFSs(), loopIR.getDeletedFSs(), loopIR.getReindexedFSs());
+        	}
+          } 
         }
       }
     }
@@ -274,6 +313,55 @@ public class XmiCasSerializer {
       startElement(elemName, workAttrs, 0);
       endElement(elemName);
     }
+    
+    private void writeView(String sofaXmiId, int[] added, int[] deleted, int[] reindexed) throws SAXException {
+        workAttrs.clear();
+        if (sofaXmiId != null && sofaXmiId.length() > 0) {
+          addAttribute(workAttrs, "sofa", sofaXmiId);
+        }
+        StringBuffer addedString = new StringBuffer();
+        for (int i = 0; i < added.length; i++) {
+          String xmiId = getXmiId(added[i]);
+          if (xmiId != null) // to catch filtered FS
+          {
+            addedString.append(xmiId).append(' ');
+          }
+        }        
+        if (addedString.length() > 0) {
+          // remove trailing space before adding to attributes
+          addAttribute(workAttrs, "added_members", addedString.substring(0, addedString.length() - 1));
+        }
+        
+        StringBuffer deletedString = new StringBuffer();
+        for (int i = 0; i < deleted.length; i++) {
+          String xmiId = getXmiId(deleted[i]);
+          if (xmiId != null) // to catch filtered FS
+          {
+            deletedString.append(xmiId).append(' ');
+          }
+        }        
+        if (deletedString.length() > 0) {
+          // remove trailing space before adding to attributes
+          addAttribute(workAttrs, "deleted_members", deletedString.substring(0, deletedString.length() - 1));
+        }
+        
+        StringBuffer reindexedString = new StringBuffer();
+        for (int i = 0; i < reindexed.length; i++) {
+          String xmiId = getXmiId(reindexed[i]);
+          if (xmiId != null) // to catch filtered FS
+          {
+            reindexedString.append(xmiId).append(' ');
+          }
+        }        
+        if (reindexedString.length() > 0) {
+          // remove trailing space before adding to attributes
+          addAttribute(workAttrs, "reindexed_members", reindexedString.substring(0, reindexedString.length() - 1));
+        }
+        
+        XmlElementName elemName = uimaTypeName2XmiElementName("uima.cas.View");
+        startElement(elemName, workAttrs, 0);
+        endElement(elemName);
+      }
 
     /**
      * Writes a special instance of dummy type uima.cas.NULL, having xmi:id=0. This is needed to
@@ -325,9 +413,11 @@ public class XmiCasSerializer {
     private void enqueueIncoming() {
       if (this.sharedData == null)
         return;
-      
       int[] fsAddrs = this.sharedData.getAllFsAddressesInIdMap();
       for (int i = 0; i < fsAddrs.length; i++) {
+        if (isDelta && !marker.isModified(fsAddrs[i])) {
+    	    continue;
+    	}
         enqueueIndexedFs(fsAddrs[i]);
       }
     }
@@ -381,6 +471,11 @@ public class XmiCasSerializer {
       if (isVisited(addr)) {
         return;
       }
+      if (isDelta) {
+    	if (!marker.isNew(addr) && !marker.isModified(addr)) {
+    	  return;
+    	}
+      }
       if (isFiltering) {
         String typeName = cas.getTypeSystemImpl().ll_getTypeForCode(cas.getHeapValue(addr)).getName();
         if (filterTypeSystem.getType(typeName) == null) {
@@ -400,6 +495,11 @@ public class XmiCasSerializer {
     private void enqueue(int addr) throws SAXException {
       if (isVisited(addr)) {
         return;
+      }
+      if (isDelta) {
+    	  if (!marker.isNew(addr) && !marker.isModified(addr)) {
+    		  return;
+    	  }
       }
       int typeCode = cas.getHeapValue(addr);
       if (isFiltering) {
@@ -1133,6 +1233,8 @@ public class XmiCasSerializer {
      * in the XmiSerializationSharedData during the last deserialization.
      */
     private void serializeOutOfTypeSystemElements() throws SAXException {
+      if (this.marker != null)
+            return;
       if (this.sharedData == null)
         return;
       Iterator it = this.sharedData.getOutOfTypeSystemElements().iterator();
@@ -1320,7 +1422,7 @@ public class XmiCasSerializer {
           throws SAXException {
     contentHandler.startDocument();
     XmiCasDocSerializer ser = new XmiCasDocSerializer(contentHandler, errorHandler, ((CASImpl) cas)
-            .getBaseCAS(), null);
+            .getBaseCAS(), null, null);
     ser.serialize();
     contentHandler.endDocument();
   }
@@ -1336,14 +1438,18 @@ public class XmiCasSerializer {
    * @param sharedData
    *          data structure used to allow the XmiCasSerializer and XmiCasDeserializer to share
    *          information.
+   * @param marker
+   * 	      an object used to filter the FSs and Views to determine if these were created after
+   *          the mark was set. Used to serialize a Delta CAS consisting of only new FSs and views and
+   *          preexisting FSs and Views that have been modified.
    * @throws IOException
    * @throws SAXException
    */
   public void serialize(CAS cas, ContentHandler contentHandler, ErrorHandler errorHandler,
-          XmiSerializationSharedData sharedData) throws SAXException {
+          XmiSerializationSharedData sharedData, Marker marker) throws SAXException {
     contentHandler.startDocument();
     XmiCasDocSerializer ser = new XmiCasDocSerializer(contentHandler, errorHandler, ((CASImpl) cas)
-            .getBaseCAS(), sharedData);
+            .getBaseCAS(), sharedData, (MarkerImpl) marker);
     ser.serialize();
     contentHandler.endDocument();
   }
@@ -1415,6 +1521,49 @@ public class XmiCasSerializer {
           throws SAXException {
     XmiCasSerializer xmiCasSerializer = new XmiCasSerializer(aTargetTypeSystem);
     XMLSerializer sax2xml = new XMLSerializer(aStream, aPrettyPrint);
-    xmiCasSerializer.serialize(aCAS, sax2xml.getContentHandler(), null, aSharedData);
+    xmiCasSerializer.serialize(aCAS, sax2xml.getContentHandler(), null, aSharedData, null);
+  }  
+  
+  /**
+   * Serializes a Delta CAS to an XMI stream.  This version of this method allows many options to be configured.
+   * 
+   * 
+   * WARNNG: 
+   *    Delta CAS serialization has a limitation when serializing a preexisting FS with a feature of 
+   *    Array or List type where the multiipleReferencesAllowed property of the feature is set to false 
+   *    (the default). If the only modification is to the non-shared Array of List FS, the preexisting FS
+   *    is not marked as modified and therefore is not serialized and the change to the referenced non-shared
+   *    Array or List FS is not represented in the XMI.
+   *     
+   *     
+   *    
+   * @param aCAS
+   *          CAS to serialize.
+   * @param aTargetTypeSystem
+   *          type system to which the produced XMI will conform. Any types or features not in the
+   *          target type system will not be serialized.  A null value indicates that all types and features
+   *          will be serialized.
+   * @param aStream
+   *          output stream to which to write the XMI document
+   * @param aPrettyPrint
+   *          if true the XML output will be formatted with newlines and indenting.  If false it will be unformatted.
+   * @param aSharedData
+   *          an optional container for data that is shared between the {@link XmiCasSerializer} and the {@link XmiCasDeserializer}.
+   *          See the JavaDocs for {@link XmiSerializationSharedData} for details.
+   * @param aMarker
+   *  	      an optional object that is used to filter and serialize a Delta CAS containing only
+   *          those FSs and Views created after Marker was set and preexisting FSs and views that were modified.
+   *          See the JavaDocs for {@link Marker} for details.
+   * @throws SAXException
+   *           if a problem occurs during XMI serialization
+   * @throws IOException
+   *           if an I/O failure occurs
+   */
+  public static void serialize(CAS aCAS, TypeSystem aTargetTypeSystem, OutputStream aStream, boolean aPrettyPrint, 
+          XmiSerializationSharedData aSharedData, Marker aMarker)
+          throws SAXException {
+    XmiCasSerializer xmiCasSerializer = new XmiCasSerializer(aTargetTypeSystem);
+    XMLSerializer sax2xml = new XMLSerializer(aStream, aPrettyPrint);
+    xmiCasSerializer.serialize(aCAS, sax2xml.getContentHandler(), null, aSharedData, aMarker);
   }  
 }

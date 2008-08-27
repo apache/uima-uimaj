@@ -41,11 +41,13 @@ import junit.framework.TestCase;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.IntArrayFS;
+import org.apache.uima.cas.Marker;
 import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
@@ -384,7 +386,7 @@ public class XmiCasDeserializerTest extends TestCase {
       JUnitExtension.handleException(e);
     }
   }
-
+ 
   public void testNoInitialSofa() throws Exception {
     CAS cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
             new FsIndexDescription[0]);
@@ -624,8 +626,9 @@ public class XmiCasDeserializerTest extends TestCase {
     deserialize(newSerCas1, cas, deserSharedData3, false, -1);
     
     assertEquals(numAnnotations +2, cas.getAnnotationIndex().size());
-    
+
     deserialize(newSerCas2, cas, deserSharedData3, false, maxOutgoingXmiId);
+    
     
     assertEquals(numAnnotations + 5, cas.getAnnotationIndex().size());
     
@@ -633,6 +636,7 @@ public class XmiCasDeserializerTest extends TestCase {
 
     // Serialize/deserialize again in case merge created duplicate ids
     String newSerCasMerged = serialize(cas, deserSharedData3);
+   
     deserialize(newSerCasMerged, cas, deserSharedData3, false, -1);
         
     //check covered text of annotations
@@ -645,7 +649,8 @@ public class XmiCasDeserializerTest extends TestCase {
     //check Owner annotation we created to test link across merge boundary
     iter = cas.getAnnotationIndex(ownerType).iterator();
     while (iter.hasNext()) {
-      AnnotationFS annot = (AnnotationFS)iter.next();
+      AnnotationFS
+      annot = (AnnotationFS)iter.next();
       String componentId = annot.getStringValue(componentIdFeat);
       if ("XCasDeserializerTest".equals(componentId)) {
         FeatureStructure targetRelArgs = annot.getFeatureValue(argsFeat);
@@ -680,6 +685,544 @@ public class XmiCasDeserializerTest extends TestCase {
     
     //try an initial CAS that contains multiple Sofas
     
+  }
+  
+  public void testDeltaCasMerging() throws Exception {
+    // deserialize a complex CAS from XCAS
+    CAS cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
+    InputStream serCasStream = new FileInputStream(JUnitExtension.getFile("ExampleCas/cas.xml"));
+    XCASDeserializer.deserialize(serCasStream, cas);
+    serCasStream.close();
+    int numAnnotations = cas.getAnnotationIndex().size(); //for comparison later
+    String docText = cas.getDocumentText(); //for comparison later
+    //add a new Sofa to test that multiple Sofas in original CAS work
+    CAS preexistingView = cas.createView("preexistingView");
+    String preexistingViewText = "John Smith blah blah blah";
+    preexistingView.setDocumentText(preexistingViewText);
+    createPersonAnnot(preexistingView, 0, 10);
+    
+    // do XMI serialization to a string, using XmiSerializationSharedData
+    // to keep track of maximum ID generated
+    XmiSerializationSharedData serSharedData = new XmiSerializationSharedData();
+    String xmiStr = serialize(cas, serSharedData);
+    int maxOutgoingXmiId = serSharedData.getMaxXmiId();
+    
+    //deserialize into two new CASes, again using XmiSerializationSharedData so
+    //we can get consistent IDs later.  
+    CAS newCas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
+    XmiSerializationSharedData deserSharedData1 = new XmiSerializationSharedData();
+    deserialize(xmiStr, newCas1, deserSharedData1, false, -1);
+    
+    CAS newCas2 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
+    XmiSerializationSharedData deserSharedData2 = new XmiSerializationSharedData();
+    deserialize(xmiStr, newCas2, deserSharedData2, false, -1);
+    
+    //create Marker before adding new FSs
+    Marker marker1 = newCas1.createMarker();
+    Marker marker2 = newCas2.createMarker();
+    
+    //add new FS to each new CAS
+    createPersonAnnot(newCas1, 0, 10);
+    createPersonAnnot(newCas1, 20, 30);
+    createPersonAnnot(newCas2, 40, 50);
+    AnnotationFS person = createPersonAnnot(newCas2, 60, 70);
+    
+    //add an Owner relation that points to an organization in the original CAS,
+    //to test links across merge boundary
+    Type orgType = newCas2.getTypeSystem().getType(
+            "org.apache.uima.testTypeSystem.Organization");
+    AnnotationFS org = (AnnotationFS)newCas2.getAnnotationIndex(orgType).iterator().next();
+    Type ownerType = newCas2.getTypeSystem().getType(
+            "org.apache.uima.testTypeSystem.Owner");
+    Feature argsFeat = ownerType.getFeatureByBaseName("relationArgs");
+    Feature componentIdFeat = ownerType.getFeatureByBaseName("componentId");
+    Type relArgsType = newCas2.getTypeSystem().getType(
+            "org.apache.uima.testTypeSystem.BinaryRelationArgs");
+    Feature domainFeat = relArgsType.getFeatureByBaseName("domainValue");
+    Feature rangeFeat = relArgsType.getFeatureByBaseName("rangeValue");
+    AnnotationFS ownerAnnot = newCas2.createAnnotation(ownerType, 0, 70);
+    FeatureStructure relArgs = newCas2.createFS(relArgsType);
+    relArgs.setFeatureValue(domainFeat, person);
+    relArgs.setFeatureValue(rangeFeat, org);
+    ownerAnnot.setFeatureValue(argsFeat, relArgs);
+    ownerAnnot.setStringValue(componentIdFeat, "XCasDeserializerTest");
+    newCas2.addFsToIndexes(ownerAnnot);
+    int orgBegin = org.getBegin();
+    int orgEnd = org.getEnd();
+    
+    //add Sofas
+    CAS newView1 = newCas1.createView("newSofa1");
+    final String sofaText1 = "This is a new Sofa, created in CAS 1.";
+    newView1.setDocumentText(sofaText1);
+    final String annotText = "Sofa";
+    int annotStart1 = sofaText1.indexOf(annotText);
+    AnnotationFS annot1 = newView1.createAnnotation(orgType, annotStart1, annotStart1 + annotText.length());
+    newView1.addFsToIndexes(annot1);
+    CAS newView2 = newCas2.createView("newSofa2");
+    final String sofaText2 = "This is another new Sofa, created in CAS 2.";
+    newView2.setDocumentText(sofaText2);
+    int annotStart2 = sofaText2.indexOf(annotText);
+    AnnotationFS annot2 = newView2.createAnnotation(orgType, annotStart2, annotStart2 + annotText.length());
+    newView2.addFsToIndexes(annot2);
+
+    //re-serialize each new CAS back to Delta XMI, keeping consistent ids
+    String newSerCas1 = serialize(newCas1, deserSharedData1, marker1);
+    String newSerCas2 = serialize(newCas2, deserSharedData2, marker2);
+    //System.out.println(newSerCas1);
+    //System.out.println(newSerCas2);
+    
+    //merge the two XMI CASes back into the original CAS
+    XmiSerializationSharedData deserSharedData3 = new XmiSerializationSharedData();
+    deserialize(newSerCas1, cas, serSharedData, false, maxOutgoingXmiId);
+    
+    assertEquals(numAnnotations +2, cas.getAnnotationIndex().size());
+
+    deserialize(newSerCas2, cas, serSharedData, false, maxOutgoingXmiId);
+    
+    
+    assertEquals(numAnnotations + 5, cas.getAnnotationIndex().size());
+    
+    assertEquals(docText, cas.getDocumentText());
+
+    // Serialize/deserialize again in case merge created duplicate ids
+    String newSerCasMerged = serialize(cas, serSharedData);
+    //System.out.println(newSerCasMerged);
+    deserialize(newSerCasMerged, cas, serSharedData, false, -1);
+        
+    //check covered text of annotations
+    FSIterator iter = cas.getAnnotationIndex().iterator();
+    while (iter.hasNext()) {
+      AnnotationFS annot = (AnnotationFS)iter.next();
+      assertEquals(cas.getDocumentText().substring(
+              annot.getBegin(), annot.getEnd()), annot.getCoveredText());
+    }
+    //check Owner annotation we created to test link across merge boundary
+    iter = cas.getAnnotationIndex(ownerType).iterator();
+    while (iter.hasNext()) {
+      AnnotationFS
+      annot = (AnnotationFS)iter.next();
+      String componentId = annot.getStringValue(componentIdFeat);
+      if ("XCasDeserializerTest".equals(componentId)) {
+        FeatureStructure targetRelArgs = annot.getFeatureValue(argsFeat);
+        AnnotationFS targetDomain = (AnnotationFS)targetRelArgs.getFeatureValue(domainFeat);
+        assertEquals(60, targetDomain.getBegin());
+        assertEquals(70, targetDomain.getEnd());
+        AnnotationFS targetRange = (AnnotationFS)targetRelArgs.getFeatureValue(rangeFeat);
+        assertEquals(orgBegin, targetRange.getBegin());
+        assertEquals(orgEnd, targetRange.getEnd());
+      }     
+    } 
+    //check Sofas
+    CAS targetView1 = cas.getView("newSofa1");
+    assertEquals(sofaText1, targetView1.getDocumentText());
+    CAS targetView2 = cas.getView("newSofa2");
+    assertEquals(sofaText2, targetView2.getDocumentText());
+    AnnotationFS targetAnnot1 = (AnnotationFS) 
+      targetView1.getAnnotationIndex(orgType).iterator().get();
+    assertEquals(annotText, targetAnnot1.getCoveredText());
+    AnnotationFS targetAnnot2 = (AnnotationFS) 
+    targetView2.getAnnotationIndex(orgType).iterator().get();
+    assertEquals(annotText, targetAnnot2.getCoveredText());
+    assertTrue(targetView1.getSofa().getSofaRef() != 
+            targetView2.getSofa().getSofaRef());
+    
+    CAS checkPreexistingView = cas.getView("preexistingView");
+    assertEquals(preexistingViewText, checkPreexistingView.getDocumentText());
+    Type personType = cas.getTypeSystem().getType("org.apache.uima.testTypeSystem.Person");    
+    AnnotationFS targetAnnot3 = (AnnotationFS)
+            checkPreexistingView.getAnnotationIndex(personType).iterator().get();
+    assertEquals("John Smith", targetAnnot3.getCoveredText());
+    
+    //try an initial CAS that contains multiple Sofas
+  }
+  
+  public void testDeltaCasIgnorePreexistingFS() throws Exception {
+   try {
+	  CAS cas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
+	          indexes);
+	  CAS cas2 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
+	          indexes);
+	  cas1.setDocumentText("This is a test document in the initial view");
+	  AnnotationFS anAnnot1 = cas1.createAnnotation(cas1.getAnnotationType(), 0, 4);
+	  cas1.getIndexRepository().addFS(anAnnot1);
+	  AnnotationFS anAnnot2 = cas1.createAnnotation(cas1.getAnnotationType(), 5, 10);
+	  cas1.getIndexRepository().addFS(anAnnot2);
+	  FSIndex tIndex = cas1.getAnnotationIndex();
+	  assertTrue(tIndex.size() == 3); //doc annot plus  annots
+	  
+	  //serialize complete  
+	  XmiSerializationSharedData sharedData = new XmiSerializationSharedData();
+	  String xml = this.serialize(cas1, sharedData);
+	  int maxOutgoingXmiId = sharedData.getMaxXmiId();
+	  //deserialize into cas2
+	  XmiSerializationSharedData sharedData2 = new XmiSerializationSharedData();      
+	  //XmiCasDeserializer.deserialize(new StringBufferInputStream(xml), cas2, true, sharedData2);
+	  this.deserialize(xml, cas2, sharedData2, true, -1);
+	  CasComparer.assertEquals(cas1, cas2);
+	  
+	  //create Marker, add/modify fs and serialize in delta xmi format.
+	  Marker marker = cas2.createMarker();
+	  FSIndex cas2tIndex = cas2.getAnnotationIndex();
+	  
+	  //create an annotation and add to index
+	  AnnotationFS cas2newAnnot = cas2.createAnnotation(cas2.getAnnotationType(), 6, 8);
+	  cas2.getIndexRepository().addFS(cas2newAnnot);
+	  assertTrue(cas2tIndex.size() == 4); // prev annots and this new one
+	  
+	  //modify an existing annotation
+	  Iterator tIndexIter = cas2tIndex.iterator();
+	  AnnotationFS docAnnot = (AnnotationFS) tIndexIter.next(); //doc annot
+	  //delete from index
+	  AnnotationFS delAnnot = (AnnotationFS) tIndexIter.next(); //annot
+	  cas2.getIndexRepository().removeFS(delAnnot);
+	  assertTrue(cas2.getAnnotationIndex().size() == 3);
+	  
+	  //modify language feature
+	  Feature languageF = cas2.getDocumentAnnotation().getType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_LANGUAGE);
+	  docAnnot.setStringValue(languageF, "en");
+	  // serialize cas2 in delta format 
+	  String deltaxml1 = this.serialize(cas2, sharedData2, marker);
+	  //System.out.println("delta cas");
+	  //System.out.println(deltaxml1);
+	  
+	  //deserialize delta xmi into cas1
+	  this.deserialize(deltaxml1, cas1, sharedData, true, maxOutgoingXmiId, AllowPreexistingFS.ignore);
+	  
+	  //check language feature of doc annot is not changed.
+	  //System.out.println(cas1.getDocumentAnnotation().getStringValue(languageF));
+	  assertTrue( ((FeatureStructure) cas1.getAnnotationIndex().iterator().next()).getStringValue(languageF).equals("x-unspecified"));
+	  //check new annotation exists and preexisting is not deleted
+	  assertTrue(cas1.getAnnotationIndex().size()==4);
+   } catch (Exception e) {
+	  JUnitExtension.handleException(e);
+   }
+  }
+  
+  public void testDeltaCasDisallowPreexistingFSMod() throws Exception {
+    try {
+      CAS cas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
+              indexes);
+      CAS cas2 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
+              indexes);
+      cas1.setDocumentText("This is a test document in the initial view");
+      AnnotationFS anAnnot1 = cas1.createAnnotation(cas1.getAnnotationType(), 0, 4);
+      cas1.getIndexRepository().addFS(anAnnot1);
+      AnnotationFS anAnnot2 = cas1.createAnnotation(cas1.getAnnotationType(), 5, 10);
+      cas1.getIndexRepository().addFS(anAnnot2);
+      FSIndex tIndex = cas1.getAnnotationIndex();
+      assertTrue(tIndex.size() == 3); //doc annot plus 2 annots
+      
+      //serialize complete  
+      XmiSerializationSharedData sharedData = new XmiSerializationSharedData();
+      String xml = this.serialize(cas1, sharedData);
+      int maxOutgoingXmiId = sharedData.getMaxXmiId();
+      
+      //deserialize into cas2
+      XmiSerializationSharedData sharedData2 = new XmiSerializationSharedData();      
+      this.deserialize(xml, cas2, sharedData2, true, -1);
+      CasComparer.assertEquals(cas1, cas2);
+      
+      //create Marker, add/modify fs and serialize in delta xmi format.
+      Marker marker = cas2.createMarker();
+      FSIndex cas2tIndex = cas2.getAnnotationIndex();
+      
+      //create an annotation and add to index
+      AnnotationFS cas2newAnnot = cas2.createAnnotation(cas2.getAnnotationType(), 6, 8);
+      cas2.getIndexRepository().addFS(cas2newAnnot);
+      assertTrue(cas2tIndex.size() == 4); // prev annots and this new one
+      
+      //modify language feature
+      Iterator tIndexIter = cas2tIndex.iterator();
+      AnnotationFS docAnnot = (AnnotationFS) tIndexIter.next();
+      Feature languageF = cas2.getDocumentAnnotation().getType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_LANGUAGE);
+      docAnnot.setStringValue(languageF, "en");
+     
+      // serialize cas2 in delta format 
+      String deltaxml1 = this.serialize(cas2, sharedData2, marker);
+      //System.out.println(deltaxml1);
+      
+      //deserialize delta xmi into cas1
+      try {
+        this.deserialize(deltaxml1, cas1, sharedData, true, maxOutgoingXmiId, AllowPreexistingFS.disallow);
+      } catch (CASRuntimeException e) {
+    	assertTrue(e.getMessageKey() == CASRuntimeException.DELTA_CAS_PREEXISTING_FS_DISALLOWED);
+      }
+    	 
+      //check language feature of doc annot is not changed.
+      //System.out.println(cas1.getDocumentAnnotation().getStringValue(languageF));
+      assertTrue( ((FeatureStructure) cas1.getAnnotationIndex().iterator().next()).getStringValue(languageF).equals("x-unspecified"));
+      //check new annotation exists
+      assertTrue(cas1.getAnnotationIndex().size() == 3); // cas2 should be unchanged. 
+	} catch (Exception e) {
+		  JUnitExtension.handleException(e);
+	}
+  }
+  
+  public void testDeltaCasDisallowPreexistingFSViewMod() throws Exception {
+    try {
+      CAS cas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
+              indexes);
+      CAS cas2 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
+              indexes);
+      cas1.setDocumentText("This is a test document in the initial view");
+      AnnotationFS anAnnot1 = cas1.createAnnotation(cas1.getAnnotationType(), 0, 4);
+      cas1.getIndexRepository().addFS(anAnnot1);
+      AnnotationFS anAnnot2 = cas1.createAnnotation(cas1.getAnnotationType(), 5, 10);
+      cas1.getIndexRepository().addFS(anAnnot2);
+      FSIndex tIndex = cas1.getAnnotationIndex();
+      assertTrue(tIndex.size() == 3); //doc annot plus 2 annots
+      
+      //serialize complete  
+      XmiSerializationSharedData sharedData = new XmiSerializationSharedData();
+      String xml = this.serialize(cas1, sharedData);
+      int maxOutgoingXmiId = sharedData.getMaxXmiId();
+      
+      //deserialize into cas2
+      XmiSerializationSharedData sharedData2 = new XmiSerializationSharedData();      
+      this.deserialize(xml, cas2, sharedData2, true, -1);
+      CasComparer.assertEquals(cas1, cas2);
+      
+      //create Marker, add/modify fs and serialize in delta xmi format.
+      Marker marker = cas2.createMarker();
+      FSIndex cas2tIndex = cas2.getAnnotationIndex();
+      
+      //create an annotation and add to index
+      AnnotationFS cas2newAnnot = cas2.createAnnotation(cas2.getAnnotationType(), 6, 8);
+      cas2.getIndexRepository().addFS(cas2newAnnot);
+      assertTrue(cas2tIndex.size() == 4); // prev annots and this new one
+      
+      //modify language feature
+      Iterator tIndexIter = cas2tIndex.iterator();
+      AnnotationFS docAnnot = (AnnotationFS) tIndexIter.next();
+      
+      //delete annotation from index    
+      AnnotationFS delAnnot = (AnnotationFS) tIndexIter.next(); //annot
+      cas2.getIndexRepository().removeFS(delAnnot);
+      assertTrue(cas2.getAnnotationIndex().size() == 3);
+      
+      // serialize cas2 in delta format 
+      String deltaxml1 = this.serialize(cas2, sharedData2, marker);
+      //System.out.println(deltaxml1);
+      
+      //deserialize delta xmi into cas1
+      try {
+        this.deserialize(deltaxml1, cas1, sharedData, true, maxOutgoingXmiId, AllowPreexistingFS.disallow);
+      } catch (CASRuntimeException e) {
+    	assertTrue(e.getMessageKey() == CASRuntimeException.DELTA_CAS_PREEXISTING_FS_DISALLOWED);
+      }
+    	 
+      //check new annotation added and preexisitng FS not removed from index
+      assertTrue(cas1.getAnnotationIndex().size() == 4);  
+    } catch (Exception e) {
+	  JUnitExtension.handleException(e);
+    }
+  }
+  
+  public void testDeltaCasAllowPreexistingFS() throws Exception {
+   try {
+      CAS cas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
+              indexes);
+      CAS cas2 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
+              indexes);
+      CAS cas3 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
+              indexes);
+      
+      Type personType = cas1.getTypeSystem().getType(
+      		"org.apache.uima.testTypeSystem.Person");
+      Feature componentIdFeat = personType.getFeatureByBaseName("componentId");
+      Feature confidenceFeat = personType.getFeatureByBaseName("confidence");
+      Type orgType = cas1.getTypeSystem().getType(
+			"org.apache.uima.testTypeSystem.Organization");
+      Type ownerType = cas1.getTypeSystem().getType(
+      						"org.apache.uima.testTypeSystem.Owner");
+      Type entityAnnotType = cas1.getTypeSystem().getType(
+		"org.apache.uima.testTypeSystem.EntityAnnotation");
+      Feature mentionTypeFeat = entityAnnotType.getFeatureByBaseName("mentionType");
+      Feature argsFeat = ownerType.getFeatureByBaseName("relationArgs");
+      Type relArgsType = cas1.getTypeSystem().getType(
+      						"org.apache.uima.testTypeSystem.BinaryRelationArgs");
+      Feature domainFeat = relArgsType.getFeatureByBaseName("domainValue");
+      Feature rangeFeat = relArgsType.getFeatureByBaseName("rangeValue");
+      
+      Type entityType = cas1.getTypeSystem().getType("org.apache.uima.testTypeSystem.Entity");
+      Feature classesFeat = entityType.getFeatureByBaseName("classes");
+      Feature linksFeat = entityType.getFeatureByBaseName("links");
+      Feature canonicalFormFeat = entityType.getFeatureByBaseName("canonicalForm");
+      
+      Type nonEmptyFsListType = cas1.getTypeSystem().getType(CAS.TYPE_NAME_NON_EMPTY_FS_LIST);
+      Type emptyFsListType = cas1.getTypeSystem().getType(CAS.TYPE_NAME_EMPTY_FS_LIST);
+      Feature headFeat = nonEmptyFsListType.getFeatureByBaseName("head");
+      Feature tailFeat = nonEmptyFsListType.getFeatureByBaseName("tail");
+      
+      //cas1
+      //initial set of feature structures 
+      // set document text for the initial view and create Annotations
+      cas1.setDocumentText("This is a test document in the initial view");
+      AnnotationFS anAnnot1 = cas1.createAnnotation(cas1.getAnnotationType(), 0, 4);
+      cas1.getIndexRepository().addFS(anAnnot1);
+      AnnotationFS anAnnot2 = cas1.createAnnotation(cas1.getAnnotationType(), 5, 6);
+      cas1.getIndexRepository().addFS(anAnnot2);
+      AnnotationFS anAnnot3 = cas1.createAnnotation(cas1.getAnnotationType(), 8, 13);
+      cas1.getIndexRepository().addFS(anAnnot3);
+      AnnotationFS anAnnot4 = cas1.createAnnotation(cas1.getAnnotationType(), 15, 30);
+      cas1.getIndexRepository().addFS(anAnnot4);
+      FSIndex tIndex = cas1.getAnnotationIndex();
+      assertTrue(tIndex.size() == 5); //doc annot plus 4 annots
+      
+      FeatureStructure entityFS = cas1.createFS(entityType);
+      cas1.getIndexRepository().addFS(entityFS);
+      
+      StringArrayFS strArrayFS = cas1.createStringArrayFS(5);
+      strArrayFS.set(0, "class1");
+      entityFS.setFeatureValue(classesFeat, strArrayFS);
+      
+      //create listFS and set the link feature
+      FeatureStructure emptyNode = cas1.createFS(emptyFsListType);
+      FeatureStructure secondNode = cas1.createFS(nonEmptyFsListType);
+      secondNode.setFeatureValue(headFeat, anAnnot2);
+      secondNode.setFeatureValue(tailFeat, emptyNode);
+      FeatureStructure firstNode = cas1.createFS(nonEmptyFsListType);
+      firstNode.setFeatureValue(headFeat, anAnnot1);
+      firstNode.setFeatureValue(tailFeat, secondNode);
+      entityFS.setFeatureValue(linksFeat, firstNode);
+      
+      // create a view w/o setting document text
+      CAS view1 = cas1.createView("View1");
+      
+      // create another view 
+      CAS preexistingView = cas1.createView("preexistingView");
+      String preexistingViewText = "John Smith blah blah blah";
+      preexistingView.setDocumentText(preexistingViewText);
+      AnnotationFS person1Annot = createPersonAnnot(preexistingView, 0, 10);
+      person1Annot.setStringValue(componentIdFeat, "deltacas1");
+      AnnotationFS person2Annot = createPersonAnnot(preexistingView, 0, 5);
+      AnnotationFS orgAnnot = preexistingView.createAnnotation(orgType, 16, 24);
+      preexistingView.addFsToIndexes(orgAnnot);
+      
+      AnnotationFS ownerAnnot = preexistingView.createAnnotation(ownerType, 0, 24);
+      preexistingView.addFsToIndexes(ownerAnnot);
+      FeatureStructure relArgs = cas1.createFS(relArgsType);
+      relArgs.setFeatureValue(domainFeat, person1Annot);
+      ownerAnnot.setFeatureValue(argsFeat, relArgs);
+      
+      //serialize complete  
+      XmiSerializationSharedData sharedData = new XmiSerializationSharedData();
+      String xml = this.serialize(cas1, sharedData);
+      int maxOutgoingXmiId = sharedData.getMaxXmiId();
+      //System.out.println("CAS1 " + xml);
+      //System.out.println("MaxOutgoingXmiId " + maxOutgoingXmiId);
+   
+      //deserialize into cas2
+      XmiSerializationSharedData sharedData2 = new XmiSerializationSharedData();      
+      this.deserialize(xml, cas2, sharedData2, true, -1);
+      CasComparer.assertEquals(cas1, cas2);
+ 
+      //=======================================================================
+      //create Marker, add/modify fs and serialize in delta xmi format.
+      Marker marker = cas2.createMarker();
+      FSIndex cas2tIndex = cas2.getAnnotationIndex();
+      CAS cas2preexistingView = cas2.getView("preexistingView");
+      FSIndex cas2personIndex = cas2preexistingView.getAnnotationIndex(personType);
+      FSIndex cas2orgIndex = cas2preexistingView.getAnnotationIndex(orgType);
+      FSIndex cas2ownerIndex = cas2preexistingView.getAnnotationIndex(ownerType);
+      
+      // create an annotation and add to index
+      AnnotationFS cas2anAnnot5 = cas2.createAnnotation(cas2.getAnnotationType(), 6, 8);
+      cas2.getIndexRepository().addFS(cas2anAnnot5);
+      assertTrue(cas2tIndex.size() == 6); // prev annots and this new one
+     
+      // set document text of View1
+      CAS cas2view1 = cas2.getView("View1");
+      cas2view1.setDocumentText("This is the View1 document.");
+      //create an annotation in View1
+      AnnotationFS cas2view1Annot = cas2view1.createAnnotation(cas2.getAnnotationType(), 1, 5);
+      cas2view1.getIndexRepository().addFS(cas2view1Annot);
+      FSIndex cas2view1Index = cas2view1.getAnnotationIndex();
+      assertTrue(cas2view1Index.size() == 2); //document annot and this annot
+      
+      //modify an existing annotation
+      Iterator tIndexIter = cas2tIndex.iterator();
+      AnnotationFS docAnnot = (AnnotationFS) tIndexIter.next(); //doc annot
+      AnnotationFS modAnnot1 = (AnnotationFS) tIndexIter.next();
+      AnnotationFS delAnnot = (AnnotationFS)  tIndexIter.next();
+      
+      //modify language feature
+      Feature languageF = cas2.getDocumentAnnotation().getType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_LANGUAGE);
+      docAnnot.setStringValue(languageF, "en");
+      
+      //index update - reindex
+      cas2.getIndexRepository().removeFS(modAnnot1);
+      Feature endF = cas2.getAnnotationType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_END);
+      modAnnot1.setIntValue(endF, 4);
+      cas2.getIndexRepository().addFS(modAnnot1);
+      //index update - remove annotation from index 
+      cas2.getIndexRepository().removeFS(delAnnot);
+      
+      //modify FS - string feature and FS feature.
+      Iterator personIter = cas2personIndex.iterator();     
+      AnnotationFS cas2person1 = (AnnotationFS) personIter.next();
+      AnnotationFS cas2person2 = (AnnotationFS) personIter.next();
+      
+      cas2person1.setFloatValue(confidenceFeat, (float) 99.99);
+      cas2person1.setStringValue(mentionTypeFeat, "FULLNAME");
+      
+      cas2person2.setStringValue(componentIdFeat, "delataCas2");
+      cas2person2.setStringValue(mentionTypeFeat, "FIRSTNAME");
+      
+      Iterator orgIter = cas2orgIndex.iterator();
+      AnnotationFS cas2orgAnnot = (AnnotationFS) orgIter.next();
+      cas2orgAnnot.setStringValue(mentionTypeFeat, "ORGNAME");
+      
+      //modify FS feature
+      Iterator ownerIter = cas2ownerIndex.iterator();
+      AnnotationFS cas2ownerAnnot = (AnnotationFS) ownerIter.next();
+      FeatureStructure cas2relArgs = cas2ownerAnnot.getFeatureValue(argsFeat);
+      cas2relArgs.setFeatureValue(rangeFeat, cas2orgAnnot);
+      
+      Iterator iter = cas2.getIndexRepository().getIndex("testEntityIndex").iterator();
+      FeatureStructure cas2EntityFS = (FeatureStructure) iter.next();
+      //cas2EntityFS.setStringValue(canonicalFormFeat, "canonicalname");
+      
+      //set values of stringarray fs
+      StringArrayFS cas2strarrayFS = (StringArrayFS) cas2EntityFS.getFeatureValue(classesFeat);
+      cas2strarrayFS.set(1, "class2");
+      cas2strarrayFS.set(2, "class3");
+      cas2strarrayFS.set(3, "class4");
+      cas2strarrayFS.set(4, "class5");
+      cas2EntityFS.setFeatureValue(classesFeat, cas2strarrayFS); //?? need to touch the entity FS
+                                         						//to serialize non-shared array or list 
+      
+      //add to FSList 
+      FeatureStructure cas2linksFS = cas2EntityFS.getFeatureValue(linksFeat);
+      FeatureStructure cas2secondNode = cas2linksFS.getFeatureValue(tailFeat);
+      FeatureStructure cas2emptyNode = cas2secondNode.getFeatureValue(tailFeat);
+      FeatureStructure cas2thirdNode = cas2.createFS(nonEmptyFsListType);
+      cas2thirdNode.setFeatureValue(headFeat, cas2anAnnot5);
+      cas2thirdNode.setFeatureValue(tailFeat, cas2emptyNode);
+      cas2secondNode.setFeatureValue(tailFeat, cas2thirdNode);
+      
+      // serialize cas2 in delta format 
+      String deltaxml1 = this.serialize(cas2, sharedData2, marker);
+      //System.out.println("delta cas");
+      //System.out.println(deltaxml1);
+      
+      //======================================================================
+      //deserialize delta xmi into cas1
+      this.deserialize(deltaxml1, cas1, sharedData, true, maxOutgoingXmiId, AllowPreexistingFS.allow);
+      
+      //======================================================================
+      //serialize complete cas and deserialize into cas3 and compare with cas1.
+      String fullxml = this.serialize(cas2, sharedData2);
+      XmiSerializationSharedData sharedData3 = new XmiSerializationSharedData();
+      this.deserialize(fullxml, cas3, sharedData3, true,-1);
+      CasComparer.assertEquals(cas1, cas3); 
+      
+      //System.out.println("CAS1 " + serialize(cas1, new XmiSerializationSharedData()));
+      //System.out.println("CAS2 " + serialize(cas2, new XmiSerializationSharedData()));
+      
+    } catch (Exception e) {
+      JUnitExtension.handleException(e);
+    }
   }
   
   public void testOutOfTypeSystemData() throws Exception {
@@ -944,13 +1487,36 @@ public class XmiCasDeserializerTest extends TestCase {
     }        
     return xmiStr;
   }
-
-
+  
+  /** Utility method for serializing a Delta CAS to XMI String 
+   * */
+  private static String serialize(CAS cas, XmiSerializationSharedData serSharedData, Marker marker) throws IOException, SAXException {
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();    
+    XmiCasSerializer.serialize(cas, null, baos, false, serSharedData, marker);
+    baos.close();
+    String xmiStr = new String(baos.toByteArray(), "UTF-8");   //note by default XmiCasSerializer generates UTF-8
+    
+    //workaround for newline serialization problem in Sun Java 1.4.2
+    //this test file should contain CRLF line endings, but Sun Java loses them
+    //when it serializes XML.
+    if(!builtInXmlSerializationSupportsCRs()) {
+      xmiStr = xmiStr.replaceAll("&#10;", "&#13;&#10;");
+    }        
+    return xmiStr;
+  }
+  
   /** Utility method for deserializing a CAS from an XMI String */
   private void deserialize(String xmlStr, CAS cas, XmiSerializationSharedData sharedData, boolean lenient, int mergePoint) throws FactoryConfigurationError, ParserConfigurationException, SAXException, IOException {
     byte[] bytes = xmlStr.getBytes("UTF-8"); //this assumes the encoding is UTF-8, which is the default output encoding of the XmiCasSerializer
     ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
     XmiCasDeserializer.deserialize(bais, cas, lenient, sharedData, mergePoint);
+    bais.close();
+  }
+  
+  private void deserialize(String xmlStr, CAS cas, XmiSerializationSharedData sharedData, boolean lenient, int mergePoint, AllowPreexistingFS allow) throws FactoryConfigurationError, ParserConfigurationException, SAXException, IOException {
+    byte[] bytes = xmlStr.getBytes("UTF-8"); //this assumes the encoding is UTF-8, which is the default output encoding of the XmiCasSerializer
+    ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+    XmiCasDeserializer.deserialize(bais, cas, lenient, sharedData, mergePoint, allow);
     bais.close();
   }  
   

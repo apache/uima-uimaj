@@ -179,6 +179,12 @@ public class CASRuntimeException extends UIMARuntimeException {
    */
   public static final String CANNOT_CLONE_SOFA = "CANNOT_CLONE_SOFA";
   
+  /** Mismatched CAS "{0}". */
+  public static final String CAS_MISMATCH = "CAS_MISMATCH";
+  
+  /** Received pre-existing FS "{0}". */
+  public static final String DELTA_CAS_PREEXISTING_FS_DISALLOWED = "DELTA_CAS_PREEXISTING_FS_DISALLOWED";
+
   
 	public CASRuntimeException() {
 		super();

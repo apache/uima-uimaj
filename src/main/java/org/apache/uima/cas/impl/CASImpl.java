@@ -62,6 +62,7 @@ import org.apache.uima.cas.FeatureValuePath;
 import org.apache.uima.cas.FloatArrayFS;
 import org.apache.uima.cas.IntArrayFS;
 import org.apache.uima.cas.LongArrayFS;
+import org.apache.uima.cas.Marker;
 import org.apache.uima.cas.ShortArrayFS;
 import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.SofaID;
@@ -206,6 +207,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     private ComponentInfo componentInfo;
 
     private FSGenerator[] localFsGenerators;
+    
+    private MarkerImpl trackingMark;
+    
+    private IntVector modifiedPreexistingFSs;
 
     private SharedViewData(boolean useFSCache) {
       this.useFSCache = useFSCache;
@@ -316,6 +321,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     this.svd.sofaNameSet = new HashSet();
     this.svd.initialSofaCreated = false;
     this.svd.viewCount = 0;
+    
+    this.svd.trackingMark = null;
+    this.svd.modifiedPreexistingFSs = null; 
   }
 
   /**
@@ -899,6 +907,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     if (this.jcas != null) {
       JCasImpl.clearData(this);
     }
+    
+    this.svd.trackingMark = null;
+    this.svd.modifiedPreexistingFSs = null;
   }
 
   /**
@@ -1052,6 +1063,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     // to.
     this.jcas = null;
     // this.sofa2jcasMap.clear();
+    this.svd.trackingMark = null;
+    this.svd.modifiedPreexistingFSs = null;
   }
 
   void reinit(int[] heapMetadata, int[] heapArray, String[] stringTable, int[] fsIndex,
@@ -1484,6 +1497,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       throw new ArrayIndexOutOfBoundsException();
     }
     this.getHeap().heap[addr + arrayContentOffset + index] = value;
+    if (this.svd.trackingMark != null) {
+    	this.logFSUpdate(addr);
+    }
   }
 
   void setArrayValueFromString(final int addr, final int index, final String value) {
@@ -1564,6 +1580,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     // Compute the offset into the heap where the array starts.
     final int offset = addr + arrayContentOffset;
     System.arraycopy(src, srcOffset, this.getHeap().heap, offset + destOffset, length);
+    if (this.svd.trackingMark != null) {
+    	this.logFSUpdate(addr);
+    }
   }
 
   void copyFeatures(int trgAddr, int srcAddr) throws CASRuntimeException {
@@ -1627,6 +1646,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    */
   public void setFeatureValue(int addr, int feat, int val) {
     this.getHeap().heap[(addr + this.svd.casMetadata.featureOffset[feat])] = val;
+    if (this.svd.trackingMark != null) {
+    	this.logFSUpdate(addr);
+    }
   }
 
   public void setStringValue(int addr, int feat, String s) {
@@ -2832,10 +2854,16 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   public final void ll_setIntValue(int fsRef, int featureCode, int value) {
     this.getHeap().heap[fsRef + this.svd.casMetadata.featureOffset[featureCode]] = value;
+    if (this.svd.trackingMark != null) {
+    	this.logFSUpdate(fsRef);
+    }
   }
 
   public final void ll_setFloatValue(int fsRef, int featureCode, float value) {
     this.getHeap().heap[fsRef + this.svd.casMetadata.featureOffset[featureCode]] = float2int(value);
+    if (this.svd.trackingMark != null) {
+    	this.logFSUpdate(fsRef);
+    }
   }
 
   public final void ll_setStringValue(int fsRef, int featureCode, String value) {
@@ -2853,10 +2881,16 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     final int stringAddr = (value == null) ? NULL : this.getStringHeap().addString(value);
     final int valueAddr = fsRef + this.svd.casMetadata.featureOffset[featureCode];
     this.getHeap().heap[valueAddr] = stringAddr;
+    if (this.svd.trackingMark != null) {
+    	this.logFSUpdate(fsRef);
+    }
   }
 
   public final void ll_setRefValue(int fsRef, int featureCode, int value) {
     this.getHeap().heap[fsRef + this.svd.casMetadata.featureOffset[featureCode]] = value;
+    if (this.svd.trackingMark != null) {
+    	this.logFSUpdate(fsRef);
+    }
   }
 
   public final void ll_setIntValue(int fsRef, int featureCode, int value, boolean doTypeChecks) {
@@ -3080,22 +3114,34 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   public void ll_setIntArrayValue(int fsRef, int position, int value) {
     final int pos = getArrayStartAddress(fsRef) + position;
     this.getHeap().heap[pos] = value;
+    if (this.svd.trackingMark != null) {
+    	this.logFSUpdate(fsRef);
+    }
   }
 
   public void ll_setFloatArrayValue(int fsRef, int position, float value) {
     final int pos = getArrayStartAddress(fsRef) + position;
     this.getHeap().heap[pos] = float2int(value);
+    if (this.svd.trackingMark != null) {
+    	this.logFSUpdate(fsRef);
+    }
   }
 
   public void ll_setStringArrayValue(int fsRef, int position, String value) {
     final int pos = getArrayStartAddress(fsRef) + position;
     final int stringCode = (value == null) ? NULL : addString(value);
     this.getHeap().heap[pos] = stringCode;
+    if (this.svd.trackingMark != null) {
+    	this.logFSUpdate(fsRef);
+    }
   }
 
   public void ll_setRefArrayValue(int fsRef, int position, int value) {
     final int pos = getArrayStartAddress(fsRef) + position;
     this.getHeap().heap[pos] = value;
+    if (this.svd.trackingMark != null) {
+    	this.logFSUpdate(fsRef);
+    }
   }
 
   public int ll_getFSRefType(int fsRef) {
@@ -3316,6 +3362,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   public void ll_setBooleanValue(int fsRef, int featureCode, boolean value) {
     this.getHeap().heap[fsRef + this.svd.casMetadata.featureOffset[featureCode]] = value ? CASImpl.TRUE
         : CASImpl.FALSE;
+    if (this.svd.trackingMark != null) {
+    	this.logFSUpdate(fsRef);
+    }
   }
 
   public void ll_setBooleanValue(int fsRef, int featureCode, boolean value, boolean doTypeChecks) {
@@ -3327,6 +3376,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   public final void ll_setByteValue(int fsRef, int featureCode, byte value) {
     this.getHeap().heap[fsRef + this.svd.casMetadata.featureOffset[featureCode]] = value;
+    if (this.svd.trackingMark != null) {
+    	this.logFSUpdate(fsRef);
+    }
   }
 
   public void ll_setByteValue(int fsRef, int featureCode, byte value, boolean doTypeChecks) {
@@ -3338,6 +3390,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   public final void ll_setShortValue(int fsRef, int featureCode, short value) {
     this.getHeap().heap[fsRef + this.svd.casMetadata.featureOffset[featureCode]] = value;
+    if (this.svd.trackingMark != null) {
+    	this.logFSUpdate(fsRef);
+    }
   }
 
   public void ll_setShortValue(int fsRef, int featureCode, short value, boolean doTypeChecks) {
@@ -3436,6 +3491,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   public void ll_setByteArrayValue(int fsRef, int position, byte value) {
     final int offset = this.getHeap().heap[getArrayStartAddress(fsRef)];
     this.getByteHeap().setHeapValue(value, offset + position);
+    if (this.svd.trackingMark != null) {
+    	this.logFSUpdate(fsRef);
+    }
   }
 
   public void ll_setByteArrayValue(int fsRef, int position, byte value, boolean doTypeChecks) {
@@ -3450,6 +3508,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     byte value = (byte) (b ? CASImpl.TRUE : CASImpl.FALSE);
     final int offset = this.getHeap().heap[getArrayStartAddress(fsRef)];
     this.getByteHeap().setHeapValue(value, offset + position);
+    if (this.svd.trackingMark != null) {
+    	this.logFSUpdate(fsRef);
+    }
   }
 
   public void ll_setBooleanArrayValue(int fsRef, int position, boolean value, boolean doTypeChecks) {
@@ -3462,6 +3523,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   public void ll_setShortArrayValue(int fsRef, int position, short value) {
     final int offset = this.getHeap().heap[getArrayStartAddress(fsRef)];
     this.getShortHeap().setHeapValue(value, offset + position);
+    if (this.svd.trackingMark != null) {
+    	this.logFSUpdate(fsRef);
+    }
   }
 
   public void ll_setShortArrayValue(int fsRef, int position, short value, boolean doTypeChecks) {
@@ -3474,6 +3538,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   public void ll_setLongArrayValue(int fsRef, int position, long value) {
     final int offset = this.getHeap().heap[getArrayStartAddress(fsRef)];
     this.getLongHeap().setHeapValue(value, offset + position);
+    if (this.svd.trackingMark != null) {
+    	this.logFSUpdate(fsRef);
+    }
   }
 
   public void ll_setLongArrayValue(int fsRef, int position, long value, boolean doTypeChecks) {
@@ -3869,4 +3936,36 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return this.isUsedJcasCache;
   }
 
+  public Marker createMarker() {
+    if (!this.svd.flushEnabled) {
+	  throw new CASAdminException(CASAdminException.FLUSH_DISABLED);
+	}
+	this.svd.trackingMark = new MarkerImpl(this.getHeap().getNextId(), this);
+	if (this.svd.modifiedPreexistingFSs == null) {
+	  this.svd.modifiedPreexistingFSs = new IntVector();
+	}
+	return this.svd.trackingMark;
+  }
+
+  private void logFSUpdate(int addr) {
+	if (this.svd.trackingMark != null && !this.svd.trackingMark.isNew(addr)) {
+	  int lastModifiedFS = -1;	
+	  if (this.svd.modifiedPreexistingFSs.size() > 0) {
+	    lastModifiedFS =  this.svd.modifiedPreexistingFSs.get(this.svd.modifiedPreexistingFSs.size()-1);
+	  }
+	  //only log if the last one logged is not the same fs.s
+	  if (lastModifiedFS != addr) {
+		  this.svd.modifiedPreexistingFSs.add(addr);
+	  }
+	}
+  }
+  
+  MarkerImpl getCurrentMark() {
+	  return this.svd.trackingMark;
+  }
+  
+  IntVector getModifiedFSList() {
+	return this.svd.modifiedPreexistingFSs;  
+  }
+  
 }
