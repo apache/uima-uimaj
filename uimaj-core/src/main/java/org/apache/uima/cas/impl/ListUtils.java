@@ -144,6 +144,38 @@ public class ListUtils {
             || isFsListType(type);
   }
 
+  public int getLength(int type, int addr) {
+	int neListType = -1;
+	int tailFeat = -1;
+	if (isIntListType(type)) {
+	  neListType = neIntListType;
+	  tailFeat = intTailFeat;
+	} else if ( isFloatListType(type)) {
+	  neListType = neFloatListType;
+	  tailFeat = floatTailFeat;
+	} else if (isStringListType(type)) {
+      neListType = neStringListType;
+	  tailFeat = stringTailFeat;
+	} else if (isFsListType(type)) {
+	  neListType = neFsListType;
+	  tailFeat = fsTailFeat;
+	}
+	IntRedBlackTree visited = new IntRedBlackTree();
+	boolean foundCycle = false;
+	// first count length of list so we can allocate array
+	int length = 0;
+	int curNode = addr;
+	while (cas.getHeapValue(curNode) == neListType) {
+	  if (!visited.put(curNode, curNode)) {
+	    foundCycle = true;
+	    break;
+	  }
+	  length++;
+	  curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(tailFeat));
+	}
+	return length;
+  }
+  
   public String[] intListToStringArray(int addr) throws SAXException {
     IntRedBlackTree visited = new IntRedBlackTree();
     boolean foundCycle = false;
@@ -330,7 +362,7 @@ public class ListUtils {
     }
     return first;
   }
-
+  
   public int createFloatList(List stringValues) {
     int first = cas.ll_createFS(eFloatListType);
     ListIterator iter = stringValues.listIterator(stringValues.size());
@@ -371,6 +403,323 @@ public class ListUtils {
     return first;
   }
 
+  public int updateIntList(int addr, List stringValues) throws SAXException  {
+    int first = addr;
+    int currLength = this.getLength(this.neIntListType, addr);
+    int curNode = addr;
+    int prevNode = 0;
+    IntRedBlackTree visited = new IntRedBlackTree();
+    boolean foundCycle = false;
+    int i =0;
+    
+    //if (currLength != stringValues.size() ) {  
+	//   first = createIntList(stringValues);
+	   
+    if (currLength < stringValues.size()) {
+  	  while (cas.getHeapValue(curNode) == neIntListType) {
+  	  	if (!visited.put(curNode, curNode)) {
+  	  	           foundCycle = true;
+  	  	           break;
+  	  	}
+  	  	int value = Integer.parseInt((String) stringValues.get(i++));
+  	    cas.setFeatureValue(curNode,floatHeadFeat, value);
+  	    prevNode = curNode;
+  	  	curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(intTailFeat));
+  	  }
+  	  //add nodes for remaining values
+  	  if (i < stringValues.size()) {
+  	  	int emptyListFs = curNode; 
+  	  	//check that first is eintlisttype
+  	  	while (i < stringValues.size()) {
+  	  	  int newNode = cas.ll_createFS(neIntListType);
+  	  	  int value = Integer.parseInt((String) stringValues.get(i++));
+  	      cas.setFeatureValue(newNode,intHeadFeat, value);
+  	      cas.setFeatureValue(newNode, intTailFeat, emptyListFs);
+  	      cas.setFeatureValue(prevNode, intTailFeat, newNode);
+  	  	  prevNode = newNode;
+  	    }
+  	  }
+  	} else if (currLength > stringValues.size()) {
+  		while (cas.getHeapValue(curNode) == neIntListType && i < stringValues.size()) {
+  		  if (!visited.put(curNode, curNode)) {
+  		  	           foundCycle = true;
+  		  	           break;
+  		  }
+  		  float value = Integer.parseInt((String) stringValues.get(i++));
+  		  cas.setFeatureValue(curNode,intHeadFeat, value);
+  		  curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(intTailFeat));
+  		}	
+  		int finalNode = curNode;
+        //loop till we get a FS that is of type eStringListType
+        while (cas.getHeapValue(curNode) == neIntListType) {
+    	  if (!visited.put(curNode, curNode)) {
+    	    foundCycle = true;
+    	    break;
+    	    //TODO throw exc
+    	  }
+    	  curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(intTailFeat));
+        }
+        //set the tail feature to eStringListType fs
+        cas.setFeatureValue(finalNode, intTailFeat, curNode);   
+    } else {
+      while (cas.getHeapValue(curNode) == neIntListType) {
+        if (!visited.put(curNode, curNode)) {
+           foundCycle = true;
+           break;
+        }
+        int value = Integer.parseInt((String) stringValues.get(i++));
+        cas.setFeatureValue(curNode,intHeadFeat, value );
+        curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(intTailFeat));
+      }
+    }
+    if (foundCycle) {
+        reportWarning("Found a cycle in an IntegerList.  List truncated to "
+                + i);
+    }
+    return first;
+  }
+	  
+  public int updateFloatList(int addr, List stringValues) throws SAXException  {
+    int first = addr;
+    int currLength = this.getLength(this.neFloatListType, addr);
+    int curNode = addr;
+    int prevNode = 0;
+    IntRedBlackTree visited = new IntRedBlackTree();
+    boolean foundCycle = false;
+    int i =0;
+    
+    //if (currLength != stringValues.size() ) {  
+	//   first = createFloatList(stringValues);
+	if (currLength < stringValues.size()) {
+	  while (cas.getHeapValue(curNode) == neFloatListType) {
+	  	if (!visited.put(curNode, curNode)) {
+	  	           foundCycle = true;
+	  	           break;
+	  	}
+	  	float value = Float.parseFloat((String) stringValues.get(i++));
+	    cas.setFeatureValue(curNode,floatHeadFeat, value);
+	    prevNode = curNode;
+	  	curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(floatTailFeat));
+	  }
+	  //add nodes for remaining values
+	  if (i < stringValues.size()) {
+	  	int emptyListFs = curNode; 
+	  	//check that first is efloatlisttype
+	  	while (i < stringValues.size()) {
+	  	  int newNode = cas.ll_createFS(neFloatListType);
+	  	  float value = Float.parseFloat((String) stringValues.get(i++));
+	      cas.setFeatureValue(newNode,floatHeadFeat, value);
+	      cas.setFeatureValue(newNode, floatTailFeat, emptyListFs);
+	      cas.setFeatureValue(prevNode, floatTailFeat, newNode);
+	  	  prevNode = newNode;
+	    }
+	  }
+	} else if (currLength > stringValues.size()) {
+		while (cas.getHeapValue(curNode) == neFloatListType && i < stringValues.size()) {
+		  if (!visited.put(curNode, curNode)) {
+		  	           foundCycle = true;
+		  	           break;
+		  }
+		  float value = Float.parseFloat((String) stringValues.get(i++));
+		  cas.setFeatureValue(curNode,floatHeadFeat, value);
+		  curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(floatTailFeat));
+		}	
+		int finalNode = curNode;
+        //loop till we get a FS that is of type eStringListType
+        while (cas.getHeapValue(curNode) == neFloatListType) {
+  	      if (!visited.put(curNode, curNode)) {
+  	        foundCycle = true;
+  	        break;
+  	      //TODO throw exc
+  	      }
+  	      curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(floatTailFeat));
+        }
+        //set the tail feature to eStringListType fs
+      	cas.setFeatureValue(finalNode, floatTailFeat, curNode);
+    } else {
+      while (cas.getHeapValue(curNode) == neFloatListType) {
+        if (!visited.put(curNode, curNode)) {
+           foundCycle = true;
+           break;
+        }
+        float value = Float.parseFloat((String) stringValues.get(i++));
+        cas.setFeatureValue(curNode,floatHeadFeat,  CASImpl.float2int(value));
+        curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(floatTailFeat));
+      }
+    }
+	
+    if (foundCycle) {
+        reportWarning("Found a cycle in an IntegerList.  List truncated to "
+                  + i);
+    }
+    return first;
+  }  
+  
+  public int updateFsList(int addr, List stringValues, IntVector fsAddresses) throws SAXException  {
+    int first = addr;
+    int currLength = this.getLength(this.neFsListType, addr);
+    boolean foundCycle = false;
+    IntRedBlackTree visited = new IntRedBlackTree();
+    int curNode = addr;
+    int prevNode = 0;
+    
+    //if (currLength != stringValues.size() ) {  
+	//   first = createFsList(stringValues, fsAddresses);
+    int i=0;
+    if (currLength < stringValues.size() ) {    
+  	  while (cas.getHeapValue(curNode) == neFsListType) {
+  	    if (!visited.put(curNode, curNode)) {
+  	           foundCycle = true;
+  	           break;
+  	    }
+  	    int value = Integer.parseInt((String) stringValues.get(i++));
+        cas.setFeatureValue(curNode,fsHeadFeat, value);
+        fsAddresses.add(curNode);
+        prevNode = curNode;
+  	    curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(fsTailFeat));
+  	  }
+  	  //add nodes for remaining values
+  	  if (i < stringValues.size()) {
+  	    int emptyListFs = curNode; 
+  	    //check that first is estringlisttype
+  	    while (i < stringValues.size()) {
+  	      int newNode = cas.ll_createFS(neFsListType);
+  	      int value = Integer.parseInt((String) stringValues.get(i++));
+          cas.setFeatureValue(newNode,fsHeadFeat, value);
+          fsAddresses.add(newNode);
+          cas.setFeatureValue(newNode, fsTailFeat, emptyListFs);
+          cas.setFeatureValue(prevNode, fsTailFeat, newNode);
+  	      prevNode = newNode;
+  	    }
+  	  }
+    } else if (currLength > stringValues.size()) {	
+        while (cas.getHeapValue(curNode) == neFsListType && i < stringValues.size()) {
+   	      if (!visited.put(curNode, curNode)) {
+   		    foundCycle = true;
+   		    break;
+   		  }
+   	      int value = Integer.parseInt((String) stringValues.get(i++));
+	      fsAddresses.add(curNode);
+          cas.setFeatureValue(curNode,fsHeadFeat, value);
+   		  curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(fsTailFeat));
+        } 
+        int finalNode = curNode;
+        //loop till we get a FS that is of type eStringListType
+        while (cas.getHeapValue(curNode) == neFsListType) {
+  	      if (!visited.put(curNode, curNode)) {
+  	        foundCycle = true;
+  	        break;
+  	      //TODO throw exc
+  	      }
+  	      curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(fsTailFeat));
+        }
+        //set the tail feature to eStringListType fs
+      	cas.setFeatureValue(finalNode, fsTailFeat, curNode);
+    } else {
+      while (cas.getHeapValue(curNode) == neFsListType) {
+        if (!visited.put(curNode, curNode)) {
+           foundCycle = true;
+           break;
+        }
+        int value = Integer.parseInt((String) stringValues.get(i++));
+        cas.setFeatureValue(curNode,fsHeadFeat, value);
+        fsAddresses.add(curNode);
+        curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(fsTailFeat));
+      }
+    }
+    if (foundCycle) {
+      reportWarning("Found a cycle in an IntegerList.  List truncated to "
+                  + i);
+    }
+    return first;
+  }  
+  
+  public int updateStringList(int addr, List stringValues) throws SAXException   {
+    int first = addr;
+    boolean foundCycle = false;
+    IntRedBlackTree visited = new IntRedBlackTree();
+    int curNode = addr;
+    int prevNode = 0;
+    int currLength = this.getLength(this.neStringListType, addr);
+    
+    if (currLength < stringValues.size() ) {    
+      int i =0;
+	  while (cas.getHeapValue(curNode) == neStringListType) {
+	    if (!visited.put(curNode, curNode)) {
+	           foundCycle = true;
+	           break;
+	    }
+	    String curValue = cas.getStringForCode(cas.getHeapValue(curNode
+	              + cas.getFeatureOffset(stringHeadFeat)));
+	    String newValue = (String)stringValues.get(i++);
+        if (!curValue.equals(newValue)) {		  
+          cas.setFeatureValue(curNode, stringHeadFeat, cas.addString(newValue));
+        }
+        prevNode = curNode;
+	    curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(stringTailFeat));
+	 }
+	 //extend the list
+	 if (i < stringValues.size()) {
+	   int emptyListFs = curNode; 
+	   while (i < stringValues.size()) {
+	     int newNode = cas.ll_createFS(neStringListType);
+	     String value = (String) stringValues.get(i++);
+	     cas.setFeatureValue(newNode, stringHeadFeat, cas.addString(value));
+	     cas.setFeatureValue(newNode, stringTailFeat, emptyListFs);
+	     cas.setFeatureValue(prevNode,stringTailFeat, newNode);
+	     prevNode = newNode;
+	   }
+	 }
+    } else if (currLength > stringValues.size()) {
+      int i=0;	
+      while (cas.getHeapValue(curNode) == neStringListType && i < stringValues.size()) {
+ 	    if (!visited.put(curNode, curNode)) {
+ 		           foundCycle = true;
+ 		           break;
+ 		}
+ 		String curValue = cas.getStringForCode(cas.getHeapValue(curNode
+ 		              + cas.getFeatureOffset(stringHeadFeat)));
+ 		String newValue = (String)stringValues.get(i++);
+        if (!curValue.equals(newValue)) {		  
+           cas.setFeatureValue(curNode, stringHeadFeat, cas.addString(newValue));
+        }
+ 		curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(stringTailFeat));
+      } 
+      int finalNode = curNode;
+      while (cas.getHeapValue(curNode) == neStringListType) {
+	    if (!visited.put(curNode, curNode)) {
+	      foundCycle = true;
+	      break;
+	      //TODO throw exc
+	    }
+	    curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(stringTailFeat));
+      }
+      cas.setFeatureValue(finalNode, stringTailFeat, curNode);
+    } else {
+      int i =0;
+      while (cas.getHeapValue(curNode) == neStringListType) {
+        if (!visited.put(curNode, curNode)) {
+           foundCycle = true;
+           break;
+        }
+        String curValue = cas.getStringForCode(cas.getHeapValue(curNode
+	              + cas.getFeatureOffset(stringHeadFeat)));
+        String newValue = (String)stringValues.get(i++);
+        if (!curValue.equals(newValue)) {		  
+          cas.setFeatureValue(curNode, stringHeadFeat, cas.addString(newValue));
+        }
+        curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(stringTailFeat));
+      }
+    }
+    
+    if (foundCycle) {
+        reportWarning("Found a cycle in an IntegerList.  List truncated. ");
+    }
+    return first;
+  }  
+		  
+	  
+  
   private void reportWarning(String message) throws SAXException {
     if (this.logger != null) {
       logger.log(Level.WARNING, message);

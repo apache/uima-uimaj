@@ -21,8 +21,10 @@ package org.apache.uima.cas.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.BitSet;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -45,6 +47,7 @@ import org.apache.uima.cas.admin.LinearTypeOrderBuilder;
 import org.apache.uima.internal.util.ComparableIntPointerIterator;
 import org.apache.uima.internal.util.IntComparator;
 import org.apache.uima.internal.util.IntPointerIterator;
+import org.apache.uima.internal.util.IntSet;
 import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.internal.util.SortedIntSet;
 
@@ -729,6 +732,18 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 
   private LinearTypeOrder defaultTypeOrder = null;
 
+  private IntVector indexUpdates;
+  
+  private BitSet indexUpdateOperation;
+  
+  private boolean logProcessed;
+  
+  private IntSet fsAddedToIndex;
+  
+  private IntSet fsDeletedFromIndex;
+  
+  private IntSet fsReindexed;
+  
   private FSIndexRepositoryImpl() {
     super();
   }
@@ -743,6 +758,12 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     this.cas = cas;
     this.typeSystem = cas.getTypeSystemImpl();
     this.name2indexMap = new HashMap();
+    this.indexUpdates = new IntVector();
+    this.indexUpdateOperation = new BitSet();
+    this.fsAddedToIndex = new IntSet();
+    this.fsDeletedFromIndex = new IntSet();
+    this.fsReindexed = new IntSet();
+    this.logProcessed = false;
     init();
   }
 
@@ -757,6 +778,12 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     this.cas = cas;
     this.typeSystem = cas.getTypeSystemImpl();
     this.name2indexMap = new HashMap();
+    this.indexUpdates = new IntVector();
+    this.indexUpdateOperation = new BitSet();
+    this.fsAddedToIndex = new IntSet();
+    this.fsDeletedFromIndex = new IntSet();
+    this.fsReindexed = new IntSet();
+    this.logProcessed = false;
     init();
     Set keys = baseIndexRepo.name2indexMap.keySet();
     if (!keys.isEmpty()) {
@@ -806,6 +833,12 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
         ((IndexIteratorCachePair) v.get(j)).index.flush();
       }
     }
+    this.indexUpdates.removeAllElements();
+    this.indexUpdateOperation.clear();
+    this.fsAddedToIndex = new IntSet();
+    this.fsDeletedFromIndex = new IntSet();
+    this.fsReindexed = new IntSet();
+    this.logProcessed = false;
   }
 
   public void addFS(int fsRef) {
@@ -1278,6 +1311,10 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     // ((IndexIteratorCachePair) idxList.get(i)).index.deleteFS(fs);
     // }
   }
+  
+  public void removeFS(int fsRef) {
+	    ll_removeFS(fsRef);
+  }
 
   /*
    * (non-Javadoc)
@@ -1356,6 +1393,9 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       // add the FS to the bag index
       ((IndexIteratorCachePair) this.indexArray[typeCode].get(0)).index.insert(fsRef);
     }
+    if (this.cas.getCurrentMark() != null) {
+      	logIndexOperation(fsRef, true);
+    }
   }
 
   private static final String getAutoIndexNameForType(Type type) {
@@ -1369,6 +1409,9 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     final int max = idxList.size();
     for (int i = 0; i < max; i++) {
       ((IndexIteratorCachePair) idxList.get(i)).index.remove(fsRef);
+    }
+    if (this.cas.getCurrentMark() != null) {
+      	logIndexOperation(fsRef, false);
     }
   }
 
@@ -1431,5 +1474,76 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       getAllIndexedFS((Type) subtypes.get(i), iteratorList);
     }
   }
+  
+  private void logIndexOperation(int fsRef, boolean added) {
+    this.indexUpdates.add(fsRef);
+    if (added)
+    	this.indexUpdateOperation.set(this.indexUpdates.size()-1,added);
+    this.logProcessed = false;
+  }
+  
+  //Delta Serialization support
+  private void processIndexUpdates() {
+	for (int i=0; i < this.indexUpdates.size(); i++)  {
+	  int fsRef = this.indexUpdates.get(i);
+	  boolean added = this.indexUpdateOperation.get(i);
+	  if (added) {
+		if (this.fsDeletedFromIndex.contains(fsRef)) {
+		  this.fsDeletedFromIndex.remove(this.fsDeletedFromIndex.indexOf(fsRef));
+		  this.fsReindexed.add(fsRef);
+		} else {
+		  this.fsAddedToIndex.add(fsRef);
+		}
+	  } else {
+		if (this.fsAddedToIndex.contains(fsRef)) {
+		  this.fsAddedToIndex.remove(this.fsAddedToIndex.indexOf(fsRef));
+		} else if (this.fsReindexed.contains(fsRef)) {
+		  this.fsReindexed.remove(fsRef);
+		} else {
+		  this.fsDeletedFromIndex.add(fsRef);
+		}
+	  }
+	}
+    this.logProcessed = true;
+  }
+  
+  public int[] getAddedFSs() {
+	if (!this.logProcessed ) {
+	  processIndexUpdates();
+	}
+	int [] fslist = new int[this.fsAddedToIndex.size()];
+	for (int i = 0; i < fslist.length; i++) {
+		fslist[i] = fsAddedToIndex.get(i);
+	}  
+	return fslist;
+  }
+  
+  public int[] getDeletedFSs() {
+	if (!this.logProcessed ) {
+	  processIndexUpdates();
+	} 
+	int [] fslist = new int[this.fsDeletedFromIndex.size()];
+	for (int i = 0; i < fslist.length; i++) {
+		fslist[i] = fsDeletedFromIndex.get(i);
+	}  
+	return fslist;
+  }
 
+  public int[] getReindexedFSs() {
+    if (!this.logProcessed ) {
+	  processIndexUpdates();
+	}  
+    int [] fslist = new int[this.fsReindexed.size()];
+	for (int i = 0; i < fslist.length; i++) {
+		fslist[i] = fsReindexed.get(i);
+	}  
+	return fslist;
+  }
+  
+  public boolean isModified() {
+    if (!this.logProcessed ) {
+	  processIndexUpdates();
+    } 
+    return (fsAddedToIndex.size() > 0 || this.fsDeletedFromIndex.size() > 0 || this.fsReindexed.size() > 0);
+  }
 }

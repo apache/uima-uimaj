@@ -127,4 +127,8 @@ public class IntSet {
     }
     return sum;
   }
+  
+  public int indexOf(int element) {
+	return  this.data.indexOf(element);
+  }
 }

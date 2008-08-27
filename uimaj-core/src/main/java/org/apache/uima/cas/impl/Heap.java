@@ -245,5 +245,9 @@ public final class Heap {
     this.heap[pos1] = val;
     return pos1;
   }
-
+  
+  public int getNextId() {
+	  return pos;
+  }
+	  
 }
