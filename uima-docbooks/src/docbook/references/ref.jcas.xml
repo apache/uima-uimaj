@@ -170,7 +170,23 @@ uima.cas.String  &rarr; String</programlisting>
     + ", size left mods: " + getlMods().size()
     + ", size right mods: " + getrMods().size();
 }</programlisting>
-    
+ 
+    <section id="ugr.ref.jcas.data_persistence">
+      <title>Persistence of additional data</title>
+      <para>If you add custom instance fields to JCas cover classes, these exist in the JCas cover object instance,
+        but not in the CAS itself. Each time a CAS object is referenced (by an iterator, or by following a Feature
+        Structure reference), a new JCas cover object instance may be created. If you need these values, you can (a)
+        make them CAS values if possible, or (b) hold a reference to the the particular JCas cover object instance in
+        your Java code. For some simple cases, setting the the performance tuning option JCAS_CACHE_ENABLE (see
+          <olink targetdoc="&uima_docs_tutorial_guides;" targetptr="tug.application.pto"/>)
+         to true
+        will cause the same JCas cover object that was previously used for a particular CAS Feature Structure to be
+        reused. However, this capability won't work when other factors interfere with the ability to reuse the same
+        object.  Pear isolation is an example of this.</para>
+      <para>Because of this, and because the JCas Cache holds on to the JCas cover objects beyond their useful life and
+        prevents them from being garbage collected, it is normally recommended running with the
+        JCAS_CACHE_ENABLE set to "false".</para>
+    </section>   
     <section id="ugr.ref.jcas.keeping_augmentations_when_regenerating">
       <title>Keeping hand-coded augmentations when regenerating</title>
       
