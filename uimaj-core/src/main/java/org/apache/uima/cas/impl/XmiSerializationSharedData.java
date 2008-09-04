@@ -45,7 +45,8 @@ import org.apache.uima.internal.util.rb_trees.RedBlackTree;
  *       whenever it encounters an XMI element that doesn't correspond to a type in the type system, it will populate the
  *       <code>XmiSerializationSharedData</code> with information about these elements.  If you then pass the same 
  *       <code>XmiSerializationSharedData</code> object to the serializer when you attempt to serialize the same CAS, these
- *       out-of-typesystem FS will be reserialized without loss of information.  References between in-typesystem and out-of-typesystem
+ *       out-of-typesystem FS will be reserialized without loss of inform
+ *       ation.  References between in-typesystem and out-of-typesystem
  *       FS (in either direction) are maintained as well.</li>
  *   <li>After calling the XmiCasSerializer and passing an <code>XmiSerializationSharedData</code>, you can call the
  *       {@link #getMaxXmiId()} method to get the maximum xmi:id value in the serialized CAS.  This feature, along with the consistency of
@@ -99,6 +100,17 @@ public class XmiSerializationSharedData {
    * The maximum XMI ID used in the serialization. Used to generate unique IDs if needed.
    */
   private int maxXmiId = 0;
+  
+  
+  /**
+   * Map from FS address of a non-shared multi-valued (Array/List) FS to the 
+   * FS address of the encompassing FS which has a feature whose value is this multi-valued FS.
+   * Used when deserializing a Delta CAS to find and serialize the encompassing FS when 
+   * the non-shared array/list FS is modified. 
+   * @param fsAddr
+   * @param xmiId
+   */
+   RedBlackTree nonsharedfeatureIdToFSId = new RedBlackTree();
 
   void addIdMapping(int fsAddr, int xmiId) {
     fsAddrToXmiIdMap.put(fsAddr, Integer.toString(xmiId));
@@ -153,6 +165,7 @@ public class XmiSerializationSharedData {
   public void clearIdMap() {
     fsAddrToXmiIdMap.clear();
     xmiIdToFsAddrMap.clear();
+    nonsharedfeatureIdToFSId.clear();
     maxXmiId = 0;
   }
   
@@ -288,6 +301,35 @@ public class XmiSerializationSharedData {
       this.ootsArrayElements.put(key, list);
     }
     list.add(new XmiArrayElement(index, Integer.toString(xmiId)));
+  }
+  
+  /**
+   * Add mapping between the address of FS that is the value of a non-shared multi-valued
+   * feature of a FeatureStructure. 
+   * 
+   * @param nonsharedFSAddr - fs address of non-shared multi-valued feature value
+   * @param fsAddr - fs address of encompassing featurestructure
+   */
+  public void addNonsharedRefToFSMapping(int nonsharedFSAddr, int fsAddr) {
+	this.nonsharedfeatureIdToFSId.put(nonsharedFSAddr, Integer.valueOf(fsAddr));
+  }
+  
+  /**
+   * 
+   * @return
+   */
+  public int[] getNonsharedMulitValuedFSs() {
+    return this.nonsharedfeatureIdToFSId.keySet();
+  }
+  
+  /**
+   * 
+   * @param nonsharedFS
+   * @return
+   */
+  public int getEncompassingFS(int nonsharedFS) {
+	Integer addr = (Integer) this.nonsharedfeatureIdToFSId.get(nonsharedFS);
+	return addr == null ? -1 : addr.intValue();
   }
   
   /**

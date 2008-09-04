@@ -1005,6 +1005,10 @@ public class XmiCasDeserializer {
           if (currVal != casArray) {
             casBeingFilled.setFeatureValue(addr, featCode, casArray);
           }
+          //add to nonshared fs to encompassing FS map
+          if (!ts.ll_getFeatureForCode(featCode).isMultipleReferencesAllowed()) {
+            addNonsharedFSToEncompassingFSMapping(casArray, addr);
+          }
           break;
         }
         /**
@@ -1015,32 +1019,44 @@ public class XmiCasDeserializer {
         }
         **/
         case XmiCasSerializer.TYPE_CLASS_INTLIST: {
-          int currVal = casBeingFilled.getFeatureValue(addr, featCode);
-          if (currVal == 0) {
-            int listFS = listUtils.createIntList(featVals);
+          int listFS = casBeingFilled.getFeatureValue(addr, featCode);
+          if (listFS == 0) {
+            listFS = listUtils.createIntList(featVals);
             casBeingFilled.setFeatureValue(addr, featCode, listFS);
           } else {
-        	listUtils.updateIntList(currVal, featVals);
+        	listUtils.updateIntList(listFS, featVals);
+          }
+          //add to nonshared fs to encompassing FS map
+          if (!ts.ll_getFeatureForCode(featCode).isMultipleReferencesAllowed()) {
+            addNonsharedFSToEncompassingFSMapping(listFS, addr);
           }
           break;
         }
         case XmiCasSerializer.TYPE_CLASS_FLOATLIST: {
-          int currVal = casBeingFilled.getFeatureValue(addr, featCode);
-          if (currVal == 0) {
-            int listFS = listUtils.createFloatList(featVals);
+          int listFS = casBeingFilled.getFeatureValue(addr, featCode);
+          if (listFS == 0) {
+            listFS = listUtils.createFloatList(featVals);
             casBeingFilled.setFeatureValue(addr, featCode, listFS);
           } else {
-        	listUtils.updateFloatList(currVal, featVals);
+        	listUtils.updateFloatList(listFS, featVals);
+          }
+          //add to nonshared fs to encompassing FS map
+          if (!ts.ll_getFeatureForCode(featCode).isMultipleReferencesAllowed()) {
+            addNonsharedFSToEncompassingFSMapping(listFS, addr);
           }
           break;
         }
         case XmiCasSerializer.TYPE_CLASS_STRINGLIST: {
-          int currVal = casBeingFilled.getFeatureValue(addr, featCode);
-          if (currVal == 0) {
-            int listFS = listUtils.createStringList(featVals);
+          int listFS = casBeingFilled.getFeatureValue(addr, featCode);
+          if (listFS == 0) {
+            listFS = listUtils.createStringList(featVals);
             casBeingFilled.setFeatureValue(addr, featCode, listFS);
           } else {
-        	listUtils.updateStringList(currVal, featVals);
+        	listUtils.updateStringList(listFS, featVals);
+          }
+          //add to nonshared fs to encompassing FS map
+          if (!ts.ll_getFeatureForCode(featCode).isMultipleReferencesAllowed()) {
+            addNonsharedFSToEncompassingFSMapping(listFS, addr);
           }
           break;
         }
@@ -1049,12 +1065,16 @@ public class XmiCasDeserializer {
           // adds each list node ID to the fsListNodesFromMultivaluedProperties list.
           // We need this so we can go back through later and reset the addresses of the
           // "head" features of these lists nodes (but not reset the tail features).
-          int currVal = casBeingFilled.getFeatureValue(addr, featCode);
-          if (currVal == 0) {
-            int listFS = listUtils.createFsList(featVals, fsListNodesFromMultivaluedProperties);
+          int listFS = casBeingFilled.getFeatureValue(addr, featCode);
+          if (listFS == 0) {
+            listFS = listUtils.createFsList(featVals, fsListNodesFromMultivaluedProperties);
             casBeingFilled.setFeatureValue(addr, featCode, listFS);
           } else {
-        	listUtils.updateFsList(currVal, featVals, fsListNodesFromMultivaluedProperties);
+        	listUtils.updateFsList(listFS, featVals, fsListNodesFromMultivaluedProperties);
+          }
+          //add to nonshared fs to encompassing FS map
+          if (!ts.ll_getFeatureForCode(featCode).isMultipleReferencesAllowed()) {
+            addNonsharedFSToEncompassingFSMapping(listFS, addr);
           }
           break;
         }
@@ -1678,8 +1698,13 @@ public class XmiCasDeserializer {
     } 
     
     private boolean isNewFS(int id) {
-        return (id > this.mergePoint);
+      return (id > this.mergePoint);
     }  
+    
+    private void addNonsharedFSToEncompassingFSMapping(int nonsharedFS, int encompassingFS ) {
+      System.out.println("addNonsharedFSToEncompassingFSMapping" + nonsharedFS + " " + encompassingFS);
+      this.sharedData.addNonsharedRefToFSMapping(nonsharedFS, encompassingFS);
+    }
   }
   
   private TypeSystemImpl ts;

@@ -218,6 +218,7 @@ public class XmiCasSerializer {
 
       enqueueIncoming(); //make sure we enqueue every FS that was deserialized into this CAS
       enqueueIndexed();
+      enqueueNonsharedMultivaluedFS();
       enqueueFeaturesOfIndexed();
       iElementCount += indexedFSs.size();
       iElementCount += queue.size();
@@ -450,6 +451,30 @@ public class XmiCasSerializer {
           }
         }
       }
+    }
+    
+    /** 
+     * When serializing Delta CAS,
+     * enqueue encompassing FS of nonshared multivalued FS that have been modified.
+     * 
+     */
+    private void enqueueNonsharedMultivaluedFS() {
+	  if (this.sharedData == null || !isDelta)
+	      return;
+	  int[] fsAddrs = this.sharedData.getNonsharedMulitValuedFSs();
+	  for (int i = 0; i < fsAddrs.length; i++) {
+	    if (!marker.isModified(fsAddrs[i])) {
+	  	  continue; 
+	    } else {
+	      System.out.println("enqueueNonshared " + fsAddrs[i] + " "  + this.sharedData.getEncompassingFS(fsAddrs[i]));
+	      int encompassingFS = this.sharedData.getEncompassingFS(fsAddrs[i]);
+	      if (isVisited(encompassingFS)) {
+	        continue;
+	      }
+	      visited.put(encompassingFS, encompassingFS);
+	      indexedFSs.add(encompassingFS);
+	    }	  
+	  }
     }
 
     /**

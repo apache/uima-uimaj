@@ -1183,14 +1183,13 @@ public class XmiCasDeserializerTest extends TestCase {
       FeatureStructure cas2EntityFS = (FeatureStructure) iter.next();
       //cas2EntityFS.setStringValue(canonicalFormFeat, "canonicalname");
       
-      //set values of stringarray fs
+      //Test modification of a nonshared multivalued feature.
+      //This should serialize the encompassing FS.
       StringArrayFS cas2strarrayFS = (StringArrayFS) cas2EntityFS.getFeatureValue(classesFeat);
       cas2strarrayFS.set(1, "class2");
       cas2strarrayFS.set(2, "class3");
       cas2strarrayFS.set(3, "class4");
       cas2strarrayFS.set(4, "class5");
-      cas2EntityFS.setFeatureValue(classesFeat, cas2strarrayFS); //?? need to touch the entity FS
-                                         						//to serialize non-shared array or list 
       
       //add to FSList 
       FeatureStructure cas2linksFS = cas2EntityFS.getFeatureValue(linksFeat);
@@ -1203,8 +1202,8 @@ public class XmiCasDeserializerTest extends TestCase {
       
       // serialize cas2 in delta format 
       String deltaxml1 = this.serialize(cas2, sharedData2, marker);
-      //System.out.println("delta cas");
-      //System.out.println(deltaxml1);
+      System.out.println("delta cas");
+      System.out.println(deltaxml1);
       
       //======================================================================
       //deserialize delta xmi into cas1
