@@ -108,6 +108,7 @@ import org.apache.uima.tools.cvd.control.AboutUimaHandler;
 import org.apache.uima.tools.cvd.control.AddLanguageHandler;
 import org.apache.uima.tools.cvd.control.AnnotatorOpenEventHandler;
 import org.apache.uima.tools.cvd.control.AnnotatorRerunEventHandler;
+import org.apache.uima.tools.cvd.control.AnnotatorRunCPCEventHandler;
 import org.apache.uima.tools.cvd.control.AnnotatorRunOnCasEventHandler;
 import org.apache.uima.tools.cvd.control.CaretChangeHandler;
 import org.apache.uima.tools.cvd.control.CloseLogViewHandler;
@@ -245,6 +246,8 @@ public class MainFrame extends JFrame {
   private JMenuItem tsViewerItem;
 
   private JMenuItem reRunMenu;
+
+  private JMenuItem runCPCMenu;
 
   private JMenuItem runOnCasMenuItem;
 
@@ -426,6 +429,29 @@ public class MainFrame extends JFrame {
     internalRunAE(doCasReset);
     timer.stop();
     setStatusbarMessage("Done running AE " + this.ae.getAnalysisEngineMetaData().getName() + " in "
+        + timer.getTimeSpan() + ".");
+    updateIndexTree(true);
+    this.allAnnotationViewerItem.setEnabled(false);
+    this.isDirty = false;
+    this.runOnCasMenuItem.setEnabled(true);
+  }
+
+  public void runCPC() {
+    setStatusbarMessage("Running CollectionProcessComplete.");
+    Timer timer = new Timer();
+    timer.start();
+    if (this.ae == null) {
+      JOptionPane.showMessageDialog(this, "No AE loaded.", "Error", JOptionPane.ERROR_MESSAGE);
+      return;
+    }
+    try {
+      this.ae.collectionProcessComplete();
+    } catch (Exception e) {
+      handleException(e);
+    }
+    this.showPerfReportItem.setEnabled(false);
+    timer.stop();
+    setStatusbarMessage("Done running CPC on " + this.ae.getAnalysisEngineMetaData().getName() + " in "
         + timer.getTimeSpan() + ".");
     updateIndexTree(true);
     this.allAnnotationViewerItem.setEnabled(false);
@@ -1049,6 +1075,10 @@ public class MainFrame extends JFrame {
     runMenu.add(this.runOnCasMenuItem);
     this.runOnCasMenuItem.addActionListener(new AnnotatorRunOnCasEventHandler(this));
     this.runOnCasMenuItem.setEnabled(false);
+    this.runCPCMenu = new JMenuItem("Run CPC");
+    runMenu.add(this.runCPCMenu);
+    this.runCPCMenu.addActionListener(new AnnotatorRunCPCEventHandler(this));
+    this.runCPCMenu.setEnabled(false);
     this.showPerfReportItem = new JMenuItem("Performance report");
     this.showPerfReportItem.setEnabled(false);
     this.showPerfReportItem.addActionListener(new ActionListener() {
@@ -1408,6 +1438,7 @@ public class MainFrame extends JFrame {
         setEnableCasFileReadingAndWriting();
         this.tsViewerItem.setEnabled(false);
         this.reRunMenu.setEnabled(false);
+        this.runCPCMenu.setEnabled(false);
         this.runOnCasMenuItem.setEnabled(false);
       }
 
@@ -1431,6 +1462,7 @@ public class MainFrame extends JFrame {
       this.typeSystemWriteItem.setEnabled(true);
       setEnableCasFileReadingAndWriting();
       this.reRunMenu.setEnabled(true);
+      this.runCPCMenu.setEnabled(true);
 
       // reset sofa combo box with just the initial view
       // this.disableSofaListener = true;
@@ -1994,6 +2026,7 @@ public class MainFrame extends JFrame {
 
   public void setRerunEnabled(boolean enabled) {
     this.reRunMenu.setEnabled(enabled);
+    this.runCPCMenu.setEnabled(enabled);
   }
 
   public void setTypeSystemViewerEnabled(boolean enabled) {
