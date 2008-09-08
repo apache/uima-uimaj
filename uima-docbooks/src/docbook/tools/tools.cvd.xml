@@ -528,6 +528,16 @@
 
     <listitem>
      <formalpara>
+      <title>Run collectionProcessComplete</title>
+      <para>
+       When you select this item, the analysis engine's 
+       collectionProcessComplete() method is called.
+      </para>
+     </formalpara>
+    </listitem>
+
+    <listitem>
+     <formalpara>
       <title>Performance Report</title>
       <para>
        After you've run your analysis, you can view a performance report.  It will show
