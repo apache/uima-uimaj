@@ -1075,7 +1075,7 @@ public class MainFrame extends JFrame {
     runMenu.add(this.runOnCasMenuItem);
     this.runOnCasMenuItem.addActionListener(new AnnotatorRunOnCasEventHandler(this));
     this.runOnCasMenuItem.setEnabled(false);
-    this.runCPCMenu = new JMenuItem("Run CPC");
+    this.runCPCMenu = new JMenuItem("Run collectionProcessComplete");
     runMenu.add(this.runCPCMenu);
     this.runCPCMenu.addActionListener(new AnnotatorRunCPCEventHandler(this));
     this.runCPCMenu.setEnabled(false);
