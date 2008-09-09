@@ -958,6 +958,45 @@ public class XmiCasDeserializerTest extends TestCase {
 	}
   }
   
+  public void testDeltaCasNoChanges() throws Exception {
+	    try {
+	      CAS cas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
+	              indexes);
+	      CAS cas2 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
+	              indexes);
+
+	      //serialize complete  
+	      XmiSerializationSharedData sharedData = new XmiSerializationSharedData();
+	      String xml = this.serialize(cas1, sharedData);
+	      int maxOutgoingXmiId = sharedData.getMaxXmiId();
+	      
+	      //deserialize into cas2
+	      XmiSerializationSharedData sharedData2 = new XmiSerializationSharedData();      
+	      this.deserialize(xml, cas2, sharedData2, true, -1);
+	      CasComparer.assertEquals(cas1, cas2);
+	      
+	      //create Marker, add/modify fs and serialize in delta xmi format.
+	      Marker marker = cas2.createMarker();
+	      FSIndex cas2tIndex = cas2.getAnnotationIndex();
+	      
+	      // serialize cas2 in delta format 
+	      String deltaxml1 = this.serialize(cas2, sharedData2, marker);
+	      //System.out.println(deltaxml1);
+	      
+	      //deserialize delta xmi into cas1
+	      try {
+	        this.deserialize(deltaxml1, cas1, sharedData, true, maxOutgoingXmiId, AllowPreexistingFS.disallow);
+	      } catch (CASRuntimeException e) {
+	    	assertTrue(e.getMessageKey() == CASRuntimeException.DELTA_CAS_PREEXISTING_FS_DISALLOWED);
+	      }
+	    	 	     
+	      //check new annotation index
+	      assertTrue(cas1.getAnnotationIndex().size() == 0); // cas2 should be unchanged. 
+		} catch (Exception e) {
+			  JUnitExtension.handleException(e);
+		}
+	  }
+  
   public void testDeltaCasDisallowPreexistingFSViewMod() throws Exception {
     try {
       CAS cas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
@@ -1179,12 +1218,10 @@ public class XmiCasDeserializerTest extends TestCase {
       FeatureStructure cas2relArgs = cas2ownerAnnot.getFeatureValue(argsFeat);
       cas2relArgs.setFeatureValue(rangeFeat, cas2orgAnnot);
       
+    //Test modification of a nonshared multivalued feature.
+      //This should serialize the encompassing FS.
       Iterator iter = cas2.getIndexRepository().getIndex("testEntityIndex").iterator();
       FeatureStructure cas2EntityFS = (FeatureStructure) iter.next();
-      //cas2EntityFS.setStringValue(canonicalFormFeat, "canonicalname");
-      
-      //Test modification of a nonshared multivalued feature.
-      //This should serialize the encompassing FS.
       StringArrayFS cas2strarrayFS = (StringArrayFS) cas2EntityFS.getFeatureValue(classesFeat);
       cas2strarrayFS.set(1, "class2");
       cas2strarrayFS.set(2, "class3");
@@ -1202,8 +1239,8 @@ public class XmiCasDeserializerTest extends TestCase {
       
       // serialize cas2 in delta format 
       String deltaxml1 = this.serialize(cas2, sharedData2, marker);
-      System.out.println("delta cas");
-      System.out.println(deltaxml1);
+      //System.out.println("delta cas");
+      //System.out.println(deltaxml1);
       
       //======================================================================
       //deserialize delta xmi into cas1

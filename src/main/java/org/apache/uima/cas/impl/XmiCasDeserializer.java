@@ -65,7 +65,6 @@ import org.xml.sax.helpers.XMLReaderFactory;
 /**
  * XMI CAS deserializer. Used to read in a CAS from XML Metadata Interchange (XMI) format.
  */
-enum AllowPreexistingFS { allow, disallow, ignore }
 
 public class XmiCasDeserializer {
 
@@ -1700,9 +1699,9 @@ public class XmiCasDeserializer {
     private boolean isNewFS(int id) {
       return (id > this.mergePoint);
     }  
-    
+
     private void addNonsharedFSToEncompassingFSMapping(int nonsharedFS, int encompassingFS ) {
-      System.out.println("addNonsharedFSToEncompassingFSMapping" + nonsharedFS + " " + encompassingFS);
+      //System.out.println("addNonsharedFSToEncompassingFSMapping" + nonsharedFS + " " + encompassingFS);
       this.sharedData.addNonsharedRefToFSMapping(nonsharedFS, encompassingFS);
     }
   }

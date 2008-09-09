@@ -272,6 +272,10 @@ public class XmiCasSerializer {
             writeView(sofaXmiId, fsarray);
           } else {
         	FeatureStructureImpl sofa = (FeatureStructureImpl) cas.getView(sofaNum).getSofa();
+        	if (sofa == null) {
+        		//System.out.println("WriteView() No sofa in view " + sofaNum );
+        		continue;
+        	}
         	if (this.marker.isNew(sofa.getAddress())) {
         	  int[] fsarray = loopIR.getIndexedFSs();
               writeView(sofaXmiId, fsarray);
@@ -452,7 +456,7 @@ public class XmiCasSerializer {
         }
       }
     }
-    
+
     /** 
      * When serializing Delta CAS,
      * enqueue encompassing FS of nonshared multivalued FS that have been modified.
@@ -466,7 +470,6 @@ public class XmiCasSerializer {
 	    if (!marker.isModified(fsAddrs[i])) {
 	  	  continue; 
 	    } else {
-	      System.out.println("enqueueNonshared " + fsAddrs[i] + " "  + this.sharedData.getEncompassingFS(fsAddrs[i]));
 	      int encompassingFS = this.sharedData.getEncompassingFS(fsAddrs[i]);
 	      if (isVisited(encompassingFS)) {
 	        continue;
@@ -1463,6 +1466,29 @@ public class XmiCasSerializer {
    * @param sharedData
    *          data structure used to allow the XmiCasSerializer and XmiCasDeserializer to share
    *          information.
+   * @throws IOException
+   * @throws SAXException
+   */
+  public void serialize(CAS cas, ContentHandler contentHandler, ErrorHandler errorHandler,
+          XmiSerializationSharedData sharedData) throws SAXException {
+    contentHandler.startDocument();
+    XmiCasDocSerializer ser = new XmiCasDocSerializer(contentHandler, errorHandler, ((CASImpl) cas)
+            .getBaseCAS(), sharedData, (MarkerImpl) null);
+    ser.serialize();
+    contentHandler.endDocument();
+  }  
+  
+  /**
+   * Write the CAS data to a SAX content handler.
+   * 
+   * @param cas
+   *          The CAS to be serialized.
+   * @param contentHandler
+   *          The SAX content handler the data is written to. should be inserted into the XCAS
+   *          output
+   * @param sharedData
+   *          data structure used to allow the XmiCasSerializer and XmiCasDeserializer to share
+   *          information.
    * @param marker
    * 	      an object used to filter the FSs and Views to determine if these were created after
    *          the mark was set. Used to serialize a Delta CAS consisting of only new FSs and views and
@@ -1551,15 +1577,6 @@ public class XmiCasSerializer {
   
   /**
    * Serializes a Delta CAS to an XMI stream.  This version of this method allows many options to be configured.
-   * 
-   * 
-   * WARNNG: 
-   *    Delta CAS serialization has a limitation when serializing a preexisting FS with a feature of 
-   *    Array or List type where the multiipleReferencesAllowed property of the feature is set to false 
-   *    (the default). If the only modification is to the non-shared Array of List FS, the preexisting FS
-   *    is not marked as modified and therefore is not serialized and the change to the referenced non-shared
-   *    Array or List FS is not represented in the XMI.
-   *     
    *     
    *    
    * @param aCAS
