@@ -19,11 +19,13 @@
 
 package org.apache.uima.taeconfigurator;
 
-import org.eclipse.jface.preference.*;
-import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.eclipse.ui.IWorkbench;
-import org.apache.uima.taeconfigurator.TAEConfiguratorPlugin;
+import org.eclipse.jface.preference.BooleanFieldEditor;
+import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.IntegerFieldEditor;
+import org.eclipse.jface.preference.StringFieldEditor;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPreferencePage;
 
 public class PreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
   public static final String P_JCAS = "org.apache.uima.cde.autojcasgen";
@@ -48,7 +50,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
    */
   private void initializeDefaults() {
     IPreferenceStore store = getPreferenceStore();
-    store.setDefault(P_JCAS, true);
+    store.setDefault(P_JCAS, false);
     store.setDefault(P_SHOW_FULLY_QUALIFIED_NAMES, true);
     store.setDefault(P_XML_TAB_SPACES, 2);
     store.setDefault(P_VNS_HOST, "localhost");
