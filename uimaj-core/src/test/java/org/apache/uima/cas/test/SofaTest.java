@@ -19,6 +19,7 @@
 
 package org.apache.uima.cas.test;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -27,7 +28,9 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.Reader;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -552,6 +555,7 @@ public class SofaTest extends TestCase {
   }
   
   public void testSetSofaDataURIonInitialView() throws Exception {
+    // This test uses platform encoding both for reading and writing.  
     String someText="remote text.";
     String someTextFile="./someUriText.txt";
     FileWriter output = new FileWriter(someTextFile);
@@ -566,13 +570,20 @@ public class SofaTest extends TestCase {
     
     InputStream is = this.cas.getSofaDataStream();
     assertTrue(is != null);
-    byte[] dest = new byte[1];
-    StringBuffer buf = new StringBuffer();
-    while (is.read(dest) != -1) {
-      buf.append((char) dest[0]);
-    }
+
+    // This obviously can't work on all platforms
+//    byte[] dest = new byte[1];
+//    StringBuffer buf = new StringBuffer();
+//    while (is.read(dest) != -1) {
+//      buf.append((char) dest[0]);
+//    }
+//    is.close();
+//    assertTrue(buf.toString().equals(someText));
+    
+    BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+    String textFromFile = reader.readLine();
     is.close();
-    assertTrue(buf.toString().equals(someText));
+    assertTrue(textFromFile.equals(someText));
     File testFile = new File(someTextFile);
     assertTrue(testFile.delete());
   }

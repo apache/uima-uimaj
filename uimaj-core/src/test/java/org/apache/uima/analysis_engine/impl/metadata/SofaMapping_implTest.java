@@ -19,6 +19,8 @@
 
 package org.apache.uima.analysis_engine.impl.metadata;
 
+import static org.apache.uima.analysis_engine.impl.AnalysisEngineDescription_implTest.encoding;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -63,10 +65,10 @@ public class SofaMapping_implTest extends TestCase {
       sm2.toXML(writer);
       String sm2Xml = writer.getBuffer().toString();
       // parse from XML
-      InputStream is = new ByteArrayInputStream(sm1Xml.getBytes());
+      InputStream is = new ByteArrayInputStream(sm1Xml.getBytes(encoding));
       SofaMapping_impl newSm1 = (SofaMapping_impl) UIMAFramework.getXMLParser().parse(
               new XMLInputSource(is, null));
-      is = new ByteArrayInputStream(sm2Xml.getBytes());
+      is = new ByteArrayInputStream(sm2Xml.getBytes(encoding));
       SofaMapping_impl newSm2 = (SofaMapping_impl) UIMAFramework.getXMLParser().parse(
               new XMLInputSource(is, null));
 

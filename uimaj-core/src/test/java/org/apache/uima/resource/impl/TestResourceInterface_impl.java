@@ -46,7 +46,7 @@ public class TestResourceInterface_impl extends Resource_ImplBase implements Sha
     try {
       // try to get an input stream and read from the file
       InputStream inStr = aData.getInputStream();
-      BufferedReader bufRdr = new BufferedReader(new InputStreamReader(inStr));
+      BufferedReader bufRdr = new BufferedReader(new InputStreamReader(inStr, "utf-8"));
       mString = bufRdr.readLine();
       inStr.close();
     } catch (IOException e) {

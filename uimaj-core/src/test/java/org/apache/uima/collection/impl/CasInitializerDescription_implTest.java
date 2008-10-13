@@ -19,6 +19,8 @@
 
 package org.apache.uima.collection.impl;
 
+import static org.apache.uima.analysis_engine.impl.AnalysisEngineDescription_implTest.encoding;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -189,7 +191,7 @@ public class CasInitializerDescription_implTest extends TestCase {
       // System.out.println(testDescXml);
 
       // parse objects from XML (no schema validation)
-      InputStream is = new ByteArrayInputStream(testDescXml.getBytes());
+      InputStream is = new ByteArrayInputStream(testDescXml.getBytes(encoding));
       CasInitializerDescription newDesc = (CasInitializerDescription) UIMAFramework.getXMLParser()
               .parse(new XMLInputSource(is, null));
 

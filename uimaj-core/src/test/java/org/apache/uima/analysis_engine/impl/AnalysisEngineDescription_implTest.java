@@ -84,6 +84,11 @@ import org.apache.uima.util.XMLParser;
  * 
  */
 public class AnalysisEngineDescription_implTest extends TestCase {
+
+  // Text encoding to use for the various byte/character conversions happening in this test case.
+  // Public because also used by other test cases.
+  public static final String encoding = "utf-8";
+  
   /**
    * Constructor for AnalysisEngineDescription_implTest.
    * 
@@ -275,10 +280,10 @@ public class AnalysisEngineDescription_implTest extends TestCase {
       // System.out.println(aggregateDescXml);
 
       // parse objects from XML
-      InputStream is = new ByteArrayInputStream(primitiveDescXml.getBytes());
+      InputStream is = new ByteArrayInputStream(primitiveDescXml.getBytes(encoding));
       AnalysisEngineDescription newPrimitiveDesc = (AnalysisEngineDescription) UIMAFramework
               .getXMLParser().parse(new XMLInputSource(is, null));
-      is = new ByteArrayInputStream(aggregateDescXml.getBytes());
+      is = new ByteArrayInputStream(aggregateDescXml.getBytes(encoding));
       AnalysisEngineDescription newAggregateDesc = (AnalysisEngineDescription) UIMAFramework
               .getXMLParser().parse(new XMLInputSource(is, null));
 
@@ -296,7 +301,7 @@ public class AnalysisEngineDescription_implTest extends TestCase {
       writer = new StringWriter();
       desc.toXML(writer);
       String descXml = writer.getBuffer().toString();
-      is = new ByteArrayInputStream(descXml.getBytes());
+      is = new ByteArrayInputStream(descXml.getBytes(encoding));
       AnalysisEngineDescription newDesc = (AnalysisEngineDescription) UIMAFramework.getXMLParser()
               .parse(new XMLInputSource(is, null));
       Assert.assertEquals(desc, newDesc);
@@ -308,7 +313,7 @@ public class AnalysisEngineDescription_implTest extends TestCase {
       writer = new StringWriter();
       desc.toXML(writer);
       descXml = writer.getBuffer().toString();
-      is = new ByteArrayInputStream(descXml.getBytes());
+      is = new ByteArrayInputStream(descXml.getBytes(encoding));
       newDesc = (AnalysisEngineDescription) UIMAFramework.getXMLParser().parse(
               new XMLInputSource(is, null));
       Assert.assertEquals(desc, newDesc);

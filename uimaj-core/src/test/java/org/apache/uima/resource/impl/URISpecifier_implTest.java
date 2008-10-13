@@ -19,6 +19,8 @@
 
 package org.apache.uima.resource.impl;
 
+import static org.apache.uima.analysis_engine.impl.AnalysisEngineDescription_implTest.encoding;
+
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
 
@@ -46,7 +48,7 @@ public class URISpecifier_implTest extends TestCase {
       StringWriter sw = new StringWriter();
       uriSpec.toXML(sw);
       URISpecifier uriSpec2 = (URISpecifier) UIMAFramework.getXMLParser().parse(
-              new XMLInputSource(new ByteArrayInputStream(sw.getBuffer().toString().getBytes()),
+              new XMLInputSource(new ByteArrayInputStream(sw.getBuffer().toString().getBytes(encoding)),
                       null));
       assertEquals(uriSpec, uriSpec2);
     } catch (Exception e) {
