@@ -92,6 +92,7 @@
         <configuration>
           <source>1.5</source>
           <target>1.5</target>
+          <encoding>utf-8</encoding>
         </configuration>
       </plugin>
       
@@ -127,7 +128,8 @@
                 
                 <condition property="sourceForLicenseNoticeDisclaimer"
                   value="skip">  <!-- value must be a non-existant file name 
-                                      blank doesn't work (copies everything) -->
+                                      blank doesn't work (copies everything)
+-->
                   <not><isset property="sourceForLicenseNoticeDisclaimer"/></not>
                 </condition>
                 
