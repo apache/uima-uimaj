@@ -30,6 +30,8 @@ import org.apache.uima.resource.PearSpecifier;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
+import static org.apache.uima.analysis_engine.impl.AnalysisEngineDescription_implTest.encoding;
+
 /**
  * PearSpecifier creation and Xmlization test
  */
@@ -88,7 +90,7 @@ public class PearSpecifier_implTest extends TestCase {
       StringWriter sw = new StringWriter();
       pearSpec.toXML(sw);
       PearSpecifier pearSpec2 = (PearSpecifier) UIMAFramework.getXMLParser().parse(
-              new XMLInputSource(new ByteArrayInputStream(sw.getBuffer().toString().getBytes()),
+              new XMLInputSource(new ByteArrayInputStream(sw.getBuffer().toString().getBytes(encoding)),
                       null));
       assertEquals(pearSpec, pearSpec2);
     } catch (Exception e) {

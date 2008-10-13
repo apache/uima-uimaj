@@ -107,7 +107,7 @@ public class DataResource_implTest extends TestCase {
 
       // try to get an input stream and read from the file
       InputStream inStr = dr.getInputStream();
-      BufferedReader bufRdr = new BufferedReader(new InputStreamReader(inStr));
+      BufferedReader bufRdr = new BufferedReader(new InputStreamReader(inStr, "utf-8"));
       String result = bufRdr.readLine();
       inStr.close();
 

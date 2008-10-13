@@ -36,6 +36,7 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.w3c.dom.Document;
 
+import static org.apache.uima.analysis_engine.impl.AnalysisEngineDescription_implTest.encoding;
 
 public class Import_implTest extends TestCase {
 
@@ -69,7 +70,7 @@ public class Import_implTest extends TestCase {
 
       // name import
       String importXml = "<import name=\"this.is.a.test\"/>";
-      Document importDoc = docBuilder.parse(new ByteArrayInputStream(importXml.getBytes()));
+      Document importDoc = docBuilder.parse(new ByteArrayInputStream(importXml.getBytes(encoding)));
       Import_impl importObj = new Import_impl();
       importObj.buildFromXMLElement(importDoc.getDocumentElement(), null);
       assertEquals("this.is.a.test", importObj.getName());
@@ -77,7 +78,7 @@ public class Import_implTest extends TestCase {
 
       // location import
       importXml = "<import location=\"foo/bar/MyFile.xml\"/>";
-      importDoc = docBuilder.parse(new ByteArrayInputStream(importXml.getBytes()));
+      importDoc = docBuilder.parse(new ByteArrayInputStream(importXml.getBytes(encoding)));
       importObj = new Import_impl();
       importObj.buildFromXMLElement(importDoc.getDocumentElement(), null);
       assertEquals("foo/bar/MyFile.xml", importObj.getLocation());
@@ -85,7 +86,7 @@ public class Import_implTest extends TestCase {
 
       // invalid - both location and name
       importXml = "<import name=\"this.is.a.test\" location=\"foo/bar/MyFile.xml\"/>";
-      importDoc = docBuilder.parse(new ByteArrayInputStream(importXml.getBytes()));
+      importDoc = docBuilder.parse(new ByteArrayInputStream(importXml.getBytes(encoding)));
       importObj = new Import_impl();
       InvalidXMLException ex = null;
       try {
@@ -97,7 +98,7 @@ public class Import_implTest extends TestCase {
 
       // invalid - empty import
       importXml = "<import/>";
-      importDoc = docBuilder.parse(new ByteArrayInputStream(importXml.getBytes()));
+      importDoc = docBuilder.parse(new ByteArrayInputStream(importXml.getBytes(encoding)));
       importObj = new Import_impl();
       ex = null;
       try {

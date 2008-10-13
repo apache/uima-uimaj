@@ -66,6 +66,8 @@ import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
+import static org.apache.uima.analysis_engine.impl.AnalysisEngineDescription_implTest.encoding;
+
 /**
  * Test the TaeDescription_impl class.
  * 
@@ -251,10 +253,10 @@ public class TaeDescription_implTest extends TestCase {
       // System.out.println(aggregateDescXml);
 
       // parse objects back from XML
-      InputStream is = new ByteArrayInputStream(primitiveDescXml.getBytes());
+      InputStream is = new ByteArrayInputStream(primitiveDescXml.getBytes(encoding));
       AnalysisEngineDescription newPrimitiveDesc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
               new XMLInputSource(is, null));
-      is = new ByteArrayInputStream(aggregateDescXml.getBytes());
+      is = new ByteArrayInputStream(aggregateDescXml.getBytes(encoding));
       AnalysisEngineDescription newAggregateDesc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
               new XMLInputSource(is, null));
 

@@ -19,6 +19,8 @@
 
 package org.apache.uima.analysis_engine.impl;
 
+import static org.apache.uima.analysis_engine.impl.AnalysisEngineDescription_implTest.encoding;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -528,7 +530,7 @@ public class ResultSpecification_implTest extends TestCase {
       // System.out.println(rsXml);
 
       // parse object back from XML
-      InputStream is = new ByteArrayInputStream(rsXml.getBytes());
+      InputStream is = new ByteArrayInputStream(rsXml.getBytes(encoding));
       ResultSpecification newRS = UIMAFramework.getXMLParser().parseResultSpecification(
               new XMLInputSource(is, null));
       TypeOrFeature[] tofs = newRS.getResultTypesAndFeatures();
