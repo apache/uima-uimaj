@@ -135,6 +135,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     new DebugFSLogicalStructure();
   }
 
+  private static enum ModifiedHeap { FSHEAP, BYTEHEAP, SHORTHEAP, LONGHEAP };
   // Static classes representing shared instance data
   // - shared data is computed once
 
@@ -211,6 +212,14 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     private MarkerImpl trackingMark;
     
     private IntVector modifiedPreexistingFSs;
+    
+    private IntVector modifiedFSHeapCells;
+    
+    private IntVector modifiedByteHeapCells;
+    
+    private IntVector modifiedShortHeapCells;
+    
+    private IntVector modifiedLongHeapCells;
 
     private SharedViewData(boolean useFSCache) {
       this.useFSCache = useFSCache;
@@ -324,6 +333,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     
     this.svd.trackingMark = null;
     this.svd.modifiedPreexistingFSs = null; 
+    this.svd.modifiedFSHeapCells = null;
+    this.svd.modifiedByteHeapCells = null;
+    this.svd.modifiedShortHeapCells = null;
+    this.svd.modifiedLongHeapCells = null;
   }
 
   /**
@@ -910,6 +923,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     
     this.svd.trackingMark = null;
     this.svd.modifiedPreexistingFSs = null;
+    this.svd.modifiedFSHeapCells = null;
+    this.svd.modifiedByteHeapCells = null;
+    this.svd.modifiedShortHeapCells = null;
+    this.svd.modifiedLongHeapCells = null;
   }
 
   /**
@@ -1065,6 +1082,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     // this.sofa2jcasMap.clear();
     this.svd.trackingMark = null;
     this.svd.modifiedPreexistingFSs = null;
+    this.svd.modifiedFSHeapCells = null;
+    this.svd.modifiedByteHeapCells = null;
+    this.svd.modifiedShortHeapCells = null;
+    this.svd.modifiedLongHeapCells = null;
   }
 
   void reinit(int[] heapMetadata, int[] heapArray, String[] stringTable, int[] fsIndex,
@@ -1100,7 +1121,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       this.svd.baseCAS.reinit(istream);
       return;
     }
-    this.resetNoQuestions();
+   
     DataInputStream dis = new DataInputStream(istream);
 
     try {
@@ -1118,17 +1139,23 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
         swap = true;
       }
 
-      // version
-      // NOTE: even though nothing ever uses the version (yet),
-      // we MUST read it from the stream or else subsequent
-      // reads will not work. So that's why
-      // we are reading here and not assigning to any variable.
+      // version      
+      // version 2 indicates this is in delta format.
+      int version;
       if (swap) {
-        swap4(dis, bytebuf);
+        version = swap4(dis, bytebuf);
       } else {
-        dis.readInt();
+        version = dis.readInt();
       }
-
+      
+      boolean delta = false;
+      if (version == 2)  {
+        delta = true;
+      }
+      if (!delta) {
+        this.resetNoQuestions();
+      }
+      
       // main fsheap
       int fsheapsz = 0;
       if (swap) {
@@ -1136,16 +1163,23 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       } else {
         fsheapsz = dis.readInt();
       }
-
-      this.getHeap().reinitSizeOnly(fsheapsz);
-      for (int i = 0; i < fsheapsz; i++) {
+      
+      int startPos = 0;
+      if (!delta) {
+        this.getHeap().reinitSizeOnly(fsheapsz);
+      } else {
+    	startPos = this.getHeap().getNextId();
+    	this.getHeap().grow(fsheapsz);
+      }
+      
+      for (int i = startPos; i < fsheapsz+startPos; i++) {
         if (swap) {
           this.getHeap().heap[i] = swap4(dis, bytebuf);
         } else {
           this.getHeap().heap[i] = dis.readInt();
         }
       }
-
+      
       // string heap
       int stringheapsz = 0;
       if (swap) {
@@ -1201,7 +1235,24 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       }
       shdh.refHeapPos = refheapsz + StringHeapDeserializationHelper.FIRST_CELL_REF;
       
-      this.getStringHeap().reinit(shdh);
+      this.getStringHeap().reinit(shdh, delta);
+      
+      //if delta, handle modified fs heap cells
+      if (delta) {
+        int fsmodssz = 0;
+        if (swap) {
+          fsmodssz = swap4(dis, bytebuf);
+        } else {
+          fsmodssz = dis.readInt();
+        }
+        for (int i = 0; i < fsmodssz; i++) {
+          if (swap) {
+            this.getHeap().heap[swap4(dis,bytebuf)] = swap4(dis, bytebuf);
+          } else {
+            this.getHeap().heap[dis.readInt()] = dis.readInt();
+          }
+        }
+      }
 
       // indexed FSs
       int fsindexsz = 0;
@@ -1220,8 +1271,12 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       }
 
       // build the index
-      reinitIndexedFSs(fsindexes);
-
+      if (delta) {
+    	reinitDeltaIndexedFSs(fsindexes);  
+      } else {
+        reinitIndexedFSs(fsindexes);
+      }
+      
       // byte heap
       int byteheapsz = 0;
       if (swap) {
@@ -1230,14 +1285,20 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
         byteheapsz = dis.readInt();
       }
 
-      this.getByteHeap().heap = new byte[Math.max(16, byteheapsz)]; // must
-      // be >
-      // 0
-      for (int i = 0; i < byteheapsz; i++) {
-        this.getByteHeap().heap[i] = dis.readByte();
+      if (!delta) {
+        this.getByteHeap().heap = new byte[Math.max(16, byteheapsz)]; // must
+        // be >
+        // 0
+        for (int i = 0; i < byteheapsz; i++) {
+          this.getByteHeap().heap[i] = dis.readByte();
+        }
+        this.getByteHeap().heapPos = byteheapsz;
+      }  else {
+        for (int i=0; i < byteheapsz; i++) {
+    	  this.getByteHeap().addByte(dis.readByte());
+        }
+        this.getByteHeap().heapPos += byteheapsz;
       }
-      this.getByteHeap().heapPos = byteheapsz;
-
       // word alignment
       int align = (4 - (byteheapsz % 4)) % 4;
       for (int i = 0; i < align; i++) {
@@ -1251,18 +1312,29 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       } else {
         shortheapsz = dis.readInt();
       }
-      this.getShortHeap().heap = new short[Math.max(16, shortheapsz)]; // must
-      // be >
-      // 0
-      for (int i = 0; i < shortheapsz; i++) {
-        if (swap) {
-          this.getShortHeap().heap[i] = (short) swap2(dis, bytebuf);
-        } else {
-          this.getShortHeap().heap[i] = dis.readShort();
+      
+      if (!delta) {
+        this.getShortHeap().heap = new short[Math.max(16, shortheapsz)]; // must
+        // be >
+        // 0
+        for (int i = 0; i < shortheapsz; i++) {
+          if (swap) {
+            this.getShortHeap().heap[i] = (short) swap2(dis, bytebuf);
+          } else {
+            this.getShortHeap().heap[i] = dis.readShort();
+          }
         }
+        this.getShortHeap().heapPos = shortheapsz;
+      } else {
+    	for (int i = 0; i < shortheapsz; i++) {
+          if (swap) {
+            this.getShortHeap().addShort((short) swap2(dis, bytebuf));
+          } else {
+            this.getShortHeap().addShort(dis.readShort());
+          }
+         }
+    	 this.getShortHeap().heapPos += shortheapsz;
       }
-      this.getShortHeap().heapPos = shortheapsz;
-
       // word alignment
       if (shortheapsz % 2 != 0) {
         dis.readShort();
@@ -1276,18 +1348,110 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       } else {
         longheapsz = dis.readInt();
       }
-      this.getLongHeap().heap = new long[Math.max(16, longheapsz)]; // must
-      // be >
-      // 0
-      for (int i = 0; i < longheapsz; i++) {
-        if (swap) {
-          this.getLongHeap().heap[i] = swap8(dis, bytebuf);
-        } else {
-          this.getLongHeap().heap[i] = dis.readLong();
+      
+      if (!delta) {
+        this.getLongHeap().heap = new long[Math.max(16, longheapsz)]; // must
+        // be >
+        // 0
+        for (int i = 0; i < longheapsz; i++) {
+          if (swap) {
+            this.getLongHeap().heap[i] = swap8(dis, bytebuf);
+          } else {
+            this.getLongHeap().heap[i] = dis.readLong();
+          }
         }
+        this.getLongHeap().heapPos = longheapsz;
+      } else {
+    	for (int i = 0; i < longheapsz; i++) {
+          if (swap) {
+            this.getLongHeap().addLong( swap8(dis, bytebuf));
+          } else {
+            this.getLongHeap().addLong(dis.readLong());
+          }
+        }
+    	this.getLongHeap().heapPos += longheapsz;
       }
-      this.getLongHeap().heapPos = longheapsz;
-
+      
+      if (delta)  {
+        //modified Byte Heap
+    	if (swap) {
+    	  byteheapsz = swap4(dis, bytebuf);
+    	} else {
+    	  byteheapsz = dis.readInt();
+    	}
+    	if (byteheapsz > 0) {
+    	  int[] byteHeapAddrs = new int[byteheapsz];
+    	  for (int i=0; i < byteheapsz; i++) {
+    		if (swap) {
+    	      byteHeapAddrs[i] = swap4(dis, bytebuf);
+    	    } else {
+    	      byteHeapAddrs[i] = dis.readInt();
+    	    }
+    	  }
+    	  for (int i=0; i < byteheapsz; i++) {
+    	    this.getByteHeap().heap[byteHeapAddrs[i]] = dis.readByte();
+    	  }
+    	}
+    	// word alignment
+        align = (4 - (byteheapsz % 4)) % 4;
+        for (int i = 0; i < align; i++) {
+          dis.readByte();
+        }
+        
+        //modified Short Heap
+    	if (swap) {
+      	  shortheapsz = swap4(dis, bytebuf);
+      	} else {
+      	  shortheapsz = dis.readInt();
+      	}
+      	if (shortheapsz > 0) {
+      	  int[] shortHeapAddrs = new int[shortheapsz];
+      	  for (int i=0; i < shortheapsz; i++) {
+      		if (swap) {
+      	      shortHeapAddrs[i] = swap4(dis, bytebuf);
+      	    } else {
+      	      shortHeapAddrs[i] = dis.readInt();
+      	    }
+      	  }
+      	  for (int i=0; i < shortheapsz; i++) {
+      		if (swap) {
+              this.getShortHeap().heap[i] = (short) swap2(dis, bytebuf);
+            } else {
+              this.getShortHeap().heap[i] = dis.readShort();
+            }
+      	  }
+      	}
+      	
+        // word alignment
+        if (shortheapsz % 2 != 0) {
+          dis.readShort();
+        }
+      
+        //modified Long Heap
+      	if (swap) {
+          longheapsz = swap4(dis, bytebuf);
+        } else {
+          longheapsz = dis.readInt();
+        }
+        if (longheapsz > 0) {
+          int[] longHeapAddrs = new int[shortheapsz];
+          for (int i=0; i < shortheapsz; i++) {
+        	if (swap) {
+        	  longHeapAddrs[i] = swap4(dis, bytebuf);
+        	} else {
+        	  longHeapAddrs[i] = dis.readInt();
+        	}
+          }
+          for (int i=0; i < longheapsz; i++) {
+        	if (swap) {
+              this.getLongHeap().heap[i] = (short) swap8(dis, bytebuf);
+            } else {
+              this.getLongHeap().heap[i] = dis.readLong();
+            }
+          }
+        }
+    	
+      }
     } catch (IOException e) {
       CASRuntimeException exception = new CASRuntimeException(
           CASRuntimeException.BLOB_DESERIALIZATION, new String[] { e.getMessage() });
@@ -1358,6 +1522,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       iterator.moveToNext();
     }
     this.svd.viewCount = numViews; // total number of views
+    
     for (int viewNbr = 1; viewNbr <= numViews; viewNbr++) {
       CAS view = (viewNbr == 1) ? getInitialView() : getView(viewNbr);
       if (view != null) {
@@ -1372,6 +1537,65 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
         loopStart += 1;
       }
     }
+  }
+  
+  // fsIndex contains added, removed and reindexed FS per view
+  private void reinitDeltaIndexedFSs(int[] fsIndex) {
+	// Add FSs to index repository for base CAS
+	int numViews = fsIndex[0]; //total number of views
+	int loopLen = fsIndex[1]; // number of sofas, not necessarily the same as
+	// number of views. Should only contain new Sofas. 
+	for (int i = 2; i < loopLen + 2; i++) { // iterate over all the sofas,
+	  this.indexRepository.addFS(fsIndex[i]); // add to base index
+	}
+	int loopStart = loopLen + 2;
+
+	FSIterator iterator = this.svd.baseCAS.getSofaIterator();
+	final Feature idFeat = getTypeSystem().getFeatureByFullName(CAS.FEATURE_FULL_NAME_SOFAID);
+	// Add FSs to index repository for each View
+	while (iterator.isValid()) {
+	      SofaFS sofa = (SofaFS) iterator.get();
+	      String id = getLowLevelCAS().ll_getStringValue(((FeatureStructureImpl) sofa).getAddress(),
+	          ((FeatureImpl) idFeat).getCode());
+	      if (CAS.NAME_DEFAULT_SOFA.equals(id)) {
+	        this.registerInitialSofa();
+	        this.svd.sofaNameSet.add(id);
+	      }
+	      // next line the getView as a side effect
+	      // checks for dupl sofa name, and if not,
+	      // adds the name to the sofaNameSet
+	      ((CASImpl) this.getView(sofa)).registerView(sofa);
+
+	      iterator.moveToNext();
+	}
+	this.svd.viewCount = numViews; // total number of views
+	    
+	for (int viewNbr = 1; viewNbr <= numViews; viewNbr++) {
+      CAS view = (viewNbr == 1) ? getInitialView() : getView(viewNbr);
+      if (view != null) {
+        FSIndexRepositoryImpl loopIndexRep = (FSIndexRepositoryImpl) getSofaIndexRepository(viewNbr);
+        loopLen = fsIndex[loopStart];
+        for (int i = loopStart + 1; i < loopStart + 1 + loopLen; i++) {
+          loopIndexRep.addFS(fsIndex[i]);
+        }
+        loopStart += loopLen + 1;
+        loopLen = fsIndex[loopStart];
+        for (int i = loopStart + 1; i < loopStart + 1 + loopLen; i++) {
+          loopIndexRep.removeFS(fsIndex[i]);
+        }
+        loopStart += loopLen + 1;
+        loopLen = fsIndex[loopStart];
+        for (int i = loopStart + 1; i < loopStart + 1 + loopLen; i++) {
+          loopIndexRep.removeFS(fsIndex[i]);
+          loopIndexRep.addFS(fsIndex[i]);
+        }
+        loopStart += loopLen + 1;
+        ((CASImpl) view).updateDocumentAnnotation();
+      } else {
+        loopStart += 1;
+      }
+	}
+	    
   }
 
   // IndexedFSs format:
@@ -1407,6 +1631,71 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       v.add(fsLoopIndex.length);
       for (int k = 0; k < fsLoopIndex.length; k++) {
         v.add(fsLoopIndex[k]);
+      }
+    }
+    return v.toArray();
+  }
+  
+  
+  //Delta IndexedFSs format:
+  // number of views
+  // number of sofas - new
+  // [sofa-1 ... sofa-n]
+  // number of new FS add in View1
+  // [FS-1 ... FS-n]
+  // number of  FS removed from View1
+  // [FS-1 ... FS-n]
+  //number of  FS reindexed in View1
+  // [FS-1 ... FS-n]
+  // etc.
+  int[] getDeltaIndexedFSs(MarkerImpl mark) {
+    IntVector v = new IntVector();
+    int[] fsLoopIndex;
+    int[] fsDeletedFromIndex;
+    int[] fsReindexed;
+
+    int numViews = getBaseSofaCount();
+    v.add(numViews);
+
+    // Get indexes for base CAS
+    fsLoopIndex = this.svd.baseCAS.indexRepository.getIndexedFSs();
+    // Get the new Sofa FS
+    IntVector newSofas = new IntVector();
+    for (int k = 0; k < fsLoopIndex.length; k++) {
+      if ( mark.isNew(fsLoopIndex[k]) ) {
+        newSofas.add(fsLoopIndex[k]);
+      }
+    }
+    
+    v.add(newSofas.size());
+    for (int k = 0; k < newSofas.size(); k++) {
+      v.add(newSofas.get(k));
+    }
+
+    // Get indexes for each SofaFS in the CAS
+    for (int sofaNum = 1; sofaNum <= numViews; sofaNum++) {
+      FSIndexRepositoryImpl loopIndexRep = (FSIndexRepositoryImpl) this.svd.baseCAS
+          .getSofaIndexRepository(sofaNum);
+      if (loopIndexRep != null) {
+        fsLoopIndex = loopIndexRep.getAddedFSs();
+        fsDeletedFromIndex = loopIndexRep.getDeletedFSs();
+        fsReindexed = loopIndexRep.getReindexedFSs();
+      } else {
+        fsLoopIndex = (new IntVector()).toArray();
+        fsDeletedFromIndex = (new IntVector()).toArray();
+        fsReindexed = (new IntVector()).toArray();
+      }
+      v.add(fsLoopIndex.length);
+      for (int k = 0; k < fsLoopIndex.length; k++) {
+        v.add(fsLoopIndex[k]);
+      }
+      v.add(fsDeletedFromIndex.length);
+      for (int k = 0; k < fsDeletedFromIndex.length; k++) {
+        v.add(fsDeletedFromIndex[k]);
+      }
+      v.add(fsReindexed.length);
+      for (int k = 0; k < fsReindexed.length; k++) {
+        v.add(fsReindexed[k]);
       }
     }
     return v.toArray();
@@ -1498,7 +1787,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
     this.getHeap().heap[addr + arrayContentOffset + index] = value;
     if (this.svd.trackingMark != null) {
-    	this.logFSUpdate(addr);
+    	this.logFSUpdate(addr, addr+arrayContentOffset+index, ModifiedHeap.FSHEAP, 1);
     }
   }
 
@@ -1581,7 +1870,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     final int offset = addr + arrayContentOffset;
     System.arraycopy(src, srcOffset, this.getHeap().heap, offset + destOffset, length);
     if (this.svd.trackingMark != null) {
-    	this.logFSUpdate(addr);
+    	this.logFSUpdate(addr, offset + destOffset, ModifiedHeap.FSHEAP, length);
     }
   }
 
@@ -1647,7 +1936,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   public void setFeatureValue(int addr, int feat, int val) {
     this.getHeap().heap[(addr + this.svd.casMetadata.featureOffset[feat])] = val;
     if (this.svd.trackingMark != null) {
-    	this.logFSUpdate(addr);
+    	this.logFSUpdate(addr, addr+this.svd.casMetadata.featureOffset[feat], 
+    			ModifiedHeap.FSHEAP, 1);
     }
   }
 
@@ -2855,14 +3145,16 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   public final void ll_setIntValue(int fsRef, int featureCode, int value) {
     this.getHeap().heap[fsRef + this.svd.casMetadata.featureOffset[featureCode]] = value;
     if (this.svd.trackingMark != null) {
-    	this.logFSUpdate(fsRef);
+    	this.logFSUpdate(fsRef, fsRef +  this.svd.casMetadata.featureOffset[featureCode],
+    			ModifiedHeap.FSHEAP, 1);
     }
   }
 
   public final void ll_setFloatValue(int fsRef, int featureCode, float value) {
     this.getHeap().heap[fsRef + this.svd.casMetadata.featureOffset[featureCode]] = float2int(value);
     if (this.svd.trackingMark != null) {
-    	this.logFSUpdate(fsRef);
+    	this.logFSUpdate(fsRef, fsRef +  this.svd.casMetadata.featureOffset[featureCode],
+    			ModifiedHeap.FSHEAP, 1);
     }
   }
 
@@ -2882,14 +3174,16 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     final int valueAddr = fsRef + this.svd.casMetadata.featureOffset[featureCode];
     this.getHeap().heap[valueAddr] = stringAddr;
     if (this.svd.trackingMark != null) {
-    	this.logFSUpdate(fsRef);
+    	this.logFSUpdate(fsRef, fsRef +  this.svd.casMetadata.featureOffset[featureCode],
+    			ModifiedHeap.FSHEAP, 1);
     }
   }
 
   public final void ll_setRefValue(int fsRef, int featureCode, int value) {
     this.getHeap().heap[fsRef + this.svd.casMetadata.featureOffset[featureCode]] = value;
     if (this.svd.trackingMark != null) {
-    	this.logFSUpdate(fsRef);
+    	this.logFSUpdate(fsRef, fsRef +  this.svd.casMetadata.featureOffset[featureCode],
+    			ModifiedHeap.FSHEAP, 1);
     }
   }
 
@@ -3115,7 +3409,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     final int pos = getArrayStartAddress(fsRef) + position;
     this.getHeap().heap[pos] = value;
     if (this.svd.trackingMark != null) {
-    	this.logFSUpdate(fsRef);
+    	this.logFSUpdate(fsRef, pos, ModifiedHeap.FSHEAP, 1);
     }
   }
 
@@ -3123,7 +3417,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     final int pos = getArrayStartAddress(fsRef) + position;
     this.getHeap().heap[pos] = float2int(value);
     if (this.svd.trackingMark != null) {
-    	this.logFSUpdate(fsRef);
+    	this.logFSUpdate(fsRef, pos,ModifiedHeap.FSHEAP, 1);
     }
   }
 
@@ -3132,7 +3426,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     final int stringCode = (value == null) ? NULL : addString(value);
     this.getHeap().heap[pos] = stringCode;
     if (this.svd.trackingMark != null) {
-    	this.logFSUpdate(fsRef);
+    	this.logFSUpdate(fsRef, pos, ModifiedHeap.FSHEAP, 1);
     }
   }
 
@@ -3140,7 +3434,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     final int pos = getArrayStartAddress(fsRef) + position;
     this.getHeap().heap[pos] = value;
     if (this.svd.trackingMark != null) {
-    	this.logFSUpdate(fsRef);
+    	this.logFSUpdate(fsRef, pos, ModifiedHeap.FSHEAP, 1);
     }
   }
 
@@ -3363,7 +3657,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     this.getHeap().heap[fsRef + this.svd.casMetadata.featureOffset[featureCode]] = value ? CASImpl.TRUE
         : CASImpl.FALSE;
     if (this.svd.trackingMark != null) {
-    	this.logFSUpdate(fsRef);
+      this.logFSUpdate(fsRef, fsRef + this.svd.casMetadata.featureOffset[featureCode], ModifiedHeap.FSHEAP, 1);
     }
   }
 
@@ -3377,7 +3671,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   public final void ll_setByteValue(int fsRef, int featureCode, byte value) {
     this.getHeap().heap[fsRef + this.svd.casMetadata.featureOffset[featureCode]] = value;
     if (this.svd.trackingMark != null) {
-    	this.logFSUpdate(fsRef);
+      this.logFSUpdate(fsRef, fsRef + this.svd.casMetadata.featureOffset[featureCode], ModifiedHeap.FSHEAP, 1);
     }
   }
 
@@ -3391,7 +3685,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   public final void ll_setShortValue(int fsRef, int featureCode, short value) {
     this.getHeap().heap[fsRef + this.svd.casMetadata.featureOffset[featureCode]] = value;
     if (this.svd.trackingMark != null) {
-    	this.logFSUpdate(fsRef);
+      this.logFSUpdate(fsRef, fsRef + this.svd.casMetadata.featureOffset[featureCode], ModifiedHeap.FSHEAP, 1);
     }
   }
 
@@ -3492,7 +3786,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     final int offset = this.getHeap().heap[getArrayStartAddress(fsRef)];
     this.getByteHeap().setHeapValue(value, offset + position);
     if (this.svd.trackingMark != null) {
-    	this.logFSUpdate(fsRef);
+    	this.logFSUpdate(fsRef, offset+position, ModifiedHeap.BYTEHEAP, 1);
     }
   }
 
@@ -3509,7 +3803,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     final int offset = this.getHeap().heap[getArrayStartAddress(fsRef)];
     this.getByteHeap().setHeapValue(value, offset + position);
     if (this.svd.trackingMark != null) {
-    	this.logFSUpdate(fsRef);
+      this.logFSUpdate(fsRef, offset+position, ModifiedHeap.BYTEHEAP, 1);
     }
   }
 
@@ -3524,7 +3818,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     final int offset = this.getHeap().heap[getArrayStartAddress(fsRef)];
     this.getShortHeap().setHeapValue(value, offset + position);
     if (this.svd.trackingMark != null) {
-    	this.logFSUpdate(fsRef);
+      this.logFSUpdate(fsRef, offset+position, ModifiedHeap.SHORTHEAP, 1);
     }
   }
 
@@ -3539,7 +3833,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     final int offset = this.getHeap().heap[getArrayStartAddress(fsRef)];
     this.getLongHeap().setHeapValue(value, offset + position);
     if (this.svd.trackingMark != null) {
-    	this.logFSUpdate(fsRef);
+      this.logFSUpdate(fsRef, offset+position, ModifiedHeap.LONGHEAP, 1);
     }
   }
 
@@ -3940,22 +4234,63 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     if (!this.svd.flushEnabled) {
 	  throw new CASAdminException(CASAdminException.FLUSH_DISABLED);
 	}
-	this.svd.trackingMark = new MarkerImpl(this.getHeap().getNextId(), this);
+	this.svd.trackingMark = new MarkerImpl(this.getHeap().getNextId(), 
+			this.getStringHeap().getSize(),
+			this.getByteHeap().getSize(),
+			this.getShortHeap().getSize(),
+			this.getLongHeap().getSize(),
+			this);
 	if (this.svd.modifiedPreexistingFSs == null) {
 	  this.svd.modifiedPreexistingFSs = new IntVector();
+	}
+	if (this.svd.modifiedFSHeapCells == null) {
+	  this.svd.modifiedFSHeapCells = new IntVector();
+	}
+	if (this.svd.modifiedByteHeapCells == null) {
+      this.svd.modifiedByteHeapCells = new IntVector();
+	}
+	if (this.svd.modifiedShortHeapCells == null) { 
+      this.svd.modifiedShortHeapCells = new IntVector();
+	}
+	if (this.svd.modifiedLongHeapCells == null) {
+      this.svd.modifiedLongHeapCells = new IntVector();
 	}
 	return this.svd.trackingMark;
   }
 
-  private void logFSUpdate(int addr) {
-	if (this.svd.trackingMark != null && !this.svd.trackingMark.isNew(addr)) {
+  private void logFSUpdate(int fsaddr, int position, ModifiedHeap whichheap, int howmany) {
+	if (this.svd.trackingMark != null && !this.svd.trackingMark.isNew(fsaddr)) {
+	  //log the FS
 	  int lastModifiedFS = -1;	
 	  if (this.svd.modifiedPreexistingFSs.size() > 0) {
 	    lastModifiedFS =  this.svd.modifiedPreexistingFSs.get(this.svd.modifiedPreexistingFSs.size()-1);
 	  }
 	  //only log if the last one logged is not the same fs.s
-	  if (lastModifiedFS != addr) {
-		  this.svd.modifiedPreexistingFSs.add(addr);
+	  if (lastModifiedFS != fsaddr) {
+		this.svd.modifiedPreexistingFSs.add(fsaddr);
+	  }	
+	  //log cells that were updated
+	  switch (whichheap) {  
+		case FSHEAP:
+		  for (int i=0; i < howmany;i++) {
+		    this.svd.modifiedFSHeapCells.add(position+i);
+		  }
+		break;
+		case BYTEHEAP:
+		  for (int i=0; i < howmany;i++) {
+		    this.svd.modifiedByteHeapCells.add(position+i);
+		  }
+		break;
+		case SHORTHEAP:
+		  for (int i=0; i < howmany;i++) {
+		    this.svd.modifiedShortHeapCells.add(position+i);
+		  }
+	    break;
+		case LONGHEAP:
+		  for (int i=0; i < howmany;i++) {
+		    this.svd.modifiedLongHeapCells.add(position+i);
+		  }
+	    break;
 	  }
 	}
   }
@@ -3966,6 +4301,22 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   
   IntVector getModifiedFSList() {
 	return this.svd.modifiedPreexistingFSs;  
+  }
+  
+  IntVector getModifiedFSHeapAddrs() {
+	return this.svd.modifiedFSHeapCells;  
+  }
+  
+  IntVector getModifiedByteHeapAddrs() {
+		return this.svd.modifiedByteHeapCells;  
+  }
+  
+  IntVector getModifiedShortHeapAddrs() {
+		return this.svd.modifiedShortHeapCells;  
+  }
+  
+  IntVector getModifiedLongHeapAddrs() {
+		return this.svd.modifiedLongHeapCells;  
   }
   
 }

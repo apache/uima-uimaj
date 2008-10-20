@@ -21,7 +21,6 @@ package org.apache.uima.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Properties;
 import java.util.Vector;
 
@@ -251,14 +250,16 @@ public class CasPool {
    *         timeout period.
    */
   public synchronized CAS getCas(long aTimeout) {
-    long startTime = new Date().getTime();
+//    long startTime = new Date().getTime();
+    long startTime = System.currentTimeMillis();
     CAS cas;
     while ((cas = getCas()) == null) {
       try {
         wait(aTimeout);
       } catch (InterruptedException e) {
       }
-      if (aTimeout > 0 && (new Date().getTime() - startTime) >= aTimeout) {
+//    if (aTimeout > 0 && (new Date().getTime() - startTime) >= aTimeout) {
+    if (aTimeout > 0 && (System.currentTimeMillis() - startTime) >= aTimeout) {
         // Timeout has expired
         return null;
       }

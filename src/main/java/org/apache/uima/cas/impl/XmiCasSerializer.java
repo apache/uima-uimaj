@@ -73,6 +73,11 @@ public class XmiCasSerializer {
   public static final int TYPE_CLASS_STRINGLIST = 103;
 
   public static final int TYPE_CLASS_FSLIST = 104;
+  
+  private static final char [] URIPFX = new char[] {'h','t','t','p',':','/','/','/'};
+  
+  private static final char [] URISFX = new char[] {'.','e','c','o','r','e'};
+
 
   // number of children of current element
   private int numChildren;
@@ -144,9 +149,12 @@ public class XmiCasSerializer {
 
     // each type
 
-    private Map nsUriToPrefixMap = new HashMap();
-
-    private Set nsPrefixesUsed = new HashSet();
+    private Map<String, String> nsUriToPrefixMap = new HashMap<String, String>();
+    
+    // lives just for one serialize call
+    private Map<String, String> uniqueStrings = new HashMap<String, String>();
+    
+    private Set<String> nsPrefixesUsed = new HashSet<String>();
     
     /**
      * Used to tell if a FS was created before or after mark.
@@ -292,7 +300,7 @@ public class XmiCasSerializer {
       if (sofaXmiId != null && sofaXmiId.length() > 0) {
         addAttribute(workAttrs, "sofa", sofaXmiId);
       }
-      StringBuffer membersString = new StringBuffer();
+      StringBuilder membersString = new StringBuilder();
       for (int i = 0; i < members.length; i++) {
         String xmiId = getXmiId(members[i]);
         if (xmiId != null) // to catch filtered FS
@@ -324,7 +332,7 @@ public class XmiCasSerializer {
         if (sofaXmiId != null && sofaXmiId.length() > 0) {
           addAttribute(workAttrs, "sofa", sofaXmiId);
         }
-        StringBuffer addedString = new StringBuffer();
+        StringBuilder addedString = new StringBuilder();
         for (int i = 0; i < added.length; i++) {
           String xmiId = getXmiId(added[i]);
           if (xmiId != null) // to catch filtered FS
@@ -337,7 +345,7 @@ public class XmiCasSerializer {
           addAttribute(workAttrs, "added_members", addedString.substring(0, addedString.length() - 1));
         }
         
-        StringBuffer deletedString = new StringBuffer();
+        StringBuilder deletedString = new StringBuilder();
         for (int i = 0; i < deleted.length; i++) {
           String xmiId = getXmiId(deleted[i]);
           if (xmiId != null) // to catch filtered FS
@@ -350,7 +358,7 @@ public class XmiCasSerializer {
           addAttribute(workAttrs, "deleted_members", deletedString.substring(0, deletedString.length() - 1));
         }
         
-        StringBuffer reindexedString = new StringBuffer();
+        StringBuilder reindexedString = new StringBuilder();
         for (int i = 0; i < reindexed.length; i++) {
           String xmiId = getXmiId(reindexed[i]);
           if (xmiId != null) // to catch filtered FS
@@ -399,7 +407,7 @@ public class XmiCasSerializer {
         workAttrs.addAttribute(XMLNS_NS_URI, "xsi", "xmlns:xsi", "CDATA", XSI_NS_URI);
 
         // write xsi:schemaLocation attributaiton
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         it = nsUriToSchemaLocationMap.entrySet().iterator();
         while (it.hasNext()) {
           Map.Entry entry = (Map.Entry) it.next();
@@ -1003,7 +1011,7 @@ public class XmiCasSerializer {
         return null;
       }
 
-      StringBuffer buf = new StringBuffer();
+      StringBuilder buf = new StringBuilder();
       final int size = cas.ll_getArraySize(addr);
       if (size > 0 && !arrayAndListFSs.put(addr, addr)) {
         reportWarning("Warning: multiple references to an array.  Reference identity will not be preserved in XMI.");
@@ -1117,7 +1125,7 @@ public class XmiCasSerializer {
       if (addr == CASImpl.NULL) {
         return null;
       }
-      StringBuffer buf = new StringBuffer();
+      StringBuilder buf = new StringBuilder();
       String[] array = new String[0];
       switch (arrayType) {
         case TYPE_CLASS_INTLIST:
@@ -1206,7 +1214,7 @@ public class XmiCasSerializer {
         // this also populats the nsUriToPrefix map
       }
     }
-
+    
     /**
      * Converts a UIMA-style dotted type name to the element name that should be used in the XMI
      * serialization. The XMI element name consists of three parts - the Namespace URI, the Local
@@ -1218,25 +1226,37 @@ public class XmiCasSerializer {
      */
     private XmlElementName uimaTypeName2XmiElementName(String uimaTypeName) {
       // split uima type name into namespace and short name
-      String namespace, shortName, nsUri;
-      int lastDotIndex = uimaTypeName.lastIndexOf('.');
+      String shortName, nsUri;
+      final int lastDotIndex = uimaTypeName.lastIndexOf('.');
       if (lastDotIndex == -1) // no namespace
       {
-        namespace = null;
+//        namespace = null;
         shortName = uimaTypeName;
         nsUri = DEFAULT_NAMESPACE_URI;
       } else {
-        namespace = uimaTypeName.substring(0, lastDotIndex);
+//        namespace = uimaTypeName.substring(0, lastDotIndex);
         shortName = uimaTypeName.substring(lastDotIndex + 1);
-        nsUri = "http:///" + namespace.replace('.', '/') + ".ecore";
+        char[] sb = new char[lastDotIndex + 14];
+        System.arraycopy(URIPFX, 0, sb, 0, URIPFX.length);
+        int i = 0;
+        for (; i < lastDotIndex; i++) {
+          char c = uimaTypeName.charAt(i);
+          sb[URIPFX.length + i] = ( c == '.') ? '/' : c;
+        }
+        System.arraycopy(URISFX, 0, sb, URIPFX.length + i, URISFX.length);
+        nsUri = getUniqueString(new String(sb));
+        
+//        nsUri = "http:///" + namespace.replace('.', '/') + ".ecore"; 
       }
+      // convert short name to shared string, without interning, reduce GCs
+      shortName = getUniqueString(shortName);
 
       // determine what namespace prefix to use
       String prefix = (String) nsUriToPrefixMap.get(nsUri);
       if (prefix == null) {
-        if (namespace != null) {
-          int secondLastDotIndex = namespace.lastIndexOf('.');
-          prefix = namespace.substring(secondLastDotIndex + 1);
+        if (lastDotIndex != -1) { // have namespace 
+          int secondLastDotIndex = uimaTypeName.lastIndexOf('.', lastDotIndex-1);
+          prefix = uimaTypeName.substring(secondLastDotIndex + 1, lastDotIndex);
         } else {
           prefix = "noNamespace";
         }
@@ -1253,7 +1273,19 @@ public class XmiCasSerializer {
         nsPrefixesUsed.add(prefix);
       }
 
-      return new XmlElementName(nsUri, shortName, prefix + ':' + shortName);
+      return new XmlElementName(nsUri, shortName, getUniqueString(prefix + ':' + shortName));
+    }
+
+    /** 
+     *  convert to shared string, without interning, reduce GCs
+     */
+    private String getUniqueString(String s) { 
+      String u = uniqueStrings.get(s);
+      if (null == u) {
+        u = s;
+        uniqueStrings.put(s, s);
+      }
+      return u;
     }
     
     /**

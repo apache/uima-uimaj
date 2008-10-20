@@ -25,11 +25,22 @@ import org.apache.uima.cas.Marker;
 
 public class MarkerImpl implements Marker {
 	
-  private int nextFSId;
+  protected int nextFSId;    //next FS addr
+  protected int nextStringHeapAddr; 
+  protected int nextByteHeapAddr;
+  protected int nextShortHeapAddr;
+  protected int nextLongHeapAddr;
+  
   CASImpl cas;
 
-  MarkerImpl(int nextPos, CASImpl cas) {
-    this.nextFSId = nextPos;
+  MarkerImpl(int nextFSAddr, int nextStringHeapAddr, 
+		     int nextByteHeapAddr, int nextShortHeapAddr, int nextLongHeapAddr, 
+		     CASImpl cas) {
+    this.nextFSId = nextFSAddr;
+    this.nextStringHeapAddr = nextStringHeapAddr;
+    this.nextByteHeapAddr = nextByteHeapAddr;
+    this.nextShortHeapAddr = nextShortHeapAddr;
+    this.nextLongHeapAddr = nextLongHeapAddr;
     this.cas = cas;
   }
 
