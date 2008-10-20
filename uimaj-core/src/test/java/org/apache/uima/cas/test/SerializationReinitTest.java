@@ -29,8 +29,10 @@ import java.util.regex.Pattern;
 
 import junit.framework.TestCase;
 
+import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.ByteArrayFS;
+import org.apache.uima.cas.Marker;
 import org.apache.uima.cas.ShortArrayFS;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
@@ -39,6 +41,7 @@ import org.apache.uima.cas.FSIndexRepository;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.admin.CASAdminException;
@@ -50,12 +53,16 @@ import org.apache.uima.cas.impl.CASSerializer;
 import org.apache.uima.cas.impl.LowLevelCAS;
 import org.apache.uima.cas.impl.Serialization;
 import org.apache.uima.cas.text.AnnotationFS;
+import org.apache.uima.cas_data.impl.CasComparer;
 import org.apache.uima.internal.util.TextStringTokenizer;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
+import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.FileUtils;
+import org.apache.uima.util.XMLInputSource;
 
 /**
  * Class comment for TokenizerTest.java goes here.
@@ -133,6 +140,10 @@ public class SerializationReinitTest extends TestCase {
   private Feature theShortArrayFeature;
   
   private Feature theLongFeature;
+  
+  private FsIndexDescription[] indexes;
+
+  private TypeSystemDescription typeSystem;
 
 
   public SerializationReinitTest(String arg) {
@@ -166,6 +177,15 @@ public class SerializationReinitTest extends TestCase {
     theShortFeature = ts.getFeatureByFullName(OSTR_TYPE + TypeSystem.FEATURE_SEPARATOR + OSHORT_TYPE_FEAT);
     theShortArrayFeature = ts.getFeatureByFullName(OSTR_TYPE + TypeSystem.FEATURE_SEPARATOR + OSHORTA_TYPE_FEAT);
     theLongFeature = ts.getFeatureByFullName(OSTR_TYPE + TypeSystem.FEATURE_SEPARATOR + OLONG_TYPE_FEAT);
+ 
+  
+    File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
+    File indexesFile = JUnitExtension.getFile("ExampleCas/testIndexes.xml");
+
+    typeSystem = UIMAFramework.getXMLParser().parseTypeSystemDescription(
+                new XMLInputSource(typeSystemFile));
+    indexes = UIMAFramework.getXMLParser().parseFsIndexCollection(new XMLInputSource(indexesFile))
+                .getFsIndexes();
   }
 
   public void tearDown() {
@@ -181,6 +201,8 @@ public class SerializationReinitTest extends TestCase {
     endFeature = null;
     sentenceType = null;
     strSub1 = null;
+    indexes = null;
+    typeSystem = null;
   }
 
   // Initialize the first CAS.
@@ -684,6 +706,213 @@ public class SerializationReinitTest extends TestCase {
     }  
   }
 
+  public void testDeltaBlobSerialization() throws Exception {
+   try {
+      CAS cas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
+              indexes);
+      CAS cas2 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
+              indexes);
+      CAS cas3 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
+              indexes);
+      
+      Type personType = cas1.getTypeSystem().getType(
+      		"org.apache.uima.testTypeSystem.Person");
+      Feature componentIdFeat = personType.getFeatureByBaseName("componentId");
+      Feature confidenceFeat = personType.getFeatureByBaseName("confidence");
+      Type orgType = cas1.getTypeSystem().getType(
+			"org.apache.uima.testTypeSystem.Organization");
+      Type ownerType = cas1.getTypeSystem().getType(
+      						"org.apache.uima.testTypeSystem.Owner");
+      Type entityAnnotType = cas1.getTypeSystem().getType(
+		"org.apache.uima.testTypeSystem.EntityAnnotation");
+      Feature mentionTypeFeat = entityAnnotType.getFeatureByBaseName("mentionType");
+      Feature argsFeat = ownerType.getFeatureByBaseName("relationArgs");
+      Type relArgsType = cas1.getTypeSystem().getType(
+      						"org.apache.uima.testTypeSystem.BinaryRelationArgs");
+      Feature domainFeat = relArgsType.getFeatureByBaseName("domainValue");
+      Feature rangeFeat = relArgsType.getFeatureByBaseName("rangeValue");
+      
+      Type entityType = cas1.getTypeSystem().getType("org.apache.uima.testTypeSystem.Entity");
+      Feature classesFeat = entityType.getFeatureByBaseName("classes");
+      Feature linksFeat = entityType.getFeatureByBaseName("links");
+      Feature canonicalFormFeat = entityType.getFeatureByBaseName("canonicalForm");
+      
+      Type nonEmptyFsListType = cas1.getTypeSystem().getType(CAS.TYPE_NAME_NON_EMPTY_FS_LIST);
+      Type emptyFsListType = cas1.getTypeSystem().getType(CAS.TYPE_NAME_EMPTY_FS_LIST);
+      Feature headFeat = nonEmptyFsListType.getFeatureByBaseName("head");
+      Feature tailFeat = nonEmptyFsListType.getFeatureByBaseName("tail");
+      
+      //cas1
+      //initial set of feature structures 
+      // set document text for the initial view and create Annotations
+      cas1.setDocumentText("This is a test document in the initial view");
+      AnnotationFS anAnnot1 = cas1.createAnnotation(cas1.getAnnotationType(), 0, 4);
+      cas1.getIndexRepository().addFS(anAnnot1);
+      AnnotationFS anAnnot2 = cas1.createAnnotation(cas1.getAnnotationType(), 5, 6);
+      cas1.getIndexRepository().addFS(anAnnot2);
+      AnnotationFS anAnnot3 = cas1.createAnnotation(cas1.getAnnotationType(), 8, 13);
+      cas1.getIndexRepository().addFS(anAnnot3);
+      AnnotationFS anAnnot4 = cas1.createAnnotation(cas1.getAnnotationType(), 15, 30);
+      cas1.getIndexRepository().addFS(anAnnot4);
+      FSIndex tIndex = cas1.getAnnotationIndex();
+      assertTrue(tIndex.size() == 5); //doc annot plus 4 annots
+      
+      FeatureStructure entityFS = cas1.createFS(entityType);
+      cas1.getIndexRepository().addFS(entityFS);
+      
+      StringArrayFS strArrayFS = cas1.createStringArrayFS(5);
+      strArrayFS.set(0, "class1");
+      entityFS.setFeatureValue(classesFeat, strArrayFS);
+      
+      //create listFS and set the link feature
+      FeatureStructure emptyNode = cas1.createFS(emptyFsListType);
+      FeatureStructure secondNode = cas1.createFS(nonEmptyFsListType);
+      secondNode.setFeatureValue(headFeat, anAnnot2);
+      secondNode.setFeatureValue(tailFeat, emptyNode);
+      FeatureStructure firstNode = cas1.createFS(nonEmptyFsListType);
+      firstNode.setFeatureValue(headFeat, anAnnot1);
+      firstNode.setFeatureValue(tailFeat, secondNode);
+      entityFS.setFeatureValue(linksFeat, firstNode);
+      
+      // create a view w/o setting document text
+      CAS view1 = cas1.createView("View1");
+      
+      // create another view 
+      CAS preexistingView = cas1.createView("preexistingView");
+      String preexistingViewText = "John Smith blah blah blah";
+      preexistingView.setDocumentText(preexistingViewText);
+      AnnotationFS person1Annot = createPersonAnnot(preexistingView, 0, 10);
+      person1Annot.setStringValue(componentIdFeat, "deltacas1");
+      AnnotationFS person2Annot = createPersonAnnot(preexistingView, 0, 5);
+      AnnotationFS orgAnnot = preexistingView.createAnnotation(orgType, 16, 24);
+      preexistingView.addFsToIndexes(orgAnnot);
+      
+      AnnotationFS ownerAnnot = preexistingView.createAnnotation(ownerType, 0, 24);
+      preexistingView.addFsToIndexes(ownerAnnot);
+      FeatureStructure relArgs = cas1.createFS(relArgsType);
+      relArgs.setFeatureValue(domainFeat, person1Annot);
+      ownerAnnot.setFeatureValue(argsFeat, relArgs);
+      
+      //serialize complete 
+      ByteArrayOutputStream fos = new ByteArrayOutputStream();
+      Serialization.serializeCAS(cas1, fos);
+
+      //deserialize into cas2
+      ByteArrayInputStream fis = new ByteArrayInputStream(fos.toByteArray());
+      Serialization.deserializeCAS(cas2, fis);
+      CasComparer.assertEquals(cas1, cas2);
+ 
+      //=======================================================================
+      //create Marker, add/modify fs and serialize in delta xmi format.
+      Marker marker = cas2.createMarker();
+      FSIndex cas2tIndex = cas2.getAnnotationIndex();
+      CAS cas2preexistingView = cas2.getView("preexistingView");
+      FSIndex cas2personIndex = cas2preexistingView.getAnnotationIndex(personType);
+      FSIndex cas2orgIndex = cas2preexistingView.getAnnotationIndex(orgType);
+      FSIndex cas2ownerIndex = cas2preexistingView.getAnnotationIndex(ownerType);
+      
+      // create an annotation and add to index
+      AnnotationFS cas2anAnnot5 = cas2.createAnnotation(cas2.getAnnotationType(), 6, 8);
+      cas2.getIndexRepository().addFS(cas2anAnnot5);
+      assertTrue(cas2tIndex.size() == 6); // prev annots and this new one
+      
+      // set document text of View1
+      CAS cas2view1 = cas2.getView("View1");
+      cas2view1.setDocumentText("This is the View1 document.");
+      //create an annotation in View1
+      AnnotationFS cas2view1Annot = cas2view1.createAnnotation(cas2.getAnnotationType(), 1, 5);
+      cas2view1.getIndexRepository().addFS(cas2view1Annot);
+      FSIndex cas2view1Index = cas2view1.getAnnotationIndex();
+      assertTrue(cas2view1Index.size() == 2); //document annot and this annot
+     
+      //modify an existing annotation
+      Iterator tIndexIter = cas2tIndex.iterator();
+      AnnotationFS docAnnot = (AnnotationFS) tIndexIter.next(); //doc annot
+      AnnotationFS modAnnot1 = (AnnotationFS) tIndexIter.next();
+      AnnotationFS delAnnot = (AnnotationFS)  tIndexIter.next();
+      
+      //modify language feature
+      Feature languageF = cas2.getDocumentAnnotation().getType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_LANGUAGE);
+      docAnnot.setStringValue(languageF, "en");
+     
+      //index update - reindex
+      cas2.getIndexRepository().removeFS(modAnnot1);
+      Feature endF = cas2.getAnnotationType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_END);
+      modAnnot1.setIntValue(endF, 4);
+      cas2.getIndexRepository().addFS(modAnnot1);
+      //index update - remove annotation from index 
+      cas2.getIndexRepository().removeFS(delAnnot);
+  
+      //modify FS - string feature and FS feature.
+      Iterator personIter = cas2personIndex.iterator();     
+      AnnotationFS cas2person1 = (AnnotationFS) personIter.next();
+      AnnotationFS cas2person2 = (AnnotationFS) personIter.next();
+      
+      cas2person1.setFloatValue(confidenceFeat, (float) 99.99);
+      cas2person1.setStringValue(mentionTypeFeat, "FULLNAME");
+      
+      cas2person2.setStringValue(componentIdFeat, "delataCas2");
+      cas2person2.setStringValue(mentionTypeFeat, "FIRSTNAME");
+      
+      Iterator orgIter = cas2orgIndex.iterator();
+      AnnotationFS cas2orgAnnot = (AnnotationFS) orgIter.next();
+      cas2orgAnnot.setStringValue(mentionTypeFeat, "ORGNAME");
+      
+      //modify FS feature
+      Iterator ownerIter = cas2ownerIndex.iterator();
+      AnnotationFS cas2ownerAnnot = (AnnotationFS) ownerIter.next();
+      FeatureStructure cas2relArgs = cas2ownerAnnot.getFeatureValue(argsFeat);
+      cas2relArgs.setFeatureValue(rangeFeat, cas2orgAnnot);
+     
+    //Test modification of a nonshared multivalued feature.
+      //This should serialize the encompassing FS.
+      Iterator iter = cas2.getIndexRepository().getIndex("testEntityIndex").iterator();
+      FeatureStructure cas2EntityFS = (FeatureStructure) iter.next();
+      StringArrayFS cas2strarrayFS = (StringArrayFS) cas2EntityFS.getFeatureValue(classesFeat);
+      cas2strarrayFS.set(1, "class2");
+      cas2strarrayFS.set(2, "class3");
+      cas2strarrayFS.set(3, "class4");
+      cas2strarrayFS.set(4, "class5");
+     
+      //add to FSList 
+      FeatureStructure cas2linksFS = cas2EntityFS.getFeatureValue(linksFeat);
+      FeatureStructure cas2secondNode = cas2linksFS.getFeatureValue(tailFeat);
+      FeatureStructure cas2emptyNode = cas2secondNode.getFeatureValue(tailFeat);
+      FeatureStructure cas2thirdNode = cas2.createFS(nonEmptyFsListType);
+      cas2thirdNode.setFeatureValue(headFeat, cas2anAnnot5);
+      cas2thirdNode.setFeatureValue(tailFeat, cas2emptyNode);
+      cas2secondNode.setFeatureValue(tailFeat, cas2thirdNode);
+      
+      // serialize cas2 in delta format 
+      ByteArrayOutputStream fosDelta = new ByteArrayOutputStream();
+      Serialization.serializeCAS(cas2, fosDelta, marker);
+      
+      //======================================================================
+      //deserialize delta xmi into cas1
+      ByteArrayInputStream fisDelta = new ByteArrayInputStream(fosDelta.toByteArray());
+      Serialization.deserializeCAS(cas1, fisDelta);
+      
+      //======================================================================
+      //serialize complete cas and deserialize into cas3 and compare with cas1.
+      ByteArrayOutputStream fosFull = new ByteArrayOutputStream();
+      Serialization.serializeCAS(cas2, fosFull);
+      ByteArrayInputStream fisFull = new ByteArrayInputStream(fosFull.toByteArray());
+      Serialization.deserializeCAS(cas3, fisFull);
+      CasComparer.assertEquals(cas1, cas3); 
+      //System.out.println("CAS1 " + serialize(cas1, new XmiSerializationSharedData()));
+      //System.out.println("CAS2 " + serialize(cas2, new XmiSerializationSharedData()));
+	      
+	} catch (Exception e) {
+	      JUnitExtension.handleException(e);
+	}
+  }
+  
+  private AnnotationFS createPersonAnnot(CAS cas, int begin, int end) {
+	Type personType = cas.getTypeSystem().getType("org.apache.uima.testTypeSystem.Person");
+	AnnotationFS person = cas.createAnnotation(personType, begin, end);
+	cas.addFsToIndexes(person);
+	return person;
+  }
   public static void main(String[] args) {
     junit.textui.TestRunner.run(SerializationReinitTest.class);
   }

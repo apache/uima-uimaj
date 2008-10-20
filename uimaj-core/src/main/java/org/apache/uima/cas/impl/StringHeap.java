@@ -48,8 +48,10 @@ final class StringHeap {
    * 
    * @param shdh Serialization helper datastructure.
    */
-  final void reinit(StringHeapDeserializationHelper shdh) {
-    initMemory();
+  final void reinit(StringHeapDeserializationHelper shdh, boolean delta) {
+	if (!delta) {
+      initMemory();
+	}
     int stringOffset;
     int stringLength;
     // Simply iterate over the ref heap and add one string after another.  The references come out
@@ -95,6 +97,44 @@ final class StringHeap {
     }
     assert (charCount == shdh.charHeap.length);
     return shdh;
+  }
+  
+  StringHeapDeserializationHelper serialize(int startPos) {
+    StringHeapDeserializationHelper shdh = new StringHeapDeserializationHelper();
+	// Ref heap is 3 times the size of the string list.
+	shdh.refHeap = new int[(this.stringList.size() - startPos + 1)
+			* StringHeapDeserializationHelper.REF_HEAP_CELL_SIZE];
+	shdh.refHeapPos = shdh.refHeap.length;
+	// Compute required size of character heap.
+	int charHeapSize = 0;   
+	for (int i = startPos; i < this.stringList.size(); i++) {
+		String s = this.stringList.get(i);
+		if (s != null) {
+			charHeapSize += s.length();
+		}
+	}
+	shdh.charHeap = new char[charHeapSize];
+	shdh.charHeapPos = shdh.charHeap.length;
+
+	int charCount = 0;
+	// Now write out the actual data
+	int r = 1;
+	for (int i = startPos; i < this.stringList.size(); i++) {
+		String s = this.stringList.get(i);
+		int refHeapOffset = r
+				* StringHeapDeserializationHelper.REF_HEAP_CELL_SIZE;
+		shdh.refHeap[refHeapOffset
+				+ StringHeapDeserializationHelper.CHAR_HEAP_POINTER_OFFSET] = charCount;
+		shdh.refHeap[refHeapOffset
+				+ StringHeapDeserializationHelper.CHAR_HEAP_STRLEN_OFFSET] = s
+				.length();
+		System.arraycopy(s.toCharArray(), 0, shdh.charHeap, charCount, s
+				.length());
+		charCount += s.length();
+		r++;
+	}
+	assert (charCount == shdh.charHeap.length);
+	return shdh;
   }
 
   // Reset the string heap (called on CAS reset).
@@ -161,5 +201,9 @@ final class StringHeap {
   final int getLargestStringCode() {
     return this.stringList.size() - 1;
   }
-
+  
+  final int getSize() {
+	  return this.stringList.size();
+  }
+  
 }

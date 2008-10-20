@@ -249,5 +249,10 @@ public final class Heap {
   public int getNextId() {
 	  return pos;
   }
-	  
+  
+  public void grow(int len) {
+	while ((this.pos + len) >= this.max) {
+	  grow();
+	}
+  }	  
 }
