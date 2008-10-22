@@ -79,6 +79,14 @@ public abstract class ConstraintFactory {
    * @return A new String constraint, completely unconstrained.
    */
   public abstract FSStringConstraint createStringConstraint();
+  
+  /**
+   * Create a new boolean constraint. A boolean constraint must be initialized after it's created by
+   * adding one or more tests to it.
+   * 
+   * @return A new boolean constraint, completely unconstrained.
+   */
+  public abstract FSBooleanConstraint createBooleanConstraint();
 
   /**
    * Combine a constraint test with a path from a feature structure instance to the value to be
