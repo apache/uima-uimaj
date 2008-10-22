@@ -50,4 +50,13 @@ public class FSBooleanConstraintImpl implements FSBooleanConstraint {
     return (this.condition == cond);
   }
 
+  public String toString() {
+    // need to escape quotes and backslashes
+    StringBuffer buf = new StringBuffer();
+    buf.append("= \"");
+    buf.append(this.condition);
+    buf.append("\"");
+    return buf.toString();
+}
+  
 }
