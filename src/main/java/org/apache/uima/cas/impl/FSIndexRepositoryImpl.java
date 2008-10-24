@@ -743,7 +743,11 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   private IntSet fsDeletedFromIndex;
   
   private IntSet fsReindexed;
-  
+
+  // Monitor indexes used to optimize getIndexedFS and flush
+  private IntVector usedIndexes;
+  private boolean[] isUsed;
+
   private FSIndexRepositoryImpl() {
     super();
   }
@@ -814,6 +818,8 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     for (int i = 0; i < this.detectIllegalIndexUpdates.length; i++) {
       this.detectIllegalIndexUpdates[i] = Integer.MIN_VALUE;
     }
+    this.usedIndexes = new IntVector();
+    this.isUsed = new boolean[numTypes];
   }
 
   /**
@@ -825,9 +831,15 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     }
     int max;
     ArrayList v;
-    // The first element is null. This is not good...
-    for (int i = 1; i < this.indexArray.length; i++) {
-      v = this.indexArray[i];
+
+    //Do nothing really fast!
+    if (this.usedIndexes.size() == 0) {
+      return;
+    }
+
+    for (int i = 0; i < this.usedIndexes.size(); i++) {
+      this.isUsed[this.usedIndexes.get(i)] = false;
+      v = this.indexArray[this.usedIndexes.get(i)];
       max = v.size();
       for (int j = 0; j < max; j++) {
         ((IndexIteratorCachePair) v.get(j)).index.flush();
@@ -839,6 +851,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     this.fsDeletedFromIndex = new IntSet();
     this.fsReindexed = new IntSet();
     this.logProcessed = false;
+    this.usedIndexes.removeAllElements();
   }
 
   public void addFS(int fsRef) {
@@ -1238,13 +1251,9 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     // implementation.
     SortedIntSet set;
     int jMax, indStrat;
-    // Iterate over all types.
-    for (int i = 0; i < this.indexArray.length; i++) {
-      iv = this.indexArray[i];
-      if (iv == null) {
-        // The 0 position is the only one that should be null.
-        continue;
-      }
+    // Iterate over indexes with something in there
+    for (int i = 0; i < this.usedIndexes.size(); i++) {
+      iv = this.indexArray[this.usedIndexes.get(i)];
       // Iterate over the indexes for the type.
       jMax = iv.size();
       // Create a vector of IICPs. If there is at least one sorted or bag
@@ -1395,6 +1404,11 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     }
     if (this.cas.getCurrentMark() != null) {
       	logIndexOperation(fsRef, true);
+    }
+    if (!this.isUsed[typeCode]) {
+      //mark this index as used
+      this.isUsed[typeCode] = true;
+      this.usedIndexes.add(typeCode);
     }
   }
 
