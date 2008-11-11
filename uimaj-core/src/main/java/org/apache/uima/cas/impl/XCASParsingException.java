@@ -104,10 +104,16 @@ public class XCASParsingException extends org.xml.sax.SAXParseException {
    */
   public static final int EXCESS_ARRAY_ELE = 11;
 
+  /**
+   * Error parsing XMI-CAS from source {0} at line {1}, column {2}: xmi id {3} is referenced but not
+   *  defined.
+   */
+  public static final int UNKNOWN_ID = 12;
+
   private static final String[] identifiers = { "WRONG_ROOT_TAG", "TEXT_EXPECTED",
       "ARRAY_ELE_EXPECTED", "ARRAY_ELE_ATTRS", "UNKNOWN_TYPE", "ILLEGAL_ID", "ILLEGAL_ARRAY_SIZE",
       "ILLEGAL_ARRAY_ATTR", "UNKNOWN_FEATURE", "INTEGER_EXPECTED", "FLOAT_EXPECTED",
-      "EXCESS_ARRAY_ELE" };
+      "EXCESS_ARRAY_ELE", "UNKNOWN_ID" };
 
   private int error;
 
