@@ -520,7 +520,7 @@ public class XmiCasDeserializer {
      *          whitespace-separated string of FS addresses. Each FS is to be added to the specified
      *          sofa's index repository
      */
-    private void processView(String sofa, String membersString) {
+    private void processView(String sofa, String membersString) throws SAXParseException {
       // TODO: this requires View to come AFTER all of its members
       if (membersString != null) {
         // a view with no Sofa will be added to the 1st, _InitialView, index
@@ -528,7 +528,12 @@ public class XmiCasDeserializer {
         if (sofa != null) {
           // translate sofa's xmi:id into its sofanum
           int sofaXmiId = Integer.parseInt(sofa);
-          int sofaAddr = getFsAddrForXmiId(sofaXmiId);
+          int sofaAddr;
+          try {
+            sofaAddr = getFsAddrForXmiId(sofaXmiId);
+          } catch (NoSuchElementException e) {
+            throw createException(XCASParsingException.UNKNOWN_ID, Integer.toString(sofaXmiId));
+          }
           sofaNum = casBeingFilled.getFeatureValue(sofaAddr, sofaNumFeatCode);
         }
         FSIndexRepositoryImpl indexRep = (FSIndexRepositoryImpl) indexRepositories.get(sofaNum);
@@ -553,7 +558,7 @@ public class XmiCasDeserializer {
             indexRep.addFS(addr);
           } catch (NoSuchElementException e) {
             if (!lenient) {
-              throw e;
+              throw createException(XCASParsingException.UNKNOWN_ID, Integer.toString(id));
             }
             else {
               //unknown view member may be an OutOfTypeSystem FS
@@ -576,7 +581,7 @@ public class XmiCasDeserializer {
      *          sofa's index repository
      */
     private void processView(String sofa, String addmembersString, 
-    		String delmemberString,String reindexmemberString) {
+    		String delmemberString, String reindexmemberString) throws SAXParseException {
       // TODO: this requires View to come AFTER all of its members
       if (addmembersString != null) {
     	  processView(sofa, addmembersString);
@@ -614,8 +619,8 @@ public class XmiCasDeserializer {
         	  indexRep.removeFS(addr);
         	} catch (NoSuchElementException e) {
         	  if (!lenient) {
-        		throw e;
-        	} else {
+                throw createException(XCASParsingException.UNKNOWN_ID, Integer.toString(id));
+              } else {
         		//unknown view member may be an OutOfTypeSystem FS
         		this.sharedData.addOutOfTypeSystemViewMember(sofa, members[i]);
         	  }
@@ -643,7 +648,7 @@ public class XmiCasDeserializer {
           	  indexRep.addFS(addr);
           	} catch (NoSuchElementException e) {
           	  if (!lenient) {
-          		throw e;
+                throw createException(XCASParsingException.UNKNOWN_ID, Integer.toString(id));
           	  } else {
           		//unknown view member may be an OutOfTypeSystem FS
           		this.sharedData.addOutOfTypeSystemViewMember(sofa, members[i]);
@@ -1398,7 +1403,7 @@ public class XmiCasDeserializer {
      * 
      * @param fsInfo
      */
-    private void finalizeFS(int addr) {
+    private void finalizeFS(int addr) throws SAXParseException {
       final int type = casBeingFilled.getHeapValue(addr);
       if (casBeingFilled.isArrayType(type)) {
         finalizeArray(type, addr);
@@ -1420,7 +1425,7 @@ public class XmiCasDeserializer {
               fsValAddr = getFsAddrForXmiId(featVal);
             } catch (NoSuchElementException e) {
               if (!lenient) {
-                throw e;
+                throw createException(XCASParsingException.UNKNOWN_ID, Integer.toString(featVal));
               }
               else {
                 // we may not have deserialized the value of this feature because it 
@@ -1443,7 +1448,7 @@ public class XmiCasDeserializer {
      * 
      * @param i
      */
-    private void remapFSListHeads(int addr) {
+    private void remapFSListHeads(int addr) throws SAXParseException {
       final int type = casBeingFilled.getHeapValue(addr);
       if (!listUtils.isFsListType(type))
         return;
@@ -1458,7 +1463,7 @@ public class XmiCasDeserializer {
           fsValAddr = getFsAddrForXmiId(featVal);
         } catch (NoSuchElementException e) {
           if (!lenient) {
-            throw e;
+            throw createException(XCASParsingException.UNKNOWN_ID, Integer.toString(featVal));
           }
           else {
             //this may be a reference to an out-of-typesystem FS
@@ -1477,7 +1482,7 @@ public class XmiCasDeserializer {
      * @param addr
      *          address of the array
      */
-    private void finalizeArray(int type, int addr) {
+    private void finalizeArray(int type, int addr) throws SAXParseException {
       if (!casBeingFilled.isFSArrayType(type)) {
         // Nothing to do.
         return;
@@ -1491,7 +1496,7 @@ public class XmiCasDeserializer {
             arrayValAddr = getFsAddrForXmiId(arrayVal);
           } catch (NoSuchElementException e) {
             if (!lenient) {
-              throw e;
+              throw createException(XCASParsingException.UNKNOWN_ID, Integer.toString(arrayVal));
             }
             else {  
               // the array element may be out of typesystem.  In that case set it
