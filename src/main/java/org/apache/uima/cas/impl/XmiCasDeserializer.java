@@ -1490,7 +1490,7 @@ public class XmiCasDeserializer {
       final int size = casBeingFilled.ll_getArraySize(addr);
       for (int i = 0; i < size; i++) {
         int arrayVal = casBeingFilled.getArrayValue(addr, i);
-        if (arrayVal != CASImpl.NULL && isNewFS(arrayVal)) {
+        if (arrayVal != CASImpl.NULL) {
           int arrayValAddr = CASImpl.NULL;
           try {
             arrayValAddr = getFsAddrForXmiId(arrayVal);
