@@ -542,152 +542,17 @@ public class XmiCasDeserializerTest extends TestCase {
     
     CasComparer.assertEquals(cas, cas2);
   }
-  
+
   public void testMerging() throws Exception {
-    // deserialize a complex CAS from XCAS
-    CAS cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
-    InputStream serCasStream = new FileInputStream(JUnitExtension.getFile("ExampleCas/cas.xml"));
-    XCASDeserializer.deserialize(serCasStream, cas);
-    serCasStream.close();
-    int numAnnotations = cas.getAnnotationIndex().size(); //for comparison later
-    String docText = cas.getDocumentText(); //for comparison later
-    //add a new Sofa to test that multiple Sofas in original CAS work
-    CAS preexistingView = cas.createView("preexistingView");
-    String preexistingViewText = "John Smith blah blah blah";
-    preexistingView.setDocumentText(preexistingViewText);
-    createPersonAnnot(preexistingView, 0, 10);
-    
-    // do XMI serialization to a string, using XmiSerializationSharedData
-    // to keep track of maximum ID generated
-    XmiSerializationSharedData serSharedData = new XmiSerializationSharedData();
-    String xmiStr = serialize(cas, serSharedData);
-    int maxOutgoingXmiId = serSharedData.getMaxXmiId();
-    
-    //deserialize into two new CASes, again using XmiSerializationSharedData so
-    //we can get consistent IDs later.  
-    CAS newCas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
-    XmiSerializationSharedData deserSharedData1 = new XmiSerializationSharedData();
-    deserialize(xmiStr, newCas1, deserSharedData1, false, -1);
-    
-    CAS newCas2 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
-    XmiSerializationSharedData deserSharedData2 = new XmiSerializationSharedData();
-    deserialize(xmiStr, newCas2, deserSharedData2, false, -1);
-    
-    //add new FS to each new CAS
-    createPersonAnnot(newCas1, 0, 10);
-    createPersonAnnot(newCas1, 20, 30);
-    createPersonAnnot(newCas2, 40, 50);
-    AnnotationFS person = createPersonAnnot(newCas2, 60, 70);
-    
-    //add an Owner relation that points to an organization in the original CAS,
-    //to test links across merge boundary
-    Type orgType = newCas2.getTypeSystem().getType(
-            "org.apache.uima.testTypeSystem.Organization");
-    AnnotationFS org = (AnnotationFS)newCas2.getAnnotationIndex(orgType).iterator().next();
-    Type ownerType = newCas2.getTypeSystem().getType(
-            "org.apache.uima.testTypeSystem.Owner");
-    Feature argsFeat = ownerType.getFeatureByBaseName("relationArgs");
-    Feature componentIdFeat = ownerType.getFeatureByBaseName("componentId");
-    Type relArgsType = newCas2.getTypeSystem().getType(
-            "org.apache.uima.testTypeSystem.BinaryRelationArgs");
-    Feature domainFeat = relArgsType.getFeatureByBaseName("domainValue");
-    Feature rangeFeat = relArgsType.getFeatureByBaseName("rangeValue");
-    AnnotationFS ownerAnnot = newCas2.createAnnotation(ownerType, 0, 70);
-    FeatureStructure relArgs = newCas2.createFS(relArgsType);
-    relArgs.setFeatureValue(domainFeat, person);
-    relArgs.setFeatureValue(rangeFeat, org);
-    ownerAnnot.setFeatureValue(argsFeat, relArgs);
-    ownerAnnot.setStringValue(componentIdFeat, "XCasDeserializerTest");
-    newCas2.addFsToIndexes(ownerAnnot);
-    int orgBegin = org.getBegin();
-    int orgEnd = org.getEnd();
-    
-    //add Sofas
-    CAS newView1 = newCas1.createView("newSofa1");
-    final String sofaText1 = "This is a new Sofa, created in CAS 1.";
-    newView1.setDocumentText(sofaText1);
-    final String annotText = "Sofa";
-    int annotStart1 = sofaText1.indexOf(annotText);
-    AnnotationFS annot1 = newView1.createAnnotation(orgType, annotStart1, annotStart1 + annotText.length());
-    newView1.addFsToIndexes(annot1);
-    CAS newView2 = newCas2.createView("newSofa2");
-    final String sofaText2 = "This is another new Sofa, created in CAS 2.";
-    newView2.setDocumentText(sofaText2);
-    int annotStart2 = sofaText2.indexOf(annotText);
-    AnnotationFS annot2 = newView2.createAnnotation(orgType, annotStart2, annotStart2 + annotText.length());
-    newView2.addFsToIndexes(annot2);
+    testMerging(false);
+  }
 
-    //re-serialize each new CAS back to XMI, keeping consistent ids
-    String newSerCas1 = serialize(newCas1, deserSharedData1);
-    String newSerCas2 = serialize(newCas2, deserSharedData2);
-    
-    //merge the two XMI CASes back into the original CAS
-    XmiSerializationSharedData deserSharedData3 = new XmiSerializationSharedData();
-    deserialize(newSerCas1, cas, deserSharedData3, false, -1);
-    
-    assertEquals(numAnnotations +2, cas.getAnnotationIndex().size());
-
-    deserialize(newSerCas2, cas, deserSharedData3, false, maxOutgoingXmiId);
-    
-    
-    assertEquals(numAnnotations + 5, cas.getAnnotationIndex().size());
-    
-    assertEquals(docText, cas.getDocumentText());
-
-    // Serialize/deserialize again in case merge created duplicate ids
-    String newSerCasMerged = serialize(cas, deserSharedData3);
-   
-    deserialize(newSerCasMerged, cas, deserSharedData3, false, -1);
-        
-    //check covered text of annotations
-    FSIterator iter = cas.getAnnotationIndex().iterator();
-    while (iter.hasNext()) {
-      AnnotationFS annot = (AnnotationFS)iter.next();
-      assertEquals(cas.getDocumentText().substring(
-              annot.getBegin(), annot.getEnd()), annot.getCoveredText());
-    }
-    //check Owner annotation we created to test link across merge boundary
-    iter = cas.getAnnotationIndex(ownerType).iterator();
-    while (iter.hasNext()) {
-      AnnotationFS
-      annot = (AnnotationFS)iter.next();
-      String componentId = annot.getStringValue(componentIdFeat);
-      if ("XCasDeserializerTest".equals(componentId)) {
-        FeatureStructure targetRelArgs = annot.getFeatureValue(argsFeat);
-        AnnotationFS targetDomain = (AnnotationFS)targetRelArgs.getFeatureValue(domainFeat);
-        assertEquals(60, targetDomain.getBegin());
-        assertEquals(70, targetDomain.getEnd());
-        AnnotationFS targetRange = (AnnotationFS)targetRelArgs.getFeatureValue(rangeFeat);
-        assertEquals(orgBegin, targetRange.getBegin());
-        assertEquals(orgEnd, targetRange.getEnd());
-      }     
-    } 
-    //check Sofas
-    CAS targetView1 = cas.getView("newSofa1");
-    assertEquals(sofaText1, targetView1.getDocumentText());
-    CAS targetView2 = cas.getView("newSofa2");
-    assertEquals(sofaText2, targetView2.getDocumentText());
-    AnnotationFS targetAnnot1 = (AnnotationFS) 
-      targetView1.getAnnotationIndex(orgType).iterator().get();
-    assertEquals(annotText, targetAnnot1.getCoveredText());
-    AnnotationFS targetAnnot2 = (AnnotationFS) 
-    targetView2.getAnnotationIndex(orgType).iterator().get();
-    assertEquals(annotText, targetAnnot2.getCoveredText());
-    assertTrue(targetView1.getSofa().getSofaRef() != 
-            targetView2.getSofa().getSofaRef());
-    
-    CAS checkPreexistingView = cas.getView("preexistingView");
-    assertEquals(preexistingViewText, checkPreexistingView.getDocumentText());
-    Type personType = cas.getTypeSystem().getType("org.apache.uima.testTypeSystem.Person");    
-    AnnotationFS targetAnnot3 = (AnnotationFS)
-            checkPreexistingView.getAnnotationIndex(personType).iterator().get();
-    assertEquals("John Smith", targetAnnot3.getCoveredText());
-    
-    //try an initial CAS that contains multiple Sofas
-    
+  public void testDeltaCasMerging() throws Exception {
+    testMerging(true);
   }
   
-  public void testDeltaCasMerging() throws Exception {
+  // Test merging with or without using delta CASes
+  private void testMerging(boolean useDeltas) throws Exception {
     // deserialize a complex CAS from XCAS
     CAS cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
     InputStream serCasStream = new FileInputStream(JUnitExtension.getFile("ExampleCas/cas.xml"));
@@ -707,8 +572,8 @@ public class XmiCasDeserializerTest extends TestCase {
     String xmiStr = serialize(cas, serSharedData);
     int maxOutgoingXmiId = serSharedData.getMaxXmiId();
     
-    //deserialize into two new CASes, again using XmiSerializationSharedData so
-    //we can get consistent IDs later.  
+    // deserialize into two new CASes, each with its own instance of XmiSerializationSharedData 
+    // so we can get consistent IDs later when serializing back.
     CAS newCas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
     XmiSerializationSharedData deserSharedData1 = new XmiSerializationSharedData();
     deserialize(xmiStr, newCas1, deserSharedData1, false, -1);
@@ -716,10 +581,14 @@ public class XmiCasDeserializerTest extends TestCase {
     CAS newCas2 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
     XmiSerializationSharedData deserSharedData2 = new XmiSerializationSharedData();
     deserialize(xmiStr, newCas2, deserSharedData2, false, -1);
-    
-    //create Marker before adding new FSs
-    Marker marker1 = newCas1.createMarker();
-    Marker marker2 = newCas2.createMarker();
+
+    Marker marker1 = null;
+    Marker marker2 = null;
+    if (useDeltas) {
+      // create Marker before adding new FSs
+      marker1 = newCas1.createMarker();
+      marker2 = newCas2.createMarker();
+    }
     
     //add new FS to each new CAS
     createPersonAnnot(newCas1, 0, 10);
@@ -765,30 +634,40 @@ public class XmiCasDeserializerTest extends TestCase {
     AnnotationFS annot2 = newView2.createAnnotation(orgType, annotStart2, annotStart2 + annotText.length());
     newView2.addFsToIndexes(annot2);
 
-    //re-serialize each new CAS back to Delta XMI, keeping consistent ids
+    // Add an FS with an array of existing annotations in another view
+    int nToks = 3;
+    ArrayFS array = newView2.createArrayFS(nToks);
+    Type thingType = newCas2.getTypeSystem().getType("org.apache.uima.testTypeSystem.Thing");
+    FSIterator thingIter = newCas2.getAnnotationIndex(thingType).iterator();
+    for (int i = 0; i < nToks; ++i)
+      array.set(i, (FeatureStructure)thingIter.next());  
+    Type annotArrayTestType = newView2.getTypeSystem().getType("org.apache.uima.testTypeSystem.AnnotationArrayTest");
+    Feature annotArrayFeat = annotArrayTestType.getFeatureByBaseName("arrayOfAnnotations");
+    AnnotationFS fsArrayTestAnno = newView2.createAnnotation(annotArrayTestType, 13, 27);
+    fsArrayTestAnno.setFeatureValue(annotArrayFeat,array);
+    newView2.addFsToIndexes(fsArrayTestAnno);
+    
+    // re-serialize each new CAS back to XMI, keeping consistent ids
     String newSerCas1 = serialize(newCas1, deserSharedData1, marker1);
     String newSerCas2 = serialize(newCas2, deserSharedData2, marker2);
-    //System.out.println(newSerCas1);
-    //System.out.println(newSerCas2);
     
-    //merge the two XMI CASes back into the original CAS
-    XmiSerializationSharedData deserSharedData3 = new XmiSerializationSharedData();
-    deserialize(newSerCas1, cas, serSharedData, false, maxOutgoingXmiId);
-    
-    assertEquals(numAnnotations +2, cas.getAnnotationIndex().size());
+    // merge the two XMI CASes back into the original CAS
+    // the shared data will be reset and recreated if not using deltaCas
+    if (useDeltas) {
+      deserialize(newSerCas1, cas, serSharedData, false, maxOutgoingXmiId);
+    } else {
+      deserialize(newSerCas1, cas, serSharedData, false, -1);
+    }
+    assertEquals(numAnnotations + 2, cas.getAnnotationIndex().size());
 
     deserialize(newSerCas2, cas, serSharedData, false, maxOutgoingXmiId);
-    
-    
     assertEquals(numAnnotations + 5, cas.getAnnotationIndex().size());
-    
     assertEquals(docText, cas.getDocumentText());
 
     // Serialize/deserialize again in case merge created duplicate ids
     String newSerCasMerged = serialize(cas, serSharedData);
-    //System.out.println(newSerCasMerged);
     deserialize(newSerCasMerged, cas, serSharedData, false, -1);
-        
+    
     //check covered text of annotations
     FSIterator iter = cas.getAnnotationIndex().iterator();
     while (iter.hasNext()) {
@@ -832,8 +711,24 @@ public class XmiCasDeserializerTest extends TestCase {
     AnnotationFS targetAnnot3 = (AnnotationFS)
             checkPreexistingView.getAnnotationIndex(personType).iterator().get();
     assertEquals("John Smith", targetAnnot3.getCoveredText());
+
+    // Check the FS with an array of pre-existing FSs
+    iter = targetView2.getAnnotationIndex(annotArrayTestType).iterator();
+    componentIdFeat = thingType.getFeatureByBaseName("componentId");
+    while (iter.hasNext()) {
+      AnnotationFS annot = (AnnotationFS)iter.next();
+      ArrayFS fsArray = (ArrayFS)annot.getFeatureValue(annotArrayFeat);
+      assertTrue(fsArray.size() == 3);
+      for (int i = 0; i < fsArray.size(); ++i) {
+        AnnotationFS refAnno = (AnnotationFS)fsArray.get(i);
+        assertEquals(thingType.getName(), refAnno.getType().getName());
+        assertEquals("JResporator", refAnno.getStringValue(componentIdFeat));
+        assertTrue(cas == refAnno.getView());
+      }
+    }
     
     //try an initial CAS that contains multiple Sofas
+    
   }
   
   public void testDeltaCasIgnorePreexistingFS() throws Exception {
