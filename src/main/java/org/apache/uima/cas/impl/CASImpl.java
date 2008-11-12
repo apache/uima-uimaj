@@ -1297,7 +1297,6 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
         for (int i=0; i < byteheapsz; i++) {
     	  this.getByteHeap().addByte(dis.readByte());
         }
-        this.getByteHeap().heapPos += byteheapsz;
       }
       // word alignment
       int align = (4 - (byteheapsz % 4)) % 4;
@@ -1333,7 +1332,6 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
             this.getShortHeap().addShort(dis.readShort());
           }
          }
-    	 this.getShortHeap().heapPos += shortheapsz;
       }
       // word alignment
       if (shortheapsz % 2 != 0) {
@@ -1369,7 +1367,6 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
             this.getLongHeap().addLong(dis.readLong());
           }
         }
-    	this.getLongHeap().heapPos += longheapsz;
       }
       
       if (delta)  {
