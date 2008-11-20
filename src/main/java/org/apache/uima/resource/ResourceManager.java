@@ -25,6 +25,7 @@ import java.net.URL;
 import java.util.Map;
 
 import org.apache.uima.resource.metadata.ResourceManagerConfiguration;
+import org.apache.uima.util.XMLizable;
 
 /**
  * A <code>ResourceManager</code> holds a collection of {@link org.apache.uima.resource.Resource}
@@ -296,4 +297,11 @@ public interface ResourceManager {
    * @param aCasManager CAS Manager instance to plug in
    */
   public void setCasManager(CasManager aCasManager);
+  
+  /**
+   * Gets a cache of imported descriptors, so that the parsed objects can be reused if the
+   * same URL is imported more than once.
+   * @return A map from absolute URL to the XMLizable object that was parsed from thar URL
+   */
+  public Map<String,XMLizable> getImportCache();
 }

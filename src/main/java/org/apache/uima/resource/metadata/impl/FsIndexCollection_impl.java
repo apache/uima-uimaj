@@ -33,8 +33,10 @@ import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.metadata.FsIndexCollection;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.Import;
+import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
+import org.apache.uima.util.XMLizable;
 
 /**
  * 
@@ -242,9 +244,19 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
   private void resolveImport(URL aURL, Collection aAlreadyImportedFsIndexCollectionURLs,
           Collection aResults, ResourceManager aResourceManager) throws InvalidXMLException,
           IOException {
-    XMLInputSource input = new XMLInputSource(aURL);
-    FsIndexCollection desc = UIMAFramework.getXMLParser().parseFsIndexCollection(input);
-    desc.resolveImports(aAlreadyImportedFsIndexCollectionURLs, aResourceManager);
+    //check the import cache
+    FsIndexCollection desc;    
+    String urlString = aURL.toString();
+    XMLizable cachedObject = aResourceManager.getImportCache().get(urlString);
+    if (cachedObject instanceof FsIndexCollection) {
+      desc = (FsIndexCollection)cachedObject;
+    } else {   
+      XMLInputSource input;
+      input = new XMLInputSource(aURL);
+      desc = UIMAFramework.getXMLParser().parseFsIndexCollection(input);
+      desc.resolveImports(aAlreadyImportedFsIndexCollectionURLs, aResourceManager);
+      aResourceManager.getImportCache().put(urlString, desc);
+    }
     aResults.addAll(Arrays.asList(desc.getFsIndexes()));
   }
 

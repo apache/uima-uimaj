@@ -46,6 +46,7 @@ import org.apache.uima.resource.SharedResourceObject;
 import org.apache.uima.resource.metadata.ExternalResourceBinding;
 import org.apache.uima.resource.metadata.ResourceManagerConfiguration;
 import org.apache.uima.util.Level;
+import org.apache.uima.util.XMLizable;
 
 /**
  * Reference implementation of {@link org.apache.uima.resource.ResourceManager}.
@@ -103,6 +104,12 @@ public class ResourceManager_impl implements ResourceManager {
   /** CasManager - manages creation and pooling of CASes. */
   private CasManager mCasManager = null;
 
+  /**
+   * Cache of imported descriptors, so that parsed objects can be reused if the
+   * same URL is imported more than once.
+   */
+  private Map<String,XMLizable> importCache = new HashMap<String,XMLizable>();
+  
   /**
    * Creates a new <code>ResourceManager_impl</code>.
    */
@@ -652,5 +659,9 @@ public class ResourceManager_impl implements ResourceManager {
       this.description = description;
       this.definingContext = definingContext;
     }
+  }
+
+  public Map<String, XMLizable> getImportCache() {
+    return importCache;
   }
 }
