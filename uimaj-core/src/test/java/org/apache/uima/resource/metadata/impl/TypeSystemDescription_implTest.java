@@ -128,7 +128,7 @@ public class TypeSystemDescription_implTest extends TestCase {
 
       types = ts.getTypes();
       assertEquals(13, types.length);
-
+      
       // test that circular imports don't crash
       descriptor = JUnitExtension.getFile("TypeSystemDescriptionImplTest/Circular1.xml");
       ts = UIMAFramework.getXMLParser().parseTypeSystemDescription(new XMLInputSource(descriptor));
@@ -154,11 +154,28 @@ public class TypeSystemDescription_implTest extends TestCase {
       typeSystemDescription.setImports(imports);
       TypeSystemDescription typeSystemWithResolvedImports = (TypeSystemDescription) typeSystemDescription
               .clone();
-      typeSystemWithResolvedImports.resolveImports();
-      assertTrue(typeSystemWithResolvedImports.getTypes().length > 0);
+      typeSystemWithResolvedImports.resolveImports(resMgr);
+      assertTrue(typeSystemWithResolvedImports.getTypes().length > 0);      
+    
+      //test that importing the same descriptor twice (using the same ResourceManager) caches
+      //the result of the first import and does not create new objects
+      TypeSystemDescription typeSystemDescription2 = UIMAFramework.getResourceSpecifierFactory()
+      .createTypeSystemDescription();
+        Import[] imports2 = new Import[1];
+      imports2[0] = new Import_impl();
+      ((Import_impl) imports2[0]).setSourceUrl(url);
+      imports2[0].setLocation("TypeSystemImportedByLocation.xml");
+      typeSystemDescription2.setImports(imports2);
+      TypeSystemDescription typeSystemWithResolvedImports2 = (TypeSystemDescription) typeSystemDescription2
+              .clone();
+      typeSystemWithResolvedImports2.resolveImports(resMgr);
+      for (int i = 0 ; i < typeSystemWithResolvedImports.getTypes().length; i++) {
+        assertTrue(typeSystemWithResolvedImports.getTypes()[i] == typeSystemWithResolvedImports2.getTypes()[i]);
+      }
+
     } catch (Exception e) {
       JUnitExtension.handleException(e);
-    }
+    }        
   }
 
   public void testInvalidTypeSystem() throws Exception {

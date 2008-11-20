@@ -35,6 +35,7 @@ import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
+import org.apache.uima.util.XMLizable;
 
 /**
  * Reference implementation of {@link TypeSystemDescription}.
@@ -251,10 +252,19 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
   private void resolveImport(URL aURL, Collection aAlreadyImportedTypeSystemURLs,
           Collection aResults, ResourceManager aResourceManager) throws InvalidXMLException,
           IOException {
-    XMLInputSource input;
-    input = new XMLInputSource(aURL);
-    TypeSystemDescription desc = UIMAFramework.getXMLParser().parseTypeSystemDescription(input);
-    desc.resolveImports(aAlreadyImportedTypeSystemURLs, aResourceManager);
+    //check the import cache
+    TypeSystemDescription desc;    
+    String urlString = aURL.toString();
+    XMLizable cachedObject = aResourceManager.getImportCache().get(urlString);
+    if (cachedObject instanceof TypeSystemDescription) {
+      desc = (TypeSystemDescription)cachedObject;
+    } else {   
+      XMLInputSource input;
+      input = new XMLInputSource(aURL);
+      desc = UIMAFramework.getXMLParser().parseTypeSystemDescription(input);
+      desc.resolveImports(aAlreadyImportedTypeSystemURLs, aResourceManager);
+      aResourceManager.getImportCache().put(urlString, desc);
+    }
     aResults.addAll(Arrays.asList(desc.getTypes()));
   }
 

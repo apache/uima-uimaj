@@ -36,6 +36,7 @@ import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypePriorityList;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
+import org.apache.uima.util.XMLizable;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
@@ -241,9 +242,19 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
   private void resolveImport(URL aURL, Collection aAlreadyImportedTypePrioritiesURLs,
           Collection aResults, ResourceManager aResourceManager) throws InvalidXMLException,
           IOException {
-    XMLInputSource input = new XMLInputSource(aURL);
-    TypePriorities desc = UIMAFramework.getXMLParser().parseTypePriorities(input);
-    desc.resolveImports(aAlreadyImportedTypePrioritiesURLs, aResourceManager);
+    //check the import cache
+    TypePriorities desc;    
+    String urlString = aURL.toString();
+    XMLizable cachedObject = aResourceManager.getImportCache().get(urlString);
+    if (cachedObject instanceof TypePriorities) {
+      desc = (TypePriorities)cachedObject;
+    } else {   
+      XMLInputSource input;
+      input = new XMLInputSource(aURL);
+      desc = UIMAFramework.getXMLParser().parseTypePriorities(input);
+      desc.resolveImports(aAlreadyImportedTypePrioritiesURLs, aResourceManager);
+      aResourceManager.getImportCache().put(urlString, desc);
+    }
     aResults.addAll(Arrays.asList(desc.getPriorityLists()));
   }
 
