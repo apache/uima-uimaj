@@ -251,8 +251,9 @@ public final class Heap {
   }
   
   public void grow(int len) {
-	while ((this.pos + len) >= this.max) {
-	  grow();
-	}
+  	while ((this.pos + len) >= this.max) {
+  	  grow();
+  	}
+    this.pos += len;
   }	  
 }
