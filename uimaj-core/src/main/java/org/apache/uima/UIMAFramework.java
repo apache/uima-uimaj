@@ -945,6 +945,15 @@ public abstract class UIMAFramework {
   }
 
   /**
+   * Gets a new instance of the default {@link ResourceManagerPearWrapper} used by this implementation. 
+   * 
+   * @return a new <code>ResourceManagerPearWrapper</code> to be used by the application.
+   */
+  public static ResourceManager newDefaultResourceManagerPearWrapper() {
+    return getInstance()._newDefaultResourceManagerPearWrapper();
+  }
+
+  /**
    * Gets a new instance of the {@link ConfigurationManager} used by this implementation. This will
    * be used by Resources to manage access to their configuration parameters.
    * 
@@ -1123,6 +1132,15 @@ public abstract class UIMAFramework {
    */
   protected abstract ResourceManager _newDefaultResourceManager();
 
+  /**
+   * To be implemented by subclasses; this should return a new instance of the default
+   * {@link ResourceManagerPearWrapper} used by this implementation.
+   * 
+   * @return a new <code>ResourceManagerPearWrapper</code> to be used by the application.
+   */
+  protected abstract ResourceManager _newDefaultResourceManagerPearWrapper();
+  
+  
   /**
    * To be implemented by subclasses; this should return a new instance of the default
    * {@link ConfigurationManager} used by this implementation.

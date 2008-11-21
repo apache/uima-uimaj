@@ -26,6 +26,7 @@
 	<cpm class="org.apache.uima.collection.impl.cpm.CPMImpl"/>
     <logger class="org.apache.uima.util.impl.JSR47Logger_impl"/>
 	<resourceManager class="org.apache.uima.resource.impl.ResourceManager_impl"/>
+  <resourceManagerPearWrapper class="org.apache.uima.resource.impl.ResourceManagerPearWrapper_impl"/>
 	<configurationManager class="org.apache.uima.resource.impl.ConfigurationManager_impl"/>
 	<uimaContext class="org.apache.uima.impl.RootUimaContext_impl"/>
 	<cpe class="org.apache.uima.collection.impl.CollectionProcessingEngine_impl"/>

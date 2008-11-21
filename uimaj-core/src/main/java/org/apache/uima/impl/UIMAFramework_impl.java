@@ -122,6 +122,12 @@ public class UIMAFramework_impl extends UIMAFramework {
   private String mResourceManagerImplClassName;
 
   /**
+   * ResourceManagerPearWrapper implementation class, an instance of which will be returned by
+   * {@link #newDefaultResourceManagerPearWrapper()}.
+   */
+  private String mResourceManagerPearWrapperImplClassName;
+
+  /**
    * ConfigurationManager implementation class, an instance of which will be returned by
    * {@link #newConfigurationManager()}.
    */
@@ -334,6 +340,24 @@ public class UIMAFramework_impl extends UIMAFramework {
   }
 
   /**
+   * To be implemented by subclasses; this should return a new instance of the default
+   * {@link ResourceManager) used by this implementation.
+   * 
+   * @return a new <code>ResourceManager</code> to be used by the application.
+   */
+  protected ResourceManager _newDefaultResourceManagerPearWrapper() {
+    try {
+      return (ResourceManager) Class.forName(mResourceManagerPearWrapperImplClassName).newInstance();
+    } catch (InstantiationException e) {
+      throw new UIMARuntimeException(e);
+    } catch (IllegalAccessException e) {
+      throw new UIMARuntimeException(e);
+    } catch (ClassNotFoundException e) {
+      throw new UIMARuntimeException(e);
+    }
+  }
+
+  /**
    * To be implemented by subclasses; this should return a new instance of the
    * {@link ConfigurationManager) used by this implementation.
    * 
@@ -509,6 +533,13 @@ public class UIMAFramework_impl extends UIMAFramework {
                   new Object[] { "<resourceManager>" }));
         }
         mResourceManagerImplClassName = attributes.getValue("class");
+      } else if ("resourceManagerPearWrapper".equals(qName)) {
+        if (context != CONTEXT_FACTORY_CONFIG) {
+          throw new SAXException(I18nUtil.localizeMessage(UIMAException.STANDARD_MESSAGE_CATALOG,
+                  Locale.getDefault(), "element_unexpected_in_context",
+                  new Object[] { "<resourceManagerPearWrapper>" }));
+        }
+        mResourceManagerPearWrapperImplClassName = attributes.getValue("class");      
       } else if ("configurationManager".equals(qName)) {
         if (context != CONTEXT_FACTORY_CONFIG) {
           throw new SAXException(I18nUtil.localizeMessage(UIMAException.STANDARD_MESSAGE_CATALOG,

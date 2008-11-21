@@ -37,11 +37,13 @@ import org.apache.uima.analysis_engine.ResultSpecification;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.impl.ChildUimaContext_impl;
 import org.apache.uima.pear.tools.PackageBrowser;
 import org.apache.uima.resource.PearSpecifier;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
+import org.apache.uima.resource.ResourceManagerPearWrapper;
 import org.apache.uima.resource.ResourceProcessException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
@@ -63,14 +65,25 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
    // key = resourceManager instance associated with this call
    // value = map <String_Pair, ResourceManager>
    // value = resourceManager instance created by this class
+  
+   // The reason we do this: For cases involving Cas Pools and multiple
+   //  threads, we want to share the resource manager - otherwise
+   //  there could be multiple instances of the classes for this pear
+   //  loaded.
+   // The map is a double map.  The first one maps between the
+   // incoming Resource Manager, and a second map.
+   // The second map (allows for multiple Pears in a pipeline)
+   // maps (for the given incoming Resource Manager), using a key
+   // consisting of the "class path" and "data path", the 
+   // Resource Manager for that combination.
 
-   static private Map cachedResourceManagers = Collections
-         .synchronizedMap(new WeakHashMap(4));
+   static private Map<ResourceManager, Map<StringPair, ResourceManager>> cachedResourceManagers = Collections
+         .synchronizedMap(new WeakHashMap<ResourceManager, Map<StringPair, ResourceManager>>(4));
 
    private AnalysisEngine ae = null;
 
-   private Map createRMmap(StringPair sp, ResourceManager rm) {
-      Map result = new HashMap(4);
+   private Map<StringPair, ResourceManager> createRMmap(StringPair sp, ResourceManager rm) {
+      Map<StringPair, ResourceManager> result = new HashMap<StringPair, ResourceManager>(4);
       result.put(sp, rm);
       UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG,
             this.getClass().getName(), "createRMmap", LOG_RESOURCE_BUNDLE,
@@ -79,12 +92,20 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
       return result;
    }
 
-   private ResourceManager createRM(StringPair sp, PackageBrowser pkgBrowser)
+   private ResourceManager createRM(StringPair sp, PackageBrowser pkgBrowser, ResourceManager parentResourceManager)
          throws MalformedURLException {
       // create UIMA resource manager and apply pear settings
-      ResourceManager rsrcMgr = UIMAFramework.newDefaultResourceManager();
-      rsrcMgr.setExtensionClassPath(sp.classPath, true);
-      UIMAFramework.getLogger(this.getClass()).logrb(
+//      ResourceManager rsrcMgr = UIMAFramework.newDefaultResourceManager();
+     ResourceManager rsrcMgr;
+     if (null == parentResourceManager) {
+       // could be null for top level Pear not in an aggregate
+       rsrcMgr = UIMAFramework.newDefaultResourceManager();
+     } else {
+       rsrcMgr = UIMAFramework.newDefaultResourceManagerPearWrapper();
+       ((ResourceManagerPearWrapper)rsrcMgr).initializeFromParentResourceManager(parentResourceManager);
+     }
+     rsrcMgr.setExtensionClassPath(sp.classPath, true);
+     UIMAFramework.getLogger(this.getClass()).logrb(
             Level.CONFIG,
             this.getClass().getName(),
             "createRM",
@@ -113,6 +134,15 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
     * 
     * @see org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase#initialize(org.apache.uima.resource.ResourceSpecifier,
     *      java.util.Map)
+    *      
+    * (Nov 2008) initialize is called as a normal part of produceResource.  
+    * There are 2 cases: 
+    *   1) The Pear is the top level component
+    *   2) The Pear is contained in an aggregate.
+    *   
+    *   In Case (1), the aAdditionalParams passed in does *not* contain a UIMA_CONTEXT
+    *   In Case (2), the aAdditionalParams passed in contains a child UIMA_CONTEXT 
+    *     created for this component.
     */
    public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
          throws ResourceInitializationException {
@@ -191,14 +221,14 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
          StringPair sp = new StringPair(classPath, dataPath);
          ResourceManager innerRM;
 
-         Map c1 = (Map) cachedResourceManagers.get(applicationRM);
+         Map<StringPair, ResourceManager> c1 = cachedResourceManagers.get(applicationRM);
          if (null == c1) {
-            innerRM = createRM(sp, pkgBrowser);
+            innerRM = createRM(sp, pkgBrowser, applicationRM);
             cachedResourceManagers.put(applicationRM, createRMmap(sp, innerRM));
          } else {
             innerRM = (ResourceManager) c1.get(sp);
             if (null == innerRM) {
-               innerRM = createRM(sp, pkgBrowser);
+               innerRM = createRM(sp, pkgBrowser, applicationRM);
                c1.put(sp, innerRM);
                UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG,
                      this.getClass().getName(), "initialize",
@@ -215,9 +245,18 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
          ResourceSpecifier specifier = UIMAFramework.getXMLParser()
                .parseResourceSpecifier(in);
 
+         UimaContextAdmin uimaContext = (UimaContextAdmin) aAdditionalParams.get(Resource.PARAM_UIMA_CONTEXT);
+         if (null != uimaContext) {
+           ((ChildUimaContext_impl)uimaContext).setPearResourceManager(innerRM);
+         }
          // create analysis engine
+         // Cloning is needed because the aAdditionalParameters, if 
+         //  passed without cloning to produceAnalysisEngine, gets
+         //  modified, and the aAdditionalParameters original object
+         //  is re-used by the ASB_impl - a caller of this method,
+         //  for other delegates.
          Map clonedAdditionalParameters = new HashMap(aAdditionalParams);
-         clonedAdditionalParameters.remove(Resource.PARAM_UIMA_CONTEXT);
+//         clonedAdditionalParameters.remove(Resource.PARAM_UIMA_CONTEXT);
          clonedAdditionalParameters.remove(Resource.PARAM_RESOURCE_MANAGER);
          this.ae = UIMAFramework
                .produceAnalysisEngine(specifier, innerRM, clonedAdditionalParameters);

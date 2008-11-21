@@ -57,35 +57,35 @@ public class ResourceManager_impl implements ResourceManager {
   /**
    * resource bundle for log messages
    */
-  private static final String LOG_RESOURCE_BUNDLE = "org.apache.uima.impl.log_messages";
+  protected static final String LOG_RESOURCE_BUNDLE = "org.apache.uima.impl.log_messages";
 
   /**
    * Object used for resolving relative paths. This is built by parsing the data path.
    */
-  private RelativePathResolver mRelativePathResolver;
+  private final RelativePathResolver mRelativePathResolver;
 
   /**
    * Map from qualified key names (declared in resource dependency XML) to Resource objects.
    */
-  private Map mResourceMap = Collections.synchronizedMap(new HashMap());
+  protected Map mResourceMap = Collections.synchronizedMap(new HashMap());
 
   /**
    * Internal map from resource names (declared in resource declaration XML) to ResourceRegistration
    * objects. Used during initialization only.
    */
-  private Map mInternalResourceRegistrationMap = Collections.synchronizedMap(new HashMap());
+  protected Map mInternalResourceRegistrationMap = Collections.synchronizedMap(new HashMap());
 
   /**
    * Map from String keys to Class objects. For ParameterizedResources only, stores the
    * implementation class corresponding to each resource name.
    */
-  private Map mParameterizedResourceImplClassMap = Collections.synchronizedMap(new HashMap());
+  protected Map mParameterizedResourceImplClassMap = Collections.synchronizedMap(new HashMap());
 
   /**
    * Internal map from resource names (declared in resource declaration XML) to Class objects. Used
    * internally during resource initialization.
    */
-  private Map mInternalParameterizedResourceImplClassMap = Collections
+  protected Map mInternalParameterizedResourceImplClassMap = Collections
           .synchronizedMap(new HashMap());
 
   /**
@@ -93,7 +93,7 @@ public class ResourceManager_impl implements ResourceManager {
    * ParameterizedResources only, stores the DataResources that have already been encountered, and
    * the Resources that have been instantiated therefrom.
    */
-  private Map mParameterizedResourceInstanceMap = Collections.synchronizedMap(new HashMap());
+  protected Map mParameterizedResourceInstanceMap = Collections.synchronizedMap(new HashMap());
 
   /**
    * UIMA extension ClassLoader. ClassLoader is created if an extension classpath is specified at
@@ -102,7 +102,7 @@ public class ResourceManager_impl implements ResourceManager {
   private UIMAClassLoader uimaCL = null;
 
   /** CasManager - manages creation and pooling of CASes. */
-  private CasManager mCasManager = null;
+  protected CasManager mCasManager = null;
 
   /**
    * Cache of imported descriptors, so that parsed objects can be reused if the
@@ -127,7 +127,7 @@ public class ResourceManager_impl implements ResourceManager {
 
     if (resolveResource) {
       // set UIMA extension ClassLoader also to resolve resources
-      mRelativePathResolver.setPathResolverClassLoader(uimaCL);
+      getRelativePathResolver().setPathResolverClassLoader(uimaCL);
     }
   }
 
@@ -142,7 +142,7 @@ public class ResourceManager_impl implements ResourceManager {
 
     if (resolveResource) {
       // set UIMA extension ClassLoader also to resolve resources
-      mRelativePathResolver.setPathResolverClassLoader(uimaCL);
+      getRelativePathResolver().setPathResolverClassLoader(uimaCL);
     }
   }
 
@@ -165,14 +165,14 @@ public class ResourceManager_impl implements ResourceManager {
    * @see org.apache.uima.resource.ResourceManager#getDataPath()
    */
   public String getDataPath() {
-    return mRelativePathResolver.getDataPath();
+    return getRelativePathResolver().getDataPath();
   }
 
   /**
    * @see org.apache.uima.resource.ResourceManager#setDataPath(String)
    */
   public void setDataPath(String aPath) throws MalformedURLException {
-    mRelativePathResolver.setDataPath(aPath);
+    getRelativePathResolver().setDataPath(aPath);
   }
 
   /*
@@ -187,7 +187,7 @@ public class ResourceManager_impl implements ResourceManager {
     } catch (MalformedURLException e) {
       relativeUrl = new URL("file", "", aRelativePath);
     }
-    return mRelativePathResolver.resolveRelativePath(relativeUrl);
+    return getRelativePathResolver().resolveRelativePath(relativeUrl);
   }
 
   /**
@@ -354,7 +354,7 @@ public class ResourceManager_impl implements ResourceManager {
       // {
       // relativeUrl = new URL("file","",aKey);
       // }
-      // return mRelativePathResolver.resolveRelativePath(relativeUrl);
+      // return getRelativePathResolver().resolveRelativePath(relativeUrl);
     }
     // }
     // catch(MalformedURLException e)
@@ -390,7 +390,7 @@ public class ResourceManager_impl implements ResourceManager {
       // {
       // relativeUrl = new URL("file","",aKey);//keyNoContext);
       // }
-      // return mRelativePathResolver.resolveRelativePath(relativeUrl);
+      // return getRelativePathResolver().resolveRelativePath(relativeUrl);
     }
     // }
     // catch(MalformedURLException e)
@@ -476,7 +476,7 @@ public class ResourceManager_impl implements ResourceManager {
         } catch (MalformedURLException e) {
           throw new ResourceInitializationException(e);
         }
-        URL absUrl = mRelativePathResolver.resolveRelativePath(relativeUrl);
+        URL absUrl = getRelativePathResolver().resolveRelativePath(relativeUrl);
         if (absUrl != null) {
           // found - create a DataResource object and store it in the mResourceMap
           FileResourceSpecifier spec = new FileResourceSpecifier_impl();
@@ -534,7 +534,7 @@ public class ResourceManager_impl implements ResourceManager {
     // add the relative path resolver to the resource init. params
     Map initParams = (aResourceInitParams == null) ? new HashMap() : new HashMap(
             aResourceInitParams);
-    initParams.put(DataResource.PARAM_RELATIVE_PATH_RESOLVER, mRelativePathResolver);
+    initParams.put(DataResource.PARAM_RELATIVE_PATH_RESOLVER, getRelativePathResolver());
     
     // determine if verification mode is on.  If so, we don't want to load the resource data
     boolean verificationMode = initParams.containsKey(AnalysisEngineImplBase.PARAM_VERIFICATION_MODE);
@@ -644,6 +644,11 @@ public class ResourceManager_impl implements ResourceManager {
                 UIMA_IllegalStateException.CANNOT_SET_CAS_MANAGER, new Object[0]);
       }
     }
+  }
+ 
+  // This method overridden by subclass for pear wrapper
+  protected RelativePathResolver getRelativePathResolver() {
+    return mRelativePathResolver;
   }
 
   static class ResourceRegistration {

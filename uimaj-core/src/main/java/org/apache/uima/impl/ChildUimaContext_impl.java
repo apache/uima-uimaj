@@ -53,6 +53,21 @@ public class ChildUimaContext_impl extends UimaContext_ImplBase implements UimaC
    */
   private SessionNamespaceView_impl mSessionNamespaceView;
 
+  /**
+   * ResourceManager used to locate and access external resources
+   * Set non-null only for Pear resources contained in an aggregate
+   */
+  
+  private ResourceManager mPearResourceManager = null;
+
+  /**
+   * ref to the parent.  
+   * This is only used to find containing resource managers
+   * that may exist due to Pear Wrappers
+   *
+   */
+  private final UimaContextAdmin parentContext;
+
   /*
    * (non-Javadoc) Creates a child context.
    */
@@ -64,6 +79,7 @@ public class ChildUimaContext_impl extends UimaContext_ImplBase implements UimaC
     mSessionNamespaceView = new SessionNamespaceView_impl(mRootContext.getSession(),
             mQualifiedContextName);
     mSofaMappings = aSofaMappings;
+    parentContext = aParentContext;
   }
 
   /*
@@ -102,9 +118,21 @@ public class ChildUimaContext_impl extends UimaContext_ImplBase implements UimaC
    * @return the ResourceManager
    */
   public ResourceManager getResourceManager() {
-    return getRootContext().getResourceManager();
+    if (null == mPearResourceManager) {
+      return parentContext.getResourceManager();
+    }
+    return mPearResourceManager;
   }
 
+  /**
+   * Set the Pear resource manager, to be used instead of any
+   * containing Resource Manager.
+   * @param resourceManager
+   */
+  public void setPearResourceManager(ResourceManager resourceManager) {
+    mPearResourceManager = resourceManager;
+  }
+  
   /*
    * (non-Javadoc)
    * 
