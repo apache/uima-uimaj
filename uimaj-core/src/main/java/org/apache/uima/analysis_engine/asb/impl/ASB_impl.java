@@ -177,7 +177,8 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
   }
 
   /**
-   * Called by the Aggregate Analysis Engine to provide this ASB with information it needs to
+   * Called after calling initialize() (see above)
+   * by the Aggregate Analysis Engine to provide this ASB with information it needs to
    * operate.
    * 
    * @param aSpecifiers
@@ -225,6 +226,10 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
       }
 
       // create child UimaContext and insert into mInitParams map
+      // mInitParams was previously set to the value of aAdditionalParams
+      //  passed to the initialize method of this aggregate, by the
+      //  preceeding call to initialize().
+      
       if (mInitParams == null)
         mInitParams = new HashMap();
       UimaContextAdmin childContext = aParentContext.createChild(key, sofamap);
