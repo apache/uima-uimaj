@@ -35,7 +35,7 @@ import org.apache.uima.util.ProcessTrace;
 /**
  * Implementation of the root {@link UimaContext}. UIMA Contexts are arranged in a tree structure
  * corresponding to the nested structure of the components in a CPE or Aggregate AE. The root
- * UimaContext has direct references to shared compoennts such as the ResourceManager and
+ * UimaContext has direct references to shared components such as the ResourceManager and
  * ConfigurationManager. The children UimaContexts reference these through the root.
  */
 public class RootUimaContext_impl extends UimaContext_ImplBase {
