@@ -28,8 +28,7 @@
 
 	<para>
 		A PEAR (Processing Engine ARchive) file is a standard package
-		for UIMA (Unstructured Information Management Architecture)
-		components. This chapter describes the PEAR 1.0 structure and
+		for UIMA components. This chapter describes the PEAR 1.0 structure and
 		specification.
 	</para>
 
@@ -48,6 +47,22 @@
 			targetptr="ugr.tools.pear.packager" />
 		for more information about these tools.
 	</para>
+  
+  <para>
+    PEARs distributed to new targets can be installed at those targets.
+    UIMA includes a tool for installing PEARs; see 
+    <olink targetdoc="&uima_docs_tools;"
+      targetptr="ugr.tools.pear.installer"/> for 
+    more information about installing PEARs.
+  </para>
+  
+  <para>
+    An installed PEAR can be used as a component within a UIMA pipeline,
+    by specifying the pear descriptor that is created when
+    installing the pear.  See
+    <olink targetdoc="&uima_docs_ref;"
+      targetptr="ugr.ref.pear.specifier"/>.
+  </para>
 
 	<section id="ugr.ref.pear.packaging_a_component">
 		<title>Packaging a UIMA component</title>
@@ -923,7 +938,17 @@ try {
        variables, system PATH settings or Java library path settings cannot be recognized
        automatically and must be set manually when the JVM is started. 
     </para>
-    <para>
+      
+    <note><para>The PEAR may contain specifications for "environment variables" and their settings.  
+      When such a PEAR is run
+    directly in the UIMA framework, those settings (except for Classpath and Data Path) are converted
+    to Java System properties, and set to the specified values.  Java cannot set true environmental variables;
+    if such a setting is needed, the application would need to arrange to do this prior to invoking Java.</para>
+    
+    <para>The Classpath and Data Path settings are used by UIMA to configure a special Resource Manager
+    that is used when code from this PEAR is being run.</para></note>  
+
+          <para>
        The generated PEAR descriptor
        is located in the component root directory of the installed PEAR package and has a filename like 
        &lt;componentID&gt;_pear.xml.
@@ -940,14 +965,14 @@ try {
        of the installed PEAR package.
     </para>
     <note>
-      <para>
+      <!--para>  should now be possible (11/2008) 
          When a PEAR descriptor is used within an aggregate AE as primitive AE, it is not possible to 
          override the PEAR AE configuration parameter settings with the aggregate AE descriptor. 
-      </para>
+      </para-->
       <para>
-         Furthermore it is also not possible to share resources between PEAR AE that are instantiated using the PEAR
-         descriptor. The PEAR runtime that is used in case of a PEAR descriptor creates an own internal ResourceManager for each
-         PEAR engine that is start up.
+         It is not possible to share resources between PEAR Analysis Engines that are instantiated using the PEAR
+         descriptor. The PEAR runtime created for each PEAR descriptor has its own specific ResourceManager
+         (unless exactly the same Classpath and Data Path are being used).
       </para>
     </note>
   </section>

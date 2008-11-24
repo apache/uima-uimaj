@@ -52,6 +52,9 @@ under the License.
     </mediaobject>
   </screenshot></para>
   
+  <para>To launch the PEAR Installer, use the script in the UIMA bin directory: 
+  <code>runPearInstaller.bat</code> or <code>runPearInstaller.sh.</code></para>
+  
   <para>PEAR Installer is a simple GUI based Java application that helps installing UIMA
     compliant components (analysis engines) from PEAR packages in a local file system. To
     install a desired UIMA component the user needs to select the appropriate PEAR file in a
@@ -86,6 +89,22 @@ under the License.
     file named <literal>&lt;componentID&gt;_pear.xml</literal> 
     in the <literal>&lt;component_root&gt;</literal> directory that can be used to directly run
     the installed pear file in your application.
-    </para>
+  </para>
+
+  <para>
+    The metadata/setenv.txt is not read by the UIMA framework anywhere.  
+    It's there for use by non-UIMA application code if that code wants to set environment variables.
+    The metadata/setenv.txt is just a "convenience" file duplicating what's in the xml.  
+  </para>
+  
+  <para>
+    The setenv.txt file has 2 special variables: the CLASSPATH and the PATH. 
+    The CLASSPATH is computed from any supplied CLASSPATH environment variable, 
+    plus the jars that are configured in the PEAR structure, including subcomponents. 
+    The PATH is similarly computed, using any supplied PATH environment variable plus 
+    it includes the "bin" subdirectory of the PEAR structure, if it exists.
+  </para>
+  
+    
   
 </chapter>
