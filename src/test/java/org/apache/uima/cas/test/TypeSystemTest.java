@@ -19,12 +19,20 @@
 
 package org.apache.uima.cas.test;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.apache.uima.UIMAFramework;
+import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
@@ -33,6 +41,16 @@ import org.apache.uima.cas.admin.CASAdminException;
 import org.apache.uima.cas.admin.CASFactory;
 import org.apache.uima.cas.admin.FSIndexRepositoryMgr;
 import org.apache.uima.cas.admin.TypeSystemMgr;
+import org.apache.uima.cas.impl.TypeSystem2Xml;
+import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.resource.metadata.FsIndexDescription;
+import org.apache.uima.resource.metadata.TypeSystemDescription;
+import org.apache.uima.test.junit_extension.JUnitExtension;
+import org.apache.uima.util.CasCreationUtils;
+import org.apache.uima.util.InvalidXMLException;
+import org.apache.uima.util.XMLInputSource;
+import org.apache.uima.util.XMLParser;
+import org.xml.sax.SAXException;
 
 /**
  * Class comment for TypeSystemTest.java goes here.
@@ -470,6 +488,63 @@ public class TypeSystemTest extends TestCase {
     Type annotationArray = this.ts.getArrayType(this.ts.getType(CAS.TYPE_NAME_ANNOTATION));
     assertTrue(this.ts.subsumes(fsArrayType, annotationArray));
     // assertFalse(this.ts.subsumes(annotationArray, fsArrayType));
+  }
+  
+  public void testSerializeTypeSystem() {
+    File descriptorFile = JUnitExtension.getFile("CASTests/desc/arrayValueDescriptor.xml");
+    assertTrue("Descriptor must exist: " + descriptorFile.getAbsolutePath(), descriptorFile
+        .exists());
+    TypeSystem typeSystem = null;
+    try {
+      XMLParser parser = UIMAFramework.getXMLParser();
+      AnalysisEngineDescription spec = (AnalysisEngineDescription) parser.parse(new XMLInputSource(
+          descriptorFile));
+      typeSystem = UIMAFramework.produceAnalysisEngine(spec).newCAS().getTypeSystem();
+    } catch (ResourceInitializationException e) {
+      e.printStackTrace();
+      assertTrue(false);
+    } catch (InvalidXMLException e) {
+      e.printStackTrace();
+      assertTrue(false);
+    } catch (IOException e) {
+      e.printStackTrace();
+      assertTrue(false);
+    }
+    ByteArrayOutputStream os = new ByteArrayOutputStream();
+    try {
+      TypeSystem2Xml.typeSystem2Xml(typeSystem, os);
+    } catch (SAXException e) {
+      assertTrue(false);
+    } catch (IOException e) {
+      assertTrue(false);
+    }
+    try {
+      os.close();
+    } catch (IOException e) {
+      assertTrue(false);
+    }
+    InputStream is = new ByteArrayInputStream(os.toByteArray());
+//    System.out.println(os.toString());
+    XMLInputSource xis = new XMLInputSource(is, new File("."));
+    Object descriptor = null;
+    try {
+      descriptor = UIMAFramework.getXMLParser().parse(xis);
+    } catch (InvalidXMLException e) {
+      assertTrue(false);
+    }
+    // instantiate CAS to get type system. Also build style
+    // map file if there is none.
+    TypeSystemDescription tsDesc = (TypeSystemDescription) descriptor;
+    try {
+      tsDesc.resolveImports();
+    } catch (InvalidXMLException e) {
+      assertTrue(false);
+    }
+    try {
+      CasCreationUtils.createCas(tsDesc, null, new FsIndexDescription[] {});
+    } catch (ResourceInitializationException e) {
+      assertTrue(false);
+    }
   }
 
   public static void main(String[] args) {
