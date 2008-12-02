@@ -1316,7 +1316,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     if (typeCode == this.stringArrayTypeCode) {
       return LowLevelCAS.TYPE_CLASS_STRINGARRAY;
     }
-    if (typeCode == this.fsArrayTypeCode) {
+    if (ll_isArrayType(typeCode)) {
       return LowLevelCAS.TYPE_CLASS_FSARRAY;
     }
     return LowLevelCAS.TYPE_CLASS_FS;

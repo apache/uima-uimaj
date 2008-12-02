@@ -27,6 +27,7 @@ import java.util.List;
 
 import org.apache.uima.ResourceSpecifierFactory;
 import org.apache.uima.UIMAFramework;
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
@@ -83,21 +84,72 @@ public class TypeSystem2Xml {
       Type type = (Type) typeIterator.next();
 
       Type superType = aTypeSystem.getParent(type);
-      if (type.getName().startsWith("uima.cas") && type.isFeatureFinal()) {
+      if ((type.getName().startsWith("uima.cas") && type.isFeatureFinal()) || type.isArray()) {
         continue; // this indicates a primitive type
       }
 
       TypeDescription typeDesc = factory.createTypeDescription();
       typeDesc.setName(type.getName());
       typeDesc.setSupertypeName(superType.getName());
-
+      LowLevelTypeSystem llts = aTypeSystem.getLowLevelTypeSystem();
       List featDescs = new ArrayList();
       Iterator featIterator = type.getFeatures().iterator();
       while (featIterator.hasNext()) {
         Feature feat = (Feature) featIterator.next();
+        if (!feat.getDomain().equals(type)) {
+          // Each feature only needs to be serialized once
+          continue;
+        }
         FeatureDescription featDesc = factory.createFeatureDescription();
         featDesc.setName(feat.getShortName());
-        featDesc.setRangeTypeName(feat.getRange().getName());
+        Type rangeType = feat.getRange();
+        if (rangeType.isArray()) {
+          final int typeClass = llts.ll_getTypeClass(llts.ll_getCodeForType(rangeType));
+          String typeName = null;
+          switch (typeClass) {
+          case LowLevelCAS.TYPE_CLASS_BOOLEANARRAY: {
+            typeName = CAS.TYPE_NAME_BOOLEAN_ARRAY;
+            break;
+          }
+          case LowLevelCAS.TYPE_CLASS_SHORTARRAY: {
+            typeName = CAS.TYPE_NAME_SHORT_ARRAY;
+            break;
+          }
+          case LowLevelCAS.TYPE_CLASS_BYTEARRAY: {
+            typeName = CAS.TYPE_NAME_BYTE_ARRAY;
+            break;
+          }
+          case LowLevelCAS.TYPE_CLASS_DOUBLEARRAY: {
+            typeName = CAS.TYPE_NAME_DOUBLE_ARRAY;
+            break;
+          }
+          case LowLevelCAS.TYPE_CLASS_FLOATARRAY: {
+            typeName = CAS.TYPE_NAME_FLOAT_ARRAY;
+            break;
+          }
+          case LowLevelCAS.TYPE_CLASS_FSARRAY: {
+            typeName = CAS.TYPE_NAME_FS_ARRAY;
+            break;
+          }
+          case LowLevelCAS.TYPE_CLASS_INTARRAY: {
+            typeName = CAS.TYPE_NAME_INTEGER_ARRAY;
+            break;
+          }
+          case LowLevelCAS.TYPE_CLASS_LONGARRAY: {
+            typeName = CAS.TYPE_NAME_LONG_ARRAY;
+            break;
+          }
+          case LowLevelCAS.TYPE_CLASS_STRINGARRAY: {
+            typeName = CAS.TYPE_NAME_STRING_ARRAY;
+            break;
+          }
+          }
+          featDesc.setRangeTypeName(typeName);
+          // TODO: make sure this works for arrays of arrays
+          featDesc.setElementType(rangeType.getComponentType().getName());
+        } else {
+          featDesc.setRangeTypeName(feat.getRange().getName());
+        }
         featDescs.add(featDesc);
       }
       FeatureDescription[] featDescArr = new FeatureDescription[featDescs.size()];
