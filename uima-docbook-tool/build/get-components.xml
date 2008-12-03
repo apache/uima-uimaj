@@ -60,6 +60,31 @@ You may obtain a copy of the License at http://www.mozilla.org/MPL/&#xA;&#xA;Ok 
   </target>
   
   <!-- ======================================================================== -->
+  <!-- == Subroutine: Download FOP                                           == -->
+  <!-- ======================================================================== -->
+  
+  <target name="get-fop" unless="fop.available">
+    <input
+      message="Downloading and unzipping (one time) Apache FOP version ${fop.version} for producing PDF output,&#xA;
+licensed under the Apache License Version 2.0;&#xA;
+you may not use this package except in compliance with the License.&#xA;&#xA; 
+You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0.txt&#xA;&#xA;Ok to download?"
+      validargs="y,n" addproperty="ok.download.fop"/>
+    <condition property="do.download.fop">
+      <equals arg1="y" arg2="${ok.download.fop}"/>
+    </condition>
+    <fail unless="do.download.fop" message="Download aborted by user."/>
+    
+    <get src="http://archive.apache.org/dist/xmlgraphics/fop/binaries/fop-${fop.version}-bin.zip" dest="${tmp.dir}/fop.zip"/>
+    <unzip src="${tmp.dir}/fop.zip" dest="${tmp.dir}/fop"/>
+    <copy todir="${fop.dir}">
+    	<fileset dir="${tmp.dir}/fop/fop-${fop.version}/build"/>
+    	<fileset dir="${tmp.dir}/fop/fop-${fop.version}/lib"/>
+  	</copy>
+  	
+  </target>
+
+  <!-- ======================================================================== -->
   <!-- == Subroutine: Download jai                                           == -->
   <!-- ======================================================================== -->
   

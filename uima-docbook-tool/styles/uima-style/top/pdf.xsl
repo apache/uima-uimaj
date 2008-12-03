@@ -45,6 +45,7 @@
   <xsl:param name="fop1.extensions">
     <xsl:choose>
       <xsl:when test="$fop.version = '0.93'">1</xsl:when>
+      <xsl:when test="$fop.version = '0.95'">1</xsl:when>
       <xsl:otherwise>0</xsl:otherwise>
     </xsl:choose>
   </xsl:param>

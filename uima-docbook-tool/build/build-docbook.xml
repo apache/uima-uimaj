@@ -60,10 +60,16 @@
 		</condition>
 
 		<condition property="docbook.fop.extensions" value="fop1.extensions">
-			<equals arg1="0.93" arg2="${fop.version}"/>
+			<or>
+        <equals arg1="0.93" arg2="${fop.version}"/>
+        <equals arg1="0.95" arg2="${fop.version}"/>
+      </or>  
 		</condition>
 		<condition property="fop.main.class" value="org.apache.fop.cli.Main">
-			<equals arg1="0.93" arg2="${fop.version}"/>
+			<or>
+        <equals arg1="0.93" arg2="${fop.version}"/>
+        <equals arg1="0.95" arg2="${fop.version}"/>
+      </or>
 		</condition>
 
 		<condition property="saxon.main.class" value="com.icl.saxon.StyleSheet">
@@ -89,6 +95,8 @@
 		<property name="docbook.xml.dir" value="${docbook.ref.dir}/docbook-xml-${docbook.xml.version}"/>
 		<property name="saxon.dir"
       value="${docbook.tool.project}/tools/saxon-versions/saxon-${saxon.version}"/>
+    <property name="fop.dir"
+      value="${docbook.tool.project}/tools/fop-versions/fop-${fop.version}"/>
 		<property name="jai.dir" value="${docbook.tool.project}/tools/jai-versions/jai-${jai.version}"/>
 		<property name="fop.config"
       value="${docbook.tool.project}/tools/fop-versions/fop-${fop.version}/fop-config.xml"/>
@@ -143,7 +151,8 @@
 	<!-- ==                                                                       == -->
 	<!-- =========================================================================== -->
 	<target name="prepare" depends="setup-common-properties-per-build, setup-availables, 
-		make-temp-dir, test-saxon-available, test-docbook-available, test-jai-available">
+		make-temp-dir, test-saxon-available, test-docbook-available, 
+		test-fop-available, test-jai-available">
 	</target>
 	
 	<target name="make-temp-dir">
@@ -154,11 +163,16 @@
 		<available file="${saxon.dir}/saxon.jar" property="saxon.available"/>
 		<available file="${docbook.xml.dir}/catalog.xml" property="docbook.available"/>
 		<available file="${jai.dir}/jai_core.jar" property="jai.available"/>
+		<available file="${fop.dir}/fop.jar" property="fop.available"/>
 	</target>
 	
 	<target name="test-saxon-available" unless="saxon.available">
 	  <ant antfile="${docbook.tool.project}/build/get-components.xml" target="get-saxon"/>
 	</target>
+
+  <target name="test-fop-available" unless="fop.available">
+    <ant antfile="${docbook.tool.project}/build/get-components.xml" target="get-fop"/>
+  </target>
 
 	<target name="test-docbook-available" unless="docbook.available">
 	  <ant antfile="${docbook.tool.project}/build/get-components.xml" target="get-docbook"/>
