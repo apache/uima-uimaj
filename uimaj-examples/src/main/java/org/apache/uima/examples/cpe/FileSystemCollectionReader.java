@@ -66,11 +66,19 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
    */
   public static final String PARAM_LANGUAGE = "Language";
 
-  private ArrayList mFiles;
+  /**
+   * Name of optional configuration parameter that indicates including
+   * the subdirectories (recursively) of the current input directory.
+   */
+  public static final String PARAM_SUBDIR = "BrowseSubdirectories";
+  
+  private ArrayList<File> mFiles;
 
   private String mEncoding;
 
   private String mLanguage;
+  
+  private Boolean mRecursive;
 
   private int mCurrentIndex;
 
@@ -79,8 +87,12 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
    */
   public void initialize() throws ResourceInitializationException {
     File directory = new File(((String) getConfigParameterValue(PARAM_INPUTDIR)).trim());
-    mEncoding = (String) getConfigParameterValue(PARAM_ENCODING);
-    mLanguage = (String) getConfigParameterValue(PARAM_LANGUAGE);
+    mEncoding  = (String) getConfigParameterValue(PARAM_ENCODING);
+    mLanguage  = (String) getConfigParameterValue(PARAM_LANGUAGE);
+    mRecursive = (Boolean) getConfigParameterValue(PARAM_SUBDIR);
+    if (null == mRecursive) { // could be null if not set, it is optional
+      mRecursive = Boolean.FALSE;
+    }
     mCurrentIndex = 0;
 
     // if input directory does not exist or is not a directory, throw exception
@@ -89,12 +101,26 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
               new Object[] { PARAM_INPUTDIR, this.getMetaData().getName(), directory.getPath() });
     }
 
-    // get list of files (not subdirectories) in the specified directory
-    mFiles = new ArrayList();
-    File[] files = directory.listFiles();
+    // get list of files in the specified directory, and subdirectories if the
+    // parameter PARAM_SUBDIR is set to True
+    mFiles = new ArrayList<File>();
+    addFilesFromDir(directory);
+  }
+  
+  /**
+   * This method adds files in the directory passed in as a parameter to mFiles.
+   * If mRecursive is true, it will include all files in all
+   * subdirectories (recursively), as well. 
+   * 
+   * @param dir
+   */
+  private void addFilesFromDir(File dir) {
+    File[] files = dir.listFiles();
     for (int i = 0; i < files.length; i++) {
       if (!files[i].isDirectory()) {
         mFiles.add(files[i]);
+      } else if (mRecursive) {
+        addFilesFromDir(files[i]);
       }
     }
   }
