@@ -38,12 +38,24 @@
                 <multiValued>false</multiValued>
                 <mandatory>true</mandatory>
             </configurationParameter>
+            <configurationParameter>
+        		<name>FailOnUnknownType</name>
+        		<type>Boolean</type>
+        		<multiValued>false</multiValued>
+        		<mandatory>false</mandatory>
+        	</configurationParameter>
         </configurationParameters>
 		<configurationParameterSettings>
 		    <nameValuePair>
 		        <name>InputDirectory</name>
 		        <value>
 		            <string>C:/Program Files/apache-uima/examples/data</string>
+		        </value>
+		    </nameValuePair>
+		    <nameValuePair>
+		        <name>FailOnUnknownType</name>
+		        <value>
+		            <boolean>true</boolean>
 		        </value>
 		    </nameValuePair>
 		</configurationParameterSettings>

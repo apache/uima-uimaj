@@ -43,7 +43,15 @@ public class XmiCollectionReader extends CollectionReader_ImplBase {
    * files.
    */
   public static final String PARAM_INPUTDIR = "InputDirectory";
+  
+  /**
+   * Name of the configuration parameter that must be set to indicate if the
+   * execution fails if an encountered type is unknown
+   */
+  public static final String PARAM_FAILUNKNOWN = "FailOnUnknownType";
 
+  private Boolean mFailOnUnknownType;
+  
   private ArrayList mFiles;
 
   private int mCurrentIndex;
@@ -52,6 +60,10 @@ public class XmiCollectionReader extends CollectionReader_ImplBase {
    * @see org.apache.uima.collection.CollectionReader_ImplBase#initialize()
    */
   public void initialize() throws ResourceInitializationException {
+	mFailOnUnknownType = (Boolean) getConfigParameterValue(PARAM_FAILUNKNOWN);
+	if (null == mFailOnUnknownType) {
+	  mFailOnUnknownType = true;  // default to true if not specified
+	}
     File directory = new File(((String) getConfigParameterValue(PARAM_INPUTDIR)).trim());
     mCurrentIndex = 0;
 
@@ -85,7 +97,7 @@ public class XmiCollectionReader extends CollectionReader_ImplBase {
     File currentFile = (File) mFiles.get(mCurrentIndex++);
     FileInputStream inputStream = new FileInputStream(currentFile);
     try {
-      XmiCasDeserializer.deserialize(inputStream, aCAS);
+    	XmiCasDeserializer.deserialize(inputStream, aCAS, ! mFailOnUnknownType);
     } catch (SAXException e) {
       throw new CollectionException(e);
     } finally {
