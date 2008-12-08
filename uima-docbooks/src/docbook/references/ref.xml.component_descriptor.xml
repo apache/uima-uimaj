@@ -341,7 +341,13 @@ uima.tcas.Annotation.</programlisting>
         omitted, it defaults to <literal>uima.cas.TOP</literal>, meaning that any
         FeatureStructure can be assigned as an element the array or list. Note: depending on
         the CAS Interface that you use in your code, this constraint may or may not be
-        enforced.</para>
+        enforced.
+        Note: At run time, the elementType is available from a runtime Feature object 
+            (using the <literal>a_feature_object.getRange().getComponentType()</literal> method) 
+            only when specified for the <literal>uima.cas.FSArray</literal> ranges; it isn't
+            available for <literal>uima.cas.FSList</literal> ranges.
+        </para>
+        
       
       <para>The <literal>multipleReferencesAllowed</literal> feature is optional, and
         applies only when the <literal>rangeTypeName</literal> is an array or list type (it
