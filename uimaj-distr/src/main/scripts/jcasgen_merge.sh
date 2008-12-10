@@ -69,13 +69,13 @@ else
     ARGS="-noupdate -nosplash -consolelog -application org.apache.uima.jcas.jcasgenp.JCasGen"
     if [ "$firstarg" = "" ] 
     then 
-      "$J" "$LOGGER" -cp "$ES" $MAIN -data "$ECLIPSE_TEMP_WORKSPACE" $ARGS 
+      "$J" "$LOGGER" -cp "$ES" $MAIN "-Duima.datapath=$UIMA_DATAPATH" -data "$ECLIPSE_TEMP_WORKSPACE" $ARGS 
     else 
       if [ "$secondarg" = "" ]
       then
-        "$J" "$LOGGER" -cp "$ES" $MAIN -data "$ECLIPSE_TEMP_WORKSPACE" $ARGS -jcasgeninput "$firstarg" 
+        "$J" "$LOGGER" -cp "$ES" $MAIN "-Duima.datapath=$UIMA_DATAPATH" -data "$ECLIPSE_TEMP_WORKSPACE" $ARGS -jcasgeninput "$firstarg" 
       else
-        "$J" "$LOGGER" -cp "$ES" $MAIN -data "$ECLIPSE_TEMP_WORKSPACE" $ARGS -jcasgeninput "$firstarg" -jcasgenoutput "$secondarg"
+        "$J" "$LOGGER" -cp "$ES" $MAIN "-Duima.datapath=$UIMA_DATAPATH" -data "$ECLIPSE_TEMP_WORKSPACE" $ARGS -jcasgeninput "$firstarg" -jcasgenoutput "$secondarg"
       fi
     fi   
   fi

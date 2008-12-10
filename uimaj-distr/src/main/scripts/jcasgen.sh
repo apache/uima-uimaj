@@ -47,12 +47,12 @@ LOGGER="-Djava.util.logging.config.file=$UIMA_LOGGER_CONFIG_FILE"
 MAIN=org.apache.uima.tools.jcasgen.Jg
 if [ "$firstarg" = "" ]
 then
-  "$UIMA_JAVA_CALL" "$LOGGER" -cp "$UIMA_CLASSPATH" $MAIN
+  "$UIMA_JAVA_CALL" "$LOGGER" -cp "$UIMA_CLASSPATH" $MAIN "-Duima.datapath=$UIMA_DATAPATH"
 else
   if [ "$secondarg" = "" ]
   then
-    "$UIMA_JAVA_CALL" "$LOGGER" -cp "$UIMA_CLASSPATH" $MAIN -jcasgeninput "$firstarg"
+    "$UIMA_JAVA_CALL" "$LOGGER" -cp "$UIMA_CLASSPATH" $MAIN "-Duima.datapath=$UIMA_DATAPATH" -jcasgeninput "$firstarg"
   else
-    "$UIMA_JAVA_CALL" "$LOGGER" -cp "$UIMA_CLASSPATH" $MAIN -jcasgeninput "$firstarg" -jcasgenoutput "$secondarg"
+    "$UIMA_JAVA_CALL" "$LOGGER" -cp "$UIMA_CLASSPATH" $MAIN "-Duima.datapath=$UIMA_DATAPATH" -jcasgeninput "$firstarg" -jcasgenoutput "$secondarg"
   fi  
 fi
