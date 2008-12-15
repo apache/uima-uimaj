@@ -57,7 +57,7 @@ public class JmxMBeanAgent {
         return;
       }
     }
-
+    
     try {
       // Now register the MBean. But, check for name collisions first. It is possible
       // that we are trying to register the same MBean twice (this happens for pools of AEs that
@@ -65,9 +65,12 @@ public class JmxMBeanAgent {
       // MBean the first time and just skip the registration each subsequent time.
       Object mbeanName = objectNameConstructor.newInstance(new Object[] { aMBean
               .getUniqueMBeanName() });
-      if (!(((Boolean) isRegistered.invoke(aMBeanServer, new Object[] { mbeanName }))
-              .booleanValue())) {
-        registerMBean.invoke(aMBeanServer, new Object[] { aMBean, mbeanName });
+      // synchronize to prevent multiple threads from initializing same thing UIMA-1247
+      synchronized (aMBeanServer) {
+        if (!(((Boolean) isRegistered.invoke(aMBeanServer, new Object[] { mbeanName }))
+                .booleanValue())) {
+          registerMBean.invoke(aMBeanServer, new Object[] { aMBean, mbeanName });
+        }
       }
     } catch (Exception e) {
       // don't fail catastrophically if we can't register with JMX. Just log a warning and continue.
