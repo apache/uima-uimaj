@@ -63,6 +63,7 @@ import org.apache.uima.resource.metadata.impl.ResourceMetaData_impl;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.Level;
+import org.apache.uima.util.Logger;
 import org.apache.uima.util.ProcessTrace;
 import org.apache.uima.util.ProcessTraceEvent;
 import org.apache.uima.util.impl.ProcessTraceEvent_impl;
@@ -180,8 +181,13 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       // so that delegate AEs will share it
       aAdditionalParams.put(Resource.PARAM_RESOURCE_MANAGER, getResourceManager());
 
+      Logger logger = getLogger();
       initializeAggregateAnalysisEngine(mDescription, aAdditionalParams);
-
+      // above call sets the logger to something associated with the ASB,
+      //   because the ASB is a subclass of Resource_ImplBase
+      // Set it back to what it was.
+      setLogger(logger);
+      
       // Initialize ResultSpec based on output capabilities
       // TODO: should only do this for outermost AE
       resetResultSpecificationToDefault();
