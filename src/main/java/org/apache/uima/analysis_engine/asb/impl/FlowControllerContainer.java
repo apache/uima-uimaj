@@ -57,6 +57,8 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
   private boolean mSofaAware;
 
   private Object mMBeanServer;
+  
+  private boolean initialized = false;
 
   /*
    * (non-Javadoc)
@@ -126,6 +128,7 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
       // (Java 1.5 only)
       JmxMBeanAgent.registerMBean(getMBean(), mMBeanServer);
 
+      initialized = true;
       return true;
     } catch (ResourceConfigurationException e) {
       throw new ResourceInitializationException(e);
@@ -295,5 +298,9 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
                   flowControllerClassName, FlowController.class, aDescriptor.getSourceUrlString() });
     }
     return (FlowController) userObject;
+  }
+
+  boolean isInitialized() {
+    return initialized;
   }
 }

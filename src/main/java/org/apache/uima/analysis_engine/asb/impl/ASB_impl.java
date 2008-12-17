@@ -164,14 +164,18 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
    * @see org.apache.uima.resource.Resource#destroy()
    */
   public void destroy() {
-    // destroy component AnalysisEngines
+    // destroy component AnalysisEngines that have been successfully initialized
+    //   unsuccessful initializations are not put into the Map
     Iterator i = mComponentAnalysisEngineMap.entrySet().iterator();
     while (i.hasNext()) {
       Map.Entry entry = (Map.Entry) i.next();
       Resource delegate = (Resource) entry.getValue();
       delegate.destroy();
     }
-    if (mFlowControllerContainer != null) {
+    
+    if (mFlowControllerContainer != null &&
+        // the container might be non-null, but the initialization could have failed
+        mFlowControllerContainer.isInitialized()) {
       mFlowControllerContainer.destroy();
     }
   }
