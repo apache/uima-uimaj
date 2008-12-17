@@ -250,7 +250,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
   public void destroy() {
     if (mASB != null)
       mASB.destroy();
-    getLogger().logrb(Level.CONFIG, CLASS_NAME.getName(), "initialize", LOG_RESOURCE_BUNDLE,
+    getLogger().logrb(Level.CONFIG, CLASS_NAME.getName(), "destroy", LOG_RESOURCE_BUNDLE,
             "UIMA_analysis_engine_destroyed__CONFIG", getMetaData().getName());
     super.destroy();
   }
@@ -364,7 +364,14 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
     // the component AnalysisEngines and the FlowController. This method also retrieves
     // the component AnalysisEngines' metadata from the ASB, so it can be access via the
     // _getComponentCasProcessorMetaData() method.
-    initASB(aDescription, aAdditionalParams);
+    // If any delegates fail to initialize, must let the successful ones release their resources.
+    // Necessary for JMS sevice adapters that create listener threads.  Jira 1251.
+    try {
+      initASB(aDescription, aAdditionalParams);
+    } catch (ResourceInitializationException e) {
+      destroy();
+      throw e;
+    }
 
     // Do any processing we need to do now that we have this metadata.
     processDelegateAnalysisEngineMetaData();
