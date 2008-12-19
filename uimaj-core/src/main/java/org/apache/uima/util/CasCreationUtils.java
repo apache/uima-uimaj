@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.apache.uima.UIMAFramework;
@@ -1046,11 +1047,8 @@ public class CasCreationUtils {
   public static TypeSystemDescription mergeTypeSystems(Collection aTypeSystems,
       ResourceManager aResourceManager, Map aOutputMergedTypes)
       throws ResourceInitializationException {
-    // create the type system into which we are merging
-    TypeSystemDescription result = UIMAFramework.getResourceSpecifierFactory()
-        .createTypeSystemDescription();
-    // also build a Map from Type names to Types
-    Map typeNameMap = new HashMap();
+    // also build a Map from Type names to Types.  Use a TreeMap so we get a consistent ordering of types.
+    Map<String, TypeDescription> typeNameMap = new TreeMap<String,TypeDescription>();
 
     // Iterate through all type systems and add types to the merged TypeSystem.
     // If a type is defined more than once, we need to check if the superType
@@ -1087,7 +1085,7 @@ public class CasCreationUtils {
         if (supertypeName.startsWith("uima.cas") || supertypeName.startsWith("uima.tcas") || typeNameMap.containsKey(supertypeName)) {
           //supertype is defined, ok to proceed
           //check if type is already defined 
-          addTypeToMergedTypeSystem(aOutputMergedTypes, result, typeNameMap, type);
+          addTypeToMergedTypeSystem(aOutputMergedTypes, typeNameMap, type);
           typeIter.remove();
         }
       }
@@ -1099,18 +1097,28 @@ public class CasCreationUtils {
     Iterator typeIter = typeList.iterator();
     while (typeIter.hasNext()) {
       TypeDescription type = (TypeDescription)typeIter.next();
-      addTypeToMergedTypeSystem(aOutputMergedTypes, result, typeNameMap, type);
+      addTypeToMergedTypeSystem(aOutputMergedTypes, typeNameMap, type);
     }    
+
+    // create the type system and populate from the typeNamesMap
+    TypeSystemDescription result = UIMAFramework.getResourceSpecifierFactory()
+        .createTypeSystemDescription();
+    TypeDescription[] types = new TypeDescription[typeNameMap.values().size()];
+    typeNameMap.values().toArray(types);
+    result.setTypes(types);
     return result;
   }
 
-  private static void addTypeToMergedTypeSystem(Map aOutputMergedTypes, TypeSystemDescription result, Map typeNameMap, TypeDescription type) throws ResourceInitializationException {
+  private static void addTypeToMergedTypeSystem(Map aOutputMergedTypes, Map<String,TypeDescription> typeNameMap, TypeDescription type) throws ResourceInitializationException {
     String typeName = type.getName();
     String supertypeName = type.getSupertypeName();
     TypeDescription existingType = (TypeDescription) typeNameMap.get(typeName);
     if (existingType == null) {
       // create new type
-      existingType = result.addType(typeName, type.getDescription(), supertypeName);
+      existingType = UIMAFramework.getResourceSpecifierFactory().createTypeDescription();
+      existingType.setName(typeName);
+      existingType.setDescription(type.getDescription());
+      existingType.setSupertypeName(supertypeName);
       existingType.setAllowedValues(type.getAllowedValues());
       existingType.setSourceUrl(type.getSourceUrl());
       typeNameMap.put(type.getName(), existingType);
