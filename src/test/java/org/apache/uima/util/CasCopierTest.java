@@ -97,6 +97,51 @@ public class CasCopierTest extends TestCase {
     CasCopier.copyCas(srcCasBase, destCasBase, true);
     CasComparer.assertEquals(srcCasBase, destCasBase);
   }
+  
+  public void testCopyCasWithDifferentTypeSystemObject() throws Exception {
+    // create a source CAS by deserializing from XCAS
+    CAS srcCas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
+    InputStream serCasStream = new FileInputStream(JUnitExtension
+            .getFile("ExampleCas/multiSofaCas.xml"));
+    XCASDeserializer.deserialize(serCasStream, srcCas);
+    serCasStream.close();
+
+    // create a destination CAS (do not share the same type system object)
+    File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
+    File indexesFile = JUnitExtension.getFile("ExampleCas/testIndexes.xml");
+
+    TypeSystemDescription newTsDesc = typeSystem = UIMAFramework.getXMLParser().parseTypeSystemDescription(
+            new XMLInputSource(typeSystemFile));
+    FsIndexDescription[] newFsIndexes = indexes = UIMAFramework.getXMLParser().parseFsIndexCollection(new XMLInputSource(indexesFile))
+            .getFsIndexes();
+    CAS destCas = CasCreationUtils.createCas(newTsDesc, new TypePriorities_impl(), newFsIndexes);
+
+    // do the copy
+    CasCopier.copyCas(srcCas, destCas, true);
+    // XCASSerializer.serialize(destCas, System.out);
+
+    // verify copy
+    CasComparer.assertEquals(srcCas, destCas);
+
+    // try with type systems are not identical (dest. a superset of src.)
+    TypeSystemDescription additionalTypes = new TypeSystemDescription_impl();
+    TypeDescription fooType = additionalTypes.addType("test.Foo", "Test Type",
+            "uima.tcas.Annotation");
+    fooType.addFeature("bar", "Test Feature", "uima.cas.String");
+    ArrayList destTypeSystems = new ArrayList();
+    destTypeSystems.add(additionalTypes);
+    destTypeSystems.add(typeSystem);
+    CAS destCas2 = CasCreationUtils.createCas(destTypeSystems);
+    CasCopier.copyCas(srcCas, destCas2, true);
+    CasComparer.assertEquals(srcCas, destCas);
+
+    // try with base CAS rather than initial view
+    CAS srcCasBase = ((CASImpl) srcCas).getBaseCAS();
+    destCas.reset();
+    CAS destCasBase = ((CASImpl) destCas).getBaseCAS();
+    CasCopier.copyCas(srcCasBase, destCasBase, true);
+    CasComparer.assertEquals(srcCasBase, destCasBase);
+  }  
 
   public void testCopyCasView() throws Exception {
     // create a source CAS by deserializing from XCAS
