@@ -210,8 +210,13 @@ public class CasCopier {
     }
 
     // create a new FS of the same type in the target CAS
-    // TODO: could optimize type lookup if type systems are identical
-    Type destType = mDestCas.getTypeSystem().getType(srcType.getName());
+    Type destType;
+    if (mDestCas.getTypeSystem() == mSrcCas.getTypeSystem()) {
+      //optimize type lookup if type systems are identical
+      destType = srcType;
+    } else {
+      destType = mDestCas.getTypeSystem().getType(srcType.getName());
+    }
     if (destType == null) {
       throw new UIMARuntimeException(UIMARuntimeException.TYPE_NOT_FOUND_DURING_CAS_COPY,
               new Object[] { srcType.getName() });
@@ -247,7 +252,6 @@ public class CasCopier {
     Iterator srcFeatIter = srcType.getFeatures().iterator();
     while (srcFeatIter.hasNext()) {
       Feature srcFeat = (Feature) srcFeatIter.next();
-      // TODO: could optimize type lookup if type systems are identical
       Feature destFeat;
       if (destType == aSrcFS.getType()) {
         // sharing same type system, so destFeat == srcFeat
