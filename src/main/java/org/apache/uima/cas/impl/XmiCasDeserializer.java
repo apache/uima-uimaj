@@ -1069,16 +1069,25 @@ public class XmiCasDeserializer {
           // adds each list node ID to the fsListNodesFromMultivaluedProperties list.
           // We need this so we can go back through later and reset the addresses of the
           // "head" features of these lists nodes (but not reset the tail features).
+          // It also adds a mapping between the nodes and the encompassing FS in order
+          // to properly serialize in delta xmi format.
           int listFS = casBeingFilled.getFeatureValue(addr, featCode);
+          IntVector fslistnodes = new IntVector();
           if (listFS == 0) {
-            listFS = listUtils.createFsList(featVals, fsListNodesFromMultivaluedProperties);
+            listFS = listUtils.createFsList(featVals, fslistnodes);
             casBeingFilled.setFeatureValue(addr, featCode, listFS);
           } else {
-        	listUtils.updateFsList(listFS, featVals, fsListNodesFromMultivaluedProperties);
+        	listUtils.updateFsList(listFS, featVals, fslistnodes);
+          } 
+          //add to multivaluedproperties fs list.
+          for (int i=0; i < fslistnodes.size();  i++) {
+        	  fsListNodesFromMultivaluedProperties.add(fslistnodes.get(i));
           }
-          //add to nonshared fs to encompassing FS map
+          //add to nonshared fs to encompassing FS map.
           if (!ts.ll_getFeatureForCode(featCode).isMultipleReferencesAllowed()) {
-            addNonsharedFSToEncompassingFSMapping(listFS, addr);
+        	for (int i=0; i < fslistnodes.size(); i++) {
+        	  addNonsharedFSToEncompassingFSMapping(fslistnodes.get(i), addr);
+        	}
           }
           break;
         }
