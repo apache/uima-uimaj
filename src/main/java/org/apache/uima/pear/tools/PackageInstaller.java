@@ -96,6 +96,40 @@ public class PackageInstaller {
    public static PackageBrowser installPackage(File installDir,
          File pearPackage, boolean verify, boolean cleanInstallDir)
          throws PackageInstallerException {
+     return installPackage(installDir, pearPackage, verify, cleanInstallDir, false);
+   }
+
+     /**
+      * Installs the specified PEAR package to the specified install location.
+      * After the installation is completed, an optional installation verification
+      * step can be executed. This verification uses the main component descriptor
+      * to instantiate the UIMA resource, encapsulated in the PEAR package, and
+      * may run some additional tests, if applicable.
+      * 
+      * @param installDir
+      *           PEAR package install location
+      * @param pearPackage
+      *           PEAR package file location to install
+      * @param verify
+      *           If true the PEAR package verification is done after the
+      *           installation
+      * @param cleanInstallDir
+      *           If <code>true</code>, the target installation directory will
+      *           be cleaned before the PEAR file is installed.
+      * @param installToTopLevelDir
+      *           If <code>true</code>, the PEAR is installed directly into the 
+      *           <code>installDir</code>.  No intermediate directory with the component name is
+      *           created.  Defaults to <code>false</code> in the overloads of this method.
+      * @return Returns a <code>PackageBrowser</code> object containing all PEAR
+      *         package install settings
+      * 
+      * @throws PackageInstallerException
+      *            If an error occurred during the pear installation or
+      *            verification.
+      */
+     public static PackageBrowser installPackage(File installDir,
+           File pearPackage, boolean verify, boolean cleanInstallDir, boolean installToTopLevelDir)
+           throws PackageInstallerException {
 
       // componentId for the given pear package
       String componentId;
@@ -164,7 +198,7 @@ public class PackageInstaller {
 
       // create installation controller and to install the pear package
       InstallationController controller = new InstallationController(
-            componentId, pearPackage, installDir, false, msgListener,
+            componentId, pearPackage, installDir, installToTopLevelDir, msgListener,
             cleanInstallDir);
 
       // install main component
