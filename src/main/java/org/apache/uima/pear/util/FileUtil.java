@@ -1331,11 +1331,11 @@ public class FileUtil {
     if (".xml".equalsIgnoreCase(fileExt)) {
       // for XML file - supporting UTF-8 (ASCII) and UTF-16 encodings
       String xmlEncoding = XMLUtil.detectXmlFileEncoding(textFile);
-      if (xmlEncoding != null)
+      if (xmlEncoding != null) {
         encoding = xmlEncoding;
-      else
-        throw new UnsupportedEncodingException("can't detect encoding in "
-                + textFile.getAbsolutePath());
+      } else {
+        encoding = "UTF-8";
+      }
     }
     // load text file, using supported encoding
     String fileContent = loadTextFile(textFile, encoding);
