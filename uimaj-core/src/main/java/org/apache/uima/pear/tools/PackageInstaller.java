@@ -240,8 +240,9 @@ public class PackageInstaller {
       PackageBrowser pkgBrowser = null;
 
       try {
+        File pearDir = (installToTopLevelDir ? installDir : new File(installDir, componentId));
          // initialize package browser object
-         pkgBrowser = new PackageBrowser(new File(installDir, componentId));
+         pkgBrowser = new PackageBrowser(pearDir);
 
          // check if package browser could be initialized
          if (pkgBrowser == null) {
