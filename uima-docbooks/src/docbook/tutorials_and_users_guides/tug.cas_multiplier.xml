@@ -73,7 +73,7 @@ under the License.
         <listitem>
           <para>If <literal>hasNext</literal> returned true, the framework will call the CAS Multiplier&apos;s
             <literal>next</literal> method. The CAS Multiplier creates a new CAS (we will see how in a moment),
-            populates it, and returns it from the <literal>hasNext</literal> method.</para>
+            populates it, and returns it from the <literal>next</literal> method.</para>
         </listitem>
         
         <listitem>
