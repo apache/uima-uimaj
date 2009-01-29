@@ -336,10 +336,14 @@
   <repositories>
     <repository>
       <id>eclipsePlugins</id>
-      <url>http://repo1.maven.org/eclipse</url>
+      <url>http://repo2.maven.org/eclipse</url>  <!-- url repo1 forwards to repo2... -->
       <releases>
         <updatePolicy>never</updatePolicy>
       </releases>
+      <snapshots>
+        <enabled>false</enabled>
+        <updatePolicy>never</updatePolicy>
+      </snapshots>
     </repository>
   </repositories>
 </project>
