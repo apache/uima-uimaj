@@ -52,7 +52,7 @@ public interface ConfigurationParameterSettings extends MetaDataObject {
    * @return a Map with <code>String</code> keys (the group names) and {@link NameValuePair}[]
    *         values (the settings for parameters in that group.
    */
-  public Map getSettingsForGroups();
+  public Map<String, NameValuePair[]> getSettingsForGroups();
 
   /**
    * Looks up the value of a parameter. This is a "dumb" getter and does not follow any fallback

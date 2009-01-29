@@ -34,6 +34,7 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.internal.util.SerializationUtils;
 import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
 import org.apache.uima.resource.metadata.MetaDataObject;
+import org.apache.uima.resource.metadata.NameValuePair;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLParser;
 import org.w3c.dom.Document;
@@ -128,16 +129,16 @@ public class MetaDataObject_implTest extends TestCase {
       
       // test with maps
       ConfigurationParameterSettings cps1 = UIMAFramework.getResourceSpecifierFactory().createConfigurationParameterSettings();
-      cps1.getSettingsForGroups().put("k1", new NameValuePair_impl("s1", "o1"));
-      cps1.getSettingsForGroups().put("k2", new NameValuePair_impl("s2", "o2"));
+      cps1.getSettingsForGroups().put("k1", new NameValuePair[] {new NameValuePair_impl("s1", "o1")});
+      cps1.getSettingsForGroups().put("k2", new NameValuePair[] {new NameValuePair_impl("s2", "o2")});
       ConfigurationParameterSettings cps2 = UIMAFramework.getResourceSpecifierFactory().createConfigurationParameterSettings();
-      cps2.getSettingsForGroups().put("k1", new NameValuePair_impl("s1", "o1"));
-      cps2.getSettingsForGroups().put("k2", new NameValuePair_impl("s2", "o2"));
+      cps2.getSettingsForGroups().put("k1", new NameValuePair[] {new NameValuePair_impl("s1", "o1")});
+      cps2.getSettingsForGroups().put("k2", new NameValuePair[] {new NameValuePair_impl("s2", "o2")});
       
       Assert.assertEquals(cps1, cps2);
       Assert.assertEquals(cps1, cps2.clone());
       
-      cps2.getSettingsForGroups().put("k2", new NameValuePair_impl("s2", "ox2"));
+      cps2.getSettingsForGroups().put("k2", new NameValuePair[] {new NameValuePair_impl("s2", "ox2")});
       Assert.assertFalse(cps1.equals(cps2));
            
     } catch (RuntimeException e) {
