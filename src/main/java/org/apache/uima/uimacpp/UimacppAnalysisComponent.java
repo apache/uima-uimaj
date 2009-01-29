@@ -21,6 +21,7 @@ package org.apache.uima.uimacpp;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.Map;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMARuntimeException;
@@ -45,6 +46,7 @@ import org.apache.uima.cas.impl.Serialization;
 import org.apache.uima.resource.ResourceCreationSpecifier;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
+import org.apache.uima.resource.metadata.NameValuePair;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
@@ -112,6 +114,34 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
         }
       }
       this.log = context.getLogger();
+      
+      /* set the configuration parameters into the parsed resourceDescription 
+       * 
+       */
+      
+      AnalysisEngineDescription aed = (AnalysisEngineDescription) resourceDescription;
+      ConfigurationParameterSettings parmSettings = aed.getAnalysisEngineMetaData().getConfigurationParameterSettings();
+      /*
+       * loop thru all the parameters in the component, and set them to the possibly overridden values
+       */
+      // for group parameters (Note: unsure if C++ actually supports group parameters ... 
+      Map<String, NameValuePair[]> groups = parmSettings.getSettingsForGroups();
+      for (Map.Entry<String, NameValuePair[]> group : groups.entrySet()) {
+        for (NameValuePair nvp : group.getValue()) {
+          Object v = context.getConfigParameterValue(group.getKey(), nvp.getName());
+          if (null != v) {
+            parmSettings.setParameterValue(group.getKey(), nvp.getName(), v);
+          }
+        }
+      }
+      // This next loop for "non-group" parameters
+      for (NameValuePair nvp : parmSettings.getParameterSettings()) {
+        Object v = context.getConfigParameterValue(nvp.getName());
+        if (null != v) {
+          parmSettings.setParameterValue(nvp.getName(), v);
+        }
+      }
+
       if (engine == null) {
         UimacppEngine.configureResourceManager(System.getProperty("java.io.tmpdir"), ae
                 .getResourceManager().getDataPath());
