@@ -337,10 +337,15 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
           component.collectionProcessComplete();
         }
       }
-      //now call reamining components in arbitrary order
+      //now call remaining components in arbitrary order
       Iterator iter = components.values().iterator();
       while (iter.hasNext()) {
         ((AnalysisEngine) iter.next()).collectionProcessComplete();
+      }
+      //  Call CPC on the Flow Controller
+      FlowControllerContainer fcc = _getASB().getFlowControllerContainer();
+      if ( fcc != null ) {
+        fcc.collectionProcessComplete();
       }
     } finally {
       exitCollectionProcessComplete();
