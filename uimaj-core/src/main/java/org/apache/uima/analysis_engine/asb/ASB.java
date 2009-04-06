@@ -26,6 +26,7 @@ import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.analysis_engine.CasIterator;
+import org.apache.uima.analysis_engine.asb.impl.FlowControllerContainer;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.analysis_engine.metadata.FlowControllerDeclaration;
 import org.apache.uima.cas.CAS;
@@ -128,4 +129,13 @@ public interface ASB extends Resource {
    * @return an iterator over all output CASes
    */
   public CasIterator process(CAS aCAS) throws AnalysisEngineProcessException;
+  
+  
+  /**
+   * Gets the <code>FlowControllerContainer</code> known to this ASB. This includes the FlowController as
+   * well as the component AnalysisEngines.
+   * 
+   * @return an instance of {@link FlowControllerContainer}
+   */  
+  public FlowControllerContainer getFlowControllerContainer();
 }
