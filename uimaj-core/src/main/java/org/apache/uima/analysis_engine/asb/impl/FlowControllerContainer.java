@@ -303,4 +303,9 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
   boolean isInitialized() {
     return initialized;
   }
+  public void collectionProcessComplete() throws AnalysisEngineProcessException {
+    if ( mFlowController != null ) {
+      mFlowController.collectionProcessComplete();
+    }
+  }
 }
