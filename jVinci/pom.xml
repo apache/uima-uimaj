@@ -41,6 +41,7 @@
 		<groupId>org.apache.uima</groupId>
 		<artifactId>uimaj</artifactId>
 		<version>2.3.0-incubating-SNAPSHOT</version> <!-- this comment is a flag for changeVersion -->
+	 	<relativePath>../uimaj</relativePath>
 	</parent>
 	<build>
 		<finalName>jVinci</finalName>
