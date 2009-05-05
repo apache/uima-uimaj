@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.uima.ecore;
+package org.apache.uima.examples.xmi;
 
 import java.io.IOException;
 import java.net.URL;

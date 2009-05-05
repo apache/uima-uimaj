@@ -71,13 +71,6 @@
 
     <dependency>
       <groupId>org.apache.uima</groupId>
-      <artifactId>uimaj-examples</artifactId>
-      <version>${uimaj-release-version}</version>
-      <scope>compile</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-adapter-vinci</artifactId>
       <version>${uimaj-release-version}</version>
       <scope>compile</scope>
@@ -128,7 +121,6 @@
                  alternative to the jars - but might have a
                  versioning / control issue -->
             <_exportcontents>
-               example,
                org.apache.uima,
                org.apache.uima.adapter.vinci,
                org.apache.uima.adapter.vinci.util,
@@ -167,14 +159,6 @@
                org.apache.uima.collection.impl.metadata,
                org.apache.uima.collection.impl.metadata.cpe,
                org.apache.uima.collection.metadata,
-               org.apache.uima.ecore,
-               org.apache.uima.examples,
-               org.apache.uima.examples.cas,
-               org.apache.uima.examples.casMultiplier,
-               org.apache.uima.examples.cpe,
-               org.apache.uima.examples.flow,
-               org.apache.uima.examples.tokenizer,
-               org.apache.uima.examples.xmi,
                org.apache.uima.flow,
                org.apache.uima.flow.impl,
                org.apache.uima.impl,
@@ -209,13 +193,6 @@
                org.apache.uima.tools.util.gui,
                org.apache.uima.tools.util.htmlview,
                org.apache.uima.tools.viewer,
-               org.apache.uima.tutorial,
-               org.apache.uima.tutorial.ex1,
-               org.apache.uima.tutorial.ex2,
-               org.apache.uima.tutorial.ex3,
-               org.apache.uima.tutorial.ex4,
-               org.apache.uima.tutorial.ex5,
-               org.apache.uima.tutorial.ex6,
                org.apache.uima.uimacpp,
                org.apache.uima.util,
                org.apache.uima.util.impl,

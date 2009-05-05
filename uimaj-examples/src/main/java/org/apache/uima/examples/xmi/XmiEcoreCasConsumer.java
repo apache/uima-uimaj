@@ -33,7 +33,6 @@ import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.impl.XmiCasSerializer;
 import org.apache.uima.collection.CasConsumer_ImplBase;
-import org.apache.uima.ecore.UimaTypeSystem2Ecore;
 import org.apache.uima.examples.SourceDocumentInformation;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -82,6 +81,7 @@ public class XmiEcoreCasConsumer extends CasConsumer_ImplBase {
 
   private Map schemaLocationMap = null;
 
+  @Override
   public void initialize() throws ResourceInitializationException {
     mDocNum = 0;
     mOutputDir = new File((String) getConfigParameterValue(PARAM_OUTPUTDIR));
