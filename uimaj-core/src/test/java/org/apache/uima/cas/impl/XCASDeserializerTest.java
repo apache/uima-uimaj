@@ -19,6 +19,8 @@
 
 package org.apache.uima.cas.impl;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -369,5 +371,29 @@ public class XCASDeserializerTest extends TestCase {
     gerView = cas.getView("GermanDocument");
     assertTrue(gerView.getDocumentText().equals("das bier ist gut"));
     assertTrue(gerView.getAnnotationIndex().size() == 5); // 4 annots plus documentAnnotation
+  }
+  
+  public void testStringArrayWithNullValues() throws Exception {
+    CAS cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
+    StringArrayFS strArray = cas.createStringArrayFS(3);
+    strArray.set(1, "value");
+    cas.getIndexRepository().addFS(strArray);
+    
+    assertEquals(null, strArray.get(0));
+    assertEquals("value", strArray.get(1));
+    assertEquals(null, strArray.get(2));
+    
+    //serialize to XCAS and back
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    XCASSerializer.serialize(cas,baos);
+    ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+    XCASDeserializer.deserialize(bais, cas);
+
+    //check
+    Iterator iter = cas.getIndexRepository().getAllIndexedFS(cas.getTypeSystem().getType("uima.cas.StringArray"));
+    StringArrayFS strArrayOut = (StringArrayFS)iter.next();
+    assertEquals(null, strArrayOut.get(0));
+    assertEquals("value", strArrayOut.get(1));
+    assertEquals(null, strArrayOut.get(2));
   }
 }
