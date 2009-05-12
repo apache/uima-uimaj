@@ -429,7 +429,7 @@ public interface UimaContext {
    * for the current call.
    * <p>
    * Note that Session support is NOT implemented in any of the service wrappers (Vinci, SOAP) currently
-   * provided in the UIMA SDK.  
+   * provided in the UIMA SDK.
    * 
    * @return the current Session object
    */
@@ -446,6 +446,7 @@ public interface UimaContext {
    *             now be obtained directly by the method {@link CAS#getView(String)}, and the
    *             framework will automatically do the necessary Sofa mappings.
    */
+  @Deprecated
   public SofaID mapToSofaID(String aSofaName);
 
   /**
@@ -464,6 +465,7 @@ public interface UimaContext {
    *             now be obtained directly by the method {@link CAS#getView(String)}, and the
    *             framework will automatically do the necessary Sofa mappings.
    */
+  @Deprecated
   public SofaID[] getSofaMappings();
 
   /**
@@ -480,5 +482,5 @@ public interface UimaContext {
    * 
    * @return an empty CAS. This will be an implementation of <code>aCasInterface</code>.
    */
-  public AbstractCas getEmptyCas(Class aCasInterface);
+  public AbstractCas getEmptyCas(Class<? extends AbstractCas> aCasInterface);
 }

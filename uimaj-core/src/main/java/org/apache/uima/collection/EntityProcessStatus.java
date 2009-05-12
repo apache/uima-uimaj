@@ -51,7 +51,7 @@ public interface EntityProcessStatus extends Serializable {
    * 
    * @return the List of Exceptions, <code>null</code> if none
    */
-  public List getExceptions();
+  public List<Exception> getExceptions();
 
   /**
    * Gets the name of the components in which Exceptions (if any) occurred. These could be the
@@ -59,7 +59,7 @@ public interface EntityProcessStatus extends Serializable {
    * 
    * @return the name of the components that failed, <code>null</code> if there was no failure
    */
-  public List getFailedComponentNames();
+  public List<String> getFailedComponentNames();
 
   /**
    * Gets the <code>ProcessTrace</code> object for the Entity's processing. The

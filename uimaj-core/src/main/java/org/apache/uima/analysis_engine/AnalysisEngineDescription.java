@@ -161,7 +161,7 @@ public interface AnalysisEngineDescription extends ResourceCreationSpecifier {
    * @throws InvalidXMLException
    *           if import resolution failed
    */
-  public Map getDelegateAnalysisEngineSpecifiers() throws InvalidXMLException;
+  public Map<String, ResourceSpecifier> getDelegateAnalysisEngineSpecifiers() throws InvalidXMLException;
 
   /**
    * For an aggregate AnalysisEngine only, retrieves a collection of {@link ResourceSpecifier}s
@@ -194,7 +194,7 @@ public interface AnalysisEngineDescription extends ResourceCreationSpecifier {
    * @throws InvalidXMLException
    *           if import resolution failed
    */
-  public Map getDelegateAnalysisEngineSpecifiers(ResourceManager aResourceManager)
+  public Map<String, ResourceSpecifier> getDelegateAnalysisEngineSpecifiers(ResourceManager aResourceManager)
           throws InvalidXMLException;
 
   /**
@@ -211,7 +211,7 @@ public interface AnalysisEngineDescription extends ResourceCreationSpecifier {
    *         {@link org.apache.uima.resource.metadata.Import} objects as values. This Map may be
    *         modified to add or remove imports or specifiers.
    */
-  public Map getDelegateAnalysisEngineSpecifiersWithImports();
+  public Map<String, ResourceSpecifier> getDelegateAnalysisEngineSpecifiersWithImports();
 
   /**
    * For an aggregate AnalysisEngine only, gets the declaration of which FlowController should be
@@ -257,7 +257,7 @@ public interface AnalysisEngineDescription extends ResourceCreationSpecifier {
    * @throws InvalidXMLException
    *           if import resolution failed
    */
-  public Map getAllComponentSpecifiers(ResourceManager aResourceManager) throws InvalidXMLException;
+  public Map<String, ResourceSpecifier> getAllComponentSpecifiers(ResourceManager aResourceManager) throws InvalidXMLException;
 
   /**
    * Retrieves the metadata that describes the AnalysisEngine. This includes the AnalysisEngine's
@@ -363,7 +363,7 @@ public interface AnalysisEngineDescription extends ResourceCreationSpecifier {
    * @throws InvalidXMLException
    *           if an import target does not exist or is invalid
    */
-  public void resolveImports(Collection aAlreadyImportedDelegateAeUrls,
+  public void resolveImports(Collection<String> aAlreadyImportedDelegateAeUrls,
           ResourceManager aResourceManager) throws InvalidXMLException;
 
   /**

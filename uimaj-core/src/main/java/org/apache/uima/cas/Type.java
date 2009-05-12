@@ -65,7 +65,8 @@ public interface Type {
    * @return The Vector of features.
    * @deprecated Use {@link #getFeatures() getFeatures()} instead.
    */
-  Vector getAppropriateFeatures();
+  @Deprecated
+  Vector<Feature> getAppropriateFeatures();
 
   /**
    * Get a vector of the features for which this type is a subtype of the features' domain (i.e.,
@@ -74,7 +75,7 @@ public interface Type {
    * 
    * @return The List of features defined for this type.
    */
-  List getFeatures();
+  List<Feature> getFeatures();
 
   /**
    * Get the number of features for which this type defines the domain. This includes inherited

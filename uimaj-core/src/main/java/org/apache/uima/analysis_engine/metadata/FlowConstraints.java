@@ -60,5 +60,5 @@ public interface FlowConstraints extends MetaDataObject {
    *          values (the new IDs). Any identifiers that do not appear in this Map will not be
    *          remapped.
    */
-  public void remapIDs(Map aIDMap);
+  public void remapIDs(Map<String, String> aIDMap);
 }

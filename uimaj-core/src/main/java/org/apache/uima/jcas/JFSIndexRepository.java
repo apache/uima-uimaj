@@ -83,14 +83,14 @@ public interface JFSIndexRepository {
    * 
    * @return All labels.
    */
-  Iterator getLabels();
+  Iterator<String> getLabels();
 
   /**
    * Get all indexes in this repository.
    * 
    * @return All indexes.
    */
-  Iterator getIndexes();
+  Iterator<FSIndex> getIndexes();
 
   /**
    * Get the underlying FSIndexRepository associated with this JFSIndexRepository.

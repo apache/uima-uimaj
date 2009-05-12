@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.apache.uima.UIMA_IllegalArgumentException;
 import org.apache.uima.UIMA_UnsupportedOperationException;
+import org.apache.uima.util.NameClassPair;
 import org.apache.uima.util.XMLizable;
 
 /**
@@ -52,7 +53,7 @@ public interface MetaDataObject extends Cloneable, java.io.Serializable, XMLizab
    *         wrapper classes will be returned (e.g. <code>java.lang.Integer</code> instead of
    *         int).
    */
-  public List listAttributes();
+  public List<NameClassPair> listAttributes();
 
   /**
    * Retrieves the value of an attribute of this <code>MetaDataObject</code>.

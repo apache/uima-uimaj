@@ -62,7 +62,7 @@ public interface UimaContextAdmin extends UimaContext {
    * @param aSofaMappings
    *          mappings from child's sofa name to parent's sofa name. May be null.
    */
-  public UimaContextAdmin createChild(String aContextName, Map aSofaMappings);
+  public UimaContextAdmin createChild(String aContextName, Map<String, String> aSofaMappings);
 
   /**
    * Sets the Logger for this UimaContext. If this method is not called, the default logger ({@link org.apache.uima.UIMAFramework#getLogger()})
@@ -160,14 +160,14 @@ public interface UimaContextAdmin extends UimaContext {
   public ComponentInfo getComponentInfo();
   
   /**
-   * Gets an unmodifiable Map containing the mapping of component sofa name to 
+   * Gets an unmodifiable Map containing the mapping of component sofa name to
    * absolute sofa ID.
    * @return the Sofa map for this component
    */
-  public Map getSofaMap();
+  public Map<String, String> getSofaMap();
   
   /**
-   * Called internally by the framework whenever the AnalysisComponent returns a CAS 
+   * Called internally by the framework whenever the AnalysisComponent returns a CAS
    * from its next() method or calls cas.release(). Used to monitor the number of CASes
    * that the AnalysisComponent is using at any one time.
    * @param aCAS the CAS that was returned or released

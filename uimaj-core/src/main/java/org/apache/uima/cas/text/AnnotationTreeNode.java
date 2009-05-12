@@ -74,7 +74,7 @@ public interface AnnotationTreeNode {
    * 
    * @return An ArrayList of the children.
    */
-  ArrayList getChildren();
+  ArrayList<AnnotationTreeNode> getChildren();
 
   /**
    * Return the annotation for this node.

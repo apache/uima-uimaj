@@ -217,6 +217,6 @@ public interface TypeSystemDescription extends MetaDataObject {
    * @throws InvalidXMLException
    *           if either the import target does not exist or is invalid
    */
-  public void resolveImports(Collection aAlreadyImportedTypeSystemURLs,
+  public void resolveImports(Collection<String> aAlreadyImportedTypeSystemURLs,
           ResourceManager aResourceManager) throws InvalidXMLException;
 }

@@ -49,7 +49,7 @@ public interface CasData extends Serializable {
    * 
    * @return an iterator over {@link FeatureStructure} objects.
    */
-  public Iterator getFeatureStructures();
+  public Iterator<FeatureStructure> getFeatureStructures();
 
   /**
    * Adds a FeatureStructure to the list of top-level FeatureStructures contained in this CasData.
