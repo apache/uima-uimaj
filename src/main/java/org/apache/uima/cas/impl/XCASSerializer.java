@@ -540,7 +540,7 @@ public class XCASSerializer {
 
       for (int i = 0; i < data.length; i++) {
         startElement(ARRAY_ELEMENT_TAG, emptyAttrs, 1);
-        addText(data[i]);
+        addText(data[i] == null ? "" : data[i]);
         endElement(ARRAY_ELEMENT_TAG);
       }
       endElement(typeName);
