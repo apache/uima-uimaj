@@ -91,7 +91,7 @@ public interface ASB extends Resource {
    * @throws org.apache.uima.UIMA_IllegalStateException
    *           if {@link #setup()} has not been called yet.
    */
-  public Map getComponentAnalysisEngineMetaData();
+  public Map<String, AnalysisEngineMetaData> getComponentAnalysisEngineMetaData();
 
   /**
    * Gets the metadata for all components known to this ASB. This includes the FlowController as
@@ -100,7 +100,7 @@ public interface ASB extends Resource {
    * @return a Map from String keys (the same keys used in the aggregate AE descriptor) to
    *         {@link ProcessingResourceMetaData} values.
    */
-  public Map getAllComponentMetaData();
+  public Map<String, ProcessingResourceMetaData> getAllComponentMetaData();
 
   /**
    * Gets references to the component AnalysisEngines known to this <code>ASB</code>.
@@ -112,7 +112,7 @@ public interface ASB extends Resource {
    * @throws org.apache.uima.UIMA_IllegalStateException
    *           if {@link #setup()} has not been called yet.
    */
-  public Map getComponentAnalysisEngines();
+  public Map<String, AnalysisEngine> getComponentAnalysisEngines();
 
   /**
    * Invokes the processing of the aggregate on the given input CAS. This returns a CasIterator that
@@ -136,6 +136,6 @@ public interface ASB extends Resource {
    * well as the component AnalysisEngines.
    * 
    * @return an instance of {@link FlowControllerContainer}
-   */  
+   */
   public FlowControllerContainer getFlowControllerContainer();
 }

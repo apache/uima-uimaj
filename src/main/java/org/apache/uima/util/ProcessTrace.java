@@ -104,7 +104,7 @@ public interface ProcessTrace extends java.io.Serializable {
    * @param aEventList
    *          a List of event object to be added to this <code>ProcessTrace</code>
    */
-  public void addAll(List aEventList);
+  public void addAll(List<ProcessTraceEvent> aEventList);
 
   /**
    * Gets a list of {@link ProcessTraceEvent}s, in the order in which they were created. This is
@@ -112,7 +112,7 @@ public interface ProcessTrace extends java.io.Serializable {
    * 
    * @return an unmodifiable List of {@link ProcessTraceEvent}s
    */
-  public List getEvents();
+  public List<ProcessTraceEvent> getEvents();
 
   /**
    * Gets all events that have the given Component name.
@@ -125,7 +125,7 @@ public interface ProcessTrace extends java.io.Serializable {
    * 
    * @return a List of ProcessTraceEvents having the given component name
    */
-  public List getEventsByComponentName(String aComponentName, boolean aRecurseWithinMatch);
+  public List<ProcessTraceEvent> getEventsByComponentName(String aComponentName, boolean aRecurseWithinMatch);
 
   /**
    * Gets all events that have the given type
@@ -138,7 +138,7 @@ public interface ProcessTrace extends java.io.Serializable {
    * 
    * @return a List of ProcessTraceEvents having the given type
    */
-  public List getEventsByType(String aType, boolean aRecurseWithinMatch);
+  public List<ProcessTraceEvent> getEventsByType(String aType, boolean aRecurseWithinMatch);
 
   /**
    * Get a specified event.

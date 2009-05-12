@@ -55,14 +55,14 @@ public interface FSIndexRepository {
    * 
    * @return All labels.
    */
-  Iterator getLabels();
+  Iterator<String> getLabels();
 
   /**
    * Get all indexes in this repository.
    * 
    * @return All indexes.
    */
-  Iterator getIndexes();
+  Iterator<FSIndex> getIndexes();
 
   /**
    * Add a feature structure to all appropriate indexes in the repository. If no indexes exist for

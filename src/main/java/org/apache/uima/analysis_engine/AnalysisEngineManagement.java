@@ -100,7 +100,7 @@ public interface AnalysisEngineManagement extends ManagementObject {
    * 
    * @return a map from String keys to AnalysisEngineManagement objects
    */
-  Map getComponents();
+  Map<String, AnalysisEngineManagement> getComponents();
 
   /**
    * Resets all of the performance statistics to zero. For an Aggregate Analysis Engine, also resets

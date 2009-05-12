@@ -80,11 +80,11 @@ public interface CasProcessorExecutable extends MetaDataObject {
    */
   public void removeCasProcessorExecArg(int aIndex);
 
-  public ArrayList getEnvs();
+  public ArrayList<CasProcessorRuntimeEnvParam> getEnvs();
 
   /**
    * @param params
    */
-  public void setEnvs(ArrayList params);
+  public void setEnvs(ArrayList<CasProcessorRuntimeEnvParam> params);
 
 }

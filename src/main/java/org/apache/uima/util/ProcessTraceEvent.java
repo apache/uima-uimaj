@@ -70,7 +70,7 @@ public interface ProcessTraceEvent extends java.io.Serializable {
    * 
    * @return a List containing other <code>ProcessTraceEvent</code> objects
    */
-  public List getSubEvents();
+  public List<ProcessTraceEvent> getSubEvents();
 
   /**
    * Gets the duration of this event, minus the sum of the durations of its direct sub-events.

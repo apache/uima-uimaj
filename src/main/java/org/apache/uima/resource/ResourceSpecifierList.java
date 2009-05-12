@@ -41,5 +41,5 @@ public interface ResourceSpecifierList extends ResourceSpecifier {
    * 
    * @return an unmodifiable List of {@link ResourceSpecifier}s.
    */
-  public List getResourceSpecifiers();
+  public List<ResourceSpecifier> getResourceSpecifiers();
 }

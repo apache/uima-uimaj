@@ -77,7 +77,7 @@ import org.apache.uima.resource.ResourceInitializationException;
  * The AnalysisComponent is permitted to make changes to this CAS. Once <code>hasNext</code>
  * returns false, the AnalysisComponent releases control of the initial CAS. This means that the
  * AnalysisComponent must finish all updates to the initial CAS prior to returning false from
- * <code>hasNext<code>. 
+ * <code>hasNext<code>.
  * <p>
  * However, if the <code>process</code> method is called a second time, before <code>hasNext</code> has returned
  * false, this is a signal to the AnalysisComponent to cancel all processing of the previous CAS and begin
@@ -197,7 +197,7 @@ public interface AnalysisComponent {
    * 
    * @return the required CAS interface. This must specify a subtype of {@link AbstractCas}.
    */
-  Class getRequiredCasInterface();
+  Class<? extends AbstractCas> getRequiredCasInterface();
 
   /**
    * Returns the maximum number of CAS instances that this AnalysisComponent expects to use at the

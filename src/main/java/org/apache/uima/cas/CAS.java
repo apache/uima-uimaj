@@ -268,6 +268,7 @@ public interface CAS extends AbstractCas {
    * @deprecated As of v2.0, this is replaced by {@link #NAME_DEFAULT_SOFA}, and the value has
    *             changed. In general, user code should not need to refer to this name.
    */
+  @Deprecated
   static final String NAME_DEFAULT_TEXT_SOFA = "_InitialView";
 
   /**
@@ -769,6 +770,7 @@ public interface CAS extends AbstractCas {
    * 
    * @deprecated As of v2.0, use {@link #createView(String)} instead.
    */
+  @Deprecated
   SofaFS createSofa(SofaID sofaID, String mimeType);
 
   /**
@@ -821,7 +823,7 @@ public interface CAS extends AbstractCas {
    *          The <code>FSListIterator</code> to be wrapped.
    * @return An equivalent <code>ListIterator</code>.
    */
-  ListIterator fs2listIterator(FSIterator it);
+  ListIterator<FeatureStructure> fs2listIterator(FSIterator it);
 
   /**
    * Reset the CAS, emptying it of all content. Feature structures and iterators will no longer be
@@ -1000,39 +1002,39 @@ public interface CAS extends AbstractCas {
   
   /**
    * Get iterator over all views in this CAS.  Each view provides access to Sofa data
-   * and the index repository that contains metadata (annotations and other feature 
+   * and the index repository that contains metadata (annotations and other feature
    * structures) pertaining to that Sofa.
    * 
    * @return an iterator which returns all views.  Each object returned by
    *   the iterator is of type CAS.
    */
-  Iterator getViewIterator();  
+  Iterator<CAS> getViewIterator();
   
   /**
    * Get iterator over all views with the given name prefix.  Each view provides access to Sofa data
-   * and the index repository that contains metadata (annotations and other feature 
+   * and the index repository that contains metadata (annotations and other feature
    * structures) pertaining to that Sofa.
    * <p>
-   * When passed the prefix <i>namePrefix</i>, the iterator will return all views who 
-   * name is either exactly equal to <i>namePrefix</i> or is of the form 
+   * When passed the prefix <i>namePrefix</i>, the iterator will return all views who
+   * name is either exactly equal to <i>namePrefix</i> or is of the form
    * <i>namePrefix</i><code>.</code><i>suffix</i>, where <i>suffix</i> can be any String.
    * 
-   * @param localViewNamePrefix  the local name prefix, before any sofa name mapping 
+   * @param localViewNamePrefix  the local name prefix, before any sofa name mapping
    *   is done, for this view (note: this is the same as the associated Sofa name prefix).
    * 
-   * @return an iterator which returns all views with the given name prefix.  
+   * @return an iterator which returns all views with the given name prefix.
    *   Each object returned by the iterator is of type CAS.
    */
-  Iterator getViewIterator(String localViewNamePrefix);   
+  Iterator<CAS> getViewIterator(String localViewNamePrefix);
   
   /**
-   * Sets a mark and returns the marker object set with the current mark which can be used to query when certain FSs 
+   * Sets a mark and returns the marker object set with the current mark which can be used to query when certain FSs
    * were created.  This can then be used to identify FSs as added before or after the mark was set and
    * to identify FSs modified after the mark is set.
    * 
    * Note: this method may only be called from an application. Calling it from an annotator
    * will trigger a runtime exception.
-   *    
+   * 
    * 
    * @return a marker object.
    */

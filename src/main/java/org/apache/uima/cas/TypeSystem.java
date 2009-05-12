@@ -89,7 +89,7 @@ public interface TypeSystem {
    * 
    * @return The iterator.
    */
-  Iterator getTypeIterator();
+  Iterator<Type> getTypeIterator();
 
   /**
    * Get the top type, i.e., the root of the type system.
@@ -106,7 +106,8 @@ public interface TypeSystem {
    * @return A vector of the directly subsumed types.
    * @deprecated Use {@link #getDirectSubtypes(Type) getDirectSubtypes(Type)} instead.
    */
-  Vector getDirectlySubsumedTypes(Type type);
+  @Deprecated
+  Vector<Type> getDirectlySubsumedTypes(Type type);
 
   /**
    * Get a List of the types directly subsumed by a given type.
@@ -115,7 +116,7 @@ public interface TypeSystem {
    *          The input type.
    * @return A List of the directly subsumed types.
    */
-  List getDirectSubtypes(Type type);
+  List<Type> getDirectSubtypes(Type type);
 
   /**
    * Return the list of all types subsumed by the input type. Note: the list does not include the
@@ -125,7 +126,7 @@ public interface TypeSystem {
    *          Input type.
    * @return The list of types subsumed by <code>type</code>.
    */
-  List getProperlySubsumedTypes(Type type);
+  List<Type> getProperlySubsumedTypes(Type type);
 
   /**
    * Get the parent type for input type.
@@ -152,7 +153,7 @@ public interface TypeSystem {
    * 
    * @return An iterator over the features.
    */
-  Iterator getFeatures();
+  Iterator<Feature> getFeatures();
 
   /**
    * Create a type name space object for the name parameter.

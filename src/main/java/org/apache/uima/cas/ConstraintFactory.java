@@ -113,7 +113,7 @@ public abstract class ConstraintFactory {
    *          The constraint to be embedded.
    * @return A new FSMatchConstraint.
    */
-  public abstract FSMatchConstraint embedConstraint(ArrayList path, FSConstraint constraint);
+  public abstract FSMatchConstraint embedConstraint(ArrayList<Feature> path, FSConstraint constraint);
 
   /**
    * Conjoin two constraints.

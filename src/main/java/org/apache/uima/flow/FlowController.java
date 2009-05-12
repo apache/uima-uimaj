@@ -153,7 +153,7 @@ public interface FlowController {
    * 
    * @return the required CAS interface. This must specify a subtype of {@link AbstractCas}.
    */
-  Class getRequiredCasInterface();
+  Class<? extends AbstractCas> getRequiredCasInterface();
   
   /**
    * Notifies this FlowController that new Analysis Engines are now available to route CASes to.
@@ -169,11 +169,11 @@ public interface FlowController {
    * time between when the Analysis Engine MetaData map is updated and the time when this method
    * completes.
    * 
-   * @param aKeys a Collection of Strings, each of which is the key of an Analysis Engine to which 
-   *   CASes can be routed.  These are the same keys as used in 
-   *   {@link FlowControllerContext#getAnalysisEngineMetaDataMap()}. 
+   * @param aKeys a Collection of Strings, each of which is the key of an Analysis Engine to which
+   *   CASes can be routed.  These are the same keys as used in
+   *   {@link FlowControllerContext#getAnalysisEngineMetaDataMap()}.
    */
-  void addAnalysisEngines(Collection aKeys);
+  void addAnalysisEngines(Collection<String> aKeys);
 
   /**
    * Notifies this FlowController that some Analysis Engines are no longer available to route CASes to.
@@ -182,9 +182,9 @@ public interface FlowController {
    * and will remove the metadata for these new Analysis Engines.
    * <p>
    * It is not required for a FlowController implementation to support this method.  It may throw
-   * an exception if this operation is not supported 
-   * (see {@link AnalysisEngineProcessException#REMOVE_AE_FROM_FLOW_NOT_SUPPORTED}.  
-   * Also the FlowController may throw an Exception if it determines that it does not make sense for 
+   * an exception if this operation is not supported
+   * (see {@link AnalysisEngineProcessException#REMOVE_AE_FROM_FLOW_NOT_SUPPORTED}.
+   * Also the FlowController may throw an Exception if it determines that it does not make sense for
    * the flow to continue in the absence of the removed Analysis Engines
    * (see {@link AnalysisEngineProcessException#FLOW_CANNOT_CONTINUE_AFTER_REMOVE}.
    * <p>
@@ -194,10 +194,10 @@ public interface FlowController {
    * completes.
    * 
    * @param aKeys a Collection of Strings, each of which is the key of an Analysis Engine to which CASes
-   *   may no longer be routed. 
-   *   
-   * @throws AnalysisEngineProcessException if the FlowController cannot continue with these 
+   *   may no longer be routed.
+   * 
+   * @throws AnalysisEngineProcessException if the FlowController cannot continue with these
    *   Analysis Engines removed, or doesn't support removing Analysis Engines at all.
    */
-  void removeAnalysisEngines(Collection aKeys) throws AnalysisEngineProcessException;
+  void removeAnalysisEngines(Collection<String> aKeys) throws AnalysisEngineProcessException;
 }

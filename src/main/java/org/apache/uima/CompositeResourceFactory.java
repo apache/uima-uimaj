@@ -19,6 +19,8 @@
 
 package org.apache.uima;
 
+import org.apache.uima.resource.ResourceSpecifier;
+
 /**
  * A type of {@link ResourceFactory} that produces resources by delegating to other Resource
  * Factories.
@@ -41,5 +43,5 @@ public interface CompositeResourceFactory extends ResourceFactory {
    * @param aFactory
    *          the factory used to create resources from resource specifiers of the given type
    */
-  public void registerFactory(Class aResourceSpecifierInterface, ResourceFactory aFactory);
+  public void registerFactory(Class<? extends ResourceSpecifier> aResourceSpecifierInterface, ResourceFactory aFactory);
 }

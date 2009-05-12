@@ -21,7 +21,6 @@ package org.apache.uima.resource;
 
 import java.util.Properties;
 
-import org.apache.uima.UimaContext;
 import org.apache.uima.UimaContextAdmin;
 import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CAS;
@@ -60,7 +59,7 @@ public interface CasManager extends CasOwner {
    *          name to give to the pool.  Must be unique among all pool names in this
    *          CAS manager, and care should be taken to assure that this does not match the
    *          qualified name of UIMA Contexts passed to {@link #defineCasPool(UimaContextAdmin, int, Properties)}.
-   *          This name is later passed to the {@link #getCas(String)} method, to check out 
+   *          This name is later passed to the {@link #getCas(String)} method, to check out
    *          CASes from the pool.
    * @param aSize
    *          the minimum CAS pool size required
@@ -87,7 +86,7 @@ public interface CasManager extends CasOwner {
    *           if a CAS could not be created.
    */
   void defineCasPool(UimaContextAdmin aRequestorContext, int aMinimumSize, Properties aPerformanceTuningSettings)
-          throws ResourceInitializationException;  
+          throws ResourceInitializationException;
 
   /**
    * Gets an empty CAS. An AnalysisEngine may only call this method after it has first called
@@ -107,7 +106,7 @@ public interface CasManager extends CasOwner {
    * Create a new CAS using the CasDefinition stored in this CAS Manager.  Note
    * that this new CAS will not belong to any pool managed by this CAS Manager.
    * If this method is called multiple times while the CasDefinition is constant,
-   * each new CAS will share an identical TypeSystem object. 
+   * each new CAS will share an identical TypeSystem object.
    * 
    * @param aPerformanceTuningSettings
    *          settings, including initial CAS heap size, for the AE
@@ -124,7 +123,7 @@ public interface CasManager extends CasOwner {
    * @param requiredInterface
    *          interface to get. Currently must be either CAS or JCas.
    */
-  AbstractCas getCasInterface(CAS cas, Class requiredInterface);
+  AbstractCas getCasInterface(CAS cas, Class<? extends AbstractCas> requiredInterface);
   
   /**
    * Configures this CAS Manager so it can register an MBean for each of its CAS pools.
