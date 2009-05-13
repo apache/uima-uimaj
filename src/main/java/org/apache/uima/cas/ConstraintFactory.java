@@ -108,12 +108,12 @@ public abstract class ConstraintFactory {
    * some int valued feature, such as the start feature of an annotation.
    * 
    * @param path
-   *          The path to embed the constraint under. This is a list of {@link Feature features}.
+   *          The path to embed the constraint under. This is a list of {@link Feature} names.
    * @param constraint
    *          The constraint to be embedded.
    * @return A new FSMatchConstraint.
    */
-  public abstract FSMatchConstraint embedConstraint(ArrayList<Feature> path, FSConstraint constraint);
+  public abstract FSMatchConstraint embedConstraint(ArrayList<String> path, FSConstraint constraint);
 
   /**
    * Conjoin two constraints.
