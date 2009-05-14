@@ -31,7 +31,7 @@ package org.apache.uima.cas;
  * 
  * 
  */
-public interface Feature extends Comparable {
+public interface Feature extends Comparable<Feature> {
 
   /**
    * Get the domain type for this feature.

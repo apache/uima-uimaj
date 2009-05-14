@@ -32,6 +32,7 @@ import org.apache.uima.analysis_engine.metadata.FlowControllerDeclaration;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 
 /**
@@ -77,7 +78,7 @@ public interface ASB extends Resource {
    *           CasObjectProcessor instance for one of the specifiers in
    *           <code>aComponentSpecifiers</code>.
    */
-  public void setup(Map aComponentSpecifiers, UimaContextAdmin aParentContext,
+  public void setup(Map<String, ResourceSpecifier> aComponentSpecifiers, UimaContextAdmin aParentContext,
           FlowControllerDeclaration aFlowControllerDeclaration,
           AnalysisEngineMetaData aAggregateMetadata) throws ResourceInitializationException;
 

@@ -64,7 +64,7 @@ import java.util.NoSuchElementException;
  * 
  * 
  */
-public interface FSIterator extends Iterator {
+public interface FSIterator extends Iterator<FeatureStructure> {
 
   /**
    * Check if this iterator is valid.

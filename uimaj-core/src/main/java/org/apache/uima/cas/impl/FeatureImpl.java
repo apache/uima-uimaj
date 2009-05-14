@@ -102,7 +102,7 @@ public class FeatureImpl implements Feature {
    * Note: you can only compare features from the same type system. If you compare features from
    * different type systems, the result is undefined.
    */
-  public int compareTo(Object o) {
+  public int compareTo(Feature o) {
     if (this == o) {
       return 0;
     }
