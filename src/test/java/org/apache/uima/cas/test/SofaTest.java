@@ -30,7 +30,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.Reader;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -629,7 +628,7 @@ public class SofaTest extends TestCase {
     this.cas.reset();
     CAS view1 = this.cas.createView("View1");
     CAS view2 = this.cas.createView("View2");
-    Iterator iter = this.cas.getViewIterator();
+    Iterator<CAS> iter = this.cas.getViewIterator();
     assertEquals(this.cas, iter.next());
     assertEquals(view1, iter.next());
     assertEquals(view2, iter.next());
@@ -646,7 +645,7 @@ public class SofaTest extends TestCase {
     UimaContextAdmin rootCtxt = UIMAFramework.newUimaContext(
             UIMAFramework.getLogger(), UIMAFramework.newDefaultResourceManager(),
             UIMAFramework.newConfigurationManager());
-    Map sofamap = new HashMap();
+    Map<String, String> sofamap = new HashMap<String, String>();
     sofamap.put("SourceDocument","EnglishDocument");
     UimaContextAdmin childCtxt = rootCtxt.createChild("test", sofamap);
     cas.setCurrentComponentInfo(childCtxt.getComponentInfo());

@@ -48,7 +48,7 @@ import org.apache.uima.util.CasCreationUtils;
  */
 public class FixedFlowControllerTest extends TestCase {
 
-  private Map analysisEngineMetaDataMap;
+  private Map<String, AnalysisEngineMetaData> analysisEngineMetaDataMap;
   private FixedFlowController fixedFlowController;
   
   /* (non-Javadoc)
@@ -56,7 +56,7 @@ public class FixedFlowControllerTest extends TestCase {
    */
   protected void setUp() throws Exception {
     super.setUp();
-    analysisEngineMetaDataMap = new HashMap();
+    analysisEngineMetaDataMap = new HashMap<String, AnalysisEngineMetaData>();
     AnalysisEngineMetaData delegateMd = new AnalysisEngineMetaData_impl();
     delegateMd.setOperationalProperties(new OperationalProperties_impl());
     analysisEngineMetaDataMap.put("key1", delegateMd);
@@ -138,7 +138,7 @@ public class FixedFlowControllerTest extends TestCase {
     analysisEngineMetaDataMap.put("key4", delegateMd);    
     analysisEngineMetaDataMap.put("key5", delegateMd);    
     //then notify FC
-    List newAeKeys = new ArrayList();
+    List<String> newAeKeys = new ArrayList<String>();
     newAeKeys.add("key4");
     newAeKeys.add("key5");
     fixedFlowController.addAnalysisEngines(newAeKeys);
@@ -187,7 +187,7 @@ public class FixedFlowControllerTest extends TestCase {
     
     //remove "key2"
     analysisEngineMetaDataMap.remove("key2");
-    List removedKeys = new ArrayList();
+    List<String> removedKeys = new ArrayList<String>();
     removedKeys.add("key2");
     fixedFlowController.removeAnalysisEngines(removedKeys);
     

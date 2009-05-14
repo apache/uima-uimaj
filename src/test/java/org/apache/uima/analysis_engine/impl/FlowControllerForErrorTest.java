@@ -45,8 +45,8 @@ public class FlowControllerForErrorTest extends CasFlowController_ImplBase {
   private String[] mSequence;
   private boolean mContinueOnFailure;
   
-  public static List abortedDocuments = new ArrayList();
-  public static List failedAEs = new ArrayList();
+  public static List<String> abortedDocuments = new ArrayList<String>();
+  public static List<String> failedAEs = new ArrayList<String>();
 
   public void initialize(FlowControllerContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);

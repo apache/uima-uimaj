@@ -61,7 +61,7 @@ public class CasComparer {
   }
 
   public static void assertEqualViews(CAS c1, CAS c2) {
-    HashMap visited = new HashMap();
+    Map<FeatureStructure, FeatureStructure> visited = new HashMap<FeatureStructure, FeatureStructure>();
     FSIterator it1 = c1.getAnnotationIndex().iterator();
     FSIterator it2 = c2.getAnnotationIndex().iterator();
     while (it1.isValid()) {
@@ -77,10 +77,10 @@ public class CasComparer {
   }
 
   public static void assertEquals(FeatureStructure fs1, FeatureStructure fs2) {
-    assertEquals(fs1, fs2, new HashMap());
+    assertEquals(fs1, fs2, new HashMap<FeatureStructure, FeatureStructure>());
   }
 
-  public static void assertEquals(FeatureStructure fs1, FeatureStructure fs2, Map visited) {
+  public static void assertEquals(FeatureStructure fs1, FeatureStructure fs2, Map<FeatureStructure, FeatureStructure> visited) {
     if (fs1 == null) {
       Assert.assertNull(fs2);
       return;
@@ -96,11 +96,11 @@ public class CasComparer {
     // System.out.println("Comparing " + fs1.getType().getName());
     Assert.assertEquals(fs1.getType().getName(), fs2.getType().getName());
 
-    List features1 = fs1.getType().getFeatures();
-    List features2 = fs2.getType().getFeatures();
+    List<Feature> features1 = fs1.getType().getFeatures();
+    List<Feature> features2 = fs2.getType().getFeatures();
     for (int i = 0; i < features1.size(); i++) {
-      Feature feat1 = (Feature) features1.get(i);
-      Feature feat2 = (Feature) features2.get(i);
+      Feature feat1 = features1.get(i);
+      Feature feat2 = features2.get(i);
       // System.out.println("Comparing " + feat1.getName());
       Type rangeType1 = feat1.getRange();
       Type rangeType2 = feat2.getRange();

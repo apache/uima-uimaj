@@ -80,7 +80,7 @@ public class TestLog4jLogger_impl extends TestCase {
       assertNotNull(classLogger);
       Logger log4jLogger = org.apache.log4j.Logger.getLogger("org.apache.uima");
       while (log4jLogger.getLevel() == null) {
-         log4jLogger = log4jLogger.getRootLogger();
+         log4jLogger = Logger.getRootLogger();
       }
 
       String key = log4jLogger.getLevel().toString();

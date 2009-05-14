@@ -40,6 +40,7 @@ import org.apache.uima.pear.tools.PackageBrowser;
 import org.apache.uima.pear.tools.PackageInstaller;
 import org.apache.uima.resource.metadata.Capability;
 import org.apache.uima.resource.metadata.Import;
+import org.apache.uima.resource.metadata.MetaDataObject;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
 /**
@@ -168,7 +169,7 @@ public class PearRuntimeTest extends TestCase {
     desc.setPrimitive(false);
 
     // add delegates as imports
-    Map delegates = desc.getDelegateAnalysisEngineSpecifiersWithImports();
+    Map<String, MetaDataObject> delegates = desc.getDelegateAnalysisEngineSpecifiersWithImports();
     String [] keys = new String[impPears.length];
     for (int i = 0; i < impPears.length; i++) {
       keys[i] = "Pear" + i;

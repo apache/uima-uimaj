@@ -88,10 +88,10 @@ public class XCasToCasDataSaxHandlerTest extends TestCase {
       xmlReader.parse(new InputSource(getClass().getResourceAsStream("xcastest.xml")));
 
       // System.out.println(casData);
-      Iterator fsIter = casData.getFeatureStructures();
+      Iterator<FeatureStructure> fsIter = casData.getFeatureStructures();
       boolean foundCrawlUrl = false;
       while (fsIter.hasNext()) {
-        FeatureStructure fs = (FeatureStructure) fsIter.next();
+        FeatureStructure fs = fsIter.next();
         if ("Crawl_colon_URL".equals(fs.getType())) {
           // System.out.println("[" + fs.getFeatureValue("value") + "]");
           Assert
@@ -201,7 +201,7 @@ public class XCasToCasDataSaxHandlerTest extends TestCase {
   private void assertValidCasData(CasData casData, TypeSystem typeSystem) {
     Type annotType = typeSystem.getType(CAS.TYPE_NAME_ANNOTATION);
     Type arrayType = typeSystem.getType(CAS.TYPE_NAME_ARRAY_BASE);
-    Iterator fsIter = casData.getFeatureStructures();
+    Iterator<FeatureStructure> fsIter = casData.getFeatureStructures();
     while (fsIter.hasNext()) {
       org.apache.uima.cas_data.FeatureStructure fs = (org.apache.uima.cas_data.FeatureStructure) fsIter
               .next();

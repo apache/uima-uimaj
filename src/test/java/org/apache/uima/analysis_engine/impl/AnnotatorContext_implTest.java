@@ -25,6 +25,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -79,7 +81,7 @@ public class AnnotatorContext_implTest extends TestCase {
       AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
       PrimitiveAnalysisEngine_impl tae = new PrimitiveAnalysisEngine_impl();
       // set data path just to test that we can get it later
-      HashMap map = new HashMap();
+      Map<String, Object> map = new HashMap<String, Object>();
       ResourceManager rm = UIMAFramework.newDefaultResourceManager();
       rm.setDataPath(TEST_DATAPATH);
       rm.setExtensionClassPath(TEST_EXTENSION_CLASSPATH, true);
@@ -280,7 +282,7 @@ public class AnnotatorContext_implTest extends TestCase {
   public void testGetConfigurationGroupNames() {
     String[] names = mAC1.getConfigurationGroupNames();
     Assert.assertEquals(5, names.length);
-    ArrayList l = new ArrayList(Arrays.asList(names));
+    List<String> l = new ArrayList<String>(Arrays.asList(names));
     Assert.assertTrue(l.contains("en"));
     Assert.assertTrue(l.contains("en-US"));
     Assert.assertTrue(l.contains("de"));
@@ -310,7 +312,7 @@ public class AnnotatorContext_implTest extends TestCase {
   public void testGetConfigParameterNamesString() {
     String[] names = mAC1.getConfigParameterNames("en");
     Assert.assertEquals(4, names.length);
-    ArrayList l = new ArrayList(Arrays.asList(names));
+    List<String> l = new ArrayList<String>(Arrays.asList(names));
     Assert.assertTrue(l.contains("StringParam"));
     Assert.assertTrue(l.contains("StringArrayParam"));
     Assert.assertTrue(l.contains("IntegerParam"));

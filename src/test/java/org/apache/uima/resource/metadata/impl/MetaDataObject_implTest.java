@@ -36,6 +36,7 @@ import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
 import org.apache.uima.resource.metadata.MetaDataObject;
 import org.apache.uima.resource.metadata.NameValuePair;
 import org.apache.uima.test.junit_extension.JUnitExtension;
+import org.apache.uima.util.NameClassPair;
 import org.apache.uima.util.XMLParser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -99,9 +100,9 @@ public class MetaDataObject_implTest extends TestCase {
    */
   public void testListAttributes() throws Exception {
     try {
-      HashSet apple1Attrs = new HashSet(apple1.listAttributes());
-      HashSet orangeAttrs = new HashSet(orange.listAttributes());
-      HashSet bagAttrs = new HashSet(fruitBag.listAttributes());
+      HashSet<NameClassPair> apple1Attrs = new HashSet<NameClassPair>(apple1.listAttributes());
+      HashSet<NameClassPair> orangeAttrs = new HashSet<NameClassPair>(orange.listAttributes());
+      HashSet<NameClassPair> bagAttrs = new HashSet<NameClassPair>(fruitBag.listAttributes());
 
       Assert.assertEquals(TestFruitObject.getAttributeSet(), apple1Attrs);
       Assert.assertEquals(TestFruitObject.getAttributeSet(), orangeAttrs);

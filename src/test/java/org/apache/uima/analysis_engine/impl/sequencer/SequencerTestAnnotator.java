@@ -105,10 +105,9 @@ public class SequencerTestAnnotator extends Annotator_ImplBase implements
                writer.write("\nResultSpec for annotator " + this.name + ":\n");
                TypeOrFeature[] tofs = resultSpec.getResultTypesAndFeatures();
                // sort by name to ensure consistent output for testing purposes
-               Arrays.sort(tofs, new Comparator() {
-                  public int compare(Object o1, Object o2) {
-                     return ((TypeOrFeature) o1).getName().compareTo(
-                           ((TypeOrFeature) o2).getName());
+               Arrays.sort(tofs, new Comparator<TypeOrFeature>() {
+                  public int compare(TypeOrFeature o1, TypeOrFeature o2) {
+                     return o1.getName().compareTo(o2.getName());
                   }
                });
                for (int i = 0; i < tofs.length; i++) {

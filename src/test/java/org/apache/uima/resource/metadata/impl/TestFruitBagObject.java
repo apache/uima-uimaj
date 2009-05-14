@@ -28,6 +28,14 @@ import org.apache.uima.util.NameClassPair;
  * A simple concrete MetaDataObject implementation for use in testing the MetaDataObject_impl class.
  */
 public class TestFruitBagObject extends MetaDataObject_impl {
+  
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("fruitBag",
+          new PropertyXmlInfo[] { new PropertyXmlInfo("fruits") });
+
+  private String mName;
+
+  private TestFruitObject[] mFruits;
+  
   public TestFruitBagObject() {
     //do nothing
   }
@@ -44,8 +52,8 @@ public class TestFruitBagObject extends MetaDataObject_impl {
    * For testing purposes - a hardcoded attribute set. Should be compared with the results of
    * {@link #listAttributes()}.
    */
-  static public Set getAttributeSet() {
-    HashSet result = new HashSet();
+  static public Set<NameClassPair> getAttributeSet() {
+    Set<NameClassPair> result = new HashSet<NameClassPair>();
     result.add(new NameClassPair("fruits", TestFruitObject[].class.getName()));
     return result;
   }
@@ -54,10 +62,4 @@ public class TestFruitBagObject extends MetaDataObject_impl {
     return XMLIZATION_INFO;
   }
 
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("fruitBag",
-          new PropertyXmlInfo[] { new PropertyXmlInfo("fruits") });
-
-  private String mName;
-
-  private TestFruitObject[] mFruits;
 }

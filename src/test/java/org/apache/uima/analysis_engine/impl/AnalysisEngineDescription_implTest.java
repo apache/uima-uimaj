@@ -45,6 +45,7 @@ import org.apache.uima.resource.ExternalResourceDependency;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
+import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.URISpecifier;
 import org.apache.uima.resource.impl.URISpecifier_impl;
 import org.apache.uima.resource.metadata.AllowedValue;
@@ -56,6 +57,7 @@ import org.apache.uima.resource.metadata.ExternalResourceBinding;
 import org.apache.uima.resource.metadata.FeatureDescription;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.FsIndexKeyDescription;
+import org.apache.uima.resource.metadata.MetaDataObject;
 import org.apache.uima.resource.metadata.NameValuePair;
 import org.apache.uima.resource.metadata.OperationalProperties;
 import org.apache.uima.resource.metadata.ResourceManagerConfiguration;
@@ -88,6 +90,10 @@ public class AnalysisEngineDescription_implTest extends TestCase {
   // Text encoding to use for the various byte/character conversions happening in this test case.
   // Public because also used by other test cases.
   public static final String encoding = "utf-8";
+  
+  private AnalysisEngineDescription primitiveDesc;
+
+  private AnalysisEngineDescription aggregateDesc;
   
   /**
    * Constructor for AnalysisEngineDescription_implTest.
@@ -203,7 +209,7 @@ public class AnalysisEngineDescription_implTest extends TestCase {
       aggregateDesc = new AnalysisEngineDescription_impl();
       aggregateDesc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
       aggregateDesc.setPrimitive(false);
-      Map delegateTaeMap = aggregateDesc.getDelegateAnalysisEngineSpecifiersWithImports();
+      Map<String, MetaDataObject> delegateTaeMap = aggregateDesc.getDelegateAnalysisEngineSpecifiersWithImports();
       delegateTaeMap.put("Test", primitiveDesc);
       AnalysisEngineDescription_impl primDesc2 = new AnalysisEngineDescription_impl();
       primDesc2.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
@@ -345,17 +351,17 @@ public class AnalysisEngineDescription_implTest extends TestCase {
 
   public void testDelegateImports() throws Exception {
     // create aggregate TAE description and add delegate AE import
-    AnalysisEngineDescription_impl testAgg = new AnalysisEngineDescription_impl();
-    Map delegateMap = testAgg.getDelegateAnalysisEngineSpecifiersWithImports();
+    AnalysisEngineDescription testAgg = new AnalysisEngineDescription_impl();
+    Map<String, MetaDataObject> delegateMap = testAgg.getDelegateAnalysisEngineSpecifiersWithImports();
     Import_impl delegateImport = new Import_impl();
     delegateImport.setLocation(JUnitExtension.getFile(
             "TextAnalysisEngineImplTest/TestPrimitiveTae1.xml").toURL().toString());
     delegateMap.put("key", delegateImport);
 
     // test that import is resolved
-    Map mapWithImportsResolved = testAgg.getDelegateAnalysisEngineSpecifiers();
+    Map<String, ResourceSpecifier> mapWithImportsResolved = testAgg.getDelegateAnalysisEngineSpecifiers();
     assertEquals(1, mapWithImportsResolved.size());
-    Object obj = mapWithImportsResolved.values().iterator().next();
+    ResourceSpecifier obj = mapWithImportsResolved.values().iterator().next();
     assertTrue(obj instanceof AnalysisEngineDescription);
 
     // test that remove works
@@ -487,7 +493,7 @@ public class AnalysisEngineDescription_implTest extends TestCase {
 
   public void testGetAllComponentSpecifiers() throws Exception {
     try {
-      Map allSpecs = aggregateDesc.getAllComponentSpecifiers(null);
+      Map<String, ResourceSpecifier> allSpecs = aggregateDesc.getAllComponentSpecifiers(null);
       FlowControllerDescription fcDesc = (FlowControllerDescription) allSpecs
               .get("TestFlowController");
       assertNotNull(fcDesc);
@@ -540,9 +546,4 @@ public class AnalysisEngineDescription_implTest extends TestCase {
     Assert.assertNotNull(ex.getMessage());
     Assert.assertFalse(ex.getMessage().startsWith("EXCEPTION MESSAGE LOCALIZATION FAILED"));
   }
-
-  private AnalysisEngineDescription_impl primitiveDesc;
-
-  private AnalysisEngineDescription_impl aggregateDesc;
-
 }

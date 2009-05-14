@@ -983,7 +983,7 @@ public class AnalysisEngine_implTest extends TestCase {
       cas.reset();
       cas.setDocumentText("One\tTwo\nThree\tFour");
       iter = ae.processAndOutputNewCASes(cas);
-      Set expectedOutputs = new HashSet();
+      Set<String> expectedOutputs = new HashSet<String>();
       expectedOutputs.add("One");
       expectedOutputs.add("Two\nThree");
       expectedOutputs.add("Four");
@@ -1239,7 +1239,7 @@ public class AnalysisEngine_implTest extends TestCase {
       CAS outCas = iter.next();
       assertEquals("This is one.", outCas.getDocumentText());
       // -- check SourceDocumentInformation FSs
-      Iterator sdiIter = outCas.getAnnotationIndex(sdiType).iterator();
+      Iterator<FeatureStructure> sdiIter = outCas.getAnnotationIndex(sdiType).iterator();
       assertTrue(sdiIter.hasNext());
       AnnotationFS outSdiFs = (AnnotationFS) sdiIter.next();
       assertEquals("This is", outSdiFs.getCoveredText());

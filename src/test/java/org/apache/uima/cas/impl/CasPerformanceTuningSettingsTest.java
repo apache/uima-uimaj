@@ -20,6 +20,7 @@
 package org.apache.uima.cas.impl;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import junit.framework.Assert;
@@ -64,7 +65,7 @@ public class CasPerformanceTuningSettingsTest extends TestCase {
       Assert.assertEquals(expectedHeapSizeDefault, heapSize);
 
       // check override
-      HashMap params = new HashMap();
+      Map<String, Object> params = new HashMap<String, Object>();
       params.put(Resource.PARAM_PERFORMANCE_TUNING_SETTINGS, newProps);
       TextAnalysisEngine taeOverride = UIMAFramework.produceTAE(testDescriptor, params);
       CAS tcasOverride = taeOverride.newCAS();

@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
+import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -168,7 +169,7 @@ public class IteratorTest extends TestCase {
   }
 
   public void testGetIndexes() {
-    Iterator it = this.cas.getIndexRepository().getIndexes();
+    Iterator<FSIndex> it = this.cas.getIndexRepository().getIndexes();
     while (it.hasNext()) {
       assertTrue(it.next() instanceof FSIndex);
     }
@@ -263,7 +264,7 @@ public class IteratorTest extends TestCase {
     }
 
     // also test Java-style iteration
-    Iterator javaIt = setIndex.iterator();
+    Iterator<FeatureStructure> javaIt = setIndex.iterator();
     current = 0;
     while (javaIt.hasNext()) {
       assertEquals(javaIt.next().hashCode(), v.get(current++));
@@ -334,7 +335,7 @@ public class IteratorTest extends TestCase {
     assertTrue(sortedIndex.size() == v.size());
 
     // Test moveTo()
-    ArrayList list = new ArrayList();
+    List<FeatureStructure> list = new ArrayList<FeatureStructure>();
     it = this.cas.getAnnotationIndex().iterator();
     for (it.moveToFirst(); it.isValid(); it.moveToNext()) {
       list.add(it.get());
