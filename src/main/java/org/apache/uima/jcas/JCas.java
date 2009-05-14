@@ -372,7 +372,7 @@ public interface JCas extends AbstractCas {
    *          The <code>FSListIterator</code> to be wrapped.
    * @return An equivalent <code>ListIterator</code>.
    */
-  java.util.ListIterator fs2listIterator(FSIterator it);
+  java.util.ListIterator<FeatureStructure> fs2listIterator(FSIterator it);
 
   /**
    * Reset the CAS, emptying it of all content. Feature structures and iterators will no longer be
@@ -583,7 +583,7 @@ public interface JCas extends AbstractCas {
    * @return an iterator which returns all views.  Each object returned by
    *   the iterator is of type JCas.
    */
-  Iterator getViewIterator() throws CASException;  
+  Iterator<CAS> getViewIterator() throws CASException;  
   
   /**
    * Get iterator over all views with the given name prefix.  Each view provides access to Sofa data
@@ -600,5 +600,5 @@ public interface JCas extends AbstractCas {
    * @return an iterator which returns all views with the given name prefix.  
    *   Each object returned by the iterator is of type JCas.
    */
-  Iterator getViewIterator(String localViewNamePrefix) throws CASException;
+  Iterator<CAS> getViewIterator(String localViewNamePrefix) throws CASException;
 }

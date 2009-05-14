@@ -53,7 +53,7 @@ package org.apache.uima.cas;
  * 
  * 
  */
-public interface FSIndex {
+public interface FSIndex extends Iterable<FeatureStructure> {
 
   /**
    * Indexing strategy: sorted index. A sorted index contains all elements, including duplicates.

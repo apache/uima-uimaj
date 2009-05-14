@@ -20,6 +20,7 @@
 package org.apache.uima.cas.impl;
 
 import org.apache.uima.cas.FSIterator;
+import org.apache.uima.cas.FeatureStructure;
 
 /**
  * Base class for FSIterator implementations. Defines the hasNext, next, and remove methods required
@@ -43,8 +44,8 @@ public abstract class FSIteratorImplBase implements FSIterator {
    * 
    * @see java.util.Iterator#next()
    */
-  public Object next() {
-    Object result = get();
+  public FeatureStructure next() {
+    FeatureStructure result = get();
     moveToNext();
     return result;
   }
