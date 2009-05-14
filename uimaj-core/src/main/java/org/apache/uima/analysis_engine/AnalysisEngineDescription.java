@@ -34,6 +34,7 @@ import org.apache.uima.resource.ResourceCreationSpecifier;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.ResourceSpecifier;
+import org.apache.uima.resource.metadata.MetaDataObject;
 import org.apache.uima.util.InvalidXMLException;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -211,7 +212,7 @@ public interface AnalysisEngineDescription extends ResourceCreationSpecifier {
    *         {@link org.apache.uima.resource.metadata.Import} objects as values. This Map may be
    *         modified to add or remove imports or specifiers.
    */
-  public Map<String, ResourceSpecifier> getDelegateAnalysisEngineSpecifiersWithImports();
+  public Map<String, MetaDataObject> getDelegateAnalysisEngineSpecifiersWithImports();
 
   /**
    * For an aggregate AnalysisEngine only, gets the declaration of which FlowController should be
