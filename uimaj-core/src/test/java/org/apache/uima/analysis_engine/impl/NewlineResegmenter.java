@@ -24,6 +24,7 @@ import java.util.Iterator;
 import org.apache.uima.analysis_component.JCasMultiplier_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.AbstractCas;
+import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.examples.SourceDocumentInformation;
 import org.apache.uima.jcas.JCas;
 
@@ -140,7 +141,7 @@ public class NewlineResegmenter extends JCasMultiplier_ImplBase {
   }
 
   private String getCasSourceUri(JCas jcas) {
-    Iterator iter = jcas.getJFSIndexRepository().getAnnotationIndex(SourceDocumentInformation.type)
+    Iterator<FeatureStructure> iter = jcas.getJFSIndexRepository().getAnnotationIndex(SourceDocumentInformation.type)
             .iterator();
     if (iter.hasNext()) {
       SourceDocumentInformation sdi = (SourceDocumentInformation) iter.next();

@@ -36,6 +36,7 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIterator;
+import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.SofaID;
 import org.apache.uima.cas.Type;
@@ -479,7 +480,7 @@ public class JcasSofaTest extends TestCase {
       Annotation annot = new Annotation(newJCas);
       annot.addToIndexes();
       
-      Iterator annotIter = newJCas.getAnnotationIndex(Annotation.type).iterator();
+      Iterator<FeatureStructure> annotIter = newJCas.getAnnotationIndex(Annotation.type).iterator();
       Annotation annot2 = (Annotation)annotIter.next();
       assertEquals(annot, annot2);
       assertEquals(annot2.getSofa(), annot2.getCASImpl().getSofa());

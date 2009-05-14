@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -263,7 +264,7 @@ public class SerializationNoMDTest extends TestCase {
     // Get a handle to the index repository.
     FSIndexRepository indexRepository = cas.getIndexRepository();
     // assert(indexRepository != null);
-    Iterator labelIt = indexRepository.getLabels();
+    Iterator<String> labelIt = indexRepository.getLabels();
     assertTrue(labelIt != null);
     // Get the standard index for tokens.
     FSIndex tokenIndex = cas.getAnnotationIndex(tokenType);
@@ -408,7 +409,7 @@ public class SerializationNoMDTest extends TestCase {
     String line;
     BufferedReader br = new BufferedReader(new StringReader(moby));
     StringBuffer buf = new StringBuffer();
-    ArrayList docs = new ArrayList();
+    List<String> docs = new ArrayList<String>();
     while ((line = br.readLine()) != null) {
       if (line.startsWith(".. <p")) {
         docs.add(buf.toString());

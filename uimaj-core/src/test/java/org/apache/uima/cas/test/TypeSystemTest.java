@@ -24,7 +24,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -361,11 +360,11 @@ public class TypeSystemTest extends TestCase {
   }
 
   public void testGetTypeIterator() {
-    Iterator it = this.ts.getTypeIterator();
+    Iterator<Type> it = this.ts.getTypeIterator();
     // Put the type names in a vector and do some spot checks.
-    ArrayList v = new ArrayList();
+    ArrayList<String> v = new ArrayList<String>();
     while (it.hasNext()) {
-      v.add(((Type) it.next()).getName());
+      v.add(it.next().getName());
     }
     assertTrue(v.contains(CAS.TYPE_NAME_TOP));
     assertTrue(v.contains(CAS.TYPE_NAME_FLOAT));
@@ -375,11 +374,11 @@ public class TypeSystemTest extends TestCase {
   }
 
   public void testGetFeatures() {
-    Iterator it = this.ts.getFeatures();
+    Iterator<Feature> it = this.ts.getFeatures();
     // Put feature names in vector and test for some known features.
-    ArrayList v = new ArrayList();
+    List<String> v = new ArrayList<String>();
     while (it.hasNext()) {
-      v.add(((Feature) it.next()).getName());
+      v.add(it.next().getName());
     }
     String annotPrefix = CAS.TYPE_NAME_ANNOTATION + TypeSystem.FEATURE_SEPARATOR;
     String arrayPrefix = CAS.TYPE_NAME_ARRAY_BASE + TypeSystem.FEATURE_SEPARATOR;
@@ -398,7 +397,7 @@ public class TypeSystemTest extends TestCase {
   }
 
   public void testGetDirectlySubsumedTypes() {
-    List subTypes = this.ts.getDirectSubtypes(this.ts.getType(CAS.TYPE_NAME_TOP));
+    List<Type> subTypes = this.ts.getDirectSubtypes(this.ts.getType(CAS.TYPE_NAME_TOP));
     Type intType = this.ts.getType(CAS.TYPE_NAME_INTEGER);
     assertTrue(subTypes.contains(intType));
     Type annotBaseType = this.ts.getType(CAS.TYPE_NAME_ANNOTATION_BASE);

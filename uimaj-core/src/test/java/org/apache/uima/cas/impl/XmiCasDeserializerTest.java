@@ -156,10 +156,10 @@ public class XmiCasDeserializerTest extends TestCase {
     // check that array refs are not null
     Type entityType = cas2.getTypeSystem().getType("org.apache.uima.testTypeSystem.Entity");
     Feature classesFeat = entityType.getFeatureByBaseName("classes");
-    Iterator iter = cas2.getIndexRepository().getIndex("testEntityIndex").iterator();
+    Iterator<FeatureStructure> iter = cas2.getIndexRepository().getIndex("testEntityIndex").iterator();
     assertTrue(iter.hasNext());
     while (iter.hasNext()) {
-      FeatureStructure fs = (FeatureStructure) iter.next();
+      FeatureStructure fs = iter.next();
       StringArrayFS arrayFS = (StringArrayFS) fs.getFeatureValue(classesFeat);
       assertNotNull(arrayFS);
       for (int i = 0; i < arrayFS.size(); i++) {
@@ -168,10 +168,10 @@ public class XmiCasDeserializerTest extends TestCase {
     }
     Type annotArrayTestType = cas2.getTypeSystem().getType("org.apache.uima.testTypeSystem.AnnotationArrayTest");
     Feature annotArrayFeat = annotArrayTestType.getFeatureByBaseName("arrayOfAnnotations");
-    Iterator iter2 = cas2.getAnnotationIndex(annotArrayTestType).iterator();
+    Iterator<FeatureStructure> iter2 = cas2.getAnnotationIndex(annotArrayTestType).iterator();
     assertTrue(iter2.hasNext());
     while (iter2.hasNext()) {
-      FeatureStructure fs = (FeatureStructure) iter2.next();
+      FeatureStructure fs = iter2.next();
       ArrayFS arrayFS = (ArrayFS) fs.getFeatureValue(annotArrayFeat);
       assertNotNull(arrayFS);
       for (int i = 0; i < arrayFS.size(); i++) {
@@ -420,7 +420,7 @@ public class XmiCasDeserializerTest extends TestCase {
 
     //test that index is correctly populated
     Type intArrayType = cas2.getTypeSystem().getType(CAS.TYPE_NAME_INTEGER_ARRAY);
-    Iterator iter = cas2.getIndexRepository().getAllIndexedFS(intArrayType);
+    Iterator<FeatureStructure> iter = cas2.getIndexRepository().getAllIndexedFS(intArrayType);
     assertTrue(iter.hasNext());
     IntArrayFS intArrayFS2 = (IntArrayFS)iter.next();
     assertFalse(iter.hasNext());
@@ -765,7 +765,7 @@ public class XmiCasDeserializerTest extends TestCase {
 	  assertTrue(cas2tIndex.size() == 4); // prev annots and this new one
 	  
 	  //modify an existing annotation
-	  Iterator tIndexIter = cas2tIndex.iterator();
+	  Iterator<FeatureStructure> tIndexIter = cas2tIndex.iterator();
 	  AnnotationFS docAnnot = (AnnotationFS) tIndexIter.next(); //doc annot
 	  //delete from index
 	  AnnotationFS delAnnot = (AnnotationFS) tIndexIter.next(); //annot
@@ -776,7 +776,7 @@ public class XmiCasDeserializerTest extends TestCase {
 	  Feature languageF = cas2.getDocumentAnnotation().getType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_LANGUAGE);
 	  docAnnot.setStringValue(languageF, "en");
 	  // serialize cas2 in delta format 
-	  String deltaxml1 = this.serialize(cas2, sharedData2, marker);
+	  String deltaxml1 = serialize(cas2, sharedData2, marker);
 	  //System.out.println("delta cas");
 	  //System.out.println(deltaxml1);
 	  
@@ -809,7 +809,7 @@ public class XmiCasDeserializerTest extends TestCase {
       
       //serialize complete  
       XmiSerializationSharedData sharedData = new XmiSerializationSharedData();
-      String xml = this.serialize(cas1, sharedData);
+      String xml = serialize(cas1, sharedData);
       int maxOutgoingXmiId = sharedData.getMaxXmiId();
       
       //deserialize into cas2
@@ -827,13 +827,13 @@ public class XmiCasDeserializerTest extends TestCase {
       assertTrue(cas2tIndex.size() == 4); // prev annots and this new one
       
       //modify language feature
-      Iterator tIndexIter = cas2tIndex.iterator();
+      Iterator<FeatureStructure> tIndexIter = cas2tIndex.iterator();
       AnnotationFS docAnnot = (AnnotationFS) tIndexIter.next();
       Feature languageF = cas2.getDocumentAnnotation().getType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_LANGUAGE);
       docAnnot.setStringValue(languageF, "en");
      
       // serialize cas2 in delta format 
-      String deltaxml1 = this.serialize(cas2, sharedData2, marker);
+      String deltaxml1 = serialize(cas2, sharedData2, marker);
       //System.out.println(deltaxml1);
       
       //deserialize delta xmi into cas1
@@ -862,7 +862,7 @@ public class XmiCasDeserializerTest extends TestCase {
 
 	      //serialize complete  
 	      XmiSerializationSharedData sharedData = new XmiSerializationSharedData();
-	      String xml = this.serialize(cas1, sharedData);
+	      String xml = serialize(cas1, sharedData);
 	      int maxOutgoingXmiId = sharedData.getMaxXmiId();
 	      
 	      //deserialize into cas2
@@ -875,7 +875,7 @@ public class XmiCasDeserializerTest extends TestCase {
 	      FSIndex cas2tIndex = cas2.getAnnotationIndex();
 	      
 	      // serialize cas2 in delta format 
-	      String deltaxml1 = this.serialize(cas2, sharedData2, marker);
+	      String deltaxml1 = serialize(cas2, sharedData2, marker);
 	      //System.out.println(deltaxml1);
 	      
 	      //deserialize delta xmi into cas1
@@ -908,7 +908,7 @@ public class XmiCasDeserializerTest extends TestCase {
       
       //serialize complete  
       XmiSerializationSharedData sharedData = new XmiSerializationSharedData();
-      String xml = this.serialize(cas1, sharedData);
+      String xml = serialize(cas1, sharedData);
       int maxOutgoingXmiId = sharedData.getMaxXmiId();
       
       //deserialize into cas2
@@ -926,7 +926,7 @@ public class XmiCasDeserializerTest extends TestCase {
       assertTrue(cas2tIndex.size() == 4); // prev annots and this new one
       
       //modify language feature
-      Iterator tIndexIter = cas2tIndex.iterator();
+      Iterator<FeatureStructure> tIndexIter = cas2tIndex.iterator();
       AnnotationFS docAnnot = (AnnotationFS) tIndexIter.next();
       
       //delete annotation from index    
@@ -935,7 +935,7 @@ public class XmiCasDeserializerTest extends TestCase {
       assertTrue(cas2.getAnnotationIndex().size() == 3);
       
       // serialize cas2 in delta format 
-      String deltaxml1 = this.serialize(cas2, sharedData2, marker);
+      String deltaxml1 = serialize(cas2, sharedData2, marker);
       //System.out.println(deltaxml1);
       
       //deserialize delta xmi into cas1
@@ -1041,7 +1041,7 @@ public class XmiCasDeserializerTest extends TestCase {
       
       //serialize complete  
       XmiSerializationSharedData sharedData = new XmiSerializationSharedData();
-      String xml = this.serialize(cas1, sharedData);
+      String xml = serialize(cas1, sharedData);
       int maxOutgoingXmiId = sharedData.getMaxXmiId();
       //System.out.println("CAS1 " + xml);
       //System.out.println("MaxOutgoingXmiId " + maxOutgoingXmiId);
@@ -1075,7 +1075,7 @@ public class XmiCasDeserializerTest extends TestCase {
       assertTrue(cas2view1Index.size() == 2); //document annot and this annot
       
       //modify an existing annotation
-      Iterator tIndexIter = cas2tIndex.iterator();
+      Iterator<FeatureStructure> tIndexIter = cas2tIndex.iterator();
       AnnotationFS docAnnot = (AnnotationFS) tIndexIter.next(); //doc annot
       AnnotationFS modAnnot1 = (AnnotationFS) tIndexIter.next();
       AnnotationFS delAnnot = (AnnotationFS)  tIndexIter.next();
@@ -1093,7 +1093,7 @@ public class XmiCasDeserializerTest extends TestCase {
       cas2.getIndexRepository().removeFS(delAnnot);
       
       //modify FS - string feature and FS feature.
-      Iterator personIter = cas2personIndex.iterator();     
+      Iterator<FeatureStructure> personIter = cas2personIndex.iterator();     
       AnnotationFS cas2person1 = (AnnotationFS) personIter.next();
       AnnotationFS cas2person2 = (AnnotationFS) personIter.next();
       
@@ -1103,19 +1103,19 @@ public class XmiCasDeserializerTest extends TestCase {
       cas2person2.setStringValue(componentIdFeat, "delataCas2");
       cas2person2.setStringValue(mentionTypeFeat, "FIRSTNAME");
       
-      Iterator orgIter = cas2orgIndex.iterator();
+      Iterator<FeatureStructure> orgIter = cas2orgIndex.iterator();
       AnnotationFS cas2orgAnnot = (AnnotationFS) orgIter.next();
       cas2orgAnnot.setStringValue(mentionTypeFeat, "ORGNAME");
       
       //modify FS feature
-      Iterator ownerIter = cas2ownerIndex.iterator();
+      Iterator<FeatureStructure> ownerIter = cas2ownerIndex.iterator();
       AnnotationFS cas2ownerAnnot = (AnnotationFS) ownerIter.next();
       FeatureStructure cas2relArgs = cas2ownerAnnot.getFeatureValue(argsFeat);
       cas2relArgs.setFeatureValue(rangeFeat, cas2orgAnnot);
       
     //Test modification of a nonshared multivalued feature.
       //This should serialize the encompassing FS.
-      Iterator iter = cas2.getIndexRepository().getIndex("testEntityIndex").iterator();
+      Iterator<FeatureStructure> iter = cas2.getIndexRepository().getIndex("testEntityIndex").iterator();
       FeatureStructure cas2EntityFS = (FeatureStructure) iter.next();
       StringArrayFS cas2strarrayFS = (StringArrayFS) cas2EntityFS.getFeatureValue(classesFeat);
       cas2strarrayFS.set(1, "class2");
@@ -1133,7 +1133,7 @@ public class XmiCasDeserializerTest extends TestCase {
       cas2secondNode.setFeatureValue(tailFeat, cas2thirdNode);
       
       // serialize cas2 in delta format 
-      String deltaxml1 = this.serialize(cas2, sharedData2, marker);
+      String deltaxml1 = serialize(cas2, sharedData2, marker);
       //System.out.println("delta cas");
       //System.out.println(deltaxml1);
       
@@ -1143,7 +1143,7 @@ public class XmiCasDeserializerTest extends TestCase {
       
       //======================================================================
       //serialize complete cas and deserialize into cas3 and compare with cas1.
-      String fullxml = this.serialize(cas2, sharedData2);
+      String fullxml = serialize(cas2, sharedData2);
       XmiSerializationSharedData sharedData3 = new XmiSerializationSharedData();
       this.deserialize(fullxml, cas3, sharedData3, true,-1);
       CasComparer.assertEquals(cas1, cas3); 
@@ -1212,7 +1212,7 @@ public class XmiCasDeserializerTest extends TestCase {
 	       
 	      //serialize complete  
 	      XmiSerializationSharedData sharedData = new XmiSerializationSharedData();
-	      String xml = this.serialize(cas1, sharedData);
+	      String xml = serialize(cas1, sharedData);
 	      int maxOutgoingXmiId = sharedData.getMaxXmiId();
 	      //System.out.println("CAS1 " + xml);
 	      //System.out.println("MaxOutgoingXmiId " + maxOutgoingXmiId);
@@ -1237,8 +1237,8 @@ public class XmiCasDeserializerTest extends TestCase {
 	      assertTrue(cas2tIndex.size() == 7); // prev annots and twonew one
 	      
 	      //add to FSList 
-	      Iterator iter = cas2.getIndexRepository().getIndex("testEntityIndex").iterator();
-	      FeatureStructure cas2EntityFS = (FeatureStructure) iter.next();
+	      Iterator<FeatureStructure> iter = cas2.getIndexRepository().getIndex("testEntityIndex").iterator();
+	      FeatureStructure cas2EntityFS = iter.next();
 	      FeatureStructure cas2linksFS = cas2EntityFS.getFeatureValue(linksFeat);
 	      FeatureStructure cas2secondNode = cas2linksFS.getFeatureValue(tailFeat);
 	      FeatureStructure cas2emptyNode = cas2secondNode.getFeatureValue(tailFeat);
@@ -1252,7 +1252,7 @@ public class XmiCasDeserializerTest extends TestCase {
 	      cas2fourthNode.setFeatureValue(tailFeat, cas2emptyNode);
 	      
 	      // serialize cas2 in delta format 
-	      String deltaxml1 = this.serialize(cas2, sharedData2, marker);
+	      String deltaxml1 = serialize(cas2, sharedData2, marker);
 	      //System.out.println("delta cas");
 	      //System.out.println(deltaxml1);
 	      
@@ -1262,7 +1262,7 @@ public class XmiCasDeserializerTest extends TestCase {
 	      CasComparer.assertEquals(cas2linksFS, entityFS.getFeatureValue(linksFeat));
 	      //======================================================================
 	      //serialize complete cas and deserialize into cas3 and compare with cas1.
-	      String fullxml = this.serialize(cas2, sharedData2);
+	      String fullxml = serialize(cas2, sharedData2);
 	      XmiSerializationSharedData sharedData3 = new XmiSerializationSharedData();
 	      this.deserialize(fullxml, cas3, sharedData3, true,-1);
 	      CasComparer.assertEquals(cas1, cas3); 
@@ -1599,7 +1599,7 @@ public class XmiCasDeserializerTest extends TestCase {
   
   static class GetNumChildrenTestHandler extends DefaultHandler {
     XmiCasSerializer xmiSer;
-    Stack childCountStack = new Stack();
+    Stack<Integer> childCountStack = new Stack<Integer>();
     
     GetNumChildrenTestHandler(XmiCasSerializer xmiSer) {
       this.xmiSer = xmiSer;

@@ -19,6 +19,8 @@
 
 package org.apache.uima.analysis_engine.impl;
 
+import static org.apache.uima.analysis_engine.impl.AnalysisEngineDescription_implTest.encoding;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -48,6 +50,7 @@ import org.apache.uima.resource.metadata.ExternalResourceBinding;
 import org.apache.uima.resource.metadata.FeatureDescription;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.FsIndexKeyDescription;
+import org.apache.uima.resource.metadata.MetaDataObject;
 import org.apache.uima.resource.metadata.NameValuePair;
 import org.apache.uima.resource.metadata.ResourceManagerConfiguration;
 import org.apache.uima.resource.metadata.TypeDescription;
@@ -66,13 +69,16 @@ import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
-import static org.apache.uima.analysis_engine.impl.AnalysisEngineDescription_implTest.encoding;
-
 /**
  * Test the TaeDescription_impl class.
  * 
  */
 public class TaeDescription_implTest extends TestCase {
+  
+  private AnalysisEngineDescription primitiveDesc;
+
+  private AnalysisEngineDescription aggregateDesc;
+  
   /**
    * Constructor for TaeDescription_implTest.
    * 
@@ -185,7 +191,7 @@ public class TaeDescription_implTest extends TestCase {
       aggregateDesc = new AnalysisEngineDescription_impl();
       aggregateDesc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
       aggregateDesc.setPrimitive(false);
-      Map delegateTaeMap = aggregateDesc.getDelegateAnalysisEngineSpecifiersWithImports();
+      Map<String, MetaDataObject> delegateTaeMap = aggregateDesc.getDelegateAnalysisEngineSpecifiersWithImports();
       delegateTaeMap.put("Test", primitiveDesc);
       AnalysisEngineDescription_impl primDesc2 = new AnalysisEngineDescription_impl();
       primDesc2.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
@@ -299,9 +305,4 @@ public class TaeDescription_implTest extends TestCase {
       JUnitExtension.handleException(e);
     }
   }
-
-  private AnalysisEngineDescription_impl primitiveDesc;
-
-  private AnalysisEngineDescription_impl aggregateDesc;
-
 }

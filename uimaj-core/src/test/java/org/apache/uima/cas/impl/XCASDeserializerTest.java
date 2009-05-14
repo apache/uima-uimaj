@@ -145,10 +145,10 @@ public class XCASDeserializerTest extends TestCase {
     // check that array refs are not null
     Type entityType = cas.getTypeSystem().getType("org.apache.uima.testTypeSystem.Entity");
     Feature classesFeat = entityType.getFeatureByBaseName("classes");
-    Iterator iter = cas.getIndexRepository().getIndex("testEntityIndex").iterator();
+    Iterator<FeatureStructure> iter = cas.getIndexRepository().getIndex("testEntityIndex").iterator();
     assertTrue(iter.hasNext());
     while (iter.hasNext()) {
-      FeatureStructure fs = (FeatureStructure) iter.next();
+      FeatureStructure fs = iter.next();
       StringArrayFS arrayFS = (StringArrayFS) fs.getFeatureValue(classesFeat);
       assertNotNull(arrayFS);
       for (int i = 0; i < arrayFS.size(); i++) {
@@ -213,10 +213,10 @@ public class XCASDeserializerTest extends TestCase {
     // check that array refs are not null
     Type entityType = cas2.getTypeSystem().getType("org.apache.uima.testTypeSystem.Entity");
     Feature classesFeat = entityType.getFeatureByBaseName("classes");
-    Iterator iter = cas2.getIndexRepository().getIndex("testEntityIndex").iterator();
+    Iterator<FeatureStructure> iter = cas2.getIndexRepository().getIndex("testEntityIndex").iterator();
     assertTrue(iter.hasNext());
     while (iter.hasNext()) {
-      FeatureStructure fs = (FeatureStructure) iter.next();
+      FeatureStructure fs = iter.next();
       StringArrayFS arrayFS = (StringArrayFS) fs.getFeatureValue(classesFeat);
       assertNotNull(arrayFS);
       for (int i = 0; i < arrayFS.size(); i++) {

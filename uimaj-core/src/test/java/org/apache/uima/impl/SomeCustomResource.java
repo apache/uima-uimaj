@@ -34,7 +34,7 @@ import org.apache.uima.resource.Resource_ImplBase;
  */
 public class SomeCustomResource extends Resource_ImplBase {
   
-  public Map paramMap = new HashMap();
+  public Map<String, String> paramMap = new HashMap<String, String>();
 
   /* (non-Javadoc)
    * @see org.apache.uima.resource.Resource_ImplBase#initialize(org.apache.uima.resource.ResourceSpecifier, java.util.Map)

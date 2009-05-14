@@ -22,6 +22,7 @@ package org.apache.uima.util;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import junit.framework.Assert;
@@ -79,7 +80,7 @@ public class CasCreationUtilsTest extends TestCase {
       Assert.assertEquals(1, ts2desc.getType("Type1").getFeatures().length);
       Assert.assertEquals(1, ts2desc.getType("Type2").getFeatures().length);
 
-      ArrayList tsList = new ArrayList();
+      ArrayList<TypeSystemDescription> tsList = new ArrayList<TypeSystemDescription>();
       tsList.add(ts1desc);
       tsList.add(ts2desc);
       Map typesWithMergedFeatures = new HashMap();
@@ -151,7 +152,7 @@ public class CasCreationUtilsTest extends TestCase {
               .getFile("CasCreationUtilsTest/" + typeFile)));
 
 
-      ArrayList tsList = new ArrayList();
+      List<TypeSystemDescription> tsList = new ArrayList<TypeSystemDescription>();
       tsList.add(ts1desc);
       tsList.add(ts2desc);
 
@@ -178,16 +179,16 @@ public class CasCreationUtilsTest extends TestCase {
               new XMLInputSource(JUnitExtension.getFile("CasCreationUtilsTest/SupertypeMergeTest2.xml")));
       assertEquals("uima.test.Super", ts2desc.getType("uima.test.Sub").getSupertypeName());
 
-      ArrayList tsList = new ArrayList();
+      List<TypeSystemDescription> tsList = new ArrayList<TypeSystemDescription>();
       tsList.add(ts1desc);
       tsList.add(ts2desc);
       TypeSystemDescription merged = CasCreationUtils.mergeTypeSystems(tsList, UIMAFramework
               .newDefaultResourceManager());
       assertEquals("uima.test.Super", merged.getType("uima.test.Sub").getSupertypeName());
 
-      // try merging in the other order - bug UIMA-826 was an order depenency in the behavior of
+      // try merging in the other order - bug UIMA-826 was an order dependency in the behavior of
       // this kind of merging
-      tsList = new ArrayList();
+      tsList = new ArrayList<TypeSystemDescription>();
       tsList.add(ts2desc);
       tsList.add(ts1desc);
       merged = CasCreationUtils.mergeTypeSystems(tsList, UIMAFramework
@@ -215,7 +216,7 @@ public class CasCreationUtilsTest extends TestCase {
               .getFile("CasCreationUtilsTest/AggregateTaeWithImports.xml");
       AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
               new XMLInputSource(taeDescriptorWithImport));
-      ArrayList mdList = new ArrayList();
+      ArrayList<AnalysisEngineDescription> mdList = new ArrayList<AnalysisEngineDescription>();
       mdList.add(desc);
       CAS tcas = CasCreationUtils.createCas(mdList, UIMAFramework
               .getDefaultPerformanceTuningProperties(), resMgr);
@@ -423,7 +424,7 @@ public class CasCreationUtilsTest extends TestCase {
               + JUnitExtension.getFile("FsIndexCollectionImplTest/dataPathDir").getAbsolutePath());
 
       // call method
-      ArrayList descList = new ArrayList();
+      ArrayList<AnalysisEngineDescription> descList = new ArrayList<AnalysisEngineDescription>();
       descList.add(desc);
       CAS cas = CasCreationUtils.createCas(descList, UIMAFramework
               .getDefaultPerformanceTuningProperties(), resMgr);

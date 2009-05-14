@@ -28,6 +28,9 @@ import org.apache.uima.util.NameClassPair;
  * A simple concrete MetaDataObject implementation for use in testing the MetaDataObject_impl class.
  */
 public class TestFruitObject extends MetaDataObject_impl {
+  
+  private static final long serialVersionUID = 1L;
+
   public TestFruitObject() {
     //do nothing
   }
@@ -93,8 +96,8 @@ public class TestFruitObject extends MetaDataObject_impl {
    * For testing purposes - a hardcoded attribute set. Should be compared with the results of
    * {@link #listAttributes()}.
    */
-  static public Set getAttributeSet() {
-    HashSet result = new HashSet();
+  static public Set<NameClassPair> getAttributeSet() {
+    HashSet<NameClassPair> result = new HashSet<NameClassPair>();
     result.add(new NameClassPair("name", String.class.getName()));
     result.add(new NameClassPair("color", String.class.getName()));
     result.add(new NameClassPair("avgWeightLbs", Float.class.getName()));

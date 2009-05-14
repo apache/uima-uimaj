@@ -381,7 +381,7 @@ public class FilteredIteratorTest extends TestCase {
       FSIterator it = cas.getAnnotationIndex(tokenType).iterator();
       FSStringConstraint type1Constraint = cas.getConstraintFactory().createStringConstraint();
       type1Constraint.equals(lemma);
-      ArrayList path = new ArrayList();
+      ArrayList<String> path = new ArrayList<String>();
       path.add(lemmaFeat.getShortName());
       FSMatchConstraint cons = cas.getConstraintFactory().embedConstraint(path, type1Constraint);
       it = cas.createFilteredIterator(it, cons);

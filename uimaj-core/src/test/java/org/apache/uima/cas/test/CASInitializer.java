@@ -26,7 +26,6 @@ import org.apache.uima.cas.admin.CASMgr;
 import org.apache.uima.cas.admin.FSIndexRepositoryMgr;
 import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.cas.impl.CASImpl;
-import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasCreationUtils;

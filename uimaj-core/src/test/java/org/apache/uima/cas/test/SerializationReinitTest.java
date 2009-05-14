@@ -24,16 +24,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;
-import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.ByteArrayFS;
-import org.apache.uima.cas.Marker;
-import org.apache.uima.cas.ShortArrayFS;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIndex;
@@ -41,6 +39,8 @@ import org.apache.uima.cas.FSIndexRepository;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.Marker;
+import org.apache.uima.cas.ShortArrayFS;
 import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
@@ -365,7 +365,7 @@ public class SerializationReinitTest extends TestCase {
     // Get a handle to the index repository.
     FSIndexRepository indexRepository = cas.getIndexRepository();
     // assert(indexRepository != null);
-    Iterator labelIt = indexRepository.getLabels();
+    Iterator<String> labelIt = indexRepository.getLabels();
     assertTrue(labelIt != null);
     // Get the standard index for tokens.
     FSIndex tokenIndex = cas.getAnnotationIndex(tokenType);
@@ -426,7 +426,7 @@ public class SerializationReinitTest extends TestCase {
     String line;
 //    BufferedReader br = new BufferedReader(new StringReader(moby));
     StringBuffer buf = new StringBuffer(10000);
-    ArrayList docs = new ArrayList();
+    List<String> docs = new ArrayList<String>();
     Matcher m = nlPattern.matcher(moby);
     while (m.find()) {
       line = m.group();
@@ -515,7 +515,7 @@ public class SerializationReinitTest extends TestCase {
     String line;
 //    BufferedReader br = new BufferedReader(new StringReader(moby));
     StringBuffer buf = new StringBuffer(10000);
-    ArrayList docs = new ArrayList();
+    List<String> docs = new ArrayList<String>();
     Matcher m = nlPattern.matcher(moby);
     while (m.find()) {
       line = m.group();
@@ -844,7 +844,7 @@ public class SerializationReinitTest extends TestCase {
       cas2.getIndexRepository().removeFS(delAnnot);
   
       //modify FS - string feature and FS feature.
-      Iterator personIter = cas2personIndex.iterator();     
+      Iterator<FeatureStructure> personIter = cas2personIndex.iterator();     
       AnnotationFS cas2person1 = (AnnotationFS) personIter.next();
       AnnotationFS cas2person2 = (AnnotationFS) personIter.next();
       
@@ -854,20 +854,20 @@ public class SerializationReinitTest extends TestCase {
       cas2person2.setStringValue(componentIdFeat, "delataCas2");
       cas2person2.setStringValue(mentionTypeFeat, "FIRSTNAME");
       
-      Iterator orgIter = cas2orgIndex.iterator();
+      Iterator<FeatureStructure> orgIter = cas2orgIndex.iterator();
       AnnotationFS cas2orgAnnot = (AnnotationFS) orgIter.next();
       cas2orgAnnot.setStringValue(mentionTypeFeat, "ORGNAME");
       
       //modify FS feature
-      Iterator ownerIter = cas2ownerIndex.iterator();
+      Iterator<FeatureStructure> ownerIter = cas2ownerIndex.iterator();
       AnnotationFS cas2ownerAnnot = (AnnotationFS) ownerIter.next();
       FeatureStructure cas2relArgs = cas2ownerAnnot.getFeatureValue(argsFeat);
       cas2relArgs.setFeatureValue(rangeFeat, cas2orgAnnot);
      
     //Test modification of a nonshared multivalued feature.
       //This should serialize the encompassing FS.
-      Iterator iter = cas2.getIndexRepository().getIndex("testEntityIndex").iterator();
-      FeatureStructure cas2EntityFS = (FeatureStructure) iter.next();
+      Iterator<FeatureStructure> iter = cas2.getIndexRepository().getIndex("testEntityIndex").iterator();
+      FeatureStructure cas2EntityFS = iter.next();
       StringArrayFS cas2strarrayFS = (StringArrayFS) cas2EntityFS.getFeatureValue(classesFeat);
       cas2strarrayFS.set(1, "class2");
       cas2strarrayFS.set(2, "class3");

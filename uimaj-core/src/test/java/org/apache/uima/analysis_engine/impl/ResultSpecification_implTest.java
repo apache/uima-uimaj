@@ -25,6 +25,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Vector;
 
 import junit.framework.Assert;
@@ -45,6 +46,14 @@ import org.apache.uima.util.XMLInputSource;
 
 public class ResultSpecification_implTest extends TestCase {
 
+  private TypeOrFeature[] mTypesAndFeatures;
+
+  private Capability[] capabilities;
+
+  private List<String[]> languages;
+
+  private TypeOrFeature t1, t2, f1;
+  
   /**
    * Constructor for ResultSpecification_implTest.
    * 
@@ -99,7 +108,7 @@ public class ResultSpecification_implTest extends TestCase {
       capabilities = new Capability[] { cap1, cap2, cap3 };
 
       // make languages array
-      languages = new Vector(3);
+      languages = new Vector<String[]>(3);
       languages.add(0, languages1);
       languages.add(1, languages2);
       languages.add(2, languages3);
@@ -175,7 +184,7 @@ public class ResultSpecification_implTest extends TestCase {
   public void testSetResultTypesAndFeaturesWithLanguage() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
-      rs.setResultTypesAndFeatures(mTypesAndFeatures, (String[]) languages.get(0));
+      rs.setResultTypesAndFeatures(mTypesAndFeatures, languages.get(0));
 
       // check for language en
       TypeOrFeature[] resultEn = rs.getResultTypesAndFeatures("en");
@@ -219,7 +228,7 @@ public class ResultSpecification_implTest extends TestCase {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
       for (int i = 0; i < mTypesAndFeatures.length; i++) {
-        rs.addResultTypeOrFeature(mTypesAndFeatures[i], (String[]) languages.get(i));
+        rs.addResultTypeOrFeature(mTypesAndFeatures[i], languages.get(i));
       }
 
       // check for language en
@@ -273,8 +282,8 @@ public class ResultSpecification_implTest extends TestCase {
   public void testAddResultTypeWithLanguage() throws Exception {
     try {
       ResultSpecification_impl rs = new ResultSpecification_impl();
-      rs.addResultType("FakeType", false, (String[]) languages.get(0));
-      rs.addResultType("AnotherType", true, (String[]) languages.get(2));
+      rs.addResultType("FakeType", false, languages.get(0));
+      rs.addResultType("AnotherType", true, languages.get(2));
       rs.addResultType("NewDefinedType", true, new String[] { "ja" });
 
       // check for language en
@@ -563,12 +572,4 @@ public class ResultSpecification_implTest extends TestCase {
       JUnitExtension.handleException(e);
     }
   }
-
-  private TypeOrFeature[] mTypesAndFeatures;
-
-  private Capability[] capabilities;
-
-  private Vector languages;
-
-  private TypeOrFeature t1, t2, f1;
 }
