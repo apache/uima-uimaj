@@ -323,6 +323,8 @@ public class RunAE implements StatusCallbackListener {
     System.err.println("-x - process input files as XCAS files.");
     System.err.println("-xmi - process input files as XmiCas files.");
     System.err.println("-lenient - ignore out-of-typesystem content when deserializing XML files.");
+    System.err.println("-l <ISO language> - specify the ISO Language code to set.");
+    System.err.println("-e <encoding> - specify the character encoding to use.");
     
   }
 
