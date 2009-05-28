@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one
+   or more contributor license agreements.  See the NOTICE file
+   distributed with this work for additional information
+   regarding copyright ownership.  The ASF licenses this file
+   to you under the Apache License, Version 2.0 (the
+   "License"); you may not use this file except in compliance
+   with the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied.  See the License for the
+   specific language governing permissions and limitations
+   under the License.    
+-->
+<launchConfiguration type="org.eclipse.pde.ui.JunitLaunchConfig">
+<booleanAttribute key="append.args" value="true"/>
+<booleanAttribute key="askclear" value="false"/>
+<booleanAttribute key="automaticAdd" value="false"/>
+<booleanAttribute key="automaticValidate" value="true"/>
+<stringAttribute key="bootstrap" value=""/>
+<stringAttribute key="checked" value="[NONE]"/>
+<booleanAttribute key="clearConfig" value="true"/>
+<booleanAttribute key="clearws" value="true"/>
+<booleanAttribute key="clearwslog" value="false"/>
+<stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/pde-junit"/>
+<booleanAttribute key="default" value="false"/>
+<booleanAttribute key="includeOptional" value="true"/>
+<stringAttribute key="location" value="${workspace_loc}/../junit-workspace"/>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/CasEditor"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="4"/>
+</listAttribute>
+<booleanAttribute key="org.eclipse.debug.core.appendEnvironmentVariables" value="true"/>
+<stringAttribute key="org.eclipse.jdt.junit.CONTAINER" value="=CasEditor/src\/plugintest\/java&lt;org.apache.uima.caseditor.core.test"/>
+<booleanAttribute key="org.eclipse.jdt.junit.KEEPRUNNING_ATTR" value="false"/>
+<stringAttribute key="org.eclipse.jdt.junit.TESTNAME" value=""/>
+<stringAttribute key="org.eclipse.jdt.junit.TEST_KIND" value="org.eclipse.jdt.junit.loader.junit4"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value=""/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl}"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="CasEditor"/>
+<stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
+<stringAttribute key="pde.version" value="3.3"/>
+<stringAttribute key="product" value="org.apache.uima.caseditor.product"/>
+<stringAttribute key="selected_target_plugins" value="com.ibm.icu,javax.servlet,org.apache.commons.logging,org.apache.lucene,org.apache.lucene.analysis,org.apache.uima.runtime,org.eclipse.ant.core,org.eclipse.core.commands,org.eclipse.core.contenttype,org.eclipse.core.databinding,org.eclipse.core.expressions,org.eclipse.core.filebuffers,org.eclipse.core.filesystem,org.eclipse.core.filesystem.linux.x86,org.eclipse.core.jobs,org.eclipse.core.net,org.eclipse.core.resources,org.eclipse.core.resources.compatibility,org.eclipse.core.runtime,org.eclipse.core.runtime.compatibility.auth,org.eclipse.core.runtime.compatibility.registry,org.eclipse.core.variables,org.eclipse.emf.common,org.eclipse.emf.ecore,org.eclipse.emf.ecore.xmi,org.eclipse.equinox.app,org.eclipse.equinox.common,org.eclipse.equinox.http.jetty,org.eclipse.equinox.http.servlet,org.eclipse.equinox.preferences,org.eclipse.equinox.registry,org.eclipse.help,org.eclipse.help.base,org.eclipse.help.ui,org.eclipse.jdt.junit.runtime,org.eclipse.jdt.junit4.runtime,org.eclipse.jface,org.eclipse.jface.databinding,org.eclipse.jface.text,org.eclipse.osgi,org.eclipse.osgi.services,org.eclipse.pde.runtime,org.eclipse.sdk,org.eclipse.swt,org.eclipse.swt.gtk.linux.x86,org.eclipse.text,org.eclipse.ui,org.eclipse.ui.cheatsheets,org.eclipse.ui.editors,org.eclipse.ui.forms,org.eclipse.ui.ide,org.eclipse.ui.ide.application,org.eclipse.ui.navigator,org.eclipse.ui.navigator.resources,org.eclipse.ui.views,org.eclipse.ui.views.properties.tabbed,org.eclipse.ui.workbench,org.eclipse.ui.workbench.texteditor,org.eclipse.update.configurator,org.eclipse.update.core,org.eclipse.update.core.linux,org.eclipse.update.ui,org.junit,org.junit4,org.mortbay.jetty"/>
+<stringAttribute key="selected_workspace_plugins" value="org.apache.uima.caseditor"/>
+<booleanAttribute key="tracing" value="false"/>
+<booleanAttribute key="useDefaultConfig" value="true"/>
+<booleanAttribute key="useDefaultConfigArea" value="false"/>
+<booleanAttribute key="useProduct" value="true"/>
+</launchConfiguration>
