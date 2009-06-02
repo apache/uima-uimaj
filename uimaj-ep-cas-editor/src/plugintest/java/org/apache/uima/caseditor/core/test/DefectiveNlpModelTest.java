@@ -23,7 +23,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 
-import org.apache.uima.caseditor.editor.CasEditorPlugin;
+import org.apache.uima.caseditor.CasEditorPlugin;
 import org.apache.uima.caseditor.core.model.AnnotatorElement;
 import org.apache.uima.caseditor.core.model.ConsumerElement;
 import org.apache.uima.caseditor.core.model.DocumentElement;
