@@ -40,7 +40,7 @@ public class NlpPerspectiveFactory implements IPerspectiveFactory
    * ID of the perspective factory. Use this ID for example in the plugin.xml
    * file.
    */
-  public static String ID = "Annotator.perspective.NLP";
+  public static String ID = "org.apache.uima.caseditor.perspective.NLP";
 
   /**
    * Define the initial layout of the nlp perspective
