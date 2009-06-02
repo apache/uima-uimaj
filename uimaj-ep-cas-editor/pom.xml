@@ -19,7 +19,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<!-- groupId omitted - inherited from parent -->
-	<artifactId>uimaj-ep-CasEditorEclipsePlugin</artifactId>
+	<artifactId>uimaj-ep-cas-editor</artifactId>
 	<packaging>bundle</packaging>
 	<!-- version omitted - inherited from parent-->
 	<name>Apache UIMA Cas Editor Eclipse Plugin</name>
@@ -172,7 +172,8 @@
 							org.eclipse.ui.ide,
 							org.eclipse.ui,
 							org.eclipse.ui.workbench,
-							org.eclipse.core.runtime
+							org.eclipse.core.runtime,
+							org.eclipse.core.resources
 					    </Require-Bundle>
             			<Import-Package>
             			    !org.eclipse.jface.text,

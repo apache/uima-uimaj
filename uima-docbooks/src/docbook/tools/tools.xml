@@ -34,6 +34,7 @@ under the License.
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="tools.doc_analyzer.xml"/>
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="tools.annotation_viewer.xml"/>
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="tools.cvd.xml"/>
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="tools.caseditor.xml"/>
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="tools.jcasgen.xml"/>
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="tools.pear.packager.xml"/>
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="tools.pear.installer.xml"/>
