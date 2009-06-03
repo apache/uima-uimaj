@@ -42,6 +42,14 @@ public interface LowLevelIndex {
    * @return An iterator for this index.
    */
   LowLevelIterator ll_iterator(boolean ambiguous);
+  
+  /**
+   * Get a low-level, FS reference iterator specifying instances of
+   * the precise type <b>only</b> (i.e. without listing the subtypes).
+   * 
+   * @return An iterator for the root type of this index.
+   */
+  LowLevelIterator ll_rootIterator();
 
   /**
    * Get the number of FSs in this index.
