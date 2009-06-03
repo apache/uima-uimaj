@@ -44,6 +44,7 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.test.junit_extension.JUnitExtension;
@@ -287,7 +288,8 @@ public class IteratorTest extends TestCase {
       assertTrue(false);
     }
     FSIndex jcasSetIndex = jcas.getJFSIndexRepository().getIndex(CASTestSetup.ANNOT_SET_INDEX);
-    assertNotNull(jcasSetIndex.find(annot));
+    Annotation jcasAnnotation = (Annotation) jcasSetIndex.find(annot);
+    assertNotNull(jcasAnnotation);
     assertNull(jcasSetIndex.find(this.cas.createAnnotation(this.annotationType, -1, -1)));
 
     // /////////////////////////////////////////////////////////////////////////
