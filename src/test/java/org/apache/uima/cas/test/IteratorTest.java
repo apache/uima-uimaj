@@ -31,6 +31,7 @@ import junit.framework.TestCase;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIndexRepository;
@@ -42,6 +43,7 @@ import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.internal.util.IntVector;
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.test.junit_extension.JUnitExtension;
@@ -171,7 +173,7 @@ public class IteratorTest extends TestCase {
   public void testGetIndexes() {
     Iterator<FSIndex> it = this.cas.getIndexRepository().getIndexes();
     while (it.hasNext()) {
-      assertTrue(it.next() instanceof FSIndex);
+      assertNotNull(it.next());
     }
   }
 
@@ -269,6 +271,24 @@ public class IteratorTest extends TestCase {
     while (javaIt.hasNext()) {
       assertEquals(javaIt.next().hashCode(), v.get(current++));
     }
+    
+    // test find()
+    AnnotationFS annot = (AnnotationFS) setIndex.iterator().get();
+    assertNotNull(setIndex.find(annot));
+    assertNull(setIndex.find(this.cas.createAnnotation(this.annotationType, -1, -1)));
+    
+    // do same for JCas
+    JCas jcas = null;
+    try {
+      jcas = this.cas.getJCas();
+    } catch (CASException e1) {
+      // TODO Auto-generated catch block
+      e1.printStackTrace();
+      assertTrue(false);
+    }
+    FSIndex jcasSetIndex = jcas.getJFSIndexRepository().getIndex(CASTestSetup.ANNOT_SET_INDEX);
+    assertNotNull(jcasSetIndex.find(annot));
+    assertNull(jcasSetIndex.find(this.cas.createAnnotation(this.annotationType, -1, -1)));
 
     // /////////////////////////////////////////////////////////////////////////
     // Test fast fail.
@@ -344,7 +364,7 @@ public class IteratorTest extends TestCase {
     for (int i = 0; i < list.size(); i++) {
       // System.out.println("Iteration: " + i);
       it.moveToFirst();
-      it.moveTo((FeatureStructure) list.get(i));
+      it.moveTo(list.get(i));
       assertTrue(((AnnotationFS) it.get()).getBegin() == ((AnnotationFS) list.get(i)).getBegin());
       assertTrue(((AnnotationFS) it.get()).getEnd() == ((AnnotationFS) list.get(i)).getEnd());
     }
