@@ -32,7 +32,7 @@ public class FSIndexComparatorImpl implements FSIndexComparator {
 
   private Type type;
 
-  private Vector keyVector;
+  private Vector<Object> keyVector;
 
   private IntVector compVector;
 
@@ -42,6 +42,7 @@ public class FSIndexComparatorImpl implements FSIndexComparator {
 
   private CASImpl cas;
 
+  @SuppressWarnings("unused")
   private FSIndexComparatorImpl() {
     super();
   }
@@ -49,7 +50,7 @@ public class FSIndexComparatorImpl implements FSIndexComparator {
   // Public only for testing purposes.
   public FSIndexComparatorImpl(CASImpl cas) {
     super();
-    this.keyVector = new Vector();
+    this.keyVector = new Vector<Object>();
     this.compVector = new IntVector();
     this.keyTypeVector = new IntVector();
     this.type = null;
@@ -179,8 +180,8 @@ public class FSIndexComparatorImpl implements FSIndexComparator {
   /**
    * @see java.lang.Comparable#compareTo(Object)
    */
-  public int compareTo(Object o) {
-    FSIndexComparator comp = (FSIndexComparator) o;
+  public int compareTo(FSIndexComparator o) {
+    FSIndexComparator comp = o;
     final int thisSize = this.getNumberOfKeys();
     final int compSize = comp.getNumberOfKeys();
     int i = 0;
