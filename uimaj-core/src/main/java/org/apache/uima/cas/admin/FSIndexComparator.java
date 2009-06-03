@@ -27,7 +27,7 @@ import org.apache.uima.cas.Type;
  * 
  * 
  */
-public interface FSIndexComparator extends Comparable {
+public interface FSIndexComparator extends Comparable<FSIndexComparator> {
 
   static final int FEATURE_KEY = 0;
 

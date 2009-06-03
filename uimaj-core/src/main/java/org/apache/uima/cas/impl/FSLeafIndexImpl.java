@@ -85,6 +85,7 @@ public abstract class FSLeafIndexImpl implements IntComparator, FSIndex, FSIndex
 
   // never called
   // declared private to block external calls
+  @SuppressWarnings("unused")
   private FSLeafIndexImpl() {
     super();
     this.indexType = 0; // must do because it's final
