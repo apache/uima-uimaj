@@ -418,4 +418,8 @@ public abstract class FSLeafIndexImpl implements IntComparator, FSIndex, FSIndex
     return null;
   }
 
+  public LowLevelIterator ll_rootIterator() {
+      return this.ll_iterator();
+  }
+
 }

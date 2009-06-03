@@ -150,34 +150,20 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 
   }
 
-  /**
-   * Comparator wrapper; will used wrapped comparator, and on equality use address of FS for further
-   * distinction.
-   */
-  private static class IteratorComparator implements IntComparator {
+  IntPointerIterator createPointerIterator(IndexIteratorCachePair iicp) {
+    iicp.createIndexIteratorCache();
+    if (iicp.iteratorCache.size() > 1)
+      return new PointerIterator(iicp);
+    else
+      return new LeafPointerIterator(iicp);
+  }
 
-    private final IntComparator comp;
-
-    private IteratorComparator(IntComparator comp) {
-      super();
-      this.comp = comp;
-    }
-
-    /**
-     * @see org.apache.uima.internal.util.IntComparator#compare(int, int)
-     */
-    public int compare(int i, int j) {
-      final int compResult = this.comp.compare(i, j);
-      if (compResult == 0) {
-        if (i < j) {
-          return -1;
-        } else if (i > j) {
-          return 1;
-        }
-      }
-      return compResult;
-    }
-
+  IntPointerIterator createPointerIterator(IndexIteratorCachePair iicp, int fs) {
+    iicp.createIndexIteratorCache();
+    if (iicp.iteratorCache.size() > 1)
+      return new PointerIterator(iicp, fs);
+    else
+      return new LeafPointerIterator(iicp, fs);
   }
 
   /**
@@ -186,35 +172,31 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    */
   private class PointerIterator implements IntPointerIterator, LowLevelIterator {
 
+    /** The number of elements to keep in order before the binary heap starts.
+     *  This section helps the performance in cases where a couple of types
+     *  dominate the index.                                                 */
+    static final int SORTED_SECTION = 3;
+
     // The IICP
     private IndexIteratorCachePair iicp;
 
     // An array of integer arrays, one for each subtype.
     private ComparableIntPointerIterator[] indexes;
 
+    int lastValidIndex;
+
     // snapshot to detectIllegalIndexUpdates
     // need to move this to ComparableIntPointerIterator so it can be tested
 
-    // Size of index (iterator) array.
-    private int indexesSize;
+    // currentIndex is always 0
 
-    // The number of currently active indexes (some may be invalid).
-    private int numIndexes;
-
-    // The current index, i.e., the index that contains the current element.
-    private int currentIndex;
-
-    // Remember the direction of the previous move, so we can save ourselves
-    // some work.
+    // The iterator works in two modes:
+    // Forward and backward processing. This flag tells which mode we're in.
+    // The iterator heap needs to be reconstructed when we switch direction.
     private boolean wentForward;
 
     // Comparator that is used to compare FS addresses for the purposes of
-    // iteration. If two FSs are identical wrt the comparator of the index,
-    // we still need to be able to distinguish them to be able to have a
-    // well-defined sequence. In that case, we arbitrarily order FSs by
-    // their
-    // addresses. We need to do this in order to be able to ensure that a
-    // reverse iterator produces the reverse order of the forward iterator.
+    // iteration. 
     private IntComparator iteratorComparator;
 
     // The next element in the iterator. When next < 0, there is no
@@ -228,18 +210,15 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     private void initPointerIterator(IndexIteratorCachePair iicp0) {
       this.iicp = iicp0;
       // Make sure the iterator cache exists.
-      iicp0.createIndexIteratorCache();
       ArrayList iteratorCache = iicp0.iteratorCache;
-      this.indexesSize = iteratorCache.size();
-      this.indexes = new ComparableIntPointerIterator[this.indexesSize];
-      this.numIndexes = this.indexesSize;
-      this.iteratorComparator = new IteratorComparator((FSLeafIndexImpl) iteratorCache.get(0));
+      this.indexes = new ComparableIntPointerIterator[iteratorCache.size()];
+      this.iteratorComparator = (FSLeafIndexImpl) iteratorCache.get(0);
       ComparableIntPointerIterator it;
-      for (int i = 0; i < this.indexesSize; i++) {
+      for (int i = 0; i < this.indexes.length; i++) {
         final FSLeafIndexImpl leafIndex = ((FSLeafIndexImpl) iteratorCache.get(i));
         it = leafIndex.pointerIterator(this.iteratorComparator,
             FSIndexRepositoryImpl.this.detectIllegalIndexUpdates, ((TypeImpl) leafIndex.getType())
-                .getCode());
+            .getCode());
         this.indexes[i] = it;
       }
     }
@@ -258,7 +237,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 
     public boolean isValid() {
       // We're valid as long as at least one index is.
-      return (this.numIndexes > 0);
+      return (lastValidIndex >= 0);
     }
 
     private ComparableIntPointerIterator checkConcurrentModification(int i) {
@@ -268,221 +247,277 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       return cipi;
     }
 
-    private void resetConcurrentModification(int i) {
-      ComparableIntPointerIterator cipi = this.indexes[i];
-      cipi.resetConcurrentModification();
-    }
-
     private void checkConcurrentModificationAll() {
       for (int i = 0; i < this.indexes.length; i++) {
         checkConcurrentModification(i);
       }
     }
 
-    public void moveToFirst() {
-      for (int i = 0; i < this.indexes.length; i++) {
-        resetConcurrentModification(i);
-        this.indexes[i].moveToFirst();
+    /**
+     * Test the order with which the two iterators should be used. Introduces 
+     * arbitrary ordering for equivalent FSs.
+     * Only called with valid iterators.
+     * @param l
+     * @param r
+     * @param dir Direction of movement, 1 for forward, -1 for backward
+     * @return true if the left iterator needs to be used before the right one.
+     */
+    private boolean is_before(ComparableIntPointerIterator l, ComparableIntPointerIterator r, 
+        int dir) {
+      int il = l.get();
+      int ir = r.get();
+      int d = iteratorComparator.compare(il, ir);
+
+      // If two FSs are identical wrt the comparator of the index,
+      // we still need to be able to distinguish them to be able to have a
+      // well-defined sequence. In that case, we arbitrarily order FSs by
+      // their
+      // addresses. We need to do this in order to be able to ensure that a
+      // reverse iterator produces the reverse order of the forward iterator.    	
+      if (d == 0)
+        d = il - ir;
+
+      return d*dir < 0;
+    }
+
+    /**
+     * Move the idx'th element up in the heap until it finds its proper
+     * position.
+     * @param it indexes[idx]
+     * @param idx Element to move
+     * @param dir Direction of iterator movement, 1 for forward, -1 for backward
+     */
+    private void heapify_up(ComparableIntPointerIterator it, int idx, int dir) {
+      int nidx;
+
+      while (idx > SORTED_SECTION) {
+        nidx = (idx+SORTED_SECTION-1)>>1;
+      if (!is_before(it, this.indexes[nidx], dir)) {
+        indexes[idx] = it;
+        return;
       }
-      this.numIndexes = this.indexes.length;
-      checkIndexesTo(this.numIndexes);
-      // bubbleSort(indexes, numIndexes);
-      Arrays.sort(this.indexes, 0, this.numIndexes);
+      indexes[idx] = indexes[nidx];
+      idx = nidx;
+      }
+
+      while (idx > 0) {
+        nidx = idx-1;
+        if (!is_before(it, this.indexes[nidx], dir)) {
+          indexes[idx] = it;
+          return;
+        }
+        indexes[idx] = indexes[nidx];
+        idx = nidx;
+      }
+
+      indexes[idx] = it; 
+    }
+
+    /**
+     * Move the top element down in the heap until it finds its proper
+     * position.
+     * @param it indexes[0]
+     * @param dir Direction of iterator movement, 1 for forward, -1 for backward
+     */
+    private void heapify_down(ComparableIntPointerIterator it, int dir) {
+      if (!it.isValid()) {
+        ComparableIntPointerIterator itl = checkConcurrentModification(lastValidIndex);
+        this.indexes[lastValidIndex] = it;
+        this.indexes[0] = itl;
+        --lastValidIndex;
+        it = itl;
+      }
+
+      int num = lastValidIndex;
+      if (num < 1 || !is_before(checkConcurrentModification(1), it, dir))
+        return;
+
+      int idx = 1;
+      this.indexes[0] = this.indexes[1];
+      int end = Math.min(num, SORTED_SECTION);
+      int nidx = idx+1;
+
+      // make sure we don't leave the iterator in a completely invalid state
+      // (i.e. one it can't recover from using moveTo/moveToFirst/moveToLast)
+      // in case of a concurrent modification
+      try {
+        while (nidx <= end) {
+          if (!is_before(checkConcurrentModification(nidx), it, dir))
+            return;  // passes through finally
+
+          this.indexes[idx] = this.indexes[nidx];
+          idx = nidx;
+          nidx = idx+1;
+        }
+
+
+        nidx = SORTED_SECTION+1;
+        while (nidx <= num) {
+          if (nidx < num && is_before(checkConcurrentModification(nidx+1), checkConcurrentModification(nidx), dir))
+            ++nidx;
+
+          if (!is_before(this.indexes[nidx], it, dir))
+            return;
+
+          this.indexes[idx] = this.indexes[nidx];
+          idx = nidx;
+          nidx = (nidx<<1)-(SORTED_SECTION-1);
+        }
+      } finally {
+        this.indexes[idx] = it;
+      }
+    }
+
+    public void moveToFirst() {
+      int lvi = this.indexes.length - 1;
+      // Need to consider all iterators.
+      // Set all iterators to insertion point.
+      int i=0;
+      while (i<=lvi) {
+        ComparableIntPointerIterator it = this.indexes[i];
+        it.resetConcurrentModification();
+        it.moveToFirst();
+        if (it.isValid()) {
+          heapify_up(it, i, 1);
+          ++i;
+        } else {
+          // swap this iterator with the last possibly valid one
+          // lvi might be equal to i, this will not be a problem
+          this.indexes[i] = this.indexes[lvi];
+          this.indexes[lvi] = it;
+          --lvi;
+        }
+      }
+      // configured to continue with forward iterations
       this.wentForward = true;
-      return;
+      this.lastValidIndex = lvi;
     }
 
     public void moveToLast() {
-      for (int i = 0; i < this.indexes.length; i++) {
-        resetConcurrentModification(i);
-        this.indexes[i].moveToLast();
+      int lvi = this.indexes.length - 1;
+      // Need to consider all iterators.
+      // Set all iterators to insertion point.
+      int i=0;
+      while (i<=lvi) {
+        ComparableIntPointerIterator it = this.indexes[i];
+        it.resetConcurrentModification();
+        it.moveToLast();
+        if (it.isValid()) {
+          heapify_up(it, i, -1);
+          ++i;
+        } else {
+          // swap this iterator with the last possibly valid one
+          // lvi might be equal to i, this will not be a problem
+          this.indexes[i] = this.indexes[lvi];
+          this.indexes[lvi] = it;
+          --lvi;
+        }
       }
-      this.numIndexes = this.indexes.length;
-      checkIndexesTo(this.numIndexes);
-      // bubbleSort(indexes, numIndexes);
-      Arrays.sort(this.indexes, 0, this.numIndexes);
-      this.currentIndex = (this.numIndexes - 1);
+      // configured to continue with backward iterations
       this.wentForward = false;
-      return;
+      this.lastValidIndex = lvi;
     }
 
     public void moveToNext() {
-      // If we're not valid, return.
-      if (!isValid()) {
+      if (!isValid())
         return;
-      }
-      checkConcurrentModificationAll();
-      // Increment iterators, taking into account which direction the last
-      // move
-      // was in.
-      boolean tempWentForward = this.wentForward;
-      incrementIterators();
-      // If we're not valid, return.
-      if (!isValid()) {
-        return;
-      }
-      // The individual iterators are pointing at the correct elements,
-      // and
-      // we can simply sort them to find the next one.
-      // bubbleSort(indexes, numIndexes);
-      // Arrays.sort(indexes, 0, numIndexes);
-      if (tempWentForward) {
-        insert(0, this.indexes, this.numIndexes);
-      } else {
-        Arrays.sort(this.indexes, 0, this.numIndexes);
-      }
-      // Moving up, the smallest element is the next one to show.
-      this.currentIndex = 0;
-      return;
-    }
 
-    private final void insert(int pos, Comparable[] array, int size) {
-      final int max = size - 1;
-      int comp, next;
-      Comparable tmp;
-      while (pos < max) {
-        next = pos + 1;
-        comp = array[pos].compareTo(array[next]);
-        if (comp <= 0) {
-          return;
-        }
-        tmp = array[pos];
-        array[pos] = array[next];
-        array[next] = tmp;
-        ++pos;
-      }
-    }
+      ComparableIntPointerIterator it0 = checkConcurrentModification(0);
 
-    private void ensureIndexValidity(int index) {
-      // assert(index >= 0);
-      // assert(index < numIndexes);
-      if (!this.indexes[index].isValid()) {
-        // If the index is not valid, we throw it out.
-        if ((index + 1) == this.numIndexes) {
-          // If the index was the last index in the array, we just
-          // shrink the
-          // array.
-          --this.numIndexes;
-        } else {
-          // Else we shrink the array and swap the previously last
-          // element to
-          // the position where we want to delete the index.
-          --this.numIndexes;
-          ComparableIntPointerIterator tempIt = this.indexes[index];
-          this.indexes[index] = this.indexes[this.numIndexes];
-          this.indexes[this.numIndexes] = tempIt;
-        }
-      }
-    }
-
-    private void checkIndexesTo(int max) {
-      // Because of the way checkIndexValidity() works, we need to work
-      // back
-      // to front.
-      for (int i = (max - 1); i >= 0; i--) {
-        ensureIndexValidity(i);
-      }
-    }
-
-    private void incrementIterators() {
       if (this.wentForward) {
-        // This is the easy case. We just need to increment the current
-        // index.
-        this.indexes[this.currentIndex].inc();
-        // Make sure it's still valid.
-        ensureIndexValidity(this.currentIndex);
+        it0.inc();        
+        heapify_down(it0, 1);
       } else {
-        // Else we need to increment everything, including the currently
-        // inactive indexes!
-        ComparableIntPointerIterator it;
-        for (int i = 0; i < this.indexesSize; i++) {
+        // We need to increment everything.
+        int lvi = this.indexes.length - 1;
+        int i=1;
+        while (i<=lvi) {
           // Any iterator other than the current one needs to be
-          // incremented
-          // until it's pointing at something that's greater than the
-          // current
-          // element.
-          if (i != this.currentIndex) {
-            it = this.indexes[i];
-            // If the iterator we're considering is not valid, we
-            // set it to the
-            // first element. This should be it for this iterator...
-            if (!it.isValid()) {
-              it.moveToFirst();
-            }
-            // while (it.isValid() &&
-            // (it.compareTo(indexes[this.currentIndex]) < 0)) {
-            // Increment the iterator while it is valid and pointing
-            // at something
-            // smaller than the current element.
-            while (it.isValid()
-                && (this.iteratorComparator
-                    .compare(it.get(), this.indexes[this.currentIndex].get()) < 0)) {
-              it.inc();
-            }
+          // incremented until it's pointing at something that's 
+          // greater than the current element.
+          ComparableIntPointerIterator it = checkConcurrentModification(i);
+          // If the iterator we're considering is not valid, we
+          // set it to the first element. This should be it for this iterator...
+          if (!it.isValid()) {
+            it.moveToFirst();
+          }
+          // Increment the iterator while it is valid and pointing
+          // at something smaller than the current element.
+          while (it.isValid() && is_before(it, it0, 1)) {
+            it.inc();
+          }
+
+          // find placement
+          if (it.isValid()) {
+            heapify_up(it, i, 1);
+            ++i;
+          } else {
+            // swap this iterator with the last possibly valid one
+            // lvi might be equal to i, this will not be a problem
+            this.indexes[i] = this.indexes[lvi];
+            this.indexes[lvi] = it;
+            --lvi;
           }
         }
-        // Increment the current index.
-        this.indexes[this.currentIndex].inc();
-        // Set number of this.indexes to all indexes.
-        this.numIndexes = this.indexesSize;
-        // Ensure validity of all active iterators.
-        checkIndexesTo(this.numIndexes);
+
+        this.lastValidIndex = lvi;        
+        this.wentForward = true;
+
+        it0.inc();
+        heapify_down(it0, 1);
       }
-      this.wentForward = true;
     }
 
     public void moveToPrevious() {
-      // If we're not valid, return.
-      if (!isValid()) {
+      if (!isValid())
         return;
-      }
-      checkConcurrentModificationAll();
-      // Decrement iterators, taking into account which direction the last
-      // move
-      // was in.
-      decrementIterators();
-      // If we're not valid, return.
-      if (!isValid()) {
-        return;
-      }
-      // bubbleSort(indexes, this.numIndexes);
-      Arrays.sort(this.indexes, 0, this.numIndexes);
-      this.currentIndex = (this.numIndexes - 1);
-      return;
-    }
 
-    private void decrementIterators() {
-      // Note: this does not sort the iterators.
+      ComparableIntPointerIterator it0 = checkConcurrentModification(0);
       if (!this.wentForward) {
-        // This is the easy case. We just need to decrement the current
-        // index.
-        this.indexes[this.currentIndex].dec();
-        ensureIndexValidity(this.currentIndex);
-      } else {
-        // Else the current index is fine, but we have to decrement all
-        // indexes.
-        ComparableIntPointerIterator it;
-        for (int i = 0; i < this.indexesSize; i++) {
-          if (i != this.currentIndex) {
-            it = this.indexes[i];
-            // while (it.isValid() &&
-            // (it.compareTo(indexes[this.currentIndex]) > 0)) {
-            if (!it.isValid()) {
-              it.moveToLast();
-            }
-            while (it.isValid()
-                && (this.iteratorComparator
-                    .compare(it.get(), this.indexes[this.currentIndex].get()) > 0)) {
-              it.dec();
-            }
+        it0.dec();
+        // this also takes care of invalid iterators
+        heapify_down(it0, -1);
+      } else {       
+        // We need to decrement everything.
+        int lvi = this.indexes.length - 1;
+        int i=1;
+        while (i<=lvi) {
+          // Any iterator other than the current one needs to be
+          // decremented until it's pointing at something that's 
+          // smaller than the current element.
+          ComparableIntPointerIterator it = checkConcurrentModification(i);
+          // If the iterator we're considering is not valid, we
+          // set it to the last element. This should be it for this iterator...
+          if (!it.isValid()) {
+            it.moveToLast();
+          }
+          // Decrement the iterator while it is valid and pointing
+          // at something greater than the current element.
+          while (it.isValid() && is_before(it, it0, -1)) {
+            it.dec();
+          }
+
+          // find placement
+          if (it.isValid()) {
+            heapify_up(it, i, -1);
+            ++i;
+          } else {
+            // swap this iterator with the last possibly valid one
+            // lvi might be equal to i, this will not be a problem
+            this.indexes[i] = this.indexes[lvi];
+            this.indexes[lvi] = it;
+            --lvi;
           }
         }
-        this.indexes[this.currentIndex].dec();
-        this.numIndexes = this.indexesSize;
-        checkIndexesTo(this.numIndexes);
+
+        this.lastValidIndex = lvi;        
+        this.wentForward = false;
+
+        it0.dec();
+        heapify_down(it0, -1);
       }
-      this.wentForward = false;
     }
+
 
     /*
      * (non-Javadoc)
@@ -497,7 +532,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       if (!isValid()) {
         throw new NoSuchElementException();
       }
-      return checkConcurrentModification(this.currentIndex).get();
+      return checkConcurrentModification(0).get();
     }
 
     public Object copy() {
@@ -516,23 +551,28 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
      * @see org.apache.uima.internal.util.IntPointerIterator#moveTo(int)
      */
     public void moveTo(int fs) {
+      int lvi = this.indexes.length - 1;
       // Need to consider all iterators.
-      this.numIndexes = this.indexes.length;
       // Set all iterators to insertion point.
-      for (int i = 0; i < this.numIndexes; i++) {
-        resetConcurrentModification(i);
-        this.indexes[i].moveTo(fs);
+      int i=0;
+      while (i<=lvi) {
+        ComparableIntPointerIterator it = this.indexes[i];
+        it.resetConcurrentModification();
+        it.moveTo(fs);
+        if (it.isValid()) {
+          heapify_up(it, i, 1);
+          ++i;
+        } else {
+          // swap this iterator with the last possibly valid one
+          // lvi might be equal to i, this will not be a problem
+          this.indexes[i] = this.indexes[lvi];
+          this.indexes[lvi] = it;
+          --lvi;
+        }
       }
-      // Check validity of all indexes.
-      checkIndexesTo(this.numIndexes);
-      // Sort the valid indexes.
-      if (this.numIndexes > 1) {
-        Arrays.sort(this.indexes, 0, this.numIndexes);
-      }
-      // bubbleSort(indexes, numIndexes);
-      // The way we compute the insertion point, we're look forward.
+      // configured to continue with forward iterations
       this.wentForward = true;
-      this.currentIndex = 0;
+      this.lastValidIndex = lvi;
     }
 
     /*
@@ -551,6 +591,131 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
      */
     public void dec() {
       moveToPrevious();
+    }
+
+    public int ll_indexSize() {
+      return this.iicp.size();
+    }
+
+    public LowLevelIndex ll_getIndex() {
+      return this.iicp.index;
+    }
+
+  }
+
+  /**
+   * The iterator implementation for indexes. Tricky because the iterator needs to be able to move
+   * backwards as well as forwards.
+   */
+  private class LeafPointerIterator implements IntPointerIterator, LowLevelIterator {
+
+    // The IICP
+    private IndexIteratorCachePair iicp;
+
+    // An array of integer arrays, one for each subtype.
+    private ComparableIntPointerIterator index;
+
+    private LeafPointerIterator() {
+      super();
+    }
+
+    private void initPointerIterator(IndexIteratorCachePair iicp0) {
+      this.iicp = iicp0;
+      // Make sure the iterator cache exists.
+      ArrayList iteratorCache = iicp0.iteratorCache;
+      final FSLeafIndexImpl leafIndex = ((FSLeafIndexImpl) iteratorCache.get(0));
+      this.index = leafIndex.pointerIterator(leafIndex,
+          FSIndexRepositoryImpl.this.detectIllegalIndexUpdates, ((TypeImpl) leafIndex.getType())
+          .getCode());
+    }
+
+    private LeafPointerIterator(IndexIteratorCachePair iicp) {
+      super();
+      initPointerIterator(iicp);
+      moveToFirst();
+    }
+
+    private LeafPointerIterator(IndexIteratorCachePair iicp, int fs) {
+      super();
+      initPointerIterator(iicp);
+      moveTo(fs);
+    }
+
+    private ComparableIntPointerIterator checkConcurrentModification() {
+      if (index.isConcurrentModification())
+        throw new ConcurrentModificationException();
+      return index;
+    }
+
+    public boolean isValid() {
+      return index.isValid();
+    }
+
+    public void moveToLast() {
+      index.resetConcurrentModification();
+      index.moveToLast();
+    }
+
+    public void moveToFirst() {
+      index.resetConcurrentModification();
+      index.moveToFirst();
+    }
+
+    public void moveToNext() {
+      checkConcurrentModification().inc();
+    }
+
+    public void moveToPrevious() {
+      checkConcurrentModification().dec();
+    }
+
+    public int get() throws NoSuchElementException {
+      return ll_get();
+    }
+
+    public int ll_get() {
+      if (!isValid()) {
+        throw new NoSuchElementException();
+      }
+      return checkConcurrentModification().get();
+    }
+
+    public Object copy() {
+      // If this.isValid(), return a copy pointing to the same element.
+      if (this.isValid()) {
+        return new LeafPointerIterator(this.iicp, this.get());
+      }
+      // Else, create a copy that is also not valid.
+      LeafPointerIterator pi = new LeafPointerIterator(this.iicp);
+      pi.moveToFirst();
+      pi.moveToPrevious();
+      return pi;
+    }
+
+    /**
+     * @see org.apache.uima.internal.util.IntPointerIterator#moveTo(int)
+     */
+    public void moveTo(int fs) {
+      index.resetConcurrentModification();
+      index.moveTo(fs);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.apache.uima.cas.impl.LowLevelIterator#moveToNext()
+     */
+    public void inc() {
+      checkConcurrentModification().inc();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.apache.uima.cas.impl.LowLevelIterator#moveToPrevious()
+     */
+    public void dec() {
+      checkConcurrentModification().dec();
     }
 
     public int ll_indexSize() {
@@ -621,19 +786,19 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
      * @see org.apache.uima.cas.FSIndex#iterator()
      */
     public FSIterator iterator() {
-      return new FSIteratorWrapper(new PointerIterator(this.iicp), FSIndexRepositoryImpl.this.cas);
+      return new FSIteratorWrapper(createPointerIterator(this.iicp), FSIndexRepositoryImpl.this.cas);
     }
 
     /**
      * @see org.apache.uima.cas.FSIndex#iterator(FeatureStructure)
      */
     public FSIterator iterator(FeatureStructure fs) {
-      return new FSIteratorWrapper(new PointerIterator(this.iicp, ((FeatureStructureImpl) fs)
+      return new FSIteratorWrapper(createPointerIterator(this.iicp, ((FeatureStructureImpl) fs)
           .getAddress()), FSIndexRepositoryImpl.this.cas);
     }
 
     public IntPointerIterator getIntIterator() {
-      return new PointerIterator(this.iicp);
+      return createPointerIterator(this.iicp);
     }
 
     /**
@@ -657,8 +822,13 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
      * @see org.apache.uima.cas.impl.LowLevelIndex#ll_iterator()
      */
     public LowLevelIterator ll_iterator() {
-      return new PointerIterator(this.iicp);
+      return (LowLevelIterator) createPointerIterator(this.iicp);
     }
+
+    public LowLevelIterator ll_rootIterator() {
+    	this.iicp.createIndexIteratorCache();
+        return new LeafPointerIterator(this.iicp);
+      }
 
     public LowLevelIterator ll_iterator(boolean ambiguous) {
       if (ambiguous) {
@@ -1175,7 +1345,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     if (index == null) {
       return null;
     }
-    return new PointerIterator(index.iicp);
+    return createPointerIterator(index.iicp);
   }
 
   public IntPointerIterator getIntIteratorForIndex(String label, Type type) {
@@ -1183,7 +1353,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     if (index == null) {
       return null;
     }
-    return new PointerIterator(index.iicp);
+    return createPointerIterator(index.iicp);
   }
 
   /**
@@ -1561,3 +1731,4 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     return (fsAddedToIndex.size() > 0 || this.fsDeletedFromIndex.size() > 0 || this.fsReindexed.size() > 0);
   }
 }
+  
