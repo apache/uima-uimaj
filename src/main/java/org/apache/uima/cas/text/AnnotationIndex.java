@@ -49,12 +49,12 @@ import org.apache.uima.cas.FSIterator;
  * have two annotations of the exact same type that also have the same span. It will also occur if
  * you have not defined any type priority between two annotations that have the same span.</li>
  * </ul>
- * In the method descrpitions below, the notation <code>a &lt; b</code>, where <code>a</code>
+ * In the method descriptions below, the notation <code>a &lt; b</code>, where <code>a</code>
  * and <code>b</code> are annotations, should be taken to mean <code>a</code> comes before
  * <code>b</code> in the index, according to the above rules.
  * </p>
  */
-public interface AnnotationIndex extends FSIndex {
+public interface AnnotationIndex extends FSIndex<AnnotationFS> {
   /**
    * Return an iterator over annotations that can be constrained to be unambiguous.
    * <p>
@@ -68,7 +68,7 @@ public interface AnnotationIndex extends FSIndex {
    *          If set to false, iterator will be unambiguous.
    * @return A annotation iterator.
    */
-  FSIterator iterator(boolean ambiguous);
+  FSIterator<AnnotationFS> iterator(boolean ambiguous);
 
   /**
    * Return a subiterator whose bounds are defined by the input annotation.
@@ -93,7 +93,7 @@ public interface AnnotationIndex extends FSIndex {
    * have defined <code>Paragraph</code> before <code>Sentence</code> in your type priorities,
    * then <code>subiterator(p)</code> will give you an iterator that will return <code>s</code>,
    * but <code>subiterator(s)</code> will give you an iterator that will NOT return <code>p</code>.
-   * The intutition is that a Paragraph is conceptually larger than a Sentence, as defined by the
+   * The intuition is that a Paragraph is conceptually larger than a Sentence, as defined by the
    * type priorities.
    * </p>
    * <p>
@@ -106,7 +106,7 @@ public interface AnnotationIndex extends FSIndex {
    *          Defines the boundaries of the subiterator.
    * @return A subiterator.
    */
-  FSIterator subiterator(AnnotationFS annot);
+  FSIterator<AnnotationFS> subiterator(AnnotationFS annot);
 
   /**
    * Return a subiterator whose bounds are defined by the input annotation.
@@ -148,7 +148,7 @@ public interface AnnotationIndex extends FSIndex {
    *          Controls if annotations that overlap to the right are considered in or out.
    * @return A subiterator.
    */
-  FSIterator subiterator(AnnotationFS annot, boolean ambiguous, boolean strict);
+  FSIterator<AnnotationFS> subiterator(AnnotationFS annot, boolean ambiguous, boolean strict);
 
   /**
    * Create an annotation tree with <code>annot</code> as root node. The tree is defined as

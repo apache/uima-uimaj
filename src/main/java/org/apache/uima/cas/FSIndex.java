@@ -29,7 +29,7 @@ package org.apache.uima.cas;
  * 
  * <p>
  * We currently support three different kinds of indexes: sorted, set and bag indexes. The default
- * index is a sorted index. In a sorted index, all FSs that are commited are entered, even if they
+ * index is a sorted index. In a sorted index, all FSs that are committed are entered, even if they
  * are duplicates of already existing FSs. The index is sorted in the sense that iterators will
  * output FSs in sorted order according to the comparator for that index. The order of FSs that are
  * equal wrt the comparator is arbitrary but fixed. That is, if you iterate over the same index
@@ -53,7 +53,7 @@ package org.apache.uima.cas;
  * 
  * 
  */
-public interface FSIndex extends Iterable<FeatureStructure> {
+public interface FSIndex<T extends FeatureStructure> extends Iterable<T> {
 
   /**
    * Indexing strategy: sorted index. A sorted index contains all elements, including duplicates.
@@ -79,7 +79,7 @@ public interface FSIndex extends Iterable<FeatureStructure> {
   public static final int DEFAULT_BAG_INDEX = 3;
   
   /**
-   * Return the number of feature strucures in this index.
+   * Return the number of feature structures in this index.
    * 
    * @return The number of FSs in this index.
    */
@@ -98,7 +98,7 @@ public interface FSIndex extends Iterable<FeatureStructure> {
    * 
    * @param fs
    *          The FS we're looking for.
-   * @return <code>true</code> iff the index contains such an element.
+   * @return <code>true</code> if the index contains such an element.
    */
   boolean contains(FeatureStructure fs);
 
@@ -127,7 +127,7 @@ public interface FSIndex extends Iterable<FeatureStructure> {
    * 
    * @return An iterator over the index.
    */
-  FSIterator iterator();
+  FSIterator<T> iterator();
 
   /**
    * Return an iterator over the index. The position of the iterator will be set such that the
@@ -139,7 +139,7 @@ public interface FSIndex extends Iterable<FeatureStructure> {
    *          The feature structure at which the iterator should be positioned.
    * @return An iterator positioned at <code>fs</code>, if it exists. An invalid iterator, else.
    */
-  FSIterator iterator(FeatureStructure fs);
+  FSIterator<T> iterator(FeatureStructure fs);
 
   /**
    * Return the indexing strategy.

@@ -32,7 +32,7 @@ import org.apache.uima.cas.text.AnnotationTree;
  * 
  * 
  */
-public class AnnotationIndexImpl implements FSIndex, AnnotationIndex {
+public class AnnotationIndexImpl implements AnnotationIndex {
 
   private FSIndex index;
 
@@ -95,7 +95,7 @@ public class AnnotationIndexImpl implements FSIndex, AnnotationIndex {
    * 
    * @see org.apache.uima.cas.FSIndex#iterator()
    */
-  public FSIterator iterator() {
+  public FSIterator<AnnotationFS> iterator() {
     return this.index.iterator();
   }
 
@@ -104,7 +104,7 @@ public class AnnotationIndexImpl implements FSIndex, AnnotationIndex {
    * 
    * @see org.apache.uima.cas.FSIndex#iterator(org.apache.uima.cas.FeatureStructure)
    */
-  public FSIterator iterator(FeatureStructure fs) {
+  public FSIterator<AnnotationFS> iterator(FeatureStructure fs) {
     return this.index.iterator(fs);
   }
 

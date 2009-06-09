@@ -1239,7 +1239,7 @@ public class AnalysisEngine_implTest extends TestCase {
       CAS outCas = iter.next();
       assertEquals("This is one.", outCas.getDocumentText());
       // -- check SourceDocumentInformation FSs
-      Iterator<FeatureStructure> sdiIter = outCas.getAnnotationIndex(sdiType).iterator();
+      Iterator<AnnotationFS> sdiIter = outCas.getAnnotationIndex(sdiType).iterator();
       assertTrue(sdiIter.hasNext());
       AnnotationFS outSdiFs = (AnnotationFS) sdiIter.next();
       assertEquals("This is", outSdiFs.getCoveredText());
