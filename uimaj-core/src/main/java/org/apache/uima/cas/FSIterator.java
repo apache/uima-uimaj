@@ -26,7 +26,7 @@ import java.util.NoSuchElementException;
  * Iterator over feature structures.
  * 
  * <p>
- * This iterator interface extends {@link java.util.Iterator java.util.Iterator}, and supports the
+ * This iterator interface extends {@link java.util.Iterator}, and supports the
  * standard <code>hasNext</code> and <code>next</code> methods. If finer control, including
  * reverse iteration, is needed, see below.
  * 
@@ -64,12 +64,12 @@ import java.util.NoSuchElementException;
  * 
  * 
  */
-public interface FSIterator extends Iterator<FeatureStructure> {
+public interface FSIterator<T extends FeatureStructure> extends Iterator<T> {
 
   /**
    * Check if this iterator is valid.
    * 
-   * @return <code>true</code> iff the iterator is valid.
+   * @return <code>true</code> if the iterator is valid.
    */
   boolean isValid();
 
@@ -120,6 +120,6 @@ public interface FSIterator extends Iterator<FeatureStructure> {
    * 
    * @return A copy of this iterator, pointing at the same element.
    */
-  FSIterator copy();
+  FSIterator<T> copy();
 
 }

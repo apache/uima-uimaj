@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.caseditor.editor.annotation.EclipseAnnotationPeer;
@@ -82,7 +81,7 @@ public abstract class CasDocumentProvider extends AbstractDocumentProvider {
 
       public Iterator<EclipseAnnotationPeer> getAnnotationIterator() {
         
-        final Iterator<FeatureStructure> mAnnotations =
+        final Iterator<AnnotationFS> mAnnotations =
                 mDocument.getCAS().getAnnotationIndex().iterator();
         
         return new Iterator<EclipseAnnotationPeer>() {

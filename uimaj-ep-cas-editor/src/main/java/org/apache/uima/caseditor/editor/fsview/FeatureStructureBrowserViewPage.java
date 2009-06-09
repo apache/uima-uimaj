@@ -84,7 +84,7 @@ public final class FeatureStructureBrowserViewPage extends Page {
 
       StrictTypeConstraint typeConstrain = new StrictTypeConstraint(mCurrentType);
 
-      FSIterator strictTypeIterator = mCAS.createFilteredIterator(
+      FSIterator<FeatureStructure> strictTypeIterator = mCAS.createFilteredIterator(
               mCAS.getIndexRepository().getAllIndexedFS(mCurrentType), typeConstrain);
 
       LinkedList<ModelFeatureStructure> featureStrucutreList = new LinkedList<ModelFeatureStructure>();

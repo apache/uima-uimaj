@@ -168,7 +168,7 @@ public class XmiCasDeserializerTest extends TestCase {
     }
     Type annotArrayTestType = cas2.getTypeSystem().getType("org.apache.uima.testTypeSystem.AnnotationArrayTest");
     Feature annotArrayFeat = annotArrayTestType.getFeatureByBaseName("arrayOfAnnotations");
-    Iterator<FeatureStructure> iter2 = cas2.getAnnotationIndex(annotArrayTestType).iterator();
+    Iterator<AnnotationFS> iter2 = cas2.getAnnotationIndex(annotArrayTestType).iterator();
     assertTrue(iter2.hasNext());
     while (iter2.hasNext()) {
       FeatureStructure fs = iter2.next();

@@ -36,6 +36,7 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.LowLevelCAS;
 import org.apache.uima.cas.impl.LowLevelException;
 import org.apache.uima.cas.impl.LowLevelIndexRepository;
+import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JFSIndexRepository;
 import org.apache.uima.jcas.cas.EmptyFSList;
@@ -745,7 +746,7 @@ public class JCasTest extends TestCase {
     }
     //check that this does not leave JCAS in an inconsistent state
     //(a check for bug UIMA-738)
-    Iterator<FeatureStructure> iter = jcas.getAnnotationIndex().iterator();
+    Iterator<AnnotationFS> iter = jcas.getAnnotationIndex().iterator();
     assertTrue(iter.hasNext());
     Annotation annot = (Annotation)iter.next();
     assertEquals("This is a test.", annot.getCoveredText());
