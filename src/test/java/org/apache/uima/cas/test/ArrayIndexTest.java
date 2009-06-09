@@ -34,6 +34,7 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIndexRepository;
 import org.apache.uima.cas.FSIterator;
+import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -64,11 +65,11 @@ public class ArrayIndexTest extends TestCase implements TextAnnotator {
       Type annotationType = ts.getType(CAS.TYPE_NAME_ANNOTATION);
       Type annotArrayType = ts.getArrayType(annotationType);
 
-      FSIndex arrayIndexAll = ir.getIndex(idxId);
+      FSIndex<FeatureStructure> arrayIndexAll = ir.getIndex(idxId);
       assertEquals(countIndexMembers(arrayIndexAll), 0);
-      FSIndex arrayIndexFSArray = ir.getIndex(idxId, ts.getType(CAS.TYPE_NAME_FS_ARRAY));
+      FSIndex<FeatureStructure> arrayIndexFSArray = ir.getIndex(idxId, ts.getType(CAS.TYPE_NAME_FS_ARRAY));
       assertEquals(countIndexMembers(arrayIndexFSArray), 0);
-      FSIndex arrayIndexAnnotArray = ir.getIndex(idxId, annotArrayType);
+      FSIndex<FeatureStructure> arrayIndexAnnotArray = ir.getIndex(idxId, annotArrayType);
       assertNull(arrayIndexAnnotArray);
     } catch (ResourceInitializationException e) {
       assertTrue(false);
