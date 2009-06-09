@@ -778,7 +778,7 @@ public interface CAS extends AbstractCas {
    * 
    * @return an iterator over SofaFS.
    */
-  FSIterator getSofaIterator();
+  FSIterator<SofaFS> getSofaIterator();
 
   /**
    * Create an iterator over structures satisfying a given constraint. Constraints are described in
@@ -790,7 +790,7 @@ public interface CAS extends AbstractCas {
    *          The constraint specifying what structures should be returned.
    * @return An iterator over FSs.
    */
-  FSIterator createFilteredIterator(FSIterator it, FSMatchConstraint cons);
+  <T extends FeatureStructure> FSIterator<T> createFilteredIterator(FSIterator<T> it, FSMatchConstraint cons);
 
   /**
    * Get a constraint factory. A constraint factory is a simple way of creating
@@ -823,7 +823,7 @@ public interface CAS extends AbstractCas {
    *          The <code>FSListIterator</code> to be wrapped.
    * @return An equivalent <code>ListIterator</code>.
    */
-  ListIterator<FeatureStructure> fs2listIterator(FSIterator it);
+  <T extends FeatureStructure> ListIterator<T> fs2listIterator(FSIterator<T> it);
 
   /**
    * Reset the CAS, emptying it of all content. Feature structures and iterators will no longer be

@@ -93,7 +93,7 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
   public synchronized void processCas(CAS aCAS) throws ResourceProcessException {
     try {
       // iterate and print annotations
-      FSIterator typeIterator = aCAS.getCurrentView().getAnnotationIndex().iterator();
+      FSIterator<AnnotationFS> typeIterator = aCAS.getCurrentView().getAnnotationIndex().iterator();
 
       for (typeIterator.moveToFirst(); typeIterator.isValid(); typeIterator.moveToNext()) {
         AnnotationFS annot = (AnnotationFS) typeIterator.get();
