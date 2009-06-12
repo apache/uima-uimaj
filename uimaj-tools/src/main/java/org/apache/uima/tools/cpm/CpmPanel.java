@@ -93,7 +93,6 @@ import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.tools.util.gui.FileChooserBugWorkarounds;
 import org.apache.uima.tools.util.gui.FileSelector;
 import org.apache.uima.tools.util.gui.FileSelectorListener;
-import org.apache.uima.tools.util.gui.SwingWorker;
 import org.apache.uima.tools.util.gui.TransportControlListener;
 import org.apache.uima.tools.util.gui.TransportControlPanel;
 import org.apache.uima.tools.util.gui.XMLFileFilter;
@@ -708,10 +707,9 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
       // logDialog.clear();
       progressBar.setValue(0);
 
-      final SwingWorker worker = new SwingWorker() {
-        public Object construct() {
+      final Thread worker = new Thread() {
+        public void run() {
           startProcessing();
-          return null;
         }
       };
       worker.start();
