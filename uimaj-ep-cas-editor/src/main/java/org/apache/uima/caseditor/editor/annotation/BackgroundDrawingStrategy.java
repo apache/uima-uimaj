@@ -50,22 +50,7 @@ final class BackgroundDrawingStrategy implements IDrawingStrategy {
         gc.fillRectangle(bounds);
 
         int start = offset;
-        int end = offset + length;
-
-
-//        Point selection = textWidget.getSelection();
-//        boolean isPartOfAnnotationSelected = selection.x < end && start < selection.y &&
-//            selection.y - selection.x > 0;
-//        if (isPartOfAnnotationSelected) {
-//
-//          int startInAnnotation = selection.x < start ? start : selection.x;
-//          int endInAnnotation = selection.y < end ? selection.y : end;
-//
-//          Rectangle boundsInAnnotation = textWidget.getTextBounds(startInAnnotation, endInAnnotation);
-//
-//          gc.setBackground(new Color(gc.getDevice(), 100, 100, 100));
-//          gc.fillRectangle(boundsInAnnotation);
-//        }
+        int end = offset + length - 1;
 
         gc.setForeground(new Color(gc.getDevice(), 0, 0, 0));
 
