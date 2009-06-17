@@ -34,8 +34,8 @@ import org.eclipse.ui.IPerspectiveFactory;
  * This <code>PerspectiveFactory</code> generates the initial layout
  * for the NLP perspective.
  */
-public class NlpPerspectiveFactory implements IPerspectiveFactory
-{
+public class NlpPerspectiveFactory implements IPerspectiveFactory {
+  
   /**
    * ID of the perspective factory. Use this ID for example in the plugin.xml
    * file.
@@ -45,14 +45,12 @@ public class NlpPerspectiveFactory implements IPerspectiveFactory
   /**
    * Define the initial layout of the nlp perspective
    */
-  public void createInitialLayout(IPageLayout layout)
-  {
+  public void createInitialLayout(IPageLayout layout) {
     defineActions(layout);
     defineLayout(layout);
   }
 
-  private void defineActions(IPageLayout layout)
-  {
+  private void defineActions(IPageLayout layout) {
     // add "new wizards"
     layout.addNewWizardShortcut(NewNlpProjectWizard.ID);
     //        layout.addNewWizardShortcut(NewCorpusWizard.ID);
@@ -69,8 +67,7 @@ public class NlpPerspectiveFactory implements IPerspectiveFactory
     layout.addPerspectiveShortcut(NlpPerspectiveFactory.ID);
   }
 
-  private void defineLayout(IPageLayout layout)
-  {
+  private void defineLayout(IPageLayout layout) {
     String editorArea = layout.getEditorArea();
 
     // left views
@@ -84,7 +81,6 @@ public class NlpPerspectiveFactory implements IPerspectiveFactory
 
     right.addView(IPageLayout.ID_OUTLINE);
     right.addView(FeatureStructureBrowserView.ID);
-    right.addView("org.eclipse.pde.runtime.LogView");
 
     // bottom views
     IFolderLayout rightBottom = layout.createFolder("rightBottom",
@@ -98,3 +94,4 @@ public class NlpPerspectiveFactory implements IPerspectiveFactory
     leftBottom.addView(EditView.ID_2);
   }
 }
+
