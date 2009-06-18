@@ -47,7 +47,7 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 
 /**
- * FlowController for the CapabilityLanguageFlow, which uses a linear fow but may skip some of the
+ * FlowController for the CapabilityLanguageFlow, which uses a linear flow but may skip some of the
  * AEs in the flow if they do not handle the language of the current document or if their outputs
  * have already been produced by a previous AE in the flow.
  */
@@ -104,7 +104,7 @@ public class CapabilityLanguageFlowController extends CasFlowController_ImplBase
 
   /**
    * method computeFlowTable create the flow table for faster processing. The flow table includes
-   * the coresponding flow sequence for all languages in the capabilities 
+   * the corresponding flow sequence for all languages in the capabilities 
    * 
    * @param aCapabilities
    *          aggregate engine capabilities
@@ -209,7 +209,7 @@ public class CapabilityLanguageFlowController extends CasFlowController_ImplBase
       // flag if current analysis engine should be called or not
       boolean shouldEngineBeCalled = false;
 
-      // check output capabilites from the current result spec
+      // check output capabilities from the current result spec
 
       // get next analysis engine from the sequence node
       node = mStaticSequence.get(sequenceIndex);
@@ -222,7 +222,7 @@ public class CapabilityLanguageFlowController extends CasFlowController_ImplBase
               .createResultSpecification();
 
       // check if engine should be called - 
-      //   loop over all remaining ouput capabilities of the aggregate's result spec
+      //   loop over all remaining output capabilities of the aggregate's result spec
       //     to see if this component of the aggregate produces that type or feature,
       //     for this language
       for (TypeOrFeature tof : tofsNeeded) {
