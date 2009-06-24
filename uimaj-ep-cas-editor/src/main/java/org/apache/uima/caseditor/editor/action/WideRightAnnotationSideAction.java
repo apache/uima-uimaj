@@ -66,7 +66,7 @@ public final class WideRightAnnotationSideAction extends BaseSelectionListenerAc
     Type annotationType = annotation.getType();
     Feature endFeature = annotationType.getFeatureByBaseName("end");
 
-    if (annotation.getEnd() < mDocument.getText().length()) {
+    if (annotation.getEnd() < mDocument.getCAS().getDocumentText().length()) {
       annotation.setIntValue(endFeature, annotation.getEnd() + 1);
     }
 

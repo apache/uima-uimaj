@@ -68,7 +68,7 @@ public class MergeAnnotationAction extends BaseSelectionListenerAction {
     AnnotationFS mergedAnnotation = documentCAS.createAnnotation(annotations.getFirst().getType(),
             annotations.getFirst().getBegin(), annotations.getLast().getEnd());
 
-    mDocument.removeAnnotations(annotations.toList());
+    mDocument.removeFeatureStructures(annotations.toList());
     mDocument.addFeatureStructure(mergedAnnotation);
   }
 }

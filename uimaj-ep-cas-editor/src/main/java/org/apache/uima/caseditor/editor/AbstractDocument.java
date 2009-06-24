@@ -32,7 +32,6 @@ import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.caseditor.editor.util.Span;
-import org.apache.uima.caseditor.editor.util.UimaUtil;
 
 /**
  * Abstract base class for document implementations.
@@ -62,32 +61,11 @@ public abstract class AbstractDocument implements ICasDocument {
   }
 
   /**
-   * Add notification.
-   */
-  public void addAnnotations(Collection<AnnotationFS> annotations) {
-    addFeatureStructures(UimaUtil.cast(annotations));
-  }
-
-  /**
-   * Remove notification.
-   */
-  public void removeAnnotations(Collection<AnnotationFS> annotationsToRemove) {
-    removeFeatureStructures(UimaUtil.cast(annotationsToRemove));
-  }
-
-  /**
-   * Update notification.
-   */
-  public void updateAnnotations(Collection<AnnotationFS> annotations) {
-    updateFeatureStructure(UimaUtil.cast(annotations));
-  }
-
-  /**
    * Sends an added message to registered listeners.
    *
    * @param annotation
    */
-  protected void fireAddedAnnotation(FeatureStructure annotation) {
+  protected void fireAddedFeatureStructure(FeatureStructure annotation) {
     for (ICasDocumentListener listener : mListener) {
       listener.added(annotation);
     }
@@ -98,7 +76,7 @@ public abstract class AbstractDocument implements ICasDocument {
    *
    * @param annotations
    */
-  protected void fireAddedAnnotation(Collection<FeatureStructure> annotations) {
+  protected void fireAddedFeatureStructure(Collection<FeatureStructure> annotations) {
     for (ICasDocumentListener listener : mListener) {
       listener.added(Collections.unmodifiableCollection(annotations));
     }
@@ -109,7 +87,7 @@ public abstract class AbstractDocument implements ICasDocument {
    *
    * @param annotation
    */
-  protected void fireRemovedAnnotation(FeatureStructure annotation) {
+  protected void fireRemovedFeatureStructure(FeatureStructure annotation) {
     for (ICasDocumentListener listener : mListener) {
       listener.removed(annotation);
     }
@@ -120,7 +98,7 @@ public abstract class AbstractDocument implements ICasDocument {
    *
    * @param annotations
    */
-  protected void fireRemovedAnnotations(Collection<FeatureStructure> annotations) {
+  protected void fireRemovedFeatureStructure(Collection<? extends FeatureStructure> annotations) {
     for (ICasDocumentListener listener : mListener) {
       listener.removed(Collections.unmodifiableCollection(annotations));
     }
@@ -142,7 +120,7 @@ public abstract class AbstractDocument implements ICasDocument {
    *
    * @param annotations
    */
-  protected void fireUpdatedFeatureStructures(Collection<FeatureStructure> annotations) {
+  protected void fireUpdatedFeatureStructure(Collection<? extends FeatureStructure> annotations) {
     for (ICasDocumentListener listener : mListener) {
       listener.updated(Collections.unmodifiableCollection(annotations));
     }
@@ -169,13 +147,6 @@ public abstract class AbstractDocument implements ICasDocument {
     }
 
     return Collections.unmodifiableMap(viewMap);
-  }
-
-  /**
-   * Retrieves the text in the given bounds.
-   */
-  public String getText(int start, int end) {
-    return getText().substring(start, end);
   }
 
   /**

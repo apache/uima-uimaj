@@ -141,7 +141,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
         		getAnnotationMode(), new Span(selection.x, selection.y));
 
         if (!oldAnnotations.isEmpty()) {
-          getDocument().removeAnnotations(oldAnnotations);
+          getDocument().removeFeatureStructures(oldAnnotations);
         }
 
         int start = selection.x;

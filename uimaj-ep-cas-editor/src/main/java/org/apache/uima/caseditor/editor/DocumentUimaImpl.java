@@ -94,23 +94,16 @@ public class DocumentUimaImpl extends AbstractDocument {
   public void addFeatureStructure(FeatureStructure annotation) {
     mCAS.getIndexRepository().addFS(annotation);
 
-    fireAddedAnnotation(annotation);
+    fireAddedFeatureStructure(annotation);
   }
 
   /**
 	 *
 	 */
-  public void addFeatureStructures(Collection<FeatureStructure> annotations) {
+  public void addFeatureStructures(Collection<? extends FeatureStructure> annotations) {
     for (FeatureStructure annotation : annotations) {
       addFeatureStructure(annotation);
     }
-  }
-
-  /**
-   * Remove all annotations. TODO: implement it
-   */
-  public void removeAnnotation() {
-    // must be implemented
   }
 
   /**
@@ -128,20 +121,20 @@ public class DocumentUimaImpl extends AbstractDocument {
   public void removeFeatureStructure(FeatureStructure annotation) {
     removeAnnotationInternal(annotation);
 
-    fireRemovedAnnotation(annotation);
+    fireRemovedFeatureStructure(annotation);
   }
 
   /**
    * Removes the given annotations from the {@link CAS}.
    */
-  public void removeFeatureStructures(Collection<FeatureStructure> annotationsToRemove) {
+  public void removeFeatureStructures(Collection<? extends FeatureStructure> annotationsToRemove) {
 
     for (FeatureStructure annotationToRemove : annotationsToRemove) {
       removeAnnotationInternal(annotationToRemove);
     }
 
     if (annotationsToRemove.size() > 0) {
-      fireRemovedAnnotations(annotationsToRemove);
+      fireRemovedFeatureStructure(annotationsToRemove);
     }
   }
 
@@ -155,8 +148,8 @@ public class DocumentUimaImpl extends AbstractDocument {
   /**
    * Notifies clients about the changed annotation.
    */
-  public void updateFeatureStructure(Collection<FeatureStructure> annotations) {
-    fireUpdatedFeatureStructures(annotations);
+  public void updateFeatureStructure(Collection<? extends FeatureStructure> annotations) {
+    fireUpdatedFeatureStructure(annotations);
   }
 
   public void changed() {
@@ -167,17 +160,17 @@ public class DocumentUimaImpl extends AbstractDocument {
    * Retrieves annotations of the given type from the {@link CAS}.
    */
   public Collection<AnnotationFS> getAnnotations(Type type) {
-    FSIndex annotationIndex = mCAS.getAnnotationIndex(type);
+    FSIndex<AnnotationFS> annotationIndex = mCAS.getAnnotationIndex(type);
 
     StrictTypeConstraint typeConstrain = new StrictTypeConstraint(type);
 
-    FSIterator strictTypeIterator =
+    FSIterator<AnnotationFS> strictTypeIterator =
             mCAS.createFilteredIterator(annotationIndex.iterator(), typeConstrain);
 
     return fsIteratorToCollection(strictTypeIterator);
   }
 
-  private Collection<AnnotationFS> fsIteratorToCollection(FSIterator iterator) {
+  private Collection<AnnotationFS> fsIteratorToCollection(FSIterator<AnnotationFS> iterator) {
     LinkedList<AnnotationFS> annotations = new LinkedList<AnnotationFS>();
     while (iterator.hasNext()) {
       AnnotationFS annotation = (AnnotationFS) iterator.next();
@@ -218,9 +211,9 @@ public class DocumentUimaImpl extends AbstractDocument {
     FSMatchConstraint annotationInSpanAndStrictTypeConstraint =
             cf.and(annotatioInSpanConstraint, strictType);
 
-    FSIndex allAnnotations = getCAS().getAnnotationIndex(type);
+    FSIndex<AnnotationFS> allAnnotations = getCAS().getAnnotationIndex(type);
 
-    FSIterator annotationInsideSpanIndex =
+    FSIterator<AnnotationFS> annotationInsideSpanIndex =
             getCAS().createFilteredIterator(allAnnotations.iterator(),
             annotationInSpanAndStrictTypeConstraint);
 
@@ -232,13 +225,6 @@ public class DocumentUimaImpl extends AbstractDocument {
    */
   public Type getType(String type) {
     return getCAS().getTypeSystem().getType(type);
-  }
-
-  /**
-   * Retrieves the text.
-   */
-  public String getText() {
-    return mCAS.getDocumentText();
   }
 
   /**

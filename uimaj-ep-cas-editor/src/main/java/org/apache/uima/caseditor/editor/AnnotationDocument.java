@@ -42,9 +42,30 @@ public class AnnotationDocument extends Document implements ICasDocument {
 
   private int lineLengthHint = 80;
 
-  public AnnotationDocument() {
-  }
+  /**
+   * Call is forwarded to the set document.
+   *
+   * @return the text
+   */
+  private String getText() {
 
+    String text = getCAS().getDocumentText();
+    
+    if (lineLengthHint != 0) {
+      return wrapWords(text, lineLengthHint);
+    } else {
+      return text;
+    }
+  }  
+  /**
+   * Notifies listener about a document change.
+   */
+  private void fireDocumentChanged() {
+    DocumentEvent ev = new DocumentEvent();
+    ev.fDocument = this;
+    fireDocumentChanged(ev);
+  }
+  
   public void setLineLengthHint(int lineLengthHint) {
     this.lineLengthHint = lineLengthHint;
   }
@@ -74,19 +95,8 @@ public class AnnotationDocument extends Document implements ICasDocument {
    *
    * @param annotations
    */
-  public void addFeatureStructures(Collection<FeatureStructure> annotations) {
+  public void addFeatureStructures(Collection<? extends FeatureStructure> annotations) {
     mDocument.addFeatureStructures(annotations);
-
-    fireDocumentChanged();
-  }
-
-  /**
-   * Call is forwarded to the set document.
-   *
-   * @param annotations
-   */
-  public void addAnnotations(Collection<AnnotationFS> annotations) {
-    mDocument.addAnnotations(annotations);
 
     fireDocumentChanged();
   }
@@ -107,19 +117,8 @@ public class AnnotationDocument extends Document implements ICasDocument {
    *
    * @param annotationsToRemove
    */
-  public void removeFeatureStructures(Collection<FeatureStructure> annotationsToRemove) {
+  public void removeFeatureStructures(Collection<? extends FeatureStructure> annotationsToRemove) {
     mDocument.removeFeatureStructures(annotationsToRemove);
-
-    fireDocumentChanged();
-  }
-
-  /**
-   * Call is forwarded to the set document.
-   *
-   * @param annotationsToRemove
-   */
-  public void removeAnnotations(Collection<AnnotationFS> annotationsToRemove) {
-    mDocument.removeAnnotations(annotationsToRemove);
 
     fireDocumentChanged();
   }
@@ -140,19 +139,8 @@ public class AnnotationDocument extends Document implements ICasDocument {
    *
    * @param annotations
    */
-  public void updateFeatureStructure(Collection<FeatureStructure> annotations) {
+  public void updateFeatureStructure(Collection<? extends FeatureStructure> annotations) {
     mDocument.updateFeatureStructure(annotations);
-
-    fireDocumentChanged();
-  }
-
-  /**
-   * Call is forwarded to the set document.
-   *
-   * @param annotations
-   */
-  public void updateAnnotations(Collection<AnnotationFS> annotations) {
-    mDocument.updateAnnotations(annotations);
 
     fireDocumentChanged();
   }
@@ -212,17 +200,9 @@ public class AnnotationDocument extends Document implements ICasDocument {
    * @param span
    * @return the annotations
    */
+  @Deprecated
   public Collection<AnnotationFS> getAnnotation(Type type, Span span) {
     return mDocument.getAnnotation(type, span);
-  }
-
-  /**
-   * Notifies listener about a document change.
-   */
-  private void fireDocumentChanged() {
-    DocumentEvent ev = new DocumentEvent();
-    ev.fDocument = this;
-    fireDocumentChanged(ev);
   }
 
   /**
@@ -255,32 +235,6 @@ public class AnnotationDocument extends Document implements ICasDocument {
     }
 
     return new String(text);
-  }
-
-  /**
-   * Call is forwarded to the set document.
-   *
-   * @return the text
-   */
-  public String getText() {
-
-    if (lineLengthHint != 0) {
-      return wrapWords(mDocument.getText(), lineLengthHint);
-    } else {
-      return mDocument.getText();
-    }
-  }
-
-  /**
-   * Call is forwarded to the set document.
-   *
-   * @param start
-   * @param end
-   * 
-   * @return the text
-   */
-  public String getText(int start, int end) {
-    return getText().substring(start, end);
   }
 
   /**

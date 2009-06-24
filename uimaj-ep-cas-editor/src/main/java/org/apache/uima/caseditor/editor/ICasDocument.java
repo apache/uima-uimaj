@@ -77,14 +77,7 @@ public interface ICasDocument {
    *
    * @param structures
    */
-  void addFeatureStructures(Collection<FeatureStructure> structures);
-
-  /**
-   * Adds the {@link AnnotationFS}s.
-   *
-   * @param annotations
-   */
-  void addAnnotations(Collection<AnnotationFS> annotations);
+  void addFeatureStructures(Collection<? extends FeatureStructure> structures);
 
   /**
    * Removes an {@link FeatureStructure} from the Document.
@@ -99,14 +92,7 @@ public interface ICasDocument {
    *
    * @param structuresToRemove
    */
-  void removeFeatureStructures(Collection<FeatureStructure> structuresToRemove);
-
-  /**
-   * Removes the given {@link AnnotationFS}s.
-   *
-   * @param annotationsToRemove
-   */
-  void removeAnnotations(Collection<AnnotationFS> annotationsToRemove);
+  void removeFeatureStructures(Collection<? extends FeatureStructure> structuresToRemove);
 
   /**
    * Updates the given {@link FeatureStructure}.
@@ -120,14 +106,7 @@ public interface ICasDocument {
    *
    * @param structures
    */
-  void updateFeatureStructure(Collection<FeatureStructure> structures);
-
-  /**
-   * Updates the given {@link AnnotationFS}s.
-   *
-   * @param annotations
-   */
-  void updateAnnotations(Collection<AnnotationFS> annotations);
+  void updateFeatureStructure(Collection<? extends FeatureStructure> structures);
 
   /**
    * The document was changed. Its unknown what changed.
@@ -158,24 +137,12 @@ public interface ICasDocument {
    * @param type
    * @param span
    * @return the annotations
+   * 
+   * @deprecated add new method to retrieve feature structures,
+   * until then get the annotation from the CAS
    */
+  @Deprecated
   Collection<AnnotationFS> getAnnotation(Type type, Span span);
-
-  /**
-   * Retrieves the text.
-   *
-   * @return the text as string
-   */
-  String getText();
-
-  /**
-   * Retrieves the text between start and end offsets.
-   *
-   * @param start
-   * @param end
-   * @return the text
-   */
-  String getText(int start, int end);
 
   /**
    * Retrieves the requested type.
