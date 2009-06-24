@@ -173,5 +173,11 @@ public interface UimaContextAdmin extends UimaContext {
    * @param aCAS the CAS that was returned or released
    */
   public void returnedCAS(AbstractCas aCAS);
+  /**
+   * Returns a UUID-like unique name of this component.
+   * 
+   * @return - unique name of this component
+   */
+  public String getUniqueName();
 
 }
