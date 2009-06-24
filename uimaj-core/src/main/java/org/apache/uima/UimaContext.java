@@ -482,5 +482,5 @@ public interface UimaContext {
    * 
    * @return an empty CAS. This will be an implementation of <code>aCasInterface</code>.
    */
-  public AbstractCas getEmptyCas(Class<? extends AbstractCas> aCasInterface);
+  public <T extends AbstractCas> T getEmptyCas(Class<T> aCasInterface);
 }
