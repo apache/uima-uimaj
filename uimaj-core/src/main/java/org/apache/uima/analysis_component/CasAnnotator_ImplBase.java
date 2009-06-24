@@ -41,7 +41,7 @@ public abstract class CasAnnotator_ImplBase extends Annotator_ImplBase {
    * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#getRequiredCasInterface()
    */
-  public Class getRequiredCasInterface() {
+  public Class<CAS> getRequiredCasInterface() {
     return CAS.class;
   }
 

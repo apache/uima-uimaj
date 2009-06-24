@@ -35,7 +35,7 @@ public abstract class JCasMultiplier_ImplBase extends AnalysisComponent_ImplBase
    * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#getRequiredCasInterface()
    */
-  public final Class getRequiredCasInterface() {
+  public final Class<JCas> getRequiredCasInterface() {
     return JCas.class;
   }
 
