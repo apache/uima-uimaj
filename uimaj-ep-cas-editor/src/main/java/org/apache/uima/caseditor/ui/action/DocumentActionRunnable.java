@@ -133,7 +133,7 @@ abstract class DocumentActionRunnable implements IRunnableWithProgress {
           } else if (!editorMap.get(documentElement).isDirty()) {
             // element is opened in editor and not dirty
             AnnotationEditor editor = editorMap.get(documentElement);
-            editor.setDirty();
+            editor.getDocument().changed();
           } else {
             // element is opened in editor and dirty, do nothing
           }

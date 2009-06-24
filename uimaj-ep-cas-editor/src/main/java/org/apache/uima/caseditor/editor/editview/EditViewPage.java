@@ -38,11 +38,11 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.caseditor.CasEditorPlugin;
 import org.apache.uima.caseditor.Images;
-import org.apache.uima.caseditor.editor.AnnotationDocument;
 import org.apache.uima.caseditor.editor.ArrayValue;
 import org.apache.uima.caseditor.editor.CasEditorError;
 import org.apache.uima.caseditor.editor.FeatureStructureSelection;
 import org.apache.uima.caseditor.editor.FeatureValue;
+import org.apache.uima.caseditor.editor.ICasDocument;
 import org.apache.uima.caseditor.editor.editview.validator.CellEditorValidatorFacotory;
 import org.apache.uima.caseditor.editor.util.FeatureStructureTransfer;
 import org.apache.uima.caseditor.editor.util.Primitives;
@@ -528,13 +528,13 @@ final class EditViewPage extends Page implements ISelectionListener {
 
   private TreeViewer viewer;
 
-  private AnnotationDocument document;
+  private ICasDocument document;
 
   private PinAction pinAction;
 
   private final EditView editView;
 
-  EditViewPage(EditView editView, AnnotationDocument document) {
+  EditViewPage(EditView editView, ICasDocument document) {
 
 	if (editView == null || document == null)
         throw new IllegalArgumentException("Parameters must not be null!");

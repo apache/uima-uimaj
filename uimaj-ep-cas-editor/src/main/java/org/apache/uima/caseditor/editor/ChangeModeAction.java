@@ -54,7 +54,7 @@ final class ChangeModeAction extends Action {
    *
    * @return the document
    */
-  protected AnnotationDocument getDocument() {
+  protected ICasDocument getDocument() {
     return mEditor.getDocument();
   }
 

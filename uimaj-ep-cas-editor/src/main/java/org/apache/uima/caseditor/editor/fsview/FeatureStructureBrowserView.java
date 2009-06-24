@@ -19,9 +19,9 @@
 
 package org.apache.uima.caseditor.editor.fsview;
 
-import org.apache.uima.caseditor.editor.AnnotationDocument;
-import org.apache.uima.caseditor.editor.AnnotationEditor;
 import org.apache.uima.caseditor.editor.AnnotationEditorView;
+import org.apache.uima.caseditor.editor.ICasEditor;
+import org.apache.uima.caseditor.editor.ICasDocument;
 
 /**
  */
@@ -36,11 +36,11 @@ public final class FeatureStructureBrowserView extends AnnotationEditorView {
   }
 
   @Override
-  protected PageRec doCreatePage(AnnotationEditor editor) {
+  protected PageRec doCreatePage(ICasEditor editor) {
 
 		PageRec result = null;
 
-		AnnotationDocument document = editor.getDocument();
+		ICasDocument document = editor.getDocument();
 
 		if (document != null) {
 			FeatureStructureBrowserViewPage page = new FeatureStructureBrowserViewPage(

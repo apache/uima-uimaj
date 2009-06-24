@@ -19,9 +19,9 @@
 
 package org.apache.uima.caseditor.editor.editview;
 
-import org.apache.uima.caseditor.editor.AnnotationDocument;
-import org.apache.uima.caseditor.editor.AnnotationEditor;
 import org.apache.uima.caseditor.editor.AnnotationEditorView;
+import org.apache.uima.caseditor.editor.ICasDocument;
+import org.apache.uima.caseditor.editor.ICasEditor;
 
 /**
  * TODO: add javadoc here
@@ -38,11 +38,11 @@ public final class EditView extends AnnotationEditorView {
 	}
 
 	@Override
-	protected PageRec doCreatePage(AnnotationEditor editor) {
+	protected PageRec doCreatePage(ICasEditor editor) {
 
 		PageRec result = null;
 
-		AnnotationDocument document = editor.getDocument();
+		ICasDocument document = editor.getDocument();
 
 		if (document != null) {
 			EditViewPage page = new EditViewPage(this, document);

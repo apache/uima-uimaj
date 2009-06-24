@@ -48,13 +48,13 @@ public abstract class AnnotationEditorView extends PageBookView {
     return page;
   }
 
-  protected abstract PageRec doCreatePage(AnnotationEditor editor);
+  protected abstract PageRec doCreatePage(ICasEditor editor);
 
   @Override
   protected final PageRec doCreatePage(IWorkbenchPart part) {
 
     if (part instanceof AnnotationEditor) {
-      AnnotationEditor editor = (AnnotationEditor) part;
+      ICasEditor editor = (ICasEditor) part;
 
       return doCreatePage(editor);
     }

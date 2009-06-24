@@ -219,7 +219,7 @@ public class AnnotationDocument extends Document implements ICasDocument {
   /**
    * Notifies listener about a document change.
    */
-  public void fireDocumentChanged() {
+  private void fireDocumentChanged() {
     DocumentEvent ev = new DocumentEvent();
     ev.fDocument = this;
     fireDocumentChanged(ev);

@@ -38,7 +38,7 @@ public final class FeatureValue implements IAdaptable {
    * @param feature
    * @param value
    */
-  public FeatureValue(AnnotationDocument document, FeatureStructure structure, Feature feature) {
+  public FeatureValue(ICasDocument document, FeatureStructure structure, Feature feature) {
     Assert.isNotNull(document);
     // TODO: Remove document parameter ? Not needed anymore!
     

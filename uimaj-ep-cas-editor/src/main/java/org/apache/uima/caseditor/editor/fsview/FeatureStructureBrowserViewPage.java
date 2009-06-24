@@ -33,8 +33,8 @@ import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.caseditor.CasEditorPlugin;
 import org.apache.uima.caseditor.Images;
 import org.apache.uima.caseditor.editor.AbstractAnnotationDocumentListener;
-import org.apache.uima.caseditor.editor.AnnotationDocument;
 import org.apache.uima.caseditor.editor.FeatureValue;
+import org.apache.uima.caseditor.editor.ICasDocument;
 import org.apache.uima.caseditor.editor.ModelFeatureStructure;
 import org.apache.uima.caseditor.editor.action.DeleteFeatureStructureAction;
 import org.apache.uima.caseditor.editor.util.StrictTypeConstraint;
@@ -66,13 +66,13 @@ public final class FeatureStructureBrowserViewPage extends Page {
   final class FeatureStructureTreeContentProvider extends AbstractAnnotationDocumentListener
           implements ITreeContentProvider {
 
-    private AnnotationDocument mDocument;
+    private ICasDocument mDocument;
 
     private CAS mCAS;
 
     private Type mCurrentType;
 
-    FeatureStructureTreeContentProvider(AnnotationDocument document, CAS tcas) {
+    FeatureStructureTreeContentProvider(ICasDocument document, CAS tcas) {
       mCAS = tcas;
       mDocument = document;
     }
@@ -293,16 +293,14 @@ public final class FeatureStructureBrowserViewPage extends Page {
       // TODO: check if an AnnotationFS was created, if so
       // add it to the document
 
-      mDocument.fireDocumentChanged();
-
-      // inserts a new feature strucutre of current type
+      // inserts a new feature structure of current type
       if (mCurrentType == null) {
         return;
       }
 
       FeatureStructure newFeatureStructure = mCAS.createFS(mCurrentType);
 
-      mCAS.getIndexRepository().addFS(newFeatureStructure);
+      mDocument.addFeatureStructure(newFeatureStructure);
 
       mFSList.refresh();
     }
@@ -316,7 +314,7 @@ public final class FeatureStructureBrowserViewPage extends Page {
     }
   }
 
-  private AnnotationDocument mDocument;
+  private ICasDocument mDocument;
 
   private CAS mCAS;
 
@@ -337,7 +335,7 @@ public final class FeatureStructureBrowserViewPage extends Page {
    *
    * @param document
    */
-  public FeatureStructureBrowserViewPage(AnnotationDocument document) {
+  public FeatureStructureBrowserViewPage(ICasDocument document) {
 
 	if (document == null)
 		throw new IllegalArgumentException("document parameter must not be null!");

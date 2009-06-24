@@ -29,10 +29,10 @@ import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.caseditor.editor.AbstractDocumentListener;
-import org.apache.uima.caseditor.editor.AnnotationDocument;
 import org.apache.uima.caseditor.editor.ArrayValue;
 import org.apache.uima.caseditor.editor.CasEditorError;
 import org.apache.uima.caseditor.editor.FeatureValue;
+import org.apache.uima.caseditor.editor.ICasDocument;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Display;
@@ -40,11 +40,11 @@ import org.eclipse.swt.widgets.Display;
 final class FeatureStructureContentProvider extends AbstractDocumentListener
         implements ITreeContentProvider {
 
-  private AnnotationDocument mDocument;
+  private ICasDocument mDocument;
 
   private Viewer viewer;
 
-  FeatureStructureContentProvider(AnnotationDocument document) {
+  FeatureStructureContentProvider(ICasDocument document) {
 
     if (document == null) {
       throw new IllegalArgumentException("document parameter must not be null!");

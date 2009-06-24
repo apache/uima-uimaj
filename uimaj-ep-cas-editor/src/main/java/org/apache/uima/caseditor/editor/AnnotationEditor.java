@@ -111,7 +111,7 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
  * add an action to decrease left side on an annotation
  * add an action to decrease right side on an annotation
  */
-public final class AnnotationEditor extends StatusTextEditor implements ISelectionListener {
+public final class AnnotationEditor extends StatusTextEditor implements ICasEditor, ISelectionListener {
   /**
    * This action annotates the selected text with a defined tag.
    */
@@ -156,7 +156,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ISelecti
       }
     }
 
-    AnnotationDocument getDocument() {
+    ICasDocument getDocument() {
       return AnnotationEditor.this.getDocument();
     }
   }
@@ -481,7 +481,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ISelecti
    */
   private int mCursorPosition;
 
-  private AnnotationDocument mDocument;
+  private ICasDocument mDocument;
 
   boolean mIsSomethingHighlighted = false;
 
@@ -671,7 +671,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ISelecti
   protected void doSetInput(IEditorInput input) throws CoreException {
     super.doSetInput(input);
 
-    mDocument = (AnnotationDocument) getDocumentProvider().getDocument(input);
+    mDocument = (ICasDocument) getDocumentProvider().getDocument(input);
 
     if (mDocument != null) {
 
@@ -733,7 +733,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ISelecti
    *
    * @return current <code>AnnotationDocument</code>
    */
-  public AnnotationDocument getDocument() {
+  public ICasDocument getDocument() {
     return mDocument;
   }
 
@@ -1022,10 +1022,6 @@ public final class AnnotationEditor extends StatusTextEditor implements ISelecti
     }
 
     super.dispose();
-  }
-
-  public void setDirty() {
-    getDocument().fireDocumentChanged();
   }
 
   void setAnnotationSelection(AnnotationFS annotation) {

@@ -25,7 +25,6 @@ import java.util.Collection;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.caseditor.editor.AbstractAnnotationDocumentListener;
-import org.apache.uima.caseditor.editor.AnnotationDocument;
 import org.apache.uima.caseditor.editor.AnnotationEditor;
 import org.apache.uima.caseditor.editor.ICasDocument;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -64,11 +63,11 @@ abstract class OutlineContentProviderBase extends AbstractAnnotationDocumentList
 	 */
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 	  if (oldInput != null) {
-	    ((AnnotationDocument) oldInput).removeChangeListener(this);
+	    ((ICasDocument) oldInput).removeChangeListener(this);
 	  }
 	
 	  if (newInput != null) {
-	    ((AnnotationDocument) newInput).addChangeListener(this);
+	    ((ICasDocument) newInput).addChangeListener(this);
 	
 	    mInputDocument = (ICasDocument) newInput;
 	    

@@ -31,8 +31,8 @@ import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.caseditor.CasEditorPlugin;
-import org.apache.uima.caseditor.editor.AnnotationDocument;
 import org.apache.uima.caseditor.editor.AnnotationEditor;
+import org.apache.uima.caseditor.editor.ICasDocument;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 
@@ -127,11 +127,11 @@ public class TypeGroupedContentProvider extends OutlineContentProviderBase {
 	@Override
   public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 		if (oldInput != null) {
-			((AnnotationDocument) oldInput).removeChangeListener(this);
+			((ICasDocument) oldInput).removeChangeListener(this);
 		}
 
 		if (newInput != null) {
-			mInputDocument = (AnnotationDocument) newInput;
+			mInputDocument = (ICasDocument) newInput;
 			
 			mInputDocument.addChangeListener(this);
 
