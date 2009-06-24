@@ -41,7 +41,7 @@ public abstract class CasMultiplier_ImplBase extends AnalysisComponent_ImplBase 
    * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#getRequiredCasInterface()
    */
-  public final Class getRequiredCasInterface() {
+  public final Class<CAS> getRequiredCasInterface() {
     return CAS.class;
   }
 

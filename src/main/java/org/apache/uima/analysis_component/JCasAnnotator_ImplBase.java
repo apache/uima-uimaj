@@ -34,7 +34,7 @@ public abstract class JCasAnnotator_ImplBase extends Annotator_ImplBase {
    * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#getRequiredCasInterface()
    */
-  public Class getRequiredCasInterface() {
+  public Class<JCas> getRequiredCasInterface() {
     return JCas.class;
   }
 
