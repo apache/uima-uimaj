@@ -158,7 +158,7 @@ public class CasManager_impl implements CasManager {
    * @see org.apache.uima.resource.CasManager#defineCasPool(org.apache.uima.UimaContextAdmin, int, java.util.Properties)
    */
   public void defineCasPool(UimaContextAdmin aRequestorContext, int aMinimumSize, Properties aPerformanceTuningSettings) throws ResourceInitializationException {
-    defineCasPool(aRequestorContext, aRequestorContext.getQualifiedContextName(), aMinimumSize, aPerformanceTuningSettings);
+    defineCasPool(aRequestorContext, aRequestorContext.getUniqueName(), aMinimumSize, aPerformanceTuningSettings);
   }
 
   /*
