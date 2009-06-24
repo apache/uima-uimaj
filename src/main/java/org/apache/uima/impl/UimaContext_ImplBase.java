@@ -25,6 +25,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.rmi.server.UID;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -114,6 +115,27 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    * Object that implements management interface to the AE.
    */
   protected AnalysisEngineManagementImpl mMBean = new AnalysisEngineManagementImpl();
+
+  private String uniqueIdentifier = "";
+
+  /*  Default constructor. Its main purpose is to create a UUID-like
+   *  unique name for this component.
+   *
+   */
+  public UimaContext_ImplBase() {
+    //  Generate unique name for this component
+    uniqueIdentifier = new UID().toString();
+    //  Strip colons and un
+    uniqueIdentifier = uniqueIdentifier.replaceAll(":", "");
+    uniqueIdentifier = uniqueIdentifier.replaceAll("-", "");
+  }
+  /* Returns a unique name of this component
+   * 
+   */
+  public String getUniqueName() {
+    // return a unique name of this component
+    return getQualifiedContextName()+"_"+uniqueIdentifier;
+  }
 
   /*
    * (non-Javadoc)
@@ -577,7 +599,9 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
                   Integer.toString(mCasPoolSize) });
     }
     CasManager casManager = getResourceManager().getCasManager();
-    CAS cas = casManager.getCas(getQualifiedContextName());
+//    CAS cas = casManager.getCas(getQualifiedContextName());
+    CAS cas = casManager.getCas(getUniqueName());
+    
     //add to the set of outstanding CASes
     mOutstandingCASes.add(((CASImpl)cas).getBaseCAS());
     // set the component info, so the CAS knows the proper sofa mappings
