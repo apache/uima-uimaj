@@ -24,8 +24,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import junit.framework.Assert;
@@ -55,6 +57,7 @@ import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.impl.URISpecifier_impl;
 import org.apache.uima.resource.metadata.AllowedValue;
 import org.apache.uima.resource.metadata.Capability;
@@ -995,6 +998,56 @@ public class AnalysisEngine_implTest extends TestCase {
         outCas.release();
       }
       assertTrue(expectedOutputs.isEmpty());
+
+      
+      // test aggregate with 2 AEs sharing resource manager
+      AnalysisEngineDescription aggregateSegDesc = UIMAFramework.getXMLParser()
+              .parseAnalysisEngineDescription(
+                      new XMLInputSource(JUnitExtension
+                              .getFile("TextAnalysisEngineImplTest/AggregateWithSegmenter.xml")));
+      
+      ResourceManager rsrcMgr = UIMAFramework.newDefaultResourceManager();
+      Map<String, Object> params = new HashMap<String, Object>();
+      AnalysisEngine ae1 = UIMAFramework.produceAnalysisEngine(aggregateSegDesc, rsrcMgr, params);
+      AnalysisEngine ae2 = UIMAFramework.produceAnalysisEngine(aggregateSegDesc, rsrcMgr, params);
+      
+      // start with testing first ae
+      CAS cas1 = ae1.newCAS();
+      cas1.setDocumentText("Line one\nLine two\nLine three");
+      CasIterator iter1 = ae1.processAndOutputNewCASes(cas1);
+      assertTrue(iter1.hasNext());
+      CAS outCas1 = iter1.next();
+      assertEquals("Line one", outCas1.getDocumentText());
+     
+      // now test second ae
+      CAS cas2 = ae2.newCAS();
+      cas2.setDocumentText("Line one\nLine two\nLine three");
+      CasIterator iter2 = ae2.processAndOutputNewCASes(cas2);
+      assertTrue(iter2.hasNext());
+      CAS outCas2 = iter2.next();
+      assertEquals("Line one", outCas2.getDocumentText());
+      outCas2.release();
+      assertTrue(iter2.hasNext());
+      outCas2 = iter2.next();
+      assertEquals("Line two", outCas2.getDocumentText());
+      outCas2.release();
+      assertTrue(iter2.hasNext());
+      outCas2 = iter2.next();
+      assertEquals("Line three", outCas2.getDocumentText());
+      outCas2.release();
+      assertFalse(iter2.hasNext());
+     
+      // continue testing first ae
+      outCas1.release();
+      assertTrue(iter1.hasNext());
+      outCas1 = iter1.next();
+      assertEquals("Line two", outCas1.getDocumentText());
+      outCas1.release();
+      assertTrue(iter1.hasNext());
+      outCas1 = iter1.next();
+      assertEquals("Line three", outCas1.getDocumentText());
+      outCas1.release();
+      assertFalse(iter1.hasNext());
       
     } catch (Exception e) {
       JUnitExtension.handleException(e);
