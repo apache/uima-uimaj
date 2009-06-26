@@ -120,7 +120,7 @@ public class PearMergerTest extends TestCase {
     // customize ResourceManager by adding component CLASSPATH
     ResourceManager resMngr = UIMAFramework.newDefaultResourceManager();
     String compClassPath = InstallationController.buildComponentClassPath(insDesc
-            .getMainComponentRoot(), insDesc);
+            .getMainComponentRoot(), insDesc, false);
     // instantiate the aggregate AE
     resMngr.setExtensionClassPath(compClassPath, true);
     String compDescFilePath = insDesc.getMainComponentDesc();

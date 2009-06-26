@@ -448,16 +448,21 @@ public class InstallationController {
    *          The given root directory of the installed component.
    * @param insdObject
    *          The given installation descriptor object.
+   * @param addLibDir
+   *          Whether we should add jars from the libdir or not (true at packaging time, false at
+   *          runtime).
    * @return The string that should be added to the CLASSPATH for the given component.
    * @throws IOException
    *           If any I/O exception occurred.
    */
   public static String buildComponentClassPath(String compRootDirPath,
-          InstallationDescriptor insdObject) throws IOException {
+          InstallationDescriptor insdObject, boolean addLibDir) throws IOException {
     // create list of JAR files in lib dir.
     File compLibDir = new File(compRootDirPath, PACKAGE_LIB_DIR);
     StringBuffer cpBuffer = new StringBuffer();
-    cpBuffer = addListOfJarFiles(compLibDir, cpBuffer);
+    if (addLibDir) {
+      cpBuffer = addListOfJarFiles(compLibDir, cpBuffer);
+    }
     // append all specified CLASSPATH env.var. settings
     Iterator envActions = insdObject.getInstallationActions(
             InstallationDescriptor.ActionInfo.SET_ENV_VARIABLE_ACT).iterator();
@@ -1437,7 +1442,7 @@ public class InstallationController {
     if (_insdObject != null) {
       StringBuffer cpBuffer = new StringBuffer();
       // build main component classpath
-      String mainClassPath = buildComponentClassPath(_mainComponentRootPath, _insdObject);
+      String mainClassPath = buildComponentClassPath(_mainComponentRootPath, _insdObject, true);
       cpBuffer.append(mainClassPath);
       // add component classpath for possible delegate components
       if (_installationTable.size() > 0) {
@@ -1447,7 +1452,7 @@ public class InstallationController {
           String dlgId = (String) dlgIdList.nextElement();
           String dlgRootPath = (String) _installationTable.get(dlgId);
           InstallationDescriptor dlgInsD = (InstallationDescriptor) _installationInsDs.get(dlgId);
-          String dlgClassPath = buildComponentClassPath(dlgRootPath, dlgInsD);
+          String dlgClassPath = buildComponentClassPath(dlgRootPath, dlgInsD, true);
           if (dlgClassPath.length() > 0) {
             if (cpBuffer.length() > 0
                     && cpBuffer.charAt(cpBuffer.length() - 1) != File.pathSeparatorChar)

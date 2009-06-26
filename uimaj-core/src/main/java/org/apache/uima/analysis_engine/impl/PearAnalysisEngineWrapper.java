@@ -216,7 +216,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
            }
          }
          
-         String classPath = pkgBrowser.buildComponentClassPath();
+         String classPath = pkgBrowser.buildComponentRuntimeClassPath();
          String dataPath = pkgBrowser.getComponentDataPath();
          StringPair sp = new StringPair(classPath, dataPath);
          ResourceManager innerRM;
