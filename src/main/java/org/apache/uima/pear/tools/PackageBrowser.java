@@ -138,7 +138,16 @@ public class PackageBrowser {
    *           If any I/O exception occurred.
    */
   public String buildComponentClassPath() throws IOException {
-    return buildComponentClassPath(false);
+    return buildComponentClassPath(false, true);
+  }
+  
+  /**
+   * Like {@link #buildComponentClassPath()}, but without all jars from the lib dir.
+   * @return The runtime classpath for the component.
+   * @throws IOException
+   */
+  public String buildComponentRuntimeClassPath() throws IOException {
+    return buildComponentClassPath(false, false);
   }
 
   /**
@@ -153,16 +162,19 @@ public class PackageBrowser {
    *          If <code>true</code>, the output string will include relative path expressions for
    *          all relevant objects containing in the component PEAR package, otherwise it will
    *          contain absolute path expressions for these objects.
+   * @param addLibDir
+   *          Whether to add jars from the lib dir to the classpath (true at packaging time, false
+   *          at runtime).
    * @return The string that should be added to the CLASSPATH to run the given installed component.
    * @throws IOException
    *           If any I/O exception occurred.
    */
-  public String buildComponentClassPath(boolean relativePath) throws IOException {
+  public String buildComponentClassPath(boolean relativePath, boolean addLibDir) throws IOException {
     if (!isArchived()) {
       InstallationDescriptor insdObject = getInstallationDescriptor();
       if (insdObject != null) {
         String absoluteClassPath = InstallationController.buildComponentClassPath(
-                getRootDirectory().getAbsolutePath(), insdObject);
+                getRootDirectory().getAbsolutePath(), insdObject, addLibDir);
         String absoluteRootDirPathExp = StringUtil.toRegExpReplacement(getRootDirectory()
                 .getAbsolutePath().replace('\\', '/'));
         return relativePath ? absoluteClassPath.replaceAll(absoluteRootDirPathExp, "\\.")
