@@ -621,12 +621,14 @@ final class EditViewPage extends Page implements ISelectionListener {
 
               // this can fail
               FeatureValue value = (FeatureValue) tableItem.getData();
-
+              
+              TypeSystem typeSystem = value.getFeatureStructure().getCAS().getTypeSystem();
+              
               Type range = value.getFeature().getRange();
 
               FeatureStructure dragFeatureStructure = (FeatureStructure) event.data;
-
-              if (range.equals(dragFeatureStructure.getType())) {
+              
+              if (typeSystem.subsumes(range, dragFeatureStructure.getType())) {
 
                 FeatureStructure target = value.getFeatureStructure();
 
