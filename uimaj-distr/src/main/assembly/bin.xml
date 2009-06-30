@@ -200,6 +200,8 @@ under the License.
       <outputDirectory>/apache-uima/examples/src</outputDirectory>
       <excludes>
         <exclude> org/apache/uima/examples/xmi/XmiEcoreCasConsumer.java</exclude>
+        <exclude> org/apache/uima/examples/xmi/Ecore2UimaTypeSystem.java</exclude>
+        <exclude> org/apache/uima/examples/xmi/UimaTypeSystem2Ecore.java</exclude>
       </excludes>
     </fileSet>
     <fileSet>
@@ -248,6 +250,16 @@ under the License.
     </file>
     <file>
       <source>../uimaj-examples/src/main/java/org/apache/uima/examples/xmi/XmiEcoreCasConsumer.java</source>
+      <outputDirectory>/apache-uima/examples/ecore_src/org/apache/uima/examples/xmi</outputDirectory>
+      <fileMode>644</fileMode> 
+    </file>
+    <file>
+      <source>../uimaj-examples/src/main/java/org/apache/uima/examples/xmi/Ecore2UimaTypeSystem.java</source>
+      <outputDirectory>/apache-uima/examples/ecore_src/org/apache/uima/examples/xmi</outputDirectory>
+      <fileMode>644</fileMode> 
+    </file>
+    <file>
+      <source>../uimaj-examples/src/main/java/org/apache/uima/examples/xmi/UimaTypeSystem2Ecore.java</source>
       <outputDirectory>/apache-uima/examples/ecore_src/org/apache/uima/examples/xmi</outputDirectory>
       <fileMode>644</fileMode> 
     </file>

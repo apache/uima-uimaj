@@ -185,7 +185,7 @@ public class UimaTypeSystem2Ecore {
         String supertypeName = type.getSupertypeName();
         EClassifier superclass = lookupEClassifierForType(supertypeName); // creates EClass if not
         // already existing
-        eclass.getESuperTypes().add(superclass);
+        eclass.getESuperTypes().add((EClass)superclass);
 
         // set features
         FeatureDescription[] features = type.getFeatures();
