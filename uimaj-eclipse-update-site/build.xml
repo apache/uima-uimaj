@@ -19,6 +19,17 @@ specific language governing permissions and limitations
 under the License.    
 -->
 
+<!--
+WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING 
+
+The instructions below that talk about the "new" way of doing
+things appear to be just a plan.  There are no poms in the
+feature projects, and the features and updated site are still
+built the "old" way.  Just set an eclipse.home property and run
+the default target.
+
+-->
+
 <!-- This script is run from ant and builds a new update site.
 
   Usage:
@@ -128,6 +139,9 @@ under the License.
 
 <project name="build update site" default="all" basedir=".">
   
+	   <!-- Set this to your eclipse installation
+	    <property name="eclipse.home" location=""/> -->
+
   
   <condition property="eclipse.home" value="${uima-maven-build-eclipse-home}">
     <not>
@@ -141,7 +155,7 @@ under the License.
   </condition>
   
   <fail unless="eclipse.home"
-    message="********** Please set up and use a maven profile with the property uima-maven-build-eclipse-home set to an Eclipse installation at level 3.3 or later, e.g. c:/eclipses/3.3/eclipse"/>
+    message="********** Please set up and use an ant property eclipse.home set to an Eclipse installation at level 3.3 or later, e.g. c:/eclipses/3.3/eclipse"/>
   
   <property name="eclipse.home" location="${uima-maven-build-eclipse-home}"/>
   
