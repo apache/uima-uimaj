@@ -201,6 +201,17 @@ under the License.
       </includes>
     </fileSet>   
     <fileSet>
+      <directory>../uimaj-ep-cas-editor</directory>
+      <outputDirectory>/uimaj-ep-cas-editor</outputDirectory>
+      <includes>
+        <include>icons/**</include>
+        <include>src/**</include>
+        <include>schema/**</include>
+        <include>plugin.xml</include>
+        <include>pom.xml</include>
+      </includes>
+    </fileSet>      
+    <fileSet>
       <directory>../uimaj-ep-configurator</directory>
       <outputDirectory>/uimaj-ep-configurator</outputDirectory>
       <includes>

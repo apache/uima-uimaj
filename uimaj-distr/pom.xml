@@ -89,6 +89,12 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.uima</groupId>
+			<artifactId>uimaj-ep-cas-editor</artifactId>
+			<version>${uimaj-release-eclipse-version}</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-ep-configurator</artifactId>
 			<version>${uimaj-release-eclipse-version}</version>
 			<scope>compile</scope>

@@ -113,6 +113,7 @@ under the License.
     <!-- Copy each eclipse plugin into the /eclipsePlugins dir of the distribution -->
     <dependencySet>
       <includes>
+        <include>org.apache.uima:uimaj-ep-cas-editor</include>
         <include>org.apache.uima:uimaj-ep-configurator</include>
         <include>org.apache.uima:uimaj-ep-debug</include>
         <include>org.apache.uima:uimaj-ep-jcasgen</include>
