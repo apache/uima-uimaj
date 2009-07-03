@@ -21,6 +21,7 @@ package org.apache.uima.caseditor.editor;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.Type;
 import org.apache.uima.caseditor.core.TaeError;
 import org.apache.uima.caseditor.editor.fsview.TypeCombo;
 import org.eclipse.jface.dialogs.Dialog;
@@ -57,16 +58,18 @@ class FindAnnotateDialog extends Dialog {
 
   private final IFindReplaceTarget findReplaceTarget;
   private final ICasDocument document;
-
+  private final Type modeType;
+  
   private Combo findField;
   private TypeCombo typeField;
-
+  
   private Button forwardRadioButton;
 
-  FindAnnotateDialog(Shell parentShell, ICasDocument document, IFindReplaceTarget findReplaceTarget) {
+  FindAnnotateDialog(Shell parentShell, ICasDocument document, IFindReplaceTarget findReplaceTarget, Type modeType) {
     super(parentShell);
     this.document = document;
     this.findReplaceTarget = findReplaceTarget;
+    this.modeType = modeType;
   }
 
   @Override
@@ -121,6 +124,7 @@ class FindAnnotateDialog extends Dialog {
             document.getCAS().getTypeSystem().getType(CAS.TYPE_NAME_ANNOTATION),
             document.getCAS().getTypeSystem());
 
+    typeField.select(modeType);
     GridData typeFieldData = new GridData();
     typeFieldData.horizontalAlignment = SWT.FILL;
     typeFieldData.grabExcessHorizontalSpace = true;

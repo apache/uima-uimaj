@@ -20,8 +20,11 @@
 package org.apache.uima.caseditor.editor.fsview;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.uima.cas.Type;
@@ -47,6 +50,8 @@ public class TypeCombo extends Composite {
 
   private Combo typeCombo;
   
+  private List<String> typeNameList;
+  
   public TypeCombo(Composite parent, Type superType, TypeSystem typeSystem) {
     this(parent, superType, typeSystem, new LinkedList<Type>());
   }
@@ -71,7 +76,7 @@ public class TypeCombo extends Composite {
       }
     });
 
-    Collection<String> typeNameList = new LinkedList<String>();
+    typeNameList = new LinkedList<String>();
 
     typeNameList.add(superType.getName());
 
@@ -86,6 +91,20 @@ public class TypeCombo extends Composite {
 
     // select the super type, its the first element (and must be there)
     typeCombo.select(0);
+  }
+  
+  /**
+   * Selects the given type or does nothing if the
+   * type is not listed.
+   * 
+   * @param type
+   */
+  public void select(Type type) {
+    Integer typeIndex = typeNameList.indexOf(type.getName());
+    
+    if (typeIndex != null) {
+      typeCombo.select(typeIndex);
+    }
   }
   
   public Type getType() {

@@ -42,7 +42,7 @@ public class FindAnnotateAction extends Action {
   public void run() {
     FindAnnotateDialog dialog = new FindAnnotateDialog(
             Display.getCurrent().getActiveShell(),
-            editor.getDocument(), target);
+            editor.getDocument(), target, editor.getAnnotationMode());
 
     dialog.open();
   }
