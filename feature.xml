@@ -111,5 +111,12 @@ under the License.
          install-size="0"
          version="2.3.0.incubating-SNAPSHOT"
          unpack="false"/>
+		 
+   <plugin
+         id="org.apache.uima.caseditor"
+         download-size="0"
+         install-size="0"
+         version="2.3.0.incubating-SNAPSHOT"
+         unpack="false"/>
 
 </feature>
