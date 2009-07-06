@@ -76,10 +76,10 @@ public final class AnnotationOutline extends ContentOutlinePage
    * This listener receive events from the bound editor.
    */
   protected class EditorListener implements IAnnotationEditorModifyListener {
-	  
+
     /**
      * Called if the editor annotation mode was changed.
-     *
+     * 
      * @param newMode
      */
     public void annotationModeChanged(Type newMode) {
@@ -87,9 +87,9 @@ public final class AnnotationOutline extends ContentOutlinePage
       mTableViewer.refresh();
     }
 
-	public void showAnnotationsChanged(Collection<Type> shownAnnotationTypes) {
-		mTableViewer.refresh();
-	}
+    public void showAnnotationsChanged(Collection<Type> shownAnnotationTypes) {
+      mTableViewer.refresh();
+    }
   }
 
   /**

@@ -21,8 +21,10 @@ package org.apache.uima.caseditor.editor.outline;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIterator;
@@ -72,6 +74,8 @@ public class TypeGroupedContentProvider extends OutlineContentProviderBase {
 	@Override
 	protected void removedAnnotation(Collection<AnnotationFS> annotations) {
 
+	  Set<AnnotationTreeNode> removeAnnotations = new HashSet<AnnotationTreeNode>();
+	  
 		for (AnnotationFS annotation : annotations) {
 			String name = annotation.getType().getName();
 
@@ -81,12 +85,14 @@ public class TypeGroupedContentProvider extends OutlineContentProviderBase {
   			AnnotationTreeNode annotationNode = new AnnotationTreeNode(mInputDocument, annotation); 
   			typeNode.remove(annotationNode);
   			
-  			viewer.remove(annotationNode);
+  			removeAnnotations.add(annotationNode);
 			}
 			else {
 			  CasEditorPlugin.logError("Unmapped annotation type!");
 			}
 		}
+		
+		viewer.remove(removeAnnotations.toArray());
 	}
 
 	public Object[] getElements(Object inputElement) {
