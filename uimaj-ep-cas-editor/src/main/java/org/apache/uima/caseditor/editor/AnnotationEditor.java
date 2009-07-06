@@ -22,6 +22,7 @@ package org.apache.uima.caseditor.editor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -56,11 +57,14 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.text.IPainter;
+import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.information.InformationPresenter;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.AnnotationPainter;
 import org.eclipse.jface.text.source.IAnnotationAccess;
 import org.eclipse.jface.text.source.IAnnotationAccessExtension;
+import org.eclipse.jface.text.source.IAnnotationModel;
+import org.eclipse.jface.text.source.IAnnotationModelExtension;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.viewers.ISelection;
@@ -231,6 +235,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
    * document with the annotations in eclipse.
    */
   private class DocumentListener extends AbstractAnnotationDocumentListener {
+    
     /**
      * Adds a collection of annotations.
      *
@@ -238,7 +243,16 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
      */
     @Override
     public void addedAnnotation(Collection<AnnotationFS> annotations) {
-    	mPainter.paint(IPainter.CONFIGURATION);
+      IAnnotationModelExtension annotationModel = (IAnnotationModelExtension) getDocumentProvider().getAnnotationModel(getEditorInput());
+      
+      Map<Annotation, Position> addAnnotationMap = new HashMap<Annotation, Position>();
+      
+      for (AnnotationFS annotation : annotations) {
+        addAnnotationMap.put(new EclipseAnnotationPeer(annotation), new Position(annotation.getBegin(), 
+                annotation.getEnd() - annotation.getBegin()));
+      }
+      
+      annotationModel.replaceAnnotations(null, addAnnotationMap);
     }
 
     /**
@@ -257,7 +271,15 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 
       highlight(0, 0); // TODO: only if removed annotation was selected
 
-      mPainter.paint(IPainter.CONFIGURATION);
+      IAnnotationModelExtension annotationModel = (IAnnotationModelExtension) getDocumentProvider().getAnnotationModel(getEditorInput());
+      
+      Annotation removeAnnotations[] = new Annotation[deletedAnnotations.size()];
+      int removeAnnotationsIndex = 0;
+      for (AnnotationFS annotation : deletedAnnotations) {
+        removeAnnotations[removeAnnotationsIndex++] = new EclipseAnnotationPeer(annotation);
+      }
+      
+      annotationModel.replaceAnnotations(removeAnnotations, null);
     }
 
     /**
@@ -672,7 +694,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     super.doSetInput(input);
 
     mDocument = (ICasDocument) getDocumentProvider().getDocument(input);
-
+    
     if (mDocument != null) {
 
       closeEditorListener = new CloseEditorListener(this);

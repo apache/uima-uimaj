@@ -27,28 +27,17 @@ import org.apache.uima.cas.text.AnnotationFS;
  */
 public class EclipseAnnotationPeer extends org.eclipse.jface.text.source.Annotation {
 
-  /**
-   * The uima annotation.
-   */
-  private AnnotationFS annotation;
+  private final AnnotationFS annotation;
 
   /**
    * Initializes a new instance.
    *
    * @param name
-   * @param isPersitent
+   * @param isPersistent
    * @param text
    */
-  public EclipseAnnotationPeer(String name, boolean isPersitent, String text) {
-    super(name, isPersitent, text);
-  }
-
-  /**
-   * Sets the annotation.
-   *
-   * @param annotation
-   */
-  public void setAnnotation(AnnotationFS annotation) {
+  public EclipseAnnotationPeer(AnnotationFS annotation) {
+    super(annotation.getType().getName(), false, "");
     this.annotation = annotation;
     setText(annotation.getCoveredText());
   }
@@ -60,5 +49,30 @@ public class EclipseAnnotationPeer extends org.eclipse.jface.text.source.Annotat
    */
   public AnnotationFS getAnnotationFS() {
     return annotation;
+  }
+  
+  @Override
+  public int hashCode() {
+    return annotation.hashCode();
+  }
+  
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == this) {
+      return true;
+    }
+    else if (obj instanceof EclipseAnnotationPeer) {
+      EclipseAnnotationPeer peer = (EclipseAnnotationPeer) obj;
+      
+      return annotation.equals(peer.annotation);
+    }
+    else {
+      return false;
+    }
+  }
+  
+  @Override
+  public String toString() {
+    return annotation.toString();
   }
 }

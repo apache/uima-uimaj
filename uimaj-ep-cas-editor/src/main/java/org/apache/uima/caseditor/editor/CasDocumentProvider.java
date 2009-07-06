@@ -34,7 +34,6 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.IAnnotationModel;
-import org.eclipse.jface.text.source.IAnnotationModelListener;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.AbstractDocumentProvider;
 
@@ -53,36 +52,13 @@ public abstract class CasDocumentProvider extends AbstractDocumentProvider {
   protected Map<Object, IStatus> elementErrorStatus = new HashMap<Object, IStatus>();
 
   @Override
-  protected IAnnotationModel createAnnotationModel(Object element) throws CoreException {
-    return new IAnnotationModel() {
-
-      private org.apache.uima.caseditor.editor.ICasDocument mDocument;
-      private int numberOfConnectedDocuments;
-
-      public void addAnnotation(Annotation annotation, Position position) {
-      }
-
-      public void addAnnotationModelListener(IAnnotationModelListener listener) {
-      }
-
-      public void connect(IDocument document) {
-        mDocument = (org.apache.uima.caseditor.editor.ICasDocument) document;
-        
-        numberOfConnectedDocuments++;
-      }
-
-      public void disconnect(IDocument document) {
-        numberOfConnectedDocuments--;
-        
-        if (numberOfConnectedDocuments == 0) {
-          mDocument = null;
-        }
-      }
-
+  protected IAnnotationModel createAnnotationModel(final Object element) throws CoreException {
+    return new org.eclipse.jface.text.source.AnnotationModel() {
       public Iterator<EclipseAnnotationPeer> getAnnotationIterator() {
+        ICasDocument document = (ICasDocument) getDocument(element);
         
         final Iterator<AnnotationFS> mAnnotations =
-                mDocument.getCAS().getAnnotationIndex().iterator();
+            document.getCAS().getAnnotationIndex().iterator();
         
         return new Iterator<EclipseAnnotationPeer>() {
 
@@ -93,28 +69,20 @@ public abstract class CasDocumentProvider extends AbstractDocumentProvider {
           public EclipseAnnotationPeer next() {
             AnnotationFS annotation = (AnnotationFS) mAnnotations.next();
 
-            EclipseAnnotationPeer peer =
-                    new EclipseAnnotationPeer(annotation.getType().getName(), false, "");
-            peer.setAnnotation(annotation);
-            return peer;
+            return new EclipseAnnotationPeer(annotation);
           }
 
           public void remove() {
+            throw new UnsupportedOperationException();
           }
         };
       }
-
+      
       public Position getPosition(Annotation annotation) {
         EclipseAnnotationPeer peer = (EclipseAnnotationPeer) annotation;
         AnnotationFS annotationFS = peer.getAnnotationFS();
         return new Position(annotationFS.getBegin(), annotationFS.getEnd()
                 - annotationFS.getBegin());
-      }
-
-      public void removeAnnotation(Annotation annotation) {
-      }
-
-      public void removeAnnotationModelListener(IAnnotationModelListener listener) {
       }
     };
   }
