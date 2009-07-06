@@ -217,9 +217,6 @@ the default target.
   <!-- temp work-around for no feature jars being built - build them here
 	   to use this, call this out as an explicit ant target to run -->
   <target name="build-features" depends="init">
-	<makeFeatureJar project-name="uimaj-eclipse-feature-caseditor"
-		            org-name="org.apache.uima.caseditor"
-					version="2.3.0.incubating-SNAPSHOT"/>
     <makeFeatureJar project-name="uimaj-eclipse-feature-deployeditor"
                     org-name="org.apache.uima.deployeditor"
                     version="2.3.0.incubating-SNAPSHOT"/>
@@ -229,7 +226,6 @@ the default target.
     <makeFeatureJar project-name="uimaj-eclipse-feature-tools"
                     org-name="org.apache.uima.tools"
                     version="2.3.0.incubating-SNAPSHOT"/>
-	
   </target>	   
 	   
   <target name="pack-jars" depends="init">
