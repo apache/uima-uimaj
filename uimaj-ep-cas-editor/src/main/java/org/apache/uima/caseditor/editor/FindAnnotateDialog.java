@@ -19,14 +19,27 @@
 
 package org.apache.uima.caseditor.editor;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
+import org.apache.uima.cas.text.AnnotationFS;
+import org.apache.uima.caseditor.CasEditorPlugin;
+import org.apache.uima.caseditor.Images;
 import org.apache.uima.caseditor.core.TaeError;
+import org.apache.uima.caseditor.editor.action.LowerLeftAnnotationSideAction;
+import org.apache.uima.caseditor.editor.action.LowerRightAnnotationSideAction;
+import org.apache.uima.caseditor.editor.action.WideLeftAnnotationSideAction;
+import org.apache.uima.caseditor.editor.action.WideRightAnnotationSideAction;
 import org.apache.uima.caseditor.editor.fsview.TypeCombo;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.text.IFindReplaceTarget;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -55,7 +68,7 @@ class FindAnnotateDialog extends Dialog {
   private static final int ANNOTATE_BUTTON = 102;
   private static final int ANNOTATE_ALL_BUTTON = 103;
   private static int CLOSE_BUTTON = 104;
-
+  
   private final IFindReplaceTarget findReplaceTarget;
   private final ICasDocument document;
   private final Type modeType;
@@ -63,8 +76,20 @@ class FindAnnotateDialog extends Dialog {
   private Combo findField;
   private TypeCombo typeField;
   
+  private Button wideLeftSideButton;
+  private Button lowerLeftSideButton;
+  private Button lowerRightSideButton;
+  private Button wideRightSideButton;
+  
   private Button forwardRadioButton;
-
+  
+  /**
+   * Annotation created by the user with the Annotate button.
+   * Contains null if no search was done or search was continued after 
+   * an annotation was created.
+   */
+  private AnnotationFS currentAnnotation;
+  
   FindAnnotateDialog(Shell parentShell, ICasDocument document, IFindReplaceTarget findReplaceTarget, Type modeType) {
     super(parentShell);
     this.document = document;
@@ -141,10 +166,10 @@ class FindAnnotateDialog extends Dialog {
    * @return
    */
   private Composite createDirectionGroup(Composite parent) {
-    Composite panel= new Composite(parent, SWT.NONE);
-    GridLayout layout= new GridLayout();
-    layout.marginWidth= 0;
-    layout.marginHeight= 0;
+    Composite panel = new Composite(parent, SWT.NONE);
+    GridLayout layout = new GridLayout();
+    layout.marginWidth = 0;
+    layout.marginHeight = 0;
     panel.setLayout(layout);
 
     Group group= new Group(panel, SWT.SHADOW_ETCHED_IN);
@@ -162,6 +187,87 @@ class FindAnnotateDialog extends Dialog {
     backwardRadioButton.setText("Backward");
 
     return panel;
+  }
+
+  private void createAnnotationButtons(Composite parent) {
+    Composite panel = new Composite(parent, SWT.NONE);
+    GridLayout layout = new GridLayout();
+    layout.marginWidth = 0;
+    layout.marginHeight = 0;
+    panel.setLayout(layout);
+
+    Group group= new Group(panel, SWT.SHADOW_ETCHED_IN);
+    group.setText("Annotation");
+    GridLayout groupLayout= new GridLayout();
+    groupLayout.numColumns = 4;
+    group.setLayout(groupLayout);
+    group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+    wideLeftSideButton = new Button(group, SWT.PUSH | SWT.LEFT);
+    wideLeftSideButton.setImage(CasEditorPlugin.getTaeImageDescriptor(
+            Images.WIDE_LEFT_SIDE).createImage());
+    wideLeftSideButton.setEnabled(false);
+    
+    wideLeftSideButton.addSelectionListener(new SelectionListener(){
+      public void widgetDefaultSelected(SelectionEvent e) {
+        // never called, do not implement
+      }
+
+      public void widgetSelected(SelectionEvent e) {
+        WideLeftAnnotationSideAction.wideLeftAnnotationSide(document, currentAnnotation);
+      }
+    });
+    
+    lowerLeftSideButton = new Button(group, SWT.PUSH | SWT.LEFT);
+    lowerLeftSideButton.setImage(CasEditorPlugin.getTaeImageDescriptor(
+            Images.LOWER_LEFT_SIDE).createImage());
+    lowerLeftSideButton.setEnabled(false);
+    lowerLeftSideButton.addSelectionListener(new SelectionListener(){
+      public void widgetDefaultSelected(SelectionEvent e) {
+        // never called, do not implement
+      }
+
+      public void widgetSelected(SelectionEvent e) {
+        LowerLeftAnnotationSideAction.lowerLeftAnnotationSide(document, currentAnnotation);
+      }
+    });
+
+    lowerRightSideButton = new Button(group, SWT.PUSH | SWT.LEFT);
+    lowerRightSideButton.setImage(CasEditorPlugin.getTaeImageDescriptor(
+            Images.LOWER_RIGHT_SIDE).createImage());
+    lowerRightSideButton.setEnabled(false);
+    lowerRightSideButton.addSelectionListener(new SelectionListener(){
+      public void widgetDefaultSelected(SelectionEvent e) {
+        // never called, do not implement
+      }
+
+      public void widgetSelected(SelectionEvent e) {
+        LowerRightAnnotationSideAction.lowerRightAnnotationSide(document, currentAnnotation);
+      }
+    });
+
+    wideRightSideButton = new Button(group, SWT.PUSH | SWT.LEFT);
+    wideRightSideButton.setImage(CasEditorPlugin.getTaeImageDescriptor(
+            Images.WIDE_RIGHT_SIDE).createImage());
+    wideRightSideButton.setEnabled(false);
+    wideRightSideButton.addSelectionListener(new SelectionListener(){
+      public void widgetDefaultSelected(SelectionEvent e) {
+        // never called, do not implement
+      }
+
+      public void widgetSelected(SelectionEvent e) {
+        WideRightAnnotationSideAction.wideRightAnnotationSide(document, currentAnnotation);
+      }
+    });
+  }
+
+  private void updateAnnotationButtons() {
+
+    boolean areButtonsEnabled = currentAnnotation != null;
+    wideLeftSideButton.setEnabled(areButtonsEnabled);
+    lowerLeftSideButton.setEnabled(areButtonsEnabled);
+    lowerRightSideButton.setEnabled(areButtonsEnabled);
+    wideRightSideButton.setEnabled(areButtonsEnabled);
   }
 
   /**
@@ -237,6 +343,8 @@ class FindAnnotateDialog extends Dialog {
 
     createDirectionGroup(panel);
 
+    createAnnotationButtons(panel);
+    
     Composite buttonFindAnnotatePanel = createButtonSection(panel);
     GridData buttonFindAnnotatePanelData = new GridData();
     buttonFindAnnotatePanelData.horizontalAlignment = SWT.RIGHT;
@@ -278,13 +386,15 @@ class FindAnnotateDialog extends Dialog {
     }
   }
 
-  private void annotateSelection() {
+  private AnnotationFS annotateSelection() {
     Point selection = findReplaceTarget.getSelection();
 
-    FeatureStructure newAnnotation = document.getCAS().createAnnotation(
+    AnnotationFS newAnnotation = document.getCAS().createAnnotation(
             typeField.getType(), selection.x, selection.x + selection.y);
     document.getCAS().addFsToIndexes(newAnnotation);
     document.addFeatureStructure(newAnnotation);
+    
+    return newAnnotation;
   }
 
   @Override
@@ -292,15 +402,19 @@ class FindAnnotateDialog extends Dialog {
 
     if (FIND_BUTTON == buttonID) {
       findAndSelectNext();
+      currentAnnotation = null;
     }
     else if (ANNOTATE_BUTTON == buttonID) {
-      annotateSelection();
+      currentAnnotation = annotateSelection();
     }
     else if (ANNOTATE_FIND_BUTTON == buttonID) {
       annotateSelection();
       findAndSelectNext();
+      
+      // TODO: Should be disabled when annotate was pressed
     }
     else if (ANNOTATE_ALL_BUTTON == buttonID) {
+      // TODO: Should it be implemented ???
     }
     else if (CLOSE_BUTTON == buttonID) {
       close();
@@ -308,5 +422,7 @@ class FindAnnotateDialog extends Dialog {
     else {
       throw new TaeError("Unkown button!");
     }
+    
+    updateAnnotationButtons();
   }
 }

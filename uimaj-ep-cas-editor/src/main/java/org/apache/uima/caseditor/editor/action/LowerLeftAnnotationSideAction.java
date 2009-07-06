@@ -55,6 +55,17 @@ public final class LowerLeftAnnotationSideAction extends BaseSelectionListenerAc
     return annotation.size() == 1;
   }
 
+  public static void lowerLeftAnnotationSide(ICasDocument document, AnnotationFS annotation) {
+    Type annotationType = annotation.getType();
+    Feature beginFeature = annotationType.getFeatureByBaseName("begin");
+
+    if (annotation.getBegin() < annotation.getEnd()) {
+      annotation.setIntValue(beginFeature, annotation.getBegin() + 1);
+    }
+
+    document.update(annotation);
+  }
+  
   /**
    * Increases the begin index of an annotation by one.
    */
@@ -64,13 +75,6 @@ public final class LowerLeftAnnotationSideAction extends BaseSelectionListenerAc
 
     AnnotationFS annotation = annotations.getFirst();
 
-    Type annotationType = annotation.getType();
-    Feature beginFeature = annotationType.getFeatureByBaseName("begin");
-
-    if (annotation.getBegin() < annotation.getEnd()) {
-      annotation.setIntValue(beginFeature, annotation.getBegin() + 1);
-    }
-
-    mDocument.update(annotation);
+    lowerLeftAnnotationSide(mDocument, annotation);
   }
 }

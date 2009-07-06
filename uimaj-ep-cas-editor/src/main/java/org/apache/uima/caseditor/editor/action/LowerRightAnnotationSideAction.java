@@ -54,6 +54,18 @@ public final class LowerRightAnnotationSideAction extends BaseSelectionListenerA
     return annotation.size() == 1;
   }
 
+  public static void lowerRightAnnotationSide(ICasDocument document, AnnotationFS annotation) {
+    
+    Type annotationType = annotation.getType();
+    Feature endFeature = annotationType.getFeatureByBaseName("end");
+    
+    if (annotation.getBegin() < annotation.getEnd()) {
+      annotation.setIntValue(endFeature, annotation.getEnd() - 1);
+    }
+    
+    document.update(annotation);
+  }
+  
   /**
    * Decreases the end index of an annotation by one.
    */
@@ -63,13 +75,6 @@ public final class LowerRightAnnotationSideAction extends BaseSelectionListenerA
 
     AnnotationFS annotation = annotations.getFirst();
 
-    Type annotationType = annotation.getType();
-    Feature endFeature = annotationType.getFeatureByBaseName("end");
-
-    if (annotation.getBegin() < annotation.getEnd()) {
-      annotation.setIntValue(endFeature, annotation.getEnd() - 1);
-    }
-
-    mDocument.update(annotation);
+    lowerRightAnnotationSide(mDocument, annotation);
   }
 }

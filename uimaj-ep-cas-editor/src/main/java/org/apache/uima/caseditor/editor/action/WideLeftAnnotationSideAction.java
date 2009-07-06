@@ -55,14 +55,13 @@ public final class WideLeftAnnotationSideAction extends BaseSelectionListenerAct
   }
 
   /**
-   * Decreases the begin index of an annotation by one.
+   * Widens the annotation and sends and sends an update notification
+   * to the provided document.
+   * 
+   * @param document
+   * @param annotation
    */
-  @Override
-  public void run() {
-    AnnotationSelection annotations = new AnnotationSelection(getStructuredSelection());
-
-    AnnotationFS annotation = annotations.getFirst();
-
+  public static void wideLeftAnnotationSide(ICasDocument document, AnnotationFS annotation) {
     Type annotationType = annotation.getType();
     Feature beginFeature = annotationType.getFeatureByBaseName("begin");
 
@@ -70,6 +69,18 @@ public final class WideLeftAnnotationSideAction extends BaseSelectionListenerAct
       annotation.setIntValue(beginFeature, annotation.getBegin() - 1);
     }
 
-    mDocument.update(annotation);
+    document.update(annotation);
+  }
+  
+  /**
+   * Decreases the begin index of an annotation by one.
+   */
+  @Override
+  public void run() {
+    AnnotationSelection annotations = new AnnotationSelection(getStructuredSelection());
+
+    AnnotationFS annotation = annotations.getFirst();
+    
+    wideLeftAnnotationSide(mDocument, annotation);
   }
 }
