@@ -147,7 +147,6 @@
         	</resource>
         	<resource>
 				<directory>${basedir}/src/main/resources</directory>
-        		<includes><include>plugin.xml</include></includes>
         	</resource>
         </resources>
 		
