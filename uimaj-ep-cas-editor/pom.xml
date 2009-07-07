@@ -145,6 +145,10 @@
 				<directory>${basedir}</directory>
         		<includes><include>plugin.xml</include></includes>
         	</resource>
+        	<resource>
+				<directory>${basedir}/src/main/resources</directory>
+        		<includes><include>plugin.xml</include></includes>
+        	</resource>
         </resources>
 		
 		<plugins>
