@@ -177,7 +177,8 @@
 							org.eclipse.ui,
 							org.eclipse.ui.workbench,
 							org.eclipse.core.runtime,
-							org.eclipse.core.resources
+							org.eclipse.core.resources,
+							org.junit4;bundle-version="4.5.0";resolution:=optional
 					    </Require-Bundle>
             			<Import-Package>
             			    !org.eclipse.jface.text,
