@@ -45,7 +45,7 @@ public interface Logger {
    *          the message to be logged with message level INFO
    */
   @Deprecated
-public void log(String aMessage);
+  public void log(String aMessage);
 
   /**
    * Logs an internationalized message.

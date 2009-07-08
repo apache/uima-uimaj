@@ -131,7 +131,7 @@ public class XMLInputSource {
    * @deprecated Use {@link #getURL()} instead.
    */
   @Deprecated
-public File getRelativePathBase() {
+  public File getRelativePathBase() {
     // use the parent directory as the base for relative path resolution
     String path = mURL.getPath();
     return new File(path).getParentFile();

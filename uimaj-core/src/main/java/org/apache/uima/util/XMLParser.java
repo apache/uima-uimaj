@@ -288,7 +288,7 @@ public interface XMLParser {
    *             instead.
    */
   @Deprecated
-public TaeDescription parseTaeDescription(XMLInputSource aInput) throws InvalidXMLException;
+  public TaeDescription parseTaeDescription(XMLInputSource aInput) throws InvalidXMLException;
 
   /**
    * Parses a TaeDescription from an XML input stream.
@@ -307,7 +307,7 @@ public TaeDescription parseTaeDescription(XMLInputSource aInput) throws InvalidX
    *             should be used instead.
    */
   @Deprecated
-public TaeDescription parseTaeDescription(XMLInputSource aInput, ParsingOptions aOptions)
+  public TaeDescription parseTaeDescription(XMLInputSource aInput, ParsingOptions aOptions)
           throws InvalidXMLException;
 
   /**

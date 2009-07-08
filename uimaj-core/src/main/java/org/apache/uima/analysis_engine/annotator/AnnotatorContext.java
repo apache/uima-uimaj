@@ -428,7 +428,7 @@ public interface AnnotatorContext {
    *             framework will automatically do the necessary Sofa mappings.
    */
   @Deprecated
-public SofaID mapToSofaID(String aSofaName);
+  public SofaID mapToSofaID(String aSofaName);
 
   /**
    * 
@@ -439,6 +439,6 @@ public SofaID mapToSofaID(String aSofaName);
    *             framework will automatically do the necessary Sofa mappings.
    */
   @Deprecated
-public SofaID[] getSofaMappings();
+  public SofaID[] getSofaMappings();
 
 }

@@ -255,7 +255,7 @@ public interface ResultSpecification extends XMLizable, Serializable, Cloneable 
    * @deprecated as of 2.2.2  Now called automatically internally when needed
    */
   @Deprecated
-public void compile(TypeSystem aTypeSystem);
+  public void compile(TypeSystem aTypeSystem);
 
   /**
    * Determines whether this <code>ResultSpecification</code> contains the specified Type for the

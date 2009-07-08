@@ -1130,7 +1130,7 @@ public class InstallationDescriptor implements Serializable {
    * @deprecated Use setMainComponentId() method instead.
    */
   @Deprecated
-public synchronized void updateMainComponentId(String id) {
+  public synchronized void updateMainComponentId(String id) {
     setMainComponentId(id);
   }
 }

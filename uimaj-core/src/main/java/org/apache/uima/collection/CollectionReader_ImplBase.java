@@ -140,7 +140,7 @@ private CasInitializer mCasInitializer;
    * @deprecated As of v2.0 CAS Initializers are deprecated.
    */
   @Deprecated
-public CasInitializer getCasInitializer() {
+  public CasInitializer getCasInitializer() {
     return mCasInitializer;
   }
 
@@ -153,7 +153,7 @@ public CasInitializer getCasInitializer() {
    * @deprecated As of v2.0 CAS Initializers are deprecated.
    */
   @Deprecated
-public void setCasInitializer(CasInitializer aCasInitializer) {
+  public void setCasInitializer(CasInitializer aCasInitializer) {
     mCasInitializer = aCasInitializer;
   }
 

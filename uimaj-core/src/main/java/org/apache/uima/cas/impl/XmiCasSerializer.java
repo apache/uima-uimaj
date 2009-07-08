@@ -1429,7 +1429,7 @@ public class XmiCasSerializer {
    *             is never used by this implementation.
    */
   @Deprecated
-public XmiCasSerializer(TypeSystem ts, UimaContext uimaContext, Map nsUriToSchemaLocationMap) {
+  public XmiCasSerializer(TypeSystem ts, UimaContext uimaContext, Map nsUriToSchemaLocationMap) {
     this(ts, nsUriToSchemaLocationMap);
   }
 
@@ -1448,7 +1448,7 @@ public XmiCasSerializer(TypeSystem ts, UimaContext uimaContext, Map nsUriToSchem
    *             never used by this implementation.
    */
   @Deprecated
-public XmiCasSerializer(TypeSystem ts, UimaContext uimaContext) {
+  public XmiCasSerializer(TypeSystem ts, UimaContext uimaContext) {
     this(ts);
   }
 

@@ -349,7 +349,7 @@ public interface AnalysisEngine extends ConfigurableResource, CasObjectProcessor
    *             Use {#link #process(CAS)} instead.
    */
   @Deprecated
-public void process(AnalysisProcessData aProcessData, ResultSpecification aResultSpec)
+  public void process(AnalysisProcessData aProcessData, ResultSpecification aResultSpec)
           throws ResultNotSupportedException, AnalysisEngineProcessException;
 
   /**

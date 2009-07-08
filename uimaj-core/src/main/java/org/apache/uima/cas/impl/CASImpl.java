@@ -570,7 +570,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * @deprecated
    */
   @Deprecated
-public SofaFS createSofa(SofaID sofaID, String mimeType) {
+  public SofaFS createSofa(SofaID sofaID, String mimeType) {
     // extract absolute SofaName string from the ID
     SofaFS aSofa = createSofa(sofaID.getSofaID(), mimeType);
     getView(aSofa); // will create the view, needed to make the
@@ -628,7 +628,7 @@ public SofaFS createSofa(SofaID sofaID, String mimeType) {
    * @deprecated
    */
   @Deprecated
-public SofaFS getSofa(SofaID sofaID) {
+  public SofaFS getSofa(SofaID sofaID) {
     // extract absolute SofaName string from the ID
     return getSofa(sofaID.getSofaID());
   }
@@ -831,7 +831,7 @@ public SofaFS getSofa(SofaID sofaID) {
    * @deprecated
    */
   @Deprecated
-public void commitFS(FeatureStructure fs) {
+  public void commitFS(FeatureStructure fs) {
     getIndexRepository().addFS(fs);
   }
 
@@ -936,7 +936,7 @@ public void commitFS(FeatureStructure fs) {
    * @deprecated Use {@link #reset reset()}instead.
    */
   @Deprecated
-public void flush() {
+  public void flush() {
     reset();
   }
 
@@ -2557,7 +2557,7 @@ public void flush() {
    * @deprecated
    */
   @Deprecated
-public JCas getJCas(SofaID aSofaID) throws CASException {
+  public JCas getJCas(SofaID aSofaID) throws CASException {
     SofaFS sofa = getSofa(aSofaID);
     if (sofa == null) {
       CASRuntimeException e = new CASRuntimeException(CASRuntimeException.SOFANAME_NOT_FOUND,

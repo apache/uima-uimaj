@@ -457,7 +457,7 @@ public abstract class UIMAFramework {
    *             instead.
    */
   @Deprecated
-public static TextAnalysisEngine produceTAE(ResourceSpecifier aSpecifier)
+  public static TextAnalysisEngine produceTAE(ResourceSpecifier aSpecifier)
           throws ResourceInitializationException {
     return (TextAnalysisEngine) produceResource(TextAnalysisEngine.class, aSpecifier, null);
   }
@@ -487,7 +487,7 @@ public static TextAnalysisEngine produceTAE(ResourceSpecifier aSpecifier)
    *             instead.
    */
   @Deprecated
-public static TextAnalysisEngine produceTAE(ResourceSpecifier aSpecifier, Map aAdditionalParams)
+  public static TextAnalysisEngine produceTAE(ResourceSpecifier aSpecifier, Map aAdditionalParams)
           throws ResourceInitializationException {
     return (TextAnalysisEngine) produceResource(TextAnalysisEngine.class, aSpecifier,
             aAdditionalParams);
@@ -522,7 +522,7 @@ public static TextAnalysisEngine produceTAE(ResourceSpecifier aSpecifier, Map aA
    *             should be used instead.
    */
   @Deprecated
-public static TextAnalysisEngine produceTAE(ResourceSpecifier aSpecifier,
+  public static TextAnalysisEngine produceTAE(ResourceSpecifier aSpecifier,
           ResourceManager aResourceManager, Map aAdditionalParams)
           throws ResourceInitializationException {
     return (TextAnalysisEngine) produceResource(TextAnalysisEngine.class, aSpecifier,
@@ -563,7 +563,7 @@ public static TextAnalysisEngine produceTAE(ResourceSpecifier aSpecifier,
    *             used instead.
    */
   @Deprecated
-public static TextAnalysisEngine produceTAE(ResourceSpecifier aSpecifier,
+  public static TextAnalysisEngine produceTAE(ResourceSpecifier aSpecifier,
           int aMaxSimultaneousRequests, int aTimeoutPeriod) throws ResourceInitializationException {
     // add parameters to the aAdditionalParams map
     Map aAdditionalParams = new HashMap();
@@ -743,7 +743,7 @@ public static TextAnalysisEngine produceTAE(ResourceSpecifier aSpecifier,
    *             {@link org.apache.uima.examples.XmlDetagger} for an example.
    */
   @Deprecated
-public static CasInitializer produceCasInitializer(ResourceSpecifier aSpecifier)
+  public static CasInitializer produceCasInitializer(ResourceSpecifier aSpecifier)
           throws ResourceInitializationException {
     return (CasInitializer) produceResource(CasInitializer.class, aSpecifier, null);
   }

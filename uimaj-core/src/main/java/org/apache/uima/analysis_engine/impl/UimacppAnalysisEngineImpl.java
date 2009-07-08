@@ -409,7 +409,7 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
    * @deprecated
    */
   @Deprecated
-protected AnalysisProcessData_impl createAnalysisProcessData() {
+  protected AnalysisProcessData_impl createAnalysisProcessData() {
     try {
       return new AnalysisProcessData_impl(newCAS(), getPerformanceTuningSettings());
     } catch (ResourceInitializationException e) {
