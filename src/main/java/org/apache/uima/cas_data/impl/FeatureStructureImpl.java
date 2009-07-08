@@ -107,7 +107,7 @@ public class FeatureStructureImpl implements FeatureStructure {
    * @deprecated
    */
   @Deprecated
-public boolean isIndexed() {
+  public boolean isIndexed() {
     return mIndexed.length > 0;
   }
 
@@ -123,7 +123,7 @@ public boolean isIndexed() {
    * @deprecated
    */
   @Deprecated
-public void setIndexed(boolean b) {
+  public void setIndexed(boolean b) {
     mIndexed = new int[] { 1 }; // index in first index repository for backwards compatibility
   }
 

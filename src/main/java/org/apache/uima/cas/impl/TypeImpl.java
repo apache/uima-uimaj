@@ -97,7 +97,7 @@ public class TypeImpl implements Type, Comparable {
    * @deprecated
    */
   @Deprecated
-public Vector getAppropriateFeatures() {
+  public Vector getAppropriateFeatures() {
     return new Vector(getFeatures());
   }
 
@@ -207,7 +207,7 @@ public Vector getAppropriateFeatures() {
    * @deprecated
    */
   @Deprecated
-public Feature getFeature(String featureName) {
+  public Feature getFeature(String featureName) {
     return getFeatureByBaseName(featureName);
   }
 

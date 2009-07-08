@@ -243,7 +243,7 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
    * @deprecated
    */
   @Deprecated
-public Import getImport() {
+  public Import getImport() {
     if (mImports.length > 0) {
       return mImports[0];
     } else {
@@ -256,7 +256,7 @@ public Import getImport() {
    * @deprecated
    */
   @Deprecated
-public void setImport(Import aImport) {
+  public void setImport(Import aImport) {
     mImports = new Import[] { aImport };
   }
 

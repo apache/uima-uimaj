@@ -77,7 +77,7 @@ public class JCasPool {
    *             {@link #JCasPool(int, AnalysisEngine)} instead.
    */
   @Deprecated
-public JCasPool(int aNumInstances, TextAnalysisEngine aTextAnalysisEngine)
+  public JCasPool(int aNumInstances, TextAnalysisEngine aTextAnalysisEngine)
           throws ResourceInitializationException {
     mNumInstances = aNumInstances;
 

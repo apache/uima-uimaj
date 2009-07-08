@@ -39,7 +39,7 @@ public interface CpeCollectionReader extends MetaDataObject {
    * @deprecated As of v2.0 CAS Initializers are deprecated.
    */
   @Deprecated
-public void setCasInitializer(CpeCollectionReaderCasInitializer aCasInitializer)
+  public void setCasInitializer(CpeCollectionReaderCasInitializer aCasInitializer)
           throws CpeDescriptorException;
 
   /**
@@ -52,7 +52,7 @@ public void setCasInitializer(CpeCollectionReaderCasInitializer aCasInitializer)
    * @deprecated As of v2.0 CAS Initializers are deprecated.
    */
   @Deprecated
-public CpeCollectionReaderCasInitializer getCasInitializer() throws CpeDescriptorException;
+  public CpeCollectionReaderCasInitializer getCasInitializer() throws CpeDescriptorException;
 
   /**
    * Removes {@link org.apache.uima.collection.metadata.CpeCollectionReaderCasInitializer} from

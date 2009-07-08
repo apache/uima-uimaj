@@ -99,7 +99,7 @@ public class Log4jLogger_impl implements Logger {
     *           the message to be logged
     */
    @Deprecated
-public void log(String aMessage) {
+  public void log(String aMessage) {
       if (isLoggable(Level.INFO)) {
          if (aMessage == null || aMessage.equals(""))
             return;
@@ -118,7 +118,7 @@ public void log(String aMessage) {
     *      java.lang.Object[])
     */
    @Deprecated
-public void log(String aResourceBundleName, String aMessageKey,
+   public void log(String aResourceBundleName, String aMessageKey,
          Object[] aArguments) {
       if (isLoggable(Level.INFO)) {
          if (aMessageKey == null || aMessageKey.equals(""))
@@ -139,7 +139,7 @@ public void log(String aResourceBundleName, String aMessageKey,
     *           the exception to be logged
     */
    @Deprecated
-public void logException(Exception aException) {
+   public void logException(Exception aException) {
       if (isLoggable(Level.INFO)) {
          if (aException == null)
             return;
@@ -157,7 +157,7 @@ public void logException(Exception aException) {
     * @deprecated use external configuration possibility
     */
    @Deprecated
-public void setOutputStream(OutputStream out) {
+   public void setOutputStream(OutputStream out) {
       throw new UnsupportedOperationException(
             "Method setOutputStream(OutputStream out) not supported");
    }
@@ -167,7 +167,7 @@ public void setOutputStream(OutputStream out) {
     * @deprecated use external configuration possibility
     */
    @Deprecated
-public void setOutputStream(PrintStream out) {
+  public void setOutputStream(PrintStream out) {
       throw new UnsupportedOperationException(
             "Method setOutputStream(PrintStream out) not supported");
    }

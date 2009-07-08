@@ -58,7 +58,7 @@ public interface CpeCasProcessor extends MetaDataObject {
    * @deprecated Doesn't support the new import syntax.  Use setCpeComponentDescriptor() instead.
    */
   @Deprecated
-public void setDescriptor(String aDescriptor) throws CpeDescriptorException;
+  public void setDescriptor(String aDescriptor) throws CpeDescriptorException;
 
   /**
    * Returns CasProcessor descriptor.
@@ -67,7 +67,7 @@ public void setDescriptor(String aDescriptor) throws CpeDescriptorException;
    * @deprecated Doesn't support the new import syntax.  Use getCpeComponentDescriptor().findAbsoluteUrl() instead.
    */
   @Deprecated
-public String getDescriptor();
+  public String getDescriptor();
 
   /**
    * Returns the {@link CpeComponentDescriptor} instance associated with this Cas Processor. That

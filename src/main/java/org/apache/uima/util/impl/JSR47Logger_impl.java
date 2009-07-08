@@ -105,7 +105,7 @@ public class JSR47Logger_impl implements Logger {
    *          the message to be logged
    */
   @Deprecated
-public void log(String aMessage) {
+  public void log(String aMessage) {
     if (isLoggable(Level.INFO)) {
       if (aMessage == null || aMessage.equals(""))
         return;
@@ -124,7 +124,7 @@ public void log(String aMessage) {
    * @see org.apache.uima.util.Logger#log(java.lang.String, java.lang.String, java.lang.Object[])
    */
   @Deprecated
-public void log(String aResourceBundleName, String aMessageKey, Object[] aArguments) {
+  public void log(String aResourceBundleName, String aMessageKey, Object[] aArguments) {
     if (isLoggable(Level.INFO)) {
       if (aMessageKey == null || aMessageKey.equals(""))
         return;
@@ -146,7 +146,7 @@ public void log(String aResourceBundleName, String aMessageKey, Object[] aArgume
    *          the exception to be logged
    */
   @Deprecated
-public void logException(Exception aException) {
+  public void logException(Exception aException) {
     if (isLoggable(Level.INFO)) {
       if (aException == null)
         return;
@@ -165,7 +165,7 @@ public void logException(Exception aException) {
    * @deprecated use external configuration possibility
    */
   @Deprecated
-public void setOutputStream(OutputStream out) {
+  public void setOutputStream(OutputStream out) {
     // if OutputStream is null set root logger level to OFF
     if (out == null) {
       LogManager.getLogManager().getLogger("").setLevel(java.util.logging.Level.OFF);
@@ -192,7 +192,7 @@ public void setOutputStream(OutputStream out) {
    * @deprecated use external configuration possibility
    */
   @Deprecated
-public void setOutputStream(PrintStream out) {
+  public void setOutputStream(PrintStream out) {
     // if PrintStream is null set root logger level to OFF
     if (out == null) {
       LogManager.getLogManager().getLogger("").setLevel(java.util.logging.Level.OFF);

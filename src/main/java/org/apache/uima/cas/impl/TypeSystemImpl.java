@@ -306,7 +306,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
    *             one. Change also your possible calls to ts.commit() - see comment on that method.
    */
   @Deprecated
-public TypeSystemImpl(CASImpl cas) {
+  public TypeSystemImpl(CASImpl cas) {
     this();
   }
 
@@ -1105,7 +1105,7 @@ public TypeSystemImpl(CASImpl cas) {
    * @deprecated
    */
   @Deprecated
-public Feature getFeature(String featureName) {
+  public Feature getFeature(String featureName) {
     return getFeatureByFullName(featureName);
   }
 

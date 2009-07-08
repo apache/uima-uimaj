@@ -52,7 +52,7 @@ public interface CASMgr {
    * @deprecated Use {@link #reset reset()} instead.
    */
   @Deprecated
-void flush() throws CASAdminException;
+  void flush() throws CASAdminException;
 
   /**
    * Flush this CAS instance of all transient data. This will delete all feature structures, but not

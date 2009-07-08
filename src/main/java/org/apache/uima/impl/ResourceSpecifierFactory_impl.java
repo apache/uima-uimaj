@@ -185,7 +185,7 @@ public class ResourceSpecifierFactory_impl implements ResourceSpecifierFactory {
    * @deprecated since v2.0
    */
   @Deprecated
-public TaeDescription createTaeDescription() {
+  public TaeDescription createTaeDescription() {
     return (TaeDescription) createObject(TaeDescription.class);
   }
 

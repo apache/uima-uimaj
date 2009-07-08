@@ -123,7 +123,7 @@ public class Annotation extends AnnotationBase implements AnnotationFS {
    * @deprecated
    */
   @Deprecated
-public int getStart() {
+  public int getStart() {
     return getBegin();
   }
 
