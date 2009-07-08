@@ -38,9 +38,6 @@ public class ShortArrayFSImpl extends CommonAuxArrayFSImpl implements ShortArray
     }
   }
 
-  private ShortArrayFSImpl() { // not called
-  }
-
   public ShortArrayFSImpl(int addr, CASImpl cas) {
     super(cas, addr); // note arg reversal
   }

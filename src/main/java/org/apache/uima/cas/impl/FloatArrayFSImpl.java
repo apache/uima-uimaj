@@ -44,10 +44,6 @@ public class FloatArrayFSImpl extends CommonArrayFSImpl implements FloatArrayFS 
 
   }
 
-  private FloatArrayFSImpl() {
-    super();
-  }
-
   public FloatArrayFSImpl(int addr, CASImpl cas) {
     super(cas, addr);
   }

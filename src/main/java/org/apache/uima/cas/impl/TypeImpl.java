@@ -46,16 +46,6 @@ public class TypeImpl implements Type, Comparable {
   private boolean isInheritanceFinal;
 
   /**
-   * Do not use.
-   */
-  private TypeImpl() {
-    super();
-    this.name = null;
-    this.code = 0;
-    this.ts = null;
-  }
-
-  /**
    * Create a new type. This should only be done by a <code>TypeSystemImpl</code>.
    */
   TypeImpl(String name, int code, TypeSystemImpl ts) {

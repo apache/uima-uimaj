@@ -44,9 +44,6 @@ public class LongArrayFSImpl extends CommonAuxArrayFSImpl implements LongArrayFS
 
   }
 
-  private LongArrayFSImpl() {
-  }
-
   public LongArrayFSImpl(int addr, CASImpl cas) {
     super(cas, addr);
   }

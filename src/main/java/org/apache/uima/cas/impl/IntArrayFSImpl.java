@@ -44,10 +44,6 @@ public class IntArrayFSImpl extends CommonArrayFSImpl implements IntArrayFS {
 
   }
 
-  private IntArrayFSImpl() { // never called, private to prevent calling from outside
-    super();
-  }
-
   public IntArrayFSImpl(int addr, CASImpl cas) {
     super(cas, addr);
   }

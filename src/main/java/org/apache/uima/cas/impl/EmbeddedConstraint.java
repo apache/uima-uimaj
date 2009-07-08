@@ -38,15 +38,6 @@ class EmbeddedConstraint extends PathConstraint implements FSMatchConstraint {
 
   private FSMatchConstraint cons;
 
-  private EmbeddedConstraint() {
-    super();
-  }
-
-  // EmbeddedConstraint(FeaturePath path, FSConstraint cons) {
-  // super(path);
-  // this.cons = (FSMatchConstraint) cons;
-  // }
-
   EmbeddedConstraint(ArrayList path, FSConstraint cons) {
     super(path);
     this.cons = (FSMatchConstraint) cons;

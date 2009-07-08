@@ -38,9 +38,6 @@ public class BooleanArrayFSImpl extends CommonAuxArrayFSImpl implements BooleanA
     }
   }
 
-  private BooleanArrayFSImpl() { // not called
-  }
-
   public BooleanArrayFSImpl(int addr, CASImpl cas) {
     super(cas, addr); // note arg reversal
   }

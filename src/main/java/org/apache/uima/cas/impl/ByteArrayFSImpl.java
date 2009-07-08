@@ -39,9 +39,6 @@ public class ByteArrayFSImpl extends CommonAuxArrayFSImpl implements ByteArrayFS
     }
   }
 
-  private ByteArrayFSImpl() { // not called
-  }
-
   public ByteArrayFSImpl(int addr, CASImpl cas) {
     super(cas, addr); // note arg reversal
   }
