@@ -27,6 +27,7 @@ import org.apache.uima.resource.metadata.impl.XmlizationInfo;
  * 
  * @deprecated since v2.0
  */
+@Deprecated
 public class TaeDescription_impl extends AnalysisEngineDescription_impl implements TaeDescription {
 
   static final long serialVersionUID = 7829820134797529630L;

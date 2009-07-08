@@ -26,6 +26,7 @@ package org.apache.uima.analysis_engine;
  * @deprecated As of v2.0, {@link AnalysisEngine} should be used instead. This interface no longer
  *             defines any additional methods beyond those in AnalysisEngine.
  */
+@Deprecated
 public interface TextAnalysisEngine extends AnalysisEngine {
   // As of 2.0, no longer defines any additional methods beyond those in AnalysisEngineDescription
 }

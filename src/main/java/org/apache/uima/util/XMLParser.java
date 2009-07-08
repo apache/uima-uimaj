@@ -287,7 +287,8 @@ public interface XMLParser {
    * @deprecated As of v2.0, {@link #parseAnalysisEngineDescription(XMLInputSource)} should be used
    *             instead.
    */
-  public TaeDescription parseTaeDescription(XMLInputSource aInput) throws InvalidXMLException;
+  @Deprecated
+public TaeDescription parseTaeDescription(XMLInputSource aInput) throws InvalidXMLException;
 
   /**
    * Parses a TaeDescription from an XML input stream.
@@ -305,7 +306,8 @@ public interface XMLParser {
    * @deprecated As of v2.0, {@link #parseAnalysisEngineDescription(XMLInputSource,ParsingOptions)}
    *             should be used instead.
    */
-  public TaeDescription parseTaeDescription(XMLInputSource aInput, ParsingOptions aOptions)
+  @Deprecated
+public TaeDescription parseTaeDescription(XMLInputSource aInput, ParsingOptions aOptions)
           throws InvalidXMLException;
 
   /**
@@ -812,7 +814,8 @@ public interface XMLParser {
      * 
      * @deprecated XInclude is no longer supported
      */
-    public boolean expandXIncludes;
+    @Deprecated
+	public boolean expandXIncludes;
 
     /**
      * Whether to expand &lt;envVarRef&gt;VARNAME&lt;/envVarRef&gt; elements by substituting the
@@ -830,7 +833,8 @@ public interface XMLParser {
      *          substituting the value of the System proprery VARNAME.
      * @deprecated XInclude is no longer supported
      */
-    public ParsingOptions(boolean aExpandXIncludes, boolean aExpandEnvVarRefs) {
+    @Deprecated
+	public ParsingOptions(boolean aExpandXIncludes, boolean aExpandEnvVarRefs) {
       expandXIncludes = aExpandXIncludes;
       expandEnvVarRefs = aExpandEnvVarRefs;
     }

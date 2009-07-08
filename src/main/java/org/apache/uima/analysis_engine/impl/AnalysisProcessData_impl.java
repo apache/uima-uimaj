@@ -31,6 +31,7 @@ import org.apache.uima.util.impl.ProcessTrace_impl;
  * 
  * @deprecated since v2.0
  */
+@Deprecated
 public class AnalysisProcessData_impl implements AnalysisProcessData {
 
   /**

@@ -48,6 +48,7 @@ import org.xml.sax.helpers.AttributesImpl;
  * 
  * @deprecated As of v2.0, use {@link org.apache.uima.util.CasToInlineXml} instead.
  */
+@Deprecated
 public class TCasToInlineXml implements TCasFormatter {
   /**
    * This destroy method does nothing.

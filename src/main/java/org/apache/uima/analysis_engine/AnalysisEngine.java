@@ -348,7 +348,8 @@ public interface AnalysisEngine extends ConfigurableResource, CasObjectProcessor
    * @deprecated This is no longer used by the framework and was never intended for users to call.
    *             Use {#link #process(CAS)} instead.
    */
-  public void process(AnalysisProcessData aProcessData, ResultSpecification aResultSpec)
+  @Deprecated
+public void process(AnalysisProcessData aProcessData, ResultSpecification aResultSpec)
           throws ResultNotSupportedException, AnalysisEngineProcessException;
 
   /**

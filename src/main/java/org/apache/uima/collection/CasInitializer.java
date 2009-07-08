@@ -37,6 +37,7 @@ import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
  *             {@link org.apache.uima.examples.XmlDetagger} for an example.
  * 
  */
+@Deprecated
 public interface CasInitializer extends ConfigurableResource {
   /**
    * Informs this CasInitializer that the CAS TypeSystem has changed. The CollectionReader must call

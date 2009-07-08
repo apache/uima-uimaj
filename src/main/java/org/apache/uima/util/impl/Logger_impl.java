@@ -97,7 +97,8 @@ public class Logger_impl implements Logger {
    * @param aMessage
    *          the message to be logged
    */
-  public void log(String aMessage) {
+  @Deprecated
+public void log(String aMessage) {
     if (isLoggable(Level.INFO) && mOut != null) {
       mOut.print(new Date());
       mOut.print(": " + Level.INFO.toString() + ": ");
@@ -112,7 +113,8 @@ public class Logger_impl implements Logger {
    * 
    * @see org.apache.uima.util.Logger#log(java.lang.String, java.lang.String, java.lang.Object[])
    */
-  public void log(String aResourceBundleName, String aMessageKey, Object[] aArguments) {
+  @Deprecated
+public void log(String aResourceBundleName, String aMessageKey, Object[] aArguments) {
     if (isLoggable(Level.INFO)) {
       log(I18nUtil.localizeMessage(aResourceBundleName, aMessageKey, aArguments,
               getExtensionClassLoader()));
@@ -127,7 +129,8 @@ public class Logger_impl implements Logger {
    * @param aException
    *          the exception to be logged
    */
-  public void logException(Exception aException) {
+  @Deprecated
+public void logException(Exception aException) {
     if (isLoggable(Level.INFO) && mOut != null) {
       mOut.print(new Date());
       mOut.print(": " + Level.INFO.toString() + ": ");
@@ -140,7 +143,8 @@ public class Logger_impl implements Logger {
    * 
    * @see org.apache.uima.util.Logger#setOutputStream(java.io.OutputStream)
    */
-  public void setOutputStream(OutputStream out) {
+  @Deprecated
+public void setOutputStream(OutputStream out) {
     if (out == null || out instanceof PrintStream) {
       mOut = (PrintStream) out;
     } else {
@@ -153,7 +157,8 @@ public class Logger_impl implements Logger {
    * 
    * @see org.apache.uima.util.Logger#setOutputStream(java.io.PrintStream)
    */
-  public void setOutputStream(PrintStream out) {
+  @Deprecated
+public void setOutputStream(PrintStream out) {
     mOut = out;
   }
 

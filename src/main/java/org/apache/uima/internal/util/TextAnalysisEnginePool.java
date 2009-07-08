@@ -31,6 +31,7 @@ import org.apache.uima.resource.ResourceSpecifier;
  * 
  * @deprecated As of v2.0, use {@link org.apache.uima.internal.util.AnalysisEnginePool} instead.
  */
+@Deprecated
 public class TextAnalysisEnginePool extends AnalysisEnginePool {
 
   /**

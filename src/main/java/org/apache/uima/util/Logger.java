@@ -44,7 +44,8 @@ public interface Logger {
    * @param aMessage
    *          the message to be logged with message level INFO
    */
-  public void log(String aMessage);
+  @Deprecated
+public void log(String aMessage);
 
   /**
    * Logs an internationalized message.
@@ -58,7 +59,8 @@ public interface Logger {
    * @param aArguments
    *          arguments to message (may be null if none)
    */
-  public void log(String aResourceBundleName, String aMessageKey, Object[] aArguments);
+  @Deprecated
+public void log(String aResourceBundleName, String aMessageKey, Object[] aArguments);
 
   /**
    * Logs an exception
@@ -68,7 +70,8 @@ public interface Logger {
    * @param aException
    *          the exception to be logged with message level INFO
    */
-  public void logException(Exception aException);
+  @Deprecated
+public void logException(Exception aException);
 
   /**
    * Sets the output stream to which log messages will go. Setting the output stream to
@@ -79,7 +82,8 @@ public interface Logger {
    * @param aStream
    *          <code>PrintStream</code> to which log messages will be printed
    */
-  public void setOutputStream(PrintStream aStream);
+  @Deprecated
+public void setOutputStream(PrintStream aStream);
 
   /**
    * Sets the output stream to which log messages will go. Setting the output stream to
@@ -90,7 +94,8 @@ public interface Logger {
    * @param aStream
    *          <code>OutputStream</code> to which log messages will be printed
    */
-  public void setOutputStream(OutputStream aStream);
+  @Deprecated
+public void setOutputStream(OutputStream aStream);
 
   /**
    * Logs a message.

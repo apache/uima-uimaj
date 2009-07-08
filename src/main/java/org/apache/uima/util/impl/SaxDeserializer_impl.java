@@ -99,7 +99,8 @@ public class SaxDeserializer_impl implements SaxDeserializer {
    *          
    * @deprecated Use {@link #SaxDeserializer_impl(XMLParser, XMLParser.ParsingOptions)} instead.
    */
-  public SaxDeserializer_impl(XMLParser aUimaXmlParser, String aNamespaceForSchema, URL aSchemaUrl,
+  @Deprecated
+public SaxDeserializer_impl(XMLParser aUimaXmlParser, String aNamespaceForSchema, URL aSchemaUrl,
           XMLParser.ParsingOptions aOptions) {
     this(aUimaXmlParser, aOptions);
   }

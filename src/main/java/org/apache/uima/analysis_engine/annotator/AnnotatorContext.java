@@ -427,7 +427,8 @@ public interface AnnotatorContext {
    *             now be obtained directly by the method {@link CAS#getView(String)}, and the
    *             framework will automatically do the necessary Sofa mappings.
    */
-  public SofaID mapToSofaID(String aSofaName);
+  @Deprecated
+public SofaID mapToSofaID(String aSofaName);
 
   /**
    * 
@@ -437,6 +438,7 @@ public interface AnnotatorContext {
    *             now be obtained directly by the method {@link CAS#getView(String)}, and the
    *             framework will automatically do the necessary Sofa mappings.
    */
-  public SofaID[] getSofaMappings();
+  @Deprecated
+public SofaID[] getSofaMappings();
 
 }

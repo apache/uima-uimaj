@@ -181,7 +181,8 @@ public interface ResourceSpecifierFactory {
    * 
    * @deprecated As of v2.0, {@link #createAnalysisEngineDescription()} should be used instead.
    */
-  public TaeDescription createTaeDescription();
+  @Deprecated
+public TaeDescription createTaeDescription();
 
   /**
    * Creates a <code>ResourceMetaData</code>.

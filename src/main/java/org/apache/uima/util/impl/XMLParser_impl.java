@@ -512,7 +512,8 @@ public class XMLParser_impl implements XMLParser {
    * 
    * @deprecated since v2.0
    */
-  public TaeDescription parseTaeDescription(XMLInputSource aInput) throws InvalidXMLException {
+  @Deprecated
+public TaeDescription parseTaeDescription(XMLInputSource aInput) throws InvalidXMLException {
     return parseTaeDescription(aInput, DEFAULT_PARSING_OPTIONS);
   }
 
@@ -530,7 +531,8 @@ public class XMLParser_impl implements XMLParser {
    * 
    * @deprecated since v2.0
    */
-  public TaeDescription parseTaeDescription(XMLInputSource aInput, ParsingOptions aOptions)
+  @Deprecated
+public TaeDescription parseTaeDescription(XMLInputSource aInput, ParsingOptions aOptions)
           throws InvalidXMLException {
     // attempt to locate resource specifier schema
     URL schemaURL = getResourceSpecifierSchemaUrl();
@@ -595,7 +597,8 @@ public class XMLParser_impl implements XMLParser {
   /**
    * @deprecated
    */
-  public CasInitializerDescription parseCasInitializerDescription(XMLInputSource aInput)
+  @Deprecated
+public CasInitializerDescription parseCasInitializerDescription(XMLInputSource aInput)
           throws InvalidXMLException {
     return parseCasInitializerDescription(aInput, DEFAULT_PARSING_OPTIONS);
   }
@@ -603,7 +606,8 @@ public class XMLParser_impl implements XMLParser {
   /**
    * @deprecated
    */
-  public CasInitializerDescription parseCasInitializerDescription(XMLInputSource aInput,
+  @Deprecated
+public CasInitializerDescription parseCasInitializerDescription(XMLInputSource aInput,
           ParsingOptions aOptions) throws InvalidXMLException {
     // attempt to locate resource specifier schema
     URL schemaURL = getResourceSpecifierSchemaUrl();

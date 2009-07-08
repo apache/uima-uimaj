@@ -108,7 +108,8 @@ public interface FeatureStructure extends Serializable// extends FeatureValue
    * @return true if this FS should be indexed, false if not
    * @deprecated Use {@link #getIndexed()} instead
    */
-  public boolean isIndexed();
+  @Deprecated
+public boolean isIndexed();
 
   /**
    * Sets whether this FeatureStructure should be indexed if the CasData is converted to a CAS
@@ -118,7 +119,8 @@ public interface FeatureStructure extends Serializable// extends FeatureValue
    *          true if this FS should be indexed, false if not
    * @deprecated Use {@link #setIndexed(int[])} instead
    */
-  public void setIndexed(boolean aIndexed);
+  @Deprecated
+public void setIndexed(boolean aIndexed);
 
   /**
    * Gets the index repositories that this FeatureStrucutre should be indexed in if the CasData is

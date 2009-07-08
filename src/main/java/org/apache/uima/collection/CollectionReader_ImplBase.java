@@ -44,7 +44,8 @@ public abstract class CollectionReader_ImplBase extends ConfigurableResource_Imp
   /**
    * @deprecated
    */
-  private CasInitializer mCasInitializer;
+  @Deprecated
+private CasInitializer mCasInitializer;
 
   /**
    * current class
@@ -138,7 +139,8 @@ public abstract class CollectionReader_ImplBase extends ConfigurableResource_Imp
    * 
    * @deprecated As of v2.0 CAS Initializers are deprecated.
    */
-  public CasInitializer getCasInitializer() {
+  @Deprecated
+public CasInitializer getCasInitializer() {
     return mCasInitializer;
   }
 
@@ -150,7 +152,8 @@ public abstract class CollectionReader_ImplBase extends ConfigurableResource_Imp
    * 
    * @deprecated As of v2.0 CAS Initializers are deprecated.
    */
-  public void setCasInitializer(CasInitializer aCasInitializer) {
+  @Deprecated
+public void setCasInitializer(CasInitializer aCasInitializer) {
     mCasInitializer = aCasInitializer;
   }
 

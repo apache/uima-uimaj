@@ -29,6 +29,7 @@ import org.apache.uima.analysis_engine.ResultSpecification;
  * @deprecated  For backwards compatibility with Capability Language Flow only.
  *   User-developed Flow Controllers should not use this.
  */
+@Deprecated
 public class SimpleStepWithResultSpec extends SimpleStep {
 
   /**

@@ -27,6 +27,7 @@ import org.apache.uima.cas.SofaID;
  * 
  * @deprecated
  */
+@Deprecated
 public class SofaID_impl implements SofaID {
 
   String mSofaID;

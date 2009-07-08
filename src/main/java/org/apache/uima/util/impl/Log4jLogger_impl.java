@@ -98,7 +98,8 @@ public class Log4jLogger_impl implements Logger {
     * @param aMessage
     *           the message to be logged
     */
-   public void log(String aMessage) {
+   @Deprecated
+public void log(String aMessage) {
       if (isLoggable(Level.INFO)) {
          if (aMessage == null || aMessage.equals(""))
             return;
@@ -116,7 +117,8 @@ public class Log4jLogger_impl implements Logger {
     * @see org.apache.uima.util.Logger#log(java.lang.String, java.lang.String,
     *      java.lang.Object[])
     */
-   public void log(String aResourceBundleName, String aMessageKey,
+   @Deprecated
+public void log(String aResourceBundleName, String aMessageKey,
          Object[] aArguments) {
       if (isLoggable(Level.INFO)) {
          if (aMessageKey == null || aMessageKey.equals(""))
@@ -136,7 +138,8 @@ public class Log4jLogger_impl implements Logger {
     * @param aException
     *           the exception to be logged
     */
-   public void logException(Exception aException) {
+   @Deprecated
+public void logException(Exception aException) {
       if (isLoggable(Level.INFO)) {
          if (aException == null)
             return;
@@ -153,7 +156,8 @@ public class Log4jLogger_impl implements Logger {
     * @see org.apache.uima.util.Logger#setOutputStream(java.io.OutputStream)
     * @deprecated use external configuration possibility
     */
-   public void setOutputStream(OutputStream out) {
+   @Deprecated
+public void setOutputStream(OutputStream out) {
       throw new UnsupportedOperationException(
             "Method setOutputStream(OutputStream out) not supported");
    }
@@ -162,7 +166,8 @@ public class Log4jLogger_impl implements Logger {
     * @see org.apache.uima.util.Logger#setOutputStream(java.io.PrintStream)
     * @deprecated use external configuration possibility
     */
-   public void setOutputStream(PrintStream out) {
+   @Deprecated
+public void setOutputStream(PrintStream out) {
       throw new UnsupportedOperationException(
             "Method setOutputStream(PrintStream out) not supported");
    }
