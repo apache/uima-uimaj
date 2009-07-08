@@ -106,7 +106,8 @@ public class FeatureStructureImpl implements FeatureStructure {
    * @return
    * @deprecated
    */
-  public boolean isIndexed() {
+  @Deprecated
+public boolean isIndexed() {
     return mIndexed.length > 0;
   }
 
@@ -121,7 +122,8 @@ public class FeatureStructureImpl implements FeatureStructure {
    * @param b
    * @deprecated
    */
-  public void setIndexed(boolean b) {
+  @Deprecated
+public void setIndexed(boolean b) {
     mIndexed = new int[] { 1 }; // index in first index repository for backwards compatibility
   }
 

@@ -581,7 +581,8 @@ public interface CAS extends AbstractCas {
    * @deprecated As of v2.0, use {#getView(String)}. From the view you can access the Sofa data, or
    *             call {@link #getSofa()} if you truly need to access the SofaFS object.
    */
-  SofaFS getSofa(SofaID sofaID);
+  @Deprecated
+SofaFS getSofa(SofaID sofaID);
 
   /**
    * Get the Sofa feature structure associated with this CAS view.
@@ -634,7 +635,8 @@ public interface CAS extends AbstractCas {
    * 
    * @deprecated As of v2.0, use {@link #getView(String)} followed by {@link #getJCas()}.
    */
-  JCas getJCas(SofaID aSofaID) throws CASException;
+  @Deprecated
+JCas getJCas(SofaID aSofaID) throws CASException;
 
   /**
    * Get the view for a Sofa (subject of analysis). The view provides access to the Sofa data and

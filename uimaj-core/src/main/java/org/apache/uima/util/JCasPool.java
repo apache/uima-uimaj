@@ -76,7 +76,8 @@ public class JCasPool {
    * @deprecated As of v2.0, TextAnalysisEngine has been deprecated. Use
    *             {@link #JCasPool(int, AnalysisEngine)} instead.
    */
-  public JCasPool(int aNumInstances, TextAnalysisEngine aTextAnalysisEngine)
+  @Deprecated
+public JCasPool(int aNumInstances, TextAnalysisEngine aTextAnalysisEngine)
           throws ResourceInitializationException {
     mNumInstances = aNumInstances;
 

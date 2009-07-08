@@ -305,7 +305,8 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
    * @deprecated Use 0 arg constructor. Type Systems are shared by many CASes, and can't point to
    *             one. Change also your possible calls to ts.commit() - see comment on that method.
    */
-  public TypeSystemImpl(CASImpl cas) {
+  @Deprecated
+public TypeSystemImpl(CASImpl cas) {
     this();
   }
 
@@ -1103,7 +1104,8 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   /**
    * @deprecated
    */
-  public Feature getFeature(String featureName) {
+  @Deprecated
+public Feature getFeature(String featureName) {
     return getFeatureByFullName(featureName);
   }
 

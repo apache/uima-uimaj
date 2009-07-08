@@ -37,6 +37,7 @@ import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
  *             {@link org.apache.uima.examples.XmlDetagger} for an example.
  * 
  */
+@Deprecated
 public abstract class CasDataInitializer_ImplBase extends ConfigurableResource_ImplBase implements
         CasDataInitializer {
   public CasDataInitializer_ImplBase() {

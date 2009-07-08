@@ -42,6 +42,7 @@ import org.w3c.dom.Element;
 /**
  * @deprecated As of v2.0, CAS Initializers are deprecated.
  */
+@Deprecated
 public class CasInitializerDescription_impl extends ResourceCreationSpecifier_impl implements
         CasInitializerDescription {
 

@@ -118,7 +118,8 @@ public interface JCas extends AbstractCas {
    * @return the associated xxx_Type instance
    * @deprecated use instance.jcasType instead - faster
    */
-  public abstract TOP_Type getType(TOP instance);
+  @Deprecated
+public abstract TOP_Type getType(TOP instance);
 
   /**
    * Internal use - looks up a type-name-string in the CAS type system and returns the Cas Type
@@ -163,7 +164,8 @@ public interface JCas extends AbstractCas {
    * @deprecated As of v2.0, use {#getView(String)}. From the view you can access the Sofa data, or
    *             call {@link #getSofa()} if you truly need to access the SofaFS object.
    */
-  public abstract Sofa getSofa(SofaID sofaID);
+  @Deprecated
+public abstract Sofa getSofa(SofaID sofaID);
 
   /**
    * Get the Sofa feature structure associated with this JCas view.
@@ -263,7 +265,8 @@ public interface JCas extends AbstractCas {
    * 
    * @deprecated not required, does nothing
    */
-  public abstract void processInit();
+  @Deprecated
+public abstract void processInit();
 
   /**
    * Get the view for a Sofa (subject of analysis). The view provides access to the Sofa data and
@@ -320,7 +323,8 @@ public interface JCas extends AbstractCas {
    * 
    * @deprecated As of v2.0, use {@link #createView(String)} instead.
    */
-  SofaFS createSofa(SofaID sofaID, String mimeType);
+  @Deprecated
+SofaFS createSofa(SofaID sofaID, String mimeType);
 
   /**
    * Get iterator for all SofaFS in the CAS.

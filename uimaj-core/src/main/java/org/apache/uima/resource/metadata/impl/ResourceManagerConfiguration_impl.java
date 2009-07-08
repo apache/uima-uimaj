@@ -242,7 +242,8 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
    * @see org.apache.uima.resource.metadata.ResourceManagerConfiguration#getImport()
    * @deprecated
    */
-  public Import getImport() {
+  @Deprecated
+public Import getImport() {
     if (mImports.length > 0) {
       return mImports[0];
     } else {
@@ -254,7 +255,8 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
    * @see org.apache.uima.resource.metadata.ResourceManagerConfiguration#setImport(org.apache.uima.resource.metadata.Import)
    * @deprecated
    */
-  public void setImport(Import aImport) {
+  @Deprecated
+public void setImport(Import aImport) {
     mImports = new Import[] { aImport };
   }
 

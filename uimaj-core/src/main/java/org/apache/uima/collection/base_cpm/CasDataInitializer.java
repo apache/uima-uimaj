@@ -39,6 +39,7 @@ import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
  *             like HTML detagging should instead be implemented as a "multi-Sofa" annotator. See
  *             {@link org.apache.uima.examples.XmlDetagger} for an example.
  */
+@Deprecated
 public interface CasDataInitializer extends ConfigurableResource {
   /**
    * Reads content and metadata from an Object and creates a <code>CasData</code>.

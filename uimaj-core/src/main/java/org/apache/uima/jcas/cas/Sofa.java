@@ -76,6 +76,7 @@ public class Sofa extends TOP implements SofaFS {
    * @deprecated As of v2.0, use {@link JCasImpl#createView(String)} to create a view, which will
    *             also create the Sofa for that view.
    */
+	@Deprecated
 	public Sofa(JCas jcas, SofaID ID, String mimeType) {
 		super(jcas);
 		final CASImpl casImpl = jcasType.casImpl;

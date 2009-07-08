@@ -41,6 +41,7 @@ import org.apache.uima.util.ProcessTrace;
  * 
  * @deprecated
  */
+@Deprecated
 public interface AnalysisProcessData {
 
   /**

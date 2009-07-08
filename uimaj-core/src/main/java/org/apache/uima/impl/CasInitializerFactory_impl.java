@@ -35,6 +35,7 @@ import org.apache.uima.resource.ResourceSpecifier;
  * 
  * @deprecated As of v2.0, CAS Initializers are deprecated.
  */
+@Deprecated
 public class CasInitializerFactory_impl implements ResourceFactory {
 
   /**

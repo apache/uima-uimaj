@@ -456,7 +456,8 @@ public abstract class UIMAFramework {
    * @deprecated As of v2.0, {@link #produceAnalysisEngine(ResourceSpecifier)} should be used
    *             instead.
    */
-  public static TextAnalysisEngine produceTAE(ResourceSpecifier aSpecifier)
+  @Deprecated
+public static TextAnalysisEngine produceTAE(ResourceSpecifier aSpecifier)
           throws ResourceInitializationException {
     return (TextAnalysisEngine) produceResource(TextAnalysisEngine.class, aSpecifier, null);
   }
@@ -485,7 +486,8 @@ public abstract class UIMAFramework {
    * @deprecated As of v2.0, {@link #produceAnalysisEngine(ResourceSpecifier,Map)} should be used
    *             instead.
    */
-  public static TextAnalysisEngine produceTAE(ResourceSpecifier aSpecifier, Map aAdditionalParams)
+  @Deprecated
+public static TextAnalysisEngine produceTAE(ResourceSpecifier aSpecifier, Map aAdditionalParams)
           throws ResourceInitializationException {
     return (TextAnalysisEngine) produceResource(TextAnalysisEngine.class, aSpecifier,
             aAdditionalParams);
@@ -519,7 +521,8 @@ public abstract class UIMAFramework {
    * @deprecated As of v2.0, {@link #produceAnalysisEngine(ResourceSpecifier,ResourceManager,Map)}
    *             should be used instead.
    */
-  public static TextAnalysisEngine produceTAE(ResourceSpecifier aSpecifier,
+  @Deprecated
+public static TextAnalysisEngine produceTAE(ResourceSpecifier aSpecifier,
           ResourceManager aResourceManager, Map aAdditionalParams)
           throws ResourceInitializationException {
     return (TextAnalysisEngine) produceResource(TextAnalysisEngine.class, aSpecifier,
@@ -559,7 +562,8 @@ public abstract class UIMAFramework {
    * @deprecated As of v2.0, {@link #produceAnalysisEngine(ResourceSpecifier,int,int)} should be
    *             used instead.
    */
-  public static TextAnalysisEngine produceTAE(ResourceSpecifier aSpecifier,
+  @Deprecated
+public static TextAnalysisEngine produceTAE(ResourceSpecifier aSpecifier,
           int aMaxSimultaneousRequests, int aTimeoutPeriod) throws ResourceInitializationException {
     // add parameters to the aAdditionalParams map
     Map aAdditionalParams = new HashMap();
@@ -738,7 +742,8 @@ public abstract class UIMAFramework {
    *             like HTML detagging should instead be implemented as a "multi-Sofa" annotator. See
    *             {@link org.apache.uima.examples.XmlDetagger} for an example.
    */
-  public static CasInitializer produceCasInitializer(ResourceSpecifier aSpecifier)
+  @Deprecated
+public static CasInitializer produceCasInitializer(ResourceSpecifier aSpecifier)
           throws ResourceInitializationException {
     return (CasInitializer) produceResource(CasInitializer.class, aSpecifier, null);
   }

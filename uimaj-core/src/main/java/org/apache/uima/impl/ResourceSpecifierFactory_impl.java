@@ -184,7 +184,8 @@ public class ResourceSpecifierFactory_impl implements ResourceSpecifierFactory {
    * @see org.apache.uima.ResourceSpecifierFactory#createTaeDescription()
    * @deprecated since v2.0
    */
-  public TaeDescription createTaeDescription() {
+  @Deprecated
+public TaeDescription createTaeDescription() {
     return (TaeDescription) createObject(TaeDescription.class);
   }
 

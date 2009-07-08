@@ -28,6 +28,7 @@ package org.apache.uima.cas;
  * @deprecated As of v2.0, this is no longer needed. CAS views can now be obtained directly using
  *             String identifiers, through the method {@link CAS#getView(String)}.
  */
+@Deprecated
 public interface SofaID {
   /**
    * Set the Sofa ID of a Sofa FS in the CAS.

@@ -265,7 +265,8 @@ public class AnnotatorContext_impl implements AnnotatorContext {
    * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#mapToSofaID(java.lang.String)
    * @deprecated
    */
-  public SofaID mapToSofaID(String aSofaName) {
+  @Deprecated
+public SofaID mapToSofaID(String aSofaName) {
     return mUimaContext.mapToSofaID(aSofaName);
   }
 
@@ -273,7 +274,8 @@ public class AnnotatorContext_impl implements AnnotatorContext {
    * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getSofaMappings()
    * @deprecated
    */
-  public SofaID[] getSofaMappings() {
+  @Deprecated
+public SofaID[] getSofaMappings() {
     return mUimaContext.getSofaMappings();
   }
 }
