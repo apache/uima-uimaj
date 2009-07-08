@@ -29,11 +29,6 @@ import org.apache.uima.cas.FeatureStructure;
  */
 public class ArrayFSImpl extends CommonArrayFSImpl implements ArrayFS {
 
-  private ArrayFSImpl() {
-    super();
-    // not used
-  }
-
   public ArrayFSImpl(int addr, CASImpl cas) {
     super(cas, addr);
   }

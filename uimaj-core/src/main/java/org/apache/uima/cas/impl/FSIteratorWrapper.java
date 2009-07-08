@@ -34,13 +34,6 @@ public class FSIteratorWrapper extends FSIteratorImplBase {
 
   CASImpl casImpl;
 
-  /**
-   * Constructor for FSIteratorWrapper.
-   */
-  private FSIteratorWrapper() {
-    super();
-  }
-
   FSIteratorWrapper(IntPointerIterator it, CASImpl casImpl) {
     this.it = it;
     this.casImpl = casImpl;

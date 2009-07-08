@@ -44,12 +44,6 @@ class FSIteratorAggregate extends FSIteratorImplBase {
   // The offset of the current index.
   private int iteratorIndex = 0;
   
-  // Not used.
-  private FSIteratorAggregate() {
-    super();
-    this.iterators = new ArrayList();
-  }
-  
   /**
    * The one and only constructor.
    * @param c Collection of input iterators.

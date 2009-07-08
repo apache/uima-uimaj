@@ -44,10 +44,6 @@ public class StringArrayFSImpl extends CommonArrayFSImpl implements StringArrayF
 
   }
 
-  private StringArrayFSImpl() {
-    super();
-  }
-
   public StringArrayFSImpl(int addr, CASImpl cas) {
     super(cas, addr);
   }

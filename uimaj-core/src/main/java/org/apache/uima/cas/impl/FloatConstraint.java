@@ -38,15 +38,6 @@ class FloatConstraint extends PathConstraint implements FSMatchConstraint {
 
   private FSFloatConstraint floatConstraint;
 
-  private FloatConstraint() {
-    super();
-  }
-
-  // FloatConstraint(FeaturePath path, FSFloatConstraint cons) {
-  // super(path);
-  // this.floatConstraint = cons;
-  // }
-
   FloatConstraint(ArrayList path, FSFloatConstraint cons) {
     super(path);
     this.floatConstraint = cons;

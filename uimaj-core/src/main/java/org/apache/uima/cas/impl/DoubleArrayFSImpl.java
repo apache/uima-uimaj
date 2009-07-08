@@ -38,9 +38,6 @@ public class DoubleArrayFSImpl extends CommonAuxArrayFSImpl implements DoubleArr
     }
   }
 
-  private DoubleArrayFSImpl() { // not called
-  }
-
   public DoubleArrayFSImpl(int addr, CASImpl cas) {
     super(cas, addr); // note arg reversal
   }
