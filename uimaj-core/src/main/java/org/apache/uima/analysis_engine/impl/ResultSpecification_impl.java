@@ -732,7 +732,8 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
       return true;
     }
     String baseLanguage = getBaseLanguage(language);
-    return baseLanguage != language && 
+    return baseLanguage != language &&  // the != means the base language is different from the language
+                                        // != is OK here
            languages.get(getLanguageIndex(baseLanguage));
   }
 

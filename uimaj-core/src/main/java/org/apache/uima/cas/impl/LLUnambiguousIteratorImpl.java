@@ -129,7 +129,7 @@ public class LLUnambiguousIteratorImpl implements LowLevelIterator {
     int i; // Current position
     int comp; // Compare value
     while (start <= end) {
-      i = (start + end) / 2;
+      i = (int)(((long)start + end) / 2);
       comp = this.ll_getIndex().ll_compare(ele, array[i]);
       if (comp == 0) {
         return i;
