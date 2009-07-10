@@ -129,7 +129,7 @@ public final class IntArrayUtils {
     int i; // Current position
     int current; // Current value
     while (start <= end) {
-      i = (start + end) / 2;
+      i = (int)(((long)start + end) / 2);
       current = array[i];
       if (ele == current) {
         return i;

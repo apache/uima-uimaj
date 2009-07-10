@@ -247,7 +247,7 @@ public class FSIntArrayIndex extends FSLeafIndexImpl {
     int i; // Current position
     int comp; // Compare value
     while (start <= end) {
-      i = (start + end) / 2;
+      i = (int)(((long)start + end) / 2);
       comp = compare(ele, array[i]);
       if (comp == 0) {
         return i;
