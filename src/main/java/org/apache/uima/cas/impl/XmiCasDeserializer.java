@@ -502,6 +502,7 @@ public class XmiCasDeserializer {
         		        		        nameSpaceURI,
         		        		        localName,
         		        		        qualifiedName});
+    		  throw e;
     		} else if (this.allowPreexistingFS == AllowPreexistingFS.allow) { //get the FS 
     		  final int addr = getFsAddrForXmiId(xmiId);
        	  	  readFS(addr,attrs);
