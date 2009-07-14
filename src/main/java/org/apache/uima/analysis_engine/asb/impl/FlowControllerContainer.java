@@ -30,11 +30,14 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.analysis_engine.impl.AnalysisEngineManagementImpl;
 import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.flow.CasFlow_ImplBase;
 import org.apache.uima.flow.Flow;
 import org.apache.uima.flow.FlowController;
 import org.apache.uima.flow.FlowControllerContext;
 import org.apache.uima.flow.FlowControllerDescription;
+import org.apache.uima.flow.JCasFlow_ImplBase;
 import org.apache.uima.internal.util.JmxMBeanAgent;
 import org.apache.uima.resource.ConfigurableResource_ImplBase;
 import org.apache.uima.resource.ResourceConfigurationException;
@@ -210,7 +213,15 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
       AbstractCas casToPass = getCasManager().getCasInterface(view, requiredInterface);    
       ((CASImpl)aCAS).switchClassLoaderLockCasCL(this.getResourceManager().getExtensionClassLoader());
       Flow flow = mFlowController.computeFlow(casToPass);
+      if (flow instanceof CasFlow_ImplBase) {
+        ((CasFlow_ImplBase)flow).setCas(view);
+      }
+      if (flow instanceof JCasFlow_ImplBase) {
+        ((JCasFlow_ImplBase)flow).setJCas(view.getJCas());
+      }
       return new FlowContainer(flow, this, aCAS);
+    } catch (CASException e) {
+      throw new AnalysisEngineProcessException(e);
     } finally {
       ((CASImpl)aCAS).restoreClassLoaderUnlockCas();
       aCAS.setCurrentComponentInfo(null);
