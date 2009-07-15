@@ -163,7 +163,7 @@
 						<phase>package</phase>
 						<configuration>
 							<tasks>
-								<delete dir="src/main/resources/META-INF" deleteOnExit="true" quiet="true" failOnError="false">
+								<delete deleteOnExit="true" quiet="true" failOnError="false">
 									<fileset dir="src/main/resources/META-INF"
 										includes="LICENSE NOTICE DISCLAIMER"/>
 								</delete>
@@ -179,7 +179,7 @@
 						<phase>clean</phase>
 						<configuration>
 							<tasks>
-								<delete dir="src/main/resources/META-INF" deleteOnExit="true" quiet="true" failOnError="false">
+								<delete deleteOnExit="true" quiet="true" failOnError="false">
 									<fileset dir="src/main/resources/META-INF"
 										includes="LICENSE NOTICE DISCLAIMER"/>
 								</delete>
