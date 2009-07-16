@@ -18,6 +18,11 @@
    under the License.
 -->
 
+    <!-- 
+       Use this script to copy the docbook build prerequisites.  This avoids having to
+       download them during the build.  This script needs to be invoked manually.  Adapt
+       the property below to your needs.
+    -->
 
 <project name="Copy docbook prereqs from local repository" default="all" basedir=".">
 
@@ -30,6 +35,9 @@
 	   fop.zip
 	   jai.zip
 	   saxon.zip
+	   
+	   You can collect those files by doing one build the regular way, where those files are
+	   downloaded.  
 	   
 	   If the docbook build changes, this script will need to be adapted.
 	-->
