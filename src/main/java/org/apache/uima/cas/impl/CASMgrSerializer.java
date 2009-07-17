@@ -22,8 +22,8 @@ package org.apache.uima.cas.impl;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Vector;
 
 import org.apache.uima.cas.CAS;
@@ -39,8 +39,6 @@ import org.apache.uima.internal.util.SymbolTable;
  * Container for serialized CAS typing information. Contains information about the type system, as
  * well as the index repository. If more than one CAS that use the same type system and index
  * repository need to be serialized, this information needs to be serialized only once.
- * 
- * 
  */
 public class CASMgrSerializer implements Serializable {
 
@@ -196,9 +194,9 @@ public class CASMgrSerializer implements Serializable {
     this.typeOrder = ir.getDefaultTypeOrder().getOrder();
     // Collect the index labels in a list, as we don't know how many there
     // are.
-    final ArrayList names = new ArrayList();
+    final List<String> names = new ArrayList<String>();
     // Create an iterator over the names.
-    final Iterator namesIt = ir.getLabels();
+    final Iterator<String> namesIt = ir.getLabels();
     // Add the names to the list, filtering out auto-indexes.
     while (namesIt.hasNext()) {
       String name = (String) namesIt.next();
@@ -220,7 +218,7 @@ public class CASMgrSerializer implements Serializable {
     }
     // Create a vector of the indexes, and build the name-to-index map.
     this.nameToIndexMap = new int[numNames];
-    Vector indexVector = new Vector();
+    Vector<FSIndex> indexVector = new Vector<FSIndex>();
     FSIndex index;
     int pos;
     for (int i = 0; i < numNames; i++) {
@@ -244,7 +242,7 @@ public class CASMgrSerializer implements Serializable {
     // Create the array with the indexing strategy.
     this.indexingStrategy = new int[numIndexes];
     for (int i = 0; i < numIndexes; i++) {
-      this.indexingStrategy[i] = ((FSIndex) indexVector.get(i)).getIndexingStrategy();
+      this.indexingStrategy[i] = indexVector.get(i).getIndexingStrategy();
     }
 
     // Create the array for the comparator index.
@@ -301,11 +299,11 @@ public class CASMgrSerializer implements Serializable {
   }
 
   private void encodeStringSubtypes(TypeSystemImpl ts) {
-    Vector list = getStringSubtypes(ts);
+    Vector<Type> list = getStringSubtypes(ts);
     final int size = list.size();
     this.stringSubtypes = new int[size];
     this.stringSubtypeValuePos = new int[size];
-    ArrayList strVals = new ArrayList();
+    List<String> strVals = new ArrayList<String>();
     StringTypeImpl type;
     int pos = 0, typeCode;
     String[] stringSet;
@@ -326,7 +324,7 @@ public class CASMgrSerializer implements Serializable {
     }
   }
 
-  private Vector getStringSubtypes(TypeSystemImpl ts) {
+  private Vector<Type> getStringSubtypes(TypeSystemImpl ts) {
     return ts.getDirectlySubsumedTypes(ts.getType(CAS.TYPE_NAME_STRING));
   }
 

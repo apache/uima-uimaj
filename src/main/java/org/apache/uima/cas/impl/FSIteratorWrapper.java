@@ -23,12 +23,7 @@ import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.internal.util.IntPointerIterator;
 
-/**
- * Class comment for FSIteratorWrapper.java goes here.
- * 
- * 
- */
-public class FSIteratorWrapper extends FSIteratorImplBase {
+public class FSIteratorWrapper<T extends FeatureStructure> extends FSIteratorImplBase<T> {
 
   IntPointerIterator it;
 
@@ -49,8 +44,8 @@ public class FSIteratorWrapper extends FSIteratorImplBase {
   /**
    * @see org.apache.uima.cas.FSIterator#get()
    */
-  public FeatureStructure get() {
-    return this.casImpl.createFS(this.it.get());
+  public T get() {
+    return (T) this.casImpl.createFS(this.it.get());
   }
 
   /**
@@ -84,8 +79,8 @@ public class FSIteratorWrapper extends FSIteratorImplBase {
   /**
    * @see org.apache.uima.cas.FSIterator#copy()
    */
-  public FSIterator copy() {
-    return new FSIteratorWrapper((IntPointerIterator) this.it.copy(), this.casImpl);
+  public FSIterator<T> copy() {
+    return new FSIteratorWrapper<T>((IntPointerIterator) this.it.copy(), this.casImpl);
   }
 
   /**

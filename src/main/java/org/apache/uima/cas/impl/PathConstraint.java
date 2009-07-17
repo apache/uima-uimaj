@@ -25,19 +25,16 @@ import org.apache.uima.cas.FSMatchConstraint;
 
 /**
  * Implements a constraint embedded under a path. Optimize later.
- * 
- * 
- * @version $Revision: 1.2 $
  */
 abstract class PathConstraint implements FSMatchConstraint {
 
-  protected ArrayList featNames;
+  protected ArrayList<String> featNames;
 
   protected PathConstraint() {
     super();
   }
 
-  PathConstraint(ArrayList featNames) {
+  PathConstraint(ArrayList<String> featNames) {
     this();
     this.featNames = featNames;
   }
@@ -51,9 +48,8 @@ abstract class PathConstraint implements FSMatchConstraint {
       if (i > 0) {
         buf.append('.');
       }
-      buf.append((String) this.featNames.get(i));
+      buf.append(this.featNames.get(i));
     }
     return buf.toString();
   }
-
 }

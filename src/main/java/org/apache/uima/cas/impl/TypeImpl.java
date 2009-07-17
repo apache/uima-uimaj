@@ -33,7 +33,7 @@ import org.apache.uima.cas.TypeSystem;
  * 
  * @version $Revision: 1.3 $
  */
-public class TypeImpl implements Type, Comparable {
+public class TypeImpl implements Type, Comparable<TypeImpl> {
 
   private final String name;
 
@@ -87,8 +87,9 @@ public class TypeImpl implements Type, Comparable {
    * @deprecated
    */
   @Deprecated
-  public Vector getAppropriateFeatures() {
-    return new Vector(getFeatures());
+  public Vector<Feature> getAppropriateFeatures() {
+    return new Vector<Feature>(getFeatures());
+
   }
 
   /**
@@ -138,11 +139,11 @@ public class TypeImpl implements Type, Comparable {
    * Note: you can only compare types from the same type system. If you compare types from different
    * type systems, the result is undefined.
    */
-  public int compareTo(Object o) {
-    if (this == o) {
+  public int compareTo(TypeImpl t) {
+    if (this == t) {
       return 0;
     }
-    TypeImpl t = (TypeImpl) o;
+
     return (this.code < t.code) ? -1 : 1;
   }
 
@@ -201,9 +202,9 @@ public class TypeImpl implements Type, Comparable {
     return getFeatureByBaseName(featureName);
   }
 
-  public List getFeatures() {
+  public List<Feature> getFeatures() {
     int[] feats = this.ts.ll_getAppropriateFeatures(this.code);
-    ArrayList list = new ArrayList(feats.length);
+    List<Feature> list = new ArrayList<Feature>(feats.length);
     for (int i = 0; i < feats.length; i++) {
       list.add(this.ts.ll_getFeatureForCode(feats[i]));
     }

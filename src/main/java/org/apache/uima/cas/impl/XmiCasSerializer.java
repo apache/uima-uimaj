@@ -208,7 +208,7 @@ public class XmiCasSerializer {
      * 
      * @param addr
      *          The address.
-     * @return <code>true</code> iff we've seen the address before.
+     * @return <code>true</code> if we've seen the address before.
      */
     private boolean isVisited(int addr) {
       return visited.containsKey(addr);
@@ -310,9 +310,9 @@ public class XmiCasSerializer {
       }
       //check for out-of-typesystem members
       if (this.sharedData != null) {
-        List ootsMembers = this.sharedData.getOutOfTypeSystemViewMembers(sofaXmiId);
+        List<String> ootsMembers = this.sharedData.getOutOfTypeSystemViewMembers(sofaXmiId);
         if (ootsMembers != null) {
-          Iterator iter = ootsMembers.iterator();
+          Iterator<String> iter = ootsMembers.iterator();
           while (iter.hasNext()) {
             membersString.append((String)iter.next()).append(' ');
           }

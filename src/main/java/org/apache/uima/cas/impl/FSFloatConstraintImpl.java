@@ -46,11 +46,11 @@ class FSFloatConstraintImpl implements FSFloatConstraint {
 
   private IntVector codes;
 
-  private Vector values;
+  private Vector<Float> values;
 
   FSFloatConstraintImpl() {
     this.codes = new IntVector();
-    this.values = new Vector();
+    this.values = new Vector<Float>();
   }
 
   public boolean match(float f) {
@@ -58,31 +58,31 @@ class FSFloatConstraintImpl implements FSFloatConstraint {
     for (int i = 0; i < max; i++) {
       switch (this.codes.get(i)) {
         case LT: {
-          if (f >= ((Float) this.values.get(i)).floatValue()) {
+          if (f >= (this.values.get(i)).floatValue()) {
             return false;
           }
           break;
         }
         case LEQ: {
-          if (f > ((Float) this.values.get(i)).floatValue()) {
+          if (f > (this.values.get(i)).floatValue()) {
             return false;
           }
           break;
         }
         case EQ: {
-          if (f != ((Float) this.values.get(i)).floatValue()) {
+          if (f != (this.values.get(i)).floatValue()) {
             return false;
           }
           break;
         }
         case GEQ: {
-          if (f < ((Float) this.values.get(i)).floatValue()) {
+          if (f < (this.values.get(i)).floatValue()) {
             return false;
           }
           break;
         }
         case GT: {
-          if (f <= ((Float) this.values.get(i)).floatValue()) {
+          if (f <= (this.values.get(i)).floatValue()) {
             return false;
           }
           break;

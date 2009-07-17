@@ -350,9 +350,9 @@ public class ListUtils {
     return array;
   }
 
-  public int createIntList(List stringValues) {
+  public int createIntList(List<String> stringValues) {
     int first = cas.ll_createFS(eIntListType);
-    ListIterator iter = stringValues.listIterator(stringValues.size());
+    ListIterator<String> iter = stringValues.listIterator(stringValues.size());
     while (iter.hasPrevious()) {
       int value = Integer.parseInt((String) iter.previous());
       int node = cas.ll_createFS(neIntListType);
@@ -363,9 +363,9 @@ public class ListUtils {
     return first;
   }
   
-  public int createFloatList(List stringValues) {
+  public int createFloatList(List<String> stringValues) {
     int first = cas.ll_createFS(eFloatListType);
-    ListIterator iter = stringValues.listIterator(stringValues.size());
+    ListIterator<String> iter = stringValues.listIterator(stringValues.size());
     while (iter.hasPrevious()) {
       float value = Float.parseFloat((String) iter.previous());
       int node = cas.ll_createFS(neFloatListType);
@@ -376,11 +376,11 @@ public class ListUtils {
     return first;
   }
 
-  public int createStringList(List stringValues) {
+  public int createStringList(List<String> stringValues) {
     int first = cas.ll_createFS(eStringListType);
-    ListIterator iter = stringValues.listIterator(stringValues.size());
+    ListIterator<String> iter = stringValues.listIterator(stringValues.size());
     while (iter.hasPrevious()) {
-      String value = (String) iter.previous();
+      String value = iter.previous();
       int node = cas.ll_createFS(neStringListType);
       cas.setFeatureValue(node, stringHeadFeat, cas.addString(value));
       cas.setFeatureValue(node, stringTailFeat, first);
@@ -389,9 +389,9 @@ public class ListUtils {
     return first;
   }
 
-  public int createFsList(List stringValues, IntVector fsAddresses) {
+  public int createFsList(List<String> stringValues, IntVector fsAddresses) {
     int first = cas.ll_createFS(eFsListType);
-    ListIterator iter = stringValues.listIterator(stringValues.size());
+    ListIterator<String> iter = stringValues.listIterator(stringValues.size());
     while (iter.hasPrevious()) {
       int value = Integer.parseInt((String) iter.previous());
       int node = cas.ll_createFS(neFsListType);
@@ -403,7 +403,7 @@ public class ListUtils {
     return first;
   }
 
-  public int updateIntList(int addr, List stringValues) throws SAXException  {
+  public int updateIntList(int addr, List<String> stringValues) throws SAXException  {
     int first = addr;
     int currLength = this.getLength(this.neIntListType, addr);
     int curNode = addr;
@@ -421,7 +421,7 @@ public class ListUtils {
   	  	           foundCycle = true;
   	  	           break;
   	  	}
-  	  	int value = Integer.parseInt((String) stringValues.get(i++));
+  	  	int value = Integer.parseInt(stringValues.get(i++));
   	    cas.setFeatureValue(curNode,floatHeadFeat, value);
   	    prevNode = curNode;
   	  	curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(intTailFeat));
@@ -479,7 +479,7 @@ public class ListUtils {
     return first;
   }
 	  
-  public int updateFloatList(int addr, List stringValues) throws SAXException  {
+  public int updateFloatList(int addr, List<String> stringValues) throws SAXException  {
     int first = addr;
     int currLength = this.getLength(this.neFloatListType, addr);
     int curNode = addr;
@@ -496,7 +496,7 @@ public class ListUtils {
 	  	           foundCycle = true;
 	  	           break;
 	  	}
-	  	float value = Float.parseFloat((String) stringValues.get(i++));
+	  	float value = Float.parseFloat(stringValues.get(i++));
 	    cas.setFeatureValue(curNode,floatHeadFeat, value);
 	    prevNode = curNode;
 	  	curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(floatTailFeat));
@@ -555,7 +555,7 @@ public class ListUtils {
     return first;
   }  
   
-  public int updateFsList(int addr, List stringValues, IntVector fsAddresses) throws SAXException  {
+  public int updateFsList(int addr, List<String> stringValues, IntVector fsAddresses) throws SAXException  {
     int first = addr;
     int currLength = this.getLength(this.neFsListType, addr);
     boolean foundCycle = false;
@@ -572,7 +572,7 @@ public class ListUtils {
   	           foundCycle = true;
   	           break;
   	    }
-  	    int value = Integer.parseInt((String) stringValues.get(i++));
+  	    int value = Integer.parseInt(stringValues.get(i++));
         cas.setFeatureValue(curNode,fsHeadFeat, value);
         fsAddresses.add(curNode);
         prevNode = curNode;
@@ -634,7 +634,7 @@ public class ListUtils {
     return first;
   }  
   
-  public int updateStringList(int addr, List stringValues) throws SAXException   {
+  public int updateStringList(int addr, List<String> stringValues) throws SAXException   {
     int first = addr;
     boolean foundCycle = false;
     IntRedBlackTree visited = new IntRedBlackTree();
@@ -651,7 +651,7 @@ public class ListUtils {
 	    }
 	    String curValue = cas.getStringForCode(cas.getHeapValue(curNode
 	              + cas.getFeatureOffset(stringHeadFeat)));
-	    String newValue = (String)stringValues.get(i++);
+	    String newValue = stringValues.get(i++);
         if (!curValue.equals(newValue)) {		  
           cas.setFeatureValue(curNode, stringHeadFeat, cas.addString(newValue));
         }

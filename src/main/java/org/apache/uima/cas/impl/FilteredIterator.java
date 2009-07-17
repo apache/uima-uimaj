@@ -28,10 +28,10 @@ import org.apache.uima.cas.FeatureStructure;
 /**
  * Implements a filtered iterator.
  */
-class FilteredIterator extends FSIteratorImplBase {
+class FilteredIterator<T extends FeatureStructure> extends FSIteratorImplBase<T> {
 
   // The base iterator.
-  private FSIterator it;
+  private FSIterator<T> it;
 
   // The filter constraint.
   private FSMatchConstraint cons;
@@ -44,7 +44,7 @@ class FilteredIterator extends FSIteratorImplBase {
   /**
    * Create a filtered iterator from a base iterator and a constraint.
    */
-  FilteredIterator(FSIterator it, FSMatchConstraint cons) {
+  FilteredIterator(FSIterator<T> it, FSMatchConstraint cons) {
     this();
     this.it = it;
     this.cons = cons;
@@ -88,7 +88,7 @@ class FilteredIterator extends FSIteratorImplBase {
     }
   }
 
-  public FeatureStructure get() throws NoSuchElementException {
+  public T get() throws NoSuchElementException {
     // This may throw an exception.
     return this.it.get();
   }
@@ -96,14 +96,14 @@ class FilteredIterator extends FSIteratorImplBase {
   /**
    * @see org.apache.uima.cas.FSIterator#copy()
    */
-  public FSIterator copy() {
-    return new FilteredIterator(this.it.copy(), this.cons);
+  public FSIterator<T> copy() {
+    return new FilteredIterator<T>(this.it.copy(), this.cons);
   }
 
   /**
    * @see org.apache.uima.cas.FSIterator#moveTo(FeatureStructure)
    */
-  public void moveTo(FeatureStructure fs) {
+  public void moveTo(T fs) {
     this.it.moveTo(fs);
     if (!this.cons.match(this.it.get())) {
       moveToNext();

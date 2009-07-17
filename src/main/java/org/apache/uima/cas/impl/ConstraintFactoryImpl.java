@@ -60,7 +60,7 @@ public class ConstraintFactoryImpl extends ConstraintFactory {
 
 	public FSMatchConstraint embedConstraint(FeaturePath featPath,
 			FSConstraint constraint) {
-		ArrayList path = new ArrayList();
+		ArrayList<String> path = new ArrayList<String>();
 		for (int i = 0; i < featPath.size(); i++) {
 			path.add(featPath.getFeature(i).getShortName());
 		}
@@ -79,7 +79,7 @@ public class ConstraintFactoryImpl extends ConstraintFactory {
 		}
 	}
 
-	public FSMatchConstraint embedConstraint(ArrayList path,
+	public FSMatchConstraint embedConstraint(ArrayList<String> path,
 			FSConstraint constraint) {
 		if (constraint instanceof FSMatchConstraint) {
 			return new EmbeddedConstraint(path, constraint);

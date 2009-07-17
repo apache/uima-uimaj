@@ -731,7 +731,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 
   }
 
-  private class IndexImpl implements FSIndex, FSIndexImpl {
+  private class IndexImpl<T extends FeatureStructure> implements FSIndex<T>, FSIndexImpl {
 
     private final IndexIteratorCachePair iicp;
 
@@ -788,7 +788,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     /**
      * @see org.apache.uima.cas.FSIndex#iterator()
      */
-    public FSIterator iterator() {
+    public FSIterator<T> iterator() {
       return new FSIteratorWrapper(createPointerIterator(this.iicp), FSIndexRepositoryImpl.this.cas);
     }
 

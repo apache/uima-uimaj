@@ -417,10 +417,6 @@ public abstract class FeatureStructureImpl implements FeatureStructure, Cloneabl
 			return WITH_LABEL;
 		}
 
-		int size() {
-			return this.count;
-		}
-
 	}
 
 	private final void getPrintRefs(PrintReferences printRefs) {
@@ -585,7 +581,7 @@ public abstract class FeatureStructureImpl implements FeatureStructure, Cloneabl
 
 		}
 
-		List feats = getType().getFeatures();
+		List<Feature> feats = getType().getFeatures();
 		Feature feat;
 		Type approp;
 		FeatureStructureImpl val;

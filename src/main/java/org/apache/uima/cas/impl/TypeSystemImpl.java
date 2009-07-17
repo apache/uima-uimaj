@@ -25,6 +25,7 @@ import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Vector;
 
@@ -47,16 +48,15 @@ import org.apache.uima.internal.util.rb_trees.RedBlackTree;
  */
 public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
 
-  private static class ListIterator implements Iterator {
+  private static class ListIterator<T> implements Iterator<T> {
 
-    private final List list;
+    private final List<T> list;
 
     private final int len;
 
     private int pos = 0;
 
-    private ListIterator(List list, int max) {
-      super();
+    private ListIterator(List<T> list, int max) {
       this.list = list;
       this.len = (max < list.size()) ? max : list.size();
     }
@@ -65,11 +65,11 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
       return this.pos < this.len;
     }
 
-    public Object next() {
+    public T next() {
       if (!hasNext()) {
         throw new NoSuchElementException();
       }
-      Object o = this.list.get(this.pos);
+      T o = this.list.get(this.pos);
       ++this.pos;
       return o;
     }
@@ -77,14 +77,13 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     public void remove() {
       throw new UnsupportedOperationException();
     }
-
   }
 
   // static maps ok for now - only built-in mappings stored here
   // which are the same for all type system instances
-  private static HashMap arrayComponentTypeNameMap = new HashMap();
+  private static Map<String, String> arrayComponentTypeNameMap = new HashMap<String, String>();
 
-  private static HashMap arrayTypeComponentNameMap = new HashMap();
+  private static Map<String, String> arrayTypeComponentNameMap = new HashMap<String, String>();
 
   private static final String arrayTypeSuffix = "[]";
 
@@ -130,16 +129,16 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   // feature is declared on).
   private StringToIntMap featureMap;
 
-  private ArrayList tree; // Collection of IntVectors encoding type tree
+  private List<IntVector> tree; // Collection of IntVectors encoding type tree
 
-  private ArrayList subsumes; // Collection of BitSets for subsumption relation
+  private List<BitSet> subsumes; // Collection of BitSets for subsumption relation
 
   private IntVector intro;
 
   // Indicates which type introduces a feature (domain)
   private IntVector featRange; // Indicates range type of features
 
-  private ArrayList approp; // For each type, an IntVector of appropriate
+  private ArrayList<IntVector> approp; // For each type, an IntVector of appropriate
 
   // features
 
@@ -147,16 +146,16 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   private int top;
 
   // An ArrayList (unsynchronized) of TypeImpl objects.
-  private ArrayList types;
+  private List<Type> types;
 
   // An ArrayList (unsynchronized) of FeatureImpl objects.
-  private ArrayList features;
+  private List<Feature> features;
 
   // List of parent types.
   private final IntVector parents;
 
   // String sets for string subtypes.
-  private final ArrayList stringSets;
+  private final List<String[]> stringSets;
 
   // This map contains an entry for every subtype of the string type. The value is a pointer into
   // the stringSets array list.
@@ -318,21 +317,21 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     this.featureMap = new StringToIntMap();
     // In each Vector, add null as first element, since we start
     // counting at 1.
-    this.tree = new ArrayList();
+    this.tree = new ArrayList<IntVector>();
     this.tree.add(null);
-    this.subsumes = new ArrayList();
+    this.subsumes = new ArrayList<BitSet>();
     this.subsumes.add(null);
     this.intro = new IntVector();
     this.intro.add(0);
     this.featRange = new IntVector();
     this.featRange.add(0);
-    this.approp = new ArrayList();
+    this.approp = new ArrayList<IntVector>();
     this.approp.add(null);
-    this.types = new ArrayList();
+    this.types = new ArrayList<Type>();
     this.types.add(null);
-    this.features = new ArrayList();
+    this.features = new ArrayList<Feature>();
     this.features.add(null);
-    this.stringSets = new ArrayList();
+    this.stringSets = new ArrayList<String[]>();
     this.stringSetMap = new IntRedBlackTree();
     this.componentToArrayTypeMap = new IntRedBlackTree();
     this.arrayToComponentTypeMap = new IntRedBlackTree();
@@ -444,13 +443,13 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     return getNumberOfTypes() + getSmallestType();
   }
 
-  public Vector getIntroFeatures(Type type) {
-    Vector feats = new Vector();
-    List appropFeats = type.getFeatures();
+  public Vector<Feature> getIntroFeatures(Type type) {
+    Vector<Feature> feats = new Vector<Feature>();
+    List<Feature> appropFeats = type.getFeatures();
     final int max = appropFeats.size();
     Feature feat;
     for (int i = 0; i < max; i++) {
-      feat = (Feature) appropFeats.get(i);
+      feat = appropFeats.get(i);
       if (feat.getDomain() == type) {
         feats.add(feat);
       }
@@ -507,7 +506,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     if (typeCode < LEAST_TYPE_CODE) {
       return null;
     }
-    return (Type) this.types.get(typeCode);
+    return this.types.get(typeCode);
   }
 
   /**
@@ -541,7 +540,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   }
 
   private static final String getArrayTypeName(String typeName) {
-    final String arrayTypeName = (String) arrayComponentTypeNameMap.get(typeName);
+    final String arrayTypeName = arrayComponentTypeNameMap.get(typeName);
     return (null == arrayTypeName) ? typeName + arrayTypeSuffix : arrayTypeName;
     // if (arrayComponentTypeNameMap.containsKey(typeName)) {
     // return (String) arrayComponentTypeNameMap.get(typeName);
@@ -560,7 +559,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   private static final String getBuiltinArrayComponent(String typeName) {
     // if typeName is not contained in the map, the "get" returns null
     // if (arrayTypeComponentNameMap.containsKey(typeName)) {
-    return (String) arrayTypeComponentNameMap.get(typeName);
+    return arrayTypeComponentNameMap.get(typeName);
     // }
     // return null;
   }
@@ -594,7 +593,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     if (typeCode < this.typeNameST.getStart()) {
       return null;
     }
-    return (Type) this.types.get(typeCode);
+    return this.types.get(typeCode);
   }
 
   /**
@@ -629,13 +628,13 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     // Create space for new type.
     newType();
     // Add an edge to the tree.
-    ((IntVector) this.tree.get(superType)).add(type);
+    (this.tree.get(superType)).add(type);
     // Update subsumption relation.
     updateSubsumption(type, superType);
     // Add inherited features.
-    final IntVector superApprop = (IntVector) this.approp.get(superType);
+    final IntVector superApprop = this.approp.get(superType);
     // superApprop.add(0);
-    final IntVector typeApprop = (IntVector) this.approp.get(type);
+    final IntVector typeApprop = this.approp.get(type);
     // typeApprop.add(0);
     final int max = superApprop.size();
     int featCode;
@@ -692,7 +691,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     if (featCode < this.featureNameST.getStart()) {
       return null;
     }
-    return (Feature) this.features.get(featCode);
+    return this.features.get(featCode);
   }
 
   /**
@@ -711,15 +710,15 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
    * 
    * @return The iterator.
    */
-  public Iterator getTypeIterator() {
-    Iterator it = new ListIterator(this.types, this.numCommittedTypes);
+  public Iterator<Type> getTypeIterator() {
+    Iterator<Type> it = new ListIterator<Type>(this.types, this.numCommittedTypes);
     // The first element is null, so skip it.
     it.next();
     return it;
   }
 
-  public Iterator getFeatures() {
-    Iterator it = this.features.iterator();
+  public Iterator<Feature> getFeatures() {
+    Iterator<Feature> it = this.features.iterator();
     // The first element is null, so skip it.
     it.next();
     return it;
@@ -731,7 +730,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
    * @return The top type.
    */
   public Type getTopType() {
-    return (Type) this.types.get(this.top);
+    return this.types.get(this.top);
   }
 
   /**
@@ -742,15 +741,16 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
    *          Input type.
    * @return The list of types subsumed by <code>type</code>.
    */
-  public List getProperlySubsumedTypes(Type type) {
-    ArrayList subList = new ArrayList();
-    Iterator typeIt = getTypeIterator();
+  public List<Type> getProperlySubsumedTypes(Type type) {
+    List<Type> subList = new ArrayList<Type>();
+    Iterator<Type> typeIt = getTypeIterator();
     while (typeIt.hasNext()) {
-      Type t = (Type) typeIt.next();
+      Type t = typeIt.next();
       if (type != t && subsumes(type, t)) {
         subList.add(t);
       }
     }
+    
     return subList;
   }
 
@@ -761,16 +761,16 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
    *          The input type.
    * @return A vector of the directly subsumed types.
    */
-  public Vector getDirectlySubsumedTypes(Type type) {
-    return new Vector(getDirectSubtypes(type));
+  public Vector<Type> getDirectlySubsumedTypes(Type type) {
+    return new Vector<Type>(getDirectSubtypes(type));
   }
 
-  public List getDirectSubtypes(Type type) {
+  public List<Type> getDirectSubtypes(Type type) {
     if (type.isArray()) {
-      return new ArrayList();
+      return new ArrayList<Type>();
     }
-    ArrayList list = new ArrayList();
-    IntVector sub = (IntVector) this.tree.get(((TypeImpl) type).getCode());
+    List<Type> list = new ArrayList<Type>();
+    IntVector sub = this.tree.get(((TypeImpl) type).getCode());
     final int max = sub.size();
     for (int i = 0; i < max; i++) {
       list.add(this.types.get(sub.get(i)));
@@ -779,7 +779,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   }
 
   public boolean directlySubsumes(int t1, int t2) {
-    IntVector sub = (IntVector) this.tree.get(t1);
+    IntVector sub = this.tree.get(t1);
     return sub.contains(t2);
   }
 
@@ -806,14 +806,14 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
       return null;
     }
     // We have to copy the array since we don't have const.
-    return ((IntVector) this.approp.get(type)).toArrayCopy();
+    return (this.approp.get(type)).toArrayCopy();
   }
 
   /**
    * @return An offset <code>&gt;0</code> if <code>feat</code> exists; <code>0</code>, else.
    */
   int getFeatureOffset(int feat) {
-    return ((IntVector) this.approp.get(this.intro.get(feat))).position(feat) + 1;
+    return (this.approp.get(this.intro.get(feat))).position(feat) + 1;
   }
 
   /**
@@ -871,12 +871,12 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     // if (t == null) {
     // System.out.println("Type is null");
     // }
-    List typesLocal = getProperlySubsumedTypes(ll_getTypeForCode(domain));
+    List<Type> typesLocal = getProperlySubsumedTypes(ll_getTypeForCode(domain));
     typesLocal.add(ll_getTypeForCode(domain));
     // For each type, check that the feature doesn't already exist.
     int max = typesLocal.size();
     for (int i = 0; i < max; i++) {
-      String featureName = ((Type) typesLocal.get(i)).getName() + FEATURE_SEPARATOR + shortName;
+      String featureName = (typesLocal.get(i)).getName() + FEATURE_SEPARATOR + shortName;
       if (this.featureMap.containsKey(featureName)) {
         // We have already added this feature. If the range of the
         // duplicate
@@ -901,7 +901,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     int feat = this.featureNameST.set(name);
     // Add entries for all subtypes.
     for (int i = 0; i < max; i++) {
-      this.featureMap.put(((Type) typesLocal.get(i)).getName() + FEATURE_SEPARATOR + shortName,
+      this.featureMap.put((typesLocal.get(i)).getName() + FEATURE_SEPARATOR + shortName,
           feat);
     }
     this.intro.add(domain);
@@ -909,7 +909,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     max = this.typeNameST.size();
     for (int i = 1; i <= max; i++) {
       if (subsumes(domain, i)) {
-        ((IntVector) this.approp.get(i)).add(feat);
+        (this.approp.get(i)).add(feat);
       }
     }
     this.features.add(new FeatureImpl(feat, name, this, multiRefsAllowed));
@@ -924,7 +924,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     if (code < 1) {
       return null;
     }
-    return (Type) this.types.get(code);
+    return this.types.get(code);
   }
 
   private int addTopTypeInternal(String name) {
@@ -1006,7 +1006,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
       // supertype must be top, or the abstract array base.
       return ((superType == this.top) || (superType == this.arrayBaseTypeCode));
     }
-    return ((BitSet) this.subsumes.get(superType)).get(type);
+    return this.subsumes.get(superType).get(type);
   }
 
   private void updateSubsumption(int type, int superType) {
@@ -1020,7 +1020,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   }
 
   private void addSubsubsumption(int superType, int type) {
-    ((BitSet) this.subsumes.get(superType)).set(type);
+    (this.subsumes.get(superType)).set(type);
   }
 
   private void newType() {
@@ -1151,7 +1151,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   // public for ref from JCas TOP type,
   // impl FeatureStructureImpl
   public String[] getStringSet(int i) {
-    return (String[]) this.stringSets.get(i);
+    return this.stringSets.get(i);
   }
 
   /*
@@ -1203,7 +1203,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
 
   public Type ll_getTypeForCode(int typeCode) {
     if (isType(typeCode)) {
-      return (Type) this.types.get(typeCode);
+      return this.types.get(typeCode);
     }
     return null;
   }
@@ -1218,7 +1218,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
 
   public Feature ll_getFeatureForCode(int featureCode) {
     if (isFeature(featureCode)) {
-      return (Feature) this.features.get(featureCode);
+      return this.features.get(featureCode);
     }
     return null;
   }
@@ -1263,7 +1263,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     if (arrayTypeCode == UNKNOWN_TYPE_CODE) {
       return null;
     }
-    return (Type) this.types.get(arrayTypeCode);
+    return this.types.get(arrayTypeCode);
   }
 
   public final int ll_getTypeClass(int typeCode) {
@@ -1362,7 +1362,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     // Add an edge to the tree.
     if (!isCommitted() && motherCode != fsArrayTypeCode ) {
       final int arrayBaseTypeCodeBeforeCommitted = this.arrayBaseTypeCode;
-      ((IntVector) this.tree.get(arrayBaseTypeCodeBeforeCommitted)).add(arrayTypeCode);
+      (this.tree.get(arrayBaseTypeCodeBeforeCommitted)).add(arrayTypeCode);
       // Update subsumption relation.
       updateSubsumption(arrayTypeCode, this.arrayBaseTypeCode);
     }
@@ -1400,7 +1400,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     if (!ll_isStringSubtype(typeCode)) {
       return null;
     }
-    return (String[]) this.stringSets.get(this.stringSetMap.get(typeCode));
+    return this.stringSets.get(this.stringSetMap.get(typeCode));
   }
 
 }

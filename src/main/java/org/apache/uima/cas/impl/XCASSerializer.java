@@ -28,6 +28,7 @@ import java.util.Vector;
 
 import org.apache.uima.UimaContext;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.internal.util.IntStack;
 import org.apache.uima.internal.util.IntVector;
@@ -84,7 +85,7 @@ public class XCASSerializer {
     int numDuplicates;
 
     // Vector of IntVectors for duplicates
-    Vector dupVectors;
+    Vector<IntVector> dupVectors;
 
     // All FSs that are in an index somewhere.
     private IntVector indexedFSs;
@@ -119,7 +120,7 @@ public class XCASSerializer {
       this.queued = new IntRedBlackTree();
       this.duplicates = new IntRedBlackTree();
       this.numDuplicates = 0;
-      this.dupVectors = new Vector();
+      this.dupVectors = new Vector<IntVector>();
       this.queue = new IntStack();
       this.indexedFSs = new IntVector();
       this.indexReps = new IntVector();
@@ -181,14 +182,14 @@ public class XCASSerializer {
           if (MULTIPLY_INDEXED == prevIndex) {
             // this addr already indexed more than once
             int thisDup = duplicates.get(addr);
-            ((IntVector) dupVectors.get(thisDup)).add(indexRep);
+            dupVectors.get(thisDup).add(indexRep);
             break;
           }
           // duplicate index detected!
           duplicates.put(addr, numDuplicates);
           dupVectors.add(new IntVector());
-          ((IntVector) dupVectors.get(numDuplicates)).add(prevIndex);
-          ((IntVector) dupVectors.get(numDuplicates)).add(indexRep);
+          dupVectors.get(numDuplicates).add(prevIndex);
+          dupVectors.get(numDuplicates).add(indexRep);
           numDuplicates++;
           queued.put(addr, MULTIPLY_INDEXED); // mark this addr as multiply indexed
           break;
@@ -250,9 +251,9 @@ public class XCASSerializer {
       if (outOfTypeSystemData != null) {
         // Queues out of type system data.
         int nextId = cas.getHeap().getCellsUsed();
-        Iterator it = outOfTypeSystemData.fsList.iterator();
+        Iterator<FSData> it = outOfTypeSystemData.fsList.iterator();
         while (it.hasNext()) {
-          FSData fs = (FSData) it.next();
+          FSData fs = it.next();
           String newId = Integer.toString(nextId++);
           outOfTypeSystemData.idMap.put(fs.id, newId);
           fs.id = newId;
@@ -347,7 +348,7 @@ public class XCASSerializer {
           encodeFS(indexedFSs.get(i), iv);
         } else {
           int thisDup = duplicates.get(indexedFSs.get(i));
-          encodeFS(indexedFSs.get(i), (IntVector) dupVectors.get(thisDup));
+          encodeFS(indexedFSs.get(i), dupVectors.get(thisDup));
         }
       }
     }
@@ -562,13 +563,13 @@ public class XCASSerializer {
         if (heapVal == CASImpl.NULL && mOutOfTypeSystemData != null) {
           // This array element may have been a reference to an OOTS
           // FS.
-          List ootsElems = (List) mOutOfTypeSystemData.arrayElements.get(Integer.valueOf(addr));
+          List<ArrayElement> ootsElems = mOutOfTypeSystemData.arrayElements.get(Integer.valueOf(addr));
           if (ootsElems != null) {
-            Iterator iter = ootsElems.iterator();
-            while (iter.hasNext()) // TODO: iteration could be slow
-            // for large arrays
+            Iterator<ArrayElement> iter = ootsElems.iterator();
+            // TODO: iteration could be slow for large arrays
+            while (iter.hasNext())
             {
-              ArrayElement ootsElem = (ArrayElement) iter.next();
+              ArrayElement ootsElem = iter.next();
               if (ootsElem.index == i) {
                 val = (String) mOutOfTypeSystemData.idMap.get(ootsElem.value);
                 break;
@@ -670,11 +671,9 @@ public class XCASSerializer {
      * @param addr
      */
     private void encodeOutOfTypeSystemFeatures(int addr, AttributesImpl attrs) {
-      List attrList = (List) mOutOfTypeSystemData.extraFeatureValues.get(Integer.valueOf(addr));
+      List<String[]> attrList = mOutOfTypeSystemData.extraFeatureValues.get(Integer.valueOf(addr));
       if (attrList != null) {
-        Iterator it = attrList.iterator();
-        while (it.hasNext()) {
-          String[] attr = (String[]) it.next();
+        for (String[] attr : attrList) {
           // remap ID if necessary
           if (attr[0].startsWith("_ref_")) {
             if (attr[1].startsWith("a")) { // reference to OOTS FS
@@ -693,9 +692,9 @@ public class XCASSerializer {
      * @param addr
      */
     private void enqueueOutOfTypeSystemFeatures(int addr) {
-      List attrList = (List) mOutOfTypeSystemData.extraFeatureValues.get(Integer.valueOf(addr));
+      List<String[]> attrList = mOutOfTypeSystemData.extraFeatureValues.get(Integer.valueOf(addr));
       if (attrList != null) {
-        Iterator it = attrList.iterator();
+        Iterator<String[]> it = attrList.iterator();
         while (it.hasNext()) {
           String[] attr = (String[]) it.next();
           // remap ID if necessary
@@ -723,15 +722,11 @@ public class XCASSerializer {
      * Produces XCAS from Out-Of-Typesystem data. (APL)
      */
     private void enqueueOutOfTypeSystemData(OutOfTypeSystemData aData) {
-      Iterator it = aData.fsList.iterator();
-      while (it.hasNext()) {
-        FSData fs = (FSData) it.next();
-        Iterator attrIt = fs.featVals.entrySet().iterator();
-        while (attrIt.hasNext()) {
-          Map.Entry entry = (Map.Entry) attrIt.next();
-          String attrName = (String) entry.getKey();
+      for (FSData fs : aData.fsList) {
+        for (Map.Entry<String, String> entry : fs.featVals.entrySet()) {
+          String attrName = entry.getKey();
           if (attrName.startsWith("_ref_")) {
-            String attrVal = (String) entry.getValue();
+            String attrVal = entry.getValue();
             // references whose ID starts with the character 'a' are references to out of type
             // system FS. All other references should be to in-typesystem FS, which we need to
             // enqueue.
@@ -744,9 +739,7 @@ public class XCASSerializer {
     }
 
     private void serializeOutOfTypeSystemData(OutOfTypeSystemData aData) throws SAXException {
-      Iterator it = aData.fsList.iterator();
-      while (it.hasNext()) {
-        FSData fs = (FSData) it.next();
+      for (FSData fs : aData.fsList) {
         workAttrs.clear();
         // Add indexed info.
         if (fs.indexRep != null) {
@@ -757,11 +750,9 @@ public class XCASSerializer {
         addAttribute(workAttrs, ID_ATTR_NAME, fs.id);
 
         // Add other attributes (remap OOTS refs)
-        Iterator attrIt = fs.featVals.entrySet().iterator();
-        while (attrIt.hasNext()) {
-          Map.Entry entry = (Map.Entry) attrIt.next();
-          String attrName = (String) entry.getKey();
-          String attrVal = (String) entry.getValue();
+        for (Map.Entry<String, String> entry : fs.featVals.entrySet()) {
+          String attrName = entry.getKey();
+          String attrVal = entry.getValue();
           if (attrName.startsWith("_ref_")) {
             if (attrVal.startsWith("a")) {
               // "a" prefix indicates a reference from one OOTS FS
@@ -848,7 +839,7 @@ public class XCASSerializer {
     this.featureNames = new String[featArraySize];
     FeatureImpl feat;
     String featName;
-    Iterator it = this.ts.getFeatures();
+    Iterator<Feature> it = this.ts.getFeatures();
     while (it.hasNext()) {
       feat = (FeatureImpl) it.next();
       if (feat.getRange().isPrimitive()) {
