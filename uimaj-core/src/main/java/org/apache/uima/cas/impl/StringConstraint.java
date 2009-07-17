@@ -38,7 +38,7 @@ class StringConstraint extends PathConstraint implements FSMatchConstraint {
 
   private FSStringConstraint stringConstraint;
 
-  StringConstraint(ArrayList path, FSStringConstraint cons) {
+  StringConstraint(ArrayList<String> path, FSStringConstraint cons) {
     super(path);
     this.stringConstraint = cons;
   }

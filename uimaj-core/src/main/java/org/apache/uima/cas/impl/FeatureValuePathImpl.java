@@ -22,6 +22,7 @@ package org.apache.uima.cas.impl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.apache.uima.cas.CAS;
@@ -108,9 +109,9 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 
 	private static final boolean CAS_TYPE_CHECKS = true;
 
-	private static final HashMap CONTAINER_TO_ELEMENTYPE_MAP;
+	private static final Map<String, String> CONTAINER_TO_ELEMENTYPE_MAP;
 
-	private static final HashMap LIST_TO_ARRAYTYPE_MAP;
+	private static final Map<String, String> LIST_TO_ARRAYTYPE_MAP;
 
 	private static final String COVERED_TEXT = "coveredText()";
 
@@ -149,7 +150,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 
 	static {
 		Arrays.sort(SIMPLE_VAL_TYPES);
-		CONTAINER_TO_ELEMENTYPE_MAP = new HashMap();
+		CONTAINER_TO_ELEMENTYPE_MAP = new HashMap<String, String>();
 		CONTAINER_TO_ELEMENTYPE_MAP.put(CAS.TYPE_NAME_INTEGER_ARRAY, CAS.TYPE_NAME_INTEGER);
 		CONTAINER_TO_ELEMENTYPE_MAP.put(CAS.TYPE_NAME_STRING_ARRAY, CAS.TYPE_NAME_STRING);
 		CONTAINER_TO_ELEMENTYPE_MAP.put(CAS.TYPE_NAME_FLOAT_ARRAY, CAS.TYPE_NAME_FLOAT);
@@ -157,7 +158,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 		CONTAINER_TO_ELEMENTYPE_MAP.put(CAS.TYPE_NAME_STRING_LIST, CAS.TYPE_NAME_STRING);
 		CONTAINER_TO_ELEMENTYPE_MAP.put(CAS.TYPE_NAME_FLOAT_LIST, CAS.TYPE_NAME_FLOAT);
 
-		LIST_TO_ARRAYTYPE_MAP = new HashMap();
+		LIST_TO_ARRAYTYPE_MAP = new HashMap<String, String>();
 		LIST_TO_ARRAYTYPE_MAP.put(CAS.TYPE_NAME_INTEGER_LIST, CAS.TYPE_NAME_INTEGER_ARRAY);
 		LIST_TO_ARRAYTYPE_MAP.put(CAS.TYPE_NAME_STRING_LIST, CAS.TYPE_NAME_STRING_ARRAY);
 		LIST_TO_ARRAYTYPE_MAP.put(CAS.TYPE_NAME_FLOAT_LIST, CAS.TYPE_NAME_FLOAT_ARRAY);

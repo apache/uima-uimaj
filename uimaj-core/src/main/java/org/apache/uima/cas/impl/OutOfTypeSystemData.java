@@ -37,25 +37,25 @@ public class OutOfTypeSystemData {
   /**
    * List of FSData objects for out-of-typesystem FSs.
    */
-  List fsList = new ArrayList();
+  List<FSData> fsList = new ArrayList<FSData>();
 
   /**
    * Map from Integer (CAS address) to List of String arrays holding feature names and values for
    * out-of-typesystem features on in-typesystem FSs.
    */
-  Map extraFeatureValues = new HashMap();
+  Map<Integer, List<String[]>> extraFeatureValues = new HashMap<Integer, List<String[]>>();
 
   /**
    * Map from Integer (CAS address of an FSArray) to List of ArrayElement objects, each of which
    * holds an array index and value (as a string).
    */
-  Map arrayElements = new HashMap();
+  Map<Integer, List<ArrayElement>> arrayElements = new HashMap<Integer, List<ArrayElement>>();
 
   /**
    * Map used during re-serialization. Stores mapping from out-of-typesystem FS IDs to the actual
    * IDs used in the generated XCAS.
    */
-  Map idMap = new HashMap();
+  Map<String, String> idMap = new HashMap<String, String>();
 
   /**
    * For debugging purposes only.
@@ -63,21 +63,15 @@ public class OutOfTypeSystemData {
   public String toString() {
     StringBuffer buf = new StringBuffer();
     buf.append("FeatureStructures\n-----------------\n");
-    Iterator it = fsList.iterator();
-    while (it.hasNext()) {
-      FSData fs = (FSData) it.next();
+    
+    for (FSData fs : fsList) {
       buf.append(fs.toString()).append("\n");
     }
     buf.append("\nFeatures\n-----------------\n");
-    it = extraFeatureValues.entrySet().iterator();
-    while (it.hasNext()) {
-      Map.Entry entry = (Map.Entry) it.next();
-      Integer id = (Integer) entry.getKey();
+    for (Map.Entry<Integer, List<String[]>> entry : extraFeatureValues.entrySet()) {
+      Integer id = entry.getKey();
       buf.append(id).append(": ");
-      List attrs = (List) entry.getValue();
-      Iterator it2 = attrs.iterator();
-      while (it2.hasNext()) {
-        String[] attr = (String[]) it2.next();
+      for (String[] attr : entry.getValue()) {
         buf.append(attr[0]).append("=").append(attr[1]).append('\n');
       }
     }
@@ -103,7 +97,7 @@ class FSData {
 
   String indexRep; // space-separated sequence of index repository numbers
 
-  Map featVals = new HashMap();
+  Map<String, String> featVals = new HashMap<String, String>();
 
   public String toString() {
     StringBuffer buf = new StringBuffer();

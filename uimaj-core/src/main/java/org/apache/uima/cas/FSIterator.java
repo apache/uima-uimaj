@@ -80,7 +80,7 @@ public interface FSIterator<T extends FeatureStructure> extends Iterator<T> {
    * @exception NoSuchElementException
    *              If the iterator is not valid.
    */
-  FeatureStructure get() throws NoSuchElementException;
+  T get() throws NoSuchElementException;
 
   /**
    * Advance the iterator. This may invalidate the iterator.
@@ -113,7 +113,7 @@ public interface FSIterator<T extends FeatureStructure> extends Iterator<T> {
    * @param fs
    *          The feature structure the iterator should be set to.
    */
-  void moveTo(FeatureStructure fs);
+  void moveTo(T fs);
 
   /**
    * Copy this iterator.

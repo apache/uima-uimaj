@@ -27,28 +27,24 @@ import java.util.NoSuchElementException;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.text.AnnotationFS;
-import org.apache.uima.cas.text.AnnotationIndex;
 
 /**
  * Subiterator implementation.
- * 
- * 
  */
+public class Subiterator<T extends AnnotationFS> extends FSIteratorImplBase<T> {
 
-public class Subiterator extends FSIteratorImplBase {
-
-  private ArrayList list;
+  private ArrayList<T> list;
 
   private int pos;
 
-  private Comparator annotationComparator = null;
+  private Comparator<T> annotationComparator = null;
 
   /**
    * 
    */
   private Subiterator() {
     super();
-    this.list = new ArrayList();
+    this.list = new ArrayList<T>();
     this.pos = 0;
   }
 
@@ -58,18 +54,18 @@ public class Subiterator extends FSIteratorImplBase {
    * @param it
    *          The iterator to be disambiguated.
    */
-  Subiterator(FSIterator it) {
+  Subiterator(FSIterator<T> it) {
     this();
     it.moveToFirst();
     if (!it.isValid()) {
       return;
     }
-    AnnotationFS current, next;
-    current = (AnnotationFS) it.get();
+    T current, next;
+    current = it.get();
     this.list.add(current);
     it.moveToNext();
     while (it.isValid()) {
-      next = (AnnotationFS) it.get();
+      next = it.get();
       if (current.getEnd() <= next.getBegin()) {
         current = next;
         this.list.add(current);
@@ -78,7 +74,7 @@ public class Subiterator extends FSIteratorImplBase {
     }
   }
 
-  Subiterator(FSIterator it, AnnotationFS annot, final boolean ambiguous, final boolean strict) {
+  Subiterator(FSIterator<T> it, T annot, final boolean ambiguous, final boolean strict) {
     this();
     if (ambiguous) {
       initAmbiguousSubiterator(it, annot, strict);
@@ -87,7 +83,7 @@ public class Subiterator extends FSIteratorImplBase {
     }
   }
 
-  private void initAmbiguousSubiterator(FSIterator it, AnnotationFS annot, final boolean strict) {
+  private void initAmbiguousSubiterator(FSIterator<T> it, T annot, final boolean strict) {
     final int start = annot.getBegin();
     final int end = annot.getEnd();
     it.moveTo(annot);
@@ -98,9 +94,9 @@ public class Subiterator extends FSIteratorImplBase {
     while (it.isValid() && ((AnnotationFS) it.get()).getBegin() < start) {
       it.moveToNext();
     }
-    AnnotationFS current;
+    T current;
     while (it.isValid()) {
-      current = (AnnotationFS) it.get();
+      current = it.get();
       // If the start of the current annotation is past the end parameter,
       // we're done.
       if (current.getBegin() > end) {
@@ -114,7 +110,7 @@ public class Subiterator extends FSIteratorImplBase {
     }
   }
 
-  private void initUnambiguousSubiterator(FSIterator it, AnnotationFS annot, final boolean strict) {
+  private void initUnambiguousSubiterator(FSIterator<T> it, T annot, final boolean strict) {
     final int start = annot.getBegin();
     final int end = annot.getEnd();
     it.moveTo(annot);
@@ -124,23 +120,23 @@ public class Subiterator extends FSIteratorImplBase {
     if (!it.isValid()) {
       return;
     }
-    annot = (AnnotationFS) it.get();
-    this.list = new ArrayList();
+    annot = it.get();
+    this.list = new ArrayList<T>();
     // Skip annotations with begin positions before the given start
     // position.
     while (it.isValid() && ((start > annot.getBegin()) || (strict && annot.getEnd() > end))) {
       it.moveToNext();
     }
     // Add annotations.
-    AnnotationFS current, next;
+    T current, next;
     if (!it.isValid()) {
       return;
     }
-    current = (AnnotationFS) it.get();
+    current = it.get();
     this.list.add(current);
     it.moveToNext();
     while (it.isValid()) {
-      next = (AnnotationFS) it.get();
+      next =  it.get();
       // If the next annotation overlaps, skip it.
       if (next.getBegin() < current.getEnd()) {
         it.moveToNext();
@@ -176,9 +172,9 @@ public class Subiterator extends FSIteratorImplBase {
    * 
    * @see org.apache.uima.cas.FSIterator#get()
    */
-  public FeatureStructure get() throws NoSuchElementException {
+  public T get() throws NoSuchElementException {
     if (isValid()) {
-      return (FeatureStructure) this.list.get(this.pos);
+      return this.list.get(this.pos);
     }
     throw new NoSuchElementException();
   }
@@ -219,9 +215,9 @@ public class Subiterator extends FSIteratorImplBase {
     this.pos = this.list.size() - 1;
   }
 
-  private final Comparator getAnnotationComparator(FeatureStructure fs) {
+  private final Comparator<T> getAnnotationComparator(FeatureStructure fs) {
     if (this.annotationComparator == null) {
-      this.annotationComparator = new AnnotationComparator(fs.getCAS().getAnnotationIndex());
+      this.annotationComparator = new AnnotationComparator<T>(fs.getCAS().getAnnotationIndex());
     }
     return this.annotationComparator;
   }
@@ -231,7 +227,7 @@ public class Subiterator extends FSIteratorImplBase {
    * 
    * @see org.apache.uima.cas.FSIterator#moveTo(org.apache.uima.cas.FeatureStructure)
    */
-  public void moveTo(FeatureStructure fs) {
+  public void moveTo(T fs) {
     final int found = Collections.binarySearch(this.list, fs, getAnnotationComparator(fs));
     if (found >= 0) {
       this.pos = found;
@@ -245,8 +241,8 @@ public class Subiterator extends FSIteratorImplBase {
    * 
    * @see org.apache.uima.cas.FSIterator#copy()
    */
-  public FSIterator copy() {
-    Subiterator copy = new Subiterator();
+  public FSIterator<T> copy() {
+    Subiterator<T> copy = new Subiterator<T>();
     copy.list = this.list;
     copy.pos = this.pos;
     return copy;

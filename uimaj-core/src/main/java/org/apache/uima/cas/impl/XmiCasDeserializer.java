@@ -40,6 +40,7 @@ import org.apache.uima.UimaContext;
 import org.apache.uima.cas.ByteArrayFS;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
+import org.apache.uima.cas.FSIndexRepository;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.SofaFS;
@@ -138,12 +139,12 @@ public class XmiCasDeserializer {
     // the array until we've seen all of the child elements.
     private int currentArrayId;
 
-    private List currentArrayElements;
+    private List<String> currentArrayElements;
 
     // Used for keeping track of multi-valued features read from subelements.
     // Keys are feature names, values are ArrayLists of strings,
     // where each String is one of the values to be assigned to the feature.
-    private Map multiValuedFeatures = new TreeMap();
+    private Map<String, List<String>> multiValuedFeatures = new TreeMap<String, List<String>>();
 
     // SofaFS type
     private int sofaTypeCode;
@@ -155,10 +156,10 @@ public class XmiCasDeserializer {
     private int sofaFeatCode;
 
     // Store IndexRepositories in a vector;
-    private ArrayList indexRepositories;
+    private List<FSIndexRepository> indexRepositories;
 
     // and views too
-    private ArrayList views;
+    private List<CAS> views;
 
     // utilities for handling CAS list types
     private ListUtils listUtils;
@@ -176,7 +177,7 @@ public class XmiCasDeserializer {
 
     // map from namespace prefixes to URIs. Allows namespace resolution even
     // with a non-namespace-enabled SAX parser.
-    private HashMap nsPrefixToUriMap = new HashMap();
+    private Map<String, String> nsPrefixToUriMap = new HashMap<String, String>();
 
     // container for data shared between the XmiCasSerialier and
     // XmiDeserializer, to support things such as consistency of IDs across
@@ -195,7 +196,7 @@ public class XmiCasDeserializer {
 
     //local map from xmi:id to FS address, used when merging multiple XMI CASes
     //into one CAS object.
-    private RedBlackTree localXmiIdToFsAddrMap = new RedBlackTree();
+    private RedBlackTree<Integer> localXmiIdToFsAddrMap = new RedBlackTree<Integer>();
     
     //if mergepoint is set, are preexisting FS allowed, disallowed or ignored.
     AllowPreexistingFS allowPreexistingFS;
@@ -257,14 +258,14 @@ public class XmiCasDeserializer {
       this.deserializedFsAddrs = new IntVector();
       this.fsListNodesFromMultivaluedProperties = new IntVector();
       this.buffer = new StringBuffer();
-      this.indexRepositories = new ArrayList();
-      this.views = new ArrayList();
+      this.indexRepositories = new ArrayList<FSIndexRepository>();
+      this.views = new ArrayList<CAS>();
       indexRepositories.add(this.casBeingFilled.getBaseIndexRepository());
       // There should always be another index for the Initial View
       indexRepositories.add(this.casBeingFilled.getView(CAS.NAME_DEFAULT_SOFA).getIndexRepository());
       //add an entry to indexRepositories for each Sofa in the CAS (which can only happen if
       //a mergePoint was specified)
-      FSIterator sofaIter = this.casBeingFilled.getSofaIterator();
+      FSIterator<SofaFS> sofaIter = this.casBeingFilled.getSofaIterator();
       while(sofaIter.hasNext()) {
         SofaFS sofa = (SofaFS)sofaIter.next();
         if (sofa.getSofaRef() == 1) {
@@ -283,7 +284,7 @@ public class XmiCasDeserializer {
       // populate feature type table
       this.featureType = new int[tsOfReceivingCas.getNumberOfFeatures() + 1];
       FeatureImpl feat;
-      Iterator it = tsOfReceivingCas.getFeatures();
+      Iterator<Feature> it = tsOfReceivingCas.getFeatures();
       while (it.hasNext()) {
         feat = (FeatureImpl) it.next();
         featureType[feat.getCode()] = classifyType(tsOfReceivingCas.range(feat.getCode()));
@@ -403,7 +404,7 @@ public class XmiCasDeserializer {
             //correctly.
             if (this.outOfTypeSystemElement != null) {
               XmlElementName elemName = new XmlElementName(nameSpaceURI, localName, qualifiedName);
-              List ootsAttrs = new ArrayList();
+              List<XmlAttribute> ootsAttrs = new ArrayList<XmlAttribute>();
               ootsAttrs.add(new XmlAttribute("href", href));
               XmlElementNameAndContents elemWithContents = new XmlElementNameAndContents(elemName, null, ootsAttrs);
               this.outOfTypeSystemElement.childElements.add(elemWithContents);
@@ -413,9 +414,9 @@ public class XmiCasDeserializer {
               //the integer value, which will be interpreted as a reference later.
               //NOTE: this will end up causing it to be reserialized as an attribute
               //rather than an element, but that is not in violation of the XMI spec.
-              ArrayList valueList = (ArrayList) this.multiValuedFeatures.get(qualifiedName);
+              List<String> valueList = this.multiValuedFeatures.get(qualifiedName);
               if (valueList == null) {
-                valueList = new ArrayList();
+                valueList = new ArrayList<String>();
                 this.multiValuedFeatures.put(qualifiedName, valueList);
               }
               valueList.add(href.substring(1));
@@ -788,7 +789,7 @@ public class XmiCasDeserializer {
       return feat.getCode();
     }
 
-    private int handleFeature(final Type type, int addr, String featName, List featVals) throws SAXException {
+    private int handleFeature(final Type type, int addr, String featName, List<String> featVals) throws SAXException {
       final FeatureImpl feat = (FeatureImpl) type.getFeatureByBaseName(featName);
       if (feat == null) {
         if (!this.lenient) {
@@ -975,7 +976,7 @@ public class XmiCasDeserializer {
      *          List of Strings, each String representing one value for the feature
      * @throws SAXException 
      */
-    private void handleFeature(int addr, int featCode, List featVals) throws SAXException {
+    private void handleFeature(int addr, int featCode, List<String> featVals) throws SAXException {
       switch (featureType[featCode]) {
         case LowLevelCAS.TYPE_CLASS_INT:
         case LowLevelCAS.TYPE_CLASS_FLOAT:
@@ -992,7 +993,7 @@ public class XmiCasDeserializer {
                     "multiple_values_unexpected",
                     new Object[] { ts.ll_getFeatureForCode(featCode).getName() }), locator);
           } else {
-            handleFeature(addr, featCode, (String) featVals.get(0));
+            handleFeature(addr, featCode, featVals.get(0));
           }
           break;
         case LowLevelCAS.TYPE_CLASS_INTARRAY:
@@ -1111,7 +1112,7 @@ public class XmiCasDeserializer {
      *          address of preexisting non-shared array
      * @return
      */
-    private int createArray(int arrayType, List values, int xmiId, int addr) {
+    private int createArray(int arrayType, List<String> values, int xmiId, int addr) {
       int casArray = -1; 
       if (addr > 0) { //non-shared preexisting
 	    if (values.size() == casBeingFilled.getLowLevelCAS().ll_getArraySize(addr)) {
@@ -1147,7 +1148,7 @@ public class XmiCasDeserializer {
      *      List of strings, each containing the value of an element of the array.
      * @return
      */
-    private int createNewArray(int arrayType, List values) {
+    private int createNewArray(int arrayType, List<String> values) {
       FeatureStructureImpl fs;
       int casArray = -1; 
       if (casBeingFilled.isIntArrayType(arrayType)) {
@@ -1179,9 +1180,9 @@ public class XmiCasDeserializer {
       return casArray;
     }
     
-    private void updateExistingArray(int arrayType, List values, int casArray) {
+    private void updateExistingArray(int arrayType, List<String> values, int casArray) {
       for (int i = 0; i < values.size(); i++) {
-        String stringVal = (String) values.get(i);
+        String stringVal = values.get(i);
         if (casBeingFilled.isStringArrayType(arrayType)) {
            String currVal = casBeingFilled.getLowLevelCAS().ll_getStringArrayValue(casArray, i);  
            if (currVal != null && currVal.equals(stringVal)) {
@@ -1295,9 +1296,9 @@ public class XmiCasDeserializer {
         case FEAT_CONTENT_STATE: {
           // We have just processed one of possibly many values for a feature.
           // Store this value in the multiValuedFeatures map for later use.
-          ArrayList valueList = (ArrayList) this.multiValuedFeatures.get(qualifiedName);
+          List<String> valueList = this.multiValuedFeatures.get(qualifiedName);
           if (valueList == null) {
-            valueList = new ArrayList();
+            valueList = new ArrayList<String>();
             this.multiValuedFeatures.put(qualifiedName, valueList);
           }
           valueList.add(buffer.toString());
@@ -1315,11 +1316,9 @@ public class XmiCasDeserializer {
           // encoded as subelements
           if (this.outOfTypeSystemElement != null) {
             if (!this.multiValuedFeatures.isEmpty()) {
-              Iterator iter = this.multiValuedFeatures.entrySet().iterator();
-              while (iter.hasNext()) {
-                Map.Entry entry = (Map.Entry) iter.next();
-                String featName = (String) entry.getKey();
-                List featVals = (List) entry.getValue();
+              for (Map.Entry<String, List<String>> entry : this.multiValuedFeatures.entrySet()) {
+                String featName = entry.getKey();
+                List<String> featVals = entry.getValue();
                 addOutOfTypeSystemFeature(outOfTypeSystemElement, featName, featVals);
               }
             }
@@ -1333,18 +1332,16 @@ public class XmiCasDeserializer {
               // the overhead of parsing into a String array first
               if (currentArrayElements == null) // were not specified as attributes
               {
-                currentArrayElements = (List) this.multiValuedFeatures.get("elements");
+                currentArrayElements = this.multiValuedFeatures.get("elements");
                 if (currentArrayElements == null) {
-                  currentArrayElements = Collections.EMPTY_LIST;
+                  currentArrayElements = Collections.emptyList();
                 }
               }
               createArray(currentType.getCode(), currentArrayElements, currentArrayId, 0);
             } else if (!this.multiValuedFeatures.isEmpty()) {
-              Iterator iter = this.multiValuedFeatures.entrySet().iterator();
-              while (iter.hasNext()) {
-                Map.Entry entry = (Map.Entry) iter.next();
-                String featName = (String) entry.getKey();
-                List featVals = (List) entry.getValue();
+              for (Map.Entry<String, List<String>> entry : this.multiValuedFeatures.entrySet()) {
+                String featName = entry.getKey();
+                List<String> featVals = entry.getValue();
                 int featcode = handleFeature(currentType, currentAddr, featName, featVals);
                 if (featcode != -1 && this.featsSeen != null ) {
                 	this.featsSeen.add(featcode);
@@ -1703,8 +1700,8 @@ public class XmiCasDeserializer {
      * @param featName name of feature
      * @param featVals feature values, as a list of strings
      */
-    private void addOutOfTypeSystemFeature(OotsElementData ootsElem, String featName, List featVals) {
-      Iterator iter = featVals.iterator();
+    private void addOutOfTypeSystemFeature(OotsElementData ootsElem, String featName, List<String> featVals) {
+      Iterator<String> iter = featVals.iterator();
       XmlElementName elemName = new XmlElementName(null,featName,featName);
       while (iter.hasNext()) {
         ootsElem.childElements.add(new XmlElementNameAndContents(elemName, (String)iter.next()));
@@ -1723,7 +1720,7 @@ public class XmiCasDeserializer {
   
   private TypeSystemImpl ts;
 
-  private Map xmiNamespaceToUimaNamespaceMap = new HashMap();
+  private Map<String, String> xmiNamespaceToUimaNamespaceMap = new HashMap<String, String>();
   
   /**
    * Create a new deserializer from a type system. Note: all CAS arguments later supplied to

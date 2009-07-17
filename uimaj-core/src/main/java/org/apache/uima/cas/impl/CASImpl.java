@@ -38,6 +38,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.uima.cas.AbstractCas_ImplBase;
 import org.apache.uima.cas.AnnotationBaseFS;
@@ -155,16 +157,16 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     private LongHeap longHeap; // for storing 64 bit values
 
     // A map from Sofas to IndexRepositories.
-    private HashMap sofa2indexMap;
+    private Map<Integer, FSIndexRepository> sofa2indexMap;
 
     // A map from Sofa numbers to CAS views.
     // number 0 - not used
     // number 1 - used for view named "_InitialView"
     // number 2-n used for other views
-    private HashMap sofaNbr2ViewMap;
+    private Map<Integer, CAS> sofaNbr2ViewMap;
 
     // set of instantiated sofaNames
-    private HashSet sofaNameSet;
+    private Set<String> sofaNameSet;
 
     // Flag that initial Sofa has been created
     private boolean initialSofaCreated = false;
@@ -325,9 +327,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       commitTypeSystem();
     }
 
-    this.svd.sofa2indexMap = new HashMap();
-    this.svd.sofaNbr2ViewMap = new HashMap();
-    this.svd.sofaNameSet = new HashSet();
+    this.svd.sofa2indexMap = new HashMap<Integer, FSIndexRepository>();
+    this.svd.sofaNbr2ViewMap = new HashMap<Integer, CAS>();
+    this.svd.sofaNameSet = new HashSet<String>();
     this.svd.initialSofaCreated = false;
     this.svd.viewCount = 0;
     
@@ -634,7 +636,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   private SofaFS getSofa(String sofaName) {
-    FSIterator iterator = this.svd.baseCAS.getSofaIterator();
+    FSIterator<SofaFS> iterator = this.svd.baseCAS.getSofaIterator();
     while (iterator.isValid()) {
       SofaFS sofa = (SofaFS) iterator.get();
       if (sofaName.equals(getStringValue(((FeatureStructureImpl) sofa).getAddress(),
@@ -661,8 +663,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return this.svd.baseCAS;
   }
 
-  public FSIterator getSofaIterator() {
-    FSIndex sofaIndex = this.svd.baseCAS.indexRepository.getIndex(CAS.SOFA_INDEX_NAME);
+  public FSIterator<SofaFS> getSofaIterator() {
+    FSIndex<SofaFS> sofaIndex = this.svd.baseCAS.indexRepository.getIndex(CAS.SOFA_INDEX_NAME);
     return sofaIndex.iterator();
   }
 
@@ -776,8 +778,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return null;
   }
 
-  public FSIterator createFilteredIterator(FSIterator it, FSMatchConstraint cons) {
-    return new FilteredIterator(it, cons);
+  public<T extends FeatureStructure> FSIterator<T> createFilteredIterator(FSIterator<T> it, FSMatchConstraint cons) {
+    return new FilteredIterator<T>(it, cons);
   }
 
   public void commitTypeSystem() {
@@ -982,8 +984,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   /**
    * @see org.apache.uima.cas.CAS#fs2listIterator(FSIterator)
    */
-  public ListIterator fs2listIterator(FSIterator it) {
-    return new FSListIteratorImpl(it);
+  public <T extends FeatureStructure> ListIterator<T> fs2listIterator(FSIterator<T> it) {
+    return new FSListIteratorImpl<T>(it);
   }
 
   /**
@@ -1504,7 +1506,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
     int loopStart = loopLen + 2;
 
-    FSIterator iterator = this.svd.baseCAS.getSofaIterator();
+    FSIterator<SofaFS> iterator = this.svd.baseCAS.getSofaIterator();
     final Feature idFeat = getTypeSystem().getFeatureByFullName(CAS.FEATURE_FULL_NAME_SOFAID);
     // Add FSs to index repository for each View
     while (iterator.isValid()) {
@@ -1551,7 +1553,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 	}
 	int loopStart = loopLen + 2;
 
-	FSIterator iterator = this.svd.baseCAS.getSofaIterator();
+	FSIterator<SofaFS> iterator = this.svd.baseCAS.getSofaIterator();
 	final Feature idFeat = getTypeSystem().getFeatureByFullName(CAS.FEATURE_FULL_NAME_SOFAID);
 	// Add FSs to index repository for each View
 	while (iterator.isValid()) {
@@ -1711,8 +1713,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
   }
 
-  static String mapName(String name, HashMap map) {
-    String out = (String) map.get(name);
+  static String mapName(String name, HashMap<String, String> map) {
+    String out = map.get(name);
     if (out != null) {
       return out;
     }
@@ -3917,8 +3919,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   private AnnotationFS createDocumentAnnotation(int length) {
     final TypeSystemImpl ts = this.svd.casMetadata.ts;
     // Remove any existing document annotations.
-    FSIterator it = getAnnotationIndex(ts.docType).iterator();
-    ArrayList list = new ArrayList();
+    FSIterator<AnnotationFS> it = getAnnotationIndex(ts.docType).iterator();
+    List<AnnotationFS> list = new ArrayList<AnnotationFS>();
     while (it.isValid()) {
       list.add(it.get());
       it.moveToNext();
@@ -3953,7 +3955,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       // base CAS has no document
       return null;
     }
-    FSIterator it = getAnnotationIndex(this.svd.casMetadata.ts.docType).iterator();
+    FSIterator<AnnotationFS> it = getAnnotationIndex(this.svd.casMetadata.ts.docType).iterator();
     if (it.isValid()) {
       return (AnnotationFS) it.get();
     }
@@ -4183,16 +4185,16 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * 
    * @see org.apache.uima.cas.CAS#getViewIterator()
    */
-  public Iterator getViewIterator() {
-    List viewList = new ArrayList();
+  public Iterator<CAS> getViewIterator() {
+    List<CAS> viewList = new ArrayList<CAS>();
     // add initial view if it has no sofa
     if (!((CASImpl) getInitialView()).mySofaIsValid()) {
       viewList.add(getInitialView());
     }
     // add views with Sofas
-    FSIterator sofaIter = getSofaIterator();
+    FSIterator<SofaFS> sofaIter = getSofaIterator();
     while (sofaIter.hasNext()) {
-      viewList.add(getView((SofaFS) sofaIter.next()));
+      viewList.add(getView(sofaIter.next()));
     }
     return viewList.iterator();
   }
@@ -4202,7 +4204,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * 
    * @see org.apache.uima.cas.CAS#getViewIterator(java.lang.String)
    */
-  public Iterator getViewIterator(String localViewNamePrefix) {
+  public Iterator<CAS> getViewIterator(String localViewNamePrefix) {
     // do sofa mapping for current component
     String absolutePrefix = null;
     if (getCurrentComponentInfo() != null) {
@@ -4213,8 +4215,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
 
     // find Sofas with this prefix
-    List viewList = new ArrayList();
-    FSIterator sofaIter = getSofaIterator();
+    List<CAS> viewList = new ArrayList<CAS>();
+    FSIterator<SofaFS> sofaIter = getSofaIterator();
     while (sofaIter.hasNext()) {
       SofaFS sofa = (SofaFS) sofaIter.next();
       String sofaId = sofa.getSofaID();

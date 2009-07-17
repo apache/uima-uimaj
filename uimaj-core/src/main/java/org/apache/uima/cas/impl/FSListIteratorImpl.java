@@ -23,22 +23,23 @@ import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
 import org.apache.uima.cas.FSIterator;
+import org.apache.uima.cas.FeatureStructure;
 
 /**
  * Class comment for FSListIteratorImpl.java goes here.
  * 
  * 
  */
-class FSListIteratorImpl implements ListIterator {
+class FSListIteratorImpl<T extends FeatureStructure> implements ListIterator<T> {
 
   // Keep two pointers: one for the next element, and one for the previous
   // one. The two pointers are always moved in lockstep. Watch for border
   // conditions where only one of the pointers is valid.
-  private FSIterator forward;
+  private FSIterator<T> forward;
 
-  private FSIterator back;
+  private FSIterator<T> back;
 
-  public FSListIteratorImpl(FSIterator it) {
+  public FSListIteratorImpl(FSIterator<T> it) {
     super();
     this.forward = it;
     this.back = it.copy();
@@ -86,7 +87,7 @@ class FSListIteratorImpl implements ListIterator {
   /**
    * @see ListIterator#next()
    */
-  public Object next() throws NoSuchElementException {
+  public T next() throws NoSuchElementException {
     // Throw exception if forward pointer is invalid.
     if (!this.forward.isValid()) {
       throw new NoSuchElementException();
@@ -108,7 +109,7 @@ class FSListIteratorImpl implements ListIterator {
   /**
    * @see ListIterator#previous()
    */
-  public Object previous() throws NoSuchElementException {
+  public T previous() throws NoSuchElementException {
     // See comments for next().
     if (!this.back.isValid()) {
       throw new NoSuchElementException();
@@ -125,7 +126,7 @@ class FSListIteratorImpl implements ListIterator {
   /**
    * @see java.util.ListIterator#add(Object)
    */
-  public void add(Object o) {
+  public void add(T o) {
     throw new UnsupportedOperationException();
   }
 
@@ -151,9 +152,9 @@ class FSListIteratorImpl implements ListIterator {
   }
 
   /**
-   * @see java.util.ListIterator#set(Object)
+   * @see java.util.ListIterator#set(T)
    */
-  public void set(Object o) {
+  public void set(T o) {
     throw new UnsupportedOperationException();
   }
 

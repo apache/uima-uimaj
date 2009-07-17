@@ -75,26 +75,26 @@ public class XmiSerializationSharedData {
    * List of OotsElementData objects, each of which captures information about
    * incoming XMI elements that did not correspond to any type in the type system.
    */
-  private List ootsFs = new ArrayList();
+  private List<OotsElementData> ootsFs = new ArrayList<OotsElementData>();
   
   /**
    * Map that from the xmi:id (String) of a Sofa to a List of xmi:id's (Strings) for
    * the out-of-typesystem FSs that are members of that Sofa's view.
    */
-  private Map ootsViewMembers = new HashMap();
+  private Map<String, List<String>> ootsViewMembers = new HashMap<String, List<String>>();
 
   /** Map from Feature Structure address (Integer) to OotsElementData object, capturing information 
    * about out-of-typesystem features that were part of an in-typesystem FS.  These include both
    * features not defined in the typesystem and features that are references to out-of-typesystem
    * elements.  This information needs to be included when the FS is subsequently serialized.
    */
-  private Map ootsFeatures = new HashMap();
+  private Map<Integer, OotsElementData> ootsFeatures = new HashMap<Integer, OotsElementData>();
   
   /** Map from Feature Structure address (Integer) of an FSArray to a list of 
    * {@link XmiArrayElement} objects, each of which holds an index and an xmi:id
    * for an out-of-typesystem array element.
    */
-  private Map ootsArrayElements = new HashMap();
+  private Map<Integer, List<XmiArrayElement>> ootsArrayElements = new HashMap<Integer, List<XmiArrayElement>>();
   
   /**
    * The maximum XMI ID used in the serialization. Used to generate unique IDs if needed.
@@ -186,7 +186,7 @@ public class XmiSerializationSharedData {
    * incoming XMI element that did not correspond to a Type in the TypeSystem.
    * @return List of {@link OotsElementData} objects
    */
-  public List getOutOfTypeSystemElements() {
+  public List<OotsElementData> getOutOfTypeSystemElements() {
     return Collections.unmodifiableList(this.ootsFs);
   }
   
@@ -198,9 +198,9 @@ public class XmiSerializationSharedData {
    *   a member of the view for the given Sofa
    */
   public void addOutOfTypeSystemViewMember(String sofaXmiId, String memberXmiId) {
-    List membersList = (List)this.ootsViewMembers.get(sofaXmiId);
+    List<String> membersList = this.ootsViewMembers.get(sofaXmiId);
     if (membersList == null) {
-      membersList = new ArrayList();
+      membersList = new ArrayList<String>();
       this.ootsViewMembers.put(sofaXmiId, membersList);
     }
     membersList.add(memberXmiId);
@@ -212,8 +212,8 @@ public class XmiSerializationSharedData {
    * @param sofaXmiId xmi:id of a Sofa
    * @return List of xmi:id's of members of the view for the given Sofa.
    */
-  public List getOutOfTypeSystemViewMembers(String sofaXmiId) {
-    List members = (List)this.ootsViewMembers.get(sofaXmiId);
+  public List<String> getOutOfTypeSystemViewMembers(String sofaXmiId) {
+    List<String> members = this.ootsViewMembers.get(sofaXmiId);
     return members == null ? null : Collections.unmodifiableList(members);
   }
   
@@ -241,17 +241,17 @@ public class XmiSerializationSharedData {
    * @param featName name of the feature (element tag name)
    * @param featVal values of the feature, as a List of strings
    */
-  public void addOutOfTypeSystemChildElements(int addr, String featName, List featVals) {
+  public void addOutOfTypeSystemChildElements(int addr, String featName, List<String> featVals) {
     Integer key = Integer.valueOf(addr);
     OotsElementData oed = (OotsElementData)this.ootsFeatures.get(key);
     if (oed == null) {
       oed = new OotsElementData();
       this.ootsFeatures.put(key, oed);
     }
-    Iterator iter = featVals.iterator();
+    Iterator<String> iter = featVals.iterator();
     XmlElementName elemName = new XmlElementName(null,featName,featName);
     while (iter.hasNext()) {
-      oed.childElements.add(new XmlElementNameAndContents(elemName, (String)iter.next()));
+      oed.childElements.add(new XmlElementNameAndContents(elemName, iter.next()));
     }
   }  
   
@@ -282,8 +282,8 @@ public class XmiSerializationSharedData {
    *   holds the index and xmi:id of an array element that is a
    *   reference to an out-of-typesystem FS.
    */
-  public List getOutOfTypeSystemArrayElements(int addr) {
-    return (List)this.ootsArrayElements.get(Integer.valueOf(addr));
+  public List<XmiArrayElement> getOutOfTypeSystemArrayElements(int addr) {
+    return this.ootsArrayElements.get(Integer.valueOf(addr));
   }
   
 
@@ -295,9 +295,9 @@ public class XmiSerializationSharedData {
    */
   public void addOutOfTypeSystemArrayElement(int addr, int index, int xmiId) {
     Integer key = Integer.valueOf(addr);
-    List list = (List)this.ootsArrayElements.get(key);
+    List<XmiArrayElement> list = this.ootsArrayElements.get(key);
     if (list == null) {
-      list = new ArrayList();
+      list = new ArrayList<XmiArrayElement>();
       this.ootsArrayElements.put(key, list);
     }
     list.add(new XmiArrayElement(index, Integer.toString(xmiId)));
@@ -336,7 +336,7 @@ public class XmiSerializationSharedData {
    * For debugging purposes only.
    */
   void checkForDups() {
-    Set ids = new HashSet();
+    Set<String> ids = new HashSet<String>();
     Iterator iter = fsAddrToXmiIdMap.iterator();
     while (iter.hasNext()) {
       String xmiId = (String) iter.next();
@@ -376,13 +376,13 @@ public class XmiSerializationSharedData {
     /**
      * List of XmlAttribute objects each holding name and value of an attribute.
      */
-    List attributes = new ArrayList();
+    List<XmlAttribute> attributes = new ArrayList<XmlAttribute>();
     
     /**
      * List of XmlElementNameAndContents objects each describing one of the
      * child elements representing features of this out-of-typesystem element.
      */
-    List childElements = new ArrayList();
+    List<XmlElementNameAndContents> childElements = new ArrayList<XmlElementNameAndContents>();
   }
   
   /** 

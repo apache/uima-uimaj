@@ -145,7 +145,8 @@ public class FSClassRegistry {
    *   
    */
   // This map can be accessed on different threads at the same time
-  private final Map generatorsByClassLoader = Collections.synchronizedMap(new HashMap(4));
+  private final Map<ClassLoader, FSGenerator[]> generatorsByClassLoader = 
+          Collections.synchronizedMap(new HashMap<ClassLoader, FSGenerator[]>(4));
 
   // private final RedBlackTree rbt;
   // private final TreeMap map;
@@ -172,7 +173,7 @@ public class FSClassRegistry {
    *          the object having a createFS method in it for this type
    */
   void addClassForType(Type type, FSGenerator fsFactory) {
-    Iterator it = this.ts.getTypeIterator();
+    Iterator<Type> it = this.ts.getTypeIterator();
     TypeImpl sub;
     while (it.hasNext()) {
       sub = (TypeImpl) it.next();
@@ -213,7 +214,7 @@ public class FSClassRegistry {
     }
   }
   
-  public void saveGeneratorsForClassLoader(ClassLoader cl, FSGenerator [] newGenerators) {
+  public void saveGeneratorsForClassLoader(ClassLoader cl, FSGenerator[] newGenerators) {
     generatorsByClassLoader.put(cl, newGenerators);
   }
   

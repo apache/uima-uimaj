@@ -34,12 +34,12 @@ import org.apache.uima.cas.FeatureStructure;
  * 
  * <p>Note: this class does not support moveTo(FS), as it is not sorted.
  */
-class FSIteratorAggregate extends FSIteratorImplBase {
+class FSIteratorAggregate<T extends FeatureStructure> extends FSIteratorImplBase<T> {
   
   // Internal contract for this class is that isValid() iff the current iterator isValid().
 
   // A list of iterators, unordered.
-  private final List iterators;
+  private final List<FSIterator<T>> iterators;
   
   // The offset of the current index.
   private int iteratorIndex = 0;
@@ -48,37 +48,37 @@ class FSIteratorAggregate extends FSIteratorImplBase {
    * The one and only constructor.
    * @param c Collection of input iterators.
    */
-  public FSIteratorAggregate(Collection c) {
+  public FSIteratorAggregate(Collection<FSIterator<T>> c) {
     super();
-    this.iterators = new ArrayList();
+    this.iterators = new ArrayList<FSIterator<T>>();
     this.iterators.addAll(c);
     // The unwritten contract of FSIterators is that they point to the first element when they are
     // constructed.  This is also one way of checking that the new iterator is valid (non-empty).
     moveToFirst();
   }
 
-  public FSIterator copy() {
-    ArrayList itCopies = new ArrayList(this.iterators.size());
+  public FSIterator<T> copy() {
+    ArrayList<FSIterator<T>> itCopies = new ArrayList<FSIterator<T>>(this.iterators.size());
     for (int i = 0; i < this.iterators.size(); i++) {
-      itCopies.add(((FSIterator) this.iterators.get(i)).copy());
+      itCopies.add(this.iterators.get(i).copy());
     }
-    FSIteratorAggregate copy = new FSIteratorAggregate(itCopies);
+    FSIteratorAggregate<T> copy = new FSIteratorAggregate<T>(itCopies);
     copy.iteratorIndex = this.iteratorIndex;
     return copy;
   }
 
-  public FeatureStructure get() throws NoSuchElementException {
+  public T get() throws NoSuchElementException {
     if (!isValid()) {
       throw new NoSuchElementException();
     }
-    return ((FSIterator) this.iterators.get(this.iteratorIndex)).get();
+    return this.iterators.get(this.iteratorIndex).get();
   }
 
   public boolean isValid() {
     return (this.iteratorIndex < this.iterators.size());
   }
 
-  public void moveTo(FeatureStructure fs) {
+  public void moveTo(T fs) {
     throw new UnsupportedOperationException("This operation is not supported on an aggregate iterator.");
   }
 
@@ -86,7 +86,7 @@ class FSIteratorAggregate extends FSIteratorImplBase {
     // Go through the iterators, starting with the first one
     this.iteratorIndex = 0;
     while (this.iteratorIndex < this.iterators.size()) {
-      FSIterator it = (FSIterator) this.iterators.get(this.iteratorIndex);
+      FSIterator<T> it = this.iterators.get(this.iteratorIndex);
       // Reset iterator to first position
       it.moveToFirst();
       // If the iterator is valid (i.e., non-empty), return...
@@ -103,7 +103,7 @@ class FSIteratorAggregate extends FSIteratorImplBase {
     // See comments on moveToFirst()
     this.iteratorIndex = this.iterators.size() - 1;
     while (this.iteratorIndex >= 0) {
-      FSIterator it = (FSIterator) this.iterators.get(this.iteratorIndex);
+      FSIterator<T> it = this.iterators.get(this.iteratorIndex);
       it.moveToLast();
       if (it.isValid()) {
         return;
@@ -118,7 +118,7 @@ class FSIteratorAggregate extends FSIteratorImplBase {
       return;
     }
     // Grab current iterator and inc.
-    FSIterator current = (FSIterator) this.iterators.get(this.iteratorIndex);
+    FSIterator<T> current = this.iterators.get(this.iteratorIndex);
     current.moveToNext();
     // If we're ok with the current iterator, return.
     if (current.isValid()) {
@@ -126,7 +126,7 @@ class FSIteratorAggregate extends FSIteratorImplBase {
     }
     ++this.iteratorIndex;
     while (this.iteratorIndex < this.iterators.size()) {
-      current = (FSIterator) this.iterators.get(this.iteratorIndex);
+      current = this.iterators.get(this.iteratorIndex);
       current.moveToFirst();
       if (current.isValid()) {
         return;
@@ -142,7 +142,7 @@ class FSIteratorAggregate extends FSIteratorImplBase {
       return;
     }
     // Grab current iterator and dec.
-    FSIterator current = (FSIterator) this.iterators.get(this.iteratorIndex);
+    FSIterator<T> current = this.iterators.get(this.iteratorIndex);
     current.moveToPrevious();
     // If we're ok with the current iterator, return.
     if (current.isValid()) {
@@ -150,7 +150,7 @@ class FSIteratorAggregate extends FSIteratorImplBase {
     }
     --this.iteratorIndex;
     while (this.iteratorIndex >= 0) {
-      current = (FSIterator) this.iterators.get(this.iteratorIndex);
+      current = this.iterators.get(this.iteratorIndex);
       current.moveToLast();
       if (current.isValid()) {
         return;

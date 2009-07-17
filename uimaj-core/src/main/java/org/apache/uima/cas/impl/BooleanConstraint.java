@@ -34,7 +34,7 @@ public class BooleanConstraint extends PathConstraint implements FSMatchConstrai
 
   private final FSBooleanConstraint cons;
   
-  BooleanConstraint(ArrayList<?> path, FSBooleanConstraint constraint) {
+  BooleanConstraint(ArrayList<String> path, FSBooleanConstraint constraint) {
     super(path);
     this.cons = constraint;
   }

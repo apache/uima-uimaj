@@ -30,14 +30,13 @@ import org.apache.uima.cas.text.AnnotationTreeNode;
  * 
  * 
  */
-
 public class AnnotationTreeNodeImpl implements AnnotationTreeNode {
 
   private AnnotationFS annot;
 
   private AnnotationTreeNodeImpl parent;
 
-  private ArrayList dtrs;
+  private ArrayList<AnnotationTreeNode> dtrs;
 
   private int pos;
 
@@ -46,7 +45,7 @@ public class AnnotationTreeNodeImpl implements AnnotationTreeNode {
    */
   AnnotationTreeNodeImpl() {
     super();
-    this.dtrs = new ArrayList();
+    this.dtrs = new ArrayList<AnnotationTreeNode>();
   }
 
   /*
@@ -117,7 +116,7 @@ public class AnnotationTreeNodeImpl implements AnnotationTreeNode {
    * 
    * @see org.apache.uima.cas.text.AnnotationTreeNode#getChildren()
    */
-  public ArrayList getChildren() {
+  public ArrayList<AnnotationTreeNode> getChildren() {
     return this.dtrs;
   }
 
@@ -142,5 +141,5 @@ public class AnnotationTreeNodeImpl implements AnnotationTreeNode {
     child.parent = this;
     this.dtrs.add(child);
   }
-
+  
 }

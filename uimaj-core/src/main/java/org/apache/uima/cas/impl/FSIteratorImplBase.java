@@ -23,19 +23,18 @@ import java.util.Comparator;
 
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
 
 /**
  * Base class for FSIterator implementations. Defines the hasNext, next, and remove methods required
  * by java.util.Iterator.
- * 
- * 
  */
-public abstract class FSIteratorImplBase implements FSIterator {
+public abstract class FSIteratorImplBase<T extends FeatureStructure> implements FSIterator<T> {
 
   // Jira UIMA-464: add annotation comparator to be able to use Collections.binarySearch() on
   // annotation list.
-  protected static class AnnotationComparator implements Comparator<FeatureStructure> {
+  protected static class AnnotationComparator<T extends AnnotationFS> implements Comparator<T> {
 
     private AnnotationIndex index;
 
@@ -44,7 +43,7 @@ public abstract class FSIteratorImplBase implements FSIterator {
       this.index = index;
     }
 
-    public int compare(FeatureStructure fs1, FeatureStructure fs2) {
+    public int compare(T fs1, T fs2) {
       return this.index.compare(fs1, fs2);
     }
 
@@ -64,8 +63,8 @@ public abstract class FSIteratorImplBase implements FSIterator {
    * 
    * @see java.util.Iterator#next()
    */
-  public FeatureStructure next() {
-    FeatureStructure result = get();
+  public T next() {
+    T result = get();
     moveToNext();
     return result;
   }
@@ -78,5 +77,4 @@ public abstract class FSIteratorImplBase implements FSIterator {
   public void remove() {
     throw new UnsupportedOperationException();
   }
-
 }

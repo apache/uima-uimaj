@@ -34,12 +34,12 @@ import org.apache.uima.cas.text.AnnotationTree;
  */
 public class AnnotationIndexImpl implements AnnotationIndex {
 
-  private FSIndex index;
+  private FSIndex<AnnotationFS> index;
 
   /**
    * 
    */
-  public AnnotationIndexImpl(FSIndex index) {
+  public AnnotationIndexImpl(FSIndex<AnnotationFS> index) {
     super();
     this.index = index;
   }
@@ -122,11 +122,11 @@ public class AnnotationIndexImpl implements AnnotationIndex {
    * 
    * @see org.apache.uima.cas.text.AnnotationIndex#iterator(boolean)
    */
-  public FSIterator iterator(boolean ambiguous) {
+  public FSIterator<AnnotationFS> iterator(boolean ambiguous) {
     if (ambiguous) {
       return this.index.iterator();
     }
-    return new Subiterator(this.index.iterator());
+    return new Subiterator<AnnotationFS>(this.index.iterator());
   }
 
   /*
@@ -134,7 +134,7 @@ public class AnnotationIndexImpl implements AnnotationIndex {
    * 
    * @see org.apache.uima.cas.text.AnnotationIndex#subiterator(org.apache.uima.cas.text.AnnotationFS)
    */
-  public FSIterator subiterator(AnnotationFS annot) {
+  public FSIterator<AnnotationFS> subiterator(AnnotationFS annot) {
     return subiterator(annot, true, true);
   }
 
@@ -144,8 +144,8 @@ public class AnnotationIndexImpl implements AnnotationIndex {
    * @see org.apache.uima.cas.text.AnnotationIndex#subiterator(org.apache.uima.cas.text.AnnotationFS,
    *      boolean, boolean)
    */
-  public FSIterator subiterator(AnnotationFS annot, boolean ambiguous, boolean strict) {
-    return new Subiterator(this.index.iterator(), annot, ambiguous, strict);
+  public FSIterator<AnnotationFS> subiterator(AnnotationFS annot, boolean ambiguous, boolean strict) {
+    return new Subiterator<AnnotationFS>(this.index.iterator(), annot, ambiguous, strict);
   }
 
   /*
@@ -162,7 +162,7 @@ public class AnnotationIndexImpl implements AnnotationIndex {
     return tree;
   }
 
-  private void addChildren(AnnotationTreeNodeImpl node, FSIterator it) {
+  private void addChildren(AnnotationTreeNodeImpl node, FSIterator<AnnotationFS> it) {
     AnnotationTreeNodeImpl dtr;
     AnnotationFS annot;
     while (it.isValid()) {

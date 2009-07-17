@@ -49,7 +49,7 @@ public class TypeSystem2Xml {
    * @param aTypeSystem
    *          the TypeSystem to convert
    * @param aOutputStream
-   *          the streamt o which XML output will be written
+   *          the stream to which XML output will be written
    * 
    * @throws IOException
    *           if there is a problem writing to the provided OutputStream
@@ -78,10 +78,10 @@ public class TypeSystem2Xml {
     ResourceSpecifierFactory factory = UIMAFramework.getResourceSpecifierFactory();
     TypeSystemDescription tsDesc = factory.createTypeSystemDescription();
 
-    List typeDescs = new ArrayList();
-    Iterator typeIterator = aTypeSystem.getTypeIterator();
+    List<TypeDescription> typeDescs = new ArrayList<TypeDescription>();
+    Iterator<Type> typeIterator = aTypeSystem.getTypeIterator();
     while (typeIterator.hasNext()) {
-      Type type = (Type) typeIterator.next();
+      Type type = typeIterator.next();
 
       Type superType = aTypeSystem.getParent(type);
       if ((type.getName().startsWith("uima.cas") && type.isFeatureFinal()) || type.isArray()) {
@@ -92,10 +92,10 @@ public class TypeSystem2Xml {
       typeDesc.setName(type.getName());
       typeDesc.setSupertypeName(superType.getName());
       LowLevelTypeSystem llts = aTypeSystem.getLowLevelTypeSystem();
-      List featDescs = new ArrayList();
-      Iterator featIterator = type.getFeatures().iterator();
+      List<FeatureDescription> featDescs = new ArrayList<FeatureDescription>();
+      Iterator<Feature> featIterator = type.getFeatures().iterator();
       while (featIterator.hasNext()) {
-        Feature feat = (Feature) featIterator.next();
+        Feature feat = featIterator.next();
         if (!feat.getDomain().equals(type)) {
           // Each feature only needs to be serialized once
           continue;

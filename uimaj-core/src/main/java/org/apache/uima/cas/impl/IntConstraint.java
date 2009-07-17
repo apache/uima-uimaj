@@ -38,7 +38,7 @@ class IntConstraint extends PathConstraint implements FSMatchConstraint {
 
   private FSIntConstraint intConstraint;
 
-  IntConstraint(ArrayList path, FSIntConstraint cons) {
+  IntConstraint(ArrayList<String> path, FSIntConstraint cons) {
     super(path);
     this.intConstraint = cons;
   }

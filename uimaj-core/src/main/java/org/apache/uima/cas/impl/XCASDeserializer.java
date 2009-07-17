@@ -46,8 +46,6 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  * XCAS Deserializer. Takes an XCAS and reads it into a CAS.
- * 
- * 
  */
 public class XCASDeserializer {
 
@@ -123,10 +121,10 @@ public class XCASDeserializer {
     private CASImpl cas;
 
     // Store FSs with ID in a search tree (for later reference resolution).
-    private RedBlackTree fsTree;
+    private RedBlackTree<FSInfo> fsTree;
 
     // Store IDless FSs in a vector;
-    private ArrayList idLess;
+    private List<FSInfo> idLess;
 
     // What we expect next.
     private int state;
@@ -157,10 +155,10 @@ public class XCASDeserializer {
     private Type annotBaseType;
 
     // Store IndexRepositories in a vector;
-    private ArrayList indexRepositories;
+    private List indexRepositories;
 
     // and Views too
-    private ArrayList views;
+    private List views;
 
     // for processing v1.x format XCAS
     // map from sofa int values to id references
@@ -177,8 +175,8 @@ public class XCASDeserializer {
       this.cas = aCAS.getBaseCAS();
       // Reset the CAS.
       cas.resetNoQuestions();
-      this.fsTree = new RedBlackTree();
-      this.idLess = new ArrayList();
+      this.fsTree = new RedBlackTree<FSInfo>();
+      this.idLess = new ArrayList<FSInfo>();
       this.buffer = new StringBuffer();
       this.outOfTypeSystemData = ootsData;
       this.indexRepositories = new ArrayList();
@@ -594,9 +592,9 @@ public class XCASDeserializer {
         if (outOfTypeSystemData != null) {
           // Add to Out-Of-Typesystem data (APL)
           Integer addrInteger = Integer.valueOf(addr);
-          List ootsAttrs = (List) outOfTypeSystemData.extraFeatureValues.get(addrInteger);
+          List<String[]> ootsAttrs = outOfTypeSystemData.extraFeatureValues.get(addrInteger);
           if (ootsAttrs == null) {
-            ootsAttrs = new ArrayList();
+            ootsAttrs = new ArrayList<String[]>();
             outOfTypeSystemData.extraFeatureValues.put(addrInteger, ootsAttrs);
           }
           ootsAttrs.add(new String[] { featName, featVal });
@@ -757,9 +755,8 @@ public class XCASDeserializer {
       // "Resolving references for id data (" + fsTree.size() + ").");
       // time = System.currentTimeMillis();
       // Resolve references, index.
-      Iterator it = fsTree.iterator();
-      while (it.hasNext()) {
-        finalizeFS((FSInfo) it.next());
+      for (FSInfo fsInfo : fsTree) {
+        finalizeFS(fsInfo);
       }
       // time = System.currentTimeMillis() - time;
       // System.out.println("Done in " + new TimeSpan(time));
@@ -774,9 +771,8 @@ public class XCASDeserializer {
 
       // also finalize Out-Of-TypeSystem FSs and features (APL)
       if (outOfTypeSystemData != null) {
-        it = outOfTypeSystemData.fsList.iterator();
-        while (it.hasNext()) {
-          finalizeOutOfTypeSystemFS((FSData) it.next());
+        for (FSData fsData : outOfTypeSystemData.fsList) {
+          finalizeOutOfTypeSystemFS(fsData);
         }
         finalizeOutOfTypeSystemFeatures();
       }
@@ -818,9 +814,9 @@ public class XCASDeserializer {
             // add it to the Out-of-typesystem features list (APL)
             if (featVal != 0 && outOfTypeSystemData != null) {
               Integer addrInteger = Integer.valueOf(addr);
-              List ootsAttrs = (List) outOfTypeSystemData.extraFeatureValues.get(addrInteger);
+              List<String[]> ootsAttrs = outOfTypeSystemData.extraFeatureValues.get(addrInteger);
               if (ootsAttrs == null) {
-                ootsAttrs = new ArrayList();
+                ootsAttrs = new ArrayList<String[]>();
                 outOfTypeSystemData.extraFeatureValues.put(addrInteger, ootsAttrs);
               }
               String featFullName = ts.ll_getFeatureForCode(feat).getName();
@@ -851,9 +847,9 @@ public class XCASDeserializer {
           // add it to the Out-of-typesystem array elements list (APL)
           if (arrayVal != 0 && outOfTypeSystemData != null) {
             Integer arrayAddrInteger = Integer.valueOf(addr);
-            List ootsElements = (List) outOfTypeSystemData.arrayElements.get(arrayAddrInteger);
+            List<ArrayElement> ootsElements = outOfTypeSystemData.arrayElements.get(arrayAddrInteger);
             if (ootsElements == null) {
-              ootsElements = new ArrayList();
+              ootsElements = new ArrayList<ArrayElement>();
               outOfTypeSystemData.arrayElements.put(arrayAddrInteger, ootsElements);
             }
             // the "value" of the refrence is the ID, but we prefix with a letter to indicate
@@ -875,12 +871,10 @@ public class XCASDeserializer {
       // make ID unique by prefixing a letter
       aFS.id = 'a' + aFS.id;
       // remap ref features
-      Iterator it = aFS.featVals.entrySet().iterator();
-      while (it.hasNext()) {
-        Map.Entry entry = (Map.Entry) it.next();
-        String attrName = (String) entry.getKey();
+      for (Map.Entry<String, String> entry : aFS.featVals.entrySet()) {
+        String attrName =  entry.getKey();
         if (attrName.startsWith("_ref_")) {
-          int val = Integer.parseInt((String) entry.getValue());
+          int val = Integer.parseInt(entry.getValue());
           if (val >= 0) // negative numbers represent null and are left unchanged
           {
             // attempt to locate target in type system
@@ -903,18 +897,14 @@ public class XCASDeserializer {
      */
     private void finalizeOutOfTypeSystemFeatures() {
       // remap ref features
-      Iterator it = outOfTypeSystemData.extraFeatureValues.values().iterator();
-      while (it.hasNext()) {
-        List attrs = (List) it.next();
-        Iterator attrIt = attrs.iterator();
-        while (attrIt.hasNext()) {
-          String[] attr = (String[]) attrIt.next();
+      for (List<String[]> attrs : outOfTypeSystemData.extraFeatureValues.values()) {
+        for (String[] attr : attrs) {
           if (attr[0].startsWith("_ref_")) {
             int val = Integer.parseInt(attr[1]);
             if (val >= 0) // negative numbers represent null and are left unchanged
             {
               // attempt to locate target in type system
-              FSInfo fsValInfo = (FSInfo) fsTree.get(val);
+              FSInfo fsValInfo = fsTree.get(val);
               if (fsValInfo != null) {
                 attr[1] = Integer.toString(fsValInfo.addr);
               } else

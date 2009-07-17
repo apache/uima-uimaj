@@ -119,12 +119,12 @@ class CASMetadata {
   // how many offset values have already been used.
   private final void computeFeatureOffsets(Type t, int offset) {
     // Find all features for which the input type is the domain type.
-    List allFeats = t.getFeatures();
-    ArrayList introFeats = new ArrayList();
+    List<Feature> allFeats = t.getFeatures();
+    ArrayList<Feature> introFeats = new ArrayList<Feature>();
     final int numAllFeats = allFeats.size();
     Feature feat;
     for (int i = 0; i < numAllFeats; i++) {
-      feat = (Feature) allFeats.get(i);
+      feat = allFeats.get(i);
       if (feat.getDomain() == t) {
         introFeats.add(feat);
       }
@@ -140,10 +140,10 @@ class CASMetadata {
     }
     // Call routine recursively for all subtypes. Increment input offset by
     // number of features introduced on this type.
-    Vector immediateSubtypes = ts.getDirectlySubsumedTypes(t);
+    Vector<Type> immediateSubtypes = ts.getDirectlySubsumedTypes(t);
     final int numTypes = immediateSubtypes.size();
     for (int i = 0; i < numTypes; i++) {
-      computeFeatureOffsets((Type) immediateSubtypes.get(i), offset + numFeats);
+      computeFeatureOffsets(immediateSubtypes.get(i), offset + numFeats);
     }
   }
 
