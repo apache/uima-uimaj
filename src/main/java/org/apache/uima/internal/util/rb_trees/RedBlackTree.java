@@ -48,7 +48,7 @@ import org.apache.uima.internal.util.BinaryTree;
  * 
  * 
  */
-public class RedBlackTree<T> {
+public class RedBlackTree<T> implements Iterable<T> {
 
   // A note on the implementation: we closely follow CLR, down to
   // function and variable names. Places where we depart from CLR are
@@ -223,7 +223,7 @@ public class RedBlackTree<T> {
    * @return An iterator over the elements in the tree. The elements are returned in ascending order
    *         of the corresponding keys.
    */
-  public java.util.Iterator<T> iterator() {
+  public Iterator<T> iterator() {
     return new RBTIterator<T>(this);
   }
 
