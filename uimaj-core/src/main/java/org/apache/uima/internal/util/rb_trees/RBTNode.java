@@ -27,7 +27,7 @@ import org.apache.uima.internal.util.BinaryTree;
  * comments in RedBlackTree.
  * 
  */
-class RBTNode {
+class RBTNode<T> {
 
   // The colors.
   private static final boolean RED = true;
@@ -40,16 +40,16 @@ class RBTNode {
 
   // A pointer to the parent node. This will be null if this is the
   // root of a tree.
-  private RBTNode parent;
+  private RBTNode<T> parent;
 
   // The following variables are package private so they can be
   // accessed from RedBlackTree.
 
-  RBTNode left; // The left daughter.
+  RBTNode<T> left; // The left daughter.
 
-  RBTNode right; // The right daughter.
+  RBTNode<T> right; // The right daughter.
 
-  Object element; // The element contained in the node.
+  T element; // The element contained in the node.
 
   // For the debugging print functions.
   private static final int indentInc = 2;
@@ -57,8 +57,8 @@ class RBTNode {
   /**
    * The real constructor, used only internally.
    */
-  private RBTNode(int key, boolean color, RBTNode parent, RBTNode left, RBTNode right,
-          Object element) {
+  private RBTNode(int key, boolean color, RBTNode<T> parent, RBTNode<T> left, RBTNode<T> right,
+          T element) {
     this.key = key;
     this.color = color;
     this.parent = parent;
@@ -75,7 +75,7 @@ class RBTNode {
    * @param element
    *          The value to be inserted.
    */
-  RBTNode(int key, Object element) {
+  RBTNode(int key, T element) {
     // The default color is completely arbitrary.
     this(key, BLACK, null, null, null, element);
   }
@@ -83,7 +83,7 @@ class RBTNode {
   /**
    * Find a node with a certain key. Returns null if no such node exists.
    */
-  static final RBTNode find(RBTNode x, int key) {
+  static final <T> RBTNode<T> find(RBTNode<T> x, int key) {
     while (x != null && x.key != key) {
       if (key < x.key) {
         x = x.left;
@@ -94,9 +94,11 @@ class RBTNode {
     return x;
   }
 
-  /** Find the successor node to this. */
-  final RBTNode successor() {
-    RBTNode x = this;
+  /** 
+   * Find the successor node to this. 
+   */
+  final RBTNode<T> successor() {
+    RBTNode<T> x = this;
     // If this has a right daughter, then the successor will be the
     // leftmost daughter of this.right, if it exists, and x.right,
     // else.
@@ -110,7 +112,7 @@ class RBTNode {
     // If this does not have a right daughter, we need to move up in
     // the tree until we hit a node we're the left daughter of. That
     // will be the successor.
-    RBTNode y = x.parent;
+    RBTNode<T> y = x.parent;
     while (y != null && x == y.right) {
       x = y;
       y = x.parent;
@@ -118,14 +120,16 @@ class RBTNode {
     return y;
   }
 
-  /** Insert a node into a tree. See CLR. */
-  static final boolean insert(RedBlackTree tree, RBTNode x) {
+  /** 
+   * Insert a node into a tree. See CLR. 
+   */
+  static final <T> boolean insert(RedBlackTree<T> tree, RBTNode<T> x) {
     if (!treeInsert(tree, x)) {
       // A node with the same key as x already existed in the tree, so
       // there is nothing left to do.
       return false;
     }
-    RBTNode y;
+    RBTNode<T> y;
     x.color = RED;
     while (x != tree.root && x.parent.color == RED) {
       if (x.parent == x.parent.parent.left) {
@@ -167,9 +171,9 @@ class RBTNode {
   }
 
   /** Auxiliary function for insert(). See CLR. */
-  private static final boolean treeInsert(RedBlackTree tree, RBTNode z) {
-    RBTNode y = null;
-    RBTNode x = tree.root;
+  private static final <T> boolean treeInsert(RedBlackTree<T> tree, RBTNode<T> z) {
+    RBTNode<T> y = null;
+    RBTNode<T> x = tree.root;
     while (x != null) {
       y = x;
       if (z.key < x.key) {
@@ -194,8 +198,8 @@ class RBTNode {
   }
 
   /** Left rotation, used to keep the tree balanced. See CLR. */
-  private final void leftRotate(RedBlackTree tree) {
-    RBTNode y = this.right;
+  private final void leftRotate(RedBlackTree<T> tree) {
+    RBTNode<T> y = this.right;
     this.right = y.left;
     if (y.left != null) {
       y.left.parent = this;
@@ -214,8 +218,8 @@ class RBTNode {
   }
 
   /** Right rotation, used to keep the tree balanced. See CLR. */
-  private final void rightRotate(RedBlackTree tree) {
-    RBTNode y = this.left;
+  private final void rightRotate(RedBlackTree<T> tree) {
+    RBTNode<T> y = this.left;
     this.left = y.right;
     if (y.right != null) {
       y.right.parent = this;
@@ -237,10 +241,10 @@ class RBTNode {
    * Delete a given node from the tree. The node must be contained in the tree! Our code is more
    * complicated than CLR because we don't use a NIL sentinel.
    */
-  static final void delete(RedBlackTree tree, RBTNode z) {
-    RBTNode x;
-    RBTNode y;
-    RBTNode xParent = null;
+  static final <T> void delete(RedBlackTree<T> tree, RBTNode<T> z) {
+    RBTNode<T> x;
+    RBTNode<T> y;
+    RBTNode<T> xParent = null;
 
     if (z.left == null || z.right == null) {
       y = z;
@@ -279,9 +283,11 @@ class RBTNode {
     }
   }
 
-  /** From CLR. x must not be null. */
-  private static final void deleteFixup(RedBlackTree tree, RBTNode x) {
-    RBTNode w;
+  /** 
+   * From CLR. x must not be null. 
+   */
+  private static final <T> void deleteFixup(RedBlackTree<T> tree, RBTNode<T> x) {
+    RBTNode<T> w;
     while (x != tree.root && x.color == BLACK) {
       if (x == x.parent.left) {
         w = x.parent.right;
@@ -342,13 +348,13 @@ class RBTNode {
    * Like deleteFixup(), only that the node we should be working on is null, and we actually hand in
    * the node's mother. Special case because we don't use sentinels.
    */
-  private static final void deleteFixupNull(RedBlackTree tree, RBTNode x) {
+  private static final <T> void deleteFixupNull(RedBlackTree<T> tree, RBTNode<T> x) {
     // if x == null, we just deleted the only node in the tree
     if (x == null) {
       return;
     }
 
-    RBTNode w;
+    RBTNode<T> w;
 
     if (x.left == null) {
       w = x.right;
@@ -473,7 +479,7 @@ class RBTNode {
   }
 
   // Use as accessor when node might be null.
-  private static final boolean colorOf(RBTNode x) {
+  private static final <T> boolean colorOf(RBTNode<T> x) {
     return (x == null) ? BLACK : x.color;
   }
 
@@ -481,19 +487,19 @@ class RBTNode {
   // null.
 
   // Use when node might be null.
-  private static final void setColor(RBTNode x, boolean c) {
+  private static final <T> void setColor(RBTNode<T> x, boolean c) {
     if (x != null) {
       x.color = c;
     }
   }
 
   // Use when node might be null.
-  private static final RBTNode leftOf(RBTNode x) {
+  private static final <T> RBTNode<T> leftOf(RBTNode<T> x) {
     return (x == null) ? null : x.left;
   }
 
   // Use when node might be null.
-  private static final RBTNode rightOf(RBTNode x) {
+  private static final <T> RBTNode<T> rightOf(RBTNode<T> x) {
     return (x == null) ? null : x.right;
   }
 

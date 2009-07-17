@@ -19,6 +19,8 @@
 
 package org.apache.uima.internal.util.rb_trees;
 
+import java.util.Iterator;
+
 import org.apache.uima.internal.util.BinaryTree;
 
 /**
@@ -46,7 +48,7 @@ import org.apache.uima.internal.util.BinaryTree;
  * 
  * 
  */
-public class RedBlackTree {
+public class RedBlackTree<T> {
 
   // A note on the implementation: we closely follow CLR, down to
   // function and variable names. Places where we depart from CLR are
@@ -56,7 +58,7 @@ public class RedBlackTree {
   // implementation is in RBTNode.
 
   // The root node of the tree.
-  RBTNode root = null;
+  RBTNode<T> root = null;
 
   // A counter to keep track of the size of the tree.
   int size = 0;
@@ -104,8 +106,8 @@ public class RedBlackTree {
    *          The value we want to check.
    * @return <code>true</code>, if value is there; <code>false</code>, else.
    */
-  public final boolean containsValue(Object o) {
-    java.util.Iterator it = this.iterator();
+  public final boolean containsValue(T o) {
+    Iterator<T> it = this.iterator();
     while (it.hasNext()) {
       if (o == it.next()) {
         return true;
@@ -125,8 +127,8 @@ public class RedBlackTree {
    *         element with that key was already in the tree. The old element is overwritten with the
    *         new one.
    */
-  public final boolean put(int key, Object el) {
-    if (put(new RBTNode(key, el))) {
+  public final boolean put(int key, T el) {
+    if (put(new RBTNode<T>(key, el))) {
       this.size++;
       return true;
     }
@@ -139,9 +141,9 @@ public class RedBlackTree {
    * @param key
    *          The key to be deleted.
    */
-  public final Object remove(int key) {
-    RBTNode node = RBTNode.find(this.root, key);
-    Object ret = null;
+  public final T remove(int key) {
+    RBTNode<T> node = RBTNode.find(this.root, key);
+    T ret = null;
     if (node != null) {
       ret = node.element;
       this.size--;
@@ -160,11 +162,11 @@ public class RedBlackTree {
    *          The key.
    * @return The corresponding element, or <code>null</code> if key is not defined.
    */
-  public final Object get(int key) {
+  public final T get(int key) {
     if (this.root == null) {
       return null;
     }
-    RBTNode node = RBTNode.find(this.root, key);
+    RBTNode<T> node = RBTNode.find(this.root, key);
     if (node == null) {
       return null;
     }
@@ -194,7 +196,7 @@ public class RedBlackTree {
   }
 
   /** Insert a RBTNode into the tree. Only used internally. */
-  private final boolean put(RBTNode node) {
+  private final boolean put(RBTNode<T> node) {
     return RBTNode.insert(this, node);
   }
 
@@ -202,15 +204,15 @@ public class RedBlackTree {
    * @return The object associated with the smallest key, or <code>null</code> if the tree is
    *         empty.
    */
-  public final Object getFirst() {
+  public final T getFirst() {
     return this.getFirstNode().element;
   }
 
-  private final RBTNode getFirstNode() {
+  private final RBTNode<T> getFirstNode() {
     if (this.root == null) {
       return null;
     }
-    RBTNode x = this.root;
+    RBTNode<T> x = this.root;
     while (x.left != null) {
       x = x.left;
     }
@@ -221,16 +223,16 @@ public class RedBlackTree {
    * @return An iterator over the elements in the tree. The elements are returned in ascending order
    *         of the corresponding keys.
    */
-  public java.util.Iterator iterator() {
-    return new RBTIterator(this);
+  public java.util.Iterator<T> iterator() {
+    return new RBTIterator<T>(this);
   }
 
   // Iterator implementation.
-  private static class RBTIterator implements java.util.Iterator {
+  private static class RBTIterator<T> implements java.util.Iterator<T> {
 
-    RBTNode current;
+    RBTNode<T> current;
 
-    RBTIterator(RedBlackTree tree) {
+    RBTIterator(RedBlackTree<T> tree) {
       this.current = tree.getFirstNode();
     }
 
@@ -238,11 +240,11 @@ public class RedBlackTree {
       return (this.current != null);
     }
 
-    public Object next() {
+    public T next() {
       if (this.current == null) {
         throw new java.util.NoSuchElementException();
       }
-      Object ret = this.current.element;
+      T ret = this.current.element;
       this.current = this.current.successor();
       return ret;
     }
@@ -282,7 +284,7 @@ public class RedBlackTree {
   }
 
   public static void main(String[] args) {
-    RedBlackTree tree = new RedBlackTree();
+    RedBlackTree<String> tree = new RedBlackTree<String>();
     tree.put(1, "a");
     tree.printKeys();
     System.out.println("");
