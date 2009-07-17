@@ -102,9 +102,9 @@ class FSData {
   public String toString() {
     StringBuffer buf = new StringBuffer();
     buf.append(type).append('[');
-    Iterator it = featVals.entrySet().iterator();
+    Iterator<Map.Entry<String, String>> it = featVals.entrySet().iterator();
     while (it.hasNext()) {
-      Map.Entry entry = (Map.Entry) it.next();
+      Map.Entry<String, String> entry = it.next();
       buf.append(entry.getKey()).append('=').append(entry.getValue()).append(',');
     }
     buf.append("](ID=").append(id).append(')');

@@ -169,7 +169,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   private final IntRedBlackTree arrayToComponentTypeMap;
 
   // A mapping from array type codes to array type objects.
-  private final RedBlackTree arrayCodeToTypeMap;
+  private final RedBlackTree<TypeImpl> arrayCodeToTypeMap;
 
   // Is the type system locked?
   private boolean locked = false;
@@ -335,7 +335,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     this.stringSetMap = new IntRedBlackTree();
     this.componentToArrayTypeMap = new IntRedBlackTree();
     this.arrayToComponentTypeMap = new IntRedBlackTree();
-    this.arrayCodeToTypeMap = new RedBlackTree();
+    this.arrayCodeToTypeMap = new RedBlackTree<TypeImpl>();
     this.parents = new IntVector();
     this.parents.add(0);
 
