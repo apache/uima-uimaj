@@ -491,7 +491,7 @@ class IntRBTNode {
     // This will hold the new array.
     IntVector v = new IntVector();
     // A stack for traversing the tree;
-    Stack nodeStack = new Stack();
+    Stack<IntRBTNode> nodeStack = new Stack<IntRBTNode>();
     // A stack for keeping addresses associated w/ the nodes on the
     // node stack.
     IntStack addressStack = new IntStack();

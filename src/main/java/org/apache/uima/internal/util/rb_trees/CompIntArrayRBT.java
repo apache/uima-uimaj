@@ -30,13 +30,6 @@ public class CompIntArrayRBT extends IntArrayRBT {
 
   private IntComparator comp;
 
-  /**
-   * Constructor for CompIntArrayRBT.
-   */
-  private CompIntArrayRBT() {
-    super();
-  }
-
   public CompIntArrayRBT(IntComparator comp) {
     this(comp, default_size);
   }
