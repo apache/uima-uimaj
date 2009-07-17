@@ -375,7 +375,7 @@ public abstract class FeatureStructureImpl implements FeatureStructure, Cloneabl
 
 		private static final String refNamePrefix = "#";
 
-		private RedBlackTree tree;
+		private RedBlackTree<String> tree;
 
 		private IntSet seen;
 
@@ -384,7 +384,7 @@ public abstract class FeatureStructureImpl implements FeatureStructure, Cloneabl
 		private PrintReferences() {
 			super();
 			this.count = 0;
-			this.tree = new RedBlackTree();
+			this.tree = new RedBlackTree<String>();
 			this.seen = new IntSet();
 		}
 

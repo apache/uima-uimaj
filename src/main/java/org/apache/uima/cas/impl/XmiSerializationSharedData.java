@@ -61,7 +61,7 @@ public class XmiSerializationSharedData {
    * getXmiId() method, which is done to ensure a consistent ID for each FS 
    * address across multiple serializations.
    */
-  private RedBlackTree fsAddrToXmiIdMap = new RedBlackTree();
+  private RedBlackTree<String> fsAddrToXmiIdMap = new RedBlackTree<String>();
   
   /** 
    * A map from xmi:id to FeatureStructure address.  This is populated whenever
@@ -69,7 +69,7 @@ public class XmiSerializationSharedData {
    * getFsAddrForXmiId() method, necessary to support merging multiple XMI
    * CASes into the same CAS object.
    **/
-  private RedBlackTree xmiIdToFsAddrMap = new RedBlackTree();
+  private RedBlackTree<Integer> xmiIdToFsAddrMap = new RedBlackTree<Integer>();
   
   /**
    * List of OotsElementData objects, each of which captures information about
@@ -110,11 +110,11 @@ public class XmiSerializationSharedData {
    * @param fsAddr
    * @param xmiId
    */
-   RedBlackTree nonsharedfeatureIdToFSId = new RedBlackTree();
+  RedBlackTree<Integer> nonsharedfeatureIdToFSId = new RedBlackTree<Integer>();
 
   void addIdMapping(int fsAddr, int xmiId) {
     fsAddrToXmiIdMap.put(fsAddr, Integer.toString(xmiId));
-    xmiIdToFsAddrMap.put(xmiId, Integer.valueOf(fsAddr));
+    xmiIdToFsAddrMap.put(xmiId, fsAddr);
     if (xmiId > maxXmiId)
       maxXmiId = xmiId;
   }
@@ -337,7 +337,7 @@ public class XmiSerializationSharedData {
    */
   void checkForDups() {
     Set<String> ids = new HashSet<String>();
-    Iterator iter = fsAddrToXmiIdMap.iterator();
+    Iterator<String> iter = fsAddrToXmiIdMap.iterator();
     while (iter.hasNext()) {
       String xmiId = (String) iter.next();
       if (!ids.add(xmiId)) {
