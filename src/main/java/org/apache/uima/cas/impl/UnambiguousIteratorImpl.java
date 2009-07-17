@@ -21,6 +21,8 @@ package org.apache.uima.cas.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.apache.uima.cas.FSIterator;
@@ -38,9 +40,11 @@ import org.apache.uima.cas.text.AnnotationFS;
  */
 public class UnambiguousIteratorImpl extends FSIteratorImplBase {
 
-  private ArrayList list;
+  private List<FeatureStructure> list;
 
   private int pos;
+
+  private Comparator<FeatureStructure> annotationComparator;
 
   private UnambiguousIteratorImpl() {
     super();
@@ -52,7 +56,7 @@ public class UnambiguousIteratorImpl extends FSIteratorImplBase {
    */
   public UnambiguousIteratorImpl(FSIterator it) {
     this();
-    this.list = new ArrayList();
+    this.list = new ArrayList<FeatureStructure>();
     it.moveToFirst();
     if (!it.isValid()) {
       return;
@@ -81,7 +85,7 @@ public class UnambiguousIteratorImpl extends FSIteratorImplBase {
 
   private void initUnambiguousSubiterator(FSIterator it, final int start, final int end,
           final boolean strict) {
-    this.list = new ArrayList();
+    this.list = new ArrayList<FeatureStructure>();
     it.moveToFirst();
     // Skip annotations with begin positions before the given start
     // position.
@@ -136,7 +140,7 @@ public class UnambiguousIteratorImpl extends FSIteratorImplBase {
    */
   public FeatureStructure get() throws NoSuchElementException {
     if (isValid()) {
-      return (FeatureStructure) this.list.get(this.pos);
+      return this.list.get(this.pos);
     }
     throw new NoSuchElementException();
   }
@@ -183,13 +187,22 @@ public class UnambiguousIteratorImpl extends FSIteratorImplBase {
    * @see org.apache.uima.cas.FSIterator#moveTo(org.apache.uima.cas.FeatureStructure)
    */
   public void moveTo(FeatureStructure fs) {
-    final int found = Collections.binarySearch(this.list, fs);
+    final int found = Collections.binarySearch(this.list, fs, getAnnotationComparator(fs));
     if (found >= 0) {
       this.pos = found;
     } else {
       this.pos = (-found) - 1;
     }
   }
+  
+  private final Comparator<FeatureStructure> getAnnotationComparator(FeatureStructure fs) {
+    if (this.annotationComparator == null) {
+      this.annotationComparator = new AnnotationComparator(fs.getCAS().getAnnotationIndex());
+    }
+    return this.annotationComparator;
+  }
+
+
 
   /*
    * (non-Javadoc)

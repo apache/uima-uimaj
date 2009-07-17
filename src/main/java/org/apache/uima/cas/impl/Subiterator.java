@@ -37,23 +37,6 @@ import org.apache.uima.cas.text.AnnotationIndex;
 
 public class Subiterator extends FSIteratorImplBase {
 
-  // Jira UIMA-464: add annotation comparator to be able to use Collections.binarySearch() on
-  // annotation list.
-  private static class AnnotationComparator implements Comparator {
-
-    AnnotationIndex index;
-
-    private AnnotationComparator(AnnotationIndex index) {
-      super();
-      this.index = index;
-    }
-
-    public int compare(Object fs1, Object fs2) {
-      return this.index.compare((FeatureStructure) fs1, (FeatureStructure) fs2);
-    }
-
-  }
-
   private ArrayList list;
 
   private int pos;
