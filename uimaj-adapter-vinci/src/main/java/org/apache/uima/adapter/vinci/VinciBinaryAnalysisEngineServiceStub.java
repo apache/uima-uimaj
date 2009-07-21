@@ -195,13 +195,6 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.service.AnalysisEngineServiceStub#callGetAnalysisEngineMetaData()
-   */
-  public AnalysisEngineMetaData callGetAnalysisEngineMetaData() throws ResourceServiceException {
-    return (AnalysisEngineMetaData) callGetMetaData();
-  }
-
-  /**
    * @see org.apache.uima.analysis_engine.service.AnalysisEngineServiceStub#callProcess(CAS)
    */
   public void callProcess(CAS aCAS) throws ResourceServiceException {

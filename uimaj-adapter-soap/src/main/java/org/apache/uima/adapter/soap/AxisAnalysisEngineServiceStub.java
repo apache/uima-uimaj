@@ -91,33 +91,6 @@ public class AxisAnalysisEngineServiceStub extends AxisResourceServiceStub imple
   }
 
   /**
-   * @see org.apache.uima.reference_impl.analysis_engine.service.AnalysisEngineServiceStub#callGetMetaData()
-   */
-  public AnalysisEngineMetaData callGetAnalysisEngineMetaData() throws ResourceServiceException {
-    final QName mOperationQName = new QName("http://uima.apache.org/analysis_engine",
-            "getAnalysisEngineMetaData");
-    final QName mResourceMetaDataTypeQName = new QName("http://uima.apache.org/resourceSpecifier",
-            "resourceMetaData");
-
-    try {
-      Service service = new Service();
-      Call call = (Call) service.createCall();
-      call.setTimeout(getTimeout());
-      call.setTargetEndpointAddress(getServiceEndpoint());
-      call.setOperationName(mOperationQName);
-
-      call.registerTypeMapping(ResourceMetaData.class, mResourceMetaDataTypeQName,
-              new XmlSerializerFactory(), new XmlDeserializerFactory());
-
-      return (AnalysisEngineMetaData) call.invoke(new Object[0]);
-    } catch (ServiceException e) {
-      throw new ResourceServiceException(e);
-    } catch (java.rmi.RemoteException e) {
-      throw new ResourceServiceException(e);
-    }
-  }
-
-  /**
    * @see org.apache.uima.reference_impl.analysis_engine.service.AnalysisEngineServiceStub#callProcess(CAS)
    */
   public void callProcess(CAS aCAS) throws ResourceServiceException {
