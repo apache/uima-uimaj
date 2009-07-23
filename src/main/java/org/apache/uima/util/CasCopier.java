@@ -58,7 +58,7 @@ public class CasCopier {
   private LowLevelCAS mLowLevelDestCas;
   private Feature mDestSofaFeature;
 
-  private Map mFsMap = new HashMap();
+  private Map<FeatureStructure, FeatureStructure> mFsMap = new HashMap<FeatureStructure, FeatureStructure>();
 
   /**
    * Creates a new CasCopier that can be used to copy FeatureStructures from one CAS to another.
@@ -94,9 +94,9 @@ public class CasCopier {
   public static void copyCas(CAS aSrcCas, CAS aDestCas, boolean aCopySofa) {
     CasCopier copier = new CasCopier(aSrcCas, aDestCas);
     
-    Iterator sofaIter = aSrcCas.getSofaIterator();
+    Iterator<SofaFS> sofaIter = aSrcCas.getSofaIterator();
     while (sofaIter.hasNext()) {
-      SofaFS sofa = ((SofaFS)sofaIter.next());
+      SofaFS sofa = sofaIter.next();
       CAS view = aSrcCas.getView(sofa);
       copier.copyCasView(view, aCopySofa);
     }
@@ -249,9 +249,9 @@ public class CasCopier {
     // set feature values
     Type srcType = aSrcFS.getType();
     Type destType = aDestFS.getType();
-    Iterator srcFeatIter = srcType.getFeatures().iterator();
+    Iterator<Feature> srcFeatIter = srcType.getFeatures().iterator();
     while (srcFeatIter.hasNext()) {
-      Feature srcFeat = (Feature) srcFeatIter.next();
+      Feature srcFeat = srcFeatIter.next();
       Feature destFeat;
       if (destType == aSrcFS.getType()) {
         // sharing same type system, so destFeat == srcFeat

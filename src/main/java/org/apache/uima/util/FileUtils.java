@@ -49,11 +49,11 @@ public class FileUtils {
    * @return ArrayList A list of <code>File</code> objects. <code>null</code> if
    *         <code>directory</code> does not exist, or is not a directory.
    */
-  public static final ArrayList getFiles(File directory, boolean getRecursive) {
+  public static final ArrayList<File> getFiles(File directory, boolean getRecursive) {
     if (!directory.exists() || !directory.isDirectory()) {
       return null;
     }
-    ArrayList fileList = new ArrayList();
+    ArrayList<File> fileList = new ArrayList<File>();
     File[] fileArray = directory.listFiles();
     File file;
     for (int i = 0; i < fileArray.length; i++) {
@@ -77,7 +77,7 @@ public class FileUtils {
    * @return ArrayList A list of <code>File</code> objects. <code>null</code> if
    *         <code>directory</code> does not exist, or is not a directory.
    */
-  public static final ArrayList getFiles(File directory) {
+  public static final ArrayList<File> getFiles(File directory) {
     return getFiles(directory, false);
   }
 
@@ -89,11 +89,11 @@ public class FileUtils {
    * @return ArrayList A list of <code>File</code> objects. <code>null</code> if
    *         <code>directory</code> does not exist, or is not a directory.
    */
-  public static final ArrayList getSubDirs(File directory) {
+  public static final ArrayList<File> getSubDirs(File directory) {
     if (!directory.exists() || !directory.isDirectory()) {
       return null;
     }
-    ArrayList dirList = new ArrayList();
+    ArrayList<File> dirList = new ArrayList<File>();
     File[] fileList = directory.listFiles();
     File file;
     for (int i = 0; i < fileList.length; i++) {

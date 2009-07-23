@@ -45,9 +45,9 @@ import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
  */
 public class JCasPool {
 
-  private Vector mAllInstances = new Vector();
+  private Vector<JCas> mAllInstances = new Vector<JCas>();
 
-  private Vector mFreeInstances = new Vector();
+  private Vector<JCas> mFreeInstances = new Vector<JCas>();
 
   private int mNumInstances;
 
@@ -59,7 +59,7 @@ public class JCasPool {
   /**
    * current class
    */
-  private static final Class CLASS_NAME = JCasPool.class;
+  private static final Class<JCasPool> CLASS_NAME = JCasPool.class;
 
   /**
    * Creates a new JCasPool

@@ -61,9 +61,9 @@ public class CasPool {
    */
   private static final Class CLASS_NAME = CasPool.class;
 
-  private Vector mAllInstances = new Vector();
+  private Vector<CAS> mAllInstances = new Vector<CAS>();
 
-  private Vector mFreeInstances = new Vector();
+  private Vector<CAS> mFreeInstances = new Vector<CAS>();
 
   private int mNumInstances;
 
@@ -323,11 +323,11 @@ public class CasPool {
     }
   }  
   
-  protected Vector getAllInstances() {
+  protected Vector<CAS> getAllInstances() {
     return mAllInstances;
   }
 
-  protected Vector getFreeInstances() {
+  protected Vector<CAS> getFreeInstances() {
     return mFreeInstances;
   }
 }
