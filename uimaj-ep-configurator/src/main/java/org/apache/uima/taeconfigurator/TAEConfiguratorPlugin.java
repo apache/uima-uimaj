@@ -200,8 +200,9 @@ public class TAEConfiguratorPlugin extends AbstractUIPlugin {
    */
   public FormColors getFormColors(Display display) {
     if (null == formColors) {
-      formColors = new FormColors(display);
-      formColors.markShared(); // keep it from being disposed early
+      FormColors tempToAvoidSyncIssues = new FormColors(display);
+      tempToAvoidSyncIssues.markShared(); // keep it from being disposed early
+      formColors = tempToAvoidSyncIssues;
     }
     return formColors;
   }

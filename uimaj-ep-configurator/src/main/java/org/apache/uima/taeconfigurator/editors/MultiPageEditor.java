@@ -1384,7 +1384,7 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
     String parsedText = null;
     try {
       XMLSerializer xmlSerializer = new XMLSerializer(true);
-      xmlSerializer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", new Integer(
+      xmlSerializer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", Integer.valueOf(
               MultiPageEditorContributor.getXMLindent()).toString());
       xmlSerializer.setWriter(writer);
       ContentHandler contentHandler = xmlSerializer.getContentHandler();
