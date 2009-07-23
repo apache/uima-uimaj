@@ -32,7 +32,7 @@ public abstract class JCasFlowController_ImplBase extends FlowController_ImplBas
    * 
    * @see org.apache.uima.flow.FlowController#getRequiredCasInterface()
    */
-  public Class getRequiredCasInterface() {
+  public Class<JCas> getRequiredCasInterface() {
     return JCas.class;
   }
 

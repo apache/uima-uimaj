@@ -34,7 +34,7 @@ import org.apache.uima.impl.ChildUimaContext_impl;
 public class FlowControllerContext_impl extends ChildUimaContext_impl implements
         FlowControllerContext {
 
-  private Map mAnalysisEngineMetaDataMap;
+  private Map<String, AnalysisEngineMetaData> mAnalysisEngineMetaDataMap;
 
   private AnalysisEngineMetaData mAggregateMetadata;
 
@@ -44,7 +44,7 @@ public class FlowControllerContext_impl extends ChildUimaContext_impl implements
    * @param aSofaMappings
    */
   public FlowControllerContext_impl(UimaContextAdmin aParentContext, String aContextName,
-          Map aSofaMappings, Map aAnalysisEngineMetaDataMap,
+          Map<String, String> aSofaMappings, Map<String, AnalysisEngineMetaData> aAnalysisEngineMetaDataMap,
           AnalysisEngineMetaData aAggregateMetadata) {
     super(aParentContext, aContextName, aSofaMappings);
     mAnalysisEngineMetaDataMap = Collections.unmodifiableMap(aAnalysisEngineMetaDataMap);
@@ -60,7 +60,7 @@ public class FlowControllerContext_impl extends ChildUimaContext_impl implements
    * 
    * @see org.apache.uima.flow.FlowControllerContext#getAnalysisEngineMetaDataMap()
    */
-  public Map getAnalysisEngineMetaDataMap() {
+  public Map<String, AnalysisEngineMetaData> getAnalysisEngineMetaDataMap() {
     return mAnalysisEngineMetaDataMap;
   }
 

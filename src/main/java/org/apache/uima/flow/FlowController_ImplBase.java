@@ -92,7 +92,7 @@ public abstract class FlowController_ImplBase implements FlowController {
    * AnalysisEngines to the flow.
    * @see org.apache.uima.flow.FlowController#addAnalysisEngines(java.util.Collection)
    */
-  public void addAnalysisEngines(Collection aKeys) {
+  public void addAnalysisEngines(Collection<String> aKeys) {
     //does nothing by default
   }
 
@@ -101,7 +101,7 @@ public abstract class FlowController_ImplBase implements FlowController {
    * this to support removing AnalysisEngines from the flow.
    * @see org.apache.uima.flow.FlowController#removeAnalysisEngines(java.util.Collection)
    */
-  public void removeAnalysisEngines(Collection aKeys) throws AnalysisEngineProcessException {
+  public void removeAnalysisEngines(Collection<String> aKeys) throws AnalysisEngineProcessException {
     throw new AnalysisEngineProcessException(
             AnalysisEngineProcessException.REMOVE_AE_FROM_FLOW_NOT_SUPPORTED,
             new Object[] { getClass().getName() });

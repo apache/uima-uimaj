@@ -31,6 +31,9 @@ import java.util.Collections;
  * method will be called again to determine the next destination for the CAS.
  */
 public class ParallelStep extends Step {
+  
+  private Collection<String> mKeys;
+  
   /**
    * Creates a new ParallelStep
    * 
@@ -39,7 +42,7 @@ public class ParallelStep extends Step {
    *          should be routed. Each String must bee one of the keys in the FlowController's
    *          {@link FlowControllerContext#getAnalysisEngineMetaDataMap()}.
    */
-  public ParallelStep(Collection aAnalysisEngineKeys) {
+  public ParallelStep(Collection<String> aAnalysisEngineKeys) {
     setAnalysisEngineKeys(aAnalysisEngineKeys);
   }
 
@@ -49,7 +52,7 @@ public class ParallelStep extends Step {
    * @return an unmodifiable Collection of Strings, where each String is the key of an Analysis Engine to 
    *         which the CAS should be routed.
    */
-  public Collection getAnalysisEngineKeys() {
+  public Collection<String> getAnalysisEngineKeys() {
     return mKeys;
   }
 
@@ -62,9 +65,7 @@ public class ParallelStep extends Step {
    *         should be routed. Each String must bee one of the keys in the FlowController's
    *         {@link FlowControllerContext#getAnalysisEngineMetaDataMap()}.
    */
-  public void setAnalysisEngineKeys(Collection aKeys) {
+  public void setAnalysisEngineKeys(Collection<String> aKeys) {
     mKeys = Collections.unmodifiableCollection(aKeys);
   }
-
-  private Collection mKeys;
 }

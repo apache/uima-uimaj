@@ -72,7 +72,7 @@ public class ChildUimaContext_impl extends UimaContext_ImplBase implements UimaC
    * (non-Javadoc) Creates a child context.
    */
   public ChildUimaContext_impl(UimaContextAdmin aParentContext, String aContextName,
-          Map aSofaMappings) {
+          Map<String, String> aSofaMappings) {
     mRootContext = aParentContext.getRootContext();
     mLogger = aParentContext.getRootContext().getLogger();
     mQualifiedContextName = aParentContext.getQualifiedContextName() + aContextName + '/';

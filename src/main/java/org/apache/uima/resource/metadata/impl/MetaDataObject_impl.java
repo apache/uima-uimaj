@@ -100,10 +100,10 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * 
    * @see org.apache.uima.resource.MetaDataObject#listAttributes()
    */
-  public List listAttributes() {
+  public List<NameClassPair> listAttributes() {
     try {
       PropertyDescriptor[] props = getPropertyDescriptors();
-      List resultList = new ArrayList(props.length);
+      List<NameClassPair> resultList = new ArrayList<NameClassPair>(props.length);
       for (int i = 0; i < props.length; i++) {
         // only list properties with read and write methods,
         // and don't include the SourceUrl property, which is for

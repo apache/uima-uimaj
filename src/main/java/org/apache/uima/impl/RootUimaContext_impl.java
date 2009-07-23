@@ -80,7 +80,7 @@ public class RootUimaContext_impl extends UimaContext_ImplBase {
     mConfigurationManager = aConfigurationManager;
     mQualifiedContextName = "/";
     mSession = new Session_impl();
-    mSofaMappings = new TreeMap();
+    mSofaMappings = new TreeMap<String, String>();
   }
 
   /**

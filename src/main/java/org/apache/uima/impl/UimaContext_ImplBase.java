@@ -31,6 +31,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -76,7 +77,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    * component engines. The key is the component sofa name and the value is the absolute sofa name
    * assigned by a top level aggregate in this process.
    */
-  protected Map mSofaMappings;
+  protected Map<String, String> mSofaMappings;
 
   /**
    * Size of the CAS pool used to support the {@link #getEmptyCas(Class)} method.
@@ -142,23 +143,23 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    * 
    * @see org.apache.uima.UimaContextAdmin#createChild(java.lang.String)
    */
-  public UimaContextAdmin createChild(String aContextName, Map aSofaMappings) {
+  public UimaContextAdmin createChild(String aContextName, Map<String, String> aSofaMappings) {
     // The aSofaMappings parameter, if present, defines the mapping between the child
     // context's sofa names and this context's sofa names. This context's sofa names
     // may again be remapped (according to the mSofaMappings field). We need to
     // produce the absolute mapping and pass that into the child context's constructor.
 
     // child context's mappings are originally equivalent to this context's mappings
-    Map childSofaMap = new TreeMap();
+    Map<String, String> childSofaMap = new TreeMap<String, String>();
     childSofaMap.putAll(mSofaMappings);
     if (aSofaMappings != null) {
       // iterate through remappings list (aSofaMappings) and apply them
-      Iterator it = aSofaMappings.entrySet().iterator();
+      Iterator<Map.Entry<String, String>> it = aSofaMappings.entrySet().iterator();
       while (it.hasNext()) {
-        Map.Entry entry = (Map.Entry) it.next();
-        String childSofaName = (String) entry.getKey();
-        String thisContextSofaName = (String) entry.getValue();
-        String absoluteSofaName = (String) mSofaMappings.get(thisContextSofaName);
+        Map.Entry<String, String> entry = it.next();
+        String childSofaName = entry.getKey();
+        String thisContextSofaName = entry.getValue();
+        String absoluteSofaName = mSofaMappings.get(thisContextSofaName);
         if (absoluteSofaName == null) {
           absoluteSofaName = thisContextSofaName;
         }
@@ -420,7 +421,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
     if (groups == null) {
       return new String[0];
     } else {
-      Set names = new TreeSet();
+      Set<String> names = new TreeSet<String>();
       for (int i = 0; i < groups.length; i++) {
         names.addAll(Arrays.asList(groups[i].getNames()));
       }
@@ -460,7 +461,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
     if (groups.length == 0) {
       return new String[0];
     } else {
-      ArrayList names = new ArrayList();
+      List<String> names = new ArrayList<String>();
       ConfigurationParameter[] commonParams = getConfigurationManager()
               .getConfigParameterDeclarations(getQualifiedContextName()).getCommonParameters();
       if (commonParams != null) {
@@ -547,7 +548,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   /* (non-Javadoc)
    * @see org.apache.uima.UimaContextAdmin#getSofaMap()
    */
-  public Map getSofaMap() {
+  public Map<String, String> getSofaMap() {
     return Collections.unmodifiableMap(mSofaMappings);
   }
 
