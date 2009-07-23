@@ -42,12 +42,12 @@ public class ProcessTrace_impl implements ProcessTrace {
   /**
    * List of closed events.
    */
-  private List mEventList = new ArrayList();
+  private List<ProcessTraceEvent> mEventList = new ArrayList<ProcessTraceEvent>();
 
   /**
    * Stack of open events.
    */
-  private Stack mOpenEvents = new Stack();
+  private Stack<ProcessTraceEvent_impl> mOpenEvents = new Stack<ProcessTraceEvent_impl>();
 
   /**
    * Timer class used to get timing information.
@@ -136,10 +136,10 @@ public class ProcessTrace_impl implements ProcessTrace {
 
       // look for matching event on mOpenEvents stack. If found, close it and
       // all its open sub-events. If not found, throw exception.
-      ArrayList eventsToClose = new ArrayList();
+      ArrayList<ProcessTraceEvent_impl> eventsToClose = new ArrayList<ProcessTraceEvent_impl>();
       boolean foundEvent = false;
       while (!mOpenEvents.isEmpty()) {
-        ProcessTraceEvent_impl evt = (ProcessTraceEvent_impl) mOpenEvents.pop();
+        ProcessTraceEvent_impl evt = mOpenEvents.pop();
         eventsToClose.add(evt);
         if (aComponentName.equals(evt.getComponentName()) && aEventType.equals(evt.getType())) {
           foundEvent = true;
@@ -152,7 +152,7 @@ public class ProcessTrace_impl implements ProcessTrace {
         // close all open sub-events
         long currentTime = mTimer.getTimeInMillis();
         for (int i = 0; i < eventsToClose.size(); i++) {
-          ProcessTraceEvent_impl subEvt = (ProcessTraceEvent_impl) eventsToClose.get(i);
+          ProcessTraceEvent_impl subEvt = eventsToClose.get(i);
           subEvt.setResultMessage(aResultMessage);
           subEvt.setDuration((int) (currentTime - subEvt.getStartTime()));
 
@@ -217,10 +217,8 @@ public class ProcessTrace_impl implements ProcessTrace {
   /**
    * @see org.apache.uima.util.ProcessTrace#addAll(java.util.List)
    */
-  public void addAll(List aEventList) {
-    Iterator it = aEventList.iterator();
-    while (it.hasNext()) {
-      ProcessTraceEvent evt = (ProcessTraceEvent) it.next();
+  public void addAll(List<ProcessTraceEvent> aEventList) {
+    for (ProcessTraceEvent evt : aEventList) {
       addEvent(evt);
     }
   }
@@ -228,18 +226,16 @@ public class ProcessTrace_impl implements ProcessTrace {
   /**
    * @see org.apache.uima.util.ProcessTrace#getEvents()
    */
-  public List getEvents() {
+  public List<ProcessTraceEvent> getEvents() {
     return mEventList;
   }
 
   /**
    * @see org.apache.uima.util.ProcessTrace#getEventsByComponentName(String)
    */
-  public List getEventsByComponentName(String aComponentName, boolean aRecurseAfterMatch) {
-    List result = new ArrayList();
-    Iterator it = getEvents().iterator();
-    while (it.hasNext()) {
-      ProcessTraceEvent event = (ProcessTraceEvent) it.next();
+  public List<ProcessTraceEvent> getEventsByComponentName(String aComponentName, boolean aRecurseAfterMatch) {
+    List<ProcessTraceEvent> result = new ArrayList<ProcessTraceEvent>();
+    for (ProcessTraceEvent event : getEvents()) {
       getEventsByComponentName(event, aComponentName, aRecurseAfterMatch, result);
     }
     return result;
@@ -248,13 +244,12 @@ public class ProcessTrace_impl implements ProcessTrace {
   /**
    * @see org.apache.uima.util.ProcessTrace#getEventsByType(String)
    */
-  public List getEventsByType(String aType, boolean aRecurseAfterMatch) {
-    List result = new ArrayList();
-    Iterator it = getEvents().iterator();
-    while (it.hasNext()) {
-      ProcessTraceEvent event = (ProcessTraceEvent) it.next();
+  public List<ProcessTraceEvent> getEventsByType(String aType, boolean aRecurseAfterMatch) {
+    List<ProcessTraceEvent> result = new ArrayList<ProcessTraceEvent>();
+    for (ProcessTraceEvent event : getEvents()) {
       getEventsByType(event, aType, aRecurseAfterMatch, result);
     }
+      
     return result;
   }
 
@@ -262,12 +257,12 @@ public class ProcessTrace_impl implements ProcessTrace {
    * @see org.apache.uima.util.ProcessTrace#getEvent(String, String)
    */
   public ProcessTraceEvent getEvent(String aComponentName, String aType) {
-    List events = getEvents();
+    List<ProcessTraceEvent> events = getEvents();
     return getEvent(events, aComponentName, aType);
   }
 
-  protected ProcessTraceEvent getEvent(List aEvents, String aComponentName, String aType) {
-    Iterator it = aEvents.iterator();
+  protected ProcessTraceEvent getEvent(List<ProcessTraceEvent> aEvents, String aComponentName, String aType) {
+    Iterator<ProcessTraceEvent> it = aEvents.iterator();
     while (it.hasNext()) {
       ProcessTraceEvent event = (ProcessTraceEvent) it.next();
       if (aComponentName.equals(event.getComponentName()) && aType.equals(event.getType())) {
@@ -294,10 +289,10 @@ public class ProcessTrace_impl implements ProcessTrace {
    */
   public void aggregate(ProcessTrace aProcessTrace) {
     if (mEnabled) {
-      List newEventList = aProcessTrace.getEvents();
+      List<ProcessTraceEvent> newEventList = aProcessTrace.getEvents();
 
       // iterate over new events
-      Iterator newEventIter = newEventList.iterator();
+      Iterator<ProcessTraceEvent> newEventIter = newEventList.iterator();
       while (newEventIter.hasNext()) {
         ProcessTraceEvent_impl newEvt = (ProcessTraceEvent_impl) newEventIter.next();
         // find corresponding event in thisEventList
@@ -318,17 +313,14 @@ public class ProcessTrace_impl implements ProcessTrace {
   public String toString() {
     // count total time so we can do percentages
     int totalTime = 0;
-    Iterator it = mEventList.iterator();
-    while (it.hasNext()) {
-      ProcessTraceEvent event = (ProcessTraceEvent) it.next();
+    
+    for (ProcessTraceEvent event : mEventList) {
       totalTime += event.getDuration();
     }
 
     // go back through and generate string
     StringBuffer buf = new StringBuffer();
-    it = mEventList.iterator();
-    while (it.hasNext()) {
-      ProcessTraceEvent event = (ProcessTraceEvent) it.next();
+    for (ProcessTraceEvent event : mEventList) {
       event.toString(buf, 0, totalTime);
     }
 
@@ -339,7 +331,7 @@ public class ProcessTrace_impl implements ProcessTrace {
    * Utility method used by getEventsByComponentName(String)
    */
   protected void getEventsByComponentName(ProcessTraceEvent aEvent, String aComponentName,
-          boolean aRecurseAfterMatch, List aResultList) {
+          boolean aRecurseAfterMatch, List<ProcessTraceEvent> aResultList) {
     if (aComponentName.equals(aEvent.getComponentName())) {
       aResultList.add(aEvent);
       if (!aRecurseAfterMatch) {
@@ -348,9 +340,7 @@ public class ProcessTrace_impl implements ProcessTrace {
     }
 
     // recurse into child events
-    Iterator it = aEvent.getSubEvents().iterator();
-    while (it.hasNext()) {
-      ProcessTraceEvent event = (ProcessTraceEvent) it.next();
+    for (ProcessTraceEvent event : aEvent.getSubEvents()) {
       getEventsByComponentName(event, aComponentName, aRecurseAfterMatch, aResultList);
     }
   }
@@ -359,7 +349,7 @@ public class ProcessTrace_impl implements ProcessTrace {
    * Utility method used by getEventsByType(String)
    */
   protected void getEventsByType(ProcessTraceEvent aEvent, String aType,
-          boolean aRecurseAfterMatch, List aResultList) {
+          boolean aRecurseAfterMatch, List<ProcessTraceEvent> aResultList) {
     if (aType.equals(aEvent.getType())) {
       aResultList.add(aEvent);
       if (!aRecurseAfterMatch) {
@@ -368,9 +358,7 @@ public class ProcessTrace_impl implements ProcessTrace {
     }
 
     // recurse into child events
-    Iterator it = aEvent.getSubEvents().iterator();
-    while (it.hasNext()) {
-      ProcessTraceEvent event = (ProcessTraceEvent) it.next();
+    for (ProcessTraceEvent event : aEvent.getSubEvents()) {
       getEventsByType(event, aType, aRecurseAfterMatch, aResultList);
     }
   }
@@ -402,12 +390,12 @@ public class ProcessTrace_impl implements ProcessTrace {
 
     // aggregate sub-events
 
-    List destEventList = aDest.getSubEvents();
-    List srcEventList = aSrc.getSubEvents();
-    List eventsToAdd = null; // lazy init
+    List<ProcessTraceEvent> destEventList = aDest.getSubEvents();
+    List<ProcessTraceEvent> srcEventList = aSrc.getSubEvents();
+    List<ProcessTraceEvent> eventsToAdd = null; // lazy init
 
     // iterate over src events
-    Iterator srcEventIter = srcEventList.iterator();
+    Iterator<ProcessTraceEvent> srcEventIter = srcEventList.iterator();
     while (srcEventIter.hasNext()) {
       ProcessTraceEvent_impl srcEvt = (ProcessTraceEvent_impl) srcEventIter.next();
       // find corresponding event in destEventList
@@ -417,7 +405,7 @@ public class ProcessTrace_impl implements ProcessTrace {
       } else {
         // no corresponding event - add srcEvt to list of events to be added
         if (eventsToAdd == null) {
-          eventsToAdd = new ArrayList();
+          eventsToAdd = new ArrayList<ProcessTraceEvent>();
         }
         eventsToAdd.add(srcEvt);
       }
@@ -425,9 +413,8 @@ public class ProcessTrace_impl implements ProcessTrace {
 
     // add all from events eventsToAdd
     if (eventsToAdd != null) {
-      Iterator it = eventsToAdd.iterator();
-      while (it.hasNext()) {
-        aDest.addSubEvent((ProcessTraceEvent) it.next());
+      for (ProcessTraceEvent eventToAdd : eventsToAdd) {
+        aDest.addSubEvent(eventToAdd);
       }
     }
   }

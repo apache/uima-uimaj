@@ -22,7 +22,6 @@ package org.apache.uima.util.impl;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.uima.util.ProcessTraceEvent;
@@ -64,7 +63,7 @@ public class ProcessTraceEvent_impl implements ProcessTraceEvent {
   /**
    * List of sub-events of this event. (Initialized lazily.)
    */
-  private List mSubEvents;
+  private List<ProcessTraceEvent> mSubEvents;
 
   /**
    * Start time of this event.
@@ -175,9 +174,9 @@ public class ProcessTraceEvent_impl implements ProcessTraceEvent {
   /**
    * @see org.apache.uima.util.ProcessTraceEvent#getSubEvents()
    */
-  public List getSubEvents() {
+  public List<ProcessTraceEvent> getSubEvents() {
     if (mSubEvents == null) {
-      return Collections.EMPTY_LIST;
+      return Collections.emptyList();
     } else {
       return mSubEvents;
     }
@@ -188,7 +187,7 @@ public class ProcessTraceEvent_impl implements ProcessTraceEvent {
    */
   public void addSubEvent(ProcessTraceEvent aEvent) {
     if (mSubEvents == null) {
-      mSubEvents = new ArrayList();
+      mSubEvents = new ArrayList<ProcessTraceEvent>();
     }
     mSubEvents.add(aEvent);
   }
@@ -241,14 +240,12 @@ public class ProcessTraceEvent_impl implements ProcessTraceEvent {
       aBuf.append("Result: ").append(getResultMessage()).append("\n");
     }
 
-    List subEvents = getSubEvents();
+    List<ProcessTraceEvent> subEvents = getSubEvents();
     if (!subEvents.isEmpty()) {
       writeTabs(aIndentLevel, aBuf);
       aBuf.append("Sub-events:").append("\n");
 
-      Iterator it = subEvents.iterator();
-      while (it.hasNext()) {
-        ProcessTraceEvent evt = (ProcessTraceEvent) it.next();
+      for (ProcessTraceEvent evt : subEvents) {
         evt.toString(aBuf, aIndentLevel + 1, aTotalTime);
         aBuf.append("\n");
       }
@@ -260,9 +257,7 @@ public class ProcessTraceEvent_impl implements ProcessTraceEvent {
    */
   public int getDurationExcludingSubEvents() {
     int result = getDuration();
-    Iterator it = getSubEvents().iterator();
-    while (it.hasNext()) {
-      ProcessTraceEvent evt = (ProcessTraceEvent) it.next();
+    for (ProcessTraceEvent evt : getSubEvents()) {
       result -= evt.getDuration();
     }
     return result;

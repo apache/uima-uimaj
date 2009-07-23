@@ -105,7 +105,7 @@ public class CasToInlineXml {
 
     // get iterator over annotations sorted by increasing start position and
     // decreasing end position
-    FSIterator iterator = aCAS.getAnnotationIndex().iterator();
+    FSIterator<AnnotationFS> iterator = aCAS.getAnnotationIndex().iterator();
 
     // filter the iterator if desired
     if (aFilter != null) {
@@ -117,7 +117,7 @@ public class CasToInlineXml {
     // annotations, and if an annotation contains other annotations, we
     // push the parent annotation on the stack, process the children, and
     // then come back to the parent later.
-    ArrayList stack = new ArrayList();
+    List<AnnotationFS> stack = new ArrayList<AnnotationFS>();
     int pos = 0;
 
     try {
@@ -218,10 +218,10 @@ public class CasToInlineXml {
 
   private final Attributes getFeatureAttributes(FeatureStructure aFS, CAS aCAS) {
     AttributesImpl attrs = new AttributesImpl();
-    List aFeatures = aFS.getType().getFeatures();
-    Iterator iter = aFeatures.iterator();
+    List<Feature> aFeatures = aFS.getType().getFeatures();
+    Iterator<Feature> iter = aFeatures.iterator();
     while (iter.hasNext()) {
-      Feature feat = (Feature) iter.next();
+      Feature feat = iter.next();
       String featName = feat.getShortName();
       // how we get feature value depends on feature's range type)
       String rangeTypeName = feat.getRange().getName();

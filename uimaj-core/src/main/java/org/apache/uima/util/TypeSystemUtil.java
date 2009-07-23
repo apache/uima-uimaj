@@ -46,8 +46,8 @@ public class TypeSystemUtil {
   public static TypeSystemDescription typeSystem2TypeSystemDescription(TypeSystem aTypeSystem) {
     ResourceSpecifierFactory fact = UIMAFramework.getResourceSpecifierFactory();
     TypeSystemDescription tsDesc = fact.createTypeSystemDescription();
-    Iterator typeIter = aTypeSystem.getTypeIterator();
-    ArrayList typeDescs = new ArrayList();
+    Iterator<Type> typeIter = aTypeSystem.getTypeIterator();
+    ArrayList<TypeDescription> typeDescs = new ArrayList<TypeDescription>();
     while (typeIter.hasNext()) {
       Type type = (Type) typeIter.next();
       if (!type.getName().startsWith("uima.cas") && !type.getName().equals("uima.tcas.Annotation") &&
@@ -88,10 +88,10 @@ public class TypeSystemUtil {
       }
       typeDesc.setAllowedValues(avObjs);
     } else {
-      ArrayList featDescs = new ArrayList();
-      Iterator featIter = aType.getFeatures().iterator();
+      ArrayList<FeatureDescription> featDescs = new ArrayList<FeatureDescription>();
+      Iterator<Feature> featIter = aType.getFeatures().iterator();
       while (featIter.hasNext()) {
-        Feature feat = (Feature) featIter.next();
+        Feature feat = featIter.next();
         if (!superType.getFeatures().contains(feat)) {
           featDescs.add(feature2FeatureDescription(feat));
         }

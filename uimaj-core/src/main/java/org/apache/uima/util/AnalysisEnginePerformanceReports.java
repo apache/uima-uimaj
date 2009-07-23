@@ -35,7 +35,7 @@ public class AnalysisEnginePerformanceReports {
 
   private ProcessTrace mProcessTrace;
 
-  private Map mAnnotatorAnalysisTimes = new HashMap();
+  private Map<String, Integer> mAnnotatorAnalysisTimes = new HashMap<String, Integer>();
 
   private int mAnalysisTime = 0;
 
@@ -55,10 +55,7 @@ public class AnalysisEnginePerformanceReports {
     pctFormat = NumberFormat.getPercentInstance();
     pctFormat.setMaximumFractionDigits(2);
 
-    List events = aProcessTrace.getEvents();
-    Iterator it = events.iterator();
-    while (it.hasNext()) {
-      ProcessTraceEvent evt = (ProcessTraceEvent) it.next();
+    for (ProcessTraceEvent evt : aProcessTrace.getEvents()) {
       if (ProcessTraceEvent.ANALYSIS_ENGINE.equals(evt.getType())
               || ProcessTraceEvent.SERVICE_CALL.equals(evt.getType())) {
         mTotalTime += evt.getDuration();
@@ -72,7 +69,7 @@ public class AnalysisEnginePerformanceReports {
     if (ProcessTraceEvent.ANALYSIS.equals(aEvent.getType())) {
       mAnalysisTime += aEvent.getDuration();
       String componentName = aEvent.getComponentName();
-      mAnnotatorAnalysisTimes.put(componentName, Integer.valueOf(aEvent.getDuration()));
+      mAnnotatorAnalysisTimes.put(componentName, aEvent.getDuration());
     } else if (ProcessTraceEvent.ANALYSIS_ENGINE.equals(aEvent.getType())) {
       // framework overhead is difference between this event's duration and
       // combined duration of all ANLAYSIS or ANALYSIS_ENGINE subevents
@@ -105,9 +102,7 @@ public class AnalysisEnginePerformanceReports {
       }
     }
 
-    Iterator subEvents = aEvent.getSubEvents().iterator();
-    while (subEvents.hasNext()) {
-      ProcessTraceEvent subEvt = (ProcessTraceEvent) subEvents.next();
+    for (ProcessTraceEvent subEvt : aEvent.getSubEvents()) {
       addEventData(subEvt);
     }
   }
@@ -188,10 +183,10 @@ public class AnalysisEnginePerformanceReports {
    */
   private int getSubEventDuration(ProcessTraceEvent aEvent, String[] aEventTypes) {
     int duration = 0;
-    List subEvents = aEvent.getSubEvents();
-    Iterator it = subEvents.iterator();
+    List<ProcessTraceEvent> subEvents = aEvent.getSubEvents();
+    Iterator<ProcessTraceEvent> it = subEvents.iterator();
     whileLoop: while (it.hasNext()) {
-      ProcessTraceEvent evt = (ProcessTraceEvent) it.next();
+      ProcessTraceEvent evt = it.next();
       String type = evt.getType();
       for (int i = 0; i < aEventTypes.length; i++) {
         if (aEventTypes[i].equals(type)) {

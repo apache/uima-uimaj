@@ -19,7 +19,6 @@
 
 package org.apache.uima.util;
 
-import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -49,7 +48,7 @@ public class AnalysisEngineUtils {
    */
   public static FSMatchConstraint createOutputFilter(AnalysisEngineMetaData aMetaData) {
     // get a list of the AE's output type names
-    Set outputTypes = new TreeSet();
+    Set<String> outputTypes = new TreeSet<String>();
     // outputTypes.add("Document"); //always output the document
     Capability[] capabilities = aMetaData.getCapabilities();
     for (int i = 0; i < capabilities.length; i++) {
@@ -63,10 +62,7 @@ public class AnalysisEngineUtils {
 
     FSTypeConstraint constraint = ConstraintFactory.instance().createTypeConstraint();
 
-    Iterator it = outputTypes.iterator();
-    while (it.hasNext()) {
-      // get next Type in set
-      String typeName = (String) it.next();
+    for (String typeName  : outputTypes) {
       // add type to constraint
       constraint.add(typeName);
     }
