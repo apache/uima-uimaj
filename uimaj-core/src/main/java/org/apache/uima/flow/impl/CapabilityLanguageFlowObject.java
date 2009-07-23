@@ -317,19 +317,19 @@ public class CapabilityLanguageFlowObject extends CasFlow_ImplBase implements Cl
       mParentController.getLastResultSpecForComponent().clear();
 
       // get all language key from the table
-      Set keys = mFlowTable.keySet();
+      Set<String> keys = mFlowTable.keySet();
 
       // loop over all languages
-      Iterator it = keys.iterator();
+      Iterator<String> it = keys.iterator();
       while (it.hasNext()) {
 
         // get sequence for current language
-        List sequence = (List) mFlowTable.get(it.next());
+        List<AnalysisSequenceCapabilityNode> sequence = mFlowTable.get(it.next());
 
         // loop over all nodes in the sequence
         for (int i = 0; i < sequence.size(); i++) {
           // get current annotator node
-          AnalysisSequenceCapabilityNode node = (AnalysisSequenceCapabilityNode) sequence.get(i);
+          AnalysisSequenceCapabilityNode node = sequence.get(i);
           if (node != null) {
             // recompile result spec
             node.getResultSpec().setTypeSystem(mLastTypeSystem);

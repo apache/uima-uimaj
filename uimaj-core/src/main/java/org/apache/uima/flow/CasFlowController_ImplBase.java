@@ -35,7 +35,7 @@ public abstract class CasFlowController_ImplBase extends FlowController_ImplBase
    * 
    * @see org.apache.uima.flow.FlowController#getRequiredCasInterface()
    */
-  public Class getRequiredCasInterface() {
+  public Class<CAS> getRequiredCasInterface() {
     return CAS.class;
   }
 

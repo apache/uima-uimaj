@@ -24,6 +24,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMARuntimeException;
@@ -50,7 +51,7 @@ import org.apache.uima.util.XMLInputSource;
 public class FixedFlowController extends CasFlowController_ImplBase {
 
   /**
-   * Key for the configuation parameter that determines what should happen to a
+   * Key for the configuration parameter that determines what should happen to a
    * CAS after it has been input to a CAS Multiplier.  Possible values are:
    * continue:  the CAS continues on to the next element in the flow
    * stop: the CAS will no longer continue in the flow, and will be returned from the
@@ -71,14 +72,14 @@ public class FixedFlowController extends CasFlowController_ImplBase {
 
   private static final int ACTION_DROP_IF_NEW_CAS_PRODUCED = 3;
 
-  private ArrayList mSequence;
+  private List<String> mSequence;
 
   private int mActionAfterCasMultiplier;
 
   public void initialize(FlowControllerContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
     FlowConstraints flowConstraints = aContext.getAggregateMetadata().getFlowConstraints();
-    mSequence = new ArrayList();
+    mSequence = new ArrayList<String>();
     if (flowConstraints instanceof FixedFlow) {
       String[] sequence = ((FixedFlow) flowConstraints).getFixedFlow();
       mSequence.addAll(Arrays.asList(sequence));
@@ -117,7 +118,7 @@ public class FixedFlowController extends CasFlowController_ImplBase {
   /* (non-Javadoc)
    * @see org.apache.uima.flow.FlowController_ImplBase#addAnalysisEngines(java.util.Collection)
    */
-  public void addAnalysisEngines(Collection aKeys) {
+  public void addAnalysisEngines(Collection<String> aKeys) {
     // Append new keys to end of Sequence
     mSequence.addAll(aKeys);
   }
@@ -125,7 +126,7 @@ public class FixedFlowController extends CasFlowController_ImplBase {
   /* (non-Javadoc)
    * @see org.apache.uima.flow.FlowController_ImplBase#removeAnalysisEngines(java.util.Collection)
    */
-  public void removeAnalysisEngines(Collection aKeys) throws AnalysisEngineProcessException {
+  public void removeAnalysisEngines(Collection<String> aKeys) throws AnalysisEngineProcessException {
     //Remove keys from Sequence
     mSequence.removeAll(aKeys);
   }
