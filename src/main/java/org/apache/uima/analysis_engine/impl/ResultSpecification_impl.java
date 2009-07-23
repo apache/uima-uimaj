@@ -81,7 +81,7 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
    */
   private static final char LANGUAGE_SEPARATOR = '-';
   
-  private class ToF_Languages {
+  private class ToF_Languages implements Cloneable {
     public TypeOrFeature tof;
     public BitSet languages;
     
