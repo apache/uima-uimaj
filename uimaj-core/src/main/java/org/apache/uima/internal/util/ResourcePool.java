@@ -56,7 +56,7 @@ public class ResourcePool {
   /**
    * current class
    */
-  private static final Class CLASS_NAME = ResourcePool.class;
+  private static final Class<ResourcePool> CLASS_NAME = ResourcePool.class;
 
   /**
    * Creates new ResourcePool_impl
@@ -193,7 +193,7 @@ public class ResourcePool {
    * Destroys all Resources in this pool.
    */
   public synchronized void destroy() {
-    Iterator i = mAllInstances.iterator();
+    Iterator<Resource> i = mAllInstances.iterator();
     while (i.hasNext()) {
       Resource current = (Resource) i.next();
       current.destroy();
@@ -253,17 +253,17 @@ public class ResourcePool {
     }
   }
 
-  protected Vector getAllInstances() {
+  protected Vector<Resource> getAllInstances() {
     return mAllInstances;
   }
 
-  protected Vector getFreeInstances() {
+  protected Vector<Resource> getFreeInstances() {
     return mFreeInstances;
   }
 
-  private Vector mAllInstances = new Vector();
+  private Vector<Resource> mAllInstances = new Vector<Resource>();
 
-  private Vector mFreeInstances = new Vector();
+  private Vector<Resource> mFreeInstances = new Vector<Resource>();
 
   private int mNumInstances;
 
