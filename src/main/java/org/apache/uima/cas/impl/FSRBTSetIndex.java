@@ -67,10 +67,11 @@ class FSRBTSetIndex extends FSLeafIndexImpl {
   }
 
   public FeatureStructure find(FeatureStructure fs) {
-    final FeatureStructureImpl fsi = (FeatureStructureImpl) fs;
-    final int resultAddr = this.tree.findKey(fsi.getAddress());
+    LowLevelCAS llc = fs.getCAS().getLowLevelCAS();
+    final int addr = llc.ll_getFSRef(fs);
+    final int resultAddr = this.tree.findKey(addr);
     if (resultAddr > 0) {
-      return fsi.getCASImpl().createFS(resultAddr);
+      return llc.ll_getFSForRef(resultAddr);
     }
     return null;
   }

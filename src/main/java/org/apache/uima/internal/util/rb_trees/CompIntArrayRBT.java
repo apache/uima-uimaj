@@ -156,7 +156,7 @@ public class CompIntArrayRBT extends IntArrayRBT {
       } else if (cv > 0) {
         node = this.right[node];
       } else {
-        return node;
+        return this.key[node];
       }
     }
     // node == NIL

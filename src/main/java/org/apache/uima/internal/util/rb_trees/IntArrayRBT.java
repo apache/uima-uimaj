@@ -593,7 +593,7 @@ public class IntArrayRBT {
       if (k < this.key[node]) {
         node = this.left[node];
       } else if (k == this.key[node]) {
-        return node;
+        return this.key[node];
       } else {
         node = this.right[node];
       }
