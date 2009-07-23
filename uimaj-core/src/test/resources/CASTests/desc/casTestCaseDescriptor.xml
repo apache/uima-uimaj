@@ -85,6 +85,17 @@
       </fsIndexKey>
      </keys>
     </fsIndexDescription>
+                <fsIndexDescription>
+                    <label>Word Set Index</label>
+                    <typeName>org.apache.uima.cas.test.types.Word</typeName>
+                    <kind>set</kind>
+                    <keys>
+                        <fsIndexKey>
+                            <featureName>word</featureName>
+                            <comparator>standard</comparator>
+                        </fsIndexKey>
+                    </keys>
+                </fsIndexDescription>
    </fsIndexes>
   </fsIndexCollection>
   <capabilities>
