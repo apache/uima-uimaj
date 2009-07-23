@@ -153,7 +153,7 @@ public class AnalysisEnginePool {
     
     // set Result Spec on each AnalysisEngine in the pool
 
-    Vector allInstances = mPool.getAllInstances();
+    Vector<Resource> allInstances = mPool.getAllInstances();
     for (int i = 0; i < mPool.getSize(); i++) {
       AnalysisEngine ae = (AnalysisEngine)allInstances.get(i);
       
@@ -183,7 +183,7 @@ public class AnalysisEnginePool {
    */
   public synchronized void reconfigure() throws ResourceConfigurationException {
     // reconfigure each AnalysisEngine in the pool
-    List toRelease = new ArrayList();
+    List<AnalysisEngine> toRelease = new ArrayList<AnalysisEngine>();
     try {
       for (int i = 0; i < mPool.getSize(); i++) {
         // get an Analysis Engine from the pool
@@ -197,9 +197,9 @@ public class AnalysisEnginePool {
       }
     } finally {
       // release all AnalysisEngines back to pool
-      Iterator it = toRelease.iterator();
+      Iterator<AnalysisEngine> it = toRelease.iterator();
       while (it.hasNext()) {
-        mPool.releaseResource((AnalysisEngine) it.next());
+        mPool.releaseResource(it.next());
       }
     }
   }
@@ -208,7 +208,7 @@ public class AnalysisEnginePool {
    * Calls batchProcessComplete on all AEs in pool.
    */
   public synchronized void batchProcessComplete() throws AnalysisEngineProcessException {
-    List toRelease = new ArrayList();
+    List<AnalysisEngine> toRelease = new ArrayList<AnalysisEngine>();
     try {
       for (int i = 0; i < mPool.getSize(); i++) {
         // get an Analysis Engine from the pool
@@ -221,9 +221,9 @@ public class AnalysisEnginePool {
       }
     } finally {
       // release all AnalysisEngines back to pool
-      Iterator it = toRelease.iterator();
+      Iterator<AnalysisEngine> it = toRelease.iterator();
       while (it.hasNext()) {
-        mPool.releaseResource((AnalysisEngine) it.next());
+        mPool.releaseResource(it.next());
       }
     }
   }
@@ -232,7 +232,7 @@ public class AnalysisEnginePool {
    * Calls collectionProcessComplete on all AEs in pool.
    */
   public synchronized void collectionProcessComplete() throws AnalysisEngineProcessException {
-    List toRelease = new ArrayList();
+    List<AnalysisEngine> toRelease = new ArrayList<AnalysisEngine>();
     try {
       for (int i = 0; i < mPool.getSize(); i++) {
         // get an Analysis Engine from the pool
@@ -245,9 +245,9 @@ public class AnalysisEnginePool {
       }
     } finally {
       // release all AnalysisEngines back to pool
-      Iterator it = toRelease.iterator();
+      Iterator<AnalysisEngine> it = toRelease.iterator();
       while (it.hasNext()) {
-        mPool.releaseResource((AnalysisEngine) it.next());
+        mPool.releaseResource(it.next());
       }
     }
   }
@@ -266,7 +266,7 @@ public class AnalysisEnginePool {
    * Sets logger for all AnalysisEngines in pool.
    */
   public synchronized void setLogger(Logger aLogger) {
-    List toRelease = new ArrayList();
+    List<AnalysisEngine> toRelease = new ArrayList<AnalysisEngine>();
     try {
       for (int i = 0; i < mPool.getSize(); i++) {
         // get an Analysis Engine from the pool
@@ -280,9 +280,9 @@ public class AnalysisEnginePool {
       }
     } finally {
       // release all AnalysisEngines back to pool
-      Iterator it = toRelease.iterator();
+      Iterator<AnalysisEngine> it = toRelease.iterator();
       while (it.hasNext()) {
-        mPool.releaseResource((AnalysisEngine) it.next());
+        mPool.releaseResource(it.next());
       }
     }
   }
@@ -293,7 +293,7 @@ public class AnalysisEnginePool {
    * 
    * @return class of Resource contained in this pool
    */
-  protected Class getResourceClass() {
+  protected Class<AnalysisEngine> getResourceClass() {
     return AnalysisEngine.class;
   }
 
