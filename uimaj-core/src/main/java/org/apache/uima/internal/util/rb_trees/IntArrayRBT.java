@@ -354,6 +354,10 @@ public class IntArrayRBT {
     this.parent = grow(this.parent, initialSize);
     this.color = grow(this.color, initialSize);
   }
+  
+  public int getKeyForNode(final int node) {
+    return this.key[node];
+  }
 
   protected int treeInsert(int k) {
     int x = this.root;
@@ -587,13 +591,16 @@ public class IntArrayRBT {
   // return (node == (next - 1));
   // }
 
+  /**
+   * Find the first node such that k &lt;= key[node].
+   */
   public int findKey(int k) {
     int node = this.root;
     while (node != NIL) {
       if (k < this.key[node]) {
         node = this.left[node];
       } else if (k == this.key[node]) {
-        return this.key[node];
+        return node;
       } else {
         node = this.right[node];
       }
