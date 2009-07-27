@@ -49,7 +49,7 @@ public class TypeSystemUtil {
     Iterator<Type> typeIter = aTypeSystem.getTypeIterator();
     ArrayList<TypeDescription> typeDescs = new ArrayList<TypeDescription>();
     while (typeIter.hasNext()) {
-      Type type = (Type) typeIter.next();
+      Type type = typeIter.next();
       if (!type.getName().startsWith("uima.cas") && !type.getName().equals("uima.tcas.Annotation") &&
           !type.isArray()) {
         typeDescs.add(type2TypeDescription(type, aTypeSystem));
@@ -89,9 +89,7 @@ public class TypeSystemUtil {
       typeDesc.setAllowedValues(avObjs);
     } else {
       ArrayList<FeatureDescription> featDescs = new ArrayList<FeatureDescription>();
-      Iterator<Feature> featIter = aType.getFeatures().iterator();
-      while (featIter.hasNext()) {
-        Feature feat = featIter.next();
+      for (Feature feat : aType.getFeatures()){ 
         if (!superType.getFeatures().contains(feat)) {
           featDescs.add(feature2FeatureDescription(feat));
         }

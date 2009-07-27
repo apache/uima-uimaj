@@ -249,9 +249,7 @@ public class CasCopier {
     // set feature values
     Type srcType = aSrcFS.getType();
     Type destType = aDestFS.getType();
-    Iterator<Feature> srcFeatIter = srcType.getFeatures().iterator();
-    while (srcFeatIter.hasNext()) {
-      Feature srcFeat = srcFeatIter.next();
+    for (Feature srcFeat : srcType.getFeatures()) {      
       Feature destFeat;
       if (destType == aSrcFS.getType()) {
         // sharing same type system, so destFeat == srcFeat
