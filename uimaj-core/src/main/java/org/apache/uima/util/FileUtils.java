@@ -54,10 +54,7 @@ public class FileUtils {
       return null;
     }
     ArrayList<File> fileList = new ArrayList<File>();
-    File[] fileArray = directory.listFiles();
-    File file;
-    for (int i = 0; i < fileArray.length; i++) {
-      file = fileArray[i];
+    for (File file : directory.listFiles()) {
       if (file.isDirectory()) {
         if (getRecursive) {
           fileList.addAll(getFiles(file, getRecursive));
@@ -94,11 +91,9 @@ public class FileUtils {
       return null;
     }
     ArrayList<File> dirList = new ArrayList<File>();
-    File[] fileList = directory.listFiles();
-    File file;
-    for (int i = 0; i < fileList.length; i++) {
-      file = fileList[i];
-      if (file.isDirectory()) {
+
+    for (File file : directory.listFiles()) {
+       if (file.isDirectory()) {
         dirList.add(file);
       }
     }

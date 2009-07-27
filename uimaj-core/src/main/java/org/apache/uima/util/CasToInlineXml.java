@@ -21,7 +21,6 @@ package org.apache.uima.util;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.uima.UIMARuntimeException;
@@ -218,10 +217,7 @@ public class CasToInlineXml {
 
   private final Attributes getFeatureAttributes(FeatureStructure aFS, CAS aCAS) {
     AttributesImpl attrs = new AttributesImpl();
-    List<Feature> aFeatures = aFS.getType().getFeatures();
-    Iterator<Feature> iter = aFeatures.iterator();
-    while (iter.hasNext()) {
-      Feature feat = iter.next();
+    for (Feature feat : aFS.getType().getFeatures()) {
       String featName = feat.getShortName();
       // how we get feature value depends on feature's range type)
       String rangeTypeName = feat.getRange().getName();
