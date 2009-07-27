@@ -96,7 +96,7 @@ class FSRBTIndex extends FSLeafIndexImpl {
 
   public FeatureStructure find(FeatureStructure fs) {
     final FeatureStructureImpl fsi = (FeatureStructureImpl) fs;
-    final int resultAddr = this.tree.findKey(fsi.getAddress());
+    final int resultAddr = this.tree.getKeyForNode(this.tree.findKey(fsi.getAddress()));
     if (resultAddr > 0) {
       return fsi.getCASImpl().createFS(resultAddr);
     }
