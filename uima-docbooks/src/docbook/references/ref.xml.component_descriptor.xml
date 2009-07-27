@@ -1053,7 +1053,7 @@ uima.tcas.Annotation.</programlisting>
               As of UIMA v2.1, if you do not declare any index for a type (or any of its 
               supertypes), a Bag index will be automatically created.</para></note>
                         
-            <para>An index may define one or more <emphasis>keys</emphasis>. These keys
+            <para>An index may define zero or more <emphasis>keys</emphasis>. These keys
               determine the sort order of the feature structures within a sorted index, and
               determine equality for set indexes. Bag indexes do not use keys. Keys are
               ordered by precedence &ndash; the first key is evaluated first, and
