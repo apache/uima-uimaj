@@ -213,7 +213,7 @@ under the License.
         another feature structure, which is indexed, or through a chain of these).</para>
       
       <para>The framework defines an unnamed bag index which indexes all types.  The
-      only access provided for this index is the getAllIndexedFs(type) method on the
+      only access provided for this index is the getAllIndexedFS(type) method on the
         index repository, which returns an iterator over all indexed instances of the
         specified type (including its subtypes) for that CAS View.
       </para>
@@ -719,7 +719,7 @@ aPerson.setStringValue(lastNameFeature, newStringValueForLastName);</programlist
       items belonging to that subtype (or subtypes of that subtype).</para>
     
     <para>The returned FSIndex objects are used, in turn, to create iterators. 
-      There is also a method on the Index Repository, <literal>getAllIndexeFs</literal>, 
+      There is also a method on the Index Repository, <literal>getAllIndexedFS</literal>, 
       which will return an iterator over all indexed Feature Structures (for that CAS View),
       in no particular order.  The iterators
       created can be used like common Java iterators, to sequentially retrieve items
@@ -740,7 +740,7 @@ aPerson.setStringValue(lastNameFeature, newStringValueForLastName);</programlist
       <title>Built-in Indexes</title>
       
       <para>An unnamed built-in bag index exists which holds all feature structures which are indexed.
-      The only access to this index is the method getAllIndexedFs(Type) which returns an iterator
+      The only access to this index is the method getAllIndexedFS(Type) which returns an iterator
       over all indexed Feature Structures.</para>
       
       <para>The CAS also contains a built-in index for the type <literal>uima.tcas.Annotation</literal>, which sorts
@@ -950,7 +950,7 @@ FSIterator it = cas.createFilteredIterator(annotIt, nounTokenCons);</programlist
       
       <para>The FSIndexRepository gives you access to methods to get instances of indexes, and
         also provides access to the iterator over all indexed feature structures: 
-        <literal>getAllIndexedFs(aType)</literal>.
+        <literal>getAllIndexedFS(aType)</literal>.
         The FSIndex and AnnotationIndex objects give you methods to create instances of
         iterators.</para>
       
