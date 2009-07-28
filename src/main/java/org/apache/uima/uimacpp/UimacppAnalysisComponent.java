@@ -74,7 +74,7 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
   /**
    * current class
    */
-  private static final Class CLASS_NAME = UimacppAnalysisComponent.class;
+  private static final Class<UimacppAnalysisComponent> CLASS_NAME = UimacppAnalysisComponent.class;
 
   public UimacppAnalysisComponent(ResourceCreationSpecifier aeDescription, AnalysisEngineImplBase ae) {
 	    super();
@@ -284,7 +284,7 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
    * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#getRequiredCasInterface()
    */
-  public Class getRequiredCasInterface() {
+  public Class<CAS> getRequiredCasInterface() {
     return CAS.class;
   }
 
