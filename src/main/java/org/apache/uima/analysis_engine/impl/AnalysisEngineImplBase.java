@@ -478,7 +478,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
   }
 
   /**
-   * Construct a ProcessTrace object that represnts the last excecution of this AnalysisEngine. This
+   * Construct a ProcessTrace object that represents the last execution of this AnalysisEngine. This
    * is used so that we can return a ProcessTrace object from each process() call for backwards
    * compatibility with version 1.x.
    */
