@@ -41,6 +41,7 @@ import org.apache.uima.impl.ChildUimaContext_impl;
 import org.apache.uima.pear.tools.PackageBrowser;
 import org.apache.uima.resource.PearSpecifier;
 import org.apache.uima.resource.Resource;
+import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.ResourceManagerPearWrapper;
@@ -208,9 +209,12 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
          // Note: UimaContext can be null for a top level call to produceAnalysisEngine,
          //       where the descriptor is a Pear Resource.
          
-         ResourceManager applicationRM = (ResourceManager) aAdditionalParams.get(Resource.PARAM_RESOURCE_MANAGER);
+
+         ResourceManager applicationRM = (aAdditionalParams == null) ? null : 
+                                         (ResourceManager) aAdditionalParams.get(Resource.PARAM_RESOURCE_MANAGER);
          if (null == applicationRM) {  
-           UimaContextAdmin uimaContext = (UimaContextAdmin)aAdditionalParams.get(Resource.PARAM_UIMA_CONTEXT);
+           UimaContextAdmin uimaContext = (aAdditionalParams == null) ? null :
+                                          (UimaContextAdmin)aAdditionalParams.get(Resource.PARAM_UIMA_CONTEXT);
            if (null != uimaContext) {
              applicationRM = uimaContext.getResourceManager();
            }
@@ -245,7 +249,8 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
          ResourceSpecifier specifier = UIMAFramework.getXMLParser()
                .parseResourceSpecifier(in);
 
-         UimaContextAdmin uimaContext = (UimaContextAdmin) aAdditionalParams.get(Resource.PARAM_UIMA_CONTEXT);
+         UimaContextAdmin uimaContext = (aAdditionalParams == null) ? null :
+                                        (UimaContextAdmin) aAdditionalParams.get(Resource.PARAM_UIMA_CONTEXT);
          if (null != uimaContext) {
            ((ChildUimaContext_impl)uimaContext).setPearResourceManager(innerRM);
          }
@@ -255,7 +260,8 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
          //  modified, and the aAdditionalParameters original object
          //  is re-used by the ASB_impl - a caller of this method,
          //  for other delegates.
-         Map clonedAdditionalParameters = new HashMap(aAdditionalParams);
+         Map clonedAdditionalParameters = (aAdditionalParams == null) ? 
+                                          new HashMap() : new HashMap(aAdditionalParams);
 //         clonedAdditionalParameters.remove(Resource.PARAM_UIMA_CONTEXT);
          clonedAdditionalParameters.remove(Resource.PARAM_RESOURCE_MANAGER);
          this.ae = UIMAFramework
@@ -348,7 +354,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
       this.ae.destroy();
    }
 
-   /*
+  /*
     * (non-Javadoc)
     * 
     * @see org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase#setResultSpecification(org.apache.uima.analysis_engine.ResultSpecification)
