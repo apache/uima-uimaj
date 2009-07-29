@@ -23,12 +23,13 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.WeakHashMap;
+import java.util.Map.Entry;
 
 import org.apache.uima.UIMAFramework;
+import org.apache.uima.UimaContext;
 import org.apache.uima.UimaContextAdmin;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -57,6 +58,13 @@ import org.apache.uima.util.XMLInputSource;
 /**
  * UIMA pear runtime analysis engine wrapper. With this wrapper implementation
  * it is possible to run installed pear files out of the box in UIMA.
+ * 
+ * Calls to the wrapper that are part of the public APIs of its superclasses
+ * are forwarded to the contained AE - this makes it possible to have the
+ * pear as a top level component.  
+ * 
+ * For instance, if you do an ae.getCas() - it will get a CAS with the type system of the 
+ * contained ae.  Or if you set parameters, it will set parameters of the contained ae.
  * 
  */
 public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
@@ -145,148 +153,139 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
     *   In Case (2), the aAdditionalParams passed in contains a child UIMA_CONTEXT 
     *     created for this component.
     */
-   public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
-         throws ResourceInitializationException {
+  @Override
+  public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
+      throws ResourceInitializationException {
 
-      // aSpecifier must be a pearSpecifier
-      if (!(aSpecifier instanceof PearSpecifier)) {
-         return false;
-      }
+    // aSpecifier must be a pearSpecifier
+    if (!(aSpecifier instanceof PearSpecifier)) {
+      return false;
+    }
 
-      // cast resource specifier to a pear specifier
-      PearSpecifier pearSpec = (PearSpecifier) aSpecifier;
+    // cast resource specifier to a pear specifier
+    PearSpecifier pearSpec = (PearSpecifier) aSpecifier;
 
-      // get pear path
-      String pearRootDirPath = pearSpec.getPearPath();
+    // get pear path
+    String pearRootDirPath = pearSpec.getPearPath();
 
-      try {
-         // get installed pear root directory - specified as URI of the
-         // descriptor
-         File pearRootDir = new File(pearRootDirPath);
+    try {
+      // get installed pear root directory - specified as URI of the
+      // descriptor
+      File pearRootDir = new File(pearRootDirPath);
 
-         // create pear package browser to get the pear meta data
-         PackageBrowser pkgBrowser = new PackageBrowser(pearRootDir);
+      // create pear package browser to get the pear meta data
+      PackageBrowser pkgBrowser = new PackageBrowser(pearRootDir);
 
-         // get pear env variables and set them as system properties
-         Properties props = pkgBrowser.getComponentEnvVars();
-         Iterator keyIterator = props.keySet().iterator();
-         Properties systemProps = System.getProperties();
-         while (keyIterator.hasNext()) {
-            String key = (String) keyIterator.next();
-            String value = (String) props.get(key);
+      Properties systemProps = System.getProperties();
+      // get pear env variables and set them as system properties
+      Properties props = pkgBrowser.getComponentEnvVars();
+      for (Entry<Object, Object> entry : props.entrySet()) {
+        String key = (String) entry.getKey();
+        String value = (String) entry.getValue();
 
-            // log warning if system property already exist and does not have
-            // the same value
-            if (systemProps.containsKey(key)) {
-               String systemPropValue = (String) systemProps.get(key);
-               if (!systemPropValue.equals(value)) {
-                  UIMAFramework.getLogger(this.getClass()).logrb(
-                        Level.WARNING,
-                        this.getClass().getName(),
-                        "initialize",
-                        LOG_RESOURCE_BUNDLE,
-                        "UIMA_pear_runtime_system_var_already_set__WARNING",
-                        new Object[] { (key + "=" + systemPropValue),
-                              (key + "=" + value),
-                              pkgBrowser.getRootDirectory().getName() });
-               }
-            }
-            // set new system property
-            System.setProperty(key, value);
-
+        // log warning if system property already exist and does not have
+        // the same value
+        if (systemProps.containsKey(key)) {
+          String systemPropValue = (String) systemProps.get(key);
+          if (!systemPropValue.equals(value)) {
             UIMAFramework.getLogger(this.getClass()).logrb(
-                  Level.CONFIG,
-                  this.getClass().getName(),
-                  "initialize",
-                  LOG_RESOURCE_BUNDLE,
-                  "UIMA_pear_runtime_set_system_var__CONFIG",
-                  new Object[] { key + "=" + value,
-                        pkgBrowser.getRootDirectory().getName() });
+                Level.WARNING,
+                this.getClass().getName(),
+                "initialize",
+                LOG_RESOURCE_BUNDLE,
+                "UIMA_pear_runtime_system_var_already_set__WARNING",
+                new Object[] { (key + "=" + systemPropValue), (key + "=" + value),
+                    pkgBrowser.getRootDirectory().getName() });
+          }
+        }
+        // set new system property
+        System.setProperty(key, value);
 
-         }
-         
-         // Caller's Resource Manager obtained from the additional parameters
-         // Note: UimaContext can be null for a top level call to produceAnalysisEngine,
-         //       where the descriptor is a Pear Resource.
-         
+        UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(),
+            "initialize", LOG_RESOURCE_BUNDLE, "UIMA_pear_runtime_set_system_var__CONFIG",
+            new Object[] { key + "=" + value, pkgBrowser.getRootDirectory().getName() });
 
-         ResourceManager applicationRM = (aAdditionalParams == null) ? null : 
-                                         (ResourceManager) aAdditionalParams.get(Resource.PARAM_RESOURCE_MANAGER);
-         if (null == applicationRM) {  
-           UimaContextAdmin uimaContext = (aAdditionalParams == null) ? null :
-                                          (UimaContextAdmin)aAdditionalParams.get(Resource.PARAM_UIMA_CONTEXT);
-           if (null != uimaContext) {
-             applicationRM = uimaContext.getResourceManager();
-           }
-         }
-         
-         String classPath = pkgBrowser.buildComponentRuntimeClassPath();
-         String dataPath = pkgBrowser.getComponentDataPath();
-         StringPair sp = new StringPair(classPath, dataPath);
-         ResourceManager innerRM;
-
-         Map<StringPair, ResourceManager> c1 = cachedResourceManagers.get(applicationRM);
-         if (null == c1) {
-            innerRM = createRM(sp, pkgBrowser, applicationRM);
-            cachedResourceManagers.put(applicationRM, createRMmap(sp, innerRM));
-         } else {
-            innerRM = (ResourceManager) c1.get(sp);
-            if (null == innerRM) {
-               innerRM = createRM(sp, pkgBrowser, applicationRM);
-               c1.put(sp, innerRM);
-               UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG,
-                     this.getClass().getName(), "initialize",
-                     LOG_RESOURCE_BUNDLE, "UIMA_pear_runtime_add_RM_map",
-                     new Object[] { sp.classPath, sp.dataPath });
-            }
-         }
-
-         // Create an XML input source from the specifier file
-         XMLInputSource in = new XMLInputSource(pkgBrowser
-               .getInstallationDescriptor().getMainComponentDesc());
-
-         // Parse the resource specifier
-         ResourceSpecifier specifier = UIMAFramework.getXMLParser()
-               .parseResourceSpecifier(in);
-
-         UimaContextAdmin uimaContext = (aAdditionalParams == null) ? null :
-                                        (UimaContextAdmin) aAdditionalParams.get(Resource.PARAM_UIMA_CONTEXT);
-         if (null != uimaContext) {
-           ((ChildUimaContext_impl)uimaContext).setPearResourceManager(innerRM);
-         }
-         // create analysis engine
-         // Cloning is needed because the aAdditionalParameters, if 
-         //  passed without cloning to produceAnalysisEngine, gets
-         //  modified, and the aAdditionalParameters original object
-         //  is re-used by the ASB_impl - a caller of this method,
-         //  for other delegates.
-         Map clonedAdditionalParameters = (aAdditionalParams == null) ? 
-                                          new HashMap() : new HashMap(aAdditionalParams);
-//         clonedAdditionalParameters.remove(Resource.PARAM_UIMA_CONTEXT);
-         clonedAdditionalParameters.remove(Resource.PARAM_RESOURCE_MANAGER);
-         this.ae = UIMAFramework
-               .produceAnalysisEngine(specifier, innerRM, clonedAdditionalParameters);
-      } catch (IOException ex) {
-         throw new ResourceInitializationException(ex);
-      } catch (InvalidXMLException ex) {
-         throw new ResourceInitializationException(ex);
       }
 
-      // note - this call must follow the setting of this.ae to a non-null value.
-      super.initialize(aSpecifier, aAdditionalParams);
+      // Caller's Resource Manager obtained from the additional parameters
+      // Note: UimaContext can be null for a top level call to
+      // produceAnalysisEngine,
+      // where the descriptor is a Pear Resource.
 
-      UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG,
-            this.getClass().getName(), "initialize", LOG_RESOURCE_BUNDLE,
-            "UIMA_analysis_engine_init_successful__CONFIG",
-            new Object[] { this.ae.getAnalysisEngineMetaData().getName() });
+      ResourceManager applicationRM = (aAdditionalParams == null) ? null
+          : (ResourceManager) aAdditionalParams.get(Resource.PARAM_RESOURCE_MANAGER);
+      if (null == applicationRM) {
+        UimaContextAdmin uimaContext = (aAdditionalParams == null) ? null
+            : (UimaContextAdmin) aAdditionalParams.get(Resource.PARAM_UIMA_CONTEXT);
+        if (null != uimaContext) {
+          applicationRM = uimaContext.getResourceManager();
+        }
+      }
 
-      return true;
-   }
+      String classPath = pkgBrowser.buildComponentRuntimeClassPath();
+      String dataPath = pkgBrowser.getComponentDataPath();
+      StringPair sp = new StringPair(classPath, dataPath);
+      ResourceManager innerRM;
+
+      Map<StringPair, ResourceManager> c1 = cachedResourceManagers.get(applicationRM);
+      if (null == c1) {
+        innerRM = createRM(sp, pkgBrowser, applicationRM);
+        cachedResourceManagers.put(applicationRM, createRMmap(sp, innerRM));
+      } else {
+        innerRM = c1.get(sp);
+        if (null == innerRM) {
+          innerRM = createRM(sp, pkgBrowser, applicationRM);
+          c1.put(sp, innerRM);
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(),
+              "initialize", LOG_RESOURCE_BUNDLE, "UIMA_pear_runtime_add_RM_map",
+              new Object[] { sp.classPath, sp.dataPath });
+        }
+      }
+
+      // Create an XML input source from the specifier file
+      XMLInputSource in = new XMLInputSource(pkgBrowser.getInstallationDescriptor()
+          .getMainComponentDesc());
+
+      // Parse the resource specifier
+      ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
+
+      UimaContextAdmin uimaContext = (aAdditionalParams == null) ? null
+          : (UimaContextAdmin) aAdditionalParams.get(Resource.PARAM_UIMA_CONTEXT);
+      if (null != uimaContext) {
+        ((ChildUimaContext_impl) uimaContext).setPearResourceManager(innerRM);
+      }
+      // create analysis engine
+      // Cloning is needed because the aAdditionalParameters, if
+      // passed without cloning to produceAnalysisEngine, gets
+      // modified, and the aAdditionalParameters original object
+      // is re-used by the ASB_impl - a caller of this method,
+      // for other delegates.
+      Map clonedAdditionalParameters = (aAdditionalParams == null) ? 
+          new HashMap() : new HashMap(aAdditionalParams);
+      // clonedAdditionalParameters.remove(Resource.PARAM_UIMA_CONTEXT);
+      clonedAdditionalParameters.remove(Resource.PARAM_RESOURCE_MANAGER);
+      this.ae = UIMAFramework.produceAnalysisEngine(specifier, innerRM, clonedAdditionalParameters);
+    } catch (IOException ex) {
+      throw new ResourceInitializationException(ex);
+    } catch (InvalidXMLException ex) {
+      throw new ResourceInitializationException(ex);
+    }
+
+    // note - this call must follow the setting of this.ae to a non-null value.
+    super.initialize(aSpecifier, aAdditionalParams);
+
+    UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(),
+        "initialize", LOG_RESOURCE_BUNDLE, "UIMA_analysis_engine_init_successful__CONFIG",
+        new Object[] { this.ae.getAnalysisEngineMetaData().getName() });
+
+    return true;
+  }
 
    /*
     * @see org.apache.uima.analysis_engine.AnalysisEngine#getAnalysisEngineMetaData()
     */
-   public AnalysisEngineMetaData getAnalysisEngineMetaData() {
+   @Override
+  public AnalysisEngineMetaData getAnalysisEngineMetaData() {
       return (AnalysisEngineMetaData) getMetaData();
    }
 
@@ -295,7 +294,8 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
     * 
     * @see org.apache.uima.resource.Resource_ImplBase#getMetaData()
     */
-   public ResourceMetaData getMetaData() {
+   @Override
+  public ResourceMetaData getMetaData() {
       return this.ae.getMetaData();
    }
 
@@ -304,7 +304,8 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
     * 
     * @see org.apache.uima.analysis_engine.AnalysisEngine#batchProcessComplete()
     */
-   public void batchProcessComplete() throws AnalysisEngineProcessException {
+   @Override
+  public void batchProcessComplete() throws AnalysisEngineProcessException {
       this.ae.batchProcessComplete();
    }
 
@@ -313,7 +314,8 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
     * 
     * @see org.apache.uima.analysis_engine.AnalysisEngine#collectionProcessComplete()
     */
-   public void collectionProcessComplete()
+   @Override
+  public void collectionProcessComplete()
          throws AnalysisEngineProcessException {
       this.ae.collectionProcessComplete();
    }
@@ -323,7 +325,8 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
     * 
     * @see org.apache.uima.analysis_engine.AnalysisEngine#processAndOutputNewCASes(org.apache.uima.cas.CAS)
     */
-   public CasIterator processAndOutputNewCASes(CAS aCAS)
+   @Override
+  public CasIterator processAndOutputNewCASes(CAS aCAS)
          throws AnalysisEngineProcessException {
 
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINE,
@@ -344,7 +347,8 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
    /**
     * @see org.apache.uima.resource.Resource#destroy()
     */
-   public void destroy() {
+   @Override
+  public void destroy() {
 
       UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG,
             this.getClass().getName(), "destroy", LOG_RESOURCE_BUNDLE,
@@ -354,12 +358,159 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
       this.ae.destroy();
    }
 
+   /* (non-Javadoc)
+    * @see org.apache.uima.resource.ConfigurableResource_ImplBase#reconfigure()
+    */
+   @Override
+   public void reconfigure() throws ResourceConfigurationException {
+     // don't call super.reconfigure - that will be done by the call below, but
+     // with the correct context.
+     ae.reconfigure();
+   }
+
+  // This class implements the methods from its super classes, just where necessary to get
+  // the implementation to forward to the contained PEAR.
+   
+  // Many of the superclass methods are OK.
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase#buildProcessTraceFromMBeanStats(org.apache.uima.util.ProcessTrace)
+   */
+  @Override
+  protected void buildProcessTraceFromMBeanStats(ProcessTrace trace) {
+    ((AnalysisEngineImplBase) ae).buildProcessTraceFromMBeanStats(trace);
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase#enterBatchProcessComplete()
+   */
+  @Override
+  protected void enterBatchProcessComplete() {
+    ((AnalysisEngineImplBase) ae).enterBatchProcessComplete();
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase#enterCollectionProcessComplete()
+   */
+  @Override
+  protected void enterCollectionProcessComplete() {
+    ((AnalysisEngineImplBase) ae).enterCollectionProcessComplete();
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase#enterProcess()
+   */
+  @Override
+  protected void enterProcess() {
+    ((AnalysisEngineImplBase) ae).enterProcess();
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase#exitBatchProcessComplete()
+   */
+  @Override
+  protected void exitBatchProcessComplete() {
+    ((AnalysisEngineImplBase) ae).exitBatchProcessComplete();
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase#exitCollectionProcessComplete()
+   */
+  @Override
+  protected void exitCollectionProcessComplete() {
+    ((AnalysisEngineImplBase) ae).exitCollectionProcessComplete();
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase#exitProcess()
+   */
+  @Override
+  protected void exitProcess() {
+    ((AnalysisEngineImplBase) ae).exitProcess();
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase#finalize()
+   */
+  @Override
+  protected void finalize() throws Throwable {
+    ((AnalysisEngineImplBase) ae).finalize();
+  }
+
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase#getMBeanNamePrefix()
+   */
+  @Override
+  protected String getMBeanNamePrefix() {
+    return ((AnalysisEngineImplBase) ae).getMBeanNamePrefix();
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase#getMBeanServer()
+   */
+  @Override
+  protected Object getMBeanServer() {
+    return ((AnalysisEngineImplBase) ae).getMBeanServer();
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase#getPerformanceTuningSettings()
+   */
+  @Override
+  public Properties getPerformanceTuningSettings() {
+    return ae.getPerformanceTuningSettings();
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase#isProcessTraceEnabled()
+   */
+  @Override
+  protected boolean isProcessTraceEnabled() {
+    return ((AnalysisEngineImplBase) ae).isProcessTraceEnabled();
+  }
+
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase#setPerformanceTuningSettings(java.util.Properties)
+   */
+  @Override
+  protected void setPerformanceTuningSettings(Properties aSettings) {
+    ((AnalysisEngineImplBase) ae).setPerformanceTuningSettings(aSettings);
+  }
+
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.resource.Resource_ImplBase#getUimaContext()
+   */
+  @Override
+  public UimaContext getUimaContext() {
+    return ae.getUimaContext();
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.resource.Resource_ImplBase#getUimaContextAdmin()
+   */
+  @Override
+  public UimaContextAdmin getUimaContextAdmin() {
+    return ae.getUimaContextAdmin();
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.resource.Resource_ImplBase#setMetaData(org.apache.uima.resource.metadata.ResourceMetaData)
+   */
+  @Override
+  protected void setMetaData(ResourceMetaData aMetaData) {
+    ((AnalysisEngineImplBase) ae).setMetaData(aMetaData);
+  }
+  
   /*
     * (non-Javadoc)
     * 
     * @see org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase#setResultSpecification(org.apache.uima.analysis_engine.ResultSpecification)
     */
-   public void setResultSpecification(ResultSpecification resultSpec) {
+   @Override
+  public void setResultSpecification(ResultSpecification resultSpec) {
       this.ae.setResultSpecification(resultSpec);
    }
 
@@ -368,7 +519,8 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
     * 
     * @see org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase#batchProcessComplete(org.apache.uima.util.ProcessTrace)
     */
-   public void batchProcessComplete(ProcessTrace trace)
+   @Override
+  public void batchProcessComplete(ProcessTrace trace)
          throws ResourceProcessException, IOException {
       this.ae.batchProcessComplete(trace);
    }
@@ -378,7 +530,8 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
     * 
     * @see org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase#collectionProcessComplete(org.apache.uima.util.ProcessTrace)
     */
-   public void collectionProcessComplete(ProcessTrace trace)
+   @Override
+  public void collectionProcessComplete(ProcessTrace trace)
          throws ResourceProcessException, IOException {
       this.ae.collectionProcessComplete(trace);
    }
@@ -388,7 +541,8 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
     * 
     * @see org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase#createResultSpecification()
     */
-   public ResultSpecification createResultSpecification() {
+   @Override
+  public ResultSpecification createResultSpecification() {
       return this.ae.createResultSpecification();
    }
 
@@ -397,7 +551,8 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
     * 
     * @see org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase#createResultSpecification(org.apache.uima.cas.TypeSystem)
     */
-   public ResultSpecification createResultSpecification(TypeSystem typeSystem) {
+   @Override
+  public ResultSpecification createResultSpecification(TypeSystem typeSystem) {
       return this.ae.createResultSpecification(typeSystem);
    }
 
@@ -406,7 +561,8 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
     * 
     * @see org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase#getProcessingResourceMetaData()
     */
-   public ProcessingResourceMetaData getProcessingResourceMetaData() {
+   @Override
+  public ProcessingResourceMetaData getProcessingResourceMetaData() {
       return this.ae.getProcessingResourceMetaData();
    }
 
@@ -415,14 +571,16 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
     * 
     * @see org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase#newCAS()
     */
-   public synchronized CAS newCAS() throws ResourceInitializationException {
+   @Override
+  public synchronized CAS newCAS() throws ResourceInitializationException {
       return this.ae.newCAS();
    }
 
    /* (non-Javadoc)
     * @see org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase#typeSystemInit(org.apache.uima.cas.TypeSystem)
     */
-   public void typeSystemInit(TypeSystem typeSystem)
+   @Override
+  public void typeSystemInit(TypeSystem typeSystem)
          throws ResourceInitializationException {
       this.ae.typeSystemInit(typeSystem);
    }
@@ -442,6 +600,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
          this.dataPath = dataPath;
       }
 
+      @Override
       public int hashCode() {
          final int prime = 31;
          int result = 1;
@@ -452,6 +611,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
          return result;
       }
 
+      @Override
       public boolean equals(Object obj) {
          if (this == obj)
             return true;
