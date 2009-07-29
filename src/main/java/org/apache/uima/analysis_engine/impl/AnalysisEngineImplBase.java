@@ -52,6 +52,7 @@ import org.apache.uima.resource.metadata.Capability;
 import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
 import org.apache.uima.resource.metadata.OperationalProperties;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
+import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.ProcessTrace;
 import org.apache.uima.util.UimaTimer;
@@ -65,6 +66,48 @@ import org.apache.uima.util.impl.ProcessTrace_impl;
  */
 public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBase implements
         TextAnalysisEngine {
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.resource.Resource_ImplBase#setMetaData(org.apache.uima.resource.metadata.ResourceMetaData)
+   */
+  @Override
+  //*****************************************************************************************
+  // NOTICE: This method is logically not needed it would seem, because the superclass of the superclass of this 
+  // implements it.
+  // However, there is some obscure issue here. If it is not included in this class, then
+  // a class which does 
+  //        ((AnalysisEngineImplBase)ae).setMetaData(...) fails with a compile error saying that
+  // the method setMetaData in the Resource_ImplBase is not visible (even though it is "protected")
+  // This hack makes that problem go away.   July 2009
+  //*****************************************************************************************
+  
+  protected void setMetaData(ResourceMetaData aMetaData) {
+    super.setMetaData(aMetaData);
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.analysis_engine.AnalysisEngine#batchProcessComplete()
+   */
+  public void batchProcessComplete() throws AnalysisEngineProcessException {
+    // TODO Auto-generated method stub
+    
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.analysis_engine.AnalysisEngine#collectionProcessComplete()
+   */
+  public void collectionProcessComplete() throws AnalysisEngineProcessException {
+    // TODO Auto-generated method stub
+    
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.analysis_engine.AnalysisEngine#processAndOutputNewCASes(org.apache.uima.cas.CAS)
+   */
+  public CasIterator processAndOutputNewCASes(CAS aCAS) throws AnalysisEngineProcessException {
+    // TODO Auto-generated method stub
+    return null;
+  }
 
   /**
    * resource bundle for log messages
@@ -104,6 +147,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    * @see org.apache.uima.resource.Resource_ImplBase#initialize(org.apache.uima.resource.ResourceSpecifier,
    *      java.util.Map)
    */
+  @Override
   public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
           throws ResourceInitializationException {
     boolean result = super.initialize(aSpecifier, aAdditionalParams);
@@ -147,6 +191,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    * 
    * @see java.lang.Object#finalize()
    */
+  @Override
   protected void finalize() throws Throwable {
     // unregister MBean from MBeanServer when GC occurs.
     // NOTE: we don't want to do this in destroy() because all AEs in a CPE are
