@@ -21,6 +21,7 @@ package org.apache.uima.cas_data.impl;
 
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.apache.uima.cas_data.CasData;
 import org.apache.uima.cas_data.FeatureStructure;
@@ -34,13 +35,13 @@ public class CasDataImpl implements CasData {
    */
   private static final long serialVersionUID = 400887901813129040L;
 
-  private LinkedList fsList = null;
+  private List<FeatureStructure> fsList = null;
 
   /**
    * Initializes FeatureStructure list
    */
   public CasDataImpl() {
-    fsList = new LinkedList();
+    fsList = new LinkedList<FeatureStructure>();
   }
 
   /**
@@ -48,7 +49,7 @@ public class CasDataImpl implements CasData {
    * 
    * @return an iterator over FeatureStructure list
    */
-  public Iterator getFeatureStructures() {
+  public Iterator<FeatureStructure> getFeatureStructures() {
     return fsList.iterator();
   }
 

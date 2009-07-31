@@ -35,7 +35,7 @@ public class FeatureStructureImpl implements FeatureStructure {
    */
   private static final long serialVersionUID = -1828536763993413045L;
 
-  private Map mFeatureMap;
+  private Map<String, FeatureValue> mFeatureMap;
 
   private String mFSType = null;
 
@@ -44,7 +44,7 @@ public class FeatureStructureImpl implements FeatureStructure {
   private int[] mIndexed = new int[0];
 
   public FeatureStructureImpl() {
-    mFeatureMap = new TreeMap();
+    mFeatureMap = new TreeMap<String, FeatureValue>();
   }
 
   public String getType() {
@@ -56,7 +56,7 @@ public class FeatureStructureImpl implements FeatureStructure {
   }
 
   public String[] getFeatureNames() {
-    Set aSet = mFeatureMap.keySet();
+    Set<String> aSet = mFeatureMap.keySet();
     String[] featureNames = new String[aSet.size()];
     aSet.toArray(featureNames);
     return featureNames;

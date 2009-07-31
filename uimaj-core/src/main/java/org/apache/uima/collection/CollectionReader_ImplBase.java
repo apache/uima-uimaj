@@ -50,7 +50,7 @@ private CasInitializer mCasInitializer;
   /**
    * current class
    */
-  private static final Class CLASS_NAME = CollectionReader_ImplBase.class;
+  private static final Class<CollectionReader_ImplBase> CLASS_NAME = CollectionReader_ImplBase.class;
 
   /**
    * Called by the framework to initialize this Collection Reader. Subclasses should generally NOT

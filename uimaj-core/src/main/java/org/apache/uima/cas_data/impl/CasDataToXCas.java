@@ -49,7 +49,7 @@ public class CasDataToXCas {
 
   private boolean mIncludeAnnotationSpannedText = false;
 
-  private List mTypesToFilter = null;
+  private List<String> mTypesToFilter = null;
 
   /**
    * Gets the name of the CASData FeatureStructure Type that stores the document text.
@@ -187,9 +187,9 @@ public class CasDataToXCas {
     }
 
     // iterate over FSs and generate XCAS
-    Iterator iter = aCasData.getFeatureStructures();
+    Iterator<FeatureStructure> iter = aCasData.getFeatureStructures();
     while (iter.hasNext()) {
-      FeatureStructure fs = (FeatureStructure) iter.next();
+      FeatureStructure fs = iter.next();
       if (mTypesToFilter == null || !mTypesToFilter.contains(fs.getType())) {
         _generate(fs, docTextHolder);
       }
