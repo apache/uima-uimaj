@@ -23,6 +23,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * The <code>MessageRouter</code> class facilitates intra-process message routing. It provides
@@ -86,9 +87,9 @@ public class MessageRouter implements Runnable {
 
   private Thread _thread;
 
-  private ArrayList _stdHistory = new ArrayList();
+  private List<String> _stdHistory = new ArrayList<String>();
 
-  private ArrayList _stdListeners = new ArrayList();
+  private List<StdChannelListener> _stdListeners = new ArrayList<StdChannelListener>();
 
   /**
    * Default constructor for the <code>MessageRouter</code> class. This constructor allocates all
@@ -119,9 +120,9 @@ public class MessageRouter implements Runnable {
     if (!_stdListeners.contains(listener)) {
       if (_stdHistory.size() > 0) {
         // send previous messages from the queue
-        Iterator list = _stdHistory.iterator();
+        Iterator<String> list = _stdHistory.iterator();
         while (list.hasNext()) {
-          String entry = (String) list.next();
+          String entry = list.next();
           // extract message itself
           String message = entry.substring(4);
           // send message to appropriate channel
@@ -191,9 +192,9 @@ public class MessageRouter implements Runnable {
           if (outMessage != null)
             _stdHistory.add(OUT_MSG_ID + "^" + outMessage);
           // send messages to listeners
-          Iterator list = _stdListeners.iterator();
+          Iterator<StdChannelListener> list = _stdListeners.iterator();
           while (list.hasNext()) {
-            StdChannelListener client = (StdChannelListener) list.next();
+            StdChannelListener client = list.next();
             if (errMessage != null)
               client.errMsgPosted(errMessage);
             if (outMessage != null)

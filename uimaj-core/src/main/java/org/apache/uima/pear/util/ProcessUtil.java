@@ -26,6 +26,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * The <code>ProcessUtil</code> class encapsulates utilities that help in dealing with
@@ -77,7 +78,7 @@ public class ProcessUtil {
 
     private boolean _printToConsole = true;
 
-    private ArrayList _listeners = new ArrayList();
+    private List<StdStreamListener> _listeners = new ArrayList<StdStreamListener>();
 
     /**
      * Constructor that takes a given <code>Process</code> object and assigns default process
@@ -219,9 +220,9 @@ public class ProcessUtil {
             // get last printed message
             String message = sWriter.getBuffer().substring(sIndex);
             // distribute message to listeners
-            Iterator list = _listeners.iterator();
+            Iterator<StdStreamListener> list = _listeners.iterator();
             while (message.length() > 0 && list.hasNext()) {
-              StdStreamListener listener = (StdStreamListener) list.next();
+              StdStreamListener listener = list.next();
               if (threadId.equals("ERR"))
                 listener.errMsgPrinted(message);
               else
