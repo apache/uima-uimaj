@@ -435,7 +435,7 @@ public class XMLUtil {
         }
       }
       // print all other elements
-      Enumeration keys = elements.keys();
+      Enumeration<Object> keys = elements.keys();
       while (keys.hasMoreElements()) {
         String tag = (String) keys.nextElement();
         // check if already printed
@@ -803,7 +803,7 @@ public class XMLUtil {
     oWriter.print(tag);
     if (!tagEnd && attributes != null) {
       // print attributes
-      Enumeration attrNames = attributes.keys();
+      Enumeration<Object> attrNames = attributes.keys();
       while (attrNames.hasMoreElements()) {
         // print attribute: name="value"
         String name = (String) attrNames.nextElement();

@@ -36,7 +36,6 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -45,6 +44,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -65,7 +65,7 @@ public class FileUtil {
    * The <code>FileTimeComparator</code> class allows comparing 'last modified' time in 2 given
    * <code>File</code> objects.
    */
-  public static class FileTimeComparator implements Comparator {
+  public static class FileTimeComparator implements Comparator<File> {
     /**
      * @return A negative integer, zero, or a positive integer as the first argument is less than,
      *         equal to, or greater than the second.
@@ -73,11 +73,9 @@ public class FileUtil {
      *           if the arguments' types prevent them from being compared by this
      *           <code>Comparator</code>.
      */
-    public int compare(Object o1, Object o2) throws ClassCastException {
-      if (!(o1 instanceof File) || !(o2 instanceof File))
-        throw new ClassCastException("invalid object type");
-      long t1 = ((File) o1).lastModified();
-      long t2 = ((File) o2).lastModified();
+    public int compare(File o1, File o2) throws ClassCastException {
+      long t1 = o1.lastModified();
+      long t2 = o2.lastModified();
       return (t1 >= t2) ? -1 : 1;
     }
 
@@ -310,13 +308,13 @@ public class FileUtil {
    */
   public static int cleanUpDirectoryFiles(File directory, int maxLimit) throws IOException {
     int counter = 0;
-    Collection fileList = createFileList(directory, false);
-    SortedSet sortedFileSet = sortFileListByTime(fileList);
+    Collection<File> fileList = createFileList(directory, false);
+    SortedSet<File> sortedFileSet = sortFileListByTime(fileList);
     if (sortedFileSet.size() > maxLimit) {
-      Iterator list = sortedFileSet.iterator();
+      Iterator<File> list = sortedFileSet.iterator();
       int no = 0;
       while (list.hasNext()) {
-        File file = (File) list.next();
+        File file = list.next();
         no++;
         if (no > maxLimit) {
           if (file.delete())
@@ -469,7 +467,7 @@ public class FileUtil {
    * @throws java.io.IOException
    *           If any I/O exception occurs.
    */
-  public static Collection createDirList(File rootDir) throws IOException {
+  public static Collection<File> createDirList(File rootDir) throws IOException {
     return createDirList(rootDir, true);
   }
 
@@ -490,8 +488,8 @@ public class FileUtil {
    * @exception java.io.IOException
    *              If any I/O exception occurs.
    */
-  public static Collection createDirList(File rootDir, boolean includeSubdirs) throws IOException {
-    ArrayList listOfDirs = new ArrayList();
+  public static Collection<File> createDirList(File rootDir, boolean includeSubdirs) throws IOException {
+    ArrayList<File> listOfDirs = new ArrayList<File>();
     File[] allDirFiles = rootDir.listFiles();
     if (allDirFiles == null)
       throw new FileNotFoundException("invalid directory specified");
@@ -518,17 +516,17 @@ public class FileUtil {
    * @throws IOException
    *           If any I/O exception occurs.
    */
-  public static Collection createDirList(JarFile archive) throws IOException {
-    ArrayList listOfDirs = new ArrayList();
+  public static Collection<File> createDirList(JarFile archive) throws IOException {
+    ArrayList<File> listOfDirs = new ArrayList<File>();
     // set root_dir_path = archive_file_path (w/o file name extension)
     int nameEndIndex = archive.getName().lastIndexOf('.');
     String rootDirPath = (nameEndIndex > 0) ? archive.getName().substring(0, nameEndIndex)
             : archive.getName();
     File rootDir = new File(rootDirPath);
     // add directories to the list
-    Enumeration entries = archive.entries();
+    Enumeration<JarEntry> entries = archive.entries();
     while (entries.hasMoreElements()) {
-      JarEntry entry = (JarEntry) entries.nextElement();
+      JarEntry entry = entries.nextElement();
       File file = new File(rootDir, entry.getName());
       if (entry.isDirectory())
         listOfDirs.add(file);
@@ -556,7 +554,7 @@ public class FileUtil {
    * @exception java.io.IOException
    *              If any I/O exception occurs.
    */
-  public static Collection createFileList(File filesDir) throws IOException {
+  public static Collection<File> createFileList(File filesDir) throws IOException {
     return createFileList(filesDir, true);
   }
 
@@ -576,8 +574,8 @@ public class FileUtil {
    * @exception java.io.IOException
    *              If any I/O exception occurs.
    */
-  public static Collection createFileList(File filesDir, boolean includeSubdirs) throws IOException {
-    ArrayList listOfFiles = new ArrayList();
+  public static Collection<File> createFileList(File filesDir, boolean includeSubdirs) throws IOException {
+    ArrayList<File> listOfFiles = new ArrayList<File>();
     File[] allDirFiles = filesDir.listFiles();
     if (allDirFiles == null)
       throw new FileNotFoundException("invalid directory specified");
@@ -602,15 +600,15 @@ public class FileUtil {
    * @throws IOException
    *           If any I/O exception occurs.
    */
-  public static Collection createFileList(JarFile archive) throws IOException {
-    ArrayList listOfFiles = new ArrayList();
+  public static Collection<File> createFileList(JarFile archive) throws IOException {
+    ArrayList<File> listOfFiles = new ArrayList<File>();
     // set root_dir_path = archive_file_path (w/o file name extension)
     int nameEndIndex = archive.getName().lastIndexOf('.');
     String rootDirPath = (nameEndIndex > 0) ? archive.getName().substring(0, nameEndIndex)
             : archive.getName();
     File rootDir = new File(rootDirPath);
     // add directories to the list
-    Enumeration entries = archive.entries();
+    Enumeration<JarEntry> entries = archive.entries();
     while (entries.hasMoreElements()) {
       JarEntry entry = (JarEntry) entries.nextElement();
       File file = new File(rootDir, entry.getName());
@@ -753,9 +751,9 @@ public class FileUtil {
           throws IOException {
     long totalBytes = 0;
     byte[] block = new byte[4096];
-    Enumeration jarList = jarFile.entries();
+    Enumeration<JarEntry> jarList = jarFile.entries();
     while (jarList.hasMoreElements()) {
-      JarEntry jarEntry = (JarEntry) jarList.nextElement();
+      JarEntry jarEntry = jarList.nextElement();
       if (!jarEntry.isDirectory()) {
         // check that file is accepted
         if (filter != null && !filter.accept(new File(jarEntry.getName())))
@@ -986,7 +984,7 @@ public class FileUtil {
    */
   public static String[] loadListOfStrings(BufferedReader iStream) throws IOException {
     String[] outputArray = null;
-    ArrayList outputList = new ArrayList();
+    List<String> outputList = new ArrayList<String>();
     String line = null;
     while ((line = iStream.readLine()) != null) {
       String string = line.trim();
@@ -1406,8 +1404,8 @@ public class FileUtil {
    *          The given list of files.
    * @return The list of files sorted by the 'last modified' time in the descending order.
    */
-  public static SortedSet sortFileListByTime(Collection fileList) {
-    TreeSet set = new TreeSet(new FileTimeComparator());
+  public static SortedSet<File> sortFileListByTime(Collection<File> fileList) {
+    TreeSet<File> set = new TreeSet<File>(new FileTimeComparator());
     set.addAll(fileList);
     return set;
   }
