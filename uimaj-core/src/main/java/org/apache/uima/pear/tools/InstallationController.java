@@ -37,12 +37,14 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.jar.JarFile;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.internal.util.I18nUtil;
+import org.apache.uima.pear.tools.InstallationDescriptor.ComponentInfo;
 import org.apache.uima.pear.util.FileUtil;
 import org.apache.uima.pear.util.MessageRouter;
 import org.apache.uima.pear.util.StringUtil;
@@ -313,9 +315,9 @@ public class InstallationController {
 
   private String _mainPearFileLocation = null;
 
-  private Hashtable _installationTable = new Hashtable();
+  private Hashtable<String, String> _installationTable = new Hashtable<String, String>();
 
-  private Hashtable _installationInsDs = new Hashtable();
+  private Hashtable<String, InstallationDescriptor> _installationInsDs = new Hashtable<String, InstallationDescriptor>();
 
   private InstallationDescriptor _insdObject;
 
@@ -354,10 +356,10 @@ public class InstallationController {
           throws IOException {
     // create list of JAR files in a given directory
     if (libDir.isDirectory()) {
-      Collection fileList = FileUtil.createFileList(libDir);
-      Iterator files = fileList.iterator();
+      Collection<File> fileList = FileUtil.createFileList(libDir);
+      Iterator<File> files = fileList.iterator();
       while (files.hasNext()) {
-        File file = (File) files.next();
+        File file = files.next();
         if (file.getName().toLowerCase().endsWith(JAR_FILE_EXT)) {
           if (listBuffer.length() > 0)
             listBuffer.append(File.pathSeparatorChar);
@@ -384,7 +386,7 @@ public class InstallationController {
   protected static boolean addToSystemEnvTable(Properties sysEnvTable, String localKey,
           String localValue) {
     boolean done = false;
-    Enumeration sysKeys = sysEnvTable.keys();
+    Enumeration<Object> sysKeys = sysEnvTable.keys();
     while (sysKeys.hasMoreElements() && !done) {
       String sysKey = (String) sysKeys.nextElement();
       // system key and local key could have different cases
@@ -407,16 +409,16 @@ public class InstallationController {
    */
   public static String[] buildArrayOfNetworkParams(InstallationDescriptor insdObject) {
     String[] paramsArray = new String[0];
-    ArrayList paramsList = new ArrayList();
+    List<String> paramsList = new ArrayList<String>();
     StringBuffer itemBuffer = new StringBuffer();
-    Set pNames = insdObject.getMainComponentNetworkParamNames();
+    Set<String> pNames = insdObject.getMainComponentNetworkParamNames();
     // go through specified parameters and add them to the list
     if (pNames != null) {
-      Iterator pList = pNames.iterator();
+      Iterator<String> pList = pNames.iterator();
       while (pList.hasNext()) {
-        String pName = (String) pList.next();
+        String pName = pList.next();
         Properties param = insdObject.getMainComponentNetworkParam(pName);
-        Enumeration keys = param.keys();
+        Enumeration<Object> keys = param.keys();
         while (keys.hasMoreElements()) {
           String key = (String) keys.nextElement();
           String value = param.getProperty(key);
@@ -464,12 +466,11 @@ public class InstallationController {
       cpBuffer = addListOfJarFiles(compLibDir, cpBuffer);
     }
     // append all specified CLASSPATH env.var. settings
-    Iterator envActions = insdObject.getInstallationActions(
+    Iterator<InstallationDescriptor.ActionInfo> envActions = insdObject.getInstallationActions(
             InstallationDescriptor.ActionInfo.SET_ENV_VARIABLE_ACT).iterator();
     while (envActions.hasNext()) {
       // if env.var.name is CLASSPATH, append value to the buffer
-      InstallationDescriptor.ActionInfo actInfo = (InstallationDescriptor.ActionInfo) envActions
-              .next();
+      InstallationDescriptor.ActionInfo actInfo = envActions.next();
       if (actInfo.params != null) {
         String varName = actInfo.params.getProperty(InstallationDescriptorHandler.VAR_NAME_TAG);
         String varValue = actInfo.params.getProperty(InstallationDescriptorHandler.VAR_VALUE_TAG);
@@ -501,12 +502,11 @@ public class InstallationController {
       pBuffer.append(compBinDir.getAbsolutePath().replace('\\', '/'));
     }
     // append all specified PATH env.var. settings
-    Iterator envActions = insdObject.getInstallationActions(
+    Iterator<InstallationDescriptor.ActionInfo> envActions = insdObject.getInstallationActions(
             InstallationDescriptor.ActionInfo.SET_ENV_VARIABLE_ACT).iterator();
     while (envActions.hasNext()) {
       // if env.var.name is PATH, append value to the buffer
-      InstallationDescriptor.ActionInfo actInfo = (InstallationDescriptor.ActionInfo) envActions
-              .next();
+      InstallationDescriptor.ActionInfo actInfo = envActions.next();
       if (actInfo.params != null) {
         String varName = actInfo.params.getProperty(InstallationDescriptorHandler.VAR_NAME_TAG);
         String varValue = actInfo.params.getProperty(InstallationDescriptorHandler.VAR_VALUE_TAG);
@@ -532,7 +532,7 @@ public class InstallationController {
     Properties envVarsTable = buildTableOfEnvVars(insdObject);
     StringBuffer envBuffer = new StringBuffer();
     // add env.var. setting in the JVM format
-    Enumeration names = envVarsTable.keys();
+    Enumeration<Object> names = envVarsTable.keys();
     while (names.hasMoreElements()) {
       String varName = (String) names.nextElement();
       String varValue = envVarsTable.getProperty(varName);
@@ -579,12 +579,11 @@ public class InstallationController {
   public static Properties buildTableOfEnvVars(InstallationDescriptor insdObject) {
     Properties envVarsTable = new Properties();
     // find all 'set_env_variable' actions
-    Iterator envActions = insdObject.getInstallationActions(
+    Iterator<InstallationDescriptor.ActionInfo> envActions = insdObject.getInstallationActions(
             InstallationDescriptor.ActionInfo.SET_ENV_VARIABLE_ACT).iterator();
     while (envActions.hasNext()) {
       // add env.var. settings to the table
-      InstallationDescriptor.ActionInfo actInfo = (InstallationDescriptor.ActionInfo) envActions
-              .next();
+      InstallationDescriptor.ActionInfo actInfo = envActions.next();
       String varName = actInfo.params.getProperty(InstallationDescriptorHandler.VAR_NAME_TAG);
       String varValue = actInfo.params.getProperty(InstallationDescriptorHandler.VAR_VALUE_TAG);
       // exclude CLASSPATH and PATH
@@ -661,8 +660,8 @@ public class InstallationController {
       }
       InstallationDescriptor insdObject = insdHandler.getInstallationDescriptor();
       // get list of separate delegate components
-      Hashtable dlgComponents = insdObject.getDelegateComponents();
-      Enumeration dlgCompIds = dlgComponents.keys();
+      Hashtable<String, ComponentInfo> dlgComponents = insdObject.getDelegateComponents();
+      Enumeration<String> dlgCompIds = dlgComponents.keys();
       while (dlgCompIds.hasMoreElements()) {
         String dlgCompId = (String) dlgCompIds.nextElement();
         if (!deleteInstalledFiles(dlgCompId, parentDir, true))
@@ -872,16 +871,16 @@ public class InstallationController {
    * @throws IOException
    *           If an I/O exception occurred while loading the installation descriptor files.
    */
-  protected static Hashtable getDelegateInstallationDescriptors(Hashtable installationTable)
+  protected static Hashtable<String, InstallationDescriptor> getDelegateInstallationDescriptors(Hashtable<String, String> installationTable)
           throws IOException {
     // get list of separately installed delegate components
-    Enumeration dlgIdList = installationTable.keys();
+    Enumeration<String> dlgIdList = installationTable.keys();
     // build Hashtable of delegate InsD objects
-    Hashtable dlgInsdObjects = new Hashtable();
+    Hashtable<String, InstallationDescriptor> dlgInsdObjects = new Hashtable<String, InstallationDescriptor>();
     while (dlgIdList.hasMoreElements()) {
       // process next delegate component
-      String dlgId = (String) dlgIdList.nextElement();
-      String dlgRootPath = (String) installationTable.get(dlgId);
+      String dlgId = dlgIdList.nextElement();
+      String dlgRootPath = installationTable.get(dlgId);
       // get InsD object for this component
       PackageBrowser dlgBrowser = new PackageBrowser(new File(dlgRootPath));
       InstallationDescriptor dlgInsdObject = dlgBrowser.getInstallationDescriptor();
@@ -1446,11 +1445,11 @@ public class InstallationController {
       cpBuffer.append(mainClassPath);
       // add component classpath for possible delegate components
       if (_installationTable.size() > 0) {
-        Enumeration dlgIdList = _installationTable.keys();
+        Enumeration<String> dlgIdList = _installationTable.keys();
         while (dlgIdList.hasMoreElements()) {
           // process next delegate component
-          String dlgId = (String) dlgIdList.nextElement();
-          String dlgRootPath = (String) _installationTable.get(dlgId);
+          String dlgId = dlgIdList.nextElement();
+          String dlgRootPath = _installationTable.get(dlgId);
           InstallationDescriptor dlgInsD = (InstallationDescriptor) _installationInsDs.get(dlgId);
           String dlgClassPath = buildComponentClassPath(dlgRootPath, dlgInsD, true);
           if (dlgClassPath.length() > 0) {
@@ -1481,11 +1480,11 @@ public class InstallationController {
       pBuffer.append(mainPath);
       // add component path for possible delegate components
       if (_installationTable.size() > 0) {
-        Enumeration dlgIdList = _installationTable.keys();
+        Enumeration<String> dlgIdList = _installationTable.keys();
         while (dlgIdList.hasMoreElements()) {
           // process next delegate component
-          String dlgId = (String) dlgIdList.nextElement();
-          String dlgRootPath = (String) _installationTable.get(dlgId);
+          String dlgId = dlgIdList.nextElement();
+          String dlgRootPath = _installationTable.get(dlgId);
           InstallationDescriptor dlgInsD = (InstallationDescriptor) _installationInsDs.get(dlgId);
           String dlgPath = buildComponentPath(dlgRootPath, dlgInsD);
           if (dlgPath.length() > 0) {
@@ -1515,7 +1514,7 @@ public class InstallationController {
       Properties envVars = buildTableOfEnvVars(_insdObject);
       // add required env vars for possible delegate components
       if (_installationTable.size() > 0) {
-        Enumeration dlgIdList = _installationTable.keys();
+        Enumeration<String> dlgIdList = _installationTable.keys();
         while (dlgIdList.hasMoreElements()) {
           // process next delegate component
           String dlgId = (String) dlgIdList.nextElement();
@@ -1657,10 +1656,10 @@ public class InstallationController {
    */
   protected synchronized void installDelegateComponents() {
     // get list of separate delegate components IDs
-    Enumeration dlgList = _insdObject.getDelegateComponents().keys();
+    Enumeration<String> dlgList = _insdObject.getDelegateComponents().keys();
     while (dlgList.hasMoreElements()) {
       // get next separate delegate component ID
-      String componentId = (String) dlgList.nextElement();
+      String componentId = dlgList.nextElement();
       // check if the same component is available (not in use)
       String componentRootPath = null;
       try {
@@ -1707,10 +1706,10 @@ public class InstallationController {
    */
   protected synchronized void installDelegateComponentsDescriptors() {
     // get list of separate delegate components IDs
-    Enumeration dlgList = _insdObject.getDelegateComponents().keys();
+    Enumeration<String> dlgList = _insdObject.getDelegateComponents().keys();
     while (dlgList.hasMoreElements()) {
       // get next separate delegate component ID
-      String componentId = (String) dlgList.nextElement();
+      String componentId = dlgList.nextElement();
       // install XML descriptors of the next delegate component
       InstallationController dlgController = new InstallationController(componentId,
               _installationDirPath, false, this._msgRouter, this._defaultMsgListener,
@@ -1791,7 +1790,7 @@ public class InstallationController {
         fWriter.println("PATH=" + path);
       // the rest of env.vars.
       Properties envVarTable = buildTableOfEnvVars();
-      Enumeration envVarList = envVarTable.keys();
+      Enumeration<Object> envVarList = envVarTable.keys();
       while (envVarList.hasMoreElements()) {
         String varName = (String) envVarList.nextElement();
         String varValue = envVarTable.getProperty(varName);
@@ -1841,9 +1840,9 @@ public class InstallationController {
     // set local config params
     packageConfig.setProperty(LocalInstallationAgent.MAIN_ROOT, _mainComponentRootPath.replace(
             '\\', '/'));
-    Iterator dlgIdList = _installationTable.keySet().iterator();
+    Iterator<String> dlgIdList = _installationTable.keySet().iterator();
     while (dlgIdList.hasNext()) {
-      String id = (String) dlgIdList.next();
+      String id = dlgIdList.next();
       String idRoot = LocalInstallationAgent.COMP_ROOT_PREFIX + id
               + LocalInstallationAgent.COMP_ROOT_SUFFIX;
       packageConfig.setProperty(idRoot, ((String) _installationTable.get(id)).replace('\\', '/'));

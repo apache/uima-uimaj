@@ -86,9 +86,9 @@ public class PackageBrowser {
 
   private boolean _archived;
 
-  private TreeSet _allFiles = new TreeSet();
+  private TreeSet<File> _allFiles = new TreeSet<File>();
 
-  private TreeSet _allDirs = new TreeSet();
+  private TreeSet<File> _allDirs = new TreeSet<File>();
 
   /**
    * Constructor that allows browsing a given PEAR package without unarchiving it.
@@ -240,10 +240,10 @@ public class PackageBrowser {
   public File[] findDirectory(String dirNamePattern) {
     String pattern = dirNamePattern.replace('\\', '/');
     File[] foundDirs = new File[0];
-    ArrayList foundDirList = new ArrayList();
-    Iterator list = _allDirs.iterator();
+    ArrayList<File> foundDirList = new ArrayList<File>();
+    Iterator<File> list = _allDirs.iterator();
     while (list.hasNext()) {
-      File dir = (File) list.next();
+      File dir = list.next();
       String dirName = dir.getAbsolutePath().substring(_rootDir.getAbsolutePath().length())
               .replace('\\', '/');
       if (pattern.startsWith(File.separator)) {
@@ -272,10 +272,10 @@ public class PackageBrowser {
   public File[] findFile(String fileNamePattern) {
     String pattern = fileNamePattern.replace('\\', '/');
     File[] foundFiles = new File[0];
-    ArrayList foundFileList = new ArrayList();
-    Iterator list = _allFiles.iterator();
+    ArrayList<File> foundFileList = new ArrayList<File>();
+    Iterator<File> list = _allFiles.iterator();
     while (list.hasNext()) {
-      File file = (File) list.next();
+      File file = list.next();
       String fileName = file.getAbsolutePath().substring(_rootDir.getAbsolutePath().length())
               .replace('\\', '/');
       if (pattern.startsWith(File.separator)) {

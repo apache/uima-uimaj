@@ -72,11 +72,11 @@ public class InstallationProcessor {
   // Attributes
   private String _mainRootPath;
 
-  private Hashtable _installationTable = new Hashtable();
+  private Hashtable<String, String> _installationTable = new Hashtable<String, String>();
 
-  private Hashtable _urlSubstitutionTable = new Hashtable();
+  private Hashtable<String, String> _urlSubstitutionTable = new Hashtable<String, String>();
 
-  private Hashtable _pathSubstitutionTable = new Hashtable();
+  private Hashtable<String, String> _pathSubstitutionTable = new Hashtable<String, String>();
 
   private InstallationDescriptor _insdObject = null;
 
@@ -85,7 +85,7 @@ public class InstallationProcessor {
   private InstallationController _controller = null;
 
   /**
-   * Builds $component_id$<suffix> reqular expression string for a given component ID and a given
+   * Builds $component_id$<suffix> regular expression string for a given component ID and a given
    * 'suffix' string. Valid 'suffix' strings are InstallationDescriptor.DELEGATE_ROOT_SUFFIX_REGEX
    * for absolute path, InstallationDescriptor.DELEGATE_ROOT_REL_SUFFIX_REGEX for relative path,
    * InstallationDescriptor.DELEGATE_ROOT_URL_SUFFIX_REGEX for URL.
@@ -264,7 +264,7 @@ public class InstallationProcessor {
    * @param installationTable
    *          The given table of installed delegate components.
    */
-  public InstallationProcessor(String mainRootPath, Hashtable installationTable) {
+  public InstallationProcessor(String mainRootPath, Hashtable<String, String> installationTable) {
     this(mainRootPath, installationTable, null);
   }
 
@@ -279,7 +279,7 @@ public class InstallationProcessor {
    * @param controller
    *          The given <code>InstallationController</code> requestor.
    */
-  public InstallationProcessor(String mainRootPath, Hashtable installationTable,
+  public InstallationProcessor(String mainRootPath, Hashtable<String, String> installationTable,
           InstallationController controller) {
     _controller = controller;
     _mainRootPath = mainRootPath.replace('\\', '/');
@@ -303,13 +303,13 @@ public class InstallationProcessor {
    *          The given main component root directory path.
    */
   protected void initSubstitutionTables(String mainRootPath) {
-    Enumeration idList = _installationTable.keys();
+    Enumeration<String> idList = _installationTable.keys();
     while (idList.hasMoreElements()) {
-      String id = (String) idList.nextElement();
+      String id = idList.nextElement();
       String compIdRootUrlRegEx = componentIdRootRegExp(id, DELEGATE_ROOT_URL_SUFFIX_REGEX);
       String compIdRootRegEx = componentIdRootRegExp(id, DELEGATE_ROOT_SUFFIX_REGEX);
       // put 1 entry for URL and absolute path
-      String rootPath = (String) _installationTable.get(id);
+      String rootPath = _installationTable.get(id);
       String rootPathUrl = FileUtil.localPathToFileUrl(rootPath);
       _urlSubstitutionTable.put(compIdRootUrlRegEx, rootPathUrl);
       _pathSubstitutionTable.put(compIdRootRegEx, rootPath);
@@ -346,7 +346,7 @@ public class InstallationProcessor {
     // set main root path
     _insdObject.setMainComponentRoot(_mainRootPath);
     // perform required actions
-    Iterator actionList = _insdObject.getInstallationActions().iterator();
+    Iterator<InstallationDescriptor.ActionInfo> actionList = _insdObject.getInstallationActions().iterator();
     while (actionList.hasNext()) {
       InstallationDescriptor.ActionInfo action = (InstallationDescriptor.ActionInfo) actionList
               .next();
@@ -377,7 +377,7 @@ public class InstallationProcessor {
    *          The given <code>Properties</code> object.
    */
   protected void substituteStringVariablesInAction(Properties params) {
-    Enumeration paramNames = params.propertyNames();
+    Enumeration<?> paramNames = params.propertyNames();
     while (paramNames.hasMoreElements()) {
       String paramName = (String) paramNames.nextElement();
       String paramValue = params.getProperty(paramName);
@@ -391,10 +391,10 @@ public class InstallationProcessor {
         // substitute '$main_root_url' and '$main_root'
         paramValue = substituteMainRootInString(paramValue, _mainRootPath);
         // substitute '$dlg_comp_id$root_url'
-        Enumeration regexList = _urlSubstitutionTable.keys();
+        Enumeration<String> regexList = _urlSubstitutionTable.keys();
         while (regexList.hasMoreElements()) {
-          String regex = (String) regexList.nextElement();
-          String replacement = (String) _urlSubstitutionTable.get(regex);
+          String regex = regexList.nextElement();
+          String replacement = _urlSubstitutionTable.get(regex);
           paramValue = paramValue.replaceAll(regex, StringUtil.toRegExpReplacement(replacement));
         }
         // substitute '$dlg_comp_id$root'
@@ -421,9 +421,9 @@ public class InstallationProcessor {
    */
   protected void substituteStringVariablesInFiles(File dir) throws IOException {
     // get list of files in the given dir with subdirs
-    Iterator fileList = FileUtil.createFileList(dir, true).iterator();
+    Iterator<File> fileList = FileUtil.createFileList(dir, true).iterator();
     while (fileList.hasNext()) {
-      File file = (File) fileList.next();
+      File file = fileList.next();
       // substitute '$main_root_url'
       String replacement = FileUtil.localPathToFileUrl(_mainRootPath);
       FileUtil.replaceStringInFile(file, MAIN_ROOT_URL_REGEX, replacement);
@@ -431,10 +431,10 @@ public class InstallationProcessor {
       replacement = _mainRootPath;
       FileUtil.replaceStringInFile(file, MAIN_ROOT_REGEX, replacement);
       // substitute '$dlg_comp_id$root_rel'
-      Enumeration compList = _installationTable.keys();
+      Enumeration<String> compList = _installationTable.keys();
       while (compList.hasMoreElements()) {
-        String compId = (String) compList.nextElement();
-        String compRootPath = (String) _installationTable.get(compId);
+        String compId = compList.nextElement();
+        String compRootPath = _installationTable.get(compId);
         String regex = componentIdRootRegExp(compId, DELEGATE_ROOT_REL_SUFFIX_REGEX);
         try {
           replacement = FileUtil.computeRelativePath(file.getParentFile(), new File(compRootPath));
@@ -444,10 +444,10 @@ public class InstallationProcessor {
         }
       }
       // substitute '$dlg_comp_id$root_url'
-      Enumeration regexList = _urlSubstitutionTable.keys();
+      Enumeration<String> regexList = _urlSubstitutionTable.keys();
       while (regexList.hasMoreElements()) {
-        String regex = (String) regexList.nextElement();
-        replacement = (String) _urlSubstitutionTable.get(regex);
+        String regex = regexList.nextElement();
+        replacement = _urlSubstitutionTable.get(regex);
         FileUtil.replaceStringInFile(file, regex, replacement);
       }
       // substitute '$dlg_comp__id$root'

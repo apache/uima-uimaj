@@ -30,6 +30,7 @@ import java.util.Properties;
 
 import org.apache.uima.UIMAException;
 import org.apache.uima.pear.tools.InstallationController.TestStatus;
+import org.apache.uima.pear.tools.InstallationDescriptor.ComponentInfo;
 import org.apache.uima.pear.util.FileUtil;
 import org.apache.uima.resource.ResourceInitializationException;
 
@@ -112,11 +113,11 @@ public class LocalInstallationAgent {
           InstallationDescriptor insdObject) {
     boolean isOk = false;
     if (packageConfig.getProperty(MAIN_ROOT) != null) {
-      Hashtable dlgTable = insdObject.getDelegateComponents();
-      Iterator idList = dlgTable.keySet().iterator();
+      Hashtable<String, ComponentInfo> dlgTable = insdObject.getDelegateComponents();
+      Iterator<String> idList = dlgTable.keySet().iterator();
       int counter = 0;
       while (idList.hasNext()) {
-        String id = (String) idList.next();
+        String id = idList.next();
         String idRoot = COMP_ROOT_PREFIX + id + COMP_ROOT_SUFFIX;
         if (packageConfig.getProperty(idRoot) != null)
           counter++;
@@ -153,7 +154,7 @@ public class LocalInstallationAgent {
       FileUtil.replaceStringInFile(file, InstallationProcessor.MAIN_ROOT_REGEX, replacement);
     }
     // substitute $comp_id$root macros for all delegates
-    Iterator idList = insdObject.getDelegateComponents().keySet().iterator();
+    Iterator<String> idList = insdObject.getDelegateComponents().keySet().iterator();
     while (idList.hasNext()) {
       String id = (String) idList.next();
       String idRoot = COMP_ROOT_PREFIX + id + COMP_ROOT_SUFFIX;
@@ -190,9 +191,9 @@ public class LocalInstallationAgent {
     String mainRootPath = packageConfig.getProperty(MAIN_ROOT);
     insdObject.setMainComponentRoot(mainRootPath);
     // set root dirs for all delegates
-    Iterator idList = insdObject.getDelegateComponents().keySet().iterator();
+    Iterator<String> idList = insdObject.getDelegateComponents().keySet().iterator();
     while (idList.hasNext()) {
-      String id = (String) idList.next();
+      String id = idList.next();
       String idRoot = COMP_ROOT_PREFIX + id + COMP_ROOT_SUFFIX;
       String compRootPath = packageConfig.getProperty(idRoot);
       insdObject.setDelegateComponentRoot(id, compRootPath);
@@ -324,15 +325,15 @@ public class LocalInstallationAgent {
   protected synchronized File[] localizeComponentFiles() throws IOException {
     // localize all files in conf & desc dirs
     File confDir = new File(_mainRootDir, InstallationController.PACKAGE_CONF_DIR);
-    Collection confDirFiles = FileUtil.createFileList(confDir, false);
+    Collection<File> confDirFiles = FileUtil.createFileList(confDir, false);
     File descDir = new File(_mainRootDir, InstallationController.PACKAGE_DESC_DIR);
-    Collection descDirFiles = FileUtil.createFileList(descDir, false);
+    Collection<File> descDirFiles = FileUtil.createFileList(descDir, false);
     File[] fileList = new File[confDirFiles.size() + descDirFiles.size()];
     int fileCounter = 0;
     // backup and localize files in conf dir
-    Iterator dirList = confDirFiles.iterator();
+    Iterator<File> dirList = confDirFiles.iterator();
     while (dirList.hasNext()) {
-      File orgFile = (File) dirList.next();
+      File orgFile = dirList.next();
       String bakFileName = orgFile.getName().concat(BACKUP_FILE_SUFFIX);
       File bakFile = new File(orgFile.getParent(), bakFileName);
       if (FileUtil.copyFile(orgFile, bakFile)) {
