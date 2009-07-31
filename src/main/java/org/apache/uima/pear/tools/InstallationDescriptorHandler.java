@@ -35,6 +35,9 @@ import java.util.jar.JarFile;
 
 import javax.xml.parsers.SAXParser;
 
+import org.apache.uima.pear.tools.InstallationDescriptor.ActionInfo;
+import org.apache.uima.pear.tools.InstallationDescriptor.ArgInfo;
+import org.apache.uima.pear.tools.InstallationDescriptor.ComponentInfo;
 import org.apache.uima.pear.util.XMLUtil;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -255,12 +258,12 @@ public class InstallationDescriptorHandler extends DefaultHandler {
         // SERVICE_COMMAND_ARGS
         XMLUtil.printXMLTag(SERVICE_COMMAND_ARGS_TAG, oWriter, false, 2);
         oWriter.println();
-        Iterator argList = service.getArgs().iterator();
+        Iterator<ArgInfo> argList = service.getArgs().iterator();
         while (argList.hasNext()) {
           // ARGUMENT - 3rd level
           XMLUtil.printXMLTag(ARGUMENT_TAG, oWriter, false, 3);
           oWriter.println();
-          InstallationDescriptor.ArgInfo arg = (InstallationDescriptor.ArgInfo) argList.next();
+          InstallationDescriptor.ArgInfo arg = argList.next();
           // VALUE - 4th level elements
           XMLUtil.printXMLElement(VALUE_TAG, arg.value, oWriter, 4);
           oWriter.println();
@@ -276,12 +279,12 @@ public class InstallationDescriptorHandler extends DefaultHandler {
         oWriter.println();
       }
       // network component parameters block
-      Set netParamNames = insdObject.getMainComponentNetworkParamNames();
+      Set<String> netParamNames = insdObject.getMainComponentNetworkParamNames();
       if (netParamNames != null) {
         // NETWORK_PARAMETERS
         XMLUtil.printXMLTag(NETWORK_PARAMETERS_TAG, oWriter, false, 2);
         oWriter.println();
-        Iterator nameList = netParamNames.iterator();
+        Iterator<String> nameList = netParamNames.iterator();
         while (nameList.hasNext()) {
           String name = (String) nameList.next();
           Properties attributes = insdObject.getMainComponentNetworkParam(name);
@@ -333,14 +336,14 @@ public class InstallationDescriptorHandler extends DefaultHandler {
     XMLUtil.printXMLTag(INSTALLATION_TAG, oWriter, false, 1);
     oWriter.println();
     // delegate components, if specified
-    Hashtable dlgTable = insdObject.getDelegateComponents();
-    Iterator dlgList = dlgTable.keySet().iterator();
+    Hashtable<String, ComponentInfo> dlgTable = insdObject.getDelegateComponents();
+    Iterator<String> dlgList = dlgTable.keySet().iterator();
     while (dlgList.hasNext()) {
       // DELEGATE_COMPONENT specs - 2nd level
       XMLUtil.printXMLTag(DELEGATE_COMPONENT_TAG, oWriter, false, 2);
       oWriter.println();
       // 3rd level elements
-      String dlgId = (String) dlgList.next();
+      String dlgId = dlgList.next();
       InstallationDescriptor.ComponentInfo dlgInfo = (InstallationDescriptor.ComponentInfo) dlgTable
               .get(dlgId);
       XMLUtil.printXMLElement(ID_TAG, dlgId, oWriter, 3);
@@ -352,10 +355,9 @@ public class InstallationDescriptorHandler extends DefaultHandler {
       oWriter.println();
     }
     // installation actions, if specified
-    Iterator actList = insdObject.getInstallationActions().iterator();
+    Iterator<ActionInfo> actList = insdObject.getInstallationActions().iterator();
     while (actList.hasNext()) {
-      InstallationDescriptor.ActionInfo actInfo = (InstallationDescriptor.ActionInfo) actList
-              .next();
+      ActionInfo actInfo = actList.next();
       // PROCESS specs - 2nd level
       XMLUtil.printXMLTag(PROCESS_TAG, oWriter, false, 2);
       oWriter.println();

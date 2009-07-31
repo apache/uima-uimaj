@@ -104,7 +104,8 @@ public class InstallationDescriptor implements Serializable {
    */
   public static class ServiceInfo {
     // private attributes
-    private ArrayList _args = new ArrayList(); // array of ArgInfo objects
+    
+    private ArrayList<ArgInfo> _args = new ArrayList<ArgInfo>();
 
     // public attributes
     public String command;
@@ -118,7 +119,7 @@ public class InstallationDescriptor implements Serializable {
     /**
      * @return <code>Collection</code> of ArgInfo objects.
      */
-    public Collection getArgs() {
+    public Collection<ArgInfo> getArgs() {
       return _args;
     }
   }
@@ -162,7 +163,7 @@ public class InstallationDescriptor implements Serializable {
 
     public ServiceInfo serviceInfo = null;
 
-    public Hashtable networkParams = null;
+    public Hashtable<String, Properties> networkParams = null;
 
     public String collIteratorDescFilePath = null;
 
@@ -195,9 +196,9 @@ public class InstallationDescriptor implements Serializable {
 
   private ComponentInfo _mainComponent = null;
 
-  private Hashtable _delegateComponents = new Hashtable();
+  private Hashtable<String, ComponentInfo> _delegateComponents = new Hashtable<String, ComponentInfo>();
 
-  private ArrayList _installationActions = new ArrayList();
+  private ArrayList<ActionInfo> _installationActions = new ArrayList<ActionInfo>();
 
   /**
    * Adds a property specified by given name and value to a given <code>Properties</code> object.
@@ -353,7 +354,7 @@ public class InstallationDescriptor implements Serializable {
       // a) substitute $main_root and $comp_id$root in action fields
       // b) substitute standard path separator (';') with OS dependent
       // in FILE_TAG, REPLACE_WITH_TAG and VAR_VALUE_TAG values
-      Enumeration keys = mAction.params.keys();
+      Enumeration<Object> keys = mAction.params.keys();
       while (keys.hasMoreElements()) {
         String key = (String) keys.nextElement();
         String value = mAction.params.getProperty(key);
@@ -366,10 +367,10 @@ public class InstallationDescriptor implements Serializable {
                     _mainComponent.rootDirPath);
             mAction.params.setProperty(key, value);
           }
-          Iterator dlgEntries = getDelegateComponents().entrySet().iterator();
+          Iterator<Map.Entry<String, ComponentInfo>> dlgEntries = getDelegateComponents().entrySet().iterator();
           while (dlgEntries.hasNext()) {
-            Map.Entry dlgEntry = (Map.Entry) dlgEntries.next();
-            ComponentInfo dlgInfo = (ComponentInfo) dlgEntry.getValue();
+            Map.Entry<String, ComponentInfo> dlgEntry = dlgEntries.next();
+            ComponentInfo dlgInfo = dlgEntry.getValue();
             if (dlgInfo.rootDirPath != null) {
               // substitute '$dlg_comp_id$root' macros
               value = InstallationProcessor.substituteCompIdRootInString(value, dlgInfo.getId(),
@@ -490,9 +491,9 @@ public class InstallationDescriptor implements Serializable {
    *          The given action name.
    */
   public synchronized void deleteInstallationActions(String actionName) {
-    Iterator actionList = _installationActions.iterator();
+    Iterator<ActionInfo> actionList = _installationActions.iterator();
     while (actionList.hasNext()) {
-      ActionInfo action = (ActionInfo) actionList.next();
+      ActionInfo action = actionList.next();
       if (action.getName().equals(actionName)) {
         _installationActions.remove(action);
         actionList = _installationActions.iterator();
@@ -529,7 +530,7 @@ public class InstallationDescriptor implements Serializable {
    * @return The list of the <code>ComponentInfo</code> objects that encapsulate specifications of
    *         the registered delegate components (for aggregate component).
    */
-  public Hashtable getDelegateComponents() {
+  public Hashtable <String, ComponentInfo>getDelegateComponents() {
     return _delegateComponents;
   }
 
@@ -545,7 +546,7 @@ public class InstallationDescriptor implements Serializable {
    * @return The list of the <code>ActionInfo</code> objects that encapsulate specifications of
    *         all requested installation actions.
    */
-  public Collection getInstallationActions() {
+  public Collection<ActionInfo> getInstallationActions() {
     return _installationActions;
   }
 
@@ -557,11 +558,11 @@ public class InstallationDescriptor implements Serializable {
    * 
    * @return The list of the <code>ActionInfo</code> objects that have the given action name.
    */
-  public Collection getInstallationActions(String actionName) {
-    ArrayList selActions = new ArrayList();
-    Iterator allActions = getInstallationActions().iterator();
+  public Collection<ActionInfo> getInstallationActions(String actionName) {
+    ArrayList<ActionInfo> selActions = new ArrayList<ActionInfo>();
+    Iterator<ActionInfo> allActions = getInstallationActions().iterator();
     while (allActions.hasNext()) {
-      ActionInfo actInfo = (ActionInfo) allActions.next();
+      ActionInfo actInfo = allActions.next();
       if (actInfo.getName().equals(actionName))
         selActions.add(actInfo);
     }
@@ -731,7 +732,7 @@ public class InstallationDescriptor implements Serializable {
   /**
    * @return The <code>Set</code> of the network component parameter names.
    */
-  public synchronized Set getMainComponentNetworkParamNames() {
+  public synchronized Set<String> getMainComponentNetworkParamNames() {
     return (_mainComponent != null && _mainComponent.networkParams != null) ? _mainComponent.networkParams
             .keySet()
             : null;
@@ -866,10 +867,10 @@ public class InstallationDescriptor implements Serializable {
     }
     // substitute $dlg_comp_id$root macros in apropriate
     // action fields
-    Iterator list = getInstallationActions().iterator();
+    Iterator<ActionInfo> list = getInstallationActions().iterator();
     while (list.hasNext()) {
-      ActionInfo action = (ActionInfo) list.next();
-      Enumeration keys = action.params.keys();
+      ActionInfo action = list.next();
+      Enumeration<Object> keys = action.params.keys();
       while (keys.hasMoreElements()) {
         String key = (String) keys.nextElement();
         String value = action.params.getProperty(key);
@@ -1023,7 +1024,7 @@ public class InstallationDescriptor implements Serializable {
   public synchronized void setMainComponentNetworkParam(String paramName, Properties paramSpecs) {
     if (_mainComponent != null) {
       if (_mainComponent.networkParams == null)
-        _mainComponent.networkParams = new Hashtable();
+        _mainComponent.networkParams = new Hashtable<String, Properties>();
       _mainComponent.networkParams.put(paramName, paramSpecs);
     }
   }
@@ -1068,10 +1069,10 @@ public class InstallationDescriptor implements Serializable {
         _mainComponent.casConsumerDescFilePath = InstallationProcessor.substituteMainRootInString(
                 _mainComponent.casConsumerDescFilePath, _mainComponent.rootDirPath);
       // substitute $main_root macros in all specs of actions
-      Iterator list = getInstallationActions().iterator();
+      Iterator<ActionInfo> list = getInstallationActions().iterator();
       while (list.hasNext()) {
         ActionInfo action = (ActionInfo) list.next();
-        Enumeration keys = action.params.keys();
+        Enumeration<Object> keys = action.params.keys();
         while (keys.hasMoreElements()) {
           String key = (String) keys.nextElement();
           String value = action.params.getProperty(key);

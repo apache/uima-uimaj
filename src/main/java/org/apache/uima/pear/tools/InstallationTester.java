@@ -20,7 +20,6 @@
 package org.apache.uima.pear.tools;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Properties;
@@ -170,7 +169,7 @@ public class InstallationTester {
 
     // get pear env variables and set them as system properties
     Properties props = pkgBrowser.getComponentEnvVars();
-    Iterator keyIterator = props.keySet().iterator();
+    Iterator<Object> keyIterator = props.keySet().iterator();
     while (keyIterator.hasNext()) {
       String key = (String) keyIterator.next();
       String value = (String) props.get(key);

@@ -189,7 +189,7 @@ public class PackageCreator {
 
     // set additional environment variables
     if (envVars != null) {
-      Enumeration keys = envVars.keys();
+      Enumeration<Object> keys = envVars.keys();
       while (keys.hasMoreElements()) {
         InstallationDescriptor.ActionInfo actionInfo = new InstallationDescriptor.ActionInfo(
                 InstallationDescriptor.ActionInfo.SET_ENV_VARIABLE_ACT);

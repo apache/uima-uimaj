@@ -51,7 +51,7 @@ public class StringUtil {
     // copy 'source' to 'result'
     result.putAll(source);
     // append 'plus' to 'result', checking same names
-    Enumeration plusNames = plus.propertyNames();
+    Enumeration<?> plusNames = plus.propertyNames();
     while (plusNames.hasMoreElements()) {
       String name = (String) plusNames.nextElement();
       String value = plus.getProperty(name);
@@ -121,7 +121,7 @@ public class StringUtil {
    *          The given Java <code>Class</code>.
    * @return The plain name (without package name) of the given Java <code>Class</code>.
    */
-  public static String getPlainClassName(Class aClass) {
+  public static String getPlainClassName(Class<?> aClass) {
     int index = aClass.getName().lastIndexOf('.');
     return (index > 0) ? aClass.getName().substring(index + 1) : aClass.getName();
   }

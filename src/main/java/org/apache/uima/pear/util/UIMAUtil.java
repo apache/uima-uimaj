@@ -79,7 +79,7 @@ public class UIMAUtil {
   public static final String REUSABLE_RESOURCE_CTG = "RR";
 
   // static attributes
-  private static Hashtable __errTableByUri = new Hashtable();
+  private static Hashtable<String, Exception> __errTableByUri = new Hashtable<String, Exception>();
 
   /**
    * Returns the last logged <code>Exception</code> object associated with a given XML descriptor
