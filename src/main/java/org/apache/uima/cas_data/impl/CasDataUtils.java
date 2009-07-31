@@ -32,11 +32,9 @@ import org.apache.uima.util.Level;
 
 /**
  * Some utilities for dealing with CasData
- * 
- * 
- * 
  */
 public class CasDataUtils {
+  
   /**
    * resource bundle for log messages
    */
@@ -45,10 +43,10 @@ public class CasDataUtils {
   /**
    * current class
    */
-  private static final Class CLASS_NAME = CasDataUtils.class;
+  private static final Class<CasDataUtils> CLASS_NAME = CasDataUtils.class;
 
   public static boolean hasFeature(CasData aCAS, String featureName) {
-    Iterator it = aCAS.getFeatureStructures();
+    Iterator<FeatureStructure> it = aCAS.getFeatureStructures();
     while (it.hasNext()) {
       Object object = it.next();
       if (object instanceof FeatureStructure) {
@@ -63,7 +61,7 @@ public class CasDataUtils {
   }
 
   public static boolean hasFeatureStructure(CasData aCAS, String aName) {
-    Iterator it = aCAS.getFeatureStructures();
+    Iterator<FeatureStructure> it = aCAS.getFeatureStructures();
     while (it.hasNext()) {
       Object object = it.next();
       if (object instanceof FeatureStructure) {
@@ -77,7 +75,7 @@ public class CasDataUtils {
   }
 
   public static void dumpFeatures(CasData aCAS) {
-    Iterator it = aCAS.getFeatureStructures();
+    Iterator<FeatureStructure> it = aCAS.getFeatureStructures();
     while (it.hasNext()) {
       Object object = it.next();
       if (object instanceof FeatureStructure) {
@@ -100,7 +98,7 @@ public class CasDataUtils {
   }
 
   public static String getFeatureValueByType(CasData aCAS, String featureName) {
-    Iterator it = aCAS.getFeatureStructures();
+    Iterator<FeatureStructure> it = aCAS.getFeatureStructures();
     String featureValue = null;
     while (it.hasNext()) {
       Object object = it.next();
@@ -143,9 +141,9 @@ public class CasDataUtils {
 
   public static String[] getFeatureStructureValues(CasData aCAS, String featureStructureName,
           String featureName) {
-    Iterator it = aCAS.getFeatureStructures();
+    Iterator<FeatureStructure> it = aCAS.getFeatureStructures();
     String featureValue = null;
-    Vector v = new Vector();
+    Vector<String> v = new Vector<String>();
     while (it.hasNext()) {
       Object object = it.next();
       if (object instanceof FeatureStructure) {
@@ -172,7 +170,7 @@ public class CasDataUtils {
 
   public static String getFeatureValueByType(CasData aCAS, String aFeatureStructure,
           String featureName) {
-    Iterator it = aCAS.getFeatureStructures();
+    Iterator<FeatureStructure> it = aCAS.getFeatureStructures();
     String featureValue = null;
     while (it.hasNext()) {
       Object object = it.next();
@@ -191,7 +189,7 @@ public class CasDataUtils {
 
   public static NameValuePair[] getCasDataFeatures(CasData aCasData, String aFeatureStructureName) {
     NameValuePair[] valuePairSet = null;
-    Iterator it = aCasData.getFeatureStructures();
+    Iterator<FeatureStructure> it = aCasData.getFeatureStructures();
 
     while (it.hasNext()) {
       Object object = it.next();

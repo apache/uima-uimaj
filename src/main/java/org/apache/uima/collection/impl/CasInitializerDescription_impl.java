@@ -20,6 +20,7 @@
 package org.apache.uima.collection.impl;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.uima.Constants;
 import org.apache.uima.UIMAFramework;
@@ -105,7 +106,7 @@ public class CasInitializerDescription_impl extends ResourceCreationSpecifier_im
                   getImplementationName(), CasInitializer.class.getName(), getSourceUrlString() });
     }
     // try to create a CAS
-    ArrayList metadata = new ArrayList();
+    List<ProcessingResourceMetaData> metadata = new ArrayList<ProcessingResourceMetaData>();
     metadata.add(getCasInitializerMetaData());
     CasCreationUtils.createCas(metadata);
   }

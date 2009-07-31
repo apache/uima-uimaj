@@ -40,7 +40,7 @@ public abstract class CasDataCollectionReader_ImplBase extends ConfigurableResou
   /**
    * current class
    */
-  private static final Class CLASS_NAME = CasDataCollectionReader_ImplBase.class;
+  private static final Class<CasDataCollectionReader_ImplBase> CLASS_NAME = CasDataCollectionReader_ImplBase.class;
 
   /**
    * Called by the framework to initialize this Collection Reader. Subclasses should generally NOT
