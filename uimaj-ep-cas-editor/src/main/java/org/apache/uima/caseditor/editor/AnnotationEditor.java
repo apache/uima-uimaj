@@ -63,7 +63,6 @@ import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.AnnotationPainter;
 import org.eclipse.jface.text.source.IAnnotationAccess;
 import org.eclipse.jface.text.source.IAnnotationAccessExtension;
-import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.IAnnotationModelExtension;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewer;
@@ -945,9 +944,29 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
                 - annotations.getFirst().getBegin());
 
         // move caret to new position when selected outside of the editor
-        if (AnnotationEditor.this != part)
-        {
-          getSourceViewer().getTextWidget().setCaretOffset(annotations.getLast().getEnd());
+        if (AnnotationEditor.this != part) {
+          
+          // Note: The caret cannot be placed between line delimiters
+          // See bug UIMA-1470
+          int newCaretOffset = annotations.getLast().getEnd();
+          String text = getSourceViewer().getTextWidget().getText();
+          
+          if (newCaretOffset > 0 && newCaretOffset < text.length()) {
+            char beforeCaret = text.charAt(newCaretOffset -1);
+            char afterCaret = text.charAt(newCaretOffset);
+            
+            final int cr = 0x0D;
+            final int lf = 0x0A;
+            if (beforeCaret == cr && afterCaret == lf) {
+              // In case the caret offset is in the middle
+              // of a multiple-char line delimiter place caret
+              // before
+              newCaretOffset = newCaretOffset -1;
+            }
+          }
+          
+          // check bounds, if out of text do nothing
+          getSourceViewer().getTextWidget().setCaretOffset(newCaretOffset);
         }
       }
     }
