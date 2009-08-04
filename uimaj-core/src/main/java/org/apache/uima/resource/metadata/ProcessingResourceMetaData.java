@@ -37,7 +37,8 @@ public interface ProcessingResourceMetaData extends ResourceMetaData {
   /**
    * Retrieves the Type System used by this Processing Resource. The Type System contains
    * {@link TypeDescription}s and {@link FeatureDescription}s that are the inputs and/or outputs
-   * of this Resource.
+   * of this Resource.  Some Processing Resources, such as aggregate analysis engines, may not
+   * contain a type system and return <code>null</code>.
    * 
    * @return a description of the type system used by this Resource
    */
