@@ -1069,8 +1069,7 @@ under the License.
           <row>
             <entry>Annotators</entry>
             <entry> Set of simple annotators meant for pedagogical purposes. Includes: Date/time, Room-number,
-              Regular expression, Tokenizer, and Meeting-finder annotator. There are also sample wrappers for
-              annotators obtainable from <ulink url="opennlp.org"></ulink>. There are sample CAS Multipliers
+              Regular expression, Tokenizer, and Meeting-finder annotator. There are sample CAS Multipliers
               as well. </entry>
           </row>
           <row>
