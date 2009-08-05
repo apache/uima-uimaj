@@ -74,11 +74,15 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
   //*****************************************************************************************
   // NOTICE: This method is logically not needed it would seem, because the superclass of the superclass of this 
   // implements it.
-  // However, there is some obscure issue here. If it is not included in this class, then
-  // a class which does 
+  // However, there is an obscure issue here involving the precise definition of "protected". 
+  // If it is not included in this class and this class is not in the same package as the class needing
+  // this, then a class (e.g. PearAnalysisEngineWrapper) which does 
   //        ((AnalysisEngineImplBase)ae).setMetaData(...) fails with a compile error saying that
   // the method setMetaData in the Resource_ImplBase is not visible (even though it is "protected")
-  // This hack makes that problem go away.   July 2009
+  // This makes that problem go away.
+  // Details of this issue are explained in section 6.6.2.1, Access to a protected member,
+  //   in The Java Language Specification (pg 139).
+  //   
   //*****************************************************************************************
   
   protected void setMetaData(ResourceMetaData aMetaData) {
