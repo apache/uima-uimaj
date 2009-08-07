@@ -1055,7 +1055,10 @@ uima.tcas.Annotation.</programlisting>
                         
             <para>An index may define zero or more <emphasis>keys</emphasis>. These keys
               determine the sort order of the feature structures within a sorted index, and
-              determine equality for set indexes. Bag indexes do not use keys. Keys are
+              determine equality for set indexes. Bag indexes do not use keys, and 
+			  equality is determined by Feature Structure identity (that is, two elements
+			  are considered equal if and only if they are exactly the same feature structure,
+			  located in the same place in the CAS). Keys are
               ordered by precedence &ndash; the first key is evaluated first, and
               subsequent keys are evaluated only if necessary.</para>
             
