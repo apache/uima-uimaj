@@ -234,7 +234,8 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   // This is a static map - effectively indexed by all loaded type systems and all classloaders
 
   // Access to this must be synch'd
-  private static Map typeSystemToLoadedJCasTypesByClassLoader = new WeakHashMap(4);
+  private static Map<TypeSystemImpl, Map<ClassLoader, Map<String, LoadedJCasType>>> typeSystemToLoadedJCasTypesByClassLoader = 
+          new WeakHashMap<TypeSystemImpl, Map<ClassLoader, Map<String, LoadedJCasType>>>(4);
 
   // **********************************************
   // * Data shared among views of a single CAS *
@@ -269,7 +270,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
 
     private JCasHashMap cAddr2Jfs;
 
-    private final Map cAddr2JfsByClassLoader = new HashMap();
+    private final Map<ClassLoader, JCasHashMap> cAddr2JfsByClassLoader = new HashMap<ClassLoader, JCasHashMap>();
 
     /* convenience holders of CAS constants that may be useful */
     /* initialization done lazily - on first call to getter */
@@ -283,7 +284,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
     public FSArray fsArray0L = null;
 
     // * collection of errors that occur during initialization
-    public Collection errorSet = new ArrayList();
+    public Collection<Exception> errorSet = new ArrayList<Exception>();
 
     public ClassLoader currentClassLoader = null;
 
@@ -531,12 +532,12 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * @param cl
    * @return
    */
-  private synchronized Map loadJCasClasses(ClassLoader cl) {
+  private synchronized Map<String, LoadedJCasType> loadJCasClasses(ClassLoader cl) {
     final TypeSystem ts = casImpl.getTypeSystem();
-    Iterator typeIt = ts.getTypeIterator();
+    Iterator<Type> typeIt = ts.getTypeIterator();
     TypeImpl t;
     String casName;
-    Map jcasTypes = new HashMap();
+    Map<String, LoadedJCasType> jcasTypes = new HashMap<String, LoadedJCasType>();
 
     // * note that many of these may have already been loaded
     // * load all the others. Actually, we ask to load all the types
@@ -586,10 +587,10 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
     }
 
     // note: this entire method is synchronized
-    Map classLoaderToLoadedJCasTypes = (Map) typeSystemToLoadedJCasTypesByClassLoader.get(casImpl
+    Map<ClassLoader, Map<String, LoadedJCasType>> classLoaderToLoadedJCasTypes = typeSystemToLoadedJCasTypesByClassLoader.get(casImpl
         .getTypeSystemImpl());
     if (null == classLoaderToLoadedJCasTypes) {
-      classLoaderToLoadedJCasTypes = new WeakHashMap(4);
+      classLoaderToLoadedJCasTypes = new WeakHashMap<ClassLoader, Map<String, LoadedJCasType>>(4);
       typeSystemToLoadedJCasTypesByClassLoader.put(casImpl.getTypeSystemImpl(),
           classLoaderToLoadedJCasTypes);
     }
@@ -610,17 +611,17 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   }
 
   public void instantiateJCas_Types(ClassLoader cl) {
-    Map loadedJCasTypes = null;
+    Map<String, LoadedJCasType> loadedJCasTypes = null;
     FSClassRegistry fscr = casImpl.getFSClassRegistry();
     boolean alreadyLoaded;  // means the "classes" have been loaded, but doesn't mean
                             // the _Type instances of those classes have been created.
     boolean anyNewInstances = false;  // true if any new instances of _Type are generated
     FSGenerator[] newFSGeneratorSet;
     synchronized (JCasImpl.class) {
-      Map classLoaderToLoadedJCasTypes = (Map) typeSystemToLoadedJCasTypesByClassLoader.get(casImpl
+      Map<ClassLoader, Map<String, LoadedJCasType>> classLoaderToLoadedJCasTypes = typeSystemToLoadedJCasTypesByClassLoader.get(casImpl
           .getTypeSystemImpl());
       if (null != classLoaderToLoadedJCasTypes) {
-        loadedJCasTypes = (Map) classLoaderToLoadedJCasTypes.get(cl);
+        loadedJCasTypes = classLoaderToLoadedJCasTypes.get(cl);
       }
       alreadyLoaded = (null != loadedJCasTypes);
       if (!alreadyLoaded) {
@@ -632,14 +633,14 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
       //   in this case newFSGeneratorSet is never referenced
       //   Set it to null for "safety"
       newFSGeneratorSet = alreadyLoaded ? null : fscr.getNewFSGeneratorSet();
-      for (Iterator it = loadedJCasTypes.entrySet().iterator(); it.hasNext();) {
+      for (Iterator<Map.Entry<String, LoadedJCasType>> it = loadedJCasTypes.entrySet().iterator(); it.hasNext();) {
         
         // Explanation for this logic:
         //   Instances of _Types are kept per class loader, per Cas (e.g., in the cas pool)
         //   When switching class loaders (e.g. a pear in the pipeline), some of the 
         //     _Type instances (e.g. the built-ins) might be already instantiated, but others are not
         //   
-        boolean madeNewInstance = makeInstanceOf_Type((LoadedJCasType) ((Map.Entry) it.next()).getValue(), alreadyLoaded,
+        boolean madeNewInstance = makeInstanceOf_Type(it.next().getValue(), alreadyLoaded,
             newFSGeneratorSet); 
         anyNewInstances = madeNewInstance || anyNewInstances;
       }
@@ -664,9 +665,9 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   }
 
   // note all callers are synchronized
-  private void copyDownSuperGenerators(Map jcasTypes, FSGenerator[] fsGenerators) {
+  private void copyDownSuperGenerators(Map<String, LoadedJCasType> jcasTypes, FSGenerator[] fsGenerators) {
     final TypeSystem ts = casImpl.getTypeSystem();
-    Iterator typeIt = ts.getTypeIterator(); // reset iterator to start
+    Iterator<Type> typeIt = ts.getTypeIterator(); // reset iterator to start
     Type topType = ts.getTopType();
     Type superType = null;
     while (typeIt.hasNext()) {
@@ -711,9 +712,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
     JCasSharedView sv = jcas.sharedView;
     if (sv.errorSet.size() > 0) {
       StringBuffer msg = new StringBuffer(100);
-      Iterator iter = sv.errorSet.iterator();
-      while (iter.hasNext()) {
-        Exception f = (Exception) iter.next();
+      for (Exception f : sv.errorSet) {
         msg.append(f.getMessage());
         msg.append("\n");
       }
@@ -729,7 +728,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * never instantiated. But it is a very slight performance boost, and it may be safer given
    * possible future changes to these types' implementations.
    */
-  private static final Collection builtInsWithNoJCas = new ArrayList();
+  private static final Collection<String> builtInsWithNoJCas = new ArrayList<String>();
   static {
     builtInsWithNoJCas.add(CAS.TYPE_NAME_BOOLEAN);
     builtInsWithNoJCas.add(CAS.TYPE_NAME_BYTE);
@@ -743,7 +742,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
     builtInsWithNoJCas.add(CAS.TYPE_NAME_LIST_BASE);
   }
 
-  private static final Collection builtInsWithAltNames = new ArrayList();
+  private static final Collection<String> builtInsWithAltNames = new ArrayList<String>();
   static { // initialization code
     builtInsWithAltNames.add(CAS.TYPE_NAME_TOP);
     builtInsWithAltNames.add(CAS.TYPE_NAME_STRING_ARRAY);
@@ -1057,9 +1056,9 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   public static void clearData(CAS cas) {
     JCasImpl jcas = (JCasImpl) ((CASImpl) cas).getExistingJCas();
     final JCasSharedView sv = jcas.sharedView;
-    for (Iterator it = sv.cAddr2JfsByClassLoader.entrySet().iterator(); it.hasNext();) {
-      Map.Entry e = (Map.Entry) it.next();
-      sv.cAddr2Jfs = (JCasHashMap) e.getValue();
+    for (Iterator<Map.Entry<ClassLoader, JCasHashMap>> it = sv.cAddr2JfsByClassLoader.entrySet().iterator(); it.hasNext();) {
+      Map.Entry<ClassLoader, JCasHashMap> e = it.next();
+      sv.cAddr2Jfs = e.getValue();
       int hashSize = Math.max(sv.cAddr2Jfs.size(), 32); // not worth dropping
       // below 32
       // System.out.println("\n***JCas Resizing Hashtable: size is: " +
@@ -1163,7 +1162,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * 
    * @see org.apache.uima.jcas.JCas#getSofaIterator()
    */
-  public FSIterator getSofaIterator() {
+  public FSIterator<SofaFS> getSofaIterator() {
     return casImpl.getSofaIterator();
   }
 
@@ -1325,7 +1324,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * @see org.apache.uima.jcas.JCas#createFilteredIterator(org.apache.uima.cas.FSIterator,
    *      org.apache.uima.cas.FSMatchConstraint)
    */
-  public FSIterator createFilteredIterator(FSIterator it, FSMatchConstraint constraint) {
+  public <T extends FeatureStructure> FSIterator<T> createFilteredIterator(FSIterator<T> it, FSMatchConstraint constraint) {
     return casImpl.createFilteredIterator(it, constraint);
   }
 
@@ -1531,11 +1530,11 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * 
    * @see org.apache.uima.jcas.JCas#getViewIterator()
    */
-  public Iterator getViewIterator() throws CASException {
-    List viewList = new ArrayList();
-    Iterator casViewIter = casImpl.getViewIterator();
+  public Iterator<JCas> getViewIterator() throws CASException {
+    List<JCas> viewList = new ArrayList<JCas>();
+    Iterator<CAS> casViewIter = casImpl.getViewIterator();
     while (casViewIter.hasNext()) {
-      viewList.add(((CAS) casViewIter.next()).getJCas());
+      viewList.add((casViewIter.next()).getJCas());
     }
     return viewList.iterator();
   }
@@ -1545,11 +1544,11 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * 
    * @see org.apache.uima.jcas.JCas#getViewIterator(java.lang.String)
    */
-  public Iterator getViewIterator(String localViewNamePrefix) throws CASException {
-    List viewList = new ArrayList();
-    Iterator casViewIter = casImpl.getViewIterator(localViewNamePrefix);
+  public Iterator<JCas> getViewIterator(String localViewNamePrefix) throws CASException {
+    List<JCas> viewList = new ArrayList<JCas>();
+    Iterator<CAS> casViewIter = casImpl.getViewIterator(localViewNamePrefix);
     while (casViewIter.hasNext()) {
-      viewList.add(((CAS) casViewIter.next()).getJCas());
+      viewList.add((casViewIter.next()).getJCas());
     }
     return viewList.iterator();
   }

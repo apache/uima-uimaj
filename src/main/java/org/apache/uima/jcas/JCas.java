@@ -21,6 +21,7 @@ package org.apache.uima.jcas;
 
 import java.io.InputStream;
 import java.util.Iterator;
+import java.util.ListIterator;
 
 import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CAS;
@@ -67,7 +68,6 @@ import org.apache.uima.jcas.cas.TOP_Type;
  * You can create a <code>JCas</code> object from a CAS object by calling the getJCas()
  * method on the CAS object. 
  */
-
 public interface JCas extends AbstractCas {
 
   /**
@@ -331,7 +331,7 @@ public interface JCas extends AbstractCas {
    * 
    * @return an iterator over SofaFS.
    */
-  FSIterator getSofaIterator();
+  FSIterator<SofaFS> getSofaIterator();
 
   /**
    * Create an iterator over structures satisfying a given constraint. Constraints are described in
@@ -343,7 +343,7 @@ public interface JCas extends AbstractCas {
    *          The constraint specifying what structures should be returned.
    * @return An iterator over FSs.
    */
-  FSIterator createFilteredIterator(FSIterator it, FSMatchConstraint cons);
+  <T extends FeatureStructure> FSIterator<T> createFilteredIterator(FSIterator<T> it, FSMatchConstraint cons);
 
   /**
    * Get a constraint factory. A constraint factory is a simple way of creating
@@ -376,7 +376,7 @@ public interface JCas extends AbstractCas {
    *          The <code>FSListIterator</code> to be wrapped.
    * @return An equivalent <code>ListIterator</code>.
    */
-  java.util.ListIterator<FeatureStructure> fs2listIterator(FSIterator it);
+  <T extends FeatureStructure> ListIterator<T> fs2listIterator(FSIterator<T> it);
 
   /**
    * Reset the CAS, emptying it of all content. Feature structures and iterators will no longer be
@@ -587,7 +587,7 @@ public interface JCas extends AbstractCas {
    * @return an iterator which returns all views.  Each object returned by
    *   the iterator is of type JCas.
    */
-  Iterator<CAS> getViewIterator() throws CASException;  
+  Iterator<JCas> getViewIterator() throws CASException;  
   
   /**
    * Get iterator over all views with the given name prefix.  Each view provides access to Sofa data
@@ -604,5 +604,5 @@ public interface JCas extends AbstractCas {
    * @return an iterator which returns all views with the given name prefix.  
    *   Each object returned by the iterator is of type JCas.
    */
-  Iterator<CAS> getViewIterator(String localViewNamePrefix) throws CASException;
+  Iterator<JCas> getViewIterator(String localViewNamePrefix) throws CASException;
 }

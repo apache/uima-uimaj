@@ -660,25 +660,25 @@ public class SofaTest extends TestCase {
     JCas jcas = this.cas.getJCas();
     JCas jview1 = jcas.createView("View1");
     JCas jview2 = jcas.createView("View2");
-    iter = jcas.getViewIterator();
-    assertEquals(jcas, iter.next());
-    assertEquals(jview1, iter.next());
-    assertEquals(jview2, iter.next());
-    assertFalse(iter.hasNext());
+    Iterator<JCas> jCasIter = jcas.getViewIterator();
+    assertEquals(jcas, jCasIter.next());
+    assertEquals(jview1, jCasIter.next());
+    assertEquals(jview2, jCasIter.next());
+    assertFalse(jCasIter.hasNext());
     
     JCas jviewE1 = jcas.createView("EnglishDocument");
     JCas jviewE2 = jcas.createView("EnglishDocument.2");
-    iter = jcas.getViewIterator("EnglishDocument");
-    assertEquals(jviewE1, iter.next());
-    assertEquals(jviewE2, iter.next());
-    assertFalse(iter.hasNext());
+    jCasIter = jcas.getViewIterator("EnglishDocument");
+    assertEquals(jviewE1, jCasIter.next());
+    assertEquals(jviewE2, jCasIter.next());
+    assertFalse(jCasIter.hasNext());
     
     //try with Sofa mappings
     cas.setCurrentComponentInfo(childCtxt.getComponentInfo());
-    iter = jcas.getViewIterator("SourceDocument");
-    assertEquals(jviewE1, iter.next());
-    assertEquals(jviewE2, iter.next());
-    assertFalse(iter.hasNext());  
+    jCasIter = jcas.getViewIterator("SourceDocument");
+    assertEquals(jviewE1, jCasIter.next());
+    assertEquals(jviewE2, jCasIter.next());
+    assertFalse(jCasIter.hasNext());  
     this.cas.setCurrentComponentInfo(null);
   }
   
