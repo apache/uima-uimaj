@@ -1251,7 +1251,7 @@ public void initialize(UimaContext aContext)
     </section>
     
     <section id="ugr.tug.aae.aaes_can_contain_cas_consumers">
-      <title>AEs can also contain CAS Consumers</title>
+      <title>AAEs can also contain CAS Consumers</title>
       
       <para>In addition to aggregating Analysis Engines, Aggregates can also contain CAS
         Consumers (see <olink targetdoc="&uima_docs_tutorial_guides;"
