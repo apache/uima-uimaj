@@ -359,7 +359,6 @@ public class LevelTest extends TestCase {
 
   public void testisGreaterOrEqual() throws Exception {
     Level level = Level.INFO;
-    Integer myInt = Integer.valueOf(20000);
 
     // check if level "ALL" is greater or equal to "INFO"
     Assert.assertFalse(level.isGreaterOrEqual(Level.ALL));
