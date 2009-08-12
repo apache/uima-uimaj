@@ -1535,12 +1535,13 @@ while (timeIter.hasNext()) {
         use. There are three to choose from:
         
         <orderedlist><listitem><para>ResourceConfigurationException should be
-          thrown from the annotator&apos;s initialize() method if invalid configuration
-          parameter values have been specified.</para></listitem>
+          thrown from the annotator&apos;s reconfigure() method if invalid configuration
+          parameter values have been specified. 
+          </para></listitem>
           
           <listitem><para>ResourceInitializationException should be thrown from the
-            annotator&apos;s initialize() method if initialization fails for some other
-            reason.</para></listitem>
+            annotator&apos;s initialize() method if initialization fails for any 
+            reason (including invalid configuration parameters).</para></listitem>
           
           <listitem><para>AnalysisEngineProcessException should be thrown from the
             annotator&apos;s process() method if the processing of a particular document
@@ -1642,7 +1643,7 @@ catch (PatternSyntaxException e) {
       
       <para>In your annotator code, throw an exception like this:
         
-        <programlisting>throw new ResourceConfigurationException(
+        <programlisting>throw new ResourceInitializationException(
     MESSAGE_DIGEST, "your_message_name",
     new Object[]{param1,param2,...});</programlisting></para>
       
