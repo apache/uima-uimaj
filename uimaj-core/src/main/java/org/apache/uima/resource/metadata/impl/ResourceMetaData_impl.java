@@ -23,6 +23,7 @@ import java.lang.reflect.Array;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceManager;
@@ -235,13 +236,13 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
     if (nvps.length > 0) {
       validateConfigurationParameterSettings(nvps, null, cfgParamDecls);
     } else {
-      Map settingsForGroups = cfgParamSettings.getSettingsForGroups();
-      Set entrySet = settingsForGroups.entrySet();
-      Iterator it = entrySet.iterator();
+      Map<String, NameValuePair[]> settingsForGroups = cfgParamSettings.getSettingsForGroups();
+      Set<Map.Entry<String, NameValuePair[]>> entrySet = settingsForGroups.entrySet();
+      Iterator<Entry<String, NameValuePair[]>> it = entrySet.iterator();
       while (it.hasNext()) {
-        Map.Entry entry = (Map.Entry) it.next();
-        String groupName = (String) entry.getKey();
-        nvps = (NameValuePair[]) entry.getValue();
+        Map.Entry<String, NameValuePair[]> entry = it.next();
+        String groupName = entry.getKey();
+        nvps = entry.getValue();
         if (nvps != null) {
           validateConfigurationParameterSettings(nvps, groupName, cfgParamDecls);
         }

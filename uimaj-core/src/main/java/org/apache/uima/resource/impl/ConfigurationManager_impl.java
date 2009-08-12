@@ -36,7 +36,7 @@ public class ConfigurationManager_impl extends ConfigurationManagerImplBase {
    * Map containing configuration parameter values and links for parameter values shared by all
    * sessions.
    */
-  private Map mSharedParamMap = Collections.synchronizedMap(new HashMap());
+  private Map<String, Object> mSharedParamMap = Collections.synchronizedMap(new HashMap<String, Object>());
 
   /*
    * (non-Javadoc)

@@ -30,6 +30,7 @@ import org.apache.uima.resource.metadata.NameValuePair;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.NameClassPair;
 import org.apache.uima.util.XMLParser;
+import org.apache.uima.util.XMLizable;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -55,7 +56,7 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
    * Settings for parameters in groups. This HashMap has <code>String</code> keys (the group name)
    * and <code>NameValuePair[]</code> values (the parmeter names and their values).
    */
-  private Map mSettingsForGroups = new HashMap();
+  private Map<String, NameValuePair[]> mSettingsForGroups = new HashMap<String, NameValuePair[]>();
 
   /**
    * @see org.apache.uima.resource.ConfigurationParameterSettings#getParameterSettings()
@@ -78,7 +79,7 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
   /**
    * @see org.apache.uima.resource.ConfigurationParameterSettings#getSettingsForGroups()
    */
-  public Map getSettingsForGroups() {
+  public Map<String, NameValuePair[]> getSettingsForGroups() {
     return mSettingsForGroups;
   }
 
@@ -221,8 +222,8 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
    * 
    * @see org.apache.uima.resource.MetaDataObject#listAttributes()
    */
-  public List listAttributes() {
-    List result = super.listAttributes();
+  public List<NameClassPair> listAttributes() {
+    List<NameClassPair> result = super.listAttributes();
     result.add(new NameClassPair("settingsForGroups", Map.class.getName()));
     return result;
   }
@@ -236,7 +237,7 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
    */
   public void buildFromXMLElement(Element aElement, XMLParser aParser,
           XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
-    ArrayList nvps = new ArrayList();
+    List<XMLizable> nvps = new ArrayList<XMLizable>();
     // get all child nodes
     NodeList childNodes = aElement.getChildNodes();
     for (int i = 0; i < childNodes.getLength(); i++) {
@@ -249,7 +250,7 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
         } else if ("settingsForGroup".equals(elem.getTagName())) {
           String key = elem.getAttribute("name");
 
-          ArrayList vals = new ArrayList();
+          List<XMLizable> vals = new ArrayList<XMLizable>();
           NodeList arrayNodes = elem.getChildNodes();
           for (int j = 0; j < arrayNodes.getLength(); j++) {
             Node curArrayNode = arrayNodes.item(j);

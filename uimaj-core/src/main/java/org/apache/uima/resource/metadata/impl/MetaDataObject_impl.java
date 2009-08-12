@@ -157,10 +157,10 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    */
   public Class getAttributeClass(String aName) {
     try {
-      List attrList = listAttributes();
-      Iterator it = attrList.iterator();
+      List<NameClassPair> attrList = listAttributes();
+      Iterator<NameClassPair> it = attrList.iterator();
       while (it.hasNext()) {
-        NameClassPair ncp = (NameClassPair) it.next();
+        NameClassPair ncp = it.next();
         if (ncp.getName().equals(aName)) {
           return Class.forName(ncp.getClassName());
         }
@@ -286,8 +286,8 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     mSourceUrl = aUrl;
 
     // set recursively on subobjects
-    List attrs = listAttributes();
-    Iterator i = attrs.iterator();
+    List<NameClassPair> attrs = listAttributes();
+    Iterator<NameClassPair> i = attrs.iterator();
     while (i.hasNext()) {
       String attrName = ((NameClassPair) i.next()).getName();
       Object val = getAttributeValue(attrName);
@@ -328,8 +328,8 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     }
 
     // now clone all values that are MetaDataObjects
-    List attrs = listAttributes();
-    Iterator i = attrs.iterator();
+    List<NameClassPair> attrs = listAttributes();
+    Iterator<NameClassPair> i = attrs.iterator();
     while (i.hasNext()) {
       String attrName = ((NameClassPair) i.next()).getName();
       Object val = getAttributeValue(attrName);
@@ -360,8 +360,8 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
   public String toString() {
     StringBuffer buf = new StringBuffer();
     buf.append(getClass().getName()).append(": \n");
-    List attrList = listAttributes();
-    Iterator i = attrList.iterator();
+    List<NameClassPair> attrList = listAttributes();
+    Iterator<NameClassPair> i = attrList.iterator();
     while (i.hasNext()) {
       NameClassPair ncp = (NameClassPair) i.next();
       buf.append(ncp.getName() + " = ");
@@ -397,16 +397,16 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     }
     MetaDataObject mdo = (MetaDataObject) aObj;
     // get the attributes (and classes) for the two objects
-    List theseAttrs = this.listAttributes();
-    List thoseAttrs = mdo.listAttributes();
+    List<NameClassPair> theseAttrs = this.listAttributes();
+    List<NameClassPair> thoseAttrs = mdo.listAttributes();
     // attribute lists must be same length
     if (theseAttrs.size() != thoseAttrs.size()) {
       return false;
     }
     // iterate through all attributes in this object
-    Iterator i = theseAttrs.iterator();
+    Iterator<NameClassPair> i = theseAttrs.iterator();
     while (i.hasNext()) {
-      NameClassPair ncp = (NameClassPair) i.next();
+      NameClassPair ncp = i.next();
       // other object must contain this attribute
       if (!thoseAttrs.contains(ncp)) {
         return false;
@@ -496,8 +496,8 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     int hashCode = 0;
 
     // add the hash codes of all attributes
-    List attrs = listAttributes();
-    Iterator i = attrs.iterator();
+    List<NameClassPair> attrs = listAttributes();
+    Iterator<NameClassPair> i = attrs.iterator();
     while (i.hasNext()) {
       String attrName = ((NameClassPair) i.next()).getName();
       Object val = getAttributeValue(attrName);
@@ -884,7 +884,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
           getXmlizationInfo().elementTagName, aElement.getTagName() });
 
     // get child elements, each of which represents a property
-    List foundProperties = new ArrayList();
+    List<String> foundProperties = new ArrayList<String>();
     NodeList childNodes = aElement.getChildNodes();
     for (int i = 0; i < childNodes.getLength(); i++) {
       Node curNode = childNodes.item(i);
@@ -1092,7 +1092,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    *           if no acceptable object is described by aElement
    */
   protected void readUnknownPropertyValueFromXMLElement(Element aElement, XMLParser aParser,
-          XMLParser.ParsingOptions aOptions, List aKnownPropertyNames) throws InvalidXMLException {
+          XMLParser.ParsingOptions aOptions, List<String> aKnownPropertyNames) throws InvalidXMLException {
     boolean success = false;
     try {
       Object valueObj = aParser.buildObjectOrPrimitive(aElement, aOptions);

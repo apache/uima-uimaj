@@ -266,21 +266,21 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
    * @see org.apache.uima.resource.metadata.TypeSystemDescription#resolveImports()
    */
   public void resolveImports() throws InvalidXMLException {
-    resolveImports(new TreeSet(), UIMAFramework.newDefaultResourceManager());
+    resolveImports(new TreeSet<String>(), UIMAFramework.newDefaultResourceManager());
   }
 
   public void resolveImports(ResourceManager aResourceManager) throws InvalidXMLException {
-    resolveImports(new TreeSet(), aResourceManager);
+    resolveImports(new TreeSet<String>(), aResourceManager);
   }
 
-  public void resolveImports(Collection aAlreadyImportedURLs, ResourceManager aResourceManager)
+  public void resolveImports(Collection<String> aAlreadyImportedURLs, ResourceManager aResourceManager)
           throws InvalidXMLException {
     // add our own URL, if known, to the collection of already imported URLs
     if (getSourceUrl() != null) {
       aAlreadyImportedURLs.add(getSourceUrl().toString());
     }
-    List importedResources = new ArrayList();
-    List importedBindings = new ArrayList();
+    List<ExternalResourceDescription> importedResources = new ArrayList<ExternalResourceDescription>();
+    List<ExternalResourceBinding> importedBindings = new ArrayList<ExternalResourceBinding>();
     Import[] imports = getImports();
     for (int i = 0; i < imports.length; i++) {
       // make sure Import's relative path base is set, to allow for users who create
@@ -330,8 +330,8 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
     this.setImports(new Import[0]);
   }
 
-  private void resolveImport(URL aURL, Collection aAlreadyImportedURLs,
-          Collection aResultResources, Collection aResultBindings, ResourceManager aResourceManager)
+  private void resolveImport(URL aURL, Collection<String> aAlreadyImportedURLs,
+          Collection<ExternalResourceDescription> aResultResources, Collection<ExternalResourceBinding> aResultBindings, ResourceManager aResourceManager)
           throws InvalidXMLException, IOException {
     XMLInputSource input = new XMLInputSource(aURL);
     ResourceManagerConfiguration desc = UIMAFramework.getXMLParser()

@@ -200,21 +200,21 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
    * @see org.apache.uima.resource.metadata.TypeSystemDescription#resolveImports()
    */
   public void resolveImports() throws InvalidXMLException {
-    resolveImports(new TreeSet(), UIMAFramework.newDefaultResourceManager());
+    resolveImports(new TreeSet<String>(), UIMAFramework.newDefaultResourceManager());
   }
 
   public void resolveImports(ResourceManager aResourceManager) throws InvalidXMLException {
-    resolveImports(new TreeSet(), aResourceManager);
+    resolveImports(new TreeSet<String>(), aResourceManager);
   }
 
-  public void resolveImports(Collection aAlreadyImportedTypeSystemURLs,
+  public void resolveImports(Collection<String> aAlreadyImportedTypeSystemURLs,
           ResourceManager aResourceManager) throws InvalidXMLException {
     // add our own URL, if known, to the collection of already imported URLs
     if (getSourceUrl() != null) {
       aAlreadyImportedTypeSystemURLs.add(getSourceUrl().toString());
     }
 
-    List importedTypes = new ArrayList();
+    List<TypeDescription> importedTypes = new ArrayList<TypeDescription>();
     Import[] imports = getImports();
     for (int i = 0; i < imports.length; i++) {
       // make sure Import's relative path base is set, to allow for users who create
@@ -249,8 +249,8 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
     this.setImports(new Import[0]);
   }
 
-  private void resolveImport(URL aURL, Collection aAlreadyImportedTypeSystemURLs,
-          Collection aResults, ResourceManager aResourceManager) throws InvalidXMLException,
+  private void resolveImport(URL aURL, Collection<String> aAlreadyImportedTypeSystemURLs,
+          Collection<TypeDescription> aResults, ResourceManager aResourceManager) throws InvalidXMLException,
           IOException {
     //check the import cache
     TypeSystemDescription desc;    

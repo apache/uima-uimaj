@@ -20,7 +20,7 @@
 package org.apache.uima.resource.metadata.impl;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.List;
 
 import org.apache.uima.resource.metadata.TypePriorityList;
 
@@ -33,7 +33,7 @@ public class TypePriorityList_impl extends MetaDataObject_impl implements TypePr
 
   static final long serialVersionUID = 4700170375564691096L;
 
-  private ArrayList mTypeNames = new ArrayList();
+  private List<String> mTypeNames = new ArrayList<String>();
 
   /**
    * @see org.apache.uima.analysis_engine.metadata.TypePriorityList#getTypes()
@@ -75,10 +75,8 @@ public class TypePriorityList_impl extends MetaDataObject_impl implements TypePr
   public Object clone() {
     TypePriorityList_impl clone = (TypePriorityList_impl) super.clone();
 
-    clone.mTypeNames = new ArrayList();
-    Iterator typeNameIter = mTypeNames.iterator();
-    while (typeNameIter.hasNext()) {
-      String name = (String) typeNameIter.next();
+    clone.mTypeNames = new ArrayList<String>();
+    for (String name : mTypeNames) {
       clone.addType(name);
     }
 
