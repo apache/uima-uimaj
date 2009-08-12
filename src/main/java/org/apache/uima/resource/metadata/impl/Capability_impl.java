@@ -155,16 +155,16 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
    */
   public void setLanguagesSupported(String[] aLanguageIDs) {
     // create a list of existing preconditions
-    List preconditions = new ArrayList();
+    List<Precondition> preconditions = new ArrayList<Precondition>();
     Precondition[] precondArray = getPreconditions();
     if (precondArray != null) {
       preconditions.addAll(Arrays.asList(precondArray));
     }
 
     // remove any existing LanguagePrecondtiions
-    Iterator i = preconditions.iterator();
+    Iterator<Precondition> i = preconditions.iterator();
     while (i.hasNext()) {
-      Precondition p = (Precondition) i.next();
+      Precondition p = i.next();
       if (p instanceof LanguagePrecondition) {
         i.remove();
       }
@@ -188,14 +188,14 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
    */
   public void setMimeTypesSupported(String[] aMimeTypes) {
     // create a list of existing preconditions
-    List preconditions = new ArrayList();
+    List<Precondition> preconditions = new ArrayList<Precondition>();
     Precondition[] precondArray = getPreconditions();
     if (precondArray != null) {
       preconditions.addAll(Arrays.asList(precondArray));
     }
 
     // remove any existing MimeTypePrecondtiions
-    Iterator i = preconditions.iterator();
+    Iterator<Precondition> i = preconditions.iterator();
     while (i.hasNext()) {
       Precondition p = (Precondition) i.next();
       if (p instanceof MimeTypePrecondition) {

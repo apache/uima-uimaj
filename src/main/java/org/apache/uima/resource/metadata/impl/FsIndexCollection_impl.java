@@ -33,7 +33,6 @@ import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.metadata.FsIndexCollection;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.Import;
-import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLizable;
@@ -191,21 +190,21 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
    * @see org.apache.uima.resource.metadata.TypeSystemDescription#resolveImports()
    */
   public void resolveImports() throws InvalidXMLException {
-    resolveImports(new TreeSet(), UIMAFramework.newDefaultResourceManager());
+    resolveImports(new TreeSet<String>(), UIMAFramework.newDefaultResourceManager());
   }
 
   public void resolveImports(ResourceManager aResourceManager) throws InvalidXMLException {
-    resolveImports(new TreeSet(), aResourceManager);
+    resolveImports(new TreeSet<String>(), aResourceManager);
   }
 
-  public void resolveImports(Collection aAlreadyImportedFsIndexURLs,
+  public void resolveImports(Collection<String> aAlreadyImportedFsIndexURLs,
           ResourceManager aResourceManager) throws InvalidXMLException {
     // add our own URL, if known, to the collection of already imported URLs
     if (getSourceUrl() != null) {
       aAlreadyImportedFsIndexURLs.add(getSourceUrl().toString());
     }
     
-    List importedIndexes = new ArrayList();
+    List<FsIndexDescription> importedIndexes = new ArrayList<FsIndexDescription>();
     Import[] imports = getImports();
     for (int i = 0; i < imports.length; i++) {
       // make sure Import's relative path base is set, to allow for users who create
@@ -241,8 +240,8 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
     this.setImports(new Import[0]);
   }
 
-  private void resolveImport(URL aURL, Collection aAlreadyImportedFsIndexCollectionURLs,
-          Collection aResults, ResourceManager aResourceManager) throws InvalidXMLException,
+  private void resolveImport(URL aURL, Collection<String> aAlreadyImportedFsIndexCollectionURLs,
+          Collection<FsIndexDescription> aResults, ResourceManager aResourceManager) throws InvalidXMLException,
           IOException {
     //check the import cache
     FsIndexCollection desc;    

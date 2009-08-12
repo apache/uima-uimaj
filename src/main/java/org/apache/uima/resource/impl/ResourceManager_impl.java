@@ -73,20 +73,20 @@ public class ResourceManager_impl implements ResourceManager {
    * Internal map from resource names (declared in resource declaration XML) to ResourceRegistration
    * objects. Used during initialization only.
    */
-  protected Map mInternalResourceRegistrationMap = Collections.synchronizedMap(new HashMap());
+  protected Map<String, ResourceRegistration> mInternalResourceRegistrationMap = Collections.synchronizedMap(new HashMap<String, ResourceRegistration>());
 
   /**
    * Map from String keys to Class objects. For ParameterizedResources only, stores the
    * implementation class corresponding to each resource name.
    */
-  protected Map mParameterizedResourceImplClassMap = Collections.synchronizedMap(new HashMap());
+  protected Map<String, Class> mParameterizedResourceImplClassMap = Collections.synchronizedMap(new HashMap<String, Class>());
 
   /**
    * Internal map from resource names (declared in resource declaration XML) to Class objects. Used
    * internally during resource initialization.
    */
-  protected Map mInternalParameterizedResourceImplClassMap = Collections
-          .synchronizedMap(new HashMap());
+  protected Map<String, Class> mInternalParameterizedResourceImplClassMap = Collections
+          .synchronizedMap(new HashMap<String, Class>());
 
   /**
    * Map from ArrayList(0:String,1:DataResource) keys to Resource objects. For

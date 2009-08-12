@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -61,19 +62,19 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
   /**
    * Map from context name to ConfigurationParameterDeclarations for that context.
    */
-  private Map mContextNameToParamDeclsMap = new HashMap();
+  private Map<String, ConfigurationParameterDeclarations> mContextNameToParamDeclsMap = new HashMap<String, ConfigurationParameterDeclarations>();
 
   /**
    * Map the fully-qualified name of a parameter to the fully-qualified name of the parameter it is
    * linked to (from which it takes its value).
    */
-  private Map mLinkMap = new HashMap();
+  private Map<String, String> mLinkMap = new HashMap<String, String>();
 
   /**
    * Set of parameters (fully qualified names) that explicitly declare overrides. This is used to
    * prevent implicit (name-based) overrides for these parameters.
    */
-  private Set mExplicitlyOverridingParameters = new HashSet();
+  private Set<String> mExplicitlyOverridingParameters = new HashSet<String>();
 
   /**
    * Current session. Used to store parmater overrides.
@@ -413,7 +414,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    */
   private NameValuePair[] getParamSettings(String aGroupName, ConfigurationParameter[] aParams,
           String aContextName) {
-    ArrayList result = new ArrayList();
+    List<NameValuePair> result = new ArrayList<NameValuePair>();
     // iterate over config. param _declarations_
     if (aParams != null) {
       for (int i = 0; i < aParams.length; i++) {

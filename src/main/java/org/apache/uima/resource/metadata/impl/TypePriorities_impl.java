@@ -42,8 +42,6 @@ import org.xml.sax.SAXException;
 
 /**
  * Reference implementation of {@link TypePriorities}.
- * 
- * 
  */
 public class TypePriorities_impl extends MetaDataObject_impl implements TypePriorities {
 
@@ -59,7 +57,7 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
 
   private Import[] mImports = new Import[0];
 
-  private ArrayList mPriorityLists = new ArrayList();
+  private List<TypePriorityList> mPriorityLists = new ArrayList<TypePriorityList>();
 
   /**
    * @see org.apache.uima.resource.ResourceMetaData#getName()
@@ -187,21 +185,21 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
    * @see org.apache.uima.resource.metadata.TypeSystemDescription#resolveImports()
    */
   public void resolveImports() throws InvalidXMLException {
-    resolveImports(new TreeSet(), UIMAFramework.newDefaultResourceManager());
+    resolveImports(new TreeSet<String>(), UIMAFramework.newDefaultResourceManager());
   }
 
   public void resolveImports(ResourceManager aResourceManager) throws InvalidXMLException {
-    resolveImports(new TreeSet(), aResourceManager);
+    resolveImports(new TreeSet<String>(), aResourceManager);
   }
 
-  public void resolveImports(Collection aAlreadyImportedTypePrioritiesURLs,
+  public void resolveImports(Collection<String> aAlreadyImportedTypePrioritiesURLs,
           ResourceManager aResourceManager) throws InvalidXMLException {
     // add our own URL, if known, to the collection of already imported URLs
     if (getSourceUrl() != null) {
       aAlreadyImportedTypePrioritiesURLs.add(getSourceUrl().toString());
     }
     
-    List importedPriorityLists = new ArrayList();
+    List<TypePriorityList> importedPriorityLists = new ArrayList<TypePriorityList>();
     Import[] imports = getImports();
     for (int i = 0; i < imports.length; i++) {
       // make sure Import's relative path base is set, to allow for users who create
@@ -239,8 +237,8 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
     this.setImports(new Import[0]);
   }
 
-  private void resolveImport(URL aURL, Collection aAlreadyImportedTypePrioritiesURLs,
-          Collection aResults, ResourceManager aResourceManager) throws InvalidXMLException,
+  private void resolveImport(URL aURL, Collection<String> aAlreadyImportedTypePrioritiesURLs,
+          Collection<TypePriorityList> aResults, ResourceManager aResourceManager) throws InvalidXMLException,
           IOException {
     //check the import cache
     TypePriorities desc;    
@@ -282,10 +280,10 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
    */
   public Object clone() {
     TypePriorities_impl clone = (TypePriorities_impl) super.clone();
-    clone.mPriorityLists = new ArrayList();
-    Iterator priListIter = mPriorityLists.iterator();
+    clone.mPriorityLists = new ArrayList<TypePriorityList>();
+    Iterator<TypePriorityList> priListIter = mPriorityLists.iterator();
     while (priListIter.hasNext()) {
-      TypePriorityList priList = (TypePriorityList) priListIter.next();
+      TypePriorityList priList = priListIter.next();
       clone.addPriorityList((TypePriorityList) priList.clone());
     }
 

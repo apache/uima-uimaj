@@ -20,6 +20,7 @@
 package org.apache.uima.resource.metadata.impl;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import org.apache.uima.resource.metadata.ConfigurationGroup;
@@ -139,7 +140,7 @@ public class ConfigurationGroup_impl extends MetaDataObject_impl implements Conf
     }
     // treat names as a space-separated list
     StringTokenizer tokenizer = new StringTokenizer(names, " \t");
-    ArrayList nameList = new ArrayList();
+    List<String> nameList = new ArrayList<String>();
     while (tokenizer.hasMoreTokens()) {
       nameList.add(tokenizer.nextToken());
     }

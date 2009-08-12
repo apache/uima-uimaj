@@ -51,13 +51,13 @@ import org.apache.uima.util.impl.CasPoolManagementImpl;
 public class CasManager_impl implements CasManager {
   private ResourceManager mResourceManager;
 
-  private ArrayList mMetaDataList = new ArrayList();
+  private List<ProcessingResourceMetaData> mMetaDataList = new ArrayList<ProcessingResourceMetaData>();
 
-  private Map mRequestorToCasPoolMap = new HashMap();
+  private Map<String, CasPool> mRequestorToCasPoolMap = new HashMap<String, CasPool>();
 
-  private Map mCasToCasPoolMap = new HashMap();
+  private Map<CAS, CasPool> mCasToCasPoolMap = new HashMap<CAS, CasPool>();
   
-  private Map mCasToUimaContextMap = new HashMap();
+  private Map<CAS, UimaContext> mCasToUimaContextMap = new HashMap<CAS, UimaContext>();
 
   private CasDefinition mCasDefinition = null;
   
@@ -239,7 +239,7 @@ public class CasManager_impl implements CasManager {
     }
   }
 
-  protected Map getCasToCasPoolMap() {
+  protected Map<CAS, CasPool> getCasToCasPoolMap() {
     return mCasToCasPoolMap;
   }
   

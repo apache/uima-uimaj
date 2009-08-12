@@ -23,7 +23,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.resource.ExternalResourceDependency;
@@ -55,7 +57,7 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
 
   private ResourceMetaData mMetaData;
 
-  private ArrayList mExternalResourceDependencies = new ArrayList();
+  private List<ExternalResourceDependency> mExternalResourceDependencies = new ArrayList<ExternalResourceDependency>();
 
   private ResourceManagerConfiguration mResourceManagerConfiguration;
 
@@ -124,7 +126,7 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
    */
   public void setExternalResourceDependencies(ExternalResourceDependency[] aDependencies) {
     // can't just clear the ArrayList since that breaks clone(). Create a new list.
-    mExternalResourceDependencies = new ArrayList();
+    mExternalResourceDependencies = new ArrayList<ExternalResourceDependency>();
     if (aDependencies != null) {
       for (int i = 0; i < aDependencies.length; i++) {
         mExternalResourceDependencies.add(aDependencies[i]);
@@ -136,9 +138,7 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
    * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#getExternalResourceDependency(java.lang.String)
    */
   public ExternalResourceDependency getExternalResourceDependency(String aKey) {
-    Iterator it = mExternalResourceDependencies.iterator();
-    while (it.hasNext()) {
-      ExternalResourceDependency dep = (ExternalResourceDependency) it.next();
+    for (ExternalResourceDependency dep : mExternalResourceDependencies) {
       if (aKey.equals(dep.getKey()))
         return dep;
     }
@@ -247,7 +247,7 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
     } else {
       ConfigurationParameter[] commonParams = cfgParamDecls.getCommonParameters();
       // check for duplicates in common params
-      HashSet commonParamNames = new HashSet();
+      Set<String> commonParamNames = new HashSet<String>();
       if (commonParams != null) {
         for (int i = 0; i < commonParams.length; i++) {
           if (!commonParamNames.add(commonParams[i].getName())) {
@@ -261,15 +261,15 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
       // check for duplicates in groups
       ConfigurationGroup[] groups = cfgParamDecls.getConfigurationGroups();
       if (groups != null) {
-        HashMap groupToParamSetMap = new HashMap(); // map from group name to HashSet of param names
+        Map<String, Set<String>> groupToParamSetMap = new HashMap<String, Set<String>>(); // map from group name to HashSet of param names
         // in that group
         for (int i = 0; i < groups.length; i++) {
           String[] names = groups[i].getNames();
           for (int j = 0; j < names.length; j++) {
-            HashSet paramNamesInGroup = (HashSet) groupToParamSetMap.get(names[j]);
+            Set<String> paramNamesInGroup = groupToParamSetMap.get(names[j]);
             if (paramNamesInGroup == null) {
               // first time we've seen this group. create an entry and add common params
-              paramNamesInGroup = new HashSet(commonParamNames);
+              paramNamesInGroup = new HashSet<String>(commonParamNames);
             }
 
             // check for duplicate parameter names
@@ -305,7 +305,7 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
    */
   protected void checkForDuplicateParameterNames(ConfigurationParameter[] aParams)
           throws ResourceInitializationException {
-    HashSet paramNames = new HashSet();
+    Set<String> paramNames = new HashSet<String>();
     for (int i = 0; i < aParams.length; i++) {
       if (!paramNames.add(aParams[i].getName())) {
         throw new ResourceInitializationException(

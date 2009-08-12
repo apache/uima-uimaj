@@ -20,6 +20,7 @@
 package org.apache.uima.resource.metadata.impl;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.uima.UIMA_IllegalArgumentException;
 import org.apache.uima.resource.metadata.ConfigurationGroup;
@@ -27,6 +28,7 @@ import org.apache.uima.resource.metadata.ConfigurationParameter;
 import org.apache.uima.resource.metadata.ConfigurationParameterDeclarations;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLParser;
+import org.apache.uima.util.XMLizable;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -169,7 +171,7 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
    * @see org.apache.uima.resource.ConfigurationParameterDeclarations#getConfigurationGroup(java.lang.String)
    */
   public ConfigurationGroup[] getConfigurationGroupDeclarations(String aGroupName) {
-    ArrayList results = new ArrayList();
+    List<ConfigurationGroup> results = new ArrayList<ConfigurationGroup>();
     ConfigurationGroup[] grps = getConfigurationGroups();
     if (grps != null) {
       for (int i = 0; i < grps.length; i++) {
@@ -316,8 +318,8 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
     }
 
     // read parameters, commonParameters, and configurationGroups
-    ArrayList params = new ArrayList();
-    ArrayList groups = new ArrayList();
+    List<XMLizable> params = new ArrayList<XMLizable>();
+    List<XMLizable> groups = new ArrayList<XMLizable>();
     NodeList childNodes = aElement.getChildNodes();
     for (int i = 0; i < childNodes.getLength(); i++) {
       Node curNode = childNodes.item(i);

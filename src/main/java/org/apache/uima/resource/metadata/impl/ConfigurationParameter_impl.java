@@ -285,7 +285,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
 
       // iterate through children, and for each element construct a value,
       // adding it to a list
-      List valueList = new ArrayList();
+      List<String> valueList = new ArrayList<String>();
       for (int i = 0; i < numChildren; i++) {
         Node curNode = elems.item(i);
         if (curNode instanceof Element) {
