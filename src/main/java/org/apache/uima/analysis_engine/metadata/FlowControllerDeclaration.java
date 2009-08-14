@@ -38,7 +38,7 @@ public interface FlowControllerDeclaration extends MetaDataObject {
    * Gets the key that can be used to refer to the FlowController in configuration parameter
    * overrides and Sofa mappings.
    * 
-   * @return the key assignd to the FlowController
+   * @return the key assigned to the FlowController
    */
   public String getKey();
 
