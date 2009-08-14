@@ -23,7 +23,7 @@ import org.apache.uima.resource.ResourceProcessException;
 
 /**
  * An <code>AnalysisEngineProcessException</code> may be thrown by an Analysis Engine's process
- * method, indicating that a failure occured during processing.
+ * method, indicating that a failure occurred during processing.
  * 
  * 
  */
