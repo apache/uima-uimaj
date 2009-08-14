@@ -76,8 +76,8 @@ public class ArrayIndexTest extends TestCase implements TextAnnotator {
     }
   }
 
-  private static final int countIndexMembers(FSIndex idx) {
-    FSIterator it = idx.iterator();
+  private static final int countIndexMembers(FSIndex<? extends FeatureStructure> idx) {
+    FSIterator<? extends FeatureStructure> it = idx.iterator();
     int count = 0;
     for (it.moveToFirst(); it.isValid(); it.moveToNext()) {
       ++count;

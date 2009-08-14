@@ -61,7 +61,7 @@ public class IndexRepositoryTest extends TestCase {
     this.indexRep.addFS(tokenTypeFs1);
 
     // now try to retrieve
-    FSIterator iter = this.indexRep.getAllIndexedFS(tokenTypeType);
+    FSIterator<FeatureStructure> iter = this.indexRep.getAllIndexedFS(tokenTypeType);
     assertTrue(iter.hasNext());
     assertEquals(tokenTypeFs1, iter.next());
     assertFalse(iter.hasNext());
@@ -72,7 +72,7 @@ public class IndexRepositoryTest extends TestCase {
     this.indexRep.addFS(tokenTypeFs2);
 
     // now there should be two instances in the index
-    FSIterator iter2 = this.indexRep.getAllIndexedFS(tokenTypeType);
+    FSIterator<FeatureStructure> iter2 = this.indexRep.getAllIndexedFS(tokenTypeType);
     assertTrue(iter2.hasNext());
     iter2.next();
     assertTrue(iter2.hasNext());

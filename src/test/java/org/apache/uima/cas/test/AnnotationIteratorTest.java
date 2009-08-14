@@ -161,7 +161,7 @@ public class AnnotationIteratorTest extends TestCase {
 
     int count;
     AnnotationIndex annotIndex = this.cas.getAnnotationIndex();
-    FSIterator it = annotIndex.iterator(true);
+    FSIterator<AnnotationFS> it = annotIndex.iterator(true);
     count = 0;
     while (it.isValid()) {
       ++count;

@@ -368,10 +368,10 @@ public class SerializationReinitTest extends TestCase {
     Iterator<String> labelIt = indexRepository.getLabels();
     assertTrue(labelIt != null);
     // Get the standard index for tokens.
-    FSIndex tokenIndex = cas.getAnnotationIndex(tokenType);
+    FSIndex<AnnotationFS> tokenIndex = cas.getAnnotationIndex(tokenType);
     // assert(tokenIndex != null);
     // Get an iterator over tokens.
-    FSIterator it = tokenIndex.iterator();
+    FSIterator<AnnotationFS> it = tokenIndex.iterator();
     // assert(it != null);
     // Now create sentences. We do this as follows: a sentence starts where
     // the first token after an EOS starts, and ends with an EOS.
@@ -688,8 +688,8 @@ public class SerializationReinitTest extends TestCase {
     ByteArrayInputStream fis = new ByteArrayInputStream(fos.toByteArray());
     Serialization.deserializeCAS(cas, fis);
 
-    FSIndex idx = cas.getAnnotationIndex(theTypeType);
-    FSIterator iter = idx.iterator();
+    FSIndex<AnnotationFS> idx = cas.getAnnotationIndex(theTypeType);
+    FSIterator<AnnotationFS> iter = idx.iterator();
     for (int tc=0; tc<cycle+1; tc++) {
       FeatureStructure testFS = iter.get();
       iter.moveToNext();
@@ -754,7 +754,7 @@ public class SerializationReinitTest extends TestCase {
       cas1.getIndexRepository().addFS(anAnnot3);
       AnnotationFS anAnnot4 = cas1.createAnnotation(cas1.getAnnotationType(), 15, 30);
       cas1.getIndexRepository().addFS(anAnnot4);
-      FSIndex tIndex = cas1.getAnnotationIndex();
+      FSIndex<AnnotationFS> tIndex = cas1.getAnnotationIndex();
       assertTrue(tIndex.size() == 5); //doc annot plus 4 annots
       
       FeatureStructure entityFS = cas1.createFS(entityType);
@@ -805,11 +805,11 @@ public class SerializationReinitTest extends TestCase {
       //=======================================================================
       //create Marker, add/modify fs and serialize in delta xmi format.
       Marker marker = cas2.createMarker();
-      FSIndex cas2tIndex = cas2.getAnnotationIndex();
+      FSIndex<AnnotationFS> cas2tIndex = cas2.getAnnotationIndex();
       CAS cas2preexistingView = cas2.getView("preexistingView");
-      FSIndex cas2personIndex = cas2preexistingView.getAnnotationIndex(personType);
-      FSIndex cas2orgIndex = cas2preexistingView.getAnnotationIndex(orgType);
-      FSIndex cas2ownerIndex = cas2preexistingView.getAnnotationIndex(ownerType);
+      FSIndex<AnnotationFS> cas2personIndex = cas2preexistingView.getAnnotationIndex(personType);
+      FSIndex<AnnotationFS> cas2orgIndex = cas2preexistingView.getAnnotationIndex(orgType);
+      FSIndex<AnnotationFS> cas2ownerIndex = cas2preexistingView.getAnnotationIndex(ownerType);
       
       // create an annotation and add to index
       AnnotationFS cas2anAnnot5 = cas2.createAnnotation(cas2.getAnnotationType(), 6, 8);
@@ -822,14 +822,14 @@ public class SerializationReinitTest extends TestCase {
       //create an annotation in View1
       AnnotationFS cas2view1Annot = cas2view1.createAnnotation(cas2.getAnnotationType(), 1, 5);
       cas2view1.getIndexRepository().addFS(cas2view1Annot);
-      FSIndex cas2view1Index = cas2view1.getAnnotationIndex();
+      FSIndex<AnnotationFS> cas2view1Index = cas2view1.getAnnotationIndex();
       assertTrue(cas2view1Index.size() == 2); //document annot and this annot
      
       //modify an existing annotation
-      Iterator tIndexIter = cas2tIndex.iterator();
-      AnnotationFS docAnnot = (AnnotationFS) tIndexIter.next(); //doc annot
-      AnnotationFS modAnnot1 = (AnnotationFS) tIndexIter.next();
-      AnnotationFS delAnnot = (AnnotationFS)  tIndexIter.next();
+      Iterator<AnnotationFS> tIndexIter = cas2tIndex.iterator();
+      AnnotationFS docAnnot = tIndexIter.next(); //doc annot
+      AnnotationFS modAnnot1 = tIndexIter.next();
+      AnnotationFS delAnnot = tIndexIter.next();
       
       //modify language feature
       Feature languageF = cas2.getDocumentAnnotation().getType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_LANGUAGE);
@@ -844,7 +844,7 @@ public class SerializationReinitTest extends TestCase {
       cas2.getIndexRepository().removeFS(delAnnot);
   
       //modify FS - string feature and FS feature.
-      Iterator<FeatureStructure> personIter = cas2personIndex.iterator();     
+      Iterator<AnnotationFS> personIter = cas2personIndex.iterator();     
       AnnotationFS cas2person1 = (AnnotationFS) personIter.next();
       AnnotationFS cas2person2 = (AnnotationFS) personIter.next();
       
@@ -854,12 +854,12 @@ public class SerializationReinitTest extends TestCase {
       cas2person2.setStringValue(componentIdFeat, "delataCas2");
       cas2person2.setStringValue(mentionTypeFeat, "FIRSTNAME");
       
-      Iterator<FeatureStructure> orgIter = cas2orgIndex.iterator();
+      Iterator<AnnotationFS> orgIter = cas2orgIndex.iterator();
       AnnotationFS cas2orgAnnot = (AnnotationFS) orgIter.next();
       cas2orgAnnot.setStringValue(mentionTypeFeat, "ORGNAME");
       
       //modify FS feature
-      Iterator<FeatureStructure> ownerIter = cas2ownerIndex.iterator();
+      Iterator<AnnotationFS> ownerIter = cas2ownerIndex.iterator();
       AnnotationFS cas2ownerAnnot = (AnnotationFS) ownerIter.next();
       FeatureStructure cas2relArgs = cas2ownerAnnot.getFeatureValue(argsFeat);
       cas2relArgs.setFeatureValue(rangeFeat, cas2orgAnnot);

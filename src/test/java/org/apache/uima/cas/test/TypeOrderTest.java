@@ -32,6 +32,7 @@ import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIterator;
+import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.admin.CASFactory;
@@ -210,7 +211,7 @@ public class TypeOrderTest extends TestCase {
       this.cas.getIndexRepository().addFS(this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
     }
 
-    FSIterator it = this.cas.getIndexRepository().getIndex(TYPE_ORDER_INDEX).iterator();
+    FSIterator<FeatureStructure> it = this.cas.getIndexRepository().getIndex(TYPE_ORDER_INDEX).iterator();
 
     // it = cas.getAnnotationIndex().iterator();
     AnnotationFS fs;

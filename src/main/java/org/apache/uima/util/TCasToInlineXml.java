@@ -102,7 +102,7 @@ public class TCasToInlineXml implements TCasFormatter {
 
     // get iterator over annotations sorted by increasing start position and
     // decreasing end position
-    FSIterator iterator = aCAS.getAnnotationIndex().iterator();
+    FSIterator<AnnotationFS> iterator = aCAS.getAnnotationIndex().iterator();
 
     // filter the iterator if desired
     if (aFilter != null) {
@@ -114,7 +114,7 @@ public class TCasToInlineXml implements TCasFormatter {
     // annotations, and if an annotation contains other annotations, we
     // push the parent annotation on the stack, process the children, and
     // then come back to the parent later.
-    ArrayList stack = new ArrayList();
+    ArrayList<AnnotationFS> stack = new ArrayList<AnnotationFS>();
     int pos = 0;
 
     try {
@@ -218,8 +218,8 @@ public class TCasToInlineXml implements TCasFormatter {
 
     Type stringType = aCAS.getTypeSystem().getType(CAS.TYPE_NAME_STRING);
 
-    List aFeatures = aFS.getType().getFeatures();
-    Iterator iter = aFeatures.iterator();
+    List<Feature> aFeatures = aFS.getType().getFeatures();
+    Iterator<Feature> iter = aFeatures.iterator();
     while (iter.hasNext()) {
       Feature feat = (Feature) iter.next();
       String featName = feat.getShortName();

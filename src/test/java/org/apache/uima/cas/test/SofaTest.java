@@ -256,15 +256,15 @@ public class SofaTest extends TestCase {
       // Sofas are indexed
       // FSIndex sofaIndex =
       // cas.getIndexRepository().getIndex(CAS.SOFA_INDEX_NAME);
-      FSIterator sofaIter =this.cas.getSofaIterator();
+      FSIterator<SofaFS> sofaIter =this.cas.getSofaIterator();
       int numSofas = 0;
       while (sofaIter.isValid()) {
         numSofas++;
         sofaIter.moveToNext();
       }
-      FSIndex engIndex = engTcas.getAnnotationIndex();
-      FSIndex gerIndex = gerTcas.getAnnotationIndex();
-      FSIndex frIndex = frTcas.getAnnotationIndex();
+      FSIndex<AnnotationFS> engIndex = engTcas.getAnnotationIndex();
+      FSIndex<AnnotationFS> gerIndex = gerTcas.getAnnotationIndex();
+      FSIndex<AnnotationFS> frIndex = frTcas.getAnnotationIndex();
       // assertTrue(sofaIndex.size() == 3); // 3 sofas
       assertTrue(numSofas == 3);
       assertTrue(engIndex.size() == 5); // 4 annots plus
@@ -275,12 +275,12 @@ public class SofaTest extends TestCase {
       // documentAnnotation
 
       // Test that the annotations are of the correct types
-      FSIterator engIt = engIndex.iterator();
-      FSIterator gerIt = gerIndex.iterator();
-      FSIterator frIt = frIndex.iterator();
-      AnnotationFS engAnnot = (AnnotationFS) engIt.get();
-      AnnotationFS gerAnnot = (AnnotationFS) gerIt.get();
-      AnnotationFS frAnnot = (AnnotationFS) frIt.get();
+      FSIterator<AnnotationFS> engIt = engIndex.iterator();
+      FSIterator<AnnotationFS> gerIt = gerIndex.iterator();
+      FSIterator<AnnotationFS> frIt = frIndex.iterator();
+      AnnotationFS engAnnot = engIt.get();
+      AnnotationFS gerAnnot = gerIt.get();
+      AnnotationFS frAnnot = frIt.get();
       assertTrue(docAnnotationType.getName().equals(engAnnot.getType().getName()));
       assertTrue(docAnnotationType.getName().equals(gerAnnot.getType().getName()));
       assertTrue(docAnnotationType.getName().equals(frAnnot.getType().getName()));

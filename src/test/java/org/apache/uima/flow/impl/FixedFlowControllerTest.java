@@ -73,8 +73,9 @@ public class FixedFlowControllerTest extends TestCase {
     UimaContextAdmin rootContext = UIMAFramework.newUimaContext(
             UIMAFramework.getLogger(), UIMAFramework.newDefaultResourceManager(),
             UIMAFramework.newConfigurationManager());
+    Map<String, String> aSofaMappings = Collections.emptyMap();
     FlowControllerContext fcContext = new FlowControllerContext_impl(
-            rootContext, "_FlowController", Collections.EMPTY_MAP,
+            rootContext, "_FlowController", aSofaMappings,
             analysisEngineMetaDataMap, aggregateMd);
     fixedFlowController = new FixedFlowController();
     fixedFlowController.initialize(fcContext);    

@@ -83,7 +83,7 @@ public class CasCopierTest extends TestCase {
     TypeDescription fooType = additionalTypes.addType("test.Foo", "Test Type",
             "uima.tcas.Annotation");
     fooType.addFeature("bar", "Test Feature", "uima.cas.String");
-    ArrayList destTypeSystems = new ArrayList();
+    ArrayList<TypeSystemDescription> destTypeSystems = new ArrayList<TypeSystemDescription>();
     destTypeSystems.add(additionalTypes);
     destTypeSystems.add(typeSystem);
     CAS destCas2 = CasCreationUtils.createCas(destTypeSystems);
@@ -128,7 +128,7 @@ public class CasCopierTest extends TestCase {
     TypeDescription fooType = additionalTypes.addType("test.Foo", "Test Type",
             "uima.tcas.Annotation");
     fooType.addFeature("bar", "Test Feature", "uima.cas.String");
-    ArrayList destTypeSystems = new ArrayList();
+    ArrayList<TypeSystemDescription> destTypeSystems = new ArrayList<TypeSystemDescription>();
     destTypeSystems.add(additionalTypes);
     destTypeSystems.add(typeSystem);
     CAS destCas2 = CasCreationUtils.createCas(destTypeSystems);
@@ -176,14 +176,14 @@ public class CasCopierTest extends TestCase {
     destCas.setDocumentText(srcCas.getDocumentText());
 
     // copy an Annotation
-    Iterator annotIter = srcCas.getAnnotationIndex().iterator();
+    Iterator<AnnotationFS> annotIter = srcCas.getAnnotationIndex().iterator();
     FeatureStructure annot = (FeatureStructure) annotIter.next();
     FeatureStructure copy = copier.copyFs(annot);
     // verify copy
     CasComparer.assertEquals(annot, copy);
 
     // copy a Relation (which will have references)
-    Iterator relationIter = srcCas.getIndexRepository().getIndex("testRelationIndex").iterator();
+    Iterator<FeatureStructure> relationIter = srcCas.getIndexRepository().getIndex("testRelationIndex").iterator();
     FeatureStructure relFS = (FeatureStructure) relationIter.next();
     FeatureStructure relCopy = copier.copyFs(relFS);
     // verify copy
@@ -214,9 +214,9 @@ public class CasCopierTest extends TestCase {
     srcCasView.addFsToIndexes(fs);
     CasCopier.copyCas(srcCas, destCas, true);
     CAS destCasView = destCas.getView("TestView");
-    Iterator annotIter = destCasView.getAnnotationIndex().iterator();
+    Iterator<AnnotationFS> annotIter = destCasView.getAnnotationIndex().iterator();
     annotIter.next(); // document annotation
-    AnnotationFS copiedFs = (AnnotationFS) annotIter.next();
+    AnnotationFS copiedFs = annotIter.next();
     assertEquals("This", copiedFs.getCoveredText());
   }
 }

@@ -75,29 +75,29 @@ public class IndexComparitorTest extends TestCase {
 
   FeatureStructure fss[][][];
 
-  FSIndex sortedType1;
+  FSIndex<FeatureStructure> sortedType1;
 
-  FSIndex sortedType1TypeOrder;
+  FSIndex<FeatureStructure> sortedType1TypeOrder;
 
-  private FSIndex setType1;
+  private FSIndex<FeatureStructure> setType1;
 
-  private FSIndex bagType1;
+  private FSIndex<FeatureStructure> bagType1;
 
-  private FSIndex sortedType1Sub1;
+  private FSIndex<FeatureStructure> sortedType1Sub1;
 
-  private FSIndex setType1Sub1;
+  private FSIndex<FeatureStructure> setType1Sub1;
 
-  private FSIndex bagType1Sub1;
+  private FSIndex<FeatureStructure> bagType1Sub1;
 
-  private FSIndex setType1TypeOrder;
+  private FSIndex<FeatureStructure> setType1TypeOrder;
 
-  private FSIndex bagType1TypeOrder;
+  private FSIndex<FeatureStructure> bagType1TypeOrder;
 
-  private FSIndex sortedType1Sub1TypeOrder;
+  private FSIndex<FeatureStructure> sortedType1Sub1TypeOrder;
 
-  private FSIndex setType1Sub1TypeOrder;
+  private FSIndex<FeatureStructure> setType1Sub1TypeOrder;
 
-  private FSIndex bagType1Sub1TypeOrder;
+  private FSIndex<FeatureStructure> bagType1Sub1TypeOrder;
 
   public IndexComparitorTest(String arg0) {
     super(arg0);
