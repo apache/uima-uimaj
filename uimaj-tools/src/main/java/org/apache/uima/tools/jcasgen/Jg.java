@@ -332,8 +332,10 @@ public class Jg {
     waiter.waitforGUI();
   }
 
+  // exits with -1 if failure
   public static void main(String[] args) {
-    (new Jg()).main0(args, null, null, new LogThrowErrorImpl());
+    int rc = (new Jg()).main0(args, null, null, new LogThrowErrorImpl());
+    System.exit(rc);
   }
 
   public void mainForCde(IMerge aMerger, IProgressMonitor aProgressMonitor, IError aError,
@@ -367,7 +369,7 @@ public class Jg {
     generateAllTypesFromTemplates(outputDirectory, tds, aCas, jcasTypeClass, jcas_TypeClass);
   }
 
-  public void main0(String[] args, IMerge aMerger, IProgressMonitor aProgressMonitor, IError aError) {
+  public int main0(String[] args, IMerge aMerger, IProgressMonitor aProgressMonitor, IError aError) {
     this.merger = aMerger;
     this.error = aError;
     this.progressMonitor = aProgressMonitor;
@@ -376,7 +378,7 @@ public class Jg {
       if (args[i].equals("-jcasgeninput")) {
         if (i == args.length - 1) {
           driveGui();
-          return;
+          return 0;
         } else {
           foundInput = true;
           break;
@@ -384,12 +386,15 @@ public class Jg {
       }
     }
     if (foundInput)
-      main1(args);
-    else
+      return main1(args);
+    else {
       driveGui();
+      return 0;
+    }
   }
 
-  public void main1(String[] arguments) {
+  public int main1(String[] arguments) {
+    boolean hadError = false;
     try {
       try {
         if (null == progressMonitor) {
@@ -497,7 +502,8 @@ public class Jg {
 
       } catch (IOException e) {
         error.newError(IError.ERROR, getString("IOException", new Object[] {}), e);
-      } catch (ErrorExit e) { // do nothing
+      } catch (ErrorExit e) { 
+        hadError = true;
       } catch (InstantiationException e) {
         error.newError(IError.ERROR, getString("InstantiationException", new Object[] {}), e);
       } catch (IllegalAccessException e) {
@@ -506,6 +512,7 @@ public class Jg {
     } finally {
       progressMonitor.done();
     }
+    return (hadError) ? -1 : 0;    
   }
 
   // message: TypeName = ".....", URLs defining this type = "xxxx", "xxxx", ....
