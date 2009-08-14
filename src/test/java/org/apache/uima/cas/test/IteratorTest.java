@@ -173,7 +173,7 @@ public class IteratorTest extends TestCase {
   }
 
   public void testGetIndexes() {
-    Iterator<FSIndex> it = this.cas.getIndexRepository().getIndexes();
+    Iterator<FSIndex<FeatureStructure>> it = this.cas.getIndexRepository().getIndexes();
     while (it.hasNext()) {
       assertNotNull(it.next());
     }
@@ -631,13 +631,13 @@ public class IteratorTest extends TestCase {
       fsArray[i] = this.cas.createAnnotation(this.tokenType, i * 5, (i * 5) + 4);
       ir.addFS(fsArray[i]);
     }
-    FSIndex setIndex = this.cas.getIndexRepository().getIndex(CASTestSetup.ANNOT_SET_INDEX,
+    FSIndex<FeatureStructure> setIndex = this.cas.getIndexRepository().getIndex(CASTestSetup.ANNOT_SET_INDEX,
         this.tokenType);
-    FSIterator setIt = setIndex.iterator();
-    FSIndex sortedIndex = this.cas.getAnnotationIndex(this.tokenType);
+    FSIterator<FeatureStructure> setIt = setIndex.iterator();
+    FSIndex<AnnotationFS> sortedIndex = this.cas.getAnnotationIndex(this.tokenType);
     FSIterator sortedIt = sortedIndex.iterator();
-    FSIndex bagIndex = ir.getIndex(CASTestSetup.ANNOT_BAG_INDEX, this.tokenType);
-    FSIterator bagIt = bagIndex.iterator();
+    FSIndex<FeatureStructure> bagIndex = ir.getIndex(CASTestSetup.ANNOT_BAG_INDEX, this.tokenType);
+    FSIterator<FeatureStructure> bagIt = bagIndex.iterator();
     // For each index, check that the FSs are actually in the index.
     for (int i = 0; i < fsArray.length; i++) {
       setIt.moveTo(fsArray[i]);

@@ -663,8 +663,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return this.svd.baseCAS;
   }
 
+  @SuppressWarnings("unchecked")
   public FSIterator<SofaFS> getSofaIterator() {
-    FSIndex<SofaFS> sofaIndex = this.svd.baseCAS.indexRepository.getIndex(CAS.SOFA_INDEX_NAME);
+    FSIndex<SofaFS> sofaIndex =  (FSIndex<SofaFS>) ( FSIndex<?>) this.svd.baseCAS.indexRepository.getIndex(CAS.SOFA_INDEX_NAME);
     return sofaIndex.iterator();
   }
 
@@ -3540,7 +3541,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
 
   }
-
+  
   public FeatureValuePath createFeatureValuePath(String featureValuePath)
       throws CASRuntimeException {
     return FeatureValuePathImpl.getFeaturePath(featureValuePath);
@@ -3887,12 +3888,18 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return (AnnotationFS) fs;
   }
 
+  @SuppressWarnings("unchecked")
   public AnnotationIndex getAnnotationIndex() {
-    return new AnnotationIndexImpl(getIndexRepository().getIndex(CAS.STD_ANNOTATION_INDEX));
+    return new AnnotationIndexImpl(
+            (FSIndex<AnnotationFS>) (FSIndex<?>) getIndexRepository().getIndex(
+             CAS.STD_ANNOTATION_INDEX));
   }
 
+  @SuppressWarnings("unchecked")
   public AnnotationIndex getAnnotationIndex(Type type) {
-    return new AnnotationIndexImpl(getIndexRepository().getIndex(CAS.STD_ANNOTATION_INDEX, type));
+    return new AnnotationIndexImpl(
+            (FSIndex<AnnotationFS>) (FSIndex<?>) getIndexRepository().getIndex(
+            CAS.STD_ANNOTATION_INDEX, type));
   }
 
   /**
