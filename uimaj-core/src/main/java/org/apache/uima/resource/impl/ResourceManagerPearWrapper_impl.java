@@ -59,7 +59,9 @@ public class ResourceManagerPearWrapper_impl extends ResourceManager_impl implem
     mParameterizedResourceImplClassMap = r.mParameterizedResourceImplClassMap;
     mInternalParameterizedResourceImplClassMap = r.mInternalParameterizedResourceImplClassMap;
     mParameterizedResourceInstanceMap = r.mParameterizedResourceInstanceMap;
-    mCasManager = r.mCasManager;
+    synchronized(this) {
+      mCasManager = r.getCasManager();  // synchronized - avoid findbugs noise
+    }
   }
  
   /**
