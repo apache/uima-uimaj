@@ -789,14 +789,14 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
      * @see org.apache.uima.cas.FSIndex#iterator()
      */
     public FSIterator<T> iterator() {
-      return new FSIteratorWrapper(createPointerIterator(this.iicp), FSIndexRepositoryImpl.this.cas);
+      return new FSIteratorWrapper<T>(createPointerIterator(this.iicp), FSIndexRepositoryImpl.this.cas);
     }
 
     /**
      * @see org.apache.uima.cas.FSIndex#iterator(FeatureStructure)
      */
-    public FSIterator iterator(FeatureStructure fs) {
-      return new FSIteratorWrapper(createPointerIterator(this.iicp, ((FeatureStructureImpl) fs)
+    public FSIterator<T> iterator(FeatureStructure fs) {
+      return new FSIteratorWrapper<T>(createPointerIterator(this.iicp, ((FeatureStructureImpl) fs)
           .getAddress()), FSIndexRepositoryImpl.this.cas);
     }
 
@@ -1128,7 +1128,6 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    * types.get(i)); addIndexRec(compCopy); } return cp; }
    */
   // Will modify comparator, so call with copy.
-  @SuppressWarnings("unchecked")
   private IndexIteratorCachePair addNewIndexRec(FSIndexComparator comparator, int indexType) {
     final IndexIteratorCachePair iicp = this.addNewIndex(comparator, indexType);
     if (indexType == FSIndex.DEFAULT_BAG_INDEX) {
@@ -1261,8 +1260,9 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   /**
    * @see org.apache.uima.cas.admin.FSIndexRepositoryMgr#getIndexes()
    */
-  public Iterator<FSIndex> getIndexes() {
-    final ArrayList<FSIndex> indexList = new ArrayList<FSIndex>();
+  public Iterator<FSIndex<FeatureStructure>> getIndexes() {
+    final ArrayList<FSIndex<FeatureStructure>> indexList =
+            new ArrayList<FSIndex<FeatureStructure>>();
     final Iterator<String> it = this.getLabels();
     String label;
     while (it.hasNext()) {
@@ -1303,7 +1303,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   /**
    * @see org.apache.uima.cas.FSIndexRepository#getIndex(String, Type)
    */
-  public FSIndex getIndex(String label, Type type) {
+  public FSIndex<FeatureStructure> getIndex(String label, Type type) {
     final IndexIteratorCachePair iicp = this.name2indexMap.get(label);
     if (iicp == null) {
       return null;
@@ -1331,24 +1331,24 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       return null;
     }
     // assert((indexCode >= 0) && (indexCode < inds.size()));
-    return new IndexImpl(inds.get(indexCode));
+    return new IndexImpl<FeatureStructure>(inds.get(indexCode));
     // return ((IndexIteratorCachePair)inds.get(indexCode)).index;
   }
 
   /**
    * @see org.apache.uima.cas.FSIndexRepository#getIndex(String)
    */
-  public FSIndex getIndex(String label) {
+  public FSIndex<FeatureStructure> getIndex(String label) {
     final IndexIteratorCachePair iicp = this.name2indexMap.get(label);
     if (iicp == null) {
       return null;
     }
-    return new IndexImpl(iicp);
+    return new IndexImpl<FeatureStructure>(iicp);
     // return ((IndexIteratorCachePair)name2indexMap.get(label)).index;
   }
 
   public IntPointerIterator getIntIteratorForIndex(String label) {
-    final IndexImpl index = (IndexImpl) getIndex(label);
+    final IndexImpl<FeatureStructure> index = (IndexImpl<FeatureStructure>) getIndex(label);
     if (index == null) {
       return null;
     }
@@ -1356,16 +1356,13 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   }
 
   public IntPointerIterator getIntIteratorForIndex(String label, Type type) {
-    final IndexImpl index = (IndexImpl) getIndex(label, type);
+    final IndexImpl<FeatureStructure> index = (IndexImpl<FeatureStructure>) getIndex(label, type);
     if (index == null) {
       return null;
     }
     return createPointerIterator(index.iicp);
   }
 
-  /**
-   */
-  @SuppressWarnings("unchecked")
   public int getIndexSize(Type type) {
     final int typeCode = ((TypeImpl) type).getCode();
     final ArrayList<IndexIteratorCachePair> indexVector = this.indexArray[typeCode];
@@ -1612,16 +1609,16 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    * 
    * @see org.apache.uima.cas.FSIndexRepository#getAllIndexedFS(org.apache.uima.cas.Type)
    */
-  public FSIterator getAllIndexedFS(Type type) {
-    final List<FSIterator> iteratorList = new ArrayList<FSIterator>();
+  public FSIterator<FeatureStructure> getAllIndexedFS(Type type) {
+    final List<FSIterator<FeatureStructure>> iteratorList = new ArrayList<FSIterator<FeatureStructure>>();
     getAllIndexedFS(type, iteratorList);
-    return new FSIteratorAggregate(iteratorList);
+    return new FSIteratorAggregate<FeatureStructure>(iteratorList);
   }
 
   @SuppressWarnings("unchecked")
-  private final void getAllIndexedFS(Type type, List<FSIterator> iteratorList) {
+  private final void getAllIndexedFS(Type type, List<FSIterator<FeatureStructure>> iteratorList) {
     // Start by looking for an auto-index. If one exists, no other index exists.
-    final FSIndex autoIndex = getIndex(getAutoIndexNameForType(type));
+    final FSIndex<FeatureStructure> autoIndex = getIndex(getAutoIndexNameForType(type));
     if (autoIndex != null) {
       iteratorList.add(autoIndex.iterator());
       // We found one of the special auto-indexes which don't inherit down the tree. So, we

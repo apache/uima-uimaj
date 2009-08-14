@@ -78,7 +78,7 @@ class FSIteratorAggregate<T extends FeatureStructure> extends FSIteratorImplBase
     return (this.iteratorIndex < this.iterators.size());
   }
 
-  public void moveTo(T fs) {
+  public void moveTo(FeatureStructure fs) {
     throw new UnsupportedOperationException("This operation is not supported on an aggregate iterator.");
   }
 

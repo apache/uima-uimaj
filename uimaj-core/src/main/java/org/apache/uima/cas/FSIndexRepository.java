@@ -35,7 +35,7 @@ public interface FSIndexRepository {
    * @return The index with the name <code>label</code>, or <code>null</code> if no such index
    *         is defined.
    */
-  FSIndex getIndex(String label);
+  FSIndex<FeatureStructure> getIndex(String label);
 
   /**
    * Retrieve an index according to a label and a type. The type is used to narrow down the index of
@@ -48,7 +48,7 @@ public interface FSIndexRepository {
    * @return The specified, or <code>null</code> if an index with that name doesn't exist.
    * @exception CASRuntimeException When <code>type</code> is not a subtype of the index's type.
    */
-  FSIndex getIndex(String label, Type type) throws CASRuntimeException;
+  FSIndex<FeatureStructure> getIndex(String label, Type type) throws CASRuntimeException;
 
   /**
    * Get all labels for all indexes.
@@ -62,7 +62,7 @@ public interface FSIndexRepository {
    * 
    * @return All indexes.
    */
-  Iterator<FSIndex> getIndexes();
+  Iterator<FSIndex<FeatureStructure>> getIndexes();
 
   /**
    * Add a feature structure to all appropriate indexes in the repository. If no indexes exist for
@@ -105,5 +105,5 @@ public interface FSIndexRepository {
    * @return An iterator that returns all indexed FeatureStructures of type <code>aType</code>,
    *         in no particular order.
    */
-  FSIterator getAllIndexedFS(Type aType);
+  FSIterator<FeatureStructure> getAllIndexedFS(Type aType);
 }
