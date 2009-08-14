@@ -52,7 +52,7 @@ public class Log4jLogger_impl implements Logger {
     * @param component
     *           specified source class
     */
-   private Log4jLogger_impl(Class component) {
+   private Log4jLogger_impl(Class<?> component) {
       super();
 
       if (component != null) {
@@ -77,7 +77,7 @@ public class Log4jLogger_impl implements Logger {
     *           current source class
     * @return Logger returns the JSR47Logger object for the specified class
     */
-   public static synchronized Logger getInstance(Class component) {
+   public static synchronized Logger getInstance(Class<?> component) {
       return new Log4jLogger_impl(component);
    }
 
