@@ -132,15 +132,15 @@ public class GetAllIndexedTest extends TestCase {
     this.otherAnnotationType = null;
   }
   
-  private final FSIterator getAllIndexed() {
+  private final FSIterator<FeatureStructure> getAllIndexed() {
     return getAllIndexed(this.cas.getTypeSystem().getTopType());
   }
 
-  private final FSIterator getAllIndexed(Type type) {
+  private final FSIterator<FeatureStructure> getAllIndexed(Type type) {
     return this.cas.getIndexRepository().getAllIndexedFS(type);
   }
   
-  private final int getIteratorSize(FSIterator it) {
+  private final int getIteratorSize(FSIterator<? extends FeatureStructure> it) {
     int count = 0;
     for (it.moveToFirst(); it.isValid(); it.moveToNext()) {
       ++count;
@@ -186,7 +186,7 @@ public class GetAllIndexedTest extends TestCase {
     addFS(createAnnot(3, 4));
     
     // Iterate backwards, check only that it returns correct number of FSs
-    FSIterator it = getAllIndexed();
+    FSIterator<FeatureStructure> it = getAllIndexed();
     int down = this.fsCount;
     for (it.moveToLast(); it.isValid(); it.moveToPrevious()) {
       --down;
@@ -195,7 +195,7 @@ public class GetAllIndexedTest extends TestCase {
 
     // Get all indexed, create copy and iterate in parallel.
     it = getAllIndexed();
-    FSIterator copy = it.copy();
+    FSIterator<FeatureStructure> copy = it.copy();
     copy.moveToFirst();
     for (it.moveToFirst(); it.isValid(); it.moveToNext()) {
       assertTrue(copy.isValid());
@@ -216,7 +216,7 @@ public class GetAllIndexedTest extends TestCase {
     //test getAllIndexed(Type)
     Type tokenType = this.cas.getTypeSystem().getType(TOKEN_TYPE);
     assertNotNull(tokenType);
-    FSIterator tokenIter = this.cas.getIndexRepository().getAllIndexedFS(tokenType);
+    FSIterator<FeatureStructure> tokenIter = this.cas.getIndexRepository().getAllIndexedFS(tokenType);
     assertFalse(tokenIter.hasNext());
   }
 

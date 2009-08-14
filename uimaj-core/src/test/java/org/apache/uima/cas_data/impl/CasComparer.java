@@ -35,6 +35,7 @@ import org.apache.uima.cas.IntArrayFS;
 import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.Type;
+import org.apache.uima.cas.text.AnnotationFS;
 
 /**
  * A non-perfect CAS equality checker for JUnit.
@@ -42,7 +43,7 @@ import org.apache.uima.cas.Type;
  */
 public class CasComparer {
   public static void assertEquals(CAS c1, CAS c2) {
-    FSIterator sofaIter = c1.getSofaIterator();
+    FSIterator<SofaFS> sofaIter = c1.getSofaIterator();
     int c1Sofas = 0;
     while (sofaIter.hasNext()) {
       SofaFS sofa = (SofaFS) sofaIter.next();
@@ -62,8 +63,8 @@ public class CasComparer {
 
   public static void assertEqualViews(CAS c1, CAS c2) {
     Map<FeatureStructure, FeatureStructure> visited = new HashMap<FeatureStructure, FeatureStructure>();
-    FSIterator it1 = c1.getAnnotationIndex().iterator();
-    FSIterator it2 = c2.getAnnotationIndex().iterator();
+    FSIterator<AnnotationFS> it1 = c1.getAnnotationIndex().iterator();
+    FSIterator<AnnotationFS> it2 = c2.getAnnotationIndex().iterator();
     while (it1.isValid()) {
       Assert.assertTrue(it2.isValid());
 

@@ -209,11 +209,11 @@ public class IteratorTest extends TestCase {
     // Create a reverse iterator for the set index and check that the result
     // is the same as for forward iteration.
     IntVector v = new IntVector();
-    FSIndex bagIndex = this.cas.getIndexRepository().getIndex(CASTestSetup.ANNOT_BAG_INDEX);
-    FSIndex setIndex = this.cas.getIndexRepository().getIndex(CASTestSetup.ANNOT_SET_INDEX);
-    FSIndex sortedIndex = this.cas.getIndexRepository().getIndex(CASTestSetup.ANNOT_SORT_INDEX);
+    FSIndex<FeatureStructure> bagIndex = this.cas.getIndexRepository().getIndex(CASTestSetup.ANNOT_BAG_INDEX);
+    FSIndex<FeatureStructure> setIndex = this.cas.getIndexRepository().getIndex(CASTestSetup.ANNOT_SET_INDEX);
+    FSIndex<FeatureStructure> sortedIndex = this.cas.getIndexRepository().getIndex(CASTestSetup.ANNOT_SORT_INDEX);
 
-    FSIterator it = setIndex.iterator();
+    FSIterator<FeatureStructure> it = setIndex.iterator();
     AnnotationFS a, b = null;
     while (it.isValid()) {
       a = (AnnotationFS) it.get();
@@ -386,18 +386,18 @@ public class IteratorTest extends TestCase {
     assertTrue(sortedIndex.size() == v.size());
 
     // Test moveTo()
-    List<FeatureStructure> list = new ArrayList<FeatureStructure>();
-    it = this.cas.getAnnotationIndex().iterator();
-    for (it.moveToFirst(); it.isValid(); it.moveToNext()) {
-      list.add(it.get());
+    List<AnnotationFS> list = new ArrayList<AnnotationFS>();
+    FSIterator<AnnotationFS> it2 = this.cas.getAnnotationIndex().iterator();
+    for (it2.moveToFirst(); it2.isValid(); it2.moveToNext()) {
+      list.add(it2.get());
     }
     // AnnotationFS an;
     for (int i = 0; i < list.size(); i++) {
       // System.out.println("Iteration: " + i);
-      it.moveToFirst();
-      it.moveTo(list.get(i));
-      assertTrue(((AnnotationFS) it.get()).getBegin() == ((AnnotationFS) list.get(i)).getBegin());
-      assertTrue(((AnnotationFS) it.get()).getEnd() == ((AnnotationFS) list.get(i)).getEnd());
+      it2.moveToFirst();
+      it2.moveTo(list.get(i));
+      assertTrue(((AnnotationFS) it2.get()).getBegin() == ((AnnotationFS) list.get(i)).getBegin());
+      assertTrue(((AnnotationFS) it2.get()).getEnd() == ((AnnotationFS) list.get(i)).getEnd());
     }
 
     // Check that reverse iterator produces reverse sequence.
@@ -544,7 +544,7 @@ public class IteratorTest extends TestCase {
     }
 
     // Test iterator copy.
-    FSIterator source, copy;
+    FSIterator<AnnotationFS> source, copy;
     source = this.cas.getAnnotationIndex().iterator();
     // Count items.
     int count = 0;
@@ -625,7 +625,7 @@ public class IteratorTest extends TestCase {
    */
   public void testDelete() {
     // Create a bunch of FSs.
-    FeatureStructure[] fsArray = new FeatureStructure[100];
+    AnnotationFS[] fsArray = new AnnotationFS[100];
     FSIndexRepository ir = this.cas.getIndexRepository();
     for (int i = 0; i < fsArray.length; i++) {
       fsArray[i] = this.cas.createAnnotation(this.tokenType, i * 5, (i * 5) + 4);
@@ -635,7 +635,7 @@ public class IteratorTest extends TestCase {
         this.tokenType);
     FSIterator<FeatureStructure> setIt = setIndex.iterator();
     FSIndex<AnnotationFS> sortedIndex = this.cas.getAnnotationIndex(this.tokenType);
-    FSIterator sortedIt = sortedIndex.iterator();
+    FSIterator<AnnotationFS> sortedIt = sortedIndex.iterator();
     FSIndex<FeatureStructure> bagIndex = ir.getIndex(CASTestSetup.ANNOT_BAG_INDEX, this.tokenType);
     FSIterator<FeatureStructure> bagIt = bagIndex.iterator();
     // For each index, check that the FSs are actually in the index.

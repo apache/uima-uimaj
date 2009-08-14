@@ -102,10 +102,10 @@ public class SubiteratorTest extends TestCase {
       this.ae.process(jcas);
       AnnotationIndex tokenIndex = jcas.getAnnotationIndex(jcas.getCasType(Token.type));
       AnnotationFS sentence = (AnnotationFS) jcas.getAnnotationIndex(jcas.getCasType(Sentence.type)).iterator().next();
-      FSIterator tokenIterator = tokenIndex.subiterator(sentence);
-      AnnotationFS token = (AnnotationFS) tokenIndex.iterator().next();
+      FSIterator<AnnotationFS> tokenIterator = tokenIndex.subiterator(sentence);
+      AnnotationFS token = tokenIndex.iterator().next();
       tokenIterator.moveTo(token); //throws ClassCastException    
-      UnambiguousIteratorImpl it = new UnambiguousIteratorImpl(tokenIndex.iterator());
+      UnambiguousIteratorImpl<AnnotationFS> it = new UnambiguousIteratorImpl<AnnotationFS>(tokenIndex.iterator());
       it.moveTo(token);
     } catch (AnalysisEngineProcessException e) {
       e.printStackTrace();

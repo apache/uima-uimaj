@@ -131,13 +131,13 @@ public class CasCopier {
     }
 
     // now copy indexed FS, but keep track so we don't index anything more than once
-    Set indexedFs = new HashSet();
-    Iterator indexes = aSrcCasView.getIndexRepository().getIndexes();
+    Set<FeatureStructure> indexedFs = new HashSet<FeatureStructure>();
+    Iterator<FSIndex<FeatureStructure>> indexes = aSrcCasView.getIndexRepository().getIndexes();
     while (indexes.hasNext()) {
-      FSIndex index = (FSIndex) indexes.next();
-      Iterator iter = index.iterator();
+      FSIndex<FeatureStructure> index = indexes.next();
+      Iterator<FeatureStructure> iter = index.iterator();
       while (iter.hasNext()) {
-        FeatureStructure fs = (FeatureStructure) iter.next();
+        FeatureStructure fs = iter.next();
         if (!indexedFs.contains(fs)) {
           FeatureStructure copyOfFs = copyFs(fs);
           //check for annotations with null Sofa reference - this can happen

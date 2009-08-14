@@ -267,10 +267,10 @@ public class SerializationNoMDTest extends TestCase {
     Iterator<String> labelIt = indexRepository.getLabels();
     assertTrue(labelIt != null);
     // Get the standard index for tokens.
-    FSIndex tokenIndex = cas.getAnnotationIndex(tokenType);
+    FSIndex<AnnotationFS> tokenIndex = cas.getAnnotationIndex(tokenType);
     // assert(tokenIndex != null);
     // Get an iterator over tokens.
-    FSIterator it = tokenIndex.iterator();
+    FSIterator<AnnotationFS> it = tokenIndex.iterator();
     // assert(it != null);
     // Now create sentences. We do this as follows: a sentence starts where
     // the first token after an EOS starts, and ends with an EOS.
@@ -315,8 +315,8 @@ public class SerializationNoMDTest extends TestCase {
 
     // Print the first few sentences.
     // System.out.println("\nThe first 10 sentences:\n");
-    FSIndex sentenceIndex = cas.getAnnotationIndex(localSentenceType);
-    FSIterator it = sentenceIndex.iterator();
+    FSIndex<AnnotationFS> sentenceIndex = cas.getAnnotationIndex(localSentenceType);
+    FSIterator<AnnotationFS> it = sentenceIndex.iterator();
     AnnotationFS sentFS;
     if (it.isValid()) {
       sentFS = (AnnotationFS) it.get();
@@ -335,7 +335,7 @@ public class SerializationNoMDTest extends TestCase {
     // }
 
     // Now get an iterator over all annotations.
-    FSIndex annotIndex = cas.getAnnotationIndex();
+    FSIndex<AnnotationFS> annotIndex = cas.getAnnotationIndex();
     // System.out.println("\nNumber of annotations in index: " + annotIndex.size());
 
     // Print the first few sentences.

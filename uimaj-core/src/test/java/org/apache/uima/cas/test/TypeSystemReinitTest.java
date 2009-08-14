@@ -20,6 +20,7 @@
 package org.apache.uima.cas.test;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -29,13 +30,13 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
-import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.admin.CASMgr;
 import org.apache.uima.cas.impl.CASCompleteSerializer;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.Serialization;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
+import org.apache.uima.resource.metadata.MetaDataObject;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
@@ -52,7 +53,7 @@ public class TypeSystemReinitTest extends TestCase {
       TypeSystemDescription tsd = UIMAFramework.getXMLParser().parseTypeSystemDescription(
               new XMLInputSource(getClass().getResource("/org/apache/uima/examples/SourceDocumentInformation.xml")));
 
-      ArrayList l = new ArrayList();
+      List<MetaDataObject> l = new ArrayList<MetaDataObject>();
       l.add(aed);
       l.add(tsd);
       CAS cas1 = CasCreationUtils.createCas(l);
