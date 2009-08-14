@@ -76,7 +76,7 @@ public class Logger_impl implements Logger {
    * 
    * @return Logger - returns the Logger object for the specified class
    */
-  public static synchronized Logger getInstance(Class component) {
+  public static synchronized Logger getInstance(Class<?> component) {
     return new Logger_impl();
   }
 

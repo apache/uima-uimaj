@@ -296,9 +296,9 @@ public class ProcessTrace_impl implements ProcessTrace {
       while (newEventIter.hasNext()) {
         ProcessTraceEvent_impl newEvt = (ProcessTraceEvent_impl) newEventIter.next();
         // find corresponding event in thisEventList
-        ProcessTraceEvent_impl correspondingEvt = findCorrespondingEvent(mEventList, newEvt);
+        ProcessTraceEvent correspondingEvt = findCorrespondingEvent(mEventList, newEvt);
         if (correspondingEvt != null) {
-          aggregateEvent(correspondingEvt, newEvt);
+          aggregateEvent((ProcessTraceEvent_impl) correspondingEvt, newEvt);
         } else {
           // no corresponding event - add newEvt to list of events to be added
           mEventList.add(newEvt);
@@ -366,11 +366,10 @@ public class ProcessTrace_impl implements ProcessTrace {
   /**
    * Utility method used by aggregate(ProcessTrace)
    */
-  protected ProcessTraceEvent_impl findCorrespondingEvent(List aEventList,
-          ProcessTraceEvent_impl aEvent) {
-    Iterator it = aEventList.iterator();
+  protected <T extends ProcessTraceEvent> T findCorrespondingEvent(List<T> aEventList, T aEvent) {
+    Iterator<T> it = aEventList.iterator();
     while (it.hasNext()) {
-      ProcessTraceEvent_impl evt = (ProcessTraceEvent_impl) it.next();
+      T evt = it.next();
       if (evt.getComponentName().equals(aEvent.getComponentName())
               && evt.getType().equals(aEvent.getType())) {
         return evt;
@@ -399,9 +398,9 @@ public class ProcessTrace_impl implements ProcessTrace {
     while (srcEventIter.hasNext()) {
       ProcessTraceEvent_impl srcEvt = (ProcessTraceEvent_impl) srcEventIter.next();
       // find corresponding event in destEventList
-      ProcessTraceEvent_impl correspondingEvt = findCorrespondingEvent(destEventList, srcEvt);
+      ProcessTraceEvent correspondingEvt = findCorrespondingEvent(destEventList, srcEvt);
       if (correspondingEvt != null) {
-        aggregateEvent(correspondingEvt, srcEvt);
+        aggregateEvent((ProcessTraceEvent_impl) correspondingEvt, srcEvt);
       } else {
         // no corresponding event - add srcEvt to list of events to be added
         if (eventsToAdd == null) {
