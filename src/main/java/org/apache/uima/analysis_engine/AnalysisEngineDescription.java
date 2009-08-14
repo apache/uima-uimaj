@@ -118,7 +118,7 @@ public interface AnalysisEngineDescription extends ResourceCreationSpecifier {
 
   /**
    * For a primitive AnalysisEngine only, retrieves the name of the annotator implementation. For
-   * Java annottaors, this will be a fully qualified Java class name.
+   * Java annotators, this will be a fully qualified Java class name.
    * 
    * @return the implementation name of the annotator. If the AnalysisEngine is aggregate, always
    *         returns <code>null</code>.
@@ -127,7 +127,7 @@ public interface AnalysisEngineDescription extends ResourceCreationSpecifier {
 
   /**
    * For a primitive AnalysisEngine only, sets the name of the annotator implementation. For Java
-   * annottaors, this must be a fully qualified Java class name.
+   * annotators, this must be a fully qualified Java class name.
    * 
    * @param aImplementationName
    *          the implementation name of the annotator.
