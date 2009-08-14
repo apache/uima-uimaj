@@ -86,8 +86,9 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
    // consisting of the "class path" and "data path", the 
    // Resource Manager for that combination.
 
-   static private Map<ResourceManager, Map<StringPair, ResourceManager>> cachedResourceManagers = Collections
-         .synchronizedMap(new WeakHashMap<ResourceManager, Map<StringPair, ResourceManager>>(4));
+   // note: all accesses to this are synchronized
+   static private Map<ResourceManager, Map<StringPair, ResourceManager>> cachedResourceManagers =
+     new WeakHashMap<ResourceManager, Map<StringPair, ResourceManager>>(4);
 
    private AnalysisEngine ae = null;
 
@@ -101,7 +102,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
       return result;
    }
 
-   private ResourceManager createRM(StringPair sp, PackageBrowser pkgBrowser, ResourceManager parentResourceManager)
+   private synchronized ResourceManager createRM(StringPair sp, PackageBrowser pkgBrowser, ResourceManager parentResourceManager)
          throws MalformedURLException {
       // create UIMA resource manager and apply pear settings
 //      ResourceManager rsrcMgr = UIMAFramework.newDefaultResourceManager();
@@ -227,18 +228,20 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
       StringPair sp = new StringPair(classPath, dataPath);
       ResourceManager innerRM;
 
-      Map<StringPair, ResourceManager> c1 = cachedResourceManagers.get(applicationRM);
-      if (null == c1) {
-        innerRM = createRM(sp, pkgBrowser, applicationRM);
-        cachedResourceManagers.put(applicationRM, createRMmap(sp, innerRM));
-      } else {
-        innerRM = c1.get(sp);
-        if (null == innerRM) {
+      synchronized (cachedResourceManagers) {
+        Map<StringPair, ResourceManager> c1 = cachedResourceManagers.get(applicationRM);
+        if (null == c1) {
           innerRM = createRM(sp, pkgBrowser, applicationRM);
-          c1.put(sp, innerRM);
-          UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(),
-              "initialize", LOG_RESOURCE_BUNDLE, "UIMA_pear_runtime_add_RM_map",
-              new Object[] { sp.classPath, sp.dataPath });
+          cachedResourceManagers.put(applicationRM, createRMmap(sp, innerRM));
+        } else {
+          innerRM = c1.get(sp);
+          if (null == innerRM) {
+            innerRM = createRM(sp, pkgBrowser, applicationRM);
+            c1.put(sp, innerRM);
+            UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(),
+                "initialize", LOG_RESOURCE_BUNDLE, "UIMA_pear_runtime_add_RM_map",
+                new Object[] { sp.classPath, sp.dataPath });
+          }
         }
       }
 
@@ -429,15 +432,9 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
     ((AnalysisEngineImplBase) ae).exitProcess();
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase#finalize()
-   */
-  @Override
-  protected void finalize() throws Throwable {
-    ((AnalysisEngineImplBase) ae).finalize();
-  }
-
-
+  // finalize method not forwarded
+  // finalize will be called on the object by the GC
+  
   /* (non-Javadoc)
    * @see org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase#getMBeanNamePrefix()
    */
