@@ -135,7 +135,7 @@ public class UimaTypeSystem2Ecore {
 
     // merge, to eliminate duplicate type definitions
     try {
-      aTypeSystem = CasCreationUtils.mergeTypeSystems(Arrays.asList(new Object[] { aTypeSystem }));
+      aTypeSystem = CasCreationUtils.mergeTypeSystems(Arrays.asList(new TypeSystemDescription[] { aTypeSystem }));
     } catch (ResourceInitializationException e) {
       throw new InvalidXMLException(e);
     }
