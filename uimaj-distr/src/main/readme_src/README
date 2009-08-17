@@ -1,10 +1,25 @@
 For instructions on building Apache UIMA please refer to:
 http://incubator.apache.org/uima/svn.html#building.with.maven
 
-If you have installed both the Apache UIMA binary distribution and the
+You can run the tool packageAllJavaSourcesIntoJar.bat (or .sh) 
+to package all of the java sources into a compressed Jar which can then
+be used with IDEs such as Eclipse to enable those tools to have access to
+the sources.  For the Eclipse IDE, for example, when it steps in 
+debug mode into a class where it doesn't know about the sources,
+it asks you to attach the sources - you can simply attach the
+generated all-sources Jar, and it will work.
+
+For Eclipse, there is a launch configuration you can run (if you
+have checked out the uima projects into a common workspace)
+called "UIMA packageAllJavaSourcesIntoJar".
+
+Alternatively, iIf you have installed both the Apache UIMA 
+binary distribution and the
 Apache UIMA source distribution, you can run the addSourceJars.bat 
 (or .sh) script to add the source code to the jar files in the 
-UIMA_HOME/lib directory.  This may make it more convenient to access
+UIMA_HOME/lib directory.  Note that this does not add the sources
+for the Eclipse plugins (use the packageAllJavaSourcesIntoJar for 
+that).  This may make it more convenient to access
 the UIMA Source Code (and JavaDocs) from an IDE such as Eclipse.
 
 See the NOTICE file for licensing information.
