@@ -27,10 +27,10 @@ import java.util.List;
  */
 public class XmlElementNameAndContents {
   public XmlElementNameAndContents(XmlElementName name, String contents) {
-    this(name, contents, Collections.EMPTY_LIST);
+    this(name, contents, Collections.<XmlAttribute>emptyList());
   }
 
-  public XmlElementNameAndContents(XmlElementName name, String contents, List attributes) {
+  public XmlElementNameAndContents(XmlElementName name, String contents, List<XmlAttribute> attributes) {
     this.name = name;
     this.contents = contents;
     this.attributes = attributes;
@@ -41,7 +41,7 @@ public class XmlElementNameAndContents {
   /**
    * List of XmlAttribute objects each holding name and value of an attribute.
    */
-  public List attributes;
+  public List<XmlAttribute> attributes;
 
   public String contents;
 }

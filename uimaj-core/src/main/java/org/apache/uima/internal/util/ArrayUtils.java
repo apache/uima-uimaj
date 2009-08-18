@@ -45,8 +45,8 @@ public abstract class ArrayUtils {
     int length = aArray1.length + aArray2.length;
 
     // determine the component type for the new array
-    Class componentType1 = aArray1.getClass().getComponentType();
-    Class componentType2 = aArray2.getClass().getComponentType();
+    Class<?> componentType1 = aArray1.getClass().getComponentType();
+    Class<?> componentType2 = aArray2.getClass().getComponentType();
     if (componentType1 == componentType2) {
       result = Array.newInstance(componentType1, length);
     } else {

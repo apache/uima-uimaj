@@ -54,8 +54,8 @@ public class CharacterUtils {
     return false;
   }
 
-  private static ArrayList getCharacterRanges(int[] charSpecs) {
-    final ArrayList ranges = new ArrayList();
+  private static ArrayList<CharRange> getCharacterRanges(int[] charSpecs) {
+    final ArrayList<CharRange> ranges = new ArrayList<CharRange>();
     CharRange range;
     // Max value needs special case since characters wrap.
     for (char c = Character.MIN_VALUE; c <= Character.MAX_VALUE; c++) {
@@ -150,7 +150,7 @@ public class CharacterUtils {
    * 
    * @return ArrayList A list of character ranges.
    */
-  public static ArrayList getLetterRange() {
+  public static ArrayList<CharRange> getLetterRange() {
     int[] types = new int[] { Character.UPPERCASE_LETTER, Character.LOWERCASE_LETTER,
         Character.TITLECASE_LETTER, Character.MODIFIER_LETTER, Character.OTHER_LETTER };
     return getCharacterRanges(types);
@@ -162,12 +162,12 @@ public class CharacterUtils {
    * 
    * @return ArrayList A list of character ranges.
    */
-  public static ArrayList getDigitRange() {
+  public static ArrayList<CharRange> getDigitRange() {
     int[] types = new int[] { Character.DECIMAL_DIGIT_NUMBER };
     return getCharacterRanges(types);
   }
 
-  public static void printAntlrLexRule(String name, ArrayList charRanges) {
+  public static void printAntlrLexRule(String name, ArrayList<CharRange> charRanges) {
     CharRange range;
     System.out.print(name + " : ");
     StringBuffer spaceBuffer = new StringBuffer();
@@ -188,7 +188,7 @@ public class CharacterUtils {
     System.out.println("\n" + spaces + " ;");
   }
 
-  public static void printJavaCCLexRule(String name, ArrayList charRanges) {
+  public static void printJavaCCLexRule(String name, ArrayList<CharRange> charRanges) {
     CharRange range;
     System.out.print(name + " = ");
     StringBuffer spaceBuffer = new StringBuffer();
@@ -198,7 +198,7 @@ public class CharacterUtils {
       if (i != 0) {
         System.out.print("\n" + spaces + " | ");
       }
-      range = (CharRange) charRanges.get(i);
+      range = charRanges.get(i);
       if (range.start == range.end) {
         System.out.print(toHexString(range.start));
       } else {
@@ -209,7 +209,7 @@ public class CharacterUtils {
   }
 
   public static void main(String[] args) {
-    ArrayList letters = getDigitRange();
+    ArrayList<CharRange> letters = getDigitRange();
     // ArrayList letters = getLetterRange();
     // getCharacterRanges(new int[] { Character.UPPERCASE_LETTER });
     printJavaCCLexRule("udigit", letters);
