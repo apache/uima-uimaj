@@ -208,7 +208,7 @@ public class JCasPool {
   protected void fillPool(ProcessingResourceMetaData aMetaData)
           throws ResourceInitializationException {
     // fill the pool
-    ArrayList mdList = new ArrayList();
+    ArrayList<ProcessingResourceMetaData> mdList = new ArrayList<ProcessingResourceMetaData>();
     mdList.add(aMetaData);
     for (int i = 0; i < mNumInstances; i++) {
       JCas c;
@@ -222,11 +222,11 @@ public class JCasPool {
     }
   }
 
-  protected Vector getAllInstances() {
+  protected Vector<JCas> getAllInstances() {
     return mAllInstances;
   }
 
-  protected Vector getFreeInstances() {
+  protected Vector<JCas> getFreeInstances() {
     return mFreeInstances;
   }
 }
