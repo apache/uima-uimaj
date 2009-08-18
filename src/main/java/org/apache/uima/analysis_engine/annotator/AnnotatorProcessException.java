@@ -23,9 +23,7 @@ import org.apache.uima.UIMAException;
 
 /**
  * An <code>AnnotatorProcessException</code> may be thrown by an annotator's process method,
- * indicating that a failure occured during processing.
- * 
- * 
+ * indicating that a failure occurred during processing.
  */
 public class AnnotatorProcessException extends UIMAException {
   private static final long serialVersionUID = -1790071433547597840L;
