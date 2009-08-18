@@ -51,9 +51,9 @@ public class CommandLineParser {
 
   }
 
-  private HashMap paramMap = null;
+  private HashMap<String, CmdLineParam> paramMap = null;
 
-  private HashMap cmdLineMap = null;
+  private HashMap<CmdLineParam, String> cmdLineMap = null;
 
   private String[] restArgs;
 
@@ -62,7 +62,7 @@ public class CommandLineParser {
    */
   public CommandLineParser() {
     super();
-    this.paramMap = new HashMap();
+    this.paramMap = new HashMap<String, CmdLineParam>();
   }
 
   /**
@@ -121,7 +121,7 @@ public class CommandLineParser {
    *           parameter in the list).
    */
   public void parseCmdLine(String[] args) throws Exception {
-    this.cmdLineMap = new HashMap();
+    this.cmdLineMap = new HashMap<CmdLineParam, String>();
     int i = 0;
     while (i < args.length) {
       String cmdLineArg = args[i];

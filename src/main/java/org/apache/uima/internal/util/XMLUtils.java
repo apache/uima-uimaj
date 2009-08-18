@@ -298,9 +298,9 @@ public abstract class XMLUtils {
 
     try {
       // load class
-      Class theClass = Class.forName(className);
+      Class<?> theClass = Class.forName(className);
       // must have a constructor that takes a String parameter
-      Constructor constructor = theClass.getConstructor(new Class[] { String.class });
+      Constructor<?> constructor = theClass.getConstructor(new Class[] { String.class });
       // construct the object and return it
       return constructor.newInstance(new Object[] { stringifiedObject });
     } catch (RuntimeException e) {

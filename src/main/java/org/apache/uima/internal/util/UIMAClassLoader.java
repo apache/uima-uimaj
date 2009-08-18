@@ -24,6 +24,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 /**
@@ -50,7 +51,7 @@ public class UIMAClassLoader extends URLClassLoader {
     // initialize StringTokenizer to separate the classpath
     StringTokenizer tok = new StringTokenizer(classpath, File.pathSeparator);
     // pathList of the classpath entries
-    ArrayList pathList = new ArrayList();
+    List<String> pathList = new ArrayList<String>();
 
     // extract all classpath entries and add them to the pathList
     while (tok.hasMoreTokens()) {
@@ -137,10 +138,10 @@ public class UIMAClassLoader extends URLClassLoader {
   /*
    * Try to load the class itself before delegate the class loading to its parent
    */
-  protected synchronized Class loadClass(String name, boolean resolve)
+  protected synchronized Class<?> loadClass(String name, boolean resolve)
           throws ClassNotFoundException {
     // First, check if the class has already been loaded
-    Class c = findLoadedClass(name);
+    Class<?> c = findLoadedClass(name);
     if (c == null) {
       try {
         // try to load class

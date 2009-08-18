@@ -41,9 +41,9 @@ public class SymbolTable {
   // The actual starting point
   private int start;
 
-  private HashMap hashtable; // String -> Integer
+  private HashMap<String, Integer> hashtable; // String -> Integer
 
-  private Vector symbols; // Vector<String>
+  private Vector<String> symbols; // Vector<String>
 
   /**
    * Use this constructor if you need your symbol numbering to start at a different point than 0.
@@ -53,8 +53,8 @@ public class SymbolTable {
    *          larger code points.
    */
   public SymbolTable(int start) {
-    this.hashtable = new HashMap();
-    this.symbols = new Vector();
+    this.hashtable = new HashMap<String, Integer>();
+    this.symbols = new Vector<String>();
     this.start = start;
   }
 
@@ -152,7 +152,7 @@ public class SymbolTable {
    */
   public int get(String symbol) {
     if (this.hashtable.containsKey(symbol)) {
-      return ((Integer) this.hashtable.get(symbol)).intValue();
+      return (this.hashtable.get(symbol)).intValue();
     }
     return (this.start - 1);
   }

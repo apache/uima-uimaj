@@ -31,7 +31,7 @@ public class StringToIntMap {
 
   private static final int DEFAULT_VALUE = 0;
 
-  private HashMap map;
+  private HashMap<String, Integer> map;
 
   /**
    * Constructor.
@@ -40,7 +40,7 @@ public class StringToIntMap {
    */
   public StringToIntMap() {
     super();
-    this.map = new HashMap();
+    this.map = new HashMap<String, Integer>();
   }
 
   /**
