@@ -51,7 +51,7 @@ public class CompositeResourceFactory_impl implements CompositeResourceFactory {
    *      org.apache.uima.resource.ResourceSpecifier, java.util.Map)
    */
   public Resource produceResource(Class aResourceClass, ResourceSpecifier aSpecifier,
-          Map aAdditionalParams) throws ResourceInitializationException {
+          Map<String, Object> aAdditionalParams) throws ResourceInitializationException {
     // check for factories registered for this resource specifier type
     // (most recently registered first)
     ListIterator it = mRegisteredFactories.listIterator(mRegisteredFactories.size());
