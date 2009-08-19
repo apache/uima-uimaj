@@ -80,11 +80,11 @@ public class AnalysisEnginePool {
    *           if the Resource instances could not be created
    */
   public AnalysisEnginePool(String aName, int aNumInstances, ResourceSpecifier aResourceSpecifier,
-          Map aResourceInitParams) throws ResourceInitializationException {
+          Map<String, Object> aResourceInitParams) throws ResourceInitializationException {
     if (aResourceInitParams == null) {
-      aResourceInitParams = new HashMap();
+      aResourceInitParams = new HashMap<String, Object>();
     } else {
-      aResourceInitParams = new HashMap(aResourceInitParams);
+      aResourceInitParams = new HashMap<String, Object>(aResourceInitParams);
     }
 
     // initialize ResourcePool
