@@ -70,7 +70,7 @@ public class TextAnalysisEnginePool extends AnalysisEnginePool {
    *           if the Resource instances could not be created
    */
   public TextAnalysisEnginePool(String aName, int aNumInstances,
-          ResourceSpecifier aResourceSpecifier, Map aResourceInitParams)
+          ResourceSpecifier aResourceSpecifier, Map<String, Object> aResourceInitParams)
           throws ResourceInitializationException {
     super(aName, aNumInstances, aResourceSpecifier, aResourceInitParams);
   }
