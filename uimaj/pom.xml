@@ -26,7 +26,7 @@
   <packaging>pom</packaging>
   <version>2.3.0-incubating-SNAPSHOT</version> <!-- this comment is a flag for changeVersion -->
   <properties>
-      <uimaj-release-version>2.3.0-incubating-SNAPSHOT</uimaj-release-version>
+      <uimaj-release-version>${project.version}</uimaj-release-version>
       <uimaj-release-eclipse-version>2.3.0.incubating-SNAPSHOT</uimaj-release-eclipse-version>
   </properties>
   <name>Apache UIMA Java SDK</name>
@@ -82,24 +82,41 @@
 	        </configuration>
 	      </plugin>
         
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <configuration>
+            <source>5</source> <!-- needed to do Enums -->
+          </configuration>
+        </plugin>
+        
         <!-- Require v2.1 of assembly plugin because v2.2 doesn't seem to correctly unpack zip files.
         It creates an extra top-level directory with the same name as the zip file. -->
         <plugin>
           <artifactId>maven-assembly-plugin</artifactId>
           <version>2.1</version>
         </plugin>
+        
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <configuration>
+            <archive>
+              <manifestEntries>
+                <Project-Title>Apache UIMA</Project-Title>
+                <Implementation-Title>${pom.name}</Implementation-Title>
+                <Implementation-Version>${pom.version}</Implementation-Version>
+                <Implementation-Vendor>Apache Software Foundation</Implementation-Vendor>
+                <Implementation-Url>${pom.url}</Implementation-Url>
+                <Implementation-License>http://www.apache.org/licenses/LICENSE-2.0.txt</Implementation-License>
+                <Build-Date>${buildNumber}</Build-Date>
+              </manifestEntries>
+            </archive>
+          </configuration>
+        </plugin>     
       </plugins>
     </pluginManagement>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>1.5</source>
-          <target>1.5</target>
-          <encoding>utf-8</encoding>
-        </configuration>
-      </plugin>
       
 			<!-- We use an ant task to copy the LICENSE, NOTICE, and DISCLAIMER files
 				from a single location in uimaj-distr into the src/main/resources/META-INF
@@ -131,21 +148,19 @@
                   file="../uimaj-distr/src/main/readme"
                   value="LICENSE NOTICE DISCLAIMER"/>
                 
-                <condition property="sourceForLicenseNoticeDisclaimer"
-                  value="skip">  <!-- value must be a non-existant file name 
-                                      blank doesn't work (copies everything)
--->
-                  <not><isset property="sourceForLicenseNoticeDisclaimer"/></not>
-                </condition>
+                <!-- only sets property if not set by previous above statement -->
+                <property name="sourceForLicenseNoticeDisclaimer"
+                  value="skip"/>  <!-- value must be a non-existant file name 
+                                      blank doesn't work (copies everything)-->                
                 
                 <!-- support POMs nested one deep -->
                 <available property="dirSourceForLicenseNoticeDisclaimer"
                   file="../uimaj-distr/src/main/readme"
                   value="../uimaj-distr/src/main/readme"/>
-                <condition property="dirSourceForLicenseNoticeDisclaimer"
-                  value="../../uimaj-distr/src/main/readme">
-                  <not><isset property="dirSourceForLicenseNoticeDisclaimer"/></not>
-                </condition>
+                  
+                <!-- only sets property if not set by previous above statement -->
+                <property name="dirSourceForLicenseNoticeDisclaimer"
+                  value="../../uimaj-distr/src/main/readme"/>
                 
                 <copy todir="src/main/resources/META-INF">
                   <fileset dir="${dirSourceForLicenseNoticeDisclaimer}"
@@ -277,23 +292,6 @@
           </groups>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifestEntries>
-              <Project-Title>Apache UIMA</Project-Title>
-              <Implementation-Title>${pom.name}</Implementation-Title>
-              <Implementation-Version>${pom.version}</Implementation-Version>
-              <Implementation-Vendor>Apache Software Foundation</Implementation-Vendor>
-              <Implementation-Url>${pom.url}</Implementation-Url>
-			        <Implementation-License>http://www.apache.org/licenses/LICENSE-2.0.txt</Implementation-License>
-              <Build-Date>${buildNumber}</Build-Date>
-            </manifestEntries>
-          </archive>
-        </configuration>
-      </plugin>     
     </plugins>
   </reporting>
 	<profiles>
