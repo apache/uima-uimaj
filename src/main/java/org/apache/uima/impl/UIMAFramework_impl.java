@@ -82,7 +82,7 @@ public class UIMAFramework_impl extends UIMAFramework {
   /**
    * current class
    */
-  private static final Class CLASS_NAME = UIMAFramework_impl.class;
+  private static final Class<UIMAFramework_impl> CLASS_NAME = UIMAFramework_impl.class;
 
   /**
    * The <code>ResourceFactory</code> used by the UIMA reference implementation.
@@ -412,7 +412,7 @@ public class UIMAFramework_impl extends UIMAFramework {
    *      java.util.Map)
    */
   protected CollectionProcessingEngine _produceCollectionProcessingEngine(
-          CpeDescription aCpeDescription, Map aAdditionalParams)
+          CpeDescription aCpeDescription, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
     try {
       CollectionProcessingEngine cpe = (CollectionProcessingEngine) Class.forName(mCpeClassName)

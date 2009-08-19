@@ -45,7 +45,7 @@ public class CasConsumerFactory_impl implements ResourceFactory {
    *      org.apache.uima.resource.ResourceSpecifier, java.util.Map)
    */
   public Resource produceResource(Class aResourceClass, ResourceSpecifier aSpecifier,
-          Map aAdditionalParams) throws ResourceInitializationException {
+          Map<String, Object> aAdditionalParams) throws ResourceInitializationException {
     if (aSpecifier instanceof CasConsumerDescription) {
       CasConsumerDescription desc = (CasConsumerDescription) aSpecifier;
 
