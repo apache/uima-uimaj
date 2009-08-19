@@ -21,6 +21,8 @@ package org.apache.uima.cas.test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import junit.framework.TestCase;
@@ -73,7 +75,7 @@ public class GrowingTheCasTestNoJcasCache extends TestCase {
             "false");
       // Create a wrapper properties object that can
       // be passed to the framework.
-      Properties additionalParams = new Properties();
+      Map<String, Object> additionalParams = new HashMap<String, Object>();
       // Set the performance tuning properties as value to
       // the appropriate parameter.
       additionalParams.put(
