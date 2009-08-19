@@ -69,6 +69,6 @@ public interface ResourceFactory {
    *           if a failure occurred during production of the resource
    */
   public Resource produceResource(Class aResourceClass, ResourceSpecifier aSpecifier,
-          Map aAdditionalParams) throws ResourceInitializationException;
+          Map<String, Object> aAdditionalParams) throws ResourceInitializationException;
 
 }
