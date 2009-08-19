@@ -57,7 +57,7 @@ public abstract class CasConsumer_ImplBase extends ConfigurableResource_ImplBase
    * @see org.apache.uima.resource.Resource#initialize(org.apache.uima.resource.ResourceSpecifier,
    *      java.util.Map)
    */
-  public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
+  public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
     // aSpecifier must be a CasConsumerDescription
     if (aSpecifier instanceof ResourceCreationSpecifier) {

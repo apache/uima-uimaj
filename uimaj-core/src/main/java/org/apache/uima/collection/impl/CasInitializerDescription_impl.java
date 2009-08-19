@@ -87,7 +87,7 @@ public class CasInitializerDescription_impl extends ResourceCreationSpecifier_im
     }
     // try to load user class
     // ust UIMA extension ClassLoader if available
-    Class implClass;
+    Class<?> implClass;
     ClassLoader cl = aResourceManager.getExtensionClassLoader();
     try {
       if (cl != null) {
