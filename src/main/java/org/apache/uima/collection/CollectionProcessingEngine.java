@@ -79,7 +79,7 @@ public interface CollectionProcessingEngine {
    * @throws UIMA_IllegalStateException
    *           if this method is called more than once on a single instance.
    */
-  public void initialize(CpeDescription aCpeDescription, Map aAdditionalParams)
+  public void initialize(CpeDescription aCpeDescription, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException;
 
   /**

@@ -51,7 +51,7 @@ public abstract class CasInitializer_ImplBase extends ConfigurableResource_ImplB
    * @see org.apache.uima.resource.Resource#initialize(org.apache.uima.resource.ResourceSpecifier,
    *      java.util.Map)
    */
-  public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
+  public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
     // aSpecifier must be a CasInitializerDescription
     if (aSpecifier instanceof ResourceCreationSpecifier) {

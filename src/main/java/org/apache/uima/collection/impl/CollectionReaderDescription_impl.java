@@ -85,7 +85,7 @@ public class CollectionReaderDescription_impl extends ResourceCreationSpecifier_
     }
     // try to load user class
     // ust UIMA extension ClassLoader if available
-    Class implClass;
+    Class<?> implClass;
     ClassLoader cl = aResourceManager.getExtensionClassLoader();
     try {
       if (cl != null) {
