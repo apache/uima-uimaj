@@ -337,7 +337,8 @@
     <module>../jVinci</module>
     <module>eclipse-plugin-superPom</module>
     <module>../uimaj-document-annotation</module>
-	<module>../uimaj-internal-tools</module>
+    <module>../PearPackagingMavenPlugin</module>
+	  <module>../uimaj-internal-tools</module>
   </modules>
   <repositories>
     <repository>
