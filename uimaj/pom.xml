@@ -26,7 +26,9 @@
   <packaging>pom</packaging>
   <version>2.3.0-incubating-SNAPSHOT</version> <!-- this comment is a flag for changeVersion -->
   <properties>
-      <uimaj-release-version>${project.version}</uimaj-release-version>
+      <!-- cannot use a property expression as the value here
+           causes recursive loop -->
+      <uimaj-release-version>2.3.0-incubating-SNAPSHOT</uimaj-release-version> <!-- this comment is a flag for changeVersion -->
       <uimaj-release-eclipse-version>2.3.0.incubating-SNAPSHOT</uimaj-release-eclipse-version>
   </properties>
   <name>Apache UIMA Java SDK</name>
