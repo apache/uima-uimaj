@@ -23,9 +23,26 @@
 	<groupId>org.apache.uima</groupId>
 	<artifactId>PearPackagingMavenPlugin</artifactId>
 	<packaging>maven-plugin</packaging>
-	<version>2.3.0-incubating-SNAPSHOT</version>
+	<version>${uimaj-release-version}</version>
 	<name>Apache UIMA - PearPackagingMavenPlugin</name>
 	<url>http://incubator.apache.org/uima</url>
+  <licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+  <scm>
+    <url>http://svn.apache.org/viewvc/incubator/uima</url>
+  </scm>
+ 	<parent>
+		<groupId>org.apache.uima</groupId>
+		<artifactId>uimaj</artifactId>
+		<version>2.3.0-incubating-SNAPSHOT</version> <!-- this comment is a flag for changeVersion -->
+    <relativePath>../uimaj</relativePath>
+	</parent>
+  
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.maven</groupId>
@@ -35,7 +52,7 @@
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-core</artifactId>
-			<version>2.3.0-incubating-SNAPSHOT</version>
+			<version>${uimaj-release-version}</version>
 			<scope>compile</scope>
 		</dependency>
 		
@@ -62,88 +79,10 @@
 	
 	<build>
 		<finalName>uima-pear-maven-plugin</finalName>
-		<plugins>
-		   <plugin>
-	          <groupId>org.apache.maven.plugins</groupId>
-	          <artifactId>maven-compiler-plugin</artifactId>
-	          <configuration>
-	            <source>1.5</source>
-	            <target>1.5</target>
-	          </configuration>
-	        </plugin>
-	        
-	        <plugin>
-		        <groupId>org.codehaus.mojo</groupId>
-		        <artifactId>buildnumber-maven-plugin</artifactId>
-		        <executions>
-		          <execution>
-		            <phase>process-classes</phase>
-		            <goals>
-		              <goal>create</goal>
-		            </goals>
-		          </execution>
-		        </executions>
-		        <configuration>
-		          <format>{0,date,yyyy-MM-dd HH:mm:ss}</format>
-		          <items>
-		            <item>timestamp</item>
-		          </items>
-		        </configuration>
-	      	</plugin>
-      
-      		<plugin>
+		<plugins>	  
+   		<!--plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<executions>
-					<execution>
-						<id>CopyLicenseNoticeDisclaimer</id>
-						<phase>process-resources</phase>
-						<configuration>
-							<tasks>                    
-                				<copy todir="src/main/resources/META-INF">
-                  					<fileset dir="." includes="LICENSE NOTICE DISCLAIMER"/>
-                				</copy>
-                				<copy todir="target/classes/META-INF">
-                  					<fileset dir="." includes="LICENSE.txt NOTICE.txt DISCLAIMER"/>
-                				</copy>
-							</tasks>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-					<!-- after compilation has been done and the files have been copied to the
-						 target directory, delete them from the source directory. -->
-					<execution>
-						<id>DeleteLicenseNoticeDisclaimer</id>
-						<phase>package</phase>
-						<configuration>
-							<tasks>
-								<delete dir="src/main/resources/META-INF" deleteOnExit="true" quiet="true" failOnError="false">
-									<fileset dir="src/main/resources/META-INF"
-										includes="LICENSE NOTICE DISCLAIMER"/>
-								</delete>
-							</tasks>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>	
-					<!-- also delete on clean. -->
-					<execution>
-						<id>CleanLicenseNoticeDisclaimer</id>
-						<phase>clean</phase>
-						<configuration>
-							<tasks>
-								<delete dir="src/main/resources/META-INF" deleteOnExit="true" quiet="true" failOnError="false">
-									<fileset dir="src/main/resources/META-INF"
-										includes="LICENSE NOTICE DISCLAIMER"/>
-								</delete>
-							</tasks>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>		          				
 					<execution>
 						<phase>package</phase>
 						<configuration>
@@ -156,25 +95,7 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
-              
-	        <plugin>
-		        <groupId>org.apache.maven.plugins</groupId>
-		        <artifactId>maven-jar-plugin</artifactId>
-		        <configuration>
-		          <archive>
-		            <manifestEntries>
-		              <Project-Title>Apache UIMA</Project-Title>
-		              <Implementation-Title>${pom.name}</Implementation-Title>
-		              <Implementation-Version>${pom.version}</Implementation-Version>
-		              <Implementation-Vendor>Apache Software Foundation</Implementation-Vendor>
-		              <Implementation-Url>${pom.url}</Implementation-Url>
-					        <Implementation-License>http://www.apache.org/licenses/LICENSE-2.0.txt</Implementation-License>
-		              <Build-Date>${buildNumber}</Build-Date>
-		            </manifestEntries>
-		          </archive>
-		        </configuration>
-      		</plugin>     	        
+			</plugin-->                 	        
 		</plugins>
 	</build>
 </project>
