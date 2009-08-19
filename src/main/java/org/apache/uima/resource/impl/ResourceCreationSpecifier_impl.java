@@ -22,7 +22,6 @@ package org.apache.uima.resource.impl;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -183,7 +182,7 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
     // try to instantiate dummy resource - this checks config params
     // and resources
     DummyResource dummy = new DummyResource();
-    Map params = new HashMap();
+    Map<String, Object> params = new HashMap<String, Object>();
     params.put(Resource.PARAM_RESOURCE_MANAGER, aResourceManager);
     dummy.initialize(this, params);
 

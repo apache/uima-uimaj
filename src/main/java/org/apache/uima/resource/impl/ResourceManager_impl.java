@@ -67,7 +67,7 @@ public class ResourceManager_impl implements ResourceManager {
   /**
    * Map from qualified key names (declared in resource dependency XML) to Resource objects.
    */
-  protected Map mResourceMap = Collections.synchronizedMap(new HashMap());
+  protected Map<String, Object> mResourceMap = Collections.synchronizedMap(new HashMap<String, Object>());
 
   /**
    * Internal map from resource names (declared in resource declaration XML) to ResourceRegistration
@@ -406,7 +406,7 @@ public class ResourceManager_impl implements ResourceManager {
    *      java.lang.String, java.util.Map)
    */
   public void initializeExternalResources(ResourceManagerConfiguration aConfiguration,
-          String aQualifiedContextName, Map aAdditionalParams)
+          String aQualifiedContextName, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
     // register resources
     ExternalResourceDescription[] resources = aConfiguration.getExternalResources();
@@ -530,9 +530,9 @@ public class ResourceManager_impl implements ResourceManager {
    * Instantiates a resource and inserts it in the internal resource map.
    */
   private void registerResource(String aName, ExternalResourceDescription aResourceDescription,
-          String aDefiningContext, Map aResourceInitParams) throws ResourceInitializationException {
+          String aDefiningContext, Map<String, Object> aResourceInitParams) throws ResourceInitializationException {
     // add the relative path resolver to the resource init. params
-    Map initParams = (aResourceInitParams == null) ? new HashMap() : new HashMap(
+    Map<String, Object> initParams = (aResourceInitParams == null) ? new HashMap<String, Object>() : new HashMap<String, Object>(
             aResourceInitParams);
     initParams.put(DataResource.PARAM_RELATIVE_PATH_RESOLVER, getRelativePathResolver());
     

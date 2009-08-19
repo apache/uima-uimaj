@@ -65,7 +65,7 @@ public class DataResource_impl extends Resource_ImplBase implements DataResource
    * 
    * @see org.apache.uima.resource.Resource#initialize(ResourceSpecifier)
    */
-  public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
+  public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
     // aSpecifier must be a FileResourceSpecifier
     if (!(aSpecifier instanceof FileResourceSpecifier))

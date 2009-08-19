@@ -218,7 +218,7 @@ public interface ResourceManager {
    *           if an initialization failure occurs
    */
   public void initializeExternalResources(ResourceManagerConfiguration aConfiguration,
-          String aQualifiedContextName, Map aAdditionalParams)
+          String aQualifiedContextName, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException;
 
   /**
