@@ -94,7 +94,7 @@ public class ResourcePool {
    *           if the Resource instances could not be created
    */
   public ResourcePool(int aNumInstances, ResourceSpecifier aResourceSpecifier,
-          Class aResourceClass, Map aResourceInitParams) throws ResourceInitializationException {
+          Class aResourceClass, Map<String, Object> aResourceInitParams) throws ResourceInitializationException {
     mNumInstances = aNumInstances;
 
     fillPool(aResourceSpecifier, aResourceClass, aResourceInitParams);
@@ -237,7 +237,7 @@ public class ResourcePool {
    *           if the Resource instances could not be created
    */
   protected void fillPool(ResourceSpecifier aResourceSpecifier, Class aResourceClass,
-          Map aResourceInitParams) throws ResourceInitializationException {
+          Map<String, Object> aResourceInitParams) throws ResourceInitializationException {
     // fill the pool
     for (int i = 0; i < mNumInstances; i++) {
       Resource_ImplBase resource = (Resource_ImplBase) UIMAFramework.produceResource(
