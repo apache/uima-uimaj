@@ -51,7 +51,7 @@ public class ResourceService_impl {
    * @param aResourceInitParams
    *          additional parameters to be passed on to the Resource Factory.
    */
-  public void initialize(ResourceSpecifier aResourceSpecifier, Map aResourceInitParams)
+  public void initialize(ResourceSpecifier aResourceSpecifier, Map<String, Object> aResourceInitParams)
           throws ResourceInitializationException {
     // create Resource
     mResource = UIMAFramework.produceResource(getResourceClass(), aResourceSpecifier,

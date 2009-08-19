@@ -47,13 +47,13 @@ public class FileLanguageResource_impl extends Resource_ImplBase implements
   private String mFileUrlSuffix;
 
   /** Initialization parameters to be passed to DataResources. */
-  private Map mResourceInitParams;
+  private Map<String, Object> mResourceInitParams;
 
   /**
    * @see org.apache.uima.resource.Resource#initialize(org.apache.uima.resource.ResourceSpecifier,
    *      java.util.Map)
    */
-  public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
+  public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
     // aSpecifier must be a FileLanguageResourceSpecifier
     if (!(aSpecifier instanceof FileLanguageResourceSpecifier))
@@ -67,7 +67,7 @@ public class FileLanguageResource_impl extends Resource_ImplBase implements
     mFileUrlSuffix = spec.getFileUrlSuffix();
 
     // store initialization parameters to be passed on to DataReources
-    mResourceInitParams = (aAdditionalParams == null) ? new HashMap() : new HashMap(
+    mResourceInitParams = (aAdditionalParams == null) ? new HashMap<String, Object>() : new HashMap<String, Object>(
             aAdditionalParams);
 
     return true;

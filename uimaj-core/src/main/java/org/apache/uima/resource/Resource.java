@@ -72,7 +72,7 @@ public interface Resource {
    * @throws UIMA_IllegalStateException
    *           if this method is called more than once on a single Resource instance.
    */
-  public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
+  public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException;
 
   /**

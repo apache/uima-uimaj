@@ -64,7 +64,7 @@ public class ConfigurableDataResource_impl extends Resource_ImplBase implements 
    * 
    * @see org.apache.uima.resource.Resource#initialize(ResourceSpecifier)
    */
-  public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
+  public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
     // aSpecifier must be a ConfigurableDataResourceSpecifier
     if (!(aSpecifier instanceof ConfigurableDataResourceSpecifier)) {
