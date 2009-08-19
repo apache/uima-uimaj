@@ -50,16 +50,16 @@
 
   <!-- project-wide dependency version levels can go here -->  
   <dependencyManagement>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
-    </dependency>
-    
+    <dependencies>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>3.8.1</version>
+        <scope>test</scope>
+      </dependency>  
+    </dependencies>    
   </dependencyManagement>
   
- 
  <!-- to deploy the artifacts to a Maven staging-repository you have to configure
       the settings.xml file in your local Maven repository -->
   <distributionManagement>
