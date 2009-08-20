@@ -75,7 +75,7 @@ public class ResourceService_impl {
    * 
    * @return the Resource Class for this service
    */
-  protected Class getResourceClass() {
+  protected Class<? extends Resource> getResourceClass() {
     return Resource.class;
   }
 
