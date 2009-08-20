@@ -22,6 +22,7 @@ package org.apache.uima.collection.base_cpm;
 import java.io.IOException;
 
 import org.apache.uima.collection.CollectionException;
+import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 import org.apache.uima.util.Progress;
 
@@ -40,7 +41,7 @@ import org.apache.uima.util.Progress;
  * 
  * 
  */
-public interface BaseCollectionReader {
+public interface BaseCollectionReader extends Resource {
   /**
    * Gets whether there are any elements remaining to be read from this
    * <code>CollectionReader</code>.
