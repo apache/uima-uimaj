@@ -114,7 +114,7 @@ public interface ResourceManager {
    * @return the Class for the resource named <code>aName</code>, <code>null</code> if there is
    *         no resource registered under that name.
    */
-  public Class getResourceClass(String aName);
+  public Class<? extends Resource> getResourceClass(String aName);
 
   /**
    * Retrieves the URL to the named resource. This can be used, for example, to locate configuration
