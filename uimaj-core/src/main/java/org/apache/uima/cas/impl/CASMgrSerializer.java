@@ -29,6 +29,7 @@ import java.util.Vector;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.Feature;
+import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.cas.admin.LinearTypeOrder;
@@ -218,8 +219,8 @@ public class CASMgrSerializer implements Serializable {
     }
     // Create a vector of the indexes, and build the name-to-index map.
     this.nameToIndexMap = new int[numNames];
-    Vector<FSIndex> indexVector = new Vector<FSIndex>();
-    FSIndex index;
+    Vector<FSIndex<FeatureStructure>> indexVector = new Vector<FSIndex<FeatureStructure>>();
+    FSIndex<FeatureStructure> index;
     int pos;
     for (int i = 0; i < numNames; i++) {
       index = ir.getIndex(this.indexNames[i]);

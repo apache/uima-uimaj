@@ -64,7 +64,7 @@ public class DebugFSLogicalStructure {
 
     private boolean isContainedFS = false;
 
-    private FSIndex fsIndex = null;
+    private FSIndex<? extends FeatureStructure> fsIndex = null;
 
     private boolean isIndex = false;
 
@@ -77,7 +77,7 @@ public class DebugFSLogicalStructure {
       isContainedFS = true;
     }
 
-    public UnexpandedFeatureStructures(FSIndex fsIndex) {
+    public UnexpandedFeatureStructures(FSIndex<? extends FeatureStructure> fsIndex) {
       this.fsIndex = fsIndex;
       isIndex = true;
     }
@@ -151,7 +151,7 @@ public class DebugFSLogicalStructure {
   public static class IndexInfo {
     public String indexName;
 
-    public FSIndex fsIndex;
+    public FSIndex<FeatureStructure> fsIndex;
 
     protected CAS cas;
 
@@ -332,11 +332,11 @@ public class DebugFSLogicalStructure {
     // index
   }
 
-  private static FeatureStructure[] getIndexContents(FSIterator it) {
+  private static FeatureStructure[] getIndexContents(FSIterator<? extends FeatureStructure> it) {
     return (FeatureStructure[]) iteratorToArray(it, FeatureStructure.class);
   }
 
-  private static FeatureStructure[] getIndexContents(FSIndex fsIndex) {
+  private static FeatureStructure[] getIndexContents(FSIndex<? extends FeatureStructure> fsIndex) {
     return getIndexContents(fsIndex.iterator());
   }
 
@@ -429,12 +429,13 @@ public class DebugFSLogicalStructure {
   // return getDebugLogicalStructure_CAS(jcas.getCas());
   // }
 
-  private static Object[] iteratorToArray(Iterator it, Class c) {
-    ArrayList items = new ArrayList();
+  @SuppressWarnings("unchecked")
+  private static <T> T[] iteratorToArray(Iterator<? extends T> it, Class<T> c) {
+    ArrayList<T> items = new ArrayList<T>();
     while (it.hasNext()) {
       items.add(it.next());
     }
-    return items.toArray((Object[]) Array.newInstance(c, items.size()));
+    return items.toArray((T[]) Array.newInstance(c, items.size()));
   }
 
   public static Object floatListToArray(FeatureStructure fs) {
