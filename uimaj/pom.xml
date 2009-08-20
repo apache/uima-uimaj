@@ -58,7 +58,84 @@
         <artifactId>junit</artifactId>
         <version>3.8.1</version>
         <scope>test</scope>
-      </dependency>  
+      </dependency>
+      
+      <!-- list the modules for uima base release that are released together.
+           POMs that inherit this parent can then omit the release version -->
+      
+      <dependency>
+        <groupId>org.apache.uima</groupId>
+        <artifactId>uimaj-adapter-vinci</artifactId>
+        <version>${uimaj-release-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.uima</groupId>
+        <artifactId>uimaj-adapter-soap</artifactId>
+        <version>${uimaj-release-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.uima</groupId>
+        <artifactId>uimaj-core</artifactId>
+        <version>${uimaj-release-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.uima</groupId>
+        <artifactId>uimaj-cpe</artifactId>
+        <version>${uimaj-release-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.uima</groupId>
+        <artifactId>uimaj-examples</artifactId>
+        <version>${uimaj-release-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.uima</groupId>
+        <artifactId>uimaj-tools</artifactId>
+        <version>${uimaj-release-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.uima</groupId>
+        <artifactId>uimaj-ep-cas-editor</artifactId>
+        <version>${uimaj-release-eclipse-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.uima</groupId>
+        <artifactId>uimaj-ep-configurator</artifactId>
+        <version>${uimaj-release-eclipse-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.uima</groupId>
+        <artifactId>uimaj-ep-debug</artifactId>
+        <version>${uimaj-release-eclipse-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.uima</groupId>
+        <artifactId>uimaj-ep-jcasgen</artifactId>
+        <version>${uimaj-release-eclipse-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.uima</groupId>
+        <artifactId>uimaj-ep-pear-packager</artifactId>
+        <version>${uimaj-release-eclipse-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.uima</groupId>
+        <artifactId>uimaj-ep-runtime</artifactId>
+        <version>${uimaj-release-eclipse-version}</version>
+      </dependency>
+ 
+      <!-- development tools, not in binary distribution -->      
+      <dependency>
+        <groupId>org.apache.uima</groupId>
+        <artifactId>uimaj-test-util</artifactId>
+        <version>${uimaj-release-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.uima</groupId>
+        <artifactId>uimaj-component-test-util</artifactId>
+        <version>${uimaj-release-version}</version>
+      </dependency>
+          
     </dependencies>    
   </dependencyManagement>
   
@@ -356,5 +433,16 @@
         <updatePolicy>never</updatePolicy>
       </snapshots>
     </repository>
+    <repository>
+      <id>ApacheIncubatorRepository</id>
+      <url>http://people.apache.org/repo/m2-incubating-repository/</url>
+      <releases>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+        <updatePolicy>never</updatePolicy>
+      </snapshots>
+    </repository>    
   </repositories>
 </project>
