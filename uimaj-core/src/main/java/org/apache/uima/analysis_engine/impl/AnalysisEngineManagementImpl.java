@@ -48,7 +48,7 @@ public class AnalysisEngineManagementImpl
    * This static set is needed to keep track of what names we've already used for "root" MBeans
    * (those representing top-level AEs and CPEs).
    */
-  private static Set usedRootNames = new HashSet();
+  private static Set<String> usedRootNames = new HashSet<String>();
 
   private String name;
 
@@ -70,7 +70,7 @@ public class AnalysisEngineManagementImpl
 
   private long serviceCallTime;
 
-  private Map components = new HashMap();
+  private Map<String, AnalysisEngineManagement> components = new HashMap<String, AnalysisEngineManagement>();
 
   private String uniqueMBeanName;
 
@@ -119,7 +119,7 @@ public class AnalysisEngineManagementImpl
     markedCollectionProcessCompleteTime = collectionProcessCompleteTime;
     markedServiceCallTime = serviceCallTime;
     // mark components also
-    Iterator iter = components.values().iterator();
+    Iterator<AnalysisEngineManagement> iter = components.values().iterator();
     while (iter.hasNext()) {
       AnalysisEngineManagementImpl component = (AnalysisEngineManagementImpl) iter.next();
       component.mark();
@@ -165,7 +165,7 @@ public class AnalysisEngineManagementImpl
     return format.format(docsPerSecond);
   }
 
-  public Map getComponents() {
+  public Map<String, AnalysisEngineManagement> getComponents() {
     return Collections.unmodifiableMap(components);
   }
 
@@ -192,7 +192,7 @@ public class AnalysisEngineManagementImpl
     markedCollectionProcessCompleteTime = 0;
     markedServiceCallTime = 0;
     // reset components also
-    Iterator iter = components.values().iterator();
+    Iterator<AnalysisEngineManagement> iter = components.values().iterator();
     while (iter.hasNext()) {
       AnalysisEngineManagementImpl component = (AnalysisEngineManagementImpl) iter.next();
       component.resetStats();

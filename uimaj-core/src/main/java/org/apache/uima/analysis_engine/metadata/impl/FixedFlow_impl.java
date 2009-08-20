@@ -67,14 +67,14 @@ public class FixedFlow_impl extends MetaDataObject_impl implements FixedFlow {
   /**
    * @see org.apache.uima.analysis_engine.metadata.FlowConstraints#remapIDs(Map)
    */
-  public void remapIDs(Map aIDMap) {
+  public void remapIDs(Map<String, String> aIDMap) {
     // Can't just overwrite existing array because cloned FixedFlow_impl objects
     // share the same array. Needs more thought.
     String[] oldFlow = getFixedFlow();
     String[] newFlow = new String[oldFlow.length];
 
     for (int i = 0; i < oldFlow.length; i++) {
-      String newID = (String) aIDMap.get(oldFlow[i]);
+      String newID = aIDMap.get(oldFlow[i]);
       if (newID != null) {
         newFlow[i] = newID;
       } else {

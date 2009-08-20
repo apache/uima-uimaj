@@ -212,7 +212,7 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl implement
   }
 
   protected void readUnknownPropertyValueFromXMLElement(Element aElement, XMLParser aParser,
-          ParsingOptions aOptions, List aKnownPropertyNames) throws InvalidXMLException {
+          ParsingOptions aOptions, List<String> aKnownPropertyNames) throws InvalidXMLException {
     // Catch the case where both fsIndexes and fsIndexCollection are specified
     if ("fsIndexes".equals(aElement.getTagName())
             || "fsIndexCollection".equals(aElement.getTagName())) {

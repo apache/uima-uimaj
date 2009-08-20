@@ -78,7 +78,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
   /**
    * current class
    */
-  private static final Class CLASS_NAME = AggregateAnalysisEngine_impl.class;
+  private static final Class<AggregateAnalysisEngine_impl> CLASS_NAME = AggregateAnalysisEngine_impl.class;
 
   static public final String PARAM_RESULT_SPECIFICATION = "RESULT_SPECIFICATION";
 
@@ -92,7 +92,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
    * ProcessingResourceMetaData object for that component. This includes component AEs as well as
    * the FlowController.
    */
-  private Map mComponentMetaData;
+  private Map<String, ProcessingResourceMetaData> mComponentMetaData;
 
   /**
    * For an aggregate AnalysisEngine only, the ASB used to communicate with the delegate
@@ -103,7 +103,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
   /**
    * @see org.apache.uima.resource.Resource#initialize(ResourceSpecifier, Map)
    */
-  public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
+  public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
     try {
       // aSpecifier must be a AnalysisEngineDescription
@@ -167,9 +167,9 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       // (First copy it so we can modify it and send the parameters on to
       // out delegate anlaysis engines.)
       if (aAdditionalParams == null) {
-        aAdditionalParams = new HashMap();
+        aAdditionalParams = new HashMap<String, Object>();
       } else {
-        aAdditionalParams = new HashMap(aAdditionalParams);
+        aAdditionalParams = new HashMap<String, Object>(aAdditionalParams);
       }
 
       // put configuration parameter settings into the aAdditionalParams map to be
@@ -219,7 +219,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       resultSpecForComponents.addCapabilities(getAllComponentCapabilities(), false);
 
       // now iterate over components and call their setResultSpecification methods
-      Iterator componentIter = _getASB().getComponentAnalysisEngines().values().iterator();
+      Iterator<AnalysisEngine> componentIter = _getASB().getComponentAnalysisEngines().values().iterator();
       while (componentIter.hasNext()) {
         AnalysisEngine ae = (AnalysisEngine) componentIter.next();
         ae.setResultSpecification(resultSpecForComponents);
@@ -233,11 +233,11 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
    * @return
    */
   private Capability[] getAllComponentCapabilities() {
-    ArrayList capabilityList = new ArrayList();
-    Iterator iter = _getComponentMetaData().values().iterator();
+    ArrayList<Capability> capabilityList = new ArrayList<Capability>();
+    Iterator<ProcessingResourceMetaData> iter = _getComponentMetaData().values().iterator();
     while (iter.hasNext()) {
-      AnalysisEngineMetaData md = (AnalysisEngineMetaData) iter.next();
-      capabilityList.addAll(Arrays.asList(((ProcessingResourceMetaData) md).getCapabilities()));
+    	ProcessingResourceMetaData md = iter.next();
+      capabilityList.addAll(Arrays.asList(md.getCapabilities()));
     }
     Capability[] capabilityArray = new Capability[capabilityList.size()];
     capabilityList.toArray(capabilityArray);
@@ -288,8 +288,8 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
     super.reconfigure();
 
     // call this method recursively on each component
-    Map components = this._getASB().getComponentAnalysisEngines();
-    Iterator it = components.values().iterator();
+    Map<String, AnalysisEngine> components = this._getASB().getComponentAnalysisEngines();
+    Iterator<AnalysisEngine> it = components.values().iterator();
     while (it.hasNext()) {
       ConfigurableResource component = (ConfigurableResource) it.next();
       component.reconfigure();
@@ -303,9 +303,9 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
     enterBatchProcessComplete();
     try {
       // pass call down to components, which might be (or contain) CAS Consumers
-      Iterator iter = this._getASB().getComponentAnalysisEngines().values().iterator();
+      Iterator<AnalysisEngine> iter = this._getASB().getComponentAnalysisEngines().values().iterator();
       while (iter.hasNext()) {
-        ((AnalysisEngine) iter.next()).batchProcessComplete();
+        iter.next().batchProcessComplete();
       }
     } finally {
       exitBatchProcessComplete();
@@ -320,7 +320,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       // at the end in arbitrary order.  If there's no standard flow type
       // (a custom FlowController must be in use), the entire order is arbitrary.
       String[] orderedNodes = null;
-      Map components = new HashMap(this._getASB().getComponentAnalysisEngines());
+      Map<String, AnalysisEngine> components = new HashMap<String, AnalysisEngine>(this._getASB().getComponentAnalysisEngines());
       FlowConstraints flow = getAnalysisEngineMetaData().getFlowConstraints();
       if (flow != null) {
         if (flow instanceof FixedFlow) {
@@ -338,9 +338,9 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
         }
       }
       //now call remaining components in arbitrary order
-      Iterator iter = components.values().iterator();
+      Iterator<AnalysisEngine> iter = components.values().iterator();
       while (iter.hasNext()) {
-        ((AnalysisEngine) iter.next()).collectionProcessComplete();
+        iter.next().collectionProcessComplete();
       }
       //  Call CPC on the Flow Controller
       FlowControllerContainer fcc = _getASB().getFlowControllerContainer();
@@ -364,7 +364,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
    *           if an initialization failure occurs
    */
   protected void initializeAggregateAnalysisEngine(AnalysisEngineDescription aDescription,
-          Map aAdditionalParams) throws ResourceInitializationException {
+          Map<String, Object> aAdditionalParams) throws ResourceInitializationException {
     // Create and configure the ASB - the ASB will create and initialize
     // the component AnalysisEngines and the FlowController. This method also retrieves
     // the component AnalysisEngines' metadata from the ASB, so it can be access via the
@@ -396,10 +396,10 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
    * @throws ResourceInitializationException
    *           if the ASB or a delegate AnalysisEngine could not be created.
    */
-  protected void initASB(AnalysisEngineDescription aAnalysisEngineDescription, Map aAdditionalParams)
+  protected void initASB(AnalysisEngineDescription aAnalysisEngineDescription, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
     // add this analysis engine's name to the parameters sent to the ASB
-    Map asbParams = new HashMap(aAdditionalParams);
+    Map<String, Object> asbParams = new HashMap<String, Object>(aAdditionalParams);
     asbParams.put(ASB.PARAM_AGGREGATE_ANALYSIS_ENGINE_NAME, this.getMetaData().getName());
     asbParams.put(Resource.PARAM_RESOURCE_MANAGER, getResourceManager());
 
@@ -451,9 +451,9 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
     // priorities but NOT its own types.)
 
     // first, create Collections of TypeSystems, TypePriorities, and Index Descriptions
-    List typeSystems = new ArrayList();
-    List typePriorities = new ArrayList();
-    List fsIndexCollections = new ArrayList();
+    List<TypeSystemDescription> typeSystems = new ArrayList<TypeSystemDescription>();
+    List<TypePriorities> typePriorities = new ArrayList<TypePriorities>();
+    List<FsIndexCollection> fsIndexCollections = new ArrayList<FsIndexCollection>();
 
     TypePriorities thisAEsTypePriorities = getAnalysisEngineMetaData().getTypePriorities();
     if (thisAEsTypePriorities != null) {
@@ -465,9 +465,9 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
     }
 
     // iterate over metadata for all components
-    Iterator metadataIterator = _getComponentMetaData().values().iterator();
+    Iterator<ProcessingResourceMetaData> metadataIterator = _getComponentMetaData().values().iterator();
     while (metadataIterator.hasNext()) {
-      ProcessingResourceMetaData md = (ProcessingResourceMetaData) metadataIterator.next();
+      ProcessingResourceMetaData md = metadataIterator.next();
       if (md.getTypeSystem() != null)
         typeSystems.add(md.getTypeSystem());
       if (md.getTypePriorities() != null)
@@ -510,9 +510,9 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
     OperationalProperties aggProps = getAnalysisEngineMetaData().getOperationalProperties();
     if (aggProps != null) {
       boolean atLeastOneCasMultiplier = false;
-      Iterator metadataIterator = _getComponentMetaData().values().iterator();
+      Iterator<ProcessingResourceMetaData> metadataIterator = _getComponentMetaData().values().iterator();
       while (metadataIterator.hasNext()) {
-        ProcessingResourceMetaData md = (ProcessingResourceMetaData) metadataIterator.next();
+        ProcessingResourceMetaData md = metadataIterator.next();
         OperationalProperties componentProps = md.getOperationalProperties();
         if (componentProps != null) {
           if (aggProps.isMultipleDeploymentAllowed()
@@ -576,7 +576,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
    * 
    * @return a Map from String keys to ProcessingResourceMetaData objects.
    */
-  protected Map _getComponentMetaData() {
+  protected Map<String, ProcessingResourceMetaData> _getComponentMetaData() {
     return mComponentMetaData;
   }
 
@@ -586,7 +586,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
    * 
    * @return a Map with String keys and ResourceSpecifier values
    */
-  protected Map _getComponentCasProcessorSpecifierMap() {
+  protected Map<String, ResourceSpecifier> _getComponentCasProcessorSpecifierMap() {
     try {
       return mDescription.getDelegateAnalysisEngineSpecifiers();
     } catch (InvalidXMLException e) {
@@ -596,7 +596,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
   }
 
   /**
-   * Construct a ProcessTrace object that represnts the last excecution of this AnalysisEngine. This
+   * Construct a ProcessTrace object that represents the last execution of this AnalysisEngine. This
    * is used so that we can return a ProcessTrace object from each process() call for backwards
    * compatibility with version 1.x.
    */
@@ -608,9 +608,9 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       trace.addEvent(procEvt);
 
       // now add subevents for each component
-      Iterator aeIter = _getASB().getComponentAnalysisEngines().values().iterator();
+      Iterator<AnalysisEngine> aeIter = _getASB().getComponentAnalysisEngines().values().iterator();
       while (aeIter.hasNext()) {
-        AnalysisEngine ae = (AnalysisEngine) aeIter.next();
+        AnalysisEngine ae = aeIter.next();
         if (ae instanceof AnalysisEngineImplBase) {
           ProcessTrace subPT = ((AnalysisEngineImplBase) ae).buildProcessTraceFromMBeanStats();
           if (subPT.getEvents().size() > 0) {

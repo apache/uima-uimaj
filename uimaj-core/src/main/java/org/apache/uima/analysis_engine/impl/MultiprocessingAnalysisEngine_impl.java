@@ -61,7 +61,7 @@ public class MultiprocessingAnalysisEngine_impl extends AnalysisEngineImplBase i
    * @see org.apache.uima.resource.Resource#initialize(org.apache.uima.resource.ResourceSpecifier,
    *      java.util.Map)
    */
-  public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
+  public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
     super.initialize(aSpecifier, aAdditionalParams);
 
@@ -69,9 +69,9 @@ public class MultiprocessingAnalysisEngine_impl extends AnalysisEngineImplBase i
     // (First copy it so we can modify it and send the parameters on to
     // each Analysis Engine in the pool.)
     if (aAdditionalParams == null) {
-      aAdditionalParams = new HashMap();
+      aAdditionalParams = new HashMap<String, Object>();
     } else {
-      aAdditionalParams = new HashMap(aAdditionalParams);
+      aAdditionalParams = new HashMap<String, Object>(aAdditionalParams);
     }
 
     // determine size of Analysis Engine pool and timeout period

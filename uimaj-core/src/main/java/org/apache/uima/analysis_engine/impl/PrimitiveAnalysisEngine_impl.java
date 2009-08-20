@@ -63,7 +63,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
   /**
    * current class
    */
-  private static final Class CLASS_NAME = PrimitiveAnalysisEngine_impl.class;
+  private static final Class<PrimitiveAnalysisEngine_impl> CLASS_NAME = PrimitiveAnalysisEngine_impl.class;
  
   private static final String [] X_UNSPECIFIED = new String [] {"x-unspecified"};
  
@@ -96,7 +96,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
   /**
    * @see org.apache.uima.resource.Resource#initialize(ResourceSpecifier, Map)
    */
-  public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
+  public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
     try {
       // Primitive AnalysisEngine can be build from any ResourceCreationSpecifier-
@@ -145,7 +145,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
 
       // Read parameters from the aAdditionalParams map.
       if (aAdditionalParams == null) {
-        aAdditionalParams = Collections.EMPTY_MAP;
+        aAdditionalParams = Collections.emptyMap();
       }
       // determine if verification mode is on
       mVerificationMode = aAdditionalParams.containsKey(PARAM_VERIFICATION_MODE);
@@ -179,7 +179,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
    * @throws ResourceInitializationException
    *           if an initialization failure occurs
    */
-  protected void initializeAnalysisComponent(Map aAdditionalParams)
+  protected void initializeAnalysisComponent(Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
     // instantiate Annotator class
     String annotatorClassName;
@@ -192,7 +192,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
     }
 
     // load annotator class
-    Class annotatorClass = null;
+    Class<?> annotatorClass = null;
     try {
       // get UIMA extension ClassLoader if available
       ClassLoader cl = getUimaContextAdmin().getResourceManager().getExtensionClassLoader();
@@ -351,7 +351,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
           view = aCAS.getView(CAS.NAME_DEFAULT_SOFA);
         }
         // now get the right interface(e.g. CAS or JCAS)
-        Class requiredInterface = mAnalysisComponent.getRequiredCasInterface();
+        Class<? extends AbstractCas> requiredInterface = mAnalysisComponent.getRequiredCasInterface();
         AbstractCas casToPass = getCasManager().getCasInterface(view, requiredInterface);
 
         // check if there was a change in the ResultSpecification or in

@@ -21,7 +21,6 @@ package org.apache.uima.analysis_engine.impl;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -155,7 +154,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
     *     created for this component.
     */
   @Override
-  public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
+  public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
       throws ResourceInitializationException {
 
     // aSpecifier must be a pearSpecifier
@@ -263,8 +262,8 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
       // modified, and the aAdditionalParameters original object
       // is re-used by the ASB_impl - a caller of this method,
       // for other delegates.
-      Map clonedAdditionalParameters = (aAdditionalParams == null) ? 
-          new HashMap() : new HashMap(aAdditionalParams);
+      Map<String, Object> clonedAdditionalParameters = (aAdditionalParams == null) ? 
+          new HashMap<String, Object>() : new HashMap<String, Object>(aAdditionalParams);
       // clonedAdditionalParameters.remove(Resource.PARAM_UIMA_CONTEXT);
       clonedAdditionalParameters.remove(Resource.PARAM_RESOURCE_MANAGER);
       this.ae = UIMAFramework.produceAnalysisEngine(specifier, innerRM, clonedAdditionalParameters);

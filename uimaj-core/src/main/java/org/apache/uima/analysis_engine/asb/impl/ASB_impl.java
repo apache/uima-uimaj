@@ -60,6 +60,7 @@ import org.apache.uima.resource.ResourceCreationSpecifier;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.Resource_ImplBase;
+import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.UimaTimer;
 
@@ -82,30 +83,31 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
   /**
    * current class
    */
-  private static final Class CLASS_NAME = ASB_impl.class;
+  private static final Class<ASB_impl> CLASS_NAME = ASB_impl.class;
 
   /**
    * Map from String key to delegate AnalysisEngine for all component AnalysisEngines within this
    * ASB.
    */
-  private Map mComponentAnalysisEngineMap = new HashMap();
+  private Map<String, AnalysisEngine> mComponentAnalysisEngineMap = new HashMap<String, AnalysisEngine>();
 
   /**
    * Map from String key to delegate AnalysisEngineMetaData for all component AnalysisEngines within
    * this ASB.
    */
-  private Map mComponentAnalysisEngineMetaDataMap = new HashMap();
+  private Map<String, AnalysisEngineMetaData> mComponentAnalysisEngineMetaDataMap =
+      new HashMap<String, AnalysisEngineMetaData>();
 
   /**
    * Map from String key to component (AnalysisEngine or FlowController) metadata.
    */
-  private Map mAllComponentMetaDataMap = new HashMap();
+  private Map<String, ProcessingResourceMetaData> mAllComponentMetaDataMap = new HashMap<String, ProcessingResourceMetaData>();
 
   /**
    * Initialization parameters passed to this ASB's initialize method. They will be passed along to
    * the delegate AnalysisEngines.
    */
-  private Map mInitParams;
+  private Map<String, Object> mInitParams;
 
   private SofaMapping[] mSofaMappings;
 
@@ -135,7 +137,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
    * 
    * @see org.apache.uima.resource.Resource#initialize(ResourceSpecifier)
    */
-  public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
+  public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
     UIMAFramework.getLogger(CLASS_NAME).logrb(Level.CONFIG, CLASS_NAME.getName(), "initialize",
             LOG_RESOURCE_BUNDLE, "UIMA_asb_init_begin__CONFIG");
@@ -166,10 +168,10 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
   public void destroy() {
     // destroy component AnalysisEngines that have been successfully initialized
     //   unsuccessful initializations are not put into the Map
-    Iterator i = mComponentAnalysisEngineMap.entrySet().iterator();
+    Iterator<Map.Entry<String, AnalysisEngine>> i = mComponentAnalysisEngineMap.entrySet().iterator();
     while (i.hasNext()) {
-      Map.Entry entry = (Map.Entry) i.next();
-      Resource delegate = (Resource) entry.getValue();
+      Map.Entry<String, AnalysisEngine> entry = i.next();
+      Resource delegate = entry.getValue();
       delegate.destroy();
     }
     
@@ -195,7 +197,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
    * @param aAggregateMetadata metadata for the aggregate AE
    * @throws ResourceInitializationException
    */
-  public void setup(Map aSpecifiers, UimaContextAdmin aParentContext,
+  public void setup(Map<String, ResourceSpecifier> aSpecifiers, UimaContextAdmin aParentContext,
           FlowControllerDeclaration aFlowControllerDeclaration,
           AnalysisEngineMetaData aAggregateMetadata) throws ResourceInitializationException {
     mAggregateUimaContext = aParentContext;
@@ -206,13 +208,13 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
     mAllComponentMetaDataMap.clear();
 
     // loop through all entries in the (key, specifier) map
-    Iterator i = aSpecifiers.entrySet().iterator();
+    Iterator<Map.Entry<String,ResourceSpecifier>> i = aSpecifiers.entrySet().iterator();
     while (i.hasNext()) {
-      Map.Entry entry = (Map.Entry) i.next();
-      String key = (String) entry.getKey();
-      ResourceSpecifier spec = (ResourceSpecifier) entry.getValue();
+      Map.Entry<String,ResourceSpecifier> entry = i.next();
+      String key =entry.getKey();
+      ResourceSpecifier spec = entry.getValue();
 
-      Map sofamap = new TreeMap();
+      Map<String, String> sofamap = new TreeMap<String, String>();
 
       // retrieve the sofa mappings for input/output sofas of this analysis engine
       if (mSofaMappings != null && mSofaMappings.length > 0) {
@@ -235,7 +237,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
       //  preceeding call to initialize().
       
       if (mInitParams == null)
-        mInitParams = new HashMap();
+        mInitParams = new HashMap<String, Object>();
       UimaContextAdmin childContext = aParentContext.createChild(key, sofamap);
       mInitParams.put(Resource.PARAM_UIMA_CONTEXT, childContext);
 
@@ -270,9 +272,9 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
     initFlowController(aFlowControllerDeclaration, aParentContext, aAggregateMetadata);
 
     // initialize the AllComponentMetaData map to include AEs plus the FlowController
-    mAllComponentMetaDataMap = new HashMap(mComponentAnalysisEngineMetaDataMap);
+    mAllComponentMetaDataMap = new HashMap<String, ProcessingResourceMetaData>(mComponentAnalysisEngineMetaDataMap);
     mAllComponentMetaDataMap.put(aFlowControllerDeclaration.getKey(), mFlowControllerContainer
-            .getMetaData());
+            .getProcessingResourceMetaData());
     mAllComponentMetaDataMap = Collections.unmodifiableMap(mAllComponentMetaDataMap);
   }
 
@@ -287,10 +289,10 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
       key = "_FlowController"; // default key
     }
 
-    HashMap flowControllerParams = new HashMap(mInitParams);
+    Map<String, Object> flowControllerParams = new HashMap<String, Object>(mInitParams);
 
     // retrieve the sofa mappings for the FlowControler
-    Map sofamap = new TreeMap();
+    Map<String, String> sofamap = new TreeMap<String, String>();
     if (mSofaMappings != null && mSofaMappings.length > 0) {
       for (int s = 0; s < mSofaMappings.length; s++) {
         // the mapping is for this analysis engine
@@ -316,18 +318,18 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
   /**
    * @see org.apache.uima.analysis_engine.asb.ASB#getDelegateAnalysisEngineMetaData()
    */
-  public Map getComponentAnalysisEngineMetaData() {
+  public Map<String, AnalysisEngineMetaData> getComponentAnalysisEngineMetaData() {
     return mComponentAnalysisEngineMetaDataMap;
   }
 
   /**
    * @see org.apache.uima.analysis_engine.asb.ASB#getDelegateAnalysisEngines()
    */
-  public Map getComponentAnalysisEngines() {
+  public Map<String, AnalysisEngine> getComponentAnalysisEngines() {
     return mComponentAnalysisEngineMap;
   }
 
-  public Map getAllComponentMetaData() {
+  public Map<String, ProcessingResourceMetaData> getAllComponentMetaData() {
     return mAllComponentMetaDataMap;
   }
 
@@ -368,14 +370,14 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
      * and start processing the output CASes instead. Since CasMultipliers can be nested, we need a
      * stack.
      */
-    Stack casIteratorStack = new Stack();
+    Stack<StackFrame> casIteratorStack = new Stack<StackFrame>();
 
     /**
      * Set of CASes that are in circulation (that is, they have been passed to FlowController and
      * the FlowController hasn't yet returned a FinalStep for them). Needed so we can clean up on
      * error.
      */
-    Set activeCASes = new HashSet();
+    Set<CAS> activeCASes = new HashSet<CAS>();
 
     /** Holds the next CAS to be returned, if it is known. */
     CAS nextCas = null;
@@ -456,15 +458,15 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
       // pop all frames off the casIteratorStack, calling Flow.abort() on flow objects and
       //CasIterator.release() on the CAS iterators
       while (!casIteratorStack.isEmpty()) {
-        StackFrame frame = ((StackFrame) casIteratorStack.pop());
+        StackFrame frame = casIteratorStack.pop();
         frame.originalCasFlow.aborted();
         frame.casIterator.release();
       }
       
       // release all active, internal CASes
-      Iterator iter = activeCASes.iterator();
+      Iterator<CAS> iter = activeCASes.iterator();
       while (iter.hasNext()) {
-        CAS cas = (CAS) iter.next();
+        CAS cas = iter.next();
         // mFlowControllerContainer.dropCas(cas);
         if (cas != mInputCas) // don't release the input CAS, it's caller's responsibility
         {
@@ -602,10 +604,10 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
             //ParallelStep (TODO: refactor out common parts with SimpleStep?)
             else if (nextStep instanceof ParallelStep) {
               //create modifiable list of destinations 
-              List destinations = new LinkedList(((ParallelStep)nextStep).getAnalysisEngineKeys());
+              List<String> destinations = new LinkedList<String>(((ParallelStep)nextStep).getAnalysisEngineKeys());
               //iterate over all destinations, removing them from the list as we go
               while (!destinations.isEmpty()) {
-                String nextAeKey = (String)destinations.get(0);
+                String nextAeKey = destinations.get(0);
                 destinations.remove(0); 
                 //execute this step as we would a single step
                 AnalysisEngine nextAe = (AnalysisEngine) mComponentAnalysisEngineMap.get(nextAeKey);

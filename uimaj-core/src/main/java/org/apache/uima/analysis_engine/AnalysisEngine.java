@@ -175,7 +175,7 @@ public interface AnalysisEngine extends ConfigurableResource, CasObjectProcessor
    * 
    * @see org.apache.uima.resource.Resource#initialize(ResourceSpecifier,Map)
    */
-  public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
+  public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException;
 
   /**

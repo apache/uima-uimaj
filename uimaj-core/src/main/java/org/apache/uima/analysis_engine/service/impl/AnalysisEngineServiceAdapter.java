@@ -58,7 +58,7 @@ public abstract class AnalysisEngineServiceAdapter extends AnalysisEngineImplBas
   /**
    * current class
    */
-  private static final Class CLASS_NAME = AnalysisEngineServiceAdapter.class;
+  private static final Class<AnalysisEngineServiceAdapter> CLASS_NAME = AnalysisEngineServiceAdapter.class;
 
   /**
    * The stub that communicates with the remote service.
