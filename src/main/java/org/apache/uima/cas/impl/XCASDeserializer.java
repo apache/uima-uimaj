@@ -22,12 +22,12 @@ package org.apache.uima.cas.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.UimaContext;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.FSIndexRepository;
 import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
@@ -155,10 +155,10 @@ public class XCASDeserializer {
     private Type annotBaseType;
 
     // Store IndexRepositories in a vector;
-    private List indexRepositories;
+    private List<FSIndexRepository> indexRepositories;
 
     // and Views too
-    private List views;
+    private List<CAS> views;
 
     // for processing v1.x format XCAS
     // map from sofa int values to id references
@@ -179,8 +179,8 @@ public class XCASDeserializer {
       this.idLess = new ArrayList<FSInfo>();
       this.buffer = new StringBuffer();
       this.outOfTypeSystemData = ootsData;
-      this.indexRepositories = new ArrayList();
-      this.views = new ArrayList();
+      this.indexRepositories = new ArrayList<FSIndexRepository>();
+      this.views = new ArrayList<CAS>();
       // using the baseCas for indexing Sofas
       indexRepositories.add(this.cas.getBaseIndexRepository());
       // There should always be another index for the Initial View

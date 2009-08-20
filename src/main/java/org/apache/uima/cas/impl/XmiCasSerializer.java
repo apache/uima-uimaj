@@ -35,8 +35,10 @@ import org.apache.uima.cas.ByteArrayFS;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CommonArrayFS;
 import org.apache.uima.cas.FSIndex;
+import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Marker;
 import org.apache.uima.cas.StringArrayFS;
+import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.XmiSerializationSharedData.OotsElementData;
 import org.apache.uima.cas.impl.XmiSerializationSharedData.XmiArrayElement;
@@ -231,7 +233,7 @@ public class XmiCasSerializer {
       iElementCount += indexedFSs.size();
       iElementCount += queue.size();
 
-      FSIndex sofaIndex = cas.getBaseCAS().indexRepository.getIndex(CAS.SOFA_INDEX_NAME);
+      FSIndex<FeatureStructure> sofaIndex = cas.getBaseCAS().indexRepository.getIndex(CAS.SOFA_INDEX_NAME);
       if (!isDelta) {
     	iElementCount += (sofaIndex.size()); // one View element per sofa
     	if (this.sharedData != null) {
@@ -393,11 +395,11 @@ public class XmiCasSerializer {
      * @param workAttrs2
      */
     private void computeNamespaceDeclarationAttrs(AttributesImpl workAttrs2) {
-      Iterator it = nsUriToPrefixMap.entrySet().iterator();
+      Iterator<Map.Entry<String, String>> it = nsUriToPrefixMap.entrySet().iterator();
       while (it.hasNext()) {
-        Map.Entry entry = (Map.Entry) it.next();
-        String nsUri = (String) entry.getKey();
-        String prefix = (String) entry.getValue();
+        Map.Entry<String, String> entry = it.next();
+        String nsUri = entry.getKey();
+        String prefix = entry.getValue();
         // write attribute
         workAttrs.addAttribute(XMLNS_NS_URI, prefix, "xmlns:" + prefix, "CDATA", nsUri);
       }
@@ -410,7 +412,7 @@ public class XmiCasSerializer {
         StringBuilder buf = new StringBuilder();
         it = nsUriToSchemaLocationMap.entrySet().iterator();
         while (it.hasNext()) {
-          Map.Entry entry = (Map.Entry) it.next();
+          Map.Entry<String, String> entry = it.next();
           buf.append(entry.getKey()).append(' ').append(entry.getValue()).append(' ');
         }
         workAttrs.addAttribute(XSI_NS_URI, "xsi", "xsi:schemaLocation", "CDATA", buf.toString());
@@ -723,7 +725,7 @@ public class XmiCasSerializer {
           // encode features. this populates the attributes (workAttrs). It also
           // populates the child elements list with features that are to be encoded
           // as child elements (currently required for string arrays).
-          List childElements = encodeFeatures(addr, workAttrs,
+          List<XmlElementNameAndContents> childElements = encodeFeatures(addr, workAttrs,
                   (typeClass != LowLevelCAS.TYPE_CLASS_FS));
           startElement(xmlElementName, workAttrs, childElements.size());
           sendElementEvents(childElements);
@@ -745,7 +747,7 @@ public class XmiCasSerializer {
         }
         case LowLevelCAS.TYPE_CLASS_STRINGARRAY: {
           // string arrays are encoded as elements, in case they contain whitespace
-          List childElements = new ArrayList();
+          List<XmlElementNameAndContents> childElements = new ArrayList<XmlElementNameAndContents>();
           stringArrayToElementList("elements", addr, childElements);
 
           startElement(xmlElementName, workAttrs, childElements.size());
@@ -790,13 +792,13 @@ public class XmiCasSerializer {
      * Generate startElement, characters, and endElement SAX events.
      * 
      * @param elements
-     *          a list of XMLElementNameAndContents objects representing the elements to generate
+     *          a list of XmlElementNameAndContents objects representing the elements to generate
      * @throws SAXException
      */
-    private void sendElementEvents(List elements) throws SAXException {
-      Iterator childIter = elements.iterator();
+    private void sendElementEvents(List<? extends XmlElementNameAndContents> elements) throws SAXException {
+      Iterator<? extends XmlElementNameAndContents> childIter = elements.iterator();
       while (childIter.hasNext()) {
-        XmlElementNameAndContents elem = (XmlElementNameAndContents) childIter.next();
+        XmlElementNameAndContents elem = childIter.next();
         if (elem.contents != null) {
           startElement(elem.name, emptyAttrs, 1);
           addText(elem.contents);
@@ -820,9 +822,9 @@ public class XmiCasSerializer {
      * @return a List of XmlElementNameAndContents objects, each of which represents an element that
      *         should be added as a child of the FS
      */
-    private List encodeFeatures(int addr, AttributesImpl attrs, boolean insideListNode)
+    private List<XmlElementNameAndContents> encodeFeatures(int addr, AttributesImpl attrs, boolean insideListNode)
             throws SAXException {
-      List childElements = new ArrayList();
+      List<XmlElementNameAndContents> childElements = new ArrayList<XmlElementNameAndContents>();
       int heapValue = cas.getHeapValue(addr);
       int[] feats = cas.getTypeSystemImpl().ll_getAppropriateFeatures(heapValue);
       int featAddr, featVal, fsClass;
@@ -946,7 +948,7 @@ public class XmiCasSerializer {
         OotsElementData oed = this.sharedData.getOutOfTypeSystemFeatures(addr);
         if (oed != null) {
           //attributes
-          Iterator attrIter = oed.attributes.iterator();
+          Iterator<XmlAttribute> attrIter = oed.attributes.iterator();
           while (attrIter.hasNext()) {
             XmlAttribute attr = (XmlAttribute)attrIter.next();
             addAttribute(workAttrs, attr.name, attr.value);
@@ -985,7 +987,7 @@ public class XmiCasSerializer {
      * @param resultList
      * @throws SAXException
      */
-    private void stringArrayToElementList(String featName, int addr, List resultList)
+    private void stringArrayToElementList(String featName, int addr, List<? super XmlElementNameAndContents> resultList)
             throws SAXException {
       if (addr == CASImpl.NULL) {
         return;
@@ -1019,7 +1021,7 @@ public class XmiCasSerializer {
       String elemStr = null;
       if (arrayType == LowLevelCAS.TYPE_CLASS_FSARRAY) {
         int pos = cas.getArrayStartAddress(addr);
-        List ootsArrayElementsList = this.sharedData == null ? null : 
+        List<XmiArrayElement> ootsArrayElementsList = this.sharedData == null ? null : 
                 this.sharedData.getOutOfTypeSystemArrayElements(addr);
         int ootsIndex = 0;
         for (int j = 0; j < size; j++) {
@@ -1036,7 +1038,7 @@ public class XmiCasSerializer {
             //out-of-typesystem FS, so check the ootsArrayElementsList
             if (ootsArrayElementsList != null) {
               while (ootsIndex < ootsArrayElementsList.size()) {
-                XmiArrayElement arel =(XmiArrayElement)ootsArrayElementsList.get(ootsIndex++);
+                XmiArrayElement arel = ootsArrayElementsList.get(ootsIndex++);
                 if (arel.index == j) {
                   elemStr = arel.xmiId;
                   break;
@@ -1195,9 +1197,9 @@ public class XmiCasSerializer {
       //Need to do this before the in-typesystem namespaces so that the prefix
       //used here are reserved and won't be reused for any in-typesystem namespaces.
       if (this.sharedData != null) {
-        Iterator ootsIter = this.sharedData.getOutOfTypeSystemElements().iterator();
+        Iterator<OotsElementData> ootsIter = this.sharedData.getOutOfTypeSystemElements().iterator();
         while (ootsIter.hasNext()) {
-          OotsElementData oed = (OotsElementData)ootsIter.next();
+          OotsElementData oed = ootsIter.next();
           String nsUri = oed.elementName.nsUri;
           String qname = oed.elementName.qName;
           String localName = oed.elementName.localName;
@@ -1207,7 +1209,7 @@ public class XmiCasSerializer {
         }
       }
       
-      Iterator it = cas.getTypeSystemImpl().getTypeIterator();
+      Iterator<Type> it = cas.getTypeSystemImpl().getTypeIterator();
       while (it.hasNext()) {
         TypeImpl t = (TypeImpl) it.next();
         xmiTypeNames[t.getCode()] = uimaTypeName2XmiElementName(t.getName());
@@ -1297,15 +1299,15 @@ public class XmiCasSerializer {
             return;
       if (this.sharedData == null)
         return;
-      Iterator it = this.sharedData.getOutOfTypeSystemElements().iterator();
+      Iterator<OotsElementData> it = this.sharedData.getOutOfTypeSystemElements().iterator();
       while (it.hasNext()) {
-        OotsElementData oed = (OotsElementData)it.next();
+        OotsElementData oed = it.next();
         workAttrs.clear();
         // Add ID attribute
         addAttribute(workAttrs, ID_ATTR_NAME, oed.xmiId);
 
         // Add other attributes
-        Iterator attrIt = oed.attributes.iterator();
+        Iterator<XmlAttribute> attrIt = oed.attributes.iterator();
         while (attrIt.hasNext()) {
           XmlAttribute attr = (XmlAttribute) attrIt.next();
           addAttribute(workAttrs, attr.name, attr.value);
@@ -1315,9 +1317,9 @@ public class XmiCasSerializer {
         startElement(oed.elementName, workAttrs, oed.childElements.size());
         
         //serialize features encoded as child elements
-        Iterator childElemIt = oed.childElements.iterator();
+        Iterator<XmlElementNameAndContents> childElemIt = oed.childElements.iterator();
         while (childElemIt.hasNext()) {
-          XmlElementNameAndContents child = (XmlElementNameAndContents)childElemIt.next();
+          XmlElementNameAndContents child = childElemIt.next();
           workAttrs.clear();
           Iterator attrIter = child.attributes.iterator();
           while (attrIter.hasNext()) {
@@ -1373,7 +1375,7 @@ public class XmiCasSerializer {
   // UIMA logger, to which we may write warnings
   private Logger logger;
 
-  private Map nsUriToSchemaLocationMap = null;
+  private Map<String, String> nsUriToSchemaLocationMap = null;
 
   /**
    * Creates a new XmiCasSerializer.
@@ -1388,7 +1390,7 @@ public class XmiCasSerializer {
    *          output. This argument must be a map from namespace URIs to the schema location for
    *          that namespace URI.
    */
-  public XmiCasSerializer(TypeSystem ts, Map nsUriToSchemaLocationMap) {
+  public XmiCasSerializer(TypeSystem ts, Map<String, String> nsUriToSchemaLocationMap) {
     super();
     // System.out.println("Creating serializer for type system.");
     this.filterTypeSystem = (TypeSystemImpl) ts;
@@ -1429,7 +1431,7 @@ public class XmiCasSerializer {
    *             is never used by this implementation.
    */
   @Deprecated
-  public XmiCasSerializer(TypeSystem ts, UimaContext uimaContext, Map nsUriToSchemaLocationMap) {
+  public XmiCasSerializer(TypeSystem ts, UimaContext uimaContext, Map<String, String> nsUriToSchemaLocationMap) {
     this(ts, nsUriToSchemaLocationMap);
   }
 

@@ -22,6 +22,7 @@ package org.apache.uima.cas.impl;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.cas.CAS;
@@ -124,11 +125,11 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
       return getNbrPred();
     }
 
-    private ArrayList getAllPredecessors() {
+    private ArrayList<GraphNode> getAllPredecessors() {
       return this.predecessors;
     }
 
-    private ArrayList getAllSuccessors() {
+    private ArrayList<GraphNode> getAllSuccessors() {
       return this.successors;
     }
 
@@ -136,8 +137,8 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
       this.successors.remove(i);
     }
 
-    private void addAllPredecessors(ArrayList pred) {
-      for (Iterator it = pred.iterator(); it.hasNext();) {
+    private void addAllPredecessors(ArrayList<? extends GraphNode> pred) {
+      for (Iterator<? extends GraphNode> it = pred.iterator(); it.hasNext();) {
 	Node n = (Node) it.next();
 	if (!LinearTypeOrderBuilderImpl.this.order.pathFromTo(this, n)) {
 	  n.connect(this);
@@ -150,8 +151,8 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
       }
     }
 
-    private void addAllSuccessors(ArrayList successors1) {
-      for (Iterator it = successors1.iterator(); it.hasNext();) {
+    private void addAllSuccessors(ArrayList<? extends GraphNode> successors1) {
+      for (Iterator<? extends GraphNode> it = successors1.iterator(); it.hasNext();) {
 	Node n = (Node) it.next();
 	if (!LinearTypeOrderBuilderImpl.this.order.pathFromTo(n, this)) {
 	  connect(n);
@@ -177,7 +178,7 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
   private class Graph {
 
     // Map type names to graph nodes.
-    private final HashMap nodeMap = new HashMap();
+    private final HashMap<String, Node> nodeMap = new HashMap<String, Node>();
 
     private int size() {
       return this.nodeMap.size();
@@ -194,13 +195,13 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
 
     private Graph copy(Node inRank0nodes) {
       Graph copy = new Graph();
-      Iterator it = this.nodeMap.entrySet().iterator();
-      Map.Entry entry;
+      Iterator<Map.Entry<String, Node>> it = this.nodeMap.entrySet().iterator();
+      Map.Entry<String, Node> entry;
       String key;
       // Copy the nodes.
       while (it.hasNext()) {
-	entry = (Map.Entry) it.next();
-	key = (String) entry.getKey();
+	entry = it.next();
+	key = entry.getKey();
 	copy.nodeMap.put(key, copy.getNode(key)); // getNode makes a new
                                                         // node
       }
@@ -208,10 +209,10 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
       it = this.nodeMap.entrySet().iterator();
       Node origNode, copyNode;
       while (it.hasNext()) {
-	entry = (Map.Entry) it.next();
-	key = (String) entry.getKey();
-	origNode = (Node) entry.getValue();
-	copyNode = (Node) copy.nodeMap.get(key);
+	entry = it.next();
+	key = entry.getKey();
+	origNode = entry.getValue();
+	copyNode = copy.nodeMap.get(key);
 	for (int i = 0; i < origNode.inRank(); i++) {
 	  key = (String) origNode.getPredecessor(i).getElement();
 	  copyNode.addPredecessor(copy.getNode(key));
@@ -227,14 +228,14 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
       return copy;
     }
 
-    private ArrayList removeNode(Node node) {
+    private ArrayList<Node> removeNode(Node node) {
       // Removing a node means removing it from the map (set of nodes) as
       // well
       // as removing outgoing references. Since we only remove nodes with
       // an
       // in-degree of 0, we don't need to worry about in-arcs.
       // Node node = (Node) this.nodeMap.get(name);
-      ArrayList rank0s = new ArrayList();
+      ArrayList<Node> rank0s = new ArrayList<Node>();
       // if (node == null) {
       // return ;
       // }
@@ -251,11 +252,11 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
     }
 
     private boolean pathFromTo(Node n1, Node n2) {
-      final HashMap map = new HashMap();
+      final HashMap<Node, Node> map = new HashMap<Node, Node>();
       return pathFromTo(n1, n2, map);
     }
 
-    private boolean pathFromTo(Node n1, Node n2, HashMap map) {
+    private boolean pathFromTo(Node n1, Node n2, HashMap<Node, Node> map) {
       if (n1 == n2) {
 	return true;
       }
@@ -317,10 +318,10 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
   }
 
   private void addInheritanceTypes() {
-    ArrayList typesToModify = new ArrayList();
+    List<Type> typesToModify = new ArrayList<Type>();
 
-    for (Iterator tsi = this.ts.getTypeIterator(); tsi.hasNext();) {
-      Type bottomType = (Type) tsi.next();
+    for (Iterator<Type> tsi = this.ts.getTypeIterator(); tsi.hasNext();) {
+      Type bottomType = tsi.next();
 
       Type type = bottomType;
       Node nIn = null;
@@ -347,7 +348,7 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
       }
       boolean doIn = true;
       boolean doOut = true;
-      for (Iterator ni = typesToModify.iterator(); ni.hasNext();) {
+      for (Iterator<Type> ni = typesToModify.iterator(); ni.hasNext();) {
 	type = (Type) ni.next();
 	String typeName = type.getName();
 	final Node n = this.order.getNode(typeName);
@@ -381,9 +382,9 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
       Node n = (Node) inRank0Nodes.getSuccessor(0);
       totalOrder[i] = (String) n.getElement();
       inRank0Nodes.removeSuccessor(0);
-      ArrayList newRank0Nodes = g.removeNode(n);
-      for (Iterator it = newRank0Nodes.iterator(); it.hasNext();) {
-	inRank0Nodes.addSuccessor((Node) it.next());
+      ArrayList<Node> newRank0Nodes = g.removeNode(n);
+      for (Iterator<Node> it = newRank0Nodes.iterator(); it.hasNext();) {
+	inRank0Nodes.addSuccessor(it.next());
       }
     }
 
