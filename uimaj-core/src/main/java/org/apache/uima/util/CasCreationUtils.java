@@ -1765,11 +1765,11 @@ public class CasCreationUtils {
       } else if (current instanceof ResourceSpecifier) {
         // try to instantiate the resource
         Resource resource = null;
-        Map resourceMgrInMap = new HashMap();
+        Map<String, Object> resourceMgrInMap = new HashMap<String, Object>();
         resourceMgrInMap.put(Resource.PARAM_RESOURCE_MANAGER, aResourceManager);
         try {
           resource = UIMAFramework.produceResource((ResourceSpecifier) current,
-              (null == aResourceManager) ? Collections.EMPTY_MAP : resourceMgrInMap);
+              (null == aResourceManager) ? Collections.<String, Object>emptyMap() : resourceMgrInMap);
         } catch (Exception e) {
           // failed. If aOutputFailedRemotes is non-null, add an entry to it to it, else throw the
           // exception.
