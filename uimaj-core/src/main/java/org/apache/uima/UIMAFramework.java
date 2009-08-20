@@ -262,7 +262,7 @@ public abstract class UIMAFramework {
    * @throws ResourceInitializationException
    *           if a failure occurred during production of the resource.
    */
-  public static Resource produceResource(Class aResourceClass, ResourceSpecifier aSpecifier,
+  public static Resource produceResource(Class<? extends Resource> aResourceClass, ResourceSpecifier aSpecifier,
           Map<String, Object> aAdditionalParams) throws ResourceInitializationException {
     Resource resource = getResourceFactory().produceResource(aResourceClass, aSpecifier,
             aAdditionalParams);
@@ -298,7 +298,7 @@ public abstract class UIMAFramework {
    * @throws ResourceInitializationException
    *           if a failure occurred during production of the resource.
    */
-  public static Resource produceResource(Class aResourceClass, ResourceSpecifier aSpecifier,
+  public static Resource produceResource(Class<? extends Resource> aResourceClass, ResourceSpecifier aSpecifier,
           ResourceManager aResourceManager, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
     // add ResourceManager to aAdditionalParams map
@@ -911,7 +911,7 @@ public abstract class UIMAFramework {
    * 
    * @return the Logger used by the specified component class
    */
-  public static Logger getLogger(Class component) {
+  public static Logger getLogger(Class<?> component) {
     return getInstance()._getLogger(component);
   }
 
@@ -1113,7 +1113,7 @@ public abstract class UIMAFramework {
    * 
    * @return the <code>Logger</code> of the specified source class
    */
-  protected abstract Logger _getLogger(Class component);
+  protected abstract Logger _getLogger(Class<?> component);
 
   /**
    * To be implemented by subclasses; this should return a new UIMA {@link Logger} instance.
@@ -1198,7 +1198,7 @@ public abstract class UIMAFramework {
       frameworkClassName = REF_IMPL_CLASS_NAME; // use default
     }
     try {
-      Class implClass = Class.forName(frameworkClassName);
+      Class<?> implClass = Class.forName(frameworkClassName);
       mInstance = (UIMAFramework) implClass.newInstance();
       mInstance._initialize();
     } catch (Exception e) {
