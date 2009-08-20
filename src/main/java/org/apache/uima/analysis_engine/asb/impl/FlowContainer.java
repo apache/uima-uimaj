@@ -70,7 +70,7 @@ public class FlowContainer {
         view = newCAS.getView(CAS.NAME_DEFAULT_SOFA);
       }
       // now get the right interface(e.g. CAS or JCAS)
-      Class requiredInterface = mFlowControllerContainer.getRequiredCasInterface();
+      Class<? extends AbstractCas> requiredInterface = mFlowControllerContainer.getRequiredCasInterface();
       AbstractCas casToPass = getCasManager().getCasInterface(view, requiredInterface);
 
       ((CASImpl)newCAS).switchClassLoaderLockCasCL(getFlowClassLoader());

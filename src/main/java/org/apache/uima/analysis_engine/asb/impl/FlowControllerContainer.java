@@ -69,7 +69,7 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
    * @see org.apache.uima.resource.Resource_ImplBase#initialize(org.apache.uima.resource.ResourceSpecifier,
    *      java.util.Map)
    */
-  public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
+  public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
     try {
       // specifier must be a FlowControllerDescription. (Eventually, we
@@ -209,7 +209,7 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
         view = aCAS.getView(CAS.NAME_DEFAULT_SOFA);
       }
       // now get the right interface(e.g. CAS or JCAS)
-      Class requiredInterface = mFlowController.getRequiredCasInterface();
+      Class<? extends AbstractCas> requiredInterface = mFlowController.getRequiredCasInterface();
       AbstractCas casToPass = getCasManager().getCasInterface(view, requiredInterface);    
       ((CASImpl)aCAS).switchClassLoaderLockCasCL(this.getResourceManager().getExtensionClassLoader());
       Flow flow = mFlowController.computeFlow(casToPass);
@@ -232,7 +232,7 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
   }
 
   /** Get the required CAS interface of the FlowController. */
-  public Class getRequiredCasInterface() {
+  public Class<? extends AbstractCas> getRequiredCasInterface() {
     return mFlowController.getRequiredCasInterface();
   }
 
@@ -251,7 +251,7 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
    * Notifies this FlowController that new Analysis Engines
    * @see FlowController#addAnalysisEngines(Collection)
    */
-  public void addAnalysisEngines(Collection aKeys) {
+  public void addAnalysisEngines(Collection<String> aKeys) {
     mFlowController.addAnalysisEngines(aKeys);
   }
 
@@ -259,7 +259,7 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
    * Notifies this FlowController that some Analysis Engines are no longer available to route CASes to.
    * @see FlowController#removeAnalysisEngines(Collection)
    */
-  public void removeAnalysisEngines(Collection aKeys) throws AnalysisEngineProcessException {
+  public void removeAnalysisEngines(Collection<String> aKeys) throws AnalysisEngineProcessException {
     mFlowController.removeAnalysisEngines(aKeys);
   }
 
@@ -278,7 +278,7 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
               new Object[] { aDescriptor.getSourceUrlString() });
     }
     // load FlowController class
-    Class flowControllerClass = null;
+    Class<?> flowControllerClass = null;
     try {
       // get UIMA extension ClassLoader if available
       ClassLoader cl = getUimaContextAdmin().getResourceManager().getExtensionClassLoader();

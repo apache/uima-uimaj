@@ -65,7 +65,7 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
   /**
    * current class
    */
-  private static final Class CLASS_NAME = UimacppAnalysisEngineImpl.class;
+  private static final Class<UimacppAnalysisEngineImpl> CLASS_NAME = UimacppAnalysisEngineImpl.class;
 
   /**
    * The AnalysisEngineDescription for this AnlaysisEngine instance.
@@ -95,7 +95,7 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
    * @throws ResourceConfigurationException
    * @see org.apache.uima.resource.Resource#initialize(ResourceSpecifier, Map)
    */
-  public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
+  public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
       // AnalysisEngine can be build from any ResourceCreationSpecifier-
       // CasConsumer descriptors as well as AnalysisEngine descriptors.
@@ -165,7 +165,7 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
 
     // Read parameters from the aAdditionalParams map.
     if (aAdditionalParams == null) {
-      aAdditionalParams = Collections.EMPTY_MAP;
+      aAdditionalParams = Collections.emptyMap();
     }
 
     // determine if verification mode is on
@@ -274,7 +274,7 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
         // Get the right type of CAS and call the AnalysisComponent's
         // process method
         CAS baseCas = ((CASImpl) aCAS).getBaseCAS();
-        Class requiredInterface = mAnnotator.getRequiredCasInterface();
+        Class<CAS> requiredInterface = mAnnotator.getRequiredCasInterface();
         AbstractCas casToPass = getCasManager().getCasInterface(baseCas, requiredInterface);
         mAnnotator.process(casToPass);
         getMBean().incrementCASesProcessed();
@@ -441,7 +441,7 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
    * 
    * @return a Map with String keys and ResourceSpecifier values
    */
-  protected Map _getComponentCasProcessorSpecifierMap() {
+  protected Map<String, ResourceSpecifier> _getComponentCasProcessorSpecifierMap() {
     try {
       return ((AnalysisEngineDescription)mDescription).getDelegateAnalysisEngineSpecifiers();
     } catch (InvalidXMLException e) {

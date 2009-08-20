@@ -53,13 +53,13 @@ import org.apache.uima.resource.ResourceInitializationException;
 public class AnnotatorAdapter implements AnalysisComponent {
   private BaseAnnotator mAnnotator;
 
-  private Class mCasInterface;
+  private Class<? extends AbstractCas> mCasInterface;
 
   private TypeSystem mLastTypeSystem;
 
   private ResultSpecification mDefaultResultSpecification;
 
-  private Map mLanguageToResultSpecMap = new HashMap();
+  private Map<String, ResultSpecification> mLanguageToResultSpecMap = new HashMap<String, ResultSpecification>();
 
   /**
    * Create a new annotator adapter.
@@ -70,11 +70,11 @@ public class AnnotatorAdapter implements AnalysisComponent {
    *          metadata for the annotator. Needed to compute ResultSpecification.
    * @param aAdditionalParams
    *          parameters passed to AE's initialize method. Used to allow containing Aggregate to
-   *          influence ResultSpecification, for backwards compatility with CapabilityLanguageFlow.
+   *          influence ResultSpecification, for backwards compatibility with CapabilityLanguageFlow.
    * @throws ResourceInitializationException
    */
   public AnnotatorAdapter(BaseAnnotator aAnnotator, AnalysisEngineMetaData aMetaData,
-          Map aAdditionalParams) throws ResourceInitializationException {
+          Map<String, Object> aAdditionalParams) throws ResourceInitializationException {
     mAnnotator = aAnnotator;
 
     // check for the invalid case where a TextAnnotator or JTextAnnotator
@@ -116,7 +116,7 @@ public class AnnotatorAdapter implements AnalysisComponent {
 
   public void setResultSpecification(ResultSpecification aResultSpec) {
     mDefaultResultSpecification = aResultSpec;
-    mLanguageToResultSpecMap = new HashMap();
+    mLanguageToResultSpecMap = new HashMap<String, ResultSpecification>();
   }
 
   /*
@@ -271,7 +271,7 @@ public class AnnotatorAdapter implements AnalysisComponent {
    * 
    * @return the CAS interface required by this annotator
    */
-  public Class getRequiredCasInterface() {
+  public Class<? extends AbstractCas> getRequiredCasInterface() {
     return mCasInterface;
   }
 

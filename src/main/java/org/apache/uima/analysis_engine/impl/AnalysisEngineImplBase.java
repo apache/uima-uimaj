@@ -152,7 +152,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    *      java.util.Map)
    */
   @Override
-  public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
+  public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
     boolean result = super.initialize(aSpecifier, aAdditionalParams);
     if (result) {
@@ -365,10 +365,10 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
 
     Type t = ts.getType(aTypeName);
     if (t != null) {
-      List features = t.getFeatures();
+      List<Feature> features = t.getFeatures();
       String[] featNames = new String[features.size()];
       for (int i = 0; i < features.size(); i++) {
-        Feature f = (Feature) features.get(i);
+        Feature f = features.get(i);
         featNames[i] = f.getShortName();
       }
       return featNames;

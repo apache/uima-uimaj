@@ -25,6 +25,7 @@ import java.util.Map;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.ResultSpecification;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceServiceException;
 import org.apache.uima.resource.ResourceSpecifier;
@@ -58,7 +59,7 @@ public class AnalysisEngineService_impl extends ResourceService_impl {
    * @see org.apache.uima.resource.service.impl.ResourceService_impl#initialize(org.apache.uima.resource.ResourceSpecifier,
    *      int, java.util.Map, int)
    */
-  public void initialize(ResourceSpecifier aResourceSpecifier, Map aResourceInitParams)
+  public void initialize(ResourceSpecifier aResourceSpecifier, Map<String, Object> aResourceInitParams)
           throws ResourceInitializationException {
     super.initialize(aResourceSpecifier, aResourceInitParams);
     Integer numInstances = (Integer) aResourceInitParams
@@ -83,7 +84,7 @@ public class AnalysisEngineService_impl extends ResourceService_impl {
    */
   public void initialize(ResourceSpecifier aResourceSpecifier, int aNumSimultaneousRequests,
           int aTimeout) throws ResourceInitializationException {
-    Map initParams = new HashMap();
+    Map<String, Object> initParams = new HashMap<String, Object>();
     initParams.put(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS, Integer.valueOf(
             aNumSimultaneousRequests));
     initParams.put(AnalysisEngine.PARAM_TIMEOUT_PERIOD, Integer.valueOf(aTimeout));

@@ -29,7 +29,7 @@ import org.apache.uima.resource.metadata.MetaDataObject;
  * 
  * 
  */
-public interface TypeOrFeature extends MetaDataObject, Comparable {
+public interface TypeOrFeature extends MetaDataObject, Comparable<TypeOrFeature> {
 
   /**
    * Gets whether this object refers to a Type or to a Feature.

@@ -78,7 +78,7 @@ public class CapabilityLanguageFlow_impl extends MetaDataObject_impl implements
   /**
    * @see org.apache.uima.analysis_engine.metadata.FlowConstraints#remapIDs(Map)
    */
-  public void remapIDs(Map aIDMap) {
+  public void remapIDs(Map<String, String> aIDMap) {
     // Can't just overwrite existing array because cloned CapabilityLanguageFlow objects
     // share the same array. Needs more thought.
     String[] oldFlow = getCapabilityLanguageFlow();

@@ -82,7 +82,7 @@ public class CollectionReaderAdapter implements AnalysisComponent {
     // Primitive AnalysisEngine.
     AnalysisEngineDescription_impl desc = new AnalysisEngineDescription_impl();
 
-    Map paramsMap = new HashMap();
+    Map<String, Object> paramsMap = new HashMap<String, Object>();
     paramsMap.put(Resource.PARAM_UIMA_CONTEXT, aContext);
     mCollectionReader.initialize(desc, paramsMap);
     mUimaContext = aContext;
@@ -233,7 +233,7 @@ public class CollectionReaderAdapter implements AnalysisComponent {
    * 
    * @return the CAS interface required by this annotator
    */
-  public Class getRequiredCasInterface() {
+  public Class<? extends AbstractCas> getRequiredCasInterface() {
     // CollectionReaders don't use the input CAS, so they don't
     // care what CAS interface they receive
     return AbstractCas.class;

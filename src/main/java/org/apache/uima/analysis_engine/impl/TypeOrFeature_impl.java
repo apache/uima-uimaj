@@ -145,7 +145,7 @@ public class TypeOrFeature_impl extends MetaDataObject_impl implements TypeOrFea
   /**
    * @see java.lang.Comparable#compareTo(java.lang.Object)
    */
-  public int compareTo(Object obj) {
+  public int compareTo(TypeOrFeature obj) {
     if (this == obj)
       return 0;
 

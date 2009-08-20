@@ -57,7 +57,7 @@ public class AnalysisComponentAdapterFactory {
    * @throws ResourceInitializationException
    */
   public static AnalysisComponent createAdapter(Object aAdaptee, AnalysisEngineMetaData aMetaData,
-          Map aAdditionalParams) throws ResourceInitializationException {
+          Map<String, Object> aAdditionalParams) throws ResourceInitializationException {
     if (aAdaptee instanceof BaseAnnotator) {
       return new AnnotatorAdapter((BaseAnnotator) aAdaptee, aMetaData, aAdditionalParams);
     } else if (aAdaptee instanceof CasConsumer) {
@@ -77,9 +77,9 @@ public class AnalysisComponentAdapterFactory {
    * 
    * @param cls
    *          the adaptee class
-   * @return true iff this factory can adapt <code>cls</code> to <code>AnalysisComponent</code>.
+   * @return true if this factory can adapt <code>cls</code> to <code>AnalysisComponent</code>.
    */
-  public static boolean isAdaptable(Class cls) {
+  public static boolean isAdaptable(Class<?> cls) {
     return BaseAnnotator.class.isAssignableFrom(cls) || CasConsumer.class.isAssignableFrom(cls)
             || CollectionReader.class.isAssignableFrom(cls);
   }
