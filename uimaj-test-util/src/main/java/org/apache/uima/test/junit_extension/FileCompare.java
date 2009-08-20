@@ -327,8 +327,8 @@ public class FileCompare {
     for (int i = 0; i < maxI; i++) {
       if (s1.charAt(i) != s2.charAt(i)) {
         System.out.println("Error: strings differ starting at char: " + i);
-        System.out.println("Error:   string 1 = " + s1.substring(Math.max(0, i-10), Math.min(s1.length(), i+10)));
-        System.out.println("Error:   string 2 = " + s2.substring(Math.max(0, i-10), Math.min(s2.length(), i+10)));
+        System.out.println("Error:   string 1 = " + s1.substring(Math.max(0, i-100), Math.min(s1.length(), i+100)));
+        System.out.println("Error:   string 2 = " + s2.substring(Math.max(0, i-100), Math.min(s2.length(), i+100)));
         return false;
       }
     }
