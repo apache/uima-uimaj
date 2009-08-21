@@ -50,7 +50,8 @@ public class CharArraySpanMap {
 
   private int pos;
 
-  private ArrayList[] map;
+  // TOOD: It is not possible to create a generic array the array should be replaced by a List
+  private ArrayList<Entry>[] map;
 
   /**
    * Default constructor.
@@ -77,6 +78,7 @@ public class CharArraySpanMap {
    * @param initialMapSize
    *          Initial map size.
    */
+  @SuppressWarnings("unchecked")
   public CharArraySpanMap(int initialArraySize, int initialMapSize) {
     super();
     if (initialArraySize < MIN_ARRAY_SIZE) {
@@ -88,12 +90,12 @@ public class CharArraySpanMap {
     this.charArray = new char[initialArraySize];
     this.map = new ArrayList[initialMapSize];
     for (int i = 0; i < initialMapSize; i++) {
-      this.map[i] = new ArrayList();
+      this.map[i] = new ArrayList<Entry>();
     }
     this.pos = 0;
   }
 
-  private final int isInList(String s, ArrayList entryList) {
+  private final int isInList(String s, ArrayList<Entry> entryList) {
     final int listLen = entryList.size();
     final int strLen = s.length();
     Entry entry;
@@ -121,7 +123,7 @@ public class CharArraySpanMap {
   }
 
   private final int isInList(final char[] inputArray, final int start, final int strLen,
-          ArrayList entryList) {
+          ArrayList<Entry> entryList) {
     final int listLen = entryList.size();
     Entry entry;
     boolean found = false;
@@ -162,7 +164,7 @@ public class CharArraySpanMap {
    */
   public void put(String s, Object value) {
     final int hashCode = CharArrayString.hashCode(s);
-    ArrayList list = this.map[hashCode % this.map.length];
+    ArrayList<Entry> list = this.map[hashCode % this.map.length];
     final int listPos = isInList(s, list);
     if (listPos >= 0) {
       Entry entry = (Entry) list.get(listPos);
@@ -195,14 +197,14 @@ public class CharArraySpanMap {
    */
   public final boolean containsKey(char[] characterArray, int start, int length) {
     final int hashCode = CharArrayString.hashCode(characterArray, start, (start + length));
-    final ArrayList list = this.map[hashCode % this.map.length];
+    final ArrayList<Entry> list = this.map[hashCode % this.map.length];
     final int listPos = isInList(characterArray, start, length, list);
     return (listPos >= 0);
   }
 
   public final Object get(char[] characterArray, int start, int length) {
     final int hashCode = CharArrayString.hashCode(characterArray, start, (start + length));
-    final ArrayList list = this.map[hashCode % this.map.length];
+    final ArrayList<Entry> list = this.map[hashCode % this.map.length];
     final int listPos = isInList(characterArray, start, length, list);
     return (listPos >= 0) ? ((Entry) list.get(listPos)).value : null;
   }
