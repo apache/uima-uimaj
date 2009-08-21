@@ -81,12 +81,13 @@ public class XMLParser_impl implements XMLParser {
   /**
    * current class
    */
-  private static final Class CLASS_NAME = XMLParser_impl.class;
+  private static final Class<XMLParser_impl> CLASS_NAME = XMLParser_impl.class;
 
   /**
    * Map from XML element names to Class objects.
    */
-  protected Map mElementToClassMap = Collections.synchronizedMap(new HashMap());
+  protected Map<String, Class<? extends XMLizable>> mElementToClassMap = Collections.synchronizedMap(
+		  new HashMap<String, Class<? extends XMLizable>>());
 
   /**
    * Whether schema validation is enabled.
@@ -271,7 +272,7 @@ public class XMLParser_impl implements XMLParser {
   public XMLizable buildObject(Element aElement, ParsingOptions aOptions)
           throws InvalidXMLException {
     // attempt to locate a Class that can be built from the element
-    Class cls = (Class) mElementToClassMap.get(aElement.getTagName());
+    Class<? extends XMLizable> cls = mElementToClassMap.get(aElement.getTagName());
     if (cls == null) {
       throw new InvalidXMLException(InvalidXMLException.UNKNOWN_ELEMENT, new Object[] { aElement
               .getTagName() });
@@ -301,7 +302,7 @@ public class XMLParser_impl implements XMLParser {
   public Object buildObjectOrPrimitive(Element aElement, ParsingOptions aOptions)
           throws InvalidXMLException {
     // attempt to locate a Class that can be built from the element
-    Class cls = (Class) mElementToClassMap.get(aElement.getTagName());
+    Class<? extends XMLizable> cls = mElementToClassMap.get(aElement.getTagName());
     if (cls == null) {
       // attempt to parse as primitive
       Object primObj = XMLUtils.readPrimitiveValue(aElement);
@@ -884,9 +885,10 @@ public CasInitializerDescription parseCasInitializerDescription(XMLInputSource a
    *           if the class named by <code>aClassName</code> does not implement
    * <code>XMLIzable</code>. @
    */
+  @SuppressWarnings("unchecked")
   public void addMapping(String aElementName, String aClassName) throws ClassNotFoundException {
     // resolve the class name and ensure that it implements XMLizable
-    Class cls = Class.forName(aClassName);
+    Class<? extends XMLizable> cls = (Class<? extends XMLizable>) Class.forName(aClassName);
     if (XMLizable.class.isAssignableFrom(cls)) {
       // add to the map
       mElementToClassMap.put(aElementName, cls);
