@@ -45,7 +45,7 @@ public class Graph {
     this.root = root;
   }
 
-  protected static int getNodeCode(GraphNode n, Vector nodes) {
+  protected static int getNodeCode(GraphNode n, Vector<GraphNode> nodes) {
     int max = nodes.size();
     for (int i = 0; i < max; i++) {
       if (n == nodes.get(i)) {
@@ -55,7 +55,7 @@ public class Graph {
     return -1;
   }
 
-  public static void collectNodes(GraphNode n, Vector nodes) {
+  public static void collectNodes(GraphNode n, Vector<GraphNode> nodes) {
     if (getNodeCode(n, nodes) >= 0) {
       return;
     }
