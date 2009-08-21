@@ -56,14 +56,15 @@ public class SimpleResourceFactory implements ResourceFactory {
   /**
    * current class
    */
-  private static final Class CLASS_NAME = SimpleResourceFactory.class;
+  private static final Class<SimpleResourceFactory> CLASS_NAME = SimpleResourceFactory.class;
 
   /**
    * Map from ResourceSpecifier Class to List of Resource Classes. Resource initialization is
    * attempted in reverse order through this List, so more recently registered classes are tried
    * first.
    */
-  protected Map mClassMap = Collections.synchronizedMap(new HashMap());
+  protected Map<Class<? extends ResourceSpecifier>, List<Class<? extends Resource>>> mClassMap =
+	      Collections.synchronizedMap(new HashMap<Class<? extends ResourceSpecifier>, List<Class<? extends Resource>>>());
 
   /**
    * Produces an appropriate <code>Resource</code> instance from a <code>ResourceSpecifier</code>.
@@ -86,17 +87,17 @@ public class SimpleResourceFactory implements ResourceFactory {
    * 
    * @see org.apache.uima.ResourceFactory#produceResource(Class, ResourceSpecifier,Map)
    */
-  public Resource produceResource(Class aResourceClass, ResourceSpecifier aSpecifier,
-          Map aAdditionalParams) throws ResourceInitializationException {
+  public Resource produceResource(Class<? extends Resource> aResourceClass, ResourceSpecifier aSpecifier,
+          Map<String, Object> aAdditionalParams) throws ResourceInitializationException {
     ResourceInitializationException lastException = null;
 
     // get all interfaces implemented by aSpecifier
-    Class[] interfaces = aSpecifier.getClass().getInterfaces();
+    Class<?>[] interfaces = aSpecifier.getClass().getInterfaces();
 
     // look up class mapping
-    List resourceClasses = null;
+    List<Class<? extends Resource>> resourceClasses = null;
     for (int i = 0; i < interfaces.length; i++) {
-      resourceClasses = (List) mClassMap.get(interfaces[i]);
+      resourceClasses = mClassMap.get(interfaces[i]);
       if (resourceClasses != null)
         break;
     }
@@ -105,15 +106,15 @@ public class SimpleResourceFactory implements ResourceFactory {
       // iterate backwards through the elements of the list, so that
       // we attempt to initialize the most recently registered Resource
       // classes first
-      ListIterator i = resourceClasses.listIterator(resourceClasses.size());
+      ListIterator<Class<? extends Resource>> i = resourceClasses.listIterator(resourceClasses.size());
       while (i.hasPrevious()) {
-        Class currentClass = (Class) i.previous();
+        Class<? extends Resource> currentClass = i.previous();
         ResourceInitializationException currentException = null;
         try {
           // check to see if this is a subclass of aResourceClass
           if (aResourceClass.isAssignableFrom(currentClass)) {
             // instantiate this Resource Class
-            Resource resource = (Resource) currentClass.newInstance();
+            Resource resource = currentClass.newInstance();
             // attempt to initialize it
             UIMAFramework.getLogger(CLASS_NAME).logrb(Level.CONFIG, CLASS_NAME.getName(),
                     "produceResource", LOG_RESOURCE_BUNDLE, "UIMA_trying_resource_class__CONFIG",
@@ -169,11 +170,11 @@ public class SimpleResourceFactory implements ResourceFactory {
    *          a subclass of <code>Resource</code> that is to be instantiated from resource
    *          specifiers of the given class.
    */
-  public void addMapping(Class aSpecifierInterface, Class aResourceClass) {
-    List mappingList = (List) mClassMap.get(aSpecifierInterface);
+  public void addMapping(Class<? extends ResourceSpecifier> aSpecifierInterface, Class<? extends Resource> aResourceClass) {
+    List<Class<? extends Resource>> mappingList = mClassMap.get(aSpecifierInterface);
     if (mappingList == null) {
       // No mapping exists. Create a new list and put it in the map.
-      mappingList = new ArrayList();
+      mappingList = new ArrayList<Class<? extends Resource>>();
       mClassMap.put(aSpecifierInterface, mappingList);
     }
 
@@ -191,9 +192,10 @@ public class SimpleResourceFactory implements ResourceFactory {
    *          the name of a subclass of <code>Resource</code> that is to be instantiated from
    *          resource specifiers of the given class.
    */
+  @SuppressWarnings("unchecked")
   public void addMapping(String aSpecifierInterfaceName, String aResourceClassName)
           throws ClassNotFoundException {
-    addMapping(Class.forName(aSpecifierInterfaceName), Class.forName(aResourceClassName));
-
+    addMapping((Class<? extends ResourceSpecifier>) Class.forName(aSpecifierInterfaceName),
+    		(Class<? extends Resource>) Class.forName(aResourceClassName));
   }
 }
