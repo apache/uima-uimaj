@@ -44,20 +44,20 @@ public class CompositeResourceFactory_impl implements CompositeResourceFactory {
   /**
    * List of Registration objects.
    */
-  private List mRegisteredFactories = Collections.synchronizedList(new ArrayList());
+  private List<Registration> mRegisteredFactories = Collections.synchronizedList(new ArrayList<Registration>());
 
   /**
    * @see org.apache.uima.ResourceFactory#produceResource(java.lang.Class,
    *      org.apache.uima.resource.ResourceSpecifier, java.util.Map)
    */
-  public Resource produceResource(Class aResourceClass, ResourceSpecifier aSpecifier,
+  public Resource produceResource(Class<? extends Resource> aResourceClass, ResourceSpecifier aSpecifier,
           Map<String, Object> aAdditionalParams) throws ResourceInitializationException {
     // check for factories registered for this resource specifier type
     // (most recently registered first)
-    ListIterator it = mRegisteredFactories.listIterator(mRegisteredFactories.size());
+    ListIterator<Registration> it = mRegisteredFactories.listIterator(mRegisteredFactories.size());
     Resource result = null;
     while (it.hasPrevious()) {
-      Registration reg = (Registration) it.previous();
+      Registration reg = it.previous();
       if (reg.resourceSpecifierInterface.isAssignableFrom(aSpecifier.getClass())) {
         result = reg.factory.produceResource(aResourceClass, aSpecifier, aAdditionalParams);
         if (result != null) {
