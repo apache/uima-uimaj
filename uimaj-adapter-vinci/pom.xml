@@ -56,6 +56,12 @@
 			<version>${uimaj-release-version}</version>
 			<scope>compile</scope>
 		</dependency>
+    
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>      
 	</dependencies>
 	<build>
 		<finalName>uima-adapter-vinci</finalName>
