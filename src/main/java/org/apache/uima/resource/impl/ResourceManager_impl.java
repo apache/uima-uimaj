@@ -26,6 +26,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.UIMAFramework;
@@ -39,6 +40,7 @@ import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.FileResourceSpecifier;
 import org.apache.uima.resource.ParameterizedDataResource;
 import org.apache.uima.resource.RelativePathResolver;
+import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceAccessException;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
@@ -79,21 +81,21 @@ public class ResourceManager_impl implements ResourceManager {
    * Map from String keys to Class objects. For ParameterizedResources only, stores the
    * implementation class corresponding to each resource name.
    */
-  protected Map<String, Class> mParameterizedResourceImplClassMap = Collections.synchronizedMap(new HashMap<String, Class>());
+  protected Map<String, Class<?>> mParameterizedResourceImplClassMap = Collections.synchronizedMap(new HashMap<String, Class<?>>());
 
   /**
    * Internal map from resource names (declared in resource declaration XML) to Class objects. Used
    * internally during resource initialization.
    */
-  protected Map<String, Class> mInternalParameterizedResourceImplClassMap = Collections
-          .synchronizedMap(new HashMap<String, Class>());
+  protected Map<String, Class<?>> mInternalParameterizedResourceImplClassMap = Collections
+          .synchronizedMap(new HashMap<String, Class<?>>());
 
   /**
    * Map from ArrayList(0:String,1:DataResource) keys to Resource objects. For
    * ParameterizedResources only, stores the DataResources that have already been encountered, and
    * the Resources that have been instantiated therefrom.
    */
-  protected Map mParameterizedResourceInstanceMap = Collections.synchronizedMap(new HashMap());
+  protected Map<List<Object>, Object> mParameterizedResourceInstanceMap = Collections.synchronizedMap(new HashMap<List<Object>, Object>());
 
   /**
    * UIMA extension ClassLoader. ClassLoader is created if an extension classpath is specified at
@@ -230,7 +232,7 @@ public class ResourceManager_impl implements ResourceManager {
     }
 
     // see if we've already encountered this DataResource under this resource name
-    ArrayList nameAndResource = new ArrayList();
+    ArrayList<Object> nameAndResource = new ArrayList<Object>();
     nameAndResource.add(aName);
     nameAndResource.add(dr);
     Object resourceInstance = mParameterizedResourceInstanceMap.get(nameAndResource);
@@ -240,7 +242,7 @@ public class ResourceManager_impl implements ResourceManager {
 
     // We haven't encountered this before. See if we need to instantiate a
     // SharedResourceObject
-    Class sharedResourceObjectClass = (Class) mParameterizedResourceImplClassMap.get(aName);
+    Class<?> sharedResourceObjectClass = mParameterizedResourceImplClassMap.get(aName);
     if (sharedResourceObjectClass != null) {
       try {
         SharedResourceObject sro = (SharedResourceObject) sharedResourceObjectClass.newInstance();
@@ -265,7 +267,8 @@ public class ResourceManager_impl implements ResourceManager {
   /**
    * @see org.apache.uima.resource.ResourceManager#getResourceClass(java.lang.String)
    */
-  public Class getResourceClass(String aName) {
+  @SuppressWarnings("unchecked")
+  public Class<? extends Resource> getResourceClass(String aName) {
     Object r = mResourceMap.get(aName);
     if (r == null) // no such resource
     {
@@ -274,7 +277,7 @@ public class ResourceManager_impl implements ResourceManager {
 
     // if this is a ParameterizedDataResource, look up its class
     if (r instanceof ParameterizedDataResource) {
-      Class customResourceClass = (Class) mParameterizedResourceImplClassMap.get(aName);
+      Class<? extends Resource> customResourceClass = (Class<? extends Resource>) mParameterizedResourceImplClassMap.get(aName);
       if (customResourceClass == null) {
         // return the default class
         return DataResource_impl.class;
@@ -282,7 +285,7 @@ public class ResourceManager_impl implements ResourceManager {
       return customResourceClass;
     } else {
       // return r's Class
-      return r.getClass();
+      return (Class<? extends Resource>) r.getClass();
     }
   }
 
@@ -499,7 +502,7 @@ public class ResourceManager_impl implements ResourceManager {
                   && aDependencies[i].getInterfaceName().length() > 0) {
             // get UIMA extension ClassLoader if available
             ClassLoader cl = getExtensionClassLoader();
-            Class theInterface = null;
+            Class<?> theInterface = null;
 
             if (cl != null) {
               // use UIMA extension ClassLoader to load the class
@@ -509,7 +512,7 @@ public class ResourceManager_impl implements ResourceManager {
               theInterface = Class.forName(aDependencies[i].getInterfaceName());
             }
 
-            Class resourceClass = getResourceClass(qname);
+            Class<? extends Resource> resourceClass = getResourceClass(qname);
             if (!theInterface.isAssignableFrom(resourceClass)) {
               throw new ResourceInitializationException(
                       ResourceInitializationException.RESOURCE_DOES_NOT_IMPLEMENT_INTERFACE,
@@ -546,7 +549,7 @@ public class ResourceManager_impl implements ResourceManager {
     // load implementation class (if any) and ensure that it implements
     // SharedResourceObject
     String implementationName = aResourceDescription.getImplementationName();
-    Class implClass = null;
+    Class<?> implClass = null;
     if (implementationName != null && implementationName.length() > 0) {
       try {
         // get UIMA extension ClassLoader if available
