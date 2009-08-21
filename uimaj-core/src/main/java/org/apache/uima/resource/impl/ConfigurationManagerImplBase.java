@@ -563,7 +563,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
   private void validateConfigurationParameterDataTypeMatch(ConfigurationParameter aParam,
           Object aValue, String aContextName) throws ResourceConfigurationException {
     if (aValue != null) {
-      Class valClass = aValue.getClass();
+      Class<?> valClass = aValue.getClass();
       if (aParam.isMultiValued() && !valClass.isArray()) {
         throw new ResourceConfigurationException(ResourceConfigurationException.ARRAY_REQUIRED,
                 new Object[] { aParam.getName(), aContextName });
@@ -585,7 +585,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    * 
    * @return the expected value class
    */
-  protected Class getParameterExpectedValueClass(ConfigurationParameter aParam) {
+  protected Class<?> getParameterExpectedValueClass(ConfigurationParameter aParam) {
     String paramType = aParam.getType();
     if (aParam.isMultiValued()) {
       if (ConfigurationParameter.TYPE_STRING.equals(paramType)) {
@@ -678,7 +678,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
   }
 
   /**
-   * Gets a parmeter value from the Session Parameter Map.
+   * Gets a parameter value from the Session Parameter Map.
    * 
    * @param aCompleteName
    *          complete parameter name to look up
@@ -688,9 +688,10 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    * @throws UIMA_IllegalStateException
    *           if no Session has been set
    */
+  @SuppressWarnings("unchecked")
   private Object getSessionParam(String aCompleteName) {
     if (mSession != null) {
-      Map m = (Map) mSession.get(SESSION_CONFIGURATION_KEY);
+      Map<String, Object> m = (Map<String, Object>) mSession.get(SESSION_CONFIGURATION_KEY);
       if (m != null) {
         return m.get(aCompleteName);
       }
@@ -699,7 +700,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
   }
 
   /**
-   * Sets a parmeter value in the Session Parameter Map.
+   * Sets a parameter value in the Session Parameter Map.
    * 
    * @param aCompleteName
    *          complete parameter name to look up
@@ -709,13 +710,14 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    * @throws UIMA_IllegalStateException
    *           if no Session has been set
    */
+  @SuppressWarnings("unchecked")
   private void setSessionParam(String aCompleteName, Object aValue) {
     if (mSession == null) {
       throw new UIMA_IllegalStateException();
     } else {
-      Map m = (Map) mSession.get(SESSION_CONFIGURATION_KEY);
+      Map<String, Object> m = (Map<String, Object>) mSession.get(SESSION_CONFIGURATION_KEY);
       if (m == null) {
-        m = Collections.synchronizedMap(new HashMap());
+        m = Collections.synchronizedMap(new HashMap<String, Object>());
         mSession.put(SESSION_CONFIGURATION_KEY, m);
       }
       m.put(aCompleteName, aValue);
