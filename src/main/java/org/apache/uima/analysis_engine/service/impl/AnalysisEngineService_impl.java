@@ -158,7 +158,7 @@ public class AnalysisEngineService_impl extends ResourceService_impl {
   /**
    * @see org.apache.uima.resource.service.impl.ResourceService_impl#getResourceClass()
    */
-  protected Class getResourceClass() {
+  protected Class<? extends Resource> getResourceClass() {
     return AnalysisEngine.class;
   }
 
