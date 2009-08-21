@@ -110,7 +110,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    * CASes, then the AnalysisComponent has requested more CASes than it is allocated and we throw 
    * an exception.
    */
-  protected Set mOutstandingCASes = new HashSet();
+  protected Set<CAS> mOutstandingCASes = new HashSet<CAS>();
 
   /**
    * Object that implements management interface to the AE.
@@ -530,12 +530,12 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    * @see org.apache.uima.UimaContext#getSofaMappings()
    */
   public SofaID[] getSofaMappings() {
-    Set sofamap = mSofaMappings.entrySet();
-    Iterator iter = sofamap.iterator();
+    Set<Map.Entry<String, String>> sofamap = mSofaMappings.entrySet();
+    Iterator<Map.Entry<String, String>> iter = sofamap.iterator();
     SofaID[] sofaArr = new SofaID_impl[sofamap.size()];
     int i = 0;
     while (iter.hasNext()) {
-      Map.Entry elem = (Map.Entry) iter.next();
+      Map.Entry<String, String> elem = iter.next();
       SofaID sofaid = new SofaID_impl();
       sofaid.setComponentSofaName((String) elem.getKey());
       sofaid.setSofaID((String) elem.getValue());

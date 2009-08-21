@@ -40,7 +40,7 @@ public class CollectionReaderFactory_impl implements ResourceFactory {
    * @see org.apache.uima.ResourceFactory#produceResource(java.lang.Class,
    *      org.apache.uima.resource.ResourceSpecifier, java.util.Map)
    */
-  public Resource produceResource(Class aResourceClass, ResourceSpecifier aSpecifier,
+  public Resource produceResource(Class<? extends Resource> aResourceClass, ResourceSpecifier aSpecifier,
           Map<String, Object> aAdditionalParams) throws ResourceInitializationException {
     if (aSpecifier instanceof CollectionReaderDescription) {
       CollectionReaderDescription desc = (CollectionReaderDescription) aSpecifier;
@@ -80,7 +80,7 @@ public class CollectionReaderFactory_impl implements ResourceFactory {
       }
 
       try {
-        Class implClass = Class.forName(className, true, cl);
+        Class<?> implClass = Class.forName(className, true, cl);
 
         // check to see if this is a subclass of BaseCollectionReader and of aResourceClass
         if (!BaseCollectionReader.class.isAssignableFrom(implClass)) {

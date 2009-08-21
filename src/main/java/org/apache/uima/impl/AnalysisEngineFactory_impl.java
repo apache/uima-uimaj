@@ -47,7 +47,7 @@ public class AnalysisEngineFactory_impl implements ResourceFactory {
    * @see org.apache.uima.ResourceFactory#produceResource(java.lang.Class,
    *      org.apache.uima.resource.ResourceSpecifier, java.util.Map)
    */
-  public Resource produceResource(Class aResourceClass, ResourceSpecifier aSpecifier,
+  public Resource produceResource(Class<? extends Resource> aResourceClass, ResourceSpecifier aSpecifier,
           Map<String, Object> aAdditionalParams) throws ResourceInitializationException {
     // It is important to know whether we need a Multiprocessing-capable
     // Analysis Engine implementation - this is determined by whether there
