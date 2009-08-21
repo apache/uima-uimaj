@@ -71,7 +71,7 @@ public class ResourcePool {
    * @throws ResourceInitializationException
    *           if the Resource instances could not be created
    */
-  public ResourcePool(int aNumInstances, ResourceSpecifier aResourceSpecifier, Class aResourceClass)
+  public ResourcePool(int aNumInstances, ResourceSpecifier aResourceSpecifier, Class<? extends Resource> aResourceClass)
           throws ResourceInitializationException {
     this(aNumInstances, aResourceSpecifier, aResourceClass, null);
   }
@@ -94,7 +94,7 @@ public class ResourcePool {
    *           if the Resource instances could not be created
    */
   public ResourcePool(int aNumInstances, ResourceSpecifier aResourceSpecifier,
-          Class aResourceClass, Map<String, Object> aResourceInitParams) throws ResourceInitializationException {
+          Class<? extends Resource> aResourceClass, Map<String, Object> aResourceInitParams) throws ResourceInitializationException {
     mNumInstances = aNumInstances;
 
     fillPool(aResourceSpecifier, aResourceClass, aResourceInitParams);
@@ -236,7 +236,7 @@ public class ResourcePool {
    * @throws ResourceInitializationException
    *           if the Resource instances could not be created
    */
-  protected void fillPool(ResourceSpecifier aResourceSpecifier, Class aResourceClass,
+  protected void fillPool(ResourceSpecifier aResourceSpecifier, Class<? extends Resource> aResourceClass,
           Map<String, Object> aResourceInitParams) throws ResourceInitializationException {
     // fill the pool
     for (int i = 0; i < mNumInstances; i++) {
