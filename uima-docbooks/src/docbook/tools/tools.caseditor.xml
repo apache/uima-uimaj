@@ -258,8 +258,9 @@ under the License.
 			</para>
 			<para>
 				It is also possible to choose the annotation type; press
-				shift + enter for this. Then a dialog asks for the
-				annotation type to create.
+				shift + enter (smart insert) for this. Then a dialog asks for the
+				annotation type to create, either select the desired type or use
+				the associated key shortcut.
 			</para>
 			<para>
 				To delete an annotation select it and press the delete
@@ -277,11 +278,13 @@ under the License.
 
 		<section id="ugr.tools.cas_editor.annotation_editor.outline">
 			<title>Outline view</title>
+			
 			<para>
-				The outline lists the annotations of the current editor
-				mode. There are actions to increase or
-				decrease the bounds of the selected annotation. There is
-				also an action to merge all selected annotations.
+				The outline view gives an overview of the annoations which are
+				shown in the editor, the annotation are grouped by type. There are
+				actions to increase or decrease the bounds of the selected annotation. There is
+				also an action to merge selected annotations. The outline has second view mode where only
+				annotations of the current editor mode are shown. The style can be switched in the view menu.
 			</para>
 
 			<screenshot>
