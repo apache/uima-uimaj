@@ -746,9 +746,9 @@ public class JCasTest extends TestCase {
     }
     //check that this does not leave JCAS in an inconsistent state
     //(a check for bug UIMA-738)
-    Iterator<AnnotationFS> iter = jcas.getAnnotationIndex().iterator();
+    Iterator<Annotation> iter = jcas.getAnnotationIndex().iterator();
     assertTrue(iter.hasNext());
-    Annotation annot = (Annotation)iter.next();
+    Annotation annot = iter.next();
     assertEquals("This is a test.", annot.getCoveredText());
   }
   

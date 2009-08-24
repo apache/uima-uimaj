@@ -54,7 +54,7 @@ import org.apache.uima.cas.FSIterator;
  * <code>b</code> in the index, according to the above rules.
  * </p>
  */
-public interface AnnotationIndex extends FSIndex<AnnotationFS> {
+public interface AnnotationIndex<T extends AnnotationFS> extends FSIndex<T> {
   /**
    * Return an iterator over annotations that can be constrained to be unambiguous.
    * <p>
@@ -68,7 +68,7 @@ public interface AnnotationIndex extends FSIndex<AnnotationFS> {
    *          If set to false, iterator will be unambiguous.
    * @return A annotation iterator.
    */
-  FSIterator<AnnotationFS> iterator(boolean ambiguous);
+  FSIterator<T> iterator(boolean ambiguous);
 
   /**
    * Return a subiterator whose bounds are defined by the input annotation.
@@ -106,7 +106,7 @@ public interface AnnotationIndex extends FSIndex<AnnotationFS> {
    *          Defines the boundaries of the subiterator.
    * @return A subiterator.
    */
-  FSIterator<AnnotationFS> subiterator(AnnotationFS annot);
+  FSIterator<T> subiterator(AnnotationFS annot);
 
   /**
    * Return a subiterator whose bounds are defined by the input annotation.
@@ -148,7 +148,7 @@ public interface AnnotationIndex extends FSIndex<AnnotationFS> {
    *          Controls if annotations that overlap to the right are considered in or out.
    * @return A subiterator.
    */
-  FSIterator<AnnotationFS> subiterator(AnnotationFS annot, boolean ambiguous, boolean strict);
+  FSIterator<T> subiterator(AnnotationFS annot, boolean ambiguous, boolean strict);
 
   /**
    * Create an annotation tree with <code>annot</code> as root node. The tree is defined as
@@ -159,6 +159,6 @@ public interface AnnotationIndex extends FSIndex<AnnotationFS> {
    *          The annotation at the root of the tree.
    * @return The annotation tree rooted at <code>annot</code>.
    */
-  AnnotationTree tree(AnnotationFS annot);
+  AnnotationTree<T> tree(T annot);
 
 }

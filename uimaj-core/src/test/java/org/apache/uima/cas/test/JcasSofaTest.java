@@ -48,7 +48,6 @@ import org.apache.uima.cas.impl.CASSerializer;
 import org.apache.uima.cas.impl.Serialization;
 import org.apache.uima.cas.impl.XCASDeserializer;
 import org.apache.uima.cas.impl.XCASSerializer;
-import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.impl.SofaID_impl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JFSIndexRepository;
@@ -480,8 +479,8 @@ public class JcasSofaTest extends TestCase {
       Annotation annot = new Annotation(newJCas);
       annot.addToIndexes();
       
-      Iterator<AnnotationFS> annotIter = newJCas.getAnnotationIndex(Annotation.type).iterator();
-      Annotation annot2 = (Annotation)annotIter.next();
+      Iterator<Annotation> annotIter = newJCas.getAnnotationIndex(Annotation.type).iterator();
+      Annotation annot2 = annotIter.next();
       assertEquals(annot, annot2);
       assertEquals(annot2.getSofa(), annot2.getCASImpl().getSofa());
       
