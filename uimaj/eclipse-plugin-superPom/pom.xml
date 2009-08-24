@@ -71,18 +71,9 @@
         <directory>src/main/resources</directory>
       </resource>
     </resources>
-
-    
-    <!-- plugin Management is configuration info, but does not 
-         cause the running of the mentioned plugins.  Each 
-         child pom can optionally include the plugin to run it
-      -->
-    <pluginManagement>
-      <plugins>
-      </plugins>
-    </pluginManagement>
     
     <plugins>
+      <!-- special eclipse:eclipse configuration for Eclipse plugins -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-eclipse-plugin</artifactId>
