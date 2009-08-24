@@ -9,6 +9,10 @@ debug mode into a class where it doesn't know about the sources,
 it asks you to attach the sources - you can simply attach the
 generated all-sources Jar, and it will work.
 
+Note: this tool requires that Ant be installed; you can set
+ANT_HOME environment variable to specify the particular version,
+if it isn't already in the Path.
+
 For Eclipse, there is a launch configuration you can run (if you
 have checked out the uima projects into a common workspace)
 called "UIMA packageAllJavaSourcesIntoJar".
