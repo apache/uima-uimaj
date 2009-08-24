@@ -24,13 +24,13 @@ package org.apache.uima.cas.text;
  * 
  * 
  */
-public interface AnnotationTree {
+public interface AnnotationTree<T extends AnnotationFS> {
 
   /**
    * Get the root node of the tree.
    * 
    * @return The root node of the tree.
    */
-  AnnotationTreeNode getRoot();
+  AnnotationTreeNode<T> getRoot();
 
 }

@@ -51,6 +51,7 @@ import org.apache.uima.jcas.cas.Sofa;
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.cas.TOP_Type;
+import org.apache.uima.jcas.tcas.Annotation;
 
 /**
  * Java Cover Classes based Object-oriented CAS (Common Analysis System) API.
@@ -557,7 +558,7 @@ public interface JCas extends AbstractCas {
    * 
    * @return The standard annotation index.
    */
-  AnnotationIndex getAnnotationIndex();
+  AnnotationIndex<Annotation> getAnnotationIndex();
 
   /**
    * Get the standard annotation index restricted to a specific annotation type.
@@ -566,7 +567,7 @@ public interface JCas extends AbstractCas {
    *          The annotation type the index is restricted to.
    * @return The standard annotation index, restricted to <code>type</code>.
    */
-  AnnotationIndex getAnnotationIndex(Type type) throws CASRuntimeException;
+  AnnotationIndex<Annotation> getAnnotationIndex(Type type) throws CASRuntimeException;
 
   /**
    * Get the standard annotation index restricted to a specific annotation type.
@@ -577,7 +578,7 @@ public interface JCas extends AbstractCas {
    *          MyAnnotationType.type
    * @return The standard annotation index, restricted to <code>type</code>.
    */
-  AnnotationIndex getAnnotationIndex(int type) throws CASRuntimeException;
+  AnnotationIndex<Annotation> getAnnotationIndex(int type) throws CASRuntimeException;
 
   /**
    * Get iterator over all views in this JCas.  Each view provides access to Sofa data

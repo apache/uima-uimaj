@@ -32,6 +32,7 @@ import org.apache.uima.cas.impl.UnambiguousIteratorImpl;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.test.junit_extension.JUnitExtension;
@@ -100,12 +101,12 @@ public class SubiteratorTest extends TestCase {
     jcas.setDocumentText(text);
     try {
       this.ae.process(jcas);
-      AnnotationIndex tokenIndex = jcas.getAnnotationIndex(jcas.getCasType(Token.type));
-      AnnotationFS sentence = (AnnotationFS) jcas.getAnnotationIndex(jcas.getCasType(Sentence.type)).iterator().next();
-      FSIterator<AnnotationFS> tokenIterator = tokenIndex.subiterator(sentence);
-      AnnotationFS token = tokenIndex.iterator().next();
+      AnnotationIndex<Annotation> tokenIndex = jcas.getAnnotationIndex(jcas.getCasType(Token.type));
+      Annotation sentence = jcas.getAnnotationIndex(jcas.getCasType(Sentence.type)).iterator().next();
+      FSIterator<Annotation> tokenIterator = tokenIndex.subiterator(sentence);
+      Annotation token = tokenIndex.iterator().next();
       tokenIterator.moveTo(token); //throws ClassCastException    
-      UnambiguousIteratorImpl<AnnotationFS> it = new UnambiguousIteratorImpl<AnnotationFS>(tokenIndex.iterator());
+      UnambiguousIteratorImpl<Annotation> it = new UnambiguousIteratorImpl<Annotation>(tokenIndex.iterator());
       it.moveTo(token);
     } catch (AnalysisEngineProcessException e) {
       e.printStackTrace();
