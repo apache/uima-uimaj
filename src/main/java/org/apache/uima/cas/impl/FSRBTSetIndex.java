@@ -33,7 +33,7 @@ import org.apache.uima.internal.util.rb_trees.CompIntArrayRBT;
  * 
  * 
  */
-class FSRBTSetIndex extends FSLeafIndexImpl {
+class FSRBTSetIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T> {
 
   private CompIntArrayRBT tree;
 

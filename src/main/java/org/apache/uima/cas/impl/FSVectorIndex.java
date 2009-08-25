@@ -28,7 +28,7 @@ import org.apache.uima.internal.util.IntComparator;
 import org.apache.uima.internal.util.IntPointerIterator;
 import org.apache.uima.internal.util.IntVector;
 
-public class FSVectorIndex extends FSLeafIndexImpl {
+public class FSVectorIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T> {
 
   private class IntVectorIterator implements ComparableIntPointerIterator, LowLevelIterator {
 
