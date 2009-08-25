@@ -34,7 +34,7 @@ import org.apache.uima.internal.util.rb_trees.CompIntArrayRBT;
  * 
  */
 // TODO: may not be used - no refs to it on 6-2006
-class FSRBTIndex extends FSLeafIndexImpl {
+class FSRBTIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T> {
 
   private CompIntArrayRBT tree;
 
