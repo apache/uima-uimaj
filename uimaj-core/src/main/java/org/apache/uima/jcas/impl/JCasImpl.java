@@ -75,6 +75,7 @@ import org.apache.uima.jcas.cas.Sofa;
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.cas.TOP_Type;
+import org.apache.uima.jcas.tcas.Annotation;
 
 // *********************************
 // * Implementation of JCas *
@@ -1444,7 +1445,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   /**
    * @see org.apache.uima.cas.CAS#fs2listIterator(FSIterator)
    */
-  public ListIterator fs2listIterator(FSIterator it) {
+  public <T extends FeatureStructure> ListIterator<T> fs2listIterator(FSIterator<T> it) {
     return casImpl.fs2listIterator(it);
   }
 
@@ -1503,8 +1504,10 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * 
    * @see org.apache.uima.jcas.JCas#getAnnotationIndex()
    */
-  public AnnotationIndex getAnnotationIndex() {
-    return casImpl.getAnnotationIndex();
+  @SuppressWarnings("unchecked")
+  public AnnotationIndex<Annotation> getAnnotationIndex() {
+    return (AnnotationIndex<Annotation>) (AnnotationIndex<?>) 
+            casImpl.getAnnotationIndex();
   }
 
   /*
@@ -1512,8 +1515,10 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * 
    * @see org.apache.uima.jcas.JCas#getAnnotationIndex(org.apache.uima.cas.Type)
    */
-  public AnnotationIndex getAnnotationIndex(Type type) throws CASRuntimeException {
-    return casImpl.getAnnotationIndex(type);
+  @SuppressWarnings("unchecked")
+  public AnnotationIndex<Annotation> getAnnotationIndex(Type type) throws CASRuntimeException {
+    return (AnnotationIndex<Annotation>) (AnnotationIndex<?>)  
+            casImpl.getAnnotationIndex(type);
   }
 
   /*
@@ -1521,8 +1526,10 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * 
    * @see org.apache.uima.jcas.JCas#getAnnotationIndex(int)
    */
-  public AnnotationIndex getAnnotationIndex(int type) throws CASRuntimeException {
-    return casImpl.getAnnotationIndex(this.getCasType(type));
+  @SuppressWarnings("unchecked")
+  public AnnotationIndex<Annotation> getAnnotationIndex(int type) throws CASRuntimeException {
+    return (AnnotationIndex<Annotation>) (AnnotationIndex<?>) 
+            casImpl.getAnnotationIndex(this.getCasType(type));
   }
 
   /*

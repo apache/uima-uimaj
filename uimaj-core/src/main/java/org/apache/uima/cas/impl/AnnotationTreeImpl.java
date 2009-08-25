@@ -19,35 +19,26 @@
 
 package org.apache.uima.cas.impl;
 
+import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationTree;
 import org.apache.uima.cas.text.AnnotationTreeNode;
 
 /**
  * Implementation of annotation tree.
- * 
- * 
  */
-public class AnnotationTreeImpl implements AnnotationTree {
+public class AnnotationTreeImpl<T extends AnnotationFS>  implements AnnotationTree<T> {
 
-  private AnnotationTreeNodeImpl root = null;
+  private AnnotationTreeNodeImpl<T> root = null;
 
-  /**
-   * 
-   */
   AnnotationTreeImpl() {
     super();
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.cas.text.AnnotationTree#getRoot()
-   */
-  public AnnotationTreeNode getRoot() {
+  public AnnotationTreeNode<T> getRoot() {
     return this.root;
   }
 
-  void setRoot(AnnotationTreeNodeImpl root) {
+  void setRoot(AnnotationTreeNodeImpl<T> root) {
     this.root = root;
   }
 

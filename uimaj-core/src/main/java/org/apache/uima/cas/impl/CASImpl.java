@@ -3889,14 +3889,14 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   @SuppressWarnings("unchecked")
-  public AnnotationIndex getAnnotationIndex() {
+  public AnnotationIndex<AnnotationFS> getAnnotationIndex() {
     return new AnnotationIndexImpl(
             (FSIndex<AnnotationFS>) (FSIndex<?>) getIndexRepository().getIndex(
              CAS.STD_ANNOTATION_INDEX));
   }
 
   @SuppressWarnings("unchecked")
-  public AnnotationIndex getAnnotationIndex(Type type) {
+  public AnnotationIndex<AnnotationFS> getAnnotationIndex(Type type) {
     return new AnnotationIndexImpl(
             (FSIndex<AnnotationFS>) (FSIndex<?>) getIndexRepository().getIndex(
             CAS.STD_ANNOTATION_INDEX, type));
