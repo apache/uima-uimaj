@@ -167,9 +167,17 @@
 	        <configuration>
 	          <source>1.5</source>
 	          <target>1.5</target>
+	          <encoding>UTF-8</encoding>
 	        </configuration>
 	      </plugin>
-        
+	      
+	      <plugin>
+          <artifactId>maven-resources-plugin</artifactId>
+          <configuration>
+            <encoding>UTF-8</encoding>
+          </configuration>
+        </plugin>
+	           
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
