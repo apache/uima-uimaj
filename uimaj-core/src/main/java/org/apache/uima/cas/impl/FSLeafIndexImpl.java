@@ -36,7 +36,7 @@ import org.apache.uima.internal.util.IntPointerIterator;
  * 
  * 
  */
-public abstract class FSLeafIndexImpl implements IntComparator, FSIndex, FSIndexImpl {
+public abstract class FSLeafIndexImpl<T extends FeatureStructure> implements IntComparator, FSIndex<T>, FSIndexImpl {
 
   private final int indexType;
 
@@ -391,16 +391,15 @@ public abstract class FSLeafIndexImpl implements IntComparator, FSIndex, FSIndex
   /**
    * @see org.apache.uima.cas.FSIndex#iterator()
    */
-  public FSIterator iterator() {
-    System.out.println(this.getClass().getName());
-    return new FSIteratorWrapper(refIterator(), this.lowLevelCAS);
+  public FSIterator<T> iterator() {
+    return new FSIteratorWrapper<T>(refIterator(), this.lowLevelCAS);
   }
 
   /**
    * @see org.apache.uima.cas.FSIndex#iterator(FeatureStructure)
    */
-  public FSIterator iterator(FeatureStructure fs) {
-    return new FSIteratorWrapper(refIterator(((FeatureStructureImpl) fs).getAddress()),
+  public FSIterator<T> iterator(FeatureStructure fs) {
+    return new FSIteratorWrapper<T>(refIterator(((FeatureStructureImpl) fs).getAddress()),
             this.lowLevelCAS);
   }
 
