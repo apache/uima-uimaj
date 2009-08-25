@@ -26,6 +26,8 @@ import org.apache.uima.cas.FSIndexRepository;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationIndex;
+import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.jcas.tcas.Annotation;
 
 /**
  * Provides the same function as the FSIndexRepository except that the variants that take a "type"
@@ -47,7 +49,7 @@ public interface JFSIndexRepository {
    * @return The index with the name <code>label</code>, or <code>null</code> if no such index
    *         is defined.
    */
-  FSIndex getIndex(String label);
+  FSIndex<TOP> getIndex(String label);
 
   /**
    * Retrieve an index according to a label and a type. The type is used to narrow down the index of
@@ -60,14 +62,14 @@ public interface JFSIndexRepository {
    * @return The specified index, or <code>null</code> if an index with that name doesn't exist,
    *         or it exists but <code>type</code> is not a subtype of the index's type.
    */
-  FSIndex getIndex(String label, int type);
+  FSIndex<TOP> getIndex(String label, int type);
 
   /**
    * Get the standard annotation index.
    * 
    * @return The standard annotation index.
    */
-  AnnotationIndex getAnnotationIndex();
+  AnnotationIndex<Annotation> getAnnotationIndex();
 
   /**
    * Get the standard annotation index restricted to a specific annotation type.
@@ -76,7 +78,7 @@ public interface JFSIndexRepository {
    *          The annotation type the index is restricted to, written as Foo.type
    * @return The standard annotation index, restricted to <code>type</code>.
    */
-  AnnotationIndex getAnnotationIndex(int type);
+  AnnotationIndex<Annotation> getAnnotationIndex(int type);
 
   /**
    * Get all labels for all indexes.
@@ -90,7 +92,7 @@ public interface JFSIndexRepository {
    * 
    * @return All indexes.
    */
-  Iterator<FSIndex> getIndexes();
+  Iterator<FSIndex<TOP>> getIndexes();
 
   /**
    * Get the underlying FSIndexRepository associated with this JFSIndexRepository.
@@ -113,7 +115,7 @@ public interface JFSIndexRepository {
    * @return An iterator that returns all indexed FeatureStructures of type <code>aType</code>,
    *         in no particular order.
    */
-  FSIterator getAllIndexedFS(Type aType);
+  FSIterator<TOP> getAllIndexedFS(Type aType);
 
   /**
    * Gets an iterator over all indexed FeatureStructures of the specified Type (and any of its
@@ -129,6 +131,6 @@ public interface JFSIndexRepository {
    * @return An iterator that returns all indexed FeatureStructures of type <code>aType</code>,
    *         in no particular order.
    */
-  FSIterator getAllIndexedFS(int aType);
+  FSIterator<TOP> getAllIndexedFS(int aType);
 
 }
