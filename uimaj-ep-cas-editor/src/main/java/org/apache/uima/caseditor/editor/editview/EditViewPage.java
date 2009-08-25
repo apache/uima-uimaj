@@ -38,11 +38,14 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.caseditor.CasEditorPlugin;
 import org.apache.uima.caseditor.Images;
+import org.apache.uima.caseditor.core.TaeError;
+import org.apache.uima.caseditor.editor.AnnotationEditor;
 import org.apache.uima.caseditor.editor.ArrayValue;
 import org.apache.uima.caseditor.editor.CasEditorError;
 import org.apache.uima.caseditor.editor.FeatureStructureSelection;
 import org.apache.uima.caseditor.editor.FeatureValue;
 import org.apache.uima.caseditor.editor.ICasDocument;
+import org.apache.uima.caseditor.editor.ICasEditor;
 import org.apache.uima.caseditor.editor.editview.validator.CellEditorValidatorFacotory;
 import org.apache.uima.caseditor.editor.util.FeatureStructureTransfer;
 import org.apache.uima.caseditor.editor.util.Primitives;
@@ -68,6 +71,7 @@ import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.DropTargetListener;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.dnd.TransferData;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -373,37 +377,61 @@ final class EditViewPage extends Page implements ISelectionListener {
 
 
     FeatureStructure createFS(Type type, int arraySize) {
-
+    		
+      if (type.isPrimitive())
+    	  throw new IllegalArgumentException("Cannot create FS for primitive type!");
+      
       FeatureStructure fs;
-
-      if (!type.isArray()) {
+      
+      TypeSystem ts = document.getCAS().getTypeSystem();
+      
+      if (type.isArray()) {
+          if (type.getName().equals(CAS.TYPE_NAME_BOOLEAN_ARRAY)) {
+              fs = document.getCAS().createBooleanArrayFS(arraySize);
+            } else if (type.getName().equals(CAS.TYPE_NAME_BYTE_ARRAY)) {
+              fs = document.getCAS().createByteArrayFS(arraySize);
+            } else if (type.getName().equals(CAS.TYPE_NAME_SHORT_ARRAY)) {
+              fs = document.getCAS().createShortArrayFS(arraySize);
+            } else if (type.getName().equals(CAS.TYPE_NAME_INTEGER_ARRAY)) {
+              fs = document.getCAS().createIntArrayFS(arraySize);
+            } else if (type.getName().equals(CAS.TYPE_NAME_LONG_ARRAY)) {
+              fs = document.getCAS().createLongArrayFS(arraySize);
+            } else if (type.getName().equals(CAS.TYPE_NAME_FLOAT_ARRAY)) {
+              fs = document.getCAS().createFloatArrayFS(arraySize);
+            } else if (type.getName().equals(CAS.TYPE_NAME_DOUBLE_ARRAY)) {
+              fs = document.getCAS().createDoubleArrayFS(arraySize);
+            } else if (type.getName().equals(CAS.TYPE_NAME_STRING_ARRAY)) {
+              fs = document.getCAS().createStringArrayFS(arraySize);
+            } else if (type.getName().equals(CAS.TYPE_NAME_FS_ARRAY)) {
+              fs = document.getCAS().createArrayFS(arraySize);
+            } else {
+              throw new CasEditorError("Unkown array type!");
+            }  
+      }
+      else if (ts.subsumes(ts.getType(CAS.TYPE_NAME_ANNOTATION), type)) {
+    	
+    	// get begin of selection from editor, if any  
+    	// TODO: Add an interface to retrieve the span from the editor  
+    	
+    	int begin = 0;
+    	int end = 0;
+    	
+    	if (editor instanceof AnnotationEditor) {
+    	  Point selection = ((AnnotationEditor) editor).getSelection();
+    	  
+    	  begin = selection.x;
+    	  end = selection.y;
+    	}
+    	
+    	fs = document.getCAS().createAnnotation(type, begin, end);
+      }
+      else if (!type.isArray()) {
         fs = document.getCAS().createFS(type);
       }
       else {
-
-        if (type.getName().equals(CAS.TYPE_NAME_BOOLEAN_ARRAY)) {
-          fs = document.getCAS().createBooleanArrayFS(arraySize);
-        } else if (type.getName().equals(CAS.TYPE_NAME_BYTE_ARRAY)) {
-          fs = document.getCAS().createByteArrayFS(arraySize);
-        } else if (type.getName().equals(CAS.TYPE_NAME_SHORT_ARRAY)) {
-          fs = document.getCAS().createShortArrayFS(arraySize);
-        } else if (type.getName().equals(CAS.TYPE_NAME_INTEGER_ARRAY)) {
-          fs = document.getCAS().createIntArrayFS(arraySize);
-        } else if (type.getName().equals(CAS.TYPE_NAME_LONG_ARRAY)) {
-          fs = document.getCAS().createLongArrayFS(arraySize);
-        } else if (type.getName().equals(CAS.TYPE_NAME_FLOAT_ARRAY)) {
-          fs = document.getCAS().createFloatArrayFS(arraySize);
-        } else if (type.getName().equals(CAS.TYPE_NAME_DOUBLE_ARRAY)) {
-          fs = document.getCAS().createDoubleArrayFS(arraySize);
-        } else if (type.getName().equals(CAS.TYPE_NAME_STRING_ARRAY)) {
-          fs = document.getCAS().createStringArrayFS(arraySize);
-        } else if (type.getName().equals(CAS.TYPE_NAME_FS_ARRAY)) {
-          fs = document.getCAS().createArrayFS(arraySize);
-        } else {
-          throw new CasEditorError("Unkown array type!");
-        }
+        throw new TaeError("Unexpected error!");
       }
-
+      
       return fs;
     }
 
@@ -529,18 +557,21 @@ final class EditViewPage extends Page implements ISelectionListener {
   private TreeViewer viewer;
 
   private ICasDocument document;
-
+  private ICasEditor editor;
+  
   private PinAction pinAction;
 
   private final EditView editView;
 
-  EditViewPage(EditView editView, ICasDocument document) {
+  EditViewPage(EditView editView, ICasEditor editor, ICasDocument document) {
 
 	if (editView == null || document == null)
         throw new IllegalArgumentException("Parameters must not be null!");
 
     this.editView = editView;
+    this.editor = editor;
     this.document = document;
+    
   }
 
   @Override

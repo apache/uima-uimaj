@@ -93,14 +93,8 @@ public class CreateFeatureStructureDialog extends IconAndMessageDialog {
     filterTypes.add(typeSystem.getType(CAS.TYPE_NAME_BOOLEAN));
     filterTypes.add(typeSystem.getType(CAS.TYPE_NAME_FLOAT));
     filterTypes.add(typeSystem.getType(CAS.TYPE_NAME_INTEGER));
-//    filterTypes.add(typeSystem.getType(CAS.TYPE_NAME_LIST_BASE));
-//    filterTypes.add(typeSystem.getType(CAS.TYPE_NAME_NON_EMPTY_FLOAT_LIST));
-//    filterTypes.add(typeSystem.getType(CAS.TYPE_NAME_NON_EMPTY_FS_LIST));
-//    filterTypes.add(typeSystem.getType(CAS.TYPE_NAME_NON_EMPTY_INTEGER_LIST));
-//    filterTypes.add(typeSystem.getType(CAS.TYPE_NAME_NON_EMPTY_STRING_LIST));
     filterTypes.add(typeSystem.getType(CAS.TYPE_NAME_SOFA));
     filterTypes.add(typeSystem.getType(CAS.TYPE_NAME_STRING));
-
   }
 
 

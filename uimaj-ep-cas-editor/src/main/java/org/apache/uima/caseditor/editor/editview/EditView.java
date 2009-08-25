@@ -45,7 +45,7 @@ public final class EditView extends AnnotationEditorView {
 		ICasDocument document = editor.getDocument();
 
 		if (document != null) {
-			EditViewPage page = new EditViewPage(this, document);
+			EditViewPage page = new EditViewPage(this, editor, document);
 			initPage(page);
 			page.createControl(getPageBook());
 
