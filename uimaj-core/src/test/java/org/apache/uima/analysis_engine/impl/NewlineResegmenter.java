@@ -27,6 +27,7 @@ import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.examples.SourceDocumentInformation;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.tcas.Annotation;
 
 /**
  * 
@@ -141,7 +142,7 @@ public class NewlineResegmenter extends JCasMultiplier_ImplBase {
   }
 
   private String getCasSourceUri(JCas jcas) {
-    Iterator<AnnotationFS> iter = jcas.getJFSIndexRepository().getAnnotationIndex(SourceDocumentInformation.type)
+    Iterator<Annotation> iter = jcas.getJFSIndexRepository().getAnnotationIndex(SourceDocumentInformation.type)
             .iterator();
     if (iter.hasNext()) {
       SourceDocumentInformation sdi = (SourceDocumentInformation) iter.next();
