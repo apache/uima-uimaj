@@ -33,6 +33,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.part.FileEditorInput;
 
 /**
  * This class can be reused by ui actions which want to modify documents.
@@ -97,11 +99,17 @@ abstract class DocumentActionRunnable implements IRunnableWithProgress {
     // TODO:
     // Now we have to ask the document provider to
     // do this kind of document element mapping
-    Map<DocumentElement, AnnotationEditor> editorMap = new HashMap<DocumentElement, AnnotationEditor>();
+    Map<String, AnnotationEditor> editorMap = new HashMap<String, AnnotationEditor>();
 
     for (AnnotationEditor annotationEditor : AnnotationEditor.getAnnotationEditors()) {
-    	// TODO: fix it
-      // editorMap.put(annotationEditor.getDocument().getDocumentElement(), annotationEditor);
+    	// TODO: Workaround for now just use the filename
+    	IEditorInput input = annotationEditor.getEditorInput();
+    	
+    	if (input instanceof FileEditorInput) {
+    		FileEditorInput fileInput = (FileEditorInput) input;
+    		
+    		editorMap.put(fileInput.getPath().toOSString(), annotationEditor);
+    	}
     }
 
     monitor.subTask("Processing documents, please wait!");
@@ -127,13 +135,18 @@ abstract class DocumentActionRunnable implements IRunnableWithProgress {
 
         try {
 
-          if (editorMap.get(documentElement) == null) {
+          String filename = documentElement.getResource().getLocation().toOSString();
+          if (editorMap.get(filename) == null) {
             // file is not opened in any editor, just save the changes
             documentElement.saveDocument();
-          } else if (!editorMap.get(documentElement).isDirty()) {
+          } else if (!editorMap.get(filename).isDirty()) {
             // element is opened in editor and not dirty
-            AnnotationEditor editor = editorMap.get(documentElement);
-            editor.getDocument().changed();
+            final AnnotationEditor editor = editorMap.get(filename);
+            Display.getDefault().syncExec(new Runnable() {
+                public void run() {
+                	editor.getDocument().changed();
+                }
+              });
           } else {
             // element is opened in editor and dirty, do nothing
           }
