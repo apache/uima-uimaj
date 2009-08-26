@@ -20,19 +20,14 @@
 package org.apache.uima.caseditor.editor;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.uima.cas.Type;
-import org.apache.uima.cas.text.AnnotationFS;
-import org.apache.uima.caseditor.editor.annotation.EclipseAnnotationPeer;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.Position;
-import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.AbstractDocumentProvider;
@@ -53,38 +48,7 @@ public abstract class CasDocumentProvider extends AbstractDocumentProvider {
 
   @Override
   protected IAnnotationModel createAnnotationModel(final Object element) throws CoreException {
-    return new org.eclipse.jface.text.source.AnnotationModel() {
-      public Iterator<EclipseAnnotationPeer> getAnnotationIterator() {
-        ICasDocument document = (ICasDocument) getDocument(element);
-        
-        final Iterator<AnnotationFS> mAnnotations =
-            document.getCAS().getAnnotationIndex().iterator();
-        
-        return new Iterator<EclipseAnnotationPeer>() {
-
-          public boolean hasNext() {
-            return mAnnotations.hasNext();
-          }
-
-          public EclipseAnnotationPeer next() {
-            AnnotationFS annotation = (AnnotationFS) mAnnotations.next();
-
-            return new EclipseAnnotationPeer(annotation);
-          }
-
-          public void remove() {
-            throw new UnsupportedOperationException();
-          }
-        };
-      }
-      
-      public Position getPosition(Annotation annotation) {
-        EclipseAnnotationPeer peer = (EclipseAnnotationPeer) annotation;
-        AnnotationFS annotationFS = peer.getAnnotationFS();
-        return new Position(annotationFS.getBegin(), annotationFS.getEnd()
-                - annotationFS.getBegin());
-      }
-    };
+	  return new org.eclipse.jface.text.source.AnnotationModel();
   }
 
   /**

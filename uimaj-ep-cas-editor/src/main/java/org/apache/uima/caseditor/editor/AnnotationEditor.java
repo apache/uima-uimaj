@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -63,6 +64,7 @@ import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.AnnotationPainter;
 import org.eclipse.jface.text.source.IAnnotationAccess;
 import org.eclipse.jface.text.source.IAnnotationAccessExtension;
+import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.IAnnotationModelExtension;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewer;
@@ -700,11 +702,22 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
       ResourcesPlugin.getWorkspace().addResourceChangeListener(
               closeEditorListener, IResourceChangeEvent.POST_CHANGE);
 
-    	// mAnnotationModel = getDocumentProvider().getAnnotationModel(input);
+     IAnnotationModel annotationModel = getDocumentProvider().getAnnotationModel(input);
 
+     // copy annotations into annotation model
+	  final Iterator<AnnotationFS> mAnnotations =
+		  mDocument.getCAS().getAnnotationIndex().iterator();
+ 
+	 while (mAnnotations.hasNext()) {
+		  AnnotationFS annotationFS = mAnnotations.next();
+		  annotationModel.addAnnotation(new EclipseAnnotationPeer(annotationFS),
+				  new Position(annotationFS.getBegin(), annotationFS.getEnd()
+		          - annotationFS.getBegin()));
+	 }
+     
       mAnnotationSynchronizer = new DocumentListener();
 
-    	getDocument().addChangeListener(mAnnotationSynchronizer);
+      getDocument().addChangeListener(mAnnotationSynchronizer);
     }
   }
 
