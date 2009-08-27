@@ -20,7 +20,7 @@
 package org.apache.uima.caseditor.editor.util;
 
 /**
- * This class usually specifies an continus are of text. This area has an start and end index. The
+ * This class usually specifies an continous are of text. This area has an start and end index. The
  * difference of the end and start is the length of the area.
  */
 public class Span implements Comparable<Span> {
@@ -93,6 +93,13 @@ public class Span implements Comparable<Span> {
     return true;
   }
 
+  public boolean isIntersecting(Span s) {
+    int sstart = s.getStart();
+    return this.isContaining(s) || s.isContaining(this) ||
+	   getStart() <= sstart && sstart < getEnd() ||
+	   sstart <= getStart() && getStart() < s.getEnd();
+  }
+  
   /**
    * Compares the current instance to another {@link Span} object.
    */
