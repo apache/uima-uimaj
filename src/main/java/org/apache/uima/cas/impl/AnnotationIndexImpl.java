@@ -29,10 +29,8 @@ import org.apache.uima.cas.text.AnnotationTree;
 
 /**
  * Implementation of annotation indexes.
- * 
- * 
  */
-public class AnnotationIndexImpl implements AnnotationIndex {
+public class AnnotationIndexImpl<T extends AnnotationFS> implements AnnotationIndex<T> {
 
   private FSIndex<AnnotationFS> index;
 
@@ -95,8 +93,8 @@ public class AnnotationIndexImpl implements AnnotationIndex {
    * 
    * @see org.apache.uima.cas.FSIndex#iterator()
    */
-  public FSIterator<AnnotationFS> iterator() {
-    return this.index.iterator();
+  public FSIterator<T> iterator() {
+    return (FSIterator<T>) this.index.iterator();
   }
 
   /*
@@ -104,8 +102,8 @@ public class AnnotationIndexImpl implements AnnotationIndex {
    * 
    * @see org.apache.uima.cas.FSIndex#iterator(org.apache.uima.cas.FeatureStructure)
    */
-  public FSIterator<AnnotationFS> iterator(FeatureStructure fs) {
-    return this.index.iterator(fs);
+  public FSIterator<T> iterator(FeatureStructure fs) {
+    return (FSIterator<T>) this.index.iterator(fs);
   }
 
   /*
@@ -122,11 +120,11 @@ public class AnnotationIndexImpl implements AnnotationIndex {
    * 
    * @see org.apache.uima.cas.text.AnnotationIndex#iterator(boolean)
    */
-  public FSIterator<AnnotationFS> iterator(boolean ambiguous) {
+  public FSIterator<T> iterator(boolean ambiguous) {
     if (ambiguous) {
-      return this.index.iterator();
+      return (FSIterator<T>) this.index.iterator();
     }
-    return new Subiterator<AnnotationFS>(this.index.iterator());
+    return new Subiterator<T>((FSIterator<T>) this.index.iterator());
   }
 
   /*
@@ -134,7 +132,7 @@ public class AnnotationIndexImpl implements AnnotationIndex {
    * 
    * @see org.apache.uima.cas.text.AnnotationIndex#subiterator(org.apache.uima.cas.text.AnnotationFS)
    */
-  public FSIterator<AnnotationFS> subiterator(AnnotationFS annot) {
+  public FSIterator<T> subiterator(AnnotationFS annot) {
     return subiterator(annot, true, true);
   }
 
@@ -144,8 +142,8 @@ public class AnnotationIndexImpl implements AnnotationIndex {
    * @see org.apache.uima.cas.text.AnnotationIndex#subiterator(org.apache.uima.cas.text.AnnotationFS,
    *      boolean, boolean)
    */
-  public FSIterator<AnnotationFS> subiterator(AnnotationFS annot, boolean ambiguous, boolean strict) {
-    return new Subiterator<AnnotationFS>(this.index.iterator(), annot, ambiguous, strict);
+  public FSIterator<T> subiterator(AnnotationFS annot, boolean ambiguous, boolean strict) {
+    return new Subiterator<T>((FSIterator<T>)this.index.iterator(), annot, ambiguous, strict);
   }
 
   /*
@@ -153,22 +151,22 @@ public class AnnotationIndexImpl implements AnnotationIndex {
    * 
    * @see org.apache.uima.cas.text.AnnotationIndex#tree(org.apache.uima.cas.text.AnnotationFS)
    */
-  public AnnotationTree tree(AnnotationFS annot) {
-    AnnotationTreeImpl tree = new AnnotationTreeImpl();
-    AnnotationTreeNodeImpl root = new AnnotationTreeNodeImpl();
+  public AnnotationTree<T> tree(T annot) {
+    AnnotationTreeImpl<T> tree = new AnnotationTreeImpl<T>();
+    AnnotationTreeNodeImpl<T> root = new AnnotationTreeNodeImpl<T>();
     tree.setRoot(root);
     root.set(annot);
     addChildren(root, subiterator(annot, false, true));
     return tree;
   }
 
-  private void addChildren(AnnotationTreeNodeImpl node, FSIterator<AnnotationFS> it) {
-    AnnotationTreeNodeImpl dtr;
-    AnnotationFS annot;
+  private void addChildren(AnnotationTreeNodeImpl<T> node, FSIterator<T> it) {
+    AnnotationTreeNodeImpl<T> dtr;
+    T annot;
     while (it.isValid()) {
-      annot = (AnnotationFS) it.get();
+      annot = it.get();
       it.moveToNext();
-      dtr = new AnnotationTreeNodeImpl();
+      dtr = new AnnotationTreeNodeImpl<T>();
       dtr.set(annot);
       node.addChild(dtr);
       addChildren(dtr, subiterator(annot, false, true));
