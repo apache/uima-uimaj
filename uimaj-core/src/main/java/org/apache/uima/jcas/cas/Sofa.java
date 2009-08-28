@@ -235,6 +235,13 @@ public class Sofa extends TOP implements SofaFS {
 		throw e;
 	}
 
+  // override setIntValue for SofaFS to not work!
+  // This method is duplicated in SofaFSImpl. Any changes should be made in both places.
+  public void setIntValue(Feature feat, Integer val) {
+    CASRuntimeException e = new CASRuntimeException(CASRuntimeException.PROTECTED_SOFA_FEATURE);
+    throw e;
+  }
+
 	// This method is duplicated in SofaFSImpl. Any changes should be made in both places.
 	public String getSofaMime() {
 		final Feature mimeFeat = jcasType.casImpl.getTypeSystem().getFeatureByFullName(
