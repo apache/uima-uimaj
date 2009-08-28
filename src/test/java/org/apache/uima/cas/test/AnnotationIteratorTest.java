@@ -160,7 +160,7 @@ public class AnnotationIteratorTest extends TestCase {
     }
 
     int count;
-    AnnotationIndex annotIndex = this.cas.getAnnotationIndex();
+    AnnotationIndex<AnnotationFS> annotIndex = this.cas.getAnnotationIndex();
     FSIterator<AnnotationFS> it = annotIndex.iterator(true);
     count = 0;
     while (it.isValid()) {
@@ -268,7 +268,7 @@ public class AnnotationIteratorTest extends TestCase {
     
     caughtException = false;
     try {
-    	AnnotationIndex ai = this.cas.getAnnotationIndex(ts.getType(CASTestSetup.TOKEN_TYPE_TYPE));
+    	AnnotationIndex<AnnotationFS> ai = this.cas.getAnnotationIndex(ts.getType(CASTestSetup.TOKEN_TYPE_TYPE));
     } catch (CASRuntimeException e) {
     	caughtException = true;
     }
