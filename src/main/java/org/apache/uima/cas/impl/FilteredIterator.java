@@ -103,7 +103,7 @@ class FilteredIterator<T extends FeatureStructure> extends FSIteratorImplBase<T>
   /**
    * @see org.apache.uima.cas.FSIterator#moveTo(FeatureStructure)
    */
-  public void moveTo(T fs) {
+  public void moveTo(FeatureStructure fs) {
     this.it.moveTo(fs);
     if (!this.cons.match(this.it.get())) {
       moveToNext();

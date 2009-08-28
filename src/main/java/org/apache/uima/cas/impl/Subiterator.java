@@ -37,7 +37,7 @@ public class Subiterator<T extends AnnotationFS> extends FSIteratorImplBase<T> {
 
   private int pos;
 
-  private Comparator<T> annotationComparator = null;
+  private Comparator<FeatureStructure> annotationComparator = null;
 
   /**
    * 
@@ -215,9 +215,9 @@ public class Subiterator<T extends AnnotationFS> extends FSIteratorImplBase<T> {
     this.pos = this.list.size() - 1;
   }
 
-  private final Comparator<T> getAnnotationComparator(FeatureStructure fs) {
+  private final Comparator<FeatureStructure> getAnnotationComparator(FeatureStructure fs) {
     if (this.annotationComparator == null) {
-      this.annotationComparator = new AnnotationComparator<T>(fs.getCAS().getAnnotationIndex());
+      this.annotationComparator = new AnnotationComparator<FeatureStructure>(fs.getCAS().getAnnotationIndex());
     }
     return this.annotationComparator;
   }
@@ -227,7 +227,7 @@ public class Subiterator<T extends AnnotationFS> extends FSIteratorImplBase<T> {
    * 
    * @see org.apache.uima.cas.FSIterator#moveTo(org.apache.uima.cas.FeatureStructure)
    */
-  public void moveTo(T fs) {
+  public void moveTo(FeatureStructure fs) {
     final int found = Collections.binarySearch(this.list, fs, getAnnotationComparator(fs));
     if (found >= 0) {
       this.pos = found;
