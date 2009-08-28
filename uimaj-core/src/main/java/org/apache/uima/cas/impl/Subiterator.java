@@ -74,7 +74,7 @@ public class Subiterator<T extends AnnotationFS> extends FSIteratorImplBase<T> {
     }
   }
 
-  Subiterator(FSIterator<T> it, T annot, final boolean ambiguous, final boolean strict) {
+  Subiterator(FSIterator<T> it, AnnotationFS annot, final boolean ambiguous, final boolean strict) {
     this();
     if (ambiguous) {
       initAmbiguousSubiterator(it, annot, strict);
@@ -83,7 +83,7 @@ public class Subiterator<T extends AnnotationFS> extends FSIteratorImplBase<T> {
     }
   }
 
-  private void initAmbiguousSubiterator(FSIterator<T> it, T annot, final boolean strict) {
+  private void initAmbiguousSubiterator(FSIterator<T> it, AnnotationFS annot, final boolean strict) {
     final int start = annot.getBegin();
     final int end = annot.getEnd();
     it.moveTo(annot);
@@ -110,7 +110,7 @@ public class Subiterator<T extends AnnotationFS> extends FSIteratorImplBase<T> {
     }
   }
 
-  private void initUnambiguousSubiterator(FSIterator<T> it, T annot, final boolean strict) {
+  private void initUnambiguousSubiterator(FSIterator<T> it, AnnotationFS annot, final boolean strict) {
     final int start = annot.getBegin();
     final int end = annot.getEnd();
     it.moveTo(annot);
