@@ -113,7 +113,7 @@ public interface FSIterator<T extends FeatureStructure> extends Iterator<T> {
    * @param fs
    *          The feature structure the iterator should be set to.
    */
-  void moveTo(T fs);
+  void moveTo(FeatureStructure fs);
 
   /**
    * Copy this iterator.

@@ -34,11 +34,11 @@ public abstract class FSIteratorImplBase<T extends FeatureStructure> implements 
 
   // Jira UIMA-464: add annotation comparator to be able to use Collections.binarySearch() on
   // annotation list.
-  protected static class AnnotationComparator<T extends AnnotationFS> implements Comparator<T> {
+  protected static class AnnotationComparator<T extends FeatureStructure> implements Comparator<T> {
 
     private AnnotationIndex<? extends AnnotationFS> index;
 
-    protected AnnotationComparator(AnnotationIndex<? extends AnnotationFS> index) {
+    protected AnnotationComparator(AnnotationIndex<? extends FeatureStructure> index) {
       super();
       this.index = index;
     }
