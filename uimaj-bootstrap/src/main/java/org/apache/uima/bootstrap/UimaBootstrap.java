@@ -49,7 +49,7 @@ import java.util.List;
  *   that is passed the rest of the arguments. 
  *
  */
-public class RunWithJarPath {
+public class UimaBootstrap {
 
   /**
    * @param args
