@@ -167,7 +167,15 @@ under the License.
         <include>src/**</include>
         <include>pom.xml</include>
       </includes>
-    </fileSet>    
+    </fileSet>  
+    <fileSet>
+      <directory>../uimaj-bootstrap</directory>
+      <outputDirectory>/uimaj-bootstrap</outputDirectory>
+      <includes>
+        <include>src/**</include>
+        <include>pom.xml</include>
+      </includes>
+    </fileSet>          
     <fileSet>
       <directory>../uimaj-component-test-util</directory>
       <outputDirectory>/uimaj-component-test-util</outputDirectory>

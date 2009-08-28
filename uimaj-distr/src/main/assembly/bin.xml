@@ -42,6 +42,15 @@ under the License.
     and had an outputFileNameMapping of ${artifactId}.jar -->
     <dependencySet>
       <includes>
+        <include>org.apache.uima:uimaj-bootstrap</include>
+      </includes>
+      <unpack>false</unpack>
+      <outputFileNameMapping>uimaj-bootstrap.jar</outputFileNameMapping>
+      <outputDirectory>/apache-uima/lib</outputDirectory>
+      <useProjectArtifact>false</useProjectArtifact>
+    </dependencySet>
+    <dependencySet>
+      <includes>
         <include>org.apache.uima:uimaj-core</include>
       </includes>
       <unpack>false</unpack>
