@@ -179,6 +179,14 @@ public class SofaFSImpl extends FeatureStructureImplC implements SofaFS {
 		throw e;
 	}
 
+  // override setIntValue for SofaFS to not work!
+  // This method is duplicated in org.apache.uima.jcas.cas.Sofa. Any changes
+  // should be made in both places.
+  public void setIntValue(Feature feat, Integer val) {
+    CASRuntimeException e = new CASRuntimeException(CASRuntimeException.PROTECTED_SOFA_FEATURE);
+    throw e;
+  }
+
 	// This method is duplicated in org.apache.uima.jcas.cas.Sofa. Any changes
 	// should be made in both places.
 	public String getSofaMime() {
