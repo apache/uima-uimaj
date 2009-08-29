@@ -1878,6 +1878,14 @@ catch (PatternSyntaxException e) {
           you do not define any constructor will, by default, have a 0-argument constructor
           that doesn&apos;t do anything, a class in which you have defined at least one
           constructor does not get a default 0-argument constructor.)</para>
+          
+        <para>All resource implementation classes that provide access to resource data
+          must also implement the interface org.apache.uima.resource.SharedResourceObject. 
+          The UIMA Framework
+          will invoke this interface's only method, <code>load</code>,  
+          after this object has been instantiated. The implementation of this method 
+          can then read data from the specified <code>DataResource</code> 
+          and use that data to initialize this object.</para>
         
         <para>This annotator is illustrated in <xref
             linkend="ugr.tug.aae.fig.external_resource_binding"/>. To see it in
