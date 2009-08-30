@@ -172,7 +172,7 @@ public class FSClassRegistry {
    * @param fsFactory
    *          the object having a createFS method in it for this type
    */
-  void addClassForType(Type type, FSGenerator fsFactory) {
+  synchronized void addClassForType(Type type, FSGenerator fsFactory) {
     Iterator<Type> it = this.ts.getTypeIterator();
     TypeImpl sub;
     while (it.hasNext()) {
@@ -268,9 +268,7 @@ public class FSClassRegistry {
    * Internal Use Only
    */
   
-  public FSGenerator [] getNewFSGeneratorSet() {
-    synchronized (generators) {
-      return (FSGenerator [])this.generators.clone();
-    }
+  public synchronized FSGenerator [] getNewFSGeneratorSet() {  
+      return (FSGenerator [])this.generators.clone();   
   }
 }
