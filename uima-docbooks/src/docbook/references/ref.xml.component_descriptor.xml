@@ -1469,6 +1469,12 @@ uima.tcas.Annotation.</programlisting>
               , and the value of the <literal>TEMP_DIR</literal> Java System property were
               <literal>c:/temp</literal>, then the configuration parameter&apos;s
               value would evaluate to <literal>c:/temp/temp.dat</literal>.</para>
+              
+            <note><para>The Component Descriptor Editor does not support 
+              environment variable references.  If you need to, however, you 
+              can use the <code>source</code> tab view in the CDE to manually
+              add this notation.
+              </para></note>
             
           </section>
         </section>
