@@ -545,7 +545,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
   protected void buildProcessTraceFromMBeanStats(ProcessTrace trace) {
     // this is the implementation for primitives only. Aggregate AE overrides.
     if (isProcessTraceEnabled()) {
-      // to accomodate service adapters, check if a Service Call time is registered
+      // to accommodate service adapters, check if a Service Call time is registered
       int serviceCallTime = (int) getMBean().getServiceCallTimeSinceMark();
       ProcessTraceEvent_impl serviceCallEvent = null;
       if (serviceCallTime > 0) {
@@ -556,7 +556,16 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
 
       // now check Analysis time
       int analysisTime = (int) getMBean().getAnalysisTimeSinceMark();
-      if (analysisTime > 0) {
+      if (analysisTime > 0 || 
+          // Jira http://issues.apache.org/jira/browse/uima-941
+          // intent is to skip recording analysis times of 0
+          //   if these are coming from a remote which supports
+          //   serviceCallTime but not analysisTime
+          //   If both are 0, the presumption is that the time really
+          //   was 0.  If only analysisTime is 0, the presumption is
+          //   that the remote didn't implement it, in favor of
+          //   returning serviceCallTime.
+          (analysisTime == 0 && serviceCallTime == 0)) {
         ProcessTraceEvent_impl analysisEvent = new ProcessTraceEvent_impl(getMetaData().getName(),
                 "Analysis", "");
         analysisEvent.setDuration(analysisTime);
