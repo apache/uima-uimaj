@@ -1289,10 +1289,21 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
     }
     boolean tryAgain = true;
     int maxCount = aCasProcessorConfig.getMaxRestartCount();
+    int maxTimeToWait = aCasProcessorConfig.getMaxTimeToWaitBetweenRetries();
+    // Never sleep indefinitely. Override if the maxTimeToWait = 0
+    if (maxTimeToWait == 0) {
+      maxTimeToWait = WAIT_TIME;
+    }
+    // Initially dont sleep
+    boolean sleepBetweenRetries = false;
 
     while (tryAgain) {
       try {
-        wait(SLEEP_TIME);
+        if ( sleepBetweenRetries ) {
+          wait(maxTimeToWait);
+        } else {
+          sleepBetweenRetries = true;
+        }
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
                   "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
