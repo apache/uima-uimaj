@@ -384,6 +384,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
   /**
    * @deprecated use the zero-argument constructor and call {@link #setEntityViewEnabled(boolean)}
    */
+  @Deprecated
   public CasAnnotationViewer(boolean aEntityViewEnabled) {
     this();
   }

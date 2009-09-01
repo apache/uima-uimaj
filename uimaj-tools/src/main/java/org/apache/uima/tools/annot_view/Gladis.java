@@ -27,6 +27,7 @@ import org.apache.uima.tools.cvd.CVD;
  * 
  * @deprecated Use org.apache.uima.tools.cvd.CVD instead.
  */
+@Deprecated
 public class Gladis {
 
   /**

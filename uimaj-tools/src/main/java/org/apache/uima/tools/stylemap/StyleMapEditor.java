@@ -272,6 +272,7 @@ public class StyleMapEditor extends JDialog implements ActionListener {
   /**
    * @deprecated use {@link #setAnalysisEngine(AnalysisEngineDescription)} instead.
    */
+  @Deprecated
   public void setTextAnalysisEngine(org.apache.uima.analysis_engine.TaeDescription tae) {
     this.ae = tae;
   }
