@@ -24,11 +24,13 @@ import java.util.Map;
 import org.apache.uima.Constants;
 import org.apache.uima.ResourceFactory;
 import org.apache.uima.collection.CollectionReaderDescription;
+import org.apache.uima.collection.CollectionReader_ImplBase;
 import org.apache.uima.collection.base_cpm.BaseCollectionReader;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.ResourceSpecifier;
+import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 
 /**
  * Specialized Resource Factory for producing CollectionReaders.
@@ -100,6 +102,9 @@ public class CollectionReaderFactory_impl implements ResourceFactory {
         // attempt to initialize it
         if (resource.initialize(aSpecifier, aAdditionalParams)) {
           // success!
+          // Next: see Jira UIMA-554
+          (((CollectionReader_ImplBase)resource).getCasManager()).addMetaData(
+              (ProcessingResourceMetaData) resource.getMetaData().clone());
           return resource;
         } else // failure, for some unknown reason :( This isn't likely to happen
         {
