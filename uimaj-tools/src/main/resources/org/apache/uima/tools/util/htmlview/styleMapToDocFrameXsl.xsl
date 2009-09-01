@@ -29,13 +29,15 @@
 
 <xsl:stylesheet version="1.0"
 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-xmlns:axsl="http://www.w3.org/1999/XSL/TransformAlias">
+xmlns:axsl="http://www.w3.org/1999/XSL/TransformAlias"
+xmlns:baxsl="http://www.w3.org/1999/XSL/TransformAliasBlank">
 
 <xsl:namespace-alias stylesheet-prefix="axsl" result-prefix="xsl"/>
+<xsl:namespace-alias stylesheet-prefix="baxsl" result-prefix=""/>
 
 <xsl:template match="/">
   <axsl:stylesheet version="1.0" xmlns="http://www.w3.org/1999/XSL/Transform">
-  <axsl:include href="annotations.xsl"/>
+  <axsl:include baxsl:href="annotations.xsl"/>
 
   <xsl:apply-templates/> 
   
