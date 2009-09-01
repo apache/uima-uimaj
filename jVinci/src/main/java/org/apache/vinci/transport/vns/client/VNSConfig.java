@@ -40,7 +40,8 @@ public final class VNSConfig {
    * @throws IllegalStateException
    *           if no VNS host has been specified.
    */
-  public String getHost() {
+  @Deprecated
+public String getHost() {
     return VinciContext.getGlobalContext().getVNSHost();
   }
 
@@ -55,7 +56,8 @@ public final class VNSConfig {
    * 
    * @deprecated Use VinciContext.getVNSPort() instead.
    */
-  public int getPort() {
+  @Deprecated
+public int getPort() {
     return VinciContext.getGlobalContext().getVNSPort();
   }
 
@@ -65,7 +67,8 @@ public final class VNSConfig {
    * 
    * @deprecated Use VinciContext.setVNSHost() instead.
    */
-  public void setHost(String h) {
+  @Deprecated
+public void setHost(String h) {
     VinciContext.getGlobalContext().setVNSHost(h);
   }
 
@@ -75,7 +78,8 @@ public final class VNSConfig {
    * 
    * @deprecated Use VinciContext.setVNSPort() instead.
    */
-  public void setPort(int p) {
+  @Deprecated
+public void setPort(int p) {
     VinciContext.getGlobalContext().setVNSPort(p);
   }
 
