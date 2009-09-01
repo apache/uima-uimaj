@@ -54,7 +54,7 @@ import org.apache.uima.resource.metadata.ResourceMetaData;
  */
 public interface ResourceCreationSpecifier extends ResourceSpecifier {
   /**
-   * Gets the name of the AE framework implementation within which the CasConsumer executes. The
+   * Gets the name of the AE framework implementation within which the Resource executes. The
    * framework name for this implementation is given by {@link Constants.JAVA_FRAMEWORK_NAME}..
    * 
    * @return the framework implementation name
@@ -62,7 +62,7 @@ public interface ResourceCreationSpecifier extends ResourceSpecifier {
   public String getFrameworkImplementation();
 
   /**
-   * Sets the name of the AE framework implementation within which the CasConsumer executes. The
+   * Sets the name of the AE framework implementation within which the <code>ResourceCreationSpecifier</code> executes. The
    * framework name for this implementation is given by {@link Constants.JAVA_FRAMEWORK_NAME}..
    * 
    * @param aFrameworkImplementation
@@ -71,7 +71,7 @@ public interface ResourceCreationSpecifier extends ResourceSpecifier {
   public void setFrameworkImplementation(String aFrameworkImplementation);
 
   /**
-   * Retrieves the name of the CasConsumer implementation. This must be a fully qualified Java class
+   * Retrieves the name of this <code>ResourceCreationSpecifier</code>'s implementation. This must be a fully qualified Java class
    * name.
    * 
    * @return the implementation name of the CasConsumer
@@ -79,7 +79,7 @@ public interface ResourceCreationSpecifier extends ResourceSpecifier {
   public String getImplementationName();
 
   /**
-   * Sets the name of the CasConsumer implementation. This must be a fully qualified Java class
+   * Sets the name of this <code>ResourceCreationSpecifier</code>'s implementation. This must be a fully qualified Java class
    * name.
    * 
    * @param aImplementationName
@@ -88,7 +88,7 @@ public interface ResourceCreationSpecifier extends ResourceSpecifier {
   public void setImplementationName(String aImplementationName);
 
   /**
-   * Retrieves the <code>ResourceMetaData</code> to assign to the newly constructed Resource.
+   * Retrieves the <code>ResourceMetaData</code> to assign to the newly constructed <code>ResourceCreationSpecifier</code>.
    * 
    * @return the metadata for the new resource. This will always be modifiable.
    */
@@ -103,9 +103,9 @@ public interface ResourceCreationSpecifier extends ResourceSpecifier {
   public void setMetaData(ResourceMetaData aMetaData);
 
   /**
-   * Retrieves descriptions of this Analysis Engine's dependencies on external resources. Each
-   * required external resource is assigned a String identifier. This is the identifier that
-   * <code>Annotators</code> can use to locate the Resource (using the
+   * Retrieves descriptions of this <code>ResourceCreationSpecifier</code>'s dependencies on external resources. Each
+   * required external resource is assigned a String identifier. This is the identifier that this
+   * <code>ResourceCreationSpecifier</code> can use to locate the Resource (using the
    * {@link org.apache.uima.analysis_engine.annotator.AnnotatorContext#getResourceObject(String)}
    * method).
    * 
@@ -115,11 +115,11 @@ public interface ResourceCreationSpecifier extends ResourceSpecifier {
   public ExternalResourceDependency[] getExternalResourceDependencies();
 
   /**
-   * Sets the descriptions of this AnalysisEngine's dependencies on external resources.
+   * Sets the descriptions of this <code>ResourceCreationSpecifier</code>'s dependencies on external resources.
    * 
    * @param aDependencies
    *          an array of {@link ExternalResourceDependency} objects that describe this
-   *          AnalysisEngine's resource dependencies.
+   *          <code>ResourceCreationSpecifier</code>'s resource dependencies.
    */
   public void setExternalResourceDependencies(ExternalResourceDependency[] aDependencies);
 
@@ -127,7 +127,7 @@ public interface ResourceCreationSpecifier extends ResourceSpecifier {
    * Gets the external resource dependency with the given key.
    * 
    * @param aKey
-   *          the key of the exteranl resource dependency to get
+   *          the key of the external resource dependency to get
    * 
    * @return the resource dependency with the specified key, <code>null</code> if none.
    */
@@ -154,7 +154,8 @@ public interface ResourceCreationSpecifier extends ResourceSpecifier {
           ResourceManagerConfiguration aResourceManagerConfiguration);
 
   /**
-   * Checks that this specifier is valid. An exception is thrown if it is not valid. This only does
+   * Checks that this <code>ResourceCreationSpecifier</code> is valid. 
+   * An exception is thrown if it is not valid. This only does
    * fairly lightweight checking. To do a more complete but more expensive check, use
    * {@link #doFullValidation()}.
    * 
@@ -166,7 +167,8 @@ public interface ResourceCreationSpecifier extends ResourceSpecifier {
   public void validate() throws ResourceInitializationException, ResourceConfigurationException;
 
   /**
-   * Checks that this specifier is valid. An exception is thrown if it is not valid. This only does
+   * Checks that this <code>ResourceCreationSpecifier</code> is valid. 
+   * An exception is thrown if it is not valid. This only does
    * fairly lightweight checking. To do a more complete but more expensive check, use
    * {@link #doFullValidation()}.
    * 
@@ -182,7 +184,8 @@ public interface ResourceCreationSpecifier extends ResourceSpecifier {
           ResourceConfigurationException;
 
   /**
-   * Does full validation of this specifier. This essentially performs all operations necessary to
+   * Does full validation of this <code>ResourceCreationSpecifier</code>. 
+   * This essentially performs all operations necessary to
    * instantiate a Resource except that it does not actually instantiate the implementation class.
    * If appropriate, this method will also attempt to create a CAS based on the descriptor, in order
    * to do full type system verification. If any operations fail, an exception will be thrown.
@@ -193,7 +196,8 @@ public interface ResourceCreationSpecifier extends ResourceSpecifier {
   public void doFullValidation() throws ResourceInitializationException;
 
   /**
-   * Does full validation of this specifier. This essentially performs all operations necessary to
+   * Does full validation of this <code>ResourceCreationSpecifier</code>. 
+   * This essentially performs all operations necessary to
    * instantiate a Resource except that it does not actually instantiate the implementation class.
    * If appropriate, this method will also attempt to create a CAS based on the descriptor, in order
    * to do full type system verification. If any operations fail, an exception will be thrown.
