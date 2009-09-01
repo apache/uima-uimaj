@@ -1,6 +1,33 @@
 
-			Apache UIMA (Unstructured Information Management Architecture) v2.2.2
+			Apache UIMA (Unstructured Information Management Architecture) v2.3.0
 		   -----------------------------------------------------------------------
+
+What's New in 2.3.0
+-------------------
+
+  Components
+  ----------
+  
+  UIMA-AS was moved out of the Sandbox to the top level.
+  The Cas Editor was moved out of the Sandbox and is a fully integrated tool within the main UIMA project.
+  Several components were added to the Sandbox release - see the README for that for details.    
+ 
+  Performance
+  -----------
+
+  Communication between Clients and Remote Services now use a "Delta CAS" protocol, where only the changes
+  from the Remote Service are sent back to the client.
+  
+  A new and more efficient form of serialization for CASes going to and from Remote Services via UIMA-AS,
+  called binary serialization, is available.
+
+ 
+  Robustness
+  ----------
+  
+  UIMA-AS has had many enhancements to handling unusual and error situations, based on feedback from the
+  initial release.
+
 
 Supported Platforms
 --------------------
@@ -18,7 +45,7 @@ Environment Variables
 ----------------------
 
 After you have unpacked the Apache UIMA distribution from the package of your choice (e.g. .zip or .gz), 
-you must perform the steps below to set up UIMA so that it will function properly.
+perform the steps below to set up UIMA so that it will function properly.
 
     * Set JAVA_HOME to the directory of your JRE installation you would like to use for UIMA.  
     * Set UIMA_HOME to the apache-uima directory of your unpacked Apache UIMA distribution
@@ -30,8 +57,8 @@ you must perform the steps below to set up UIMA so that it will function properl
       you must either have java in your PATH or set the environment variable JAVA_HOME to a 
       suitable JRE.
 
-    Note: The Mac OS X operating system has special procedures for setting up global environment
-    variables; see http://developer.apple.com/qa/qa2001/qa1067.html for how to do this.
+    Note: The Mac OS X operating system procedures for setting up global environment
+    variables are described here: see http://developer.apple.com/qa/qa2001/qa1067.html.
       
       
 Verifying Your Installation
