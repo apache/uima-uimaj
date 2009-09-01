@@ -1658,7 +1658,13 @@ public class CasCreationUtils {
     }
   }
 
-  private static boolean elementTypesCompatible(Object o1, Object o2) {
+  /**
+   * Compare element type names for array-like features
+   * @param o1 name of first element type
+   * @param o2 name of second element type
+   * @return true if elements are compatible for merging features
+   */
+  private static boolean elementTypesCompatible(String o1, String o2) {
     return ((null == o1) && (null == o2)) || ((null != o1) && o1.equals(o2)) ||
       // allow missing types to be equal to TOP
       (o1 != null && o1.equals(CAS.TYPE_NAME_TOP) && o2 == null) ||
