@@ -592,7 +592,8 @@ public class CPMEngine extends Thread {
    * @deprecated
    * 
    */
-  public void asynchStop() {
+  @Deprecated
+public void asynchStop() {
     if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
               "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_terminate_pipelines__INFO",

@@ -149,7 +149,8 @@ public class CasProcessorCpeObject extends MetaDataObject_impl implements CpeCas
    * @deprecated Doesn't support the new import syntax.  Use getCpeComponentDescriptor().findAbsoluteUrl() instead.
    */
 
-  public String getDescriptor() {
+  @Deprecated
+public String getDescriptor() {
     if (descriptor != null && descriptor.getInclude() != null) {
       return descriptor.getInclude().get();
     }
@@ -366,7 +367,8 @@ public class CasProcessorCpeObject extends MetaDataObject_impl implements CpeCas
    * @param aSoFa
    * @throws CpeDescriptorException
    */
-  public void setSOFA(String aSoFa) throws CpeDescriptorException {
+  @Deprecated
+public void setSOFA(String aSoFa) throws CpeDescriptorException {
     // if (casProcessor != null )
     // {
     // casProcessor.setContentTag(aSoFa);
@@ -377,7 +379,8 @@ public class CasProcessorCpeObject extends MetaDataObject_impl implements CpeCas
    * @deprecated (non-Javadoc)
    * @see org.apache.uima.collection.metadata.CpeCasProcessor#getSOFA()
    */
-  public String getSOFA() {
+  @Deprecated
+public String getSOFA() {
 
     // if (casProcessor != null )
     // {

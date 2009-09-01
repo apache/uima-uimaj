@@ -124,7 +124,8 @@ public class VinciCasDataConverter {
    * 
    * @deprecated Use appendVinciFrameToCasData(Aframe, CasData) or vinciFrameToCasData(AFrame)
    */
-  public void vinciFrameToCasData(AFrame aCasFrame, CasData aCasData) throws SAXException {
+  @Deprecated
+public void vinciFrameToCasData(AFrame aCasFrame, CasData aCasData) throws SAXException {
     appendVinciFrameToCasData(aCasFrame, aCasData);
   }
 

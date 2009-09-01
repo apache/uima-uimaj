@@ -35,6 +35,7 @@ import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 /**
  * @deprecated As of v2.0, CAS Initializers are deprecated.
  */
+@Deprecated
 public class CpeCollectionReaderCasInitializerImpl extends MetaDataObject_impl implements
         CpeCollectionReaderCasInitializer {
   private static final long serialVersionUID = -6284616239685904940L;

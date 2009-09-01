@@ -181,7 +181,8 @@ public class CpeDescriptorFactory {
    * 
    * @deprecated As of v2.0, CAS Initializers are deprecated.
    */
-  public static CpeCollectionReaderCasInitializer produceCollectionReaderCasInitializer(
+  @Deprecated
+public static CpeCollectionReaderCasInitializer produceCollectionReaderCasInitializer(
           String aPath, CpeDescription aDescriptor) throws CpeDescriptorException {
     if (aDescriptor == null) {
       aDescriptor = produceDescriptor();
@@ -196,7 +197,8 @@ public class CpeDescriptorFactory {
    * @param aInitializerDescriptorPath
    * @deprecated As of v2.0, CAS Initializers are deprecated.
    */
-  protected static CpeCollectionReaderCasInitializer produceCollectionReaderCasInitializer(
+  @Deprecated
+protected static CpeCollectionReaderCasInitializer produceCollectionReaderCasInitializer(
           String aInitializerDescriptorPath) {
     try {
       return produceCollectionReaderCasInitializer(aInitializerDescriptorPath, null);

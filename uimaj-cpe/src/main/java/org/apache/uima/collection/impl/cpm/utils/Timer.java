@@ -26,6 +26,7 @@ import org.apache.uima.util.UimaTimer;
  * 
  */
 
+@Deprecated
 public interface Timer {
   // starts the time
   public void start();

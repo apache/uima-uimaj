@@ -25,6 +25,7 @@ import org.apache.uima.cas_data.impl.PrimitiveValueImpl;
 /**
  * @deprecated Use PrimitiveValueImpl instead. This is just here for backwards compatibility.
  */
+@Deprecated
 public class VinciPrimitiveValue extends PrimitiveValueImpl implements PrimitiveValue {
 
   private static final long serialVersionUID = 1668126114372701948L;

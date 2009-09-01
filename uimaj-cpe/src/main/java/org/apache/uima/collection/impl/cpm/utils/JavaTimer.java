@@ -28,6 +28,7 @@ import org.apache.uima.util.UimaTimer;
  * 
  */
 
+@Deprecated
 public class JavaTimer implements Timer, Serializable {
   private static final long serialVersionUID = 5399135137398839124L;
 

@@ -518,7 +518,8 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
    * 
    * @deprecated
    */
-  public void setLastCas(Object aCasObject) {
+  @Deprecated
+public void setLastCas(Object aCasObject) {
     lastCas = aCasObject;
   }
 
@@ -527,7 +528,8 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
    * 
    * @deprecated
    */
-  public Object getLastCas() {
+  @Deprecated
+public Object getLastCas() {
     return lastCas;
   }
 
@@ -1080,14 +1082,16 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
   /**
    * @deprecated
    */
-  public void start() {
+  @Deprecated
+public void start() {
     new Thread(this);
   }
 
   /**
    * @deprecated
    */
-  public void stop() {
+  @Deprecated
+public void stop() {
   }
 
   /**
@@ -1198,21 +1202,24 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
   /**
    * @deprecated
    */
-  public boolean isLocal() {
+  @Deprecated
+public boolean isLocal() {
     return isLocal;
   }
 
   /**
    * @deprecated
    */
-  public boolean isRemote() {
+  @Deprecated
+public boolean isRemote() {
     return isRemote;
   }
 
   /**
    * @deprecated
    */
-  public boolean isIntegrated() {
+  @Deprecated
+public boolean isIntegrated() {
     return isIntegrated;
   }
 

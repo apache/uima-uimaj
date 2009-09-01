@@ -558,7 +558,8 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
    * @see org.apache.uima.collection.base_cpm.BaseCPM#process(org.apache.uima.collection.base_cpm.BaseCollectionReader)
    * @deprecated
    */
-  public void process(BaseCollectionReader aCollectionReader)
+  @Deprecated
+public void process(BaseCollectionReader aCollectionReader)
           throws ResourceInitializationException {
     // Retrieve number of entities to process from the CPM configuration
     try {
@@ -611,7 +612,8 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
    *      int)
    * @deprecated
    */
-  public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
+  @Deprecated
+public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
           throws ResourceInitializationException {
     // Let the application define the size of Collection.
     num2Process = aBatchSize;

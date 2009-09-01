@@ -114,7 +114,8 @@ public class CpeDescriptionImpl extends MetaDataObject_impl implements CpeDescri
   /**
    * @deprecated As of v2.0, CAS Initializers are deprecated.
    */
-  public CpeCollectionReaderCasInitializer addCasInitializer(String aInitializerDescriptorPath)
+  @Deprecated
+public CpeCollectionReaderCasInitializer addCasInitializer(String aInitializerDescriptorPath)
           throws CpeDescriptorException {
     if (collectionReader == null) {
       collectionReader = CpeDescriptorFactory.produceCollectionReader();
@@ -165,7 +166,8 @@ public class CpeDescriptionImpl extends MetaDataObject_impl implements CpeDescri
   /**
    * @deprecated
    */
-  public void setInputQueueSize(int aSize) throws CpeDescriptorException {
+  @Deprecated
+public void setInputQueueSize(int aSize) throws CpeDescriptorException {
     if (casProcessors == null) {
       casProcessors = CpeDescriptorFactory.produceCasProcessors();
     }
@@ -182,7 +184,8 @@ public class CpeDescriptionImpl extends MetaDataObject_impl implements CpeDescri
   /**
    * @deprecated
    */
-  public void setOutputQueueSize(int aSize) throws CpeDescriptorException {
+  @Deprecated
+public void setOutputQueueSize(int aSize) throws CpeDescriptorException {
     if (casProcessors == null) {
       casProcessors = CpeDescriptorFactory.produceCasProcessors();
     }
