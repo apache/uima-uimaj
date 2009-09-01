@@ -340,6 +340,7 @@ public abstract class FSLeafIndexImpl<T extends FeatureStructure> implements Int
     return 0;
   }
 
+  // Eclipse says this method is never called by uimaj-core methods 9-2009
   public final boolean equals(Object o) {
     if (this == o) {
       return true;
