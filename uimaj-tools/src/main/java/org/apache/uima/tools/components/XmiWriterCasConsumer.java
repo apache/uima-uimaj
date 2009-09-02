@@ -111,7 +111,7 @@ public class XmiWriterCasConsumer extends CasConsumer_ImplBase {
       }
     }
     if (outFile == null) {
-      outFile = new File(mOutputDir, "doc" + mDocNum++);
+      outFile = new File(mOutputDir, "doc" + mDocNum++ + ".xmi"); // Jira UIMA-629
     }
     // serialize XCAS and write to output file
     try {
