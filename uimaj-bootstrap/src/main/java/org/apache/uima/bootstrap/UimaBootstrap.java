@@ -40,6 +40,8 @@ import java.util.List;
  *   -Dorg.apache.uima.jarpath=XXXX where XXXX is
  *    a string of file paths to directories connected using File.pathSeparator; each
  *    directory's contained JARs will be added to the class path.
+ *    If the directory has no Jars, then it is put in the class path directly.
+ *    
  *    The paths can also contain jar files.
  *    
  *    The paths added are added in an arbitrary order.
@@ -67,6 +69,7 @@ public class UimaBootstrap {
       System.err.println("Usage: specify -Dorg.apache.uima.jarpath=XXXX, where");
       System.err.println("  XXXX is a string of file paths to directories or jar files, separated using the proper path separator character.");
       System.err.println("  For directories, all of the JARs found in these directories will be added to the classpath.");
+      System.err.println("  If the directory has no Jars, then it is put in the class path directly.");
       System.err.println("  Normal \"parent-first\" delegation is done.");
       System.err.println("  The first argument is taken to be the name of the class whose \"main\" method will be called and passed the rest of the arguments.");
       System.exit(1);
@@ -115,8 +118,14 @@ public class UimaBootstrap {
     File pf = new File(p);
     if (pf.isDirectory()) {
       File[] jars = pf.listFiles(jarFilter);
+      if (jars.length == 0) {
+        // this is the case where the user wants to include
+        // a directory containing non-jar'd .class files
+        urls.add(pf.toURI().toURL()); 
+      } else {
       for (File f : jars) {
         urls.add(f.toURI().toURL());
+      }
       }
     } else if (p.toLowerCase().endsWith(".jar")) {
       urls.add(pf.toURI().toURL());
