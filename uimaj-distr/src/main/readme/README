@@ -9,8 +9,13 @@ What's New in 2.3.0
   ----------
   
   UIMA-AS was moved out of the Sandbox to the top level.
-  The Cas Editor was moved out of the Sandbox and is a fully integrated tool within the main UIMA project.
-  Several components were added to the Sandbox release - see the README for that for details.
+  
+  The Cas Editor was moved out of the Sandbox and changed
+  into an Eclipse plugin that is now a fully integrated tool 
+  within the main UIMA project.
+  
+  Several components were added to the Sandbox release - 
+  see the README for that for details.
   
   The classes supporting ecore were moved out of the core and into the examples, to 
   allow the core and runtime modules to not require the ecore support bundles.
