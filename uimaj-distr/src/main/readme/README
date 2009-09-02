@@ -10,11 +10,19 @@ What's New in 2.3.0
   
   UIMA-AS was moved out of the Sandbox to the top level.
   The Cas Editor was moved out of the Sandbox and is a fully integrated tool within the main UIMA project.
-  Several components were added to the Sandbox release - see the README for that for details.    
+  Several components were added to the Sandbox release - see the README for that for details.
+  
+  The classes supporting ecore were moved out of the core and into the examples, to 
+  allow the core and runtime modules to not require the ecore support bundles.
+  A readme was added to inform users how to set up their installation to make 
+  use of the ecore functionality.    
  
   Performance
   -----------
 
+  Many improvements to core UIMA were made reducing the framework overhead, and reducing its footprint, as 
+  a result of careful measurement of its use in a very large scaled-out project needing low latency.
+  
   Communication between Clients and Remote Services now use a "Delta CAS" protocol, where only the changes
   from the Remote Service are sent back to the client.
   
