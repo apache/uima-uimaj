@@ -90,6 +90,11 @@
       </dependency>
       <dependency>
         <groupId>org.apache.uima</groupId>
+        <artifactId>uimaj-bootstrap</artifactId>
+        <version>${uimaj-release-version}</version>
+      </dependency>      
+      <dependency>
+        <groupId>org.apache.uima</groupId>
         <artifactId>uimaj-tools</artifactId>
         <version>${uimaj-release-version}</version>
       </dependency>
@@ -181,8 +186,10 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
+          <version>2.6</version>
           <configuration>
             <source>5</source> <!-- needed to do Enums -->
+            <encoding>UTF-8</encoding>
           </configuration>
         </plugin>
         
@@ -230,6 +237,16 @@
             </dependency>
           </dependencies>          
         </plugin>  
+        
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-eclipse-plugin</artifactId>
+          <version>2.7</version>
+          <configuration>
+            <downloadSources>true</downloadSources>
+          </configuration>
+        </plugin>
+        
       </plugins>
     </pluginManagement>
     
@@ -260,16 +277,17 @@
 						<phase>process-resources</phase>
 						<configuration>
 							<tasks>                
-                <!-- turn off copying if this pom is not at the top level -->
-                <available property="sourceForLicenseNoticeDisclaimer"
-                  file="../uimaj-distr/src/main/readme"
-                  value="LICENSE NOTICE DISCLAIMER"/>
-                
+                <!-- skip if no src/main/java dir -->
+                <condition property="sourceForLicenseNoticeDisclaimer"
+                           value="skip"> <!-- value must be a non-existant file name 
+                                      blank doesn't work (copies everything)-->
+                  <not> <available file="src/main/java"/> </not>
+                </condition>
+                  
                 <!-- only sets property if not set by previous above statement -->
                 <property name="sourceForLicenseNoticeDisclaimer"
-                  value="skip"/>  <!-- value must be a non-existant file name 
-                                      blank doesn't work (copies everything)-->                
-                
+                  value="LICENSE NOTICE DISCLAIMER"/>
+                                
                 <!-- support POMs nested one deep -->
                 <available property="dirSourceForLicenseNoticeDisclaimer"
                   file="../uimaj-distr/src/main/readme"
@@ -362,8 +380,6 @@
 						</goals>
 					</execution>		          				
 				</executions>
-
-        
 			</plugin>
       
       <!-- something to get the timestamp -->
@@ -386,7 +402,21 @@
           </items>
         </configuration>
       </plugin>
-    
+      
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>2.1</version>
+        <executions>
+          <execution>
+            <id>main-jar</id>
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+            <phase>package</phase>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
   
