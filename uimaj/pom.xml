@@ -252,6 +252,23 @@
     
     <plugins>
       
+      <!-- ORDERING: the source plugin has to come before the Ant one below,
+           because otherwise the Ant one below cleans up the meta-inf dir
+           before it can be used by this to have the LIC/NOT/DIS files included -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>2.1</version>
+        <executions>
+          <execution>
+            <id>main-jar</id>
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+            <phase>package</phase>
+          </execution>
+        </executions>
+      </plugin>
 			<!-- We use an ant task to copy the LICENSE, NOTICE, and DISCLAIMER files
 				from a single location in uimaj-distr into the src/main/resources/META-INF
 				directory of all components.  We tried using the Maven resources plugin for 
@@ -286,14 +303,42 @@
                   
                 <!-- only sets property if not set by previous above statement -->
                 <property name="sourceForLicenseNoticeDisclaimer"
-                  value="LICENSE NOTICE DISCLAIMER"/>
+                  value="LICENSE NOTICE DISCLAIMER LICENSE.txt NOTICE.txt DISCLAIMER.txt"/>
+                
+                <!-- use LIC/NOT/DIS file from project if available -->
+                <condition property="dirSourceForLicenseNoticeDisclaimer"
+                           value=".">
+                  <or>
+                    <available file="LICENSE.txt"/>
+                    <available file="LICENSE"/>
+                  </or>
+                </condition>
+                
+                <!-- use LIC/NOT/DIS file from project's parent if available & above not available -->
+                <condition property="dirSourceForLicenseNoticeDisclaimer"
+                           value="${project.parent.relativePath}/src/main/readme">
+                  <or>
+                    <available file="${project.parent.relativePath}/src/main/readme/LICENSE.txt"/>
+                    <available file="${project.parent.relativePath}/src/main/readme/LICENSE"/>
+                  </or>
+                </condition>
+                 
+                <!-- use LIC/NOT/DIS file from uimaj-distr project if above not available -->
+                <condition property="dirSourceForLicenseNoticeDisclaimer"
+                           value="../uimaj-distr/src/main/readme">
+                  <or>
+                    <available file="../uimaj-distr/src/main/readme/LICENSE.txt"/>
+                    <available file="../uimaj-distr/src/main/readme/LICENSE"/>
+                  </or>
+                </condition>
+                 
                                 
                 <!-- support POMs nested one deep -->
-                <available property="dirSourceForLicenseNoticeDisclaimer"
+                <!--available property="dirSourceForLicenseNoticeDisclaimer"
                   file="../uimaj-distr/src/main/readme"
-                  value="../uimaj-distr/src/main/readme"/>
+                  value="../uimaj-distr/src/main/readme"/-->
                   
-                <!-- only sets property if not set by previous above statement -->
+                <!-- only sets property if not set by previous statements -->
                 <property name="dirSourceForLicenseNoticeDisclaimer"
                   value="../../uimaj-distr/src/main/readme"/>
                 
@@ -324,7 +369,7 @@
                 
 								<delete deleteOnExit="true" quiet="true" failOnError="false">
 									<fileset dir="src/main/resources/META-INF"
-										includes="LICENSE NOTICE DISCLAIMER"/>
+										includes="LICENSE NOTICE DISCLAIMER LICENSE.txt NOTICE.txt DISCLAIMER.txt"/>
 								</delete>
                 
                 <fileset id="src.meta.inf.dir"
@@ -401,21 +446,6 @@
             <item>timestamp</item>
           </items>
         </configuration>
-      </plugin>
-      
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-        <version>2.1</version>
-        <executions>
-          <execution>
-            <id>main-jar</id>
-            <goals>
-              <goal>jar-no-fork</goal>
-            </goals>
-            <phase>package</phase>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>
