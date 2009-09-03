@@ -53,6 +53,8 @@ import java.util.List;
  */
 public class UimaBootstrap {
 
+  private static boolean suppressClassPathDisplay;
+
   /**
    * @param args
    * @throws NoSuchMethodException 
@@ -72,14 +74,16 @@ public class UimaBootstrap {
       System.err.println("  If the directory has no Jars, then it is put in the class path directly.");
       System.err.println("  Normal \"parent-first\" delegation is done.");
       System.err.println("  The first argument is taken to be the name of the class whose \"main\" method will be called and passed the rest of the arguments.");
+      System.err.println(" Set -DUimaBootstrapSuppressClassPathDisplay to suppress the display of the resulting classpath");
+      
       System.exit(1);
     }    
-    
+    suppressClassPathDisplay = System.getProperty("UimaBootstrapSuppressClassPathDisplay") != null;
     URL[] urls = getUrls();
     URLClassLoader cl = new ParentFirstWithResourceClassLoader(urls);
     Thread.currentThread().setContextClassLoader(cl);
     
-    Class classToLaunch = null;
+    Class<?> classToLaunch = null;
     try {
       classToLaunch = cl.loadClass(args[0]);
     } catch (ClassNotFoundException e) {
@@ -98,6 +102,9 @@ public class UimaBootstrap {
     if (null == jps) {
       System.err.println("Missing the -Dorg.apache.uima.jarpath=XXXX property");
       System.exit(1);
+    }
+    if (!suppressClassPathDisplay) {
+      System.out.println("UimaBootstrap ClassPath:");
     }
     List<URL> urls = new ArrayList<URL>();
     String[] jpaths = jps.split(File.pathSeparator);
@@ -121,15 +128,23 @@ public class UimaBootstrap {
       if (jars.length == 0) {
         // this is the case where the user wants to include
         // a directory containing non-jar'd .class files
-        urls.add(pf.toURI().toURL()); 
+        add(urls, pf); 
       } else {
       for (File f : jars) {
-        urls.add(f.toURI().toURL());
+        add(urls, f);
       }
       }
     } else if (p.toLowerCase().endsWith(".jar")) {
-      urls.add(pf.toURI().toURL());
+      add(urls, pf);
     }
+  }
+  
+  private static void add(List<URL> urls, File cp) throws MalformedURLException {
+    URL url = cp.toURI().toURL();
+    if (!suppressClassPathDisplay) {
+      System.out.format( " %s%n", url.toString());
+    }
+    urls.add(url);
   }
 
   private static class ParentFirstWithResourceClassLoader extends URLClassLoader {
