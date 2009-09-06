@@ -22,6 +22,8 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="UIMA_HOME/lib/uima-core.jar">
 		<attributes>
+		  <!-- Strings file:/C:/Program Files/apache-uima are replaced
+		       by the adjustExamplePaths script with the UIMA install location -->
 			<attribute value="file:/C:/Program Files/apache-uima/docs/api" name="javadoc_location"/>
 		</attributes>
 	</classpathentry>		
