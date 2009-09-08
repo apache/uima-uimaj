@@ -44,15 +44,25 @@ public class TestResourceInterface_impl extends Resource_ImplBase implements Sha
    * @see org.apache.uima.resource.SharedResourceObject#load(DataResource)
    */
   public void load(DataResource aData) throws ResourceInitializationException {
+    InputStream inStr = null;
     try {
       // try to get an input stream and read from the file
-      InputStream inStr = aData.getInputStream();
+      inStr = aData.getInputStream();
       BufferedReader bufRdr = new BufferedReader(new InputStreamReader(inStr));
       mString = bufRdr.readLine();
       inStr.close();
     } catch (IOException e) {
       throw new ResourceInitializationException(e);
+    } finally {
+      if ( inStr != null ) {
+        try {
+          inStr.close();
+        } catch( Exception e) {
+          System.out.println("CPE.load() - Unable to close Input Stream");
+        }
+      }
     }
+    
   }
 
   /**
