@@ -1592,32 +1592,31 @@ public void asynchStop() {
    */
   public void setCollectionReader(BaseCollectionReader aCollectionReader) {
     collectionReader = aCollectionReader;
-
-    if (collectionReader.getProcessingResourceMetaData().getConfigurationParameterSettings()
-            .getParameterValue("fetchSize") != null) {
-      try {
-        readerFetchSize = ((Integer) collectionReader.getProcessingResourceMetaData()
-                .getConfigurationParameterSettings().getParameterValue("fetchSize")).intValue();
-      } catch (NumberFormatException nfe) {
-        readerFetchSize = 1; // restore default
-      }
-    }
-    if (checkpointData != null && checkpointData.getSynchPoint() != null
-            && collectionReader != null) {
-      if (collectionReader instanceof RecoverableCollectionReader) {
+    if ( collectionReader != null ) {
+      if (collectionReader.getProcessingResourceMetaData().getConfigurationParameterSettings()
+              .getParameterValue("fetchSize") != null) {
         try {
-          // Let the CollectionReader do the synchronization to the last known (good) read point
-          ((RecoverableCollectionReader) collectionReader).moveTo(checkpointData.getSynchPoint());
-          String readerName = collectionReader.getProcessingResourceMetaData().getName();
-          if (readerName != null) {
-            restoreFromCheckpoint(readerName, "COLLECTION READER PROCESSING TIME");
+          readerFetchSize = ((Integer) collectionReader.getProcessingResourceMetaData()
+                  .getConfigurationParameterSettings().getParameterValue("fetchSize")).intValue();
+        } catch (NumberFormatException nfe) {
+          readerFetchSize = 1; // restore default
+        }
+      }
+      if (checkpointData != null && checkpointData.getSynchPoint() != null ) {
+        try {
+          if (collectionReader instanceof RecoverableCollectionReader) {
+            // Let the CollectionReader do the synchronization to the last known (good) read point
+            ((RecoverableCollectionReader) collectionReader).moveTo(checkpointData.getSynchPoint());
+            String readerName = collectionReader.getProcessingResourceMetaData().getName();
+            if (readerName != null) {
+              restoreFromCheckpoint(readerName, "COLLECTION READER PROCESSING TIME");
+            }
           }
         } catch (Exception e) {
           e.printStackTrace();
         }
       }
     }
-
   }
 
   /**
@@ -1680,7 +1679,7 @@ public void asynchStop() {
         Class[] args = new Class[] { int.class, String.class, CPMEngine.class };
         Class cpClass = Class.forName(outputQueueClass);
         Constructor constructor = cpClass.getConstructor(args);
-        Object[] oArgs = new Object[] { new Integer(aQueueSize), "Sequenced Output Queue", this };
+        Object[] oArgs = new Object[] { Integer.valueOf(aQueueSize), "Sequenced Output Queue", this };
         outputQueue = (BoundedWorkQueue) constructor.newInstance(oArgs);
       }
     } else {
