@@ -421,7 +421,7 @@ public class ArtifactProducer extends Thread {
           if (cpmStatTable != null) {
             Progress[] progress = collectionReader.getProgress();
             cpmStatTable.put("COLLECTION_READER_PROGRESS", progress);
-            cpmStatTable.put("COLLECTION_READER_TIME", new Long(totalFetchTime));
+            cpmStatTable.put("COLLECTION_READER_TIME", Long.valueOf(totalFetchTime));
           }
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
@@ -614,7 +614,7 @@ public class ArtifactProducer extends Thread {
     if (cpmStatTable != null) {
       Progress[] progress = collectionReader.getProgress();
       cpmStatTable.put("COLLECTION_READER_PROGRESS", progress);
-      cpmStatTable.put("COLLECTION_READER_TIME", new Long(totalFetchTime));
+      cpmStatTable.put("COLLECTION_READER_TIME", Long.valueOf(totalFetchTime));
     }
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
