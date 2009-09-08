@@ -80,9 +80,11 @@ public class SofaMixedCPE_Test extends TestCase {
   public void testProcess() throws Throwable {
     try {
       cpe.process();
-      // wait till cpe finishes
-      synchronized (statCbL1) {
-        statCbL1.wait();
+      while ( cpe.isProcessing() ) {
+        // wait till cpe finishes
+        synchronized (statCbL1) {
+          statCbL1.wait(100);
+        }
       }
     } catch (Exception e) {
       JUnitExtension.handleException(e);
