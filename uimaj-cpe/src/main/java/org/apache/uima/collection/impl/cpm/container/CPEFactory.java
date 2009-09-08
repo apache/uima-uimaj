@@ -426,7 +426,7 @@ public class CPEFactory {
       }
       // Provide CollectionReader with the number of documents to process
       ((ConfigurableResource_ImplBase) colreader).setConfigParameterValue("processSize",
-              new Integer((int)numDocs2Process));
+              Integer.valueOf((int)numDocs2Process) );
       CpeConfiguration cpeType = getCpeDescriptor().getCpeConfiguration();
       if (cpeType != null && cpeType.getStartingEntityId() != null
               && cpeType.getStartingEntityId().trim().length() > 0) {
@@ -1108,7 +1108,9 @@ public class CPEFactory {
     // Override the name of the component with the name specified in the cpe descriptor
     // Uniqueness of names is enforced on names in the cpe descriptor not those defined
     // in the component descriptor
-    casProcessor.getProcessingResourceMetaData().setName(aCasProcessorType.getName());
+    if ( casProcessor != null && aCasProcessorType != null ) {
+      casProcessor.getProcessingResourceMetaData().setName(aCasProcessorType.getName());
+    }
 
     return casProcessor;
 
