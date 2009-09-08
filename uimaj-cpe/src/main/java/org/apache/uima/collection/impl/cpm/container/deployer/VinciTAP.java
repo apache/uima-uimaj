@@ -937,11 +937,14 @@ public class VinciTAP {
                 " responseFrame from service::" + serviceName + "\n" + responseFrame.toXML());
       }
 
-      if (responseFrame.fgetAFrame("DATA") == null) {
+      if (responseFrame != null && responseFrame.fgetAFrame("DATA") == null) {
         // No annotations found in reply so just leave
         return aCasList;
       }
-      ArrayList d = responseFrame.fget("DATA");
+      ArrayList d = new ArrayList();
+      if ( responseFrame != null ) {
+        d = responseFrame.fget("DATA");
+      }
       int instanceCount = 0;
       // Process response, DATA frame at a time. Each DATA frame corresponds to an instance of
       // CasData
