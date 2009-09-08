@@ -47,10 +47,6 @@ public class SofaNamingInAggregateTest extends TestCase {
 
   PrimitiveAnalysisEngine_impl delegateAE;
 
-  AnalysisEngine primitiveTAE;
-
-  boolean debug = true;
-
   private AnalysisEngineDescription aeDescriptor;
 
   private FlowControllerContainer flowController;
