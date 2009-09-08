@@ -349,7 +349,9 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
           }
         }
         // Continue to parse
-        cp.buildFromXMLElement((Element) node, aParser, aOptions);
+        if ( cp != null ) {
+          cp.buildFromXMLElement((Element) node, aParser, aOptions);
+        }
 
         // Aggregate Cas Processors
         casProcessors.add(cp);
