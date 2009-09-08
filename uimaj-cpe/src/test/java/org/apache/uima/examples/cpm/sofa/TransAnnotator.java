@@ -115,12 +115,12 @@ public class TransAnnotator extends Annotator_ImplBase implements GenericAnnotat
   private String Translate(String word) {
     String lword = word.toLowerCase();
     if (Arrays.equals(wThis, lword.toCharArray()))
-      return new String("das");
+      return String.valueOf("das");
     if (Arrays.equals(wBeer, lword.toCharArray()))
-      return new String("bier");
+      return String.valueOf("bier");
     if (Arrays.equals(wIs, lword.toCharArray()))
-      return new String("ist");
-    return new String("gut");
+      return String.valueOf("ist");
+    return String.valueOf("gut");
   }
 
 }
