@@ -477,7 +477,7 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
    * 
    * @return Number of entities yet to be processed
    */
-  public long getRemaining() {
+  public synchronized long getRemaining() {
     return remaining;
   }
 
@@ -487,7 +487,7 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
    * @param aRemainingCount -
    *          number of entities to process
    */
-  public void setRemaining(long aRemainingCount) {
+  public synchronized void setRemaining(long aRemainingCount) {
     remaining = aRemainingCount;
   }
 
@@ -1286,7 +1286,7 @@ public boolean isIntegrated() {
       }
     }
 
-    if (Constants.DISABLE_CASPROCESSOR.equals(anAction.toLowerCase())) {
+    if (anAction != null && Constants.DISABLE_CASPROCESSOR.equals(anAction.toLowerCase())) {
       return true;
     }
     return false;
@@ -1466,7 +1466,7 @@ public boolean isIntegrated() {
         Object stat = statMap.remove(aStatName);
         if (stat instanceof Integer) {
           int newValue = aStat.intValue() + ((Integer) stat).intValue();
-          aStat = new Integer(newValue);
+          aStat = Integer.valueOf(newValue);
         }
       }
       statMap.put(aStatName, aStat);
