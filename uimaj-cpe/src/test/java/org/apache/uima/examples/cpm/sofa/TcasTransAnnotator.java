@@ -116,12 +116,12 @@ public class TcasTransAnnotator extends Annotator_ImplBase implements TextAnnota
   private String Translate(String word) {
     String lword = word.toLowerCase();
     if (Arrays.equals(wThis, lword.toCharArray()))
-      return String.valueOf("das");
+      return "das";
     if (Arrays.equals(wBeer, lword.toCharArray()))
-      return String.valueOf("bier");
+      return "bier";
     if (Arrays.equals(wIs, lword.toCharArray()))
-      return String.valueOf("ist");
-    return String.valueOf("gut");
+      return "ist";
+    return "gut";
   }
 
 }
