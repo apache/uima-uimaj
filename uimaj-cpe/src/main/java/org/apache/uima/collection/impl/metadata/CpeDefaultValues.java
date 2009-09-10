@@ -34,9 +34,9 @@ public class CpeDefaultValues {
 
   public static final short BATCH = 1000;
 
-  public static final String INPUT_Q_SIZE = String.valueOf("5");
+  public static final String INPUT_Q_SIZE = "5";
 
-  public static final String OUTPUT_Q_SIZE = String.valueOf("5");
+  public static final String OUTPUT_Q_SIZE = "5";
 
   public static final String PROCESSING_UNIT_THREAD_COUNT = "1";
 
