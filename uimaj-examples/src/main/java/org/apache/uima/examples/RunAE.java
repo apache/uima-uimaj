@@ -36,6 +36,7 @@ import org.apache.uima.collection.impl.metadata.cpe.CpeDescriptorFactory;
 import org.apache.uima.collection.metadata.CasProcessorConfigurationParameterSettings;
 import org.apache.uima.collection.metadata.CpeCasProcessor;
 import org.apache.uima.collection.metadata.CpeCollectionReader;
+import org.apache.uima.collection.metadata.CpeComponentDescriptor;
 import org.apache.uima.collection.metadata.CpeDescription;
 import org.apache.uima.collection.metadata.CpeSofaMapping;
 import org.apache.uima.collection.metadata.CpeSofaMappings;
@@ -64,7 +65,7 @@ import org.apache.uima.util.AnalysisEnginePerformanceReports;
  * documents, that contains the text to be analyzed. The text will also be detagged. If this option
  * is not specified, the entire document will be processed. <br>
  * -l &lt;ISO code&gt; (Language) - specifies the ISO code for the language of the input documents.
- * Some AEs require this. <br>
+ * Some AEs (e.g. PersonTitleAnnotator) require this. <br>
  * -e &lt;Encoding&gt; - specifies character encoding of the input documents. The default is UTF-8.
  * <br>
  * -q (Quiet) - supresses progress messages that are normally printed as each document is processed.
@@ -93,6 +94,10 @@ public class RunAE implements StatusCallbackListener {
   private int statsLevel = 1;
 
   private boolean xcasInput = false;
+
+  private boolean xmiInput = false;
+  
+  private boolean xLenient = false;
 
   int docsProcessed;
 
@@ -126,14 +131,22 @@ public class RunAE implements StatusCallbackListener {
               .getAbsolutePath());
       crSettings.setParameterValue(FileSystemCollectionReader.PARAM_ENCODING, encoding);
       crSettings.setParameterValue(FileSystemCollectionReader.PARAM_LANGUAGE, language);
-      crSettings.setParameterValue(FileSystemCollectionReader.PARAM_XCAS, Boolean
-              .toString(xcasInput));
+      if (xcasInput) {
+        crSettings.setParameterValue(FileSystemCollectionReader.PARAM_XCAS, "XCAS");
+      } else if (xmiInput) {
+        crSettings.setParameterValue(FileSystemCollectionReader.PARAM_XCAS, "XMI");
+      }
+      if (xLenient) {
+        crSettings.setParameterValue(FileSystemCollectionReader.PARAM_LENIENT, "true");
+      }
 
       // if XML tag was specified, configure XmlDetagger annotator and add to CPE
       CpeCasProcessor xmlDetaggerCasProc = null;
       if (xmlTagName != null && xmlTagName.length() > 0) {
         xmlDetaggerCasProc = CpeDescriptorFactory.produceCasProcessor("XmlDetagger");
-        xmlDetaggerCasProc.setDescriptor(XmlDetagger.getDescriptorURL().toString());
+        CpeComponentDescriptor cpeComponentDescriptor = 
+          CpeDescriptorFactory.produceComponentDescriptor(XmlDetagger.getDescriptorURL().toString());
+        xmlDetaggerCasProc.setCpeComponentDescriptor(cpeComponentDescriptor);
         CasProcessorConfigurationParameterSettings detaggerSettings = CpeDescriptorFactory
                 .produceCasProcessorConfigurationParameterSettings();
         xmlDetaggerCasProc.setConfigurationParameterSettings(detaggerSettings);
@@ -144,7 +157,9 @@ public class RunAE implements StatusCallbackListener {
 
       // add user's AE to CPE
       CpeCasProcessor casProc = CpeDescriptorFactory.produceCasProcessor("UserAE");
-      casProc.setDescriptor(aeSpecifierFile.getAbsolutePath());
+      CpeComponentDescriptor cpeComponentDescriptor = 
+        CpeDescriptorFactory.produceComponentDescriptor(aeSpecifierFile.getAbsolutePath());
+      casProc.setCpeComponentDescriptor(cpeComponentDescriptor);
       casProc.setMaxErrorCount(0);
       cpeDesc.addCasProcessor(casProc);
 
@@ -153,14 +168,19 @@ public class RunAE implements StatusCallbackListener {
       CpeCasProcessor casCon = null;
       if (outputDir != null) {
         casCon = CpeDescriptorFactory.produceCasProcessor("CasConsumer");
-        casCon.setDescriptor(InlineXmlCasConsumer.getDescriptorURL().toString());
+        cpeComponentDescriptor = 
+          CpeDescriptorFactory.produceComponentDescriptor(InlineXmlCasConsumer.getDescriptorURL().toString());
+        casCon.setCpeComponentDescriptor(cpeComponentDescriptor);        
         CasProcessorConfigurationParameterSettings consumerSettings = CpeDescriptorFactory
                 .produceCasProcessorConfigurationParameterSettings();
         casCon.setConfigurationParameterSettings(consumerSettings);
         consumerSettings.setParameterValue(InlineXmlCasConsumer.PARAM_OUTPUTDIR, outputDir
                 .getAbsolutePath());
-        consumerSettings.setParameterValue(InlineXmlCasConsumer.PARAM_XCAS, Boolean
-                .toString(xcasInput));
+        if (xcasInput) {
+          consumerSettings.setParameterValue(InlineXmlCasConsumer.PARAM_XCAS, "XCAS");
+        } else if (xmiInput) {
+          consumerSettings.setParameterValue(InlineXmlCasConsumer.PARAM_XCAS, "XMI");
+        }
         casCon.setMaxErrorCount(0);
         cpeDesc.addCasProcessor(casCon);
       }
@@ -231,9 +251,9 @@ public class RunAE implements StatusCallbackListener {
         ((Throwable) iter.next()).printStackTrace();
       }
     } else if (genProgressMessages) {
-      // retreive the filename of the input file from the CAS
+      // retrieve the filename of the input file from the CAS
       // (it was put there by the FileSystemCollectionReader)
-      if (!xcasInput) {
+      if (!(xcasInput || xmiInput)) {
         Type fileLocType = aCas.getTypeSystem().getType(
                 "org.apache.uima.examples.SourceDocumentInformation");
         Feature fileNameFeat = fileLocType.getFeatureByBaseName("uri");
@@ -309,6 +329,10 @@ public class RunAE implements StatusCallbackListener {
     System.err.println("-s<x> (Stats level) - determines the verboseness of "
             + "performance statistics.  s0=none, s1=brief, s2=full.  The default is brief.");
     System.err.println("-x - process input files as XCAS files.");
+    System.err.println("-xmi - process input files as XmiCas files.");
+    System.err.println("-lenient - ignore out-of-typesystem content when deserializing XML files.");
+    System.err.println("-l <ISO language> - specify the ISO Language code to set.");
+    System.err.println("-e <encoding> - specify the character encoding to use.");
 
   }
 
@@ -355,6 +379,16 @@ public class RunAE implements StatusCallbackListener {
       } else if (arg.equals("-x")) // XCAS file input
       {
         xcasInput = true;
+      } else if (arg.equals("-xmi")) // XMI file input
+      {
+        xmiInput = true;
+      } else if (arg.equals("-lenient")) // lenient XML deserialization
+      {
+        xLenient = true;
+      } else if (arg.startsWith("-")) // invalid option
+      {
+        System.err.println(arg + " is not a valid option");
+        return false;
       } else // one of the standard params - whichever we haven't read yet
       {
         if (aeSpecifierFile == null) {
