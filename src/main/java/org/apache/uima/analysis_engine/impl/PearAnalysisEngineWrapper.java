@@ -336,14 +336,14 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
             LOG_RESOURCE_BUNDLE, "UIMA_analysis_engine_process_begin__FINE",
             new Object[] { this.ae.getAnalysisEngineMetaData().getName() });
 
-      this.ae.process(aCAS);
+      CasIterator result = this.ae.processAndOutputNewCASes(aCAS);
 
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINE,
             this.getClass().getName(), "processAndOutputNewCASes",
             LOG_RESOURCE_BUNDLE, "UIMA_analysis_engine_process_end__FINE",
             new Object[] { this.ae.getAnalysisEngineMetaData().getName() });
 
-      return new EmptyCasIterator();
+      return result;
    }
 
    /**
