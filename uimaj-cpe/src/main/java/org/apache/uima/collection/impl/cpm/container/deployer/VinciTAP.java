@@ -1340,7 +1340,7 @@ public class VinciTAP {
                     CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                     "UIMA_CPM_waiting_for_service_shutdown__FINEST",
                     new Object[] { Thread.currentThread().getName(), String.valueOf(10 - retry),
-                        String.valueOf(10) });
+                        "10" });
           }
           Thread.sleep(100); // wait for 100ms to give the service time to exit cleanly
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
