@@ -22,7 +22,10 @@ What's New in 2.3.0
   The classes supporting ecore were moved out of the core and into the examples, to 
   allow the core and runtime modules to not require the ecore support bundles.
   A readme was added to inform users how to set up their installation to make 
-  use of the ecore functionality.    
+  use of the ecore functionality.  
+  
+  Running PEARs as components in a pipe-line was improved: parameters,
+  performance reporting, CAS Multipliers are all now supported.  
  
   Performance
   -----------
