@@ -265,6 +265,9 @@
             <goals>
               <goal>jar-no-fork</goal>
             </goals>
+            <configuration>
+              <includePom>true</includePom>
+            </configuration>
             <phase>package</phase>
           </execution>
         </executions>
