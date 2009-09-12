@@ -26,11 +26,8 @@ import java.util.Vector;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
-import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.impl.CASImpl;
-import org.apache.uima.collection.CasConsumerDescription;
-import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.resource.CasDefinition;
 import org.apache.uima.resource.CasManager;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -59,7 +56,7 @@ public class CasPool {
   /**
    * current class
    */
-  private static final Class CLASS_NAME = CasPool.class;
+  private static final Class<CasPool> CLASS_NAME = CasPool.class;
 
   private Vector<CAS> mAllInstances = new Vector<CAS>();
 
@@ -72,9 +69,8 @@ public class CasPool {
    * 
    * @param aNumInstances
    *          the number of CAS instances in the pool
-   * @param aComponentDescriptionsOrMetaData
-   *          a collection of {@link AnalysisEngineDescription},
-   *          {@link CollectionReaderDescription}, {@link CasConsumerDescription}, or
+   * @param aCollectionOfProcessingResourceMetaData
+   *          a collection of 
    *          {@link ProcessingResourceMetaData} objects.
    * @param aPerformanceTuningSettings
    *          Properties object containing framework performance tuning settings using key names
@@ -85,12 +81,12 @@ public class CasPool {
    * @throws ResourceInitializationException
    *           if the CAS instances could not be created
    */
-  public CasPool(int aNumInstances, Collection aComponentDescriptionsOrMetaData,
+  public CasPool(int aNumInstances, Collection<? extends ProcessingResourceMetaData> aCollectionOfProcessingResourceMetaData,
           Properties aPerformanceTuningSettings, ResourceManager aResourceManager)
           throws ResourceInitializationException {
     mNumInstances = aNumInstances;
 
-    fillPool(aComponentDescriptionsOrMetaData, aPerformanceTuningSettings, aResourceManager);
+    fillPool(aCollectionOfProcessingResourceMetaData, aPerformanceTuningSettings, aResourceManager);
   }
 
   /**
@@ -108,8 +104,8 @@ public class CasPool {
   public CasPool(int aNumInstances, AnalysisEngine aAnalysisEngine)
           throws ResourceInitializationException {
     mNumInstances = aNumInstances;
-    ArrayList mdList = new ArrayList();
-    mdList.add(aAnalysisEngine.getMetaData());
+    ArrayList<ProcessingResourceMetaData> mdList = new ArrayList<ProcessingResourceMetaData>();
+    mdList.add((ProcessingResourceMetaData) aAnalysisEngine.getMetaData());
     fillPool(mdList, aAnalysisEngine.getPerformanceTuningSettings(), aAnalysisEngine
             .getResourceManager());
   }
@@ -128,7 +124,7 @@ public class CasPool {
   public CasPool(int aNumInstances, ProcessingResourceMetaData aMetaData)
           throws ResourceInitializationException {
     mNumInstances = aNumInstances;
-    ArrayList mdList = new ArrayList();
+    ArrayList<ProcessingResourceMetaData> mdList = new ArrayList<ProcessingResourceMetaData>();
     mdList.add(aMetaData);
     fillPool(mdList, null, null);
   }
@@ -148,7 +144,7 @@ public class CasPool {
           ResourceManager aResourceManager) throws ResourceInitializationException {
     mNumInstances = aNumInstances;
 
-    ArrayList mdList = new ArrayList();
+    ArrayList<ProcessingResourceMetaData> mdList = new ArrayList<ProcessingResourceMetaData>();
     mdList.add(aMetaData);
     fillPool(mdList, null, aResourceManager);
   }
@@ -289,7 +285,7 @@ public class CasPool {
    * @param performanceTuningSettings
    * @param resourceManager
    */
-  private void fillPool(Collection mdList, Properties performanceTuningSettings,
+  private void fillPool(Collection<? extends ProcessingResourceMetaData> mdList, Properties performanceTuningSettings,
           ResourceManager resourceManager) throws ResourceInitializationException {
     CasDefinition casDef = new CasDefinition(mdList, resourceManager);
     fillPool(casDef, performanceTuningSettings);
