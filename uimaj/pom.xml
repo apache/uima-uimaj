@@ -170,22 +170,22 @@
       <plugins>
         <!-- set Java 1.5 as the source and target of compilation -->
         <plugin>
-	        <groupId>org.apache.maven.plugins</groupId>
-	        <artifactId>maven-compiler-plugin</artifactId>
-	        <configuration>
-	          <source>1.5</source>
-	          <target>1.5</target>
-	          <encoding>UTF-8</encoding>
-	        </configuration>
-	      </plugin>
-	      
-	      <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <configuration>
+            <source>1.5</source>
+            <target>1.5</target>
+            <encoding>UTF-8</encoding>
+          </configuration>
+        </plugin>
+        
+        <plugin>
           <artifactId>maven-resources-plugin</artifactId>
           <configuration>
             <encoding>UTF-8</encoding>
           </configuration>
         </plugin>
-	           
+             
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
@@ -255,10 +255,10 @@
     
     <plugins>
       
-			<!-- We use an ant task to copy the LICENSE, NOTICE, and DISCLAIMER files
-				from a single location in uimaj-distr into the src/main/resources/META-INF
-				directory of all components.  We tried using the Maven resources plugin for 
-				this, but then the Maven eclipse plugin (which runs the lifecycle up thru
+      <!-- We use an ant task to copy the LICENSE, NOTICE, and DISCLAIMER files
+        from a single location in uimaj-distr into the src/main/resources/META-INF
+        directory of all components.  We tried using the Maven resources plugin for 
+        this, but then the Maven eclipse plugin (which runs the lifecycle up thru
         generate-resources) seeing the <resources> element,
         adds a classpath src entry for this which references the path outside
         the project, which eclipse doesn't want.  
@@ -271,15 +271,15 @@
         builds (for Maven repo).  We also copy to the target/classes/META-INF
         directory so it gets picked up by the binary jar as well.-->
             
-			<plugin>
-				<artifactId>maven-antrun-plugin</artifactId>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
         <version>1.3</version>
- 				<executions>
-					<execution>
-						<id>CopyLicenseNoticeDisclaimer</id>
-						<phase>process-resources</phase>
-						<configuration>
-							<tasks>                
+        <executions>
+          <execution>
+            <id>CopyLicenseNoticeDisclaimer</id>
+            <phase>process-resources</phase>
+            <configuration>
+              <tasks>                
                 <!-- skip if no src/main/java dir -->
                 <condition property="sourceForLicenseNoticeDisclaimer"
                            value="skip"> <!-- value must be a non-existant file name 
@@ -336,82 +336,100 @@
                   <fileset dir="${dirSourceForLicenseNoticeDisclaimer}"
                     includes="${sourceForLicenseNoticeDisclaimer}"/>
                 </copy>
-							</tasks>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-					<!-- after compilation has been done and the files have been copied to the
-						 target directory, delete them from the source directory. -->
-					<execution>
-						<id>DeleteLicenseNoticeDisclaimer</id>
-						<phase>package</phase>
-						<configuration>
-							<tasks>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+          <!-- after compilation has been done and the files have been copied to the
+             target directory, delete them from the source directory. -->
+          <execution>
+            <id>DeleteLicenseNoticeDisclaimer</id>
+            <phase>package</phase>
+            <configuration>
+              <tasks>
                 <typedef resource="net/sf/antcontrib/antlib.xml">
                   <classpath refid="maven.dependency.classpath"/>
                 </typedef> <!-- set up ant-contrib extensions -->
                 
-								<delete deleteOnExit="true" quiet="true" failOnError="false">
-									<fileset dir="src/main/resources/META-INF"
-										includes="LICENSE NOTICE DISCLAIMER LICENSE.txt NOTICE.txt DISCLAIMER.txt"/>
-								</delete>
+                <delete deleteOnExit="true" quiet="true" failOnError="false">
+                  <fileset dir="src/main/resources/META-INF"
+                    includes="LICENSE NOTICE DISCLAIMER LICENSE.txt NOTICE.txt DISCLAIMER.txt"/>
+                </delete>
                 
-                <fileset id="src.meta.inf.dir"
-                        dir="src/main/resources/META-INF"/>
+                <macrodef name="rmvUnusedDirs">
+                  <attribute name="dir"/>
+                  <attribute name="dirId"/>
+                  <sequential>
+                    <!-- defaultexcludes set to no to retain dirs which were checked into svn
+                         they have .svn files
+                         If these are deleted by this script, svn can't find the svn metadata
+                     -->
+                    <fileset id="@{dirId}" dir="@{dir}" defaultexcludes="no"/>
+                    <if>
+                      <and>
+                        <available file="@{dir}"/>
+                        <resourcecount refid="@{dirId}" count="0" when="equal"/>  
+                      </and>
+                      <then> <delete dir="@{dir}"/> </then>
+                    </if>
+                  </sequential>
+                </macrodef>
                 
-                <if>
-                  <and>
-                    <available file="src/main/resources/META-INF"/>
-                    <resourcecount refid="src.meta.inf.dir"
-                       count="0" when="equal"/>  
-                  </and>
-                  <then>
-                    <delete dir="src/main/resources/META-INF" quiet="true"/>
-                  </then>
-                </if>
-							</tasks>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>	
-					<!-- also delete on clean. -->
-					<execution>
-						<id>CleanLicenseNoticeDisclaimer</id>
-						<phase>clean</phase>
-						<configuration>
-							<tasks>
+                <rmvUnusedDirs dir="src/main/resources/META-INF" dirId="src.meta.inf.dir"/>
+                <rmvUnusedDirs dir="src/main/resources" dirId="src.main.resources.dir"/>
+                <rmvUnusedDirs dir="src/main" dirId="src.main.dir"/>
+                <rmvUnusedDirs dir="src" dirId="src.dir"/>
+                                
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>  
+          <!-- also delete on clean. -->
+          <execution>
+            <id>CleanLicenseNoticeDisclaimer</id>
+            <phase>clean</phase>
+            <configuration>
+              <tasks>
                 <typedef resource="net/sf/antcontrib/antlib.xml">
                   <classpath refid="maven.dependency.classpath"/>
                 </typedef> <!-- set up ant-contrib extensions -->
                 
-								<delete deleteOnExit="true" quiet="true" failOnError="false">
-									<fileset dir="src/main/resources/META-INF"
-										includes="LICENSE NOTICE DISCLAIMER"/>
-								</delete>
+                <delete deleteOnExit="true" quiet="true" failOnError="false">
+                  <fileset dir="src/main/resources/META-INF"
+                    includes="LICENSE NOTICE DISCLAIMER"/>
+                </delete>
                 
-                <fileset id="src.meta.inf.dir"
-                        dir="src/main/resources/META-INF"/>           
-                <if>
-                  <and>
-                    <available file="src/main/resources/META-INF"/>
-                    <resourcecount refid="src.meta.inf.dir"
-                       count="0" when="equal"/>  
-                  </and>
-                  <then>
-                    <delete file="src/main/resources/META-INF" quiet="true"/>
-                  </then>
-                </if>
-							</tasks>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>		          				
-				</executions>
-			</plugin>
+                <macrodef name="rmvUnusedDirs">
+                  <attribute name="dir"/>
+                  <attribute name="dirId"/>
+                  <sequential>
+                    <fileset id="@{dirId}" dir="@{dir}" defaultexcludes="no"/>
+                    <if>
+                      <and>
+                        <available file="@{dir}"/>
+                        <resourcecount refid="@{dirId}" count="0" when="equal"/>  
+                      </and>
+                      <then> <delete dir="@{dir}"/> </then>
+                    </if>
+                  </sequential>
+                </macrodef>
+                
+                <rmvUnusedDirs dir="src/main/resources/META-INF" dirId="src.meta.inf.dir"/>
+                <rmvUnusedDirs dir="src/main/resources" dirId="src.main.resources.dir"/>
+                <rmvUnusedDirs dir="src/main" dirId="src.main.dir"/>
+                <rmvUnusedDirs dir="src" dirId="src.dir"/>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>                      
+        </executions>
+      </plugin>
       
       <!-- something to get the timestamp -->
       <!-- this plugin sets the output string into the variable buildNumber -->
@@ -459,11 +477,11 @@
           <groups>
             <group>
               <title>Core Framework</title>
-							<packages>org.apache.uima:org.apache.uima.impl:org.apache.uima.analysis_component:org.apache.uima.analysis_engine*:org.apache.uima.cas*:org.apache.uima.collection*:org.apache.uima.ecore:org.apache.uima.flow*:org.apache.uima.internal*:org.apache.uima.jcas*:org.apache.uima.pear.tools:org.apache.uima.pear.util:org.apache.uima.resource*:org.apache.uima.search*:org.apache.uima.tttypesystem:org.apache.uima.uimacpp:org.apache.uima.util*</packages>
+              <packages>org.apache.uima:org.apache.uima.impl:org.apache.uima.analysis_component:org.apache.uima.analysis_engine*:org.apache.uima.cas*:org.apache.uima.collection*:org.apache.uima.ecore:org.apache.uima.flow*:org.apache.uima.internal*:org.apache.uima.jcas*:org.apache.uima.pear.tools:org.apache.uima.pear.util:org.apache.uima.resource*:org.apache.uima.search*:org.apache.uima.tttypesystem:org.apache.uima.uimacpp:org.apache.uima.util*</packages>
             </group>
             <group>
               <title>Collection Processing Engine</title>
-							<packages>org.apache.uima.collection.impl*:org.apache.uima.cas_data.impl.vinci</packages>							
+              <packages>org.apache.uima.collection.impl*:org.apache.uima.cas_data.impl.vinci</packages>             
             </group>
             <group>
               <title>SOAP Adapter</title>
@@ -479,7 +497,7 @@
             </group>
             <group>
               <title>Eclipse Plugins</title>
-							<packages>org.apache.uima.taeconfigurator*:org.apache.uima.typesystem*:org.apache.uima.ep_debug:org.apache.uima.jcas.jcasgenp:org.apache.uima.pear:org.apache.uima.pear.actions:org.apache.uima.pear.generate:org.apache.uima.pear.insd*:org.apache.uima.pear.nature</packages>							
+              <packages>org.apache.uima.taeconfigurator*:org.apache.uima.typesystem*:org.apache.uima.ep_debug:org.apache.uima.jcas.jcasgenp:org.apache.uima.pear:org.apache.uima.pear.actions:org.apache.uima.pear.generate:org.apache.uima.pear.insd*:org.apache.uima.pear.nature</packages>             
             </group>
             <group>
               <title>Examples</title>
@@ -496,7 +514,7 @@
   </reporting>
   
   
-	<profiles>
+  <profiles>
     <profile>
       <id>buildSourceJar</id>
       <activation>
@@ -527,34 +545,34 @@
         </plugins>
       </build>      
     </profile>
-		<profile>
-			<id>signArtifacts</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-				<property>
-					<name>signArtifacts</name>
-					<value>true</value>
-				</property>
-			</activation>
-			<build>
+    <profile>
+      <id>signArtifacts</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+        <property>
+          <name>signArtifacts</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <build>
           <plugins>
             <plugin>
               <groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-gpg-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>sign-artifacts</id>
-								<phase>verify</phase>
-								<goals>
-									<goal>sign</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
   
     
   <modules>
@@ -570,7 +588,7 @@
     <module>eclipse-plugin-superPom</module>
     <module>../uimaj-document-annotation</module>
     <module>../PearPackagingMavenPlugin</module>
-	  <module>../uimaj-internal-tools</module>
+    <module>../uimaj-internal-tools</module>
   </modules>
   <repositories>
     <repository>
