@@ -23,7 +23,9 @@ package org.apache.uima.analysis_engine.annotator;
  * Base interface for annotators in UIMA SDK v1.x. As of v2.0, annotators should extend
  * {@link org.apache.uima.analysis_component.CasAnnotator_ImplBase} or
  * {@link org.apache.uima.analysis_component.JCasAnnotator_ImplBase}.
+ * @deprecated As of release 2.3.0, use CasAnnotator_ImplBase or JCasAnnotator_ImplBase instead
  */
+@Deprecated
 public abstract class GenericAnnotator_ImplBase extends Annotator_ImplBase implements
         GenericAnnotator {
   // overrides no methods

@@ -32,7 +32,9 @@ import org.apache.uima.util.Logger;
 /**
  * This interface is maintained only for backwards compatibility with annotators developed in UIMA
  * SDK v1.x. New code should use {@link UimaContext} instead.
+ * @deprecated As of release 2.3.0, use UimaContext instead
  */
+@Deprecated
 public interface AnnotatorContext {
 
   /**
