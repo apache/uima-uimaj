@@ -364,10 +364,10 @@ uima.cas.String  &rarr; String</programlisting>
     <section id="ugr.ref.jcas.documentannotation_issues">
       <title>Adding Features to DocumentAnnotation</title>
       
-      <para>There is one built-in type, <literal>uima.tcas.DocumentAnnotion</literal>, 
+      <para>There is one built-in type, <literal>uima.tcas.DocumentAnnotation</literal>, 
         to which applications can add additional features.  (All other built-in types
         are "feature-final" and you cannot add additional features to them.)  Frequently,
-        additional features are added to <literal>uima.tcas.DocumentAnnotion</literal> 
+        additional features are added to <literal>uima.tcas.DocumentAnnotation</literal> 
         to provide a place to store document-level metadata.</para>
       
       <para>For the same reasons mentioned in the previous section, adding features to 
