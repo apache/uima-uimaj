@@ -22,12 +22,43 @@ then
   echo UIMA_HOME environment variable is not set
   exit 1
 fi
+LOCAL_SAVED_UIMA_CLASSPATH=$UIMA_CLASSPATH
+UIMA_CLASSPATH=$UIMA_HOME/examples/resources
+UIMA_CLASSPATH=$UIMA_CLASSPATH:$UIMA_HOME/lib/uima-core.jar
+UIMA_CLASSPATH=$UIMA_CLASSPATH:$UIMA_HOME/lib/uima-document-annotation.jar
+UIMA_CLASSPATH=$UIMA_CLASSPATH:$UIMA_HOME/lib/uima-cpe.jar
+UIMA_CLASSPATH=$UIMA_CLASSPATH:$UIMA_HOME/lib/uima-tools.jar
+UIMA_CLASSPATH=$UIMA_CLASSPATH:$UIMA_HOME/lib/uima-examples.jar
+UIMA_CLASSPATH=$UIMA_CLASSPATH:$UIMA_HOME/lib/uima-adapter-soap.jar
+UIMA_CLASSPATH=$UIMA_CLASSPATH:$UIMA_HOME/lib/uima-adapter-vinci.jar
+UIMA_CLASSPATH=$UIMA_CLASSPATH:$CATALINA_HOME/webapps/axis/WEB-INF/lib/activation.jar
+UIMA_CLASSPATH=$UIMA_CLASSPATH:$CATALINA_HOME/webapps/axis/WEB-INF/lib/axis.jar
+UIMA_CLASSPATH=$UIMA_CLASSPATH:$CATALINA_HOME/webapps/axis/WEB-INF/lib/commons-discovery.jar
+UIMA_CLASSPATH=$UIMA_CLASSPATH:$CATALINA_HOME/webapps/axis/WEB-INF/lib/commons-discovery-0.2.jar
+UIMA_CLASSPATH=$UIMA_CLASSPATH:$CATALINA_HOME/webapps/axis/WEB-INF/lib/commons-logging.jar
+UIMA_CLASSPATH=$UIMA_CLASSPATH:$CATALINA_HOME/webapps/axis/WEB-INF/lib/commons-logging-1.0.4.jar
+UIMA_CLASSPATH=$UIMA_CLASSPATH:$CATALINA_HOME/webapps/axis/WEB-INF/lib/jaxrpc.jar
+UIMA_CLASSPATH=$UIMA_CLASSPATH:$CATALINA_HOME/webapps/axis/WEB-INF/lib/mail.jar
+UIMA_CLASSPATH=$UIMA_CLASSPATH:$CATALINA_HOME/webapps/axis/WEB-INF/lib/saaj.jar
+UIMA_CLASSPATH=$UIMA_CLASSPATH:$UIMA_HOME/lib/jVinci.jar
 
-UIMA_CLASSPATH=$UIMA_CLASSPATH:$UIMA_HOME/examples/resources:$UIMA_HOME/lib/uima-core.jar:$UIMA_HOME/lib/uima-document-annotation.jar:$UIMA_HOME/lib/uima-cpe.jar:$UIMA_HOME/lib/uima-tools.jar:$UIMA_HOME/lib/uima-examples.jar:$UIMA_HOME/lib/uima-adapter-soap.jar:$UIMA_HOME/lib/uima-adapter-vinci.jar:$CATALINA_HOME/webapps/axis/WEB-INF/lib/axis.jar:$CATALINA_HOME/webapps/axis/WEB-INF/lib/commons-discovery.jar:$CATALINA_HOME/webapps/axis/WEB-INF/lib/commons-discovery-0.2.jar:$CATALINA_HOME/webapps/axis/WEB-INF/lib/commons-logging.jar:$CATALINA_HOME/webapps/axis/WEB-INF/lib/commons-logging-1.0.4.jar:$CATALINA_HOME/webapps/axis/WEB-INF/lib/jaxrpc.jar:$CATALINA_HOME/webapps/axis/WEB-INF/lib/saaj.jar:$CATALINA_HOME/webapps/axis/WEB-INF/lib/activation.jar:$UIMA_HOME/lib/jVinci.jar:$CLASSPATH
+# next 3 jars are not present unless uima-as is included
+UIMA_CLASSPATH=$UIMA_CLASSPATH:$UIMA_HOME/lib/uimaj-as-core.jar
+UIMA_CLASSPATH=$UIMA_CLASSPATH:$UIMA_HOME/lib/uimaj-as-activemq.jar
+UIMA_CLASSPATH=$UIMA_CLASSPATH:$UIMA_HOME/lib/uimaj-as-jms.jar
+
+UIMA_CLASSPATH=$UIMA_CLASSPATH:$LOCAL_SAVED_UIMA_CLASSPATH
+UIMA_CLASSPATH=$UIMA_CLASSPATH:$CLASSPATH
+
 #set LD_LIBRARY_PATH to support running C++ annotators
-LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$UIMA_HOME/uimacpp/lib:$UIMA_HOME/uimacpp/examples/tutorial/src
+if [ "$UIMACPP_HOME" = "" ]
+then
+  UIMACPP_HOME=$UIMA_HOME/uimacpp
+fi
+export LD_LIBRARY_PATH=$UIMACPP_HOME/lib:$UIMACPP_HOME/examples/tutorial/src:$LD_LIBRARY_PATH
 #also set DYLD_LIBRARY_PATH, used by Mac OSX
-DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:$UIMA_HOME/uimacpp/lib:$UIMA_HOME/uimacpp/examples/tutorial/src
+export DYLD_LIBRARY_PATH=$UIMACPP_HOME/lib:$UIMACPP_HOME/examples/tutorial/src:$DYLD_LIBRARY_PATH
+
 #also set default values for VNS_HOST and VNS_PORT
 if [ "$VNS_HOST" = "" ];
 then
