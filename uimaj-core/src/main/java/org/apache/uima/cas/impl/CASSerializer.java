@@ -315,6 +315,11 @@ public class CASSerializer implements Serializable {
   public void addCAS(CASImpl cas, OutputStream ostream, Marker trackingMark) {
 
     try {
+      if (!trackingMark.isValid() ) {
+        CASRuntimeException exception = new CASRuntimeException(
+    		          CASRuntimeException.INVALID_MARKER, new String[] { "Invalid Marker." });
+        throw exception;
+      }
       MarkerImpl mark = (MarkerImpl) trackingMark;
       DataOutputStream dos = new DataOutputStream(ostream);
 

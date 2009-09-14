@@ -33,6 +33,7 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.UimaContext;
 import org.apache.uima.cas.ByteArrayFS;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.CommonArrayFS;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FeatureStructure;
@@ -192,7 +193,15 @@ public class XmiCasSerializer {
       this.arrayAndListFSs = new IntRedBlackTree();
       this.sharedData = sharedData;
       this.isFiltering = filterTypeSystem != null && filterTypeSystem != cas.getTypeSystemImpl();
-      this.marker = marker;
+      if (marker != null ) {
+      	if (marker.isValid())
+          this.marker = marker;
+        else {
+    	    CASRuntimeException exception = new CASRuntimeException(
+    	          CASRuntimeException.INVALID_MARKER, new String[] { "Invalid Marker." });
+    	    throw exception;
+        }
+      }
       this.isDelta = false;
       if (this.marker != null) this.isDelta = true;
     }
@@ -1534,6 +1543,7 @@ public class XmiCasSerializer {
    */
   public void serialize(CAS cas, ContentHandler contentHandler, ErrorHandler errorHandler,
           XmiSerializationSharedData sharedData, Marker marker) throws SAXException {
+	  
     contentHandler.startDocument();
     XmiCasDocSerializer ser = new XmiCasDocSerializer(contentHandler, errorHandler, ((CASImpl) cas)
             .getBaseCAS(), sharedData, (MarkerImpl) marker);

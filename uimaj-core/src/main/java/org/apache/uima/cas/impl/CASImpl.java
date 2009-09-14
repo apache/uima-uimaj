@@ -211,6 +211,17 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
     private FSGenerator[] localFsGenerators;
     
+    /**
+     * This tracks the changes for delta cas
+     * May also in the future support Journaling by component,
+     * allowing determination of which component in a flow 
+     * created/updated a FeatureStructure (not implmented)
+     * 
+     * TrackingMarkers are held on to by things outside of the 
+     * Cas, to support switching from one tracking marker to 
+     * another (currently not used, but designed to support
+     * Component Journaling).
+     */
     private MarkerImpl trackingMark;
     
     private IntVector modifiedPreexistingFSs;
@@ -222,6 +233,13 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     private IntVector modifiedShortHeapCells;
     
     private IntVector modifiedLongHeapCells;
+    
+    /**
+     * This list currently only contains at most 1 element.
+     * If Journaling is implemented, it may contain an
+     * element per component being journaled.
+     */
+    private ArrayList<MarkerImpl> trackingMarkList;
 
     private SharedViewData(boolean useFSCache) {
       this.useFSCache = useFSCache;
@@ -333,12 +351,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     this.svd.initialSofaCreated = false;
     this.svd.viewCount = 0;
     
-    this.svd.trackingMark = null;
-    this.svd.modifiedPreexistingFSs = null; 
-    this.svd.modifiedFSHeapCells = null;
-    this.svd.modifiedByteHeapCells = null;
-    this.svd.modifiedShortHeapCells = null;
-    this.svd.modifiedLongHeapCells = null;
+    clearTrackingMarks();
   }
 
   /**
@@ -926,13 +939,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     if (this.jcas != null) {
       JCasImpl.clearData(this);
     }
-    
-    this.svd.trackingMark = null;
-    this.svd.modifiedPreexistingFSs = null;
-    this.svd.modifiedFSHeapCells = null;
-    this.svd.modifiedByteHeapCells = null;
-    this.svd.modifiedShortHeapCells = null;
-    this.svd.modifiedLongHeapCells = null;
+    clearTrackingMarks();
   }
 
   /**
@@ -1087,12 +1094,27 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     // to.
     this.jcas = null;
     // this.sofa2jcasMap.clear();
+    
+    clearTrackingMarks();
+  }
+  
+  private void clearTrackingMarks() {
+    // resets all markers that might be held by things outside the Cas
+    // Currently (2009) this list has a max of 1 element
+    // Future impl may have one element per component for component Journaling
+    if (this.svd.trackingMarkList != null) {
+      for (int i=0; i < this.svd.trackingMarkList.size(); i++) {
+        this.svd.trackingMarkList.get(i).isValid = false;
+      }
+    }
+
     this.svd.trackingMark = null;
     this.svd.modifiedPreexistingFSs = null;
     this.svd.modifiedFSHeapCells = null;
     this.svd.modifiedByteHeapCells = null;
     this.svd.modifiedShortHeapCells = null;
     this.svd.modifiedLongHeapCells = null;
+    this.svd.trackingMarkList = null;     
   }
 
   void reinit(int[] heapMetadata, int[] heapArray, String[] stringTable, int[] fsIndex,
@@ -4241,34 +4263,51 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return this.isUsedJcasCache;
   }
 
+  /**
+   * The current implementation only supports 1 marker call per 
+   * CAS.  Subsequent calls will throw an error.
+   * 
+   * The design is intended to support (at some future point)
+   * multiple markers; for this to work, the intent is to 
+   * extend the MarkerImpl to keep track of indexes into
+   * these IntVectors specifying where that marker starts/ends.
+   */
   public Marker createMarker() {
     if (!this.svd.flushEnabled) {
 	  throw new CASAdminException(CASAdminException.FLUSH_DISABLED);
-	}
-	this.svd.trackingMark = new MarkerImpl(this.getHeap().getNextId(), 
-			this.getStringHeap().getSize(),
-			this.getByteHeap().getSize(),
-			this.getShortHeap().getSize(),
-			this.getLongHeap().getSize(),
-			this);
-	if (this.svd.modifiedPreexistingFSs == null) {
-	  this.svd.modifiedPreexistingFSs = new IntVector();
-	}
-	if (this.svd.modifiedFSHeapCells == null) {
-	  this.svd.modifiedFSHeapCells = new IntVector();
-	}
-	if (this.svd.modifiedByteHeapCells == null) {
-      this.svd.modifiedByteHeapCells = new IntVector();
-	}
-	if (this.svd.modifiedShortHeapCells == null) { 
-      this.svd.modifiedShortHeapCells = new IntVector();
-	}
-	if (this.svd.modifiedLongHeapCells == null) {
-      this.svd.modifiedLongHeapCells = new IntVector();
-	}
-	return this.svd.trackingMark;
+  	}
+  	this.svd.trackingMark = new MarkerImpl(this.getHeap().getNextId(), 
+  			this.getStringHeap().getSize(),
+  			this.getByteHeap().getSize(),
+  			this.getShortHeap().getSize(),
+  			this.getLongHeap().getSize(),
+  			this);
+  	if (this.svd.modifiedPreexistingFSs == null) {
+  	  this.svd.modifiedPreexistingFSs = new IntVector();
+  	} else {errorMultipleMarkers();}
+  	if (this.svd.modifiedFSHeapCells == null) {
+  	  this.svd.modifiedFSHeapCells = new IntVector();
+  	} else {errorMultipleMarkers();}
+  	if (this.svd.modifiedByteHeapCells == null) {
+        this.svd.modifiedByteHeapCells = new IntVector();
+  	} else {errorMultipleMarkers();}
+  	if (this.svd.modifiedShortHeapCells == null) { 
+        this.svd.modifiedShortHeapCells = new IntVector();
+  	} else {errorMultipleMarkers();}
+  	if (this.svd.modifiedLongHeapCells == null) {
+        this.svd.modifiedLongHeapCells = new IntVector();
+  	} else {errorMultipleMarkers();}
+  	if (this.svd.trackingMarkList == null) {
+  	  this.svd.trackingMarkList = new ArrayList<MarkerImpl>();
+  	} else {errorMultipleMarkers();}
+  	this.svd.trackingMarkList.add(this.svd.trackingMark);
+  	return this.svd.trackingMark;
   }
 
+  private void errorMultipleMarkers() {
+    throw new CASRuntimeException(CASRuntimeException.MULTIPLE_CREATE_MARKER);
+  }
+  
   private void logFSUpdate(int fsaddr, int position, ModifiedHeap whichheap, int howmany) {
 	if (this.svd.trackingMark != null && !this.svd.trackingMark.isNew(fsaddr)) {
 	  //log the FS
