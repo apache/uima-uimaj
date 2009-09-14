@@ -185,7 +185,12 @@ public class CASRuntimeException extends UIMARuntimeException {
   /** Received pre-existing FS "{0}". */
   public static final String DELTA_CAS_PREEXISTING_FS_DISALLOWED = "DELTA_CAS_PREEXISTING_FS_DISALLOWED";
 
-  
+  /** Invalid Marker. */
+  public static final String INVALID_MARKER = "INVALID_MARKER";
+
+  /** Multiple Create Marker call for a CAS */
+  public static final String MULTIPLE_CREATE_MARKER = "MULTIPLE_CREATE_MARKER";
+
 	public CASRuntimeException() {
 		super();
 	}
