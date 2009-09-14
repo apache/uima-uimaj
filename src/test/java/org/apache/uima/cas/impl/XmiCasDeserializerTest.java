@@ -39,6 +39,7 @@ import javax.xml.parsers.SAXParserFactory;
 import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;
+import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
@@ -852,6 +853,59 @@ public class XmiCasDeserializerTest extends TestCase {
 		  JUnitExtension.handleException(e);
 	}
   }
+  
+  
+  public void testDeltaCasInvalidMarker() throws Exception {
+	  try {
+      CAS cas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
+              indexes);
+      CAS cas2 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
+              indexes);
+
+      //serialize complete  
+      XmiSerializationSharedData sharedData = new XmiSerializationSharedData();
+      String xml = serialize(cas1, sharedData);
+      int maxOutgoingXmiId = sharedData.getMaxXmiId();
+      
+      //deserialize into cas2
+      XmiSerializationSharedData sharedData2 = new XmiSerializationSharedData();      
+      this.deserialize(xml, cas2, sharedData2, true, -1);
+      CasComparer.assertEquals(cas1, cas2);
+      
+      //create Marker, add/modify fs and serialize in delta xmi format.
+      Marker marker = cas2.createMarker();
+      boolean caughtMutlipleMarker = false;
+      try {
+        Marker marker2 = cas2.createMarker();
+      } catch (UIMARuntimeException e) {
+        caughtMutlipleMarker = true;
+        System.out.format("Should catch MultipleCreateMarker message: %s%n", e.getMessage());
+      }
+      assertTrue(caughtMutlipleMarker);
+      
+      //reset cas
+      cas2.reset();
+      boolean serfailed = false;
+      try {
+      	serialize(cas2, sharedData2, marker);
+      } catch (CASRuntimeException e) {
+      	serfailed = true;
+      }
+      assertTrue(serfailed);
+      
+//      serfailed = false;
+//      try {
+//      	serialize(cas2, sharedData2, marker2);
+//      } catch (CASRuntimeException e) {
+//      	serfailed = true;
+//      }
+//      assertTrue(serfailed);
+	      
+		} catch (Exception e) {
+			  JUnitExtension.handleException(e);
+		}
+  }
+  
   
   public void testDeltaCasNoChanges() throws Exception {
 	    try {

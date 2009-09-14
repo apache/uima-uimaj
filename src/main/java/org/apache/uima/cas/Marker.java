@@ -40,6 +40,14 @@ public interface Marker {
   * @return boolean 
   */
  boolean isModified(FeatureStructure fs);
+ 
+ /**
+  * Return true if the Marker is still valid.
+  * A Marker becomes invalid when the <code>CAS</code> from which it was obtained
+  * is reset.
+  * @return
+  */
+ boolean isValid();
 
 }
 

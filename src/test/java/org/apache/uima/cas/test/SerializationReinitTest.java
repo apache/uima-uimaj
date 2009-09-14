@@ -34,6 +34,7 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.ByteArrayFS;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
+import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIndexRepository;
 import org.apache.uima.cas.FSIterator;
@@ -907,6 +908,37 @@ public class SerializationReinitTest extends TestCase {
 	}
   }
   
+  public void testDeltaBlobWithInvalidMarker() throws Exception {
+    try {
+       CAS cas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
+               indexes);
+       boolean serfailed = false;
+       Marker mark1 = cas1.createMarker();
+//       Marker mark2 = cas1.createMarker();  // multiple markers not supported, tested in other test case
+       
+       cas1.reset();
+       
+       try {
+      	 ByteArrayOutputStream fos = new ByteArrayOutputStream();
+      	 Serialization.serializeCAS(cas1, fos, mark1);
+       } catch (CASRuntimeException e) {
+      	 serfailed = true;
+       }
+       assertTrue(serfailed);
+       
+//       serfailed = false;
+//       try {
+//      	 ByteArrayOutputStream fos = new ByteArrayOutputStream();
+//      	 Serialization.serializeCAS(cas1, fos, mark2);
+//       } catch (CASRuntimeException e) {
+//      	 serfailed = true;
+//       }
+//       assertTrue(serfailed);
+    } catch (Exception e) {
+      JUnitExtension.handleException(e);
+    }
+  }
+
   private AnnotationFS createPersonAnnot(CAS cas, int begin, int end) {
 	Type personType = cas.getTypeSystem().getType("org.apache.uima.testTypeSystem.Person");
 	AnnotationFS person = cas.createAnnotation(personType, begin, end);

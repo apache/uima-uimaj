@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.Marker;
 import org.apache.uima.cas.admin.CASMgr;
 
@@ -86,8 +87,11 @@ public class Serialization {
    * @param mark
    */
   public static void serializeCAS(CAS cas, OutputStream ostream, Marker mark) {
-	    CASSerializer ser = new CASSerializer();
-	    ser.addCAS((CASImpl) cas, ostream, mark);
+  	if (!mark.isValid() ) {
+  	  throw new CASRuntimeException(CASRuntimeException.INVALID_MARKER);
+  	}
+  	CASSerializer ser = new CASSerializer();
+  	ser.addCAS((CASImpl) cas, ostream, mark);
   }
 
 }
