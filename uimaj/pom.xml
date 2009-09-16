@@ -284,7 +284,10 @@
                 <condition property="sourceForLicenseNoticeDisclaimer"
                            value="skip"> <!-- value must be a non-existant file name 
                                       blank doesn't work (copies everything)-->
-                  <not> <available file="src/main/java"/> </not>
+                  <!--not> <available file="src/main/java"/> </not-->
+                  <not>
+                    <equals arg1="jar" arg2="${project.packaging}"></equals>
+                  </not>
                 </condition>
                   
                 <!-- only sets property if not set by previous above statement -->
