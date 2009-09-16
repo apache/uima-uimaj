@@ -62,11 +62,11 @@ public class ShowAnnotationsMenu extends TypeMenu {
 	 * @param typeSystem
 	 */
 	public ShowAnnotationsMenu(EditorAnnotationStatus status,
-			TypeSystem typeSystem) {
+			TypeSystem typeSystem, Collection<Type> shownTypes) {
 		super(typeSystem.getType(CAS.TYPE_NAME_ANNOTATION), typeSystem);
 
-		for (String typeName : status.getDisplayAnnotations()) {
-			typesToDisplay.add(typeSystem.getType(typeName));
+		for (Type type : shownTypes) {
+			typesToDisplay.add(type);
 		}
 	}
 

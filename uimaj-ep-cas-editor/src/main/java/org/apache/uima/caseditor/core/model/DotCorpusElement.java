@@ -190,7 +190,20 @@ public class DotCorpusElement extends AbstractNlpElement {
   public AnnotationStyle getAnnotation(Type type) {
     return mDotCorpus.getAnnotation(type);
   }
-
+  
+  
+  public Collection<String> getShownTypes() {
+    return mDotCorpus.getShownTypes();
+  }
+  
+  public void removeShownType(String type) {
+    mDotCorpus.removeShownType(type);
+  }
+  
+  public void addShownType(String type) {
+    mDotCorpus.setShownType(type);
+  }
+  
   /**
    * Retrieves the config folder name.
    * 

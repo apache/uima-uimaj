@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -520,6 +521,8 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 
   private CloseEditorListener closeEditorListener;
 
+  private Collection<Type> shownAnnotationTypes = new HashSet<Type>();
+  
   /**
    * Creates an new AnnotationEditor object.
    */
@@ -645,18 +648,34 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     if (getDocument() != null) {
       mShowAnnotationsMenu = new ShowAnnotationsMenu(
               getDocumentProvider().getEditorAnnotationStatus(getEditorInput()),
-              getDocument().getCAS().getTypeSystem());
+              getDocument().getCAS().getTypeSystem(), shownAnnotationTypes);
       mShowAnnotationsMenu.addListener(new IShowAnnotationsListener() {
 
         public void selectionChanged(Collection<Type> selection) {
-          // TODO: only synchronize annotation which
-          // must be removed/added
-          syncAnnotations();
-
-          // TODO:
-          // get and set editor annotation status must
-          // be added to document provider
-
+          
+          // if changes selection is either larger, or smaller
+          // if larger an annotation type was added
+          // if smaller one was removed
+          if (shownAnnotationTypes.size() < selection.size()) {
+            List<Type> clonedCollection = new ArrayList<Type>(selection);
+            clonedCollection.removeAll(shownAnnotationTypes);
+            
+            Type addedAnnotationType = clonedCollection.get(0);
+            showAnnotationType(addedAnnotationType, true);
+            getDocumentProvider().addShownType(getEditorInput(), addedAnnotationType);
+          }
+          else if (selection.size() < shownAnnotationTypes.size()) {
+            List<Type> clonedCollection = new ArrayList<Type>(shownAnnotationTypes);
+            clonedCollection.removeAll(selection);
+            
+            Type removedAnnotationType = clonedCollection.get(0);
+            showAnnotationType(removedAnnotationType, false);
+            getDocumentProvider().removeShownType(getEditorInput(), removedAnnotationType);
+          }
+          
+          // Repaint after annotations are changed
+          mPainter.paint(IPainter.CONFIGURATION);
+          
           EditorAnnotationStatus status =
                   getDocumentProvider().getEditorAnnotationStatus(getEditorInput());
 
@@ -695,29 +714,40 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     super.doSetInput(input);
 
     mDocument = (ICasDocument) getDocumentProvider().getDocument(input);
-    
+
     if (mDocument != null) {
 
       closeEditorListener = new CloseEditorListener(this);
-      ResourcesPlugin.getWorkspace().addResourceChangeListener(
-              closeEditorListener, IResourceChangeEvent.POST_CHANGE);
+      ResourcesPlugin.getWorkspace().addResourceChangeListener(closeEditorListener,
+              IResourceChangeEvent.POST_CHANGE);
 
-     IAnnotationModel annotationModel = getDocumentProvider().getAnnotationModel(input);
+      IAnnotationModel annotationModel = getDocumentProvider().getAnnotationModel(input);
 
-     // copy annotations into annotation model
-	  final Iterator<AnnotationFS> mAnnotations =
-		  mDocument.getCAS().getAnnotationIndex().iterator();
- 
-	 while (mAnnotations.hasNext()) {
-		  AnnotationFS annotationFS = mAnnotations.next();
-		  annotationModel.addAnnotation(new EclipseAnnotationPeer(annotationFS),
-				  new Position(annotationFS.getBegin(), annotationFS.getEnd()
-		          - annotationFS.getBegin()));
-	 }
-     
+      // copy annotations into annotation model
+      final Iterator<AnnotationFS> mAnnotations = mDocument.getCAS().getAnnotationIndex()
+              .iterator();
+
+      while (mAnnotations.hasNext()) {
+        AnnotationFS annotationFS = mAnnotations.next();
+        annotationModel.addAnnotation(new EclipseAnnotationPeer(annotationFS), new Position(
+                annotationFS.getBegin(), annotationFS.getEnd() - annotationFS.getBegin()));
+      }
+
       mAnnotationSynchronizer = new DocumentListener();
 
       getDocument().addChangeListener(mAnnotationSynchronizer);
+
+      Collection<String> shownTypes = getDocumentProvider().getShownTypes(input);
+
+      for (String shownType : shownTypes) {
+        
+        // Types can be deleted from the type system but still be marked 
+        // as shown in the .dotCorpus file, in that case the type
+        // name cannot be mapped to a type and should be ignored.
+        Type type = getDocument().getType(shownType);
+        if (type != null)
+          shownAnnotationTypes.add(type);
+      }
     }
   }
 
@@ -816,14 +846,28 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     }
   }
 
-  private void showAnnotationType(Type type) {
-    AnnotationStyle style = getDocumentProvider().getAnnotationStyle(getEditorInput(), type);
-    mPainter.addDrawingStrategy(type.getName(),
-            DrawingStyle.valueOf(style.getStyle().name()).getStrategy());
-    mPainter.addAnnotationType(type.getName(), type.getName());
-    java.awt.Color color = style.getColor();
-    mPainter.setAnnotationTypeColor(type.getName(), new Color(null, color.getRed(),
-            color.getGreen(), color.getBlue()));
+  /**
+   * Set the shown annotation status of a type.
+   * 
+   * @param type
+   * @param isVisible if true the type is shown, if false the type
+   * it not shown
+   */
+  private void showAnnotationType(Type type, boolean isVisible) {
+    if (isVisible) {
+      AnnotationStyle style = getDocumentProvider().getAnnotationStyle(getEditorInput(), type);
+      mPainter.addDrawingStrategy(type.getName(),
+              DrawingStyle.valueOf(style.getStyle().name()).getStrategy());
+      mPainter.addAnnotationType(type.getName(), type.getName());
+      java.awt.Color color = style.getColor();
+      mPainter.setAnnotationTypeColor(type.getName(), new Color(null, color.getRed(),
+              color.getGreen(), color.getBlue()));
+      shownAnnotationTypes.add(type);
+    }
+    else {
+      mPainter.removeAnnotationType(type.getName());
+      shownAnnotationTypes.remove(type);
+    }
   }
 
   /**
@@ -832,13 +876,13 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   public void syncAnnotations() {
 
     mPainter.removeAllAnnotationTypes();
-
+    
     for (Type displayType : mShowAnnotationsMenu.getSelectedTypes()) {
-      showAnnotationType(displayType);
+      showAnnotationType(displayType, true);
     }
 
     if (!mShowAnnotationsMenu.getSelectedTypes().contains(getAnnotationMode())) {
-      showAnnotationType(getAnnotationMode());
+      showAnnotationType(getAnnotationMode(), true);
     }
 
     mPainter.paint(IPainter.CONFIGURATION);

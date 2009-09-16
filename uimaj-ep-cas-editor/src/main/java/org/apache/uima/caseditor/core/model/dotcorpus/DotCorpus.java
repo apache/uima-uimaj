@@ -64,6 +64,11 @@ public class DotCorpus {
   private HashMap<String, AnnotationStyle> mStyleMap = new HashMap<String, AnnotationStyle>();
 
   /**
+   * Contains names of types which are visible/shown.
+   */
+  private Set<String> shownTypes = new HashSet<String>();
+  
+  /**
    * Retrieves type system name parameter.
    * 
    * @return type system name parameter
@@ -156,9 +161,21 @@ public class DotCorpus {
    * @return - the annotation styles
    */
   public Collection<AnnotationStyle> getAnnotationStyles() {
-    return mStyleMap.values();
+    return Collections.unmodifiableCollection(mStyleMap.values());
   }
-
+  
+  public Collection<String> getShownTypes() {
+    return Collections.unmodifiableCollection(shownTypes);
+  }
+  
+  public void setShownType(String type) {
+    shownTypes.add(type);
+  }
+  
+  public void removeShownType(String type) {
+    shownTypes.remove(type);
+  }
+  
   /**
    * Adds an AnnotationStyle. TODO: move style stuff to nlp project
    * 

@@ -1,5 +1,7 @@
 package org.apache.uima.caseditor.editor;
 
+import java.util.Collection;
+
 import org.apache.uima.cas.Type;
 import org.apache.uima.caseditor.CasEditorPlugin;
 import org.apache.uima.caseditor.core.model.DocumentElement;
@@ -110,6 +112,39 @@ public class DefaultCasDocumentProvider extends
     return nlpElement.getNlpProject().getDotCorpus().getAnnotation(type);
   }
 
+  @Override
+  protected Collection<String> getShownTypes(Object element) {
+    INlpElement nlpElement = getNlpElement(element);
+
+    return nlpElement.getNlpProject().getDotCorpus().getShownTypes();
+  }
+  
+  @Override
+  protected void addShownType(Object element, Type type) {
+    INlpElement nlpElement = getNlpElement(element);
+    
+    nlpElement.getNlpProject().getDotCorpus().addShownType(type.getName());
+    
+    try {
+      nlpElement.getNlpProject().getDotCorpus().serialize();
+    } catch (CoreException e) {
+      CasEditorPlugin.log(e);
+    }
+  }
+  
+  @Override
+  protected void removeShownType(Object element, Type type) {
+    INlpElement nlpElement = getNlpElement(element);
+
+    nlpElement.getNlpProject().getDotCorpus().removeShownType(type.getName());
+    
+    try {
+      nlpElement.getNlpProject().getDotCorpus().serialize();
+    } catch (CoreException e) {
+      CasEditorPlugin.log(e);
+    }
+  }
+  
   @Override
   protected EditorAnnotationStatus getEditorAnnotationStatus(Object element) {
     INlpElement nlpElement = getNlpElement(element);

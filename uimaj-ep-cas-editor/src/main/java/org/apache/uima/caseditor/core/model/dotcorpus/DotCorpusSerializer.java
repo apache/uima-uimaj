@@ -74,6 +74,13 @@ public class DotCorpusSerializer {
 
   private static final String EDITOR_LINE_LENGTH_ATTRIBUTE = "line-length-hint";
 
+  private static final String SHOWN_ELEMENT = "shown";
+  
+  private static final String SHOWN_TYPE_ATTRIBUTE = "type";
+  
+  private static final String SHOWN_IS_VISISBLE_ATTRIBUTE = "visible";
+  
+  
   /**
    * Creates a {@link DotCorpus} object from a given {@link InputStream}.
    * 
@@ -175,7 +182,18 @@ public class DotCorpusSerializer {
         int lineLengthHint = Integer.parseInt(lineLengthHintString);
 
         dotCorpus.setEditorLineLength(lineLengthHint);
-      } else {
+      } else if (SHOWN_ELEMENT.equals(corporaChildElement.getNodeName())) {
+        String type = corporaChildElement.getAttribute(SHOWN_TYPE_ATTRIBUTE);
+        
+        String isVisisbleString = corporaChildElement.getAttribute(SHOWN_IS_VISISBLE_ATTRIBUTE);
+        
+        boolean isVisible = Boolean.parseBoolean(isVisisbleString);
+        
+        if (isVisible) {
+          dotCorpus.setShownType(type); 
+        }
+      }
+      else {
         String message = "Unexpected element: " + corporaChildElement.getNodeName();
 
         IStatus s = new Status(IStatus.ERROR, CasEditorPlugin.ID, IStatus.OK, message, null);
@@ -228,6 +246,16 @@ public class DotCorpusSerializer {
         xmlSerHandler.endElement("", STYLE_ELEMENT, STYLE_ELEMENT);
       }
 
+      for (String type : dotCorpus.getShownTypes()) {
+        
+        AttributesImpl shownAttributes = new AttributesImpl();
+        shownAttributes.addAttribute("", "", SHOWN_TYPE_ATTRIBUTE, "", type);
+        shownAttributes.addAttribute("", "", SHOWN_IS_VISISBLE_ATTRIBUTE, "", "true");
+        
+        xmlSerHandler.startElement("", SHOWN_ELEMENT, SHOWN_ELEMENT, shownAttributes);
+        xmlSerHandler.endElement("", SHOWN_ELEMENT, SHOWN_ELEMENT);
+      }
+      
       if (dotCorpus.getTypeSystemFileName() != null) {
         AttributesImpl typeSystemFileAttributes = new AttributesImpl();
         typeSystemFileAttributes.addAttribute("", "", TYPESYTEM_FILE_ATTRIBUTE, "", dotCorpus

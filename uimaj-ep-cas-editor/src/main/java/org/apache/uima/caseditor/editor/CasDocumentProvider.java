@@ -19,6 +19,7 @@
 
 package org.apache.uima.caseditor.editor;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -80,6 +81,12 @@ public abstract class CasDocumentProvider extends AbstractDocumentProvider {
 
   protected abstract AnnotationStyle getAnnotationStyle(Object element, Type type);
 
+  protected abstract Collection<String> getShownTypes(Object element);
+  
+  protected abstract void addShownType(Object elemtn, Type type);
+  
+  protected abstract void removeShownType(Object element, Type type);
+  
   protected abstract EditorAnnotationStatus getEditorAnnotationStatus(Object element);
 
   protected abstract void setEditorAnnotationStatus(Object element,
