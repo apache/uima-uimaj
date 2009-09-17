@@ -31,116 +31,31 @@
 	</title>
 
 	<xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-		href="../../../SandboxDocs/src/docbook/book_info.xml" />
+		href="../../../uima-docbooks/src/docbook/common_book_info.xml" />
 
 	<preface>
 		<title>Overview</title>
 		<para>
-			To make UIMA analysis components easily consumable for other users, UIMA defines
-			the PEAR (Processing Engine ARchive) file format. This allows applications and tools
+      This plugin supports creating PEAR packages using Maven.
+    </para>
+    <para>
+			The PEAR (Processing Engine ARchive) file format is designed to make UIMA analysis components 
+      easily consumable for other users, and is the preferred packaging format for 
+			UIMA analysis components. This format allows applications and tools
 			to manage UIMA analysis components automatically for verification, deployment, 
-			invocation and testing. So far the PEAR file format is the desired output format for 
-			an UIMA analysis component. With the PEAR packaging Maven plugin it is possible to create
-			such a PEAR package for the analysis component automatically during the Maven artifact 
-			build.
+			invocation and testing. 
 		</para>
 	</preface>
 	
-	<chapter id="pear.packaging.maven.plugin.install.src">
-		<title>Installing The PEAR Packaging Plugin From Source</title>
-		<para>
-		  The PEAR packaging Maven plugin is modeled as custom plugin for the Maven build system.
-		  To use it, the plugin must be available in the local Maven repository. So far the plugin is
-		  not available by default when building the UIMA SDK, so it have to be built manually using the provided 
-		  Maven build. The plugin code is available in the Apache
-		  subversion repository at:
-		  <blockquote>
-           <para>
-             <ulink url="http://svn.apache.org/repos/asf/incubator/uima/sandbox/trunk/PearPackagingMavenPlugin"/>
-           </para>
-         </blockquote>
-		  After downloading the code to the Apache UIMA build environment just call the provided maven build
-		  in the main directory of the PEAR Packaging Plugin as shown in the listing below.
-		</para>
-		<para>
-		<programlisting><![CDATA[#PearPackagingMavenPlugin> mvn install]]></programlisting>
-		</para>
-		<para>
-		  After successfully building the plugin is available in the local Maven repository and can be used
-		  in other Maven artifact builds from now. To integrate the plugin into other builds it is necessary to 
-		  know the PEAR Packaging Plugin version number as it is available in the Maven repository. The plugin version number
-		  is displayed at the end of the Maven build as shown in the example below. For this example, the plugin 
-		  version number is: <code>2.2.2-incubating</code> 
-		</para>
-		<para>
-		<programlisting><![CDATA[[INFO] Installing 
-/code/apache/PearPackagingMavenPlugin/target/
-PearPackagingMavenPlugin-2.2.2.-incubating.jar 
-to 
-/maven-repository/repository/org/apache/uima/PearPackagingMavenPlugin/
-2.2.2-incubating/
-PearPackagingMavenPlugin-2.2.2-incubating.jar
-[INFO] [plugin:updateRegistry]
-[INFO] --------------------------------------------------------------
-[INFO] BUILD SUCCESSFUL
-[INFO] --------------------------------------------------------------
-[INFO] Total time: 6 seconds
-[INFO] Finished at: Tue Nov 13 15:07:11 CET 2007
-[INFO] Final Memory: 10M/24M
-[INFO] --------------------------------------------------------------]]></programlisting>
-		</para>
-		
-		<para>
-		  To use the PEAR Packaging Plugin in a Maven build, it is necessary to add it as dependency to the
-		  POM. Important while adding the dependency is the version number of the plugin. With that the correct
-		  version of the plugin is used and can be found in the local Maven repository. The version number of the plugin was 
-		  displayed when installing the PEAR packaging Maven plugin to the Maven repository. The snippet below 
-		  shows how the plugin dependency is added to the dependencies sections of the POM.
-		</para>
-		<para>
-		<programlisting><![CDATA[<dependencies>
-   ...
-   <dependency>
-     <groupId>org.apache.uima</groupId>
-     <artifactId>PearPackagingMavenPlugin</artifactId>
-     <version>2.2.0-incubating-SNAPSHOT</version>
-     <scope>package</scope>
-   </dependency>
-   ....
-</dependencies>
-]]></programlisting>
-		</para>
-		
-	</chapter>
-
-	<chapter id="pear.packaging.maven.plugin.install">
-		<title>Installing The PEAR Packaging Plugin Using The Binary</title>
-		<para>
-		  It is also possible to use the binary version of the plugin. In that case the 
-		  <code>uima-pear-maven-plugin.jar</code> file must be added to the dependency set of your 
-		  POM like for example: 
-		</para>
-		<para>
-		<programlisting><![CDATA[<dependencies>
-   ...
-   <dependency>
-     <groupId>org.apache.uima</groupId>
-     <artifactId>PearPackagingMavenPlugin</artifactId>
-     <version>2.2.2-incubating</version>
-     <scope>system</scope>
-     <systemPath>${basedir}/lib/uima-pear-maven-plugin.jar</systemPath>
-   </dependency>
-   ....
-</dependencies>]]></programlisting>
-		</para>
-	</chapter>
 
 	<chapter id="pear.packaging.maven.plugin.usage">
 		<title>Using the PEAR Packaging Plugin</title>
+    
 		<section id="pear.packaging.maven.plugin.usage.configure">
-			<title>Calling The PEAR Packaging Plugin</title>
+			<title>Specifying the PEAR Packaging Pluging</title>
+      
 		<para>
-		  To call the PEAR Packaging Plugin within a Maven build, the plugin must be added to the plugins section of the 
+		  To use the PEAR Packaging Plugin within a Maven build, the plugin must be added to the plugins section of the 
 		  POM as shown below:
 		</para>
 		<para>
@@ -150,15 +65,22 @@ PearPackagingMavenPlugin-2.2.2-incubating.jar
   <plugin>
     <groupId>org.apache.uima</groupId>
     <artifactId>PearPackagingMavenPlugin</artifactId>
-    <extensions>true</extensions>
+    
+    <!-- if version is omitted, then version is inherited from parent's pluginManagement section -->
+    <!-- otherwise, include a version element here --> 
+    
+    <!-- says to load Maven extensions (such as packaging and type handlers) from this plugin -->
+    <extensions>true</extensions>  
     <executions>
       <execution>
-        <phase>package</phase>
-        <configuration>
+        <phase>package</phase> <!-- this is the default and can be omitted -->
+        <configuration>  <!-- where you specify details of the thing being packaged -->
           
           <classpath>
             <!-- PEAR file component classpath settings -->
-            $main_root/lib/sample.jar
+            <!-- Jars in the $main_root/lib are automatically put into the classpath
+                 and do not need to be listed here -->
+            $main_root/lib-alternative/sample.jar
           </classpath>
           
           <mainComponentDesc>
@@ -177,8 +99,8 @@ PearPackagingMavenPlugin-2.2.2-incubating.jar
           </datapath>
           
         </configuration>
-        <goals>
-          <goal>package</goal>
+        <goals> 
+          <goal>package</goal> 
         </goals>
       </execution>
     </executions>
@@ -188,10 +110,11 @@ PearPackagingMavenPlugin-2.2.2-incubating.jar
 </build>
 ]]></programlisting>
 		</para>
+    
 		<para>
 		  To configure the plugin with the specific settings of a PEAR package, the 
 		  <code>&lt;configuration></code> element section is used. This sections contains all parameters 
-		  that are provided by the PEAR Packaging Plugin to package the right content and set the specific PEAR package settings.
+		  that are used by the PEAR Packaging Plugin to package the right content and set the specific PEAR package settings.
 		  The details about each parameter and how it is used is shown below:
 		</para>
 		<para>
@@ -199,13 +122,13 @@ PearPackagingMavenPlugin-2.2.2-incubating.jar
 				<listitem>
 					<para>
 						<code>&lt;classpath></code>
-						  - This element specifies the classpath settings that are necessary to start up the 
-						  PEAR component. The jar artifact that is built during the current Maven build is 
-						  automatically added to the PEAR classpath settings and do not have to be added manually.
-						  The classpath element can be removed if the component jar artifact is the only classpath entry. 
+						  - This element specifies the classpath settings for the 
+						  PEAR component. The Jar artifact that is built during the current Maven build is 
+						  automatically added to the PEAR classpath settings and does not have to be added manually.
+						  The classpath element can be omitted if the component Jar artifact is the only classpath entry. 
 					</para>
 					<note>
-					  <para>Use $main_root variables to refer libraries inside 
+					  <para>Use $main_root variables to refer to libraries inside 
 						  the PEAR package. For more details about PEAR packaging please refer to the 
 						  Apache UIMA PEAR documentation.</para>
 					</note>
@@ -215,21 +138,21 @@ PearPackagingMavenPlugin-2.2.2-incubating.jar
 						<code>&lt;mainComponentDesc></code>
 						  - This element specifies the relative path to the main component descriptor 
 						  that should be used to run the PEAR content. The path must be relative to the 
-						  project root. It is a good default to use <code>desc/${artifactId}.xml</code> here.
+						  project root. A good default to use is <code>desc/${artifactId}.xml</code>.
 					</para>
 				</listitem>
 				<listitem>
 					<para>
 						<code>&lt;componentID></code>
-						  - This element specifies the PEAR package component ID. It is a good default
-						  to use <code>${artifactId}</code>.
+						  - This element specifies the PEAR package component ID. A good default
+						  to use is <code>${artifactId}</code>.
 					</para>
 				</listitem>
 				<listitem>
 					<para>
 						<code>&lt;datapath></code>
 						  - This element specifies the PEAR package UIMA datapath settings.
-						  If no datapath settings are necessary, this element can be removed. 
+						  If no datapath settings are necessary, this element can be omitted. 
 					</para>
 					<note>
 					  <para>Use $main_root variables to refer libraries inside 
@@ -283,7 +206,7 @@ PearPackagingMavenPlugin-2.2.2-incubating.jar
 				<para>
 				While the dependencies will be automatically included in the 
 				PEAR file using this procedure, you still need to add them
-				manually to the PEAR classpath.
+				manually to the PEAR classpath, using the <code>&lt;classpath></code> element described above.
 				</para>
 			</note>
 
@@ -370,5 +293,77 @@ PearPackagingMavenPlugin-2.2.2-incubating.jar
 
 		</section>
 	</chapter>
+
+	<chapter id="pear.packaging.maven.plugin.install">
+		<title>Installing The PEAR Packaging Plugin</title>
+
+    <para>If you specify the Apache Incubating Repository as one of the repositories 
+      for your maven configuration, then the <code>uima-pear-maven-plugin.jar</code> should be
+      automatically fetched when needed.  This is typically specified in the .settings file or in 
+      a parent POM, using this format:
+    </para>
+    <programlisting><![CDATA[<repositories>
+  <repository>
+    <id>apache-incubating-repository</id>
+    <url>http://people.apache.org/repo/m2-incubating-repository</url>
+    <releases>
+      <!-- never: because artifacts are never updated in the repo -->
+      <updatePolicy>never</updatePolicy> 
+    </releases>
+  </repository>
+</repositories>]]></programlisting>
+
+		<para>
+		  Otherwise, the 
+		  <code>uima-pear-maven-plugin.jar</code> file must be manually installed into your local
+      repository.  See <ulink url="http://maven.apache.org/general.html#importing-jars"/>.
+      The information you need to do this is:
+      <itemizedlist spacing="compact">
+        <listitem><para><code>-DgroupId=org.apache.uima</code></para></listitem>
+        <listitem><para><code>-DartifactId=PearPackagingMavenPlugin</code></para></listitem>
+        <listitem><para><code>-Dversion=2.3.0-incubating</code>  (change this to the version you want)</para></listitem>
+        <listitem><para><code>-Dpackaging=jar</code></para></listitem>
+        <listitem><para><code>-DgeneratePom=true</code></para></listitem>
+      </itemizedlist>
+		</para>
+	</chapter>
+
+	<chapter id="pear.packaging.maven.plugin.install.src">
+		<title>Building the PEAR Packaging Plugin From Source</title>
+		<para>
+		  The plugin code is available in the Apache
+		  subversion repository at:
+		  <ulink url="http://svn.apache.org/repos/asf/incubator/uima/uimaj/trunk/PearPackagingMavenPlugin"/>.
+      Use the following command line to build it (you will need the Maven build tool, available from Apache):
+		</para>
+		<para>
+		<programlisting><![CDATA[#PearPackagingMavenPlugin> mvn install]]></programlisting>
+		</para>
+		<para>
+		  This maven command will build the tool and install it in your local maven repository, 
+      making it available for use by other maven POMs.  The plugin version number
+		  is displayed at the end of the Maven build as shown in the example below. For this example, the plugin 
+		  version number is: <code>2.3.0-incubating</code> 
+		</para>
+		<para>
+		<programlisting><![CDATA[[INFO] Installing 
+/code/apache/PearPackagingMavenPlugin/target/
+PearPackagingMavenPlugin-2.3.0-incubating.jar 
+to 
+/maven-repository/repository/org/apache/uima/PearPackagingMavenPlugin/
+2.3.0-incubating/
+PearPackagingMavenPlugin-2.3.0-incubating.jar
+[INFO] [plugin:updateRegistry]
+[INFO] --------------------------------------------------------------
+[INFO] BUILD SUCCESSFUL
+[INFO] --------------------------------------------------------------
+[INFO] Total time: 6 seconds
+[INFO] Finished at: Tue Nov 13 15:07:11 CET 2007
+[INFO] Final Memory: 10M/24M
+[INFO] --------------------------------------------------------------]]></programlisting>
+		</para>
+		
+	</chapter>
+
 
 </book>
