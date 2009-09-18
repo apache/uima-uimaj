@@ -99,6 +99,10 @@
 	</dependencies-->
 
 	<build>
+    <!-- normally, the resources spec copies into 
+         target/classes/ ... but if it's not a "jar" packaging,
+         it copies into target/
+    -->
     <resources>
       <resource>
         <targetPath>eclipse-update-site/web</targetPath>
