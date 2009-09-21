@@ -143,11 +143,13 @@
         <groupId>org.apache.uima</groupId>
         <artifactId>uimaj-test-util</artifactId>
         <version>${uimaj-release-version}</version>
+        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.uima</groupId>
         <artifactId>uimaj-component-test-util</artifactId>
         <version>${uimaj-release-version}</version>
+        <scope>test</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -521,7 +523,6 @@
     <profile>
       <id>buildSourceJar</id>
       <activation>
-        <activeByDefault>false</activeByDefault>
         <file>
           <exists>src/main/java</exists>
         </file>
@@ -596,7 +597,7 @@
   <repositories>
     <repository>
       <id>eclipsePlugins</id>
-      <url>http://repo2.maven.org/eclipse</url>  <!-- url repo1 forwards to repo2... -->
+      <url>http://repo1.maven.org/eclipse</url>
       <releases>
         <updatePolicy>never</updatePolicy>
       </releases>
