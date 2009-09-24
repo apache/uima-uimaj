@@ -252,6 +252,19 @@
           </configuration>
         </plugin>
         
+        <plugin>
+          <groupId>org.apache.rat</groupId>
+          <artifactId>apache-rat-plugin</artifactId>
+          <version>0.6</version>
+          <executions>
+            <execution>
+              <id>default-cli</id>
+              <goals><goal>check</goal></goals>
+              <phase>process-resources</phase>
+            </execution>
+          </executions>
+        </plugin>
+        
       </plugins>
     </pluginManagement>
     
@@ -595,7 +608,8 @@
     <module>../uimaj-internal-tools</module>
   </modules>
   <repositories>
-    <repository>
+    <!-- alternate Eclipse repo not used 9/2009 - found way around version comparison -->
+    <!--repository>
       <id>eclipsePlugins</id>
       <url>http://repo1.maven.org/eclipse</url>
       <releases>
@@ -605,8 +619,8 @@
         <enabled>false</enabled>
         <updatePolicy>never</updatePolicy>
       </snapshots>
-    </repository>
-    <!--repository>  temp - people is down
+    </repository-->
+    <repository> 
       <id>ApacheIncubatorRepository</id>
       <url>http://people.apache.org/repo/m2-incubating-repository/</url>
       <releases>
@@ -616,6 +630,6 @@
         <enabled>false</enabled>
         <updatePolicy>never</updatePolicy>
       </snapshots>
-    </repository-->    
+    </repository>    
   </repositories>
 </project>
