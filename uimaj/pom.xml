@@ -260,7 +260,7 @@
             <execution>
               <id>default-cli</id>
               <goals><goal>check</goal></goals>
-              <phase>process-resources</phase>
+              <phase>verify</phase>
             </execution>
           </executions>
         </plugin>
