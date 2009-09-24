@@ -93,7 +93,7 @@ You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2
       message="Downloading and unzipping (one time) Java Advanced Imaging package (JAI),&#xA;
 licensed under the specific Sun license for JAI;&#xA;
 You may not use this package except in compliance with the License.&#xA;&#xA; 
-The license is contained in the download.&#xA;&#xA;Ok to download?"
+The license is contained in the download.&#xA;&#xA;Note that your company may not find this license acceptable, and have other download alternatives; if so, manually place the jai_code.jar and jai_core.jar in the tools/jai-versions/jai-1.1.3 directory. Ok to download?"
       validargs="y,n" addproperty="ok.download.jai"/>
     <condition property="do.download.jai">
       <equals arg1="y" arg2="${ok.download.jai}"/>
