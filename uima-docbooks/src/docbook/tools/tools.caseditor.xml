@@ -40,15 +40,6 @@ under the License.
       Feature Structures which are annotations can additionally be viewed and edited
 			directly on text. 
 		</para>
-
-		<screenshot>
-			<mediaobject>
-				<imageobject>
-					<imagedata scale="50" format="PNG"
-						fileref="&imgroot;CasEditor.png" />
-				</imageobject>
-			</mediaobject>
-		</screenshot>
 	</section>
 
 	<section id="sandbox.caseditor.Projects">
