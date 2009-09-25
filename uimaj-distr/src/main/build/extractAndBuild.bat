@@ -22,29 +22,33 @@ REM Run with -notest to skip the unit tests
 @echo on
 
 @if "%~1"=="" goto usage
+@if not "%4"=="" goto usage
 @if "%~1"=="trunk" goto trunk
-@set level=tags/%~1
-@set leveldir=%~1
+@set leveldir=uimaj-%~1-%~2
+@set svnloc=tags/uimaj-%~1/%leveldir%
 @goto checkargs
 
 @:trunk
-@set level=trunk
+@set svnloc=trunk
 @set leveldir=trunk
 @goto checkargs
 
 @:checkargs
 @set jvmarg=
 @set mvnCommand=clean install
-@if not "%3"=="" goto usage
-@if "%~2"=="" goto execute
-@if "%~2"=="-notest" goto notest
-@if "%~2"=="-deploy" goto deploy
+
+@if "%~3"=="" goto execute
+@if "%~3"=="-notest" goto notest
+@if "%~3"=="-deploy" goto deploy
 @goto usage
 
 @:usage
 @echo off
-echo Usage: extractAndBuild.bat level [-notest] [-deploy]
+echo Run this command in a directory where the files will be extracted to.
+echo Usage: extractAndBuild.bat level release-candidate [-notest] [-deploy]
 echo            (-notest and -deploy cannot be used together)
+echo  examples of the 1st 2 arguments, level release-candidate, are  trunk trunk   or  2.2.2  01
+echo  If trunk, use the word "trunk" for the 2nd argument, e.g. extractAndBuild.bat trunk trunk 
 @echo on
 @goto exit
 
@@ -54,14 +58,18 @@ echo            (-notest and -deploy cannot be used together)
 
 @:deploy
 @set jvmarg="-DsignArtifacts=true"
-@set mvnCommand=source:jar deploy
+@set mvnCommand=deploy
 @goto execute
 
 @:execute
-svn checkout -r HEAD http://svn.apache.org/repos/asf/incubator/uima/uimaj/%level%
+svn checkout -r HEAD http://svn.apache.org/repos/asf/incubator/uima/uimaj/%svnloc%
 cd %leveldir%
+copy  %~d0%~p0\..\..\..\..uima-docbook-tool\tools\fop-versions\fop-0.95\*             uima-docbook-tool\tools\fop-versions\fop-0.95 
+copy  %~d0%~p0\..\..\..\..uima-docbook-tool\tools\jai-versions\jai-1.1.3\*            uima-docbook-tool\tools\jai-versions\jai-1.1.3
+xcopy %~d0%~p0\..\..\..\..uima-docbook-tool\tools\docbook-versions\docbook-xml-4.5\*  uima-docbook-tool\tools\docbook-versions\docbook-xml-4.5 
 cd uimaj
 call mvn %jvmarg%  -Duima.build.date="%date% %time%" %mvnCommand%
+REM keep these next 2 "cd"s as two separate lines - got strange behavior when combining 2009
 cd ..
 cd uimaj-distr
 call mvn clean assembly:assembly
