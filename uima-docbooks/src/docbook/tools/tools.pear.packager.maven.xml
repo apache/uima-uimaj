@@ -106,7 +106,8 @@
               - This element specifies the classpath settings for the 
               PEAR component. The Jar artifact that is built during the current Maven build is 
               automatically added to the PEAR classpath settings and does not have to be added manually.
-              The classpath element can be omitted if the component Jar artifact is the only classpath entry. 
+              In addition, all Jars in the lib directory and its subdirectories will be added to the
+              generated classpath when the PEAR is installed.  
           </para>
           <note>
             <para>Use $main_root variables to refer to libraries inside 
@@ -188,22 +189,20 @@
           dependencies are included in the PEAR file.
       </para>
 
-      <note>
+      
         <para>
-        While the dependencies will be automatically included in the 
-        PEAR file using this procedure, you still need to explicitly add them
-        to the PEAR classpath, using the <code>&lt;classpath></code> element,
-        as described above.
+        The dependencies will be automatically included in the 
+        PEAR file using this procedure; the pear install process also will automatically
+        adds all files in the lib directory (and sub directories) to the 
+        classpath.
         </para>
-      </note>
+      
 
       <para>
         The <code>maven-dependency-plugin</code>
         copies the runtime dependencies of the PEAR into the
         <code>lib</code> folder, which is where the PEAR packaging
-        plugin expects them.  In this example, the version is stripped from the file
-        names of the dependencies so it is not necessary to adapt
-        the PEAR classpath when changing the version of a dependency.
+        plugin expects them.  
       </para>
 
         <programlisting><![CDATA[<build>
@@ -221,9 +220,7 @@
       <goal>copy-dependencies</goal>
      </goals>
      <configuration>
-      <stripVersion>true</stripVersion>
       <outputDirectory>${basedir}/lib</outputDirectory>
-      <overWriteReleases>false</overWriteReleases>
       <overWriteSnapshots>true</overWriteSnapshots>
       <includeScope>runtime</includeScope>
      </configuration>
@@ -263,9 +260,9 @@
      <phase>clean</phase>
      <configuration>
       <tasks>
-       <delete dir="lib" deleteOnExit="true" quiet="true" 
+       <delete quiet="true" 
                failOnError="false">
-        <fileset dir="lib" includes="*.jar"/>
+        <fileset dir="lib" includes="**/*.jar"/>
        </delete>
       </tasks>
      </configuration>
@@ -317,6 +314,26 @@
     </para>
   </section>
 
+  <section id="ugr.tools.pear.packager.maven.plugin.commandline">
+    <title>Running from the command line</title>
+    <para>
+      The pear packager can be run as a maven command.  To enable this, you have to add the following to your
+      maven settings file:
+      <programlisting><![CDATA[<settings>
+  ...
+  <pluginGroups>
+    <pluginGroup>org.apache.uima</pluginGroup>
+  </pluginGroups>]]></programlisting>
+      To invoke the pear packager using maven, use the command:
+      <programlisting><![CDATA[mvn uima-pear:package <parameters...>]]></programlisting>
+      The settings are the same ones used in the configuration above, specified as -D variables 
+      where the variable name is pear.parameterName.
+      For example:
+      <programlisting><![CDATA[mvn uima-pear:package -Dpear.mainComponentDesc=desc/mydescriptor.xml
+                      -Dpear.componentId=foo]]></programlisting> 
+    </para>
+  </section>
+  
   <section id="ugr.tools.pear.packager.maven.plugin.install.src">
     <title>Building the PEAR Packaging Plugin From Source</title>
     <para>

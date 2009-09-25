@@ -55,14 +55,14 @@ public class PearPackagingMojo extends AbstractMojo {
    /**
     * Required classpath settings for the PEAR package.
     * 
-    * @parameter
+    * @parameter expression="${pear.classpath}"
     */
    private String classpath = null;
 
    /**
     * Main Component Descriptor path relative to the main component directory
     * 
-    * @parameter
+    * @parameter expression="${pear.mainComponentDesc}"
     * @required
     */
    private String mainComponentDesc = null;
@@ -70,7 +70,7 @@ public class PearPackagingMojo extends AbstractMojo {
    /**
     * PEAR package component ID
     * 
-    * @parameter
+    * @parameter expression="${pear.componentId}"
     * @required
     */
    private String componentId = null;

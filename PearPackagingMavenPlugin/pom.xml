@@ -65,5 +65,15 @@
 	
 	<build>
 		<finalName>uima-pear-maven-plugin</finalName>
+    
+    <plugins>
+      <plugin>
+        <artifactId>maven-plugin-plugin</artifactId>
+        <configuration>
+          <goalPrefix>uimaPear</goalPrefix>
+        </configuration>
+      </plugin>
+    </plugins>
+    
 	</build>
 </project>
