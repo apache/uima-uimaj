@@ -168,7 +168,45 @@ public class FileCompare {
     }
     return true;
   }
+  
+  /**
+   * Compare 2 strings, ignoring whitespace characters
+   * @param in1
+   * @param in2
+   * @return
+   */
+  public static boolean compareStrings(String in1, String in2) {
+    char c1, c2;
 
+    int i1 = 0;
+    int i2 = 0;
+    
+    while (i1 < in1.length()) {
+      
+      c1 = in1.charAt(i1 ++);
+
+      // check if char is whitespace, and skip it
+      if (Character.isWhitespace(c1)) {
+        continue;
+      }
+      
+      while (true) {
+        if (i2 >= in2.length()) {
+          return false;  // ran off the end of string 2
+        }
+
+        c2 = in2.charAt(i2 ++);
+        if (!Character.isWhitespace(c2)) {
+          break;
+        }
+      }
+      
+      if (c1 != c2) {
+        return false;
+      }
+    }
+    return true;
+  }
 
   /**
    * Compares two XML files and returns true, if both have the same content. Different notations for
