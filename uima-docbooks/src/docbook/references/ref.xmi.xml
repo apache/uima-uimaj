@@ -343,4 +343,31 @@ myFeature = "bar"</programlisting>
       mapping for each of your CAS namespaces, using a space separated list. For details see
       Budinsky et al. <emphasis>Eclipse Modeling Framework</emphasis>.</para>
   </section>
+  
+  <section id="ugr.ref.xmi.delta">
+   <title>Delta CAS XMI Format</title>
+   <titleabbrev>Delta CAS XMI Format</titleabbrev>
+   <para>
+   The Delta CAS XMI serialization format is designed primarily to reduce the overhead serialization when calling annotators 
+   configured as services. Only Feature Structures and Views that are new or modified by the service  
+   are serialized and returned by the service.  
+   </para>
+   <para>
+   The classes <literal>org.apache.uima.cas.impl.XmiCasSerializer</literal> and
+    <literal>org.apache.uima.cas.impl.XmiCasDeserializer</literal> support serialization of only the modifications to the CAS. 
+    A caller is expected to set a marker to indicate the point from which changes to the CAS are to be tracked.
+   </para>
+   <para>
+   A Delta CAS XMI document contains only the Feature Structures and Views that have been added or modified.
+   The new and modified Feature Structures are represented in exactly the format as in a complete CAS serialization.
+   The <literal> cas:View </literal> element has been extended with three additional attributes to represent modifications to 
+   View membership. These new attributes are <literal>added_members</literal>, <literal>deleted_members</literal> and 
+   <literal>reindexed_members</literal>. For example:
+   </para>
+    <programlisting>&lt;cas:View sofa="1" added_members="63 77" deleted_member="7 61" reindexed_members="39" /&gt;</programlisting>
+    <para>
+    Here the integers 63, 77 represent xmi:id fields of the objects that have been newly added members to this View,
+    7 and 61 are xmi:id fields of the objects that have been removed from this view and 39 is the xmi:id of an object to be reindexed in this view.
+    </para>
+  </section>
 </chapter>
