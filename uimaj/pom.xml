@@ -606,6 +606,7 @@
     <module>../uimaj-document-annotation</module>
     <module>../PearPackagingMavenPlugin</module>
     <module>../uimaj-internal-tools</module>
+    <module>../uimaj-bootstrap</module>
   </modules>
   <repositories>
     <repository>
