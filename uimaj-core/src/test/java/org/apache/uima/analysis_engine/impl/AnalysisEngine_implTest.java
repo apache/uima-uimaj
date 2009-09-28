@@ -362,7 +362,10 @@ public class AnalysisEngine_implTest extends TestCase {
                       .getFile("TextAnalysisEngineImplTest/AggregateTaeWithCasConsumer.xml")));
       _testProcess(aggWithCcDesc);      
       // test that CAS Consumer ran
-      assertTrue(outFile.exists());
+      if (null == outFile) {
+        outFile = JUnitExtension.getFile("CpmOutput.txt");
+      }
+      assertTrue(outFile != null && outFile.exists());
       assertTrue(outFile.length() > 0);
       outFile.delete();
       
