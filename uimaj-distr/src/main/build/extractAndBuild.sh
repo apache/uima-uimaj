@@ -31,7 +31,7 @@ jvmargs=""
 mvnCommand="clean install"
 
 # Check arguments
-if [ $# -eq 0 -o $# gt 3 ]
+if [ $# -eq 0 -o $# -gt 3 ]
 then
   usage
   exit 1
