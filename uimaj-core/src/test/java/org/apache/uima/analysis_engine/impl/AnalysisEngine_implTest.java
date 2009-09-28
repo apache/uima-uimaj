@@ -350,7 +350,7 @@ public class AnalysisEngine_implTest extends TestCase {
 
       // test aggregate TAE containing a CAS Consumer
       File outFile = JUnitExtension.getFile("CpmOutput.txt");
-      if(outFile.exists()) {
+      if(outFile != null && outFile.exists()) {
         //outFile.delete() //can't be relied upon.  Instead set file to zero length.
         FileOutputStream fos = new FileOutputStream(outFile, false);
         fos.close();
