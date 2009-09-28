@@ -65,7 +65,8 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
-					<argLine>-Xmx450M</argLine>
+          <!-- testing on 64 bit Linux requires larger heap -->
+					<argLine>-Xmx650M</argLine>
 				</configuration>
 			</plugin>		
 		</plugins>
