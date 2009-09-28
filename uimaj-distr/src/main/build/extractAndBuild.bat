@@ -67,6 +67,8 @@ cd %leveldir%
 copy  %~d0%~p0\..\..\..\..uima-docbook-tool\tools\fop-versions\fop-0.95\*             uima-docbook-tool\tools\fop-versions\fop-0.95 
 copy  %~d0%~p0\..\..\..\..uima-docbook-tool\tools\jai-versions\jai-1.1.3\*            uima-docbook-tool\tools\jai-versions\jai-1.1.3
 xcopy %~d0%~p0\..\..\..\..uima-docbook-tool\tools\docbook-versions\docbook-xml-4.5\*  uima-docbook-tool\tools\docbook-versions\docbook-xml-4.5 
+xcopy %~d0%~p0\..\..\..\..uima-docbook-tool\tools\docbook-versions\docbook-xsl-1.72.0\*  uima-docbook-tool\tools\docbook-versions\docbook-xsl-1.72.0 
+copy  %~d0%~p0\..\..\..\..uima-docbook-tool\tools\saxon-versions\saxon-6.5.5\*        uima-docbook-tool\tools\saxon-versions\saxon-6.5.5
 cd uimaj
 call mvn %jvmarg%  -Duima.build.date="%date% %time%" %mvnCommand%
 REM keep these next 2 "cd"s as two separate lines - got strange behavior when combining 2009
