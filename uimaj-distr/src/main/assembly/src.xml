@@ -40,30 +40,39 @@ under the License.
         <exclude>src/**/*.bat</exclude>
         <exclude>src/**/*.sh</exclude>
       </excludes>
+      <fileMode>644</fileMode>
     </fileSet>
-    <!-- Copy .bat/.sh files as executable -->
+    <!-- Copy .sh files as executable -->
     <fileSet>
       <fileMode>755</fileMode>
       <directory>.</directory>
       <outputDirectory>/uimaj-distr</outputDirectory>
       <includes>
-        <include>src/**/*.bat</include>
         <include>src/**/*.sh</include>
       </includes>
     </fileSet>
     <fileSet>
+      <fileMode>644</fileMode>
+      <directory>.</directory>
+      <outputDirectory>/uimaj-distr</outputDirectory>
+      <includes>
+        <include>src/**/*.bat</include>
+        <include>src/**/*.cmd</include>
+      </includes>
+    </fileSet>    
+    <fileSet>
       <directory>src/main/readme</directory>
       <outputDirectory>/</outputDirectory>
       <excludes>
-          <exclude>README</exclude>
+        <exclude>README</exclude>
       </excludes>
+      <fileMode>644</fileMode>
     </fileSet>
-    <!-- Copy .bat/.sh files as executable -->
+    <!-- Copy .sh files as executable -->
     <fileSet>
       <fileMode>755</fileMode>
       <directory>src/main/readme_src</directory>
       <includes>
-        <include>*.bat</include>
         <include>*.sh</include>
       </includes>
       <outputDirectory>/</outputDirectory>
@@ -72,10 +81,10 @@ under the License.
     <fileSet>
       <directory>src/main/readme_src</directory>
       <excludes>
-        <exclude>*.bat</exclude>
         <exclude>*.sh</exclude>
       </excludes>
       <outputDirectory>/</outputDirectory>
+      <fileMode>644</fileMode>
     </fileSet>
     <fileSet>
       <directory>../uima-docbooks</directory>
@@ -90,6 +99,7 @@ under the License.
         <exclude>LICENSE.txt</exclude>
         <exclude>src/styles/titlepage/*.xsl</exclude>     
       </excludes>
+      <fileMode>644</fileMode>
     </fileSet>   
     <fileSet>
       <directory>../uima-docbook-tool</directory>
@@ -105,6 +115,7 @@ under the License.
         <include>README</include>
         <include>README.FIRST</include>
       </includes>
+      <fileMode>644</fileMode>
     </fileSet>
     <fileSet>
       <directory>../uimaj-eclipse-update-site</directory>
@@ -117,6 +128,7 @@ under the License.
         <include>index.html</include>
         <include>site.xml</include>
       </includes>
+      <fileMode>644</fileMode>
     </fileSet>    
     <fileSet>
       <directory>../uimaj-eclipse-feature-runtime</directory>
@@ -126,6 +138,7 @@ under the License.
         <include>feature.properties</include>
         <include>feature.xml</include>
       </includes>
+      <fileMode>644</fileMode>
     </fileSet>    
     <fileSet>
       <directory>../uimaj-eclipse-feature-tools</directory>
@@ -135,6 +148,7 @@ under the License.
         <include>feature.properties</include>
         <include>feature.xml</include>
       </includes>
+      <fileMode>644</fileMode>
     </fileSet>    
     <fileSet>
       <directory>../uimaj</directory>
@@ -143,6 +157,7 @@ under the License.
         <include>pom.xml</include>
         <include>eclipse-plugin-superPom/**</include>
       </includes>
+      <fileMode>644</fileMode>
     </fileSet>
     <fileSet>
       <directory>../jVinci</directory>
@@ -151,6 +166,7 @@ under the License.
         <include>src/**</include>
         <include>pom.xml</include>
       </includes>
+      <fileMode>644</fileMode>
     </fileSet>
     <fileSet>
       <directory>../uimaj-adapter-soap</directory>
@@ -159,6 +175,7 @@ under the License.
         <include>src/**</include>
         <include>pom.xml</include>
       </includes>
+      <fileMode>644</fileMode>
     </fileSet>
     <fileSet>
       <directory>../uimaj-adapter-vinci</directory>
@@ -167,6 +184,7 @@ under the License.
         <include>src/**</include>
         <include>pom.xml</include>
       </includes>
+      <fileMode>644</fileMode>
     </fileSet>  
     <fileSet>
       <directory>../uimaj-bootstrap</directory>
@@ -175,6 +193,7 @@ under the License.
         <include>src/**</include>
         <include>pom.xml</include>
       </includes>
+      <fileMode>644</fileMode>
     </fileSet>          
     <fileSet>
       <directory>../uimaj-component-test-util</directory>
@@ -183,6 +202,7 @@ under the License.
         <include>src/**</include>
         <include>pom.xml</include>
       </includes>
+      <fileMode>644</fileMode>
     </fileSet>  
     <fileSet>
       <directory>../uimaj-core</directory>
@@ -191,6 +211,7 @@ under the License.
         <include>src/**</include>
         <include>pom.xml</include>
       </includes>
+      <fileMode>644</fileMode>
     </fileSet>  
     <fileSet>
       <directory>../uimaj-cpe</directory>
@@ -199,6 +220,7 @@ under the License.
         <include>src/**</include>
         <include>pom.xml</include>
       </includes>
+      <fileMode>644</fileMode>
     </fileSet>      
     <fileSet>
       <directory>../uimaj-document-annotation</directory>
@@ -207,6 +229,7 @@ under the License.
         <include>src/**</include>
         <include>pom.xml</include>
       </includes>
+      <fileMode>644</fileMode>
     </fileSet>   
     <fileSet>
       <directory>../uimaj-ep-cas-editor</directory>
@@ -218,6 +241,7 @@ under the License.
         <include>plugin.xml</include>
         <include>pom.xml</include>
       </includes>
+      <fileMode>644</fileMode>
     </fileSet>      
     <fileSet>
       <directory>../uimaj-ep-configurator</directory>
@@ -226,6 +250,7 @@ under the License.
         <include>src/**</include>
         <include>pom.xml</include>
       </includes>
+      <fileMode>644</fileMode>
     </fileSet>      
     <fileSet>
       <directory>../uimaj-ep-debug</directory>
@@ -234,6 +259,7 @@ under the License.
         <include>src/**</include>
         <include>pom.xml</include>
       </includes>
+      <fileMode>644</fileMode>
     </fileSet>       
     <fileSet>
       <directory>../uimaj-ep-jcasgen</directory>
@@ -242,6 +268,7 @@ under the License.
         <include>src/**</include>
         <include>pom.xml</include>
       </includes>
+      <fileMode>644</fileMode>
     </fileSet> 
     <fileSet>
       <directory>../uimaj-ep-pear-packager</directory>
@@ -250,6 +277,7 @@ under the License.
         <include>src/**</include>
         <include>pom.xml</include>
       </includes>
+      <fileMode>644</fileMode>
     </fileSet>     
     <fileSet>
       <directory>../uimaj-ep-runtime</directory>
@@ -258,6 +286,7 @@ under the License.
         <include>src/**</include>
         <include>pom.xml</include>
       </includes>
+      <fileMode>644</fileMode>
     </fileSet>      
     <fileSet>
       <directory>../uimaj-examples</directory>
@@ -266,6 +295,7 @@ under the License.
         <include>src/**</include>
         <include>pom.xml</include>
       </includes>
+      <fileMode>644</fileMode>
     </fileSet>      
     <fileSet>
       <directory>../uimaj-test-util</directory>
@@ -274,6 +304,7 @@ under the License.
         <include>src/**</include>
         <include>pom.xml</include>
       </includes>
+      <fileMode>644</fileMode>
     </fileSet>     
     <fileSet>
       <directory>../uimaj-tools</directory>
@@ -282,6 +313,7 @@ under the License.
         <include>src/**</include>
         <include>pom.xml</include>
       </includes>
+      <fileMode>644</fileMode>
     </fileSet>       
   </fileSets>  
 </assembly>

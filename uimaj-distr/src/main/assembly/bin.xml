@@ -48,6 +48,7 @@ under the License.
       <outputFileNameMapping>uimaj-bootstrap.jar</outputFileNameMapping>
       <outputDirectory>/apache-uima/lib</outputDirectory>
       <useProjectArtifact>false</useProjectArtifact>
+      <fileMode>644</fileMode> 
     </dependencySet>
     <dependencySet>
       <includes>
@@ -57,6 +58,7 @@ under the License.
       <outputFileNameMapping>uima-core.jar</outputFileNameMapping>
       <outputDirectory>/apache-uima/lib</outputDirectory>
       <useProjectArtifact>false</useProjectArtifact>
+      <fileMode>644</fileMode> 
     </dependencySet>
     <dependencySet>
       <includes>
@@ -66,6 +68,7 @@ under the License.
       <outputFileNameMapping>uima-cpe.jar</outputFileNameMapping>
       <outputDirectory>/apache-uima/lib</outputDirectory>
       <useProjectArtifact>false</useProjectArtifact>
+      <fileMode>644</fileMode> 
     </dependencySet>
     <dependencySet>
       <includes>
@@ -75,6 +78,7 @@ under the License.
       <outputFileNameMapping>uima-document-annotation.jar</outputFileNameMapping>
       <outputDirectory>/apache-uima/lib</outputDirectory>
       <useProjectArtifact>false</useProjectArtifact>
+      <fileMode>644</fileMode> 
     </dependencySet>
     <dependencySet>
       <includes>
@@ -84,6 +88,7 @@ under the License.
       <outputFileNameMapping>uima-examples.jar</outputFileNameMapping>
       <outputDirectory>/apache-uima/lib</outputDirectory>
       <useProjectArtifact>false</useProjectArtifact>
+      <fileMode>644</fileMode> 
     </dependencySet>
     <dependencySet>
       <includes>
@@ -94,6 +99,7 @@ under the License.
       <outputFileNameMapping>uima-tools.jar</outputFileNameMapping>
       <outputDirectory>/apache-uima/lib</outputDirectory>
       <useProjectArtifact>false</useProjectArtifact>
+      <fileMode>644</fileMode> 
     </dependencySet>
     <dependencySet>
       <includes>
@@ -104,6 +110,7 @@ under the License.
       <outputFileNameMapping>uima-adapter-soap.jar</outputFileNameMapping>
       <outputDirectory>/apache-uima/lib</outputDirectory>
       <useProjectArtifact>false</useProjectArtifact>
+      <fileMode>644</fileMode> 
     </dependencySet>
     <dependencySet>
       <includes>
@@ -114,6 +121,7 @@ under the License.
       <outputFileNameMapping> uima-adapter-vinci.jar</outputFileNameMapping>
       <outputDirectory>/apache-uima/lib</outputDirectory>
       <useProjectArtifact>false</useProjectArtifact>
+      <fileMode>644</fileMode> 
     </dependencySet>
     <dependencySet>
       <includes>
@@ -124,6 +132,7 @@ under the License.
       <outputFileNameMapping>jVinci.jar</outputFileNameMapping>
       <outputDirectory>/apache-uima/lib</outputDirectory>
       <useProjectArtifact>false</useProjectArtifact>
+      <fileMode>644</fileMode> 
     </dependencySet>
     
     
@@ -142,6 +151,7 @@ under the License.
       <outputDirectory>/apache-uima/eclipsePlugins</outputDirectory>
       <outputFileNameMapping>${artifact.build.finalName}.jar</outputFileNameMapping>
       <useProjectArtifact>false</useProjectArtifact>
+      <fileMode>644</fileMode> 
     </dependencySet>
   </dependencySets>
   
@@ -150,15 +160,24 @@ under the License.
     <fileSet>
       <directory>src/main/scripts</directory>
       <outputDirectory>/apache-uima/bin</outputDirectory>
+      <includes><include>*.sh</include></includes>
       <fileMode>755</fileMode>
+    </fileSet>
+    <fileSet>
+      <directory>src/main/scripts</directory>
+      <outputDirectory>/apache-uima/bin</outputDirectory>
+      <excludes><exclude>*.sh</exclude></excludes>
+      <fileMode>644</fileMode>
     </fileSet>
     <fileSet>
       <directory>src/main/properties</directory>
       <outputDirectory>/apache-uima/config</outputDirectory>
+      <fileMode>644</fileMode>
     </fileSet>
     <fileSet>
       <directory>src/main/readme</directory>
       <outputDirectory>/apache-uima/</outputDirectory>
+      <fileMode>644</fileMode>
     </fileSet>
     <fileSet>
       <directory>target/site/apidocs</directory>
@@ -169,6 +188,7 @@ under the License.
         <exclude>files</exclude>
         <exclude>argfile</exclude>        
       </excludes>
+      <fileMode>444</fileMode>
     </fileSet>
     <fileSet>
       <directory>../uima-docbooks/target</directory>
@@ -185,6 +205,7 @@ under the License.
         <include>references/references.html</include>
         <include>references/css/**</include>
       </includes>
+      <fileMode>644</fileMode>
     </fileSet>
     <fileSet>
       <directory>../uima-docbooks/target/overview_and_setup</directory>
@@ -192,6 +213,7 @@ under the License.
       <includes>
         <include>overview_and_setup.pdf</include>
       </includes>
+      <fileMode>644</fileMode>
     </fileSet>
     <fileSet>
       <directory>../uima-docbooks/target/tutorials_and_users_guides</directory>
@@ -199,6 +221,7 @@ under the License.
       <includes>
         <include>tutorials_and_users_guides.pdf</include>
       </includes>
+      <fileMode>644</fileMode>
     </fileSet>
     <fileSet>
       <directory>../uima-docbooks/target/tools</directory>
@@ -206,6 +229,7 @@ under the License.
       <includes>
         <include>tools.pdf</include>
       </includes>
+      <fileMode>644</fileMode>
     </fileSet>
     <fileSet>
       <directory>../uima-docbooks/target/references</directory>
@@ -213,6 +237,7 @@ under the License.
       <includes>
         <include>references.pdf</include>
       </includes>
+      <fileMode>644</fileMode>
     </fileSet>
     <fileSet>
       <directory>../uimaj-examples/src/main/java</directory>
@@ -222,30 +247,38 @@ under the License.
         <exclude> org/apache/uima/examples/xmi/Ecore2UimaTypeSystem.java</exclude>
         <exclude> org/apache/uima/examples/xmi/UimaTypeSystem2Ecore.java</exclude>
       </excludes>
+      <fileMode>644</fileMode>
     </fileSet>
     <fileSet>
       <directory>../uimaj-examples/src/main/data</directory>
       <outputDirectory>/apache-uima/examples/data</outputDirectory>
+      <fileMode>644</fileMode>
     </fileSet>
     <fileSet>
       <directory>../uimaj-examples/src/main/deploy</directory>
       <outputDirectory>/apache-uima/examples/deploy</outputDirectory>
+      <fileMode>644</fileMode>
     </fileSet>
     <fileSet>
       <directory>../uimaj-examples/src/main/descriptors</directory>
       <outputDirectory>/apache-uima/examples/descriptors</outputDirectory>
+      <fileMode>644</fileMode>
     </fileSet>
-    <fileSet>
+    <!-- removed in 2.3.0 -->
+    <!--fileSet> 
       <directory>../uimaj-examples/src/main/opennlp_wrappers</directory>
       <outputDirectory>/apache-uima/examples/opennlp_wrappers</outputDirectory>
-    </fileSet>
+      <fileMode>644</fileMode>
+    </fileSet-->
     <fileSet>
       <directory>../uimaj-examples/src/main/resources</directory>
       <outputDirectory>/apache-uima/examples/resources</outputDirectory>
+      <fileMode>644</fileMode>
     </fileSet>
     <fileSet>
       <directory>../uimaj-examples/src/main/run_configuration</directory>
       <outputDirectory>/apache-uima/examples/run_configuration</outputDirectory>
+      <fileMode>644</fileMode>
     </fileSet>
   </fileSets>
   <files>
