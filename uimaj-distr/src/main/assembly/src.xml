@@ -28,7 +28,7 @@ under the License.
   <includeBaseDirectory>true</includeBaseDirectory>
   
   <fileSets>
-    <!-- Leave out .sh/.bat files, include them in the next step as executable -->
+    <!-- Leave out .sh/.bat/.cmd files, include them in the next step as executable -->
     <fileSet>
       <directory>.</directory>
       <outputDirectory>/uimaj-distr</outputDirectory>
@@ -38,6 +38,7 @@ under the License.
       </includes>
       <excludes>
         <exclude>src/**/*.bat</exclude>
+        <exclude>src/**/*.cmd</exclude>
         <exclude>src/**/*.sh</exclude>
       </excludes>
       <fileMode>644</fileMode>
