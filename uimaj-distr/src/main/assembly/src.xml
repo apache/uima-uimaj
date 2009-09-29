@@ -63,7 +63,7 @@ under the License.
     </fileSet>    
     <fileSet>
       <directory>src/main/readme</directory>
-      <outputDirectory>/</outputDirectory>
+      <outputDirectory/>
       <excludes>
         <exclude>README</exclude>
       </excludes>
@@ -76,7 +76,7 @@ under the License.
       <includes>
         <include>*.sh</include>
       </includes>
-      <outputDirectory>/</outputDirectory>
+      <outputDirectory/>
     </fileSet>
     <!-- Copy everything else as non-executable -->
     <fileSet>
@@ -84,7 +84,7 @@ under the License.
       <excludes>
         <exclude>*.sh</exclude>
       </excludes>
-      <outputDirectory>/</outputDirectory>
+      <outputDirectory/>
       <fileMode>644</fileMode>
     </fileSet>
     <fileSet>
