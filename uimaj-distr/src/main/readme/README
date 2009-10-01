@@ -5,6 +5,13 @@
 What's New in 2.3.0
 -------------------
 
+  Java 5 Generification
+  ---------------------
+  
+  Many of the core components have been updated to include a Generic Type.
+  This mainly affects the various indexing and iterating classes and interface
+  APIs.  Previous code using the non-generic APIs should continue to work.  
+
   Components
   ----------
   
