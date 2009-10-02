@@ -38,7 +38,9 @@ public abstract class JCasFlow_ImplBase implements Flow {
    * 
    * @param aJCas
    *          the JCas to be routed by this Flow object
+   * @deprecated this is done automatically by the framework with the Flow object is created
    */
+  @Deprecated
   public void setJCas(JCas aJCas) {
     mJCas = aJCas;
   }
