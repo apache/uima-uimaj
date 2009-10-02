@@ -438,11 +438,12 @@ public class XCASSerializer {
           // xmlStack.addAttribute(INDEXED_ATTR_NAME, TRUE_VALUE);
           addAttribute(workAttrs, INDEXED_ATTR_NAME, Integer.toString(indexRep.get(0)));
         } else {
-          String multIndex = Integer.toString(indexRep.get(0));
+          StringBuilder multIndex = new StringBuilder(); 
+          multIndex.append(Integer.toString(indexRep.get(0)));
           for (int mi = 1; mi < indexRep.size(); mi++) {
-            multIndex += " " + Integer.toString(indexRep.get(mi));
+            multIndex.append(' ').append(Integer.toString(indexRep.get(mi)));
           }
-          addAttribute(workAttrs, INDEXED_ATTR_NAME, multIndex);
+          addAttribute(workAttrs, INDEXED_ATTR_NAME, multIndex.toString());
         }
       }
       // Add ID attribute. We do this for every FS, since otherwise we
