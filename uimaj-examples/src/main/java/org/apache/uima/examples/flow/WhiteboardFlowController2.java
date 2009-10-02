@@ -124,7 +124,9 @@ public class WhiteboardFlowController2 extends CasFlowController_ImplBase {
    */
   public Flow computeFlow(CAS aCAS) throws AnalysisEngineProcessException {
     WhiteboardFlow flow = new WhiteboardFlow();
-    flow.setCas(aCAS);
+    // No need to do the following as of release 2.3.0
+    //  because the framework automatically does this
+//    flow.setCas(aCAS);
     return flow;
   }
 
