@@ -125,7 +125,10 @@ under the License.
   public Flow computeFlow(CAS aCAS) 
           throws AnalysisEngineProcessException {
     WhiteboardFlow flow = new WhiteboardFlow();
-    flow.setCas(aCAS);
+    // As of release 2.3.0, the following is not needed,
+    //   because the framework does this automatically
+    // flow.setCas(aCAS); 
+                        
     return flow;
   }
 
@@ -138,10 +141,8 @@ under the License.
           <literal>CasFlowController_ImplBase</literal> and implements the
           <literal>computeFlow</literal> method. The implementation of the <literal>computeFlow</literal>
           method is very simple; it just constructs a new <literal>WhiteboardFlow</literal> object that will be
-          responsible for routing this CAS, and calls the <literal>WhiteboardFlow.setCas</literal> method to
-          give it a handle to that CAS, which it will later use to make its routing decisions. The
-          <literal>setCas</literal> method is a method provided by the <literal>..._ImplBase</literal>
-          classes for Flows.</para>
+          responsible for routing this CAS.  The framework will add a handle to that CAS
+          which it will later use to make its routing decisions.</para>
         
         <para>Note that we will have one instance of <literal>WhiteboardFlow</literal> per CAS, so if there are
           multiple CASes being simultaneously processed there will not be any confusion.</para>
