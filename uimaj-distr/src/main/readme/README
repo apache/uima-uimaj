@@ -32,7 +32,11 @@ What's New in 2.3.0
   use of the ecore functionality.  
   
   Running PEARs as components in a pipe-line was improved: parameters,
-  performance reporting, CAS Multipliers are all now supported.  
+  performance reporting, CAS Multipliers are all now supported.
+  
+  The OpenNLP wrappers were removed from the examples project, because they were
+  out of date with the OpenNLP project, and that project has now produced
+  UIMA wrappers - so they should be obtained from there.  
  
   Performance
   -----------

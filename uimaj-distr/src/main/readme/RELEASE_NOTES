@@ -18,7 +18,7 @@
  ***************************************************************
 
 
-	Apache UIMA (Unstructured Information Management Architecture) v2.2.2
+	Apache UIMA (Unstructured Information Management Architecture) v2.3.0
                                Release Notes
    -----------------------------------------------------------------------
 
@@ -64,20 +64,7 @@ Python and TCL.
 
 2. Major Changes in this Release
 
-The Apache UIMA release version 2.2.2 is just a bugfix release and has no major 
-release changes. For a list of all JIRA issues fixed with this release, 
-please refer to chapter 6. "List of JIRA Issues Fixed in this Release".
-
-The computation of the default result specification was corrected, and may
-impact users if you are running annotators that test the result specification.
-For aggregates, if the aggregate does not specify in its capability specifications
-that it needs a certain type, and non of the delegates of that aggregate have
-that type as an input, then the default result specification will not include
-that type, since no one needs it.  
-
-The "soap" adapter code was removed from the Eclipse runtime plugin for uima tooling, because 
-it depended on the axis jars, which were not available.  If this functionality is
-needed, please post to the uima-dev list.  
+Please see the README for this information.  
 
 3. Migrating from IBM UIMA to Apache UIMA
 
@@ -159,110 +146,227 @@ issues you find at http://issues.apache.org/jira/browse/uima.
 
 6. List of JIRA Issues Fixed in this Release
 
-Release Notes - UIMA - Version 2.2.2
+
+Release Notes - UIMA - Version 2.3.0
 
 
 ** Bug
-    * [UIMA-475] - Document Analyzer and CPE GUI have trouble running AE's multiple times
-    * [UIMA-498] - TAEConfiguratorPlugin throws NullPointer during activation
-    * [UIMA-552] - Documentation for applications has non-working examples of API use (wrong number of args, reversed args)
-    * [UIMA-591] - In uimaj-examples the AdvancedFixedFlowController method removeAnalysisEngines is incorrect
-    * [UIMA-643] - TypeSystemUtil.type2TypeDescription() throws NPE when the superType is null
-    * [UIMA-672] - Wrong URL for mirrors support in the Eclipse update site
-    * [UIMA-677] - improve MD5 and SHA1 checksum generation
-    * [UIMA-680] - CAS is not unlocked on Errors
-    * [UIMA-686] - Deadlocks in CPM tests:CPM shutdown tests failing (hanging) intermittantly
-    * [UIMA-698] - wrong eclipse update site top level name - fix to match documentation
-    * [UIMA-722] - Fix parsing of language specifications to normalize them
-    * [UIMA-726] - ArrayFSImpl.copyToArray will throw NPE when array element is null
-    * [UIMA-727] - Result Specifications not being passed to imbedded Pears
-    * [UIMA-729] - CasCopier doesn't work with Annotations produced with LowLevelCAS API, which don't have their sofa feature set
-    * [UIMA-730] - Fix definition of containsType/Feature for Resut Spec for corner case involving x-unspecified language
-    * [UIMA-732] - featurePath object  throws LowLevelCASException if FS is not valid for feature path.
-    * [UIMA-733] - it is possible to load a type system descriptor that redefines the super type of the DocumentAnnotation
-    * [UIMA-735] - ResultSpecification_impl missing equals and hashCode for inner class - causing intermittant test case failure
-    * [UIMA-738] - Calling jcas.getType for a type that is not defined in the descriptor leaves the JCAS in an inconsitent state
-    * [UIMA-740] - change FeaturePath implementation for empty featurePath strings
-    * [UIMA-741] - File streams are not closed
-    * [UIMA-747] - addSourceToJars.sh contains windows EOL characters, making it unusable out of the box
-    * [UIMA-761] - udpate build script to do a clean build
-    * [UIMA-764] - Source distribution is incomplete: documentation can't be built
-    * [UIMA-780] - CDE hangs when processing AEs with very high initialization time (adding the AE to the aggregate or saving the descriptor)
-    * [UIMA-794] - Extra </programmlisting> in component descriptor documentation
-    * [UIMA-805] - cas.setSofaDataURI() fails on _InitialView
-    * [UIMA-807] - Eclipse update site build fails if there are more than 1 launcher.jar kind of plugin in the plugins directory
-    * [UIMA-810] - uimaj-ep-runtime missing import of log4j package
-    * [UIMA-813] - improve PEAR error message for the installation of a non-existing PEAR package
-    * [UIMA-814] - PEAR verification should be able to treat customResoruceSpecifiers
-    * [UIMA-821] - Vinci Services have getMetaData timeout problems when there are a large number of clients
-    * [UIMA-822] - eclipse plugins build broken - the messages resources are not found
-    * [UIMA-823] - Building is broken - message is failed to resolve artifact uimaj-eclipse-plugins
-    * [UIMA-826] - Type System Merging does not work consistently when a type is declared twice with different supertypes
-    * [UIMA-828] - MultiprocessingAnalysisEngine_implTest.java fails intermittently
-    * [UIMA-835] - src distribution build does not work
-    * [UIMA-836] - The maven property that points to the eclipse installation for build the eclipse update site points to the parent directory and expects to find a directory called eclipse
-    * [UIMA-858] - AnalysisEnginePoolTest intermittant failure - same issue as MultiprocessingAnalysisEngine_implTest
-    * [UIMA-859] - changeVersion scripts not handling transition from SNAPSHOT to non-SNAPSHOT properly
-    * [UIMA-863] - update release notes for release 2.2.2-incubating
-    * [UIMA-864] - update version from 2.2.2-incubating-SNAPSHOT to 2.2.2-incubating
-    * [UIMA-865] - UIMA core distribution build only works if the UIMA AS plugins are available
-    * [UIMA-878] - fix missing license headers
-    * [UIMA-879] - Eclipse plugin jar files do not have the right names
-    * [UIMA-888] - fix documentation for SOAP deployment
-    * [UIMA-889] - fix PearInstaller help file
-    * [UIMA-890] - Capabilities with no language spec do not cause proper ResultSpec to be set up
-    * [UIMA-891] - uima example annotator does not work with the new Result spec design
-    * [UIMA-892] - annoation viewer help dialog mention TAEs
-    * [UIMA-893] - annotation viewer throws FileNotFoundException
-    * [UIMA-894] - CDE import by name broken on Linux
-    * [UIMA-897] - users of uimaj-ep-runtime plugin having trouble due to jar inside jar structure
-    * [UIMA-898] - documentAnalyzer throws NPE
-    * [UIMA-899] - DocumentAnalyzer does not creat all output types for UIMA Analysis example
-    * [UIMA-906] - SOAP deployment does not work properly
-    * [UIMA-913] - cleanup and simplify C++ service wrapper implementation
-    * [UIMA-923] - update the run examples scripts to use XMI format of CAS.
-    * [UIMA-935] - [UIMA eclipse plugins] Possible WRONG wiring of imported packages for UIMA Eclipse plugins
-    * [UIMA-936] - NPE when serializing a CAS with a String array that contains a null value element
-    * [UIMA-939] - PEAR packaging eclipse plugin not visible after installation
-    * [UIMA-951] - Eclipse split packages not handled well - causing plugin ClassNotFound failures
+    * [UIMA-629] - Default file names produced by XmiWriterCasConsumer don't have .xmi extension and can't be read by XmiCollectionReader
+    * [UIMA-781] - CPE test case CpmCasConsumer_ErrorTest intermittently failing
+    * [UIMA-852] - jcasgen.sh has trouble with import by name
+    * [UIMA-853] - jcasgen.sh returns success even if the run fails
+    * [UIMA-941] - No ProcessTrace events for process calls that take 0ms
+    * [UIMA-958] - Document Analyzer not showing PersonTitle when running with xml tagged source
+    * [UIMA-978] - CDE eclipse plugin contains upper-case GIF file extension
+    * [UIMA-982] - SofaFS class level Javadocs misleading
+    * [UIMA-988] - Performance bug: CAS heap reset wasteful use of Arrays.fill()
+    * [UIMA-989] - CVD hangs on start-up
+    * [UIMA-1012] - addSourceToJars.[bat/sh] is not executable in distribution
+    * [UIMA-1024] - change version number from 2.2.2-incubating to 2.3-incubating-SNAPSHOT
+    * [UIMA-1027] - Classes from uima-document-annotator.jar are not in Eclipse plugin
+    * [UIMA-1036] - runAE help message needs to document available options for language and encoding
+    * [UIMA-1045] - "Recently used" file lists in CVD do not work correctly
+    * [UIMA-1058] - synch issue in FSClassRegistry.generators
+    * [UIMA-1086] - CpmPanel displayProgress has bad logic
+    * [UIMA-1100] - Token annotation rendering style does not work.
+    * [UIMA-1105] - CPE is sutck trying to retrieve a free CAS from the pool
+    * [UIMA-1107] - Annotator context not set when annotator loaded from PEAR
+    * [UIMA-1111] - Calling jcas.getType for a type that is not defined in the descriptor causes a lot of object allocation
+    * [UIMA-1113] - DocumentAnalyzer falls down when running pear specifier and html result view
+    * [UIMA-1114] - DocumentAnalyzer: html view doesn't work for aggregates
+    * [UIMA-1116] - Missing override to protect SofaNum feature from modification
+    * [UIMA-1142] - FileUtils.saveString2File() should use try/finally block to close output stream
+    * [UIMA-1150] - Pear isolation broken, test case failing
+    * [UIMA-1158] - Some shell scripts don't work on Ubuntu Linux
+    * [UIMA-1175] - CasEditor should work well with eclipse 3.4
+    * [UIMA-1180] - Opening a CAS file should open the annotation editor. Not the text editor.
+    * [UIMA-1181] - Deleting a CAS file should also close the annotation editor. This occurs when the file is opened in text editor and annotation editor and cas file is deleted.
+    * [UIMA-1202] - Test cases fail because of incorrect/missing text encoding handling
+    * [UIMA-1203] - Add source code encoding to master pom
+    * [UIMA-1208] - How to get the element type of a uima.cas.FSList feature
+    * [UIMA-1228] - Merging results from a parallel step fails when a feature is an array of pre-existing annotations
+    * [UIMA-1242] - Array-valued features are written out incorrectly when serializing type system
+    * [UIMA-1244] - PDF for Tutorials and Users' Guides printing fails on page 32
+    * [UIMA-1247] - MBean Registration not thread-safe
+    * [UIMA-1250] - Some initialization messages may not appear as the Logger object changes during initialization
+    * [UIMA-1251] - If one delegate in an aggregate uses a JMS service descriptor and another fails to initialize, the JVM fails to terminate
+    * [UIMA-1256] - UIMA-AS XMI serialization loses items appended to an FSList
+    * [UIMA-1266] - AnalysisEngineMetaData.getTypeSystem() returns null
+    * [UIMA-1268] - Pear installer can't detect encoding of UTF-8 XML file
+    * [UIMA-1273] - Pear runtime pulls in all jar files in pear lib directory, no matter if they're on the classpath or not
+    * [UIMA-1275] - Mistake in CAS Multiplier documentation
+    * [UIMA-1277] - CasEditor line length setting is ignored 
+    * [UIMA-1280] - Missing message key in CPM at FINEST logging
+    * [UIMA-1281] - Parameter overrides ignored for C++ annotators
+    * [UIMA-1287] - deployAsyncService.sh does not work if UIMA_HOME contains a whitespace
+    * [UIMA-1291] - FileNotFoundException with addSourceToJars under Windows when UIMA_HOME contains whitespace
+    * [UIMA-1302] -  PerformanceReports for PEAR not being generated in a CPE
+    * [UIMA-1304] - Error handling parameters in CPE with a Vinci processor
+    * [UIMA-1325] - jVinci pom.xml should have relative path to parent pom
+    * [UIMA-1340] - PearAnalysisEngineWrapper does not expose Management Interface of the wrapped AE
+    * [UIMA-1344] - XCAS Serialization doesn't handle StringArrays with null elements
+    * [UIMA-1349] - Documentation does not mention that resource implementation should implement 
+    * [UIMA-1352] - java.lang.ClassCastException using find() with a SET index
+    * [UIMA-1365] - Code trying to ensure reverse iterators list items in the opposite order of forward ones is present but not working
+    * [UIMA-1373] - SimpleUimaAsService needs a POM
+    * [UIMA-1380] - SwingWorker is Sun code that can't be relicensed under Apache license and needs to be removed
+    * [UIMA-1386] - Cas Editor: BackgroundDrawingStrategy throws IllegalArgumentException
+    * [UIMA-1388] - TypeSystem2Xml creates an incompatible type system descriptor
+    * [UIMA-1400] - Uima aggregate with embedded Cas Multiplier fails if one attempts to create multiple instances of it in the same JVM
+    * [UIMA-1404] - It is not possible to set feature values with subtypes of the feature type.
+    * [UIMA-1408] - Annotation highlightning does not work with background drawing strategy
+    * [UIMA-1411] - Instructions for building eclipse update site are wrong
+    * [UIMA-1415] - Unix shell scripts should not use -vx debug arguments
+    * [UIMA-1418] - Find/Annotate dialog annotation type should be synchronized with editor mode
+    * [UIMA-1420] - Annotation Editor updates are too slow when it displays a huge number of annotations
+    * [UIMA-1421] - Removing a huge number of annoations is slow
+    * [UIMA-1422] - Improve/fix build process for Eclipse Plugins
+    * [UIMA-1423] - Document import broken
+    * [UIMA-1425] - Cas Editor plugin tests cannot be executed
+    * [UIMA-1430] - XmiCasDeserializerHandler.readFS(String, String, String, Attributes) should throw an instantiated exception
+    * [UIMA-1431] - Fix some potential overflow errors
+    * [UIMA-1432] - Function SOAP AxisAnalysisEngineServiceStub.callAnalysisEngineMetaData() fails and should be removed
+    * [UIMA-1438] - Don't delete src/main/resources/META-INF
+    * [UIMA-1441] - Incorrect use of Collection.binarySearch in UnambiguousIteratorImpl
+    * [UIMA-1458] - Remove the Cas Editor from the sandbox page.
+    * [UIMA-1465] - running a pearSpecifier as a top level component fails with NullPointerException
+    * [UIMA-1466] - Instantiating top level pearSpecifier: reconfigure throwing NPE and need to set Session
+    * [UIMA-1467] - PearAnalysisEngineWrapper should forward remaining methods in its interfaces to the contained AE including reconfigure and management interfaces
+    * [UIMA-1468] - Saving of annotations and relations does not always work properly
+    * [UIMA-1470] - Annotation Editor tries to place cursor on invalid position
+    * [UIMA-1473] - mvn assembly:assembly failing with msg about illegal character in path name to ant in repo
+    * [UIMA-1483] - Incorrect generification of JCas interface
+    * [UIMA-1485] - UIMA Tutorial and Developers guide in sub title 1.3.2 should be AAE and not AE
+    * [UIMA-1491] - Correct generics in org.apache.uima.cas.text
+    * [UIMA-1493] - Findbugs reporting inconsistent synchronization in ResourceManager - pear wrapper
+    * [UIMA-1494] - PearWrapper - don't forward finalize method
+    * [UIMA-1499] - Potential ClassCastException in CasPool
+    * [UIMA-1512] - some subproject POMs missing dependency on JUnit
+    * [UIMA-1516] - Deleted annotations remain highlighted 
+    * [UIMA-1521] - File encoding is platform dependent
+    * [UIMA-1523] - Generics: FSIterator.moveTo(T) should be moveTo(FeatureStructure)
+    * [UIMA-1525] - Running an AE inside the Cas Editor does not marks editor as dirty if document is opened
+    * [UIMA-1536] - move RunWithJarPath into its own project
+    * [UIMA-1543] - Missing <version> tags in uimaj-distr POM
+    * [UIMA-1548] - Include LICENSE/NOTICE/DISCLAIMER files from local sources ahead of common sources
+    * [UIMA-1549] - uimaj-core has dependency on log4j coded incorrectly
+    * [UIMA-1560] - Fix problems reported by FindBugs
+    * [UIMA-1561] - UIMA Reference docs 5.5.4 DocumentAnnotation is misspelled
+    * [UIMA-1562] - CasMultiplier doesn't work for PEARs
+    * [UIMA-1566] - build breaks for some components having no source files
+    * [UIMA-1569] - Marker should be make invalid when CAS is reset.
+    * [UIMA-1573] - setUimaClassPath fixes
+    * [UIMA-1576] - The AnnotationEditor does not remember the shown annotations when the Cas Editor is restarted
+    * [UIMA-1584] - Document Delta CAS XMI format
 
 ** Improvement
-    * [UIMA-477] - CDE function for import by name uses file system browser; should instead show appropriate items in classpath
-    * [UIMA-553] - casManager.releaseCas(aCas) should switch to the base view of the argument; otherwise fails to release
-    * [UIMA-657] - Eclipse Update site should keep previous versions
-    * [UIMA-687] - Remove redundant notifyAll when calling casPool.releaseCas(...)
-    * [UIMA-694] - Make Manifest Build-date work
-    * [UIMA-709] - eclipse plugins won't compile if uimaj-ep-runtime project is open
-    * [UIMA-721] - Improve performance of ResultSpecification, especially for Capability Language Flows
-    * [UIMA-731] - check if output file must be created while running the capabilityLanguageFlow tests
-    * [UIMA-734] - Check and possibly update docs for capability language flow to say not to depend on subtyping
-    * [UIMA-739] - Use compressed form of eclipse update site, and support multiple releases
-    * [UIMA-746] - add additional type checking for featurePath implementation
-    * [UIMA-774] - maven build improvements
-    * [UIMA-782] - Document Java 1.5 requirement for running Eclipse to use CDE, and mark runtime plugin (and others) as needing 1.5 level
-    * [UIMA-792] - CDE's Add "Component Engine Selection" dialog does not remember the setting for "Add selected AEs to end of flow"
-    * [UIMA-802] - CDE is unable to create PEAR descriptor as delegate
-    * [UIMA-811] - Document import-by-name CDE change
-    * [UIMA-816] - maven build - Eclipse plugin build improvements
-    * [UIMA-817] - uimaj-distr pom has wrong dependencies, due to changing eclipse plugin poms
-    * [UIMA-818] - Improve Signing artifacts for deployment, and update also website signing topic
-    * [UIMA-824] - document on website what needs to be set for running uimaj-distr assembly:assembly to specify Eclipse location
-    * [UIMA-825] - for Eclipse Update Site, remove checksum generation - it's done elsewhere, and improve specifying eclipse-home
-    * [UIMA-837] - Docbook tooling PDF footer overflows with long version name
-    * [UIMA-877] - Reverse multiple copyright statements in docbooks, per request at previous release vote
-    * [UIMA-920] - remove extraneous LICENSE files in uima-docbook-tool lib directory
-    * [UIMA-933] - [CDE] In CDE GUI, the border of some tables and combobox is not visible 
+    * [UIMA-71] - New v2 features missing from tutorial chapters
+    * [UIMA-420] - CVD should use encoding list provided by JVM
+    * [UIMA-472] - CAS Editor: All annotation inside the editor should have a differnt default colors as its done in the "UIMA Annotation Viewer"
+    * [UIMA-483] - JCas method like getSofaDataString that doesn't copy the chars from the StringHeap
+    * [UIMA-518] - improve browser utilities to configured the used browser in UIMA
+    * [UIMA-554] - Have produceResource for CollectionReaders operate like other Analysis Engines with respect to setup of type system
+    * [UIMA-684] - update website with "How to do a release" 
+    * [UIMA-767] - Use eclipse content types to identify annotators descriptors (.ann) and consumer descriptors (.con)
+    * [UIMA-857] - Change startup of framework to support versioned Jars and simplified classpath
+    * [UIMA-961] - Cleanup - remove unused things
+    * [UIMA-984] - Improve way we get required jar file javax.activation:activation:jar:1.0.2 for building from the source
+    * [UIMA-1015] - Example using deprecated method
+    * [UIMA-1048] - Eliminate compiler warings in CVD
+    * [UIMA-1067] - Remove char heap/ref heap in StringHeap of the CAS
+    * [UIMA-1068] - Use of the JCas cache should be configurable
+    * [UIMA-1119] - The XmiCasDeserializer throws NoSuchElementException if an XCAS is corrupted, but doesn't report the offending element.
+    * [UIMA-1148] - CVD should ignore feature structures of unknown types
+    * [UIMA-1163] - set svn:eol-style to native for source files in UIMA project
+    * [UIMA-1177] - Consider making the default setting for "Auto Generate JCAS Java source files" be off.
+    * [UIMA-1178] - Move the editing part of the Cas Editor to a new plugin
+    * [UIMA-1179] - Outline view should have an option to show all annotations grouped by type
+    * [UIMA-1182] - add info on how to verify using md5 signatures
+    * [UIMA-1206] - Add the capability to browse subdirectories to org.apache.uima.examples.cpe.FileSystemCollectionReader
+    * [UIMA-1212] - Optimize indexRepository methods getIndexedFS and flush
+    * [UIMA-1221] - PEAR Installer : how to run?
+    * [UIMA-1222] - PEAR Installer: environment variables
+    * [UIMA-1225] - dot files should not be redistributed
+    * [UIMA-1230] - When parsing an aggregate descriptor, should parse a shared type system file only once
+    * [UIMA-1257] - Type System Merging Should Produce Consistent Ordering of Types
+    * [UIMA-1258] - Optimize performance of CasCopier when input and output TypeSystems are the same
+    * [UIMA-1260] - [SimpleServer] Expose some "private" variables and method as "protected" so that new subclasses for UIMA-AS can be defined
+    * [UIMA-1262] - Make changes to superPoms active before they are *installed*
+    * [UIMA-1283] - Improve POMs so that eclipse build no longer requery maven repos once a day
+    * [UIMA-1306] - uimaj-examples: opennlp_wrappers not compatible with opennlp 1.4.x
+    * [UIMA-1326] - Remove EMF dependency from uimaj-ep-runtime plugin
+    * [UIMA-1341] - Introduce generics in UIMA core API
+    * [UIMA-1342] - Use @Deprecated annotation also
+    * [UIMA-1345] - Use generics in uimaj-core test code
+    * [UIMA-1356] - Add source to UIMA Eclipse plugins
+    * [UIMA-1362] - Cas Editor pom should use ${uimaj-release-version variable instead of hardcoded version string
+    * [UIMA-1363] - Access to individual type index iterators
+    * [UIMA-1364] - Concurrent modification checks dominate index iteration time.
+    * [UIMA-1366] - Binary heap annotation iterator implementation
+    * [UIMA-1368] - Compiler warnings in CAS index impl code
+    * [UIMA-1396] - Use generics in uimaj-core org.apache.uima.analysis_component package
+    * [UIMA-1397] - Extract CasEditor interface from AnnotationEditor
+    * [UIMA-1398] - Refactor ICasDocument interface to be more generic for non-text cas editors
+    * [UIMA-1417] - ResourceConfigurationException to be thrown from the initialize(context) method
+    * [UIMA-1419] - Find/Annotate dialog should have buttons to adjust annoation span
+    * [UIMA-1428] - Remove unused private constructors from org.apache.uima.cas.impl package classes
+    * [UIMA-1440] - Documentation build: add ant script that copies the docbook prereqs from a known location
+    * [UIMA-1442] - RedBlackTree should use generics
+    * [UIMA-1443] - RedBlackTree should implement Iterable
+    * [UIMA-1444] - cas.impl package should use generics
+    * [UIMA-1445] - Refactor FSTypeConstraintImpl
+    * [UIMA-1451] - findbugs changes for ep-configurator (CDE)
+    * [UIMA-1452] - add generic type info to some classes in uima-core
+    * [UIMA-1453] - some findbugs cleanup in uimaj-core
+    * [UIMA-1474] - review POMs for specification of obsolete, out-of-date levels of components
+    * [UIMA-1488] - Generics for org.apache.uima.resoruce classes
+    * [UIMA-1489] - Generify FSIndexRepository
+    * [UIMA-1496] - Generics for CasCreationUtils
+    * [UIMA-1500] - Deprecate UIMA 1.x classes in org.apache.uima.analysis_engine.annotator
+    * [UIMA-1501] - more refactoring and updating - parent POMs
+    * [UIMA-1504] - Generify the additionalParams Map through the uimaj-core codebase
+    * [UIMA-1505] - Generics for org.apache.uima.analysis_engine classes
+    * [UIMA-1507] - BaseCollectionReader should extend Resource
+    * [UIMA-1508] - Generify uimaj-core
+    * [UIMA-1509] - Generify the aResourceClass Class through the uimaj-core codebase
+    * [UIMA-1510] - improve uimaj-distr assembly
+    * [UIMA-1513] - Update Cas Editor documentation for 2.3.0 release
+    * [UIMA-1517] - Don't set executable bits on non-executables, when building assemblies
+    * [UIMA-1519] - Generify JFSIndexRepository
+    * [UIMA-1520] - An annotation created with the edit view should use span of editor selection
+    * [UIMA-1537] - License Notice Disclaimer copying
+    * [UIMA-1538] - Common Build Step: build source Jars for java Jars
+    * [UIMA-1544] - make bootstrap launcher take directories which have .class files in them
+    * [UIMA-1545] - UimaBootstrap loader - print out the resulting classpath by default
+    * [UIMA-1567] - Maven build: add <prerequisites> to uimaj to specify minimum Maven release level
+    * [UIMA-1568] - Remove no longer used assemble-plugin files from uimaj-ep- projects
+    * [UIMA-1575] - Change eclipse update site and feature generation to use common maven mechanisms
+    * [UIMA-1590] - fix extractAndBuild scripts
+    * [UIMA-1591] - Sandbox build - fix copying & cleaning of docs/ for website interaction with SVN
+    * [UIMA-1592] - PearPackagingMavenPlugin - correct documentation and add usage from command line, and add plugin prefix
 
 ** New Feature
-    * [UIMA-718] - add featurePath helper class 
+    * [UIMA-1046] - CVD should support an ini file parameter on the command line
+    * [UIMA-1129] - XMI serialization support for delta CAS  
+    * [UIMA-1151] - Make CVD load a CAS from command line
+    * [UIMA-1167] - CVD should be able to call CollectionProcessComplete
+    * [UIMA-1188] - More constraints for primitive types
+    * [UIMA-1207] - Support for Delta CAS format in binary (blob) serialization
+    * [UIMA-1210] - XmiCollectionReader fails when it encounters unknown types
+    * [UIMA-1267] - Pear installer: expose the ability to install pear file without intermediate component ID
+
+
+
 
 ** Task
-    * [UIMA-681] - change UIMA version from 2.2.1-incubating to 2.3.0-incubating-SNAPSHOT
-    * [UIMA-832] - Update version of UIMAJ to 2.2.2 from 2.3.0
+    * [UIMA-1360] - Graduate the Cas Editor out of the sandbox
+    * [UIMA-1387] - Cas Editor: Remove pde log viewer from perspective
+    * [UIMA-1414] - Add Cas Editor to uima distribution
+    * [UIMA-1424] - Remove .launch files from Cas Editor
+    * [UIMA-1497] - change build for pear packaging maven plugin
+
 
 ** Test
-    * [UIMA-796] - update org.apache.uima.resource.metadata.impl.Import_implTest test to create canonical URLs
+    * [UIMA-1389] - Remove OpenNLP example wrapper
 
-** Wish
-    * [UIMA-282] - Work well with Apache logging (Log4J)
-    * [UIMA-749] - add performance report to CVD
+
