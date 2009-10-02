@@ -891,14 +891,14 @@ public interface CAS extends AbstractCas {
   /**
    * Get the document text.
    * 
-   * @return The text being analyzed.
+   * @return The text being analyzed, or <code>null</code> if not set.
    */
   String getDocumentText();
 
   /**
    * Get the Sofa Data String (a.k.a. the document text).
    * 
-   * @return The Sofa data string.
+   * @return The Sofa data string, or <code>null</code> if not set.
    */
   String getSofaDataString();
 
@@ -935,7 +935,7 @@ public interface CAS extends AbstractCas {
   /**
    * Get the Sofa data array.
    * 
-   * @return The Sofa Data being analyzed.
+   * @return The Sofa Data being analyzed, or <code>null</code> if not set.
    */
   FeatureStructure getSofaDataArray();
 
@@ -955,14 +955,14 @@ public interface CAS extends AbstractCas {
   /**
    * Get the Sofa data array.
    * 
-   * @return The Sofa Data being analyzed.
+   * @return The Sofa URI being analyzed, or <code>null</code> if not set.
    */
   String getSofaDataURI();
 
   /**
    * Get the Sofa data as a byte stream.
    * 
-   * @return A stream handle to the Sofa Data.
+   * @return A stream handle to the Sofa Data, or <code>null</code> if not set.
    */
   InputStream getSofaDataStream();
 
