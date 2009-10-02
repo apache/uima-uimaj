@@ -38,7 +38,9 @@ public abstract class CasFlow_ImplBase implements Flow {
    * 
    * @param aCAS
    *          the CAS to be routed by this Flow object
+   * @deprecated this is automatically done by the framework after a new flow object is created
    */
+  @Deprecated
   public void setCas(CAS aCAS) {
     mCAS = aCAS;
   }
