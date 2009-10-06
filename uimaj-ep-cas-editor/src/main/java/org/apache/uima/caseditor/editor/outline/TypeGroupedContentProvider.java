@@ -33,6 +33,7 @@ import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.caseditor.CasEditorPlugin;
+import org.apache.uima.caseditor.core.TaeError;
 import org.apache.uima.caseditor.editor.AnnotationEditor;
 import org.apache.uima.caseditor.editor.ICasDocument;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -102,11 +103,21 @@ public class TypeGroupedContentProvider extends OutlineContentProviderBase {
 
 	public Object getParent(Object element) {
 	
-		AnnotationTreeNode annotation = (AnnotationTreeNode) element;
-	
-		String name = annotation.getAnnotation().getType().getName();
-	
-		return nameAnnotationTypeNodeMap.get(name);
+		if (element instanceof AnnotationTreeNode) {
+			AnnotationTreeNode annotation = (AnnotationTreeNode) element;
+		
+			String name = annotation.getAnnotation().getType().getName();
+		
+			return nameAnnotationTypeNodeMap.get(name);
+		}
+		else if (element instanceof AnnotationTypeTreeNode) {
+			// The head type elements to not have a parent
+			return null;
+		}
+		else {
+			CasEditorPlugin.logError("TypeGroupedContentProvider: Unexpected type " + element.getClass().getName());
+			return null;
+		}
 	}
 
 	public boolean hasChildren(Object element) {
