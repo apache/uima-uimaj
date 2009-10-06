@@ -56,14 +56,14 @@ final class BackgroundDrawingStrategy implements IDrawingStrategy {
     	  
         Rectangle bounds = textWidget.getTextBounds(annotationBegin, annotationEnd - 1);
 
-        // Selection in the text widget are drawn before the annotation are drawn,
+        // Selection in the text widget are drawn before the annotations are drawn,
         // to make a selection visible the selection is redrawn over the background
         // rectangle
         //
-        //
         // The annotation background to be drawn is a span which has a begin and end offset.
         // Inside the background are areas (spans) which should not be over drawn. 
-        // That can be visualized like this:
+        // That can be visualized like this (annotation goes from first to last z, an 
+        // X is the selection which should not be overdrawn):
         //
         // zzzzXXXzzzzXXXXzzzXX
         //
@@ -98,7 +98,7 @@ final class BackgroundDrawingStrategy implements IDrawingStrategy {
         if (dontOverDrawSpans.size() > 0) {
 	        int zBegin = offset;
 	    	for (Span xSpan : dontOverDrawSpans) {
-	    	  if (xSpan.getLength()> 0 && zBegin < xSpan.getStart()) {
+	    	  if (xSpan.getLength() > 0 && zBegin < xSpan.getStart()) {
 	    		  Rectangle selectionBounds = textWidget.getTextBounds(zBegin, xSpan.getStart() -1);
 	    		  gc.fillRectangle(selectionBounds);
 	    	   }
@@ -123,7 +123,17 @@ final class BackgroundDrawingStrategy implements IDrawingStrategy {
 
         gc.setForeground(new Color(gc.getDevice(), 0, 0, 0));
         
-        gc.drawText(textWidget.getText(start, end), bounds.x, bounds.y, true);
+        // Instead of a tab draw textWidget.getTabs() spaces
+        String annotationText = textWidget.getText(start, end);
+        
+        if (annotationText.contains("\t")) {
+        	char replacementSpaces[] = new char[textWidget.getTabs()];
+        	for (int i = 0; i < replacementSpaces.length; i++) {
+        		replacementSpaces[i] = ' ';
+        	}
+        	annotationText = annotationText.replace(new String(new char[]{'\t'}), new String(replacementSpaces));
+        }
+        gc.drawText(annotationText, bounds.x, bounds.y, true);
       } 
       else {
         textWidget.redrawRange(offset, length, true);
