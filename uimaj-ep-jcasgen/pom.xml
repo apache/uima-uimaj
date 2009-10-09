@@ -119,7 +119,8 @@
                  not needed by maven -->
             <Import-Package>*,
               org.eclipse.core.runtime.jobs,
-              org.osgi.framework
+              org.osgi.framework, 
+              org.eclipse.jdt.core.jdom
             </Import-Package> 
             <Bundle-SymbolicName>org.apache.uima.jcas.jcasgenp;singleton:=true</Bundle-SymbolicName>
             <Eclipse-AutoStart>true</Eclipse-AutoStart>
