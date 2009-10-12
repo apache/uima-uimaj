@@ -111,7 +111,7 @@ under the License.
         <include>properties/**</include>
         <include>styles/**</include>
         <include>tools/common-lib/**</include>
-        <include>tools/fop-versions/fop-0.95/fop.config.xml</include>
+        <include>tools/fop-versions/fop-0.95/fop-config.xml</include>
         <include>xinclude.mod</include> 
         <include>README</include>
         <include>README.FIRST</include>
