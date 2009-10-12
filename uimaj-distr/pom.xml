@@ -23,33 +23,20 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.uima</groupId>
   <artifactId>uimaj-distr</artifactId>
-  
-  <!-- packaging is set to jar even though it causes an extraneous jar to be built
-       and deployed to the maven repos.
-       This is because of some issue with getting the assembly to work; see
-       http://article.gmane.org/gmane.comp.apache.uima.devel/3228/match=should+uimaj+distr+packaging
-    -->
   <packaging>pom</packaging>
   <version>${uimaj-release-version}</version>
   <name>Apache UIMA Java SDK - Resources and Assembly Descriptor for building the distribution</name>
-  <url>http://incubator.apache.org/uima</url>
-  <organization><name>The Apache Software Foundation</name></organization>
-  <licenses>
-    <license>
-      <name>The Apache Software License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
-  <scm>
-    <url>http://svn.apache.org/viewvc/incubator/uima</url>
-  </scm>    
   <parent>
     <groupId>org.apache.uima</groupId>
-    <artifactId>uimaj</artifactId>
+    <artifactId>uima-common-distribution</artifactId>
     <version>2.3.0-incubating-SNAPSHOT</version> <!-- this comment is a flag for changeVersion -->
-        <relativePath>../uimaj</relativePath>
+    <relativePath>../uimaj/distr-superPom</relativePath>
   </parent>
+  
+  <properties>
+    <!-- property used in multiple places in distr-superPom -->
+    <assemblyFinalName>uima-as-${uimaj-release-version}</assemblyFinalName>  
+  </properties>  
   
   <!-- dependencies that go into the various builds via dependency-sets -->
   <!-- version is picked up from parent -->
@@ -112,7 +99,7 @@
           <execution>
             <id>javadoc</id>
             <phase>package</phase>
-         <!--phase>deploy</phase--> <!-- comment above and uncomment to disable javadocs, for testing/experimentation, with assembly:assembly-->
+            <!--phase>deploy</phase--> <!-- comment above and uncomment to disable javadocs, for testing/experimentation, with assembly:assembly-->
             <goals>
               <goal>aggregate</goal>
             </goals>
@@ -144,20 +131,6 @@
         </executions>
       </plugin>
       
-      
-      <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <version>2.2-beta-4</version>
-        <configuration>
-          <descriptors>
-            <descriptor>src/main/assembly/bin.xml</descriptor>
-            <descriptor>src/main/assembly/src.xml</descriptor>
-          </descriptors>
-          <finalName>uimaj-${uimaj-release-version}</finalName>
-          <tarLongFileMode>gnu</tarLongFileMode>
-        </configuration>
-      </plugin>
-      
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
         <executions>
@@ -184,36 +157,52 @@
               <goal>run</goal>
             </goals>
           </execution>
-          <!-- 
-          <execution>
-            <id>checksum</id>
-            <phase>package</phase>
-            <configuration>
-              <tasks>
-                <checksum algorithm="sha1">
-                  <fileset dir="target" includes="*.gz *.bz2 *.zip" />
-                  <fileset dir="../uimaj-eclipse-update-site/target/eclipse-update-site/features"
-                           includes="*.jar"/> 
-                  <fileset dir="../uimaj-eclipse-update-site/target/eclipse-update-site/plugins"
-                           includes="*.jar *.pack.gz"/>
-                </checksum>
-                <checksum algorithm="md5">
-                  <fileset dir="target" includes="*.gz *.bz2 *.zip" />
-                  <fileset dir="../uimaj-eclipse-update-site/target/eclipse-update-site/features"
-                           includes="*.jar"/>
-                  <fileset dir="../uimaj-eclipse-update-site/target/eclipse-update-site/plugins"
-                           includes="*.jar *.pack.gz"/>
-                </checksum>
-              </tasks>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-           -->
+          
         </executions>
       </plugin>
       
-  </plugins>
+      <!-- must follow other package goals, like the one above building the docbooks -->
+      <plugin> 
+        <artifactId>maven-assembly-plugin</artifactId>
+      </plugin>
+  
+      <!-- Release Audit Tool checks -->
+      <!-- run Release Audit Tool (RAT) on src and bin distrs -->       
+      <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>rat-check-src</id>
+            <configuration>
+              <excludes>
+                <exclude>uima-docbooks/README.USER.txt</exclude> <!-- readme -->
+                <exclude>uima-docbooks/src/olink/**</exclude> <!-- generated cross ref database for Apache FOP -->
+                <exclude>uimaj-core/src/test/resources/**</exclude> <!-- test data -->
+                <exclude>uimaj-ep-cas-editor/src/test/resources/ManualTests/**</exclude> <!-- test data -->
+                <exclude>uimaj-examples/src/main/data/**</exclude> <!-- sample data -->
+                <exclude>uimaj-examples/src/main/eclipseProject/ecore_src_readme.txt</exclude>  <!-- readme -->
+                <exclude>uimaj-examples/src/main/resources/org/apache/uima/tutorial/ex6/uimaAcronyms.txt</exclude>  <!-- sample data -->
+                <exclude>uimaj-tools/src/main/resources/org/apache/uima/tools/migration/*.txt</exclude> <!-- system data file -->
+                <exclude>uimaj-tools/src/main/resources/org/apache/uima/tools/util/gui/about.txt</exclude> <!-- about file -->
+                <exclude>uimaj-tools/src/test/resources/pearTests/pearMergerTests/uima.example.RoomNumber.pear</exclude> <!-- test binary file -->
+              </excludes>
+            </configuration>
+          </execution>
+          <execution>
+            <id>default-cli</id>
+            <configuration>
+              <excludes>
+                <exclude>docs/api/**</exclude> <!-- javadocs-->
+                <exclude>docs/html/images/*.svg</exclude>  <!-- generated .svg image files -->
+                <exclude>examples/data/**</exclude> <!-- sample data -->
+                <exclude>examples/resources/org/apache/uima/tutorial/ex6/uimaAcronyms.txt</exclude> <!--sample param file -->         
+              </excludes>
+            </configuration>
+          </execution>  
+        </executions>
+      </plugin>
+
+    </plugins>
   </build>  
 </project>
