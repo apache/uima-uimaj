@@ -219,13 +219,13 @@ the default target.
   <target name="build-features" depends="init">
     <makeFeatureJar project-name="uimaj-eclipse-feature-deployeditor"
                     org-name="org.apache.uima.deployeditor"
-                    version="2.3.0.incubating-SNAPSHOT"/>
+                    version="2.3.0.incubating"/>
 	<makeFeatureJar project-name="uimaj-eclipse-feature-runtime"
                     org-name="org.apache.uima.runtime"
-                    version="2.3.0.incubating-SNAPSHOT"/>
+                    version="2.3.0.incubating"/>
     <makeFeatureJar project-name="uimaj-eclipse-feature-tools"
                     org-name="org.apache.uima.tools"
-                    version="2.3.0.incubating-SNAPSHOT"/>
+                    version="2.3.0.incubating"/>
   </target>	   
 	   
   <target name="pack-jars" depends="init">

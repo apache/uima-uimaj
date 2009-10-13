@@ -51,7 +51,8 @@
     normal-modules, 
     uima-framework,
     eclipse-plugins, 
-    eclipse-features, 
+    eclipse-features,
+    eclipse-update-site, 
     docbooks, 
     readme"/> 
                           <!-- uimaj, normal-modules, uima-framework, 
@@ -81,6 +82,7 @@
       "jVinci/pom.xml,
        uimaj-adapter-soap/pom.xml,
        uimaj-adapter-vinci/pom.xml,
+       uimaj-bootstrap/pom.xml,
        uimaj-component-test-util/pom.xml,
        uimaj-core/pom.xml,
        uimaj-cpe/pom.xml,
@@ -90,7 +92,7 @@
        uimaj-internal-tools/pom.xml,
        uimaj-test-util/pom.xml,
        uimaj-tools/pom.xml,
-       PearPackagingMavenPlugin,
+       PearPackagingMavenPlugin/pom.xml,
        uimaj/distr-superPom/pom.xml
 -       " summary="yes"
       token="&lt;version&gt;${uima.prev.version}&lt;/version&gt; &lt;!-- this comment is a flag for changeVersion -->"
@@ -130,6 +132,21 @@
       summary="yes"
       token='version="${uima.eclipse.prev.version}"'
       value='version="${uima.eclipse.version}"'/>      
+  </target>
+  
+  <target name="eclipse-update-site">
+    <replace file="${wksp}/uimaj-eclipse-update-site/build.xml" 
+      summary="yes"
+      token='version="${uima.eclipse.prev.version}"'
+      value='version="${uima.eclipse.version}"'/>
+    <replace file="${wksp}/uimaj-eclipse-update-site/site.xml" 
+      summary="yes"
+      token='version="${uima.eclipse.prev.version}"'
+      value='version="${uima.eclipse.version}"'/>
+    <replace file="${wksp}/uimaj-eclipse-update-site/site.xml" 
+      summary="yes"
+      token='_${uima.eclipse.prev.version}.jar'
+      value='_${uima.eclipse.version}.jar'/>     
   </target>
   
   <target name="readme">
