@@ -88,12 +88,26 @@
               <goals><goal>run</goal></goals>
               <configuration>
                 <tasks>
-                  <delete dir="target/rat-src-dir"/>
-                  <delete dir="target/rat-bin-dir"/>
-                  <unzip dest="target/rat-src-dir"
-                         src="target/${assemblyFinalName}-src.zip"/>
-                  <unzip dest="target/rat-bin-dir"
-                         src="target/${assemblyFinalName}-bin.zip"/>                     
+                  <!-- set up ant-contrib extensions -->
+                  <typedef resource="net/sf/antcontrib/antlib.xml">
+                    <classpath refid="maven.dependency.classpath"/>
+                  </typedef>
+
+                  <!-- skip this if assemblyFinalName is undefined -->
+                  <!-- This happens when this pom is installed by itself -->
+                  <!-- because it's superpom has a ant-run instance -->
+
+                  <if>
+                    <isset property="assemblyFinalName"></isset>
+                    <then>
+                      <delete dir="target/rat-src-dir"/>
+                      <delete dir="target/rat-bin-dir"/>
+                      <unzip dest="target/rat-src-dir"
+                             src="target/${assemblyFinalName}-src.zip"/>
+                      <unzip dest="target/rat-bin-dir"
+                             src="target/${assemblyFinalName}-bin.zip"/>    
+                    </then>
+                  </if>                                   
                 </tasks>
               </configuration>
             </execution>
