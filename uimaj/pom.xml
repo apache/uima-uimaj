@@ -606,7 +606,10 @@
     <module>distr-superPom</module>
     <module>../uimaj-document-annotation</module>
     <module>../PearPackagingMavenPlugin</module>
-    <module>../uimaj-internal-tools</module>
+    <!-- the internal tools project is not part of any release 
+         and can't be built automatically - to build it,
+         cd to the project directory and do mvn install -->
+    <!--module>../uimaj-internal-tools</module-->
     <module>../uimaj-bootstrap</module>
   </modules>
   <repositories>

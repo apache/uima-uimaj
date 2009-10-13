@@ -319,6 +319,16 @@ under the License.
         <include>pom.xml</include>
       </includes>
       <fileMode>644</fileMode>
+    </fileSet>
+    <fileSet>
+      <directory>../PearPackagingMavenPlugin</directory>
+      <outputDirectory>/PearPackagingMavenPlugin</outputDirectory>
+      <includes>
+        <include>src/**</include>
+        <include>pom.xml</include>
+      </includes>
+      <fileMode>644</fileMode>
     </fileSet>       
+          
   </fileSets>  
 </assembly>
