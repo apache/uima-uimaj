@@ -74,6 +74,6 @@ call mvn %jvmarg%  -Duima.build.date="%date% %time%" %mvnCommand%
 REM keep these next 2 "cd"s as two separate lines - got strange behavior when combining 2009
 cd ..
 cd uimaj-distr
-call mvn clean assembly:assembly
+call mvn clean install
 
 @:exit

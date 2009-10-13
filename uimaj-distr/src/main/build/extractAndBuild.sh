@@ -74,5 +74,5 @@ cd uimaj
 mvn ${jvmargs} -Duima.build.date="`date`" $mvnCommand
 cd ..
 cd uimaj-distr
-mvn assembly:assembly
+mvn clean install
 
