@@ -27,13 +27,13 @@
   <groupId>org.apache.uima</groupId>
   <artifactId>uimaj</artifactId>
   <packaging>pom</packaging>
-  <version>2.3.0-incubating-SNAPSHOT</version> <!-- this comment is a flag for changeVersion -->
+  <version>2.3.0-incubating</version> <!-- this comment is a flag for changeVersion -->
 
   <properties>
       <!-- cannot use a property expression as the value here
            causes recursive loop -->
-      <uimaj-release-version>2.3.0-incubating-SNAPSHOT</uimaj-release-version> <!-- this comment is a flag for changeVersion -->
-      <uimaj-release-eclipse-version>2.3.0.incubating-SNAPSHOT</uimaj-release-eclipse-version>
+      <uimaj-release-version>2.3.0-incubating</uimaj-release-version> <!-- this comment is a flag for changeVersion -->
+      <uimaj-release-eclipse-version>2.3.0.incubating</uimaj-release-eclipse-version>
   </properties>
   <name>Apache UIMA Java SDK</name>
 
