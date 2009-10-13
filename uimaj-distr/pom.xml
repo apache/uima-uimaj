@@ -35,7 +35,7 @@
   
   <properties>
     <!-- property used in multiple places in distr-superPom -->
-    <assemblyFinalName>uima-as-${uimaj-release-version}</assemblyFinalName>  
+    <assemblyFinalName>uimaj-${uimaj-release-version}</assemblyFinalName>  
   </properties>  
   
   <!-- dependencies that go into the various builds via dependency-sets -->
