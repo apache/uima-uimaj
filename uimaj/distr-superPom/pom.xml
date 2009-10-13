@@ -136,10 +136,14 @@
 
   <!-- listing the modules here allows running mvn xxx on this pom
     and having it recurse into all the children -->
+    
+  <!-- commenting this out - need to separate aggregation from
+       parenting... this will allow this to be included in the
+       uimaj aggregation without forcing the build of all assemblies -->
       
-  <modules>
+  <!--modules>
     <module>../../uimaj-distr</module>
     <module>../../uima-as-distr</module>
     <module>../../SandboxDistr</module>
-  </modules>
+  </modules-->
 </project>

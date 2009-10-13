@@ -603,6 +603,7 @@
     <module>../uimaj-component-test-util</module>
     <module>../jVinci</module>
     <module>eclipse-plugin-superPom</module>
+    <module>distr-superPom</module>
     <module>../uimaj-document-annotation</module>
     <module>../PearPackagingMavenPlugin</module>
     <module>../uimaj-internal-tools</module>
