@@ -160,6 +160,7 @@ under the License.
       <includes>
         <include>pom.xml</include>
         <include>eclipse-plugin-superPom/**</include>
+        <include>distr-supertPom/**</include>
       </includes>
       <fileMode>644</fileMode>
     </fileSet>
