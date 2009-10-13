@@ -190,7 +190,7 @@
             </configuration>
           </execution>
           <execution>
-            <id>default-cli</id>
+            <id>rat-check-bin</id>
             <configuration>
               <excludes>
                 <exclude>docs/api/**</exclude> <!-- javadocs-->
