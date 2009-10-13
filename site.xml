@@ -25,13 +25,13 @@
    </description>
    
    <!-- keep old features listed here - to permit the update site to provide the older features -->
-   <feature url="features/org.apache.uima.tools_2.3.0.incubating-SNAPSHOT.jar" id="org.apache.uima.tools" version="2.3.0.incubating-SNAPSHOT">
+   <feature url="features/org.apache.uima.tools_2.3.0.incubating.jar" id="org.apache.uima.tools" version="2.3.0.incubating">
       <category name="uima-tooling-and-runtimes"/>
    </feature>
-   <feature url="features/org.apache.uima.runtime_2.3.0.incubating-SNAPSHOT.jar" id="org.apache.uima.runtime" version="2.3.0.incubating-SNAPSHOT">
+   <feature url="features/org.apache.uima.runtime_2.3.0.incubating.jar" id="org.apache.uima.runtime" version="2.3.0.incubating">
       <category name="uima-tooling-and-runtimes"/>
    </feature>
-   <feature url="features/org.apache.uima.as.deployeditor_2.3.0.incubating-SNAPSHOT.jar" id="org.apache.uima.as.deployeditor" version="2.3.0.incubating-SNAPSHOT">
+   <feature url="features/org.apache.uima.as.deployeditor_2.3.0.incubating.jar" id="org.apache.uima.as.deployeditor" version="2.3.0.incubating">
       <category name="uima-as-tooling"/>
    </feature>
    
