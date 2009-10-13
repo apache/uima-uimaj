@@ -90,7 +90,8 @@
        uimaj-internal-tools/pom.xml,
        uimaj-test-util/pom.xml,
        uimaj-tools/pom.xml,
-       PearPackagingMavenPlugin
+       PearPackagingMavenPlugin,
+       uimaj/distr-superPom/pom.xml
 -       " summary="yes"
       token="&lt;version&gt;${uima.prev.version}&lt;/version&gt; &lt;!-- this comment is a flag for changeVersion -->"
       value="&lt;version&gt;${uima.version}&lt;/version&gt; &lt;!-- this comment is a flag for changeVersion -->"/>     
