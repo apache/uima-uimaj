@@ -51,7 +51,7 @@ final public class NewNlpProjectWizard extends Wizard implements INewWizard
      */
     public void init(IWorkbench workbench, IStructuredSelection selection)
     {
-      setWindowTitle("New NLP project");
+      setWindowTitle("New Cas Editor Project");
     }
 
     /**
@@ -61,8 +61,8 @@ final public class NewNlpProjectWizard extends Wizard implements INewWizard
     public void addPages()
     {
         mMainPage = new NewNlpProjectWizardPage();
-        mMainPage.setTitle("Create a NLP project");
-        mMainPage.setDescription("Create a NLP project in the workspace");
+        mMainPage.setTitle("Create a Cas Editor Project");
+        mMainPage.setDescription("Create a Cas Editor Project in the workspace");
         addPage(mMainPage);
     }
 

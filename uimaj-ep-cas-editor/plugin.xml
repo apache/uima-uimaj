@@ -47,7 +47,7 @@
 
 
 	<extension point="org.eclipse.ui.views">
-		<category id="org.apache.uima.caseditor.ui.views" name="NLP" />
+		<category id="org.apache.uima.caseditor.ui.views" name="Cas Editor" />
 
 		<view id="org.apache.uima.caseditor.editview"
 			name="Edit View"
@@ -108,7 +108,7 @@
 	</extension>
 	
 	<extension point="org.eclipse.core.resources.natures"
-		id="NLPProject" name="NLP Nature">
+		id="NLPProject" name="Cas Editor Nature">
 		<runtime>
 			<run
 				class="org.apache.uima.caseditor.core.model.NlpProject" />
@@ -124,7 +124,7 @@
 
 	<!-- ui extensions -->
 	<extension point="org.eclipse.ui.views">
-		<category id="org.apache.uima.caseditor.ui.views" name="NLP" />
+		<category id="org.apache.uima.caseditor.ui.views" name="Cas Editor" />
 
 		<view id="org.apache.uima.caseditor.corpusview"
 			name="Corpus Explorer"
@@ -135,7 +135,7 @@
 
 	<extension point="org.eclipse.ui.newWizards">
 
-		<category name="NLP" id="org.apache.uima.caseditor.ui.wizards" />
+		<category name="Cas Editor" id="org.apache.uima.caseditor.ui.wizards" />
 
 		<wizard canFinishEarly="false"
 			category="org.apache.uima.caseditor.ui.wizards"
@@ -143,10 +143,10 @@
 			finalPerspective="org.apache.uima.caseditor.perspective.NLP"
 			hasPages="true" icon="icons/svgicons/corpus.png"
 			id="org.apache.uima.caseditor.wizards.NLPProjectWizard"
-			name="Project"
+			name="Cas Editor Project"
 			preferredPerspectives="org.apache.uima.caseditor.perspective.NLP"
 			project="true">
-			<description>Create a NLP project</description>
+			<description>Create a Cas Editor Project</description>
 		</wizard>
 		<!--		
 			<wizard
@@ -177,7 +177,7 @@
   
 		<extension point="org.eclipse.ui.importWizards">
 		
-		<category name="NLP" id="org.apache.uima.caseditor.ui.wizards" />
+		<category name="Cas Editor" id="org.apache.uima.caseditor.ui.wizards" />
 		
 		<wizard
 		category="org.apache.uima.caseditor.ui.wizards"
@@ -193,7 +193,7 @@
 		<perspective
 			class="org.apache.uima.caseditor.ui.NlpPerspectiveFactory"
 			fixed="true" icon="icons/svgicons/corpus.png"
-			id="org.apache.uima.caseditor.perspective.NLP" name="NLP">
+			id="org.apache.uima.caseditor.perspective.NLP" name="Cas Editor">
 		</perspective>
 	</extension>
 
