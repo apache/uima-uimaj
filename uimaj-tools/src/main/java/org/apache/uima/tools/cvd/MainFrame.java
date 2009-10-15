@@ -36,6 +36,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
@@ -1297,7 +1298,16 @@ public class MainFrame extends JFrame {
     // initialize log framework
     LogManager logManager = LogManager.getLogManager();
     try {
-      logManager.readConfiguration(ClassLoader.getSystemResourceAsStream(loggerPropertiesFileName));
+      InputStream ins = ClassLoader.getSystemResourceAsStream(loggerPropertiesFileName);
+      // Try the current class loader if system one cannot find the file
+      if (ins == null) {
+    	ins = this.getClass().getClassLoader().getResourceAsStream(loggerPropertiesFileName);
+      }
+      if (ins != null) {
+    	logManager.readConfiguration(ins);
+      } else {
+    	System.out.println("WARNING: failed to load "+loggerPropertiesFileName);
+      }
     } catch (SecurityException e) {
       handleException(e);
       return;
