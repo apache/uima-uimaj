@@ -17,12 +17,6 @@
 #   specific language governing permissions and limitations
 #   under the License.
 
-if [ "$UIMA_HOME" = "" ]
-then
-  echo UIMA_HOME environment variable is not set
-  exit 1
-fi
-
 if [ $# -ge 1 ]
 then
   firstarg=$1
@@ -31,28 +25,16 @@ if [ $# -ge 2 ]
 then
   secondarg=$2
 fi
-. "$UIMA_HOME/bin/setUimaClassPath.sh"
 echo "Running JCasGen with no Java CAS Model merging.  To run with merging, use jcasgen_merge (requires Eclipse, plus UIMA and EMF plugins)."
-if [ "$JAVA_HOME" = "" ]
-then
-  UIMA_JAVA_CALL=java
-else
-  UIMA_JAVA_CALL="$JAVA_HOME/bin/java"
-fi
-if [ "$UIMA_LOGGER_CONFIG_FILE" = "" ]
-then
-  UIMA_LOGGER_CONFIG_FILE=$UIMA_HOME/config/Logger.properties
-fi
-LOGGER="-Djava.util.logging.config.file=$UIMA_LOGGER_CONFIG_FILE"
 MAIN=org.apache.uima.tools.jcasgen.Jg
 if [ "$firstarg" = "" ]
 then
-  "$UIMA_JAVA_CALL" "$LOGGER" -cp "$UIMA_CLASSPATH" $MAIN "-Duima.datapath=$UIMA_DATAPATH"
+  . runUimaClass.sh $MAIN
 else
   if [ "$secondarg" = "" ]
   then
-    "$UIMA_JAVA_CALL" "$LOGGER" -cp "$UIMA_CLASSPATH" $MAIN "-Duima.datapath=$UIMA_DATAPATH" -jcasgeninput "$firstarg"
+    . runUimaClass.sh $MAIN -jcasgeninput "$firstarg"
   else
-    "$UIMA_JAVA_CALL" "$LOGGER" -cp "$UIMA_CLASSPATH" $MAIN "-Duima.datapath=$UIMA_DATAPATH" -jcasgeninput "$firstarg" -jcasgenoutput "$secondarg"
-  fi  
+    . runUimaClass.sh $MAIN -jcasgeninput "$firstarg" -jcasgenoutput "$secondarg"
+    fi  
 fi

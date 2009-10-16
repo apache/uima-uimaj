@@ -17,17 +17,6 @@
 #   specific language governing permissions and limitations
 #   under the License.
 
-if [ "$UIMA_HOME" = "" ]
-then
-  echo UIMA_HOME environment variable is not set
-  exit 1
-fi
-
-. "$UIMA_HOME/bin/setUimaClassPath.sh"
-if [ "$JAVA_HOME" = "" ]
-then
-  UIMA_JAVA_CALL=java
-else
-  UIMA_JAVA_CALL="$JAVA_HOME/bin/java"
-fi
-"$UIMA_JAVA_CALL" -cp "$UIMA_CLASSPATH" $UIMA_JVM_OPTS "-Djava.util.logging.config.file=$UIMA_LOGGER_CONFIG_FILE" "-Duima.home=$UIMA_HOME" "-Duima.tools.cvd.manpath=${UIMA_HOME}/docs/html" "-Duima.datapath=$UIMA_DATAPATH" -DVNS_HOST=$VNS_HOST -DVNS_PORT=$VNS_PORT org.apache.uima.tools.cvd.CVD $*
+# UIMA_HOME is checked in the runUimaClass.sh script
+UIMA_JVM_OPTS="-Duima.tools.cvd.manpath=$UIMA_HOME/docs/html $UIMA_JVM_OPTS"
+. runUimaClass.sh org.apache.uima.tools.cvd.CVD $*

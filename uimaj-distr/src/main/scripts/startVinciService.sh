@@ -17,23 +17,10 @@
 #   specific language governing permissions and limitations
 #   under the License.
 
-if [ "$UIMA_HOME" = "" ]
-then
-  echo UIMA_HOME environment variable is not set
-  exit 1
-fi
-
 if [ "$1" = "" ];
 then
   echo "Usage: startVinciService.sh svcdescriptor [vns_host]"
-  exit
-fi
-. "$UIMA_HOME/bin/setUimaClassPath.sh"
-if [ "$JAVA_HOME" = "" ]
-then
-  UIMA_JAVA_CALL=java
-else
-  UIMA_JAVA_CALL="$JAVA_HOME/bin/java"
+  exit 1
 fi
 
 SERVICE=$1
@@ -49,7 +36,6 @@ if [ "$2" != "" ];
 then
   VNS_HOST=$2
 fi
-
-"$UIMA_JAVA_CALL" -cp "$UIMA_CLASSPATH" "-Duima.datapath=$UIMA_DATAPATH" -DVNS_HOST=$VNS_HOST -DVNS_PORT=$VNS_PORT "-Djava.util.logging.config.file=$UIMA_LOGGER_CONFIG_FILE" $UIMA_JVM_OPTS org.apache.uima.adapter.vinci.VinciAnalysisEngineService_impl $SERVICE $INSTANCEID
+. runUimaClass.sh org.apache.uima.adapter.vinci.VinciAnalysisEngineService_impl $SERVICE $INSTANCEID
 
 

@@ -17,17 +17,4 @@
 #   specific language governing permissions and limitations
 #   under the License.
 
-if [ "$UIMA_HOME" = "" ]
-then
-  echo UIMA_HOME environment variable is not set
-  exit 1
-fi
-
-. "$UIMA_HOME/bin/setUimaClassPath.sh"
-if [ "$JAVA_HOME" = "" ]
-then
-  UIMA_JAVA_CALL=java
-else
-  UIMA_JAVA_CALL="$JAVA_HOME/bin/java"
-fi
-"$UIMA_JAVA_CALL" -cp "$UIMA_CLASSPATH" "-Duima.datapath=$UIMA_DATAPATH" $UIMA_JVM_OPTS org.apache.uima.tools.ValidateDescriptor $*
+. runUimaClass.sh org.apache.uima.tools.ValidateDescriptor $*

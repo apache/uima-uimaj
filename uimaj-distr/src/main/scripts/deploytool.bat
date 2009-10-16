@@ -17,18 +17,6 @@ REM   KIND, either express or implied.  See the License for the
 REM   specific language governing permissions and limitations
 REM   under the License.
 
-if not defined UIMA_HOME goto USAGE_UIMA
-goto RUN
-
-:USAGE_UIMA
-echo UIMA_HOME environment variable is not set 
-goto EXIT
-
-:RUN
-@echo on
-setlocal
-call "%UIMA_HOME%\bin\setUimaClassPath"
-if "%JAVA_HOME%"=="" (set UIMA_JAVA_CALL=java) else (set UIMA_JAVA_CALL=%JAVA_HOME%\bin\java)
-"%UIMA_JAVA_CALL%" -cp "%UIMA_CLASSPATH%;%CATALINA_HOME%\webapps\axis\WEB-INF\classes" %UIMA_JVM_OPTS% org.apache.axis.client.AdminClient -lhttp://localhost:8080/axis/services/AdminService %1
-:EXIT
+@set UIMA_CLASSPATH=%UIMA_CLASSPATH%;%CATALINA_HOME%\webapps\axis\WEB-INF\classes
+@call runUimaClass org.apache.axis.client.AdminClient -lhttp://localhost:8080/axis/services/AdminService %1
 
