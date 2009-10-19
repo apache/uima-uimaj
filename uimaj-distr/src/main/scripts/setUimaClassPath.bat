@@ -41,7 +41,7 @@ goto EXIT
 @set UIMA_CLASSPATH=%UIMA_CLASSPATH%;%CATALINA_HOME%\webapps\axis\WEB-INF\lib\mail.jar
 @set UIMA_CLASSPATH=%UIMA_CLASSPATH%;%CATALINA_HOME%\webapps\axis\WEB-INF\lib\saaj.jar
 @set UIMA_CLASSPATH=%UIMA_CLASSPATH%;%UIMA_HOME%\lib\jVinci.jar
-REM next 3 jars are not present unless uima-as is included
+@REM next 3 jars are not present unless uima-as is included
 @set UIMA_CLASSPATH=%UIMA_CLASSPATH%;%UIMA_HOME%\lib\uimaj-as-core.jar
 @set UIMA_CLASSPATH=%UIMA_CLASSPATH%;%UIMA_HOME%\lib\uimaj-as-activemq.jar
 @set UIMA_CLASSPATH=%UIMA_CLASSPATH%;%UIMA_HOME%\lib\uimaj-as-jms.jar
@@ -53,7 +53,7 @@ REM next 3 jars are not present unless uima-as is included
 @set UIMA_CLASSPATH=%UIMA_CLASSPATH%;%_REALLYNOQUOTES%
 @rem set path to support running C++ annotators
 @if "%UIMACPP_HOME%"=="" set UIMACPP_HOME=%UIMA_HOME%\uimacpp
-set PATH=%UIMACPP_HOME%\bin;%UIMACPP_HOME%\examples\tutorial\src;%PATH%
+@set PATH=%UIMACPP_HOME%\bin;%UIMACPP_HOME%\examples\tutorial\src;%PATH%
 @rem Also set VNS_HOST and VNS_PORT to default values if they are not specified
 @if "%VNS_HOST%"=="" set VNS_HOST=localhost
 @if "%VNS_PORT%"=="" set VNS_PORT=9000
