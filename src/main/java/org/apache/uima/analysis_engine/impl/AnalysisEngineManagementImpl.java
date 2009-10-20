@@ -103,7 +103,7 @@ public class AnalysisEngineManagementImpl
   }
 
   public long getAnalysisTime() {
-    return analysisTime;
+  	return analysisTime + serviceCallTime;
   }
 
   public long getServiceCallTime() {
@@ -159,9 +159,9 @@ public class AnalysisEngineManagementImpl
   }
 
   public String getCASesPerSecond() {
-    if (analysisTime == 0)
+    if (getAnalysisTime() == 0)
       return "0";
-    float docsPerSecond = (float) numProcessed / analysisTime * 1000;
+    float docsPerSecond = (float) numProcessed / getAnalysisTime() * 1000;
     return format.format(docsPerSecond);
   }
 

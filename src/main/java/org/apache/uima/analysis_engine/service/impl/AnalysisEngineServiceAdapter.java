@@ -143,6 +143,7 @@ public abstract class AnalysisEngineServiceAdapter extends AnalysisEngineImplBas
     } finally {
       mTimer.stopIt();
       getMBean().reportServiceCallTime((int) mTimer.getDuration());
+      getMBean().incrementCASesProcessed();
     }
   }
 
