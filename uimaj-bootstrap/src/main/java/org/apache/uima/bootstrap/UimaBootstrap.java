@@ -80,12 +80,13 @@ public class UimaBootstrap {
     }    
     suppressClassPathDisplay = System.getProperty("UimaBootstrapSuppressClassPathDisplay") != null;
     URL[] urls = getUrls();
-    URLClassLoader cl = new ParentFirstWithResourceClassLoader(urls);
-    Thread.currentThread().setContextClassLoader(cl);
+//    URLClassLoader cl = new ParentFirstWithResourceClassLoader(urls);
+//    Thread.currentThread().setContextClassLoader(cl);
+    addUrlsToSystemLoader(urls);
     
     Class<?> classToLaunch = null;
     try {
-      classToLaunch = cl.loadClass(args[0]);
+      classToLaunch = ClassLoader.getSystemClassLoader().loadClass(args[0]);
     } catch (ClassNotFoundException e) {
      System.err.println("Cannot find class to launch");
      System.exit(1);
@@ -147,50 +148,65 @@ public class UimaBootstrap {
     urls.add(url);
   }
 
-  private static class ParentFirstWithResourceClassLoader extends URLClassLoader {
- 
-    /**
-     * Creates a new ParentFirstWithResourceClassLoader 
-     * 
-     * @param urls
-     *          an array of URLs representing JAR files
-     * 
-     * @throws MalformedURLException
-     *           if a malformed URL has occurred in the classpath string.
-     */
-    public ParentFirstWithResourceClassLoader(URL[] urls) {
-      super(urls);
-    }
-
-
-    @SuppressWarnings("unchecked")
-    protected synchronized Class loadClass(String name, boolean resolve)
-            throws ClassNotFoundException {
-      // First, check if the class has already been loaded
-      Class c = findLoadedClass(name);
-      if (c == null) {
-        // delegate class loading for class
-        try {
-          c = super.loadClass(name, false);
-        } catch (ClassNotFoundException e) {
-          // try to load class
-          c = findClass(name);
-        }
-      }
-      if (resolve) {
-        resolveClass(c);
-      }
-      return c;
-    }
-
-    // make sure resources are looked up first in this loader
-    // ASSUMES that getResourceAsStream calls getResource
-//    @Override
-//    public URL getResource(String resName) {
-//      URL r = findResource(resName);
-//      if (r != null) 
-//        return r;
-//      return super.getResource(resName);  
-//    }    
-  } 
+  private static void addUrlsToSystemLoader(URL[] urls) throws IOException {
+    URLClassLoader systemClassLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+    try {
+       Method method = URLClassLoader.class.getDeclaredMethod("addURL", new Class[]{URL.class});
+       method.setAccessible(true); // is normally "protected"
+       for (URL url : urls) {
+         method.invoke(systemClassLoader, new Object[]{url});
+       }
+    } catch (Throwable t) {
+       t.printStackTrace();
+       throw new IOException("Error, could not add URL to system classloader");
+    } 
+  }
+  
+  
+//  private static class ParentFirstWithResourceClassLoader extends URLClassLoader {
+// 
+//    /**
+//     * Creates a new ParentFirstWithResourceClassLoader 
+//     * 
+//     * @param urls
+//     *          an array of URLs representing JAR files
+//     * 
+//     * @throws MalformedURLException
+//     *           if a malformed URL has occurred in the classpath string.
+//     */
+//    public ParentFirstWithResourceClassLoader(URL[] urls) {
+//      super(urls);
+//    }
+//
+//
+//    @SuppressWarnings("unchecked")
+//    protected synchronized Class loadClass(String name, boolean resolve)
+//            throws ClassNotFoundException {
+//      // First, check if the class has already been loaded
+//      Class c = findLoadedClass(name);
+//      if (c == null) {
+//        // delegate class loading for class
+//        try {
+//          c = super.loadClass(name, false);
+//        } catch (ClassNotFoundException e) {
+//          // try to load class
+//          c = findClass(name);
+//        }
+//      }
+//      if (resolve) {
+//        resolveClass(c);
+//      }
+//      return c;
+//    }
+//
+//    // make sure resources are looked up first in this loader
+//    // ASSUMES that getResourceAsStream calls getResource
+////    @Override
+////    public URL getResource(String resName) {
+////      URL r = findResource(resName);
+////      if (r != null) 
+////        return r;
+////      return super.getResource(resName);  
+////    }    
+//  } 
 }
