@@ -34,27 +34,30 @@ under the License.
 
 		<para>
 			The CAS Editor is an annotation tool which supports manual and automatic
-			annotation (via running UIMA annotators) of CAS files.
+			annotation (via running UIMA annotators) of CASes stored in files.
       Currently only text-based CAS are supported. 
       The CAS Editor can visualize and edit all feature structures. 
       Feature Structures which are annotations can additionally be viewed and edited
 			directly on text. 
 		</para>
+    
 	</section>
 
 	<section id="sandbox.caseditor.Projects">
 		<title>Projects</title>
 
 		<para>
-			The CAS Editor organizes all artifacts in one or more projects. It is
-			not possible to open artifacts which are located outside of
+      The CAS Editor operates only with special Eclipse projects created using 
+      the menu pick for new Projects -> Other -> Cas Editor -> Cas Editor Project.
+			The CAS Editor operates on artifacts in one or more of these kinds of projects. It is
+			not possible to use the Cas Editor to open artifacts which are located outside of
 			a project.
 		</para>
 
-		<section id="ugr.tools.cas_editor.pojects.structure">
-			<title>Project structure</title>
+		<section id="ugr.tools.cas_editor.projects.structure">
+			<title>Cas Editor Project structure</title>
 
-			<para>A project includes these elements:</para>
+			<para>A Cas Editor project includes these elements:</para>
 
 			<para>
 				<itemizedlist>
