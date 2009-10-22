@@ -158,6 +158,8 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
   private void createActions() {
 
     autoJCasAction = new Action() {
+      // The run action is simply to toggle the setting in the prefs page, and
+      //   to update the checked status to correspond to that
       public void run() {
         TAEConfiguratorPlugin plugin = TAEConfiguratorPlugin.getDefault();
         Preferences prefs = plugin.getPluginPreferences();
@@ -218,7 +220,7 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
   }
 
   public static boolean getAutoJCasGen() {
-    return getUimaPrefBoolean(PreferencePage.P_JCAS, true);
+    return getUimaPrefBoolean(PreferencePage.P_JCAS, false); // Jira UIMA-1177
   }
 
   public static boolean getUseQualifiedTypes() {
