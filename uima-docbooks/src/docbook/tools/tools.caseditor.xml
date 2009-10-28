@@ -108,8 +108,8 @@ under the License.
 							can be used to annotate CAS files in a
 							corpus folder. To be recognized as Analysis
 							Engine Descriptor the file must end with
-							".ann" and must be placed in a processor
-							folder.
+							".xml", contain an Analysis Engine Descriptor and
+							must be placed in a processor folder.
 						</para>
 					</listitem>
 
@@ -119,8 +119,8 @@ under the License.
 							Configuration for a Consumer which can be
 							fed with the CAS files in a corpus. To be
 							recognized as Consumer Descriptor the file
-							must end with ".con" and must be placed in a
-							processor folder.
+							must end with ".xml", contain a Cas Consumer Descriptor
+							and must be placed in a processor folder.
 						</para>
 					</listitem>
 				</itemizedlist>
@@ -132,7 +132,7 @@ under the License.
 				the listed elements a project can also contain files and
 				folders e.g. for documentation. If one of these special
 				elements contains an error, a marker which describes the
-				problem is added to the file.
+				problem is added to the file and shown in the editor (the file itself is not marked).
 			</para>
 
 			<para>
@@ -162,17 +162,10 @@ under the License.
 				Its strongly recommended to first add a valid type system
 				to the project; other functions are only available if the
 				type system is present. Use copy and paste to import an
-				existing type system. Editing of the type system is
-				currently not supported inside the CAS Editor.
+				existing type system (no drag n' drop support).
+				Editing of the type system is supported, but afterwards all
+				editors should be reopened to recognize the type system change.
 			</para>
-
-			<note>
-				<para>
-					If an external text editor is used to modify the
-					type system, close all editors inside the CAS Editor
-					and run the refresh action.
-				</para>
-			</note>
 
 			<para>
 				After the type system file is added, you need to make the CAS Editor
@@ -343,7 +336,7 @@ under the License.
 			An Analysis Engine can be run against either a whole corpus or just a
 			few CAS files. To do this select a corpus or some CAS files and
 			then choose in the context menu the correct Analysis Engine.
-			The filename of the Analysis Engine must end with ".ann"
+			The filename of the Analysis Engine must end with ".xml"
 			otherwise it is not recognized as an Analysis Engine.
 		</para>
 
@@ -351,7 +344,7 @@ under the License.
 			The CAS Consumer can be fed with the CAS files loaded from a corpus.
 			To do this select a corpus and then select the consumer in
 			the context menu. To add a CAS Consumer Descriptor paste a file
-			into the processor folder. The filename must end with ".con";
+			into the processor folder. The filename must end with ".xml";
 			otherwise it is not recognized as consumer.
 		</para>
 	</section>
