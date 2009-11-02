@@ -17,6 +17,12 @@
 #   specific language governing permissions and limitations
 #   under the License.
 
+if [ "$UIMA_HOME" = "" ]
+then
+  echo UIMA_HOME environment variable is not set
+  exit 1
+fi
+
 if [ $# -ge 1 ]
 then
   firstarg=$1
@@ -29,12 +35,12 @@ echo "Running JCasGen with no Java CAS Model merging.  To run with merging, use 
 MAIN=org.apache.uima.tools.jcasgen.Jg
 if [ "$firstarg" = "" ]
 then
-  . runUimaClass.sh $MAIN
+  . "$UIMA_HOME/bin/runUimaClass.sh" $MAIN
 else
   if [ "$secondarg" = "" ]
   then
-    . runUimaClass.sh $MAIN -jcasgeninput "$firstarg"
+    . "$UIMA_HOME/bin/runUimaClass.sh" $MAIN -jcasgeninput "$firstarg"
   else
-    . runUimaClass.sh $MAIN -jcasgeninput "$firstarg" -jcasgenoutput "$secondarg"
+    . "$UIMA_HOME/bin/runUimaClass.sh" $MAIN -jcasgeninput "$firstarg" -jcasgenoutput "$secondarg"
     fi  
 fi

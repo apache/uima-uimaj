@@ -17,7 +17,12 @@
 #   specific language governing permissions and limitations
 #   under the License.
 
+if [ "$UIMA_HOME" = "" ]
+then
+  echo UIMA_HOME environment variable is not set
+  exit 1
+fi
 
 UIMA_CLASSPATH=$UIMA_CLASSPATH;$CATALINA_HOME/webapps/axis/WEB-INF/classes
 
-. runUimaClass.sh org.apache.axis.client.AdminClient -lhttp://localhost:8080/axis/services/AdminService $1
+. "$UIMA_HOME/bin/runUimaClass.sh" org.apache.axis.client.AdminClient -lhttp://localhost:8080/axis/services/AdminService $1

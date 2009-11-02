@@ -17,6 +17,13 @@ REM   KIND, either express or implied.  See the License for the
 REM   specific language governing permissions and limitations
 REM   under the License.
 
+if not defined UIMA_HOME goto USAGE_UIMA
+goto RUN
+
+:USAGE_UIMA
+echo UIMA_HOME environment variable is not set 
+goto end
+
 :RUN
 @echo on
 setlocal
@@ -30,16 +37,16 @@ setlocal
 @if "%~2"=="" goto execute
 @set VNS_HOST=%~2
 @:execute
-@call runUimaClass org.apache.uima.adapter.vinci.VinciAnalysisEngineService_impl %SERVICE%
+@call "%UIMA_HOME%\bin\runUimaClass.bat" org.apache.uima.adapter.vinci.VinciAnalysisEngineService_impl %SERVICE%
 @goto end
 
 @:execute2
 @set VNS_HOST=%~2
 @set INSTANCEID=%~3
-@call runUimaClass org.apache.uima.adapter.vinci.VinciAnalysisEngineService_impl %SERVICE% %INSTANCEID%
+@call "%UIMA_HOME%\bin\runUimaClass.bat" org.apache.uima.adapter.vinci.VinciAnalysisEngineService_impl %SERVICE% %INSTANCEID%
 @goto end
 
 @:usage
-@  echo Usage: startVinciService.sh svcdescriptor [vns_host]
+@  echo Usage: startVinciService.bat svcdescriptor [vns_host]
 @:end
 

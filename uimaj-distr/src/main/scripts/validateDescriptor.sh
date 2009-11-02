@@ -17,4 +17,10 @@
 #   specific language governing permissions and limitations
 #   under the License.
 
-. runUimaClass.sh org.apache.uima.tools.ValidateDescriptor $*
+if [ "$UIMA_HOME" = "" ]
+then
+  echo UIMA_HOME environment variable is not set
+  exit 1
+fi
+
+. "$UIMA_HOME/bin/runUimaClass.sh" org.apache.uima.tools.ValidateDescriptor $*

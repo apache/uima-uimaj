@@ -17,5 +17,13 @@ REM   KIND, either express or implied.  See the License for the
 REM   specific language governing permissions and limitations
 REM   under the License.
 
-@call runUimaClass org.apache.uima.tools.docanalyzer.DocumentAnalyzer
+if not defined UIMA_HOME goto USAGE_UIMA
+goto RUN
 
+:USAGE_UIMA
+echo UIMA_HOME environment variable is not set 
+goto EXIT
+
+:RUN
+@call "%UIMA_HOME%\bin\runUimaClass.bat" org.apache.uima.tools.docanalyzer.DocumentAnalyzer
+:EXIT

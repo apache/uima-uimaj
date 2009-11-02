@@ -17,8 +17,18 @@ REM   KIND, either express or implied.  See the License for the
 REM   specific language governing permissions and limitations
 REM   under the License.
 
-REM UIMA_HOME will be checked in the runUimaClass and will fail if not set
-set UIMA_JVM_OPTS="-Duima.tools.cvd.manpath=%UIMA_HOME%/docs/html" %UIMA_JVM_OPTS%
-@call runUimaClass org.apache.uima.tools.cvd.CVD %*
+if not defined UIMA_HOME goto USAGE_UIMA
+goto RUN
 
+:USAGE_UIMA
+echo UIMA_HOME environment variable is not set 
+goto EXIT
+
+:RUN
+setlocal
+@REM the quotes in the next line become part of the value and
+@REM are needed in case UIMA_HOME has blanks
+set UIMA_JVM_OPTS="-Duima.tools.cvd.manpath=%UIMA_HOME%/docs/html" %UIMA_JVM_OPTS%
+@call "%UIMA_HOME%\bin\runUimaClass.bat" org.apache.uima.tools.cvd.CVD %*
+:EXIT
 

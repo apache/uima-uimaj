@@ -17,6 +17,11 @@
 #   specific language governing permissions and limitations
 #   under the License.
 
-# UIMA_HOME is checked in the runUimaClass.sh script
-UIMA_JVM_OPTS="-Duima.tools.cvd.manpath=$UIMA_HOME/docs/html $UIMA_JVM_OPTS"
-. runUimaClass.sh org.apache.uima.tools.cvd.CVD $*
+if [ "$UIMA_HOME" = "" ]
+then
+  echo UIMA_HOME environment variable is not set
+  exit 1
+fi
+
+UIMA_JVM_OPTS="\"-Duima.tools.cvd.manpath=$UIMA_HOME/docs/html\" $UIMA_JVM_OPTS"
+. "$UIMA_HOME/bin/runUimaClass.sh" org.apache.uima.tools.cvd.CVD $*
