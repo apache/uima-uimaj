@@ -40,16 +40,16 @@ fi
 UIMA_CLASSPATH=$UIMA_CLASSPATH:$UIMA_HOME/examples/resources
 
 
-LOCAL_SAVED_UIMA_CLASSPATH=$UIMA_CLASSPATH
+#LOCAL_SAVED_UIMA_CLASSPATH=$UIMA_CLASSPATH
 UIMA_CLASSPATH=$UIMA_HOME/examples/resources
 UIMA_CLASSPATH=$UIMA_CLASSPATH:$UIMA_HOME/lib
-if [ -e $ACTIVEMQ_HOME ] 
+if [ -e "$ACTIVEMQ_HOME" ] 
 then
 	UIMA_CLASSPATH=$UIMA_CLASSPATH:$ACTIVEMQ_HOME:$ACTIVEMQ_HOME/lib:$ACTIVEMQ_HOME/lib/optional
 fi
 
 # -n: true if string has non-zero length
-if [ -n $CATALINA_HOME ]
+if [ -n "$CATALINA_HOME" ]
 then
 	UIMA_CLASSPATH=$UIMA_CLASSPATH:$CATALINA_HOME/webapps/axis/WEB-INF/lib
 fi
@@ -62,11 +62,11 @@ then
   UIMACPP_HOME=$UIMA_HOME/uimacpp
 fi
 
-export PATH=$UIMACPP_HOME/bin:$UIMACPP_HOME/examples/tutorial/src:$PATH
+export "PATH=$UIMACPP_HOME/bin:$UIMACPP_HOME/examples/tutorial/src:$PATH"
 
-export LD_LIBRARY_PATH=$UIMACPP_HOME/lib:$UIMACPP_HOME/examples/tutorial/src:$LD_LIBRARY_PATH
+export "LD_LIBRARY_PATH=$UIMACPP_HOME/lib:$UIMACPP_HOME/examples/tutorial/src:$LD_LIBRARY_PATH"
 #also set DYLD_LIBRARY_PATH, used by Mac OSX
-export DYLD_LIBRARY_PATH=$UIMACPP_HOME/lib:$UIMACPP_HOME/examples/tutorial/src:$DYLD_LIBRARY_PATH
+export "DYLD_LIBRARY_PATH=$UIMACPP_HOME/lib:$UIMACPP_HOME/examples/tutorial/src:$DYLD_LIBRARY_PATH"
 
 #also set default values for VNS_HOST and VNS_PORT
 if [ "$VNS_HOST" = "" ];
