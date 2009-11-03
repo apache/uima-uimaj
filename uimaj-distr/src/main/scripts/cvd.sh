@@ -24,4 +24,5 @@ then
 fi
 
 UIMA_JVM_OPTS="\"-Duima.tools.cvd.manpath=$UIMA_HOME/docs/html\" $UIMA_JVM_OPTS"
-. "$UIMA_HOME/bin/runUimaClass.sh" org.apache.uima.tools.cvd.CVD $*
+export UIMA_JVM_OPTS
+"$UIMA_HOME/bin/runUimaClass.sh" org.apache.uima.tools.cvd.CVD $*

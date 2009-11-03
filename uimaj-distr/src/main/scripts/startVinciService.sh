@@ -42,6 +42,6 @@ if [ "$2" != "" ];
 then
   VNS_HOST=$2
 fi
-. "$UIMA_HOME/bin/runUimaClass.sh" org.apache.uima.adapter.vinci.VinciAnalysisEngineService_impl $SERVICE $INSTANCEID
+"$UIMA_HOME/bin/runUimaClass.sh" org.apache.uima.adapter.vinci.VinciAnalysisEngineService_impl $SERVICE $INSTANCEID
 
 

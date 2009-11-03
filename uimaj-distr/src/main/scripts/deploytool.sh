@@ -24,5 +24,5 @@ then
 fi
 
 UIMA_CLASSPATH=$UIMA_CLASSPATH;$CATALINA_HOME/webapps/axis/WEB-INF/classes
-
-. "$UIMA_HOME/bin/runUimaClass.sh" org.apache.axis.client.AdminClient -lhttp://localhost:8080/axis/services/AdminService $1
+export UIMA_CLASSPATH
+"$UIMA_HOME/bin/runUimaClass.sh" org.apache.axis.client.AdminClient -lhttp://localhost:8080/axis/services/AdminService $1

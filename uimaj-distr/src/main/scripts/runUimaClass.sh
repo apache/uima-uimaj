@@ -62,11 +62,18 @@ then
   UIMACPP_HOME=$UIMA_HOME/uimacpp
 fi
 
-export "PATH=$UIMACPP_HOME/bin:$UIMACPP_HOME/examples/tutorial/src:$PATH"
+# The exports here are done in 2 lines because on some shells (dash)
+# (used by Ubuntu) blanks in the substitutions (e.g., a dir whose name
+# includes a blank) causes a failure
+PATH=$UIMACPP_HOME/bin:$UIMACPP_HOME/examples/tutorial/src:$PATH
+export PATH
 
-export "LD_LIBRARY_PATH=$UIMACPP_HOME/lib:$UIMACPP_HOME/examples/tutorial/src:$LD_LIBRARY_PATH"
+LD_LIBRARY_PATH=$UIMACPP_HOME/lib:$UIMACPP_HOME/examples/tutorial/src:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH
+
 #also set DYLD_LIBRARY_PATH, used by Mac OSX
-export "DYLD_LIBRARY_PATH=$UIMACPP_HOME/lib:$UIMACPP_HOME/examples/tutorial/src:$DYLD_LIBRARY_PATH"
+DYLD_LIBRARY_PATH=$UIMACPP_HOME/lib:$UIMACPP_HOME/examples/tutorial/src:$DYLD_LIBRARY_PATH
+export DYLD_LIBRARY_PATH
 
 #also set default values for VNS_HOST and VNS_PORT
 if [ "$VNS_HOST" = "" ];

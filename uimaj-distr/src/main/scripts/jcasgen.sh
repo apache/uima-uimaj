@@ -35,12 +35,12 @@ echo "Running JCasGen with no Java CAS Model merging.  To run with merging, use 
 MAIN=org.apache.uima.tools.jcasgen.Jg
 if [ "$firstarg" = "" ]
 then
-  . "$UIMA_HOME/bin/runUimaClass.sh" $MAIN
+  "$UIMA_HOME/bin/runUimaClass.sh" $MAIN
 else
   if [ "$secondarg" = "" ]
   then
-    . "$UIMA_HOME/bin/runUimaClass.sh" $MAIN -jcasgeninput "$firstarg"
+    "$UIMA_HOME/bin/runUimaClass.sh" $MAIN -jcasgeninput "$firstarg"
   else
-    . "$UIMA_HOME/bin/runUimaClass.sh" $MAIN -jcasgeninput "$firstarg" -jcasgenoutput "$secondarg"
+    "$UIMA_HOME/bin/runUimaClass.sh" $MAIN -jcasgeninput "$firstarg" -jcasgenoutput "$secondarg"
     fi  
 fi

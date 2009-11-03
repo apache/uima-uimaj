@@ -23,4 +23,4 @@ then
   exit 1
 fi
 
-. "$UIMA_HOME/bin/runUimaClass.sh" org.apache.uima.tools.ValidateDescriptor $*
+"$UIMA_HOME/bin/runUimaClass.sh" org.apache.uima.tools.ValidateDescriptor $*
