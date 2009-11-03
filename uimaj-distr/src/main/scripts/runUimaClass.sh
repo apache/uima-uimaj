@@ -38,10 +38,6 @@ fi
 
 #Set jar search order of: UIMA_CLASSPATH uima activemq(optional) tomcat(optional) CLASSPATH
 UIMA_CLASSPATH=$UIMA_CLASSPATH:$UIMA_HOME/examples/resources
-
-
-#LOCAL_SAVED_UIMA_CLASSPATH=$UIMA_CLASSPATH
-UIMA_CLASSPATH=$UIMA_HOME/examples/resources
 UIMA_CLASSPATH=$UIMA_CLASSPATH:$UIMA_HOME/lib
 if [ -e "$ACTIVEMQ_HOME" ] 
 then
@@ -51,7 +47,7 @@ fi
 # -n: true if string has non-zero length
 if [ -n "$CATALINA_HOME" ]
 then
-	UIMA_CLASSPATH=$UIMA_CLASSPATH:$CATALINA_HOME/webapps/axis/WEB-INF/lib
+	UIMA_CLASSPATH=$UIMA_CLASSPATH:$CATALINA_HOME/webapps/axis/WEB-INF/lib:$CATALINA_HOME/webapps/axis/WEB-INF/classes
 fi
 
 UIMA_CLASSPATH=$UIMA_CLASSPATH:$CLASSPATH
@@ -93,5 +89,5 @@ fi
 UIMA_JVM_OPTS="$UIMA_JVM_OPTS -Xms128M -Xmx800M"
 
 # Finally load the jars and run the class
-"$UIMA_JAVA_CALL" -DVNS_HOST=$VNS_HOST -DVNS_PORT=$VNS_PORT "-Duima.home=$UIMA_HOME" "-Duima.datapath=$UIMA_DATAPATH" "-Djava.util.logging.config.file=$UIMA_LOGGER_CONFIG_FILE" $UIMA_JVM_OPTS -DUimaBootstrapSuppressClassPathDisplay -Dorg.apache.uima.jarpath="$UIMA_CLASSPATH" -jar "$UIMA_HOME/lib/uimaj-bootstrap.jar" $*
+"$UIMA_JAVA_CALL" -DVNS_HOST=$VNS_HOST -DVNS_PORT=$VNS_PORT "-Duima.home=$UIMA_HOME" "-Duima.datapath=$UIMA_DATAPATH" "-Djava.util.logging.config.file=$UIMA_LOGGER_CONFIG_FILE" "$UIMA_CVDMAN" $UIMA_JVM_OPTS -DUimaBootstrapSuppressClassPathDisplay -Dorg.apache.uima.jarpath="$UIMA_CLASSPATH" -jar "$UIMA_HOME/lib/uimaj-bootstrap.jar" $*
 

@@ -32,7 +32,7 @@
 @set UIMA_CLASSPATH=%UIMA_CLASSPATH%;%UIMA_HOME%\examples\resources
 @set UIMA_CLASSPATH=%UIMA_CLASSPATH%;%UIMA_HOME%\lib
 @if EXIST "%ACTIVEMQ_HOME%" (set UIMA_CLASSPATH=%UIMA_CLASSPATH%;%ACTIVEMQ_HOME%;%ACTIVEMQ_HOME%\lib;%ACTIVEMQ_HOME%\lib\optional)
-@if NOT "%CATALINA_HOME%"=="" (set UIMA_CLASSPATH=%UIMA_CLASSPATH%;%CATALINA_HOME%\webapps\axis\WEB-INF\lib)
+@if NOT "%CATALINA_HOME%"=="" (set UIMA_CLASSPATH=%UIMA_CLASSPATH%;%CATALINA_HOME%\webapps\axis\WEB-INF\lib;%CATALINA_HOME%\webapps\axis\WEB-INF\classes)
 @set UIMA_CLASSPATH=%UIMA_CLASSPATH%;%CLASSPATH%
 
 @rem Set path to support running C++ annotators
@@ -50,4 +50,4 @@
 @set UIMA_JVM_OPTS=%UIMA_JVM_OPTS% -Xms128M -Xmx800M
 
 @rem Finally load the jars and run the class
-@"%UIMA_JAVA_CALL%" -DVNS_HOST=%VNS_HOST% -DVNS_PORT=%VNS_PORT% "-Duima.home=%UIMA_HOME%" "-Duima.datapath=%UIMA_DATAPATH%" "-Djava.util.logging.config.file=%UIMA_LOGGER_CONFIG_FILE%" %UIMA_JVM_OPTS% -DUimaBootstrapSuppressClassPathDisplay -Dorg.apache.uima.jarpath="%UIMA_CLASSPATH%" -jar "%UIMA_HOME%\lib\uimaj-bootstrap.jar" %*
+@"%UIMA_JAVA_CALL%" -DVNS_HOST=%VNS_HOST% -DVNS_PORT=%VNS_PORT% "-Duima.home=%UIMA_HOME%" "-Duima.datapath=%UIMA_DATAPATH%" "-Djava.util.logging.config.file=%UIMA_LOGGER_CONFIG_FILE%" "%UIMA_CVDMAN%" %UIMA_JVM_OPTS% -DUimaBootstrapSuppressClassPathDisplay -Dorg.apache.uima.jarpath="%UIMA_CLASSPATH%" -jar "%UIMA_HOME%\lib\uimaj-bootstrap.jar" %*

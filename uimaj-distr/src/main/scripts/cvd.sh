@@ -23,6 +23,6 @@ then
   exit 1
 fi
 
-UIMA_JVM_OPTS="\"-Duima.tools.cvd.manpath=$UIMA_HOME/docs/html\" $UIMA_JVM_OPTS"
-export UIMA_JVM_OPTS
+UIMA_CVDMAN="-Duima.tools.cvd.manpath=$UIMA_HOME/docs/html"
+export UIMA_CVDMAN
 "$UIMA_HOME/bin/runUimaClass.sh" org.apache.uima.tools.cvd.CVD $*
