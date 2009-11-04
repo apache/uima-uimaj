@@ -23,6 +23,4 @@ then
   exit 1
 fi
 
-UIMA_CLASSPATH=$UIMA_CLASSPATH;$CATALINA_HOME/webapps/axis/WEB-INF/classes
-export UIMA_CLASSPATH
 "$UIMA_HOME/bin/runUimaClass.sh" org.apache.axis.client.AdminClient -lhttp://localhost:8080/axis/services/AdminService $1

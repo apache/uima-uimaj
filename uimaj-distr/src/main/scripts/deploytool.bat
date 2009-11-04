@@ -25,6 +25,5 @@ echo UIMA_HOME environment variable is not set
 goto EXIT
 
 :RUN
-@set UIMA_CLASSPATH=%UIMA_CLASSPATH%;%CATALINA_HOME%\webapps\axis\WEB-INF\classes
 @call "%UIMA_HOME%\bin\runUimaClass.bat" org.apache.axis.client.AdminClient -lhttp://localhost:8080/axis/services/AdminService %1
 :EXIT
