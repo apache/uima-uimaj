@@ -148,6 +148,7 @@ issues you find at http://issues.apache.org/jira/browse/uima.
 
 
 
+
 Release Notes - UIMA - Version 2.3
 
 
@@ -248,6 +249,7 @@ Release Notes - UIMA - Version 2.3
     * [UIMA-1521] - File encoding is platform dependent
     * [UIMA-1523] - Generics: FSIterator.moveTo(T) should be moveTo(FeatureStructure)
     * [UIMA-1525] - Running an AE inside the Cas Editor does not marks editor as dirty if document is opened
+    * [UIMA-1532] - Generics in FSIndex maybe incorrect
     * [UIMA-1536] - move RunWithJarPath into its own project
     * [UIMA-1543] - Missing <version> tags in uimaj-distr POM
     * [UIMA-1548] - Include LICENSE/NOTICE/DISCLAIMER files from local sources ahead of common sources
@@ -268,6 +270,9 @@ Release Notes - UIMA - Version 2.3
     * [UIMA-1618] - Rename CasEditor NLP category to "Cas Editor" and the NLP project to "Cas Editor Project"
     * [UIMA-1619] - Clarify that a Cas Editor Project is required to use the Cas Editor in the documentation
     * [UIMA-1631] - UimaBootstrap Loader approach fails to work for classes loaded by logger (and maybe other parts of Java)
+    * [UIMA-1641] - Cas Processor integration was changed, but documentation not updated
+    * [UIMA-1647] - Scripts fail to call runUimaClass.sh 
+    * [UIMA-1650] - Bug in common launcher script causing UIMA_CLASSPATH to be ignored
 
 ** Improvement
     * [UIMA-71] - New v2 features missing from tutorial chapters
@@ -384,6 +389,3 @@ Release Notes - UIMA - Version 2.3
 
 ** Test
     * [UIMA-1389] - Remove OpenNLP example wrapper
-
-
-
