@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+	Licensed to the Apache Software Foundation (ASF) under one
+	or more contributor license agreements.  See the NOTICE file
+	distributed with this work for additional information
+	regarding copyright ownership.  The ASF licenses this file
+	to you under the Apache License, Version 2.0 (the
+	"License"); you may not use this file except in compliance
+	with the License.  You may obtain a copy of the License at
+	
+	http://www.apache.org/licenses/LICENSE-2.0
+	
+	Unless required by applicable law or agreed to in writing,
+	software distributed under the License is distributed on an
+	"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+	KIND, either express or implied.  See the License for the
+	specific language governing permissions and limitations
+	under the License.    
+-->
+
+<CAS>
+    <uima.cas.Sofa _indexed="0" _id="1" sofaNum="1"
+        sofaID="_InitialView" mimeType="text" sofaString="On March 15, there was an accident near Munich. The driver got badly&#xd;&#xa;injured. Driving alone not far from her home, the middle-aged woman&#xd;&#xa;crashed at high speed into a tree. A resident, who lives near the&#xd;&#xa;street where the accident took place, called instantly the police. He &#xd;&#xa;reported what had happened and gave his name and address to the officer.&#xd;&#xa;He's called Peter Schubert and he lives at Max-L�w-Stra�e 13 in&#xd;&#xa;84630 Gauting. The police arrived ten minutes later and brought&#xd;&#xa;the woman into hospital. Although she had multiple trauma, she's &#xd;&#xa;out of mortal danger.&#xd;&#xa;"/>
+    <uima.tcas.DocumentAnnotation _indexed="1" _id="12" _ref_sofa="1"
+        begin="0" end="572" language="x-unspecified"/>
+    <org.apache.uima.caseditor.Test _indexed="1" _id="17" _ref_sofa="1" begin="0"
+        end="2"/>
+    <org.apache.uima.caseditor.Test _indexed="1" _id="22" _ref_sofa="1" begin="9"
+        end="11"/>
+    <org.apache.uima.caseditor.Test _indexed="1" _id="27" _ref_sofa="1" begin="11"
+        end="12"/>
+    <org.apache.uima.caseditor.Test _indexed="1" _id="32" _ref_sofa="1" begin="13"
+        end="18"/>
+    <org.apache.uima.caseditor.Test _indexed="1" _id="37" _ref_sofa="1" begin="19"
+        end="22"/>
+    <org.apache.uima.caseditor.Test _indexed="1" _id="42" _ref_sofa="1" begin="23"
+        end="25"/>
+    <org.apache.uima.caseditor.Test _indexed="1" _id="47" _ref_sofa="1" begin="26"
+        end="34"/>
+    <org.apache.uima.caseditor.Test _indexed="1" _id="52" _ref_sofa="1" begin="35"
+        end="39"/>
+    <org.apache.uima.caseditor.Test _indexed="1" _id="57" _ref_sofa="1" begin="40"
+        end="46"/>
+    <org.apache.uima.caseditor.Test _indexed="1" _id="62" _ref_sofa="1" begin="46"
+        end="47"/>
+    <org.apache.uima.caseditor.Test _indexed="1" _id="67" _ref_sofa="1" begin="48"
+        end="51"/>
+    <org.apache.uima.caseditor.Test _indexed="1" _id="72" _ref_sofa="1" begin="52"
+        end="58"/>
+    <org.apache.uima.caseditor.Test _indexed="1" _id="77" _ref_sofa="1" begin="59"
+        end="62"/>
+    <org.apache.uima.caseditor.Test _indexed="1" _id="82" _ref_sofa="1" begin="63"
+        end="68"/>
+    <org.apache.uima.caseditor.Test _indexed="1" _id="87" _ref_sofa="1" begin="70"
+        end="77"/>
+    <org.apache.uima.caseditor.Test _indexed="1" _id="92" _ref_sofa="1" begin="77"
+        end="78"/>
+    <org.apache.uima.caseditor.Test _indexed="1" _id="97" _ref_sofa="1" begin="79"
+        end="86"/>
+    <org.apache.uima.caseditor.Test _indexed="1" _id="102" _ref_sofa="1" begin="93"
+        end="96"/>
+    <org.apache.uima.caseditor.Test _indexed="1" _id="107" _ref_sofa="1" begin="97"
+        end="100"/>
+    <org.apache.uima.caseditor.Test _indexed="1" _id="112" _ref_sofa="1" begin="101"
+        end="105"/>
+    <org.apache.uima.caseditor.Test _indexed="1" _id="117" _ref_sofa="1" begin="106"
+        end="109"/>
+    <org.apache.uima.caseditor.Test _indexed="1" _id="122" _ref_sofa="1" begin="110"
+        end="114"/>
+    <org.apache.uima.caseditor.Test _indexed="1" _id="127" _ref_sofa="1" begin="114"
+        end="115"/>
+    <org.apache.uima.caseditor.Test _indexed="1" _id="132" _ref_sofa="1" begin="116"
+        end="119"/>
+    <org.apache.uima.caseditor.Test _indexed="1" _id="137" _ref_sofa="1" begin="120"
+        end="131"/>
+    <org.apache.uima.caseditor.Test _indexed="1" _id="142" _ref_sofa="1" begin="132"
+        end="137"/>
+    <org.apache.uima.caseditor.Test _indexed="1" _id="147" _ref_sofa="1" begin="147"
+        end="149"/>
+    <org.apache.uima.caseditor.Test _indexed="1" _id="152" _ref_sofa="1" begin="139"
+        end="146"/>
+</CAS>

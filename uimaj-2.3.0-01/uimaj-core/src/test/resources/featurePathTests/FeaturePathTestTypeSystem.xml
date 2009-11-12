@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ -->
+
+<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <name>FeaturePathTestTypeSystem</name>
+  <description></description>
+  <version>1.0</version>
+  <vendor></vendor>
+  <types>
+     <typeDescription>
+      <name>uima.tt.TestAnnotation</name>
+      <description></description>
+      <supertypeName>uima.tcas.Annotation</supertypeName>
+      <features>
+        <featureDescription>
+          <name>stringFeature</name>
+          <description></description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+      </features>
+  	 </typeDescription>
+     <typeDescription>
+      <name>uima.tt.TestAnnotSub</name>
+      <description></description>
+      <supertypeName>uima.tt.TestAnnotation</supertypeName>
+      <features>
+        <featureDescription>
+          <name>testFeature</name>
+          <description></description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+      </features>
+  	 </typeDescription>
+
+     <typeDescription>
+      <name>uima.tcas.DocumentAnnotation</name>
+      <description></description>
+      <supertypeName>uima.tcas.Annotation</supertypeName>
+      <features>
+        <featureDescription>
+          <name>stringFeature</name>
+          <description></description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>shortFeature</name>
+          <description></description>
+          <rangeTypeName>uima.cas.Short</rangeTypeName>
+        </featureDescription>
+              <featureDescription>
+          <name>floatFeature</name>
+          <description></description>
+          <rangeTypeName>uima.cas.Float</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>doubleFeature</name>
+          <description></description>
+          <rangeTypeName>uima.cas.Double</rangeTypeName>
+        </featureDescription>
+              <featureDescription>
+          <name>longFeature</name>
+          <description></description>
+          <rangeTypeName>uima.cas.Long</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>intFeature</name>
+          <description></description>
+          <rangeTypeName>uima.cas.Integer</rangeTypeName>
+        </featureDescription>
+              <featureDescription>
+          <name>booleanFeature</name>
+          <description></description>
+          <rangeTypeName>uima.cas.Boolean</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>byteFeature</name>
+          <description></description>
+          <rangeTypeName>uima.cas.Byte</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>refFeature</name>
+          <description></description>
+          <rangeTypeName>uima.tcas.Annotation</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>refFeature2</name>
+          <description></description>
+          <rangeTypeName>uima.tcas.DocumentAnnotation</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>stringArray</name>
+          <description></description>
+          <rangeTypeName>uima.cas.StringArray</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>shortArray</name>
+          <description></description>
+          <rangeTypeName>uima.cas.ShortArray</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>floatArray</name>
+          <description></description>
+          <rangeTypeName>uima.cas.FloatArray</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>doubleArray</name>
+          <description></description>
+          <rangeTypeName>uima.cas.DoubleArray</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>longArray</name>
+          <description></description>
+          <rangeTypeName>uima.cas.LongArray</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>intArray</name>
+          <description></description>
+          <rangeTypeName>uima.cas.IntegerArray</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>booleanArray</name>
+          <description></description>
+          <rangeTypeName>uima.cas.BooleanArray</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>byteArray</name>
+          <description></description>
+          <rangeTypeName>uima.cas.ByteArray</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>fsArray</name>
+          <description></description>
+          <rangeTypeName>uima.cas.FSArray</rangeTypeName>
+        </featureDescription>
+        
+      </features>
+    </typeDescription>
+  </types>
+</typeSystemDescription>
