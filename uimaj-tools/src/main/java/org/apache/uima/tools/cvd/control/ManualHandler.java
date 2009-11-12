@@ -86,6 +86,11 @@ public class ManualHandler implements ActionListener {
           File manFile = new File(manDir, manFileName);
           if (manFile.exists()) {
             manURL = manFile.toURL();
+          } else {
+            String msg = String.format("Can't find manual in directory: %s", manpath);
+            JOptionPane.showMessageDialog(this.main, msg, "Error loading manual",
+                JOptionPane.ERROR_MESSAGE);
+            return;
           }
         }
       }
