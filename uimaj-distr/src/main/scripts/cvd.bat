@@ -26,9 +26,8 @@ goto EXIT
 
 :RUN
 setlocal
-@REM the quotes in the next line become part of the value and
-@REM are needed in case UIMA_HOME has blanks
-set UIMA_CVDMAN="-Duima.tools.cvd.manpath=%UIMA_HOME%/docs/html"
+
+set UIMA_CVDMAN=-Duima.tools.cvd.manpath=%UIMA_HOME%/docs/html
 @call "%UIMA_HOME%\bin\runUimaClass.bat" org.apache.uima.tools.cvd.CVD %*
 :EXIT
 

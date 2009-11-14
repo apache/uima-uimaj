@@ -49,7 +49,7 @@
 @rem Set default JVM opts
 @set UIMA_JVM_OPTS=%UIMA_JVM_OPTS% -Xms128M -Xmx800M
 
-@if not defined UIMA_CVDMAN set UIMA_CVDMAN=-Duima.tools.cvd.manpath.notset
+@if "%UIMA_CVDMAN%"=="" set UIMA_CVDMAN=-Duima.tools.cvd.manpath.notset
 
 @rem Finally load the jars and run the class
 @"%UIMA_JAVA_CALL%" -DVNS_HOST=%VNS_HOST% -DVNS_PORT=%VNS_PORT% "-Duima.home=%UIMA_HOME%" "-Duima.datapath=%UIMA_DATAPATH%" "-Djava.util.logging.config.file=%UIMA_LOGGER_CONFIG_FILE%" "%UIMA_CVDMAN%" %UIMA_JVM_OPTS% -DUimaBootstrapSuppressClassPathDisplay -Dorg.apache.uima.jarpath="%UIMA_CLASSPATH%" -jar "%UIMA_HOME%\lib\uimaj-bootstrap.jar" %*
