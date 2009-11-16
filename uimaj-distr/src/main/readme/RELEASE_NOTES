@@ -146,9 +146,6 @@ issues you find at http://issues.apache.org/jira/browse/uima.
 
 6. List of JIRA Issues Fixed in this Release
 
-
-
-
 Release Notes - UIMA - Version 2.3
 
 
@@ -273,6 +270,8 @@ Release Notes - UIMA - Version 2.3
     * [UIMA-1641] - Cas Processor integration was changed, but documentation not updated
     * [UIMA-1647] - Scripts fail to call runUimaClass.sh 
     * [UIMA-1650] - Bug in common launcher script causing UIMA_CLASSPATH to be ignored
+    * [UIMA-1663] - All directories in UIMA distribution should be 755
+    * [UIMA-1664] - Windows command line files not working
 
 ** Improvement
     * [UIMA-71] - New v2 features missing from tutorial chapters
