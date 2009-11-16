@@ -1,0 +1,661 @@
+	<!--
+	 ***************************************************************
+	 * Licensed to the Apache Software Foundation (ASF) under one
+	 * or more contributor license agreements.  See the NOTICE file
+	 * distributed with this work for additional information
+	 * regarding copyright ownership.  The ASF licenses this file
+	 * to you under the Apache License, Version 2.0 (the
+	 * "License"); you may not use this file except in compliance
+	 * with the License.  You may obtain a copy of the License at
+     *
+	 *   http://www.apache.org/licenses/LICENSE-2.0
+	 * 
+	 * Unless required by applicable law or agreed to in writing,
+	 * software distributed under the License is distributed on an
+	 * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+	 * KIND, either express or implied.  See the License for the
+	 * specific language governing permissions and limitations
+	 * under the License.
+	 ***************************************************************
+   -->
+<html>
+<head>
+  <title>Apache UIMA v2.3.0 Release Notes</title>
+</head>
+<body>
+<h1>Apache UIMA (Unstructured Information Management Architecture) v2.3.0 Release Notes</h1>
+
+<h2>Contents</h2>
+<p>
+<a href="#what.is.uima">1. What is UIMA?</a><br/>
+<a href="#major.changes">2. Major Changes in this Release</a><br/>
+<a href="#migrating">3. Migrating from IBM UIMA to Apache UIMA</a><br/>
+<a href="#get.involved">4. How to Get Involved</a><br/>
+<a href="#report.issues">5. How to Report Issues</a><br/>
+<a href="#list.issues">6. List of JIRA Issues Fixed in this Release</a>
+</p>  
+   
+<h2><a name="what.is.uima">1. What is UIMA?</a></h2>
+
+     <p>
+  			Unstructured Information Management applications are
+				software systems that analyze large volumes of
+				unstructured information in order to discover knowledge
+				that is relevant to an end user. UIMA is a framework and
+				SDK for developing such applications. An example UIM
+				application might ingest plain text and identify
+				entities, such as persons, places, organizations; or
+				relations, such as works-for or located-at. UIMA enables
+				such an application to be decomposed into components,
+				for example "language identification" -&gt; "language
+				specific segmentation" -&gt; "sentence boundary
+				detection" -&gt; "entity detection (person/place names
+				etc.)". Each component must implement interfaces defined
+				by the framework and must provide self-describing
+				metadata via XML descriptor files. The framework manages
+				these components and the data flow between them.
+				Components are written in Java or C++; the data that
+				flows between components is designed for efficient
+				mapping between these languages. UIMA additionally
+				provides capabilities to wrap components as network
+				services, and can scale to very large volumes by
+				replicating processing pipelines over a cluster of
+				networked nodes.
+			</p>
+                                                <p>
+				Apache UIMA is an Apache-licensed open source
+				implementation of the UIMA specification (that
+				specification is, in turn, being developed concurrently
+				by a technical committee within
+				<a href="http://www.oasis-open.org">OASIS</a>
+				, a standards organization). We invite and encourage you
+				to participate in both the implementation and
+				specification efforts.
+			</p>
+                                                <p>
+				UIMA is a component framework for analysing unstructured
+				content such as text, audio and video. It comprises an
+				SDK and tooling for composing and running analytic
+				components written in Java and C++, with some support
+				for Perl, Python and TCL.
+			</p>
+
+<h2><a name="major.changes">2. Major Changes in this Release</a></h2>
+<p>
+Please see the README for this information.
+</p>
+  
+<h2><a name="migrating">3. Migrating from IBM UIMA to Apache UIMA</a></h2>
+
+<p>
+This section describes how to move from pre-Apache versions of UIMA to the
+Apache version (starting with Apache UIMA 2.1).
+</p>
+
+<p>
+Note: Before running the migration utility, be sure to back up your files, just 
+in case you encounter any problems, because the migration tool updates the 
+files in place in the directories where it finds them.
+</p>
+<p>
+The migration utility is run by executing the script file 
+apache-uima/bin/ibmUimaToApacheUima.bat (Windows) or 
+apache-uima/bin/ibmUimaToApacheUima.sh (UNIX). You must pass one argument: the 
+directory containing the files that you want to be migrated. Subdirectories 
+will be processed recursively.
+</p>
+<p>
+The script scans your files and applies the necessary updates, for example 
+replacing the com.ibm package names with the new org.apache package names. 
+</p>
+<p>
+The script will only attempt to modify files with the extensions: java, xml, 
+xmi, wsdd, properties, launch, bat, cmd, sh, ksh, or csh; and files with no 
+extension. Also, files with size greater than 1,000,000 bytes will be skipped. 
+(If you want the script to modify files with other extensions, you can edit 
+the script file and change the -ext argument appropriately.)
+</p>  
+<p>
+If the migration tool reports warnings, there may be a few additional steps to 
+take. The following two sections explain some simple manual changes that you
+might need to make to your code.
+</p>
+  
+<h3>3.1. JCas Cover Classes for DocumentAnnotation</h3>
+<p>
+If you have run JCasGen it is likely that you have the classes 
+com.ibm.uima.jcas.tcas.DocumentAnnotation and 
+com.ibm.uima.jcas.tcas.DocumentAnnotation_Type as part of your code. This 
+package name is no longer valid, and the migration utility does not move your 
+files between directories so it is unable to fix this.
+</p>
+<p>
+If you have not made manual modifications to these classes, the best solution 
+is usually to just delete these two classes (and their containing package). 
+There is a default version in the uima-document-annotation.jar file that is 
+included in Apache UIMA. If you have made custom changes, then you should not 
+delete the file but instead move it to the correct package 
+org.apache.uima.jcas.tcas. For more information about JCas and 
+DocumentAnnotation please see Section 5.5.4, 
+"Adding Features to DocumentAnnotation" in the 
+  <a href="docs/html/references/references.html">UIMA References</a> manual.
+</p>  
+  
+<h3>3.2. JCas.getDocumentAnnotation</h3>
+<p>
+The deprecated method JCas.getDocumentAnnotation has been removed. Its use 
+must be replaced with JCas.getDocumentAnnotationFs. The method 
+JCas.getDocumentAnnotationFs() returns type TOP, so your code must cast this to 
+type DocumentAnnotation. The reasons for this are described in Section 
+5.5.4, "Adding Features to DocumentAnnotation" in the 
+<a href="docs/html/references/references.html">UIMA References</a> manual.
+</p>
+  
+<h3>3.3. Rare Cases Where Additional Manual Migration is Necessary</h3>
+<p>
+For most users there should not be any additional migration steps necessary.
+However, if the migration tool reported an additional warning or if you are 
+having trouble getting your code to compile or run after running the migration, 
+please see Section 1.4.2. "Rare Cases Where Additional Manual Migration is 
+Necessary," in the <a href="docs/html/overview_and_setup/overview_and_setup.html">
+Overview and Setup</a> manual.
+</p>
+  
+<h2><a name="get.involved">4. How to Get Involved</a></h2>
+<p>
+The Apache UIMA project really needs and appreciates any contributions, 
+including documentation help, source code and feedback.  If you are interested
+in contributing, please visit 
+<a href="http://incubator.apache.org/uima/get-involved.html">
+  http://incubator.apache.org/uima/get-involved.html</a>.
+</p>
+  
+<h2><a name="report.issues">5. How to Report Issues</a></h2>
+<p>
+The Apache UIMA project uses JIRA for issue tracking.  Please report any 
+issues you find at 
+<a href="http://issues.apache.org/jira/browse/uima">http://issues.apache.org/jira/browse/uima</a>
+</p>
+  
+<h2><a name="list.issues">6. List of JIRA Issues Fixed in this Release</a></h2>
+
+        Release Notes - UIMA - Version 2.3
+        
+<h2>        Bug
+</h2>
+<ul>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-629'>UIMA-629</a>] -         Default file names produced by XmiWriterCasConsumer don't have .xmi extension and can't be read by XmiCollectionReader
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-781'>UIMA-781</a>] -         CPE test case CpmCasConsumer_ErrorTest intermittently failing
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-852'>UIMA-852</a>] -         jcasgen.sh has trouble with import by name
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-853'>UIMA-853</a>] -         jcasgen.sh returns success even if the run fails
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-941'>UIMA-941</a>] -         No ProcessTrace events for process calls that take 0ms
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-958'>UIMA-958</a>] -         Document Analyzer not showing PersonTitle when running with xml tagged source
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-978'>UIMA-978</a>] -         CDE eclipse plugin contains upper-case GIF file extension
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-982'>UIMA-982</a>] -         SofaFS class level Javadocs misleading
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-985'>UIMA-985</a>] -         Javdocs for getSofaData calls do not say null may be returned
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-988'>UIMA-988</a>] -         Performance bug: CAS heap reset wasteful use of Arrays.fill()
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-989'>UIMA-989</a>] -         CVD hangs on start-up
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1012'>UIMA-1012</a>] -         addSourceToJars.[bat/sh] is not executable in distribution
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1024'>UIMA-1024</a>] -         change version number from 2.2.2-incubating to 2.3-incubating-SNAPSHOT
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1027'>UIMA-1027</a>] -         Classes from uima-document-annotator.jar are not in Eclipse plugin
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1036'>UIMA-1036</a>] -         runAE help message needs to document available options for language and encoding
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1045'>UIMA-1045</a>] -         &quot;Recently used&quot; file lists in CVD do not work correctly
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1058'>UIMA-1058</a>] -         synch issue in FSClassRegistry.generators
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1086'>UIMA-1086</a>] -         CpmPanel displayProgress has bad logic
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1099'>UIMA-1099</a>] -         The Cas Editor leaks memory with each opened file.
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1100'>UIMA-1100</a>] -         Token annotation rendering style does not work.
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1105'>UIMA-1105</a>] -         CPE is sutck trying to retrieve a free CAS from the pool
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1107'>UIMA-1107</a>] -         Annotator context not set when annotator loaded from PEAR
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1111'>UIMA-1111</a>] -         Calling jcas.getType for a type that is not defined in the descriptor causes a lot of object allocation
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1114'>UIMA-1114</a>] -         DocumentAnalyzer: html view doesn't work for aggregates
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1116'>UIMA-1116</a>] -         Missing override to protect SofaNum feature from modification
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1142'>UIMA-1142</a>] -         FileUtils.saveString2File() should use try/finally block to close output stream
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1150'>UIMA-1150</a>] -         Pear isolation broken, test case failing
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1158'>UIMA-1158</a>] -         Some shell scripts don't work on Ubuntu Linux
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1175'>UIMA-1175</a>] -         CasEditor should work well with eclipse 3.4
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1180'>UIMA-1180</a>] -         Opening a CAS file should open the annotation editor. Not the text editor.
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1181'>UIMA-1181</a>] -         Deleting a CAS file should also close the annotation editor. This occurs when the file is opened in text editor and annotation editor and cas file is deleted.
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1202'>UIMA-1202</a>] -         Test cases fail because of incorrect/missing text encoding handling
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1203'>UIMA-1203</a>] -         Add source code encoding to master pom
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1208'>UIMA-1208</a>] -         How to get the element type of a uima.cas.FSList feature
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1228'>UIMA-1228</a>] -         Merging results from a parallel step fails when a feature is an array of pre-existing annotations
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1242'>UIMA-1242</a>] -         Array-valued features are written out incorrectly when serializing type system
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1244'>UIMA-1244</a>] -         PDF for Tutorials and Users' Guides printing fails on page 32
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1247'>UIMA-1247</a>] -         MBean Registration not thread-safe
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1250'>UIMA-1250</a>] -         Some initialization messages may not appear as the Logger object changes during initialization
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1251'>UIMA-1251</a>] -         If one delegate in an aggregate uses a JMS service descriptor and another fails to initialize, the JVM fails to terminate
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1256'>UIMA-1256</a>] -         UIMA-AS XMI serialization loses items appended to an FSList
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1266'>UIMA-1266</a>] -         AnalysisEngineMetaData.getTypeSystem() returns null
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1268'>UIMA-1268</a>] -         Pear installer can't detect encoding of UTF-8 XML file
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1273'>UIMA-1273</a>] -         Pear runtime pulls in all jar files in pear lib directory, no matter if they're on the classpath or not
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1275'>UIMA-1275</a>] -         Mistake in CAS Multiplier documentation
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1277'>UIMA-1277</a>] -         CasEditor line length setting is ignored 
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1280'>UIMA-1280</a>] -         Missing message key in CPM at FINEST logging
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1281'>UIMA-1281</a>] -         Parameter overrides ignored for C++ annotators
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1287'>UIMA-1287</a>] -         deployAsyncService.sh does not work if UIMA_HOME contains a whitespace
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1291'>UIMA-1291</a>] -         FileNotFoundException with addSourceToJars under Windows when UIMA_HOME contains whitespace
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1302'>UIMA-1302</a>] -          PerformanceReports for PEAR not being generated in a CPE
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1304'>UIMA-1304</a>] -         Error handling parameters in CPE with a Vinci processor
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1325'>UIMA-1325</a>] -         jVinci pom.xml should have relative path to parent pom
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1340'>UIMA-1340</a>] -         PearAnalysisEngineWrapper does not expose Management Interface of the wrapped AE
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1344'>UIMA-1344</a>] -         XCAS Serialization doesn't handle StringArrays with null elements
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1349'>UIMA-1349</a>] -         Documentation does not mention that resource implementation should implement 
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1352'>UIMA-1352</a>] -         java.lang.ClassCastException using find() with a SET index
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1365'>UIMA-1365</a>] -         Code trying to ensure reverse iterators list items in the opposite order of forward ones is present but not working
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1373'>UIMA-1373</a>] -         SimpleUimaAsService needs a POM
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1380'>UIMA-1380</a>] -         SwingWorker is Sun code that can't be relicensed under Apache license and needs to be removed
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1386'>UIMA-1386</a>] -         Cas Editor: BackgroundDrawingStrategy throws IllegalArgumentException
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1388'>UIMA-1388</a>] -         TypeSystem2Xml creates an incompatible type system descriptor
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1400'>UIMA-1400</a>] -         Uima aggregate with embedded Cas Multiplier fails if one attempts to create multiple instances of it in the same JVM
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1404'>UIMA-1404</a>] -         It is not possible to set feature values with subtypes of the feature type.
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1408'>UIMA-1408</a>] -         Annotation highlightning does not work with background drawing strategy
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1411'>UIMA-1411</a>] -         Instructions for building eclipse update site are wrong
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1415'>UIMA-1415</a>] -         Unix shell scripts should not use -vx debug arguments
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1418'>UIMA-1418</a>] -         Find/Annotate dialog annotation type should be synchronized with editor mode
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1420'>UIMA-1420</a>] -         Annotation Editor updates are too slow when it displays a huge number of annotations
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1421'>UIMA-1421</a>] -         Removing a huge number of annoations is slow
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1422'>UIMA-1422</a>] -         Improve/fix build process for Eclipse Plugins
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1423'>UIMA-1423</a>] -         Document import broken
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1425'>UIMA-1425</a>] -         Cas Editor plugin tests cannot be executed
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1430'>UIMA-1430</a>] -         XmiCasDeserializerHandler.readFS(String, String, String, Attributes) should throw an instantiated exception
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1431'>UIMA-1431</a>] -         Fix some potential overflow errors
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1432'>UIMA-1432</a>] -         Function SOAP AxisAnalysisEngineServiceStub.callAnalysisEngineMetaData() fails and should be removed
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1438'>UIMA-1438</a>] -         Don't delete src/main/resources/META-INF
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1441'>UIMA-1441</a>] -         Incorrect use of Collection.binarySearch in UnambiguousIteratorImpl
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1458'>UIMA-1458</a>] -         Remove the Cas Editor from the sandbox page.
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1465'>UIMA-1465</a>] -         running a pearSpecifier as a top level component fails with NullPointerException
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1466'>UIMA-1466</a>] -         Instantiating top level pearSpecifier: reconfigure throwing NPE and need to set Session
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1467'>UIMA-1467</a>] -         PearAnalysisEngineWrapper should forward remaining methods in its interfaces to the contained AE including reconfigure and management interfaces
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1468'>UIMA-1468</a>] -         Saving of annotations and relations does not always work properly
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1470'>UIMA-1470</a>] -         Annotation Editor tries to place cursor on invalid position
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1473'>UIMA-1473</a>] -         mvn assembly:assembly failing with msg about illegal character in path name to ant in repo
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1483'>UIMA-1483</a>] -         Incorrect generification of JCas interface
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1485'>UIMA-1485</a>] -         UIMA Tutorial and Developers guide in sub title 1.3.2 should be AAE and not AE
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1491'>UIMA-1491</a>] -         Correct generics in org.apache.uima.cas.text
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1493'>UIMA-1493</a>] -         Findbugs reporting inconsistent synchronization in ResourceManager - pear wrapper
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1494'>UIMA-1494</a>] -         PearWrapper - don't forward finalize method
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1499'>UIMA-1499</a>] -         Potential ClassCastException in CasPool
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1512'>UIMA-1512</a>] -         some subproject POMs missing dependency on JUnit
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1516'>UIMA-1516</a>] -         Deleted annotations remain highlighted 
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1521'>UIMA-1521</a>] -         File encoding is platform dependent
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1523'>UIMA-1523</a>] -         Generics: FSIterator.moveTo(T) should be moveTo(FeatureStructure)
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1525'>UIMA-1525</a>] -         Running an AE inside the Cas Editor does not marks editor as dirty if document is opened
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1532'>UIMA-1532</a>] -         Generics in FSIndex maybe incorrect
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1536'>UIMA-1536</a>] -         move RunWithJarPath into its own project
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1543'>UIMA-1543</a>] -         Missing &lt;version&gt; tags in uimaj-distr POM
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1548'>UIMA-1548</a>] -         Include LICENSE/NOTICE/DISCLAIMER files from local sources ahead of common sources
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1549'>UIMA-1549</a>] -         uimaj-core has dependency on log4j coded incorrectly
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1560'>UIMA-1560</a>] -         Fix problems reported by FindBugs
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1561'>UIMA-1561</a>] -         UIMA Reference docs 5.5.4 DocumentAnnotation is misspelled
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1562'>UIMA-1562</a>] -         CasMultiplier doesn't work for PEARs
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1566'>UIMA-1566</a>] -         build breaks for some components having no source files
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1569'>UIMA-1569</a>] -         Marker should be make invalid when CAS is reset.
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1573'>UIMA-1573</a>] -         setUimaClassPath fixes
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1576'>UIMA-1576</a>] -         The AnnotationEditor does not remember the shown annotations when the Cas Editor is restarted
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1584'>UIMA-1584</a>] -         Document Delta CAS XMI format
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1599'>UIMA-1599</a>] -         Outline view may throws ClassCastException in TypeGroupedContentProvider
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1600'>UIMA-1600</a>] -         Background drawing style does not draw correctly if an annotation contains a tab
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1606'>UIMA-1606</a>] -         On eclipse 3.3.1.1 package not automatically added to the list of  imported packages 
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1609'>UIMA-1609</a>] -         binary assembly wrongly including FOP files
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1615'>UIMA-1615</a>] -         make build-from-sources work
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1618'>UIMA-1618</a>] -         Rename CasEditor NLP category to &quot;Cas Editor&quot; and the NLP project to &quot;Cas Editor Project&quot;
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1619'>UIMA-1619</a>] -         Clarify that a Cas Editor Project is required to use the Cas Editor in the documentation
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1631'>UIMA-1631</a>] -         UimaBootstrap Loader approach fails to work for classes loaded by logger (and maybe other parts of Java)
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1641'>UIMA-1641</a>] -         Cas Processor integration was changed, but documentation not updated
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1647'>UIMA-1647</a>] -         Scripts fail to call runUimaClass.sh 
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1650'>UIMA-1650</a>] -         Bug in common launcher script causing UIMA_CLASSPATH to be ignored
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1663'>UIMA-1663</a>] -         All directories in UIMA distribution should be 755
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1664'>UIMA-1664</a>] -         Windows command line files not working
+</li>
+</ul>
+    
+<h2>        Improvement
+</h2>
+<ul>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-71'>UIMA-71</a>] -         New v2 features missing from tutorial chapters
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-420'>UIMA-420</a>] -         CVD should use encoding list provided by JVM
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-472'>UIMA-472</a>] -         CAS Editor: All annotation inside the editor should have a differnt default colors as its done in the &quot;UIMA Annotation Viewer&quot;
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-483'>UIMA-483</a>] -         JCas method like getSofaDataString that doesn't copy the chars from the StringHeap
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-518'>UIMA-518</a>] -         improve browser utilities to configured the used browser in UIMA
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-554'>UIMA-554</a>] -         Have produceResource for CollectionReaders operate like other Analysis Engines with respect to setup of type system
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-684'>UIMA-684</a>] -         update website with &quot;How to do a release&quot; 
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-767'>UIMA-767</a>] -         Use eclipse content types to identify annotators descriptors (.ann) and consumer descriptors (.con)
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-841'>UIMA-841</a>] -         move Eclipse feature maven builds into feature projects
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-857'>UIMA-857</a>] -         Change startup of framework to support versioned Jars and simplified classpath
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-961'>UIMA-961</a>] -         Cleanup - remove unused things
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-984'>UIMA-984</a>] -         Improve way we get required jar file javax.activation:activation:jar:1.0.2 for building from the source
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1015'>UIMA-1015</a>] -         Example using deprecated method
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1048'>UIMA-1048</a>] -         Eliminate compiler warings in CVD
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1067'>UIMA-1067</a>] -         Remove char heap/ref heap in StringHeap of the CAS
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1068'>UIMA-1068</a>] -         Use of the JCas cache should be configurable
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1119'>UIMA-1119</a>] -         The XmiCasDeserializer throws NoSuchElementException if an XCAS is corrupted, but doesn't report the offending element.
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1148'>UIMA-1148</a>] -         CVD should ignore feature structures of unknown types
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1163'>UIMA-1163</a>] -         set svn:eol-style to native for source files in UIMA project
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1177'>UIMA-1177</a>] -         Consider making the default setting for &quot;Auto Generate JCAS Java source files&quot; be off.
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1178'>UIMA-1178</a>] -         Move the editing part of the Cas Editor to a new plugin
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1179'>UIMA-1179</a>] -         Outline view should have an option to show all annotations grouped by type
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1182'>UIMA-1182</a>] -         add info on how to verify using md5 signatures
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1206'>UIMA-1206</a>] -         Add the capability to browse subdirectories to org.apache.uima.examples.cpe.FileSystemCollectionReader
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1212'>UIMA-1212</a>] -         Optimize indexRepository methods getIndexedFS and flush
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1221'>UIMA-1221</a>] -         PEAR Installer : how to run?
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1222'>UIMA-1222</a>] -         PEAR Installer: environment variables
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1225'>UIMA-1225</a>] -         dot files should not be redistributed
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1230'>UIMA-1230</a>] -         When parsing an aggregate descriptor, should parse a shared type system file only once
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1257'>UIMA-1257</a>] -         Type System Merging Should Produce Consistent Ordering of Types
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1258'>UIMA-1258</a>] -         Optimize performance of CasCopier when input and output TypeSystems are the same
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1260'>UIMA-1260</a>] -         [SimpleServer] Expose some &quot;private&quot; variables and method as &quot;protected&quot; so that new subclasses for UIMA-AS can be defined
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1262'>UIMA-1262</a>] -         Make changes to superPoms active before they are *installed*
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1283'>UIMA-1283</a>] -         Improve POMs so that eclipse build no longer requery maven repos once a day
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1306'>UIMA-1306</a>] -         uimaj-examples: opennlp_wrappers not compatible with opennlp 1.4.x
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1326'>UIMA-1326</a>] -         Remove EMF dependency from uimaj-ep-runtime plugin
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1333'>UIMA-1333</a>] -         JCasFlow_ImplBase.setJCas() should be deprecated, and this action always done by framework
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1341'>UIMA-1341</a>] -         Introduce generics in UIMA core API
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1342'>UIMA-1342</a>] -         Use @Deprecated annotation also
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1345'>UIMA-1345</a>] -         Use generics in uimaj-core test code
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1356'>UIMA-1356</a>] -         Add source to UIMA Eclipse plugins
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1362'>UIMA-1362</a>] -         Cas Editor pom should use ${uimaj-release-version variable instead of hardcoded version string
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1363'>UIMA-1363</a>] -         Access to individual type index iterators
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1364'>UIMA-1364</a>] -         Concurrent modification checks dominate index iteration time.
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1366'>UIMA-1366</a>] -         Binary heap annotation iterator implementation
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1368'>UIMA-1368</a>] -         Compiler warnings in CAS index impl code
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1396'>UIMA-1396</a>] -         Use generics in uimaj-core org.apache.uima.analysis_component package
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1397'>UIMA-1397</a>] -         Extract CasEditor interface from AnnotationEditor
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1398'>UIMA-1398</a>] -         Refactor ICasDocument interface to be more generic for non-text cas editors
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1417'>UIMA-1417</a>] -         ResourceConfigurationException to be thrown from the initialize(context) method
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1419'>UIMA-1419</a>] -         Find/Annotate dialog should have buttons to adjust annoation span
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1428'>UIMA-1428</a>] -         Remove unused private constructors from org.apache.uima.cas.impl package classes
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1440'>UIMA-1440</a>] -         Documentation build: add ant script that copies the docbook prereqs from a known location
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1442'>UIMA-1442</a>] -         RedBlackTree should use generics
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1443'>UIMA-1443</a>] -         RedBlackTree should implement Iterable
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1444'>UIMA-1444</a>] -         cas.impl package should use generics
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1445'>UIMA-1445</a>] -         Refactor FSTypeConstraintImpl
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1448'>UIMA-1448</a>] -         Add generics to LinearTypeOrderBuilderImpl
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1451'>UIMA-1451</a>] -         findbugs changes for ep-configurator (CDE)
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1452'>UIMA-1452</a>] -         add generic type info to some classes in uima-core
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1453'>UIMA-1453</a>] -         some findbugs cleanup in uimaj-core
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1474'>UIMA-1474</a>] -         review POMs for specification of obsolete, out-of-date levels of components
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1488'>UIMA-1488</a>] -         Generics for org.apache.uima.resoruce classes
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1489'>UIMA-1489</a>] -         Generify FSIndexRepository
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1496'>UIMA-1496</a>] -         Generics for CasCreationUtils
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1500'>UIMA-1500</a>] -         Deprecate UIMA 1.x classes in org.apache.uima.analysis_engine.annotator
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1501'>UIMA-1501</a>] -         more refactoring and updating - parent POMs
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1504'>UIMA-1504</a>] -         Generify the additionalParams Map through the uimaj-core codebase
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1505'>UIMA-1505</a>] -         Generics for org.apache.uima.analysis_engine classes
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1507'>UIMA-1507</a>] -         BaseCollectionReader should extend Resource
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1508'>UIMA-1508</a>] -         Generify uimaj-core
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1509'>UIMA-1509</a>] -         Generify the aResourceClass Class through the uimaj-core codebase
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1510'>UIMA-1510</a>] -         improve uimaj-distr assembly
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1513'>UIMA-1513</a>] -         Update Cas Editor documentation for 2.3.0 release
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1517'>UIMA-1517</a>] -         Don't set executable bits on non-executables, when building assemblies
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1519'>UIMA-1519</a>] -         Generify JFSIndexRepository
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1520'>UIMA-1520</a>] -         An annotation created with the edit view should use span of editor selection
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1537'>UIMA-1537</a>] -         License Notice Disclaimer copying
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1538'>UIMA-1538</a>] -         Common Build Step: build source Jars for java Jars
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1544'>UIMA-1544</a>] -         make bootstrap launcher take directories which have .class files in them
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1545'>UIMA-1545</a>] -         UimaBootstrap loader - print out the resulting classpath by default
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1567'>UIMA-1567</a>] -         Maven build: add &lt;prerequisites&gt; to uimaj to specify minimum Maven release level
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1568'>UIMA-1568</a>] -         Remove no longer used assemble-plugin files from uimaj-ep- projects
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1575'>UIMA-1575</a>] -         Change eclipse update site and feature generation to use common maven mechanisms
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1585'>UIMA-1585</a>] -         Run RAT on projects, fix missing licenses, add RAT running to POM, document exclusions
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1590'>UIMA-1590</a>] -         fix extractAndBuild scripts
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1591'>UIMA-1591</a>] -         Sandbox build - fix copying &amp; cleaning of docs/ for website interaction with SVN
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1592'>UIMA-1592</a>] -         PearPackagingMavenPlugin - correct documentation and add usage from command line, and add plugin prefix
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1613'>UIMA-1613</a>] -         run Rat consistently for all maven assemblies
+</li>
+</ul>
+    
+<h2>        New Feature
+</h2>
+<ul>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1046'>UIMA-1046</a>] -         CVD should support an ini file parameter on the command line
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1129'>UIMA-1129</a>] -         XMI serialization support for delta CAS  
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1151'>UIMA-1151</a>] -         Make CVD load a CAS from command line
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1167'>UIMA-1167</a>] -         CVD should be able to call CollectionProcessComplete
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1188'>UIMA-1188</a>] -         More constraints for primitive types
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1207'>UIMA-1207</a>] -         Support for Delta CAS format in binary (blob) serialization
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1210'>UIMA-1210</a>] -         XmiCollectionReader fails when it encounters unknown types
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1267'>UIMA-1267</a>] -         Pear installer: expose the ability to install pear file without intermediate component ID
+</li>
+</ul>
+                
+<h2>        Task
+</h2>
+<ul>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1360'>UIMA-1360</a>] -         Graduate the Cas Editor out of the sandbox
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1387'>UIMA-1387</a>] -         Cas Editor: Remove pde log viewer from perspective
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1414'>UIMA-1414</a>] -         Add Cas Editor to uima distribution
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1424'>UIMA-1424</a>] -         Remove .launch files from Cas Editor
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1497'>UIMA-1497</a>] -         change build for pear packaging maven plugin
+</li>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1614'>UIMA-1614</a>] -         update 2.3.0-incubating-SNAPSHOT to drop the snapshot in prep for release
+</li>
+</ul>
+        
+<h2>        Test
+</h2>
+<ul>
+<li>[<a href='https://issues.apache.org/jira/browse/UIMA-1389'>UIMA-1389</a>] -         Remove OpenNLP example wrapper
+</li>
+</ul>
+</body>
+</html>

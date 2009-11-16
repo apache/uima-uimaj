@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % uimaents SYSTEM "../entities.ent" >  
+%uimaents;
+]>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<chapter id="ugr.faqs">
+  <title>UIMA Frequently Asked Questions (FAQ&apos;s)</title>
+  <titleabbrev>UIMA FAQ&apos;s</titleabbrev>
+
+  <variablelist>
+    <varlistentry id="ugr.faqs.what_is_uima">
+    <term><emphasis role="bold">What is UIMA?</emphasis></term>
+        <listitem><para>UIMA stands for Unstructured Information Management
+          Architecture. It is component software architecture for the development,
+          discovery, composition and deployment of multi-modal analytics for the analysis
+          of unstructured information.</para>
+          <para>UIMA processing occurs through a series of modules called 
+            <link linkend="ugr.faqs.annotator_versus_ae">analysis engines</link>. The result of analysis is an assignment of semantics to the elements of
+            unstructured data, for example, the indication that the phrase
+            <quote>Washington</quote> refers to a person&apos;s name or that it refers to a
+            place.</para>
+          
+          <para>Analysis Engine&apos;s output can be saved in conventional structures,
+            for example, relational databases or search engine indices, where the content
+            of the original unstructured information may be efficiently accessed
+            according to its inferred semantics. </para>
+          
+          <para>UIMA supports developers in creating,
+            integrating, and deploying components across platforms and among dispersed
+            teams working to develop unstructured information management
+            applications.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry id="ugr.faqs.pronounce">
+        <term><emphasis role="bold">How do you pronounce UIMA?</emphasis></term>
+        <listitem><para>You &ndash; eee &ndash; muh. 
+        <!-- Or, in IPA notation, /juːiːmə/ (which does not
+        display correctly in our PDF documentation, so it's commented out). --></para></listitem>
+      </varlistentry>
+      <varlistentry id="ugr.faqs.difference_apache_uima">
+        <term><emphasis role="bold">What&apos;s the difference between UIMA and the Apache UIMA?</emphasis></term>
+        <listitem><para>UIMA is an architecture which specifies component interfaces,
+          design patterns, data representations and development roles.</para>
+          
+          <para>Apache UIMA is an open source, Apache-licensed software project,
+            currently undergoing incubation at Apache.org.  It includes run-time
+            frameworks in Java and C++, APIs and tools for implementing, composing, packaging
+            and deploying UIMA components.</para>
+          
+          <para>The UIMA run-time framework allows developers to plug-in their components
+            and applications and run them on different platforms and according to different
+            deployment options that range from tightly-coupled (running in the same
+            process space) to loosely-coupled (distributed across different processes or
+            machines for greater scale, flexibility and recoverability).</para>
+        </listitem>
+      </varlistentry>
+     
+      <varlistentry id="ugr.faqs.include_semantic_search">
+        <term><emphasis role="bold">
+          Does UIMA include a semantic search engine?
+        </emphasis></term>
+        <listitem><para>
+          The Apache UIMA project does not itself include a semantic search engine.  
+          It can interface with the semantic search engine
+            component (available from <ulink
+              url="www.alphaworks.ibm.com/tech/uima"/> for indexing and querying over
+            the results of analysis. Over time, we expect that additional search engines will
+            add support for semantic searching.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry id="ugr.faqs.what_is_an_annotation">
+        
+        <term><emphasis role="bold">What is an Annotation?</emphasis></term>
+        <listitem><para>An annotation is metadata that is associated with a region of a
+          document. It often is a label, typically represented as string of characters. The
+          region may be the whole document. </para>
+          
+          <para>An example is the label <quote>Person</quote> associated with the span of
+            text <quote>George Washington</quote>. We say that <quote>Person</quote>
+            annotates <quote>George Washington</quote> in the sentence <quote>George
+            Washington was the first president of the United States</quote>. The
+            association of the label
+            <quote>Person</quote> with a particular span of text is an annotation. Another
+            example may have an annotation represent a topic, like <quote>American
+            Presidents</quote> and be used to label an entire document.</para>
+          
+          <para>Annotations are not limited to regions of texts. An annotation may annotate
+            a region of an image or a segment of audio. The same concepts apply.</para>
+        </listitem>
+      </varlistentry>
+ 
+  
+      <varlistentry id="ugr.faqs.what_is_the_cas">
+        <term><emphasis role="bold">What is the CAS?</emphasis></term>
+        <listitem><para>The CAS stands for Common Analysis Structure. It provides
+          cooperating UIMA components with a common representation and mechanism for
+          shared access to the artifact being analyzed (e.g., a document, audio file, video
+          stream etc.) and the current analysis results.</para></listitem>
+      </varlistentry>
+      <varlistentry id="ugr.faqs.what_does_the_cas_contain">
+        <term><emphasis role="bold">What does the CAS contain?</emphasis></term>
+        <listitem><para>The CAS is a data structure for which UIMA provides multiple
+          interfaces. It contains and provides the analysis algorithm or application
+          developer with access to</para>
+          
+          <itemizedlist spacing="compact">
+            
+            <listitem><para>the subject of analysis (the artifact being analyzed, like
+              the document),</para></listitem>
+            
+            <listitem><para>the analysis results or metadata(e.g., annotations, parse
+              trees, relations, entities etc.),</para></listitem>
+            
+            <listitem><para>indices to the analysis results, and</para></listitem>
+            
+            <listitem><para>the type system (a schema for the analysis results).</para>
+            </listitem>
+          </itemizedlist>
+          
+          <para>A CAS can hold multiple versions of the artifact being analyzed (for
+            instance, a raw html document, and a detagged version, or an English version and a
+            corresponding German version, or an audio sample, and the text that
+            corresponds, etc.). For each version there is a separate instance of the results
+            indices.</para></listitem>
+      </varlistentry>
+      <varlistentry id="ugr.faqs.only_annotations">
+        <term><emphasis role="bold">Does the CAS only contain Annotations?</emphasis></term>
+        <listitem><para>No. The CAS contains the artifact being analyzed plus the analysis
+          results. Analysis results are those metadata recorded by <link linkend="ugr.faqs.annotator_versus_ae">analysis engines</link> in the
+          CAS. The most common form of analysis result is the addition of an annotation. But an
+          analysis engine may write any structure that conforms to the CAS&apos;s type
+          system into the CAS. These may not be annotations but may be other things, for
+          example links between annotations and properties of objects associated with
+          annotations.</para>
+          <para>The CAS may have multiple representations of the artifact being analyzed, each one
+            represented in the CAS as a particular Subject of Analysis. or <link linkend="ugr.faqs.what_is_a_sofa">Sofa</link></para></listitem>
+      </varlistentry>
+      <varlistentry id="ugr.faqs.just_xml">
+        <term><emphasis role="bold">Is the CAS just XML?</emphasis></term>
+        <listitem><para>No, in fact there are many possible representations of the CAS. If all
+          of the <link linkend="ugr.faqs.annotator_versus_ae">analysis engines</link> are running in the same process, an efficient, in-memory
+          data object is used. If a CAS must be sent to an analysis engine on a remote machine, it
+          can be done via an XML or a binary serialization of the CAS. </para>
+          
+          <para>The UIMA framework provides serialization and de-serialization methods
+            for a particular XML representation of the CAS named the XMI.</para></listitem>
+      </varlistentry>
+      <varlistentry id="ugr.faqs.what_is_a_type_system">
+        <term><emphasis role="bold">What is a Type System?</emphasis></term>
+        <listitem><para>Think of a type system as a schema or class model for the <link linkend="ugr.faqs.what_is_the_cas">CAS</link>. It defines
+          the types of objects and their properties (or features) that may be instantiated in
+          a CAS. A specific CAS conforms to a particular type system. UIMA components declare
+          their input and output with respect to a type system. </para>
+          
+          <para>Type Systems include the definitions of types, their properties, range
+            types (these can restrict the value of properties to other types) and
+            single-inheritance hierarchy of types.</para></listitem>
+      </varlistentry>
+      <varlistentry id="ugr.faqs.what_is_a_sofa">
+        <term><emphasis role="bold">What is a Sofa?</emphasis></term>
+        <listitem><para>Sofa stands for &ldquo;Subject of Analysis&quot;. A <link linkend="ugr.faqs.what_is_the_cas">CAS</link> is
+          associated with a single artifact being analysed by a collection of UIMA analysis
+          engines. But a single artifact may have multiple independent views, each of which
+          may be analyzed separately by a different set of <link linkend="ugr.faqs.annotator_versus_ae">analysis engines</link>. For example,
+          given a document it may have different translations, each of which are associated
+          with the original document but each potentially analyzed by different engines. A
+          CAS may have multiple Views, each containing a different Subject of Analysis
+          corresponding to some version of the original artifact. This feature is ideal for
+          multi-modal analysis, where for example, one view of a video stream may be the video
+          frames and the other the close-captions.</para></listitem>
+      </varlistentry>
+
+      
+      <varlistentry id="ugr.faqs.annotator_versus_ae">
+        <term><emphasis role="bold">What's the difference between an Annotator and an Analysis
+          Engine?</emphasis></term>
+        <listitem><para>In the terminology of UIMA, an annotator is simply some code that
+          analyzes documents and outputs <link linkend="ugr.faqs.what_is_an_annotation">annotations</link> on the content of the documents. The
+          UIMA framework takes the annotator, together with metadata describing such
+          things as the input requirements and outputs types of the annotator, and produces
+          an analysis engine. </para>
+          
+          <para>Analysis Engines contain the framework-provided infrastructure that
+            allows them to be easily combined with other analysis engines in different flows
+            and according to different deployment options (collocated or as web services,
+            for example). </para>
+          
+          <para>Analysis Engines are the framework-generated objects that an Application
+            interacts with. An Annotator is a user-written class that implements the one of
+            the supported Annotator interfaces.</para></listitem>
+      </varlistentry>
+      <varlistentry id="ugr.faqs.web_services">
+        <term><emphasis role="bold">Are UIMA analysis engines web services?</emphasis></term>
+        <listitem><para>They can be deployed as such. Deploying an analysis engine as a web
+          service is one of the deployment options supported by the UIMA framework.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry id="ugr.faqs.stateless_aes">
+        <term><emphasis role="bold">Do Analysis Engines have to be
+          &quot;stateless&quot;?</emphasis></term>
+        <listitem><para>This is a user-specifyable option. The XML metadata for the
+          component includes an
+          <code>operationalProperties</code> element which can specify if multiple
+          deployment is allowed. If true, then a particular instance of an Engine might not
+          see all the CASes being processed. If false, then that component will see all of the
+          CASes being processed. In this case, it can accumulate state information among all
+          the CASes. Typically, Analysis Engines in the main analysis pipeline are marked
+          multipleDeploymentAllowed = true. The CAS Consumer component, on the other hand,
+          defaults to having this property set to false, and is typically associated with
+          some resource like a database or search engine that aggregates analysis results
+          across an entire collection.</para>
+          
+          <para>Analysis Engines developers are encouraged not to maintain state between
+            documents that would prevent their engine from working as advertised if
+            operated in a parallelized environment.</para></listitem>
+      </varlistentry>
+      <varlistentry id="ugr.faqs.uddi">
+        <term><emphasis role="bold">Is engine meta-data compatible with web services and
+          UDDI?</emphasis></term>
+        <listitem><para>All UIMA component implementations are associated with Component
+          Descriptors which represents metadata describing various properties about the
+          component to support discovery, reuse, validation, automatic composition and
+          development tooling. In principle, UIMA component descriptors are compatible
+          with web services and UDDI. However, the UIMA framework currently uses its own XML
+          representation for component metadata. It would not be difficult to convert
+          between UIMA&apos;s XML representation and the WSDL and UDDI standards.</para>
+        </listitem>
+      </varlistentry>
+
+      
+      <varlistentry id="ugr.faqs.scaling">
+        <term><emphasis role="bold">How do you scale a UIMA application?</emphasis></term>
+        <listitem><para>The UIMA framework allows components such as <link linkend="ugr.faqs.annotator_versus_ae">analysis engines</link> and
+          CAS Consumers to be easily deployed as services or in other containers and managed
+          by systems middleware designed to scale. UIMA applications tend to naturally
+          scale-out across documents allowing many documents to be analyzed in
+          parallel.</para>
+          <para>A component in the UIMA framework called the CPM (Collection Processing
+            Manager) has a host of features and configuration settings for scaling an
+            application to increase its throughput and recoverability.</para></listitem>
+      </varlistentry>
+      <varlistentry id="ugr.faqs.embedding">
+        <term><emphasis role="bold">What does it mean to embed UIMA in systems middleware?</emphasis></term>
+        <listitem><para>An example of an embedding would be the deployment of a UIMA analysis
+          engine as an Enterprise Java Bean inside an application server such as IBM
+          WebSphere. Such an embedding allows the deployer to take advantage of the features
+          and tools provided by WebSphere for achieving scalability, service management,
+          recoverability etc. UIMA is independent of any particular systems middleware, so
+          <link linkend="ugr.faqs.annotator_versus_ae">analysis engines</link> could be deployed on other application servers as well.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry id="ugr.faqs.cpm_versus_cpe">
+        <term><emphasis role="bold">How is the CPM different from a CPE?</emphasis></term>
+        <listitem><para>These name complimentary aspects of collection processing. The CPM
+          (Collection Processing <emphasis role="bold">Manager</emphasis> is the part of 
+          the UIMA framework that manages the execution of a workflow of UIMA
+          components orchestrated to analyze a large collection of documents. The UIMA
+          developer does not implement or describe a CPM. It is a piece of infrastructure code
+          that handles CAS transport, instance management, batching, check-pointing,
+          statistics collection and failure recovery in the execution of a collection
+          processing workflow.</para>
+          
+          <para>A Collection Processing Engine (CPE) is component created by the framework
+            from a specific CPE descriptor. A CPE descriptor refers to a series of UIMA
+            components including a Collection Reader, CAS Initializer, Analysis
+            Engine(s) and CAS Consumers. These components are organized in a work flow and
+            define a collection analysis job or CPE. A CPE acquires documents from a source
+            collection, initializes CASs with document content, performs document
+            analysis and then produces collection level results (e.g., search engine
+            index, database etc). The CPM is the execution engine for a CPE.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry id="ugr.faqs.semantic_search">
+        <term><emphasis role="bold">What is Semantic Search and what is its relationship to
+          UIMA?</emphasis></term>
+        <listitem><para>Semantic Search refers to a document search paradigm that allows
+          users to search based not just on the keywords contained in the documents, but also
+          on the semantics associated with the text by <link linkend="ugr.faqs.annotator_versus_ae">analysis engines</link>. UIMA applications
+          perform analysis on text documents and generate semantics in the form of
+          <link linkend="ugr.faqs.what_is_an_annotation">annotations</link> on regions of text. For example, a UIMA analysis engine may discover
+          the text <quote>First Financial Bank</quote> to refer to an organization and
+          annotated it as such. With traditional keyword search, the query
+          <command>first</command> will return all documents that contain that word.
+          <command>First</command> is a frequent and ambiguous term &ndash; it occurs a lot
+          and can mean different things in different places. If the user is looking for
+          organizations that contain that word <command>first</command> in their names,
+          s/he will likely have to sift through lots of documents containing the word
+          <quote>first</quote> used in different ways. Semantic Search exploits the
+          results of analysis to allow more precise queries. For example, the semantic
+          search query <emphasis>&lt;organization&gt; first
+          &lt;/organization&gt;</emphasis> will rank first documents that contain the
+          word <quote>first</quote> as part of the name of an organization. The UIMA SDK
+          documentation demonstrates how UIMA applications can be built using semantic
+          search. It provides details about the XML Fragment Query language. This is the
+          particular query language used by the semantic search engine that comes with the
+          SDK.</para></listitem>
+      </varlistentry>
+      <varlistentry id="ugr.faqs.xml_fragment_not_xml">
+        <term><emphasis role="bold">Is an XML Fragment Query valid XML?</emphasis></term>
+        <listitem><para>Not necessarily. The XML Fragment Query syntax is used to formulate
+          queries interpreted by the semantic search engine that ships with the UIMA SDK.
+          This query language relies on basic XML syntax as an intuitive way to describe
+          hierarchical patterns of annotations that may occur in a <link linkend="ugr.faqs.what_is_the_cas">CAS</link>. The language
+          deviates from valid XML in order to support queries over
+          <quote>overlapping</quote> or <quote>cross-over</quote> annotations and
+          other features that affect the interpretation of the query by the query processor.
+          For example, it admits notations in the query to indicate whether a keyword or an
+          annotation is optional or required to match a document.</para></listitem>
+      </varlistentry>
+      <varlistentry id="ugr.faqs.modalities_other_than_text">
+        <term><emphasis role="bold">Does UIMA support modalities other than text?</emphasis></term>
+        <listitem><para>The UIMA architecture supports the development, discovery,
+          composition and deployment of multi-modal analytics including text, audio and
+          video. Applications that process text, speech and video have been developed using
+          UIMA. This release of the SDK, however, does not include examples of these
+          multi-modal applications. </para>
+          
+          <para>It does however include documentation and programming examples for using
+            the key feature required for building multi-modal applications. UIMA supports
+            multiple subjects of analysis or <link linkend="ugr.faqs.what_is_a_sofa">Sofas</link>. These allow multiple views of a single
+            artifact to be associated with a <link linkend="ugr.faqs.what_is_the_cas">CAS</link>. For example, if an artifact is a video
+            stream, one Sofa could be associated with the video frames and another with the
+            closed-captions text. UIMA&apos;s multiple Sofa feature is included and
+            described in this release of the SDK.</para></listitem>
+      </varlistentry>
+      <varlistentry id="ugr.faqs.compare">
+        <term><emphasis role="bold">How does UIMA compare to other similar work?</emphasis></term>
+        <listitem><para>A number of different frameworks for NLP have preceded UIMA. Two of
+          them were developed at IBM Research and represent UIMA&apos;s early roots. For
+          details please refer to the UIMA article that appears in the IBM Systems Journal
+          Vol. 43, No. 3 (<ulink
+            url="http://www.research.ibm.com/journal/sj/433/ferrucci.html"/>
+          ).</para>
+          
+          <para>UIMA has advanced that state of the art along a number of dimensions
+            including: support for distributed deployments in different middleware
+            environments, easy framework embedding in different software product
+            platforms (key for commercial applications), broader architectural converge
+            with its collection processing architecture, support for
+            multiple-modalities, support for efficient integration across programming
+            languages, support for a modern software engineering discipline calling out
+            different roles in the use of UIMA to develop applications, the extensive use of
+            descriptive component metadata to support development tooling, component
+            discovery and composition. (Please note that not all of these features are
+            available in this release of the SDK.)</para></listitem>
+      </varlistentry>
+      <varlistentry id="ugr.faqs.open_source">
+        <term><emphasis role="bold">Is UIMA Open Source?</emphasis></term>
+        <listitem><para>Yes. As of version 2, UIMA development has moved to Apache and is being
+          developed within the Apache open source processes. It is licensed under the Apache
+          version 2 license. Previous versions are available on the IBM alphaWorks site (
+            <ulink url="http://www.alphaworks.ibm.com/tech/uima"/>) and the source
+          code for previous version of the UIMA framework is available on SourceForge (
+            <ulink url="http://uima-framework.sourceforge.net/"/>).</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry id="ugr.faqs.levels_required">
+        <term><emphasis role="bold">What Java level and OS are required for the UIMA SDK?</emphasis></term>
+        <listitem><para>As of release 2.2.1, the UIMA SDK requires a Java 1.5 level (or later).  Releases prior to 2.2.1
+          require as a minimum the Java 1.4 level; they will not run on 1.3 (or earlier levels). 
+          The release has been tested with Java 5 and 6. 
+          It has been tested on mainly on Windows XP and Linux Intel 32bit platforms, with some
+          testing on the MacOSX. Other
+          platforms and JDK implementations will likely work, but have
+          not been as significantly tested.</para></listitem>
+      </varlistentry>
+      <varlistentry id="ugr.faqs.building_apps_on_top_of_uima">
+        <term><emphasis role="bold">Can I build my UIM application on top of UIMA?</emphasis></term>
+        <listitem><para>Yes. Apache UIMA is licensed under the Apache version 2 license,
+          enabling you to build and distribute applications which include the framework.
+          </para></listitem>
+      </varlistentry>
+      <varlistentry id="ugr.faqs.commercial_products">
+        <term><emphasis role="bold">Do any commercial products support the UIMA framework or include
+          it as part of their product?</emphasis></term>
+        <listitem><para>Yes. IBM's WebSphere Information Integration Omnifind Edition
+          product (<ulink
+            url="http://www.ibm.com/developerworks/db2/zones/db2ii"/> or <ulink
+            url="http://www-306.ibm.com/software/data/integration/db2ii/editions_womnifind.html"/>
+          ) has UIMA <quote>inside</quote> and supports adding UIMA annotators to the
+          processing pipeline. We are actively seeking other product embeddings. </para>
+        </listitem>
+      </varlistentry>
+      <!--
+      <varlistentry>
+      <term><emphasis role="bold"></emphasis></term>
+      <listitem><para></para></listitem>
+      </varlistentry>
+      -->
+ </variablelist>
+</chapter>

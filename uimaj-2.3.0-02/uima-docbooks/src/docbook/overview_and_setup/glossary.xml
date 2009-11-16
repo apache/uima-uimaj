@@ -1,0 +1,559 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE glossary PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % uimaents SYSTEM "../entities.ent" >  
+%uimaents;
+]>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<glossary id="ugr.glossary">
+  <title>Glossary: Key Terms &amp; Concepts</title>
+  <titleabbrev>Glossary</titleabbrev>
+ <!-- 
+  <para></para>
+  <glossary id="ugr.glossary.glossary">
+   -->
+    <!--
+    <glossentry id="ugr.glossary.">
+      <glossterm></glossterm>
+      <glosssee otherterm="ugr.glossary."></glosssee>
+      <glossdef>
+        <para></para>
+        <glossseealso otherterm="ugr.glossary."/>
+      </glossdef>
+    </glossentry>
+      -->
+       <glossentry id="ugr.glossary.aggregate">
+      <glossterm>Aggregate &ae;</glossterm>
+      <glossdef>
+        <para>An <glossterm linkend="ugr.glossary.analysis_engine">Analysis Engine</glossterm>
+ made up of multiple subcomponent
+&ae;s arranged in a flow.  The
+flow can be one of the two built-in flows, or a custom flow provided by the user.</para>
+      </glossdef>
+    </glossentry> 
+    
+  <glossentry id="ugr.glossary.analysis_engine">
+    <glossterm>&ae;</glossterm>
+    <glossdef><para>A program that analyzes artifacts (e.g. documents) and infers information about
+them, and which implements the UIMA &ae; interface Specification. It
+does not matter how the program is built, with what framework or whether or not
+it contains component (<quote>sub</quote>) &ae;s.</para>
+    </glossdef>
+  </glossentry>
+
+  
+    <glossentry id="ugr.glossary.annotation">
+      <glossterm>Annotation</glossterm>
+      <glossdef>
+        <para>The association of a metadata, such as a label, with a region of text (or other
+type of artifact). For example, the label <quote>Person</quote> associated with a
+region of text <quote>John Doe</quote> constitutes an annotation. We say
+<quote>Person</quote> annotates the span of text from X to Y containing exactly
+<quote>John Doe</quote>. An annotation is represented as a special
+          <glossterm linkend="ugr.glossary.type">type</glossterm> 
+
+in a UIMA <glossterm linkend="ugr.glossary.type_system">type system</glossterm>.
+           It is the type used to record
+the labeling of regions of a <glossterm linkend="ugr.glossary.sofa">Sofa</glossterm></para>
+      </glossdef>
+    </glossentry>
+  
+    <glossentry id="ugr.glossary.annotator">
+      <glossterm>Annotator</glossterm>
+      <glossdef>
+        <para>A software
+component that implements the UIMA annotator interface. Annotators are
+implemented to produce and record annotations over regions of an artifact
+(e.g., text document, audio, and video).</para>
+      </glossdef>
+    </glossentry>
+  
+    <glossentry id="ugr.glossary.application">
+      <glossterm>Application</glossterm>
+      <glossdef>
+        <para>An application is the outer containing code that invokes
+        the UIMA framework functions to instantiate an 
+        <glossterm linkend="ugr.glossary.analysis_engine">Analysis Engine</glossterm> or a
+        <glossterm linkend="ugr.glossary.cpe">Collection Processing Engine</glossterm> from a particular 
+        descriptor, and run it.</para>
+      </glossdef>
+    </glossentry>
+
+      <glossentry id="ugr.glossary.apache_uima_java_framework">
+      <glossterm>Apache UIMA Java Framework</glossterm>
+      <glossdef>
+        <para>A Java-based implementation of the <glossterm linkend="ugr.glossary.uima">UIMA</glossterm>
+         architecture.  It provides a run-time environment in which developers can plug in and run their UIMA component 
+         implementations and with which they can build and deploy UIM applications.  The framework is the
+         core part of the <glossterm linkend="ugr.glossary.apache_uima_sdk">Apache UIMA SDK</glossterm>.</para>
+      </glossdef>
+    </glossentry>
+
+    <glossentry id="ugr.glossary.apache_uima_sdk">
+      <glossterm>Apache UIMA Software Development Kit (SDK)</glossterm>
+      <glossdef>
+        <para>The SDK for which you are now reading the documentation.  The SDK includes the framework
+          plus additional components such as tooling and examples.  Some of the tooling is Eclipse-based 
+          (<ulink url="http://www.eclipse.org/"/>). The Apache UIMA SDK is being developed at the 
+          <ulink url="http://incubator.apache.org">Apache Incuabator</ulink>.</para>
+      </glossdef>
+    </glossentry>
+    
+      <glossentry id="ugr.glossary.cas">
+      <glossterm>CAS</glossterm>
+      <glossdef>
+        <para>The UIMA Common Analysis Structure is
+the primary data structure which UIMA analysis components use to represent and
+share analysis results.  It contains:</para>
+
+<itemizedlist><listitem><para>The artifact. This is the object
+being analyzed such as a text document or audio or video stream. The CAS
+projects one or more views of the artifact. Each view is referred to as a 
+  <glossterm linkend="ugr.glossary.sofa">Sofa</glossterm>.</para></listitem>
+
+
+<listitem><para>A type system description &ndash;
+indicating the types, subtypes, and their features. </para></listitem>
+
+
+<listitem><para>Analysis metadata &ndash; <quote>standoff</quote>
+annotations describing the artifact or a region of the artifact </para></listitem>
+
+
+<listitem><para>An index repository to support
+efficient access to and iteration over the results of analysis.
+</para></listitem></itemizedlist>
+
+<para>UIMA&apos;s primary interface to this structure is provided by
+a class called the Common Analysis System. We use <quote>CAS</quote> to refer to
+both the structure and system. Where the common analysis structure is used
+through a different interface, the particular implementation of the structure
+is indicated, For example, the <glossterm linkend="ugr.glossary.jcas">JCas</glossterm> is a native Java object
+representation of the contents of the common analysis structure.</para>
+
+<para>A CAS can have multiple views; each view has a unique
+representation of the artifact, and has its own index repository, representing
+results of analysis for that representation of the artifact.</para>
+      </glossdef>
+    </glossentry>
+  
+    <glossentry id="ugr.glossary.cas_consumer">
+      <glossterm>CAS Consumer</glossterm>
+      <glossdef>
+        <para>A component that
+receives each CAS in the collection, usually after it has been processed by an 
+          <glossterm linkend="ugr.glossary.analysis_engine">Analysis Engine</glossterm>. It is responsible for taking the results from
+the CAS and using them for some purpose, perhaps storing selected results into
+a database, for instance.  The CAS
+Consumer may also perform collection-level analysis, saving these results in an
+application-specific, aggregate data structure.</para>
+      </glossdef>
+    </glossentry>
+  
+    <glossentry id="ugr.glossary.cas_initializer">
+      <glossterm>CAS Initializer (deprecated)</glossterm>
+      <glossdef>
+        <para>Prior to version 2, this was the component that took an 
+          undefined input form and produced a particular <glossterm linkend="ugr.glossary.sofa">Sofa</glossterm>.
+          For version 2, this has been replaced with using any <glossterm linkend="ugr.glossary.analysis_engine">Analysis Engine</glossterm>
+          which takes a particular <glossterm linkend="ugr.glossary.cas_view">CAS View</glossterm> and creates a
+          new output Sofa.  For example, if the document is HTML, an &ae; might 
+          create a Sofa which is a detagged version of an input CAS View, perhaps also
+creating annotations derived from the tags. For example &lt;p&gt; tags
+might be translated into Paragraph annotations in the CAS.</para>
+      </glossdef>
+    </glossentry>
+  
+    <glossentry id="ugr.glossary.cas_multiplier">
+      <glossterm>CAS Multiplier</glossterm>
+      <glossdef>
+        <para>A component, implemented by a UIMA developer,
+that takes a CAS as input and produces 0 or more new CASes as output.  Common use cases for a CAS Multiplier
+          include creating alternative versions of an input <glossterm linkend="ugr.glossary.sofa">Sofa</glossterm> 
+          (see <glossterm linkend="ugr.glossary.cas_initializer">CAS Initializer</glossterm>), and breaking 
+          a large input CAS into smaller pieces, each of which is emitted as a
+separate output CAS.  There are other
+uses, however, such as aggregating input CASes into a single output CAS.</para>
+      </glossdef>
+    </glossentry>
+  
+    <glossentry id="ugr.glossary.cas_processor">
+      <glossterm>CAS Processor</glossterm>
+      <glossdef>
+        <para>A component of a Collection Processing Engine (CPE) that
+takes a CAS as input and returns a CAS as output. There are two types of CAS
+Processors: <glossterm linkend="ugr.glossary.analysis_engine">Analysis Engine</glossterm>s and 
+          <glossterm linkend="ugr.glossary.cas_consumer">CAS Consumer</glossterm>s.</para>
+      </glossdef>
+    </glossentry>
+  
+    <glossentry id="ugr.glossary.cas_view">
+      <glossterm>CAS View</glossterm>
+      <glossdef>
+        <para>A CAS Object which shares the base CAS and type system
+definition and index specifications, but has a unique index repository and a
+particular <glossterm linkend="ugr.glossary.sofa">Sofa</glossterm>.   Views are named, and applications and
+annotators can dynamically create additional views whenever they are needed.
+Annotations are made with respect to one view.  Feature structures can have references to feature structures 
+          indexed in other views, as needed.</para>
+      </glossdef>
+    </glossentry>
+  
+    <glossentry id="ugr.glossary.cde">
+      <glossterm>CDE</glossterm>
+      <glossdef>
+        <para>The Component Descriptor Editor. This
+is the Eclipse tool that lets you conveniently edit the UIMA descriptors; 
+          see <olink targetdoc="&uima_docs_tools;" targetptr="ugr.tools.cde"/>.</para>
+      </glossdef>
+    </glossentry>
+  
+    <glossentry id="ugr.glossary.cpe">
+      <glossterm>Collection Processing Engine (CPE)</glossterm>
+      <glossdef>
+        <para>Performs Collection Processing
+through the combination of a 
+          <glossterm linkend="ugr.glossary.collection_reader">Collection Reader</glossterm>,
+          0 or more <glossterm linkend="ugr.glossary.analysis_engine">Analysis Engine</glossterm>s,
+ and zero or more <glossterm linkend="ugr.glossary.cas_consumer">CAS Consumer</glossterm>s.
+The Collection Processing Manager (CPM) manages the execution of the engine.</para>
+        <para>The CPE also refers to the XML specification of the Collection Processing
+        engine.  The CPM reads a CPE specification and instantiates a CPE instance from it,
+        and runs it.</para>
+      </glossdef>
+    </glossentry>
+  
+    <glossentry id="ugr.glossary.cpm">
+      <glossterm>Collection Processing Manager (CPM)</glossterm>
+      <glossdef>
+        <para>The part of the framework that
+manages the execution of collection processing, routing CASs from the 
+          <glossterm linkend="ugr.glossary.collection_reader">Collection Reader</glossterm>
+          
+to 0 or more <glossterm linkend="ugr.glossary.analysis_engine">Analysis Engine</glossterm>s
+and then to the 0 or more <glossterm linkend="ugr.glossary.cas_consumer">CAS Consumer</glossterm>s. The CPM
+provides feedback such as performance statistics and error reporting and supports
+other features such as parallelization and error handling.</para>
+      </glossdef>
+    </glossentry>
+  
+    <glossentry id="ugr.glossary.collection_reader">
+      <glossterm>Collection Reader</glossterm>
+      <glossdef>
+        <para>A component
+that reads documents from some source, for example a file system or database.
+The collection reader initializes a CAS with this document.  
+          Each document is returned as a CAS that may then be processed by 
+          an <glossterm linkend="ugr.glossary.analysis_engine">Analysis Engine</glossterm>s. If the task of populating a CAS
+from the document is complex, you may use an arbitrarily complex chain of 
+          <glossterm linkend="ugr.glossary.analysis_engine">Analysis Engine</glossterm>s and have the last one
+          create and initialize a new <glossterm linkend="ugr.glossary.sofa">Sofa</glossterm>.</para>
+      </glossdef>
+    </glossentry>
+  
+    <glossentry id="ugr.glossary.fact_search">
+      <glossterm>Fact Search</glossterm>
+      <glossdef>
+        <para>A search that given a fact pattern, returns facts
+extracted from a collection of documents by a set of &ae;s that
+match the fact pattern.</para>
+      </glossdef>
+    </glossentry>
+  
+    <glossentry id="ugr.glossary.feature">
+      <glossterm>Feature</glossterm>
+      <glossdef>
+        <para>A data member or attribute of a type.  Each feature itself has an
+associated range type, the type of the value that it can hold.  In the
+database analogy where types are tables, features are columns.
+        In the world of structured data types, each feature is a <quote>field</quote>,
+        or data member.</para>
+      </glossdef>
+    </glossentry>
+  
+    <glossentry id="ugr.glossary.flow_controller">
+      <glossterm>Flow Controller</glossterm>
+      <glossdef>
+        <para>A component which implements the interfaces needed
+to specify a custom flow within an <glossterm linkend="ugr.glossary.aggregate">&aae;</glossterm>.</para>
+      </glossdef>
+    </glossentry>
+  
+    <glossentry id="ugr.glossary.hybrid_analysis_engine">
+      <glossterm>Hybrid &ae;</glossterm>
+      <glossdef>
+        <para>An <glossterm linkend="ugr.glossary.aggregate">&aae;</glossterm> 
+          where more than one of its component &ae;s are deployed
+the same address space and one or more are deployed remotely (part tightly and
+part loosely-coupled).</para>
+      </glossdef>
+    </glossentry>
+  
+    <glossentry id="ugr.glossary.index">
+      <glossterm>Index</glossterm>
+      <glossdef>
+        <para>Data in the CAS can only be retrieved using Indexes.  
+          Indexes are analogous to the indexes that are
+specified on tables of a database.  Indexes belong to Index Repositories;
+there is one Repository for each
+view of the CAS.  Indexes are specified
+to retrieve instances of some CAS Type (including its subtypes), and can be
+optionally sorted in a user-definable way. 
+          For example, all types derived from the UIMA
+built-in type <literal>uima.tcas.Annotation</literal> contain begin
+and end features, which mark the begin and end offsets in the text where this
+annotation occurs.  There is a built-in index of Annotations that specifies that
+annotations are retrieved sequentially by sorting first on the value of the begin 
+feature (ascending) and then by the value of the end feature (descending).
+In this case, iterating over the annotations, one first obtains annotations that 
+come sequentially first in the text, while favoring longer annotations, in the case
+where two annotations start at the same offset.  Users can define their own indexes
+as well.</para>
+      </glossdef>
+    </glossentry>
+  
+    <glossentry id="ugr.glossary.jcas">
+      <glossterm>JCas</glossterm>
+      <glossdef>
+        <para>A Java object interface to the contents of the CAS.  
+          This interface use additional generated Java classes, where each type in the CAS
+is represented as a Java class with the same name, each feature is represented with
+a getter and setter method, and each instance of a type is represented as a
+Java object of the corresponding Java class.</para>
+      </glossdef>
+    </glossentry>
+  
+    <glossentry id="ugr.glossary.keyword_search">
+      <glossterm>Keyword Search</glossterm>
+      <glossdef>
+        <para>The standard search method where one supplies words (or <quote>keywords</quote>)
+and candidate documents are returned.</para>
+      </glossdef>
+    </glossentry>
+  
+    <glossentry id="ugr.glossary.knowledge_base">
+      <glossterm>Knowledge Base</glossterm>
+      <glossdef>
+        <para>A collection of data that may be interpreted as a
+set of facts and rules considered true in a possible world.</para>
+      </glossdef>
+    </glossentry>
+  
+    <glossentry id="ugr.glossary.loosely_coupled_analysis_engine">
+      <glossterm>Loosely-Coupled &ae;</glossterm>
+      <glossdef>
+        <para>An <glossterm linkend="ugr.glossary.aggregate">&aae;</glossterm>
+         where no two of its component &ae;s run in the
+same address space but where each is remote with respect to the others that
+make up the aggregate. Loosely coupled engines are ideal for using 
+          remote &ae; services that are
+not locally available, or for quickly assembling and testing functionality in
+cross-language, cross-platform distributed environments. They also better enable
+distributed scaleable implementations where quick recoverability may have a
+greater impact on overall throughput than analysis speed.</para>
+      </glossdef>
+    </glossentry>
+  
+    <glossentry id="ugr.glossary.ontology">
+      <glossterm></glossterm>
+      <glossdef>
+        <para>The part of a knowledge base that defines the semantics of the data
+axiomatically.</para>
+      </glossdef>
+    </glossentry>
+  
+    <glossentry id="ugr.glossary.pear">
+      <glossterm>PEAR</glossterm>
+      <glossdef>
+        <para>An archive file that packages up a UIMA component with its code,
+descriptor files and other resources required to install and run it in another
+environment. You can generate PEAR files using utilities that come with the
+UIMA SDK.</para>
+      </glossdef>
+    </glossentry>
+  
+    <glossentry id="ugr.glossary.primitive_analysis_engine">
+      <glossterm>Primitive &ae;</glossterm>
+      <glossdef>
+        <para>An <glossterm linkend="ugr.glossary.analysis_engine">Analysis Engine</glossterm> 
+          that is composed of a single 
+          <glossterm linkend="ugr.glossary.annotator">Annotator</glossterm>; one that has
+no component (or <quote>sub</quote>) &ae;s inside of it; 
+contrast with
+          <glossterm linkend="ugr.glossary.aggregate">&aae;</glossterm>.</para>
+      </glossdef>
+    </glossentry>
+  
+    <glossentry id="ugr.glossary.semantic_search">
+      <glossterm>Semantic Search</glossterm>
+      <glossdef>
+        <para> search where the semantic intent of the query is
+specified using one or more entity or relation specifiers.  For example,
+one could specify that they are looking for a person (named) <quote>Bush.</quote>
+Such a query would then not return results about the kind of bushes that grow
+in your garden but rather just persons named Bush.</para>
+      </glossdef>
+    </glossentry>
+  
+    <glossentry id="ugr.glossary.structured_information">
+      <glossterm>Structured Information</glossterm>
+      <glossdef>
+        <para>Items stored in structured resources such as
+search engine indices, databases or knowledge bases. The canonical example of
+structured information is the database table. Each element of information in
+the database is associated with a precisely defined schema where each table
+column heading indicates its precise semantics, defining exactly how the
+information should be interpreted by a computer program or end-user.</para>
+      </glossdef>
+    </glossentry>
+  
+    <glossentry id="ugr.glossary.sofa">
+      <glossterm>Subject of Analysis (Sofa)</glossterm>
+      <glossdef>
+        <para>A piece of
+data (e.g., text document, image, audio segment, or video segment), which is intended
+for analysis by UIMA analysis components.  It belongs to a 
+          <glossterm linkend="ugr.glossary.cas_view">CAS View</glossterm> which has the same name; there
+          is a one-to-one correspondence between these.  There can be multiple Sofas contained within
+one CAS, each one representing a different view of the original artifact &ndash; for example,
+an audio file could be the original artifact, and also be one Sofa, and another
+could be the output of a voice-recognition component, where the Sofa would be
+the corresponding text document. Sofas may be analyzed independently or
+simultaneously; they all co-exist within the CAS.  </para>
+      </glossdef>
+    </glossentry>
+  
+    <glossentry id="ugr.glossary.tightly_coupled_analysis_engine">
+      <glossterm>Tightly-Coupled &ae;</glossterm>
+      <glossdef>
+        <para>An <glossterm linkend="ugr.glossary.aggregate">&aae;</glossterm>
+ where all of its component &ae;s run in the same address space.</para>
+      </glossdef>
+    </glossentry>
+  
+    <glossentry id="ugr.glossary.type">
+      <glossterm>Type</glossterm>
+      <glossdef>
+        <para>A specification of an object in the
+          <glossterm linkend="ugr.glossary.cas">CAS</glossterm> used to store the results of
+analysis.  Types are defined using inheritance, so some types may be
+defined purely for the sake of defining other types, and are in this sense <quote>abstract
+types.</quote>  Types usually contain 
+          <glossterm linkend="ugr.glossary.feature">Feature</glossterm>s, which are attributes, or
+properties of the type.  A type is roughly equivalent to a class in an
+object oriented programming language, or a table in a database.  Instances of types in the CAS
+          may be indexed for retrieval.</para>
+      </glossdef>
+    </glossentry>
+  
+    <glossentry id="ugr.glossary.type_system">
+      <glossterm>Type System</glossterm>
+      <glossdef>
+        <para>A collection of related <glossterm linkend="ugr.glossary.type">types</glossterm>.
+          All components that can access the CAS,
+including <glossterm linkend="ugr.glossary.application">Applications</glossterm>,
+          <glossterm linkend="ugr.glossary.analysis_engine">Analysis Engine</glossterm>s,
+          <glossterm linkend="ugr.glossary.collection_reader">Collection Readers</glossterm>,
+          <glossterm linkend="ugr.glossary.flow_controller">Flow Controllers</glossterm>, or
+          <glossterm linkend="ugr.glossary.cas_consumer">CAS Consumers</glossterm>
+declare the type system that they use. Type systems are shared across &ae;s, allowing the outputs 
+          of one &ae; to be read as input by another &ae;.
+A type system is roughly analogous to a set of related classes in object
+oriented programming, or a set of related tables in a database.  The type
+system / type / feature terminology comes from computational linguistics.</para>
+      </glossdef>
+    </glossentry>
+  
+    <glossentry id="ugr.glossary.unstructured_information">
+      <glossterm>Unstructured Information</glossterm>
+      <glossdef>
+        <para>The canonical example of unstructured
+information is the natural language text document. The intended meaning of a
+document's content is only implicit and its precise interpretation by a
+computer program requires some degree of analysis to explicate the document's
+semantics. Other examples include audio, video and images. Contrast with
+<glossterm linkend="ugr.glossary.structured_information">Structured Information</glossterm>.
+        </para>          
+      </glossdef>
+    </glossentry>
+  
+    <glossentry id="ugr.glossary.uima">
+      <glossterm>UIMA</glossterm>
+      <glossdef>
+        <para>UIMA is an acronym that stands for Unstructured Information Management Architecture; 
+          it is a software architecture which specifies component interfaces, design patterns
+and development roles for creating, describing, discovering, composing and
+deploying multi-modal analysis capabilities.  The UIMA specification is being developed by a 
+        technical committee at <ulink url="http://www.oasis-open.org/committees/uima">OASIS</ulink>.</para>
+      </glossdef>
+    </glossentry>
+  
+    <glossentry id="ugr.glossary.uima_java_framework">
+      <glossterm>UIMA Java Framework</glossterm>
+      <glossdef>
+        <para>See <glossterm linkend="ugr.glossary.apache_uima_java_framework">Apache UIMA Java Framework</glossterm>.</para>
+        <para/>
+      </glossdef>
+    </glossentry>
+
+    <glossentry id="ugr.glossary.uima_sdk">
+      <glossterm>UIMA SDK</glossterm>
+      <glossdef>
+        <para>See <glossterm linkend="ugr.glossary.apache_uima_sdk">Apache UIMA SDK</glossterm>.</para>
+        <para/>
+      </glossdef>
+    </glossentry>
+  
+    <glossentry id="ugr.glossary.xcas">
+      <glossterm>XCAS</glossterm>
+      <glossdef>
+        <para>An XML representation of the CAS. The XCAS can be used for saving
+and restoring CASs to and from streams. The UIMA SDK provides XCAS serialization and
+de-serialization methods for CASes.  This is an older serialization format and
+new UIMA code should use the standard <glossterm linkend="ugr.glossary.xmi">XMI</glossterm>
+format instead.</para>
+      </glossdef>
+    </glossentry>
+  
+    <glossentry id="ugr.glossary.xmi">
+      <glossterm>XML Metadata Interchange (XMI)</glossterm>
+      <glossdef>
+        <para>An OMG standard for representing
+object graphs in XML, which UIMA uses to serialize analysis results from the
+CAS to an XML representation.  The UIMA SDK provides XMI serialization and
+de-serialization methods for CASes</para>
+      </glossdef>
+    </glossentry>
+
+
+  <!--  
+    <glossentry id="ugr.glossary.">
+      <glossterm></glossterm>
+      <glossdef>
+        <para></para>
+      </glossdef>
+    </glossentry>
+  -->
+  
+  </glossary>
+
+ <!-- 
+</chapter>
+   -->
