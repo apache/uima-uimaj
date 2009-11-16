@@ -48,7 +48,8 @@ under the License.
       <outputFileNameMapping>uimaj-bootstrap.jar</outputFileNameMapping>
       <outputDirectory>/apache-uima/lib</outputDirectory>
       <useProjectArtifact>false</useProjectArtifact>
-      <fileMode>644</fileMode> 
+      <fileMode>644</fileMode>
+      <directoryMode>755</directoryMode> 
     </dependencySet>
     <dependencySet>
       <includes>
@@ -58,7 +59,8 @@ under the License.
       <outputFileNameMapping>uima-core.jar</outputFileNameMapping>
       <outputDirectory>/apache-uima/lib</outputDirectory>
       <useProjectArtifact>false</useProjectArtifact>
-      <fileMode>644</fileMode> 
+      <fileMode>644</fileMode>
+      <directoryMode>755</directoryMode>        
     </dependencySet>
     <dependencySet>
       <includes>
@@ -69,6 +71,7 @@ under the License.
       <outputDirectory>/apache-uima/lib</outputDirectory>
       <useProjectArtifact>false</useProjectArtifact>
       <fileMode>644</fileMode> 
+      <directoryMode>755</directoryMode>        
     </dependencySet>
     <dependencySet>
       <includes>
@@ -79,6 +82,7 @@ under the License.
       <outputDirectory>/apache-uima/lib</outputDirectory>
       <useProjectArtifact>false</useProjectArtifact>
       <fileMode>644</fileMode> 
+      <directoryMode>755</directoryMode>        
     </dependencySet>
     <dependencySet>
       <includes>
@@ -89,6 +93,7 @@ under the License.
       <outputDirectory>/apache-uima/lib</outputDirectory>
       <useProjectArtifact>false</useProjectArtifact>
       <fileMode>644</fileMode> 
+      <directoryMode>755</directoryMode>        
     </dependencySet>
     <dependencySet>
       <includes>
@@ -100,6 +105,7 @@ under the License.
       <outputDirectory>/apache-uima/lib</outputDirectory>
       <useProjectArtifact>false</useProjectArtifact>
       <fileMode>644</fileMode> 
+      <directoryMode>755</directoryMode>        
     </dependencySet>
     <dependencySet>
       <includes>
@@ -111,6 +117,7 @@ under the License.
       <outputDirectory>/apache-uima/lib</outputDirectory>
       <useProjectArtifact>false</useProjectArtifact>
       <fileMode>644</fileMode> 
+      <directoryMode>755</directoryMode>        
     </dependencySet>
     <dependencySet>
       <includes>
@@ -122,6 +129,7 @@ under the License.
       <outputDirectory>/apache-uima/lib</outputDirectory>
       <useProjectArtifact>false</useProjectArtifact>
       <fileMode>644</fileMode> 
+      <directoryMode>755</directoryMode>        
     </dependencySet>
     <dependencySet>
       <includes>
@@ -133,6 +141,7 @@ under the License.
       <outputDirectory>/apache-uima/lib</outputDirectory>
       <useProjectArtifact>false</useProjectArtifact>
       <fileMode>644</fileMode> 
+      <directoryMode>755</directoryMode>        
     </dependencySet>
     
     
@@ -152,6 +161,7 @@ under the License.
       <outputFileNameMapping>${artifact.build.finalName}.jar</outputFileNameMapping>
       <useProjectArtifact>false</useProjectArtifact>
       <fileMode>644</fileMode> 
+      <directoryMode>755</directoryMode>        
     </dependencySet>
   </dependencySets>
   
@@ -162,22 +172,26 @@ under the License.
       <outputDirectory>/apache-uima/bin</outputDirectory>
       <includes><include>*.sh</include></includes>
       <fileMode>755</fileMode>
+      <directoryMode>755</directoryMode>        
     </fileSet>
     <fileSet>
       <directory>src/main/scripts</directory>
       <outputDirectory>/apache-uima/bin</outputDirectory>
       <excludes><exclude>*.sh</exclude></excludes>
       <fileMode>644</fileMode>
+      <directoryMode>755</directoryMode>        
     </fileSet>
     <fileSet>
       <directory>src/main/properties</directory>
       <outputDirectory>/apache-uima/config</outputDirectory>
       <fileMode>644</fileMode>
+      <directoryMode>755</directoryMode>        
     </fileSet>
     <fileSet>
       <directory>src/main/readme</directory>
       <outputDirectory>/apache-uima</outputDirectory>
       <fileMode>644</fileMode>
+      <directoryMode>755</directoryMode>        
     </fileSet>
     <fileSet>
       <directory>target/site/apidocs</directory>
@@ -189,6 +203,7 @@ under the License.
         <exclude>argfile</exclude>        
       </excludes>
       <fileMode>444</fileMode>
+      <directoryMode>755</directoryMode>        
     </fileSet>
     <fileSet>
       <directory>../uima-docbooks/target</directory>
@@ -206,6 +221,7 @@ under the License.
         <include>references/css/**</include>
       </includes>
       <fileMode>644</fileMode>
+      <directoryMode>755</directoryMode>        
     </fileSet>
     <fileSet>
       <directory>../uima-docbooks/target/overview_and_setup</directory>
@@ -214,6 +230,7 @@ under the License.
         <include>overview_and_setup.pdf</include>
       </includes>
       <fileMode>644</fileMode>
+      <directoryMode>755</directoryMode>        
     </fileSet>
     <fileSet>
       <directory>../uima-docbooks/target/tutorials_and_users_guides</directory>
@@ -222,6 +239,7 @@ under the License.
         <include>tutorials_and_users_guides.pdf</include>
       </includes>
       <fileMode>644</fileMode>
+      <directoryMode>755</directoryMode>        
     </fileSet>
     <fileSet>
       <directory>../uima-docbooks/target/tools</directory>
@@ -230,6 +248,7 @@ under the License.
         <include>tools.pdf</include>
       </includes>
       <fileMode>644</fileMode>
+      <directoryMode>755</directoryMode>        
     </fileSet>
     <fileSet>
       <directory>../uima-docbooks/target/references</directory>
@@ -238,6 +257,7 @@ under the License.
         <include>references.pdf</include>
       </includes>
       <fileMode>644</fileMode>
+      <directoryMode>755</directoryMode>        
     </fileSet>
     <fileSet>
       <directory>../uimaj-examples/src/main/java</directory>
@@ -248,37 +268,46 @@ under the License.
         <exclude> org/apache/uima/examples/xmi/UimaTypeSystem2Ecore.java</exclude>
       </excludes>
       <fileMode>644</fileMode>
+      <directoryMode>755</directoryMode>        
     </fileSet>
     <fileSet>
       <directory>../uimaj-examples/src/main/data</directory>
       <outputDirectory>/apache-uima/examples/data</outputDirectory>
       <fileMode>644</fileMode>
+      <!-- next mode 777 because some examples write into dir
+           and we want to eliminate failures due to write permissions -->
+      <directoryMode>777</directoryMode>        
     </fileSet>
     <fileSet>
       <directory>../uimaj-examples/src/main/deploy</directory>
       <outputDirectory>/apache-uima/examples/deploy</outputDirectory>
       <fileMode>644</fileMode>
+      <directoryMode>755</directoryMode>        
     </fileSet>
     <fileSet>
       <directory>../uimaj-examples/src/main/descriptors</directory>
       <outputDirectory>/apache-uima/examples/descriptors</outputDirectory>
       <fileMode>644</fileMode>
+      <directoryMode>755</directoryMode>        
     </fileSet>
     <!-- removed in 2.3.0 -->
     <!--fileSet> 
       <directory>../uimaj-examples/src/main/opennlp_wrappers</directory>
       <outputDirectory>/apache-uima/examples/opennlp_wrappers</outputDirectory>
       <fileMode>644</fileMode>
+      <directoryMode>755</directoryMode>        
     </fileSet-->
     <fileSet>
       <directory>../uimaj-examples/src/main/resources</directory>
       <outputDirectory>/apache-uima/examples/resources</outputDirectory>
       <fileMode>644</fileMode>
+      <directoryMode>755</directoryMode>        
     </fileSet>
     <fileSet>
       <directory>../uimaj-examples/src/main/run_configuration</directory>
       <outputDirectory>/apache-uima/examples/run_configuration</outputDirectory>
       <fileMode>644</fileMode>
+      <directoryMode>755</directoryMode>        
     </fileSet>
   </fileSets>
   <files>
