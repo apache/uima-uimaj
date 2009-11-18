@@ -86,7 +86,7 @@ then
   UIMA_LOGGER_CONFIG_FILE=$UIMA_HOME/config/Logger.properties
 fi
 #set default JVM opts
-UIMA_JVM_OPTS="$UIMA_JVM_OPTS -Xms128M -Xmx800M"
+UIMA_JVM_OPTS="$UIMA_JVM_OPTS -Dlog4j.configuration=file:$UIMA_HOME/as_config/log4j.properties -Xms128M -Xmx800M"
 
 if [ "$UIMA_CVDMAN" = "" ]
 then 

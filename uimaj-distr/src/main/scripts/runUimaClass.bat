@@ -47,7 +47,7 @@
 @if "%UIMA_LOGGER_CONFIG_FILE%"=="" set UIMA_LOGGER_CONFIG_FILE=%UIMA_HOME%\config\Logger.properties
 
 @rem Set default JVM opts
-@set UIMA_JVM_OPTS=%UIMA_JVM_OPTS% -Xms128M -Xmx800M
+@set UIMA_JVM_OPTS=%UIMA_JVM_OPTS% -Dlog4j.configuration=file:%UIMA_HOME%/as_config/log4j.properties -Xms128M -Xmx800M
 
 @if "%UIMA_CVDMAN%"=="" set UIMA_CVDMAN=-Duima.tools.cvd.manpath.notset
 
