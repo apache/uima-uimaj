@@ -86,7 +86,13 @@ then
   UIMA_LOGGER_CONFIG_FILE=$UIMA_HOME/config/Logger.properties
 fi
 #set default JVM opts
-UIMA_JVM_OPTS="$UIMA_JVM_OPTS -Dlog4j.configuration=file:$UIMA_HOME/as_config/log4j.properties -Xms128M -Xmx800M"
+UIMA_JVM_OPTS="$UIMA_JVM_OPTS -Xms128M -Xmx800M"
+
+# Check if Uima AS is installed, and if so set the default log4j configuration file
+if [ -e "$UIMA_HOME"/as_config ] 
+then
+	LOG4J_CONFIG_FILE=-Dlog4j.configuration=file:$UIMA_HOME/as_config/log4j.properties
+fi
 
 if [ "$UIMA_CVDMAN" = "" ]
 then 
@@ -94,5 +100,5 @@ then
 fi
 
 # Finally load the jars and run the class
-"$UIMA_JAVA_CALL" -DVNS_HOST=$VNS_HOST -DVNS_PORT=$VNS_PORT "-Duima.home=$UIMA_HOME" "-Duima.datapath=$UIMA_DATAPATH" "-Djava.util.logging.config.file=$UIMA_LOGGER_CONFIG_FILE" "$UIMA_CVDMAN" $UIMA_JVM_OPTS -DUimaBootstrapSuppressClassPathDisplay -Dorg.apache.uima.jarpath="$UIMA_CLASSPATH" -jar "$UIMA_HOME/lib/uimaj-bootstrap.jar" $*
+"$UIMA_JAVA_CALL" -DVNS_HOST=$VNS_HOST -DVNS_PORT=$VNS_PORT "-Duima.home=$UIMA_HOME" "-Duima.datapath=$UIMA_DATAPATH" "-Djava.util.logging.config.file=$UIMA_LOGGER_CONFIG_FILE" "$UIMA_CVDMAN" $UIMA_JVM_OPTS $LOG4J_CONFIG_FILE -DUimaBootstrapSuppressClassPathDisplay -Dorg.apache.uima.jarpath="$UIMA_CLASSPATH" -jar "$UIMA_HOME/lib/uimaj-bootstrap.jar" $*
 
