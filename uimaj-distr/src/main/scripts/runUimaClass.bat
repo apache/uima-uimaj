@@ -49,8 +49,9 @@
 @rem Set default JVM opts
 @set UIMA_JVM_OPTS=%UIMA_JVM_OPTS% -Xms128M -Xmx800M
 
-@if EXIST "%UIMA_HOME%"\as_config set LOG4J_CONFIG_FILE=-Dlog4j.configuration=file:%UIMA_HOME%\as_config\log4j.properties 
-
+@rem Check if Uima AS is installed, and if so set the default log4j configuration file
+@if EXIST "%UIMA_HOME%"\as_config (set LOG4J_CONFIG_FILE=-Dlog4j.configuration=file:%UIMA_HOME%\as_config\log4j.properties) else (set LOG4J_CONFIG_FILE=-DNoOp)
+   
 @if "%UIMA_CVDMAN%"=="" set UIMA_CVDMAN=-Duima.tools.cvd.manpath.notset
 
 @rem Finally load the jars and run the class
