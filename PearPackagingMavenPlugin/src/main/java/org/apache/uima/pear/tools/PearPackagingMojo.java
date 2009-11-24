@@ -19,9 +19,12 @@
 package org.apache.uima.pear.tools;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.AbstractMojo;
@@ -111,6 +114,12 @@ public class PearPackagingMojo extends AbstractMojo {
    // the PEAR
    private File pearPackagingDir;
 
+  private ArrayList<String> classpathsInOrder;
+
+  private Set<String> classpathsDefined;
+
+  private Log log;
+
    /*
     * (non-Javadoc)
     * 
@@ -130,8 +139,7 @@ public class PearPackagingMojo extends AbstractMojo {
       File finalPearFileName = new File(this.targetDir, this.componentId
             + ".pear");
 
-      // log PEAR packaging details
-      Log log = getLog();
+      log = getLog();
       log.info("Start building PEAR package for component " + this.componentId);
       log.debug("UIMA PEAR INFORMATION ");
       log.debug("======================");
@@ -177,19 +185,71 @@ public class PearPackagingMojo extends AbstractMojo {
             throw new IOException(errorMessage);
          }
 
-         // add compiled jar to the PEAR classpath
-         StringBuffer buffer = new StringBuffer();
-         buffer.append(";$main_root/");
-         buffer.append(InstallationController.PACKAGE_LIB_DIR);
-         buffer.append("/");
-         buffer.append(this.project.getBuild().getFinalName());
-         buffer.append(".jar");
-         String classpathExtension = buffer.toString();
-         if(this.classpath != null) {
-            this.classpath = this.classpath + classpathExtension;
-         } else {
-            this.classpath = classpathExtension.substring(1,classpathExtension.length());
+         // classpath handling:  
+         //   1) keep order: 
+         //      jar for this artifact if it exists, 
+         //      followed by user-specified,
+         //      followed by jars in lib
+         //   2) remove duplicates
+         //   3) paths that are generated are in form $main_root/lib/jar-name
+         
+         classpathsInOrder = new ArrayList<String>();
+         classpathsDefined = new HashSet<String>();
+         
+         String pathToLib = String.format("$main_root/%s", InstallationController.PACKAGE_LIB_DIR);
+         log.debug("pear pathToLib = " + pathToLib);
+         String mainJar = String.format("%s/%s.jar", pathToLib, this.project.getBuild().getFinalName());
+         
+         maybeAddClasspath(mainJar);
+         
+         if (classpath != null && classpath != "") {
+           if (classpath.indexOf(':') != -1) {
+             throw new MojoExecutionException(
+             "classpath: " + classpath + " must use semicolons as separators.");
+           }
+           String[] userClasspath = classpath.split(";");
+           for (String ucp : userClasspath) {
+             maybeAddClasspath(ucp);
+           }
          }
+         
+         File libDir = new File(this.pearPackagingDir, InstallationController.PACKAGE_LIB_DIR);
+         if (libDir.isDirectory()) {
+           FileFilter jarFilter = new FileFilter() {
+             public boolean accept(File pathname) {
+               return pathname.isFile() && pathname.getAbsolutePath().toLowerCase().endsWith(".jar");
+             }
+           };
+           File[] jars = libDir.listFiles(jarFilter);
+           if (null != jars) {
+             for (File jar : jars) {
+               maybeAddClasspath(String.format("%s/%s", pathToLib, jar.getName()));
+             }
+           }
+         }
+
+         StringBuffer buffer = new StringBuffer();
+         for (String cp : classpathsInOrder) {
+           buffer.append(cp).append(";");
+         }
+         
+         // add compiled jar to the PEAR classpath
+         // not done here - done as part of next step
+//         buffer.append(";$main_root/");
+//         buffer.append(InstallationController.PACKAGE_LIB_DIR);
+//         buffer.append("/");
+//         buffer.append(this.project.getBuild().getFinalName());
+//         buffer.append(".jar");
+       
+         // add lib jars to the PEAR classpath
+         
+         classpath = buffer.substring(0, buffer.length()-1);
+
+//         if (this.classpath != null) {
+//           this.classpath = this.classpath + ";" + classpathExtension;
+//           } else {
+//             this.classpath = classpathExtension.substring(1,classpathExtension.length());
+//           }
 
          // create the PEAR package
          createPear();
@@ -211,6 +271,18 @@ public class PearPackagingMojo extends AbstractMojo {
       }
 
    }
+
+  private void maybeAddClasspath(String acp) {
+//    System.out.println("TEST maybeAddClasspath: " + acp);
+    log.debug("pear maybe add classpath: " + acp);
+    if (!classpathsDefined.contains(acp)) {
+      classpathsInOrder.add(acp);
+      classpathsDefined.add(acp);
+    } else {
+//      System.out.println("TEST duplicate found");
+      log.debug("pear maybe add classpath: duplicate found");
+    }
+  }
 
    /**
     * Returns the current UIMA log level for the UIMA root logger
@@ -267,7 +339,6 @@ public class PearPackagingMojo extends AbstractMojo {
     * 
     * @throws IOException
     */
-   @SuppressWarnings("unchecked")
    private void removeDotDirectories(File dir) throws IOException {
       ArrayList<File> subdirs = org.apache.uima.util.FileUtils.getSubDirs(dir);
 
