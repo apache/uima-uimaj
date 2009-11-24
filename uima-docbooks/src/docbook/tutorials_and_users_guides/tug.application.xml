@@ -1719,25 +1719,17 @@ Exception: Connection refused: connect</programlisting>
       JVM that supports JMX, the UIMA framework will automatically detect the presence of JMX and will register
       <emphasis>MBeans</emphasis> that provide access to the performance statistics.</para>
     
-    <para>To enable remote monitoring of these performance statistics, when you start your UIMA application
-      specify the following JVM parameter: <literal>-Dcom.sun.management.jmxremote</literal></para>
+    <para>Note: The Sun JVM supports local monitoring; for others you can configure your
++      application for remote monitoring (even when on the same host) by specifying a unique port number, e.g.
++      <literal>-Dcom.sun.management.jmxremote.port=1098
++      -Dcom.sun.management.jmxremote.authenticate=false
++      -Dcom.sun.management.jmxremote.ssl=false</literal></para>
     
-    <para>Now, you can use any JMX client to view the statistics. JDK 5.0 provides a standard client that you can use.
-      Simply open a command prompt, make sure the JDK 5.0 <literal>bin</literal> directory is in your path, and
-      execute the <literal>jconsole</literal> command. This should bring up the following window:
-      
-      
-      <screenshot>
-    <mediaobject>
-      <imageobject>
-        <imagedata width="3.5in" format="JPG" fileref="&imgroot;image004.jpg"/>
-      </imageobject>
-      <textobject><phrase>Screenshot of JMX console</phrase></textobject>
-    </mediaobject>
-  </screenshot></para>
-    
-    <para>Here you can choose from among your JMX-enabled applications that are currently running. Select a UIMA
-      application from the list and click <quote>Connect</quote>. The next screen will show a summary of
+    <para>Now, you can use any JMX client to view the statistics. JDK 5.0 or later provides a standard client that you can use.
+      Simply open a command prompt, make sure the JDK <literal>bin</literal> directory is in your path, and
+      execute the <literal>jconsole</literal> command. This should bring up a window allowing you to
+      select one of the local JMX-enabled applications currently running, or to enter a remote (or local) host and
+      port, e.g. localhost:1098.  The next screen will show a summary of
       information about the Java process that you connected to. Click on the <quote>MBeans</quote> tab, then expand
       <quote>org.apache.uima</quote> in the tree at the left. You should see a view like this:
       
