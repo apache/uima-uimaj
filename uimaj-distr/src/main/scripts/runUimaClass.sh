@@ -86,7 +86,10 @@ then
   UIMA_LOGGER_CONFIG_FILE=$UIMA_HOME/config/Logger.properties
 fi
 #set default JVM opts
-UIMA_JVM_OPTS="$UIMA_JVM_OPTS -Xms128M -Xmx800M"
+if [ "$UIMA_JVM_OPTS" = "" ]
+then
+  UIMA_JVM_OPTS="-Xms128M -Xmx800M"
+fi
 
 # Check if Uima AS is installed, and if so set the default log4j configuration file
 if [ -e "$UIMA_HOME"/as_config ] 
