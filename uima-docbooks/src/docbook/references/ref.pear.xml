@@ -734,7 +734,8 @@ local_root_directory_for_1st_delegate_component/resources/dict/
           of the PackageBrowser class builds a classpath string from what it finds in 
           the CLASSPATH specification here, plus adds a classpath entry for all
           Jars in the <literal>lib</literal> directory.  Because of this, there is no need
-            to specify Class Path entries for Jars in the lib directory.</para>
+            to specify Class Path entries for Jars in the lib directory, when using
+            the Eclipse plugin pear packager or the Maven Pear Packager.</para>
             
             <blockquote><para>When specifying the value of the CLASSPATH environment 
             variable, use the semicolon ";" as the separator character, regardless of the

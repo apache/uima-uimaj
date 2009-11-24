@@ -27,7 +27,18 @@
   <chapter id="ugr.tools.pear.packager.maven.plugin.usage">
     <title>The PEAR Packaging Maven Plugin</title>
     <para>
-      UIMA includes a Maven plugin that supports creating PEAR packages using Maven.
+      UIMA includes a Maven plugin that supports creating PEAR packages using Maven. 
+      When configured for a project, it assumes that the project has the PEAR layout, 
+      and will copy the standard directories that are part of a PEAR structure under the
+      project root into the PEAR, excluding files that start with a period (".").  
+      It also will put the Jar that is built for the project
+      into the lib/ directory and include it first on the generated classpath. 
+    </para>
+    
+    <para>
+      The classpath that is generated for this includes the artifact's Jar first, any user specified
+      entries second (in the order they are specified), and finally, entries for all Jars 
+      found in the lib/ directory (in some arbitrary order).
     </para>
     
     <section id="ugr.tools.pear.packager.maven.plugin.usage.configure">
