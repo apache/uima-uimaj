@@ -1,0 +1,149 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+<%@ jet package="org.apache.uima.tools.jcasgen" imports="java.util.Iterator org.apache.uima.resource.metadata.TypeDescription org.apache.uima.resource.metadata.FeatureDescription" class="JCasTypeTemplate" implements="Jg.IJCasTypeTemplate" %>
+
+<%  Object [] args = (Object [])argument;
+    Jg jg = (Jg)args[0];
+    TypeDescription td = (TypeDescription)args[1]; 
+   jg.packageName = jg.getJavaPkg(td); %>
+/* First created by JCasGen <%=jg.getDate()%> */
+<% if (0 != jg.packageName.length()) {%>
+package <%=jg.packageName%>;
+<% } 
+   else 
+     jg.error.newError(IError.WARN, 
+		jg.getString("pkgMissing", new Object[] {td.getName()}), null); %>
+
+import org.apache.uima.jcas.JCas; 
+import org.apache.uima.jcas.JCasRegistry;
+import org.apache.uima.jcas.cas.TOP_Type;
+
+<% for(Iterator i=jg.collectImports(td, false).iterator(); i.hasNext();) { %>
+import <%=(String)i.next()%>;
+<% } %>
+
+
+<% String typeName = jg.getJavaName(td);
+   String typeName_Type = typeName + "_Type";
+   String jcasTypeCasted = "((" + typeName_Type + ")jcasType)";
+%>
+/** <%=jg.nullBlank(td.getDescription())%>
+ * Updated by JCasGen <%=jg.getDate()%>
+ * XML source: <%=jg.xmlSourceFileName%>
+ * @generated */
+public class <%=typeName%> extends <%=jg.getJavaName(td.getSupertypeName())%> {
+  /** @generated
+   * @ordered 
+   */
+  public final static int typeIndexID = JCasRegistry.register(<%=typeName%>.class);
+  /** @generated
+   * @ordered 
+   */
+  public final static int type = typeIndexID;
+  /** @generated  */
+  public              int getTypeIndexID() {return typeIndexID;}
+ 
+  /** Never called.  Disable default constructor
+   * @generated */
+  protected <%=typeName%>() {}
+    
+  /** Internal - constructor used by generator 
+   * @generated */
+  public <%=typeName%>(int addr, TOP_Type type) {
+    super(addr, type);
+    readObject();
+  }
+  
+  /** @generated */
+  public <%=typeName%>(JCas jcas) {
+    super(jcas);
+    readObject();   
+  } 
+<%if (jg.isSubTypeOfAnnotation(td)) { %>
+
+  /** @generated */  
+  public <%=typeName%>(JCas jcas, int begin, int end) {
+    super(jcas);
+    setBegin(begin);
+    setEnd(end);
+    readObject();
+  }   
+<%} %>
+
+  /** <!-- begin-user-doc -->
+    * Write your own initialization here
+    * <!-- end-user-doc -->
+  @generated modifiable */
+  private void readObject() {}
+     
+<% FeatureDescription [] fds = td.getFeatures();
+   for (int i = 0; i < fds.length; i++) { 
+     FeatureDescription fd = fds[i];
+
+     String featName = fd.getName();
+     String featUName = jg.uc1(featName);  // upper case first letter
+	 if (Jg.reservedFeatureNames.contains(featUName))
+	   jg.error.newError(IError.ERROR, 
+		 jg.getString("reservedNameUsed", new Object[] { featName, td.getName() }),
+		 null);
+
+     String featDesc = jg.nullBlank(fd.getDescription());
+     String featDescCmt = featDesc;
+
+     String rangeType = jg.getJavaRangeType(fd);
+     String elemType = jg.getJavaRangeArrayElementType(fd);    
+%> 
+    
+  //*--------------*
+  //* Feature: <%=featName%>
+
+  /** getter for <%=featName%> - gets <%=featDescCmt%>
+   * @generated */
+  public <%=rangeType%> get<%=featUName%>() {
+    <%@ include file="../includedTemplates/FeatOkTesting.javajet"%>
+    return <%=jg.getFeatureValue(fd, td)%>;}
+    
+  /** setter for <%=featName%> - sets <%=featDescCmt%> 
+   * @generated */
+  public void set<%=featUName%>(<%=rangeType%> v) {
+    <%@ include file="../includedTemplates/FeatOkTesting.javajet"%>
+    <%=jg.setFeatureValue(fd, td)%>;}    
+  <%if (jg.hasArrayRange(fd)) {%>
+  
+  /** indexed getter for <%=featName%> - gets an indexed value - <%=featDescCmt%>
+   * @generated */
+  public <%=elemType%> get<%=featUName%>(int i) {
+    <%@ include file="../includedTemplates/FeatOkTesting.javajet"%>
+    <%@ include file="../includedTemplates/ArrayBoundsChecking.javajet"%>
+    return <%=jg.getArrayFeatureValue(fd, td)%>;}
+
+  /** indexed setter for <%=featName%> - sets an indexed value - <%=featDescCmt%>
+   * @generated */
+  public void set<%=featUName%>(int i, <%=elemType%> v) { 
+    <%@ include file="../includedTemplates/FeatOkTesting.javajet"%>
+    <%@ include file="../includedTemplates/ArrayBoundsChecking.javajet"%>
+    <%=jg.setArrayFeatureValue(fd, td)%>;}
+  <% } /* of hasArray */ %>
+<% } /* of Features iteration */ %>
+<% if (td.getName().equals("uima.cas.Annotation")) { %>
+  <%@ include file="../includedTemplates/AnnotationMethods.javajet" %>
+<% } /* of Annotation if-statement */ %>
+}
+
+    

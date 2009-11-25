@@ -1,0 +1,214 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.apache.uima.desceditor">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="org.apache.uima.desceditor" id="externalEditor" name="UIMA External Editor"/>
+      </appInfo>
+      <documentation>
+         &lt;p&gt;This extension point is used to add a new editing capability to the UIMA CDE 
+   for an additional kind of UIMA XML descriptor (Resource Specifer). 
+   Developers can extend the editor to edit a new kind of Resource Specifier by
+using this extension point to extend the CDE&apos;s editing capability.  
+&lt;/p&gt;
+
+&lt;p&gt;The extension must implement two interfaces:
+&lt;ol&gt;&lt;li&gt;&lt;code&gt;org.apache.uima.taeconfigurator.editors.point.IUimaEditorExtension&lt;/code&gt; and&lt;/li&gt;
+    &lt;li&gt;&lt;code&gt;org.apache.uima.taeconfigurator.editors.point.IUimaMultiPageEditor&lt;/code&gt;.&lt;/li&gt;
+&lt;/ol&gt;&lt;/p&gt;
+
+&lt;p&gt;When the CDE is instantiated, it will load the information in the XML spec
+for all contributors to the extension point.  When an attempt is made to edit
+a top-most element which the CDE doesn&apos;t know how to handle, this XML info is
+scanned to see if some contributor can handle this.  All this is done without
+loading any classes.  If it finds one, it loads the class and calls the 
+&lt;code&gt;init&lt;/code&gt; method of the &lt;code&gt;IUimaEditorExtension&lt;/code&gt; 
+interface; this allows all extensions to do whatever initialization they may need to do.
+For instance, the extension could register a factory class for the new descriptor&apos;s type
+(see below) with UIMA&apos;s general ResourceSpecifier support.  
+&lt;/p&gt;
+
+&lt;p&gt;If the parser can&apos;t parse the descriptor, this same scan code is used to see
+if some editor can possibly contribute a parser for the particular top-level
+element.  If so, the &lt;code&gt;init&lt;/code&gt; method is called, as above, in the hopes that
+the editor will cause some additional parser to get &quot;registered&quot;, and then the parsing
+is retried. &lt;/p&gt;
+&lt;p&gt; 
+The &lt;code&gt;IUimaMultiPageEditor&lt;/code&gt; 
+interface is used by CDE to redirect the editing functions to the external editor.
+&lt;/p&gt;
+
+&lt;p&gt;Note: To add a new kind of Resource Specifier to UIMA, 
+   you can register a new factory class for the new descriptor&apos;s type 
+   (by using the &lt;code&gt;addMapping(String, String)&lt;/code&gt; 
+   method of the &lt;code&gt;org.apache.uima.ResourceSpecifierFactory&lt;/code&gt; 
+   factory class)
+   &lt;/p&gt;
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <complexType>
+         <sequence>
+            <element ref="editor" minOccurs="1" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a fully qualified identifier of the target extension point
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  an optional identifier of the extension instance
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  an optional name of the extension instance
+               </documentation>
+               <appInfo>
+                  <meta.attribute translatable="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="editor">
+      <complexType>
+         <sequence minOccurs="1" maxOccurs="unbounded">
+            <element ref="handlesElement"/>
+         </sequence>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  a translatable name that will be used in the UI for this editor
+               </documentation>
+               <appInfo>
+                  <meta.attribute translatable="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  a unique name that will be used to identify this editor
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the name of a class that implements &lt;code&gt;org.apache.uima.taeconfigurator.editors.point.IUimaEditorExtension&lt;/code&gt; and &lt;code&gt;org.apache.uima.taeconfigurator.editors.point.IUimaMultiPageEditor&lt;/code&gt;. The attributes
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="java"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="handlesElement">
+      <annotation>
+         <documentation>
+            One or more handlesElement elements name the kinds of XML top-level elements that a particular editor will edit.  The CDE scans these to determine which editor to load.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="elementName" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The name of the top-level element; cannot be one of the elements the CDE already edits
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="internalParseClass" type="string" use="required">
+            <annotation>
+               <documentation>
+                  An interface that represents the result of parsing this element
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="java" basedOn=":org.apache.uima.util.XMLizable"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="since"/>
+      </appInfo>
+      <documentation>
+         2.2.1
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         The following is an example of an external editor extension definition:
+&lt;p&gt;
+&lt;pre&gt;
+   &lt;extension
+         point=&quot;org.apache.uima.desceditor.externalEditor&quot;&gt;
+      &lt;editor
+            class=&quot;org.apache.uima.dde.internal.DeploymentDescriptorEditor&quot;
+            id=&quot;org.apache.uima.dde&quot;
+            name=&quot;Deployment Descriptor Editor&quot;&gt;
+         &lt;handlesElement
+               class=&quot;org.apache.uima.aae.deployment.AEService&quot;
+               elementName=&quot;analysisEngineDeploymentDescription&quot;
+               internalParseClass=&quot;org.apache.uima.aae.deployment.impl.AEDeploymentDescription_Impl&quot;/&gt;
+      &lt;/editor&gt;
+   &lt;/extension&gt;
+&lt;/pre&gt;
+&lt;/p&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="apiInfo"/>
+      </appInfo>
+      <documentation>
+         The contributed class must implement 
+&lt;code&gt;org.apache.uima.taeconfigurator.editors.point.IUimaEditorExtension&lt;/code&gt; 
+           and
+&lt;code&gt;org.apache.uima.taeconfigurator.editors.point.IUimaMultiPageEditor&lt;/code&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="copyright"/>
+      </appInfo>
+      <documentation>
+         Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ &quot;License&quot;); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+ 
+   http://www.apache.org/licenses/LICENSE-2.0
+ 
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+      </documentation>
+   </annotation>
+
+</schema>

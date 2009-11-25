@@ -1,0 +1,129 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one
+   or more contributor license agreements.  See the NOTICE file
+   distributed with this work for additional information
+   regarding copyright ownership.  The ASF licenses this file
+   to you under the Apache License, Version 2.0 (the
+   "License"); you may not use this file except in compliance
+   with the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied.  See the License for the
+   specific language governing permissions and limitations
+   under the License.    
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+  <!-- groupId omitted - inherited from parent -->
+	<artifactId>uimaj-ep-debug</artifactId>
+	<packaging>bundle</packaging>
+  <!-- version omitted - inherited from parent-->
+	<name>Apache UIMA Debug Eclipse Plugin</name>
+	<url>http://incubator.apache.org/uima</url>
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+  <scm>
+    <url>http://svn.apache.org/viewvc/incubator/uima</url>
+  </scm>    
+	<parent>
+		<groupId>org.apache.uima</groupId>
+		<artifactId>uimaj-eclipse-plugins</artifactId>
+		<version>2.3.0.incubating</version> <!-- this comment is a flag for changeVersion -->
+    <!-- this relative path is used the first time mvn is run on the uimaj pom
+         to find the uimaj/eclipse-plugin-superPom
+      If at some point, a different child pom other than this one becomes the 
+      first child in the eclipse-plugin-superPom, this relative link needs to
+      be put there. Once it is resolved, it is cached, apparently. 
+      -->
+    <relativePath>../uimaj/eclipse-plugin-superPom</relativePath>
+	</parent>
+  
+	<dependencies>
+    <!-- depending on the ep-runtime doesn't work without manual intervention because
+         eclipse:eclipse on the ep-runtime doesn't mark the embedded things as "exported".
+         It doesn't matter which scope - compile or provided - is used, both fail
+      
+         Other posts indicate that plugins should have explicit dependencies, anyway.
+         And, it lets these plugins work when the library plugin is "open" in the same workspace.
+      -->
+    <!--dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-ep-runtime</artifactId>
+      <version>${uimaj-release-eclipse-version}</version>
+      <scope>compile</scope>       
+    </dependency-->
+    
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-core</artifactId>
+      <version>${uimaj-release-version}</version>
+      <scope>compile</scope>
+    </dependency>
+    
+    <!-- next dependency is commented out due to Maven 2.0.7 throwing NPE 
+         Might be related to http://jira.codehaus.org/browse/MNG-3086 -->
+		<!--dependency>
+			<groupId>org.eclipse.ui</groupId>
+			<artifactId>org.eclipse.ui</artifactId>
+			<version>3.2.0</version>
+			<scope>provided</scope>
+		</dependency-->
+
+		<dependency>
+			<groupId>org.eclipse.jdt</groupId>
+			<artifactId>org.eclipse.jdt.debug.ui</artifactId>
+			<version>3.2.0</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+  
+	<build>
+    
+		<finalName>org.apache.uima.debug_${uimaj-release-eclipse-version}</finalName>
+    	    
+		<plugins>
+      
+
+      
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <!-- version 1.4.0 to support _nouses instruction -->
+        <version>1.4.0</version>
+        <extensions>true</extensions>
+        <configuration>
+          <manifestLocation>META-INF</manifestLocation>
+          <instructions>
+            <!-- turn off "uses" generation because Eclipse 3.2.x doesn't work with them -->
+            <_nouses>true</_nouses>
+            <Export-Package>
+              org.apache.uima.ep_debug
+            </Export-Package>
+            
+            <Import-Package>*,
+              org.eclipse.ui.plugin
+            </Import-Package>  
+
+            <Bundle-Activator>org.apache.uima.ep_debug.DebugPlugin</Bundle-Activator>
+            <Bundle-SymbolicName>org.apache.uima.debug;singleton:=true</Bundle-SymbolicName>
+            
+            <Eclipse-AutoStart>true</Eclipse-AutoStart>
+          </instructions>
+        </configuration>
+      </plugin>
+      		
+		</plugins>
+	</build>
+</project>
