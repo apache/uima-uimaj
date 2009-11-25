@@ -272,6 +272,9 @@ Release Notes - UIMA - Version 2.3
     * [UIMA-1650] - Bug in common launcher script causing UIMA_CLASSPATH to be ignored
     * [UIMA-1663] - All directories in UIMA distribution should be 755
     * [UIMA-1664] - Windows command line files not working
+    * [UIMA-1668] - Update sample descriptor for cas editor test UI_009
+    * [UIMA-1678] - Pear builder maven plugin should use "Package" mode of buildComponentClassPath 
+    * [UIMA-1679] - UIMA scripts set memory options that override user's setiings
 
 ** Improvement
     * [UIMA-71] - New v2 features missing from tutorial chapters
