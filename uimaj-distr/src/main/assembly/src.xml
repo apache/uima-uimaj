@@ -109,9 +109,15 @@ under the License.
         <include>build/**</include>
         <include>catalog/**</include>
         <include>properties/**</include>
+        <include>samples/**</include>
         <include>styles/**</include>
         <include>tools/common-lib/**</include>
-        <include>tools/fop-versions/fop-0.95/fop-config.xml</include>
+        <include>tools/docbook-versions/docbook-xml-*</include>
+        <include>tools/docbook-versions/docbook-xsl-*</include>
+        <include>tools/fop-versions/fop-*/fop-config.xml</include>
+        <include>tools/jai-version/jai-1.1.3</include>
+        <include>tools/saxon-versions/saxon-6.5.5</include>
+        <include>tools/HOW_TO</include>
         <include>xinclude.mod</include> 
         <include>README</include>
         <include>README.FIRST</include>
@@ -124,34 +130,27 @@ under the License.
     <fileSet>
       <directory>../uimaj-eclipse-update-site</directory>
       <outputDirectory>/uimaj-eclipse-update-site</outputDirectory>
-      <includes>
-        <include>features/**</include>
-        <include>plugins/**</include>
-        <include>web/**</include>
-        <include>build.xml</include>
-        <include>index.html</include>
-        <include>site.xml</include>
-      </includes>
+      <excludes>
+        <exclude>target/**</exclude>
+      </excludes>
       <fileMode>644</fileMode>
     </fileSet>    
     <fileSet>
       <directory>../uimaj-eclipse-feature-runtime</directory>
       <outputDirectory>/uimaj-eclipse-feature-runtime</outputDirectory>
-      <includes>
-        <include>build.properties</include>
-        <include>feature.properties</include>
-        <include>feature.xml</include>
-      </includes>
+      <excludes>
+        <exclude>META-INF/**</exclude>
+        <exclude>target/**</exclude>
+      </excludes>
       <fileMode>644</fileMode>
     </fileSet>    
     <fileSet>
       <directory>../uimaj-eclipse-feature-tools</directory>
       <outputDirectory>/uimaj-eclipse-feature-tools</outputDirectory>
-      <includes>
-        <include>build.properties</include>
-        <include>feature.properties</include>
-        <include>feature.xml</include>
-      </includes>
+      <excludes>
+        <exclude>META-INF/**</exclude>
+        <exclude>target/**</exclude>
+      </excludes>
       <fileMode>644</fileMode>
     </fileSet>    
     <fileSet>
@@ -245,6 +244,7 @@ under the License.
         <include>schema/**</include>
         <include>plugin.xml</include>
         <include>pom.xml</include>
+        <include>build.properties</include>
       </includes>
       <fileMode>644</fileMode>
     </fileSet>      
@@ -254,6 +254,9 @@ under the License.
       <includes>
         <include>src/**</include>
         <include>pom.xml</include>
+        <include>META-INF</include>
+        <include>plugin.xml</include>
+        <include>schema/**</include>
       </includes>
       <fileMode>644</fileMode>
     </fileSet>      
@@ -263,6 +266,8 @@ under the License.
       <includes>
         <include>src/**</include>
         <include>pom.xml</include>
+        <include>META-INF</include>
+        <include>plugin.xml</include>
       </includes>
       <fileMode>644</fileMode>
     </fileSet>       
@@ -272,6 +277,8 @@ under the License.
       <includes>
         <include>src/**</include>
         <include>pom.xml</include>
+        <include>META-INF</include>
+        <include>plugin.xml</include>
       </includes>
       <fileMode>644</fileMode>
     </fileSet> 
@@ -281,6 +288,10 @@ under the License.
       <includes>
         <include>src/**</include>
         <include>pom.xml</include>
+        <include>META-INF</include>
+        <include>about.html</include>
+        <include>icons/**</include>
+        <include>plugin.xml</include>
       </includes>
       <fileMode>644</fileMode>
     </fileSet>     
@@ -290,6 +301,8 @@ under the License.
       <includes>
         <include>src/**</include>
         <include>pom.xml</include>
+        <include>META-INF</include>
+        <include>plugin.xml</include>
       </includes>
       <fileMode>644</fileMode>
     </fileSet>      
