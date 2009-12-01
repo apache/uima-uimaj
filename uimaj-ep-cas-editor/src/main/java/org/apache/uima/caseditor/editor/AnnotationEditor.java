@@ -721,18 +721,8 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
       ResourcesPlugin.getWorkspace().addResourceChangeListener(closeEditorListener,
               IResourceChangeEvent.POST_CHANGE);
 
-      IAnnotationModel annotationModel = getDocumentProvider().getAnnotationModel(input);
-
-      // copy annotations into annotation model
-      final Iterator<AnnotationFS> mAnnotations = mDocument.getCAS().getAnnotationIndex()
-              .iterator();
-
-      while (mAnnotations.hasNext()) {
-        AnnotationFS annotationFS = mAnnotations.next();
-        annotationModel.addAnnotation(new EclipseAnnotationPeer(annotationFS), new Position(
-                annotationFS.getBegin(), annotationFS.getEnd() - annotationFS.getBegin()));
-      }
-
+      syncAnnotations();
+      
       mAnnotationSynchronizer = new DocumentListener();
 
       getDocument().addChangeListener(mAnnotationSynchronizer);
@@ -826,7 +816,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 
     updateStatusLineModeItem();
 
-    syncAnnotations();
+    syncAnnotationTypes();
 
     fireAnnotationTypeChanged(getAnnotationMode());
 
@@ -873,10 +863,10 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   /**
    * Synchronizes all annotations which the eclipse annotation painter.
    */
-  public void syncAnnotations() {
+  public void syncAnnotationTypes() {
 
     mPainter.removeAllAnnotationTypes();
-    
+
     for (Type displayType : mShowAnnotationsMenu.getSelectedTypes()) {
       showAnnotationType(displayType, true);
     }
@@ -888,6 +878,23 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     mPainter.paint(IPainter.CONFIGURATION);
   }
 
+  private void syncAnnotations() {
+    // Remove all annotation from the model
+    IAnnotationModel annotationModel = getDocumentProvider().getAnnotationModel(getEditorInput());
+    ((IAnnotationModelExtension) annotationModel).removeAllAnnotations();
+
+    // Add all annotation to the model
+    // copy annotations into annotation model
+    final Iterator<AnnotationFS> mAnnotations = mDocument.getCAS().getAnnotationIndex()
+            .iterator();
+
+    while (mAnnotations.hasNext()) {
+      AnnotationFS annotationFS = mAnnotations.next();
+      annotationModel.addAnnotation(new EclipseAnnotationPeer(annotationFS), new Position(
+              annotationFS.getBegin(), annotationFS.getEnd() - annotationFS.getBegin()));
+    }
+  }
+  
   /**
    * @param listener
    */

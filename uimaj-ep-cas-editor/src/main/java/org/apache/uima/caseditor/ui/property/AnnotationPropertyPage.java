@@ -336,7 +336,7 @@ public class AnnotationPropertyPage extends PropertyPage {
      
     // Repaint annotations of all open editors
     for (AnnotationEditor editor : AnnotationEditor.getAnnotationEditors()) {
-      editor.syncAnnotations();
+      editor.syncAnnotationTypes();
     }
     
     return true;
