@@ -20,8 +20,6 @@
 package org.apache.uima.caseditor.editor.outline;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.caseditor.core.model.NlpModel;
@@ -38,9 +36,6 @@ import org.eclipse.swt.widgets.Display;
   class ModeSensitiveContentProvider extends OutlineContentProviderBase {
 	  
     private AnnotationTreeNodeList mAnnotationNodeList;
-
-    private Map<AnnotationFS, AnnotationTreeNode> mParentNodeLookup =
-      new HashMap<AnnotationFS, AnnotationTreeNode>();
 
     protected ModeSensitiveContentProvider(AnnotationEditor editor, TreeViewer viewer) {
     	super(editor, viewer);
@@ -75,7 +70,7 @@ import org.eclipse.swt.widgets.Display;
     }
 
     /**
-     * Removes the removed annoations from the viewer.
+     * Removes the removed annotations from the viewer.
      *
      * @param deletedAnnotations
      */
@@ -108,8 +103,6 @@ import org.eclipse.swt.widgets.Display;
 
       mAnnotationNodeList = annotations != null ? new AnnotationTreeNodeList(mEditor
               .getDocument(), annotations) : null;
-
-      mParentNodeLookup.clear();
 
       Display.getDefault().syncExec(new Runnable() {
         public void run() {

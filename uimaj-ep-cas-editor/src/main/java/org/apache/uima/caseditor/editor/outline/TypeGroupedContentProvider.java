@@ -33,11 +33,9 @@ import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.caseditor.CasEditorPlugin;
-import org.apache.uima.caseditor.core.TaeError;
 import org.apache.uima.caseditor.editor.AnnotationEditor;
-import org.apache.uima.caseditor.editor.ICasDocument;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * The content provider for the type grouped annotation outline.
@@ -137,54 +135,40 @@ public class TypeGroupedContentProvider extends OutlineContentProviderBase {
 		return typeNode.getAnnotations();
 	}
 
-	@Override
-  public void dispose() {
-	}
-
-	@Override
-  public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-		if (oldInput != null) {
-			((ICasDocument) oldInput).removeChangeListener(this);
-		}
-
-		if (newInput != null) {
-			mInputDocument = (ICasDocument) newInput;
-			
-			mInputDocument.addChangeListener(this);
-
-			nameAnnotationTypeNodeMap.clear();
-			
-			TypeSystem typeSystem = mInputDocument.getCAS().getTypeSystem();
-			
-			List<Type> types = typeSystem.getProperlySubsumedTypes(
-					typeSystem.getType(CAS.TYPE_NAME_ANNOTATION));
-			
-			types.add(typeSystem.getType(CAS.TYPE_NAME_ANNOTATION));
-			
-			for (Type type : types) {
-				
-				AnnotationTypeTreeNode typeNode = new AnnotationTypeTreeNode(type);
-				
-				nameAnnotationTypeNodeMap.put(type.getName(), typeNode);
-				
-				CAS cas = mInputDocument.getCAS();
-				
-				AnnotationIndex index = cas.getAnnotationIndex(type);
-				
-				for (FSIterator it = index.iterator(); it.hasNext(); ) {
-					AnnotationFS annotation = (AnnotationFS) it.next();
-					
-					if (annotation.getType().equals(type)) {
-					  typeNode.add(new AnnotationTreeNode(mInputDocument, annotation));
-					}
-				}
-			}
-			
-			viewer.refresh();
-		}
-	}
 
 	public void changed() {
-		// update on changes
+		nameAnnotationTypeNodeMap.clear();
+		
+		TypeSystem typeSystem = mInputDocument.getCAS().getTypeSystem();
+		
+		List<Type> types = typeSystem.getProperlySubsumedTypes(
+				typeSystem.getType(CAS.TYPE_NAME_ANNOTATION));
+		
+		types.add(typeSystem.getType(CAS.TYPE_NAME_ANNOTATION));
+		
+		for (Type type : types) {
+			
+			AnnotationTypeTreeNode typeNode = new AnnotationTypeTreeNode(type);
+			
+			nameAnnotationTypeNodeMap.put(type.getName(), typeNode);
+			
+			CAS cas = mInputDocument.getCAS();
+			
+			AnnotationIndex<AnnotationFS> index = cas.getAnnotationIndex(type);
+			
+			for (FSIterator<AnnotationFS> it = index.iterator(); it.hasNext(); ) {
+				AnnotationFS annotation = it.next();
+				
+				if (annotation.getType().equals(type)) {
+				  typeNode.add(new AnnotationTreeNode(mInputDocument, annotation));
+				}
+			}
+		}
+
+      Display.getDefault().syncExec(new Runnable() {
+        public void run() {
+        	viewer.refresh();
+        }
+      });
 	}
 }
