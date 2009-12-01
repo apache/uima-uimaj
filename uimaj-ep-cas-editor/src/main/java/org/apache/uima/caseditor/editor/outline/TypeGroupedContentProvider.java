@@ -104,9 +104,17 @@ public class TypeGroupedContentProvider extends OutlineContentProviderBase {
 		if (element instanceof AnnotationTreeNode) {
 			AnnotationTreeNode annotation = (AnnotationTreeNode) element;
 		
-			String name = annotation.getAnnotation().getType().getName();
+			Type type = annotation.getAnnotation().getType();
 		
-			return nameAnnotationTypeNodeMap.get(name);
+			if (type != null) {
+				return nameAnnotationTypeNodeMap.get(type.getName());
+			}
+			else {
+				// Can happen when a changed request was triggered after
+				// a CAS.reset(), in this case it is not possible to find a 
+				// parent for the element and null should be returned.
+				return null;
+			}
 		}
 		else if (element instanceof AnnotationTypeTreeNode) {
 			// The head type elements to not have a parent
