@@ -63,7 +63,7 @@ then
   fi
 fi
 
-svn checkout -r HEAD http://svn.apache.org/repos/asf/incubator/uima/uimaj/$svnloc
+svn export -r HEAD http://svn.apache.org/repos/asf/incubator/uima/uimaj/$svnloc
 cd $leveldir
 cp -r ${0%/*}/../../../../uima-docbook-tool/tools/fop-versions/fop-0.95             uima-docbook-tool/tools/fop-versions 
 cp -r ${0%/*}/../../../../uima-docbook-tool/tools/jai-versions/jai-1.1.3            uima-docbook-tool/tools/jai-versions 
