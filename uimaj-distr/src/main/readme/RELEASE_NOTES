@@ -272,9 +272,12 @@ Release Notes - UIMA - Version 2.3
     * [UIMA-1650] - Bug in common launcher script causing UIMA_CLASSPATH to be ignored
     * [UIMA-1663] - All directories in UIMA distribution should be 755
     * [UIMA-1664] - Windows command line files not working
-    * [UIMA-1668] - Update sample descriptor for cas editor test UI_009
     * [UIMA-1678] - Pear builder maven plugin should use "Package" mode of buildComponentClassPath 
     * [UIMA-1679] - UIMA scripts set memory options that override user's setiings
+    * [UIMA-1683] - fix copyright notice in the NOTICE files
+    * [UIMA-1687] - correct top-level svn license/notice files
+    * [UIMA-1688] - Cas Editor throws NPE when cleaning a document which is opened
+    * [UIMA-1690] - After cleaning a document the outline view does not sync
 
 ** Improvement
     * [UIMA-71] - New v2 features missing from tutorial chapters
@@ -366,6 +369,7 @@ Release Notes - UIMA - Version 2.3
     * [UIMA-1591] - Sandbox build - fix copying & cleaning of docs/ for website interaction with SVN
     * [UIMA-1592] - PearPackagingMavenPlugin - correct documentation and add usage from command line, and add plugin prefix
     * [UIMA-1613] - run Rat consistently for all maven assemblies
+    * [UIMA-1689] - fix some miscompares between svn export and source-distribution
 
 ** New Feature
     * [UIMA-1046] - CVD should support an ini file parameter on the command line
