@@ -1,0 +1,175 @@
+	                    Apache UIMA Cas Editor v2.2.2
+                               Release Notes
+   -----------------------------------------------------------------------
+
+CONTENTS
+0. License
+1. What is the UIMA?
+2. What is the Apache UIMA Cas Editor package?
+3. Major Changes in this Release
+4. How to Get Involved
+5. How to Report Issues
+6. List of JIRA Issues Fixed in this Release   
+
+0. License
+
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+ 
+http://www.apache.org/licenses/LICENSE-2.0
+ 
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.   
+
+1. What is UIMA?
+
+Unstructured Information Management applications are software systems that 
+analyze large volumes of unstructured information in order to discover knowledge
+that is relevant to an end user. UIMA is a framework and SDK for developing such
+applications. An example UIM application might ingest plain text and identify 
+entities, such as persons, places, organizations; or relations, such as 
+works-for or located-at. UIMA enables such an application to be decomposed into 
+components, for example "language identification" -> 
+"language specific segmentation" -> "sentence boundary detection" -> 
+"entity detection (person/place names etc.)". Each component must implement 
+interfaces defined by the framework and must provide self-describing metadata 
+via XML descriptor files. The framework manages these components and the data 
+flow between them. Components are written in Java or C++; the data that 
+flows between components is designed for efficient mapping between these 
+languages. UIMA additionally provides capabilities to wrap components as 
+network services, and can scale to very large volumes by replicating processing 
+pipelines over a cluster of networked nodes.
+
+Apache UIMA is an Apache-licensed open source implementation of the UIMA 
+specification (that specification is, in turn, being developed concurrently by 
+a technical committee within OASIS , a standards organization). We invite and 
+encourage you to participate in both the implementation and specification 
+efforts.
+
+UIMA is a component framework for analysing unstructured content such as text, 
+audio and video. It comprises an SDK and tooling for composing and running 
+analytic components written in Java and C++, with some support for Perl, 
+Python and TCL.
+
+2. What is the Apache UIMA Cas Editor package?
+
+The Apache UIMA Cas Editor is an annotation tool which supports manual and automatic annotation of CAS files. 
+The CAS Editor can visualize and edit all feature structures, annotations can be viewed and edited
+directly on text.
+
+3. Major Changes in this Release
+
+The Apache UIMA Cas Editor release version 2.2.2 is the first release 
+of this package. 
+ 
+For a list of all JIRA issues fixed with the current Cas Editor release, 
+please refer to chapter 6. "List of JIRA Issues Fixed in this Release". 
+
+
+4. How to Get Involved
+
+The Apache UIMA project really needs and appreciates any contributions, 
+including documentation help, source code and feedback.  If you are interested
+in contributing, please visit http://incubator.apache.org/uima/get-involved.html.
+
+
+5. How to Report Issues
+
+The Apache UIMA project uses JIRA for issue tracking.  Please report any 
+issues you find at http://issues.apache.org/jira/browse/uima.
+
+
+6. List of JIRA Issues Fixed in this Release
+
+Release Notes - UIMA - Version 2.2.2
+
+
+** Bug
+    * [UIMA-430] - CAS Editor test case fails 
+    * [UIMA-431] - Cas Editor: Select all button in the outline view does not work
+    * [UIMA-432] - CAS Editor annotation style property page show not all annotations
+    * [UIMA-433] - CAS Editor changing documents does not always sets dirty flag
+    * [UIMA-434] - CAS Editor add icons
+    * [UIMA-450] - Cas Editor: Renaming typesystem does not work
+    * [UIMA-451] - Cas Editor: AnnotionEditor.dispose() throws NPE
+    * [UIMA-452] - Cas Editor: Actions to modify annotations spans do not check bounds
+    * [UIMA-453] - Cas Editor: FS View delete button does not work
+    * [UIMA-454] - Cas Editor : AnnotationEditor highlights annotations which do not belong to the current annotation mode
+    * [UIMA-455] - Unused import com.sun.org.apache.bcel.internal.generic.ISTORE in CasEditor causes build break with IBM JVM
+    * [UIMA-457] - Can't build CAS Editor from SVN checkout in Eclipse
+    * [UIMA-482] - Cas Editor: Show Annotations menu does not remember selction across editors
+    * [UIMA-493] - Cas Editor: Adding a typesystem throws NPE
+    * [UIMA-505] - Cas Editor: Hide unwanted org.eclipse.ui.ide extensions
+    * [UIMA-512] - Cas Editor: plugin.xml contains unused extensions which depend on eclipse 3.3
+    * [UIMA-530] - Cas Editor: The Annotation Editor throws sometimes exceptions if used as FS drag source
+    * [UIMA-531] - Cas Editor: Delete button of the FSView does not work correctly
+    * [UIMA-532] - Cas Editor: Select all action does not work in FSView
+    * [UIMA-535] - Cas Editor: After running an AE there is no call to collectionProcessComplete
+    * [UIMA-537] - Cas Editor: Imports do not work in descriptor files
+    * [UIMA-542] - Cas Editor cannot be exported via product export wizard
+    * [UIMA-558] - Cas Editor: Annotator Runner sets editor dirty but also writes the file to disc
+    * [UIMA-561] - Cas Editor: Junit Plugin tests cannot be run
+    * [UIMA-593] - Cas Editor: The show menu in the annotation editor can not hide annotations 
+    * [UIMA-658] - Cas Editor: Change version to 2.2.1
+    * [UIMA-713] - Opening a document should show an error message if something goes wrong
+    * [UIMA-714] - F2 key short cut for renaming a resource does not work in the Corpus Explorer
+    * [UIMA-715] - F5 key short cut for refreshing does not work in Corpus Explorer
+    * [UIMA-716] - Deletion of processor folder does not removes the folder in the Corpus Explorer
+    * [UIMA-864] - update version from 2.2.2-incubating-SNAPSHOT to 2.2.2-incubating
+    * [UIMA-885] - fix license header issues
+    * [UIMA-1029] - udpate CasEditor build for release 2.2.2
+
+** Improvement
+    * [UIMA-460] - Change CAS Editor Docs project to be a general sandbox docs project
+    * [UIMA-470] - CAS Editor: Cas Processor error reporting does not show a problem message
+    * [UIMA-471] - CAS Editor: Non xcas files are only viewable but not editable
+    * [UIMA-481] - Cas Editor: Error reporting for cas processor
+    * [UIMA-485] - Cas Editor: Add cas text color annotation drawing strategy
+    * [UIMA-495] - Cas Editor: FS View should show address of FS objects
+    * [UIMA-497] - Cas Editor: Add token annotation drawing strategy
+    * [UIMA-501] - Cas Editor: Finish the about dialog
+    * [UIMA-502] - Cas Editor: Add a splash screen
+    * [UIMA-503] - Cas Editor: Add support for XMI files
+    * [UIMA-504] - Cas Editor: Cas Processors should synchronize with editors
+    * [UIMA-511] - Cas Editor: Should show all annotaions by default
+    * [UIMA-526] - Cas Editor: Add a new Edit View for editing of FS
+    * [UIMA-536] - Build Cas Editor as rcp application with maven
+    * [UIMA-538] - Cas Editor: Add an icon for the merge action in the outline view
+    * [UIMA-540] - Cas Editor: Add launcher icons
+    * [UIMA-541] - Cas Editor: Add windows icons
+    * [UIMA-559] - Cas Editor: Add a facility to choose the type of a new annotation in the AnnotationEditor
+    * [UIMA-562] - Cas Editor: Add an import wizard for txt files
+    * [UIMA-565] - Cas Editor: Improve startup process
+    * [UIMA-566] - Cas Editor: Add a dialog to choose the workspace
+    * [UIMA-571] - Cas Editor: Add drawing layer support for annotation painting
+    * [UIMA-584] - Add eclipse project files to the Cas Editor project
+    * [UIMA-587] - Cas Editor: After a cas processor was run the cas processor folder should be refreshed
+    * [UIMA-596] - Cas Editor: Do not show DocumentAnnotation by default
+    * [UIMA-609] - Cas Editor: Add automated ui tests
+    * [UIMA-678] - Update notice file
+    * [UIMA-793] - CasEditor - updates to docbook doc
+
+** New Feature
+    * [UIMA-155] - add cas editor (tae) project
+    * [UIMA-515] - enable CASEditor to work with resource specifiers as cas processors
+
+
+** Task
+    * [UIMA-357] - Write documentation for the Cas Editor
+    * [UIMA-573] - Cas Editor: Update documentation
+    * [UIMA-581] - Cas Editor: Create a test plan
+    * [UIMA-783] - Update Cas Editor version to 2.2.2
+    * [UIMA-1093] - Update NOTICE, LICENSE files and About dialog
+    * [UIMA-1094] - Remove junit dependency from binary distribution
+
+** Wish
+    * [UIMA-448] - Add a sample annotation project

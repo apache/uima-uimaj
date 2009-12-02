@@ -1,0 +1,163 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one
+   or more contributor license agreements.  See the NOTICE file
+   distributed with this work for additional information
+   regarding copyright ownership.  The ASF licenses this file
+   to you under the Apache License, Version 2.0 (the
+   "License"); you may not use this file except in compliance
+   with the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied.  See the License for the
+   specific language governing permissions and limitations
+   under the License.    
+-->
+
+<!-- this POM holds common, factored-out settings for all 
+     distribution-building POMs.  
+     Those project's POMs refer to this as their "parent"
+     This POM refers to the uimaj pom as its parent
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <!-- thru testing, discovered that "inheriting" the groupId isn't done
+       when scanning for projects -->
+  <groupId>org.apache.uima</groupId>
+  <artifactId>uima-common-distribution</artifactId>
+  <packaging>pom</packaging>
+  <name>Apache UIMA common Distribution POM settings</name>
+  <description>Holds common, factored out settings for Distribution POMs</description>
+
+  <parent>
+    <groupId>org.apache.uima</groupId>
+    <artifactId>uimaj</artifactId>
+    <version>2.3.0-incubating</version> <!-- this comment is a flag for changeVersion -->
+    <relativePath>..</relativePath>
+  </parent>
+     
+  <build>
+    
+    <pluginManagement>
+      
+      <plugins>
+        <plugin> 
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>2.2-beta-4</version>
+          <configuration>
+            <descriptors>
+              <descriptor>src/main/assembly/bin.xml</descriptor>
+              <descriptor>src/main/assembly/src.xml</descriptor>
+            </descriptors>
+            <finalName>${assemblyFinalName}</finalName>
+            <tarLongFileMode>gnu</tarLongFileMode>
+            <attach>false</attach> <!-- assembly results not put into Maven repos -->
+          </configuration>
+          <executions>
+            <execution>
+              <goals><goal>single</goal></goals>
+              <phase>package</phase>
+            </execution>
+            <execution>
+              <id>default-cli</id>
+              <configuration>
+                <descriptors>
+                  <descriptor>do-not-use--mvn-assembly-assembly--instead-use-mvn-install</descriptor>
+                </descriptors>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+  
+        <!-- Release Audit Tool checks -->
+        <!-- first unpack the assembly into a rat-src-dir and rat-bin-dir -->
+  
+        <plugin>
+          <artifactId>maven-antrun-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>unzip-for-RAT</id>
+              <!-- make sure this is before the Run RAT step below -->
+              <phase>verify</phase>
+              <goals><goal>run</goal></goals>
+              <configuration>
+                <tasks>
+                  <!-- set up ant-contrib extensions -->
+                  <typedef resource="net/sf/antcontrib/antlib.xml">
+                    <classpath refid="maven.dependency.classpath"/>
+                  </typedef>
+
+                  <!-- skip this if assemblyFinalName is undefined -->
+                  <!-- This happens when this pom is installed by itself -->
+                  <!-- because it's superpom has a ant-run instance -->
+
+                  <if>
+                    <isset property="assemblyFinalName"></isset>
+                    <then>
+                      <delete dir="target/rat-src-dir"/>
+                      <delete dir="target/rat-bin-dir"/>
+                      <unzip dest="target/rat-src-dir"
+                             src="target/${assemblyFinalName}-src.zip"/>
+                      <unzip dest="target/rat-bin-dir"
+                             src="target/${assemblyFinalName}-bin.zip"/>    
+                    </then>
+                  </if>                                   
+                </tasks>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+        
+        <!-- Run RAT --> 
+        <plugin>
+          <groupId>org.apache.rat</groupId>
+          <artifactId>apache-rat-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>default-cli</id>
+              <!-- set the phase to some phase that never will be invoked 
+                   to disable this (an ugly hack, please fix to something better -->
+              <phase>site-deploy</phase>
+            </execution>
+            <execution>
+              <id>rat-check-src</id>
+              <phase>verify</phase>
+              <configuration>
+                <basedir>target/rat-src-dir/${assemblyFinalName}</basedir>
+              </configuration>
+              <goals><goal>check</goal></goals>
+            </execution>
+            <execution>
+              <id>rat-check-bin</id>
+              <phase>verify</phase>
+              <configuration>
+                <basedir>target/rat-bin-dir/apache-uima</basedir>
+              </configuration>
+              <goals><goal>check</goal></goals>
+            </execution>  
+          </executions>
+        </plugin>
+        
+      </plugins>
+    </pluginManagement>       
+  </build>
+
+  <!-- listing the modules here allows running mvn xxx on this pom
+    and having it recurse into all the children -->
+    
+  <!-- commenting this out - need to separate aggregation from
+       parenting... this will allow this to be included in the
+       uimaj aggregation without forcing the build of all assemblies -->
+      
+  <!--modules>
+    <module>../../uimaj-distr</module>
+    <module>../../uima-as-distr</module>
+    <module>../../SandboxDistr</module>
+  </modules-->
+</project>
