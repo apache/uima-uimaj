@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd"[
+<!ENTITY % uimaents SYSTEM "../entities.ent">  
+%uimaents;
+]>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<chapter id="ugr.tug.xmi_emf">
+  <title>XMI and EMF Interoperability</title>
+  <titleabbrev>XMI &amp; EMF</titleabbrev>
+  
+  <section id="ugr.tug.xmi_emf.overview">
+    <title>Overview</title>
+    
+    <para>In traditional object-oriented terms, a UIMA Type System is a class model and a UIMA CAS is an object graph.
+      There are established standards in this area
+      &ndash; specifically, <trademark class="registered">UML</trademark> is an <trademark class="trade">
+      OMG</trademark> standard for class models and XMI (XML Metadata Interchange) is an OMG standard for the XML
+      representation of object graphs.</para>
+    
+    <para>Furthermore, the Eclipse Modeling Framework (EMF) is an open-source framework for model-based
+      application development, and it is based on UML and XMI. In EMF, you define class models using a metamodel called
+      Ecore, which is similar to UML. EMF provides tools for converting a UML model to Ecore. EMF can then generate Java
+      classes from your model, and supports persistence of those classes in the XMI format.</para>
+    
+    <para>The UIMA SDK provides tools for interoperability with XMI and EMF. These tools allow conversions of UIMA
+      Type Systems to and from Ecore models, as well as conversions of UIMA CASes to and from XMI format. This provides a
+      number of advantages, including:</para>
+    
+    <blockquote>
+      <para>You can define a model using a UML Editor, such as Rational Rose or EclipseUML, and then automatically
+        convert it to a UIMA Type System.</para>
+      
+      <para>You can take an existing UIMA application, convert its type system to Ecore, and save the CASes it
+        produces to XMI. This data is now in a form where it can easily be ingested by an EMF-based application.</para>
+    </blockquote>
+    
+    <para>More generally, we are adopting the well-documented, open standard XMI as the standard way to represent
+      UIMA-compliant analysis results (replacing the UIMA-specific XCAS format). This use of an open standard
+      enables other applications to more easily produce or consume these UIMA analysis results.</para>
+    
+    <para>For more information on XMI, see Grose et al. <emphasis>Mastering XMI. Java Programming with XMI, XML, and
+      UML.</emphasis> John Wiley &amp; Sons, Inc. 2002.</para>
+    
+    <para>For more information on EMF, see Budinsky et al. <emphasis>Eclipse Modeling Framework 2.0.</emphasis>
+      Addison-Wesley. 2006.</para>
+    
+    <para>For details of how the UIMA CAS is represented in XMI format, see <olink targetdoc="&uima_docs_ref;"
+        targetptr="ugr.ref.xmi"/> .</para>
+    
+  </section>
+  
+  <section id="ugr.tug.xmi_emf.converting_ecore_to_from_uima_type_system">
+    <title>Converting an Ecore Model to or from a UIMA Type System</title>
+    
+    <para>The UIMA SDK provides the following two classes:</para>
+    
+    <para><emphasis role="bold"><literal>Ecore2UimaTypeSystem:</literal>
+      </emphasis> converts from an .ecore model developed using EMF to a UIMA-compliant
+      TypeSystem descriptor. This is a Java class that can be run as a standalone program or
+      invoked from another Java application. To run as a standalone program,
+      execute:</para>
+    
+    <para><command>java org.apache.uima.ecore.Ecore2UimaTypeSystem &lt;ecore
+      file&gt; &lt;output file&gt;</command></para>
+    
+    <para>The input .ecore file will be converted to a UIMA TypeSystem descriptor and written
+      to the specified output file. You can then use the resulting TypeSystem descriptor in
+      your UIMA application.</para>
+    
+    <para><emphasis role="bold"><literal>UimaTypeSystem2Ecore:</literal>
+      </emphasis> converts from a UIMA TypeSystem descriptor to an .ecore model. This is a
+      Java class that can be run as a standalone program or invoked from another Java
+      application. To run as a standalone program, execute:</para>
+    
+    <para><command>java org.apache.uima.ecore.UimaTypeSystem2Ecore
+      &lt;TypeSystem descriptor&gt; &lt;output file&gt;</command></para>
+    
+    <para>The input UIMA TypeSystem descriptor will be converted to an Ecore model file and
+      written to the specified output file. You can then use the resulting Ecore model in EMF
+      applications. The converted type system will include any
+      <literal>&lt;import...&gt;</literal>ed TypeSystems; the fact that they were
+      imported is currently not preserved.</para>
+    
+    <para>To run either of these converters, your classpath will need to include the UIMA jar
+      files as well as the following jar files from the EMF distribution: common.jar,
+      ecore.jar, and ecore.xmi.jar.</para>
+    
+    <para>Also, note that the uima-core.jar file contains the Ecore model file uima.ecore,
+      which defines the built-in UIMA types. You may need to use this file from your EMF
+      applications.</para>
+    
+  </section>
+  
+  <section id="ugr.tug.xmi_emf.using_xmi_cas_serialization">
+    <title>Using XMI CAS Serialization</title>
+    
+    <para>The UIMA SDK provides XMI support through the following two classes:</para>
+    
+    <para><emphasis role="bold"><literal>XmiCasSerializer:</literal></emphasis>
+      can be run from within a UIMA application to write out a CAS to the standard XMI format. The
+      XMI that is generated will be compliant with the Ecore model generated by
+      <literal>UimaTypeSystem2Ecore</literal>. An EMF application could use this Ecore
+      model to ingest and process the XMI produced by the XmiCasSerializer.</para>
+    
+    <para><emphasis role="bold"><literal>XmiCasDeserializer:</literal></emphasis>
+      can be run from within a UIMA application to read in an XMI document and populate a CAS. The
+      XMI must conform to the Ecore model generated by
+      <literal>UimaTypeSystem2Ecore</literal>.</para>
+    
+    <para>Also, the uimaj-examples Eclipse project contains some example code that shows
+      how to use the serializer and deserializer:
+
+    <blockquote>
+    <para><literal>org.apache.uima.examples.xmi.XmiWriterCasConsumer:</literal>
+      This is a CAS Consumer that writes each CAS to an output file in XMI format. It is analogous
+      to the XCasWriter CAS Consumer that has existed in prior UIMA versions, except that it
+      uses the XMI serialization format.</para>
+    
+    <para><literal>org.apache.uima.examples.xmi.XmiCollectionReader:</literal>
+      This is a Collection Reader that reads a directory of XMI files and deserializes each of
+      them into a CAS. For example, this would allow you to build a Collection Processing
+      Engine that reads XMI files, which could contain some previous analysis results, and
+      then do further analysis.</para>
+    </blockquote></para>
+    
+    <para>Finally, in under the folder <literal>uimaj-examples/ecore_src</literal> is
+      the class
+      <literal>org.apache.uima.examples.xmi.XmiEcoreCasConsumer</literal>, which
+      writes each CAS to XMI format and also saves the Type System as an Ecore file. Since this
+      uses the <literal>UimaTypeSystem2Ecore</literal> converter, to compile it you must
+      add to your classpath the EMF jars common.jar, ecore.jar, and ecore.xmi.jar &ndash;
+      see ecore_src/readme.txt for instructions.</para>
+
+    <section id="ugr.tug.xmi_emf.xml_character_issues">
+    <title>Character Encoding Issues with XML Serialization</title>
+    
+    <para>Note that not all valid Unicode characters are valid XML characters, at least not in XML
+      1.0.  Moreover, it is possible to create characters in Java that are not even valid Unicode
+      characters, let alone XML characters.  As UIMA character data is translated directly into XML
+      character data on serialization, this may lead to issues.  UIMA will therefore check that the
+      character data that is being serialized is valid for the version of XML being used.  If 
+      non-serializable character data is encountered during serialization, an exception is thrown
+      and serialization fails (to avoid creating invalid XML data).  UIMA does not simply replace
+      the offending characters with some valid replacement character; the assumption being that
+      most applications would not like to have their data modified automatically.
+    </para>
+    
+    <para>If you know you are going to use XML serialization, and you would like to avoid such issues
+      on serialization, you should check any character data you create in UIMA ahead of time.  Issues
+      most often arise with the document text, as documents may originate at various sources, and
+      may be of varying quality.  So it's a particularly good idea to check the document text for
+      characters that will cause issues for serialization.
+    </para>
+    
+    <para>UIMA provides a handful of functions to assist you in checking Java character data.  Those
+      methods are located in 
+      <literal>org.apache.uima.internal.util.XMLUtils.checkForNonXmlCharacters()</literal>, with
+      several overloads.  Please check the javadocs for further information.
+    </para>
+    
+    <para>Please note that these issues are not specific to XMI serialization, they apply to the
+      older XCAS format in the same way.
+    </para>
+  
+    </section>
+  </section>
+  
+</chapter>

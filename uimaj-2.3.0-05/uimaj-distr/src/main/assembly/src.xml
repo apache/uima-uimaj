@@ -1,0 +1,347 @@
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.    
+-->
+
+<assembly>
+  <id>src</id>
+  <formats>
+    <format>tar.gz</format>
+    <!--format>tar.bz2</format-->  <!-- to speed up builds -->
+    <format>zip</format>
+  </formats>
+  
+  <includeBaseDirectory>true</includeBaseDirectory>
+  
+  <fileSets>
+    <!-- Leave out .sh/.bat/.cmd files, include them in the next step as executable -->
+    <fileSet>
+      <directory>.</directory>
+      <outputDirectory>/uimaj-distr</outputDirectory>
+      <includes>
+        <include>src/**</include>
+        <include>pom.xml</include>
+      </includes>
+      <excludes>
+        <exclude>src/**/*.bat</exclude>
+        <exclude>src/**/*.cmd</exclude>
+        <exclude>src/**/*.sh</exclude>
+      </excludes>
+      <fileMode>644</fileMode>
+    </fileSet>
+    <!-- Copy .sh files as executable -->
+    <fileSet>
+      <fileMode>755</fileMode>
+      <directory>.</directory>
+      <outputDirectory>/uimaj-distr</outputDirectory>
+      <includes>
+        <include>src/**/*.sh</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <fileMode>644</fileMode>
+      <directory>.</directory>
+      <outputDirectory>/uimaj-distr</outputDirectory>
+      <includes>
+        <include>src/**/*.bat</include>
+        <include>src/**/*.cmd</include>
+      </includes>
+    </fileSet>    
+    <fileSet>
+      <directory>src/main/readme</directory>
+      <outputDirectory/>
+      <excludes>
+        <exclude>README</exclude>
+      </excludes>
+      <fileMode>644</fileMode>
+    </fileSet>
+    <!-- Copy .sh files as executable -->
+    <fileSet>
+      <fileMode>755</fileMode>
+      <directory>src/main/readme_src</directory>
+      <includes>
+        <include>*.sh</include>
+      </includes>
+      <outputDirectory/>
+    </fileSet>
+    <!-- Copy everything else as non-executable -->
+    <fileSet>
+      <directory>src/main/readme_src</directory>
+      <excludes>
+        <exclude>*.sh</exclude>
+      </excludes>
+      <outputDirectory/>
+      <fileMode>644</fileMode>
+    </fileSet>
+    <fileSet>
+      <directory>../uima-docbooks</directory>
+      <outputDirectory>/uima-docbooks</outputDirectory>
+      <excludes>
+        <exclude>target/**</exclude>
+        <!-- Directories does not exist -->
+        <!-- <exclude>docbook/**</exclude>  -->
+        <!-- <exclude>lib/**</exclude> -->
+        <!-- <exclude>Source_UIMA_SDK_Guide_Ref/**</exclude> -->
+        <exclude>.*</exclude>   
+        <exclude>LICENSE.txt</exclude>
+        <exclude>src/styles/titlepage/*.xsl</exclude>     
+      </excludes>
+      <fileMode>644</fileMode>
+    </fileSet>   
+    <fileSet>
+      <directory>../uima-docbook-tool</directory>
+      <outputDirectory>/uima-docbook-tool</outputDirectory>
+      <includes>
+        <include>build/**</include>
+        <include>catalog/**</include>
+        <include>properties/**</include>
+        <include>samples/**</include>
+        <include>styles/**</include>
+        <include>tools/common-lib/**</include>
+        <include>tools/docbook-versions/docbook-xml-*</include>
+        <include>tools/docbook-versions/docbook-xsl-*</include>
+        <include>tools/fop-versions/fop-*/fop-config.xml</include>
+        <include>tools/jai-version/jai-1.1.3</include>
+        <include>tools/saxon-versions/saxon-6.5.5</include>
+        <include>tools/HOW_TO</include>
+        <include>xinclude.mod</include> 
+        <include>README</include>
+        <include>README.FIRST</include>
+      </includes>
+      <excludes>
+        <exclude></exclude>
+      </excludes>
+      <fileMode>644</fileMode>
+    </fileSet>
+    <fileSet>
+      <directory>../uimaj-eclipse-update-site</directory>
+      <outputDirectory>/uimaj-eclipse-update-site</outputDirectory>
+      <excludes>
+        <exclude>target/**</exclude>
+      </excludes>
+      <fileMode>644</fileMode>
+    </fileSet>    
+    <fileSet>
+      <directory>../uimaj-eclipse-feature-runtime</directory>
+      <outputDirectory>/uimaj-eclipse-feature-runtime</outputDirectory>
+      <excludes>
+        <exclude>META-INF/**</exclude>
+        <exclude>target/**</exclude>
+      </excludes>
+      <fileMode>644</fileMode>
+    </fileSet>    
+    <fileSet>
+      <directory>../uimaj-eclipse-feature-tools</directory>
+      <outputDirectory>/uimaj-eclipse-feature-tools</outputDirectory>
+      <excludes>
+        <exclude>META-INF/**</exclude>
+        <exclude>target/**</exclude>
+      </excludes>
+      <fileMode>644</fileMode>
+    </fileSet>    
+    <fileSet>
+      <directory>../uimaj</directory>
+      <outputDirectory>/uimaj</outputDirectory>
+      <includes>
+        <include>pom.xml</include>
+        <include>eclipse-plugin-superPom/**</include>
+        <include>distr-superPom/**</include>
+      </includes>
+      <fileMode>644</fileMode>
+    </fileSet>
+    <fileSet>
+      <directory>../jVinci</directory>
+      <outputDirectory>/jVinci</outputDirectory>
+      <includes>
+        <include>src/**</include>
+        <include>pom.xml</include>
+      </includes>
+      <fileMode>644</fileMode>
+    </fileSet>
+    <fileSet>
+      <directory>../uimaj-adapter-soap</directory>
+      <outputDirectory>/uimaj-adapter-soap</outputDirectory>
+      <includes>
+        <include>src/**</include>
+        <include>pom.xml</include>
+      </includes>
+      <fileMode>644</fileMode>
+    </fileSet>
+    <fileSet>
+      <directory>../uimaj-adapter-vinci</directory>
+      <outputDirectory>/uimaj-adapter-vinci</outputDirectory>
+      <includes>
+        <include>src/**</include>
+        <include>pom.xml</include>
+      </includes>
+      <fileMode>644</fileMode>
+    </fileSet>  
+    <fileSet>
+      <directory>../uimaj-bootstrap</directory>
+      <outputDirectory>/uimaj-bootstrap</outputDirectory>
+      <includes>
+        <include>src/**</include>
+        <include>pom.xml</include>
+      </includes>
+      <fileMode>644</fileMode>
+    </fileSet>          
+    <fileSet>
+      <directory>../uimaj-component-test-util</directory>
+      <outputDirectory>/uimaj-component-test-util</outputDirectory>
+      <includes>
+        <include>src/**</include>
+        <include>pom.xml</include>
+      </includes>
+      <fileMode>644</fileMode>
+    </fileSet>  
+    <fileSet>
+      <directory>../uimaj-core</directory>
+      <outputDirectory>/uimaj-core</outputDirectory>
+      <includes>
+        <include>src/**</include>
+        <include>pom.xml</include>
+      </includes>
+      <fileMode>644</fileMode>
+    </fileSet>  
+    <fileSet>
+      <directory>../uimaj-cpe</directory>
+      <outputDirectory>/uimaj-cpe</outputDirectory>
+      <includes>
+        <include>src/**</include>
+        <include>pom.xml</include>
+      </includes>
+      <fileMode>644</fileMode>
+    </fileSet>      
+    <fileSet>
+      <directory>../uimaj-document-annotation</directory>
+      <outputDirectory>/uimaj-document-annotation</outputDirectory>
+      <includes>
+        <include>src/**</include>
+        <include>pom.xml</include>
+      </includes>
+      <fileMode>644</fileMode>
+    </fileSet>   
+    <fileSet>
+      <directory>../uimaj-ep-cas-editor</directory>
+      <outputDirectory>/uimaj-ep-cas-editor</outputDirectory>
+      <includes>
+        <include>icons/**</include>
+        <include>src/**</include>
+        <include>schema/**</include>
+        <include>plugin.xml</include>
+        <include>pom.xml</include>
+        <include>build.properties</include>
+      </includes>
+      <fileMode>644</fileMode>
+    </fileSet>      
+    <fileSet>
+      <directory>../uimaj-ep-configurator</directory>
+      <outputDirectory>/uimaj-ep-configurator</outputDirectory>
+      <includes>
+        <include>src/**</include>
+        <include>pom.xml</include>
+        <include>META-INF</include>
+        <include>plugin.xml</include>
+        <include>schema/**</include>
+      </includes>
+      <fileMode>644</fileMode>
+    </fileSet>      
+    <fileSet>
+      <directory>../uimaj-ep-debug</directory>
+      <outputDirectory>/uimaj-ep-debug</outputDirectory>
+      <includes>
+        <include>src/**</include>
+        <include>pom.xml</include>
+        <include>META-INF</include>
+        <include>plugin.xml</include>
+      </includes>
+      <fileMode>644</fileMode>
+    </fileSet>       
+    <fileSet>
+      <directory>../uimaj-ep-jcasgen</directory>
+      <outputDirectory>/uimaj-ep-jcasgen</outputDirectory>
+      <includes>
+        <include>src/**</include>
+        <include>pom.xml</include>
+        <include>META-INF</include>
+        <include>plugin.xml</include>
+      </includes>
+      <fileMode>644</fileMode>
+    </fileSet> 
+    <fileSet>
+      <directory>../uimaj-ep-pear-packager</directory>
+      <outputDirectory>/uimaj-ep-pear-packager</outputDirectory>
+      <includes>
+        <include>src/**</include>
+        <include>pom.xml</include>
+        <include>META-INF</include>
+        <include>about.html</include>
+        <include>icons/**</include>
+        <include>plugin.xml</include>
+      </includes>
+      <fileMode>644</fileMode>
+    </fileSet>     
+    <fileSet>
+      <directory>../uimaj-ep-runtime</directory>
+      <outputDirectory>/uimaj-ep-runtime</outputDirectory>
+      <includes>
+        <include>src/**</include>
+        <include>pom.xml</include>
+        <include>META-INF</include>
+        <include>plugin.xml</include>
+      </includes>
+      <fileMode>644</fileMode>
+    </fileSet>      
+    <fileSet>
+      <directory>../uimaj-examples</directory>
+      <outputDirectory>/uimaj-examples</outputDirectory>
+      <includes>
+        <include>src/**</include>
+        <include>pom.xml</include>
+      </includes>
+      <fileMode>644</fileMode>
+    </fileSet>      
+    <fileSet>
+      <directory>../uimaj-test-util</directory>
+      <outputDirectory>/uimaj-test-util</outputDirectory>
+      <includes>
+        <include>src/**</include>
+        <include>pom.xml</include>
+      </includes>
+      <fileMode>644</fileMode>
+    </fileSet>     
+    <fileSet>
+      <directory>../uimaj-tools</directory>
+      <outputDirectory>/uimaj-tools</outputDirectory>
+      <includes>
+        <include>src/**</include>
+        <include>pom.xml</include>
+      </includes>
+      <fileMode>644</fileMode>
+    </fileSet>
+    <fileSet>
+      <directory>../PearPackagingMavenPlugin</directory>
+      <outputDirectory>/PearPackagingMavenPlugin</outputDirectory>
+      <includes>
+        <include>src/**</include>
+        <include>pom.xml</include>
+      </includes>
+      <fileMode>644</fileMode>
+    </fileSet>       
+          
+  </fileSets>  
+</assembly>
