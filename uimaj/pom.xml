@@ -52,7 +52,7 @@
   </licenses>
   <scm>
     <url>http://svn.apache.org/viewvc/incubator/uima</url>
-    <developerConnection>scm:svn:http://svn.apache.org/repos/asf/incubator/uima/uimaj/trunk</developerConnection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/uima/uimaj/trunk</developerConnection>
   </scm>
   <organization>
     <name>The Apache Software Foundation</name>
