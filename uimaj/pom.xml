@@ -34,6 +34,9 @@
            causes recursive loop -->
       <uimaj-release-version>2.3.0-incubating</uimaj-release-version> <!-- this comment is a flag for changeVersion -->
       <uimaj-release-eclipse-version>2.3.0.incubating</uimaj-release-eclipse-version>
+      <scm.branch>trunk</scm.branch>
+      <scm.module.path />
+      <scmBranchPropertyName>${scm.branch}</scmBranchPropertyName>
   </properties>
   <name>Apache UIMA Java SDK</name>
 
@@ -49,6 +52,7 @@
   </licenses>
   <scm>
     <url>http://svn.apache.org/viewvc/incubator/uima</url>
+    <developerConnection>scm:svn:http://svn.apache.org/repos/asf/incubator/uima/uimaj/trunk</developerConnection>
   </scm>
   <organization>
     <name>The Apache Software Foundation</name>
