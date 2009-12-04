@@ -35,6 +35,7 @@ import java.util.TreeSet;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
@@ -1771,11 +1772,14 @@ public class CasCreationUtils {
       } else if (current instanceof ResourceSpecifier) {
         // try to instantiate the resource
         Resource resource = null;
-        Map<String, Object> resourceMgrInMap = new HashMap<String, Object>();
-        resourceMgrInMap.put(Resource.PARAM_RESOURCE_MANAGER, aResourceManager);
+        Map<String, Object> prParams = new HashMap<String, Object>();
+        if (aResourceManager != null) {
+          prParams.put(Resource.PARAM_RESOURCE_MANAGER, aResourceManager);
+        }
+        prParams.put(AnalysisEngineImplBase.PARAM_VERIFICATION_MODE, Boolean.TRUE);
         try {
-          resource = UIMAFramework.produceResource((ResourceSpecifier) current,
-              (null == aResourceManager) ? Collections.<String, Object>emptyMap() : resourceMgrInMap);
+          resource = UIMAFramework.produceResource((ResourceSpecifier) current, prParams);
+//              (null == aResourceManager) ? Collections.<String, Object>emptyMap() : resourceMgrInMap);
         } catch (Exception e) {
           // failed. If aOutputFailedRemotes is non-null, add an entry to it to it, else throw the
           // exception.
