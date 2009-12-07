@@ -266,6 +266,7 @@ Release Notes - UIMA - Version 2.3
     * [UIMA-1615] - make build-from-sources work
     * [UIMA-1618] - Rename CasEditor NLP category to "Cas Editor" and the NLP project to "Cas Editor Project"
     * [UIMA-1619] - Clarify that a Cas Editor Project is required to use the Cas Editor in the documentation
+    * [UIMA-1621] - CVD should work when classes loaded dynamically
     * [UIMA-1631] - UimaBootstrap Loader approach fails to work for classes loaded by logger (and maybe other parts of Java)
     * [UIMA-1641] - Cas Processor integration was changed, but documentation not updated
     * [UIMA-1647] - Scripts fail to call runUimaClass.sh 
@@ -279,6 +280,7 @@ Release Notes - UIMA - Version 2.3
     * [UIMA-1688] - Cas Editor throws NPE when cleaning a document which is opened
     * [UIMA-1690] - After cleaning a document the outline view does not sync
     * [UIMA-1692] - add missing license headers to .project files etc. in uimaj-eclipse-... projects
+    * [UIMA-1694] - Error 'scm url cannot be null' on uimaj POM
 
 ** Improvement
     * [UIMA-71] - New v2 features missing from tutorial chapters
@@ -372,6 +374,7 @@ Release Notes - UIMA - Version 2.3
     * [UIMA-1613] - run Rat consistently for all maven assemblies
     * [UIMA-1689] - fix some miscompares between svn export and source-distribution
     * [UIMA-1691] - change checkout to export in extract and build scripts
+    * [UIMA-1695] - Eclipse tooling: CDE fully instantiates components of aggregates, resulting in OutOfMemory issues
 
 ** New Feature
     * [UIMA-1046] - CVD should support an ini file parameter on the command line
@@ -397,4 +400,4 @@ Release Notes - UIMA - Version 2.3
 
 ** Test
     * [UIMA-1389] - Remove OpenNLP example wrapper
-    
+      
