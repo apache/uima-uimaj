@@ -1,0 +1,101 @@
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+================================
+= How to use the docbook tool. = 
+================================
+
+The tooling is set up assuming you put your documentation in another directory
+which is parallel (has the same ancestor) as the uima-docbook-tool directory.
+Furthermore, it assumes the target output directory for generated code is 
+some directory (name is arbitrary) at the top level of your documentation project.
+(This follows maven conventions).
+
+
+Step 1: Create a project (if necessary) for your docbook documentation.
+
+Step 2: Organize the documentation into one or more "books".  
+
+  Directory structure to create:  
+      ... (at some level) ... /your-first-book-name
+      ... (at some level) ... /your-second-book-name
+        etc.
+        
+    Within each book-name, you have subdirectories for chapters.  These
+    are "xi:include-d" into a "master" file, which should be named
+    the same as the book.  So, a typical book looks like:
+    
+      ... (at some level) ... /my-book-name/my-book-name.xml  <<-- the "master" file
+      ... (at some level) ... /my-book-name/my-chapter1-name.xml  <<-- included files
+      ... (at some level) ... /my-book-name/my-chapter2-name.xml  <<-- included files
+                  etc.
+                 
+Step 3: copy the contents of the "samples" directory into your docbook project,
+        in the src/styles directory.  You should end up with 
+        src/styles/top and src/styles/titlepage directories.
+                  
+Step 4: modify the "local.docbook.properties", 
+        to fit your requirements and directory layout
+
+        For each book you want to build, create a custom copy of
+        build_book-name.xml, modified to reference the book you want to build.
+        
+        Edit the files in the "top" directory and correct any relative path
+        specifications as needed to correspond to your directory layout.
+        
+        (Optional) Customize the "style": Change the titlepage files, and/or
+        add overrides to the xsl files in the "top" directory.  For instructions
+        on how to do this, see http://www.sagehill.net/book-description.html
+        (you can view this as an on-line book, or buy the book).  
+
+Step 5: build the book using the build_book-name.xml as an ANT script.
+
+
+=============
+=  T I P S  =
+=============
+
+Recommended editor = XMLBuddy plugin for Eclipse.  This will read the docbook dtd, 
+plus any customized Entities you might declare, and make them available for 
+Eclipse auto-completion and checking.
+
+Entities you declare can be put into shared entity files, and then
+essentially included in other files.  See Chapter 22 of the DocBook XSL, the 
+Complete Guide, for examples.
+
+
+=============================================================
+Path requirements:
+
+The target path must be a top level path in a parallel project directory.  
+The font config currently depends on this.
+
+NOTES:
+
+The functionality for xi:include relative linking when the thing being included was 
+in a different directory from the includer was broken.  
+This showed up in image fileref= attributes being improperly / inconsistently translated
+to src=... attributes in the generated xml.  Work-around: give up for now
+in having subdirectories - put all things into one directory.  (Note - as
+of April 2007 a bug in this area has been fix and this needs to be retested)
+
+The qandaset functionality works but the FOP processor 0.20.5 seems to have trouble
+handling id= attributes; it's giving an incorrect error message about a duplicate id tag,
+when, in fact, there is no duplicate.  Work-around: give up using qandaset - just use
+variablelist instead. (4/2007: Needs retesting on FOP 0.93 and newer level of docbook)
+
+Parameters for Docbook are described in the FO ref:
+http://docbook.sourceforge.net/release/xsl/current/doc/fo/index.html

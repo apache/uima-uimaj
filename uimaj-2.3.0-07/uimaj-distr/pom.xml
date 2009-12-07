@@ -1,0 +1,208 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one
+   or more contributor license agreements.  See the NOTICE file
+   distributed with this work for additional information
+   regarding copyright ownership.  The ASF licenses this file
+   to you under the Apache License, Version 2.0 (the
+   "License"); you may not use this file except in compliance
+   with the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied.  See the License for the
+   specific language governing permissions and limitations
+   under the License.    
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.apache.uima</groupId>
+  <artifactId>uimaj-distr</artifactId>
+  <packaging>pom</packaging>
+  <version>${uimaj-release-version}</version>
+  <name>Apache UIMA Java SDK - Resources and Assembly Descriptor for building the distribution</name>
+  <parent>
+    <groupId>org.apache.uima</groupId>
+    <artifactId>uima-common-distribution</artifactId>
+    <version>2.3.0-incubating</version> <!-- this comment is a flag for changeVersion -->
+    <relativePath>../uimaj/distr-superPom</relativePath>
+  </parent>
+  
+  <properties>
+    <!-- property used in multiple places in distr-superPom -->
+    <assemblyFinalName>uimaj-${uimaj-release-version}</assemblyFinalName>  
+  </properties>  
+  
+  <!-- dependencies that go into the various builds via dependency-sets -->
+  <!-- version is picked up from parent -->
+  <!-- default scope is compile -->
+  
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.uima</groupId> <artifactId>uimaj-adapter-vinci</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId> <artifactId>uimaj-adapter-soap</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId> <artifactId>uimaj-bootstrap</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId> <artifactId>uimaj-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId> <artifactId>uimaj-cpe</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId> <artifactId>uimaj-examples</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId> <artifactId>uimaj-tools</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId> <artifactId>uimaj-ep-cas-editor</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId> <artifactId>uimaj-ep-configurator</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId> <artifactId>uimaj-ep-debug</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId> <artifactId>uimaj-ep-jcasgen</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId> <artifactId>uimaj-ep-pear-packager</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId> <artifactId>uimaj-ep-runtime</artifactId>
+    </dependency>
+  </dependencies>
+  
+  <build>
+    <plugins>
+     
+      <!-- This java doc config is for building the ones distributed with the bin packaging, and also 
+           posted on our website.
+        
+           There is another javadoc config in the parent POM that builds all the java docs - intended
+           for use by developers (currently not used) -->
+      
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>javadoc</id>
+            <phase>package</phase>
+            <!--phase>deploy</phase--> <!-- comment above and uncomment to disable javadocs, for testing/experimentation, with assembly:assembly-->
+            <goals>
+              <goal>aggregate</goal>
+            </goals>
+            <configuration>
+              <quiet>true</quiet>
+              <groups>
+                <group>
+                  <title>Packages</title>
+                  <packages>*</packages>
+                </group>
+              </groups>
+              <sourcepath>../uimaj-core/src/main/java;../uimaj-document-annotation/src/main/java</sourcepath>
+              <excludePackageNames>*.internal.*:*.impl.*</excludePackageNames>
+              <!-- add a few classes in impl packages that are directly used by user code -->
+              <additionalparam>
+                ${basedir}/../uimaj-core/src/main/java/org/apache/uima/cas/impl/XCASDeserializer.java
+                ${basedir}/../uimaj-core/src/main/java/org/apache/uima/cas/impl/XCASParsingException.java
+                ${basedir}/../uimaj-core/src/main/java/org/apache/uima/cas/impl/XCASSerializer.java
+                ${basedir}/../uimaj-core/src/main/java/org/apache/uima/cas/impl/XmiCasDeserializer.java
+                ${basedir}/../uimaj-core/src/main/java/org/apache/uima/cas/impl/XmiCasSerializer.java
+                ${basedir}/../uimaj-core/src/main/java/org/apache/uima/cas/impl/XmiSerializationSharedData.java
+                ${basedir}/../uimaj-cpe/src/main/java/org/apache/uima/collection/impl/metadata/cpe/CpeDescriptorFactory.java
+                ${basedir}/../uimaj-cpe/src/main/java/org/apache/uima/collection/impl/cpm/engine/CPMChunkTimeoutException.java
+              </additionalparam>
+              <doctitle>Apache UIMA Java SDK ${pom.version} User-Level API Documentation</doctitle>
+              <windowtitle>Apache UIMA Java SDK ${pom.version} User-Level API Documentation</windowtitle>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <configuration>
+              <tasks>
+                <!-- Build documentation -->
+                <ant dir="../uima-docbooks" inheritAll="false"/>
+                <!-- build eclipse update site 
+                     Deleted from here, moved to a "deploy" step -->
+                  
+                <!--ant dir="../uimaj-eclipse-update-site"-->
+                  <!-- property values from maven must be passed in 
+                       using what looks like a redundant <property> statement.
+                       See http://cwiki.apache.org/UIMA/maven-tips.html 
+                         section on passing parameters to ant scripts -->
+                  <!--property name="uima-maven-build-eclipse-home" value="${uima-maven-build-eclipse-home}"/>                 
+                  <property name="project.version" value="${uimaj-release-eclipse-version}"/>
+                </ant-->            
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+          
+        </executions>
+      </plugin>
+      
+      <!-- must follow other package goals, like the one above building the docbooks -->
+      <plugin> 
+        <artifactId>maven-assembly-plugin</artifactId>
+      </plugin>
+  
+      <!-- Release Audit Tool checks -->
+      <!-- run Release Audit Tool (RAT) on src and bin distrs -->       
+      <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>rat-check-src</id>
+            <configuration>
+              <excludes>
+                <exclude>uima-docbooks/README.USER.txt</exclude> <!-- readme -->
+                <exclude>uima-docbooks/src/olink/**</exclude> <!-- generated cross ref database for Apache FOP -->
+                <exclude>uimaj-core/src/test/resources/**</exclude> <!-- test data -->
+                <exclude>uimaj-ep-cas-editor/src/test/resources/ManualTests/**</exclude> <!-- test data -->
+                <exclude>uimaj-examples/src/main/data/**</exclude> <!-- sample data -->
+                <exclude>uimaj-examples/src/main/eclipseProject/ecore_src_readme.txt</exclude>  <!-- readme -->
+                <exclude>uimaj-examples/src/main/resources/org/apache/uima/tutorial/ex6/uimaAcronyms.txt</exclude>  <!-- sample data -->
+                <exclude>uimaj-tools/src/main/resources/org/apache/uima/tools/migration/*.txt</exclude> <!-- system data file -->
+                <exclude>uimaj-tools/src/main/resources/org/apache/uima/tools/util/gui/about.txt</exclude> <!-- about file -->
+                <exclude>uimaj-tools/src/test/resources/pearTests/pearMergerTests/uima.example.RoomNumber.pear</exclude> <!-- test binary file -->
+              </excludes>
+            </configuration>
+          </execution>
+          <execution>
+            <id>rat-check-bin</id>
+            <configuration>
+              <excludes>
+                <exclude>docs/api/**</exclude> <!-- javadocs-->
+                <exclude>docs/html/images/*.svg</exclude>  <!-- generated .svg image files -->
+                <exclude>examples/data/**</exclude> <!-- sample data -->
+                <exclude>examples/resources/org/apache/uima/tutorial/ex6/uimaAcronyms.txt</exclude> <!--sample param file -->         
+              </excludes>
+            </configuration>
+          </execution>  
+        </executions>
+      </plugin>
+
+    </plugins>
+  </build>  
+</project>
