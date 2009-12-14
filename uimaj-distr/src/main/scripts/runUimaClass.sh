@@ -94,7 +94,7 @@ fi
 # Check if Uima AS is installed, and if so set the default log4j configuration file
 if [ -e "$UIMA_HOME"/as_config ] 
 then
-	LOG4J_CONFIG_FILE=-Dlog4j.configuration=file:$UIMA_HOME/as_config/log4j.properties
+	LOG4J_CONFIG_FILE=-Dlog4j.configuration=file:$UIMA_HOME/as_config/uimaAsLog4j.properties
 else
 #   Define a variable with an arbitrary no op value 
 	LOG4J_CONFIG_FILE=-DNoOp
