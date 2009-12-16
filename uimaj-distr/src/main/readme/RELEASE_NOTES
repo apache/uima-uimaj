@@ -281,6 +281,7 @@ Release Notes - UIMA - Version 2.3
     * [UIMA-1690] - After cleaning a document the outline view does not sync
     * [UIMA-1692] - add missing license headers to .project files etc. in uimaj-eclipse-... projects
     * [UIMA-1694] - Error 'scm url cannot be null' on uimaj POM
+    * [UIMA-1708] - Trailing blank following log property level causing problems with IBM Java 6
 
 ** Improvement
     * [UIMA-71] - New v2 features missing from tutorial chapters
