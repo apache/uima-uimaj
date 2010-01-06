@@ -63,6 +63,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
   /**
    * current class
    */
+  
   private static final Class<PrimitiveAnalysisEngine_impl> CLASS_NAME = PrimitiveAnalysisEngine_impl.class;
  
   private static final String [] X_UNSPECIFIED = new String [] {"x-unspecified"};
@@ -569,7 +570,15 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
           ((CASImpl)mInputCas).restoreClassLoaderUnlockCas();
         }
         return casAvailable;
-      } finally {
+      } catch (Exception e) {
+        ((CASImpl)mInputCas).restoreClassLoaderUnlockCas();
+        if (e instanceof AnalysisEngineProcessException) {
+          throw (AnalysisEngineProcessException) e;
+        }
+        throw new AnalysisEngineProcessException(e);
+      }
+ 
+      finally {
         exitProcess();
       }
     }
@@ -595,6 +604,8 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
           // cas.setParentID(mOriginalCas.getID());
           return cas;
         } catch (Exception e) {
+          ((CASImpl)mInputCas).restoreClassLoaderUnlockCas();
+          
           if (e instanceof AnalysisEngineProcessException) {
             throw (AnalysisEngineProcessException) e;
           }
