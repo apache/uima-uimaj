@@ -1720,10 +1720,11 @@ Exception: Connection refused: connect</programlisting>
       <emphasis>MBeans</emphasis> that provide access to the performance statistics.</para>
     
     <para>Note: The Sun JVM supports local monitoring; for others you can configure your
-+      application for remote monitoring (even when on the same host) by specifying a unique port number, e.g.
-+      <literal>-Dcom.sun.management.jmxremote.port=1098
-+      -Dcom.sun.management.jmxremote.authenticate=false
-+      -Dcom.sun.management.jmxremote.ssl=false</literal></para>
+      application for remote monitoring (even when on the same host) by specifying a unique port number, e.g.
+      <literal>
+      -Dcom.sun.management.jmxremote.port=1098
+      -Dcom.sun.management.jmxremote.authenticate=false
+      -Dcom.sun.management.jmxremote.ssl=false</literal></para>
     
     <para>Now, you can use any JMX client to view the statistics. JDK 5.0 or later provides a standard client that you can use.
       Simply open a command prompt, make sure the JDK <literal>bin</literal> directory is in your path, and
