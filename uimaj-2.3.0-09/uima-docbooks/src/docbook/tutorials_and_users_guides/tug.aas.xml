@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd"[
+<!ENTITY % uimaents SYSTEM "../entities.ent" >  
+%uimaents;
+]>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<chapter id="ugr.tug.aas">
+  <title>Annotations, Artifacts, and Sofas</title>
+  <titleabbrev>Annotations, Artifacts &amp; Sofas</titleabbrev>
+  
+  <para>Up to this point, the documentation has focused on analyzing strings of Unicode text,
+    producing subtypes of Annotations which reference offsets in those strings. This
+    chapter generalizes this concept and shows how other kinds of artifacts can be handled,
+    including non-text things like audio and images, and how you can define your own kinds of
+    <quote>annotations</quote> for these.</para>
+  
+  <section id="ugr.tug.aas.terminology">
+    <title>Terminology</title>
+    
+    <section id="ugr.tug.aas.artifact">
+      <title>Artifact</title>
+      
+      <para>The Artifact is the unstructured thing being analyzed by an annotator. It could
+        be an HTML web page, an image, a video stream, a recorded audio conversation, an MPEG-4
+        stream, etc. Artifacts are often restructured in the course of processing to
+        facilitate particular kinds of analysis. For instance, an HTML page may be converted
+        into a <quote>de-tagged</quote> version. Annotators at different places in the
+        pipeline may be analyzing different versions of the artifact.</para>
+      
+    </section>
+    
+    <section id="ugr.tug.aas.sofa">
+      <title>Subject of Analysis &mdash; Sofa</title>
+      
+      <para>Each representation of an Artifact is called a Subject of Analysis, abbreviated
+        using the acronym <quote>Sofa</quote> which stands for <emphasis
+          role="underline">S</emphasis>ubject <emphasis role="underline">
+        OF</emphasis> <emphasis role="underline">A</emphasis>nalysis. Annotation
+        metadata, which have explicit designations of sub-regions of the artifact to which
+        they apply, are always associated with a particular Sofa. For instance, an
+        annotation over text specifies two features, the begin and end, which represent the
+        character offsets into the text string Sofa being analyzed.</para>
+      
+      <para>Other examples of representations of Artifacts, which could be Sofas include:
+        An HTML web page, a detagged web page, the translated text of that document, an audio or
+        video stream, closed-caption text from a video stream, etc.</para>
+      
+      <para>Often, there is one Sofa being analyzed in a CAS. The next chapter will show how
+        UIMA facilitates working with multiple representations of an artifact at the same
+        time, in the same CAS.</para>
+      
+    </section>
+  </section>
+  
+  <section id="ugr.tug.aas.sofa_data_formats">
+    <title>Formats of Sofa Data</title>
+    
+    <para>Sofa data can be Java Unicode Strings, Feature Structure arrays of primitive
+      types, or a URI which references remote data available via a network
+      connection.</para>
+    
+    <para>The arrays of primitive types can be things like byte arrays or float arrays, and are
+      intended to be used for artifacts like audio data, image data, etc.</para>
+    
+    <para>The URI form holds a URI specification String.</para>
+    
+    <note><para>Sofa data can be "serialized" using an XML format; when it is, the String data 
+      being serialized must not include invalid XML characters.  See
+      <xref linkend="ugr.tug.xmi_emf.xml_character_issues"/>.
+      </para></note>
+    
+  </section>
+  
+  <section id="ugr.tug.aas.setting_accessing_sofa_data">
+    <title>Setting and Accessing Sofa Data</title>
+    
+    <section id="ugr.tug.aas.setting_sofa_data">
+      <title>Setting Sofa Data</title>
+      
+      <para>When a CAS is created, you can set its Sofa Data, just one time; this property
+        insures that metadata describing regions of the Sofa remain valid. As a consequence,
+        the following methods that set data for a given Sofa can only be called once for a given
+        Sofa.</para>
+      
+      <para>The following methods on the CAS set the Sofa Data to one of the 3 formats. Assume
+        that the variable <quote>aCas</quote> holds a reference to a CAS:</para>
+      
+      
+      <programlisting><?db-font-size 80% ?>aCas.<emphasis role="bold">setSofaDataString</emphasis>(document_text_string, mime_type_string);
+aCas.<emphasis role="bold">setSofaDataArray</emphasis>(feature_structure_primitive_array, mime_type_string);
+aCas.<emphasis role="bold">setSofaDataURI</emphasis>(uri_string, mime_type_string);</programlisting>
+      
+      <para>In addition, the method
+        <literal>aCas.setDocumentText(document_text_string)</literal> may still be
+        used, and is equivalent to <literal>setSofaDataString(string,
+        "text")</literal>. The mime type is currently not used by the UIMA framework, but may
+        be set and retrieved by user code.</para>
+      
+      <para>Feature Structure primitive arrays are all the UIMA Array types except arrays of
+        Feature Structures, Strings, and Booleans. Typically, these are arrays of bytes,
+        but can be other types, such as floats, longs, etc.</para>
+      
+      <para>The URI string should conform to the standard URI format.</para>
+      
+    </section>
+    
+    <section id="ugr.tug.aas.accessing_sofa_data">
+      <title>Accessing Sofa Data</title>
+      
+      <para>The analysis algorithms typically work with the Sofa data. The following
+        methods on the CAS access the Sofa Data:</para>
+      
+      
+      <programlisting>String           aCas.getDocumentText();
+String           aCas.getSofaDataString();
+FeatureStructure aCas.getSofaDataArray();
+String           aCas.getSofaDataURI();
+String           aCas.getSofaMimeType();</programlisting>
+      
+      <para>The <literal>getDocumentText</literal> and
+        <literal>getSofaDataString</literal> return the same text string. The
+        <literal>getSofaDataURI</literal> returns the URI itself, not the data the URI is
+        pointing to. You can use standard Java I/O capabilities to get the data associated
+        with the URI, or use the UIMA Framework Streaming method described next.</para>
+      
+    </section>
+    
+    <section id="ugr.tug.aas.accessing_sofa_data_using_java_stream">
+      <title>Accessing Sofa Data using a Java Stream</title>
+      
+      <para>The framework provides a consistent method for accessing the Sofa data,
+        independent of it being stored locally, or accessed remotely using the URI. Get a Java
+        InputStream instance from the Sofa data using:</para>
+      
+      
+      <programlisting>InputStream inputStream = aCas.getSofaDataStream();</programlisting>
+      
+      <itemizedlist spacing="compact"><listitem><para>If the data is local, this method
+        returns a ByteArrayInputStream. This stream provides bytes.
+        
+        <itemizedlist><listitem><para>If the Sofa data was set using setDocumentText or
+          setSofaDataString, the String is converted to bytes by using the UTF-8
+          encoding.</para></listitem>
+          
+          <listitem><para>If the Sofa data was set as a DataArray, the bytes in the data array
+            are serialized, high-byte first. </para></listitem></itemizedlist>
+        </para></listitem>
+        
+        <listitem><para>If the Sofa data was specified as a URI, this method returns the
+          handle from url.openStream(). Java offers built-in support for several URI
+          schemes including <quote>FILE:</quote>, <quote>HTTP:</quote>,
+          <quote>FTP:</quote> and has an extensible mechanism,
+          <literal>URLStreamHandlerFactory</literal>, for customizing access to an
+          arbitrary URI. See more details at <ulink
+            url="http://java.sun.com/j2se/1.5.0/docs/api/java/net/URLStreamHandlerFactory.html"/>
+          . </para></listitem></itemizedlist>
+      
+    </section>
+  </section>
+  
+  <section id="ugr.tug.aas.sofa_fs">
+    <title>The Sofa Feature Structure</title>
+    
+    <para>Information about a Sofa is contained in a special built-in Feature Structure of
+      type <literal>uima.cas.Sofa</literal>. This feature structure is created and
+      managed by the UIMA Framework; users must not create it directly. Although these Sofa
+      type instances are implemented as standard feature structures, <emphasis>generic
+      CAS APIs can not be used to create Sofas or set their features</emphasis>. Instead,
+      Sofas are created implicitly by the creation of new CAS views. Similarly, Sofa features
+      are set by CAS methods such as <literal>cas.setDocumentText()</literal>.</para>
+    
+    <para>Features of the Sofa type include</para>
+    
+    <itemizedlist><listitem><para>SofaID: Every Sofa in a CAS has a unique SofaID. SofaIDs
+      are the primary handle for access. This ID is often the same as the name string given to the
+      Sofa by the developer, but it can be mapped to a different name (see <olink
+        targetdoc="&uima_docs_tutorial_guides;"
+        targetptr="ugr.tug.mvs.sofa_name_mapping"/>.</para></listitem>
+      
+      <listitem><para>Mime type: This string feature can be used to describe the type of the
+        data represented by a Sofa. It is not used by the framework; the framework provides
+        APIs to set and get its value.</para></listitem>
+      
+      <listitem><para>Sofa Data: The Sofa data itself. This data can be resident in the CAS or
+        it can be a reference to data outside the CAS. </para></listitem></itemizedlist>
+    
+  </section>
+  
+  <section id="ugr.tug.aas.annotations">
+    <title>Annotations</title>
+    
+    <para>Annotators add meta data about a Sofa to the CAS. It is often useful to have this
+      metadata denote a region of the Sofa to which it applies. For instance, assuming the Sofa
+      is a String, the metadata might describe a particular substring as the name of a person.
+      The built-in UIMA type, uima.tcas.Annotation, has two extra features that enable this
+      - the begin and end features - which denote a character position offset into the text
+      string being analyzed.</para>
+    
+    <para>The concept of <quote>annotations</quote> can be generalized for non-string
+      kinds of Sofas. For instance, an audio stream might have an audio annotation which
+      describes sounds regions in terms of floating point time offsets in the Sofa. An image
+      annotation might use two pairs of x,y coordinates to define the region the annotation
+      applies to.</para>
+    
+    <section id="ugr.tug.aas.built_in_annotation_types">
+      <title>Built-in Annotation types</title>
+      
+      <para>The built-in CAS type, <literal>uima.tcas.Annotation</literal>, is just one
+        kind of definition of an Annotation. It was designed for annotating text strings, and
+        has begin and end features which describe which substring of the Sofa being
+        annotated.</para>
+      
+      <para>For applications which have other kinds of Sofas, the UIMA developer will design
+        their own kinds of Annotation types, as needed to describe an annotation, by
+        declaring new types which are subtypes of
+        <literal>uima.cas.AnnotationBase</literal>. For instance, for images, you
+        might have the concept of a rectangular region to which the annotation applies. In
+        this case, you might describe the region with 2 pairs of x, y coordinates.</para>
+      
+    </section>
+    
+    <section id="ugr.tug.aas.annotations_associated_sofa">
+      <title>Annotations have an associated Sofa</title>
+      
+      <para>Annotations are always associated with a particular Sofa. In subsequent
+        chapters, you will learn how there can be multiple Sofas associated with an artifact;
+        which Sofa an annotation refers to is described by the Annotation feature structure
+        itself.</para>
+      
+      <para>All annotation types extend from the built-in type uima.cas.AnnotationBase.
+        This type has one feature, a reference to the Sofa associated with the annotation.
+        This value is currently used by the Framework to support the getCoveredText() method
+        on the annotation instance - this returns the portion of a text Sofa that the
+        annotation spans. It also is used to insure that the Annotation is indexed only in the
+        CAS View associated with this Sofa.</para>
+    </section>
+  </section>
+  
+  <section id="ugr.tug.aas.annotationbase">
+    <title>AnnotationBase</title>
+    
+    <para>A built-in type, <literal>uima.cas.AnnotationBase</literal>, is provided by
+      UIMA to allow users to extend the Annotation capabilities to different kinds of
+      Annotations. The <literal>AnnotationBase</literal> type has one feature, named
+      <literal>sofa</literal>, which holds a reference to the
+      <literal>Sofa</literal> feature structure with which this annotation is associated. 
+      The <literal>sofa</literal> feature is automatically set when creating an annotation 
+      (meaning &mdash; any type derived from the built-in 
+      <literal>uima.cas.AnnotationBase</literal> type); it should not be set by the user.</para>
+    
+    <para>There is one method, <literal>getView</literal>(), provided by
+      <literal>AnnotationBase</literal> that returns the CAS View for the Sofa the
+      annotation is pointing at. Note that this method always returns a CAS, even when applied
+      to JCas annotation instances.</para>
+    
+    <para>The built-in type <literal>uima.tcas.Annotation</literal> extends
+      <literal>uima.cas.AnnotationBase</literal> and adds two features, a begin and an
+      end feature, which are suitable for identifying a span in a text string that the
+      annotation applies to. Users may define other extensions to
+      <literal>AnnotationBase</literal> with alternative specifications that can
+      denote a particular region within the subject of analysis, as appropriate to their
+      application.</para>
+    
+  </section>
+</chapter>
