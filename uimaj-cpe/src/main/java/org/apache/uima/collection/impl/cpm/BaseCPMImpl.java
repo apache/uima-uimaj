@@ -514,7 +514,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
       // Notify all listeners that the CPM has finished processing
       for (int j = 0; j < statusCbL.size(); j++) {
         BaseStatusCallbackListener st = (BaseStatusCallbackListener) statusCbL.get(j);
-        if (st instanceof StatusCallbackListener) {
+        if (st != null && st instanceof StatusCallbackListener) {
           ((StatusCallbackListener) st).entityProcessComplete(null, enProcSt);
         }
       }
@@ -533,10 +533,12 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
     // Notify all listeners that the CPM has finished processing
     for (int j = 0; j < statusCbL.size(); j++) {
       BaseStatusCallbackListener st = (BaseStatusCallbackListener) statusCbL.get(j);
-      if (!killed) {
-        st.collectionProcessComplete();
-      } else {
-        st.aborted();
+      if ( st != null ) {
+        if (!killed) {
+          st.collectionProcessComplete();
+        } else {
+          st.aborted();
+        }
       }
     }
   }
