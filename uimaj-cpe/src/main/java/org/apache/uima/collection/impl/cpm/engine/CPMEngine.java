@@ -424,7 +424,9 @@ public class CPMEngine extends Thread {
    * @see org.apache.uima.collection.base_cpm.BaseCPM#addStatusCallbackListener(org.apache.uima.collection.base_cpm.BaseStatusCallbackListener)
    */
   public void addStatusCallbackListener(BaseStatusCallbackListener aListener) {
-    statusCbL.add(aListener);
+    if ( aListener != null ) {
+      statusCbL.add(aListener);
+    }
   }
 
   /**
@@ -1706,7 +1708,7 @@ public void asynchStop() {
     // Notify all listeners that the CPM has finished processing
     for (int j = 0; statusCbL != null && j < statusCbL.size(); j++) {
       BaseStatusCallbackListener st = (BaseStatusCallbackListener) statusCbL.get(j);
-      if (st instanceof StatusCallbackListener) {
+      if (st != null && st instanceof StatusCallbackListener) {
         ((StatusCallbackListener) st).entityProcessComplete(null, enProcSt);
       }
     }
@@ -3465,13 +3467,15 @@ public void asynchStop() {
    * @param eps entity process status
    */
   public static void callEntityProcessCompleteWithCAS(StatusCallbackListener statCL, CAS cas, EntityProcessStatus eps) {
-    try {
-      if (null != cas)
-        ((CASImpl)cas).switchClassLoaderLockCas(statCL);
-      statCL.entityProcessComplete(cas, eps);
-    } finally {
-      if (null != cas) 
-        ((CASImpl)cas).restoreClassLoaderUnlockCas();
+    if ( statCL != null ) {
+      try {
+        if (null != cas)
+          ((CASImpl)cas).switchClassLoaderLockCas(statCL);
+        statCL.entityProcessComplete(cas, eps);
+      } finally {
+        if (null != cas) 
+          ((CASImpl)cas).restoreClassLoaderUnlockCas();
+      }
     }
   }  
   
