@@ -880,12 +880,14 @@ public class ArtifactProducer extends Thread {
   private void notifyListeners(CAS aCas, Exception anException) {
     for (int i = 0; callbackListeners != null && i < callbackListeners.size(); i++) {
       StatusCallbackListener statCL = (StatusCallbackListener) callbackListeners.get(i);
-      ProcessTrace prTrace = new ProcessTrace_impl(cpm.getPerformanceTuningSettings());
-      EntityProcessStatusImpl aEntityProcStatus = new EntityProcessStatusImpl(prTrace);
-      aEntityProcStatus.addEventStatus("Collection Reader Failure", "failed", anException);
-      // Notify the listener that the Cas has been processed
-      CPMEngine.callEntityProcessCompleteWithCAS(statCL, aCas, aEntityProcStatus);
-//      statCL.entityProcessComplete(aCas, aEntityProcStatus);
+      if ( statCL != null ) {
+        ProcessTrace prTrace = new ProcessTrace_impl(cpm.getPerformanceTuningSettings());
+        EntityProcessStatusImpl aEntityProcStatus = new EntityProcessStatusImpl(prTrace);
+        aEntityProcStatus.addEventStatus("Collection Reader Failure", "failed", anException);
+        // Notify the listener that the Cas has been processed
+        CPMEngine.callEntityProcessCompleteWithCAS(statCL, aCas, aEntityProcStatus);
+//        statCL.entityProcessComplete(aCas, aEntityProcStatus);
+      }
     }
   }
 
