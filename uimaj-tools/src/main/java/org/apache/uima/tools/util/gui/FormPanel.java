@@ -120,7 +120,7 @@ public class FormPanel extends JPanel {
       if (i == 0)
         sb.append(String.valueOf(c).toUpperCase());
       else {
-        if (c > 'A' && c < 'Z')
+        if (c >= 'A' && c <= 'Z')
           sb.append(" ");
 
         sb.append(c);
