@@ -82,7 +82,7 @@ public interface BaseCPM {
 
   /**
    * Gets the <code>CasProcessors</code>s assigned to this CPM, in the order in which they will
-   * be caleld by the CPM.
+   * be called by the CPM.
    * 
    * @return an array of <code>CasProcessor</code>s
    */
