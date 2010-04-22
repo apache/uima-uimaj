@@ -18,38 +18,46 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<!-- groupId omitted - inherited from parent -->
+
+  <parent>
+    <groupId>org.apache.uima</groupId>
+    <artifactId>parent-pom-uimaj-eclipse-plugins</artifactId>
+    <version>1-SNAPSHOT</version>
+  </parent>
+  
 	<artifactId>uimaj-ep-cas-editor</artifactId>
+  <version>2.3.1.SNAPSHOT</version>
 	<packaging>bundle</packaging>
-	<!-- version omitted - inherited from parent-->
-	<name>Apache UIMA Cas Editor Eclipse Plugin</name>
-	<url>http://incubator.apache.org/uima</url>
-	<licenses>
-		<license>
-			<name>The Apache Software License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
-	<scm>
-		<url>http://svn.apache.org/viewvc/incubator/uima</url>
-	</scm>
-	<parent>
-		<groupId>org.apache.uima</groupId>
-		<artifactId>uimaj-eclipse-plugins</artifactId>
-		<version>2.3.0.incubating</version> <!-- this comment is a flag for changeVersion -->
-    <relativePath>../uimaj/eclipse-plugin-superPom</relativePath>
-	</parent>
-	
-	<repositories>
-		<repository>
-			<id>ApacheIncubatorRepository</id>
-			<url>
-				http://people.apache.org/repo/m2-incubating-repository
-			</url>
-		</repository>
-	</repositories>	
-	
+	<name>UIMA Eclipse: ${artifactId}</name>
+  <description>Allows editing the contents of a saved CAS</description>
+  <url>${uimaWebsiteUrl}</url>
+  
+  <!-- Special inheritance note
+       even though the <scm> element that follows is exactly the 
+       same as those in super poms, it cannot be inherited because 
+       there is some special code that computes the connection elements
+       from the chain of parent poms, if this is omitted. 
+       
+       Keeping this a bit factored allows cutting/pasting the <scm>
+       element, and just changing the following two properties -->  
+  <scm>
+    <connection>
+      scm:svn:http://svn.apache.org/repos/asf/uima/${uimaScmRoot}/trunk/${uimaScmProject}
+    </connection>
+    <developerConnection>
+      scm:svn:https://svn.apache.org/repos/asf/uima/${uimaScmRoot}/trunk/${uimaScmProject}
+    </developerConnection>
+    <url>
+      http://svn.apache.org/viewvc/uima/${uimaScmRoot}/trunk/${uimaScmProject}
+    </url>
+  </scm>
+  
+  <properties>
+    <uimaScmRoot>uimaj</uimaScmRoot>
+    <uimaScmProject>${project.artifactId}</uimaScmProject>
+    <uimaDependencyVersion>2.3.1-SNAPSHOT</uimaDependencyVersion>
+  </properties>
+  		
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -66,14 +74,14 @@
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-core</artifactId>
-			<version>${uimaj-release-version}</version>
+			<version>${uimaDependencyVersion}</version>
 			<scope>compile</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-tools</artifactId>
-			<version>${uimaj-release-version}</version>
+			<version>${uimaDependencyVersion}</version>
 			<scope>compile</scope>
 		</dependency>
 
@@ -103,7 +111,11 @@
 		<dependency>
 			<groupId>org.eclipse.swt</groupId>
 			<artifactId>org.eclipse.swt.win32.win32.x86</artifactId>
-			<version>[3.3.0.0,4.0.0)</version>
+      <!-- changing the lower version number to 3.2.0, 
+           was 3.3.0 
+           because only 3.2.0 and 3.2.1 are in 
+           repo -->
+			<version>[3.2.0.0,4.0.0)</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -117,7 +129,11 @@
 		<dependency>
 			<groupId>org.eclipse.ui</groupId>
 			<artifactId>views</artifactId>
-			<version>[3.3.0.0,4.0.0)</version>
+      <!-- changing the lower version number to 3.2.0, 
+        was 3.3.0 
+        because only 3.2.0 and 3.2.1 are in 
+        repo -->
+			<version>[3.2.0.0,4.0.0)</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -137,8 +153,8 @@
 	</dependencies>
 
 	<build>
-		<finalName>org.apache.uima.caseditor_${uimaj-release-eclipse-version}</finalName>
-		<resources>
+		<finalName>org.apache.uima.caseditor_${version}</finalName>
+		<!--resources>
 			<resource>
 				<targetPath>icons</targetPath>
 				<directory>${basedir}/icons</directory>
@@ -150,15 +166,12 @@
         	<resource>
 				<directory>${basedir}/src/main/resources</directory>
         	</resource>
-        </resources>
+        </resources-->
 		
 		<plugins>
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
-				<!-- version 1.4.0 to support _nouses instruction -->
-				<version>2.0.0</version>
-				<extensions>true</extensions>
 				<configuration>
 					<manifestLocation>META-INF</manifestLocation>
 					<instructions>
@@ -197,6 +210,22 @@
 					</instructions>
 				</configuration>
 			</plugin>
+      
+      <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>default-cli</id>
+            <configuration>
+              <excludes>
+                <exclude>src/test/resources/ManualTests/*</exclude> <!-- test data -->
+              </excludes>              
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>   
+      
 		</plugins>
 	</build>
 </project>
