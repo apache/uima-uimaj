@@ -21,18 +21,20 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.apache.uima</groupId>
+  
+  <parent>
+    <groupId>org.apache.uima</groupId>
+    <artifactId>parent-pom-uimaj</artifactId>
+    <version>1-SNAPSHOT</version>
+  </parent>
+
 	<artifactId>uimaj-bootstrap</artifactId>
 	<packaging>jar</packaging>
-	<version>${uimaj-release-version}</version>
-	<name>Apache UIMA Bootstrap launcher</name>
-
-	<parent>
-		<groupId>org.apache.uima</groupId>
-		<artifactId>uimaj</artifactId>
-		<version>2.3.0-incubating</version> <!-- this comment is a flag for changeVersion -->
-    <relativePath>../uimaj</relativePath>
-	</parent>
+	<version>2.3.1-SNAPSHOT</version>
+	<name>UIMA Base: ${artifactId}: Bootstrap launcher</name>
+  <description>Configures a classpath from directories, and runs
+    a Java application using that</description>
+  <url>${uimaWebsiteUrl}</url>
   
   <build>
     <plugins>
@@ -42,13 +44,7 @@
         <configuration>
           <archive>
             <manifestEntries>
-              <Project-Title>Apache UIMA</Project-Title>
-              <Implementation-Title>${pom.name}</Implementation-Title>
-              <Implementation-Version>${pom.version}</Implementation-Version>
-              <Implementation-Vendor>Apache Software Foundation</Implementation-Vendor>
-              <Implementation-Url>${pom.url}</Implementation-Url>
-              <Implementation-License>http://www.apache.org/licenses/LICENSE-2.0.txt</Implementation-License>
-              <Build-Date>${buildNumber}</Build-Date>
+              <!-- other normal entries included by default -->
               <Main-Class>org.apache.uima.bootstrap.UimaBootstrap</Main-Class>
             </manifestEntries>
           </archive>

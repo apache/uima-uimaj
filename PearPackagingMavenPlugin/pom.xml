@@ -20,28 +20,58 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.apache.uima</groupId>
-	<artifactId>PearPackagingMavenPlugin</artifactId>
-	<packaging>maven-plugin</packaging>
-	<version>${uimaj-release-version}</version>
-	<name>Apache UIMA - PearPackagingMavenPlugin</name>
-
- 	<parent>
-		<groupId>org.apache.uima</groupId>
-		<artifactId>uimaj</artifactId>
-		<version>2.3.0-incubating</version> <!-- this comment is a flag for changeVersion -->
-    <relativePath>../uimaj</relativePath>
-	</parent>
   
+  <parent>
+    <groupId>org.apache.uima</groupId>
+    <artifactId>parent-pom-uimaj</artifactId>
+    <version>1-SNAPSHOT</version>
+  </parent>
+  
+	<artifactId>PearPackagingMavenPlugin</artifactId>
+  <version>2.3.1-SNAPSHOT</version>
+	<packaging>maven-plugin</packaging>
+	<name>UIMA Maven Plugin ${artifactId}</name>
+  <description>This is a maven plugin that produces a pear artifact.</description>
+  <url>${uimaWebsiteUrl}</url>
+
+
+  <!-- Special inheritance note
+       even though the <scm> element that follows is exactly the 
+       same as those in super poms, it cannot be inherited because 
+       there is some special code that computes the connection elements
+       from the chain of parent poms, if this is omitted. 
+       
+       Keeping this a bit factored allows cutting/pasting the <scm>
+       element, and just changing the following two properties -->  
+  <scm>
+    <connection>
+      scm:svn:http://svn.apache.org/repos/asf/uima/${uimaScmRoot}/trunk/${uimaScmProject}
+    </connection>
+    <developerConnection>
+      scm:svn:https://svn.apache.org/repos/asf/uima/${uimaScmRoot}/trunk/${uimaScmProject}
+    </developerConnection>
+    <url>
+      http://svn.apache.org/viewvc/uima/${uimaScmRoot}/trunk/${uimaScmProject}
+    </url>
+  </scm>
+  
+  <properties>
+    <uimaScmRoot>uimaj</uimaScmRoot>
+    <uimaScmProject>${project.artifactId}</uimaScmProject>
+    <uimaDependencyVersion>2.3.1-SNAPSHOT</uimaDependencyVersion>
+  </properties>
+  
+
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-plugin-api</artifactId>
-			<version>2.0</version>
+      <version>2.2.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-core</artifactId>
+      <version>${uimaDependencyVersion}</version>
 		</dependency>
 		
 		<dependency>

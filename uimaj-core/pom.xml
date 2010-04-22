@@ -21,40 +21,58 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.apache.uima</groupId>
+  
+  <parent>
+    <groupId>org.apache.uima</groupId>
+    <artifactId>parent-pom-uimaj-ibm-notice</artifactId>
+    <version>1-SNAPSHOT</version>
+  </parent>
+  
 	<artifactId>uimaj-core</artifactId>
 	<packaging>jar</packaging>
-	<version>${uimaj-release-version}</version>
-	<name>Apache UIMA Java Framework Core</name>
-	<url>http://incubator.apache.org/uima</url>
-	<licenses>
-		<license>
-			<name>The Apache Software License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
+	<version>2.3.1-SNAPSHOT</version>
+	<name>UIMA Base: ${artifactId}</name>
+  <description>The core implementation of the UIMA Java Framework</description>
+  <url>${uimaWebsiteUrl}</url>
+
+  <!-- Special inheritance note
+       even though the <scm> element that follows is exactly the 
+       same as those in super poms, it cannot be inherited because 
+       there is some special code that computes the connection elements
+       from the chain of parent poms, if this is omitted. 
+       
+       Keeping this a bit factored allows cutting/pasting the <scm>
+       element, and just changing the following two properties -->  
   <scm>
-    <url>http://svn.apache.org/viewvc/incubator/uima</url>
-  </scm>    
-	<parent>
-		<groupId>org.apache.uima</groupId>
-		<artifactId>uimaj</artifactId>
-		<version>2.3.0-incubating</version> <!-- this comment is a flag for changeVersion -->
-    <relativePath>../uimaj</relativePath>
-	</parent>
+    <connection>
+      scm:svn:http://svn.apache.org/repos/asf/uima/${uimaScmRoot}/trunk/${uimaScmProject}
+    </connection>
+    <developerConnection>
+      scm:svn:https://svn.apache.org/repos/asf/uima/${uimaScmRoot}/trunk/${uimaScmProject}
+    </developerConnection>
+    <url>
+      http://svn.apache.org/viewvc/uima/${uimaScmRoot}/trunk/${uimaScmProject}
+    </url>
+  </scm>
+  
+  <properties>
+    <uimaScmRoot>uimaj</uimaScmRoot>
+    <uimaScmProject>${project.artifactId}</uimaScmProject>
+    <uimaDependencyVersion>2.3.1-SNAPSHOT</uimaDependencyVersion>
+  </properties>
+  
 	<dependencies>
-	    <dependency>
-	      <groupId>log4j</groupId>
-	      <artifactId>log4j</artifactId>
-	      <version>1.2.8</version>
-	      <scope>provided</scope>
-        <optional>true</optional>
-	    </dependency>
+	  <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.8</version>
+      <scope>provided</scope>
+      <optional>true</optional>
+    </dependency>
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-test-util</artifactId>
-			<version>${uimaj-release-version}</version>
+			<version>${uimaDependencyVersion}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -68,7 +86,25 @@
           <!-- testing on 64 bit Linux requires larger heap -->
 					<argLine>-Xmx650M</argLine>
 				</configuration>
-			</plugin>		
+			</plugin>
+      <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>default-cli</id>
+            <configuration>
+              <excludes>
+                <exclude>src/test/resources/CASTests/*.txt</exclude> <!-- test data -->
+                <exclude>src/test/resources/data/moby.txt</exclude>
+                <exclude>src/test/resources/org/apache/uima/resource/impl/ResourceInClasspath.txt</exclude> <!-- test data -->
+                <exclude>src/test/resources/pearTests/*.pear</exclude> <!-- test pear files -->
+                <exclude>src/test/resources/SequencerTest/*.txt</exclude> <!-- test data -->
+              </excludes>              
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>		
 		</plugins>
 	</build>
 </project>
