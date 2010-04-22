@@ -1,0 +1,84 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one
+   or more contributor license agreements.  See the NOTICE file
+   distributed with this work for additional information
+   regarding copyright ownership.  The ASF licenses this file
+   to you under the Apache License, Version 2.0 (the
+   "License"); you may not use this file except in compliance
+   with the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied.  See the License for the
+   specific language governing permissions and limitations
+   under the License.    
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+  
+  <parent>
+    <groupId>org.apache.uima</groupId>
+    <artifactId>parent-pom-uimaj</artifactId>
+    <version>1-SNAPSHOT</version>
+  </parent>
+
+	<artifactId>aggregate-pom-uimaj</artifactId>
+	<packaging>pom</packaging>
+	<version>2.3.1-SNAPSHOT</version>
+	<name>UIMA Aggregate POM ${artifactId}: UIMA Base</name>
+  <description>The aggregate for the base UIMA framework build and release</description>
+  <url>${uimaWebsiteUrl}</url>
+
+  <!-- Special inheritance note
+       even though the <scm> element that follows is exactly the 
+       same as those in super poms, it cannot be inherited because 
+       there is some special code that computes the connection elements
+       from the chain of parent poms, if this is omitted. 
+       
+       Keeping this a bit factored allows cutting/pasting the <scm>
+       element, and just changing the following two properties -->  
+  <scm>
+    <connection>
+      scm:svn:http://svn.apache.org/repos/asf/uima/${uimaScmRoot}/trunk/${uimaScmProject}
+    </connection>
+    <developerConnection>
+      scm:svn:https://svn.apache.org/repos/asf/uima/${uimaScmRoot}/trunk/${uimaScmProject}
+    </developerConnection>
+    <url>
+      http://svn.apache.org/viewvc/uima/${uimaScmRoot}/trunk/${uimaScmProject}
+    </url>
+  </scm>
+  
+  <properties>
+    <uimaScmRoot>uimaj</uimaScmRoot>
+    <uimaScmProject>${project.artifactId}</uimaScmProject>
+    <uimaDependencyVersion>2.3.1-SNAPSHOT</uimaDependencyVersion>
+  </properties>
+  
+  <modules>
+    <module>../uimaj-core</module>
+    <module>../uimaj-cpe</module>
+    <module>../uimaj-examples</module>
+    <module>../uimaj-tools</module>
+    <module>../uimaj-adapter-vinci</module>
+    <module>../uimaj-adapter-soap</module>
+    <module>../uimaj-test-util</module>
+    <module>../uimaj-component-test-util</module>
+    <module>../jVinci</module>
+    <module>../aggregate-pom-uimaj-eclipse-plugins</module>
+    <!--module>distr-superPom</module-->
+    <module>../uimaj-document-annotation</module>
+    <module>../PearPackagingMavenPlugin</module>
+    <!-- the internal tools project is not part of any release 
+         and can't be built automatically - to build it,
+         cd to the project directory and do mvn install -->
+    <!--module>../uimaj-internal-tools</module-->
+    <module>../uimaj-bootstrap</module>    
+  </modules>  
+</project>
