@@ -21,28 +21,47 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-  <!-- groupId omitted - inherited from parent -->
+  
+  <parent>
+    <groupId>org.apache.uima</groupId>
+    <artifactId>parent-pom-uimaj-ibm-notice</artifactId>
+    <version>1-SNAPSHOT</version>
+  </parent>
+  
 	<artifactId>uimaj-ep-jcasgen</artifactId>
 	<packaging>bundle</packaging>
-  <!-- version omitted - inherited from parent-->
-	<name>Apache UIMA JCasGen Eclipse Plugin</name>
-	<url>http://incubator.apache.org/uima</url>
-	<licenses>
-		<license>
-			<name>The Apache Software License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
+  <version>2.3.1.SNAPSHOT</version>
+	<name>UIMA Eclipse: ${artifactId}</name>
+  <description>Provides a connection to the JCasGen tooling, for
+    the Component Descriptor Editor</description>
+  <url>${uimaWebsiteUrl}</url>
+  
+  <!-- Special inheritance note
+       even though the <scm> element that follows is exactly the 
+       same as those in super poms, it cannot be inherited because 
+       there is some special code that computes the connection elements
+       from the chain of parent poms, if this is omitted. 
+       
+       Keeping this a bit factored allows cutting/pasting the <scm>
+       element, and just changing the following two properties -->  
   <scm>
-    <url>http://svn.apache.org/viewvc/incubator/uima</url>
-  </scm>    
-	<parent>
-		<groupId>org.apache.uima</groupId>
-		<artifactId>uimaj-eclipse-plugins</artifactId>
-		<version>2.3.0.incubating</version> <!-- this comment is a flag for changeVersion -->
-    <relativePath>../uimaj/eclipse-plugin-superPom</relativePath>
-	</parent>
+    <connection>
+      scm:svn:http://svn.apache.org/repos/asf/uima/${uimaScmRoot}/trunk/${uimaScmProject}
+    </connection>
+    <developerConnection>
+      scm:svn:https://svn.apache.org/repos/asf/uima/${uimaScmRoot}/trunk/${uimaScmProject}
+    </developerConnection>
+    <url>
+      http://svn.apache.org/viewvc/uima/${uimaScmRoot}/trunk/${uimaScmProject}
+    </url>
+  </scm>
+  
+  <properties>
+    <uimaScmRoot>uimaj</uimaScmRoot>
+    <uimaScmProject>${project.artifactId}</uimaScmProject>
+    <uimaDependencyVersion>2.3.1-SNAPSHOT</uimaDependencyVersion>
+  </properties>
+  
 	<dependencies>
     <!-- UIMA dependencies -->
     <!-- don't depend on the runtime plugin, instead, 
@@ -57,14 +76,14 @@
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-core</artifactId>
-			<version>${uimaj-release-version}</version>
+			<version>${uimaDependencyVersion}</version>
 			<scope>compile</scope>
 		</dependency>
     		
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-tools</artifactId>
-			<version>${uimaj-release-version}</version>
+			<version>${uimaDependencyVersion}</version>
 			<scope>compile</scope>
 		</dependency>	
     
