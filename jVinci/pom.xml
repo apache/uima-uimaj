@@ -31,7 +31,7 @@
 	<artifactId>jVinci</artifactId>
 	<packaging>jar</packaging>
 	<version>2.3.1-SNAPSHOT</version>
-	<name>UIMA Base: ${artifactId}: Vinci Transport Library</name>
+	<name>UIMA Base: ${project.artifactId}: Vinci Transport Library</name>
   <description>This is a non-standard protocol for higher efficiency than
     SOAP, used by the base UIMA Collection processing manager for supporting
     networked deployment.  See UIMA-AS as a more modern alternative supporting

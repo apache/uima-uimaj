@@ -31,7 +31,7 @@
 	<artifactId>uimaj-examples</artifactId>
 	<packaging>jar</packaging>
 	<version>2.3.1-SNAPSHOT</version>
-	<name>UIMA Base: ${artifactId}: SDK Examples</name>
+	<name>UIMA Base: ${project.artifactId}: SDK Examples</name>
   <description>Examples and sample code</description>
   <url>${uimaWebsiteUrl}</url>
 

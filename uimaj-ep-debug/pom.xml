@@ -31,7 +31,7 @@
 	<artifactId>uimaj-ep-debug</artifactId>
   <version>2.3.1.SNAPSHOT</version>
 	<packaging>bundle</packaging> 
-	<name>UIMA Eclipse: ${artifactId}</name>
+	<name>UIMA Eclipse: ${project.artifactId}</name>
   <description>Adds structure knowledge for common
     UIMA data structures to the Eclipse Debug displays</description>
   <url>${uimaWebsiteUrl}</url>

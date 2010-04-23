@@ -31,7 +31,7 @@
   <artifactId>aggregate-pom-uimaj-eclipse-plugins</artifactId>
   <packaging>pom</packaging>
   <version>2.3.1-SNAPSHOT</version>
-  <name>UIMA Aggregate POM ${artifactId}</name>
+  <name>UIMA Aggregate POM ${project.artifactId}</name>
   <description>The aggregate for building the Eclipse plugins 
     that are part of the base UIMA framework</description>
   <url>${uimaWebsiteUrl}</url>

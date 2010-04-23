@@ -31,7 +31,7 @@
 	<artifactId>uimaj-cpe</artifactId>
 	<packaging>jar</packaging>
 	<version>2.3.1-SNAPSHOT</version>
-	<name>UIMA Base: ${artifactId}: Collection Processing Engine</name>
+	<name>UIMA Base: ${project.artifactId}: Collection Processing Engine</name>
   <description>The implementation of a simple scaleout capability, called
     the Collection Processing Engine.  New implementations may find 
     UIMA-AS a better scaleout mechanism.</description>

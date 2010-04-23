@@ -28,7 +28,7 @@
 	<artifactId>uimaj-ep-cas-editor</artifactId>
   <version>2.3.1.SNAPSHOT</version>
 	<packaging>bundle</packaging>
-	<name>UIMA Eclipse: ${artifactId}</name>
+	<name>UIMA Eclipse: ${project.artifactId}</name>
   <description>Allows editing the contents of a saved CAS</description>
   <url>${uimaWebsiteUrl}</url>
   
@@ -153,7 +153,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>org.apache.uima.caseditor_${version}</finalName>
+		<finalName>org.apache.uima.caseditor_${project.version}</finalName>
 		<!--resources>
 			<resource>
 				<targetPath>icons</targetPath>

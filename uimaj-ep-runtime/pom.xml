@@ -31,7 +31,7 @@
   <artifactId>uimaj-ep-runtime</artifactId>
   <version>2.3.1.SNAPSHOT</version>
   <packaging>bundle</packaging>
-  <name>UIMA Eclipse: ${artifactId}</name>
+  <name>UIMA Eclipse: ${project.artifactId}</name>
   <description>Provides the core UIMA Framework to other Eclipse 
     plugins for their use</description>
   <url>${uimaWebsiteUrl}</url>

@@ -31,7 +31,7 @@
 	<artifactId>aggregate-pom-uimaj</artifactId>
 	<packaging>pom</packaging>
 	<version>2.3.1-SNAPSHOT</version>
-	<name>UIMA Aggregate POM ${artifactId}: UIMA Base</name>
+	<name>UIMA Aggregate POM ${project.artifactId}: UIMA Base</name>
   <description>The aggregate for the base UIMA framework build and release</description>
   <url>${uimaWebsiteUrl}</url>
 

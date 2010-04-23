@@ -85,12 +85,12 @@
           
           <mainComponentDesc>
             <!-- PEAR file main component descriptor -->
-            desc/${artifactId}.xml
+            desc/${project.artifactId}.xml
           </mainComponentDesc>
           
           <componentId>
             <!-- PEAR file component ID -->
-            ${artifactId}
+            ${project.artifactId}
           </componentId>
           
           <datapath>
@@ -138,14 +138,14 @@
 						<code>&lt;mainComponentDesc></code>
 						  - This element specifies the relative path to the main component descriptor 
 						  that should be used to run the PEAR content. The path must be relative to the 
-						  project root. A good default to use is <code>desc/${artifactId}.xml</code>.
+						  project root. A good default to use is <code>desc/${project.artifactId}.xml</code>.
 					</para>
 				</listitem>
 				<listitem>
 					<para>
 						<code>&lt;componentID></code>
 						  - This element specifies the PEAR package component ID. A good default
-						  to use is <code>${artifactId}</code>.
+						  to use is <code>${project.artifactId}</code>.
 					</para>
 				</listitem>
 				<listitem>

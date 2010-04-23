@@ -31,7 +31,7 @@
 	<artifactId>uimaj-tools</artifactId>
 	<packaging>jar</packaging>
 	<version>2.3.1-SNAPSHOT</version>
-	<name>UIMA Base: ${artifactId}: Tools</name>
+	<name>UIMA Base: ${project.artifactId}: Tools</name>
   <description>Tooling supporting UIMA use</description>
   <url>${uimaWebsiteUrl}</url>
   

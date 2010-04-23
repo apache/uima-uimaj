@@ -31,7 +31,7 @@
 	<artifactId>uimaj-adapter-vinci</artifactId>
 	<packaging>jar</packaging>
 	<version>2.3.1-SNAPSHOT</version>
-	<name>UIMA Base: ${artifactId}: Vinci Adapter</name>
+	<name>UIMA Base: ${project.artifactId}: Vinci Adapter</name>
   <description>Provides the capability to connect to a remote analysis
     engine, using the Vinci protocol</description>
   <url>${uimaWebsiteUrl}</url>

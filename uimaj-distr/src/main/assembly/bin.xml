@@ -39,7 +39,7 @@ under the License.
     I need a separate dependency set for each module so that I can
     specify the jar file name.  If we didn't have this inconsistency
     we could have a single dependencySet that included all modules
-    and had an outputFileNameMapping of ${artifactId}.jar -->
+    and had an outputFileNameMapping of ${project.artifactId}.jar -->
     <dependencySet>
       <includes>
         <include>org.apache.uima:uimaj-bootstrap</include>

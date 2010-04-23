@@ -31,7 +31,7 @@
 	<artifactId>uimaj-bootstrap</artifactId>
 	<packaging>jar</packaging>
 	<version>2.3.1-SNAPSHOT</version>
-	<name>UIMA Base: ${artifactId}: Bootstrap launcher</name>
+	<name>UIMA Base: ${project.artifactId}: Bootstrap launcher</name>
   <description>Configures a classpath from directories, and runs
     a Java application using that</description>
   <url>${uimaWebsiteUrl}</url>

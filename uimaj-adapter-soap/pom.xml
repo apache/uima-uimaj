@@ -31,7 +31,7 @@
 	<artifactId>uimaj-adapter-soap</artifactId>
 	<packaging>jar</packaging>
 	<version>2.3.1-SNAPSHOT</version>
-	<name>UIMA Base: ${artifactId}: SOAP Adapter</name>
+	<name>UIMA Base: ${project.artifactId}: SOAP Adapter</name>
   <description>Provides the capability to connect to a remote
     component, using the SOAP protocol</description>
   <url>${uimaWebsiteUrl}</url>
