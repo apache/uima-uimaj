@@ -115,8 +115,7 @@ aCas.<emphasis role="bold">setSofaDataURI</emphasis>(uri_string, mime_type_strin
         be set and retrieved by user code.</para>
       
       <para>Feature Structure primitive arrays are all the UIMA Array types except arrays of
-        Feature Structures, Strings, and Booleans. Typically, these are arrays of bytes,
-        but can be other types, such as floats, longs, etc.</para>
+        Feature Structures and Booleans.</para>
       
       <para>The URI string should conform to the standard URI format.</para>
       
