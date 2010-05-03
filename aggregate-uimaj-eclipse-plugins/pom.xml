@@ -26,12 +26,13 @@
     <groupId>org.apache.uima</groupId>
     <artifactId>parent-pom-uimaj</artifactId>
     <version>1-SNAPSHOT</version>
+    <relativePath/>
   </parent>
 
-  <artifactId>aggregate-pom-uimaj-eclipse-plugins</artifactId>
+  <artifactId>aggregate-uimaj-eclipse-plugins</artifactId>
   <packaging>pom</packaging>
   <version>2.3.1-SNAPSHOT</version>
-  <name>UIMA Aggregate POM ${project.artifactId}</name>
+  <name>UIMA Aggregate: ${project.artifactId}</name>
   <description>The aggregate for building the Eclipse plugins 
     that are part of the base UIMA framework</description>
   <url>${uimaWebsiteUrl}</url>
