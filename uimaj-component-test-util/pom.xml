@@ -26,7 +26,7 @@
     <groupId>org.apache.uima</groupId>
     <artifactId>parent-pom-uimaj</artifactId>
     <version>1-SNAPSHOT</version>
-    <relativePath>../uimaj</relativePath>
+    <relativePath/>
   </parent>
   
 	<artifactId>uimaj-component-test-util</artifactId>

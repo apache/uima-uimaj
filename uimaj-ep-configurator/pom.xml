@@ -26,6 +26,7 @@
     <groupId>org.apache.uima</groupId>
     <artifactId>parent-pom-uimaj-eclipse-plugins-ibm-notice</artifactId>
     <version>1-SNAPSHOT</version>
+    <relativePath/>
   </parent>
 
   <artifactId>uimaj-ep-configurator</artifactId>

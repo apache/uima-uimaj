@@ -23,6 +23,7 @@
     <groupId>org.apache.uima</groupId>
     <artifactId>parent-pom-uimaj-eclipse-plugins</artifactId>
     <version>1-SNAPSHOT</version>
+    <relativePath/>
   </parent>
   
 	<artifactId>uimaj-ep-cas-editor</artifactId>
