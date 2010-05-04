@@ -32,7 +32,7 @@
 	<artifactId>uimaj-component-test-util</artifactId>
 	<packaging>jar</packaging>
 	<version>2.3.1-SNAPSHOT</version>
-	<name>UIMA Base: ${project.artifactId}: for JUnit Tests</name>
+	<name>UIMA Base: ${project.artifactId}: for JUnit</name>
   <description>Supporting utilities used in various JUnit tests</description>
   <url>${uimaWebsiteUrl}</url>
 
