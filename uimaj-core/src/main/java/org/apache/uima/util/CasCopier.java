@@ -280,10 +280,8 @@ public class CasCopier {
   }
 
   /**
-   * Returns whether the given FS has already been copied using this CasCopier.
-   * 
-   * @param aFS
-   * @return
+   * @param aFS a feature structure
+   * @return true if the given FS has already been copied using this CasCopier.
    */
   public boolean alreadyCopied(FeatureStructure aFS) {
     return mFsMap.containsKey(aFS);

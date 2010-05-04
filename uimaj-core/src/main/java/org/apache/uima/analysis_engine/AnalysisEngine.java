@@ -199,7 +199,7 @@ public interface AnalysisEngine extends ConfigurableResource, CasObjectProcessor
    * <p>
    * Note that the CAS allows multiple subjects of analysis (e.g. documents) and defines a separate
    * "view" for each of them. If your application wants to work with a single subject of analysis,
-   * call the method {@link CAS#getDefaultView()} and operate on the returned view.
+   * call the method {@link CAS#getCurrentView()} and operate on the returned view.
    * 
    * @return a new <code>CAS</code> appropriate for this AnalysisEngine.
    * 
@@ -215,7 +215,7 @@ public interface AnalysisEngine extends ConfigurableResource, CasObjectProcessor
    * {@link JCas} interface.
    * <p>
    * Note: the JCas that is returned is equivalent to what you would get if you called
-   * <code>newCAS().getDefaultView().getJCas()</code>. That is, this method returns a view of the
+   * <code>newCAS().getCurrentView().getJCas()</code>. That is, this method returns a view of the
    * default Sofa, NOT a Base CAS.
    * <p>
    * <b>Important:</b> CAS creation is expensive, so if at all possible an application should reuse

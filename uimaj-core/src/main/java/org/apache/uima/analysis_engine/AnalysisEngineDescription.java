@@ -100,7 +100,7 @@ public interface AnalysisEngineDescription extends ResourceCreationSpecifier {
    * Some of the methods on this class apply only to one type of AnalysisEngine:<br>
    * {@link #getAnnotatorImplementationName()} - primitive AnalysisEngine only<br>
    * {@link #getDelegateAnalysisEngineSpecifiers()} - aggregate AnalysisEngine only<br>
-   * {@link #getFlowController()} - aggregate AnalysisEngine only<br>
+   * {@link #getFlowControllerDeclaration()} - aggregate AnalysisEngine only<br>
    * <p>
    * 
    * @return true if and only if the AnalysisEngine is primitive
@@ -245,7 +245,7 @@ public interface AnalysisEngineDescription extends ResourceCreationSpecifier {
    * Note that the Map returned by this method will never contain
    * {@link org.apache.uima.resource.metadata.Import} objects -- they will always be resolved first.
    * If you want to get access to the original Import objects, use
-   * {@link #getDelegateAnalysisEngineSpecifiersWithImports()} and {@link #getFlowController()}.
+   * {@link #getDelegateAnalysisEngineSpecifiersWithImports()} and {@link #getFlowControllerDeclaration()}.
    * Also use those methods if you want to make changes to be able to make changes to the Map.
    * 
    * @param aResourceManager

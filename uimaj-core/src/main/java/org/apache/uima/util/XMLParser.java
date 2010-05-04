@@ -59,7 +59,7 @@ import org.w3c.dom.Element;
  * using the {@link #addMapping(String,String)} method to specify mappings between XML Element names
  * and the class names of the objects to be built from elements with those names. All objects to be
  * built by the XML parser must implement {@link XMLizable} and provide an implementation of
- * {@link XMLizable#buildFromXMLElement(Element,XmlParserBak)}.
+ * {@link XMLizable#buildFromXMLElement(Element, XMLParser)}.
  * <p>
  * Note that we are considering replacing this ad-hoc XML data binding interface with the java
  * standard extension JAXB. See <a href="http://java.sun.com/xml/jaxb"> http://java.sun.com/xml/jaxb</a>
@@ -689,7 +689,7 @@ public interface XMLParser {
   /**
    * Builds an object from its XML DOM representation. This method is not typically called by
    * applications. It may be called from within a
-   * {@link XMLizable#buildFromXMLElement(Element,XmlParserBak)} method to construct sub-objects.
+   * {@link XMLizable#buildFromXMLElement(Element, XMLParser)} method to construct sub-objects.
    * 
    * @param aElement
    *          a DOM Element
@@ -704,7 +704,7 @@ public interface XMLParser {
   /**
    * Builds an object from its XML DOM representation. This method is not typically called by
    * applications. It may be called from within a
-   * {@link XMLizable#buildFromXMLElement(Element,XmlParserBak)} method to construct sub-objects.
+   * {@link XMLizable#buildFromXMLElement(Element, XMLParser)} method to construct sub-objects.
    * 
    * @param aElement
    *          a DOM Element
@@ -722,7 +722,7 @@ public interface XMLParser {
   /**
    * Builds an object from its XML DOM representation. This method is not typically called by
    * applications. It may be called from within a
-   * {@link XMLizable#buildFromXMLElement(Element,XmlParser)} method to construct sub-objects.
+   * {@link XMLizable#buildFromXMLElement(Element, XMLParser)} method to construct sub-objects.
    * <p>
    * This method is similar to {@link #buildObject(Element, XMLParser.ParsingOptions)} but can also
    * parse primitive-typed objects wrapped as XML elements, such as
@@ -734,7 +734,7 @@ public interface XMLParser {
    *          option settings
    * 
    * @return an object constructed from the DOM element. This can be either an instance of
-   *         {@link Xmlizable}, {@link String}, or one of the primitive type wrapper objects (e.g.
+   *         {@link XMLizable}, {@link String}, or one of the primitive type wrapper objects (e.g.
    *         {@link Integer}, {@link Float}, {@link Boolean}).
    * 
    * @throws InvalidXMLException

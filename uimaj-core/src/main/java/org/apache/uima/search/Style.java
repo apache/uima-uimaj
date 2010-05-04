@@ -129,7 +129,7 @@ public interface Style extends XMLizable, Serializable {
    * Sets the mappings that specify which features (properties) of the annotation should be indexed,
    * and under which names.
    * 
-   * @pram aMappings an array of objects that each specify a mapping from a CAS feature name to the
+   * @param aMappings an array of objects that each specify a mapping from a CAS feature name to the
    *       name under which this feature should be recorded in the index.
    */
   public void setAttributeMappings(Mapping[] aMappings);

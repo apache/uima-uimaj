@@ -62,8 +62,7 @@ public abstract class XmlCasSerializer {
    * @param aTargetTypeSystem
    *          type system to which the produced XMI will conform. Any types or features not in the
    *          target type system will not be serialized.
-   * @param aCAS
-   *          CAS to serialize.
+   *          
    * @param aStream
    *          output stream to which to write the XMI document
    * 

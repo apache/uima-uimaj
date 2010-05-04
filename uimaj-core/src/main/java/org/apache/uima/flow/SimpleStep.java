@@ -28,7 +28,7 @@ public class SimpleStep extends Step {
   /**
    * Creates a new SimpleStep
    * 
-   * @param aAnalysisEngineKey
+   * @param aCasProcessorKey
    *          The key of the Analysis Engine to which the CAS should be routed. This must be one of
    *          the keys in the FlowController's
    *          {@link FlowControllerContext#getAnalysisEngineMetaDataMap()}.
@@ -51,7 +51,7 @@ public class SimpleStep extends Step {
    * user's Flow implementation can (but is not required to) reuse the same SimpleStep object
    * multiple times.
    * 
-   * @return an Analysis Engine key. This must be one of the keys in the FlowController's
+   * @param aKey an Analysis Engine key. This must be one of the keys in the FlowController's
    *         {@link FlowControllerContext#getAnalysisEngineMetaDataMap()}.
    */
   public void setAnalysisEngineKey(String aKey) {

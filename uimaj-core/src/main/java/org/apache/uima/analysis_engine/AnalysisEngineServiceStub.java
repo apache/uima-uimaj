@@ -34,8 +34,6 @@ public interface AnalysisEngineServiceStub extends ResourceServiceStub {
    * 
    * @param aCAS
    *          the CAS to process
-   * 
-   * @return metadata for the Analysis Engine
    */
   public abstract void callProcess(CAS aCAS) throws ResourceServiceException;
 

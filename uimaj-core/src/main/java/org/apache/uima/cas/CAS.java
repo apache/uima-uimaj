@@ -881,7 +881,7 @@ public interface CAS extends AbstractCas {
    * 
    * @param text
    *          The text to be analyzed.
-   * @param mime
+   * @param mimetype
    *          The mime type of the data
    * @exception CASRuntimeException
    *              If the Sofa data has already been set.

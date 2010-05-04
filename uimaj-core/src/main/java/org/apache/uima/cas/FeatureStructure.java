@@ -272,8 +272,8 @@ public interface FeatureStructure {
    * Sets the value of a feature from a string input if the feature type is one of the primitive
    * types.
    * 
-   * @param featThe
-   *          feature whose value we want to set.
+   * @param feat 
+   *          The feature whose value we want to set.
    * @param s
    *          The string value that the feature will be set to.
    * @throws CASRuntimeException

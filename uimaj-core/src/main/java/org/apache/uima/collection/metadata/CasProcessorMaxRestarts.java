@@ -25,8 +25,6 @@ import org.apache.uima.resource.metadata.MetaDataObject;
  * An object that holds configuration related to handling max restarts for CasProcessors. It
  * provides the means of configuring threshold for max restart tolerance, and defining a strategy to
  * apply when thresholds are exceeded. Used when constucting a CPE descriptor.
- * 
- * 
  */
 public interface CasProcessorMaxRestarts extends MetaDataObject {
   /**
@@ -71,12 +69,12 @@ public interface CasProcessorMaxRestarts extends MetaDataObject {
 
   /**
    * 
-   * @return
+   * @return the wait time between successive retries
    */
   public int getWaitTimeBetweenRetries();
 
   /**
-   * @param i
+   * @param i time to wait between successive retries
    */
   public void setWaitTimeBetweenRetries(int i);
 

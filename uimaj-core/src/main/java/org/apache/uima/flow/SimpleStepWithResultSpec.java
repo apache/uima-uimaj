@@ -33,8 +33,8 @@ import org.apache.uima.analysis_engine.ResultSpecification;
 public class SimpleStepWithResultSpec extends SimpleStep {
 
   /**
-   * @param casProcessorKey
-   * @param currentAnalysisResultSpec
+   * @param aCasProcessorKey
+   * @param aResultSpec
    */
   public SimpleStepWithResultSpec(String aCasProcessorKey, ResultSpecification aResultSpec) {
     super(aCasProcessorKey);
@@ -42,21 +42,18 @@ public class SimpleStepWithResultSpec extends SimpleStep {
   }
 
   /**
-   * Gets the key of the Analysis Engine to which the CAS should be routed.
+   * Gets the results specification
    * 
-   * @return an AnalysisEngine key
+   * @return the results specification
    */
   public ResultSpecification getResultSpecification() {
     return mResultSpec;
   }
 
   /**
-   * Sets the key of the Analysis Engine to which the CAS should be routed. By using this method, a
-   * user's Flow implementation can (but is not required to) reuse the same SimpleStep object
-   * multiple times.
+   * Sets the results specification
    * 
-   * @return an Analysis Engine key. This must be one of the keys in the FlowController's
-   *         {@link FlowControllerContext#getAnalysisEngineMetaDataMap()}.
+   * @param aResultSpec the results specification to set
    */
   public void setResultSpecification(ResultSpecification aResultSpec) {
     mResultSpec = aResultSpec;

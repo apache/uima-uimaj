@@ -33,9 +33,9 @@ import org.apache.uima.resource.metadata.ResourceMetaData;
  * All Resource Creation Specifiers must the following:
  * <ul>
  * <li><code>frameworkImplementation</code>: The name of the UIMA framework in which the
- * component executes. The name for this implementation is given by {@link Constants.JAVA_FRAMEWORK_NAME}. 
+ * component executes. The name for this implementation is given by {@link org.apache.uima.Constants#JAVA_FRAMEWORK_NAME}. 
  * A component that runs in the C++ enablement layer needs to have the framework name given by
- * {@link Constants.CPP_FRAMEWORK_NAME}.
+ * {@link org.apache.uima.Constants#CPP_FRAMEWORK_NAME}.
  * <li>
  * <li><code>implementationName</code>: The fully-qualified Java class name of the user's
  * component (Annotator, CAS Consumer, Collection Reader, or CAS Initializer).
@@ -55,7 +55,7 @@ import org.apache.uima.resource.metadata.ResourceMetaData;
 public interface ResourceCreationSpecifier extends ResourceSpecifier {
   /**
    * Gets the name of the AE framework implementation within which the Resource executes. The
-   * framework name for this implementation is given by {@link Constants.JAVA_FRAMEWORK_NAME}..
+   * framework name for this implementation is given by {@link org.apache.uima.Constants#JAVA_FRAMEWORK_NAME}..
    * 
    * @return the framework implementation name
    */
@@ -63,7 +63,7 @@ public interface ResourceCreationSpecifier extends ResourceSpecifier {
 
   /**
    * Sets the name of the AE framework implementation within which the <code>ResourceCreationSpecifier</code> executes. The
-   * framework name for this implementation is given by {@link Constants.JAVA_FRAMEWORK_NAME}..
+   * framework name for this implementation is given by {@link Constants#JAVA_FRAMEWORK_NAME}..
    * 
    * @param aFrameworkImplementation
    *          the framework implementation name
