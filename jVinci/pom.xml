@@ -26,6 +26,7 @@
     <groupId>org.apache.uima</groupId>
     <artifactId>parent-pom-uimaj-ibm-notice</artifactId>
     <version>1-SNAPSHOT</version> 
+    <relativePath/>
   </parent>
 
 	<artifactId>jVinci</artifactId>
@@ -60,7 +61,7 @@
   
   <properties>
     <uimaScmRoot>uimaj</uimaScmRoot>
-    <uimaScmProject>jvinci</uimaScmProject>
+    <uimaScmProject>${project.artifactId}</uimaScmProject>
   </properties>
      
 	<build>
