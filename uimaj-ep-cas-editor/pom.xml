@@ -27,8 +27,8 @@
   </parent>
   
 	<artifactId>uimaj-ep-cas-editor</artifactId>
-  <version>2.3.1.SNAPSHOT</version>
-	<packaging>bundle</packaging>
+  <version>2.3.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
 	<name>UIMA Eclipse: ${project.artifactId}</name>
   <description>Allows editing the contents of a saved CAS</description>
   <url>${uimaWebsiteUrl}</url>
@@ -56,7 +56,7 @@
   <properties>
     <uimaScmRoot>uimaj</uimaScmRoot>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
-    <uimaDependencyVersion>2.3.1-SNAPSHOT</uimaDependencyVersion>
+    <uimaDependencyVersion>${project.version}</uimaDependencyVersion>
   </properties>
   		
 	<dependencies>
@@ -154,62 +154,54 @@
 	</dependencies>
 
 	<build>
-		<finalName>org.apache.uima.caseditor_${project.version}</finalName>
-		<!--resources>
-			<resource>
-				<targetPath>icons</targetPath>
-				<directory>${basedir}/icons</directory>
-        	</resource>
-        	<resource>
-				<directory>${basedir}</directory>
-        		<includes><include>plugin.xml</include></includes>
-        	</resource>
-        	<resource>
-				<directory>${basedir}/src/main/resources</directory>
-        	</resource>
-        </resources-->
-		
+    <!-- don't use artifactId as first part of finalName, follow instead the eclipse convention -->  
+    <finalName>org.apache.uima.caseditor_${parsedVersion.osgiVersion}</finalName>		
 		<plugins>
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
-				<configuration>
-					<manifestLocation>META-INF</manifestLocation>
-					<instructions>
-						<Bundle-SymbolicName>org.apache.uima.caseditor;singleton:=true</Bundle-SymbolicName>
-						<Bundle-Activator>org.apache.uima.caseditor.CasEditorPlugin</Bundle-Activator>
-						<Bundle-RequiredExecutionEnvironment>J2SE-1.5</Bundle-RequiredExecutionEnvironment>
-						<Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
-						<Export-Package>
-							org.apache.uima.caseditor.*
-            			</Export-Package>
-						<Require-Bundle>
-							org.eclipse.jface.text,
-							org.eclipse.text,
-							org.eclipse.ui.editors,
-							org.eclipse.ui.workbench.texteditor,
-							org.eclipse.ui.ide,
-							org.eclipse.ui,
-							org.eclipse.ui.workbench,
-							org.eclipse.core.runtime,
-							org.eclipse.core.resources,
-							org.junit4;bundle-version="4.5.0";resolution:=optional
-					    </Require-Bundle>
-            			<Import-Package>
-            			    !org.eclipse.jface.text,
-							!org.eclipse.jface.text.link,
-							!org.eclipse.jface.text.source,
-							!org.eclipse.jface.text.templates,
-							!org.eclipse.ui.texteditor,
-							!org.eclipse.ui,
-							!org.eclipse.ui.actions,
-							!org.eclipse.ui.dialogs,
-							!org.eclipse.ui.model,
-							!org.eclipse.ui.part, 
-							!org.eclipse.core.runtime,
-       						*</Import-Package>
-					</instructions>
-				</configuration>
+        <executions>
+          <execution>
+            <id>uima-bundle</id>
+            <configuration>
+              <instructions>
+                <Bundle-SymbolicName>org.apache.uima.caseditor;singleton:=true</Bundle-SymbolicName>
+                <Bundle-Activator>org.apache.uima.caseditor.CasEditorPlugin</Bundle-Activator>
+                <Bundle-RequiredExecutionEnvironment>J2SE-1.5</Bundle-RequiredExecutionEnvironment>
+                <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
+                <Export-Package>
+                  org.apache.uima.caseditor.*
+                      </Export-Package>
+                <Require-Bundle>
+                  org.eclipse.jface.text,
+                  org.eclipse.text,
+                  org.eclipse.ui.editors,
+                  org.eclipse.ui.workbench.texteditor,
+                  org.eclipse.ui.ide,
+                  org.eclipse.ui,
+                  org.eclipse.ui.workbench,
+                  org.eclipse.core.runtime,
+                  org.eclipse.core.resources,
+                  org.junit4;bundle-version="4.5.0";resolution:=optional
+                </Require-Bundle>
+                <Import-Package>
+                  !org.eclipse.jface.text,
+                  !org.eclipse.jface.text.link,
+                  !org.eclipse.jface.text.source,
+                  !org.eclipse.jface.text.templates,
+                  !org.eclipse.ui.texteditor,
+                  !org.eclipse.ui,
+                  !org.eclipse.ui.actions,
+                  !org.eclipse.ui.dialogs,
+                  !org.eclipse.ui.model,
+                  !org.eclipse.ui.part, 
+                  !org.eclipse.core.runtime,
+                  *
+                </Import-Package>
+              </instructions>
+            </configuration>
+          </execution>
+        </executions>
 			</plugin>
       
       <plugin>

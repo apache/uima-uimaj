@@ -30,8 +30,8 @@
   </parent>
 
 	<artifactId>uimaj-ep-debug</artifactId>
-  <version>2.3.1.SNAPSHOT</version>
-	<packaging>bundle</packaging> 
+  <version>2.3.1-SNAPSHOT</version>
+	<packaging>jar</packaging> 
 	<name>UIMA Eclipse: ${project.artifactId}</name>
   <description>Adds structure knowledge for common
     UIMA data structures to the Eclipse Debug displays</description>
@@ -60,7 +60,7 @@
   <properties>
     <uimaScmRoot>uimaj</uimaScmRoot>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
-    <uimaDependenciesVersion>2.3.1-SNAPSHOT</uimaDependenciesVersion>
+    <uimaDependenciesVersion>${project.version}</uimaDependenciesVersion>
   </properties>
   
 	<dependencies>
@@ -102,34 +102,37 @@
 		</dependency>
 	</dependencies>
   
-	<build>    
-		<finalName>org.apache.uima.debug_${project.version}</finalName>   	    
+	<build>  
+    <!-- don't use artifactId as first part of finalName, follow instead the eclipse convention -->  
+		<finalName>org.apache.uima.debug_${parsedVersion.osgiVersion}</finalName>   	    
 		<plugins>
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
-        <!-- version 1.4.0 to support _nouses instruction -->
-        <version>1.4.0</version>
-        <extensions>true</extensions>
-        <configuration>
-          <manifestLocation>META-INF</manifestLocation>
-          <instructions>
-            <!-- turn off "uses" generation because Eclipse 3.2.x doesn't work with them -->
-            <_nouses>true</_nouses>
-            <Export-Package>
-              org.apache.uima.ep_debug
-            </Export-Package>
+        <executions>
+          <execution>
+            <id>uima-bundle</id>
+            <configuration>
+              <instructions>
+                <!-- turn off "uses" generation because Eclipse 3.2.x doesn't work with them -->
+                <_nouses>true</_nouses>
+                <Export-Package>
+                  org.apache.uima.ep_debug
+                </Export-Package>
+                
+                <Import-Package>*,
+                  org.eclipse.ui.plugin
+                </Import-Package>  
+    
+                <Bundle-Activator>org.apache.uima.ep_debug.DebugPlugin</Bundle-Activator>
+                <Bundle-SymbolicName>org.apache.uima.debug;singleton:=true</Bundle-SymbolicName>
+                
+                <Eclipse-AutoStart>true</Eclipse-AutoStart>
+              </instructions>
+            </configuration>
             
-            <Import-Package>*,
-              org.eclipse.ui.plugin
-            </Import-Package>  
-
-            <Bundle-Activator>org.apache.uima.ep_debug.DebugPlugin</Bundle-Activator>
-            <Bundle-SymbolicName>org.apache.uima.debug;singleton:=true</Bundle-SymbolicName>
-            
-            <Eclipse-AutoStart>true</Eclipse-AutoStart>
-          </instructions>
-        </configuration>
+          </execution>
+        </executions>
       </plugin>      		
 		</plugins>
 	</build>

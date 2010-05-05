@@ -30,8 +30,8 @@
   </parent>
   
 	<artifactId>uimaj-ep-jcasgen</artifactId>
-	<packaging>bundle</packaging>
-  <version>2.3.1.SNAPSHOT</version>
+	<packaging>jar</packaging>
+  <version>2.3.1-SNAPSHOT</version>
 	<name>UIMA Eclipse: ${project.artifactId}</name>
   <description>Provides a connection to the JCasGen tooling, for
     the Component Descriptor Editor</description>
@@ -60,7 +60,7 @@
   <properties>
     <uimaScmRoot>uimaj</uimaScmRoot>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
-    <uimaDependencyVersion>2.3.1-SNAPSHOT</uimaDependencyVersion>
+    <uimaDependencyVersion>${project.version}</uimaDependencyVersion>
   </properties>
   
 	<dependencies>
@@ -117,36 +117,38 @@
   
 	<build>
     
-		<finalName>org.apache.uima.jcas.jcasgenp_${project.version}</finalName>
+    <!-- don't use artifactId as first part of finalName, follow instead the eclipse convention -->  
+		<finalName>org.apache.uima.jcas.jcasgenp_${parsedVersion.osgiVersion}</finalName>
     	
  		<plugins>
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
-        <!-- version 1.4.0 to support _nouses instruction -->
-        <version>1.4.0</version>
-        <extensions>true</extensions>
-        <configuration>
-          <manifestLocation>META-INF</manifestLocation>
-          <instructions>
-            <!-- turn off "uses" generation because Eclipse 3.2.x doesn't work with them -->
-            <_nouses>true</_nouses>
-            <Export-Package>
-              org.apache.uima.jcas.jcasgenp
-            </Export-Package>
-            <Bundle-Activator>org.eclipse.core.internal.compatibility.PluginActivator</Bundle-Activator>
-            <!-- these next imports are needed by Eclipse to get things to compile, but
-                 not needed by maven -->
-            <Import-Package>*,
-              org.eclipse.core.runtime.jobs,
-              org.osgi.framework, 
-              org.eclipse.jdt.core.jdom
-            </Import-Package> 
-            <Bundle-SymbolicName>org.apache.uima.jcas.jcasgenp;singleton:=true</Bundle-SymbolicName>
-            <Eclipse-AutoStart>true</Eclipse-AutoStart>
-            <Plugin-Class>org.apache.uima.jcas.jcasgenp.JgPlugin</Plugin-Class>            
-          </instructions>
-        </configuration>
+        <executions>
+          <execution>
+            <id>uima-bundle</id>
+            <configuration>
+              <instructions>
+                <!-- turn off "uses" generation because Eclipse 3.2.x doesn't work with them -->
+                <_nouses>true</_nouses>
+                <Export-Package>
+                  org.apache.uima.jcas.jcasgenp
+                </Export-Package>
+                <Bundle-Activator>org.eclipse.core.internal.compatibility.PluginActivator</Bundle-Activator>
+                <!-- these next imports are needed by Eclipse to get things to compile, but
+                     not needed by maven -->
+                <Import-Package>*,
+                  org.eclipse.core.runtime.jobs,
+                  org.osgi.framework, 
+                  org.eclipse.jdt.core.jdom
+                </Import-Package> 
+                <Bundle-SymbolicName>org.apache.uima.jcas.jcasgenp;singleton:=true</Bundle-SymbolicName>
+                <Eclipse-AutoStart>true</Eclipse-AutoStart>
+                <Plugin-Class>org.apache.uima.jcas.jcasgenp.JgPlugin</Plugin-Class>            
+              </instructions>
+            </configuration>
+          </execution>
+        </executions>
       </plugin> 
 		</plugins>
 	</build>
