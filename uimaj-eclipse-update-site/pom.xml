@@ -18,18 +18,52 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<!-- groupId omitted - inherited from parent -->
+  
+  <parent>
+    <groupId>org.apache.uima</groupId>
+    <artifactId>parent-pom-top</artifactId>
+    <version>1-SNAPSHOT</version>
+    <relativePath/>
+  </parent>
+  
 	<artifactId>uimaj-eclipse-update-site</artifactId>
 	<packaging>pom</packaging>
-	<!-- version omitted - inherited from parent-->
-	<name>Apache UIMA Eclipse Update Site</name>
-	<parent>
-		<groupId>org.apache.uima</groupId>
-		<artifactId>uimaj-eclipse-plugins</artifactId>
-		<version>2.3.0.incubating</version> <!-- this comment is a flag for changeVersion -->
-	</parent>
-		
-	<!--dependencies>	
+	<version>2.3.1-SNAPSHOT</version>
+	<name>UIMA Eclipse: ${project.artifactId}</name>
+  <description>The UIMA Eclipse update site</description>
+  <url>${uimaWebsiteUrl}</url>
+
+  <!-- Special inheritance note
+       even though the <scm> element that follows is exactly the 
+       same as those in super poms, it cannot be inherited because 
+       there is some special code that computes the connection elements
+       from the chain of parent poms, if this is omitted. 
+       
+       Keeping this a bit factored allows cutting/pasting the <scm>
+       element, and just changing the following two properties -->  
+  <scm>
+    <connection>
+      scm:svn:http://svn.apache.org/repos/asf/uima/${uimaScmRoot}/trunk/${uimaScmProject}
+    </connection>
+    <developerConnection>
+      scm:svn:https://svn.apache.org/repos/asf/uima/${uimaScmRoot}/trunk/${uimaScmProject}
+    </developerConnection>
+    <url>
+      http://svn.apache.org/viewvc/uima/${uimaScmRoot}/trunk/${uimaScmProject}
+    </url>
+  </scm>
+  
+  <properties>
+    <uimaScmRoot>uimaj</uimaScmRoot>
+    <uimaScmProject>${project.artifactId}</uimaScmProject>
+    <eclipseUpdateSite>${project.build.directory}/eclipse-update-site</eclipseUpdateSite>
+  </properties>
+
+  <!-- don't use dependency mechanism - use dependency:copy
+       because we need to get multiple versions for the
+       eclipese-feature-projects, and Maven
+       wants to resolve multiple versions into one.
+	<dependencies>	
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-ep-cas-editor</artifactId>
@@ -77,7 +111,7 @@
       <artifactId>uimaj-ep-runtime-deployeditor</artifactId>
       <version>${uimaj-release-eclipse-version}</version>
     </dependency>
-    
+
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-eclipse-feature-deployeditor</artifactId>
@@ -119,36 +153,85 @@
     </resources>
     
 		<plugins>
-			<!--plugin>
+			<plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <executions>
           <execution>
-            <id>copy-plugins</id>
+            <id>copy-plugins-being-released</id>
             <goals>
-              <goal>copy-dependencies</goal>
+              <goal>copy</goal>
             </goals>
             <configuration>
-              <outputDirectory>plugins</outputDirectory>
-              <outputAbsoluteArtifactFilename>true</outputAbsoluteArtifactFilename>
-              <excludeTransitive>true</excludeTransitive>
-              <excludeArtifactIds>uimaj-eclipse-feature-deployeditor,uimaj-eclipse-feature-runtime,uimaj-eclipse-feature-tools</excludeArtifactIds>
+              <!-- ===================================================================
+                List here just the new versions of plugins that are being released;
+                   remove old versions from this list.
+                   
+                   Include (hard-code) the specific versions you wish to use.  
+                                      
+                   The build will include just those new plugins; these should be
+                   merged with other released plugins for previous versions that the
+                   feature(s) support, on the actual eclipse-update-site 
+               ======================================================================= -->
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.apache.uima</groupId>
+                  <artifactId>uimaj-ep-cas-editor</artifactId>
+                  <version>2.3.1-SNAPSHOT</version>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.apache.uima</groupId>
+                  <artifactId>uimaj-ep-configurator</artifactId>
+                  <version>2.3.1-SNAPSHOT</version>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.apache.uima</groupId>
+                  <artifactId>uimaj-ep-debug</artifactId>
+                  <version>2.3.1-SNAPSHOT</version>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.apache.uima</groupId>
+                  <artifactId>uimaj-ep-jcasgen</artifactId>
+                  <version>2.3.1-SNAPSHOT</version>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.apache.uima</groupId>
+                  <artifactId>uimaj-ep-pear-packager</artifactId>
+                  <version>2.3.1-SNAPSHOT</version>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.apache.uima</groupId>
+                  <artifactId>uimaj-ep-runtime</artifactId>
+                  <version>2.3.1-SNAPSHOT</version>
+                </artifactItem>
+              </artifactItems>
+              <outputDirectory>${project.build.directory}/work/plugins</outputDirectory>
             </configuration>
           </execution>
           <execution>
             <id>copy-features</id>
             <goals>
-              <goal>copy-dependencies</goal>
+              <goal>copy</goal>
             </goals>
             <configuration>
-              <outputDirectory>features</outputDirectory>
-              <outputAbsoluteArtifactFilename>true</outputAbsoluteArtifactFilename>
-              <excludeTransitive>true</excludeTransitive>
-              <includeArtifactIds>uimaj-eclipse-feature-deployeditor,uimaj-eclipse-feature-runtime,uimaj-eclipse-feature-tools</includeArtifactIds>
+              <!-- include here all of the features -->
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.apache.uima</groupId>
+                  <artifactId>uimaj-eclipse-feature-runtime</artifactId>
+                  <version>${project.version}</version>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.apache.uima</groupId>
+                  <artifactId>uimaj-eclipse-feature-tools</artifactId>
+                  <version>${project.version}</version>
+                </artifactItem>
+              </artifactItems>
+              <outputDirectory>${project.build.directory}/eclipse-update-site/features</outputDirectory>
             </configuration>
           </execution>
         </executions>
-			</plugin-->
+			</plugin>
       
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
@@ -173,6 +256,7 @@
                 <fail unless="eclipse.home"
                   message="********** Please set up and use an ant property eclipse.home set to an Eclipse installation at level 3.3 or later, e.g. c:/eclipses/3.3/eclipse"/>
   
+                <!--
                 <copy todir="plugins" preservelastmodified="true"
                       file="../uimaj-ep-cas-editor/target/org.apache.uima.caseditor_${uimaj-release-eclipse-version}.jar"/>
                 <copy todir="plugins" preservelastmodified="true"
@@ -196,25 +280,26 @@
                       file="../uimaj-eclipse-feature-runtime/target/org.apache.uima.runtime_${uimaj-release-eclipse-version}.jar"/>
                 <copy todir="features" preservelastmodified="true"
                       file="../uimaj-eclipse-feature-tools/target/org.apache.uima.tools_${uimaj-release-eclipse-version}.jar"/>
+                -->
                                                     
                 <java jar="${eclipse.home}/plugins/org.eclipse.equinox.launcher.jar" 
                       fork="true" failonerror="true" maxmemory="256m">
                    <arg line="-application org.eclipse.update.core.siteOptimizer"/>
                    <arg line="-jarProcessor -verbose -processAll -pack"/>
-                   <arg line="-outputDir target/eclipse-update-site/plugins"/>
-                   <arg line="plugins"/>
+                   <arg line="-outputDir ${eclipseUpdateSite}/plugins"/>
+                   <arg line="${project.build.directory}/work/plugins"/>
                 </java>
                 
-                <copy todir="target/eclipse-update-site/web" preservelastmodified="true">
+                <copy todir="${eclipseUpdateSite}/web" preservelastmodified="true">
                   <fileset dir="web"/>
                 </copy>
-                <copy todir="target/eclipse-update-site" 
+                <copy todir="${eclipseUpdateSite}" 
                       file="index.html" preservelastmodified="true"/>
-                <copy todir="target/eclipse-update-site" 
+                <copy todir="${eclipseUpdateSite}" 
                       file="site.xml" preservelastmodified="true"/>
 
-                <!-- copy all the features to the target -->
-                <copy todir="target/eclipse-update-site/features" preservelastmodified="true" >
+                <!-- copy all feature jars preserved in SVN in the features/ folder to the target -->
+                <copy todir="${eclipseUpdateSite}/features" preservelastmodified="true" >
                   <fileset dir="features"/>
                 </copy>
 
@@ -245,7 +330,7 @@
     <module>../uimaj-ep-pear-packager</module>
     <module>../uimaj-ep-runtime</module>
     <module>../uimaj-ep-runtime-deployeditor</module-->
-    <module>../uimaj-eclipse-feature-deployeditor</module>
+    <!--module>../uimaj-eclipse-feature-deployeditor</module-->
     <module>../uimaj-eclipse-feature-runtime</module>
     <module>../uimaj-eclipse-feature-tools</module>
   </modules>

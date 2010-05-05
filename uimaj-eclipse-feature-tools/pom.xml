@@ -18,19 +18,49 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <!-- groupId omitted - inherited from parent -->
-  <artifactId>uimaj-eclipse-feature-tools</artifactId>
-  <packaging>jar</packaging>
-  <!-- version omitted - inherited from parent-->
-  <name>Apache UIMA Eclipse Feature: Tools</name>
+  
   <parent>
     <groupId>org.apache.uima</groupId>
-    <artifactId>uimaj-eclipse-plugins</artifactId>
-    <version>2.3.0.incubating</version> <!-- this comment is a flag for changeVersion -->
+    <artifactId>parent-pom-top</artifactId>
+    <version>1-SNAPSHOT</version>
+    <relativePath/>
   </parent>
-    
+  
+  <artifactId>uimaj-eclipse-feature-tools</artifactId>
+  <packaging>jar</packaging>
+  <version>2.3.1-SNAPSHOT</version>
+  <name>UIMA Eclipse: ${project.artifactId}</name>
+  <description>UIMA Eclipse Plugin Feature for base uima tooling</description>  
+  <url>${uimaWebsiteUrl}</url>
+
+  <!-- Special inheritance note
+       even though the <scm> element that follows is exactly the 
+       same as those in super poms, it cannot be inherited because 
+       there is some special code that computes the connection elements
+       from the chain of parent poms, if this is omitted. 
+       
+       Keeping this a bit factored allows cutting/pasting the <scm>
+       element, and just changing the following two properties -->  
+  <scm>
+    <connection>
+      scm:svn:http://svn.apache.org/repos/asf/uima/${uimaScmRoot}/trunk/${uimaScmProject}
+    </connection>
+    <developerConnection>
+      scm:svn:https://svn.apache.org/repos/asf/uima/${uimaScmRoot}/trunk/${uimaScmProject}
+    </developerConnection>
+    <url>
+      http://svn.apache.org/viewvc/uima/${uimaScmRoot}/trunk/${uimaScmProject}
+    </url>
+  </scm>
+  
+  <properties>
+    <uimaScmRoot>uimaj</uimaScmRoot>
+    <uimaScmProject>${project.artifactId}</uimaScmProject>
+  </properties>
+
   <build>
-    <finalName>org.apache.uima.tools_${uimaj-release-eclipse-version}</finalName>
+    <!-- parsedVersion set in parent-pom-top by builder-helper -->    
+    <finalName>org.apache.uima.tools_${parsedVersion.osgiVersion}</finalName>
     <resources>
       <resource>
         <directory>.</directory>
