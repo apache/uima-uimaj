@@ -25,6 +25,7 @@
     <groupId>org.apache.uima</groupId>
     <artifactId>parent-pom-uimaj</artifactId>
     <version>1-SNAPSHOT</version>
+    <relativePath/>
   </parent>
   
 	<artifactId>PearPackagingMavenPlugin</artifactId>
@@ -58,6 +59,7 @@
   <properties>
     <uimaScmRoot>uimaj</uimaScmRoot>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
+    <bookNameRoot>PearPackagingMavenPluginUserGuide</bookNameRoot>
     <uimaDependencyVersion>2.3.1-SNAPSHOT</uimaDependencyVersion>
   </properties>
   
