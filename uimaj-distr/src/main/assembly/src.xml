@@ -26,7 +26,11 @@ under the License.
   </formats>
   
   <includeBaseDirectory>true</includeBaseDirectory>
-  
+
+  <!-- project copying for this project, paying attention to
+       fileMode settings - mostly readonly for owner/group/other, 
+       but executable for executables -->
+         
   <fileSets>
     <!-- Leave out .sh/.bat/.cmd files, include them in the next step as executable -->
     <fileSet>
@@ -52,6 +56,7 @@ under the License.
         <include>src/**/*.sh</include>
       </includes>
     </fileSet>
+    <!-- Copy .bat and cmd files as not-executable -->
     <fileSet>
       <fileMode>644</fileMode>
       <directory>.</directory>
@@ -60,15 +65,21 @@ under the License.
         <include>src/**/*.bat</include>
         <include>src/**/*.cmd</include>
       </includes>
-    </fileSet>    
+    </fileSet>
+    
+    <!-- ===================================== -->
+    <!-- copy top level files to the top level -->    
+    <!-- ===================================== -->
     <fileSet>
       <directory>src/main/readme</directory>
       <outputDirectory/>
       <excludes>
+        <!-- exclude bin distr README -->
         <exclude>README</exclude>
       </excludes>
       <fileMode>644</fileMode>
     </fileSet>
+    
     <!-- Copy .sh files as executable -->
     <fileSet>
       <fileMode>755</fileMode>
@@ -87,261 +98,194 @@ under the License.
       <outputDirectory/>
       <fileMode>644</fileMode>
     </fileSet>
+
+    <!-- for every other source, use relative paths to locate
+         the project's root, and include the whole thing except for 
+         target/ 
+         
+         There must be one entry here for each entry in 
+         the <modules> section (recursively)
+         
+         Parent poms in the build/ section of svn are not included.
+         Aggregator poms used in this build are included. 
+    -->    
+    
+    <!-- aggregator poms -->
     <fileSet>
-      <directory>../uima-docbooks</directory>
-      <outputDirectory>/uima-docbooks</outputDirectory>
-      <excludes>
-        <exclude>target/**</exclude>
-        <!-- Directories does not exist -->
-        <!-- <exclude>docbook/**</exclude>  -->
-        <!-- <exclude>lib/**</exclude> -->
-        <!-- <exclude>Source_UIMA_SDK_Guide_Ref/**</exclude> -->
-        <exclude>.*</exclude>   
-        <exclude>LICENSE.txt</exclude>
-        <exclude>src/styles/titlepage/*.xsl</exclude>     
-      </excludes>
-      <fileMode>644</fileMode>
-    </fileSet>   
-    <fileSet>
-      <directory>../uima-docbook-tool</directory>
-      <outputDirectory>/uima-docbook-tool</outputDirectory>
-      <includes>
-        <include>build/**</include>
-        <include>catalog/**</include>
-        <include>properties/**</include>
-        <include>samples/**</include>
-        <include>styles/**</include>
-        <include>tools/common-lib/**</include>
-        <include>tools/docbook-versions/docbook-xml-*</include>
-        <include>tools/docbook-versions/docbook-xsl-*</include>
-        <include>tools/fop-versions/fop-*/fop-config.xml</include>
-        <include>tools/jai-version/jai-1.1.3</include>
-        <include>tools/saxon-versions/saxon-6.5.5</include>
-        <include>tools/HOW_TO</include>
-        <include>xinclude.mod</include> 
-        <include>README</include>
-        <include>README.FIRST</include>
-      </includes>
-      <excludes>
-        <exclude></exclude>
-      </excludes>
+      <directory>../aggregate-uimaj</directory>
+      <outputDirectory>/aggregate-uimaj</outputDirectory>
+      <excludes><exclude>target/**</exclude></excludes>
       <fileMode>644</fileMode>
     </fileSet>
     <fileSet>
-      <directory>../uimaj-eclipse-update-site</directory>
-      <outputDirectory>/uimaj-eclipse-update-site</outputDirectory>
-      <excludes>
-        <exclude>target/**</exclude>
-      </excludes>
-      <fileMode>644</fileMode>
-    </fileSet>    
-    <fileSet>
-      <directory>../uimaj-eclipse-feature-runtime</directory>
-      <outputDirectory>/uimaj-eclipse-feature-runtime</outputDirectory>
-      <excludes>
-        <exclude>META-INF/**</exclude>
-        <exclude>target/**</exclude>
-      </excludes>
-      <fileMode>644</fileMode>
-    </fileSet>    
-    <fileSet>
-      <directory>../uimaj-eclipse-feature-tools</directory>
-      <outputDirectory>/uimaj-eclipse-feature-tools</outputDirectory>
-      <excludes>
-        <exclude>META-INF/**</exclude>
-        <exclude>target/**</exclude>
-      </excludes>
-      <fileMode>644</fileMode>
-    </fileSet>    
-    <fileSet>
-      <directory>../uimaj</directory>
-      <outputDirectory>/uimaj</outputDirectory>
-      <includes>
-        <include>pom.xml</include>
-        <include>eclipse-plugin-superPom/**</include>
-        <include>distr-superPom/**</include>
-      </includes>
+      <directory>../aggregate-uimaj-eclipse-plugins</directory>
+      <outputDirectory>/aggregate-uimaj</outputDirectory>
+      <excludes><exclude>target/**</exclude></excludes>
       <fileMode>644</fileMode>
     </fileSet>
     <fileSet>
-      <directory>../jVinci</directory>
-      <outputDirectory>/jVinci</outputDirectory>
-      <includes>
-        <include>src/**</include>
-        <include>pom.xml</include>
-      </includes>
+      <directory>../aggregate-uimaj-docbooks</directory>
+      <outputDirectory>/aggregate-uimaj</outputDirectory>
+      <excludes><exclude>target/**</exclude></excludes>
+      <fileMode>644</fileMode>
+    </fileSet>
+    
+    <!-- from aggregate-uimaj-docbooks -->
+    <fileSet>
+      <directory>../uima-docbook-overview-and-setup</directory>
+      <outputDirectory>/uima-docbook-overview-and-setup</outputDirectory>
+      <excludes><exclude>target/**</exclude></excludes>
       <fileMode>644</fileMode>
     </fileSet>
     <fileSet>
-      <directory>../uimaj-adapter-soap</directory>
-      <outputDirectory>/uimaj-adapter-soap</outputDirectory>
-      <includes>
-        <include>src/**</include>
-        <include>pom.xml</include>
-      </includes>
+      <directory>../uima-docbook-references</directory>
+      <outputDirectory>/uima-docbook-references</outputDirectory>
+      <excludes><exclude>target/**</exclude></excludes>
       <fileMode>644</fileMode>
     </fileSet>
     <fileSet>
-      <directory>../uimaj-adapter-vinci</directory>
-      <outputDirectory>/uimaj-adapter-vinci</outputDirectory>
-      <includes>
-        <include>src/**</include>
-        <include>pom.xml</include>
-      </includes>
+      <directory>../uima-docbook-tools</directory>
+      <outputDirectory>/uima-docbook-tools</outputDirectory>
+      <excludes><exclude>target/**</exclude></excludes>
       <fileMode>644</fileMode>
-    </fileSet>  
+    </fileSet>
     <fileSet>
-      <directory>../uimaj-bootstrap</directory>
-      <outputDirectory>/uimaj-bootstrap</outputDirectory>
-      <includes>
-        <include>src/**</include>
-        <include>pom.xml</include>
-      </includes>
+      <directory>../uima-docbook-tutorials-and-users-guides</directory>
+      <outputDirectory>/uima-docbook-tutorials-and-users-guides</outputDirectory>
+      <excludes><exclude>target/**</exclude></excludes>
       <fileMode>644</fileMode>
-    </fileSet>          
-    <fileSet>
-      <directory>../uimaj-component-test-util</directory>
-      <outputDirectory>/uimaj-component-test-util</outputDirectory>
-      <includes>
-        <include>src/**</include>
-        <include>pom.xml</include>
-      </includes>
-      <fileMode>644</fileMode>
-    </fileSet>  
-    <fileSet>
-      <directory>../uimaj-core</directory>
-      <outputDirectory>/uimaj-core</outputDirectory>
-      <includes>
-        <include>src/**</include>
-        <include>pom.xml</include>
-      </includes>
-      <fileMode>644</fileMode>
-    </fileSet>  
-    <fileSet>
-      <directory>../uimaj-cpe</directory>
-      <outputDirectory>/uimaj-cpe</outputDirectory>
-      <includes>
-        <include>src/**</include>
-        <include>pom.xml</include>
-      </includes>
-      <fileMode>644</fileMode>
-    </fileSet>      
-    <fileSet>
-      <directory>../uimaj-document-annotation</directory>
-      <outputDirectory>/uimaj-document-annotation</outputDirectory>
-      <includes>
-        <include>src/**</include>
-        <include>pom.xml</include>
-      </includes>
-      <fileMode>644</fileMode>
-    </fileSet>   
+    </fileSet>
+    
+    <!-- from aggregate-uimaj-eclipse-plugins -->    
     <fileSet>
       <directory>../uimaj-ep-cas-editor</directory>
       <outputDirectory>/uimaj-ep-cas-editor</outputDirectory>
-      <includes>
-        <include>icons/**</include>
-        <include>src/**</include>
-        <include>schema/**</include>
-        <include>plugin.xml</include>
-        <include>pom.xml</include>
-        <include>build.properties</include>
-      </includes>
+      <excludes>
+        <exclude>target/**</exclude>
+        <exclude>META-INF</exclude>
+      </excludes>
       <fileMode>644</fileMode>
     </fileSet>      
     <fileSet>
       <directory>../uimaj-ep-configurator</directory>
       <outputDirectory>/uimaj-ep-configurator</outputDirectory>
-      <includes>
-        <include>src/**</include>
-        <include>pom.xml</include>
-        <include>META-INF</include>
-        <include>plugin.xml</include>
-        <include>schema/**</include>
-      </includes>
+      <excludes>
+        <exclude>target/**</exclude>
+        <exclude>META-INF</exclude>
+      </excludes>
       <fileMode>644</fileMode>
     </fileSet>      
     <fileSet>
       <directory>../uimaj-ep-debug</directory>
       <outputDirectory>/uimaj-ep-debug</outputDirectory>
-      <includes>
-        <include>src/**</include>
-        <include>pom.xml</include>
-        <include>META-INF</include>
-        <include>plugin.xml</include>
-      </includes>
+      <excludes>
+        <exclude>target/**</exclude>
+        <exclude>META-INF</exclude>
+      </excludes>
       <fileMode>644</fileMode>
     </fileSet>       
     <fileSet>
       <directory>../uimaj-ep-jcasgen</directory>
       <outputDirectory>/uimaj-ep-jcasgen</outputDirectory>
-      <includes>
-        <include>src/**</include>
-        <include>pom.xml</include>
-        <include>META-INF</include>
-        <include>plugin.xml</include>
-      </includes>
+      <excludes>
+        <exclude>target/**</exclude>
+        <exclude>META-INF</exclude>
+      </excludes>
       <fileMode>644</fileMode>
     </fileSet> 
     <fileSet>
       <directory>../uimaj-ep-pear-packager</directory>
       <outputDirectory>/uimaj-ep-pear-packager</outputDirectory>
-      <includes>
-        <include>src/**</include>
-        <include>pom.xml</include>
-        <include>META-INF</include>
-        <include>about.html</include>
-        <include>icons/**</include>
-        <include>plugin.xml</include>
-      </includes>
+      <excludes>
+        <exclude>target/**</exclude>
+        <exclude>META-INF</exclude>
+      </excludes>
       <fileMode>644</fileMode>
     </fileSet>     
     <fileSet>
       <directory>../uimaj-ep-runtime</directory>
       <outputDirectory>/uimaj-ep-runtime</outputDirectory>
-      <includes>
-        <include>src/**</include>
-        <include>pom.xml</include>
-        <include>META-INF</include>
-        <include>plugin.xml</include>
-      </includes>
+      <excludes>
+        <exclude>target/**</exclude>
+        <exclude>META-INF</exclude>
+      </excludes>
+      <fileMode>644</fileMode>
+    </fileSet>      
+    
+    <!-- from aggregate-uimaj -->    
+    <fileSet>
+      <directory>../jVinci</directory>
+      <outputDirectory>/jVinci</outputDirectory>
+      <excludes><exclude>target/**</exclude></excludes>
+      <fileMode>644</fileMode>
+    </fileSet>
+    <fileSet>
+      <directory>../uimaj-adapter-soap</directory>
+      <outputDirectory>/uimaj-adapter-soap</outputDirectory>
+      <excludes><exclude>target/**</exclude></excludes>
+      <fileMode>644</fileMode>
+    </fileSet>
+    <fileSet>
+      <directory>../uimaj-adapter-vinci</directory>
+      <outputDirectory>/uimaj-adapter-vinci</outputDirectory>
+      <excludes><exclude>target/**</exclude></excludes>
+      <fileMode>644</fileMode>
+    </fileSet>  
+    <fileSet>
+      <directory>../uimaj-bootstrap</directory>
+      <outputDirectory>/uimaj-bootstrap</outputDirectory>
+      <excludes><exclude>target/**</exclude></excludes>
+      <fileMode>644</fileMode>
+    </fileSet>          
+    <fileSet>
+      <directory>../uimaj-component-test-util</directory>
+      <outputDirectory>/uimaj-component-test-util</outputDirectory>
+      <excludes><exclude>target/**</exclude></excludes>
+      <fileMode>644</fileMode>
+    </fileSet>  
+    <fileSet>
+      <directory>../uimaj-core</directory>
+      <outputDirectory>/uimaj-core</outputDirectory>
+      <excludes><exclude>target/**</exclude></excludes>
+      <fileMode>644</fileMode>
+    </fileSet>  
+    <fileSet>
+      <directory>../uimaj-cpe</directory>
+      <outputDirectory>/uimaj-cpe</outputDirectory>
+      <excludes><exclude>target/**</exclude></excludes>
       <fileMode>644</fileMode>
     </fileSet>      
     <fileSet>
+      <directory>../uimaj-document-annotation</directory>
+      <outputDirectory>/uimaj-document-annotation</outputDirectory>
+      <excludes><exclude>target/**</exclude></excludes>
+      <fileMode>644</fileMode>
+    </fileSet>   
+    <fileSet>
       <directory>../uimaj-examples</directory>
       <outputDirectory>/uimaj-examples</outputDirectory>
-      <includes>
-        <include>src/**</include>
-        <include>pom.xml</include>
-      </includes>
+      <excludes><exclude>target/**</exclude></excludes>
       <fileMode>644</fileMode>
     </fileSet>      
     <fileSet>
       <directory>../uimaj-test-util</directory>
       <outputDirectory>/uimaj-test-util</outputDirectory>
-      <includes>
-        <include>src/**</include>
-        <include>pom.xml</include>
-      </includes>
+      <excludes><exclude>target/**</exclude></excludes>
       <fileMode>644</fileMode>
     </fileSet>     
     <fileSet>
       <directory>../uimaj-tools</directory>
       <outputDirectory>/uimaj-tools</outputDirectory>
-      <includes>
-        <include>src/**</include>
-        <include>pom.xml</include>
-      </includes>
+      <excludes><exclude>target/**</exclude></excludes>
       <fileMode>644</fileMode>
     </fileSet>
     <fileSet>
       <directory>../PearPackagingMavenPlugin</directory>
       <outputDirectory>/PearPackagingMavenPlugin</outputDirectory>
-      <includes>
-        <include>src/**</include>
-        <include>pom.xml</include>
-      </includes>
+      <excludes><exclude>target/**</exclude></excludes>
       <fileMode>644</fileMode>
-    </fileSet>       
+    </fileSet>          
           
-  </fileSets>  
+  </fileSets>
+  
 </assembly>
