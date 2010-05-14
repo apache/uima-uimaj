@@ -24,7 +24,7 @@
   
   <parent>
     <groupId>org.apache.uima</groupId>
-    <artifactId>parent-pom-ibm-notice</artifactId>
+    <artifactId>parent-pom-distr</artifactId>
     <version>1-SNAPSHOT</version>
     <relativePath/>
   </parent>
@@ -33,7 +33,7 @@
   <packaging>pom</packaging>
   <version>2.3.1-SNAPSHOT</version>
   <name>UIMA Base: ${project.artifactId}</name>
-  <description>:Builds and releases UIMA Java SDK (base),
+  <description>Builds and releases UIMA Java SDK (base),
     including all of the included sub-projects,
     the source and binary assembly distributions</description>
   <url>${uimaWebsiteUrl}</url>
@@ -197,30 +197,7 @@
           </execution>
         </executions>
       </plugin>
-           
-      <!-- must follow other package goals -->
-      <plugin> 
-        <artifactId>maven-assembly-plugin</artifactId>
-      </plugin>
   
-      <!-- Release Audit Tool checks -->
-      <!-- run Release Audit Tool (RAT) on src in this project
-             - it has already been run on the src in the included projects -->       
-      <plugin>
-        <groupId>org.apache.rat</groupId>
-        <artifactId>apache-rat-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>default-cli</id>
-            <configuration>
-              <excludes>
-                <exclude>src/main/readme/README</exclude>
-                <exclude>src/main/readme_src/README</exclude>
-              </excludes>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
   </build>     
   
