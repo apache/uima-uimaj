@@ -270,7 +270,7 @@ public class InternationalizedException extends Exception {
     * 
     * @param messageKey
     *           to search for in the exception chain
-    * @return
+    * @return true if this exception or any of its root causes has a particular UIMA message key.
     */
    public boolean hasMessageKey(String messageKey) {
       if (messageKey.equals(this.getMessageKey())) {

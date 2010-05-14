@@ -1690,7 +1690,7 @@ public class CasCreationUtils {
    * service will be queries for its metadata. An exception will be thrown if the connection can not
    * be opened.
    * 
-   * @param aComponentDescriptionsOrMetaData
+   * @param aComponentDescriptionOrMetaData
    *                a collection of {@link ResourceSpecifier}, {@link ProcessingResourceMetaData},
    *                {@link TypeSystemDescription}, {@link FsIndexCollection}, or
    *                {@link TypePriorities} objects.
@@ -1828,7 +1828,7 @@ public class CasCreationUtils {
    * service will be queries for its metadata. An exception will be thrown if the connection can not
    * be opened.
    * 
-   * @param aComponentDescriptionsOrMetaData
+   * @param aComponentDescriptionOrMetaData
    *                a collection of {@link ResourceSpecifier}, {@link ProcessingResourceMetaData},
    *                {@link TypeSystemDescription}, {@link FsIndexCollection}, or
    *                {@link TypePriorities} objects.

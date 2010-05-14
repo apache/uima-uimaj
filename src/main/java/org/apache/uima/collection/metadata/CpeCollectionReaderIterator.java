@@ -27,10 +27,8 @@ import org.apache.uima.resource.metadata.MetaDataObject;
  * 
  */
 public interface CpeCollectionReaderIterator extends MetaDataObject {
-  /**
-   * Return Descriptor
-   * 
-   * @return
+  /** 
+   * @return Descriptor
    */
   public CpeComponentDescriptor getDescriptor();
 
@@ -42,10 +40,8 @@ public interface CpeCollectionReaderIterator extends MetaDataObject {
   public void setDescriptor(CpeComponentDescriptor descriptor);
 
   /**
-   * Return override parameters. These override parameters in the Collection Reader component
-   * descriptor.
-   * 
-   * @return
+   * @return override parameters. These override parameters in the Collection Reader component
+   * descriptor. 
    */
   public CasProcessorConfigurationParameterSettings getConfigurationParameterSettings();
 

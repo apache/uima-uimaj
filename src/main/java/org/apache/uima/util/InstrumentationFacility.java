@@ -81,8 +81,6 @@ public interface InstrumentationFacility {
    *          duration of the event in milliseconds
    * @param aResultMsg
    *          result message of event
-   * 
-   * @return the new event
    */
   public void addEvent(String aResourceName, String aType, String aDescription, int aDuration,
           String aResultMsg);

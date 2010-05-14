@@ -71,7 +71,7 @@ import org.apache.uima.util.XMLizable;
  * <code>syntax</code> attribute on the <code>filter</code> element. See {@link Filter} for
  * details. </li>
  * <li>STRING can be any string (although in some contexts this must match a valid CAS feature
- * name). See {@link Attribute} and {@link AttributeMappings} for details.</li>
+ * name). See {@link Attribute} and {@link Mapping} for details.</li>
  * </ul>
  * 
  * 

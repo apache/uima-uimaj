@@ -1394,7 +1394,7 @@ public class XmiCasSerializer {
    *          the <code>serialize</code> method that contains types and features that are not in
    *          this typesystem, the serialization will not contain instances of those types or values
    *          for those features. So this can be used to filter the results of serialization.
-   * @param nsUriToSchemaLocation
+   * @param nsUriToSchemaLocationMap
    *          Map if supplied, this map is used to generate a "schemaLocation" attribute in the XMI
    *          output. This argument must be a map from namespace URIs to the schema location for
    *          that namespace URI.
@@ -1431,7 +1431,7 @@ public class XmiCasSerializer {
    *          for those features. So this can be used to filter the results of serialization.
    * @param uimaContext
    *          not used
-   * @param nsUriToSchemaLocation
+   * @param nsUriToSchemaLocationMap
    *          Map if supplied, this map is used to generate a "schemaLocation" attribute in the XMI
    *          output. This argument must be a map from namespace URIs to the schema location for
    *          that namespace URI.

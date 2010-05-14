@@ -25,7 +25,7 @@ public interface CpeSofaMapping extends MetaDataObject {
   public String getComponentSofaName();
 
   /**
-   * @return
+   * @return Sofa Name
    */
   public String getCpeSofaName();
 

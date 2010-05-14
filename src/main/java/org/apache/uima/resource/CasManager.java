@@ -61,7 +61,7 @@ public interface CasManager extends CasOwner {
    *          qualified name of UIMA Contexts passed to {@link #defineCasPool(UimaContextAdmin, int, Properties)}.
    *          This name is later passed to the {@link #getCas(String)} method, to check out
    *          CASes from the pool.
-   * @param aSize
+   * @param aMinimumSize
    *          the minimum CAS pool size required
    * @param aPerformanceTuningSettings
    *          settings, including initial CAS heap size, for the AE
@@ -75,10 +75,10 @@ public interface CasManager extends CasOwner {
    * Defines the CAS pool required by a particular AnalysisEngine. (The AnalysisEngine must contain
    * a CAS Multiplier if it requires a CAS pool.)
    * 
-   * @param aRequestorContextName
+   * @param aRequestorContext
    *          the UimaContext of the AE that will request the CASes
    *          (AnalysisEngine.getUimaContextAdmin()).
-   * @param aSize
+   * @param aMinimumSize
    *          the minimum CAS pool size required
    * @param aPerformanceTuningSettings
    *          settings, including initial CAS heap size, for the AE

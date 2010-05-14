@@ -91,7 +91,7 @@ public final class DoubleArray_Type extends CommonArray_Type {
   /**
    * updates the Cas, setting the indexed value to the passed in Java String value.
    * 
-   * @see org.apache.uima.cas.DoubleArrayFS#set(int, FeatureStructure)
+   * @see org.apache.uima.cas.DoubleArrayFS#set(int, double)
    */
   public void set(int addr, int i, double v) {
     if (lowLevelTypeChecks)

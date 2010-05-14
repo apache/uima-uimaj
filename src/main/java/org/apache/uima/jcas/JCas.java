@@ -185,8 +185,8 @@ public interface JCas extends AbstractCas {
    * {@link #setSofaDataString(String, String)} or {@link #setSofaDataURI(String, String)} on the
    * JCas view returned by this method.
    * 
-   * @param localViewName
-   *          the local name, before any sofa name mapping is done, for this view (note: this is the
+   * @param sofaID
+   *          the local view name, before any sofa name mapping is done, for this view (note: this is the
    *          same as the associated Sofa name).
    * 
    * @return The view corresponding to this local name.
@@ -198,7 +198,7 @@ public interface JCas extends AbstractCas {
   /**
    * Create a JCas view for a Sofa. 
    * 
-   * @param aSofa
+   * @param sofa
    *          a Sofa feature structure in this CAS.
    * 
    * @return The JCas view for the given Sofa.
@@ -433,7 +433,7 @@ public interface JCas extends AbstractCas {
    * 
    * @param text
    *          The text to be analyzed.
-   * @param mime
+   * @param mimetype
    *          The mime type of the data
    * @exception CASRuntimeException
    *              If the Sofa data has already been set.

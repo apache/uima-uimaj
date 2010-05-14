@@ -91,7 +91,7 @@ public final class ShortArray_Type extends CommonArray_Type {
   /**
    * updates the Cas, setting the indexed value to the passed in Java String value.
    * 
-   * @see org.apache.uima.cas.ShortArrayFS#set(int, FeatureStructure)
+   * @see org.apache.uima.cas.ShortArrayFS#set(int, short)
    */
   public void set(int addr, int i, short v) {
     if (lowLevelTypeChecks)

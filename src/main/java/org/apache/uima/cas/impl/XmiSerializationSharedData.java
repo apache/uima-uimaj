@@ -182,9 +182,9 @@ public class XmiSerializationSharedData {
   }
 
   /**
-   * Gets a List of {@link OotsElementData} objects, each of which describes an
+   * Gets a List of {@link org.apache.uima.cas.impl.XmiSerializationSharedData.OotsElementData} objects, each of which describes an
    * incoming XMI element that did not correspond to a Type in the TypeSystem.
-   * @return List of {@link OotsElementData} objects
+   * @return List of {@link org.apache.uima.cas.impl.XmiSerializationSharedData.OotsElementData} objects
    */
   public List<OotsElementData> getOutOfTypeSystemElements() {
     return Collections.unmodifiableList(this.ootsFs);
@@ -239,7 +239,7 @@ public class XmiSerializationSharedData {
    * These will be added to the child elements when that FS is reserialized.
    * @param addr CAS address of the FS 
    * @param featName name of the feature (element tag name)
-   * @param featVal values of the feature, as a List of strings
+   * @param featVals values of the feature, as a List of strings
    */
   public void addOutOfTypeSystemChildElements(int addr, String featName, List<String> featVals) {
     Integer key = Integer.valueOf(addr);
@@ -278,7 +278,7 @@ public class XmiSerializationSharedData {
   /**
    * Gets information about out-of-typesystem array elements.
    * @param addr the CAS address of an FSArray
-   * @return a List of {@link XmiArrayElement} objects, each of which
+   * @return a List of {@link org.apache.uima.cas.impl.XmiSerializationSharedData.XmiArrayElement} objects, each of which
    *   holds the index and xmi:id of an array element that is a
    *   reference to an out-of-typesystem FS.
    */
@@ -316,7 +316,7 @@ public class XmiSerializationSharedData {
   
   /**
    * 
-   * @return
+   * @return the non-shared featureId to FS Id key set
    */
   public int[] getNonsharedMulitValuedFSs() {
     return this.nonsharedfeatureIdToFSId.keySet();
@@ -325,7 +325,7 @@ public class XmiSerializationSharedData {
   /**
    * 
    * @param nonsharedFS
-   * @return
+   * @return the int handle to the encompassing FS
    */
   public int getEncompassingFS(int nonsharedFS) {
 	Integer addr = (Integer) this.nonsharedfeatureIdToFSId.get(nonsharedFS);

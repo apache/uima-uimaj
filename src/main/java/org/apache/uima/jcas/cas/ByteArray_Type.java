@@ -91,7 +91,7 @@ public final class ByteArray_Type extends CommonArray_Type {
   /**
    * updates the Cas, setting the indexed value to the passed in Java String value.
    * 
-   * @see org.apache.uima.cas.ByteArrayFS#set(int, FeatureStructure)
+   * @see org.apache.uima.cas.ByteArrayFS#set(int, byte)
    */
   public void set(int addr, int i, byte v) {
     if (lowLevelTypeChecks)

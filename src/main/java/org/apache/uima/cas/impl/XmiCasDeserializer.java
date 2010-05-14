@@ -2010,11 +2010,11 @@ public class XmiCasDeserializer {
    *     
    */
   public static void deserialize(InputStream aStream, CAS aCAS, boolean aLenient,
-		  XmiSerializationSharedData aSharedData, int aMergePoint, AllowPreexistingFS allowPreexistngFS)
+		  XmiSerializationSharedData aSharedData, int aMergePoint, AllowPreexistingFS allowPreexistingFS)
   throws SAXException, IOException {
 	  XMLReader xmlReader = XMLReaderFactory.createXMLReader();
 	  XmiCasDeserializer deser = new XmiCasDeserializer(aCAS.getTypeSystem());
-	  ContentHandler handler = deser.getXmiCasHandler(aCAS, aLenient, aSharedData, aMergePoint, allowPreexistngFS);
+	  ContentHandler handler = deser.getXmiCasHandler(aCAS, aLenient, aSharedData, aMergePoint, allowPreexistingFS);
 	  xmlReader.setContentHandler(handler);
 	  xmlReader.parse(new InputSource(aStream));
   }  

@@ -91,7 +91,7 @@ public final class BooleanArray_Type extends CommonArray_Type {
   /**
    * updates the Cas, setting the indexed value to the passed in Java String value.
    * 
-   * @see org.apache.uima.cas.BooleanArrayFS#set(int, FeatureStructure)
+   * @see org.apache.uima.cas.BooleanArrayFS#set(int, boolean)
    */
   public void set(int addr, int i, boolean v) {
     if (lowLevelTypeChecks)
