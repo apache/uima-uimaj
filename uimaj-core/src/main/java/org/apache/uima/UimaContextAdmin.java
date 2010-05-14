@@ -113,8 +113,6 @@ public interface UimaContextAdmin extends UimaContext {
    * created. In a multi-client deployment, the deployment wrapper is responsible for ensuring that
    * an appropriate Session object is installed here prior to invoking components that use this
    * UimaContext.
-   * 
-   * @return the Session object for the current client
    */
   public void setSession(Session aSession);
 

@@ -91,8 +91,7 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
 
   /**
    * @throws ResourceInitializationException
-   * @see org.apache.uima.analysis_engine.annotator.BaseAnnotator#initialize(org.apache.uima.cas.CAS,
-   *      org.apache.uima.analysis_engine.annotator.AnnotatorContext)
+   * @see org.apache.uima.analysis_component.AnalysisComponent#initialize(org.apache.uima.UimaContext)
    */
   public void initialize(UimaContext context) throws ResourceInitializationException {
     try {
@@ -171,7 +170,7 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.annotator.BaseAnnotator#typeSystemInit()
+   * @see org.apache.uima.analysis_component.CasAnnotator_ImplBase#typeSystemInit(TypeSystem)
    */
   public void typeSystemInit(TypeSystem ts) throws AnnotatorConfigurationException,
           AnnotatorInitializationException {
@@ -180,7 +179,7 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.annotator.BaseAnnotator#reconfigure(java.lang.String[])
+   * @see org.apache.uima.analysis_component.AnalysisComponent#reconfigure()
    */
   public void reconfigure() {
     // destroy engine; it will be reinitialized on next call to process
@@ -193,7 +192,7 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.annotator.BaseAnnotator#process(org.apache.uima.analysis_engine.ResultSpecification)
+   * @see org.apache.uima.analysis_engine.annotator.GenericAnnotator#process(CAS, ResultSpecification)
    */
   public void process(CAS cas, ResultSpecification aResultSpec) throws AnnotatorProcessException {
     try {

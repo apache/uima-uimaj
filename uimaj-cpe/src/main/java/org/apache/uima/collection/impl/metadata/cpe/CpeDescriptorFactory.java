@@ -175,7 +175,7 @@ public class CpeDescriptorFactory {
 
   /**
    * 
-   * @param aInitializerDescriptorPath
+   * @param aPath
    * @param aDescriptor
    * @throws CpeDescriptorException
    * 
@@ -210,7 +210,7 @@ protected static CpeCollectionReaderCasInitializer produceCollectionReaderCasIni
 
   /**
    * 
-   * @param aDescriptorPath
+   * @param aPath
    */
   public static CpeComponentDescriptor produceComponentDescriptor(String aPath) {
 

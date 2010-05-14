@@ -21,34 +21,47 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-  <!-- groupId omitted - inherited from parent -->
+  
+  <parent>
+    <groupId>org.apache.uima</groupId>
+    <artifactId>parent-pom-eclipse-plugins</artifactId>
+    <version>1-SNAPSHOT</version>
+    <relativePath/>
+  </parent>
+
 	<artifactId>uimaj-ep-debug</artifactId>
-	<packaging>bundle</packaging>
-  <!-- version omitted - inherited from parent-->
-	<name>Apache UIMA Debug Eclipse Plugin</name>
-	<url>http://incubator.apache.org/uima</url>
-	<licenses>
-		<license>
-			<name>The Apache Software License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
+  <version>2.3.1-SNAPSHOT</version>
+	<packaging>jar</packaging> 
+	<name>UIMA Eclipse: ${project.artifactId}</name>
+  <description>Adds structure knowledge for common
+    UIMA data structures to the Eclipse Debug displays</description>
+  <url>${uimaWebsiteUrl}</url>
+
+  <!-- Special inheritance note
+       even though the <scm> element that follows is exactly the 
+       same as those in super poms, it cannot be inherited because 
+       there is some special code that incorrectly computes the 
+       connection elements from the chain of parent poms, if this is omitted. 
+       
+       Keeping this a bit factored allows cutting/pasting the <scm>
+       element, and just changing the following two properties -->  
   <scm>
-    <url>http://svn.apache.org/viewvc/incubator/uima</url>
-  </scm>    
-	<parent>
-		<groupId>org.apache.uima</groupId>
-		<artifactId>uimaj-eclipse-plugins</artifactId>
-		<version>2.3.0.incubating</version> <!-- this comment is a flag for changeVersion -->
-    <!-- this relative path is used the first time mvn is run on the uimaj pom
-         to find the uimaj/eclipse-plugin-superPom
-      If at some point, a different child pom other than this one becomes the 
-      first child in the eclipse-plugin-superPom, this relative link needs to
-      be put there. Once it is resolved, it is cached, apparently. 
-      -->
-    <relativePath>../uimaj/eclipse-plugin-superPom</relativePath>
-	</parent>
+    <connection>
+      scm:svn:http://svn.apache.org/repos/asf/uima/${uimaScmRoot}/trunk/${uimaScmProject}
+    </connection>
+    <developerConnection>
+      scm:svn:https://svn.apache.org/repos/asf/uima/${uimaScmRoot}/trunk/${uimaScmProject}
+    </developerConnection>
+    <url>
+      http://svn.apache.org/viewvc/uima/${uimaScmRoot}/trunk/${uimaScmProject}
+    </url>
+  </scm>
+  
+  <properties>
+    <uimaScmRoot>uimaj</uimaScmRoot>
+    <uimaScmProject>${project.artifactId}</uimaScmProject>
+    <uimaDependenciesVersion>${project.version}</uimaDependenciesVersion>
+  </properties>
   
 	<dependencies>
     <!-- depending on the ep-runtime doesn't work without manual intervention because
@@ -68,7 +81,7 @@
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-core</artifactId>
-      <version>${uimaj-release-version}</version>
+      <version>${uimaDependenciesVersion}</version>
       <scope>compile</scope>
     </dependency>
     
@@ -89,41 +102,38 @@
 		</dependency>
 	</dependencies>
   
-	<build>
-    
-		<finalName>org.apache.uima.debug_${uimaj-release-eclipse-version}</finalName>
-    	    
+	<build>  
+    <!-- don't use artifactId as first part of finalName, follow instead the eclipse convention -->  
+		<finalName>org.apache.uima.debug_${parsedVersion.osgiVersion}</finalName>   	    
 		<plugins>
-      
-
-      
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
-        <!-- version 1.4.0 to support _nouses instruction -->
-        <version>1.4.0</version>
-        <extensions>true</extensions>
-        <configuration>
-          <manifestLocation>META-INF</manifestLocation>
-          <instructions>
-            <!-- turn off "uses" generation because Eclipse 3.2.x doesn't work with them -->
-            <_nouses>true</_nouses>
-            <Export-Package>
-              org.apache.uima.ep_debug
-            </Export-Package>
+        <executions>
+          <execution>
+            <id>uima-bundle</id>
+            <configuration>
+              <instructions>
+                <!-- turn off "uses" generation because Eclipse 3.2.x doesn't work with them -->
+                <_nouses>true</_nouses>
+                <Export-Package>
+                  org.apache.uima.ep_debug
+                </Export-Package>
+                
+                <Import-Package>*,
+                  org.eclipse.ui.plugin
+                </Import-Package>  
+    
+                <Bundle-Activator>org.apache.uima.ep_debug.DebugPlugin</Bundle-Activator>
+                <Bundle-SymbolicName>org.apache.uima.debug;singleton:=true</Bundle-SymbolicName>
+                
+                <Eclipse-AutoStart>true</Eclipse-AutoStart>
+              </instructions>
+            </configuration>
             
-            <Import-Package>*,
-              org.eclipse.ui.plugin
-            </Import-Package>  
-
-            <Bundle-Activator>org.apache.uima.ep_debug.DebugPlugin</Bundle-Activator>
-            <Bundle-SymbolicName>org.apache.uima.debug;singleton:=true</Bundle-SymbolicName>
-            
-            <Eclipse-AutoStart>true</Eclipse-AutoStart>
-          </instructions>
-        </configuration>
-      </plugin>
-      		
+          </execution>
+        </executions>
+      </plugin>      		
 		</plugins>
 	</build>
 </project>

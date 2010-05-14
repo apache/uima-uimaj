@@ -90,7 +90,7 @@ public interface ASB extends Resource {
    *         {@link AnalysisEngineMetaData} values.
    * 
    * @throws org.apache.uima.UIMA_IllegalStateException
-   *           if {@link #setup()} has not been called yet.
+   *           if {@link #setup(Map, UimaContextAdmin, FlowControllerDeclaration, AnalysisEngineMetaData)} has not been called yet.
    */
   public Map<String, AnalysisEngineMetaData> getComponentAnalysisEngineMetaData();
 
@@ -111,7 +111,7 @@ public interface ASB extends Resource {
    *         {@link AnalysisEngine} objects.
    * 
    * @throws org.apache.uima.UIMA_IllegalStateException
-   *           if {@link #setup()} has not been called yet.
+   *           if {@link #setup(Map, UimaContextAdmin, FlowControllerDeclaration, AnalysisEngineMetaData)} has not been called yet.
    */
   public Map<String, AnalysisEngine> getComponentAnalysisEngines();
 

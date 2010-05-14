@@ -699,8 +699,6 @@ public class InstallationController {
    * Internal implementatiton of the <code>extractFilesFromPEARFile</code> method, which allows
    * sending messages to the OUT and ERR queues.
    * 
-   * @param componentId
-   *          The given component ID.
    * @param pearFileLocation
    *          The given PEAR file location.
    * @param fileExt
@@ -839,8 +837,6 @@ public class InstallationController {
    * Internal implementation of the <code>extractPEARFile</code> method, which allows sending
    * messages to the OUT and ERR queues.
    * 
-   * @param componentId
-   *          The given component ID.
    * @param pearFileLocation
    *          The given PEAR file location.
    * @param installationDir

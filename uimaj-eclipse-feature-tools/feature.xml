@@ -20,7 +20,7 @@
 <feature
       id="org.apache.uima.tools"
       label="UIMA tools (includes Runtime)"
-      version="2.3.0.incubating"
+      version="2.3.0.SNAPSHOT"
       provider-name="Apache Software Foundation">
 
    <description url="http://incubator.apache.org/uima">
@@ -59,7 +59,7 @@ under the License.
 
    <includes
          id="org.apache.uima.runtime"
-         version="2.3.0.incubating"
+         version="2.3.1.SNAPSHOT"
          name="UIMA Runtime plugin feature"/>
 
    <requires>
@@ -90,35 +90,35 @@ under the License.
          id="org.apache.uima.debug"
          download-size="0"
          install-size="0"
-         version="2.3.0.incubating"
+         version="2.3.1.SNAPSHOT"
          unpack="false"/>
 
    <plugin
          id="org.apache.uima.desceditor"
          download-size="0"
          install-size="0"
-         version="2.3.0.incubating"
+         version="2.3.1.SNAPSHOT"
          unpack="false"/>
 
    <plugin
          id="org.apache.uima.jcas.jcasgenp"
          download-size="0"
          install-size="0"
-         version="2.3.0.incubating"
+         version="2.3.1.SNAPSHOT"
          unpack="false"/>
 
    <plugin
          id="org.apache.uima.pear"
          download-size="0"
          install-size="0"
-         version="2.3.0.incubating"
+         version="2.3.1.SNAPSHOT"
          unpack="false"/>
 		 
    <plugin
          id="org.apache.uima.caseditor"
          download-size="0"
          install-size="0"
-         version="2.3.0.incubating"
+         version="2.3.1.SNAPSHOT"
          unpack="false"/>
 
 </feature>

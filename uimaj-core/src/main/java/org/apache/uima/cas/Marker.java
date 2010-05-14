@@ -27,25 +27,22 @@ package org.apache.uima.cas;
 public interface Marker {
 
  /**
-  * Returns true if a <code>FeatureStructure</code> was created after the mark represented by this <code>Marker</code> object.
   * @param fs 
-  * @return  
+  * @return true if a <code>FeatureStructure</code> was created after the mark represented by this <code>Marker</code> object. 
   */
  boolean isNew(FeatureStructure fs);
  
  /**
-  * Returns true if a  <code>FeatureStructure</code> that existed prior to the mark
   * represented by this <code>Markere</code> is modified.
   * @param fs
-  * @return boolean 
+  * @return true if a  <code>FeatureStructure</code> that existed prior to the mark
   */
  boolean isModified(FeatureStructure fs);
  
  /**
-  * Return true if the Marker is still valid.
   * A Marker becomes invalid when the <code>CAS</code> from which it was obtained
   * is reset.
-  * @return
+  * @return true if the Marker is still valid.
   */
  boolean isValid();
 

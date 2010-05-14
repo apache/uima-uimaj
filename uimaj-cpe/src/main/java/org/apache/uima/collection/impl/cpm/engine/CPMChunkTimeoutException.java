@@ -48,14 +48,14 @@ public class CPMChunkTimeoutException extends ResourceProcessException {
   }
 
   /**
-   * @return
+   * @return the docID
    */
   public long getDocID() {
     return docID;
   }
 
   /**
-   * @return
+   * @return the ThrottleID
    */
   public String getThrottleID() {
     return throttleID;

@@ -91,7 +91,7 @@ public final class LongArray_Type extends CommonArray_Type {
   /**
    * updates the Cas, setting the indexed value to the passed in Java String value.
    * 
-   * @see org.apache.uima.cas.LongArrayFS#set(int, FeatureStructure)
+   * @see org.apache.uima.cas.LongArrayFS#set(int, long)
    */
   public void set(int addr, int i, long v) {
     if (lowLevelTypeChecks)

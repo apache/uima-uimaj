@@ -21,29 +21,48 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <!-- groupId omitted - inherited from parent -->
-  <artifactId>uimaj-ep-runtime</artifactId>
-  <packaging>bundle</packaging>
-  <!-- version omitted - inherited from parent-->
-  <name>Apache UIMA Runtime Plugin</name>
-  <url>http://incubator.apache.org/uima</url>
-  <licenses>
-    <license>
-      <name>The Apache Software License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
-  <scm>
-    <url>http://svn.apache.org/viewvc/incubator/uima</url>
-  </scm>
+  
   <parent>
     <groupId>org.apache.uima</groupId>
-    <artifactId>uimaj-eclipse-plugins</artifactId>
-    <version>2.3.0.incubating</version> <!-- this comment is a flag for changeVersion -->
-    <relativePath>../uimaj/eclipse-plugin-superPom</relativePath>
+    <artifactId>parent-pom-eclipse-plugins</artifactId>
+    <version>1-SNAPSHOT</version>
+    <relativePath/>
   </parent>
+  
+  <artifactId>uimaj-ep-runtime</artifactId>
+  <version>2.3.1-SNAPSHOT</version>
+  <packaging>jar</packaging>
+  <name>UIMA Eclipse: ${project.artifactId}</name>
+  <description>Provides the core UIMA Framework to other Eclipse 
+    plugins for their use</description>
+  <url>${uimaWebsiteUrl}</url>
 
+  <!-- Special inheritance note
+       even though the <scm> element that follows is exactly the 
+       same as those in super poms, it cannot be inherited because 
+       there is some special code that incorrectly computes the 
+       connection elements from the chain of parent poms, if this is omitted. 
+       
+       Keeping this a bit factored allows cutting/pasting the <scm>
+       element, and just changing the following two properties -->  
+  <scm>
+    <connection>
+      scm:svn:http://svn.apache.org/repos/asf/uima/${uimaScmRoot}/trunk/${uimaScmProject}
+    </connection>
+    <developerConnection>
+      scm:svn:https://svn.apache.org/repos/asf/uima/${uimaScmRoot}/trunk/${uimaScmProject}
+    </developerConnection>
+    <url>
+      http://svn.apache.org/viewvc/uima/${uimaScmRoot}/trunk/${uimaScmProject}
+    </url>
+  </scm>
+  
+  <properties>
+    <uimaScmRoot>uimaj</uimaScmRoot>
+    <uimaScmProject>${project.artifactId}</uimaScmProject>
+    <uimaDependenciesVersion>${project.version}</uimaDependenciesVersion>
+  </properties>
+  
   <!-- These dependencies should just be all the jars that
        need to be included in the library plugin -->
   <dependencies>
@@ -51,28 +70,28 @@
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-core</artifactId>
-      <version>${uimaj-release-version}</version>
+      <version>${uimaDependenciesVersion}</version>
       <scope>compile</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-cpe</artifactId>
-      <version>${uimaj-release-version}</version>
+      <version>${uimaDependenciesVersion}</version>
       <scope>compile</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-tools</artifactId>
-      <version>${uimaj-release-version}</version>
+      <version>${uimaDependenciesVersion}</version>
       <scope>compile</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-adapter-vinci</artifactId>
-      <version>${uimaj-release-version}</version>
+      <version>${uimaDependenciesVersion}</version>
       <scope>compile</scope>
     </dependency>
 
@@ -93,138 +112,136 @@
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>jVinci</artifactId>
-      <version>${uimaj-release-version}</version>
+      <version>${uimaDependenciesVersion}</version>
       <scope>compile</scope>
     </dependency>
     
   </dependencies>
 
-
   <build>
-
-    <finalName>org.apache.uima.runtime_${uimaj-release-eclipse-version}</finalName>
-
+    <!-- don't use artifactId as first part of finalName, follow instead the eclipse convention -->  
+    <finalName>org.apache.uima.runtime_${parsedVersion.osgiVersion}</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
-        <!-- version 1.4.0 to support _nouses instruction -->
-        <version>1.4.0</version>
-        <extensions>true</extensions>
-        <configuration>
-          <manifestLocation>META-INF</manifestLocation>
-          <instructions>
-            <!-- turn off "uses" generation because Eclipse 3.2.x doesn't work with them -->
-            <_nouses>true</_nouses>
-            <!-- export contents because we don't want the actual
-                 java code included (although we could... as an
-                 alternative to the jars - but might have a
-                 versioning / control issue -->
-            <_exportcontents>
-               org.apache.uima,
-               org.apache.uima.adapter.vinci,
-               org.apache.uima.adapter.vinci.util,
-               org.apache.uima.analysis_component,
-               org.apache.uima.analysis_engine,
-               org.apache.uima.analysis_engine.annotator,
-               org.apache.uima.analysis_engine.asb,
-               org.apache.uima.analysis_engine.asb.impl,
-               org.apache.uima.analysis_engine.impl,
-               org.apache.uima.analysis_engine.impl.compatibility,
-               org.apache.uima.analysis_engine.metadata,
-               org.apache.uima.analysis_engine.metadata.impl,
-               org.apache.uima.analysis_engine.service.impl,
-               org.apache.uima.cas,
-               org.apache.uima.cas.admin,
-               org.apache.uima.cas.impl,
-               org.apache.uima.cas.text,
-               org.apache.uima.cas_data,
-               org.apache.uima.cas_data.impl,
-               org.apache.uima.cas_data.impl.vinci,
-               org.apache.uima.collection,
-               org.apache.uima.collection.base_cpm,
-               org.apache.uima.collection.impl,
-               org.apache.uima.collection.impl.base_cpm.container,
-               org.apache.uima.collection.impl.base_cpm.container.deployer,
-               org.apache.uima.collection.impl.cpm,
-               org.apache.uima.collection.impl.cpm.container,
-               org.apache.uima.collection.impl.cpm.container.deployer,
-               org.apache.uima.collection.impl.cpm.container.deployer.socket,
-               org.apache.uima.collection.impl.cpm.container.deployer.vinci,
-               org.apache.uima.collection.impl.cpm.container.deployer.vns,
-               org.apache.uima.collection.impl.cpm.engine,
-               org.apache.uima.collection.impl.cpm.utils,
-               org.apache.uima.collection.impl.cpm.vinci,
-               org.apache.uima.collection.impl.cpm.vinci.cas_data,
-               org.apache.uima.collection.impl.metadata,
-               org.apache.uima.collection.impl.metadata.cpe,
-               org.apache.uima.collection.metadata,
-               org.apache.uima.flow,
-               org.apache.uima.flow.impl,
-               org.apache.uima.impl,
-               org.apache.uima.internal.util,
-               org.apache.uima.internal.util.rb_trees,
-               org.apache.uima.internal.util.text,
-               org.apache.uima.jcas,
-               org.apache.uima.jcas.cas,
-               org.apache.uima.jcas.impl,
-               org.apache.uima.jcas.tcas,
-               org.apache.uima.pear.tools,
-               org.apache.uima.pear.util,
-               org.apache.uima.resource,
-               org.apache.uima.resource.impl,
-               org.apache.uima.resource.metadata,
-               org.apache.uima.resource.metadata.impl,
-               org.apache.uima.resource.service.impl,
-               org.apache.uima.search,
-               org.apache.uima.search.impl,
-               org.apache.uima.tools,
-               org.apache.uima.tools.annot_view,
-               org.apache.uima.tools.cpm,
-               org.apache.uima.tools.cvd,
-               org.apache.uima.tools.cvd.control,
-               org.apache.uima.tools.cvd.tsview,
-               org.apache.uima.tools.docanalyzer,
-               org.apache.uima.tools.images,
-               org.apache.uima.tools.jcasgen,
-               org.apache.uima.tools.pear.install,
-               org.apache.uima.tools.pear.merger,
-               org.apache.uima.tools.stylemap,
-               org.apache.uima.tools.util.gui,
-               org.apache.uima.tools.util.htmlview,
-               org.apache.uima.tools.viewer,
-               org.apache.uima.uimacpp,
-               org.apache.uima.util,
-               org.apache.uima.util.impl,
-               org.apache.vinci.debug,
-               org.apache.vinci.transport,
-               org.apache.vinci.transport.context,
-               org.apache.vinci.transport.document,
-               org.apache.vinci.transport.util,
-               org.apache.vinci.transport.vns,
-               org.apache.vinci.transport.vns.client,
-               org.apache.vinci.transport.vns.service
-            </_exportcontents>
-
-            <!-- excluded packages:
-               org.apache.uima.adapter.soap,
-               org.apache.uima.adapter.soap.axis11,
-             -->
-            <Import-Package>org.apache.log4j;resolution:=optional,*
-            </Import-Package>
-            <!-- causes the other Jars from the maven
-                 dependencies, at the proper version, to be
-                 included in this, and also sets up the bundle
-                 classpath to include them -->
-            <Embed-Dependency>*;scope=compile;inline=true</Embed-Dependency>
-
-            <!-- These just get made into the corresponding manifest entries -->
-            <Bundle-SymbolicName>org.apache.uima.runtime;singleton:=true</Bundle-SymbolicName>
-            <Bundle-RequiredExecutionEnvironment>J2SE-1.5</Bundle-RequiredExecutionEnvironment>            
-            <Eclipse-ExtensibleAPI>true</Eclipse-ExtensibleAPI>
-            <Eclipse-BuddyPolicy>registered</Eclipse-BuddyPolicy>
-          </instructions>
-        </configuration>
+        <executions>
+          <execution>
+            <configuration>
+              <instructions>
+                <!-- turn off "uses" generation because Eclipse 3.2.x doesn't work with them -->
+                <_nouses>true</_nouses>
+                <!-- export contents because we don't want the actual
+                     java code included (although we could... as an
+                     alternative to the jars - but might have a
+                     versioning / control issue -->
+                <_exportcontents>
+                   org.apache.uima,
+                   org.apache.uima.adapter.vinci,
+                   org.apache.uima.adapter.vinci.util,
+                   org.apache.uima.analysis_component,
+                   org.apache.uima.analysis_engine,
+                   org.apache.uima.analysis_engine.annotator,
+                   org.apache.uima.analysis_engine.asb,
+                   org.apache.uima.analysis_engine.asb.impl,
+                   org.apache.uima.analysis_engine.impl,
+                   org.apache.uima.analysis_engine.impl.compatibility,
+                   org.apache.uima.analysis_engine.metadata,
+                   org.apache.uima.analysis_engine.metadata.impl,
+                   org.apache.uima.analysis_engine.service.impl,
+                   org.apache.uima.cas,
+                   org.apache.uima.cas.admin,
+                   org.apache.uima.cas.impl,
+                   org.apache.uima.cas.text,
+                   org.apache.uima.cas_data,
+                   org.apache.uima.cas_data.impl,
+                   org.apache.uima.cas_data.impl.vinci,
+                   org.apache.uima.collection,
+                   org.apache.uima.collection.base_cpm,
+                   org.apache.uima.collection.impl,
+                   org.apache.uima.collection.impl.base_cpm.container,
+                   org.apache.uima.collection.impl.base_cpm.container.deployer,
+                   org.apache.uima.collection.impl.cpm,
+                   org.apache.uima.collection.impl.cpm.container,
+                   org.apache.uima.collection.impl.cpm.container.deployer,
+                   org.apache.uima.collection.impl.cpm.container.deployer.socket,
+                   org.apache.uima.collection.impl.cpm.container.deployer.vinci,
+                   org.apache.uima.collection.impl.cpm.container.deployer.vns,
+                   org.apache.uima.collection.impl.cpm.engine,
+                   org.apache.uima.collection.impl.cpm.utils,
+                   org.apache.uima.collection.impl.cpm.vinci,
+                   org.apache.uima.collection.impl.cpm.vinci.cas_data,
+                   org.apache.uima.collection.impl.metadata,
+                   org.apache.uima.collection.impl.metadata.cpe,
+                   org.apache.uima.collection.metadata,
+                   org.apache.uima.flow,
+                   org.apache.uima.flow.impl,
+                   org.apache.uima.impl,
+                   org.apache.uima.internal.util,
+                   org.apache.uima.internal.util.rb_trees,
+                   org.apache.uima.internal.util.text,
+                   org.apache.uima.jcas,
+                   org.apache.uima.jcas.cas,
+                   org.apache.uima.jcas.impl,
+                   org.apache.uima.jcas.tcas,
+                   org.apache.uima.pear.tools,
+                   org.apache.uima.pear.util,
+                   org.apache.uima.resource,
+                   org.apache.uima.resource.impl,
+                   org.apache.uima.resource.metadata,
+                   org.apache.uima.resource.metadata.impl,
+                   org.apache.uima.resource.service.impl,
+                   org.apache.uima.search,
+                   org.apache.uima.search.impl,
+                   org.apache.uima.tools,
+                   org.apache.uima.tools.annot_view,
+                   org.apache.uima.tools.cpm,
+                   org.apache.uima.tools.cvd,
+                   org.apache.uima.tools.cvd.control,
+                   org.apache.uima.tools.cvd.tsview,
+                   org.apache.uima.tools.docanalyzer,
+                   org.apache.uima.tools.images,
+                   org.apache.uima.tools.jcasgen,
+                   org.apache.uima.tools.pear.install,
+                   org.apache.uima.tools.pear.merger,
+                   org.apache.uima.tools.stylemap,
+                   org.apache.uima.tools.util.gui,
+                   org.apache.uima.tools.util.htmlview,
+                   org.apache.uima.tools.viewer,
+                   org.apache.uima.uimacpp,
+                   org.apache.uima.util,
+                   org.apache.uima.util.impl,
+                   org.apache.vinci.debug,
+                   org.apache.vinci.transport,
+                   org.apache.vinci.transport.context,
+                   org.apache.vinci.transport.document,
+                   org.apache.vinci.transport.util,
+                   org.apache.vinci.transport.vns,
+                   org.apache.vinci.transport.vns.client,
+                   org.apache.vinci.transport.vns.service
+                </_exportcontents>
+    
+                <!-- excluded packages:
+                   org.apache.uima.adapter.soap,
+                   org.apache.uima.adapter.soap.axis11,
+                 -->
+                <Import-Package>org.apache.log4j;resolution:=optional,*
+                </Import-Package>
+                <!-- causes the other Jars from the maven
+                     dependencies, at the proper version, to be
+                     included in this, and also sets up the bundle
+                     classpath to include them -->
+                <Embed-Dependency>*;scope=compile;inline=true</Embed-Dependency>
+    
+                <!-- These just get made into the corresponding manifest entries -->
+                <Bundle-SymbolicName>org.apache.uima.runtime;singleton:=true</Bundle-SymbolicName>
+                <Bundle-RequiredExecutionEnvironment>J2SE-1.5</Bundle-RequiredExecutionEnvironment>            
+                <Eclipse-ExtensibleAPI>true</Eclipse-ExtensibleAPI>
+                <Eclipse-BuddyPolicy>registered</Eclipse-BuddyPolicy>
+              </instructions>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

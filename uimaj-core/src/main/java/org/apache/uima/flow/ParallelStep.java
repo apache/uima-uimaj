@@ -61,7 +61,7 @@ public class ParallelStep extends Step {
    * a user's Flow implementation can (but is not required to) reuse the same ParallelStep object
    * multiple times.
    * 
-   * @return A Collection of Strings, where each String is the key of an Analysis Engine to which the CAS
+   * @param aKeys A Collection of Strings, where each String is the key of an Analysis Engine to which the CAS
    *         should be routed. Each String must bee one of the keys in the FlowController's
    *         {@link FlowControllerContext#getAnalysisEngineMetaDataMap()}.
    */
