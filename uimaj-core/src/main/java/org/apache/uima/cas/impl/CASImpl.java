@@ -717,7 +717,18 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
         int arraySize = this.ll_getArraySize(fs.getAddress());
         ByteBuffer buf = null;
         Type type = fs.getType();
-        if (type.getName().equals(CAS.TYPE_NAME_INTEGER_ARRAY)) {
+        if (type.getName().equals(CAS.TYPE_NAME_STRING_ARRAY)) {
+          StringBuffer sb = new StringBuffer();
+          for (int i=0; i<((StringArrayFS)fs).size(); i++) {
+            if (i==0) {
+              sb.append( ((StringArrayFS)fs).get(i) );
+            } else {
+              sb.append( "\n" + ((StringArrayFS)fs).get(i) );
+            }
+          }
+          ByteArrayInputStream bis = new ByteArrayInputStream( sb.toString().getBytes("UTF-8") );
+          return bis;
+        } else if (type.getName().equals(CAS.TYPE_NAME_INTEGER_ARRAY)) {
           arrayStart = getArrayStartAddress(fs.getAddress());
           buf = ByteBuffer.allocate(arraySize * 4);
           IntBuffer intbuf = buf.asIntBuffer();

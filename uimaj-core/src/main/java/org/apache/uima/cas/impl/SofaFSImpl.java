@@ -85,7 +85,8 @@ public class SofaFSImpl extends FeatureStructureImplC implements SofaFS {
 				&& !type.getName().equals(CAS.TYPE_NAME_FLOAT_ARRAY)
 				&& !type.getName().equals(CAS.TYPE_NAME_INTEGER_ARRAY)
 				&& !type.getName().equals(CAS.TYPE_NAME_LONG_ARRAY)
-				&& !type.getName().equals(CAS.TYPE_NAME_SHORT_ARRAY)) {
+				&& !type.getName().equals(CAS.TYPE_NAME_SHORT_ARRAY)
+				&& !type.getName().equals(CAS.TYPE_NAME_STRING_ARRAY)) {
 			CASRuntimeException e = new CASRuntimeException(CASRuntimeException.INAPPROP_TYPE,
 					new String[] { "Byte/Float/Integer/Short/String/Long/Double Array", type.getName() });
 			throw e;

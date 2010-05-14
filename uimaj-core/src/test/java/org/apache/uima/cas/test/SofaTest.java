@@ -52,6 +52,7 @@ import org.apache.uima.cas.IntArrayFS;
 import org.apache.uima.cas.LongArrayFS;
 import org.apache.uima.cas.ShortArrayFS;
 import org.apache.uima.cas.SofaFS;
+import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.admin.CASFactory;
 import org.apache.uima.cas.admin.CASMgr;
@@ -356,6 +357,16 @@ public class SofaTest extends TestCase {
       CAS intArrayView =this.cas.createView("intArraySofaData");
       intArrayView.setSofaDataArray(intArrayFS, "integers");
 
+      // create a string array fs
+      StringArrayFS stringArrayFS =this.cas.createStringArrayFS(5);
+      stringArrayFS.set(0, "This");
+      stringArrayFS.set(1, "beer");
+      stringArrayFS.set(2, "is");
+      stringArrayFS.set(3, "really");
+      stringArrayFS.set(4, "good");
+      CAS stringArrayView =this.cas.createView("stringArraySofaData");
+      stringArrayView.setSofaDataArray(stringArrayFS, "strings");
+
       // create a float array fs
       FloatArrayFS floatArrayFS =this.cas.createFloatArrayFS(5);
       floatArrayFS.set(0, (float) 0.1);
@@ -458,6 +469,15 @@ public class SofaTest extends TestCase {
       int i = 0;
       while (is.read(dest) != -1) {
         assertTrue(ByteBuffer.wrap(dest).getInt() == intArrayFS.get(i++));
+      }
+
+      is.close();
+      is = stringArrayView.getSofaDataStream();
+      assertTrue(is != null);
+      BufferedReader br = new BufferedReader(new InputStreamReader(is));
+      i = 0;
+      while (br.ready()) {
+        assertTrue(stringArrayFS.get(i++).equals(br.readLine()));
       }
 
       // is = floatarraySofaFS.getSofaDataStream();
