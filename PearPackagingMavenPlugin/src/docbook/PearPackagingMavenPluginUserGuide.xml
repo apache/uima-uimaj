@@ -317,7 +317,7 @@
       <itemizedlist spacing="compact">
         <listitem><para><code>-DgroupId=org.apache.uima</code></para></listitem>
         <listitem><para><code>-DartifactId=PearPackagingMavenPlugin</code></para></listitem>
-        <listitem><para><code>-Dversion=2.3.0-incubating</code>  (change this to the version you want)</para></listitem>
+        <listitem><para><code>-Dversion=2.3.1</code>  (change this to the version you want)</para></listitem>
         <listitem><para><code>-Dpackaging=jar</code></para></listitem>
         <listitem><para><code>-DgeneratePom=true</code></para></listitem>
       </itemizedlist>
@@ -339,16 +339,16 @@
 		  This maven command will build the tool and install it in your local maven repository, 
       making it available for use by other maven POMs.  The plugin version number
 		  is displayed at the end of the Maven build as shown in the example below. For this example, the plugin 
-		  version number is: <code>2.3.0-incubating</code> 
+		  version number is: <code>2.3.1</code> 
 		</para>
 		<para>
 		<programlisting><![CDATA[[INFO] Installing 
 /code/apache/PearPackagingMavenPlugin/target/
-PearPackagingMavenPlugin-2.3.0-incubating.jar 
+PearPackagingMavenPlugin-2.3.1.jar 
 to 
 /maven-repository/repository/org/apache/uima/PearPackagingMavenPlugin/
 2.3.0-incubating/
-PearPackagingMavenPlugin-2.3.0-incubating.jar
+PearPackagingMavenPlugin-2.3.1.jar
 [INFO] [plugin:updateRegistry]
 [INFO] --------------------------------------------------------------
 [INFO] BUILD SUCCESSFUL
