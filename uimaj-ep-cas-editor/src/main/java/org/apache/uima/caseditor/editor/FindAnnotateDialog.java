@@ -19,11 +19,7 @@
 
 package org.apache.uima.caseditor.editor;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.caseditor.CasEditorPlugin;
@@ -34,7 +30,6 @@ import org.apache.uima.caseditor.editor.action.LowerRightAnnotationSideAction;
 import org.apache.uima.caseditor.editor.action.WideLeftAnnotationSideAction;
 import org.apache.uima.caseditor.editor.action.WideRightAnnotationSideAction;
 import org.apache.uima.caseditor.editor.fsview.TypeCombo;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.text.IFindReplaceTarget;
 import org.eclipse.swt.SWT;
@@ -418,6 +413,7 @@ class FindAnnotateDialog extends Dialog {
     }
     else if (CLOSE_BUTTON == buttonID) {
       close();
+      return;
     }
     else {
       throw new TaeError("Unkown button!");
