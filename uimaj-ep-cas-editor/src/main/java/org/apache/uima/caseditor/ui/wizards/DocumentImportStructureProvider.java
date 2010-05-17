@@ -26,6 +26,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.List;
 
 import javax.swing.text.BadLocationException;
@@ -52,12 +53,15 @@ import org.xml.sax.SAXException;
  */
 final class DocumentImportStructureProvider implements IImportStructureProvider {
 
+   private final Charset importEncoding;
+	
   /**
    * Constructs a new DocumentImportStructureProvider object.
    *
    * @param containerFullPath
    */
-  public DocumentImportStructureProvider() {
+  public DocumentImportStructureProvider(String importEncoding) {
+	  this.importEncoding = Charset.forName(importEncoding);
   }
 
   public List<Object> getChildren(Object element) {
@@ -162,7 +166,7 @@ final class DocumentImportStructureProvider implements IImportStructureProvider 
           int length = in.read(readBuffer);
 
           // TODO: ask the user for the correct encoding
-          textStringBuffer.append(new String(readBuffer, 0, length)); //, "UTF-8"));
+          textStringBuffer.append(new String(readBuffer, 0, length, importEncoding));
         }
 
         return getDocument(textStringBuffer.toString(), DocumentFormat.XMI);

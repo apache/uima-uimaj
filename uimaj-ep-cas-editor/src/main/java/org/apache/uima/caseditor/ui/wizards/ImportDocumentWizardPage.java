@@ -20,12 +20,18 @@
 package org.apache.uima.caseditor.ui.wizards;
 
 import java.io.File;
+import java.nio.charset.Charset;
+import java.nio.charset.IllegalCharsetNameException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.SortedMap;
 
 import org.apache.uima.caseditor.CasEditorPlugin;
 import org.apache.uima.caseditor.core.model.CorpusElement;
+import org.apache.uima.caseditor.editor.DocumentFormat;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
@@ -36,14 +42,18 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
@@ -59,6 +69,8 @@ final class ImportDocumentWizardPage extends WizardPage {
 
   private IPath importDestinationPath;
 
+  private String importEncoding;
+  
   private TableViewer fileTable;
 
   private CorpusElement corpusElement;
@@ -80,7 +92,20 @@ final class ImportDocumentWizardPage extends WizardPage {
   }
 
   private void computePageComplete() {
-    setPageComplete(importDestinationPath != null && fileTable.getTable().getItemCount() > 0);
+	  
+	boolean isEncodingSupported = false;
+	
+	try {
+		isEncodingSupported = Charset.isSupported(importEncoding);
+	}
+	catch (IllegalCharsetNameException e) {
+		// Name of the Charset is incorrect, that means
+		// it cannot exist
+		
+	}
+    setPageComplete(importDestinationPath != null && 
+    		fileTable.getTable().getItemCount() > 0
+    		&& isEncodingSupported);
   }
 
   public void createControl(Composite parent) {
@@ -190,6 +215,7 @@ final class ImportDocumentWizardPage extends WizardPage {
       }
     });
 
+    // Into Corpus folder 
     Label corpusFolderLabel = new Label(composite, SWT.NONE);
     corpusFolderLabel.setText("Into corpus:");
 
@@ -198,7 +224,6 @@ final class ImportDocumentWizardPage extends WizardPage {
 
     if (importDestinationPath != null) {
       corpusText.setText(importDestinationPath.toString());
-      computePageComplete();
     }
 
     Button browseForCorpusFolder = new Button(composite, SWT.NONE);
@@ -262,6 +287,60 @@ final class ImportDocumentWizardPage extends WizardPage {
       }
     });
 
+    Group importOptions = new Group(composite, SWT.NONE);
+    importOptions.setText("Options");
+    GridLayout importOptionsGridLayout = new GridLayout();
+    importOptionsGridLayout.numColumns = 2;
+    importOptions.setLayout(importOptionsGridLayout);
+    GridData importOptionsGridData = new GridData(GridData.FILL, GridData.CENTER, true, false);
+    importOptionsGridData.horizontalSpan = 3;
+    importOptions.setLayoutData(importOptionsGridData);
+	
+    // Text file encoding
+    Label encodingLabel = new Label(importOptions, SWT.NONE);
+    encodingLabel.setText("Text Encoding:");
+    
+    // combo box ...
+    final Combo encodingCombo = new Combo(importOptions, SWT.NONE);
+    encodingCombo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+    
+    importEncoding = Charset.defaultCharset().displayName();
+    
+    Set<String> charsets = new HashSet<String>();
+    charsets.add("US-ASCII");
+    charsets.add("ISO-8859-1");
+    charsets.add("UTF-8");
+    charsets.add("UTF-16BE");
+    charsets.add("UTF-16LE");
+    charsets.add("UTF-16");
+    charsets.add(importEncoding);
+    
+    encodingCombo.setItems(charsets.toArray(new String[charsets.size()]));
+    encodingCombo.setText(importEncoding);
+    encodingCombo.addSelectionListener(new SelectionListener() {
+		
+		public void widgetSelected(SelectionEvent e) {
+			importEncoding = encodingCombo.getText();
+			computePageComplete();
+		}
+		
+		public void widgetDefaultSelected(SelectionEvent e) {
+		}
+	});
+    
+    encodingCombo.addKeyListener(new KeyListener() {
+		
+		public void keyReleased(KeyEvent e) {
+			importEncoding = encodingCombo.getText();
+			computePageComplete();
+		}
+		
+		public void keyPressed(KeyEvent e) {
+		}
+	});
+    
+    computePageComplete();
+    
     setControl(composite);
   }
 
@@ -283,5 +362,9 @@ final class ImportDocumentWizardPage extends WizardPage {
     }
 
     return files;
+  }
+  
+  String getTextEncoding() {
+	  return importEncoding;
   }
 }
