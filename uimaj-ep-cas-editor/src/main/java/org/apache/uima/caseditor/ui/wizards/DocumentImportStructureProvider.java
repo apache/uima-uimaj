@@ -54,14 +54,17 @@ import org.xml.sax.SAXException;
 final class DocumentImportStructureProvider implements IImportStructureProvider {
 
    private final Charset importEncoding;
-	
+   
+   private final DocumentFormat casFormat;
   /**
    * Constructs a new DocumentImportStructureProvider object.
    *
    * @param containerFullPath
    */
-  public DocumentImportStructureProvider(String importEncoding) {
+  public DocumentImportStructureProvider(String importEncoding,
+		  DocumentFormat casFormat) {
 	  this.importEncoding = Charset.forName(importEncoding);
+	  this.casFormat = casFormat;
   }
 
   public List<Object> getChildren(Object element) {
@@ -138,7 +141,7 @@ final class DocumentImportStructureProvider implements IImportStructureProvider 
         in = new FileInputStream((File) element);
         String text = convert(in);
 
-        return getDocument(text, DocumentFormat.XMI);
+        return getDocument(text, casFormat);
       } catch (FileNotFoundException e) {
         return null;
       } catch (IOException e) {
@@ -169,7 +172,7 @@ final class DocumentImportStructureProvider implements IImportStructureProvider 
           textStringBuffer.append(new String(readBuffer, 0, length, importEncoding));
         }
 
-        return getDocument(textStringBuffer.toString(), DocumentFormat.XMI);
+        return getDocument(textStringBuffer.toString(), casFormat);
       } catch (FileNotFoundException e) {
         return null;
       } catch (IOException e) {
@@ -222,8 +225,19 @@ final class DocumentImportStructureProvider implements IImportStructureProvider 
     if (fileName.endsWith(".rtf") || fileName.endsWith(".txt")) {
       int nameWithouEndingLength = fileName.lastIndexOf(".");
       String nameWithouEnding = fileName.substring(0, nameWithouEndingLength);
-
-      return nameWithouEnding + ".xmi";
+      
+      String ending;
+      if (DocumentFormat.XMI.equals(casFormat)) {
+    	  ending = "xmi";
+      }
+      else if (DocumentFormat.XCAS.equals(casFormat)) {
+    	  ending = "xcas";
+      }
+      else {
+    	  throw new IllegalStateException("Unkown DocumentFormat!");
+      }
+      
+       return nameWithouEnding + "." + ending;
     } else {
       return fileName;
     }

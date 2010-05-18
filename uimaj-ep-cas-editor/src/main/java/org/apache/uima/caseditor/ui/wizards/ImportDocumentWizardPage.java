@@ -27,7 +27,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.SortedMap;
 
 import org.apache.uima.caseditor.CasEditorPlugin;
 import org.apache.uima.caseditor.core.model.CorpusElement;
@@ -70,6 +69,8 @@ final class ImportDocumentWizardPage extends WizardPage {
   private IPath importDestinationPath;
 
   private String importEncoding;
+  
+  private DocumentFormat documentFormat;
   
   private TableViewer fileTable;
 
@@ -339,6 +340,26 @@ final class ImportDocumentWizardPage extends WizardPage {
 		}
 	});
     
+    Label casFormatLabel = new Label(importOptions, SWT.NONE);
+    casFormatLabel.setText("Cas Format:");
+  
+    final Combo casFormatCombo = new Combo(importOptions, SWT.READ_ONLY);
+    casFormatCombo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+    casFormatCombo.setItems(new String[]{DocumentFormat.XMI.toString(), DocumentFormat.XCAS.toString()});
+    documentFormat = DocumentFormat.XMI;
+    casFormatCombo.select(0);
+    
+    casFormatCombo.addSelectionListener(new SelectionListener() {
+		
+		public void widgetSelected(SelectionEvent e) {
+			documentFormat = DocumentFormat.valueOf(casFormatCombo.getText());
+		}
+		
+		public void widgetDefaultSelected(SelectionEvent e) {
+		}
+	});
+    
+    
     computePageComplete();
     
     setControl(composite);
@@ -366,5 +387,9 @@ final class ImportDocumentWizardPage extends WizardPage {
   
   String getTextEncoding() {
 	  return importEncoding;
+  }
+  
+  DocumentFormat getCasFormat() {
+	  return documentFormat;
   }
 }
