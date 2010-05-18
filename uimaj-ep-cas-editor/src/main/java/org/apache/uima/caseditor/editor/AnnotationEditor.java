@@ -58,6 +58,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.text.IPainter;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.information.InformationPresenter;
@@ -91,6 +92,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
@@ -746,9 +748,10 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     super.editorContextMenuAboutToShow(menu);
 
     // Add Annotate action
-    menu.add(getAction(ITextEditorActionDefinitionIds.SMART_ENTER));
-    menu.add(getAction("Enter"));
-    menu.add(getAction(ITextEditorActionDefinitionIds.DELETE));
+    menu.appendToGroup(IWorkbenchActionConstants.MB_ADDITIONS, new Separator());
+    menu.appendToGroup(IWorkbenchActionConstants.MB_ADDITIONS, getAction(ITextEditorActionDefinitionIds.SMART_ENTER));
+    menu.appendToGroup(IWorkbenchActionConstants.MB_ADDITIONS, getAction("Enter"));
+    menu.appendToGroup(IWorkbenchActionConstants.MB_ADDITIONS, getAction(ITextEditorActionDefinitionIds.DELETE));
     
     TypeSystem typeSytem = getDocument().getCAS().getTypeSystem();
 
