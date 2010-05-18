@@ -41,7 +41,7 @@ public class DeleteFeatureStructureAction extends BaseSelectionListenerAction {
 
     mDocument = document;
 
-    setEnabled(true);
+    setEnabled(false);
   }
 
   @Override

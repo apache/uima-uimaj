@@ -71,6 +71,8 @@ import org.eclipse.jface.text.source.IAnnotationModelExtension;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
@@ -120,10 +122,21 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
  * add an action to decrease right side on an annotation
  */
 public final class AnnotationEditor extends StatusTextEditor implements ICasEditor, ISelectionListener {
+	
+  private abstract class AbstractAnnotateAction extends Action
+      implements ISelectionChangedListener {
+	
+    public void selectionChanged(SelectionChangedEvent event) {
+      setEnabled(AnnotationEditor.this.getSelection().y - 
+          AnnotationEditor.this.getSelection().x > 0);
+    }
+  }
+	
   /**
    * This action annotates the selected text with a defined tag.
    */
-  private class AnnotateAction extends Action {
+  private class AnnotateAction extends AbstractAnnotateAction {
+	  
     private StyledText mTextWidget;
 
     /**
@@ -169,7 +182,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     }
   }
 
-  private class SmartAnnotateAction extends Action {
+  private class SmartAnnotateAction extends AbstractAnnotateAction {
 
     @Override
     public void run() {
@@ -1082,6 +1095,8 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     annotateAction.setActionDefinitionId(annotateActionID);
     annotateAction.setText("Quick Annotate");
     annotateAction.setAccelerator(SWT.CR);
+    getSite().getSelectionProvider().addSelectionChangedListener(annotateAction);
+    
     setAction(annotateActionID, annotateAction);
     setActionActivationCode(annotateActionID, '\r', SWT.CR,
             SWT.NONE);
@@ -1090,6 +1105,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     smartAnnotateAction.setActionDefinitionId(ITextEditorActionDefinitionIds.SMART_ENTER);
     smartAnnotateAction.setText("Annotate");
     smartAnnotateAction.setAccelerator(SWT.SHIFT | SWT.CR);
+    getSite().getSelectionProvider().addSelectionChangedListener(smartAnnotateAction);
     setAction(ITextEditorActionDefinitionIds.SMART_ENTER, smartAnnotateAction);
 
     setActionActivationCode(ITextEditorActionDefinitionIds.SMART_ENTER, '\r', SWT.CR,
