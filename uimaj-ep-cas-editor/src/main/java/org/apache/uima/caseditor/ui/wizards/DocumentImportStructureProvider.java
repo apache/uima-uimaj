@@ -161,14 +161,13 @@ final class DocumentImportStructureProvider implements IImportStructureProvider 
       try {
         in = new FileInputStream((File) element);
 
-        StringBuffer textStringBuffer = new StringBuffer();
+        StringBuilder textStringBuffer = new StringBuilder();
 
         byte[] readBuffer = new byte[2048];
 
         while (in.available() > 0) {
           int length = in.read(readBuffer);
 
-          // TODO: ask the user for the correct encoding
           textStringBuffer.append(new String(readBuffer, 0, length, importEncoding));
         }
 
