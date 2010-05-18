@@ -80,7 +80,7 @@ final class ImportDocumentWizardPage extends WizardPage {
       IStructuredSelection currentResourceSelection) {
     super(pageName);
 
-    setMessage("Please select the documents to import.");
+    setTitle("Import Text Files");
 
     if (!currentResourceSelection.isEmpty()) {
       if (currentResourceSelection.getFirstElement() instanceof CorpusElement) {
@@ -92,7 +92,7 @@ final class ImportDocumentWizardPage extends WizardPage {
     setPageComplete(false);
   }
 
-  private void computePageComplete() {
+  private void updatePageState() {
 	  
 	boolean isEncodingSupported = false;
 	
@@ -104,6 +104,18 @@ final class ImportDocumentWizardPage extends WizardPage {
 		// it cannot exist
 		
 	}
+	
+	String errorMessage = null;
+	if (!isEncodingSupported)
+		errorMessage ="Invalid text import encoding!";
+	
+	// error message is always displayed instead of status message
+	// if both are set
+	setErrorMessage(errorMessage);
+	setMessage("Please select the documents to import.");
+	
+	
+	
     setPageComplete(importDestinationPath != null && 
     		fileTable.getTable().getItemCount() > 0
     		&& isEncodingSupported);
@@ -142,7 +154,7 @@ final class ImportDocumentWizardPage extends WizardPage {
             fileTable.add(new File(fd.getFilterPath() + File.separator + fileItem));
           }
 
-          computePageComplete();
+          updatePageState();
         }
       }
     });
@@ -174,7 +186,7 @@ final class ImportDocumentWizardPage extends WizardPage {
 
         fileTable.remove(selectedElements);
 
-        computePageComplete();
+        updatePageState();
       }
     });
 
@@ -283,7 +295,7 @@ final class ImportDocumentWizardPage extends WizardPage {
 
           corpusText.setText(importDestinationPath.toString());
 
-          computePageComplete();
+          updatePageState();
         }
       }
     });
@@ -322,7 +334,7 @@ final class ImportDocumentWizardPage extends WizardPage {
 		
 		public void widgetSelected(SelectionEvent e) {
 			importEncoding = encodingCombo.getText();
-			computePageComplete();
+			updatePageState();
 		}
 		
 		public void widgetDefaultSelected(SelectionEvent e) {
@@ -333,7 +345,7 @@ final class ImportDocumentWizardPage extends WizardPage {
 		
 		public void keyReleased(KeyEvent e) {
 			importEncoding = encodingCombo.getText();
-			computePageComplete();
+			updatePageState();
 		}
 		
 		public void keyPressed(KeyEvent e) {
@@ -359,8 +371,7 @@ final class ImportDocumentWizardPage extends WizardPage {
 		}
 	});
     
-    
-    computePageComplete();
+    updatePageState();
     
     setControl(composite);
   }

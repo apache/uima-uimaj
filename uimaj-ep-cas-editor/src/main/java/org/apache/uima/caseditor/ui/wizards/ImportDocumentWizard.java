@@ -42,7 +42,9 @@ public final class ImportDocumentWizard extends Wizard implements IImportWizard 
   public void init(IWorkbench workbench, IStructuredSelection selection) {
     mCurrentResourceSelection = selection; // if corpus set as import corpus
 
-    setWindowTitle("Import Documents");
+    // Did not find a way to retrieve the "Import" string
+    // from an eclipse message file
+    setWindowTitle("Import");
   }
 
   @Override
