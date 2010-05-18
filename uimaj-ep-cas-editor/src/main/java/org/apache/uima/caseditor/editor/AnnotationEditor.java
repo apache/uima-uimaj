@@ -745,6 +745,11 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   protected void editorContextMenuAboutToShow(IMenuManager menu) {
     super.editorContextMenuAboutToShow(menu);
 
+    // Add Annotate action
+    menu.add(getAction(ITextEditorActionDefinitionIds.SMART_ENTER));
+    menu.add(getAction("Enter"));
+    menu.add(getAction(ITextEditorActionDefinitionIds.DELETE));
+    
     TypeSystem typeSytem = getDocument().getCAS().getTypeSystem();
 
     // mode menu
@@ -1072,13 +1077,16 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     final String annotateActionID = "Enter";
 
     annotateAction.setActionDefinitionId(annotateActionID);
-
+    annotateAction.setText("Quick Annotate");
+    annotateAction.setAccelerator(SWT.CR);
     setAction(annotateActionID, annotateAction);
     setActionActivationCode(annotateActionID, '\r', SWT.CR,
             SWT.NONE);
 
     SmartAnnotateAction smartAnnotateAction = new SmartAnnotateAction();
     smartAnnotateAction.setActionDefinitionId(ITextEditorActionDefinitionIds.SMART_ENTER);
+    smartAnnotateAction.setText("Annotate");
+    smartAnnotateAction.setAccelerator(SWT.SHIFT | SWT.CR);
     setAction(ITextEditorActionDefinitionIds.SMART_ENTER, smartAnnotateAction);
 
     setActionActivationCode(ITextEditorActionDefinitionIds.SMART_ENTER, '\r', SWT.CR,
@@ -1087,7 +1095,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     // create delete action
     DeleteFeatureStructureAction deleteAnnotationAction = new DeleteFeatureStructureAction(
             getDocument());
-
+    deleteAnnotationAction.setText("Delete Annotation");
     getSite().getSelectionProvider().addSelectionChangedListener(deleteAnnotationAction);
 
     deleteAnnotationAction.setActionDefinitionId(IWorkbenchActionDefinitionIds.DELETE);
