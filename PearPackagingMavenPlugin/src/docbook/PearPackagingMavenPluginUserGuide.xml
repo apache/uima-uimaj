@@ -62,20 +62,22 @@
     <groupId>org.apache.uima</groupId>
     <artifactId>PearPackagingMavenPlugin</artifactId>
     
-    <!-- if version is omitted, then version is inherited from parent's pluginManagement section -->
+    <!-- if version is omitted, then version is inherited from
+         parent's pluginManagement section -->
     <!-- otherwise, include a version element here --> 
     
-    <!-- says to load Maven extensions (such as packaging and type handlers) from this plugin -->
+    <!-- says to load Maven extensions (such as packaging
+         and type handlers) from this plugin -->
     <extensions>true</extensions>  
     <executions>
       <execution>
-        <phase>package</phase> <!-- this is the default and can be omitted -->
-        <configuration>  <!-- where you specify details of the thing being packaged -->
-          
+        <phase>package</phase> <!--this is the default, can be omitted-->
+        <configuration>
+        <!-- where you specify details of the thing being packaged -->
           <classpath>
             <!-- PEAR file component classpath settings -->
-            <!-- Jars in the $main_root/lib are automatically put into the classpath
-                 and do not need to be listed here -->
+            <!-- Jars in the $main_root/lib are automatically put into the
+                 classpath and do not need to be listed here -->
             $main_root/lib-alternative/sample.jar
           </classpath>
           
@@ -271,7 +273,8 @@
      <phase>clean</phase>
      <configuration>
       <tasks>
-       <delete dir="lib" deleteOnExit="true" quiet="true" failOnError="false">
+       <delete dir="lib" deleteOnExit="true" quiet="true"
+               failOnError="false">
         <fileset dir="lib" includes="*.jar"/>
        </delete>
       </tasks>
