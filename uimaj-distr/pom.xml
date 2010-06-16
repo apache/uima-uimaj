@@ -149,14 +149,13 @@
         <artifactId>maven-javadoc-plugin</artifactId>
         <executions>
           <execution>
-            <id>javadoc</id>
+            <id>javadoc-distr</id>
             <phase>package</phase>
             <!--phase>deploy</phase--> <!-- comment above and uncomment to disable javadocs, for testing/experimentation, with assembly:assembly-->
             <goals>
               <goal>javadoc</goal>
             </goals>
             <configuration>
-              <quiet>true</quiet>
               <groups>
                 <group>
                   <title>Packages</title>
@@ -178,21 +177,6 @@
               </additionalparam>
               <doctitle>Apache UIMA Java SDK ${project.version} User-Level API Documentation</doctitle>
               <windowtitle>Apache UIMA Java SDK ${project.version} User-Level API Documentation</windowtitle>
-              <!-- putting the tags for JCasGen here avoids lots of warnings -->
-              <tags>
-                <tag>
-                  <name>generated</name>
-                  <placement>X</placement>
-                </tag>
-                <tag>
-                  <name>ordered</name>
-                  <placement>X</placement>
-                </tag>
-                <tag>
-                  <name>modifiable</name>
-                  <placement>X</placement>
-                </tag>
-              </tags>
             </configuration>
           </execution>
         </executions>
