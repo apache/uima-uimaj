@@ -53,7 +53,7 @@ import org.xml.sax.SAXException;
  */
 final class DocumentImportStructureProvider implements IImportStructureProvider {
 
-   private final Charset importEncoding;
+   private final String importEncoding; // https://issues.apache.org/jira/browse/UIMA-1808
    
    private final DocumentFormat casFormat;
   /**
@@ -63,7 +63,7 @@ final class DocumentImportStructureProvider implements IImportStructureProvider 
    */
   public DocumentImportStructureProvider(String importEncoding,
 		  DocumentFormat casFormat) {
-	  this.importEncoding = Charset.forName(importEncoding);
+	  this.importEncoding = importEncoding; // https://issues.apache.org/jira/browse/UIMA-1808
 	  this.casFormat = casFormat;
   }
 
