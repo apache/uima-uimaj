@@ -214,6 +214,7 @@
             <id>default-cli</id>
             <configuration>
               <excludes>
+                <exclude>release.properties</exclude> <!-- release generated artifact -->
                 <exclude>src/test/resources/ManualTests/*</exclude> <!-- test data -->
               </excludes>              
             </configuration>
