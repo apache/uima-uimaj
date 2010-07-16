@@ -364,7 +364,8 @@ myFeature = "bar"</programlisting>
    View membership. These new attributes are <literal>added_members</literal>, <literal>deleted_members</literal> and 
    <literal>reindexed_members</literal>. For example:
    </para>
-    <programlisting>&lt;cas:View sofa="1" added_members="63 77" deleted_member="7 61" reindexed_members="39" /&gt;</programlisting>
+    <programlisting>&lt;cas:View sofa="1" added_members="63 77" 
+          deleted_member="7 61" reindexed_members="39" /&gt;</programlisting>
     <para>
     Here the integers 63, 77 represent xmi:id fields of the objects that have been newly added members to this View,
     7 and 61 are xmi:id fields of the objects that have been removed from this view and 39 is the xmi:id of an object to be reindexed in this view.

@@ -252,12 +252,13 @@ under the License.
     <para>The <literal>Byte, Short, Integer, </literal>and<literal> Long</literal> are
       all signed integer types, of length 8, 16, 32, and 64 bits. The
       <literal>Double</literal> type is 64 bit floating point. The
-      <literal>String</literal> type can be sub-typed to create sets of allowed values; see
+      <literal>String</literal> type can be subtyped to create sets of allowed values; see
         <olink targetdoc="&uima_docs_ref;"
         targetptr="ugr.ref.xml.component_descriptor.type_system.string_subtypes"/>.
       These types can be used to specify the range of a String-valued feature. They act like
       Strings, but have additional checking to insure the setting of values into them
-      conforms to one of the allowed values. Note that the other primitive types cannot be used
+      conforms to one of the allowed values, or to null (which is the value if it is not set). 
+      Note that the other primitive types cannot be used
       as a supertype for another type definition; only
       <literal>uima.cas.String</literal> can be sub-typed.</para>
     
