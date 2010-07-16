@@ -3197,15 +3197,17 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   public final void ll_setStringValue(int fsRef, int featureCode, String value) {
-    final TypeSystemImpl ts = this.svd.casMetadata.ts;
-    String[] stringSet = ts.ll_getStringSet(ts.ll_getRangeType(featureCode));
-    if (stringSet != null) {
-      final int rc = Arrays.binarySearch(stringSet, value);
-      if (rc < 0) {
-        // Not a legal value.
-        CASRuntimeException e = new CASRuntimeException(CASRuntimeException.ILLEGAL_STRING_VALUE,
-            new String[] { value, ts.ll_getTypeForCode(ts.ll_getRangeType(featureCode)).getName() });
-        throw e;
+    if (null != value) {
+      final TypeSystemImpl ts = this.svd.casMetadata.ts;
+      String[] stringSet = ts.ll_getStringSet(ts.ll_getRangeType(featureCode));
+      if (stringSet != null) {
+        final int rc = Arrays.binarySearch(stringSet, value);
+        if (rc < 0) {
+          // Not a legal value.
+          CASRuntimeException e = new CASRuntimeException(CASRuntimeException.ILLEGAL_STRING_VALUE,
+              new String[] { value, ts.ll_getTypeForCode(ts.ll_getRangeType(featureCode)).getName() });
+          throw e;
+        }
       }
     }
     final int stringAddr = (value == null) ? NULL : this.getStringHeap().addString(value);

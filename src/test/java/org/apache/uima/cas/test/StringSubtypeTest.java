@@ -111,6 +111,8 @@ public class StringSubtypeTest extends TestCase {
     cas.ll_setStringValue(addr, stringSetFeat, definedValue1);
     cas.ll_setStringValue(addr, stringSetFeat, definedValue2);
     cas.ll_setStringValue(addr, stringSetFeat, definedValue3);
+    // next should be ok https://issues.apache.org/jira/browse/UIMA-1839
+    cas.ll_setStringValue(addr, stringSetFeat, null); 
     boolean exCaught = false;
     try {
       cas.ll_setStringValue(addr, stringSetFeat, undefinedValue);
@@ -130,6 +132,8 @@ public class StringSubtypeTest extends TestCase {
     fs.setStringValue(stringSetFeat, definedValue1);
     fs.setStringValue(stringSetFeat, definedValue2);
     fs.setStringValue(stringSetFeat, definedValue3);
+    // next should be ok https://issues.apache.org/jira/browse/UIMA-1839
+    fs.setStringValue(stringSetFeat, null);
     boolean exCaught = false;
     try {
       fs.setStringValue(stringSetFeat, undefinedValue);
