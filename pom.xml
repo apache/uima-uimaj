@@ -96,6 +96,7 @@
             <id>default-cli</id>
             <configuration>
               <excludes>
+                <exclude>release.properties</exclude> <!-- release generated artifact -->
                 <exclude>src/test/resources/CASTests/*.txt</exclude> <!-- test data -->
                 <exclude>src/test/resources/data/moby.txt</exclude>
                 <exclude>src/test/resources/org/apache/uima/resource/impl/ResourceInClasspath.txt</exclude> <!-- test data -->
