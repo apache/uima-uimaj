@@ -167,7 +167,7 @@ public class FlowControllerDeclaration_impl extends MetaDataObject_impl implemen
     // write key as attribute
     AttributesImpl attrs = new AttributesImpl();
     if (mKey != null && mKey.length() > 0) {
-      attrs.addAttribute(null, null, "key", "string", mKey);
+      attrs.addAttribute("", "key", "key", "string", mKey);
     }
     return attrs;
   }
