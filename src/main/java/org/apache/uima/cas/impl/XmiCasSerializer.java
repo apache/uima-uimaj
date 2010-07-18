@@ -272,6 +272,7 @@ public class XmiCasSerializer {
       }
       writeViews(); // encodes cas.sofaCount + 1 elements
       endElement(XMI_TAG);
+      endPrefixMappings();
     }
 
     private void writeViews() throws SAXException {
@@ -402,8 +403,9 @@ public class XmiCasSerializer {
 
     /**
      * @param workAttrs2
+     * @throws SAXException 
      */
-    private void computeNamespaceDeclarationAttrs(AttributesImpl workAttrs2) {
+    private void computeNamespaceDeclarationAttrs(AttributesImpl workAttrs2) throws SAXException {
       Iterator<Map.Entry<String, String>> it = nsUriToPrefixMap.entrySet().iterator();
       while (it.hasNext()) {
         Map.Entry<String, String> entry = it.next();
@@ -411,12 +413,14 @@ public class XmiCasSerializer {
         String prefix = entry.getValue();
         // write attribute
         workAttrs.addAttribute(XMLNS_NS_URI, prefix, "xmlns:" + prefix, "CDATA", nsUri);
+        ch.startPrefixMapping(prefix, nsUri);
       }
       // also add schemaLocation if specified
       if (nsUriToSchemaLocationMap != null) {
         // write xmlns:xsi attribute
         workAttrs.addAttribute(XMLNS_NS_URI, "xsi", "xmlns:xsi", "CDATA", XSI_NS_URI);
-
+        ch.startPrefixMapping("xsi", XSI_NS_URI);
+        
         // write xsi:schemaLocation attributaiton
         StringBuilder buf = new StringBuilder();
         it = nsUriToSchemaLocationMap.entrySet().iterator();
@@ -425,6 +429,18 @@ public class XmiCasSerializer {
           buf.append(entry.getKey()).append(' ').append(entry.getValue()).append(' ');
         }
         workAttrs.addAttribute(XSI_NS_URI, "xsi", "xsi:schemaLocation", "CDATA", buf.toString());
+      }
+    }
+    
+    private void endPrefixMappings() throws SAXException {
+      Iterator<Map.Entry<String, String>> it = nsUriToPrefixMap.entrySet().iterator();
+      while (it.hasNext()) {
+        Map.Entry<String, String> entry = it.next();
+        String prefix = entry.getValue();
+        ch.endPrefixMapping(prefix);
+      }
+      if (nsUriToSchemaLocationMap != null) {
+        ch.endPrefixMapping("xsi");
       }
     }
 
@@ -974,7 +990,8 @@ public class XmiCasSerializer {
     }
     
     private void addAttribute(AttributesImpl attrs, String attrName, String attrValue) {
-      attrs.addAttribute(null, null, attrName, cdataType, attrValue);
+      final int index = attrName.lastIndexOf(':') + 1;
+      attrs.addAttribute("", attrName.substring(index), attrName, cdataType, attrValue);
     }
 
     private void startElement(XmlElementName name, Attributes attrs, int aNumChildren)
