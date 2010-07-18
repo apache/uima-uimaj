@@ -377,10 +377,10 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
   protected AttributesImpl getXMLAttributes() {
     AttributesImpl attrs = new AttributesImpl();
     if ((getDefaultGroupName() != null) && (!getDefaultGroupName().equals(""))) {
-      attrs.addAttribute(null, null, "defaultGroup", "string", getDefaultGroupName());
+      attrs.addAttribute("", "defaultGroup", "defaultGroup", "string", getDefaultGroupName());
     }
     if ((getSearchStrategy() != null) && (!getSearchStrategy().equals(""))) {
-      attrs.addAttribute(null, null, "searchStrategy", "string", getSearchStrategy());
+      attrs.addAttribute("", "searchStrategy", "searchStrategy", "string", getSearchStrategy());
     }
     return attrs;
   }

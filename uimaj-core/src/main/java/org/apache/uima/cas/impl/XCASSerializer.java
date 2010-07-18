@@ -265,7 +265,7 @@ public class XCASSerializer {
       iElementCount += queue.size();
 
       AttributesImpl rootAttrs = new AttributesImpl();
-      rootAttrs.addAttribute(null, null, VERSION_ATTR, cdataType, CURRENT_VERSION);
+      rootAttrs.addAttribute("", VERSION_ATTR, VERSION_ATTR, cdataType, CURRENT_VERSION);
       startElement(casTagName, rootAttrs, iElementCount);
 
       // continue with serialization
@@ -320,7 +320,7 @@ public class XCASSerializer {
       if (CAS.FEATURE_BASE_NAME_SOFASTRING.equals(attrName)) {
         attrValue = replaceInvalidXmlChars(attrValue);
       }
-      attrs.addAttribute(null, null, attrName, cdataType, attrValue);
+      attrs.addAttribute("", attrName, attrName, cdataType, attrValue);
     }
 
     private void startElement(String tag, Attributes attrs, int num) throws SAXException {
