@@ -191,21 +191,21 @@ public class UIMAFramework_impl extends UIMAFramework {
    * @see org.apache.uima.UIMAFramework#_getMajorVersion()
    */
   public short _getMajorVersion() {
-    return 2; // major version
+    return UimaVersion.getMajorVersion(); // major version
   }
 
   /**
    * @see org.apache.uima.UIMAFramework#_getMinorVersion()
    */
   public short _getMinorVersion() {
-    return 3; // minor version
+    return UimaVersion.getMinorVersion(); // minor version
   }
 
   /**
    * @see org.apache.uima.UIMAFramework#_getBuildRevision()
    */
   public short _getBuildRevision() {
-    return 0; // build revision
+    return UimaVersion.getBuildRevision(); // build revision
   }
 
   /**
