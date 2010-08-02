@@ -19,9 +19,7 @@
 
 package org.apache.uima.analysis_engine.impl;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.Constants;
@@ -35,7 +33,6 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.analysis_engine.CasIterator;
 import org.apache.uima.analysis_engine.ResultNotSupportedException;
 import org.apache.uima.analysis_engine.ResultSpecification;
-import org.apache.uima.analysis_engine.TypeOrFeature;
 import org.apache.uima.analysis_engine.impl.compatibility.AnalysisComponentAdapterFactory;
 import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CAS;
@@ -48,7 +45,6 @@ import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceCreationSpecifier;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
-import org.apache.uima.resource.metadata.Capability;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.util.Level;
@@ -66,11 +62,12 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
   
   private static final Class<PrimitiveAnalysisEngine_impl> CLASS_NAME = PrimitiveAnalysisEngine_impl.class;
  
-  private static final String [] X_UNSPECIFIED = new String [] {"x-unspecified"};
- 
-  private static final String [] EMPTY_STRING_ARRAY = new String [0];
-
   private ResultSpecification mCurrentResultSpecification;
+  /**
+   * result specification derived from the output capabilities of this primitive, used in intersection of languages
+   * Recomputed when type system changes
+   */
+  private ResultSpecification rsFromOutputCapabilities;
 
   private boolean mResultSpecChanged;
 
@@ -359,13 +356,17 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
         // the TypeSystem. If so, set the changed type system into the ResultSpecification and
         // inform the component
         if (mResultSpecChanged || mLastTypeSystem != view.getTypeSystem()) {
-          mLastTypeSystem = view.getTypeSystem();
-          mCurrentResultSpecification.setTypeSystem(mLastTypeSystem);
+          if (mLastTypeSystem != view.getTypeSystem()) {
+            mLastTypeSystem = view.getTypeSystem();
+            mCurrentResultSpecification.setTypeSystem(mLastTypeSystem);
+            rsFromOutputCapabilities = new ResultSpecification_impl();
+            rsFromOutputCapabilities.addCapabilities(this.getAnalysisEngineMetaData().getCapabilities());
+          }
           // the actual ResultSpec we send to the component is formed by
           // looking at this primitive AE's declared output types and eliminiating
           // any that are not in mCurrentResultSpecification.
-          ResultSpecification analysisComponentResultSpec = computeAnalysisComponentResultSpec(
-                  mCurrentResultSpecification, getAnalysisEngineMetaData().getCapabilities());
+          ResultSpecification analysisComponentResultSpec = 
+            ResultSpecification_impl.intersect(mCurrentResultSpecification, (ResultSpecification_impl) rsFromOutputCapabilities);
           mAnalysisComponent.setResultSpecification(analysisComponentResultSpec);
           mResultSpecChanged = false;
         }
@@ -409,52 +410,59 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
     }
   }
 
-  /**
-   * Creates the ResultSpecification to be passed to the AnalysisComponent. This is derived from the
-   * ResultSpec that is input to this AE (via its setResultSpecification method) by intersecting
-   * with the declared outputs of this AE, so that we never ask an AnalysisComponent to produce a
-   * result type that it does not declare in its outputs.
-   * 
-   * @param currentResultSpecification
-   *          the result spec passed to this AE's setResultSpecification method
-   * @param capabilities
-   *          the capabilities of this AE
-   * 
-   * @return a ResultSpecifciation to pass to the AnalysisComponent
-   */
-  protected ResultSpecification computeAnalysisComponentResultSpec(
-          ResultSpecification inputResultSpec, Capability[] capabilities) {
-    ResultSpecification newResultSpec = new ResultSpecification_impl(inputResultSpec.getTypeSystem());
-    List<String> languagesToAdd = new ArrayList<String>();
- 
-    for (Capability capability : capabilities) {
-      TypeOrFeature[] outputs = capability.getOutputs();
-      String[] languages = capability.getLanguagesSupported();
-      if (null == languages || languages.length == 0) {
-        languages = X_UNSPECIFIED;
-      }
-      
-      for (TypeOrFeature tof : outputs) {
-        String tofName = tof.getName();
-        languagesToAdd.clear();
-        for (String language : languages) {
-          if ((tof.isType() && inputResultSpec.containsType(tofName, language)) ||
-              (!tof.isType() && inputResultSpec.containsFeature(tofName, language))) {
-            languagesToAdd.add(language);
-          }
-        }
-        if (0 < languagesToAdd.size()) {
-          if (tof.isType()) {
-            newResultSpec.addResultType(tofName, tof.isAllAnnotatorFeatures(), 
-                languagesToAdd.toArray(EMPTY_STRING_ARRAY));
-          } else {
-            newResultSpec.addResultFeature(tofName, languagesToAdd.toArray(EMPTY_STRING_ARRAY));
-          }  
-        }
-      }
-    }
-    return newResultSpec;    
-  }
+//  /**
+//   * Creates the ResultSpecification to be passed to the AnalysisComponent. This is derived from the
+//   * ResultSpec that is input to this AE (via its setResultSpecification method) by intersecting
+//   * with the declared outputs of this AE, so that we never ask an AnalysisComponent to produce a
+//   * result type that it does not declare in its outputs.
+//   * 
+//   * For each type or feature, the intersection includes intersecting the languages:
+//   *   if either has x-unspecified, then the intersection is the languages of the other side.
+//   *   else do a bit-intersection of the languages (this will produce too few results)
+//   *     and then iterate over the smaller of the two sources:
+//   *       for each non-base lang, if not in the other source already, see if the base lang
+//   *       is in the other source, and if so, and the non-base lang.
+//   * 
+//   * @param currentResultSpecification
+//   *          the result spec passed to this AE's setResultSpecification method
+//   * @param capabilities
+//   *          the capabilities of this AE
+//   * 
+//   * @return a ResultSpecifciation to pass to the AnalysisComponent
+//   */
+//  protected ResultSpecification computeAnalysisComponentResultSpec(
+//          ResultSpecification inputResultSpec, Capability[] capabilities) {
+//    ResultSpecification newResultSpec = new ResultSpecification_impl(inputResultSpec.getTypeSystem());
+//    List<String> languagesToAdd = new ArrayList<String>();
+// 
+//    for (Capability capability : capabilities) {
+//      TypeOrFeature[] outputs = capability.getOutputs();
+//      String[] languages = capability.getLanguagesSupported();
+//      if (null == languages || languages.length == 0) {
+//        languages = X_UNSPECIFIED;
+//      }
+//      
+//      for (TypeOrFeature tof : outputs) {
+//        String tofName = tof.getName();
+//        languagesToAdd.clear();
+//        for (String language : languages) {
+//          if ((tof.isType() && inputResultSpec.containsType(tofName, language)) ||
+//              (!tof.isType() && inputResultSpec.containsFeature(tofName, language))) {
+//            languagesToAdd.add(language);
+//          }
+//        }
+//        if (0 < languagesToAdd.size()) {
+//          if (tof.isType()) {
+//            newResultSpec.addResultType(tofName, tof.isAllAnnotatorFeatures(), 
+//                languagesToAdd.toArray(EMPTY_STRING_ARRAY));
+//          } else {
+//            newResultSpec.addResultFeature(tofName, languagesToAdd.toArray(EMPTY_STRING_ARRAY));
+//          }  
+//        }
+//      }
+//    }
+//    return newResultSpec;    
+//  }
     
 //    for (int i = 0; i < capabilities.length; i++) {
 //      Capability cap = capabilities[i];

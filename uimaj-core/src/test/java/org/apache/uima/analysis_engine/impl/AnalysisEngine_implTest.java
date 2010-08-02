@@ -1331,27 +1331,7 @@ public class AnalysisEngine_implTest extends TestCase {
     }
   }
 
-  public void testComputeAnalysisComponentResultSpec() throws Exception {
-    try {
-      AnalysisEngineDescription aeDesc = UIMAFramework.getXMLParser()
-              .parseAnalysisEngineDescription(
-                      new XMLInputSource(JUnitExtension.getFile("SequencerTest/Annotator1.xml")));
-      PrimitiveAnalysisEngine_impl ae = (PrimitiveAnalysisEngine_impl) UIMAFramework
-              .produceAnalysisEngine(aeDesc);
-      CAS cas = ae.newCAS();
-      ResultSpecification resultSpec = new ResultSpecification_impl();
-      resultSpec.addResultType("uima.tt.TokenLikeAnnotation", true);
-      resultSpec.setTypeSystem(cas.getTypeSystem());
-      ResultSpecification acResultSpec = ae.computeAnalysisComponentResultSpec(resultSpec, ae
-              .getAnalysisEngineMetaData().getCapabilities());
-      assertTrue(acResultSpec.containsType("uima.tt.TokenAnnotation"));
-      assertFalse(acResultSpec.containsType("uima.tt.SentenceAnnotation"));
-      assertFalse(acResultSpec.containsType("uima.tt.Lemma"));
-    } catch (Exception e) {
-      JUnitExtension.handleException(e);
-    }
-  }
-  
+
   public void testProcessWithError() throws Exception {
     try {
       //This test uses an aggregate AE fails if the document text is set to "ERROR".

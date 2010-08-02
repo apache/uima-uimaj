@@ -279,12 +279,21 @@ public interface ResultSpecification extends XMLizable, Serializable, Cloneable 
    * @param aTypeName
    *          the name of the type
    * @param aLanguage
-   *          the language to search for.  A null value or the value x-unspecified for this argument disables
-   *          the language test - any language will match. The language is matched after excluding any
-   *          country code, if present.
+   *          the language to search for.  
+   *          A null value or the value x-unspecified for this argument only
+   *            matches ResultSpecifications having x-unspecified as their type.
+   *          A language value that is contained within a language in the ResultSpecification
+   *            is considered to match.  In particular:
+   *               Language          ResultSpecification      Result
+   *               x-unspecified     x-unspecified             match
+   *               x-unspecified     en                        no match
+   *               en                x-unspecified             match
+   *               en                en-us                     no match
+   *               en-us             en                        match
+   *               
    * 
    * @return true if and only if this <code>ResultSpecification</code> contains the type with name
-   *         <code>aTypeName</code> for the specified language.
+   *         <code>aTypeName</code> for a matching language.
    */
   public boolean containsType(String aTypeName, String aLanguage);
 
@@ -315,12 +324,20 @@ public interface ResultSpecification extends XMLizable, Serializable, Cloneable 
    * @param aFullFeatureName
    *          the fully-qualified name of the feature, in the form MyTypeName:MyFeatureName.
    * @param aLanguage
-   *          the language to search for.  A null value or the value x-unspecified for this argument disables
-   *          the language test - any language will match.  A value with a country code
-   *          in addition to a language will match a result-spec without the country code.
+   *          the language to search for.  
+   *          A null value or the value x-unspecified for this argument only
+   *            matches ResultSpecifications having x-unspecified as their type.
+   *          A language value that is contained within a language in the ResultSpecification
+   *            is considered to match.  In particular:
+   *               Language          ResultSpecification      Result
+   *               x-unspecified     x-unspecified             match
+   *               x-unspecified     en                        no match
+   *               en                x-unspecified             match
+   *               en                en-us                     no match
+   *               en-us             en                        match
    * 
    * @return true if and only if this <code>ResultSpecification</code> contains the feature with
-   *         name <code>aFullFeatureName</code> for the specified language.
+   *         name <code>aFullFeatureName</code> for a matching language.
    */
   public boolean containsFeature(String aFullFeatureName, String aLanguage);
 
