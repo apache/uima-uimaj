@@ -184,7 +184,7 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
   /**
    * Default language set to use if nothing else is specified
    */
-  private static final String[] mDefaultLanguage = new String[] {Language.UNSPECIFIED_LANGUAGE};
+  private static final String[] UNSPECIFIED_LANGUAGE_IN_ARRAY_OF_1 = new String[] {Language.UNSPECIFIED_LANGUAGE};
 
   /**
    * The type system used to compute the subtypes and allAnnotatorFeatures of types
@@ -252,7 +252,7 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
     }
   }
   
-  private String getBaseLanguage(String language) {
+  private static String getBaseLanguage(String language) {
     String baseLanguage = language;
     int index = language.indexOf(LANGUAGE_SEPARATOR);
     if (index > -1) {
@@ -280,6 +280,15 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
     return withSubtypesName2tof_langs;
   }
 
+  /**
+   * return the set of languages for this type or feature, or null if no such type/feature
+   */
+  private ToF_Languages getLanguagesForTypeOrFeature(String typeOrFeature) {
+    boolean isType = typeOrFeature.indexOf(TypeSystem.FEATURE_SEPARATOR) == -1;
+    Map<String, ToF_Languages> tofMap = (isType) ? availName2tof_langs() : name2tof_langs;
+    return tofMap.get(typeOrFeature);
+  }
+  
   /**
    * @see org.apache.uima.analysis_engine.ResultSpecification#getResultTypesAndFeatures(java.lang.String)
    */
@@ -324,11 +333,11 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
    */
   private String [] normalizeLanguages(String [] languages) {   
     if (null == languages) {
-      return mDefaultLanguage;
+      return UNSPECIFIED_LANGUAGE_IN_ARRAY_OF_1;
     } else {
       for (String lang : languages) {
         if (lang.equals(Language.UNSPECIFIED_LANGUAGE)) {
-          return mDefaultLanguage;
+          return UNSPECIFIED_LANGUAGE_IN_ARRAY_OF_1;
         }
       }
     }
@@ -367,6 +376,12 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
     for (String lang : languages) {
       langBitSet.set(getLanguageIndex(lang));
     }
+    setNeedsCompilation();
+  }
+  
+  private void addClonedToF_Languages(ToF_Languages tofLangs) {
+    ToF_Languages cloned = (ToF_Languages) tofLangs.clone();
+    name2tof_langs.put(cloned.tof.getName(), cloned);
     setNeedsCompilation();
   }
 
@@ -423,7 +438,7 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
     BitSet langBitSet = tof_langs.languages;
     
     // "==" ok here due to normalizeLanguages call above
-    if (languages == mDefaultLanguage) {
+    if (languages == UNSPECIFIED_LANGUAGE_IN_ARRAY_OF_1) {
       if ( ! langBitSet.get(UNSPECIFIED_LANGUAGE_INDEX)) {
         langBitSet.clear();
         langBitSet.set(UNSPECIFIED_LANGUAGE_INDEX);
@@ -471,7 +486,7 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
    * @see org.apache.uima.analysis_engine.ResultSpecification#setResultTypesAndFeatures(org.apache.uima.analysis_engine.TypeOrFeature[])
    */
   public void setResultTypesAndFeatures(TypeOrFeature[] aTypesAndFeatures) {
-    setResultTypesAndFeatures(aTypesAndFeatures, mDefaultLanguage);
+    setResultTypesAndFeatures(aTypesAndFeatures, UNSPECIFIED_LANGUAGE_IN_ARRAY_OF_1);
   }
   
   /**
@@ -490,7 +505,7 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
    * @see org.apache.uima.analysis_engine.ResultSpecification#addResultTypeOrFeature(org.apache.uima.analysis_engine.TypeOrFeature)
    */
   public void addResultTypeOrFeature(TypeOrFeature aTypeOrFeature) {
-    addTypeOrFeatureInternal(aTypeOrFeature, mDefaultLanguage);
+    addTypeOrFeatureInternal(aTypeOrFeature, UNSPECIFIED_LANGUAGE_IN_ARRAY_OF_1);
   }
 
   /**
@@ -506,7 +521,7 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
    *      boolean)
    */
   public void addResultType(String aTypeName, boolean aAllAnnotatorFeatures) {
-    addTypeOrFeatureInternal(createTypeOrFeature(aTypeName, true, aAllAnnotatorFeatures), mDefaultLanguage);
+    addTypeOrFeatureInternal(createTypeOrFeature(aTypeName, true, aAllAnnotatorFeatures), UNSPECIFIED_LANGUAGE_IN_ARRAY_OF_1);
   }
   
   /**
@@ -521,7 +536,7 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
    * @see org.apache.uima.analysis_engine.ResultSpecification#addResultFeature(java.lang.String)
    */
   public void addResultFeature(String aFullFeatureName) {
-    addResultFeature(aFullFeatureName, mDefaultLanguage);
+    addResultFeature(aFullFeatureName, UNSPECIFIED_LANGUAGE_IN_ARRAY_OF_1);
   }
 
   /**
@@ -654,7 +669,7 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
     compileIfNeeded();
     return languageMatches(availName2tof_langs().get(aTypeName), language);
   }
-
+  
   /**
    * @see org.apache.uima.analysis_engine.ResultSpecification#containsFeature(java.lang.String)
    */
@@ -750,7 +765,6 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
            languages.get(baseLanguageIndex);
   }
   
-
   /**
    * @see org.apache.uima.resource.impl.MetaDataObject_impl#getXmlizationInfo()
    */
@@ -780,7 +794,7 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
       String[] supportedLanguages = capability.getLanguagesSupported();
       if (null == supportedLanguages ||
           supportedLanguages.length == 0) {
-        supportedLanguages = mDefaultLanguage;
+        supportedLanguages = UNSPECIFIED_LANGUAGE_IN_ARRAY_OF_1;
       }
       for (TypeOrFeature tof : tofs) {
         addResultTypeOrFeatureAddLanguage(tof, supportedLanguages);
@@ -835,5 +849,119 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
     sb.append("mTypeSystem = ").append(mTypeSystem).append("\n");
     return sb.toString();
   }
+  
+  /**
+   * Compute the feature/type + language intersection of two result specs
+   * Result-spec 2 is the more-or-less constant spec from the primitive's capability outputs
+   *   it can change if the type system changes... causing new 'inheritance"
+   *   
+   * Language intersection is done on a per-type-or-feature basis:
+   *   Each is a set of languages, interpreted as a "Union".
+   *     If the set contains x-unspecified - it is taken to mean all languages
+   *     if the set contains XX - it is taken to mean the union of all sublanguages XX-yy
+   *     
+   * package scope
+   */
 
+  static ResultSpecification_impl intersect(ResultSpecification rs1in, ResultSpecification_impl rs2in) {
+    ResultSpecification_impl rs1 = (ResultSpecification_impl) rs1in;
+    ResultSpecification_impl rs2 = (ResultSpecification_impl) rs2in;
+    ResultSpecification_impl newRs = new ResultSpecification_impl(rs1.getTypeSystem());
+    
+    rs1.compileIfNeeded();  // compile to make the next tests for type intersecting work
+    rs2.compileIfNeeded();
+    
+    // iterate over all types and features in this component's result set
+    for (Map.Entry<String, ToF_Languages> item : rs2.availName2tof_langs().entrySet()) {
+      String rs2tof = item.getKey();
+      ToF_Languages rs2Langs = item.getValue();
+      // see if in other resultSpec
+      ToF_Languages rs1Langs = rs1.getLanguagesForTypeOrFeature(rs2tof);
+      if (rs1Langs == null) {
+        continue;
+      }
+
+      // Type or Feature is in both; intersect the languages
+      // if either has language x-unspecified, use the other's language spec.
+      if (rs1Langs.languages.get(ResultSpecification_impl.UNSPECIFIED_LANGUAGE_INDEX)) {
+        newRs.addClonedToF_Languages(rs2Langs);
+        continue;
+      }
+      if (rs2Langs.languages.get(ResultSpecification_impl.UNSPECIFIED_LANGUAGE_INDEX)) {
+        newRs.addClonedToF_Languages(rs1Langs);
+        continue;
+      }
+
+      // Intersect languages - neither has x-unspecified
+
+      List<String> rsltLangs = computeResultLangIntersection(rs1, rs1Langs, rs2, rs2Langs);
+ 
+      if (rsltLangs.size() > 0) {
+        newRs.addResultTypeOrFeature(rs2Langs.tof, rsltLangs.toArray(new String[rsltLangs.size()]));
+      }
+    }
+    return newRs;
+  }
+  
+  private static List<String> computeResultLangIntersection(
+      ResultSpecification_impl rs1, ToF_Languages rs1Langs,     
+      ResultSpecification_impl rs2, ToF_Languages rs2Langs) {
+
+    BitSet rs1bs = rs1Langs.languages;
+    BitSet rs2bs = rs2Langs.languages;
+    List<String> rsltLangs = new ArrayList<String>();
+
+    // because we don't have a list of languages as "Strings",
+    // iterate over all the languages, and skip those not in this
+    // type-or-feature
+    for (Map.Entry<String, Integer> langIndex2 : rs2.lang2int.entrySet()) {
+      if (!rs2bs.get(langIndex2.getValue())) {
+        continue;
+      }
+
+      // String intersectLang = intersectLanguages(langIndex.getKey(),
+      // rs1Langs, rs2Langs);
+
+      String thisLang = langIndex2.getKey();
+      if (rs1bs.get(rs1.getLanguageIndex(thisLang))) {
+        rsltLangs.add(thisLang);
+        continue;
+      }
+
+      // thisLang is not in the set of rs1 languages, but it might still be
+      // in the intersection, if thisLang is not a base form, and the base
+      // form
+      // *is* in the set of rs1 languages
+      String baseLang = getBaseLanguage(thisLang);
+      if (baseLang != thisLang) { // thisLang is not a base form
+        if (rs1bs.get(rs1.getLanguageIndex(baseLang))) {
+          rsltLangs.add(thisLang);
+          continue;
+        }
+      }
+    }
+    
+    // add in more specific langs in rs1 matching general lang in rs2
+   
+    // because we don't have a list of languages as "Strings",
+    // iterate over all the languages, and skip those not in this
+    // type-or-feature
+    for (Map.Entry<String, Integer> langIndex1 : rs1.lang2int.entrySet()) {
+      if (!rs1bs.get(langIndex1.getValue())) {
+        continue;
+      }
+
+      String rsLang1 = langIndex1.getKey();
+      if (rs2bs.get(rs2.getLanguageIndex(rsLang1))) {
+        continue;  // skip this if already would be in intersection
+      }
+      String baseLang1 = getBaseLanguage(rsLang1);
+      if (rsLang1 != baseLang1) {  // rsLang1 is not a base form
+        if (rs2bs.get(rs2.getLanguageIndex(baseLang1))) {
+          rsltLangs.add(rsLang1);  // add specific lang to intersection
+        }
+      }
+    }
+    return rsltLangs;
+  }
 }
