@@ -379,9 +379,23 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
     setNeedsCompilation();
   }
   
-  private void addClonedToF_Languages(ToF_Languages tofLangs) {
-    ToF_Languages cloned = (ToF_Languages) tofLangs.clone();
-    name2tof_langs.put(cloned.tof.getName(), cloned);
+  /**
+   * Create an entry in this result spec from the type or feature and its languages
+   * @param tofLangs
+   */
+  private void addClonedToF_Languages(ToF_Languages tofLangs, ResultSpecification_impl rs) {
+    List<String> languages = new ArrayList<String>();
+    BitSet bs = tofLangs.languages;
+    for (Map.Entry<String, Integer> si : rs.lang2int.entrySet()) {
+      if (bs.get(si.getValue())) {
+        languages.add(si.getKey());
+      }
+    }
+    
+    ToF_Languages n = new ToF_Languages(
+        tofLangs.tof, 
+        languages.toArray(new String[languages.size()]));
+    name2tof_langs.put(n.tof.getName(), n);
     setNeedsCompilation();
   }
 
@@ -884,11 +898,11 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
       // Type or Feature is in both; intersect the languages
       // if either has language x-unspecified, use the other's language spec.
       if (rs1Langs.languages.get(ResultSpecification_impl.UNSPECIFIED_LANGUAGE_INDEX)) {
-        newRs.addClonedToF_Languages(rs2Langs);
+        newRs.addClonedToF_Languages(rs2Langs, rs2);
         continue;
       }
       if (rs2Langs.languages.get(ResultSpecification_impl.UNSPECIFIED_LANGUAGE_INDEX)) {
-        newRs.addClonedToF_Languages(rs1Langs);
+        newRs.addClonedToF_Languages(rs1Langs, rs1);
         continue;
       }
 
@@ -963,5 +977,77 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
       }
     }
     return rsltLangs;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (!super.equals(obj)) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    ResultSpecification_impl other = (ResultSpecification_impl) obj;
+    if (lang2int == null) {
+      if (other.lang2int != null) {
+        return false;
+      }
+    }
+    if (mTypeSystem == null) {
+      if (other.mTypeSystem != null) {
+        return false;
+      }
+    } else if (mTypeSystem != other.mTypeSystem) {
+      return false;
+    }
+    if (name2tof_langs == null) {
+      if (other.name2tof_langs != null) {
+        return false;
+      }
+    } 
+    this.compileIfNeeded();
+    other.compileIfNeeded();
+    
+    if (withSubtypesName2tof_langs == null) {
+      if (other.withSubtypesName2tof_langs != null) {
+        return false;
+      }
+    }
+    
+    if (availName2tof_langs().size() != other.availName2tof_langs().size()) {
+      return false;
+    }
+    
+    // iterate over all types and features in this 
+    for (Map.Entry<String, ToF_Languages> item : availName2tof_langs().entrySet()) {
+      String tof = item.getKey();
+      ToF_Languages toflangs = item.getValue();
+      ToF_Languages otherToflangs = other.availName2tof_langs().get(tof);
+      BitSet thisBs = toflangs.languages;
+      BitSet otherBs = otherToflangs.languages;
+      if (thisBs.cardinality() != otherBs.cardinality()) {
+        return false;
+      }
+      for (Map.Entry<String, Integer>l2ie : lang2int.entrySet()) {
+        if (thisBs.get(l2ie.getValue())) {
+          if (!otherBs.get(other.lang2int.get(l2ie.getKey()))) {
+            return false;
+          }
+        }
+      }
+    }
+    
+    return true;
+  }
+  
+  /**
+   * Hash code not implemented
+   * @return
+   */
+  public int hashcode() {
+    throw new UnsupportedOperationException();
   }
 }

@@ -40,6 +40,7 @@ public class ResultSpecTest extends TestCase {
   private static final String EN = "en";
   private static final String X  = "x-unspecified";
   private static final String EN_US = "en-us";
+  private static final String PTBR = "pt-br";
   private static final String I = "I";  // split designator
   
   /**
@@ -60,6 +61,9 @@ public class ResultSpecTest extends TestCase {
     checkl(X, EN, I, EN, X, I, X);
     checkl(X, EN, I, EN, I, EN);
     checkl(EN, EN_US, I, X, I, EN, EN_US);
+    
+    checkl(X, PTBR, I, EN, I, EN);
+    checkl(PTBR, I, EN, I, null);
   }
   
   private void checkl(String... args) {
@@ -73,7 +77,9 @@ public class ResultSpecTest extends TestCase {
       if (args[i] == I) {
         tgtI ++;
       } else {
-        tgts[tgtI].add(args[i]);            
+        if (args[i] != null) {
+          tgts[tgtI].add(args[i]);    
+        }
       }
     }
     String[] rs1langs = rs1List.toArray(new String[rs1List.size()]);
@@ -84,14 +90,28 @@ public class ResultSpecTest extends TestCase {
     ResultSpecification_impl rs2 = new ResultSpecification_impl();
     ResultSpecification_impl rsE = new ResultSpecification_impl(); //expected
     
-    rs1.addResultType("T1", true, rs1langs);
-    rs2.addResultType("T1", true, rs2langs);
-    rsE.addResultType("T1", true, explangs);
+    addResultTypeOneAtATime(rs1, rs1langs);
+    addResultTypeOneAtATime(rs2, rs2langs);
+    addResultTypeOneAtATime(rsE, explangs);
     
     ResultSpecification_impl rsQ = ResultSpecification_impl.intersect(rs1, rs2);
     assertTrue(rsQ.equals(rsE));
   }
   
+  // we do this to avoid language normalization from collapsing x-unspecified 
+  // plus other languages into just x-unspecified
+  private void addResultTypeOneAtATime(ResultSpecification_impl rs, String[] languages) {
+    if (languages.length == 0) {
+      return;
+    }
+    if (languages.length == 1) {
+      rs.addResultType("T1", true, languages);
+    } else {
+      for (int i = 0; i < languages.length; i++) {
+        rs.addResultType("T1", true, new String[]{languages[i]});
+      }
+    } 
+  }
   public void testComputeAnalysisComponentResultSpec() throws Exception {
     try {
       AnalysisEngineDescription aeDesc = UIMAFramework.getXMLParser()
