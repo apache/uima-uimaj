@@ -360,7 +360,8 @@ public class AnalysisEngine_implTest extends TestCase {
       AnalysisEngineDescription aggWithCcDesc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
               new XMLInputSource(JUnitExtension
                       .getFile("TextAnalysisEngineImplTest/AggregateTaeWithCasConsumer.xml")));
-      _testProcess(aggWithCcDesc);      
+      
+      _testProcess(aggWithCcDesc, new String[] {"en"});      
       // test that CAS Consumer ran
       if (null == outFile) {
         outFile = JUnitExtension.getFile("CpmOutput.txt");
@@ -386,34 +387,61 @@ public class AnalysisEngine_implTest extends TestCase {
   }
 
   /**
-   * Auxilliary method used by testProcess()
+   * Auxiliary method used by testProcess()
    * 
    * @param aTaeDesc
    *          description of TextAnalysisEngine to test
    */
   protected void _testProcess(AnalysisEngineDescription aTaeDesc) throws UIMAException {
-    // create and initialize TextAnalysisEngine
     AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(aTaeDesc);
+    CAS tcas = ae.newCAS();
+
+    // process(CAS,ResultSpecification)
+    ResultSpecification resultSpec = new ResultSpecification_impl(tcas.getTypeSystem());
+    resultSpec.addResultType("NamedEntity", true);
+
+    _testProcessInner(ae, tcas, resultSpec, resultSpec);
+  }
+  
+  protected void _testProcess(AnalysisEngineDescription aTaeDesc, String[] languages) throws UIMAException {
+    AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(aTaeDesc);
+    CAS tcas = ae.newCAS();
+
+    // process(CAS,ResultSpecification)
+    ResultSpecification resultSpec = new ResultSpecification_impl(tcas.getTypeSystem());
+    resultSpec.addResultType("NamedEntity", true);
+    
+    ResultSpecification expectedLastResultSpec = new ResultSpecification_impl(tcas.getTypeSystem());
+    expectedLastResultSpec.addResultType("NamedEntity", true, languages);
+
+    _testProcessInner(ae, tcas, resultSpec, expectedLastResultSpec);
+  }
+  
+  /**
+   * Auxiliary method used by testProcess()
+   * 
+   * @param aTaeDesc
+   *          description of TextAnalysisEngine to test
+   */
+  protected void _testProcessInner(AnalysisEngine ae, CAS tcas, ResultSpecification resultSpec,
+      ResultSpecification expectedLastResultSpec) throws UIMAException {
+    // create and initialize TextAnalysisEngine
 
     // Test each form of the process method. When TestAnnotator executes, it
     // stores in static fields the document text and the ResultSpecification.
     // We use thse to make sure the information propogates correctly to the annotator.
 
     // process(CAS)
-    CAS tcas = ae.newCAS();
     tcas.setDocumentText("new test");
     ae.process(tcas);
     assertEquals("new test", TestAnnotator.lastDocument);
     tcas.reset();
 
     // process(CAS,ResultSpecification)
-    ResultSpecification resultSpec = new ResultSpecification_impl(tcas.getTypeSystem());
-    resultSpec.addResultType("NamedEntity", true);
-
     tcas.setDocumentText("testing...");
     ae.process(tcas, resultSpec);
     assertEquals("testing...", TestAnnotator.lastDocument);
-    assertEquals(resultSpec, TestAnnotator.lastResultSpec);
+    assertEquals(expectedLastResultSpec, TestAnnotator.lastResultSpec);
     tcas.reset();
     ae.destroy();
   }
