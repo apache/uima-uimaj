@@ -31,7 +31,7 @@
   
   <artifactId>uimaj-ep-runtime</artifactId>
   <version>2.3.1-SNAPSHOT</version>
-  <packaging>jar</packaging>
+  <packaging>jar</packaging>  <!-- can't be bundle because it doesn't handle property substitution -->
   <name>UIMA Eclipse: ${project.artifactId}</name>
   <description>Provides the core UIMA Framework to other Eclipse 
     plugins for their use</description>
@@ -127,6 +127,7 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <executions>
           <execution>
+            <id>uima-bundle</id>
             <configuration>
               <instructions>
                 <!-- turn off "uses" generation because Eclipse 3.2.x doesn't work with them -->
@@ -239,10 +240,23 @@
                 <Eclipse-ExtensibleAPI>true</Eclipse-ExtensibleAPI>
                 <Eclipse-BuddyPolicy>registered</Eclipse-BuddyPolicy>
               </instructions>
-            </configuration>
+            </configuration>            
           </execution>
         </executions>
       </plugin>
+      
+      <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpackDependentJars</id>
+            <goals><goal>unpack-dependencies</goal></goals>
+            <configuration>
+              <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>      
     </plugins>
   </build>
 </project>
