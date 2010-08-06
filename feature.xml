@@ -20,17 +20,17 @@
 <feature
       id="org.apache.uima.tools"
       label="UIMA tools (includes Runtime)"
-      version="2.3.0.SNAPSHOT"
+      version="2.3.1.SNAPSHOT"
       provider-name="Apache Software Foundation">
 
-   <description url="http://incubator.apache.org/uima">
+   <description url="http://uima.apache.org">
       This feature contains a debug structure handler plugin, the Component
 Descriptor Editor (a forms-based editor for creating and editing
 the XML descriptors used by UIMA), the JCas generation capability,
 a CAS Editor, and the PEAR packaging capability.
    </description>
 
-   <copyright url="http://incubator.apache.org/uima">
+   <copyright url="http://www.apache.org/licenses/LICENSE-2.0">
       Copyright the Apache Software Foundation and others; see License
 and NOTICE files
    </copyright>
@@ -54,7 +54,7 @@ under the License.
 
    <url>
       <!-- note: following url must end in slash per tip #1 at http://www.eclipse.org/articles/Article-Update/keeping-up-to-date.html -->
-      <discovery label="UIMA Eclipse Plugins update site" url="http://www.apache.org/dist/incubator/uima/eclipse-update-site/"/>
+      <discovery label="UIMA Eclipse Plugins update site" url="http://www.apache.org/dist/uima/eclipse-update-site/"/>
    </url>
 
    <includes
