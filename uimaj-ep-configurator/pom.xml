@@ -229,116 +229,115 @@
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>uima-bundle</id>
-            <configuration>
-              <manifestLocation>META-INF</manifestLocation>
-              <instructions>
-                <!-- turn off "uses" generation because Eclipse 3.2.x doesn't work with them -->
-                <_nouses>true</_nouses>
-                <Export-Package>
-                  org.apache.uima.taeconfigurator,
-                  org.apache.uima.taeconfigurator.editors,
-                  org.apache.uima.taeconfigurator.editors.point,
-                  org.apache.uima.taeconfigurator.editors.ui,
-                  org.apache.uima.taeconfigurator.editors.ui.dialogs,
-                  org.apache.uima.taeconfigurator.editors.xml,
-                  org.apache.uima.taeconfigurator.files,
-                  org.apache.uima.taeconfigurator.model,
-                  org.apache.uima.taeconfigurator.wizards
-                </Export-Package>
-                <Bundle-Activator>org.eclipse.core.internal.compatibility.PluginActivator</Bundle-Activator>
-                <Bundle-SymbolicName>org.apache.uima.desceditor;singleton:=true</Bundle-SymbolicName>
-                <Bundle-RequiredExecutionEnvironment>J2SE-1.5</Bundle-RequiredExecutionEnvironment>
-    
-                <!-- handle split packages in Eclipse.
-                  We do this by using Require-Bundle, and excluding from the Import-Package those
-                    split packages covered by those bundles - this is required by OSGi.
-                                   
-                   There are 4 packages in org.eclipse.jface.* that are "split" between bundles 
-                      org.eclipse.jface.text and org.eclipse.text.
-                     Packages:
-                      org.eclipse.jface.text
-                      org.eclipse.jface.text.link
-                      org.eclipse.jface.text.source
-                      org.eclipse.jface.text.templates 
-                   org.eclipse.ui.texteditor is split between 
-                     org.eclipse.ui.editors and org.eclipse.ui.workbench.texteditor.
-                     Packages: 
-                      org.eclipse.ui.texteditor
-                   There are 5 packages in org.eclipse.ui.*  that are split between 
-                     org.eclipse.ui.ide and org.eclipse.ui.workbench.  
-                     The Notes say not to require org.eclipse.ui.workbench, but instead just require
-                        org.eclipse.ui (which imports and reexports org.eclipse.ui.workbench packages).
-                     Packages:
-                      org.eclipse.ui
-                      org.eclipse.ui.actions
-                      org.eclipse.ui.dialogs
-                      org.eclipse.ui.model
-                      org.eclipse.ui.part
-                   org.eclipse.core.runtime has combined apis (that were split in later 
-                     point releases of 3.x)
-                -->
-                <Require-Bundle>
-                  org.eclipse.jface.text,
-                  org.eclipse.text,
-                  org.eclipse.ui.editors,
-                  org.eclipse.ui.workbench.texteditor,
-                  org.eclipse.ui.ide,
-                  org.eclipse.ui,
-                  org.eclipse.core.runtime
-                </Require-Bundle>
-                <Import-Package>
-                  !org.eclipse.jface.text,  <!-- the ! means to exclude this -->
-                  !org.eclipse.jface.text.link,
-                  !org.eclipse.jface.text.source,
-                  !org.eclipse.jface.text.templates,
-                  !org.eclipse.ui.texteditor,
-                  !org.eclipse.ui,
-                  !org.eclipse.ui.actions,
-                  !org.eclipse.ui.dialogs,
-                  !org.eclipse.ui.model,
-                  !org.eclipse.ui.part, 
-                  *,
-                  org.apache.uima.jcas.jcasgenp,
-                  org.eclipse.jdt.ui
-                </Import-Package>
-    
-                
-                <!-- these determined to be needed empiracally, due to a flaw in the bundle resolver -
-                     it works from the .class files, so references to things like org.eclipse.swt.SWT.ABORT
-                     are not visible - this is a static final constant that gets compiled into a number
-                  
-                     Also, we stick a minimum version of 3.1.0 to insure we have that at least
-                  
-                     First import specifies bundle, since package exists in more than 1 bundle
-                  -->
-                <!--Import-Package>org.eclipse.jface.text.source;bundle-symbolic-name=org.eclipse.jface.text,
-                  org.eclipse.jface.text;bundle-symbolic-name=org.eclipse.jface.text,
-                  *,
-                  org.eclipse.core.commands.common,
-                  org.eclipse.core.runtime.jobs,
-                  org.eclipse.core.runtime.content,
-                  org.eclipse.swt,
-                  org.eclipse.jface.window,
-                  org.apache.uima.jcas.jcasgenp,
-                  org.eclipse.jdt.launching,
-                  org.eclipse.jdt.ui
-                </Import-Package-->
-    
-                <!--Import-Package>
-                  *,
-                  org.eclipse.jdt.launching,
-                  org.apache.uima.jcas.jcasgenp</Import-Package-->
-                
-                <Eclipse-AutoStart>true</Eclipse-AutoStart>
-                <Plugin-Class>org.apache.uima.taeconfigurator.TAEConfiguratorPlugin</Plugin-Class>
-                <Eclipse-ExtensibleAPI>true</Eclipse-ExtensibleAPI>
-              </instructions>
-            </configuration>
-          </execution>
-        </executions>
+        <configuration>
+          <manifestLocation>META-INF</manifestLocation>
+          <instructions>
+            <!-- turn off "uses" generation because Eclipse 3.2.x doesn't work with them -->
+            <_nouses>true</_nouses>
+            <Export-Package>
+              org.apache.uima.taeconfigurator,
+              org.apache.uima.taeconfigurator.editors,
+              org.apache.uima.taeconfigurator.editors.point,
+              org.apache.uima.taeconfigurator.editors.ui,
+              org.apache.uima.taeconfigurator.editors.ui.dialogs,
+              org.apache.uima.taeconfigurator.editors.xml,
+              org.apache.uima.taeconfigurator.files,
+              org.apache.uima.taeconfigurator.model,
+              org.apache.uima.taeconfigurator.wizards
+            </Export-Package>
+            <Bundle-Activator>org.eclipse.core.internal.compatibility.PluginActivator</Bundle-Activator>
+            <Bundle-SymbolicName>org.apache.uima.desceditor;singleton:=true</Bundle-SymbolicName>
+            <Bundle-RequiredExecutionEnvironment>J2SE-1.5</Bundle-RequiredExecutionEnvironment>
+
+            <!-- handle split packages in Eclipse.
+              We do this by using Require-Bundle, and excluding from the Import-Package those
+                split packages covered by those bundles - this is required by OSGi.
+                               
+               There are 4 packages in org.eclipse.jface.* that are "split" between bundles 
+                  org.eclipse.jface.text and org.eclipse.text.
+                 Packages:
+                  org.eclipse.jface.text
+                  org.eclipse.jface.text.link
+                  org.eclipse.jface.text.source
+                  org.eclipse.jface.text.templates 
+               org.eclipse.ui.texteditor is split between 
+                 org.eclipse.ui.editors and org.eclipse.ui.workbench.texteditor.
+                 Packages: 
+                  org.eclipse.ui.texteditor
+               There are 5 packages in org.eclipse.ui.*  that are split between 
+                 org.eclipse.ui.ide and org.eclipse.ui.workbench.  
+                 The Notes say not to require org.eclipse.ui.workbench, but instead just require
+                    org.eclipse.ui (which imports and reexports org.eclipse.ui.workbench packages).
+                 Packages:
+                  org.eclipse.ui
+                  org.eclipse.ui.actions
+                  org.eclipse.ui.dialogs
+                  org.eclipse.ui.model
+                  org.eclipse.ui.part
+               org.eclipse.core.runtime has combined apis (that were split in later 
+                 point releases of 3.x)
+            -->
+            <!-- note: cde manifest has too many blanks in it, fails when running, if these next lines are not 
+                 left justified 8/2010 -->
+            <Require-Bundle>
+org.eclipse.jface.text,
+org.eclipse.text,
+org.eclipse.ui.editors,
+org.eclipse.ui.workbench.texteditor,
+org.eclipse.ui.ide,
+org.eclipse.ui,
+org.eclipse.core.runtime
+            </Require-Bundle>  
+              
+            <Import-Package>
+              !org.eclipse.jface.text,  <!-- the ! means to exclude this -->
+              !org.eclipse.jface.text.link,
+              !org.eclipse.jface.text.source,
+              !org.eclipse.jface.text.templates,
+              !org.eclipse.ui.texteditor,
+              !org.eclipse.ui,
+              !org.eclipse.ui.actions,
+              !org.eclipse.ui.dialogs,
+              !org.eclipse.ui.model,
+              !org.eclipse.ui.part,
+              !org.eclipse.core.runtime,
+              *,
+              org.apache.uima.jcas.jcasgenp,
+              org.eclipse.jdt.ui
+            </Import-Package>
+
+            
+            <!-- these determined to be needed empiracally, due to a flaw in the bundle resolver -
+                 it works from the .class files, so references to things like org.eclipse.swt.SWT.ABORT
+                 are not visible - this is a static final constant that gets compiled into a number
+              
+                 Also, we stick a minimum version of 3.1.0 to insure we have that at least
+              
+                 First import specifies bundle, since package exists in more than 1 bundle
+              -->
+            <!--Import-Package>org.eclipse.jface.text.source;bundle-symbolic-name=org.eclipse.jface.text,
+              org.eclipse.jface.text;bundle-symbolic-name=org.eclipse.jface.text,
+              *,
+              org.eclipse.core.commands.common,
+              org.eclipse.core.runtime.jobs,
+              org.eclipse.core.runtime.content,
+              org.eclipse.swt,
+              org.eclipse.jface.window,
+              org.apache.uima.jcas.jcasgenp,
+              org.eclipse.jdt.launching,
+              org.eclipse.jdt.ui
+            </Import-Package-->
+
+            <!--Import-Package>
+              *,
+              org.eclipse.jdt.launching,
+              org.apache.uima.jcas.jcasgenp</Import-Package-->
+            
+            <Eclipse-AutoStart>true</Eclipse-AutoStart>
+            <Plugin-Class>org.apache.uima.taeconfigurator.TAEConfiguratorPlugin</Plugin-Class>
+            <Eclipse-ExtensibleAPI>true</Eclipse-ExtensibleAPI>
+          </instructions>
+        </configuration>        
       </plugin>
     </plugins>
   </build>
