@@ -180,31 +180,37 @@
                   <groupId>org.apache.uima</groupId>
                   <artifactId>uimaj-ep-cas-editor</artifactId>
                   <version>2.3.1-SNAPSHOT</version>
+                  <destFileName>org.apache.uima.caseditor_2.3.1.SNAPSHOT.jar</destFileName>
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.apache.uima</groupId>
                   <artifactId>uimaj-ep-configurator</artifactId>
                   <version>2.3.1-SNAPSHOT</version>
+                  <destFileName>org.apache.uima.desceditor_2.3.1.SNAPSHOT.jar</destFileName>
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.apache.uima</groupId>
                   <artifactId>uimaj-ep-debug</artifactId>
                   <version>2.3.1-SNAPSHOT</version>
+                  <destFileName>org.apache.uima.debug_2.3.1.SNAPSHOT.jar</destFileName>
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.apache.uima</groupId>
                   <artifactId>uimaj-ep-jcasgen</artifactId>
                   <version>2.3.1-SNAPSHOT</version>
+                  <destFileName>org.apache.uima.jcas.jcasgenp_2.3.1.SNAPSHOT.jar</destFileName>
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.apache.uima</groupId>
                   <artifactId>uimaj-ep-pear-packager</artifactId>
                   <version>2.3.1-SNAPSHOT</version>
+                  <destFileName>org.apache.uima.pear_2.3.1.SNAPSHOT.jar</destFileName>
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.apache.uima</groupId>
                   <artifactId>uimaj-ep-runtime</artifactId>
                   <version>2.3.1-SNAPSHOT</version>
+                  <destFileName>org.apache.uima.runtime_2.3.1.SNAPSHOT.jar</destFileName>
                 </artifactItem>
               </artifactItems>
               <outputDirectory>${project.build.directory}/work/plugins</outputDirectory>
