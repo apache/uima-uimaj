@@ -33,8 +33,9 @@
   <version>2.3.1-SNAPSHOT</version>
 	<packaging>jar</packaging> 
 	<name>UIMA Eclipse: ${project.artifactId}</name>
+  <!-- continuation lines need to start in col 1 else manifest has extra blanks -->
   <description>Adds structure knowledge for common
-    UIMA data structures to the Eclipse Debug displays</description>
+UIMA data structures to the Eclipse Debug displays</description>
   <url>${uimaWebsiteUrl}</url>
 
   <!-- Special inheritance note
@@ -93,13 +94,14 @@
 			<version>3.2.0</version>
 			<scope>provided</scope>
 		</dependency-->
-
+    
 		<dependency>
 			<groupId>org.eclipse.jdt</groupId>
 			<artifactId>org.eclipse.jdt.debug.ui</artifactId>
 			<version>3.2.0</version>
 			<scope>provided</scope>
 		</dependency>
+    
 	</dependencies>
   
 	<build>  
@@ -109,30 +111,35 @@
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>uima-bundle</id>
-            <configuration>
-              <instructions>
-                <!-- turn off "uses" generation because Eclipse 3.2.x doesn't work with them -->
-                <_nouses>true</_nouses>
-                <Export-Package>
-                  org.apache.uima.ep_debug
-                </Export-Package>
-                
-                <Import-Package>*,
-                  org.eclipse.ui.plugin
-                </Import-Package>  
-    
-                <Bundle-Activator>org.apache.uima.ep_debug.DebugPlugin</Bundle-Activator>
-                <Bundle-SymbolicName>org.apache.uima.debug;singleton:=true</Bundle-SymbolicName>
-                
-                <Eclipse-AutoStart>true</Eclipse-AutoStart>
-              </instructions>
-            </configuration>
+        <configuration>
+          <instructions>
+            <!-- turn off "uses" generation because Eclipse 3.2.x doesn't work with them -->
+            <_nouses>true</_nouses>
+            <Export-Package>
+              org.apache.uima.ep_debug
+            </Export-Package>
             
-          </execution>
-        </executions>
+            <Bundle-Activator>org.apache.uima.ep_debug.DebugPlugin</Bundle-Activator>
+            <Bundle-SymbolicName>org.apache.uima.debug;singleton:=true</Bundle-SymbolicName>
+             
+            <!-- handle split packages in Eclipse.
+               We do this by using Require-Bundle, and excluding from the Import-Package those
+                 split packages covered by those bundles - this is required by OSGi.
+                                
+                org.eclipse.core.runtime has combined apis (that were split in later 
+                  point releases of 3.x)
+            -->
+            <!-- NOTE: ANY CONTINUATION LINES for Require-Bundle MUST START IN Col1 else manifest is potentially wrong -->
+            <Require-Bundle>org.eclipse.core.runtime</Require-Bundle>
+            <Import-Package>
+              !org.eclipse.core.runtime,                 
+              *,
+              org.eclipse.ui.plugin
+            </Import-Package>  
+
+            <Eclipse-AutoStart>true</Eclipse-AutoStart>
+          </instructions>
+        </configuration>
       </plugin>      		
 		</plugins>
 	</build>
