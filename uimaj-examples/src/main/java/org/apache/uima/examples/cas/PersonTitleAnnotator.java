@@ -80,6 +80,13 @@ public class PersonTitleAnnotator extends CasAnnotator_ImplBase {
    * The list of government titles, read from the GovernmentTitles configuration parameter.
    */
   private String[] mGovernmentTitles;
+  
+  /**
+   * Show warning message just once
+   */
+  private boolean warningMsgShown = false;
+
+  private Logger logger;
 
   /**
    * Performs initialization logic. This implementation just reads values for the configuration
@@ -96,7 +103,7 @@ public class PersonTitleAnnotator extends CasAnnotator_ImplBase {
     mGovernmentTitles = (String[]) getContext().getConfigParameterValue("GovernmentTitles");
 
     // write log messages
-    Logger logger = getContext().getLogger();
+    logger = getContext().getLogger();
     logger.log(Level.CONFIG, "PersonTitleAnnotator initialized");
     logger.log(Level.CONFIG, "CivilianTitles = " + Arrays.asList(mCivilianTitles));
     logger.log(Level.CONFIG, "MilitaryTitles = " + Arrays.asList(mMilitaryTitles));
@@ -149,6 +156,16 @@ public class PersonTitleAnnotator extends CasAnnotator_ImplBase {
       // If the ResultSpec doesn't include the PersonTitle type, we have
       // nothing to do.
       if (!getResultSpecification().containsType("example.PersonTitle",aCAS.getDocumentLanguage())) {
+        if (!warningMsgShown) {
+          String m = String.format(
+              "No output is being produced by the PersonTitleAnnotator because the Result Specification did not contain" +
+              " a request for the type example.PersonTitle with the language '%s'%n" +
+              "  (Note: this message will only be shown once.)%n", 
+              aCAS.getDocumentLanguage());               
+          System.err.println(m);
+          logger.log(Level.WARNING, m);
+          warningMsgShown = true;
+        }
         return;
       }
 
@@ -261,5 +278,4 @@ public class PersonTitleAnnotator extends CasAnnotator_ImplBase {
     // Add the annotation to the index.
     aCAS.getIndexRepository().addFS(title);
   }
-
 }

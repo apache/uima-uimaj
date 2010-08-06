@@ -35,6 +35,7 @@ import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.tutorial.DateAnnot;
 import org.apache.uima.tutorial.DateTimeAnnot;
 import org.apache.uima.tutorial.TimeAnnot;
+import org.apache.uima.util.Level;
 
 /**
  * Simple Date/Time annotator.
@@ -118,6 +119,8 @@ public class TutorialDateTime extends JCasAnnotator_ImplBase {
   };
 
   static final String defaultYear = "2003";
+  
+  private static boolean warningMessageShown = false;
 
   // PROCESS
   /**
@@ -130,14 +133,31 @@ public class TutorialDateTime extends JCasAnnotator_ImplBase {
 
     // Create Annotations
     ResultSpecification resultSpec = getResultSpecification();
-    if (resultSpec.containsType("org.apache.uima.tutorial.TimeAnnot",aJCas.getDocumentLanguage()))
+    boolean timeWanted = resultSpec.containsType("org.apache.uima.tutorial.TimeAnnot", aJCas.getDocumentLanguage());
+    boolean dateWanted = resultSpec.containsType("org.apache.uima.tutorial.DateAnnot", aJCas.getDocumentLanguage());
+
+    if (timeWanted)
       makeAnnotations(timeAnnotationMaker, hoursMinutesPattern, dfTimeShort);
-    if (resultSpec.containsType("org.apache.uima.tutorial.DateAnnot",aJCas.getDocumentLanguage()))
+    
+    if (dateWanted) {    
       makeAnnotations(dateAnnotationMaker, numericDatePattern, dfDateShort);
-    if (resultSpec.containsType("org.apache.uima.tutorial.DateAnnot",aJCas.getDocumentLanguage()))
       makeAnnotations(dateAnnotationMaker, mediumDatePattern, dfDateMedium);
-    if (resultSpec.containsType("org.apache.uima.tutorial.DateAnnot",aJCas.getDocumentLanguage()))
       makeAnnotations(dateAnnotationMaker, longDatePattern, dfDateLong);
+    }
+    
+    if (!timeWanted && !dateWanted && !warningMessageShown) {
+      String m = String.format(
+        "No output is being produced by the TutorialDateTime annotator because the Result Specification did not contain" +
+        " a request for the type%n" +
+        "  org.apache.uima.tutorial.TimeAnnot nor%n" +
+        "  org.apache.uima.tutorial.DateAnnot" +
+        " with the language '%s'%n" +
+              "  (Note: this message will only be shown once.)%n", 
+              aJCas.getDocumentLanguage());              
+      System.err.println(m);
+      getContext().getLogger().log(Level.WARNING, m);
+      warningMessageShown = true;
+    }
   }
 
   // HELPER METHODS
