@@ -124,31 +124,37 @@
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>uima-bundle</id>
-            <configuration>
-              <instructions>
-                <!-- turn off "uses" generation because Eclipse 3.2.x doesn't work with them -->
-                <_nouses>true</_nouses>
-                <Export-Package>
-                  org.apache.uima.jcas.jcasgenp
-                </Export-Package>
-                <Bundle-Activator>org.eclipse.core.internal.compatibility.PluginActivator</Bundle-Activator>
-                <!-- these next imports are needed by Eclipse to get things to compile, but
-                     not needed by maven -->
-                <Import-Package>*,
-                  org.eclipse.core.runtime.jobs,
-                  org.osgi.framework, 
-                  org.eclipse.jdt.core.jdom
-                </Import-Package> 
-                <Bundle-SymbolicName>org.apache.uima.jcas.jcasgenp;singleton:=true</Bundle-SymbolicName>
-                <Eclipse-AutoStart>true</Eclipse-AutoStart>
-                <Plugin-Class>org.apache.uima.jcas.jcasgenp.JgPlugin</Plugin-Class>            
-              </instructions>
-            </configuration>
-          </execution>
-        </executions>
+        <configuration>
+          <instructions>
+            <!-- turn off "uses" generation because Eclipse 3.2.x doesn't work with them -->
+            <_nouses>true</_nouses>
+            <Export-Package>
+              org.apache.uima.jcas.jcasgenp
+            </Export-Package>
+            <Bundle-Activator>org.eclipse.core.internal.compatibility.PluginActivator</Bundle-Activator>
+
+            <!-- handle split packages in Eclipse.
+              We do this by using Require-Bundle, and excluding from the Import-Package those
+                split packages covered by those bundles - this is required by OSGi.
+                               
+               org.eclipse.core.runtime has combined apis (that were split in later 
+                 point releases of 3.x)
+            -->
+            <!-- NOTE: ANY CONTINUATION LINES for Require-Bundle MUST START IN Col1 else manifest is potentially wrong -->
+            <Require-Bundle>org.eclipse.core.runtime</Require-Bundle>
+            <!-- the bottom two imports are needed by Eclipse to get things to compile, but
+                 not needed by maven -->
+            <Import-Package>
+              !org.eclipse.core.runtime,                 
+              *,  
+              org.osgi.framework, 
+              org.eclipse.jdt.core.jdom
+            </Import-Package> 
+            <Bundle-SymbolicName>org.apache.uima.jcas.jcasgenp;singleton:=true</Bundle-SymbolicName>
+            <Eclipse-AutoStart>true</Eclipse-AutoStart>
+            <Plugin-Class>org.apache.uima.jcas.jcasgenp.JgPlugin</Plugin-Class>            
+          </instructions>
+        </configuration>
       </plugin> 
 		</plugins>
 	</build>
