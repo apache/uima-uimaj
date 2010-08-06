@@ -23,7 +23,7 @@
       version="2.3.1.SNAPSHOT"
       provider-name="Apache Software Foundation">
 
-   <description url="http://incubator.apache.org/uima">
+   <description url="http://uima.apache.org">
       This feature packages the UIMA runtime libraries plugin.
    </description>
 
@@ -51,7 +51,7 @@ under the License.
 
    <url>
       <!-- note: following url must end in slash per tip #1 at http://www.eclipse.org/articles/Article-Update/keeping-up-to-date.html -->
-      <discovery label="UIMA Eclipse Plugins update site" url="http://www.apache.org/dist/incubator/uima/eclipse-update-site/"/>
+      <discovery label="UIMA Eclipse Plugins update site" url="http://www.apache.org/dist/uima/eclipse-update-site/"/>
    </url>
 
    <plugin
