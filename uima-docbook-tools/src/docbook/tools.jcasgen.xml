@@ -79,6 +79,10 @@ under the License.
     generated Java source code should go. If it isn&apos;t given, JCasGen generates its
     output into a subfolder called JCas (or sometimes JCasNew &ndash; see below), of the first
     argument&apos;s path.</para>
+    
+  <para>The first argument, the input file, can be written as
+    <literal>jar:&lt;url>!{entry}</literal>, for example:
+    <literal>jar:http://www.foo.com/bar/baz.jar!/COM/foo/quux.class</literal></para>
   
   <para>If no arguments are given to JCasGen, then it launches a GUI to interact with the user
     and ask for the same input. The GUI will remember the arguments you previously used.

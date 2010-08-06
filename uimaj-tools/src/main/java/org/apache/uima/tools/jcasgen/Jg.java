@@ -29,6 +29,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -425,20 +426,37 @@ public class Jg {
         }
 
         xmlSourceFileName = inputFile.replaceAll("\\\\", "/");
-        File file = new File(inputFile);
-        if (!file.exists()) {
-          error.newError(IError.ERROR, getString("fileNotFound", new Object[] { inputFile }), null);
+        URL url;
+        if(inputFile.substring(0, 4).equalsIgnoreCase("jar:")) {
+        	try {
+        		url = new URL(inputFile);
+          	if (null == url) {
+          		error.newError(IError.ERROR, getString("fileNotFound", new Object[] { inputFile }), null);
+          	}
+          	if(null == outputDirectory || outputDirectory.equals("")) {
+          		error.newError(IError.ERROR, getString("sourceArgNeedsDirectory", new Object[] { inputFile }), null);
+          	}
+        	} catch (MalformedURLException e) {
+        		error.newError(IError.ERROR, getString("fileNotFound", new Object[] { inputFile }), null);
+        		url = null;  // never get here, the previous statement throws.  Needed, though for java path analysis.
+        	}
+        } else {
+        	File file = new File(inputFile);
+          if (!file.exists()) {
+              error.newError(IError.ERROR, getString("fileNotFound", new Object[] { inputFile }), null);
+          }
+          if (null == outputDirectory || outputDirectory.equals("")) {
+            File dir = file.getParentFile();
+            if (null == dir) {
+              error.newError(IError.ERROR, getString("sourceArgNeedsDirectory",
+                      new Object[] { inputFile }), null);
+            }
+            outputDirectory = dir.getPath() + File.separator + "JCas"
+                    + ((null != merger) ? "" : "New");
+          }
+          url = file.toURI().toURL();
         }
 
-        if (null == outputDirectory || outputDirectory.equals("")) {
-          File dir = file.getParentFile();
-          if (null == dir) {
-            error.newError(IError.ERROR, getString("sourceArgNeedsDirectory",
-                    new Object[] { inputFile }), null);
-          }
-          outputDirectory = dir.getPath() + File.separator + "JCas"
-                  + ((null != merger) ? "" : "New");
-        }
         progressMonitor.beginTask("", 5);
         progressMonitor.subTask("Output going to '" + outputDirectory + "'");
         progressMonitor.subTask(getString("ReadingDescriptorAndCreatingTypes",
@@ -447,7 +465,7 @@ public class Jg {
         CASImpl casLocal = null;
         // handle classpath
         try {
-          XMLInputSource in = new XMLInputSource(file);
+          XMLInputSource in = new XMLInputSource(url);
           XMLizable specifier = UIMAFramework.getXMLParser().parse(in);
 
           mergedTypesAddingFeatures.clear();
