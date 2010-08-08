@@ -1047,7 +1047,8 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
    * Hash code not implemented
    * @return
    */
-  public int hashcode() {
+  @Override
+  public int hashCode() {
     throw new UnsupportedOperationException();
   }
 }

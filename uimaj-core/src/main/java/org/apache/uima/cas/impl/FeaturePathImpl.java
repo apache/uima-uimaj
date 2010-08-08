@@ -176,7 +176,7 @@ class FeaturePathImpl implements FeaturePath {
       // throw exception if featurePath is null
       if (featurePath == null) {
          throw new CASException(MESSAGE_DIGEST, "INVALID_FEATURE_PATH_SYNTAX",
-               new Object[] { featurePath, null });
+               new Object[] { featurePath, "null for a feature path" });
       }
 
       // check featurePath for invalid character sequences
