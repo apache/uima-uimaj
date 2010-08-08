@@ -49,6 +49,7 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
   // output file writer
   OutputStreamWriter fileWriter;
 
+  // only used by test case
   static boolean typeSystemInitCalled = false;
 
   /**
