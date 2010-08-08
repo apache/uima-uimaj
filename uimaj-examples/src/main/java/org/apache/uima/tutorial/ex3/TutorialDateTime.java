@@ -78,7 +78,8 @@ public class TutorialDateTime extends JCasAnnotator_ImplBase {
   static final Pattern numericDatePattern = Pattern
           .compile("(?s)\\b([0-1]?\\d/[0-3]?\\d((/[1-2]\\d\\d\\d)|(/\\d\\d))?)\\W");
 
-  static final DateFormat dfDateShort = DateFormat.getDateInstance(DateFormat.SHORT, Locale.US);
+  // not static, because DateFormat is not threadsafe
+  final DateFormat dfDateShort = DateFormat.getDateInstance(DateFormat.SHORT, Locale.US);
 
   // .*? (any number of artibrary chars, non greedy
   // \b word boundary
@@ -202,7 +203,7 @@ public class TutorialDateTime extends JCasAnnotator_ImplBase {
     String av; // append value
     pp.setIndex(0);
     if (-1 < s.indexOf(":")) { // have time string
-      if (s.endsWith("AM") | s.endsWith("PM") | s.endsWith("am") | s.endsWith("pm"))
+      if (s.endsWith("AM") || s.endsWith("PM") || s.endsWith("am") || s.endsWith("pm"))
         return s;
       else {
         int hour = numberFormat.parse(s, pp).intValue();

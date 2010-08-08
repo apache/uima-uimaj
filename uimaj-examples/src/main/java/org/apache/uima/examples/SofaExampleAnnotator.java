@@ -105,12 +105,12 @@ public class SofaExampleAnnotator extends CasAnnotator_ImplBase {
   private String translate(String word) {
     String lword = word.toLowerCase();
     if (Arrays.equals(wThis, lword.toCharArray()))
-      return new String("das");
+      return "das";
     if (Arrays.equals(wBeer, lword.toCharArray()))
-      return new String("bier");
+      return "bier";
     if (Arrays.equals(wIs, lword.toCharArray()))
-      return new String("ist");
-    return new String("gut");
+      return "ist";
+    return "gut";
   }
 
 }

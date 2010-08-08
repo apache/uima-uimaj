@@ -524,6 +524,11 @@ public class ServiceRegistry {
 
       return (p.minPort == minPort) && (p.maxPort == maxPort);
     }
+
+    @Override
+    public int hashCode() {
+      return minPort * 31 + maxPort;
+    }
   }
 
   /* For testing */

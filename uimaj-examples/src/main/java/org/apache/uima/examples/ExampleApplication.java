@@ -117,31 +117,21 @@ public class ExampleApplication {
   private static void processFile(File aFile, AnalysisEngine aAE, CAS aCAS) throws IOException,
           AnalysisEngineProcessException {
     System.out.println("Processing file " + aFile.getName());
-    BufferedInputStream fis = null;
 
-    try {
-      String document = FileUtils.file2String(aFile);
-      document = document.trim();
+    String document = FileUtils.file2String(aFile);
+    document = document.trim();
 
-      // put document text in CAS
-      aCAS.setDocumentText(document);
+    // put document text in CAS
+    aCAS.setDocumentText(document);
 
-      // process
-      aAE.process(aCAS);
+    // process
+    aAE.process(aCAS);
 
-      // print annotations to System.out
-      PrintAnnotations.printAnnotations(aCAS, System.out);
+    // print annotations to System.out
+    PrintAnnotations.printAnnotations(aCAS, System.out);
 
-      // reset the CAS to prepare it for processing the next document
-      aCAS.reset();
-    } finally {
-      try {
-        if (fis != null)
-          fis.close();
-      } catch (Exception ex) {
-        ex.printStackTrace();
-      }
-    }
+    // reset the CAS to prepare it for processing the next document
+    aCAS.reset();
   }
 
 }
