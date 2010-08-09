@@ -936,7 +936,8 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 			// for simple range types, only [] and fsId() are allowed as child
 			// path
 			if (this.isSimpleRangeType
-					& !(this.childPath.isBracketsOnly() || this.childPath.isFsIdFeature)) {
+					&& !(this.childPath.isBracketsOnly() || 
+					     this.childPath.isFsIdFeature)) {
 				CASRuntimeException exception = new CASRuntimeException(
 						CASRuntimeException.INVALID_FEATURE_PATH, new String[] { this.featureName });
 				throw exception;
