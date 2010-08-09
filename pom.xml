@@ -212,6 +212,18 @@
                   <version>2.3.1-SNAPSHOT</version>
                   <destFileName>org.apache.uima.runtime_2.3.1.SNAPSHOT.jar</destFileName>
                 </artifactItem>
+                <artifactItem>
+                  <groupId>org.apache.uima</groupId>
+                  <artifactId>uimaj-ep-deployeditor</artifactId>
+                  <version>2.3.1-SNAPSHOT</version>
+                  <destFileName>org.apache.uima.deployeditor_2.3.1.SNAPSHOT.jar</destFileName>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.apache.uima</groupId>
+                  <artifactId>uimaj-ep-runtime-deployeditor</artifactId>
+                  <version>2.3.1-SNAPSHOT</version>
+                  <destFileName>org.apache.uima.runtime.fragments.deployeditor_2.3.1.SNAPSHOT.jar</destFileName>
+                </artifactItem>              
               </artifactItems>
               <outputDirectory>${project.build.directory}/work/plugins</outputDirectory>
             </configuration>
@@ -235,6 +247,12 @@
                   <artifactId>uimaj-eclipse-feature-tools</artifactId>
                   <version>${project.version}</version>
                   <destFileName>org.apache.uima.tools_${parsedVersion.osgiVersion}.jar</destFileName>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.apache.uima</groupId>
+                  <artifactId>uimaj-eclipse-feature-deployeditor</artifactId>
+                  <version>${project.version}</version>
+                  <destFileName>org.apache.uima.as.deployeditor_${parsedVersion.osgiVersion}.jar</destFileName>
                 </artifactItem>
               </artifactItems>
               <outputDirectory>${project.build.directory}/eclipse-update-site/features</outputDirectory>
