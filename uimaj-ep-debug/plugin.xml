@@ -63,8 +63,8 @@
       </javaLogicalStructure>
       <javaLogicalStructure
             description="UIMA JCas"
-            subtypes="false"
-            type="org.apache.uima.jcas.impl.JCas">
+            subtypes="true"
+            type="org.apache.uima.jcas.JCas">
          <variable
                name="Sofa"
                value="return new org.apache.uima.cas.impl.DebugFSLogicalStructure.ViewInfo(this.getCas());"/>
