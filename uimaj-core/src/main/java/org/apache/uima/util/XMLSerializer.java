@@ -53,7 +53,8 @@ public class XMLSerializer {
 
   private Transformer mTransformer;
 
-  private Result mResult;
+  private OutputStream mOutputStream;
+  private Writer mWriter;
 
   public XMLSerializer() {
     this(true);
@@ -98,13 +99,15 @@ public class XMLSerializer {
   }
 
   public void setOutputStream(OutputStream aOutputStream) {
-    mResult = new StreamResult(aOutputStream);
-    mHandler.setResult(mResult);
+    mWriter = null;
+    mOutputStream = aOutputStream;
+    mHandler.setResult(createSaxResultObject());
   }
 
   public void setWriter(Writer aWriter) {
-    mResult = new StreamResult(aWriter);
-    mHandler.setResult(mResult);
+    mOutputStream = null;
+    mWriter = aWriter;
+    mHandler.setResult(createSaxResultObject());
   }
 
   public ContentHandler getContentHandler() {
@@ -113,9 +116,19 @@ public class XMLSerializer {
     return new CharacterValidatingContentHandler(!xml10, mHandler);
   }
 
+  private Result createSaxResultObject() {
+    if (mOutputStream != null) {
+      return new StreamResult(mOutputStream);
+    } else if (mWriter != null) {
+      return new StreamResult(mWriter); 
+    } else {
+      return new StreamResult();
+    }
+  }
+
   public void serialize(Node node) {
     try {
-      mTransformer.transform(new DOMSource(node), mResult);
+      mTransformer.transform(new DOMSource(node), createSaxResultObject());
     } catch (TransformerException e) {
       throw new UIMARuntimeException(e);
     }
@@ -135,6 +148,9 @@ public class XMLSerializer {
     } catch (IllegalArgumentException e) {
       throw new UIMARuntimeException(e);
     }
+    //re-create the Result object when properties change.  This fixes bug UIMA-1859 where setting the XML version was
+    //not reflected in the output.
+    mHandler.setResult(createSaxResultObject());
   }  
   
   static class CharacterValidatingContentHandler implements ContentHandler {
