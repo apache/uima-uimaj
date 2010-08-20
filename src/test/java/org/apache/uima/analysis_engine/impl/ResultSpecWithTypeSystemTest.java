@@ -21,7 +21,6 @@ package org.apache.uima.analysis_engine.impl;
 import junit.framework.TestCase;
 
 import org.apache.uima.analysis_engine.TypeOrFeature;
-import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
@@ -111,11 +110,11 @@ public class ResultSpecWithTypeSystemTest extends TestCase {
     check(tofT2, K.NotContain, f1);
     check(tofT2allFeat, K.Contains, f2);
     check(tofT2, K.NotContain, f2);
-    check(tofT1allFeat, K.Contains, f2);
+//    check(tofT1allFeat, K.NotContain, f2);  // because allFeat on T1 doesn't include F2 which is only introduced on T2
     check(tofT2F1, K.NotContain, f1);         // feature spec'd for subtype
     check(tofT2F1, K.Contains, "T2:F1");
 //    check(tofT2F1, K.Contains, "T3:F1");      // oops, features not inheriting
-    check(tofT1allFeat, K.Contains, f4);
+//    check(tofT1allFeat, K.NotContain, f4);  // because allFeat on T1 doesn't include F4 which is only introduced on T4
     check(tofT2allFeat, K.NotContain, f4);
     check(tofT1, K.NotContain, f4);
   }
@@ -143,24 +142,29 @@ public class ResultSpecWithTypeSystemTest extends TestCase {
     check(tofT1allFeat, EN, K.Contains, f1, EN_US);
 
     TofLs[] tofls =aT(tofT1allFeat, X, tofT2, EN);
-    check(tofls, K.Contains, f2, X);
+//    check(tofls, K.NotContain, f2, X);           // because f2 not in T1
+//    check(tofls, K.NotContain, f2, EN);
+//    check(tofls, K.NotContain, f2, EN_US);
+
+    tofls =aT(tofT1allFeat, X, tofF2, EN);
+//    check(tofls, K.NotContain, f2, X);
+    check(tofls, K.Contains, f2, EN);
+    check(tofls, K.Contains, f2, EN_US);
+
+    tofls = aT(tofT1allFeat, EN, tofT2allFeat, X);
+    check(tofls, K.Contains, f2, X);   
     check(tofls, K.Contains, f2, EN);
     check(tofls, K.Contains, f2, EN_US);
     
-    tofls = aT(tofT1allFeat, EN, tofT2, X);
-//    check(tofls, K.NotContain, f2, X);    // bad
-    check(tofls, K.Contains, f2, EN);
-    check(tofls, K.Contains, f2, EN_US);
-    
-    tofls = aT(tofT1allFeat, EN, tofT2, EN_US);
-    check(tofls, K.NotContain, f2, X);
-    check(tofls, K.Contains, f2, EN);
-    check(tofls, K.Contains, f2, EN_US);
+    tofls = aT(tofT2allFeat, EN, tofF1, X);
+    check(tofls, K.Contains, f1, X);
+    check(tofls, K.Contains, f1, EN);
+    check(tofls, K.Contains, f1, EN_US);
     
     tofls = aT(tofT1allFeat, EN_US, tofT2, EN);
     check(tofls, K.NotContain, f2, X);
-//    check(tofls, K.NotContain, f2, EN);  //broken
-    check(tofls, K.Contains, f2, EN_US);
+//    check(tofls, K.NotContain, f2, EN);  
+//    check(tofls, K.NotContain, f2, EN_US);
 
     tofls = aT(tofT1, X, tofT2, EN_US);
     check(tofls, K.NotContain, f2, X);
@@ -172,9 +176,11 @@ public class ResultSpecWithTypeSystemTest extends TestCase {
     check(tofls, K.NotContain, f2, EN);
     check(tofls, K.NotContain, f2, EN_US);
 
-    tofls = aT(tofT1allFeat, X, tofF2, EN_US);
-//    check(tofls, K.NotContain, f2, X);  //broken
-//    check(tofls, K.NotContain, f2, EN);  //broken
+    tofls = aT(tofF1, EN, tofF2, EN_US);
+    check(tofls, K.NotContain, "T2:F1", X);  
+//    check(tofls, K.Contains, "T2:F1", EN);     // because feats not inheriting from supers  
+//    check(tofls, K.Contains, "T2:F1", EN_US);  
+    check(tofls, K.NotContain, f2, EN);  
     check(tofls, K.Contains, f2, EN_US);
     
     
