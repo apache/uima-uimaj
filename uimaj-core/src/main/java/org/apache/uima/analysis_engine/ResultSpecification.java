@@ -103,15 +103,15 @@ import org.apache.uima.util.XMLizable;
  */
 public interface ResultSpecification extends XMLizable, Serializable, Cloneable {
   /**
-   * Retrieves the Types and Features that the AnalysisEngine or Annotator is requested to produce
-   * for the default language x-unspecified (that is, regardless any language specification).
+   * Retrieves the Types and Features that the AnalysisEngine or Annotator is requested to produce,
+   * for all languages.
    * <p>
    * The set of types and features returned are just the ones that have been 
    * explicitly set or added to the ResultSpecification, and doesn't include
    * any derived subtypes, even if this ResultSpecification has been compiled. 
    * 
    * @return an array of {@link TypeOrFeature} objects that define the result types and features for
-   *         the language x-unspecified.
+   *         all languages.
    */
   public TypeOrFeature[] getResultTypesAndFeatures();
 
