@@ -477,7 +477,7 @@ public class ResultSpecification_implTest extends TestCase {
       Assert.assertFalse(rs.containsType("FakeType:FakeFeature2"));
       Assert.assertTrue(rs.containsFeature("AnotherType:AnotherFeature"));
       Assert.assertTrue(rs.containsFeature("AnotherType:YetAnotherFeature"));
-      Assert.assertFalse(rs.containsFeature("AnotherType:asdfghjkl"));
+      Assert.assertTrue(rs.containsFeature("AnotherType:asdfghjkl"));  // unknown features are there, if the type says allFeats
       Assert.assertFalse(rs.containsType("NotThere:FakeFeature"));
     } catch (Exception e) {
       JUnitExtension.handleException(e);
@@ -516,7 +516,7 @@ public class ResultSpecification_implTest extends TestCase {
       Assert.assertFalse(rs.containsType("FakeType:FakeFeature2"));
       Assert.assertTrue(rs.containsFeature("AnotherType:AnotherFeature"));
       Assert.assertTrue(rs.containsFeature("AnotherType:YetAnotherFeature"));
-      Assert.assertFalse(rs.containsFeature("AnotherType:asdfghjkl"));
+      Assert.assertTrue(rs.containsFeature("AnotherType:asdfghjkl")); // unknown features are there if type says allfeats
       Assert.assertFalse(rs.containsType("NotThere:FakeFeature"));
       Assert.assertFalse(rs.containsFeature("NotThere:FakeFeature"));
       Assert.assertFalse(rs.containsType("SubType"));
