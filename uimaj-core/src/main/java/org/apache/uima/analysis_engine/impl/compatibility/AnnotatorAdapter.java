@@ -168,10 +168,14 @@ public class AnnotatorAdapter implements AnalysisComponent {
         rs = UIMAFramework.getResourceSpecifierFactory().createResultSpecification();
         rs.setResultTypesAndFeatures(tofs);
       } else {
-        // special case: if annotator lists no outputs for this language, all it
-        // with all possible outputs. This is mainly for backwards compatibility,
+        // special case: if annotator lists no outputs for this language, call it
+        // with the actual result spec, set up by language.
+     
+        // An earlier version of this comment erroneously asserted
+        // "call for all possible outputs.
+        // This is mainly for backwards compatibility,
         // but here's a rationalization: the FlowController wants us to invoke the
-        // annotator, so calling it with no outputs doesn't really make sense.
+        // annotator, so calling it with no outputs doesn't really make sense."
         rs = mDefaultResultSpecification;
       }
       mLanguageToResultSpecMap.put(language, rs);

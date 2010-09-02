@@ -325,15 +325,38 @@ public class AnalysisEngine_implTest extends TestCase {
   public void testProcess() throws Exception {
     try {
       // test simple primitive TextAnalysisEngine (using TestAnnotator class)
+      // This test should work with or without a type system description
       AnalysisEngineDescription primitiveDesc = new AnalysisEngineDescription_impl();
       primitiveDesc.setPrimitive(true);
       primitiveDesc
               .setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
       primitiveDesc.getMetaData().setName("Test Primitive TAE");
+
+//      TypeSystemDescription tsd = new TypeSystemDescription_impl();
+//      tsd.addType("NamedEntity", "", "uima.tcas.Annotation");
+//      tsd.addType("DocumentStructure", "", "uima.cas.TOP");
+//      primitiveDesc.getAnalysisEngineMetaData().setTypeSystem(tsd);
       Capability cap = new Capability_impl();
       cap.addOutputType("NamedEntity", true);
       cap.addOutputType("DocumentStructure", true);
       Capability[] caps = new Capability[] {cap};
+      primitiveDesc.getAnalysisEngineMetaData().setCapabilities(caps);
+      _testProcess(primitiveDesc);
+
+      primitiveDesc = new AnalysisEngineDescription_impl();
+      primitiveDesc.setPrimitive(true);
+      primitiveDesc
+              .setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
+      primitiveDesc.getMetaData().setName("Test Primitive TAE");
+
+      TypeSystemDescription tsd = new TypeSystemDescription_impl();
+      tsd.addType("NamedEntity", "", "uima.tcas.Annotation");
+      tsd.addType("DocumentStructure", "", "uima.cas.TOP");
+      primitiveDesc.getAnalysisEngineMetaData().setTypeSystem(tsd);
+      cap = new Capability_impl();
+      cap.addOutputType("NamedEntity", true);
+      cap.addOutputType("DocumentStructure", true);
+      caps = new Capability[] {cap};
       primitiveDesc.getAnalysisEngineMetaData().setCapabilities(caps);
       _testProcess(primitiveDesc);
 
@@ -409,10 +432,18 @@ public class AnalysisEngine_implTest extends TestCase {
 
     // process(CAS,ResultSpecification)
     ResultSpecification resultSpec = new ResultSpecification_impl(tcas.getTypeSystem());
-    resultSpec.addResultType("NamedEntity", true);
+    resultSpec.addResultType("NamedEntity", true);   // includes subtypes Person, Sentence, Place, Paragraph
+                                                     // sets for lang = x-unspecified
     
     ResultSpecification expectedLastResultSpec = new ResultSpecification_impl(tcas.getTypeSystem());
-    expectedLastResultSpec.addResultType("NamedEntity", true, languages);
+    // interesting case:
+    //   Because the annotator extends a UIMA Version 1.x impl class, we go thru an "adapter" interface
+    //     which normally replaces the result spec with one that is based on language x-unspecified
+    //       (guessing because version 1.x didn't properly support languages)
+    //     However there's an exception to this: if the result spec would have no types or features
+    //       for the language in the CAS, the original result spec is used, rather than a 
+    //       new one based on x-unspecified.
+    expectedLastResultSpec.addResultType("NamedEntity", true, languages);  
 
     _testProcessInner(ae, tcas, resultSpec, expectedLastResultSpec);
   }
@@ -429,9 +460,10 @@ public class AnalysisEngine_implTest extends TestCase {
 
     // Test each form of the process method. When TestAnnotator executes, it
     // stores in static fields the document text and the ResultSpecification.
-    // We use thse to make sure the information propogates correctly to the annotator.
+    // We use these to make sure the information propagates correctly to the annotator.
 
     // process(CAS)
+    //   Calls with the Result spec set to default to that of the outer annotator output capabilities
     tcas.setDocumentText("new test");
     ae.process(tcas);
     assertEquals("new test", TestAnnotator.lastDocument);
