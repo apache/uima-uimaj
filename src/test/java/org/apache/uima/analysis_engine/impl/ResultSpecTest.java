@@ -30,6 +30,10 @@ import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.ResultSpecification;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.Feature;
+import org.apache.uima.cas.Type;
+import org.apache.uima.cas.admin.TypeSystemMgr;
+import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
@@ -43,6 +47,14 @@ public class ResultSpecTest extends TestCase {
   private static final String PTBR = "pt-br";
   private static final String I = "I";  // split designator
   
+  // types
+  
+  private static final TypeSystemMgr ts = new TypeSystemImpl();
+  private static final Type t1 = ts.addType("T1", ts.getTopType());
+  private static final Feature f1 = ts.addFeature("F1", t1, t1);
+  private static final Feature f1a = ts.addFeature("F1a", t1, t1);
+  static {ts.commit();};
+
   /**
    * Tests for https://issues.apache.org/jira/browse/UIMA-1840
    */
@@ -86,16 +98,16 @@ public class ResultSpecTest extends TestCase {
     String[] rs2langs = rs2List.toArray(new String[rs2List.size()]);
     String[] explangs = expList.toArray(new String[expList.size()]);
 
-    ResultSpecification_impl rs1 = new ResultSpecification_impl();
-    ResultSpecification_impl rs2 = new ResultSpecification_impl();
-    ResultSpecification_impl rsE = new ResultSpecification_impl(); //expected
+    ResultSpecification_impl rs1 = new ResultSpecification_impl(ts);
+    ResultSpecification_impl rs2 = new ResultSpecification_impl(ts);
+    ResultSpecification_impl rsE = new ResultSpecification_impl(ts); //expected
     
     addResultTypeOneAtATime(rs1, rs1langs);
     addResultTypeOneAtATime(rs2, rs2langs);
     addResultTypeOneAtATime(rsE, explangs);
     
-    ResultSpecification_impl rsQ = ResultSpecification_impl.intersect(rs1, rs2);
-    assertTrue(rsQ.equals(rsE));
+    ResultSpecification_impl rsQ = rs1.intersect(rs2);
+    assertEquals(rsQ, rsE);
   }
   
   // we do this to avoid language normalization from collapsing x-unspecified 
@@ -120,13 +132,13 @@ public class ResultSpecTest extends TestCase {
       PrimitiveAnalysisEngine_impl ae = (PrimitiveAnalysisEngine_impl) UIMAFramework
               .produceAnalysisEngine(aeDesc);
       CAS cas = ae.newCAS();
-      ResultSpecification resultSpec = new ResultSpecification_impl();
+      ResultSpecification_impl resultSpec = new ResultSpecification_impl();
       resultSpec.addResultType("uima.tt.TokenLikeAnnotation", true);
       resultSpec.setTypeSystem(cas.getTypeSystem());
       
       ResultSpecification_impl rs2 = new ResultSpecification_impl(cas.getTypeSystem());
       rs2.addCapabilities(ae.getAnalysisEngineMetaData().getCapabilities());
-      ResultSpecification acResultSpec = ResultSpecification_impl.intersect(resultSpec, rs2);
+      ResultSpecification acResultSpec = resultSpec.intersect(rs2);
       assertTrue(acResultSpec.containsType("uima.tt.TokenAnnotation"));
       assertFalse(acResultSpec.containsType("uima.tt.SentenceAnnotation"));
       assertFalse(acResultSpec.containsType("uima.tt.Lemma"));
@@ -143,12 +155,12 @@ public class ResultSpecTest extends TestCase {
       PrimitiveAnalysisEngine_impl ae = (PrimitiveAnalysisEngine_impl) UIMAFramework
               .produceAnalysisEngine(aeDesc);
       CAS cas = ae.newCAS();
-      ResultSpecification resultSpec = new ResultSpecification_impl(cas.getTypeSystem());
+      ResultSpecification_impl resultSpec = new ResultSpecification_impl(cas.getTypeSystem());
       resultSpec.addResultType("uima.tcas.Annotation", true);
       
       ResultSpecification_impl rs2 = new ResultSpecification_impl(cas.getTypeSystem());
       rs2.addCapabilities(ae.getAnalysisEngineMetaData().getCapabilities());
-      ResultSpecification acResultSpec = ResultSpecification_impl.intersect(resultSpec, rs2);
+      ResultSpecification acResultSpec = resultSpec.intersect(rs2);
       assertTrue(acResultSpec.containsType("uima.tt.TokenAnnotation"));
       assertTrue(acResultSpec.containsType("uima.tt.SentenceAnnotation"));
       assertFalse(acResultSpec.containsType("uima.tt.Lemma"));

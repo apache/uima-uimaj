@@ -359,14 +359,14 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
           if (mLastTypeSystem != view.getTypeSystem()) {
             mLastTypeSystem = view.getTypeSystem();
             mCurrentResultSpecification.setTypeSystem(mLastTypeSystem);
-            rsFromOutputCapabilities = new ResultSpecification_impl();
+            rsFromOutputCapabilities = new ResultSpecification_impl(mLastTypeSystem);
             rsFromOutputCapabilities.addCapabilities(this.getAnalysisEngineMetaData().getCapabilities());
           }
           // the actual ResultSpec we send to the component is formed by
-          // looking at this primitive AE's declared output types and eliminiating
+          // looking at this primitive AE's declared output types and eliminating
           // any that are not in mCurrentResultSpecification.
           ResultSpecification analysisComponentResultSpec = 
-            ResultSpecification_impl.intersect(mCurrentResultSpecification, (ResultSpecification_impl) rsFromOutputCapabilities);
+            ((ResultSpecification_impl)mCurrentResultSpecification).intersect((ResultSpecification_impl)rsFromOutputCapabilities);
           mAnalysisComponent.setResultSpecification(analysisComponentResultSpec);
           mResultSpecChanged = false;
         }

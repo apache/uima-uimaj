@@ -161,4 +161,42 @@ public class TypeOrFeature_impl extends MetaDataObject_impl implements TypeOrFea
     return new XmlizationInfo(null, null);
     // this object has custom XMLization routines
   }
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = super.hashCode();
+    result = prime * result + (mAllAnnotatorFeatures ? 1231 : 1237);
+    result = prime * result + ((mName == null) ? 0 : mName.hashCode());
+    result = prime * result + (mType ? 1231 : 1237);
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (!super.equals(obj)) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    TypeOrFeature_impl other = (TypeOrFeature_impl) obj;
+    if (mAllAnnotatorFeatures != other.mAllAnnotatorFeatures) {
+      return false;
+    }
+    if (mName == null) {
+      if (other.mName != null) {
+        return false;
+      }
+    } else if (!mName.equals(other.mName)) {
+      return false;
+    }
+    if (mType != other.mType) {
+      return false;
+    }
+    return true;
+  }
 }

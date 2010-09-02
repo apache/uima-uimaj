@@ -125,7 +125,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
 
   // A map from the full space of feature names to feature codes. A feature
   // may
-  // be know by many different names (one for each subtype of the type the
+  // be known by many different names (one for each subtype of the type the
   // feature is declared on).
   private StringToIntMap featureMap;
 
@@ -808,7 +808,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     // We have to copy the array since we don't have const.
     return (this.approp.get(type)).toArrayCopy();
   }
-
+  
   /**
    * @return An offset <code>&gt;0</code> if <code>feat</code> exists; <code>0</code>, else.
    */
