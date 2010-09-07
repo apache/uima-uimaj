@@ -129,6 +129,77 @@
       <scope>provided</scope>
     </dependency>   
 
+    <!-- These next dependencies are just to lock down the
+         transitive dependencies of the above.
+         This was done because on Sept 7 2010 somebody uploaded
+         corrupted versions of these to maven central. -->
+ 
+    <dependency>
+      <groupId>org.eclipse.equinox</groupId>
+      <artifactId>org.eclipse.equinox.registry</artifactId>
+      <version>3.2.1</version>
+      <scope>provided</scope>      
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.core</groupId>
+      <artifactId>org.eclipse.core.jobs</artifactId>
+      <version>3.2.0</version>
+      <scope>provided</scope>      
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.core</groupId>
+      <artifactId>org.eclipse.core.contenttype</artifactId>
+      <version>3.2.0</version>
+      <scope>provided</scope>      
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.equinox</groupId>
+      <artifactId>org.eclipse.equinox.preferences</artifactId>
+      <version>3.2.1</version>
+      <scope>provided</scope>      
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.core</groupId>
+      <artifactId>org.eclipse.core.runtime.compatibility.auth</artifactId>
+      <version>3.2.0</version>
+      <scope>provided</scope>      
+    </dependency>  
+    <dependency>
+      <groupId>org.eclipse.osgi</groupId>
+      <artifactId>org.eclipse.osgi</artifactId>
+      <version>3.2.1</version>
+      <scope>provided</scope>      
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.core</groupId>
+      <artifactId>org.eclipse.core.filesystem</artifactId>
+      <version>1.0.0</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.equinox</groupId>
+      <artifactId>org.eclipse.equinox.common</artifactId>
+      <version>3.2.0</version>
+      <scope>provided</scope>      
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.ant</groupId>
+      <artifactId>org.eclipse.ant.core</artifactId>
+      <version>3.1.100</version>
+      <scope>provided</scope>      
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.core</groupId>
+      <artifactId>org.eclipse.core.expressions</artifactId>
+      <version>3.2.1</version>
+      <scope>provided</scope>      
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.core</groupId>
+      <artifactId>org.eclipse.core.variables</artifactId>
+      <version>3.1.100</version>
+      <scope>provided</scope>      
+    </dependency>    
 	</dependencies>
 	<build>
     
@@ -191,19 +262,11 @@ org.eclipse.ui,
 org.eclipse.ui.workbench,
 org.eclipse.core.runtime
             </Require-Bundle>
-            <Import-Package>
-              !org.eclipse.jface.text,
-              !org.eclipse.jface.text.link,
-              !org.eclipse.jface.text.source,
-              !org.eclipse.jface.text.templates,
-              !org.eclipse.ui.texteditor,
-              !org.eclipse.ui.workbench,
+            <Import-Package>              
               !org.eclipse.core.runtime,
               !org.eclipse.ui,
-              !org.eclipse.ui.actions,
               !org.eclipse.ui.dialogs,
-              !org.eclipse.ui.model,
-              !org.eclipse.ui.part, 
+              !org.eclipse.ui.model, 
               *
             </Import-Package> 
     

@@ -102,6 +102,85 @@ UIMA data structures to the Eclipse Debug displays</description>
 			<scope>provided</scope>
 		</dependency>
     
+    <!-- dependencies added to overcome 3.6 maven central corrupted upload -->
+    <dependency>
+      <groupId>org.eclipse.core</groupId>
+      <artifactId>org.eclipse.core.filesystem</artifactId>
+      <version>1.0.0</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.core</groupId>
+      <artifactId>org.eclipse.core.resources</artifactId>
+      <version>3.2.1</version>
+      <scope>provided</scope>      
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.core</groupId>
+      <artifactId>org.eclipse.core.runtime</artifactId>
+      <version>3.2.0</version>
+      <scope>provided</scope>      
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.equinox</groupId>
+      <artifactId>org.eclipse.equinox.common</artifactId>
+      <version>3.2.0</version>
+      <scope>provided</scope>      
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.osgi</groupId>
+      <artifactId>org.eclipse.osgi</artifactId>
+      <version>3.2.1</version>
+      <scope>provided</scope>      
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.core</groupId>
+      <artifactId>org.eclipse.core.expressions</artifactId>
+      <version>3.2.1</version>
+      <scope>provided</scope>      
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.core</groupId>
+      <artifactId>org.eclipse.core.variables</artifactId>
+      <version>3.1.100</version>
+      <scope>provided</scope>      
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.ant</groupId>
+      <artifactId>org.eclipse.ant.core</artifactId>
+      <version>3.1.100</version>
+      <scope>provided</scope>      
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.equinox</groupId>
+      <artifactId>org.eclipse.equinox.registry</artifactId>
+      <version>3.2.1</version>
+      <scope>provided</scope>      
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.core</groupId>
+      <artifactId>org.eclipse.core.jobs</artifactId>
+      <version>3.2.0</version>
+      <scope>provided</scope>      
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.equinox</groupId>
+      <artifactId>org.eclipse.equinox.preferences</artifactId>
+      <version>3.2.1</version>
+      <scope>provided</scope>      
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.core</groupId>
+      <artifactId>org.eclipse.core.contenttype</artifactId>
+      <version>3.2.0</version>
+      <scope>provided</scope>      
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.core</groupId>
+      <artifactId>org.eclipse.core.runtime.compatibility.auth</artifactId>
+      <version>3.2.0</version>
+      <scope>provided</scope>      
+    </dependency>  
 	</dependencies>
   
 	<build>  
