@@ -102,6 +102,7 @@ under the License.
     <!-- for every other source, use relative paths to locate
          the project's root, and include the whole thing except for 
          target/ 
+         .*  (.settings/, .project, .classpath)
          
          There must be one entry here for each entry in 
          the <modules> section (recursively)
@@ -114,19 +115,28 @@ under the License.
     <fileSet>
       <directory>../aggregate-uimaj</directory>
       <outputDirectory>/aggregate-uimaj</outputDirectory>
-      <excludes><exclude>target/**</exclude></excludes>
+      <excludes>
+        <exclude>target/**</exclude>
+        <exclude>.*/**</exclude>
+      </excludes>
       <fileMode>644</fileMode>
     </fileSet>
     <fileSet>
       <directory>../aggregate-uimaj-eclipse-plugins</directory>
       <outputDirectory>/aggregate-uimaj</outputDirectory>
-      <excludes><exclude>target/**</exclude></excludes>
+      <excludes>
+        <exclude>target/**</exclude>
+        <exclude>.*/**</exclude>
+      </excludes>
       <fileMode>644</fileMode>
     </fileSet>
     <fileSet>
       <directory>../aggregate-uimaj-docbooks</directory>
       <outputDirectory>/aggregate-uimaj</outputDirectory>
-      <excludes><exclude>target/**</exclude></excludes>
+      <excludes>
+        <exclude>target/**</exclude>
+        <exclude>.*/**</exclude>
+      </excludes>
       <fileMode>644</fileMode>
     </fileSet>
     
@@ -134,25 +144,37 @@ under the License.
     <fileSet>
       <directory>../uima-docbook-overview-and-setup</directory>
       <outputDirectory>/uima-docbook-overview-and-setup</outputDirectory>
-      <excludes><exclude>target/**</exclude></excludes>
+      <excludes>
+        <exclude>target/**</exclude>
+        <exclude>.*/**</exclude>
+      </excludes>
       <fileMode>644</fileMode>
     </fileSet>
     <fileSet>
       <directory>../uima-docbook-references</directory>
       <outputDirectory>/uima-docbook-references</outputDirectory>
-      <excludes><exclude>target/**</exclude></excludes>
+      <excludes>
+        <exclude>target/**</exclude>
+        <exclude>.*/**</exclude>
+      </excludes>
       <fileMode>644</fileMode>
     </fileSet>
     <fileSet>
       <directory>../uima-docbook-tools</directory>
       <outputDirectory>/uima-docbook-tools</outputDirectory>
-      <excludes><exclude>target/**</exclude></excludes>
+      <excludes>
+        <exclude>target/**</exclude>
+        <exclude>.*/**</exclude>
+      </excludes>
       <fileMode>644</fileMode>
     </fileSet>
     <fileSet>
       <directory>../uima-docbook-tutorials-and-users-guides</directory>
       <outputDirectory>/uima-docbook-tutorials-and-users-guides</outputDirectory>
-      <excludes><exclude>target/**</exclude></excludes>
+      <excludes>
+        <exclude>target/**</exclude>
+        <exclude>.*/**</exclude>
+      </excludes>
       <fileMode>644</fileMode>
     </fileSet>
     
@@ -163,6 +185,7 @@ under the License.
       <excludes>
         <exclude>target/**</exclude>
         <exclude>META-INF</exclude>
+        <exclude>.*/**</exclude>
       </excludes>
       <fileMode>644</fileMode>
     </fileSet>      
@@ -172,6 +195,7 @@ under the License.
       <excludes>
         <exclude>target/**</exclude>
         <exclude>META-INF</exclude>
+        <exclude>.*/**</exclude>
       </excludes>
       <fileMode>644</fileMode>
     </fileSet>      
@@ -181,6 +205,7 @@ under the License.
       <excludes>
         <exclude>target/**</exclude>
         <exclude>META-INF</exclude>
+        <exclude>.*/**</exclude>
       </excludes>
       <fileMode>644</fileMode>
     </fileSet>       
@@ -190,6 +215,7 @@ under the License.
       <excludes>
         <exclude>target/**</exclude>
         <exclude>META-INF</exclude>
+        <exclude>.*/**</exclude>
       </excludes>
       <fileMode>644</fileMode>
     </fileSet> 
@@ -199,6 +225,7 @@ under the License.
       <excludes>
         <exclude>target/**</exclude>
         <exclude>META-INF</exclude>
+        <exclude>.*/**</exclude>
       </excludes>
       <fileMode>644</fileMode>
     </fileSet>     
@@ -208,6 +235,7 @@ under the License.
       <excludes>
         <exclude>target/**</exclude>
         <exclude>META-INF</exclude>
+        <exclude>.*/**</exclude>
       </excludes>
       <fileMode>644</fileMode>
     </fileSet>      
@@ -216,73 +244,109 @@ under the License.
     <fileSet>
       <directory>../jVinci</directory>
       <outputDirectory>/jVinci</outputDirectory>
-      <excludes><exclude>target/**</exclude></excludes>
+      <excludes>
+        <exclude>target/**</exclude>
+        <exclude>.*/**</exclude>
+      </excludes>
       <fileMode>644</fileMode>
     </fileSet>
     <fileSet>
       <directory>../uimaj-adapter-soap</directory>
       <outputDirectory>/uimaj-adapter-soap</outputDirectory>
-      <excludes><exclude>target/**</exclude></excludes>
+      <excludes>
+        <exclude>target/**</exclude>
+        <exclude>.*/**</exclude>
+      </excludes>
       <fileMode>644</fileMode>
     </fileSet>
     <fileSet>
       <directory>../uimaj-adapter-vinci</directory>
       <outputDirectory>/uimaj-adapter-vinci</outputDirectory>
-      <excludes><exclude>target/**</exclude></excludes>
+      <excludes>
+        <exclude>target/**</exclude>
+        <exclude>.*/**</exclude>
+      </excludes>
       <fileMode>644</fileMode>
     </fileSet>  
     <fileSet>
       <directory>../uimaj-bootstrap</directory>
       <outputDirectory>/uimaj-bootstrap</outputDirectory>
-      <excludes><exclude>target/**</exclude></excludes>
+      <excludes>
+        <exclude>target/**</exclude>
+        <exclude>.*/**</exclude>
+      </excludes>
       <fileMode>644</fileMode>
     </fileSet>          
     <fileSet>
       <directory>../uimaj-component-test-util</directory>
       <outputDirectory>/uimaj-component-test-util</outputDirectory>
-      <excludes><exclude>target/**</exclude></excludes>
+      <excludes>
+        <exclude>target/**</exclude>
+        <exclude>.*/**</exclude>
+      </excludes>
       <fileMode>644</fileMode>
     </fileSet>  
     <fileSet>
       <directory>../uimaj-core</directory>
       <outputDirectory>/uimaj-core</outputDirectory>
-      <excludes><exclude>target/**</exclude></excludes>
+      <excludes>
+        <exclude>target/**</exclude>
+        <exclude>.*/**</exclude>
+      </excludes>
       <fileMode>644</fileMode>
     </fileSet>  
     <fileSet>
       <directory>../uimaj-cpe</directory>
       <outputDirectory>/uimaj-cpe</outputDirectory>
-      <excludes><exclude>target/**</exclude></excludes>
+      <excludes>
+        <exclude>target/**</exclude>
+        <exclude>.*/**</exclude>
+      </excludes>
       <fileMode>644</fileMode>
     </fileSet>      
     <fileSet>
       <directory>../uimaj-document-annotation</directory>
       <outputDirectory>/uimaj-document-annotation</outputDirectory>
-      <excludes><exclude>target/**</exclude></excludes>
+      <excludes>
+        <exclude>target/**</exclude>
+        <exclude>.*/**</exclude>
+      </excludes>
       <fileMode>644</fileMode>
     </fileSet>   
     <fileSet>
       <directory>../uimaj-examples</directory>
       <outputDirectory>/uimaj-examples</outputDirectory>
-      <excludes><exclude>target/**</exclude></excludes>
+      <excludes>
+        <exclude>target/**</exclude>
+        <exclude>.*/**</exclude>
+      </excludes>
       <fileMode>644</fileMode>
     </fileSet>      
     <fileSet>
       <directory>../uimaj-test-util</directory>
       <outputDirectory>/uimaj-test-util</outputDirectory>
-      <excludes><exclude>target/**</exclude></excludes>
+      <excludes>
+        <exclude>target/**</exclude>
+        <exclude>.*/**</exclude>
+      </excludes>
       <fileMode>644</fileMode>
     </fileSet>     
     <fileSet>
       <directory>../uimaj-tools</directory>
       <outputDirectory>/uimaj-tools</outputDirectory>
-      <excludes><exclude>target/**</exclude></excludes>
+      <excludes>
+        <exclude>target/**</exclude>
+        <exclude>.*/**</exclude>
+      </excludes>
       <fileMode>644</fileMode>
     </fileSet>
     <fileSet>
       <directory>../PearPackagingMavenPlugin</directory>
       <outputDirectory>/PearPackagingMavenPlugin</outputDirectory>
-      <excludes><exclude>target/**</exclude></excludes>
+      <excludes>
+        <exclude>target/**</exclude>
+        <exclude>.*/**</exclude>
+      </excludes>
       <fileMode>644</fileMode>
     </fileSet>          
           

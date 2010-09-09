@@ -149,7 +149,7 @@
         <artifactId>maven-javadoc-plugin</artifactId>
         <executions>
           <execution>
-            <id>javadoc-distr</id>
+            <id>javadocs-distr</id> <!-- name should match one in parent-pom-top --> 
             <phase>package</phase>
             <!--phase>deploy</phase--> <!-- comment above and uncomment to disable javadocs, for testing/experimentation, with assembly:assembly-->
             <goals>
