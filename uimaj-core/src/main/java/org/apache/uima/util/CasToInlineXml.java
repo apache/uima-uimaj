@@ -45,10 +45,21 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 /**
- * Generates an inline XML representation of a CAS. Annotation types are represented as XML tags,
- * features are represented as attributes. Note that features whose values are FeatureStructures are
- * not represented.
+ * Generates an *approximate* inline XML representation of a CAS. 
+ * Annotation types are represented as XML tags, features are represented as attributes.
+ *  
+ * Features whose values are FeatureStructures are not represented.
+ * Feature values which are strings longer than 64 characters are truncated.
+ * Feature values which are arrays of primitives are represented by 
+ * strings that look like [ xxx, xxx ]
  * 
+ * The Subject of analysis is presumed to be a text string.
+ * 
+ * Some characters in the document's Subject-of-analysis
+ * are replaced by blanks, because the characters aren't valid in xml documents.
+ * 
+ * It doesn't work for annotations which are overlapping, because these cannot 
+ * be properly represented as properly - nested XML.
  * 
  */
 public class CasToInlineXml {
