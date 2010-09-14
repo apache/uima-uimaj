@@ -80,6 +80,7 @@ under the License.
       <import plugin="org.eclipse.jdt.launching"/>
       <import plugin="org.eclipse.search"/>
       <import plugin="org.eclipse.emf.codegen"/>
+      <import plugin="org.eclipse.emf.common"/>  <!-- eclipse 3.5 complains about unresolved dependencies -->
       <import plugin="org.eclipse.ui.views"/>
       <import plugin="org.eclipse.jdt"/>
 	    <import plugin="org.eclipse.text"/>

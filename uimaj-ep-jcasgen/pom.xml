@@ -113,6 +113,12 @@
 			<version>2.1.0</version>
 			<scope>provided</scope>
 		</dependency>
+    <dependency>
+      <groupId>org.eclipse.emf</groupId>
+      <artifactId>common</artifactId>
+      <version>2.1.0</version>
+    </dependency>
+    
     
     <!-- These next dependencies are just to lock down the
          transitive dependencies of the above.
