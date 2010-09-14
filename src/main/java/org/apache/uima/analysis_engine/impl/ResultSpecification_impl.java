@@ -211,7 +211,7 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
   
   private TypeOrFeature[] getResultTypesAndFeatures(boolean skipLanguageFilter, String language) {
     List<TypeOrFeature> r = new ArrayList<TypeOrFeature>();
-    if ((rsTypesMap == null || rsTypesMap.nbrOfTypes() == 0) && needsCompilation == false) {
+    if (rsTypesMap.nbrOfTypes() == 0 && needsCompilation == false) {
       // being called on results of intersection
       // probably by a test case, not a normal call
       // attempt to construct a plausible representation
@@ -726,6 +726,8 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
     return compiledFormEquals((ResultSpecification_impl)aObj);
   }
   
+  
+  
   static boolean equalsOrBothNull(Object x, Object y) {
     if (null == x && null == y) {
       return true;
@@ -734,6 +736,11 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
       return true;
     }
     return false;
+  }
+
+  @Override
+  public int hashCode() {
+    throw new UnsupportedOperationException("HashCode not implemented for ResultSpecification_impl");
   }
 
 }
