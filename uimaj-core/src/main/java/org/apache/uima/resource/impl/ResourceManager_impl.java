@@ -119,6 +119,25 @@ public class ResourceManager_impl implements ResourceManager {
     mRelativePathResolver = new RelativePathResolver_impl();
   }
 
+ /**
+  * Support reusing UIMA Class Loader instances to speed up
+  * things including the Component Description Editor when
+  * obtaining info from CustomResourceSpecifiers
+  * https://issues.apache.org/jira/browse/UIMA-1722
+  * @param uimaCL
+  * @param resolveResource
+  */
+ public void setExtensionClassPath(UIMAClassLoader uimaCL, boolean resolveResource) {
+   this.uimaCL = uimaCL;
+   
+   if (resolveResource) {
+     // set UIMA extension ClassLoader also to resolve resources
+     getRelativePathResolver().setPathResolverClassLoader(uimaCL);
+   }
+ }
+
+ /**
+
   /**
    * @see org.apache.uima.resource.ResourceManager#setExtensionClassPath(java.lang.String, boolean)
    */

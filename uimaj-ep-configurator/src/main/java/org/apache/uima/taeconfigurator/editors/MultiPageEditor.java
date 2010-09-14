@@ -29,6 +29,7 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.lang.ref.SoftReference;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -58,12 +59,14 @@ import org.apache.uima.collection.CasConsumerDescription;
 import org.apache.uima.collection.CasInitializerDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.flow.FlowControllerDescription;
+import org.apache.uima.internal.util.UIMAClassLoader;
 import org.apache.uima.jcas.jcasgenp.MergerImpl;
 import org.apache.uima.resource.ResourceCreationSpecifier;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.ResourceServiceSpecifier;
 import org.apache.uima.resource.ResourceSpecifier;
+import org.apache.uima.resource.impl.ResourceManager_impl;
 import org.apache.uima.resource.metadata.Capability;
 import org.apache.uima.resource.metadata.FsIndexCollection;
 import org.apache.uima.resource.metadata.Import;
@@ -1087,18 +1090,41 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
     return rm;
   }
 
+  private String cachedRMclassPath = null; 
+  private SoftReference<UIMAClassLoader> cachedRMcl = new SoftReference<UIMAClassLoader>(null);
+
   public ResourceManager createResourceManager(String classPath) {
-    // workspacePath = TAEConfiguratorPlugin.getWorkspace().getRoot().getLocation().toString();
     ResourceManager resourceManager = UIMAFramework.newDefaultResourceManager();
 
     try {
-      if (null == classPath)
+      if (null == classPath) {
         classPath = getProjectClassPath();
-      // first arg in next is the parent of the class loader.  Make it be the
-      //   uima framework's class loader (not this class's class loader)
-      //   so the validation tests work properly (that test isAssignableFrom)
-      resourceManager.setExtensionClassPath(UIMAFramework.class.getClassLoader(), classPath, true);
-      resourceManager.setDataPath(CDEpropertyPage.getDataPath(getProject()));
+      }      
+      String dataPath = CDEpropertyPage.getDataPath(getProject());
+      
+      // first try to get the value of the class loader from the last (cached)
+      // value - should succeed frequently because the class loader is only dependent
+      // on the value of the classpath
+      
+      UIMAClassLoader uimaCL = null;
+      if (cachedRMclassPath != null &&
+          cachedRMclassPath.equals(classPath)) {
+        uimaCL = cachedRMcl.get();
+      }
+      
+      if (uimaCL != null) {
+        ((ResourceManager_impl)resourceManager).setExtensionClassPath(uimaCL, true);
+      } else {
+        // first arg in next is the parent of the class loader.  Make it be the
+        //   uima framework's class loader (not this class's class loader)
+        //   so the validation tests work properly (that test isAssignableFrom)
+        resourceManager.setExtensionClassPath(UIMAFramework.class.getClassLoader(), classPath, true);
+        cachedRMclassPath = classPath;
+        cachedRMcl = new SoftReference<UIMAClassLoader>((UIMAClassLoader) resourceManager.getExtensionClassLoader());
+      }
+      
+      // in any case, set the data path
+      resourceManager.setDataPath(dataPath);
     } catch (MalformedURLException e1) {
       throw new InternalErrorCDE(Messages.getString("MultiPageEditor.14"), e1); //$NON-NLS-1$
     } catch (CoreException e1) {
@@ -1437,19 +1463,20 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
     } catch (InvalidXMLException e) {
       throw new ResourceInitializationException(e);
     }
+    // get the metadata once, because it can be expensive to do     
+    AnalysisEngineMetaData md = aeDescription.getAnalysisEngineMetaData();
+
     // These come before setTypeSystemDescription call because that call
-    // invokeds tcas validate, which uses the merged values for speedup
+    // invokes tcas validate, which uses the merged values for speedup
     // Here we set them to values that won't cause errors. They're set to actual values below.
-    mergedFsIndexCollection = aeDescription.getAnalysisEngineMetaData().getFsIndexCollection();
-    mergedTypePriorities = aeDescription.getAnalysisEngineMetaData().getTypePriorities();
+    mergedFsIndexCollection = md.getFsIndexCollection();
+    mergedTypePriorities = md.getTypePriorities();
     resolvedExternalResourcesAndBindings = aeDescription.getResourceManagerConfiguration();
     resolvedFlowControllerDeclaration = aeDescription.getFlowControllerDeclaration();
 
-    setTypeSystemDescription(aeDescription.isPrimitive() ? aeDescription
-            .getAnalysisEngineMetaData().getTypeSystem() : null); // aggregates have null
-    // tsd. If passed in one
-    // isn't null, make it
-    // null.
+    setTypeSystemDescription(aeDescription.isPrimitive() ? md.getTypeSystem() : null); 
+    // aggregates have null type system descriptors. 
+    // If passed in one that isn't null, make it null.
 
     // These come after setTypeSystemDescription call, even though
     // that call invokeds tcas validate, which uses the merged values for speedup
@@ -2957,7 +2984,7 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
       sb.append("Component key-name(s): ").append(names.get(i))
         .append(": ")
         .append(getMessagesToRootCause((Exception)exceptions.get(i)))
-        .append("\n");
+        .append("\n---------------\n");
     }
     
     Utility.popMessage("Remotes Unavailable", "Note: This message is only shown once.\n\n" +

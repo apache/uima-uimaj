@@ -22,7 +22,6 @@ package org.apache.uima.util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -30,8 +29,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.Map.Entry;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -1673,6 +1675,129 @@ public class CasCreationUtils {
     ;
   }
 
+  /*************************************************************************************************
+   * Caching of getMeta info that requires producing the resource                                  *
+   *   - done because producing the resource can be very expensive                                 *                        
+   *     including accessing remote things on the network                                          *
+   * Cache is cleared approximately every 30 seconds because remote resource's statuses may change *
+   *                                                                                               *
+   * Cache key is the ResourceSpecifier's class loaders and the ResourceManager                    *
+   *   Both the DataPath and the uima extension class loader are used as part of the key           *
+   *   because differences in these could cause different metadata to be loaded                    *
+   *************************************************************************************************/
+  
+  private static class MetaDataCacheKey {
+    final ResourceSpecifier resourceSpecifier;
+    final ClassLoader rmClassLoader;
+    final String rmDataPath;
+    
+    MetaDataCacheKey(ResourceSpecifier resourceSpecifier, ResourceManager resourceManager) {
+      this.resourceSpecifier = resourceSpecifier;
+      this.rmClassLoader = (null == resourceManager) ? null : resourceManager.getExtensionClassLoader(); // can be null
+      this.rmDataPath = (null == resourceManager) ? null : resourceManager.getDataPath();
+    }
+
+    @Override
+    public int hashCode() {
+      return ((rmClassLoader == null) ? 0 : rmClassLoader.hashCode()) 
+             + ((rmDataPath == null)  ? 0 : rmDataPath.hashCode()) 
+             + resourceSpecifier.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      MetaDataCacheKey k = (MetaDataCacheKey) obj;
+      if (rmDataPath == null) {
+        if (k.rmDataPath != null) {
+          return false;
+        }
+        return resourceSpecifier.equals(k.resourceSpecifier) && 
+               rmClassLoader == k.rmClassLoader;
+      }
+      return resourceSpecifier.equals(k.resourceSpecifier) && 
+             rmClassLoader == k.rmClassLoader &&
+             rmDataPath.equals(k.rmDataPath);
+    }
+
+    @Override
+    public String toString() {
+      return "MetaDataCacheKey [resourceSpecifier=" + resourceSpecifier + ", rmClassLoader="
+          + rmClassLoader + ", rmDataPath=" + rmDataPath + "]";
+    }
+  }
+  
+  private static final boolean cacheDebug = false; // set true for debugging info
+  private static final int HOLD_TIME = 30000;  // keep cache for 30 seconds, approx., in case a remote resource changes state
+  
+  /**
+   * This is the cache.
+   * All references to it are synchronized, using it as the object.
+   */
+  private static final transient Map<MetaDataCacheKey, MetaDataCacheEntry> metaDataCache = new HashMap<MetaDataCacheKey, MetaDataCacheEntry>();
+
+  /** This holds an instance of a Timer object
+   * This object is nulled out and gets gc'd when it's timertask finishes, when the
+   * cache is empty.  
+   * 
+   * All references to it are synchronized under the metaDataCache.
+   */
+  private static Timer cleanupTimer = null;
+
+  /**
+   * This class holds the processing Resource Metadata, or null if there is none, and
+   * a timestamp when the metadata was obtained.
+   */
+  private static class MetaDataCacheEntry {
+    ProcessingResourceMetaData processingResourceMetaData;
+    long creationTime;
+    
+    MetaDataCacheEntry(ResourceMetaData resourceMetaData) {
+      processingResourceMetaData = (resourceMetaData instanceof ProcessingResourceMetaData) ? (ProcessingResourceMetaData) resourceMetaData : null;
+      creationTime = System.currentTimeMillis(); 
+      if (null == cleanupTimer) {
+        if (cacheDebug) {
+          System.err.format("GetMetaDataCache: Scheduling new cleanup task%n");
+        }
+
+        cleanupTimer = new Timer("metaDataCacheCleanup", true);  // run as daemon
+        // create a new instance of the timer task, because a previous one may 
+        // still be running
+        TimerTask metaDataCacheCleanupTask = new TimerTask() {   
+          @Override
+          public void run() {
+            synchronized (metaDataCache) {
+              long now = System.currentTimeMillis();
+              if (cacheDebug) {
+                System.err.format("GetMetaDataCache: cleanup task running%n");
+              }
+              for (Iterator<Entry<MetaDataCacheKey, MetaDataCacheEntry>> it = metaDataCache.entrySet().iterator(); it.hasNext();) {
+                Entry<MetaDataCacheKey, MetaDataCacheEntry> e = it.next();
+                if (e.getValue().creationTime + HOLD_TIME < now) {
+                  if (cacheDebug) {
+                    System.err.format("GetMetaDataCache: cleanup task removing entry %s%n", e.getKey().toString() );
+                  }
+                  it.remove();
+                }
+              }
+              if (metaDataCache.size() == 0) {
+                if (cacheDebug) {
+                  System.err.format("GetMetaDataCache: cleanup task terminating, cache empty%n");
+                }
+                cancel();
+                cleanupTimer = null;
+              }
+              if (cacheDebug) {
+                System.err.format("GetMetaDataCache: cleanup task finished a cycle%n");
+              }
+            }
+          }
+        };
+        cleanupTimer.scheduleAtFixedRate(metaDataCacheCleanupTask, HOLD_TIME, HOLD_TIME);
+      }
+    }
+  }
+   
+  
   /**
    * Gets a list of ProcessingResourceMetadata objects from a list containing either
    * ResourceSpecifiers, ProcessingResourceMetadata objects, or subparts of
@@ -1690,6 +1815,13 @@ public class CasCreationUtils {
    * service will be queries for its metadata. An exception will be thrown if the connection can not
    * be opened.
    * 
+   * Note that this last kind of lookup may be expensive (calling produceResource, which in turn may
+   * query remote connections etc.).  Because of this, a cache is maintained for these, 
+   * (because some scenarios end up requesting the same metadata multiple times, in rapid succession).
+   * 
+   * Because remote resource may become available, the cache entries are removed 30 seconds
+   * after they are created.  This also reclaims space from the cache.
+   *  
    * @param aComponentDescriptionOrMetaData
    *                a collection of {@link ResourceSpecifier}, {@link ProcessingResourceMetaData},
    *                {@link TypeSystemDescription}, {@link FsIndexCollection}, or
@@ -1770,7 +1902,24 @@ public class CasCreationUtils {
         md.setTypePriorities((TypePriorities) current);
         mdList.add(md);
       } else if (current instanceof ResourceSpecifier) {
+                
+        // first try the cache
+        MetaDataCacheKey metaDataCacheKey = new MetaDataCacheKey((ResourceSpecifier)current, aResourceManager);
+        synchronized(metaDataCache) {
+          MetaDataCacheEntry metaData = metaDataCache.get(metaDataCacheKey);
+          if (null != metaData) {
+            if (cacheDebug) {
+              System.err.format("GetMetaDataCache: using cached entry%n");
+            }
+            if (null != metaData.processingResourceMetaData) {
+              mdList.add(metaData.processingResourceMetaData);
+            }
+            continue;
+          } 
+        }
+        
         // try to instantiate the resource
+        
         Resource resource = null;
         Map<String, Object> prParams = new HashMap<String, Object>();
         if (aResourceManager != null) {
@@ -1781,6 +1930,13 @@ public class CasCreationUtils {
           resource = UIMAFramework.produceResource((ResourceSpecifier) current, prParams);
 //              (null == aResourceManager) ? Collections.<String, Object>emptyMap() : resourceMgrInMap);
         } catch (Exception e) {
+          // record failure, so we don't ask for this again, for a while
+          synchronized (metaDataCache) {
+            if (cacheDebug) {
+              System.err.format("GetMetaDataCache: saving entry in cache%n");
+            }
+            metaDataCache.put(metaDataCacheKey, new MetaDataCacheEntry(null));
+          }
           // failed. If aOutputFailedRemotes is non-null, add an entry to it to it, else throw the
           // exception.
           if (aOutputFailedRemotes != null) {
@@ -1794,8 +1950,16 @@ public class CasCreationUtils {
               throw new RuntimeException(e);
           }
         }
+        ResourceMetaData metadata = (resource == null) ? null : resource.getMetaData();
+
+        synchronized (metaDataCache) {
+          if (cacheDebug) {
+            System.err.format("GetMetaDataCache: saving entry in cache%n");
+          }
+          metaDataCache.put(metaDataCacheKey, new MetaDataCacheEntry(metadata));
+        }
+
         if (resource != null) {
-          ResourceMetaData metadata = resource.getMetaData();
           if (metadata instanceof ProcessingResourceMetaData) {
             mdList.add((ProcessingResourceMetaData) metadata);
           }
