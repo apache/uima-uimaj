@@ -19,6 +19,7 @@
 
 package org.apache.uima.analysis_component;
 
+import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.analysis_engine.ResultSpecification;
@@ -61,7 +62,7 @@ public abstract class AnalysisComponent_ImplBase implements AnalysisComponent {
    */
   public void reconfigure() throws ResourceConfigurationException, ResourceInitializationException {
     destroy();
-    initialize(mContext);
+    initialize(getContext());
   }
 
   /*
@@ -110,6 +111,10 @@ public abstract class AnalysisComponent_ImplBase implements AnalysisComponent {
    * @return the UimaContext for this AnalysisComponent
    */
   protected final UimaContext getContext() {
+    if (null == mContext) {
+      // wrapped in RuntimeException because we don't want to change the API of this method
+      throw new UIMARuntimeException(UIMARuntimeException.UIMA_CONTEXT_NULL, new Object[] {} );
+    }    
     return mContext;
   }
 
@@ -122,6 +127,10 @@ public abstract class AnalysisComponent_ImplBase implements AnalysisComponent {
    * @return the ResultSpecification for this Analysis Component to use.
    */
   protected ResultSpecification getResultSpecification() {
+    if (null == mResultSpecification) {
+      // wrapped in RuntimeException because we don't want to change the API of this method
+      throw new UIMARuntimeException(UIMARuntimeException.RESULT_SPEC_NULL, new Object[] {} );
+    }
     return mResultSpecification;
   }
 }

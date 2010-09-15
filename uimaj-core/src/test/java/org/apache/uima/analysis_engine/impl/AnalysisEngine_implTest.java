@@ -1447,4 +1447,21 @@ public class AnalysisEngine_implTest extends TestCase {
       JUnitExtension.handleException(e);
     }    
   }
+  
+  public void testMissingSuper() throws Exception {
+    try {
+      // initialize simple primitive TextAnalysisEngine
+      AnalysisEngine ae1 = new PrimitiveAnalysisEngine_impl();
+      AnalysisEngineDescription primitiveDesc = new AnalysisEngineDescription_impl();
+      primitiveDesc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
+      primitiveDesc.setPrimitive(true);
+      primitiveDesc.setAnnotatorImplementationName(AnnotatorMissingSuper.class.getCanonicalName());
+      ae1.initialize(primitiveDesc, null);
+      ae1.process(ae1.newCAS());
+    } catch (Exception e) {
+      JUnitExtension.handleException(e);
+    }
+  }
+  
+  
 }

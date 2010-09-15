@@ -101,6 +101,18 @@ public class UIMARuntimeException extends InternationalizedRuntimeException {
   public static final String FEATURE_NOT_FOUND_DURING_CAS_COPY = "feature_not_found_during_cas_copy";
 
   /**
+   * Message key for a standard UIMA exception message: 
+   * Saved UIMA context is null; probable cause: Annotator initialize(context) method failed to call super.initialize(context). 
+   */
+  public static final String UIMA_CONTEXT_NULL = "uima_context_null";
+
+  /**
+   * Message key for a standard UIMA exception message: 
+   * Saved result specification is null; probable cause: Annotator overrode setResultSpecification(spec) but failed to call super.setResultSpecification(spec). 
+   */
+  public static final String RESULT_SPEC_NULL = "result_spec_null";
+
+  /**
    * Creates a new exception with a null message.
    */
   public UIMARuntimeException() {
