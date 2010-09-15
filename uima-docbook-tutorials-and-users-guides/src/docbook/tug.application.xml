@@ -535,7 +535,7 @@ CpeIntegratedCasProcessor personTitleProcessor =
 personTitleProcessor.setDescriptor([descriptor]);
 
 //Continue, despite errors and skip bad Cas
-personTitleProcessor.setActionOnMaxError(<quote>terminate</quote>);
+personTitleProcessor.setActionOnMaxError(<quote>continue</quote>);
 
   //Increase amount of time in ms the CPE waits for response
 //from this Analysis Engine
@@ -553,7 +553,7 @@ consumerProcessor.setDescriptor([descriptor]);
 consumerProcessor.setBatchSize(100);
 
 //Terminate CPE on max errors
-personTitleProcessor.setActionOnMaxError(<quote>terminate</quote>);
+consumerProcessor.setActionOnMaxError(<quote>terminate</quote>);
 
 //Add CAS Consumer to the descriptor
 cpe.addCasProcessor(consumerProcessor);
