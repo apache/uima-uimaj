@@ -111,11 +111,12 @@ public class I18nUtil {
     try {
       // if aLoader is null, replace with the I18nUtil.class.getClassLoader()
       if (aLoader == null) {
-        aLoader = I18nUtil.class.getClassLoader();
-        if (aLoader == null) // bootstrap classLoader; use system classLoader instead
-        {
-          aLoader = ClassLoader.getSystemClassLoader();
-        }
+        aLoader = MsgLocalizationClassLoader.getMsgLocalizationClassLoader();        
+//        aLoader = I18nUtil.class.getClassLoader();
+//        if (aLoader == null) // bootstrap classLoader; use system classLoader instead
+//        {
+//          aLoader = ClassLoader.getSystemClassLoader();
+//        }
       }
 
       // locate the resource bundle for this exception's messages
