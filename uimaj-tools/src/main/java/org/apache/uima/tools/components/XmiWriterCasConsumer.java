@@ -24,6 +24,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.apache.uima.UIMAFramework;
@@ -98,7 +100,10 @@ public class XmiWriterCasConsumer extends CasConsumer_ImplBase {
       SourceDocumentInformation fileLoc = (SourceDocumentInformation) it.next();
       File inFile;
       try {
-        inFile = new File(new URL(fileLoc.getUri()).getPath());
+        // handle blanks in path
+        // https://issues.apache.org/jira/browse/UIMA-1748
+        URI uri = new URI(fileLoc.getUri());
+        inFile = new File(uri);
         String outFileName = inFile.getName();
         if (fileLoc.getOffsetInSource() > 0) {
           outFileName += ("_" + fileLoc.getOffsetInSource());
@@ -106,8 +111,8 @@ public class XmiWriterCasConsumer extends CasConsumer_ImplBase {
         outFileName += ".xmi";
         outFile = new File(mOutputDir, outFileName);
         modelFileName = mOutputDir.getAbsolutePath() + "/" + inFile.getName() + ".ecore";
-      } catch (MalformedURLException e1) {
-        // invalid URL, use default processing below
+      } catch (URISyntaxException e) {
+        // bad URI, use default processing below
       }
     }
     if (outFile == null) {
