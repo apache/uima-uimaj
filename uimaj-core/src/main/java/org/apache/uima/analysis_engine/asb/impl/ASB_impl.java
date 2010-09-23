@@ -69,7 +69,7 @@ import org.apache.uima.util.UimaTimer;
  * technology. It simply uses the {@link ResourceFactory} to acquire instances of its delegate
  * AnalysisEngines and then communicates with these delegate AnalysisEngines through the
  * {@link AnalysisEngine} interface. Any communication with remote AnalysisEngine services is done
- * through a {@link org.apache.uima.analysis_engine.service.AnalysisEngineServiceAdapter} and is not
+ * through a {@link org.apache.uima.analysis_engine.service.impl.AnalysisEngineServiceAdapter} and is not
  * the concern of this ASB implementation.
  * 
  * 
@@ -135,7 +135,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
    * @return true if and only if initialization completed successfully. Returns false if this
    *         implementation cannot handle the given <code>ResourceSpecifier</code>.
    * 
-   * @see org.apache.uima.resource.Resource#initialize(ResourceSpecifier)
+   * @see org.apache.uima.resource.Resource#initialize(ResourceSpecifier, Map)
    */
   public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
@@ -316,14 +316,14 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.asb.ASB#getDelegateAnalysisEngineMetaData()
+   * @see org.apache.uima.analysis_engine.asb.ASB#getComponentAnalysisEngineMetaData()
    */
   public Map<String, AnalysisEngineMetaData> getComponentAnalysisEngineMetaData() {
     return mComponentAnalysisEngineMetaDataMap;
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.asb.ASB#getDelegateAnalysisEngines()
+   * @see org.apache.uima.analysis_engine.asb.ASB#getComponentAnalysisEngines()
    */
   public Map<String, AnalysisEngine> getComponentAnalysisEngines() {
     return mComponentAnalysisEngineMap;
