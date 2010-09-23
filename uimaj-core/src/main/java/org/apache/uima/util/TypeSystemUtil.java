@@ -112,6 +112,9 @@ public class TypeSystemUtil {
     FeatureDescription featDesc = UIMAFramework.getResourceSpecifierFactory()
             .createFeatureDescription();
     featDesc.setName(aFeature.getShortName());
+    if (aFeature.isMultipleReferencesAllowed()) {
+      featDesc.setMultipleReferencesAllowed(true);
+    }
     Type rangeType = aFeature.getRange();
     //special check for array range types, which are represented in the CAS as
     //elementType[] but in the descriptor as an FSArray with an <elementType>
