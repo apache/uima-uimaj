@@ -57,7 +57,7 @@ public class CasConverter {
   /**
    * Sets the name of the CASData FeatureStructure Type that stores the document text.
    * 
-   * @parma aDocumentTextTypeName the document text type name
+   * @param aDocumentTextTypeName the document text type name
    */
   public void setDocumentTextTypeName(String aDocumentTextTypeName) {
     mDocumentTextTypeName = aDocumentTextTypeName;
