@@ -190,7 +190,7 @@
     <profile>
         <id>apache-release</id>
         <modules>
-          <module>../aggregate-pom-uimaj</module>
+          <module>../aggregate-uimaj</module>
         </modules>      
     </profile>
   </profiles>  
