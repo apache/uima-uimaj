@@ -185,13 +185,9 @@
     </plugins>
   </build>     
   
-  <profiles>
-    <!-- if apache release, call the aggregate to clean and build the sub-modules -->
-    <profile>
-        <id>apache-release</id>
-        <modules>
-          <module>../aggregate-uimaj</module>
-        </modules>      
-    </profile>
-  </profiles>  
+  <!-- Use -N option to skip building submodule, for testing uimaj-distr -->
+  <modules>
+    <module>../aggregate-uimaj</module>
+  </modules>      
+
 </project>
