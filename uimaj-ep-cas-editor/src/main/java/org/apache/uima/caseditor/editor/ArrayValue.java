@@ -128,7 +128,6 @@ public class ArrayValue implements IAdaptable {
     }
   }
 
-  @SuppressWarnings("unchecked")
   public Object getAdapter(Class adapter) {
 
     if (FeatureStructure.class.equals(adapter)) {
