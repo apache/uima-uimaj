@@ -36,7 +36,7 @@ import org.apache.uima.caseditor.editor.AnnotationStyle;
  * Utility to assign default colors to the annotation types in the
  * TypeSystem.
  */
-class DefaultColors {
+public class DefaultColors {
 
   // colors to use for highlighting annotations
   // (use high brightness for best contrast against black text)
@@ -88,7 +88,7 @@ class DefaultColors {
    * @param styles already existing styles which map an annotation to a color
    * @return
    */
-  static Collection<AnnotationStyle> assignColors(TypeSystem ts, Collection<AnnotationStyle> styles) {
+  public static Collection<AnnotationStyle> assignColors(TypeSystem ts, Collection<AnnotationStyle> styles) {
     
     Map<String, Color> typeNameToColorMap = new HashMap<String, Color>();
     
