@@ -882,7 +882,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   }
 
   /**
-   * Synchronizes all annotations which the eclipse annotation painter.
+   * Synchronizes all annotations with the eclipse annotation painter.
    */
   public void syncAnnotationTypes() {
 
