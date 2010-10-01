@@ -21,7 +21,9 @@ package org.apache.uima.caseditor.editor;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.uima.cas.Type;
 import org.eclipse.core.runtime.CoreException;
@@ -39,6 +41,9 @@ import org.eclipse.ui.texteditor.AbstractDocumentProvider;
  */
 public abstract class CasDocumentProvider extends AbstractDocumentProvider {
 
+  private Set<IAnnotationStyleListener> annotationStyleListeners =
+      new HashSet<IAnnotationStyleListener>();
+  
   /**
    * The method {@link #createDocument(Object)} put error status objects for the given element in
    * this map, if something with document creation goes wrong.
@@ -79,11 +84,27 @@ public abstract class CasDocumentProvider extends AbstractDocumentProvider {
     return status;
   }
 
-  protected abstract AnnotationStyle getAnnotationStyle(Object element, Type type);
+  /**
+   * Retrieves an <code>AnnotationStyle</code> from the underlying storage.
+   *
+   * @param element
+   * @param type
+   * @return
+   */
+  public abstract AnnotationStyle getAnnotationStyle(Object element, Type type);
 
+  /**
+   * 
+   * @param element
+   * @param style
+   */
+  public abstract void setAnnotationStyle(Object element, AnnotationStyle style);
+  
+  // TODO: We also need a set method here
+  
   protected abstract Collection<String> getShownTypes(Object element);
   
-  protected abstract void addShownType(Object elemtn, Type type);
+  protected abstract void addShownType(Object element, Type type);
   
   protected abstract void removeShownType(Object element, Type type);
   
@@ -91,4 +112,25 @@ public abstract class CasDocumentProvider extends AbstractDocumentProvider {
 
   protected abstract void setEditorAnnotationStatus(Object element,
           EditorAnnotationStatus editorAnnotationStatus);
+  
+  // TODO:
+  // This case only works if there is a single shared state between all editors
+  // An implementation should track the listeners per shared type system
+  //
+  // Must that be already done for multiple CAS Editor projects, or do they have an instance
+  // per project ???
+  // Is there one doc provider instance per editor, or one for many editors ?!
+  public void addAnnotationStyleListener(Object element, IAnnotationStyleListener listener) {
+    annotationStyleListeners.add(listener);
+  }
+  
+  public void removeAnnotationStyleListener(Object element, IAnnotationStyleListener listener) {
+    annotationStyleListeners.remove(listener);
+  }
+  
+  public void fireAnnotationStyleChanged(Object element, Collection<AnnotationStyle> styles) {
+    for (IAnnotationStyleListener listener : annotationStyleListeners) {
+      listener.annotationStylesChanged(styles);
+    }
+  }
 }

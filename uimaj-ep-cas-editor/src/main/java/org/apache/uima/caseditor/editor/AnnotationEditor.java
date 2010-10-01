@@ -28,6 +28,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Type;
@@ -513,7 +514,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
    */
   private IContentOutlinePage mOutlinePage;
 
-  private IAnnotationEditorModifyListener mEditorListener;
+  private Set<IAnnotationEditorModifyListener> mEditorListener = new HashSet<IAnnotationEditorModifyListener>();
 
   /**
    * TODO: Do we really need this position variable ?
@@ -534,6 +535,8 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 
   private DocumentListener mAnnotationSynchronizer;
 
+  private IAnnotationStyleListener mAnnotationStyleListener;
+  
   private CloseEditorListener closeEditorListener;
 
   private Collection<Type> shownAnnotationTypes = new HashSet<Type>();
@@ -697,8 +700,10 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
           getDocumentProvider().setEditorAnnotationStatus(getEditorInput(),
                   new EditorAnnotationStatus(status.getMode(), selection));
 
-          if (mEditorListener != null)
-            mEditorListener.showAnnotationsChanged(selection);
+          if (mEditorListener != null) {
+            for (IAnnotationEditorModifyListener listener : mEditorListener) 
+              listener.showAnnotationsChanged(selection);
+          }
         }
       });
 
@@ -741,9 +746,19 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
       mAnnotationSynchronizer = new DocumentListener();
 
       getDocument().addChangeListener(mAnnotationSynchronizer);
-
+      
+      mAnnotationStyleListener = new IAnnotationStyleListener() {
+        
+        public void annotationStylesChanged(Collection<AnnotationStyle> styles) {
+          // TODO: Only sync changed types
+          syncAnnotationTypes();
+        }
+      };
+      
+      getDocumentProvider().addAnnotationStyleListener(getEditorInput(), mAnnotationStyleListener);
+      
       Collection<String> shownTypes = getDocumentProvider().getShownTypes(input);
-
+      
       for (String shownType : shownTypes) {
         
         // Types can be deleted from the type system but still be marked 
@@ -847,13 +862,18 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   public Collection<Type> getShownAnnotationTypes() {
 	  return mShowAnnotationsMenu.getSelectedTypes();
   }
+  
+  public void setShownAnnotationType(Type type, boolean isShown) {
+    mShowAnnotationsMenu.setSelectedType(type, isShown);
+  }
 
   /**
    * @param type
    */
   private void fireAnnotationTypeChanged(Type type) {
     if (mEditorListener != null) {
-    	mEditorListener.annotationModeChanged(type);
+      for (IAnnotationEditorModifyListener listener : mEditorListener)
+        listener.annotationModeChanged(type);
     }
   }
 
@@ -920,7 +940,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
    * @param listener
    */
   public void addAnnotationListener(IAnnotationEditorModifyListener listener) {
-    mEditorListener = listener;
+    mEditorListener.add(listener);
   }
 
   /**
@@ -1153,6 +1173,11 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
               .removeResourceChangeListener(closeEditorListener);
     }
 
+    CasDocumentProvider provider = getDocumentProvider();
+    
+    if (provider != null)
+      provider.removeAnnotationStyleListener(getEditorInput(), mAnnotationStyleListener);
+    
     super.dispose();
   }
 

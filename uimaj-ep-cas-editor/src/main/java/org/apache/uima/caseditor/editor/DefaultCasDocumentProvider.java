@@ -125,7 +125,7 @@ public class DefaultCasDocumentProvider extends
   }
 
   @Override
-  protected AnnotationStyle getAnnotationStyle(Object element, Type type) {
+  public AnnotationStyle getAnnotationStyle(Object element, Type type) {
     
     if (type == null)
     	throw new IllegalArgumentException("type parameter must not be null!");
@@ -135,6 +135,13 @@ public class DefaultCasDocumentProvider extends
     return nlpElement.getNlpProject().getDotCorpus().getAnnotation(type);
   }
 
+  @Override
+  public void setAnnotationStyle(Object element, AnnotationStyle style) {
+    INlpElement nlpElement = getNlpElement(element);
+
+    nlpElement.getNlpProject().getDotCorpus().setStyle(style);
+  }
+  
   @Override
   protected Collection<String> getShownTypes(Object element) {
     INlpElement nlpElement = getNlpElement(element);

@@ -103,9 +103,7 @@ public class ShowAnnotationsMenu extends TypeMenu {
 					typesToDisplay.remove(type);
 				}
 
-				for (IShowAnnotationsListener listener : listeners) {
-					listener.selectionChanged(getSelectedTypes());
-				}
+				fireChanged();
 			}
 		});
 	}
@@ -124,6 +122,28 @@ public class ShowAnnotationsMenu extends TypeMenu {
 		return Collections.unmodifiableCollection(selectedTypes);
 	}
 
+	private void fireChanged() {
+	   for (IShowAnnotationsListener listener : listeners) {
+	      listener.selectionChanged(getSelectedTypes());
+	    }
+	}
+	
+	public void setSelectedType(Type type, boolean isShown) {
+	  
+	  if (typesToDisplay.contains(type)) {
+	    if (!isShown) {
+	      typesToDisplay.remove(type);
+	      fireChanged();
+	    }
+	  }
+	  else {
+	    if (isShown) {
+	      typesToDisplay.add(type);
+	      fireChanged();
+	    }
+	  }
+	}
+	
 	public void setSelectedTypes(Collection<Type> types) {
 		typesToDisplay = new HashSet<Type>();
 
@@ -141,16 +161,12 @@ public class ShowAnnotationsMenu extends TypeMenu {
 		if (typesToDisplay.contains(newMode)) {
 			if (editorAnnotationMode != null) {
 				editorAnnotationMode = null;
-				for (IShowAnnotationsListener listener : listeners) {
-					listener.selectionChanged(getSelectedTypes());
-				}	
+				fireChanged();
 			}
 		} else {
 			editorAnnotationMode = newMode;
 
-			for (IShowAnnotationsListener listener : listeners) {
-				listener.selectionChanged(getSelectedTypes());
-			}
+			fireChanged();
 		}
 	}
 }

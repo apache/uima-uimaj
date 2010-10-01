@@ -22,6 +22,7 @@ package org.apache.uima.caseditor.ui;
 
 import org.apache.uima.caseditor.editor.editview.EditView;
 import org.apache.uima.caseditor.editor.fsview.FeatureStructureBrowserView;
+import org.apache.uima.caseditor.editor.styleview.AnnotationStyleView;
 import org.apache.uima.caseditor.ui.corpusview.CorpusExplorerView;
 import org.apache.uima.caseditor.ui.wizards.NewNlpProjectWizard;
 import org.apache.uima.caseditor.ui.wizards.WizardNewFileCreation;
@@ -62,7 +63,9 @@ public class NlpPerspectiveFactory implements IPerspectiveFactory {
     // add "show views"
     layout.addShowViewShortcut(CorpusExplorerView.ID);
     layout.addShowViewShortcut(IPageLayout.ID_OUTLINE);
+    layout.addShowViewShortcut(AnnotationStyleView.ID);
 
+    
     // add "open perspective"
     layout.addPerspectiveShortcut(NlpPerspectiveFactory.ID);
   }
@@ -81,6 +84,10 @@ public class NlpPerspectiveFactory implements IPerspectiveFactory {
 
     right.addView(IPageLayout.ID_OUTLINE);
     right.addView(FeatureStructureBrowserView.ID);
+    
+    IFolderLayout rightBottomCorner  = layout.createFolder("rightBottomCorner", IPageLayout.BOTTOM,
+            0.75f, "right");
+    rightBottomCorner.addView(AnnotationStyleView.ID);
 
     // bottom views
     IFolderLayout rightBottom = layout.createFolder("rightBottom",

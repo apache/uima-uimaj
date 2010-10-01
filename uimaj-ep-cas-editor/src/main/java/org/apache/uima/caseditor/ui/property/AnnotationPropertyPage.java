@@ -20,14 +20,17 @@
 package org.apache.uima.caseditor.ui.property;
 
 import java.awt.Color;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.caseditor.CasEditorPlugin;
 import org.apache.uima.caseditor.core.model.DotCorpusElement;
-import org.apache.uima.caseditor.core.model.INlpElement;
 import org.apache.uima.caseditor.core.model.NlpProject;
 import org.apache.uima.caseditor.core.model.TypesystemElement;
 import org.apache.uima.caseditor.editor.AnnotationEditor;
@@ -61,9 +64,10 @@ import org.eclipse.ui.dialogs.PropertyPage;
  * This is the <code>AnnotationPropertyPage</code>. this page configures the project dependent
  * and type dependent annotation appearance in the <code>AnnotationEditor</code>.
  */
-public class AnnotationPropertyPage extends PropertyPage {
-  private DotCorpusElement mDotCorpusElement;
+public abstract class AnnotationPropertyPage extends PropertyPage {
 
+  private boolean isTypeSystemPresent = true;
+  
   private Combo mStyleCombo;
 
   private ColorSelector mColorSelector;
@@ -72,7 +76,7 @@ public class AnnotationPropertyPage extends PropertyPage {
 
   private AnnotationStyle mCurrentSelectedAnnotation = null;
 
-  private NlpProject mProject;
+  private Map<String, AnnotationStyle> changedStyles = new HashMap<String, AnnotationStyle>();
 
   private AnnotationStyle getDefaultAnnotation() {
 
@@ -84,40 +88,63 @@ public class AnnotationPropertyPage extends PropertyPage {
             AnnotationStyle.DEFAULT_COLOR, mCurrentSelectedAnnotation.getLayer());
   }
 
+  protected abstract AnnotationStyle getAnnotationStyle(Type type);
+  
+  // does not make sense, just give it a list with new annotation styles,
+  // to save them and notify other about the chagne
+  
+  protected final void setAnnotationStyle(AnnotationStyle style) {
+    changedStyles.put(mCurrentSelectedAnnotation.getAnnotation(), mCurrentSelectedAnnotation);
+  }
+  
+  protected abstract TypeSystem getTypeSystem();
+  
   private void itemSelected() {
     IStructuredSelection selection = (IStructuredSelection) mTypeList.getSelection();
 
     Type selectedType = (Type) selection.getFirstElement();
 
-    AnnotationStyle style = mDotCorpusElement.getAnnotation(selectedType);
-
-    mCurrentSelectedAnnotation = style;
-
-    if (style == null) {
-      style = new AnnotationStyle(selectedType.getName(), AnnotationStyle.DEFAULT_STYLE,
-              AnnotationStyle.DEFAULT_COLOR, mCurrentSelectedAnnotation.getLayer());
+    if( selectedType != null) {
+      
+      AnnotationStyle style = getAnnotationStyle(selectedType);
+  
+      mCurrentSelectedAnnotation = style;
+  
+      if (style == null) {
+        style = new AnnotationStyle(selectedType.getName(), AnnotationStyle.DEFAULT_STYLE,
+                AnnotationStyle.DEFAULT_COLOR, mCurrentSelectedAnnotation.getLayer());
+      }
+  
+      mStyleCombo.setText(style.getStyle().name());
+      mStyleCombo.setEnabled(true);
+  
+      Color color = style.getColor();
+      mColorSelector.setColorValue(new RGB(color.getRed(), color.getGreen(), color.getBlue()));
+      mColorSelector.setEnabled(true);
+      
+      // TODO: Enable move up down buttons
     }
-
-    mStyleCombo.setText(style.getStyle().name());
-    mStyleCombo.setEnabled(true);
-
-    Color color = style.getColor();
-    mColorSelector.setColorValue(new RGB(color.getRed(), color.getGreen(), color.getBlue()));
-    mColorSelector.setEnabled(true);
+    else {
+      // no type selected
+      mStyleCombo.setEnabled(false);
+      mColorSelector.setEnabled(false);
+      
+      // TODO: Disable up down button
+    }
   }
-
+  
   /**
    * Creates the annotation property page controls.
    */
   @Override
   protected Control createContents(Composite parent) {
-    mProject = ((INlpElement) getElement()).getNlpProject();
 
-    mDotCorpusElement = mProject.getDotCorpus();
+    TypeSystem typeSystem = getTypeSystem();
 
-    TypesystemElement typesystem = mProject.getTypesystemElement();
-
-    if (typesystem == null) {
+    if (typeSystem == null) {
+      
+      isTypeSystemPresent = false;
+      
       Label message = new Label(parent, SWT.NONE);
       message.setText("Please set a valid typesystem file first.");
 
@@ -171,16 +198,14 @@ public class AnnotationPropertyPage extends PropertyPage {
 
         Type type = (Type) cell.getElement();
 
-        AnnotationStyle style = mDotCorpusElement.getAnnotation(type);
+        AnnotationStyle style = getAnnotationStyle(type);
 
         cell.setText(Integer.toString(style.getLayer()));
       }});
 
-    TypeSystem typeSytstem = mProject.getTypesystemElement().getTypeSystem();
+    Type annotationType = typeSystem.getType(CAS.TYPE_NAME_ANNOTATION);
 
-    Type annotationType = typeSytstem.getType(CAS.TYPE_NAME_ANNOTATION);
-
-    List<Type> types = typeSytstem.getProperlySubsumedTypes(annotationType);
+    List<Type> types = typeSystem.getProperlySubsumedTypes(annotationType);
 
     for (Type type : types) {
       // inserts objects with type Type
@@ -219,7 +244,7 @@ public class AnnotationPropertyPage extends PropertyPage {
                         .valueOf(mStyleCombo.getText()), mCurrentSelectedAnnotation.getColor(),
                 mCurrentSelectedAnnotation.getLayer());
 
-        mDotCorpusElement.setStyle(mCurrentSelectedAnnotation);
+        setAnnotationStyle(mCurrentSelectedAnnotation);
       }
 
       public void widgetDefaultSelected(SelectionEvent e) {
@@ -253,7 +278,7 @@ public class AnnotationPropertyPage extends PropertyPage {
                 mCurrentSelectedAnnotation.getAnnotation(), mCurrentSelectedAnnotation.getStyle(),
                 color, mCurrentSelectedAnnotation.getLayer());
 
-        mDotCorpusElement.setStyle(mCurrentSelectedAnnotation);
+        setAnnotationStyle(mCurrentSelectedAnnotation);
       }
     });
 
@@ -275,7 +300,7 @@ public class AnnotationPropertyPage extends PropertyPage {
                         .valueOf(mStyleCombo.getText()), mCurrentSelectedAnnotation.getColor(),
                 mCurrentSelectedAnnotation.getLayer() + 1);
 
-        mDotCorpusElement.setStyle(mCurrentSelectedAnnotation);
+        setAnnotationStyle(mCurrentSelectedAnnotation);
 
         mTypeList.refresh(((IStructuredSelection) mTypeList.getSelection()).getFirstElement(),
                 true);
@@ -299,7 +324,7 @@ public class AnnotationPropertyPage extends PropertyPage {
                   .getAnnotation(), AnnotationStyle.Style.valueOf(mStyleCombo.getText()),
                   mCurrentSelectedAnnotation.getColor(), mCurrentSelectedAnnotation.getLayer() - 1);
 
-          mDotCorpusElement.setStyle(mCurrentSelectedAnnotation);
+          setAnnotationStyle(mCurrentSelectedAnnotation);
 
           mTypeList.update(((IStructuredSelection) mTypeList.getSelection()).getFirstElement(),
                   null);
@@ -316,28 +341,21 @@ public class AnnotationPropertyPage extends PropertyPage {
     return base;
   }
 
+  protected abstract boolean saveChanges(Collection<AnnotationStyle> changedStyles);
+  
   /**
    * Executed after the OK button was pressed.
    */
   @Override
   public boolean performOk() {
-    // workaround for type system not present problem
-    if (mProject.getTypesystemElement() == null
-            || mProject.getTypesystemElement().getTypeSystem() == null) {
+    
+    if (!isTypeSystemPresent)
       return true;
-    }
-
-    try {
-      mDotCorpusElement.serialize();
-    } catch (CoreException e) {
-      CasEditorPlugin.log(e);
+    
+    if (!saveChanges(changedStyles.values()))
       return false;
-    }
-     
-    // Repaint annotations of all open editors
-    for (AnnotationEditor editor : AnnotationEditor.getAnnotationEditors()) {
-      editor.syncAnnotationTypes();
-    }
+    
+    changedStyles.clear();
     
     return true;
   }

@@ -66,6 +66,12 @@
 			class="org.apache.uima.caseditor.editor.fsview.FeatureStructureBrowserView"
 			icon="icons/svgicons/fsview.png"
 			category="org.apache.uima.caseditor.ui.views" />	
+			
+		<view id="org.apache.uima.caseditor.styleview"
+			name="Annotation Styles"
+			class="org.apache.uima.caseditor.editor.styleview.AnnotationStyleView"
+			icon="icons/svgicons/fsview.png"
+			category="org.apache.uima.caseditor.ui.views" />	
 	</extension>
 	
 	<extension point="org.eclipse.ui.editors">
@@ -216,12 +222,21 @@
 			</enabledWhen>
 		</page>
 		<page
-			class="org.apache.uima.caseditor.ui.property.AnnotationPropertyPage"
+			class="org.apache.uima.caseditor.ui.property.NlpAnnotationPropertyPage"
+			icon="icons/svgicons/corpus.png"
+			id="org.apache.uima.caseditor.nlpannotationspropertypage"
+			name="Annotations">
+			<enabledWhen>
+				<instanceof value="org.apache.uima.caseditor.core.model.NlpProject"/>
+			</enabledWhen>
+		</page>
+		<page
+			class="org.apache.uima.caseditor.ui.property.EditorAnnotationPropertyPage"
 			icon="icons/svgicons/corpus.png"
 			id="org.apache.uima.caseditor.annotationspropertypage"
 			name="Annotations">
 			<enabledWhen>
-				<instanceof value="org.apache.uima.caseditor.core.model.NlpProject"/>
+				<instanceof value="org.apache.uima.caseditor.editor.styleview.AnnotationTypeNode"/>
 			</enabledWhen>
 		</page>
 	</extension>
