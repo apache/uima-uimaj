@@ -80,6 +80,26 @@
 	<build>
 		<finalName>uima-core</finalName>
 		<plugins>
+		
+		  <!-- experiment with CLIRR
+		    gets fatal error: 
+		    
+		    net.sf.clirr.core.CheckerException: Unable to find information in class org.apache.uima.cas.impl.AnnotationBaseImpl 
+		    referring back to nested class org.apache.uima.cas.ipl.AnnotationBaseImpl$1
+        at net.sf.clirr.core.internal.bcel.BcelScopeHelper.getClassScope(BcelScopeHelper.java:127)
+        at net.sf.clirr.core.internal.bcel.BcelJavaType.getDeclaredScope(BcelJavaType.java:141)
+        at net.sf.clirr.core.internal.bcel.BcelJavaType.getEffectiveScope(BcelJavaType.java:145)
+        at net.sf.clirr.core.internal.checks.ClassScopeCheck.check(ClassScopeCheck.java:72)
+        at net.sf.clirr.core.Checker.runClassChecks(Checker.java:190)
+        at net.sf.clirr.core.Checker.reportDiffs(Checker.java:136)
+        at org.codehaus.mojo.clirr.AbstractClirrMojo.executeClirr(AbstractClirrMojo.java:236) 
+		  -->
+		  <!-- plugin>  
+		    <artifactId>clirr-maven-plugin</artifactId>
+		    <groupId>org.codehaus.mojo</groupId>
+		    <version>2.2.2</version>
+		    
+		  </plugin-->
       
       <!-- filter the template for the version java code
            to insert the version from properties -->
