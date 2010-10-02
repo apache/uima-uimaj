@@ -29,6 +29,7 @@ import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.caseditor.CasEditorPlugin;
 import org.apache.uima.caseditor.core.model.delta.INlpElementDelta;
 import org.apache.uima.caseditor.core.util.MarkerUtil;
+import org.apache.uima.caseditor.editor.DocumentUimaImpl;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.TypePriorities;
@@ -89,7 +90,7 @@ public class TypesystemElement extends AbstractNlpElement {
     ((NlpModel) mProject.getParent()).asyncExcuteQueue(clearMarkers);
 
     try {
-      return getCASInternal();
+      return DocumentUimaImpl.getVirginCAS(mTypesytemFile);
     } catch (final CoreException e) {
       Runnable createMarker = new Runnable() {
         public void run() {
@@ -104,60 +105,6 @@ public class TypesystemElement extends AbstractNlpElement {
 
       return null;
     }
-  }
-
-  private CAS getCASInternal() throws CoreException {
-    ResourceSpecifierFactory resourceSpecifierFactory = UIMAFramework.getResourceSpecifierFactory();
-
-    IFile extensionTypeSystemFile = mTypesytemFile;
-
-    InputStream inTypeSystem;
-
-    if (extensionTypeSystemFile != null && extensionTypeSystemFile.exists()) {
-      inTypeSystem = extensionTypeSystemFile.getContents();
-    } else {
-      return null;
-    }
-
-    XMLInputSource xmlTypeSystemSource = new XMLInputSource(inTypeSystem, new File(""));
-
-    XMLParser xmlParser = UIMAFramework.getXMLParser();
-
-    TypeSystemDescription typeSystemDesciptor;
-
-    try {
-      typeSystemDesciptor = (TypeSystemDescription) xmlParser.parse(xmlTypeSystemSource);
-
-      typeSystemDesciptor.resolveImports();
-    } catch (InvalidXMLException e) {
-
-      String message = e.getMessage() != null ? e.getMessage() : "";
-
-      IStatus s = new Status(IStatus.ERROR, CasEditorPlugin.ID, IStatus.OK, message, e);
-
-      throw new CoreException(s);
-    }
-
-    TypePriorities typePriorities = resourceSpecifierFactory.createTypePriorities();
-
-    FsIndexDescription indexDesciptor = new FsIndexDescription_impl();
-    indexDesciptor.setLabel("TOPIndex");
-    indexDesciptor.setTypeName("uima.cas.TOP");
-    indexDesciptor.setKind(FsIndexDescription.KIND_SORTED);
-
-    CAS cas;
-    try {
-      cas = CasCreationUtils.createCas(typeSystemDesciptor, typePriorities,
-              new FsIndexDescription[] { indexDesciptor });
-    } catch (ResourceInitializationException e) {
-      String message = e.getMessage() != null ? e.getMessage() : "";
-
-      IStatus s = new Status(IStatus.ERROR, CasEditorPlugin.ID, IStatus.OK, message, e);
-
-      throw new CoreException(s);
-    }
-
-    return cas;
   }
 
   /**

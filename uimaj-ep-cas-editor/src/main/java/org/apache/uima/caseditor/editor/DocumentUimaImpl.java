@@ -19,6 +19,7 @@
 
 package org.apache.uima.caseditor.editor;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -29,6 +30,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.apache.uima.ResourceSpecifierFactory;
+import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.ConstraintFactory;
 import org.apache.uima.cas.FSIndex;
@@ -47,7 +50,17 @@ import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.caseditor.CasEditorPlugin;
 import org.apache.uima.caseditor.editor.util.Span;
 import org.apache.uima.caseditor.editor.util.StrictTypeConstraint;
+import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.resource.metadata.FsIndexDescription;
+import org.apache.uima.resource.metadata.TypePriorities;
+import org.apache.uima.resource.metadata.TypeSystemDescription;
+import org.apache.uima.resource.metadata.impl.FsIndexDescription_impl;
+import org.apache.uima.util.CasCreationUtils;
+import org.apache.uima.util.InvalidXMLException;
+import org.apache.uima.util.XMLInputSource;
+import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.XMLSerializer;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -338,5 +351,61 @@ public class DocumentUimaImpl extends AbstractDocument {
       throw new CoreException(new Status(IStatus.ERROR, CasEditorPlugin.ID, IStatus.OK,
               "Unkown file format!", null));
     }
+  }
+  
+  public static CAS getVirginCAS(IFile typeSystemFile) throws CoreException {
+    ResourceSpecifierFactory resourceSpecifierFactory = UIMAFramework.getResourceSpecifierFactory();
+
+    IFile extensionTypeSystemFile = typeSystemFile;
+
+    InputStream inTypeSystem;
+
+    if (extensionTypeSystemFile != null && extensionTypeSystemFile.exists()) {
+      inTypeSystem = extensionTypeSystemFile.getContents();
+    } else {
+      return null;
+    }
+
+    XMLInputSource xmlTypeSystemSource = new XMLInputSource(inTypeSystem, new File(""));
+
+    XMLParser xmlParser = UIMAFramework.getXMLParser();
+
+    TypeSystemDescription typeSystemDesciptor;
+
+    try {
+      typeSystemDesciptor = (TypeSystemDescription) xmlParser.parse(xmlTypeSystemSource);
+
+      typeSystemDesciptor.resolveImports();
+    } catch (InvalidXMLException e) {
+
+      String message = e.getMessage() != null ? e.getMessage() : "";
+
+      // TODO: Change plugin ID
+      IStatus s = new Status(IStatus.ERROR, "org.apache.uima.dev", IStatus.OK, message, e);
+
+      throw new CoreException(s);
+    }
+
+    TypePriorities typePriorities = resourceSpecifierFactory.createTypePriorities();
+
+    FsIndexDescription indexDesciptor = new FsIndexDescription_impl();
+    indexDesciptor.setLabel("TOPIndex");
+    indexDesciptor.setTypeName("uima.cas.TOP");
+    indexDesciptor.setKind(FsIndexDescription.KIND_SORTED);
+
+    CAS cas;
+    try {
+      cas = CasCreationUtils.createCas(typeSystemDesciptor, typePriorities,
+              new FsIndexDescription[] { indexDesciptor });
+    } catch (ResourceInitializationException e) {
+      String message = e.getMessage() != null ? e.getMessage() : "";
+
+      // TODO: Change plugin ID
+      IStatus s = new Status(IStatus.ERROR, "org.apache.uima.dev", IStatus.OK, message, e);
+
+      throw new CoreException(s);
+    }
+
+    return cas;
   }
 }
