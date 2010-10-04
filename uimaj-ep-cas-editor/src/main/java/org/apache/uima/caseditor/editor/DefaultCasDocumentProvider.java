@@ -447,8 +447,9 @@ public class DefaultCasDocumentProvider extends
     }
     else {
       DotCorpus dotCorpus = getStyle(element);
-      
       dotCorpus.setShownType(type.getName());
+      
+      saveStyles(element);
     }
   }
   
@@ -467,8 +468,9 @@ public class DefaultCasDocumentProvider extends
     }
     else {
       DotCorpus dotCorpus = getStyle(element);
-      
       dotCorpus.removeShownType(type.getName());
+      
+      saveStyles(element);
     }
   }
   
