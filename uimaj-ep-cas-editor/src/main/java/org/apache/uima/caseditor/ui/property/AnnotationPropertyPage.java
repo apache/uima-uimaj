@@ -211,7 +211,9 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
       // inserts objects with type Type
       mTypeList.add(type);
     }
-
+    
+    mTypeList.add(annotationType);
+    
     mTypeList.addSelectionChangedListener(new ISelectionChangedListener() {
 
       public void selectionChanged(SelectionChangedEvent event) {
@@ -219,6 +221,7 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
       }
     });
 
+    
     Composite settingsComposite = new Composite(base, SWT.NONE);
 
     GridLayout settingsLayout = new GridLayout();
