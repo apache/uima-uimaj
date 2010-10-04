@@ -79,6 +79,10 @@ public class AnnotationDocument extends Document implements ICasDocument {
     set(getText());
   }
 
+  ICasDocument getDocument() {
+    return mDocument;
+  }
+  
   /**
    * Call is forwarded to the set document.
    *

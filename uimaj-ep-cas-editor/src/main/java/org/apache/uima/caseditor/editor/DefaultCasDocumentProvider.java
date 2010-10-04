@@ -209,7 +209,9 @@ public class DefaultCasDocumentProvider extends
 
           AnnotationDocument document = new AnnotationDocument();
           document.setDocument(doc);
-    
+          
+          elementErrorStatus.remove(element);
+          
           return document;
         }
         else {
@@ -261,12 +263,29 @@ public class DefaultCasDocumentProvider extends
           fireElementStateChangeFailed(element);
           throw e;
         }
-      } else {
+      } else if (CasEditorPlugin.getNlpModel().
+              findMember(file.getProject()) instanceof INlpElement) {
         fireElementStateChangeFailed(element);
         return;
       }
+      else {
+        if (document instanceof AnnotationDocument) {
+          
+          AnnotationDocument annotationDocument = (AnnotationDocument) document;
+          DocumentUimaImpl documentImpl = (DocumentUimaImpl) annotationDocument.getDocument();
+          
+          ByteArrayOutputStream outStream = new ByteArrayOutputStream(40000); 
+          documentImpl.serialize(outStream);
+          
+          InputStream stream = new ByteArrayInputStream(outStream.toByteArray());
+
+          file.setContents(stream, true, false, null);
+        }
+      }
     }
 
+    // tell everyone that the element changed and is not
+    // dirty any longer
     fireElementDirtyStateChanged(element, false);
   }
 
