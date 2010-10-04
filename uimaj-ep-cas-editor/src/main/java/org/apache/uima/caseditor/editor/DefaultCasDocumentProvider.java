@@ -37,6 +37,7 @@ import org.apache.uima.caseditor.core.model.INlpElement;
 import org.apache.uima.caseditor.core.model.dotcorpus.DotCorpus;
 import org.apache.uima.caseditor.core.model.dotcorpus.DotCorpusSerializer;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -66,6 +67,15 @@ public class DefaultCasDocumentProvider extends
    * deleted when they are not longer needed ?!
    */
   private Map<String, DotCorpus> styles = new HashMap<String, DotCorpus>();
+  
+  private String getStyleFileForTypeSystem(String typeSystemFile) {
+    int lastSlashIndex = typeSystemFile.lastIndexOf("/");
+    
+    String styleId = typeSystemFile.substring(0, lastSlashIndex + 1);
+    styleId = styleId + ".style-" + typeSystemFile.substring(lastSlashIndex + 1);
+    
+    return styleId;
+  }
   
   @Override
   protected IDocument createDocument(Object element) throws CoreException {
@@ -113,12 +123,26 @@ public class DefaultCasDocumentProvider extends
       else {
 
         // Try to find a type system for the CAS file
-
-        // TODO: Discuss logic to resolve type system on dev list
-        // For now it will just be assumed that the type system is placed
-        // in a file called TypeSystem.xml at the root of the project
-
-        IFile typeSystemFile = casFile.getProject().getFile("TypeSystem.xml");
+        
+        // First check if a type system is already known or was
+        // set by the editor for this specific CAS
+        String typeSystemFileString = documentToTypeSystemMap.get(casFile.getFullPath().toPortableString());
+        
+        // If non was found, use the default name!
+        if (typeSystemFileString == null)
+          typeSystemFileString = "TypeSystem.xml";
+        
+        // TODO: Change to only use full path
+        IFile typeSystemFile = null; 
+        
+        IResource typeSystemResource = ResourcesPlugin.getWorkspace().getRoot().
+            findMember(new Path(typeSystemFileString));
+        
+        if (typeSystemResource instanceof IFile)
+          typeSystemFile = (IFile) typeSystemResource;
+        
+        if (typeSystemFile == null)
+          typeSystemFile = casFile.getProject().getFile(typeSystemFileString);
         
         if (typeSystemFile.exists()) {
           
@@ -129,7 +153,8 @@ public class DefaultCasDocumentProvider extends
           // colors could change completely when the a type is
           // added or removed to the type system
           
-          IFile styleFile = casFile.getProject().getFile(".style-TypeSystem.xml");
+          IFile styleFile = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(
+                  getStyleFileForTypeSystem(typeSystemFile.getFullPath().toPortableString())));
           
           DotCorpus dotCorpus = styles.get(styleFile.getFullPath().toPortableString());
           
@@ -200,10 +225,14 @@ public class DefaultCasDocumentProvider extends
             try {
               casIn.close();
             } catch (IOException e) {
-              // TODO: how to handle this error ?
-              // Throw an exception, or continue to display file and
-              // leave stream open ?
-              e.printStackTrace();
+              // Unable to close file after loading it
+              //
+              // In the current implementation the user
+              // does not notice the error and can just
+              // edit the file, tough saving it might fail
+              // if the io error persists
+              
+              CasEditorPlugin.log(e);
             }
           }
 
@@ -215,14 +244,13 @@ public class DefaultCasDocumentProvider extends
           return document;
         }
         else {
-          IStatus status = new Status(IStatus.ERROR, "org.apache.uima.dev", IStatus.OK,
+          IStatus status = new Status(IStatus.ERROR, "org.apache.uima.dev", 12,
                   "Cannot find type system!\nPlease place a valid type system in this path:\n" +
                   typeSystemFile.getLocation().toOSString(), null);
           
           elementErrorStatus.put(element, status);
         }
       }
-      
     }
 
     return null;
@@ -234,10 +262,10 @@ public class DefaultCasDocumentProvider extends
     super.disposeElementInfo(element, info);
     
     // Remove the mapping of document to type system
-    if (element instanceof FileEditorInput) {
-      FileEditorInput editorInput = (FileEditorInput) element;
-      documentToTypeSystemMap.remove(editorInput.getFile().getFullPath().toPortableString());
-    }
+//    if (element instanceof FileEditorInput) {
+//      FileEditorInput editorInput = (FileEditorInput) element;
+//      documentToTypeSystemMap.remove(editorInput.getFile().getFullPath().toPortableString());
+//    }
   }
   
   @Override
@@ -323,12 +351,7 @@ public class DefaultCasDocumentProvider extends
   }
 
   private void saveStyles(Object element) {
-    String tsId = getTypesystemId(element);
-    
-    int lastSlashIndex = tsId.lastIndexOf("/");
-    
-    String styleId = tsId.substring(0, lastSlashIndex + 1);
-    styleId = styleId + ".style-" + tsId.substring(lastSlashIndex + 1);
+    String styleId = getStyleFileForTypeSystem(getTypesystemId(element));
     
     DotCorpus style = styles.get(styleId);
     
@@ -477,5 +500,9 @@ public class DefaultCasDocumentProvider extends
     else {
       sharedEditorStatus.put(getTypesystemId(element), editorAnnotationStatus);
     }
+  }
+  
+  void setTypeSystem(String document, String typeSystem) {
+    documentToTypeSystemMap.put(document, typeSystem);
   }
 }

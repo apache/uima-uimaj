@@ -55,6 +55,7 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
@@ -88,13 +89,20 @@ import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.MouseMoveListener;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -106,10 +114,13 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
+import org.eclipse.ui.part.PageBookView;
+import org.eclipse.ui.texteditor.IDocumentProviderExtension;
 import org.eclipse.ui.texteditor.IStatusField;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.eclipse.ui.texteditor.IWorkbenchActionDefinitionIds;
+import org.eclipse.ui.texteditor.InfoForm;
 import org.eclipse.ui.texteditor.StatusTextEditor;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
@@ -521,7 +532,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
    */
   private int mCursorPosition;
 
-  private ICasDocument mDocument;
+//  private ICasDocument mDocument;
 
   boolean mIsSomethingHighlighted = false;
 
@@ -662,10 +673,110 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     getSourceViewer().setEditable(false);
 
     getSite().setSelectionProvider(mFeatureStructureSelectionProvider);
+    
+    initiallySynchronizeUI();
+  }
 
+  // TODO: still not called always, e.g. on mouse selection
+  private void cursorPositionChanged() {
+    mFeatureStructureSelectionProvider.setSelection(getDocument(), getSelectedAnnotations());
+  }
+
+  /**
+   * Checks if the current instance is editable.
+   *
+   * @return false
+   */
+  @Override
+  public boolean isEditable() {
+    return false;
+  }
+
+  @Override
+  protected void doSetInput(IEditorInput input) throws CoreException {
+    
+    super.doSetInput(input);
+    
     if (getDocument() != null) {
+
+      // Register listener to listens for deletion events,
+      // if the file opened in this editor is deleted, the editor should be closed!
+      closeEditorListener = new CloseEditorListener(this);
+      ResourcesPlugin.getWorkspace().addResourceChangeListener(closeEditorListener,
+              IResourceChangeEvent.POST_CHANGE);
+
+      // Synchronize all annotation from the document with
+      // the editor
+      syncAnnotations();
+      
+      // Register listener to synchronize annotations between the
+      // editor and the document in case the annotations
+      // change e.g. updated in a view
+      mAnnotationSynchronizer = new DocumentListener();
+      getDocument().addChangeListener(mAnnotationSynchronizer);
+      
+      // Register listener to synchronize annotation styles
+      // between multiple open annotation editors
+      mAnnotationStyleListener = new IAnnotationStyleListener() {
+        
+        public void annotationStylesChanged(Collection<AnnotationStyle> styles) {
+          // TODO: Only sync changed types
+          syncAnnotationTypes();
+        }
+      };
+      
+      getDocumentProvider().addAnnotationStyleListener(getEditorInput(), mAnnotationStyleListener);
+      
+      // Synchronize shown types with the editor
+      Collection<String> shownTypes = getDocumentProvider().getShownTypes(input);
+      
+      for (String shownType : shownTypes) {
+        
+        Type type = getDocument().getType(shownType);
+        
+        // Types can be deleted from the type system but still be marked 
+        // as shown in the .dotCorpus file, in that case the type
+        // name cannot be mapped to a type and should be ignored.
+        
+        if (type != null)
+          shownAnnotationTypes.add(type);
+      }
+      
+      if (getSourceViewer() != null) {
+        
+        // This branch is usually only executed when the 
+        // input was updated because it could not be opened the
+        // first time trough an error e.g. no type system available
+        //
+        // Compared to the usual code branch createPartControl was
+        // already called without a document, which means
+        // that the state between the UI and the document
+        // must be synchronized now
+
+        initiallySynchronizeUI();
+        
+        IWorkbenchPage page = getSite().getWorkbenchWindow().getActivePage();
+        
+        for (IWorkbenchPart view : page.getViews()) {
+          if (view instanceof PageBookView) {
+            ((PageBookView) view).partBroughtToTop(getEditorSite().getPart());
+          }
+        }
+      }
+      
+    }
+  }
+  
+  /**
+   * Initialized the UI from the freshly set document.
+   * 
+   * Note: Does nothing if getDoucment() return null.
+   */
+  private void initiallySynchronizeUI() {
+    if (getDocument() != null) {
+      
       mShowAnnotationsMenu = new ShowAnnotationsMenu(
-              getDocumentProvider().getEditorAnnotationStatus(getEditorInput()),
+              null,
               getDocument().getCAS().getTypeSystem(), shownAnnotationTypes);
       mShowAnnotationsMenu.addListener(new IShowAnnotationsListener() {
 
@@ -706,71 +817,14 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
           }
         }
       });
-
-      EditorAnnotationStatus status = getDocumentProvider()
-              .getEditorAnnotationStatus(getEditorInput());
-
+        
+      EditorAnnotationStatus status =
+        getDocumentProvider().getEditorAnnotationStatus(getEditorInput());
+      
       setAnnotationMode(getDocument().getType(status.getMode()));
     }
   }
-
-  // TODO: still not called always, e.g. on mouse selection
-  private void cursorPositionChanged() {
-    mFeatureStructureSelectionProvider.setSelection(getDocument(), getSelectedAnnotations());
-  }
-
-  /**
-   * Checks if the current instance is editable.
-   *
-   * @return false
-   */
-  @Override
-  public boolean isEditable() {
-    return false;
-  }
-
-  @Override
-  protected void doSetInput(IEditorInput input) throws CoreException {
-    super.doSetInput(input);
-
-    mDocument = (ICasDocument) getDocumentProvider().getDocument(input);
-
-    if (mDocument != null) {
-
-      closeEditorListener = new CloseEditorListener(this);
-      ResourcesPlugin.getWorkspace().addResourceChangeListener(closeEditorListener,
-              IResourceChangeEvent.POST_CHANGE);
-
-      syncAnnotations();
-      
-      mAnnotationSynchronizer = new DocumentListener();
-
-      getDocument().addChangeListener(mAnnotationSynchronizer);
-      
-      mAnnotationStyleListener = new IAnnotationStyleListener() {
-        
-        public void annotationStylesChanged(Collection<AnnotationStyle> styles) {
-          // TODO: Only sync changed types
-          syncAnnotationTypes();
-        }
-      };
-      
-      getDocumentProvider().addAnnotationStyleListener(getEditorInput(), mAnnotationStyleListener);
-      
-      Collection<String> shownTypes = getDocumentProvider().getShownTypes(input);
-      
-      for (String shownType : shownTypes) {
-        
-        // Types can be deleted from the type system but still be marked 
-        // as shown in the .dotCorpus file, in that case the type
-        // name cannot be mapped to a type and should be ignored.
-        Type type = getDocument().getType(shownType);
-        if (type != null)
-          shownAnnotationTypes.add(type);
-      }
-    }
-  }
-
+  
   @Override
   protected void editorContextMenuAboutToShow(IMenuManager menu) {
     super.editorContextMenuAboutToShow(menu);
@@ -824,7 +878,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
    * @return current <code>AnnotationDocument</code>
    */
   public ICasDocument getDocument() {
-    return mDocument;
+    return (ICasDocument) getDocumentProvider().getDocument(getEditorInput());
   }
 
   /**
@@ -860,7 +914,8 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   }
 
   public Collection<Type> getShownAnnotationTypes() {
-	  return mShowAnnotationsMenu.getSelectedTypes();
+    return Collections.unmodifiableCollection(shownAnnotationTypes);
+//	  return mShowAnnotationsMenu.getSelectedTypes();
   }
   
   public void setShownAnnotationType(Type type, boolean isShown) {
@@ -926,7 +981,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 
     // Add all annotation to the model
     // copy annotations into annotation model
-    final Iterator<AnnotationFS> mAnnotations = mDocument.getCAS().getAnnotationIndex()
+    final Iterator<AnnotationFS> mAnnotations = getDocument().getCAS().getAnnotationIndex()
             .iterator();
 
     while (mAnnotations.hasNext()) {
@@ -1210,5 +1265,58 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     }
 
     return dirtyParts.toArray(new AnnotationEditor[dirtyParts.size()]);
+  }
+  
+  @Override
+  protected Control createStatusControl(Composite parent, IStatus status) {
+
+    // Type System is missing in non Cas Editor Project case
+    if (status.getCode() == 12 && getEditorInput() instanceof FileEditorInput) {
+      
+      // Note:
+      // If the editor is not active and the user clicks on the button
+      // the editor gets activated and an exception is logged
+      // on the second click the button is selected
+      // How to fix the exception ?!
+      // Only tested on OS X Snow Leopard
+      
+      Composite provideTypeSystemForm = new Composite(parent, SWT.NONE);
+      provideTypeSystemForm.setLayout(new GridLayout(1, false));
+      Label infoLabel = new Label(provideTypeSystemForm, SWT.NONE);
+      infoLabel.setText(status.getMessage());
+      Button retryButton = new Button(provideTypeSystemForm, SWT.NONE);
+      retryButton.setText("Choose Type System ...");
+      retryButton.addSelectionListener(new SelectionListener() {
+        public void widgetSelected(SelectionEvent e) {
+          
+          // Open a dialog to let the user choose a type system
+          WorkspaceResourceDialog resourceDialog = new WorkspaceResourceDialog();
+          IResource resource = resourceDialog.getWorkspaceResourceElement(Display.getCurrent().getActiveShell(),
+                  ResourcesPlugin.getWorkspace().getRoot(),
+                  "Select a Type System", "Please select a Type System:");
+          
+          if (resource != null) {
+            DefaultCasDocumentProvider provider = (DefaultCasDocumentProvider) getDocumentProvider();
+            
+            FileEditorInput editorInput = (FileEditorInput) getEditorInput();
+            provider.setTypeSystem(editorInput.getFile().getFullPath().toPortableString(),
+                    resource.getFullPath().toPortableString());
+            
+            // Now set the input again to open the editor with the
+            // specified type system
+            setInput(getEditorInput());
+          }
+        }
+  
+        public void widgetDefaultSelected(SelectionEvent e) {
+          throw new IllegalStateException("Never be called!");
+        }
+      });
+  
+      return provideTypeSystemForm;
+    }
+    else {
+      return super.createStatusControl(parent, status);
+    }
   }
 }
