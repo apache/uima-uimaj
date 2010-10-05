@@ -80,7 +80,6 @@ public class AnnotationTreeNode implements IAdaptable {
     mChildren.buildTree();
   }
 
-  @SuppressWarnings("unchecked")
   public Object getAdapter(Class adapter) {
     // TODO:
     // use ModelFeatureStructure

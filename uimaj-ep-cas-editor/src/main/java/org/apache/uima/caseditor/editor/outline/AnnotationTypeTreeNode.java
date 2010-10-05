@@ -53,7 +53,6 @@ class AnnotationTypeTreeNode implements IAdaptable {
 		annotations.remove(annotation);
 	}
 	
-	@SuppressWarnings("unchecked")
 	public Object getAdapter(Class adapter) {
 		
 		if (Type.class.equals(adapter)) {
