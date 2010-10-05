@@ -86,7 +86,6 @@ public class ModelFeatureStructure implements IAdaptable {
     return structres;
   }
 
-  @SuppressWarnings("unchecked")
   public Object getAdapter(Class adapter) {
     if (FeatureStructure.class.equals(adapter)) {
       return getStructre();
