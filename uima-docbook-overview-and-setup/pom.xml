@@ -59,7 +59,7 @@
     <uimaScmRoot>uimaj</uimaScmRoot>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
     <!-- next property is the name of the top file under src/docbook without trailing .xml -->
-    <bookNameRoot>overview-and-setup</bookNameRoot>
+    <bookNameRoot>overview_and_setup</bookNameRoot>
   </properties>
  	
 </project>
