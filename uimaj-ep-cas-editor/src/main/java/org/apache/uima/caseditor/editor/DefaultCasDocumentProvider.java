@@ -256,18 +256,6 @@ public class DefaultCasDocumentProvider extends
     return null;
   }
 
-  // Needed for non Cas Editor project case
-  @Override
-  protected void disposeElementInfo(Object element, ElementInfo info) {
-    super.disposeElementInfo(element, info);
-    
-    // Remove the mapping of document to type system
-//    if (element instanceof FileEditorInput) {
-//      FileEditorInput editorInput = (FileEditorInput) element;
-//      documentToTypeSystemMap.remove(editorInput.getFile().getFullPath().toPortableString());
-//    }
-  }
-  
   @Override
   protected void doSaveDocument(IProgressMonitor monitor, Object element, IDocument document,
           boolean overwrite) throws CoreException {
@@ -329,13 +317,8 @@ public class DefaultCasDocumentProvider extends
   // get access to style for element
   private DotCorpus getStyle(Object element) {
       String tsId = getTypesystemId(element);
-      
-      int lastSlashIndex = tsId.lastIndexOf("/");
-      
-      String styleId = tsId.substring(0, lastSlashIndex + 1);
-      styleId = styleId + ".style-" + tsId.substring(lastSlashIndex + 1);
-      
-      return styles.get(styleId);
+       
+      return styles.get(getStyleFileForTypeSystem(tsId));
   }
   
   private INlpElement getNlpElement(Object element) {
