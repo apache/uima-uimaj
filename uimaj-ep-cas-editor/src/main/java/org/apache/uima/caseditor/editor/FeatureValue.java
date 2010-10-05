@@ -61,7 +61,6 @@ public final class FeatureValue implements IAdaptable {
     return mStructure.getFeatureValue(mFeature);
   }
 
-  @SuppressWarnings("unchecked")
   public Object getAdapter(Class adapter) {
     if (AnnotationFS.class.equals(adapter)) {
       if (getValue() instanceof AnnotationFS) {
