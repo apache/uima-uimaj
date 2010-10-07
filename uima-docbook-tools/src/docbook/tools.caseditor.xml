@@ -33,22 +33,57 @@ under the License.
 		<title>Introduction</title>
 
 		<para>
-			The CAS Editor is an annotation tool which supports manual and automatic
+			The CAS Editor is an eclipse based annotation tool which supports manual and automatic
 			annotation (via running UIMA annotators) of CASes stored in files.
-      Currently only text-based CAS are supported. 
-      The CAS Editor can visualize and edit all feature structures. 
-      Feature Structures which are annotations can additionally be viewed and edited
-			directly on text. 
+			Currently only text-based CAS are supported. 
+		    The CAS Editor can visualize and edit all feature structures. 
+		    Feature Structures which are annotations can additionally be viewed and edited
+			directly on text.
 		</para>
-    
+		
+		<!-- Note: In the HTML version the screen shot is to small and in the
+		PDF version its almost to big, how can that be fixed ?! -->
+		<screenshot>
+			<mediaobject>
+				<imageobject>
+					<imagedata scale="65" format="PNG"
+						fileref="&imgroot;CasEditor.png" />
+				</imageobject>
+			</mediaobject>
+		</screenshot>
+	</section>
+
+	<section id="sandbox.caseditor.Launching">
+		<title>Launching the Cas Editor</title>
+		<para>
+			To open a CAS in the Cas Editor it needs a compatible type system
+			and styling information which specify how to display the types.
+			The styling information is created automatically by the Cas Editor,
+			the type system file must be provided by the user.
+			A CAS in the xmi or xcas format can simply be opened by clicking
+			on it, like a text file is opened with the eclipse text editor.
+			The Cas Editor expects a type system file at the root of the project
+			named TypeSystem.xml. If the type system file does not exist in this
+			location the user has the option to point the Cas Editor to a
+			type system file. After the Cas Editor is opened switch to the Cas Editor
+			Perspective to see all the Cas Editor related views.
+		</para>
+		
+		<para>
+			Depending on the requirements the user should create
+			a Cas Editor project. The Cas Editor project is intended for
+			users which are building a corpus or need to annotate/view a
+			significant number of documents.
+			See the Cas Editor project section below for further details.
+		</para>
 	</section>
 
 	<section id="sandbox.caseditor.Projects">
-		<title>Projects</title>
+		<title>Cas Editor Project</title>
 
 		<para>
-      The CAS Editor operates only with special Eclipse projects created using 
-      the menu pick for new Projects -> Other -> Cas Editor -> Cas Editor Project.
+			The CAS Editor operates only with special Eclipse projects created using 
+			the menu pick for new Projects -> Other -> Cas Editor -> Cas Editor Project.
 			The CAS Editor operates on artifacts in one or more of these kinds of projects. It is
 			not possible to use the Cas Editor to open artifacts which are located outside of
 			a project.
@@ -263,6 +298,181 @@ under the License.
 			</screenshot>
 		</section>
 
+		<section id="sandbox.caseditor.annotation_editor.styling">
+			<title>Configure annotation styling</title>
+			<para>
+				The Cas Editor can visualize the annotations in multiple
+				highlighting colors and with different annotation drawing styles.
+				The annotation styling is defined per type system. When its changed,
+				the appearance changes in all opened editors sharing a type system.
+			</para>
+		
+			<para>
+				The styling is initialized with a unique color for every
+				annotation type and every annotation is drawn with
+				Squiggles annotation style. Its recommended to adjust
+				the annotation styles and coloring depending on the project
+				needs.
+			</para>
+		
+			<screenshot>
+				<mediaobject>
+					<imageobject>
+						<imagedata scale="100" format="PNG"
+						fileref="&imgroot;StyleView.png" />
+				</imageobject>
+				</mediaobject>
+			</screenshot>
+			
+			<para>
+				The Cas Editor offers a property page to edit the
+				styling. To open this property page click on the "Properties"
+				button in the Styles view.
+			</para>
+			
+			<para>
+				The property page can be seen below. By clicking on one of the
+				annotation types the color, drawing style and drawing layer can be edited on the right
+				side.
+			</para>
+			
+			<screenshot>
+				<mediaobject>
+					<imageobject>
+						<imagedata scale="75" format="PNG"
+						fileref="&imgroot;StyleProperties.png" />
+				</imageobject>
+				</mediaobject>
+			</screenshot>
+			
+			<!-- TODO: Try a table instead of the list ... -->
+			
+			<para>
+				The annotations can be visualized with one the following 
+				annotation stlyes:
+				<itemizedlist>
+					<listitem>
+						<para>
+							<emphasis>BACKGROUND</emphasis>
+							<screenshot>
+								<mediaobject>
+									<imageobject>
+										<imagedata align="left" scale="100" format="PNG"
+										fileref="&imgroot;Style-Background.png" />
+									</imageobject>
+								</mediaobject>
+							</screenshot>
+							The background is drawn in the annotation color.
+						</para>
+					</listitem>
+	
+					<listitem>
+						<para>
+							<emphasis>TEXT_COLOR</emphasis>
+							<screenshot>
+								<mediaobject>
+									<imageobject>
+										<imagedata align="left" scale="100" format="PNG"
+										fileref="&imgroot;Style-TextColor.png" />
+									</imageobject>
+								</mediaobject>
+							</screenshot>
+							The text is drawn in the annotation color.
+						</para>
+					</listitem>
+					
+					<listitem>
+						<para>
+							<emphasis>TOKEN</emphasis>
+							<screenshot>
+								<mediaobject>
+									<imageobject>
+										<imagedata align="left" scale="100" format="PNG"
+										fileref="&imgroot;Style-Token.png" />
+									</imageobject>
+								</mediaobject>
+							</screenshot>
+							The token type assumes that token annotation are always separated
+							by a whitespace. Only if they are not separated by a whitespace
+							a vertical line is drawn to display the two token annotations. 
+						</para>
+					</listitem>
+					<listitem>
+						<para>
+							<emphasis>SQUIGGLES</emphasis>
+							<screenshot>
+								<mediaobject>
+									<imageobject>
+										<imagedata align="left" scale="100" format="PNG"
+										fileref="&imgroot;Style-Squiggles.png" />
+									</imageobject>
+								</mediaobject>
+							</screenshot>
+							
+							Squiggles are drawen under the annotation in the annotation color.
+						</para>
+					</listitem>
+					<listitem>
+						<para>
+							<emphasis>BOX</emphasis>
+							<screenshot>
+								<mediaobject>
+									<imageobject>
+										<imagedata align="left" scale="100" format="PNG"
+										fileref="&imgroot;Style-Box.png" />
+									</imageobject>
+								</mediaobject>
+							</screenshot>
+							A box in the annotation color is drawn around
+							the annotation.
+						</para>
+					</listitem>
+					<listitem>
+						<para>
+							<emphasis>UNDERLINE</emphasis>
+							<screenshot>
+								<mediaobject>
+									<imageobject>
+										<imagedata align="left" scale="100" format="PNG"
+										fileref="&imgroot;Style-Underline.png" />
+									</imageobject>
+								</mediaobject>
+							</screenshot>
+							A line in the annotation color is drawen below
+							the annotation.
+						</para>
+					</listitem>
+					<listitem>
+						<para>
+							<emphasis>BRACKET</emphasis>
+							<screenshot>
+								<mediaobject>
+									<imageobject>
+										<imagedata align="left" scale="100" format="PNG"
+										fileref="&imgroot;Style-Bracket.png" />
+									</imageobject>
+								</mediaobject>
+							</screenshot>
+							An opening bracket is drawn around the first
+							character of the annotation and a closing bracket
+							is drawn around the last character of the annotation.
+						</para>
+					</listitem>
+				</itemizedlist>
+			</para>
+			
+			<para>
+				The Cas Editor can draw the annotations in different
+				layers. If the spans of two annotations overlap the annotation
+				which is in a higher layer is drawn over annotations in a lower 
+				layer. Depending on the drawing style it is possible to see
+				both annotations. The drawing order is defined by the layer
+				number, layer 0 is drawn first, then layer 1 and so on.
+			</para>
+		
+		<!-- Add image to explain the layers -->
+		</section>
+		
 		<section id="ugr.tools.cas_editor.annotation_editor.outline">
 			<title>Outline view</title>
 			
