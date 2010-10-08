@@ -74,27 +74,36 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
 
   private TableViewer mTypeList;
 
-  private AnnotationStyle mCurrentSelectedAnnotation = null;
+  private Button moveLayerUpButton;
+  private Button moveLayerDownButton;
+  
+//  private AnnotationStyle mCurrentSelectedAnnotation = null;
 
-  private Map<String, AnnotationStyle> changedStyles = new HashMap<String, AnnotationStyle>();
+  private Map<Type, AnnotationStyle> changedStyles = new HashMap<Type, AnnotationStyle>();
 
-  private AnnotationStyle getDefaultAnnotation() {
+  private Type getSelectedType() {
 
     IStructuredSelection selection = (IStructuredSelection) mTypeList.getSelection();
 
-    Type selectedType = (Type) selection.getFirstElement();
-
-    return new AnnotationStyle(selectedType.getName(), AnnotationStyle.DEFAULT_STYLE,
-            AnnotationStyle.DEFAULT_COLOR, mCurrentSelectedAnnotation.getLayer());
+    return (Type) selection.getFirstElement();
   }
 
   protected abstract AnnotationStyle getAnnotationStyle(Type type);
+  
+  private final AnnotationStyle getWorkingCopyAnnotationStyle(Type type) {
+    AnnotationStyle style = changedStyles.get(type);
+    
+    if (style == null)
+      style = getAnnotationStyle(type);
+    
+    return style;
+  }
   
   // does not make sense, just give it a list with new annotation styles,
   // to save them and notify other about the chagne
   
   protected final void setAnnotationStyle(AnnotationStyle style) {
-    changedStyles.put(mCurrentSelectedAnnotation.getAnnotation(), mCurrentSelectedAnnotation);
+    changedStyles.put(getSelectedType(), style);
   }
   
   protected abstract TypeSystem getTypeSystem();
@@ -106,13 +115,11 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
 
     if( selectedType != null) {
       
-      AnnotationStyle style = getAnnotationStyle(selectedType);
-  
-      mCurrentSelectedAnnotation = style;
+      AnnotationStyle style = getWorkingCopyAnnotationStyle(selectedType);
   
       if (style == null) {
         style = new AnnotationStyle(selectedType.getName(), AnnotationStyle.DEFAULT_STYLE,
-                AnnotationStyle.DEFAULT_COLOR, mCurrentSelectedAnnotation.getLayer());
+                AnnotationStyle.DEFAULT_COLOR, style.getLayer());
       }
   
       mStyleCombo.setText(style.getStyle().name());
@@ -121,6 +128,9 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
       Color color = style.getColor();
       mColorSelector.setColorValue(new RGB(color.getRed(), color.getGreen(), color.getBlue()));
       mColorSelector.setEnabled(true);
+
+      moveLayerUpButton.setEnabled(true);
+      moveLayerDownButton.setEnabled(true);
       
       // TODO: Enable move up down buttons
     }
@@ -129,7 +139,8 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
       mStyleCombo.setEnabled(false);
       mColorSelector.setEnabled(false);
       
-      // TODO: Disable up down button
+      moveLayerUpButton.setEnabled(false);
+      moveLayerDownButton.setEnabled(false);
     }
   }
   
@@ -198,7 +209,7 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
 
         Type type = (Type) cell.getElement();
 
-        AnnotationStyle style = getAnnotationStyle(type);
+        AnnotationStyle style = getWorkingCopyAnnotationStyle(type);
 
         cell.setText(Integer.toString(style.getLayer()));
       }});
@@ -238,16 +249,11 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
     mStyleCombo.setEnabled(false);
     mStyleCombo.addSelectionListener(new SelectionListener() {
       public void widgetSelected(SelectionEvent e) {
-        if (mCurrentSelectedAnnotation == null) {
-          mCurrentSelectedAnnotation = getDefaultAnnotation();
-        }
+        
+        AnnotationStyle style = getWorkingCopyAnnotationStyle( getSelectedType());
 
-        mCurrentSelectedAnnotation = new AnnotationStyle(
-                mCurrentSelectedAnnotation.getAnnotation(), AnnotationStyle.Style
-                        .valueOf(mStyleCombo.getText()), mCurrentSelectedAnnotation.getColor(),
-                mCurrentSelectedAnnotation.getLayer());
-
-        setAnnotationStyle(mCurrentSelectedAnnotation);
+        setAnnotationStyle(new AnnotationStyle(style.getAnnotation(), AnnotationStyle.Style
+                .valueOf(mStyleCombo.getText()), style.getColor(), style.getLayer()));
       }
 
       public void widgetDefaultSelected(SelectionEvent e) {
@@ -269,23 +275,19 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
     mColorSelector.setEnabled(false);
     mColorSelector.addListener(new IPropertyChangeListener() {
       public void propertyChange(PropertyChangeEvent event) {
-        if (mCurrentSelectedAnnotation == null) {
-          mCurrentSelectedAnnotation = getDefaultAnnotation();
-        }
+        AnnotationStyle style = getWorkingCopyAnnotationStyle( getSelectedType());
 
         RGB colorRGB = mColorSelector.getColorValue();
 
         Color color = new Color(colorRGB.red, colorRGB.green, colorRGB.blue);
 
-        mCurrentSelectedAnnotation = new AnnotationStyle(
-                mCurrentSelectedAnnotation.getAnnotation(), mCurrentSelectedAnnotation.getStyle(),
-                color, mCurrentSelectedAnnotation.getLayer());
-
-        setAnnotationStyle(mCurrentSelectedAnnotation);
+        setAnnotationStyle(new AnnotationStyle(
+                style.getAnnotation(), style.getStyle(),
+                color, style.getLayer()));
       }
     });
 
-    Button moveLayerUpButton = new Button(settingsComposite, SWT.NONE);
+    moveLayerUpButton = new Button(settingsComposite, SWT.NONE);
     moveLayerUpButton.setText("Move layer up");
     GridDataFactory.fillDefaults().span(2, 1).applyTo(moveLayerUpButton);
     moveLayerUpButton.addSelectionListener(new SelectionListener() {
@@ -294,23 +296,17 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
       }
 
       public void widgetSelected(SelectionEvent e) {
-        if (mCurrentSelectedAnnotation == null) {
-          mCurrentSelectedAnnotation = getDefaultAnnotation();
-        }
+        AnnotationStyle style = getWorkingCopyAnnotationStyle(getSelectedType());
 
-        mCurrentSelectedAnnotation = new AnnotationStyle(
-                mCurrentSelectedAnnotation.getAnnotation(), AnnotationStyle.Style
-                        .valueOf(mStyleCombo.getText()), mCurrentSelectedAnnotation.getColor(),
-                mCurrentSelectedAnnotation.getLayer() + 1);
+        setAnnotationStyle(new AnnotationStyle(
+                style.getAnnotation(), AnnotationStyle.Style.valueOf(mStyleCombo.getText()),
+                style.getColor(), style.getLayer() + 1));
 
-        setAnnotationStyle(mCurrentSelectedAnnotation);
-
-        mTypeList.refresh(((IStructuredSelection) mTypeList.getSelection()).getFirstElement(),
-                true);
+        mTypeList.update(getSelectedType(), null);
       }
     });
 
-    Button moveLayerDownButton = new Button(settingsComposite, SWT.NONE);
+    moveLayerDownButton = new Button(settingsComposite, SWT.NONE);
     moveLayerDownButton.setText("Move layer down");
     GridDataFactory.fillDefaults().span(2, 1).applyTo(moveLayerDownButton);
 
@@ -320,17 +316,15 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
       }
 
       public void widgetSelected(SelectionEvent e) {
-        if (mCurrentSelectedAnnotation != null && mCurrentSelectedAnnotation.getLayer() - 1 >= 0) {
-          mCurrentSelectedAnnotation = getDefaultAnnotation();
+        
+        AnnotationStyle style = getWorkingCopyAnnotationStyle(getSelectedType());
 
-          mCurrentSelectedAnnotation = new AnnotationStyle(mCurrentSelectedAnnotation
+        if (style.getLayer() - 1 >= 0) {
+          setAnnotationStyle(new AnnotationStyle(style
                   .getAnnotation(), AnnotationStyle.Style.valueOf(mStyleCombo.getText()),
-                  mCurrentSelectedAnnotation.getColor(), mCurrentSelectedAnnotation.getLayer() - 1);
+                  style.getColor(), style.getLayer() - 1));
 
-          setAnnotationStyle(mCurrentSelectedAnnotation);
-
-          mTypeList.update(((IStructuredSelection) mTypeList.getSelection()).getFirstElement(),
-                  null);
+          mTypeList.update(getSelectedType(), null);
         }
       }
     });
