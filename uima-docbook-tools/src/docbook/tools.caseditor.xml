@@ -345,120 +345,153 @@ under the License.
 				</mediaobject>
 			</screenshot>
 			
-			<!-- TODO: Try a table instead of the list ... -->
-			
 			<para>
 				The annotations can be visualized with one the following 
 				annotation stlyes:
-				<itemizedlist>
-					<listitem>
-						<para>
-							<emphasis>BACKGROUND</emphasis>
+			
+			
+				<table frame='all'><title>Style Table</title>
+					<tgroup cols='3' align='left' colsep='1' rowsep='1'>
+					<thead>
+						<row>
+						  <entry>Style</entry>
+						  <entry>Sample</entry>
+						  <entry>Description</entry>
+						</row>
+					</thead>
+					<tbody>
+					<row>
+						<entry>BACKGROUND</entry>
+						<entry>							
 							<screenshot>
 								<mediaobject>
 									<imageobject>
 										<imagedata align="left" scale="100" format="PNG"
-										fileref="&imgroot;Style-Background.png" />
-									</imageobject>
+											fileref="&imgroot;Style-Background.png" />
+										</imageobject>
 								</mediaobject>
 							</screenshot>
-							The background is drawn in the annotation color.
-						</para>
-					</listitem>
-	
-					<listitem>
-						<para>
-							<emphasis>TEXT_COLOR</emphasis>
-							<screenshot>
-								<mediaobject>
-									<imageobject>
-										<imagedata align="left" scale="100" format="PNG"
-										fileref="&imgroot;Style-TextColor.png" />
-									</imageobject>
-								</mediaobject>
-							</screenshot>
-							The text is drawn in the annotation color.
-						</para>
-					</listitem>
+						</entry>
+						<entry>
+							<para>The background is drawn in the annotation color.</para>
+						</entry>
+					</row>
 					
-					<listitem>
-						<para>
-							<emphasis>TOKEN</emphasis>
+					<row>
+						<entry>TEXT_COLOR</entry>
+						<entry>							
 							<screenshot>
 								<mediaobject>
 									<imageobject>
 										<imagedata align="left" scale="100" format="PNG"
-										fileref="&imgroot;Style-Token.png" />
-									</imageobject>
+											fileref="&imgroot;Style-TextColor.png" />
+										</imageobject>
 								</mediaobject>
 							</screenshot>
-							The token type assumes that token annotation are always separated
-							by a whitespace. Only if they are not separated by a whitespace
-							a vertical line is drawn to display the two token annotations. 
-						</para>
-					</listitem>
-					<listitem>
-						<para>
-							<emphasis>SQUIGGLES</emphasis>
+						</entry>
+						<entry>
+							<para>The text is drawn in the annotation color.</para>
+						</entry>
+					</row>
+
+					<row>
+						<entry>TOKEN</entry>
+						<entry>							
 							<screenshot>
 								<mediaobject>
 									<imageobject>
 										<imagedata align="left" scale="100" format="PNG"
-										fileref="&imgroot;Style-Squiggles.png" />
-									</imageobject>
+											fileref="&imgroot;Style-Token.png" />
+										</imageobject>
 								</mediaobject>
 							</screenshot>
-							
-							Squiggles are drawen under the annotation in the annotation color.
-						</para>
-					</listitem>
-					<listitem>
-						<para>
-							<emphasis>BOX</emphasis>
+						</entry>
+						<entry>
+							<para>
+								The token type assumes that token annotation are always separated
+								by a whitespace. Only if they are not separated by a whitespace
+								a vertical line is drawn to display the two token annotations.
+								The image on the left actually contains three annotations, one for "Mr", "."
+								and "Obama".
+							</para>
+						</entry>
+					</row>
+					
+					<row>
+						<entry>SQUIGGLES</entry>
+						<entry>							
 							<screenshot>
 								<mediaobject>
 									<imageobject>
 										<imagedata align="left" scale="100" format="PNG"
-										fileref="&imgroot;Style-Box.png" />
-									</imageobject>
+											fileref="&imgroot;Style-Squiggles.png" />
+										</imageobject>
 								</mediaobject>
 							</screenshot>
-							A box in the annotation color is drawn around
-							the annotation.
-						</para>
-					</listitem>
-					<listitem>
-						<para>
-							<emphasis>UNDERLINE</emphasis>
+						</entry>
+						<entry>
+							<para>Squiggles are drawen under the annotation in the annotation color.</para>
+						</entry>
+					</row>
+					
+					<row>
+						<entry>BOX</entry>
+						<entry>							
 							<screenshot>
 								<mediaobject>
 									<imageobject>
 										<imagedata align="left" scale="100" format="PNG"
-										fileref="&imgroot;Style-Underline.png" />
-									</imageobject>
+											fileref="&imgroot;Style-Box.png" />
+										</imageobject>
 								</mediaobject>
 							</screenshot>
-							A line in the annotation color is drawen below
-							the annotation.
-						</para>
-					</listitem>
-					<listitem>
-						<para>
-							<emphasis>BRACKET</emphasis>
+						</entry>
+						<entry>
+							<para>A box in the annotation color is drawn around
+							the annotation.</para>
+						</entry>
+					</row>
+					
+					<row>
+						<entry>UNDERLINE</entry>
+						<entry>							
 							<screenshot>
 								<mediaobject>
 									<imageobject>
 										<imagedata align="left" scale="100" format="PNG"
-										fileref="&imgroot;Style-Bracket.png" />
-									</imageobject>
+											fileref="&imgroot;Style-Underline.png" />
+										</imageobject>
 								</mediaobject>
 							</screenshot>
-							An opening bracket is drawn around the first
+						</entry>
+						<entry>
+							<para>A line in the annotation color is drawen below
+							the annotation.</para>
+						</entry>
+					</row>
+
+					<row>
+						<entry>BRACKET</entry>
+						<entry>							
+							<screenshot>
+								<mediaobject>
+									<imageobject>
+										<imagedata align="left" scale="100" format="PNG"
+											fileref="&imgroot;Style-Bracket.png" />
+										</imageobject>
+								</mediaobject>
+							</screenshot>
+						</entry>
+						<entry>
+							<para>An opening bracket is drawn around the first
 							character of the annotation and a closing bracket
-							is drawn around the last character of the annotation.
-						</para>
-					</listitem>
-				</itemizedlist>
+							is drawn around the last character of the annotation.</para>
+						</entry>
+					</row>
+					
+					</tbody>
+					</tgroup>
+				</table>
 			</para>
 			
 			<para>
@@ -468,6 +501,8 @@ under the License.
 				layer. Depending on the drawing style it is possible to see
 				both annotations. The drawing order is defined by the layer
 				number, layer 0 is drawn first, then layer 1 and so on.
+				If annotations in the same layer overlap its not defined which
+				annotation type is drawn first.
 			</para>
 		
 		<!-- Add image to explain the layers -->
