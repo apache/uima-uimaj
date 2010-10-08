@@ -26,7 +26,7 @@ under the License.
 
 <chapter id="ugr.tools.ce">
 
-	<title>Apache UIMA Cas Editor User&apos;s Guide</title>
+	<title>Cas Editor User&apos;s Guide</title>
 	<titleabbrev>Cas Editor User&apos;s Guide</titleabbrev>
 
 	<section id="sandbox.caseditor.Introduction">
@@ -65,10 +65,24 @@ under the License.
 			The Cas Editor expects a type system file at the root of the project
 			named TypeSystem.xml. If the type system file does not exist in this
 			location the user has the option to point the Cas Editor to a
-			type system file. After the Cas Editor is opened switch to the Cas Editor
+			type system file.
+		</para>
+
+		<screenshot>
+			<mediaobject>
+				<imageobject>
+					<imagedata scale="100" format="PNG"
+						fileref="&imgroot;ProvideTypeSystem.png" />
+				</imageobject>
+				<textobject>
+					<phrase>No type system available for the opened CAS.</phrase>
+				</textobject>
+			</mediaobject>
+		</screenshot>
+		<para>
+			After the Cas Editor is opened switch to the Cas Editor
 			Perspective to see all the Cas Editor related views.
 		</para>
-		
 		<para>
 			Depending on the requirements the user should create
 			a Cas Editor project. The Cas Editor project is intended for
@@ -82,11 +96,11 @@ under the License.
 		<title>Cas Editor Project</title>
 
 		<para>
-			The CAS Editor operates only with special Eclipse projects created using 
+			The CAS Editor can operate with special Eclipse projects created using 
 			the menu pick for new Projects -> Other -> Cas Editor -> Cas Editor Project.
 			The CAS Editor operates on artifacts in one or more of these kinds of projects. It is
-			not possible to use the Cas Editor to open artifacts which are located outside of
-			a project.
+			recommended to use Cas Editor Project when building a corpus or reviewing/annotating a
+			huge amount of documents.
 		</para>
 
 		<section id="ugr.tools.cas_editor.projects.structure">
@@ -248,54 +262,108 @@ under the License.
 		<para>
 			The annotation editor shows the text with annotations and
 			provides different views to show aspects of the CAS.
+			
 		</para>
 
 		<section id="ugr.tools.cas_editor.annotation_editor.editor">
 			<title>Editor</title>
 			<para>
-				The editor has an associated, changable CAS Type.
-        This type is called the editor "mode".
-        By default the editor only
-				shows annotation of this type. Actions and views are
-				sensitive to this mode. To change the
-        mode for the editor, use the "Mode" menu in the editor context menu. 
-        </para>
-      <para>
-        The editor can also show annotations of other Types.  
-        To do this, use the "Show" menu in
-				the context menu. The annotation renderer and rendering
-				layer can be changed in the Properties dialog. After the
-				change all editors should be re-opened.
+			    After the editor is open it shows the default sofa of the CAS, displaying another sofa is right now not possible.
+				The editor has an associated, changable CAS Type. This type is called the editor "mode".
+        		By default the editor only shows annotation of this type. Actions and views are
+				sensitive to this mode. 
+				
+				<screenshot>
+					<mediaobject>
+						<imageobject>
+							<imagedata scale="100" format="PNG"
+								fileref="&imgroot;Editor.png" />
+						</imageobject>
+					</mediaobject>
+				</screenshot>
+				
+				To change the mode for the editor, use the "Mode" menu in the editor context menu.
+				To open the context menu right click somewhere on the text.
+				
+				<screenshot>
+					<mediaobject>
+						<imageobject>
+							<imagedata scale="100" format="PNG"
+								fileref="&imgroot;ModeMenu.png" />
+						</imageobject>
+					</mediaobject>
+				</screenshot>
+				        	
+				The current mode is displayed in the status line at the bottom and in the Style View.
+			</para>
+			
+      		<para>
+				Its possible to work with more than one annotation type at a time, the mode just selects the default annotation type
+				which can be marked with the fewest keystrokes. To show annotations of other types, use the "Show" menu in
+				the context menu.
+					
+				<screenshot>
+					<mediaobject>
+						<imageobject>
+							<imagedata scale="100" format="PNG"
+								fileref="&imgroot;ShowAnnotationsMenu.png" />
+						</imageobject>
+					</mediaobject>
+				</screenshot>
+				
+				Or selected the annotation types to be shown in the Style View.
+				
+				<screenshot>
+					<mediaobject>
+						<imageobject>
+							<imagedata scale="100" format="PNG"
+								fileref="&imgroot;StyleView.png" />
+						</imageobject>
+					</mediaobject>
+				</screenshot>
+				The editor shows now also the additional selected types.
+				<!--  TODO: Add an image of editor which shows multiple types ... -->
+				
+				The annotation renderer and rendering layer can be changed in the Properties dialog. After the
+				change all editors which share the same type system will be updated.
 			</para>
 			<para>
-				The editor automatically selects annotations of the
-        editor mode Type that are near the
-				cursor. This selection is then
-				synchronized or displayed in other views.
+				The editor automatically selects annotations of the editor mode type that are near the
+				cursor. This selection is then synchronized or displayed in other views.
 			</para>
 			<para>
 				To create an annotation manually using the editor, mark a piece of text and then
 				press the enter key. This creates an annotation of the 
-        type of the editor mode, having bounds corresponding to the selection.
+        		type of the editor mode, having bounds corresponding to the selection.
+        		Or use the "Quick Annotate" action from the context menu.
 			</para>
 			<para>
 				It is also possible to choose the annotation type; press
-				shift + enter (smart insert) for this. Then a dialog asks for the
-				annotation type to create, either select the desired type or use
-				the associated key shortcut.
+				shift + enter (smart insert) or click on "Annotate" in the context menu for this.
+				Then a dialog asks for the annotation type to create, either select the desired type or use
+				the associated key shortcut. In the screen shot below a press on "p"
+				will create a Person annotation for "Obama".
 			</para>
-			<para>
-				To delete an annotation select it and press the delete
-				key. Only annotations of the editor mode can be selected.
-			</para>
+			
 			<screenshot>
 				<mediaobject>
 					<imageobject>
 						<imagedata scale="100" format="PNG"
-							fileref="&imgroot;Editor.png" />
+							fileref="&imgroot;ShiftEnter.png" />
 					</imageobject>
 				</mediaobject>
 			</screenshot>
+			
+			<para>
+				To delete an annotation select it and press the delete
+				key. Only annotations of the editor mode can be deleted with this method.
+				To delete non editor mode annotations use the Outline View.
+			</para>
+			
+			<para>
+			For annotation projects its recommended to increase the font size in the editor. 
+			This can be done in the eclipse preference dialog, go to General -> Colors and Fonts and
+			then on the right side Basic -> Text Font. Change it from 11 to 14 for example.</para>
 		</section>
 
 		<section id="sandbox.caseditor.annotation_editor.styling">
