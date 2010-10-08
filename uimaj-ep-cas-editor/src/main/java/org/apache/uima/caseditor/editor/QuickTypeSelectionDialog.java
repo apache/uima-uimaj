@@ -167,6 +167,8 @@ class QuickTypeSelectionDialog extends PopupDialog {
     List<Type> types =
             typeSystem.getProperlySubsumedTypes(typeSystem.getType(CAS.TYPE_NAME_ANNOTATION));
 
+    types.add(typeSystem.getType(CAS.TYPE_NAME_ANNOTATION));
+    
     return types.toArray(new Type[types.size()]);
   }
 
