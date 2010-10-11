@@ -46,7 +46,7 @@ under the License.
 		<screenshot>
 			<mediaobject>
 				<imageobject>
-					<imagedata scale="65" format="PNG"
+					<imagedata width="5.7in" format="PNG"
 						fileref="&imgroot;CasEditor.png" />
 				</imageobject>
 			</mediaobject>
@@ -326,7 +326,7 @@ under the License.
 				<screenshot>
 					<mediaobject>
 						<imageobject>
-							<imagedata scale="100" format="PNG"
+							<imagedata width="5.7in" format="PNG"
 								fileref="&imgroot;EditorAllTypes.png" />
 						</imageobject>
 					</mediaobject>
@@ -678,7 +678,7 @@ under the License.
 			<screenshot>
 				<mediaobject>
 					<imageobject>
-						<imagedata scale="100" format="PNG"
+						<imagedata width="5.7in" format="PNG"
 							fileref="&imgroot;RunAnnotator.png" />
 					</imageobject>
 				</mediaobject>
