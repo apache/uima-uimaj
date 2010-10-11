@@ -19,27 +19,24 @@
 
 package org.apache.uima.caseditor.ui.wizards;
 
-import org.apache.uima.caseditor.core.model.CorpusElement;
-import org.apache.uima.caseditor.core.model.NlpProject;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 
-public class CorpusElementFilter extends ViewerFilter {
+public class ContainerElementFilter extends ViewerFilter {
 
   @Override
   public boolean select(Viewer viewer, Object parentElement, Object element) {
 
-    boolean result;
-
-    if (element instanceof NlpProject) {
-      result = true;
-    }
-    else if (element instanceof CorpusElement) {
-      result = true;
-    } else {
-      result = false;
+    if (element instanceof IAdaptable) {
+      IResource resourceElement = (IResource) ((IAdaptable) element).getAdapter(IResource.class);
+      
+      if (resourceElement != null)
+        element = resourceElement;
     }
 
-    return result;
+    return element instanceof IContainer;
   }
 }

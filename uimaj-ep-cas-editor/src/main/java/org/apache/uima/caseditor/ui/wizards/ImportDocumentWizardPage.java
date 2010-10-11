@@ -31,7 +31,9 @@ import java.util.Set;
 import org.apache.uima.caseditor.CasEditorPlugin;
 import org.apache.uima.caseditor.core.model.CorpusElement;
 import org.apache.uima.caseditor.editor.DocumentFormat;
-import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -74,7 +76,7 @@ final class ImportDocumentWizardPage extends WizardPage {
   
   private TableViewer fileTable;
 
-  private CorpusElement corpusElement;
+  private IContainer containerElement;
 
   protected ImportDocumentWizardPage(String pageName,
       IStructuredSelection currentResourceSelection) {
@@ -84,8 +86,8 @@ final class ImportDocumentWizardPage extends WizardPage {
 
     if (!currentResourceSelection.isEmpty()) {
       if (currentResourceSelection.getFirstElement() instanceof CorpusElement) {
-        corpusElement = (CorpusElement) currentResourceSelection.getFirstElement();
-        importDestinationPath = corpusElement.getResource().getFullPath();
+        containerElement = (IContainer) currentResourceSelection.getFirstElement();
+        importDestinationPath = containerElement.getFullPath();
       }
     }
 
@@ -229,8 +231,8 @@ final class ImportDocumentWizardPage extends WizardPage {
     });
 
     // Into Corpus folder 
-    Label corpusFolderLabel = new Label(composite, SWT.NONE);
-    corpusFolderLabel.setText("Into corpus:");
+    Label intoFolderLabel = new Label(composite, SWT.NONE);
+    intoFolderLabel.setText("Into folder:");
 
     final Text corpusText = new Text(composite, SWT.READ_ONLY | SWT.BORDER);
     corpusText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -239,11 +241,11 @@ final class ImportDocumentWizardPage extends WizardPage {
       corpusText.setText(importDestinationPath.toString());
     }
 
-    Button browseForCorpusFolder = new Button(composite, SWT.NONE);
-    browseForCorpusFolder.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
+    Button browseForFolder = new Button(composite, SWT.NONE);
+    browseForFolder.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
             | GridData.VERTICAL_ALIGN_BEGINNING));
-    browseForCorpusFolder.setText("Browse");
-    browseForCorpusFolder.addSelectionListener(new SelectionListener() {
+    browseForFolder.setText("Browse");
+    browseForFolder.addSelectionListener(new SelectionListener() {
 
       public void widgetDefaultSelected(SelectionEvent e) {
         // never called
@@ -260,25 +262,35 @@ final class ImportDocumentWizardPage extends WizardPage {
                         .getWorkbench().getDecoratorManager().getLabelDecorator()),
                 new BaseWorkbenchContentProvider());
 
-        folderSelectionDialog.addFilter(new CorpusElementFilter());
+        folderSelectionDialog.addFilter(new ContainerElementFilter());
 
-        if (corpusElement != null) {
-          folderSelectionDialog.setInitialSelection(corpusElement);
+        if (containerElement != null) {
+          folderSelectionDialog.setInitialSelection(containerElement);
         }
 
         folderSelectionDialog.setInput(org.apache.uima.caseditor.CasEditorPlugin.getNlpModel());
 
-        folderSelectionDialog.setTitle("Choose corpus");
-        folderSelectionDialog.setMessage("Please choose a corpus.");
+        folderSelectionDialog.setTitle("Choose folder");
+        folderSelectionDialog.setMessage("Please choose a folder.");
 
         folderSelectionDialog.setValidator(new ISelectionStatusValidator() {
           public IStatus validate(Object[] selection) {
 
-            if (selection.length == 1 && selection[0] instanceof CorpusElement) {
-              return new Status(IStatus.OK, CasEditorPlugin.ID, 0, "", null);
+            if (selection.length == 1) {
+              
+              Object selectedElement = selection[0];
+              
+              if (selectedElement instanceof IAdaptable) {
+                Object resourceElement = ((IAdaptable) selectedElement).getAdapter(IResource.class);
+                if (resourceElement != null)
+                  selectedElement = resourceElement;
+              }
+              
+              if (selectedElement instanceof IContainer)
+                return new Status(IStatus.OK, CasEditorPlugin.ID, 0, "", null);
             }
 
-            return new Status(IStatus.ERROR, CasEditorPlugin.ID, 0, "Please select a corpus!", null);
+            return new Status(IStatus.ERROR, CasEditorPlugin.ID, 0, "Please select a folder!", null);
           }
         });
 
@@ -286,12 +298,23 @@ final class ImportDocumentWizardPage extends WizardPage {
 
         Object[] results = folderSelectionDialog.getResult();
 
-        if (results != null) {
-          // validator makes sure that one CorpusElement is selected
-          corpusElement = (CorpusElement) results[0];
-
-          IFolder corpusFolder = (IFolder) corpusElement.getResource();
-          importDestinationPath = corpusFolder.getFullPath();
+        if (results != null && results.length > 0) {
+          // validator makes sure that an IContainer or an IAdaptable
+          // element which can provide an IContainer is selected
+          
+          if (results[0] instanceof IContainer) {
+            containerElement = (IContainer) results[0];
+          }
+          else if (results[0] instanceof IAdaptable) {
+            IAdaptable adaptableElement = (IAdaptable) results[0];
+            
+            containerElement = (IContainer) adaptableElement.getAdapter(IResource.class);
+          }
+          else {
+            throw new IllegalStateException("Unexpected selection!");
+          }
+          
+          importDestinationPath = containerElement.getFullPath();
 
           corpusText.setText(importDestinationPath.toString());
 
