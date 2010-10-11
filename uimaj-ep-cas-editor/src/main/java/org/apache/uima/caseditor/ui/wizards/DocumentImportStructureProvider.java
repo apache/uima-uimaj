@@ -26,7 +26,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
 import java.util.List;
 
 import javax.swing.text.BadLocationException;
@@ -104,26 +103,25 @@ final class DocumentImportStructureProvider implements IImportStructureProvider 
     ByteArrayOutputStream out = new ByteArrayOutputStream(40000);
 
     if (DocumentFormat.XCAS.equals(format)) {
-	    try {
-	      XCASSerializer.serialize(cas, out);
-	    } catch (SAXException e) {
-	      // should not happen
-	      throw new TaeError("Unexpected exception!", e);
-	    } catch (IOException e) {
-	      // will not happen, writing to memory
-	      throw new TaeError("Unexpected exception!", e);
-	    }
-    }
+      try {
+        XCASSerializer.serialize(cas, out);
+      } catch (SAXException e) {
+        // should not happen
+        throw new TaeError("Unexpected exception!", e);
+      } catch (IOException e) {
+        // will not happen, writing to memory
+        throw new TaeError("Unexpected exception!", e);
+      }
+    } 
     else if (DocumentFormat.XMI.equals(format)) {
-    	try {
-			XmiCasSerializer.serialize(cas, out);
-		} catch (SAXException e) {
-			// should not happen
-			throw new TaeError("Unexpected exception!", e);
-		}
-    }
-    else {
-    	throw new TaeError("Unkown document type!", null);
+      try {
+        XmiCasSerializer.serialize(cas, out);
+      } catch (SAXException e) {
+        // should not happen
+        throw new TaeError("Unexpected exception!", e);
+      }
+    } else {
+      throw new TaeError("Unkown document type!", null);
     }
 
     return new ByteArrayInputStream(out.toByteArray());
