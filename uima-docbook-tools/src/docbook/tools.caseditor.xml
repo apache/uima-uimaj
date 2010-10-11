@@ -269,15 +269,15 @@ under the License.
 			<title>Editor</title>
 			<para>
 			    After the editor is open it shows the default sofa of the CAS, displaying another sofa is right now not possible.
-				The editor has an associated, changable CAS Type. This type is called the editor "mode".
+				The editor has an associated, changeable CAS Type. This type is called the editor "mode".
         		By default the editor only shows annotation of this type. Actions and views are
-				sensitive to this mode. 
+				sensitive to this mode.
 				
 				<screenshot>
 					<mediaobject>
 						<imageobject>
 							<imagedata scale="100" format="PNG"
-								fileref="&imgroot;Editor.png" />
+								fileref="&imgroot;EditorOneType.png" />
 						</imageobject>
 					</mediaobject>
 				</screenshot>
@@ -317,13 +317,20 @@ under the License.
 					<mediaobject>
 						<imageobject>
 							<imagedata scale="100" format="PNG"
-								fileref="&imgroot;StyleView.png" />
+								fileref="&imgroot;StyleView2.png" />
 						</imageobject>
 					</mediaobject>
 				</screenshot>
 				The editor shows now also the additional selected types.
-				<!--  TODO: Add an image of editor which shows multiple types ... -->
 				
+				<screenshot>
+					<mediaobject>
+						<imageobject>
+							<imagedata scale="100" format="PNG"
+								fileref="&imgroot;EditorAllTypes.png" />
+						</imageobject>
+					</mediaobject>
+				</screenshot>				
 				The annotation renderer and rendering layer can be changed in the Properties dialog. After the
 				change all editors which share the same type system will be updated.
 			</para>
@@ -584,9 +591,9 @@ under the License.
 				shown in the editor, the annotation are grouped by type. There are
 				actions to increase or decrease the bounds of the selected annotation. There is
 				also an action to merge selected annotations. The outline has second view mode where only
-				annotations of the current editor mode are shown. The style can be switched in the view menu.
-			</para>
+				annotations of the current editor mode are shown. 
 
+			<!-- TODO: Replace image which a newer one -->
 			<screenshot>
 				<mediaobject>
 					<imageobject>
@@ -595,6 +602,12 @@ under the License.
 					</imageobject>
 				</mediaobject>
 			</screenshot>
+			
+			The style can be switched in the view menu. Then it only shows the annotations which 
+			belong to the current editor mode.
+			
+			<!-- TODO: Add image which visualizes this -->
+			</para>
 		</section>
 
 		<section
@@ -644,21 +657,40 @@ under the License.
 		</section>
 	</section>
 	<section id="sandbox.caseditor.cas_processor_integration">
-		<title>Cas processor integration</title>
+		<title>Cas Processor integration</title>
 		<para>
-			An Analysis Engine can be run against either a whole corpus or just a
+			The Cas Processor integration requires a Cas Project. If not
+			done already creaet a new folder and register it as Cas Processor
+			folder.
+		</para>
+		
+		<para>			
+			Before a Cas Processor can be used it must be installed. 
+			Take a PEAR and install into a local folder and copy
+			the descriptor file over into the Cas Processor folder.
+		</para>
+		
+		<para>
+			Now the (Aggregated) Analysis Engine can be run against either a whole corpus or just a
 			few CAS files. To do this select a corpus or some CAS files and
-			then choose in the context menu the correct Analysis Engine.
-			The filename of the Analysis Engine must end with ".xml"
-			otherwise it is not recognized as an Analysis Engine.
+			then choose in the context menu the correct Analysis Engine from the PEAR.
+			
+			<screenshot>
+				<mediaobject>
+					<imageobject>
+						<imagedata scale="100" format="PNG"
+							fileref="&imgroot;RunAnnotator.png" />
+					</imageobject>
+				</mediaobject>
+			</screenshot>			
 		</para>
-
+		
 		<para>
-			The CAS Consumer can be fed with the CAS files loaded from a corpus.
-			To do this select a corpus and then select the consumer in
-			the context menu. To add a CAS Consumer Descriptor paste a file
-			into the processor folder. The filename must end with ".xml";
-			otherwise it is not recognized as consumer.
+			The type system must be compatible with the type system of the Cas Editor
+			project otherwise only an error message will be shown when the CASes from the
+			corpus folder are opened.
 		</para>
+		
+		<!--  TODO: Is there a sample pear ?! If so give a step by step guide for it!-->
 	</section>
 </chapter>
