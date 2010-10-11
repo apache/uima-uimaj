@@ -29,8 +29,9 @@
 	                 id="org.apache.uima.caseditor.AnalysisEngineDescriptor"
 	                 name="Analysis Engine Descriptor"
 	                 priority="normal">
-	      <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
-	         <parameter name="element" value="analysisEngineDescription"/>
+	      <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+	         <parameter name="element" value="{http://uima.apache.org/resourceSpecifier}analysisEngineDescription"/>
+	         <parameter name="element" value="{http://uima.apache.org/resourceSpecifier}pearSpecifier"/>
 	      </describer>
 	   </content-type>
 	   
