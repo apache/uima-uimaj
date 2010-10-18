@@ -29,6 +29,6 @@ then
 else
   UIMA_JAVA_CALL="$JAVA_HOME/bin/java"
 fi
-"$UIMA_JAVA_CALL" -cp "$UIMA_HOME/lib/jVinci.jar" org.apache.vinci.transport.vns.service.VNS $*
+"$UIMA_JAVA_CALL" -cp "$UIMA_HOME/lib/jVinci.jar" org.apache.vinci.transport.vns.service.VNS $@
 
 
