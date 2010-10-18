@@ -276,7 +276,7 @@ under the License.
 				<screenshot>
 					<mediaobject>
 						<imageobject>
-							<imagedata scale="100" format="PNG"
+							<imagedata width="5.7in" format="PNG"
 								fileref="&imgroot;EditorOneType.png" />
 						</imageobject>
 					</mediaobject>
@@ -288,7 +288,7 @@ under the License.
 				<screenshot>
 					<mediaobject>
 						<imageobject>
-							<imagedata scale="100" format="PNG"
+							<imagedata width="5.7in" format="PNG"
 								fileref="&imgroot;ModeMenu.png" />
 						</imageobject>
 					</mediaobject>
@@ -414,7 +414,7 @@ under the License.
 			<screenshot>
 				<mediaobject>
 					<imageobject>
-						<imagedata scale="75" format="PNG"
+						<imagedata scale="100" format="PNG"
 						fileref="&imgroot;StyleProperties.png" />
 				</imageobject>
 				</mediaobject>
@@ -661,12 +661,12 @@ under the License.
 		<para>
 			The Cas Processor integration requires a Cas Project. If not
 			done already creaet a new folder and register it as Cas Processor
-			folder.
+			folder. The Cas Editor Project section describes how that can be done.
 		</para>
 		
 		<para>			
 			Before a Cas Processor can be used it must be installed. 
-			Take a PEAR and install into a local folder and copy
+			Take a PEAR and install it into a local folder and copy
 			the descriptor file over into the Cas Processor folder.
 		</para>
 		
@@ -690,7 +690,5 @@ under the License.
 			project otherwise only an error message will be shown when the CASes from the
 			corpus folder are opened.
 		</para>
-		
-		<!--  TODO: Is there a sample pear ?! If so give a step by step guide for it!-->
 	</section>
 </chapter>
