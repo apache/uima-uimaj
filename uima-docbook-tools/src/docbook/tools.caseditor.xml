@@ -659,9 +659,11 @@ under the License.
 	<section id="sandbox.caseditor.cas_processor_integration">
 		<title>Cas Processor integration</title>
 		<para>
-			The Cas Processor integration requires a Cas Project. If not
-			done already creaet a new folder and register it as Cas Processor
-			folder. The Cas Editor Project section describes how that can be done.
+			The Cas Editor has to support to run UIMA Analysis Engines
+			and Consumers. 
+			The integration requires a Cas Editor Project which
+			has a Cas Processor folder. See the Cas Editor Project
+			section for further details.
 		</para>
 		
 		<para>			
@@ -674,7 +676,7 @@ under the License.
 			Now the (Aggregated) Analysis Engine can be run against either a whole corpus or just a
 			few CAS files. To do this select a corpus or some CAS files and
 			then choose in the context menu the correct Analysis Engine from the PEAR.
-			
+			Make sure to be in the Corpus Explorer view.
 			<screenshot>
 				<mediaobject>
 					<imageobject>
