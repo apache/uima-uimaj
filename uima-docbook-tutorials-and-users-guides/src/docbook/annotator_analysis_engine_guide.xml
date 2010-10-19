@@ -1129,7 +1129,7 @@ public void initialize(UimaContext aContext)
         folder (in Eclipse, it&apos;s in your uimaj-examples project, under the
         <literal>descriptors/tutorial/ex3</literal> folder), you will find a
         descriptor for a TutorialDateTime annotator. This annotator detects dates and
-        times (and also sentences and words). To see what this annotator can do, try it out
+        times. To see what this annotator can do, try it out
         using the Document Analyzer. If you are curious as to how this annotator works, the
         source code is included, but it is not necessary to understand the code at this
         time.</para>
@@ -1227,16 +1227,15 @@ public void initialize(UimaContext aContext)
    </screenshot>
           </para>
         <para>Note that it is not automatically assumed that all outputs of each component
-          Analysis Engine (AE) are passed through as outputs of the aggregate AE. In this
-          case, for example, we have decided to suppress the Word and Sentence annotations
-          that are produced by the TutorialDateTime annotator.</para>
+          Analysis Engine (AE) are passed through as outputs of the aggregate AE. If, for example,
+          the TutorialDateTime annotator also produced Word and Sentence annotations, 
+          but those were not of interest as output in this case, we can exclude them from the 
+          list of outputs.</para>
         
         <para>You can run this AE using the Document Analyzer in the same way that you run any
           other AE. Just select the <literal>examples/descriptors/tutorial/ex3/
           RoomNumberAndDateTime.xml</literal> descriptor and click the Run button. You
-          should see that RoomNumbers, Dates, and Times are all shown but that Words and
-          Sentences are not:</para>
-        
+          should see that RoomNumbers, Dates, and Times are all shown:</para>
         
         <screenshot>
      <mediaobject>
