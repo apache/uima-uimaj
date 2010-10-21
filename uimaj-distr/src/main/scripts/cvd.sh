@@ -25,4 +25,4 @@ fi
 
 UIMA_CVDMAN="-Duima.tools.cvd.manpath=$UIMA_HOME/docs/html"
 export UIMA_CVDMAN
-"$UIMA_HOME/bin/runUimaClass.sh" org.apache.uima.tools.cvd.CVD $*
+"$UIMA_HOME/bin/runUimaClass.sh" org.apache.uima.tools.cvd.CVD $@
