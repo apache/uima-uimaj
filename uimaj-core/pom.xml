@@ -25,7 +25,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>parent-pom-ibm-notice</artifactId>
-    <version>4</version>
+    <version>6-SNAPSHOT</version>
     <relativePath/>
   </parent>
   
@@ -85,7 +85,7 @@
 		    gets fatal error: 
 		    
 		    net.sf.clirr.core.CheckerException: Unable to find information in class org.apache.uima.cas.impl.AnnotationBaseImpl 
-		    referring back to nested class org.apache.uima.cas.ipl.AnnotationBaseImpl$1
+		    referring back to nested class org.apache.uima.cas.impl.AnnotationBaseImpl$1
         at net.sf.clirr.core.internal.bcel.BcelScopeHelper.getClassScope(BcelScopeHelper.java:127)
         at net.sf.clirr.core.internal.bcel.BcelJavaType.getDeclaredScope(BcelJavaType.java:141)
         at net.sf.clirr.core.internal.bcel.BcelJavaType.getEffectiveScope(BcelJavaType.java:145)
@@ -94,12 +94,12 @@
         at net.sf.clirr.core.Checker.reportDiffs(Checker.java:136)
         at org.codehaus.mojo.clirr.AbstractClirrMojo.executeClirr(AbstractClirrMojo.java:236) 
 		  -->
-		  <!-- plugin>  
+		  <plugin>  
 		    <artifactId>clirr-maven-plugin</artifactId>
 		    <groupId>org.codehaus.mojo</groupId>
-		    <version>2.2.2</version>
+		    <version>2.2.3-SNAPSHOT</version>
 		    
-		  </plugin-->
+		  </plugin>
       
       <!-- filter the template for the version java code
            to insert the version from properties -->
