@@ -1185,7 +1185,7 @@ public void asynchStop() {
    *          CasProcessor position in processing pipeline
    */
   public void removeCasProcessor(int aCasProcessorIndex) {
-    if (aCasProcessorIndex < 0 || aCasProcessorIndex > annotatorList.size()) {
+    if (aCasProcessorIndex < 0 || aCasProcessorIndex >= annotatorList.size()) {
       return;
     }
     annotatorList.remove(aCasProcessorIndex);
