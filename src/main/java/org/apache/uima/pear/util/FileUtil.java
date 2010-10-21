@@ -851,6 +851,8 @@ public class FileUtil {
       try {
         URL fileUrl = new URL(fileLocation);
         URLConnection urlConn = fileUrl.openConnection();
+        // See https://issues.apache.org/jira/browse/UIMA-1746
+        urlConn.setUseCaches(false);
         fileSize = urlConn.getContentLength();
       } catch (IOException e) {
         fileSize = -1;
@@ -1038,6 +1040,8 @@ public class FileUtil {
    */
   public static String[] loadListOfStrings(URL textFileURL) throws IOException {
     URLConnection urlConnection = textFileURL.openConnection();
+    // See https://issues.apache.org/jira/browse/UIMA-1746
+    urlConnection.setUseCaches(false);
     BufferedReader iStream = null;
     String[] outputArray = null;
     try {
@@ -1192,6 +1196,8 @@ public class FileUtil {
    */
   public static String loadTextFile(URL textFileURL) throws IOException {
     URLConnection urlConnection = textFileURL.openConnection();
+    // See https://issues.apache.org/jira/browse/UIMA-1746
+    urlConnection.setUseCaches(false);    
     return loadTextFile(urlConnection);
   }
 
@@ -1207,6 +1213,8 @@ public class FileUtil {
   public static String loadTextFile(URLConnection urlConnection) throws IOException {
     BufferedReader iStream = null;
     String content = null;
+    // See https://issues.apache.org/jira/browse/UIMA-1746
+    urlConnection.setUseCaches(false);    
     try {
       iStream = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
       content = loadTextFile(iStream);

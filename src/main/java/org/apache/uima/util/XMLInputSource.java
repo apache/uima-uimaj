@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 
 import org.apache.uima.UIMARuntimeException;
 
@@ -111,7 +112,13 @@ public class XMLInputSource {
    */
   public XMLInputSource(URL aURL) throws IOException {
     mURL = aURL;
-    mInputStream = aURL.openStream();
+    // replace openStream which is openConnection().getInputStream() with
+    // version that allows setting caching(false)
+    // See https://issues.apache.org/jira/browse/UIMA-1746
+    URLConnection urlConnection= aURL.openConnection();
+    urlConnection.setUseCaches(false);
+    mInputStream = urlConnection.getInputStream();
+//    mInputStream = aURL.openStream();
   }
 
   /**
