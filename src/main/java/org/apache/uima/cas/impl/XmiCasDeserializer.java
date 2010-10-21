@@ -1723,7 +1723,9 @@ public class XmiCasDeserializer {
   private Map<String, String> xmiNamespaceToUimaNamespaceMap = new HashMap<String, String>();
   
   /**
-   * Create a new deserializer from a type system. Note: all CAS arguments later supplied to
+   * Create a new deserializer from a type system.
+   * <p>
+   * Note: all CAS arguments later supplied to
    * <code>getXCASHandler()</code> must have this type system as their type system.
    * 
    * @param ts
