@@ -1,7 +1,20 @@
-For instructions on building Apache UIMA please refer to:
-http://incubator.apache.org/uima/svn.html#building.with.maven
+To build from the source distribution, you'll need a Java 1.5 or later.  We've
+tested with Sun Java and IBM Java.  Then,
 
-You can run the tool packageAllJavaSourcesIntoJar.bat (or .sh) 
+a) download and install Maven, release 3 (from http://maven.apache.org)
+b) set the environment variable MAVEN_OPTS to 
+   -Xmx800m  -XX:MaxPermSize=256m
+b) cd to uimaj-distr directory in this unzipped archive
+c) run the maven command "mvn install"
+
+This should build things and install them to your local maven
+repository, and also build the distribution packages in the 
+uimaj-distr/target directory.
+
+For more in depth instructions on building Apache UIMA please refer to:
+http://uima.apache.org/building-uima.html . 
+
+(Optional) You can run the tool packageAllJavaSourcesIntoJar.bat (or .sh) 
 to package all of the java sources into a compressed Jar which can then
 be used with IDEs such as Eclipse to enable those tools to have access to
 the sources.  For the Eclipse IDE, for example, when it steps in 
@@ -9,7 +22,7 @@ debug mode into a class where it doesn't know about the sources,
 it asks you to attach the sources - you can simply attach the
 generated all-sources Jar, and it will work.
 
-Note: this tool requires that Ant be installed; you can set
+Note: this tool requires that Apache Ant be installed; you can set
 ANT_HOME environment variable to specify the particular version,
 if it isn't already in the Path.
 
@@ -17,7 +30,7 @@ For Eclipse, there is a launch configuration you can run (if you
 have checked out the uima projects into a common workspace)
 called "UIMA packageAllJavaSourcesIntoJar".
 
-Alternatively, iIf you have installed both the Apache UIMA 
+Alternatively, if you have installed both the Apache UIMA 
 binary distribution and the
 Apache UIMA source distribution, you can run the addSourceJars.bat 
 (or .sh) script to add the source code to the jar files in the 
@@ -26,13 +39,5 @@ for the Eclipse plugins (use the packageAllJavaSourcesIntoJar for
 that).  This may make it more convenient to access
 the UIMA Source Code (and JavaDocs) from an IDE such as Eclipse.
 
-See the NOTICE file for licensing information.
-
-Apache UIMA is an effort undergoing incubation at The Apache Software
-Foundation (ASF). Incubation is required of all newly accepted projects
-until a further review indicates that the infrastructure, communications,
-and decision making process have stabilized in a manner consistent with
-other successful ASF projects. While incubation status is not necessarily
-a reflection of the completeness or stability of the code, it does
-indicate that the project has yet to be fully endorsed by the ASF.
+See the LICENSE and NOTICE files for licensing information.
 
