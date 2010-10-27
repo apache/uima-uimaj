@@ -23,8 +23,8 @@
 
   <parent>
     <groupId>org.apache.uima</groupId>
-    <artifactId>parent-pom-eclipse-plugins</artifactId>
-    <version>6-SNAPSHOT</version>
+    <artifactId>parent-pom</artifactId>
+    <version>1-SNAPSHOT</version>
     <relativePath/>
   </parent>
   
@@ -216,6 +216,7 @@
               <excludes>
                 <exclude>release.properties</exclude> <!-- release generated artifact -->
                 <exclude>src/test/resources/ManualTests/*</exclude> <!-- test data -->
+                <exclude>marker-file-identifying-*</exclude>
               </excludes>              
             </configuration>
           </execution>

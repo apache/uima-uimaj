@@ -24,8 +24,8 @@
   
   <parent>
     <groupId>org.apache.uima</groupId>
-    <artifactId>parent-pom-eclipse-plugins-ibm-notice</artifactId>
-    <version>6-SNAPSHOT</version>
+    <artifactId>parent-pom</artifactId>
+    <version>1-SNAPSHOT</version>
     <relativePath/>
   </parent>
   
@@ -61,6 +61,7 @@
     <uimaScmRoot>uimaj</uimaScmRoot>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
     <uimaDependencyVersion>2.3.1-SNAPSHOT</uimaDependencyVersion>
+    <postNoticeText>${ibmNoticeText}</postNoticeText>
   </properties>
   
 	<dependencies>

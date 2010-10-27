@@ -24,8 +24,8 @@
   
   <parent>
     <groupId>org.apache.uima</groupId>
-    <artifactId>parent-pom-ibm-notice</artifactId>
-    <version>6-SNAPSHOT</version> 
+    <artifactId>parent-pom</artifactId>
+    <version>1-SNAPSHOT</version> 
     <relativePath/>
   </parent>
 
@@ -62,6 +62,7 @@
   <properties>
     <uimaScmRoot>uimaj</uimaScmRoot>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
+    <postNoticeText>${ibmNoticeText}</postNoticeText>
   </properties>
      
 	<build>

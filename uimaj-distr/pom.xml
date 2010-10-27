@@ -24,8 +24,8 @@
   
   <parent>
     <groupId>org.apache.uima</groupId>
-    <artifactId>parent-pom-distr</artifactId>
-    <version>5-SNAPSHOT</version>
+    <artifactId>parent-pom</artifactId>
+    <version>1-SNAPSHOT</version>
     <relativePath/>
   </parent>
 
@@ -149,7 +149,7 @@
         <artifactId>maven-javadoc-plugin</artifactId>
         <executions>
           <execution>
-            <id>javadocs-distr</id> <!-- name should match one in parent-pom-top --> 
+            <id>javadocs-distr</id> <!-- name should match one in parent-pom --> 
             <phase>package</phase>
             <!--phase>deploy</phase--> <!-- comment above and uncomment to disable javadocs, for testing/experimentation, with assembly:assembly-->
             <goals>
