@@ -23,8 +23,8 @@
 
   <parent>
     <groupId>org.apache.uima</groupId>
-    <artifactId>parent-pom-top</artifactId>
-    <version>7-SNAPSHOT</version>
+    <artifactId>parent-pom</artifactId>
+    <version>1-SNAPSHOT</version>
     <relativePath/>
   </parent>
     
@@ -63,7 +63,7 @@
   </properties>
 
   <build>
-    <!-- parsedVersion set in parent-pom-top by builder-helper -->
+    <!-- parsedVersion set in parent-pom by builder-helper -->
     <finalName>org.apache.uima.runtime_${parsedVersion.osgiVersion}</finalName>
     <resources>
       <resource>
