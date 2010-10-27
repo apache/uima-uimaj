@@ -183,11 +183,28 @@ under the License.
       <fileMode>644</fileMode>
       <directoryMode>755</directoryMode>        
     </fileSet>
+    
+    <!-- copy bin distr license and notice -->
     <fileSet>
       <directory>src/main/readme</directory>
       <outputDirectory></outputDirectory>
       <fileMode>644</fileMode>
-      <directoryMode>755</directoryMode>        
+      <directoryMode>755</directoryMode>
+      
+    <!-- copy standard top level files -->        
+    </fileSet>
+      <directory>.</directory>
+      <outputDirectory></outputDirectory>
+      <fileMode>644</fileMode>
+      <directoryMode>755</directoryMode> 
+      <includes>
+        <include>README*</include>
+        <include>readme*</include>
+        <include>RELEASE_NOTES*</include>
+        <include>Release-Notes*</include>
+        <include>issuesFixed/**</include>      
+      </includes>       
+    <fileSet>
     </fileSet>
     <fileSet>
       <directory>target/site/apidocs</directory>

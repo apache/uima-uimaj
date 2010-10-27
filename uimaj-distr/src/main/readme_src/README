@@ -1,3 +1,6 @@
+NOTE: This file is no longer used (as of 10/2010) - how to build is
+now merged with the top level README file.
+
 To build from the source distribution, you'll need a Java 1.5 or later.  We've
 tested with Sun Java and IBM Java.  Then,
 

@@ -17,6 +17,11 @@ specific language governing permissions and limitations
 under the License.    
 -->
 
+<!-- NOTE: This is no longer used as of 2.3.1 10/2010
+     Instead, source distributions are built using the 
+     standard source-release assembly mechanism of 
+     Apache common super pom -->
+
 <assembly>
   <id>src</id>
   <formats>

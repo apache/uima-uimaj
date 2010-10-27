@@ -2,6 +2,20 @@
 			Apache UIMA (Unstructured Information Management Architecture) v2.3.1 SDK
 		  -------------------------------------------------------------------------
 
+Building from the Source Distribution
+-------------------------------------
+
+We use Maven 3.0 for building; download this if needed, and set MAVEN_OPTS to -Xmx800m -XX:MaxPerSize-256m.
+
+Then build all the parts by going into the .../uimaj-distr directory, and issuing the command
+   mvn clean install.
+   
+Look for the result in the two artifacts: 
+   .../uimaj-distr/target/uimaj-distr-2.3.1-source-release.zip and
+   .../uimaj-distr/target/uimaj-2.3.1-bin.zip
+   .../uimaj-distr/target/uimaj-2.3.1-bin.tar.gz 
+   
+
 What's New in 2.3.1
 ------------------- 
 
@@ -25,8 +39,7 @@ What's New in 2.3.1
 
   The Component Descriptor Editor (CDE) (an Eclipse tool) had potentially poor performance when
   editing aggregate descriptors that referenced many remote components.  The performance in this
-  case has been greatly improved.
-  
+  case has been greatly improved, using a caching technique and eliminating repetitive remote accesses.  
   
 
 Supported Platforms
