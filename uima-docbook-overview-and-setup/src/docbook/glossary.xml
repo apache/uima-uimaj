@@ -111,8 +111,7 @@ implemented to produce and record annotations over regions of an artifact
       <glossdef>
         <para>The SDK for which you are now reading the documentation.  The SDK includes the framework
           plus additional components such as tooling and examples.  Some of the tooling is Eclipse-based 
-          (<ulink url="http://www.eclipse.org/"/>). The Apache UIMA SDK is being developed at the 
-          <ulink url="http://incubator.apache.org">Apache Incuabator</ulink>.</para>
+          (<ulink url="http://www.eclipse.org/"/>).</para>
       </glossdef>
     </glossentry>
     

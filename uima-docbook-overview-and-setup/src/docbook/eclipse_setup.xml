@@ -102,7 +102,7 @@ under the License.
       On the next page, select the option to Search for new features to install, and press the
         <command>Next</command> button.  On the next panel, update sites to visit, press the "Add a new
         remote site" button and enter the URL 
-        http://www.apache.org/dist/incubator/uima/eclipse-update-site, and press OK.  On the previous
+        http://www.apache.org/dist/uima/eclipse-update-site, and press OK.  On the previous
         page will now appear this new Site, and it should be checked.</para>
       
       <para>Also check the Europa (or Callisto) 

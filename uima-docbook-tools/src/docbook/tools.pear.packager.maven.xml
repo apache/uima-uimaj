@@ -350,7 +350,7 @@
     <para>
       The plugin code is available in the Apache
       subversion repository at:
-      <ulink url="http://svn.apache.org/repos/asf/incubator/uima/uimaj/trunk/PearPackagingMavenPlugin"/>.
+      <ulink url="http://svn.apache.org/repos/asf/uima/uimaj/trunk/PearPackagingMavenPlugin"/>.
       Use the following command line to build it (you will need the Maven build tool, available from Apache):
     </para>
     <para>
