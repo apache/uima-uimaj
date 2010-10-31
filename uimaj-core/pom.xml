@@ -95,12 +95,12 @@
         at net.sf.clirr.core.Checker.reportDiffs(Checker.java:136)
         at org.codehaus.mojo.clirr.AbstractClirrMojo.executeClirr(AbstractClirrMojo.java:236) 
 		  -->
-		  <plugin>  
+		  <!--plugin>  
 		    <artifactId>clirr-maven-plugin</artifactId>
 		    <groupId>org.codehaus.mojo</groupId>
 		    <version>2.2.3-SNAPSHOT</version>
 		    
-		  </plugin>
+		  </plugin-->
       
       <!-- filter the template for the version java code
            to insert the version from properties -->
