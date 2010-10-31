@@ -17,21 +17,19 @@
    specific language governing permissions and limitations
    under the License.    
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
   
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>parent-pom</artifactId>
-    <version>1-SNAPSHOT</version>
-    <relativePath/>
+    <version>1</version>
+    <relativePath />
   </parent>
   
 	<artifactId>uimaj-core</artifactId>
 	<packaging>jar</packaging>
-	<version>2.3.1-SNAPSHOT</version>
+	<version>2.3.1</version>
 	<name>UIMA Base: ${project.artifactId}</name>
   <description>The core implementation of the UIMA Java Framework</description>
   <url>${uimaWebsiteUrl}</url>
@@ -46,20 +44,20 @@
        element, and just changing the following two properties -->  
   <scm>
     <connection>
-      scm:svn:http://svn.apache.org/repos/asf/uima/${uimaScmRoot}/trunk/${uimaScmProject}
+      scm:svn:http://svn.apache.org/repos/asf/uima/${uimaScmRoot}/tags/uimaj-distr-2.3.1/${uimaScmProject}
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/${uimaScmRoot}/trunk/${uimaScmProject}
+      scm:svn:https://svn.apache.org/repos/asf/uima/${uimaScmRoot}/tags/uimaj-distr-2.3.1/${uimaScmProject}
     </developerConnection>
     <url>
-      http://svn.apache.org/viewvc/uima/${uimaScmRoot}/trunk/${uimaScmProject}
+      http://svn.apache.org/viewvc/uima/${uimaScmRoot}/tags/uimaj-distr-2.3.1/${uimaScmProject}
     </url>
   </scm>
   
   <properties>
     <uimaScmRoot>uimaj</uimaScmRoot>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
-    <uimaDependencyVersion>2.3.1-SNAPSHOT</uimaDependencyVersion>
+    <uimaDependencyVersion>2.3.1</uimaDependencyVersion>
     <postNoticeText>${ibmNoticeText}</postNoticeText>
   </properties>
   
