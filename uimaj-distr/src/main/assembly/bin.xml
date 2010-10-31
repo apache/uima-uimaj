@@ -189,10 +189,11 @@ under the License.
       <directory>src/main/readme</directory>
       <outputDirectory></outputDirectory>
       <fileMode>644</fileMode>
-      <directoryMode>755</directoryMode>
-      
-    <!-- copy standard top level files -->        
+      <directoryMode>755</directoryMode>      
     </fileSet>
+    
+    <!-- copy standard top level files -->        
+    <fileSet>
       <directory>.</directory>
       <outputDirectory></outputDirectory>
       <fileMode>644</fileMode>
@@ -204,11 +205,11 @@ under the License.
         <include>Release-Notes*</include>
         <include>issuesFixed/**</include>      
       </includes>       
-    <fileSet>
     </fileSet>
+    
     <fileSet>
       <directory>target/site/apidocs</directory>
-      <outputDirectory>docs/api</outputDirectory>
+      <outputDirectory>docs/d/api</outputDirectory>
       <excludes>
         <exclude>options</exclude>
         <exclude>packages</exclude>
@@ -221,26 +222,28 @@ under the License.
 
     <!-- docbooks -->
     <fileSet>
-      <directory>../uima-docbook-overview-and-setup/target/docbkx</directory>
+      <directory>../uima-docbook-overview-and-setup/target/site/</directory>
       <outputDirectory>docs</outputDirectory>
       <excludes><exclude>pdf/*.fo</exclude></excludes>
       <fileMode>644</fileMode>
       <directoryMode>755</directoryMode>        
     </fileSet>
     <fileSet>
-      <directory>../uima-docbook-references/target/docbkx</directory>
+      <directory>../uima-docbook-references/target/site</directory>
       <outputDirectory>docs</outputDirectory>
       <excludes><exclude>pdf/*.fo</exclude></excludes>
       <fileMode>644</fileMode>
       <directoryMode>755</directoryMode>        
-    </fileSet>    <fileSet>
-      <directory>../uima-docbook-tools/target/docbkx</directory>
+    </fileSet>    
+    <fileSet>
+      <directory>../uima-docbook-tools/target/site</directory>
       <outputDirectory>docs</outputDirectory>
       <excludes><exclude>pdf/*.fo</exclude></excludes>
       <fileMode>644</fileMode>
       <directoryMode>755</directoryMode>        
-    </fileSet>    <fileSet>
-      <directory>../uima-docbook-tutorial-and-users-guides/target/docbkx</directory>
+    </fileSet>    
+    <fileSet>
+      <directory>../uima-docbook-tutorial-and-users-guides/target/site</directory>
       <outputDirectory>docs</outputDirectory>
       <excludes><exclude>pdf/*.fo</exclude></excludes>
       <fileMode>644</fileMode>

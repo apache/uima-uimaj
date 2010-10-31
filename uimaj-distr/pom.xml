@@ -62,6 +62,7 @@
     <uimaScmRoot>uimaj</uimaScmRoot>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
     <assemblyFinalName>uimaj-${project.version}</assemblyFinalName>  
+    <jiraVersion>12315344</jiraVersion>
   </properties> 
   
   <!-- dependencies that go into the various builds via dependency-sets -->
@@ -150,7 +151,7 @@
         <executions>
           <execution>
             <id>javadocs-distr</id> <!-- name should match one in parent-pom --> 
-            <phase>package</phase>
+            <phase>prepare-package</phase>  <!-- must come before package which uses the results -->
             <!--phase>deploy</phase--> <!-- comment above and uncomment to disable javadocs, for testing/experimentation, with assembly:assembly-->
             <goals>
               <goal>javadoc</goal>
