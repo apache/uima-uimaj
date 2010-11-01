@@ -106,7 +106,6 @@
            to insert the version from properties -->
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
-        <version>2.4.3</version>  <!-- 2.4.0 fails -->
         <executions>
           <execution>
             <id>setVersions</id>
