@@ -57,7 +57,7 @@
   <properties>
     <uimaScmRoot>uimaj</uimaScmRoot>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
-    <uimaDependencyVersion>2.3.1</uimaDependencyVersion>
+    <uimaDependencyVersion>2.3.2-SNAPSHOT</uimaDependencyVersion>
   </properties>
 
 	<dependencies>

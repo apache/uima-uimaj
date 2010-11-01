@@ -59,7 +59,7 @@
     <uimaScmRoot>uimaj</uimaScmRoot>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
     <bookNameRoot>PearPackagingMavenPluginUserGuide</bookNameRoot>
-    <uimaDependencyVersion>2.3.1</uimaDependencyVersion>
+    <uimaDependencyVersion>2.3.2-SNAPSHOT</uimaDependencyVersion>
   </properties>
   
 
