@@ -29,7 +29,7 @@
   
 	<artifactId>uimaj-ep-jcasgen</artifactId>
 	<packaging>jar</packaging>
-  <version>2.3.2-SNAPSHOT</version>
+  <version>2.3.1-SNAPSHOT</version>
 	<name>UIMA Eclipse: ${project.artifactId}</name>
   <description>Provides a connection to the JCasGen tooling, for
     the Component Descriptor Editor</description>
@@ -58,7 +58,7 @@
   <properties>
     <uimaScmRoot>uimaj</uimaScmRoot>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
-    <uimaDependencyVersion>2.3.2-SNAPSHOT</uimaDependencyVersion>
+    <uimaDependencyVersion>2.3.1-SNAPSHOT</uimaDependencyVersion>
     <postNoticeText>${ibmNoticeText}</postNoticeText>
   </properties>
   
