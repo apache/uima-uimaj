@@ -180,13 +180,37 @@
           </execution>
         </executions>
       </plugin>
-  
+        
     </plugins>
   </build>     
   
   <!-- Use -N option to skip building submodule, for testing uimaj-distr -->
   <modules>
     <module>../aggregate-uimaj</module>
-  </modules>      
+  </modules>
+  
+  <profiles>
+    <profile>
+      <id>apache-release</id>
+      
+      <build>
+        <!-- Run jira report -->
+        <!-- depends on having -DjiraVersion set -->
+        <plugins>
+          <plugin>
+            <artifactId>maven-changes-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>jiraReport</id>
+                <configuration>
+                  <fixVersionIds>${jiraVersion}</fixVersionIds>
+                </configuration>
+              </execution>
+            </executions>  
+          </plugin>
+        </plugins>     
+      </build>
+    </profile>
+  </profiles>    
 
 </project>
