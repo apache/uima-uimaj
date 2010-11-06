@@ -28,7 +28,7 @@
   </parent>
   
   <artifactId>uimaj-ep-runtime</artifactId>
-  <version>2.3.1</version>
+  <version>2.3.2-SNAPSHOT</version>
   <packaging>jar</packaging>  <!-- can't be bundle because it doesn't handle property substitution -->
   <name>UIMA Eclipse: ${project.artifactId}</name>
   <description>Provides the core UIMA Framework to other Eclipse 
@@ -45,20 +45,20 @@
        element, and just changing the following two properties -->  
   <scm>
     <connection>
-      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-distr-2.3.1-RC2/uimaj-ep-runtime
+      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-ep-runtime
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-distr-2.3.1-RC2/uimaj-ep-runtime
+      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-ep-runtime
     </developerConnection>
     <url>
-      http://svn.apache.org/viewvc/uima/uimaj/tags/uimaj-distr-2.3.1-RC2/uimaj-ep-runtime
+      http://svn.apache.org/viewvc/uima/uimaj/trunk/uimaj-ep-runtime
     </url>
   </scm>
   
   <properties>
     <uimaScmRoot>uimaj</uimaScmRoot>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
-    <uimaDependenciesVersion>2.3.1</uimaDependenciesVersion>
+    <uimaDependenciesVersion>2.3.2-SNAPSHOT</uimaDependenciesVersion>
   </properties>
   
   <!-- These dependencies should just be all the jars that
