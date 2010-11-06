@@ -201,7 +201,7 @@
             <artifactId>maven-changes-plugin</artifactId>
             <executions>
               <execution>
-                <id>jiraReport</id>
+                <id>default-cli</id>
                 <configuration>
                   <fixVersionIds>${jiraVersion}</fixVersionIds>
                 </configuration>
