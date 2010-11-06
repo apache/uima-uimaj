@@ -28,7 +28,7 @@
   </parent>
   
 	<artifactId>uimaj-cpe</artifactId>
-	<version>2.3.2-SNAPSHOT</version>
+	<version>2.3.1-SNAPSHOT</version>
 	<name>UIMA Base: ${project.artifactId}: Collection Processing Engine</name>
   <description>The implementation of a simple scaleout capability, called
     the Collection Processing Engine.  New implementations may find 
@@ -58,7 +58,7 @@
   <properties>
     <uimaScmRoot>uimaj</uimaScmRoot>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
-    <uimaDependencyVersion>2.3.1</uimaDependencyVersion>
+    <uimaDependencyVersion>2.3.1-SNAPSHOT</uimaDependencyVersion>
     <postNoticeText>${ibmNoticeText}</postNoticeText>
   </properties>
 
