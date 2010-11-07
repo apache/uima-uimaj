@@ -243,7 +243,7 @@ under the License.
       <directoryMode>755</directoryMode>        
     </fileSet>    
     <fileSet>
-      <directory>../uima-docbook-tutorial-and-users-guides/target/site</directory>
+      <directory>../uima-docbook-tutorials-and-users-guides/target/site</directory>
       <outputDirectory>docs</outputDirectory>
       <excludes><exclude>pdf/*.fo</exclude></excludes>
       <fileMode>644</fileMode>
