@@ -61,6 +61,7 @@
     <uimaScmProject>${project.artifactId}</uimaScmProject>
     <assemblyFinalName>uimaj-${project.version}</assemblyFinalName>  
     <jiraVersion>12315344</jiraVersion>
+    <postNoticeText>${ibmNoticeText}</postNoticeText>    
   </properties> 
   
   <!-- dependencies that go into the various builds via dependency-sets -->
