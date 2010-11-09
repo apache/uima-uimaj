@@ -30,7 +30,7 @@
 	<groupId>org.apache.uima</groupId>
 	<artifactId>uimaj-test-util</artifactId>
 	<packaging>jar</packaging>
-	<version>2.3.1</version>
+	<version>2.3.2-SNAPSHOT</version>
 	<name>UIMA Base: ${project.artifactId}: JUnit utilities</name>
   <description>Utilities for testing UIMA</description>
   <url>${uimaWebsiteUrl}</url>
@@ -45,13 +45,13 @@
        element, and just changing the following two properties -->  
   <scm>
     <connection>
-      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-distr-2.3.1-RC3/jvinci
+      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/trunk/jvinci
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-distr-2.3.1-RC3/jvinci
+      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/trunk/jvinci
     </developerConnection>
     <url>
-      http://svn.apache.org/viewvc/uima/uimaj/tags/uimaj-distr-2.3.1-RC3/jvinci
+      http://svn.apache.org/viewvc/uima/uimaj/trunk/jvinci
     </url>
   </scm>
   

@@ -29,7 +29,7 @@
   
 	<artifactId>uimaj-adapter-vinci</artifactId>
 	<packaging>jar</packaging>
-	<version>2.3.1</version>
+	<version>2.3.2-SNAPSHOT</version>
 	<name>UIMA Base: ${project.artifactId}: Vinci Adapter</name>
   <description>Provides the capability to connect to a remote analysis
     engine, using the Vinci protocol</description>
@@ -45,13 +45,13 @@
        element, and just changing the following two properties -->  
   <scm>
     <connection>
-      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-distr-2.3.1-RC3/uimaj-adapter-vinci
+      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-adapter-vinci
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-distr-2.3.1-RC3/uimaj-adapter-vinci
+      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-adapter-vinci
     </developerConnection>
     <url>
-      http://svn.apache.org/viewvc/uima/uimaj/tags/uimaj-distr-2.3.1-RC3/uimaj-adapter-vinci
+      http://svn.apache.org/viewvc/uima/uimaj/trunk/uimaj-adapter-vinci
     </url>
   </scm>
   
