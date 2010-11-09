@@ -29,7 +29,7 @@ import javax.swing.ImageIcon;
  * Names of images and utility methods to get images.
  */
 public class Images {
-  public static final String BANNER = "/org/apache/uima/tools/images/UIMA_banner.png";
+  public static final String BANNER = "/org/apache/uima/tools/images/UIMA_banner2tlp.png";
 
   public static final String MICROSCOPE = "/org/apache/uima/tools/images/Micro_16.gif";
 
