@@ -29,7 +29,7 @@
   
 	<artifactId>uimaj-core</artifactId>
 	<packaging>jar</packaging>
-	<version>2.3.2-SNAPSHOT</version>
+	<version>2.3.1-SNAPSHOT</version>
 	<name>UIMA Base: ${project.artifactId}</name>
   <description>The core implementation of the UIMA Java Framework</description>
   <url>${uimaWebsiteUrl}</url>
@@ -57,7 +57,7 @@
   <properties>
     <uimaScmRoot>uimaj</uimaScmRoot>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
-    <uimaDependencyVersion>2.3.2-SNAPSHOT</uimaDependencyVersion>
+    <uimaDependencyVersion>2.3.1-SNAPSHOT</uimaDependencyVersion>
     <postNoticeText>${ibmNoticeText}</postNoticeText>
   </properties>
   
