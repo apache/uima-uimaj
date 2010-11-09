@@ -28,7 +28,7 @@
   </parent>
   
 	<artifactId>uimaj-cpe</artifactId>
-	<version>2.3.1-SNAPSHOT</version>
+	<version>2.3.1</version>
 	<name>UIMA Base: ${project.artifactId}: Collection Processing Engine</name>
   <description>The implementation of a simple scaleout capability, called
     the Collection Processing Engine.  New implementations may find 
@@ -45,20 +45,20 @@
        element, and just changing the following two properties -->  
   <scm>
     <connection>
-      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-cpe
+      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-distr-2.3.1-RC3/uimaj-cpe
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-cpe
+      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-distr-2.3.1-RC3/uimaj-cpe
     </developerConnection>
     <url>
-      http://svn.apache.org/viewvc/uima/uimaj/trunk/uimaj-cpe
+      http://svn.apache.org/viewvc/uima/uimaj/tags/uimaj-distr-2.3.1-RC3/uimaj-cpe
     </url>
   </scm>
   
   <properties>
     <uimaScmRoot>uimaj</uimaScmRoot>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
-    <uimaDependencyVersion>2.3.1-SNAPSHOT</uimaDependencyVersion>
+    <uimaDependencyVersion>2.3.1</uimaDependencyVersion>
     <postNoticeText>${ibmNoticeText}</postNoticeText>
   </properties>
 

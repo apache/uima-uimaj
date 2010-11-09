@@ -28,7 +28,7 @@
   </parent>
   
 	<artifactId>uimaj-ep-cas-editor</artifactId>
-  <version>2.3.1-SNAPSHOT</version>
+  <version>2.3.1</version>
 	<packaging>jar</packaging>
 	<name>UIMA Eclipse: ${project.artifactId}</name>
   <description>Allows editing the contents of a saved CAS</description>
@@ -44,20 +44,20 @@
        element, and just changing the following two properties -->  
   <scm>
     <connection>
-      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-ep-cas-editor
+      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-distr-2.3.1-RC3/uimaj-ep-cas-editor
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-ep-cas-editor
+      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-distr-2.3.1-RC3/uimaj-ep-cas-editor
     </developerConnection>
     <url>
-      http://svn.apache.org/viewvc/uima/uimaj/trunk/uimaj-ep-cas-editor
+      http://svn.apache.org/viewvc/uima/uimaj/tags/uimaj-distr-2.3.1-RC3/uimaj-ep-cas-editor
     </url>
   </scm>
   
   <properties>
     <uimaScmRoot>uimaj</uimaScmRoot>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
-    <uimaDependencyVersion>2.3.1-SNAPSHOT</uimaDependencyVersion>
+    <uimaDependencyVersion>2.3.1</uimaDependencyVersion>
   </properties>
   		
 	<dependencies>
