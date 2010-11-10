@@ -27,7 +27,7 @@ goto EXIT
 :RUN
 setlocal
 
-set UIMA_CVDMAN=-Duima.tools.cvd.manpath=%UIMA_HOME%/docs/html
+set UIMA_CVDMAN=-Duima.tools.cvd.manpath=%UIMA_HOME%\docs\d
 @call "%UIMA_HOME%\bin\runUimaClass.bat" org.apache.uima.tools.cvd.CVD %*
 :EXIT
 
