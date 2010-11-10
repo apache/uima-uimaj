@@ -29,7 +29,7 @@
   
 	<artifactId>uima-docbook-tutorials-and-users-guides</artifactId>
 	<packaging>pom</packaging>
-	<version>2.3.2-SNAPSHOT</version>
+	<version>2.3.1-SNAPSHOT</version>
 	<name>Apache UIMA SDK Documentation - tutorials and user's guides</name>	
   <url>${uimaWebsiteUrl}</url>
  
