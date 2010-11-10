@@ -18,7 +18,16 @@
  */
 
 package org.apache.uima.impl;
-
+/**
+ * The source for this class is located in 
+ *   src/main/versionJava/org/apache/uima/impl/UimaVersion.java
+ *   
+ * It is processed at build time to create a java source, by substituting
+ * values from the build into some fields.
+ *   The Java source is put into target/generated-sources/releaseVersion
+ *     in the package org.apache.uima.impl
+ *
+ */
 public class UimaVersion {
   /**
    * @see org.apache.uima.UIMAFramework#_getMajorVersion()
@@ -40,5 +49,10 @@ public class UimaVersion {
   public static short getBuildRevision() {
     return ${parsedVersion.incrementalVersion}; // build revision
   }
+  
+  public static String getBuildYear() {
+    return "${buildYear}";
+  }
+  
 
 }
