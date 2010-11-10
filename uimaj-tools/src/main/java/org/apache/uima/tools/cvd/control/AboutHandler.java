@@ -27,6 +27,8 @@ import javax.swing.Icon;
 import javax.swing.JOptionPane;
 
 import org.apache.uima.UIMAFramework;
+import org.apache.uima.impl.UIMAFramework_impl;
+import org.apache.uima.impl.UimaVersion;
 import org.apache.uima.tools.cvd.MainFrame;
 import org.apache.uima.tools.images.Images;
 
@@ -49,8 +51,8 @@ public class AboutHandler implements ActionListener {
       versionInfo = "Running Java " + javaVersion + " from " + javaVendor;
     }
     String msg = "CVD (CAS Visual Debugger)\n" + "Apache UIMA Version "
-        + UIMAFramework.getVersionString() + "-incubating\n"
-        + "Copyright 2006, 2007 The Apache Software Foundation\n" + versionInfo + "\n";
+        + UIMAFramework.getVersionString() 
+        + " Copyright 2006, " + UimaVersion.getBuildYear() + " The Apache Software Foundation\n" + versionInfo + "\n";
     Icon icon = Images.getImageIcon(Images.UIMA_LOGO_SMALL);
     if (icon == null) {
       JOptionPane.showMessageDialog(this.main, msg, "About CVD",

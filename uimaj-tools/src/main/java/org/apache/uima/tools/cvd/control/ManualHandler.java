@@ -73,7 +73,7 @@ public class ManualHandler implements ActionListener {
 
   public void actionPerformed(ActionEvent event) {
     try {
-      String manFileName = "tools/tools.html";
+      String manFileName = "tools.html";
       JFrame manFrame = new JFrame("CVD Manual");
       JEditorPane editorPane = new JEditorPane();
       editorPane.setEditable(false);
@@ -88,6 +88,9 @@ public class ManualHandler implements ActionListener {
             manURL = manFile.toURL();
           } else {
             String msg = String.format("Can't find manual in directory: %s", manpath);
+            if (!manDir.exists()) {
+              msg += String.format("\n Directory doesn't exist");
+            }
             JOptionPane.showMessageDialog(this.main, msg, "Error loading manual",
                 JOptionPane.ERROR_MESSAGE);
             return;
