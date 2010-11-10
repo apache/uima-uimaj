@@ -29,7 +29,7 @@
 
 	<artifactId>jVinci</artifactId>
 	<packaging>jar</packaging>
-	<version>2.3.1-SNAPSHOT</version>
+	<version>2.3.1</version>
 	<name>UIMA Base: ${project.artifactId}: Vinci Transport Library</name>
   <description>This is a non-standard protocol for higher efficiency than
     SOAP, used by the base UIMA Collection processing manager for supporting
@@ -47,13 +47,13 @@
        element, and just changing the following two properties -->  
   <scm>
     <connection>
-      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/trunk/jVinci
+      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-distr-2.3.1-rc4/jVinci
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/trunk/jVinci
+      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-distr-2.3.1-rc4/jVinci
     </developerConnection>
     <url>
-      http://svn.apache.org/viewvc/uima/uimaj/trunk/jVinci
+      http://svn.apache.org/viewvc/uima/uimaj/tags/uimaj-distr-2.3.1-rc4/jVinci
     </url>
   </scm>
   

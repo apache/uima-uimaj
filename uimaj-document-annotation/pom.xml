@@ -29,7 +29,7 @@
   
 	<artifactId>uimaj-document-annotation</artifactId>
 	<packaging>jar</packaging>
-	<version>2.3.1-SNAPSHOT</version>
+	<version>2.3.1</version>
 	<name>UIMA Base: ${project.artifactId}</name>
   <description>A common, but not built-in, type in the type system,
     specifying the language of a document</description>
@@ -45,13 +45,13 @@
        element, and just changing the following two properties -->  
   <scm>
     <connection>
-      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-document-annotation
+      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-distr-2.3.1-rc4/uimaj-document-annotation
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-document-annotation
+      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-distr-2.3.1-rc4/uimaj-document-annotation
     </developerConnection>
     <url>
-      http://svn.apache.org/viewvc/uima/uimaj/trunk/uimaj-document-annotation
+      http://svn.apache.org/viewvc/uima/uimaj/tags/uimaj-distr-2.3.1-rc4/uimaj-document-annotation
     </url>
   </scm>
   

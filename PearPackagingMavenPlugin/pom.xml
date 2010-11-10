@@ -28,7 +28,7 @@
   </parent>
   
 	<artifactId>PearPackagingMavenPlugin</artifactId>
-  <version>2.3.1-SNAPSHOT</version>
+  <version>2.3.1</version>
 	<packaging>maven-plugin</packaging>
 	<name>UIMA Maven Plugin ${project.artifactId}</name>
   <description>This is a maven plugin that produces a pear artifact.</description>
@@ -45,13 +45,13 @@
        element, and just changing the following two properties -->  
   <scm>
     <connection>
-      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/trunk/PearPackagingMavenPlugin
+      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-distr-2.3.1-rc4/PearPackagingMavenPlugin
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/trunk/PearPackagingMavenPlugin
+      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-distr-2.3.1-rc4/PearPackagingMavenPlugin
     </developerConnection>
     <url>
-      http://svn.apache.org/viewvc/uima/uimaj/trunk/PearPackagingMavenPlugin
+      http://svn.apache.org/viewvc/uima/uimaj/tags/uimaj-distr-2.3.1-rc4/PearPackagingMavenPlugin
     </url>
   </scm>
   

@@ -28,7 +28,7 @@
   </parent>
   
 	<artifactId>uimaj-ep-pear-packager</artifactId>
-  <version>2.3.1-SNAPSHOT</version>
+  <version>2.3.1</version>
 	<packaging>jar</packaging>
 	<name>UIMA Eclipse: ${project.artifactId}</name>
   <description>Provides an Eclipse Wizard to construct
@@ -45,13 +45,13 @@
        element, and just changing the following two properties -->  
   <scm>
     <connection>
-      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-ep-pear-packager
+      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-distr-2.3.1-rc4/uimaj-ep-pear-packager
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-ep-pear-packager
+      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-distr-2.3.1-rc4/uimaj-ep-pear-packager
     </developerConnection>
     <url>
-      http://svn.apache.org/viewvc/uima/uimaj/trunk/uimaj-ep-pear-packager
+      http://svn.apache.org/viewvc/uima/uimaj/tags/uimaj-distr-2.3.1-rc4/uimaj-ep-pear-packager
     </url>
   </scm>
   
