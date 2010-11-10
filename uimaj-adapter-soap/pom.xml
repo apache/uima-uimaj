@@ -29,7 +29,7 @@
 
 	<artifactId>uimaj-adapter-soap</artifactId>
 	<packaging>jar</packaging>
-	<version>2.3.1</version>
+	<version>2.3.2-SNAPSHOT</version>
 	<name>UIMA Base: ${project.artifactId}: SOAP Adapter</name>
   <description>Provides the capability to connect to a remote
     component, using the SOAP protocol</description>
@@ -45,20 +45,20 @@
        element, and just changing the following two properties -->  
   <scm>
     <connection>
-      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-distr-2.3.1-rc4/uimaj-adapter-soap
+      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-adapter-soap
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-distr-2.3.1-rc4/uimaj-adapter-soap
+      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-adapter-soap
     </developerConnection>
     <url>
-      http://svn.apache.org/viewvc/uima/uimaj/tags/uimaj-distr-2.3.1-rc4/uimaj-adapter-soap
+      http://svn.apache.org/viewvc/uima/uimaj/trunk/uimaj-adapter-soap
     </url>
   </scm>
   
   <properties>
     <uimaScmRoot>uimaj</uimaScmRoot>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
-    <uimaDependencyVersion>2.3.1</uimaDependencyVersion>
+    <uimaDependencyVersion>2.3.2-SNAPSHOT</uimaDependencyVersion>
     <postNoticeText>${ibmNoticeText}</postNoticeText>
   </properties>
   

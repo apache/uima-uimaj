@@ -29,7 +29,7 @@
   
 	<artifactId>uima-docbook-tools</artifactId>
 	<packaging>pom</packaging>
-	<version>2.3.1</version>
+	<version>2.3.2-SNAPSHOT</version>
 	<name>Apache UIMA SDK Documentation - tools</name>	
   <url>${uimaWebsiteUrl}</url>
  
@@ -43,13 +43,13 @@
        element, and just changing the following two properties -->  
   <scm>
     <connection>
-      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-distr-2.3.1-rc4/uima-docbook-tools
+      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/trunk/uima-docbook-tools
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-distr-2.3.1-rc4/uima-docbook-tools
+      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/trunk/uima-docbook-tools
     </developerConnection>
     <url>
-      http://svn.apache.org/viewvc/uima/uimaj/tags/uimaj-distr-2.3.1-rc4/uima-docbook-tools
+      http://svn.apache.org/viewvc/uima/uimaj/trunk/uima-docbook-tools
     </url>
   </scm>
   
