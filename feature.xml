@@ -20,7 +20,7 @@
 <feature
       id="org.apache.uima.tools"
       label="UIMA tools (includes Runtime)"
-      version="2.3.1.SNAPSHOT"
+      version="${parsedVersion.osgiVersion}"
       provider-name="Apache Software Foundation">
 
    <description url="http://uima.apache.org">
@@ -53,13 +53,12 @@ under the License.
    </license>
 
    <url>
-      <!-- note: following url must end in slash per tip #1 at http://www.eclipse.org/articles/Article-Update/keeping-up-to-date.html -->
       <discovery label="UIMA Eclipse Plugins update site" url="http://www.apache.org/dist/uima/eclipse-update-site/"/>
    </url>
 
    <includes
          id="org.apache.uima.runtime"
-         version="2.3.1.SNAPSHOT"
+         version="${parsedVersion.osgiVersion}"
          name="UIMA Runtime plugin feature"/>
 
    <requires>
@@ -80,46 +79,46 @@ under the License.
       <import plugin="org.eclipse.jdt.launching"/>
       <import plugin="org.eclipse.search"/>
       <import plugin="org.eclipse.emf.codegen"/>
-      <import plugin="org.eclipse.emf.common"/>  <!-- eclipse 3.5 complains about unresolved dependencies -->
+      <import plugin="org.eclipse.emf.common"/>
       <import plugin="org.eclipse.ui.views"/>
       <import plugin="org.eclipse.jdt"/>
-	    <import plugin="org.eclipse.text"/>
-	    <import plugin="org.eclipse.ui.workbench"/>
+      <import plugin="org.eclipse.text"/>
+      <import plugin="org.eclipse.ui.workbench"/>
    </requires>
 
    <plugin
          id="org.apache.uima.debug"
          download-size="0"
          install-size="0"
-         version="2.3.1.SNAPSHOT"
+         version="${parsedVersion.osgiVersion}"
          unpack="false"/>
 
    <plugin
          id="org.apache.uima.desceditor"
          download-size="0"
          install-size="0"
-         version="2.3.1.SNAPSHOT"
+         version="${parsedVersion.osgiVersion}"
          unpack="false"/>
 
    <plugin
          id="org.apache.uima.jcas.jcasgenp"
          download-size="0"
          install-size="0"
-         version="2.3.1.SNAPSHOT"
+         version="${parsedVersion.osgiVersion}"
          unpack="false"/>
 
    <plugin
          id="org.apache.uima.pear"
          download-size="0"
          install-size="0"
-         version="2.3.1.SNAPSHOT"
+         version="${parsedVersion.osgiVersion}"
          unpack="false"/>
-		 
+
    <plugin
          id="org.apache.uima.caseditor"
          download-size="0"
          install-size="0"
-         version="2.3.1.SNAPSHOT"
+         version="${parsedVersion.osgiVersion}"
          unpack="false"/>
 
 </feature>
