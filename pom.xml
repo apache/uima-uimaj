@@ -29,7 +29,7 @@
   
 	<artifactId>uimaj-eclipse-update-site</artifactId>
 	<packaging>pom</packaging>
-	<version>3</version>
+	<version>4-SNAPSHOT</version>
   
 	<name>UIMA Eclipse: ${project.artifactId}</name>
   <description>The UIMA Eclipse update site</description>
@@ -45,13 +45,13 @@
        element, and just changing the following two properties -->  
   <scm>
     <connection>
-      scm:svn:http://svn.apache.org/repos/asf/uima/${uimaScmRoot}/tags/uimaj-eclipse-update-site-3-rc1
+      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-eclipse-update-site
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/${uimaScmRoot}/tags/uimaj-eclipse-update-site-3-rc1
+      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-eclipse-update-site
     </developerConnection>
     <url>
-      http://svn.apache.org/viewvc/uima/${uimaScmRoot}/tags/uimaj-eclipse-update-site-3-rc1
+      http://svn.apache.org/viewvc/uima/uimaj/trunk/uimaj-eclipse-update-site
     </url>
   </scm>
   
