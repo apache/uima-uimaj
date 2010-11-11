@@ -17,20 +17,19 @@
    specific language governing permissions and limitations
    under the License.    
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
   
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>parent-pom</artifactId>
     <version>1</version>
-    <relativePath/>
+    <relativePath />
   </parent>
   
 	<artifactId>uimaj-eclipse-update-site</artifactId>
 	<packaging>pom</packaging>
-	<version>3-SNAPSHOT</version>
+	<version>3</version>
   
 	<name>UIMA Eclipse: ${project.artifactId}</name>
   <description>The UIMA Eclipse update site</description>
@@ -46,13 +45,13 @@
        element, and just changing the following two properties -->  
   <scm>
     <connection>
-      scm:svn:http://svn.apache.org/repos/asf/uima/${uimaScmRoot}/trunk/${uimaScmProject}
+      scm:svn:http://svn.apache.org/repos/asf/uima/${uimaScmRoot}/tags/uimaj-eclipse-update-site-3-rc1
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/${uimaScmRoot}/trunk/${uimaScmProject}
+      scm:svn:https://svn.apache.org/repos/asf/uima/${uimaScmRoot}/tags/uimaj-eclipse-update-site-3-rc1
     </developerConnection>
     <url>
-      http://svn.apache.org/viewvc/uima/${uimaScmRoot}/trunk/${uimaScmProject}
+      http://svn.apache.org/viewvc/uima/${uimaScmRoot}/tags/uimaj-eclipse-update-site-3-rc1
     </url>
   </scm>
   
@@ -214,46 +213,41 @@
                 <!-- if the property uima-maven-build-eclipse-home is set, use it, otherwise don't -->
                 <condition property="eclipse.home" value="${uima-maven-build-eclipse-home}">
                   <not>
-                    <equals arg1="${uima-maven-build-eclipse-home}" arg2="$${uima-maven-build-eclipse-home}"/>
+                    <equals arg1="${uima-maven-build-eclipse-home}" arg2="$${uima-maven-build-eclipse-home}" />
                   </not>
                 </condition>
                 
-                <property environment="envVar"/>
+                <property environment="envVar" />
                 <condition property="eclipse.home" value="${envVar.ECLIPSE_HOME}">
-                  <isset property="envVar.ECLIPSE_HOME"/>
+                  <isset property="envVar.ECLIPSE_HOME" />
                 </condition>
                 
-                <fail unless="eclipse.home"
-                  message="********** Please set up and use an ant property eclipse.home set to an Eclipse installation at level 3.3 or later, e.g. c:/eclipses/3.3/eclipse"/>
+                <fail unless="eclipse.home" message="********** Please set up and use an ant property eclipse.home set to an Eclipse installation at level 3.3 or later, e.g. c:/eclipses/3.3/eclipse" />
                                                       
-                <java jar="${eclipse.home}/plugins/org.eclipse.equinox.launcher.jar" 
-                      fork="true" failonerror="true" maxmemory="256m">
-                   <arg line="-application org.eclipse.update.core.siteOptimizer"/>
-                   <arg line="-jarProcessor -verbose -processAll -pack"/>
-                   <arg line="-outputDir ${eclipseUpdateSite}/plugins"/>
-                   <arg line="${project.build.directory}/work/plugins"/>
+                <java jar="${eclipse.home}/plugins/org.eclipse.equinox.launcher.jar" fork="true" failonerror="true" maxmemory="256m">
+                   <arg line="-application org.eclipse.update.core.siteOptimizer" />
+                   <arg line="-jarProcessor -verbose -processAll -pack" />
+                   <arg line="-outputDir ${eclipseUpdateSite}/plugins" />
+                   <arg line="${project.build.directory}/work/plugins" />
                 </java>
                 
                 <copy todir="${eclipseUpdateSite}/web" preservelastmodified="true">
-                  <fileset dir="web"/>
+                  <fileset dir="web" />
                 </copy>
-                <copy todir="${eclipseUpdateSite}" 
-                      file="index.html" preservelastmodified="true"/>
-                <copy todir="${eclipseUpdateSite}" 
-                      file="site.xml" preservelastmodified="true"/>
+                <copy todir="${eclipseUpdateSite}" file="index.html" preservelastmodified="true" />
+                <copy todir="${eclipseUpdateSite}" file="site.xml" preservelastmodified="true" />
 
                 <!-- copy all feature jars preserved in SVN in the features/ folder to the target -->
-                <copy todir="${eclipseUpdateSite}/features" preservelastmodified="true" >
-                  <fileset dir="features"/>
+                <copy todir="${eclipseUpdateSite}/features" preservelastmodified="true">
+                  <fileset dir="features" />
                 </copy>
 
                 
                 <!-- see http://wiki.eclipse.org/Update_Site_Optimization -->
-                <java jar="${eclipse.home}/plugins/org.eclipse.equinox.launcher.jar" 
-                      fork="true" failonerror="true" maxmemory="256m">
-                  <arg line="-application org.eclipse.update.core.siteOptimizer"/>
-                  <arg line="-digestBuilder -digestOutputDir=target/eclipse-update-site"/>
-                  <arg line="-siteXML=target/eclipse-update-site/site.xml"/>
+                <java jar="${eclipse.home}/plugins/org.eclipse.equinox.launcher.jar" fork="true" failonerror="true" maxmemory="256m">
+                  <arg line="-application org.eclipse.update.core.siteOptimizer" />
+                  <arg line="-digestBuilder -digestOutputDir=target/eclipse-update-site" />
+                  <arg line="-siteXML=target/eclipse-update-site/site.xml" />
                 </java>
               </target>
             </configuration>
