@@ -29,7 +29,7 @@
   
   <artifactId>uimaj-eclipse-feature-tools</artifactId>
   <packaging>jar</packaging>
-  <version>2.3.1</version>
+  <version>2.3.2-SNAPSHOT</version>
   <name>UIMA Eclipse: ${project.artifactId}</name>
   <description>UIMA Eclipse Plugin Feature for base uima tooling</description>  
   <url>${uimaWebsiteUrl}</url>
@@ -44,13 +44,13 @@
        element, and just changing the following two properties -->  
   <scm>
     <connection>
-      scm:svn:http://svn.apache.org/repos/asf/uima/${uimaScmRoot}/tags/uimaj-eclipse-feature-tools-2.3.1-rc1
+      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-eclipse-feature-tools
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/${uimaScmRoot}/tags/uimaj-eclipse-feature-tools-2.3.1-rc1
+      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-eclipse-feature-tools
     </developerConnection>
     <url>
-      http://svn.apache.org/viewvc/uima/${uimaScmRoot}/tags/uimaj-eclipse-feature-tools-2.3.1-rc1
+      http://svn.apache.org/viewvc/uima/uimaj/trunk/uimaj-eclipse-feature-tools
     </url>
   </scm>
   
