@@ -24,13 +24,14 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>parent-pom</artifactId>
-    <version>1-SNAPSHOT</version>
+    <version>1</version>
     <relativePath/>
   </parent>
   
 	<artifactId>uimaj-eclipse-update-site</artifactId>
 	<packaging>pom</packaging>
-	<version>2.3.1-SNAPSHOT</version>
+	<version>3-SNAPSHOT</version>
+  
 	<name>UIMA Eclipse: ${project.artifactId}</name>
   <description>The UIMA Eclipse update site</description>
   <url>${uimaWebsiteUrl}</url>
@@ -59,80 +60,14 @@
     <uimaScmRoot>uimaj</uimaScmRoot>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
     <eclipseUpdateSite>${project.build.directory}/eclipse-update-site</eclipseUpdateSite>
+    <item-maven-release-version>2.3.1</item-maven-release-version>
+    <item-eclipse-release-version>2.3.1</item-eclipse-release-version>
   </properties>
 
   <!-- don't use dependency mechanism - use dependency:copy
        because we need to get multiple versions for the
        eclipese-feature-projects, and Maven
-       wants to resolve multiple versions into one.
-	<dependencies>	
-		<dependency>
-			<groupId>org.apache.uima</groupId>
-			<artifactId>uimaj-ep-cas-editor</artifactId>
-			<version>${uimaj-release-eclipse-version}</version>
-		</dependency>
-
-    <dependency>
-      <groupId>org.apache.uima</groupId>
-      <artifactId>uimaj-ep-configurator</artifactId>
-      <version>${uimaj-release-eclipse-version}</version>
-    </dependency>
-    
-    <dependency>
-      <groupId>org.apache.uima</groupId>
-      <artifactId>uimaj-ep-debug</artifactId>
-      <version>${uimaj-release-eclipse-version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.uima</groupId>
-      <artifactId>uimaj-ep-deployeditor</artifactId>
-      <version>${uimaj-release-eclipse-version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.uima</groupId>
-      <artifactId>uimaj-ep-jcasgen</artifactId>
-      <version>${uimaj-release-eclipse-version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.uima</groupId>
-      <artifactId>uimaj-ep-pear-packager</artifactId>
-      <version>${uimaj-release-eclipse-version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.uima</groupId>
-      <artifactId>uimaj-ep-runtime</artifactId>
-      <version>${uimaj-release-eclipse-version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.uima</groupId>
-      <artifactId>uimaj-ep-runtime-deployeditor</artifactId>
-      <version>${uimaj-release-eclipse-version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.uima</groupId>
-      <artifactId>uimaj-eclipse-feature-deployeditor</artifactId>
-      <version>${uimaj-release-eclipse-version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.uima</groupId>
-      <artifactId>uimaj-eclipse-feature-runtime</artifactId>
-      <version>${uimaj-release-eclipse-version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.uima</groupId>
-      <artifactId>uimaj-eclipse-feature-tools</artifactId>
-      <version>${uimaj-release-eclipse-version}</version>
-    </dependency>
-
-	</dependencies-->
+       wants to resolve multiple versions into one. -->
 
 	<build>
     <!-- normally, the resources spec copies into 
@@ -179,51 +114,54 @@
                 <artifactItem>
                   <groupId>org.apache.uima</groupId>
                   <artifactId>uimaj-ep-cas-editor</artifactId>
-                  <version>2.3.1-SNAPSHOT</version>
-                  <destFileName>org.apache.uima.caseditor_2.3.1.SNAPSHOT.jar</destFileName>
+                  <version>${item-maven-release-version}</version>
+                  <destFileName>org.apache.uima.caseditor_${item-eclipse-release-version}.jar</destFileName>
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.apache.uima</groupId>
                   <artifactId>uimaj-ep-configurator</artifactId>
-                  <version>2.3.1-SNAPSHOT</version>
-                  <destFileName>org.apache.uima.desceditor_2.3.1.SNAPSHOT.jar</destFileName>
+                  <version>${item-maven-release-version}</version>
+                  <destFileName>org.apache.uima.desceditor_${item-eclipse-release-version}.jar</destFileName>
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.apache.uima</groupId>
                   <artifactId>uimaj-ep-debug</artifactId>
-                  <version>2.3.1-SNAPSHOT</version>
-                  <destFileName>org.apache.uima.debug_2.3.1.SNAPSHOT.jar</destFileName>
+                  <version>${item-maven-release-version}</version>
+                  <destFileName>org.apache.uima.debug_${item-eclipse-release-version}.jar</destFileName>
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.apache.uima</groupId>
                   <artifactId>uimaj-ep-jcasgen</artifactId>
-                  <version>2.3.1-SNAPSHOT</version>
-                  <destFileName>org.apache.uima.jcas.jcasgenp_2.3.1.SNAPSHOT.jar</destFileName>
+                  <version>${item-maven-release-version}</version>
+                  <destFileName>org.apache.uima.jcas.jcasgenp_${item-eclipse-release-version}.jar</destFileName>
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.apache.uima</groupId>
                   <artifactId>uimaj-ep-pear-packager</artifactId>
-                  <version>2.3.1-SNAPSHOT</version>
-                  <destFileName>org.apache.uima.pear_2.3.1.SNAPSHOT.jar</destFileName>
+                  <version>${item-maven-release-version}</version>
+                  <destFileName>org.apache.uima.pear_${item-eclipse-release-version}.jar</destFileName>
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.apache.uima</groupId>
                   <artifactId>uimaj-ep-runtime</artifactId>
-                  <version>2.3.1-SNAPSHOT</version>
-                  <destFileName>org.apache.uima.runtime_2.3.1.SNAPSHOT.jar</destFileName>
+                  <version>${item-maven-release-version}</version>
+                  <destFileName>org.apache.uima.runtime_${item-eclipse-release-version}.jar</destFileName>
                 </artifactItem>
+                <!-- 
                 <artifactItem>
                   <groupId>org.apache.uima</groupId>
                   <artifactId>uimaj-ep-deployeditor</artifactId>
-                  <version>2.3.1-SNAPSHOT</version>
-                  <destFileName>org.apache.uima.deployeditor_2.3.1.SNAPSHOT.jar</destFileName>
+                  <version>2.3.0.incubating</version>
+                  <destFileName>org.apache.uima.deployeditor_2.3.0.incubating.jar</destFileName>
                 </artifactItem>
+                 
                 <artifactItem>
                   <groupId>org.apache.uima</groupId>
                   <artifactId>uimaj-ep-runtime-deployeditor</artifactId>
-                  <version>2.3.1-SNAPSHOT</version>
-                  <destFileName>org.apache.uima.runtime.fragments.deployeditor_2.3.1.SNAPSHOT.jar</destFileName>
-                </artifactItem>              
+                  <version>2.3.0.incubating</version>
+                  <destFileName>org.apache.uima.runtime.fragments.deployeditor_2.3.0.incubating.jar</destFileName>
+                </artifactItem>
+                 -->  
               </artifactItems>
               <outputDirectory>${project.build.directory}/work/plugins</outputDirectory>
             </configuration>
@@ -234,26 +172,30 @@
               <goal>copy</goal>
             </goals>
             <configuration>
-              <!-- include here all of the features -->
+              <!-- include here all of the new / updated 
+                   features being included in this build.
+                   Merge in older features on the target update site -->
               <artifactItems>
                 <artifactItem>
                   <groupId>org.apache.uima</groupId>
                   <artifactId>uimaj-eclipse-feature-runtime</artifactId>
-                  <version>${project.version}</version>
-                  <destFileName>org.apache.uima.runtime_${parsedVersion.osgiVersion}.jar</destFileName>
+                  <version>${item-maven-release-version}</version>
+                  <destFileName>org.apache.uima.runtime_${item-eclipse-release-version}.jar</destFileName>
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.apache.uima</groupId>
                   <artifactId>uimaj-eclipse-feature-tools</artifactId>
-                  <version>${project.version}</version>
-                  <destFileName>org.apache.uima.tools_${parsedVersion.osgiVersion}.jar</destFileName>
+                  <version>${item-maven-release-version}</version>
+                  <destFileName>org.apache.uima.tools_${item-eclipse-release-version}.jar</destFileName>
                 </artifactItem>
+                <!--
                 <artifactItem>
                   <groupId>org.apache.uima</groupId>
                   <artifactId>uimaj-eclipse-feature-deployeditor</artifactId>
-                  <version>${project.version}</version>
+                  <version>2.3.0</version>
                   <destFileName>org.apache.uima.as.deployeditor_${parsedVersion.osgiVersion}.jar</destFileName>
                 </artifactItem>
+                  -->
               </artifactItems>
               <outputDirectory>${project.build.directory}/eclipse-update-site/features</outputDirectory>
             </configuration>
@@ -263,13 +205,13 @@
       
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
-        <version>1.3</version>
         <executions>
           <execution>
             <id>BuildUpdateSite</id>
             <phase>package</phase> 
             <configuration>
-              <tasks>
+              <target>
+                <!-- if the property uima-maven-build-eclipse-home is set, use it, otherwise don't -->
                 <condition property="eclipse.home" value="${uima-maven-build-eclipse-home}">
                   <not>
                     <equals arg1="${uima-maven-build-eclipse-home}" arg2="$${uima-maven-build-eclipse-home}"/>
@@ -283,33 +225,7 @@
                 
                 <fail unless="eclipse.home"
                   message="********** Please set up and use an ant property eclipse.home set to an Eclipse installation at level 3.3 or later, e.g. c:/eclipses/3.3/eclipse"/>
-  
-                <!--
-                <copy todir="plugins" preservelastmodified="true"
-                      file="../uimaj-ep-cas-editor/target/org.apache.uima.caseditor_${uimaj-release-eclipse-version}.jar"/>
-                <copy todir="plugins" preservelastmodified="true"
-                      file="../uimaj-ep-configurator/target/org.apache.uima.desceditor_${uimaj-release-eclipse-version}.jar"/>
-                <copy todir="plugins" preservelastmodified="true"
-                      file="../uimaj-ep-debug/target/org.apache.uima.debug_${uimaj-release-eclipse-version}.jar"/>
-                <copy todir="plugins" preservelastmodified="true"
-                      file="../uimaj-ep-deployeditor/target/org.apache.uima.deployeditor_${uimaj-release-eclipse-version}.jar"/>
-                <copy todir="plugins" preservelastmodified="true"
-                      file="../uimaj-ep-jcasgen/target/org.apache.uima.jcas.jcasgenp_${uimaj-release-eclipse-version}.jar"/>
-                <copy todir="plugins" preservelastmodified="true"
-                      file="../uimaj-ep-pear-packager/target/org.apache.uima.pear_${uimaj-release-eclipse-version}.jar"/>
-                <copy todir="plugins" preservelastmodified="true"
-                      file="../uimaj-ep-runtime/target/org.apache.uima.runtime_${uimaj-release-eclipse-version}.jar"/>
-                <copy todir="plugins" preservelastmodified="true"
-                      file="../uimaj-ep-runtime-deployeditor/target/org.apache.uima.runtime.fragments.deployeditor_${uimaj-release-eclipse-version}.jar"/>
-
-                <copy todir="features" preservelastmodified="true"
-                      file="../uimaj-eclipse-feature-deployeditor/target/org.apache.uima.as.deployeditor_${uimaj-release-eclipse-version}.jar"/>
-                <copy todir="features" preservelastmodified="true"
-                      file="../uimaj-eclipse-feature-runtime/target/org.apache.uima.runtime_${uimaj-release-eclipse-version}.jar"/>
-                <copy todir="features" preservelastmodified="true"
-                      file="../uimaj-eclipse-feature-tools/target/org.apache.uima.tools_${uimaj-release-eclipse-version}.jar"/>
-                -->
-                                                    
+                                                      
                 <java jar="${eclipse.home}/plugins/org.eclipse.equinox.launcher.jar" 
                       fork="true" failonerror="true" maxmemory="256m">
                    <arg line="-application org.eclipse.update.core.siteOptimizer"/>
@@ -339,7 +255,7 @@
                   <arg line="-digestBuilder -digestOutputDir=target/eclipse-update-site"/>
                   <arg line="-siteXML=target/eclipse-update-site/site.xml"/>
                 </java>
-              </tasks>
+              </target>
             </configuration>
             <goals>
               <goal>run</goal>
@@ -349,17 +265,5 @@
       </plugin>
 		</plugins>
 	</build>
-  <modules>
-    <!--module>../uimaj-ep-cas-editor</module>
-    <module>../uimaj-ep-configurator</module>
-    <module>../uimaj-ep-debug</module>
-    <module>../uimaj-ep-deployeditor</module>
-    <module>../uimaj-ep-jcasgen</module>
-    <module>../uimaj-ep-pear-packager</module>
-    <module>../uimaj-ep-runtime</module>
-    <module>../uimaj-ep-runtime-deployeditor</module-->
-    <!--module>../uimaj-eclipse-feature-deployeditor</module-->
-    <module>../uimaj-eclipse-feature-runtime</module>
-    <module>../uimaj-eclipse-feature-tools</module>
-  </modules>
+
 </project>

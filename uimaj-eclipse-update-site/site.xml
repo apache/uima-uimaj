@@ -19,21 +19,23 @@
 -->
 <site pack200="true"
       digestURL="/"
-      mirrorsURL="http://incubator.apache.org/uima/mirrors-support/uima-eclipse-update--xml.cgi">
-   <description url="http://www.apache.org/dist/incubator/uima/eclipse-update-site">
+      mirrorsURL="http://uima.apache.org/mirrors-support/uima-eclipse-update--xml.cgi">
+   <description url="http://www.apache.org/dist/uima/eclipse-update-site">
       Eclipse update site for Apache UIMA.
    </description>
    
    <!-- keep old features listed here - to permit the update site to provide the older features -->
-   <feature url="features/org.apache.uima.tools_2.3.1.SNAPSHOT.jar" id="org.apache.uima.tools" version="2.3.1.SNAPSHOT">
+   <feature url="features/org.apache.uima.tools_2.3.1.jar" id="org.apache.uima.tools" version="2.3.1">
       <category name="uima-tooling-and-runtimes"/>
    </feature>
-   <feature url="features/org.apache.uima.runtime_2.3.1.SNAPSHOT.jar" id="org.apache.uima.runtime" version="2.3.1.SNAPSHOT">
+   <feature url="features/org.apache.uima.runtime_2.3.1.jar" id="org.apache.uima.runtime" version="2.3.1">
       <category name="uima-tooling-and-runtimes"/>
    </feature>
-   <feature url="features/org.apache.uima.as.deployeditor_2.3.1.SNAPSHOT.jar" id="org.apache.uima.as.deployeditor" version="2.3.1.SNAPSHOT">
+   <!-- next feature not yet ready
+   <feature url="features/org.apache.uima.as.deployeditor_2.3.1.jar" id="org.apache.uima.as.deployeditor" version="2.3.1">
       <category name="uima-as-tooling"/>
    </feature>
+   -->
    
    
    <feature url="features/org.apache.uima.tools_2.3.0.incubating.jar" id="org.apache.uima.tools" version="2.3.0.incubating">
