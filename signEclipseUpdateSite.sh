@@ -20,29 +20,28 @@
 # Bourne shell syntax, this should hopefully run on pretty much anything.
 
 usage() {
-  echo "Usage: cd to the uimaj-eclipse-update-site project, then ./signEclipseUpdateSite.sh <passphrase> (e.g., signEclipseUpdateSite.sh \"Your passphrase\")"
+  echo "Usage: cd to the uimaj-eclipse-update-site project, then ./signEclipseUpdateSite.sh"
 }
 
-if [ -n "$1" ]
+if [ "$1" = "-help" ]
 then
-  passphrase=$1
-else
   usage
   exit 1
 fi
 
 # Create PGP signatures
-for i in target/eclipse-update-site/features/org.apache.uima.*.incubating.jar; do gpg --passphrase "$passphrase" --output $i.asc --detach-sig --armor $i; done
-for i in  target/eclipse-update-site/plugins/org.apache.uima.*.incubating.jar;  do gpg --passphrase "$passphrase" --output $i.asc --detach-sig --armor $i; done
-gpg --passphrase "$passphrase" --output target/eclipse-update-site/digest.zip.asc --detach-sig --armor target/eclipse-update-site/digest.zip
+for i in target/eclipse-update-site/features/org.apache.uima.*.jar; do gpg --output $i.asc --detach-sig --armor $i; done
+for i in  target/eclipse-update-site/plugins/org.apache.uima.*.jar;  do gpg --output $i.asc --detach-sig --armor $i; done
+for i in  target/eclipse-update-site/plugins/org.apache.uima.*.pack.gz;  do gpg --output $i.asc --detach-sig --armor $i; done
+gpg --output target/eclipse-update-site/digest.zip.asc --detach-sig --armor target/eclipse-update-site/digest.zip
 
 
 # Create MD5 checksums
-for i in target/eclipse-update-site/features/org.apache.uima.*.incubating.jar; do md5sum --binary $i > $i.md5; done
-for i in  target/eclipse-update-site/plugins/org.apache.uima.*.incubating.jar;  do md5sum --binary $i > $i.md5; done
+for i in target/eclipse-update-site/features/org.apache.uima.*.jar; do md5sum --binary $i > $i.md5; done
+for i in  target/eclipse-update-site/plugins/org.apache.uima.*.jar;  do md5sum --binary $i > $i.md5; done
 md5sum --binary target/eclipse-update-site/digest.zip > target/eclipse-update-site/digest.zip.md5
 
 # Create SHA1 checksums
-for i in target/eclipse-update-site/features/org.apache.uima.*.incubating.jar; do sha1sum --binary $i > $i.sha1; done
-for i in  target/eclipse-update-site/plugins/org.apache.uima.*.incubating.jar;  do sha1sum --binary $i > $i.sha1; done
+for i in target/eclipse-update-site/features/org.apache.uima.*.jar; do sha1sum --binary $i > $i.sha1; done
+for i in  target/eclipse-update-site/plugins/org.apache.uima.*.jar;  do sha1sum --binary $i > $i.sha1; done
 sha1sum --binary target/eclipse-update-site/digest.zip > target/eclipse-update-site/digest.zip.sha1
