@@ -117,14 +117,6 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
           return false;
      }
 
-     // validate the AnalysisEngineDescription and throw a
-     // ResourceInitializationException if there is a problem
-     try {
-       mDescription.validate(getResourceManager());
-     } catch (ResourceConfigurationException e) {
-       throw new ResourceInitializationException(e);
-     }
-
     // Aggregate TAF AEs mostly act like primitives (because the flow
     // control is all handled
     // in TAF). But, we do need to make sure that this AE's type system,
@@ -134,16 +126,27 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
     // components' descriptors
     if (mDescription instanceof AnalysisEngineDescription  && 
     		 (! ((AnalysisEngineDescription)mDescription).isPrimitive())) { 
+
+      // resolve deep type system imports
+      try {
+        mDescription.validate(getResourceManager());
+      } catch (ResourceConfigurationException e) {
+        throw new ResourceInitializationException(e);
+      }
+
       mergeDelegateAnalysisEngineMetaData();      
     }
 
     ProcessingResourceMetaData md = (ProcessingResourceMetaData) mDescription.getMetaData();
-    // resolve imports
-    try {
-      md.resolveImports();
-    } catch (InvalidXMLException e1) {
-      throw new ResourceInitializationException(e1);
-    }
+    // resolve imports for primitives
+    if (mDescription instanceof AnalysisEngineDescription  && 
+            ((AnalysisEngineDescription)mDescription).isPrimitive()) { 
+        try {
+          md.resolveImports();
+        } catch (InvalidXMLException e1) {
+        throw new ResourceInitializationException(e1);
+      }
+       }
 
     super.initialize(aSpecifier, aAdditionalParams);
 
