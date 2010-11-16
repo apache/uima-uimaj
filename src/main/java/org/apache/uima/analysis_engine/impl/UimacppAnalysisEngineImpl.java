@@ -117,6 +117,14 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
           return false;
      }
 
+     // validate the AnalysisEngineDescription and throw a
+     // ResourceInitializationException if there is a problem
+     try {
+       mDescription.validate(getResourceManager());
+     } catch (ResourceConfigurationException e) {
+       throw new ResourceInitializationException(e);
+     }
+
     // Aggregate TAF AEs mostly act like primitives (because the flow
     // control is all handled
     // in TAF). But, we do need to make sure that this AE's type system,
@@ -154,14 +162,6 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
       mdCopy.setUUID(UUIDGenerator.generate());
     }
     setMetaData(mdCopy);
-
-    // validate the AnalysisEngineDescription and throw a
-    // ResourceInitializationException if there is a problem
-    try {
-      mDescription.validate(getResourceManager());
-    } catch (ResourceConfigurationException e) {
-      throw new ResourceInitializationException(e);
-    }
 
     // Read parameters from the aAdditionalParams map.
     if (aAdditionalParams == null) {
