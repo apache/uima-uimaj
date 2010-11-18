@@ -49,7 +49,7 @@ goto exit1
 @set ARGS=-data "%ECLIPSE_TEMP_WORKSPACE%" -noupdate -nosplash -consolelog -application org.apache.uima.jcas.jcasgenp.JCasGen %firstarg% %secondarg%
 @set logger=-Djava.util.logging.config.file=%UIMA_HOME%/config\FileConsoleLogger.properties
 @rmdir /S /Q "%ECLIPSE_TEMP_WORKSPACE%"
-if "%JAVA_HOME%"=="" (set UIMA_JAVA_CALL=java) else (set UIMA_JAVA_CALL=%JAVA_HOME%\bin\java)
+if "%JAVA_HOME%"=="" (set UIMA_JAVA_CALL=java) else (set "UIMA_JAVA_CALL=%JAVA_HOME%\bin\java")
 "%UIMA_JAVA_CALL%" "%logger%" -cp "%ECLIPSE_HOME%\startup.jar" "-Duima.datapath=%UIMA_DATAPATH%" org.eclipse.core.launcher.Main %ARGS%
 @rem "%ECLIPSE_HOME%\eclipse.exe" -data %ECLIPSE_TEMP_WORKSPACE% -noupdate -nosplash -consolelog -application org.apache.uima.jcas.jcasgenp.JCasGen %firstarg% %secondarg%
 @:exit1

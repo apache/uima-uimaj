@@ -24,15 +24,15 @@
 @setlocal
 
 @rem Set ActiveMQ home
-@if "%ACTIVEMQ_HOME%"=="" (set ACTIVEMQ_HOME=%UIMA_HOME%\apache-activemq-4.1.1)
+@if "%ACTIVEMQ_HOME%"=="" (set "ACTIVEMQ_HOME=%UIMA_HOME%\apache-activemq-4.1.1")
 
-@if "%JAVA_HOME%"=="" (set UIMA_JAVA_CALL=java) else (set UIMA_JAVA_CALL=%JAVA_HOME%\bin\java)
+@if "%JAVA_HOME%"=="" (set UIMA_JAVA_CALL=java) else (set "UIMA_JAVA_CALL=%JAVA_HOME%\bin\java")
 
 @rem Set jar search order of: UIMA_CLASSPATH uima activemq(optional) tomcat(optional) CLASSPATH
 @set UIMA_CLASSPATH=%UIMA_CLASSPATH%;%UIMA_HOME%\examples\resources
 @set UIMA_CLASSPATH=%UIMA_CLASSPATH%;%UIMA_HOME%\lib
-@if EXIST "%ACTIVEMQ_HOME%" (set UIMA_CLASSPATH=%UIMA_CLASSPATH%;%ACTIVEMQ_HOME%;%ACTIVEMQ_HOME%\lib;%ACTIVEMQ_HOME%\lib\optional)
-@if NOT "%CATALINA_HOME%"=="" (set UIMA_CLASSPATH=%UIMA_CLASSPATH%;%CATALINA_HOME%\webapps\axis\WEB-INF\lib;%CATALINA_HOME%\webapps\axis\WEB-INF\classes)
+@if EXIST "%ACTIVEMQ_HOME%" (set "UIMA_CLASSPATH=%UIMA_CLASSPATH%;%ACTIVEMQ_HOME%;%ACTIVEMQ_HOME%\lib;%ACTIVEMQ_HOME%\lib\optional")
+@if NOT "%CATALINA_HOME%"=="" (set "UIMA_CLASSPATH=%UIMA_CLASSPATH%;%CATALINA_HOME%\webapps\axis\WEB-INF\lib;%CATALINA_HOME%\webapps\axis\WEB-INF\classes")
 @set UIMA_CLASSPATH=%UIMA_CLASSPATH%;%CLASSPATH%
 
 @rem Set path to support running C++ annotators
@@ -50,7 +50,7 @@
 @if "%UIMA_JVM_OPTS%"=="" set UIMA_JVM_OPTS=-Xms128M -Xmx800M
 
 @rem Check if Uima AS is installed, and if so set the default log4j configuration file
-@if EXIST "%UIMA_HOME%"\as_config (set LOG4J_CONFIG_FILE=-Dlog4j.configuration=file:%UIMA_HOME%\as_config\uimaAsLog4j.properties) else (set LOG4J_CONFIG_FILE=-DNoOp)
+@if EXIST "%UIMA_HOME%"\as_config (set "LOG4J_CONFIG_FILE=-Dlog4j.configuration=file:%UIMA_HOME%\as_config\uimaAsLog4j.properties") else (set LOG4J_CONFIG_FILE=-DNoOp)
    
 @if "%UIMA_CVDMAN%"=="" set UIMA_CVDMAN=-Duima.tools.cvd.manpath.notset
 

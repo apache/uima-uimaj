@@ -27,7 +27,7 @@ goto EXIT
 :RUN
 @echo on
 setlocal
-if "%JAVA_HOME%"=="" (set UIMA_JAVA_CALL=java) else (set UIMA_JAVA_CALL=%JAVA_HOME%\bin\java)
+if "%JAVA_HOME%"=="" (set UIMA_JAVA_CALL=java) else (set "UIMA_JAVA_CALL=%JAVA_HOME%\bin\java")
 "%UIMA_JAVA_CALL%" -cp "%UIMA_HOME%/lib/uima-core.jar" org.apache.uima.internal.util.ReplaceStringInFiles "%UIMA_HOME%/examples" .xml "C:/Program Files/apache-uima" "%UIMA_HOME%" -ignorecase
 "%UIMA_JAVA_CALL%" -cp "%UIMA_HOME%/lib/uima-core.jar" org.apache.uima.internal.util.ReplaceStringInFiles "%UIMA_HOME%/examples" .classpath "C:/Program Files/apache-uima" "%UIMA_HOME%" -ignorecase
 "%UIMA_JAVA_CALL%" -cp "%UIMA_HOME%/lib/uima-core.jar" org.apache.uima.internal.util.ReplaceStringInFiles "%UIMA_HOME%/examples" .launch "C:/Program Files/apache-uima" "%UIMA_HOME%" -ignorecase
