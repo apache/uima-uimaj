@@ -22,13 +22,13 @@
 
   <parent>
     <groupId>org.apache.uima</groupId>
-    <artifactId>parent-pom</artifactId>
-    <version>1</version>
-    <relativePath />
+    <artifactId>uimaj-parent</artifactId>
+    <version>2.3.1-SNAPSHOT</version>
+    <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
 
   <artifactId>uimaj-ep-configurator</artifactId>
-  <version>2.3.2-SNAPSHOT</version>
+  <version>2.3.1-SNAPSHOT</version>
   <packaging>jar</packaging>  
   <name>UIMA Eclipse: ${project.artifactId}: Descriptor Editor</name>
   <description>A frame-based editor for most of the UIMA XML 
@@ -56,9 +56,7 @@
   </scm>
   
   <properties>
-    <uimaScmRoot>uimaj</uimaScmRoot>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
-    <uimaDependenciesVersion>2.3.1</uimaDependenciesVersion>
     <postNoticeText>${ibmNoticeText}</postNoticeText>
   </properties>
   
@@ -81,14 +79,14 @@
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-core</artifactId>
-      <version>${uimaDependenciesVersion}</version>
+      <version>${uimaDependencyVersion}</version>
       <scope>compile</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-tools</artifactId>
-      <version>${uimaDependenciesVersion}</version>
+      <version>${uimaDependencyVersion}</version>
       <!-- must be provided to get pax:eclipse to work, but
            must be compile to get eclipse:eclipse to include
            them as Referenced Libraries -->
@@ -98,7 +96,7 @@
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-ep-jcasgen</artifactId>
-      <version>${uimaDependenciesVersion}</version>
+      <version>${uimaDependencyVersion}</version>
       <scope>provided</scope>
     </dependency>
 

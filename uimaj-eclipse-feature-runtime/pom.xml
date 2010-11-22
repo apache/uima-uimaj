@@ -22,14 +22,14 @@
 
   <parent>
     <groupId>org.apache.uima</groupId>
-    <artifactId>parent-pom</artifactId>
-    <version>1</version>
-    <relativePath />
+    <artifactId>uimaj-parent</artifactId>
+    <version>2.3.1-SNAPSHOT</version>
+    <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
     
   <artifactId>uimaj-eclipse-feature-runtime</artifactId>
   <packaging>jar</packaging>
-  <version>2.3.2-SNAPSHOT</version>
+  <version>2.3.1-SNAPSHOT</version>
   <name>UIMA Eclipse: ${project.artifactId}</name>
   <description>UIMA Eclipse Plugin Feature that
     has the base UIMA runtime, referred to by other plugins that
@@ -57,7 +57,6 @@
   </scm>
   
   <properties>
-    <uimaScmRoot>uimaj</uimaScmRoot>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
   </properties>
 
