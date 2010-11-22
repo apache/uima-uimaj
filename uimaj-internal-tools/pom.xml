@@ -58,9 +58,8 @@
   </scm>
   
   <properties>
-    <uimaScmRoot>uimaj</uimaScmRoot>
+    <uimaScmRoot>uimaj</uimaScmRoot>  <!-- keep this here, project doesn't inherit from uimaj parent -->
     <uimaScmProject>${project.artifactId}</uimaScmProject>
-    <uimaDependencyVersion>2.3.1-SNAPSHOT</uimaDependencyVersion>
   </properties>
   
 	<build>
