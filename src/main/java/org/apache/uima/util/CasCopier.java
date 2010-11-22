@@ -18,6 +18,7 @@
  */
 package org.apache.uima.util;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -59,6 +60,12 @@ public class CasCopier {
   private Feature mDestSofaFeature;
 
   private Map<FeatureStructure, FeatureStructure> mFsMap = new HashMap<FeatureStructure, FeatureStructure>();
+  
+  /**
+   * feature structures whose slots need copying are put on this list, together with their source
+   * List is operated as a stack, from the end, for efficiency
+   */
+  private ArrayList<FeatureStructure> fsToDo = new ArrayList<FeatureStructure>();
 
   /**
    * Creates a new CasCopier that can be used to copy FeatureStructures from one CAS to another.
@@ -160,6 +167,30 @@ public class CasCopier {
     }
   }
 
+  /**
+   * For long lists, and other structures, the straight-forward impl with recursion can
+   * nest too deep, causing a Java failure - out of stack space.
+   * 
+   * This is a non-recursive impl, making use of an aux object: featureStructuresWithSlotsToSet to
+   * hold copied FSs whose slots need to be scanned and set with values.
+   * 
+   * The main loop dequeues one element, and copies the features.
+   * 
+   * The copying of a FS copies the FS without setting the slots; instead it queues the
+   * copied FS together with its source instance on featureStructuresWithSlotsToSet 
+   * for later processing.
+   * 
+   */
+  
+  public FeatureStructure copyFs(FeatureStructure aFS) {
+    FeatureStructure copy = copyFsInner(aFS);  // doesn't copy the slot values, but enqueues them
+    while (!fsToDo.isEmpty()) {
+      FeatureStructure copyToFillSlots = fsToDo.remove(fsToDo.size()-1);
+      FeatureStructure srcToFillSlots = fsToDo.remove(fsToDo.size()-1);
+      copyFeatures(srcToFillSlots, copyToFillSlots);   
+    }
+    return copy;
+  }
 
   /**
    * Copies an FS from the source CAS to the destination CAS. Also copies any referenced FS, except
@@ -169,7 +200,7 @@ public class CasCopier {
    *          the FS to copy. Must be contained within the source CAS.
    * @return the copy of <code>aFS</code> in the target CAS.
    */
-  public FeatureStructure copyFs(FeatureStructure aFS) {
+  public FeatureStructure copyFsInner(FeatureStructure aFS) {
     //FS must be in the source CAS
     assert ((CASImpl)aFS.getCAS()).getBaseCAS() == ((CASImpl)mSrcCas).getBaseCAS();
 
@@ -232,10 +263,11 @@ public class CasCopier {
     // add to map so we don't try to copy this more than once
     mFsMap.put(aFS, destFs);
 
-    copyFeatures(aFS, destFs);
+    fsToDo.add(aFS);  // order important
+    fsToDo.add(destFs);
     return destFs;
   }
-
+  
   /**
    * Copy feature values from one FS to another. For reference-valued features, this does a deep
    * copy.
@@ -266,13 +298,20 @@ public class CasCopier {
       // copy primitive values using their string representation
       // TODO: could be optimized but this code would be very messy if we have to
       // enumerate all possible primitive types. Maybe LowLevel CAS API could help?
+      String srcRangeName = srcFeat.getRange().getName();
+      if (srcRangeName.equals(CAS.TYPE_NAME_STRING)) {
+        aDestFS.setStringValue(destFeat, aSrcFS.getStringValue(srcFeat));
+      } else
+      if (srcRangeName.equals(CAS.TYPE_NAME_INTEGER)) {
+        aDestFS.setIntValue(destFeat, aSrcFS.getIntValue(srcFeat));
+      } else
       if (srcFeat.getRange().isPrimitive()) {
         aDestFS.setFeatureValueFromString(destFeat, aSrcFS.getFeatureValueAsString(srcFeat));
       } else {
-        // recursive copy
+        // recursive copy no longer done recursively, to avoid blowing the stack
         FeatureStructure refFS = aSrcFS.getFeatureValue(srcFeat);
         if (refFS != null) {
-          FeatureStructure copyRefFs = copyFs(refFS);
+          FeatureStructure copyRefFs = copyFsInner(refFS);
           aDestFS.setFeatureValue(destFeat, copyRefFs);
         }
       }
@@ -372,7 +411,7 @@ public class CasCopier {
       for (int i = 0; i < len; i++) {
         FeatureStructure srcElem = arrayFs.get(i);
         if (srcElem != null) {
-          FeatureStructure copyElem = copyFs(arrayFs.get(i));
+          FeatureStructure copyElem = copyFsInner(arrayFs.get(i));
           destFS.set(i, copyElem);
         }
       }
