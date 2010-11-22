@@ -122,7 +122,7 @@ public class XMLSerializer {
     } else if (mWriter != null) {
       return new StreamResult(mWriter); 
     } else {
-      return new StreamResult();
+      return null;
     }
   }
 
@@ -150,7 +150,10 @@ public class XMLSerializer {
     }
     //re-create the Result object when properties change.  This fixes bug UIMA-1859 where setting the XML version was
     //not reflected in the output.
-    mHandler.setResult(createSaxResultObject());
+    Result result = createSaxResultObject();
+    if (result != null) {
+      mHandler.setResult(result);
+    }
   }  
   
   static class CharacterValidatingContentHandler implements ContentHandler {
