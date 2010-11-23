@@ -131,4 +131,84 @@
     <uimaDependencyVersion>${project.version}</uimaDependencyVersion>
   </properties>
 
+  <profiles>
+    <!-- ********************************** -->
+    <!-- *   Docbook Processing           * -->
+    <!-- ********************************** -->
+
+    <!-- Skip docbook processing unless
+         the leaf child project has a docbook directory -->  
+    <profile>
+      <id>process-docbook</id>
+      <activation>
+        <file><exists>src/docbook</exists></file>
+      </activation>
+  
+      <build>
+        <plugins>
+          <!-- use the dependency:unpack goal to get the shared resource
+               that has the docbook-shared directory 
+               Unpack into spot relative to project - because
+               these are referred to in docbook sources using
+               relative references
+               
+               also unpack next to docbook-olink in
+               repository location for olink info, because
+               the site.xml files use relative location to
+               get at the uima entities -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+              <execution>
+                <!-- use the dependency:unpack goal to get the shared resource
+                     that has the docbook-shared directory 
+                     Unpack into spot relative to project - because
+                     these are referred to in docbook sources using
+                     relative references -->
+                <id>copyDocbookInfo</id>
+                <phase>prepare-package</phase>
+                <goals><goal>unpack</goal></goals>
+                <configuration>
+                  <overWriteIfNewer>true</overWriteIfNewer>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>org.apache.uima</groupId>
+                      <artifactId>uima-build-resources</artifactId>
+                      <version>1</version>
+                      <includes>docbook-shared/**</includes>
+                      <outputDirectory>${project.build.directory}</outputDirectory>
+                    </artifactItem>
+                  </artifactItems>
+                </configuration>
+              </execution>
+
+              <execution>
+                <!-- also unpack next to docbook-olink in
+                     repository location for olink info, because
+                     the site.xml files use relative location to
+                     get at the uima entities -->
+                <id>copyDocbookInfoNextToOlink</id>
+                <phase>prepare-package</phase>
+                <goals><goal>unpack</goal></goals>
+                <configuration>
+                  <overWriteIfNewer>true</overWriteIfNewer>
+                  <markersDirectory>${dolRepo}/dependency-maven-plugin-markers</markersDirectory>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>org.apache.uima</groupId>
+                      <artifactId>uima-build-resources</artifactId>
+                      <version>1</version>
+                      <includes>docbook-shared/**</includes>
+                      <outputDirectory>${dolRepo}</outputDirectory>
+                    </artifactItem>
+                  </artifactItems>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>    
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
