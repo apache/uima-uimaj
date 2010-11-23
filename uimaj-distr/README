@@ -5,16 +5,17 @@
 Building from the Source Distribution
 -------------------------------------
 
-We use Maven 3.0 for building; download this if needed, and set MAVEN_OPTS to -Xmx800m -XX:MaxPerSize-256m.
+We use Maven 3.0 for building; download this if needed, 
+and set the environment variable MAVEN_OPTS to -Xmx800m -XX:MaxPerSize-256m.
 
-Then build all the parts by going into the .../uimaj-distr directory, and issuing the command
+Then build everything by going into the .../uimaj directory, and issuing the command
    mvn clean install.
    
 Look for the result in the two artifacts: 
-   .../uimaj-distr/target/uimaj-distr-2.3.1-source-release.zip and
-   .../uimaj-distr/target/uimaj-2.3.1-bin.zip
-   .../uimaj-distr/target/uimaj-2.3.1-bin.tar.gz 
-   
+   ../uimaj-distr/target/uimaj-distr-2.3.1-source-release.zip and
+   ../uimaj-distr/target/uimaj-2.3.1-bin.zip and/or ../uimaj-distr/target/uimaj-2.3.1-bin.tar.gz 
+
+For more details, please see http://uima.apache.org/building-uima.html   
 
 What's New in 2.3.1
 ------------------- 
@@ -40,15 +41,16 @@ What's New in 2.3.1
   The Component Descriptor Editor (CDE) (an Eclipse tool) had potentially poor performance when
   editing aggregate descriptors that referenced many remote components.  The performance in this
   case has been greatly improved, using a caching technique and eliminating repetitive remote accesses.  
-  
+
+  A complete list of fixes is in issuesFixed/jira-report.hmtl.  
 
 Supported Platforms
 --------------------
 
-Apache UIMA requires Java level 1.5; it has been tested with Sun Java SDK v5.0 and v6.0.
+Apache UIMA requires Java level 1.5; it has been tested with Sun Java SDK v5.0 and v6.0, and IBM Java 6.0.
 Running the Eclipse plugin tooling for UIMA requires you start Eclipse using a Java 1.5 or later, as well.
-The supported platforms are: Windows, Linux, Solaris, AIX and Mac OS X.  Other platforms and Java (1.5+) implementations
-should work, but have not been significantly tested.
+The supported platforms are: Windows, Linux, Solaris, AIX and Mac OS X.  
+Other platforms and Java (1.5+) implementations should work, but have not been significantly tested.
 
 Many of the scripts in the /bin directory invoke Java. They use the value of the environment variable, JAVA_HOME, 
 to locate the Java to use; if it is not set, they invoke "java" expecting to find an appropriate Java in your PATH. 
