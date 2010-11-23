@@ -5,3 +5,4 @@ To build Apache UIMA Java SDK, run the command
 in this directory. This will build all the submodules including the binary distribution package.
 
 Apache Maven 3.0 or later is required to build this.
+For more details, please visit http://uima.apache.org/building-uima.html
