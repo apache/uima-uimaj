@@ -1127,6 +1127,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
           
           // check bounds, if out of text do nothing
           getSourceViewer().getTextWidget().setCaretOffset(newCaretOffset);
+          getSourceViewer().revealRange(newCaretOffset, 0);
         }
       }
     }
