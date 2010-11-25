@@ -111,11 +111,11 @@ final class BackgroundDrawingStrategy implements IDrawingStrategy {
 	    	if (zBegin < annotationEnd) {
 	    		  Rectangle selectionBounds = textWidget.getTextBounds(zBegin, annotationEnd -1);
 	    		  gc.fillRectangle(selectionBounds);
-	    	}
+	    	  }
         }
         else {
-  		  Rectangle selectionBounds = textWidget.getTextBounds(annotationBegin, annotationEnd -1);
-		  gc.fillRectangle(selectionBounds);
+  		    Rectangle selectionBounds = textWidget.getTextBounds(annotationBegin, annotationEnd -1);
+		      gc.fillRectangle(selectionBounds);
         }
         
         int start = offset;
