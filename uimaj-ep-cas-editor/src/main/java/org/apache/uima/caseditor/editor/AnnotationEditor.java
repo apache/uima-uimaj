@@ -1290,8 +1290,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
         public void widgetSelected(SelectionEvent e) {
           
           // Open a dialog to let the user choose a type system
-          WorkspaceResourceDialog resourceDialog = new WorkspaceResourceDialog();
-          IResource resource = resourceDialog.getWorkspaceResourceElement(Display.getCurrent().getActiveShell(),
+          IResource resource = WorkspaceResourceDialog.getWorkspaceResourceElement(Display.getCurrent().getActiveShell(),
                   ResourcesPlugin.getWorkspace().getRoot(),
                   "Select a Type System", "Please select a Type System:");
           
