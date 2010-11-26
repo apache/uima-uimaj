@@ -231,8 +231,7 @@ final class EditViewPage extends Page implements ISelectionListener {
         // otherwise return boolean number
         if (!featureValue.getFeature().getRange().getName().equals(
                 CAS.TYPE_NAME_BOOLEAN)) {
-          return featureValue.getFeatureStructure()
-            .getFeatureValueAsString(featureValue.getFeature());
+          return Primitives.getPrimitiv(featureValue.getFeatureStructure(), featureValue.getFeature()).toString();
         }
         else {
           // for booleans

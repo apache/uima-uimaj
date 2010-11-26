@@ -191,6 +191,9 @@ public enum Primitives {
       result = structure.getDoubleValue(feature);
     } else if (Primitives.STRING.isCompatible(feature)) {
       result = structure.getStringValue(feature);
+      
+      if (result == null)
+        result = "";
     } else {
       assert false;
 

@@ -24,6 +24,7 @@ import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.caseditor.editor.ArrayValue;
 import org.apache.uima.caseditor.editor.CasEditorError;
 import org.apache.uima.caseditor.editor.FeatureValue;
+import org.apache.uima.caseditor.editor.util.Primitives;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ViewerCell;
 
@@ -41,8 +42,7 @@ final class ValueColumnLabelProvider extends CellLabelProvider {
       FeatureValue featureValue = (FeatureValue) element;
 
       if (featureValue.getFeature().getRange().isPrimitive()) {
-        cell.setText(featureValue.getFeatureStructure().getFeatureValueAsString(
-                featureValue.getFeature()));
+        cell.setText(Primitives.getPrimitiv(featureValue.getFeatureStructure(), featureValue.getFeature()).toString());
       }
       else {
         FeatureStructure value = (FeatureStructure) featureValue.getValue();
