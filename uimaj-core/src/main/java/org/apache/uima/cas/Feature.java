@@ -34,14 +34,16 @@ package org.apache.uima.cas;
 public interface Feature extends Comparable<Feature> {
 
   /**
-   * Get the domain type for this feature.
+   * Get the domain type for this feature. The domain is the 
+   * type which defines this feature.
    * 
    * @return The domain type. This can not be <code>null</code>.
    */
   Type getDomain();
 
   /**
-   * Get the range type for this feature.
+   * Get the range type for this feature. The range defines
+   * the type of the feature value.
    * 
    * @return The range type. This can not be <code>null</code>.
    */
