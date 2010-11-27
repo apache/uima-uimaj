@@ -48,7 +48,16 @@ final class BoxDrawingStrategy implements IDrawingStrategy {
 
         gc.setForeground(color);
 
-        gc.drawRectangle(bounds.x, bounds.y, bounds.width, bounds.height);
+        int correctedHeight;
+        
+        if (bounds.height > 0) {
+          correctedHeight = bounds.height -1;
+        }
+        else {
+          correctedHeight = bounds.height;
+        }
+          
+        gc.drawRectangle(bounds.x, bounds.y, bounds.width, correctedHeight);
       } else {
         textWidget.redrawRange(offset, length, true);
       }
