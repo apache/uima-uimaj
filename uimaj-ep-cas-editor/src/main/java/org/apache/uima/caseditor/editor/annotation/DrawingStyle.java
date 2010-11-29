@@ -60,7 +60,9 @@ public enum DrawingStyle {
   /**
    * The bracket {@link IDrawingStrategy}.
    */
-  BRACKET(new BracketDrawingStrategy());
+  BRACKET(new BracketDrawingStrategy()),
+  
+  TAG(new TagDrawingStrategy());
 
   private final IDrawingStrategy strategy;
 
