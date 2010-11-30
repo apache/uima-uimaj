@@ -386,12 +386,21 @@ public class DefaultCasDocumentProvider extends
     }
   }
 
+  // TODO: Disk must be accessed for every changed annotation style
+  // add a second method which can take all changed styles
   @Override
   public void setAnnotationStyle(Object element, AnnotationStyle style) {
     INlpElement nlpElement = getNlpElement(element);
 
     if (nlpElement != null) {
       nlpElement.getNlpProject().getDotCorpus().setStyle(style);
+      
+      try {
+        nlpElement.getNlpProject().getDotCorpus().serialize();
+      } catch (CoreException e) {
+        CasEditorPlugin.log(e);
+      }
+      
     }
     else {
       DotCorpus dotCorpus = getStyle(element);
