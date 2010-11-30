@@ -56,8 +56,15 @@ final class BoxDrawingStrategy implements IDrawingStrategy {
         else {
           correctedHeight = bounds.height;
         }
-          
-        gc.drawRectangle(bounds.x, bounds.y, bounds.width, correctedHeight);
+        
+        int correctedWidth;
+        
+        if (bounds.width > 0)
+          correctedWidth = bounds.width -1;
+        else
+          correctedWidth = bounds.width;
+        
+        gc.drawRectangle(bounds.x, bounds.y, correctedWidth, correctedHeight);
       } else {
         textWidget.redrawRange(offset, length, true);
       }
