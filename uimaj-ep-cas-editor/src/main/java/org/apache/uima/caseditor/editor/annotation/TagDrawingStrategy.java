@@ -44,7 +44,18 @@ import org.eclipse.swt.graphics.Rectangle;
  */
 class TagDrawingStrategy implements IDrawingStrategy {
 
-  private String featureName = "pos";
+  /**
+   * The name of the feature to print.
+   */
+  private final String featureName;
+  
+  TagDrawingStrategy(String featureName) {
+    
+    if (featureName == null)
+      throw new IllegalArgumentException("featureName must not be null!");
+    
+    this.featureName = featureName;
+  }
   
   public void draw(Annotation annotation, GC gc, StyledText textWidget, int offset, int length,
           Color color) {
@@ -57,26 +68,32 @@ class TagDrawingStrategy implements IDrawingStrategy {
       if (feature != null && feature.getRange().isPrimitive()) {
         
         String featureValue = annotationFS.getFeatureValueAsString(feature);
-
-        if (gc != null && featureValue != null) {
-          Rectangle bounds = textWidget.getTextBounds(offset, offset + length - 1);
-
-          gc.setForeground(color);
-
-          Font currentFont = gc.getFont();
-          
-          Font tagFont = new Font(currentFont.getDevice(), currentFont.getFontData()[0].getName(),
-                  12, currentFont.getFontData()[0].getStyle());
-          gc.setFont(tagFont);
-          gc.drawString(featureValue, bounds.x, bounds.y +bounds.height, true);
-          gc.setFont(currentFont);
-          
-        } else {
-          textWidget.redrawRange(offset, length, true);
-        }
         
+        if (featureValue != null) {
+          Rectangle bounds = textWidget.getTextBounds(offset, offset + length - 1);
+  
+          if (gc != null && featureValue != null) {
+  
+            gc.setForeground(color);
+  
+            Font currentFont = gc.getFont();
+            
+            // TODO: Figure out if that is safe
+            Font tagFont = new Font(currentFont.getDevice(), currentFont.getFontData()[0].getName(),
+                    12, currentFont.getFontData()[0].getStyle());
+            gc.setFont(tagFont);
+            
+            // TODO: if string does not fit, still draw ?!
+            
+            gc.drawString(featureValue, bounds.x, bounds.y + bounds.height - 2, true);
+            gc.setFont(currentFont);
+            
+          } else {
+            // TODO: How to calculate redraw area ?!
+            textWidget.redraw(bounds.x, bounds.y + bounds.height -2, bounds.width, bounds.height, true);
+          }
+        }
       }
     }
   }
-
 }

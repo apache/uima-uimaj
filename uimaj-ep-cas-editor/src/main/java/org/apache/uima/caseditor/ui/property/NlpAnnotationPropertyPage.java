@@ -60,6 +60,10 @@ public class NlpAnnotationPropertyPage extends AnnotationPropertyPage {
   
   protected boolean saveChanges(Collection<AnnotationStyle> changedStyles) {
     
+    // If the property page is created for the project there is no
+    // Document Provider which can be used to access the dotCorpus file.
+    // Changes are directly written into the dot corpus element.
+    
     for (AnnotationStyle style : changedStyles) {
       mDotCorpusElement.setStyle(style);
     }

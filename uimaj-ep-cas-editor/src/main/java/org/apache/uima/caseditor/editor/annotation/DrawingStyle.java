@@ -19,68 +19,51 @@
 
 package org.apache.uima.caseditor.editor.annotation;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.uima.caseditor.editor.AnnotationStyle;
+import org.apache.uima.caseditor.editor.AnnotationStyle.Style;
 import org.eclipse.jface.text.source.AnnotationPainter.IDrawingStrategy;
 
 /**
- * An enumeration of all available {@link IDrawingStrategy}.
+ * A factory for drawing styles.
+ * 
+ *  @see AnnotationStyle.Style
  */
-public enum DrawingStyle {
+public class DrawingStyle {
 
-  /**
-   * The background color {@link IDrawingStrategy}.
-   */
-  BACKGROUND(new BackgroundDrawingStrategy()),
-
-  /**
-   * The text color {@link IDrawingStrategy}.
-   */
-  TEXT_COLOR(new TextColorDrawingStrategy()),
-
-  /**
-   * The token {@link IDrawingStrategy}.
-   */
-  TOKEN(new TokenDrawingStrategy()),
-
-  /**
-   * The squiggles {@link IDrawingStrategy}.
-   */
-  @SuppressWarnings("deprecation")
-  SQUIGGLES(new org.eclipse.jface.text.source.AnnotationPainter.SquigglesStrategy()),
-
-  /**
-   * The box {@link IDrawingStrategy}.
-   */
-  BOX(new BoxDrawingStrategy()),
-
-  /**
-   * The underline {@link IDrawingStrategy}.
-   */
-  UNDERLINE(new UnderlineDrawingStrategy()),
-
-  /**
-   * The bracket {@link IDrawingStrategy}.
-   */
-  BRACKET(new BracketDrawingStrategy()),
+  private static Map<AnnotationStyle.Style, IDrawingStrategy> statelessStyles =
+      new HashMap<AnnotationStyle.Style, IDrawingStrategy>();
   
-  TAG(new TagDrawingStrategy());
+  static {
+    statelessStyles.put(Style.BACKGROUND, new BackgroundDrawingStrategy());
+    statelessStyles.put(Style.TEXT_COLOR, new TextColorDrawingStrategy());
+    statelessStyles.put(Style.TOKEN, new TokenDrawingStrategy());
+    // deprecated since 3.4, but minimum version is 3.3
+    statelessStyles.put(Style.SQUIGGLES, 
+            new org.eclipse.jface.text.source.AnnotationPainter.SquigglesStrategy());
+    statelessStyles.put(Style.BOX, new BoxDrawingStrategy());
+    statelessStyles.put(Style.UNDERLINE, new UnderlineDrawingStrategy());
+    statelessStyles.put(Style.BRACKET, new BracketDrawingStrategy());
+  }
 
-  private final IDrawingStrategy strategy;
-
-  /**
-   * Initializes the current instance.
-   *
-   * @param strategy
-   */
-  private DrawingStyle(IDrawingStrategy strategy) {
-    this.strategy = strategy;
+  private DrawingStyle() {
   }
 
   /**
    * Retrieves the {@link IDrawingStrategy}.
    *
-   * @return the {@link IDrawingStrategy}.
+   * @return the {@link IDrawingStrategy} or null if does not exist.
    */
-  public IDrawingStrategy getStrategy() {
+  public static IDrawingStrategy createStrategy(AnnotationStyle style) {
+    
+    IDrawingStrategy strategy = statelessStyles.get(style.getStyle());
+    
+    if (strategy == null && Style.TAG.equals(style.getStyle()) && style.getConfiguration() != null) {
+      strategy = new TagDrawingStrategy(style.getConfiguration());
+    }
+    
     return strategy;
   }
 }

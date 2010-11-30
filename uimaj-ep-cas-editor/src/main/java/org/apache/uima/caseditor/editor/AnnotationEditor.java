@@ -72,6 +72,7 @@ import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.IAnnotationModelExtension;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewer;
+import org.eclipse.jface.text.source.AnnotationPainter.IDrawingStrategy;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -604,7 +605,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     mPainter = new AnnotationPainter(sourceViewer, new AnnotationAccess());
 
     sourceViewer.addPainter(mPainter);
-
+    
     return sourceViewer;
   }
 
@@ -940,19 +941,36 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
    * it not shown
    */
   private void showAnnotationType(Type type, boolean isVisible) {
+    AnnotationStyle style = getDocumentProvider().getAnnotationStyle(getEditorInput(), type);
+    
     if (isVisible) {
-      AnnotationStyle style = getDocumentProvider().getAnnotationStyle(getEditorInput(), type);
-      mPainter.addDrawingStrategy(type.getName(),
-              DrawingStyle.valueOf(style.getStyle().name()).getStrategy());
-      mPainter.addAnnotationType(type.getName(), type.getName());
-      java.awt.Color color = style.getColor();
-      mPainter.setAnnotationTypeColor(type.getName(), new Color(null, color.getRed(),
-              color.getGreen(), color.getBlue()));
+      
+      IDrawingStrategy strategy = DrawingStyle.createStrategy(style);
+      
+      // It might not be possible to create the drawing strategy trough
+      // configuration errors, in this case the drawing strategy will be ignored
+      if (strategy != null) {
+        
+        if (style.getStyle().equals(AnnotationStyle.Style.TAG)) {
+          getSourceViewer().getTextWidget().setLineSpacing(12);
+        }
+        
+        mPainter.addDrawingStrategy(type.getName(), strategy);
+        mPainter.addAnnotationType(type.getName(), type.getName());
+        java.awt.Color color = style.getColor();
+        mPainter.setAnnotationTypeColor(type.getName(), new Color(null, color.getRed(),
+                color.getGreen(), color.getBlue()));
+      }
+      
       shownAnnotationTypes.add(type);
     }
     else {
       mPainter.removeAnnotationType(type.getName());
       shownAnnotationTypes.remove(type);
+      
+      if (style.getStyle().equals(AnnotationStyle.Style.TAG)) {
+        getSourceViewer().getTextWidget().setLineSpacing(0);
+      }
     }
   }
 
@@ -962,7 +980,8 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   public void syncAnnotationTypes() {
 
     mPainter.removeAllAnnotationTypes();
-
+    getSourceViewer().getTextWidget().setLineSpacing(0);
+    
     for (Type displayType : mShowAnnotationsMenu.getSelectedTypes()) {
       showAnnotationType(displayType, true);
     }

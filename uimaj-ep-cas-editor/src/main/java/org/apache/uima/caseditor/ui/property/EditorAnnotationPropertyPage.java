@@ -50,6 +50,8 @@ public class EditorAnnotationPropertyPage extends AnnotationPropertyPage {
   @Override
   protected boolean saveChanges(Collection<AnnotationStyle> changedStyles) {
     
+    // TODO: Add method to change all styles at once, instead of writing
+    // the dotCorpus file for changed style
     for (AnnotationStyle style : changedStyles) {
       getEditor().getDocumentProvider().setAnnotationStyle(
               getEditor().getEditorInput(), style);

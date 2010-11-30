@@ -65,7 +65,9 @@ public final class AnnotationStyle {
     /**
      * The bracket style.
      */
-    BRACKET
+    BRACKET,
+    
+    TAG
   }
 
   /**
@@ -88,6 +90,8 @@ public final class AnnotationStyle {
 
   private final int layer;
 
+  private final String configuration;
+  
   /**
    * Initialize a new instance.
    *
@@ -99,8 +103,10 @@ public final class AnnotationStyle {
    *          annotation color
    *
    * @param layer - drawing layer
+   * 
+   * @param configuration the configuration string for the style or null if no configuration
    */
-  public AnnotationStyle(String annotation, Style style, Color color, int layer) {
+  public AnnotationStyle(String annotation, Style style, Color color, int layer, String configuration) {
 
     if (annotation == null || style == null || color == null) {
       throw new IllegalArgumentException("parameters must be not null!");
@@ -115,9 +121,13 @@ public final class AnnotationStyle {
     }
 
     this.layer = layer;
-
+    this.configuration = configuration;
   }
 
+  public AnnotationStyle(String annotation, Style style, Color color, int layer) {
+    this(annotation, style, color, layer, null);
+  }
+  
   /**
    * Retrieves the annotation type.
    *
@@ -154,6 +164,10 @@ public final class AnnotationStyle {
     return layer;
   }
 
+  public String getConfiguration() {
+    return configuration;
+  }
+  
   /**
    * Compares if current is equal to another object.
    */
@@ -165,9 +179,12 @@ public final class AnnotationStyle {
       isEqual = true;
     } else if (object instanceof AnnotationStyle) {
       AnnotationStyle style = (AnnotationStyle) object;
-
+      
+      boolean isConfigEqual = configuration == style.configuration ||
+          configuration != null ? false : configuration.equals(style.configuration);
+      
       isEqual = annotation.equals(style.annotation) && this.style.equals(style.style)
-              && color.equals(style.color) && layer == style.layer;
+              && color.equals(style.color) && layer == style.layer && isConfigEqual;
     } else {
       isEqual = false;
     }
@@ -192,6 +209,7 @@ public final class AnnotationStyle {
     annotationStyle += " Style: " + getStyle().name();
     annotationStyle += " Color: " + getColor().toString();
     annotationStyle += " Layer: " + getLayer();
+    annotationStyle += " Config: " + getConfiguration();
     return annotationStyle;
   }
 }

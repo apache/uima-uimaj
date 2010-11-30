@@ -22,20 +22,17 @@ package org.apache.uima.caseditor.ui.property;
 import java.awt.Color;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
-import org.apache.uima.caseditor.CasEditorPlugin;
-import org.apache.uima.caseditor.core.model.DotCorpusElement;
-import org.apache.uima.caseditor.core.model.NlpProject;
-import org.apache.uima.caseditor.core.model.TypesystemElement;
-import org.apache.uima.caseditor.editor.AnnotationEditor;
 import org.apache.uima.caseditor.editor.AnnotationStyle;
-import org.eclipse.core.runtime.CoreException;
+import org.apache.uima.caseditor.editor.AnnotationStyle.Style;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.preference.ColorSelector;
 import org.eclipse.jface.util.IPropertyChangeListener;
@@ -51,12 +48,15 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.dialogs.PropertyPage;
 
@@ -66,6 +66,123 @@ import org.eclipse.ui.dialogs.PropertyPage;
  */
 public abstract class AnnotationPropertyPage extends PropertyPage {
 
+  private static interface CustomStyleConfigChangeListener {
+    void styleChanged(String configuration);
+  }
+  
+  private static abstract class CustomStyleConfigWidget extends Composite {
+    
+    private Set<CustomStyleConfigChangeListener> listeners =
+        new HashSet<CustomStyleConfigChangeListener>();
+    
+    public CustomStyleConfigWidget(Composite parent) {
+      super(parent, SWT.NONE);
+    }
+    
+    protected void notifyChange(String newConfig) {
+      for (CustomStyleConfigChangeListener listener : listeners) {
+        listener.styleChanged(newConfig);
+      }
+    }
+    
+    void addListener(CustomStyleConfigChangeListener listener) {
+      listeners.add(listener);
+    }
+    
+    void removeListener(CustomStyleConfigChangeListener listener) {
+      listeners.remove(listener);
+    }
+    
+    void setStyle(AnnotationStyle style, Type selectedType) {
+    }
+    
+    abstract String getConfiguration();
+  }
+  
+  // TODO: If there is more than one config widget, do a little refactoring ...
+  // TODO: needs one label plus combo to select the combinded drawing style
+  private static class TagStyleConfigWidget extends CustomStyleConfigWidget {
+    
+    private Combo featureCombo;
+    
+    TagStyleConfigWidget(Composite parent) {
+      super(parent);
+      
+      // Add a warning, that tag style is still experimental
+      
+      
+      // group layout must fill everything .. ?!
+      setLayout(new FillLayout());
+      
+      Group group = new Group(this, SWT.NONE);
+      group.setText("Tag Style Settings");
+      
+      GridLayout layout = new GridLayout();
+      layout.numColumns = 2;
+      group.setLayout(layout);
+      
+      Label warning = new Label(group, SWT.NONE);
+      warning.setText("The tag style is experimental\n" +
+              "and has still minor issues!");
+      GridDataFactory.fillDefaults().span(2, 1).applyTo(warning);
+      
+      // Label and combo to select the feature
+      Label featureLabel = new Label(group, SWT.NONE);
+      featureLabel.setText("Feature:");
+      GridDataFactory.fillDefaults().applyTo(featureLabel);
+      
+      featureCombo = new Combo(group, SWT.READ_ONLY | SWT.DROP_DOWN);
+      GridDataFactory.fillDefaults().applyTo(featureCombo);
+      
+      featureCombo.addSelectionListener(new SelectionListener() {
+        
+        public void widgetSelected(SelectionEvent e) {
+          notifyChange(featureCombo.getText());
+        }
+        
+        public void widgetDefaultSelected(SelectionEvent e) {
+          // called when enter is pressed, not needed
+        }
+      });
+      
+      group.pack();
+    }
+    
+    String getConfiguration() {
+      String configString = featureCombo.getText();
+      
+      if (configString.length() == 0)
+        return null;
+      else
+        return configString;
+    }
+    
+    @Override
+    void setStyle(AnnotationStyle style, Type selectedType) {
+      featureCombo.removeAll();
+      
+      for (Feature feature : selectedType.getFeatures()) {
+        if (feature.getRange().isPrimitive()) {
+          String featureName = feature.getShortName();
+          featureCombo.add(featureName);
+        }
+      }
+      
+      // Select the first index as default
+      featureCombo.select(0);
+      
+      // Figure out if the provided config,
+      // can be used to select the actual feature
+      String feature = style.getConfiguration();
+      if (feature != null) {
+        int indexToSelect = featureCombo.indexOf(feature);
+        
+        if (indexToSelect != -1)
+          featureCombo.select(indexToSelect);
+      }
+    }
+  }
+  
   private boolean isTypeSystemPresent = true;
   
   private Combo mStyleCombo;
@@ -77,8 +194,8 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
   private Button moveLayerUpButton;
   private Button moveLayerDownButton;
   
-//  private AnnotationStyle mCurrentSelectedAnnotation = null;
-
+  private CustomStyleConfigWidget styleConfigurationWidget;
+  
   private Map<Type, AnnotationStyle> changedStyles = new HashMap<Type, AnnotationStyle>();
 
   private Type getSelectedType() {
@@ -108,6 +225,18 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
   
   protected abstract TypeSystem getTypeSystem();
   
+  // Depending on active style, enable custom configuration widget
+  // and update the annotation style with custom control defaults
+  private void updateCustomStyleControl(AnnotationStyle style, Type selectedType) {
+    if (Style.TAG.equals(style.getStyle())) {
+      styleConfigurationWidget.setVisible(true);
+      styleConfigurationWidget.setStyle(style, selectedType);
+    }
+    else {
+      styleConfigurationWidget.setVisible(false);
+    }
+  }
+  
   private void itemSelected() {
     IStructuredSelection selection = (IStructuredSelection) mTypeList.getSelection();
 
@@ -119,7 +248,7 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
   
       if (style == null) {
         style = new AnnotationStyle(selectedType.getName(), AnnotationStyle.DEFAULT_STYLE,
-                AnnotationStyle.DEFAULT_COLOR, style.getLayer());
+                AnnotationStyle.DEFAULT_COLOR, 0);
       }
   
       mStyleCombo.setText(style.getStyle().name());
@@ -132,7 +261,7 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
       moveLayerUpButton.setEnabled(true);
       moveLayerDownButton.setEnabled(true);
       
-      // TODO: Enable move up down buttons
+      updateCustomStyleControl(style, selectedType);
     }
     else {
       // no type selected
@@ -141,8 +270,11 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
       
       moveLayerUpButton.setEnabled(false);
       moveLayerDownButton.setEnabled(false);
+      styleConfigurationWidget.setVisible(false);
     }
   }
+  
+
   
   /**
    * Creates the annotation property page controls.
@@ -231,7 +363,6 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
         itemSelected();
       }
     });
-
     
     Composite settingsComposite = new Composite(base, SWT.NONE);
 
@@ -250,14 +381,30 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
     mStyleCombo.addSelectionListener(new SelectionListener() {
       public void widgetSelected(SelectionEvent e) {
         
-        AnnotationStyle style = getWorkingCopyAnnotationStyle( getSelectedType());
-
-        setAnnotationStyle(new AnnotationStyle(style.getAnnotation(), AnnotationStyle.Style
-                .valueOf(mStyleCombo.getText()), style.getColor(), style.getLayer()));
+        AnnotationStyle style = getWorkingCopyAnnotationStyle(getSelectedType());
+        
+        AnnotationStyle newStyle = new AnnotationStyle(style.getAnnotation(), AnnotationStyle.Style
+                .valueOf(mStyleCombo.getText()), style.getColor(), style.getLayer());
+        
+        updateCustomStyleControl(newStyle, getSelectedType());
+        
+        // Is there a nice way to do this ?!
+        if (styleConfigurationWidget.isVisible()) {
+          String configString = styleConfigurationWidget.getConfiguration();
+        
+          if (configString != null) {
+            newStyle = new AnnotationStyle(newStyle.getAnnotation(), newStyle.getStyle(),
+                newStyle.getColor(), newStyle.getLayer(), configString);
+          }
+        }
+        
+        setAnnotationStyle(newStyle);
+        
       }
+        
 
       public void widgetDefaultSelected(SelectionEvent e) {
-        // not needed
+        // called when enter is pressed, not needed
       }
 
     });
@@ -329,6 +476,20 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
       }
     });
 
+    // Insert style dependent configuration widget
+    styleConfigurationWidget = new TagStyleConfigWidget(settingsComposite);
+    GridDataFactory.fillDefaults().span(2, 1).applyTo(styleConfigurationWidget);
+    styleConfigurationWidget.setVisible(false);
+    styleConfigurationWidget.addListener(new CustomStyleConfigChangeListener() {
+      public void styleChanged(String configuration) {
+        AnnotationStyle style = getWorkingCopyAnnotationStyle(getSelectedType());
+        
+        setAnnotationStyle(new AnnotationStyle(style.getAnnotation(),
+                style.getStyle(), style.getColor(), style.getLayer(), configuration));
+      }
+    });
+    
+    // There is always at least the AnnotationFS type
     mTypeList.getTable().select(0);
 
     if (mTypeList.getTable().getSelectionIndex() != -1) {

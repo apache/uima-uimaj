@@ -61,6 +61,8 @@ public class DotCorpusSerializer {
   private static final String STYLE_COLOR_ATTRIBUTE = "color";
 
   private static final String STYLE_LAYER_ATTRIBUTE = "layer";
+  
+  private static final String STYLE_CONFIG_ATTRIBUTE = "config";
 
   private static final String TYPESYSTEM_ELEMENT = "typesystem";
 
@@ -142,6 +144,10 @@ public class DotCorpusSerializer {
 
       Element corporaChildElement = (Element) corporaChildNode;
 
+      // TODO: This code will emit NumberFormatExceptions if the values
+      // are incorrect, they should be caught, logged and replaced with default
+      // values
+      
       if (TYPESYSTEM_ELEMENT.equals(corporaChildElement.getNodeName())) {
         dotCorpus.setTypeSystemFilename(corporaChildElement.getAttribute(TYPESYTEM_FILE_ATTRIBUTE));
       } else if (CORPUS_ELEMENT.equals(corporaChildElement.getNodeName())) {
@@ -159,7 +165,12 @@ public class DotCorpusSerializer {
         Color color = new Color(colorInteger);
 
         String drawingLayerString = corporaChildElement.getAttribute(STYLE_LAYER_ATTRIBUTE);
-
+        
+        String drawingConfigString = corporaChildElement.getAttribute(STYLE_CONFIG_ATTRIBUTE);
+        
+        if (drawingConfigString.length() == 0)
+          drawingConfigString = null;
+        
         int drawingLayer;
 
         try {
@@ -169,7 +180,7 @@ public class DotCorpusSerializer {
         }
 
         AnnotationStyle style = new AnnotationStyle(type, AnnotationStyle.Style
-                .valueOf(styleString), color, drawingLayer);
+                .valueOf(styleString), color, drawingLayer, drawingConfigString);
 
         dotCorpus.setStyle(style);
       } else if (CAS_PROCESSOR_ELEMENT.equals(corporaChildElement.getNodeName())) {
@@ -241,6 +252,10 @@ public class DotCorpusSerializer {
         styleAttributes.addAttribute("", "", STYLE_COLOR_ATTRIBUTE, "", colorInt.toString());
         styleAttributes.addAttribute("", "", STYLE_LAYER_ATTRIBUTE, "", Integer.toString(style
                 .getLayer()));
+        if (style.getConfiguration() != null) {
+          styleAttributes.addAttribute("", "", STYLE_CONFIG_ATTRIBUTE, "", style
+                  .getConfiguration());
+        }
 
         xmlSerHandler.startElement("", STYLE_ELEMENT, STYLE_ELEMENT, styleAttributes);
         xmlSerHandler.endElement("", STYLE_ELEMENT, STYLE_ELEMENT);
