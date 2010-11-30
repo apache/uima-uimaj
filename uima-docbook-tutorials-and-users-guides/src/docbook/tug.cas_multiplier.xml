@@ -77,14 +77,20 @@ under the License.
         </listitem>
         
         <listitem>
-          <para>Steps 2 and 3 continue until <literal>hasNext</literal> returns false. </para>
+          <para>Steps 2 and 3 continue until <literal>hasNext</literal> returns false. If the
+          framework detects a situation where it needs to cancel this CAS Multiplier, it will stop
+          calling the <literal>hasNext</literal> and <literal>next</literal> methods, and when
+          another top-level CAS comes along it will call the annotator's <literal>process</literal> method again.
+          User's annotator code should interpret this as a signal to cleanup 
+          processing related to the previous CAS and then start processing with the new CAS.</para>
         </listitem>
       </orderedlist>
       
       <para>From the time when <literal>process</literal> is called until the <literal>hasNext</literal>
-        method returns false, the CAS Multiplier <quote>owns</quote> the CAS that was passed to its
+        method returns false (or <literal>process</literal> is called again), 
+        the CAS Multiplier <quote>owns</quote> the CAS that was passed to its
         <literal>process</literal> method. The CAS Multiplier can store a reference to this CAS in a local field and
-        can read from it or write to it during this time. Once <literal>hasNext</literal> returns false, the CAS
+        can read from it or write to it during this time. Once the ending condition occurs, the CAS
         Multiplier gives up ownership of the input CAS and should no longer retain a reference to it.</para>
     </section>
     
