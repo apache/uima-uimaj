@@ -63,25 +63,25 @@
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-core</artifactId>
-			<version>${uimaDependencyVersion}</version>
+			<version>${project.parent.version}</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-cpe</artifactId>
-			<version>${uimaDependencyVersion}</version>
+			<version>${project.parent.version}</version>
 			<scope>compile</scope>
 		</dependency>		
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-document-annotation</artifactId>
-			<version>${uimaDependencyVersion}</version>
+			<version>${project.parent.version}</version>
 			<scope>compile</scope>
 		</dependency>	
  		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-tools</artifactId>
-			<version>${uimaDependencyVersion}</version>
+			<version>${project.parent.version}</version>
 			<scope>compile</scope>
 		</dependency>		
  		<dependency>

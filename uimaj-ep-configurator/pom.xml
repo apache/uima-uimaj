@@ -79,14 +79,14 @@
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-core</artifactId>
-      <version>${uimaDependencyVersion}</version>
+      <version>${project.parent.version}</version>
       <scope>compile</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-tools</artifactId>
-      <version>${uimaDependencyVersion}</version>
+      <version>${project.parent.version}</version>
       <!-- must be provided to get pax:eclipse to work, but
            must be compile to get eclipse:eclipse to include
            them as Referenced Libraries -->
@@ -96,7 +96,7 @@
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-ep-jcasgen</artifactId>
-      <version>${uimaDependencyVersion}</version>
+      <version>${project.parent.version}</version>
       <scope>provided</scope>
     </dependency>
 

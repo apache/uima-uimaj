@@ -78,7 +78,7 @@ UIMA data structures to the Eclipse Debug displays</description>
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-core</artifactId>
-      <version>${uimaDependencyVersion}</version>
+      <version>${project.parent.version}</version>
       <scope>compile</scope>
     </dependency>
     

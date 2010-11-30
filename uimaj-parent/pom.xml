@@ -127,8 +127,6 @@
   <properties>
     <uimaScmRoot>uimaj</uimaScmRoot>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
-    <!-- current practice is to release all components of uimaj together at same release level -->
-    <uimaDependencyVersion>${project.version}</uimaDependencyVersion>
   </properties>
 
   <profiles>
