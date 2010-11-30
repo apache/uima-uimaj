@@ -952,7 +952,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
       if (strategy != null) {
         
         if (style.getStyle().equals(AnnotationStyle.Style.TAG)) {
-          getSourceViewer().getTextWidget().setLineSpacing(12);
+          getSourceViewer().getTextWidget().setLineSpacing(13);
         }
         
         mPainter.addDrawingStrategy(type.getName(), strategy);
@@ -969,7 +969,22 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
       shownAnnotationTypes.remove(type);
       
       if (style.getStyle().equals(AnnotationStyle.Style.TAG)) {
-        getSourceViewer().getTextWidget().setLineSpacing(0);
+        // TODO: only if no more TAG styles are active
+        // How to figure that out ?!
+        boolean isKeepLineSpacing = false;
+        
+        for(Type shownType : shownAnnotationTypes) {
+          AnnotationStyle potentialTagStyle = 
+            getDocumentProvider().getAnnotationStyle(getEditorInput(), shownType);
+          
+          if (AnnotationStyle.Style.TAG.equals(potentialTagStyle.getStyle())) {
+            isKeepLineSpacing = true;
+            break;
+          }
+        }
+        
+        if (!isKeepLineSpacing)
+          getSourceViewer().getTextWidget().setLineSpacing(0);
       }
     }
   }
