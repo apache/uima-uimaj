@@ -51,7 +51,6 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -384,7 +383,7 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
         AnnotationStyle style = getWorkingCopyAnnotationStyle(getSelectedType());
         
         AnnotationStyle newStyle = new AnnotationStyle(style.getAnnotation(), AnnotationStyle.Style
-                .valueOf(mStyleCombo.getText()), style.getColor(), style.getLayer());
+                .valueOf(mStyleCombo.getText()), style.getColor(), style.getLayer(), style.getConfiguration());
         
         updateCustomStyleControl(newStyle, getSelectedType());
         
@@ -399,7 +398,6 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
         }
         
         setAnnotationStyle(newStyle);
-        
       }
         
 
@@ -430,7 +428,7 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
 
         setAnnotationStyle(new AnnotationStyle(
                 style.getAnnotation(), style.getStyle(),
-                color, style.getLayer()));
+                color, style.getLayer(), style.getConfiguration()));
       }
     });
 
@@ -447,7 +445,7 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
 
         setAnnotationStyle(new AnnotationStyle(
                 style.getAnnotation(), AnnotationStyle.Style.valueOf(mStyleCombo.getText()),
-                style.getColor(), style.getLayer() + 1));
+                style.getColor(), style.getLayer() + 1, style.getConfiguration()));
 
         mTypeList.update(getSelectedType(), null);
       }
@@ -469,7 +467,7 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
         if (style.getLayer() - 1 >= 0) {
           setAnnotationStyle(new AnnotationStyle(style
                   .getAnnotation(), AnnotationStyle.Style.valueOf(mStyleCombo.getText()),
-                  style.getColor(), style.getLayer() - 1));
+                  style.getColor(), style.getLayer() - 1, style.getConfiguration()));
 
           mTypeList.update(getSelectedType(), null);
         }
