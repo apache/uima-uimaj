@@ -181,7 +181,7 @@ public final class AnnotationStyle {
       AnnotationStyle style = (AnnotationStyle) object;
       
       boolean isConfigEqual = configuration == style.configuration ||
-          configuration != null ? false : configuration.equals(style.configuration);
+          (configuration != null ? false : configuration.equals(style.configuration));
       
       isEqual = annotation.equals(style.annotation) && this.style.equals(style.style)
               && color.equals(style.color) && layer == style.layer && isConfigEqual;
