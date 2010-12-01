@@ -27,23 +27,24 @@ import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 
-// TODO: needs a path to a feature to draw
-// TODO: Annotation Editor needs to modify line spacing
-// TODO: needs a strategy to avoid overlaps
-// TODO: Check if its possible to increase the space which is used to
-//       draw a white space (e.g. space char, tab char)
-// Add to annotation editor: sourceViewer.getTextWidget().setLineSpacing(12);
+
 /**
- * Experimental implementation, to figure out how tag drawing could be implemented.
- * To test it, add the line spacing to the Annotation Editor and enable this class to be a
- * drawing strategy.
  * 
- * Issue for this work is UIMA-1875.
  */
+// TODO: Check if its possible to increase the space between characters,
+//       or suggest to use mono space font for long tags ...
 class TagDrawingStrategy implements IDrawingStrategy {
 
+  private static final int TAG_FONT_SIZE = 11;
+  private static final int MAX_LEFT_TAG_OVERLAP = 1;
+  private static final int MAX_RIGHT_TAG_OVERLAP = 1;
+  private static final int TAG_OVERLAP = MAX_LEFT_TAG_OVERLAP + MAX_RIGHT_TAG_OVERLAP;
+  
+  private IDrawingStrategy annotationDrawingStyle = new BoxDrawingStrategy();
+  
   /**
    * The name of the feature to print.
    */
@@ -60,6 +61,9 @@ class TagDrawingStrategy implements IDrawingStrategy {
   public void draw(Annotation annotation, GC gc, StyledText textWidget, int offset, int length,
           Color color) {
     
+    // Always draw a box around the annotation itself
+    annotationDrawingStyle.draw(annotation, gc, textWidget, offset, length, color);
+    
     if (annotation instanceof EclipseAnnotationPeer) {
       AnnotationFS annotationFS = ((EclipseAnnotationPeer) annotation).getAnnotationFS();
       
@@ -69,28 +73,118 @@ class TagDrawingStrategy implements IDrawingStrategy {
         
         String featureValue = annotationFS.getFeatureValueAsString(feature);
         
-        if (featureValue != null) {
-          Rectangle bounds = textWidget.getTextBounds(offset, offset + length - 1);
+        // Annotation can be rendered into multiple lines, always draw
+        // the tag in the first line where annotation starts
+        if (featureValue != null && annotationFS.getBegin() == offset) {
+          
+          // Calculate how much overhang on both sides of the annotation for a tag is allowed
+          int lineIndex = textWidget.getLineAtOffset(offset);
+          int firstCharInLineOffset = textWidget.getOffsetAtLine(lineIndex);
+          
+          int maxBeginOverhang;
+          if (firstCharInLineOffset == offset) {
+            maxBeginOverhang = 0;
+          }
+          else {
+            maxBeginOverhang = MAX_LEFT_TAG_OVERLAP;
+          }
+          
+          int maxEndOverhang = 0;
+// TODO: Not compatible with 3.3
+//          if ((firstCharInLineOffset + textWidget.getLine(lineIndex).length()) == offset + length) {
+//            maxEndOverhang = 0;
+//          }
+//          else {
+//            maxEndOverhang = MAX_RIGHT_TAG_OVERLAP;
+//          }
+        
+          Rectangle bounds = textWidget.getTextBounds(offset, offset + length);
   
           if (gc != null && featureValue != null) {
-  
-            gc.setForeground(color);
-  
+
+            int lastCharIndex;
+            
+            if (length == 0)
+              lastCharIndex = offset;
+            else
+              lastCharIndex = offset + length - 1;
+            
+            Point annotationStringExtent = gc.stringExtent(
+                    textWidget.getText(offset, lastCharIndex));
+            
             Font currentFont = gc.getFont();
             
             // TODO: Figure out if that is safe
             Font tagFont = new Font(currentFont.getDevice(), currentFont.getFontData()[0].getName(),
-                    12, currentFont.getFontData()[0].getStyle());
+                    TAG_FONT_SIZE, currentFont.getFontData()[0].getStyle());
             gc.setFont(tagFont);
+            gc.setForeground(color);
             
-            // TODO: if string does not fit, still draw ?!
+            // Cutoffs the tag if two chars longer than annotation
+            // and replaces it with a scissor
+            int maxAllowedLength = length + maxBeginOverhang + maxEndOverhang;
+            if (featureValue.length() > maxAllowedLength) {
+              if (length > 0) {
+                // Trim featureValue to substring which is length -1 + scissor symbol
+                char scissorChar = (char) 0x2704;
+                featureValue = featureValue.substring(0, maxAllowedLength - 1) + scissorChar;
+              }
+              else
+                // If zero length annotation, just draw nothing
+                featureValue = "";
+            }
             
-            gc.drawString(featureValue, bounds.x, bounds.y + bounds.height - 2, true);
+            // Drawing after the end of a line, and before the begin does not work ...
+            Point tagStringExtent = gc.stringExtent(featureValue);
+            
+            int centerOfAnnotation = annotationStringExtent.x / 2;
+            int centerOfTag = tagStringExtent.x / 2;
+            
+            // Tag can be positioned at three different places
+            // if there is an overhang on both side, its centered
+            int newX = bounds.x + centerOfAnnotation - centerOfTag;
+            
+            // Figure out if there is an overhang allowed, and recalculate the position.
+            
+            // No overhang means that the annotation is the first or last in the line,
+            // in this case the tag should be placed as close as possible to the begin
+            // or end of the annotation boundary.
+            
+            // if no overhang on the left side allowed, 
+            // the tag must start with the annotation bound
+            if (maxBeginOverhang == 0) {
+              newX = bounds.x;
+            }
+            // if no overhang on the right side allowed, 
+            // the tag must end with the annotation bound
+            else if (maxEndOverhang == 0) {
+              newX = bounds.x + (annotationStringExtent.x - tagStringExtent.x);
+            }
+            
+            // TODO: Might not be too safe, if bounds.height == 0,
+            // passed parameter could be -1
+            gc.drawString(featureValue, newX, bounds.y + bounds.height - 1, true);
             gc.setFont(currentFont);
             
           } else {
-            // TODO: How to calculate redraw area ?!
-            textWidget.redraw(bounds.x, bounds.y + bounds.height -2, bounds.width, bounds.height, true);
+            
+            // The area into which the tag will be drawn must be marked
+            // to be redrawn, that requires a calculation of that area.
+            
+            // Note: Did not find a way to calculate the tag extent correctly here
+            // GC.stringExtent cannot be called, because the passed GC is null
+            // 
+            // The width is assumed to be the font size multiplied by the length
+            // of annotation string + TAG_OVERLAP, this is not optimal, but should give
+            // a little to large estimate
+            // 
+            // Note: It unknown what happens if a too big area is drawn
+            // Doesn't seem to cause a crash on OS X
+            // TODO: Test that on windows 7, Windows XP and Linux
+           
+            textWidget.redraw(bounds.x - TAG_FONT_SIZE * TAG_OVERLAP, bounds.y + bounds.height -1, 
+                    TAG_FONT_SIZE * (length + TAG_OVERLAP), 
+                    bounds.height, true);
           }
         }
       }
