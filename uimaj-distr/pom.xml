@@ -155,6 +155,13 @@
               <goal>javadoc</goal>
             </goals>
             <configuration>
+              <!-- fix java api links because Oracle bought Sun -->
+              <javaApiLinks>
+                <property>
+                  <name>api_1.5</name>
+                  <value>http://download.oracle.com/javase/1.5.0/docs/api/</value>
+                </property>
+              </javaApiLinks>
               <groups>
                 <group>
                   <title>Packages</title>
