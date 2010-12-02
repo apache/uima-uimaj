@@ -154,7 +154,19 @@
 
 	<build>
     <!-- don't use artifactId as first part of finalName, follow instead the eclipse convention -->  
-    <finalName>org.apache.uima.caseditor_${parsedVersion.osgiVersion}</finalName>		
+    <finalName>org.apache.uima.caseditor_${parsedVersion.osgiVersion}</finalName>  
+    <resources>
+      <resource>
+        <directory>.</directory>
+        <includes>
+          <include>plugin.xml</include>
+          <include>icons/**/*.*</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>src\main\resources</directory>
+      </resource>
+    </resources>		
 		<plugins>
 			<plugin>
 				<groupId>org.apache.felix</groupId>
