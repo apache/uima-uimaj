@@ -176,6 +176,9 @@ class TagDrawingStrategy implements IDrawingStrategy {
             gc.drawString(featureValue, newX, bounds.y + bounds.height - 1, true);
             gc.setFont(currentFont);
             
+            // After done using the tag font it must be disposed, otherwise
+            // eclipse on windows runs out of handles and crashes
+            tagFont.dispose();
           } else {
             
             // The area into which the tag will be drawn must be marked
