@@ -89,14 +89,24 @@ class TagDrawingStrategy implements IDrawingStrategy {
             maxBeginOverhang = MAX_LEFT_TAG_OVERLAP;
           }
           
-          int maxEndOverhang = 0;
-// TODO: Not compatible with 3.3
-//          if ((firstCharInLineOffset + textWidget.getLine(lineIndex).length()) == offset + length) {
-//            maxEndOverhang = 0;
-//          }
-//          else {
-//            maxEndOverhang = MAX_RIGHT_TAG_OVERLAP;
-//          }
+          int maxEndOverhang;
+          int lineLength;
+          int lineCount = textWidget.getLineCount();
+          if (lineCount > lineIndex +1) {
+            int offsetNextLine = textWidget.getOffsetAtLine(lineIndex + 1);
+            lineLength = offsetNextLine - firstCharInLineOffset -1;
+          }
+          else {
+            // Its the last line
+            lineLength = textWidget.getCharCount() - offset;
+          }
+          
+          if ((firstCharInLineOffset + lineLength) == offset + length) {
+            maxEndOverhang = 0;
+          }
+          else {
+            maxEndOverhang = MAX_RIGHT_TAG_OVERLAP;
+          }
         
           Rectangle bounds = textWidget.getTextBounds(offset, offset + length);
   
