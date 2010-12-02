@@ -50,9 +50,18 @@ public class UimaVersion {
     return ${parsedVersion.incrementalVersion}; // build revision
   }
   
+  /**
+   * @return build year as a String, e.g. "2010"
+   */
   public static String getBuildYear() {
     return "${buildYear}";
   }
   
-
+  /**
+   * @return build version as a String, e.g., "2.3.1-SNAPSHOT"
+   */
+  public static String getFullVersionString() {
+    return "${project.version}";
+  }
+  
 }
