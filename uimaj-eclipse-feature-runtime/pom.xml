@@ -28,8 +28,8 @@
   </parent>
     
   <artifactId>uimaj-eclipse-feature-runtime</artifactId>
-  <packaging>jar</packaging>
   <version>2.3.1-SNAPSHOT</version>
+  
   <name>UIMA Eclipse: ${project.artifactId}</name>
   <description>UIMA Eclipse Plugin Feature that
     has the base UIMA runtime, referred to by other plugins that
@@ -62,10 +62,11 @@
 
   <build>
     <!-- parsedVersion set in parent-pom by builder-helper -->
-    <finalName>org.apache.uima.runtime_${parsedVersion.osgiVersion}</finalName>
+    <finalName>${project.artifactId}_${parsedVersion.osgiVersion}</finalName>
+    <!-- turn on filtering for these resources -->         
     <resources>
       <resource>
-        <directory>.</directory>
+        <directory>${basedir}</directory>
         <includes>
           <include>feature.properties</include>
           <include>feature.xml</include>
@@ -73,5 +74,31 @@
         <filtering>true</filtering>
       </resource>
     </resources>
+    
+    <plugins>
+      <!-- filter the feature.xml to have the right version info 
+           for Eclipse at the top level-->
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>filter feature.xml</id>
+            <!-- run before process-resources, which uses this result -->
+            <phase>generate-resources</phase>
+            <goals><goal>copy-resources</goal></goals>
+            <configuration>
+              <outputDirectory>${basedir}</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>src/main/resources</directory>
+                  <includes><include>feature.xml</include></includes>
+                  <filtering>true</filtering>
+                </resource>
+              </resources> 
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
 </project>
