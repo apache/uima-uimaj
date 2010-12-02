@@ -95,7 +95,7 @@ public enum Images {
 
   PIN("svgicons/pin.png");
 
-  private String mPath;
+  private final String mPath;
 
   private Images(String path) {
     mPath = path;
