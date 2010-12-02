@@ -19,6 +19,7 @@
 
 package org.apache.uima.caseditor.core.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -390,7 +391,8 @@ public final class NlpProject extends AbstractNlpElement implements IProjectNatu
   }
 
   private void updateAnnotationTypeColors() throws CoreException {
-    Collection<AnnotationStyle> styles = getDotCorpus().getAnnotationStyles();
+    Collection<AnnotationStyle> styles = new ArrayList<AnnotationStyle>();
+    styles.addAll(getDotCorpus().getAnnotationStyles());
     
     if (getTypesystemElement() != null) {
       TypeSystem ts = getTypesystemElement().getTypeSystem();
@@ -519,13 +521,14 @@ public final class NlpProject extends AbstractNlpElement implements IProjectNatu
       mTypesystem = null;
 
       initialize();
-      
+
       updateAnnotationTypeColors();
       
       CasEditorPlugin.getNlpModel().fireRefreshEvent(this);
     }
     
     if (mDotCorpusMustBeSerialized) {
+      mDotCorpusMustBeSerialized = false;
       Runnable writeDotCorpus = new Runnable() {
         public void run() {
           try {
