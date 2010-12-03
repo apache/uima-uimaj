@@ -62,6 +62,11 @@ class TagDrawingStrategy implements IDrawingStrategy {
           Color color) {
     
     // Always draw a box around the annotation itself
+    
+    // TODO: It seems that the call to the box drawing strategy is rather
+    // expensive, test how fast it is when the box drawing is "inlined".
+    // The box drawing strategy could be changed to do the drawing via
+    // static methods
     annotationDrawingStyle.draw(annotation, gc, textWidget, offset, length, color);
     
     if (annotation instanceof EclipseAnnotationPeer) {
