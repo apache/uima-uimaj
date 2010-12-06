@@ -20,6 +20,29 @@ For more details, please see http://uima.apache.org/building-uima.html
 What's New in 2.3.1
 ------------------- 
 
+  CAS Editor
+  ----------
+  The Cas Editor received a few important enhancements aimed at making it
+  the preferred editor and viewer for CAS files inside a UIMA project.
+  It is now possible to open CAS files from any location within an
+  eclipse workspace.
+  
+  Based on feedback from our users the Cas Editor received a number of 
+  usability enhancements and bug fixes.
+  
+  A new view to show the annotation colors and visualization style was added. 
+  The view interacts with the editor and can be used to define which
+  kind of annotations are displayed.
+  
+  There is now a new annotation style to display features values in between 
+  the text lines. This is especially useful to show Part-Of-Speech tags, 
+  entity categories or a stemming.
+  
+  There have been a couple of minor improvements:  the editor context menu 
+  now shows keyboard shortcuts, and it is possible to choose the encoding 
+  and resulting CAS format when importing a text file. 
+  
+
   Build
   -----
   
