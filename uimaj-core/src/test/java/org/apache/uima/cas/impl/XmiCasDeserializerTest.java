@@ -273,6 +273,105 @@ public class XmiCasDeserializerTest extends TestCase {
     }
   }
 
+  public void testDeltaCasIndexExistingFsInView() throws Exception {
+    CAS cas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
+            indexes);
+    CAS cas2 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
+            indexes);
+    cas1.setDocumentText("This is a test document in the initial view");
+    Type referentType = cas1.getTypeSystem().getType("org.apache.uima.testTypeSystem.Referent");
+    FeatureStructure fs1 = cas1.createFS(referentType);
+    cas1.getIndexRepository().addFS(fs1);
+
+    //serialize complete
+    XmiSerializationSharedData sharedData = new XmiSerializationSharedData();
+    String xml = serialize(cas1, sharedData);
+    System.out.println(xml);
+    int maxOutgoingXmiId = sharedData.getMaxXmiId();
+
+    //deserialize into cas2
+    XmiSerializationSharedData sharedData2 = new XmiSerializationSharedData();
+    this.deserialize(xml, cas2, sharedData2, true, -1);
+    CasComparer.assertEquals(cas1, cas2);
+
+    //create Marker, add/modify fs and serialize in delta xmi format.
+    Marker marker = cas2.createMarker();
+
+    //create View
+    CAS view = cas2.createView("NewView");
+    //add FS to index
+    Type referentType2 = cas2.getTypeSystem().getType("org.apache.uima.testTypeSystem.Referent");
+    Iterator<FeatureStructure> fsIter = cas2.getIndexRepository().getAllIndexedFS(referentType2);
+    while (fsIter.hasNext()) {
+      FeatureStructure fs = fsIter.next();
+      view.getIndexRepository().addFS(fs);
+    }
+    AnnotationFS cas2newAnnot = view.createAnnotation(cas2.getAnnotationType(), 6, 8);
+    view.getIndexRepository().addFS(cas2newAnnot);
+
+    // serialize cas2 in delta format
+    String deltaxml1 = serialize(cas2, sharedData2, marker);
+    System.out.println(deltaxml1);
+
+    //deserialize delta xmi into cas1
+    this.deserialize(deltaxml1, cas1, sharedData, true, maxOutgoingXmiId, AllowPreexistingFS.allow);
+
+    //check that new View contains the FS
+    CAS deserView = cas1.getView("NewView");
+    Iterator<FeatureStructure> deserFsIter = deserView.getIndexRepository().getAllIndexedFS(referentType);
+    assertTrue(deserFsIter.hasNext());
+  }
+
+
+  public void testDeltaCasIndexExistingFsInNewView() throws Exception {
+    CAS cas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
+            indexes);
+    CAS cas2 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
+            indexes);
+    cas1.setDocumentText("This is a test document in the initial view");
+    Type referentType = cas1.getTypeSystem().getType("org.apache.uima.testTypeSystem.Referent");
+    FeatureStructure fs1 = cas1.createFS(referentType);
+    cas1.getIndexRepository().addFS(fs1);
+
+    //serialize complete
+    XmiSerializationSharedData sharedData = new XmiSerializationSharedData();
+    String xml = serialize(cas1, sharedData);
+    System.out.println(xml);
+    int maxOutgoingXmiId = sharedData.getMaxXmiId();
+
+    //deserialize into cas2
+    XmiSerializationSharedData sharedData2 = new XmiSerializationSharedData();
+    this.deserialize(xml, cas2, sharedData2, true, -1);
+    CasComparer.assertEquals(cas1, cas2);
+
+    //create Marker, add/modify fs and serialize in delta xmi format.
+    Marker marker = cas2.createMarker();
+
+    //create View
+    CAS view = cas2.createView("NewView");
+    //add FS to index
+    Type referentType2 = cas2.getTypeSystem().getType("org.apache.uima.testTypeSystem.Referent");
+    Iterator<FeatureStructure> fsIter = cas2.getIndexRepository().getAllIndexedFS(referentType2);
+    while (fsIter.hasNext()) {
+      FeatureStructure fs = fsIter.next();
+      view.getIndexRepository().addFS(fs);
+    }
+    AnnotationFS cas2newAnnot = view.createAnnotation(cas2.getAnnotationType(), 6, 8);
+    view.getIndexRepository().addFS(cas2newAnnot);
+
+    // serialize cas2 in delta format
+    String deltaxml1 = serialize(cas2, sharedData2, marker);
+    System.out.println(deltaxml1);
+
+    //deserialize delta xmi into cas1
+    this.deserialize(deltaxml1, cas1, sharedData, true, maxOutgoingXmiId, AllowPreexistingFS.allow);
+
+    //check that new View contains the FS
+    CAS deserView = cas1.getView("NewView");
+    Iterator<FeatureStructure> deserFsIter = deserView.getIndexRepository().getAllIndexedFS(referentType);
+    assertTrue(deserFsIter.hasNext());
+  }
+
 
   public void testMultipleSofas() throws Exception {
     try {
@@ -1695,7 +1794,7 @@ public class XmiCasDeserializerTest extends TestCase {
         childCountStack.push(Integer.valueOf(count.intValue() - 1));
       }
     }
-    
+
     
   }
 }
