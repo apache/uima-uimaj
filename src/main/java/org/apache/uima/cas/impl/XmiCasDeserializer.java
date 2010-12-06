@@ -527,9 +527,11 @@ public class XmiCasDeserializer {
       if (membersString != null) {
         // a view with no Sofa will be added to the 1st, _InitialView, index
         int sofaNum = 1;
+        boolean newview = false;
         if (sofa != null) {
           // translate sofa's xmi:id into its sofanum
           int sofaXmiId = Integer.parseInt(sofa);
+          newview = isNewFS(sofaXmiId);
           int sofaAddr;
           try {
             sofaAddr = getFsAddrForXmiId(sofaXmiId);
@@ -545,12 +547,18 @@ public class XmiCasDeserializer {
         String[] members = parseArray(membersString);
         for (int i = 0; i < members.length; i++) {
           int id = Integer.parseInt(members[i]);
-          //if merging, don't try to index anything below the merge point
-          if (!isNewFS(id)) {
-        	if (this.allowPreexistingFS == AllowPreexistingFS.disallow) { //flag this
-        	  this.disallowedViewMemberEncountered = true;
-        	}
-            continue;
+          // special handling for merge operations ...
+          if (!newview && !isNewFS(id)) {
+            // a pre-existing FS is indexed in a pre-existing view
+            if (this.allowPreexistingFS == AllowPreexistingFS.ignore) {
+              // merging with full CAS: ignore anything below the high water mark
+              continue;
+            }
+            if (this.allowPreexistingFS == AllowPreexistingFS.disallow) {
+              // merging with delta CAS: flag it
+              this.disallowedViewMemberEncountered = true;
+              continue;
+            }
           }
           // have to map each ID to its "real" address (TODO: optimize?)
           //TODO: currently broken, can't use XmiSerializationSharedData for
