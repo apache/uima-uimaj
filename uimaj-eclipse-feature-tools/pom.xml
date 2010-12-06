@@ -23,13 +23,13 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>2.3.2-SNAPSHOT</version>
+    <version>2.3.1-SNAPSHOT</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
   
   <artifactId>uimaj-eclipse-feature-tools</artifactId>
   <packaging>jar</packaging>
-  <version>2.3.2-SNAPSHOT</version>
+  <version>2.3.1-SNAPSHOT</version>
   <name>UIMA Eclipse: ${project.artifactId}</name>
   <description>UIMA Eclipse Plugin Feature for base uima tooling</description>  
   <url>${uimaWebsiteUrl}</url>
