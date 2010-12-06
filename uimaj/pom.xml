@@ -29,13 +29,13 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>2.3.1-SNAPSHOT</version>
+    <version>2.3.1</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
 
   <artifactId>uimaj</artifactId>
   <packaging>pom</packaging>
-  <version>2.3.1-SNAPSHOT</version>
+  <version>2.3.1</version>
   <name>UIMA Java SDK: ${project.artifactId}</name>
   <description>The top project for the uimaj SDK</description>
   <url>${uimaWebsiteUrl}</url>
@@ -50,13 +50,13 @@
        element, and just changing the following two properties -->
   <scm>
     <connection>
-      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj
+      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-2.3.1-rc1/uimaj
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj
+      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-2.3.1-rc1/uimaj
     </developerConnection>
     <url>
-      http://svn.apache.org/viewvc/uima/uimaj/trunk/uimaj
+      http://svn.apache.org/viewvc/uima/uimaj/tags/uimaj-2.3.1-rc1/uimaj
     </url>
   </scm>
 
