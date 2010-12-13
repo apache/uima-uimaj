@@ -150,7 +150,7 @@ under the License.
         targetptr="ugr.ovv.eclipse_setup.linking_uima_javadocs"/> for how to attach the UIMA 
         Javadocs to the jar files.
       Also you may wish to refer to the UIMA SDK Javadocs located in the <ulink
-        url="file:../../api/index.html">docs/api</ulink> directory.</para>
+        url="api/index.html">docs/api/index.html</ulink> directory.</para>
     
         <note><para>In Eclipse 3.1, if you highlight a UIMA class or method defined in the UIMA SDK
     Javadocs, you can conveniently have Eclipse open the corresponding Javadoc for that
