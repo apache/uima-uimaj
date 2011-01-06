@@ -101,7 +101,8 @@ public class JetExpander {
 	String readFile(String fileName) {
     FileReader fileReader = null;
     try {
-			File file = new File(fileName);  	
+			File file = new File(fileName);
+			file = file.getCanonicalFile();
       fileReader = new FileReader(file);
       
 			int fileLength = (int)file.length(); // length in bytes >= length in chars due to char encoding
