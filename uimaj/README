@@ -1,5 +1,6 @@
 To build Apache UIMA Java SDK, 
-  cd to the uimaj directory containing this README, and then run the command
+  cd to the uimaj directory - the one containing the pom.xml having the element 
+    <artifactId>uimaj</artifactId>, and then run the command
 
   mvn install
   
