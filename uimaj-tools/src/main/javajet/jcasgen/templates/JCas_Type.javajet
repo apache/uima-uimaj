@@ -51,6 +51,7 @@ import <%=imp%>;
  * @generated */
 public class <%=typeName_Type%> extends <%=jg.getJavaName(td.getSupertypeName()) + "_Type"%> {
   /** @generated */
+  @Override
   protected FSGenerator getFSGenerator() {return fsGenerator;}
   /** @generated */
   private final FSGenerator fsGenerator = 
@@ -69,9 +70,11 @@ public class <%=typeName_Type%> extends <%=jg.getJavaName(td.getSupertypeName())
   	  }
     };
   /** @generated */
+  @SuppressWarnings ("hiding")
   public final static int typeIndexID = <%=typeName%>.typeIndexID;
   /** @generated 
      @modifiable */
+  @SuppressWarnings ("hiding")
   public final static boolean featOkTst = JCasRegistry.getFeatOkTst("<%=td.getName()%>");
 <% FeatureDescription [] fds = td.getFeatures();
    for (int i = 0; i < fds.length; i++) { 

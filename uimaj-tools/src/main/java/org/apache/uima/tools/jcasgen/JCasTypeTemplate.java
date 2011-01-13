@@ -65,11 +65,11 @@ public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
     stringBuffer.append(typeName);
     stringBuffer.append(" extends ");
     stringBuffer.append(jg.getJavaName(td.getSupertypeName()));
-    stringBuffer.append(" {\n  /** @generated\n   * @ordered \n   */\n  public final static int typeIndexID = JCasRegistry.register(");
+    stringBuffer.append(" {\n  /** @generated\n   * @ordered \n   */\n  @SuppressWarnings (\"hiding\")\n  public final static int typeIndexID = JCasRegistry.register(");
     stringBuffer.append(typeName);
-    stringBuffer.append(".class);\n  /** @generated\n   * @ordered \n   */\n  public final static int type = typeIndexID;\n  /** @generated  */\n  public              int getTypeIndexID() {return typeIndexID;}\n \n  /** Never called.  Disable default constructor\n   * @generated */\n  protected ");
+    stringBuffer.append(".class);\n  /** @generated\n   * @ordered \n   */\n  @SuppressWarnings (\"hiding\")\n  public final static int type = typeIndexID;\n  /** @generated  */\n  @Override\n  public              int getTypeIndexID() {return typeIndexID;}\n \n  /** Never called.  Disable default constructor\n   * @generated */\n  protected ");
     stringBuffer.append(typeName);
-    stringBuffer.append("() {}\n    \n  /** Internal - constructor used by generator \n   * @generated */\n  public ");
+    stringBuffer.append("() {/* intentionally empty block */}\n    \n  /** Internal - constructor used by generator \n   * @generated */\n  public ");
     stringBuffer.append(typeName);
     stringBuffer.append("(int addr, TOP_Type type) {\n    super(addr, type);\n    readObject();\n  }\n  \n  /** @generated */\n  public ");
     stringBuffer.append(typeName);
@@ -79,7 +79,7 @@ public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
     stringBuffer.append(typeName);
     stringBuffer.append("(JCas jcas, int begin, int end) {\n    super(jcas);\n    setBegin(begin);\n    setEnd(end);\n    readObject();\n  }   \n");
   } 
-    stringBuffer.append("\n  /** <!-- begin-user-doc -->\n    * Write your own initialization here\n    * <!-- end-user-doc -->\n  @generated modifiable */\n  private void readObject() {}\n     \n");
+    stringBuffer.append("\n  /** <!-- begin-user-doc -->\n    * Write your own initialization here\n    * <!-- end-user-doc -->\n  @generated modifiable */\n  private void readObject() {/*default - does nothing empty block */}\n     \n");
    FeatureDescription [] fds = td.getFeatures();
    for (int i = 0; i < fds.length; i++) { 
      FeatureDescription fd = fds[i];

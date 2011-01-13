@@ -65,7 +65,7 @@ public class JCas_TypeTemplate implements Jg.IJCasTypeTemplate {
     stringBuffer.append(typeName_Type);
     stringBuffer.append(" extends ");
     stringBuffer.append(jg.getJavaName(td.getSupertypeName()) + "_Type");
-    stringBuffer.append(" {\n  /** @generated */\n  protected FSGenerator getFSGenerator() {return fsGenerator;}\n  /** @generated */\n  private final FSGenerator fsGenerator = \n    new FSGenerator() {\n      public FeatureStructure createFS(int addr, CASImpl cas) {\n  			 if (");
+    stringBuffer.append(" {\n  /** @generated */\n  @Override\n  protected FSGenerator getFSGenerator() {return fsGenerator;}\n  /** @generated */\n  private final FSGenerator fsGenerator = \n    new FSGenerator() {\n      public FeatureStructure createFS(int addr, CASImpl cas) {\n  			 if (");
     stringBuffer.append(typeName_Type);
     stringBuffer.append(".this.useExistingInstance) {\n  			   // Return eq fs instance if already created\n  		     FeatureStructure fs = ");
     stringBuffer.append(typeName_Type);
@@ -79,9 +79,9 @@ public class JCas_TypeTemplate implements Jg.IJCasTypeTemplate {
     stringBuffer.append(typeName);
     stringBuffer.append("(addr, ");
     stringBuffer.append(typeName_Type);
-    stringBuffer.append(".this);\n  	  }\n    };\n  /** @generated */\n  public final static int typeIndexID = ");
+    stringBuffer.append(".this);\n  	  }\n    };\n  /** @generated */\n  @SuppressWarnings (\"hiding\")\n  public final static int typeIndexID = ");
     stringBuffer.append(typeName);
-    stringBuffer.append(".typeIndexID;\n  /** @generated \n     @modifiable */\n  public final static boolean featOkTst = JCasRegistry.getFeatOkTst(\"");
+    stringBuffer.append(".typeIndexID;\n  /** @generated \n     @modifiable */\n  @SuppressWarnings (\"hiding\")\n  public final static boolean featOkTst = JCasRegistry.getFeatOkTst(\"");
     stringBuffer.append(td.getName());
     stringBuffer.append("\");\n");
    FeatureDescription [] fds = td.getFeatures();
