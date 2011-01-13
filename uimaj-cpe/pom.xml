@@ -88,24 +88,26 @@
 	</dependencies>
 	<build>
 		<finalName>uima-cpe</finalName>
-    <!-- remove this once test case cleans up after itself -->
-    <plugins>
-      <plugin>
-        <groupId>org.apache.rat</groupId>
-        <artifactId>apache-rat-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>default-cli</id>
-            <configuration>
-              <excludes>
-                <exclude>release.properties</exclude> <!-- release generated artifact -->
-                <exclude>checkpoint_synchPoint.xml*</exclude> <!-- test data -->
-                <exclude>checkpoint.dat*</exclude> <!-- test data -->
-              </excludes>              
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>      
-    </plugins>
+    <pluginManagement>
+      <!-- remove this once test case cleans up after itself -->
+      <plugins>
+        <plugin>
+          <groupId>org.apache.rat</groupId>
+          <artifactId>apache-rat-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>default-cli</id>
+              <configuration>
+                <excludes>
+                  <exclude>release.properties</exclude> <!-- release generated artifact -->
+                  <exclude>checkpoint_synchPoint.xml*</exclude> <!-- test data -->
+                  <exclude>checkpoint.dat*</exclude> <!-- test data -->
+                </excludes>              
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>      
+      </plugins>
+    </pluginManagement>
 	</build>	
 </project>

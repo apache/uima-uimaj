@@ -76,6 +76,31 @@
 	</dependencies>
 	<build>
 		<finalName>uima-core</finalName>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.rat</groupId>
+          <artifactId>apache-rat-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>default-cli</id>
+              <configuration>
+                <excludes>
+                  <exclude>release.properties</exclude> <!-- release generated artifact -->
+                  <exclude>src/test/resources/CASTests/*.txt</exclude> <!-- test data -->
+                  <exclude>src/test/resources/data/moby.txt</exclude>
+                  <exclude>src/test/resources/org/apache/uima/resource/impl/ResourceInClasspath.txt</exclude> <!-- test data -->
+                  <exclude>src/test/resources/pearTests/*.pear</exclude> <!-- test pear files -->
+                  <exclude>src/test/resources/pearTests/encodingTests/*</exclude> <!-- test data, RAT can't reliably read these -->
+                  <exclude>src/test/resources/SequencerTest/*.txt</exclude> <!-- test data -->
+                </excludes>              
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>         
+      </plugins>
+    </pluginManagement>
+    
 		<plugins>
 		
 		  <!-- experiment with CLIRR
@@ -150,26 +175,7 @@
 					<argLine>-Xmx650M</argLine>
 				</configuration>
 			</plugin>
-      <plugin>
-        <groupId>org.apache.rat</groupId>
-        <artifactId>apache-rat-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>default-cli</id>
-            <configuration>
-              <excludes>
-                <exclude>release.properties</exclude> <!-- release generated artifact -->
-                <exclude>src/test/resources/CASTests/*.txt</exclude> <!-- test data -->
-                <exclude>src/test/resources/data/moby.txt</exclude>
-                <exclude>src/test/resources/org/apache/uima/resource/impl/ResourceInClasspath.txt</exclude> <!-- test data -->
-                <exclude>src/test/resources/pearTests/*.pear</exclude> <!-- test pear files -->
-                <exclude>src/test/resources/pearTests/encodingTests/*</exclude> <!-- test data, RAT can't reliably read these -->
-                <exclude>src/test/resources/SequencerTest/*.txt</exclude> <!-- test data -->
-              </excludes>              
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>		
 		</plugins>
 	</build>
+  
 </project>
