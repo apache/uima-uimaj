@@ -31,11 +31,11 @@
    <feature url="features/org.apache.uima.runtime_2.3.1.jar" id="org.apache.uima.runtime" version="2.3.1">
       <category name="uima-tooling-and-runtimes"/>
    </feature>
-   <!-- next feature not yet ready
+   <!-- next feature not yet ready -->
    <feature url="features/org.apache.uima.as.deployeditor_2.3.1.jar" id="org.apache.uima.as.deployeditor" version="2.3.1">
       <category name="uima-as-tooling"/>
    </feature>
-   -->
+   
    
    
    <feature url="features/org.apache.uima.tools_2.3.0.incubating.jar" id="org.apache.uima.tools" version="2.3.0.incubating">
