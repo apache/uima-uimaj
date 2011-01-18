@@ -146,21 +146,21 @@
                   <version>${item-maven-release-version}</version>
                   <destFileName>org.apache.uima.runtime_${item-eclipse-release-version}.jar</destFileName>
                 </artifactItem>
-                <!-- 
+                 
                 <artifactItem>
                   <groupId>org.apache.uima</groupId>
                   <artifactId>uimaj-ep-deployeditor</artifactId>
-                  <version>2.3.0.incubating</version>
-                  <destFileName>org.apache.uima.deployeditor_2.3.0.incubating.jar</destFileName>
+                  <version>2.3.1.incubating</version>
+                  <destFileName>org.apache.uima.deployeditor_2.3.1.incubating.jar</destFileName>
                 </artifactItem>
                  
                 <artifactItem>
                   <groupId>org.apache.uima</groupId>
                   <artifactId>uimaj-ep-runtime-deployeditor</artifactId>
-                  <version>2.3.0.incubating</version>
-                  <destFileName>org.apache.uima.runtime.fragments.deployeditor_2.3.0.incubating.jar</destFileName>
+                  <version>2.3.1.incubating</version>
+                  <destFileName>org.apache.uima.runtime.fragments.deployeditor_2.3.1.incubating.jar</destFileName>
                 </artifactItem>
-                 -->  
+                   
               </artifactItems>
               <outputDirectory>${project.build.directory}/work/plugins</outputDirectory>
             </configuration>
