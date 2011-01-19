@@ -32,7 +32,7 @@
       <category name="uima-tooling-and-runtimes"/>
    </feature>
    <!-- next feature not yet ready -->
-   <feature url="features/org.apache.uima.as.deployeditor_2.3.1.jar" id="org.apache.uima.as.deployeditor" version="2.3.1">
+   <feature url="features/org.apache.uima.as.deployeditor_2.3.1.SNAPSHOT.jar" id="org.apache.uima.as.deployeditor" version="2.3.1.SNAPSHOT">
       <category name="uima-as-tooling"/>
    </feature>
    
