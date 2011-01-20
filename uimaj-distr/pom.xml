@@ -136,32 +136,6 @@
   </dependencies>
   
   <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-changes-plugin</artifactId>
-          <version>2.3</version>
-          <executions>
-            <execution>
-              <id>default-cli</id>
-              <goals><goal>jira-report</goal></goals>
-              <!-- don't use generate-sources - because javadoc plugin re-exec's that -->
-              <phase>generate-resources</phase>        
-              <configuration>
-                <fixVersionIds>${jiraVersion}</fixVersionIds>
-                <columnNames>Type,Key,Status,Summary</columnNames>
-                <resolutionIds>Fixed</resolutionIds>
-                <statusIds>Closed,Resolved</statusIds>
-                <sortColumnNames>Type,Key,Status</sortColumnNames>
-                <outputDirectory>${basedir}/issuesFixed/</outputDirectory>
-                <maxEntries>1000</maxEntries> <!-- hopefully, bigger than ever needed -->
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>      
-      </plugins>
-    </pluginManagement>
     
     <plugins>
      
