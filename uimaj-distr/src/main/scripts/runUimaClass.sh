@@ -26,7 +26,7 @@ fi
 # set default ActiveMQ home 
 if [ "$ACTIVEMQ_HOME" = "" ]
 then
-  ACTIVEMQ_HOME=$UIMA_HOME/apache-activemq-4.1.1
+  ACTIVEMQ_HOME=$UIMA_HOME/apache-activemq-5.4.1
 fi
 
 if [ "$JAVA_HOME" = "" ]

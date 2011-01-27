@@ -24,7 +24,7 @@
 @setlocal
 
 @rem Set ActiveMQ home
-@if "%ACTIVEMQ_HOME%"=="" (set "ACTIVEMQ_HOME=%UIMA_HOME%\apache-activemq-4.1.1")
+@if "%ACTIVEMQ_HOME%"=="" (set "ACTIVEMQ_HOME=%UIMA_HOME%\apache-activemq-5.4.1")
 
 @if "%JAVA_HOME%"=="" (set UIMA_JAVA_CALL=java) else (set "UIMA_JAVA_CALL=%JAVA_HOME%\bin\java")
 
