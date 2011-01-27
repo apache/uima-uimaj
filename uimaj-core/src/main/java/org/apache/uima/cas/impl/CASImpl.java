@@ -2409,26 +2409,26 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     Type fsList = ts.addType(CAS.TYPE_NAME_FS_LIST, list);
     Type fsEList = ts.addType(CAS.TYPE_NAME_EMPTY_FS_LIST, fsList);
     Type fsNeList = ts.addType(CAS.TYPE_NAME_NON_EMPTY_FS_LIST, fsList);
-    ts.addFeature(CAS.FEATURE_BASE_NAME_HEAD, fsNeList, top);
-    ts.addFeature(CAS.FEATURE_BASE_NAME_TAIL, fsNeList, fsList);
+    ts.addFeature(CAS.FEATURE_BASE_NAME_HEAD, fsNeList, top, true);
+    ts.addFeature(CAS.FEATURE_BASE_NAME_TAIL, fsNeList, fsList, true);
     // Float lists.
     Type floatList = ts.addType(CAS.TYPE_NAME_FLOAT_LIST, list);
     Type floatEList = ts.addType(CAS.TYPE_NAME_EMPTY_FLOAT_LIST, floatList);
     Type floatNeList = ts.addType(CAS.TYPE_NAME_NON_EMPTY_FLOAT_LIST, floatList);
-    ts.addFeature(CAS.FEATURE_BASE_NAME_HEAD, floatNeList, floatT);
-    ts.addFeature(CAS.FEATURE_BASE_NAME_TAIL, floatNeList, floatList);
+    ts.addFeature(CAS.FEATURE_BASE_NAME_HEAD, floatNeList, floatT, false);
+    ts.addFeature(CAS.FEATURE_BASE_NAME_TAIL, floatNeList, floatList, true);
     // Integer lists.
     Type intList = ts.addType(CAS.TYPE_NAME_INTEGER_LIST, list);
     Type intEList = ts.addType(CAS.TYPE_NAME_EMPTY_INTEGER_LIST, intList);
     Type intNeList = ts.addType(CAS.TYPE_NAME_NON_EMPTY_INTEGER_LIST, intList);
-    ts.addFeature(CAS.FEATURE_BASE_NAME_HEAD, intNeList, intT);
-    ts.addFeature(CAS.FEATURE_BASE_NAME_TAIL, intNeList, intList);
+    ts.addFeature(CAS.FEATURE_BASE_NAME_HEAD, intNeList, intT, false);
+    ts.addFeature(CAS.FEATURE_BASE_NAME_TAIL, intNeList, intList, true);
     // String lists.
     Type stringList = ts.addType(CAS.TYPE_NAME_STRING_LIST, list);
     Type stringEList = ts.addType(CAS.TYPE_NAME_EMPTY_STRING_LIST, stringList);
     Type stringNeList = ts.addType(CAS.TYPE_NAME_NON_EMPTY_STRING_LIST, stringList);
-    ts.addFeature(CAS.FEATURE_BASE_NAME_HEAD, stringNeList, stringT);
-    ts.addFeature(CAS.FEATURE_BASE_NAME_TAIL, stringNeList, stringList);
+    ts.addFeature(CAS.FEATURE_BASE_NAME_HEAD, stringNeList, stringT, false);
+    ts.addFeature(CAS.FEATURE_BASE_NAME_TAIL, stringNeList, stringList, true);
 
     Type booleanT = ts.addType(CAS.TYPE_NAME_BOOLEAN, top);
     Type byteT = ts.addType(CAS.TYPE_NAME_BYTE, top);
@@ -2445,23 +2445,23 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
     // Sofa Stuff
     Type sofa = ts.addType(CAS.TYPE_NAME_SOFA, top);
-    ts.addFeature(CAS.FEATURE_BASE_NAME_SOFANUM, sofa, intT);
-    ts.addFeature(CAS.FEATURE_BASE_NAME_SOFAID, sofa, stringT);
-    ts.addFeature(CAS.FEATURE_BASE_NAME_SOFAMIME, sofa, stringT);
+    ts.addFeature(CAS.FEATURE_BASE_NAME_SOFANUM, sofa, intT, false);
+    ts.addFeature(CAS.FEATURE_BASE_NAME_SOFAID, sofa, stringT, false);
+    ts.addFeature(CAS.FEATURE_BASE_NAME_SOFAMIME, sofa, stringT, false);
     // Type localSofa = ts.addType(CAS.TYPE_NAME_LOCALSOFA, sofa);
-    ts.addFeature(CAS.FEATURE_BASE_NAME_SOFAARRAY, sofa, top);
-    ts.addFeature(CAS.FEATURE_BASE_NAME_SOFASTRING, sofa, stringT);
+    ts.addFeature(CAS.FEATURE_BASE_NAME_SOFAARRAY, sofa, top, true);
+    ts.addFeature(CAS.FEATURE_BASE_NAME_SOFASTRING, sofa, stringT, false);
     // Type remoteSofa = ts.addType(CAS.TYPE_NAME_REMOTESOFA, sofa);
-    ts.addFeature(CAS.FEATURE_BASE_NAME_SOFAURI, sofa, stringT);
+    ts.addFeature(CAS.FEATURE_BASE_NAME_SOFAURI, sofa, stringT, false);
 
     // Annotations
     Type annotBaseType = ts.addType(CAS.TYPE_NAME_ANNOTATION_BASE, top);
-    ts.addFeature(CAS.FEATURE_BASE_NAME_SOFA, annotBaseType, sofa);
+    ts.addFeature(CAS.FEATURE_BASE_NAME_SOFA, annotBaseType, sofa, false);
     Type annotType = ts.addType(CAS.TYPE_NAME_ANNOTATION, annotBaseType);
-    ts.addFeature(CAS.FEATURE_BASE_NAME_BEGIN, annotType, intT);
-    ts.addFeature(CAS.FEATURE_BASE_NAME_END, annotType, intT);
+    ts.addFeature(CAS.FEATURE_BASE_NAME_BEGIN, annotType, intT, false);
+    ts.addFeature(CAS.FEATURE_BASE_NAME_END, annotType, intT, false);
     Type docType = ts.addType(CAS.TYPE_NAME_DOCUMENT_ANNOTATION, annotType);
-    ts.addFeature(CAS.FEATURE_BASE_NAME_LANGUAGE, docType, stringT);
+    ts.addFeature(CAS.FEATURE_BASE_NAME_LANGUAGE, docType, stringT, false);
 
     // Lock individual types.
     setTypeFinal(intT);
