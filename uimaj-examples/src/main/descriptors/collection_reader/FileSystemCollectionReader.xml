@@ -84,6 +84,12 @@
                     <boolean>false</boolean>
                 </value>
             </nameValuePair>
+            <nameValuePair>
+		        <name>Language</name>
+		        <value>
+		            <string>en</string>
+		        </value>
+		    </nameValuePair>
 		</configurationParameterSettings>
 
         <!-- Type System of CASes returned by this Collection Reader -->
