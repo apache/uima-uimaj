@@ -238,6 +238,20 @@ public class AnnotatorTester {
    }
 
    /**
+    * Creates a new fresh CAS instance which can be used for testing.
+    * @return
+    * @throws Exception
+    */
+    public CAS createCAS()  throws Exception {
+        try {
+            return ae.newCAS();
+        } catch (Exception ex) {
+            JUnitExtension.handleException(ex);
+            return null;
+        }
+    }
+	
+   /**
     * performs a test on the initialized annotator. The specified document is
     * processed with the given language.
     * 
