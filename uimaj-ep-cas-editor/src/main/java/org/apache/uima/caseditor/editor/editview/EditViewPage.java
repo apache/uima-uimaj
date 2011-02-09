@@ -404,7 +404,7 @@ final class EditViewPage extends Page implements ISelectionListener {
             } else if (type.getName().equals(CAS.TYPE_NAME_FS_ARRAY)) {
               fs = document.getCAS().createArrayFS(arraySize);
             } else {
-              throw new CasEditorError("Unkown array type!");
+              throw new CasEditorError("Unkown array type: " + type.getName() + "!");
             }  
       }
       else if (ts.subsumes(ts.getType(CAS.TYPE_NAME_ANNOTATION), type)) {
