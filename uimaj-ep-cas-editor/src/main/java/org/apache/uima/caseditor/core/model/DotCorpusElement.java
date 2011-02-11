@@ -316,9 +316,8 @@ public class DotCorpusElement extends AbstractNlpElement {
    * 
    * @throws CoreException
    */
-  // BUG: When serializing do not re-create NLP Project!+
   public void serialize() throws CoreException {
-    serialize(false);
+    serialize(true);
   }
 
   /**
