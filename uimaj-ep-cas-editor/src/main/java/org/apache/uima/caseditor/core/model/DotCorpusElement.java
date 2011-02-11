@@ -285,20 +285,40 @@ public class DotCorpusElement extends AbstractNlpElement {
   }
 
   /**
+   * Serializes the dot corpus. If updateProject is true the project structure will be re-build,
+   * otherwise not.
+   * 
+   * @param updateProject
+   * @throws CoreException
+   */
+  public void serialize(boolean updateProject) throws CoreException {
+    
+    if (updateProject == false) getNlpProject().setDotCorpusStyleOnlyChanges(true);
+    
+    ByteArrayOutputStream outBuffer = new ByteArrayOutputStream();
+    
+    try {
+      DotCorpusSerializer.serialize(mDotCorpus, outBuffer);
+  
+      if (mResource.exists()) {
+        mResource.setContents(new ByteArrayInputStream(outBuffer.toByteArray()), true, true, null);
+      } else {
+        mResource.create(new ByteArrayInputStream(outBuffer.toByteArray()), true, null);
+      }
+    }
+    finally {
+      if (updateProject == false) getNlpProject().setDotCorpusStyleOnlyChanges(false);
+    }
+  }
+  
+  /**
    * Serializes the <code>DotCorpus</code> instance to the given <code>IFile</code>.
    * 
    * @throws CoreException
    */
+  // BUG: When serializing do not re-create NLP Project!+
   public void serialize() throws CoreException {
-    ByteArrayOutputStream outBuffer = new ByteArrayOutputStream();
-
-    DotCorpusSerializer.serialize(mDotCorpus, outBuffer);
-
-    if (mResource.exists()) {
-      mResource.setContents(new ByteArrayInputStream(outBuffer.toByteArray()), true, true, null);
-    } else {
-      mResource.create(new ByteArrayInputStream(outBuffer.toByteArray()), true, null);
-    }
+    serialize(false);
   }
 
   /**

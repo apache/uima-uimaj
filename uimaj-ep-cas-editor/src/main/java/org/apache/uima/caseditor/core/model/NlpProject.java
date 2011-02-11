@@ -60,6 +60,8 @@ public final class NlpProject extends AbstractNlpElement implements IProjectNatu
 
   private DotCorpusElement mDotCorpusElement;
 
+  private boolean isDotCorpusStyleChange = false;
+  
   private Collection<CorpusElement> mCopora = new LinkedList<CorpusElement>();
 
   private Collection<CasProcessorFolder> mUimaSourceFolder = new LinkedList<CasProcessorFolder>();
@@ -507,21 +509,34 @@ public final class NlpProject extends AbstractNlpElement implements IProjectNatu
       }
     }
   }
-
+  
+  /**
+   * Used to disable/enable of the project structure when only styling was changed.
+   * Set to true before style change, and set to false afterwards.
+   * 
+   * @param isStyleOnlyChange
+   */
+  void setDotCorpusStyleOnlyChanges(boolean isStyleOnlyChange) {
+    isDotCorpusStyleChange = isStyleOnlyChange;
+  }
+  
   void postProcessResourceChanges() throws CoreException {
     if (mIsDotCorpusDirty) {
-      mIsDotCorpusDirty = false;
-
-      mDotCorpusElement = null;
-      loadDotCorpus();
       
-      mUimaSourceFolder.clear();
-      mCopora.clear();
-
-      mTypesystem = null;
-
-      initialize();
-
+      mIsDotCorpusDirty = false;
+      
+      if (!isDotCorpusStyleChange) {
+        mDotCorpusElement = null;
+        loadDotCorpus();
+        
+        mUimaSourceFolder.clear();
+        mCopora.clear();
+  
+        mTypesystem = null;
+  
+        initialize();
+      }
+      
       updateAnnotationTypeColors();
       
       CasEditorPlugin.getNlpModel().fireRefreshEvent(this);

@@ -267,9 +267,8 @@ public class DefaultCasDocumentProvider extends
 
       IFile file = fileInput.getFile();
 
-      INlpElement nlpElement =
-              org.apache.uima.caseditor.CasEditorPlugin.getNlpModel().findMember(file);
-
+      INlpElement nlpElement = CasEditorPlugin.getNlpModel().findMember(file);
+      
       if (nlpElement instanceof DocumentElement) {
         DocumentElement documentElement = (DocumentElement) nlpElement;
 
@@ -396,7 +395,7 @@ public class DefaultCasDocumentProvider extends
       nlpElement.getNlpProject().getDotCorpus().setStyle(style);
       
       try {
-        nlpElement.getNlpProject().getDotCorpus().serialize();
+        nlpElement.getNlpProject().getDotCorpus().serialize(false);
       } catch (CoreException e) {
         CasEditorPlugin.log(e);
       }
@@ -432,7 +431,7 @@ public class DefaultCasDocumentProvider extends
       nlpElement.getNlpProject().getDotCorpus().addShownType(type.getName());
       
       try {
-        nlpElement.getNlpProject().getDotCorpus().serialize();
+        nlpElement.getNlpProject().getDotCorpus().serialize(false);
       } catch (CoreException e) {
         CasEditorPlugin.log(e);
       }
@@ -453,7 +452,7 @@ public class DefaultCasDocumentProvider extends
       nlpElement.getNlpProject().getDotCorpus().removeShownType(type.getName());
       
       try {
-        nlpElement.getNlpProject().getDotCorpus().serialize();
+        nlpElement.getNlpProject().getDotCorpus().serialize(false);
       } catch (CoreException e) {
         CasEditorPlugin.log(e);
       }
