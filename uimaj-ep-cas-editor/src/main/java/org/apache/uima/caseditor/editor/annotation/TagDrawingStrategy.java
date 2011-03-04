@@ -115,7 +115,7 @@ class TagDrawingStrategy implements IDrawingStrategy {
         
           Rectangle bounds = textWidget.getTextBounds(offset, offset + length);
   
-          if (gc != null && featureValue != null) {
+          if (gc != null) {
 
             int lastCharIndex;
             

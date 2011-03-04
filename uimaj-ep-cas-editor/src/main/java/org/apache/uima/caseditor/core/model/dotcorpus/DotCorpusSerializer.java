@@ -98,7 +98,7 @@ public class DotCorpusSerializer {
     try {
       documentBuilder = documentBuilderFacoty.newDocumentBuilder();
     } catch (ParserConfigurationException e) {
-      String message = "This should never happen:" + e.getMessage() != null ? e.getMessage() : "";
+      String message = "This should never happen:" + (e.getMessage() != null ? e.getMessage() : "");
 
       IStatus s = new Status(IStatus.ERROR, CasEditorPlugin.ID, IStatus.OK, message, e);
 
