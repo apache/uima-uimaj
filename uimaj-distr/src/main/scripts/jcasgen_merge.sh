@@ -63,7 +63,8 @@ else
       UIMA_JAVA_CALL="$JAVA_HOME/bin/java"
     fi    
     J="$UIMA_JAVA_CALL"
-    ES="$ECLIPSE_HOME/startup.jar"
+#   Next line changed to use method for launching Eclipse in headless mode, as of Eclipse 3.3    
+    ES=`ls $ECLIPSE_HOME/plugins/org.eclipse.equinox.launcher_*.jar|head -1`
     MAIN=org.eclipse.core.launcher.Main
     LOGGER="-Djava.util.logging.config.file=$UIMA_HOME/config/FileConsoleLogger.properties"
     ARGS="-noupdate -nosplash -consolelog -application org.apache.uima.jcas.jcasgenp.JCasGen"
