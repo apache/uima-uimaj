@@ -34,6 +34,7 @@ import org.apache.uima.resource.RelativePathResolver;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.Resource_ImplBase;
+import org.apache.uima.util.UriUtils;
 
 /**
  * A simple {@link DataResource} implementation that can read data from a file via a URL. There is
@@ -74,7 +75,7 @@ public class ConfigurableDataResource_impl extends Resource_ImplBase implements 
     ConfigurableDataResourceSpecifier spec = (ConfigurableDataResourceSpecifier) aSpecifier;
     try {
       // create URI object from URL specified in descriptor
-      mUri = new URI(spec.getUrl());
+      mUri = UriUtils.quote(spec.getUrl());
     } catch (URISyntaxException e) {
       throw new ResourceInitializationException(e);
     }
