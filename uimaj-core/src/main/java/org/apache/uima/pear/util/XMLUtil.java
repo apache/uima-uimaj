@@ -158,8 +158,9 @@ public class XMLUtil {
     BufferedReader fReader = null;
     try {
       // first, make sure - this is a valid XML file
-      if (!isValidXmlFile(xmlFile))
+      if (!isValidXmlFile(xmlFile)) {
         return null;
+      }
       iStream = new FileInputStream(xmlFile);
       // read prefix - possible BOM or signature
       int byteCounter = 0;
@@ -226,7 +227,12 @@ public class XMLUtil {
       }
       if (offset != (bytes2put - 1))
         throw new IOException("cannot read file");
-      // check first XML header characters - '<?xml'
+      // check first XML header characters - '<?'
+      // buffer is 7 bytes
+      // some Javas won't properly decode an odd number of bytes for utf16 coding
+      // https://issues.apache.org/jira/browse/UIMA-2099
+      byte[] buffer6 = new byte[6];
+      System.arraycopy(buffer, 0, buffer6, 0, 6);  
       if (utf8Signature) {
         // check for UTF-8
         String test = new String(buffer, "UTF-8");
@@ -234,7 +240,7 @@ public class XMLUtil {
           encoding = "UTF-8";
       } else if (utf16Signature) {
         // check for UTF-16
-        String test = new String(buffer, "UTF-16");
+        String test = new String(buffer6, "UTF-16");
         if (test.startsWith(FIRST_XML_CHARS))
           encoding = "UTF-16";
       } else if (utf32Signature) {
@@ -246,12 +252,12 @@ public class XMLUtil {
           encoding = "UTF-8";
         else {
           // next, check for UTF-16LE in XML header characters
-          test = new String(buffer, "UTF-16LE");
+          test = new String(buffer6, "UTF-16LE");
           if (test.startsWith(FIRST_XML_CHARS)) {
             encoding = "UTF-16LE";
           } else {
-            // next, check for UTF-16BE in XML header hcharacters
-            test = new String(buffer, "UTF-16BE");
+            // next, check for UTF-16BE in XML header characters
+            test = new String(buffer6, "UTF-16BE");
             if (test.startsWith(FIRST_XML_CHARS)) {
               encoding = "UTF-16BE";
             }
