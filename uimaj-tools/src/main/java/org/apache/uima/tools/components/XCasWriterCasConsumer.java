@@ -40,6 +40,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceProcessException;
 import org.apache.uima.util.InvalidXMLException;
+import org.apache.uima.util.UriUtils;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLSerializer;
 import org.xml.sax.SAXException;
@@ -108,7 +109,9 @@ public class XCasWriterCasConsumer extends CasConsumer_ImplBase {
       try {
         // handle blanks in path
         // https://issues.apache.org/jira/browse/UIMA-1748
-        URI uri = new URI(fileLoc.getUri());
+        // use 3 arg form of URI Constructor to properly quote any otherwise illegal chars such as blank
+        // https://issues.apache.org/jira/browse/UIMA-2097
+        URI uri = UriUtils.quote(fileLoc.getUri());
         inFile = new File(uri);
 
         String outFileName = inFile.getName();

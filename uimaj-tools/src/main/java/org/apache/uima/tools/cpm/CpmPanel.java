@@ -99,6 +99,7 @@ import org.apache.uima.tools.util.gui.XMLFileFilter;
 import org.apache.uima.util.FileUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.Progress;
+import org.apache.uima.util.UriUtils;
 import org.apache.uima.util.XMLInputSource;
 
 public class CpmPanel extends JPanel implements ActionListener, FileSelectorListener,
@@ -1001,8 +1002,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
    * @return File corresponding to that URL
    */
   private File urlToFile(URL url) throws URISyntaxException {
-    String urlString = url.toString().replaceAll(" ", "%20");
-    return new File(new URI(urlString));
+    return new File(UriUtils.quote(url));
   }
 
   private void displayProgress() {

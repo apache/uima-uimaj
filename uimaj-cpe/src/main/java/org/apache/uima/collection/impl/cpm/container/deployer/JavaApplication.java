@@ -33,6 +33,7 @@ import org.apache.uima.collection.metadata.CasProcessorExecArg;
 import org.apache.uima.collection.metadata.CpeCasProcessor;
 import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.util.Level;
+import org.apache.uima.util.UriUtils;
 
 /**
  * Component responsible for configuring command line for java based CasProcessor. Each CasProcessor
@@ -157,7 +158,7 @@ public class JavaApplication extends RunnableApplication {
         URL descriptorUrl = aCasProcessorConfiguration.getDescriptorUrl();
         String descriptorPath;
         try {
-          descriptorPath = new URI(descriptorUrl.toString()).getPath();
+          descriptorPath = UriUtils.quote(descriptorUrl).getPath();
         } catch (URISyntaxException e) {
           throw new ResourceConfigurationException(e);
         }

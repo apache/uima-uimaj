@@ -55,6 +55,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.ConfigurationGroup;
 import org.apache.uima.resource.metadata.ConfigurationParameter;
 import org.apache.uima.util.Level;
+import org.apache.uima.util.UriUtils;
 
 /**
  * 
@@ -222,17 +223,20 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    * @see org.apache.uima.UimaContext#getResourceURI(java.lang.String)
    */
   public URI getResourceURI(String aKey) throws ResourceAccessException {
-    URL resourceUrl = getResourceURL(aKey);
+    return getResourceURIfromURL( getResourceURL(aKey));
+  }
+  
+  private URI getResourceURIfromURL(URL resourceUrl) throws ResourceAccessException {
     if (resourceUrl != null) {
       try {
-        return new URI(resourceUrl.toString().replaceAll(" ", "%20"));
+        return UriUtils.quote(resourceUrl);
       } catch (URISyntaxException e) {
         throw new ResourceAccessException(e);
       }
     }
     else {
       return null;
-    }
+    } 
   }
  
 
@@ -363,19 +367,8 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    * @see org.apache.uima.UimaContext#getResourceURI(String, String[])
    */
   public URI getResourceURI(String aKey, String[] aParams) throws ResourceAccessException {
-    URL resourceUrl = getResourceURL(aKey, aParams);
-    if (resourceUrl != null) {
-      try {
-        return new URI(resourceUrl.toString().replaceAll(" ", "%20"));
-      } catch (URISyntaxException e) {
-        throw new ResourceAccessException(e);
-      }
-    }
-    else {
-      return null;
-    }
-  }
- 
+    return getResourceURIfromURL(getResourceURL(aKey, aParams));
+  } 
 
   /* (non-Javadoc)
    * @see org.apache.uima.UimaContext#getResourceFilePath(String, String[])

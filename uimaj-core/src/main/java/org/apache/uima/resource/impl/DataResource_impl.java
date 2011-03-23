@@ -35,6 +35,7 @@ import org.apache.uima.resource.RelativePathResolver;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.Resource_ImplBase;
+import org.apache.uima.util.UriUtils;
 
 /**
  * A simple {@link DataResource} implementation that can read data from a file via a URL. There is
@@ -158,10 +159,7 @@ public class DataResource_impl extends Resource_ImplBase implements DataResource
    */
   public URI getUri() {
     try {
-      // we need to escape any space characters in the URL. In Java,
-      // a URL object may contain a space but a URI may not.
-      String urlStr = mFileUrl.toString();
-      return new URI(urlStr.replaceAll(" ", "%20"));
+      return UriUtils.quote(mFileUrl);
     } catch (URISyntaxException e) {
       throw new UIMARuntimeException(e);
     }
