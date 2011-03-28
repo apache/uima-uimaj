@@ -64,4 +64,20 @@ public class UriUtils {
   public static URI quote(URL u) throws URISyntaxException {
     return quote(u.toString());
   }
+  
+  /**
+   * Create a URI from a String, with proper quoting.
+   * Already quoted things in the input string are not re-quoted.
+   * Mimic exception treatment of URI.create
+   * @param u
+   * @return URI with proper quoting
+   */
+
+  public static URI create(String s) {
+    try {
+      return quote(s);
+    } catch (URISyntaxException e) {
+      throw new IllegalArgumentException(e);
+    }
+  }
 }
