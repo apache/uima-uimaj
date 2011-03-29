@@ -43,10 +43,10 @@ public class NoOpAnnotator extends CasAnnotator_ImplBase {
   int finalCount = 0;
 
   int cpcDelay = 0;
-
+  
   public void initialize(UimaContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
-
+    
     if (getContext().getConfigParameterValue("FailDuringInitialization") != null) {
       throw new ResourceInitializationException(new FileNotFoundException("Simulated Exception"));
     }
