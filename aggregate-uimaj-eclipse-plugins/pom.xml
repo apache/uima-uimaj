@@ -64,6 +64,7 @@
     <module>../uimaj-ep-jcasgen</module>
     <module>../uimaj-ep-configurator</module>
     <module>../uimaj-ep-pear-packager</module>
+    <module>../uimaj-ep-launcher</module>
     <module>../uimaj-ep-cas-editor</module>
     <module>../uimaj-ep-runtime</module>
     
