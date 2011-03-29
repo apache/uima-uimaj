@@ -220,6 +220,7 @@
 			  org.eclipse.debug.core,
 			  org.eclipse.debug.ui,
 			  org.eclipse.debug.ui.sourcelookup,
+			  org.eclipse.debug.core.model,
 			  org.eclipse.jdt.debug.ui.launchConfigurations,
 			  org.eclipse.jdt.launching,
 			  org.eclipse.jface.layout,
