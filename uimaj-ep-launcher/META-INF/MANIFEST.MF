@@ -1,0 +1,25 @@
+Manifest-Version: 1.0
+Eclipse-AutoStart: true
+Ignore-Package: org.eclipse.core.runtime
+Tool: Bnd-0.0.357
+Bundle-Name: UIMA Eclipse: uimaj-ep-launcher
+Created-By: 1.6.0_24 (Apple Inc.)
+Require-Bundle: org.eclipse.core.runtime
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 2.3.2.SNAPSHOT
+Bnd-LastModified: 1301318607109
+Bundle-Activator: org.apache.uima.ep_launcher.LauncherPlugin
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Adds launch support for Analysis Engines
+Import-Package: org.eclipse.core.resources,org.eclipse.core.runtime.mo
+ del,org.eclipse.core.variables,org.eclipse.debug.core,org.eclipse.deb
+ ug.ui,org.eclipse.debug.ui.sourcelookup,org.eclipse.jdt.debug.ui.laun
+ chConfigurations,org.eclipse.jdt.launching,org.eclipse.jface.layout,o
+ rg.eclipse.jface.preference,org.eclipse.jface.viewers,org.eclipse.swt
+ .events,org.eclipse.swt.layout,org.eclipse.swt.widgets,org.eclipse.ui
+ ,org.eclipse.ui.dialogs,org.eclipse.ui.model,org.eclipse.ui.plugin,or
+ g.osgi.framework;version="1.3"
+Bundle-SymbolicName: org.apache.uima.launcher;singleton:=true
+Bundle-DocURL: http://www.apache.org/
+
