@@ -20,6 +20,7 @@
 package org.apache.uima.resource.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,11 +54,11 @@ public class CasManager_impl implements CasManager {
 
   private List<ProcessingResourceMetaData> mMetaDataList = new ArrayList<ProcessingResourceMetaData>();
 
-  private Map<String, CasPool> mRequestorToCasPoolMap = new HashMap<String, CasPool>();
+  private Map<String, CasPool> mRequestorToCasPoolMap = Collections.synchronizedMap(new HashMap<String, CasPool>());
 
-  private Map<CAS, CasPool> mCasToCasPoolMap = new HashMap<CAS, CasPool>();
+  private Map<CAS, CasPool> mCasToCasPoolMap = Collections.synchronizedMap(new HashMap<CAS, CasPool>());
   
-  private Map<CAS, UimaContext> mCasToUimaContextMap = new HashMap<CAS, UimaContext>();
+  private Map<CAS, UimaContext> mCasToUimaContextMap = Collections.synchronizedMap(new HashMap<CAS, UimaContext>());
 
   private CasDefinition mCasDefinition = null;
   
