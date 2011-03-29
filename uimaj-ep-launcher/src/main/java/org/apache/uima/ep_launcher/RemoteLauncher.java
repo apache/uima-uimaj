@@ -154,7 +154,7 @@ public class RemoteLauncher {
         try {
           XmiCasDeserializer.deserialize(inputStream, aCAS, true);
         } catch (SAXException e) {
-          throw new IOException(e);
+          throw new IOException(e.getMessage());
         } finally {
           inputStream.close();
         }
@@ -164,7 +164,7 @@ public class RemoteLauncher {
         try {
           XCASDeserializer.deserialize(inputStream, aCAS, true);
         } catch (SAXException e) {
-          throw new IOException(e);
+          throw new IOException(e.getMessage());
         } finally {
           inputStream.close();
         }
@@ -213,7 +213,7 @@ public class RemoteLauncher {
         try {
           ser.serialize(aCAS, xmlSer.getContentHandler());
         } catch (SAXException e) {
-          throw new IOException(e);
+          throw new IOException(e.getMessage());
         }
       } finally {
         if (out != null) {
