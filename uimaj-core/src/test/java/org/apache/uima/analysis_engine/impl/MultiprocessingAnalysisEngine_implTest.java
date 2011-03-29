@@ -30,6 +30,7 @@ import org.apache.uima.Constants;
 import org.apache.uima.UIMAException;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMA_IllegalStateException;
+import org.apache.uima.ae.multiplier.SimpleCasGenerator;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.ResultSpecification;
@@ -314,8 +315,8 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
       //Check TestAnnotator fields only at the very end of processing,
       //we can't test from the threads themselves since the state of
       //these fields is nondeterministic during the multithreaded processing.
-      assertEquals("testing...", TestAnnotator.getLastDocument());
-      ResultSpecification lastResultSpec = TestAnnotator.getLastResultSpec();
+      assertEquals("testing...", SimpleCasGenerator.getLastDocument());
+      ResultSpecification lastResultSpec = SimpleCasGenerator.getLastResultSpec();
       ResultSpecification resultSpec = new ResultSpecification_impl(lastResultSpec.getTypeSystem());
       resultSpec.addResultType("NamedEntity", true);
       assertEquals(resultSpec, lastResultSpec);
@@ -509,9 +510,9 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
           ResultSpecification resultSpec = new ResultSpecification_impl(tcas.getTypeSystem());
           resultSpec.addResultType("NamedEntity", true);
   
-//          tcas.setDocumentText("testing...");
-//          mAE.process(tcas, resultSpec);
-//          tcas.reset();
+          tcas.setDocumentText("testing...");
+          mAE.process(tcas, resultSpec);
+          tcas.reset();
         }
       } catch (Throwable t) {
         t.printStackTrace();

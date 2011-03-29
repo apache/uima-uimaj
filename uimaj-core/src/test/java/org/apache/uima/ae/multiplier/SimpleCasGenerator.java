@@ -46,6 +46,7 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.CasMultiplier_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
+import org.apache.uima.analysis_engine.ResultSpecification;
 import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -62,6 +63,18 @@ public class SimpleCasGenerator extends CasMultiplier_ImplBase {
   private String text;
 
   long docCount = 0;
+  
+  public static String lastDocument;
+
+  public static ResultSpecification lastResultSpec;
+  
+  public static synchronized String getLastDocument() {
+    return lastDocument;  
+  }
+  
+  public static synchronized ResultSpecification getLastResultSpec() {
+    return lastResultSpec;
+  }
 
   /*
    * (non-Javadoc)
@@ -71,6 +84,9 @@ public class SimpleCasGenerator extends CasMultiplier_ImplBase {
    */
   public void initialize(UimaContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
+    lastDocument = null;
+    lastResultSpec = null;
+
     this.nToGen = ((Integer) aContext.getConfigParameterValue("NumberToGenerate")).intValue();
     FileInputStream fis = null;
     try {
@@ -107,6 +123,10 @@ public class SimpleCasGenerator extends CasMultiplier_ImplBase {
    * @see JCasMultiplier_ImplBase#process(JCas)
    */
   public void process(CAS aCas) throws AnalysisEngineProcessException {
+    // set static fields to contain document text, result spec,
+    // and value of StringParam configuration parameter.
+    lastDocument = aCas.getDocumentText();
+    lastResultSpec = getResultSpecification();
     this.mCount = 0;
     this.docCount = 0;
   }
