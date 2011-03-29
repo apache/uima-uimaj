@@ -94,10 +94,17 @@ public abstract class Resource_ImplBase implements Resource {
       // UIMA extension ClassLoader is used to locate message digests.
       Logger logger = UIMAFramework.getLogger(this.getClass());
       logger.setResourceManager(resMgr);
+      
+      ConfigurationManager configMgr = null;
+      if (aAdditionalParams != null) {
+        configMgr = (ConfigurationManager)aAdditionalParams.get(PARAM_CONFIG_MANAGER);
+      }
+      if (configMgr == null) {
+        configMgr = UIMAFramework.newConfigurationManager();
+      }
 
       // create and initialize UIMAContext
-      mUimaContextAdmin = UIMAFramework.newUimaContext(logger, resMgr, UIMAFramework
-              .newConfigurationManager());
+      mUimaContextAdmin = UIMAFramework.newUimaContext(logger, resMgr, configMgr);
 
     } else {
       // configure logger of the UIMA context so that class-specific logging
@@ -109,7 +116,7 @@ public abstract class Resource_ImplBase implements Resource {
       mUimaContextAdmin.setLogger(logger);
     }
 
-    // if this is a local resource (instantaited from a ResourceCreationSpecifier),
+    // if this is a local resource (instantiated from a ResourceCreationSpecifier),
     // initialize the ResourceManager and UIMA Context.
     if (aSpecifier instanceof ResourceCreationSpecifier) {
       // resolve imports in the metadata
