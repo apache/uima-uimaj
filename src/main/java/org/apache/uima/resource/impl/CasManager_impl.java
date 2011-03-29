@@ -164,8 +164,9 @@ public class CasManager_impl implements CasManager {
 
   /*
    * Defines a CAS pool using either a UimaContext or the name of a UimaContext.
+   * synchronized because it tests, then sets "pool"
    */
-  private void defineCasPool(UimaContext aRequestorContext, String aRequestorContextName, int aMinimumSize,
+  private synchronized void defineCasPool(UimaContext aRequestorContext, String aRequestorContextName, int aMinimumSize,
           Properties aPerformanceTuningSettings) throws ResourceInitializationException {
     int poolSize = getCasPoolSize(aRequestorContextName, aMinimumSize);
     if (poolSize > 0) {
