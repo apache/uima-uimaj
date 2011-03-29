@@ -573,8 +573,9 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    * (non-Javadoc)
    * 
    * @see org.apache.uima.UimaContext#getEmptyCas(java.lang.Class)
+   * synchronized because tests, then sets mCasPoolCreated
    */
-  public AbstractCas getEmptyCas(Class aCasInterface) {
+  public synchronized AbstractCas getEmptyCas(Class aCasInterface) {
     if (!mCasPoolCreated) {
       // define CAS Pool in the CasManager
       try {
