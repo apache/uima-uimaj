@@ -171,4 +171,17 @@ public interface Resource {
   // */
   /** Reserved for future use. */
   public static final String PARAM_AGGREGATE_SOFA_MAPPINGS = "AGGREGATE_SOFA_MAPPINGS";
+  
+  /**
+   * Key to specify a pre-existing 
+   * {@link org.apache.uima.resource.ConfigurationManager} object.
+   * If specified, this object is used when initializing the UimaContext
+   * associated with this Resource, instead
+   * of creating a new instance.
+   * This value is used as a key in
+   * the <code>aAdditionalParams</code> Map that is passed to the
+   * {@link #initialize(ResourceSpecifier,Map)} method.
+   */
+  public static final String PARAM_CONFIG_MANAGER = "CONFIG_MANAGER";
+
 }
