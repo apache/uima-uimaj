@@ -43,7 +43,7 @@
         <description>Process Delay</description>
         <type>Integer</type>
         <multiValued>false</multiValued>
-        <mandatory>true</mandatory>
+        <mandatory>false</mandatory>
       </configurationParameter>
     
     </configurationParameters>
@@ -56,12 +56,12 @@
         </value>
       </nameValuePair>
 
-      <nameValuePair>
+      <!--nameValuePair> is the default, commenting out eliminates noisy msg
         <name>ProcessDelay</name>
         <value>
           <integer>0</integer>
         </value>
-      </nameValuePair>
+      </nameValuePair-->
     
     </configurationParameterSettings>
     
