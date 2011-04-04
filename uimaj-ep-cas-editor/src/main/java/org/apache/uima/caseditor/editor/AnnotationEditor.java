@@ -557,6 +557,9 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 	      // TODO: Add support for non text views, editor has
 	      //       to display some error message
 	      
+	      if (cas.getViewName().equals(viewName))
+	          actionItem.setSelection(true);
+	      
 	      // TODO: move this to an action
 	      actionItem.addListener(SWT.Selection, new Listener() {
 	        public void handleEvent(Event e) {
@@ -565,8 +568,6 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 	          if(!casEditor.getDocument().getCAS().getViewName().equals(viewName)) {
 	              casEditor.showView(viewName);
 	          }
-	          // TODO: update selection accordingly,
-	          //       why does setSelection does not work here?
 	        }
 	      });
 	    }
