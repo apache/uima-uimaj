@@ -896,7 +896,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     MenuManager modeMenuManager = new MenuManager("Mode");
     menu.appendToGroup(IWorkbenchActionConstants.MB_ADDITIONS, modeMenuManager);
 
-    ModeMenu modeMenu = new ModeMenu(typeSytem);
+    ModeMenu modeMenu = new ModeMenu(typeSytem, this);
     modeMenu.addListener(new IModeMenuListener(){
 
 		public void modeChanged(Type newMode) {

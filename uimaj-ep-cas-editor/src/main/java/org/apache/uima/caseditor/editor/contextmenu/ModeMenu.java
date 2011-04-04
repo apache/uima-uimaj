@@ -25,6 +25,7 @@ import java.util.Set;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.caseditor.editor.AnnotationEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -36,6 +37,8 @@ import org.eclipse.swt.widgets.MenuItem;
  */
 public class ModeMenu extends TypeMenu {
 	
+  private AnnotationEditor editor;
+  
   private Set<IModeMenuListener> listeners = new HashSet<IModeMenuListener>();
 
   /**
@@ -44,8 +47,9 @@ public class ModeMenu extends TypeMenu {
    * @param type
    * @param typeSystem
    */
-  public ModeMenu(TypeSystem typeSystem) {
+  public ModeMenu(TypeSystem typeSystem, AnnotationEditor editor) {
     super(typeSystem.getType(CAS.TYPE_NAME_ANNOTATION), typeSystem);
+    this.editor = editor;
   }
 
   public void addListener(IModeMenuListener listener) {
@@ -58,9 +62,12 @@ public class ModeMenu extends TypeMenu {
   
   @Override
   protected void insertAction(final Type type, Menu parentMenu) {
-    MenuItem actionItem = new MenuItem(parentMenu, SWT.PUSH);
+    MenuItem actionItem = new MenuItem(parentMenu, SWT.CHECK);
     actionItem.setText(type.getShortName());
-
+    
+    if (type.equals(editor.getAnnotationMode()))
+        actionItem.setSelection(true);
+    
     actionItem.addListener(SWT.Selection, new Listener() {
       public void handleEvent(Event e) {
 
