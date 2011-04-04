@@ -132,6 +132,14 @@ public interface ICasDocument {
   Map<Integer, AnnotationFS> getView(Type annotationType);
 
   /**
+   * Switches the view of the underlying CAS to the provided
+   * view name.
+   * 
+   * @param viewName
+   */
+  void switchView(String viewName);
+  
+  /**
    * Retrieves the annotations of the given type inside the given span.
    *
    * @param type

@@ -132,6 +132,12 @@ public abstract class AbstractDocument implements ICasDocument {
     }
   }
 
+  protected void fireViewChanged(String oldViewName, String newViewName) {
+	for (ICasDocumentListener listener : mListener) {
+	    listener.viewChanged(oldViewName, newViewName);
+	  }
+  }
+  
   /**
    * Retrieves the view map.
    */
@@ -169,7 +175,6 @@ public abstract class AbstractDocument implements ICasDocument {
       }
 
       annotations.addLast(annotation);
-
     }
 
     TreeSet<AnnotationFS> set = new TreeSet<AnnotationFS>();

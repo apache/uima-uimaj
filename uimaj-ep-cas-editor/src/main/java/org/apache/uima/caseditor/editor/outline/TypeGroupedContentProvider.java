@@ -143,7 +143,10 @@ public class TypeGroupedContentProvider extends OutlineContentProviderBase {
 		return typeNode.getAnnotations();
 	}
 
-
+	public void viewChanged(String oldViewName, String newViewName) {
+		changed();
+	}
+	
 	public void changed() {
 		nameAnnotationTypeNodeMap.clear();
 		

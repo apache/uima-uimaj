@@ -42,6 +42,14 @@ public class AnnotationDocument extends Document implements ICasDocument {
 
   private int lineLengthHint = 80;
 
+  private String transformText(String text) {
+	if (lineLengthHint != 0) {
+	    return wrapWords(text, lineLengthHint);
+	} else {
+	    return text;
+	}
+  }
+  
   /**
    * Call is forwarded to the set document.
    *
@@ -50,12 +58,7 @@ public class AnnotationDocument extends Document implements ICasDocument {
   private String getText() {
 
     String text = getCAS().getDocumentText();
-    
-    if (lineLengthHint != 0) {
-      return wrapWords(text, lineLengthHint);
-    } else {
-      return text;
-    }
+    return transformText(text);
   }  
   /**
    * Notifies listener about a document change.
@@ -258,5 +261,24 @@ public class AnnotationDocument extends Document implements ICasDocument {
    */
   public Type getType(String type) {
     return mDocument.getType(type);
+  }
+  
+  public void switchView(String viewName) {
+	  
+	  // TODO: Optimize the text retrieval and update notification handling
+	  // Currently the text must be changed before switchView is called ...
+	  
+	  // HACK: 
+	  // Replace the text like set() would do,
+	  // but without sending out notifications.
+	  // The stop and resume notification methods do not yield
+	  // the desired effect
+	  String text = transformText(getCAS().getView(viewName).getDocumentText());
+	  getStore().set(text);
+	  getTracker().set(text);
+	  
+	  // Note: Sends out view update notification
+	  ((DocumentUimaImpl) mDocument).switchView(viewName);
+	  
   }
 }

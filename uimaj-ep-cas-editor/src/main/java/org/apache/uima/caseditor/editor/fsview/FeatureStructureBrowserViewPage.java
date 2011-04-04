@@ -68,12 +68,10 @@ public final class FeatureStructureBrowserViewPage extends Page {
 
     private ICasDocument mDocument;
 
-    private CAS mCAS;
 
     private Type mCurrentType;
 
-    FeatureStructureTreeContentProvider(ICasDocument document, CAS tcas) {
-      mCAS = tcas;
+    FeatureStructureTreeContentProvider(ICasDocument document) {
       mDocument = document;
     }
 
@@ -84,8 +82,8 @@ public final class FeatureStructureBrowserViewPage extends Page {
 
       StrictTypeConstraint typeConstrain = new StrictTypeConstraint(mCurrentType);
 
-      FSIterator<FeatureStructure> strictTypeIterator = mCAS.createFilteredIterator(
-              mCAS.getIndexRepository().getAllIndexedFS(mCurrentType), typeConstrain);
+      FSIterator<FeatureStructure> strictTypeIterator =mDocument.getCAS().createFilteredIterator(
+              mDocument.getCAS().getIndexRepository().getAllIndexedFS(mCurrentType), typeConstrain);
 
       LinkedList<ModelFeatureStructure> featureStrucutreList = new LinkedList<ModelFeatureStructure>();
 
@@ -281,6 +279,10 @@ public final class FeatureStructureBrowserViewPage extends Page {
       // ignore
     }
 
+    public void viewChanged(String oldViewName, String newViewName) {
+      changed();
+    }
+    
     public void changed() {
       mFSList.refresh();
     }
@@ -298,7 +300,7 @@ public final class FeatureStructureBrowserViewPage extends Page {
         return;
       }
 
-      FeatureStructure newFeatureStructure = mCAS.createFS(mCurrentType);
+      FeatureStructure newFeatureStructure = mDocument.getCAS().createFS(mCurrentType);
 
       mDocument.addFeatureStructure(newFeatureStructure);
 
@@ -315,8 +317,6 @@ public final class FeatureStructureBrowserViewPage extends Page {
   }
 
   private ICasDocument mDocument;
-
-  private CAS mCAS;
 
   private ListViewer mFSList;
 
@@ -340,14 +340,13 @@ public final class FeatureStructureBrowserViewPage extends Page {
 	if (document == null)
 		throw new IllegalArgumentException("document parameter must not be null!");
 
-    mCAS = document.getCAS();
     mDocument = document;
 
     mDeleteAction = new DeleteFeatureStructureAction(this.mDocument);
 
     mSelectAllAction = new SelectAllAction();
 
-    TypeSystem ts = mCAS.getTypeSystem();
+    TypeSystem ts = mDocument.getCAS().getTypeSystem();
 
     filterTypes = new HashSet<Type>();
     filterTypes.add(ts.getType(CAS.TYPE_NAME_ARRAY_BASE));
@@ -417,7 +416,8 @@ public final class FeatureStructureBrowserViewPage extends Page {
     typeLabel.setLayoutData(typeLabelData);
     
     TypeCombo typeCombo = new TypeCombo(typePanel,
-            mCAS.getTypeSystem().getType(CAS.TYPE_NAME_TOP),mCAS.getTypeSystem(), filterTypes);
+            mDocument.getCAS().getTypeSystem().getType(CAS.TYPE_NAME_TOP),
+            mDocument.getCAS().getTypeSystem(), filterTypes);
     GridData typeComboData = new GridData();
     typeComboData.horizontalAlignment = SWT.FILL;
     typeComboData.grabExcessHorizontalSpace = true;
@@ -431,7 +431,7 @@ public final class FeatureStructureBrowserViewPage extends Page {
     instanceListData.verticalAlignment = SWT.FILL;
     mFSList.getList().setLayoutData(instanceListData);
     mFSList
-            .setContentProvider(new FeatureStructureTreeContentProvider(mDocument, mCAS));
+            .setContentProvider(new FeatureStructureTreeContentProvider(mDocument));
     mFSList.setLabelProvider(new FeatureStructureLabelProvider());
 
     mFSList.setUseHashlookup(true);

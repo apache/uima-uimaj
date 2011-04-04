@@ -80,4 +80,15 @@ public interface ICasDocumentListener {
    * Note: The text can not be changed
    */
   void changed();
+  
+  /**
+   * This method is called when the currently active view is changed in
+   * the document. A view changed does not indicate a structural change,
+   * but usually feature structures must be completely synchronized afterward.
+   * 
+   * @param oldViewName
+   * @param newViewName
+   * @return
+   */
+  void viewChanged(String oldViewName, String newViewName);
 }

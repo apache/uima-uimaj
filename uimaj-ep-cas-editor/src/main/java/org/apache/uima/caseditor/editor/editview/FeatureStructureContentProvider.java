@@ -134,6 +134,10 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener
   public void added(Collection<FeatureStructure> newFeatureStructure) {
   }
 
+  public void viewChanged(String oldViewName, String newViewName) {
+    changed();
+  }
+  
   public void changed() {
 
     Display.getDefault().syncExec(new Runnable() {

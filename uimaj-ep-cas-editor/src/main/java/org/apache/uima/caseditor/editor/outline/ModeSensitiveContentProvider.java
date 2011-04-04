@@ -96,6 +96,10 @@ import org.eclipse.swt.widgets.Display;
       });
     }
 
+    public void viewChanged(String oldViewName, String newViewName) {
+    	changed();
+    }
+    
     public void changed() {
 
       Collection<AnnotationFS> annotations = mEditor.getDocument().getAnnotations(

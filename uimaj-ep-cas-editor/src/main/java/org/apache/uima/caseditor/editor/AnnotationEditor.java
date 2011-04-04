@@ -57,6 +57,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.ContributionItem;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -66,13 +67,13 @@ import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.information.InformationPresenter;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.AnnotationPainter;
+import org.eclipse.jface.text.source.AnnotationPainter.IDrawingStrategy;
 import org.eclipse.jface.text.source.IAnnotationAccess;
 import org.eclipse.jface.text.source.IAnnotationAccessExtension;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.IAnnotationModelExtension;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewer;
-import org.eclipse.jface.text.source.AnnotationPainter.IDrawingStrategy;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -97,13 +98,15 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -116,12 +119,10 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.PageBookView;
-import org.eclipse.ui.texteditor.IDocumentProviderExtension;
 import org.eclipse.ui.texteditor.IStatusField;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.eclipse.ui.texteditor.IWorkbenchActionDefinitionIds;
-import org.eclipse.ui.texteditor.InfoForm;
 import org.eclipse.ui.texteditor.StatusTextEditor;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
@@ -336,6 +337,10 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 
       syncAnnotations();
     }
+    
+    public void viewChanged(String oldViewName, String newViewName) {
+    	syncAnnotations();
+    }
   }
 
   /**
@@ -519,6 +524,55 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     }
   }
 
+  // TODO: Move to external class
+  static class CasViewMenu extends ContributionItem {
+    
+    private AnnotationEditor casEditor;
+    
+    public CasViewMenu(AnnotationEditor casEditor) {
+      this.casEditor = casEditor;
+    } 
+    
+	  @Override
+	  public void fill(Menu parentMenu, int index) {
+	    
+	    CAS cas = casEditor.getDocument().getCAS();
+	    
+	    for (Iterator<CAS> it = cas.getViewIterator(); it.hasNext(); ) {
+	      
+	      CAS casView = it.next();
+	      final String viewName = casView.getViewName();
+	      
+	      final MenuItem actionItem = new MenuItem(parentMenu, SWT.CHECK);
+	      actionItem.setText(viewName);
+	      
+	      // TODO: Disable non-text views, check mime-type
+	      try {
+	        actionItem.setEnabled(cas.getDocumentText() != null);
+	      } catch (Throwable t) {
+	        // TODO: Not nice, discuss better solution on ml
+	        actionItem.setEnabled(false); 
+	      }
+	      
+	      // TODO: Add support for non text views, editor has
+	      //       to display some error message
+	      
+	      // TODO: move this to an action
+	      actionItem.addListener(SWT.Selection, new Listener() {
+	        public void handleEvent(Event e) {
+	          // Trigger only if view is really changed
+	          // TODO: Move this check to the document itself ...
+	          if(!casEditor.getDocument().getCAS().getViewName().equals(viewName)) {
+	              casEditor.showView(viewName);
+	          }
+	          // TODO: update selection accordingly,
+	          //       why does setSelection does not work here?
+	        }
+	      });
+	    }
+	  }
+  }
+  
   private Type mAnnotationMode;
 
   /**
@@ -858,6 +912,12 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     MenuManager showAnnotationMenu = new MenuManager("Show Annotations");
     menu.appendToGroup(IWorkbenchActionConstants.MB_ADDITIONS, showAnnotationMenu);
     showAnnotationMenu.add(mShowAnnotationsMenu);
+    
+    // view menu
+    MenuManager casViewMenuManager = new MenuManager("CAS Views");
+    menu.appendToGroup(IWorkbenchActionConstants.MB_ADDITIONS, casViewMenuManager);
+    CasViewMenu casViewMenu = new CasViewMenu(this);
+    casViewMenuManager.add(casViewMenu);
   }
 
   /**
@@ -1008,11 +1068,20 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     mPainter.paint(IPainter.CONFIGURATION);
   }
 
+  private void removeAllAnnotations() {
+	    // Remove all annotation from the model
+	    IAnnotationModel annotationModel = getDocumentProvider().getAnnotationModel(getEditorInput());
+	    ((IAnnotationModelExtension) annotationModel).removeAllAnnotations();
+  }
+  
   private void syncAnnotations() {
+	  
+	removeAllAnnotations();
+	  
     // Remove all annotation from the model
     IAnnotationModel annotationModel = getDocumentProvider().getAnnotationModel(getEditorInput());
     ((IAnnotationModelExtension) annotationModel).removeAllAnnotations();
-
+    
     // Add all annotation to the model
     // copy annotations into annotation model
     final Iterator<AnnotationFS> mAnnotations = getDocument().getCAS().getAnnotationIndex()
@@ -1060,6 +1129,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
               mCurrentStyleRange.length, null, null);
 
       text.setStyleRange(resetedStyleRange);
+      mCurrentStyleRange = null;
     }
 
     if (length != 0) {
@@ -1109,7 +1179,40 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 
     return selection;
   }
-
+  
+  public void showView(String viewName) {
+	  
+    // TODO: Consider to clear selection if this is called in the
+    // selectionChanged method, is that the right place?!
+    
+    // Clear all old selections, references FSes of current view
+    mFeatureStructureSelectionProvider.clearSelection();
+    
+    // Move the caret before the first char, otherwise it
+    // might be placed on an index which is out of bounds in
+    // the changed text
+    getSourceViewer().getTextWidget().setCaretOffset(0);
+    
+    // De-highlight the text in the editor, because the highlight
+    // method has to remember the highlighted text area 
+    // After the text changed the offsets might be out of bound
+    highlight(0, 0);
+    
+	  // Remove all editor annotations
+	  // Changing the text with annotations might fail, because the
+	  // bounds might be invalid in the new text
+	  removeAllAnnotations();
+	  
+	  // Change the view in the input document
+	  // TODO: Add support for this to the interface
+	  ((AnnotationDocument) getDocument()).switchView(viewName);
+	  
+	  // Refresh the source viewer to retrieve the new document text
+	  getSourceViewer().invalidateTextPresentation();
+	  
+	  // All annotations will be synchronized in the document listener
+  }
+  
   /**
    * Text is not editable, cause of the nature of the annotation editor. This does not mean, that
    * the annotations are not editable.

@@ -74,7 +74,7 @@ public class DocumentUimaImpl extends AbstractDocument {
   // TODO: Remove field not needed anymore
   private final TypeSystem mTypeSystem;
 
-  private final CAS mCAS;
+  private CAS mCAS;
 
   private final DocumentFormat format;
 
@@ -240,6 +240,14 @@ public class DocumentUimaImpl extends AbstractDocument {
     return getCAS().getTypeSystem().getType(type);
   }
 
+  public void switchView(String viewName) {
+	  String oldViewName = mCAS.getViewName();
+	  
+	  mCAS = mCAS.getView(viewName);
+	  
+	  fireViewChanged(oldViewName, viewName);
+  }
+  
   /**
    * Sets the content. The XCAS {@link InputStream} gets parsed.
    */
