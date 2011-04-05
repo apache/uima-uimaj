@@ -43,11 +43,11 @@ public class AnnotationDocument extends Document implements ICasDocument {
   private int lineLengthHint = 80;
 
   private String transformText(String text) {
-	if (lineLengthHint != 0) {
-	    return wrapWords(text, lineLengthHint);
-	} else {
-	    return text;
-	}
+  	if (lineLengthHint != 0 && text != null) {
+  	    return wrapWords(text, lineLengthHint);
+  	} else {
+  	    return text;
+  	}
   }
   
   /**

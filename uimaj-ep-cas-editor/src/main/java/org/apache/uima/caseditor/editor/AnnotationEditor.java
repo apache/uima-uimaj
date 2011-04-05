@@ -1,5 +1,4 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
  * regarding copyright ownership.  The ASF licenses this file
@@ -57,6 +56,7 @@ import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ContributionItem;
 import org.eclipse.jface.action.IAction;
@@ -340,7 +340,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     }
     
     public void viewChanged(String oldViewName, String newViewName) {
-    	syncAnnotations();
+      // TODO: Currently do nothing ... 
     }
   }
 
@@ -667,7 +667,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 
   /**
    * Configures the editor.
-   *
+   * 
    * @param parent
    */
   @Override
@@ -724,13 +724,17 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 
     dragSource.addDragListener(new FeatureStructureDragListener(getSourceViewer().getTextWidget()));
 
-    getSite().getPage().addSelectionListener(this);
-
     getSourceViewer().getTextWidget().setEditable(false);
     getSourceViewer().setEditable(false);
 
     getSite().setSelectionProvider(mFeatureStructureSelectionProvider);
     
+    // Note: In case the CAS could not be created the editor will be initialized with
+    // a null document (getDocument() == null). Depending on the error it might be 
+    // possible to recover and the editor input will be set again. The createPartControl
+    // method might be called with a document or without one, both cases must be supported.
+    
+    // Perform the document dependent initialization 
     initiallySynchronizeUI();
   }
 
@@ -755,35 +759,13 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     super.doSetInput(input);
     
     if (getDocument() != null) {
-
+            
       // Register listener to listens for deletion events,
       // if the file opened in this editor is deleted, the editor should be closed!
       closeEditorListener = new CloseEditorListener(this);
       ResourcesPlugin.getWorkspace().addResourceChangeListener(closeEditorListener,
               IResourceChangeEvent.POST_CHANGE);
 
-      // Synchronize all annotation from the document with
-      // the editor
-      syncAnnotations();
-      
-      // Register listener to synchronize annotations between the
-      // editor and the document in case the annotations
-      // change e.g. updated in a view
-      mAnnotationSynchronizer = new DocumentListener();
-      getDocument().addChangeListener(mAnnotationSynchronizer);
-      
-      // Register listener to synchronize annotation styles
-      // between multiple open annotation editors
-      mAnnotationStyleListener = new IAnnotationStyleListener() {
-        
-        public void annotationStylesChanged(Collection<AnnotationStyle> styles) {
-          // TODO: Only sync changed types
-          syncAnnotationTypes();
-        }
-      };
-      
-      getDocumentProvider().addAnnotationStyleListener(getEditorInput(), mAnnotationStyleListener);
-      
       // Synchronize shown types with the editor
       Collection<String> shownTypes = getDocumentProvider().getShownTypes(input);
       
@@ -812,6 +794,10 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 
         initiallySynchronizeUI();
         
+        // Views which fetch content from the editors document still believe
+        // the editor document is not available.
+        // Send a partBroughtToTop event to the views to update their content
+        // on this currently active editor.
         IWorkbenchPage page = getSite().getWorkbenchWindow().getActivePage();
         
         for (IWorkbenchPart view : page.getViews()) {
@@ -820,8 +806,15 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
           }
         }
       }
-      
     }
+  }
+  
+  // The editor status support is abused to display different control than the
+  // text control when displaying text is not possible, e.g. because the sofa
+  // is not a text sofa or not set at all
+  @Override
+  protected boolean isErrorStatus(IStatus status) {
+    return super.isErrorStatus(status) || getDocument().getCAS().getDocumentText() == null;
   }
   
   /**
@@ -874,8 +867,6 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
           }
         }
       });
-        
-      
       
       EditorAnnotationStatus status =
         getDocumentProvider().getEditorAnnotationStatus(getEditorInput());
@@ -1233,6 +1224,61 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 	  
 	  // Last opened view should be remembered, in case a new editor is opened
 	  setProjectEditorStatus();
+	  
+	  // Check if CAS view is compatible, only if compatible the listeners
+	  // to update the annotations in the editor can be registered
+	  // and the annotations can be synchronized
+	  if (!isErrorStatus(getDocumentProvider().getStatus(getEditorInput()))) {
+	    
+      // Synchronize all annotation from the document with
+      // the editor
+      syncAnnotations();
+      
+      // Note: If a change from a compatible view to a compatible view
+      //       occurs there is no need be register the listeners again
+      
+      // Register listener to synchronize annotations between the
+      // editor and the document in case the annotations
+      // change e.g. updated in a view
+      if (mAnnotationSynchronizer == null) {
+        mAnnotationSynchronizer = new DocumentListener();
+        getDocument().addChangeListener(mAnnotationSynchronizer);
+      }
+      
+      // Register listener to synchronize annotation styles
+      // between multiple open annotation editors
+      if (mAnnotationStyleListener == null) {
+        mAnnotationStyleListener = new IAnnotationStyleListener() {
+          
+          public void annotationStylesChanged(Collection<AnnotationStyle> styles) {
+            // TODO: Only sync changed types
+            syncAnnotationTypes();
+          }
+        };
+        
+        getDocumentProvider().addAnnotationStyleListener(getEditorInput(), mAnnotationStyleListener);
+      }
+      
+      getSite().getPage().addSelectionListener(this);
+	  }
+	  else {
+	    // if not null ... then unregister ... listener
+	    if (mAnnotationSynchronizer != null) {
+	      getDocument().removeChangeListener(mAnnotationSynchronizer);
+	      mAnnotationSynchronizer = null;
+	    }
+	    
+	    if (mAnnotationStyleListener != null) {
+	      getDocumentProvider().removeAnnotationStyleListener(getEditorInput(), mAnnotationStyleListener);
+	      mAnnotationStyleListener = null;
+	    }
+	    
+	    getSite().getPage().removeSelectionListener(this);
+	  }
+	  
+	  // According to error status toggle between text editor or
+	  // status page
+	  updatePartControl(getEditorInput());
   }
   
   /**
@@ -1473,6 +1519,18 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
       });
   
       return provideTypeSystemForm;
+    }
+    else if (status.getCode() == IStatus.OK) {
+      
+      // TODO: Figure out which page should be shown
+      // TODO: Implement pages ...
+      // TODO: Each page needs an ability to switch the view back to something else ...
+      
+      if (getDocument() != null && getDocument().getCAS().getDocumentText() == null) {
+        return super.createStatusControl(parent, new Status(0, CasEditorPlugin.ID, "Text sofa is not set!"));
+      }
+      
+      return super.createStatusControl(parent, status);
     }
     else {
       return super.createStatusControl(parent, status);

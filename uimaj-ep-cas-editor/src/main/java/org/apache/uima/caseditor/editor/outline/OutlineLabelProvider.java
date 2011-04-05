@@ -46,7 +46,10 @@ class OutlineLabelProvider extends LabelProvider implements ITableLabelProvider 
     AnnotationFS annotation = (AnnotationFS) ((IAdaptable) element).getAdapter(AnnotationFS.class);
 
     if (annotation != null) {
-    	return getStringWithoutNewLine(annotation.getCoveredText());
+      if (annotation.getCoveredText() != null)
+        return getStringWithoutNewLine(annotation.getCoveredText());
+      else
+        return "";
     }
     
     Type type = (Type) ((IAdaptable) element).getAdapter(Type.class);
