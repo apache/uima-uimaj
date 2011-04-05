@@ -1233,13 +1233,6 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 	  
 	  // Last opened view should be remembered, in case a new editor is opened
 	  setProjectEditorStatus();
-	  
-//	  try {
-//      doSetInput(getEditorInput());
-//    } catch (CoreException e) {
-//      // TODO Auto-generated catch block
-//      e.printStackTrace();
-//    }
   }
   
   /**
