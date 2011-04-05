@@ -34,9 +34,11 @@ import org.apache.uima.cas.Type;
  */
 public class EditorAnnotationStatus {
 
-  private String mode;
+  private final String mode;
 
   private Collection<String> displayAnnotations = new HashSet<String>();
+  
+  private final String lastActiveCasView;
 
   /**
    * Initializes a new instance.
@@ -44,7 +46,7 @@ public class EditorAnnotationStatus {
    * @param mode
    * @param displayAnnotations
    */
-  public EditorAnnotationStatus(String mode, Collection<Type> displayAnnotations) {
+  public EditorAnnotationStatus(String mode, Collection<Type> displayAnnotations, String lastActiveCasView) {
     if (mode == null) {
       throw new IllegalArgumentException("Mode must not be null!");
     }
@@ -57,6 +59,8 @@ public class EditorAnnotationStatus {
         this.displayAnnotations.add(type.getName());
       }
     }
+    
+    this.lastActiveCasView = lastActiveCasView;
   }
 
   /**
@@ -75,5 +79,9 @@ public class EditorAnnotationStatus {
    */
   public Collection<String> getDisplayAnnotations() {
     return displayAnnotations;
+  }
+  
+  public String getLastActiveCasViewName() {
+    return lastActiveCasView;
   }
 }

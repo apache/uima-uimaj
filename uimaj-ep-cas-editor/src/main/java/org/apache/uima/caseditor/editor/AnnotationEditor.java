@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.text.AnnotationFS;
@@ -865,7 +866,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
                   getDocumentProvider().getEditorAnnotationStatus(getEditorInput());
 
           getDocumentProvider().setEditorAnnotationStatus(getEditorInput(),
-                  new EditorAnnotationStatus(status.getMode(), selection));
+                  new EditorAnnotationStatus(status.getMode(), selection, getDocument().getCAS().getViewName()));
 
           if (mEditorListener != null) {
             for (IAnnotationEditorModifyListener listener : mEditorListener) 
@@ -874,10 +875,25 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
         }
       });
         
+      
+      
       EditorAnnotationStatus status =
         getDocumentProvider().getEditorAnnotationStatus(getEditorInput());
       
       setAnnotationMode(getDocument().getType(status.getMode()));
+      
+      String lastActiveViewName = status.getLastActiveCasViewName();
+      
+      try {
+        // TODO: Missing compatibility check!!!
+        getDocument().getCAS().getView(lastActiveViewName);
+        showView(lastActiveViewName);
+      }
+      catch (CASRuntimeException e) {
+        // ignore, view is not available
+        // TODO: Using exceptions for control flow is very bad practice
+      }
+      
     }
   }
   
@@ -1070,14 +1086,14 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   }
 
   private void removeAllAnnotations() {
-	    // Remove all annotation from the model
-	    IAnnotationModel annotationModel = getDocumentProvider().getAnnotationModel(getEditorInput());
-	    ((IAnnotationModelExtension) annotationModel).removeAllAnnotations();
+    // Remove all annotation from the model
+    IAnnotationModel annotationModel = getDocumentProvider().getAnnotationModel(getEditorInput());
+    ((IAnnotationModelExtension) annotationModel).removeAllAnnotations();
   }
   
   private void syncAnnotations() {
 	  
-	removeAllAnnotations();
+	  removeAllAnnotations();
 	  
     // Remove all annotation from the model
     IAnnotationModel annotationModel = getDocumentProvider().getAnnotationModel(getEditorInput());
@@ -1182,7 +1198,9 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   }
   
   public void showView(String viewName) {
-	  
+    
+    // TODO: Check if set view is compatible .. if not display some message!
+    
     // TODO: Consider to clear selection if this is called in the
     // selectionChanged method, is that the right place?!
     
@@ -1212,6 +1230,16 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 	  getSourceViewer().invalidateTextPresentation();
 	  
 	  // All annotations will be synchronized in the document listener
+	  
+	  // Last opened view should be remembered, in case a new editor is opened
+	  setProjectEditorStatus();
+	  
+//	  try {
+//      doSetInput(getEditorInput());
+//    } catch (CoreException e) {
+//      // TODO Auto-generated catch block
+//      e.printStackTrace();
+//    }
   }
   
   /**
@@ -1272,7 +1300,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   }
 
   private boolean isSomethingSelected() {
-    // TODO: sometimes we get a NPE here ... mh
+    // TODO: sometimes we get a NPE here ...
     // getSourceViewer() returns null here ... but why ?
     return getSourceViewer().getTextWidget().getSelectionCount() != 0;
   }
@@ -1280,7 +1308,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   private void setProjectEditorStatus() {
     // TODO: do not replace if equal ... check this
     EditorAnnotationStatus status = new EditorAnnotationStatus(getAnnotationMode().getName(),
-            mShowAnnotationsMenu.getSelectedTypes());
+            mShowAnnotationsMenu.getSelectedTypes(), getDocument().getCAS().getViewName());
 
     getDocumentProvider().setEditorAnnotationStatus(getEditorInput(), status);
   }

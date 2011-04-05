@@ -123,7 +123,7 @@ public final class NlpProject extends AbstractNlpElement implements IProjectNatu
       // removes the document annotation
       displayTypes.remove(typeSystem.getType(CAS.TYPE_NAME_DOCUMENT_ANNOTATION));
 
-      mEditorAnnotationStatus = new EditorAnnotationStatus(annotationType.getName(), displayTypes);
+      mEditorAnnotationStatus = new EditorAnnotationStatus(annotationType.getName(), displayTypes, CAS.NAME_DEFAULT_SOFA);
     }
   }
 
@@ -505,7 +505,7 @@ public final class NlpProject extends AbstractNlpElement implements IProjectNatu
 
       if (getTypesystemElement().getTypeSystem() != null) {
         updateAnnotationTypeColors();
-        mEditorAnnotationStatus = new EditorAnnotationStatus(CAS.TYPE_NAME_ANNOTATION, null);
+        mEditorAnnotationStatus = new EditorAnnotationStatus(CAS.TYPE_NAME_ANNOTATION, null, CAS.NAME_DEFAULT_SOFA);
       }
     }
   }

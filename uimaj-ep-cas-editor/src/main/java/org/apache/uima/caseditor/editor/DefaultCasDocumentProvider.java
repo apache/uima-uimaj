@@ -476,7 +476,7 @@ public class DefaultCasDocumentProvider extends
       EditorAnnotationStatus status = sharedEditorStatus.get(getTypesystemId(element));
       
       if (status == null)
-        status = new EditorAnnotationStatus(CAS.TYPE_NAME_ANNOTATION, null);
+        status = new EditorAnnotationStatus(CAS.TYPE_NAME_ANNOTATION, null, CAS.NAME_DEFAULT_SOFA);
       
       return status;
     }
