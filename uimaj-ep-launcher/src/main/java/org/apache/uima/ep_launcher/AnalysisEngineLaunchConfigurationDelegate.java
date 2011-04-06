@@ -76,15 +76,16 @@ public class AnalysisEngineLaunchConfigurationDelegate extends JavaLaunchDelegat
     cmdline.append(RemoteLauncher.DESCRIPTOR_PARAM + " ");
     String descriptorPath = configuration.getAttribute(LauncherConstants.ATTR_DESCRIPTOR_NAME, "");
     IResource descriptor = ResourcesPlugin.getWorkspace().getRoot().findMember(descriptorPath);
+    // TODO: Potential NPE
     cmdline.append(descriptor.getLocation().toOSString() + " ");
     cmdline.append(RemoteLauncher.INPUT_RESOURCE_PARAM + " ");
     
     String inputResourcePath = configuration.getAttribute(LauncherConstants.ATTR_INPUT_NAME, "");
     IResource inputResource = ResourcesPlugin.getWorkspace().getRoot().findMember(inputResourcePath);
+    // TODO: Potential NPE
     cmdline.append(inputResource.getLocation().toOSString() + " ");
     
-    String formatName = configuration.getAttribute(LauncherConstants.ATTR_INPUT_FORMAT_NAME,
-           " "); 
+    String formatName = configuration.getAttribute(LauncherConstants.ATTR_INPUT_FORMAT_NAME, " "); 
     cmdline.append(RemoteLauncher.INPUT_FORMAT_PARAM + " ");
     cmdline.append(formatName + " ");
     
@@ -101,17 +102,19 @@ public class AnalysisEngineLaunchConfigurationDelegate extends JavaLaunchDelegat
     String outputFolderPath = configuration.getAttribute(LauncherConstants.ATTR_OUTPUT_FOLDER_NAME, "");
     if (outputFolderPath.length() != 0) {
       IResource outputFolder = ResourcesPlugin.getWorkspace().getRoot().findMember(outputFolderPath);
-    
-	  cmdline.append(RemoteLauncher.OUTPUT_FOLDER_PARAM + " ");
-	  cmdline.append(outputFolder.getLocation().toOSString() + " ");
-	  
-	  // Do not delete the output folder if it is the Workspace Root or a Project
-	  // It should not be possible to set it to one of both, but in case something goes
-	  // it should be double checked
-	  if (!(outputFolder instanceof IWorkspaceRoot || outputFolder instanceof IProject)) {
-		  cmdline.append(RemoteLauncher.OUTPUT_CLEAR_PARAM + " ");
-		  cmdline.append(configuration.getAttribute(LauncherConstants.ATTR_OUTPUT_CLEAR_NAME, false));
-	  }
+      
+      if (outputFolder != null) {
+		  cmdline.append(RemoteLauncher.OUTPUT_FOLDER_PARAM + " ");
+		  cmdline.append(outputFolder.getLocation().toOSString() + " ");
+		  
+		  // Do not delete the output folder if it is the Workspace Root or a Project
+		  // It should not be possible to set it to one of both, but in case something goes
+		  // it should be double checked
+		  if (!(outputFolder instanceof IWorkspaceRoot || outputFolder instanceof IProject)) {
+			  cmdline.append(RemoteLauncher.OUTPUT_CLEAR_PARAM + " ");
+			  cmdline.append(configuration.getAttribute(LauncherConstants.ATTR_OUTPUT_CLEAR_NAME, false));
+		  }
+      }
     }
     
     return cmdline.toString();
