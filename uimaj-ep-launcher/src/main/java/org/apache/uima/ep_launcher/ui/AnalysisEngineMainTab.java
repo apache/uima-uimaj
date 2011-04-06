@@ -99,14 +99,10 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
   }
   
   private IContainer getContainer(String path) {
-    IProject project = getSelectedProject();
-    
-    if (project != null) {
-      Path containerPath = new Path(path);
-      IResource resource =  project.findMember(containerPath);
-      if (resource instanceof IContainer)
-        return (IContainer) resource;
-    }
+	Path containerPath = new Path(path);
+	IResource resource =  getWorkspaceRoot().findMember(containerPath);
+	if (resource instanceof IContainer)
+	  return (IContainer) resource;
     
     return null;
   }
@@ -193,11 +189,12 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
                 new WorkbenchLabelProvider(), new WorkbenchContentProvider());
         dialog.setTitle("Select descriptor");
         dialog.setMessage("Select descriptor");
-        dialog.setInput(getSelectedProject());
+        dialog.setInput(getWorkspaceRoot());
+        dialog.setInitialSelection(getWorkspaceRoot().findMember(descriptorText.getText()));
         if (dialog.open() == IDialogConstants.OK_ID) {
           IResource resource = (IResource) dialog.getFirstResult();
           if (resource != null) {
-            String fileLoc = resource.getProjectRelativePath().toString();
+            String fileLoc = resource.getFullPath().toString();
             descriptorText.setText(fileLoc);
           }
         }
@@ -233,10 +230,11 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
         dialog.setTitle("Select input folder or file");
         dialog.setMessage("Select input folder or file");
         dialog.setInput(getSelectedProject());
+        dialog.setInitialSelection(getWorkspaceRoot().findMember(inputText.getText()));
         if (dialog.open() == IDialogConstants.OK_ID) {
           IResource resource = (IResource) dialog.getFirstResult();
           if (resource != null) {
-            String fileLoc = resource.getProjectRelativePath().toString();
+            String fileLoc = resource.getFullPath().toString();
             inputText.setText(fileLoc);
           }
         }
@@ -392,17 +390,15 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
       return false;
     }
     
-    IProject project = (IProject) projectResource;
-    
     // Descriptor must be set and valid file
-    IResource descriptorResource = project.findMember(descriptorText.getText());
+    IResource descriptorResource = getWorkspaceRoot().findMember(descriptorText.getText());
     if (!(descriptorResource instanceof IFile)) {
       setErrorMessage("Descriptor must be an existing file!");
       return false;
     }
     
     // Input folder or file must be set
-    IResource inputResource = project.findMember(inputText.getText());
+    IResource inputResource = getWorkspaceRoot().findMember(inputText.getText());
     if (inputResource == null) {
       setErrorMessage("Input resource must be an existing file or folder!");
       return false;
@@ -428,7 +424,7 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
     
     // Validate output folder
     if (outputFolderText.getText().length() > 0) {
-      IResource outputResource = project.findMember(outputFolderText.getText());
+      IResource outputResource = getWorkspaceRoot().findMember(outputFolderText.getText());
       if (!(outputResource instanceof IFolder)) {
         setErrorMessage("The output folder must be a valid folder or not be set!");
         return false;

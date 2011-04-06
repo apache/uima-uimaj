@@ -72,9 +72,14 @@ public class AnalysisEngineLaunchConfigurationDelegate extends JavaLaunchDelegat
     
     StringBuilder cmdline = new StringBuilder();
     cmdline.append(RemoteLauncher.DESCRIPTOR_PARAM + " ");
-    cmdline.append(configuration.getAttribute(LauncherConstants.ATTR_DESCRIPTOR_NAME, "") + " ");
+    String descriptorPath = configuration.getAttribute(LauncherConstants.ATTR_DESCRIPTOR_NAME, "");
+    IResource descriptor = ResourcesPlugin.getWorkspace().getRoot().findMember(descriptorPath);
+    cmdline.append(descriptor.getLocation().toOSString() + " ");
     cmdline.append(RemoteLauncher.INPUT_RESOURCE_PARAM + " ");
-    cmdline.append(configuration.getAttribute(LauncherConstants.ATTR_INPUT_NAME, "") + " ");
+    
+    String inputResourcePath = configuration.getAttribute(LauncherConstants.ATTR_INPUT_NAME, "");
+    IResource inputResource = ResourcesPlugin.getWorkspace().getRoot().findMember(inputResourcePath);
+    cmdline.append(inputResource.getLocation().toOSString() + " ");
     
     String formatName = configuration.getAttribute(LauncherConstants.ATTR_INPUT_FORMAT_NAME,
            " "); 
@@ -91,7 +96,9 @@ public class AnalysisEngineLaunchConfigurationDelegate extends JavaLaunchDelegat
     cmdline.append(RemoteLauncher.INPUT_RECURSIVE_PARAM + " ");
     cmdline.append(configuration.getAttribute(LauncherConstants.ATTR_INPUT_RECURSIVELY_NAME, false) + " ");
     cmdline.append(RemoteLauncher.OUTPUT_FOLDER_PARAM + " ");
-    cmdline.append(configuration.getAttribute(LauncherConstants.ATTR_OUTPUT_FOLDER_NAME, "") + " ");
+    String outputFolderPath = configuration.getAttribute(LauncherConstants.ATTR_OUTPUT_FOLDER_NAME, "");
+    IResource outputFolder = ResourcesPlugin.getWorkspace().getRoot().findMember(outputFolderPath);
+    cmdline.append(outputFolder.getLocation().toOSString() + " ");
     cmdline.append(RemoteLauncher.OUTPUT_CLEAR_PARAM + " ");
     cmdline.append(configuration.getAttribute(LauncherConstants.ATTR_OUTPUT_CLEAR_NAME, false));
     
