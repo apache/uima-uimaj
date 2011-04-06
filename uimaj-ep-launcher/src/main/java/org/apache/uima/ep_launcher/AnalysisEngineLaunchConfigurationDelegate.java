@@ -28,7 +28,9 @@ import java.util.Enumeration;
 import java.util.List;
 
 import org.apache.uima.ep_launcher.LauncherConstants.InputFormat;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
@@ -95,12 +97,22 @@ public class AnalysisEngineLaunchConfigurationDelegate extends JavaLaunchDelegat
     
     cmdline.append(RemoteLauncher.INPUT_RECURSIVE_PARAM + " ");
     cmdline.append(configuration.getAttribute(LauncherConstants.ATTR_INPUT_RECURSIVELY_NAME, false) + " ");
-    cmdline.append(RemoteLauncher.OUTPUT_FOLDER_PARAM + " ");
+    
     String outputFolderPath = configuration.getAttribute(LauncherConstants.ATTR_OUTPUT_FOLDER_NAME, "");
-    IResource outputFolder = ResourcesPlugin.getWorkspace().getRoot().findMember(outputFolderPath);
-    cmdline.append(outputFolder.getLocation().toOSString() + " ");
-    cmdline.append(RemoteLauncher.OUTPUT_CLEAR_PARAM + " ");
-    cmdline.append(configuration.getAttribute(LauncherConstants.ATTR_OUTPUT_CLEAR_NAME, false));
+    if (outputFolderPath.length() != 0) {
+      IResource outputFolder = ResourcesPlugin.getWorkspace().getRoot().findMember(outputFolderPath);
+    
+	  cmdline.append(RemoteLauncher.OUTPUT_FOLDER_PARAM + " ");
+	  cmdline.append(outputFolder.getLocation().toOSString() + " ");
+	  
+	  // Do not delete the output folder if it is the Workspace Root or a Project
+	  // It should not be possible to set it to one of both, but in case something goes
+	  // it should be double checked
+	  if (!(outputFolder instanceof IWorkspaceRoot || outputFolder instanceof IProject)) {
+		  cmdline.append(RemoteLauncher.OUTPUT_CLEAR_PARAM + " ");
+		  cmdline.append(configuration.getAttribute(LauncherConstants.ATTR_OUTPUT_CLEAR_NAME, false));
+	  }
+    }
     
     return cmdline.toString();
   }
