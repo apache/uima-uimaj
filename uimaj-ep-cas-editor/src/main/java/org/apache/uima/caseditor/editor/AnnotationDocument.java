@@ -46,7 +46,10 @@ public class AnnotationDocument extends Document implements ICasDocument {
   	if (lineLengthHint != 0 && text != null) {
   	    return wrapWords(text, lineLengthHint);
   	} else {
+  	  if (text != null)
   	    return text;
+  	  else
+  	    return "";
   	}
   }
   

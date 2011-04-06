@@ -99,8 +99,10 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Canvas;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -109,6 +111,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
@@ -1201,7 +1204,8 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     // Move the caret before the first char, otherwise it
     // might be placed on an index which is out of bounds in
     // the changed text
-    getSourceViewer().getTextWidget().setCaretOffset(0);
+    if (getSourceViewer().getTextWidget().getText().length() > 0)
+      getSourceViewer().getTextWidget().setCaretOffset(0);
     
     // De-highlight the text in the editor, because the highlight
     // method has to remember the highlighted text area 
@@ -1527,7 +1531,48 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
       // TODO: Each page needs an ability to switch the view back to something else ...
       
       if (getDocument() != null && getDocument().getCAS().getDocumentText() == null) {
-        return super.createStatusControl(parent, new Status(0, CasEditorPlugin.ID, "Text sofa is not set!"));
+        
+        // TODO: Also display the current view name ...
+        
+        Composite noTextComposite = new Composite(parent, SWT.NONE);
+        noTextComposite.setLayout(new GridLayout(1, false));
+        Label noTextLabel = new Label(noTextComposite, SWT.NONE);
+        noTextLabel.setText("Text sofa is not set!");
+        
+        
+        Label switchToView = new Label(noTextComposite, SWT.NONE);
+        switchToView.setText("Choose a view to switch to:");
+        
+        final Combo viewSelectionCombo = new Combo(noTextComposite, SWT.READ_ONLY);
+        
+        List<String> viewNames = new ArrayList<String>();
+        
+        for (Iterator<CAS> it = getDocument().getCAS().getViewIterator(); it.hasNext(); ) {
+          viewNames.add(it.next().getViewName());
+        }
+        
+        viewSelectionCombo.setItems(viewNames.toArray(new String[viewNames.size()]));
+        
+        // Preselect default view, will always be there
+        viewSelectionCombo.select(0);
+        
+        Button switchView = new Button(noTextComposite, SWT.PUSH);
+        switchView.setText("Switch");
+        
+        // TODO: Add a combo to select view ...
+        
+        switchView.addSelectionListener(new SelectionListener() {
+          
+          public void widgetSelected(SelectionEvent e) {
+            // TODO; Switch to selected view in combo ...
+            showView(viewSelectionCombo.getText());
+          }
+          
+          public void widgetDefaultSelected(SelectionEvent e) {
+          }
+        });
+        
+        return noTextComposite;
       }
       
       return super.createStatusControl(parent, status);
