@@ -73,7 +73,7 @@ under the License.
 	    
 	    <para>
 	    The output directory is optional, if set all processed input files will be written to the specified
-	    directory, if the clear check box is marked all files inside the output folder will be deleted, usually
+	    directory in the XMI CAS format, if the clear check box is marked all files inside the output folder will be deleted, usually
 	    this option is not needed because existing files will be overwritten without notice.
 	    </para>
 	    
