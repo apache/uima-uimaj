@@ -187,9 +187,17 @@ public class RemoteLauncher {
         inputDirectory = inputResource;
       }
       
-      String outputFilePath = inputFile.getPath();
-      outputFilePath = outputFilePath.replaceFirst(inputDirectory.getName(),
-              outputFolder.getName());
+      String inputFilePath = inputFile.getPath();
+      String relativeInputFilePath;
+      if (inputFilePath.startsWith(inputDirectory.getPath())) {
+        relativeInputFilePath = inputFilePath.substring(inputDirectory.getPath().length());
+      }
+      else {
+        System.err.println("Error: Unable to construct output file path, output file will not be written!");
+        return;
+      }
+      
+      String outputFilePath = new File(outputFolder.getPath(), relativeInputFilePath).getPath();
       
       // cutoff file ending
       int fileTypeIndex = outputFilePath.lastIndexOf(".");
