@@ -886,8 +886,8 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
       catch (CASRuntimeException e) {
         // ignore, view is not available
         // TODO: Using exceptions for control flow is very bad practice
+        showView(CAS.NAME_DEFAULT_SOFA);
       }
-      
     }
   }
   
@@ -1097,12 +1097,17 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     // copy annotations into annotation model
     final Iterator<AnnotationFS> mAnnotations = getDocument().getCAS().getAnnotationIndex()
             .iterator();
-
+    
+    // TODO: Build first a map, and then pass all annotations at once
+    Map annotationsToAdd = new HashMap();
+    
     while (mAnnotations.hasNext()) {
       AnnotationFS annotationFS = mAnnotations.next();
-      annotationModel.addAnnotation(new EclipseAnnotationPeer(annotationFS), new Position(
+      annotationsToAdd.put(new EclipseAnnotationPeer(annotationFS), new Position(
               annotationFS.getBegin(), annotationFS.getEnd() - annotationFS.getBegin()));
     }
+    
+    ((IAnnotationModelExtension) annotationModel).replaceAnnotations(null, annotationsToAdd);
   }
   
   /**
