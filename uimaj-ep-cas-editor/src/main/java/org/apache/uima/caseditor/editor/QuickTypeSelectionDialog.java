@@ -141,17 +141,14 @@ class QuickTypeSelectionDialog extends PopupDialog {
     }
 
     // Now assign letters to the remaining types
-    for (Iterator<Type> it = types.iterator(); it.hasNext();) {
+    for (Iterator<Type> it = types.iterator(); it.hasNext() && shortcuts.size() > 0;) {
 
-      if (shortcuts.size() > 0) {
+      Character candidateChar = shortcuts.iterator().next();
 
-        Character candidateChar = shortcuts.iterator().next();
+      putShortcut(candidateChar, it.next());
 
-        putShortcut(candidateChar, it.next());
-
-        shortcuts.remove(candidateChar);
-        it.remove();
-      }
+      shortcuts.remove(candidateChar);
+      it.remove();
     }
   }
 
@@ -279,7 +276,7 @@ class QuickTypeSelectionDialog extends PopupDialog {
 
         Character key = typeShortcutMap.get(type);
 
-        if (typeShortcutMap != null) {
+        if (key != null) {
           return "[" + key + "] " + type.getShortName();
         } else {
           return type.getShortName();
