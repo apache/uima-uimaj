@@ -65,6 +65,13 @@ public class AnalysisEngineLaunchConfigurationDelegate extends JavaLaunchDelegat
     return FileLocator.toFileURL(url).getFile();
   }
 
+  private static void ensureResourceExists(IResource resource, String resourceName)
+          throws CoreException {
+    if (resource == null)
+      throw new CoreException(new Status(IStatus.ERROR, LauncherPlugin.ID, "The " + resourceName
+              + " does not exist!"));
+  }
+  
   @Override
   public String getProgramArguments(ILaunchConfiguration configuration) throws CoreException {
     
@@ -76,13 +83,13 @@ public class AnalysisEngineLaunchConfigurationDelegate extends JavaLaunchDelegat
     cmdline.append(RemoteLauncher.DESCRIPTOR_PARAM + " ");
     String descriptorPath = configuration.getAttribute(LauncherConstants.ATTR_DESCRIPTOR_NAME, "");
     IResource descriptor = ResourcesPlugin.getWorkspace().getRoot().findMember(descriptorPath);
-    // TODO: Potential NPE
+    ensureResourceExists(descriptor, "Analysis Engine Descritpor");
     cmdline.append(descriptor.getLocation().toOSString() + " ");
     cmdline.append(RemoteLauncher.INPUT_RESOURCE_PARAM + " ");
     
     String inputResourcePath = configuration.getAttribute(LauncherConstants.ATTR_INPUT_NAME, "");
     IResource inputResource = ResourcesPlugin.getWorkspace().getRoot().findMember(inputResourcePath);
-    // TODO: Potential NPE
+    ensureResourceExists(inputResource, "Input Resource");
     cmdline.append(inputResource.getLocation().toOSString() + " ");
     
     String formatName = configuration.getAttribute(LauncherConstants.ATTR_INPUT_FORMAT_NAME, " "); 
@@ -100,29 +107,36 @@ public class AnalysisEngineLaunchConfigurationDelegate extends JavaLaunchDelegat
     cmdline.append(configuration.getAttribute(LauncherConstants.ATTR_INPUT_RECURSIVELY_NAME, false) + " ");
     
     String outputFolderPath = configuration.getAttribute(LauncherConstants.ATTR_OUTPUT_FOLDER_NAME, "");
+    // zero length string means that is is not set
     if (outputFolderPath.length() != 0) {
       IResource outputFolder = ResourcesPlugin.getWorkspace().getRoot().findMember(outputFolderPath);
       
-      if (outputFolder != null) {
+      ensureResourceExists(outputFolder, "Output Folder");
+      
 		  cmdline.append(RemoteLauncher.OUTPUT_FOLDER_PARAM + " ");
 		  cmdline.append(outputFolder.getLocation().toOSString() + " ");
 		  
 		  // Do not delete the output folder if it is the Workspace Root or a Project
-		  // It should not be possible to set it to one of both, but in case something goes
+		  // It should not be possible to set it to one of both, but in case something goes wrong
 		  // it should be double checked
 		  if (!(outputFolder instanceof IWorkspaceRoot || outputFolder instanceof IProject)) {
 			  cmdline.append(RemoteLauncher.OUTPUT_CLEAR_PARAM + " ");
 			  cmdline.append(configuration.getAttribute(LauncherConstants.ATTR_OUTPUT_CLEAR_NAME, false));
 		  }
-      }
     }
     
     return cmdline.toString();
   }
 
   
+  /**
+   * Adds the launcher and uima core jar to the class path,
+   * depending on normal mode or PDE development mode.
+   */
   @Override
   public String[] getClasspath(ILaunchConfiguration configuration) throws CoreException {
+    
+    // The class path already contains the jars which are specified in the Classpath tab
     
     List<String> extendedClasspath = new ArrayList<String>();
     Collections.addAll(extendedClasspath, super.getClasspath(configuration));
@@ -185,11 +199,14 @@ public class AnalysisEngineLaunchConfigurationDelegate extends JavaLaunchDelegat
       }
     }
     
-    // It is assumed that the working directory is the project directory,
-    // otherwise the refresh will not occur
-    File workingDir = getWorkingDirectory(configuration);
-    IResource result = ResourcesPlugin.getWorkspace().getRoot().findMember(workingDir.getName());
-    if (result != null)
-        result.refreshLocal(IResource.DEPTH_INFINITE, null);
+    String outputFolderPath = configuration.getAttribute(LauncherConstants.ATTR_OUTPUT_FOLDER_NAME, "");
+    // zero length string means that is is not set
+    if (outputFolderPath.length() != 0) {
+      // If the output directory is set and inside the workspace it will be refreshed
+      IResource result = ResourcesPlugin.getWorkspace().getRoot().findMember(outputFolderPath);
+      
+      if (result != null)
+          result.refreshLocal(IResource.DEPTH_INFINITE, null);
+    }
   }
 }
