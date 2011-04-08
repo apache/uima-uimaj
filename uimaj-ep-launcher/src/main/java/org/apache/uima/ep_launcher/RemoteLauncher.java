@@ -49,6 +49,7 @@ public class RemoteLauncher {
   public static final String INPUT_RECURSIVE_PARAM = "-recursive";
   public static final String INPUT_FORMAT_PARAM = "-format";
   public static final String INPUT_ENCODING_PARAM = "-encoding";
+  public static final String INPUT_LANGUAGE_PARAM = "-language";
   public static final String OUTPUT_FOLDER_PARAM = "-output";
   public static final String OUTPUT_CLEAR_PARAM = "-clear";
   
@@ -57,6 +58,7 @@ public class RemoteLauncher {
   private static boolean inputRecursive;
   private static InputFormat inputFormat = InputFormat.CAS;
   private static String inputEncoding = java.nio.charset.Charset.defaultCharset().name();
+  private static String inputLanguage;
   private static File outputFolder;
   private static boolean outputFolderClear;
   
@@ -118,6 +120,13 @@ public class RemoteLauncher {
         
         inputEncoding = args[index++];
       }
+      else if (INPUT_LANGUAGE_PARAM.equals(arg)) {
+        if (index >= args.length) {
+          return false;
+        }
+        
+        inputLanguage = args[index++];
+      }
       else if (OUTPUT_FOLDER_PARAM.equals(arg)) {
         if (index >= args.length) {
           return false;
@@ -147,6 +156,9 @@ public class RemoteLauncher {
   
       // put document text in CAS
       aCAS.setDocumentText(document);
+      
+      if (inputLanguage != null)
+        aCAS.setDocumentLanguage(inputLanguage);
     }
     else if (InputFormat.CAS.equals(format)) {
       if (inputFile.getName().endsWith(".xmi")) {

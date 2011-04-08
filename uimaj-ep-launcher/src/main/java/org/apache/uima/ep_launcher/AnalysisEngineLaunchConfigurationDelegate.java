@@ -100,6 +100,9 @@ public class AnalysisEngineLaunchConfigurationDelegate extends JavaLaunchDelegat
       cmdline.append(RemoteLauncher.INPUT_ENCODING_PARAM + " ");
       cmdline.append(configuration.getAttribute(LauncherConstants.ATTR_INPUT_ENCODING_NAME, "") 
               + " ");
+      
+      cmdline.append(RemoteLauncher.INPUT_LANGUAGE_PARAM + " ");
+      cmdline.append(configuration.getAttribute(LauncherConstants.ATTR_INPUT_LANGUAGE_NAME, "") + " "); 
     }
     
     cmdline.append(RemoteLauncher.INPUT_RECURSIVE_PARAM + " ");

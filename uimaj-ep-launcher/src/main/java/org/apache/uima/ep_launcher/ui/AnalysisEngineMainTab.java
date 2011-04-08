@@ -56,6 +56,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
@@ -81,6 +82,7 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
   private Button casButton;
   private Button plainTextButton;
   private Combo encodingCombo;
+  private Text languageText;
   
   private Text outputFolderText;
   private Button clearFolderButton;
@@ -261,13 +263,13 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
     GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).
             grab(true, false).applyTo(inputFormatGroup);
     
-    GridLayout inputFormatGroupLayout = new GridLayout(2, false);
+    GridLayout inputFormatGroupLayout = new GridLayout(4, false);
     inputFormatGroup.setLayout(inputFormatGroupLayout);
     
     casButton = new Button(inputFormatGroup, SWT.RADIO);
     casButton.setText("CASes (XMI or XCAS format)");
     GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).
-            grab(true, false).span(2, 1).applyTo(casButton);
+            grab(true, false).span(4, 1).applyTo(casButton);
     casButton.addSelectionListener(new SelectionListener() {
       
       public void widgetSelected(SelectionEvent event) {
@@ -285,6 +287,7 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
       
       public void widgetSelected(SelectionEvent event) {
         encodingCombo.setEnabled(plainTextButton.getSelection());
+        languageText.setEnabled(plainTextButton.getSelection());
         updateLaunchConfigurationDialog();
       }
       
@@ -319,6 +322,22 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
     // Will be enabled by initializeForm if format is plain text
     encodingCombo.setEnabled(false);
     
+    // Add language label
+    Label languageLabel = new Label(inputFormatGroup, SWT.NONE);
+    languageLabel.setText("Language:");
+    
+    // Add language text field
+   languageText = new Text(inputFormatGroup, SWT.BORDER);
+   GridDataFactory.swtDefaults().hint(250, SWT.DEFAULT).align(SWT.LEFT, SWT.CENTER).
+            grab(true, false).applyTo(languageText);
+    
+   languageText.addModifyListener(new ModifyListener() {
+     
+     public void modifyText(ModifyEvent event) {
+       updateLaunchConfigurationDialog();
+     }
+   });
+   
     // Output Folder
     Group outputFolderGroup = new Group(projectComposite, SWT.None);
     outputFolderGroup.setText("Output Folder:");
@@ -459,13 +478,18 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
     
     config.setAttribute(LauncherConstants.ATTR_INPUT_ENCODING_NAME, encodingCombo.getText());
     
+    config.setAttribute(LauncherConstants.ATTR_INPUT_LANGUAGE_NAME, languageText.getText());
+    
     config.setAttribute(LauncherConstants.ATTR_OUTPUT_FOLDER_NAME, outputFolderText.getText());
     config.setAttribute(LauncherConstants.ATTR_OUTPUT_CLEAR_NAME,
             Boolean.valueOf(clearFolderButton.getSelection()));
   }
 
   public void setDefaults(ILaunchConfigurationWorkingCopy config) {
-    // no defaults are provided yet
+    config.setAttribute(LauncherConstants.ATTR_INPUT_RECURSIVELY_NAME, false);
+    config.setAttribute(LauncherConstants.ATTR_INPUT_FORMAT_NAME, InputFormat.CAS.toString());
+    config.setAttribute(LauncherConstants.ATTR_INPUT_LANGUAGE_NAME, "x-unspecified");
+    config.setAttribute(LauncherConstants.ATTR_OUTPUT_CLEAR_NAME, false);
   }
   
   @Override
@@ -514,7 +538,16 @@ public class AnalysisEngineMainTab extends JavaLaunchTab {
     else if (InputFormat.PLAIN_TEXT.toString().equals(formatName)) {
       plainTextButton.setSelection(true);
       encodingCombo.setEnabled(true);
+      languageText.setEnabled(true);
       
+      String language;
+      try {
+        language = config.getAttribute(LauncherConstants.ATTR_INPUT_LANGUAGE_NAME, "x-unspecified");
+      } catch (CoreException e) {
+        language = "x-unspecified";
+      }
+      
+      languageText.setText(language);
     }
     
     // Always remember the input encoding, even so plain text is not selected,
