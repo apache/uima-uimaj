@@ -81,7 +81,7 @@ public class ShowAnnotationsMenu extends TypeMenu {
 	@Override
 	protected void insertAction(final Type type, Menu parentMenu) {
 		final MenuItem actionItem = new MenuItem(parentMenu, SWT.CHECK);
-		actionItem.setText(type.getShortName());
+		actionItem.setText(type.getName());
 
 		// TODO: find another way to select the annotation mode also
 		if (editorAnnotationMode != null && editorAnnotationMode.equals(type)) {

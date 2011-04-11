@@ -63,7 +63,7 @@ public class ModeMenu extends TypeMenu {
   @Override
   protected void insertAction(final Type type, Menu parentMenu) {
     MenuItem actionItem = new MenuItem(parentMenu, SWT.CHECK);
-    actionItem.setText(type.getShortName());
+    actionItem.setText(type.getName());
     
     if (type.equals(editor.getAnnotationMode()))
         actionItem.setSelection(true);

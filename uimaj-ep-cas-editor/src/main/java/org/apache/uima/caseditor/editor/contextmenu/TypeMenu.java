@@ -72,7 +72,7 @@ abstract class TypeMenu extends ContributionItem {
 
         if (isParentIncluded) {
           MenuItem  subMenuItem = new MenuItem(parentMenu, SWT.CASCADE);
-          subMenuItem.setText(parentType.getShortName());
+          subMenuItem.setText(parentType.getName());
 
           newSubMenu = new Menu(subMenuItem);
           subMenuItem.setMenu(newSubMenu);
