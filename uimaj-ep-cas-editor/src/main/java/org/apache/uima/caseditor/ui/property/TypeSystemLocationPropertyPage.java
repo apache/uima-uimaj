@@ -28,6 +28,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -91,6 +93,13 @@ public class TypeSystemLocationPropertyPage extends PropertyPage {
     gd = new GridData(GridData.FILL_HORIZONTAL);
     typeSystemText.setLayoutData(gd);
 
+    typeSystemText.addModifyListener(new ModifyListener() {
+      
+      public void modifyText(ModifyEvent event) {
+        updateApplyButton();
+      }
+    });
+    
     try {
       String typeSystemPath = ((IResource) getElement()).getPersistentProperty(new QualifiedName("",
               TYPE_SYSTEM_PROPERTY));
@@ -125,26 +134,6 @@ public class TypeSystemLocationPropertyPage extends PropertyPage {
 
   protected void performDefaults() {
     typeSystemText.setText(getDefaultTypeSystemLocation());
-  }
-  
-  @Override
-  public boolean isValid() {
-    
-    IProject project = getProject();
-    
-    if (project != null) {
-      try {
-        if (typeSystemText.getText().length() > 0) {
-          project.getFile(typeSystemText.getText());
-        }
-        return true;
-      }
-      catch (IllegalArgumentException e) {
-        return false;
-      }
-    }
-    
-    return false;
   }
   
   public boolean performOk() {
