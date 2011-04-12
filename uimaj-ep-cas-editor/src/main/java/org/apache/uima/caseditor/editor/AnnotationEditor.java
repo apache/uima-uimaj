@@ -1514,7 +1514,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
             
             FileEditorInput editorInput = (FileEditorInput) getEditorInput();
             provider.setTypeSystem(editorInput.getFile().getFullPath().toPortableString(),
-                    resource.getFullPath().toPortableString());
+                    resource.getFullPath().toString());
             
             // Now set the input again to open the editor with the
             // specified type system

@@ -32,17 +32,20 @@ import org.apache.uima.caseditor.core.model.dotcorpus.DotCorpus;
 import org.apache.uima.caseditor.core.model.dotcorpus.DotCorpusSerializer;
 import org.apache.uima.caseditor.core.util.MarkerUtil;
 import org.apache.uima.caseditor.editor.AnnotationStyle;
+import org.apache.uima.caseditor.ui.property.TypeSystemLocationPropertyPage;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.QualifiedName;
 
 /**
  * The <code>DotCorpus</code> is responsible to load/store the project dependent configuration. It
  * has several methods to set and retrieve configuration parameters.
  */
 public class DotCorpusElement extends AbstractNlpElement {
+  
   private DotCorpus mDotCorpus;
 
   private IFile mResource;
@@ -70,14 +73,23 @@ public class DotCorpusElement extends AbstractNlpElement {
    * @return - type system file name or null if no set
    */
   public IFile getTypeSystemFile() {
-    IFile result;
-
-    if (mDotCorpus.getTypeSystemFileName() != null) {
-      result = getFile(mDotCorpus.getTypeSystemFileName());
-    } else {
-      result = null;
+    
+    // Get from project property
+    IFile result = TypeSystemLocationPropertyPage.getTypeSystemLocation(mNlpProject.getProject());
+    
+    // Migration:
+    // If not there it might be the first run or type system is not set
+    // Try to get it from the dot corpus file, if not set that will also return null
+    if (result == null) {
+      if (mDotCorpus.getTypeSystemFileName() != null) {
+        result = getFile(mDotCorpus.getTypeSystemFileName());
+      }
+    
+      // Set it as a project property
+      if (result != null)
+        TypeSystemLocationPropertyPage.setTypeSystemLocation(mNlpProject.getProject(), result.getFullPath().toString());
     }
-
+    
     return result;
   }
 
@@ -98,7 +110,22 @@ public class DotCorpusElement extends AbstractNlpElement {
    *          type system file name
    */
   public void setTypeSystemFilename(String filename) {
-    mDotCorpus.setTypeSystemFilename(filename);
+    
+    if (filename != null) {
+      // Make path absolute
+      IFile tsFile = mNlpProject.getProject().getFile(filename);
+      
+      // Write into project property!
+      TypeSystemLocationPropertyPage.setTypeSystemLocation(mNlpProject.getProject(), tsFile.getFullPath().toString());
+      
+      // Write type system location into dot corpus for backward compatibility
+      // Might not be needed but is safer!
+      mDotCorpus.setTypeSystemFilename(tsFile.getFullPath().toString());
+    }
+    else {
+      TypeSystemLocationPropertyPage.setTypeSystemLocation(mNlpProject.getProject(), "");
+      mDotCorpus.setTypeSystemFilename(null);
+    }
   }
 
   /**

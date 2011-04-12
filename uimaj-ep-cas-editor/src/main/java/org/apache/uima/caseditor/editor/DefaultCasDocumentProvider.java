@@ -36,6 +36,7 @@ import org.apache.uima.caseditor.core.model.DocumentElement;
 import org.apache.uima.caseditor.core.model.INlpElement;
 import org.apache.uima.caseditor.core.model.dotcorpus.DotCorpus;
 import org.apache.uima.caseditor.core.model.dotcorpus.DotCorpusSerializer;
+import org.apache.uima.caseditor.ui.property.TypeSystemLocationPropertyPage;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -123,28 +124,21 @@ public class DefaultCasDocumentProvider extends
       else {
 
         // Try to find a type system for the CAS file
+        // TODO: Change to only use full path
+        IFile typeSystemFile = null; 
         
         // First check if a type system is already known or was
         // set by the editor for this specific CAS
         String typeSystemFileString = documentToTypeSystemMap.get(casFile.getFullPath().toPortableString());
         
-        // If non was found, use the default name!
-        if (typeSystemFileString == null)
-          typeSystemFileString = "TypeSystem.xml";
+        if (typeSystemFileString != null)
+          typeSystemFile = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(typeSystemFileString));
         
-        // TODO: Change to only use full path
-        IFile typeSystemFile = null; 
-        
-        IResource typeSystemResource = ResourcesPlugin.getWorkspace().getRoot().
-            findMember(new Path(typeSystemFileString));
-        
-        if (typeSystemResource instanceof IFile)
-          typeSystemFile = (IFile) typeSystemResource;
-        
+        // If non was found get it from project
         if (typeSystemFile == null)
-          typeSystemFile = casFile.getProject().getFile(typeSystemFileString);
+          typeSystemFile = TypeSystemLocationPropertyPage.getTypeSystemLocation(casFile.getProject());
         
-        if (typeSystemFile.exists()) {
+        if (typeSystemFile != null && typeSystemFile.exists()) {
           
           // Try to load a style file for the type system
           // Should be named: ts file name, prefixed with .style-
@@ -244,9 +238,17 @@ public class DefaultCasDocumentProvider extends
           return document;
         }
         else {
-          IStatus status = new Status(IStatus.ERROR, "org.apache.uima.dev", 12,
-                  "Cannot find type system!\nPlease place a valid type system in this path:\n" +
-                  typeSystemFile.getLocation().toOSString(), null);
+          
+          String message = null;
+          
+          if (typeSystemFile != null) {
+            message = "Cannot find type system!\nPlease place a valid type system in this path:\n" +
+                    typeSystemFile.getFullPath().toString();
+          }
+          else
+            message = "Type system is not set, please choose a type system to open the CAS.";
+          
+          IStatus status = new Status(IStatus.ERROR, "org.apache.uima.dev", 12, message, null);
           
           elementErrorStatus.put(element, status);
         }
