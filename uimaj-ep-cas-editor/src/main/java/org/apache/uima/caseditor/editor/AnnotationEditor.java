@@ -36,6 +36,10 @@ import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.caseditor.CasEditorPlugin;
 import org.apache.uima.caseditor.editor.action.DeleteFeatureStructureAction;
+import org.apache.uima.caseditor.editor.action.LowerLeftAnnotationSideAction;
+import org.apache.uima.caseditor.editor.action.LowerRightAnnotationSideAction;
+import org.apache.uima.caseditor.editor.action.WideLeftAnnotationSideAction;
+import org.apache.uima.caseditor.editor.action.WideRightAnnotationSideAction;
 import org.apache.uima.caseditor.editor.annotation.DrawingStyle;
 import org.apache.uima.caseditor.editor.annotation.EclipseAnnotationPeer;
 import org.apache.uima.caseditor.editor.context.AnnotationEditingControlCreator;
@@ -324,16 +328,20 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     @Override
     public void updatedAnnotation(Collection<AnnotationFS> annotations) {
 
+      List<AnnotationFS> selectedFSes = getSelectedAnnotations();
+      
+      // TODO: Improve update handling
+      // Removing and adding is problematic because the selection goes away
       removedAnnotation(annotations);
       addedAnnotation(annotations);
 
       List<ModelFeatureStructure> structures = new LinkedList<ModelFeatureStructure>();
 
-      for (AnnotationFS annotation : annotations) {
+      for (AnnotationFS annotation : selectedFSes) {
         structures.add(new ModelFeatureStructure(getDocument(), annotation));
       }
 
-      selectionChanged(getSite().getPage().getActivePart(), new StructuredSelection(structures));
+      mFeatureStructureSelectionProvider.setSelection(getDocument(), selectedFSes);
     }
 
     public void changed() {
@@ -1388,8 +1396,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     getSite().getSelectionProvider().addSelectionChangedListener(annotateAction);
     
     setAction(annotateActionID, annotateAction);
-    setActionActivationCode(annotateActionID, '\r', SWT.CR,
-            SWT.NONE);
+    setActionActivationCode(annotateActionID, '\r', -1, SWT.DEFAULT);
 
     SmartAnnotateAction smartAnnotateAction = new SmartAnnotateAction();
     smartAnnotateAction.setActionDefinitionId(ITextEditorActionDefinitionIds.SMART_ENTER);
@@ -1423,6 +1430,34 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     FindAnnotateAction findAnnotateAction = new FindAnnotateAction(this, getSourceViewer().getFindReplaceTarget());
     findAnnotateAction.setActionDefinitionId(IWorkbenchActionDefinitionIds.FIND_REPLACE);
     setAction(ITextEditorActionConstants.FIND, findAnnotateAction);
+    
+    // Lower left side of annotation action
+    LowerLeftAnnotationSideAction lowerLeftAnnotationSideAction = new LowerLeftAnnotationSideAction(getDocument());
+    lowerLeftAnnotationSideAction.setActionDefinitionId("LowerLeftAnnotationSide");
+    setActionActivationCode("LowerLeftAnnotationSide", 'm', -1, SWT.CTRL);
+    setAction("LowerLeftAnnotationSide", lowerLeftAnnotationSideAction);
+    getSite().getSelectionProvider().addSelectionChangedListener(lowerLeftAnnotationSideAction);
+    
+    // Wide left side of annotation action
+    WideLeftAnnotationSideAction wideLeftAnnotationSide = new WideLeftAnnotationSideAction(getDocument());
+    wideLeftAnnotationSide.setActionDefinitionId("WideLeftAnnotationSide");
+    setActionActivationCode("WideLeftAnnotationSide", 'n', -1, SWT.CTRL);
+    setAction("WideLeftAnnotationSide", wideLeftAnnotationSide);
+    getSite().getSelectionProvider().addSelectionChangedListener(wideLeftAnnotationSide);
+    
+    // Lower right side of annotation
+    LowerRightAnnotationSideAction lowerRightAnnotationSideAction = new LowerRightAnnotationSideAction(getDocument());
+    lowerRightAnnotationSideAction.setActionDefinitionId("LowerRightAnnotationSide");
+    setActionActivationCode("LowerRightAnnotationSide", ',', -1, SWT.CTRL);
+    setAction("LowerRightAnnotationSide", lowerRightAnnotationSideAction);
+    getSite().getSelectionProvider().addSelectionChangedListener(lowerRightAnnotationSideAction);
+    
+    // Wide right side of annotation
+    WideRightAnnotationSideAction wideRightAnnotationSideAction = new WideRightAnnotationSideAction(getDocument());
+    wideRightAnnotationSideAction.setActionDefinitionId("WideRightAnnotationSide");
+    setActionActivationCode("WideRightAnnotationSide", '.', -1, SWT.CTRL);
+    setAction("WideRightAnnotationSide", wideRightAnnotationSideAction);
+    getSite().getSelectionProvider().addSelectionChangedListener(wideRightAnnotationSideAction);
   }
 
   @Override
