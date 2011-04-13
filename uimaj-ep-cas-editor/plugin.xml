@@ -240,6 +240,14 @@
 				<instanceof value="org.apache.uima.caseditor.editor.styleview.AnnotationTypeNode"/>
 			</enabledWhen>
 		</page>
+		
+        <page
+            adaptable="true"
+            objectClass="org.eclipse.core.resources.IProject"
+            class="org.apache.uima.caseditor.ui.property.TypeSystemLocationPropertyPage"
+            name="UIMA Type System"
+            id="org.apache.uima.caseditor.TypeSystemLocationPropertyPage">
+            </page>
 	</extension>
 	
 	<extension point="org.eclipse.core.runtime.adapters">
