@@ -328,20 +328,15 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     @Override
     public void updatedAnnotation(Collection<AnnotationFS> annotations) {
 
-      List<AnnotationFS> selectedFSes = getSelectedAnnotations();
+      // Remember old selection
+      ISelection oldSelection = mFeatureStructureSelectionProvider.getSelection();   
       
       // TODO: Improve update handling
       // Removing and adding is problematic because the selection goes away
       removedAnnotation(annotations);
       addedAnnotation(annotations);
-
-      List<ModelFeatureStructure> structures = new LinkedList<ModelFeatureStructure>();
-
-      for (AnnotationFS annotation : selectedFSes) {
-        structures.add(new ModelFeatureStructure(getDocument(), annotation));
-      }
-
-      mFeatureStructureSelectionProvider.setSelection(getDocument(), selectedFSes);
+      
+      mFeatureStructureSelectionProvider.setSelection(oldSelection);
     }
 
     public void changed() {
