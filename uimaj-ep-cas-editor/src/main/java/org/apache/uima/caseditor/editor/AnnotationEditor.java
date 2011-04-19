@@ -327,16 +327,15 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
      */
     @Override
     public void updatedAnnotation(Collection<AnnotationFS> annotations) {
-
-      // Remember old selection
-      ISelection oldSelection = mFeatureStructureSelectionProvider.getSelection();   
       
-      // TODO: Improve update handling
-      // Removing and adding is problematic because the selection goes away
-      removedAnnotation(annotations);
-      addedAnnotation(annotations);
+      IAnnotationModelExtension annotationModel = (IAnnotationModelExtension) getDocumentProvider().getAnnotationModel(getEditorInput());
       
-      mFeatureStructureSelectionProvider.setSelection(oldSelection);
+      for (AnnotationFS annotation : annotations) {
+        annotationModel.modifyAnnotationPosition(new EclipseAnnotationPeer(annotation), 
+                new Position(annotation.getBegin(), annotation.getEnd() - annotation.getBegin()));
+      }
+      
+      selectionChanged(getSite().getPage().getActivePart(), mFeatureStructureSelectionProvider.getSelection());
     }
 
     public void changed() {
@@ -1312,11 +1311,13 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
    */
   public void selectionChanged(IWorkbenchPart part, ISelection selection) {
     if (selection instanceof StructuredSelection) {
+      
       AnnotationSelection annotations = new AnnotationSelection((StructuredSelection) selection);
 
       // only process these selection if the annotations belong
       // to the current editor instance
       if (getSite().getPage().getActiveEditor() == this && !annotations.isEmpty()) {
+        
         highlight(annotations.getFirst().getBegin(), annotations.getLast().getEnd()
                 - annotations.getFirst().getBegin());
 
@@ -1345,6 +1346,8 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
           // check bounds, if out of text do nothing
           getSourceViewer().getTextWidget().setCaretOffset(newCaretOffset);
           getSourceViewer().revealRange(newCaretOffset, 0);
+          
+          mFeatureStructureSelectionProvider.setSelection(selection);
         }
       }
     }
