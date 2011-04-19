@@ -374,7 +374,8 @@ public class DocumentUimaImpl extends AbstractDocument {
       return null;
     }
 
-    XMLInputSource xmlTypeSystemSource = new XMLInputSource(inTypeSystem, new File(""));
+    XMLInputSource xmlTypeSystemSource = new XMLInputSource(inTypeSystem,
+            extensionTypeSystemFile.getLocation().toFile());
 
     XMLParser xmlParser = UIMAFramework.getXMLParser();
 
