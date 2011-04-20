@@ -311,4 +311,79 @@
           class="org.apache.uima.caseditor.editor.DefaultCasDocumentProvider">
     </provider>
  </extension>
+ 
+ 
+ <extension
+	point="org.eclipse.ui.commands">
+      <category
+            name="Annotate"
+            description="Annotate"
+            id="org.apache.uima.caseditor.annotate">
+      </category>
+      
+      <command
+            categoryId="org.apache.uima.caseditor.annotate"
+            id="Enter"
+            description="Quick Annotate"
+            name="Quick Annotate">
+      </command>
+      <command
+            categoryId="org.apache.uima.caseditor.annotate"
+            id="WideRightAnnotationSide"
+            description="WideRightAnnotationSide"
+            name="WideRightAnnotationSide">
+      </command>
+      <command
+            categoryId="org.apache.uima.caseditor.annotate"
+            id="LowerRightAnnotationSide"
+            description="LowerRightAnnotationSide"
+            name="LowerRightAnnotationSide">
+      </command>
+      <command
+            categoryId="org.apache.uima.caseditor.annotate"
+            id="WideLeftAnnotationSide"
+            description="WideLeftAnnotationSide"
+            name="WideLeftAnnotationSide">
+      </command>
+      <command
+            categoryId="org.apache.uima.caseditor.annotate"
+            id="LowerLeftAnnotationSide"
+            description="LowerLeftAnnotationSide"
+            name="LowerLeftAnnotationSide">
+      </command>
+</extension>
+
+	<extension
+	         point="org.eclipse.ui.bindings">
+	<key
+	            commandId="Enter"
+	            contextId="org.eclipse.ui.contexts.window"
+	            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+	            sequence="CR">
+	</key>
+	<key
+	            commandId="WideLeftAnnotationSide"
+	            contextId="org.eclipse.ui.contexts.window"
+	            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+	            sequence="M1+K">
+	</key>
+	<key
+	            commandId="LowerLeftAnnotationSide"
+	            contextId="org.eclipse.ui.contexts.window"
+	            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+	            sequence="M1+L">
+	</key>
+	<key
+	            commandId="WideRightAnnotationSide"
+	            contextId="org.eclipse.ui.contexts.window"
+	            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+	            sequence="M3+L">
+	</key>
+	<key
+	            commandId="LowerRightAnnotationSide"
+	            contextId="org.eclipse.ui.contexts.window"
+	            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+	            sequence="M3+K">
+	</key>
+	</extension> 
 </plugin>

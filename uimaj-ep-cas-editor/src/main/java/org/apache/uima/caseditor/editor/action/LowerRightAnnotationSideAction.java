@@ -32,6 +32,9 @@ import org.eclipse.ui.actions.BaseSelectionListenerAction;
  * Lowers the right side of the currently selected annotation by one.
  */
 public final class LowerRightAnnotationSideAction extends BaseSelectionListenerAction {
+  
+  public static final String ID = "LowerRightAnnotationSide";
+  
   private ICasDocument mDocument;
 
   /**

@@ -62,6 +62,7 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.views.contentoutline.ContentOutline;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 
@@ -179,72 +180,6 @@ public final class AnnotationOutline extends ContentOutlinePage
   }
 
   /**
-   * Adds the actions to the tool bar.
-   *
-   * @param menuManager
-   * @param toolBarManager
-   * @param statusLineManager
-   */
-  @Override
-  public void makeContributions(IMenuManager menuManager, IToolBarManager toolBarManager,
-          IStatusLineManager statusLineManager) {
-    // wide left annotation side action
-    WideLeftAnnotationSideAction wideLeftAnnotationSideAction = new WideLeftAnnotationSideAction(
-            editor.getDocument());
-    wideLeftAnnotationSideAction.setText("Wides the left annotation side");
-    wideLeftAnnotationSideAction.setImageDescriptor(CasEditorPlugin
-            .getTaeImageDescriptor(Images.WIDE_LEFT_SIDE));
-
-    getSite().getSelectionProvider().addSelectionChangedListener(wideLeftAnnotationSideAction);
-
-    toolBarManager.add(wideLeftAnnotationSideAction);
-
-    // lower left annotation side action
-    LowerLeftAnnotationSideAction lowerLeftAnnotationSideAction = new LowerLeftAnnotationSideAction(
-            editor.getDocument());
-    lowerLeftAnnotationSideAction.setText("Lowers the left annotation side");
-    lowerLeftAnnotationSideAction.setImageDescriptor(CasEditorPlugin
-            .getTaeImageDescriptor(Images.LOWER_LEFT_SIDE));
-
-    getSite().getSelectionProvider().addSelectionChangedListener(lowerLeftAnnotationSideAction);
-
-    toolBarManager.add(lowerLeftAnnotationSideAction);
-
-    // lower right annotation side action
-    LowerRightAnnotationSideAction lowerRightAnnotionSideAction =
-      new LowerRightAnnotationSideAction(editor.getDocument());
-    lowerRightAnnotionSideAction.setText("Lowers the right annotation side");
-    lowerRightAnnotionSideAction.setImageDescriptor(CasEditorPlugin
-            .getTaeImageDescriptor(Images.LOWER_RIGHT_SIDE));
-
-    getSite().getSelectionProvider().addSelectionChangedListener(lowerRightAnnotionSideAction);
-
-    toolBarManager.add(lowerRightAnnotionSideAction);
-
-    // wide right annotation side action
-    WideRightAnnotationSideAction wideRightAnnotationSideAction = new WideRightAnnotationSideAction(
-            editor.getDocument());
-    wideRightAnnotationSideAction.setText("Wides the right annotation side");
-
-    wideRightAnnotationSideAction.setImageDescriptor(CasEditorPlugin
-            .getTaeImageDescriptor(Images.WIDE_RIGHT_SIDE));
-
-    getSite().getSelectionProvider().addSelectionChangedListener(wideRightAnnotationSideAction);
-
-    toolBarManager.add(wideRightAnnotationSideAction);
-
-    // merge action
-    MergeAnnotationAction mergeAction = new MergeAnnotationAction(editor.getDocument());
-    getSite().getSelectionProvider().addSelectionChangedListener(mergeAction);
-    mergeAction.setImageDescriptor(CasEditorPlugin.getTaeImageDescriptor(Images.MERGE));
-
-    toolBarManager.add(mergeAction);
-
-    // delete action
-    toolBarManager.add(ActionFactory.DELETE.create(getSite().getWorkbenchWindow()));
-  }
-
-  /**
    * Retrieves the control.
    *
    * @return the control
@@ -275,6 +210,66 @@ public final class AnnotationOutline extends ContentOutlinePage
     
     IMenuManager dropDownMenu = actionBars.getMenuManager();
     dropDownMenu.add(action);
+    
+    IToolBarManager toolBarManager = actionBars.getToolBarManager();
+    
+    // wide left annotation side action
+    WideLeftAnnotationSideAction wideLeftAnnotationSideAction = new WideLeftAnnotationSideAction(
+            editor.getDocument());
+    wideLeftAnnotationSideAction.setActionDefinitionId(WideLeftAnnotationSideAction.ID);
+    wideLeftAnnotationSideAction.setText("Wides the left annotation side");
+    wideLeftAnnotationSideAction.setImageDescriptor(CasEditorPlugin
+            .getTaeImageDescriptor(Images.WIDE_LEFT_SIDE));
+
+    getSite().getSelectionProvider().addSelectionChangedListener(wideLeftAnnotationSideAction);
+    actionBars.setGlobalActionHandler(WideLeftAnnotationSideAction.ID, wideLeftAnnotationSideAction);
+    toolBarManager.add(wideLeftAnnotationSideAction);
+
+    // lower left annotation side action
+    LowerLeftAnnotationSideAction lowerLeftAnnotationSideAction = new LowerLeftAnnotationSideAction(
+            editor.getDocument());
+    lowerLeftAnnotationSideAction.setActionDefinitionId(LowerLeftAnnotationSideAction.ID);
+    lowerLeftAnnotationSideAction.setText("Lowers the left annotation side");
+    lowerLeftAnnotationSideAction.setImageDescriptor(CasEditorPlugin
+            .getTaeImageDescriptor(Images.LOWER_LEFT_SIDE));
+
+    getSite().getSelectionProvider().addSelectionChangedListener(lowerLeftAnnotationSideAction);
+    actionBars.setGlobalActionHandler(LowerLeftAnnotationSideAction.ID, lowerLeftAnnotationSideAction);
+    toolBarManager.add(lowerLeftAnnotationSideAction);
+
+    // lower right annotation side action
+    LowerRightAnnotationSideAction lowerRightAnnotationSideAction =
+      new LowerRightAnnotationSideAction(editor.getDocument());
+    lowerRightAnnotationSideAction.setActionDefinitionId(LowerRightAnnotationSideAction.ID);
+    lowerRightAnnotationSideAction.setText("Lowers the right annotation side");
+    lowerRightAnnotationSideAction.setImageDescriptor(CasEditorPlugin
+            .getTaeImageDescriptor(Images.LOWER_RIGHT_SIDE));
+
+    getSite().getSelectionProvider().addSelectionChangedListener(lowerRightAnnotationSideAction);
+    actionBars.setGlobalActionHandler(LowerRightAnnotationSideAction.ID, lowerRightAnnotationSideAction);
+    toolBarManager.add(lowerRightAnnotationSideAction);
+
+    // wide right annotation side action
+    WideRightAnnotationSideAction wideRightAnnotationSideAction = new WideRightAnnotationSideAction(
+            editor.getDocument());
+    wideRightAnnotationSideAction.setActionDefinitionId(WideRightAnnotationSideAction.ID);
+    wideRightAnnotationSideAction.setText("Wides the right annotation side");
+    wideRightAnnotationSideAction.setImageDescriptor(CasEditorPlugin
+            .getTaeImageDescriptor(Images.WIDE_RIGHT_SIDE));
+
+    getSite().getSelectionProvider().addSelectionChangedListener(wideRightAnnotationSideAction);
+    actionBars.setGlobalActionHandler(WideRightAnnotationSideAction.ID, wideRightAnnotationSideAction);
+    toolBarManager.add(wideRightAnnotationSideAction);
+
+    // merge action
+    MergeAnnotationAction mergeAction = new MergeAnnotationAction(editor.getDocument());
+    getSite().getSelectionProvider().addSelectionChangedListener(mergeAction);
+    mergeAction.setImageDescriptor(CasEditorPlugin.getTaeImageDescriptor(Images.MERGE));
+
+    toolBarManager.add(mergeAction);
+
+    // delete action
+    toolBarManager.add(ActionFactory.DELETE.create(getSite().getWorkbenchWindow()));
     
     super.setActionBars(actionBars);
   }

@@ -32,6 +32,9 @@ import org.eclipse.ui.actions.BaseSelectionListenerAction;
  * Widens the right side of the currently selected annotation by one.
  */
 public final class WideRightAnnotationSideAction extends BaseSelectionListenerAction {
+  
+  public static final String ID = "WideRightAnnotationSide";
+  
   private ICasDocument mDocument;
 
   /**
