@@ -33,6 +33,7 @@ import org.apache.uima.caseditor.core.model.CorpusElement;
 import org.apache.uima.caseditor.editor.DocumentFormat;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
@@ -268,7 +269,7 @@ final class ImportDocumentWizardPage extends WizardPage {
           folderSelectionDialog.setInitialSelection(containerElement);
         }
 
-        folderSelectionDialog.setInput(org.apache.uima.caseditor.CasEditorPlugin.getNlpModel());
+        folderSelectionDialog.setInput(ResourcesPlugin.getWorkspace().getRoot());
 
         folderSelectionDialog.setTitle("Choose folder");
         folderSelectionDialog.setMessage("Please choose a folder.");
