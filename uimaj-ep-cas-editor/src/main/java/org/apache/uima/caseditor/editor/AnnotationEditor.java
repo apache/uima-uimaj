@@ -67,6 +67,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.IPainter;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.information.InformationPresenter;
@@ -762,6 +763,22 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   protected void doSetInput(IEditorInput input) throws CoreException {
     
     super.doSetInput(input);
+    
+    
+    if (CasEditorPlugin.getDefault().
+            getAndClearShowMigrationDialogFlag()) {
+      getSite().getShell().getDisplay().asyncExec(new Runnable() {
+          public void run() {
+              MessageDialog.openInformation(getSite().getShell(),"Cas Editor Project Removed",
+                      "The Cas Editor Project support was removed from this release and" +
+                      " your existing Cas Editor Projects have been migrated. If you still want to use the " +
+                      "Cas Editor Project support please install the Cas Editor 2.3.1 again.\n\n" + 
+                      "The Analysis Engine and Cas Consumer run support was also removed and " +
+                      "is replaced by the new Analysis Engine Launch plugin.");
+          }
+      });
+    }
+    
     
     if (getDocument() != null) {
             

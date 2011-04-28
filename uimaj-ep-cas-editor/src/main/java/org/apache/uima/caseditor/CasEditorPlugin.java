@@ -57,6 +57,9 @@ public class CasEditorPlugin extends AbstractUIPlugin {
    */
   private ResourceBundle mResourceBundle;
 
+  
+  private boolean showMigrationDialog = false;
+  
   /**
    * The constructor.
    */
@@ -78,9 +81,6 @@ public class CasEditorPlugin extends AbstractUIPlugin {
     
     // Backward compatibility: Migrate old Cas Editor Projects
     
-    // Active when no type system property is set on the project
-    
-
     // Scan for all Nlp nature projects
     IProject projects[] = ResourcesPlugin.getWorkspace().getRoot().getProjects();
     
@@ -140,6 +140,7 @@ public class CasEditorPlugin extends AbstractUIPlugin {
               try {
                 dotCorpusFile.copy(project.getFile(typeSystemFile.getParent().getProjectRelativePath() + "/" 
                         + ".style-" + typeSystemFile.getName()).getFullPath(), true, null);
+                showMigrationDialog = true;
               } catch (CoreException e) {
                 log(e);
               }
@@ -148,7 +149,6 @@ public class CasEditorPlugin extends AbstractUIPlugin {
         }
       }
     }
-      
   }
 
   /**
@@ -229,4 +229,14 @@ public class CasEditorPlugin extends AbstractUIPlugin {
   public static ImageDescriptor getTaeImageDescriptor(Images image) {
     return imageDescriptorFromPlugin(ID, ICONS_PATH + image.getPath());
   }
+  
+  public boolean getAndClearShowMigrationDialogFlag() {
+    if (showMigrationDialog) {
+      showMigrationDialog = false;
+      return true;
+    }
+    
+    return false;
+  }
+  
 }
