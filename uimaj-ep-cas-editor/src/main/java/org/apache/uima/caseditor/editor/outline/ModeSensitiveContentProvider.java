@@ -22,8 +22,6 @@ package org.apache.uima.caseditor.editor.outline;
 import java.util.Collection;
 
 import org.apache.uima.cas.text.AnnotationFS;
-import org.apache.uima.caseditor.core.model.NlpModel;
-import org.apache.uima.caseditor.core.model.NlpProject;
 import org.apache.uima.caseditor.editor.AnnotationEditor;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.TreeViewer;

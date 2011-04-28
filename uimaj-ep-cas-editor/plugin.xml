@@ -23,30 +23,6 @@
 <plugin>
    <extension-point id="org.apache.uima.caseditor.editor" name="DocumentProvider" schema="schema/org.apache.uima.caseditor.editor.exsd"/>
 
-	<extension point="org.eclipse.core.contenttype.contentTypes">
-	   <content-type base-type="org.eclipse.core.runtime.xml"
-	                 file-extensions="xml"
-	                 id="org.apache.uima.caseditor.AnalysisEngineDescriptor"
-	                 name="Analysis Engine Descriptor"
-	                 priority="normal">
-	      <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
-	         <parameter name="element" value="{http://uima.apache.org/resourceSpecifier}analysisEngineDescription"/>
-	         <parameter name="element" value="{http://uima.apache.org/resourceSpecifier}pearSpecifier"/>
-	      </describer>
-	   </content-type>
-	   
-	   <content-type base-type="org.eclipse.core.runtime.xml"
-	                 file-extensions="xml"
-	                 id="org.apache.uima.caseditor.CasConsumerDescriptor"
-	                 name="Cas Consumer Descriptor"
-	                 priority="normal">
-	      <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
-	         <parameter name="element" value="casConsumerDescription"/>
-	      </describer>
-	   </content-type>
-	</extension>
-
-
 	<extension point="org.eclipse.ui.views">
 		<category id="org.apache.uima.caseditor.ui.views" name="UIMA Cas Editor" />
 
@@ -122,13 +98,6 @@
 		</runtime>
 	</extension>
 
-	<extension id="problem" name="Problem"
-		point="org.eclipse.core.resources.markers">
-		<super type="org.eclipse.core.resources.problemmarker" />
-		<persistent value="false" />
-	</extension>
-
-
 	<!-- ui extensions -->
 	<extension point="org.eclipse.ui.views">
 		<category id="org.apache.uima.caseditor.ui.views" name="UIMA Cas Editor" />
@@ -138,47 +107,6 @@
 			class="org.apache.uima.caseditor.ui.corpusview.CorpusExplorerView"
 			icon="icons/svgicons/explorer.png"
 			category="org.apache.uima.caseditor.ui.views" />
-	</extension>
-
-	<extension point="org.eclipse.ui.newWizards">
-
-		<category name="UIMA Cas Editor" id="org.apache.uima.caseditor.ui.wizards" />
-
-		<wizard canFinishEarly="false"
-			category="org.apache.uima.caseditor.ui.wizards"
-			class="org.apache.uima.caseditor.ui.wizards.NewNlpProjectWizard"
-			finalPerspective="org.apache.uima.caseditor.perspective.NLP"
-			hasPages="true" icon="icons/svgicons/corpus.png"
-			id="org.apache.uima.caseditor.wizards.NLPProjectWizard"
-			name="Cas Editor Project"
-			preferredPerspectives="org.apache.uima.caseditor.perspective.NLP"
-			project="true">
-			<description>Create a Cas Editor Project</description>
-		</wizard>
-		<!--		
-			<wizard
-			canFinishEarly="false"
-			category="org.apache.uima.caseditor.ui.wizards"
-			class="org.apache.uima.caseditor.ui.wizards.WizardNewFileCreation"
-			finalPerspective="org.apache.uima.caseditor.perspective.NLP"
-			hasPages="true"
-			icon="icons/nlp.gif"
-			id="org.apache.uima.caseditor.ui.wizards.WizardNewFileCreation"
-			name="File"
-			preferredPerspectives="org.apache.uima.caseditor.perspective.NLP"
-			project="true"/>
-			
-			<wizard
-			canFinishEarly="false"
-			category="org.apache.uima.caseditor.ui.wizards"
-			class="org.apache.uima.caseditor.ui.wizards.WizardNewFolderCreation"
-			finalPerspective="org.apache.uima.caseditor.perspective.NLP"
-			hasPages="true"
-			icon="icons/nlp.gif"
-			id="org.apache.uima.caseditor.ui.wizards.WizardNewFolderCreation"
-			name="Folder"
-			preferredPerspectives="org.apache.uima.caseditor.perspective.NLP"
-			project="true"/> -->
 	</extension>
 
   
@@ -206,32 +134,6 @@
 
 	<extension point="org.eclipse.ui.propertyPages">
 		<page
-			class="org.apache.uima.caseditor.ui.property.ProjectPropertyPage"
-			icon="icons/svgicons/corpus.png"
-			id="org.apache.uima.caseditor.corpusPropertyPage" name="Project"> 
-			<enabledWhen>
-				<instanceof value="org.apache.uima.caseditor.core.model.NlpProject"/>
-			</enabledWhen>
-		</page>
-
-		<page
-			class="org.apache.uima.caseditor.ui.property.DocumentPropertyPage"
-			icon="icons/svgicons/document.png"
-			id="org.apache.uima.caseditor.documentPropertyPage" name="Document">
-			<enabledWhen>
-				<instanceof value="org.apache.uima.caseditor.core.model.DocumentElement"/>
-			</enabledWhen>
-		</page>
-		<page
-			class="org.apache.uima.caseditor.ui.property.NlpAnnotationPropertyPage"
-			icon="icons/svgicons/corpus.png"
-			id="org.apache.uima.caseditor.nlpannotationspropertypage"
-			name="Annotations">
-			<enabledWhen>
-				<instanceof value="org.apache.uima.caseditor.core.model.NlpProject"/>
-			</enabledWhen>
-		</page>
-		<page
 			class="org.apache.uima.caseditor.ui.property.EditorAnnotationPropertyPage"
 			icon="icons/svgicons/corpus.png"
 			id="org.apache.uima.caseditor.annotationspropertypage"
@@ -249,62 +151,6 @@
             id="org.apache.uima.caseditor.TypeSystemLocationPropertyPage">
             </page>
 	</extension>
-	
-	<extension point="org.eclipse.core.runtime.adapters">
-		<factory
-			adaptableType="org.apache.uima.caseditor.core.model.NlpModel"
-			class="org.apache.uima.caseditor.ui.model.ElementWorkbenchAdapterFactory">
-			<adapter type="org.eclipse.ui.model.IWorkbenchAdapter" />
-		</factory>
-		<factory
-			adaptableType="org.apache.uima.caseditor.core.model.NlpProject"
-			class="org.apache.uima.caseditor.ui.model.ElementWorkbenchAdapterFactory">
-			<adapter type="org.eclipse.ui.model.IWorkbenchAdapter" />
-		</factory>
-		<factory
-			adaptableType="org.apache.uima.caseditor.core.model.CorpusElement"
-			class="org.apache.uima.caseditor.ui.model.ElementWorkbenchAdapterFactory">
-			<adapter type="org.eclipse.ui.model.IWorkbenchAdapter" />
-		</factory>
-		<factory
-			adaptableType="org.apache.uima.caseditor.core.model.TypesystemElement"
-			class="org.apache.uima.caseditor.ui.model.ElementWorkbenchAdapterFactory">
-			<adapter type="org.eclipse.ui.model.IWorkbenchAdapter" />
-		</factory>
-		<factory
-			adaptableType="org.apache.uima.caseditor.core.model.DocumentElement"
-			class="org.apache.uima.caseditor.ui.model.ElementWorkbenchAdapterFactory">
-			<adapter type="org.eclipse.ui.model.IWorkbenchAdapter" />
-		</factory>
-		<factory
-			adaptableType="org.apache.uima.caseditor.core.model.ConsumerElement"
-			class="org.apache.uima.caseditor.ui.model.ElementWorkbenchAdapterFactory">
-			<adapter type="org.eclipse.ui.model.IWorkbenchAdapter" />
-		</factory>
-		<factory
-			adaptableType="org.apache.uima.caseditor.core.model.AnnotatorElement"
-			class="org.apache.uima.caseditor.ui.model.ElementWorkbenchAdapterFactory">
-			<adapter type="org.eclipse.ui.model.IWorkbenchAdapter" />
-		</factory>
-		<factory
-			adaptableType="org.apache.uima.caseditor.core.model.CasProcessorFolder"
-			class="org.apache.uima.caseditor.ui.model.ElementWorkbenchAdapterFactory">
-			<adapter type="org.eclipse.ui.model.IWorkbenchAdapter" />
-		</factory>
-		<factory adaptableType="org.eclipse.core.resources.IFile"
-			class="org.apache.uima.caseditor.ui.model.ElementWorkbenchAdapterFactory">
-			<adapter type="org.eclipse.ui.model.IWorkbenchAdapter" />
-		</factory>
-		<factory adaptableType="org.eclipse.core.resources.IFolder"
-			class="org.apache.uima.caseditor.ui.model.ElementWorkbenchAdapterFactory">
-			<adapter type="org.eclipse.ui.model.IWorkbenchAdapter" />
-		</factory>
-		<factory adaptableType="org.eclipse.core.resources.IProject"
-			class="org.apache.uima.caseditor.ui.model.ElementWorkbenchAdapterFactory">
-			<adapter type="org.eclipse.ui.model.IWorkbenchAdapter" />
-		</factory>
-	</extension>
-
  <extension
        point="org.apache.uima.caseditor.editor">
     <provider

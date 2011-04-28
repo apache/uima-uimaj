@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.uima.caseditor.CasEditorPlugin;
-import org.apache.uima.caseditor.core.model.CorpusElement;
 import org.apache.uima.caseditor.editor.DocumentFormat;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
@@ -85,12 +84,13 @@ final class ImportDocumentWizardPage extends WizardPage {
 
     setTitle("Import Text Files");
 
-    if (!currentResourceSelection.isEmpty()) {
-      if (currentResourceSelection.getFirstElement() instanceof CorpusElement) {
-        containerElement = (IContainer) currentResourceSelection.getFirstElement();
-        importDestinationPath = containerElement.getFullPath();
-      }
-    }
+    // TODO: Pre select the selected foler ..
+//    if (!currentResourceSelection.isEmpty()) {
+//      if (currentResourceSelection.getFirstElement() instanceof CorpusElement) {
+//        containerElement = (IContainer) currentResourceSelection.getFirstElement();
+//        importDestinationPath = containerElement.getFullPath();
+//      }
+//    }
 
     setPageComplete(false);
   }

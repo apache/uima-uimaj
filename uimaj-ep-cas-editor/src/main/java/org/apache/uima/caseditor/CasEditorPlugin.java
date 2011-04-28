@@ -22,7 +22,6 @@ package org.apache.uima.caseditor;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import org.apache.uima.caseditor.core.model.NlpModel;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -47,8 +46,6 @@ public class CasEditorPlugin extends AbstractUIPlugin {
    * Resource bundle.
    */
   private ResourceBundle mResourceBundle;
-
-  private static NlpModel sNLPModel;
 
   /**
    * The constructor.
@@ -147,32 +144,5 @@ public class CasEditorPlugin extends AbstractUIPlugin {
    */
   public static ImageDescriptor getTaeImageDescriptor(Images image) {
     return imageDescriptorFromPlugin(ID, ICONS_PATH + image.getPath());
-  }
-
-  /**
-   * Retrieves the nlp model.
-   *
-   * @return the nlp model
-   */
-  public static NlpModel getNlpModel() {
-    if (sNLPModel == null) {
-      try {
-        sNLPModel = new NlpModel();
-      } catch (CoreException e) {
-        // TODO: This should not happen, return an emtpy Model
-        log(e);
-      }
-    }
-
-    return sNLPModel;
-  }
-
-  /**
-   * Destroy the nlp model, only for testing.
-   */
-  public static void destroyNlpModelForTesting() {
-    sNLPModel.destroyForTesting();
-
-    sNLPModel = null;
   }
 }

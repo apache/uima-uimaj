@@ -32,13 +32,10 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.caseditor.CasEditorPlugin;
 import org.apache.uima.caseditor.core.model.DefaultColors;
-import org.apache.uima.caseditor.core.model.DocumentElement;
-import org.apache.uima.caseditor.core.model.INlpElement;
 import org.apache.uima.caseditor.core.model.dotcorpus.DotCorpus;
 import org.apache.uima.caseditor.core.model.dotcorpus.DotCorpusSerializer;
 import org.apache.uima.caseditor.ui.property.TypeSystemLocationPropertyPage;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -85,173 +82,134 @@ public class DefaultCasDocumentProvider extends
 
       IFile casFile = fileInput.getFile();
 
-      INlpElement nlpElement = CasEditorPlugin.getNlpModel().findMember(casFile);
-
-      // Thats the case if the CAS is inside a Cas Editor Project
-      // and part of a corpus folder
-      if (nlpElement instanceof DocumentElement) {
-
-        try {
-          org.apache.uima.caseditor.editor.ICasDocument workingCopy =
-                  ((DocumentElement) nlpElement).getDocument(true);
-
-          AnnotationDocument document = new AnnotationDocument();
-
-          document.setDocument(workingCopy);
-
-          elementErrorStatus.remove(element);
-
-          return document;
-        } catch (CoreException e) {
-          elementErrorStatus.put(element, new Status(IStatus.ERROR, CasEditorPlugin.ID, IStatus.OK,
-                  "There is a problem with the document: " + e.getMessage(), e));
-        }
-      } else if (CasEditorPlugin.getNlpModel().
-              findMember(casFile.getProject()) instanceof INlpElement) {
-        IStatus status;
-
-        if (nlpElement == null) {
-          status = new Status(IStatus.ERROR, CasEditorPlugin.ID, IStatus.OK,
-                  "Document not in a corpus folder!", null);
-        } else {
-          status = new Status(IStatus.ERROR, CasEditorPlugin.ID, IStatus.OK, "Not a cas document!",
-                  null);
-        }
-
-        elementErrorStatus.put(element, status);
-      }
-      // handle the non Cas Editor project case here
-      else {
-
-        // Try to find a type system for the CAS file
-        // TODO: Change to only use full path
-        IFile typeSystemFile = null; 
+      // Try to find a type system for the CAS file
+      // TODO: Change to only use full path
+      IFile typeSystemFile = null; 
+      
+      // First check if a type system is already known or was
+      // set by the editor for this specific CAS
+      String typeSystemFileString = documentToTypeSystemMap.get(casFile.getFullPath().toPortableString());
+      
+      if (typeSystemFileString != null)
+        typeSystemFile = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(typeSystemFileString));
+      
+      // If non was found get it from project
+      if (typeSystemFile == null)
+        typeSystemFile = TypeSystemLocationPropertyPage.getTypeSystemLocation(casFile.getProject());
+      
+      if (typeSystemFile != null && typeSystemFile.exists()) {
         
-        // First check if a type system is already known or was
-        // set by the editor for this specific CAS
-        String typeSystemFileString = documentToTypeSystemMap.get(casFile.getFullPath().toPortableString());
+        // Try to load a style file for the type system
+        // Should be named: ts file name, prefixed with .style-
+        // If it does not exist, create it when it is changed
+        // Creating it after the default is changed means that
+        // colors could change completely when the a type is
+        // added or removed to the type system
         
-        if (typeSystemFileString != null)
-          typeSystemFile = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(typeSystemFileString));
+        IFile styleFile = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(
+                getStyleFileForTypeSystem(typeSystemFile.getFullPath().toPortableString())));
         
-        // If non was found get it from project
-        if (typeSystemFile == null)
-          typeSystemFile = TypeSystemLocationPropertyPage.getTypeSystemLocation(casFile.getProject());
+        DotCorpus dotCorpus = styles.get(styleFile.getFullPath().toPortableString());
         
-        if (typeSystemFile != null && typeSystemFile.exists()) {
-          
-          // Try to load a style file for the type system
-          // Should be named: ts file name, prefixed with .style-
-          // If it does not exist, create it when it is changed
-          // Creating it after the default is changed means that
-          // colors could change completely when the a type is
-          // added or removed to the type system
-          
-          IFile styleFile = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(
-                  getStyleFileForTypeSystem(typeSystemFile.getFullPath().toPortableString())));
-          
-          DotCorpus dotCorpus = styles.get(styleFile.getFullPath().toPortableString());
+        if (dotCorpus == null) {
+          if (styleFile.exists()) {
+           InputStream styleFileIn = null;;
+           try {
+             styleFileIn = styleFile.getContents();
+             dotCorpus = DotCorpusSerializer.parseDotCorpus(styleFileIn);
+           }
+           finally {
+             if (styleFileIn != null)
+              try {
+                styleFileIn.close();
+              } catch (IOException e) {
+                CasEditorPlugin.log(e);
+              }
+           }
+          }
           
           if (dotCorpus == null) {
-            if (styleFile.exists()) {
-             InputStream styleFileIn = null;;
-             try {
-               styleFileIn = styleFile.getContents();
-               dotCorpus = DotCorpusSerializer.parseDotCorpus(styleFileIn);
-             }
-             finally {
-               if (styleFileIn != null)
-                try {
-                  styleFileIn.close();
-                } catch (IOException e) {
-                  CasEditorPlugin.log(e);
-                }
-             }
-            }
+            dotCorpus = new DotCorpus();
             
-            if (dotCorpus == null) {
-              dotCorpus = new DotCorpus();
-              
-              // Initialize colors
-              CAS cas = DocumentUimaImpl.getVirginCAS(typeSystemFile);
-              TypeSystem ts = cas.getTypeSystem();
-              
-              Collection<AnnotationStyle> defaultStyles = dotCorpus.getAnnotationStyles();
-              
-              Collection<AnnotationStyle> newStyles = DefaultColors.assignColors(ts, defaultStyles);
-              
-              for (AnnotationStyle style : newStyles) {
-               dotCorpus.setStyle(style);
-              }
-            }
+            // Initialize colors
+            CAS cas = DocumentUimaImpl.getVirginCAS(typeSystemFile);
+            TypeSystem ts = cas.getTypeSystem();
             
-            styles.put(styleFile.getFullPath().toPortableString(), dotCorpus);
+            Collection<AnnotationStyle> defaultStyles = dotCorpus.getAnnotationStyles();
+            
+            Collection<AnnotationStyle> newStyles = DefaultColors.assignColors(ts, defaultStyles);
+            
+            for (AnnotationStyle style : newStyles) {
+             dotCorpus.setStyle(style);
+            }
           }
           
-          documentToTypeSystemMap.put(casFile.getFullPath().toPortableString(),
-                  typeSystemFile.getFullPath().toPortableString());
+          styles.put(styleFile.getFullPath().toPortableString(), dotCorpus);
+        }
+        
+        documentToTypeSystemMap.put(casFile.getFullPath().toPortableString(),
+                typeSystemFile.getFullPath().toPortableString());
 
-          // TODO:
-          // Preferences are bound to the type system
-          // Changed in one place, then it should change in all places
-          
-          CAS cas = DocumentUimaImpl.getVirginCAS(typeSystemFile);
-    
-          DocumentFormat documentFormat;
-    
-          // Which file format to use ?
-          if (casFile.getName().endsWith("xmi")) {
-            documentFormat = DocumentFormat.XMI;
-          } else if (casFile.getName().endsWith("xcas")) {
-            documentFormat = DocumentFormat.XCAS;
-          } else {
-            throw new CoreException(new Status(IStatus.ERROR, "org.apache.uima.dev",
-                    "Unkown file format!"));
-          }
-    
-          InputStream casIn = casFile.getContents();
+        // TODO:
+        // Preferences are bound to the type system
+        // Changed in one place, then it should change in all places
+        
+        CAS cas = DocumentUimaImpl.getVirginCAS(typeSystemFile);
+  
+        DocumentFormat documentFormat;
+  
+        // Which file format to use ?
+        if (casFile.getName().endsWith("xmi")) {
+          documentFormat = DocumentFormat.XMI;
+        } else if (casFile.getName().endsWith("xcas")) {
+          documentFormat = DocumentFormat.XCAS;
+        } else {
+          throw new CoreException(new Status(IStatus.ERROR, "org.apache.uima.dev",
+                  "Unkown file format!"));
+        }
+  
+        InputStream casIn = casFile.getContents();
 
-          org.apache.uima.caseditor.editor.ICasDocument doc;
+        org.apache.uima.caseditor.editor.ICasDocument doc;
 
+        try {
+          doc = new DocumentUimaImpl(cas, casIn, documentFormat);
+        } finally {
           try {
-            doc = new DocumentUimaImpl(cas, casIn, documentFormat);
-          } finally {
-            try {
-              casIn.close();
-            } catch (IOException e) {
-              // Unable to close file after loading it
-              //
-              // In the current implementation the user
-              // does not notice the error and can just
-              // edit the file, tough saving it might fail
-              // if the io error persists
-              
-              CasEditorPlugin.log(e);
-            }
+            casIn.close();
+          } catch (IOException e) {
+            // Unable to close file after loading it
+            //
+            // In the current implementation the user
+            // does not notice the error and can just
+            // edit the file, tough saving it might fail
+            // if the io error persists
+            
+            CasEditorPlugin.log(e);
           }
+        }
 
-          AnnotationDocument document = new AnnotationDocument();
-          document.setDocument(doc);
-          
-          elementErrorStatus.remove(element);
-          
-          return document;
+        AnnotationDocument document = new AnnotationDocument();
+        document.setDocument(doc);
+        
+        elementErrorStatus.remove(element);
+        
+        return document;
+      }
+      else {
+        
+        String message = null;
+        
+        if (typeSystemFile != null) {
+          message = "Cannot find type system!\nPlease place a valid type system in this path:\n" +
+                  typeSystemFile.getFullPath().toString();
         }
-        else {
-          
-          String message = null;
-          
-          if (typeSystemFile != null) {
-            message = "Cannot find type system!\nPlease place a valid type system in this path:\n" +
-                    typeSystemFile.getFullPath().toString();
-          }
-          else
-            message = "Type system is not set, please choose a type system to open the CAS.";
-          
-          IStatus status = new Status(IStatus.ERROR, "org.apache.uima.dev", 12, message, null);
-          
-          elementErrorStatus.put(element, status);
-        }
+        else
+          message = "Type system is not set, please choose a type system to open the CAS.";
+        
+        IStatus status = new Status(IStatus.ERROR, "org.apache.uima.dev", 12, message, null);
+        
+        elementErrorStatus.put(element, status);
       }
     }
 
@@ -269,35 +227,17 @@ public class DefaultCasDocumentProvider extends
 
       IFile file = fileInput.getFile();
 
-      INlpElement nlpElement = CasEditorPlugin.getNlpModel().findMember(file);
-      
-      if (nlpElement instanceof DocumentElement) {
-        DocumentElement documentElement = (DocumentElement) nlpElement;
+      if (document instanceof AnnotationDocument) {
+        
+        AnnotationDocument annotationDocument = (AnnotationDocument) document;
+        DocumentUimaImpl documentImpl = (DocumentUimaImpl) annotationDocument.getDocument();
+        
+        ByteArrayOutputStream outStream = new ByteArrayOutputStream(40000); 
+        documentImpl.serialize(outStream);
+        
+        InputStream stream = new ByteArrayInputStream(outStream.toByteArray());
 
-        try {
-          documentElement.saveDocument();
-        } catch (CoreException e) {
-          fireElementStateChangeFailed(element);
-          throw e;
-        }
-      } else if (CasEditorPlugin.getNlpModel().
-              findMember(file.getProject()) instanceof INlpElement) {
-        fireElementStateChangeFailed(element);
-        return;
-      }
-      else {
-        if (document instanceof AnnotationDocument) {
-          
-          AnnotationDocument annotationDocument = (AnnotationDocument) document;
-          DocumentUimaImpl documentImpl = (DocumentUimaImpl) annotationDocument.getDocument();
-          
-          ByteArrayOutputStream outStream = new ByteArrayOutputStream(40000); 
-          documentImpl.serialize(outStream);
-          
-          InputStream stream = new ByteArrayInputStream(outStream.toByteArray());
-
-          file.setContents(stream, true, false, null);
-        }
+        file.setContents(stream, true, false, null);
       }
     }
 
@@ -322,18 +262,6 @@ public class DefaultCasDocumentProvider extends
       return styles.get(getStyleFileForTypeSystem(tsId));
   }
   
-  private INlpElement getNlpElement(Object element) {
-    if (element instanceof FileEditorInput) {
-      FileEditorInput fileInput = (FileEditorInput) element;
-
-      IFile file = fileInput.getFile();
-
-      return CasEditorPlugin.getNlpModel().findMember(file);
-    }
-
-    return null;
-  }
-
   private void saveStyles(Object element) {
     String styleId = getStyleFileForTypeSystem(getTypesystemId(element));
     
@@ -375,126 +303,58 @@ public class DefaultCasDocumentProvider extends
     if (type == null)
     	throw new IllegalArgumentException("type parameter must not be null!");
     
-    INlpElement nlpElement = getNlpElement(element);
-
-    if (nlpElement != null) {
-      return nlpElement.getNlpProject().getDotCorpus().getAnnotation(type);
-    }
-    else {
-      DotCorpus dotCorpus = getStyle(element);
-      
-      return dotCorpus.getAnnotation(type);
-    }
+    DotCorpus dotCorpus = getStyle(element);
+    
+    return dotCorpus.getAnnotation(type);
   }
 
   // TODO: Disk must be accessed for every changed annotation style
   // add a second method which can take all changed styles
   @Override
   public void setAnnotationStyle(Object element, AnnotationStyle style) {
-    INlpElement nlpElement = getNlpElement(element);
 
-    if (nlpElement != null) {
-      nlpElement.getNlpProject().getDotCorpus().setStyle(style);
-      
-      try {
-        nlpElement.getNlpProject().getDotCorpus().serialize(false);
-      } catch (CoreException e) {
-        CasEditorPlugin.log(e);
-      }
-      
-    }
-    else {
-      DotCorpus dotCorpus = getStyle(element);
-      dotCorpus.setStyle(style);
-      
-      saveStyles(element); 
-    }
+    DotCorpus dotCorpus = getStyle(element);
+    dotCorpus.setStyle(style);
+    
+    saveStyles(element); 
   }
   
   @Override
   protected Collection<String> getShownTypes(Object element) {
-    INlpElement nlpElement = getNlpElement(element);
-
-    if (nlpElement != null) {
-      return nlpElement.getNlpProject().getDotCorpus().getShownTypes();
-    }
-    else {
-      DotCorpus dotCorpus = getStyle(element);
-      
-      return dotCorpus.getShownTypes();
-    }
+    DotCorpus dotCorpus = getStyle(element);
+    return dotCorpus.getShownTypes();
   }
   
   @Override
   protected void addShownType(Object element, Type type) {
-    INlpElement nlpElement = getNlpElement(element);
+    DotCorpus dotCorpus = getStyle(element);
+    dotCorpus.setShownType(type.getName());
     
-    if (nlpElement != null) {
-      nlpElement.getNlpProject().getDotCorpus().addShownType(type.getName());
-      
-      try {
-        nlpElement.getNlpProject().getDotCorpus().serialize(false);
-      } catch (CoreException e) {
-        CasEditorPlugin.log(e);
-      }
-    }
-    else {
-      DotCorpus dotCorpus = getStyle(element);
-      dotCorpus.setShownType(type.getName());
-      
-      saveStyles(element);
-    }
+    saveStyles(element);
   }
   
   @Override
   protected void removeShownType(Object element, Type type) {
-    INlpElement nlpElement = getNlpElement(element);
-
-    if (nlpElement != null) {
-      nlpElement.getNlpProject().getDotCorpus().removeShownType(type.getName());
-      
-      try {
-        nlpElement.getNlpProject().getDotCorpus().serialize(false);
-      } catch (CoreException e) {
-        CasEditorPlugin.log(e);
-      }
-    }
-    else {
-      DotCorpus dotCorpus = getStyle(element);
-      dotCorpus.removeShownType(type.getName());
-      
-      saveStyles(element);
-    }
+    DotCorpus dotCorpus = getStyle(element);
+    dotCorpus.removeShownType(type.getName());
+    
+    saveStyles(element);
   }
   
   @Override
   protected EditorAnnotationStatus getEditorAnnotationStatus(Object element) {
-    INlpElement nlpElement = getNlpElement(element);
-
-    if (nlpElement != null) {
-      return nlpElement.getNlpProject().getEditorAnnotationStatus();
-    }
-    else {
-      EditorAnnotationStatus status = sharedEditorStatus.get(getTypesystemId(element));
-      
-      if (status == null)
-        status = new EditorAnnotationStatus(CAS.TYPE_NAME_ANNOTATION, null, CAS.NAME_DEFAULT_SOFA);
-      
-      return status;
-    }
+    EditorAnnotationStatus status = sharedEditorStatus.get(getTypesystemId(element));
+    
+    if (status == null)
+      status = new EditorAnnotationStatus(CAS.TYPE_NAME_ANNOTATION, null, CAS.NAME_DEFAULT_SOFA);
+    
+    return status;
   }
 
   @Override
   protected void setEditorAnnotationStatus(Object element,
           EditorAnnotationStatus editorAnnotationStatus) {
-    INlpElement nlpElement = getNlpElement(element);
-
-    if (nlpElement != null) {
-      nlpElement.getNlpProject().setEditorAnnotationStatus(editorAnnotationStatus);
-    }
-    else {
-      sharedEditorStatus.put(getTypesystemId(element), editorAnnotationStatus);
-    }
+    sharedEditorStatus.put(getTypesystemId(element), editorAnnotationStatus);
   }
   
   void setTypeSystem(String document, String typeSystem) {

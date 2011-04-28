@@ -29,39 +29,11 @@ import org.eclipse.jface.resource.ImageDescriptor;
  */
 public enum Images {
 
-  MODEL_PROJECT_OPEN("svgicons/project-open.png"),
-
-  MODEL_PROJECT_CLOSED("svgicons/project-closed.png"),
-
-  /**
-   * The corpus image.
-   */
-  MODEL_CORPUS("svgicons/corpus.png"),
-
-  /**
-   * The document image.
-   */
-  MODEL_DOCUMENT("svgicons/document.png"),
 
   /**
    * The source folder image.
    */
   MODEL_PROCESSOR_FOLDER("svgicons/processor.png"),
-
-  /**
-   * Image for the type system element.
-   */
-  MODEL_TYPESYSTEM("typesystem.gif"),
-
-  /**
-   * The enabled refresh icon.
-   */
-  EXPLORER_E_REFRESH("svgicons/refresh.png"),
-
-  /**
-   * The disabled refresh icon.
-   */
-  EXPLORER_D_REFRESH("svgicons/refresh.png"),
 
   /**
    * The wide left side image.
