@@ -20,6 +20,7 @@
 package org.apache.uima.caseditor.editor;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -336,8 +337,12 @@ class QuickTypeSelectionDialog extends PopupDialog {
         annotateAndClose((Type) selection.getFirstElement());
       }
     });
-
-    typeTree.setInput(getTypes());
+    
+    Collection<Type> shownAnnotationTypes = editor.getShownAnnotationTypes();
+    
+    Type[] types = shownAnnotationTypes.toArray(new Type[shownAnnotationTypes.size()]);
+    
+    typeTree.setInput(types);
 
     ISelection modeSelection = new StructuredSelection(new Object[] { editor.getAnnotationMode() });
 
