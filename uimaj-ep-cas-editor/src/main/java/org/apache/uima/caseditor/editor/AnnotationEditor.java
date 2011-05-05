@@ -160,6 +160,8 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
    */
   private class AnnotateAction extends AbstractAnnotateAction {
 	  
+    private static final String ID = "QuickAnnotate";
+    
     private StyledText mTextWidget;
 
     /**
@@ -207,6 +209,8 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 
   private class SmartAnnotateAction extends AbstractAnnotateAction {
 
+    private static final String ID = "Annotate";
+    
     @Override
     public void run() {
 
@@ -916,8 +920,8 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 
     // Add Annotate action
     menu.appendToGroup(IWorkbenchActionConstants.MB_ADDITIONS, new Separator());
-    menu.appendToGroup(IWorkbenchActionConstants.MB_ADDITIONS, getAction(ITextEditorActionDefinitionIds.SMART_ENTER));
-    menu.appendToGroup(IWorkbenchActionConstants.MB_ADDITIONS, getAction("Enter"));
+    menu.appendToGroup(IWorkbenchActionConstants.MB_ADDITIONS, getAction(SmartAnnotateAction.ID));
+    menu.appendToGroup(IWorkbenchActionConstants.MB_ADDITIONS, getAction(AnnotateAction.ID));
     menu.appendToGroup(IWorkbenchActionConstants.MB_ADDITIONS, getAction(ITextEditorActionDefinitionIds.DELETE));
     
     TypeSystem typeSytem = getDocument().getCAS().getTypeSystem();
@@ -1402,23 +1406,16 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 
     // create annotate action
     AnnotateAction annotateAction = new AnnotateAction(getSourceViewer().getTextWidget());
-
-    final String annotateActionID = "Enter";
-
-    annotateAction.setActionDefinitionId(annotateActionID);
+    annotateAction.setActionDefinitionId(AnnotateAction.ID);
     annotateAction.setText("Quick Annotate");
-    setAction(annotateActionID, annotateAction);
+    setAction(AnnotateAction.ID, annotateAction);
     getSite().getSelectionProvider().addSelectionChangedListener(annotateAction);
-
+    
     SmartAnnotateAction smartAnnotateAction = new SmartAnnotateAction();
-    smartAnnotateAction.setActionDefinitionId(ITextEditorActionDefinitionIds.SMART_ENTER);
+    smartAnnotateAction.setActionDefinitionId(SmartAnnotateAction.ID);
     smartAnnotateAction.setText("Annotate");
-    smartAnnotateAction.setAccelerator(SWT.SHIFT | SWT.CR);
+    setAction(SmartAnnotateAction.ID, smartAnnotateAction);
     getSite().getSelectionProvider().addSelectionChangedListener(smartAnnotateAction);
-    setAction(ITextEditorActionDefinitionIds.SMART_ENTER, smartAnnotateAction);
-
-    setActionActivationCode(ITextEditorActionDefinitionIds.SMART_ENTER, '\r', SWT.CR,
-            SWT.SHIFT);
 
     // create delete action
     DeleteFeatureStructureAction deleteAnnotationAction = new DeleteFeatureStructureAction(

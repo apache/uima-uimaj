@@ -169,7 +169,13 @@
       
       <command
             categoryId="org.apache.uima.caseditor.annotate"
-            id="Enter"
+            id="QuickAnnotate"
+            description="Quick Annotate"
+            name="Quick Annotate">
+      </command>
+      <command
+            categoryId="org.apache.uima.caseditor.annotate"
+            id="Annotate"
             description="Quick Annotate"
             name="Quick Annotate">
       </command>
@@ -202,10 +208,16 @@
 	<extension
 	         point="org.eclipse.ui.bindings">
 	<key
-	            commandId="Enter"
+	            commandId="QuickAnnotate"
 	            contextId="org.eclipse.ui.contexts.window"
 	            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
 	            sequence="CR">
+	</key>
+	<key
+	            commandId="Annotate"
+	            contextId="org.eclipse.ui.contexts.window"
+	            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+	            sequence="M2+CR">
 	</key>
 	<key
 	            commandId="WideLeftAnnotationSide"
