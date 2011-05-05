@@ -87,7 +87,7 @@ public class CasEditorPlugin extends AbstractUIPlugin {
     for (IProject project : projects) {
       // if nlp nature project
       
-      if ( project.hasNature("org.apache.uima.caseditor.NLPProject")) {
+      if (project.isOpen() && project.hasNature("org.apache.uima.caseditor.NLPProject")) {
         
         // if ts property is not set ... 
         String typeSystemLocation;
