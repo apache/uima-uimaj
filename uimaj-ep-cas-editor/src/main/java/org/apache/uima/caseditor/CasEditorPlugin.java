@@ -29,7 +29,6 @@ import org.apache.uima.caseditor.core.model.dotcorpus.DotCorpusSerializer;
 import org.apache.uima.caseditor.ui.property.TypeSystemLocationPropertyPage;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
