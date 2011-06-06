@@ -55,7 +55,7 @@ public final class FeatureValue implements IAdaptable {
 
   public Object getValue() {
     if (mFeature.getRange().isPrimitive()) {
-      return Primitives.getPrimitiv(mStructure, mFeature);
+      return Primitives.getPrimitive(mStructure, mFeature);
     }
 
     return mStructure.getFeatureValue(mFeature);

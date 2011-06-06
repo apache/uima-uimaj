@@ -42,7 +42,7 @@ final class ValueColumnLabelProvider extends CellLabelProvider {
       FeatureValue featureValue = (FeatureValue) element;
 
       if (featureValue.getFeature().getRange().isPrimitive()) {
-        cell.setText(Primitives.getPrimitiv(featureValue.getFeatureStructure(), featureValue.getFeature()).toString());
+        cell.setText(Primitives.getPrimitive(featureValue.getFeatureStructure(), featureValue.getFeature()).toString());
       }
       else {
         FeatureStructure value = (FeatureStructure) featureValue.getValue();

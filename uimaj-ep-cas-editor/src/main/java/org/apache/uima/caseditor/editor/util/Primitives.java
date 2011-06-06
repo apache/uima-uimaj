@@ -22,147 +22,69 @@ package org.apache.uima.caseditor.editor.util;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.Type;
+import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.cas.impl.LowLevelTypeSystem;
 
 /**
- * This enumeration contains all primitives and some util methods.
- * TODO: remove all array and list
- * types, thats are FeatureStructures !!!
+ * 
  */
-public enum Primitives {
+public class Primitives {
 
   /**
-   * The uima {@link Boolean} type.
+   * Retrieve the primitive java class for a primitive type.
+   * 
+   * @param cas
+   * @param type
+   * 
+   * @return the primitive java class
    */
-  BOOLEAN(CAS.TYPE_NAME_BOOLEAN, Boolean.class),
-
-  /**
-   * The uima {@link Byte} type.
-   */
-  BYTE(CAS.TYPE_NAME_BYTE, Byte.class),
-
-  /**
-   * The uima {@link Short} type.
-   */
-  SHORT(CAS.TYPE_NAME_SHORT, Short.class),
-
-  /**
-   * The uima {@link Integer} type.
-   */
-  INTEGER(CAS.TYPE_NAME_INTEGER, Integer.class),
-
-  /**
-   * The uima {@link Long} type.
-   */
-  LONG(CAS.TYPE_NAME_LONG, Long.class),
-
-  /**
-   * The uima {@link Float} type.
-   */
-  FLOAT(CAS.TYPE_NAME_FLOAT, Float.class),
-
-  /**
-   * The uima {@link Double} type.
-   */
-  DOUBLE(CAS.TYPE_NAME_DOUBLE, Double.class),
-
-  /**
-   * The uima {@link String} type.
-   */
-  STRING(CAS.TYPE_NAME_STRING, String.class);
-
-  private final String mTypeName;
-
-  private final Class mType;
-
-  private Primitives(String typeName, Class type) {
-    mTypeName = typeName;
-    mType = type;
-  }
-
-  /**
-   * Retrieves the uima name of the type.
-   *
-   * @return the uima name.
-   */
-  public String getTypeName() {
-    return mTypeName;
-  }
-
-  /**
-   * Retrieves the type.
-   *
-   * @return the type
-   */
-  public Class getType() {
-    return mType;
-  }
-
-  /**
-   * Checks if the given feature has the same type.
-   *
-   * @param feature
-   * @return true if type is the same otherwise false
-   */
-  public boolean isCompatible(Feature feature) {
-    return feature.getRange().getName().equals(getTypeName());
-  }
-
-  /**
-   * Checks if a given <code>Feature</code> has a primitive type.
-   *
-   * @param f
-   * @return true if primitive otherwise false
-   */
-  @Deprecated
-  public static boolean isPrimitive(Feature f) {
-    if (f == null) {
-      throw new IllegalArgumentException();
+  public static Class<?> getPrimitiveClass(TypeSystem ts, Type type) {
+    if (!type.isPrimitive())
+      throw new IllegalArgumentException("Type " + type.getName() + " is not primitive!");
+    
+    // Note:
+    // In a UIMA type system *only* the primitive string type can be 
+    // sub-typed.
+    
+    if (ts.getType(CAS.TYPE_NAME_BOOLEAN).equals(type)) {
+      return Boolean.class;
     }
-
-    return isPrimitive(f.getRange().getName());
-  }
-
-  /**
-   * Checks if the given typeName is a primitive.
-   *
-   * @param typeName
-   * @return true if primitive otherwise false.
-   */
-  @Deprecated
-  public static boolean isPrimitive(String typeName) {
-    if (typeName == null) {
-      throw new IllegalArgumentException();
+    else if (ts.getType(CAS.TYPE_NAME_BYTE).equals(type)) {
+      return Byte.class;
     }
-
-    return getPrimitive(typeName) != null ? true : false;
+    else if (ts.getType(CAS.TYPE_NAME_SHORT).equals(type)) {
+      return Short.class;
+    }
+    else if (ts.getType(CAS.TYPE_NAME_INTEGER).equals(type)) {
+      return Integer.class;
+    }
+    else if (ts.getType(CAS.TYPE_NAME_LONG).equals(type)) {
+      return Long.class;
+    }
+    else if (ts.getType(CAS.TYPE_NAME_FLOAT).equals(type)) {
+      return Float.class;
+    }
+    else if (ts.getType(CAS.TYPE_NAME_DOUBLE).equals(type)) {
+      return Double.class;
+    }
+    else if (ts.getType(CAS.TYPE_NAME_STRING).equals(type) || 
+            ts.subsumes(ts.getType(CAS.TYPE_NAME_STRING), type)) {
+      return String.class;
+    }
+    else {
+      throw new IllegalStateException("Unexpected primitive type: " + type.getName());
+    }
   }
-
+  
   /**
    * Retrieves the {@link Class} for the current primitive.
    *
    * @param f
    * @return the class
    */
-  public static Class getPrimitiveClass(Feature f) {
-    assert Primitives.isPrimitive(f);
-
-    return getPrimitive(f.getRange().getName()).getType();
-  }
-
-  /**
-   * Retrieves a primitive by name.
-   *
-   * @param typeName
-   * @return the primitive or null if none
-   */
-  public static Primitives getPrimitive(String typeName) {
-    for (Primitives primitive : values()) {
-      if (primitive.getTypeName().equals(typeName)) {
-        return primitive;
-      }
-    }
-
-    return null;
+  public static Class<?> getPrimitiveClass(TypeSystem ts, Feature f) {
+    return getPrimitiveClass(ts, f.getRange());
   }
 
   /**
@@ -172,34 +94,66 @@ public enum Primitives {
    * @param feature
    * @return the primitive value as object
    */
-  public static Object getPrimitiv(FeatureStructure structure, Feature feature) {
+  public static Object getPrimitive(FeatureStructure structure, Feature feature) {
+    
+    TypeSystem ts = structure.getCAS().getTypeSystem();
+    
+    Class<?> primitiveClass = getPrimitiveClass(ts, feature);
+    
     Object result;
 
-    if (Primitives.BOOLEAN.isCompatible(feature)) {
+    if (Boolean.class.equals(primitiveClass)) {
       result = structure.getBooleanValue(feature);
-    } else if (Primitives.BYTE.isCompatible(feature)) {
+    } else if (Byte.class.equals(primitiveClass)) {
       result = structure.getByteValue(feature);
-    } else if (Primitives.SHORT.isCompatible(feature)) {
+    } else if (Short.class.equals(primitiveClass)) {
       result = structure.getShortValue(feature);
-    } else if (Primitives.INTEGER.isCompatible(feature)) {
+    } else if (Integer.class.equals(primitiveClass)) {
       result = structure.getIntValue(feature);
-    } else if (Primitives.LONG.isCompatible(feature)) {
+    } else if (Long.class.equals(primitiveClass)) {
       result = structure.getLongValue(feature);
-    } else if (Primitives.FLOAT.isCompatible(feature)) {
+    } else if (Float.class.equals(primitiveClass)) {
       result = structure.getFloatValue(feature);
-    } else if (Primitives.DOUBLE.isCompatible(feature)) {
+    } else if (Double.class.equals(primitiveClass)) {
       result = structure.getDoubleValue(feature);
-    } else if (Primitives.STRING.isCompatible(feature)) {
+    } else if (String.class.equals(primitiveClass)) {
       result = structure.getStringValue(feature);
       
       if (result == null)
         result = "";
     } else {
-      assert false;
-
-      result = "unexpected type";
+      throw new IllegalStateException("Unexpected type: " 
+          + feature.getRange().getName());
     }
 
     return result;
   }
+  
+  public static boolean isRestrictedByAllowedValues(TypeSystem ts, Type type) {
+    
+    if (ts.getType(CAS.TYPE_NAME_STRING).equals(type) || 
+            ts.subsumes(ts.getType(CAS.TYPE_NAME_STRING), type)) {
+      LowLevelTypeSystem lts = ts.getLowLevelTypeSystem();
+      final int typeCode = lts.ll_getCodeForType(type);
+      String[] strings = lts.ll_getStringSet(typeCode);
+      
+      return strings.length > 0;
+    }
+    else {
+      return false;
+    }
+    
+  }
+  
+  public static String[] getRestrictedValues(TypeSystem ts, Type type) {
+    if (isRestrictedByAllowedValues(ts, type)) {
+      throw new IllegalArgumentException("Type " + type.getName() + " does not defines allowed values!");
+    }
+    
+    LowLevelTypeSystem lts = ts.getLowLevelTypeSystem();
+    final int typeCode = lts.ll_getCodeForType(type);
+    
+    return lts.ll_getStringSet(typeCode);
+  }
+  
 }

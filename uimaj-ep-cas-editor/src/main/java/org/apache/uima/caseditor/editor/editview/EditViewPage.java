@@ -151,7 +151,7 @@ final class EditViewPage extends Page implements ISelectionListener {
           else {
             editor = new TextCellEditor(viewer.getTree());
             editor.setValidator(CellEditorValidatorFacotory.createValidator(Primitives
-                    .getPrimitiveClass(value.getFeature())));
+                    .getPrimitiveClass(value.getFeatureStructure().getCAS().getTypeSystem(), value.getFeature())));
           }
 
           return editor;
@@ -231,7 +231,7 @@ final class EditViewPage extends Page implements ISelectionListener {
         // otherwise return boolean number
         if (!featureValue.getFeature().getRange().getName().equals(
                 CAS.TYPE_NAME_BOOLEAN)) {
-          return Primitives.getPrimitiv(featureValue.getFeatureStructure(), featureValue.getFeature()).toString();
+          return Primitives.getPrimitive(featureValue.getFeatureStructure(), featureValue.getFeature()).toString();
         }
         else {
           // for booleans
