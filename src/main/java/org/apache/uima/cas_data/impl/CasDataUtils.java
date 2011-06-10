@@ -48,14 +48,11 @@ public class CasDataUtils {
   public static boolean hasFeature(CasData aCAS, String featureName) {
     Iterator<FeatureStructure> it = aCAS.getFeatureStructures();
     while (it.hasNext()) {
-      Object object = it.next();
-      if (object instanceof FeatureStructure) {
-        FeatureStructure fs = (FeatureStructure) object;
+        FeatureStructure fs = it.next();
         FeatureValue fValue = fs.getFeatureValue(featureName);
         if (fValue != null) {
           return true;
         }
-      }
     }
     return false;
   }
@@ -63,13 +60,10 @@ public class CasDataUtils {
   public static boolean hasFeatureStructure(CasData aCAS, String aName) {
     Iterator<FeatureStructure> it = aCAS.getFeatureStructures();
     while (it.hasNext()) {
-      Object object = it.next();
-      if (object instanceof FeatureStructure) {
-        FeatureStructure fs = (FeatureStructure) object;
+        FeatureStructure fs = it.next();
         if (fs.getType().equals(aName)) {
           return true;
         }
-      }
     }
     return false;
   }
@@ -77,9 +71,7 @@ public class CasDataUtils {
   public static void dumpFeatures(CasData aCAS) {
     Iterator<FeatureStructure> it = aCAS.getFeatureStructures();
     while (it.hasNext()) {
-      Object object = it.next();
-      if (object instanceof FeatureStructure) {
-        FeatureStructure fs = (FeatureStructure) object;
+        FeatureStructure fs = it.next();
         UIMAFramework.getLogger(CLASS_NAME).logrb(Level.FINE, CLASS_NAME.getName(), "dumpFeatures",
                 LOG_RESOURCE_BUNDLE, "UIMA_cas_feature_structure_type__FINE", fs.getType());
 
@@ -92,7 +84,6 @@ public class CasDataUtils {
                     new Object[] { names[i], fValue.toString() });
           }
         }
-      }
     }
 
   }
@@ -101,9 +92,7 @@ public class CasDataUtils {
     Iterator<FeatureStructure> it = aCAS.getFeatureStructures();
     String featureValue = null;
     while (it.hasNext()) {
-      Object object = it.next();
-      if (object instanceof FeatureStructure) {
-        FeatureStructure fs = (FeatureStructure) object;
+        FeatureStructure fs = it.next();
         if (System.getProperty("DEBUG") != null)
           System.out.println("FeatureName::::::::::::::::::::::::::::::::::::::::::>"
                   + fs.getType() + " Searching For::" + featureName);
@@ -133,7 +122,6 @@ public class CasDataUtils {
             featureValue = fValue.toString();
             break;
           }
-        }
       }
     }
     return featureValue;
@@ -145,9 +133,7 @@ public class CasDataUtils {
     String featureValue = null;
     Vector<String> v = new Vector<String>();
     while (it.hasNext()) {
-      Object object = it.next();
-      if (object instanceof FeatureStructure) {
-        FeatureStructure fs = (FeatureStructure) object;
+        FeatureStructure fs = it.next();
         if (featureStructureName.equals(fs.getType())) {
           String[] names = fs.getFeatureNames();
           for (int i = 0; names != null && i < names.length; i++) {
@@ -159,8 +145,6 @@ public class CasDataUtils {
               }
             }
           }
-
-        }
       }
     }
     String[] features = new String[v.size()];
@@ -173,10 +157,8 @@ public class CasDataUtils {
     Iterator<FeatureStructure> it = aCAS.getFeatureStructures();
     String featureValue = null;
     while (it.hasNext()) {
-      Object object = it.next();
-      if (object instanceof FeatureStructure
-              && ((FeatureStructure) object).getType().equals(aFeatureStructure)) {
-        FeatureStructure fs = (FeatureStructure) object;
+      FeatureStructure fs = it.next();
+      if (fs.getType().equals(aFeatureStructure)) {
         FeatureValue fValue = fs.getFeatureValue(featureName);
         if (fValue != null) {
           featureValue = fValue.toString();
@@ -192,10 +174,8 @@ public class CasDataUtils {
     Iterator<FeatureStructure> it = aCasData.getFeatureStructures();
 
     while (it.hasNext()) {
-      Object object = it.next();
-      if (object instanceof FeatureStructure
-              && ((FeatureStructure) object).getType().equals(aFeatureStructureName)) {
-        FeatureStructure fs = (FeatureStructure) object;
+      FeatureStructure fs = it.next();
+      if (fs.getType().equals(aFeatureStructureName)) {
         String[] featureNames = fs.getFeatureNames();
         if (featureNames == null) {
           // return empty set
