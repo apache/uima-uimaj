@@ -50,7 +50,7 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
  */
 public class TypeSystemLocationPropertyPage extends PropertyPage {
 
-  public final static String TYPE_SYSTEM_PROPERTY = "UimaCasEditorTypeSystemPath";
+  public final static String TYPE_SYSTEM_PROPERTY = CasEditorPlugin.TYPE_SYSTEM_PROPERTY;
 
   private static final String DEFAULT_TYPE_SYSTEM_PATH = "TypeSystem.xml";
 

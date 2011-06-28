@@ -44,6 +44,11 @@ import org.osgi.framework.BundleContext;
 public class CasEditorPlugin extends AbstractUIPlugin {
   public static final String ID = "org.apache.uima.caseditor";
 
+  // TODO: Constant should be moved to ide part as soon as the Cas Editor
+  //       Project migration support can be removed!
+  @Deprecated
+  public final static String TYPE_SYSTEM_PROPERTY = "UimaCasEditorTypeSystemPath";
+
   private static final String ICONS_PATH = "icons/";
 
   /**
@@ -92,7 +97,7 @@ public class CasEditorPlugin extends AbstractUIPlugin {
         String typeSystemLocation;
         try {
           typeSystemLocation = project.getPersistentProperty(new QualifiedName("", 
-                  TypeSystemLocationPropertyPage.TYPE_SYSTEM_PROPERTY));
+                  CasEditorPlugin.TYPE_SYSTEM_PROPERTY));
         } catch (CoreException e) {
           typeSystemLocation = null;
         }
