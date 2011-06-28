@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.uima.caseditor;
+package org.apache.uima.caseditor.ide;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,22 +34,19 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
  * TODO: add javadoc here
  */
-public class CasEditorPlugin extends AbstractUIPlugin {
-  public static final String ID = "org.apache.uima.caseditor";
-
-  private static final String ICONS_PATH = "icons/";
+public class CasEditorIdePlugin extends AbstractUIPlugin {
+  public static final String ID = "org.apache.uima.caseditor.ide";
 
   /**
    * The shared instance.
    */
-  private static CasEditorPlugin sPlugin;
+  private static CasEditorIdePlugin sPlugin;
 
   /**
    * Resource bundle.
@@ -62,7 +59,7 @@ public class CasEditorPlugin extends AbstractUIPlugin {
   /**
    * The constructor.
    */
-  public CasEditorPlugin() {
+  public CasEditorIdePlugin() {
     super();
 
     sPlugin = this;
@@ -169,7 +166,7 @@ public class CasEditorPlugin extends AbstractUIPlugin {
    *
    * @return the TaePlugin
    */
-  public static CasEditorPlugin getDefault() {
+  public static CasEditorIdePlugin getDefault() {
     return sPlugin;
   }
 
@@ -217,16 +214,6 @@ public class CasEditorPlugin extends AbstractUIPlugin {
 
   public static void logError(String message) {
     getDefault().getLog().log(new Status(IStatus.ERROR, ID, message));
-  }
-
-  /**
-   * Retrieves an image.
-   *
-   * @param image
-   * @return the requested image if not available null
-   */
-  public static ImageDescriptor getTaeImageDescriptor(Images image) {
-    return imageDescriptorFromPlugin(ID, ICONS_PATH + image.getPath());
   }
   
   public boolean getAndClearShowMigrationDialogFlag() {
