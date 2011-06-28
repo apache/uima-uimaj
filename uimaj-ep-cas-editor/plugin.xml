@@ -23,34 +23,6 @@
 <plugin>
    <extension-point id="org.apache.uima.caseditor.editor" name="DocumentProvider" schema="schema/org.apache.uima.caseditor.editor.exsd"/>
 
-	<extension point="org.eclipse.ui.views">
-		<category id="org.apache.uima.caseditor.ui.views" name="UIMA Cas Editor" />
-
-		<view id="org.apache.uima.caseditor.editview"
-			name="Edit View"
-			class="org.apache.uima.caseditor.editor.editview.EditView"
-			icon="icons/svgicons/explorer.png"
-			category="org.apache.uima.caseditor.ui.views" />
-			
-		<view id="org.apache.uima.caseditor.editview2"
-			name="Edit View"
-			class="org.apache.uima.caseditor.editor.editview.EditView"
-			icon="icons/svgicons/explorer.png"
-			category="org.apache.uima.caseditor.ui.views" />
-			
-		<view id="org.apache.uima.caseditor.fsview"
-			name="FeatureStructure View"
-			class="org.apache.uima.caseditor.editor.fsview.FeatureStructureBrowserView"
-			icon="icons/svgicons/fsview.png"
-			category="org.apache.uima.caseditor.ui.views" />	
-			
-		<view id="org.apache.uima.caseditor.styleview"
-			name="Annotation Styles"
-			class="org.apache.uima.caseditor.editor.styleview.AnnotationStyleView"
-			icon="icons/svgicons/fsview.png"
-			category="org.apache.uima.caseditor.ui.views" />	
-	</extension>
-	
 	<extension point="org.eclipse.ui.editors">
 		<editor icon="icons/svgicons/document.png"
 			class="org.apache.uima.caseditor.editor.AnnotationEditor"
@@ -62,7 +34,7 @@
 		</editor>
 	</extension>
 	
-		<extension point="org.eclipse.ui.editors.annotationTypes">
+	<extension point="org.eclipse.ui.editors.annotationTypes">
 		<type name="org.apache.uima.caseditor.Annotation" />
 		<type name="uima.tcas.Annotation" />
 	</extension>
@@ -90,74 +62,7 @@
 			verticalRulerPreferenceValue="false" includeOnPreferencePage="false" />
 	</extension>
 	
-	<extension point="org.eclipse.core.resources.natures"
-		id="NLPProject" name="UIMA Cas Editor Nature">
-		<runtime>
-			<run
-				class="org.apache.uima.caseditor.core.model.NlpProject" />
-		</runtime>
-	</extension>
-
-	<!-- ui extensions -->
-	<extension point="org.eclipse.ui.views">
-		<category id="org.apache.uima.caseditor.ui.views" name="UIMA Cas Editor" />
-
-		<view id="org.apache.uima.caseditor.corpusview"
-			name="Corpus Explorer"
-			class="org.apache.uima.caseditor.ui.corpusview.CorpusExplorerView"
-			icon="icons/svgicons/explorer.png"
-			category="org.apache.uima.caseditor.ui.views" />
-	</extension>
-
   
-		<extension point="org.eclipse.ui.importWizards">
-		
-		<category name="UIMA Cas Editor" id="org.apache.uima.caseditor.ui.wizards" />
-		
-		<wizard
-		category="org.apache.uima.caseditor.ui.wizards"
-		class="org.apache.uima.caseditor.ui.wizards.ImportDocumentWizard"
-		icon="icons/svgicons/document.png"
-		id="org.apache.uima.caseditor.ui.wizards.NewDocumentWizard"
-		name="Document">
-		<description>Create a Document</description>
-		</wizard>
-		</extension>
-
-	<extension point="org.eclipse.ui.perspectives">
-		<perspective
-			class="org.apache.uima.caseditor.ui.NlpPerspectiveFactory"
-			fixed="true" icon="icons/svgicons/corpus.png"
-			id="org.apache.uima.caseditor.perspective.NLP" name="Cas Editor">
-		</perspective>
-	</extension>
-
-	<extension point="org.eclipse.ui.propertyPages">
-		<page
-			class="org.apache.uima.caseditor.ui.property.EditorAnnotationPropertyPage"
-			icon="icons/svgicons/corpus.png"
-			id="org.apache.uima.caseditor.annotationspropertypage"
-			name="Annotations">
-			<enabledWhen>
-				<instanceof value="org.apache.uima.caseditor.editor.styleview.AnnotationTypeNode"/>
-			</enabledWhen>
-		</page>
-		
-        <page
-            adaptable="true"
-            objectClass="org.eclipse.core.resources.IProject"
-            class="org.apache.uima.caseditor.ui.property.TypeSystemLocationPropertyPage"
-            name="UIMA Type System"
-            id="org.apache.uima.caseditor.TypeSystemLocationPropertyPage">
-            </page>
-	</extension>
- <extension
-       point="org.apache.uima.caseditor.editor">
-    <provider
-          class="org.apache.uima.caseditor.editor.DefaultCasDocumentProvider">
-    </provider>
- </extension>
- 
  
  <extension
 	point="org.eclipse.ui.commands">

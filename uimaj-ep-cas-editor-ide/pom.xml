@@ -84,6 +84,13 @@
 			<version>${project.parent.version}</version>
 			<scope>compile</scope>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.uima</groupId>
+			<artifactId>uimaj-ep-cas-editor</artifactId>
+			<version>${project.parent.version}</version>
+			<scope>compile</scope>
+		</dependency>
 
 		<!-- Eclipse dependencies -->
 		<dependency>
@@ -197,15 +204,16 @@
             <id>uima-bundle</id>
             <configuration>
               <instructions>
-                <Bundle-SymbolicName>org.apache.uima.caseditor;singleton:=true</Bundle-SymbolicName>
+                <Bundle-SymbolicName>org.apache.uima.caseditor.ide;singleton:=true</Bundle-SymbolicName>
                 <Bundle-Activator>org.apache.uima.caseditor.CasEditorPlugin</Bundle-Activator>
                 <Bundle-RequiredExecutionEnvironment>J2SE-1.5</Bundle-RequiredExecutionEnvironment>
                 <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
                 <Export-Package>
-                  org.apache.uima.caseditor.*
+                  org.apache.uima.caseditor.ide.*
                       </Export-Package>
                 <Require-Bundle>
                   org.eclipse.jface.text,
+                  org.apache.uima.caseditor,
                   org.eclipse.text,
                   org.eclipse.ui.editors,
                   org.eclipse.ui.workbench.texteditor,
@@ -228,6 +236,7 @@
                   !org.eclipse.ui.model,
                   !org.eclipse.ui.part, 
                   !org.eclipse.core.runtime,
+                  org.apache.uima.caseditor.*
                   *
                 </Import-Package>
               </instructions>
