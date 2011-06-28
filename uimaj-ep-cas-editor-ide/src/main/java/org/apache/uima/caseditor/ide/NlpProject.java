@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.uima.caseditor.core.model;
+package org.apache.uima.caseditor.ide;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectNature;

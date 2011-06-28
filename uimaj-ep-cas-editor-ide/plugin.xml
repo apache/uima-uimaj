@@ -55,7 +55,7 @@
 		id="NLPProject" name="UIMA Cas Editor Nature">
 		<runtime>
 			<run
-				class="org.apache.uima.caseditor.core.model.NlpProject" />
+				class="org.apache.uima.caseditor.ide.NlpProject" />
 		</runtime>
 	</extension>
 
