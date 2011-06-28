@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.uima.caseditor.editor;
+package org.apache.uima.caseditor.ide;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
