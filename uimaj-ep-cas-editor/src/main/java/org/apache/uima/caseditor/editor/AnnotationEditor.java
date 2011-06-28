@@ -976,6 +976,10 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     return (ICasDocument) getDocumentProvider().getDocument(getEditorInput());
   }
 
+  public void reopenEditorWithNewTypeSystem() {
+    setInput(getEditorInput());
+  }
+  
   /**
    * Returns the current annotation type.
    *
@@ -1527,47 +1531,10 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 
     // Type System is missing in non Cas Editor Project case
     if (status.getCode() == 12 && getEditorInput() instanceof FileEditorInput) {
-      
-      // Note:
-      // If the editor is not active and the user clicks on the button
-      // the editor gets activated and an exception is logged
-      // on the second click the button is selected
-      // How to fix the exception ?!
-      // Only tested on OS X Snow Leopard
-      
-      Composite provideTypeSystemForm = new Composite(parent, SWT.NONE);
-      provideTypeSystemForm.setLayout(new GridLayout(1, false));
-      Label infoLabel = new Label(provideTypeSystemForm, SWT.NONE);
-      infoLabel.setText(status.getMessage());
-      Button retryButton = new Button(provideTypeSystemForm, SWT.NONE);
-      retryButton.setText("Choose Type System ...");
-      retryButton.addSelectionListener(new SelectionListener() {
-        public void widgetSelected(SelectionEvent e) {
-          
-          // Open a dialog to let the user choose a type system
-          IResource resource = WorkspaceResourceDialog.getWorkspaceResourceElement(Display.getCurrent().getActiveShell(),
-                  ResourcesPlugin.getWorkspace().getRoot(),
-                  "Select a Type System", "Please select a Type System:");
-          
-          if (resource != null) {
-            DefaultCasDocumentProvider provider = (DefaultCasDocumentProvider) getDocumentProvider();
-            
-            FileEditorInput editorInput = (FileEditorInput) getEditorInput();
-            provider.setTypeSystem(editorInput.getFile().getFullPath().toPortableString(),
-                    resource.getFullPath().toString());
-            
-            // Now set the input again to open the editor with the
-            // specified type system
-            setInput(getEditorInput());
-          }
-        }
-  
-        public void widgetDefaultSelected(SelectionEvent e) {
-          throw new IllegalStateException("Never be called!");
-        }
-      });
-  
-      return provideTypeSystemForm;
+      // Show a form to select a type system in the document provider,
+      // afterwards the form calls reopenEditorWithNewTypesytem to reopen
+      // the editor on the input
+      return getDocumentProvider().createTypeSystemSelectorForm(this, parent, status);
     }
     else if (status.getCode() == IStatus.OK) {
       

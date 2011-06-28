@@ -32,6 +32,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.source.IAnnotationModel;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.AbstractDocumentProvider;
 
@@ -133,4 +134,6 @@ public abstract class CasDocumentProvider extends AbstractDocumentProvider {
       listener.annotationStylesChanged(styles);
     }
   }
+  
+  public abstract Composite createTypeSystemSelectorForm(ICasEditor editor, Composite parent, IStatus status);
 }

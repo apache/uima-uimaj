@@ -36,6 +36,7 @@ import org.apache.uima.caseditor.core.model.dotcorpus.DotCorpus;
 import org.apache.uima.caseditor.core.model.dotcorpus.DotCorpusSerializer;
 import org.apache.uima.caseditor.ui.property.TypeSystemLocationPropertyPage;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -43,6 +44,14 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.part.FileEditorInput;
 
 public class DefaultCasDocumentProvider extends
@@ -359,5 +368,50 @@ public class DefaultCasDocumentProvider extends
   
   void setTypeSystem(String document, String typeSystem) {
     documentToTypeSystemMap.put(document, typeSystem);
+  }
+  
+  @Override
+  public Composite createTypeSystemSelectorForm(final ICasEditor editor,
+          Composite parent, IStatus status) {
+    
+    // Note:
+    // If the editor is not active and the user clicks on the button
+    // the editor gets activated and an exception is logged
+    // on the second click the button is selected
+    // How to fix the exception ?!
+    // Only tested on OS X Snow Leopard
+    
+    Composite provideTypeSystemForm = new Composite(parent, SWT.NONE);
+    provideTypeSystemForm.setLayout(new GridLayout(1, false));
+    Label infoLabel = new Label(provideTypeSystemForm, SWT.NONE);
+    infoLabel.setText(status.getMessage());
+    Button retryButton = new Button(provideTypeSystemForm, SWT.NONE);
+    retryButton.setText("Choose Type System ...");
+    retryButton.addSelectionListener(new SelectionListener() {
+      public void widgetSelected(SelectionEvent e) {
+        
+        // Open a dialog to let the user choose a type system
+        IResource resource = WorkspaceResourceDialog.getWorkspaceResourceElement(Display.getCurrent().getActiveShell(),
+                ResourcesPlugin.getWorkspace().getRoot(),
+                "Select a Type System", "Please select a Type System:");
+        
+        if (resource != null) {
+          
+          FileEditorInput editorInput = (FileEditorInput) editor.getEditorInput();
+          setTypeSystem(editorInput.getFile().getFullPath().toPortableString(),
+                  resource.getFullPath().toString());
+          
+          // Now set the input again to open the editor with the
+          // specified type system
+          editor.reopenEditorWithNewTypeSystem();
+        }
+      }
+
+      public void widgetDefaultSelected(SelectionEvent e) {
+        throw new IllegalStateException("Never be called!");
+      }
+    });
+    
+    return provideTypeSystemForm;
   }
 }
