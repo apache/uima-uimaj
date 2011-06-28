@@ -73,13 +73,13 @@
   
 		<extension point="org.eclipse.ui.importWizards">
 		
-		<category name="UIMA Cas Editor" id="org.apache.uima.caseditor.ui.wizards" />
+		<category name="UIMA Cas Editor" id="org.apache.uima.caseditor.ide.wizards" />
 		
 		<wizard
-		category="org.apache.uima.caseditor.ui.wizards"
-		class="org.apache.uima.caseditor.ui.wizards.ImportDocumentWizard"
+		category="org.apache.uima.caseditor.ide.wizards"
+		class="org.apache.uima.caseditor.ide.wizards.ImportDocumentWizard"
 		icon="icons/svgicons/document.png"
-		id="org.apache.uima.caseditor.ui.wizards.NewDocumentWizard"
+		id="org.apache.uima.caseditor.ide.wizards.NewDocumentWizard"
 		name="Document">
 		<description>Create a Document</description>
 		</wizard>

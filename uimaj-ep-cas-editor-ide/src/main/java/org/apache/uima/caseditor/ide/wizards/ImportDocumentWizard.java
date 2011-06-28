@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.uima.caseditor.ui.wizards;
+package org.apache.uima.caseditor.ide.wizards;
 
 import java.lang.reflect.InvocationTargetException;
 
