@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.uima.caseditor.editor;
+package org.apache.uima.caseditor.ide;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -34,6 +34,13 @@ import org.apache.uima.caseditor.CasEditorPlugin;
 import org.apache.uima.caseditor.core.model.DefaultColors;
 import org.apache.uima.caseditor.core.model.dotcorpus.DotCorpus;
 import org.apache.uima.caseditor.core.model.dotcorpus.DotCorpusSerializer;
+import org.apache.uima.caseditor.editor.AnnotationDocument;
+import org.apache.uima.caseditor.editor.AnnotationStyle;
+import org.apache.uima.caseditor.editor.DocumentFormat;
+import org.apache.uima.caseditor.editor.DocumentUimaImpl;
+import org.apache.uima.caseditor.editor.EditorAnnotationStatus;
+import org.apache.uima.caseditor.editor.ICasEditor;
+import org.apache.uima.caseditor.editor.WorkspaceResourceDialog;
 import org.apache.uima.caseditor.ui.property.TypeSystemLocationPropertyPage;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;

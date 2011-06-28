@@ -95,7 +95,7 @@
 
 	<extension point="org.eclipse.ui.propertyPages">
 		<page
-			class="org.apache.uima.caseditor.ui.property.EditorAnnotationPropertyPage"
+			class="org.apache.uima.caseditor.ide.property.EditorAnnotationPropertyPage"
 			icon="icons/svgicons/corpus.png"
 			id="org.apache.uima.caseditor.annotationspropertypage"
 			name="Annotations">
@@ -107,7 +107,7 @@
         <page
             adaptable="true"
             objectClass="org.eclipse.core.resources.IProject"
-            class="org.apache.uima.caseditor.ui.property.TypeSystemLocationPropertyPage"
+            class="org.apache.uima.caseditor.ide.property.TypeSystemLocationPropertyPage"
             name="UIMA Type System"
             id="org.apache.uima.caseditor.TypeSystemLocationPropertyPage">
             </page>
@@ -115,7 +115,7 @@
  <extension
        point="org.apache.uima.caseditor.editor">
     <provider
-          class="org.apache.uima.caseditor.editor.DefaultCasDocumentProvider">
+          class="org.apache.uima.caseditor.ide.DefaultCasDocumentProvider">
     </provider>
  </extension>
 </plugin>

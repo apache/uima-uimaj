@@ -26,7 +26,6 @@ import java.util.ResourceBundle;
 
 import org.apache.uima.caseditor.core.model.dotcorpus.DotCorpus;
 import org.apache.uima.caseditor.core.model.dotcorpus.DotCorpusSerializer;
-import org.apache.uima.caseditor.ui.property.TypeSystemLocationPropertyPage;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -82,77 +81,6 @@ public class CasEditorPlugin extends AbstractUIPlugin {
   @Override
   public void start(BundleContext context) throws Exception {
     super.start(context);
-    
-    // Backward compatibility: Migrate old Cas Editor Projects
-    
-    // Scan for all Nlp nature projects
-    IProject projects[] = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-    
-    for (IProject project : projects) {
-      // if nlp nature project
-      
-      if (project.isOpen() && project.hasNature("org.apache.uima.caseditor.NLPProject")) {
-        
-        // if ts property is not set ... 
-        String typeSystemLocation;
-        try {
-          typeSystemLocation = project.getPersistentProperty(new QualifiedName("", 
-                  CasEditorPlugin.TYPE_SYSTEM_PROPERTY));
-        } catch (CoreException e) {
-          typeSystemLocation = null;
-        }
-        
-        if (typeSystemLocation == null) {
-          // 1. Read dotCorpus
-          IFile dotCorpusFile = project.getFile(".corpus");
-          
-          
-          if (dotCorpusFile.exists()) {
-            
-            InputStream dotCorpusIn = null;
-            
-            try {
-              dotCorpusIn = dotCorpusFile.getContents();
-            }
-            catch (CoreException e) {
-              log(e);
-            }
-            
-            IFile typeSystemFile = null;
-            if (dotCorpusIn != null) {
-              try {
-                DotCorpus dotCorpus = DotCorpusSerializer.parseDotCorpus(dotCorpusIn);
-                
-                if (dotCorpus.getTypeSystemFileName() != null)
-                    typeSystemFile = project.getFile(dotCorpus.getTypeSystemFileName());
-              }
-              finally {
-                try {
-                  dotCorpusIn.close();
-                }
-                catch (IOException e) {
-                  log(e);
-                }
-              }
-            }
-            
-            if (typeSystemFile != null && typeSystemFile.exists()) {
-              // 2. Set type system file accordingly
-              TypeSystemLocationPropertyPage.setTypeSystemLocation(project, typeSystemFile.getFullPath().toString());
-              
-              // 3. Try to copy dotCorpus file to type system location
-              try {
-                dotCorpusFile.copy(project.getFile(typeSystemFile.getParent().getProjectRelativePath() + "/" 
-                        + ".style-" + typeSystemFile.getName()).getFullPath(), true, null);
-                showMigrationDialog = true;
-              } catch (CoreException e) {
-                log(e);
-              }
-            }
-          }
-        }
-      }
-    }
   }
 
   /**
@@ -232,6 +160,10 @@ public class CasEditorPlugin extends AbstractUIPlugin {
    */
   public static ImageDescriptor getTaeImageDescriptor(Images image) {
     return imageDescriptorFromPlugin(ID, ICONS_PATH + image.getPath());
+  }
+  
+  public void setShowMigrationDialog() {
+    showMigrationDialog = true;
   }
   
   public boolean getAndClearShowMigrationDialogFlag() {
