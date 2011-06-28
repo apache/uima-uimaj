@@ -85,7 +85,7 @@ public class CasEditorIdePlugin extends AbstractUIPlugin {
 	        String typeSystemLocation;
 	        try {
 	          typeSystemLocation = project.getPersistentProperty(new QualifiedName("", 
-	                  CasEditorPlugin.TYPE_SYSTEM_PROPERTY));
+	        		  TypeSystemLocationPropertyPage.TYPE_SYSTEM_PROPERTY));
 	        } catch (CoreException e) {
 	          typeSystemLocation = null;
 	        }
