@@ -33,7 +33,6 @@ import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.AbstractDocumentProvider;
 
 /**
@@ -59,7 +58,7 @@ public abstract class CasDocumentProvider extends AbstractDocumentProvider {
   }
 
   /**
-   * Creates the a new {@link AnnotationDocument} from the given {@link FileEditorInput} element.
+   * Creates the a new {@link AnnotationDocument} from the given {@link IEditorInput} element.
    * For all other elements null is returned.
    */
   @Override
