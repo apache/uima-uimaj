@@ -65,7 +65,7 @@ public class NlpPerspectiveFactory implements IPerspectiveFactory {
     // left views
     IFolderLayout left = layout.createFolder("left", IPageLayout.LEFT,
             0.19f, editorArea);
-    left.addView("org.eclipse.ui.navigator.ProjectExplore");
+    left.addView("org.eclipse.ui.navigator.ProjectExplorer");
 
     // right views
     IFolderLayout right = layout.createFolder("right", IPageLayout.RIGHT,
