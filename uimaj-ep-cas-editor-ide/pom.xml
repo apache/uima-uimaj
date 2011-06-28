@@ -236,7 +236,6 @@
                   !org.eclipse.ui.model,
                   !org.eclipse.ui.part, 
                   !org.eclipse.core.runtime,
-                  org.apache.uima.caseditor.*
                   *
                 </Import-Package>
               </instructions>
