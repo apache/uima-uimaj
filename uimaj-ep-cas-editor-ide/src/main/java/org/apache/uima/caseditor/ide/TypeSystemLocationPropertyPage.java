@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.uima.caseditor.ui.property;
+package org.apache.uima.caseditor.ide;
 
 import org.apache.uima.caseditor.CasEditorPlugin;
 import org.eclipse.core.resources.IFile;

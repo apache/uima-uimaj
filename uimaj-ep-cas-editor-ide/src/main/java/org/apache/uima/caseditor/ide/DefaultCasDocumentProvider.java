@@ -41,7 +41,6 @@ import org.apache.uima.caseditor.editor.DocumentUimaImpl;
 import org.apache.uima.caseditor.editor.EditorAnnotationStatus;
 import org.apache.uima.caseditor.editor.ICasEditor;
 import org.apache.uima.caseditor.editor.WorkspaceResourceDialog;
-import org.apache.uima.caseditor.ui.property.TypeSystemLocationPropertyPage;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;

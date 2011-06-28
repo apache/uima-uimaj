@@ -205,7 +205,7 @@
             <configuration>
               <instructions>
                 <Bundle-SymbolicName>org.apache.uima.caseditor.ide;singleton:=true</Bundle-SymbolicName>
-                <Bundle-Activator>org.apache.uima.caseditor.CasEditorPlugin</Bundle-Activator>
+                <Bundle-Activator>org.apache.uima.caseditor.ide.CasEditorIdePlugin</Bundle-Activator>
                 <Bundle-RequiredExecutionEnvironment>J2SE-1.5</Bundle-RequiredExecutionEnvironment>
                 <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
                 <Export-Package>
