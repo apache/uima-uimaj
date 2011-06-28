@@ -36,6 +36,7 @@ import org.apache.uima.caseditor.core.model.dotcorpus.DotCorpus;
 import org.apache.uima.caseditor.core.model.dotcorpus.DotCorpusSerializer;
 import org.apache.uima.caseditor.editor.AnnotationDocument;
 import org.apache.uima.caseditor.editor.AnnotationStyle;
+import org.apache.uima.caseditor.editor.CasDocumentProvider;
 import org.apache.uima.caseditor.editor.DocumentFormat;
 import org.apache.uima.caseditor.editor.DocumentUimaImpl;
 import org.apache.uima.caseditor.editor.EditorAnnotationStatus;
@@ -221,7 +222,8 @@ public class DefaultCasDocumentProvider extends
         else
           message = "Type system is not set, please choose a type system to open the CAS.";
         
-        IStatus status = new Status(IStatus.ERROR, "org.apache.uima.dev", 12, message, null);
+        IStatus status = new Status(IStatus.ERROR, "org.apache.uima.dev",
+        		CasDocumentProvider.TYPE_SYSTEM_NOT_AVAILABLE_STATUS_CODE, message, null);
         
         elementErrorStatus.put(element, status);
       }

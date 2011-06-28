@@ -41,6 +41,8 @@ import org.eclipse.ui.texteditor.AbstractDocumentProvider;
  */
 public abstract class CasDocumentProvider extends AbstractDocumentProvider {
 
+  public static final int TYPE_SYSTEM_NOT_AVAILABLE_STATUS_CODE = 12;
+  
   private Set<IAnnotationStyleListener> annotationStyleListeners =
       new HashSet<IAnnotationStyleListener>();
   

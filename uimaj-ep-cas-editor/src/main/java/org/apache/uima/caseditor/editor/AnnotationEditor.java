@@ -1530,7 +1530,10 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   protected Control createStatusControl(Composite parent, IStatus status) {
 
     // Type System is missing in non Cas Editor Project case
-    if (status.getCode() == 12 && getEditorInput() instanceof FileEditorInput) {
+    if (status.getCode() == CasDocumentProvider.TYPE_SYSTEM_NOT_AVAILABLE_STATUS_CODE
+            && getEditorInput() !=null) {
+      // TODO: Is the null check on the editor input necessary ?!
+      
       // Show a form to select a type system in the document provider,
       // afterwards the form calls reopenEditorWithNewTypesytem to reopen
       // the editor on the input
