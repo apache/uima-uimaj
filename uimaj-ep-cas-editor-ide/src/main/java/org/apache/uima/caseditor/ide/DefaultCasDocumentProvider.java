@@ -481,7 +481,9 @@ public class DefaultCasDocumentProvider extends
     
     FileElementInfo info = new FileElementInfo(super.createElementInfo(element));
 
-      // TODO: install delete listener here ...
+    // Register listener to listens for deletion events,
+    // if the file opened in this editor is deleted, the editor should be closed!
+    
     info.deleteListener = new DeleteElementListener((FileEditorInput) element);
     ResourcesPlugin.getWorkspace().addResourceChangeListener(info.deleteListener,
             IResourceChangeEvent.POST_CHANGE);
