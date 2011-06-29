@@ -136,5 +136,9 @@ public abstract class CasDocumentProvider extends AbstractDocumentProvider {
     }
   }
   
+  public void fireDeleteEvent(Object element) {
+    fireElementDeleted(element);
+  }
+  
   public abstract Composite createTypeSystemSelectorForm(ICasEditor editor, Composite parent, IStatus status);
 }

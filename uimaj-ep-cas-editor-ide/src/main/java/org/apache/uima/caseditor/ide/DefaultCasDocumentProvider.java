@@ -43,6 +43,10 @@ import org.apache.uima.caseditor.editor.EditorAnnotationStatus;
 import org.apache.uima.caseditor.editor.ICasEditor;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -50,6 +54,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -63,6 +68,54 @@ import org.eclipse.ui.part.FileEditorInput;
 public class DefaultCasDocumentProvider extends
         org.apache.uima.caseditor.editor.CasDocumentProvider {
 
+  /**
+   * Listens for resource remove/delete event, if the input file for the
+   * editor is removed the editor will be closed.
+   */
+  private class DeleteElementListener implements IResourceChangeListener {
+
+    private FileEditorInput fileInput;
+
+    public DeleteElementListener(FileEditorInput fileInput) {
+      this.fileInput = fileInput;
+    }
+
+    public void resourceChanged(IResourceChangeEvent event) {
+      IResourceDelta delta = event.getDelta();
+      try {
+        IResourceDeltaVisitor visitor = new IResourceDeltaVisitor() {
+          public boolean visit(IResourceDelta delta) throws CoreException {
+            if (delta.getFlags() != IResourceDelta.MARKERS
+                    && delta.getResource().getType() == IResource.FILE) {
+              if (delta.getKind() == IResourceDelta.REMOVED) {
+                IResource resource = delta.getResource();
+                
+                if (resource.equals(fileInput.getFile())) {
+                  handleElementDeleted(fileInput);
+                }
+              }
+            }
+
+            return true;
+          }
+        };
+
+        delta.accept(visitor);
+      } catch (CoreException e) {
+        CasEditorPlugin.log(e);
+      }
+    }
+  }
+  
+  private class FileElementInfo extends ElementInfo {
+    
+    private DeleteElementListener deleteListener;
+    
+    FileElementInfo(ElementInfo info) {
+      super(info.fDocument, info.fModel);
+    }
+  }
+  
   /**
    * This map resolved an opened document to its associated style object id.
    * 
@@ -420,5 +473,32 @@ public class DefaultCasDocumentProvider extends
     });
     
     return provideTypeSystemForm;
+  }
+  
+  @Override
+	protected ElementInfo createElementInfo(Object element)
+			throws CoreException {
+    
+    FileElementInfo info = new FileElementInfo(super.createElementInfo(element));
+
+      // TODO: install delete listener here ...
+    info.deleteListener = new DeleteElementListener((FileEditorInput) element);
+    ResourcesPlugin.getWorkspace().addResourceChangeListener(info.deleteListener,
+            IResourceChangeEvent.POST_CHANGE);
+
+    return info;
+	}
+  
+  @Override
+	protected void disposeElementInfo(Object element, ElementInfo info) {
+	  
+    FileElementInfo fileInfo = (FileElementInfo) info;
+    ResourcesPlugin.getWorkspace().removeResourceChangeListener(fileInfo.deleteListener);
+	  
+		super.disposeElementInfo(element, info);
+	}
+  
+  private void handleElementDeleted(Object element) {
+    fireElementDeleted(element);
   }
 }

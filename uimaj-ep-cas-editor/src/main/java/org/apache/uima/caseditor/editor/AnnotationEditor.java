@@ -200,6 +200,9 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 
         setAnnotationSelection(annotation);
       }
+      
+      CasDocumentProvider test = (CasDocumentProvider) getDocumentProvider();
+      test.fireDeleteEvent(getEditorInput());
     }
 
     ICasDocument getDocument() {
@@ -490,51 +493,6 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     }
   }
 
-  /**
-   * Listens for resource remove/delete event, if the input file for the
-   * editor is removed the editor will be closed.
-   */
-  private static class CloseEditorListener implements IResourceChangeListener {
-
-    private AnnotationEditor editor;
-
-    public CloseEditorListener(AnnotationEditor editor) {
-      this.editor = editor;
-    }
-
-    public void resourceChanged(IResourceChangeEvent event) {
-      IResourceDelta delta = event.getDelta();
-      try {
-        IResourceDeltaVisitor visitor = new IResourceDeltaVisitor() {
-          public boolean visit(IResourceDelta delta) throws CoreException {
-            if (delta.getFlags() != IResourceDelta.MARKERS
-                    && delta.getResource().getType() == IResource.FILE) {
-              if (delta.getKind() == IResourceDelta.REMOVED) {
-                IResource resource = delta.getResource();
-
-                IEditorInput input = editor.getEditorInput();
-
-                if (input instanceof FileEditorInput) {
-                  FileEditorInput fileInput = (FileEditorInput) input;
-
-                  if (resource.equals(fileInput.getFile())) {
-                    editor.close(false);
-                  }
-                }
-              }
-            }
-
-            return true;
-          }
-        };
-
-        delta.accept(visitor);
-      } catch (CoreException e) {
-        CasEditorPlugin.log(e);
-      }
-    }
-  }
-
   // TODO: Move to external class
   static class CasViewMenu extends ContributionItem {
     
@@ -615,8 +573,6 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 
   private IAnnotationStyleListener mAnnotationStyleListener;
   
-  private CloseEditorListener closeEditorListener;
-
   private Collection<Type> shownAnnotationTypes = new HashSet<Type>();
   
   /**
@@ -788,9 +744,9 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
             
       // Register listener to listens for deletion events,
       // if the file opened in this editor is deleted, the editor should be closed!
-      closeEditorListener = new CloseEditorListener(this);
-      ResourcesPlugin.getWorkspace().addResourceChangeListener(closeEditorListener,
-              IResourceChangeEvent.POST_CHANGE);
+//      closeEditorListener = new CloseEditorListener(this);
+//      ResourcesPlugin.getWorkspace().addResourceChangeListener(closeEditorListener,
+//              IResourceChangeEvent.POST_CHANGE);
 
       // Synchronize shown types with the editor
       Collection<String> shownTypes = getDocumentProvider().getShownTypes(input);
@@ -1480,11 +1436,6 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 
     if (document != null) {
       document.removeChangeListener(mAnnotationSynchronizer);
-    }
-
-    if (closeEditorListener != null) {
-      ResourcesPlugin.getWorkspace()
-              .removeResourceChangeListener(closeEditorListener);
     }
 
     CasDocumentProvider provider = getDocumentProvider();
