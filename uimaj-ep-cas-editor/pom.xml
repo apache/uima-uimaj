@@ -209,7 +209,6 @@
                   org.eclipse.text,
                   org.eclipse.ui.editors,
                   org.eclipse.ui.workbench.texteditor,
-                  org.eclipse.ui.ide,
                   org.eclipse.ui,
                   org.eclipse.ui.workbench,
                   org.eclipse.core.runtime,
