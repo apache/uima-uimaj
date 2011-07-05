@@ -189,9 +189,6 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 
         setAnnotationSelection(annotation);
       }
-      
-      CasDocumentProvider test = (CasDocumentProvider) getDocumentProvider();
-      test.fireDeleteEvent(getEditorInput());
     }
 
     ICasDocument getDocument() {
