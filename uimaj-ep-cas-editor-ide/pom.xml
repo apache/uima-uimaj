@@ -161,7 +161,7 @@
 
 	<build>
     <!-- don't use artifactId as first part of finalName, follow instead the eclipse convention -->  
-    <finalName>org.apache.uima.caseditor_${parsedVersion.osgiVersion}</finalName>  
+    <finalName>org.apache.uima.caseditor.ide_${parsedVersion.osgiVersion}</finalName>  
     <resources>
       <resource>
         <directory>.</directory>
@@ -210,10 +210,9 @@
                 <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
                 <Export-Package>
                   org.apache.uima.caseditor.ide.*
-                      </Export-Package>
+                </Export-Package>
                 <Require-Bundle>
                   org.eclipse.jface.text,
-                  org.apache.uima.caseditor,
                   org.eclipse.text,
                   org.eclipse.ui.editors,
                   org.eclipse.ui.workbench.texteditor,
