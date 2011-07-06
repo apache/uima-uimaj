@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.uima.caseditor.ui;
+package org.apache.uima.caseditor.ide;
 
 
 import org.apache.uima.caseditor.editor.editview.EditView;

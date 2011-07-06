@@ -87,7 +87,7 @@
 
 	<extension point="org.eclipse.ui.perspectives">
 		<perspective
-			class="org.apache.uima.caseditor.ui.NlpPerspectiveFactory"
+			class="org.apache.uima.caseditor.ide.NlpPerspectiveFactory"
 			fixed="true" icon="icons/svgicons/corpus.png"
 			id="org.apache.uima.caseditor.perspective.NLP" name="Cas Editor">
 		</perspective>
