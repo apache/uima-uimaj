@@ -1189,7 +1189,9 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 	  // TODO: Add support for this to the interface
 	  ((AnnotationDocument) getDocument()).switchView(viewName);
 	  
-	  // Refresh the source viewer to retrieve the new document text
+	  // Retrieve the new (changed) text document and refresh the source viewer
+    getSourceViewer().setDocument((AnnotationDocument) getDocument(),
+            getDocumentProvider().getAnnotationModel(getEditorInput())); 
 	  getSourceViewer().invalidateTextPresentation();
 	  
 	  // All annotations will be synchronized in the document listener
