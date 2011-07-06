@@ -60,18 +60,7 @@
 	</extension>
 
 	<!-- ui extensions -->
-	<extension point="org.eclipse.ui.views">
-		<category id="org.apache.uima.caseditor.ui.views" name="UIMA Cas Editor" />
-
-		<view id="org.apache.uima.caseditor.corpusview"
-			name="Corpus Explorer"
-			class="org.apache.uima.caseditor.ui.corpusview.CorpusExplorerView"
-			icon="icons/svgicons/explorer.png"
-			category="org.apache.uima.caseditor.ui.views" />
-	</extension>
-
-  
-		<extension point="org.eclipse.ui.importWizards">
+	<extension point="org.eclipse.ui.importWizards">
 		
 		<category name="UIMA Cas Editor" id="org.apache.uima.caseditor.ide.wizards" />
 		
