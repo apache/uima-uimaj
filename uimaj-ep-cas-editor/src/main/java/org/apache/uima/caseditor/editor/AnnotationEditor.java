@@ -126,12 +126,6 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 /**
  * An editor to annotate text.
- *
- * TODO:
- * add an action to increase left side of an annotation
- * add an action to increase right side of an annotation
- * add an action to decrease left side on an annotation
- * add an action to decrease right side on an annotation
  */
 public final class AnnotationEditor extends StatusTextEditor implements ICasEditor, ISelectionListener {
 	
