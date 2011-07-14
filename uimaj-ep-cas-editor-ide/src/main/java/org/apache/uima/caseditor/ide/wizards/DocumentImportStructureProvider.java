@@ -39,6 +39,7 @@ import org.apache.uima.cas.impl.XCASSerializer;
 import org.apache.uima.cas.impl.XmiCasSerializer;
 import org.apache.uima.caseditor.core.TaeError;
 import org.apache.uima.caseditor.editor.DocumentFormat;
+import org.apache.uima.internal.util.XMLUtils;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasCreationUtils;
@@ -66,6 +67,27 @@ final class DocumentImportStructureProvider implements IImportStructureProvider 
 	  this.casFormat = casFormat;
   }
 
+  
+  private static String removeNonXmlChars(String input) {
+    
+    char inputChars[] = input.toCharArray();
+    
+    StringBuilder cleanedString = new StringBuilder(inputChars.length);
+    
+    int startIndex = 0;
+
+     int offendingCharOsset;
+     while ((offendingCharOsset = XMLUtils.checkForNonXmlCharacters(
+             inputChars, startIndex, inputChars.length - startIndex, false)) != -1) {
+       cleanedString.append(inputChars, startIndex, offendingCharOsset - startIndex);
+       startIndex = offendingCharOsset + 1;
+     }
+     
+     cleanedString.append(inputChars, startIndex, inputChars.length - startIndex);
+     
+    return cleanedString.toString();
+  }
+  
   public List<Object> getChildren(Object element) {
     return null;
   }
@@ -100,7 +122,7 @@ final class DocumentImportStructureProvider implements IImportStructureProvider 
     String failedToImportLine = "Failed to import: " + fileName + "\n\n";
     
     CAS cas = createEmtpyCAS();
-    cas.setDocumentText(text);
+    cas.setDocumentText(removeNonXmlChars(text));
 
     ByteArrayOutputStream out = new ByteArrayOutputStream(40000);
 
