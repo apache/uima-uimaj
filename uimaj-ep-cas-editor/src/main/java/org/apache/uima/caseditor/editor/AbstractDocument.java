@@ -21,14 +21,10 @@ package org.apache.uima.caseditor.editor;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.uima.cas.FeatureStructure;
-import org.apache.uima.cas.Type;
-import org.apache.uima.cas.text.AnnotationFS;
 
 /**
  * Abstract base class for document implementations.
