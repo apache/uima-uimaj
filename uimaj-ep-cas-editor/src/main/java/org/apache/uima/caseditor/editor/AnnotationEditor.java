@@ -626,7 +626,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
      */
     showChangeInformation(false);
 
-    // Note:
+    // UIMA-2167:
     // The Annotation Editor needs to listen to changes for the caret position,
     // the new eclipse 3.5 API allows to register a listener which reports
     // that
