@@ -626,6 +626,15 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
      */
     showChangeInformation(false);
 
+    // Note:
+    // The Annotation Editor needs to listen to changes for the caret position,
+    // the new eclipse 3.5 API allows to register a listener which reports
+    // that
+    //
+    // Until this can be used we improvise by registering a couple of listeners which
+    // compute a caret offset change based on events which could change it, 
+    // that are key and mouse listeners.
+    
     getSourceViewer().getTextWidget().addKeyListener(new KeyListener() {
       public void keyPressed(KeyEvent e) {
         int newCaretOffset = getSourceViewer().getTextWidget().getCaretOffset();
@@ -657,7 +666,12 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
       }
 
       public void mouseUp(MouseEvent e) {
-        // not needed
+        int newCaretOffset = getSourceViewer().getTextWidget().getCaretOffset();
+        
+        if (newCaretOffset != mCursorPosition) {
+          mCursorPosition = newCaretOffset;
+          cursorPositionChanged();
+        }        
       }
 
     });
@@ -684,7 +698,6 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     initiallySynchronizeUI();
   }
 
-  // TODO: still not called always, e.g. on mouse selection
   private void cursorPositionChanged() {
     mFeatureStructureSelectionProvider.setSelection(getDocument(), getSelectedAnnotations());
   }
