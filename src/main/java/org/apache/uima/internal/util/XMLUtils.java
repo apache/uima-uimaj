@@ -475,7 +475,7 @@ public abstract class XMLUtils {
    * 
    * @param ch Input character array
    * @param start offset of first char to check
-   * @param length nunmber of chars to check
+   * @param length number of chars to check
    * @param xml11 true to check for invalid XML 1.1 characters, false to check for invalid XML 1.0 characters.
    *   The default is false.
    * @return The position of the first invalid XML character encountered. <code>-1</code> if no
