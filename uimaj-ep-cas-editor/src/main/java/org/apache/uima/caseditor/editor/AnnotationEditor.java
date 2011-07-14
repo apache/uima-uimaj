@@ -30,6 +30,12 @@ import java.util.Set;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
+import org.apache.uima.cas.ConstraintFactory;
+import org.apache.uima.cas.FSIndex;
+import org.apache.uima.cas.FSIntConstraint;
+import org.apache.uima.cas.FSIterator;
+import org.apache.uima.cas.FSMatchConstraint;
+import org.apache.uima.cas.FeaturePath;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.text.AnnotationFS;
@@ -51,6 +57,7 @@ import org.apache.uima.caseditor.editor.util.AnnotationComparator;
 import org.apache.uima.caseditor.editor.util.AnnotationSelection;
 import org.apache.uima.caseditor.editor.util.FeatureStructureTransfer;
 import org.apache.uima.caseditor.editor.util.Span;
+import org.apache.uima.caseditor.editor.util.StrictTypeConstraint;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.action.Action;
@@ -166,7 +173,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 
         // get old annotations of current type for this area
         // if there is something ... the delete them and add
-        Collection<AnnotationFS> oldAnnotations = getDocument().getAnnotation(
+        Collection<AnnotationFS> oldAnnotations = getAnnotation(getDocument().getCAS(),
         		getAnnotationMode(), new Span(selection.x, selection.y));
 
         if (!oldAnnotations.isEmpty()) {
@@ -1141,7 +1148,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 
       Span selecectedSpan = new Span(selectedText.x, selectedText.y);
 
-      Collection<AnnotationFS> selectedAnnotations = getDocument().getAnnotation(
+      Collection<AnnotationFS> selectedAnnotations = getAnnotation(getDocument().getCAS(),
               getAnnotationMode(), selecectedSpan);
 
       for (AnnotationFS annotation : selectedAnnotations) {
@@ -1535,5 +1542,43 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     else {
       return super.createStatusControl(parent, status);
     }
+  }
+  
+  /**
+   * Retrieves the annotations in the given span.
+   */
+  static Collection<AnnotationFS> getAnnotation(CAS cas, Type type, Span span) {
+    ConstraintFactory cf = cas.getConstraintFactory();
+
+    Type annotationType = cas.getAnnotationType();
+
+    FeaturePath beginPath = cas.createFeaturePath();
+    beginPath.addFeature(annotationType.getFeatureByBaseName("begin"));
+    FSIntConstraint beginConstraint = cf.createIntConstraint();
+    beginConstraint.geq(span.getStart());
+
+    FSMatchConstraint embeddedBegin = cf.embedConstraint(beginPath, beginConstraint);
+
+    FeaturePath endPath = cas.createFeaturePath();
+    endPath.addFeature(annotationType.getFeatureByBaseName("end"));
+    FSIntConstraint endConstraint = cf.createIntConstraint();
+    endConstraint.leq(span.getEnd());
+
+    FSMatchConstraint embeddedEnd = cf.embedConstraint(endPath, endConstraint);
+
+    FSMatchConstraint strictType = new StrictTypeConstraint(type);
+
+    FSMatchConstraint annotatioInSpanConstraint = cf.and(embeddedBegin, embeddedEnd);
+
+    FSMatchConstraint annotationInSpanAndStrictTypeConstraint =
+            cf.and(annotatioInSpanConstraint, strictType);
+
+    FSIndex<AnnotationFS> allAnnotations = cas.getAnnotationIndex(type);
+
+    FSIterator<AnnotationFS> annotationInsideSpanIndex =
+            cas.createFilteredIterator(allAnnotations.iterator(),
+            annotationInSpanAndStrictTypeConstraint);
+
+    return DocumentUimaImpl.fsIteratorToCollection(annotationInsideSpanIndex);
   }
 }

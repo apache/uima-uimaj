@@ -182,7 +182,7 @@ public class DocumentUimaImpl extends AbstractDocument {
     return fsIteratorToCollection(strictTypeIterator);
   }
 
-  private Collection<AnnotationFS> fsIteratorToCollection(FSIterator<AnnotationFS> iterator) {
+  static Collection<AnnotationFS> fsIteratorToCollection(FSIterator<AnnotationFS> iterator) {
     LinkedList<AnnotationFS> annotations = new LinkedList<AnnotationFS>();
     while (iterator.hasNext()) {
       AnnotationFS annotation = (AnnotationFS) iterator.next();
@@ -191,45 +191,6 @@ public class DocumentUimaImpl extends AbstractDocument {
     }
 
     return annotations;
-  }
-
-  /**
-   * Retrieves the annotations in the given span.
-   */
-  @Override
-  public Collection<AnnotationFS> getAnnotation(Type type, Span span) {
-    ConstraintFactory cf = getCAS().getConstraintFactory();
-
-    Type annotationType = getCAS().getAnnotationType();
-
-    FeaturePath beginPath = getCAS().createFeaturePath();
-    beginPath.addFeature(annotationType.getFeatureByBaseName("begin"));
-    FSIntConstraint beginConstraint = cf.createIntConstraint();
-    beginConstraint.geq(span.getStart());
-
-    FSMatchConstraint embeddedBegin = cf.embedConstraint(beginPath, beginConstraint);
-
-    FeaturePath endPath = getCAS().createFeaturePath();
-    endPath.addFeature(annotationType.getFeatureByBaseName("end"));
-    FSIntConstraint endConstraint = cf.createIntConstraint();
-    endConstraint.leq(span.getEnd());
-
-    FSMatchConstraint embeddedEnd = cf.embedConstraint(endPath, endConstraint);
-
-    FSMatchConstraint strictType = new StrictTypeConstraint(type);
-
-    FSMatchConstraint annotatioInSpanConstraint = cf.and(embeddedBegin, embeddedEnd);
-
-    FSMatchConstraint annotationInSpanAndStrictTypeConstraint =
-            cf.and(annotatioInSpanConstraint, strictType);
-
-    FSIndex<AnnotationFS> allAnnotations = getCAS().getAnnotationIndex(type);
-
-    FSIterator<AnnotationFS> annotationInsideSpanIndex =
-            getCAS().createFilteredIterator(allAnnotations.iterator(),
-            annotationInSpanAndStrictTypeConstraint);
-
-    return fsIteratorToCollection(annotationInsideSpanIndex);
   }
 
   /**

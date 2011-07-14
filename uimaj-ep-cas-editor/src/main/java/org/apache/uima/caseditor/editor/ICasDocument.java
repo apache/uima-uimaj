@@ -140,19 +140,6 @@ public interface ICasDocument {
   void switchView(String viewName);
   
   /**
-   * Retrieves the annotations of the given type inside the given span.
-   *
-   * @param type
-   * @param span
-   * @return the annotations
-   * 
-   * @deprecated add new method to retrieve feature structures,
-   * until then get the annotation from the CAS
-   */
-  @Deprecated
-  Collection<AnnotationFS> getAnnotation(Type type, Span span);
-
-  /**
    * Retrieves the requested type.
    *
    * @param type

@@ -154,35 +154,4 @@ public abstract class AbstractDocument implements ICasDocument {
 
     return Collections.unmodifiableMap(viewMap);
   }
-
-  /**
-   * Retrieves annotations of the given type in the given bounds.
-   */
-  public Collection<AnnotationFS> getAnnotation(Type type, Span span) {
-    Map<Integer, AnnotationFS> view = getView(type);
-
-    LinkedList<AnnotationFS> annotations = new LinkedList<AnnotationFS>();
-
-    for (int i = span.getStart(); i < span.getEnd(); i++) {
-      AnnotationFS annotation = view.get(i);
-
-      if (annotation == null) {
-        continue;
-      }
-
-      if (!annotation.getType().equals(type)) {
-        continue;
-      }
-
-      annotations.addLast(annotation);
-    }
-
-    TreeSet<AnnotationFS> set = new TreeSet<AnnotationFS>();
-
-    for (AnnotationFS annotation : annotations) {
-      set.add(annotation);
-    }
-
-    return Collections.unmodifiableSet(set);
-  }
 }

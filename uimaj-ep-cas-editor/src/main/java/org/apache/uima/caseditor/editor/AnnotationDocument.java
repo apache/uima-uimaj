@@ -204,18 +204,6 @@ public class AnnotationDocument extends Document implements ICasDocument {
   }
 
   /**
-   * Call is forwarded to the set document.
-   *
-   * @param type
-   * @param span
-   * @return the annotations
-   */
-  @Deprecated
-  public Collection<AnnotationFS> getAnnotation(Type type, Span span) {
-    return mDocument.getAnnotation(type, span);
-  }
-
-  /**
    * Wrap words at next space after lineLengthHint chars in a line.
    * If the line is shorter than lineLengthHint nothing happens.
    * The space char is replaced with an line feed char.
