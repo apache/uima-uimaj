@@ -20,13 +20,11 @@
 package org.apache.uima.caseditor.editor;
 
 import java.util.Collection;
-import java.util.Map;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationFS;
-import org.apache.uima.caseditor.editor.util.Span;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.DocumentEvent;
 
@@ -173,16 +171,6 @@ public class AnnotationDocument extends Document implements ICasDocument {
    */
   public Collection<AnnotationFS> getAnnotations(Type type) {
     return mDocument.getAnnotations(type);
-  }
-
-  /**
-   * Call is forwarded to the set document.
-   *
-   * @param annotationType
-   * @return the view map
-   */
-  public Map<Integer, AnnotationFS> getView(Type annotationType) {
-    return mDocument.getView(annotationType);
   }
 
   /**

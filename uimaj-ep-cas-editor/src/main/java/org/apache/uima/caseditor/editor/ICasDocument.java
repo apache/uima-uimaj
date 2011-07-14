@@ -124,14 +124,6 @@ public interface ICasDocument {
   Collection<AnnotationFS> getAnnotations(Type type);
 
   /**
-   * Retrieves the view map.
-   *
-   * @param annotationType
-   * @return the view map
-   */
-  Map<Integer, AnnotationFS> getView(Type annotationType);
-
-  /**
    * Switches the view of the underlying CAS to the provided
    * view name.
    * 

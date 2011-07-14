@@ -23,15 +23,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationFS;
-import org.apache.uima.caseditor.editor.util.Span;
 
 /**
  * Abstract base class for document implementations.
@@ -136,22 +133,5 @@ public abstract class AbstractDocument implements ICasDocument {
 	for (ICasDocumentListener listener : mListener) {
 	    listener.viewChanged(oldViewName, newViewName);
 	  }
-  }
-  
-  /**
-   * Retrieves the view map.
-   */
-  public Map<Integer, AnnotationFS> getView(Type annotationType) {
-    Collection<AnnotationFS> annotations = getAnnotations(annotationType);
-
-    HashMap<Integer, AnnotationFS> viewMap = new HashMap<Integer, AnnotationFS>();
-
-    for (AnnotationFS annotation : annotations) {
-      for (int i = annotation.getBegin(); i <= annotation.getEnd() - 1; i++) {
-        viewMap.put(i, annotation);
-      }
-    }
-
-    return Collections.unmodifiableMap(viewMap);
   }
 }

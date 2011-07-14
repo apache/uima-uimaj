@@ -386,7 +386,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
               return;
             }
 
-            Map<Integer, AnnotationFS> view = getDocument().getView(getAnnotationMode());
+            Map<Integer, AnnotationFS> view = getView(getAnnotationMode());
 
             mCandidate = view.get(offset);
 
@@ -1157,7 +1157,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 
       Collections.sort(selection, new AnnotationComparator());
     } else {
-      Map<Integer, AnnotationFS> view = getDocument().getView(getAnnotationMode());
+      Map<Integer, AnnotationFS> view = getView(getAnnotationMode());
 
       AnnotationFS annotation = view.get(mCursorPosition);
 
@@ -1580,5 +1580,22 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
             annotationInSpanAndStrictTypeConstraint);
 
     return DocumentUimaImpl.fsIteratorToCollection(annotationInsideSpanIndex);
+  }
+  
+  /**
+   * Retrieves the view map.
+   */
+  private Map<Integer, AnnotationFS> getView(Type annotationType) {
+    Collection<AnnotationFS> annotations = getDocument().getAnnotations(annotationType);
+
+    HashMap<Integer, AnnotationFS> viewMap = new HashMap<Integer, AnnotationFS>();
+
+    for (AnnotationFS annotation : annotations) {
+      for (int i = annotation.getBegin(); i <= annotation.getEnd() - 1; i++) {
+        viewMap.put(i, annotation);
+      }
+    }
+
+    return Collections.unmodifiableMap(viewMap);
   }
 }
