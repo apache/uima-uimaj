@@ -71,8 +71,19 @@ public final class ImportDocumentWizard extends Wizard implements IImportWizard 
       getContainer().run(true, true, operation);
     } catch (InvocationTargetException e) {
       CasEditorPlugin.log(e);
-
-      MessageDialog.openError(getContainer().getShell(), "Error during import", e.getMessage());
+      
+      String message = "Unkown error during import, see the log file for details";
+      
+      Throwable cause = e.getCause();
+      if (cause != null) {
+        
+        String causeMessage = cause.getMessage();
+        
+        if (causeMessage != null)
+          message = causeMessage;
+      }
+      
+      MessageDialog.openError(getContainer().getShell(), "Import failed", message);
 
       return false;
     } catch (InterruptedException e) {

@@ -95,8 +95,10 @@ final class DocumentImportStructureProvider implements IImportStructureProvider 
       }
   }
 
-  private InputStream getDocument(String text, DocumentFormat format) {
+  private InputStream getDocument(String fileName, String text, DocumentFormat format) {
 
+    String failedToImportLine = "Failed to import: " + fileName + "\n\n";
+    
     CAS cas = createEmtpyCAS();
     cas.setDocumentText(text);
 
@@ -107,10 +109,10 @@ final class DocumentImportStructureProvider implements IImportStructureProvider 
         XCASSerializer.serialize(cas, out);
       } catch (SAXException e) {
         // should not happen
-        throw new TaeError("Unexpected exception!", e);
+        throw new TaeError(failedToImportLine + e.getMessage(), e);
       } catch (IOException e) {
         // will not happen, writing to memory
-        throw new TaeError("Unexpected exception!", e);
+        throw new TaeError(failedToImportLine + e.getMessage(), e);
       }
     } 
     else if (DocumentFormat.XMI.equals(format)) {
@@ -118,10 +120,10 @@ final class DocumentImportStructureProvider implements IImportStructureProvider 
         XmiCasSerializer.serialize(cas, out);
       } catch (SAXException e) {
         // should not happen
-        throw new TaeError("Unexpected exception!", e);
+        throw new TaeError(failedToImportLine + e.getMessage(), e);
       }
     } else {
-      throw new TaeError("Unkown document type!", null);
+      throw new TaeError(failedToImportLine + "Unkown document type!", null);
     }
 
     return new ByteArrayInputStream(out.toByteArray());
@@ -139,7 +141,7 @@ final class DocumentImportStructureProvider implements IImportStructureProvider 
         in = new FileInputStream((File) element);
         String text = convert(in);
 
-        return getDocument(text, casFormat);
+        return getDocument(fileToImport.getAbsolutePath(), text, casFormat);
       } catch (FileNotFoundException e) {
         return null;
       } catch (IOException e) {
@@ -169,7 +171,7 @@ final class DocumentImportStructureProvider implements IImportStructureProvider 
           textStringBuffer.append(new String(readBuffer, 0, length, importEncoding));
         }
 
-        return getDocument(textStringBuffer.toString(), casFormat);
+        return getDocument(fileToImport.getAbsolutePath(), textStringBuffer.toString(), casFormat);
       } catch (FileNotFoundException e) {
         return null;
       } catch (IOException e) {
