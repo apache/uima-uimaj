@@ -73,6 +73,7 @@ public class DotCorpus {
    * 
    * @return type system name parameter
    */
+  @Deprecated
   public String getTypeSystemFileName() {
     return mTypeSystemFileName;
   }
@@ -83,6 +84,7 @@ public class DotCorpus {
    * @param name
    *          type system name parameter
    */
+  @Deprecated
   public void setTypeSystemFilename(String name) {
     mTypeSystemFileName = name;
   }
@@ -92,6 +94,7 @@ public class DotCorpus {
    * 
    * @return uima config folder name parameter.
    */
+  @Deprecated
   public Collection<String> getCasProcessorFolderNames() {
     return Collections.unmodifiableCollection(mCasProcessorFolders);
   }
@@ -102,10 +105,12 @@ public class DotCorpus {
    * @param folder
    *          uima config folder name parameter.
    */
+  @Deprecated
   public void addCasProcessorFolder(String folder) {
     mCasProcessorFolders.add(folder);
   }
 
+  @Deprecated
   public void removeCasProcessorFolder(String folder) {
     mCasProcessorFolders.remove(folder);
   }
@@ -115,6 +120,7 @@ public class DotCorpus {
    * 
    * @param name
    */
+  @Deprecated
   public void addCorpusFolder(String name) {
     mCorpusFolders.add(name);
   }
@@ -124,6 +130,7 @@ public class DotCorpus {
    * 
    * @param name
    */
+  @Deprecated
   public void removeCorpusFolder(String name) {
     mCorpusFolders.remove(name);
   }
@@ -133,6 +140,7 @@ public class DotCorpus {
    * 
    * @return corpus folder list
    */
+  @Deprecated
   public Collection<String> getCorpusFolderNameList() {
     return Collections.unmodifiableCollection(mCorpusFolders);
   }
@@ -141,7 +149,10 @@ public class DotCorpus {
    * Retrieves the editor line length hint parameter.
    * 
    * @return line length hint
+   * 
+   * @deprecated setting was moved to preference store
    */
+  @Deprecated
   public int getEditorLineLengthHint() {
     return mEditorLineLengthHint;
   }
@@ -150,7 +161,10 @@ public class DotCorpus {
    * Sets the editor line length hint parameter.
    * 
    * @param lineLengthHint
+   * 
+   * @deprecated setting was moved to preference store
    */
+  @Deprecated
   public void setEditorLineLength(int lineLengthHint) {
     mEditorLineLengthHint = lineLengthHint;
   }
