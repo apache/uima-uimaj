@@ -47,6 +47,7 @@ import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -281,6 +282,8 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
   @Override
   protected Control createContents(Composite parent) {
 
+    setSize(new Point(350,350));
+    
     TypeSystem typeSystem = getTypeSystem();
 
     if (typeSystem == null) {
