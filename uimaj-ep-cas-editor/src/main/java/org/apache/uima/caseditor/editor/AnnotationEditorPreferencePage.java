@@ -32,8 +32,11 @@ public class AnnotationEditorPreferencePage extends FieldEditorPreferencePage
         implements IWorkbenchPreferencePage {
 
   static final String EDITOR_LINE_LENGTH_HINT = "EDITOR_LINE_LENGTH_HINT";
+
+  public static final String EDITOR_TEXT_SIZE = "EDITOR_TEXT_SIZE";
   
   private IntegerFieldEditor mEditorLineLengthHint;
+  private IntegerFieldEditor mEditorTextSize;
   
   public AnnotationEditorPreferencePage() {
     setPreferenceStore(CasEditorPlugin.getDefault().getPreferenceStore());
@@ -48,6 +51,12 @@ public class AnnotationEditorPreferencePage extends FieldEditorPreferencePage
             EDITOR_LINE_LENGTH_HINT,
             "Line Length Hint", getFieldEditorParent());
     addField(mEditorLineLengthHint);
+    
+    // editor text size
+    mEditorTextSize = new IntegerFieldEditor(
+            EDITOR_TEXT_SIZE,
+            "Editor Text Size", getFieldEditorParent());
+    addField(mEditorTextSize);
   }
 
   public void init(IWorkbench workbench) {
@@ -66,5 +75,13 @@ public class AnnotationEditorPreferencePage extends FieldEditorPreferencePage
       setValid(false);
     }
     
+    if (mEditorTextSize.getIntValue() > 5) {
+      setErrorMessage(null);
+      setValid(true);
+    }
+    else {
+      setErrorMessage("Editor text size must be a larger than five!");
+      setValid(false);
+    }
   }
 }

@@ -60,6 +60,7 @@ import org.apache.uima.caseditor.editor.util.Span;
 import org.apache.uima.caseditor.editor.util.StrictTypeConstraint;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ContributionItem;
 import org.eclipse.jface.action.IAction;
@@ -67,6 +68,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IPainter;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.information.InformationPresenter;
@@ -79,6 +81,8 @@ import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.IAnnotationModelExtension;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewer;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -99,6 +103,8 @@ import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -562,6 +568,8 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   
   private Collection<Type> shownAnnotationTypes = new HashSet<Type>();
   
+  private IPropertyChangeListener preferenceStoreChangeListener;
+  
   /**
    * Creates an new AnnotationEditor object.
    */
@@ -615,9 +623,21 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 
     sourceViewer.addPainter(mPainter);
     
+
+    
     return sourceViewer;
   }
 
+  private void setTextSize(int newSize) {
+    Font font = getSourceViewer().getTextWidget().getFont();
+    
+    if (font.getFontData().length > 0) {
+      FontData fd = font.getFontData()[0];
+      getSourceViewer().getTextWidget().setFont(new Font(font.getDevice(),
+              fd.getName(), newSize, fd.getStyle()));
+    }
+  }
+  
   /**
    * Configures the editor.
    * 
@@ -695,6 +715,30 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     getSourceViewer().setEditable(false);
 
     getSite().setSelectionProvider(mFeatureStructureSelectionProvider);
+    
+      
+    // Retrieve font size from preference store, default is 15
+    IPreferenceStore prefStore = CasEditorPlugin.getDefault().getPreferenceStore();
+    int textSize = prefStore.getInt(AnnotationEditorPreferencePage.EDITOR_TEXT_SIZE);
+    
+    if (textSize > 0) {
+      setTextSize(textSize);
+    }
+    
+    preferenceStoreChangeListener = (new IPropertyChangeListener() {
+      
+      public void propertyChange(PropertyChangeEvent event) {
+        if (AnnotationEditorPreferencePage.EDITOR_TEXT_SIZE.equals(event.getProperty())) {
+          Integer textSize = (Integer) event.getNewValue();
+          
+          if (textSize != null && textSize > 0) {
+            setTextSize(textSize);
+          }
+        }
+      }
+    });
+    
+    prefStore.addPropertyChangeListener(preferenceStoreChangeListener);
     
     // Note: In case the CAS could not be created the editor will be initialized with
     // a null document (getDocument() == null). Depending on the error it might be 
@@ -1438,6 +1482,9 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     
     if (provider != null)
       provider.removeAnnotationStyleListener(getEditorInput(), mAnnotationStyleListener);
+    
+    if (preferenceStoreChangeListener != null)
+      CasEditorPlugin.getDefault().getPreferenceStore().removePropertyChangeListener(preferenceStoreChangeListener);
     
     super.dispose();
   }

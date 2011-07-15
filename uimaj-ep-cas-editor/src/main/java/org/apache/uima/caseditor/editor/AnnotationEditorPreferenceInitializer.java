@@ -29,5 +29,6 @@ public class AnnotationEditorPreferenceInitializer extends AbstractPreferenceIni
 	public void initializeDefaultPreferences() {
 		IPreferenceStore store = CasEditorPlugin.getDefault().getPreferenceStore();
 		store.setDefault(AnnotationEditorPreferencePage.EDITOR_LINE_LENGTH_HINT, 80);
+		store.setDefault(AnnotationEditorPreferencePage.EDITOR_TEXT_SIZE, 13);
 	}
 }
