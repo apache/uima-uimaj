@@ -53,7 +53,7 @@ public class CasEditorPerspectiveFactory implements IPerspectiveFactory {
   private void defineActions(IPageLayout layout) {
 
     // add "show views"
-    layout.addShowViewShortcut("org.eclipse.ui.navigator.ProjectExplore");
+    layout.addShowViewShortcut("org.eclipse.ui.navigator.ProjectExplorer");
     layout.addShowViewShortcut(IPageLayout.ID_OUTLINE);
     layout.addShowViewShortcut(AnnotationStyleView.ID);
 
