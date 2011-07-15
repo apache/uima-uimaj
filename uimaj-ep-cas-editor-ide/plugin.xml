@@ -107,4 +107,11 @@
           class="org.apache.uima.caseditor.ide.DefaultCasDocumentProvider">
     </provider>
  </extension>
+ <extension point="org.eclipse.ui.preferencePages">
+    <page
+          class="org.apache.uima.caseditor.editor.AnnotationEditorPreferencePage"
+          id="org.apache.uima.caseditor.ide.AnnotationEditorPreference"
+          name="UIMA Annotation Editor">
+    </page>
+ </extension>
 </plugin>

@@ -25,6 +25,8 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationFS;
+import org.apache.uima.caseditor.CasEditorPlugin;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.DocumentEvent;
 
@@ -38,8 +40,16 @@ public class AnnotationDocument extends Document implements ICasDocument {
 
   private ICasDocument mDocument;
 
-  private int lineLengthHint = 80;
+  private int lineLengthHint;
 
+  public AnnotationDocument() {
+    IPreferenceStore prefStore = CasEditorPlugin.getDefault().getPreferenceStore();
+    lineLengthHint = prefStore.getInt(AnnotationEditorPreferencePage.EDITOR_LINE_LENGTH_HINT);
+    
+    if (lineLengthHint == 0)
+      lineLengthHint = 80;
+  }
+  
   private String transformText(String text) {
   	if (lineLengthHint != 0 && text != null) {
   	    return wrapWords(text, lineLengthHint);
@@ -70,9 +80,9 @@ public class AnnotationDocument extends Document implements ICasDocument {
     fireDocumentChanged(ev);
   }
   
-  public void setLineLengthHint(int lineLengthHint) {
-    this.lineLengthHint = lineLengthHint;
-  }
+//  public void setLineLengthHint(int lineLengthHint) {
+//    this.lineLengthHint = lineLengthHint;
+//  }
 
   /**
    * @param element
