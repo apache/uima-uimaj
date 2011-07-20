@@ -35,6 +35,7 @@ import org.eclipse.ui.wizards.datatransfer.ImportOperation;
  * is supported.
  */
 public final class ImportDocumentWizard extends Wizard implements IImportWizard {
+  
   private ImportDocumentWizardPage mMainPage;
 
   private IStructuredSelection mCurrentResourceSelection;
@@ -58,9 +59,10 @@ public final class ImportDocumentWizard extends Wizard implements IImportWizard 
   public boolean performFinish() {
     IImportStructureProvider importProvider = new DocumentImportStructureProvider(mMainPage.getLanguage(),
     		mMainPage.getTextEncoding(), mMainPage.getCasFormat());
-
+    
+    // BUG: We cannot pass null here for the overwrite query
     ImportOperation operation =
-            new ImportOperation(mMainPage.getImportDestinationPath(), importProvider, null,
+            new ImportOperation(mMainPage.getImportDestinationPath(), importProvider, new OverwriteQuery(getShell()),
             mMainPage.getFilesToImport());
 
     operation.setContext(getShell());
