@@ -28,6 +28,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.uima.cas.CAS;
 import org.apache.uima.caseditor.CasEditorPlugin;
 import org.apache.uima.caseditor.editor.DocumentFormat;
 import org.eclipse.core.resources.IContainer;
@@ -45,6 +46,8 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -71,6 +74,8 @@ final class ImportDocumentWizardPage extends WizardPage {
   private IPath importDestinationPath;
 
   private String importEncoding;
+  
+  private String language = CAS.DEFAULT_LANGUAGE_NAME;
   
   private DocumentFormat documentFormat;
   
@@ -332,10 +337,24 @@ final class ImportDocumentWizardPage extends WizardPage {
     GridData importOptionsGridData = new GridData(GridData.FILL, GridData.CENTER, true, false);
     importOptionsGridData.horizontalSpan = 3;
     importOptions.setLayoutData(importOptionsGridData);
-	
+    
+    Label languageLabel = new Label(importOptions, SWT.NONE);
+    languageLabel.setText("Language:");
+    
+    final Text languageText = new Text(importOptions, SWT.BORDER);
+    languageText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+    languageText.setText(language);
+    languageText.addModifyListener(new ModifyListener() {
+      
+      public void modifyText(ModifyEvent e) {
+        language = languageText.getText();
+      }
+    });
+    
     // Text file encoding
     Label encodingLabel = new Label(importOptions, SWT.NONE);
     encodingLabel.setText("Text Encoding:");
+    
     
     // combo box ...
     final Combo encodingCombo = new Combo(importOptions, SWT.NONE);
@@ -355,26 +374,26 @@ final class ImportDocumentWizardPage extends WizardPage {
     encodingCombo.setItems(charsets.toArray(new String[charsets.size()]));
     encodingCombo.setText(importEncoding);
     encodingCombo.addSelectionListener(new SelectionListener() {
-		
-		public void widgetSelected(SelectionEvent e) {
-			importEncoding = encodingCombo.getText();
-			updatePageState();
-		}
-		
-		public void widgetDefaultSelected(SelectionEvent e) {
-		}
-	});
+  		
+  		public void widgetSelected(SelectionEvent e) {
+  			importEncoding = encodingCombo.getText();
+  			updatePageState();
+  		}
+  		
+  		public void widgetDefaultSelected(SelectionEvent e) {
+  		}
+  	});
     
     encodingCombo.addKeyListener(new KeyListener() {
 		
-		public void keyReleased(KeyEvent e) {
-			importEncoding = encodingCombo.getText();
-			updatePageState();
-		}
-		
-		public void keyPressed(KeyEvent e) {
-		}
-	});
+  		public void keyReleased(KeyEvent e) {
+  			importEncoding = encodingCombo.getText();
+  			updatePageState();
+  		}
+  		
+  		public void keyPressed(KeyEvent e) {
+  		}
+  	});
     
     Label casFormatLabel = new Label(importOptions, SWT.NONE);
     casFormatLabel.setText("Cas Format:");
@@ -386,14 +405,14 @@ final class ImportDocumentWizardPage extends WizardPage {
     casFormatCombo.select(0);
     
     casFormatCombo.addSelectionListener(new SelectionListener() {
-		
-		public void widgetSelected(SelectionEvent e) {
-			documentFormat = DocumentFormat.valueOf(casFormatCombo.getText());
-		}
-		
-		public void widgetDefaultSelected(SelectionEvent e) {
-		}
-	});
+  		
+  		public void widgetSelected(SelectionEvent e) {
+  			documentFormat = DocumentFormat.valueOf(casFormatCombo.getText());
+  		}
+  		
+  		public void widgetDefaultSelected(SelectionEvent e) {
+  		}
+  	});
     
     updatePageState();
     
@@ -422,6 +441,10 @@ final class ImportDocumentWizardPage extends WizardPage {
   
   String getTextEncoding() {
 	  return importEncoding;
+  }
+  
+  String getLanguage() {
+    return language;
   }
   
   DocumentFormat getCasFormat() {

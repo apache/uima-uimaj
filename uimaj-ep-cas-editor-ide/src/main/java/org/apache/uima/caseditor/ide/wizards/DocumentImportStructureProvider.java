@@ -53,6 +53,8 @@ import org.xml.sax.SAXException;
  */
 final class DocumentImportStructureProvider implements IImportStructureProvider {
 
+   private final String language;
+  
    private final String importEncoding; // https://issues.apache.org/jira/browse/UIMA-1808
    
    private final DocumentFormat casFormat;
@@ -61,8 +63,9 @@ final class DocumentImportStructureProvider implements IImportStructureProvider 
    *
    * @param containerFullPath
    */
-  public DocumentImportStructureProvider(String importEncoding,
+  public DocumentImportStructureProvider(String language, String importEncoding,
 		  DocumentFormat casFormat) {
+    this.language = language;
 	  this.importEncoding = importEncoding; // https://issues.apache.org/jira/browse/UIMA-1808
 	  this.casFormat = casFormat;
   }
@@ -117,13 +120,14 @@ final class DocumentImportStructureProvider implements IImportStructureProvider 
       }
   }
 
-  private InputStream getDocument(String fileName, String text, DocumentFormat format) {
+  private InputStream getDocument(String fileName, String text, String language, DocumentFormat format) {
 
     String failedToImportLine = "Failed to import: " + fileName + "\n\n";
     
     CAS cas = createEmtpyCAS();
     cas.setDocumentText(removeNonXmlChars(text));
-
+    cas.setDocumentLanguage(language);
+    
     ByteArrayOutputStream out = new ByteArrayOutputStream(40000);
 
     if (DocumentFormat.XCAS.equals(format)) {
@@ -163,7 +167,7 @@ final class DocumentImportStructureProvider implements IImportStructureProvider 
         in = new FileInputStream((File) element);
         String text = convert(in);
 
-        return getDocument(fileToImport.getAbsolutePath(), text, casFormat);
+        return getDocument(fileToImport.getAbsolutePath(), text, language, casFormat);
       } catch (FileNotFoundException e) {
         return null;
       } catch (IOException e) {
@@ -193,7 +197,8 @@ final class DocumentImportStructureProvider implements IImportStructureProvider 
           textStringBuffer.append(new String(readBuffer, 0, length, importEncoding));
         }
 
-        return getDocument(fileToImport.getAbsolutePath(), textStringBuffer.toString(), casFormat);
+        return getDocument(fileToImport.getAbsolutePath(), textStringBuffer.toString(),
+                language, casFormat);
       } catch (FileNotFoundException e) {
         return null;
       } catch (IOException e) {

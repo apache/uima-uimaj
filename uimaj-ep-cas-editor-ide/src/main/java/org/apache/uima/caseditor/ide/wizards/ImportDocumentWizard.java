@@ -56,7 +56,7 @@ public final class ImportDocumentWizard extends Wizard implements IImportWizard 
 
   @Override
   public boolean performFinish() {
-    IImportStructureProvider importProvider = new DocumentImportStructureProvider(
+    IImportStructureProvider importProvider = new DocumentImportStructureProvider(mMainPage.getLanguage(),
     		mMainPage.getTextEncoding(), mMainPage.getCasFormat());
 
     ImportOperation operation =
