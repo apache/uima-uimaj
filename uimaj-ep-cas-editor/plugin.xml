@@ -85,12 +85,6 @@
       </command>
       <command
             categoryId="org.apache.uima.caseditor.annotate"
-            id="Annotate"
-            description="Annotate"
-            name="Annotate">
-      </command>
-      <command
-            categoryId="org.apache.uima.caseditor.annotate"
             id="WideRightAnnotationSide"
             description="WideRightAnnotationSide"
             name="WideRightAnnotationSide">
