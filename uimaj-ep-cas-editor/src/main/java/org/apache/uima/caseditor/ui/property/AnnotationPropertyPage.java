@@ -282,6 +282,7 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
   @Override
   protected Control createContents(Composite parent) {
 
+    // Set a size to fix UIMA-2115
     setSize(new Point(350,350));
     
     TypeSystem typeSystem = getTypeSystem();
