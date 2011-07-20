@@ -154,7 +154,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   /**
    * This action annotates the selected text with a defined tag.
    */
-  private class AnnotateAction extends AbstractAnnotateAction {
+  private class QuickAnnotateAction extends AbstractAnnotateAction {
 	  
     private static final String ID = "QuickAnnotate";
     
@@ -165,7 +165,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
      *
      * @param textWidget
      */
-    AnnotateAction(StyledText textWidget) {
+    QuickAnnotateAction(StyledText textWidget) {
       mTextWidget = textWidget;
     }
 
@@ -550,8 +550,6 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
    */
   private int mCursorPosition;
 
-//  private ICasDocument mDocument;
-
   boolean mIsSomethingHighlighted = false;
 
   private StyleRange mCurrentStyleRange;
@@ -622,8 +620,6 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     mPainter = new AnnotationPainter(sourceViewer, new AnnotationAccess());
 
     sourceViewer.addPainter(mPainter);
-    
-
     
     return sourceViewer;
   }
@@ -915,7 +911,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     // Add Annotate action
     menu.appendToGroup(IWorkbenchActionConstants.MB_ADDITIONS, new Separator());
     menu.appendToGroup(IWorkbenchActionConstants.MB_ADDITIONS, getAction(SmartAnnotateAction.ID));
-    menu.appendToGroup(IWorkbenchActionConstants.MB_ADDITIONS, getAction(AnnotateAction.ID));
+    menu.appendToGroup(IWorkbenchActionConstants.MB_ADDITIONS, getAction(QuickAnnotateAction.ID));
     menu.appendToGroup(IWorkbenchActionConstants.MB_ADDITIONS, getAction(ITextEditorActionDefinitionIds.DELETE));
     
     TypeSystem typeSytem = getDocument().getCAS().getTypeSystem();
@@ -1008,7 +1004,6 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 
   public Collection<Type> getShownAnnotationTypes() {
     return Collections.unmodifiableCollection(shownAnnotationTypes);
-//	  return mShowAnnotationsMenu.getSelectedTypes();
   }
   
   public void setShownAnnotationType(Type type, boolean isShown) {
@@ -1405,11 +1400,11 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     getSite().setSelectionProvider(mFeatureStructureSelectionProvider);
 
     // create annotate action
-    AnnotateAction annotateAction = new AnnotateAction(getSourceViewer().getTextWidget());
-    annotateAction.setActionDefinitionId(AnnotateAction.ID);
-    annotateAction.setText("Quick Annotate");
-    setAction(AnnotateAction.ID, annotateAction);
-    getSite().getSelectionProvider().addSelectionChangedListener(annotateAction);
+    QuickAnnotateAction quickAnnotateAction = new QuickAnnotateAction(getSourceViewer().getTextWidget());
+    quickAnnotateAction.setActionDefinitionId(QuickAnnotateAction.ID);
+    quickAnnotateAction.setText("Quick Annotate");
+    setAction(QuickAnnotateAction.ID, quickAnnotateAction);
+    getSite().getSelectionProvider().addSelectionChangedListener(quickAnnotateAction);
     
     SmartAnnotateAction smartAnnotateAction = new SmartAnnotateAction();
     smartAnnotateAction.setActionDefinitionId(SmartAnnotateAction.ID);
