@@ -1177,7 +1177,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
    *
    * TODO: make this private ??? clients can use selections for this ...
    *
-   * @return the selected annotation or null if none
+   * @return the selected annotations or an empty list
    */
   public List<AnnotationFS> getSelectedAnnotations() {
     List<AnnotationFS> selection = new ArrayList<AnnotationFS>();
@@ -1332,38 +1332,44 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 
       // only process these selection if the annotations belong
       // to the current editor instance
-      if (getSite().getPage().getActiveEditor() == this && !annotations.isEmpty()) {
+      if (getSite().getPage().getActiveEditor() == this) {
         
-        highlight(annotations.getFirst().getBegin(), annotations.getLast().getEnd()
-                - annotations.getFirst().getBegin());
-
-        // move caret to new position when selected outside of the editor
-        if (AnnotationEditor.this != part) {
-          
-          // Note: The caret cannot be placed between line delimiters
-          // See bug UIMA-1470
-          int newCaretOffset = annotations.getLast().getEnd();
-          String text = getSourceViewer().getTextWidget().getText();
-          
-          if (newCaretOffset > 0 && newCaretOffset < text.length()) {
-            char beforeCaret = text.charAt(newCaretOffset -1);
-            char afterCaret = text.charAt(newCaretOffset);
+        if (!annotations.isEmpty()) {
+          highlight(annotations.getFirst().getBegin(), annotations.getLast().getEnd()
+                  - annotations.getFirst().getBegin());
+  
+          // move caret to new position when selected outside of the editor
+          if (AnnotationEditor.this != part) {
             
-            final int cr = 0x0D;
-            final int lf = 0x0A;
-            if (beforeCaret == cr && afterCaret == lf) {
-              // In case the caret offset is in the middle
-              // of a multiple-char line delimiter place caret
-              // before
-              newCaretOffset = newCaretOffset -1;
+            // Note: The caret cannot be placed between line delimiters
+            // See bug UIMA-1470
+            int newCaretOffset = annotations.getLast().getEnd();
+            String text = getSourceViewer().getTextWidget().getText();
+            
+            if (newCaretOffset > 0 && newCaretOffset < text.length()) {
+              char beforeCaret = text.charAt(newCaretOffset -1);
+              char afterCaret = text.charAt(newCaretOffset);
+              
+              final int cr = 0x0D;
+              final int lf = 0x0A;
+              if (beforeCaret == cr && afterCaret == lf) {
+                // In case the caret offset is in the middle
+                // of a multiple-char line delimiter place caret
+                // before
+                newCaretOffset = newCaretOffset -1;
+              }
             }
+            
+            // check bounds, if out of text do nothing
+            getSourceViewer().getTextWidget().setCaretOffset(newCaretOffset);
+            getSourceViewer().revealRange(newCaretOffset, 0);
+            
+            mFeatureStructureSelectionProvider.setSelection(selection);
           }
-          
-          // check bounds, if out of text do nothing
-          getSourceViewer().getTextWidget().setCaretOffset(newCaretOffset);
-          getSourceViewer().revealRange(newCaretOffset, 0);
-          
-          mFeatureStructureSelectionProvider.setSelection(selection);
+        }
+        else {
+          // Nothing selected, clear annotation selection
+          highlight(0, 0);
         }
       }
     }
