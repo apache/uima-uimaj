@@ -37,14 +37,17 @@ public class CasManager_implTest extends TestCase {
     
     ((CASImpl)cas).enableReset(false);
     
-    try {
-      cas.release();
-      fail();
-    }
-    catch (CASAdminException e) {
-      //expected
-    }
-    
+//    try {
+//      cas.release();
+//      fail();
+//    }
+//    catch (CASAdminException e) {
+//      //expected
+//    }
+
+    cas.release();  // should work, release unlocks things.
+  
+    cas = mgr.getCas("test");
     ((CASImpl)cas).enableReset(true);
     cas.release();
 

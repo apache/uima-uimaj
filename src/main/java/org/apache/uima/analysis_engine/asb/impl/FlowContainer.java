@@ -30,6 +30,7 @@ import org.apache.uima.flow.CasFlow_ImplBase;
 import org.apache.uima.flow.Flow;
 import org.apache.uima.flow.JCasFlow_ImplBase;
 import org.apache.uima.flow.Step;
+import org.apache.uima.impl.Util;
 import org.apache.uima.resource.CasManager;
 import org.apache.uima.util.UimaTimer;
 
@@ -57,23 +58,18 @@ public class FlowContainer {
   public FlowContainer newCasProduced(CAS newCAS, String producedBy)
           throws AnalysisEngineProcessException {
     mTimer.startIt();
+    CAS view = null;
     try {
-      // set the current component info of the CAS, so that it knows the sofa
-      // mappings for the component that's about to process it (the FlowController)
-      newCAS.setCurrentComponentInfo(mFlowControllerContainer.getUimaContextAdmin()
-              .getComponentInfo());
-
-      // Get the right view of the CAS. Sofa-aware components get the base CAS.
-      // Sofa-unaware components get whatever is mapped to the default text sofa.
-      CAS view = ((CASImpl) newCAS).getBaseCAS();
-      if (!mSofaAware) {
-        view = newCAS.getView(CAS.NAME_DEFAULT_SOFA);
-      }
+      view = Util.getStartingView(
+          newCAS, 
+          mSofaAware, 
+          mFlowControllerContainer.getUimaContextAdmin().getComponentInfo());
       // now get the right interface(e.g. CAS or JCAS)
+      // must be done before call to switchClassLoader
       Class<? extends AbstractCas> requiredInterface = mFlowControllerContainer.getRequiredCasInterface();
       AbstractCas casToPass = getCasManager().getCasInterface(view, requiredInterface);
 
-      ((CASImpl)newCAS).switchClassLoaderLockCasCL(getFlowClassLoader());
+      ((CASImpl)view).switchClassLoaderLockCasCL(getFlowClassLoader());
       Flow flow = mFlow.newCasProduced(casToPass, producedBy);
       if (flow instanceof CasFlow_ImplBase) {
         ((CasFlow_ImplBase)flow).setCas(view);
@@ -85,8 +81,10 @@ public class FlowContainer {
     } catch (CASException e) {
       throw new AnalysisEngineProcessException(e);
     } finally {
-      ((CASImpl)newCAS).restoreClassLoaderUnlockCas();
-      newCAS.setCurrentComponentInfo(null);
+      if (null != view) {
+        ((CASImpl)view).restoreClassLoaderUnlockCas();
+        view.setCurrentComponentInfo(null);
+      }
       mTimer.stopIt();
       getMBean().reportAnalysisTime(mTimer.getDuration());
       getMBean().incrementCASesProcessed();
@@ -108,7 +106,7 @@ public class FlowContainer {
   public void aborted() {
     try {
       mCAS.switchClassLoaderLockCasCL(getFlowClassLoader());
-    mFlow.aborted();
+      mFlow.aborted();
     } finally {
       mCAS.restoreClassLoaderUnlockCas();
     }
