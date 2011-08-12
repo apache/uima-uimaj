@@ -655,6 +655,12 @@ FSIterator myIterator = myIndex.iterator();</programlisting>
       have the same names. 
     </para>
     
+    <para>The mechanism used to switch the class loaders when entering a PEAR-packaged annotator in
+    a flow depends on the framework knowing if JCas is being used within that annotator code.  The
+    framework will know this if the particular view being passed has had a previous call to 
+    getJCas(), or if the particular annotator is marked as a JCas-using one (by having it extend the
+    class <code>JCasAnnotator_ImplBase).</code></para>
+    
   </section>
   
 </chapter>
