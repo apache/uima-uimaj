@@ -599,20 +599,20 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
     
     //add to the set of outstanding CASes
     mOutstandingCASes.add(((CASImpl)cas).getBaseCAS());
-    // set the component info, so the CAS knows the proper sofa mappings
-    cas.setCurrentComponentInfo(getComponentInfo());
-    // This cas will be unlocked and its class loader restored when the
-    //   next() method returns it
-    ((CASImpl)cas).switchClassLoader(getResourceManager().getExtensionClassLoader());
-    // if this is a sofa-aware component, give it the Base CAS
-    // if it is a sofa-unaware component, give it whatever view maps to the _InitialVie
-    if (mSofaAware) {
-      cas = ((CASImpl) cas).getBaseCAS();
-    } else {
-      cas = cas.getView(CAS.NAME_DEFAULT_SOFA);
-    }
-    // convert CAS to requested interface
-    return casManager.getCasInterface(cas, aCasInterface);
+
+    // The CAS returned by this method will not be locked 
+    //   so users can call the reset() method.  This is due to 
+    //   historical reasons, and changing it could break existing
+    //   code.  There's not a serious downside to leaving it unlocked;
+    //   when the CAS enters a flow it will be locked when being
+    //   given as a parameter to further user code.
+
+    return Util.setupViewSwitchClassLoaders(
+        cas, 
+        mSofaAware, 
+        getComponentInfo(), 
+        getResourceManager(), 
+        aCasInterface);    
   }
 
   /**

@@ -39,6 +39,7 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.impl.UimaContext_ImplBase;
+import org.apache.uima.impl.Util;
 import org.apache.uima.internal.util.UUIDGenerator;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceConfigurationException;
@@ -336,19 +337,15 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
     getLogger().logrb(Level.FINE, CLASS_NAME.getName(), "process", LOG_RESOURCE_BUNDLE,
             "UIMA_analysis_engine_process_begin__FINE", resourceName);
     try {
+      CAS view = null;
       // call Annotator's process method
       try {
-        // set the current component info of the CAS, so that it knows the sofa
-        // mappings for the component that's about to process it
-        aCAS.setCurrentComponentInfo(getUimaContextAdmin().getComponentInfo());
 
         // Get the right view of the CAS. Sofa-aware components get the base CAS.
         // Sofa-unaware components get whatever is mapped to the _InitialView.
-        CAS view = ((CASImpl) aCAS).getBaseCAS();
-        if (!mSofaAware) {
-          view = aCAS.getView(CAS.NAME_DEFAULT_SOFA);
-        }
+        view = Util.getStartingView(aCAS, mSofaAware, getUimaContextAdmin().getComponentInfo());
         // now get the right interface(e.g. CAS or JCAS)
+        // must precede the switchClassLoader call below UIMA-2211
         Class<? extends AbstractCas> requiredInterface = mAnalysisComponent.getRequiredCasInterface();
         AbstractCas casToPass = getCasManager().getCasInterface(view, requiredInterface);
 
@@ -370,8 +367,9 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
           mAnalysisComponent.setResultSpecification(analysisComponentResultSpec);
           mResultSpecChanged = false;
         }
-        
-        ((CASImpl)aCAS).switchClassLoaderLockCasCL(this.getResourceManager().getExtensionClassLoader());
+       
+        // insure view is passed to switch / restore class loader https://issues.apache.org/jira/browse/UIMA-2211
+        ((CASImpl)view).switchClassLoaderLockCasCL(this.getResourceManager().getExtensionClassLoader());
 
         // call the process method
         mAnalysisComponent.process(casToPass);
@@ -383,8 +381,10 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
         //AnalysisComponentCasIterator that knows when it is time to clear the currentComponentInfo.
       } catch (Exception e) {
         // catching Throwable to catch out-of-memory errors too, which are not Exceptions
-        aCAS.setCurrentComponentInfo(null);
-        ((CASImpl)aCAS).restoreClassLoaderUnlockCas();
+        if (null != view) {
+          view.setCurrentComponentInfo(null);
+          ((CASImpl)view).restoreClassLoaderUnlockCas();
+        }
         if (e instanceof AnalysisEngineProcessException) {
           throw (AnalysisEngineProcessException) e;
         } else {
@@ -392,8 +392,10 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
                   AnalysisEngineProcessException.ANNOTATOR_EXCEPTION, null, e);
         }
       } catch (Error e) {  // out of memory error, for instance
-        aCAS.setCurrentComponentInfo(null);
-        ((CASImpl)aCAS).restoreClassLoaderUnlockCas();
+        if (null != view) {
+          view.setCurrentComponentInfo(null);
+          ((CASImpl)view).restoreClassLoaderUnlockCas();
+        }
         throw e;
       }
 

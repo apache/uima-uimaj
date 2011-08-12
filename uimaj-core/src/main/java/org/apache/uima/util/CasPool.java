@@ -220,12 +220,12 @@ public class CasPool {
       UIMAFramework.getLogger(CLASS_NAME).logrb(Level.WARNING, CLASS_NAME.getName(), "releaseCas",
               LOG_RESOURCE_BUNDLE, "UIMA_return_cas_to_pool__WARNING");
     } else {
-      // reset CAS
-      cas.reset();
-
       // restore the ClassLoader and unlock the CAS, since release() can be called 
       // from within a CAS Multiplier.
-      ((CASImpl)cas).restoreClassLoaderUnlockCas();  
+      ((CASImpl)cas).restoreClassLoaderUnlockCas(); 
+      
+      // reset CAS
+      cas.reset();
       
       // Add the CAS to the end of the free instances List
       mFreeInstances.add(cas);

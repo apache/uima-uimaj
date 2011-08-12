@@ -227,7 +227,34 @@ public class CasManager_impl implements CasManager {
               new Object[] { requiredInterface });
     }
   }
-    
+
+  /**
+   * Gets a specified interface to a CAS.
+   * 
+   * @param cas
+   *          The CAS
+   * @param requiredInterface
+   *          interface to get. Currently must be one of CAS or JCas.
+   */
+  public static AbstractCas getCasInterfaceStatic(CAS cas, Class<? extends AbstractCas> requiredInterface) {
+    if (requiredInterface == CAS.class) {
+      return cas;
+    } else if (requiredInterface == JCas.class) {
+      try {
+        return cas.getJCas();
+      } catch (CASException e) {
+        throw new UIMARuntimeException(e);
+      }
+    } else if (requiredInterface.isInstance(cas)) // covers AbstractCas
+    {
+      return cas;
+    }
+    {
+      throw new UIMARuntimeException(UIMARuntimeException.UNSUPPORTED_CAS_INTERFACE,
+              new Object[] { requiredInterface });
+    }
+  }
+
   /* (non-Javadoc)
    * @see org.apache.uima.resource.CasManager#setJmxInfo(java.lang.Object, java.lang.String)
    */

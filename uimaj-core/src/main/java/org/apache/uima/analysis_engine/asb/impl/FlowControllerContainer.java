@@ -38,6 +38,7 @@ import org.apache.uima.flow.FlowController;
 import org.apache.uima.flow.FlowControllerContext;
 import org.apache.uima.flow.FlowControllerDescription;
 import org.apache.uima.flow.JCasFlow_ImplBase;
+import org.apache.uima.impl.Util;
 import org.apache.uima.internal.util.JmxMBeanAgent;
 import org.apache.uima.resource.ConfigurableResource_ImplBase;
 import org.apache.uima.resource.ResourceConfigurationException;
@@ -196,22 +197,14 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
    */
   public FlowContainer computeFlow(CAS aCAS) throws AnalysisEngineProcessException {
     mTimer.startIt();
+    CAS view = null;
     try {
-      // set the current component info of the CAS, so that it knows the sofa
-      // mappings for the component that's about to process it (the FlowController)
-      aCAS.setCurrentComponentInfo(getUimaContextAdmin().getComponentInfo());
+      view = Util.getStartingView(aCAS, mSofaAware, getUimaContextAdmin().getComponentInfo());
 
-      // must get the appropriate CAS interface for the FlowController
-      // Get the right view of the CAS. Sofa-aware components get the base CAS.
-      // Sofa-unaware components get whatever is mapped to the default text sofa.
-      CAS view = ((CASImpl) aCAS).getBaseCAS();
-      if (!mSofaAware) {
-        view = aCAS.getView(CAS.NAME_DEFAULT_SOFA);
-      }
       // now get the right interface(e.g. CAS or JCAS)
       Class<? extends AbstractCas> requiredInterface = mFlowController.getRequiredCasInterface();
       AbstractCas casToPass = getCasManager().getCasInterface(view, requiredInterface);    
-      ((CASImpl)aCAS).switchClassLoaderLockCasCL(this.getResourceManager().getExtensionClassLoader());
+      ((CASImpl)view).switchClassLoaderLockCasCL(this.getResourceManager().getExtensionClassLoader());
       Flow flow = mFlowController.computeFlow(casToPass);
       if (flow instanceof CasFlow_ImplBase) {
         ((CasFlow_ImplBase)flow).setCas(view);
@@ -223,8 +216,10 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
     } catch (CASException e) {
       throw new AnalysisEngineProcessException(e);
     } finally {
-      ((CASImpl)aCAS).restoreClassLoaderUnlockCas();
-      aCAS.setCurrentComponentInfo(null);
+      if (view != null) {
+        ((CASImpl)view).restoreClassLoaderUnlockCas();
+        view.setCurrentComponentInfo(null);
+      }
       mTimer.stopIt();
       getMBean().reportAnalysisTime(mTimer.getDuration());
       getMBean().incrementCASesProcessed();
