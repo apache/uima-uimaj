@@ -36,14 +36,16 @@ public class Util {
     // if this is a sofa-aware component, give it the Base CAS
     // if it is a sofa-unaware component, give it whatever view maps to the _InitialView
     CASImpl ci;
+    // need to set the componentInfo for the getView to find the sofa mappings
+    // Do this *before* the getView call below
+    // note: this is in a shared view part of the CAS
+    cas.setCurrentComponentInfo(componentInfo);  
     if (sofaAware) {
       ci = ((CASImpl) cas).getBaseCAS();
     } else {
       ci = (CASImpl) cas.getView(CAS.NAME_DEFAULT_SOFA);
     }
     
-    // set the component info, so the CAS knows the proper sofa mappings
-    ci.setCurrentComponentInfo(componentInfo);
     return ci;
   }
   
