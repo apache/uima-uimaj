@@ -20,6 +20,8 @@
 package org.apache.uima.analysis_engine.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -545,15 +547,33 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
     return mTypeSystem;
   }
   
+  @SuppressWarnings("unchecked")
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("org.apache.uima.analysis_engine.impl.ResultSpecification_impl:\n);");
+    sb.append("org.apache.uima.analysis_engine.impl.ResultSpecification_impl:\n");
     sb.append("  needsCompilation = ").append(needsCompilation).append("\n");
 //    sb.append("lang2int = ").append(lang2int).append("\n");
 //    sb.append("name2tof_langs = ").append(name2tof_langs).append("\n");
 //    sb.append("withSubtypesName2tof_langs = ").append(withSubtypesName2tof_langs).append("\n");
-    sb.append("rsTofLangs = ").append(rsTypesMap);
-    sb.append("mTypeSystem = ").append(mTypeSystem).append("\n");
+    sb.append("\nrsTofLangs:\n");
+    if (needsCompilation) {
+      sb.append(rsTypesMap);
+    } else {
+      Object [] sorted = rsCompiled.entrySet().toArray();
+      Arrays.sort(sorted, new Comparator<Object>() {
+        public int compare(Object object1, Object object2) {
+          return ((Entry<String, RsLangs>)object1).getKey().
+          compareTo(((Entry<String, RsLangs>)object2).getKey());
+        }
+      });
+      for (Object o : sorted) {
+        Entry<String, RsLangs> e = (Entry<String, RsLangs>) o;
+        String k = e.getKey();
+        k = k + "        ".substring(k.length()%8);
+        sb.append(" key: ").append(k).append("  value: ").append(e.getValue()).append("\n");
+      }
+    }
+    sb.append("\n\nmTypeSystem = ").append(mTypeSystem).append("\n");
     return sb.toString();
   }
 
