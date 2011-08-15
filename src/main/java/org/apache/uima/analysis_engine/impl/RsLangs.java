@@ -65,6 +65,22 @@ public class RsLangs {
     return rsl;
   }
   
+  
+  @Override
+  public String toString() {
+    StringBuilder builder = new StringBuilder();
+    builder.append("RsLangs [languages=");
+    if (languages != null) {
+      for (String l : languages) {
+        builder.append(l).append(',');
+      }
+    }
+    builder.append(", isShared=");
+    builder.append(isShared);
+    builder.append("]");
+    return builder.toString();
+  }
+
   static RsLangs createOrNull(String[] languages) {
     return replaceAll(null, languages);
   }
@@ -162,7 +178,7 @@ public class RsLangs {
    */
   static RsLangs replaceAll(RsLangs rsl, String[] langs) {
     if (rsl == null || rsl.languages == null) {
-      if (langs == null) {
+      if (langs == null || (langs.length == 0)) { // UIMA-2212
         return null;
       }
       if (rsl == null || rsl.isShared) {
