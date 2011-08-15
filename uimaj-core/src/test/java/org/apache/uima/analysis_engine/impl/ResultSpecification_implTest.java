@@ -49,6 +49,8 @@ public class ResultSpecification_implTest extends TestCase {
   private TypeOrFeature[] mTypesAndFeatures;
 
   private Capability[] capabilities;
+  
+  private Capability cap4;
 
   private List<String[]> languages;
 
@@ -104,6 +106,13 @@ public class ResultSpecification_implTest extends TestCase {
       cap3.setLanguagesSupported(languages3);
       cap3.setOutputs(tofs3);
 
+      // capability 4 - using f1
+      cap4 = new Capability_impl();
+      String[] languages4 = {}; // length 0 string
+      TypeOrFeature[] tofs4 = { f1 };
+      cap4.setLanguagesSupported(languages4);
+      cap4.setOutputs(tofs4);
+
       // make capability array with the above specified values
       capabilities = new Capability[] { cap1, cap2, cap3 };
 
@@ -133,6 +142,12 @@ public class ResultSpecification_implTest extends TestCase {
       for (int i = 0; i < result.length; i++) {
         Assert.assertEquals(mTypesAndFeatures[i], result[i]);
       }
+      
+      // test defaulting - if no language, should be x-unspecified
+      resultSpecLanguage = new ResultSpecification_impl();
+      resultSpecLanguage.addCapabilities(new Capability[] {cap4});
+      assertTrue(resultSpecLanguage.containsFeature("FakeType:FakeFeature"));
+      assertTrue(resultSpecLanguage.containsFeature("FakeType:FakeFeature", "en"));
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
