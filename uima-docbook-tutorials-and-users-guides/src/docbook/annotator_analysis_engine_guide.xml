@@ -2015,8 +2015,28 @@ catch (PatternSyntaxException e) {
     <section id="ugr.tug.aae.result_specification_setting">
       <title>Result Specifications</title>
       
+      <para>Annotators often are written to do a lot of computation and produce a lot of different outputs.
+      For example, a tokenizer can, in addition to identifying tokens, look them up in dictionaries, create 
+      lemma forms (dropping suffexes and prefixes), etc.  Result Specifications provide a way to dynamically
+      specify what results are desired for a particular CAS being processed.</para>
+      
+      <para>It is up to the annotator writer to take advantage of the result specification; using it is optional.
+      If it is used, the annotator writer checks if a particular output is wanted, by asking the result specification
+      if it contains a specific Type and/or Feature.  If it does, then the annotator produces that type/feature; if not,
+      it skips the computations for producing that type/feature.</para>
+      
+      <para>The Result Specification querying may 
+      include the language.  A typical use case:  The CAS contains a document written in some language, and some
+      upstream Annotator has discovered what this language is.  
+      The Annotator extracts the previously discovered language specification from the CAS and 
+      then includes it when querying the Result Specification.  The exact method of encoding 
+      language specifications in the CAS is left up to annotator developers; however,
+      the framework provides a commonly used type for this - the org.apache.uima.tcas.DocumentAnnotation
+      type.</para>
+      
       <para>The Result Specification is passed to the annotator instance by calling its
-        setResultSpecificaiton method. When called, the default implementation saves the
+        setResultSpecificaiton method (this call is typically done by the framework, based on Capability specifications). 
+        When called, the default implementation saves the
         result specification in an instance variable of the Annotator instance, which can be
         accessed by the annotator using the protected
         <literal>getResultSpecification()</literal> method.</para>
@@ -2032,27 +2052,28 @@ catch (PatternSyntaxException e) {
       specifiable in Capability Specifications; examples include "en" for English, "en-uk" for
       British English, etc.  There is also a language type, "x-unspecified", which is presumed
       if no language specification(s) are given.</para>
-      
-      <para>Result Specifications can be queryed by the Annotator code, and the query may 
-      include the language.  If it doesn't include the language, it is treated as if the 
+           
+      <para>If a query of the Result Specification doesn't include a language, it is treated as if the 
       language "x-unspecified" was specified.  Language matching is hierarchically defaulted,
-      in one direction: if a query asks about a type T for language "en-uk", it will match
-        for languages "en-uk", "en", or "x-unspecified".  However the reverse is not true:
-        If the query asks about a type T for language "x-unspecified", then it only 
-        matches Result Specifications with no language (or "x-unspecified", which is equivalent).
+      in one direction: if a query includes the language "en-uk", meaning that the document
+      being processed is in that language, it will match
+        Result Specifications whose languages "en-uk", "en", or "x-unspecified".  In other words, if the 
+        Result Specifications say to produce output if the actual document's language
+        is en-uk, or en, or x-unspecified, then having the actual document's language be
+        en-uk would "match" any of these Result Specifications. However the reverse is not true:
+        If the query asks about producing output if the actual document's language is "x-unspecified", 
+        then it would not match if the Result Specification said to produce output only if the 
+        actual document is en-uk or en;  the Result Specification would need to say to 
+        produce output for "x-unspecified).
         </para>
       
-      <para>
-      The effect of this is that if the Result Specification indicates it wants output
+      <para>If the Result Specification indicates it wants output
       produced for "en-uk", but the annotator is given a language which is unknown, 
         or one that is known, but isn't "en-uk", then the query (using the language 
-        of the document) will 
-      return false.   This is true even if the language is "en".  
+        of the document) will return false.   This is true even if the language is "en".  
         However, if the Result Specification indicates it wants output for "en", 
-      and the query is for "en-uk" (presumably because that's the language of the document
-      and the annotator can handle that especially well), then the query will return true.
-    </para> 
-      
+      and the query is for a document whose language is "en-uk" then the query will return true.
+    </para>      
       
       <para>Sometimes you can specify the Result Specification; othertimes, you cannot
         (for instance, inside a Collection Processing Engine, you cannot). When you cannot
@@ -2114,7 +2135,8 @@ catch (PatternSyntaxException e) {
           <emphasis>all</emphasis> input types and features of
           <emphasis>all</emphasis> component AnalysisEngines within that aggregate. This forms the
           complete set of types and features that any component of the aggregate might need to
-          produce. This derived Result Specification is then passed to the
+          produce. This derived Result Specification is then intersected with the 
+          delegate's output capabilities, and the result is passed to the
           <code>AnalysisEngine.setResultSpecification(ResultSpecification)</code>
           of each component AnalysisEngine. In the case of nested aggregates, this procedure
           is applied recursively.</para>
