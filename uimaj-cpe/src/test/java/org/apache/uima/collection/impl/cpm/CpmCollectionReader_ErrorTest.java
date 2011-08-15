@@ -656,8 +656,8 @@ public class CpmCollectionReader_ErrorTest extends TestCase {
    protected void tearDown() throws Exception {
       super.tearDown();
       FunctionErrorStore.resetCount();
-      System.gc();
-      System.gc();
+//      System.gc();
+//      System.gc();
    }
 
    /**

@@ -73,8 +73,8 @@ public class SofaCPE_Test extends TestCase {
     cpeDesc = null;
     cpe = null;
     cpeSpecifierFile = null;
-    System.gc();
-    System.gc();
+//    System.gc();
+//    System.gc();
   }
 
   public void testProcess() throws Throwable {
