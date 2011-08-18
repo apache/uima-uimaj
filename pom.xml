@@ -142,7 +142,7 @@
 
   <modules>
     <module>uimaj-parent</module>
-    <module>../aggregate-uimaj</module>
+    <module>aggregate-uimaj</module>
   </modules>
   
   <build>
@@ -235,9 +235,7 @@
                   <exclude>uimaj-jet-expander/**</exclude>
                   <exclude>uimaj-bootstrap/**</exclude>
                   <exclude>uimaj-internal-tools/**</exclude>
-                  <exclude>uimaj/**</exclude>  <!--  to be removed when remove the old uimaj project -->
-                  <exclude>uimaj-distr/**</exclude>  <!--  to be removed when remove the old uimaj-distr project -->
-                </excludes>
+               </excludes>
               </configuration>
             </execution>
           </executions>
