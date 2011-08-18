@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one
+   or more contributor license agreements.  See the NOTICE file
+   distributed with this work for additional information
+   regarding copyright ownership.  The ASF licenses this file
+   to you under the Apache License, Version 2.0 (the
+   "License"); you may not use this file except in compliance
+   with the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied.  See the License for the
+   specific language governing permissions and limitations
+   under the License.
+-->
+
+<!-- This pom serves as the release top level project,
+     and for users wanting to build all of the
+     base UIMA Java SDK
+ -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache.uima</groupId>
+    <artifactId>uimaj-parent</artifactId>
+    <version>2.3.2-SNAPSHOT</version>
+    <relativePath>uimaj-parent/pom.xml</relativePath>
+  </parent>
+
+  <artifactId>uimaj</artifactId>
+  <packaging>pom</packaging>
+  <version>2.3.2-SNAPSHOT</version>
+  <name>UIMA Java SDK: ${project.artifactId}</name>
+  <description>The top project for the uimaj SDK</description>
+  <url>${uimaWebsiteUrl}</url>
+
+  <!-- Special inheritance note
+       even though the <scm> element that follows is exactly the
+       same as those in super poms, it cannot be inherited because
+       there is some special code that computes the connection elements
+       from the chain of parent poms, if this is omitted.
+
+       Keeping this a bit factored allows cutting/pasting the <scm>
+       element, and just changing the following two properties -->
+  <scm>
+    <connection>
+      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj
+    </connection>
+    <developerConnection>
+      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj
+    </developerConnection>
+    <url>
+      http://svn.apache.org/viewvc/uima/uimaj/trunk/uimaj
+    </url>
+  </scm>
+
+  <properties>
+    <uimaScmProject>${project.artifactId}</uimaScmProject>
+    <jiraVersion>12315996</jiraVersion> <!-- for 2.3.2SDK -->  
+    <assemblyFinalName>uimaj-${project.version}</assemblyFinalName>  
+    <postNoticeText>${ibmNoticeText}</postNoticeText>    
+  </properties>
+
+  <!-- dependencies that go into the various builds via dependency-sets -->
+  <!-- version is specified here -->
+  <!-- default scope is compile -->
+  <!-- Used for assemblies, to insure they're built *before* the assembly -->
+  
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.uima</groupId> 
+      <artifactId>uimaj-adapter-vinci</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId> 
+      <artifactId>uimaj-adapter-soap</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId> 
+      <artifactId>uimaj-bootstrap</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-cpe</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-examples</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-tools</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-ep-cas-editor</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-ep-configurator</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-ep-debug</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-ep-jcasgen</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-ep-pear-packager</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-ep-runtime</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+
+  <modules>
+    <module>uimaj-parent</module>
+    <module>../aggregate-uimaj</module>
+  </modules>
+  
+  <build>
+    <plugins>
+
+      <!-- This java doc config is for building the ones distributed with the bin packaging, and also 
+           posted on our website.  It is not a complete javadoc - it only has user-level API info.
+        
+           There is another javadoc config in the parent POM that builds all the java docs - intended
+           for use by developers (currently not used) -->
+      
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>javadocs-distr</id> <!-- name should match one in parent-pom --> 
+            <phase>prepare-package</phase>  <!-- must come before package which uses the results -->
+            <!--phase>deploy</phase--> <!-- comment above and uncomment to disable javadocs, for testing/experimentation, with assembly:assembly-->
+            <goals>
+              <goal>javadoc</goal>
+            </goals>
+            <configuration>
+              <!-- fix java api links because Oracle bought Sun -->
+              <javaApiLinks>
+                <property>
+                  <name>api_1.5</name>
+                  <value>http://download.oracle.com/javase/1.5.0/docs/api/</value>
+                </property>
+              </javaApiLinks>
+              <groups>
+                <group>
+                  <title>Packages</title>
+                  <packages>*</packages>
+                </group>
+              </groups>
+              <sourcepath>uimaj-core/src/main/java;uimaj-document-annotation/src/main/java</sourcepath>
+              <excludePackageNames>*.internal.*:*.impl.*</excludePackageNames>
+              <!-- add a few classes in impl packages that are directly used by user code -->
+              <additionalparam>
+                ${basedir}/uimaj-core/src/main/java/org/apache/uima/cas/impl/XCASDeserializer.java
+                ${basedir}/uimaj-core/src/main/java/org/apache/uima/cas/impl/XCASParsingException.java
+                ${basedir}/uimaj-core/src/main/java/org/apache/uima/cas/impl/XCASSerializer.java
+                ${basedir}/uimaj-core/src/main/java/org/apache/uima/cas/impl/XmiCasDeserializer.java
+                ${basedir}/uimaj-core/src/main/java/org/apache/uima/cas/impl/XmiCasSerializer.java
+                ${basedir}/uimaj-core/src/main/java/org/apache/uima/cas/impl/XmiSerializationSharedData.java
+                ${basedir}/uimaj-cpe/src/main/java/org/apache/uima/collection/impl/metadata/cpe/CpeDescriptorFactory.java
+                ${basedir}/uimaj-cpe/src/main/java/org/apache/uima/collection/impl/cpm/engine/CPMChunkTimeoutException.java
+              </additionalparam>
+              <doctitle>Apache UIMA Java SDK ${project.version} User-Level API Documentation</doctitle>
+              <windowtitle>Apache UIMA Java SDK ${project.version} User-Level API Documentation</windowtitle>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    
+      <plugin>
+          <groupId>org.apache.rat</groupId>
+          <artifactId>apache-rat-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>default-cli</id>
+              <goals><goal>check</goal></goals>
+              <phase>verify</phase>
+              <!-- default configuration -->
+              <configuration>
+                <excludes>
+                  <exclude>release.properties</exclude> <!-- generated file -->
+                  <exclude>README*</exclude>
+                  <exclude>RELEASE_NOTES*</exclude>
+                  <exclude>issuesFixed/**</exclude> <!-- generated file -->
+                  <exclude>src/main/resources/docbook-shared/titlepage/*.xsl</exclude>
+                  <exclude>marker-file-identifying-*</exclude> <!-- empty file -->
+                  <exclude>DEPENDENCIES</exclude>  <!-- generated file -->
+                  
+                  <!--  workaround https://issues.apache.org/jira/browse/RAT-97 -->
+                  <exclude>aggregate-uimaj*/**</exclude>
+                  <exclude>jVinci/**</exclude>
+                  <exclude>PearPackagingMavenPlugin/**</exclude>
+                  <exclude>uima-docbook-*/**</exclude>
+                  <exclude>uimaj-adapter-*/**</exclude>
+                  <exclude>uimaj-component-test-util/**</exclude>
+                  <exclude>uimaj-core/**</exclude>
+                  <exclude>uimaj-cpe/**</exclude>
+                  <exclude>uimaj-document-annotation/**</exclude>
+                  <exclude>uimaj-eclipse-*/**</exclude>
+                  <exclude>uimaj-ep-*/**</exclude>
+                  <exclude>uimaj-examples/**</exclude>
+                  <exclude>uimaj-test-util/**</exclude>
+                  <exclude>uimaj-tools/**</exclude>
+                  <exclude>uimaj-jet-expander/**</exclude>
+                  <exclude>uimaj-bootstrap/**</exclude>
+                  <exclude>uimaj-internal-tools/**</exclude>
+                  <exclude>uimaj/**</exclude>  <!--  to be removed when remove the old uimaj project -->
+                  <exclude>uimaj-distr/**</exclude>  <!--  to be removed when remove the old uimaj-distr project -->
+                </excludes>
+              </configuration>
+            </execution>
+          </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>apache-release</id>
+      
+      <build>
+        <!-- Run jira report -->
+        <!-- depends on having -DjiraVersion set -->
+        <plugins>
+          <plugin>
+            <artifactId>maven-changes-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>default-cli</id>
+                <configuration>
+                  <fixVersionIds>${jiraVersion}</fixVersionIds>
+                </configuration>
+              </execution>
+            </executions>  
+          </plugin>
+        </plugins>     
+      </build>
+    </profile>
+  </profiles>    
+    
+</project>
