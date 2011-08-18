@@ -222,114 +222,95 @@ under the License.
 
     <!-- docbooks -->
     <fileSet>
-      <directory>../uima-docbook-overview-and-setup/target/site/</directory>
+      <directory>uima-docbook-overview-and-setup/target/site/</directory>
       <outputDirectory>docs</outputDirectory>
       <fileMode>644</fileMode>
       <directoryMode>755</directoryMode>        
     </fileSet>
     <fileSet>
-      <directory>../uima-docbook-references/target/site</directory>
+      <directory>uima-docbook-references/target/site</directory>
       <outputDirectory>docs</outputDirectory>
       <fileMode>644</fileMode>
       <directoryMode>755</directoryMode>        
     </fileSet>    
     <fileSet>
-      <directory>../uima-docbook-tools/target/site</directory>
+      <directory>uima-docbook-tools/target/site</directory>
       <outputDirectory>docs</outputDirectory>
       <fileMode>644</fileMode>
       <directoryMode>755</directoryMode>        
     </fileSet>    
     <fileSet>
-      <directory>../uima-docbook-tutorials-and-users-guides/target/site</directory>
+      <directory>uima-docbook-tutorials-and-users-guides/target/site</directory>
       <outputDirectory>docs</outputDirectory>
       <fileMode>644</fileMode>
       <directoryMode>755</directoryMode>        
     </fileSet>
-
+    
     <!-- examples -->
     <fileSet>
-      <directory>../uimaj-examples/src/main/java</directory>
+      <directory>uimaj-examples/src/main</directory>
+      <outputDirectory>examples</outputDirectory>
+      <fileMode>644</fileMode>
+      <directoryMode>755</directoryMode>
+      <includes>
+        <include>deploy/**</include>
+        <include>descriptors/**</include>
+        <include>resources/**</include>
+        <include>run_configuration/**</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>uimaj-examples/src/main/java</directory>
       <outputDirectory>examples/src</outputDirectory>
       <excludes>
-        <exclude> org/apache/uima/examples/xmi/XmiEcoreCasConsumer.java</exclude>
-        <exclude> org/apache/uima/examples/xmi/Ecore2UimaTypeSystem.java</exclude>
-        <exclude> org/apache/uima/examples/xmi/UimaTypeSystem2Ecore.java</exclude>
+        <exclude>org/apache/uima/examples/xmi/XmiEcoreCasConsumer.java</exclude>
+        <exclude>org/apache/uima/examples/xmi/Ecore2UimaTypeSystem.java</exclude>
+        <exclude>org/apache/uima/examples/xmi/UimaTypeSystem2Ecore.java</exclude>
       </excludes>
       <fileMode>644</fileMode>
       <directoryMode>755</directoryMode>        
     </fileSet>
     <fileSet>
-      <directory>../uimaj-examples/src/main/data</directory>
+      <directory>uimaj-examples/src/main/data</directory>
       <outputDirectory>examples/data</outputDirectory>
       <fileMode>644</fileMode>
       <!-- next mode 777 because some examples write into dir
            and we want to eliminate failures due to write permissions -->
       <directoryMode>777</directoryMode>        
     </fileSet>
-    <fileSet>
-      <directory>../uimaj-examples/src/main/deploy</directory>
-      <outputDirectory>examples/deploy</outputDirectory>
-      <fileMode>644</fileMode>
-      <directoryMode>755</directoryMode>        
-    </fileSet>
-    <fileSet>
-      <directory>../uimaj-examples/src/main/descriptors</directory>
-      <outputDirectory>examples/descriptors</outputDirectory>
-      <fileMode>644</fileMode>
-      <directoryMode>755</directoryMode>        
-    </fileSet>
-    <!-- removed in 2.3.0 -->
-    <!--fileSet> 
-      <directory>../uimaj-examples/src/main/opennlp_wrappers</directory>
-      <outputDirectory>examples/opennlp_wrappers</outputDirectory>
-      <fileMode>644</fileMode>
-      <directoryMode>755</directoryMode>        
-    </fileSet-->
-    <fileSet>
-      <directory>../uimaj-examples/src/main/resources</directory>
-      <outputDirectory>examples/resources</outputDirectory>
-      <fileMode>644</fileMode>
-      <directoryMode>755</directoryMode>        
-    </fileSet>
-    <fileSet>
-      <directory>../uimaj-examples/src/main/run_configuration</directory>
-      <outputDirectory>examples/run_configuration</outputDirectory>
-      <fileMode>644</fileMode>
-      <directoryMode>755</directoryMode>        
-    </fileSet>
   </fileSets>
  
   <files>
     <file>
-      <source>../uimaj-examples/src/main/eclipseProject/project</source>
+      <source>uimaj-examples/src/main/eclipseProject/project</source>
       <outputDirectory>examples</outputDirectory>
       <destName>.project</destName>
       <fileMode>644</fileMode> 
     </file>
     <file>
-      <source>../uimaj-examples/src/main/eclipseProject/classpath</source>
+      <source>uimaj-examples/src/main/eclipseProject/classpath</source>
       <outputDirectory>examples</outputDirectory>
       <destName>.classpath</destName>
       <fileMode>644</fileMode> 
     </file>
     <file>
-      <source> ../uimaj-examples/src/main/eclipseProject/ecore_src_readme.txt</source>
+      <source>uimaj-examples/src/main/eclipseProject/ecore_src_readme.txt</source>
       <outputDirectory>examples/ecore_src</outputDirectory>
       <destName>readme.txt</destName>
       <fileMode>644</fileMode> 
     </file>
     <file>
-      <source>../uimaj-examples/src/main/java/org/apache/uima/examples/xmi/XmiEcoreCasConsumer.java</source>
+      <source>uimaj-examples/src/main/java/org/apache/uima/examples/xmi/XmiEcoreCasConsumer.java</source>
       <outputDirectory>examples/ecore_src/org/apache/uima/examples/xmi</outputDirectory>
       <fileMode>644</fileMode> 
     </file>
     <file>
-      <source>../uimaj-examples/src/main/java/org/apache/uima/examples/xmi/Ecore2UimaTypeSystem.java</source>
+      <source>uimaj-examples/src/main/java/org/apache/uima/examples/xmi/Ecore2UimaTypeSystem.java</source>
       <outputDirectory>examples/ecore_src/org/apache/uima/examples/xmi</outputDirectory>
       <fileMode>644</fileMode> 
     </file>
     <file>
-      <source>../uimaj-examples/src/main/java/org/apache/uima/examples/xmi/UimaTypeSystem2Ecore.java</source>
+      <source>uimaj-examples/src/main/java/org/apache/uima/examples/xmi/UimaTypeSystem2Ecore.java</source>
       <outputDirectory>examples/ecore_src/org/apache/uima/examples/xmi</outputDirectory>
       <fileMode>644</fileMode> 
     </file>

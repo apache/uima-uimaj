@@ -40,14 +40,12 @@ under the License.
     <!-- Leave out .sh/.bat/.cmd files, include them in the next step as executable -->
     <fileSet>
       <directory>.</directory>
-      <outputDirectory>/uimaj-distr</outputDirectory>
+      <outputDirectory/>
       <includes>
         <include>src/**</include>
         <include>pom.xml</include>
       </includes>
       <excludes>
-        <exclude>src/**/*.bat</exclude>
-        <exclude>src/**/*.cmd</exclude>
         <exclude>src/**/*.sh</exclude>
       </excludes>
       <fileMode>644</fileMode>
@@ -56,19 +54,9 @@ under the License.
     <fileSet>
       <fileMode>755</fileMode>
       <directory>.</directory>
-      <outputDirectory>/uimaj-distr</outputDirectory>
+      <outputDirectory/>
       <includes>
         <include>src/**/*.sh</include>
-      </includes>
-    </fileSet>
-    <!-- Copy .bat and cmd files as not-executable -->
-    <fileSet>
-      <fileMode>644</fileMode>
-      <directory>.</directory>
-      <outputDirectory>/uimaj-distr</outputDirectory>
-      <includes>
-        <include>src/**/*.bat</include>
-        <include>src/**/*.cmd</include>
       </includes>
     </fileSet>
     
@@ -78,10 +66,6 @@ under the License.
     <fileSet>
       <directory>src/main/readme</directory>
       <outputDirectory/>
-      <excludes>
-        <!-- exclude bin distr README -->
-        <exclude>README</exclude>
-      </excludes>
       <fileMode>644</fileMode>
     </fileSet>
     
@@ -116,7 +100,31 @@ under the License.
          Aggregator poms used in this build are included. 
     -->    
     
+    <fileSet>
+      <directory>.</directory>
+      <outputDirectory/>
+      <includes>
+        <include>aggregate*/**</include>
+        <include>jVinci/**</include>
+        <include>PearPackagingMavenPlugin/**</include>
+        <include>uima-docbook-*/**</include>
+        <include>uimaj-adapter-*/**</include>
+        <include>uimaj-bootstrap/**</include>
+        <include>uimaj-component-test-util/**</include>
+        <include>uimaj-core/**</include>
+        <include>uimaj-cpe/**</include>
+        <include>uimaj-document-annotation/**</include>
+        <include>uimaj-eclipse-*/**</include>
+        <include>uimaj-ep-*/**</include>
+        <include>uimaj-examples/**</include>
+        <include>uimaj-parent</include>
+        <include>uimaj-test-util</include>
+        <include>uimaj-tools</include>
+      </includes>
+    </fileSet>
+    
     <!-- aggregator poms -->
+    <!-- 
     <fileSet>
       <directory>../aggregate-uimaj</directory>
       <outputDirectory>/aggregate-uimaj</outputDirectory>
@@ -144,8 +152,9 @@ under the License.
       </excludes>
       <fileMode>644</fileMode>
     </fileSet>
-    
+    -->
     <!-- from aggregate-uimaj-docbooks -->
+    <!-- 
     <fileSet>
       <directory>../uima-docbook-overview-and-setup</directory>
       <outputDirectory>/uima-docbook-overview-and-setup</outputDirectory>
@@ -182,8 +191,9 @@ under the License.
       </excludes>
       <fileMode>644</fileMode>
     </fileSet>
-    
-    <!-- from aggregate-uimaj-eclipse-plugins -->    
+    -->
+    <!-- from aggregate-uimaj-eclipse-plugins -->
+    <!-- 
     <fileSet>
       <directory>../uimaj-ep-cas-editor</directory>
       <outputDirectory>/uimaj-ep-cas-editor</outputDirectory>
@@ -244,8 +254,9 @@ under the License.
       </excludes>
       <fileMode>644</fileMode>
     </fileSet>      
-    
-    <!-- from aggregate-uimaj -->    
+    -->
+    <!-- from aggregate-uimaj -->
+    <!-- 
     <fileSet>
       <directory>../jVinci</directory>
       <outputDirectory>/jVinci</outputDirectory>
@@ -353,7 +364,8 @@ under the License.
         <exclude>.*/**</exclude>
       </excludes>
       <fileMode>644</fileMode>
-    </fileSet>          
+    </fileSet> 
+    -->         
           
   </fileSets>
   
