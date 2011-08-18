@@ -69,7 +69,7 @@ public class UriUtils {
    * Create a URI from a String, with proper quoting.
    * Already quoted things in the input string are not re-quoted.
    * Mimic exception treatment of URI.create
-   * @param u
+   * @param s
    * @return URI with proper quoting
    */
 
