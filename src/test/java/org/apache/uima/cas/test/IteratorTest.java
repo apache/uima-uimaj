@@ -107,8 +107,8 @@ public class IteratorTest extends TestCase {
     // }
 
     File descriptorFile = JUnitExtension.getFile("CASTests/desc/casTestCaseDescriptor.xml");
-    assertTrue("Descriptor must exist: " + descriptorFile.getAbsolutePath(), descriptorFile
-        .exists());
+    assertTrue("Descriptor must exist: " + descriptorFile.getAbsolutePath(),
+        descriptorFile.exists());
 
     try {
       XMLParser parser = UIMAFramework.getXMLParser();
@@ -179,6 +179,37 @@ public class IteratorTest extends TestCase {
     }
   }
 
+  public void testMoveTo() {
+    // Add some arbitrary annotations
+    for (int i = 0; i < 10; i++) {
+      this.cas.getIndexRepository().addFS(
+          this.cas.createAnnotation(this.annotationType, i * 2, (i * 2) + 1));
+      this.cas.getIndexRepository().addFS(
+          this.cas.createAnnotation(this.sentenceType, i * 2, (i * 2) + 1));
+      this.cas.getIndexRepository().addFS(
+          this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
+      this.cas.getIndexRepository().addFS(
+          this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
+      this.cas.getIndexRepository().addFS(
+          this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
+    }
+    final int start = 5;
+    final int end = 7;
+    FSIndexRepository repo = this.cas.getIndexRepository();
+    for (int i = 0; i < 10; i++) {
+      AnnotationFS annotation = this.cas.createAnnotation(this.annotationType, start, end);
+      repo.addFS(annotation);
+    }
+    AnnotationFS match = this.cas.createAnnotation(this.annotationType, start, end);
+    FSIndex<AnnotationFS> index = this.cas.getAnnotationIndex();
+    FSIterator<AnnotationFS> it = index.iterator();
+    it.moveTo(match);
+    assertTrue(index.compare(match, it.get()) == 0);
+    // The contract of moveTo() says that any preceding FS must be smaller.
+    it.moveToPrevious();
+    assertTrue(index.compare(match, it.get()) > 0);
+  }
+
   public void testIterator() {
     for (int i = 0; i < 10; i++) {
       this.cas.getIndexRepository().addFS(
@@ -209,9 +240,12 @@ public class IteratorTest extends TestCase {
     // Create a reverse iterator for the set index and check that the result
     // is the same as for forward iteration.
     IntVector v = new IntVector();
-    FSIndex<FeatureStructure> bagIndex = this.cas.getIndexRepository().getIndex(CASTestSetup.ANNOT_BAG_INDEX);
-    FSIndex<FeatureStructure> setIndex = this.cas.getIndexRepository().getIndex(CASTestSetup.ANNOT_SET_INDEX);
-    FSIndex<FeatureStructure> sortedIndex = this.cas.getIndexRepository().getIndex(CASTestSetup.ANNOT_SORT_INDEX);
+    FSIndex<FeatureStructure> bagIndex = this.cas.getIndexRepository().getIndex(
+        CASTestSetup.ANNOT_BAG_INDEX);
+    FSIndex<FeatureStructure> setIndex = this.cas.getIndexRepository().getIndex(
+        CASTestSetup.ANNOT_SET_INDEX);
+    FSIndex<FeatureStructure> sortedIndex = this.cas.getIndexRepository().getIndex(
+        CASTestSetup.ANNOT_SORT_INDEX);
 
     FSIterator<FeatureStructure> it = setIndex.iterator();
     AnnotationFS a, b = null;
@@ -631,8 +665,8 @@ public class IteratorTest extends TestCase {
       fsArray[i] = this.cas.createAnnotation(this.tokenType, i * 5, (i * 5) + 4);
       ir.addFS(fsArray[i]);
     }
-    FSIndex<FeatureStructure> setIndex = this.cas.getIndexRepository().getIndex(CASTestSetup.ANNOT_SET_INDEX,
-        this.tokenType);
+    FSIndex<FeatureStructure> setIndex = this.cas.getIndexRepository().getIndex(
+        CASTestSetup.ANNOT_SET_INDEX, this.tokenType);
     FSIterator<FeatureStructure> setIt = setIndex.iterator();
     FSIndex<AnnotationFS> sortedIndex = this.cas.getAnnotationIndex(this.tokenType);
     FSIterator<AnnotationFS> sortedIt = sortedIndex.iterator();
