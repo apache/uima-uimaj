@@ -74,6 +74,32 @@ public class AnalysisEngineManagementImpl
 
   private String uniqueMBeanName;
 
+  
+  private State status = State.Initializing;  // Initial AE state
+  
+  private long threadId = Thread.currentThread().getId();  // Thread id which created this instance  
+  private long initializationTime;
+  
+  public long getInitializationTime() {
+    return initializationTime;
+  }
+  
+  public void setInitializationTime(long initializationTime) {
+    this.initializationTime = initializationTime;
+  }
+  public long getThreadId() {
+    return threadId;
+  }
+ 
+  public String getState() {
+    return this.status.toString();
+  }
+  
+  public void setState(State state) {
+    this.status = state;
+  }
+
+  
   public void reportAnalysisTime(long time) {
     analysisTime += time;
   }
