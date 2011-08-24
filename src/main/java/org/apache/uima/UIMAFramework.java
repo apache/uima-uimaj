@@ -24,7 +24,9 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.uima.analysis_engine.AnalysisEngine;
+import org.apache.uima.analysis_engine.AnalysisEngineManagement.State;
 import org.apache.uima.analysis_engine.TextAnalysisEngine;
+import org.apache.uima.analysis_engine.impl.AnalysisEngineManagementImpl;
 import org.apache.uima.collection.CasConsumer;
 import org.apache.uima.collection.CasInitializer;
 import org.apache.uima.collection.CollectionProcessingEngine;
@@ -311,7 +313,21 @@ public abstract class UIMAFramework {
 
     return produceResource(aResourceClass, aSpecifier, aAdditionalParams);
   }
-
+  
+  /**
+   * Called if AE initialization succeeds. Sets the AE state to Ready and time
+   * it took to initialize the AE. 
+   * 
+   * @param ae
+   * @param initStartTime
+   */
+  private static void updateAeState(AnalysisEngine ae, long initStartTime) {
+	  if ( ae.getManagementInterface() instanceof AnalysisEngineManagementImpl) {
+	      ((AnalysisEngineManagementImpl)ae.getManagementInterface()).setState(State.Ready);
+	      ((AnalysisEngineManagementImpl)ae.getManagementInterface()).
+	        setInitializationTime( System.currentTimeMillis() - initStartTime);
+	    }
+  }
   /**
    * Produces an {@link AnalysisEngine} instance from a <code>ResourceSpecifier</code>. The
    * <code>ResourceSpecifier</code> may either specify how to construct a new instance or how to
@@ -332,7 +348,14 @@ public abstract class UIMAFramework {
    */
   public static AnalysisEngine produceAnalysisEngine(ResourceSpecifier aSpecifier)
           throws ResourceInitializationException {
-    return (AnalysisEngine) produceResource(AnalysisEngine.class, aSpecifier, null);
+	    AnalysisEngine ae = null;
+	    //	Fetch current time to compute initialization time
+	    long initStartTime = System.currentTimeMillis();
+	    ae = (AnalysisEngine) produceResource(AnalysisEngine.class, aSpecifier, null);
+	    //	initialization succeeded, update AE state and initialization time
+	    updateAeState(ae,initStartTime);
+	    return ae;
+
   }
 
   /**
@@ -358,7 +381,14 @@ public abstract class UIMAFramework {
    */
   public static AnalysisEngine produceAnalysisEngine(ResourceSpecifier aSpecifier,
           Map<String, Object> aAdditionalParams) throws ResourceInitializationException {
-    return (AnalysisEngine) produceResource(AnalysisEngine.class, aSpecifier, aAdditionalParams);
+	    AnalysisEngine ae = null;
+	    //	Fetch current time to compute initialization time
+	    long initStartTime = System.currentTimeMillis();
+	    ae = (AnalysisEngine) produceResource(AnalysisEngine.class, aSpecifier, aAdditionalParams);
+	    //	initialization succeeded, update AE state and initialization time
+	    updateAeState(ae,initStartTime);
+	    return ae;
+
   }
 
   /**
@@ -389,8 +419,14 @@ public abstract class UIMAFramework {
   public static AnalysisEngine produceAnalysisEngine(ResourceSpecifier aSpecifier,
           ResourceManager aResourceManager, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
-    return (AnalysisEngine) produceResource(AnalysisEngine.class, aSpecifier, aResourceManager,
+    AnalysisEngine ae = null;
+    //	Fetch current time to compute initialization time
+    long initStartTime = System.currentTimeMillis();
+    ae = (AnalysisEngine) produceResource(AnalysisEngine.class, aSpecifier, aResourceManager,
             aAdditionalParams);
+    //	initialization succeeded, update AE state and initialization time
+    updateAeState(ae,initStartTime);
+    return ae;
   }
 
   /**
@@ -432,7 +468,14 @@ public abstract class UIMAFramework {
             aMaxSimultaneousRequests));
     aAdditionalParams.put(AnalysisEngine.PARAM_TIMEOUT_PERIOD, Integer.valueOf(aTimeoutPeriod));
 
-    return (AnalysisEngine) produceResource(AnalysisEngine.class, aSpecifier, aAdditionalParams);
+    AnalysisEngine ae = null;
+    //	Fetch current time to compute initialization time
+    long initStartTime = System.currentTimeMillis();
+
+    ae = (AnalysisEngine) produceResource(AnalysisEngine.class, aSpecifier, aAdditionalParams);
+    //	initialization succeeded, update AE state and initialization time
+    updateAeState(ae,initStartTime);
+    return ae;
   }
 
   /**
