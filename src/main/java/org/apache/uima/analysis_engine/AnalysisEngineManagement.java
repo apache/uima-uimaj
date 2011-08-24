@@ -33,6 +33,8 @@ import org.apache.uima.resource.ManagementObject;
  * href="http://java.sun.com/j2se/1.5.0/docs/api/javax/management/package-summary.html"/>
  */
 public interface AnalysisEngineManagement extends ManagementObject {
+	public static enum State {Unavailable,Initializing, Ready};
+	
   /**
    * Gets a name for this AnalysisEngineManagement object, which will be unique among all of its
    * siblings (i.e. the objects returned from its parent's {@link #getComponents()} method.
@@ -107,4 +109,24 @@ public interface AnalysisEngineManagement extends ManagementObject {
    * the statistics for all the components of the aggregate.
    */
   void resetStats();
+  
+  /**
+   * Gets the current state of an AnalysisEngine. The AE should either be in Initializing or Ready state.
+   */
+  String getState();
+  
+  /**
+   * Gets an id of a thread that was used to initialize AE instance
+   * 
+   * @return - thread id
+   */
+  public long getThreadId();
+  
+  /**
+   * Total time it took AnalysisEngine to initialize
+   * 
+   * @return - initialization time
+   */
+  public long getInitializationTime();
+
 }
