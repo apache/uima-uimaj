@@ -40,4 +40,10 @@ public interface AnalysisEngineManagementImplMBean extends Serializable {
   String getCASesPerSecond();
 
   void resetStats();
+  
+  String getState();
+  
+  public long getThreadId();
+  
+  public long getInitializationTime();
 }
