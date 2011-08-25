@@ -83,6 +83,14 @@
             description="Quick Annotate"
             name="Quick Annotate">
       </command>
+      
+      <command
+            categoryId="org.apache.uima.caseditor.annotate"
+            id="Annotate"
+            description="Quick Annotate"
+            name="Annotate">
+      </command>
+      
       <command
             categoryId="org.apache.uima.caseditor.annotate"
             id="WideRightAnnotationSide"
