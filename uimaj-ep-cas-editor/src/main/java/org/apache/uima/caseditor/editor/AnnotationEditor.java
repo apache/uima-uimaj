@@ -578,7 +578,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   @Override
   public void init(IEditorSite site, IEditorInput input) throws PartInitException {
     CasDocumentProvider provider =
-            CasDocumentProviderFactory.instance().getDocumentProvider();
+            CasDocumentProviderFactory.instance().getDocumentProvider(input);
     
     setDocumentProvider(provider);
     

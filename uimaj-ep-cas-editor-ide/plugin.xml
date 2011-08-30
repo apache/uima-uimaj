@@ -101,12 +101,14 @@
             id="org.apache.uima.caseditor.TypeSystemLocationPropertyPage">
             </page>
 	</extension>
- <extension
-       point="org.apache.uima.caseditor.editor">
+ <extension point="org.apache.uima.caseditor.editor">
     <provider
-          class="org.apache.uima.caseditor.ide.DefaultCasDocumentProvider">
+    	  id="org.apache.uima.caseditor.ide.DefaultCasDocumentProvider"
+          class="org.apache.uima.caseditor.ide.DefaultCasDocumentProvider"
+          inputType="org.eclipse.ui.IFileEditorInput">
     </provider>
  </extension>
+ 
  <extension point="org.eclipse.ui.preferencePages">
     <page
           class="org.apache.uima.caseditor.editor.AnnotationEditorPreferencePage"

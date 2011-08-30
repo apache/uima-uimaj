@@ -133,6 +133,10 @@ public class CasEditorPlugin extends AbstractUIPlugin {
   public static void log(Throwable t) {
     getDefault().getLog().log(new Status(IStatus.ERROR, ID, IStatus.OK, t.getMessage(), t));
   }
+  
+  public static void log(String message, Throwable t) {
+    getDefault().getLog().log(new Status(IStatus.ERROR, ID, IStatus.OK, message, t));
+  }
 
   public static void logError(String message) {
     getDefault().getLog().log(new Status(IStatus.ERROR, ID, message));
