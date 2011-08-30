@@ -60,7 +60,6 @@ import org.apache.uima.caseditor.editor.util.Span;
 import org.apache.uima.caseditor.editor.util.StrictTypeConstraint;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ContributionItem;
 import org.eclipse.jface.action.IAction;
@@ -123,11 +122,13 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.PageBookView;
 import org.eclipse.ui.texteditor.IStatusField;
@@ -572,12 +573,18 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
    * Creates an new AnnotationEditor object.
    */
   public AnnotationEditor() {
-	CasDocumentProvider provider =
-			CasDocumentProviderFactory.instance().getDocumentProvider();
-
-    setDocumentProvider(provider);
   }
 
+  @Override
+  public void init(IEditorSite site, IEditorInput input) throws PartInitException {
+    CasDocumentProvider provider =
+            CasDocumentProviderFactory.instance().getDocumentProvider();
+    
+    setDocumentProvider(provider);
+    
+    super.init(site, input);
+  }
+  
   @Override
   public CasDocumentProvider getDocumentProvider() {
 	  return (CasDocumentProvider) super.getDocumentProvider();
