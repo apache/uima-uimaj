@@ -38,7 +38,7 @@ public class EditorAnnotationPropertyPage extends AnnotationPropertyPage {
   @Override
   protected AnnotationStyle getAnnotationStyle(Type type) {
     // TODO: Use the editor directly ...
-    return getEditor().getDocumentProvider().getAnnotationStyle(
+    return getEditor().getCasDocumentProvider().getAnnotationStyle(
             getEditor().getEditorInput(), type);
   }
 
@@ -53,11 +53,11 @@ public class EditorAnnotationPropertyPage extends AnnotationPropertyPage {
     // TODO: Add method to change all styles at once, instead of writing
     // the dotCorpus file for changed style
     for (AnnotationStyle style : changedStyles) {
-      getEditor().getDocumentProvider().setAnnotationStyle(
+      getEditor().getCasDocumentProvider().setAnnotationStyle(
               getEditor().getEditorInput(), style);
     }
     
-    getEditor().getDocumentProvider().fireAnnotationStyleChanged(getEditor().getEditorInput(),
+    getEditor().getCasDocumentProvider().fireAnnotationStyleChanged(getEditor().getEditorInput(),
             changedStyles);
     
     return true;

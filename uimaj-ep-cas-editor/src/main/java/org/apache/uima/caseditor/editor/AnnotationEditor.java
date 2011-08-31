@@ -131,6 +131,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.PageBookView;
+import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.IStatusField;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
@@ -446,7 +447,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
         // ask document provider for this
         // getAnnotation must be added to cas document provider
 
-        AnnotationStyle style = getDocumentProvider().getAnnotationStyle(getEditorInput(),
+        AnnotationStyle style = getCasDocumentProvider().getAnnotationStyle(getEditorInput(),
         		eclipseAnnotation.getAnnotationFS().getType());
 
         return style.getLayer();
@@ -569,6 +570,8 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   
   private IPropertyChangeListener preferenceStoreChangeListener;
   
+  private CasDocumentProvider casDocumentProvider;
+  
   /**
    * Creates an new AnnotationEditor object.
    */
@@ -577,19 +580,18 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 
   @Override
   public void init(IEditorSite site, IEditorInput input) throws PartInitException {
-    CasDocumentProvider provider =
+    casDocumentProvider =
             CasDocumentProviderFactory.instance().getDocumentProvider(input);
     
-    setDocumentProvider(provider);
+    setDocumentProvider(new TextDocumentProvider(casDocumentProvider));
     
     super.init(site, input);
   }
   
-  @Override
-  public CasDocumentProvider getDocumentProvider() {
-	  return (CasDocumentProvider) super.getDocumentProvider();
+  public CasDocumentProvider getCasDocumentProvider() {
+    return casDocumentProvider;
   }
-
+  
   /**
    * Retrieves annotation editor adapters.
    *
@@ -790,7 +792,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     if (getDocument() != null) {
             
       // Synchronize shown types with the editor
-      Collection<String> shownTypes = getDocumentProvider().getShownTypes(input);
+      Collection<String> shownTypes = getCasDocumentProvider().getShownTypes(input);
       
       for (String shownType : shownTypes) {
         
@@ -864,7 +866,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
             
             Type addedAnnotationType = clonedCollection.get(0);
             showAnnotationType(addedAnnotationType, true);
-            getDocumentProvider().addShownType(getEditorInput(), addedAnnotationType);
+            getCasDocumentProvider().addShownType(getEditorInput(), addedAnnotationType);
           }
           else if (selection.size() < shownAnnotationTypes.size()) {
             List<Type> clonedCollection = new ArrayList<Type>(shownAnnotationTypes);
@@ -872,16 +874,16 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
             
             Type removedAnnotationType = clonedCollection.get(0);
             showAnnotationType(removedAnnotationType, false);
-            getDocumentProvider().removeShownType(getEditorInput(), removedAnnotationType);
+            getCasDocumentProvider().removeShownType(getEditorInput(), removedAnnotationType);
           }
           
           // Repaint after annotations are changed
           mPainter.paint(IPainter.CONFIGURATION);
           
           EditorAnnotationStatus status =
-                  getDocumentProvider().getEditorAnnotationStatus(getEditorInput());
+                  getCasDocumentProvider().getEditorAnnotationStatus(getEditorInput());
 
-          getDocumentProvider().setEditorAnnotationStatus(getEditorInput(),
+          getCasDocumentProvider().setEditorAnnotationStatus(getEditorInput(),
                   new EditorAnnotationStatus(status.getMode(), selection, getDocument().getCAS().getViewName()));
 
           if (mEditorListener != null) {
@@ -892,7 +894,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
       });
       
       EditorAnnotationStatus status =
-        getDocumentProvider().getEditorAnnotationStatus(getEditorInput());
+        getCasDocumentProvider().getEditorAnnotationStatus(getEditorInput());
       
       setAnnotationMode(getDocument().getType(status.getMode()));
       
@@ -1035,7 +1037,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
    * it not shown
    */
   private void showAnnotationType(Type type, boolean isVisible) {
-    AnnotationStyle style = getDocumentProvider().getAnnotationStyle(getEditorInput(), type);
+    AnnotationStyle style = getCasDocumentProvider().getAnnotationStyle(getEditorInput(), type);
     
     if (isVisible) {
       
@@ -1069,7 +1071,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
         
         for(Type shownType : shownAnnotationTypes) {
           AnnotationStyle potentialTagStyle = 
-            getDocumentProvider().getAnnotationStyle(getEditorInput(), shownType);
+            getCasDocumentProvider().getAnnotationStyle(getEditorInput(), shownType);
           
           if (AnnotationStyle.Style.TAG.equals(potentialTagStyle.getStyle())) {
             isKeepLineSpacing = true;
@@ -1262,7 +1264,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 	  // Check if CAS view is compatible, only if compatible the listeners
 	  // to update the annotations in the editor can be registered
 	  // and the annotations can be synchronized
-	  if (!isErrorStatus(getDocumentProvider().getStatus(getEditorInput()))) {
+	  if (!isErrorStatus(getCasDocumentProvider().getStatus(getEditorInput()))) {
 	    
       // Synchronize all annotation from the document with
       // the editor
@@ -1290,7 +1292,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
           }
         };
         
-        getDocumentProvider().addAnnotationStyleListener(getEditorInput(), mAnnotationStyleListener);
+        getCasDocumentProvider().addAnnotationStyleListener(getEditorInput(), mAnnotationStyleListener);
       }
       
       getSite().getPage().addSelectionListener(this);
@@ -1303,7 +1305,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 	    }
 	    
 	    if (mAnnotationStyleListener != null) {
-	      getDocumentProvider().removeAnnotationStyleListener(getEditorInput(), mAnnotationStyleListener);
+	      getCasDocumentProvider().removeAnnotationStyleListener(getEditorInput(), mAnnotationStyleListener);
 	      mAnnotationStyleListener = null;
 	    }
 	    
@@ -1393,7 +1395,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     EditorAnnotationStatus status = new EditorAnnotationStatus(getAnnotationMode().getName(),
             mShowAnnotationsMenu.getSelectedTypes(), getDocument().getCAS().getViewName());
 
-    getDocumentProvider().setEditorAnnotationStatus(getEditorInput(), status);
+    getCasDocumentProvider().setEditorAnnotationStatus(getEditorInput(), status);
   }
 
   /**
@@ -1486,7 +1488,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
       document.removeChangeListener(mAnnotationSynchronizer);
     }
 
-    CasDocumentProvider provider = getDocumentProvider();
+    CasDocumentProvider provider = getCasDocumentProvider();
     
     if (provider != null)
       provider.removeAnnotationStyleListener(getEditorInput(), mAnnotationStyleListener);
@@ -1539,7 +1541,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
       // Show a form to select a type system in the document provider,
       // afterwards the form calls reopenEditorWithNewTypesytem to reopen
       // the editor on the input
-      return getDocumentProvider().createTypeSystemSelectorForm(this, parent, status);
+      return getCasDocumentProvider().createTypeSystemSelectorForm(this, parent, status);
     }
     else if (status.getCode() == IStatus.OK) {
       

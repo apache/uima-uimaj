@@ -36,7 +36,7 @@ import org.eclipse.jface.text.DocumentEvent;
  *
  * Note: Before an instance can be used the  document must be set.
  */
-public class AnnotationDocument extends Document implements ICasDocument {
+class AnnotationDocument extends Document implements ICasDocument {
 
   private ICasDocument mDocument;
 

@@ -27,6 +27,11 @@ import org.eclipse.ui.IEditorPart;
  * is responsible to view and edit a {@link CAS} object.
  */
 public interface ICasEditor extends IEditorPart {
+  
+  // TODO: Add a method to get the document provider, could needed
+  //       by various views to store configuration linked to the ts!
+  
   ICasDocument getDocument();
+  
   void reopenEditorWithNewTypeSystem();
 }

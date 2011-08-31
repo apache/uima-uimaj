@@ -34,12 +34,12 @@ import org.apache.uima.caseditor.CasEditorPlugin;
 import org.apache.uima.caseditor.core.model.DefaultColors;
 import org.apache.uima.caseditor.core.model.dotcorpus.DotCorpus;
 import org.apache.uima.caseditor.core.model.dotcorpus.DotCorpusSerializer;
-import org.apache.uima.caseditor.editor.AnnotationDocument;
 import org.apache.uima.caseditor.editor.AnnotationStyle;
 import org.apache.uima.caseditor.editor.CasDocumentProvider;
 import org.apache.uima.caseditor.editor.DocumentFormat;
 import org.apache.uima.caseditor.editor.DocumentUimaImpl;
 import org.apache.uima.caseditor.editor.EditorAnnotationStatus;
+import org.apache.uima.caseditor.editor.ICasDocument;
 import org.apache.uima.caseditor.editor.ICasEditor;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -53,7 +53,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.text.IDocument;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -106,12 +105,12 @@ public class DefaultCasDocumentProvider extends
     }
   }
   
-  private class FileElementInfo extends ElementInfo {
+  private static class FileElementInfo extends ElementInfo {
     
     private DeleteElementListener deleteListener;
     
     FileElementInfo(ElementInfo info) {
-      super(info.fDocument, info.fModel);
+      super(info.element);
     }
   }
   
@@ -143,7 +142,7 @@ public class DefaultCasDocumentProvider extends
   }
   
   @Override
-  protected IDocument createDocument(Object element) throws CoreException {
+  protected ICasDocument createDocument(Object element) throws CoreException {
     if (element instanceof FileEditorInput) {
       FileEditorInput fileInput = (FileEditorInput) element;
 
@@ -256,12 +255,9 @@ public class DefaultCasDocumentProvider extends
           }
         }
 
-        AnnotationDocument document = new AnnotationDocument();
-        document.setDocument(doc);
-        
         elementErrorStatus.remove(element);
         
-        return document;
+        return doc;
       }
       else {
         
@@ -285,20 +281,19 @@ public class DefaultCasDocumentProvider extends
   }
 
   @Override
-  protected void doSaveDocument(IProgressMonitor monitor, Object element, IDocument document,
+  protected void doSaveDocument(IProgressMonitor monitor, Object element, ICasDocument document,
           boolean overwrite) throws CoreException {
 
-    fireElementStateChanging(element);
+//    fireElementStateChanging(element);
 
     if (element instanceof FileEditorInput) {
       FileEditorInput fileInput = (FileEditorInput) element;
 
       IFile file = fileInput.getFile();
 
-      if (document instanceof AnnotationDocument) {
+      if (document instanceof DocumentUimaImpl) {
         
-        AnnotationDocument annotationDocument = (AnnotationDocument) document;
-        DocumentUimaImpl documentImpl = (DocumentUimaImpl) annotationDocument.getDocument();
+        DocumentUimaImpl documentImpl = (DocumentUimaImpl) document;
         
         ByteArrayOutputStream outStream = new ByteArrayOutputStream(40000); 
         documentImpl.serialize(outStream);
@@ -475,8 +470,7 @@ public class DefaultCasDocumentProvider extends
   }
   
   @Override
-	protected ElementInfo createElementInfo(Object element)
-			throws CoreException {
+	protected ElementInfo createElementInfo(Object element) {
     
     FileElementInfo info = new FileElementInfo(super.createElementInfo(element));
 

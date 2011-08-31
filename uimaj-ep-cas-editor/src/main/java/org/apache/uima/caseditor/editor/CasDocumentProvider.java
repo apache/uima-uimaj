@@ -29,22 +29,41 @@ import org.apache.uima.cas.Type;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.jface.operation.IRunnableContext;
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.texteditor.AbstractDocumentProvider;
+import org.eclipse.ui.texteditor.IElementStateListener;
 
 /**
  * Provides the {@link org.apache.uima.caseditor.editor.ICasDocument} for the
  * {@link AnnotationEditor}.
+ * 
+ * Note: This document provider is still experimental and its API might change without
+ * any notice, even on a revision release!
  */
-public abstract class CasDocumentProvider extends AbstractDocumentProvider {
+public abstract class CasDocumentProvider {
 
+  protected static class ElementInfo {
+    public int referenceCount;
+    public final Object element;
+    
+    protected ElementInfo(Object element) {
+      this.element = element;
+    }
+  }
+  
   public static final int TYPE_SYSTEM_NOT_AVAILABLE_STATUS_CODE = 12;
+  
+  private Set<IElementStateListener> elementStateListeners =
+          new HashSet<IElementStateListener>();
   
   private Set<IAnnotationStyleListener> annotationStyleListeners =
       new HashSet<IAnnotationStyleListener>();
+  
+  protected ElementInfo createElementInfo(Object element) {
+    return new ElementInfo(element);
+  }
+  
+  protected void disposeElementInfo(Object element, ElementInfo info) {
+  }
   
   /**
    * The method {@link #createDocument(Object)} put error status objects for the given element in
@@ -54,36 +73,17 @@ public abstract class CasDocumentProvider extends AbstractDocumentProvider {
    */
   protected Map<Object, IStatus> elementErrorStatus = new HashMap<Object, IStatus>();
 
-  @Override
-  protected IAnnotationModel createAnnotationModel(final Object element) throws CoreException {
-	  return new org.eclipse.jface.text.source.AnnotationModel();
-  }
-
   /**
    * Creates the a new {@link AnnotationDocument} from the given {@link IEditorInput} element.
    * For all other elements null is returned.
    */
-  @Override
-  protected abstract IDocument createDocument(Object element) throws CoreException;
+  protected abstract ICasDocument createDocument(Object element) throws CoreException;
 
-  @Override
   protected abstract void doSaveDocument(IProgressMonitor monitor, Object element,
-          IDocument document, boolean overwrite) throws CoreException;
+          ICasDocument document, boolean overwrite) throws CoreException;
 
-  @Override
-  protected IRunnableContext getOperationRunner(IProgressMonitor monitor) {
-    return null;
-  }
-
-  @Override
   public IStatus getStatus(Object element) {
-    IStatus status = elementErrorStatus.get(element);
-
-    if (status == null) {
-      status = super.getStatus(element);
-    }
-
-    return status;
+    return elementErrorStatus.get(element);
   }
 
   /**
@@ -136,9 +136,25 @@ public abstract class CasDocumentProvider extends AbstractDocumentProvider {
     }
   }
   
-  public void fireDeleteEvent(Object element) {
-    fireElementDeleted(element);
+  public abstract Composite createTypeSystemSelectorForm(ICasEditor editor, Composite parent, IStatus status);
+  
+  public void addElementStateListener(IElementStateListener listener) {
+    elementStateListeners.add(listener);
+  }
+
+  public void removeElementStateListener(IElementStateListener listener) {
+    elementStateListeners.remove(listener);
   }
   
-  public abstract Composite createTypeSystemSelectorForm(ICasEditor editor, Composite parent, IStatus status);
+  protected void fireElementDeleted(Object element) {
+    for (IElementStateListener listener : elementStateListeners) {
+      listener.elementDeleted(element);
+    }
+  }
+  
+  protected void fireElementDirtyStateChanged(Object element, boolean isDirty) {
+    for (IElementStateListener listener : elementStateListeners) {
+      listener.elementDirtyStateChanged(element, isDirty);
+    }
+  }
 }
