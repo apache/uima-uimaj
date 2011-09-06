@@ -50,7 +50,11 @@ public class FileSaveAsEventHandler implements ActionListener {
     int rc = fileChooser.showSaveDialog(this.main);
     if (rc == JFileChooser.APPROVE_OPTION) {
       File tmp = this.main.getTextFile();
-      this.main.setTextFile(fileChooser.getSelectedFile());
+      File fileToSaveTo = fileChooser.getSelectedFile();
+      if (!this.main.confirmOverwrite(fileToSaveTo)) {
+        return;
+      }      
+      this.main.setTextFile(fileToSaveTo);
       boolean fileSaved = this.main.saveFile();
       if (fileSaved) {
         this.main.setDirty(false);

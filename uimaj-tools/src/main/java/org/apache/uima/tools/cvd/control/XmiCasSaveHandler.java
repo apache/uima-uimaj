@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 import org.apache.uima.cas.impl.XmiCasSerializer;
 import org.apache.uima.tools.cvd.MainFrame;
@@ -65,6 +66,9 @@ public class XmiCasSaveHandler implements ActionListener {
     int rc = fileChooser.showSaveDialog(this.main);
     if (rc == JFileChooser.APPROVE_OPTION) {
       File xmiCasFile = fileChooser.getSelectedFile();
+      if (!this.main.confirmOverwrite(xmiCasFile)) {
+        return;
+      }
       this.main.setXcasFileOpenDir(xmiCasFile.getParentFile());
       try {
         OutputStream outStream = new BufferedOutputStream(new FileOutputStream(xmiCasFile));

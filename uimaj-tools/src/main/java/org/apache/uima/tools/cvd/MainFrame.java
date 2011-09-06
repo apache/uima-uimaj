@@ -730,6 +730,26 @@ public class MainFrame extends JFrame {
     }
     return true;
   }
+  
+  public boolean confirmOverwrite(File f) {
+    if (f.exists()) {
+      Object[] options = {"Yes, Overwrite.",
+                          "No"};
+      int n = JOptionPane.showOptionDialog(this,
+          "File " + f.getAbsolutePath() + " exists.\nWould you like to overwrite it?",
+          
+          "Confirm Overwrite",
+          JOptionPane.YES_NO_OPTION,
+          JOptionPane.QUESTION_MESSAGE,
+          null,
+          options,
+          options[1]);
+      if (n == 1) {
+        return false;
+      }
+    }
+    return true;
+  }
 
   private void createTextArea() {
     try {

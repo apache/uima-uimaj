@@ -54,6 +54,9 @@ public class XCASSaveTSHandler implements ActionListener {
     int rc = fileChooser.showSaveDialog(this.main);
     if (rc == JFileChooser.APPROVE_OPTION) {
       File tsFile = fileChooser.getSelectedFile();
+      if (!this.main.confirmOverwrite(tsFile)) {
+        return;
+      }
       this.main.setXcasFileOpenDir(tsFile.getParentFile());
       try {
         OutputStream outStream = new BufferedOutputStream(new FileOutputStream(tsFile));
