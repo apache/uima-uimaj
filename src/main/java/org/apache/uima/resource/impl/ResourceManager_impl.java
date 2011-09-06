@@ -673,7 +673,7 @@ public class ResourceManager_impl implements ResourceManager {
     return mRelativePathResolver;
   }
 
-  static class ResourceRegistration {
+  static protected class ResourceRegistration { // make protected https://issues.apache.org/jira/browse/UIMA-2102
     Object resource;
 
     ExternalResourceDescription description;
