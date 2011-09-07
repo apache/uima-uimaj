@@ -25,6 +25,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.Widget;
 
 import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 import org.apache.uima.taeconfigurator.editors.ui.Utility;
@@ -57,13 +58,13 @@ public abstract class AbstractDialogMultiColTable extends AbstractDialog {
       Point mousePosition = new Point(event.x, event.y);
       TableItem item = table.getItem(mousePosition);
       if (null == item) {
-        jitHowTo();
+        jitHowTo(event.widget);
         return;
       }
 
       int col = getHitColumn(item, mousePosition);
       if (col != 1 && col != 2) {
-        jitHowTo();
+        jitHowTo(event.widget);
         return;
       }
       if (col == 1 && !enableCol1) {
@@ -80,8 +81,8 @@ public abstract class AbstractDialogMultiColTable extends AbstractDialog {
     super.handleEvent(event);
   }
 
-  private void jitHowTo() {
-    Utility.popMessage("Where to mouse click",
+  private void jitHowTo(Widget w) {
+    Utility.popMessage(w, "Where to mouse click",
             "Please click the mouse in the input or output columns to toggle the selection.",
             MessageDialog.INFORMATION);
   }

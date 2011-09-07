@@ -28,6 +28,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Widget;
 
 // MessageDialog extended only to enable resize
 public class Utility extends MessageDialog {
@@ -85,16 +86,35 @@ public class Utility extends MessageDialog {
   public static void popMessage(String title, String message, int type) {
     popMessage(title, message, type, OKstring);
   }
+  
+  public static void popMessage(Widget w, String title, String message, int type) {
+    popMessage(w, title, message, type, OKstring);
+  }
 
   public static int popMessage(String title, String message, int type, String[] buttons) {
-    Utility dialog = new Utility(new Shell(), title, null, message, type, buttons, 0);
-    dialog.setShellStyle(SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL | SWT.RESIZE);
+    return popMessage(new Shell(), title,message, type, buttons);
+//    Utility dialog = new Utility(new Shell(), title, null, message, type, buttons, 0);
+//    dialog.setShellStyle(SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL | SWT.RESIZE);
+//    dialog.getShell().forceActive();  
+//    int returnCode = dialog.open();
+//    if (returnCode == -1)
+//      returnCode = Window.CANCEL; // Cancel code
+//    return returnCode;
+  }
+
+  public static int popMessage(Shell parent, String title, String message, int type, String[] buttons) {
+    Utility dialog = new Utility(parent, title, null, message, type, buttons, 0);
+    dialog.setShellStyle(SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL | SWT.RESIZE); 
     int returnCode = dialog.open();
     if (returnCode == -1)
       returnCode = Window.CANCEL; // Cancel code
     return returnCode;
   }
 
+  // https://issues.apache.org/jira/browse/UIMA-2114
+  public static int popMessage(Widget w, String title, String message, int type, String[] buttons) {
+    return popMessage(w.getDisplay().getActiveShell(), title, message, type, buttons);
+  }
   /**
    * remove 1 element (must be present) use == test
    * 
