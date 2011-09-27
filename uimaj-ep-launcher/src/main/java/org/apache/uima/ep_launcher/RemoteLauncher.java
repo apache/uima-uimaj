@@ -37,6 +37,7 @@ import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.FileUtils;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLSerializer;
+import org.apache.uima.util.impl.ProcessTrace_impl;
 import org.xml.sax.SAXException;
 
 /**
@@ -339,6 +340,7 @@ public class RemoteLauncher {
     
     findAndProcessFiles(inputResource, fileFilter, ae, cas);
     
+    ae.collectionProcessComplete(new ProcessTrace_impl());
     ae.destroy();
   }
 }
