@@ -131,7 +131,6 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.PageBookView;
-import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.IStatusField;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
@@ -673,7 +672,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 
         if (newCaretOffset != mCursorPosition) {
           mCursorPosition = newCaretOffset;
-          cursorPositionChanged();
+          refreshSelection();
         }
       }
 
@@ -689,7 +688,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 
         if (newCaretOffset != mCursorPosition) {
           mCursorPosition = newCaretOffset;
-          cursorPositionChanged();
+          refreshSelection();
         }
       }
 
@@ -702,12 +701,29 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
         
         if (newCaretOffset != mCursorPosition) {
           mCursorPosition = newCaretOffset;
-          cursorPositionChanged();
+          refreshSelection();
         }        
       }
 
     });
 
+    
+    // UIMA-2242:
+    // When a single character is selected with a double click the selection
+    // changes but the caret does not.
+    // A press on enter now fails to create an annotation.
+    getSourceViewer().getTextWidget().addSelectionListener(new SelectionListener() {
+		
+		public void widgetSelected(SelectionEvent e) {
+			 refreshSelection();
+		}
+		
+		public void widgetDefaultSelected(SelectionEvent e) {
+			// This method is never called!
+		}
+	});
+    
+    
     DragSource dragSource = new DragSource(getSourceViewer().getTextWidget(), DND.DROP_COPY);
 
     Transfer[] types = new Transfer[] { FeatureStructureTransfer.getInstance() };
@@ -754,7 +770,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     initiallySynchronizeUI();
   }
 
-  private void cursorPositionChanged() {
+  private void refreshSelection() {
     mFeatureStructureSelectionProvider.setSelection(getDocument(), getSelectedAnnotations());
   }
 
@@ -1207,7 +1223,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     } else {
       Map<Integer, AnnotationFS> view = getView(getAnnotationMode());
 
-      AnnotationFS annotation = view.get(mCursorPosition);
+      AnnotationFS annotation = view.get(getSourceViewer().getTextWidget().getCaretOffset());
 
       if (annotation == null) {
         annotation = view.get(mCursorPosition - 1);
