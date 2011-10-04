@@ -19,13 +19,17 @@
 
 package org.apache.uima.caseditor.ide;
 
+import java.awt.Color;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Type;
@@ -35,6 +39,7 @@ import org.apache.uima.caseditor.core.model.DefaultColors;
 import org.apache.uima.caseditor.core.model.dotcorpus.DotCorpus;
 import org.apache.uima.caseditor.core.model.dotcorpus.DotCorpusSerializer;
 import org.apache.uima.caseditor.editor.AnnotationStyle;
+import org.apache.uima.caseditor.editor.AnnotationStyle.Style;
 import org.apache.uima.caseditor.editor.CasDocumentProvider;
 import org.apache.uima.caseditor.editor.DocumentFormat;
 import org.apache.uima.caseditor.editor.DocumentUimaImpl;
@@ -53,6 +58,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -125,13 +132,12 @@ public class DefaultCasDocumentProvider extends
   private Map<String, EditorAnnotationStatus> sharedEditorStatus = new HashMap<String, EditorAnnotationStatus>();
   
   /**
-   * This map resolves a type system to a style.
-   * 
-   * TODO: Right now styles are not closed, how are they
-   * deleted when they are not longer needed ?!
+   * This map resolves a type system to a style. It is used to cache type system
+   * preference instance while the editor is open.
    */
-  private Map<String, DotCorpus> styles = new HashMap<String, DotCorpus>();
+  private Map<String, PreferenceStore> typeSystemPreferences = new HashMap<String, PreferenceStore>();
   
+  // UIMA-2245 Remove this method together with the migration code below one day
   private String getStyleFileForTypeSystem(String typeSystemFile) {
     int lastSlashIndex = typeSystemFile.lastIndexOf("/");
     
@@ -139,6 +145,85 @@ public class DefaultCasDocumentProvider extends
     styleId = styleId + ".style-" + typeSystemFile.substring(lastSlashIndex + 1);
     
     return styleId;
+  }
+  
+  private String getPreferenceFileForTypeSystem(String typeSystemFile) {
+    int lastSlashIndex = typeSystemFile.lastIndexOf("/");
+    
+    String styleId = typeSystemFile.substring(0, lastSlashIndex + 1);
+    styleId = styleId + ".pref-" + typeSystemFile.substring(lastSlashIndex + 1);
+    
+    return styleId;
+  }
+  
+  private void putAnnotatationStyleToStore(IPreferenceStore store, AnnotationStyle style) {
+    
+    Color color = new Color(style.getColor().getRed(), style.getColor().getGreen(),
+            style.getColor().getBlue());
+    
+    // TODO: Define appendixes in constants ...
+    store.putValue(style.getAnnotation() + ".style.color", Integer.toString(color.getRGB()));
+    store.putValue(style.getAnnotation() + ".style.strategy", style.getStyle().toString());
+    store.putValue(style.getAnnotation() + ".style.layer", Integer.toString(style.getLayer()));
+    
+    if (style.getConfiguration() != null)
+      store.putValue(style.getAnnotation() + ".style.config", style.getConfiguration());
+  }
+  
+  // method to get annotation style from pref store
+  private AnnotationStyle getAnnotationStyleFromStore(IPreferenceStore store, String typeName) {
+    
+    AnnotationStyle.Style style = AnnotationStyle.Style.UNDERLINE;
+    
+    String styleString = store.getString(typeName + ".style.strategy");
+    if (styleString.length() != 0) {
+      // TODO: Might throw exception, catch it and use default!
+      try {
+        style = AnnotationStyle.Style.valueOf(styleString);
+      }
+      catch (IllegalArgumentException e) {
+      }
+    }
+    
+    Color color = Color.RED;
+    
+    String colorString = store.getString(typeName + ".style.color");
+    if (colorString.length() != 0) {
+      try {
+        int colorInteger = Integer.parseInt(colorString);
+        color = new Color(colorInteger);
+      }
+      catch (NumberFormatException e) {
+      }
+    }
+    
+    int layer = 0;
+    
+    String layerString = store.getString(typeName + ".style.layer");
+    
+    if (layerString.length() != 0) {
+      try {
+        layer = Integer.parseInt(layerString);
+      }
+      catch (NumberFormatException e) {
+      }
+    }
+    
+    String configuration = store.getString(typeName + ".style.config");
+    
+    if (configuration.length() != 0)
+      configuration = null;
+    
+    return new AnnotationStyle(typeName, style, color, layer, configuration);
+  }
+  
+  private Collection<AnnotationStyle> getConfiguredAnnotationStyles(IPreferenceStore store, TypeSystem types) {
+
+    Collection<AnnotationStyle> styles = new HashSet<AnnotationStyle>();
+    
+    // TODO: for each annotation type, try to retrieve annotation styles
+    
+    return styles;
   }
   
   @Override
@@ -165,6 +250,7 @@ public class DefaultCasDocumentProvider extends
       
       if (typeSystemFile != null && typeSystemFile.exists()) {
         
+        // TODO: Update this comment!
         // Try to load a style file for the type system
         // Should be named: ts file name, prefixed with .style-
         // If it does not exist, create it when it is changed
@@ -172,45 +258,88 @@ public class DefaultCasDocumentProvider extends
         // colors could change completely when the a type is
         // added or removed to the type system
         
-        IFile styleFile = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(
-                getStyleFileForTypeSystem(typeSystemFile.getFullPath().toPortableString())));
+        IFile prefFile = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(
+                getPreferenceFileForTypeSystem(typeSystemFile.getFullPath().toPortableString())));
         
-        DotCorpus dotCorpus = styles.get(styleFile.getFullPath().toPortableString());
+        PreferenceStore tsPrefStore = typeSystemPreferences.get(prefFile.getFullPath().toPortableString());
         
-        if (dotCorpus == null) {
-          if (styleFile.exists()) {
-           InputStream styleFileIn = null;;
-           try {
-             styleFileIn = styleFile.getContents();
-             dotCorpus = DotCorpusSerializer.parseDotCorpus(styleFileIn);
-           }
-           finally {
-             if (styleFileIn != null)
+        // If lookup for store failed ...
+        if (tsPrefStore == null) {
+          if (prefFile.exists()) {
+            tsPrefStore = new PreferenceStore(prefFile.getName());
+            try {
+              tsPrefStore.load(prefFile.getContents()); // TODO: Close stream!
+            } catch (IOException e) {
+              e.printStackTrace(); // TODO: Handle this correctly!
+            }
+          }
+          else {
+            
+            // UIMA-2245
+            // DotCorpus to Eclipse PreferenceStore migration code.
+            // If there is DotCorpus style file and not yet a preference store file
+            // the settings from the DotCorpus style file should be written into a preference store file.
+            IFile styleFile = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(
+                    getStyleFileForTypeSystem(typeSystemFile.getFullPath().toPortableString())));
+            
+            if (styleFile.exists()) {
+              InputStream styleFileIn = null;;
+              DotCorpus dotCorpus = null;
               try {
-                styleFileIn.close();
-              } catch (IOException e) {
-                CasEditorPlugin.log(e);
+                styleFileIn = styleFile.getContents();
+                dotCorpus = DotCorpusSerializer.parseDotCorpus(styleFileIn);
+                
               }
-           }
+              finally {
+                if (styleFileIn != null)
+                 try {
+                   styleFileIn.close();
+                 } catch (IOException e) {
+                   CasEditorPlugin.log(e);
+                 }
+              }
+              
+              if (dotCorpus != null) {
+                tsPrefStore = new PreferenceStore(prefFile.getName());
+                for (AnnotationStyle style : dotCorpus.getAnnotationStyles()) {
+                  putAnnotatationStyleToStore(tsPrefStore, style);
+                }
+                
+                for (String shownType : dotCorpus.getShownTypes()) {
+                  tsPrefStore.putValue(shownType + ".isShown", "true");
+                }
+                
+                ByteArrayOutputStream prefOut = new ByteArrayOutputStream();
+                try {
+                  tsPrefStore.save(prefOut, "");
+                } catch (IOException e) {
+                  // Should never happen!
+                  CasEditorPlugin.log(e);
+                }
+                
+                // TODO: Do we need to handle exceptions here?
+                prefFile.create(new ByteArrayInputStream(prefOut.toByteArray()), IFile.FORCE, null);
+              }
+             }
           }
           
-          if (dotCorpus == null) {
-            dotCorpus = new DotCorpus();
+          // No preference defined, lets use defaults
+          if (tsPrefStore == null) {
+            tsPrefStore = new PreferenceStore(prefFile.getName());
             
-            // Initialize colors
             CAS cas = DocumentUimaImpl.getVirginCAS(typeSystemFile);
             TypeSystem ts = cas.getTypeSystem();
             
-            Collection<AnnotationStyle> defaultStyles = dotCorpus.getAnnotationStyles();
+            Collection<AnnotationStyle> defaultStyles = getConfiguredAnnotationStyles(tsPrefStore, ts);
             
             Collection<AnnotationStyle> newStyles = DefaultColors.assignColors(ts, defaultStyles);
             
             for (AnnotationStyle style : newStyles) {
-             dotCorpus.setStyle(style);
+              putAnnotatationStyleToStore(tsPrefStore, style);
             }
           }
           
-          styles.put(styleFile.getFullPath().toPortableString(), dotCorpus);
+          typeSystemPreferences.put(prefFile.getFullPath().toPortableString(), tsPrefStore);
         }
         
         documentToTypeSystemMap.put(casFile.getFullPath().toPortableString(),
@@ -284,8 +413,6 @@ public class DefaultCasDocumentProvider extends
   protected void doSaveDocument(IProgressMonitor monitor, Object element, ICasDocument document,
           boolean overwrite) throws CoreException {
 
-//    fireElementStateChanging(element);
-
     if (element instanceof FileEditorInput) {
       FileEditorInput fileInput = (FileEditorInput) element;
 
@@ -304,8 +431,7 @@ public class DefaultCasDocumentProvider extends
       }
     }
 
-    // tell everyone that the element changed and is not
-    // dirty any longer
+    // tell everyone that the element changed and is not dirty any longer
     fireElementDirtyStateChanged(element, false);
   }
 
@@ -318,38 +444,37 @@ public class DefaultCasDocumentProvider extends
     return null;
   }
   
-  // get access to style for element
-  private DotCorpus getStyle(Object element) {
-      String tsId = getTypesystemId(element);
-       
-      return styles.get(getStyleFileForTypeSystem(tsId));
+  private IPreferenceStore getPreferences(Object element) {
+    String tsId = getTypesystemId(element);
+    
+    return typeSystemPreferences.get(getPreferenceFileForTypeSystem(tsId));
   }
   
-  private void saveStyles(Object element) {
-    String styleId = getStyleFileForTypeSystem(getTypesystemId(element));
+  private void savePreferences(Object element) {
+    String prefereceFileId = getPreferenceFileForTypeSystem(getTypesystemId(element));
     
-    DotCorpus style = styles.get(styleId);
+    PreferenceStore preferences = typeSystemPreferences.get(prefereceFileId);
     
     // serialize ... 
-    IFile dotCorpusFile = ResourcesPlugin.getWorkspace().getRoot().getFile(
-            Path.fromPortableString(styleId));
+    IFile preferenceFile = ResourcesPlugin.getWorkspace().getRoot().getFile(
+            Path.fromPortableString(prefereceFileId));
     
-    ByteArrayOutputStream dotCorpusBytes = new ByteArrayOutputStream();
+    ByteArrayOutputStream preferenceBytes = new ByteArrayOutputStream();
     
     try {
-      DotCorpusSerializer.serialize(style, dotCorpusBytes);
-    } catch (CoreException e) {
+      preferences.save(preferenceBytes, "");
+    } catch (IOException e) {
       // will not fail, writing to memory
       CasEditorPlugin.log(e);
     }
     
     try {
-      if (dotCorpusFile.exists()) {
-        dotCorpusFile.setContents(new ByteArrayInputStream(dotCorpusBytes.toByteArray()),
+      if (preferenceFile.exists()) {
+        preferenceFile.setContents(new ByteArrayInputStream(preferenceBytes.toByteArray()),
                 true, false, null);
       }
       else {
-        dotCorpusFile.create(new ByteArrayInputStream(dotCorpusBytes.toByteArray()),
+        preferenceFile.create(new ByteArrayInputStream(preferenceBytes.toByteArray()),
                 true, null);
       }
     }
@@ -366,9 +491,9 @@ public class DefaultCasDocumentProvider extends
     if (type == null)
     	throw new IllegalArgumentException("type parameter must not be null!");
     
-    DotCorpus dotCorpus = getStyle(element);
+    IPreferenceStore prefStore = getPreferences(element);
     
-    return dotCorpus.getAnnotation(type);
+    return getAnnotationStyleFromStore(prefStore, type.getName());
   }
 
   // TODO: Disk must be accessed for every changed annotation style
@@ -376,32 +501,40 @@ public class DefaultCasDocumentProvider extends
   @Override
   public void setAnnotationStyle(Object element, AnnotationStyle style) {
 
-    DotCorpus dotCorpus = getStyle(element);
-    dotCorpus.setStyle(style);
+    IPreferenceStore prefStore = getPreferences(element);
+    putAnnotatationStyleToStore(prefStore, style);
     
-    saveStyles(element); 
+    savePreferences(element); 
   }
   
   @Override
   protected Collection<String> getShownTypes(Object element) {
-    DotCorpus dotCorpus = getStyle(element);
-    return dotCorpus.getShownTypes();
+    PreferenceStore prefStore = (PreferenceStore) getPreferences(element);
+    
+    Set<String> shownTypes = new HashSet<String>();
+    
+    for (String prefName : prefStore.preferenceNames()) {
+      if (prefName.endsWith(".isShown")) {
+        if (prefStore.getBoolean(prefName))
+          shownTypes.add(prefName.substring(0, prefName.lastIndexOf(".isShown")));
+      }
+    }
+    
+    return shownTypes;
   }
   
   @Override
   protected void addShownType(Object element, Type type) {
-    DotCorpus dotCorpus = getStyle(element);
-    dotCorpus.setShownType(type.getName());
-    
-    saveStyles(element);
+    IPreferenceStore prefStore = getPreferences(element);
+    prefStore.setValue(type.getName() + ".isShown", Boolean.TRUE.toString());
+    savePreferences(element);
   }
   
   @Override
   protected void removeShownType(Object element, Type type) {
-    DotCorpus dotCorpus = getStyle(element);
-    dotCorpus.removeShownType(type.getName());
-    
-    saveStyles(element);
+    IPreferenceStore prefStore = getPreferences(element);
+    prefStore.setValue(type.getName() + ".isShown", Boolean.FALSE.toString());
+    savePreferences(element);
   }
   
   @Override
