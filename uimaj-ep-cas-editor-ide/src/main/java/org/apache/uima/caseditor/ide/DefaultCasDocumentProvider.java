@@ -486,6 +486,11 @@ public class DefaultCasDocumentProvider extends
   }
   
   @Override
+  public IPreferenceStore getTypeSystemPreferenceStore(Object element) {
+    return getPreferences(element);
+  }
+  
+  @Override
   public AnnotationStyle getAnnotationStyle(Object element, Type type) {
     
     if (type == null)

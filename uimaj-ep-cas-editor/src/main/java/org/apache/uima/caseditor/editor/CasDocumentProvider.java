@@ -29,6 +29,7 @@ import org.apache.uima.cas.Type;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.texteditor.IElementStateListener;
 
@@ -86,6 +87,8 @@ public abstract class CasDocumentProvider {
     return elementErrorStatus.get(element);
   }
 
+  public abstract IPreferenceStore getTypeSystemPreferenceStore(Object element);
+  
   /**
    * Retrieves an <code>AnnotationStyle</code> from the underlying storage.
    *
