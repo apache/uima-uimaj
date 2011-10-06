@@ -59,8 +59,8 @@
     <uimaScmRoot>uimaj</uimaScmRoot>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
     <eclipseUpdateSite>${project.build.directory}/eclipse-update-site</eclipseUpdateSite>
-    <item-maven-release-version>2.3.1</item-maven-release-version>
-    <item-eclipse-release-version>2.3.1</item-eclipse-release-version>
+    <item-maven-release-version>2.4.0</item-maven-release-version>
+    <item-eclipse-release-version>2.4.0</item-eclipse-release-version>
   </properties>
 
   <!-- don't use dependency mechanism - use dependency:copy

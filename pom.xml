@@ -29,13 +29,13 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>2.3.2-SNAPSHOT</version>
+    <version>2.4.0-SNAPSHOT</version>
     <relativePath>uimaj-parent/pom.xml</relativePath>
   </parent>
 
   <artifactId>uimaj</artifactId>
   <packaging>pom</packaging>
-  <version>2.3.2-SNAPSHOT</version>
+  <version>2.4.0-SNAPSHOT</version>
   <name>UIMA Java SDK: ${project.artifactId}</name>
   <description>The top project for the uimaj SDK</description>
   <url>${uimaWebsiteUrl}</url>
@@ -62,7 +62,7 @@
 
   <properties>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
-    <jiraVersion>12315996</jiraVersion> <!-- for 2.3.2SDK -->  
+    <jiraVersion>12315996</jiraVersion> <!-- for 2.4.0SDK -->  
     <assemblyFinalName>uimaj-${project.version}</assemblyFinalName>  
     <postNoticeText>${ibmNoticeText}</postNoticeText>    
   </properties>

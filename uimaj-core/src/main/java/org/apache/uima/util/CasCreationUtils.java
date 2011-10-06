@@ -1784,6 +1784,7 @@ public class CasCreationUtils {
                   System.err.format("GetMetaDataCache: cleanup task terminating, cache empty%n");
                 }
                 cancel();
+                cleanupTimer.cancel();  // probably not needed, but for safety ...
                 cleanupTimer = null;
               }
               if (cacheDebug) {
@@ -1792,7 +1793,7 @@ public class CasCreationUtils {
             }
           }
         };
-        cleanupTimer.scheduleAtFixedRate(metaDataCacheCleanupTask, HOLD_TIME, HOLD_TIME);
+        cleanupTimer.schedule(metaDataCacheCleanupTask, HOLD_TIME, HOLD_TIME);
       }
     }
   }
