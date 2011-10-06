@@ -19,6 +19,7 @@
 
 package org.apache.uima.caseditor.editor;
 
+import java.awt.Color;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -30,6 +31,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.texteditor.IElementStateListener;
 
@@ -92,26 +94,63 @@ public abstract class CasDocumentProvider {
   /**
    * Retrieves an <code>AnnotationStyle</code> from the underlying storage.
    *
+   * Note: Internal usage only!
+   * 
    * @param element
    * @param type
    * @return
    */
-  public abstract AnnotationStyle getAnnotationStyle(Object element, Type type);
+  public AnnotationStyle getAnnotationStyle(Object element, Type type) {
+    
+    if (type == null)
+      throw new IllegalArgumentException("type parameter must not be null!");
+    
+    IPreferenceStore prefStore = getTypeSystemPreferenceStore(element);
+    
+    return getAnnotationStyleFromStore(prefStore, type.getName());
+  }
 
   /**
+   * Sets an annotation style.
+   * 
+   * Note: Internal usage only!
    * 
    * @param element
    * @param style
    */
-  public abstract void setAnnotationStyle(Object element, AnnotationStyle style);
+  // TODO: Disk must be accessed for every changed annotation style
+  // add a second method which can take all changed styles
+  public void setAnnotationStyle(Object element, AnnotationStyle style) {
+    IPreferenceStore prefStore = getTypeSystemPreferenceStore(element);
+    putAnnotatationStyleToStore(prefStore, style);
+  }
   
   // TODO: We also need a set method here
   
-  protected abstract Collection<String> getShownTypes(Object element);
+  protected Collection<String> getShownTypes(Object element) {
+    PreferenceStore prefStore = (PreferenceStore) getTypeSystemPreferenceStore(element);
+    
+    Set<String> shownTypes = new HashSet<String>();
+    
+    for (String prefName : prefStore.preferenceNames()) {
+      if (prefName.endsWith(".isShown")) {
+        if (prefStore.getBoolean(prefName))
+          shownTypes.add(prefName.substring(0, prefName.lastIndexOf(".isShown")));
+      }
+    }
+    
+    return shownTypes;
+  }
   
-  protected abstract void addShownType(Object element, Type type);
+  protected void addShownType(Object element, Type type) {
+    IPreferenceStore prefStore = getTypeSystemPreferenceStore(element);
+    prefStore.setValue(type.getName() + ".isShown", Boolean.TRUE.toString());
+  }
   
-  protected abstract void removeShownType(Object element, Type type);
+  protected void removeShownType(Object element, Type type) {
+    IPreferenceStore prefStore = getTypeSystemPreferenceStore(element);
+    prefStore.setValue(type.getName() + ".isShown", Boolean.FALSE.toString());
+  }
   
   protected abstract EditorAnnotationStatus getEditorAnnotationStatus(Object element);
 
@@ -125,6 +164,69 @@ public abstract class CasDocumentProvider {
   // Must that be already done for multiple CAS Editor projects, or do they have an instance
   // per project ???
   // Is there one doc provider instance per editor, or one for many editors ?!
+  
+  protected static void putAnnotatationStyleToStore(IPreferenceStore store, AnnotationStyle style) {
+    
+    Color color = new Color(style.getColor().getRed(), style.getColor().getGreen(),
+            style.getColor().getBlue());
+    
+    // TODO: Define appendixes in constants ...
+    store.putValue(style.getAnnotation() + ".style.color", Integer.toString(color.getRGB()));
+    store.putValue(style.getAnnotation() + ".style.strategy", style.getStyle().toString());
+    store.putValue(style.getAnnotation() + ".style.layer", Integer.toString(style.getLayer()));
+    
+    if (style.getConfiguration() != null)
+      store.putValue(style.getAnnotation() + ".style.config", style.getConfiguration());
+  }
+  
+  // method to get annotation style from pref store
+  private AnnotationStyle getAnnotationStyleFromStore(IPreferenceStore store, String typeName) {
+    
+    AnnotationStyle.Style style = AnnotationStyle.Style.UNDERLINE;
+    
+    String styleString = store.getString(typeName + ".style.strategy");
+    if (styleString.length() != 0) {
+      // TODO: Might throw exception, catch it and use default!
+      try {
+        style = AnnotationStyle.Style.valueOf(styleString);
+      }
+      catch (IllegalArgumentException e) {
+      }
+    }
+    
+    Color color = Color.RED;
+    
+    String colorString = store.getString(typeName + ".style.color");
+    if (colorString.length() != 0) {
+      try {
+        int colorInteger = Integer.parseInt(colorString);
+        color = new Color(colorInteger);
+      }
+      catch (NumberFormatException e) {
+      }
+    }
+    
+    int layer = 0;
+    
+    String layerString = store.getString(typeName + ".style.layer");
+    
+    if (layerString.length() != 0) {
+      try {
+        layer = Integer.parseInt(layerString);
+      }
+      catch (NumberFormatException e) {
+      }
+    }
+    
+    String configuration = store.getString(typeName + ".style.config");
+    
+    if (configuration.length() != 0)
+      configuration = null;
+    
+    return new AnnotationStyle(typeName, style, color, layer, configuration);
+  }
+  
+  
   public void addAnnotationStyleListener(Object element, IAnnotationStyleListener listener) {
     annotationStyleListeners.add(listener);
   }

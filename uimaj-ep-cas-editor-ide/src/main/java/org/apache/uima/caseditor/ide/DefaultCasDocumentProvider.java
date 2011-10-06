@@ -19,17 +19,14 @@
 
 package org.apache.uima.caseditor.ide;
 
-import java.awt.Color;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Type;
@@ -39,7 +36,6 @@ import org.apache.uima.caseditor.core.model.DefaultColors;
 import org.apache.uima.caseditor.core.model.dotcorpus.DotCorpus;
 import org.apache.uima.caseditor.core.model.dotcorpus.DotCorpusSerializer;
 import org.apache.uima.caseditor.editor.AnnotationStyle;
-import org.apache.uima.caseditor.editor.AnnotationStyle.Style;
 import org.apache.uima.caseditor.editor.CasDocumentProvider;
 import org.apache.uima.caseditor.editor.DocumentFormat;
 import org.apache.uima.caseditor.editor.DocumentUimaImpl;
@@ -156,66 +152,7 @@ public class DefaultCasDocumentProvider extends
     return styleId;
   }
   
-  private void putAnnotatationStyleToStore(IPreferenceStore store, AnnotationStyle style) {
-    
-    Color color = new Color(style.getColor().getRed(), style.getColor().getGreen(),
-            style.getColor().getBlue());
-    
-    // TODO: Define appendixes in constants ...
-    store.putValue(style.getAnnotation() + ".style.color", Integer.toString(color.getRGB()));
-    store.putValue(style.getAnnotation() + ".style.strategy", style.getStyle().toString());
-    store.putValue(style.getAnnotation() + ".style.layer", Integer.toString(style.getLayer()));
-    
-    if (style.getConfiguration() != null)
-      store.putValue(style.getAnnotation() + ".style.config", style.getConfiguration());
-  }
-  
-  // method to get annotation style from pref store
-  private AnnotationStyle getAnnotationStyleFromStore(IPreferenceStore store, String typeName) {
-    
-    AnnotationStyle.Style style = AnnotationStyle.Style.UNDERLINE;
-    
-    String styleString = store.getString(typeName + ".style.strategy");
-    if (styleString.length() != 0) {
-      // TODO: Might throw exception, catch it and use default!
-      try {
-        style = AnnotationStyle.Style.valueOf(styleString);
-      }
-      catch (IllegalArgumentException e) {
-      }
-    }
-    
-    Color color = Color.RED;
-    
-    String colorString = store.getString(typeName + ".style.color");
-    if (colorString.length() != 0) {
-      try {
-        int colorInteger = Integer.parseInt(colorString);
-        color = new Color(colorInteger);
-      }
-      catch (NumberFormatException e) {
-      }
-    }
-    
-    int layer = 0;
-    
-    String layerString = store.getString(typeName + ".style.layer");
-    
-    if (layerString.length() != 0) {
-      try {
-        layer = Integer.parseInt(layerString);
-      }
-      catch (NumberFormatException e) {
-      }
-    }
-    
-    String configuration = store.getString(typeName + ".style.config");
-    
-    if (configuration.length() != 0)
-      configuration = null;
-    
-    return new AnnotationStyle(typeName, style, color, layer, configuration);
-  }
+
   
   private Collection<AnnotationStyle> getConfiguredAnnotationStyles(IPreferenceStore store, TypeSystem types) {
 
@@ -334,6 +271,7 @@ public class DefaultCasDocumentProvider extends
             
             Collection<AnnotationStyle> newStyles = DefaultColors.assignColors(ts, defaultStyles);
             
+            // TODO: Settings defaults must be moved to the AnnotationEditor
             for (AnnotationStyle style : newStyles) {
               putAnnotatationStyleToStore(tsPrefStore, style);
             }
@@ -444,12 +382,6 @@ public class DefaultCasDocumentProvider extends
     return null;
   }
   
-  private IPreferenceStore getPreferences(Object element) {
-    String tsId = getTypesystemId(element);
-    
-    return typeSystemPreferences.get(getPreferenceFileForTypeSystem(tsId));
-  }
-  
   private void savePreferences(Object element) {
     String prefereceFileId = getPreferenceFileForTypeSystem(getTypesystemId(element));
     
@@ -487,61 +419,32 @@ public class DefaultCasDocumentProvider extends
   
   @Override
   public IPreferenceStore getTypeSystemPreferenceStore(Object element) {
-    return getPreferences(element);
-  }
-  
-  @Override
-  public AnnotationStyle getAnnotationStyle(Object element, Type type) {
+    String tsId = getTypesystemId(element);
     
-    if (type == null)
-    	throw new IllegalArgumentException("type parameter must not be null!");
-    
-    IPreferenceStore prefStore = getPreferences(element);
-    
-    return getAnnotationStyleFromStore(prefStore, type.getName());
+    return typeSystemPreferences.get(getPreferenceFileForTypeSystem(tsId));
   }
 
   // TODO: Disk must be accessed for every changed annotation style
   // add a second method which can take all changed styles
   @Override
   public void setAnnotationStyle(Object element, AnnotationStyle style) {
-
-    IPreferenceStore prefStore = getPreferences(element);
-    putAnnotatationStyleToStore(prefStore, style);
-    
+    super.setAnnotationStyle(element, style);
     savePreferences(element); 
   }
   
   @Override
-  protected Collection<String> getShownTypes(Object element) {
-    PreferenceStore prefStore = (PreferenceStore) getPreferences(element);
-    
-    Set<String> shownTypes = new HashSet<String>();
-    
-    for (String prefName : prefStore.preferenceNames()) {
-      if (prefName.endsWith(".isShown")) {
-        if (prefStore.getBoolean(prefName))
-          shownTypes.add(prefName.substring(0, prefName.lastIndexOf(".isShown")));
-      }
-    }
-    
-    return shownTypes;
-  }
-  
-  @Override
   protected void addShownType(Object element, Type type) {
-    IPreferenceStore prefStore = getPreferences(element);
-    prefStore.setValue(type.getName() + ".isShown", Boolean.TRUE.toString());
+    super.addShownType(element, type);
     savePreferences(element);
   }
   
   @Override
   protected void removeShownType(Object element, Type type) {
-    IPreferenceStore prefStore = getPreferences(element);
-    prefStore.setValue(type.getName() + ".isShown", Boolean.FALSE.toString());
+    super.removeShownType(element, type);
     savePreferences(element);
   }
   
+  // TODO: How to move these two methods away?
   @Override
   protected EditorAnnotationStatus getEditorAnnotationStatus(Object element) {
     EditorAnnotationStatus status = sharedEditorStatus.get(getTypesystemId(element));
