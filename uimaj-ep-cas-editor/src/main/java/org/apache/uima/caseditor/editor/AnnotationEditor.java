@@ -446,7 +446,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
         // ask document provider for this
         // getAnnotation must be added to cas document provider
 
-        AnnotationStyle style = getCasDocumentProvider().getAnnotationStyle(getEditorInput(),
+        AnnotationStyle style = getAnnotationStyle(
         		eclipseAnnotation.getAnnotationFS().getType());
 
         return style.getLayer();
@@ -1046,6 +1046,41 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   }
 
   /**
+   * Retrieves an <code>AnnotationStyle</code> from the underlying storage.
+   *
+   * @param element
+   * @param type
+   * @return
+   */
+  public AnnotationStyle getAnnotationStyle(Type type) {
+    if (type == null)
+      throw new IllegalArgumentException("type parameter must not be null!");
+    
+    IPreferenceStore prefStore = getCasDocumentProvider().
+            getTypeSystemPreferenceStore(getEditorInput());
+    
+    return AnnotationStyle.getAnnotationStyleFromStore(prefStore, type.getName());
+  }
+  
+
+  /**
+   * Sets an annotation style.
+   * 
+   * Note: Internal usage only!
+   * 
+   * @param element
+   * @param style
+   */
+  // TODO: Disk must be accessed for every changed annotation style
+  // add a second method which can take all changed styles
+  public void setAnnotationStyle(AnnotationStyle style) {
+    IPreferenceStore prefStore = getCasDocumentProvider().getTypeSystemPreferenceStore(getEditorInput());
+    AnnotationStyle.putAnnotatationStyleToStore(prefStore, style);
+    
+    getCasDocumentProvider().saveTypeSystemPreferenceStore(getEditorInput());
+  }
+  
+  /**
    * Set the shown annotation status of a type.
    * 
    * @param type
@@ -1053,7 +1088,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
    * it not shown
    */
   private void showAnnotationType(Type type, boolean isVisible) {
-    AnnotationStyle style = getCasDocumentProvider().getAnnotationStyle(getEditorInput(), type);
+    AnnotationStyle style = getAnnotationStyle(type);
     
     if (isVisible) {
       
@@ -1086,8 +1121,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
         boolean isKeepLineSpacing = false;
         
         for(Type shownType : shownAnnotationTypes) {
-          AnnotationStyle potentialTagStyle = 
-            getCasDocumentProvider().getAnnotationStyle(getEditorInput(), shownType);
+          AnnotationStyle potentialTagStyle = getAnnotationStyle(shownType);
           
           if (AnnotationStyle.Style.TAG.equals(potentialTagStyle.getStyle())) {
             isKeepLineSpacing = true;

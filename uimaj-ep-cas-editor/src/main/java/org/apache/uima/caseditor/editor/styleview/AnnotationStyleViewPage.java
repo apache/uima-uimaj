@@ -154,7 +154,7 @@ class AnnotationStyleViewPage extends Page {
       Type type = typeNode.getAnnotationType();
       
       // TODO: Get this information trough the editor ... its easier
-      AnnotationStyle style = editor.getCasDocumentProvider().getAnnotationStyle(editor.getEditorInput(), type);
+      AnnotationStyle style = editor.getAnnotationStyle(type);
       
       if (TYPE_NAME_COLUMN == columnIndex) {
         return type.getShortName().trim();
@@ -176,8 +176,8 @@ class AnnotationStyleViewPage extends Page {
       AnnotationTypeNode typeNode = (AnnotationTypeNode) element;
       
       Type type = typeNode.getAnnotationType();
-   // TODO: Get this information trough the editor ... its easier
-      AnnotationStyle style = editor.getCasDocumentProvider().getAnnotationStyle(editor.getEditorInput(), type);
+      
+      AnnotationStyle style = editor.getAnnotationStyle(type);
       
       return new Color(Display.getCurrent(), style.getColor().getRed(),
               style.getColor().getGreen(), style.getColor().getBlue());

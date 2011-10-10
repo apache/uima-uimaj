@@ -19,7 +19,6 @@
 
 package org.apache.uima.caseditor.editor;
 
-import java.awt.Color;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -89,45 +88,17 @@ public abstract class CasDocumentProvider {
     return elementErrorStatus.get(element);
   }
 
+  // Problem: Keys maybe should be pre-fixed depending on the plugin which is storing values
   public abstract IPreferenceStore getTypeSystemPreferenceStore(Object element);
   
-  /**
-   * Retrieves an <code>AnnotationStyle</code> from the underlying storage.
-   *
-   * Note: Internal usage only!
-   * 
-   * @param element
-   * @param type
-   * @return
-   */
-  public AnnotationStyle getAnnotationStyle(Object element, Type type) {
-    
-    if (type == null)
-      throw new IllegalArgumentException("type parameter must not be null!");
-    
-    IPreferenceStore prefStore = getTypeSystemPreferenceStore(element);
-    
-    return getAnnotationStyleFromStore(prefStore, type.getName());
-  }
-
-  /**
-   * Sets an annotation style.
-   * 
-   * Note: Internal usage only!
-   * 
-   * @param element
-   * @param style
-   */
-  // TODO: Disk must be accessed for every changed annotation style
-  // add a second method which can take all changed styles
-  public void setAnnotationStyle(Object element, AnnotationStyle style) {
-    IPreferenceStore prefStore = getTypeSystemPreferenceStore(element);
-    putAnnotatationStyleToStore(prefStore, style);
-  }
+  // Might fail silently, only log an error
+  public abstract void saveTypeSystemPreferenceStore(Object element);
+  
   
   // TODO: We also need a set method here
-  
-  protected Collection<String> getShownTypes(Object element) {
+  // TODO: This is somehow duplicated, once in the editor annotation status
+  //       and once in the 
+  Collection<String> getShownTypes(Object element) {
     PreferenceStore prefStore = (PreferenceStore) getTypeSystemPreferenceStore(element);
     
     Set<String> shownTypes = new HashSet<String>();
@@ -142,16 +113,23 @@ public abstract class CasDocumentProvider {
     return shownTypes;
   }
   
-  protected void addShownType(Object element, Type type) {
+  // TODO: Move to Annotation Editor
+  void addShownType(Object element, Type type) {
     IPreferenceStore prefStore = getTypeSystemPreferenceStore(element);
     prefStore.setValue(type.getName() + ".isShown", Boolean.TRUE.toString());
+    
+    saveTypeSystemPreferenceStore(element);
   }
   
-  protected void removeShownType(Object element, Type type) {
+  // TODO: Move to Annotation Editor
+  void removeShownType(Object element, Type type) {
     IPreferenceStore prefStore = getTypeSystemPreferenceStore(element);
     prefStore.setValue(type.getName() + ".isShown", Boolean.FALSE.toString());
+    
+    saveTypeSystemPreferenceStore(element);
   }
   
+  // TODO: Redesign the editor annotation status ... maybe this could be a session and ts scoped pref store?
   protected abstract EditorAnnotationStatus getEditorAnnotationStatus(Object element);
 
   protected abstract void setEditorAnnotationStatus(Object element,
@@ -165,76 +143,19 @@ public abstract class CasDocumentProvider {
   // per project ???
   // Is there one doc provider instance per editor, or one for many editors ?!
   
-  protected static void putAnnotatationStyleToStore(IPreferenceStore store, AnnotationStyle style) {
-    
-    Color color = new Color(style.getColor().getRed(), style.getColor().getGreen(),
-            style.getColor().getBlue());
-    
-    // TODO: Define appendixes in constants ...
-    store.putValue(style.getAnnotation() + ".style.color", Integer.toString(color.getRGB()));
-    store.putValue(style.getAnnotation() + ".style.strategy", style.getStyle().toString());
-    store.putValue(style.getAnnotation() + ".style.layer", Integer.toString(style.getLayer()));
-    
-    if (style.getConfiguration() != null)
-      store.putValue(style.getAnnotation() + ".style.config", style.getConfiguration());
-  }
-  
-  // method to get annotation style from pref store
-  private AnnotationStyle getAnnotationStyleFromStore(IPreferenceStore store, String typeName) {
-    
-    AnnotationStyle.Style style = AnnotationStyle.Style.UNDERLINE;
-    
-    String styleString = store.getString(typeName + ".style.strategy");
-    if (styleString.length() != 0) {
-      // TODO: Might throw exception, catch it and use default!
-      try {
-        style = AnnotationStyle.Style.valueOf(styleString);
-      }
-      catch (IllegalArgumentException e) {
-      }
-    }
-    
-    Color color = Color.RED;
-    
-    String colorString = store.getString(typeName + ".style.color");
-    if (colorString.length() != 0) {
-      try {
-        int colorInteger = Integer.parseInt(colorString);
-        color = new Color(colorInteger);
-      }
-      catch (NumberFormatException e) {
-      }
-    }
-    
-    int layer = 0;
-    
-    String layerString = store.getString(typeName + ".style.layer");
-    
-    if (layerString.length() != 0) {
-      try {
-        layer = Integer.parseInt(layerString);
-      }
-      catch (NumberFormatException e) {
-      }
-    }
-    
-    String configuration = store.getString(typeName + ".style.config");
-    
-    if (configuration.length() != 0)
-      configuration = null;
-    
-    return new AnnotationStyle(typeName, style, color, layer, configuration);
-  }
-  
-  
+  // TODO: Replace this with preference listener
+  // TODO: Write a Annotation Style Listener which outputs the current events,
+  //       based on preference store changes ... non-relevant chanegs need to be filtered!
   public void addAnnotationStyleListener(Object element, IAnnotationStyleListener listener) {
     annotationStyleListeners.add(listener);
   }
   
+//TODO: Replace this with preference listener
   public void removeAnnotationStyleListener(Object element, IAnnotationStyleListener listener) {
     annotationStyleListeners.remove(listener);
   }
   
+//TODO: Replace this with preference listener
   public void fireAnnotationStyleChanged(Object element, Collection<AnnotationStyle> styles) {
     for (IAnnotationStyleListener listener : annotationStyleListeners) {
       listener.annotationStylesChanged(styles);
