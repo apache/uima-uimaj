@@ -239,7 +239,7 @@ public class DefaultCasDocumentProvider extends
               if (dotCorpus != null) {
                 tsPrefStore = new PreferenceStore(prefFile.getName());
                 for (AnnotationStyle style : dotCorpus.getAnnotationStyles()) {
-                  putAnnotatationStyleToStore(tsPrefStore, style);
+                  AnnotationStyle.putAnnotatationStyleToStore(tsPrefStore, style);
                 }
                 
                 for (String shownType : dotCorpus.getShownTypes()) {
@@ -273,7 +273,7 @@ public class DefaultCasDocumentProvider extends
             
             // TODO: Settings defaults must be moved to the AnnotationEditor
             for (AnnotationStyle style : newStyles) {
-              putAnnotatationStyleToStore(tsPrefStore, style);
+              AnnotationStyle.putAnnotatationStyleToStore(tsPrefStore, style);
             }
           }
           
@@ -382,7 +382,8 @@ public class DefaultCasDocumentProvider extends
     return null;
   }
   
-  private void savePreferences(Object element) {
+  @Override
+  public void saveTypeSystemPreferenceStore(Object element) {
     String prefereceFileId = getPreferenceFileForTypeSystem(getTypesystemId(element));
     
     PreferenceStore preferences = typeSystemPreferences.get(prefereceFileId);
@@ -422,26 +423,6 @@ public class DefaultCasDocumentProvider extends
     String tsId = getTypesystemId(element);
     
     return typeSystemPreferences.get(getPreferenceFileForTypeSystem(tsId));
-  }
-
-  // TODO: Disk must be accessed for every changed annotation style
-  // add a second method which can take all changed styles
-  @Override
-  public void setAnnotationStyle(Object element, AnnotationStyle style) {
-    super.setAnnotationStyle(element, style);
-    savePreferences(element); 
-  }
-  
-  @Override
-  protected void addShownType(Object element, Type type) {
-    super.addShownType(element, type);
-    savePreferences(element);
-  }
-  
-  @Override
-  protected void removeShownType(Object element, Type type) {
-    super.removeShownType(element, type);
-    savePreferences(element);
   }
   
   // TODO: How to move these two methods away?
