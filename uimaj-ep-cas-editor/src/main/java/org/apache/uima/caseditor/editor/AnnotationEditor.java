@@ -711,17 +711,15 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     // When a single character is selected with a double click the selection
     // changes but the caret does not.
     // A press on enter now fails to create an annotation.
-    getSourceViewer().getTextWidget().addSelectionListener(new SelectionListener() {
-		
-		public void widgetSelected(SelectionEvent e) {
-			 refreshSelection();
-		}
-		
-		public void widgetDefaultSelected(SelectionEvent e) {
-			// This method is never called!
-		}
-	});
     
+    // UIMA-2247:
+    // Changed again to ensure that also selection from the find dialog
+    // can be detected
+    getSourceViewer().getSelectionProvider().addSelectionChangedListener(new ISelectionChangedListener() {
+      public void selectionChanged(SelectionChangedEvent event) {
+        refreshSelection();
+      }
+    });
     
     DragSource dragSource = new DragSource(getSourceViewer().getTextWidget(), DND.DROP_COPY);
 
@@ -1517,7 +1515,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     annotationContextEditAction.setActionDefinitionId(ITextEditorActionDefinitionIds.QUICK_ASSIST);
     setAction(ITextEditorActionDefinitionIds.QUICK_ASSIST, annotationContextEditAction);
 
-    // create find annotate action
+    // Create find annotate action
     FindAnnotateAction findAnnotateAction = new FindAnnotateAction(this, getSourceViewer().getFindReplaceTarget());
     findAnnotateAction.setActionDefinitionId(IWorkbenchActionDefinitionIds.FIND_REPLACE);
     setAction(ITextEditorActionConstants.FIND, findAnnotateAction);
