@@ -77,10 +77,14 @@ class TextDocumentProvider extends AbstractDocumentProvider {
   protected IDocument createDocument(Object element) throws CoreException {
     ICasDocument casDocument =  documentProvider.createDocument(element);
     
-    AnnotationDocument document = new AnnotationDocument();
-    document.setDocument(casDocument);
-    
-    return document;
+    if (casDocument != null) {
+      AnnotationDocument document = new AnnotationDocument();
+      document.setDocument(casDocument);
+      return document;
+    }
+    else {
+      return null;
+    }
   }
 
   @Override
