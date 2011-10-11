@@ -28,7 +28,6 @@ import java.util.Set;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
-import org.apache.uima.caseditor.editor.EditorAnnotationStatus;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -61,8 +60,7 @@ public class ShowAnnotationsMenu extends TypeMenu {
 	 * @param type
 	 * @param typeSystem
 	 */
-	public ShowAnnotationsMenu(EditorAnnotationStatus status,
-			TypeSystem typeSystem, Collection<Type> shownTypes) {
+	public ShowAnnotationsMenu(TypeSystem typeSystem, Collection<Type> shownTypes) {
 		super(typeSystem.getType(CAS.TYPE_NAME_ANNOTATION), typeSystem);
 
 		for (Type type : shownTypes) {

@@ -19,18 +19,15 @@
 
 package org.apache.uima.caseditor.editor;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.uima.cas.Type;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.texteditor.IElementStateListener;
@@ -89,52 +86,36 @@ public abstract class CasDocumentProvider {
     return elementErrorStatus.get(element);
   }
 
+  /**
+   * Retrieves the persistent per type system preference store. This store is usually
+   * saved in relation to the type system, e.g. an ide plugin could save a preference file
+   * next to the type system file.
+   * 
+   * @param element
+   * @return
+   */
   // Problem: Keys maybe should be pre-fixed depending on the plugin which is storing values
+  // TODO: Should it be renamed to getPersistentPreferenceStore?
   public abstract IPreferenceStore getTypeSystemPreferenceStore(Object element);
   
   // Might fail silently, only log an error
   public abstract void saveTypeSystemPreferenceStore(Object element);
   
-  
-  // TODO: We also need a set method here
-  // TODO: This is somehow duplicated, once in the editor annotation status
-  //       and once in the 
-  Collection<String> getShownTypes(Object element) {
-    PreferenceStore prefStore = (PreferenceStore) getTypeSystemPreferenceStore(element);
-    
-    Set<String> shownTypes = new HashSet<String>();
-    
-    for (String prefName : prefStore.preferenceNames()) {
-      if (prefName.endsWith(".isShown")) {
-        if (prefStore.getBoolean(prefName))
-          shownTypes.add(prefName.substring(0, prefName.lastIndexOf(".isShown")));
-      }
-    }
-    
-    return shownTypes;
-  }
-  
-  // TODO: Move to Annotation Editor
-  void addShownType(Object element, Type type) {
-    IPreferenceStore prefStore = getTypeSystemPreferenceStore(element);
-    prefStore.setValue(type.getName() + ".isShown", Boolean.TRUE.toString());
-    
-    saveTypeSystemPreferenceStore(element);
-  }
-  
-  // TODO: Move to Annotation Editor
-  void removeShownType(Object element, Type type) {
-    IPreferenceStore prefStore = getTypeSystemPreferenceStore(element);
-    prefStore.setValue(type.getName() + ".isShown", Boolean.FALSE.toString());
-    
-    saveTypeSystemPreferenceStore(element);
-  }
+  /**
+   * Retrieves the session preference store. This preference store is used to 
+   * store session data which should be used to initialize a freshly opened editor.
+   * 
+   * @param element
+   * 
+   * heise.@return
+   */
+  public abstract IPreferenceStore getSessionPreferenceStore(Object element);
   
   // TODO: Redesign the editor annotation status ... maybe this could be a session and ts scoped pref store?
-  protected abstract EditorAnnotationStatus getEditorAnnotationStatus(Object element);
+  // protected abstract EditorAnnotationStatus getEditorAnnotationStatus(Object element);
 
-  protected abstract void setEditorAnnotationStatus(Object element,
-          EditorAnnotationStatus editorAnnotationStatus);
+  // protected abstract void setEditorAnnotationStatus(Object element,
+  //        EditorAnnotationStatus editorAnnotationStatus);
   
   public abstract Composite createTypeSystemSelectorForm(ICasEditor editor, Composite parent, IStatus status);
   

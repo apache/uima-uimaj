@@ -601,7 +601,6 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   @SuppressWarnings("unchecked")
   public Object getAdapter(Class adapter) {
 
-
     if (IContentOutlinePage.class.equals(adapter) && getDocument() != null) {
       if (mOutlinePage == null) {
         mOutlinePage = new AnnotationOutline(this);
@@ -808,7 +807,9 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     if (getDocument() != null) {
             
       // Synchronize shown types with the editor
-      Collection<String> shownTypes = getCasDocumentProvider().getShownTypes(input);
+      String shownTypesString = getCasDocumentProvider().getSessionPreferenceStore(input).getString("LastShownTypes");
+      
+      String[] shownTypes = shownTypesString.split(";");
       
       for (String shownType : shownTypes) {
         
@@ -867,7 +868,6 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     if (getDocument() != null) {
       
       mShowAnnotationsMenu = new ShowAnnotationsMenu(
-              null,
               getDocument().getCAS().getTypeSystem(), shownAnnotationTypes);
       mShowAnnotationsMenu.addListener(new IShowAnnotationsListener() {
 
@@ -882,7 +882,6 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
             
             Type addedAnnotationType = clonedCollection.get(0);
             showAnnotationType(addedAnnotationType, true);
-            getCasDocumentProvider().addShownType(getEditorInput(), addedAnnotationType);
           }
           else if (selection.size() < shownAnnotationTypes.size()) {
             List<Type> clonedCollection = new ArrayList<Type>(shownAnnotationTypes);
@@ -890,18 +889,13 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
             
             Type removedAnnotationType = clonedCollection.get(0);
             showAnnotationType(removedAnnotationType, false);
-            getCasDocumentProvider().removeShownType(getEditorInput(), removedAnnotationType);
           }
           
           // Repaint after annotations are changed
           mPainter.paint(IPainter.CONFIGURATION);
           
-          EditorAnnotationStatus status =
-                  getCasDocumentProvider().getEditorAnnotationStatus(getEditorInput());
-
-          getCasDocumentProvider().setEditorAnnotationStatus(getEditorInput(),
-                  new EditorAnnotationStatus(status.getMode(), selection, getDocument().getCAS().getViewName()));
-
+          setEditorSessionPreferences();
+          
           if (mEditorListener != null) {
             for (IAnnotationEditorModifyListener listener : mEditorListener) 
               listener.showAnnotationsChanged(selection);
@@ -909,12 +903,19 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
         }
       });
       
-      EditorAnnotationStatus status =
-        getCasDocumentProvider().getEditorAnnotationStatus(getEditorInput());
+      IPreferenceStore sessionPreferences =
+          getCasDocumentProvider().getSessionPreferenceStore(getEditorInput());
       
-      setAnnotationMode(getDocument().getType(status.getMode()));
+      // TODO: Define constants for these settings!
       
-      String lastActiveViewName = status.getLastActiveCasViewName();
+      String lastModeTypeName = sessionPreferences.getString("LastUsedModeType");
+      
+      if (lastModeTypeName.length() == 0)
+        lastModeTypeName = CAS.TYPE_NAME_ANNOTATION;
+      
+      setAnnotationMode(getDocument().getType(lastModeTypeName));
+      
+      String lastActiveViewName = sessionPreferences.getString("LastActiveCasViewName");
       
       try {
         // TODO: Missing compatibility check!!!
@@ -923,7 +924,10 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
       }
       catch (CASRuntimeException e) {
         // ignore, view is not available
-        // TODO: Using exceptions for control flow is very bad practice
+        // Note: Using exceptions for control flow is very bad practice
+        // TODO: Is there a way to check which views are available?!
+        //       Maybe we should iterate over all available views, and then
+        //       check if it is available!
         showView(CAS.NAME_DEFAULT_SOFA);
       }
     }
@@ -1016,7 +1020,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 
     highlight(0, 0);
 
-    setProjectEditorStatus();
+    setEditorSessionPreferences();
 
     updateStatusLineModeItem();
 
@@ -1309,7 +1313,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 	  // All annotations will be synchronized in the document listener
 	  
 	  // Last opened view should be remembered, in case a new editor is opened
-	  setProjectEditorStatus();
+	  setEditorSessionPreferences();
 	  
 	  // Check if CAS view is compatible, only if compatible the listeners
 	  // to update the annotations in the editor can be registered
@@ -1441,13 +1445,29 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     // getSourceViewer() returns null here ... but why ?
     return getSourceViewer().getTextWidget().getSelectionCount() != 0;
   }
-
-  private void setProjectEditorStatus() {
-    // TODO: do not replace if equal ... check this
-    EditorAnnotationStatus status = new EditorAnnotationStatus(getAnnotationMode().getName(),
-            mShowAnnotationsMenu.getSelectedTypes(), getDocument().getCAS().getViewName());
-
-    getCasDocumentProvider().setEditorAnnotationStatus(getEditorInput(), status);
+  
+  /**
+   * Set the session data which should be used to initalize the next Cas Editor which
+   * is opened.
+   */
+  private void setEditorSessionPreferences() {
+    
+    // TODO: Define constants with prefix for these settings ... so they don't conflict with other plugins!
+    
+    IPreferenceStore sessionStore = getCasDocumentProvider().
+            getSessionPreferenceStore(getEditorInput());
+    
+    sessionStore.setValue("LastActiveCasViewName", getDocument().getCAS().getViewName());
+    sessionStore.setValue("LastUsedModeType", getAnnotationMode().getName());
+    
+    StringBuilder shownTypesString = new StringBuilder();
+    
+    for (Type shownType : getShownAnnotationTypes()) {
+      shownTypesString.append(shownType.getName());
+      shownTypesString.append(";");
+    }
+    
+    sessionStore.setValue("LastShownTypes", shownTypesString.toString());
   }
 
   /**

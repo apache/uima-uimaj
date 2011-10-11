@@ -39,7 +39,6 @@ import org.apache.uima.caseditor.editor.AnnotationStyle;
 import org.apache.uima.caseditor.editor.CasDocumentProvider;
 import org.apache.uima.caseditor.editor.DocumentFormat;
 import org.apache.uima.caseditor.editor.DocumentUimaImpl;
-import org.apache.uima.caseditor.editor.EditorAnnotationStatus;
 import org.apache.uima.caseditor.editor.ICasDocument;
 import org.apache.uima.caseditor.editor.ICasEditor;
 import org.eclipse.core.resources.IFile;
@@ -125,7 +124,7 @@ public class DefaultCasDocumentProvider extends
    */
   private Map<String, String> documentToTypeSystemMap = new HashMap<String, String>();
   
-  private Map<String, EditorAnnotationStatus> sharedEditorStatus = new HashMap<String, EditorAnnotationStatus>();
+  private Map<String, IPreferenceStore> sessionPreferenceStores = new HashMap<String, IPreferenceStore>();
   
   /**
    * This map resolves a type system to a style. It is used to cache type system
@@ -425,21 +424,18 @@ public class DefaultCasDocumentProvider extends
     return typeSystemPreferences.get(getPreferenceFileForTypeSystem(tsId));
   }
   
-  // TODO: How to move these two methods away?
   @Override
-  protected EditorAnnotationStatus getEditorAnnotationStatus(Object element) {
-    EditorAnnotationStatus status = sharedEditorStatus.get(getTypesystemId(element));
-    
-    if (status == null)
-      status = new EditorAnnotationStatus(CAS.TYPE_NAME_ANNOTATION, null, CAS.NAME_DEFAULT_SOFA);
-    
-    return status;
-  }
+  public IPreferenceStore getSessionPreferenceStore(Object element) {
+	  
+    // lookup one, and if it does not exist create a new one, and put it!
+    IPreferenceStore store = sessionPreferenceStores.get(getTypesystemId(element));
+	  
+    if (store == null) {
+      store = new PreferenceStore();
+      sessionPreferenceStores.put(getTypesystemId(element), store);
+    }
 
-  @Override
-  protected void setEditorAnnotationStatus(Object element,
-          EditorAnnotationStatus editorAnnotationStatus) {
-    sharedEditorStatus.put(getTypesystemId(element), editorAnnotationStatus);
+    return store;
   }
   
   void setTypeSystem(String document, String typeSystem) {
