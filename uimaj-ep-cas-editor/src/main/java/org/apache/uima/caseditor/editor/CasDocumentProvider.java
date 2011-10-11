@@ -53,20 +53,13 @@ public abstract class CasDocumentProvider {
     }
   }
   
+  /**
+   * Error status code to indicate that a type system is not available.
+   */
   public static final int TYPE_SYSTEM_NOT_AVAILABLE_STATUS_CODE = 12;
   
   private Set<IElementStateListener> elementStateListeners =
           new HashSet<IElementStateListener>();
-  
-  private Set<IAnnotationStyleListener> annotationStyleListeners =
-      new HashSet<IAnnotationStyleListener>();
-  
-  protected ElementInfo createElementInfo(Object element) {
-    return new ElementInfo(element);
-  }
-  
-  protected void disposeElementInfo(Object element, ElementInfo info) {
-  }
   
   /**
    * The method {@link #createDocument(Object)} put error status objects for the given element in
@@ -76,6 +69,13 @@ public abstract class CasDocumentProvider {
    */
   protected Map<Object, IStatus> elementErrorStatus = new HashMap<Object, IStatus>();
 
+  protected ElementInfo createElementInfo(Object element) {
+    return new ElementInfo(element);
+  }
+  
+  protected void disposeElementInfo(Object element, ElementInfo info) {
+  }
+  
   /**
    * Creates the a new {@link AnnotationDocument} from the given {@link IEditorInput} element.
    * For all other elements null is returned.
