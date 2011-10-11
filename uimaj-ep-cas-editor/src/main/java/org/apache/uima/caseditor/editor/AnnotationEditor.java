@@ -563,7 +563,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 
   private DocumentListener mAnnotationSynchronizer;
 
-  private IAnnotationStyleListener mAnnotationStyleListener;
+  private AnnotationStyleChangeListener mAnnotationStyleListener;
   
   private Collection<Type> shownAnnotationTypes = new HashSet<Type>();
   
@@ -1334,7 +1334,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
       // Register listener to synchronize annotation styles
       // between multiple open annotation editors
       if (mAnnotationStyleListener == null) {
-        mAnnotationStyleListener = new IAnnotationStyleListener() {
+        mAnnotationStyleListener = new AnnotationStyleChangeListener() {
           
           public void annotationStylesChanged(Collection<AnnotationStyle> styles) {
             // TODO: Only sync changed types
@@ -1342,7 +1342,8 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
           }
         };
         
-        getCasDocumentProvider().addAnnotationStyleListener(getEditorInput(), mAnnotationStyleListener);
+        getCasDocumentProvider().getTypeSystemPreferenceStore(getEditorInput()).
+            addPropertyChangeListener(mAnnotationStyleListener);
       }
       
       getSite().getPage().addSelectionListener(this);
@@ -1355,7 +1356,8 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 	    }
 	    
 	    if (mAnnotationStyleListener != null) {
-	      getCasDocumentProvider().removeAnnotationStyleListener(getEditorInput(), mAnnotationStyleListener);
+	      getCasDocumentProvider().getTypeSystemPreferenceStore(getEditorInput()).
+	          removePropertyChangeListener(mAnnotationStyleListener);
 	      mAnnotationStyleListener = null;
 	    }
 	    
@@ -1541,7 +1543,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     CasDocumentProvider provider = getCasDocumentProvider();
     
     if (provider != null)
-      provider.removeAnnotationStyleListener(getEditorInput(), mAnnotationStyleListener);
+      provider.getTypeSystemPreferenceStore(getEditorInput()).removePropertyChangeListener(mAnnotationStyleListener);
     
     if (preferenceStoreChangeListener != null)
       CasEditorPlugin.getDefault().getPreferenceStore().removePropertyChangeListener(preferenceStoreChangeListener);

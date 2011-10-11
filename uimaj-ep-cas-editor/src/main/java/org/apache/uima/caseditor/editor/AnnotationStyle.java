@@ -275,7 +275,7 @@ public final class AnnotationStyle {
       styleProperties.put("config", style.getConfiguration());
     }
     
-    store.putValue(style.getAnnotation() + ".style", serializeProperties(styleProperties));
+    store.setValue(style.getAnnotation() + ".style", serializeProperties(styleProperties));
   }
   
   /**

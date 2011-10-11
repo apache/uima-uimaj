@@ -29,6 +29,7 @@ import org.apache.uima.caseditor.CasEditorPlugin;
 import org.apache.uima.caseditor.Images;
 import org.apache.uima.caseditor.editor.AnnotationEditor;
 import org.apache.uima.caseditor.editor.AnnotationStyle;
+import org.apache.uima.caseditor.editor.AnnotationStyleChangeListener;
 import org.apache.uima.caseditor.editor.IAnnotationEditorModifyListener;
 import org.apache.uima.caseditor.editor.IAnnotationStyleListener;
 import org.apache.uima.caseditor.ui.property.EditorAnnotationPropertyPage;
@@ -188,7 +189,7 @@ class AnnotationStyleViewPage extends Page {
 
   private IAnnotationEditorModifyListener editorListener;
   
-  private IAnnotationStyleListener changeListener;
+  private AnnotationStyleChangeListener changeListener;
   
   private CheckboxTableViewer treeViewer;
 
@@ -246,7 +247,7 @@ class AnnotationStyleViewPage extends Page {
     treeViewer.setInput(editor.getDocument().getCAS().getTypeSystem());
     getSite().setSelectionProvider(treeViewer);
     
-    changeListener = new IAnnotationStyleListener() {
+    changeListener = new AnnotationStyleChangeListener() {
       
       
       public void annotationStylesChanged(Collection<AnnotationStyle> styles) {
@@ -266,8 +267,8 @@ class AnnotationStyleViewPage extends Page {
       }
     };
     
-    editor.getCasDocumentProvider().addAnnotationStyleListener(
-            editor.getEditorInput(), changeListener);
+    editor.getCasDocumentProvider().getTypeSystemPreferenceStore(editor.getEditorInput()).
+        addPropertyChangeListener(changeListener);
     
     treeViewer.setCheckedElements(typesToNodes(editor.getShownAnnotationTypes(), editor));
     
@@ -358,7 +359,7 @@ class AnnotationStyleViewPage extends Page {
   public void dispose() {
     super.dispose();
     
-    editor.getCasDocumentProvider().removeAnnotationStyleListener(
-            editor.getEditorInput(), changeListener);
+    editor.getCasDocumentProvider().getTypeSystemPreferenceStore(
+            editor.getEditorInput()).removePropertyChangeListener(changeListener);
   }
 }

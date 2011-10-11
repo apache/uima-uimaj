@@ -32,6 +32,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.texteditor.IElementStateListener;
 
 /**
@@ -134,33 +135,6 @@ public abstract class CasDocumentProvider {
 
   protected abstract void setEditorAnnotationStatus(Object element,
           EditorAnnotationStatus editorAnnotationStatus);
-  
-  // TODO:
-  // This case only works if there is a single shared state between all editors
-  // An implementation should track the listeners per shared type system
-  //
-  // Must that be already done for multiple CAS Editor projects, or do they have an instance
-  // per project ???
-  // Is there one doc provider instance per editor, or one for many editors ?!
-  
-  // TODO: Replace this with preference listener
-  // TODO: Write a Annotation Style Listener which outputs the current events,
-  //       based on preference store changes ... non-relevant chanegs need to be filtered!
-  public void addAnnotationStyleListener(Object element, IAnnotationStyleListener listener) {
-    annotationStyleListeners.add(listener);
-  }
-  
-//TODO: Replace this with preference listener
-  public void removeAnnotationStyleListener(Object element, IAnnotationStyleListener listener) {
-    annotationStyleListeners.remove(listener);
-  }
-  
-//TODO: Replace this with preference listener
-  public void fireAnnotationStyleChanged(Object element, Collection<AnnotationStyle> styles) {
-    for (IAnnotationStyleListener listener : annotationStyleListeners) {
-      listener.annotationStylesChanged(styles);
-    }
-  }
   
   public abstract Composite createTypeSystemSelectorForm(ICasEditor editor, Composite parent, IStatus status);
   

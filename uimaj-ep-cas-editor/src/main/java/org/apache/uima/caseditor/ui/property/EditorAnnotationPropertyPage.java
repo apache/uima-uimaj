@@ -54,13 +54,6 @@ public class EditorAnnotationPropertyPage extends AnnotationPropertyPage {
       getEditor().setAnnotationStyle(style);
     }
     
-    // TODO: This should not be necessary anymore! Synchronization should be done via preference store!
-    getEditor().getCasDocumentProvider().fireAnnotationStyleChanged(getEditor().getEditorInput(),
-            changedStyles);
-    
-    // TODO: Trigger saving of preference store!
-    // getEditor().getCasDocumentProvider().saveTypeSystemPreferenceStore(getEditor().getEditorInput());
-    
     return true;
   }
 }
