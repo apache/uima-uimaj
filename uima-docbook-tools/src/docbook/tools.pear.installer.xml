@@ -52,10 +52,15 @@ under the License.
     </mediaobject>
   </screenshot></para>
   
-  <para>To launch the PEAR Installer, use the script in the UIMA bin directory: 
-  <code>runPearInstaller.bat</code> or <code>runPearInstaller.sh.</code></para>
+  <para>There are two versions of the PEAR Installer.  One is an interactive, GUI-based
+  application which puts up a panel asking for the parameters of the installation; the 
+  other is a command line interface version where you pass the parameters needed on the command
+  line itself.  To launch the GUI version of the PEAR Installer, use the script in the UIMA bin directory: 
+  <code>runPearInstaller.bat</code> or <code>runPearInstaller.sh.</code>
+  The command line is launched using <code>runPearInstallerCli.cmd</code> or 
+  <code>runPearInstallerCli.sh.</code></para>
   
-  <para>PEAR Installer is a simple GUI based Java application that helps installing UIMA
+  <para>The PEAR Installer installs UIMA
     compliant components (analysis engines) from PEAR packages in a local file system. To
     install a desired UIMA component the user needs to select the appropriate PEAR file in a
     local file system and specify the installation directory (optional). If no installation
@@ -105,6 +110,10 @@ under the License.
     it includes the "bin" subdirectory of the PEAR structure, if it exists.
   </para>
   
-    
+  <para>The command line version of the PEAR installer has one required argument:
+  the path to the PEAR file being installed.  A second argument can specify the
+  installation directory (default is the current working directory).
+  An optional argument, one of "-c" or "-check" or "-verify", causes verification to be done
+  after installation, as described above.</para>  
   
 </chapter>
