@@ -1654,30 +1654,40 @@ catch (PatternSyntaxException e) {
     </section>
     
     <section id="ugr.tug.aae.accessing_external_resource_files">
-      <title>Accessing External Resource Files</title>
+      <title>Accessing External Resources</title>
       
-      <para>Sometimes you may want an annotator to read from an external file &ndash; for
+      <para>External Resources are Java objects that have a life cycle where they
+      are (optionally) initialized at startup time by reading external data from 
+      a file or via a URL (which can access information over the http protocol, for instance).
+      It is not <emphasis>required</emphasis> that Extermal Resource objects 
+      do any external data reading to initialize themselves.  However, this is such a 
+      common use case, that we will presume this mode of operation in the description below.</para>
+      
+      <para>Sometimes you may want an annotator to read from an external resource, 
+        such as a URL or a file &ndash; for
         example, a long list of keys and values that you are going to build into a HashMap. You
         could, of course, just introduce a configuration parameter that holds the absolute
-        path to this resource file, and build the HashMap in your annotator&apos;s
+        path or URL to this resource, and build the HashMap in your annotator&apos;s
         initialize method. However, this is not the best solution for three reasons:</para>
       
-      <orderedlist><listitem><para>Including an absolute path in your descriptor makes
+      <orderedlist><listitem><para>Including an absolute path in your descriptor to
+        specify the initialization data makes
         your annotator difficult for others to use. Each user will need to edit this
         descriptor and set the absolute path to a value appropriate for his or her
         installation.</para></listitem>
         
-        <listitem><para>You cannot share the HashMap between multiple annotators. Also,
+        <listitem><para>You cannot share the created Java object(s), e.g., a HashMap, 
+          between multiple annotators. Also,
           in some deployment scenarios there may be more than one instance of your annotator,
-          and you would like to have the option for them to use the same HashMap
-          instance.</para></listitem>
+          and you would like to have the option for them to share the same Java Object(s).</para></listitem>
         
-        <listitem><para>Your annotator would become dependent on a particular data
-          representation &ndash; the word list would have to come from a file on the local disk
-          and it would have to be in a particular format. It would be better if this were
-          decoupled. </para></listitem></orderedlist>
+        <listitem><para>Your annotator would become dependent on a particular 
+          implementation of the Java Object(s).  It would be better if there was 
+          a decoupling between the actual implementation, and the API used to
+          access it. </para></listitem></orderedlist>
       
-      <para>A better way to access external resources is through the ResourceManager
+      <para>A better way to create these sharable Java objects and initialize them 
+        via external disk or URL sources is through the ResourceManager
         component. In this section we are going to show an example of how to use the Resource
         Manager.</para>
       
@@ -1744,8 +1754,10 @@ catch (PatternSyntaxException e) {
           different things. The interface name
           (<literal>org.apache.uima.tutorial.ex6.StringMapResource</literal>) is
           the Java interface through which the annotator accesses the data. Specifying an
-          interface name is optional. If you do not specify an interface name, annotators
-          will get direct access to the data file.</para>
+          interface name is optional.  If you do not specify an interface name, annotators
+          will instead get an interface which can provide direct access to the 
+          data resource (file or URL) that is 
+          associated with this external resource.</para>
       </section>
       
       <section id="ugr.tug.aae.resources.accessing_from_uimacontext">
@@ -1765,7 +1777,8 @@ catch (PatternSyntaxException e) {
           will implement the interface declared in the
           <literal>&lt;interfaceName&gt;</literal> section of the descriptor,
           <literal>StringMapResource</literal> in this case. The annotator code does not
-          need to know the location of the data nor the Java class that is being used to read the
+          need to know the location of external data that may be used to initilize this
+          object, nor the Java class that might be used to read the
           data and implement the <literal>StringMapResource</literal>
           interface.</para>
         
@@ -1830,7 +1843,10 @@ catch (PatternSyntaxException e) {
         
         <para>The first section of this XML declares an externalResource, the
           <literal>UimaAcronymTableFile</literal>. With this, the fileUrl element
-          specifies the path to the data file. This can be an absolute URL (e.g. one that starts
+          specifies the path to the data file.  This can be a file on the file system,
+          but can also be a remote resource access via, e.g., the http protocol.
+          The fileUrl element doesn't have to be a "file", it can be a URL. 
+          This can be an absolute URL (e.g. one that starts
           with file:/ or file:///, or file://my.host.org/), but that is not recommended
           because it makes installation of your component more difficult, as noted earlier.
           Better is a relative URL, which will be looked up within the classpath (and/or
@@ -1862,13 +1878,19 @@ catch (PatternSyntaxException e) {
           a stream or URI/URL of the external resource that was declared in the external resource; 
           for resources where
           loading does not make sense, you can implement a <literal>load</literal> method
-          which ignores its argument and just returns.  See the Javadocs for SharedResourceObject for
-          details on this. 
+          which ignores its argument and just returns, or performes whatever
+          initialization is appropriate at startup time.  See the Javadocs for 
+          SharedResourceObject for details on this.</para>
+          
+          <para> 
           The UimaAcronymAnnotator then accesses the data through the
           <literal>StringMapResource</literal> interface. This single instance could
-          be shared among multiple annotators, as will be explained later.
-          Because of this, you should insure your implementation is thread-safe, as it 
-          could be called multiple times on multiple threads.</para>
+          be shared among multiple annotators, as will be explained later.</para>
+          
+          <warning><para>
+          Because the implementation of the resource is shared, 
+          you should insure your implementation is thread-safe, as it 
+          could be called multiple times on multiple threads, simultaneously.</para></warning>
         
         <para>Note that all resource implementation classes (e.g.
           StringMapResource_impl in the provided example) must be declared public
@@ -1884,7 +1906,8 @@ catch (PatternSyntaxException e) {
           will invoke this interface's only method, <code>load</code>,  
           after this object has been instantiated. The implementation of this method 
           can then read data from the specified <code>DataResource</code> 
-          and use that data to initialize this object.</para>
+          and use that data to initialize this object.  It can also do whatever
+          resource initialization might be appropriate to do at startup time.</para>
         
         <para>This annotator is illustrated in <xref
             linkend="ugr.tug.aae.fig.external_resource_binding"/>. To see it in

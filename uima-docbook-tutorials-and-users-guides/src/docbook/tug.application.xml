@@ -87,7 +87,7 @@ under the License.
         <listitem>
           <para>UIMAFramework.newDefaultResourceManager(): Gets an instance of the UIMA ResourceManager. The
             key method on ResourceManager is setDataPath, which allows you to specify the location where UIMA
-            components will go to look for their external resource files. Once you've obtained and initialized a
+            components will go to look for their external resources. Once you've obtained and initialized a
             ResourceManager, you can pass it to any of the produceXXX methods. </para>
         </listitem>
       </itemizedlist></para>

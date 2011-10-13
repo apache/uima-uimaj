@@ -437,7 +437,8 @@ under the License.
         external resources through the framework&apos;s resource manager interface
         called the <emphasis role="bold">UIMA Context</emphasis>. This interface, among
         other things, can ensure that different annotators working together in an aggregate
-        flow may share the same instance of an external file, for example. For details on using
+        flow may share the same instance of an external file or remote resource accessed
+        via its URL, for example. For details on using
         the UIMA Context see <olink targetdoc="&uima_docs_tutorial_guides;"
           targetptr="ugr.tug.aae"/>.</para>
       
