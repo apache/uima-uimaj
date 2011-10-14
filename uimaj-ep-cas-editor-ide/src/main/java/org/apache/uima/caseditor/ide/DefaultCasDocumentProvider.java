@@ -143,8 +143,11 @@ public class DefaultCasDocumentProvider extends
       try {
         tsFile.setPersistentProperty(
             new QualifiedName("", CAS_EDITOR_SESSION_PROPERTIES),
-            new String(prefBytes.toByteArray(), Charset.forName("UTF-8")));
+            new String(prefBytes.toByteArray(), "UTF-8"));
       } catch (CoreException e) {
+        CasEditorIdePlugin.log(e);
+      }
+      catch(IOException e) {
         CasEditorIdePlugin.log(e);
       }
     }
@@ -332,7 +335,7 @@ public class DefaultCasDocumentProvider extends
           if (sessionPreferenceString != null) {
             try {
               newStore.load(new ByteArrayInputStream(
-                      sessionPreferenceString.getBytes(Charset.forName("UTF-8"))));
+                      sessionPreferenceString.getBytes("UTF-8")));
             } catch (IOException e) {
               CasEditorPlugin.log(e);
             }
