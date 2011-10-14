@@ -23,6 +23,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -52,9 +53,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceStore;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -115,6 +119,38 @@ public class DefaultCasDocumentProvider extends
       super(info.element);
     }
   }
+  
+  private class SaveSessionPreferencesTrigger implements IPropertyChangeListener {
+    private Object element;
+    
+    SaveSessionPreferencesTrigger(Object element) {
+      this.element = element;
+    }
+    
+    public void propertyChange(PropertyChangeEvent event) {
+      IResource tsFile = ResourcesPlugin.getWorkspace().getRoot()
+          .findMember((getTypesystemId(element)));
+      
+      PreferenceStore prefStore = (PreferenceStore) getSessionPreferenceStore(element);
+      
+      ByteArrayOutputStream prefBytes = new ByteArrayOutputStream();
+      try {
+        prefStore.save(prefBytes, "");
+      } catch (IOException e) {
+        CasEditorIdePlugin.log(e);
+      }
+      
+      try {
+        tsFile.setPersistentProperty(
+            new QualifiedName("", CAS_EDITOR_SESSION_PROPERTIES),
+            new String(prefBytes.toByteArray(), Charset.forName("UTF-8")));
+      } catch (CoreException e) {
+        CasEditorIdePlugin.log(e);
+      }
+    }
+  }
+  
+  private static final String CAS_EDITOR_SESSION_PROPERTIES = "CAS_EDITOR_SESSION_PROPERTIES";
   
   /**
    * This map resolved an opened document to its associated style object id.
@@ -282,6 +318,28 @@ public class DefaultCasDocumentProvider extends
         documentToTypeSystemMap.put(casFile.getFullPath().toPortableString(),
                 typeSystemFile.getFullPath().toPortableString());
 
+        
+        IPreferenceStore store = sessionPreferenceStores.get(getTypesystemId(element));
+        
+        if (store == null) {
+          PreferenceStore newStore = new PreferenceStore();
+          sessionPreferenceStores.put(getTypesystemId(element), newStore);
+          newStore.addPropertyChangeListener(new SaveSessionPreferencesTrigger(element));
+          
+          String sessionPreferenceString = typeSystemFile.getPersistentProperty(
+                  new QualifiedName("", CAS_EDITOR_SESSION_PROPERTIES));
+          
+          if (sessionPreferenceString != null) {
+            try {
+              newStore.load(new ByteArrayInputStream(
+                      sessionPreferenceString.getBytes(Charset.forName("UTF-8"))));
+            } catch (IOException e) {
+              CasEditorPlugin.log(e);
+            }
+          }
+        }
+        
+        
         // TODO:
         // Preferences are bound to the type system
         // Changed in one place, then it should change in all places
@@ -426,16 +484,7 @@ public class DefaultCasDocumentProvider extends
   
   @Override
   public IPreferenceStore getSessionPreferenceStore(Object element) {
-	  
-    // lookup one, and if it does not exist create a new one, and put it!
-    IPreferenceStore store = sessionPreferenceStores.get(getTypesystemId(element));
-	  
-    if (store == null) {
-      store = new PreferenceStore();
-      sessionPreferenceStores.put(getTypesystemId(element), store);
-    }
-
-    return store;
+    return sessionPreferenceStores.get(getTypesystemId(element));
   }
   
   void setTypeSystem(String document, String typeSystem) {
