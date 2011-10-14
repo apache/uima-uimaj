@@ -69,6 +69,7 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IPainter;
+import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.information.InformationPresenter;
 import org.eclipse.jface.text.source.Annotation;
@@ -84,6 +85,7 @@ import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
@@ -717,7 +719,8 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     // can be detected
     getSourceViewer().getSelectionProvider().addSelectionChangedListener(new ISelectionChangedListener() {
       public void selectionChanged(SelectionChangedEvent event) {
-        refreshSelection();
+        mFeatureStructureSelectionProvider.setSelection(new AnnotationEditorSelection((ITextSelection) event.getSelection(), 
+                new StructuredSelection(ModelFeatureStructure.create(getDocument(), getSelectedAnnotations()))));
       }
     });
     
