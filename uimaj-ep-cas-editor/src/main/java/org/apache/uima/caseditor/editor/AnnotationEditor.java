@@ -1276,6 +1276,15 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     return selection;
   }
   
+  /**
+   * Returns the caret position relative to the start of the text.
+   * 
+   * @return
+   */
+  public int getCaretOffset() {
+    return getSourceViewer().getTextWidget().getCaretOffset();
+  }
+  
   public void showView(String viewName) {
     
     // TODO: Check if set view is compatible .. if not display some message!
