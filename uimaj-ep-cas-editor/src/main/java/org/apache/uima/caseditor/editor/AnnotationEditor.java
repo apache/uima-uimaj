@@ -1196,6 +1196,10 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   public void addAnnotationListener(IAnnotationEditorModifyListener listener) {
     mEditorListener.add(listener);
   }
+  
+  public void removeAnnotationListener(IAnnotationEditorModifyListener listener) {
+    mEditorListener.remove(listener);
+  }
 
   /**
    * Returns the selection.
