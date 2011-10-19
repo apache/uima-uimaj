@@ -52,6 +52,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.Status;
@@ -238,6 +239,10 @@ public class DefaultCasDocumentProvider extends
       }
 
       if (typeSystemFile != null && typeSystemFile.exists()) {
+
+        if (!typeSystemFile.isSynchronized(IResource.DEPTH_ZERO)) {
+          typeSystemFile.refreshLocal(IResource.DEPTH_ZERO, new NullProgressMonitor());
+        }
 
         // TODO: Update this comment!
         // Try to load a style file for the type system
