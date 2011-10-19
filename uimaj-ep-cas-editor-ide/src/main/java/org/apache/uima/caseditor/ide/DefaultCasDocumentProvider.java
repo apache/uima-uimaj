@@ -23,14 +23,12 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
 import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.caseditor.CasEditorPlugin;
 import org.apache.uima.caseditor.core.model.DefaultColors;
@@ -42,6 +40,8 @@ import org.apache.uima.caseditor.editor.DocumentFormat;
 import org.apache.uima.caseditor.editor.DocumentUimaImpl;
 import org.apache.uima.caseditor.editor.ICasDocument;
 import org.apache.uima.caseditor.editor.ICasEditor;
+import org.apache.uima.caseditor.editor.searchStrategy.ITypeSystemSearchStrategy;
+import org.apache.uima.caseditor.editor.searchStrategy.TypeSystemSearchStrategyFactory;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -73,8 +73,8 @@ public class DefaultCasDocumentProvider extends
         org.apache.uima.caseditor.editor.CasDocumentProvider {
 
   /**
-   * Listens for resource remove/delete event, if the input file for the
-   * editor is removed the editor will be closed.
+   * Listens for resource remove/delete event, if the input file for the editor is removed the
+   * editor will be closed.
    */
   private class DeleteElementListener implements IResourceChangeListener {
 
@@ -93,7 +93,7 @@ public class DefaultCasDocumentProvider extends
                     && delta.getResource().getType() == IResource.FILE) {
               if (delta.getKind() == IResourceDelta.REMOVED) {
                 IResource resource = delta.getResource();
-                
+
                 if (resource.equals(fileInput.getFile())) {
                   handleElementDeleted(fileInput);
                 }
@@ -110,97 +110,94 @@ public class DefaultCasDocumentProvider extends
       }
     }
   }
-  
+
   private static class FileElementInfo extends ElementInfo {
-    
+
     private DeleteElementListener deleteListener;
-    
+
     FileElementInfo(ElementInfo info) {
       super(info.element);
     }
   }
-  
+
   private class SaveSessionPreferencesTrigger implements IPropertyChangeListener {
     private Object element;
-    
+
     SaveSessionPreferencesTrigger(Object element) {
       this.element = element;
     }
-    
+
     public void propertyChange(PropertyChangeEvent event) {
       IResource tsFile = ResourcesPlugin.getWorkspace().getRoot()
-          .findMember((getTypesystemId(element)));
-      
+              .findMember((getTypesystemId(element)));
+
       PreferenceStore prefStore = (PreferenceStore) getSessionPreferenceStore(element);
-      
+
       ByteArrayOutputStream prefBytes = new ByteArrayOutputStream();
       try {
         prefStore.save(prefBytes, "");
       } catch (IOException e) {
         CasEditorIdePlugin.log(e);
       }
-      
+
       try {
-        tsFile.setPersistentProperty(
-            new QualifiedName("", CAS_EDITOR_SESSION_PROPERTIES),
-            new String(prefBytes.toByteArray(), "UTF-8"));
+        tsFile.setPersistentProperty(new QualifiedName("", CAS_EDITOR_SESSION_PROPERTIES),
+                new String(prefBytes.toByteArray(), "UTF-8"));
       } catch (CoreException e) {
         CasEditorIdePlugin.log(e);
-      }
-      catch(IOException e) {
+      } catch (IOException e) {
         CasEditorIdePlugin.log(e);
       }
     }
   }
-  
+
   private static final String CAS_EDITOR_SESSION_PROPERTIES = "CAS_EDITOR_SESSION_PROPERTIES";
-  
+
   /**
    * This map resolved an opened document to its associated style object id.
    * 
-   * The tracking is done in the provider because the document element itself
-   * does not has any link to the style object.
+   * The tracking is done in the provider because the document element itself does not has any link
+   * to the style object.
    */
   private Map<String, String> documentToTypeSystemMap = new HashMap<String, String>();
-  
+
   private Map<String, IPreferenceStore> sessionPreferenceStores = new HashMap<String, IPreferenceStore>();
-  
+
   /**
-   * This map resolves a type system to a style. It is used to cache type system
-   * preference instance while the editor is open.
+   * This map resolves a type system to a style. It is used to cache type system preference instance
+   * while the editor is open.
    */
   private Map<String, PreferenceStore> typeSystemPreferences = new HashMap<String, PreferenceStore>();
-  
+
   // UIMA-2245 Remove this method together with the migration code below one day
   private String getStyleFileForTypeSystem(String typeSystemFile) {
     int lastSlashIndex = typeSystemFile.lastIndexOf("/");
-    
+
     String styleId = typeSystemFile.substring(0, lastSlashIndex + 1);
     styleId = styleId + ".style-" + typeSystemFile.substring(lastSlashIndex + 1);
-    
+
     return styleId;
   }
-  
+
   private String getPreferenceFileForTypeSystem(String typeSystemFile) {
     int lastSlashIndex = typeSystemFile.lastIndexOf("/");
-    
+
     String styleId = typeSystemFile.substring(0, lastSlashIndex + 1);
     styleId = styleId + ".pref-" + typeSystemFile.substring(lastSlashIndex + 1);
-    
+
     return styleId;
   }
-  
 
-  
-  private Collection<AnnotationStyle> getConfiguredAnnotationStyles(IPreferenceStore store, TypeSystem types) {
+  private Collection<AnnotationStyle> getConfiguredAnnotationStyles(IPreferenceStore store,
+          TypeSystem types) {
 
     Collection<AnnotationStyle> styles = new HashSet<AnnotationStyle>();
-    
+
     // TODO: for each annotation type, try to retrieve annotation styles
-    
+
     return styles;
   }
-  
+
   @Override
   protected ICasDocument createDocument(Object element) throws CoreException {
     if (element instanceof FileEditorInput) {
@@ -210,21 +207,38 @@ public class DefaultCasDocumentProvider extends
 
       // Try to find a type system for the CAS file
       // TODO: Change to only use full path
-      IFile typeSystemFile = null; 
-      
+      IFile typeSystemFile = null;
+
       // First check if a type system is already known or was
       // set by the editor for this specific CAS
-      String typeSystemFileString = documentToTypeSystemMap.get(casFile.getFullPath().toPortableString());
-      
+      String typeSystemFileString = documentToTypeSystemMap.get(casFile.getFullPath()
+              .toPortableString());
+
       if (typeSystemFileString != null)
-        typeSystemFile = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(typeSystemFileString));
-      
+        typeSystemFile = ResourcesPlugin.getWorkspace().getRoot()
+                .getFile(new Path(typeSystemFileString));
+
       // If non was found get it from project
       if (typeSystemFile == null)
         typeSystemFile = TypeSystemLocationPropertyPage.getTypeSystemLocation(casFile.getProject());
-      
+
+      // use search strategies for finding the type system
+      if (typeSystemFile == null || !typeSystemFile.exists()) {
+        Map<Integer, ITypeSystemSearchStrategy> searchStrategies = TypeSystemSearchStrategyFactory
+                .instance().getSearchStrategies();
+        // TODO sort again for user preference settings
+        Collection<ITypeSystemSearchStrategy> values = searchStrategies.values();
+        for (ITypeSystemSearchStrategy eachStrategy : values) {
+          IFile findTypeSystem = eachStrategy.findTypeSystem(casFile);
+          if (findTypeSystem != null && findTypeSystem.exists()) {
+            typeSystemFile = findTypeSystem;
+            break;
+          }
+        }
+      }
+
       if (typeSystemFile != null && typeSystemFile.exists()) {
-        
+
         // TODO: Update this comment!
         // Try to load a style file for the type system
         // Should be named: ts file name, prefixed with .style-
@@ -232,12 +246,17 @@ public class DefaultCasDocumentProvider extends
         // Creating it after the default is changed means that
         // colors could change completely when the a type is
         // added or removed to the type system
-        
-        IFile prefFile = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(
-                getPreferenceFileForTypeSystem(typeSystemFile.getFullPath().toPortableString())));
-        
-        PreferenceStore tsPrefStore = typeSystemPreferences.get(prefFile.getFullPath().toPortableString());
-        
+
+        IFile prefFile = ResourcesPlugin
+                .getWorkspace()
+                .getRoot()
+                .getFile(
+                        new Path(getPreferenceFileForTypeSystem(typeSystemFile.getFullPath()
+                                .toPortableString())));
+
+        PreferenceStore tsPrefStore = typeSystemPreferences.get(prefFile.getFullPath()
+                .toPortableString());
+
         // If lookup for store failed ...
         if (tsPrefStore == null) {
           if (prefFile.exists()) {
@@ -247,43 +266,47 @@ public class DefaultCasDocumentProvider extends
             } catch (IOException e) {
               e.printStackTrace(); // TODO: Handle this correctly!
             }
-          }
-          else {
-            
+          } else {
+
             // UIMA-2245
             // DotCorpus to Eclipse PreferenceStore migration code.
             // If there is DotCorpus style file and not yet a preference store file
-            // the settings from the DotCorpus style file should be written into a preference store file.
-            IFile styleFile = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(
-                    getStyleFileForTypeSystem(typeSystemFile.getFullPath().toPortableString())));
-            
+            // the settings from the DotCorpus style file should be written into a preference store
+            // file.
+            IFile styleFile = ResourcesPlugin
+                    .getWorkspace()
+                    .getRoot()
+                    .getFile(
+                            new Path(getStyleFileForTypeSystem(typeSystemFile.getFullPath()
+                                    .toPortableString())));
+
             if (styleFile.exists()) {
-              InputStream styleFileIn = null;;
+              InputStream styleFileIn = null;
+              ;
               DotCorpus dotCorpus = null;
               try {
                 styleFileIn = styleFile.getContents();
                 dotCorpus = DotCorpusSerializer.parseDotCorpus(styleFileIn);
-                
-              }
-              finally {
+
+              } finally {
                 if (styleFileIn != null)
-                 try {
-                   styleFileIn.close();
-                 } catch (IOException e) {
-                   CasEditorPlugin.log(e);
-                 }
+                  try {
+                    styleFileIn.close();
+                  } catch (IOException e) {
+                    CasEditorPlugin.log(e);
+                  }
               }
-              
+
               if (dotCorpus != null) {
                 tsPrefStore = new PreferenceStore(prefFile.getName());
                 for (AnnotationStyle style : dotCorpus.getAnnotationStyles()) {
                   AnnotationStyle.putAnnotatationStyleToStore(tsPrefStore, style);
                 }
-                
+
                 for (String shownType : dotCorpus.getShownTypes()) {
                   tsPrefStore.putValue(shownType + ".isShown", "true");
                 }
-                
+
                 ByteArrayOutputStream prefOut = new ByteArrayOutputStream();
                 try {
                   tsPrefStore.save(prefOut, "");
@@ -291,66 +314,64 @@ public class DefaultCasDocumentProvider extends
                   // Should never happen!
                   CasEditorPlugin.log(e);
                 }
-                
+
                 // TODO: Do we need to handle exceptions here?
                 prefFile.create(new ByteArrayInputStream(prefOut.toByteArray()), IFile.FORCE, null);
               }
-             }
+            }
           }
-          
+
           // No preference defined, lets use defaults
           if (tsPrefStore == null) {
             tsPrefStore = new PreferenceStore(prefFile.getName());
-            
+
             CAS cas = DocumentUimaImpl.getVirginCAS(typeSystemFile);
             TypeSystem ts = cas.getTypeSystem();
-            
-            Collection<AnnotationStyle> defaultStyles = getConfiguredAnnotationStyles(tsPrefStore, ts);
-            
+
+            Collection<AnnotationStyle> defaultStyles = getConfiguredAnnotationStyles(tsPrefStore,
+                    ts);
+
             Collection<AnnotationStyle> newStyles = DefaultColors.assignColors(ts, defaultStyles);
-            
+
             // TODO: Settings defaults must be moved to the AnnotationEditor
             for (AnnotationStyle style : newStyles) {
               AnnotationStyle.putAnnotatationStyleToStore(tsPrefStore, style);
             }
           }
-          
+
           typeSystemPreferences.put(prefFile.getFullPath().toPortableString(), tsPrefStore);
         }
-        
-        documentToTypeSystemMap.put(casFile.getFullPath().toPortableString(),
-                typeSystemFile.getFullPath().toPortableString());
 
-        
+        documentToTypeSystemMap.put(casFile.getFullPath().toPortableString(), typeSystemFile
+                .getFullPath().toPortableString());
+
         IPreferenceStore store = sessionPreferenceStores.get(getTypesystemId(element));
-        
+
         if (store == null) {
           PreferenceStore newStore = new PreferenceStore();
           sessionPreferenceStores.put(getTypesystemId(element), newStore);
           newStore.addPropertyChangeListener(new SaveSessionPreferencesTrigger(element));
-          
-          String sessionPreferenceString = typeSystemFile.getPersistentProperty(
-                  new QualifiedName("", CAS_EDITOR_SESSION_PROPERTIES));
-          
+
+          String sessionPreferenceString = typeSystemFile.getPersistentProperty(new QualifiedName(
+                  "", CAS_EDITOR_SESSION_PROPERTIES));
+
           if (sessionPreferenceString != null) {
             try {
-              newStore.load(new ByteArrayInputStream(
-                      sessionPreferenceString.getBytes("UTF-8")));
+              newStore.load(new ByteArrayInputStream(sessionPreferenceString.getBytes("UTF-8")));
             } catch (IOException e) {
               CasEditorPlugin.log(e);
             }
           }
         }
-        
-        
+
         // TODO:
         // Preferences are bound to the type system
         // Changed in one place, then it should change in all places
-        
+
         CAS cas = DocumentUimaImpl.getVirginCAS(typeSystemFile);
-  
+
         DocumentFormat documentFormat;
-  
+
         // Which file format to use ?
         if (casFile.getName().endsWith("xmi")) {
           documentFormat = DocumentFormat.XMI;
@@ -360,7 +381,7 @@ public class DefaultCasDocumentProvider extends
           throw new CoreException(new Status(IStatus.ERROR, "org.apache.uima.dev",
                   "Unkown file format!"));
         }
-  
+
         InputStream casIn = casFile.getContents();
 
         org.apache.uima.caseditor.editor.ICasDocument doc;
@@ -377,29 +398,27 @@ public class DefaultCasDocumentProvider extends
             // does not notice the error and can just
             // edit the file, tough saving it might fail
             // if the io error persists
-            
+
             CasEditorPlugin.log(e);
           }
         }
 
         elementErrorStatus.remove(element);
-        
+
         return doc;
-      }
-      else {
-        
+      } else {
+
         String message = null;
-        
+
         if (typeSystemFile != null) {
-          message = "Cannot find type system!\nPlease place a valid type system in this path:\n" +
-                  typeSystemFile.getFullPath().toString();
-        }
-        else
+          message = "Cannot find type system!\nPlease place a valid type system in this path:\n"
+                  + typeSystemFile.getFullPath().toString();
+        } else
           message = "Type system is not set, please choose a type system to open the CAS.";
-        
+
         IStatus status = new Status(IStatus.ERROR, "org.apache.uima.dev",
-        		CasDocumentProvider.TYPE_SYSTEM_NOT_AVAILABLE_STATUS_CODE, message, null);
-        
+                CasDocumentProvider.TYPE_SYSTEM_NOT_AVAILABLE_STATUS_CODE, message, null);
+
         elementErrorStatus.put(element, status);
       }
     }
@@ -417,12 +436,12 @@ public class DefaultCasDocumentProvider extends
       IFile file = fileInput.getFile();
 
       if (document instanceof DocumentUimaImpl) {
-        
+
         DocumentUimaImpl documentImpl = (DocumentUimaImpl) document;
-        
-        ByteArrayOutputStream outStream = new ByteArrayOutputStream(40000); 
+
+        ByteArrayOutputStream outStream = new ByteArrayOutputStream(40000);
         documentImpl.serialize(outStream);
-        
+
         InputStream stream = new ByteArrayInputStream(outStream.toByteArray());
 
         file.setContents(stream, true, false, null);
@@ -438,73 +457,70 @@ public class DefaultCasDocumentProvider extends
       FileEditorInput editorInput = (FileEditorInput) element;
       return documentToTypeSystemMap.get(editorInput.getFile().getFullPath().toPortableString());
     }
-    
+
     return null;
   }
-  
+
   @Override
   public void saveTypeSystemPreferenceStore(Object element) {
     String prefereceFileId = getPreferenceFileForTypeSystem(getTypesystemId(element));
-    
+
     PreferenceStore preferences = typeSystemPreferences.get(prefereceFileId);
-    
-    // serialize ... 
-    IFile preferenceFile = ResourcesPlugin.getWorkspace().getRoot().getFile(
-            Path.fromPortableString(prefereceFileId));
-    
+
+    // serialize ...
+    IFile preferenceFile = ResourcesPlugin.getWorkspace().getRoot()
+            .getFile(Path.fromPortableString(prefereceFileId));
+
     ByteArrayOutputStream preferenceBytes = new ByteArrayOutputStream();
-    
+
     try {
       preferences.save(preferenceBytes, "");
     } catch (IOException e) {
       // will not fail, writing to memory
       CasEditorPlugin.log(e);
     }
-    
+
     try {
       if (preferenceFile.exists()) {
-        preferenceFile.setContents(new ByteArrayInputStream(preferenceBytes.toByteArray()),
-                true, false, null);
+        preferenceFile.setContents(new ByteArrayInputStream(preferenceBytes.toByteArray()), true,
+                false, null);
+      } else {
+        preferenceFile.create(new ByteArrayInputStream(preferenceBytes.toByteArray()), true, null);
       }
-      else {
-        preferenceFile.create(new ByteArrayInputStream(preferenceBytes.toByteArray()),
-                true, null);
-      }
-    }
-    catch (CoreException e) {
+    } catch (CoreException e) {
       // might fail if writing is not possible
       // for some reason
       CasEditorPlugin.log(e);
     }
   }
-  
+
   @Override
   public IPreferenceStore getTypeSystemPreferenceStore(Object element) {
     String tsId = getTypesystemId(element);
-    
+
     return typeSystemPreferences.get(getPreferenceFileForTypeSystem(tsId));
   }
-  
+
   @Override
   public IPreferenceStore getSessionPreferenceStore(Object element) {
     return sessionPreferenceStores.get(getTypesystemId(element));
   }
-  
+
   void setTypeSystem(String document, String typeSystem) {
     documentToTypeSystemMap.put(document, typeSystem);
   }
-  
+
   @Override
-  public Composite createTypeSystemSelectorForm(final ICasEditor editor,
-          Composite parent, IStatus status) {
-    
+  public Composite createTypeSystemSelectorForm(final ICasEditor editor, Composite parent,
+          IStatus status) {
+
     // Note:
     // If the editor is not active and the user clicks on the button
     // the editor gets activated and an exception is logged
     // on the second click the button is selected
     // How to fix the exception ?!
     // Only tested on OS X Snow Leopard
-    
+
     Composite provideTypeSystemForm = new Composite(parent, SWT.NONE);
     provideTypeSystemForm.setLayout(new GridLayout(1, false));
     Label infoLabel = new Label(provideTypeSystemForm, SWT.NONE);
@@ -513,18 +529,18 @@ public class DefaultCasDocumentProvider extends
     retryButton.setText("Choose Type System ...");
     retryButton.addSelectionListener(new SelectionListener() {
       public void widgetSelected(SelectionEvent e) {
-        
+
         // Open a dialog to let the user choose a type system
-        IResource resource = WorkspaceResourceDialog.getWorkspaceResourceElement(Display.getCurrent().getActiveShell(),
-                ResourcesPlugin.getWorkspace().getRoot(),
+        IResource resource = WorkspaceResourceDialog.getWorkspaceResourceElement(Display
+                .getCurrent().getActiveShell(), ResourcesPlugin.getWorkspace().getRoot(),
                 "Select a Type System", "Please select a Type System:");
-        
+
         if (resource != null) {
-          
+
           FileEditorInput editorInput = (FileEditorInput) editor.getEditorInput();
-          setTypeSystem(editorInput.getFile().getFullPath().toPortableString(),
-                  resource.getFullPath().toString());
-          
+          setTypeSystem(editorInput.getFile().getFullPath().toPortableString(), resource
+                  .getFullPath().toString());
+
           // Now set the input again to open the editor with the
           // specified type system
           editor.reopenEditorWithNewTypeSystem();
@@ -535,34 +551,34 @@ public class DefaultCasDocumentProvider extends
         throw new IllegalStateException("Never be called!");
       }
     });
-    
+
     return provideTypeSystemForm;
   }
-  
+
   @Override
-	protected ElementInfo createElementInfo(Object element) {
-    
+  protected ElementInfo createElementInfo(Object element) {
+
     FileElementInfo info = new FileElementInfo(super.createElementInfo(element));
 
     // Register listener to listens for deletion events,
     // if the file opened in this editor is deleted, the editor should be closed!
-    
+
     info.deleteListener = new DeleteElementListener((FileEditorInput) element);
     ResourcesPlugin.getWorkspace().addResourceChangeListener(info.deleteListener,
             IResourceChangeEvent.POST_CHANGE);
 
     return info;
-	}
-  
+  }
+
   @Override
-	protected void disposeElementInfo(Object element, ElementInfo info) {
-	  
+  protected void disposeElementInfo(Object element, ElementInfo info) {
+
     FileElementInfo fileInfo = (FileElementInfo) info;
     ResourcesPlugin.getWorkspace().removeResourceChangeListener(fileInfo.deleteListener);
-	  
-		super.disposeElementInfo(element, info);
-	}
-  
+
+    super.disposeElementInfo(element, info);
+  }
+
   private void handleElementDeleted(Object element) {
     fireElementDeleted(element);
   }
