@@ -1,4 +1,4 @@
-package org.apache.uima.caseditor.editor.searchStrategy;
+package org.apache.uima.caseditor.ide.searchstrategy;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -10,7 +10,7 @@ import org.eclipse.core.runtime.Platform;
 
 public class TypeSystemSearchStrategyFactory {
 
-  private static final String SEARCH_STRATEGY_EXTENSION = "org.apache.uima.caseditor.searchstrategy";
+  private static final String SEARCH_STRATEGY_EXTENSION = "org.apache.uima.caseditor.ide.searchstrategy";
 
   private static TypeSystemSearchStrategyFactory instance;
 

@@ -22,6 +22,7 @@
 
 <plugin>
    <extension-point id="org.apache.uima.caseditor.editor" name="DocumentProvider" schema="schema/org.apache.uima.caseditor.editor.exsd"/>
+   <extension-point id="org.apache.uima.caseditor.ide.searchstrategy" name="Type System Search Strategy" schema="schema/org.apache.uima.caseditor.ide.searchstrategy.exsd"/>
 
 	<extension point="org.eclipse.core.resources.natures"
 		id="NLPProject" name="UIMA Cas Editor Nature">

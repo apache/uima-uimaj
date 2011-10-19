@@ -1,4 +1,4 @@
-package org.apache.uima.caseditor.editor.searchStrategy;
+package org.apache.uima.caseditor.ide.searchstrategy;
 
 import org.eclipse.core.resources.IFile;
 

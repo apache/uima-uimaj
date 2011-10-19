@@ -22,7 +22,6 @@
 
 <plugin>
    <extension-point id="org.apache.uima.caseditor.editor" name="DocumentProvider" schema="schema/org.apache.uima.caseditor.editor.exsd"/>
-   <extension-point id="org.apache.uima.caseditor.searchstrategy" name="Type System Search Strategy" schema="schema/org.apache.uima.caseditor.searchstrategy.exsd"/>
 
 	<extension point="org.eclipse.ui.editors">
 		<editor icon="icons/svgicons/document.png"
