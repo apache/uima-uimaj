@@ -33,6 +33,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +50,7 @@ import org.apache.uima.util.NameClassPair;
 import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.XMLSerializer;
 import org.apache.uima.util.XMLizable;
+import org.w3c.dom.Comment;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -83,10 +86,12 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
 
   private static final Attributes EMPTY_ATTRIBUTES = new AttributesImpl();
 
-  private transient PropertyDescriptor[] mPropertyDescriptors = null;
+  // Class level cache (static) for introspection - 30x speedup in CDE for large descriptor
+  private static transient Map<Class<? extends MetaDataObject_impl>, PropertyDescriptor[]> mPropertyDescriptorsMap = 
+    Collections.synchronizedMap(new IdentityHashMap<Class<? extends MetaDataObject_impl>, PropertyDescriptor[]>());  
 
   private transient URL mSourceUrl;
-
+  
   /**
    * Creates a new <code>MetaDataObject_impl</code> with null attribute values
    */
@@ -97,6 +102,8 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * Returns a list of <code>NameClassPair</code> objects indicating the attributes of this object
    * and the Classes of the attributes' values. For primitive types, the wrapper classes will be
    * returned (e.g. <code>java.lang.Integer</code> instead of int).
+   * 
+   * Several subclasses override this, to add additional items to the list.
    * 
    * @see org.apache.uima.resource.MetaDataObject#listAttributes()
    */
@@ -146,7 +153,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
   }
 
   /**
-   * Gets the Class of the given attribue's value. For primitive types, the wrapper classes will be
+   * Gets the Class of the given attribute's value. For primitive types, the wrapper classes will be
    * returned (e.g. <code>java.lang.Integer</code> instead of int).
    * 
    * @param aName
@@ -157,12 +164,11 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    */
   public Class getAttributeClass(String aName) {
     try {
+      // note: listAttributes() is overridden in some subclasses to add additional items
       List<NameClassPair> attrList = listAttributes();
-      Iterator<NameClassPair> it = attrList.iterator();
-      while (it.hasNext()) {
-        NameClassPair ncp = it.next();
+      for (NameClassPair ncp : attrList) {
         if (ncp.getName().equals(aName)) {
-          return Class.forName(ncp.getClassName());
+          return Class.forName(ncp.getClassName()); 
         }
       }
       return null;
@@ -915,6 +921,9 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
             readUnknownPropertyValueFromXMLElement(curElem, aParser, aOptions, foundProperties);
           }
         }
+      } else if (curNode instanceof Comment) {
+        Comment curElem = (Comment) curNode;
+        String comment = curElem.getData();
       }
     }
   }
@@ -1259,17 +1268,21 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * initialization time by preventing the introspector from searching for nonexistent BeanInfo
    * classes for all the MetaDataObjects.
    * 
+   * Caching needed, this method is called for every access to a field, and introspection doesn't cache
+   * (from observation... although the javadocs say otherwise (as of Java6 10/2011 - both IBM and Sun)
+   * 
    * @return the <code>PropertyDescriptors</code> for all properties introduced by subclasses of
    *         <code>MetaDataObject_impl</code>.
    * 
    * @throw IntrospectionException if introspection fails
    */
-  protected PropertyDescriptor[] getPropertyDescriptors() throws IntrospectionException {
-    if (mPropertyDescriptors == null) {
-      mPropertyDescriptors = Introspector.getBeanInfo(this.getClass(),
-              Introspector.IGNORE_ALL_BEANINFO).getPropertyDescriptors();
+  protected PropertyDescriptor[] getPropertyDescriptors() throws IntrospectionException { 
+    PropertyDescriptor[] pd = mPropertyDescriptorsMap.get(this.getClass());
+    if (null == pd) {
+      pd = Introspector.getBeanInfo(this.getClass(), Introspector.IGNORE_ALL_BEANINFO).getPropertyDescriptors();
+      mPropertyDescriptorsMap.put(this.getClass(), pd);
     }
-    return mPropertyDescriptors;
+    return pd;
   }
 
 }
