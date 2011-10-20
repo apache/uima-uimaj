@@ -136,10 +136,9 @@ public class XMLParser_impl implements XMLParser {
       SAXParserFactory factory = SAXParserFactory.newInstance();
 
       // Turn on namespace support
-      factory.setNamespaceAware(true);
-
-      SAXParser parser = factory.newSAXParser();
-
+      factory.setNamespaceAware(true);        
+      SAXParser parser = factory.newSAXParser();  // in the future, if performance issue, can save this , and reuse with reset()
+        
       XMLReader reader = parser.getXMLReader();
       reader.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
 
@@ -174,6 +173,7 @@ public class XMLParser_impl implements XMLParser {
       // Parse with SaxDeserializer
       SaxDeserializer deser = new SaxDeserializer_impl(this, aOptions);
       reader.setContentHandler(deser);
+      reader.setProperty ("http://xml.org/sax/properties/lexical-handler", deser);
       reader.parse(input);
 
       // if there was an exception, throw it

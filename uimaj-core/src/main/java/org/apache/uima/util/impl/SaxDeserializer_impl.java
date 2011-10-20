@@ -37,13 +37,14 @@ import org.w3c.dom.Node;
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
+import org.xml.sax.ext.LexicalHandler;
 
 /**
  * Reference implementation of {@link SaxDeserializer}.
  * 
  * 
  */
-public class SaxDeserializer_impl implements SaxDeserializer {
+public class SaxDeserializer_impl implements SaxDeserializer, LexicalHandler {
   static final String JAXP_SCHEMA_LANGUAGE = "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
 
   static final String W3C_XML_SCHEMA = "http://www.w3.org/2001/XMLSchema";
@@ -109,6 +110,7 @@ public class SaxDeserializer_impl implements SaxDeserializer {
    * @see org.apache.uima.util.SaxDeserializer#getObject()
    */
   public XMLizable getObject() throws InvalidXMLException {
+    // COMMENT NODEs may be present, and getDocumentElement would skip it...
     Node rootDomNode = ((Document) mDOMResult.getNode()).getDocumentElement();
 
     // build the object
@@ -209,4 +211,22 @@ public class SaxDeserializer_impl implements SaxDeserializer {
     // System.out.println("SaxDeserializer_impl::startPrefixMapping("+prefix+","+uri+")");
     mTransformerHandler.startPrefixMapping(prefix, uri);
   }
+
+  //==============================================
+  // Methods for LexicalHandler interface
+  public void comment(char[] arg0, int arg1, int arg2) throws SAXException {
+    mTransformerHandler.comment(arg0, arg1, arg2);
+  }
+
+  public void endCDATA() throws SAXException {}
+
+  public void endDTD() throws SAXException {}
+
+  public void endEntity(String name) throws SAXException {}
+
+  public void startCDATA() throws SAXException {}
+
+  public void startDTD(String name, String publicId, String systemId) throws SAXException {}
+
+  public void startEntity(String name) throws SAXException {}
 }
