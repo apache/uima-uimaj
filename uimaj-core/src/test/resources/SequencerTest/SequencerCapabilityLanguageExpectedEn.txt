@@ -1,0 +1,12 @@
+
+ResultSpec for annotator Test Annotator 1:
+uima.tt.ParagraphAnnotation
+uima.tt.SentenceAnnotation
+uima.tt.TokenAnnotation
+
+ResultSpec for annotator Test Annotator 2:
+uima.tt.CompPartAnnotation
+uima.tt.Lemma
+
+ResultSpec for annotator Test Annotator 3:
+uima.tcas.DocumentAnnotation:categories

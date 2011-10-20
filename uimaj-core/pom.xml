@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one
+   or more contributor license agreements.  See the NOTICE file
+   distributed with this work for additional information
+   regarding copyright ownership.  The ASF licenses this file
+   to you under the Apache License, Version 2.0 (the
+   "License"); you may not use this file except in compliance
+   with the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied.  See the License for the
+   specific language governing permissions and limitations
+   under the License.    
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+  
+  <parent>
+    <groupId>org.apache.uima</groupId>
+    <artifactId>uimaj-parent</artifactId>
+    <version>2.4.0-SNAPSHOT</version>
+    <relativePath>../uimaj-parent/pom.xml</relativePath>
+  </parent>
+  
+	<artifactId>uimaj-core</artifactId>
+	<packaging>jar</packaging>
+	<version>2.4.0-SNAPSHOT</version>
+	<name>UIMA Base: ${project.artifactId}</name>
+  <description>The core implementation of the UIMA Java Framework</description>
+  <url>${uimaWebsiteUrl}</url>
+
+  <!-- Special inheritance note
+       even though the <scm> element that follows is exactly the 
+       same as those in super poms, it cannot be inherited because 
+       there is some special code that computes the connection elements
+       from the chain of parent poms, if this is omitted. 
+       
+       Keeping this a bit factored allows cutting/pasting the <scm>
+       element, and just changing the following two properties -->  
+  <scm>
+    <connection>
+      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-core
+    </connection>
+    <developerConnection>
+      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-core
+    </developerConnection>
+    <url>
+      http://svn.apache.org/viewvc/uima/uimaj/trunk/uimaj-core
+    </url>
+  </scm>
+  
+  <properties>
+    <uimaScmProject>${project.artifactId}</uimaScmProject>
+    <postNoticeText>${ibmNoticeText}</postNoticeText>
+  </properties>
+  
+	<dependencies>
+	  <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.8</version>
+      <scope>provided</scope>
+      <optional>true</optional>
+    </dependency>
+		<dependency>
+			<groupId>org.apache.uima</groupId>
+			<artifactId>uimaj-test-util</artifactId>
+			<version>${project.parent.version}</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	<build>
+		<finalName>uima-core</finalName>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.rat</groupId>
+          <artifactId>apache-rat-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>default-cli</id>
+              <configuration>
+                <excludes>
+                  <exclude>release.properties</exclude> <!-- release generated artifact -->
+                  <exclude>src/test/resources/CASTests/*.txt</exclude> <!-- test data -->
+                  <exclude>src/test/resources/data/moby.txt</exclude>
+                  <exclude>src/test/resources/org/apache/uima/resource/impl/ResourceInClasspath.txt</exclude> <!-- test data -->
+                  <exclude>src/test/resources/pearTests/*.pear</exclude> <!-- test pear files -->
+                  <exclude>src/test/resources/pearTests/encodingTests/*</exclude> <!-- test data, RAT can't reliably read these -->
+                  <exclude>src/test/resources/SequencerTest/*.txt</exclude> <!-- test data -->
+                </excludes>              
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>         
+      </plugins>
+    </pluginManagement>
+    
+		<plugins>
+		
+		  <!-- experiment with CLIRR
+		    gets fatal error: 
+		    
+		    net.sf.clirr.core.CheckerException: Unable to find information in class org.apache.uima.cas.impl.AnnotationBaseImpl 
+		    referring back to nested class org.apache.uima.cas.impl.AnnotationBaseImpl$1
+        at net.sf.clirr.core.internal.bcel.BcelScopeHelper.getClassScope(BcelScopeHelper.java:127)
+        at net.sf.clirr.core.internal.bcel.BcelJavaType.getDeclaredScope(BcelJavaType.java:141)
+        at net.sf.clirr.core.internal.bcel.BcelJavaType.getEffectiveScope(BcelJavaType.java:145)
+        at net.sf.clirr.core.internal.checks.ClassScopeCheck.check(ClassScopeCheck.java:72)
+        at net.sf.clirr.core.Checker.runClassChecks(Checker.java:190)
+        at net.sf.clirr.core.Checker.reportDiffs(Checker.java:136)
+        at org.codehaus.mojo.clirr.AbstractClirrMojo.executeClirr(AbstractClirrMojo.java:236) 
+		  -->
+		  <!--plugin>  
+		    <artifactId>clirr-maven-plugin</artifactId>
+		    <groupId>org.codehaus.mojo</groupId>
+		    <version>2.2.3-SNAPSHOT</version>
+		    
+		  </plugin-->
+      
+      <!-- filter the template for the version java code
+           to insert the version from properties -->
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>setVersions</id>
+            <goals><goal>copy-resources</goal></goals>
+            <phase>generate-sources</phase>
+            <configuration>
+              <outputDirectory>${project.build.directory}/generated-sources/releaseVersion</outputDirectory>
+              <resources>
+                <resource>
+                  <filtering>true</filtering>
+                  <directory>src/main/versionJava</directory>
+                </resource>
+              </resources>
+              <delimiters>
+                <delimiter>${*}</delimiter>
+              </delimiters>
+              <useDefaultDelimiters>false</useDefaultDelimiters>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      
+      <!-- add the generated sources to the compile sources -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>1.5</version>
+        <executions>
+          <execution>
+            <id>addVersionSrc</id>
+            <goals><goal>add-source</goal></goals>
+            <configuration>
+              <sources>
+                <source>${project.build.directory}/generated-sources/releaseVersion</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+          <!-- testing on 64 bit Linux requires larger heap -->
+					<argLine>-Xmx650M</argLine>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+  
+</project>
