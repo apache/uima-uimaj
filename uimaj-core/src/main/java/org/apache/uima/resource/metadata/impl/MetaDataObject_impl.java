@@ -61,8 +61,8 @@ import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * Abstract base class for all MetaDataObjects in the reference implementation. Provides basic
- * support for getting and setting property values given their names, by storing all attribute
- * values in a HashMap keyed on attribute name.
+ * support for getting and setting property values given their names, by referring to Introspected
+ * information for the class (see below).  
  * <p>
  * Also provides the ability to write objects to XML and build objects from their DOM
  * representation, as required to implement the {@link XMLizable} interface, which is a
@@ -72,11 +72,21 @@ import org.xml.sax.helpers.AttributesImpl;
  * 
  * The implementation for getting and setting property values uses the JavaBeans introspection API.
  * Therefore subclasses of this class must be valid JavaBeans and either use the standard naming
- * conventions for getters and setters or else provide a BeanInfo class. See <a
- * href="http://java.sun.com/docs/books/tutorial/javabeans/"> The Java Beans Tutorial</a> for more
+ * conventions for getters and setters. BeanInfo augmentation is ignored; the implementation here
+ * uses the flag IGNORE_ALL_BEANINFO. See <a href="http://java.sun.com/docs/books/tutorial/javabeans/"> 
+ * The Java Beans Tutorial</a> for more
  * information.
  * 
+ * To support XML Comments, which can occur inbetween any sub-elements, including array values,
+ * the "data" for all objects is stored in a pair of ArrayLists; one holds the "name" of the slot,
+ * the other the value; comments are interspersed within this list where they occur.
  * 
+ * To the extent possible, this should be the *only* data storage used for the xml element.  
+ * Subclasses should access these elements on demand.  Data will be read into / written from this
+ * representation; Cloning will copy this information.
+ * 
+ *    For getters that need to do some special initial processing, a global flag will be set whenever
+ *    this base code changes the underlying value.
  */
 public abstract class MetaDataObject_impl implements MetaDataObject {
 
@@ -92,6 +102,10 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
 
   private transient URL mSourceUrl;
   
+  private transient List<String> itemNames = new ArrayList();
+  
+  private transient List<?> itemValues = new ArrayList();
+  
   /**
    * Creates a new <code>MetaDataObject_impl</code> with null attribute values
    */
@@ -100,8 +114,9 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
 
   /**
    * Returns a list of <code>NameClassPair</code> objects indicating the attributes of this object
-   * and the Classes of the attributes' values. For primitive types, the wrapper classes will be
-   * returned (e.g. <code>java.lang.Integer</code> instead of int).
+   * and the String names of the Classes of the attributes' values. 
+   *   For primitive types, the wrapper classes will be
+   *   returned (e.g. <code>java.lang.Integer</code> instead of int).
    * 
    * Several subclasses override this, to add additional items to the list.
    * 
@@ -333,11 +348,14 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
       throw new UIMARuntimeException(e);
     }
 
+    // clone the itemLists
+    clone.itemNames = new ArrayList<String>(this.itemNames);
+    clone.itemValues = new ArrayList<Object>(this.itemValues);
+    
     // now clone all values that are MetaDataObjects
     List<NameClassPair> attrs = listAttributes();
-    Iterator<NameClassPair> i = attrs.iterator();
-    while (i.hasNext()) {
-      String attrName = ((NameClassPair) i.next()).getName();
+    for (NameClassPair ncp : attrs) {
+      String attrName = ncp.getName();
       Object val = getAttributeValue(attrName);
       if (val instanceof MetaDataObject) {
         Object clonedVal = ((MetaDataObject) val).clone();
@@ -870,6 +888,9 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
   /**
    * Initializes this object from its XML DOM representation. This method is typically called from
    * the {@link XMLParser}.
+   * 
+   * It is overridden by specific Java impl classes to provide additional
+   * defaulting (e.g. see AnalysisEngineDescription_impl)
    * 
    * @param aElement
    *          the XML element that represents this object.
