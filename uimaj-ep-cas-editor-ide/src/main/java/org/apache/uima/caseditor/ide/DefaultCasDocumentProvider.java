@@ -219,10 +219,6 @@ public class DefaultCasDocumentProvider extends
         typeSystemFile = ResourcesPlugin.getWorkspace().getRoot()
                 .getFile(new Path(typeSystemFileString));
 
-      // If non was found get it from project
-      if (typeSystemFile == null)
-        typeSystemFile = TypeSystemLocationPropertyPage.getTypeSystemLocation(casFile.getProject());
-
       // use search strategies for finding the type system
       if (typeSystemFile == null || !typeSystemFile.exists()) {
         Map<Integer, ITypeSystemSearchStrategy> searchStrategies = TypeSystemSearchStrategyFactory
@@ -237,6 +233,10 @@ public class DefaultCasDocumentProvider extends
           }
         }
       }
+
+      // If non was found get it from project
+      if (typeSystemFile == null)
+        typeSystemFile = TypeSystemLocationPropertyPage.getTypeSystemLocation(casFile.getProject());
 
       if (typeSystemFile != null && typeSystemFile.exists()) {
 
