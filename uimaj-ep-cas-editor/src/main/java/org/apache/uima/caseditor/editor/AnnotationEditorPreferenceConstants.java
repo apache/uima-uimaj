@@ -19,18 +19,13 @@
 
 package org.apache.uima.caseditor.editor;
 
-import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
-import org.eclipse.jface.preference.IPreferenceStore;
-
 import org.apache.uima.caseditor.CasEditorPlugin;
 
-public class AnnotationEditorPreferenceInitializer extends AbstractPreferenceInitializer {
+public class AnnotationEditorPreferenceConstants {
 
-	public void initializeDefaultPreferences() {
-		IPreferenceStore store = CasEditorPlugin.getDefault().getPreferenceStore();
-		store.setDefault(
-		        AnnotationEditorPreferenceConstants.ANNOTATION_EDITOR_ENABLE_WORD_WRAP, true);
-		store.setDefault(
-		        AnnotationEditorPreferenceConstants.ANNOTATION_EDITOR_TEXT_SIZE, 13);
-	}
+  public static final String ANNOTATION_EDITOR_TEXT_SIZE =
+          CasEditorPlugin.ID + ".editor-text-size";
+  
+  public static final String ANNOTATION_EDITOR_ENABLE_WORD_WRAP = 
+          CasEditorPlugin.ID + ".enable-word-wrap";
 }

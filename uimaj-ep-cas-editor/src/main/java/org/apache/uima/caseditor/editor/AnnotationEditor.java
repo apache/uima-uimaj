@@ -630,6 +630,12 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 
     sourceViewer.addPainter(mPainter);
     
+    // UIMA-2271: Set word wrap based on the preferences
+    IPreferenceStore preferences = CasEditorPlugin.getDefault().getPreferenceStore();
+    
+    sourceViewer.getTextWidget().setWordWrap(preferences.getBoolean(
+            AnnotationEditorPreferenceConstants.ANNOTATION_EDITOR_ENABLE_WORD_WRAP));
+    
     return sourceViewer;
   }
 
@@ -740,24 +746,32 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
       
     // Retrieve font size from preference store, default is 15
     IPreferenceStore prefStore = CasEditorPlugin.getDefault().getPreferenceStore();
-    int textSize = prefStore.getInt(AnnotationEditorPreferencePage.EDITOR_TEXT_SIZE);
+    int textSize = prefStore.getInt(
+            AnnotationEditorPreferenceConstants.ANNOTATION_EDITOR_TEXT_SIZE);
+    
+    // TODO: We should use a preference initialize instead ...
     
     if (textSize > 0) {
       setTextSize(textSize);
     }
     
-    preferenceStoreChangeListener = (new IPropertyChangeListener() {
+    preferenceStoreChangeListener = new IPropertyChangeListener() {
       
       public void propertyChange(PropertyChangeEvent event) {
-        if (AnnotationEditorPreferencePage.EDITOR_TEXT_SIZE.equals(event.getProperty())) {
+        if (AnnotationEditorPreferenceConstants.
+                ANNOTATION_EDITOR_TEXT_SIZE.equals(event.getProperty())) {
           Integer textSize = (Integer) event.getNewValue();
           
           if (textSize != null && textSize > 0) {
             setTextSize(textSize);
           }
         }
+        else if (AnnotationEditorPreferenceConstants.
+                ANNOTATION_EDITOR_ENABLE_WORD_WRAP.equals(event.getProperty())) {
+          getSourceViewer().getTextWidget().setWordWrap((Boolean) event.getNewValue());
+        }
       }
-    });
+    };
     
     prefStore.addPropertyChangeListener(preferenceStoreChangeListener);
     

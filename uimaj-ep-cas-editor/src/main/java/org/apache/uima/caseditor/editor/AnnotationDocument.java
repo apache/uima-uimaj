@@ -40,37 +40,11 @@ class AnnotationDocument extends Document implements ICasDocument {
 
   private ICasDocument mDocument;
 
-  private int lineLengthHint;
-
-  public AnnotationDocument() {
-    IPreferenceStore prefStore = CasEditorPlugin.getDefault().getPreferenceStore();
-    lineLengthHint = prefStore.getInt(AnnotationEditorPreferencePage.EDITOR_LINE_LENGTH_HINT);
-    
-    if (lineLengthHint == 0)
-      lineLengthHint = 80;
-  }
-  
-  private String transformText(String text) {
-  	if (lineLengthHint != 0 && text != null) {
-  	    return wrapWords(text, lineLengthHint);
-  	} else {
-  	  if (text != null)
-  	    return text;
-  	  else
-  	    return "";
-  	}
-  }
-  
   /**
    * Call is forwarded to the set document.
    *
    * @return the text
    */
-  private String getText() {
-
-    String text = getCAS().getDocumentText();
-    return transformText(text);
-  }  
   /**
    * Notifies listener about a document change.
    */
@@ -80,17 +54,13 @@ class AnnotationDocument extends Document implements ICasDocument {
     fireDocumentChanged(ev);
   }
   
-//  public void setLineLengthHint(int lineLengthHint) {
-//    this.lineLengthHint = lineLengthHint;
-//  }
-
   /**
    * @param element
    */
   public void setDocument(ICasDocument element) {
     mDocument = element;
 
-    set(getText());
+    set(getCAS().getDocumentText());
   }
 
   public ICasDocument getDocument() {
@@ -262,7 +232,7 @@ class AnnotationDocument extends Document implements ICasDocument {
 	  // but without sending out notifications.
 	  // The stop and resume notification methods do not yield
 	  // the desired effect
-	  String text = transformText(getCAS().getView(viewName).getDocumentText());
+	  String text = getCAS().getView(viewName).getDocumentText();
 	  getStore().set(text);
 	  getTracker().set(text);
 	  
