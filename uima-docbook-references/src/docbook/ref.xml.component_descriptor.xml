@@ -1110,11 +1110,6 @@ uima.tcas.Annotation.</programlisting>
       ...
     </output>
 
-    <languagesSupported>
-      <language>[ISO Language ID]</language>
-        ...
-    </languagesSupported>
-
     <inputSofas>
       <sofaName>[name]</sofaName>
       ...
@@ -1124,6 +1119,11 @@ uima.tcas.Annotation.</programlisting>
       <sofaName>[name]</sofaName>
       ...
     </outputSofas>
+
+    <languagesSupported>
+      <language>[ISO Language ID]</language>
+        ...
+    </languagesSupported>
   </capability>
 
   <capability>
