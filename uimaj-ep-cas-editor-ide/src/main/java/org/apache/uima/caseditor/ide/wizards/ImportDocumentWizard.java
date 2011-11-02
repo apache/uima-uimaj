@@ -20,9 +20,15 @@
 package org.apache.uima.caseditor.ide.wizards;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.uima.caseditor.CasEditorPlugin;
+import org.apache.uima.caseditor.ide.CasEditorIdePlugin;
+import org.apache.uima.caseditor.ide.CasEditorIdePreferenceConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IImportWizard;
@@ -57,6 +63,42 @@ public final class ImportDocumentWizard extends Wizard implements IImportWizard 
 
   @Override
   public boolean performFinish() {
+    
+    String usedEncoding = mMainPage.getTextEncoding();
+    
+    IPreferenceStore store = CasEditorIdePlugin.getDefault().getPreferenceStore();
+    
+    String lastUsedEncodingsString = store.getString(
+            CasEditorIdePreferenceConstants.CAS_IMPORT_WIZARD_LAST_USED_ENCODINGS);
+    
+    List<String> lastUsedEncodings = new ArrayList<String>(Arrays.asList(lastUsedEncodingsString.split(
+            CasEditorIdePreferenceConstants.STRING_DELIMITER)));
+    
+    int usedEncodingIndex = lastUsedEncodings.indexOf(usedEncoding);
+    
+    if (usedEncodingIndex != -1) {
+      lastUsedEncodings.remove(usedEncodingIndex);
+    }
+    
+    lastUsedEncodings.add(0, usedEncoding);
+    
+    int maxUserItemCount = 10;
+    
+    if (lastUsedEncodings.size() > maxUserItemCount) {
+      lastUsedEncodings = lastUsedEncodings.subList(0, maxUserItemCount - 1);
+    }
+    
+    StringBuilder updatedLastUsedEncodingsString = new StringBuilder();
+    
+    for (String encoding : lastUsedEncodings) {
+      updatedLastUsedEncodingsString.append(encoding);
+      updatedLastUsedEncodingsString.append(
+              CasEditorIdePreferenceConstants.STRING_DELIMITER);
+    }
+    
+    store.setValue(CasEditorIdePreferenceConstants.CAS_IMPORT_WIZARD_LAST_USED_ENCODINGS,
+            updatedLastUsedEncodingsString.toString());
+    
     IImportStructureProvider importProvider = new DocumentImportStructureProvider(mMainPage.getLanguage(),
     		mMainPage.getTextEncoding(), mMainPage.getCasFormat());
     

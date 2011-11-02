@@ -23,14 +23,17 @@ import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.uima.cas.CAS;
 import org.apache.uima.caseditor.CasEditorPlugin;
 import org.apache.uima.caseditor.editor.DocumentFormat;
+import org.apache.uima.caseditor.ide.CasEditorIdePlugin;
+import org.apache.uima.caseditor.ide.CasEditorIdePreferenceConstants;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -39,6 +42,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
@@ -71,11 +75,27 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
  */
 final class ImportDocumentWizardPage extends WizardPage {
 
+  private static final Set<String> defaultEncodings;
+  
+  static {
+    Set<String> encodings = new HashSet<String>();
+    
+    encodings.add("US-ASCII");
+    encodings.add("ISO-8859-1");
+    encodings.add("UTF-8");
+    encodings.add("UTF-16BE");
+    encodings.add("UTF-16LE");
+    encodings.add("UTF-16");
+    encodings.add(Charset.defaultCharset().displayName());
+    
+    defaultEncodings = Collections.unmodifiableSet(encodings);
+  }
+  
   private IPath importDestinationPath;
 
   private String importEncoding;
   
-  private String language = CAS.DEFAULT_LANGUAGE_NAME;
+  private String language;
   
   private DocumentFormat documentFormat;
   
@@ -96,7 +116,7 @@ final class ImportDocumentWizardPage extends WizardPage {
 //        importDestinationPath = containerElement.getFullPath();
 //      }
 //    }
-
+    
     setPageComplete(false);
   }
 
@@ -341,13 +361,18 @@ final class ImportDocumentWizardPage extends WizardPage {
     Label languageLabel = new Label(importOptions, SWT.NONE);
     languageLabel.setText("Language:");
     
+    final IPreferenceStore store = CasEditorIdePlugin.getDefault().getPreferenceStore();
+    
     final Text languageText = new Text(importOptions, SWT.BORDER);
     languageText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+    language = store.getString(
+            CasEditorIdePreferenceConstants.CAS_IMPORT_WIZARD_LAST_USED_LANG);
     languageText.setText(language);
     languageText.addModifyListener(new ModifyListener() {
       
       public void modifyText(ModifyEvent e) {
         language = languageText.getText();
+        store.setValue(CasEditorIdePreferenceConstants.CAS_IMPORT_WIZARD_LAST_USED_LANG, language);
       }
     });
     
@@ -355,21 +380,26 @@ final class ImportDocumentWizardPage extends WizardPage {
     Label encodingLabel = new Label(importOptions, SWT.NONE);
     encodingLabel.setText("Text Encoding:");
     
-    
     // combo box ...
     final Combo encodingCombo = new Combo(importOptions, SWT.NONE);
     encodingCombo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
     
-    importEncoding = Charset.defaultCharset().displayName();
     
     Set<String> charsets = new HashSet<String>();
-    charsets.add("US-ASCII");
-    charsets.add("ISO-8859-1");
-    charsets.add("UTF-8");
-    charsets.add("UTF-16BE");
-    charsets.add("UTF-16LE");
-    charsets.add("UTF-16");
-    charsets.add(importEncoding);
+    charsets.addAll(defaultEncodings);
+    
+    String lastUsedEncodingsString = 
+            store.getString(CasEditorIdePreferenceConstants.CAS_IMPORT_WIZARD_LAST_USED_ENCODINGS);
+    
+    String lastUsedEncodings[] = lastUsedEncodingsString.split(CasEditorIdePreferenceConstants.STRING_DELIMITER);
+    charsets.addAll(Arrays.asList(lastUsedEncodings));
+
+    if (lastUsedEncodings.length > 0) {
+      importEncoding = lastUsedEncodings[0];
+    }
+    else {
+      importEncoding = Charset.defaultCharset().displayName();
+    }
     
     encodingCombo.setItems(charsets.toArray(new String[charsets.size()]));
     encodingCombo.setText(importEncoding);

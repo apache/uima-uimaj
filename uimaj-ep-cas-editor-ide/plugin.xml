@@ -89,4 +89,11 @@
           name="UIMA Annotation Editor">
     </page>
  </extension>
+ 
+    <extension
+       point="org.eclipse.core.runtime.preferences">
+    <initializer
+          class="org.apache.uima.caseditor.ide.CasEditorIdePreferenceInitializer">
+    </initializer>
+ </extension>
 </plugin>
