@@ -35,6 +35,7 @@ import org.apache.uima.caseditor.Images;
 import org.apache.uima.caseditor.editor.AbstractAnnotationDocumentListener;
 import org.apache.uima.caseditor.editor.FeatureValue;
 import org.apache.uima.caseditor.editor.ICasDocument;
+import org.apache.uima.caseditor.editor.ICasEditor;
 import org.apache.uima.caseditor.editor.ModelFeatureStructure;
 import org.apache.uima.caseditor.editor.action.DeleteFeatureStructureAction;
 import org.apache.uima.caseditor.editor.util.StrictTypeConstraint;
@@ -44,6 +45,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -59,10 +61,12 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.Page;
 
 /**
- * TODO: add javadoc here
+ * The actual view page which contains the ui code for this view.
  */
 public final class FeatureStructureBrowserViewPage extends Page {
-
+  
+  private static final String LAST_SELECTED_FS_TYPE = "lastSelectedFeatureStructureBrowserViewType";
+  
   final class FeatureStructureTreeContentProvider extends AbstractAnnotationDocumentListener
           implements ITreeContentProvider {
 
@@ -318,6 +322,8 @@ public final class FeatureStructureBrowserViewPage extends Page {
 
   private ICasDocument mDocument;
 
+  private ICasEditor mCasEditor;
+  
   private ListViewer mFSList;
 
   private Composite mInstanceComposite;
@@ -330,18 +336,21 @@ public final class FeatureStructureBrowserViewPage extends Page {
 
   private Collection<Type> filterTypes;
 
+
   /**
    * Initializes a new instance.
    *
    * @param document
    */
-  public FeatureStructureBrowserViewPage(ICasDocument document) {
+  public FeatureStructureBrowserViewPage(ICasEditor editor) {
 
-	if (document == null)
-		throw new IllegalArgumentException("document parameter must not be null!");
+	if (editor == null)
+		throw new IllegalArgumentException("editor parameter must not be null!");
 
-    mDocument = document;
+    mDocument = editor.getDocument();
 
+    mCasEditor = editor;
+    
     mDeleteAction = new DeleteFeatureStructureAction(this.mDocument);
 
     mSelectAllAction = new SelectAllAction();
@@ -415,6 +424,7 @@ public final class FeatureStructureBrowserViewPage extends Page {
     typeLabelData.horizontalAlignment = SWT.LEFT;
     typeLabel.setLayoutData(typeLabelData);
     
+    
     TypeCombo typeCombo = new TypeCombo(typePanel,
             mDocument.getCAS().getTypeSystem().getType(CAS.TYPE_NAME_TOP),
             mDocument.getCAS().getTypeSystem(), filterTypes);
@@ -423,6 +433,22 @@ public final class FeatureStructureBrowserViewPage extends Page {
     typeComboData.grabExcessHorizontalSpace = true;
     typeCombo.setLayoutData(typeComboData);
     
+    final IPreferenceStore store = mCasEditor.getCasDocumentProvider().
+            getSessionPreferenceStore(mCasEditor.getEditorInput());
+    
+    Type lastUsedType = mDocument.getType(store.getString(LAST_SELECTED_FS_TYPE));
+    
+    if (lastUsedType != null) {
+      typeCombo.select(lastUsedType);
+    }
+    
+    typeCombo.addListener(new ITypePaneListener() {
+      
+      public void typeChanged(Type newType) {
+        store.setValue(LAST_SELECTED_FS_TYPE, newType.getName());
+      }
+    });
+    
     mFSList = new ListViewer(mInstanceComposite, SWT.MULTI | SWT.V_SCROLL | SWT.BORDER);
     GridData instanceListData = new GridData();
     instanceListData.grabExcessHorizontalSpace = true;
@@ -430,8 +456,7 @@ public final class FeatureStructureBrowserViewPage extends Page {
     instanceListData.horizontalAlignment = SWT.FILL;
     instanceListData.verticalAlignment = SWT.FILL;
     mFSList.getList().setLayoutData(instanceListData);
-    mFSList
-            .setContentProvider(new FeatureStructureTreeContentProvider(mDocument));
+    mFSList.setContentProvider(new FeatureStructureTreeContentProvider(mDocument));
     mFSList.setLabelProvider(new FeatureStructureLabelProvider());
 
     mFSList.setUseHashlookup(true);

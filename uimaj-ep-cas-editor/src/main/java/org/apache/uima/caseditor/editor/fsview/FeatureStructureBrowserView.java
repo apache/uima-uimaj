@@ -24,6 +24,8 @@ import org.apache.uima.caseditor.editor.ICasEditor;
 import org.apache.uima.caseditor.editor.ICasDocument;
 
 /**
+ * The Feature Structure Browser View displays a list of feature structures which
+ * belong to the selected type.
  */
 public final class FeatureStructureBrowserView extends AnnotationEditorView {
   /**
@@ -44,7 +46,7 @@ public final class FeatureStructureBrowserView extends AnnotationEditorView {
 
 		if (document != null) {
 			FeatureStructureBrowserViewPage page = new FeatureStructureBrowserViewPage(
-					document);
+					editor);
 			initPage(page);
 			page.createControl(getPageBook());
 
