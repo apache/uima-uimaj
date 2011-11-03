@@ -171,8 +171,8 @@ public class DocumentUimaImpl extends AbstractDocument {
 
     StrictTypeConstraint typeConstrain = new StrictTypeConstraint(type);
 
-    FSIterator<AnnotationFS> strictTypeIterator =
-            mCAS.createFilteredIterator(annotationIndex.iterator(), typeConstrain);
+    FSIterator<AnnotationFS> strictTypeIterator = mCAS.createFilteredIterator(
+            annotationIndex.iterator(), typeConstrain);
 
     return fsIteratorToCollection(strictTypeIterator);
   }
@@ -196,13 +196,13 @@ public class DocumentUimaImpl extends AbstractDocument {
   }
 
   public void switchView(String viewName) {
-	  String oldViewName = mCAS.getViewName();
-	  
-	  mCAS = mCAS.getView(viewName);
-	  
-	  fireViewChanged(oldViewName, viewName);
+    String oldViewName = mCAS.getViewName();
+
+    mCAS = mCAS.getView(viewName);
+
+    fireViewChanged(oldViewName, viewName);
   }
-  
+
   /**
    * Sets the content. The XCAS {@link InputStream} gets parsed.
    */
@@ -315,7 +315,7 @@ public class DocumentUimaImpl extends AbstractDocument {
               "Unkown file format!", null));
     }
   }
-  
+
   public static CAS getVirginCAS(IFile typeSystemFile) throws CoreException {
     ResourceSpecifierFactory resourceSpecifierFactory = UIMAFramework.getResourceSpecifierFactory();
 
@@ -329,8 +329,8 @@ public class DocumentUimaImpl extends AbstractDocument {
       return null;
     }
 
-    XMLInputSource xmlTypeSystemSource = new XMLInputSource(inTypeSystem,
-            extensionTypeSystemFile.getLocation().toFile());
+    XMLInputSource xmlTypeSystemSource = new XMLInputSource(inTypeSystem, extensionTypeSystemFile
+            .getLocation().toFile());
 
     XMLParser xmlParser = UIMAFramework.getXMLParser();
 
@@ -371,5 +371,9 @@ public class DocumentUimaImpl extends AbstractDocument {
     }
 
     return cas;
+  }
+
+  public void switchCasDocument(ICasDocument oldDocument, ICasDocument newDocument) {
+    fireCasDocumentChanged(oldDocument, newDocument);
   }
 }

@@ -64,14 +64,13 @@ import org.eclipse.ui.part.Page;
  * The actual view page which contains the ui code for this view.
  */
 public final class FeatureStructureBrowserViewPage extends Page {
-  
+
   private static final String LAST_SELECTED_FS_TYPE = "lastSelectedFeatureStructureBrowserViewType";
-  
+
   final class FeatureStructureTreeContentProvider extends AbstractAnnotationDocumentListener
           implements ITreeContentProvider {
 
     private ICasDocument mDocument;
-
 
     private Type mCurrentType;
 
@@ -86,14 +85,13 @@ public final class FeatureStructureBrowserViewPage extends Page {
 
       StrictTypeConstraint typeConstrain = new StrictTypeConstraint(mCurrentType);
 
-      FSIterator<FeatureStructure> strictTypeIterator =mDocument.getCAS().createFilteredIterator(
+      FSIterator<FeatureStructure> strictTypeIterator = mDocument.getCAS().createFilteredIterator(
               mDocument.getCAS().getIndexRepository().getAllIndexedFS(mCurrentType), typeConstrain);
 
       LinkedList<ModelFeatureStructure> featureStrucutreList = new LinkedList<ModelFeatureStructure>();
 
       while (strictTypeIterator.hasNext()) {
-        featureStrucutreList.add(new ModelFeatureStructure(mDocument,
-                strictTypeIterator.next()));
+        featureStrucutreList.add(new ModelFeatureStructure(mDocument, strictTypeIterator.next()));
       }
 
       ModelFeatureStructure[] featureStructureArray = new ModelFeatureStructure[featureStrucutreList
@@ -132,7 +130,7 @@ public final class FeatureStructureBrowserViewPage extends Page {
 
     /**
      * Retrieves children for a FeatureStrcuture and for FeatureValues if they have children.
-     *
+     * 
      * @param parentElement
      * @return the children
      */
@@ -206,8 +204,7 @@ public final class FeatureStructureBrowserViewPage extends Page {
     @Override
     protected void addedAnnotation(Collection<AnnotationFS> annotations) {
 
-      final LinkedList<ModelFeatureStructure> featureStrucutreList =
-        new LinkedList<ModelFeatureStructure>();
+      final LinkedList<ModelFeatureStructure> featureStrucutreList = new LinkedList<ModelFeatureStructure>();
 
       for (AnnotationFS annotation : annotations) {
         if (annotation.getType() == mCurrentType) {
@@ -224,8 +221,7 @@ public final class FeatureStructureBrowserViewPage extends Page {
 
     @Override
     public void added(Collection<FeatureStructure> structres) {
-      final LinkedList<ModelFeatureStructure> featureStrucutreList =
-        new LinkedList<ModelFeatureStructure>();
+      final LinkedList<ModelFeatureStructure> featureStrucutreList = new LinkedList<ModelFeatureStructure>();
 
       for (FeatureStructure structure : structres) {
         if (structure.getType() == mCurrentType) {
@@ -243,8 +239,7 @@ public final class FeatureStructureBrowserViewPage extends Page {
     @Override
     protected void removedAnnotation(Collection<AnnotationFS> annotations) {
 
-      final LinkedList<ModelFeatureStructure> featureStrucutreList =
-        new LinkedList<ModelFeatureStructure>();
+      final LinkedList<ModelFeatureStructure> featureStrucutreList = new LinkedList<ModelFeatureStructure>();
 
       for (AnnotationFS annotation : annotations) {
         if (annotation.getType() == mCurrentType) {
@@ -262,8 +257,7 @@ public final class FeatureStructureBrowserViewPage extends Page {
 
     @Override
     public void removed(Collection<FeatureStructure> structres) {
-      final LinkedList<ModelFeatureStructure> featureStrucutreList =
-        new LinkedList<ModelFeatureStructure>();
+      final LinkedList<ModelFeatureStructure> featureStrucutreList = new LinkedList<ModelFeatureStructure>();
 
       for (FeatureStructure structure : structres) {
         if (structure.getType() == mCurrentType) {
@@ -286,9 +280,13 @@ public final class FeatureStructureBrowserViewPage extends Page {
     public void viewChanged(String oldViewName, String newViewName) {
       changed();
     }
-    
+
     public void changed() {
       mFSList.refresh();
+    }
+
+    public void casDocumentChanged(ICasDocument oldDocument, ICasDocument newDocument) {
+      inputChanged(mFSList, oldDocument, newDocument);
     }
   }
 
@@ -323,7 +321,7 @@ public final class FeatureStructureBrowserViewPage extends Page {
   private ICasDocument mDocument;
 
   private ICasEditor mCasEditor;
-  
+
   private ListViewer mFSList;
 
   private Composite mInstanceComposite;
@@ -336,21 +334,20 @@ public final class FeatureStructureBrowserViewPage extends Page {
 
   private Collection<Type> filterTypes;
 
-
   /**
    * Initializes a new instance.
-   *
+   * 
    * @param document
    */
   public FeatureStructureBrowserViewPage(ICasEditor editor) {
 
-	if (editor == null)
-		throw new IllegalArgumentException("editor parameter must not be null!");
+    if (editor == null)
+      throw new IllegalArgumentException("editor parameter must not be null!");
 
     mDocument = editor.getDocument();
 
     mCasEditor = editor;
-    
+
     mDeleteAction = new DeleteFeatureStructureAction(this.mDocument);
 
     mSelectAllAction = new SelectAllAction();
@@ -404,51 +401,49 @@ public final class FeatureStructureBrowserViewPage extends Page {
     layout.numColumns = 1;
 
     mInstanceComposite.setLayout(layout);
-    
+
     Composite typePanel = new Composite(mInstanceComposite, SWT.NULL);
-    
+
     GridData typePanelData = new GridData();
     typePanelData.grabExcessHorizontalSpace = true;
     typePanelData.grabExcessVerticalSpace = false;
     typePanelData.horizontalAlignment = SWT.FILL;
     typePanel.setLayoutData(typePanelData);
-    
+
     GridLayout typePanelLayout = new GridLayout();
     typePanelLayout.numColumns = 2;
     typePanel.setLayout(typePanelLayout);
-    
+
     Label typeLabel = new Label(typePanel, SWT.NONE);
     typeLabel.setText("Type: ");
 
     GridData typeLabelData = new GridData();
     typeLabelData.horizontalAlignment = SWT.LEFT;
     typeLabel.setLayoutData(typeLabelData);
-    
-    
-    TypeCombo typeCombo = new TypeCombo(typePanel,
-            mDocument.getCAS().getTypeSystem().getType(CAS.TYPE_NAME_TOP),
-            mDocument.getCAS().getTypeSystem(), filterTypes);
+
+    TypeCombo typeCombo = new TypeCombo(typePanel, mDocument.getCAS().getTypeSystem()
+            .getType(CAS.TYPE_NAME_TOP), mDocument.getCAS().getTypeSystem(), filterTypes);
     GridData typeComboData = new GridData();
     typeComboData.horizontalAlignment = SWT.FILL;
     typeComboData.grabExcessHorizontalSpace = true;
     typeCombo.setLayoutData(typeComboData);
-    
-    final IPreferenceStore store = mCasEditor.getCasDocumentProvider().
-            getSessionPreferenceStore(mCasEditor.getEditorInput());
-    
+
+    final IPreferenceStore store = mCasEditor.getCasDocumentProvider().getSessionPreferenceStore(
+            mCasEditor.getEditorInput());
+
     Type lastUsedType = mDocument.getType(store.getString(LAST_SELECTED_FS_TYPE));
-    
+
     if (lastUsedType != null) {
       typeCombo.select(lastUsedType);
     }
-    
+
     typeCombo.addListener(new ITypePaneListener() {
-      
+
       public void typeChanged(Type newType) {
         store.setValue(LAST_SELECTED_FS_TYPE, newType.getName());
       }
     });
-    
+
     mFSList = new ListViewer(mInstanceComposite, SWT.MULTI | SWT.V_SCROLL | SWT.BORDER);
     GridData instanceListData = new GridData();
     instanceListData.grabExcessHorizontalSpace = true;
@@ -474,7 +469,7 @@ public final class FeatureStructureBrowserViewPage extends Page {
 
   /**
    * Retrieves the control
-   *
+   * 
    * @return the control
    */
   @Override
@@ -485,7 +480,7 @@ public final class FeatureStructureBrowserViewPage extends Page {
   /**
    * Adds the following actions to the toolbar: {@link CreateAction} {@link DereferenceAction}
    * {@link DeleteAction}
-   *
+   * 
    * @param menuManager
    * @param toolBarManager
    * @param statusLineManager
@@ -505,7 +500,7 @@ public final class FeatureStructureBrowserViewPage extends Page {
 
   /**
    * Sets global action handlers for: delete select all
-   *
+   * 
    * @param actionBars
    */
   @Override
@@ -526,4 +521,5 @@ public final class FeatureStructureBrowserViewPage extends Page {
   public void setFocus() {
     mInstanceComposite.setFocus();
   }
+
 }

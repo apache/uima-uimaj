@@ -37,7 +37,7 @@ public abstract class AbstractDocument implements ICasDocument {
 
   /**
    * Registers a change listener.
-   *
+   * 
    * @param listener
    */
   public void addChangeListener(final ICasDocumentListener listener) {
@@ -46,7 +46,7 @@ public abstract class AbstractDocument implements ICasDocument {
 
   /**
    * Unregisters a change listener.
-   *
+   * 
    * @param listener
    */
   public void removeChangeListener(ICasDocumentListener listener) {
@@ -55,7 +55,7 @@ public abstract class AbstractDocument implements ICasDocument {
 
   /**
    * Sends an added message to registered listeners.
-   *
+   * 
    * @param annotation
    */
   protected void fireAddedFeatureStructure(FeatureStructure annotation) {
@@ -66,7 +66,7 @@ public abstract class AbstractDocument implements ICasDocument {
 
   /**
    * Sends an added message to registered listeners.
-   *
+   * 
    * @param annotations
    */
   protected void fireAddedFeatureStructure(Collection<FeatureStructure> annotations) {
@@ -77,7 +77,7 @@ public abstract class AbstractDocument implements ICasDocument {
 
   /**
    * Sends a removed message to registered listeners.
-   *
+   * 
    * @param annotation
    */
   protected void fireRemovedFeatureStructure(FeatureStructure annotation) {
@@ -88,7 +88,7 @@ public abstract class AbstractDocument implements ICasDocument {
 
   /**
    * Sends a removed message to registered listeners.
-   *
+   * 
    * @param annotations
    */
   protected void fireRemovedFeatureStructure(Collection<? extends FeatureStructure> annotations) {
@@ -99,7 +99,7 @@ public abstract class AbstractDocument implements ICasDocument {
 
   /**
    * Sends an updated message to registered listeners.
-   *
+   * 
    * @param annotation
    */
   protected void fireUpdatedFeatureStructure(FeatureStructure annotation) {
@@ -110,7 +110,7 @@ public abstract class AbstractDocument implements ICasDocument {
 
   /**
    * Sends an updated message to registered listeners.
-   *
+   * 
    * @param annotations
    */
   protected void fireUpdatedFeatureStructure(Collection<? extends FeatureStructure> annotations) {
@@ -126,8 +126,15 @@ public abstract class AbstractDocument implements ICasDocument {
   }
 
   protected void fireViewChanged(String oldViewName, String newViewName) {
-	for (ICasDocumentListener listener : mListener) {
-	    listener.viewChanged(oldViewName, newViewName);
-	  }
+    for (ICasDocumentListener listener : mListener) {
+      listener.viewChanged(oldViewName, newViewName);
+    }
   }
+
+  protected void fireCasDocumentChanged(ICasDocument oldDocument, ICasDocument newDocument) {
+    for (ICasDocumentListener listener : mListener.toArray(new ICasDocumentListener[0])) {
+      listener.casDocumentChanged(oldDocument, newDocument);
+    }
+  }
+
 }

@@ -28,80 +28,78 @@ import org.apache.uima.cas.text.AnnotationFS;
 
 /**
  * The {@link ICasDocument} represents texts with meta information.
- *
- * A {@link ICasDocument} allows manipulation of its meta information
- * the text must not be changed.
- *
+ * 
+ * A {@link ICasDocument} allows manipulation of its meta information the text must not be changed.
+ * 
  * Meta information can be retrieved over the {@link CAS} object.
- *
- * Note: All changes to meta information should be done with
- * calls to the manipulation methods of the document.
- * If this is not possible, change the {@link CAS} and after
- * the change call the {@link ICasDocument#changed()} method.
+ * 
+ * Note: All changes to meta information should be done with calls to the manipulation methods of
+ * the document. If this is not possible, change the {@link CAS} and after the change call the
+ * {@link ICasDocument#changed()} method.
  */
 public interface ICasDocument {
 
   /**
    * Adds a given change listener.
-   *
+   * 
    * @param listener
    */
   void addChangeListener(ICasDocumentListener listener);
 
   /**
    * Removes the given change listener.
-   *
+   * 
    * @param listener
    */
   void removeChangeListener(ICasDocumentListener listener);
 
   /**
    * Retrieves the CAS.
-   *
+   * 
    * @return the CAS
    */
   CAS getCAS();
 
   /**
    * Adds a {@link FeatureStructure} to the document.
-   *
-   * @param structure -
-   *          the {@link FeatureStructure} to add.
+   * 
+   * @param structure
+   *          - the {@link FeatureStructure} to add.
    */
   void addFeatureStructure(FeatureStructure structure);
 
   /**
    * Adds the {@link FeatureStructure}s.
-   *
+   * 
    * @param structures
    */
   void addFeatureStructures(Collection<? extends FeatureStructure> structures);
 
   /**
    * Removes an {@link FeatureStructure} from the Document.
-   *
-   * @param structure -
-   *          the {@link FeatureStructure} to remove.
+   * 
+   * @param structure
+   *          - the {@link FeatureStructure} to remove.
    */
   void removeFeatureStructure(FeatureStructure structure);
 
   /**
    * Removes the given {@link FeatureStructure}s.
-   *
+   * 
    * @param structuresToRemove
    */
   void removeFeatureStructures(Collection<? extends FeatureStructure> structuresToRemove);
 
   /**
    * Updates the given {@link FeatureStructure}.
-   *
+   * 
    * @param structure
    */
   void update(FeatureStructure structure);
 
   /**
    * Updates the given {@link FeatureStructure}s.
-   *
+   * 
    * @param structures
    */
   void updateFeatureStructure(Collection<? extends FeatureStructure> structures);
@@ -113,27 +111,37 @@ public interface ICasDocument {
 
   /**
    * Returns all <code>Annotation</code>s of the given type.
-   *
-   * @param type -
-   *          type of the requested <code>Annotation</code>s.
+   * 
+   * @param type
+   *          - type of the requested <code>Annotation</code>s.
    * @return - return all <code>Annotation</code> of the given type or null if no
    *         <code>Annotation</code> of this type exist.
    */
   Collection<AnnotationFS> getAnnotations(Type type);
 
   /**
-   * Switches the view of the underlying CAS to the provided
-   * view name.
+   * Switches the view of the underlying CAS to the provided view name.
    * 
    * @param viewName
    */
   void switchView(String viewName);
-  
+
   /**
    * Retrieves the requested type.
-   *
+   * 
    * @param type
    * @return the type
    */
   Type getType(String type);
+
+  /**
+   * This method is called if an {@link ICasDocument} is exchanged.
+   * 
+   * @param oldDocument
+   *          - the replaced, old document {@link ICasDocument}.
+   * @param newDocument
+   *          - the new, current document {@link ICasDocument}.
+   */
+  void switchCasDocument(ICasDocument oldDocument, ICasDocument newDocument);
+
 }

@@ -33,8 +33,8 @@ import org.eclipse.jface.text.DocumentEvent;
 /**
  * The <code>AnnotationDocument</code> adapts the annotation document to the eclipse Document
  * (needed for the editor).
- *
- * Note: Before an instance can be used the  document must be set.
+ * 
+ * Note: Before an instance can be used the document must be set.
  */
 class AnnotationDocument extends Document implements ICasDocument {
 
@@ -45,32 +45,33 @@ class AnnotationDocument extends Document implements ICasDocument {
   public AnnotationDocument() {
     IPreferenceStore prefStore = CasEditorPlugin.getDefault().getPreferenceStore();
     lineLengthHint = prefStore.getInt(AnnotationEditorPreferenceConstants.EDITOR_LINE_LENGTH_HINT);
-    
+
     if (lineLengthHint == 0)
       lineLengthHint = 80;
   }
-  
+
   private String transformText(String text) {
-  	if (lineLengthHint != 0 && text != null) {
-  	    return wrapWords(text, lineLengthHint);
-  	} else {
-  	  if (text != null)
-  	    return text;
-  	  else
-  	    return "";
-  	}
+    if (lineLengthHint != 0 && text != null) {
+      return wrapWords(text, lineLengthHint);
+    } else {
+      if (text != null)
+        return text;
+      else
+        return "";
+    }
   }
-  
+
   /**
    * Call is forwarded to the set document.
-   *
+   * 
    * @return the text
    */
   private String getText() {
 
     String text = getCAS().getDocumentText();
     return transformText(text);
-  }  
+  }
+
   /**
    * Notifies listener about a document change.
    */
@@ -79,10 +80,10 @@ class AnnotationDocument extends Document implements ICasDocument {
     ev.fDocument = this;
     fireDocumentChanged(ev);
   }
-  
-//  public void setLineLengthHint(int lineLengthHint) {
-//    this.lineLengthHint = lineLengthHint;
-//  }
+
+  // public void setLineLengthHint(int lineLengthHint) {
+  // this.lineLengthHint = lineLengthHint;
+  // }
 
   /**
    * @param element
@@ -96,10 +97,10 @@ class AnnotationDocument extends Document implements ICasDocument {
   public ICasDocument getDocument() {
     return mDocument;
   }
-  
+
   /**
    * Call is forwarded to the set document.
-   *
+   * 
    * @param annotation
    */
   public void addFeatureStructure(FeatureStructure annotation) {
@@ -110,7 +111,7 @@ class AnnotationDocument extends Document implements ICasDocument {
 
   /**
    * Call is forwarded to the set document.
-   *
+   * 
    * @param annotations
    */
   public void addFeatureStructures(Collection<? extends FeatureStructure> annotations) {
@@ -121,7 +122,7 @@ class AnnotationDocument extends Document implements ICasDocument {
 
   /**
    * Call is forwarded to the set document.
-   *
+   * 
    * @param annotation
    */
   public void removeFeatureStructure(FeatureStructure annotation) {
@@ -132,7 +133,7 @@ class AnnotationDocument extends Document implements ICasDocument {
 
   /**
    * Call is forwarded to the set document.
-   *
+   * 
    * @param annotationsToRemove
    */
   public void removeFeatureStructures(Collection<? extends FeatureStructure> annotationsToRemove) {
@@ -143,7 +144,7 @@ class AnnotationDocument extends Document implements ICasDocument {
 
   /**
    * Call is forwarded to the set document.
-   *
+   * 
    * @param annotation
    */
   public void update(FeatureStructure annotation) {
@@ -154,7 +155,7 @@ class AnnotationDocument extends Document implements ICasDocument {
 
   /**
    * Call is forwarded to the set document.
-   *
+   * 
    * @param annotations
    */
   public void updateFeatureStructure(Collection<? extends FeatureStructure> annotations) {
@@ -164,8 +165,7 @@ class AnnotationDocument extends Document implements ICasDocument {
   }
 
   /**
-   * Called to notify that the whole document has been changed and
-   * must now synchronized.
+   * Called to notify that the whole document has been changed and must now synchronized.
    */
   public void changed() {
     mDocument.changed();
@@ -175,7 +175,7 @@ class AnnotationDocument extends Document implements ICasDocument {
 
   /**
    * Call is forwarded to the set document.
-   *
+   * 
    * @param type
    * @return the annotations
    */
@@ -185,7 +185,7 @@ class AnnotationDocument extends Document implements ICasDocument {
 
   /**
    * Call is forwarded to the set document.
-   *
+   * 
    * @param listener
    */
   public void addChangeListener(ICasDocumentListener listener) {
@@ -194,7 +194,7 @@ class AnnotationDocument extends Document implements ICasDocument {
 
   /**
    * Call is forwarded to the set document.
-   *
+   * 
    * @param listener
    */
   public void removeChangeListener(ICasDocumentListener listener) {
@@ -202,10 +202,9 @@ class AnnotationDocument extends Document implements ICasDocument {
   }
 
   /**
-   * Wrap words at next space after lineLengthHint chars in a line.
-   * If the line is shorter than lineLengthHint nothing happens.
-   * The space char is replaced with an line feed char.
-   *
+   * Wrap words at next space after lineLengthHint chars in a line. If the line is shorter than
+   * lineLengthHint nothing happens. The space char is replaced with an line feed char.
+   * 
    * @param textString
    * @param lineLengthHint
    * @return input text with line breaks
@@ -235,7 +234,7 @@ class AnnotationDocument extends Document implements ICasDocument {
 
   /**
    * Call is forwarded to the set document.
-   *
+   * 
    * @return the {@link CAS}
    */
   public CAS getCAS() {
@@ -244,30 +243,35 @@ class AnnotationDocument extends Document implements ICasDocument {
 
   /**
    * Call is forwarded to the set document.
-   *
+   * 
    * @param type
    * @return the type
    */
   public Type getType(String type) {
     return mDocument.getType(type);
   }
-  
+
   public void switchView(String viewName) {
-	  
-	  // TODO: Optimize the text retrieval and update notification handling
-	  // Currently the text must be changed before switchView is called ...
-	  
-	  // HACK: 
-	  // Replace the text like set() would do,
-	  // but without sending out notifications.
-	  // The stop and resume notification methods do not yield
-	  // the desired effect
-	  String text = transformText(getCAS().getView(viewName).getDocumentText());
-	  getStore().set(text);
-	  getTracker().set(text);
-	  
-	  // Note: Sends out view update notification
-	  ((DocumentUimaImpl) mDocument).switchView(viewName);
-	  
+
+    // TODO: Optimize the text retrieval and update notification handling
+    // Currently the text must be changed before switchView is called ...
+
+    // HACK:
+    // Replace the text like set() would do,
+    // but without sending out notifications.
+    // The stop and resume notification methods do not yield
+    // the desired effect
+    String text = transformText(getCAS().getView(viewName).getDocumentText());
+    getStore().set(text);
+    getTracker().set(text);
+
+    // Note: Sends out view update notification
+    ((DocumentUimaImpl) mDocument).switchView(viewName);
+
   }
+
+  public void switchCasDocument(ICasDocument oldDocument, ICasDocument newDocument) {
+    ((DocumentUimaImpl) mDocument).switchCasDocument(oldDocument, newDocument);
+  }
+
 }

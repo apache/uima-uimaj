@@ -29,66 +29,76 @@ import org.apache.uima.cas.FeatureStructure;
 public interface ICasDocumentListener {
   /**
    * This method is called if an {@link FeatureStructure} is added.
-   *
-   * @param newFeatureStructure -
-   *          the added {@link FeatureStructure}.
+   * 
+   * @param newFeatureStructure
+   *          - the added {@link FeatureStructure}.
    */
   void added(FeatureStructure newFeatureStructure);
 
   /**
    * This method is called if multiple <code>FeatureStructure</code>s are added.
-   *
-   * @param newFeatureStructure -
-   *          the added {@link FeatureStructure}s.
+   * 
+   * @param newFeatureStructure
+   *          - the added {@link FeatureStructure}s.
    */
   void added(Collection<FeatureStructure> newFeatureStructure);
 
   /**
    * This method is called if an {@link FeatureStructure} is removed.
-   *
-   * @param deletedFeatureStructure -
-   *          the removed {@link FeatureStructure}.
+   * 
+   * @param deletedFeatureStructure
+   *          - the removed {@link FeatureStructure}.
    */
   void removed(FeatureStructure deletedFeatureStructure);
 
   /**
    * This method is called if multiple {@link FeatureStructure}s are removed.
-   *
-   * @param deletedFeatureStructure -
-   *          the removed <code>Annotation</code>s.
+   * 
+   * @param deletedFeatureStructure
+   *          - the removed <code>Annotation</code>s.
    */
   void removed(Collection<FeatureStructure> deletedFeatureStructure);
 
   /**
    * This method is called if the {@link FeatureStructure} changed.
-   *
+   * 
    * @param featureStructure
    */
   void updated(FeatureStructure featureStructure);
 
   /**
    * This method is called if the {@link FeatureStructure}s changed.
-   *
+   * 
    * @param featureStructure
    */
   void updated(Collection<FeatureStructure> featureStructure);
 
   /**
-   * This method is called if {@link FeatureStructure}s in the
-   * document are changed.
-   *
+   * This method is called if {@link FeatureStructure}s in the document are changed.
+   * 
    * Note: The text can not be changed
    */
   void changed();
-  
+
   /**
-   * This method is called when the currently active view is changed in
-   * the document. A view changed does not indicate a structural change,
-   * but usually feature structures must be completely synchronized afterward.
+   * This method is called when the currently active view is changed in the document. A view changed
+   * does not indicate a structural change, but usually feature structures must be completely
+   * synchronized afterward.
    * 
    * @param oldViewName
    * @param newViewName
    * @return
    */
   void viewChanged(String oldViewName, String newViewName);
+
+  /**
+   * This method is called when the currently active document is changed, e.g., the file input
+   * changed.
+   * 
+   * 
+   * @param oldDocument
+   * @param newDocument
+   * @return
+   */
+  void casDocumentChanged(ICasDocument oldDocument, ICasDocument newDocument);
 }

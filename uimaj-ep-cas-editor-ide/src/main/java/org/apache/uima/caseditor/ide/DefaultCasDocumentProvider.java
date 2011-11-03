@@ -74,14 +74,15 @@ public class DefaultCasDocumentProvider extends
         org.apache.uima.caseditor.editor.CasDocumentProvider {
 
   /**
-   * Listens for resource remove/delete event, if the input file for the editor is removed the
-   * editor will be closed.
+   * Listens for resource events: If the input file for the editor is removed the editor will be
+   * closed and if the input file is modified, then the CAS needs to be updated and all views needs
+   * to be notified.
    */
-  private class DeleteElementListener implements IResourceChangeListener {
+  private class ModifyElementListener implements IResourceChangeListener {
 
     private FileEditorInput fileInput;
 
-    public DeleteElementListener(FileEditorInput fileInput) {
+    public ModifyElementListener(FileEditorInput fileInput) {
       this.fileInput = fileInput;
     }
 
@@ -92,11 +93,12 @@ public class DefaultCasDocumentProvider extends
           public boolean visit(IResourceDelta delta) throws CoreException {
             if (delta.getFlags() != IResourceDelta.MARKERS
                     && delta.getResource().getType() == IResource.FILE) {
-              if (delta.getKind() == IResourceDelta.REMOVED) {
-                IResource resource = delta.getResource();
-
-                if (resource.equals(fileInput.getFile())) {
+              IResource resource = delta.getResource();
+              if (resource.equals(fileInput.getFile())) {
+                if (delta.getKind() == IResourceDelta.REMOVED) {
                   handleElementDeleted(fileInput);
+                } else if (delta.getKind() == IResourceDelta.CHANGED) {
+                  handleElementChanged(fileInput);
                 }
               }
             }
@@ -114,7 +116,7 @@ public class DefaultCasDocumentProvider extends
 
   private static class FileElementInfo extends ElementInfo {
 
-    private DeleteElementListener deleteListener;
+    private ModifyElementListener deleteListener;
 
     FileElementInfo(ElementInfo info) {
       super(info.element);
@@ -568,7 +570,7 @@ public class DefaultCasDocumentProvider extends
     // Register listener to listens for deletion events,
     // if the file opened in this editor is deleted, the editor should be closed!
 
-    info.deleteListener = new DeleteElementListener((FileEditorInput) element);
+    info.deleteListener = new ModifyElementListener((FileEditorInput) element);
     ResourcesPlugin.getWorkspace().addResourceChangeListener(info.deleteListener,
             IResourceChangeEvent.POST_CHANGE);
 
@@ -587,4 +589,9 @@ public class DefaultCasDocumentProvider extends
   private void handleElementDeleted(Object element) {
     fireElementDeleted(element);
   }
+
+  private void handleElementChanged(Object element) {
+    fireElementChanged(element);
+  }
+
 }
