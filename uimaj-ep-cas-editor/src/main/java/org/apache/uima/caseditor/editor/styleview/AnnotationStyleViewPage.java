@@ -361,5 +361,7 @@ class AnnotationStyleViewPage extends Page {
     
     editor.getCasDocumentProvider().getTypeSystemPreferenceStore(
             editor.getEditorInput()).removePropertyChangeListener(changeListener);
+    
+    editor.removeAnnotationListener(editorListener);
   }
 }

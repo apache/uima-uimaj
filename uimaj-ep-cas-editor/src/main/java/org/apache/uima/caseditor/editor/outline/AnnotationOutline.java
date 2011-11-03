@@ -105,6 +105,8 @@ public final class AnnotationOutline extends ContentOutlinePage
     }
   }
 
+  private IAnnotationEditorModifyListener editorChangeListener;
+  
   private OutlineStyles style = OutlineStyles.TYPE;
   
   private Composite mOutlineComposite;
@@ -144,8 +146,8 @@ public final class AnnotationOutline extends ContentOutlinePage
 
     changeAnnotationMode();
 
-    // TODO: create a listener interface ... for editor listener
-    editor.addAnnotationListener(new EditorListener());
+    editorChangeListener = new EditorListener();
+    editor.addAnnotationListener(editorChangeListener);
 
     DragSource source = new DragSource(mTableViewer.getTree(), DND.DROP_COPY);
 
@@ -395,5 +397,7 @@ public final class AnnotationOutline extends ContentOutlinePage
     
     // remove selection listener
     getSite().getWorkbenchWindow().getSelectionService().removeSelectionListener(this);
+    
+    editor.removeAnnotationListener(editorChangeListener);
   }
 }
