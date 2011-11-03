@@ -47,7 +47,6 @@ public class TypeSystemSearchStrategyFactory {
         // extract id element
         String id = element.getAttribute("id");
         String priority = element.getAttribute("priority");
-        String description = element.getAttribute("description");
 
         Object searchStrategyObject;
         try {
