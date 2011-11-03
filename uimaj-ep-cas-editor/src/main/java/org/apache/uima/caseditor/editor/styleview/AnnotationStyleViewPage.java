@@ -31,7 +31,6 @@ import org.apache.uima.caseditor.editor.AnnotationEditor;
 import org.apache.uima.caseditor.editor.AnnotationStyle;
 import org.apache.uima.caseditor.editor.AnnotationStyleChangeListener;
 import org.apache.uima.caseditor.editor.IAnnotationEditorModifyListener;
-import org.apache.uima.caseditor.editor.IAnnotationStyleListener;
 import org.apache.uima.caseditor.ui.property.EditorAnnotationPropertyPage;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
