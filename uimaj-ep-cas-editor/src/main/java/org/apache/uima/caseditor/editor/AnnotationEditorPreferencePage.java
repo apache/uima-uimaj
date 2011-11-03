@@ -20,7 +20,6 @@
 package org.apache.uima.caseditor.editor;
 
 import org.apache.uima.caseditor.CasEditorPlugin;
-import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.ui.IWorkbench;
@@ -32,6 +31,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 public class AnnotationEditorPreferencePage extends FieldEditorPreferencePage
         implements IWorkbenchPreferencePage {
 
+  private IntegerFieldEditor mEditorLineLengthHint;
   private IntegerFieldEditor mEditorTextSize;
   
   public AnnotationEditorPreferencePage() {
@@ -42,10 +42,10 @@ public class AnnotationEditorPreferencePage extends FieldEditorPreferencePage
 
   @Override
   protected void createFieldEditors() {
-    // editor word wrap
-    BooleanFieldEditor mEditorLineLengthHint = new BooleanFieldEditor(
-            AnnotationEditorPreferenceConstants.ANNOTATION_EDITOR_ENABLE_WORD_WRAP,
-            "Enable Word Wrap", getFieldEditorParent());
+    // editor line length hint
+    mEditorLineLengthHint = new IntegerFieldEditor(
+            AnnotationEditorPreferenceConstants.EDITOR_LINE_LENGTH_HINT,
+            "Line Length Hint", getFieldEditorParent());
     addField(mEditorLineLengthHint);
     
     // editor text size
@@ -61,6 +61,15 @@ public class AnnotationEditorPreferencePage extends FieldEditorPreferencePage
   @Override
   protected void checkState() {
     super.checkState();
+    
+    if (mEditorLineLengthHint.getIntValue() > 0) {
+      setErrorMessage(null);
+      setValid(true);
+    }
+    else {
+      setErrorMessage("Line length hint must be a larger than zero!");
+      setValid(false);
+    }
     
     if (mEditorTextSize.getIntValue() > 5) {
       setErrorMessage(null);

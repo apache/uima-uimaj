@@ -26,6 +26,6 @@ public class AnnotationEditorPreferenceConstants {
   public static final String ANNOTATION_EDITOR_TEXT_SIZE =
           CasEditorPlugin.ID + ".editor-text-size";
   
-  public static final String ANNOTATION_EDITOR_ENABLE_WORD_WRAP = 
-          CasEditorPlugin.ID + ".enable-word-wrap";
+  public static final String EDITOR_LINE_LENGTH_HINT = 
+          "EDITOR_LINE_LENGTH_HINT";
 }

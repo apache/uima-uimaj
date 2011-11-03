@@ -28,9 +28,7 @@ public class AnnotationEditorPreferenceInitializer extends AbstractPreferenceIni
 
 	public void initializeDefaultPreferences() {
 		IPreferenceStore store = CasEditorPlugin.getDefault().getPreferenceStore();
-		store.setDefault(
-		        AnnotationEditorPreferenceConstants.ANNOTATION_EDITOR_ENABLE_WORD_WRAP, true);
-		store.setDefault(
-		        AnnotationEditorPreferenceConstants.ANNOTATION_EDITOR_TEXT_SIZE, 13);
+		store.setDefault(AnnotationEditorPreferenceConstants.EDITOR_LINE_LENGTH_HINT, 80);
+		store.setDefault(AnnotationEditorPreferenceConstants.ANNOTATION_EDITOR_TEXT_SIZE, 13);
 	}
 }
