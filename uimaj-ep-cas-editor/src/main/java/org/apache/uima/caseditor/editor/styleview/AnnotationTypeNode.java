@@ -59,7 +59,7 @@ public class AnnotationTypeNode implements IAdaptable{
     return type.hashCode();
   }
 
-  public Object getAdapter(Class adapter) {
+  public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
     
     if (AnnotationTypeNode.class.equals(adapter)) {
       return this;
