@@ -42,7 +42,11 @@ public class InstallPearCli {
 //    parser.acceptsAll(Arrays.asList("v", "verbose"), "be more verbose");
 //    parser.acceptsAll(Arrays.asList( "h", "?" ), "show help");
     
-    if (null == args || args.length < 2) {
+    if (null == args || 
+        args.length == 0 ||
+        "?".equals(args[0]) ||
+        "-h".equals(args[0]) ||
+        "-help".equals(args[0])) {
       printUsageAndExit();
     }
     File pathToPear = new File(args[0]);
@@ -108,6 +112,7 @@ public class InstallPearCli {
   private static void printUsageAndExit() {
     System.out
             .println("Usage: installPearCli pathToPearFile [directoryToInstallInto] [options]\n\n"
+                    + "  *** items in [] are optional ***"
                     + "Install a Pear file into a specified directory\n"
                     + "Install directory defaults to the current directory/pearFileName\n"
                     + "Options:\n"
