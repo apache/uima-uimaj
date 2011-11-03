@@ -61,7 +61,7 @@ public final class FeatureValue implements IAdaptable {
     return mStructure.getFeatureValue(mFeature);
   }
 
-  public Object getAdapter(Class adapter) {
+  public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
     if (AnnotationFS.class.equals(adapter)) {
       if (getValue() instanceof AnnotationFS) {
         return getValue();
