@@ -53,7 +53,7 @@ class AnnotationTypeTreeNode implements IAdaptable {
 		annotations.remove(annotation);
 	}
 	
-	public Object getAdapter(Class adapter) {
+	public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
 		
 		if (Type.class.equals(adapter)) {
 			return type;
