@@ -85,7 +85,6 @@ import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
@@ -600,8 +599,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
    * @return an adapter or null
    */
   @Override
-  @SuppressWarnings("unchecked")
-  public Object getAdapter(Class adapter) {
+  public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
 
     if (IContentOutlinePage.class.equals(adapter) && getDocument() != null) {
       if (mOutlinePage == null) {
