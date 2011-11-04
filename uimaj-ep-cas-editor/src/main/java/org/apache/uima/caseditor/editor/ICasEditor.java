@@ -36,4 +36,9 @@ public interface ICasEditor extends IEditorPart {
   CasDocumentProvider getCasDocumentProvider();
   
   void reopenEditorWithNewTypeSystem();
+  
+  void addCasEditorInputListener(ICasEditorInputListener listener);
+  
+  void removeCasEditorInputListener(ICasEditorInputListener listener);
+  
 }

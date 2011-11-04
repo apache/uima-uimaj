@@ -33,7 +33,6 @@ import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.caseditor.CasEditorPlugin;
 import org.apache.uima.caseditor.Images;
 import org.apache.uima.caseditor.editor.AbstractAnnotationDocumentListener;
-import org.apache.uima.caseditor.editor.AnnotationEditor;
 import org.apache.uima.caseditor.editor.FeatureValue;
 import org.apache.uima.caseditor.editor.ICasDocument;
 import org.apache.uima.caseditor.editor.ICasEditor;
@@ -81,9 +80,7 @@ public final class FeatureStructureBrowserViewPage extends Page {
     FeatureStructureTreeContentProvider(ICasEditor editor) {
       mEditor = editor;
       mDocument = editor.getDocument();
-      if(mEditor instanceof AnnotationEditor) {
-        ((AnnotationEditor)mEditor).addCasEditorInputListener(this);
-      }
+      mEditor.addCasEditorInputListener(this);
     }
 
     public Object[] getElements(Object inputElement) {
@@ -112,9 +109,7 @@ public final class FeatureStructureBrowserViewPage extends Page {
 
     public void dispose() {
       mDocument.removeChangeListener(this);
-      if(mEditor instanceof AnnotationEditor) {
-        ((AnnotationEditor)mEditor).removeCasEditorInputListener(this);
-      }
+      mEditor.removeCasEditorInputListener(this);
     }
 
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {

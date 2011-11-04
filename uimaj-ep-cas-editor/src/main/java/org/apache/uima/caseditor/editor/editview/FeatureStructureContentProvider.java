@@ -29,7 +29,6 @@ import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.caseditor.editor.AbstractDocumentListener;
-import org.apache.uima.caseditor.editor.AnnotationEditor;
 import org.apache.uima.caseditor.editor.ArrayValue;
 import org.apache.uima.caseditor.editor.CasEditorError;
 import org.apache.uima.caseditor.editor.FeatureValue;
@@ -55,9 +54,7 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener imp
     if (mDocument == null) {
       throw new IllegalArgumentException("document parameter must not be null!");
     }
-    if(mEditor instanceof AnnotationEditor) {
-      ((AnnotationEditor)mEditor).addCasEditorInputListener(this);
-    }
+     mEditor.addCasEditorInputListener(this);
   }
 
   private int arraySize(FeatureStructure value) {
@@ -123,9 +120,7 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener imp
 
   public void dispose() {
     mDocument.removeChangeListener(this);
-    if(mEditor instanceof AnnotationEditor) {
-      ((AnnotationEditor)mEditor).removeCasEditorInputListener(this);
-    }
+    mEditor.removeCasEditorInputListener(this);
   }
 
   public void inputChanged(final Viewer viewer, Object oldInput, Object newInput) {
