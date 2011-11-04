@@ -351,10 +351,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
       // TODO: Currently do nothing ... 
     }
     
-    public void casDocumentChanged(ICasDocument oldDocument, ICasDocument newDocument) {
-      // TODO: Currently do nothing ...
-    }
-    
+   
   }
 
   /**
@@ -552,6 +549,8 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 
   private Set<IAnnotationEditorModifyListener> mEditorListener = new HashSet<IAnnotationEditorModifyListener>();
 
+  private Set<ICasEditorInputListener> mEditorInputListener = new HashSet<ICasEditorInputListener>();;
+  
   /**
    * TODO: Do we really need this position variable ?
    */
@@ -576,6 +575,8 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   private IPropertyChangeListener preferenceStoreChangeListener;
   
   private CasDocumentProvider casDocumentProvider;
+
+
   
   /**
    * Creates an new AnnotationEditor object.
@@ -797,17 +798,15 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   @Override
   protected void handleElementContentReplaced() {
     super.handleElementContentReplaced();
-    ICasDocument oldDocument = getDocument();
     setInput(getEditorInput());
-    ICasDocument newDocument = getDocument();
-    oldDocument.switchCasDocument(oldDocument, newDocument);
   }
   
   @Override
   protected void doSetInput(IEditorInput input) throws CoreException {
-    
+    ICasDocument oldDocument = getDocument();
     super.doSetInput(input);
-    
+    ICasDocument newDocument = getDocument();
+    fireCasDocumentChanged(oldDocument, newDocument);
     
     if (CasEditorPlugin.getDefault().
             getAndClearShowMigrationDialogFlag()) {
@@ -871,6 +870,13 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     }
   }
   
+  private void fireCasDocumentChanged(ICasDocument oldDocument, ICasDocument newDocument) {
+    if (mEditorInputListener != null) {
+      for (ICasEditorInputListener listener : mEditorInputListener)
+        listener.casDocumentChanged(oldDocument, newDocument);
+    }
+  }
+
   // The editor status support is abused to display different control than the
   // text control when displaying text is not possible, e.g. because the sofa
   // is not a text sofa or not set at all
@@ -1220,6 +1226,15 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     mEditorListener.remove(listener);
   }
 
+  public void addCasEditorInputListener(ICasEditorInputListener listener) {
+    mEditorInputListener.add(listener);
+  }
+  
+  public void removeCasEditorInputListener(ICasEditorInputListener listener) {
+    mEditorInputListener.remove(listener);
+  }
+  
+  
   /**
    * Returns the selection.
    *

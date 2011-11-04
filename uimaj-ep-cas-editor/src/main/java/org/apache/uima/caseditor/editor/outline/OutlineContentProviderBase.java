@@ -27,13 +27,14 @@ import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.caseditor.editor.AbstractAnnotationDocumentListener;
 import org.apache.uima.caseditor.editor.AnnotationEditor;
 import org.apache.uima.caseditor.editor.ICasDocument;
+import org.apache.uima.caseditor.editor.ICasEditorInputListener;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Display;
 
 abstract class OutlineContentProviderBase extends AbstractAnnotationDocumentListener implements
-        ITreeContentProvider {
+        ITreeContentProvider, ICasEditorInputListener {
 
   protected AnnotationEditor mEditor;
 
@@ -44,13 +45,15 @@ abstract class OutlineContentProviderBase extends AbstractAnnotationDocumentList
   protected OutlineContentProviderBase(AnnotationEditor editor, TreeViewer viewer) {
     this.viewer = viewer;
     this.mEditor = editor;
+    mEditor.addCasEditorInputListener(this);
   }
 
   /**
    * not implemented
    */
   public void dispose() {
-    // currently not implemented
+    mInputDocument.removeChangeListener(this);
+    mEditor.removeCasEditorInputListener(this);
   }
 
   /**

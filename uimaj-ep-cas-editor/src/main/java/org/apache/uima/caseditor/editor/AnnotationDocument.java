@@ -270,8 +270,5 @@ class AnnotationDocument extends Document implements ICasDocument {
 
   }
 
-  public void switchCasDocument(ICasDocument oldDocument, ICasDocument newDocument) {
-    ((DocumentUimaImpl) mDocument).switchCasDocument(oldDocument, newDocument);
-  }
 
 }

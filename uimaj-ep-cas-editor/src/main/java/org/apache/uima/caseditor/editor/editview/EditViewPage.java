@@ -599,7 +599,7 @@ final class EditViewPage extends Page implements ISelectionListener {
 
 
     FeatureStructureContentProvider contentProvider =
-        new FeatureStructureContentProvider(document);
+        new FeatureStructureContentProvider(editor);
 
     viewer.setContentProvider(contentProvider);
 

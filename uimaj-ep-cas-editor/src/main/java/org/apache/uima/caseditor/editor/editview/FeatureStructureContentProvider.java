@@ -29,28 +29,35 @@ import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.caseditor.editor.AbstractDocumentListener;
+import org.apache.uima.caseditor.editor.AnnotationEditor;
 import org.apache.uima.caseditor.editor.ArrayValue;
 import org.apache.uima.caseditor.editor.CasEditorError;
 import org.apache.uima.caseditor.editor.FeatureValue;
 import org.apache.uima.caseditor.editor.ICasDocument;
+import org.apache.uima.caseditor.editor.ICasEditor;
+import org.apache.uima.caseditor.editor.ICasEditorInputListener;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Display;
 
 final class FeatureStructureContentProvider extends AbstractDocumentListener implements
-        ITreeContentProvider {
+        ITreeContentProvider, ICasEditorInputListener {
 
   private ICasDocument mDocument;
 
   private Viewer viewer;
 
-  FeatureStructureContentProvider(ICasDocument document) {
+  private ICasEditor mEditor;
 
-    if (document == null) {
+  FeatureStructureContentProvider(ICasEditor editor) {
+    mEditor = editor;
+    mDocument = editor.getDocument();
+    if (mDocument == null) {
       throw new IllegalArgumentException("document parameter must not be null!");
     }
-
-    mDocument = document;
+    if(mEditor instanceof AnnotationEditor) {
+      ((AnnotationEditor)mEditor).addCasEditorInputListener(this);
+    }
   }
 
   private int arraySize(FeatureStructure value) {
@@ -116,6 +123,9 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener imp
 
   public void dispose() {
     mDocument.removeChangeListener(this);
+    if(mEditor instanceof AnnotationEditor) {
+      ((AnnotationEditor)mEditor).removeCasEditorInputListener(this);
+    }
   }
 
   public void inputChanged(final Viewer viewer, Object oldInput, Object newInput) {
@@ -241,6 +251,11 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener imp
   }
 
   public void casDocumentChanged(ICasDocument oldDocument, ICasDocument newDocument) {
-    inputChanged(viewer, oldDocument, newDocument);
+    oldDocument.removeChangeListener(this);
+    mDocument = newDocument;
+    mDocument.addChangeListener(this);
+    viewer.setInput(null);
+    viewer.refresh();
   }
+
 }

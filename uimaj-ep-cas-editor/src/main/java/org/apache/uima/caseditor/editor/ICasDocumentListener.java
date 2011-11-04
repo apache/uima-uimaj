@@ -91,14 +91,5 @@ public interface ICasDocumentListener {
    */
   void viewChanged(String oldViewName, String newViewName);
 
-  /**
-   * This method is called when the currently active document is changed, e.g., the file input
-   * changed.
-   * 
-   * 
-   * @param oldDocument
-   * @param newDocument
-   * @return
-   */
-  void casDocumentChanged(ICasDocument oldDocument, ICasDocument newDocument);
+
 }

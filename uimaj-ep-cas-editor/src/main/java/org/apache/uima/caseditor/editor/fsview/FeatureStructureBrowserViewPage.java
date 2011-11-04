@@ -33,9 +33,11 @@ import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.caseditor.CasEditorPlugin;
 import org.apache.uima.caseditor.Images;
 import org.apache.uima.caseditor.editor.AbstractAnnotationDocumentListener;
+import org.apache.uima.caseditor.editor.AnnotationEditor;
 import org.apache.uima.caseditor.editor.FeatureValue;
 import org.apache.uima.caseditor.editor.ICasDocument;
 import org.apache.uima.caseditor.editor.ICasEditor;
+import org.apache.uima.caseditor.editor.ICasEditorInputListener;
 import org.apache.uima.caseditor.editor.ModelFeatureStructure;
 import org.apache.uima.caseditor.editor.action.DeleteFeatureStructureAction;
 import org.apache.uima.caseditor.editor.util.StrictTypeConstraint;
@@ -68,14 +70,20 @@ public final class FeatureStructureBrowserViewPage extends Page {
   private static final String LAST_SELECTED_FS_TYPE = "lastSelectedFeatureStructureBrowserViewType";
 
   final class FeatureStructureTreeContentProvider extends AbstractAnnotationDocumentListener
-          implements ITreeContentProvider {
+          implements ITreeContentProvider , ICasEditorInputListener{
 
     private ICasDocument mDocument;
 
     private Type mCurrentType;
 
-    FeatureStructureTreeContentProvider(ICasDocument document) {
-      mDocument = document;
+    private ICasEditor mEditor;
+
+    FeatureStructureTreeContentProvider(ICasEditor editor) {
+      mEditor = editor;
+      mDocument = editor.getDocument();
+      if(mEditor instanceof AnnotationEditor) {
+        ((AnnotationEditor)mEditor).addCasEditorInputListener(this);
+      }
     }
 
     public Object[] getElements(Object inputElement) {
@@ -103,6 +111,10 @@ public final class FeatureStructureBrowserViewPage extends Page {
     }
 
     public void dispose() {
+      mDocument.removeChangeListener(this);
+      if(mEditor instanceof AnnotationEditor) {
+        ((AnnotationEditor)mEditor).removeCasEditorInputListener(this);
+      }
     }
 
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
@@ -286,7 +298,11 @@ public final class FeatureStructureBrowserViewPage extends Page {
     }
 
     public void casDocumentChanged(ICasDocument oldDocument, ICasDocument newDocument) {
-      inputChanged(mFSList, oldDocument, newDocument);
+      oldDocument.removeChangeListener(this);
+      mDocument = newDocument;
+      mDocument.addChangeListener(this);
+      // TODO retrieve the type from the new type system of the new document?
+      inputChanged(mFSList, mCurrentType, mCurrentType);
     }
   }
 
@@ -451,7 +467,7 @@ public final class FeatureStructureBrowserViewPage extends Page {
     instanceListData.horizontalAlignment = SWT.FILL;
     instanceListData.verticalAlignment = SWT.FILL;
     mFSList.getList().setLayoutData(instanceListData);
-    mFSList.setContentProvider(new FeatureStructureTreeContentProvider(mDocument));
+    mFSList.setContentProvider(new FeatureStructureTreeContentProvider(mCasEditor));
     mFSList.setLabelProvider(new FeatureStructureLabelProvider());
 
     mFSList.setUseHashlookup(true);

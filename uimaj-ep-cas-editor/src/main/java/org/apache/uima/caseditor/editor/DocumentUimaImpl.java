@@ -373,7 +373,5 @@ public class DocumentUimaImpl extends AbstractDocument {
     return cas;
   }
 
-  public void switchCasDocument(ICasDocument oldDocument, ICasDocument newDocument) {
-    fireCasDocumentChanged(oldDocument, newDocument);
-  }
+
 }

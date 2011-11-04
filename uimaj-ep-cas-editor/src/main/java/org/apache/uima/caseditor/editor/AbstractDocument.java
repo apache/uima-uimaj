@@ -131,10 +131,4 @@ public abstract class AbstractDocument implements ICasDocument {
     }
   }
 
-  protected void fireCasDocumentChanged(ICasDocument oldDocument, ICasDocument newDocument) {
-    for (ICasDocumentListener listener : mListener.toArray(new ICasDocumentListener[0])) {
-      listener.casDocumentChanged(oldDocument, newDocument);
-    }
-  }
-
 }

@@ -134,14 +134,6 @@ public interface ICasDocument {
    */
   Type getType(String type);
 
-  /**
-   * This method is called if an {@link ICasDocument} is exchanged.
-   * 
-   * @param oldDocument
-   *          - the replaced, old document {@link ICasDocument}.
-   * @param newDocument
-   *          - the new, current document {@link ICasDocument}.
-   */
-  void switchCasDocument(ICasDocument oldDocument, ICasDocument newDocument);
+
 
 }
