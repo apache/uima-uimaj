@@ -23,6 +23,9 @@ public interface ICasEditorInputListener {
 
   /**
    * This method is called if an {@link ICasDocument} is exchanged.
+   * The arguments of this methods can be null under certain circumstances.
+   * For example, if a document is opened where the type system cannot be found 
+   * for, then the new document will be null.
    * 
    * @param oldDocument
    *          - the replaced, old document {@link ICasDocument}.
