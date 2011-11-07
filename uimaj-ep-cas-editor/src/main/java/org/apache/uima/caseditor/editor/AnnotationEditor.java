@@ -294,9 +294,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
                 annotation.getEnd() - annotation.getBegin()));
       }
       
-      mPainter.deactivate(true);
       annotationModel.replaceAnnotations(null, addAnnotationMap);
-      mPainter.paint(IPainter.CONFIGURATION);
     }
 
     /**
@@ -323,9 +321,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
         removeAnnotations[removeAnnotationsIndex++] = new EclipseAnnotationPeer(annotation);
       }
       
-      mPainter.deactivate(true);
       annotationModel.replaceAnnotations(removeAnnotations, null);
-      mPainter.paint(IPainter.CONFIGURATION);
     }
 
     /**
