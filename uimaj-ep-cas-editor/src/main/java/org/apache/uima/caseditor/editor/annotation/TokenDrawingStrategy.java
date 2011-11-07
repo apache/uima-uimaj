@@ -30,15 +30,11 @@ import org.eclipse.swt.graphics.Rectangle;
 public class TokenDrawingStrategy implements IDrawingStrategy {
   private static final int BRACKET_WIDTH = 5;
 
-  private static boolean isWhitespace(StyledText textWidget, int offset) {
+  private static boolean isWhitespace(String text, int offset) {
 
-    String characterString = textWidget.getText(offset, offset);
+    char character = text.charAt(offset);
 
-    if (characterString.trim().length() == 0) {
-      return true;
-    }
-
-    return false;
+    return Character.isWhitespace(character);
   }
 
   public void draw(Annotation annotation, GC gc, StyledText textWidget, int offset, int length,
@@ -46,7 +42,6 @@ public class TokenDrawingStrategy implements IDrawingStrategy {
     if (length > 0) {
       if (annotation instanceof EclipseAnnotationPeer) {
         AnnotationFS annotationFS = ((EclipseAnnotationPeer) annotation).getAnnotationFS();
-
         if (gc != null) {
           Rectangle bounds = textWidget.getTextBounds(offset, offset + length - 1);
 
@@ -54,7 +49,7 @@ public class TokenDrawingStrategy implements IDrawingStrategy {
 
           boolean isDrawOpenBracket = annotationFS.getBegin() == offset;
           // and no space before offset
-          if (isDrawOpenBracket && offset > 1 && !isWhitespace(textWidget, offset - 1)) {
+          if (isDrawOpenBracket && offset > 1 && !isWhitespace(annotationFS.getCAS().getDocumentText(), offset - 1)) {
             gc.drawLine(bounds.x, bounds.y + bounds.height - 1, bounds.x + BRACKET_WIDTH, bounds.y
                     + bounds.height - 1);
 
@@ -66,7 +61,7 @@ public class TokenDrawingStrategy implements IDrawingStrategy {
           boolean isDrawCloseBracket = annotationFS.getEnd() == offset + length;
           // and no space after offset
           if (isDrawCloseBracket && offset + length < textWidget.getText().length()
-                  && !isWhitespace(textWidget, offset + length)) {
+                  && !isWhitespace(annotationFS.getCAS().getDocumentText(), offset + length)) {
             gc.drawLine(bounds.x + bounds.width, bounds.y + bounds.height - 1, bounds.x
                     + bounds.width - BRACKET_WIDTH, bounds.y + bounds.height - 1);
 
