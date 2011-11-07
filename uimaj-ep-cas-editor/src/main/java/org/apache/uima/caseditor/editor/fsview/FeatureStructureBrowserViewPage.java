@@ -476,6 +476,9 @@ public final class FeatureStructureBrowserViewPage extends Page {
     });
 
     getSite().setSelectionProvider(mFSList);
+    
+    if (lastUsedType != null)
+      mFSList.setInput(lastUsedType);
   }
 
   /**
