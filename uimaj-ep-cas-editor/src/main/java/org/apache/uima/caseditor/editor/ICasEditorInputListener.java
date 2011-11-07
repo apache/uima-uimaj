@@ -19,6 +19,8 @@
 
 package org.apache.uima.caseditor.editor;
 
+import org.eclipse.ui.IEditorInput;
+
 public interface ICasEditorInputListener {
 
   /**
@@ -32,6 +34,6 @@ public interface ICasEditorInputListener {
    * @param newDocument
    *          - the new, current document {@link ICasDocument}.
    */
-  void casDocumentChanged(ICasDocument oldDocument, ICasDocument newDocument);
+  void casDocumentChanged(IEditorInput oldInput, ICasDocument oldDocument, IEditorInput newInput, ICasDocument newDocument);
   
 }
