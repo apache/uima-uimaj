@@ -805,8 +805,6 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   protected void doSetInput(IEditorInput input) throws CoreException {
     ICasDocument oldDocument = getDocument();
     super.doSetInput(input);
-    ICasDocument newDocument = getDocument();
-    fireCasDocumentChanged(oldDocument, newDocument);
     
     if (CasEditorPlugin.getDefault().
             getAndClearShowMigrationDialogFlag()) {
@@ -822,9 +820,10 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
       });
     }
     
-    
     if (getDocument() != null) {
-            
+      
+      shownAnnotationTypes.clear();
+      
       // Synchronize shown types with the editor
       String shownTypesString = getCasDocumentProvider().getSessionPreferenceStore(input).getString("LastShownTypes");
       
@@ -868,6 +867,9 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
         }
       }
     }
+    
+    ICasDocument newDocument = getDocument();
+    fireCasDocumentChanged(oldDocument, newDocument);
   }
   
   private void fireCasDocumentChanged(ICasDocument oldDocument, ICasDocument newDocument) {

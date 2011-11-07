@@ -106,12 +106,12 @@ class AnnotationStyleViewPage extends Page implements ICasEditorInputListener {
         annotationTypes = null;
       }
       
-      
-      Display.getDefault().syncExec(new Runnable() {
-        public void run() {
-          treeViewer.refresh();
-        }
-      });
+      treeViewer.refresh();
+//      Display.getDefault().syncExec(new Runnable() {
+//        public void run() {
+//          treeViewer.refresh();
+//        }
+//      });
     }
 
     public Object[] getElements(Object inputElement) {
@@ -225,6 +225,11 @@ class AnnotationStyleViewPage extends Page implements ICasEditorInputListener {
     return selectedNodes;
   }
   
+  private void setCheckBoxes() {
+    treeViewer.setCheckedElements(typesToNodes(editor.getShownAnnotationTypes(), editor));
+    treeViewer.setGrayed(new AnnotationTypeNode(editor, editor.getAnnotationMode()), true);
+  }
+  
   @Override
   public void createControl(Composite parent) {
 
@@ -280,10 +285,6 @@ class AnnotationStyleViewPage extends Page implements ICasEditorInputListener {
         treeViewer.update(typeNodes, null);
       }
     };
-    
-    treeViewer.setCheckedElements(typesToNodes(editor.getShownAnnotationTypes(), editor));
-    
-    treeViewer.setGrayed(new AnnotationTypeNode(editor, editor.getAnnotationMode()), true);
     
     treeViewer.addCheckStateListener(new ICheckStateListener() {
       
@@ -378,8 +379,10 @@ class AnnotationStyleViewPage extends Page implements ICasEditorInputListener {
   }
 
   public void casDocumentChanged(ICasDocument oldDocument, ICasDocument newDocument) {
-    if (newDocument != null)
+    if (newDocument != null) {
       treeViewer.setInput(newDocument.getCAS().getTypeSystem());
+      setCheckBoxes();
+    }
     else 
       treeViewer.setInput(null);
     
