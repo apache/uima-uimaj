@@ -246,11 +246,14 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener imp
   }
 
   public void casDocumentChanged(ICasDocument oldDocument, ICasDocument newDocument) {
-    oldDocument.removeChangeListener(this);
+    if (oldDocument != null)
+      oldDocument.removeChangeListener(this);
+    
     mDocument = newDocument;
-    mDocument.addChangeListener(this);
+    
+    if (mDocument != null)
+      mDocument.addChangeListener(this);
+    
     viewer.setInput(null);
-    viewer.refresh();
   }
-
 }
