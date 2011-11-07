@@ -69,7 +69,7 @@ public abstract class AbstractDocument implements ICasDocument {
    * 
    * @param annotations
    */
-  protected void fireAddedFeatureStructure(Collection<FeatureStructure> annotations) {
+  protected void fireAddedFeatureStructure(Collection<? extends FeatureStructure> annotations) {
     for (ICasDocumentListener listener : mListener) {
       listener.added(Collections.unmodifiableCollection(annotations));
     }

@@ -96,11 +96,20 @@ public class DocumentUimaImpl extends AbstractDocument {
   }
 
   /**
+   * Internally removes an annotation from the {@link CAS}.
+   * 
+   * @param featureStructure
+   */
+  private void addFeatureStructureInternal(FeatureStructure featureStructure) {
+    getCAS().getIndexRepository().addFS(featureStructure);
+  }
+  
+  /**
    * Adds the given annotation to the {@link CAS}.
    */
   public void addFeatureStructure(FeatureStructure annotation) {
-    mCAS.getIndexRepository().addFS(annotation);
-
+    addFeatureStructureInternal(annotation);
+    
     fireAddedFeatureStructure(annotation);
   }
 
@@ -109,7 +118,11 @@ public class DocumentUimaImpl extends AbstractDocument {
 	 */
   public void addFeatureStructures(Collection<? extends FeatureStructure> annotations) {
     for (FeatureStructure annotation : annotations) {
-      addFeatureStructure(annotation);
+      addFeatureStructureInternal(annotation);
+    }
+    
+    if (annotations.size() > 0) {
+      fireAddedFeatureStructure(annotations);
     }
   }
 
