@@ -63,6 +63,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.eclipse.ui.internal.dialogs.PropertyDialog;
 import org.eclipse.ui.part.Page;
@@ -320,7 +321,7 @@ class AnnotationStyleViewPage extends Page implements ICasEditorInputListener {
     // TODO: must this listener be removed ?!
     editor.addAnnotationListener(editorListener);
     
-    casDocumentChanged(null, editor.getDocument());
+    casDocumentChanged(null, null, editor.getEditorInput(), editor.getDocument());
   }
 
   @Override
@@ -378,7 +379,8 @@ class AnnotationStyleViewPage extends Page implements ICasEditorInputListener {
     editor.removeCasEditorInputListener(this);
   }
 
-  public void casDocumentChanged(ICasDocument oldDocument, ICasDocument newDocument) {
+  public void casDocumentChanged(IEditorInput oldInput, ICasDocument oldDocument, IEditorInput newInput, ICasDocument newDocument) {
+    
     if (newDocument != null) {
       treeViewer.setInput(newDocument.getCAS().getTypeSystem());
       setCheckBoxes();
@@ -386,6 +388,13 @@ class AnnotationStyleViewPage extends Page implements ICasEditorInputListener {
     else 
       treeViewer.setInput(null);
     
-    // TODO: Type system preference listener must also be changed!
+    if (oldInput != null) {
+      editor.getCasDocumentProvider().getTypeSystemPreferenceStore(
+              oldInput).removePropertyChangeListener(changeListener);
+    }
+    
+    if (newInput != null) {
+      editor.getCasDocumentProvider().getTypeSystemPreferenceStore(newInput).addPropertyChangeListener(changeListener);
+    }
   }
 }

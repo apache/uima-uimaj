@@ -803,6 +803,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   
   @Override
   protected void doSetInput(IEditorInput input) throws CoreException {
+    IEditorInput oldInput = getEditorInput();
     ICasDocument oldDocument = getDocument();
     super.doSetInput(input);
     
@@ -869,13 +870,10 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     }
     
     ICasDocument newDocument = getDocument();
-    fireCasDocumentChanged(oldDocument, newDocument);
-  }
-  
-  private void fireCasDocumentChanged(ICasDocument oldDocument, ICasDocument newDocument) {
+    
     if (mEditorInputListener != null) {
       for (ICasEditorInputListener listener : mEditorInputListener)
-        listener.casDocumentChanged(oldDocument, newDocument);
+        listener.casDocumentChanged(oldInput, oldDocument, input, newDocument);
     }
   }
 

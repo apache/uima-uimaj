@@ -32,6 +32,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IEditorInput;
 
 abstract class OutlineContentProviderBase extends AbstractAnnotationDocumentListener implements
         ITreeContentProvider, ICasEditorInputListener {
@@ -107,7 +108,7 @@ abstract class OutlineContentProviderBase extends AbstractAnnotationDocumentList
     });
   }
 
-  public void casDocumentChanged(ICasDocument oldDocument, ICasDocument newDocument) {
+  public void casDocumentChanged(IEditorInput oldInput, ICasDocument oldDocument, IEditorInput newInput, ICasDocument newDocument) {
     inputChanged(viewer, oldDocument, newDocument);
   }
 }

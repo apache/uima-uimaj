@@ -38,6 +38,7 @@ import org.apache.uima.caseditor.editor.ICasEditorInputListener;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IEditorInput;
 
 final class FeatureStructureContentProvider extends AbstractDocumentListener implements
         ITreeContentProvider, ICasEditorInputListener {
@@ -245,7 +246,7 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener imp
     }
   }
 
-  public void casDocumentChanged(ICasDocument oldDocument, ICasDocument newDocument) {
+  public void casDocumentChanged(IEditorInput oldInput, ICasDocument oldDocument, IEditorInput newInput, ICasDocument newDocument) {
     if (oldDocument != null)
       oldDocument.removeChangeListener(this);
     

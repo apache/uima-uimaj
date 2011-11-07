@@ -58,6 +58,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.Page;
 
@@ -69,7 +70,7 @@ public final class FeatureStructureBrowserViewPage extends Page {
   private static final String LAST_SELECTED_FS_TYPE = "lastSelectedFeatureStructureBrowserViewType";
 
   final class FeatureStructureTreeContentProvider extends AbstractAnnotationDocumentListener
-          implements ITreeContentProvider , ICasEditorInputListener{
+          implements ITreeContentProvider , ICasEditorInputListener {
 
     private ICasDocument mDocument;
 
@@ -292,7 +293,8 @@ public final class FeatureStructureBrowserViewPage extends Page {
       mFSList.refresh();
     }
 
-    public void casDocumentChanged(ICasDocument oldDocument, ICasDocument newDocument) {
+    public void casDocumentChanged(IEditorInput oldInput, ICasDocument oldDocument, 
+            IEditorInput newInput, ICasDocument newDocument) {
       oldDocument.removeChangeListener(this);
       mDocument = newDocument;
       mDocument.addChangeListener(this);
