@@ -803,6 +803,18 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   protected void doSetInput(IEditorInput input) throws CoreException {
     IEditorInput oldInput = getEditorInput();
     ICasDocument oldDocument = getDocument();
+    
+    // Unregister the editor listeners on the old input
+    // TODO: Should we make methods to encapsulate the register/unregister code?
+    if (oldDocument != null) {
+      oldDocument.removeChangeListener(mAnnotationSynchronizer);
+      mAnnotationSynchronizer = null;
+      
+      getCasDocumentProvider().getTypeSystemPreferenceStore(getEditorInput()).
+              removePropertyChangeListener(mAnnotationStyleListener);
+      mAnnotationStyleListener = null;
+    }
+    
     super.doSetInput(input);
     
     if (CasEditorPlugin.getDefault().
