@@ -74,9 +74,14 @@ abstract class OutlineContentProviderBase extends AbstractAnnotationDocumentList
       ((ICasDocument) newInput).addChangeListener(this);
 
       mInputDocument = (ICasDocument) newInput;
-
-      changed();
     }
+    else {
+      mInputDocument = null;
+    }
+    
+    // Also called when input document is null,
+    // case must be handled
+    changed();
   }
 
   /**

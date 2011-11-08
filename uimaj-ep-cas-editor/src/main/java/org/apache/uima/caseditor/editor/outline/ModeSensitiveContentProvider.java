@@ -99,12 +99,17 @@ class ModeSensitiveContentProvider extends OutlineContentProviderBase {
 
   public void changed() {
 
+    if (mInputDocument != null) {
     Collection<AnnotationFS> annotations = mEditor.getDocument().getAnnotations(
             mEditor.getAnnotationMode());
 
     mAnnotationNodeList = annotations != null ? new AnnotationTreeNodeList(mEditor.getDocument(),
             annotations) : null;
-
+    }
+    else {
+      mAnnotationNodeList = null;
+    }
+    
     Display.getDefault().syncExec(new Runnable() {
       public void run() {
         viewer.refresh();
