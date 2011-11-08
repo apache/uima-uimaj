@@ -354,6 +354,8 @@ public final class FeatureStructureBrowserViewPage extends Page implements ICasE
 
     mCasEditor = editor;
 
+    mCasEditor.addCasEditorInputListener(this);
+    
     mDeleteAction = new DeleteFeatureStructureAction(editor);
 
     mSelectAllAction = new SelectAllAction();
@@ -435,13 +437,11 @@ public final class FeatureStructureBrowserViewPage extends Page implements ICasE
     typeComboData.grabExcessHorizontalSpace = true;
     typeCombo.setLayoutData(typeComboData);
 
-    
-    final IPreferenceStore store = mCasEditor.getCasDocumentProvider().getSessionPreferenceStore(
-            mCasEditor.getEditorInput());
-
     typeCombo.addListener(new ITypePaneListener() {
 
       public void typeChanged(Type newType) {
+        IPreferenceStore store = mCasEditor.getCasDocumentProvider().getSessionPreferenceStore(
+                mCasEditor.getEditorInput());
         store.setValue(LAST_SELECTED_FS_TYPE, newType.getName());
       }
     });
@@ -527,22 +527,33 @@ public final class FeatureStructureBrowserViewPage extends Page implements ICasE
     mInstanceComposite.setFocus();
   }
 
+  @Override
+  public void dispose() {
+    super.dispose();
+    
+    mCasEditor.removeCasEditorInputListener(this);
+  }
+  
   public void casDocumentChanged(IEditorInput oldInput, ICasDocument oldDocument,
           IEditorInput newInput, ICasDocument newDocument) {
     
-    typeCombo.setInput(newDocument.getCAS().getTypeSystem().getType(CAS.TYPE_NAME_TOP),
-            newDocument.getCAS().getTypeSystem(), filterTypes);
-    
-    final IPreferenceStore store = mCasEditor.getCasDocumentProvider().getSessionPreferenceStore(
-            mCasEditor.getEditorInput());
-    
-    Type lastUsedType = newDocument.getType(store.getString(LAST_SELECTED_FS_TYPE));
-
-    if (lastUsedType != null) {
-      typeCombo.select(lastUsedType);
+    if (newDocument != null) {
+      typeCombo.setInput(newDocument.getCAS().getTypeSystem().getType(CAS.TYPE_NAME_TOP),
+              newDocument.getCAS().getTypeSystem(), filterTypes);
+      
+      final IPreferenceStore store = mCasEditor.getCasDocumentProvider().getSessionPreferenceStore(newInput);
+      
+      Type lastUsedType = newDocument.getType(store.getString(LAST_SELECTED_FS_TYPE));
+  
+      if (lastUsedType != null) {
+        typeCombo.select(lastUsedType);
+      }
+      
+      if (lastUsedType != null)
+        mFSList.setInput(lastUsedType);
     }
-    
-    if (lastUsedType != null)
-      mFSList.setInput(lastUsedType);
+    else {
+      // clear combo?!
+    }
   }
 }
