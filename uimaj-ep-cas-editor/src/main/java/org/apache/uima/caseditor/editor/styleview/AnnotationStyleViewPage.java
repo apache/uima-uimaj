@@ -51,7 +51,6 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -388,12 +387,12 @@ class AnnotationStyleViewPage extends Page implements ICasEditorInputListener {
     else 
       treeViewer.setInput(null);
     
-    if (oldInput != null) {
+    if (oldInput != null && oldDocument != null) {
       editor.getCasDocumentProvider().getTypeSystemPreferenceStore(
               oldInput).removePropertyChangeListener(changeListener);
     }
     
-    if (newInput != null) {
+    if (newInput != null && newDocument != null) {
       editor.getCasDocumentProvider().getTypeSystemPreferenceStore(newInput).addPropertyChangeListener(changeListener);
     }
   }
