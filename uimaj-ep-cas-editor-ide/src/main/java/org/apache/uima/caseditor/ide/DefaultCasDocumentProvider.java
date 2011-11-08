@@ -505,7 +505,10 @@ public class DefaultCasDocumentProvider extends
   public IPreferenceStore getTypeSystemPreferenceStore(Object element) {
     String tsId = getTypesystemId(element);
 
-    return typeSystemPreferences.get(getPreferenceFileForTypeSystem(tsId));
+    if (tsId != null)
+      return typeSystemPreferences.get(getPreferenceFileForTypeSystem(tsId));
+    else
+      return null;
   }
 
   @Override
