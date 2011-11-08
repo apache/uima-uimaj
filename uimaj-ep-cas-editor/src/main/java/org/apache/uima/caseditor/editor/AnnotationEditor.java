@@ -1547,7 +1547,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 
     // create delete action
     DeleteFeatureStructureAction deleteAnnotationAction = new DeleteFeatureStructureAction(
-            getDocument());
+            this);
     deleteAnnotationAction.setText("Delete Annotation");
     getSite().getSelectionProvider().addSelectionChangedListener(deleteAnnotationAction);
 
@@ -1569,25 +1569,25 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     setAction(ITextEditorActionConstants.FIND, findAnnotateAction);
     
     // Lower left side of annotation action
-    LowerLeftAnnotationSideAction lowerLeftAnnotationSideAction = new LowerLeftAnnotationSideAction(getDocument());
+    LowerLeftAnnotationSideAction lowerLeftAnnotationSideAction = new LowerLeftAnnotationSideAction(this);
     lowerLeftAnnotationSideAction.setActionDefinitionId(LowerLeftAnnotationSideAction.ID);
     setAction(LowerLeftAnnotationSideAction.ID, lowerLeftAnnotationSideAction);
     getSite().getSelectionProvider().addSelectionChangedListener(lowerLeftAnnotationSideAction);
     
     // Wide left side of annotation action
-    WideLeftAnnotationSideAction wideLeftAnnotationSide = new WideLeftAnnotationSideAction(getDocument());
+    WideLeftAnnotationSideAction wideLeftAnnotationSide = new WideLeftAnnotationSideAction(this);
     wideLeftAnnotationSide.setActionDefinitionId(WideLeftAnnotationSideAction.ID);
     setAction(WideLeftAnnotationSideAction.ID, wideLeftAnnotationSide);
     getSite().getSelectionProvider().addSelectionChangedListener(wideLeftAnnotationSide);
     
     // Lower right side of annotation
-    LowerRightAnnotationSideAction lowerRightAnnotationSideAction = new LowerRightAnnotationSideAction(getDocument());
+    LowerRightAnnotationSideAction lowerRightAnnotationSideAction = new LowerRightAnnotationSideAction(this);
     lowerRightAnnotationSideAction.setActionDefinitionId(LowerRightAnnotationSideAction.ID);
     setAction(LowerRightAnnotationSideAction.ID, lowerRightAnnotationSideAction);
     getSite().getSelectionProvider().addSelectionChangedListener(lowerRightAnnotationSideAction);
     
     // Wide right side of annotation
-    WideRightAnnotationSideAction wideRightAnnotationSideAction = new WideRightAnnotationSideAction(getDocument());
+    WideRightAnnotationSideAction wideRightAnnotationSideAction = new WideRightAnnotationSideAction(this);
     wideRightAnnotationSideAction.setActionDefinitionId(WideRightAnnotationSideAction.ID);
     setAction(WideRightAnnotationSideAction.ID, wideRightAnnotationSideAction);
     getSite().getSelectionProvider().addSelectionChangedListener(wideRightAnnotationSideAction);

@@ -197,8 +197,7 @@ public final class AnnotationOutline extends ContentOutlinePage
    */
   @Override
   public void setActionBars(IActionBars actionBars) {
-    DeleteFeatureStructureAction deleteAction = new DeleteFeatureStructureAction(editor
-            .getDocument());
+    DeleteFeatureStructureAction deleteAction = new DeleteFeatureStructureAction(editor);
 
     actionBars.setGlobalActionHandler(ActionFactory.DELETE.getId(), deleteAction);
 
@@ -215,7 +214,7 @@ public final class AnnotationOutline extends ContentOutlinePage
     
     // wide left annotation side action
     WideLeftAnnotationSideAction wideLeftAnnotationSideAction = new WideLeftAnnotationSideAction(
-            editor.getDocument());
+            editor);
     wideLeftAnnotationSideAction.setActionDefinitionId(WideLeftAnnotationSideAction.ID);
     wideLeftAnnotationSideAction.setText("Wides the left annotation side");
     wideLeftAnnotationSideAction.setImageDescriptor(CasEditorPlugin
@@ -227,7 +226,7 @@ public final class AnnotationOutline extends ContentOutlinePage
 
     // lower left annotation side action
     LowerLeftAnnotationSideAction lowerLeftAnnotationSideAction = new LowerLeftAnnotationSideAction(
-            editor.getDocument());
+            editor);
     lowerLeftAnnotationSideAction.setActionDefinitionId(LowerLeftAnnotationSideAction.ID);
     lowerLeftAnnotationSideAction.setText("Lowers the left annotation side");
     lowerLeftAnnotationSideAction.setImageDescriptor(CasEditorPlugin
@@ -239,7 +238,7 @@ public final class AnnotationOutline extends ContentOutlinePage
 
     // lower right annotation side action
     LowerRightAnnotationSideAction lowerRightAnnotationSideAction =
-      new LowerRightAnnotationSideAction(editor.getDocument());
+      new LowerRightAnnotationSideAction(editor);
     lowerRightAnnotationSideAction.setActionDefinitionId(LowerRightAnnotationSideAction.ID);
     lowerRightAnnotationSideAction.setText("Lowers the right annotation side");
     lowerRightAnnotationSideAction.setImageDescriptor(CasEditorPlugin
@@ -251,7 +250,7 @@ public final class AnnotationOutline extends ContentOutlinePage
 
     // wide right annotation side action
     WideRightAnnotationSideAction wideRightAnnotationSideAction = new WideRightAnnotationSideAction(
-            editor.getDocument());
+            editor);
     wideRightAnnotationSideAction.setActionDefinitionId(WideRightAnnotationSideAction.ID);
     wideRightAnnotationSideAction.setText("Wides the right annotation side");
     wideRightAnnotationSideAction.setImageDescriptor(CasEditorPlugin
@@ -262,7 +261,7 @@ public final class AnnotationOutline extends ContentOutlinePage
     toolBarManager.add(wideRightAnnotationSideAction);
 
     // merge action
-    MergeAnnotationAction mergeAction = new MergeAnnotationAction(editor.getDocument());
+    MergeAnnotationAction mergeAction = new MergeAnnotationAction(editor);
     getSite().getSelectionProvider().addSelectionChangedListener(mergeAction);
     mergeAction.setImageDescriptor(CasEditorPlugin.getTaeImageDescriptor(Images.MERGE));
 

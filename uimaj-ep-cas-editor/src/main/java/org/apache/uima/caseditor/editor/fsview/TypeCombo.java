@@ -20,6 +20,7 @@
 package org.apache.uima.caseditor.editor.fsview;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -50,15 +51,8 @@ public class TypeCombo extends Composite {
   
   private List<String> typeNameList;
   
-  public TypeCombo(Composite parent, Type superType, TypeSystem typeSystem) {
-    this(parent, superType, typeSystem, new LinkedList<Type>());
-  }
-  
-  public TypeCombo(Composite parent, Type superType, TypeSystem typeSystem,
-          Collection<Type> filterTypes) {
+  public TypeCombo(Composite parent) {
     super(parent, SWT.NONE);
-
-    this.typeSystem = typeSystem;
 
     setLayout(new FillLayout());
 
@@ -73,7 +67,12 @@ public class TypeCombo extends Composite {
         }
       }
     });
-
+  }
+  
+  public void setInput(Type superType, TypeSystem typeSystem,
+          Collection<Type> filterTypes) {
+    this.typeSystem = typeSystem;
+    
     typeNameList = new LinkedList<String>();
 
     typeNameList.add(superType.getName());
@@ -91,6 +90,10 @@ public class TypeCombo extends Composite {
     typeCombo.select(0);
   }
   
+  public void setInput(Type superType, TypeSystem typeSystem) {
+    setInput(superType, typeSystem, Collections.<Type>emptyList());
+  }
+  
   /**
    * Selects the given type or does nothing if the
    * type is not listed.
@@ -105,6 +108,12 @@ public class TypeCombo extends Composite {
     }
   }
   
+  /**
+   * Retrieves the selected type. Behavior is undefined when called
+   * before setInput.
+   * 
+   * @return
+   */
   public Type getType() {
     return typeSystem.getType(typeCombo.getText());
   }

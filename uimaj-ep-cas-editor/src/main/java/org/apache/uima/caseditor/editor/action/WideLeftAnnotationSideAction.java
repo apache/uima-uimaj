@@ -24,6 +24,7 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.caseditor.editor.ICasDocument;
+import org.apache.uima.caseditor.editor.ICasEditor;
 import org.apache.uima.caseditor.editor.util.AnnotationSelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
@@ -35,17 +36,17 @@ public final class WideLeftAnnotationSideAction extends BaseSelectionListenerAct
   
   public static final String ID = "WideLeftAnnotationSide";
   
-  private ICasDocument mDocument;
+  private ICasEditor editor;
 
   /**
    * Initializes a new instance.
    *
    * @param document
    */
-  public WideLeftAnnotationSideAction(ICasDocument document) {
+  public WideLeftAnnotationSideAction(ICasEditor editor) {
     super("WideLeftAnnotationSside");
 
-    mDocument = document;
+    this.editor = editor;
 
     setEnabled(false);
   }
@@ -84,6 +85,6 @@ public final class WideLeftAnnotationSideAction extends BaseSelectionListenerAct
 
     AnnotationFS annotation = annotations.getFirst();
     
-    wideLeftAnnotationSide(mDocument, annotation);
+    wideLeftAnnotationSide(editor.getDocument(), annotation);
   }
 }

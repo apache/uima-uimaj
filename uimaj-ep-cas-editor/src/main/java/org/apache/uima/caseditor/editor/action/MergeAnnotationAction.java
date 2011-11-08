@@ -23,6 +23,7 @@ package org.apache.uima.caseditor.editor.action;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.caseditor.editor.ICasDocument;
+import org.apache.uima.caseditor.editor.ICasEditor;
 import org.apache.uima.caseditor.editor.util.AnnotationSelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
@@ -34,17 +35,17 @@ import org.eclipse.ui.actions.BaseSelectionListenerAction;
  * in conflict case do nothing
  */
 public class MergeAnnotationAction extends BaseSelectionListenerAction {
-  private ICasDocument mDocument;
+  private ICasEditor editor;
 
   /**
    * Initializes the current instance.
    *
    * @param document
    */
-  public MergeAnnotationAction(ICasDocument document) {
+  public MergeAnnotationAction(ICasEditor editor) {
     super("MergeAnnotationAction");
-
-    mDocument = document;
+    
+    this.editor = editor;
 
     setEnabled(false);
   }
@@ -63,12 +64,14 @@ public class MergeAnnotationAction extends BaseSelectionListenerAction {
   public void run() {
     AnnotationSelection annotations = new AnnotationSelection(getStructuredSelection());
 
-    CAS documentCAS = mDocument.getCAS();
+    ICasDocument document = editor.getDocument();
+    
+    CAS documentCAS = document.getCAS();
 
     AnnotationFS mergedAnnotation = documentCAS.createAnnotation(annotations.getFirst().getType(),
             annotations.getFirst().getBegin(), annotations.getLast().getEnd());
 
-    mDocument.removeFeatureStructures(annotations.toList());
-    mDocument.addFeatureStructure(mergedAnnotation);
+    document.removeFeatureStructures(annotations.toList());
+    document.addFeatureStructure(mergedAnnotation);
   }
 }

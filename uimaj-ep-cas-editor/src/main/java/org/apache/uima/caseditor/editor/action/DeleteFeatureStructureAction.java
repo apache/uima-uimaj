@@ -21,7 +21,7 @@ package org.apache.uima.caseditor.editor.action;
 
 
 import org.apache.uima.caseditor.editor.FeatureStructureSelection;
-import org.apache.uima.caseditor.editor.ICasDocument;
+import org.apache.uima.caseditor.editor.ICasEditor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
 
@@ -29,17 +29,17 @@ import org.eclipse.ui.actions.BaseSelectionListenerAction;
  * Deletes all selected annotations.
  */
 public class DeleteFeatureStructureAction extends BaseSelectionListenerAction {
-  private ICasDocument mDocument;
+  private ICasEditor editor;
 
   /**
    * Initializes the current instance.
    *
    * @param document
    */
-  public DeleteFeatureStructureAction(ICasDocument document) {
+  public DeleteFeatureStructureAction(ICasEditor editor) {
     super("DeleteAction");
 
-    mDocument = document;
+    this.editor = editor;
 
     setEnabled(false);
   }
@@ -61,6 +61,6 @@ public class DeleteFeatureStructureAction extends BaseSelectionListenerAction {
     FeatureStructureSelection featureStructures =
       new FeatureStructureSelection(getStructuredSelection());
 
-    mDocument.removeFeatureStructures(featureStructures.toList());
+    editor.getDocument().removeFeatureStructures(featureStructures.toList());
   }
 }

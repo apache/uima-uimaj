@@ -167,8 +167,9 @@ public class CreateFeatureStructureDialog extends IconAndMessageDialog {
       Label typeLabel = new Label(typePanel, SWT.NONE);
       typeLabel.setText("Type: ");
       
-      typeSelection = new TypeCombo(typePanel, superType, typeSystem, filterTypes);
-
+      typeSelection = new TypeCombo(typePanel);
+      typeSelection.setInput(superType, typeSystem, filterTypes);
+      
       selectedType = typeSelection.getType();
 
       // maybe consider to show the type of the array and disable the selector
