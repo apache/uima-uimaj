@@ -1620,8 +1620,11 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 
     CasDocumentProvider provider = getCasDocumentProvider();
     
-    if (provider != null)
-      provider.getTypeSystemPreferenceStore(getEditorInput()).removePropertyChangeListener(mAnnotationStyleListener);
+    if (provider != null) {
+      IPreferenceStore store = provider.getTypeSystemPreferenceStore(getEditorInput());
+      if (store != null)
+        store.removePropertyChangeListener(mAnnotationStyleListener);
+    }
     
     if (preferenceStoreChangeListener != null)
       CasEditorPlugin.getDefault().getPreferenceStore().removePropertyChangeListener(preferenceStoreChangeListener);
