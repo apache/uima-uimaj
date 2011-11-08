@@ -140,8 +140,8 @@ class FindAnnotateDialog extends Dialog {
     typeData.horizontalAlignment =  SWT.LEFT;
     typeLabel.setLayoutData(typeData);
 
-    typeField = new TypeCombo(panel,
-            document.getCAS().getTypeSystem().getType(CAS.TYPE_NAME_ANNOTATION),
+    typeField = new TypeCombo(panel);
+    typeField.setInput(document.getCAS().getTypeSystem().getType(CAS.TYPE_NAME_ANNOTATION),
             document.getCAS().getTypeSystem());
 
     typeField.select(modeType);
