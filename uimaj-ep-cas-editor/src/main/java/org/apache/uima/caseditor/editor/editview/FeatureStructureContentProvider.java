@@ -120,7 +120,9 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener imp
   }
 
   public void dispose() {
-    mDocument.removeChangeListener(this);
+    if (mDocument != null)
+      mDocument.removeChangeListener(this);
+    
     mEditor.removeCasEditorInputListener(this);
   }
 

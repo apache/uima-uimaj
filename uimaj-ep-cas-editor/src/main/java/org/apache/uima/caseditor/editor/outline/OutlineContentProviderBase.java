@@ -53,7 +53,9 @@ abstract class OutlineContentProviderBase extends AbstractAnnotationDocumentList
    * not implemented
    */
   public void dispose() {
-    mInputDocument.removeChangeListener(this);
+    if (mInputDocument != null)
+      mInputDocument.removeChangeListener(this);
+    
     mEditor.removeCasEditorInputListener(this);
   }
 

@@ -79,6 +79,9 @@ public final class FeatureStructureBrowserViewPage extends Page implements ICasE
     FeatureStructureTreeContentProvider(ICasEditor editor) {
       mEditor = editor;
       mEditor.addCasEditorInputListener(this);
+      
+      if (mEditor.getDocument() != null)
+        mEditor.getDocument().addChangeListener(this);
     }
 
     public Object[] getElements(Object inputElement) {
@@ -108,25 +111,15 @@ public final class FeatureStructureBrowserViewPage extends Page implements ICasE
     }
 
     public void dispose() {
-      mEditor.getDocument().removeChangeListener(this);
+      if (mEditor.getDocument() != null)
+        mEditor.getDocument().removeChangeListener(this);
+      
       mEditor.removeCasEditorInputListener(this);
     }
 
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 
-      if (oldInput != null) {
-        mEditor.getDocument().removeChangeListener(this);
-      }
-
-      if (newInput == null) {
-
-        mCurrentType = null;
-        return;
-      }
-
       mCurrentType = (Type) newInput;
-
-      mEditor.getDocument().addChangeListener(this);
 
       Display.getDefault().syncExec(new Runnable() {
         public void run() {

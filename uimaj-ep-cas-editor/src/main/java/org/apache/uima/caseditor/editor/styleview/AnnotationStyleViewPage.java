@@ -40,6 +40,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.preference.IPreferenceNode;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceManager;
 import org.eclipse.jface.preference.PreferenceNode;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
@@ -370,8 +371,11 @@ class AnnotationStyleViewPage extends Page implements ICasEditorInputListener {
   public void dispose() {
     super.dispose();
     
-    editor.getCasDocumentProvider().getTypeSystemPreferenceStore(
-            editor.getEditorInput()).removePropertyChangeListener(changeListener);
+    IPreferenceStore store = editor.getCasDocumentProvider().getTypeSystemPreferenceStore(
+            editor.getEditorInput());
+    
+    if (store != null)        
+      store.removePropertyChangeListener(changeListener);
     
     editor.removeAnnotationListener(editorListener);
     

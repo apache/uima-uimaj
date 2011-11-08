@@ -92,7 +92,7 @@ public abstract class CasDocumentProvider {
    * system file.
    * 
    * @param element
-   * @return
+   * @return the preference store or null if it cannot be retrieved, e.g no document was created for the input.
    */
   // Problem: Keys maybe should be pre-fixed depending on the plugin which is storing values
   // TODO: Should it be renamed to getPersistentPreferenceStore?
@@ -107,7 +107,7 @@ public abstract class CasDocumentProvider {
    * 
    * @param element
    * 
-   *          heise.@return
+   * @return
    */
   public abstract IPreferenceStore getSessionPreferenceStore(Object element);
 
