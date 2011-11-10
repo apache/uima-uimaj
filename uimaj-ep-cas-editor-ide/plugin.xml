@@ -84,15 +84,21 @@
  
  <extension point="org.eclipse.ui.preferencePages">
     <page
+          category="org.apache.uima.caseditor.ide.CasEditorPreference"
           class="org.apache.uima.caseditor.editor.AnnotationEditorPreferencePage"
           id="org.apache.uima.caseditor.ide.AnnotationEditorPreference"
-          name="UIMA Annotation Editor">
+          name="Annotation Editor">
     </page>
     <page
-          category="org.apache.uima.caseditor.ide.AnnotationEditorPreference"
+          category="org.apache.uima.caseditor.ide.CasEditorPreference"
           class="org.apache.uima.caseditor.ide.CasEditorIdePreferencePage"
           id="org.apache.uima.caseditor.ide.CasEditorIdePreference"
           name="Cas Editor Ide">
+    </page>
+    <page
+          class="org.apache.uima.caseditor.ide.CasEditorPreferencePage"
+          id="org.apache.uima.caseditor.ide.CasEditorPreference"
+          name="UIMA Cas Editor">
     </page>
  </extension>
  
