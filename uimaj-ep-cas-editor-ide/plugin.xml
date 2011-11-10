@@ -88,6 +88,12 @@
           id="org.apache.uima.caseditor.ide.AnnotationEditorPreference"
           name="UIMA Annotation Editor">
     </page>
+    <page
+          category="org.apache.uima.caseditor.ide.AnnotationEditorPreference"
+          class="org.apache.uima.caseditor.ide.CasEditorIdePreferencePage"
+          id="org.apache.uima.caseditor.ide.CasEditorIdePreference"
+          name="Cas Editor Ide">
+    </page>
  </extension>
  
     <extension

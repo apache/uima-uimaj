@@ -27,4 +27,7 @@ public class CasEditorIdePreferenceConstants {
           "CAS_IMPORT_WIZARD_LAST_USED_LANG";
   
   public static final String CAS_IMPORT_WIZARD_LAST_USED_ENCODINGS = "CAS_IMPORT_WIZARD_ENCODINGS";
+  
+  public static final String CAS_EDITOR_REMEMBER_TYPESYSTEM = "CAS_EDITOR_REMEMBER_TYPESYSTEM";
+  
 }
