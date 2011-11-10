@@ -20,6 +20,7 @@
 package org.apache.uima.caseditor.editor;
 
 import org.apache.uima.caseditor.CasEditorPlugin;
+import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.ui.IWorkbench;
@@ -33,6 +34,7 @@ public class AnnotationEditorPreferencePage extends FieldEditorPreferencePage
 
   private IntegerFieldEditor mEditorLineLengthHint;
   private IntegerFieldEditor mEditorTextSize;
+  private BooleanFieldEditor mEditorPartialTypeystem;
   
   public AnnotationEditorPreferencePage() {
     setPreferenceStore(CasEditorPlugin.getDefault().getPreferenceStore());
@@ -53,6 +55,13 @@ public class AnnotationEditorPreferencePage extends FieldEditorPreferencePage
             AnnotationEditorPreferenceConstants.ANNOTATION_EDITOR_TEXT_SIZE,
             "Editor Text Size", getFieldEditorParent());
     addField(mEditorTextSize);
+    
+    // load CAS with partial type system
+    mEditorPartialTypeystem = new BooleanFieldEditor(
+            AnnotationEditorPreferenceConstants.ANNOTATION_EDITOR_PARTIAL_TYPESYSTEM,
+            "Load CAS leniently (WARNING: only for experienced users)", getFieldEditorParent());
+    addField(mEditorPartialTypeystem);
+    
   }
 
   public void init(IWorkbench workbench) {

@@ -58,6 +58,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.xml.sax.SAXException;
 
 /**
@@ -224,64 +225,67 @@ public class DocumentUimaImpl extends AbstractDocument {
     SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
     saxParserFactory.setValidating(false);
 
-    SAXParser saxParser;
+    SAXParser saxParser = null;
 
     try {
       saxParser = saxParserFactory.newSAXParser();
     } catch (ParserConfigurationException e) {
-      String message = e.getMessage() != null ? e.getMessage() : "";
-
-      IStatus s = new Status(IStatus.ERROR, CasEditorPlugin.ID, IStatus.OK, message, e);
-
-      throw new CoreException(s);
+      throwCoreException(e);
     } catch (SAXException e) {
-      String message = e.getMessage() != null ? e.getMessage() : "";
-
-      IStatus s = new Status(IStatus.ERROR, CasEditorPlugin.ID, IStatus.OK, message, e);
-
-      throw new CoreException(s);
+      throwCoreException(e);
     }
 
+    IPreferenceStore store = CasEditorPlugin.getDefault().getPreferenceStore();
+    boolean withPartialTypesystem = store
+            .getBoolean(AnnotationEditorPreferenceConstants.ANNOTATION_EDITOR_PARTIAL_TYPESYSTEM);
     if (DocumentFormat.XCAS.equals(format)) {
-      XCASDeserializer dezerializer = new XCASDeserializer(mTypeSystem);
-
-      try {
-        saxParser.parse(content, dezerializer.getXCASHandler(mCAS));
-      } catch (IOException e) {
-        String message = e.getMessage() != null ? e.getMessage() : "";
-
-        IStatus s = new Status(IStatus.ERROR, CasEditorPlugin.ID, IStatus.OK, message, e);
-
-        throw new CoreException(s);
-      } catch (SAXException e) {
-        String message = e.getMessage() != null ? e.getMessage() : "";
-
-        IStatus s = new Status(IStatus.ERROR, CasEditorPlugin.ID, IStatus.OK, message, e);
-
-        throw new CoreException(s);
+      if(withPartialTypesystem) {
+        try {
+          XCASDeserializer.deserialize(content, mCAS, true);
+        } catch (SAXException e) {
+          throwCoreException(e);
+        } catch (IOException e) {
+          throwCoreException(e);
+        }
+      } else {
+        XCASDeserializer dezerializer = new XCASDeserializer(mTypeSystem);
+        try {
+          saxParser.parse(content, dezerializer.getXCASHandler(mCAS));
+        } catch (IOException e) {
+          throwCoreException(e);
+        } catch (SAXException e) {
+          throwCoreException(e);
+        }
       }
     } else if (DocumentFormat.XMI.equals(format)) {
-      XmiCasDeserializer dezerializer = new XmiCasDeserializer(mTypeSystem);
-
-      try {
-        saxParser.parse(content, dezerializer.getXmiCasHandler(mCAS));
-      } catch (IOException e) {
-        String message = e.getMessage() != null ? e.getMessage() : "";
-
-        IStatus s = new Status(IStatus.ERROR, CasEditorPlugin.ID, IStatus.OK, message, e);
-
-        throw new CoreException(s);
-      } catch (SAXException e) {
-        String message = e.getMessage() != null ? e.getMessage() : "";
-
-        IStatus s = new Status(IStatus.ERROR, CasEditorPlugin.ID, IStatus.OK, message, e);
-
-        throw new CoreException(s);
+      if (withPartialTypesystem) {
+        try {
+          XmiCasDeserializer.deserialize(content, mCAS, true);
+        } catch (SAXException e) {
+          throwCoreException(e);
+        } catch (IOException e) {
+          throwCoreException(e);
+        }
+      } else {
+        try {
+          XmiCasDeserializer dezerializer = new XmiCasDeserializer(mTypeSystem);
+          saxParser.parse(content, dezerializer.getXmiCasHandler(mCAS));
+        } catch (IOException e) {
+          throwCoreException(e);
+        } catch (SAXException e) {
+          throwCoreException(e);
+        }
       }
     } else {
       throw new CoreException(new Status(IStatus.ERROR, CasEditorPlugin.ID, IStatus.OK,
               "Unkown file format!", null));
     }
+  }
+
+  private void throwCoreException(Exception e) throws CoreException {
+    String message = e.getMessage() != null ? e.getMessage() : "";
+    IStatus s = new Status(IStatus.ERROR, CasEditorPlugin.ID, IStatus.OK, message, e);
+    throw new CoreException(s);
   }
 
   /**
@@ -297,17 +301,9 @@ public class DocumentUimaImpl extends AbstractDocument {
       try {
         xcasSerializer.serialize(mCAS, xmlSerialzer.getContentHandler());
       } catch (IOException e) {
-        String message = e.getMessage() != null ? e.getMessage() : "";
-
-        IStatus s = new Status(IStatus.ERROR, CasEditorPlugin.ID, IStatus.OK, message, e);
-
-        throw new CoreException(s);
+        throwCoreException(e);
       } catch (SAXException e) {
-        String message = e.getMessage() != null ? e.getMessage() : "";
-
-        IStatus s = new Status(IStatus.ERROR, CasEditorPlugin.ID, IStatus.OK, message, e);
-
-        throw new CoreException(s);
+        throwCoreException(e);
       }
     } else if (DocumentFormat.XMI.equals(format)) {
       XmiCasSerializer xmiSerializer = new XmiCasSerializer(mCAS.getTypeSystem());
@@ -317,11 +313,7 @@ public class DocumentUimaImpl extends AbstractDocument {
       try {
         xmiSerializer.serialize(mCAS, xmlSerialzer.getContentHandler());
       } catch (SAXException e) {
-        String message = e.getMessage() != null ? e.getMessage() : "";
-
-        IStatus s = new Status(IStatus.ERROR, CasEditorPlugin.ID, IStatus.OK, message, e);
-
-        throw new CoreException(s);
+        throwCoreException(e);
       }
     } else {
       throw new CoreException(new Status(IStatus.ERROR, CasEditorPlugin.ID, IStatus.OK,
