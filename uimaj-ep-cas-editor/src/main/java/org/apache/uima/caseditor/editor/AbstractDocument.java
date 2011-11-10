@@ -21,10 +21,11 @@ package org.apache.uima.caseditor.editor;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.apache.uima.cas.FeatureStructure;
+import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.core.runtime.SafeRunner;
+import org.eclipse.jface.util.SafeRunnable;
 
 /**
  * Abstract base class for document implementations.
@@ -33,7 +34,7 @@ public abstract class AbstractDocument implements ICasDocument {
   /**
    * Contains the change listener objects.
    */
-  private Set<ICasDocumentListener> mListener = new HashSet<ICasDocumentListener>();
+  private ListenerList mListener = new ListenerList();
 
   /**
    * Registers a change listener.
@@ -58,9 +59,16 @@ public abstract class AbstractDocument implements ICasDocument {
    * 
    * @param annotation
    */
-  protected void fireAddedFeatureStructure(FeatureStructure annotation) {
-    for (ICasDocumentListener listener : mListener) {
-      listener.added(annotation);
+  protected void fireAddedFeatureStructure(final FeatureStructure annotation) {
+    
+    for (Object listener : mListener.getListeners()) {
+      final ICasDocumentListener documentListener = (ICasDocumentListener) listener;
+      
+      SafeRunner.run(new SafeRunnable() {
+        public void run() {
+          documentListener.added(annotation);
+        }
+      });
     }
   }
 
@@ -69,9 +77,16 @@ public abstract class AbstractDocument implements ICasDocument {
    * 
    * @param annotations
    */
-  protected void fireAddedFeatureStructure(Collection<? extends FeatureStructure> annotations) {
-    for (ICasDocumentListener listener : mListener) {
-      listener.added(Collections.unmodifiableCollection(annotations));
+  protected void fireAddedFeatureStructure(final Collection<? extends FeatureStructure> annotations) {
+    for (Object listener : mListener.getListeners()) {
+      
+      final ICasDocumentListener documentListener = (ICasDocumentListener) listener;
+      
+      SafeRunner.run(new SafeRunnable() {
+        public void run() {
+          documentListener.added(Collections.unmodifiableCollection(annotations));
+        }
+      });
     }
   }
 
@@ -80,9 +95,16 @@ public abstract class AbstractDocument implements ICasDocument {
    * 
    * @param annotation
    */
-  protected void fireRemovedFeatureStructure(FeatureStructure annotation) {
-    for (ICasDocumentListener listener : mListener) {
-      listener.removed(annotation);
+  protected void fireRemovedFeatureStructure(final FeatureStructure annotation) {
+    for (Object listener : mListener.getListeners()) {
+      
+      final ICasDocumentListener documentListener = (ICasDocumentListener) listener;
+      
+      SafeRunner.run(new SafeRunnable() {
+        public void run() {
+          documentListener.removed(annotation);
+        }
+      });
     }
   }
 
@@ -91,9 +113,16 @@ public abstract class AbstractDocument implements ICasDocument {
    * 
    * @param annotations
    */
-  protected void fireRemovedFeatureStructure(Collection<? extends FeatureStructure> annotations) {
-    for (ICasDocumentListener listener : mListener) {
-      listener.removed(Collections.unmodifiableCollection(annotations));
+  protected void fireRemovedFeatureStructure(final Collection<? extends FeatureStructure> annotations) {
+    for (Object listener : mListener.getListeners()) {
+      
+      final ICasDocumentListener documentListener = (ICasDocumentListener) listener;
+      
+      SafeRunner.run(new SafeRunnable() {
+        public void run() {
+          documentListener.removed(Collections.unmodifiableCollection(annotations));
+        }
+      });
     }
   }
 
@@ -102,9 +131,16 @@ public abstract class AbstractDocument implements ICasDocument {
    * 
    * @param annotation
    */
-  protected void fireUpdatedFeatureStructure(FeatureStructure annotation) {
-    for (ICasDocumentListener listener : mListener) {
-      listener.updated(annotation);
+  protected void fireUpdatedFeatureStructure(final FeatureStructure annotation) {
+    for (Object listener : mListener.getListeners()) {
+      
+      final ICasDocumentListener documentListener = (ICasDocumentListener) listener;
+      
+      SafeRunner.run(new SafeRunnable() {
+        public void run() {
+          documentListener.updated(annotation);
+        }
+      });
     }
   }
 
@@ -113,22 +149,42 @@ public abstract class AbstractDocument implements ICasDocument {
    * 
    * @param annotations
    */
-  protected void fireUpdatedFeatureStructure(Collection<? extends FeatureStructure> annotations) {
-    for (ICasDocumentListener listener : mListener) {
-      listener.updated(Collections.unmodifiableCollection(annotations));
+  protected void fireUpdatedFeatureStructure(final Collection<? extends FeatureStructure> annotations) {
+    for (Object listener : mListener.getListeners()) {
+      
+      final ICasDocumentListener documentListener = (ICasDocumentListener) listener;
+      
+      SafeRunner.run(new SafeRunnable() {
+        public void run() {
+          documentListener.updated(Collections.unmodifiableCollection(annotations));
+        }
+      });
     }
   }
 
   protected void fireChanged() {
-    for (ICasDocumentListener listener : mListener) {
-      listener.changed();
+    for (Object listener : mListener.getListeners()) {
+      
+      final ICasDocumentListener documentListener = (ICasDocumentListener) listener;
+      
+      SafeRunner.run(new SafeRunnable() {
+        public void run() {
+          documentListener.changed();
+        }
+      });
     }
   }
 
-  protected void fireViewChanged(String oldViewName, String newViewName) {
-    for (ICasDocumentListener listener : mListener) {
-      listener.viewChanged(oldViewName, newViewName);
+  protected void fireViewChanged(final String oldViewName, final String newViewName) {
+    for (Object listener : mListener.getListeners()) {
+      
+      final ICasDocumentListener documentListener = (ICasDocumentListener) listener;
+      
+      SafeRunner.run(new SafeRunnable() {
+        public void run() {
+          documentListener.viewChanged(oldViewName, newViewName);
+        }
+      });
     }
   }
-
 }
