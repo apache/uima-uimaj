@@ -34,6 +34,7 @@ import org.apache.uima.caseditor.CasEditorPlugin;
 import org.apache.uima.caseditor.core.model.DefaultColors;
 import org.apache.uima.caseditor.core.model.dotcorpus.DotCorpus;
 import org.apache.uima.caseditor.core.model.dotcorpus.DotCorpusSerializer;
+import org.apache.uima.caseditor.editor.AnnotationEditorPreferenceConstants;
 import org.apache.uima.caseditor.editor.AnnotationStyle;
 import org.apache.uima.caseditor.editor.CasDocumentProvider;
 import org.apache.uima.caseditor.editor.DocumentFormat;
@@ -213,10 +214,16 @@ public class DefaultCasDocumentProvider extends
       IFile typeSystemFile = null;
 
       // First check if a type system is already known or was
-      // set by the editor for this specific CAS
-      String typeSystemFileString = documentToTypeSystemMap.get(casFile.getFullPath()
-              .toPortableString());
-
+      // set by the editor for this specific CAS.
+      // apply that type system only if the setting is active in the preferences
+      String typeSystemFileString = null;
+      IPreferenceStore prefStore = CasEditorPlugin.getDefault().getPreferenceStore();
+      boolean useLastTypesystem = prefStore
+              .getBoolean(AnnotationEditorPreferenceConstants.ANNOTATION_EDITOR_REMEMBER_TYPESYSTEM);
+      if (useLastTypesystem) {
+        typeSystemFileString = documentToTypeSystemMap
+                .get(casFile.getFullPath().toPortableString());
+      }
       if (typeSystemFileString != null)
         typeSystemFile = ResourcesPlugin.getWorkspace().getRoot()
                 .getFile(new Path(typeSystemFileString));

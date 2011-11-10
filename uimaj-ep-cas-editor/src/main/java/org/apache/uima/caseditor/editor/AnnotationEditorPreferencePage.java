@@ -20,6 +20,7 @@
 package org.apache.uima.caseditor.editor;
 
 import org.apache.uima.caseditor.CasEditorPlugin;
+import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.ui.IWorkbench;
@@ -33,6 +34,7 @@ public class AnnotationEditorPreferencePage extends FieldEditorPreferencePage
 
   private IntegerFieldEditor mEditorLineLengthHint;
   private IntegerFieldEditor mEditorTextSize;
+  private BooleanFieldEditor mEditorRememberTypesystem;
   
   public AnnotationEditorPreferencePage() {
     setPreferenceStore(CasEditorPlugin.getDefault().getPreferenceStore());
@@ -53,6 +55,14 @@ public class AnnotationEditorPreferencePage extends FieldEditorPreferencePage
             AnnotationEditorPreferenceConstants.ANNOTATION_EDITOR_TEXT_SIZE,
             "Editor Text Size", getFieldEditorParent());
     addField(mEditorTextSize);
+    
+    // editor text size
+    mEditorRememberTypesystem = new BooleanFieldEditor(
+            AnnotationEditorPreferenceConstants.ANNOTATION_EDITOR_REMEMBER_TYPESYSTEM,
+            "Use the previously selected type system to open a CAS", getFieldEditorParent());
+    addField(mEditorRememberTypesystem);
+    
+    
   }
 
   public void init(IWorkbench workbench) {

@@ -28,4 +28,6 @@ public class AnnotationEditorPreferenceConstants {
   
   public static final String EDITOR_LINE_LENGTH_HINT = 
           "EDITOR_LINE_LENGTH_HINT";
+
+  public static final String ANNOTATION_EDITOR_REMEMBER_TYPESYSTEM = CasEditorPlugin.ID +".rememberTypesystem";
 }
