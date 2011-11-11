@@ -53,6 +53,7 @@ import org.apache.uima.caseditor.editor.contextmenu.IShowAnnotationsListener;
 import org.apache.uima.caseditor.editor.contextmenu.ModeMenu;
 import org.apache.uima.caseditor.editor.contextmenu.ShowAnnotationsMenu;
 import org.apache.uima.caseditor.editor.outline.AnnotationOutline;
+import org.apache.uima.caseditor.editor.outline.OutlinePageBook;
 import org.apache.uima.caseditor.editor.util.AnnotationComparator;
 import org.apache.uima.caseditor.editor.util.AnnotationSelection;
 import org.apache.uima.caseditor.editor.util.FeatureStructureTransfer;
@@ -60,6 +61,8 @@ import org.apache.uima.caseditor.editor.util.Span;
 import org.apache.uima.caseditor.editor.util.StrictTypeConstraint;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ContributionItem;
 import org.eclipse.jface.action.IAction;
@@ -83,6 +86,7 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.jface.util.SafeRunnable;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -543,11 +547,11 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   /**
    * The outline page belonging to this editor.
    */
-  private IContentOutlinePage mOutlinePage;
+  private OutlinePageBook mOutlinePage = new OutlinePageBook();
 
   private Set<IAnnotationEditorModifyListener> mEditorListener = new HashSet<IAnnotationEditorModifyListener>();
 
-  private Set<ICasEditorInputListener> mEditorInputListener = new HashSet<ICasEditorInputListener>();;
+  private ListenerList mEditorInputListener = new ListenerList();
   
   /**
    * TODO: Do we really need this position variable ?
@@ -574,8 +578,6 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   
   private CasDocumentProvider casDocumentProvider;
 
-
-  
   /**
    * Creates an new AnnotationEditor object.
    */
@@ -606,10 +608,6 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
 
     if (IContentOutlinePage.class.equals(adapter) && getDocument() != null) {
-      if (mOutlinePage == null) {
-        mOutlinePage = new AnnotationOutline(this);
-      }
-
       return mOutlinePage;
     }
     else if (CAS.class.equals(adapter) && getDocument() != null) {
@@ -800,9 +798,9 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   }
   
   @Override
-  protected void doSetInput(IEditorInput input) throws CoreException {
-    IEditorInput oldInput = getEditorInput();
-    ICasDocument oldDocument = getDocument();
+  protected void doSetInput(final IEditorInput input) throws CoreException {
+    final IEditorInput oldInput = getEditorInput();
+    final ICasDocument oldDocument = getDocument();
     
     // Unregister the editor listeners on the old input
     // TODO: Should we make methods to encapsulate the register/unregister code?
@@ -814,7 +812,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
               removePropertyChangeListener(mAnnotationStyleListener);
       mAnnotationStyleListener = null;
     }
-    
+
     super.doSetInput(input);
     
     if (CasEditorPlugin.getDefault().
@@ -833,6 +831,9 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     
     if (getDocument() != null) {
       
+      AnnotationOutline outline = new AnnotationOutline(this);
+      mOutlinePage.setCASViewPage(outline);
+
       shownAnnotationTypes.clear();
       
       // Synchronize shown types with the editor
@@ -864,7 +865,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
         // must be synchronized now
 
         initiallySynchronizeUI();
-        
+
         // Views which fetch content from the editors document still believe
         // the editor document is not available.
         // Send a partBroughtToTop event to the views to update their content
@@ -878,12 +879,30 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
         }
       }
     }
+    else {
+      // Makes the outline book show the not available message page
+      mOutlinePage.setCASViewPage(null);
+    }
     
-    ICasDocument newDocument = getDocument();
+    final ICasDocument newDocument = getDocument();
     
     if (mEditorInputListener != null) {
-      for (ICasEditorInputListener listener : mEditorInputListener)
-        listener.casDocumentChanged(oldInput, oldDocument, input, newDocument);
+      
+      // Iterate over the existing listeners, listeners might be removed
+      // or added during notification, since views are created or destroyed
+      // when this event is fired.
+      
+      for (Object listener : mEditorInputListener.getListeners()) {
+        
+        final ICasEditorInputListener inputListener = 
+                (ICasEditorInputListener) listener;
+        
+        SafeRunner.run(new SafeRunnable() {
+          public void run() {
+            inputListener.casDocumentChanged(oldInput, oldDocument, input, newDocument);
+          }
+        });
+      }
     }
   }
 
