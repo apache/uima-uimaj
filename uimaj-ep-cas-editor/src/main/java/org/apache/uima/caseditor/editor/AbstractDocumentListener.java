@@ -29,6 +29,9 @@ import org.apache.uima.cas.FeatureStructure;
  */
 public abstract class AbstractDocumentListener implements ICasDocumentListener {
 
+  public void added(Collection<FeatureStructure> newFeatureStructure) {
+  }
+  
   /**
    * Forwards the call.
    */
@@ -40,6 +43,9 @@ public abstract class AbstractDocumentListener implements ICasDocumentListener {
     added(structures);
   }
 
+  public void removed(Collection<FeatureStructure> deletedFeatureStructure) {
+  }
+  
   /**
    * Forwards the call.
    */
@@ -51,6 +57,9 @@ public abstract class AbstractDocumentListener implements ICasDocumentListener {
     removed(structures);
   }
 
+  public void updated(Collection<FeatureStructure> featureStructure) {
+  }
+  
   /**
    * Forwards the call.
    */
@@ -60,5 +69,11 @@ public abstract class AbstractDocumentListener implements ICasDocumentListener {
     structures.add(annotation);
 
     updated(structures);
+  }
+
+  public void changed() {
+  }
+  
+  public void viewChanged(String oldViewName, String newViewName) {
   }
 }
