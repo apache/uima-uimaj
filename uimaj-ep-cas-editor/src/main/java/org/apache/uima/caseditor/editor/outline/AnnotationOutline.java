@@ -399,4 +399,8 @@ public final class AnnotationOutline extends ContentOutlinePage
     
     editor.removeAnnotationListener(editorChangeListener);
   }
+
+  Viewer getViewer() {
+    return mTableViewer;
+  }
 }

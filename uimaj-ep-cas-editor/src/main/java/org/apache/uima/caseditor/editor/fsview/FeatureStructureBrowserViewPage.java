@@ -36,7 +36,6 @@ import org.apache.uima.caseditor.editor.AbstractAnnotationDocumentListener;
 import org.apache.uima.caseditor.editor.FeatureValue;
 import org.apache.uima.caseditor.editor.ICasDocument;
 import org.apache.uima.caseditor.editor.ICasEditor;
-import org.apache.uima.caseditor.editor.ICasEditorInputListener;
 import org.apache.uima.caseditor.editor.ModelFeatureStructure;
 import org.apache.uima.caseditor.editor.action.DeleteFeatureStructureAction;
 import org.apache.uima.caseditor.editor.util.StrictTypeConstraint;
@@ -58,30 +57,25 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.Page;
 
 /**
  * The actual view page which contains the ui code for this view.
  */
-public final class FeatureStructureBrowserViewPage extends Page implements ICasEditorInputListener {
-
+public final class FeatureStructureBrowserViewPage extends Page {
+  
   private static final String LAST_SELECTED_FS_TYPE = "lastSelectedFeatureStructureBrowserViewType";
-
+  
   final class FeatureStructureTreeContentProvider extends AbstractAnnotationDocumentListener
-          implements ITreeContentProvider, ICasEditorInputListener {
+          implements ITreeContentProvider {
+
+    private ICasDocument mDocument;
 
     private Type mCurrentType;
 
-    private ICasEditor mEditor;
-
-    FeatureStructureTreeContentProvider(ICasEditor editor) {
-      mEditor = editor;
-      mEditor.addCasEditorInputListener(this);
-      
-      if (mEditor.getDocument() != null)
-        mEditor.getDocument().addChangeListener(this);
+    FeatureStructureTreeContentProvider(ICasDocument document) {
+      mDocument = document;
     }
 
     public Object[] getElements(Object inputElement) {
@@ -91,15 +85,14 @@ public final class FeatureStructureBrowserViewPage extends Page implements ICasE
 
       StrictTypeConstraint typeConstrain = new StrictTypeConstraint(mCurrentType);
 
-      ICasDocument document = mEditor.getDocument();
-      
-      FSIterator<FeatureStructure> strictTypeIterator = document.getCAS().createFilteredIterator(
-              document.getCAS().getIndexRepository().getAllIndexedFS(mCurrentType), typeConstrain);
+      FSIterator<FeatureStructure> strictTypeIterator =mDocument.getCAS().createFilteredIterator(
+              mDocument.getCAS().getIndexRepository().getAllIndexedFS(mCurrentType), typeConstrain);
 
       LinkedList<ModelFeatureStructure> featureStrucutreList = new LinkedList<ModelFeatureStructure>();
 
       while (strictTypeIterator.hasNext()) {
-        featureStrucutreList.add(new ModelFeatureStructure(document, strictTypeIterator.next()));
+        featureStrucutreList.add(new ModelFeatureStructure(mDocument,
+                strictTypeIterator.next()));
       }
 
       ModelFeatureStructure[] featureStructureArray = new ModelFeatureStructure[featureStrucutreList
@@ -111,15 +104,25 @@ public final class FeatureStructureBrowserViewPage extends Page implements ICasE
     }
 
     public void dispose() {
-      if (mEditor.getDocument() != null)
-        mEditor.getDocument().removeChangeListener(this);
-      
-      mEditor.removeCasEditorInputListener(this);
+      if (mDocument != null)
+        mDocument.removeChangeListener(this);
     }
 
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 
+      if (oldInput != null) {
+        mDocument.removeChangeListener(this);
+      }
+
+      if (newInput == null) {
+
+        mCurrentType = null;
+        return;
+      }
+
       mCurrentType = (Type) newInput;
+
+      mDocument.addChangeListener(this);
 
       Display.getDefault().syncExec(new Runnable() {
         public void run() {
@@ -130,7 +133,7 @@ public final class FeatureStructureBrowserViewPage extends Page implements ICasE
 
     /**
      * Retrieves children for a FeatureStrcuture and for FeatureValues if they have children.
-     * 
+     *
      * @param parentElement
      * @return the children
      */
@@ -154,7 +157,7 @@ public final class FeatureStructureBrowserViewPage extends Page implements ICasE
       Type type = featureStructure.getType();
 
       for (Feature feature : type.getFeatures()) {
-        childs.add(new FeatureValue(mEditor.getDocument(), featureStructure, feature));
+        childs.add(new FeatureValue(mDocument, featureStructure, feature));
       }
 
       assert childs.size() > 0;
@@ -204,11 +207,12 @@ public final class FeatureStructureBrowserViewPage extends Page implements ICasE
     @Override
     protected void addedAnnotation(Collection<AnnotationFS> annotations) {
 
-      final LinkedList<ModelFeatureStructure> featureStrucutreList = new LinkedList<ModelFeatureStructure>();
+      final LinkedList<ModelFeatureStructure> featureStrucutreList =
+        new LinkedList<ModelFeatureStructure>();
 
       for (AnnotationFS annotation : annotations) {
         if (annotation.getType() == mCurrentType) {
-          featureStrucutreList.add(new ModelFeatureStructure(mEditor.getDocument(), annotation));
+          featureStrucutreList.add(new ModelFeatureStructure(mDocument, annotation));
         }
       }
 
@@ -221,11 +225,12 @@ public final class FeatureStructureBrowserViewPage extends Page implements ICasE
 
     @Override
     public void added(Collection<FeatureStructure> structres) {
-      final LinkedList<ModelFeatureStructure> featureStrucutreList = new LinkedList<ModelFeatureStructure>();
+      final LinkedList<ModelFeatureStructure> featureStrucutreList =
+        new LinkedList<ModelFeatureStructure>();
 
       for (FeatureStructure structure : structres) {
         if (structure.getType() == mCurrentType) {
-          featureStrucutreList.add(new ModelFeatureStructure(mEditor.getDocument(), structure));
+          featureStrucutreList.add(new ModelFeatureStructure(mDocument, structure));
         }
       }
 
@@ -239,11 +244,12 @@ public final class FeatureStructureBrowserViewPage extends Page implements ICasE
     @Override
     protected void removedAnnotation(Collection<AnnotationFS> annotations) {
 
-      final LinkedList<ModelFeatureStructure> featureStrucutreList = new LinkedList<ModelFeatureStructure>();
+      final LinkedList<ModelFeatureStructure> featureStrucutreList =
+        new LinkedList<ModelFeatureStructure>();
 
       for (AnnotationFS annotation : annotations) {
         if (annotation.getType() == mCurrentType) {
-          featureStrucutreList.add(new ModelFeatureStructure(mEditor.getDocument(), annotation));
+          featureStrucutreList.add(new ModelFeatureStructure(mDocument, annotation));
         }
       }
 
@@ -257,11 +263,12 @@ public final class FeatureStructureBrowserViewPage extends Page implements ICasE
 
     @Override
     public void removed(Collection<FeatureStructure> structres) {
-      final LinkedList<ModelFeatureStructure> featureStrucutreList = new LinkedList<ModelFeatureStructure>();
+      final LinkedList<ModelFeatureStructure> featureStrucutreList =
+        new LinkedList<ModelFeatureStructure>();
 
       for (FeatureStructure structure : structres) {
         if (structure.getType() == mCurrentType) {
-          featureStrucutreList.add(new ModelFeatureStructure(mEditor.getDocument(), structure));
+          featureStrucutreList.add(new ModelFeatureStructure(mDocument, structure));
         }
       }
 
@@ -280,19 +287,9 @@ public final class FeatureStructureBrowserViewPage extends Page implements ICasE
     public void viewChanged(String oldViewName, String newViewName) {
       changed();
     }
-
+    
     public void changed() {
       mFSList.refresh();
-    }
-
-    public void casDocumentChanged(IEditorInput oldInput, ICasDocument oldDocument, 
-            IEditorInput newInput, ICasDocument newDocument) {
-      
-      if (oldDocument != null)
-        oldDocument.removeChangeListener(this);
-
-      if (newDocument != null)
-        newDocument.addChangeListener(this);
     }
   }
 
@@ -308,11 +305,11 @@ public final class FeatureStructureBrowserViewPage extends Page implements ICasE
         return;
       }
 
-      FeatureStructure newFeatureStructure = mCasEditor.getDocument().getCAS().createFS(mCurrentType);
+      FeatureStructure newFeatureStructure = mDocument.getCAS().createFS(mCurrentType);
 
-      mCasEditor.getDocument().addFeatureStructure(newFeatureStructure);
+      mDocument.addFeatureStructure(newFeatureStructure);
 
-      mFSList.refresh(); // TODO: Should not be necessary?
+      mFSList.refresh();
     }
   }
 
@@ -324,11 +321,9 @@ public final class FeatureStructureBrowserViewPage extends Page implements ICasE
     }
   }
 
-//  private ICasDocument mDocument;
+  private ICasDocument mDocument;
 
   private ICasEditor mCasEditor;
-
-  private TypeCombo typeCombo;
   
   private ListViewer mFSList;
 
@@ -342,25 +337,26 @@ public final class FeatureStructureBrowserViewPage extends Page implements ICasE
 
   private Collection<Type> filterTypes;
 
+
   /**
    * Initializes a new instance.
-   * 
+   *
    * @param document
    */
   public FeatureStructureBrowserViewPage(ICasEditor editor) {
 
-    if (editor == null)
-      throw new IllegalArgumentException("editor parameter must not be null!");
+	if (editor == null)
+		throw new IllegalArgumentException("editor parameter must not be null!");
+
+    mDocument = editor.getDocument();
 
     mCasEditor = editor;
-
-    mCasEditor.addCasEditorInputListener(this);
     
-    mDeleteAction = new DeleteFeatureStructureAction(editor);
+    mDeleteAction = new DeleteFeatureStructureAction(this.mCasEditor);
 
     mSelectAllAction = new SelectAllAction();
 
-    TypeSystem ts = editor.getDocument().getCAS().getTypeSystem();
+    TypeSystem ts = mDocument.getCAS().getTypeSystem();
 
     filterTypes = new HashSet<Type>();
     filterTypes.add(ts.getType(CAS.TYPE_NAME_ARRAY_BASE));
@@ -409,43 +405,51 @@ public final class FeatureStructureBrowserViewPage extends Page implements ICasE
     layout.numColumns = 1;
 
     mInstanceComposite.setLayout(layout);
-
+    
     Composite typePanel = new Composite(mInstanceComposite, SWT.NULL);
-
+    
     GridData typePanelData = new GridData();
     typePanelData.grabExcessHorizontalSpace = true;
     typePanelData.grabExcessVerticalSpace = false;
     typePanelData.horizontalAlignment = SWT.FILL;
     typePanel.setLayoutData(typePanelData);
-
+    
     GridLayout typePanelLayout = new GridLayout();
     typePanelLayout.numColumns = 2;
     typePanel.setLayout(typePanelLayout);
-
+    
     Label typeLabel = new Label(typePanel, SWT.NONE);
     typeLabel.setText("Type: ");
 
     GridData typeLabelData = new GridData();
     typeLabelData.horizontalAlignment = SWT.LEFT;
     typeLabel.setLayoutData(typeLabelData);
-
+    
+    
+    TypeCombo typeCombo = new TypeCombo(typePanel);
+    typeCombo.setInput(mDocument.getCAS().getTypeSystem().getType(CAS.TYPE_NAME_TOP),
+            mDocument.getCAS().getTypeSystem(), filterTypes);
     GridData typeComboData = new GridData();
-    
-    typeCombo = new TypeCombo(typePanel);
-    
     typeComboData.horizontalAlignment = SWT.FILL;
     typeComboData.grabExcessHorizontalSpace = true;
     typeCombo.setLayoutData(typeComboData);
-
+    
+    final IPreferenceStore store = mCasEditor.getCasDocumentProvider().
+            getSessionPreferenceStore(mCasEditor.getEditorInput());
+    
+    Type lastUsedType = mDocument.getType(store.getString(LAST_SELECTED_FS_TYPE));
+    
+    if (lastUsedType != null) {
+      typeCombo.select(lastUsedType);
+    }
+    
     typeCombo.addListener(new ITypePaneListener() {
-
+      
       public void typeChanged(Type newType) {
-        IPreferenceStore store = mCasEditor.getCasDocumentProvider().getSessionPreferenceStore(
-                mCasEditor.getEditorInput());
         store.setValue(LAST_SELECTED_FS_TYPE, newType.getName());
       }
     });
-
+    
     mFSList = new ListViewer(mInstanceComposite, SWT.MULTI | SWT.V_SCROLL | SWT.BORDER);
     GridData instanceListData = new GridData();
     instanceListData.grabExcessHorizontalSpace = true;
@@ -453,7 +457,7 @@ public final class FeatureStructureBrowserViewPage extends Page implements ICasE
     instanceListData.horizontalAlignment = SWT.FILL;
     instanceListData.verticalAlignment = SWT.FILL;
     mFSList.getList().setLayoutData(instanceListData);
-    mFSList.setContentProvider(new FeatureStructureTreeContentProvider(mCasEditor));
+    mFSList.setContentProvider(new FeatureStructureTreeContentProvider(mDocument));
     mFSList.setLabelProvider(new FeatureStructureLabelProvider());
 
     mFSList.setUseHashlookup(true);
@@ -466,15 +470,15 @@ public final class FeatureStructureBrowserViewPage extends Page implements ICasE
       }
     });
 
-    getSite().setSelectionProvider(mFSList);
+    if (lastUsedType != null)
+      mFSList.setInput(lastUsedType);
     
-    // That call sets the content on the type combo
-    casDocumentChanged(null, null, mCasEditor.getEditorInput(), mCasEditor.getDocument());
+    getSite().setSelectionProvider(mFSList);
   }
 
   /**
    * Retrieves the control
-   * 
+   *
    * @return the control
    */
   @Override
@@ -485,7 +489,7 @@ public final class FeatureStructureBrowserViewPage extends Page implements ICasE
   /**
    * Adds the following actions to the toolbar: {@link CreateAction} {@link DereferenceAction}
    * {@link DeleteAction}
-   * 
+   *
    * @param menuManager
    * @param toolBarManager
    * @param statusLineManager
@@ -505,7 +509,7 @@ public final class FeatureStructureBrowserViewPage extends Page implements ICasE
 
   /**
    * Sets global action handlers for: delete select all
-   * 
+   *
    * @param actionBars
    */
   @Override
@@ -525,35 +529,5 @@ public final class FeatureStructureBrowserViewPage extends Page implements ICasE
   @Override
   public void setFocus() {
     mInstanceComposite.setFocus();
-  }
-
-  @Override
-  public void dispose() {
-    super.dispose();
-    
-    mCasEditor.removeCasEditorInputListener(this);
-  }
-  
-  public void casDocumentChanged(IEditorInput oldInput, ICasDocument oldDocument,
-          IEditorInput newInput, ICasDocument newDocument) {
-    
-    if (newDocument != null) {
-      typeCombo.setInput(newDocument.getCAS().getTypeSystem().getType(CAS.TYPE_NAME_TOP),
-              newDocument.getCAS().getTypeSystem(), filterTypes);
-      
-      final IPreferenceStore store = mCasEditor.getCasDocumentProvider().getSessionPreferenceStore(newInput);
-      
-      Type lastUsedType = newDocument.getType(store.getString(LAST_SELECTED_FS_TYPE));
-  
-      if (lastUsedType != null) {
-        typeCombo.select(lastUsedType);
-      }
-      
-      if (lastUsedType != null)
-        mFSList.setInput(lastUsedType);
-    }
-    else {
-      // clear combo?!
-    }
   }
 }

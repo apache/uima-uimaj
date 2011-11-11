@@ -31,8 +31,6 @@ import org.apache.uima.caseditor.editor.AnnotationEditor;
 import org.apache.uima.caseditor.editor.AnnotationStyle;
 import org.apache.uima.caseditor.editor.AnnotationStyleChangeListener;
 import org.apache.uima.caseditor.editor.IAnnotationEditorModifyListener;
-import org.apache.uima.caseditor.editor.ICasDocument;
-import org.apache.uima.caseditor.editor.ICasEditorInputListener;
 import org.apache.uima.caseditor.ui.property.EditorAnnotationPropertyPage;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
@@ -63,14 +61,13 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.eclipse.ui.internal.dialogs.PropertyDialog;
 import org.eclipse.ui.part.Page;
 
 // TODO: Subscribe to style change events
 // create new listener interface for this
-class AnnotationStyleViewPage extends Page implements ICasEditorInputListener {
+class AnnotationStyleViewPage extends Page {
 
   static class AnnotationTypeContentProvider implements ITreeContentProvider {
 
@@ -78,11 +75,8 @@ class AnnotationStyleViewPage extends Page implements ICasEditorInputListener {
     
     private AnnotationEditor editor;
     
-    private CheckboxTableViewer treeViewer;
-    
-    AnnotationTypeContentProvider(AnnotationEditor editor, CheckboxTableViewer treeViewer) {
+    AnnotationTypeContentProvider(AnnotationEditor editor) {
       this.editor = editor;
-      this.treeViewer = treeViewer;
     }
     
     public void dispose() {
@@ -107,19 +101,10 @@ class AnnotationStyleViewPage extends Page implements ICasEditorInputListener {
         annotationTypes = null;
       }
       
-      treeViewer.refresh();
-//      Display.getDefault().syncExec(new Runnable() {
-//        public void run() {
-//          treeViewer.refresh();
-//        }
-//      });
     }
 
     public Object[] getElements(Object inputElement) {
-      if (annotationTypes != null)
-        return annotationTypes;
-      else
-        return new Object[0];
+      return annotationTypes;
     }
 
     public Object[] getChildren(Object parentElement) {
@@ -210,7 +195,6 @@ class AnnotationStyleViewPage extends Page implements ICasEditorInputListener {
 
   AnnotationStyleViewPage(AnnotationEditor editor) {
     this.editor = editor;
-    editor.addCasEditorInputListener(this);
   }
 
   private static AnnotationTypeNode[] typesToNodes(Collection<Type> types, AnnotationEditor editor) {
@@ -224,11 +208,6 @@ class AnnotationStyleViewPage extends Page implements ICasEditorInputListener {
     }
     
     return selectedNodes;
-  }
-  
-  private void setCheckBoxes() {
-    treeViewer.setCheckedElements(typesToNodes(editor.getShownAnnotationTypes(), editor));
-    treeViewer.setGrayed(new AnnotationTypeNode(editor, editor.getAnnotationMode()), true);
   }
   
   @Override
@@ -262,9 +241,10 @@ class AnnotationStyleViewPage extends Page implements ICasEditorInputListener {
     stlyeColumn.setText("Style");
     stlyeColumn.setWidth(100);
 
-    treeViewer.setContentProvider(new AnnotationTypeContentProvider(editor, treeViewer));
+    treeViewer.setContentProvider(new AnnotationTypeContentProvider(editor));
     treeViewer.setLabelProvider(new AnnotationStylingLabelProvider(editor));
     
+    treeViewer.setInput(editor.getDocument().getCAS().getTypeSystem());
     getSite().setSelectionProvider(treeViewer);
     
     changeListener = new AnnotationStyleChangeListener() {
@@ -286,6 +266,13 @@ class AnnotationStyleViewPage extends Page implements ICasEditorInputListener {
         treeViewer.update(typeNodes, null);
       }
     };
+    
+    editor.getCasDocumentProvider().getTypeSystemPreferenceStore(editor.getEditorInput()).
+        addPropertyChangeListener(changeListener);
+    
+    treeViewer.setCheckedElements(typesToNodes(editor.getShownAnnotationTypes(), editor));
+    
+    treeViewer.setGrayed(new AnnotationTypeNode(editor, editor.getAnnotationMode()), true);
     
     treeViewer.addCheckStateListener(new ICheckStateListener() {
       
@@ -321,7 +308,8 @@ class AnnotationStyleViewPage extends Page implements ICasEditorInputListener {
     // TODO: must this listener be removed ?!
     editor.addAnnotationListener(editorListener);
     
-    casDocumentChanged(null, null, editor.getEditorInput(), editor.getDocument());
+    // register a listener to change state
+    // create a action handle to push changes to editor
   }
 
   @Override
@@ -372,32 +360,11 @@ class AnnotationStyleViewPage extends Page implements ICasEditorInputListener {
     super.dispose();
     
     IPreferenceStore store = editor.getCasDocumentProvider().getTypeSystemPreferenceStore(
-            editor.getEditorInput());
+            editor.getEditorInput()); // TODO: Use old input, which was used when the view was created!
     
     if (store != null)        
       store.removePropertyChangeListener(changeListener);
     
     editor.removeAnnotationListener(editorListener);
-    
-    editor.removeCasEditorInputListener(this);
-  }
-
-  public void casDocumentChanged(IEditorInput oldInput, ICasDocument oldDocument, IEditorInput newInput, ICasDocument newDocument) {
-    
-    if (newDocument != null) {
-      treeViewer.setInput(newDocument.getCAS().getTypeSystem());
-      setCheckBoxes();
-    }
-    else 
-      treeViewer.setInput(null);
-    
-    if (oldInput != null && oldDocument != null) {
-      editor.getCasDocumentProvider().getTypeSystemPreferenceStore(
-              oldInput).removePropertyChangeListener(changeListener);
-    }
-    
-    if (newInput != null && newDocument != null) {
-      editor.getCasDocumentProvider().getTypeSystemPreferenceStore(newInput).addPropertyChangeListener(changeListener);
-    }
   }
 }

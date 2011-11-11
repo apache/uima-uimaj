@@ -19,15 +19,16 @@
 
 package org.apache.uima.caseditor.editor.fsview;
 
-import org.apache.uima.caseditor.editor.AnnotationEditorView;
-import org.apache.uima.caseditor.editor.ICasEditor;
+import org.apache.uima.caseditor.editor.CasEditorView;
 import org.apache.uima.caseditor.editor.ICasDocument;
+import org.apache.uima.caseditor.editor.ICasEditor;
+import org.eclipse.ui.part.IPageBookViewPage;
 
 /**
  * The Feature Structure Browser View displays a list of feature structures which
  * belong to the selected type.
  */
-public final class FeatureStructureBrowserView extends AnnotationEditorView {
+public final class FeatureStructureBrowserView extends CasEditorView {
   /**
    * The ID of the feature structure view.
    */
@@ -38,19 +39,17 @@ public final class FeatureStructureBrowserView extends AnnotationEditorView {
   }
 
   @Override
-  protected PageRec doCreatePage(ICasEditor editor) {
+  protected IPageBookViewPage doCreatePage(ICasEditor editor) {
 
-		PageRec result = null;
+    IPageBookViewPage result = null;
 
 		ICasDocument document = editor.getDocument();
 
 		if (document != null) {
 			FeatureStructureBrowserViewPage page = new FeatureStructureBrowserViewPage(
 					editor);
-			initPage(page);
-			page.createControl(getPageBook());
 
-			result = new PageRec(editor, page);
+			result = page;
 		}
 
 		return result;

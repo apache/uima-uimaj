@@ -597,9 +597,9 @@ final class EditViewPage extends Page implements ISelectionListener {
 
     valueColumn.setEditingSupport(new ValueEditingSupport(viewer));
 
-
+    
     FeatureStructureContentProvider contentProvider =
-        new FeatureStructureContentProvider(editor);
+        new FeatureStructureContentProvider(document);
 
     viewer.setContentProvider(contentProvider);
 
@@ -799,5 +799,6 @@ final class EditViewPage extends Page implements ISelectionListener {
   @Override
   public void dispose() {
     getSite().getPage().removeSelectionListener(this);
+    super.dispose();
   }
 }

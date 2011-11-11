@@ -150,38 +150,36 @@ public class TypeGroupedContentProvider extends OutlineContentProviderBase {
 	public void changed() {
 		nameAnnotationTypeNodeMap.clear();
 		
-		if (mInputDocument != null) {
-  		TypeSystem typeSystem = mInputDocument.getCAS().getTypeSystem();
-  		
-  		List<Type> types = typeSystem.getProperlySubsumedTypes(
-  				typeSystem.getType(CAS.TYPE_NAME_ANNOTATION));
-  		
-  		types.add(typeSystem.getType(CAS.TYPE_NAME_ANNOTATION));
-  		
-  		for (Type type : types) {
-  			
-  			AnnotationTypeTreeNode typeNode = new AnnotationTypeTreeNode(type);
-  			
-  			nameAnnotationTypeNodeMap.put(type.getName(), typeNode);
-  			
-  			CAS cas = mInputDocument.getCAS();
-  			
-  			AnnotationIndex<AnnotationFS> index = cas.getAnnotationIndex(type);
-  			
-  			for (FSIterator<AnnotationFS> it = index.iterator(); it.hasNext(); ) {
-  				AnnotationFS annotation = it.next();
-  				
-  				if (annotation.getType().equals(type)) {
-  				  typeNode.add(new AnnotationTreeNode(mInputDocument, annotation));
-  				}
-  			}
-  		}
-		}
+		TypeSystem typeSystem = mInputDocument.getCAS().getTypeSystem();
 		
-    Display.getDefault().syncExec(new Runnable() {
-      public void run() {
-      	viewer.refresh();
-      }
-    });
+		List<Type> types = typeSystem.getProperlySubsumedTypes(
+				typeSystem.getType(CAS.TYPE_NAME_ANNOTATION));
+		
+		types.add(typeSystem.getType(CAS.TYPE_NAME_ANNOTATION));
+		
+		for (Type type : types) {
+			
+			AnnotationTypeTreeNode typeNode = new AnnotationTypeTreeNode(type);
+			
+			nameAnnotationTypeNodeMap.put(type.getName(), typeNode);
+			
+			CAS cas = mInputDocument.getCAS();
+			
+			AnnotationIndex<AnnotationFS> index = cas.getAnnotationIndex(type);
+			
+			for (FSIterator<AnnotationFS> it = index.iterator(); it.hasNext(); ) {
+				AnnotationFS annotation = it.next();
+				
+				if (annotation.getType().equals(type)) {
+				  typeNode.add(new AnnotationTreeNode(mInputDocument, annotation));
+				}
+			}
+		}
+
+      Display.getDefault().syncExec(new Runnable() {
+        public void run() {
+        	viewer.refresh();
+        }
+      });
 	}
 }

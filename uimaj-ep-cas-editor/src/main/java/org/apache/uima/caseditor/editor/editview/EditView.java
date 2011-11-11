@@ -19,14 +19,16 @@
 
 package org.apache.uima.caseditor.editor.editview;
 
-import org.apache.uima.caseditor.editor.AnnotationEditorView;
+import org.apache.uima.caseditor.editor.CasEditorView;
 import org.apache.uima.caseditor.editor.ICasDocument;
 import org.apache.uima.caseditor.editor.ICasEditor;
+import org.eclipse.ui.part.IPageBookViewPage;
 
 /**
  * TODO: add javadoc here
  */
-public final class EditView extends AnnotationEditorView {
+public final class EditView extends CasEditorView {
+  
 	/**
 	 * The ID of the feature structure view.
 	 */
@@ -36,20 +38,18 @@ public final class EditView extends AnnotationEditorView {
 	public EditView() {
 		super("The edit view is currently not available.");
 	}
-
+  
 	@Override
-	protected PageRec doCreatePage(ICasEditor editor) {
+	protected IPageBookViewPage doCreatePage(ICasEditor editor) {
 
-		PageRec result = null;
+	  IPageBookViewPage result = null;
 
 		ICasDocument document = editor.getDocument();
 
 		if (document != null) {
 			EditViewPage page = new EditViewPage(this, editor, document);
-			initPage(page);
-			page.createControl(getPageBook());
 
-			result = new PageRec(editor, page);
+			result = page;
 		}
 
 		return result;

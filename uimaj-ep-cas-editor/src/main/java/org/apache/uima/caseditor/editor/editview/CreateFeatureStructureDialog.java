@@ -169,7 +169,7 @@ public class CreateFeatureStructureDialog extends IconAndMessageDialog {
       
       typeSelection = new TypeCombo(typePanel);
       typeSelection.setInput(superType, typeSystem, filterTypes);
-      
+
       selectedType = typeSelection.getType();
 
       // maybe consider to show the type of the array and disable the selector

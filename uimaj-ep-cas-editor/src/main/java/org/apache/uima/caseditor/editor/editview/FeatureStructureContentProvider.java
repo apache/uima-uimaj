@@ -33,29 +33,24 @@ import org.apache.uima.caseditor.editor.ArrayValue;
 import org.apache.uima.caseditor.editor.CasEditorError;
 import org.apache.uima.caseditor.editor.FeatureValue;
 import org.apache.uima.caseditor.editor.ICasDocument;
-import org.apache.uima.caseditor.editor.ICasEditor;
-import org.apache.uima.caseditor.editor.ICasEditorInputListener;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IEditorInput;
 
-final class FeatureStructureContentProvider extends AbstractDocumentListener implements
-        ITreeContentProvider, ICasEditorInputListener {
+final class FeatureStructureContentProvider extends AbstractDocumentListener
+        implements ITreeContentProvider {
 
   private ICasDocument mDocument;
 
   private Viewer viewer;
 
-  private ICasEditor mEditor;
+  FeatureStructureContentProvider(ICasDocument document) {
 
-  FeatureStructureContentProvider(ICasEditor editor) {
-    mEditor = editor;
-    mDocument = editor.getDocument();
-    if (mDocument == null) {
+    if (document == null) {
       throw new IllegalArgumentException("document parameter must not be null!");
     }
-     mEditor.addCasEditorInputListener(this);
+
+    mDocument = document;
   }
 
   private int arraySize(FeatureStructure value) {
@@ -102,7 +97,8 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener imp
         }
 
         return featureValues.toArray();
-      } else {
+      }
+      else {
         int size = arraySize(featureStructure);
 
         ArrayValue arrayValues[] = new ArrayValue[size];
@@ -122,8 +118,6 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener imp
   public void dispose() {
     if (mDocument != null)
       mDocument.removeChangeListener(this);
-    
-    mEditor.removeCasEditorInputListener(this);
   }
 
   public void inputChanged(final Viewer viewer, Object oldInput, Object newInput) {
@@ -144,7 +138,7 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener imp
   public void viewChanged(String oldViewName, String newViewName) {
     changed();
   }
-
+  
   public void changed() {
 
     Display.getDefault().syncExec(new Runnable() {
@@ -155,7 +149,7 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener imp
   }
 
   public void removed(Collection<FeatureStructure> deletedFeatureStructure) {
-    for (FeatureStructure fs : deletedFeatureStructure) {
+    for(FeatureStructure fs : deletedFeatureStructure) {
       if (viewer.getInput() == fs) {
         viewer.setInput(null);
         break;
@@ -192,7 +186,8 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener imp
       ArrayFS array = (ArrayFS) value.getFeatureStructure();
 
       return getElements(array.get(value.slot()));
-    } else {
+    }
+    else {
       throw new CasEditorError("Unexpected element type!");
     }
   }
@@ -204,6 +199,7 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener imp
   private boolean hasChildren(FeatureStructure value) {
 
     boolean result;
+
 
     if (value != null) {
 
@@ -227,7 +223,8 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener imp
 
       if (value.getFeature().getRange().isPrimitive()) {
         return false;
-      } else {
+      }
+      else {
         return hasChildren((FeatureStructure) value.getValue());
       }
     } else if (element instanceof ArrayValue) {
@@ -239,24 +236,14 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener imp
         ArrayFS array = (ArrayFS) value.getFeatureStructure();
 
         return hasChildren(array.get(value.slot()));
-      } else {
+      }
+      else {
         // false for primitive arrays
         return false;
       }
-    } else {
+    }
+    else {
       throw new CasEditorError("Unkown element type");
     }
-  }
-
-  public void casDocumentChanged(IEditorInput oldInput, ICasDocument oldDocument, IEditorInput newInput, ICasDocument newDocument) {
-    if (oldDocument != null)
-      oldDocument.removeChangeListener(this);
-    
-    mDocument = newDocument;
-    
-    if (mDocument != null)
-      mDocument.addChangeListener(this);
-    
-    viewer.setInput(null);
   }
 }
