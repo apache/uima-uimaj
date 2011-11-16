@@ -38,6 +38,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.ext.LexicalHandler;
+import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * Reference implementation of {@link SaxDeserializer}.
@@ -62,6 +63,8 @@ public class SaxDeserializer_impl implements SaxDeserializer, LexicalHandler {
  
   private TransformerHandler mTransformerHandler;
 
+  private final boolean needsFix;
+
   /**
    * Creates a new SAX Deserializer.
    * 
@@ -74,15 +77,37 @@ public class SaxDeserializer_impl implements SaxDeserializer, LexicalHandler {
   public SaxDeserializer_impl(XMLParser aUimaXmlParser, XMLParser.ParsingOptions aOptions) {
     mUimaXmlParser = aUimaXmlParser;
     mOptions = aOptions;
+    
+    TransformerHandler testTransformerHandler = null;
+    DOMResult testDomResult = new DOMResult();
 
     // use a TransformerHandler to convert SAX events to DOM
     try {
       mTransformerHandler = transformerFactory.newTransformerHandler();
       mDOMResult = new DOMResult();
       mTransformerHandler.setResult(mDOMResult);
+      
+      // set up a test for old buggy XALAN (2.6.0) impl 
+      //   see https://issues.apache.org/jira/browse/UIMA-2155
+      testTransformerHandler = transformerFactory.newTransformerHandler();
+      testTransformerHandler.setResult(testDomResult);
     } catch (TransformerConfigurationException e) {
       throw new UIMARuntimeException(e);
     }
+    
+    // test for old buggy XALAN (2.6.0) impl 
+    //   see https://issues.apache.org/jira/browse/UIMA-2155
+ 
+    AttributesImpl atts = new AttributesImpl();
+    atts.addAttribute("", "xmlns", "xmlns", "CDATA", "http://some");
+    boolean nf = false;
+    try {
+      testTransformerHandler.startDocument();
+      testTransformerHandler.startElement("http://some", "test", "test", atts);
+    } catch (SAXException e) {
+      nf = true;
+    }
+    needsFix = nf;
   }
   
   /**
@@ -200,8 +225,28 @@ public class SaxDeserializer_impl implements SaxDeserializer, LexicalHandler {
    */
   public void startElement(String namespaceURI, String localName, String qName, Attributes atts)
           throws SAXException {
-    // System.out.println("SaxDeserializer_impl::startElement("+namespaceURI+","+localName+","+qName+","+atts+")");
-    mTransformerHandler.startElement(namespaceURI, localName, qName, atts);
+//    System.out.println("SaxDeserializer_impl::startElement("+namespaceURI+","+localName+","+qName+","+atts+")");
+    if (needsFix) {
+      mTransformerHandler.startElement(namespaceURI, localName, qName, fixNSbug(atts));
+    } else {
+      mTransformerHandler.startElement(namespaceURI, localName, qName, atts);
+    }
+  }
+  
+  // bypass a bug in handling xmlns= attributes in some Javas impls,
+  // where it throws a org.w3c.dom.DOMException: NAMESPACE_ERR: An attempt is made to create or change an object in a way which is incorrect with regard to namespaces.
+  // confirmed happens on Java 1.6 Sun 6_22, but is OK on IBM Java 6
+
+  private Attributes fixNSbug(Attributes atts) {
+    // fix: scan the attributes for the attribute "xmlns" and if found, add the correct namespace for that attribute.
+    for (int i = 0; i < atts.getLength(); i++) {
+      if ("xmlns".equals(atts.getQName(i))){
+        AttributesImpl result = new AttributesImpl(atts);  // make a copy of all the attributes, into an impl-neutral impl.
+        result.setURI(i, "http://www.w3.org/2000/xmlns/");
+        return result;
+      }
+    }
+    return atts;
   }
 
   /**
