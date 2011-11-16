@@ -19,28 +19,115 @@
 
 package org.apache.uima.caseditor.editor;
 
-import org.apache.uima.caseditor.CasEditorPlugin;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
+import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.core.runtime.SafeRunner;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.util.SafeRunnable;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.SubActionBars;
 import org.eclipse.ui.part.IPageBookViewPage;
 import org.eclipse.ui.part.Page;
 import org.eclipse.ui.part.PageBook;
 
-public class CasEditorViewPage extends Page {
+public class CasEditorViewPage extends Page implements ISelectionProvider {
+
+  private ListenerList selectionChangedListeners = new ListenerList();
   
   private final String notAvailableMessage;
   
   protected PageBook book;
   
-  private IPageBookViewPage casViewPage;
+  protected IPageBookViewPage casViewPage;
 
+  private SubActionBars subActionBar;
+  
   private Text messageText;
   
   protected CasEditorViewPage(String notAvailableMessage) {
     this.notAvailableMessage = notAvailableMessage;
+  }
+  
+  private void refreshActionHandlers() {
+
+    IActionBars actionBars = getSite().getActionBars();
+    actionBars.clearGlobalActionHandlers();
+
+    Map newActionHandlers = subActionBar
+        .getGlobalActionHandlers();
+    if (newActionHandlers != null) {
+      Set keys = newActionHandlers.entrySet();
+      Iterator iter = keys.iterator();
+      while (iter.hasNext()) {
+        Map.Entry entry = (Map.Entry) iter.next();
+        actionBars.setGlobalActionHandler((String) entry.getKey(),
+            (IAction) entry.getValue());
+      }
+    }
+  }
+
+  public void addSelectionChangedListener(ISelectionChangedListener listener) {
+    selectionChangedListeners.add(listener);
+  }
+
+  public void removeSelectionChangedListener(ISelectionChangedListener listener) {
+    selectionChangedListeners.remove(listener);
+  }
+  
+  public void selectionChanged(final SelectionChangedEvent event) {
+    
+    for (Object listener : selectionChangedListeners.getListeners()) {
+      
+      final ISelectionChangedListener selectionChangedListener = 
+              (ISelectionChangedListener) listener;
+      
+      SafeRunner.run(new SafeRunnable() {
+        public void run() {
+          selectionChangedListener.selectionChanged(event);
+        }
+      });
+    }
+  }
+  
+  public ISelection getSelection() {
+    if (casViewPage != null && casViewPage.getSite().getSelectionProvider() != null) {
+      return casViewPage.getSite().getSelectionProvider().getSelection();
+    }
+    else {
+      return StructuredSelection.EMPTY;
+    }
+  }
+
+  public void setSelection(ISelection selection) {
+    if (casViewPage != null && casViewPage.getSite().getSelectionProvider() != null) {
+      casViewPage.getSite().getSelectionProvider().setSelection(selection);
+    }
+  }
+  
+  @Override
+  public void createControl(Composite parent) {
+    book = new PageBook(parent, SWT.NONE);
+    
+    messageText = new Text(book, SWT.WRAP | SWT.READ_ONLY);
+    messageText.setBackground(parent.getShell().getBackground());
+    messageText.setText(notAvailableMessage);
+    
+    getSite().setSelectionProvider(this);
+    
+    // Page might be set before the page is initialized
+    initializeAndShowPage(casViewPage);
   }
   
   /**
@@ -52,15 +139,26 @@ public class CasEditorViewPage extends Page {
   protected void initializeAndShowPage(IPageBookViewPage page) {
     if (book != null) {
       if (page != null) {
-        
-        try {
-          page.init(getSite());
-        } catch (PartInitException e) {
-          CasEditorPlugin.log(e);
-        }
-        
         page.createControl(book);
         casViewPage = page;
+        
+        ISelectionProvider selectionProvider = page.getSite().getSelectionProvider();
+        selectionProvider.addSelectionChangedListener(new ISelectionChangedListener() {
+          
+          public void selectionChanged(SelectionChangedEvent event) {
+            CasEditorViewPage.this.selectionChanged(event);
+          }
+        });
+        
+        subActionBar = (SubActionBars) (getSite().getActionBars());
+        
+        casViewPage.setActionBars(subActionBar);
+
+        subActionBar.activate();
+        subActionBar.updateActionBars();
+
+        refreshActionHandlers();
+        
         book.showPage(page.getControl());
       }
       else {
@@ -71,26 +169,18 @@ public class CasEditorViewPage extends Page {
   
   public void setCASViewPage(IPageBookViewPage page) {
     
-    if (book != null && casViewPage != null)
+    if (book != null && casViewPage != null) {
       casViewPage.dispose();
+      subActionBar.dispose();
+      
+      getSite().getActionBars().updateActionBars();
+    }
     
     casViewPage = page;
     
     initializeAndShowPage(page);
   }
   
-  @Override
-  public void createControl(Composite parent) {
-    book = new PageBook(parent, SWT.NONE);
-    
-    messageText = new Text(book, SWT.WRAP | SWT.READ_ONLY);
-    messageText.setBackground(parent.getShell().getBackground());
-    messageText.setText(notAvailableMessage);
-    
-    // Page might be set before the page is initialized
-    initializeAndShowPage(casViewPage);
-  }
-
   @Override
   public Control getControl() {
     return book;
@@ -105,7 +195,9 @@ public class CasEditorViewPage extends Page {
   public void dispose() {
     super.dispose();
 
-    if (casViewPage != null)
+    if (casViewPage != null) {
       casViewPage.dispose();
+      subActionBar.dispose();
+    }
   }
 }

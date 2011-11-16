@@ -83,7 +83,6 @@ import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
-import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.part.Page;
 
 /**
@@ -744,26 +743,21 @@ final class EditViewPage extends Page implements ISelectionListener {
 
   @Override
   public void setFocus() {
-  }
-
-  @Override
-  public void init(IPageSite pageSite) {
-    super.init(pageSite);
-
-    // pin action
-    pinAction = new PinAction();
-
-    pinAction.setText("Pin");
-    pinAction.setImageDescriptor(CasEditorPlugin.getTaeImageDescriptor(Images.PIN));
-    pageSite.getActionBars().getToolBarManager().add(pinAction);
-
+    viewer.getControl().setFocus();
   }
 
   @Override
   public void setActionBars(IActionBars actionBars) {
+    // pin action
+    pinAction = new PinAction();
+    
+    pinAction.setText("Pin");
+    pinAction.setImageDescriptor(CasEditorPlugin.getTaeImageDescriptor(Images.PIN));
+    actionBars.getToolBarManager().add(pinAction);
+    
     CreateFeatureStructrueValue createAction = new CreateFeatureStructrueValue();
     createAction.setImageDescriptor(CasEditorPlugin.getTaeImageDescriptor(Images.ADD));
-    getSite().getActionBars().getToolBarManager().add(createAction);
+    actionBars.getToolBarManager().add(createAction);
 
     // TODO: setActionBars is depreciated, but registration of change listener
     // does not work in init method
@@ -771,11 +765,11 @@ final class EditViewPage extends Page implements ISelectionListener {
 
     // delete action
     DeleteFeatureStructureValue deleteAction = new DeleteFeatureStructureValue();
-    getSite().getActionBars().setGlobalActionHandler(ActionFactory.DELETE.getId(), deleteAction);
+    actionBars.setGlobalActionHandler(ActionFactory.DELETE.getId(), deleteAction);
 
     getSite().getSelectionProvider().addSelectionChangedListener(deleteAction);
 
-    getSite().getActionBars().getToolBarManager().add(
+    actionBars.getToolBarManager().add(
             ActionFactory.DELETE.create(getSite().getWorkbenchWindow()));
   }
 

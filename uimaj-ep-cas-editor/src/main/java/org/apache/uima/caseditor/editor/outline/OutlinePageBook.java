@@ -19,43 +19,100 @@
 
 package org.apache.uima.caseditor.editor.outline;
 
+import org.apache.uima.caseditor.CasEditorPlugin;
 import org.apache.uima.caseditor.editor.CasEditorViewPage;
-import org.eclipse.core.runtime.ListenerList;
-import org.eclipse.core.runtime.SafeRunner;
-import org.eclipse.jface.util.SafeRunnable;
-import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.SubActionBars;
 import org.eclipse.ui.part.IPageBookViewPage;
+import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 public class OutlinePageBook extends CasEditorViewPage 
         implements IContentOutlinePage, ISelectionChangedListener {
 
-  private ListenerList selectionChangedListeners = new ListenerList();
-  
+  private final class SubPageSite implements IPageSite {
+
+    private SubActionBars subActionBars; 
+    private ISelectionProvider selectionProvider;
+
+    public boolean hasService(@SuppressWarnings("rawtypes") Class api) {
+      return getSite().hasService(api);
+    }
+
+    public Object getService(@SuppressWarnings("rawtypes") Class api) {
+      return getSite().getService(api);
+    }
+
+    public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
+      return getSite().getAdapter(adapter);
+    }
+
+    public void setSelectionProvider(ISelectionProvider provider) {
+      selectionProvider = provider;
+    }
+
+    public IWorkbenchWindow getWorkbenchWindow() {
+      return getSite().getWorkbenchWindow();
+    }
+
+    public Shell getShell() {
+      return getSite().getShell();
+    }
+
+    public ISelectionProvider getSelectionProvider() {
+      return selectionProvider;
+    }
+
+    public IWorkbenchPage getPage() {
+      return getSite().getPage();
+    }
+
+    public void registerContextMenu(String menuId, MenuManager menuManager,
+            ISelectionProvider selectionProvider) {
+      getSite().registerContextMenu(menuId, menuManager, selectionProvider);
+    }
+
+    public IActionBars getActionBars() {
+      
+      if (subActionBars == null) {
+        subActionBars = new SubActionBars(getSite().getActionBars());
+      }
+
+      return subActionBars;
+    }
+  }
+
   private Viewer viewer;
   
   public OutlinePageBook() {
     super("An outline it not available!");
   }
 
-  public void addSelectionChangedListener(ISelectionChangedListener listener) {
-    selectionChangedListeners.add(listener);
-  }
-
-  public void removeSelectionChangedListener(ISelectionChangedListener listener) {
-    selectionChangedListeners.remove(listener);
-  }
   
   @Override
-  protected void initializeAndShowPage(IPageBookViewPage page) {
+  protected void initializeAndShowPage(final IPageBookViewPage page) {
     
     if (viewer != null)
       viewer.removeSelectionChangedListener(this);
     
+    IPageSite site = new SubPageSite();
+
+    if (book != null && page != null) {
+      try {
+        page.init(site);
+      } catch (PartInitException e) {
+        CasEditorPlugin.log(e);
+      }
+    }
+
     super.initializeAndShowPage(page);
     
     if (book != null) {
@@ -69,30 +126,7 @@ public class OutlinePageBook extends CasEditorViewPage
     }
   }
   
-  public ISelection getSelection() {
-    if (viewer != null)
-      return viewer.getSelection();
-    else
-      return StructuredSelection.EMPTY;
-  }
-
-  public void setSelection(ISelection selection) {
-    if (viewer != null)
-      viewer.setSelection(selection);
-  }
-
-  public void selectionChanged(final SelectionChangedEvent event) {
-    
-    for (Object listener : selectionChangedListeners.getListeners()) {
-      
-      final ISelectionChangedListener selectionChangedListener = 
-              (ISelectionChangedListener) listener;
-      
-      SafeRunner.run(new SafeRunnable() {
-        public void run() {
-          selectionChangedListener.selectionChanged(event);
-        }
-      });
-    }
+  public IPageBookViewPage getCasViewPage() {
+    return casViewPage;
   }
 }

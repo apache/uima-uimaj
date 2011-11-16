@@ -61,6 +61,7 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.part.IPage;
 import org.eclipse.ui.views.contentoutline.ContentOutline;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 
@@ -143,7 +144,7 @@ public final class AnnotationOutline extends ContentOutlinePage
 
     getSite().getPage().addSelectionListener(this);
     getSite().setSelectionProvider(mTableViewer);
-
+    
     changeAnnotationMode();
 
     editorChangeListener = new EditorListener();
@@ -370,8 +371,19 @@ public final class AnnotationOutline extends ContentOutlinePage
   }
 
   public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-    boolean isForeignSelection = !(part instanceof ContentOutline && ((ContentOutline) part)
-            .getCurrentPage() == this);
+    
+    boolean isForeignSelection = true;
+    
+    if (part instanceof ContentOutline) {
+      ContentOutline contentOutline = (ContentOutline) part;
+      
+      IPage currentPage = contentOutline.getCurrentPage();
+      
+      if (currentPage instanceof OutlinePageBook) {
+        OutlinePageBook pageBook = (OutlinePageBook) currentPage;
+        isForeignSelection = pageBook.getCasViewPage() != this;
+      }
+    }
 
     if (isForeignSelection) {
       if (selection instanceof StructuredSelection) {
@@ -392,10 +404,8 @@ public final class AnnotationOutline extends ContentOutlinePage
     
     super.dispose();
     
+    getSite().setSelectionProvider(null);
     getSite().getPage().removeSelectionListener(this);
-    
-    // remove selection listener
-    getSite().getWorkbenchWindow().getSelectionService().removeSelectionListener(this);
     
     editor.removeAnnotationListener(editorChangeListener);
   }
