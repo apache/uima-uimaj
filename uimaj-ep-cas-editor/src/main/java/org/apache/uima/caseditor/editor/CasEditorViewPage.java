@@ -150,7 +150,7 @@ public class CasEditorViewPage extends Page implements ISelectionProvider {
           }
         });
         
-        subActionBar = (SubActionBars) (getSite().getActionBars());
+        subActionBar = (SubActionBars) casViewPage.getSite().getActionBars();
         
         casViewPage.setActionBars(subActionBar);
 
@@ -163,6 +163,7 @@ public class CasEditorViewPage extends Page implements ISelectionProvider {
       }
       else {
         book.showPage(messageText);
+        getSite().getActionBars().updateActionBars();
       }
     }
   }
@@ -172,8 +173,6 @@ public class CasEditorViewPage extends Page implements ISelectionProvider {
     if (book != null && casViewPage != null) {
       casViewPage.dispose();
       subActionBar.dispose();
-      
-      getSite().getActionBars().updateActionBars();
     }
     
     casViewPage = page;
