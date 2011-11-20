@@ -31,7 +31,7 @@
 	<packaging>pom</packaging>
 	<version>4-SNAPSHOT</version>
   
-	<name>UIMA Eclipse: ${project.artifactId}</name>
+	<name>Apache UIMAhe UIMA Eclipse: ${project.artifactId}</name>
   <description>The UIMA Eclipse update site</description>
   <url>${uimaWebsiteUrl}</url>
 
