@@ -30,7 +30,7 @@
 	<artifactId>uimaj-ep-debug</artifactId>
   <version>2.4.0-SNAPSHOT</version>
 	<packaging>jar</packaging> 
-	<name>UIMA Eclipse: ${project.artifactId}</name>
+	<name>Apache UIMA Eclipse: ${project.artifactId}</name>
   <!-- continuation lines need to start in col 1 else manifest has extra blanks -->
   <description>Adds structure knowledge for common
 UIMA data structures to the Eclipse Debug displays</description>

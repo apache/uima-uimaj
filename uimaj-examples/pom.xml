@@ -30,7 +30,7 @@
 	<artifactId>uimaj-examples</artifactId>
 	<packaging>jar</packaging>
 	<version>2.4.0-SNAPSHOT</version>
-	<name>UIMA Base: ${project.artifactId}: SDK Examples</name>
+	<name>Apache UIMA Base: ${project.artifactId}: SDK Examples</name>
   <description>Examples and sample code</description>
   <url>${uimaWebsiteUrl}</url>
 

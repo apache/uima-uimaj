@@ -30,7 +30,7 @@
 	<artifactId>uimaj-ep-jcasgen</artifactId>
 	<packaging>jar</packaging>
   <version>2.4.0-SNAPSHOT</version>
-	<name>UIMA Eclipse: ${project.artifactId}</name>
+	<name>Apache UIMA Eclipse: ${project.artifactId}</name>
   <description>Provides a connection to the JCasGen tooling, for
     the Component Descriptor Editor</description>
   <url>${uimaWebsiteUrl}</url>

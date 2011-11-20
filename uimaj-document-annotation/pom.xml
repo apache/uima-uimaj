@@ -30,7 +30,7 @@
 	<artifactId>uimaj-document-annotation</artifactId>
 	<packaging>jar</packaging>
 	<version>2.4.0-SNAPSHOT</version>
-	<name>UIMA Base: ${project.artifactId}</name>
+	<name>Apache UIMA Base: ${project.artifactId}</name>
   <description>A common, but not built-in, type in the type system,
     specifying the language of a document</description>
   <url>${uimaWebsiteUrl}</url>

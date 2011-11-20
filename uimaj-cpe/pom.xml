@@ -29,7 +29,7 @@
   
 	<artifactId>uimaj-cpe</artifactId>
 	<version>2.4.0-SNAPSHOT</version>
-	<name>UIMA Base: ${project.artifactId}: Collection Processing Engine</name>
+	<name>Apache UIMA Base: ${project.artifactId}: Collection Processing Engine</name>
   <description>The implementation of a simple scaleout capability, called
     the Collection Processing Engine.  New implementations may find 
     UIMA-AS a better scaleout mechanism.</description>
