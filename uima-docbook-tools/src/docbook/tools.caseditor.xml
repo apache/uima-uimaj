@@ -200,9 +200,10 @@ under the License.
 			</para>
 			
 			<para>
-			For annotation projects its recommended to increase the font size in the editor. 
-			This can be done in the eclipse preference dialog, go to General -> Colors and Fonts and
-			then on the right side Basic -> Text Font. Change it from 11 to 14 for example.</para>
+			For annotation projects its recommended to increase the font size in the editor.
+			The default font size is 13. To change this open the eclipse preference dialog, 
+			go to "UIMA Annotation Editor". Depending on the project an screen resolution a bigger
+			font size maybe desired.</para>
 		</section>
 
 		<section id="sandbox.caseditor.annotation_editor.styling">
@@ -415,6 +416,21 @@ under the License.
 		<!-- Add image to explain the layers -->
 		</section>
 		
+		<section id="ugr.tools.cas_editor.annotation_editor.cas_views">
+			<title>CAS view support</title>
+			<para>
+			The Annotation Editor can only display text Sofa CAS views. Displaying
+			CAS views with Sofas of different types is not possible and will show
+			an editor page to switch back to another CAS view. The Edit and Feature Structure Browser views
+			are still available and might be used to edit Feature Structures which belong to the CAS view.
+			</para>
+			<para>
+			To switch to another CAS view, right click in the editor to open
+			the context menu and choose "CAS Views" and the view the editor
+			should switch to. 
+			</para>
+		</section>
+		
 		<section id="ugr.tools.cas_editor.annotation_editor.outline">
 			<title>Outline view</title>
 			
@@ -487,5 +503,116 @@ under the License.
 				</mediaobject>
 			</screenshot>
 		</section>
+	</section>
+	<section id="ugr.tools.cas_editor.custom_view">
+	<title>Implementing a custom Cas Editor View</title>
+	<para>
+	For many applications it is necessary to implement a custom Cas Editor view
+	to rapidly create, access and/or change Feature Structures in the CAS.
+	The Annotation Editor and its views only offer support for general viewing and editing.
+	Accessing and editing a Feature Structure in the CAS may take too many steps to be
+	efficient for an annotation project. A custom Cas Editor view can usually be
+	programmed against the used type system and optimized for an annotation project
+	to quickly change or show something.
+	</para>
+	<para>
+	Annotation projects often need to track the annotation status of a CAS where a user
+	needs to mark which parts have been annotated or corrected. To do this with the Cas Editor
+	a user would need to use the Feature Structure Browser view to select the Feature Structure
+	and then edit it inside the Edit view.
+	A custom Cas Editor view could directly select and show the Feature Structure and offer 
+	a tailored user interface to change the annotation status.
+	Some features such as the name of the annotator could even be automatically filled in.
+	</para>
+	<para>
+	The creation of Feature Structures which are linked to existing annotations or Feature Structures
+	is usually difficult with the standard views. A custom view which can make assumptions about the
+	type system is usually needed to do this efficiently.
+	</para>
+	<section id="ugr.tools.cas_editor.custom_view.sample">
+	<title>Annotation Status View Sample</title>
+	<para>
+	The Cas Editor provides the CasEditorView class as a base class for views which need to access
+	the CAS which is opened in the current editor. It shows a view not available message when the current
+	editor does not show a CAS, no editor is opened at all or the current CAS view is incompatible with
+	the view. 
+	</para>
+	<para>
+	The following snippet shows how it is usually implemented:
+	<programlisting>
+public class AnnotationStatusView extends CasEditorView {
+	
+  public AnnotationStatusView() {
+    super("The Annotation Status View is currently not available.");
+  }
+
+  @Override
+  protected IPageBookViewPage doCreatePage(ICasEditor editor) {
+    ICasDocument document = editor.getDocument();
+
+    if (document != null) {
+      return new AnnotationStatusViewPage(editor);
+    }
+
+    return null;
+  }
+}
+	</programlisting>
+	The doCreatePage method is called to create the actual view page. If the document
+	is null the editor failed to load a document and is showing an error message.
+	In the case the document is not null but the CAS view is incompatible the method
+	should return null to indicate that it has nothing to show. In this case the not
+	available message is displayed.
+	</para>
+	<para>
+	The next step is to implement the AnnotationStatusViewPage. That is the page which
+	gets the CAS as input and need to provide the user with a ui to change the Annotation
+	Status Feature Structure.
+	<programlisting>
+public class AnnotationStatusViewPage extends Page {
+  
+  private ICasEditor editor;
+  
+  AnnotationStatusViewPage(ICasEditor editor) {
+    this.editor = editor;
+  }
+  
+  ...
+  
+  public void createControl(Composite parent) {
+  
+    // create ui elements here
+    
+    ...
+    
+    ICasDocument document = editor.getDocument();
+    CAS cas = document.getCAS();
+    
+    // Retrieve Annotation Status FS from CAS
+    // and initalize the ui elements with it
+    
+    FeatureStructre statusFS;
+    
+    ...
+    
+    // Add event listeners to the ui element
+    // to save an update to the CAS
+    // and to advertise a change
+    
+    ...
+    
+    // Send update event
+    document.update(statusFS);
+    
+  }
+}
+	</programlisting>
+	The above code sketches out how a typical view page is implemented. The CAS can be directly used
+	to access any Feature Structures or annotations stored in it.
+	When something is modified added/removed/changed that must be advertised via the ICasDocument object,
+	it has multiple notification methods which send an event so that other views can be updated.
+	The view itself can also register a listener to receive CAS change events. 
+	</para>
+	</section>
 	</section>
 </chapter>
