@@ -33,7 +33,7 @@ under the License.
 		<title>Introduction</title>
 
 		<para>
-			The CAS Editor is an eclipse based annotation tool which supports manual and automatic
+			The CAS Editor is an Eclipse based annotation tool which supports manual and automatic
 			annotation (via running UIMA annotators) of CASes stored in files.
 			Currently only text-based CAS are supported. 
 		    The CAS Editor can visualize and edit all feature structures. 
@@ -41,8 +41,15 @@ under the License.
 			directly on text.
 		</para>
 		
-		<!-- Note: In the HTML version the screen shot is to small and in the
-		PDF version its almost to big, how can that be fixed ?! -->
+		<!-- Note: In the HTML version the screen shot is too small and in the
+		PDF version its almost to big, how can that be fixed?
+    
+    I looked at this, in PDF and Firefox, and the images are almost the same size
+    relative to the font size.  So I think it's working OK.
+    
+    There is code to scale things for pdf vs html in uima-build-resources in 
+    src/main/resources/docbook-shared/common/html-pdf.xsl -->
+    
 		<screenshot>
 			<mediaobject>
 				<imageobject>
@@ -58,30 +65,43 @@ under the License.
 		<para>
 			To open a CAS in the Cas Editor it needs a compatible type system
 			and styling information which specify how to display the types.
-			The styling information is created automatically by the Cas Editor,
-			the type system file must be provided by the user.
-			A CAS in the xmi or xcas format can simply be opened by clicking
-			on it, like a text file is opened with the eclipse text editor.
-			The Cas Editor expects a type system file at the root of the project
-			named TypeSystem.xml. If the type system file does not exist in this
-			location the user has the option to point the Cas Editor to a
-			type system file. Or to change the default type system location in the
-			properties page of the eclipse project. To do that right click the project,
-			select Properties and go to the UIMA Type System tab, there a different 
-			type system file can be chosen.
-		</para>
-
-		<screenshot>
-			<mediaobject>
-				<imageobject>
-					<imagedata scale="100" format="PNG"
-						fileref="&imgroot;ProvideTypeSystem.png" />
-				</imageobject>
-				<textobject>
-					<phrase>No type system available for the opened CAS.</phrase>
-				</textobject>
-			</mediaobject>
-		</screenshot>
+			The styling information is created automatically by the Cas Editor;
+			but the type system file must be provided by the user.
+    </para>
+    
+    <para>A CAS in the xmi or xcas format can simply be opened by clicking
+      on it, like a text file is opened with the Eclipse text editor.</para>
+    
+    <section id="sandbox.caseditor.typeSystemSpec">
+      <title>Specifying a type system</title>
+      <para>    
+      The Cas Editor expects a type system file at the root of the project
+      named TypeSystem.xml.  If a type system cannot be found, this message is shown:
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata scale="100" format="PNG"
+            fileref="&imgroot;ProvideTypeSystem.png" />
+        </imageobject>
+        <textobject>
+          <phrase>No type system available for the opened CAS.</phrase>
+        </textobject>
+      </mediaobject>
+    </screenshot>
+    
+    </para>
+    <para>     
+      If the type system file does not exist in this
+      location you can point the Cas Editor to a specific
+      type system file.  
+      
+      You can also change the default type system location in the
+      properties page of the Eclipse project. To do that right click the project,
+      select Properties and go to the UIMA Type System tab, and specify the default
+      location for the type system file.
+    </para>   
+    </section>
+    
 		<para>
 			After the Cas Editor is opened switch to the Cas Editor
 			Perspective to see all the Cas Editor related views.
@@ -100,10 +120,11 @@ under the License.
 		<section id="ugr.tools.cas_editor.annotation_editor.editor">
 			<title>Editor</title>
 			<para>
-			    After the editor is open it shows the default sofa of the CAS, displaying another sofa is right now not possible.
+			    After the editor is open it shows the default sofa of the CAS.  
+          (Displaying another sofa is right now not possible.)
 				The editor has an associated, changeable CAS Type. This type is called the editor "mode".
         		By default the editor only shows annotation of this type. Actions and views are
-				sensitive to this mode.
+				sensitive to this mode.  The next screen shows the display, where the mode is set to "Person":
 				
 				<screenshot>
 					<mediaobject>
@@ -130,7 +151,7 @@ under the License.
 			</para>
 			
       		<para>
-				Its possible to work with more than one annotation type at a time, the mode just selects the default annotation type
+				It's possible to work with more than one annotation type at a time; the mode just selects the default annotation type
 				which can be marked with the fewest keystrokes. To show annotations of other types, use the "Show" menu in
 				the context menu.
 					
@@ -143,7 +164,7 @@ under the License.
 					</mediaobject>
 				</screenshot>
 				
-				Or selected the annotation types to be shown in the Style View.
+				Alternatively, you may select the annotation types to be shown in the Style View.
 				
 				<screenshot>
 					<mediaobject>
@@ -153,7 +174,8 @@ under the License.
 						</imageobject>
 					</mediaobject>
 				</screenshot>
-				The editor shows now also the additional selected types.
+        
+				The editor will show the additional selected types.
 				
 				<screenshot>
 					<mediaobject>
@@ -174,13 +196,13 @@ under the License.
 				To create an annotation manually using the editor, mark a piece of text and then
 				press the enter key. This creates an annotation of the 
         		type of the editor mode, having bounds corresponding to the selection.
-        		Or use the "Quick Annotate" action from the context menu.
+        		You can also use the "Quick Annotate" action from the context menu.
 			</para>
 			<para>
 				It is also possible to choose the annotation type; press
 				shift + enter (smart insert) or click on "Annotate" in the context menu for this.
-				Then a dialog asks for the annotation type to create, either select the desired type or use
-				the associated key shortcut. In the screen shot below a press on "p"
+				A dialog will ask for the annotation type to create; either select the desired type or use
+				the associated key shortcut. In the screen shot below, pressing the "p" key
 				will create a Person annotation for "Obama".
 			</para>
 			
@@ -194,16 +216,16 @@ under the License.
 			</screenshot>
 			
 			<para>
-				To delete an annotation select it and press the delete
+				To delete an annotation, select it and press the delete
 				key. Only annotations of the editor mode can be deleted with this method.
-				To delete non editor mode annotations use the Outline View.
+				To delete non-editor mode annotations use the Outline View.
 			</para>
 			
 			<para>
-			For annotation projects its recommended to increase the font size in the editor.
-			The default font size is 13. To change this open the eclipse preference dialog, 
-			go to "UIMA Annotation Editor". Depending on the project an screen resolution a bigger
-			font size maybe desired.</para>
+			For annotation projects you can change the font size in the editor.
+			The default font size is 13. To change this open the Eclipse preference dialog, 
+			go to "UIMA Annotation Editor".  
+			</para>
 		</section>
 
 		<section id="sandbox.caseditor.annotation_editor.styling">
@@ -218,7 +240,7 @@ under the License.
 			<para>
 				The styling is initialized with a unique color for every
 				annotation type and every annotation is drawn with
-				Squiggles annotation style. Its recommended to adjust
+				Squiggles annotation style. You may adjust
 				the annotation styles and coloring depending on the project
 				needs.
 			</para>
@@ -240,14 +262,14 @@ under the License.
 			
 			<para>
 				The property page can be seen below. By clicking on one of the
-				annotation types the color, drawing style and drawing layer can be edited on the right
+				annotation types, the color, drawing style and drawing layer can be edited on the right
 				side.
 			</para>
 			
 			<screenshot>
 				<mediaobject>
 					<imageobject>
-						<imagedata scale="100" format="PNG"
+						<imagedata width="5.7in" format="PNG"
 						fileref="&imgroot;StyleProperties.png" />
 				</imageobject>
 				</mediaobject>
@@ -436,7 +458,7 @@ under the License.
 			
 			<para>
 				The outline view gives an overview of the annoations which are
-				shown in the editor, the annotation are grouped by type. There are
+				shown in the editor.  The annotation are grouped by type. There are
 				actions to increase or decrease the bounds of the selected annotation. There is
 				also an action to merge selected annotations. The outline has second view mode where only
 				annotations of the current editor mode are shown. 
@@ -451,7 +473,7 @@ under the License.
 				</mediaobject>
 			</screenshot>
 			
-			The style can be switched in the view menu. Then it only shows the annotations which 
+			The style can be switched in the view menu, to a style where it only shows the annotations which 
 			belong to the current editor mode.
 			
 			<!-- TODO: Add image which visualizes this -->
@@ -465,9 +487,9 @@ under the License.
 				The Edit Views show details about the currently
 				selected annotations or feature structures. It is
 				possible to change primitive values in this view.
-				Referenced feature structures can be created and deleted
-				including arrays. To link a feature structures with
-				other feature structures it can be pinned to the edit
+				Referenced feature structures can be created and deleted,
+				including arrays. To link a feature structure with
+				other feature structures, it can be pinned to the edit
 				view. This means that it does not change if the
 				selection changes.
 			</para>
@@ -490,7 +512,7 @@ under the License.
 			</para>
 			
 			<para>
-				Its possible to create and delete feature structures of
+				It's possible to create and delete feature structures of
 				every type.
 			</para>
 
@@ -507,13 +529,12 @@ under the License.
 	<section id="ugr.tools.cas_editor.custom_view">
 	<title>Implementing a custom Cas Editor View</title>
 	<para>
-	For many applications it is necessary to implement a custom Cas Editor view
+	Custom Cas Editor views can be added, 
 	to rapidly create, access and/or change Feature Structures in the CAS.
-	The Annotation Editor and its views only offer support for general viewing and editing.
-	Accessing and editing a Feature Structure in the CAS may take too many steps to be
-	efficient for an annotation project. A custom Cas Editor view can usually be
-	programmed against the used type system and optimized for an annotation project
-	to quickly change or show something.
+	While the Annotation Editor and its views offer support for general viewing and editing,
+	accessing and editing things in the CAS can be streamlined using a custom Cas Editor.
+  A custom Cas Editor view can be
+	programmed to use a particular type system and optimized to quickly change or show something.
 	</para>
 	<para>
 	Annotation projects often need to track the annotation status of a CAS where a user
@@ -533,7 +554,7 @@ under the License.
 	<title>Annotation Status View Sample</title>
 	<para>
 	The Cas Editor provides the CasEditorView class as a base class for views which need to access
-	the CAS which is opened in the current editor. It shows a view not available message when the current
+	the CAS which is opened in the current editor. It shows a "view not available" message when the current
 	editor does not show a CAS, no editor is opened at all or the current CAS view is incompatible with
 	the view. 
 	</para>
@@ -561,8 +582,8 @@ public class AnnotationStatusView extends CasEditorView {
 	The doCreatePage method is called to create the actual view page. If the document
 	is null the editor failed to load a document and is showing an error message.
 	In the case the document is not null but the CAS view is incompatible the method
-	should return null to indicate that it has nothing to show. In this case the not
-	available message is displayed.
+	should return null to indicate that it has nothing to show. In this case the
+  "not available" message is displayed.
 	</para>
 	<para>
 	The next step is to implement the AnnotationStatusViewPage. That is the page which
@@ -609,8 +630,8 @@ public class AnnotationStatusViewPage extends Page {
 	</programlisting>
 	The above code sketches out how a typical view page is implemented. The CAS can be directly used
 	to access any Feature Structures or annotations stored in it.
-	When something is modified added/removed/changed that must be advertised via the ICasDocument object,
-	it has multiple notification methods which send an event so that other views can be updated.
+	When something is modified added/removed/changed that must be advertised via the ICasDocument object.
+	It has multiple notification methods which send an event so that other views can be updated.
 	The view itself can also register a listener to receive CAS change events. 
 	</para>
 	</section>
