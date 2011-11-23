@@ -139,7 +139,7 @@
   <properties>
     <uimaScmRoot>uimaj</uimaScmRoot>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
-    <uimaBuildResourcesVersion>3-SNAPSHOT</uimaBuildResourcesVersion>
+    <uimaBuildResourcesVersion>3</uimaBuildResourcesVersion>
   </properties>
 
 </project>
