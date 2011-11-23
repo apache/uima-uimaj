@@ -23,9 +23,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.uima.cas.CAS;
+import org.apache.uima.caseditor.CasEditorPlugin;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.IPage;
 import org.eclipse.ui.part.IPageBookViewPage;
 import org.eclipse.ui.part.MessagePage;
@@ -93,7 +95,12 @@ public abstract class CasEditorView extends PageBookView {
     
     IPageBookViewPage page = doCreatePage(editor);
     if (page != null) {
-      initPage(page);
+      try {
+        page.init(new SubPageSite(casViewPageBookedPage.getSite()));
+      } catch (PartInitException e) {
+        CasEditorPlugin.log(e);
+      }
+      
       casViewPageBookedPage.setCASViewPage(page);
     }
     else {
@@ -150,6 +157,7 @@ public abstract class CasEditorView extends PageBookView {
       casViewPageBookedPage = new CasEditorViewPage(editorNotAvailableMessage);
       
       initPage(casViewPageBookedPage);
+      
       casViewPageBookedPage.createControl(getPageBook());
       
       createViewPage(editor);
