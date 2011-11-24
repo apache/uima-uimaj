@@ -775,16 +775,18 @@ final class EditViewPage extends Page implements ISelectionListener {
 
   public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 
-    if (selection instanceof IStructuredSelection) {
-
-      FeatureStructureSelection fsSelection = new FeatureStructureSelection(
-              (IStructuredSelection) selection);
-
-      if (fsSelection.size() == 1 && !pinAction.isChecked()) {
-
-        // filter out selection which are cause by this view itself
-        if (editView != part) {
-          viewer.setInput(fsSelection.toList().get(0));
+    if (getSite().getPage().getActiveEditor() == editor) {
+      if (selection instanceof IStructuredSelection) {
+  
+        FeatureStructureSelection fsSelection = new FeatureStructureSelection(
+                (IStructuredSelection) selection);
+  
+        if (fsSelection.size() == 1 && !pinAction.isChecked()) {
+  
+          // filter out selection which are cause by this view itself
+          if (editView != part) {
+            viewer.setInput(fsSelection.toList().get(0));
+          }
         }
       }
     }

@@ -60,6 +60,7 @@ public class CasEditorViewPage extends Page implements ISelectionProvider {
     this.notAvailableMessage = notAvailableMessage;
   }
   
+  @SuppressWarnings("rawtypes")
   private void refreshActionHandlers() {
 
     IActionBars actionBars = getSite().getActionBars();
@@ -78,6 +79,8 @@ public class CasEditorViewPage extends Page implements ISelectionProvider {
     }
   }
 
+  // These are called from the outside, even if the page is not active ...
+  // this leads to the processing of events which should not be processed!
   public void addSelectionChangedListener(ISelectionChangedListener listener) {
     selectionChangedListeners.add(listener);
   }
@@ -142,6 +145,7 @@ public class CasEditorViewPage extends Page implements ISelectionProvider {
         page.createControl(book);
         casViewPage = page;
         
+        // Note: If page is in background event listening must be disabled!
         ISelectionProvider selectionProvider = page.getSite().getSelectionProvider();
         selectionProvider.addSelectionChangedListener(new ISelectionChangedListener() {
           

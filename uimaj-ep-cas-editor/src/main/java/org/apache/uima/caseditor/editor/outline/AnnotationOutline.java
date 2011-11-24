@@ -385,7 +385,7 @@ public final class AnnotationOutline extends ContentOutlinePage
       }
     }
 
-    if (isForeignSelection) {
+    if (isForeignSelection && getSite().getPage().getActiveEditor() == editor) {
       if (selection instanceof StructuredSelection) {
         AnnotationSelection annotations = new AnnotationSelection((StructuredSelection) selection);
 
