@@ -27,7 +27,7 @@
       This feature contains a debug structure handler plugin, the Component
 Descriptor Editor (a forms-based editor for creating and editing
 the XML descriptors used by UIMA), the JCas generation capability,
-a CAS Editor, and the PEAR packaging capability.
+a CAS Editor, the Launcher, and the PEAR packaging capability.
    </description>
 
    <copyright url="http://www.apache.org/licenses/LICENSE-2.0">
@@ -120,5 +120,20 @@ under the License.
          install-size="0"
          version="${parsedVersion.osgiVersion}"
          unpack="false"/>
+
+   <plugin
+         id="org.apache.uima.caseditor.ide"
+         download-size="0"
+         install-size="0"
+         version="${parsedVersion.osgiVersion}"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.uima.launcher"
+         download-size="0"
+         install-size="0"
+         version="${parsedVersion.osgiVersion}"
+         unpack="false"/>
+        
 
 </feature>
