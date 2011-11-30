@@ -362,7 +362,7 @@ class AnnotationStyleViewPage extends Page {
     IPreferenceStore store = editor.getCasDocumentProvider().getTypeSystemPreferenceStore(
             editor.getEditorInput()); // TODO: Use old input, which was used when the view was created!
     
-    if (store != null)        
+    if (store != null && changeListener != null)        
       store.removePropertyChangeListener(changeListener);
     
     editor.removeAnnotationListener(editorListener);

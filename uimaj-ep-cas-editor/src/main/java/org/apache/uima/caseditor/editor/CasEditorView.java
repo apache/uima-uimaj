@@ -49,8 +49,6 @@ public abstract class CasEditorView extends PageBookView {
 
   private final String editorNotAvailableMessage;
 
-  private CasEditorViewPage casViewPageBookedPage;
-
   private Map<ICasEditor, ICasEditorInputListener> editorListenerMap =
           new HashMap<ICasEditor, ICasEditorInputListener>();
   
@@ -91,7 +89,7 @@ public abstract class CasEditorView extends PageBookView {
   // Will be recreated on view switch (need a flag to disable that) and input cas switch
   protected abstract IPageBookViewPage doCreatePage(ICasEditor editor);
 
-  private void createViewPage(ICasEditor editor) {
+  private void createViewPage( CasEditorViewPage casViewPageBookedPage, ICasEditor editor) {
     
     IPageBookViewPage page = doCreatePage(editor);
     if (page != null) {
@@ -116,12 +114,14 @@ public abstract class CasEditorView extends PageBookView {
     if (part instanceof ICasEditor) {
       final ICasEditor editor = (ICasEditor) part;
       
+      final CasEditorViewPage casViewPageBookedPage = new CasEditorViewPage(editorNotAvailableMessage);
+      
       if (editor.getDocument() != null) {
         ICasDocumentListener documentListener = new AbstractDocumentListener() {
           @Override
           public void viewChanged(String oldViewName, String newViewName) {
             if (isRecreatePageOnCASViewSwitch()) {
-              createViewPage(editor);
+              createViewPage(casViewPageBookedPage, editor);
             }
           }
         };
@@ -137,7 +137,7 @@ public abstract class CasEditorView extends PageBookView {
         public void casDocumentChanged(IEditorInput oldInput, ICasDocument oldDocument,
                 IEditorInput newInput, ICasDocument newDocument) {
           
-          createViewPage(editor);
+          createViewPage(casViewPageBookedPage, editor);
           
           ICasDocumentListener changeListener = documentListenerMap.get(editor);
           
@@ -151,16 +151,17 @@ public abstract class CasEditorView extends PageBookView {
           
         }
       };
-      
+      editorListenerMap.put(editor, inputListener);
       editor.addCasEditorInputListener(inputListener);
       
-      casViewPageBookedPage = new CasEditorViewPage(editorNotAvailableMessage);
+      // BUG: This does not work! 
+      
       
       initPage(casViewPageBookedPage);
       
       casViewPageBookedPage.createControl(getPageBook());
       
-      createViewPage(editor);
+      createViewPage(casViewPageBookedPage, editor);
       
       result = new PageRec(editor, casViewPageBookedPage);
     }
@@ -214,6 +215,7 @@ public abstract class CasEditorView extends PageBookView {
   
   @Override
   public void dispose() {
+    
     for (Map.Entry<ICasEditor, ICasEditorInputListener> entry :
       editorListenerMap.entrySet()) {
       entry.getKey().removeCasEditorInputListener(entry.getValue());
@@ -231,8 +233,8 @@ public abstract class CasEditorView extends PageBookView {
     
     documentListenerMap.clear();
     
-    if (casViewPageBookedPage != null)
-      casViewPageBookedPage.dispose();
+//    if (casViewPageBookedPage != null)
+//      casViewPageBookedPage.dispose();
     
     super.dispose();
   }
