@@ -23,12 +23,12 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>2.4.0-SNAPSHOT</version>
+    <version>2.4.0</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
     
   <artifactId>uimaj-eclipse-feature-runtime</artifactId>
-  <version>2.4.0-SNAPSHOT</version>
+  <version>2.4.0</version>
   
   <name>Apache UIMA Eclipse: ${project.artifactId}</name>
   <description>UIMA Eclipse Plugin Feature that
@@ -46,13 +46,13 @@
        element, and just changing the following two properties -->  
   <scm>
     <connection>
-      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-eclipse-feature-runtime
+      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-2.4.0-rc1/uimaj-eclipse-feature-runtime
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-eclipse-feature-runtime
+      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-2.4.0-rc1/uimaj-eclipse-feature-runtime
     </developerConnection>
     <url>
-      http://svn.apache.org/viewvc/uima/uimaj/trunk/uimaj-eclipse-feature-runtime
+      http://svn.apache.org/viewvc/uima/uimaj/tags/uimaj-2.4.0-rc1/uimaj-eclipse-feature-runtime
     </url>
   </scm>
   
