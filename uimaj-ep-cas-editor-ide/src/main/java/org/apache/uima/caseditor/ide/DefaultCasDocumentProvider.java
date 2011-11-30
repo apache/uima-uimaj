@@ -98,7 +98,9 @@ public class DefaultCasDocumentProvider extends
                 if (delta.getKind() == IResourceDelta.REMOVED) {
                   handleElementDeleted(fileInput);
                 } else if (delta.getKind() == IResourceDelta.CHANGED) {
-                  handleElementChanged(fileInput);
+                  
+                  if (isFileChangeTrackingEnabled)
+                    handleElementChanged(fileInput);
                 }
               }
             }
@@ -171,6 +173,8 @@ public class DefaultCasDocumentProvider extends
    * while the editor is open.
    */
   private Map<String, PreferenceStore> typeSystemPreferences = new HashMap<String, PreferenceStore>();
+  
+  private boolean isFileChangeTrackingEnabled = true;
 
   // UIMA-2245 Remove this method together with the migration code below one day
   private String getStyleFileForTypeSystem(String typeSystemFile) {
@@ -456,8 +460,15 @@ public class DefaultCasDocumentProvider extends
         documentImpl.serialize(outStream);
 
         InputStream stream = new ByteArrayInputStream(outStream.toByteArray());
-
-        file.setContents(stream, true, false, null);
+        
+        isFileChangeTrackingEnabled = false;
+        
+        try {
+          file.setContents(stream, true, false, null);
+        }
+        finally {
+          isFileChangeTrackingEnabled = true;
+        }
       }
     }
 
