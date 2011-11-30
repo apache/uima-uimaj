@@ -22,31 +22,33 @@ Look for the result in the two artifacts:
 
 For more details, please see http://uima.apache.org/building-uima.html   
 
-What's New in 2.3.1
+What's New in 2.4.0
 ------------------- 
 
   CAS Editor
   ----------
-  The Cas Editor received a few important enhancements aimed at making it
-  the preferred editor and viewer for CAS files inside a UIMA project.
-  It is now possible to open CAS files from any location within an
-  eclipse workspace.
+  The Cas Editor received a few important enhancements to make it
+  extensible by user provided plugins. It is now possible to save
+  generic preferences based on a type system scope and the Cas Editor
+  was split into two parts to allow the integration into RCP applications.
+
+  Support for Cas Editor projects is now removed, existing Cas Editor
+  projects will be migrated automatically. Before this happens a dialog
+  ask for confirmation.
   
-  Based on feedback from our users the Cas Editor received a number of 
-  usability enhancements and bug fixes.
+  There have been a couple of minor improvements: Adding of annotations
+  to a CAS is now much faster, reusing of Annotation Editor instances is
+  now possible, CAS file changes can now be detected and the changed file
+  is shown in the editor, many things are now remembered after a dialog
+  is reopened or an editor is reopened.
   
-  A new view to show the annotation colors and visualization style was added. 
-  The view interacts with the editor and can be used to define which
-  kind of annotations are displayed.
-  
-  There is now a new annotation style to display features values in between 
-  the text lines. This is especially useful to show Part-Of-Speech tags, 
-  entity categories or a stemming.
-  
-  There have been a couple of minor improvements:  the editor context menu 
-  now shows keyboard shortcuts, and it is possible to choose the encoding 
-  and resulting CAS format when importing a text file. 
-  
+  Eclipse Analysis Engine Launcher Plugin
+  ---------------------------------------
+  We added a new launcher plugin to run and debug Analysis Engines directly
+  from Eclipse. The plugin can load input CASes in the XCAS or XMI format
+  from a specified folder and then processes them with the Analysis Engine.
+  The files can optionally be written to an output folder for inspection
+  with the Cas Editor. Plain text input files are supported as well.
 
   Build
   -----
