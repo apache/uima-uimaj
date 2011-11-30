@@ -233,9 +233,6 @@ public abstract class CasEditorView extends PageBookView {
     
     documentListenerMap.clear();
     
-//    if (casViewPageBookedPage != null)
-//      casViewPageBookedPage.dispose();
-    
     super.dispose();
   }
 }
