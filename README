@@ -1,5 +1,5 @@
 
-			Apache UIMA (Unstructured Information Management Architecture) v2.3.1 SDK
+			Apache UIMA (Unstructured Information Management Architecture) v2.4.0 SDK
 		  -------------------------------------------------------------------------
 
 Building from the Source Distribution
@@ -16,17 +16,21 @@ change the command to
 
    mvn clean install -Papache-release
    
-Look for the result in the two artifacts: 
-   ../uimaj/target/uimaj-[version]-source-release.zip (if run with -Papache-release) and
-   ../uimaj-distr/target/uimaj-[version]-bin.zip (or ...tar.gz) 
+Look for the result here: 
+   target/uimaj-[version]-source-release.zip (if run with -Papache-release)
 
 For more details, please see http://uima.apache.org/building-uima.html   
 
 What's New in 2.4.0
-------------------- 
+-------------------
 
-  CAS Editor
-  ----------
+  There was a change in the API (methods added) used for JMX monitoring of performance statistics;
+  because of this, we incremented the version from 2.3.x to 2.4.0.
+  
+  Other than this, there are some bug fixes, and some tooling enhancements.
+  
+  CAS Editor (Eclipse Tooling)
+  ----------------------------
   The Cas Editor received a few important enhancements to make it
   extensible by user provided plugins. It is now possible to save
   generic preferences based on a type system scope and the Cas Editor
@@ -49,31 +53,18 @@ What's New in 2.4.0
   from a specified folder and then processes them with the Analysis Engine.
   The files can optionally be written to an output folder for inspection
   with the Cas Editor. Plain text input files are supported as well.
+  
+  A command line Pear Installer tool was added.
 
+  
   Build
   -----
   
   The build process was redone to align it with normal Maven build procedures, where possible.
-  There is a new top-level directory in our SVN called "build" which holds the build tooling.
-  The new build tooling is described in general on the website 
-  http://uima.apache.org/maven-design.html
- 
-  
-  Result Specification
-  --------------------
-  
-  The implementation handling the result specification was redone to correct several corner case issues.
+  This includes moving the top level project, uimaj, up one level in SVN, so it now contains the
+  modules. 
   
  
-  Performance
-  -----------
-
-  The Component Descriptor Editor (CDE) (an Eclipse tool) had potentially poor performance when
-  editing aggregate descriptors that referenced many remote components.  The performance in this
-  case has been greatly improved, using a caching technique and eliminating repetitive remote accesses.  
-
-  A complete list of fixes is in issuesFixed/jira-report.hmtl.  
-
 Supported Platforms
 --------------------
 
