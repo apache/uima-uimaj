@@ -43,7 +43,7 @@ public class CpmInitTest extends TestCase {
   }
 
   public void testInitSingleThreadCPMMode() throws Exception {
-    int documentCount = 10000;
+    int documentCount = 10000000;
     int threadCount = 1;
 
     // setup CPM to process 1 documents
@@ -60,10 +60,10 @@ public class CpmInitTest extends TestCase {
     while (!listener.isInitialized()) {
       Thread.sleep(10);
     }
-    System.out.println("Initialize was called: " + listener.isInitialized());
+    System.out.println("SingleThreadCPMMode Initialize was called: " + listener.isInitialized());
 
     // Let the CPM process some docs, before calling stop
-    Thread.sleep(500);
+    Thread.sleep(300);
 
     // stop CPM
     cpe.stop();
@@ -75,7 +75,7 @@ public class CpmInitTest extends TestCase {
   }
 
   public void testInitMultiThreadCPMMode() throws Exception {
-    int documentCount = 10000; // hopefully enough that we won't finish before we abort
+    int documentCount = 10000000; // hopefully enough that we won't finish before we abort
     int threadCount = 1;
 
     // setup CPM to process 1 documents
@@ -91,10 +91,10 @@ public class CpmInitTest extends TestCase {
     while (!listener.isInitialized()) {
       Thread.sleep(10);
     }
-    System.out.println("Initialize was called: " + listener.isInitialized());
+    System.out.println("MultiThreadCPMMode Initialize was called: " + listener.isInitialized());
 
     // Let the CPM process some docs, before calling stop
-    Thread.sleep(500);
+    Thread.sleep(300);
 
     // stop CPM
     cpe.stop();
@@ -106,7 +106,7 @@ public class CpmInitTest extends TestCase {
   }
 
   public void testInitMultiThreadCPM() throws Exception {
-    int documentCount = 10000;
+    int documentCount = 10000000;
     int threadCount = 3;
 
     // setup CPM to process documents
@@ -125,7 +125,7 @@ public class CpmInitTest extends TestCase {
     System.out.println("testInitMultiThreadCPM()-Initialize was called: "
             + listener.isInitialized());
     // Let the CPM process some docs, before calling stop
-    Thread.sleep(500);
+    Thread.sleep(300);
 
     // stop CPM
     cpe.stop();
