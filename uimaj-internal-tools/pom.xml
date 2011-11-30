@@ -32,7 +32,7 @@
 	<artifactId>uimaj-internal-tools</artifactId>
 	<packaging>jar</packaging>
 	<version>2.4.0-SNAPSHOT</version>
-	<name>UIMA Base: ${project.artifactId}: internal Tools</name>
+	<name>Apache UIMA Base: ${project.artifactId}: internal Tools</name>
   <description>Internal tooling for developing UIMA, 
     not a part of normal distributions.</description>
   <url>${uimaWebsiteUrl}</url>
