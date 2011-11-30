@@ -145,11 +145,13 @@ under the License.
     <dependencySet>
       <includes>
         <include>org.apache.uima:uimaj-ep-cas-editor</include>
+        <include>org.apache.uima:uimaj-ep-cas-editor-ide</include>
         <include>org.apache.uima:uimaj-ep-configurator</include>
         <include>org.apache.uima:uimaj-ep-debug</include>
         <include>org.apache.uima:uimaj-ep-jcasgen</include>
         <include>org.apache.uima:uimaj-ep-pear-packager</include>
         <include>org.apache.uima:uimaj-ep-runtime</include>
+        <include>org.apache.uima:uimaj-ep-launcher</include>
       </includes>
       <unpack>false</unpack>
       <scope>runtime</scope>
