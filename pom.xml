@@ -138,6 +138,16 @@
       <artifactId>uimaj-ep-runtime</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-ep-cas-editor-ide</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-ep-launcher</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
 
   <modules>
