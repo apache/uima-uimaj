@@ -50,13 +50,13 @@
        element, and just changing the following two properties -->
   <scm>
     <connection>
-      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj
+      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/trunk/
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj
+      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/trunk/
     </developerConnection>
     <url>
-      http://svn.apache.org/viewvc/uima/uimaj/trunk/uimaj
+      http://svn.apache.org/viewvc/uima/uimaj/trunk/
     </url>
   </scm>
 
