@@ -23,13 +23,13 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>2.4.0</version>
+    <version>2.4.1-SNAPSHOT</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
 
 	<artifactId>uimaj-bootstrap</artifactId>
 	<packaging>jar</packaging>
-	<version>2.4.0</version>
+	<version>2.4.1-SNAPSHOT</version>
 	<name>Apache UIMA Base: ${project.artifactId}: Bootstrap launcher</name>
   <description>Configures a classpath from directories, and runs
     a Java application using that</description>
