@@ -23,13 +23,13 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>parent-pom</artifactId>
-    <version>1</version>
+    <version>3</version>
     <relativePath />
   </parent>
   
 	<artifactId>uimaj-eclipse-update-site</artifactId>
 	<packaging>pom</packaging>
-	<version>4-SNAPSHOT</version>
+	<version>4</version>
   
 	<name>Apache UIMAhe UIMA Eclipse: ${project.artifactId}</name>
   <description>The UIMA Eclipse update site</description>
@@ -146,7 +146,22 @@
                   <version>${item-maven-release-version}</version>
                   <destFileName>org.apache.uima.runtime_${item-eclipse-release-version}.jar</destFileName>
                 </artifactItem>
-                 
+
+                <artifactItem>
+                  <groupId>org.apache.uima</groupId>
+                  <artifactId>uimaj-ep-launcher</artifactId>
+                  <version>${item-maven-release-version}</version>
+                  <destFileName>org.apache.uima.launcher_${item-eclipse-release-version}.jar</destFileName>
+                </artifactItem>
+
+                <artifactItem>
+                  <groupId>org.apache.uima</groupId>
+                  <artifactId>uimaj-ep-cas-editor-ide</artifactId>
+                  <version>${item-maven-release-version}</version>
+                  <destFileName>org.apache.uima.caseditor.ide_${item-eclipse-release-version}.jar</destFileName>
+                </artifactItem>
+               
+                <!-- Deploy editor released with uima-as (later)  
                 <artifactItem>
                   <groupId>org.apache.uima</groupId>
                   <artifactId>uimaj-ep-deployeditor</artifactId>
@@ -160,7 +175,7 @@
                   <version>${item-maven-release-version}</version>
                   <destFileName>org.apache.uima.runtime.fragments.deployeditor_${item-eclipse-release-version}.jar</destFileName>
                 </artifactItem>
-                   
+                 -->
               </artifactItems>
               <outputDirectory>${project.build.directory}/work/plugins</outputDirectory>
             </configuration>
@@ -188,13 +203,14 @@
                   <destFileName>org.apache.uima.tools_${item-eclipse-release-version}.jar</destFileName>
                 </artifactItem>
                 
+                <!-- not yet 
                 <artifactItem>
                   <groupId>org.apache.uima</groupId>
                   <artifactId>uimaj-eclipse-feature-deployeditor</artifactId>
                   <version>${item-eclipse-release-version}</version>
                   <destFileName>org.apache.uima.as.deployeditor_${item-eclipse-release-version}.jar</destFileName>
                 </artifactItem>
-                  
+                   -->
               </artifactItems>
               <outputDirectory>${project.build.directory}/eclipse-update-site/features</outputDirectory>
             </configuration>
