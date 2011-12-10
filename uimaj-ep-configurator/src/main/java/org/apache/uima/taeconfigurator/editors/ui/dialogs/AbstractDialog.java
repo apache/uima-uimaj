@@ -157,6 +157,11 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
     c.setText(label);
     c.setToolTipText(tip);
   }
+  
+  protected void setTextAndTip(Label c, String label, String tip, int horizStyle, boolean horizGrab) {
+    setTextAndTip(c, label, tip);
+    c.setLayoutData(new GridData(horizStyle, SWT.BEGINNING, horizGrab, false));
+  }
 
   protected Composite new2ColumnComposite(Composite parent) {
     Composite twoCol = new Composite(parent, SWT.NONE);

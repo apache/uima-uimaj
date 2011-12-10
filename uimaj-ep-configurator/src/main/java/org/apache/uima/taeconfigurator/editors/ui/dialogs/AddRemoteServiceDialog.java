@@ -21,6 +21,7 @@ package org.apache.uima.taeconfigurator.editors.ui.dialogs;
 
 import java.text.MessageFormat;
 
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.ModifyEvent;
@@ -58,6 +59,8 @@ public class AddRemoteServiceDialog extends AbstractDialog {
   private CCombo serviceTypeCombo;
 
   private Text uriText;
+  
+  private Text endpointText;
 
   private Text keyText;
 
@@ -94,6 +97,38 @@ public class AddRemoteServiceDialog extends AbstractDialog {
   private boolean portNumberIsOK;
 
   private CCombo aeOrCcCombo;
+  
+  private Label endpointLabel;
+  
+  private Label uriLabel;
+
+  private Label timeoutProcessLabel;
+
+  private Label timeoutJmsGetmetaLabel;
+
+  private Text timeoutGetmetaText;
+
+  public String getmetaTimeout;
+
+  public String endpoint;
+
+  private Text timeoutJmsCpcText;
+
+  private Label timeoutJmsCpcLabel;
+
+  private Label binarySerializationLabel;
+
+  private CCombo binarySerializationCombo;
+
+  private Label ignoreProcessErrorsLabel;
+
+  private CCombo ignoreProcessErrorsCombo;
+
+  public String cpcTimeout;
+
+  public String binary_serialization;
+
+  public String ignore_process_errors;
 
   private class DialogModifyListener implements ModifyListener {
     public void modifyText(ModifyEvent e) {
@@ -128,33 +163,41 @@ public class AddRemoteServiceDialog extends AbstractDialog {
   protected Control createDialogArea(Composite parent) {
 
     Composite composite = (Composite) super.createDialogArea(parent);
+    
+    Composite tc1 = new2ColumnComposite(composite);
+    Label tempLabel;
+    
+    setTextAndTip(tempLabel = new Label(tc1, SWT.WRAP), "Service kind:", S_, SWT.BEGINNING, false);    
+    aeOrCcCombo = wideCCombo(tc1, "Specify whether the Service is an Analysis Engine or a Cas Consumer",
+            "AnalysisEngine", "CasConsumer");
 
-    createWideLabel(composite, "Service kind: Analysis Engine or Cas Consumer:");
+    setTextAndTip(tempLabel = new Label(tc1, SWT.WRAP), "Protocol Service Type", S_, SWT.BEGINNING, false);
+    serviceTypeCombo = wideCCombo(tc1, S_, "UIMA-AS JMS", "SOAP", "Vinci");
 
-    aeOrCcCombo = newCCombo(composite,
-            "Specify whether the Service is an Analysis Engine or a Cas Consumer");
-    aeOrCcCombo.add("AnalysisEngine");
-    aeOrCcCombo.add("CasConsumer");
-    aeOrCcCombo.select(0);
+    setTextAndTip(uriLabel = new Label(tc1, SWT.NONE), "URI of service or JMS Broker:",
+       "The URI for the service, e.g. localhost", SWT.BEGINNING, false);
+    uriText = wideTextInput(tc1, S_, m_dialogModifyListener);
 
-    createWideLabel(composite, "Protocol Service Type:");
+    setTextAndTip(endpointLabel = new Label(tc1, SWT.NONE), "Endpoint Name (JMS Service):",
+    "For UIMA-AS JMS Services only, the endpoint name", SWT.BEGINNING, false);
 
-    serviceTypeCombo = newCCombo(composite, S_);
-    serviceTypeCombo.add("SOAP");
-    serviceTypeCombo.add("Vinci");
-    serviceTypeCombo.select(0);
+    endpointText = wideTextInput(tc1, S_, m_dialogModifyListener);
 
-    createWideLabel(composite, "URI:");
+    setTextAndTip(binarySerializationLabel = new Label(tc1, SWT.NONE), "Binary Serialization (JMS Service):",
+        "For UIMA-AS JMS Services only, use binary serialzation (requires all type systems be identical)", 
+        SWT.BEGINNING, false);
 
-    uriText = new Text(composite, SWT.BORDER);
-    uriText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-    uriText.addModifyListener(m_dialogModifyListener);
+    binarySerializationCombo = wideCComboTF(tc1, S_);
+    
+    setTextAndTip(ignoreProcessErrorsLabel = new Label(tc1, SWT.NONE), "Ignore Process Errors (JMS Service):",
+    "For UIMA-AS JMS Services only, ignore processing errors");
+    ignoreProcessErrorsLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
 
-    createWideLabel(composite, "Key (a short mnemonic for this service):");
+    ignoreProcessErrorsCombo = wideCComboTF(tc1, S_);   
 
-    keyText = new Text(composite, SWT.BORDER);
-    keyText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-    keyText.addModifyListener(m_dialogModifyListener);
+    setTextAndTip(tempLabel = new Label(tc1, SWT.NONE), "Key (a short mnemonic for this service):",
+        "also used as part of the file name", SWT.BEGINNING, false);
+    keyText = wideTextInput(tc1, S_, m_dialogModifyListener);
     keyText.addVerifyListener(new DialogVerifyListener());
     keyTextPrev = ".xml";
 
@@ -165,10 +208,21 @@ public class AddRemoteServiceDialog extends AbstractDialog {
 
     createWideLabel(
             composite,
-            "Timeout, in milliseconds.  This is ignored for the Vinci protocol.  Specify 0 to wait forever. If not specified, a default timeout is used.");
-    timeoutText = new Text(composite, SWT.BORDER);
-    timeoutText.setEnabled(false);
+            "Timeouts, in milliseconds.  This is ignored for the Vinci protocol.  Specify 0 to wait forever. If not specified, a default timeout is used.");
+    
+    tc1 = new2ColumnComposite(composite);
+    
+    setTextAndTip(timeoutProcessLabel = new Label(tc1, SWT.NONE), "Timeout: Process:",
+        "Timeout for processing a CAS", SWT.BEGINNING, false);   
+    timeoutText = wideTextInput(tc1, S_);
 
+    setTextAndTip(timeoutJmsGetmetaLabel = new Label(tc1, SWT.NONE), "Timeout: (JMS) GetMeta:",
+    "Timeout for querying the metadata from a JMS service", SWT.BEGINNING, false);
+    timeoutGetmetaText = wideTextInput(tc1, S_);
+
+    setTextAndTip(timeoutJmsCpcLabel = new Label(tc1, SWT.NONE), "Timeout: (JMS) Collection Processing Complete:",
+    "Timeout for Collection Processing Complete", SWT.BEGINNING, false);   
+    timeoutJmsCpcText = wideTextInput(tc1, S_);
     createWideLabel(composite,
             "For the Vinci protocol, you can optionally specify the Host/Port for the Vinci Name Service");
     Composite tc = new2ColumnComposite(composite);
@@ -207,18 +261,66 @@ public class AddRemoteServiceDialog extends AbstractDialog {
     return composite;
   }
 
+  private CCombo wideCCombo(Composite tc, String tip, String ... entries) {
+    CCombo cc = newCCombo(tc, tip);
+    for (String e : entries) {
+      cc.add(e);
+    }
+    ((GridData) cc.getLayoutData()).grabExcessHorizontalSpace = true;;
+    cc.select(0);
+    return cc;
+  }
+  
+  private CCombo wideCComboTF(Composite tc, String tip) {
+    return wideCCombo(tc, tip, "false", "true");
+  }
+ 
+  private Text wideTextInput(Composite tc, String tip) {
+    return wideTextInput(tc, tip, null);
+  }
+  
+  private Text wideTextInput(Composite tc, String tip, DialogModifyListener listener) {
+    Text t = newText(tc, SWT.BORDER, tip);
+    t.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+    if (listener != null) {
+      t.addModifyListener(listener);
+    } else {
+      t.setEnabled(false);
+    }
+    return t;
+  }
+  
+  
   public void enableOK() {
-    boolean isVinci = serviceTypeCombo.getSelectionIndex() == 1;
+    boolean isVinci = serviceTypeCombo.getSelectionIndex() == 2;
+    boolean isJms = serviceTypeCombo.getSelectionIndex() == 0;
     vnsHostLabel.setEnabled(isVinci);
     vnsHostUI.setEnabled(isVinci);
     vnsPortLabel.setEnabled(isVinci);
     vnsPortUI.setEnabled(isVinci);
     timeoutText.setEnabled(!isVinci);
+    timeoutProcessLabel.setEnabled(!isVinci);
+    timeoutJmsGetmetaLabel.setEnabled(isJms);
+    timeoutGetmetaText.setEnabled(isJms);
+    endpointLabel.setEnabled(isJms);
+    endpointText.setEnabled(isJms);
+    timeoutJmsCpcLabel.setEnabled(isJms);
+    timeoutJmsCpcText.setEnabled(isJms);
+    binarySerializationLabel.setEnabled(isJms);
+    binarySerializationCombo.setEnabled(isJms);
+    binarySerializationCombo.setVisible(isJms);
+    ignoreProcessErrorsLabel.setEnabled(isJms);
+    ignoreProcessErrorsCombo.setEnabled(isJms);
+    ignoreProcessErrorsCombo.setVisible(isJms);
 
     boolean bEnableOk = (serviceTypeCombo.getText() != null && !serviceTypeCombo.getText().equals(
             ""))
             && (uriText != null && !uriText.getText().trim().equals(""))
             && (keyText != null && !keyText.getText().trim().equals(""));
+    
+    if (!bEnableOk) {
+      setErrorMessage("missing URI or key");
+    }
 
     portNumberIsOK = true;
     if (isVinci && vnsPortUI.getText().length() > 0) {
@@ -231,8 +333,16 @@ public class AddRemoteServiceDialog extends AbstractDialog {
         setErrorMessage("Invalid number, please correct.");
       }
     }
+    
+    if (isJms && 
+        (endpointText.getText() == null || 
+         endpointText.getText().trim().equals(""))) {
+      bEnableOk = false;
+      setErrorMessage("missing JMS endpoint");
+    }    
+    
     okButton.setEnabled(bEnableOk);
-    if (portNumberWasBad && portNumberIsOK) {
+    if (bEnableOk) {
       setErrorMessage("");
       portNumberWasBad = false;
     }
@@ -271,6 +381,11 @@ public class AddRemoteServiceDialog extends AbstractDialog {
     vnsHost = vnsHostUI.getText();
     vnsPort = vnsPortUI.getText();
     CDEpropertyPage.setImportByDefault(editor.getProject(), isImportByName ? "name" : "location");
+    getmetaTimeout = timeoutGetmetaText.getText();
+    cpcTimeout = timeoutJmsCpcText.getText();
+    endpoint = endpointText.getText();
+    binary_serialization = binarySerializationCombo.getText();
+    ignore_process_errors = ignoreProcessErrorsCombo.getText();
   }
 
   public boolean isValid() {

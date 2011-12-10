@@ -44,6 +44,7 @@ import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.analysis_engine.metadata.FlowControllerDeclaration;
 import org.apache.uima.analysis_engine.metadata.SofaMapping;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.resource.CustomResourceSpecifier;
 import org.apache.uima.resource.ExternalResourceDependency;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.PearSpecifier;
@@ -1254,11 +1255,19 @@ implements Listener, StandardStrings {
 
     // code to open selected file, by location or by name
     if (null != res) {
-      if (inputDescription instanceof URISpecifier)
+      if ((inputDescription instanceof URISpecifier) ||
+          isJmsDescriptor(inputDescription)) {
         editor.openTextEditor(path);
+      }
       else
         editor.open(path);
     }
+  }
+  
+  protected boolean isJmsDescriptor (XMLizable inputDescription) {
+    return (inputDescription instanceof CustomResourceSpecifier) &&
+    ("org.apache.uima.aae.jms_adapter.JmsAnalysisEngineServiceAdapter".equals(
+        ((CustomResourceSpecifier)inputDescription).getResourceClassName()));
   }
 
   private Point getAbsoluteLocation(Control control, int x, int y) {

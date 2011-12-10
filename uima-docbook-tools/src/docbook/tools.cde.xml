@@ -330,23 +330,28 @@ under the License.
         specifies a remote engine (just as if you were adding a non-remote engine) or use the
         Add Remote button which will create a remote descriptor, save it, and then import it,
         all in one operation. The Add Remote button enables you to easily specify the
-        information needed to create a Service Client descriptor for a remote AE - one that
-        runs on a different computer connected over the network. The Service Client
-        descriptor is described in <olink targetdoc="&uima_docs_ref;"
-          targetptr="ugr.ref.xml.component_descriptor.service_client"/>. The Add
-        Remote button creates this descriptor, saves it as a file in the workspace, and
+        information needed to create a remote service descriptor for a remote AE - one that
+        runs on a different computer connected over the network. There are 3 kinds of 
+        these: two are variants of the Service Client
+        descriptor, described in <olink targetdoc="&uima_docs_ref;"
+          targetptr="ugr.ref.xml.component_descriptor.service_client"/>;
+          the other is the UIMA-AS JMS Service descriptor, described in
+          <olink targetdoc="&uima_docs_as;"  
+          targetptr="ugr.async.ov.concepts.jms_descriptor"/>. The Add
+        Remote button creates an instance of one of these descriptors, 
+        saves it as a file in the workspace, and
         imports it into the aggregate.</para>
       
-      <para>Of course, if you already have a Service Client descriptor, you can add it to the
-        set of delegates, just like adding other kinds of analysis engines.</para>
+      <para>Of course, if you already have a remote service descriptor, you can add it to the
+        set of delegates using the <code>Add</code> button, just like adding other kinds of analysis engines.</para>
       
-      <para>After clicking on Add Remote, the following dialog is displayed:
+      <para>After clicking on <code>Add Remote</code>, the following dialog is displayed:
         
         
         <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="5.7in" format="JPG" fileref="&imgroot;image014.jpg"/>
+          <imagedata width="4.9in" format="JPG" fileref="&imgroot;image014v2.jpg"/>
         </imageobject>
         <textobject><phrase>Adding a remote client to an aggregate</phrase>
         </textobject>
@@ -354,8 +359,11 @@ under the License.
     </screenshot></para>
       
       <para>To define a remote service you specify the Service Kind, Protocol Service Type,
-        URI and Key. You can also specify a Timeout in milliseconds, used by the SOAP service,
-        and a VNS Host and Port used by the Vinci Service. Just like when one adds an engine from
+        URI and Key. You can also specify a Timeout in milliseconds, used by the SOAP and
+        JMS services,
+        and a VNS Host and Port used by the Vinci Service. 
+        The JMS service has additional timeouts and other parameters you may specify. 
+        Just like when one adds an engine from
         the file system, you have the option of adding the engine to the end of the flow. The
         Component Descriptor Editor currently only supports Vinci and SOAP services using
         this dialog.</para>
@@ -374,7 +382,10 @@ under the License.
       <para>If you are using the Vinci protocol, it requires that you specify the location of
         the Vinci Name Server (an IP address and a Port number). You can specify these in the
         service descriptor, or globally, for your Eclipse workspace, using the Eclipse menu
-        item: Window &rarr; Preferences... &rarr; UIMA Preferences. If the remote service
+        item: Window &rarr; Preferences... &rarr; UIMA Preferences.
+      </para>
+      
+      <para>If the remote service
         is available (up and running), additional operations become possible. For
         instance, hovering the mouse over the remote descriptor will show the description
         metadata from the remote service.</para>

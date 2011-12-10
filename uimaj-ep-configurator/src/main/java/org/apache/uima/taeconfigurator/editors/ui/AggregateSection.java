@@ -417,6 +417,16 @@ public class AggregateSection extends AbstractSection {
           "  <protocol>{2}</protocol>\n" + // SOAP or Vinci
           "  <timeout>{3}</timeout>" + "  {4}" + // <parameters> for VNS </parameters>
           "\n</uriSpecifier>";
+  
+  private final static String REMOTE_JMS_TEMPLATE = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" 
+    + "<customResourceSpecifier xmlns=\"http://uima.apache.org/resourceSpecifier\">\n"
+    + "  <resourceClassName>org.apache.uima.aae.jms_adapter.JmsAnalysisEngineServiceAdapter</resourceClassName>\n"
+    + "  <parameters>\n"
+    + "    <parameter name=\"brokerURL\" value=\"{0}\"/>\n"
+    + "    <parameter name=\"endpoint\"  value=\"{1}\"/>\n"
+    + "{2}" 
+    + "  </parameters>\n"
+    + "</customResourceSpecifier>";
 
   private void handleAddRemote() {
     String sDescriptorPath = editor.getFile().getParent().getLocation().toString() + '/';
@@ -426,7 +436,10 @@ public class AggregateSection extends AbstractSection {
       return;
 
     String sServiceType = dialog.getSelectedServiceTypeName();
-    if (sServiceType != null && !sServiceType.equals("SOAP") && !sServiceType.equals("Vinci")) {
+    if (sServiceType != null &&
+        !sServiceType.equals("UIMA-AS JMS") &&
+        !sServiceType.equals("SOAP") && 
+        !sServiceType.equals("Vinci")) {
       return;
     }
     String sURI = dialog.getSelectedUri();
@@ -440,19 +453,37 @@ public class AggregateSection extends AbstractSection {
 
     PrintWriter printWriter = setupToPrintFile(dialog.genFilePath);
     if (null != printWriter) {
-      String vnsHostPort = "";
-      if (dialog.vnsHost.length() > 0) {
-        vnsHostPort = MessageFormat.format("    <parameter name=\"VNS_HOST\" value=\"{0}\"/>\n",
-                new Object[] { dialog.vnsHost });
+      if (!sServiceType.equals("UIMA-AS JMS")) {
+        String vnsHostPort = "";
+        if (dialog.vnsHost.length() > 0) {
+          vnsHostPort = MessageFormat.format("    <parameter name=\"VNS_HOST\" value=\"{0}\"/>\n",
+                    new Object[] { dialog.vnsHost });
+        }
+        if (dialog.vnsPort.length() > 0) {
+          vnsHostPort += MessageFormat.format("    <parameter name=\"VNS_PORT\" value=\"{0}\"/>\n",
+                  new Object[] { dialog.vnsPort });
+        }
+        
+        if (vnsHostPort.length() > 0)
+          vnsHostPort = "\n  <parameters>" + vnsHostPort + "  </parameters>";
+      
+      
+        printWriter.println(MessageFormat.format(REMOTE_TEMPLATE, new Object[] { dialog.aeOrCc, sURI,
+            sServiceType, dialog.timeout, vnsHostPort }));
+      } else { 
+        // is UIMA-AS JMS
+        StringBuilder sb = new StringBuilder();
+        addParam(sb, "timeout", dialog.timeout);
+        addParam(sb, "getmetatimeout", dialog.getmetaTimeout);
+        addParam(sb, "cpctimeout", dialog.cpcTimeout);
+        addParam(sb, "binary_serialization", dialog.binary_serialization);
+        addParam(sb, "ignore_process_errors", dialog.ignore_process_errors);
+        printWriter.println(MessageFormat.format(REMOTE_JMS_TEMPLATE, new Object[] {
+            sURI, // brokerUrl
+            dialog.endpoint, // endpoint
+            sb.toString()
+        }));   
       }
-      if (dialog.vnsPort.length() > 0) {
-        vnsHostPort += MessageFormat.format("    <parameter name=\"VNS_PORT\" value=\"{0}\"/>\n",
-                new Object[] { dialog.vnsPort });
-      }
-      if (vnsHostPort.length() > 0)
-        vnsHostPort = "\n  <parameters>" + vnsHostPort + "  </parameters>";
-      printWriter.println(MessageFormat.format(REMOTE_TEMPLATE, new Object[] { dialog.aeOrCc, sURI,
-          sServiceType, dialog.timeout, vnsHostPort }));
       printWriter.close();
 
       boolean bSuccess = addDelegate(dialog.genFilePath, sKey, sKey, dialog.isImportByName);
@@ -464,6 +495,13 @@ public class AggregateSection extends AbstractSection {
         refresh();
       }
     }
+  }
+  
+  private StringBuilder addParam(StringBuilder sb, String name, String value) {
+    if (value != null && value.length() > 0) {
+      sb = sb.append("      <parameter name=\"").append(name).append("\" value=\"").append(value).append("\"/>\n");
+    }
+    return sb;
   }
 
   private static final String[] delegateComponentStringHeadersLC = new String[] {
@@ -565,7 +603,9 @@ public class AggregateSection extends AbstractSection {
     if (!(inputDescription instanceof AnalysisEngineDescription)
             && !(inputDescription instanceof CasConsumerDescription)
             && !(inputDescription instanceof URISpecifier)
-            && !(inputDescription instanceof PearSpecifier)) {
+            && !(inputDescription instanceof PearSpecifier)
+            && !(isJmsDescriptor(inputDescription))
+       ) {
       Utility
               .popMessage(
                       "Invalid kind of descriptor",
@@ -591,7 +631,7 @@ public class AggregateSection extends AbstractSection {
     finishAggregateChangeAction();
     return true;
   }
-
+  
   private boolean isNewKey(String keyName) {
     for (int i = 0; i < filesTable.getItemCount(); i++) {
       if (filesTable.getItem(i).getText(1).equals(keyName)) {
