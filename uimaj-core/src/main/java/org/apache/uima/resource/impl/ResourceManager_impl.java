@@ -110,7 +110,7 @@ public class ResourceManager_impl implements ResourceManager {
    * Cache of imported descriptors, so that parsed objects can be reused if the
    * same URL is imported more than once.
    */
-  private Map<String,XMLizable> importCache = new HashMap<String,XMLizable>();
+  private Map<String,XMLizable> importCache = Collections.synchronizedMap(new HashMap<String,XMLizable>());
   
   /**
    * Creates a new <code>ResourceManager_impl</code>.
