@@ -109,6 +109,13 @@ public class ResourceManager_impl implements ResourceManager {
   /**
    * Cache of imported descriptors, so that parsed objects can be reused if the
    * same URL is imported more than once.
+   * 
+   * Use Case where synchronization is needed:
+   *   running multiple instances on multiple threads, sharing a common resource manager,
+   *   the initialization that merges typePriorities happens lazily, when using Cas Multipliers,
+   *   and occurs when the first getCas call happens on a thread.  Although these calls
+   *   are synchronized among themselves, any other use of this map that might occur
+   *   simultaneously is not.
    */
   private Map<String,XMLizable> importCache = Collections.synchronizedMap(new HashMap<String,XMLizable>());
   
