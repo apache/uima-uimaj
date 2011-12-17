@@ -104,6 +104,7 @@ public class ResourceManager_impl implements ResourceManager {
   private UIMAClassLoader uimaCL = null;
 
   /** CasManager - manages creation and pooling of CASes. */
+  // gets and sets of this are synchronized
   protected CasManager mCasManager = null;
 
   /**
@@ -134,7 +135,7 @@ public class ResourceManager_impl implements ResourceManager {
   * @param uimaCL
   * @param resolveResource
   */
- public void setExtensionClassPath(UIMAClassLoader uimaCL, boolean resolveResource) {
+ public synchronized void setExtensionClassPath(UIMAClassLoader uimaCL, boolean resolveResource) {
    this.uimaCL = uimaCL;
    
    if (resolveResource) {
@@ -148,7 +149,7 @@ public class ResourceManager_impl implements ResourceManager {
   /**
    * @see org.apache.uima.resource.ResourceManager#setExtensionClassPath(java.lang.String, boolean)
    */
-  public void setExtensionClassPath(String classpath, boolean resolveResource)
+  public synchronized void setExtensionClassPath(String classpath, boolean resolveResource)
           throws MalformedURLException {
     // create UIMA extension ClassLoader with the given classpath
     uimaCL = new UIMAClassLoader(classpath, this.getClass().getClassLoader());
@@ -163,7 +164,7 @@ public class ResourceManager_impl implements ResourceManager {
    * @see org.apache.uima.resource.ResourceManager#setExtensionClassPath(ClassLoader,java.lang.String,
    *      boolean)
    */
-  public void setExtensionClassPath(ClassLoader parent, String classpath, boolean resolveResource)
+  public synchronized void setExtensionClassPath(ClassLoader parent, String classpath, boolean resolveResource)
           throws MalformedURLException {
     // create UIMA extension ClassLoader with the given classpath
     uimaCL = new UIMAClassLoader(classpath, parent);
@@ -177,7 +178,7 @@ public class ResourceManager_impl implements ResourceManager {
   /**
    * @see org.apache.uima.resource.ResourceManager#getExtensionClassLoader()
    */
-  public ClassLoader getExtensionClassLoader() {
+  public synchronized ClassLoader getExtensionClassLoader() {
     return uimaCL;
   }
 
