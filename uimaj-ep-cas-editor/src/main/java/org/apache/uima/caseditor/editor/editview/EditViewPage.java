@@ -54,8 +54,8 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.ColumnViewer;
-import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -144,8 +144,7 @@ final class EditViewPage extends Page implements ISelectionListener {
           CellEditor editor;
 
           if (value.getFeature().getRange().getName().equals(CAS.TYPE_NAME_BOOLEAN)) {
-            editor = new ComboBoxCellEditor(viewer.getTree(), new String[]{"false", "true"},
-                    SWT.READ_ONLY);
+            editor = new CheckboxCellEditor(viewer.getTree(), SWT.CHECK);
           }
           else {
             editor = new TextCellEditor(viewer.getTree());
@@ -167,9 +166,7 @@ final class EditViewPage extends Page implements ISelectionListener {
         CellEditor editor;
 
         if (arrayFS instanceof BooleanArrayFS) {
-          editor = new ComboBoxCellEditor(viewer.getTree(), new String[]{"false", "true"},
-                  SWT.READ_ONLY);
-          editor.setStyle(SWT.READ_ONLY);
+          editor = new CheckboxCellEditor(viewer.getTree(), SWT.CHECK);
         }
         else {
           editor = new TextCellEditor(viewer.getTree());
@@ -207,19 +204,6 @@ final class EditViewPage extends Page implements ISelectionListener {
       }
     }
 
-    private int booleanToInt(boolean value) {
-      if (value) {
-        return 1;
-      }
-      else {
-        return 0;
-      }
-    }
-
-    private boolean intToBoolean(int value) {
-      return value == 1;
-    }
-
     @Override
     protected Object getValue(Object element) {
 
@@ -234,8 +218,7 @@ final class EditViewPage extends Page implements ISelectionListener {
         }
         else {
           // for booleans
-          return booleanToInt(featureValue.getFeatureStructure().
-              getBooleanValue(featureValue.getFeature()));
+          return Primitives.getPrimitive(featureValue.getFeatureStructure(), featureValue.getFeature());
         }
 
       }
@@ -247,7 +230,7 @@ final class EditViewPage extends Page implements ISelectionListener {
             return value.get().toString();
           }
           else {
-            return booleanToInt((Boolean) value.get());
+            return value.get();
           }
       }
       else {
@@ -276,8 +259,7 @@ final class EditViewPage extends Page implements ISelectionListener {
             }
           }
           else {
-            featureValue.getFeatureStructure().setBooleanValue(featureValue.getFeature(),
-                    intToBoolean((Integer) value));
+            featureValue.getFeatureStructure().setBooleanValue(featureValue.getFeature(),(Boolean) value);
           }
           document.update(featureValue.getFeatureStructure());
 
@@ -291,8 +273,7 @@ final class EditViewPage extends Page implements ISelectionListener {
             arrayValue.set((String) value);
           }
           else {
-            arrayValue.set(Boolean.toString(
-                    intToBoolean((Integer) value)).toString());
+            arrayValue.set(value.toString());
           }
 
           document.update(arrayValue.getFeatureStructure());
@@ -303,6 +284,7 @@ final class EditViewPage extends Page implements ISelectionListener {
       }
     }
   }
+
 
   final class DeleteFeatureStructureValue extends BaseSelectionListenerAction {
 
@@ -375,14 +357,15 @@ final class EditViewPage extends Page implements ISelectionListener {
 
 
     FeatureStructure createFS(Type type, int arraySize) {
-    		
-      if (type.isPrimitive())
-    	  throw new IllegalArgumentException("Cannot create FS for primitive type!");
-      
+
+      if (type.isPrimitive()) {
+        throw new IllegalArgumentException("Cannot create FS for primitive type!");
+      }
+
       FeatureStructure fs;
-      
+
       TypeSystem ts = document.getCAS().getTypeSystem();
-      
+
       if (type.isArray()) {
           if (type.getName().equals(CAS.TYPE_NAME_BOOLEAN_ARRAY)) {
               fs = document.getCAS().createBooleanArrayFS(arraySize);
@@ -404,23 +387,23 @@ final class EditViewPage extends Page implements ISelectionListener {
               fs = document.getCAS().createArrayFS(arraySize);
             } else {
               throw new CasEditorError("Unkown array type: " + type.getName() + "!");
-            }  
+            }
       }
       else if (ts.subsumes(ts.getType(CAS.TYPE_NAME_ANNOTATION), type)) {
-    	
-    	// get begin of selection from editor, if any  
-    	// TODO: Add an interface to retrieve the span from the editor  
-    	
+
+    	// get begin of selection from editor, if any
+    	// TODO: Add an interface to retrieve the span from the editor
+
     	int begin = 0;
     	int end = 0;
-    	
+
     	if (editor instanceof AnnotationEditor) {
     	  Point selection = ((AnnotationEditor) editor).getSelection();
-    	  
+
     	  begin = selection.x;
     	  end = selection.y;
     	}
-    	
+
     	fs = document.getCAS().createAnnotation(type, begin, end);
       }
       else if (!type.isArray()) {
@@ -429,7 +412,7 @@ final class EditViewPage extends Page implements ISelectionListener {
       else {
         throw new TaeError("Unexpected error!");
       }
-      
+
       return fs;
     }
 
@@ -556,20 +539,21 @@ final class EditViewPage extends Page implements ISelectionListener {
 
   private ICasDocument document;
   private ICasEditor editor;
-  
+
   private PinAction pinAction;
 
   private final EditView editView;
 
   EditViewPage(EditView editView, ICasEditor editor, ICasDocument document) {
 
-	if (editView == null || document == null)
-        throw new IllegalArgumentException("Parameters must not be null!");
+	if (editView == null || document == null) {
+		throw new IllegalArgumentException("Parameters must not be null!");
+	}
 
     this.editView = editView;
     this.editor = editor;
     this.document = document;
-    
+
   }
 
   @Override
@@ -596,7 +580,7 @@ final class EditViewPage extends Page implements ISelectionListener {
 
     valueColumn.setEditingSupport(new ValueEditingSupport(viewer));
 
-    
+
     FeatureStructureContentProvider contentProvider =
         new FeatureStructureContentProvider(document);
 
@@ -650,13 +634,13 @@ final class EditViewPage extends Page implements ISelectionListener {
 
               // this can fail
               FeatureValue value = (FeatureValue) tableItem.getData();
-              
+
               TypeSystem typeSystem = value.getFeatureStructure().getCAS().getTypeSystem();
-              
+
               Type range = value.getFeature().getRange();
 
               FeatureStructure dragFeatureStructure = (FeatureStructure) event.data;
-              
+
               if (typeSystem.subsumes(range, dragFeatureStructure.getType())) {
 
                 FeatureStructure target = value.getFeatureStructure();
@@ -750,11 +734,11 @@ final class EditViewPage extends Page implements ISelectionListener {
   public void setActionBars(IActionBars actionBars) {
     // pin action
     pinAction = new PinAction();
-    
+
     pinAction.setText("Pin");
     pinAction.setImageDescriptor(CasEditorPlugin.getTaeImageDescriptor(Images.PIN));
     actionBars.getToolBarManager().add(pinAction);
-    
+
     CreateFeatureStructrueValue createAction = new CreateFeatureStructrueValue();
     createAction.setImageDescriptor(CasEditorPlugin.getTaeImageDescriptor(Images.ADD));
     actionBars.getToolBarManager().add(createAction);
@@ -777,12 +761,12 @@ final class EditViewPage extends Page implements ISelectionListener {
 
     if (getSite().getPage().getActiveEditor() == editor) {
       if (selection instanceof IStructuredSelection) {
-  
+
         FeatureStructureSelection fsSelection = new FeatureStructureSelection(
                 (IStructuredSelection) selection);
-  
+
         if (fsSelection.size() == 1 && !pinAction.isChecked()) {
-  
+
           // filter out selection which are cause by this view itself
           if (editView != part) {
             viewer.setInput(fsSelection.toList().get(0));
