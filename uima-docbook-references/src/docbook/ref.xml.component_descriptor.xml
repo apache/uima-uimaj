@@ -1231,7 +1231,7 @@ uima.tcas.Annotation.</programlisting>
               true except for CAS Consumer components.</para>
                        
             <para><literal>multipleDeploymentAllowed</literal>, if true, allows the
-              component to be deployed multiple times to increase performance throught
+              component to be deployed multiple times to increase performance through
               scale-out techniques. If it is not specified, the default value is true,
               except for CAS Consumer and Collection Reader components.</para>
 
