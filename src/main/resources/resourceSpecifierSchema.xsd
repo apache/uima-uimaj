@@ -133,7 +133,11 @@
 
 	<complexType name="DelegateAnalysisEngineType">
 		<choice>
-			<element ref="rs:resourceSpecifier" />
+      <element ref="rs:taeDescription"/>
+      <element ref="rs:analysisEngineDescription"/>
+      <element ref="rs:uriSpecifier"/>
+      <element ref="rs:customResourceSpecifier"/>
+      <element ref="rs:pearSpecifier"/>
  			<element name="import" type="rs:ImportType" />
 		</choice>
 		<attribute name="key" type="Name" />
@@ -141,7 +145,7 @@
 
 	<complexType name="FlowControllerDeclarationType">
 		<choice>
-			<element ref="rs:resourceSpecifier" />
+			<element ref="rs:flowControllerDescription" />
  			<element name="import" type="rs:ImportType" />
 		</choice>
 		<attribute name="key" type="Name" />
@@ -449,7 +453,7 @@
 			</element>
 		</sequence>
 	</complexType>
-
+	
 	<complexType name="TypeOrFeatureNameListType">
 		<sequence>
 			<group ref="rs:TypeOrFeature" minOccurs="0" maxOccurs="unbounded" />
@@ -533,7 +537,13 @@
 					<sequence>
 						<element name="name" type="string" />
 						<element name="description" type="string" />
-						<element ref="rs:resourceSpecifier" />
+						<choice>
+              <element ref="rs:fileResourceSpecifier" />
+              <element ref="rs:fileLanguageResourceSpecifier" />
+              <element ref="rs:customResourceSpecifier" />
+              <element ref="rs:configurableDataResourceSpecifier" />
+              <element ref="rs:uriSpecifier" />  <!-- a test case tests this -->
+						</choice>						
 						<element name="implementationName" type="string" minOccurs="0" />
 					</sequence>
 				</complexType>
@@ -575,6 +585,14 @@
   <element name="casInitializerDescription" type="rs:CollectionProcessingComponentDescriptionType"/>
   <element name="casConsumerDescription" type="rs:CollectionProcessingComponentDescriptionType"/>
   
+  <!-- similar to AnalysisEngineDescriptionType
+       drops some fields, and renames others 
+       drops: primitive, flowController, sofaMappings (only appropriate with aggregates)
+       renames: annotatorImplementationName -> implementationName
+                analysisEngineMetaData -> processingResourceMetaData
+       same: frameworkImplementation, externalResourceDependencies, resourceManagerConfiguration
+  -->
+           
   <complexType name="CollectionProcessingComponentDescriptionType">
     <sequence>
       <element name="frameworkImplementation" type="string" />
