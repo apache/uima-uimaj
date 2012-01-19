@@ -350,7 +350,8 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
           "resourceCreationSpecifier", new PropertyXmlInfo[] {
               new PropertyXmlInfo("frameworkImplementation"),
-              new PropertyXmlInfo("implementationName"), new PropertyXmlInfo("metaData", null),
+              new PropertyXmlInfo("implementationName"), 
+              new PropertyXmlInfo("metaData", null),
               new PropertyXmlInfo("externalResourceDependencies"),
               new PropertyXmlInfo("externalResources"),
               new PropertyXmlInfo("resourceManagerConfiguration", null), });
