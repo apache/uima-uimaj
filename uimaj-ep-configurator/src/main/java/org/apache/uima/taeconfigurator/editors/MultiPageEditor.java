@@ -154,6 +154,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.osgi.framework.Bundle;
+import org.w3c.dom.Node;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
@@ -205,6 +206,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   public final int INITIAL_SIZE_TYPE_COLLECTIONS = 20;
 
   public final int INITIAL_SIZE_FEATURE_COLLECTIONS = 40;
+  
+  public final boolean PRESERVE_COMMENTS = true;
 
   // ******************************
 
@@ -222,6 +225,7 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
 
   private TypeSystemDescription importedTypeSystemDescription = null;
 
+  private Node xmlInfoset = null;  // captures comments and ignorableWhitespace
   /**
    * Key = unique ID of included AE in aggregate Value = AnalysisEngineSpecification or URISpecifier
    * if remote This value is obtained from aeDescription.getDelegateAnalysisEngineSpecifiers() for
@@ -957,7 +961,7 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
     // leaves isBadXML set, if it can't parse but isn't throwing
     isContextLoaded = false;
     try {
-      parseSource(input, filePathName);
+      parseSource(input, filePathName, PRESERVE_COMMENTS);
     } catch (MultilevelCancel e) {
       throw new PartInitException("Operation Cancelled");
     }
@@ -974,15 +978,15 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
 
   private IUimaEditorExtension extensionEditor;
   
-  private void parseSource(XMLInputSource input, String filePathName) throws PartInitException {
+  private void parseSource(XMLInputSource input, String filePathName, boolean preserveComments) throws PartInitException {
     extensionEditor = null;
-    parseSourceInner(input, filePathName);
+    parseSourceInner(input, filePathName, preserveComments);
   }
   
-  private void parseSourceInner(XMLInputSource input, String filePathName) throws PartInitException {
+  private void parseSourceInner(XMLInputSource input, String filePathName, boolean preserveComments) throws PartInitException {
     XMLizable inputDescription = null;
     try {
-      inputDescription = AbstractSection.parseDescriptor(input);
+      inputDescription = AbstractSection.parseDescriptor(input, preserveComments);
       if (inputDescription instanceof AnalysisEngineDescription) {
         validateDescriptorType(DESCRIPTOR_AE);
         setAeDescription((AnalysisEngineDescription) inputDescription);
@@ -1039,7 +1043,7 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
             // exception go away - so try reparsing.
                         
             try {
-              parseSourceInner(new XMLInputSource(input.getURL()), filePathName);
+              parseSourceInner(new XMLInputSource(input.getURL()), filePathName, preserveComments);
             } catch (IOException e1) {
               Utility.popMessage(
                   "Internal Error",
@@ -1288,7 +1292,7 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
     TypeSystemDescription oldTsdWithResolvedImports = mergedTypeSystemDescription;
 
     try {
-      parseSource(input, filePathName); // sets isBadXML to false if OK
+      parseSource(input, filePathName, true); // sets isBadXML to false if OK
     } catch (PartInitException e1) { // if user switched the kind of descriptor
       Utility.popMessage(Messages.getString("MultiPageEditor.20"), //$NON-NLS-1$
               getMessagesToRootCause(e1), MessageDialog.ERROR);
@@ -1411,7 +1415,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
     try {
       XMLSerializer xmlSerializer = new XMLSerializer(true);
       xmlSerializer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", Integer.valueOf(
-              MultiPageEditorContributor.getXMLindent()).toString());
+            MultiPageEditorContributor.getXMLindent()).toString());
+      xmlSerializer.setIndent(false);
       xmlSerializer.setWriter(writer);
       ContentHandler contentHandler = xmlSerializer.getContentHandler();
       contentHandler.startDocument();
@@ -1720,7 +1725,7 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
         }
         if (null != input)
           try {
-            parseSource(input, contextFile);
+            parseSource(input, contextFile, !PRESERVE_COMMENTS);
           } catch (PartInitException e) {
             showContextLoadFailureMessage(e, contextFile);
             throw new MultilevelCancel();

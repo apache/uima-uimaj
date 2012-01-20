@@ -1422,8 +1422,13 @@ implements Listener, StandardStrings {
   }
 
   public static XMLizable parseDescriptor(XMLInputSource input) throws InvalidXMLException {
+    return parseDescriptor(input, false);
+  }
+  
+  public static XMLizable parseDescriptor(XMLInputSource input, boolean preserveComments) throws InvalidXMLException {
     // turn off environment variable expansion
     XMLParser.ParsingOptions parsingOptions = new XMLParser.ParsingOptions(false);
+    parsingOptions.preserveComments = preserveComments;
     XMLParser parser = UIMAFramework.getXMLParser();
     // disabled - error messages from XML validation not very helpful
     // parser.enableSchemaValidation(true);
