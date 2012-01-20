@@ -65,6 +65,9 @@ public class CpeResourceManagerConfigurationImpl extends MetaDataObject_impl imp
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
           throws InvalidXMLException {
     setHref(aElement.getAttribute("href"));
+    if (aOptions.preserveComments) {
+      setInfoset(aElement);
+    }
   }
 
   /**
