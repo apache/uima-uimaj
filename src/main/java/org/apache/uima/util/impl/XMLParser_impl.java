@@ -137,7 +137,7 @@ public class XMLParser_impl implements XMLParser {
 
       // Turn on namespace support
       factory.setNamespaceAware(true);        
-      SAXParser parser = factory.newSAXParser();  // in the future, if performance issue, can save this , and reuse with reset()
+      SAXParser parser = factory.newSAXParser();  // unless multi-threaded, in the future, if performance issue, can save this , and reuse with reset()
         
       XMLReader reader = parser.getXMLReader();
       reader.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
@@ -173,7 +173,9 @@ public class XMLParser_impl implements XMLParser {
       // Parse with SaxDeserializer
       SaxDeserializer deser = new SaxDeserializer_impl(this, aOptions);
       reader.setContentHandler(deser);
-      reader.setProperty ("http://xml.org/sax/properties/lexical-handler", deser);
+      if (aOptions.preserveComments) {
+        reader.setProperty ("http://xml.org/sax/properties/lexical-handler", deser);
+      }
       reader.parse(input);
 
       // if there was an exception, throw it
@@ -287,11 +289,20 @@ public class XMLParser_impl implements XMLParser {
               UIMA_IllegalStateException.COULD_NOT_INSTANTIATE_XMLIZABLE, new Object[] { cls
                       .getName() }, e);
     }
-
-    // construct the XMLizable object from the XML element
-    object.buildFromXMLElement(aElement, this, aOptions);
+    
+    callBuildFromXMLElement(aElement, object, aOptions);
 
     return object;
+  }
+  
+  private void callBuildFromXMLElement(Element aElement, XMLizable object, ParsingOptions aOptions) 
+                   throws InvalidXMLException {
+    if (aOptions.preserveComments && (object instanceof MetaDataObject_impl)) {
+      ((MetaDataObject_impl)object).setInfoset(aElement);
+    }
+
+    object.buildFromXMLElement(aElement, this, aOptions);
+    
   }
 
   /*
@@ -326,8 +337,7 @@ public class XMLParser_impl implements XMLParser {
     }
 
     // construct the XMLizable object from the XML element
-    object.buildFromXMLElement(aElement, this, aOptions);
-
+    callBuildFromXMLElement(aElement, object, aOptions);
     return object;
   }
 

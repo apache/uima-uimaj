@@ -815,13 +815,18 @@ public interface XMLParser {
      * @deprecated XInclude is no longer supported
      */
     @Deprecated
-	public boolean expandXIncludes;
+	  public boolean expandXIncludes;
 
     /**
      * Whether to expand &lt;envVarRef&gt;VARNAME&lt;/envVarRef&gt; elements by substituting the
      * value of the System proprery VARNAME.
      */
     public boolean expandEnvVarRefs;
+    
+    /**
+     * Whether to preserve comments and ignorable whitespace
+     */
+    public boolean preserveComments = false;
 
     /**
      * Creates a new ParsingOptions object.
@@ -834,7 +839,7 @@ public interface XMLParser {
      * @deprecated XInclude is no longer supported
      */
     @Deprecated
-	public ParsingOptions(boolean aExpandXIncludes, boolean aExpandEnvVarRefs) {
+	  public ParsingOptions(boolean aExpandXIncludes, boolean aExpandEnvVarRefs) {
       expandXIncludes = aExpandXIncludes;
       expandEnvVarRefs = aExpandEnvVarRefs;
     }

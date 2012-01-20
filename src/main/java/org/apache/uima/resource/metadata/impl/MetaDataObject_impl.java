@@ -49,20 +49,25 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.NameClassPair;
 import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.XMLSerializer;
+import org.apache.uima.util.XMLSerializer.CharacterValidatingContentHandler;
 import org.apache.uima.util.XMLizable;
+import org.w3c.dom.CharacterData;
 import org.w3c.dom.Comment;
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
+import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * Abstract base class for all MetaDataObjects in the reference implementation. Provides basic
- * support for getting and setting property values given their names, by storing all attribute
- * values in a HashMap keyed on attribute name.
+ * support for getting and setting property values given their names, using bean introspection and reflection.
  * <p>
  * Also provides the ability to write objects to XML and build objects from their DOM
  * representation, as required to implement the {@link XMLizable} interface, which is a
@@ -92,6 +97,13 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
 
   private transient URL mSourceUrl;
   
+  // This is only used if we are capturing comments and ignorable whitespace in the XML
+  private transient Node infoset = null; // by default, set to null
+  
+  public void setInfoset(Node infoset) {
+    this.infoset = infoset;
+  }
+
   /**
    * Creates a new <code>MetaDataObject_impl</code> with null attribute values
    */
@@ -549,11 +561,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    *          a Writer to which the XML string will be written
    */
   public void toXML(Writer aWriter) throws SAXException, IOException {
-    XMLSerializer sax2xml = new XMLSerializer(aWriter);
-    ContentHandler contentHandler = sax2xml.getContentHandler();
-    contentHandler.startDocument();
-    toXML(sax2xml.getContentHandler(), true);
-    contentHandler.endDocument();
+    toXML(new XMLSerializer(aWriter));
   }
 
   /**
@@ -563,11 +571,14 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    *          an OutputStream to which the XML string will be written
    */
   public void toXML(OutputStream aOutputStream) throws SAXException, IOException {
-    XMLSerializer sax2xml = new XMLSerializer(aOutputStream);
+    toXML(new XMLSerializer(aOutputStream));
+  }
+  
+  private void toXML(XMLSerializer sax2xml) throws SAXException, IOException {
     ContentHandler contentHandler = sax2xml.getContentHandler();
     contentHandler.startDocument();
     toXML(sax2xml.getContentHandler(), true);
-    contentHandler.endDocument();
+    contentHandler.endDocument();    
   }
 
   /**
@@ -583,7 +594,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
   public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute)
           throws SAXException {
     XmlizationInfo inf = getXmlizationInfo();
-
+    
     // write the element's start tag
     // get attributes (can be provided by subclasses)
     AttributesImpl attrs = getXMLAttributes();
@@ -595,16 +606,22 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     }
 
     // start element
-    aContentHandler.startElement(inf.namespace, inf.elementTagName, inf.elementTagName, attrs);
-
-    // write child elements
-    for (int i = 0; i < inf.propertyInfo.length; i++) {
-      PropertyXmlInfo propInf = inf.propertyInfo[i];
-      writePropertyAsElement(propInf, inf.namespace, aContentHandler);
+    outputStartElement(aContentHandler, infoset, inf.namespace, inf.elementTagName, inf.elementTagName, attrs);
+   // write child elements
+    
+    CharacterValidatingContentHandler cc = (CharacterValidatingContentHandler) aContentHandler;
+    cc.lastOutputNodeAddLevel();
+    try {
+      for (int i = 0; i < inf.propertyInfo.length; i++) {
+        PropertyXmlInfo propInf = inf.propertyInfo[i];
+        writePropertyAsElement(propInf, inf.namespace, aContentHandler);
+      }
+    } finally {
+      cc.lastOutputNodeClearLevel();
     }
-
+     
     // end element
-    aContentHandler.endElement(inf.namespace, inf.elementTagName, inf.elementTagName);
+    outputEndElement(aContentHandler, infoset, inf.namespace, inf.elementTagName, inf.elementTagName);
   }
 
   /**
@@ -666,10 +683,9 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
       return;
 
     // if XML element name was supplied, write a tag
-    if (aPropInfo.xmlElementName != null) {
-      aContentHandler.startElement(aNamespace, aPropInfo.xmlElementName, aPropInfo.xmlElementName,
+    Node elementNode = findMatchingSubElement(aContentHandler, aPropInfo.xmlElementName);
+    outputStartElement(aContentHandler, elementNode, aNamespace, aPropInfo.xmlElementName, aPropInfo.xmlElementName,
               EMPTY_ATTRIBUTES);
-    }
 
     // get class of property
     Class propClass = getAttributeClass(aPropInfo.propertyName);
@@ -701,9 +717,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     }
 
     // if XML element name was supplied, end the element that we started
-    if (aPropInfo.xmlElementName != null) {
-      aContentHandler.endElement(aNamespace, aPropInfo.xmlElementName, aPropInfo.xmlElementName);
-    }
+    outputEndElement(aContentHandler, elementNode, aNamespace, aPropInfo.xmlElementName, aPropInfo.xmlElementName);
   }
 
   /**
@@ -729,47 +743,51 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
           throws SAXException {
     // if aPropClass is generic Object, reader won't know whether to expect
     // an array, so we tell it be writing an "array" element here.
+    Node arraySubElement = findMatchingSubElement(aContentHandler, "array");
     if (aPropClass == Object.class) {
-      aContentHandler.startElement(aNamespace, "array", "array", EMPTY_ATTRIBUTES);
+      outputStartElement(aContentHandler, arraySubElement, aNamespace, "array", "array", EMPTY_ATTRIBUTES);
     }
 
     // iterate through elements of the array (at this point we don't allow
     // nested arrays here
     int len = ((Object[]) aValue).length;
-    for (int i = 0; i < len; i++) {
-      Object curElem = Array.get(aValue, i);
-
-      // if a particular array element tag has been specified, write it
-      if (aArrayElementTagName != null) {
-        aContentHandler.startElement(aNamespace, aArrayElementTagName, aArrayElementTagName,
-                EMPTY_ATTRIBUTES);
-      }
-
-      // if attribute's value is an XMLizable object, call its toXML method
-      if (curElem instanceof XMLizable) {
-        ((XMLizable) curElem).toXML(aContentHandler);
-      }
-      // else, attempt to write it as a primitive
-      else {
-        if (aArrayElementTagName == null) {
-          // need to include the type, e.g. <string>
-          XMLUtils.writePrimitiveValue(curElem, aContentHandler);
-        } else {
-          // don't include the type - just write the value
-          String valStr = curElem.toString();
-          aContentHandler.characters(valStr.toCharArray(), 0, valStr.length());
+    CharacterValidatingContentHandler cc = (CharacterValidatingContentHandler) aContentHandler;
+    cc.lastOutputNodeAddLevel();
+    try {
+      for (int i = 0; i < len; i++) {
+        Object curElem = Array.get(aValue, i);
+        Node matchingArrayElement = findMatchingSubElement(aContentHandler, aArrayElementTagName);
+        
+        // if a particular array element tag has been specified, write it
+        outputStartElement(aContentHandler, matchingArrayElement, aNamespace, aArrayElementTagName, aArrayElementTagName,
+                  EMPTY_ATTRIBUTES);
+  
+        // if attribute's value is an XMLizable object, call its toXML method
+        if (curElem instanceof XMLizable) {
+          ((XMLizable) curElem).toXML(aContentHandler);
         }
+        // else, attempt to write it as a primitive
+        else {
+          if (aArrayElementTagName == null) {
+            // need to include the type, e.g. <string>
+            XMLUtils.writePrimitiveValue(curElem, aContentHandler);
+          } else {
+            // don't include the type - just write the value
+            String valStr = curElem.toString();
+            aContentHandler.characters(valStr.toCharArray(), 0, valStr.length());
+          }
+        }
+  
+        // if we started an element, end it
+        outputEndElement(aContentHandler, matchingArrayElement, aNamespace, aArrayElementTagName, aArrayElementTagName);
       }
-
-      // if we started an element, end it
-      if (aArrayElementTagName != null) {
-        aContentHandler.endElement(aNamespace, aArrayElementTagName, aArrayElementTagName);
-      }
+    } finally {
+      cc.lastOutputNodeClearLevel();
     }
 
     // if we started an "Array" element, end it
     if (aPropClass == Object.class) {
-      aContentHandler.endElement(aNamespace, "array", "array");
+      outputEndElement(aContentHandler, arraySubElement, aNamespace, "array", "array");
     }
   }
 
@@ -797,55 +815,54 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
           String aKeyXmlAttribute, String aValueTagName, boolean aOmitIfNull, String aNamespace,
           ContentHandler aContentHandler) throws SAXException {
     // get map
-    Map theMap = (Map) getAttributeValue(aPropName);
-
+    @SuppressWarnings("unchecked")
+    Map<String, Object> theMap = (Map<String, Object>) getAttributeValue(aPropName);
+    Node matchingNode = findMatchingSubElement(aContentHandler, aXmlElementName);
+   
     // if map is empty handle appropriately
     if (theMap == null || theMap.isEmpty()) {
       if (!aOmitIfNull && aXmlElementName != null) {
-        aContentHandler
-                .startElement(aNamespace, aXmlElementName, aXmlElementName, EMPTY_ATTRIBUTES);
-        aContentHandler.endElement(aNamespace, aXmlElementName, aXmlElementName);
+        outputStartElement(aContentHandler, matchingNode, aNamespace, aXmlElementName, aXmlElementName, EMPTY_ATTRIBUTES);        
+        outputEndElement(aContentHandler, matchingNode, aNamespace, aXmlElementName, aXmlElementName);
       }
     } else {
       // write start tag for attribute if desired
-      if (aXmlElementName != null) {
-        aContentHandler
-                .startElement(aNamespace, aXmlElementName, aXmlElementName, EMPTY_ATTRIBUTES);
-      }
+      outputStartElement(aContentHandler, matchingNode, aNamespace, aXmlElementName, aXmlElementName, EMPTY_ATTRIBUTES);        
 
-      // iterate over entries in the Map
-      Set entries = theMap.entrySet();
-      Iterator i = entries.iterator();
-      while (i.hasNext()) {
-        Map.Entry curEntry = (Map.Entry) i.next();
-        String key = (String) curEntry.getKey();
-
-        // write a tag for the value, with a "key" attribute
-        AttributesImpl attrs = new AttributesImpl();
-        attrs.addAttribute("", aKeyXmlAttribute, aKeyXmlAttribute, null, key); // are these nulls
-        // OK?
-        aContentHandler.startElement(aNamespace, aValueTagName, aValueTagName, attrs);
-
-        // write the value (must be XMLizable or an array of XMLizable)
-        Object val = curEntry.getValue();
-        if (val.getClass().isArray()) {
-          Object[] arr = (Object[]) val;
-          for (int j = 0; j < arr.length; j++) {
-            XMLizable elem = (XMLizable) arr[j];
-            elem.toXML(aContentHandler);
+      CharacterValidatingContentHandler cc = (CharacterValidatingContentHandler) aContentHandler;
+      cc.lastOutputNodeAddLevel();
+      try {
+        // iterate over entries in the Map
+        for (Map.Entry<String, Object> curEntry : theMap.entrySet()) {
+          String key = curEntry.getKey();
+  
+          // write a tag for the value, with a "key" attribute
+          AttributesImpl attrs = new AttributesImpl();
+          attrs.addAttribute("", aKeyXmlAttribute, aKeyXmlAttribute, null, key); // are these nulls OK?
+          Node innerMatchingNode = findMatchingSubElement(aContentHandler, aValueTagName);
+          outputStartElement(aContentHandler, innerMatchingNode, aNamespace, aValueTagName, aValueTagName, attrs);      
+ 
+          // write the value (must be XMLizable or an array of XMLizable)
+          Object val = curEntry.getValue();
+          if (val.getClass().isArray()) {
+            Object[] arr = (Object[]) val;
+            for (int j = 0; j < arr.length; j++) {
+              XMLizable elem = (XMLizable) arr[j];
+              elem.toXML(aContentHandler);
+            }
+          } else {
+            ((XMLizable) val).toXML(aContentHandler);
           }
-        } else {
-          ((XMLizable) val).toXML(aContentHandler);
+  
+          // write end tag for the value
+          outputEndElement(aContentHandler, innerMatchingNode, aNamespace, aValueTagName, aValueTagName);
         }
-
-        // write end tag for the value
-        aContentHandler.endElement(aNamespace, aValueTagName, aValueTagName);
+      } finally {
+        cc.lastOutputNodeClearLevel();
       }
 
       // if we wrote start tag for attribute, now write end tag
-      if (aXmlElementName != null) {
-        aContentHandler.endElement(aNamespace, aXmlElementName, aXmlElementName);
-      }
+      outputEndElement(aContentHandler, matchingNode, aNamespace, aXmlElementName, aXmlElementName);
     }
   }
 
@@ -889,6 +906,10 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
       throw new InvalidXMLException(InvalidXMLException.INVALID_ELEMENT_TYPE, new Object[] {
           getXmlizationInfo().elementTagName, aElement.getTagName() });
 
+    if (aOptions.preserveComments) {
+      infoset = aElement;
+    }
+    
     // get child elements, each of which represents a property
     List<String> foundProperties = new ArrayList<String>();
     NodeList childNodes = aElement.getChildNodes();
@@ -921,9 +942,6 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
             readUnknownPropertyValueFromXMLElement(curElem, aParser, aOptions, foundProperties);
           }
         }
-      } else if (curNode instanceof Comment) {
-        Comment curElem = (Comment) curNode;
-        String comment = curElem.getData();
       }
     }
   }
@@ -1283,6 +1301,289 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
       mPropertyDescriptorsMap.put(this.getClass(), pd);
     }
     return pd;
+  }
+
+  
+  /**
+   * Heuristics for comment and whitespace processing
+   * 
+   * Example:
+   *    <!-- at top -->
+   * <a>   <!-- same line -->
+   *   <b/>
+   *   <d> <!-- cmt --> <e/> </d>
+   *   <c/>  <!-- same line -->
+   *   <!-- unusual case, following final one at a level -->
+   * </a>  <!-- same line -->
+   *   <!-- at bottom -->
+   *
+   * Each element has 2 calls: 
+   *     startElement, endElement
+   *   Surround these with:
+   *     maybeOutputCommentsBefore
+   *     maybeOutputCommentsAfter  
+   *   
+   * Detect top level (by fact that parent is null), and for top level:
+   *   collect all above -> output before startelement
+   *   collect all below -> output after endelement
+   *   
+   * For normal element node, "start":
+   *   --> output before element
+   *     collect all prev siblings up to first newline (assume before that, the comment goes with the node having children)
+   *       if no nl assume comments go with previous element, and skip here
+   *       (stop looking if get null for getPreviousSibling())
+   *       (stop looking if get other than comment or ignorable whitespace)
+   *         (ignorable whitespace not always distinguishable from text that is whitespace?)
+   *   --> output after element:
+   *     if element children:    eg:  <start> <!-- cmt --> 
+   *       collect all up to and including first nl before first child
+   *         (stop at first Element node; if no nl, then the source had multiple elements on one line:
+   *            associate the comments and whitespace with previous (and output them).
+   *          
+   *     if no element children: - means it's written <xxx/> or <xxx></xxx> or <xxx>   something  </xxx>
+   *       output nothing - after comments will be done following endElement call
+   *       
+   * For normal element node, "end":
+   *   --> output before element
+   *     if element children:
+   *       collect all after last child Element; skip all up to first nl (assume before that, the comment goes with last child node)
+   *       if no nl (e.g.   </lastChild> <!--  cmt -->  </elementBeingEnded> )
+   *         assume comments go with previous element, and skip here
+   *       (stop looking if get null for getNextSibling())
+   *       (stop looking if get Element)
+   *       
+   *     if no element children - output nothing  
+   *   --> output after element    
+   *       if this element has no successor sibling elements
+   *         collect all up to the null
+   *       else  
+   *         collect all up to and including first nl from getNextSibling().
+   *           (stop at first Element)
+   *           
+   * For implied element nodes (no Java model object corresponding)
+   * We have only the "parent" node, and the element name.  Try to do matching on the element name
+   * In this case, we always are working with the children in the Dom infoset; we have a last-outputted reference
+   *   Scan from last-outputted, to find element match, and then use that element as the "root".       
+   *    
+   */
+  
+  /**
+   * CoIw = Comment or IgnorableWhitespace
+   * 
+   */
+  
+  private void maybeOutputCoIwBeforeStart(ContentHandler contentHandler, Node node) throws SAXException {
+    if (null == node) {
+      return;
+    }
+    if (node.getParentNode() instanceof Document) {
+       
+       // Special handling for top node:
+       //   The SAX parser doesn't do callbacks for whitespace that come before the top node.
+       //   It does do callbacks for comments, though.
+          
+       //   For this case, we do (one time) insert of "nl" as follows:
+       //     1 nl before top element
+       //     1 nl before each preceeding comment
+       
+      outputNL(contentHandler);
+      
+      for (Node c = node.getParentNode().getFirstChild(); c != node; c = c.getNextSibling()) {
+        if (c instanceof Comment) {
+          outputCoIw(contentHandler, c);
+          outputNL(contentHandler);
+        }
+      }
+      return;
+    }
+    for (Node p = getFirstPrevCoIw(node); p != node; p = p.getNextSibling()) {
+      outputCoIw(contentHandler, p);
+    }
+  }
+ 
+  private void maybeOutputCoIwAfterStart(ContentHandler contentHandler, Node node) throws SAXException {
+    if (null == node || (!hasElementChildNode(node))) {
+      return;
+    }
+    
+    for (Node n = node.getFirstChild(); isCoIw(n); n = n.getNextSibling()) {
+      outputCoIw(contentHandler, n);
+      if (hasNewline(n)) {
+        return;
+      }
+    }
+  }
+  
+  private void maybeOutputCoIwBeforeEnd(ContentHandler contentHandler, Node node) throws SAXException {
+    if (null == node || (!hasElementChildNode(node))) {
+      return;
+    }
+    Node n = node.getLastChild();
+    Node np = null;
+    boolean newlineFound = false;
+    for (Node p = n; p != null && !(p instanceof Element); p = p.getPreviousSibling()) {
+      if (hasNewline(p)) {
+        newlineFound = true;
+      }
+      np = p;
+    }
+    if (!newlineFound) {
+      return;
+    }
+    for (Node o = skipUpToFirstAfterNL(np); o != null; o = o.getNextSibling()) {
+      outputCoIw(contentHandler, o);
+    }
+  }
+  
+  private void maybeOutputCoIwAfterEnd(ContentHandler contentHandler, Node node) throws SAXException {
+    if (null == node) {
+      return;
+    }
+    for (Node o = node.getNextSibling(); isCoIw(o); o = o.getNextSibling()) {
+      outputCoIw(contentHandler, o);
+      if (hasNewline(o)) {
+        break;
+      }
+    }
+  }
+
+  /**
+   * Scan from last output node the child nodes, looking for a matching element.
+   * Side effect if found - set lastoutput node to the found one.
+   * @param contentHandler
+   * @param elementName
+   * @return null (if no match) or matching node
+   */
+  private Node findMatchingSubElement(ContentHandler contentHandler, String elementName) {
+    if (null == infoset || null == elementName) {
+      return null;
+    }
+    CharacterValidatingContentHandler c = (CharacterValidatingContentHandler) contentHandler;
+    Node lastOutput = c.getLastOutputNode();
+    Node n = (lastOutput == null) ? infoset.getFirstChild() : lastOutput.getNextSibling();
+    for (; n != null; n = n.getNextSibling()) {
+      if ((n instanceof Element) && 
+          elementName.equals(((Element)n).getTagName())) {
+        c.setLastOutputNode(n);
+        return n;
+      }
+    }
+    return null;
+  }
+  
+  /**
+   * Scan backwards from argument node, continuing until get something other than
+   * comment or ignorable whitespace.
+   * Return the first node after a nl 
+   *   If no nl found, return original node
+   * 
+   * NOTE: never called with original == the top node
+   * @param r - guaranteed non-null
+   * @return
+   */
+  private Node getFirstPrevCoIw(Node original) {
+    boolean newlineFound = false;
+    Node p = original; // tracks one behind r
+    for (Node r = p.getPreviousSibling(); isCoIw(r); r = r.getPreviousSibling()) {
+      if (hasNewline(r)) {
+        newlineFound = true;
+      }
+      p = r;
+    }
+    if (!newlineFound) {
+      return original;
+    }
+    return skipUpToFirstAfterNL(p);
+  }
+  
+  /**
+   * Skip nodes going forwards until find one with a nl, then return the one following
+   * @param n must not be null, and there must be a NL in the siblings
+   * @return node following the one with a new line 
+   */
+  private Node skipUpToFirstAfterNL(Node n) {
+    while (!hasNewline(n)) {
+      n = n.getNextSibling();
+    }
+    return n.getNextSibling();
+  }
+  
+  private boolean hasNewline(Node n) {
+    if (n instanceof Comment) {
+      return false;
+    }
+    CharacterData c = (CharacterData) n;
+    return (-1) != c.getData().indexOf('\n');
+  }
+    
+  private boolean hasElementChildNode(Node n) {
+    for (Node c = n.getFirstChild(); (c != null); c = c.getNextSibling()) {
+      if (c instanceof Element) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private void outputCoIw(ContentHandler contentHandler, Node p) throws DOMException, SAXException {
+    if (p instanceof Comment) {
+      Comment c = (Comment)p;
+      ((LexicalHandler)contentHandler).comment(c.getData().toCharArray(), 0, c.getLength());
+    } else {
+      String s = p.getTextContent();
+      contentHandler.characters(s.toCharArray(), 0, s.length());    
+    }
+    
+  }
+  
+  private boolean isCoIw(Node n) {
+    return (n != null) && ((n instanceof Comment) || isWhitespaceText(n));
+  }
+  
+  private boolean isWhitespaceText(Node n) {
+    if (!(n instanceof Text)) {
+      return false;
+    }
+    Text t = (Text) n;
+    String s = t.getData();
+    for (int i = 0; i < s.length(); i++) {
+      if (!Character.isWhitespace(s.charAt(i))) {
+        return false;
+      }
+    }
+    return true;
+  }
+  
+  private void outputStartElement(ContentHandler aContentHandler, 
+                                  Node node, 
+                                  String aNamespace, 
+                                  String localname, 
+                                  String qname, 
+                                  Attributes attributes) throws SAXException {
+    if (null == localname) {
+      return;
+    }
+    maybeOutputCoIwBeforeStart(aContentHandler, node);
+    aContentHandler.startElement(aNamespace, localname, qname, attributes);
+    maybeOutputCoIwAfterStart(aContentHandler, node);
+  }
+  
+  private void outputEndElement(ContentHandler aContentHandler, 
+                                Node node,
+                                String aNamespace, 
+                                String localname, 
+                                String qname) throws SAXException {
+    if (null == localname) {
+      return;
+    }
+    maybeOutputCoIwBeforeEnd(aContentHandler, node);
+    aContentHandler.endElement(aNamespace, localname, qname);
+    maybeOutputCoIwAfterEnd(aContentHandler, node);
+  }
+  
+  private static final char[] nlca = new char[] {'\n'};
+  private void outputNL(ContentHandler contentHandler) throws SAXException {
+    contentHandler.characters(nlca, 0, 1); 
   }
 
 }
