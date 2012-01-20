@@ -112,7 +112,17 @@ public class SaxDeserializer_impl implements SaxDeserializer, LexicalHandler {
   public XMLizable getObject() throws InvalidXMLException {
     // COMMENT NODEs may be present, and getDocumentElement would skip it...
     Node rootDomNode = ((Document) mDOMResult.getNode()).getDocumentElement();
-
+//    NodeList children = mDOMResult.getNode().getChildNodes();
+//    for (int i = 0; i < children.getLength(); i ++) {
+//      System.out.format("Child: %s", children.item(i).getNodeName());
+//      if (children.item(i) instanceof Text) {
+//        String s = children.item(i).getTextContent();
+//        for (int j = 0; j < s.length(); j++) {
+//          System.out.format(" %d", s.codePointAt(j));
+//        }
+//      }
+//      System.out.print("\n");
+//    }
     // build the object
     XMLizable result = mUimaXmlParser.buildObject((Element) rootDomNode, mOptions);
 
@@ -122,12 +132,12 @@ public class SaxDeserializer_impl implements SaxDeserializer, LexicalHandler {
 
     return result;
   }
-
+  
   /**
    * @see org.xml.sax.ContentHandler#characters(char[], int, int)
    */
   public void characters(char[] ch, int start, int length) throws SAXException {
-    // System.out.println("SaxDeserializer_impl::characters");
+//    System.out.format("SaxDeserializer_impl::characters: %s%n", new String(ch, start, length));
     mTransformerHandler.characters(ch, start, length);
   }
 
@@ -160,7 +170,10 @@ public class SaxDeserializer_impl implements SaxDeserializer, LexicalHandler {
    * @see org.xml.sax.ContentHandler#ignorableWhitespace(char[], int, int)
    */
   public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {
-    mTransformerHandler.ignorableWhitespace(ch, start, length);
+//    System.out.format("SaxDeserializer_impl::ignorableWS: %s%n", new String(ch, start, length));
+    if (mOptions.preserveComments) {
+      mTransformerHandler.ignorableWhitespace(ch, start, length);
+    }
   }
 
   /**

@@ -21,6 +21,8 @@ package org.apache.uima.util;
 
 import java.io.OutputStream;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
@@ -41,6 +43,7 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
+import org.xml.sax.ext.LexicalHandler;
 
 /**
  * Utility class that generates XML output from SAX events or DOM nodes.
@@ -55,7 +58,7 @@ public class XMLSerializer {
 
   private OutputStream mOutputStream;
   private Writer mWriter;
-
+  
   public XMLSerializer() {
     this(true);
   }
@@ -78,6 +81,10 @@ public class XMLSerializer {
     }
   }
 
+  public void setIndent(boolean yes) {
+    mTransformer.setOutputProperty(OutputKeys.INDENT, yes ? "yes" : "no");
+  }
+  
   public XMLSerializer(OutputStream aOutputStream) {
     this();
     setOutputStream(aOutputStream);
@@ -156,9 +163,27 @@ public class XMLSerializer {
     }
   }  
   
-  static class CharacterValidatingContentHandler implements ContentHandler {
+  public static class CharacterValidatingContentHandler implements ContentHandler, LexicalHandler {
     ContentHandler mHandler;
     boolean mXml11;
+    
+    private List<Node> mLastOutputNode = new ArrayList<Node>();  // the last output node for repeated subelement nodes 
+    
+    public void lastOutputNodeAddLevel() {
+      mLastOutputNode.add(null);
+    }
+    
+    public void setLastOutputNode(Node n) {
+      mLastOutputNode.set(mLastOutputNode.size() -1, n);
+    }
+
+    public Node getLastOutputNode() {
+      return mLastOutputNode.get(mLastOutputNode.size() -1);
+    }
+    
+    public void lastOutputNodeClearLevel() {
+      mLastOutputNode.remove(mLastOutputNode.size() -1);
+    }
     
     CharacterValidatingContentHandler(boolean xml11, ContentHandler serializerHandler) {
       mHandler = serializerHandler;  
@@ -264,6 +289,17 @@ public class XMLSerializer {
                 " character: " + ch[index]
             + ", 0x" + Integer.toHexString(ch[index]), null);
       }
-    }    
+    }
+
+    public void comment(char[] ch, int start, int length) throws SAXException {
+      ((LexicalHandler)mHandler).comment(ch, start, length);
+    }
+
+    public void endCDATA() throws SAXException {}
+    public void endDTD() throws SAXException {}
+    public void endEntity(String arg0) throws SAXException {}
+    public void startCDATA() throws SAXException {}
+    public void startDTD(String arg0, String arg1, String arg2) throws SAXException {}
+    public void startEntity(String arg0) throws SAXException {}    
   }
 }
