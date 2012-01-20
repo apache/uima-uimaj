@@ -328,6 +328,16 @@ public class AnalysisEngineDescription_implTest extends TestCase {
       JUnitExtension.handleException(e);
     }
   }
+ 
+  public void testDefaultingOperationalParameters() throws Exception {
+    XMLInputSource in = new XMLInputSource(JUnitExtension
+            .getFile("TextAnalysisEngineImplTest/TestPrimitiveOperationalParmsDefaults.xml"));
+    AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
+    OperationalProperties opProps = desc.getAnalysisEngineMetaData().getOperationalProperties();
+    assertNotNull(opProps);
+    assertEquals(true, opProps.getModifiesCas());
+    assertEquals(false, opProps.isMultipleDeploymentAllowed());
+  }
 
   public void testSerialization() throws Exception {
     try {
