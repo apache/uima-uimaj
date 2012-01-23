@@ -41,6 +41,7 @@ import org.apache.uima.cas.admin.CASMgr;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.collection.CasConsumerDescription;
 import org.apache.uima.impl.UimaContext_ImplBase;
+import org.apache.uima.impl.Util;
 import org.apache.uima.internal.util.UUIDGenerator;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceConfigurationException;
@@ -274,11 +275,13 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
         // access
         enableProhibitedAnnotatorCasFunctions(aCAS, false);
 
+        // Get the right view of the CAS. Sofa-aware components get the base CAS.
+        // Sofa-unaware components get whatever is mapped to the _InitialView.   
+        CAS view = Util.getStartingView(aCAS, mSofaAware, getUimaContextAdmin().getComponentInfo());
         // Get the right type of CAS and call the AnalysisComponent's
         // process method
-        CAS baseCas = ((CASImpl) aCAS).getBaseCAS();
         Class<CAS> requiredInterface = mAnnotator.getRequiredCasInterface();
-        AbstractCas casToPass = getCasManager().getCasInterface(baseCas, requiredInterface);
+        AbstractCas casToPass = getCasManager().getCasInterface(view, requiredInterface);
         mAnnotator.process(casToPass);
         getMBean().incrementCASesProcessed();
       } catch (Exception e) {
