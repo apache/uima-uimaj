@@ -835,7 +835,7 @@ mCPE.process();</programlisting></para>
         of its work (i.e., consume the CAS).</para>
       
       <para>The <literal>CasConsumer</literal> interface (as well as the version 2
-        Analysis Engine interfac) additionally defines batch
+        Analysis Engine interface) additionally defines batch
         and collection level processing methods. The CAS Consumer or Analysis Engine
         can implement the
         <literal>batchProcessComplete()</literal> method to perform processing that
