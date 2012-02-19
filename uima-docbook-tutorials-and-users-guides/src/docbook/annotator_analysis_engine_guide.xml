@@ -1262,7 +1262,7 @@ public void initialize(UimaContext aContext)
       <para>Analysis Engines support the <literal>collectionProcessComplete</literal>
         method, which is particularly important for many CAS Consumers.  If
         an application (or a Collection Processing Engine) calls 
-        <literal>collectionProcessComplete</literal> no an aggregate, the framework
+        <literal>collectionProcessComplete</literal> on an aggregate, the framework
         will deliver that call to all of the components of the aggregate.  If you use
         one of the built-in flow types (fixedFlow or capabilityLanguageFlow), then the
         order specified in that flow will be the same order in which the
