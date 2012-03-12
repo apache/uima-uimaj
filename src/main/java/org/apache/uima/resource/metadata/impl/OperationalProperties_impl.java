@@ -19,6 +19,7 @@
 
 package org.apache.uima.resource.metadata.impl;
 
+import org.apache.uima.resource.metadata.ExternalOverrideSettings;
 import org.apache.uima.resource.metadata.OperationalProperties;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLParser;
@@ -36,6 +37,8 @@ public class OperationalProperties_impl extends MetaDataObject_impl implements
   private boolean mMultipleDeploymentAllowed;
 
   private boolean mOutputsNewCASes;
+  
+  private ExternalOverrideSettings  mExternalOverrideSettings;
 
   /*
    * (non-Javadoc)
@@ -82,6 +85,14 @@ public class OperationalProperties_impl extends MetaDataObject_impl implements
     mOutputsNewCASes = aOutputsNewCASes;
   }
 
+  public void setExternalOverrideSettings(ExternalOverrideSettings aExternalOverrideSettings) {
+    mExternalOverrideSettings = aExternalOverrideSettings;
+  }
+
+  public ExternalOverrideSettings getExternalOverrideSettings() {
+    return mExternalOverrideSettings;
+  }
+
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
@@ -89,7 +100,8 @@ public class OperationalProperties_impl extends MetaDataObject_impl implements
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("operationalProperties",
           new PropertyXmlInfo[] { new PropertyXmlInfo("modifiesCas"),
               new PropertyXmlInfo("multipleDeploymentAllowed"),
-              new PropertyXmlInfo("outputsNewCASes") });
+              new PropertyXmlInfo("outputsNewCASes"),
+              new PropertyXmlInfo("externalOverrideSettings", null)});
 
   /* (non-Javadoc)
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#buildFromXMLElement(org.w3c.dom.Element, org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)

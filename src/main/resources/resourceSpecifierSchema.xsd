@@ -204,6 +204,7 @@
 	<complexType name="ConfigurationParameterType">
 		<sequence>
 			<element name="name" type="Name" />
+			<element name="externalOverrideName" type="string" minOccurs="0" />
 			<element name="description" type="string" minOccurs="0" />
 			<element name="type" type="rs:CfgParamDataType" />
 			<element name="multiValued" type="boolean" minOccurs="0" />
@@ -499,6 +500,7 @@
 			<element name="modifiesCas" minOccurs="0" type="boolean"/>
 			<element name="multipleDeploymentAllowed" minOccurs="0" type="boolean"/>
 			<element name="outputsNewCASes" minOccurs="0" type="boolean"/>
+			<element name="externalOverrideSettings" minOccurs="0" type="rs:ExternalOverrideSettingsType"/>
 		</sequence>
 	</complexType>
 	
@@ -578,6 +580,12 @@
 		</sequence>
 	</complexType>
         
+	<complexType name="ExternalOverrideSettingsType">
+		<all>
+			<element name="imports" type="rs:ImportSequenceType" minOccurs="0" />
+			<element name="settings" type="string" minOccurs="0" />
+		</all>
+	</complexType>
 
 <!-- Top Level Element Definitions for Collection Processing Component Specifiers -->
 

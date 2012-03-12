@@ -70,9 +70,27 @@ public interface ConfigurationParameter extends MetaDataObject {
   public void setName(String aName);
 
   /**
+   * Retrieves the external name of this configuration parameter.
+   * 
+   * @return the external name of this configuration parameter.
+   */
+  public String getExternalOverrideName();
+
+  /**
+   * Sets the external name of this configuration parameter.
+   * 
+   * @param aExternalOverrideName
+   *          the external name of this configuration parameter.
+   * 
+   * @throws org.apache.uima.UIMA_UnsupportedOperationException
+   *           if this object is not modifiable
+   */
+  public void setExternalOverrideName(String aExternalName);
+  
+  /**
    * Retrieves the description of this configuration parameter.
    * 
-   * @return the description of this configuraiton parameter.
+   * @return the description of this configuration parameter.
    */
   public String getDescription();
 

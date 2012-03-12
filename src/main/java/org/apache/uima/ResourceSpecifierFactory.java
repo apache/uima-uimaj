@@ -64,6 +64,7 @@ import org.apache.uima.resource.metadata.ConfigurationGroup;
 import org.apache.uima.resource.metadata.ConfigurationParameter;
 import org.apache.uima.resource.metadata.ConfigurationParameterDeclarations;
 import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
+import org.apache.uima.resource.metadata.ExternalOverrideSettings;
 import org.apache.uima.resource.metadata.ExternalResourceBinding;
 import org.apache.uima.resource.metadata.FeatureDescription;
 import org.apache.uima.resource.metadata.FsIndexCollection;
@@ -475,4 +476,5 @@ public interface ResourceSpecifierFactory {
 
   public CasProcessorRuntimeEnvParam createEnv();
 
+  public ExternalOverrideSettings createExternalOverrideSettings();
 }

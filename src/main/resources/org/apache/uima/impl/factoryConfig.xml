@@ -137,6 +137,7 @@
 	    <binding element="errorRateThreshold" interface="org.apache.uima.collection.metadata.CasProcessorErrorRateThreshold" class="org.apache.uima.collection.impl.metadata.cpe.CasProcessorErrorRateThresholdImpl"/>
 	    <binding element="timeout" interface="org.apache.uima.collection.metadata.CasProcessorTimeout" class="org.apache.uima.collection.impl.metadata.cpe.CasProcessorTimeoutImpl"/>
 	    <binding element="sofaNameMappings" interface="org.apache.uima.collection.metadata.CpeSofaMappings" class="org.apache.uima.collection.impl.metadata.cpe.CpeSofaMappingsImpl"/>
-	
+		<binding element="externalOverrideSettings" interface="org.apache.uima.resource.metadata.ExternalOverrideSettings" class="org.apache.uima.resource.metadata.impl.ExternalOverrideSettings_impl"/>	
+
 	</resourceSpecifier>
 </factoryConfig>

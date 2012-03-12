@@ -38,6 +38,7 @@ import org.apache.uima.resource.metadata.ConfigurationParameter;
 import org.apache.uima.resource.metadata.ConfigurationParameterDeclarations;
 import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
 import org.apache.uima.resource.metadata.NameValuePair;
+import org.apache.uima.resource.metadata.OperationalProperties;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 
 /**
@@ -68,7 +69,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    * Map the fully-qualified name of a parameter to the fully-qualified name of the parameter it is
    * linked to (from which it takes its value).
    */
-  private Map<String, String> mLinkMap = new HashMap<String, String>();
+  protected Map<String, String> mLinkMap = new HashMap<String, String>();
 
   /**
    * Set of parameters (fully qualified names) that explicitly declare overrides. This is used to
@@ -80,6 +81,11 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    * Current session. Used to store parmater overrides.
    */
   private Session mSession = null;
+
+  /**
+   * Holds the externalOverrideSettings from the top-level Analysis Engine
+   */
+  protected OperationalProperties mOperationalProperties = null;
 
   /*
    * (non-Javadoc)
@@ -295,7 +301,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
 
   /**
    * Does a direct lookup of a complete name, including the group. Follows links but does not do any
-   * fallback processing.
+   * fallback processing.  An external name definition overrides all
    * 
    * @param aCompleteName
    *          complete name, of the form context/parameter$group
@@ -307,8 +313,9 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
     String linkedTo = getLink(aCompleteName);
     if (linkedTo != null) {
       Object val = lookup(linkedTo);
-      if (val != null)
+      if (val != null) {
         return val;
+      }
     }
     // there is no overriding value, so look up the parameter directly
     // look up in session param map first
@@ -348,6 +355,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
         if (overriddenBy == null) {
           // no explicit override. Check for implicit override (a parameter with same
           // name declared in parent aggregate with no explicit overrides)
+          // Note: any type mismatch will generate an error later
           String nameInParentContext = makeQualifiedName(aParentContextName, param.getName(),
                   aGroupName);
           if (lookup(nameInParentContext) != null
@@ -359,7 +367,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
             mLinkMap.put(qname, nameInParentContext);
           }
         }
-        // if this parameter explicitly overrides others, enter those ParameterLinks in the map
+        // if this parameter explicitly overrides others, enter those parameter links in the map
         // String overrideTarget = (overriddenBy != null) ? overriddenBy : qname;
         String[] overrides = param.getOverrides();
         for (int j = 0; j < overrides.length; j++) {
@@ -396,7 +404,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    * @param aCompleteName
    *          complete name, of the form context/parameter$group
    * 
-   * @return value of parameter, or ParameterLink object, or null if no value assigned
+   * @return value of parameter, or null if no value assigned
    */
   protected abstract Object lookupSharedParamNoLinks(String aCompleteName);
 
