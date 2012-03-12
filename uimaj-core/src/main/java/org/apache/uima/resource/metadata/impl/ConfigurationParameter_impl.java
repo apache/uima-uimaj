@@ -45,6 +45,9 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
   /** Name of this Configuration Parameter. */
   private String mName;
 
+  /** External name of this Configuration Parameter. */
+  private String mExternalOverrideName;
+
   /** Description of this Configuration Parameter. */
   private String mDescription;
 
@@ -75,6 +78,20 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
    */
   public void setName(String aName) {
     mName = aName;
+  }
+
+  /**
+   * @see org.apache.uima.resource.ConfigurationParameter#getExternalOverrideName()
+   */
+  public String getExternalOverrideName() {
+    return mExternalOverrideName;
+  }
+
+  /**
+   * @see org.apache.uima.resource.ConfigurationParameter#setExternalOverrideName(String)
+   */
+  public void setExternalOverrideName(String aExternalOverrideName) {
+    mExternalOverrideName = aExternalOverrideName;
   }
 
   /**
@@ -320,5 +337,6 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
           "configurationParameter", new PropertyXmlInfo[] { new PropertyXmlInfo("name"),
               new PropertyXmlInfo("description"), new PropertyXmlInfo("type"),
               new PropertyXmlInfo("multiValued"), new PropertyXmlInfo("mandatory"),
+              new PropertyXmlInfo("externalOverrideName"),
               new PropertyXmlInfo("overrides", "overrides", true, "parameter"), });
 }

@@ -25,6 +25,8 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMA_IllegalStateException;
 import org.apache.uima.UimaContext;
 import org.apache.uima.UimaContextAdmin;
+import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
+import org.apache.uima.resource.impl.ConfigurationManager_impl;
 import org.apache.uima.resource.metadata.ResourceManagerConfiguration;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.util.InvalidXMLException;
@@ -129,6 +131,19 @@ public abstract class Resource_ImplBase implements Resource {
       }
       // store Resource metadata so it can be retrieved via getMetaData() method
       setMetaData(metadata);
+      
+      // If an Analysis Engine load the external override settings in the shared configuration manager
+      if (metadata instanceof AnalysisEngineMetaData
+              && mUimaContextAdmin.getConfigurationManager() instanceof ConfigurationManager_impl) {
+        ConfigurationManager_impl cfgmgr = (ConfigurationManager_impl) mUimaContextAdmin.getConfigurationManager();
+        try {
+          cfgmgr.setupExternalOverrideSettings(mUimaContextAdmin.getQualifiedContextName(), metadata,
+                  getResourceManager());
+        } catch (ResourceConfigurationException e) {
+          throw new ResourceInitializationException(ResourceInitializationException.ERROR_INITIALIZING_FROM_DESCRIPTOR,
+                  new Object[] { name, metadata.getSourceUrlString() }, e);
+        }
+      }
 
       // initialize configuration
       try {

@@ -42,8 +42,8 @@
 </delegateAnalysisEngineSpecifiers> 
 
 <analysisEngineMetaData>
-<name>Aggregate TAE with Configuration Parameter Overrides</name>
-<description>For testing configuration parameters.</description>
+<name>Aggregate with Unknown Remote Component</name>
+<description>For testing unknown remote service.</description>
 <version>1.0</version>
 <vendor>The Apache Software Foundation</vendor>
 

@@ -80,4 +80,8 @@ public interface OperationalProperties {
    *          true if this component may output new CASes, false if it does not
    */
   public void setOutputsNewCASes(boolean aOutputsNewCASes);
+  
+  public void setExternalOverrideSettings(ExternalOverrideSettings aExternalOverrideSettings);
+
+  public ExternalOverrideSettings getExternalOverrideSettings();
 }
