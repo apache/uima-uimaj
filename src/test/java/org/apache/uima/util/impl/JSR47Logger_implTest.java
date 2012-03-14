@@ -194,6 +194,7 @@ public class JSR47Logger_implTest extends TestCase {
     logger.log(Level.INFO, null, "");
 
     // log test with method log(Level,String,Throwable)
+    logger.setLevel(Level.WARNING); // Don't log the expected exceptions
     Throwable thrown = new Throwable();
     logger.log(Level.INFO, "My fourth test message", thrown);
     logger.log(Level.INFO, "", thrown);
@@ -262,6 +263,7 @@ public class JSR47Logger_implTest extends TestCase {
 
     // test method logrb(Level, String, String, String, String, thrown)
     Throwable thrown = new Throwable();
+    logger.setLevel(Level.WARNING); // Don't log the expected exceptions
     logger.logrb(Level.INFO, null, null, bundle, msgKey, thrown);
     logger.logrb(Level.INFO, null, null, bundle, null, thrown);
     logger.logrb(Level.INFO, null, null, null, msgKey, thrown);

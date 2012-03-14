@@ -656,7 +656,7 @@ public class CasCreationUtilsTest extends TestCase {
               .mergeDelegateAnalysisEngineMetaData(desc2, resMgr,
                       mergedTypes2, failedRemotes);
       assertTrue(failedRemotes.containsKey("/RemoteDelegate"));
-      ((Exception)failedRemotes.get("/RemoteDelegate")).printStackTrace();
+      // ((Exception)failedRemotes.get("/RemoteDelegate")).printStackTrace();
       assertTrue(mergedMetaData2.getTypeSystem().getTypes().length > 0);
 
     } catch (Exception e) {
