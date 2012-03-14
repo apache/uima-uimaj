@@ -208,11 +208,13 @@ public class TestLog4jLogger_impl extends TestCase {
 
       // log test with method log(Level,String,Throwable)
       Throwable thrown = new Throwable();
+      logger.setLevel(Level.WARNING); // Don't log the expected exceptions
       logger.log(Level.INFO, "My fourth test message", thrown);
       logger.log(Level.INFO, "", thrown);
       logger.log(Level.INFO, null, thrown);
       thrown = null;
       logger.log(Level.INFO, "My fourth test message", thrown);
+      logger.setLevel(Level.INFO);
 
       // test deprecated log method
       logger.log("My fifth test message");
@@ -221,6 +223,7 @@ public class TestLog4jLogger_impl extends TestCase {
 
       // test deprecated logException method
       Exception ex = new Exception("My sixth test message");
+      logger.setLevel(Level.WARNING); // Don't log the expected exceptions
       logger.logException(ex);
       logger.logException(null);
    }
@@ -276,6 +279,7 @@ public class TestLog4jLogger_impl extends TestCase {
       logger.logrb(Level.INFO, "testClass", "testMethod", null, null, objects);
 
       // test method logrb(Level, String, String, String, String, thrown)
+      logger.setLevel(Level.WARNING); // Don't log the expected exceptions
       Throwable thrown = new Throwable();
       logger.logrb(Level.INFO, null, null, bundle, msgKey, thrown);
       logger.logrb(Level.INFO, null, null, bundle, null, thrown);

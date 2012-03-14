@@ -19,14 +19,15 @@
 package org.apache.uima.util;
 
 import java.io.File;
+import java.io.StringWriter;
+
+import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.test.junit_extension.JUnitExtension;
-
-import junit.framework.TestCase;
 
 public class TypeSystemUtilTest extends TestCase {
   public void testTypeSystem2TypeSystemDescription() throws Exception {
@@ -45,8 +46,11 @@ public class TypeSystemUtilTest extends TestCase {
     CAS cas = CasCreationUtils.createCas(tsDesc, null, null);    
     //convert that CAS's type system back to a TypeSystemDescription
     TypeSystemDescription tsDesc2 = TypeSystemUtil.typeSystem2TypeSystemDescription(cas.getTypeSystem());
-    tsDesc2.toXML(System.out);
     //test that this is valid by creating a new CAS
     CasCreationUtils.createCas(tsDesc2, null, null);
+    
+    // Check that can be written (without cluttering up the console)
+    StringWriter out = new StringWriter();
+    tsDesc2.toXML(out);
   }
 }

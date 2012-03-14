@@ -81,6 +81,7 @@ import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.InvalidXMLException;
+import org.apache.uima.util.Level;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.impl.ProcessTrace_impl;
 
@@ -1143,11 +1144,12 @@ public class AnalysisEngine_implTest extends TestCase {
         assertEquals("Line two", outCas.getDocumentText());
         outCas.release();
         try {
+          UIMAFramework.getLogger().setLevel(Level.OFF);  // Suppress logging of expected exception
           assertTrue(iter.hasNext());
           outCas = iter.next();
           fail(); // the above should throw an exception
         } catch (AnalysisEngineProcessException e) {
-          //do nothing
+          UIMAFramework.getLogger().setLevel(Level.INFO); // Restore to apparent default of INFO
         }
         //check that FlowController was notified twice, once for the 
         //segment's flow and once for the complete document's flow
@@ -1181,11 +1183,12 @@ public class AnalysisEngine_implTest extends TestCase {
         assertEquals("Line two", outCas.getDocumentText());
         outCas.release();
         try {
+          UIMAFramework.getLogger().setLevel(Level.OFF);  // Suppress logging of expected exception
           assertTrue(iter.hasNext());
           outCas = iter.next();
           fail(); // the above should throw an exception
         } catch (AnalysisEngineProcessException e) {
-          //do nothing
+          UIMAFramework.getLogger().setLevel(Level.INFO); // Restore to apparent default of INFO
         }
         //check that FlowController was notified three times, once for the 
         //segment's flow and twice for the complete document's flow (once
@@ -1226,11 +1229,12 @@ public class AnalysisEngine_implTest extends TestCase {
         assertEquals("Three", outCas.getDocumentText());
         outCas.release();
         try {
+          UIMAFramework.getLogger().setLevel(Level.OFF);  // Suppress logging of expected exception
           assertTrue(iter.hasNext());
           outCas = iter.next();
           fail(); // the above should throw an exception
         } catch (AnalysisEngineProcessException e) {
-          //do nothing
+          UIMAFramework.getLogger().setLevel(Level.INFO); // Restore to apparent default of INFO
         }
         //check that FlowController was notified three times, once for each level of granularity
         assertEquals(3, FlowControllerForErrorTest.abortedDocuments.size());
@@ -1256,10 +1260,11 @@ public class AnalysisEngine_implTest extends TestCase {
       assertTrue(iter.hasNext());
       // next call should fail with AnalysisEngineProcessException
       try {
+        UIMAFramework.getLogger().setLevel(Level.OFF);  // Suppress logging of expected exception
         iter.next();
         fail(); // should not get here
       } catch (AnalysisEngineProcessException e) {
-        // should get here
+        UIMAFramework.getLogger().setLevel(Level.INFO); // Restore to apparent default of INFO
       }
       
       // bad segmenter in an aggregate
@@ -1279,12 +1284,13 @@ public class AnalysisEngine_implTest extends TestCase {
       assertTrue(FlowControllerForErrorTest.failedAEs.isEmpty());
       // next call should fail with AnalysisEngineProcessException
       try {
+        UIMAFramework.getLogger().setLevel(Level.OFF);  // Suppress logging of expected exception
         if (iter.hasNext()) {
           iter.next();
         }
         fail(); // should not get here
       } catch (AnalysisEngineProcessException e) {
-        // should get here
+        UIMAFramework.getLogger().setLevel(Level.INFO); // Restore to apparent default of INFO
       }
       assertEquals(1, FlowControllerForErrorTest.abortedDocuments.size());
       assertTrue(FlowControllerForErrorTest.abortedDocuments.contains("Line one\nLine two\nLine three"));
@@ -1308,7 +1314,9 @@ public class AnalysisEngine_implTest extends TestCase {
       
       //next call should not have aborted, but FC should have been notified of the failiure,
       // and no CAS should come back
+      UIMAFramework.getLogger().setLevel(Level.OFF);  // Suppress logging of expected exception
       assertFalse(iter.hasNext());
+      UIMAFramework.getLogger().setLevel(Level.INFO); // Restore to apparent default of INFO
       assertEquals(0, FlowControllerForErrorTest.abortedDocuments.size());
       assertEquals(1, FlowControllerForErrorTest.failedAEs.size());
       assertTrue(FlowControllerForErrorTest.failedAEs.contains("Segmenter"));
@@ -1412,11 +1420,12 @@ public class AnalysisEngine_implTest extends TestCase {
       cas.reset();
       cas.setDocumentText("ERROR");
       try {
+        UIMAFramework.getLogger().setLevel(Level.OFF);  // Suppress logging of expected exception
         ae.process(cas);
         fail();
       }
       catch(AnalysisEngineProcessException e) {
-        //expected
+        UIMAFramework.getLogger().setLevel(Level.INFO); // Restore to apparent default of INFO
       }
       assertEquals(1, FlowControllerForErrorTest.abortedDocuments.size());
       assertTrue(FlowControllerForErrorTest.abortedDocuments.contains("ERROR"));
@@ -1436,7 +1445,9 @@ public class AnalysisEngine_implTest extends TestCase {
       ae.reconfigure();
       cas.reset();
       cas.setDocumentText("ERROR");
+      UIMAFramework.getLogger().setLevel(Level.OFF);  // Suppress logging of expected exception
       ae.process(cas); //should not throw exception now
+      UIMAFramework.getLogger().setLevel(Level.INFO); // Restore to apparent default of INFO
       
       //document should not have aborted, but FC should have been notified of the failiure
       assertEquals(0, FlowControllerForErrorTest.abortedDocuments.size());
