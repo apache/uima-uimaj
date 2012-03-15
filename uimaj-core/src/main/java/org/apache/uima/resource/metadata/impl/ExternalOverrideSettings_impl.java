@@ -3,10 +3,10 @@
  */
 package org.apache.uima.resource.metadata.impl;
 
-import java.io.FileReader;
+import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Properties;
@@ -192,7 +192,7 @@ public class ExternalOverrideSettings_impl extends MetaDataObject_impl implement
       String fname = System.getProperty("UimaExternalOverrides");
       if (fname != null) {
         mProperties = new Properties(mProperties);
-        mProperties.load(new FileReader(fname));
+        mProperties.load(new FileInputStream(fname)); // Cannot use the 1.6 load(Reader) method
         UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(),
                 "resolveImports", LOG_RESOURCE_BUNDLE, "UIMA_external_overrides_loaded__CONFIG",
                 new Object[] {"cmdline file", fname} );
@@ -206,10 +206,10 @@ public class ExternalOverrideSettings_impl extends MetaDataObject_impl implement
   }
   
   private void loadInlineSettings(String settings) throws IOException {
-    StringReader sr = new StringReader(getSettings());
+    InputStream is = new ByteArrayInputStream(getSettings().getBytes("ISO-8859-1"));
     mProperties = new Properties(mProperties);
-    mProperties.load(sr);
-    sr.close();
+    mProperties.load(is);   // Cannot use the 1.6 load(Reader) method
+    is.close();
     // External overrides loaded from {0} "{1}"
     UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(), "resolveImports",
             LOG_RESOURCE_BUNDLE, "UIMA_external_overrides_loaded__CONFIG",
