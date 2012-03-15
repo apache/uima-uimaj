@@ -39,6 +39,7 @@
   <multiValued>false</multiValued><mandatory>false</mandatory></configurationParameter>
   <configurationParameter>
     <name>StringArrayParam</name>
+    <externalOverrideName>test.externalStringArray</externalOverrideName>
     <description/>
     <type>String</type>
     <multiValued>true</multiValued>
@@ -50,6 +51,7 @@
   <multiValued>false</multiValued><mandatory>false</mandatory></configurationParameter>
   <configurationParameter>
     <name>IntegerArrayParam</name>
+    <externalOverrideName>test.externalIntegerArray</externalOverrideName>
     <description/>
     <type>Integer</type>
     <multiValued>true</multiValued>
@@ -123,6 +125,8 @@
         <settings>
           inline-suffix    suffix_from_inline
           inline-value     ${import-prefix}-suffix_from_inline
+          test.externalStringArray = ${import-prefix},-,${inline-suffix},->,${import-value}
+          test.externalIntegerArray : 1 , 22 , 333,4444     
         </settings>
         <imports>
           <import location="testExternalOverride.settings"/>

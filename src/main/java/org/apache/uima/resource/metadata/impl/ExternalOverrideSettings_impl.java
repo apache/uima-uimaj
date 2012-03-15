@@ -53,6 +53,12 @@ public class ExternalOverrideSettings_impl extends MetaDataObject_impl implement
    */
   private boolean settingsFirst;
 
+  /*
+   * Regex that matches ${...}
+   * non-greedy so stops on first '}' -- hence key cannot contain '}'
+   */
+  private Pattern evalPattern = Pattern.compile("\\$\\{.*?\\}");
+
   /* (non-Javadoc)
    * @see org.apache.uima.resource.metadata.ExternalOverrideSettings#getImport()
    */
@@ -97,6 +103,7 @@ public class ExternalOverrideSettings_impl extends MetaDataObject_impl implement
   /* 
    * Look up value for external name from the external override settings.
    * Perform one substitution pass on ${key} substrings.  Undefined keys get the empty string.
+   * Recursively evaluate the value to be substituted.  NOTE: infinite loops not detected!
    * To avoid evaluation and get ${key} in the output use a property to generate the $, e.g. 
    *   $   = $
    *   key = ${$}{key}
@@ -107,14 +114,13 @@ public class ExternalOverrideSettings_impl extends MetaDataObject_impl implement
     if (mProperties == null || (value = mProperties.getProperty(name)) == null) {
       return null;
     }
-    Pattern pat = Pattern.compile("\\$\\{.*?\\}");
-    Matcher matcher = pat.matcher(value);
+    Matcher matcher = evalPattern.matcher(value);
     StringBuilder result = new StringBuilder(value.length() + 100);
     int lastEnd = 0;
     while (matcher.find()) {
       result.append(value.substring(lastEnd, matcher.start()));
       lastEnd = matcher.end();
-      String val = mProperties.getProperty(value.substring(matcher.start() + 2, lastEnd - 1));
+      String val = resolveExternalName(value.substring(matcher.start() + 2, lastEnd - 1));
       if (val != null) {    // If variable is undefined replace with nothing
         result.append(val);
       }

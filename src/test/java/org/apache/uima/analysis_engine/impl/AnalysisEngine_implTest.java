@@ -300,6 +300,22 @@ public class AnalysisEngine_implTest extends TestCase {
 
       ae.destroy();
       
+      // try a descriptor with configuration parameter external overrides - should work
+      in = new XMLInputSource(JUnitExtension
+              .getFile("TextAnalysisEngineImplTest/AnnotatorWithExternalOverrides.xml"));
+      desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
+      ae1 = new PrimitiveAnalysisEngine_impl();
+      ae1.initialize(desc, null);
+      String[] arrayParam = (String[]) ae1.getUimaContext().getConfigParameterValue("StringArrayParam");
+      Assert.assertNotNull(arrayParam);
+      Assert.assertEquals(5, arrayParam.length);
+      String[] expectedResult = {"prefix_from_import", "-", "suffix_from_inline", "->", "prefix_from_import-suffix_from_inline"};
+      Assert.assertTrue(Arrays.equals(expectedResult, arrayParam));
+      Integer[] intArr = (Integer[]) ae1.getUimaContext().getConfigParameterValue("IntegerArrayParam");
+      Assert.assertEquals(4, intArr.length);
+      
+      ae1.destroy();
+      
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }

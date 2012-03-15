@@ -19,6 +19,8 @@
 
 package org.apache.uima.resource.impl;
 
+import java.lang.reflect.Array;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -147,28 +149,53 @@ public class ConfigurationManager_impl extends ConfigurationManagerImplBase {
   }
   
   /*
-   * Convert the string property value into an object matching the parameter
-   * Assume arrays are represented as a comma separated list, no escape characters.
-   * 
+   * Create the appropriate type of parameter object from the value of the external override 
    */
-  private Object createParam(String value, String paramType, boolean isArray) {
+  private Object createParam(String value, String paramType, boolean isArray) throws NumberFormatException {
+    try {
+      if (paramType.equals(ConfigurationParameter.TYPE_BOOLEAN)) {
+        return createParamForClass(value, isArray, Boolean.class);
+      } else if (paramType.equals(ConfigurationParameter.TYPE_INTEGER)) {
+        return createParamForClass(value, isArray, Integer.class);
+      } else if (paramType.equals(ConfigurationParameter.TYPE_FLOAT)) {
+        return createParamForClass(value, isArray, Float.class);
+      } else { // Must be a string 
+        return createParamForClass(value, isArray, String.class);
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new NumberFormatException("Failed to convert " + value + " to " + paramType);
+    }
+  }
+  
+  // String does not have a valueOf(String) method so use this trivial class instead
+  static class StringX {
+    public static String valueOf(String s) {
+      return s;
+    }
+  }
+
+  /*
+   * Convert the string to the appropriate object, or array of.
+   * Suppress the warnings about the casts.
+   */
+  @SuppressWarnings("unchecked")
+  private <T> Object createParamForClass(String value, boolean isArray, Class<T> clas) throws Exception {
+    Method valOf = null;
+    try {
+      valOf = clas.getMethod("valueOf", String.class);
+    } catch (NoSuchMethodException e) {
+      valOf = StringX.class.getMethod("valueOf", String.class);
+    }
     if (isArray) {
       String[] tokens = value.split(",");   // NOTE: could improve and allow escape chars
-      Object[] result = new Object[tokens.length];
+      T[] result = (T[]) Array.newInstance(clas, tokens.length);
       for (int i = 0; i < tokens.length; ++i) {
-        result[i] = createParam(tokens[i], paramType, false);
+        result[i] = (T) valOf.invoke(null, tokens[i].trim());
       }
       return result;
     } else {
-      if (paramType.equals(ConfigurationParameter.TYPE_BOOLEAN)) {
-        return Boolean.valueOf(value);
-      } else if (paramType.equals(ConfigurationParameter.TYPE_INTEGER)) {
-        return Integer.valueOf(value);
-      } else if (paramType.equals(ConfigurationParameter.TYPE_FLOAT)) {
-        return Float.valueOf(value);
-      } else { // Must be a string so no conversion needed
-        return value;
-      }
+      return valOf.invoke(null, value);
     }
   }
 
