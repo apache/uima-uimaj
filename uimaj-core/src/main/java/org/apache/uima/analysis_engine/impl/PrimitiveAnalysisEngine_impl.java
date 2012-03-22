@@ -123,7 +123,9 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       super.initialize(aSpecifier, aAdditionalParams);
       ProcessingResourceMetaData md = (ProcessingResourceMetaData) mDescription.getMetaData();
 
-      getLogger().logrb(Level.CONFIG, CLASS_NAME.getName(), "initialize", LOG_RESOURCE_BUNDLE,
+      // Get logger for this class
+      Logger logger = getLogger();
+      logger.logrb(Level.CONFIG, CLASS_NAME.getName(), "initialize", LOG_RESOURCE_BUNDLE,
               "UIMA_analysis_engine_init_begin__CONFIG", md.getName());
 
       // Normalize language codes. Need to do this since a wide variety of
@@ -159,7 +161,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       // TODO: should only do this for outermost AE
       resetResultSpecificationToDefault();
 
-      getLogger().logrb(Level.CONFIG, CLASS_NAME.getName(), "initialize", LOG_RESOURCE_BUNDLE,
+      logger.logrb(Level.CONFIG, CLASS_NAME.getName(), "initialize", LOG_RESOURCE_BUNDLE,
               "UIMA_analysis_engine_init_successful__CONFIG", md.getName());
       return true;
     } catch (ResourceConfigurationException e) {
@@ -334,7 +336,8 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
   protected void callAnalysisComponentProcess(CAS aCAS) throws AnalysisEngineProcessException {
     // logging and instrumentation
     String resourceName = getMetaData().getName();
-    getLogger().logrb(Level.FINE, CLASS_NAME.getName(), "process", LOG_RESOURCE_BUNDLE,
+    Logger logger = getLogger();
+    logger.logrb(Level.FINE, CLASS_NAME.getName(), "process", LOG_RESOURCE_BUNDLE,
             "UIMA_analysis_engine_process_begin__FINE", resourceName);
     try {
       CAS view = null;
@@ -400,11 +403,11 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       }
 
       // log end of event
-      getLogger().logrb(Level.FINE, CLASS_NAME.getName(), "process", LOG_RESOURCE_BUNDLE,
+      logger.logrb(Level.FINE, CLASS_NAME.getName(), "process", LOG_RESOURCE_BUNDLE,
               "UIMA_analysis_engine_process_end__FINE", resourceName);
     } catch (Exception e) {
       // log and rethrow exception
-      getLogger().log(Level.SEVERE, "", e);
+      logger.log(Level.SEVERE, "", e);
       if (e instanceof AnalysisEngineProcessException)
         throw (AnalysisEngineProcessException) e;
       else

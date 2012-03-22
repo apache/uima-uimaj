@@ -127,7 +127,9 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       super.initialize(aSpecifier, aAdditionalParams);
       AnalysisEngineMetaData md = mDescription.getAnalysisEngineMetaData();
 
-      getLogger().logrb(Level.CONFIG, CLASS_NAME.getName(), "initialize", LOG_RESOURCE_BUNDLE,
+      // Get logger for this class ... NOT the user's one in the UimaContext
+      Logger logger = getLogger();
+      logger.logrb(Level.CONFIG, CLASS_NAME.getName(), "initialize", LOG_RESOURCE_BUNDLE,
               "UIMA_analysis_engine_init_begin__CONFIG", md.getName());
 
       // Normalize language codes. Need to do this since a wide variety of
@@ -165,7 +167,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
 
       // Read parameters from the aAdditionalParams map.
       // (First copy it so we can modify it and send the parameters on to
-      // out delegate anlaysis engines.)
+      // out delegate analysis engines.)
       if (aAdditionalParams == null) {
         aAdditionalParams = new HashMap<String, Object>();
       } else {
@@ -181,18 +183,13 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       // so that delegate AEs will share it
       aAdditionalParams.put(Resource.PARAM_RESOURCE_MANAGER, getResourceManager());
 
-      Logger logger = getLogger();
       initializeAggregateAnalysisEngine(mDescription, aAdditionalParams);
-      // above call sets the logger to something associated with the ASB,
-      //   because the ASB is a subclass of Resource_ImplBase
-      // Set it back to what it was.
-      setLogger(logger);
-      
+
       // Initialize ResultSpec based on output capabilities
       // TODO: should only do this for outermost AE
       resetResultSpecificationToDefault();
 
-      getLogger().logrb(Level.CONFIG, CLASS_NAME.getName(), "initialize", LOG_RESOURCE_BUNDLE,
+      logger.logrb(Level.CONFIG, CLASS_NAME.getName(), "initialize", LOG_RESOURCE_BUNDLE,
               "UIMA_analysis_engine_init_successful__CONFIG", md.getName());
       return true;
     } catch (ResourceConfigurationException e) {
@@ -261,18 +258,19 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
   public CasIterator processAndOutputNewCASes(CAS aCAS) throws AnalysisEngineProcessException {
     // logging and instrumentation
     String resourceName = getMetaData().getName();
-    getLogger().logrb(Level.FINE, CLASS_NAME.getName(), "process", LOG_RESOURCE_BUNDLE,
+    Logger logger = getLogger();
+    logger.logrb(Level.FINE, CLASS_NAME.getName(), "process", LOG_RESOURCE_BUNDLE,
             "UIMA_analysis_engine_process_begin__FINE", resourceName);
     try {
       CasIterator iterator = _getASB().process(aCAS);
 
       // log end of event
-      getLogger().logrb(Level.FINE, CLASS_NAME.getName(), "process", LOG_RESOURCE_BUNDLE,
+      logger.logrb(Level.FINE, CLASS_NAME.getName(), "process", LOG_RESOURCE_BUNDLE,
               "UIMA_analysis_engine_process_end__FINE", resourceName);
       return iterator;
     } catch (Exception e) {
       // log and rethrow exception
-      getLogger().log(Level.SEVERE, "", e);
+      logger.log(Level.SEVERE, "", e);
       if (e instanceof AnalysisEngineProcessException)
         throw (AnalysisEngineProcessException) e;
       else
