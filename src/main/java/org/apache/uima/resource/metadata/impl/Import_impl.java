@@ -44,6 +44,8 @@ public class Import_impl extends MetaDataObject_impl implements Import {
   private String mName;
 
   private String mLocation;
+  
+  private String byNameSuffix = ".xml";
 
   /*
    * (non-Javadoc)
@@ -82,6 +84,13 @@ public class Import_impl extends MetaDataObject_impl implements Import {
   }
 
   /*
+   * Called when importing by name without an implied ".xml" suffix
+   */
+  public void hasNoSuffix() {
+    byNameSuffix = "";
+  }
+  
+  /*
    * (non-Javadoc)
    * 
    * @see org.apache.uima.resource.metadata.Import#findAbsoluteUrl(org.apache.uima.resource.ResourceManager)
@@ -95,7 +104,7 @@ public class Import_impl extends MetaDataObject_impl implements Import {
             getLocation(), getSourceUrlString() }, e);
       }
     } else if (getName() != null) {
-      String filename = getName().replace('.', '/') + ".xml";
+      String filename = getName().replace('.', '/') + byNameSuffix;
       URL url;
       try {
         url = aResourceManager.resolveRelativePath(filename);

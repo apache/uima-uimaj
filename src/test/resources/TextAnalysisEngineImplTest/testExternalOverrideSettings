@@ -1,0 +1,2 @@
+# Note: since this is imported by name its name cannot contain any periods (.) as they are converted to slash (/)
+import-value     prefix_from_import-${inline-suffix}

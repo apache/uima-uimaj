@@ -263,4 +263,8 @@ public class ConfigurationManager_impl extends ConfigurationManagerImplBase {
     return mSettingsMap.get(aContextName);
   }
 
+  public String getExternalParameter(String context, String name) {
+    ExternalOverrideSettings settings = getExternalOverrideSettings(context);
+    return settings == null ? null : settings.resolveExternalName(name);
+  }
 }

@@ -301,17 +301,18 @@ public class AnalysisEngine_implTest extends TestCase {
       ae.destroy();
       
       // try a descriptor with configuration parameter external overrides - should work
-      in = new XMLInputSource(JUnitExtension
-              .getFile("TextAnalysisEngineImplTest/AnnotatorWithExternalOverrides.xml"));
+      // Use an aggregate so the annotator can run tests based on the context.
+      in = new XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/AggregateWithExternalOverrides.xml"));
       desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
-      ae1 = new PrimitiveAnalysisEngine_impl();
-      ae1.initialize(desc, null);
-      String[] arrayParam = (String[]) ae1.getUimaContext().getConfigParameterValue("StringArrayParam");
+      ae = new AggregateAnalysisEngine_impl();
+      ae.initialize(desc, null);
+      delegate1 = (PrimitiveAnalysisEngine_impl) ae._getASB().getComponentAnalysisEngines().get("ExternalOverrides");
+      String[] arrayParam = (String[]) delegate1.getUimaContext().getConfigParameterValue("StringArrayParam");
       Assert.assertNotNull(arrayParam);
       Assert.assertEquals(5, arrayParam.length);
-      String[] expectedResult = {"prefix_from_import", "-", "suffix_from_inline", "->", "prefix_from_import-suffix_from_inline"};
-      Assert.assertTrue(Arrays.equals(expectedResult, arrayParam));
-      Integer[] intArr = (Integer[]) ae1.getUimaContext().getConfigParameterValue("IntegerArrayParam");
+      String[] expect = { "prefix_from_import", "-", "suffix_from_inline", "->", "prefix_from_import-suffix_from_inline" };
+      Assert.assertTrue(Arrays.equals(expect, arrayParam));
+      Integer[] intArr = (Integer[]) delegate1.getUimaContext().getConfigParameterValue("IntegerArrayParam");
       Assert.assertEquals(4, intArr.length);
       
       ae1.destroy();

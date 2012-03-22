@@ -162,6 +162,7 @@ public class ExternalOverrideSettings_impl extends MetaDataObject_impl implement
         InputStream stream = null;
         for (int i = imports.length - 1; i >= 0; --i) {
           try {
+            ((Import_impl)imports[i]).hasNoSuffix();    // Disable usual append of ".xml"
             URL url = imports[i].findAbsoluteUrl(aResourceManager);
             stream = url.openStream();
             mProperties = new Properties(mProperties);

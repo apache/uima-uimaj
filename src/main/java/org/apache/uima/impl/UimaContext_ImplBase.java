@@ -52,6 +52,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.CasManager;
 import org.apache.uima.resource.ResourceAccessException;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.resource.impl.ConfigurationManager_impl;
 import org.apache.uima.resource.metadata.ConfigurationGroup;
 import org.apache.uima.resource.metadata.ConfigurationParameter;
 import org.apache.uima.util.Level;
@@ -474,6 +475,15 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
     }
   }
 
+  /**
+   * Lookup and evaluate an arbitrary (string) parameter from the External Override Settings
+   * Lets annotator configuration bypass the descriptor parameters. 
+   */
+  public String getExternalParameterValue(String name) {
+    ConfigurationManager_impl cfgmgr = (ConfigurationManager_impl) getConfigurationManager();
+    return cfgmgr.getExternalParameter(mQualifiedContextName, name);
+  }
+  
   /**
    * Changes here should also be made in UimaContext_ImplBase.mapToSofaID (non-Javadoc)
    * 
