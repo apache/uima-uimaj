@@ -31,7 +31,7 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.TypeSystem;
 
 /**
- * Annotator class used for testing
+ * Annotator class used for testing.
  * 
  */
 public class TestAnnotator extends Annotator_ImplBase implements TextAnnotator {

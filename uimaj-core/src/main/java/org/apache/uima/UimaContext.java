@@ -115,6 +115,20 @@ public interface UimaContext {
   public String[] getConfigParameterNames();
 
   /**
+   * Retrieves the value for an external parameter defined in the External Override Settings
+   * as specified in the top-level descriptor's operationalProperties section, or via the
+   *  -DUimaExternalOverrides value.
+   * 
+   * @param aParamName
+   *          the name of the parameter to look up
+   * 
+   * @return the value of the parameter with the given name, as a String.
+   *         Returns <code>null</code> if the parameter does not exist.
+   *         Returns an empty string (<code>""</code>) if the parameter was not assigned a value.
+   */
+  public String getExternalParameterValue(String aParamName);
+  
+  /**
    * Gets the <code>Logger</code> to which log output will be sent. UIMA components should use
    * this facility rather than writing to their own log files (or to stdout).
    * 

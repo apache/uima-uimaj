@@ -335,8 +335,8 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
           "configurationParameter", new PropertyXmlInfo[] { new PropertyXmlInfo("name"),
+              new PropertyXmlInfo("externalOverrideName"),
               new PropertyXmlInfo("description"), new PropertyXmlInfo("type"),
               new PropertyXmlInfo("multiValued"), new PropertyXmlInfo("mandatory"),
-              new PropertyXmlInfo("externalOverrideName"),
               new PropertyXmlInfo("overrides", "overrides", true, "parameter"), });
 }

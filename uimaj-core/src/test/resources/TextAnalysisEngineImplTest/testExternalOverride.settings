@@ -1,2 +1,2 @@
 import-prefix    prefix_from_import
-import-value     prefix_from_import-${inline-suffix}
+
