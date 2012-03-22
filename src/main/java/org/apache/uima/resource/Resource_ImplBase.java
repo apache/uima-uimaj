@@ -209,14 +209,15 @@ public abstract class Resource_ImplBase implements Resource {
   }
 
   /**
-   * @see org.apache.uima.resource.Resource#getLogger()
+   * Get the logger for this UIMA framework class.
+   * Note that this is NOT the user's logger in the UimaContext
    */
   public Logger getLogger() {
-    return (getUimaContext() == null) ? null : getUimaContext().getLogger();
+    return UIMAFramework.getLogger(this.getClass());
   }
 
   /**
-   * @see org.apache.uima.resource.Resource#setLogger(org.apache.uima.util.Logger)
+   * Set the logger in the current UimaContext for use by user annotators. 
    */
   public void setLogger(Logger aLogger) {
     if (getUimaContext() != null) {
