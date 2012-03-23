@@ -571,9 +571,9 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
      */
     public boolean hasNext() throws AnalysisEngineProcessException {
       enterProcess();
-      if (casAvailable)
-        return true;
       try {
+        if (casAvailable)
+          return true;
         casAvailable = mMyAnalysisComponent.hasNext();
         if (!casAvailable) {
           //when hasNext returns false, by contract the AnalysisComponent is done processing its
