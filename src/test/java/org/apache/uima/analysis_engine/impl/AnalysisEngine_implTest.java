@@ -314,6 +314,8 @@ public class AnalysisEngine_implTest extends TestCase {
       Assert.assertTrue(Arrays.equals(expect, arrayParam));
       Integer[] intArr = (Integer[]) delegate1.getUimaContext().getConfigParameterValue("IntegerArrayParam");
       Assert.assertEquals(4, intArr.length);
+      Float[] floats = (Float[]) delegate1.getUimaContext().getConfigParameterValue("FloatArrayParam");
+      Assert.assertTrue(floats != null && floats.length == 0);       // Should be an empty array
       
       ae1.destroy();
       

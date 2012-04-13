@@ -24,7 +24,6 @@ import junit.framework.Assert;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.CasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.ResultSpecification;
-import org.apache.uima.analysis_engine.annotator.AnnotatorContext;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.impl.UimaContext_ImplBase;
@@ -49,7 +48,7 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
 
   /**
    * @throws ResourceInitializationException 
-   * @see org.apache.uima.analysis_engine.annotator.Annotator#initialize(AnnotatorContext)
+   * @see org.apache.uima.analysis_component.CasAnnotator_ImplBase#initialize(UimaContext)
    */
   public void initialize(UimaContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
@@ -61,7 +60,7 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
     String contextName = ((UimaContext_ImplBase) aContext).getQualifiedContextName();
     if ("/ExternalOverrides/".equals(contextName)) {
       String actual = aContext.getExternalParameterValue("test.externalStringArray");
-      String expected = "prefix_from_import,-,suffix_from_inline,->,prefix_from_import-suffix_from_inline";
+      String expected = "[prefix_from_import,-,suffix_from_inline,->,prefix_from_import-suffix_from_inline]";
       Assert.assertEquals(expected, actual);
     }
   }
