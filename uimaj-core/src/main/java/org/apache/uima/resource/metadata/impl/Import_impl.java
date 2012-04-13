@@ -84,10 +84,10 @@ public class Import_impl extends MetaDataObject_impl implements Import {
   }
 
   /*
-   * Called when importing by name without an implied ".xml" suffix
+   * Called when importing by name non-xml files, e.g. external override settings
    */
-  public void hasNoSuffix() {
-    byNameSuffix = "";
+  public void setSuffix(String suffix) {
+    byNameSuffix = suffix;
   }
   
   /*
@@ -110,11 +110,11 @@ public class Import_impl extends MetaDataObject_impl implements Import {
         url = aResourceManager.resolveRelativePath(filename);
       } catch (MalformedURLException e) {
         throw new InvalidXMLException(InvalidXMLException.IMPORT_BY_NAME_TARGET_NOT_FOUND,
-                new Object[] { getName(), getSourceUrlString() }, e);
+                new Object[] { filename, getSourceUrlString() }, e);
       }
       if (url == null) {
         throw new InvalidXMLException(InvalidXMLException.IMPORT_BY_NAME_TARGET_NOT_FOUND,
-                new Object[] { getName(), getSourceUrlString() });
+                new Object[] { filename, getSourceUrlString() });
       }
       return url;
     } else {

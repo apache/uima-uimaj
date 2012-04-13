@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Arrays;
-import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,6 +19,7 @@ import org.apache.uima.resource.metadata.ExternalOverrideSettings;
 import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.Level;
+import org.apache.uima.util.impl.Settings_impl;
 
 /**
  * Class created by the XML parser representing the externalOverrideSettings element.
@@ -41,17 +41,12 @@ public class ExternalOverrideSettings_impl extends MetaDataObject_impl implement
   
   private String mSettings = null;
   
-  private Properties mProperties = null;
+  private Settings_impl mProperties = null;
 
   /*
    * Is true if settings or imports have been declared more than once
    */
   private boolean multipleEntries = false;
-
-  /*
-   * Is true if settings entries precede imports in file (and priority)
-   */
-  private boolean settingsFirst;
 
   /*
    * Regex that matches ${...}
@@ -81,7 +76,6 @@ public class ExternalOverrideSettings_impl extends MetaDataObject_impl implement
       multipleEntries = true;
       return;
     }
-    settingsFirst = (mImports == null);
     mSettings = aSettings;
   }
 
@@ -118,11 +112,17 @@ public class ExternalOverrideSettings_impl extends MetaDataObject_impl implement
     StringBuilder result = new StringBuilder(value.length() + 100);
     int lastEnd = 0;
     while (matcher.find()) {
-      result.append(value.substring(lastEnd, matcher.start()));
-      lastEnd = matcher.end();
-      String val = resolveExternalName(value.substring(matcher.start() + 2, lastEnd - 1));
-      if (val != null) {    // If variable is undefined replace with nothing
-        result.append(val);
+      // Check if the $ is escaped
+      if (mProperties.isEscaped(value,matcher.start())) {
+        result.append(value.substring(lastEnd, matcher.start() + 1));
+        lastEnd = matcher.start() + 1;  // copy the escaped $ and restart after it
+      } else {
+        result.append(value.substring(lastEnd, matcher.start()));
+        lastEnd = matcher.end();
+        String val = resolveExternalName(value.substring(matcher.start() + 2, lastEnd - 1));
+        if (val != null) {    // If variable is undefined replace with nothing
+          result.append(val);
+        }
       }
     }
     if (lastEnd == 0) {
@@ -141,7 +141,7 @@ public class ExternalOverrideSettings_impl extends MetaDataObject_impl implement
   }
 
   /* 
-   * Resolve imports and load properties files in reverse order for top-down priority
+   * Resolve imports and load properties files in declaration order for top-down priority
    * Also load inline settings to override or follow the imports
    */
   public void resolveImports(ResourceManager aResourceManager) throws ResourceConfigurationException {
@@ -151,21 +151,41 @@ public class ExternalOverrideSettings_impl extends MetaDataObject_impl implement
                 new Object[] { "<settings> or <imports>", "<externalOverrideSettings>"});
       }
  
-      // Load settings as final default if after imports in xml
-      if (!settingsFirst && getSettings() != null) {
-        loadInlineSettings(getSettings());
+      // Use local class that extends Java Properties to support multi-line arrays & maps
+      // Also supports UTF-8 and lets first entry found override later entries.
+      mProperties = new Settings_impl();
+      
+      // First see if an import specified on the command line
+      String fname = System.getProperty("UimaExternalOverrides");
+      if (fname != null) {
+        mProperties.load(new FileInputStream(fname));
+        UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(),
+                "resolveImports", LOG_RESOURCE_BUNDLE, "UIMA_external_overrides_loaded__CONFIG",
+                new Object[] {"cmdline file", fname} );
+      }
+      
+      // Load settings first to override any imports
+      // Note: cannot use declaration order of settings vs. imports as the XmlizationInfo routine
+      // puts settings first when (re-)writing the descriptor.
+      if (getSettings() != null) {
+        InputStream is = new ByteArrayInputStream(getSettings().getBytes("UTF-8"));
+        mProperties.load(is);
+        is.close();
+        // External overrides loaded from {0} "{1}"
+        UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(), "resolveImports",
+                LOG_RESOURCE_BUNDLE, "UIMA_external_overrides_loaded__CONFIG",
+                new Object[] { "inline entry", getSettings() });
       }
 
-      // Load imported files in reverse order
+      // Load imported files in declared order of declaration ... first overrides later ones
       Import[] imports = getImports();
       if (imports != null) {
         InputStream stream = null;
-        for (int i = imports.length - 1; i >= 0; --i) {
+        for (int i = 0; i < imports.length; ++i) {
           try {
-            ((Import_impl)imports[i]).hasNoSuffix();    // Disable usual append of ".xml"
+            ((Import_impl)imports[i]).setSuffix(".settings");    // Format is similar to java.util.Properties
             URL url = imports[i].findAbsoluteUrl(aResourceManager);
             stream = url.openStream();
-            mProperties = new Properties(mProperties);
             mProperties.load(stream);
             UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(),
                     "resolveImports", LOG_RESOURCE_BUNDLE, "UIMA_external_overrides_loaded__CONFIG",
@@ -184,21 +204,6 @@ public class ExternalOverrideSettings_impl extends MetaDataObject_impl implement
         }
       }
       
-      // Load settings to override imports if before imports in xml
-      if (settingsFirst) {
-        loadInlineSettings(getSettings());
-      }
-      
-      // Finally see if an import specified on the command line
-      String fname = System.getProperty("UimaExternalOverrides");
-      if (fname != null) {
-        mProperties = new Properties(mProperties);
-        mProperties.load(new FileInputStream(fname)); // Cannot use the 1.6 load(Reader) method
-        UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(),
-                "resolveImports", LOG_RESOURCE_BUNDLE, "UIMA_external_overrides_loaded__CONFIG",
-                new Object[] {"cmdline file", fname} );
-      }
-
     } catch (IOException e) {
       throw new ResourceConfigurationException(e);
     } catch (InvalidXMLException e) {
@@ -206,23 +211,14 @@ public class ExternalOverrideSettings_impl extends MetaDataObject_impl implement
     }
   }
   
-  private void loadInlineSettings(String settings) throws IOException {
-    InputStream is = new ByteArrayInputStream(getSettings().getBytes("ISO-8859-1"));
-    mProperties = new Properties(mProperties);
-    mProperties.load(is);   // Cannot use the 1.6 load(Reader) method
-    is.close();
-    // External overrides loaded from {0} "{1}"
-    UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(), "resolveImports",
-            LOG_RESOURCE_BUNDLE, "UIMA_external_overrides_loaded__CONFIG",
-            new Object[] { "inline", getSettings() });
-  }
-
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
 
+  // NOTE:  This will cause any re-write of a descriptor to order settings before imports
+  //        which may not have been the original ordering !!
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("externalOverrideSettings",
-          new PropertyXmlInfo[] { new PropertyXmlInfo("imports", false),
-              new PropertyXmlInfo("settings", false)});
+          new PropertyXmlInfo[] { new PropertyXmlInfo("settings", false),
+              new PropertyXmlInfo("imports", false)});
 
 }

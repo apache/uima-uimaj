@@ -71,6 +71,7 @@
       </configurationParameter>
       <configurationParameter>
         <name>FloatArrayParam</name>
+        <externalOverrideName>test.externalFloatArray</externalOverrideName>
         <description/>
         <type>Float</type>
         <multiValued>true</multiValued>
@@ -153,7 +154,7 @@
         </settings>
         <imports>
           <import location="testExternalOverride.settings"/>
-          <import name="TextAnalysisEngineImplTest.testExternalOverrideSettings"/>
+          <import name="TextAnalysisEngineImplTest.testExternalOverride2"/>
         </imports>
       </externalOverrideSettings>
     </operationalProperties>

@@ -104,11 +104,12 @@ public class ConfigurationManager_impl extends ConfigurationManagerImplBase {
           String propValue = settings.resolveExternalName(extName);
           if (propValue != null) {
             Object result = createParam(propValue, aParams[i].getType(), aParams[i].isMultiValued());
-            if (result != null) {
-              paramValue = result;
-              mLinkMap.remove(qname);
-              from = "(overridden from " + extName + ")"; 
+            if (result == null) {
+              throw new NumberFormatException("Array mismatch assigning value of " + extName + " ('" + propValue + "') to " + aParams[i].getName());
             }
+            paramValue = result;
+            mLinkMap.remove(qname);
+            from = "(overridden from " + extName + ")"; 
           }
         }
         mSharedParamMap.put(qname, paramValue);
@@ -152,6 +153,10 @@ public class ConfigurationManager_impl extends ConfigurationManagerImplBase {
    * Create the appropriate type of parameter object from the value of the external override 
    */
   private Object createParam(String value, String paramType, boolean isArray) throws NumberFormatException {
+    boolean arrayValue = value.length() > 0 && value.charAt(0) == '[' && value.charAt(value.length()-1) == ']';
+    if (arrayValue ^ isArray) {
+      return null;  // Caller throws exception
+    }
     try {
       if (paramType.equals(ConfigurationParameter.TYPE_BOOLEAN)) {
         return createParamForClass(value, isArray, Boolean.class);
@@ -164,7 +169,7 @@ public class ConfigurationManager_impl extends ConfigurationManagerImplBase {
       }
     } catch (Exception e) {
       e.printStackTrace();
-      throw new NumberFormatException("Failed to convert " + value + " to " + paramType);
+      throw new NumberFormatException("Failed to convert '" + value + "' to " + paramType);
     }
   }
   
@@ -178,6 +183,7 @@ public class ConfigurationManager_impl extends ConfigurationManagerImplBase {
   /*
    * Convert the string to the appropriate object, or array of.
    * Suppress the warnings about the casts.
+   * Tokenize arrays on ',' but if should have been escaped put the ',' back
    */
   @SuppressWarnings("unchecked")
   private <T> Object createParamForClass(String value, boolean isArray, Class<T> clas) throws Exception {
@@ -188,17 +194,63 @@ public class ConfigurationManager_impl extends ConfigurationManagerImplBase {
       valOf = StringX.class.getMethod("valueOf", String.class);
     }
     if (isArray) {
-      String[] tokens = value.split(",");   // NOTE: could improve and allow escape chars
-      T[] result = (T[]) Array.newInstance(clas, tokens.length);
-      for (int i = 0; i < tokens.length; ++i) {
-        result[i] = (T) valOf.invoke(null, tokens[i].trim());
+      value = value.substring(1, value.length()-1);
+      if (value.length() == 0) {          // If an empty string create a 0-length array 
+        return (T[]) Array.newInstance(clas, 0);
+      }
+      String[] tokens = value.split(",");
+      int nTokens = tokens.length;
+      int i;
+      for (i = 0; i < tokens.length - 1; ++i) {
+        if (endsWithEscape(tokens[i])) {
+          tokens[i+1] = tokens[i] + "," + tokens[i+1];
+          tokens[i] = null;
+          --nTokens;
+        }
+      }
+      if (endsWithEscape(tokens[i])) {
+        tokens[i] += ",";
+      }
+      T[] result = (T[]) Array.newInstance(clas, nTokens);
+      i = 0;
+      for (String token : tokens) {
+        if (token != null) {
+          result[i++] = (T) valOf.invoke(null, escape(token.trim()));
+        }
       }
       return result;
     } else {
-      return valOf.invoke(null, value);
+      return valOf.invoke(null, escape(value));
     }
   }
 
+  // Finally process any escapes by replacing \x by x
+  private String escape(String token) {
+    int next = token.indexOf('\\');
+    if (next < 0) {
+      return token;
+    }
+    StringBuilder result = new StringBuilder(token.length());
+    int last = 0;
+    // For each '\' found copy up to it and restart the search after the next char
+    while (next >= 0) {
+      result.append(token.substring(last, next));
+      last = next + 1;
+      next = token.indexOf('\\', last + 1);
+    }
+    result.append(token.substring(last));
+    return result.toString();
+  }
+  
+  private boolean endsWithEscape(String line) {
+    int i = line.length();
+    while (i > 0 && line.charAt(i-1) == '\\') {
+      --i;
+    }
+    // If change in i is odd then ended with an unescaped \ 
+    return ((line.length() - i) % 2 != 0);
+  }
+  
   /**
    * If the first Analysis Engine load the External Override Settings
    * May start with the root context "/" or may get multiple top-level contexts (e.g. from CPE)
@@ -265,6 +317,7 @@ public class ConfigurationManager_impl extends ConfigurationManagerImplBase {
 
   public String getExternalParameter(String context, String name) {
     ExternalOverrideSettings settings = getExternalOverrideSettings(context);
-    return settings == null ? null : settings.resolveExternalName(name);
+    String value = settings == null ? null : settings.resolveExternalName(name);
+    return value == null ? null : escape(value);
   }
 }
