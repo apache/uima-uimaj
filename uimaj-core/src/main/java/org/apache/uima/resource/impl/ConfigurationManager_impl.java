@@ -79,12 +79,12 @@ public class ConfigurationManager_impl extends ConfigurationManagerImplBase {
    * (non-Javadoc)
    * 
    * @see org.apache.uima.resource.impl.ConfigurationManagerImplBase#declareParameters(java.lang.String,
-   *      org.apache.uima.resource.metadata.ConfigurationParameter[],
-   *      org.apache.uima.resource.metadata.ConfigurationParameterSettings, java.lang.String,
-   *      java.lang.String)
+   * org.apache.uima.resource.metadata.ConfigurationParameter[],
+   * org.apache.uima.resource.metadata.ConfigurationParameterSettings, java.lang.String, java.lang.String)
    */
   protected void declareParameters(String aGroupName, ConfigurationParameter[] aParams,
-          ConfigurationParameterSettings aSettings, String aContextName, String aParentContextName) {
+          ConfigurationParameterSettings aSettings, String aContextName, String aParentContextName)
+          throws ResourceConfigurationException {
     super.declareParameters(aGroupName, aParams, aSettings, aContextName, aParentContextName);
     // iterate over config. param _declarations_ and build mSharedParamNap
     if (aParams != null) {
@@ -105,11 +105,12 @@ public class ConfigurationManager_impl extends ConfigurationManagerImplBase {
           if (propValue != null) {
             Object result = createParam(propValue, aParams[i].getType(), aParams[i].isMultiValued());
             if (result == null) {
-              throw new NumberFormatException("Array mismatch assigning value of " + extName + " ('" + propValue + "') to " + aParams[i].getName());
+              throw new NumberFormatException("Array mismatch assigning value of " + extName + " ('" + propValue
+                      + "') to " + aParams[i].getName());
             }
             paramValue = result;
             mLinkMap.remove(qname);
-            from = "(overridden from " + extName + ")"; 
+            from = "(overridden from " + extName + ")";
           }
         }
         mSharedParamMap.put(qname, paramValue);
@@ -133,8 +134,8 @@ public class ConfigurationManager_impl extends ConfigurationManagerImplBase {
           Object[] array = (Object[]) realValue;
           realValue = Arrays.toString(array);
         }
-        UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(),
-                "declareParameters", LOG_RESOURCE_BUNDLE, "UIMA_parameter_set__CONFIG",
+        UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(), "declareParameters",
+                LOG_RESOURCE_BUNDLE, "UIMA_parameter_set__CONFIG",
                 new Object[] { aParams[i].getName(), aContextName, realValue, from });
       }
     }
@@ -315,9 +316,20 @@ public class ConfigurationManager_impl extends ConfigurationManagerImplBase {
     return mSettingsMap.get(aContextName);
   }
 
+  /**
+   * Convenience method for direct access to string variables
+   * 
+   * @param context - UIMA Context
+   * @param name    - variable to look up
+   * @return        - value of variable OR an exception message if definition is invalid
+   */
   public String getExternalParameter(String context, String name) {
     ExternalOverrideSettings settings = getExternalOverrideSettings(context);
-    String value = settings == null ? null : settings.resolveExternalName(name);
-    return value == null ? null : escape(value);
+    try {
+      String value = settings == null ? null : settings.resolveExternalName(name);
+      return value == null ? null : escape(value);
+    } catch (ResourceConfigurationException e) {
+      return "*ERROR* " + e.getMessage();
+    }
   }
 }

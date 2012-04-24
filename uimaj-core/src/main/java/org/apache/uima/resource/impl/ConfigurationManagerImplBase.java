@@ -341,9 +341,11 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    *          name of context containing this parameter
    * @param aParentContextName
    *          name of parent context, null if none
+   * @throws ResourceConfigurationException 
    */
   protected void declareParameters(String aGroupName, ConfigurationParameter[] aParams,
-          ConfigurationParameterSettings aSettings, String aContextName, String aParentContextName) {
+          ConfigurationParameterSettings aSettings, String aContextName, String aParentContextName)
+          throws ResourceConfigurationException {
     // iterate over config. param _declarations_
     if (aParams != null) {
       for (int i = 0; i < aParams.length; i++) {
@@ -356,10 +358,8 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
           // no explicit override. Check for implicit override (a parameter with same
           // name declared in parent aggregate with no explicit overrides)
           // Note: any type mismatch will generate an error later
-          String nameInParentContext = makeQualifiedName(aParentContextName, param.getName(),
-                  aGroupName);
-          if (lookup(nameInParentContext) != null
-                  && !mExplicitlyOverridingParameters.contains(nameInParentContext)) {
+          String nameInParentContext = makeQualifiedName(aParentContextName, param.getName(), aGroupName);
+          if (lookup(nameInParentContext) != null && !mExplicitlyOverridingParameters.contains(nameInParentContext)) {
             // create a link (but collapse multiple links)
             // String parentLink = getLink(nameInParentContext);
             // overriddenBy = parentLink != null ? parentLink : nameInParentContext;
