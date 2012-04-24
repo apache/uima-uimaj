@@ -70,7 +70,7 @@ public interface ExternalOverrideSettings extends MetaDataObject {
   /* (non-Javadoc)
    * Look up value for external name from the external override settings
    */
-  public String resolveExternalName(String name);
+  public String resolveExternalName(String name) throws ResourceConfigurationException;
   
   /**
    * Resolves an imported ExternalOverrideSettings specifier, if there is one. 

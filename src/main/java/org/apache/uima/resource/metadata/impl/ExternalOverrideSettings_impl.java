@@ -96,14 +96,15 @@ public class ExternalOverrideSettings_impl extends MetaDataObject_impl implement
 
   /* 
    * Look up value for external name from the external override settings.
-   * Perform one substitution pass on ${key} substrings.  Undefined keys get the empty string.
+   * Perform one substitution pass on ${key} substrings. If key is undefined throw an exception.
    * Recursively evaluate the value to be substituted.  NOTE: infinite loops not detected!
    * To avoid evaluation and get ${key} in the output use a property to generate the $, e.g. 
    *   $   = $
    *   key = ${$}{key}
-   * The Properties class processes the \ escape character so it must be doubled to survive
+   * or escape the $
+   *   key = \${key}
    */
-  public String resolveExternalName(String name) {
+  public String resolveExternalName(String name) throws ResourceConfigurationException {
     String value;
     if (mProperties == null || (value = mProperties.getProperty(name)) == null) {
       return null;
@@ -113,16 +114,19 @@ public class ExternalOverrideSettings_impl extends MetaDataObject_impl implement
     int lastEnd = 0;
     while (matcher.find()) {
       // Check if the $ is escaped
-      if (mProperties.isEscaped(value,matcher.start())) {
+      if (mProperties.isEscaped(value, matcher.start())) {
         result.append(value.substring(lastEnd, matcher.start() + 1));
-        lastEnd = matcher.start() + 1;  // copy the escaped $ and restart after it
+        lastEnd = matcher.start() + 1; // copy the escaped $ and restart after it
       } else {
         result.append(value.substring(lastEnd, matcher.start()));
         lastEnd = matcher.end();
-        String val = resolveExternalName(value.substring(matcher.start() + 2, lastEnd - 1));
-        if (val != null) {    // If variable is undefined replace with nothing
-          result.append(val);
+        String key = value.substring(matcher.start() + 2, lastEnd - 1);
+        String val = resolveExternalName(key);
+        if (val == null) { // External override variable "{0}" references the undefined variable "{1}"
+          throw new ResourceConfigurationException(ResourceConfigurationException.EXTERNAL_OVERRIDE_INVALID,
+                  new Object[] { name, key });
         }
+        result.append(val);
       }
     }
     if (lastEnd == 0) {
@@ -155,13 +159,15 @@ public class ExternalOverrideSettings_impl extends MetaDataObject_impl implement
       // Also supports UTF-8 and lets first entry found override later entries.
       mProperties = new Settings_impl();
       
-      // First see if an import specified on the command line
-      String fname = System.getProperty("UimaExternalOverrides");
-      if (fname != null) {
-        mProperties.load(new FileInputStream(fname));
-        UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(),
-                "resolveImports", LOG_RESOURCE_BUNDLE, "UIMA_external_overrides_loaded__CONFIG",
-                new Object[] {"cmdline file", fname} );
+      // First see if a comma-separated list of imports has been specified on the command line
+      String fnames = System.getProperty("UimaExternalOverrides");
+      if (fnames != null) {
+        for (String fname : fnames.split(",")) {
+          mProperties.load(new FileInputStream(fname));
+          UIMAFramework.getLogger(this.getClass())
+                  .logrb(Level.CONFIG, this.getClass().getName(), "resolveImports", LOG_RESOURCE_BUNDLE,
+                          "UIMA_external_overrides_loaded__CONFIG", new Object[] { "cmdline file", fname });
+        }
       }
       
       // Load settings first to override any imports

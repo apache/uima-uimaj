@@ -90,6 +90,11 @@ public class ResourceConfigurationException extends UIMAException {
    * component "{1}" -- directory "{2}" does not exist.
    */
   public static final String DIRECTORY_NOT_FOUND = "directory_not_found";
+  
+  /**
+   * Message key for a standard UIMA exception message: An external override references the undefined variable "{0}"
+   */
+  public static final String EXTERNAL_OVERRIDE_INVALID = "external_override_invalid";
 
   /**
    * Creates a new exception with a null message.
