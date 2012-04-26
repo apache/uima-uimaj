@@ -27,6 +27,7 @@ import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.SofaID;
 import org.apache.uima.resource.ResourceAccessException;
+import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.Session;
 import org.apache.uima.util.InstrumentationFacility;
 import org.apache.uima.util.Logger;
@@ -125,8 +126,9 @@ public interface UimaContext {
    * @return the value of the parameter with the given name, as a String.
    *         Returns <code>null</code> if the parameter does not exist.
    *         Returns an empty string (<code>""</code>) if the parameter was not assigned a value.
+   * @throws ResourceConfigurationException if the parameter refers to an undefined variable
    */
-  public String getExternalParameterValue(String aParamName);
+  public String getExternalParameterValue(String aParamName) throws ResourceConfigurationException;
   
   /**
    * Gets the <code>Logger</code> to which log output will be sent. UIMA components should use

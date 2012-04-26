@@ -9,8 +9,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Arrays;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.resource.ResourceConfigurationException;
@@ -48,11 +46,6 @@ public class ExternalOverrideSettings_impl extends MetaDataObject_impl implement
    */
   private boolean multipleEntries = false;
 
-  /*
-   * Regex that matches ${...}
-   * non-greedy so stops on first '}' -- hence key cannot contain '}'
-   */
-  private Pattern evalPattern = Pattern.compile("\\$\\{.*?\\}");
 
   /* (non-Javadoc)
    * @see org.apache.uima.resource.metadata.ExternalOverrideSettings#getImport()
@@ -92,49 +85,6 @@ public class ExternalOverrideSettings_impl extends MetaDataObject_impl implement
       return;
     }
     mImports = aImports;
-  }
-
-  /* 
-   * Look up value for external name from the external override settings.
-   * Perform one substitution pass on ${key} substrings. If key is undefined throw an exception.
-   * Recursively evaluate the value to be substituted.  NOTE: infinite loops not detected!
-   * To avoid evaluation and get ${key} in the output use a property to generate the $, e.g. 
-   *   $   = $
-   *   key = ${$}{key}
-   * or escape the $
-   *   key = \${key}
-   */
-  public String resolveExternalName(String name) throws ResourceConfigurationException {
-    String value;
-    if (mProperties == null || (value = mProperties.getProperty(name)) == null) {
-      return null;
-    }
-    Matcher matcher = evalPattern.matcher(value);
-    StringBuilder result = new StringBuilder(value.length() + 100);
-    int lastEnd = 0;
-    while (matcher.find()) {
-      // Check if the $ is escaped
-      if (mProperties.isEscaped(value, matcher.start())) {
-        result.append(value.substring(lastEnd, matcher.start() + 1));
-        lastEnd = matcher.start() + 1; // copy the escaped $ and restart after it
-      } else {
-        result.append(value.substring(lastEnd, matcher.start()));
-        lastEnd = matcher.end();
-        String key = value.substring(matcher.start() + 2, lastEnd - 1);
-        String val = resolveExternalName(key);
-        if (val == null) { // External override variable "{0}" references the undefined variable "{1}"
-          throw new ResourceConfigurationException(ResourceConfigurationException.EXTERNAL_OVERRIDE_INVALID,
-                  new Object[] { name, key });
-        }
-        result.append(val);
-      }
-    }
-    if (lastEnd == 0) {
-      return value;
-    } else {
-      result.append(value.substring(lastEnd));
-      return result.toString();
-    }
   }
 
   /* (non-Javadoc)
@@ -217,6 +167,11 @@ public class ExternalOverrideSettings_impl extends MetaDataObject_impl implement
     }
   }
   
+  @Override
+  public String resolveExternalName(String name) throws ResourceConfigurationException {
+    return mProperties == null ? null : mProperties.lookUp(name);
+  }
+
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }

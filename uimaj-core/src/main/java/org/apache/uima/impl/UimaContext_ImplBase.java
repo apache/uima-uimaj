@@ -51,6 +51,7 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.CasManager;
 import org.apache.uima.resource.ResourceAccessException;
+import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.impl.ConfigurationManager_impl;
 import org.apache.uima.resource.metadata.ConfigurationGroup;
@@ -478,8 +479,9 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   /**
    * Lookup and evaluate an arbitrary (string) parameter from the External Override Settings
    * Lets annotator configuration bypass the descriptor parameters. 
+   * @throws ResourceConfigurationException 
    */
-  public String getExternalParameterValue(String name) {
+  public String getExternalParameterValue(String name) throws ResourceConfigurationException {
     ConfigurationManager_impl cfgmgr = (ConfigurationManager_impl) getConfigurationManager();
     return cfgmgr.getExternalParameter(mQualifiedContextName, name);
   }
