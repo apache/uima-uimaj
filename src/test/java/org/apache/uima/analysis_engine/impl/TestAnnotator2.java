@@ -19,6 +19,9 @@
 
 package org.apache.uima.analysis_engine.impl;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+
 import junit.framework.Assert;
 
 import org.apache.uima.UimaContext;
@@ -27,7 +30,10 @@ import org.apache.uima.analysis_engine.ResultSpecification;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.impl.UimaContext_ImplBase;
+import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.util.Settings;
+import org.apache.uima.util.impl.Settings_impl;
 
 /**
  * Annotator class used for testing.
@@ -59,9 +65,33 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
     // Check if can get an arbitrary external parameter from the override settings
     String contextName = ((UimaContext_ImplBase) aContext).getQualifiedContextName();
     if ("/ExternalOverrides/".equals(contextName)) {
-      String actual = aContext.getExternalParameterValue("test.externalStringArray");
+      String actual = null;
+      try {
+        actual = aContext.getExternalParameterValue("test.externalStringArray");
+      } catch (ResourceConfigurationException e) {
+        Assert.fail(e.getMessage());
+      }
       String expected = "[prefix_from_import,-,suffix_from_inline,->,prefix_from_import-suffix_from_inline]";
       Assert.assertEquals(expected, actual);
+      
+      // Test a stand-alone settings object
+      Settings testSettings = new Settings_impl();
+      String lines = "foo = ${bar} \n bar : [ok \n OK] \n bad = ${missing}";
+      InputStream is;
+      try {
+        is = new ByteArrayInputStream(lines.getBytes("UTF-8"));
+        testSettings.load(is);
+        String val = testSettings.lookUp("foo");
+        Assert.assertEquals("[ok,OK]", val);
+        try {
+          val = testSettings.lookUp("bad");
+          Assert.fail("\"bad\" should create an error");
+        } catch (ResourceConfigurationException e) {
+          System.err.println("Expected exception: " + e.toString());
+        }
+      } catch (Exception e) {
+        Assert.fail(e.toString());
+      }
     }
   }
 

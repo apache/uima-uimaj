@@ -322,14 +322,11 @@ public class ConfigurationManager_impl extends ConfigurationManagerImplBase {
    * @param context - UIMA Context
    * @param name    - variable to look up
    * @return        - value of variable OR an exception message if definition is invalid
+   * @throws ResourceConfigurationException 
    */
-  public String getExternalParameter(String context, String name) {
+  public String getExternalParameter(String context, String name) throws ResourceConfigurationException {
     ExternalOverrideSettings settings = getExternalOverrideSettings(context);
-    try {
-      String value = settings == null ? null : settings.resolveExternalName(name);
-      return value == null ? null : escape(value);
-    } catch (ResourceConfigurationException e) {
-      return "*ERROR* " + e.getMessage();
-    }
+    String value = settings == null ? null : settings.resolveExternalName(name);
+    return value == null ? null : escape(value);
   }
 }
