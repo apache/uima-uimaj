@@ -167,7 +167,6 @@ public class ExternalOverrideSettings_impl extends MetaDataObject_impl implement
     }
   }
   
-  @Override
   public String resolveExternalName(String name) throws ResourceConfigurationException {
     return mProperties == null ? null : mProperties.lookUp(name);
   }
