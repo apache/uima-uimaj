@@ -85,7 +85,7 @@ public interface ConfigurationParameter extends MetaDataObject {
    * @throws org.apache.uima.UIMA_UnsupportedOperationException
    *           if this object is not modifiable
    */
-  public void setExternalOverrideName(String aExternalName);
+  public void setExternalOverrideName(String aExternalOverrideName);
   
   /**
    * Retrieves the description of this configuration parameter.

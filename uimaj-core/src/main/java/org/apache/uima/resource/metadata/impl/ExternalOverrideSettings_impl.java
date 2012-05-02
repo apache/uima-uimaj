@@ -40,6 +40,8 @@ public class ExternalOverrideSettings_impl extends MetaDataObject_impl implement
   private String mSettings = null;
   
   private Settings_impl mProperties = null;
+  
+  private ExternalOverrideSettings parentOverrides = null;
 
   /*
    * Is true if settings or imports have been declared more than once
@@ -105,18 +107,24 @@ public class ExternalOverrideSettings_impl extends MetaDataObject_impl implement
                 new Object[] { "<settings> or <imports>", "<externalOverrideSettings>"});
       }
  
+      Settings_impl parentSettings = null;
+      if (parentOverrides != null) {
+        parentSettings = ((ExternalOverrideSettings_impl)parentOverrides).mProperties;
+      }
       // Use local class that extends Java Properties to support multi-line arrays & maps
       // Also supports UTF-8 and lets first entry found override later entries.
-      mProperties = new Settings_impl();
+      mProperties = new Settings_impl(parentSettings);
       
-      // First see if a comma-separated list of imports has been specified on the command line
-      String fnames = System.getProperty("UimaExternalOverrides");
-      if (fnames != null) {
-        for (String fname : fnames.split(",")) {
-          mProperties.load(new FileInputStream(fname));
-          UIMAFramework.getLogger(this.getClass())
-                  .logrb(Level.CONFIG, this.getClass().getName(), "resolveImports", LOG_RESOURCE_BUNDLE,
-                          "UIMA_external_overrides_loaded__CONFIG", new Object[] { "cmdline file", fname });
+      // If top-level see if a comma-separated list of imports has been specified on the command line
+      if (parentOverrides == null) {
+        String fnames = System.getProperty("UimaExternalOverrides");
+        if (fnames != null) {
+          for (String fname : fnames.split(",")) {
+            UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(), "resolveImports",
+                    LOG_RESOURCE_BUNDLE, "UIMA_external_overrides_load__CONFIG",
+                    new Object[] { "cmdline file", fname });
+            mProperties.load(new FileInputStream(fname));
+          }
         }
       }
       
@@ -125,12 +133,12 @@ public class ExternalOverrideSettings_impl extends MetaDataObject_impl implement
       // puts settings first when (re-)writing the descriptor.
       if (getSettings() != null) {
         InputStream is = new ByteArrayInputStream(getSettings().getBytes("UTF-8"));
-        mProperties.load(is);
-        is.close();
         // External overrides loaded from {0} "{1}"
         UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(), "resolveImports",
-                LOG_RESOURCE_BUNDLE, "UIMA_external_overrides_loaded__CONFIG",
+                LOG_RESOURCE_BUNDLE, "UIMA_external_overrides_load__CONFIG",
                 new Object[] { "inline entry", getSettings() });
+        mProperties.load(is);
+        is.close();
       }
 
       // Load imported files in declared order of declaration ... first overrides later ones
@@ -142,10 +150,10 @@ public class ExternalOverrideSettings_impl extends MetaDataObject_impl implement
             ((Import_impl)imports[i]).setSuffix(".settings");    // Format is similar to java.util.Properties
             URL url = imports[i].findAbsoluteUrl(aResourceManager);
             stream = url.openStream();
-            mProperties.load(stream);
             UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(),
-                    "resolveImports", LOG_RESOURCE_BUNDLE, "UIMA_external_overrides_loaded__CONFIG",
+                    "resolveImports", LOG_RESOURCE_BUNDLE, "UIMA_external_overrides_load__CONFIG",
                     new Object[] {"file", url} );
+            mProperties.load(stream);
           } catch (InvalidXMLException e) {
             throw new ResourceConfigurationException(e);
           } finally {
@@ -166,6 +174,18 @@ public class ExternalOverrideSettings_impl extends MetaDataObject_impl implement
       throw new ResourceConfigurationException(e);
     }
   }
+  
+  public void setParentOverrides(ExternalOverrideSettings parent) {
+    parentOverrides = parent;
+  }
+  
+  /*
+   * Return the object loaded with all the settings declared in the descriptor.
+   * Not to be confused with getSettings which refers to the inline <settings> element in the xml
+   */
+/*  protected Settings_impl getSettings_impl() {
+    return mProperties;
+  }*/
   
   public String resolveExternalName(String name) throws ResourceConfigurationException {
     return mProperties == null ? null : mProperties.lookUp(name);
