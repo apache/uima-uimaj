@@ -36,7 +36,9 @@ public class Settings_impl implements Settings {
   private BufferedReader rdr;
 
   private Map<String, String> map;
-
+  
+  private Settings_impl parent = null;
+  
   /*
    * Regex that matches ${...}
    * non-greedy so stops on first '}' -- hence key cannot contain '}'
@@ -44,6 +46,11 @@ public class Settings_impl implements Settings {
   private Pattern evalPattern = Pattern.compile("\\$\\{.*?\\}");
 
   public Settings_impl() {
+    this(null);
+  }
+
+  public Settings_impl(Settings_impl parent) {
+    this.parent = parent;
     map = new HashMap<String, String>();
   }
 
@@ -110,7 +117,7 @@ public class Settings_impl implements Settings {
    */
   public String lookUp(String name) throws ResourceConfigurationException {
     String value;
-    if ((value = map.get(name)) == null) {
+    if ((value = get(name)) == null) {
       return null;
     }
     Matcher matcher = evalPattern.matcher(value);
@@ -141,6 +148,22 @@ public class Settings_impl implements Settings {
     }
   }
 
+  /*
+   * Get the raw value for a key by search the linked list of settings, starting 
+   * at the end of the list, i.e. the top-level settings.
+   */
+  private String get(String name) {
+    String value;
+    // Only if parent (and parent's parent etc.) doesn't have an entry do we check our entries.
+    if (parent != null) {
+      value = parent.get(name);
+      if (value != null) {
+        return value;
+      }
+    }
+    return map.get(name);
+  }
+  
   /*
    * Create a string representing an array from one or more logical lines
    * Assert: line length > 0

@@ -19,10 +19,9 @@
 
 package org.apache.uima.resource.metadata;
 
-import java.util.List;
-
 import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceManager;
+import org.apache.uima.resource.metadata.impl.ExternalOverrideSettings_impl;
 
 
 /**
@@ -47,7 +46,7 @@ public interface ExternalOverrideSettings extends MetaDataObject {
   /**
    * Sets the imports that hold external override settings.
    * 
-   * @param aImport
+   * @param aImports
    *          an object containing the import information, or null if no import is to be used
    */
   public void setImports(Import[] aImports);
@@ -73,9 +72,8 @@ public interface ExternalOverrideSettings extends MetaDataObject {
   public String resolveExternalName(String name) throws ResourceConfigurationException;
   
   /**
-   * Resolves an imported ExternalOverrideSettings specifier, if there is one. 
-   * The <code>properties</code>property of this object is set to the result 
-   * of parsing the imported file. The import is then deleted.
+   * Processes the entries in the ExternalOverrideSettings element, if there is one. 
+   * Loads the Settings object with any inline settings and imports
    * 
    * @throws ResourceConfigurationException
    *           if either the import target does not exist or is invalid
@@ -83,9 +81,8 @@ public interface ExternalOverrideSettings extends MetaDataObject {
   public void resolveImports() throws ResourceConfigurationException;
 
   /**
-   * Resolves an imported ExternalOverrideSettings specifier, if there is one. 
-   * The <code>properties</code>property of this object is set to the result 
-   * of parsing the imported file. The import is then deleted.
+   * Processes the entries in the ExternalOverrideSettings element, if there is one. 
+   * Loads the Settings object with any inline settings and imports
    * 
    * @param aResourceManager
    *          the Resource Manager used to locate an file imported by name
@@ -94,4 +91,11 @@ public interface ExternalOverrideSettings extends MetaDataObject {
    *           if either the import target does not exist or is invalid
    */
   public void resolveImports(ResourceManager aResourceManager) throws ResourceConfigurationException;
+  
+  /**
+   * Sets a link to the next higher priority overrides inherited from a parent descriptor
+   * 
+   * @param parent
+   */
+  public void setParentOverrides(ExternalOverrideSettings parent);
 }

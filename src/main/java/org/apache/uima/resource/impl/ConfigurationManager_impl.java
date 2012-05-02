@@ -56,24 +56,9 @@ public class ConfigurationManager_impl extends ConfigurationManagerImplBase {
   private Map<String, Object> mSharedParamMap = Collections.synchronizedMap(new HashMap<String, Object>());
 
   /**
-   * External Overrides when top-level engine has the root context ... map not needed.
-   */
-  private ExternalOverrideSettings mRootSettings;
-  
-  /**
    * Map of External Overrides when have multiple top-level engines, e.g. under CPE
    */
-  private Map<String,ExternalOverrideSettings> mSettingsMap;
-  
-  /**
-   * Set the External Overrides Settings object for the specified top-level context
-   * 
-   * @param topContextName
-   * @param aSettings
-   */
-  public void setExternalOverrideSettings(String topContextName, ExternalOverrideSettings aSettings) {
-    mSettingsMap.put(topContextName, aSettings);
-  }
+  private Map<String,ExternalOverrideSettings_impl> mSettingsMap = new ConcurrentHashMap<String, ExternalOverrideSettings_impl>();
   
   /*
    * (non-Javadoc)
@@ -89,7 +74,7 @@ public class ConfigurationManager_impl extends ConfigurationManagerImplBase {
     // iterate over config. param _declarations_ and build mSharedParamNap
     if (aParams != null) {
 
-      ExternalOverrideSettings settings = getExternalOverrideSettings(aContextName);
+      ExternalOverrideSettings settings = mSettingsMap.get(aContextName);
       for (int i = 0; i < aParams.length; i++) {
         String qname = makeQualifiedName(aContextName, aParams[i].getName(), aGroupName);
         String from = "";
@@ -263,57 +248,31 @@ public class ConfigurationManager_impl extends ConfigurationManagerImplBase {
    */
   public void setupExternalOverrideSettings(String contextName, ResourceMetaData metadata,
           ResourceManager resourceManager) throws ResourceConfigurationException {
-    // If have already create a root entry then quit smartly
-    if (mRootSettings != null) {
-        return;         // Setup already done
+    ExternalOverrideSettings_impl parentOverrides = null;
+    // Remove last section of the context, e.g. from "/toplevel/secondlevel/thirdlevel/" or "/"
+    int i = contextName.substring(0, contextName.length()-1).lastIndexOf('/');
+    if (i >= 0) {
+      String parentContext = contextName.substring(0, i + 1);  // keep final '/'
+      parentOverrides = mSettingsMap.get(parentContext);
     }
-    ExternalOverrideSettings eos;
-    if (contextName.length() > 1) {
-      contextName = contextName.split("/")[1]; // Use part up to 2nd slash
-      if (mSettingsMap != null) {
-        eos = mSettingsMap.get(contextName);
-        if (eos != null) {
-          return;         // Setup already done
-        }
-      } else {
-        mSettingsMap = new ConcurrentHashMap<String, ExternalOverrideSettings>();
+
+    // See if descriptor has any settings
+    ExternalOverrideSettings_impl eos = (ExternalOverrideSettings_impl) ((AnalysisEngineMetaData)metadata).getOperationalProperties().getExternalOverrideSettings();
+    if (eos == null) {
+      // If no settings inherit the parent's settings, unless this is the top-level descriptor
+      if (parentOverrides != null) {
+        mSettingsMap.put(contextName, parentOverrides);  // Child has same list as parent
+        return;
+      } else {                                           // Create required top-level one
+        eos = new ExternalOverrideSettings_impl();  // Simpler than using the factory
       }
     }
-
-    // Must be creating the first Analysis Engine for this context
-    eos = ((AnalysisEngineMetaData)metadata).getOperationalProperties().getExternalOverrideSettings();
-    if (eos == null) {
-      // Create empty one when none provided in the top descriptor
-      // ??? with: eos = UIMAFramework.getResourceSpecifierFactory().createExternalOverrideSettings(); 
-      eos = new ExternalOverrideSettings_impl();  // Simpler than using the factory
-    }
+    // Link this back to the next higher set of external overrides
+    eos.setParentOverrides(parentOverrides);
+    
+    // Resolve imports
     eos.resolveImports(resourceManager);
-
-    // Save setup results
-    if (contextName.equals("/")) {
-      mRootSettings = eos;
-    } else {
-      mSettingsMap.put(contextName, eos);
-    }
-  }
-
-  /**
-   * Get External Overrides Settings object for the specified context
-   * If don't have a root value then should have a map and the context must be at least "/name/"
-   * but setup will not have been called if a non-AE resource
-   * 
-   * @param aContextName
-   * @return settings (should not be null as called after parameters setup)
-   */
-  private ExternalOverrideSettings getExternalOverrideSettings(String aContextName) {
-    if (mRootSettings != null) {
-      return mRootSettings;
-    }
-    if (mSettingsMap == null) {
-      return null;
-    }
-    aContextName = aContextName.split("/")[1]; 
-    return mSettingsMap.get(aContextName);
+    mSettingsMap.put(contextName, eos);
   }
 
   /**
@@ -325,7 +284,7 @@ public class ConfigurationManager_impl extends ConfigurationManagerImplBase {
    * @throws ResourceConfigurationException 
    */
   public String getExternalParameter(String context, String name) throws ResourceConfigurationException {
-    ExternalOverrideSettings settings = getExternalOverrideSettings(context);
+    ExternalOverrideSettings settings = mSettingsMap.get(context);
     String value = settings == null ? null : settings.resolveExternalName(name);
     return value == null ? null : escape(value);
   }
