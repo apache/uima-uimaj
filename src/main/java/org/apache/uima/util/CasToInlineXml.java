@@ -20,6 +20,7 @@
 package org.apache.uima.util;
 
 import java.io.ByteArrayOutputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -220,8 +221,10 @@ public class CasToInlineXml {
       handler.endDocument();
 
       // return XML string
-      return new String(byteArrayOutputStream.toByteArray());
+      return new String(byteArrayOutputStream.toByteArray(),"UTF-8");
     } catch (SAXException e) {
+      throw new UIMARuntimeException(e);
+    } catch (UnsupportedEncodingException e) {
       throw new UIMARuntimeException(e);
     }
   }
