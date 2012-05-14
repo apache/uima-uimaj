@@ -55,6 +55,8 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
   private IEditorPart activeEditorPart;
 
   Action autoJCasAction;
+  
+  Action limitJCasGenToProject;
 
   Action qualifiedTypesAction;
 
@@ -168,6 +170,18 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
         prefs.setValue(PreferencePage.P_JCAS, bAutoJCasGen); //$NON-NLS-1$
       }
     };
+    
+    limitJCasGenToProject = new Action () {
+      // The run action is simply to toggle the setting in the prefs page, and
+      //   to update the checked status to correspond to that
+      public void run() {
+        TAEConfiguratorPlugin plugin = TAEConfiguratorPlugin.getDefault();
+        Preferences prefs = plugin.getPluginPreferences();
+        boolean bJCasLimit = !prefs.getBoolean(PreferencePage.P_JCAS_LIMIT_TO_PROJECT_SCOPE); //$NON-NLS-1$
+        limitJCasGenToProject.setChecked(bJCasLimit);
+        prefs.setValue(PreferencePage.P_JCAS_LIMIT_TO_PROJECT_SCOPE, bJCasLimit); //$NON-NLS-1$
+      }
+    };
 
     runJCasGenAction = new Action() {
       public void run() {
@@ -201,6 +215,9 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
 
     autoJCasAction.setText(Messages.getString("MultiPageEditorContributor.autoGenJCas")); //$NON-NLS-1$
     autoJCasAction.setChecked(getAutoJCasGen()); //$NON-NLS-1$
+    
+    limitJCasGenToProject.setText(Messages.getString("MultiPageEditorContributor.limitJCasGenToProjectScope"));
+    limitJCasGenToProject.setChecked(getLimitJCasGenToProjectScope());
 
     qualifiedTypesAction.setText(Messages.getString("MultiPageEditorContributor.showFullNames")); //$NON-NLS-1$
     qualifiedTypesAction.setChecked(getUseQualifiedTypes()); //$NON-NLS-1$
@@ -217,6 +234,7 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
     menu.add(settingsMenu);
     settingsMenu.add(autoJCasAction);
     settingsMenu.add(qualifiedTypesAction);
+    settingsMenu.add(limitJCasGenToProject);
   }
 
   public static boolean getAutoJCasGen() {
@@ -225,6 +243,10 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
 
   public static boolean getUseQualifiedTypes() {
     return getUimaPrefBoolean(PreferencePage.P_SHOW_FULLY_QUALIFIED_NAMES, true);
+  }
+  
+  public static boolean getLimitJCasGenToProjectScope() {
+    return getUimaPrefBoolean(PreferencePage.P_JCAS_LIMIT_TO_PROJECT_SCOPE, false);
   }
 
   public static int getXMLindent() {

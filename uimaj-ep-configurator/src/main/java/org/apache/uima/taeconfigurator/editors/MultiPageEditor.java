@@ -221,7 +221,7 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
 
   private TypeSystemDescription mergedTypeSystemDescription = null;
   
-  private Map mergedTypesAddingFeatures = new TreeMap();
+  private Map<String, Set<String>> mergedTypesAddingFeatures = new TreeMap<String, Set<String>>();
 
   private TypeSystemDescription importedTypeSystemDescription = null;
 
@@ -358,6 +358,16 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
 
   public boolean getIsContextLoaded() {
     return isContextLoaded;
+  }
+
+  private boolean limitJCasGenToProjectScope = MultiPageEditorContributor.getLimitJCasGenToProjectScope();
+  
+  public boolean getLimitJCasGenToProjectScope() {
+    return limitJCasGenToProjectScope;
+  }
+  
+  public void setLimitJCasGenToProjectScope(boolean v) {
+    limitJCasGenToProjectScope = v;
   }
 
   /**
@@ -2103,7 +2113,10 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
         public void run(IProgressMonitor progressMonitor) {
           try {
             jg.mainForCde(new MergerImpl(), new JCasGenProgressMonitor(progressMonitor),
-                    jCasGenThrower, inputFile, outputDirectory, types, (CASImpl) getCurrentView());
+                    jCasGenThrower, inputFile, outputDirectory, types, (CASImpl) getCurrentView(),
+                    getProject().getLocationURI().getPath(),
+                    limitJCasGenToProjectScope,
+                    mergedTypesAddingFeatures);
           } catch (IOException e) {
             Utility.popMessage(Messages.getString("MultiPageEditor.25"), //$NON-NLS-1$
                     Messages.getString("MultiPageEditor.26") //$NON-NLS-1$
@@ -3004,4 +3017,5 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
         "would have come from the remote components, had they been available.\n\n" +
         sb, MessageDialog.WARNING);
   }
+  
 }

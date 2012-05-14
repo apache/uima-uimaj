@@ -63,6 +63,7 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.taeconfigurator.InternalErrorCDE;
 import org.apache.uima.taeconfigurator.TAEConfiguratorPlugin;
 import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
+import org.apache.uima.taeconfigurator.editors.MultiPageEditorContributor;
 import org.apache.uima.taeconfigurator.editors.ui.dialogs.AddAllowedValueDialog;
 import org.apache.uima.taeconfigurator.editors.ui.dialogs.AddFeatureDialog;
 import org.apache.uima.taeconfigurator.editors.ui.dialogs.AddTypeDialog;
@@ -114,6 +115,8 @@ public class TypeSection extends AbstractImportablePartSection {
 
   private Button exportButton;
 
+  private Button limitJCasGenToProjectScope;
+
   // private TypeSystemDescription tsdLocal; // for this descriptor, no imports
 
   private static final boolean ALLOWED = true;
@@ -160,6 +163,11 @@ public class TypeSection extends AbstractImportablePartSection {
     spacer(buttonContainer);
     jcasGenButton = newPushButton(buttonContainer, "JCasGen",
             "Click here to run JCasGen on this type system.");
+    limitJCasGenToProjectScope = newCheckBox(buttonContainer, "limited", 
+        "JCasGen only those types defined within this project" + 
+        "\n  You can change the default in UIMA prefs or in the UIMA menu");
+    boolean defaultValue = editor.getLimitJCasGenToProjectScope();
+    limitJCasGenToProjectScope.setSelection(defaultValue);
   }
 
   /*
@@ -305,6 +313,8 @@ public class TypeSection extends AbstractImportablePartSection {
       refresh();
     } else if (event.widget == jcasGenButton) {
       editor.doJCasGenChkSrc(null);
+    } else if (event.widget == limitJCasGenToProjectScope) {
+      editor.setLimitJCasGenToProjectScope(limitJCasGenToProjectScope.getSelection());
     } else if (event.type == SWT.MouseHover) {
       handleHover(event);
     }

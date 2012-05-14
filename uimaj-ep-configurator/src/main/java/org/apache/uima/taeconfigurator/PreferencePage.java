@@ -29,6 +29,8 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 
 public class PreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
   public static final String P_JCAS = "org.apache.uima.cde.autojcasgen";
+  
+  public static final String P_JCAS_LIMIT_TO_PROJECT_SCOPE = "org.apache.uima.cde.jcasgen.limittoprojectscope";
 
   public static final String P_SHOW_FULLY_QUALIFIED_NAMES = "org.apache.uima.cde.qualifiedtypes";
 
@@ -61,6 +63,9 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
   public void createFieldEditors() {
     addField(new BooleanFieldEditor(P_JCAS, "&Automatically run JCasGen when Types change",
             getFieldEditorParent()));
+
+    addField(new BooleanFieldEditor(P_JCAS_LIMIT_TO_PROJECT_SCOPE, "&Limit JCasGen to types defined in this project",
+        getFieldEditorParent()));
 
     addField(new BooleanFieldEditor(P_SHOW_FULLY_QUALIFIED_NAMES, "&Show fully qualified names",
             getFieldEditorParent()));

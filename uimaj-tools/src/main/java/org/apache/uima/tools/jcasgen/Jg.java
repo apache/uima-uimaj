@@ -29,6 +29,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -275,7 +277,11 @@ public class Jg {
 
   private Type tcasAnnotationType;
 
-  private Map mergedTypesAddingFeatures = new TreeMap(); // a Map of types and the xml files that were merged to create them 
+  private Map<String, Set<String>> mergedTypesAddingFeatures = new TreeMap<String, Set<String>>(); // a Map of types and the xml files that were merged to create them 
+
+  private String projectPathDir;  
+
+  private boolean limitJCasGenToProjectScope;
 
   public Jg() { // default constructor
   }
@@ -342,29 +348,54 @@ public class Jg {
   public void mainForCde(IMerge aMerger, IProgressMonitor aProgressMonitor, IError aError,
           String inputFile, String outputDirectory, TypeDescription[] tds, CASImpl aCas)
           throws IOException {
+    mainForCde(aMerger, aProgressMonitor, aError,
+               inputFile, outputDirectory, tds, aCas, "", false, null);
+  }
+  
+  public void mainForCde(IMerge aMerger, IProgressMonitor aProgressMonitor, IError aError,
+          String inputFile, String outputDirectory, TypeDescription[] tds, CASImpl aCas, 
+          String projectPathDir, boolean limitJCasGenToProjectScope, 
+          Map<String, Set<String>> mergedTypesAddingFeatures)
+          throws IOException {
     try {
       // Generate type classes by using DEFAULT templates
       mainGenerateAllTypesFromTemplates(aMerger, aProgressMonitor, aError, inputFile,
-              outputDirectory, tds, aCas, JCasTypeTemplate.class, JCas_TypeTemplate.class);
+              outputDirectory, tds, aCas, JCasTypeTemplate.class, JCas_TypeTemplate.class,
+              projectPathDir, limitJCasGenToProjectScope, mergedTypesAddingFeatures);
       // convert thrown things to IOExceptions to avoid changing API for this
       // FIXME later
     } catch (InstantiationException e) {
       throw new IOException(e.toString());
     } catch (IllegalAccessException e) {
       throw new IOException(e.toString());
-    }
+    }    
   }
 
   // use template classes to generate code
   public void mainGenerateAllTypesFromTemplates(IMerge aMerger, IProgressMonitor aProgressMonitor,
+      IError aError, String inputFile, String outputDirectory, TypeDescription[] tds,
+      CASImpl aCas, Class jcasTypeClass, // Template class
+      Class jcas_TypeClass) // Template class
+      throws IOException, InstantiationException, IllegalAccessException {
+    mainGenerateAllTypesFromTemplates(aMerger, aProgressMonitor, 
+             aError, inputFile, outputDirectory, tds, aCas, 
+             jcasTypeClass, jcas_TypeClass, "", false, null);
+  }
+  
+  public void mainGenerateAllTypesFromTemplates(IMerge aMerger, IProgressMonitor aProgressMonitor,
           IError aError, String inputFile, String outputDirectory, TypeDescription[] tds,
           CASImpl aCas, Class jcasTypeClass, // Template class
-          Class jcas_TypeClass) // Template class
+          Class jcas_TypeClass,
+          String projectPathDir, boolean limitJCasGenToProjectScope,
+          Map<String, Set<String>> mergedTypesAddingFeatures) // Template class
           throws IOException, InstantiationException, IllegalAccessException {
     this.merger = aMerger;
     this.error = aError;
     this.progressMonitor = aProgressMonitor;
     xmlSourceFileName = inputFile.replaceAll("\\\\", "/");
+    this.projectPathDir = projectPathDir;
+    this.limitJCasGenToProjectScope = limitJCasGenToProjectScope;
+    this.mergedTypesAddingFeatures = mergedTypesAddingFeatures;
 
     // Generate type classes by using SPECIFIED templates
     generateAllTypesFromTemplates(outputDirectory, tds, aCas, jcasTypeClass, jcas_TypeClass);
@@ -394,6 +425,15 @@ public class Jg {
     }
   }
 
+  /**
+   * Arguments are:
+   *   -jcasgeninput xxxx
+   *   -jcasgenoutput  xxxx
+   *   -jcasgenclasspath xxxx
+   *   
+   * @param arguments
+   * @return
+   */
   public int main1(String[] arguments) {
     boolean hadError = false;
     try {
@@ -409,6 +449,9 @@ public class Jg {
 
         TypeSystemDescription typeSystemDescription = null;
         TypeDescription[] tds = null;
+        
+        projectPathDir = "";  // init to default value
+        limitJCasGenToProjectScope = false;
 
         for (int i = 0; i < arguments.length - 1; i++) {
           if (arguments[i].equalsIgnoreCase("-jcasgeninput")) {
@@ -419,8 +462,14 @@ public class Jg {
             outputDirectory = arguments[++i];
             continue;
           }
+          // This next is not apparently used  5/2012 schor
           if (arguments[i].equalsIgnoreCase("=jcasgenclasspath")) {
             classPath = arguments[++i];
+            continue;
+          }
+          if (arguments[i].equalsIgnoreCase("-limitToDirectory")) {
+            projectPathDir = arguments[++i];
+            limitJCasGenToProjectScope = (projectPathDir.length() > 0);
             continue;
           }
         }
@@ -580,6 +629,19 @@ public class Jg {
         continue;
       if (td.getSupertypeName().equals("uima.cas.String"))
         continue;
+      if (limitJCasGenToProjectScope && 
+          isOutOfScope(td, projectPathDir)) {
+        Set<String> mt = mergedTypesAddingFeatures.get(td.getName());
+        if (null == mt) {
+          continue;
+        }
+        StringBuilder sb = new StringBuilder("\n");
+        for (String p : mt) {
+          sb.append("  ").append(p).append('\n');
+        }
+        error.newError(IError.ERROR, getString("limitingButTypeWasExtended", new Object[] { td.getName(), sb.toString()}), null);
+        continue;
+      }
 
       // if the type is built-in - augment it with the built-in's features
       FeatureDescription[] builtInFeatures = (FeatureDescription[]) extendableBuiltInTypes.get(td
@@ -647,6 +709,41 @@ public class Jg {
    }
    */
 
+  /**
+   * return true if td is not defined in this project, of
+   *   it is defined, but is also in merged and any of the other
+   *   merged urls are not defined in this project
+   */
+  private boolean isOutOfScope(TypeDescription td, String projectDirPath) {
+    URI typeDefinitionUri;
+    try {
+      typeDefinitionUri = new URI (td.getSourceUrlString());
+    } catch (URISyntaxException e) {
+      return true; // may be overkill - but if td's source cant be parsed, ... likely out of project
+    }
+    String tdPath = typeDefinitionUri.getPath();
+    boolean r = !tdPath.startsWith(projectDirPath);
+    if (r) {
+      return true;
+    }
+    Set<String> mergedPaths = mergedTypesAddingFeatures.get(td.getName());
+    if (null != mergedPaths) {
+      for (String p : mergedPaths) {
+        URI tempURI;
+        try {
+          tempURI = new URI(p);
+        } catch (URISyntaxException e) {
+          return true; //because a merged path is out of the project
+        }
+        String tempPath = tempURI.getPath();
+        if (!tempPath.startsWith(projectDirPath)) {
+          return true; 
+        }
+      }
+    }
+    return false; 
+  }
+  
   /**
    *  Generate type classes from the specified templates
    * @param td                        TypeDescription object
