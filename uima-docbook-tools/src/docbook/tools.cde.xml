@@ -675,23 +675,24 @@ under the License.
       constitute the language in which the inputs and outputs are described in the
       Capabilities page and also affect the choice of indexes on the Indexes page. The Type
       System page looks like the following:
-      
-      
+            
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="5.7in" format="JPG" fileref="&imgroot;image030.jpg"/>
+          <imagedata width="6.4in" format="JPG" fileref="&imgroot;limitJCasGenType.jpg"/>
         </imageobject>
         <textobject><phrase>Type System declaration page</phrase>
         </textobject>
       </mediaobject>
     </screenshot></para>
     
-    <para>Before discussing this page in detail, it is important to note that there are two
+    <para>Before discussing this page in detail, it is important to note that there are 3
       settings that affect the operation of this page. These are accessed by selecting the
       UIMA &rarr; Settings (or by going to the Eclipse Window &rarr; Preferences &rarr; UIMA
       Preferences) and checking or unchecking one of the following: <quote>Auto generate
-      .java files when defining types</quote> and <quote>Display fully qualified type
+      .java files when defining types</quote>, 
+      <quote>Generate JCasGen classes only for types defined within the local project scope</quote> 
+      and <quote>Display fully qualified type
       names.</quote></para>
     
     <para id="ugr.tools.cde.auto_jcasgen">When the Auto generate option is checked and the development language for the AE is
@@ -735,6 +736,32 @@ under the License.
         </textobject>
       </mediaobject>
     </screenshot>
+    
+    <para>When <quote>Generate JCasGen classes only for types defined within the local project scope</quote>
+    is checked, then JCasGen skips generating classes for types that are imported from sources outside this project.
+    This might be done, for instance, if you have an aggregate which is importing type systems from its delegates,
+    some of which are defined in other projects, and have JCasGen'd files already present in those other projects.
+    </para>
+    
+    <para>The UIMA settings and preferences for controlling this are used to initialize a particular instance of the
+    editor, when it is started.  Following that, you can override this setting, just for that editor, by checking or
+    unchecking the box shown on the type system page:</para>
+    
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata width=".73in" format="JPG" fileref="&imgroot;limitJCasGen.jpg"/>
+        </imageobject>
+        <textobject><phrase>Setting JCasGen options</phrase>
+        </textobject>
+      </mediaobject>
+    </screenshot>
+    
+    <note><para>If this is checked, and one of the types that would be excluded has merged type features, an error message
+    is issued - because JCasGen will need to be run for the combined (merged) type in order to get a class definition
+    that will work for this configuration (have access to all the features).  If this happens, you have to run without
+    limiting JCasGen, and manually delete any duplicated/unwanted source results.</para></note>
+    
     
     <para>When <quote>Display fully qualified type names</quote> is left unchecked, the
       namespace of types is not displayed, i.e. if a fully qualified type name is
