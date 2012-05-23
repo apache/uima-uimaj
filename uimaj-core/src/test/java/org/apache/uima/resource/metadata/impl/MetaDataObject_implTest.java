@@ -168,7 +168,7 @@ public class MetaDataObject_implTest extends TestCase {
    * excercise the {@link MetaDataObject#getAttributeValue(String)} and
    * {@link MetaDataObject#setAttributeValue(String,Object)} methods.
    */
-  public void bestXMLization() throws Exception {
+  public void testXMLization() throws Exception {
     try {
       // write objects to XML
 
@@ -234,7 +234,7 @@ public class MetaDataObject_implTest extends TestCase {
       Assert.assertEquals("banana", fruits[0].getName());
       Assert.assertEquals("raspberry", fruits[1].getName());
 
-      // property name ommitted but can be inferred from type of value
+      // property name omitted but can be inferred from type of value
       xmlStr = "<fruit><name>banana</name><string>yellow</string></fruit>";
       xmlDoc = docBuilder.parse(new ByteArrayInputStream(xmlStr.getBytes()));
       TestFruitObject banana = new TestFruitObject();
@@ -255,7 +255,7 @@ public class MetaDataObject_implTest extends TestCase {
     }
   }
 
-  public void bestSerialization() throws Exception {
+  public void testSerialization() throws Exception {
     try {
       byte[] apple1Bytes = SerializationUtils.serialize(apple1);
       TestFruitObject apple1a = (TestFruitObject) SerializationUtils.deserialize(apple1Bytes);
