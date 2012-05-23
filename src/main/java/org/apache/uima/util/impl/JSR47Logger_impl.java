@@ -474,7 +474,7 @@ public class JSR47Logger_impl implements Logger {
    * @param thrown
    *          the thrown
    * 
-   * @return String[] - fist element is the souce class, second element is the method name with
+   * @return String[] - fist element is the source class, second element is the method name with
    *         linenumber if available
    */
   private String[] getStackTraceInfo(Throwable thrown) {
