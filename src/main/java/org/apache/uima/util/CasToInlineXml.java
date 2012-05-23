@@ -25,20 +25,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.uima.UIMARuntimeException;
+import org.apache.uima.cas.BooleanArrayFS;
+import org.apache.uima.cas.ByteArrayFS;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
+import org.apache.uima.cas.DoubleArrayFS;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FSMatchConstraint;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
-import org.apache.uima.cas.impl.BooleanArrayFSImpl;
-import org.apache.uima.cas.impl.ByteArrayFSImpl;
-import org.apache.uima.cas.impl.DoubleArrayFSImpl;
-import org.apache.uima.cas.impl.FloatArrayFSImpl;
-import org.apache.uima.cas.impl.IntArrayFSImpl;
-import org.apache.uima.cas.impl.LongArrayFSImpl;
-import org.apache.uima.cas.impl.ShortArrayFSImpl;
-import org.apache.uima.cas.impl.StringArrayFSImpl;
+import org.apache.uima.cas.FloatArrayFS;
+import org.apache.uima.cas.IntArrayFS;
+import org.apache.uima.cas.LongArrayFS;
+import org.apache.uima.cas.ShortArrayFS;
+import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
@@ -251,35 +251,35 @@ public class CasToInlineXml {
         //TODO: there should be a better way to get any array value as a string array
         String[] vals = null;
         if (CAS.TYPE_NAME_STRING_ARRAY.equals(rangeTypeName)) {
-          StringArrayFSImpl arrayFS = (StringArrayFSImpl) aFS.getFeatureValue(feat);
+          StringArrayFS arrayFS = (StringArrayFS) aFS.getFeatureValue(feat);
           if (arrayFS != null)
             vals = arrayFS.toArray();
         } else if (CAS.TYPE_NAME_INTEGER_ARRAY.equals(rangeTypeName)) {
-          IntArrayFSImpl arrayFS = (IntArrayFSImpl) aFS.getFeatureValue(feat);
+          IntArrayFS arrayFS = (IntArrayFS) aFS.getFeatureValue(feat);
           if (arrayFS != null)
             vals = arrayFS.toStringArray();
         } else if (CAS.TYPE_NAME_FLOAT_ARRAY.equals(rangeTypeName)) {
-          FloatArrayFSImpl arrayFS = (FloatArrayFSImpl) aFS.getFeatureValue(feat);
+          FloatArrayFS arrayFS = (FloatArrayFS) aFS.getFeatureValue(feat);
           if (arrayFS != null)
             vals = arrayFS.toStringArray();
         } else if (CAS.TYPE_NAME_BOOLEAN_ARRAY.equals(rangeTypeName)) {
-          BooleanArrayFSImpl arrayFS = (BooleanArrayFSImpl) aFS.getFeatureValue(feat);
+          BooleanArrayFS arrayFS = (BooleanArrayFS) aFS.getFeatureValue(feat);
           if (arrayFS != null)
             vals = arrayFS.toStringArray();
         } else if (CAS.TYPE_NAME_BYTE_ARRAY.equals(rangeTypeName)) {
-          ByteArrayFSImpl arrayFS = (ByteArrayFSImpl) aFS.getFeatureValue(feat);
+          ByteArrayFS arrayFS = (ByteArrayFS) aFS.getFeatureValue(feat);
           if (arrayFS != null)
             vals = arrayFS.toStringArray();
         } else if (CAS.TYPE_NAME_SHORT_ARRAY.equals(rangeTypeName)) {
-          ShortArrayFSImpl arrayFS = (ShortArrayFSImpl) aFS.getFeatureValue(feat);
+          ShortArrayFS arrayFS = (ShortArrayFS) aFS.getFeatureValue(feat);
           if (arrayFS != null)
             vals = arrayFS.toStringArray();
         } else if (CAS.TYPE_NAME_LONG_ARRAY.equals(rangeTypeName)) {
-          LongArrayFSImpl arrayFS = (LongArrayFSImpl) aFS.getFeatureValue(feat);
+          LongArrayFS arrayFS = (LongArrayFS) aFS.getFeatureValue(feat);
           if (arrayFS != null)
             vals = arrayFS.toStringArray();
         } else if (CAS.TYPE_NAME_DOUBLE_ARRAY.equals(rangeTypeName)) {
-          DoubleArrayFSImpl arrayFS = (DoubleArrayFSImpl) aFS.getFeatureValue(feat);
+          DoubleArrayFS arrayFS = (DoubleArrayFS) aFS.getFeatureValue(feat);
           if (arrayFS != null)
             vals = arrayFS.toStringArray();
         } 
