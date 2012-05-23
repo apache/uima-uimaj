@@ -163,10 +163,39 @@ public class XMLSerializer {
     }
   }  
   
-  public static class CharacterValidatingContentHandler implements ContentHandler, LexicalHandler {
-    ContentHandler mHandler;
-    boolean mXml11;
+  /**
+   * This class wraps the standard content handler
+   */
+  public class CharacterValidatingContentHandler implements ContentHandler, LexicalHandler {
+    ContentHandler mHandler;  // the wrapped handler
+    boolean mXml11;           
     
+    private int indent = 0;  // tracks indentation for nicely indented output
+    
+    public int getIndent() {
+      return indent;
+    }
+    
+    public int nextIndent() {
+      indent += indentDelta;
+      return indent;
+    }
+
+    public int prevIndent() {
+      indent -= indentDelta;
+      return indent;
+    }
+    
+    private int indentDelta = 0;  // set to positive # to indent each level
+    
+    public int getIndentDelta() {
+      return indentDelta;
+    }
+
+    public void setIndentDelta(int indentDelta) {
+      this.indentDelta = indentDelta;
+    }
+
     private List<Node> mLastOutputNode = new ArrayList<Node>();  // the last output node for repeated subelement nodes 
     
     public void lastOutputNodeAddLevel() {
@@ -185,9 +214,21 @@ public class XMLSerializer {
       mLastOutputNode.remove(mLastOutputNode.size() -1);
     }
     
+    public boolean prevWasEndElement = false;
+    
+    public boolean prevNL = false;
+    
     CharacterValidatingContentHandler(boolean xml11, ContentHandler serializerHandler) {
       mHandler = serializerHandler;  
       mXml11 = xml11;
+      String indentDeltaString = mTransformer.getOutputProperty("{http://xml.apache.org/xslt}indent-amount");
+      if (null != indentDeltaString) {
+        try {
+          indentDelta = Integer.parseInt(indentDeltaString);
+        } catch (NumberFormatException e) {
+          indentDelta = 0;
+        }
+      }
     }
 
     /* (non-Javadoc)
@@ -198,8 +239,8 @@ public class XMLSerializer {
         String val = atts.getValue(i);
         checkForInvalidXmlChars(val, mXml11);
       }
-      mHandler.startElement(uri, localName, qName, atts);
-      
+      mHandler.startElement(uri, localName, qName, atts); 
+      prevWasEndElement = false;
     }
     
     /* (non-Javadoc)
@@ -208,6 +249,8 @@ public class XMLSerializer {
     public void characters(char[] ch, int start, int length) throws SAXException {
       checkForInvalidXmlChars(ch, start, length, mXml11);
       mHandler.characters(ch, start, length);
+//      nlOK = false;  //unfortunately, non validating dom parsers can't detect ignorable whitespace,
+      // so they use characters instead...
     }
 
     /* (non-Javadoc)
@@ -222,6 +265,7 @@ public class XMLSerializer {
      */
     public void endElement(String uri, String localName, String qName) throws SAXException {
       mHandler.endElement(uri, localName, qName);
+      prevWasEndElement = true;
     }
 
     /* (non-Javadoc)
@@ -263,6 +307,7 @@ public class XMLSerializer {
      * @see org.xml.sax.ContentHandler#startDocument()
      */
     public void startDocument() throws SAXException {
+      indent = 0;
       mHandler.startDocument();
     }
 

@@ -88,6 +88,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
   static final long serialVersionUID = 5876728533863334480L;
 
   private static String PROP_NAME_SOURCE_URL = "sourceUrl";
+  private static String PROP_NAME_INFOSET = "infoset";
 
   private static final Attributes EMPTY_ATTRIBUTES = new AttributesImpl();
 
@@ -102,6 +103,10 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
   
   public void setInfoset(Node infoset) {
     this.infoset = infoset;
+  }
+
+  public Node getInfoset() {
+    return infoset;
   }
 
   /**
@@ -127,8 +132,11 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
         // only list properties with read and write methods,
         // and don't include the SourceUrl property, which is for
         // internal bookkeeping and shouldn't affect object equality
+        // and don't include infoset, which is for internal bookkeeping
+        // related to comments and whitespace
         if (props[i].getReadMethod() != null && props[i].getWriteMethod() != null
-                && !props[i].getName().equals(PROP_NAME_SOURCE_URL)) {
+                && !props[i].getName().equals(PROP_NAME_SOURCE_URL)
+                && !props[i].getName().equals(PROP_NAME_INFOSET)) {
           String propName = props[i].getName();
           Class propClass = props[i].getPropertyType();
           // translate primitive types (int, boolean, etc.) to wrapper classes
@@ -577,7 +585,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
   private void toXML(XMLSerializer sax2xml) throws SAXException, IOException {
     ContentHandler contentHandler = sax2xml.getContentHandler();
     contentHandler.startDocument();
-    toXML(sax2xml.getContentHandler(), true);
+    toXML(contentHandler, true);  // no reason to create a new content handler
     contentHandler.endDocument();    
   }
 
@@ -1345,7 +1353,6 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    *       
    * For normal element node, "end":
    *   --> output before element
-   *     if element children:
    *       collect all after last child Element; skip all up to first nl (assume before that, the comment goes with last child node)
    *       if no nl (e.g.   </lastChild> <!--  cmt -->  </elementBeingEnded> )
    *         assume comments go with previous element, and skip here
@@ -1366,6 +1373,11 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    *   Scan from last-outputted, to find element match, and then use that element as the "root".       
    *    
    */
+  private static final char[] blanks = new char[80];
+  static {Arrays.fill(blanks, ' ');}
+  private void outputIndent(int indent, ContentHandler contentHandler) throws SAXException {
+    contentHandler.ignorableWhitespace(blanks, 0, Math.min(80, indent));
+  }
   
   /**
    * CoIw = Comment or IgnorableWhitespace
@@ -1373,7 +1385,19 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    */
   
   private void maybeOutputCoIwBeforeStart(ContentHandler contentHandler, Node node) throws SAXException {
+    int indent = 0;
+    if (contentHandler instanceof CharacterValidatingContentHandler) {
+      indent = ((CharacterValidatingContentHandler) contentHandler).getIndent();;
+    }
+   
     if (null == node) {
+      if (contentHandler instanceof CharacterValidatingContentHandler) {
+        CharacterValidatingContentHandler cvch = (CharacterValidatingContentHandler)contentHandler;
+        if (!cvch.prevNL) { 
+          outputNL(contentHandler);
+          outputIndent(indent, contentHandler);
+        }
+      }
       return;
     }
     if (node.getParentNode() instanceof Document) {
@@ -1402,26 +1426,57 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
   }
  
   private void maybeOutputCoIwAfterStart(ContentHandler contentHandler, Node node) throws SAXException {
+    if (contentHandler instanceof CharacterValidatingContentHandler) {
+      ((CharacterValidatingContentHandler)contentHandler).nextIndent();
+    }
     if (null == node || (!hasElementChildNode(node))) {
+      if (contentHandler instanceof CharacterValidatingContentHandler) {
+        ((CharacterValidatingContentHandler)contentHandler).prevNL = false;
+      }
       return;
     }
-    
-    for (Node n = node.getFirstChild(); isCoIw(n); n = n.getNextSibling()) {
-      outputCoIw(contentHandler, n);
-      if (hasNewline(n)) {
-        return;
+
+    outputCoIwAfterElement(node.getFirstChild(), contentHandler);
+  }
+  
+  private void outputCoIwAfterElement(Node startNode, ContentHandler contentHandler) throws DOMException, SAXException {
+    if (null != startNode) {
+      for (Node n = startNode.getFirstChild(); isCoIw(n); n = n.getNextSibling()) {
+        outputCoIw(contentHandler, n);
+        if (hasNewline(n)) {
+          if (contentHandler instanceof CharacterValidatingContentHandler) {
+            ((CharacterValidatingContentHandler) contentHandler).prevNL = true;
+          }
+          return;
+        }
       }
+    }
+    if (contentHandler instanceof CharacterValidatingContentHandler) {
+      ((CharacterValidatingContentHandler) contentHandler).prevNL = false;
     }
   }
   
   private void maybeOutputCoIwBeforeEnd(ContentHandler contentHandler, Node node) throws SAXException {
+    int indent = 0;
+    if (contentHandler instanceof CharacterValidatingContentHandler) {
+      indent = ((CharacterValidatingContentHandler) contentHandler).prevIndent();
+    }
+    
     if (null == node || (!hasElementChildNode(node))) {
+      if (null == node && contentHandler instanceof CharacterValidatingContentHandler) {
+        CharacterValidatingContentHandler cvch = (CharacterValidatingContentHandler)contentHandler;
+        if (cvch.prevWasEndElement) { 
+          outputNL(contentHandler);
+          outputIndent(indent, contentHandler);
+        } 
+      }
       return;
     }
+    
     Node n = node.getLastChild();
     Node np = null;
     boolean newlineFound = false;
-    for (Node p = n; p != null && !(p instanceof Element); p = p.getPreviousSibling()) {
+    for (Node p = n; p != null && !(p instanceof Element) && (p.getNodeType() != Node.ATTRIBUTE_NODE); p = p.getPreviousSibling()) {
       if (hasNewline(p)) {
         newlineFound = true;
       }
@@ -1439,12 +1494,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     if (null == node) {
       return;
     }
-    for (Node o = node.getNextSibling(); isCoIw(o); o = o.getNextSibling()) {
-      outputCoIw(contentHandler, o);
-      if (hasNewline(o)) {
-        break;
-      }
-    }
+    outputCoIwAfterElement(node.getNextSibling(), contentHandler);
   }
 
   /**
@@ -1582,8 +1632,23 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
   }
   
   private static final char[] nlca = new char[] {'\n'};
+  
   private void outputNL(ContentHandler contentHandler) throws SAXException {
-    contentHandler.characters(nlca, 0, 1); 
+    contentHandler.ignorableWhitespace(nlca, 0, 1); 
+    if (contentHandler instanceof CharacterValidatingContentHandler) {
+      ((CharacterValidatingContentHandler) contentHandler).prevNL = true;
+    }
   }
 
+  // skip forward over any attribute nodes
+//  private Node skipAttrNodes(Node node) {
+//    while (node.getNodeType() == Node.ATTRIBUTE_NODE) {
+//      Node next = node.getNextSibling();
+//      if (next == null) {
+//        return node;  // return last good node if only attribute nodes
+//      }
+//      node = next;
+//    }
+//    return node;
+//  }
 }
