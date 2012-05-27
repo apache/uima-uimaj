@@ -5,7 +5,7 @@
 Building from the Source Distribution
 -------------------------------------
 
-We use Maven 3.0 for building; download this if needed, 
+We use Maven 3.0 or later for building; download this if needed, 
 and set the environment variable MAVEN_OPTS to -Xmx800m -XX:MaxPerSize-256m.
 
 Then do the build by going into the .../uimaj directory, and issuing the command
