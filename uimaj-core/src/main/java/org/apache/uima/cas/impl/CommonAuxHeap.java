@@ -27,7 +27,7 @@ abstract class CommonAuxHeap {
   protected static final int DEFAULT_HEAP_BASE_SIZE = 16;
 
   // Jira: https://issues.apache.org/jira/browse/UIMA-2385
-  protected static final int DEFAULT_HEAP_MULT_LIMIT = 1024 * 1024 * 8; // for 8 byte things, this is 64 megs
+  protected static final int DEFAULT_HEAP_MULT_LIMIT = 1024 * 512; // for 8 byte things, this is 4 megs
 
   protected static final int MIN_HEAP_BASE_SIZE = 16;
 
