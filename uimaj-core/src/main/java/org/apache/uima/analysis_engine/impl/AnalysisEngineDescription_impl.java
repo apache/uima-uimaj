@@ -61,7 +61,6 @@ import org.apache.uima.resource.metadata.impl.Import_impl;
 import org.apache.uima.resource.metadata.impl.PropertyXmlInfo;
 import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 import org.apache.uima.util.InvalidXMLException;
-import org.apache.uima.util.Level;
 import org.apache.uima.util.NameClassPair;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
@@ -80,11 +79,6 @@ import org.xml.sax.SAXException;
  */
 public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_impl implements
         AnalysisEngineDescription {
-
-  /**
-   * resource bundle for log messages
-   */
-  private static final String LOG_RESOURCE_BUNDLE = "org.apache.uima.impl.log_messages";
 
   /**
    * Name of the "delegateAnalysisEngineSpecifiers" property. Change this if interface changes.
@@ -361,10 +355,10 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
                 ResourceInitializationException.PARAM_OVERRIDE_IN_PRIMITIVE, new Object[] {
                     aParams[i].getName(), getMetaData().getName(), getSourceUrlString() });
       } else if (overrides.length == 0 && !isPrimitive()) {
-        UIMAFramework.getLogger(this.getClass()).logrb(Level.WARNING, this.getClass().getName(),
-                "checkForInvalidParameterOverrides", LOG_RESOURCE_BUNDLE,
-                "UIMA_aggregate_param_no_overrides__WARNING",
-                new Object[] { getMetaData().getName(), aParams[i].getName() });
+        // Were deprecated for many years ... now no longer supported.
+        throw new ResourceInitializationException(
+                ResourceInitializationException.INVALID_PARAM_OVERRIDE_NO_OVERRIDES, new Object[] {
+                    aParams[i].getName(), getMetaData().getName(), getSourceUrlString() });
       }
       for (int j = 0; j < overrides.length; j++) {
         // overrides should be of form delegateKey/paramName

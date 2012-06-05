@@ -25,18 +25,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.uima.UIMAFramework;
-import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.resource.ResourceConfigurationException;
-import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.metadata.ConfigurationParameter;
 import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
-import org.apache.uima.resource.metadata.ExternalOverrideSettings;
-import org.apache.uima.resource.metadata.ResourceMetaData;
-import org.apache.uima.resource.metadata.impl.ExternalOverrideSettings_impl;
 import org.apache.uima.util.Level;
+import org.apache.uima.util.Settings;
 
 /**
  * Basic standalone Configuration Manager implmentation.
@@ -55,11 +50,6 @@ public class ConfigurationManager_impl extends ConfigurationManagerImplBase {
    */
   private Map<String, Object> mSharedParamMap = Collections.synchronizedMap(new HashMap<String, Object>());
 
-  /**
-   * Map of External Overrides when have multiple top-level engines, e.g. under CPE
-   */
-  private Map<String,ExternalOverrideSettings_impl> mSettingsMap = new ConcurrentHashMap<String, ExternalOverrideSettings_impl>();
-  
   /*
    * (non-Javadoc)
    * 
@@ -68,13 +58,11 @@ public class ConfigurationManager_impl extends ConfigurationManagerImplBase {
    * org.apache.uima.resource.metadata.ConfigurationParameterSettings, java.lang.String, java.lang.String)
    */
   protected void declareParameters(String aGroupName, ConfigurationParameter[] aParams,
-          ConfigurationParameterSettings aSettings, String aContextName, String aParentContextName)
+          ConfigurationParameterSettings aSettings, String aContextName, Settings aExternalOverrides)
           throws ResourceConfigurationException {
-    super.declareParameters(aGroupName, aParams, aSettings, aContextName, aParentContextName);
+    super.declareParameters(aGroupName, aParams, aSettings, aContextName, aExternalOverrides);
     // iterate over config. param _declarations_ and build mSharedParamNap
     if (aParams != null) {
-
-      ExternalOverrideSettings settings = mSettingsMap.get(aContextName);
       for (int i = 0; i < aParams.length; i++) {
         String qname = makeQualifiedName(aContextName, aParams[i].getName(), aGroupName);
         String from = "";
@@ -85,8 +73,8 @@ public class ConfigurationManager_impl extends ConfigurationManagerImplBase {
         // even over an external name in the aggregate.
         Object paramValue = aSettings.getParameterValue(aGroupName, aParams[i].getName());
         String extName = aParams[i].getExternalOverrideName();
-        if (extName != null && settings != null) {
-          String propValue = settings.resolveExternalName(extName);
+        if (extName != null && aExternalOverrides != null) {
+          String propValue = aExternalOverrides.lookUp(extName);
           if (propValue != null) {
             Object result = createParam(propValue, aParams[i].getType(), aParams[i].isMultiValued());
             if (result == null) {
@@ -236,56 +224,5 @@ public class ConfigurationManager_impl extends ConfigurationManagerImplBase {
     // If change in i is odd then ended with an unescaped \ 
     return ((line.length() - i) % 2 != 0);
   }
-  
-  /**
-   * If the first Analysis Engine load the External Override Settings
-   * May start with the root context "/" or may get multiple top-level contexts (e.g. from CPE)
-   * 
-   * @param contextName for this engine, "/" or "/name/" or "/name/name/..."
-   * @param metadata
-   * @param resourceManager
-   * @throws ResourceConfigurationException
-   */
-  public void setupExternalOverrideSettings(String contextName, ResourceMetaData metadata,
-          ResourceManager resourceManager) throws ResourceConfigurationException {
-    ExternalOverrideSettings_impl parentOverrides = null;
-    // Remove last section of the context, e.g. from "/toplevel/secondlevel/thirdlevel/" or "/"
-    int i = contextName.substring(0, contextName.length()-1).lastIndexOf('/');
-    if (i >= 0) {
-      String parentContext = contextName.substring(0, i + 1);  // keep final '/'
-      parentOverrides = mSettingsMap.get(parentContext);
-    }
 
-    // See if descriptor has any settings
-    ExternalOverrideSettings_impl eos = (ExternalOverrideSettings_impl) ((AnalysisEngineMetaData)metadata).getOperationalProperties().getExternalOverrideSettings();
-    if (eos == null) {
-      // If no settings inherit the parent's settings, unless this is the top-level descriptor
-      if (parentOverrides != null) {
-        mSettingsMap.put(contextName, parentOverrides);  // Child has same list as parent
-        return;
-      } else {                                           // Create required top-level one
-        eos = new ExternalOverrideSettings_impl();  // Simpler than using the factory
-      }
-    }
-    // Link this back to the next higher set of external overrides
-    eos.setParentOverrides(parentOverrides);
-    
-    // Resolve imports
-    eos.resolveImports(resourceManager);
-    mSettingsMap.put(contextName, eos);
-  }
-
-  /**
-   * Convenience method for direct access to string variables
-   * 
-   * @param context - UIMA Context
-   * @param name    - variable to look up
-   * @return        - value of variable OR an exception message if definition is invalid
-   * @throws ResourceConfigurationException 
-   */
-  public String getExternalParameter(String context, String name) throws ResourceConfigurationException {
-    ExternalOverrideSettings settings = mSettingsMap.get(context);
-    String value = settings == null ? null : settings.resolveExternalName(name);
-    return value == null ? null : escape(value);
-  }
 }

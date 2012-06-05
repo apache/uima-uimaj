@@ -1,6 +1,7 @@
 package org.apache.uima.util.impl;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -37,8 +38,6 @@ public class Settings_impl implements Settings {
 
   private Map<String, String> map;
   
-  private Settings_impl parent = null;
-  
   /*
    * Regex that matches ${...}
    * non-greedy so stops on first '}' -- hence key cannot contain '}'
@@ -46,11 +45,6 @@ public class Settings_impl implements Settings {
   private Pattern evalPattern = Pattern.compile("\\$\\{.*?\\}");
 
   public Settings_impl() {
-    this(null);
-  }
-
-  public Settings_impl(Settings_impl parent) {
-    this.parent = parent;
     map = new HashMap<String, String>();
   }
 
@@ -94,13 +88,37 @@ public class Settings_impl implements Settings {
       } else {
         if (!value.equals(map.get(name))) {
           // Key {0} already in use ... ignoring value "{1}"
-          UIMAFramework.getLogger(this.getClass()).logrb(Level.WARNING, this.getClass().getName(), "load",
-                  LOG_RESOURCE_BUNDLE, "UIMA_external_override_ignored__WARNING", new Object[] { name, value });
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(), "load",
+                  LOG_RESOURCE_BUNDLE, "UIMA_external_override_ignored__CONFIG", new Object[] { name, value });
         }
       }
     }
   }
 
+  /**
+   * Load the files specified in the system property UimaExternalOverrides
+   *
+   * @throws IOException
+   * @throws ResourceConfigurationException 
+   */
+  
+  public void loadSystemDefaults() throws ResourceConfigurationException {
+    String fnames = System.getProperty("UimaExternalOverrides");
+    if (fnames != null) {
+      for (String fname : fnames.split(",")) {
+        UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(), "loadSystemDefaults",
+                LOG_RESOURCE_BUNDLE, "UIMA_external_overrides_load__CONFIG",
+                new Object[] { fname });
+        try {
+          load(new FileInputStream(fname));
+        } catch (IOException e) {
+          throw new ResourceConfigurationException(ResourceConfigurationException.EXTERNAL_OVERRIDE_ERROR,
+                  new Object[] { fname }, e);
+        }
+      }
+    }
+  }
+  
   /**
    * Look up the value for a property.
    * Perform one substitution pass on ${key} substrings. If key is undefined throw an exception.
@@ -117,7 +135,7 @@ public class Settings_impl implements Settings {
    */
   public String lookUp(String name) throws ResourceConfigurationException {
     String value;
-    if ((value = get(name)) == null) {
+    if ((value = map.get(name)) == null) {
       return null;
     }
     Matcher matcher = evalPattern.matcher(value);
@@ -146,22 +164,6 @@ public class Settings_impl implements Settings {
       result.append(value.substring(lastEnd));
       return result.toString();
     }
-  }
-
-  /*
-   * Get the raw value for a key by search the linked list of settings, starting 
-   * at the end of the list, i.e. the top-level settings.
-   */
-  private String get(String name) {
-    String value;
-    // Only if parent (and parent's parent etc.) doesn't have an entry do we check our entries.
-    if (parent != null) {
-      value = parent.get(name);
-      if (value != null) {
-        return value;
-      }
-    }
-    return map.get(name);
   }
   
   /*

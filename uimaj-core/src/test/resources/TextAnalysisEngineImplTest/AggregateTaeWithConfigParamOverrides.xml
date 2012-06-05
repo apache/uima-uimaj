@@ -58,12 +58,17 @@
     </overrides>
   </configurationParameter>
   
-  <!-- Implicit override -->
+  <!-- Array overrides (was testing deprecated Implicit override) -->
   <configurationParameter>
     <name>StringArrayParam</name>
     <description/>
     <type>String</type>
     <multiValued>true</multiValued>
+    <overrides>
+      <parameter>Annotator1/StringArrayParam</parameter>
+      <parameter>Annotator2/StringArrayParam</parameter>
+      <parameter>MyFlowController/StringArrayParam</parameter>
+    </overrides>
   </configurationParameter>
 
   <!-- Override multiple params -->

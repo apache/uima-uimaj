@@ -81,21 +81,21 @@ public class ResourceConfigurationException extends UIMAException {
   public static final String CONFIG_SETTING_ABSENT = "config_setting_absent";
 
   /**
-   * Message key for a standard UIMA exception message: "Could not load properties file "{0}"."
-   */
-  public static final String PROPERTIES_FILE_NOT_FOUND = "properties_file_not_found";
-
-  /**
    * Message key for a standard UIMA exception message: Invalid value for parameter "{0}" in
    * component "{1}" -- directory "{2}" does not exist.
    */
   public static final String DIRECTORY_NOT_FOUND = "directory_not_found";
   
   /**
-   * Message key for a standard UIMA exception message: An external override references the undefined variable "{0}"
+   * Message key for a standard UIMA exception message: External override variable "{0}" references the undefined variable "{1}"
    */
   public static final String EXTERNAL_OVERRIDE_INVALID = "external_override_invalid";
 
+  /**
+   * Message key for a standard UIMA exception message: Error loading external overrides from "{0}"
+   */
+  public static final String EXTERNAL_OVERRIDE_ERROR = "external_override_error";
+  
   /**
    * Creates a new exception with a null message.
    */

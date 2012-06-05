@@ -25,12 +25,12 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMA_IllegalStateException;
 import org.apache.uima.UimaContext;
 import org.apache.uima.UimaContextAdmin;
-import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
-import org.apache.uima.resource.impl.ConfigurationManager_impl;
 import org.apache.uima.resource.metadata.ResourceManagerConfiguration;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.Logger;
+import org.apache.uima.util.Settings;
+import org.apache.uima.util.impl.Settings_impl;
 
 /**
  * Implementation base class for {@link org.apache.uima.resource.Resource}s. Provides access to
@@ -132,23 +132,30 @@ public abstract class Resource_ImplBase implements Resource {
       // store Resource metadata so it can be retrieved via getMetaData() method
       setMetaData(metadata);
       
-      // If an Analysis Engine load the external override settings in the shared configuration manager
-      if (metadata instanceof AnalysisEngineMetaData
-              && mUimaContextAdmin.getConfigurationManager() instanceof ConfigurationManager_impl) {
-        ConfigurationManager_impl cfgmgr = (ConfigurationManager_impl) mUimaContextAdmin.getConfigurationManager();
-        try {
-          cfgmgr.setupExternalOverrideSettings(mUimaContextAdmin.getQualifiedContextName(), metadata,
-                  getResourceManager());
-        } catch (ResourceConfigurationException e) {
-          throw new ResourceInitializationException(ResourceInitializationException.ERROR_INITIALIZING_FROM_DESCRIPTOR,
-                  new Object[] { name, metadata.getSourceUrlString() }, e);
+      // Check if a Settings object for the external overrides has been provided in the additional
+      // parameters map.  If not and not already set from the parent UimaContext then create one 
+      // (for the root context) from the system defaults
+      Settings externalOverrides = aAdditionalParams == null ? null : 
+                    (Settings) aAdditionalParams.get(Resource.PARAM_EXTERNAL_OVERRIDE_SETTINGS);
+      if (externalOverrides != null) {
+        mUimaContextAdmin.setExternalOverrides(externalOverrides);
+      } else {
+        if (mUimaContextAdmin.getExternalOverrides() == null) {
+          externalOverrides = new Settings_impl();
+          try {
+            externalOverrides.loadSystemDefaults();
+          } catch (ResourceConfigurationException e) {
+            throw new ResourceInitializationException(ResourceInitializationException.ERROR_INITIALIZING_FROM_DESCRIPTOR,
+                    new Object[] { name, metadata.getSourceUrlString() }, e);
+          }
+          mUimaContextAdmin.setExternalOverrides(externalOverrides);
         }
       }
 
       // initialize configuration
       try {
         mUimaContextAdmin.getConfigurationManager().createContext(
-                mUimaContextAdmin.getQualifiedContextName(), getMetaData());
+                mUimaContextAdmin.getQualifiedContextName(), getMetaData(), mUimaContextAdmin.getExternalOverrides());
         mUimaContextAdmin.getConfigurationManager().setSession(mUimaContextAdmin.getSession());
       } catch (ResourceConfigurationException e) {
         throw new ResourceInitializationException(

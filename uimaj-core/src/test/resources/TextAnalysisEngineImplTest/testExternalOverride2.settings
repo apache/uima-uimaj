@@ -1,6 +1,5 @@
-# Note: since this is imported by name its name cannot contain any periods (.) as they are converted to slash (/)
-import-value     prefix_from_import-${inline-suffix}
+prefix-suffix     Prefix-${suffix}
 # The following key should have already been set by an earlier import
-inline-suffix = should be ignored
+suffix = should be ignored
 # Empty array
 test.externalFloatArray =  []

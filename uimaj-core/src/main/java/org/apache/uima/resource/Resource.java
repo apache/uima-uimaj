@@ -151,6 +151,16 @@ public interface Resource {
    * {@link #initialize(ResourceSpecifier,Map)} method.
    */
   public static final String PARAM_CONFIG_PARAM_SETTINGS = "CONFIG_PARAM_SETTINGS";
+  
+  /**
+   * Key for the initialization parameter whose value is a {@link org.apache.uima.util.Settings}
+   * object that holds the external override settings.  This will replace any prior settings.  
+   * If omitted the value in the parent UIMA Context is inherited.  If there is no parent (i.e. at 
+   * the root or top-level context) then the files in the system property UimaExternalOverrides are used.
+   * This value is used as a key in the <code>aAdditionalParams</code> Map that is passed to the
+   * {@link #initialize(ResourceSpecifier,Map)} method.
+   */
+  public static final String PARAM_EXTERNAL_OVERRIDE_SETTINGS = "EXTERNAL_OVERRIDE_SETTINGS";
 
   /**
    * Key for the initialization parameter whose value is a {@link java.util.Properties} object that

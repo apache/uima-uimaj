@@ -81,7 +81,4 @@ public interface OperationalProperties {
    */
   public void setOutputsNewCASes(boolean aOutputsNewCASes);
   
-  public void setExternalOverrideSettings(ExternalOverrideSettings aExternalOverrideSettings);
-
-  public ExternalOverrideSettings getExternalOverrideSettings();
 }

@@ -26,47 +26,32 @@
 
 <delegateAnalysisEngineSpecifiers>
 <delegateAnalysisEngine key="Annotator1">
-<import location="AnnotatorWithConfigurationGroups.xml"/>
+<import location="AnnotatorWithConfigurationParameters.xml"/>
 </delegateAnalysisEngine>
 
 <delegateAnalysisEngine key="Annotator2">
-<import location="AnnotatorWithConfigurationGroups.xml"/>
+<import location="AnnotatorWithConfigurationParameters.xml"/>
 </delegateAnalysisEngine>
 </delegateAnalysisEngineSpecifiers> 
 
 <analysisEngineMetaData>
-<name>Aggregate TAE with Configuration Parameter Overrides</name>
-<description>For testing configuration parameters.</description>
-<version>1.0</version>
+<name>Aggregate TAE with Invalid Configuration Parameters</name>
+<description>For testing configuration parameters.</description><version>1.0</version>
 <vendor>The Apache Software Foundation</vendor>
 
 <!-- Configuration Parameter Definitions -->
-<configurationParameters defaultGroup="en" searchStrategy="language_fallback"> 
+<configurationParameters> 
 
-<configurationGroup names="en">
+  <!-- ERROR - No overrides -->
   <configurationParameter>
-    <name>StringParam</name>
+    <name>AggregateParam</name>
     <description/>
     <type>String</type>
     <overrides>
-      <parameter>Annotator1/StringParam</parameter>
     </overrides>
   </configurationParameter>
-</configurationGroup>
-
 </configurationParameters>
-
-
-<!-- Values for the configuration parameters -->
-<configurationParameterSettings>
-
-<settingsForGroup name="en">
-  <nameValuePair>
-    <name>StringParam</name>
-    <value><string>override</string></value>
-  </nameValuePair>
-</settingsForGroup>
-</configurationParameterSettings>
+  
 
 <flowConstraints>
   <fixedFlow>
