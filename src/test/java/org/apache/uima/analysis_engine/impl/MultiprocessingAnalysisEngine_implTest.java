@@ -370,6 +370,7 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
       p2.setName("StringParam");
       p2.setDescription("parameter with String data type");
       p2.setType(ConfigurationParameter.TYPE_STRING);
+      p2.setOverrides(new String[] {"Test/StringParam"});
       aggDesc.getMetaData().getConfigurationParameterDeclarations().setConfigurationParameters(
               new ConfigurationParameter[] { p2 });
       aggDesc.getMetaData().getConfigurationParameterSettings().setParameterSettings(

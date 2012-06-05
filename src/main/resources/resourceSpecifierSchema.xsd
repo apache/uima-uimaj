@@ -215,7 +215,7 @@
 						<sequence>
 							<element name="parameter" type="string" minOccurs="0" maxOccurs="unbounded" />
 	  					</sequence>
-						<!-- Use of tag "param" is deprectated but permitted for backwards compatibility -->
+						<!-- Use of tag "param" is deprecated but permitted for backwards compatibility -->
 						<sequence>
 							<element name="param" type="string" minOccurs="0" maxOccurs="unbounded" />
 	  					</sequence>
@@ -500,7 +500,6 @@
 			<element name="modifiesCas" minOccurs="0" type="boolean"/>
 			<element name="multipleDeploymentAllowed" minOccurs="0" type="boolean"/>
 			<element name="outputsNewCASes" minOccurs="0" type="boolean"/>
-			<element name="externalOverrideSettings" minOccurs="0" type="rs:ExternalOverrideSettingsType"/>
 		</sequence>
 	</complexType>
 	
@@ -578,13 +577,6 @@
 				</complexType>
 			</element>
 		</sequence>
-	</complexType>
-        
-	<complexType name="ExternalOverrideSettingsType">
-		<all>
-			<element name="imports" type="rs:ImportSequenceType" minOccurs="0" />
-			<element name="settings" type="string" minOccurs="0" />
-		</all>
 	</complexType>
 
 <!-- Top Level Element Definitions for Collection Processing Component Specifiers -->

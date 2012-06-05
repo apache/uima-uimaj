@@ -37,6 +37,15 @@ public interface Settings {
   public void load(InputStream in) throws IOException;
 
   /**
+   * Load properties from the comma-separated list of files specified in the system property 
+   *   UimaExternalOverrides
+   * Files are loaded in order --- so in descending priority.
+   * 
+   * @throws ResourceConfigurationException 
+   */
+  public void loadSystemDefaults() throws ResourceConfigurationException;
+  
+  /**
    * Look up the value for a property.
    * Perform one substitution pass on ${key} substrings replacing them with the value for key.
    * Recursively evaluate the value to be substituted.  NOTE: infinite loops not detected!
@@ -47,7 +56,7 @@ public interface Settings {
    * 
    * @param name - name to look up
    * @return     - value of property
-   * @throws ResourceConfigurationException
+   * @throws ResourceConfigurationException if the value references an undefined property
    */
   public String lookUp(String name) throws ResourceConfigurationException;
 

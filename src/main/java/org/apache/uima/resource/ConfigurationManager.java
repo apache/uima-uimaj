@@ -22,6 +22,7 @@ package org.apache.uima.resource;
 import org.apache.uima.resource.metadata.ConfigurationParameterDeclarations;
 import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
 import org.apache.uima.resource.metadata.ResourceMetaData;
+import org.apache.uima.util.Settings;
 
 /**
  * Manages the configuration parameters of all components within a possibly aggregate
@@ -48,7 +49,7 @@ public interface ConfigurationManager {
    * @throws ResourceConfigurationException
    *           if the configuration settings are invalid
    */
-  public void createContext(String aContextName, ResourceMetaData aResourceMetaData)
+  public void createContext(String aContextName, ResourceMetaData aResourceMetaData, Settings externalSettings)
           throws ResourceConfigurationException;
 
   /**

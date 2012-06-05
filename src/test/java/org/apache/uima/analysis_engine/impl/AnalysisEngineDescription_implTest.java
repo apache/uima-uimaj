@@ -53,16 +53,13 @@ import org.apache.uima.resource.metadata.Capability;
 import org.apache.uima.resource.metadata.ConfigurationGroup;
 import org.apache.uima.resource.metadata.ConfigurationParameter;
 import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
-import org.apache.uima.resource.metadata.ExternalOverrideSettings;
 import org.apache.uima.resource.metadata.ExternalResourceBinding;
-import org.apache.uima.resource.metadata.FeatureDescription;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.FsIndexKeyDescription;
 import org.apache.uima.resource.metadata.MetaDataObject;
 import org.apache.uima.resource.metadata.NameValuePair;
 import org.apache.uima.resource.metadata.OperationalProperties;
 import org.apache.uima.resource.metadata.ResourceManagerConfiguration;
-import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypePriorityList;
@@ -116,7 +113,7 @@ public class AnalysisEngineDescription_implTest extends TestCase {
       
       TypeSystemDescription typeSystem = new TypeSystemDescription_impl();
       TypeDescription type1 = typeSystem.addType("Fake", "<b>Fake</b> Type", "Annotation");
-      FeatureDescription feature1 = type1.addFeature("TestFeature", "For Testing Only",
+      type1.addFeature("TestFeature", "For Testing Only",
               CAS.TYPE_NAME_STRING);
       TypeDescription enumType = typeSystem.addType("EnumType", "Test Enumerated Type",
               "uima.cas.String");
@@ -368,7 +365,7 @@ public class AnalysisEngineDescription_implTest extends TestCase {
     Map<String, MetaDataObject> delegateMap = testAgg.getDelegateAnalysisEngineSpecifiersWithImports();
     Import_impl delegateImport = new Import_impl();
     delegateImport.setLocation(JUnitExtension.getFile(
-            "TextAnalysisEngineImplTest/TestPrimitiveTae1.xml").toURL().toString());
+            "TextAnalysisEngineImplTest/TestPrimitiveTae1.xml").toURI().toURL().toString());
     delegateMap.put("key", delegateImport);
 
     // test that import is resolved
@@ -560,37 +557,4 @@ public class AnalysisEngineDescription_implTest extends TestCase {
     Assert.assertFalse(ex.getMessage().startsWith("EXCEPTION MESSAGE LOCALIZATION FAILED"));
   }
   
-  public void testClone() throws Exception {
-    try {
-      XMLInputSource in = new XMLInputSource(JUnitExtension
-              .getFile("TextAnalysisEngineImplTest/AnnotatorWithExternalOverrides.xml"));
-      AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
-      AnalysisEngineDescription descClone = (AnalysisEngineDescription) desc.clone();
-      assertEquals(desc.getImplementationName(), descClone.getImplementationName());
-      
-      ResourceMetaData metadata = desc.getMetaData();
-      ExternalOverrideSettings eos = ((AnalysisEngineMetaData)metadata).getOperationalProperties().getExternalOverrideSettings();
-      String descSettings = eos.getSettings();
-
-      ResourceMetaData metadataClone = descClone.getMetaData();
-      ExternalOverrideSettings eosClone = ((AnalysisEngineMetaData)metadataClone).getOperationalProperties().getExternalOverrideSettings();
-      String descSettingsClone = eosClone.getSettings();
-      assertEquals(descSettings, descSettingsClone);
-  
-      // Check that imports can be found and settings can be loaded 
-      ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
-      eos.resolveImports(resMgr);
-      eosClone.resolveImports(resMgr);
-      
-      // Check that a nested inline expression can depend of an imported value
-      String val1 = eosClone.resolveExternalName("import-value");
-      String val2 = eosClone.resolveExternalName("inline-value");
-      assertNotNull(val1);
-      assertEquals(val1, val2);
-      
-    } catch (Exception e) {
-      JUnitExtension.handleException(e);
-    }
-  }
-
 }

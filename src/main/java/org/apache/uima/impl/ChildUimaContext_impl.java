@@ -80,6 +80,7 @@ public class ChildUimaContext_impl extends UimaContext_ImplBase implements UimaC
             mQualifiedContextName);
     mSofaMappings = aSofaMappings;
     parentContext = aParentContext;
+    mExternalOverrides = aParentContext.getExternalOverrides();
   }
 
   /*

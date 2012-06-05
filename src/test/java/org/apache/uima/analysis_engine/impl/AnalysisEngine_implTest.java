@@ -20,6 +20,7 @@
 package org.apache.uima.analysis_engine.impl;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
@@ -56,6 +57,7 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.cas.text.AnnotationFS;
+import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.impl.URISpecifier_impl;
@@ -82,8 +84,10 @@ import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.Level;
+import org.apache.uima.util.Settings;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.impl.ProcessTrace_impl;
+import org.apache.uima.util.impl.Settings_impl;
 
 /**
  * Tests the TextAnalysisEngine_impl class.
@@ -158,7 +162,7 @@ public class AnalysisEngine_implTest extends TestCase {
       Assert.assertTrue(result);
 
       // try some descriptors that are invalid due to config. param problems
-      for (int i = 1; i <= 13; i++) {
+      for (int i = 1; i <= 14; i++) {
         _testInvalidDescriptor(JUnitExtension
                 .getFile("TextAnalysisEngineImplTest/InvalidConfigParams" + i + ".xml"));
       }
@@ -187,11 +191,10 @@ public class AnalysisEngine_implTest extends TestCase {
               "StringParam");
       Assert.assertEquals("en", strVal3);
 
-      Assert.assertEquals("en", strVal2);
       Integer intVal1 = (Integer) delegate1.getUimaContext().getConfigParameterValue("en",
               "IntegerParam");
       Assert.assertEquals(100, intVal1.intValue());
-      Integer intVal2 = (Integer) delegate1.getUimaContext().getConfigParameterValue("en",
+      Integer intVal2 = (Integer) delegate2.getUimaContext().getConfigParameterValue("en",
               "IntegerParam");
       Assert.assertEquals(100, intVal2.intValue());
       Integer intVal3 = (Integer) flowController.getUimaContext().getConfigParameterValue("en",
@@ -252,6 +255,14 @@ public class AnalysisEngine_implTest extends TestCase {
 
       ae.destroy();
       
+   // anotherdescriptor with configuration parameter overrides (this time no groups)
+      in = new XMLInputSource(JUnitExtension
+              .getFile("TextAnalysisEngineImplTest/AggregateTaeWithConfigParamOverrides2.xml"));
+
+      desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
+      ae = new AggregateAnalysisEngine_impl();
+      ae.initialize(desc, Collections.EMPTY_MAP);
+      
       // test an aggregate TAE containing a CAS Consumer
       in = new XMLInputSource(JUnitExtension
               .getFile("TextAnalysisEngineImplTest/AggregateTaeWithCasConsumer.xml"));
@@ -299,23 +310,41 @@ public class AnalysisEngine_implTest extends TestCase {
       Assert.assertEquals("AggregateParam3b", ann2_groupBParamBC);
 
       ae.destroy();
+
+      // descriptor with configuration parameter external overrides
+      // implicitly load settings values from the system property UimaExternalSettings
+      String resDir = "src/test/resources/TextAnalysisEngineImplTest/";
+      System.setProperty("UimaExternalOverrides", resDir+"testExternalOverride.settings,"+resDir+"testExternalOverride2.settings");
+      in = new XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/AnnotatorWithExternalOverrides.xml"));
+      desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
+      ae1 = new PrimitiveAnalysisEngine_impl();
+      ae1.initialize(desc, null);
+      String[] arrayParam = (String[]) ae1.getUimaContext().getConfigParameterValue("StringArrayParam");
+      Assert.assertNotNull(arrayParam);
+      Assert.assertEquals(5, arrayParam.length);
+      String[] expect = { "Prefix", "-", "Suffix", "->", "Prefix-Suffix" };
+      Assert.assertTrue(Arrays.equals(expect, arrayParam));
+      Integer[] intArr = (Integer[]) ae1.getUimaContext().getConfigParameterValue("IntegerArrayParam");
+      Assert.assertEquals(4, intArr.length);
+      Float[] floats = (Float[]) ae1.getUimaContext().getConfigParameterValue("FloatArrayParam");
+      Assert.assertTrue(floats != null && floats.length == 0);       // Should be an empty array
+      System.clearProperty("UimaExternalOverrides");
       
-      // try a descriptor with configuration parameter external overrides - should work
-      // Use an aggregate so the annotator can run tests based on the context.
+      ae1.destroy();
+      
+      // aggregate with delegate with configuration parameter external overrides
+      // use aggregate so the annotator can run tests based on the context.
+      // load settings explicitly, ignoring system property
+      System.setProperty("UimaExternalOverrides", "missing file");  // Will fail if used
       in = new XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/AggregateWithExternalOverrides.xml"));
       desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
       ae = new AggregateAnalysisEngine_impl();
-      ae.initialize(desc, null);
-      delegate1 = (PrimitiveAnalysisEngine_impl) ae._getASB().getComponentAnalysisEngines().get("ExternalOverrides");
-      String[] arrayParam = (String[]) delegate1.getUimaContext().getConfigParameterValue("StringArrayParam");
-      Assert.assertNotNull(arrayParam);
-      Assert.assertEquals(5, arrayParam.length);
-      String[] expect = { "prefix_from_import", "-", "suffix_from_inline", "->", "prefix_from_import-suffix_from_inline" };
-      Assert.assertTrue(Arrays.equals(expect, arrayParam));
-      Integer[] intArr = (Integer[]) delegate1.getUimaContext().getConfigParameterValue("IntegerArrayParam");
-      Assert.assertEquals(4, intArr.length);
-      Float[] floats = (Float[]) delegate1.getUimaContext().getConfigParameterValue("FloatArrayParam");
-      Assert.assertTrue(floats != null && floats.length == 0);       // Should be an empty array
+      Map<String,Object> additionalParams = new HashMap<String,Object>();
+      Settings extSettings = new Settings_impl();
+      extSettings.load(new FileInputStream(new File(resDir,"testExternalOverride2.settings")));
+      additionalParams.put(Resource.PARAM_EXTERNAL_OVERRIDE_SETTINGS, extSettings);
+      ae.initialize(desc, additionalParams);
+      System.clearProperty("UimaExternalOverrides");
       
       ae1.destroy();
       
@@ -542,6 +571,7 @@ public class AnalysisEngine_implTest extends TestCase {
       p2.setName("StringParam");
       p2.setDescription("parameter with String data type");
       p2.setType(ConfigurationParameter.TYPE_STRING);
+      p2.setOverrides(new String[] {"Test/StringParam"});
       aggDesc.getMetaData().getConfigurationParameterDeclarations().setConfigurationParameters(
               new ConfigurationParameter[] { p2 });
       aggDesc.getMetaData().getConfigurationParameterSettings().setParameterSettings(
@@ -558,43 +588,7 @@ public class AnalysisEngine_implTest extends TestCase {
 
       // test again
       assertEquals("Test4", TestAnnotator.stringParamValue);
-
-      // reconfigure WITHOUT setting that parameter
-      aggAe.reconfigure();
-      // test again
-      assertEquals("Test4", TestAnnotator.stringParamValue);
-
-      // test aggregate TAE that does NOT override parameter
-      primitiveDesc.getMetaData().getConfigurationParameterSettings().setParameterSettings(
-              new NameValuePair[] { new NameValuePair_impl("StringParam", "Test1") });
-      AnalysisEngineDescription aggDesc2 = new AnalysisEngineDescription_impl();
-      aggDesc2.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
-      aggDesc2.setPrimitive(false);
-      aggDesc2.getMetaData().setName("Test Aggregate TAE");
-      aggDesc2.getDelegateAnalysisEngineSpecifiersWithImports().put("Test", primitiveDesc);
-      FixedFlow_impl flow2 = new FixedFlow_impl();
-      flow2.setFixedFlow(new String[] { "Test" });
-      aggDesc2.getAnalysisEngineMetaData().setFlowConstraints(flow2);
-      ConfigurationParameter p3 = new ConfigurationParameter_impl();
-      p3.setName("IntParam");
-      p3.setDescription("parameter with Integer data type");
-      p3.setType(ConfigurationParameter.TYPE_INTEGER);
-      aggDesc2.getMetaData().getConfigurationParameterDeclarations().setConfigurationParameters(
-              new ConfigurationParameter[] { p3 });
-      aggDesc2.getMetaData().getConfigurationParameterSettings().setParameterSettings(
-              new NameValuePair[] { new NameValuePair_impl("IntParam", Integer.valueOf(42)) });
-      // instantiate TextAnalysisEngine
-      AggregateAnalysisEngine_impl aggAe2 = new AggregateAnalysisEngine_impl();
-      aggAe2.initialize(aggDesc2, null);
-
-      // call process - this should generate an event with a resource name equal
-      // to the value of StringParam
-      assertEquals("Test1", TestAnnotator.stringParamValue);
-      // reconfigure
-      aggAe2.setConfigParameterValue("IntParam", Integer.valueOf(0));
-      aggAe2.reconfigure();
-      // test again - should not have changed
-      assertEquals("Test1", TestAnnotator.stringParamValue);
+      
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }

@@ -67,11 +67,11 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
     if ("/ExternalOverrides/".equals(contextName)) {
       String actual = null;
       try {
-        actual = aContext.getExternalParameterValue("test.externalStringArray");
+        actual = aContext.getExternalParameterValue("test.externalFloatArray");
       } catch (ResourceConfigurationException e) {
         Assert.fail(e.getMessage());
       }
-      String expected = "[prefix_from_import,-,suffix_from_inline,->,prefix_from_import-suffix_from_inline]";
+      String expected = "[]";
       Assert.assertEquals(expected, actual);
       
       // Test a stand-alone settings object

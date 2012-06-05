@@ -61,12 +61,15 @@
     </overrides>
   </configurationParameter>
   
-  <!-- Implicit override -->
+  <!-- Another Explicit override (was testing deprecated Implicit override) -->
   <configurationParameter>
     <name>StringArrayParam</name>
     <description/>
     <type>String</type>
     <multiValued>true</multiValued>
+    <overrides>
+      <parameter>Annotator1/StringArrayParam</parameter>
+    </overrides>
   </configurationParameter>
 
   <!-- Override multiple params -->

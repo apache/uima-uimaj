@@ -40,6 +40,7 @@ import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
 import org.apache.uima.resource.metadata.NameValuePair;
 import org.apache.uima.resource.metadata.OperationalProperties;
 import org.apache.uima.resource.metadata.ResourceMetaData;
+import org.apache.uima.util.Settings;
 
 /**
  * Convenience base class for Configuration Manager implementations. Subclasses just need to
@@ -102,7 +103,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    * @see org.apache.uima.resource.ConfigurationManager#createContext(java.lang.String,
    *      org.apache.uima.resource.metadata.ResourceMetaData)
    */
-  public void createContext(String aContextName, ResourceMetaData aResourceMetaData)
+  public void createContext(String aContextName, ResourceMetaData aResourceMetaData, Settings externalOverrides)
           throws ResourceConfigurationException {
     // first internally validate settings in the ResourceMetaData (catches data type problems,
     // settings for undefined parameters, etc.)
@@ -113,14 +114,13 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
     // provide access to the parameter values
     ConfigurationParameterDeclarations paramDecls = aResourceMetaData
             .getConfigurationParameterDeclarations();
-    String parentContext = computeParentContextName(aContextName);
     ConfigurationParameterSettings settings = aResourceMetaData.getConfigurationParameterSettings();
 
     // parameters in no group
     ConfigurationParameter[] paramsInNoGroup = paramDecls.getConfigurationParameters();
     if (paramsInNoGroup.length > 0) // no groups declared
     {
-      declareParameters(null, paramsInNoGroup, settings, aContextName, parentContext);
+      declareParameters(null, paramsInNoGroup, settings, aContextName, externalOverrides);
     }
 
     // parameter groups
@@ -133,12 +133,12 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
             // common params
             ConfigurationParameter[] commonParams = paramDecls.getCommonParameters();
             if (commonParams != null) {
-              declareParameters(names[j], commonParams, settings, aContextName, parentContext);
+              declareParameters(names[j], commonParams, settings, aContextName, externalOverrides);
             }
             // params in group
             ConfigurationParameter[] params = groups[i].getConfigurationParameters();
             if (params != null) {
-              declareParameters(names[j], params, settings, aContextName, parentContext);
+              declareParameters(names[j], params, settings, aContextName, externalOverrides);
             }
           }
         }
@@ -339,46 +339,22 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    *          settings for parameters
    * @param aContextName
    *          name of context containing this parameter
-   * @param aParentContextName
-   *          name of parent context, null if none
+   * @param aExternalOverrides
+   *          settings for parameters with external overrides 
    * @throws ResourceConfigurationException 
    */
   protected void declareParameters(String aGroupName, ConfigurationParameter[] aParams,
-          ConfigurationParameterSettings aSettings, String aContextName, String aParentContextName)
+          ConfigurationParameterSettings aSettings, String aContextName, Settings aExternalOverrides)
           throws ResourceConfigurationException {
     // iterate over config. param _declarations_
     if (aParams != null) {
       for (int i = 0; i < aParams.length; i++) {
         ConfigurationParameter param = aParams[i];
         String qname = makeQualifiedName(aContextName, param.getName(), aGroupName);
-        // look up in link map; if an entry is found it indicates this parameter was
-        // explicitly overridden by an aggregate parameter (in which case we don't enter a value)
-        String overriddenBy = getLink(qname);
-        if (overriddenBy == null) {
-          // no explicit override. Check for implicit override (a parameter with same
-          // name declared in parent aggregate with no explicit overrides)
-          // Note: any type mismatch will generate an error later
-          String nameInParentContext = makeQualifiedName(aParentContextName, param.getName(), aGroupName);
-          if (lookup(nameInParentContext) != null && !mExplicitlyOverridingParameters.contains(nameInParentContext)) {
-            // create a link (but collapse multiple links)
-            // String parentLink = getLink(nameInParentContext);
-            // overriddenBy = parentLink != null ? parentLink : nameInParentContext;
-            // mLinkMap.put(qname, overriddenBy);
-            mLinkMap.put(qname, nameInParentContext);
-          }
-        }
         // if this parameter explicitly overrides others, enter those parameter links in the map
-        // String overrideTarget = (overriddenBy != null) ? overriddenBy : qname;
         String[] overrides = param.getOverrides();
         for (int j = 0; j < overrides.length; j++) {
-          // mLinkMap.put(makeQualifiedName(aContextName, overrides[j], aGroupName),
-          // overrideTarget);
           mLinkMap.put(makeQualifiedName(aContextName, overrides[j], aGroupName), qname);
-        }
-        if (overrides.length > 0) {
-          // record this as an explcitily overriding parameter (so implicit override does not take
-          // place)
-          mExplicitlyOverridingParameters.add(qname);
         }
       }
     }

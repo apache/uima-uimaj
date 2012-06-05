@@ -249,6 +249,13 @@ public class ResourceInitializationException extends UIMAException {
   public static final String PARAM_OVERRIDE_IN_PRIMITIVE = "param_override_in_primitive";
 
   /**
+   * Message key for a standard UIMA exception message: Configuration parameter "{0}" in aggregate
+   * Analysis Engine "{1}" does not declare any overrides.  Implicit overrides are no longer supported. 
+   * (Descriptor: {2})
+   */
+  public static final String INVALID_PARAM_OVERRIDE_NO_OVERRIDES = "invalid_param_override_no_overrides";
+
+  /**
    * Message key for a standard UIMA exception message: Invalid configuration parameter override
    * syntax "{0}" in parameter "{1}" of Analysis Engine "{2}". Overrides must be of the form
    * "&lt;delegateKey>/&lt;paramName>"

@@ -53,10 +53,10 @@ import org.apache.uima.resource.CasManager;
 import org.apache.uima.resource.ResourceAccessException;
 import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.apache.uima.resource.impl.ConfigurationManager_impl;
 import org.apache.uima.resource.metadata.ConfigurationGroup;
 import org.apache.uima.resource.metadata.ConfigurationParameter;
 import org.apache.uima.util.Level;
+import org.apache.uima.util.Settings;
 import org.apache.uima.util.UriUtils;
 
 /**
@@ -121,6 +121,8 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   protected AnalysisEngineManagementImpl mMBean = new AnalysisEngineManagementImpl();
 
   private String uniqueIdentifier = "";
+  
+  protected Settings mExternalOverrides;
 
   /*  Default constructor. Its main purpose is to create a UUID-like
    *  unique name for this component.
@@ -180,7 +182,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getConfigParameterValue(String)
+   * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getConfigParameterValue(java.lang.String)
    */
   public Object getConfigParameterValue(String aName) {
     return getConfigurationManager().getConfigParameterValue(makeQualifiedName(aName));
@@ -198,7 +200,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   /**
    * Locates Resource URL's using the ResourceManager.
    * 
-   * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getResourceURL(String)
+   * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getResourceURL(java.lang.String)
    */
   public URL getResourceURL(String aKey) throws ResourceAccessException {
     URL result = getResourceManager().getResourceURL(makeQualifiedName(aKey));
@@ -264,7 +266,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   /**
    * Acquires Resource InputStreams using the ResourceManager.
    * 
-   * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getResourceAsStream(String)
+   * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getResourceAsStream(java.lang.String)
    */
   public InputStream getResourceAsStream(String aKey) throws ResourceAccessException {
     InputStream result = getResourceManager().getResourceAsStream(makeQualifiedName(aKey));
@@ -295,7 +297,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   /**
    * Acquires a Resource object using the ResourceManager.
    * 
-   * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getResourceObject(String)
+   * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getResourceObject(java.lang.String)
    */
   public Object getResourceObject(String aKey) throws ResourceAccessException {
     return getResourceManager().getResource(makeQualifiedName(aKey));
@@ -366,14 +368,14 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   }
   
   /* (non-Javadoc)
-   * @see org.apache.uima.UimaContext#getResourceURI(String, String[])
+   * @see org.apache.uima.UimaContext#getResourceURI(java.lang.String, java.lang.String[])
    */
   public URI getResourceURI(String aKey, String[] aParams) throws ResourceAccessException {
     return getResourceURIfromURL(getResourceURL(aKey, aParams));
   } 
 
   /* (non-Javadoc)
-   * @see org.apache.uima.UimaContext#getResourceFilePath(String, String[])
+   * @see org.apache.uima.UimaContext#getResourceFilePath(java.lang.String, java.lang.String[])
    */
   public String getResourceFilePath(String aKey, String[] aParams) throws ResourceAccessException {
     URI resourceUri = getResourceURI(aKey, aParams);
@@ -482,8 +484,25 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    * @throws ResourceConfigurationException 
    */
   public String getExternalParameterValue(String name) throws ResourceConfigurationException {
-    ConfigurationManager_impl cfgmgr = (ConfigurationManager_impl) getConfigurationManager();
-    return cfgmgr.getExternalParameter(mQualifiedContextName, name);
+    return mExternalOverrides == null ? null : mExternalOverrides.lookUp(name);
+  }
+
+  /**
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.UimaContextAdmin#getExternalOverrides()
+   */
+  public Settings getExternalOverrides() {
+    return mExternalOverrides;
+  }
+
+  /**
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.UimaContextAdmin#setExternalOverrides(org.apache.uima.util.Settings)
+   */
+  public void setExternalOverrides(Settings externalOverrides) {
+    mExternalOverrides = externalOverrides; 
   }
   
   /**

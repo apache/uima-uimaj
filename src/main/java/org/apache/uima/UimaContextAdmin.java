@@ -32,6 +32,7 @@ import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.Session;
 import org.apache.uima.util.Logger;
 import org.apache.uima.util.ProcessTrace;
+import org.apache.uima.util.Settings;
 
 /**
  * Admin interface to the UIMA Context. Developer code should only use the {@link UimaContext}
@@ -171,11 +172,26 @@ public interface UimaContextAdmin extends UimaContext {
    * @param aCAS the CAS that was returned or released
    */
   public void returnedCAS(AbstractCas aCAS);
+  
   /**
    * Returns a UUID-like unique name of this component.
    * 
    * @return - unique name of this component
    */
   public String getUniqueName();
+  
+  /**
+   * Gets the settings to be used for external parameter overrides
+   *  
+   * @return the Settings object
+   */
+  public Settings getExternalOverrides();
+  
+  /**
+   * Sets the Settings for external parameter overrides
+   * 
+   * @param externalOverrides
+   */
+  public void setExternalOverrides(Settings externalOverrides);
 
 }

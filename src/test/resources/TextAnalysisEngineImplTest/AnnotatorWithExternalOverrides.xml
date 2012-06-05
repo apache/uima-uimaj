@@ -147,16 +147,6 @@
       <modifiesCas>true</modifiesCas>
       <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
       <outputsNewCASes>false</outputsNewCASes>
-      <externalOverrideSettings>
-        <settings>
-          inline-suffix    suffix_from_inline
-          inline-value     ${import-prefix}-suffix_from_inline
-        </settings>
-        <imports>
-          <import location="testExternalOverride.settings"/>
-          <import name="TextAnalysisEngineImplTest.testExternalOverride2"/>
-        </imports>
-      </externalOverrideSettings>
     </operationalProperties>
   </analysisEngineMetaData>
 </taeDescription>

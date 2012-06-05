@@ -305,7 +305,7 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
           NameValuePair aNVP) throws ResourceConfigurationException {
     String paramName = aParam.getName();
     String paramType = aParam.getType();
-    Class valClass = aNVP.getValue().getClass();
+    Class<?> valClass = aNVP.getValue().getClass();
 
     if (aParam.isMultiValued()) // value must be an array
     {
@@ -336,7 +336,7 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
    * 
    * @return expected Java class for parameter values of this type
    */
-  protected Class getClassForParameterType(String paramType) {
+  protected Class<?> getClassForParameterType(String paramType) {
     if (ConfigurationParameter.TYPE_STRING.equals(paramType)) {
       return String.class;
     } else if (ConfigurationParameter.TYPE_BOOLEAN.equals(paramType)) {
