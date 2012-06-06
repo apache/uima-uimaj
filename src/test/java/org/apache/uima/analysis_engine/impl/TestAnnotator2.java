@@ -40,7 +40,7 @@ import org.apache.uima.util.impl.Settings_impl;
  * 
  */
 public class TestAnnotator2 extends CasAnnotator_ImplBase {
-  // Process method saves information to these static fields,
+  // Initialize and process methods save information to these static fields,
   // which are queried by the unit test.
   public static String lastDocument;
 
@@ -48,6 +48,8 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
 
   public static boolean typeSystemInitCalled;
 
+  public static String allContexts = "";
+  
   public static synchronized String getLastDocument() {
     return lastDocument;  
   }
@@ -93,6 +95,8 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
         Assert.fail(e.toString());
       }
     }
+    // Used to check initialization order by testManyDelegates
+    allContexts  = allContexts + contextName.substring(1);
   }
 
   public void typeSystemInit(TypeSystem aTypeSystem) {

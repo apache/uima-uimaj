@@ -19,6 +19,7 @@
 
 package org.apache.uima.analysis_engine.impl;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -60,6 +61,7 @@ import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
+import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.impl.URISpecifier_impl;
 import org.apache.uima.resource.metadata.AllowedValue;
 import org.apache.uima.resource.metadata.Capability;
@@ -86,8 +88,11 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Settings;
 import org.apache.uima.util.XMLInputSource;
+import org.apache.uima.util.XMLParser;
+import org.apache.uima.util.XMLSerializer;
 import org.apache.uima.util.impl.ProcessTrace_impl;
 import org.apache.uima.util.impl.Settings_impl;
+import org.xml.sax.ContentHandler;
 
 /**
  * Tests the TextAnalysisEngine_impl class.
@@ -1487,5 +1492,38 @@ public class AnalysisEngine_implTest extends TestCase {
     }
   }
   
+  public void testManyDelegates() throws Exception {
+    // Test that an aggregate can be copied preserving all comments and ordering of delegates
+    XMLParser.ParsingOptions parsingOptions = new XMLParser.ParsingOptions(false);
+    parsingOptions.preserveComments = true;
+    XMLParser parser = UIMAFramework.getXMLParser();
+    File inFile = JUnitExtension.getFile("TextAnalysisEngineImplTest/AggregateWithManyDelegates.xml");
+    AnalysisEngineDescription desc = parser.parseAnalysisEngineDescription(new XMLInputSource(inFile), parsingOptions);
+
+    // Write out descriptor
+    File cloneFile = new File(inFile.getParentFile(), "CopyOfAggregateWithManyDelegates.xml");
+    BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(cloneFile));
+    XMLSerializer xmlSerializer = new XMLSerializer(true);
+    xmlSerializer.setOutputStream(os);
+    xmlSerializer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+    ContentHandler contentHandler = xmlSerializer.getContentHandler();
+    contentHandler.startDocument();
+    desc.toXML(contentHandler, true);
+    contentHandler.endDocument();
+    os.close();
+    assertEquals(inFile.length(), cloneFile.length());
+
+    // Initialize all delegates and check the initialization order (should be declaration order)
+    TestAnnotator2.allContexts = "";
+    UIMAFramework.produceAnalysisEngine(desc);
+    assertEquals("D/C/B/A/F/E/", TestAnnotator2.allContexts);
+    
+    // Check that copying aggregate preserved the order of the delegates
+    desc = parser.parseAnalysisEngineDescription(new XMLInputSource(cloneFile), parsingOptions);
+    TestAnnotator2.allContexts = "";
+    UIMAFramework.produceAnalysisEngine(desc);
+    assertEquals("D/C/B/A/F/E/", TestAnnotator2.allContexts);
+    cloneFile.delete();
+  }
   
 }

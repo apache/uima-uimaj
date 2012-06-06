@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -89,7 +90,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
    * Map from String key to delegate AnalysisEngine for all component AnalysisEngines within this
    * ASB.
    */
-  private Map<String, AnalysisEngine> mComponentAnalysisEngineMap = new HashMap<String, AnalysisEngine>();
+  private Map<String, AnalysisEngine> mComponentAnalysisEngineMap = new LinkedHashMap<String, AnalysisEngine>();
 
   /**
    * Map from String key to delegate AnalysisEngineMetaData for all component AnalysisEngines within
@@ -101,7 +102,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
   /**
    * Map from String key to component (AnalysisEngine or FlowController) metadata.
    */
-  private Map<String, ProcessingResourceMetaData> mAllComponentMetaDataMap = new HashMap<String, ProcessingResourceMetaData>();
+  private Map<String, ProcessingResourceMetaData> mAllComponentMetaDataMap = new LinkedHashMap<String, ProcessingResourceMetaData>();
 
   /**
    * Initialization parameters passed to this ASB's initialize method. They will be passed along to
@@ -272,7 +273,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
     initFlowController(aFlowControllerDeclaration, aParentContext, aAggregateMetadata);
 
     // initialize the AllComponentMetaData map to include AEs plus the FlowController
-    mAllComponentMetaDataMap = new HashMap<String, ProcessingResourceMetaData>(mComponentAnalysisEngineMetaDataMap);
+    mAllComponentMetaDataMap = new LinkedHashMap<String, ProcessingResourceMetaData>(mComponentAnalysisEngineMetaDataMap);
     mAllComponentMetaDataMap.put(aFlowControllerDeclaration.getKey(), mFlowControllerContainer
             .getProcessingResourceMetaData());
     mAllComponentMetaDataMap = Collections.unmodifiableMap(mAllComponentMetaDataMap);

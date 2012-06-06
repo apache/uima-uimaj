@@ -21,9 +21,9 @@ package org.apache.uima.analysis_engine.impl;
 
 import java.text.DecimalFormat;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -70,7 +70,7 @@ public class AnalysisEngineManagementImpl
 
   private long serviceCallTime;
 
-  private Map<String, AnalysisEngineManagement> components = new HashMap<String, AnalysisEngineManagement>();
+  private Map<String, AnalysisEngineManagement> components = new LinkedHashMap<String, AnalysisEngineManagement>();
 
   private String uniqueMBeanName;
 

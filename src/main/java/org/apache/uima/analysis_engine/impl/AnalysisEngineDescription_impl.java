@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -102,9 +103,9 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
 
   private FlowControllerDeclaration mFlowControllerDeclaration;
 
-  private Map<String, ResourceSpecifier> mDelegateAnalysisEngineSpecifiers = new HashMap<String, ResourceSpecifier>();
+  private Map<String, ResourceSpecifier> mDelegateAnalysisEngineSpecifiers = new LinkedHashMap<String, ResourceSpecifier>();
 
-  private Map<String, MetaDataObject> mDelegateAnalysisEngineSpecifiersWithImports = new HashMap<String, MetaDataObject>();
+  private Map<String, MetaDataObject> mDelegateAnalysisEngineSpecifiersWithImports = new LinkedHashMap<String, MetaDataObject>();
 
   private Map<String, Import> mProcessedImports = new HashMap<String, Import>();
 
@@ -218,7 +219,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
       aResourceManager = UIMAFramework.newDefaultResourceManager();
     }
     resolveImports(aResourceManager);
-    Map<String, ResourceSpecifier> map = new HashMap<String, ResourceSpecifier>(mDelegateAnalysisEngineSpecifiers);
+    Map<String, ResourceSpecifier> map = new LinkedHashMap<String, ResourceSpecifier>(mDelegateAnalysisEngineSpecifiers);
     if (getFlowControllerDeclaration() != null) {
       map.put(getFlowControllerDeclaration().getKey(), getFlowControllerDeclaration()
               .getSpecifier());
