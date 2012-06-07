@@ -1505,7 +1505,9 @@ public class AnalysisEngine_implTest extends TestCase {
     BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(cloneFile));
     XMLSerializer xmlSerializer = new XMLSerializer(true);
     xmlSerializer.setOutputStream(os);
-    xmlSerializer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+    // Don't try to indent nicely as appears to behave differently on Win & Unix
+    //xmlSerializer.setIndent(false);
+    xmlSerializer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "0");
     ContentHandler contentHandler = xmlSerializer.getContentHandler();
     contentHandler.startDocument();
     desc.toXML(contentHandler, true);
