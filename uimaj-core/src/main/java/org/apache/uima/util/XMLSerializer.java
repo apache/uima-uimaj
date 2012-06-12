@@ -196,7 +196,7 @@ public class XMLSerializer {
       this.indentDelta = indentDelta;
     }
 
-    private List<Node> mLastOutputNode = new ArrayList<Node>();  // the last output node for repeated subelement nodes 
+    private List<Node> mLastOutputNode = new ArrayList<Node>();  // the last output node for repeated subelement nodes
     
     public void lastOutputNodeAddLevel() {
       mLastOutputNode.add(null);
@@ -208,6 +208,14 @@ public class XMLSerializer {
 
     public Node getLastOutputNode() {
       return mLastOutputNode.get(mLastOutputNode.size() -1);
+    }
+    
+    public Node getLastOutputNodePrevLevel() {
+      int lastIndex = mLastOutputNode.size() -1;
+      if (lastIndex > 0) {
+        return mLastOutputNode.get(lastIndex - 1); 
+      }
+      return null;
     }
     
     public void lastOutputNodeClearLevel() {
@@ -229,6 +237,7 @@ public class XMLSerializer {
           indentDelta = 0;
         }
       }
+      mLastOutputNode.add(null);
     }
 
     /* (non-Javadoc)
@@ -241,6 +250,7 @@ public class XMLSerializer {
       }
       mHandler.startElement(uri, localName, qName, atts); 
       prevWasEndElement = false;
+      prevNL = false;
     }
     
     /* (non-Javadoc)
@@ -249,6 +259,13 @@ public class XMLSerializer {
     public void characters(char[] ch, int start, int length) throws SAXException {
       checkForInvalidXmlChars(ch, start, length, mXml11);
       mHandler.characters(ch, start, length);
+      prevNL = false;
+      for (int i = start; i < start + length; i++) {
+        if (ch[i] == '\n') {
+          prevNL = true;
+          break;
+        }
+      }
 //      nlOK = false;  //unfortunately, non validating dom parsers can't detect ignorable whitespace,
       // so they use characters instead...
     }
@@ -266,6 +283,7 @@ public class XMLSerializer {
     public void endElement(String uri, String localName, String qName) throws SAXException {
       mHandler.endElement(uri, localName, qName);
       prevWasEndElement = true;
+      prevNL = false;
     }
 
     /* (non-Javadoc)
@@ -338,6 +356,7 @@ public class XMLSerializer {
 
     public void comment(char[] ch, int start, int length) throws SAXException {
       ((LexicalHandler)mHandler).comment(ch, start, length);
+      prevNL = false;
     }
 
     public void endCDATA() throws SAXException {}

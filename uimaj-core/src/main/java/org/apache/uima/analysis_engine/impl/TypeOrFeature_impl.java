@@ -26,6 +26,7 @@ import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLParser;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -116,29 +117,40 @@ public class TypeOrFeature_impl extends MetaDataObject_impl implements TypeOrFea
    */
   public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute)
           throws SAXException {
+    
+    String namespace = getXmlizationInfo().namespace;
+
     if (isType()) {
       // tag is "type"
+      Node node = findMatchingSubElement(aContentHandler, "type");
+
       // if allAnnotatorFeatures is true, write that as an attribute
       if (isAllAnnotatorFeatures()) {
         AttributesImpl attrs = new AttributesImpl();
         attrs.addAttribute("", "allAnnotatorFeatures", "allAnnotatorFeatures", null, "true");
-        aContentHandler.startElement(getXmlizationInfo().namespace, "type", "type", attrs);
+        outputStartElement(aContentHandler, node, namespace, "type", "type", attrs);
+//        aContentHandler.startElement(getXmlizationInfo().namespace, "type", "type", attrs);
       } else {
-        aContentHandler.startElement(getXmlizationInfo().namespace, "type", "type",
-                new AttributesImpl());
+        outputStartElement(aContentHandler, node, namespace, "type", "type", new AttributesImpl());
+//        aContentHandler.startElement(getXmlizationInfo().namespace, "type", "type",
+//                new AttributesImpl());
       }
       // write type name here
       aContentHandler.characters(getName().toCharArray(), 0, getName().length());
 
-      aContentHandler.endElement(getXmlizationInfo().namespace, "type", "type");
+      outputEndElement(aContentHandler, node, namespace, "type", "type");
+//      aContentHandler.endElement(getXmlizationInfo().namespace, "type", "type");
     } else // feature
     {
-      aContentHandler.startElement(getXmlizationInfo().namespace, "feature", "feature",
-              new AttributesImpl());
+      Node node = findMatchingSubElement(aContentHandler, "feature");
+      outputStartElement(aContentHandler, node, namespace, "feature", "feature",
+          new AttributesImpl());
+//      aContentHandler.startElement(getXmlizationInfo().namespace, "feature", "feature",
+//              new AttributesImpl());
 
       aContentHandler.characters(getName().toCharArray(), 0, getName().length());
-
-      aContentHandler.endElement(getXmlizationInfo().namespace, "feature", "feature");
+      outputEndElement(aContentHandler, node, namespace, "feature", "feature");
+//      aContentHandler.endElement(getXmlizationInfo().namespace, "feature", "feature");
     }
   }
 
