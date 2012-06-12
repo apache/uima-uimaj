@@ -614,11 +614,11 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     }
 
     // start element
-    outputStartElement(aContentHandler, infoset, inf.namespace, inf.elementTagName, inf.elementTagName, attrs);
-   // write child elements
-    
+    outputStartElement(aContentHandler, infoset, inf.namespace, inf.elementTagName, inf.elementTagName, attrs);    
     CharacterValidatingContentHandler cc = (CharacterValidatingContentHandler) aContentHandler;
+    cc.setLastOutputNode(infoset);
     cc.lastOutputNodeAddLevel();
+    // write child elements
     try {
       for (int i = 0; i < inf.propertyInfo.length; i++) {
         PropertyXmlInfo propInf = inf.propertyInfo[i];
@@ -694,10 +694,12 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     Node elementNode = findMatchingSubElement(aContentHandler, aPropInfo.xmlElementName);
     outputStartElement(aContentHandler, elementNode, aNamespace, aPropInfo.xmlElementName, aPropInfo.xmlElementName,
               EMPTY_ATTRIBUTES);
-
+    CharacterValidatingContentHandler cc = (CharacterValidatingContentHandler) aContentHandler;
+    cc.lastOutputNodeAddLevel();
     // get class of property
     Class propClass = getAttributeClass(aPropInfo.propertyName);
 
+    try {
     // if value is null then write nothing
     if (val != null) {
       // if value is an array then we have to treat that specially
@@ -722,6 +724,9 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
           aContentHandler.characters(valStr.toCharArray(), 0, valStr.length());
         }
       }
+    }
+    } finally {
+      cc.lastOutputNodeClearLevel();
     }
 
     // if XML element name was supplied, end the element that we started
@@ -859,7 +864,12 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
               elem.toXML(aContentHandler);
             }
           } else {
+            cc.lastOutputNodeAddLevel();
+            try {
             ((XMLizable) val).toXML(aContentHandler);
+            } finally {
+              cc.lastOutputNodeClearLevel();              
+            }
           }
   
           // write end tag for the value
@@ -1332,23 +1342,32 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    *     maybeOutputCommentsAfter  
    *   
    * Detect top level (by fact that parent is null), and for top level:
-   *   collect all above -> output before startelement
+   *   collect all above -> output before startelement  
+   *     BUT, note that the sax parser doesn't do callbacks for text (blank lines) before the
+   *       start element, so all we can collect are the comment lines.
    *   collect all below -> output after endelement
    *   
    * For normal element node, "start":
    *   --> output before element
-   *     collect all prev siblings up to first newline (assume before that, the comment goes with the node having children)
+   *     collect all prev white space siblings up to the one that contains the first newline 
+   *         because the prev white space siblings before and including that one will
+   *         have been outputted as part of the previous start or end tag's "after element" processing
+   *         
    *       if no nl assume comments go with previous element, and skip here
    *       (stop looking if get null for getPreviousSibling())
    *       (stop looking if get other than comment or ignorable whitespace)
    *         (ignorable whitespace not always distinguishable from text that is whitespace?)
+   *         
    *   --> output after element:
-   *     if element children:    eg:  <start> <!-- cmt --> 
-   *       collect all up to and including first nl before first child
+   *     if children:    eg:  <start> <!-- cmt --> 
+   *       collect all up to and including first nl before first Element child
    *         (stop at first Element node; if no nl, then the source had multiple elements on one line:
    *            associate the comments and whitespace with previous (and output them).
    *          
-   *     if no element children: - means it's written <xxx/> or <xxx></xxx> or <xxx>   something  </xxx>
+   *     if no children: - means it's written 
+   *          <xxx/> or 
+   *          <xxx></xxx>  
+   *              Note:  <xxx>   something  </xxx> not possible, because then it would have some text children
    *       output nothing - after comments will be done following endElement call
    *       
    * For normal element node, "end":
@@ -1439,14 +1458,55 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     outputCoIwAfterElement(node.getFirstChild(), contentHandler);
   }
   
+  /**
+   * Output comments and ignorable whitespace after an element.
+   * Comments following an element can either be grouped with the preceeding element or with the following one.
+   *   e.g.    <element>   <!--comment 1-->
+   *             <!--comment 2-->
+   *             <!--comment 3-->
+   *             <subelement>
+   *             
+   *   We arbitrarily group comment 1 with the element, and comment 2 and 3 with the subelement.
+   *   This is for purposes of when they get processed and put out.
+   *   This also affects what happens when new elements are "inserted" by an editor.
+   *   
+   * This routine outputs only the whitespace and comment on the same line (e.g., 
+   * it stops after outputting the ignorable whitespace that contains a nl.)
+   * If find text which is not whitespace, don't output anything.
+   *   Use case: 
+   *      <someElement>  some text
+   *         
+   * @param startNode - the node corresponding to the start or end element just outputted
+   * @param contentHandler
+   * @throws DOMException
+   * @throws SAXException
+   */
   private void outputCoIwAfterElement(Node startNode, ContentHandler contentHandler) throws DOMException, SAXException {
     if (null != startNode) {
-      for (Node n = startNode.getFirstChild(); isCoIw(n); n = n.getNextSibling()) {
+      // scan for last node to output
+      // we do this first so we output nothing if have non-blank text somewhere
+      Node lastNode = null;
+      for (Node n = startNode;
+                (n != null) && 
+                ((n instanceof Comment) || (n instanceof Text));  // keep going as long as have non-Element nodes
+                n = n.getNextSibling()) {
+        if ((n instanceof Text) && !isWhitespaceText(n)) {
+          return;  // catch case <someElement>   some text
+        }
+        lastNode = n;
+      }
+      if (null == lastNode) {
+        return;
+      }
+      for (Node n = startNode;; n = n.getNextSibling()) { 
         outputCoIw(contentHandler, n);
-        if (hasNewline(n)) {
+        if (hasNewline(n)) {          
           if (contentHandler instanceof CharacterValidatingContentHandler) {
             ((CharacterValidatingContentHandler) contentHandler).prevNL = true;
           }
+          return;  // return after outputting up to and including 1st new line 
+        }
+        if (n == lastNode) {
           return;
         }
       }
@@ -1504,13 +1564,23 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * @param elementName
    * @return null (if no match) or matching node
    */
-  private Node findMatchingSubElement(ContentHandler contentHandler, String elementName) {
+  protected Node findMatchingSubElement(ContentHandler contentHandler, String elementName) {
     if (null == infoset || null == elementName) {
       return null;
     }
     CharacterValidatingContentHandler c = (CharacterValidatingContentHandler) contentHandler;
     Node lastOutput = c.getLastOutputNode();
-    Node n = (lastOutput == null) ? infoset.getFirstChild() : lastOutput.getNextSibling();
+    Node n = null;
+    
+    if (lastOutput == null) {
+      lastOutput = c.getLastOutputNodePrevLevel();
+      if (lastOutput == null) {
+        return null;
+      }
+      n = lastOutput.getFirstChild();
+    } else {
+      n = lastOutput.getNextSibling();
+    }
     for (; n != null; n = n.getNextSibling()) {
       if ((n instanceof Element) && 
           elementName.equals(((Element)n).getTagName())) {
@@ -1586,6 +1656,16 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     
   }
   
+  /**
+   * Dom parsers if not operating in validating mode can't distinguish between
+   * ignorable white space and non-ignorable white space.
+   * 
+   * So we use a heuristic instead - we see if the text is whitespace only, and if so,
+   * we consider it to be ignorable white space.
+   * 
+   * @param n
+   * @return
+   */
   private boolean isCoIw(Node n) {
     return (n != null) && ((n instanceof Comment) || isWhitespaceText(n));
   }
@@ -1604,7 +1684,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     return true;
   }
   
-  private void outputStartElement(ContentHandler aContentHandler, 
+  protected void outputStartElement(ContentHandler aContentHandler, 
                                   Node node, 
                                   String aNamespace, 
                                   String localname, 
@@ -1618,7 +1698,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     maybeOutputCoIwAfterStart(aContentHandler, node);
   }
   
-  private void outputEndElement(ContentHandler aContentHandler, 
+  protected void outputEndElement(ContentHandler aContentHandler, 
                                 Node node,
                                 String aNamespace, 
                                 String localname, 

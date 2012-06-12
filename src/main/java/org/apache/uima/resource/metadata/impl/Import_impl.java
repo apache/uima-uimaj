@@ -27,6 +27,7 @@ import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLParser;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -152,6 +153,7 @@ public class Import_impl extends MetaDataObject_impl implements Import {
    */
   public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute)
           throws SAXException {
+    String namespace = getXmlizationInfo().namespace;
     AttributesImpl attrs = new AttributesImpl();
     if (getName() != null) {
       attrs.addAttribute("", "name", "name", null, getName());
@@ -159,8 +161,11 @@ public class Import_impl extends MetaDataObject_impl implements Import {
     if (getLocation() != null) {
       attrs.addAttribute("", "location", "location", null, getLocation());
     }
-    aContentHandler.startElement(getXmlizationInfo().namespace, "import", "import", attrs);
-    aContentHandler.endElement(getXmlizationInfo().namespace, "import", "import");
+    Node node = findMatchingSubElement(aContentHandler, "import");
+    outputStartElement(aContentHandler, node, namespace, "import", "import", attrs);
+//    aContentHandler.startElement(getXmlizationInfo().namespace, "import", "import", attrs);
+    outputEndElement(aContentHandler, node, namespace, "import", "import");
+//    aContentHandler.endElement(getXmlizationInfo().namespace, "import", "import");
   }
 
   /**
