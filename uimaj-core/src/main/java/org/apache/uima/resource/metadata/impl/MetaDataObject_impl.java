@@ -691,11 +691,21 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
       return;
 
     // if XML element name was supplied, write a tag
-    Node elementNode = findMatchingSubElement(aContentHandler, aPropInfo.xmlElementName);
-    outputStartElement(aContentHandler, elementNode, aNamespace, aPropInfo.xmlElementName, aPropInfo.xmlElementName,
-              EMPTY_ATTRIBUTES);
+    String elementName = aPropInfo.xmlElementName;      
     CharacterValidatingContentHandler cc = (CharacterValidatingContentHandler) aContentHandler;
-    cc.lastOutputNodeAddLevel();
+    Node elementNode = null;
+
+    if (null != elementName) { // can be null in this case:
+        //               <fixedFlow>       <== after outputting this,
+        //                                     there is no <array> conntaining:
+        //                  <node>A</node>  
+        //                  <node>B</node>
+  
+      elementNode = findMatchingSubElement(aContentHandler, aPropInfo.xmlElementName);
+      outputStartElement(aContentHandler, elementNode, aNamespace, aPropInfo.xmlElementName, aPropInfo.xmlElementName,
+                EMPTY_ATTRIBUTES);
+      cc.lastOutputNodeAddLevel();
+    }
     // get class of property
     Class propClass = getAttributeClass(aPropInfo.propertyName);
 
@@ -726,11 +736,15 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
       }
     }
     } finally {
-      cc.lastOutputNodeClearLevel();
+      if (null != elementName) {
+        cc.lastOutputNodeClearLevel();
+      }
     }
 
     // if XML element name was supplied, end the element that we started
-    outputEndElement(aContentHandler, elementNode, aNamespace, aPropInfo.xmlElementName, aPropInfo.xmlElementName);
+    if (null != elementName) {
+      outputEndElement(aContentHandler, elementNode, aNamespace, aPropInfo.xmlElementName, aPropInfo.xmlElementName);
+    }
   }
 
   /**
@@ -754,18 +768,21 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
   protected void writeArrayPropertyAsElement(String aPropName, Class aPropClass, Object aValue,
           String aArrayElementTagName, String aNamespace, ContentHandler aContentHandler)
           throws SAXException {
+    CharacterValidatingContentHandler cc = (CharacterValidatingContentHandler) aContentHandler;
+
     // if aPropClass is generic Object, reader won't know whether to expect
     // an array, so we tell it be writing an "array" element here.
     Node arraySubElement = findMatchingSubElement(aContentHandler, "array");
-    if (aPropClass == Object.class) {
+    
+    if (aPropClass == Object.class) {  // skip writting <array> unless the property class (of objects in the array) is "Object"
+                                       // skipped e.g. in <fixedFlow> values, where aPropClass is String
       outputStartElement(aContentHandler, arraySubElement, aNamespace, "array", "array", EMPTY_ATTRIBUTES);
+      cc.lastOutputNodeAddLevel();
     }
 
     // iterate through elements of the array (at this point we don't allow
     // nested arrays here
     int len = ((Object[]) aValue).length;
-    CharacterValidatingContentHandler cc = (CharacterValidatingContentHandler) aContentHandler;
-    cc.lastOutputNodeAddLevel();
     try {
       for (int i = 0; i < len; i++) {
         Object curElem = Array.get(aValue, i);
@@ -795,7 +812,9 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
         outputEndElement(aContentHandler, matchingArrayElement, aNamespace, aArrayElementTagName, aArrayElementTagName);
       }
     } finally {
-      cc.lastOutputNodeClearLevel();
+      if (aPropClass == Object.class) {
+        cc.lastOutputNodeClearLevel();
+      }
     }
 
     // if we started an "Array" element, end it
@@ -1690,7 +1709,12 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
                                   String localname, 
                                   String qname, 
                                   Attributes attributes) throws SAXException {
-    if (null == localname) {
+    if (null == localname) {  // happens for <flowConstraints>
+                              //               <fixedFlow>       <== after outputting this,
+                              //                                     called writePropertyAsElement
+                              //                                     But there is no <array>...
+                              //                  <node>A</node>  
+                              //                  <node>B</node>
       return;
     }
     maybeOutputCoIwBeforeStart(aContentHandler, node);

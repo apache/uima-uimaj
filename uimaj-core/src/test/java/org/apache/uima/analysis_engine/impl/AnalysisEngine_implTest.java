@@ -1505,14 +1505,17 @@ public class AnalysisEngine_implTest extends TestCase {
     BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(cloneFile));
     XMLSerializer xmlSerializer = new XMLSerializer(true);
     xmlSerializer.setOutputStream(os);
-    xmlSerializer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+    // set the amount to a value which will show up if used
+    // indent should not be used because we're using a parser mode which preserves
+    // comments and ignorable white space.
+    xmlSerializer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
     ContentHandler contentHandler = xmlSerializer.getContentHandler();
     contentHandler.startDocument();
     desc.toXML(contentHandler, true);
     contentHandler.endDocument();
     os.close();
     // Omit test for same-length-file as formatting appears to be platform-dependent
-    //assertEquals(inFile.length(), cloneFile.length());
+    assertEquals(inFile.length(), cloneFile.length());
 
     // Initialize all delegates and check the initialization order (should be declaration order)
     TestAnnotator2.allContexts = "";
