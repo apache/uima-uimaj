@@ -1664,10 +1664,18 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     return false;
   }
 
+  static private String lineEnd = System.getProperty("line.separator");
+  
+  /*
+   * If necessary replace any internal new-lines with the platform's line separator
+   */
   private void outputCoIw(ContentHandler contentHandler, Node p) throws DOMException, SAXException {
     if (p instanceof Comment) {
-      Comment c = (Comment)p;
-      ((LexicalHandler)contentHandler).comment(c.getData().toCharArray(), 0, c.getLength());
+      String cmt = ((Comment)p).getData();
+      if (!lineEnd.equals("\n")) {
+        cmt = cmt.replace("\n", lineEnd);
+      }
+      ((LexicalHandler)contentHandler).comment(cmt.toCharArray(), 0, cmt.length());
     } else {
       String s = p.getTextContent();
       contentHandler.characters(s.toCharArray(), 0, s.length());    

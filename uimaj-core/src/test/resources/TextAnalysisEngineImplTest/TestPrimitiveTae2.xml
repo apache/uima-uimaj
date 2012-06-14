@@ -21,16 +21,33 @@
 <!-- For testing only. -->
 
 <taeDescription xmlns="http://uima.apache.org/resourceSpecifier">
-<frameworkImplementation>org.apache.uima.java</frameworkImplementation>
-<primitive>true</primitive>
-<annotatorImplementationName>org.apache.uima.analysis_engine.impl.TestAnnotator2</annotatorImplementationName>
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+  <primitive>true</primitive>
+  <annotatorImplementationName>org.apache.uima.analysis_engine.impl.TestAnnotator2</annotatorImplementationName>
  
-<analysisEngineMetaData>
-<name>Test Primitive TAE 2</name>
-<description>For testing only.</description>
-<version>1.0</version>
-<vendor>The Apache Software Foundation</vendor>
+  <analysisEngineMetaData>
+    <name>Test Primitive TAE 2</name>
+    <description>For testing only.</description>
+    <version>1.0</version>
+    <vendor>The Apache Software Foundation</vendor>
  
+    <!-- Configuration Parameters -->
+
+    <configurationParameters>
+      <configurationParameter>
+        <name>StringParam</name>
+        <description>This is a string parameter</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter><configurationParameter>
+        <name>IntArrayParam</name>
+        <description>Array of integers</description>
+        <type>Integer</type>
+        <multiValued>true</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+    </configurationParameters><configurationParameterSettings/>
 
 <!-- TypeSystem Definition -->
 <typeSystemDescription>
