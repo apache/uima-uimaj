@@ -186,39 +186,41 @@ public abstract class XMLUtils {
     aWriter.write(">");
   }
 
-  /**
-   * Writes a standard XML representation of the specified Object, in the form:<br>
-   * <code>&lt;className&gt;string value%lt;/className%gt;</code>
-   * <p>
-   * where <code>className</code> is the object's java class name without the package and made
-   * lowercase, e.g. "string","integer", "boolean" and <code>string value</code> is the result of
-   * <code>Object.toString()</code>.
-   * <p>
-   * This is intended to be used for Java Strings and wrappers for primitive value classes (e.g.
-   * Integer, Boolean).
-   * 
-   * @param aObj
-   *          the object to write
-   * @param aContentHandler
-   *          the SAX ContentHandler to which events will be sent
-   * 
-   * @throws SAXException
-   *           if the ContentHandler throws an exception
-   */
-  public static void writePrimitiveValue(Object aObj, ContentHandler aContentHandler)
-      throws SAXException {
-    final Attributes EMPTY_ATTRIBUTES = new AttributesImpl();
-
-    String className = aObj.getClass().getName();
-    int lastDotIndex = className.lastIndexOf(".");
-    if (lastDotIndex > -1)
-      className = className.substring(lastDotIndex + 1).toLowerCase();
-
-    aContentHandler.startElement(null, className, className, EMPTY_ATTRIBUTES);
-    String valStr = aObj.toString();
-    aContentHandler.characters(valStr.toCharArray(), 0, valStr.length());
-    aContentHandler.endElement(null, className, className);
-  }
+  
+  // This method moved to MetaDataObject_impl, made private non-static, and integrated with the comment/whitespace preserving change. 6/2012 schor
+//  /**
+//   * Writes a standard XML representation of the specified Object, in the form:<br>
+//   * <code>&lt;className&gt;string value%lt;/className%gt;</code>
+//   * <p>
+//   * where <code>className</code> is the object's java class name without the package and made
+//   * lowercase, e.g. "string","integer", "boolean" and <code>string value</code> is the result of
+//   * <code>Object.toString()</code>.
+//   * <p>
+//   * This is intended to be used for Java Strings and wrappers for primitive value classes (e.g.
+//   * Integer, Boolean).
+//   * 
+//   * @param aObj
+//   *          the object to write
+//   * @param aContentHandler
+//   *          the SAX ContentHandler to which events will be sent
+//   * 
+//   * @throws SAXException
+//   *           if the ContentHandler throws an exception
+//   */
+//  public static void writePrimitiveValue(Object aObj, ContentHandler aContentHandler)
+//      throws SAXException {
+//    final Attributes EMPTY_ATTRIBUTES = new AttributesImpl();
+//
+//    String className = aObj.getClass().getName();
+//    int lastDotIndex = className.lastIndexOf(".");
+//    if (lastDotIndex > -1)
+//      className = className.substring(lastDotIndex + 1).toLowerCase();
+//
+//    aContentHandler.startElement(null, className, className, EMPTY_ATTRIBUTES);
+//    String valStr = aObj.toString();
+//    aContentHandler.characters(valStr.toCharArray(), 0, valStr.length());
+//    aContentHandler.endElement(null, className, className);
+//  }
 
   /**
    * Gets the first child of the given Element with the given tag name.
