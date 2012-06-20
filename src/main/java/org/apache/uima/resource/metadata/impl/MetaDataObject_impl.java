@@ -724,7 +724,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
         // else, if property's class is java.lang.Object, attempt to write
         // it as a primitive
         else if (propClass == Object.class) {
-          XMLUtils.writePrimitiveValue(val, aContentHandler);
+          writePrimitiveValue(val, aContentHandler);
         } else {
           // assume attribute's class is known (e.g. String, Integer), so it
           // is not necessary to write the class name to the XML. Just write
@@ -800,7 +800,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
         else {
           if (aArrayElementTagName == null) {
             // need to include the type, e.g. <string>
-            XMLUtils.writePrimitiveValue(curElem, aContentHandler);
+            writePrimitiveValue(curElem, aContentHandler);
           } else {
             // don't include the type - just write the value
             String valStr = curElem.toString();
@@ -1763,4 +1763,42 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
 //    }
 //    return node;
 //  }
+  // This next method moved here from XMLUtils, but left there because it's public.
+  // The version here handles comments and ignorablewhitespace
+  /**
+   * Writes a standard XML representation of the specified Object, in the form:<br>
+   * <code>&lt;className&gt;string value%lt;/className%gt;</code>
+   * <p>
+   * where <code>className</code> is the object's java class name without the package and made
+   * lowercase, e.g. "string","integer", "boolean" and <code>string value</code> is the result of
+   * <code>Object.toString()</code>.
+   * <p>
+   * This is intended to be used for Java Strings and wrappers for primitive value classes (e.g.
+   * Integer, Boolean).
+   * 
+   * @param aObj
+   *          the object to write
+   * @param aContentHandler
+   *          the SAX ContentHandler to which events will be sent
+   * 
+   * @throws SAXException
+   *           if the ContentHandler throws an exception
+   */
+  private void writePrimitiveValue(Object aObj, ContentHandler aContentHandler)
+      throws SAXException {
+    final Attributes EMPTY_ATTRIBUTES = new AttributesImpl();
+
+    String className = aObj.getClass().getName();
+    int lastDotIndex = className.lastIndexOf(".");
+    if (lastDotIndex > -1)
+      className = className.substring(lastDotIndex + 1).toLowerCase();
+
+    Node node = findMatchingSubElement(aContentHandler, className);
+    outputStartElement(aContentHandler, node, null, className, className, EMPTY_ATTRIBUTES);
+//    aContentHandler.startElement(null, className, className, EMPTY_ATTRIBUTES);
+    String valStr = aObj.toString();
+    aContentHandler.characters(valStr.toCharArray(), 0, valStr.length());
+    outputEndElement(aContentHandler, node, null, className, className);
+//    aContentHandler.endElement(null, className, className);
+  }
 }
