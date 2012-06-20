@@ -52,9 +52,7 @@
   <!-- serialize back to disk  -->
   <analysisEngineMetaData>
     <name>AggregateWithManyDelegates</name>
-    <description/>
     <version>1.0</version>
-    <vendor/>
     <configurationParameters searchStrategy="language_fallback">
       <configurationParameter>              <!-- First parameter -->
         <name>StringParam</name>
