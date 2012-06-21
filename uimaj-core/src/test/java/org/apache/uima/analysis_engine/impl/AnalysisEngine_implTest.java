@@ -1515,8 +1515,8 @@ public class AnalysisEngine_implTest extends TestCase {
     contentHandler.endDocument();
     os.close();
     long diff = cloneFile.length() - inFile.length();
-    // One platform inserts a blank line after the first, so don't insist on perfection
-    assertTrue("File size changed by "+diff+" should be no more than 1", diff >= -1 && diff <= 1);
+    // One platform inserts a blank line and a final newline, so don't insist on perfection
+    assertTrue("File size changed by "+diff+" should be no more than 2", diff >= -2 && diff <= 2);
 
     // Initialize all delegates and check the initialization order (should be declaration order)
     TestAnnotator2.allContexts = "";
