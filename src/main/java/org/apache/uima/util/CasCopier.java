@@ -111,21 +111,19 @@ public class CasCopier {
 
   /**
    * Does a deep copy of the contents of one CAS View into another CAS.
-   * If a view with the same name as <code>aDestCasView</code> exists in the destination CAS,
+   * If a view with the same name as <code>aSrcCasView</code> exists in the destination CAS,
    * then it will be the target of the copy.  Otherwise, a new view will be created with
    * that name and will become the target of the copy.  All FeatureStructures that are indexed 
    * in the source CAS view will become indexed in the target view.
    * 
    * @param aSrcCasView
    *          the CAS to copy from
-   * @param aDestCasView
-   *          the destination CAS view
    * @param aCopySofa
    *          if true, the sofa data and mimeType will be copied. If false they will not.
    */
-  public void copyCasView(CAS aSrcCasView, String aDestCasView, boolean aCopySofa) {
+  public void copyCasView(CAS aSrcCasView, boolean aCopySofa) {
     //get or create the target view
-    CAS targetView = getOrCreateView(mDestCas, aDestCasView);
+    CAS targetView = getOrCreateView(mDestCas, aSrcCasView.getViewName());
     
     if (aCopySofa) {
       // can't copy the SofaFS - just copy the sofa data and mime type
@@ -169,22 +167,6 @@ public class CasCopier {
     }
   }
 
-  /**
-   * Does a deep copy of the contents of one CAS View into another CAS.
-   * If a view with the same name as <code>aSrcCasView</code> exists in the destination CAS,
-   * then it will be the target of the copy.  Otherwise, a new view will be created with
-   * that name and will become the target of the copy.  All FeatureStructures that are indexed 
-   * in the source CAS view will become indexed in the target view.
-   * 
-   * @param aSrcCasView
-   *          the CAS to copy from
-   * @param aCopySofa
-   *          if true, the sofa data and mimeType will be copied. If false they will not.
-   */
-  public void copyCasView(CAS aSrcCasView, boolean aCopySofa) {
-    copyCasView(aSrcCasView, aSrcCasView.getViewName(), aCopySofa);
-  }
-  
   /**
    * For long lists, and other structures, the straight-forward impl with recursion can
    * nest too deep, causing a Java failure - out of stack space.
