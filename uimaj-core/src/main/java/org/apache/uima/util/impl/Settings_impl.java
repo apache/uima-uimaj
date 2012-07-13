@@ -93,6 +93,7 @@ public class Settings_impl implements Settings {
         }
       }
     }
+    rdr.close();   // Close reader (& input stream) as caller will probably forget.
   }
 
   /**
