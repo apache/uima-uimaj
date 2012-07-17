@@ -1,0 +1,4 @@
+# An invalid array, missing final (unescaped) ]
+badArray =  [
+  one
+  two, three, \], four
