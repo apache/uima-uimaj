@@ -93,13 +93,11 @@ public class Settings_impl implements Settings {
         }
       }
     }
-    rdr.close();   // Close reader (& input stream) as caller will probably forget.
   }
 
   /**
    * Load the files specified in the system property UimaExternalOverrides
    *
-   * @throws IOException
    * @throws ResourceConfigurationException 
    */
   
@@ -111,7 +109,12 @@ public class Settings_impl implements Settings {
                 LOG_RESOURCE_BUNDLE, "UIMA_external_overrides_load__CONFIG",
                 new Object[] { fname });
         try {
-          load(new FileInputStream(fname));
+          FileInputStream is = new FileInputStream(fname);
+          try {
+            load(is);
+          } finally {
+            is.close();
+          }
         } catch (IOException e) {
           throw new ResourceConfigurationException(ResourceConfigurationException.EXTERNAL_OVERRIDE_ERROR,
                   new Object[] { fname }, e);

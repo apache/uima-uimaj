@@ -343,15 +343,28 @@ public class AnalysisEngine_implTest extends TestCase {
       System.setProperty("UimaExternalOverrides", "missing file");  // Will fail if used
       in = new XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/AggregateWithExternalOverrides.xml"));
       desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
-      ae = new AggregateAnalysisEngine_impl();
       Map<String,Object> additionalParams = new HashMap<String,Object>();
       Settings extSettings = new Settings_impl();
-      extSettings.load(new FileInputStream(new File(resDir,"testExternalOverride2.settings")));
+      FileInputStream fis = new FileInputStream(new File(resDir,"testExternalOverride2.settings"));
+      extSettings.load(fis);
+      fis.close();
       additionalParams.put(Resource.PARAM_EXTERNAL_OVERRIDE_SETTINGS, extSettings);
-      ae.initialize(desc, additionalParams);
+      UIMAFramework.produceAnalysisEngine(desc, additionalParams);
       System.clearProperty("UimaExternalOverrides");
       
-      ae1.destroy();
+      // Same aggregate with invalid syntax for an array in the external overrides file
+      System.setProperty("UimaExternalOverrides", resDir+"testExternalOverride3.settings");
+      try {
+        UIMAFramework.produceAnalysisEngine(desc);
+        fail(); // should not get here
+      } catch (ResourceInitializationException e) {
+        Throwable thr = e;
+        while(thr.getCause() != null) {
+          thr = thr.getCause();
+        }
+        System.err.println("Expected exception: " + thr.toString());
+      }
+      System.clearProperty("UimaExternalOverrides");
       
     } catch (Exception e) {
       JUnitExtension.handleException(e);

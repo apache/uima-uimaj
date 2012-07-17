@@ -83,6 +83,7 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
       try {
         is = new ByteArrayInputStream(lines.getBytes("UTF-8"));
         testSettings.load(is);
+        is.close();
         String val = testSettings.lookUp("foo");
         Assert.assertEquals("[ok,OK]", val);
         try {
