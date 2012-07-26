@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>parent-pom</artifactId>
-    <version>3</version>
+    <version>4</version>
     <relativePath />
   </parent>
   
@@ -161,21 +161,22 @@
                   <destFileName>org.apache.uima.caseditor.ide_${item-eclipse-release-version}.jar</destFileName>
                 </artifactItem>
                
-                <!-- Deploy editor released with uima-as (later)  
+                <!-- Deploy editor released with uima-as (later)  -->
                 <artifactItem>
                   <groupId>org.apache.uima</groupId>
                   <artifactId>uimaj-ep-deployeditor</artifactId>
-                  <version>${item-maven-release-version}</version>
-                  <destFileName>org.apache.uima.deployeditor_${item-eclipse-release-version}.jar</destFileName>
+                  <version>${item-maven-release-version}-SNAPSHOT</version>
+                  <destFileName>org.apache.uima.deployeditor_${item-eclipse-release-version}-SNAPSHOT.jar</destFileName>
                 </artifactItem>
                  
                 <artifactItem>
                   <groupId>org.apache.uima</groupId>
                   <artifactId>uimaj-ep-runtime-deployeditor</artifactId>
-                  <version>${item-maven-release-version}</version>
-                  <destFileName>org.apache.uima.runtime.fragments.deployeditor_${item-eclipse-release-version}.jar</destFileName>
+                  <version>${item-maven-release-version}-SNAPSHOT</version>
+                  <destFileName>org.apache.uima.runtime.fragments.deployeditor_${item-eclipse-release-version}-SNAPSHOT.jar</destFileName>
                 </artifactItem>
-                 -->
+                 <!--  -->
+                 
               </artifactItems>
               <outputDirectory>${project.build.directory}/work/plugins</outputDirectory>
             </configuration>
@@ -203,14 +204,14 @@
                   <destFileName>org.apache.uima.tools_${item-eclipse-release-version}.jar</destFileName>
                 </artifactItem>
                 
-                <!-- not yet 
+                <!-- not yet -->
                 <artifactItem>
                   <groupId>org.apache.uima</groupId>
                   <artifactId>uimaj-eclipse-feature-deployeditor</artifactId>
-                  <version>${item-eclipse-release-version}</version>
-                  <destFileName>org.apache.uima.as.deployeditor_${item-eclipse-release-version}.jar</destFileName>
+                  <version>${item-eclipse-release-version}-SNAPSHOT</version>
+                  <destFileName>org.apache.uima.as.deployeditor_${item-eclipse-release-version}-SNAPSHOT.jar</destFileName>
                 </artifactItem>
-                   -->
+                  <!--  -->
               </artifactItems>
               <outputDirectory>${project.build.directory}/eclipse-update-site/features</outputDirectory>
             </configuration>
