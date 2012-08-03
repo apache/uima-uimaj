@@ -26,6 +26,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.nio.ByteBuffer;
 import java.util.Iterator;
 import java.util.StringTokenizer;
@@ -129,8 +130,9 @@ public class JcasSofaTest extends TestCase {
       es.setLocalSofaData("this beer is good");
 
       // Test Multiple Sofas across XCAS serialization
+      String xcasFilename = "Sofa.xcas";
       XCASSerializer ser = new XCASSerializer(cas.getTypeSystem());
-      OutputStream outputXCAS = new FileOutputStream("Sofa.xcas");
+      OutputStream outputXCAS = new FileOutputStream(xcasFilename);
       XMLSerializer xmlSer = new XMLSerializer(outputXCAS);
       try {
         ser.serialize(cas, xmlSer.getContentHandler());
@@ -143,7 +145,7 @@ public class JcasSofaTest extends TestCase {
 
       // Deserialize XCAS
       cas.reset();
-      InputStream inputXCAS = new FileInputStream("Sofa.xcas");
+      InputStream inputXCAS = new FileInputStream(xcasFilename);
       try {
         XCASDeserializer.deserialize(inputXCAS, cas, false);
         inputXCAS.close();
@@ -152,7 +154,13 @@ public class JcasSofaTest extends TestCase {
       } catch (IOException e2) {
         e2.printStackTrace();
       }
-
+      
+      // Delete the generated file.
+      File xcasFile = new File(xcasFilename);
+      if (xcasFile.exists()) {
+        assertTrue(xcasFile.delete());
+      }
+      
       // Add a new Sofa
       // id.setSofaID("GermanDocument");
       // Sofa gs = new Sofa(jcas, id, "text");
@@ -383,7 +391,10 @@ public class JcasSofaTest extends TestCase {
       JCas remoteView = jcas.createView("remoteSofaData");
       String sofaFileName = "./Sofa.xcas";
       remoteView.setSofaDataURI("file:" + sofaFileName, "text");
-
+      PrintWriter out = new PrintWriter(sofaFileName);
+      out.print("this beer is good");
+      out.close();
+      
       // read sofa data
       InputStream is = stringView.getSofaDataStream();
       assertTrue(is != null);
@@ -457,6 +468,11 @@ public class JcasSofaTest extends TestCase {
       bis.close();
       is = remoteView.getSofaDataStream();
       assertTrue(is != null);
+      buf = new StringBuffer();
+      while (is.read(dest) != -1) {
+        buf.append((char) dest[0]);
+      }
+      assertTrue(buf.toString().equals("this beer is good"));
       is.close();
       
       // Delete the generated file.

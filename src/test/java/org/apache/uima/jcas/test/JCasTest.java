@@ -36,7 +36,6 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.LowLevelCAS;
 import org.apache.uima.cas.impl.LowLevelException;
 import org.apache.uima.cas.impl.LowLevelIndexRepository;
-import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JFSIndexRepository;
 import org.apache.uima.jcas.cas.EmptyFSList;
@@ -416,7 +415,8 @@ public class JCasTest extends TestCase {
 	MakeAndTest root1 = new MakeAndTest() {
 		public void make() {
 			Root r1 = new Root(jcas);
-			int k = System.identityHashCode(r1);
+			// Note: Java 7 can return -ve hashcodes so must avoid -ve remainders.
+			int k = Math.abs(System.identityHashCode(r1));
 			int imax = 1 + (k % 10);
 			r1.setArrayFloat(new FloatArray(jcas, imax));
 			for (int i = 0; i < imax; i++) {
@@ -434,7 +434,7 @@ public class JCasTest extends TestCase {
 		public void test(Object o1) {
 			assertTrue(o1 instanceof Root);
 			Root r1 = (Root) o1;
-			int k = System.identityHashCode(r1);
+			int k = Math.abs(System.identityHashCode(r1));
 			int imax = 1 + (k % 10);
 			for (int i = 0; i < imax; i++) {
 				assertTrue(r1.getArrayFloat(i) == ((float) k / i));

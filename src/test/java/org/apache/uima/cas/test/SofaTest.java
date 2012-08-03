@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -146,8 +147,9 @@ public class SofaTest extends TestCase {
       es.setLocalSofaData("this beer is good");
 
       // Test Multiple Sofas across XCAS serialization
+      String xcasFilename = "Sofa.xcas";
       XCASSerializer ser = new XCASSerializer(this.cas.getTypeSystem());
-      OutputStream outputXCAS = new FileOutputStream("Sofa.xcas");
+      OutputStream outputXCAS = new FileOutputStream(xcasFilename);
       XMLSerializer xmlSer = new XMLSerializer(outputXCAS);
       try {
         ser.serialize(cas, xmlSer.getContentHandler());
@@ -160,7 +162,7 @@ public class SofaTest extends TestCase {
 
       // Deserialize XCAS
      this.cas.reset();
-      InputStream inputXCAS = new FileInputStream("Sofa.xcas");
+      InputStream inputXCAS = new FileInputStream(xcasFilename);
       try {
         XCASDeserializer.deserialize(inputXCAS, cas, false);
         inputXCAS.close();
@@ -169,7 +171,12 @@ public class SofaTest extends TestCase {
       } catch (IOException e2) {
         e2.printStackTrace();
       }
-
+      // Delete the generated file.
+      File xcasFile = new File(xcasFilename);
+      if (xcasFile.exists()) {
+        assertTrue(xcasFile.delete());
+      }
+      
       // Add a new Sofa
       // SofaID_impl gid = new SofaID_impl();
       // gid.setSofaID("GermanDocument");
@@ -449,7 +456,10 @@ public class SofaTest extends TestCase {
       CAS remoteView =this.cas.createView("remoteSofaData");
       String sofaFileName = "./Sofa.xcas";
       remoteView.setSofaDataURI("file:" + sofaFileName, "text");
-
+      PrintWriter out = new PrintWriter(sofaFileName);
+      out.print("this beer is good");
+      out.close();
+      
       // read sofa data
       // InputStream is = strSofa.getSofaDataStream();
       InputStream is = stringView.getSofaDataStream();
@@ -529,11 +539,17 @@ public class SofaTest extends TestCase {
       }
 
       dest = new byte[1];
+      is.close();
       // is = remoteSofa.getSofaDataStream();
       is = remoteView.getSofaDataStream();
       assertTrue(is != null);
-
+      buf = new StringBuffer();
+      while (is.read(dest) != -1) {
+        buf.append((char) dest[0]);
+      }
+      assertTrue(buf.toString().equals("this beer is good"));
       is.close();
+      
       // Delete the generated file.
       File xcasFile = new File(sofaFileName);
       if (xcasFile.exists()) {
