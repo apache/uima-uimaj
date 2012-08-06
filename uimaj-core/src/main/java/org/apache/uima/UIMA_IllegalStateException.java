@@ -77,7 +77,7 @@ public class UIMA_IllegalStateException extends UIMARuntimeException {
    * Message key for a standard UIMA exception message: ResourceManager.setCasManager was called
    * after the CAS Manager had already been set.  You can only call setCasManager once, and you
    * cannot have previously called ResourceManager.getCasManager or initialized any
-   * AnalysisEngines that use this ResouceManager.
+   * AnalysisEngines that use this ResourceManager.
    */
   public static final String CANNOT_SET_CAS_MANAGER = "cannot_set_cas_manager";
   

@@ -1504,8 +1504,15 @@ public class AnalysisEngine_implTest extends TestCase {
       JUnitExtension.handleException(e);
     }
   }
-  
   public void testManyDelegates() throws Exception {
+    // test with and without validation - UIMA-2453
+    UIMAFramework.getXMLParser().enableSchemaValidation(true);
+    manyDelegatesCommon();
+    
+    UIMAFramework.getXMLParser().enableSchemaValidation(false);
+    manyDelegatesCommon();
+  }
+  public void manyDelegatesCommon() throws Exception {
     // Test that an aggregate can be copied preserving all comments and ordering of delegates
     XMLParser.ParsingOptions parsingOptions = new XMLParser.ParsingOptions(false);
     parsingOptions.preserveComments = true;
@@ -1527,6 +1534,7 @@ public class AnalysisEngine_implTest extends TestCase {
     desc.toXML(contentHandler, true);
     contentHandler.endDocument();
     os.close();
+    
     long diff = cloneFile.length() - inFile.length();
     // One platform inserts a blank line and a final newline, so don't insist on perfection
     assertTrue("File size changed by "+diff+" should be no more than 2", diff >= -2 && diff <= 2);
@@ -1541,7 +1549,8 @@ public class AnalysisEngine_implTest extends TestCase {
     TestAnnotator2.allContexts = "";
     UIMAFramework.produceAnalysisEngine(desc);
     assertEquals("D/C/B/A/F/E/", TestAnnotator2.allContexts);
-    cloneFile.delete();
+//    cloneFile.delete();
   }
+  
   
 }
