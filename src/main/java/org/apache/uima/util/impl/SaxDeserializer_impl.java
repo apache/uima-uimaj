@@ -172,7 +172,12 @@ public class SaxDeserializer_impl implements SaxDeserializer, LexicalHandler {
   public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {
 //    System.out.format("SaxDeserializer_impl::ignorableWS: %s%n", new String(ch, start, length));
     if (mOptions.preserveComments) {
-      mTransformerHandler.ignorableWhitespace(ch, start, length);
+      characters(ch, start, length);
+        // calling ignorableWhiteSpace results in the white space being dropped in the DOM
+      //  Note this method is only called when "validating"
+      // When not validating, the parser can't tell if it's real chars or ignorable, 
+      // so it calls characters.
+//      mTransformerHandler.ignorableWhitespace(ch, start, length);
     }
   }
 
