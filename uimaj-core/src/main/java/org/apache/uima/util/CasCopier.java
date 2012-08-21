@@ -290,7 +290,7 @@ public class CasCopier {
         // not sharing same type system, so do a name loop up in destination type system
         destFeat = destType.getFeatureByBaseName(srcFeat.getShortName());
         if (destFeat == null) {
-          throw new UIMARuntimeException(UIMARuntimeException.TYPE_NOT_FOUND_DURING_CAS_COPY,
+          throw new UIMARuntimeException(UIMARuntimeException.FEATURE_NOT_FOUND_DURING_CAS_COPY,
                   new Object[] { srcFeat.getName() });
         }
       }
