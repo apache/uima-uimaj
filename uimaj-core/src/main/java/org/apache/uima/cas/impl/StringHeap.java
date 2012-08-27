@@ -20,7 +20,9 @@
 package org.apache.uima.cas.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Encapsulate string storage for the CAS.
@@ -49,17 +51,27 @@ final class StringHeap {
    * @param shdh Serialization helper datastructure.
    */
   final void reinit(StringHeapDeserializationHelper shdh, boolean delta) {
-	if (!delta) {
-      initMemory();
-	}
-    int stringOffset;
-    int stringLength;
+  	if (!delta) {
+        initMemory();
+  	}
     // Simply iterate over the ref heap and add one string after another.  The references come out
     // right because they are defined by the positions on the ref heap.
+    int stringOffset;
+    int stringLength;
+    String charHeapInString = new String(shdh.charHeap); // UIMA-2460
+    Map<String, String> reuseStrings = new HashMap<String, String>(
+        Math.min(8, 
+                 (shdh.refHeap.length / StringHeapDeserializationHelper.REF_HEAP_CELL_SIZE) 
+                 / 2));
     for (int i = StringHeapDeserializationHelper.FIRST_CELL_REF; i < shdh.refHeap.length; i += StringHeapDeserializationHelper.REF_HEAP_CELL_SIZE) {
       stringOffset = shdh.refHeap[i + StringHeapDeserializationHelper.CHAR_HEAP_POINTER_OFFSET];
       stringLength = shdh.refHeap[i + StringHeapDeserializationHelper.CHAR_HEAP_STRLEN_OFFSET];
-      this.stringList.add(new String(shdh.charHeap, stringOffset, stringLength));
+      String s = charHeapInString.substring(stringOffset, stringOffset + stringLength);
+      String reuse = reuseStrings.get(s);
+      if (reuse == null) {
+        reuseStrings.put(s, s);
+      }
+      this.stringList.add(reuse != null ? reuse : s);  
     }
   }
 
