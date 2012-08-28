@@ -42,7 +42,7 @@ public class DefaultColors {
   // (use high brightness for best contrast against black text)
   private static final float BRIGHT = 0.95f;
   
-  private static final Color[] COLORS = new Color[] {
+  public static final Color[] COLORS = new Color[] {
     // low saturation colors are best, so put them first
     Color.getHSBColor(55f / 360, 0.25f, BRIGHT), // butter yellow?
     Color.getHSBColor(0f / 360, 0.25f, BRIGHT), // pink?

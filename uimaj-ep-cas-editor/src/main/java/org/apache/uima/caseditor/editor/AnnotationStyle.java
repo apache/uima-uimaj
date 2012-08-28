@@ -23,6 +23,7 @@ import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.uima.caseditor.core.model.DefaultColors;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 
@@ -292,7 +293,10 @@ public final class AnnotationStyle {
     
     Map<String, String> styleProperties = parseProperties(store.getString(typeName + ".style"));
     
-    AnnotationStyle.Style style = AnnotationStyle.Style.UNDERLINE;
+    // initialize with random background style for the case if the store contains no style information
+    AnnotationStyle.Style style = AnnotationStyle.Style.BACKGROUND;
+    int index = (int) Math.round(Math.random() * (DefaultColors.COLORS.length-1));
+    Color color = DefaultColors.COLORS[index];
     
     String styleString = styleProperties.get("strategy");
     if (styleString != null && styleString.length() != 0) {
@@ -304,7 +308,6 @@ public final class AnnotationStyle {
       }
     }
     
-    Color color = Color.RED;
     
     String colorString = styleProperties.get("color");
     if (colorString != null && colorString.length() != 0) {
@@ -333,6 +336,13 @@ public final class AnnotationStyle {
     if (configuration != null && configuration.length() != 0)
       configuration = null;
     
-    return new AnnotationStyle(typeName, style, color, layer, configuration);
+    AnnotationStyle annotationStyle = new AnnotationStyle(typeName, style, color, layer, configuration);
+    
+    // store style if it is not known yet
+    if(styleProperties == null || styleProperties.isEmpty()) {
+      putAnnotatationStyleToStore(store, annotationStyle);
+    }
+    
+    return annotationStyle;
   }
 }
