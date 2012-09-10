@@ -160,7 +160,7 @@ public class JSR47Logger_implTest extends TestCase {
 
   public void testMessageLogMethods() throws Exception {
     // create Logger
-    org.apache.uima.util.Logger logger = JSR47Logger_impl.getInstance();
+    final org.apache.uima.util.Logger logger = JSR47Logger_impl.getInstance();
     // reset log level to INFO
     logger.setLevel(Level.INFO);
 
@@ -202,6 +202,12 @@ public class JSR47Logger_implTest extends TestCase {
     thrown = null;
     logger.log(Level.INFO, "My fourth test message", thrown);
 
+    new Runnable() {
+      public void run() {
+        logger.log(getClass().getName(), Level.INFO, "Message from wrapper", null);
+      }
+    }.run();
+    
     // test deprecated log method
     logger.log("My fifth test message");
     logger.log("");

@@ -106,7 +106,8 @@ public class Log4jLogger_impl implements Logger {
 
          String[] sourceInfo = getStackTraceInfo(new Throwable());
 
-         org.apache.log4j.Logger.getLogger(sourceInfo[0]).info(aMessage);
+         org.apache.log4j.Logger.getLogger(sourceInfo[0]).log(getClass().getName(), 
+                 org.apache.log4j.Level.INFO, aMessage, null);
       }
    }
 
@@ -125,9 +126,10 @@ public class Log4jLogger_impl implements Logger {
             return;
 
          String[] sourceInfo = getStackTraceInfo(new Throwable());
-         org.apache.log4j.Logger.getLogger(sourceInfo[0]).info(
+         org.apache.log4j.Logger.getLogger(sourceInfo[0]).log(getClass().getName(), 
+               org.apache.log4j.Level.INFO, 
                I18nUtil.localizeMessage(aResourceBundleName, aMessageKey,
-                     aArguments, getExtensionClassLoader()));
+                     aArguments, getExtensionClassLoader()), null);
       }
    }
 
@@ -147,8 +149,8 @@ public class Log4jLogger_impl implements Logger {
          String[] sourceInfo = getStackTraceInfo(new Throwable());
 
          // log exception
-         org.apache.log4j.Logger.getLogger(sourceInfo[0]).info(
-               EXCEPTION_MESSAGE, aException);
+         org.apache.log4j.Logger.getLogger(sourceInfo[0]).log(getClass().getName(), 
+               org.apache.log4j.Level.INFO, EXCEPTION_MESSAGE, aException);
       }
    }
 
@@ -208,7 +210,7 @@ public class Log4jLogger_impl implements Logger {
 
          org.apache.log4j.Level log4jLevel = getLog4jLevel(level);
 
-         logger.log(log4jLevel, aMessage);
+         logger.log(getClass().getName(), log4jLevel, aMessage, null);
       }
    }
 
@@ -224,8 +226,8 @@ public class Log4jLogger_impl implements Logger {
             return;
          org.apache.log4j.Level log4jLevel = getLog4jLevel(level);
 
-         logger.log(log4jLevel, MessageFormat.format(aMessage,
-               new Object[] { param1 }));
+         logger.log(getClass().getName(), log4jLevel, MessageFormat.format(aMessage,
+               new Object[] { param1 }), null);
       }
    }
 
@@ -243,7 +245,7 @@ public class Log4jLogger_impl implements Logger {
          // get corresponding Log4j level
          org.apache.log4j.Level log4jLevel = getLog4jLevel(level);
 
-         logger.log(log4jLevel, MessageFormat.format(aMessage, params));
+         logger.log(getClass().getName(), log4jLevel, MessageFormat.format(aMessage, params), null);
 
       }
    }
@@ -261,13 +263,13 @@ public class Log4jLogger_impl implements Logger {
          if (aMessage != null && !aMessage.equals("")) {
             // get corresponding Log4j level
 
-            logger.log(log4jLevel, aMessage, thrown);
+            logger.log(getClass().getName(), log4jLevel, aMessage, thrown);
          }
 
          if (thrown != null && (aMessage == null || aMessage.equals(""))) {
             // get corresponding Log4j level
             // log exception
-            logger.log(log4jLevel, EXCEPTION_MESSAGE, thrown);
+            logger.log(getClass().getName(), log4jLevel, EXCEPTION_MESSAGE, thrown);
          }
       }
 
@@ -293,8 +295,8 @@ public class Log4jLogger_impl implements Logger {
          // get corresponding Log4j level
          org.apache.log4j.Level log4jLevel = getLog4jLevel(level);
 
-         logger.log(log4jLevel, I18nUtil.localizeMessage(bundleName, msgKey,
-               new Object[] { param1 }, getExtensionClassLoader()));
+         logger.log(getClass().getName(), log4jLevel, I18nUtil.localizeMessage(bundleName, msgKey,
+               new Object[] { param1 }, getExtensionClassLoader()), null);
       }
    }
 
@@ -317,8 +319,8 @@ public class Log4jLogger_impl implements Logger {
          // get corresponding Log4j level
          org.apache.log4j.Level log4jLevel = getLog4jLevel(level);
 
-         logger.log(log4jLevel, I18nUtil.localizeMessage(bundleName, msgKey,
-               params, getExtensionClassLoader()));
+         logger.log(getClass().getName(), log4jLevel, I18nUtil.localizeMessage(bundleName, msgKey,
+               params, getExtensionClassLoader()), null);
       }
    }
 
@@ -340,7 +342,7 @@ public class Log4jLogger_impl implements Logger {
 
          if (msgKey != null && !msgKey.equals("")) {
             // get corresponding Log4j level
-            org.apache.log4j.Logger.getLogger(sourceClass).log(
+            org.apache.log4j.Logger.getLogger(sourceClass).log(getClass().getName(), 
                   log4jLevel,
                   I18nUtil.localizeMessage(bundleName, msgKey, null,
                         getExtensionClassLoader()), thrown);
@@ -349,7 +351,7 @@ public class Log4jLogger_impl implements Logger {
          if (thrown != null && (msgKey == null || msgKey.equals(""))) {
 
             // log exception
-            org.apache.log4j.Logger.getLogger(sourceClass).log(log4jLevel,
+            org.apache.log4j.Logger.getLogger(sourceClass).log(getClass().getName(), log4jLevel,
                   EXCEPTION_MESSAGE, thrown);
          }
       }
@@ -374,10 +376,8 @@ public class Log4jLogger_impl implements Logger {
          }
          // get corresponding Log4j level
          org.apache.log4j.Level log4jLevel = getLog4jLevel(level);
-         org.apache.log4j.Logger.getLogger(sourceClass).log(
-               log4jLevel,
-               I18nUtil.localizeMessage(bundleName, msgKey, null,
-                     getExtensionClassLoader()));
+         org.apache.log4j.Logger.getLogger(sourceClass).log(getClass().getName(), log4jLevel,
+               I18nUtil.localizeMessage(bundleName, msgKey, null, getExtensionClassLoader()), null);
 
          // logger.log(log4jLevel, sourceClass + sourceMethod +
          // I18nUtil.localizeMessage(bundleName, msgKey, null,
@@ -385,6 +385,12 @@ public class Log4jLogger_impl implements Logger {
       }
    }
 
+   public void log(String wrapperFQCN, Level level, String message, Throwable thrown) {
+     // get corresponding Log4j level
+     org.apache.log4j.Level log4jLevel = getLog4jLevel(level);
+     logger.log(wrapperFQCN, log4jLevel, message, thrown);
+   }
+   
    /*
     * (non-Javadoc)
     * 
@@ -443,7 +449,7 @@ public class Log4jLogger_impl implements Logger {
     * 
     * @param thrown
     *           the thrown
-    * @return String[] - fist element is the souce class, second element is the
+    * @return String[] - fist element is the source class, second element is the
     *         method name with linenumber if available
     */
    private String[] getStackTraceInfo(Throwable thrown) {

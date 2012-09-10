@@ -110,7 +110,7 @@ public class JSR47Logger_impl implements Logger {
       if (aMessage == null || aMessage.equals(""))
         return;
 
-      String[] sourceInfo = getStackTraceInfo(new Throwable());
+      String[] sourceInfo = getStackTraceInfo(null, new Throwable());
 
       logger.logp(java.util.logging.Level.INFO, sourceInfo[0], sourceInfo[1], aMessage);
     }
@@ -129,7 +129,7 @@ public class JSR47Logger_impl implements Logger {
       if (aMessageKey == null || aMessageKey.equals(""))
         return;
 
-      String[] sourceInfo = getStackTraceInfo(new Throwable());
+      String[] sourceInfo = getStackTraceInfo(null, new Throwable());
 
       logger.logp(java.util.logging.Level.INFO, sourceInfo[0], sourceInfo[1], I18nUtil
               .localizeMessage(aResourceBundleName, aMessageKey, aArguments,
@@ -151,7 +151,7 @@ public class JSR47Logger_impl implements Logger {
       if (aException == null)
         return;
 
-      String[] sourceInfo = getStackTraceInfo(new Throwable());
+      String[] sourceInfo = getStackTraceInfo(null, new Throwable());
 
       // log exception
       logger.logp(java.util.logging.Level.INFO, sourceInfo[0], sourceInfo[1], EXCEPTION_MESSAGE,
@@ -250,7 +250,7 @@ public class JSR47Logger_impl implements Logger {
       // get corresponding JSR-47 level
       java.util.logging.Level jsr47Level = getJSR47Level(level);
 
-      String[] sourceInfo = getStackTraceInfo(new Throwable());
+      String[] sourceInfo = getStackTraceInfo(null, new Throwable());
 
       logger.logp(jsr47Level, sourceInfo[0], sourceInfo[1], aMessage);
     }
@@ -270,7 +270,7 @@ public class JSR47Logger_impl implements Logger {
       // get corresponding JSR-47 level
       java.util.logging.Level jsr47Level = getJSR47Level(level);
 
-      String[] sourceInfo = getStackTraceInfo(new Throwable());
+      String[] sourceInfo = getStackTraceInfo(null, new Throwable());
 
       logger.logp(jsr47Level, sourceInfo[0], sourceInfo[1], MessageFormat.format(aMessage,
               new Object[] { param1 }));
@@ -291,7 +291,7 @@ public class JSR47Logger_impl implements Logger {
       // get corresponding JSR-47 level
       java.util.logging.Level jsr47Level = getJSR47Level(level);
 
-      String[] sourceInfo = getStackTraceInfo(new Throwable());
+      String[] sourceInfo = getStackTraceInfo(null, new Throwable());
 
       logger.logp(jsr47Level, sourceInfo[0], sourceInfo[1], MessageFormat.format(aMessage, params));
     }
@@ -309,7 +309,7 @@ public class JSR47Logger_impl implements Logger {
         // get corresponding JSR-47 level
         java.util.logging.Level jsr47Level = getJSR47Level(level);
 
-        String[] sourceInfo = getStackTraceInfo(new Throwable());
+        String[] sourceInfo = getStackTraceInfo(null, new Throwable());
 
         logger.logp(jsr47Level, sourceInfo[0], sourceInfo[1], aMessage, thrown);
       }
@@ -318,7 +318,7 @@ public class JSR47Logger_impl implements Logger {
         // get corresponding JSR-47 level
         java.util.logging.Level jsr47Level = getJSR47Level(level);
 
-        String[] sourceInfo = getStackTraceInfo(new Throwable());
+        String[] sourceInfo = getStackTraceInfo(null, new Throwable());
 
         // log exception
         logger.logp(jsr47Level, sourceInfo[0], sourceInfo[1], EXCEPTION_MESSAGE, thrown);
@@ -414,6 +414,15 @@ public class JSR47Logger_impl implements Logger {
     }
   }
 
+  public void log(String wrapperFQCN, Level level, String message, Throwable thrown) {
+    // get corresponding JSR-47 level
+    java.util.logging.Level jsr47Level = getJSR47Level(level);
+    String[] sourceInfo = getStackTraceInfo(wrapperFQCN, new Throwable());
+
+    // log exception
+    logger.logp(jsr47Level, sourceInfo[0], sourceInfo[1], message, thrown);
+  }
+
   /*
    * (non-Javadoc)
    * 
@@ -477,16 +486,33 @@ public class JSR47Logger_impl implements Logger {
    * @return String[] - fist element is the source class, second element is the method name with
    *         linenumber if available
    */
-  private String[] getStackTraceInfo(Throwable thrown) {
+  private String[] getStackTraceInfo(String wrapperFQCN, Throwable thrown) {
     StackTraceElement[] stackTraceElement = thrown.getStackTrace();
 
     String sourceMethod = "";
     String sourceClass = "";
     int lineNumber = 0;
+    
     try {
-      lineNumber = stackTraceElement[1].getLineNumber();
-      sourceMethod = stackTraceElement[1].getMethodName();
-      sourceClass = stackTraceElement[1].getClassName();
+      int index = 0;
+      if (wrapperFQCN != null) {
+        boolean found = false;
+        while (index < stackTraceElement.length) {
+          if (wrapperFQCN.equals(stackTraceElement[index].getClassName())) {
+            found = true;
+            break;
+          }
+          index++;
+        }
+        if (!found) {
+          index = 0;
+        }
+      }
+      index++;
+      
+      lineNumber = stackTraceElement[index].getLineNumber();
+      sourceMethod = stackTraceElement[index].getMethodName();
+      sourceClass = stackTraceElement[index].getClassName();
     } catch (Exception ex) {
       // do nothing, use the initialized string members
     }

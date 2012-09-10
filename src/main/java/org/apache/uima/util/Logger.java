@@ -221,6 +221,20 @@ public void setOutputStream(OutputStream aStream);
           String msgKey, Throwable thrown);
 
   /**
+   * Generic logging method intended for logging wrappers.
+   * 
+   * @param wrapperFQCN
+   *          fully qualified class name of the wrapper
+   * @param level
+   *          message level
+   * @param message
+   *          message
+   * @param thrown
+   *          throwable object
+   */
+  public void log(String wrapperFQCN, Level level, String message, Throwable thrown);
+  
+  /**
    * Checks if the argument level is greater or equal to the specified level
    * 
    * @param level
