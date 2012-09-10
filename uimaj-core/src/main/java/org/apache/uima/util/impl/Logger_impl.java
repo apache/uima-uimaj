@@ -311,6 +311,16 @@ public class Logger_impl implements Logger {
               getExtensionClassLoader()));
     }
   }
+  
+  public void log(String wrapperFQCN, Level level, String message, Throwable thrown) {
+    if (isLoggable(level)) {
+      logMessage(level, message);
+
+      if (thrown != null) {
+        logException(level, thrown);
+      }
+    }
+  }
 
   /*
    * (non-Javadoc)

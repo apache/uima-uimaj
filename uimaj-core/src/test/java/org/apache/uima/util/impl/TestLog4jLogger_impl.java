@@ -18,12 +18,17 @@
  */
 package org.apache.uima.util.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.apache.log4j.Appender;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
+import org.apache.log4j.spi.LocationInfo;
+import org.apache.log4j.spi.LoggingEvent;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.util.Level;
 
@@ -32,11 +37,13 @@ import org.apache.uima.util.Level;
  */
 public class TestLog4jLogger_impl extends TestCase {
 
-   public void setUp() throws Exception {
+   @Override
+  public void setUp() throws Exception {
       BasicConfigurator.configure();
    }
 
-   public void tearDown() throws Exception {
+   @Override
+  public void tearDown() throws Exception {
       BasicConfigurator.resetConfiguration();
    }
 
@@ -172,8 +179,27 @@ public class TestLog4jLogger_impl extends TestCase {
    }
 
    public void testMessageLogMethods() throws Exception {
+     final List<LoggingEvent> records = new ArrayList<LoggingEvent>();
+     
+     // Tell the logger to log everything
+     Logger rootLogger = org.apache.log4j.LogManager.getRootLogger();
+     rootLogger.setLevel(org.apache.log4j.Level.ALL);
+     Appender appender = (Appender) rootLogger.getAllAppenders().nextElement();
+     // Capture the logging output without actually logging it
+     appender.addFilter(new org.apache.log4j.spi.Filter() {
+       @Override
+       public int decide(LoggingEvent event) {
+         records.add(event);
+         LocationInfo l = event.getLocationInformation();
+         System.out.printf("[%s:%s] %s%n", l.getFileName(), l.getLineNumber(), event.getMessage());
+         assertEquals(TestLog4jLogger_impl.this.getClass().getSimpleName()+".java", 
+                 l.getFileName());
+         return org.apache.log4j.spi.Filter.DENY;
+       }
+     }); 
+     
       // create Logger
-      org.apache.uima.util.Logger logger = Log4jLogger_impl.getInstance();
+      final org.apache.uima.util.Logger logger = Log4jLogger_impl.getInstance(getClass());
       // reset log level to INFO
       logger.setLevel(Level.INFO);
 
@@ -208,14 +234,18 @@ public class TestLog4jLogger_impl extends TestCase {
 
       // log test with method log(Level,String,Throwable)
       Throwable thrown = new Throwable();
-      logger.setLevel(Level.WARNING); // Don't log the expected exceptions
       logger.log(Level.INFO, "My fourth test message", thrown);
       logger.log(Level.INFO, "", thrown);
       logger.log(Level.INFO, null, thrown);
       thrown = null;
       logger.log(Level.INFO, "My fourth test message", thrown);
-      logger.setLevel(Level.INFO);
 
+      new Runnable() {
+        public void run() {
+          logger.log(getClass().getName(), Level.INFO, "Message from wrapper", null);
+        }
+      }.run();
+      
       // test deprecated log method
       logger.log("My fifth test message");
       logger.log("");
@@ -223,12 +253,32 @@ public class TestLog4jLogger_impl extends TestCase {
 
       // test deprecated logException method
       Exception ex = new Exception("My sixth test message");
-      logger.setLevel(Level.WARNING); // Don't log the expected exceptions
       logger.logException(ex);
       logger.logException(null);
+      
+      assertEquals(16, records.size());  // all calls except those with null or "" msgs (including non-null throwable/exception)
    }
 
    public void testMessageKeyLogMethods() throws Exception {
+     final List<LoggingEvent> records = new ArrayList<LoggingEvent>();
+     
+     // Tell the logger to log everything
+     Logger rootLogger = org.apache.log4j.LogManager.getRootLogger();
+     rootLogger.setLevel(org.apache.log4j.Level.ALL);
+     Appender appender = (Appender) rootLogger.getAllAppenders().nextElement();
+     // Capture the logging output without actually logging it
+     appender.addFilter(new org.apache.log4j.spi.Filter() {
+       @Override
+       public int decide(LoggingEvent event) {
+         records.add(event);
+         LocationInfo l = event.getLocationInformation();
+         System.out.printf("[%s:%s] %s%n", l.getFileName(), l.getLineNumber(), event.getMessage());
+         assertEquals(TestLog4jLogger_impl.this.getClass().getSimpleName()+".java", 
+                 l.getFileName());
+         return org.apache.log4j.spi.Filter.DENY;
+       }
+     }); 
+
       // create Logger
       org.apache.uima.util.Logger logger = Log4jLogger_impl.getInstance();
       // reset log level to INFO
@@ -279,7 +329,6 @@ public class TestLog4jLogger_impl extends TestCase {
       logger.logrb(Level.INFO, "testClass", "testMethod", null, null, objects);
 
       // test method logrb(Level, String, String, String, String, thrown)
-      logger.setLevel(Level.WARNING); // Don't log the expected exceptions
       Throwable thrown = new Throwable();
       logger.logrb(Level.INFO, null, null, bundle, msgKey, thrown);
       logger.logrb(Level.INFO, null, null, bundle, null, thrown);
@@ -290,6 +339,7 @@ public class TestLog4jLogger_impl extends TestCase {
             thrown);
       logger.logrb(Level.INFO, "testClass", "testMethod", null, null, thrown);
 
+      assertEquals(18, records.size());
    }
 
    public void testLoggerFromUIMAFramework() {
