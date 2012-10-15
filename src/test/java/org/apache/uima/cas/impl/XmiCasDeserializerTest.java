@@ -1285,6 +1285,12 @@ public class XmiCasDeserializerTest extends TestCase {
       cas2thirdNode.setFeatureValue(tailFeat, cas2emptyNode);
       cas2secondNode.setFeatureValue(tailFeat, cas2thirdNode);
       
+      // Test that the new access method returns an array containing just the right marker
+      List<Marker> mkrs = cas2.getMarkers();
+      assertNotNull(mkrs);
+      assertEquals(1, mkrs.size());
+      assertEquals(marker, mkrs.get(0));
+      
       // serialize cas2 in delta format 
       String deltaxml1 = serialize(cas2, sharedData2, marker);
       //System.out.println("delta cas");
