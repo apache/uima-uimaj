@@ -45,8 +45,8 @@ import org.apache.uima.internal.util.rb_trees.RedBlackTree;
  *       whenever it encounters an XMI element that doesn't correspond to a type in the type system, it will populate the
  *       <code>XmiSerializationSharedData</code> with information about these elements.  If you then pass the same 
  *       <code>XmiSerializationSharedData</code> object to the serializer when you attempt to serialize the same CAS, these
- *       out-of-typesystem FS will be reserialized without loss of inform
- *       ation.  References between in-typesystem and out-of-typesystem
+ *       out-of-typesystem FS will be reserialized without loss of information.  
+ *       References between in-typesystem and out-of-typesystem
  *       FS (in either direction) are maintained as well.</li>
  *   <li>After calling the XmiCasSerializer and passing an <code>XmiSerializationSharedData</code>, you can call the
  *       {@link #getMaxXmiId()} method to get the maximum xmi:id value in the serialized CAS.  This feature, along with the consistency of
