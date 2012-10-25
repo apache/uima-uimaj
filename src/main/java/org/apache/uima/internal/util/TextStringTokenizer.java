@@ -22,7 +22,7 @@ package org.apache.uima.internal.util;
 import java.util.Arrays;
 
 /**
- * An implementation of a text tokenizer for whitespace separated natural lanuage text.
+ * An implementation of a text tokenizer for whitespace separated natural language text.
  * 
  * <p>
  * The tokenizer knows about four different character classes: regular word characters, whitespace
