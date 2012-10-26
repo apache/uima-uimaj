@@ -22,6 +22,7 @@ package org.apache.uima.internal.util;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
@@ -35,7 +36,8 @@ import java.util.logging.LogRecord;
  * 
  */
 public class UIMALogFormatter extends Formatter {
-  private static final String timestampFormat = "{0,date,short} {0,time}";
+
+  SimpleDateFormat tsFormatter = new SimpleDateFormat( "hh:mm:ss.SS" ); 
 
   private static final String CRLF = System.getProperties().getProperty("line.separator");
 
@@ -49,8 +51,7 @@ public class UIMALogFormatter extends Formatter {
 
     // create timestamp
     Date timestamp = new Date(record.getMillis());
-    Object[] timestampArgs = { timestamp };
-    String timestampStr = MessageFormat.format(timestampFormat, timestampArgs);
+    String timestampStr = tsFormatter.format(timestamp);
     // append timestamp to the output string
     buffer.append(timestampStr);
 
