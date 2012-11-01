@@ -86,12 +86,12 @@ public class XmiCasSerializer {
   private int numChildren;
 
   /**
-   * Gets the number of children of the current element. This is guranteed to be set correctly at
+   * Gets the number of children of the current element. This is guaranteed to be set correctly at
    * the time when startElement is called. Needed for streaming Vinci serialization.
    * <p>
    * NOTE: this method will not work if there are simultaneously executing calls to
    * XmiCasSerializer.serialize. Use it only with a dedicated XmiCasSerializer instance that is not
-   * shared betwen threads.
+   * shared between threads.
    * 
    * @return the number of children of the current element
    */
@@ -279,29 +279,28 @@ public class XmiCasSerializer {
       // Get indexes for each SofaFS in the CAS
       int numViews = cas.getBaseSofaCount();
       String sofaXmiId = null;
+      FeatureStructureImpl sofa = null;
+      
       for (int sofaNum = 1; sofaNum <= numViews; sofaNum++) {
-        FSIndexRepositoryImpl loopIR = (FSIndexRepositoryImpl) cas.getBaseCAS()
-                .getSofaIndexRepository(sofaNum);
-        if (sofaNum != 1 || cas.isInitialSofaCreated()) {
-          FeatureStructureImpl sofa = (FeatureStructureImpl) cas.getView(sofaNum).getSofa();
+        FSIndexRepositoryImpl loopIR = (FSIndexRepositoryImpl) cas.getBaseCAS().getSofaIndexRepository(sofaNum);
+        if (sofaNum != 1 || cas.isInitialSofaCreated()) { //skip if initial view && no Sofa yet
+                                                          // all non-initial-views must have a sofa
+          sofa = (FeatureStructureImpl) cas.getView(sofaNum).getSofa();
           sofaXmiId = getXmiId((sofa).getAddress());
         }
         if (loopIR != null) {
           if (!isDelta) {
             int[] fsarray = loopIR.getIndexedFSs();
             writeView(sofaXmiId, fsarray);
-          } else {
-        	FeatureStructureImpl sofa = (FeatureStructureImpl) cas.getView(sofaNum).getSofa();
-        	if (sofa == null) {
-        		//System.out.println("WriteView() No sofa in view " + sofaNum );
-        		continue;
-        	}
-        	if (this.marker.isNew(sofa.getAddress())) {
-        	  int[] fsarray = loopIR.getIndexedFSs();
+          } else { // is Delta Cas
+        	  if (sofaNum != 1 && this.marker.isNew(sofa.getAddress())) {
+        	    // for views created after mark (initial view never is - it is always created with the CAS)
+        	    // write out the view as new
+        	    int[] fsarray = loopIR.getIndexedFSs();
               writeView(sofaXmiId, fsarray);
-        	} else if (loopIR.isModified()) {
-        	  writeView(sofaXmiId,loopIR.getAddedFSs(), loopIR.getDeletedFSs(), loopIR.getReindexedFSs());
-        	}
+        	  } else if (loopIR.isModified()) {
+        	    writeView(sofaXmiId, loopIR.getAddedFSs(), loopIR.getDeletedFSs(), loopIR.getReindexedFSs());
+          	}
           } 
         }
       }
