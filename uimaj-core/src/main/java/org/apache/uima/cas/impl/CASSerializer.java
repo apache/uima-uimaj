@@ -30,10 +30,38 @@ import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.Marker;
 
 /**
- * Serialization for CAS. This serializes the state of the CAS, assuming that the type and index
+ * Binary Serialization for CAS. This serializes the state of the CAS, assuming that the type and index
  * information remains constant. <code>CASSerializer</code> objects can be serialized with
- * standard Java serialization.
+ * standard Java serialization; many uses of this class follow this form:
  * 
+ * 1) create an instance of this class
+ * 2) add a Cas to it (via addCAS methods)
+ * 3) use the instance of this class as the argument to anObjectOutputStream.writeObject(anInstanceOfThisClass)
+ *    In UIMA this is done in the SerializationUtils class.
+ * 
+ * There are also custom serialization methods that serialize to outputStreams.
+ * 
+ * The format of the serialized data is in one of several formats:
+ *   normal Java object serialization / custom binary serialization
+ *
+ *   The custom binary serialization is in several formats:
+ *     full / delta:
+ *       full - the entire cas
+ *       delta - only differences from a previous "mark" are serialized
+ *     uncompressed / compressed / compressed (fast)
+ *       uncompressed
+ *       compressed - trades off time for space to give the most compression
+ *       compressed (fast) - less compression, but faster 
+ *     
+ * This class is for internal use.  Some of the serialized formats are readable by the C++
+ * implementation, and used for efficiently transferring CASes between Java frameworks and other ones.
+ * Others are used with Vinci or SOAP to communicate to remote annotators.
+ * 
+ * External interfaces to compressed forms of this serialization are provided by the 
+ * user class org.apache.uima.util.Compression
+ * 
+ * To serialize the shared common information among a group of CASes sharing the same
+ * type definition and index specifications, 
  * @see org.apache.uima.cas.impl.CASMgrSerializer
  * 
  * 
@@ -73,8 +101,7 @@ public class CASSerializer implements Serializable {
   /**
    * Serialize CAS data without heap-internal meta data. Currently used for serialization to C++.
    * 
-   * @param casImpl
-   *                The CAS to be serialized.
+   * @param casImpl The CAS to be serialized.
    */
   public void addNoMetaData(CASImpl casImpl) {
     addCAS(casImpl, false);
@@ -84,8 +111,7 @@ public class CASSerializer implements Serializable {
    * Add the CAS to be serialized. Note that we need the implementation here, the interface is not
    * enough.
    * 
-   * @param cas
-   *                The CAS to be serialized.
+   * @param cas The CAS to be serialized.
    */
   public void addCAS(CASImpl cas) {
     addCAS(cas, true);
@@ -95,8 +121,7 @@ public class CASSerializer implements Serializable {
    * Add the CAS to be serialized. Note that we need the implementation here, the interface is not
    * enough.
    * 
-   * @param cas
-   *                The CAS to be serialized.
+   * @param cas The CAS to be serialized.
    */
   public void addCAS(CASImpl cas, boolean addMetaData) {
     this.fsIndex = cas.getIndexedFSs();
@@ -104,7 +129,12 @@ public class CASSerializer implements Serializable {
     this.heapArray = new int[heapSize];
     System.arraycopy(cas.getHeap().heap, 0, this.heapArray, 0, heapSize);
     if (addMetaData) {
-      this.heapMetaData = cas.getHeap().getMetaData();
+      // some details about current main-heap specifications
+      // not required to deserialize
+      // not sent for C++
+      // is 7 words long
+      // not serialized by custom serializers, only by Java object serialization
+      this.heapMetaData = cas.getHeap().getMetaData();  
     }
     this.stringTable = stringArrayListToArray(cas.getStringTable());
 
@@ -120,29 +150,113 @@ public class CASSerializer implements Serializable {
     this.longHeapArray = new long[longHeapSize];
     System.arraycopy(cas.getLongHeap().heap, 0, this.longHeapArray, 0, longHeapSize);
   }
+  
+  // version
+  // encode: bits 7 6 5 4 3 2 1 0
+  //                        0 0 1 = no delta, no compression
+  //                        0 1 - = delta, no compression
+  //                        1 d - = compression, w/wo delta
+
+  static void outputVersion(int version, DataOutputStream dos) throws IOException {
+    // output the key and version number
+
+    byte[] uima = new byte[4];
+    uima[0] = 85; // U
+    uima[1] = 73; // I
+    uima[2] = 77; // M
+    uima[3] = 65; // A
+
+    ByteBuffer buf = ByteBuffer.wrap(uima);
+    int key = buf.asIntBuffer().get();
+
+    dos.writeInt(key);
+    dos.writeInt(version);
+  }
+  
+  private void outputStringHeap(DataOutputStream dos, CASImpl cas, StringHeapDeserializationHelper shdh) throws IOException {
+    // output the strings
+
+    // compute the number of total size of data in stringHeap
+    // total size = char buffer length + length of strings in the string list;
+    int stringHeapLength = shdh.charHeapPos;
+    int stringListLength = 0;
+    for (int i = 0; i < shdh.refHeap.length; i += 3) {
+      int ref = shdh.refHeap[i + StringHeapDeserializationHelper.STRING_LIST_ADDR_OFFSET];
+      // this is a string in the string list
+      // get length and add to total string heap length
+      if (ref != 0) {
+        // terminate each string with a null
+        stringListLength += 1 + cas.getStringHeap().getStringForCode(ref).length();
+      }
+    }
+
+    int stringTotalLength = stringHeapLength + stringListLength;
+    if (stringHeapLength == 0 && stringListLength > 0) {
+      // nothing from stringHeap
+      // add 1 for the null at the beginning
+      stringTotalLength += 1;
+    }
+    dos.writeInt(stringTotalLength);
+
+    // write the data in the stringheap, if there is any
+    if (stringTotalLength > 0) {
+      if (shdh.charHeapPos > 0) {
+        dos.writeChars(String.valueOf(shdh.charHeap, 0, shdh.charHeapPos));
+      } else {
+        // no stringheap data
+        // if there is data in the string lists, write a leading 0
+        if (stringListLength > 0) {
+          dos.writeChar(0);
+        }
+      }
+
+      // word alignment
+      if (stringTotalLength % 2 != 0) {
+        dos.writeChar(0);
+      }
+    }
+
+    // write out the string ref heap
+    // each reference consist of a offset into stringheap and a length
+    int refheapsz = ((shdh.refHeap.length - StringHeapDeserializationHelper.FIRST_CELL_REF) / StringHeapDeserializationHelper.REF_HEAP_CELL_SIZE) * 2;
+    refheapsz++;
+    dos.writeInt(refheapsz);
+    dos.writeInt(0);
+    for (int i = StringHeapDeserializationHelper.FIRST_CELL_REF; i < shdh.refHeap.length; i += 3) {
+      dos.writeInt(shdh.refHeap[i + StringHeapDeserializationHelper.CHAR_HEAP_POINTER_OFFSET]);
+      dos.writeInt(shdh.refHeap[i + StringHeapDeserializationHelper.CHAR_HEAP_STRLEN_OFFSET]);
+    }
+  }
 
   /**
    * Serializes the CAS data and writes it to the output stream.
-   * --------------------------------------------------------------------- Blob Format
-   * 
-   * Element Size Number of Description (bytes) Elements ------------ ---------
-   * -------------------------------- 4 1 Blob key = "UIMA" in utf-8 4 1 Version (currently = 1) 4 1
-   * size of 32-bit FS Heap array = s32H 4 s32H 32-bit FS heap array 4 1 size of 16-bit string Heap
-   * array = sSH 2 sSH 16-bit string heap array 4 1 size of string Ref Heap array = sSRH 4 2*sSRH
-   * string ref offsets and lengths 4 1 size of FS index array = sFSI 4 sFSI FS index array
-   * 
-   * 4 1 size of 8-bit Heap array = s8H 1 s8H 8-bit Heap array 4 1 size of 16-bit Heap array = s16H
-   * 2 s16H 16-bit Heap array 4 1 size of 64-bit Heap array = s64H 8 s64H 64-bit Heap array
+   * --------------------------------------------------------------------- 
+   * Blob         Format    Element 
+   * Size         Number of Description 
+   * (bytes)      Elements 
+   * ------------ --------- -------------------------------- 
+   * 4            1         Blob key = "UIMA" in utf-8 
+   * 4            1         Version (currently = 1) 
+   * 4            1         size of 32-bit FS Heap array = s32H 
+   * 4            s32H      32-bit FS heap array 
+   * 4            1         size of 16-bit string Heap array = sSH  
+   * 2            sSH       16-bit string heap array 
+   * 4            1         size of string Ref Heap zrray = sSRH 
+   * 4            2*sSRH    string ref offsets and lengths 
+   * 4            1         size of FS index array = sFSI 
+   * 4            sFSI      FS index array
+   * 4            1         size of 8-bit Heap array = s8H  
+   * 1            s8H       8-bit Heap array 
+   * 4            1         size of 16-bit Heap array = s16H 
+   * 2            s16H      16-bit Heap array 
+   * 4            1         size of 64-bit Heap array = s64H 
+   * 8            s64H      64-bit Heap array
    * ---------------------------------------------------------------------
    * 
-   * This reads in and deserializes CAS data from a stream. Byte swapping may be needed is the blob
-   * is from C++ -- C++ blob serialization writes data in native byte order.
-   * 
-   * @param cas
-   *                The CAS to be serialized. ostream The output stream.
+   * @param cas  The CAS to be serialized. ostream The output stream.
    */
   public void addCAS(CASImpl cas, OutputStream ostream) {
-
+ 
     try {
 
       DataOutputStream dos = new DataOutputStream(ostream);
@@ -151,20 +265,8 @@ public class CASSerializer implements Serializable {
       this.fsIndex = cas.getIndexedFSs();
 
       // output the key and version number
-
-      byte[] uima = new byte[4];
-      uima[0] = 85; // U
-      uima[1] = 73; // I
-      uima[2] = 77; // M
-      uima[3] = 65; // A
-
-      ByteBuffer buf = ByteBuffer.wrap(uima);
-      int key = buf.asIntBuffer().get();
-
-      int version = 1;
-      dos.writeInt(key);
-      dos.writeInt(version);
-
+      outputVersion(1, dos);
+      
       // output the FS heap
       final int heapSize = cas.getHeap().getCellsUsed();
       dos.writeInt(heapSize);
@@ -175,56 +277,57 @@ public class CASSerializer implements Serializable {
       // output the strings
       StringHeapDeserializationHelper shdh = cas.getStringHeap().serialize();
 
-      // compute the number of total size of data in stringHeap
-      // total size = char buffer length + length of strings in the string list;
-      int stringHeapLength = shdh.charHeapPos;
-      int stringListLength = 0;
-      for (int i = 0; i < shdh.refHeap.length; i += 3) {
-        int ref = shdh.refHeap[i + StringHeapDeserializationHelper.STRING_LIST_ADDR_OFFSET];
-        // this is a string in the string list
-        // get length and add to total string heap length
-        if (ref != 0) {
-          // terminate each string with a null
-          stringListLength += 1 + cas.getStringHeap().getStringForCode(ref).length();
-        }
-      }
-
-      int stringTotalLength = stringHeapLength + stringListLength;
-      if (stringHeapLength == 0 && stringListLength > 0) {
-        // nothing from stringHeap
-        // add 1 for the null at the beginning
-        stringTotalLength += 1;
-      }
-      dos.writeInt(stringTotalLength);
-
-      // write the data in the stringheap, if there is any
-      if (stringTotalLength > 0) {
-        if (shdh.charHeapPos > 0) {
-          dos.writeChars(String.valueOf(shdh.charHeap, 0, shdh.charHeapPos));
-        } else {
-          // no stringheap data
-          // if there is data in the string lists, write a leading 0
-          if (stringListLength > 0) {
-            dos.writeChar(0);
-          }
-        }
-
-        // word alignment
-        if (stringTotalLength % 2 != 0) {
-          dos.writeChar(0);
-        }
-      }
-
-      // write out the string ref heap
-      // each reference consist of a offset into stringheap and a length
-      int refheapsz = ((shdh.refHeap.length - StringHeapDeserializationHelper.FIRST_CELL_REF) / StringHeapDeserializationHelper.REF_HEAP_CELL_SIZE) * 2;
-      refheapsz++;
-      dos.writeInt(refheapsz);
-      dos.writeInt(0);
-      for (int i = StringHeapDeserializationHelper.FIRST_CELL_REF; i < shdh.refHeap.length; i += 3) {
-        dos.writeInt(shdh.refHeap[i + StringHeapDeserializationHelper.CHAR_HEAP_POINTER_OFFSET]);
-        dos.writeInt(shdh.refHeap[i + StringHeapDeserializationHelper.CHAR_HEAP_STRLEN_OFFSET]);
-      }
+      outputStringHeap(dos, cas, shdh);
+//      // compute the number of total size of data in stringHeap
+//      // total size = char buffer length + length of strings in the string list;
+//      int stringHeapLength = shdh.charHeapPos;
+//      int stringListLength = 0;
+//      for (int i = 0; i < shdh.refHeap.length; i += 3) {
+//        int ref = shdh.refHeap[i + StringHeapDeserializationHelper.STRING_LIST_ADDR_OFFSET];
+//        // this is a string in the string list
+//        // get length and add to total string heap length
+//        if (ref != 0) {
+//          // terminate each string with a null
+//          stringListLength += 1 + cas.getStringHeap().getStringForCode(ref).length();
+//        }
+//      }
+//
+//      int stringTotalLength = stringHeapLength + stringListLength;
+//      if (stringHeapLength == 0 && stringListLength > 0) {
+//        // nothing from stringHeap
+//        // add 1 for the null at the beginning
+//        stringTotalLength += 1;
+//      }
+//      dos.writeInt(stringTotalLength);
+//
+//      // write the data in the stringheap, if there is any
+//      if (stringTotalLength > 0) {
+//        if (shdh.charHeapPos > 0) {
+//          dos.writeChars(String.valueOf(shdh.charHeap, 0, shdh.charHeapPos));
+//        } else {
+//          // no stringheap data
+//          // if there is data in the string lists, write a leading 0
+//          if (stringListLength > 0) {
+//            dos.writeChar(0);
+//          }
+//        }
+//
+//        // word alignment
+//        if (stringTotalLength % 2 != 0) {
+//          dos.writeChar(0);
+//        }
+//      }
+//
+//      // write out the string ref heap
+//      // each reference consist of a offset into stringheap and a length
+//      int refheapsz = ((shdh.refHeap.length - StringHeapDeserializationHelper.FIRST_CELL_REF) / StringHeapDeserializationHelper.REF_HEAP_CELL_SIZE) * 2;
+//      refheapsz++;
+//      dos.writeInt(refheapsz);
+//      dos.writeInt(0);
+//      for (int i = StringHeapDeserializationHelper.FIRST_CELL_REF; i < shdh.refHeap.length; i += 3) {
+//        dos.writeInt(shdh.refHeap[i + StringHeapDeserializationHelper.CHAR_HEAP_POINTER_OFFSET]);
+//        dos.writeInt(shdh.refHeap[i + StringHeapDeserializationHelper.CHAR_HEAP_STRLEN_OFFSET]);
+//      }
 
       // output the index FSs
       dos.writeInt(this.fsIndex.length);
@@ -279,33 +382,33 @@ public class CASSerializer implements Serializable {
    * 
    * ElementSize NumberOfElements Description
    * ----------- ---------------- ---------------------------------------------------------
-   * 4				1				Blob key = "UIMA" in utf-8 (byte order flag)
-   * 4				1				Version (1 = complete cas, 2 = delta cas)
-   * 4				1				size of 32-bit heap array = s32H
-   * 4            s32H              32-bit FS heap array (new elements) 
-   * 4              1 				size of 16-bit string Heap array = sSH 
-   * 2 			   sSH 				16-bit string heap array (new strings)
-   * 4 				1 				size of string Ref Heap array = sSRH 
-   * 4 			2*sSRH				string ref offsets and lengths (for new strings)
-   * 4              1				number of modified, preexisting 32-bit modified FS heap elements = sM32H
-   * 4			2*sM32H             32-bit heap offset and value (preexisting cells modified)	 
-   * 4 	            1 				size of FS index array = sFSI 
-   * 4			  sFSI 				FS index array in Delta format
-   * 4 				1 				size of 8-bit Heap array = s8H 
-   * 1 			  s8H 				8-bit Heap array (new elements)
-   * 4 				1 				size of 16-bit Heap array = s16H
-   * 2 			  s16H 				16-bit Heap array (new elements) 
-   * 4 				1 				size of 64-bit Heap array = s64H 
-   * 8 			  s64H 				64-bit Heap array (new elements)
-   * 4				1				number of modified, preexisting 8-bit heap elements = sM8H
-   * 4			  sM8H              8-bit heap offsets (preexisting cells modified)
-   * 1			  sM8H              8-bit heap values  (preexisting cells modified)
-   * 4				1				number of modified, preexisting 16-bit heap elements = sM16H
-   * 4			  sM16H             16-bit heap offsets (preexisting cells modified)
-   * 2			  sM16H             16-bit heap values  (preexisting cells modified)
-   * 4				1				number of modified, preexisting 64-bit heap elements = sM64H
-   * 4			  sM64H             64-bit heap offsets (preexisting cells modified)
-   * 2			  sM64H             64-bit heap values  (preexisting cells modified)
+   * 4				   1				        Blob key = "UIMA" in utf-8 (byte order flag)
+   * 4				   1				        Version (1 = complete cas, 2 = delta cas)
+   * 4				   1				        size of 32-bit heap array = s32H
+   * 4           s32H             32-bit FS heap array (new elements) 
+   * 4           1 				        size of 16-bit string Heap array = sSH 
+   * 2 			     sSH 				      16-bit string heap array (new strings)
+   * 4 				   1 				        size of string Ref Heap array = sSRH 
+   * 4 			     2*sSRH				    string ref offsets and lengths (for new strings)
+   * 4           1        				number of modified, preexisting 32-bit modified FS heap elements = sM32H
+   * 4			     2*sM32H          32-bit heap offset and value (preexisting cells modified)	 
+   * 4 	         1 	        			size of FS index array = sFSI 
+   * 4		       sFSI 	    			FS index array in Delta format
+   * 4 		 	  	 1 			        	size of 8-bit Heap array = s8H 
+   * 1 			     s8H 			      	8-bit Heap array (new elements)
+   * 4 			  	 1 			        	size of 16-bit Heap array = s16H
+   * 2 			     s16H 				    16-bit Heap array (new elements) 
+   * 4 			  	 1 			        	size of 64-bit Heap array = s64H 
+   * 8 			     s64H 				    64-bit Heap array (new elements)
+   * 4				   1			        	number of modified, preexisting 8-bit heap elements = sM8H
+   * 4			     sM8H             8-bit heap offsets (preexisting cells modified)
+   * 1			     sM8H             8-bit heap values  (preexisting cells modified)
+   * 4			  	 1				        number of modified, preexisting 16-bit heap elements = sM16H
+   * 4			     sM16H            16-bit heap offsets (preexisting cells modified)
+   * 2			     sM16H            16-bit heap values  (preexisting cells modified)
+   * 4			  	 1				        number of modified, preexisting 64-bit heap elements = sM64H
+   * 4			     sM64H            64-bit heap offsets (preexisting cells modified)
+   * 2			     sM64H            64-bit heap values  (preexisting cells modified)
    * 
    * 
    * @param cas
@@ -327,20 +430,9 @@ public class CASSerializer implements Serializable {
       this.fsIndex = cas.getDeltaIndexedFSs(mark);
       
       // output the key and version number
-
-      byte[] uima = new byte[4];
-      uima[0] = 85; // U
-      uima[1] = 73; // I
-      uima[2] = 77; // M
-      uima[3] = 65; // A
-
-      ByteBuffer buf = ByteBuffer.wrap(uima);
-      int key = buf.asIntBuffer().get();
-
-      int version = 2;    //1 = current full serialization; 2 = delta format 
-                          //perhaps this should be split into 2 bytes for version and 2 bytes for format.
-      dos.writeInt(key);
-      dos.writeInt(version);
+      //1 = current full serialization; 2 = delta format 
+      //perhaps this should be split into 2 bytes for version and 2 bytes for format.
+      outputVersion(2, dos);
 
       // output the new FS heap cells
       final int heapSize = cas.getHeap().getCellsUsed() - mark.nextFSId;
@@ -353,56 +445,57 @@ public class CASSerializer implements Serializable {
       // output the new strings
       StringHeapDeserializationHelper shdh = cas.getStringHeap().serialize(mark.nextStringHeapAddr);
 
-      // compute the number of total size of data in stringHeap
-      // total size = char buffer length + length of strings in the string list;
-      int stringHeapLength = shdh.charHeapPos;
-      int stringListLength = 0;
-      for (int i = 0; i < shdh.refHeap.length; i += 3) {
-        int ref = shdh.refHeap[i + StringHeapDeserializationHelper.STRING_LIST_ADDR_OFFSET];
-        // this is a string in the string list
-        // get length and add to total string heap length
-        if (ref != 0) {
-          // terminate each string with a null
-          stringListLength += 1 + cas.getStringHeap().getStringForCode(ref).length();
-        }
-      }
-
-      int stringTotalLength = stringHeapLength + stringListLength;
-      if (stringHeapLength == 0 && stringListLength > 0) {
-        // nothing from stringHeap
-        // add 1 for the null at the beginning
-        stringTotalLength += 1;
-      }
-      dos.writeInt(stringTotalLength);
-
-      // write the data in the stringheap, if there is any
-      if (stringTotalLength > 0) {
-        if (shdh.charHeapPos > 0) {
-          dos.writeChars(String.valueOf(shdh.charHeap, 0, shdh.charHeapPos));
-        } else {
-          // no stringheap data
-          // if there is data in the string lists, write a leading 0
-          if (stringListLength > 0) {
-            dos.writeChar(0);
-          }
-        }
-
-        // word alignment
-        if (stringTotalLength % 2 != 0) {
-          dos.writeChar(0);
-        }
-      }
-
-      // write out the string ref heap
-      // each reference consist of a offset into stringheap and a length
-      int refheapsz = ((shdh.refHeap.length - StringHeapDeserializationHelper.FIRST_CELL_REF) / StringHeapDeserializationHelper.REF_HEAP_CELL_SIZE) * 2;
-      refheapsz++;
-      dos.writeInt(refheapsz);
-      dos.writeInt(0);
-      for (int i = StringHeapDeserializationHelper.FIRST_CELL_REF; i < shdh.refHeap.length; i += 3) {
-        dos.writeInt(shdh.refHeap[i + StringHeapDeserializationHelper.CHAR_HEAP_POINTER_OFFSET]);
-        dos.writeInt(shdh.refHeap[i + StringHeapDeserializationHelper.CHAR_HEAP_STRLEN_OFFSET]);
-      }
+      outputStringHeap(dos, cas, shdh);
+//      // compute the number of total size of data in stringHeap
+//      // total size = char buffer length + length of strings in the string list;
+//      int stringHeapLength = shdh.charHeapPos;
+//      int stringListLength = 0;
+//      for (int i = 0; i < shdh.refHeap.length; i += 3) {
+//        int ref = shdh.refHeap[i + StringHeapDeserializationHelper.STRING_LIST_ADDR_OFFSET];
+//        // this is a string in the string list
+//        // get length and add to total string heap length
+//        if (ref != 0) {
+//          // terminate each string with a null
+//          stringListLength += 1 + cas.getStringHeap().getStringForCode(ref).length();
+//        }
+//      }
+//
+//      int stringTotalLength = stringHeapLength + stringListLength;
+//      if (stringHeapLength == 0 && stringListLength > 0) {
+//        // nothing from stringHeap
+//        // add 1 for the null at the beginning
+//        stringTotalLength += 1;
+//      }
+//      dos.writeInt(stringTotalLength);
+//
+//      // write the data in the stringheap, if there is any
+//      if (stringTotalLength > 0) {
+//        if (shdh.charHeapPos > 0) {
+//          dos.writeChars(String.valueOf(shdh.charHeap, 0, shdh.charHeapPos));
+//        } else {
+//          // no stringheap data
+//          // if there is data in the string lists, write a leading 0
+//          if (stringListLength > 0) {
+//            dos.writeChar(0);
+//          }
+//        }
+//
+//        // word alignment
+//        if (stringTotalLength % 2 != 0) {
+//          dos.writeChar(0);
+//        }
+//      }
+//
+//      // write out the string ref heap
+//      // each reference consist of a offset into stringheap and a length
+//      int refheapsz = ((shdh.refHeap.length - StringHeapDeserializationHelper.FIRST_CELL_REF) / StringHeapDeserializationHelper.REF_HEAP_CELL_SIZE) * 2;
+//      refheapsz++;
+//      dos.writeInt(refheapsz);
+//      dos.writeInt(0);
+//      for (int i = StringHeapDeserializationHelper.FIRST_CELL_REF; i < shdh.refHeap.length; i += 3) {
+//        dos.writeInt(shdh.refHeap[i + StringHeapDeserializationHelper.CHAR_HEAP_POINTER_OFFSET]);
+//        dos.writeInt(shdh.refHeap[i + StringHeapDeserializationHelper.CHAR_HEAP_STRLEN_OFFSET]);
+//      }
 
       //output modified FS Heap cells
       int[] fsHeapModifiedAddrs = cas.getModifiedFSHeapAddrs().toArray();
@@ -452,16 +545,16 @@ public class CASSerializer implements Serializable {
       
       // 8 bit heap modified cells
       int[] byteHeapModifiedAddrs = cas.getModifiedByteHeapAddrs().toArray();
-      byte[] byteValues = new byte[byteHeapModifiedAddrs.length];
+//      byte[] byteValues = new byte[byteHeapModifiedAddrs.length];
       dos.writeInt(byteHeapModifiedAddrs.length);
       for (int i=0; i < byteHeapModifiedAddrs.length; i++) {
-    	dos.writeInt(byteHeapModifiedAddrs[i]);
-    	byteValues[i] = cas.getByteHeap().getHeapValue(byteHeapModifiedAddrs[i]);
+      	dos.writeInt(byteHeapModifiedAddrs[i]);
+//      	byteValues[i] = cas.getByteHeap().getHeapValue(byteHeapModifiedAddrs[i]);
       }
-      for (int i=0; i < byteValues.length; i++) {  
+      for (int i=0; i < byteHeapModifiedAddrs.length; i++) {  
     	  dos.writeByte(cas.getByteHeap().getHeapValue(byteHeapModifiedAddrs[i]));
-	  }
-      
+	    }
+
       // word alignment
       align = (4 - (byteheapsz % 4)) % 4;
       for (int i = 0; i < align; i++) {
@@ -504,7 +597,35 @@ public class CASSerializer implements Serializable {
     }
 
   }
-
+  
+//  /**
+//   * Serialize with compression
+//   * Target is not constrained to the C++ format
+//   * For non delta serialization, pass marker with 0 as values
+//   * @throws IOException 
+//   */
+//
+//  public void serialize(CASImpl cas, OutputStream ostream, Marker marker) throws IOException {
+//    if (marker != null && !marker.isValid() ) {
+//      CASRuntimeException exception = new CASRuntimeException(
+//                CASRuntimeException.INVALID_MARKER, new String[] { "Invalid Marker." });
+//      throw exception;
+//    }
+//    MarkerImpl mark = (MarkerImpl) marker;
+//    DataOutputStream dos = new DataOutputStream(ostream);
+//
+//    this.fsIndex = cas.getDeltaIndexedFSs(mark);
+//    outputVersion(3 , dos);
+//    
+//    // output the new FS heap cells
+//    final int heapSize = cas.getHeap().getCellsUsed() - mark.nextFSId);
+//    compressHeapOut(dos, cas, heapSize, mark)
+//
+//    // output the new strings
+//
+//  }
+  
+  
   /**
    * Method stringArrayListToArray.
    * 

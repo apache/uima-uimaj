@@ -80,35 +80,7 @@ final class StringHeap {
    * @return Serialization helper that can be interpreted easier by serialization code.
    */
   StringHeapDeserializationHelper serialize() {
-    StringHeapDeserializationHelper shdh = new StringHeapDeserializationHelper();
-    // Ref heap is 3 times the size of the string list.
-    shdh.refHeap = new int[this.stringList.size()
-        * StringHeapDeserializationHelper.REF_HEAP_CELL_SIZE];
-    shdh.refHeapPos = shdh.refHeap.length;
-    // Compute required size of character heap.
-    int charHeapSize = 0;
-    for (int i = 0; i < this.stringList.size(); i++) {
-      String s = this.stringList.get(i);
-      if (s != null) {
-        charHeapSize += s.length();
-      }
-    }
-    shdh.charHeap = new char[charHeapSize];
-    shdh.charHeapPos = shdh.charHeap.length;
-
-    int charCount = 0;
-    // Now write out the actual data
-    for (int i = 1; i < this.stringList.size(); i++) {
-      String s = this.stringList.get(i);
-      int refHeapOffset = i * StringHeapDeserializationHelper.REF_HEAP_CELL_SIZE;
-      shdh.refHeap[refHeapOffset + StringHeapDeserializationHelper.CHAR_HEAP_POINTER_OFFSET] = charCount;
-      shdh.refHeap[refHeapOffset + StringHeapDeserializationHelper.CHAR_HEAP_STRLEN_OFFSET] = s
-          .length();
-      System.arraycopy(s.toCharArray(), 0, shdh.charHeap, charCount, s.length());
-      charCount += s.length();
-    }
-    assert (charCount == shdh.charHeap.length);
-    return shdh;
+    return serialize(1);  
   }
   
   StringHeapDeserializationHelper serialize(int startPos) {

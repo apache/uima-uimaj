@@ -42,6 +42,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.AbstractCas_ImplBase;
 import org.apache.uima.cas.AnnotationBaseFS;
 import org.apache.uima.cas.ArrayFS;
@@ -84,6 +85,7 @@ import org.apache.uima.cas.text.Language;
 import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.impl.JCasImpl;
+import org.apache.uima.util.SerializationMeasures;
 
 /**
  * Implements the CAS interfaces. This class must be public because we need to
@@ -108,6 +110,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   public static final int FALSE = 0;
 
+  private static final int[] INT0 = new int[0];
+  
   public static final int DEFAULT_INITIAL_HEAP_SIZE = 500000;
 
   public static final int DEFAULT_RESET_HEAP_SIZE = 5000000;
@@ -241,6 +245,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
      * element per component being journaled.
      */
     private List<Marker> trackingMarkList;
+    
+    // must be in svd part because has a field that is updated
+    // while serializing
+    private BinaryCasSerDes4 binaryCompressor;
 
     private SharedViewData(boolean useFSCache) {
       this.useFSCache = useFSCache;
@@ -1163,47 +1171,39 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       return;
     }
    
-    DataInputStream dis = new DataInputStream(istream);
+    final DataInputStream dis = (istream instanceof DataInputStream) ?  
+       (DataInputStream) istream : new DataInputStream(istream);
 
     try {
       // key
-      // deteremine if byte swap if needed based on key
+      // determine if byte swap if needed based on key
       byte[] bytebuf = new byte[4];
       bytebuf[0] = dis.readByte(); // U
       bytebuf[1] = dis.readByte(); // I
       bytebuf[2] = dis.readByte(); // M
       bytebuf[3] = dis.readByte(); // A
 
-      boolean swap = false;
-      // check if first byte is ascii char U
-      if (bytebuf[0] != 85) {
-        swap = true;
-      }
+      final boolean swap = (bytebuf[0] != 85);
 
       // version      
-      // version 2 indicates this is in delta format.
-      int version;
-      if (swap) {
-        version = swap4(dis, bytebuf);
-      } else {
-        version = dis.readInt();
-      }
+      // version bit in 2's place indicates this is in delta format.
+      final int version = readInt(dis, swap);      
+      final boolean delta = ((version & 2) == 2);
       
-      boolean delta = false;
-      if (version == 2)  {
-        delta = true;
-      }
       if (!delta) {
         this.resetNoQuestions();
       }
       
-      // main fsheap
-      int fsheapsz = 0;
-      if (swap) {
-        fsheapsz = swap4(dis, bytebuf);
-      } else {
-        fsheapsz = dis.readInt();
+      if (0 != (version & 4)) {
+        if (svd.binaryCompressor == null) {
+          svd.binaryCompressor = new BinaryCasSerDes4(this.getTypeSystemImpl(), false);
+        }
+        svd.binaryCompressor.deserialize(this, dis, delta);
+        return;
       }
+      
+      // main fsheap
+      final int fsheapsz = readInt(dis, swap);
       
       int startPos = 0;
       if (!delta) {
@@ -1212,32 +1212,19 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     	startPos = this.getHeap().getNextId();
     	this.getHeap().grow(fsheapsz);
       }
-      
+            
       for (int i = startPos; i < fsheapsz+startPos; i++) {
-        if (swap) {
-          this.getHeap().heap[i] = swap4(dis, bytebuf);
-        } else {
-          this.getHeap().heap[i] = dis.readInt();
-        }
+        this.getHeap().heap[i] = readInt(dis, swap);
       }
       
       // string heap
-      int stringheapsz = 0;
-      if (swap) {
-        stringheapsz = swap4(dis, bytebuf);
-      } else {
-        stringheapsz = dis.readInt();
-      }
+      int stringheapsz = readInt(dis, swap);
 
       final StringHeapDeserializationHelper shdh = new StringHeapDeserializationHelper();
       
       shdh.charHeap = new char[stringheapsz];
       for (int i = 0; i < stringheapsz; i++) {
-        if (swap) {
-          shdh.charHeap[i] = swap2(dis, bytebuf);
-        } else {
-          shdh.charHeap[i] = dis.readChar();
-        }
+        shdh.charHeap[i] = (char) readShort(dis, swap);
       }
       shdh.charHeapPos = stringheapsz;
 
@@ -1247,12 +1234,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       }
 
       // string ref heap
-      int refheapsz = 0;
-      if (swap) {
-        refheapsz = swap4(dis, bytebuf);
-      } else {
-        refheapsz = dis.readInt();
-      }
+      int refheapsz = readInt(dis, swap);
 
       refheapsz--;
       refheapsz = refheapsz / 2;
@@ -1264,14 +1246,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
       dis.readInt(); // 0
       for (int i = shdh.refHeapPos; i < shdh.refHeap.length; i += StringHeapDeserializationHelper.REF_HEAP_CELL_SIZE) {
-        if (swap) {
-          shdh.refHeap[i + StringHeapDeserializationHelper.CHAR_HEAP_POINTER_OFFSET] = swap4(dis,
-              bytebuf);
-          shdh.refHeap[i + StringHeapDeserializationHelper.CHAR_HEAP_STRLEN_OFFSET] = swap4(dis, bytebuf);
-        } else {
-          shdh.refHeap[i + StringHeapDeserializationHelper.CHAR_HEAP_POINTER_OFFSET] = dis.readInt();
-          shdh.refHeap[i + StringHeapDeserializationHelper.CHAR_HEAP_STRLEN_OFFSET] = dis.readInt();
-        }
+        shdh.refHeap[i + StringHeapDeserializationHelper.CHAR_HEAP_POINTER_OFFSET] = readInt(dis, swap);
+        shdh.refHeap[i + StringHeapDeserializationHelper.CHAR_HEAP_STRLEN_OFFSET] = readInt(dis, swap);
         shdh.refHeap[i + StringHeapDeserializationHelper.STRING_LIST_ADDR_OFFSET] = 0;
       }
       shdh.refHeapPos = refheapsz + StringHeapDeserializationHelper.FIRST_CELL_REF;
@@ -1280,35 +1256,17 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       
       //if delta, handle modified fs heap cells
       if (delta) {
-        int fsmodssz = 0;
-        if (swap) {
-          fsmodssz = swap4(dis, bytebuf);
-        } else {
-          fsmodssz = dis.readInt();
-        }
+        int fsmodssz = readInt(dis, swap);
         for (int i = 0; i < fsmodssz; i++) {
-          if (swap) {
-            this.getHeap().heap[swap4(dis,bytebuf)] = swap4(dis, bytebuf);
-          } else {
-            this.getHeap().heap[dis.readInt()] = dis.readInt();
-          }
+          this.getHeap().heap[readInt(dis, swap)] = readInt(dis, swap);
         }
       }
 
       // indexed FSs
-      int fsindexsz = 0;
-      if (swap) {
-        fsindexsz = swap4(dis, bytebuf);
-      } else {
-        fsindexsz = dis.readInt();
-      }
+      int fsindexsz = readInt(dis, swap);
       int[] fsindexes = new int[fsindexsz];
       for (int i = 0; i < fsindexsz; i++) {
-        if (swap) {
-          fsindexes[i] = swap4(dis, bytebuf);
-        } else {
-          fsindexes[i] = dis.readInt();
-        }
+        fsindexes[i] = readInt(dis, swap);
       }
 
       // build the index
@@ -1319,218 +1277,156 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       }
       
       // byte heap
-      int byteheapsz = 0;
-      if (swap) {
-        byteheapsz = swap4(dis, bytebuf);
-      } else {
-        byteheapsz = dis.readInt();
-      }
+      int heapsz = readInt(dis, swap);
 
       if (!delta) {
-        this.getByteHeap().heap = new byte[Math.max(16, byteheapsz)]; // must
-        // be >
-        // 0
-        for (int i = 0; i < byteheapsz; i++) {
-          this.getByteHeap().heap[i] = dis.readByte();
-        }
-        this.getByteHeap().heapPos = byteheapsz;
+        this.getByteHeap().heap = new byte[Math.max(16, heapsz)]; // must be > 0
+        dis.read(this.getByteHeap().heap, 0, heapsz);
+        this.getByteHeap().heapPos = heapsz;
       }  else {
-        for (int i=0; i < byteheapsz; i++) {
-    	  this.getByteHeap().addByte(dis.readByte());
+        for (int i=0; i < heapsz; i++) {
+      	  this.getByteHeap().addByte(dis.readByte());
         }
       }
       // word alignment
-      int align = (4 - (byteheapsz % 4)) % 4;
-      for (int i = 0; i < align; i++) {
-        dis.readByte();
-      }
+      int align = (4 - (heapsz % 4)) % 4;
+      dis.skipBytes(align);
 
       // short heap
-      int shortheapsz = 0;
-      if (swap) {
-        shortheapsz = swap4(dis, bytebuf);
-      } else {
-        shortheapsz = dis.readInt();
-      }
+      heapsz = readInt(dis, swap);
       
       if (!delta) {
-        this.getShortHeap().heap = new short[Math.max(16, shortheapsz)]; // must
-        // be >
-        // 0
-        for (int i = 0; i < shortheapsz; i++) {
-          if (swap) {
-            this.getShortHeap().heap[i] = (short) swap2(dis, bytebuf);
-          } else {
-            this.getShortHeap().heap[i] = dis.readShort();
-          }
+        this.getShortHeap().heap = new short[Math.max(16, heapsz)]; // must be > 0
+        for (int i = 0; i < heapsz; i++) {
+          this.getShortHeap().heap[i] = readShort(dis, swap);
         }
-        this.getShortHeap().heapPos = shortheapsz;
+        this.getShortHeap().heapPos = heapsz;
       } else {
-    	for (int i = 0; i < shortheapsz; i++) {
-          if (swap) {
-            this.getShortHeap().addShort((short) swap2(dis, bytebuf));
-          } else {
-            this.getShortHeap().addShort(dis.readShort());
-          }
-         }
+      	for (int i = 0; i < heapsz; i++) {
+      	  this.getShortHeap().addShort(readShort(dis, swap));
+        }
       }
       // word alignment
-      if (shortheapsz % 2 != 0) {
+      if (heapsz % 2 != 0) {
         dis.readShort();
       }
 
       // long heap
-      int longheapsz = 0;
-      if (swap) {
-        longheapsz = swap4(dis, bytebuf);
-        bytebuf = new byte[8];
-      } else {
-        longheapsz = dis.readInt();
-      }
+      heapsz = readInt(dis, swap);
       
       if (!delta) {
-        this.getLongHeap().heap = new long[Math.max(16, longheapsz)]; // must
-        // be >
-        // 0
-        for (int i = 0; i < longheapsz; i++) {
-          if (swap) {
-            this.getLongHeap().heap[i] = swap8(dis, bytebuf);
-          } else {
-            this.getLongHeap().heap[i] = dis.readLong();
-          }
+        this.getLongHeap().heap = new long[Math.max(16, heapsz)]; // must be > 0
+        for (int i = 0; i < heapsz; i++) {
+          this.getLongHeap().heap[i] = readLong(dis, swap);
         }
-        this.getLongHeap().heapPos = longheapsz;
+        this.getLongHeap().heapPos = heapsz;
       } else {
-    	for (int i = 0; i < longheapsz; i++) {
-          if (swap) {
-            this.getLongHeap().addLong( swap8(dis, bytebuf));
-          } else {
-            this.getLongHeap().addLong(dis.readLong());
-          }
+      	for (int i = 0; i < heapsz; i++) {
+      	  this.getLongHeap().addLong(readLong(dis, swap));
         }
       }
       
       if (delta)  {
-        //modified Byte Heap
-    	if (swap) {
-    	  byteheapsz = swap4(dis, bytebuf);
-    	} else {
-    	  byteheapsz = dis.readInt();
-    	}
-    	if (byteheapsz > 0) {
-    	  int[] byteHeapAddrs = new int[byteheapsz];
-    	  for (int i=0; i < byteheapsz; i++) {
-    		if (swap) {
-    	      byteHeapAddrs[i] = swap4(dis, bytebuf);
-    	    } else {
-    	      byteHeapAddrs[i] = dis.readInt();
-    	    }
-    	  }
-    	  for (int i=0; i < byteheapsz; i++) {
-    	    this.getByteHeap().heap[byteHeapAddrs[i]] = dis.readByte();
-    	  }
-    	}
-    	// word alignment
-        align = (4 - (byteheapsz % 4)) % 4;
-        for (int i = 0; i < align; i++) {
-          dis.readByte();
-        }
+          //modified Byte Heap
+        heapsz = readInt(dis, swap);
+      	if (heapsz > 0) {
+      	  int[] heapAddrs = new int[heapsz];
+      	  for (int i = 0; i < heapsz; i++) {
+      	    heapAddrs[i] = readInt(dis, swap);
+      	  }
+      	  for (int i = 0; i < heapsz; i++) {
+      	    this.getByteHeap().heap[heapAddrs[i]] = dis.readByte();
+      	  }
+      	}
+      	// word alignment
+        align = (4 - (heapsz % 4)) % 4;
+        dis.skipBytes(align);
         
         //modified Short Heap
-    	if (swap) {
-      	  shortheapsz = swap4(dis, bytebuf);
-      	} else {
-      	  shortheapsz = dis.readInt();
-      	}
-      	if (shortheapsz > 0) {
-      	  int[] shortHeapAddrs = new int[shortheapsz];
-      	  for (int i=0; i < shortheapsz; i++) {
-      		if (swap) {
-      	      shortHeapAddrs[i] = swap4(dis, bytebuf);
-      	    } else {
-      	      shortHeapAddrs[i] = dis.readInt();
-      	    }
-      	  }
-      	  for (int i=0; i < shortheapsz; i++) {
-      		if (swap) {
-              this.getShortHeap().heap[i] = (short) swap2(dis, bytebuf);
-            } else {
-              this.getShortHeap().heap[i] = dis.readShort();
-            }
-      	  }
+        heapsz = readInt(dis, swap);
+        if (heapsz > 0) {
+          int[] heapAddrs = new int[heapsz];
+      	  for (int i = 0; i < heapsz; i++) {
+            heapAddrs[i] = readInt(dis, swap);
+          }
+          for (int i = 0; i < heapsz; i++) {
+            this.getShortHeap().heap[heapAddrs[i]] = readShort(dis, swap);
+       	  }
       	}
       	
         // word alignment
-        if (shortheapsz % 2 != 0) {
+        if (heapsz % 2 != 0) {
           dis.readShort();
         }
       
         //modified Long Heap
-      	if (swap) {
-          longheapsz = swap4(dis, bytebuf);
-        } else {
-          longheapsz = dis.readInt();
-        }
-        if (longheapsz > 0) {
-          int[] longHeapAddrs = new int[shortheapsz];
-          for (int i=0; i < shortheapsz; i++) {
-        	if (swap) {
-        	  longHeapAddrs[i] = swap4(dis, bytebuf);
-        	} else {
-        	  longHeapAddrs[i] = dis.readInt();
-        	}
+        heapsz = readInt(dis, swap);
+        if (heapsz > 0) {
+          int[] heapAddrs = new int[heapsz];
+          for (int i = 0; i < heapsz; i++) {
+            heapAddrs[i] = readInt(dis, swap);
           }
-          for (int i=0; i < longheapsz; i++) {
-        	if (swap) {
-              this.getLongHeap().heap[i] = (short) swap8(dis, bytebuf);
-            } else {
-              this.getLongHeap().heap[i] = dis.readLong();
-            }
+          for (int i = 0; i < heapsz; i++) {
+            this.getLongHeap().heap[heapAddrs[i]] = readLong(dis, swap);
           }
         }
-    	
-      }
+      } // of delta - modified processing
     } catch (IOException e) {
       CASRuntimeException exception = new CASRuntimeException(
           CASRuntimeException.BLOB_DESERIALIZATION, new String[] { e.getMessage() });
       throw exception;
     }
   }
-
-  private long swap8(DataInputStream dis, byte[] buf) throws IOException {
-
-    buf[7] = dis.readByte();
-    buf[6] = dis.readByte();
-    buf[5] = dis.readByte();
-    buf[4] = dis.readByte();
-    buf[3] = dis.readByte();
-    buf[2] = dis.readByte();
-    buf[1] = dis.readByte();
-    buf[0] = dis.readByte();
-    ByteBuffer bb = ByteBuffer.wrap(buf);
-    return bb.getLong();
+  
+  private long readLong(DataInputStream dis, boolean swap) throws IOException {
+    long v = dis.readLong();
+    return swap ? Long.reverseBytes(v) : v;
+  }
+  
+  private int readInt(DataInputStream dis, boolean swap) throws IOException {
+    int v = dis.readInt();
+    return swap ? Integer.reverseBytes(v) : v;
+  }
+  
+  private short readShort(DataInputStream dis, boolean swap) throws IOException {
+    short v = dis.readShort();
+    return swap ? Short.reverseBytes(v) : v;
   }
 
-  private int swap4(DataInputStream dis, byte[] buf) throws IOException {
-    buf[3] = dis.readByte();
-    buf[2] = dis.readByte();
-    buf[1] = dis.readByte();
-    buf[0] = dis.readByte();
-    ByteBuffer bb = ByteBuffer.wrap(buf);
-    return bb.getInt();
-  }
-
-  private char swap2(DataInputStream dis, byte[] buf) throws IOException {
-    buf[1] = dis.readByte();
-    buf[0] = dis.readByte();
-    ByteBuffer bb = ByteBuffer.wrap(buf, 0, 2);
-    return bb.getChar();
-  }
+//  private long swap8(DataInputStream dis, byte[] buf) throws IOException {
+//
+//    buf[7] = dis.readByte();
+//    buf[6] = dis.readByte();
+//    buf[5] = dis.readByte();
+//    buf[4] = dis.readByte();
+//    buf[3] = dis.readByte();
+//    buf[2] = dis.readByte();
+//    buf[1] = dis.readByte();
+//    buf[0] = dis.readByte();
+//    ByteBuffer bb = ByteBuffer.wrap(buf);
+//    return bb.getLong();
+//  }
+//
+//  private int swap4(DataInputStream dis, byte[] buf) throws IOException {
+//    buf[3] = dis.readByte();
+//    buf[2] = dis.readByte();
+//    buf[1] = dis.readByte();
+//    buf[0] = dis.readByte();
+//    ByteBuffer bb = ByteBuffer.wrap(buf);
+//    return bb.getInt();
+//  }
+//
+//  private char swap2(DataInputStream dis, byte[] buf) throws IOException {
+//    buf[1] = dis.readByte();
+//    buf[0] = dis.readByte();
+//    ByteBuffer bb = ByteBuffer.wrap(buf, 0, 2);
+//    return bb.getChar();
+//  }
 
   // assumes:
   // indexes are empty on entry
   //   
-  private void reinitIndexedFSs(int[] fsIndex) {
+  void reinitIndexedFSs(int[] fsIndex) {
     // Add FSs to index repository for base CAS
     int numViews = fsIndex[0];
     int loopLen = fsIndex[1]; // number of sofas, not necessarily the same as
@@ -1578,7 +1474,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
   
   // fsIndex contains added, removed and reindexed FS per view
-  private void reinitDeltaIndexedFSs(int[] fsIndex) {
+  void reinitDeltaIndexedFSs(int[] fsIndex) {
 	// Add FSs to index repository for base CAS
 	int numViews = fsIndex[0]; //total number of views
 	int loopLen = fsIndex[1]; // number of sofas, not necessarily the same as
@@ -1664,7 +1560,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       if (loopIndexRep != null) {
         fsLoopIndex = loopIndexRep.getIndexedFSs();
       } else {
-        fsLoopIndex = (new IntVector()).toArray();
+        fsLoopIndex = INT0;
       }
       v.add(fsLoopIndex.length);
       for (int k = 0; k < fsLoopIndex.length; k++) {
@@ -1674,6 +1570,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return v.toArray();
   }
   
+ 
   
   //Delta IndexedFSs format:
   // number of views
@@ -1719,9 +1616,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
         fsDeletedFromIndex = loopIndexRep.getDeletedFSs();
         fsReindexed = loopIndexRep.getReindexedFSs();
       } else {
-        fsLoopIndex = (new IntVector()).toArray();
-        fsDeletedFromIndex = (new IntVector()).toArray();
-        fsReindexed = (new IntVector()).toArray();
+        fsLoopIndex = INT0;
+        fsDeletedFromIndex = INT0;
+        fsReindexed = INT0;
       }
       v.add(fsLoopIndex.length);
       for (int k = 0; k < fsLoopIndex.length; k++) {
@@ -3926,14 +3823,14 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   @SuppressWarnings("unchecked")
   public AnnotationIndex<AnnotationFS> getAnnotationIndex() {
-    return new AnnotationIndexImpl(
+    return new AnnotationIndexImpl<AnnotationFS>(
             (FSIndex<AnnotationFS>) (FSIndex<?>) getIndexRepository().getIndex(
              CAS.STD_ANNOTATION_INDEX));
   }
 
   @SuppressWarnings("unchecked")
   public AnnotationIndex<AnnotationFS> getAnnotationIndex(Type type) {
-    return new AnnotationIndexImpl(
+    return new AnnotationIndexImpl<AnnotationFS>(
             (FSIndex<AnnotationFS>) (FSIndex<?>) getIndexRepository().getIndex(
             CAS.STD_ANNOTATION_INDEX, type));
   }
@@ -4388,6 +4285,18 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   
   IntVector getModifiedLongHeapAddrs() {
 		return this.svd.modifiedLongHeapCells;  
+  }
+  
+  /**
+   * Serialize in compressed binary form
+   * @param out - an OutputStream, a DataOutputStream, or a File
+   * @throws IOException
+   */
+  public void serializeWithCompression(Object out) throws IOException {
+    if (svd.binaryCompressor == null) {
+      svd.binaryCompressor = new BinaryCasSerDes4(this.getTypeSystemImpl(), false);
+    }
+    svd.binaryCompressor.serialize(this, out);
   }
   
 }
