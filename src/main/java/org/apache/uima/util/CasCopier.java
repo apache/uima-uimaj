@@ -101,11 +101,18 @@ public class CasCopier {
   public static void copyCas(CAS aSrcCas, CAS aDestCas, boolean aCopySofa) {
     CasCopier copier = new CasCopier(aSrcCas, aDestCas);
     
-    Iterator<SofaFS> sofaIter = aSrcCas.getSofaIterator();
-    while (sofaIter.hasNext()) {
-      SofaFS sofa = sofaIter.next();
-      CAS view = aSrcCas.getView(sofa);
-      copier.copyCasView(view, aCopySofa);
+    // oops, this misses the initial view if a sofa FS has not yet been created
+//    Iterator<SofaFS> sofaIter = aSrcCas.getSofaIterator();
+//    while (sofaIter.hasNext()) {
+//      SofaFS sofa = sofaIter.next();
+//      CAS view = aSrcCas.getView(sofa);
+//      copier.copyCasView(view, aCopySofa);
+//    }
+    
+    Iterator<CAS> viewIterator = aSrcCas.getViewIterator();
+    while (viewIterator.hasNext()) {
+      CAS view = viewIterator.next();
+      copier.copyCasView(view, aCopySofa);     
     }
   }
 
@@ -127,13 +134,16 @@ public class CasCopier {
     
     if (aCopySofa) {
       // can't copy the SofaFS - just copy the sofa data and mime type
-      String sofaMime = aSrcCasView.getSofa().getSofaMime();
-      if (aSrcCasView.getDocumentText() != null) {
-        targetView.setSofaDataString(aSrcCasView.getDocumentText(), sofaMime);
-      } else if (aSrcCasView.getSofaDataURI() != null) {
-        targetView.setSofaDataURI(aSrcCasView.getSofaDataURI(), sofaMime);
-      } else if (aSrcCasView.getSofaDataArray() != null) {
-        targetView.setSofaDataArray(copyFs(aSrcCasView.getSofaDataArray()), sofaMime);
+      SofaFS sofa = aSrcCasView.getSofa();
+      if (null != sofa) { 
+        String sofaMime = sofa.getSofaMime();
+        if (aSrcCasView.getDocumentText() != null) {
+          targetView.setSofaDataString(aSrcCasView.getDocumentText(), sofaMime);
+        } else if (aSrcCasView.getSofaDataURI() != null) {
+          targetView.setSofaDataURI(aSrcCasView.getSofaDataURI(), sofaMime);
+        } else if (aSrcCasView.getSofaDataArray() != null) {
+          targetView.setSofaDataArray(copyFs(aSrcCasView.getSofaDataArray()), sofaMime);
+        }
       }
     }
 

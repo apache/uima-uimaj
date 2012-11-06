@@ -191,6 +191,10 @@ public class CASRuntimeException extends UIMARuntimeException {
   /** Multiple Create Marker call for a CAS */
   public static final String MULTIPLE_CREATE_MARKER = "MULTIPLE_CREATE_MARKER";
 
+  /** Deserializing Binary Header invalid */
+  public static final String DESERIALIZING_BINARY_INVALID_HEADER = "DESERIALIZING_BINARY_INVALID_HEADER";
+
+  
 	public CASRuntimeException() {
 		super();
 	}

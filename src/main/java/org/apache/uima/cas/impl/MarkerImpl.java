@@ -95,5 +95,25 @@ public class MarkerImpl implements Marker {
   public boolean isValid() {
     return isValid;
   }
+
+  public int getNextFSId() {
+    return nextFSId;
+  }
+
+  public int getNextStringHeapAddr() {
+    return nextStringHeapAddr;
+  }
+
+  public int getNextByteHeapAddr() {
+    return nextByteHeapAddr;
+  }
+
+  public int getNextShortHeapAddr() {
+    return nextShortHeapAddr;
+  }
+
+  public int getNextLongHeapAddr() {
+    return nextLongHeapAddr;
+  }
   
 }
