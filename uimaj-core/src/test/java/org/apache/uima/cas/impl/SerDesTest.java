@@ -23,18 +23,16 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-import java.util.zip.Deflater;
+
+import junit.framework.TestCase;
 
 import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.BooleanArrayFS;
 import org.apache.uima.cas.ByteArrayFS;
 import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.DoubleArrayFS;
-import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
@@ -45,20 +43,12 @@ import org.apache.uima.cas.ShortArrayFS;
 import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
-import org.apache.uima.cas.admin.CASAdminException;
-import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.cas.admin.FSIndexRepositoryMgr;
-import org.apache.uima.cas.admin.LinearTypeOrderBuilder;
 import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.cas.test.AnnotatorInitializer;
 import org.apache.uima.cas.test.CASInitializer;
-import org.apache.uima.util.CasCopier;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.SerializationMeasures;
-
-import sun.security.x509.DeltaCRLIndicatorExtension;
-
-import junit.framework.TestCase;
 
 /**
  * Serializer and Deserializer testing
@@ -572,7 +562,6 @@ public class SerDesTest extends TestCase {
   }
   
   private void makeRandomFss(int n, List<FeatureStructure> fss, Random r) {
-    FeatureStructure prev = null;
     List<FeatureStructure> lfss = new ArrayList<FeatureStructure>();
     for (int i = 0; i < n; i++) {
       FeatureStructure fs = makeAkof(r);
@@ -610,7 +599,6 @@ public class SerDesTest extends TestCase {
     fs.setStringValue(akofString, "");
     fs.setFeatureValue(akofFs, fs1);
     cas.addFsToIndexes(fs);
-    FeatureStructure fs2 = fs;
 
     fs = newAkof(fsl);
     fs.setByteValue(akofByte, Byte.MIN_VALUE);
@@ -644,19 +632,16 @@ public class SerDesTest extends TestCase {
     fs.setLongValue(akofLong, 1L);
     fs.setDoubleValue(akofDouble, 1.0D);
     cas.addFsToIndexes(fs);
-    FeatureStructure fs5 = fs;
     
     fs = newAkof(fsl);
     fs.setFloatValue(akofFloat, Float.MIN_NORMAL);
     fs.setDoubleValue(akofDouble, Double.MIN_NORMAL);
     cas.addFsToIndexes(fs);
-    FeatureStructure fs6 = fs;
     
     fs = newAkof(fsl);
     fs.setFloatValue(akofFloat, Float.MIN_VALUE);
     fs.setDoubleValue(akofDouble, Double.MIN_VALUE);
     cas.addFsToIndexes(fs);
-    FeatureStructure fs7 = fs;
 
     fs = newAkof(fsl);
     fs.setFloatValue(akofFloat, Float.NaN);
