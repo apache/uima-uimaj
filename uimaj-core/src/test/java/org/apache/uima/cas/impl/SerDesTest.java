@@ -725,7 +725,7 @@ public class SerDesTest extends TestCase {
   private void verify() {
     try {
       BinaryCasSerDes4 bcs = new BinaryCasSerDes4(
-          ts, true);
+          ts, false);
       ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
       if (doPlain) {
         (new CASSerializer()).addCAS(cas, baos);      
@@ -745,7 +745,7 @@ public class SerDesTest extends TestCase {
     try {
       ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
       BinaryCasSerDes4 bcs = new BinaryCasSerDes4(
-          ts, true);
+          ts, false);
       if (doPlain) {
         Serialization.serializeCAS(cas, baos);
       } else {
