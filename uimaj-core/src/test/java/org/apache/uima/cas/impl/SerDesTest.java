@@ -409,7 +409,7 @@ public class SerDesTest extends TestCase {
   private void createFloatA (FeatureStructure fs, float x) {
     FloatArrayFS fafs = cas.createFloatArrayFS(6);
     fafs.set(0, Float.MAX_VALUE - x);
-    fafs.set(1, Float.MIN_NORMAL + x);
+//    fafs.set(1, Float.MIN_NORMAL + x);
     fafs.set(2, Float.MIN_VALUE + x);
     fafs.set(3, Float.NaN);
     fafs.set(4, Float.NEGATIVE_INFINITY);
@@ -420,7 +420,7 @@ public class SerDesTest extends TestCase {
   private void createDoubleA (FeatureStructure fs, double x) {
     DoubleArrayFS fafs = cas.createDoubleArrayFS(6);
     fafs.set(0, Double.MAX_VALUE - x);
-    fafs.set(1, Double.MIN_NORMAL + x);
+//    fafs.set(1, Double.MIN_NORMAL + x);
     fafs.set(2, Double.MIN_VALUE + x);
     fafs.set(3, Double.NaN);
     fafs.set(4, Double.NEGATIVE_INFINITY);
@@ -538,7 +538,7 @@ public class SerDesTest extends TestCase {
   }
 
   private static final double[] doubleValues = {
-    1d, 0d, -1d, Double.MAX_VALUE, Double.MIN_NORMAL, Double.MIN_VALUE, 33d, -33.33d  };
+    1d, 0d, -1d, Double.MAX_VALUE, /*Double.MIN_NORMAL,*/ Double.MIN_VALUE, 33d, -33.33d  };
   
   private DoubleArrayFS randomDoubleA(Random r) {
     int length = r.nextInt(2) + 1;
@@ -550,7 +550,7 @@ public class SerDesTest extends TestCase {
   }
 
   private static final float[] floatValues = {
-    1f, 0f, -1f, Float.MAX_VALUE, Float.MIN_NORMAL, Float.MIN_VALUE, 17f, -22.33f  };
+    1f, 0f, -1f, Float.MAX_VALUE, /*Float.MIN_NORMAL,*/ Float.MIN_VALUE, 17f, -22.33f  };
   
   private FloatArrayFS randomFloatA(Random r) {
     int length = r.nextInt(2) + 1;
@@ -633,10 +633,10 @@ public class SerDesTest extends TestCase {
     fs.setDoubleValue(akofDouble, 1.0D);
     cas.addFsToIndexes(fs);
     
-    fs = newAkof(fsl);
-    fs.setFloatValue(akofFloat, Float.MIN_NORMAL);
-    fs.setDoubleValue(akofDouble, Double.MIN_NORMAL);
-    cas.addFsToIndexes(fs);
+//    fs = newAkof(fsl);
+//    fs.setFloatValue(akofFloat, Float.MIN_NORMAL);
+//    fs.setDoubleValue(akofDouble, Double.MIN_NORMAL);
+//    cas.addFsToIndexes(fs);
     
     fs = newAkof(fsl);
     fs.setFloatValue(akofFloat, Float.MIN_VALUE);
