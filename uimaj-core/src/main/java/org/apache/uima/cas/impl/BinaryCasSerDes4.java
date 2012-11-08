@@ -917,9 +917,14 @@ public class BinaryCasSerDes4 {
           baos.writeTo(cds);
           cds.close();
           idxAndLen.add(i);
-          idxAndLen.add((int)(sm.statDetails[i].afterZip = deflater.getBytesWritten()));
-          idxAndLen.add((int)(sm.statDetails[i].beforeZip = deflater.getBytesRead()));
-          sm.statDetails[i].zipTime = System.currentTimeMillis() - startTime;
+          if (doMeasurement) {
+            idxAndLen.add((int)(sm.statDetails[i].afterZip = deflater.getBytesWritten()));            
+            idxAndLen.add((int)(sm.statDetails[i].beforeZip = deflater.getBytesRead()));
+            sm.statDetails[i].zipTime = System.currentTimeMillis() - startTime;
+          } else {
+            idxAndLen.add((int)deflater.getBytesWritten());            
+            idxAndLen.add((int)deflater.getBytesRead());
+          }
         } 
       }
       serializedOut.writeInt(nbrEntries);                     // write number of entries
@@ -1520,7 +1525,7 @@ public class BinaryCasSerDes4 {
       deserIn.readInt();    // reserved to record additional version info
       final int nbrEntries = deserIn.readInt();  // number of compressed streams
       
-      IntVector idxAndLen = new IntVector(nbrEntries * 2);
+      IntVector idxAndLen = new IntVector(nbrEntries * 3);
       
       for (int i = 0; i < nbrEntries; i++) {
         idxAndLen.add(deserIn.readUnsignedByte());  // slot ordinal number
