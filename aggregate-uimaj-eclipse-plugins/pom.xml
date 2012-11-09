@@ -68,8 +68,10 @@
     <module>../uimaj-ep-cas-editor</module>
     <module>../uimaj-ep-cas-editor-ide</module>
     <module>../uimaj-ep-runtime</module>
-    
+
+    <!-- remove because of Jenkins / versioning issues    
     <module>../uimaj-eclipse-feature-tools</module>
     <module>../uimaj-eclipse-feature-runtime</module>
+     -->
   </modules>
 </project>
