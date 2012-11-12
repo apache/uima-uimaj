@@ -79,9 +79,9 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Marker;
 import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.util.SerializationMeasures;
 import org.apache.uima.util.impl.DataIO;
 import org.apache.uima.util.impl.OptimizeStrings;
+import org.apache.uima.util.impl.SerializationMeasures;
 
 /**
  * User callable serialization and deserialization of the CAS in a compressed Binary Format
@@ -2686,10 +2686,6 @@ public class BinaryCasSerDes4 {
     
     private IntVector itemIndexToAddr = new IntVector();  // item is feature structure or string segment
     private Map<Integer, Integer>  itemAddrToIndex = new HashMap<Integer, Integer>();
-//    private float avgWdsPerFs;
-//    private int midValue;
-//    private int smallFudge;
-//    private boolean isSetup = false;
 
     public ComprItemRefs() {
       addItemAddr(0);
@@ -2717,59 +2713,8 @@ public class BinaryCasSerDes4 {
       return itemIndexToAddr.get(index);
     }
     
-    /** 
-     * search in table for matching fsAddr;
-     * if found, return relative position
-     * to current fsAddr
-     * otherwise is an error 
-     * 
-     * Modified binary search - mid point calc closer than middle
-     *
-     * @param itemAddr
-     * @return
-     */
     public int getItemIndex(int itemAddr) {
-      return itemAddrToIndex.get(itemAddr);  
-    
-//      // special case 0 and 1 which occur frequently 
-//      // 0 is "null" fs
-//      // 1 usually is the sofa fs - in every annotation
-//      if (itemAddr == 0) {
-//        return 0;
-//      }
-//      if (itemAddr == 1) {
-//        return 1;
-//      }
-//      if (!isSetup) {
-//        throw new RuntimeException();
-//      }
-//      
-//      int lowIndex = 0;
-//      int highIndex = itemIndexToAddr.size() - 1;
-//      
-//      // the initial split point is made as close as possible to the value
-//      // but tries to fudge to be on the right side so a smaller number of
-//      // iterations are needed
-//      int smallDelta = (itemAddr > midValue) ? - smallFudge : smallFudge; 
-//      float fudge = (itemAddr > midValue) ? .99F : 1.01F;
-//      int testIndex = (int)(fudge * itemAddr / avgWdsPerFs) + smallDelta;
-//      int testValue = itemIndexToAddr.get(testIndex);
-//      
-//      while (testValue != itemAddr) {
-//        
-//        if (testValue > itemAddr) {
-//          highIndex = testIndex - 1;
-//        } else {
-//          lowIndex = testIndex + 1;
-//        }
-//        if (lowIndex > highIndex) {
-//          throw new RuntimeException("not found - should never happen");
-//        }
-//        // next trick lets the int addition overflow, and then recovers
-//        testIndex = (highIndex + lowIndex) >>> 1;
-//        testValue = itemIndexToAddr.get(testIndex);
-//      }
-//      return testIndex;
+      return itemAddrToIndex.get(itemAddr);      
     }
   }
   
