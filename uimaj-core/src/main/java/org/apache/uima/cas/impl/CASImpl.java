@@ -85,7 +85,7 @@ import org.apache.uima.cas.text.Language;
 import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.impl.JCasImpl;
-import org.apache.uima.util.SerializationMeasures;
+import org.apache.uima.util.impl.SerializationMeasures;
 
 /**
  * Implements the CAS interfaces. This class must be public because we need to

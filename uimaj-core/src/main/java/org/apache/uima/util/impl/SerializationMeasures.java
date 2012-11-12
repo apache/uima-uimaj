@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.uima.util;
+package org.apache.uima.util.impl;
 
 import static org.apache.uima.cas.impl.BinaryCasSerDes4.CAN_BE_NEGATIVE;
 import static org.apache.uima.cas.impl.BinaryCasSerDes4.IN_MAIN_HEAP;

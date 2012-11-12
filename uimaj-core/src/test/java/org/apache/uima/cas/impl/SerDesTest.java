@@ -48,7 +48,7 @@ import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.cas.test.AnnotatorInitializer;
 import org.apache.uima.cas.test.CASInitializer;
 import org.apache.uima.util.CasCreationUtils;
-import org.apache.uima.util.SerializationMeasures;
+import org.apache.uima.util.impl.SerializationMeasures;
 
 /**
  * Serializer and Deserializer testing
