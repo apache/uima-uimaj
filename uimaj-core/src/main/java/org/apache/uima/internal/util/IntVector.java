@@ -192,9 +192,10 @@ public class IntVector implements Serializable {
     }
     --this.pos;
     int retval = this.array[index];
-    for (int i = index; i < this.pos; i++) {
-      this.array[i] = this.array[i + 1];
-    }
+    System.arraycopy(this.array, index + 1, this.array, index, this.pos - index);
+//    for (int i = index; i < this.pos; i++) {
+//      this.array[i] = this.array[i + 1];
+//    }
     return retval;
   }
 
@@ -342,9 +343,10 @@ public class IntVector implements Serializable {
   public IntVector copy() {
     IntVector copy = new IntVector(this.array.length, this.growth_factor, this.multiplication_limit);
     copy.pos = this.pos;
-    for (int i = 0; i < this.pos; i++) {
-      copy.array[i] = this.array[i];
-    }
+//    for (int i = 0; i < this.pos; i++) {
+//      copy.array[i] = this.array[i];
+//    }
+    System.arraycopy(this.array, 0, copy.array, 0, this.pos);
     return copy;
   }
 
