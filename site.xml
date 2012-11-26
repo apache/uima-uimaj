@@ -24,56 +24,23 @@
       Eclipse update site for Apache UIMA.
    </description>
    
-   <!-- keep old features listed here - to permit the update site to provide the older features -->
    <feature url="features/org.apache.uima.tools_2.4.0.jar" id="org.apache.uima.tools" version="2.4.0">
       <category name="uima-tooling-and-runtimes"/>
    </feature>
    <feature url="features/org.apache.uima.runtime_2.4.0.jar" id="org.apache.uima.runtime" version="2.4.0">
       <category name="uima-tooling-and-runtimes"/>
    </feature>
-   <feature url="features/org.apache.uima.as.deployeditor_2.4.0.jar" id="org.apache.uima.as.deployeditor" version="2.4.0">
+   
+   <!--
+   <feature url="features/org.apache.uima.as.deployeditor_2.4.0.SNAPSHOT.jar" id="org.apache.uima.as.deployeditor" version="2.4.0">
       <category name="uima-as-tooling"/>
    </feature>
-
-  
-
-   <feature url="features/org.apache.uima.tools_2.3.1.jar" id="org.apache.uima.tools" version="2.3.1">
-      <category name="uima-tooling-and-runtimes"/>
-   </feature>
-   <feature url="features/org.apache.uima.runtime_2.3.1.jar" id="org.apache.uima.runtime" version="2.3.1">
-      <category name="uima-tooling-and-runtimes"/>
-   </feature>
-   <feature url="features/org.apache.uima.as.deployeditor_2.3.1.jar" id="org.apache.uima.as.deployeditor" version="2.3.1">
-      <category name="uima-as-tooling"/>
-   </feature>
+   -->
    
-   
-   
-   <feature url="features/org.apache.uima.tools_2.3.0.incubating.jar" id="org.apache.uima.tools" version="2.3.0.incubating">
-      <category name="uima-tooling-and-runtimes"/>
-   </feature>
-   <feature url="features/org.apache.uima.runtime_2.3.0.incubating.jar" id="org.apache.uima.runtime" version="2.3.0.incubating">
-      <category name="uima-tooling-and-runtimes"/>
-   </feature>
-   <feature url="features/org.apache.uima.as.deployeditor_2.3.0.incubating.jar" id="org.apache.uima.as.deployeditor" version="2.3.0.incubating">
-      <category name="uima-as-tooling"/>
-   </feature>
-   
-   <feature url="features/org.apache.uima.tools_2.2.2.incubating.jar" id="org.apache.uima.tools" version="2.2.2.incubating">
-      <category name="uima-tooling-and-runtimes"/>
-   </feature>
-   <feature url="features/org.apache.uima.runtime_2.2.2.incubating.jar" id="org.apache.uima.runtime" version="2.2.2.incubating">
-      <category name="uima-tooling-and-runtimes"/>
-   </feature>
-   <feature url="features/org.apache.uima.tools_2.2.1.incubating.jar" id="org.apache.uima.tools" version="2.2.1.incubating">
-      <category name="uima-tooling-and-runtimes"/>
-   </feature>
-   <feature url="features/org.apache.uima.runtime_2.2.1.incubating.jar" id="org.apache.uima.runtime" version="2.2.1.incubating">
-      <category name="uima-tooling-and-runtimes"/>
-   </feature>
-   <feature url="features/org.apache.uima.as.deployeditor_2.2.2.incubating.jar" id="org.apache.uima.as.deployeditor" version="2.2.2.incubating">
-      <category name="uima-as-tooling"/>
-   </feature>
    <category-def name="uima-tooling-and-runtimes" label="Apache UIMA Eclipse tooling and runtime support"/>
+   
+  
+   <!--
    <category-def name="uima-as-tooling" label="Apache UIMA-AS (Asynchronous Scaleout) Eclipse tooling"/>
+   -->
 </site>
