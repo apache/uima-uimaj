@@ -32,15 +32,15 @@
    </feature>
    
    <!--
-   <feature url="features/org.apache.uima.as.deployeditor_2.4.0.SNAPSHOT.jar" id="org.apache.uima.as.deployeditor" version="2.4.0">
+   -->
+   <feature url="features/org.apache.uima.as.deployeditor_2.4.0.jar" id="org.apache.uima.as.deployeditor" version="2.4.0">
       <category name="uima-as-tooling"/>
    </feature>
-   -->
    
    <category-def name="uima-tooling-and-runtimes" label="Apache UIMA Eclipse tooling and runtime support"/>
    
   
    <!--
-   <category-def name="uima-as-tooling" label="Apache UIMA-AS (Asynchronous Scaleout) Eclipse tooling"/>
    -->
+   <category-def name="uima-as-tooling" label="Apache UIMA-AS (Asynchronous Scaleout) Eclipse tooling"/>
 </site>

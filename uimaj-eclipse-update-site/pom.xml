@@ -152,6 +152,7 @@
                 </artifactItem>
 
                 <!-- Deploy editor released with uima-as (later) 
+                -->
                 <artifactItem>
                   <groupId>org.apache.uima</groupId>
                   <artifactId>uimaj-ep-deployeditor</artifactId>
@@ -165,7 +166,6 @@
                   <version>${item-maven-release-version}</version>
                   <destFileName>org.apache.uima.runtime.fragments.deployeditor_${item-eclipse-release-version}.jar</destFileName>
                 </artifactItem>
-                -->
 
               </artifactItems>
               <outputDirectory>${project.build.directory}/work/plugins</outputDirectory>
@@ -193,13 +193,13 @@
                 </artifactItem>
 
                 <!-- not yet 
+                -->
                 <artifactItem>
                   <groupId>org.apache.uima</groupId>
                   <artifactId>uimaj-eclipse-feature-deployeditor</artifactId>
                   <version>${item-eclipse-release-version}</version>
                   <destFileName>org.apache.uima.as.deployeditor_${item-eclipse-release-version}.jar</destFileName>
                 </artifactItem>
-                -->
               </artifactItems>
               <outputDirectory>${eclipseUpdateSite}/features</outputDirectory>
             </configuration>
@@ -275,7 +275,8 @@
                   <arg line="-publishArtifacts" />
                 </java>
                 
-                
+                <!-- 
+                 -->
                 <echo>Extend composite repository</echo>
                 <copy todir="${eclipseUpdateSiteComposite}/uima-${item-eclipse-release-version}" preservelastmodified="true">
                   <fileset dir="${eclipseUpdateSite}" />
