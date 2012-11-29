@@ -275,6 +275,15 @@
                   <arg line="-publishArtifacts" />
                 </java>
                 
+                <java jar="${eclipse-equinox-launcher}" fork="true" failonerror="true"
+                  maxmemory="256m">
+                  <arg line="-application org.eclipse.equinox.p2.publisher.CategoryPublisher" />
+                  <arg line="-metadataRepository file://${eclipseUpdateSite}" />
+                  <arg line="-categoryDefinition file://${basedir}/category.xml" />
+                  <arg line="-categoryQualifier" />
+                </java>
+                
+                
                 <!-- 
                  -->
                 <echo>Extend composite repository</echo>
