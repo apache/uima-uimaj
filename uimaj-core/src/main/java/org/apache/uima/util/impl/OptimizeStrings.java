@@ -271,11 +271,23 @@ public class OptimizeStrings {
     System.arraycopy(sa, start, sortedStrings, 0, length);
     optimizeI(sortedStrings);
   }
-    
+   
   private void optimizeI(final String[] sortedStrings) {
     savedCharsExact = 0;
     savedCharsSubstr = 0;
     StringBuilder sb = new StringBuilder();
+    
+    // debug intermittent sort failure
+//    String[] temp = new String[sortedStrings.length];
+//    
+//    for (debugi = 0; debugi < 1000; debugi++) {
+//      System.arraycopy(sortedStrings, 0, temp, 0, sortedStrings.length);
+//      sortStrings(temp);
+//      if ((debugi % 50) == 0) {
+//        System.out.println(" " + debugi);
+//      }
+//    }
+    
     sortStrings(sortedStrings);
     
     int ssLength = eliminateSortedStringDuplicates(sortedStrings);
@@ -363,15 +375,15 @@ public class OptimizeStrings {
       try {
         Arrays.sort(sa); 
       } catch (StackOverflowError e) {
+//        throw e;
         System.err.format("Caught ArraySort stack overflow, original array is " +
             " %,d entries%n", inStrings.size());
-        Collections.reverse(inStrings);  // sometimes particular orders take many recursions, try reversed order
         sa = inStrings.toArray(new String[inStrings.size()]);
         retryCount ++;
-        if (retryCount < 2) {
+        if (retryCount < 20) { // 2 is too low to avoid JIT issue
           continue;
         }
-        throw new RuntimeException(e);
+        throw e;
       }
       break;
     }
