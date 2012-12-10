@@ -1564,7 +1564,7 @@ public class BinaryCasSerDes4 {
       /************************************************
        * Setup all the input streams with inflaters
        ************************************************/
-      long startTime1 = System.currentTimeMillis();
+//      long startTime1 = System.currentTimeMillis();
       
       /************************************************
        * Read in the common string(s)
@@ -1645,7 +1645,7 @@ public class BinaryCasSerDes4 {
       }
 
       closeDataInputs();
-      System.out.format("Deserialize took %,d ms%n", System.currentTimeMillis() - startTime1);
+//      System.out.format("Deserialize took %,d ms%n", System.currentTimeMillis() - startTime1);
     }
     
     private void readNonHeapStoredArray(int iHeap) throws IOException {
