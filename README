@@ -1,0 +1,83 @@
+#######
+SUMMARY
+#######
+uimaFIT is a library that provides factories, injection, and testing utilities for UIMA.  The following list 
+highlights some of the features uimaFIT provides:
+
+ * Factories: simplify instantiating UIMA components programmatically without descriptor files.  
+ 	For example, to instantiate an AnalysisEngine a call like this could be made: 
+ 	AnalysisEngineFactory.createPrimitive(MyAEImpl.class, myTypeSystem, paramName, paramValue)
+ * Injection: handles the binding of configuration parameter values to the corresponding member variables 
+ 	in the analysis engines and handles the binding of external resources.  For example, to bind a configuration 
+ 	parameter just annotate a member variable with @ConfigurationParameter.  Then add one line of code to 
+ 	your initialize method - ConfigurationParameterInitializer.initialize(this, uimaContext).  This is handled 
+ 	automatically if you extend the uimaFIT JCasAnnotator_ImplBase class.
+ * Testing: uimaFIT simplifies testing in a number of ways described in the documentation.  By making it 
+ 	easy to instantiate your components without descriptor files a large amount of difficult-to-maintain and 
+ 	unnecessary XML can be eliminated from your test code.   This makes tests easier to write and maintain.  
+ 	Also, running components as a pipeline can be accomplished with a method call like this:  
+ 	SimplePipeline.runPipeline(reader, ae1, ..., aeN, consumer1, ... consumerN)
+
+uimaFIT requires Java 1.5 or higher and UIMA 2.4.0 or higher.
+
+############
+AVAILABILITY
+############
+uimaFIT is licensed with Apache Software License 2.0 and is available from Google Code at:
+
+http://uimafit.googlecode.com
+http://code.google.com/p/uimafit/wiki/Documentation
+
+uimaFIT is available via Maven Central.  If you use maven for your build environment, then you can add uimaFIT 
+as a dependency to your pom.xml file with the following:
+
+<dependency>
+<groupId>org.uimafit</groupId>
+<artifactId>uimafit</artifactId>
+<version>1.4.0</version>
+</dependency>
+
+#########
+Reference
+#########
+
+If you use uimaFIT to support academic research, then please cite the following paper as appropriate:
+
+@InProceedings{ogren-bethard:2009:SETQA-NLP,
+  author    = {Ogren, Philip  and  Bethard, Steven},
+  title     = {Building Test Suites for {UIMA} Components},
+  booktitle = {Proceedings of the Workshop on Software Engineering, Testing, and Quality Assurance for Natural Language Processing (SETQA-NLP 2009)},
+  month     = {June},
+  year      = {2009},
+  address   = {Boulder, Colorado},
+  publisher = {Association for Computational Linguistics},
+  pages     = {1--4},
+  url       = {http://www.aclweb.org/anthology/W/W09/W09-1501}
+}
+
+########
+ABOUT US
+########
+uimaFIT is a collaborative effort between the Center for Computational Pharmacology at the University of 
+Colorado Denver, the Center for Computational Language and Education Research at the University of 
+Colorado at Boulder, and the Ubiquitous Knowledge Processing (UKP) Lab at the Technische Universität 
+Darmstadt.  uimaFIT is extensively used by projects being developed by these groups.
+
+The uimaFIT development team is:
+
+Philip Ogren, University of Colorado, USA
+Richard Eckart de Castilho, Technische Universität Darmstadt, Germany
+Steven Bethard, Stanford University, USA
+
+with contributions from Niklas Jakob, Fabio Mancinelli, Chris Roeder, Philipp Wetzler, Shuo Yang, 
+Torsten Zesch.
+
+#######
+SUPPORT
+#######
+Please address questions to uimafit-users@googlegroups.com.  
+
+#####
+Misc.
+#####
+uimaFIT was formerly known as UUTUC.

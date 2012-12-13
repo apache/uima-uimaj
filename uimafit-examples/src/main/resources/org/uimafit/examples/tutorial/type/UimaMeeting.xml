@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <name>UimaMeeting</name>
+  <description/>
+  <version>1.0</version>
+  <vendor/>
+  <imports>
+    <import name="org.uimafit.examples.tutorial.type.Meeting"/>
+  </imports>
+  <types>
+    <typeDescription>
+      <name>org.uimafit.examples.tutorial.type.UimaMeeting</name>
+      <description/>
+      <supertypeName>org.uimafit.examples.tutorial.type.Meeting</supertypeName>
+    </typeDescription>
+  </types>
+</typeSystemDescription>

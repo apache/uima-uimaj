@@ -1,0 +1,92 @@
+======== CAS 0 begin ==================================
+
+-------- View _InitialView begin ----------------------------------
+
+DocumentAnnotation
+   sofa: _InitialView
+   begin: 0
+   end: 42
+   language: "x-unspecified"
+
+CAS-Text:
+Me and all my friends are non-conformists.
+[Me and all my friends are non-conformists.]
+Sentence
+   sofa: _InitialView
+   begin: 0
+   end: 42
+[Me]
+Token
+   sofa: _InitialView
+   begin: 0
+   end: 2
+   pos: "M"
+   stem: "me"
+[and]
+Token
+   sofa: _InitialView
+   begin: 3
+   end: 6
+   pos: "A"
+   stem: "and"
+[all]
+Token
+   sofa: _InitialView
+   begin: 7
+   end: 10
+   pos: "A"
+   stem: "all"
+[my]
+Token
+   sofa: _InitialView
+   begin: 11
+   end: 13
+   pos: "M"
+   stem: "my"
+[friends]
+Token
+   sofa: _InitialView
+   begin: 14
+   end: 21
+   pos: "F"
+   stem: "friend"
+[are]
+Token
+   sofa: _InitialView
+   begin: 22
+   end: 25
+   pos: "A"
+   stem: "are"
+[non]
+Token
+   sofa: _InitialView
+   begin: 26
+   end: 29
+   pos: "N"
+   stem: "non"
+[-]
+Token
+   sofa: _InitialView
+   begin: 29
+   end: 30
+   pos: "-"
+   stem: "-"
+[conformists]
+Token
+   sofa: _InitialView
+   begin: 30
+   end: 41
+   pos: "C"
+   stem: "conformist"
+[.]
+Token
+   sofa: _InitialView
+   begin: 41
+   end: 42
+   pos: "."
+   stem: "."
+-------- View _InitialView end ----------------------------------
+
+======== CAS 0 end ==================================
+
+

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <name>DateAnnotaton</name>
+  <description/>
+  <version>1.0</version>
+  <vendor/>
+  <imports>
+    <import name="org.uimafit.examples.tutorial.type.DateAnnotaton"/>
+    <import name="org.uimafit.examples.tutorial.type.TimeAnnotation"/>
+    <import name="org.uimafit.examples.tutorial.type.RoomNumber"/>
+  </imports>
+  <types>
+    <typeDescription>
+      <name>org.uimafit.examples.tutorial.type.Meeting</name>
+      <description/>
+      <supertypeName>uima.tcas.Annotation</supertypeName>
+      <features>
+        <featureDescription>
+          <name>room</name>
+          <description/>
+          <rangeTypeName>org.uimafit.examples.tutorial.type.RoomNumber</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>date</name>
+          <description/>
+          <rangeTypeName>org.uimafit.examples.tutorial.type.DateAnnotation</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>startTime</name>
+          <description/>
+          <rangeTypeName>org.uimafit.examples.tutorial.type.TimeAnnotation</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>endTime</name>
+          <description/>
+          <rangeTypeName>org.uimafit.examples.tutorial.type.TimeAnnotation</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+  </types>
+</typeSystemDescription>

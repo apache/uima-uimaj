@@ -1,0 +1,159 @@
+changes since 1.4.0
+    - resolved issue #130 "upgrade dependencies?"
+    - resolved issue #129 "HideOutput should not extend OutputStream"
+    - resolved issue #84 "upgrade to Java 6"
+
+changes in 1.4.0
+    - resolved issue #128 "Move over CpeBuilder"
+    - resolved issue #127 "Maven excludes on unnecessary Spring dependencies cause trouble"
+    - resolved issue #123 "Debug utility to access all annotations by type"
+    - resolved issue #120 "Additional method selectRelative() for JCasUtil"
+    - resolved issue #104 "JCasUtil.selectCovered should accept AnnotationFS"
+    - resolved issue #90 "JCasUtil.isCovered() is named somewhat confusing"
+    - resolved issue #79 "Use PropertyEditors to convert parameter values"
+    - resolved issue #68 "Improve performance of selectCovered() using offsets"
+
+changes in 1.3.1
+    - resolved issue #115 "AAEs to run multi-step pipelines"
+	- resolved issue #109 "Support nested resources"
+
+changes in 1.3.0
+	- resolved issue #112 "Several create() methods missing from FSCollectionFactory"
+	- resolved issue #111 "Several methods in FSCollectionFactory need generics"
+	- resolved issue #110 "All fillArrayFS methods in FSCollectionFactory are broken"
+	- resolved issue #108 "Update to latest Sonatype OSS POM"
+	- resolved issue #107 "Update to UIMA 2.4.0"
+	- resolved issue #106 "Deprecate TypeSystemDescriptionFactory.createTypeSystemDescription(Class<?>...)"
+	- resolved issue #103 "Resource_ImplBase initialize() does not use generics"
+	- resolved issue #101 "CASDumpWriter doesn't dump binary Sofa data"
+	- resolved issue #100 "Allow binding external resources in the same way as setting parameters"
+	- resolved issue #99 "Add support/test-case for ParameterizedDataResource "
+	- resolved issue #98 "Setting parameters on a SharedResourceObject"
+	- resolved issue #86 "Add (J)CasUtil.selectBetween"
+	- resolved issue #80 "Allow injection of logger"
+
+changes in 1.2.0
+    - resolved issue #88 "runPipeline() never calls destroy() on the analysis engines"
+    - resolved issue #87 "DocumentAnnotation cannot be used in createTypePriorities(Class...)"
+    - resolved issue #85 "Configuring external resources for non-uimaFIT components is too complex"
+    - resolved issue #82 "upgrade to Apache UIMA 2.3.1"
+    - resolved issue #81 "JCasUtil.selectFollowing doesn't start after the given annotation"
+    - resolved issue #78 "Remove findbugs dependency from uimaFIT"
+    - resolved issue #77 "Avoid directly instantiating internal UIMA component classes"
+    - resolved issue #76 "SimpleNamedResourceManager does not support bindings"
+    - resolved issue #75 "Provide means of injecting arbitrary Java objects as external resource in a local deployment"
+    - resolved issue #74 "Add a external resource locator using JNDI"
+    - resolved issue #73 "ExternalResources loaded through a ExternalResourceLocator should not need to declare "api""
+    - resolved issue #66 "Consider removing select*() using type names before 1.2.0"
+    - resolved issue #64 "Methods in CasUtil should not be generic"
+    - resolved issue #63 "Ability to specify container in terms of begin and end offset"
+    - resolved issue #62 "Iteration over FSArray and FSList"
+    - resolved issue #60 "Add indexCovering() to replace ContainmentIndex"
+    - resolved issue #59 "Unable to use doubles for parameters in the create* factory methods"
+    - resolved issue #58 "Support for iterating over FeatureStructures"
+    - resolved issue #57 "JCasUtil has various methods that would be nice to have in CasUtil as well"
+    - resolved issue #56 "ExternalResourceFactory fails to bind a resource class twice with different parameters"
+    - resolved issue #55 "Support for no-op steps in a pipeline"
+    - resolved issue #54 "Support creating custom indexes"
+    - resolved issue #52 "null pointer exception thrown when AnalysisEngine impl has no package"
+    - resolved issue #50 "document what types of member variables can be annotated with @ConfigurationParameter"
+    - resolved issue #47 "jcasgen source files should be generated to target/generated-sources/jcasgen"	
+    - resolved issue #45 "set svn:eol-style for .java files	"	
+    - resolved issue #42 "add a "distribution" module to uimaFIT which generates a zip containing uimaFIT plus all dependencies."
+    - resolved issue #38 "TypeSystemDescriptionFactory.createTypeSystemDescription(Class...typeSystemClasses) assumes 1 descriptor file per type"
+    - resolved issue #28 "Eclipse code-style file"
+    - resolved issue #6  "Initialize component from map or resource specifier"
+    - deprecated several iterate() methods in CasUtil and JCasUtil. Instead select() should be used.
+
+changes in 1.1.0
+	- resolved issue #44 "bug in TokenBuilder related to windows newlines"
+	- resolved issue #43 "support for Locale configuration parameters"
+	- introduced CASDumpWriter component
+	- introduced JCasBuilder for cases in which TokenBuilder does not provide enough flexibility
+	- introduced ContainmentIndex useful when repeated containment checks need to be made
+	- CollectionReaderFactory/AnalysisEngineDescription: added create* methods which employ type system auto detection
+	- TokenBuilder: added factory methods which allow using Java's type inference and result in less verbose code
+	- CasUtil: added iterator() methods
+	- JCasUtil: added getView(), exists() and selectSingle() methods
+	- JCasUtil: added select() method which works like iterate() but returns a collection which allows it to be used in extended for loops as well as to initialize collections (e.g. new ArrayList(select(...)))
+	- JCasUtil/CasUtil: added selectPreceding/selectFollowing methods (thanks Niklas Jakob).
+	- introduced Apache Maven RAT plugin which can be used to check presence of license headers during build
+	- fixed infinite loop in SingleFileXReader
+
+changes in 1.0.0
+ 	- resolved issue #36 "remove compiler warnings"
+ 	- resolved issue #2 "tutorial"
+ 	- resolved issue #22 "org.uimafit.factory.ExternalResourceFactoryTest fails with an error if not connected to Internet  "
+ 	- resolved issue #34 "developers setup instructions"
+ 	- resolved issue #35 "jcasgen not running in process-test-resources phase"
+ 	- resolved issue #25 "Update copyright statements to include 2010 "
+ 	- resolved issue #27 "Synchronize initializer method names and signature"
+ 	- resolved issue #23 "Auto-discovery of type system descriptors"
+
+changes in 0.9.14
+	- resolved issue #13 "Consider getting a proper Maven repository and publishing to Maven Central"  
+	- introduced CasUtil & JCasUtil
+	- resolved issue #29 "CasUtil & JCasUtil - method names"
+	- resolved issue #30 "naming convention for method arguments  "
+	- resolved issue #24 "move AnnotationRetrieval.get(JCas, Class<T>, int) method to testing.util package  "
+	- resolved issue #26 "Stick to three-level versioning scheme"
+	- introduced JCasGenPomFriendly for calling Jg from maven without calling System.exit()
+	- resolved issue #12 "upgrade UIMA to version 2.3.0"
+    - resolved issue #20 "create initialize package" which moves InitializeUtil and ExternalResourceConfigurator into a common "initialize" package and gives them consistent names (org.uimafit.component.initialize.ConfigurationParameterInitializer and org.uimafit.component.initialize.ExternalResourceInitializer)
+    - resolved issue #21 "ComponentTestBase - base class for tests"
+	- resolved issue #10 "consider removing TearDownUtil"
+	- resolved issue #11 "consider removing Files.java"
+    - resolved issue #4 "Simplify TokenFactory methods" - renamed to TokenBuilder and refactored interface so it is much easier to use.
+	- resolved issue #8 "rearrange util package"
+    - resolved issue #19 "Clean up JCasFactory methods that have xmi file names as a parameter"
+    - fixed issue #18 "support for different flow controllers in aggregate AEs"
+	- resolved issue #14 "move XWriter into uimaFIT from ClearTK"
+	- resolved issue #15 "Move Initializable interface to uimaFIT along with related UIMAUtil.create methods"
+
+changes in 0.9.13
+	- changed name from uutuc to uimaFIT - see issue #1 "moving uutuc to UimaFIT" (issue number corresponds to uimafit issues)
+
+changes in 0.9.12
+	- added method AnalysisEngineFactory.createAnalysisEngineDescription which is now called by createAnalysisEngine
+	- removed method Files.stripRootDir
+	- fixed issue #34 "POM should specify absolute plugin versions"
+	- fixed issue #33 "Setting AAE multi-deployment property properly when mixing single-deploy AEs and multi-deploy-AEs in the same AAE" 
+	- completed issue #40 "SofaInitializerAnnotator and DocumentTextCopierAnnotator"
+	- fixed issue #41 "AggregateBuilder doesn't work correctly if you add an aggregate description"
+ 	- fixed issue #32 "Working with sofas should be easier" by introducing AggregateBuilder
+ 	- added TypeCapability annotation and updated CapabilityFactory.createCapability accordingly
+ 	- CapabilityFactory.createCapability method returns a single capability set rather than an array
+ 	- added various component base classes which invoke the InitializeUtil and 
+ 	  ExternalResourceConfigurator to configure themselves based on their UIMAContext.  See, for example, org.uutuc.component.JCasAnnotator_ImplBase
+  	
+changes in 0.9.11
+	- fixed issue #23 "use default values in InitializeUtil" again.  See final comments in that
+	  issue for the mo' better fix.
+	- fixed issue #27 "Parameters cannot be set to null".
+	- add javadoc for @SofaCapability per wontfix issue #26 "sofa aware components treat "base CAS"
+	  differently then "_InitialView""
+	- fixed issue #28 "Support for enumeration fields" see org.uutuc.util.InitializeUtilTest.testEnumDefaultValue()
+	- fixed issue #29 "AnalysisComponent annotations on ancestor classes are not taken into account".
+	  See org.uutuc.factory.AnalysisEngineFactoryTest.testComponentAnnotationOnAncestor().
+
+changes in 0.9.10
+ 	- fixed issue 23 "use default values in InitializeUtil"
+ 	- added ConfigurationParameterFactory.createConfigurationParameterName 
+ 	  method which resolves issue 22 "ConfigurationParameter name quandry" 
+ 	- fixed issue 17 "all test components should use annotations"
+ 	
+changes in 0.9.9
+	- added several addConfigurationParameters methods to ConfigurationParameterFactory. 
+	  These are useful for a variety of scenarios - esp. when you need configuration parameter
+	  information from dynamically loaded classes.
+	- added this CHANGES file you are reading
+	- Changes to External Resources
+	- Updated external resources code to handle SharedResourceObjects created using 
+	  ConfigurableDataResourceSpecifiers. 
+	- Added convenience methods to use Files and URLs as external resources.
+	- Updated JavaDoc
+	- Added external dependencies reflection code used in AnalysisEngineFactory also 
+	  to CollectionReaderFactory .
+	- Split ResourceCreationSpecifiedFactory.setConfigurationParameters() into two 
+	  methods to reuse the part operating on ResourceMetaData.
+  

@@ -1,0 +1,2 @@
+classpath*:org/uimafit/examples/type/*.xml
+classpath*:org/uimafit/examples/tutorial/type/*.xml

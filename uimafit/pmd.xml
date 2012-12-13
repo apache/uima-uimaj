@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<ruleset name="Custom ruleset" xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd"
+	xsi:noNamespaceSchemaLocation="http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+	<description>
+		PMD ruleset for Java in uimaFIT
+	</description>
+
+	<exclude-pattern>.*/src/test/.*</exclude-pattern>
+	<exclude-pattern>.*/target/generated-sources/.*</exclude-pattern>
+	<rule ref="rulesets/braces.xml"></rule>
+	<rule ref="rulesets/clone.xml"></rule>
+	<rule ref="rulesets/codesize.xml">
+		<exclude name="CyclomaticComplexity" />
+		<exclude name="TooManyMethods" />
+	</rule>
+	<rule ref="rulesets/coupling.xml"></rule>
+	<rule ref="rulesets/design.xml">
+		<exclude name="ConfusingTernary" />
+		<exclude name="ConstructorCallsOverridableMethod" />
+		<exclude name="EmptyMethodInAbstractClassShouldBeAbstract" />
+	</rule>
+	<rule ref="rulesets/finalizers.xml"></rule>
+	<rule ref="rulesets/imports.xml">
+		<exclude name="TooManyStaticImports" />
+	</rule>
+	<rule ref="rulesets/naming.xml">
+		<exclude name="LongVariable" />
+		<exclude name="ShortVariable" />
+	</rule>
+	<rule ref="rulesets/optimizations.xml">
+		<exclude name="AvoidInstantiatingObjectsInLoops" />
+		<exclude name="LocalVariableCouldBeFinal" />
+		<exclude name="MethodArgumentCouldBeFinal" />
+	</rule>
+	<rule ref="rulesets/strictexception.xml"></rule>
+	<rule ref="rulesets/strings.xml"></rule>
+	<rule ref="rulesets/sunsecure.xml"></rule>
+	<rule ref="rulesets/typeresolution.xml"></rule>
+	<rule ref="rulesets/unusedcode.xml"></rule>
+</ruleset>
