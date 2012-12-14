@@ -508,8 +508,8 @@
 		</profile>
 	</profiles>
 	<modules>
-		<module>uimaFIT</module>
-		<module>uimaFIT-examples</module>
-		<module>uimaFIT-spring</module>
+		<module>uimafit</module>
+		<module>uimafit-examples</module>
+		<module>uimafit-spring</module>
 	</modules>
 </project>
