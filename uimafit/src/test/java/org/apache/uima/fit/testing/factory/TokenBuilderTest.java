@@ -28,13 +28,13 @@ import org.apache.uima.UIMAException;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.fit.ComponentTestBase;
+import org.apache.uima.fit.type.Sentence;
+import org.apache.uima.fit.type.Token;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.pear.util.FileUtil;
 import org.junit.Test;
-import org.uimafit.type.Sentence;
-import org.uimafit.type.Token;
 
 /**
  * @author Steven Bethard, Philip Ogren

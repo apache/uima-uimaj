@@ -20,13 +20,13 @@ package org.apache.uima.fit;
 import org.apache.uima.fit.factory.TypePrioritiesFactory;
 import org.apache.uima.fit.factory.TypeSystemDescriptionFactory;
 import org.apache.uima.fit.testing.factory.TokenBuilder;
+import org.apache.uima.fit.type.Sentence;
+import org.apache.uima.fit.type.Token;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasCreationUtils;
 import org.junit.Before;
-import org.uimafit.type.Sentence;
-import org.uimafit.type.Token;
 
 /**
  * 
@@ -45,8 +45,8 @@ public class ComponentTestBase {
 			TYPE_SYSTEM_DESCRIPTION.set(TypeSystemDescriptionFactory.createTypeSystemDescription());
 
 			TypePriorities tp = TypePrioritiesFactory.createTypePriorities(new String[] {
-					"org.uimafit.type.Sentence", "org.uimafit.type.AnalyzedText",
-					"org.uimafit.type.Token" });
+					"org.apache.uima.fit.type.Sentence", "org.apache.uima.fit.type.AnalyzedText",
+					"org.apache.uima.fit.type.Token" });
 			TYPE_PRIORITIES.set(tp);
 
 			JCas jCas = CasCreationUtils.createCas(TYPE_SYSTEM_DESCRIPTION.get(), tp, null)

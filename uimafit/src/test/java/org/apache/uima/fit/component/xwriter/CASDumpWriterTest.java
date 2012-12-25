@@ -31,7 +31,6 @@ import org.apache.uima.jcas.JCas;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import org.uimafit.component.xwriter.CASDumpWriter;
 
 /**
  * @author Richard Eckart de Castilho

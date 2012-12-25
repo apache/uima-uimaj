@@ -54,7 +54,7 @@ public final class TypeSystemDescriptionFactory {
 	 * System property indicating which locations to scan for type descriptions. A list of locations
 	 * may be given separated by ";".
 	 */
-	public static final String TYPE_IMPORT_PATTERN = "org.uimafit.type.import_pattern";
+	public static final String TYPE_IMPORT_PATTERN = "org.apache.uima.fit.type.import_pattern";
 
 	/**
 	 * Type manifest location.

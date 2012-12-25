@@ -26,7 +26,6 @@ import junit.framework.Assert;
 
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
-import org.apache.uima.fit.pipeline.CpePipeline;
 import org.apache.uima.fit.pipeline.SimplePipelineTest.Annotator;
 import org.apache.uima.fit.pipeline.SimplePipelineTest.Reader;
 import org.apache.uima.fit.pipeline.SimplePipelineTest.Writer;

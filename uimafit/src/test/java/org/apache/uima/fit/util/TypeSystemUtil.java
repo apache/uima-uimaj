@@ -16,9 +16,8 @@
  */
 package org.apache.uima.fit.util;
 
-import org.apache.uima.fit.util.JCasUtil;
+import org.apache.uima.fit.type.AnalyzedText;
 import org.apache.uima.jcas.JCas;
-import org.uimafit.type.AnalyzedText;
 
 /**
  * @author Philip Ogren

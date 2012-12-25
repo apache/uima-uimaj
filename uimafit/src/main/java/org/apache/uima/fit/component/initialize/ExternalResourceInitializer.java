@@ -32,6 +32,7 @@ import java.util.WeakHashMap;
 
 import org.apache.uima.UimaContext;
 import org.apache.uima.UimaContextAdmin;
+import org.apache.uima.fit.component.ExternalResourceAware;
 import org.apache.uima.fit.descriptor.ExternalResource;
 import org.apache.uima.fit.descriptor.ExternalResourceLocator;
 import org.apache.uima.fit.util.ReflectionUtil;
@@ -42,7 +43,6 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.SharedResourceObject;
 import org.apache.uima.resource.impl.ResourceManager_impl;
-import org.uimafit.component.ExternalResourceAware;
 
 /**
  * Configurator class for {@link ExternalResource} annotations.

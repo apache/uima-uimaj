@@ -22,18 +22,32 @@ package org.apache.uima.fit.util;
 
 import static java.util.Arrays.asList;
 import static org.apache.commons.lang.ArrayUtils.toObject;
-import static org.apache.uima.fit.util.FSCollectionFactory.*;
+import static org.apache.uima.fit.util.FSCollectionFactory.create;
+import static org.apache.uima.fit.util.FSCollectionFactory.createBooleanArray;
+import static org.apache.uima.fit.util.FSCollectionFactory.createByteArray;
+import static org.apache.uima.fit.util.FSCollectionFactory.createDoubleArray;
+import static org.apache.uima.fit.util.FSCollectionFactory.createFSArray;
+import static org.apache.uima.fit.util.FSCollectionFactory.createFSList;
+import static org.apache.uima.fit.util.FSCollectionFactory.createFloatArray;
+import static org.apache.uima.fit.util.FSCollectionFactory.createFloatList;
+import static org.apache.uima.fit.util.FSCollectionFactory.createIntArray;
+import static org.apache.uima.fit.util.FSCollectionFactory.createIntegerList;
+import static org.apache.uima.fit.util.FSCollectionFactory.createLongArray;
+import static org.apache.uima.fit.util.FSCollectionFactory.createShortArray;
+import static org.apache.uima.fit.util.FSCollectionFactory.createStringArray;
+import static org.apache.uima.fit.util.FSCollectionFactory.createStringList;
 import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.fit.factory.JCasFactory;
+import org.apache.uima.fit.type.Token;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.junit.Before;
 import org.junit.Test;
-import org.uimafit.type.Token;
 
 /**
  * @author Richard Eckart de Castilho

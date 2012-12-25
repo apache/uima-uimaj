@@ -33,7 +33,6 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.Progress;
 import org.junit.Test;
-import org.uimafit.component.JCasCollectionReader_ImplBase;
 
 /**
  * Test {@link JCasCollectionReader_ImplBase}

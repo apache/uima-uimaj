@@ -30,7 +30,6 @@ import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.junit.Test;
-import org.uimafit.component.ViewTextCopierAnnotator;
 
 /**
  * @author Philip Ogren

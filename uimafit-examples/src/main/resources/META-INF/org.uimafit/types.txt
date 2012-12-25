@@ -1,2 +1,2 @@
-classpath*:org/uimafit/examples/type/*.xml
-classpath*:org/uimafit/examples/tutorial/type/*.xml
+classpath*:org/apache/uima/fit/examples/type/*.xml
+classpath*:org/apache/uima/fit/examples/tutorial/type/*.xml

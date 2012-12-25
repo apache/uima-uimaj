@@ -30,11 +30,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.uima.fit.ComponentTestBase;
-import org.apache.uima.fit.util.ContainmentIndex;
+import org.apache.uima.fit.type.Sentence;
+import org.apache.uima.fit.type.Token;
 import org.apache.uima.fit.util.ContainmentIndex.Type;
 import org.junit.Test;
-import org.uimafit.type.Sentence;
-import org.uimafit.type.Token;
 
 /**
  * Unit test for {@link ContainmentIndex}.

@@ -23,10 +23,10 @@ import org.apache.uima.UIMAException;
 import org.apache.uima.cas.impl.XCASSerializer;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.fit.testing.factory.TokenBuilder;
+import org.apache.uima.fit.type.Sentence;
+import org.apache.uima.fit.type.Token;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.util.XMLSerializer;
-import org.uimafit.type.Sentence;
-import org.uimafit.type.Token;
 import org.xml.sax.SAXException;
 
 /**

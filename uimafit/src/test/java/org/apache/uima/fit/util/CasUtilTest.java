@@ -40,11 +40,10 @@ import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.fit.ComponentTestBase;
-import org.apache.uima.fit.util.JCasUtil;
+import org.apache.uima.fit.type.Token;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.junit.Test;
-import org.uimafit.type.Token;
 
 /**
  * Test cases for {@link JCasUtil}.

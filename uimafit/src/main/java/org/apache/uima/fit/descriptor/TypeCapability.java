@@ -26,13 +26,13 @@ import java.lang.annotation.Target;
  * A typical use of this annotation might look something like:
  * 
  * <pre>
- *  	@TypeCapability(inputs="org.uimafit.type.Token", outputs="org.uimafit.type.Token:pos")
+ *  	@TypeCapability(inputs="org.apache.uima.fit.type.Token", outputs="org.apache.uima.fit.type.Token:pos")
  * </pre>
  * 
  * or
  * 
  * <pre>
- *  	@TypeCapability(inputs={"org.uimafit.type.Token","org.uimafit.type.Sentence"}, outputs={"org.uimafit.type.Token:pos", "org.apache.uima.tutorial.RoomNumber"})
+ *  	@TypeCapability(inputs={"org.apache.uima.fit.type.Token","org.apache.uima.fit.type.Sentence"}, outputs={"org.apache.uima.fit.type.Token:pos", "org.apache.uima.tutorial.RoomNumber"})
  * </pre>
  * 
  * @author Philip Ogren
@@ -45,7 +45,7 @@ public @interface TypeCapability {
 	/**
 	 * inputs can be type names or feature names. A feature name typically looks like a type name
 	 * followed by a colon (':') followed by the feature name. A valid feature name from the uimaFIT
-	 * test type system is "org.uimafit.type.Token:pos"
+	 * test type system is "org.apache.uima.fit.type.Token:pos"
 	 * 
 	 */
 	String[] inputs() default NO_DEFAULT_VALUE;
@@ -53,7 +53,7 @@ public @interface TypeCapability {
 	/**
 	 * outputs can be type names or feature names. A feature name typically looks like a type name
 	 * followed by a colon (':') followed by the feature name. A valid feature name from the uimaFIT
-	 * test type system is "org.uimafit.type.Token:pos"
+	 * test type system is "org.apache.uima.fit.type.Token:pos"
 	 */
 	String[] outputs() default NO_DEFAULT_VALUE;
 

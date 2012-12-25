@@ -69,7 +69,7 @@
 				<configuration>
 					<mainClass>org.apache.uima.fit.util.JCasGenPomFriendly</mainClass>
 					<arguments>
-						<argument>file:${project.basedir}/src/test/resources/org/uimafit/type/**/*.xml</argument>
+						<argument>file:${project.basedir}/src/test/resources/org/apache/uima/fit/type/**/*.xml</argument>
 						<argument>${project.build.directory}/generated-sources/jcasgen</argument>
 					</arguments>
 					<classpathScope>test</classpathScope>
@@ -108,7 +108,7 @@
 						<exclude>README</exclude>
 						<exclude>src/main/resources/**/*</exclude>
 						<exclude>src/test/resources/**/*</exclude>
-						<exclude>src/test/java/org/uimafit/type/**/*</exclude> <!-- JCasGen -->
+						<exclude>src/test/java/org/apache/uima/fit/type/**/*</exclude> <!-- JCasGen -->
 						<exclude>apidocs/package-list</exclude>
 					</excludes>
 				</configuration>

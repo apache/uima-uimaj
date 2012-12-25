@@ -23,15 +23,13 @@ import static org.junit.Assert.assertTrue;
 
 import org.apache.uima.UimaContext;
 import org.apache.uima.fit.component.initialize.ConfigurationParameterInitializer;
+import org.apache.uima.fit.component.xwriter.XWriterFileNamer;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.factory.ConfigurationParameterFactory;
 import org.apache.uima.fit.factory.UimaContextFactory;
-import org.apache.uima.fit.factory.initializable.Initializable;
-import org.apache.uima.fit.factory.initializable.InitializableFactory;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.junit.Test;
-import org.uimafit.component.xwriter.XWriterFileNamer;
 
 /**
  * @author Philip Ogren

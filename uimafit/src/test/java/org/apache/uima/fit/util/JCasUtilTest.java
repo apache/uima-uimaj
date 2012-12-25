@@ -58,7 +58,9 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.fit.ComponentTestBase;
-import org.apache.uima.fit.util.JCasUtil;
+import org.apache.uima.fit.type.AnalyzedText;
+import org.apache.uima.fit.type.Sentence;
+import org.apache.uima.fit.type.Token;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.EmptyFSList;
 import org.apache.uima.jcas.cas.FSArray;
@@ -67,9 +69,6 @@ import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.util.CasCreationUtils;
 import org.junit.Test;
-import org.uimafit.type.AnalyzedText;
-import org.uimafit.type.Sentence;
-import org.uimafit.type.Token;
 
 /**
  * Test cases for {@link JCasUtil}.

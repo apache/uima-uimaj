@@ -26,17 +26,16 @@ import junit.framework.Assert;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.collection.CollectionException;
+import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
+import org.apache.uima.fit.component.JCasCollectionReader_ImplBase;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
-import org.apache.uima.fit.pipeline.SimplePipeline;
+import org.apache.uima.fit.type.Sentence;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Progress;
 import org.junit.Test;
-import org.uimafit.component.JCasAnnotator_ImplBase;
-import org.uimafit.component.JCasCollectionReader_ImplBase;
-import org.uimafit.type.Sentence;
 
 /**
  * @author Steven Bethard

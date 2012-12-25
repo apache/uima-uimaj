@@ -24,11 +24,11 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.fit.ComponentTestBase;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.JCasFactory;
+import org.apache.uima.fit.factory.testAes.Annotator1;
+import org.apache.uima.fit.factory.testAes.Annotator2;
+import org.apache.uima.fit.factory.testAes.Annotator3;
 import org.apache.uima.fit.pipeline.SimplePipeline;
 import org.junit.Test;
-import org.uimafit.factory.testAes.Annotator1;
-import org.uimafit.factory.testAes.Annotator2;
-import org.uimafit.factory.testAes.Annotator3;
 
 /**
  * @author Philip Ogren

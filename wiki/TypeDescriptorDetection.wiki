@@ -7,16 +7,16 @@ UIMA component and to each created CAS, it is quite inconvenient to do so. For t
 
 = Making types auto-detectable =
 
-The provider of a type system should create a file `META-INF/org.uimafit/types.txt` in the classpath. This file should define the locations of the type system descriptions. Assume that a type `org.uimafit.type.Token` is specified  in the TSD `org/uimafit/type/Token.xml`, then the file should have the following contents:
+The provider of a type system should create a file `META-INF/org.uimafit/types.txt` in the classpath. This file should define the locations of the type system descriptions. Assume that a type `org.uimafit.type.Token` is specified  in the TSD `org/apache/uima/fit/type/Token.xml`, then the file should have the following contents:
 
 {{{
-classpath*:org/uimafit/type/Token.xml
+classpath*:org/apache/uima/fit/type/Token.xml
 }}}
 
-To specify multiple TSDs, add additonal lines to the file. If you have a large number of TSDs, you may prefer to add a pattern. Assume that we have a large number of TSDs under `org/uimafit/type`, we can use the following pattern which recursively scans the package `org.uimafit.type` and all sub-packages for XML files and tries to load them as TSDs.
+To specify multiple TSDs, add additonal lines to the file. If you have a large number of TSDs, you may prefer to add a pattern. Assume that we have a large number of TSDs under `org/apache/uima/fit/type`, we can use the following pattern which recursively scans the package `org.uimafit.type` and all sub-packages for XML files and tries to load them as TSDs.
 
 {{{
-classpath*:org/uimafit/type/**/*.xml
+classpath*:org/apache/uima/fit/type/**/*.xml
 }}}
 
 Try to design your packages structure in a way that TSDs and JCas wrapper classes generated from them are separate from the rest of your code. 
@@ -24,7 +24,7 @@ Try to design your packages structure in a way that TSDs and JCas wrapper classe
 If it is not possible or inconvenient to add the `types.txt` file, patterns can also be specified using a system property. Multiple patterns may be specified separated by semicolon:
 
 {{{
-org.uimafit.type.import_pattern=classpath*:org/uimafit/type/**/*.xml
+org.apache.uima.fit.type.import_pattern=classpath*:org/apache/uima/fit/type/**/*.xml
 }}}
 
 = Using type auto-detection =
@@ -73,7 +73,7 @@ Voilá, the result is a type system covering all types could be found in the cla
 I recommend 
   # to put type system descriptors into packages resembling a namespace you "own" and to use a package-scoped wildcard search 
 {{{ 
-classpath*:org/uimafit/type/**/*.xml`
+classpath*:org/apache/uima/fit/type/**/*.xml`
 }}}
   # or when putting descriptors into a "well-known" package like `desc.type`, that `types.txt` file  should explicitly list all type system descriptors instead of using a wildcard search or 
 {{{

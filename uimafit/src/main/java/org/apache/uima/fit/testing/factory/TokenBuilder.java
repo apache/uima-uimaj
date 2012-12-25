@@ -60,10 +60,10 @@ public class TokenBuilder<TOKEN_TYPE extends Annotation, SENTENCE_TYPE extends A
 	 * 
 	 * @param tokenClass
 	 *            the class of your token type from your type system (e.g.
-	 *            org.uimafit.type.Token.class)
+	 *            org.apache.uima.fit.type.Token.class)
 	 * @param sentenceClass
 	 *            the class of your sentence type from your type system (e.g.
-	 *            org.uimafit.type.Sentence.class)
+	 *            org.apache.uima.fit.type.Sentence.class)
 	 * @param posFeatureName
 	 *            the feature name for the part-of-speech tag for your token type. This assumes that
 	 *            there is a single string feature for which to put your pos tag. null is an ok
@@ -90,10 +90,10 @@ public class TokenBuilder<TOKEN_TYPE extends Annotation, SENTENCE_TYPE extends A
 	 *            the type system sentence type (e.g. org.uimafit.examples.type.Sentence)
 	 * @param tokenClass
 	 *            the class of your token type from your type system (e.g.
-	 *            org.uimafit.type.Token.class)
+	 *            org.apache.uima.fit.type.Token.class)
 	 * @param sentenceClass
 	 *            the class of your sentence type from your type system (e.g.
-	 *            org.uimafit.type.Sentence.class)
+	 *            org.apache.uima.fit.type.Sentence.class)
 	 * @return the builder.
 	 */
 	public static <T extends Annotation, S extends Annotation> TokenBuilder<T, S> create(

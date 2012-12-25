@@ -18,11 +18,11 @@
 package org.apache.uima.fit.factory.initializable;
 
 import org.apache.uima.UimaContext;
+import org.apache.uima.fit.component.xwriter.IntegerFileNamer;
+import org.apache.uima.fit.component.xwriter.XWriter;
+import org.apache.uima.fit.component.xwriter.XWriterFileNamer;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.uimafit.component.xwriter.IntegerFileNamer;
-import org.uimafit.component.xwriter.XWriter;
-import org.uimafit.component.xwriter.XWriterFileNamer;
 
 /**
  * <p>

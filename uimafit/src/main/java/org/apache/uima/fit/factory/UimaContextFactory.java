@@ -19,8 +19,8 @@ package org.apache.uima.fit.factory;
 
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngine;
+import org.apache.uima.fit.component.NoOpAnnotator;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.uimafit.component.NoOpAnnotator;
 
 /**
  * @author Steven Bethard, Philip Ogren

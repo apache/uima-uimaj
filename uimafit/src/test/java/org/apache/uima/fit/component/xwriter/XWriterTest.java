@@ -31,6 +31,10 @@ import org.apache.uima.fit.ComponentTestBase;
 import org.apache.uima.fit.factory.AggregateBuilder;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.JCasFactory;
+import org.apache.uima.fit.factory.testAes.Annotator1;
+import org.apache.uima.fit.factory.testAes.Annotator2;
+import org.apache.uima.fit.factory.testAes.Annotator3;
+import org.apache.uima.fit.factory.testAes.ViewNames;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.FileUtils;
 import org.jdom.Document;
@@ -42,12 +46,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import org.uimafit.component.xwriter.IntegerFileNamer;
-import org.uimafit.component.xwriter.XWriter;
-import org.uimafit.factory.testAes.Annotator1;
-import org.uimafit.factory.testAes.Annotator2;
-import org.uimafit.factory.testAes.Annotator3;
-import org.uimafit.factory.testAes.ViewNames;
 
 /**
  * @author Philip Ogren
@@ -175,9 +173,9 @@ public class XWriterTest extends ComponentTestBase {
 			throw new AnalysisEngineProcessException(e);
 		}
 
-		List<?> elements = root.getChildren("org.uimafit.type.Sentence");
+		List<?> elements = root.getChildren("org.apache.uima.fit.type.Sentence");
 		Assert.assertEquals(1, elements.size());
-		elements = root.getChildren("org.uimafit.type.Token");
+		elements = root.getChildren("org.apache.uima.fit.type.Token");
 		Assert.assertEquals(4, elements.size());
 
 	}

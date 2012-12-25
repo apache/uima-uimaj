@@ -25,10 +25,10 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.TypeOrFeature;
 import org.apache.uima.fit.ComponentTestBase;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
+import org.apache.uima.fit.factory.testAes.Annotator4;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.Capability;
 import org.junit.Test;
-import org.uimafit.factory.testAes.Annotator4;
 
 /**
  * @author Philip Ogren
@@ -45,12 +45,12 @@ public class TypeCapabilityTest extends ComponentTestBase {
 		Capability capability = capabilities[0];
 		TypeOrFeature[] inputs = capability.getInputs();
 		assertEquals(1, inputs.length);
-		assertEquals("org.uimafit.type.Token", inputs[0].getName());
+		assertEquals("org.apache.uima.fit.type.Token", inputs[0].getName());
 		assertTrue(inputs[0].isType());
 
 		TypeOrFeature[] outputs = capability.getOutputs();
 		assertEquals(1, outputs.length);
-		assertEquals("org.uimafit.type.Token:pos", outputs[0].getName());
+		assertEquals("org.apache.uima.fit.type.Token:pos", outputs[0].getName());
 		assertFalse(outputs[0].isType());
 
 	}
