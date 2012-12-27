@@ -8,17 +8,15 @@
 	<description>Factories, Injection, and Testing library for UIMA</description>
 	<url>http://uimafit.googlecode.com</url>
 	<parent>
-		<groupId>org.sonatype.oss</groupId>
-		<artifactId>oss-parent</artifactId>
-		<version>7</version>
+	    <groupId>org.apache.uima</groupId>
+	    <artifactId>parent-pom</artifactId>
+	    <version>4</version>
+	    <relativePath />
 	</parent>
-	<prerequisites>
-		<maven>2.2.1</maven>
-    </prerequisites>
 	<scm>
-		<connection>scm:svn:http://uimafit.googlecode.com/svn/trunk/</connection>
-		<developerConnection>scm:svn:https://uimafit.googlecode.com/svn/trunk/</developerConnection>
-		<url>http://uimafit.googlecode.com/svn/</url>
+		<connection>scm:svn:http://svn.apache.org/repos/asf/uima/sandbox/uimafit/trunk/</connection>
+		<developerConnection>scm:svn:https://svn.apache.org/repos/asf/uima/sandbox/uimafit/trunk/</developerConnection>
+		<url>http://svn.apache.org/repos/asf/uima/sandbox/uimafit/trunk/</url>
 	</scm>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -28,10 +26,6 @@
 		<uima.version>2.4.0</uima.version>
 	</properties>
 	<repositories>
-		<repository>
-			<id>UIMA</id>
-			<url>http://people.apache.org/repo/m2-incubating-repository</url>
-		</repository>
 		<repository>
 			<id>maven2-repository.dev.java.net</id>
 			<name>Java.net Repository for Maven</name>
@@ -324,21 +318,28 @@
 							<pluginExecutions>
 								<pluginExecution>
 									<pluginExecutionFilter>
-										<groupId>
-											org.codehaus.mojo
-										</groupId>
-										<artifactId>
-											exec-maven-plugin
-										</artifactId>
-										<versionRange>
-											[1.2,)
-										</versionRange>
+										<groupId>org.codehaus.mojo</groupId>
+										<artifactId>exec-maven-plugin</artifactId>
+										<versionRange>[1.2,)</versionRange>
 										<goals>
 											<goal>java</goal>
 										</goals>
 									</pluginExecutionFilter>
 									<action>
 										<ignore />
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.apache.uima</groupId>
+										<artifactId>uima-build-helper-maven-plugin</artifactId>
+										<versionRange>[4,)</versionRange>
+										<goals>
+											<goal>parse-date-time</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
 									</action>
 								</pluginExecution>
 							</pluginExecutions>
