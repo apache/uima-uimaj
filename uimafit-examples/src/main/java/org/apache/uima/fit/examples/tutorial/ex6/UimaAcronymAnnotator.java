@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.fit.examples.tutorial.ex6;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription;

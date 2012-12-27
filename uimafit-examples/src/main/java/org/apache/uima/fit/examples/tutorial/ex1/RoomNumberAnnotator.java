@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.fit.examples.tutorial.ex1;
 
 import java.util.regex.Matcher;
