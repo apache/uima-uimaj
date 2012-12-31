@@ -26,7 +26,6 @@ import org.apache.uima.jcas.JCas;
 
 /**
  * 
- * @author Philip Ogren
  * 
  */
 public class GetStartedQuickPipeline {

@@ -24,7 +24,6 @@ import org.apache.uima.fit.component.NoOpAnnotator;
 import org.apache.uima.resource.ResourceInitializationException;
 
 /**
- * @author Steven Bethard, Philip Ogren
  */
 public final class UimaContextFactory {
 	private UimaContextFactory() {

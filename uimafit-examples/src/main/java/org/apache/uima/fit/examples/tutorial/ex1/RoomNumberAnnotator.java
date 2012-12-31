@@ -41,7 +41,6 @@ import org.apache.uima.jcas.JCas;
  * <li>The class is annotated with org.apache.uima.fit.descriptor.TypeCapability</li>
  * </ul>
  *
- * @author unknown
  *
  */
 @TypeCapability(outputs = { "org.apache.uima.tutorial.RoomNumber", "org.apache.uima.tutorial.RoomNumber:building" })

@@ -51,7 +51,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * @author Richard Eckart de Castilho
  */
 public class FSCollectionFactoryTest {
 	private JCas jcas;

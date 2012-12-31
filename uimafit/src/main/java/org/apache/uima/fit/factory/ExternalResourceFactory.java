@@ -69,7 +69,6 @@ import org.apache.uima.util.InvalidXMLException;
 /**
  * Helper methods for external resources.
  *
- * @author Richard Eckart de Castilho
  */
 public final class ExternalResourceFactory {
 	public static final String PARAM_RESOURCE_NAME = "__UIMAFIT_RESOURCE_NAME__";

@@ -24,7 +24,6 @@ import org.apache.uima.cas.CAS;
 /**
  * No-operation annotator. This annotator performs no operation whatsoever.
  *
- * @author Steven Bethard, Philip Ogren
  */
 public class NoOpAnnotator extends CasAnnotator_ImplBase {
 	@Override

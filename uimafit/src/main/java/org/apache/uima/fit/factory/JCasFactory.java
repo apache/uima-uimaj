@@ -36,8 +36,6 @@ import org.apache.uima.util.CasCreationUtils;
 import org.xml.sax.SAXException;
 
 /**
- * @author Steven Bethard, Philip Ogren
- * @author Richard Eckart de Castilho
  */
 public final class JCasFactory {
 	private JCasFactory() {

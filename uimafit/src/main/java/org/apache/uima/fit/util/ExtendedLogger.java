@@ -33,7 +33,6 @@ import org.apache.uima.util.Logger;
  * Log4J's {@code Category} and SLF4J's {@code Logger}, using the names {@code error}, {@code warn},
  * {@code info}, {@code debug} and {@code trace} and mapping these to UIMA logging levels.
  * 
- * @author Richard Eckart de Castilho
  */
 public class ExtendedLogger implements Logger {
 

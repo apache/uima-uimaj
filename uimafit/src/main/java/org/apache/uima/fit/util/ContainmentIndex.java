@@ -37,7 +37,6 @@ import org.apache.uima.jcas.JCas;
  * Create a fast way of repeatedly checking whether instances of one type are contained within the
  * boundaries on another type.
  *
- * @author Richard Eckart de Castilho
  *
  * @param <S>
  *            covering type.

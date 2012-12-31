@@ -45,7 +45,6 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 
 /**
- * @author Richard Eckart de Castilho
  */
 public final class FsIndexFactory {
 	  public static final int STANDARD_COMPARE = FsIndexKeyDescription.STANDARD_COMPARE;

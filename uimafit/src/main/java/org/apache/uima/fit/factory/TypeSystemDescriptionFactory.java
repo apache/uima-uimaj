@@ -43,8 +43,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 /**
- * @author Steven Bethard, Philip Ogren
- * @author Richard Eckart de Castilho
  */
 public final class TypeSystemDescriptionFactory {
 	private TypeSystemDescriptionFactory() {

@@ -56,8 +56,6 @@ import org.apache.uima.util.Progress;
 import org.junit.Test;
 
 /**
- * @author Shuo Yang
- * @author Richard Eckart de Castilho
  */
 public class CollectionReaderFactoryExternalResourceTest {
 	@Test

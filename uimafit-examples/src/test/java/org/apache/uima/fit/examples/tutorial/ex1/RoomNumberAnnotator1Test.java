@@ -35,7 +35,6 @@ import org.junit.Test;
  * This class demonstrates some simple tests using uimaFIT. A slightly better set of tests can be
  * found in RoomNumberAnnotator2Test
  * 
- * @author Philip
  */
 public class RoomNumberAnnotator1Test {
 

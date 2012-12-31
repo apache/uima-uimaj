@@ -47,7 +47,6 @@ import org.apache.uima.fit.factory.ConfigurationParameterFactory;
  * {@link File}, {@link URL}, {@link URI} ...</li>
  * </ul>
  *
- * @author Philip Ogren
  * @see ConfigurationParameterInitializer
  */
 

@@ -31,7 +31,6 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
 
 /**
  * 
- * @author Philip Ogren
  * 
  */
 public class RoomNumberAnnotatorPipeline {

@@ -27,7 +27,6 @@ import org.apache.uima.jcas.JCas;
 import org.junit.Test;
 
 /**
- * @author Philip Ogren
  */
 
 public class DefaultPackageAETest extends ComponentTestBase {

@@ -50,8 +50,6 @@ import org.apache.uima.jcas.tcas.Annotation;
 /**
  * Utility methods for convenient access to the {@link CAS}.
  *
- * @author Richard Eckart de Castilho
- * @author Niklas Jakob
  */
 public class CasUtil {
 	/**

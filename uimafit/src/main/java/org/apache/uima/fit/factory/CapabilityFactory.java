@@ -29,7 +29,6 @@ import org.apache.uima.resource.metadata.Capability;
 import org.apache.uima.resource.metadata.impl.Capability_impl;
 
 /**
- * @author Philip Ogren
  */
 
 public final class CapabilityFactory {

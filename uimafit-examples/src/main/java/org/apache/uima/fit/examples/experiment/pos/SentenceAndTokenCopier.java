@@ -33,7 +33,6 @@ import org.apache.uima.jcas.JCas;
 /**
  * This simple AE copies tokens and sentences from one view to another.
  * 
- * @author Philip
  * 
  */
 

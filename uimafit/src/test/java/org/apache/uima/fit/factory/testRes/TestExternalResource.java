@@ -24,7 +24,6 @@ import org.apache.uima.fit.component.Resource_ImplBase;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 
 /**
- * @author Richard Eckart de Castilho
  */
 public class TestExternalResource extends Resource_ImplBase {
 	public static final String EXPECTED_VALUE = "expected value";

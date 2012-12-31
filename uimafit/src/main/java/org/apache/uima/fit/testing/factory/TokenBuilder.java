@@ -32,8 +32,6 @@ import org.apache.uima.jcas.tcas.Annotation;
  * This class provides convenience methods for creating tokens and sentences and add them to a
  * {@link JCas}.
  * 
- * @author Steven Bethard, Philip Ogren
- * @author Richard Eckart de Castilho
  * 
  * @param <TOKEN_TYPE>
  *            the type system token type (e.g. org.uimafit.examples.type.Token)

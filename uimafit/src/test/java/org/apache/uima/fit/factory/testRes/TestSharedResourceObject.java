@@ -27,7 +27,6 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.SharedResourceObject;
 
 /**
- * @author Richard Eckart de Castilho
  */
 public class TestSharedResourceObject implements SharedResourceObject {
 	public static final String EXPECTED_VALUE = "expected value";

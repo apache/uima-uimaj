@@ -25,8 +25,6 @@ import org.apache.uima.resource.ResourceCreationSpecifier;
 import org.junit.Test;
 
 /**
- * @author Steven Bethard, Philip Ogren
- * @author Richard Eckart de Castilho
  */
 
 public class ResourceCreationSpecifierFactoryTest {

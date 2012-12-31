@@ -24,7 +24,6 @@ import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 
 /**
- * @author Philip Ogren
  */
 public class GetStartedQuickAE extends JCasAnnotator_ImplBase {
 

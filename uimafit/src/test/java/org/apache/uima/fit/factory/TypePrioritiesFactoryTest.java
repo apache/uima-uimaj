@@ -32,7 +32,6 @@ import org.junit.Test;
 /**
  * Tests for the {@link TypePrioritiesFactory}.
  *
- * @author Richard Eckart de Castilho
  */
 public class TypePrioritiesFactoryTest {
 

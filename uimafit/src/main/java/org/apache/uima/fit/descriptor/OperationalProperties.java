@@ -34,7 +34,6 @@ import org.apache.uima.analysis_engine.AnalysisEngine;
 /**
  * Control aspects of the UIMA analysis component.<br/>
  * 
- * @author Richard Eckart de Castilho
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)

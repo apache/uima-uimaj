@@ -36,7 +36,6 @@ import java.lang.annotation.Target;
  *  	@TypeCapability(inputs={"org.apache.uima.fit.type.Token","org.apache.uima.fit.type.Sentence"}, outputs={"org.apache.uima.fit.type.Token:pos", "org.apache.uima.tutorial.RoomNumber"})
  * </pre>
  * 
- * @author Philip Ogren
  */
 
 @Retention(RetentionPolicy.RUNTIME)

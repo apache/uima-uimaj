@@ -70,7 +70,6 @@ import org.apache.uima.resource.metadata.impl.Import_impl;
 import org.apache.uima.util.FileUtils;
 
 /**
- * @author Steven Bethard, Philip Ogren, Fabio Mancinelli
  */
 public final class AnalysisEngineFactory {
 	private AnalysisEngineFactory() {

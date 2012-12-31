@@ -52,7 +52,6 @@ import org.springframework.validation.ObjectError;
  * <p>Initialize an instance of a class with fields that are annotated as
  * {@link ConfigurationParameter}s from the parameter values given in a {@link UimaContext}.</p>
  *
- * @author Philip Ogren
  */
 
 public final class ConfigurationParameterInitializer {

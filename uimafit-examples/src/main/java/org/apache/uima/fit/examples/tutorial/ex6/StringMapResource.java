@@ -20,7 +20,6 @@ package org.apache.uima.fit.examples.tutorial.ex6;
 
 /**
  * 
- * @author unknown
  * 
  */
 

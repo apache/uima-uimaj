@@ -26,7 +26,6 @@ import org.apache.uima.fit.util.TypeSystemUtil;
 import org.apache.uima.jcas.JCas;
 
 /**
- * @author Philip Ogren
  */
 
 public class FlowAE2 extends JCasAnnotator_ImplBase {

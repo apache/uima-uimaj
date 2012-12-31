@@ -50,7 +50,6 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 /**
- * @author Philip Ogren
  */
 public class XWriterTest extends ComponentTestBase {
 

@@ -74,8 +74,6 @@ import org.junit.Test;
 /**
  * Test cases for {@link JCasUtil}.
  *
- * @author Richard Eckart de Castilho
- * @author Torsten Zesch
  */
 public class JCasUtilTest extends ComponentTestBase {
 	/**

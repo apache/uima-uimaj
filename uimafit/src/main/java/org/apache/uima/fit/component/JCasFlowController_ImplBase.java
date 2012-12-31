@@ -25,7 +25,6 @@ import org.apache.uima.flow.FlowControllerContext;
 import org.apache.uima.resource.ResourceInitializationException;
 
 /**
- * @author Philip Ogren
  */
 
 public abstract class JCasFlowController_ImplBase extends

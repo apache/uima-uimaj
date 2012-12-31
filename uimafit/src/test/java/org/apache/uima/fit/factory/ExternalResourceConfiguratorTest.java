@@ -37,7 +37,6 @@ import org.junit.Test;
 /**
  * Test the {@link ExternalResourceInitializer}.
  * 
- * @author Richard Eckart de Castilho
  */
 public class ExternalResourceConfiguratorTest extends ComponentTestBase {
 	@Test

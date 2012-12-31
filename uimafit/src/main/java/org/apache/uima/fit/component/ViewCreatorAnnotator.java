@@ -35,7 +35,6 @@ import org.apache.uima.jcas.JCas;
  * annotator (when it asks for the default view) will not be created unless you have explicitly
  * created it.
  * 
- * @author Philip Ogren
  * 
  */
 public class ViewCreatorAnnotator extends JCasAnnotator_ImplBase {

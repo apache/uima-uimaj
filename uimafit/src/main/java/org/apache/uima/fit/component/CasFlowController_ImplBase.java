@@ -25,8 +25,6 @@ import org.apache.uima.flow.FlowControllerContext;
 import org.apache.uima.resource.ResourceInitializationException;
 
 /**
- * @author Philip Ogren
- * @author Richard Eckart de Castilho
  */
 
 public abstract class CasFlowController_ImplBase extends

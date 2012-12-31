@@ -23,7 +23,6 @@ import org.apache.uima.jcas.JCas;
 
 
 /**
- * @author Philip Ogren
  */
 
 public class DefaultPackageAE extends JCasAnnotator_ImplBase {

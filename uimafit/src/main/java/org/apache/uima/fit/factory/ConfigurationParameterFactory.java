@@ -46,8 +46,6 @@ import org.springframework.beans.SimpleTypeConverter;
 import org.springframework.beans.TypeMismatchException;
 
 /**
- * @author Philip Ogren
- * @author Richard Eckart de Castilho
  */
 
 public final class ConfigurationParameterFactory {

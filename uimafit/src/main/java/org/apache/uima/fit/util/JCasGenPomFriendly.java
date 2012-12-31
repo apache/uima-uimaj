@@ -64,8 +64,6 @@ import org.apache.uima.util.XMLInputSource;
  * &lt;/plugin>
  * </pre>
  * 
- * @author Philip Ogren
- * @author Richard Eckart de Castilho
  */
 public class JCasGenPomFriendly {
 	/**

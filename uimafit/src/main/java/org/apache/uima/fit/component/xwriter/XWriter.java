@@ -41,7 +41,6 @@ import org.xml.sax.SAXException;
  * A simple CAS consumer that generates XCAS (XML representation of the CAS) files in the
  * filesystem.
  * 
- * @author Philip Ogren
  */
 
 public class XWriter extends JCasConsumer_ImplBase {

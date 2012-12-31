@@ -41,8 +41,6 @@ import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.util.CasCreationUtils;
 
 /**
- * @author Steven Bethard, Philip Ogren
- * @author Richard Eckart de Castilho
  *
  */
 public final class SimplePipeline {

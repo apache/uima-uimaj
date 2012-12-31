@@ -47,7 +47,6 @@ import org.apache.uima.resource.impl.ResourceManager_impl;
 /**
  * Configurator class for {@link ExternalResource} annotations.
  *
- * @author Richard Eckart de Castilho
  */
 public class ExternalResourceInitializer {
 	

@@ -25,7 +25,6 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.junit.Test;
 
 /**
- * @author Steven Bethard, Philip Ogren
  */
 
 public class UimaContextFactoryTest {

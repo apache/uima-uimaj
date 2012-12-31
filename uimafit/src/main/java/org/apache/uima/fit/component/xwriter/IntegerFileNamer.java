@@ -30,7 +30,6 @@ import org.apache.uima.resource.ResourceInitializationException;
  * This is a very simple implementation of XWriterFileNamer that generates file names based on a
  * prefix string and a incrementing counter.
  * 
- * @author Philip Ogren
  */
 
 public class IntegerFileNamer implements XWriterFileNamer, Initializable {

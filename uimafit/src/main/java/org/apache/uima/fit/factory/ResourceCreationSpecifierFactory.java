@@ -32,7 +32,6 @@ import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
 
 /**
- * @author Steven Bethard, Philip Ogren
  */
 public final class ResourceCreationSpecifierFactory {
 	private ResourceCreationSpecifierFactory() {

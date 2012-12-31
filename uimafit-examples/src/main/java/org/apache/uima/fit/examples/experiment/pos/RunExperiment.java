@@ -54,7 +54,6 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
  * Please see comments in the code for details on how the UIMA pipeline is set up and run for this
  * task.
  * 
- * @author Philip Ogren
  * 
  */
 public class RunExperiment {

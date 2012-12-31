@@ -25,7 +25,6 @@ import org.apache.uima.fit.factory.ExternalResourceFactory;
  * Allows an external resource to use the {@link ExternalResource} annotation on member variables
  * to gain access to other external resources.
  * 
- * @author Richard Eckart de Castilho
  */
 public interface ExternalResourceAware {
 	/**

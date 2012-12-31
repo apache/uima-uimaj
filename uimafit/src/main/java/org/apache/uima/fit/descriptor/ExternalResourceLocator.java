@@ -32,7 +32,6 @@ import org.apache.uima.resource.Resource;
  * produces.
  * 
  * @see ExternalResource#api()
- * @author Richard Eckart de Castilho
  */
 public interface ExternalResourceLocator extends Resource {
 	/**

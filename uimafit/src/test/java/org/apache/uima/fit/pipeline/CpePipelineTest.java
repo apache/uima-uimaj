@@ -32,7 +32,6 @@ import org.apache.uima.fit.pipeline.SimplePipelineTest.Writer;
 import org.junit.Test;
 
 /**
- * @author Richard Eckart de Castilho
  */
 public class CpePipelineTest {
 	@Test

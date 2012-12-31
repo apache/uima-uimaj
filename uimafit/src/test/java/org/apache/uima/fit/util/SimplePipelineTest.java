@@ -32,7 +32,6 @@ import org.apache.uima.fit.pipeline.SimplePipeline;
 import org.junit.Test;
 
 /**
- * @author Philip Ogren
  */
 
 public class SimplePipelineTest extends ComponentTestBase {

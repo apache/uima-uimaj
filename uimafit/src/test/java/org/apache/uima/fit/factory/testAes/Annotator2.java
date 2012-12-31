@@ -29,7 +29,6 @@ import org.apache.uima.fit.descriptor.SofaCapability;
 import org.apache.uima.jcas.JCas;
 
 /**
- * @author Philip Ogren
  */
 
 @SofaCapability(inputSofas = { CAS.NAME_DEFAULT_SOFA, ViewNames.PARENTHESES_VIEW }, outputSofas = {

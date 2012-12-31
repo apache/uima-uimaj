@@ -51,7 +51,6 @@ import org.springframework.context.support.GenericApplicationContext;
  * Test reconfiguring the UIMA framework so that an additional Spring initialization is applied
  * after the UIMA initialization. This allows regular annotation-based Spring dependency injection.
  *
- * @author Richard Eckart de Castilho
  */
 @SuppressWarnings("deprecation")
 public class UimaFactoryInjectionTest {

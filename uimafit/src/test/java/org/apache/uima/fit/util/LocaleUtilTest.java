@@ -29,7 +29,6 @@ import org.junit.Test;
 
 /**
  * 
- * @author Philip Ogren
  * 
  */
 public class LocaleUtilTest {

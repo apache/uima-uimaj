@@ -41,7 +41,6 @@ import org.apache.uima.resource.metadata.FsIndexKeyDescription;
 import org.junit.Test;
 
 /**
- * @author Richard Eckart de Castilho
  */
 public class FsIndexFactoryTest extends ComponentTestBase {
 	@Test

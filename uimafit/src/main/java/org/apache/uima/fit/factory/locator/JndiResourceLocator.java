@@ -32,7 +32,6 @@ import org.apache.uima.resource.ResourceSpecifier;
 /**
  * Locate an object via JNDI.
  *
- * @author Richard Eckart de Castilho
  */
 public class JndiResourceLocator extends Resource_ImplBase implements ExternalResourceLocator {
 	public static final String PARAM_NAME = "Name";

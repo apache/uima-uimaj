@@ -35,7 +35,6 @@ import org.apache.uima.util.Progress;
 import org.junit.Test;
 
 /**
- * @author Steven Bethard, Philip Ogren
  */
 
 public class SingleFileXReaderTest extends ComponentTestBase {

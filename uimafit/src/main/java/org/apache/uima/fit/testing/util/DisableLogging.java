@@ -26,7 +26,6 @@ import java.util.logging.Logger;
  * you do this. However, it only works if logging is being done by the Java logger, not by, say,
  * log4j.
  * 
- * @author Steven Bethard, Philip Ogren
  */
 public final class DisableLogging {
 	private DisableLogging() {

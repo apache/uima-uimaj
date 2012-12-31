@@ -25,8 +25,6 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * @author Philip Ogren
- * @author Richard Eckart de Castilho
  */
 public final class ReflectionUtil {
 	

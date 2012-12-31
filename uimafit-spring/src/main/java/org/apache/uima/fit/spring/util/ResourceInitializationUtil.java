@@ -29,7 +29,6 @@ import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.context.ApplicationContext;
 
 /**
- * @author Richard Eckart de Castilho
  */
 public class ResourceInitializationUtil {
 	/**

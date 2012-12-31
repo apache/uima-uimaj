@@ -39,9 +39,6 @@ import org.apache.uima.jcas.tcas.Annotation;
 /**
  * Utility methods for convenient access to the {@link JCas}.
  *
- * @author Richard Eckart de Castilho
- * @author Philip Ogren
- * @author Niklas Jakob
  */
 public class JCasUtil {
 	/**

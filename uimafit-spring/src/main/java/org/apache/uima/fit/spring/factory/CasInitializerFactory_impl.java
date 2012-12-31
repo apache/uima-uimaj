@@ -32,7 +32,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 /**
- * @author Richard Eckart de Castilho
  */
 @Deprecated
 public class CasInitializerFactory_impl

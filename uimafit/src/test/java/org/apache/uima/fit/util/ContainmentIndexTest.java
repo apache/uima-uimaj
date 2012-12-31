@@ -39,7 +39,6 @@ import org.junit.Test;
 /**
  * Unit test for {@link ContainmentIndex}.
  * 
- * @author Richard Eckart de Castilho
  */
 public class ContainmentIndexTest extends ComponentTestBase {
 	@Test

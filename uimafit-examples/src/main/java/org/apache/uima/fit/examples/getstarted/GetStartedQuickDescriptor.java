@@ -29,7 +29,6 @@ import org.xml.sax.SAXException;
 
 /**
  * 
- * @author Philip Ogren
  * 
  */
 public class GetStartedQuickDescriptor {

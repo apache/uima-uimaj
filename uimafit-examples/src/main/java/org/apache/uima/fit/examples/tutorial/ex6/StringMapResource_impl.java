@@ -32,7 +32,6 @@ import org.apache.uima.resource.SharedResourceObject;
 
 /**
  * 
- * @author unknown
  * 
  */
 public class StringMapResource_impl implements StringMapResource, SharedResourceObject {

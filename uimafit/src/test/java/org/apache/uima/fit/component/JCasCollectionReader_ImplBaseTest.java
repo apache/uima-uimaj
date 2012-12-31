@@ -37,7 +37,6 @@ import org.junit.Test;
 /**
  * Test {@link JCasCollectionReader_ImplBase}
  * 
- * @author Richard Eckart de Castilho
  */
 public class JCasCollectionReader_ImplBaseTest {
 	/**

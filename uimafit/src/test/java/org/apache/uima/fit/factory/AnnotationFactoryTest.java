@@ -28,7 +28,6 @@ import org.apache.uima.fit.type.Token;
 import org.junit.Test;
 
 /**
- * @author Steven Bethard, Philip Ogren
  */
 
 public class AnnotationFactoryTest extends ComponentTestBase {

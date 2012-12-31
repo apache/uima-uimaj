@@ -55,7 +55,6 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
  * AnalysisEngine aggregateEngine = builder.createAggregate();
  * </pre></blockquote></p>
  *
- * @author Philip Ogren
  */
 public class AggregateBuilder {
 

@@ -29,7 +29,6 @@ import org.apache.uima.resource.Resource_ImplBase;
 /**
  * Parametrized AE for testing {@link ExternalResource} annotations.
  * 
- * @author Richard Eckart de Castilho
  */
 public class ParameterizedAE2 extends JCasAnnotator_ImplBase {
 	@ExternalResource

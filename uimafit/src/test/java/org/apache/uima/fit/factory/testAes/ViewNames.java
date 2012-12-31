@@ -21,7 +21,6 @@ package org.apache.uima.fit.factory.testAes;
 import org.apache.uima.cas.CAS;
 
 /**
- * @author Philip Ogren
  */
 
 public class ViewNames {

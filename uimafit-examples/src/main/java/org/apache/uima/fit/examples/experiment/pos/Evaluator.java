@@ -41,7 +41,6 @@ import org.apache.uima.jcas.JCas;
  * a number of reasons (e.g. no confusion matrix, assumes gold-standard tokens
  * and sentences in the system view, etc.)
  * 
- * @author Philip Ogren
  * 
  */
 @SofaCapability(inputSofas = { GOLD_VIEW, SYSTEM_VIEW })

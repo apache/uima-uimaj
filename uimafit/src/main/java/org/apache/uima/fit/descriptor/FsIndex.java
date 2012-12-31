@@ -29,7 +29,6 @@ import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.FsIndexKeyDescription;
 
 /**
- * @author Richard Eckart de Castilho
  * @see FsIndexDescription
  * @see FsIndexFactory
  */

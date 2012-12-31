@@ -29,7 +29,6 @@ import org.apache.uima.fit.testing.util.DisableLogging;
 import org.junit.Test;
 
 /**
- * @author Steven Bethard, Philip Ogren
  */
 public class DisableLoggingTest {
 

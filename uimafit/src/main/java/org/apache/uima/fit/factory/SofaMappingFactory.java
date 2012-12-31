@@ -23,7 +23,6 @@ import org.apache.uima.analysis_engine.metadata.SofaMapping;
 import org.apache.uima.analysis_engine.metadata.impl.SofaMapping_impl;
 
 /**
- * @author Philip Ogren
  */
 public final class SofaMappingFactory {
 	private SofaMappingFactory() {

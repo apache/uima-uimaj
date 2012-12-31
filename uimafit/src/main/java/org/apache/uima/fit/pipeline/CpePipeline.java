@@ -37,7 +37,6 @@ import org.apache.uima.fit.factory.CpeBuilder;
 import org.xml.sax.SAXException;
 
 /**
- * @author Richard Eckart de Castilho
  */
 public class CpePipeline {
 	/**

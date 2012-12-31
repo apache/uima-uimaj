@@ -20,7 +20,6 @@ package org.apache.uima.fit.examples.experiment.pos;
 
 /**
  * 
- * @author Philip Ogren
  * 
  */
 public class ViewNames {

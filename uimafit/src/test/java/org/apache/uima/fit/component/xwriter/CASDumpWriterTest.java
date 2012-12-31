@@ -33,7 +33,6 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 /**
- * @author Richard Eckart de Castilho
  */
 public class CASDumpWriterTest {
 

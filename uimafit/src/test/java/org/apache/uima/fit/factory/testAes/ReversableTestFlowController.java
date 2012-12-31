@@ -37,7 +37,6 @@ import org.apache.uima.flow.Step;
 import org.apache.uima.jcas.JCas;
 
 /**
- * @author Philip Ogren, Fabio Mancinelli
  * 
  *         NOTE: this class extends org.uimafit.component.JCasFlowController_ImplBase
  */

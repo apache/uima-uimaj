@@ -57,7 +57,6 @@ import org.xml.sax.SAXException;
  * builder will add each child of the aggregate engine as one processor to the engine. This works
  * only for aggregate analysis engines using a {@link FixedFlow}.
  *
- * @author Richard Eckart de Castilho
  */
 public class CpeBuilder
 {

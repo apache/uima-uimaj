@@ -28,7 +28,6 @@ import org.springframework.beans.PropertyEditorRegistrySupport;
  * Custom property editor that tries to look convert and value to a string by checking if there is
  * a registered property editor for the source value.
  * 
- * @author Richard Eckart de Castilho
  */
 public class GetAsTextStringEditor extends PropertyEditorSupport {
 	private final PropertyEditorRegistry editorRegistry;

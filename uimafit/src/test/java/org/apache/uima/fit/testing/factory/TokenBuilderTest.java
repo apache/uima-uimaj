@@ -38,7 +38,6 @@ import org.apache.uima.pear.util.FileUtil;
 import org.junit.Test;
 
 /**
- * @author Steven Bethard, Philip Ogren
  */
 
 public class TokenBuilderTest extends ComponentTestBase {

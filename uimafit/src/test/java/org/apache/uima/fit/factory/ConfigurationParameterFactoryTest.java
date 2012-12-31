@@ -34,8 +34,6 @@ import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.junit.Test;
 
 /**
- * @author Philip Ogren
- * @author Richard Eckart de Castilho
  */
 
 public class ConfigurationParameterFactoryTest {

@@ -28,7 +28,6 @@ import org.apache.uima.jcas.JCas;
  * the full path and do not specify the suffix (.xmi or .xcas will be automatically appended as
  * appropriate)
  * 
- * @author Philip Ogren
  */
 public interface XWriterFileNamer {
 	/**

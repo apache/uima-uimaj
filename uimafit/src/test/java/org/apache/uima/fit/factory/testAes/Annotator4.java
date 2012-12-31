@@ -28,7 +28,6 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 /**
  * 
- * @author Philip Ogren
  * 
  */
 @TypeCapability(inputs = "org.apache.uima.fit.type.Token", outputs = "org.apache.uima.fit.type.Token:pos")

@@ -32,7 +32,6 @@ import org.apache.uima.util.XMLSerializer;
 import org.xml.sax.SAXException;
 
 /**
- * @author Steven Bethard, Philip Ogren
  */
 
 public class CreateSampleXCASFile {

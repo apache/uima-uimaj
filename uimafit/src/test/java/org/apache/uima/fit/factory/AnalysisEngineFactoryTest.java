@@ -66,7 +66,6 @@ import org.apache.uima.resource.metadata.TypePriorityList;
 import org.junit.Test;
 
 /**
- * @author Steven Bethard, Philip Ogren
  */
 
 public class AnalysisEngineFactoryTest extends ComponentTestBase {

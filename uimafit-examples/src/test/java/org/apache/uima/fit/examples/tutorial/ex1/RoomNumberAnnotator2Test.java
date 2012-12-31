@@ -34,7 +34,6 @@ import org.junit.Test;
  * ExamplesTestBase. These tests have the advantage that a new JCas is not
  * created for each test.
  * 
- * @author Philip
  * 
  */
 public class RoomNumberAnnotator2Test extends ExamplesTestBase {

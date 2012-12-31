@@ -28,7 +28,6 @@ import org.apache.uima.fit.testing.util.HideOutput;
 import org.junit.Test;
 
 /**
- * @author Steven Bethard, Philip Ogren
  */
 
 public class HideOutputTest {

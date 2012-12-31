@@ -55,7 +55,6 @@ import org.apache.uima.util.Progress;
 import org.junit.Test;
 
 /**
- * @author Richard Eckart de Castilho
  */
 public class LoggingTest {
 	@Test

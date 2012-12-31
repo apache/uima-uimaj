@@ -39,7 +39,6 @@ import org.apache.uima.resource.metadata.ConfigurationParameter;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 
 /**
- * @author Fabio Mancinelli, Philip Ogren
  */
 
 public final class FlowControllerFactory {

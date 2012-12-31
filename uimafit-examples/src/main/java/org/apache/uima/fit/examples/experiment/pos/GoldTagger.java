@@ -38,7 +38,6 @@ import org.apache.uima.jcas.JCas;
  * with the format "word/tag word/tag...". It converts this data into Token
  * objects and plain text which are posted to the GOLD_VIEW.
  * 
- * @author Philip
  * 
  */
 @SofaCapability(inputSofas = CAS.NAME_DEFAULT_SOFA, outputSofas = GOLD_VIEW)

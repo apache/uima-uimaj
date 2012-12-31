@@ -26,7 +26,6 @@ import java.lang.annotation.Target;
 import org.apache.uima.fit.factory.FsIndexFactory;
 
 /**
- * @author Richard Eckart de Castilho
  * @see org.apache.uima.resource.metadata.FsIndexCollection
  * @see FsIndexFactory
  */

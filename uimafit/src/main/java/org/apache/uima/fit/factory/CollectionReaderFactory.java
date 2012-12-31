@@ -52,7 +52,6 @@ import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 
 /**
- * @author Steven Bethard, Philip Ogren
  */
 public final class CollectionReaderFactory {
 

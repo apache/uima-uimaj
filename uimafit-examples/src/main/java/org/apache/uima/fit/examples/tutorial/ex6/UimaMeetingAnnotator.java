@@ -53,7 +53,6 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
  * meeting. When combined in an aggregate TAE with the UimaAcronymAnnotator,
  * demonstrates the use of the ResourceManager to share data between annotators.
  * 
- * @author unknown
  */
 @TypeCapability(inputs = "org.apache.uima.tutorial.Meeting", outputs = "org.apache.uima.tutorial.UimaMeeting")
 public class UimaMeetingAnnotator extends JCasAnnotator_ImplBase {

@@ -25,7 +25,6 @@ import org.apache.uima.fit.component.NoOpAnnotator;
 import org.junit.Test;
 
 /**
- * @author Philip Ogren
  */
 
 public class SofaMappingFactoryTest {

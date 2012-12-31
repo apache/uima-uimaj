@@ -25,7 +25,6 @@ import org.springframework.beans.PropertyEditorRegistry;
 import org.springframework.beans.propertyeditors.CustomCollectionEditor;
 
 /**
- * @author Richard Eckart de Castilho
  */
 public final class PropertyEditorUtil {
 

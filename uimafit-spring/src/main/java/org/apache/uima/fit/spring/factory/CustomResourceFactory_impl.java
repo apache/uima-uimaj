@@ -32,7 +32,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 /**
- * @author Richard Eckart de Castilho
  */
 public class CustomResourceFactory_impl
 	extends org.apache.uima.impl.CustomResourceFactory_impl

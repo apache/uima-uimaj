@@ -56,8 +56,6 @@ import org.junit.rules.TestName;
 import org.xml.sax.SAXException;
 
 /**
- * @author Richard Eckart de Castilho
- * @author Shuo Yang
  */
 public class AnalysisEngineFactoryExternalResourceTest {
 	/**

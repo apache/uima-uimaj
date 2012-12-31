@@ -42,7 +42,6 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.junit.Test;
 
 /**
- * @author Philip Ogren
  */
 public class AggregateBuilderTest extends ComponentTestBase {
 

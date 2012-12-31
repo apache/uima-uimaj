@@ -22,7 +22,6 @@ import org.apache.uima.fit.type.AnalyzedText;
 import org.apache.uima.jcas.JCas;
 
 /**
- * @author Philip Ogren
  */
 
 public class TypeSystemUtil {

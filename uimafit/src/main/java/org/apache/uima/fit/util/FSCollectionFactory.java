@@ -73,7 +73,6 @@ import org.apache.uima.jcas.cas.TOP;
  * Bridge between Java {@link Collection Collections} from different representations of collections
  * of UIMA {@link FeatureStructure FeatureStructures}.
  *
- * @author Richard Eckart de Castilho
  *
  * @param <T> data type.
  */

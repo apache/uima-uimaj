@@ -25,9 +25,6 @@ import org.apache.uima.resource.ResourceInitializationException;
  * Please see {@link Initializable} for a description of how this class is intended to be used.
  *
  *
- * @author Philip Ogren
- * @author Philipp Wetzler
- * @author Steven Bethard
  * @see Initializable
  */
 public final class InitializableFactory {

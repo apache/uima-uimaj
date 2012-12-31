@@ -30,7 +30,6 @@ import org.apache.uima.resource.Resource;
 /**
  * Mark a field as external resource.
  * 
- * @author Richard Eckart de Castilho
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)

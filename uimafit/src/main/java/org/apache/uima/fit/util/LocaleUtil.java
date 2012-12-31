@@ -22,7 +22,6 @@ import java.lang.reflect.Field;
 import java.util.Locale;
 
 /**
- * @author Philip Ogren
  */
 public final class LocaleUtil {
 

@@ -41,7 +41,6 @@ import org.junit.Test;
  * view might be different for sofa aware and sofa unaware components. So the tests are run on using
  * an analysis engine of both kinds.
  * 
- * @author Philip Ogren
  * 
  */
 public class ViewCreatorAnnotatorTest extends ComponentTestBase {

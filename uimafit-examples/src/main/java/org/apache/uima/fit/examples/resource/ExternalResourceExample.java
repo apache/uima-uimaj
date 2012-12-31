@@ -44,7 +44,6 @@ import org.junit.Test;
 /**
  * Example for the use of external resources with uimaFIT.
  *
- * @author Richard Eckart de Castilho
  */
 public class ExternalResourceExample {
 	/**

@@ -57,8 +57,6 @@ import org.apache.uima.flow.Step;
 import org.junit.Test;
 
 /**
- * @author Shuo Yang
- * @author Richard Eckart de Castilho
  */
 public class FlowControllerFactoryExternalResourceTest {
 	@Test

@@ -25,7 +25,6 @@ import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import static org.apache.uima.fit.util.CasUtil.UIMA_BUILTIN_JCAS_PREFIX;
 
 /**
- * @author Philip Ogren
  */
 
 public final class TypePrioritiesFactory {

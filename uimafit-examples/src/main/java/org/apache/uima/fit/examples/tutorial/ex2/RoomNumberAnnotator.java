@@ -49,7 +49,6 @@ import org.apache.uima.util.Level;
  * <li>the initialize method was removed</li>
  * </ul>
  *
- * @author unknown
  */
 
 @TypeCapability(outputs = { "org.apache.uima.tutorial.RoomNumber", "org.apache.uima.tutorial.RoomNumber:building" })

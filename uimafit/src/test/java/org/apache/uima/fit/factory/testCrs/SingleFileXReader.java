@@ -42,7 +42,6 @@ import org.xml.sax.SAXException;
  * to help out a couple JCasFactory create methods. However, it is also used for this project unit
  * tests as an example collection reader.
  * 
- * @author Steven Bethard, Philip Ogren
  */
 
 public class SingleFileXReader extends CasCollectionReader_ImplBase {

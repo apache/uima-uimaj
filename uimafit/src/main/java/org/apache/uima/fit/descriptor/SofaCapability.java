@@ -45,7 +45,6 @@ import java.lang.annotation.Target;
  * 
  * org.apache.uima.analysis_engine.impl.PrimitiveAnalysisEngine_impl. mSofaAware
  * 
- * @author Philip Ogren A typical use of this annotation might look something like:
  */
 
 @Retention(RetentionPolicy.RUNTIME)

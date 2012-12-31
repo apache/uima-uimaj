@@ -40,7 +40,6 @@ import org.apache.uima.util.CasCreationUtils;
  * is a JCas containing a single document. The documents have been loaded by the CollectionReader
  * and processed by the AnalysisEngine (if any).
  * 
- * @author Steven Bethard, Philip Ogren
  */
 public class JCasIterable implements Iterator<JCas>, Iterable<JCas> {
 

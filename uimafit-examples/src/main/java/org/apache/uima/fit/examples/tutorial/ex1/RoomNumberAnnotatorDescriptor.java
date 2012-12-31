@@ -33,7 +33,6 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
  * provided in the uimaj-examples except that instead of building the file in parallel with the
  * class definition, it is now built completely by using the class definition.
  * 
- * @author Philip Ogren
  * 
  */
 public class RoomNumberAnnotatorDescriptor {

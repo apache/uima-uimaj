@@ -54,7 +54,6 @@ import org.junit.Test;
 import org.xml.sax.SAXException;
 
 /**
- * @author Philip Ogren
  */
 
 public class ConfigurationParameterInitializerTest extends ComponentTestBase {

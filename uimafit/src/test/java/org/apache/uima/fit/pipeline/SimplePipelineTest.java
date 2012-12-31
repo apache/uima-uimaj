@@ -40,7 +40,6 @@ import org.apache.uima.util.Progress;
 import org.junit.Test;
 
 /**
- * @author Steven Bethard
  */
 public class SimplePipelineTest {
 

@@ -38,7 +38,6 @@ import org.apache.commons.io.output.NullOutputStream;
  * }
  * </code>
  * 
- * @author Steven Bethard, Philip Ogren
  */
 public class HideOutput {
 	protected PrintStream out;

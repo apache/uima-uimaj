@@ -19,7 +19,6 @@
 package org.apache.uima.fit.util;
 
 /**
- * @author Philip Ogren
  */
 
 import java.util.Iterator;

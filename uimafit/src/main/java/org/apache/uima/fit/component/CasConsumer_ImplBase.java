@@ -30,7 +30,6 @@ import org.apache.uima.resource.ResourceInitializationException;
  * {@link org.apache.uima.analysis_component.CasAnnotator_ImplBase}) which initializes itself based
  * on annotations.
  * 
- * @author Richard Eckart de Castilho
  */
 @OperationalProperties(multipleDeploymentAllowed = false)
 public abstract class CasConsumer_ImplBase extends

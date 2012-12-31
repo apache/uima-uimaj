@@ -31,7 +31,6 @@ import org.junit.Before;
 
 /**
  * 
- * @author Philip Ogren
  * 
  */
 public class ComponentTestBase {

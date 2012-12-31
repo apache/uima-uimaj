@@ -49,7 +49,6 @@ import org.apache.uima.resource.ResourceInitializationException;
  * the initialize method.
  * </p>
  *
- * @author Philip Ogren
  */
 public interface Initializable {
 

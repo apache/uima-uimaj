@@ -30,7 +30,6 @@ import org.apache.uima.jcas.JCas;
  * however, that the tagger operates on the default view. This will be mapped to
  * the "system" view when we run our experiment.
  * 
- * @author Philip Ogren
  * 
  */
 public class BaselineTagger extends JCasAnnotator_ImplBase {

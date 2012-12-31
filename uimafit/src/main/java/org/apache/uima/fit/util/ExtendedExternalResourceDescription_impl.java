@@ -30,7 +30,6 @@ import org.apache.uima.resource.metadata.ExternalResourceBinding;
  * Extended {@link ExternalResourceDescription_impl} which can carry
  * {@link ExternalResourceDescription}s.
  * 
- * @author Richard Eckart de Castilho
  */
 public class ExtendedExternalResourceDescription_impl extends ExternalResourceDescription_impl {
 	private static final long serialVersionUID = 4901306350609836452L;

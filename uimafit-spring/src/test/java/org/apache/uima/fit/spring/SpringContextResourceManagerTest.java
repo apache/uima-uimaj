@@ -41,7 +41,6 @@ import org.springframework.context.support.GenericApplicationContext;
 /**
  * Test making Spring beans available to a UIMA component via the resource manager.
  *
- * @author Richard Eckart de Castilho
  */
 public class SpringContextResourceManagerTest {
 	// Allow UIMA components to be configured with beans from a Spring context

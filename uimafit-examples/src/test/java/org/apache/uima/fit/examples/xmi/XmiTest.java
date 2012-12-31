@@ -42,7 +42,6 @@ import org.junit.Test;
  * XMI-serialized CAS. Here we have two "upstream" analysis engines, Annotator1
  * and Annotator2, which add annotations used by Annotator3.
  * 
- * @author Philip
  * 
  */
 public class XmiTest extends ExamplesTestBase {

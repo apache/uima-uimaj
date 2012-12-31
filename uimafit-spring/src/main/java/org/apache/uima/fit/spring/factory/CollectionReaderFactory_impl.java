@@ -32,7 +32,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 /**
- * @author Richard Eckart de Castilho
  */
 public class CollectionReaderFactory_impl
 	extends org.apache.uima.impl.CollectionReaderFactory_impl

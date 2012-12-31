@@ -73,7 +73,6 @@ import org.springframework.mock.jndi.SimpleNamingContextBuilder;
 /**
  * Test case for {@link ExternalResource} annotations.
  *
- * @author Richard Eckart de Castilho
  */
 public class ExternalResourceFactoryTest extends ComponentTestBase {
 	private static final String EX_URI = "http://dum.my";

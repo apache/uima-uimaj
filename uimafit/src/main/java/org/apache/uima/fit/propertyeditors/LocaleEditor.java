@@ -28,7 +28,6 @@ import org.apache.uima.fit.util.LocaleUtil;
  * locale when {@code null} or {@code ""} is passed. This is used to be backwards-compatible with 
  * previous uimaFIT behavior.
  * 
- * @author Richard Eckart de Castilho
  */
 public class LocaleEditor extends PropertyEditorSupport {
 

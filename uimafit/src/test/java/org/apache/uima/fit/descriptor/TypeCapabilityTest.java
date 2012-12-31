@@ -32,7 +32,6 @@ import org.apache.uima.resource.metadata.Capability;
 import org.junit.Test;
 
 /**
- * @author Philip Ogren
  */
 
 public class TypeCapabilityTest extends ComponentTestBase {

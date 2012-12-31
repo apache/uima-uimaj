@@ -29,8 +29,6 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.junit.Test;
 
 /**
- * @author Steven Bethard, Philip Ogren
- * @author Richard Eckart de Castilho
  */
 
 public class JCasFactoryTest extends ComponentTestBase {

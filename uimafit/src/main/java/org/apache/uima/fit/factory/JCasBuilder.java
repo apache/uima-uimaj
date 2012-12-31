@@ -27,7 +27,6 @@ import org.apache.uima.jcas.JCas;
 /**
  * Allows to add types and text to a CAS easily piece by piece.
  * 
- * @author Richard Eckart de Castilho
  */
 public class JCasBuilder {
 	private final StringBuilder documentText = new StringBuilder();

@@ -24,7 +24,6 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 /**
  * 
- * @author Steven Bethard, Philip Ogren
  * 
  */
 public final class AnnotationFactory {

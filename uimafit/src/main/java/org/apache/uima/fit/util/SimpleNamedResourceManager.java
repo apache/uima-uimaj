@@ -85,7 +85,6 @@ import org.apache.uima.util.Level;
  * AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(desc, resMgr, null);
  * </pre></blockquote>
  *
- * @author Richard Eckart de Castilho
  */
 public class SimpleNamedResourceManager extends ResourceManager_impl {
 	private Map<String, Object> externalContext;
