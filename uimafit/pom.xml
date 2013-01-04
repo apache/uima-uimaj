@@ -26,7 +26,7 @@
 	<description>Factories, Injection, and Testing library for UIMA</description>
 	<url>http://uimafit.googlecode.com</url>
 	<parent>
-		<groupId>org.uimafit</groupId>
+		<groupId>org.apache.uima</groupId>
 		<artifactId>uimafit-parent</artifactId>
 		<version>1.5.0-SNAPSHOT</version>
 	</parent>
