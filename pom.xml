@@ -532,5 +532,6 @@
 		<module>uimafit</module>
 		<module>uimafit-examples</module>
 		<module>uimafit-spring</module>
+		<module>uimafit-maven-plugin</module>
 	</modules>
 </project>
