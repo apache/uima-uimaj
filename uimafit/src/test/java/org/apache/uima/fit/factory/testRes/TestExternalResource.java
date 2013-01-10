@@ -26,15 +26,16 @@ import org.apache.uima.fit.descriptor.ConfigurationParameter;
 /**
  */
 public class TestExternalResource extends Resource_ImplBase {
-	public static final String EXPECTED_VALUE = "expected value";
-	
-	public final static String PARAM_VALUE = "value";
-	@ConfigurationParameter(name = PARAM_VALUE)
-	private String value;
+  public static final String EXPECTED_VALUE = "expected value";
 
-	public void assertConfiguredOk() {
-		System.out.println(getClass().getSimpleName()+".assertConfiguredOk()");
-		// Ensure normal parameters get passed to External Resource
-		assertEquals(EXPECTED_VALUE, value);
-	}
+  public final static String PARAM_VALUE = "value";
+
+  @ConfigurationParameter(name = PARAM_VALUE)
+  private String value;
+
+  public void assertConfiguredOk() {
+    System.out.println(getClass().getSimpleName() + ".assertConfiguredOk()");
+    // Ensure normal parameters get passed to External Resource
+    assertEquals(EXPECTED_VALUE, value);
+  }
 }

@@ -29,24 +29,24 @@ import org.apache.uima.resource.ResourceInitializationException;
  * Base class for JCas consumers (actually a
  * {@link org.apache.uima.analysis_component.JCasAnnotator_ImplBase}) which initializes itself based
  * on annotations.
- *
+ * 
  */
 @OperationalProperties(multipleDeploymentAllowed = false)
 public abstract class JCasConsumer_ImplBase extends
-		org.apache.uima.analysis_component.JCasAnnotator_ImplBase {
-	private ExtendedLogger logger;
-	
-	public ExtendedLogger getLogger() {
-		if (logger == null) {
-			logger = new ExtendedLogger(getContext());
-		}
-		return logger;
-	}
-	
-	@Override
-	public void initialize(final UimaContext context) throws ResourceInitializationException {
-		super.initialize(context);
-		ConfigurationParameterInitializer.initialize(this, context);
-		ExternalResourceInitializer.initialize(context, this);
-	}
+        org.apache.uima.analysis_component.JCasAnnotator_ImplBase {
+  private ExtendedLogger logger;
+
+  public ExtendedLogger getLogger() {
+    if (logger == null) {
+      logger = new ExtendedLogger(getContext());
+    }
+    return logger;
+  }
+
+  @Override
+  public void initialize(final UimaContext context) throws ResourceInitializationException {
+    super.initialize(context);
+    ConfigurationParameterInitializer.initialize(this, context);
+    ExternalResourceInitializer.initialize(context, this);
+  }
 }

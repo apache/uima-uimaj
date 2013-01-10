@@ -42,87 +42,86 @@ import org.junit.Test;
 
 public class CollectionReaderFactoryTest extends ComponentTestBase {
 
-	@Test
-	public void testCreateCollectionReader() throws UIMAException, IOException {
+  @Test
+  public void testCreateCollectionReader() throws UIMAException, IOException {
 
-		CollectionReader reader = CollectionReaderFactory.createCollectionReader(
-				SingleFileXReader.class, typeSystemDescription, SingleFileXReader.PARAM_FILE_NAME,
-				"src/test/resources/data/docs/test.xmi", SingleFileXReader.PARAM_XML_SCHEME,
-				SingleFileXReader.XMI);
+    CollectionReader reader = CollectionReaderFactory.createCollectionReader(
+            SingleFileXReader.class, typeSystemDescription, SingleFileXReader.PARAM_FILE_NAME,
+            "src/test/resources/data/docs/test.xmi", SingleFileXReader.PARAM_XML_SCHEME,
+            SingleFileXReader.XMI);
 
-		JCasIterable jCasIterable = new JCasIterable(reader, typeSystemDescription);
-		jCas = jCasIterable.next();
-		assertNotNull(jCas);
-		assertEquals("Me and all my friends are non-conformists.", jCas.getDocumentText());
-		Token token = JCasUtil.selectByIndex(jCas, Token.class, 2);
-		assertEquals("all", token.getCoveredText());
-		assertEquals("A", token.getPos());
-		assertEquals("all", token.getStem());
+    JCasIterable jCasIterable = new JCasIterable(reader, typeSystemDescription);
+    jCas = jCasIterable.next();
+    assertNotNull(jCas);
+    assertEquals("Me and all my friends are non-conformists.", jCas.getDocumentText());
+    Token token = JCasUtil.selectByIndex(jCas, Token.class, 2);
+    assertEquals("all", token.getCoveredText());
+    assertEquals("A", token.getPos());
+    assertEquals("all", token.getStem());
 
-		reader = CollectionReaderFactory.createCollectionReader(
-				"org.apache.uima.fit.factory.testCrs.SingleFileXReader", SingleFileXReader.PARAM_FILE_NAME,
-				"src/test/resources/data/docs/test.xmi", SingleFileXReader.PARAM_XML_SCHEME,
-				SingleFileXReader.XMI);
+    reader = CollectionReaderFactory.createCollectionReader(
+            "org.apache.uima.fit.factory.testCrs.SingleFileXReader",
+            SingleFileXReader.PARAM_FILE_NAME, "src/test/resources/data/docs/test.xmi",
+            SingleFileXReader.PARAM_XML_SCHEME, SingleFileXReader.XMI);
 
-		jCasIterable = new JCasIterable(reader, typeSystemDescription);
-		jCas = jCasIterable.next();
-		assertNotNull(jCas);
-		assertEquals("Me and all my friends are non-conformists.", jCas.getDocumentText());
-		token = JCasUtil.selectByIndex(jCas, Token.class, 9);
-		assertEquals(".", token.getCoveredText());
-		assertEquals(".", token.getPos());
-		assertEquals(".", token.getStem());
+    jCasIterable = new JCasIterable(reader, typeSystemDescription);
+    jCas = jCasIterable.next();
+    assertNotNull(jCas);
+    assertEquals("Me and all my friends are non-conformists.", jCas.getDocumentText());
+    token = JCasUtil.selectByIndex(jCas, Token.class, 9);
+    assertEquals(".", token.getCoveredText());
+    assertEquals(".", token.getPos());
+    assertEquals(".", token.getStem());
 
-		reader = CollectionReaderFactory.createCollectionReaderFromPath(
-				"src/test/resources/org/apache/uima/fit/factory/testCrs/SingleFileXReader.xml",
-				SingleFileXReader.PARAM_FILE_NAME, "src/test/resources/data/docs/test.xmi",
-				SingleFileXReader.PARAM_XML_SCHEME, SingleFileXReader.XMI);
+    reader = CollectionReaderFactory.createCollectionReaderFromPath(
+            "src/test/resources/org/apache/uima/fit/factory/testCrs/SingleFileXReader.xml",
+            SingleFileXReader.PARAM_FILE_NAME, "src/test/resources/data/docs/test.xmi",
+            SingleFileXReader.PARAM_XML_SCHEME, SingleFileXReader.XMI);
 
-		jCasIterable = new JCasIterable(reader, typeSystemDescription);
-		jCas = jCasIterable.next();
-		assertNotNull(jCas);
-		assertEquals("Me and all my friends are non-conformists.", jCas.getDocumentText());
-		token = JCasUtil.selectByIndex(jCas, Token.class, 4);
-		assertEquals("friends", token.getCoveredText());
-		assertEquals("F", token.getPos());
-		assertEquals("friend", token.getStem());
+    jCasIterable = new JCasIterable(reader, typeSystemDescription);
+    jCas = jCasIterable.next();
+    assertNotNull(jCas);
+    assertEquals("Me and all my friends are non-conformists.", jCas.getDocumentText());
+    token = JCasUtil.selectByIndex(jCas, Token.class, 4);
+    assertEquals("friends", token.getCoveredText());
+    assertEquals("F", token.getPos());
+    assertEquals("friend", token.getStem());
 
-	}
+  }
 
-	@Test
-	public void testExceptions() {
-		ResourceInitializationException rie = null;
-		try {
-			CollectionReaderFactory.createCollectionReader(TestCR.class, (Object[]) null);
-		}
-		catch (ResourceInitializationException e) {
-			rie = e;
-		}
-		assertNotNull(rie);
-	}
+  @Test
+  public void testExceptions() {
+    ResourceInitializationException rie = null;
+    try {
+      CollectionReaderFactory.createCollectionReader(TestCR.class, (Object[]) null);
+    } catch (ResourceInitializationException e) {
+      rie = e;
+    }
+    assertNotNull(rie);
+  }
 
-	private class TestCR extends CollectionReader_ImplBase {
+  private class TestCR extends CollectionReader_ImplBase {
 
-		private TestCR() {
-			// do not instantiate
-		}
+    private TestCR() {
+      // do not instantiate
+    }
 
-		public void getNext(CAS acas) throws IOException, CollectionException {
-			// TODO Auto-generated method stub
-		}
+    public void getNext(CAS acas) throws IOException, CollectionException {
+      // TODO Auto-generated method stub
+    }
 
-		public void close() throws IOException {
-			// TODO Auto-generated method stub
-		}
+    public void close() throws IOException {
+      // TODO Auto-generated method stub
+    }
 
-		public Progress[] getProgress() {
-			// TODO Auto-generated method stub
-			return null;
-		}
+    public Progress[] getProgress() {
+      // TODO Auto-generated method stub
+      return null;
+    }
 
-		public boolean hasNext() throws IOException, CollectionException {
-			// TODO Auto-generated method stub
-			return false;
-		}
-	}
+    public boolean hasNext() throws IOException, CollectionException {
+      // TODO Auto-generated method stub
+      return false;
+    }
+  }
 }

@@ -37,19 +37,18 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
  */
 public class RoomNumberAnnotatorDescriptor {
 
-	public static AnalysisEngineDescription createDescriptor()
-			throws ResourceInitializationException {
-		TypeSystemDescription typeSystemDescription = TypeSystemDescriptionFactory
-				.createTypeSystemDescription();
-		return AnalysisEngineFactory.createPrimitiveDescription(RoomNumberAnnotator.class,
-				typeSystemDescription);
-	}
+  public static AnalysisEngineDescription createDescriptor() throws ResourceInitializationException {
+    TypeSystemDescription typeSystemDescription = TypeSystemDescriptionFactory
+            .createTypeSystemDescription();
+    return AnalysisEngineFactory.createPrimitiveDescription(RoomNumberAnnotator.class,
+            typeSystemDescription);
+  }
 
-	public static void main(String[] args) throws Exception {
-		File outputDirectory = new File("target/example-output/ex1/");
-		outputDirectory.mkdirs();
-		AnalysisEngineDescription aed = createDescriptor();
-		aed.toXML(new FileOutputStream(new File(outputDirectory, "RoomNumberAnnotator.xml")));
-	}
+  public static void main(String[] args) throws Exception {
+    File outputDirectory = new File("target/example-output/ex1/");
+    outputDirectory.mkdirs();
+    AnalysisEngineDescription aed = createDescriptor();
+    aed.toXML(new FileOutputStream(new File(outputDirectory, "RoomNumberAnnotator.xml")));
+  }
 
 }

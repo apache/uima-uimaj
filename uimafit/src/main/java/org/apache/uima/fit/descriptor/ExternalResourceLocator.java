@@ -17,7 +17,6 @@
  * under the License.
  */
 
-
 package org.apache.uima.fit.descriptor;
 
 import org.apache.uima.resource.Resource;
@@ -34,8 +33,8 @@ import org.apache.uima.resource.Resource;
  * @see ExternalResource#api()
  */
 public interface ExternalResourceLocator extends Resource {
-	/**
-	 * @return the resource
-	 */
-	public Object getResource();
+  /**
+   * @return the resource
+   */
+  public Object getResource();
 }

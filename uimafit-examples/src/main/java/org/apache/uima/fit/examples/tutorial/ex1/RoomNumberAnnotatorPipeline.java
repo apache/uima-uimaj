@@ -35,18 +35,16 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
  */
 public class RoomNumberAnnotatorPipeline {
 
-	public static void main(String[] args) throws UIMAException {
-		String text = "The meeting was moved from Yorktown 01-144 to Hawthorne 1S-W33.";
-		TypeSystemDescription tsd = createTypeSystemDescription(
-				"org.apache.uima.fit.examples.tutorial.type.RoomNumber");
-		JCas jCas = createJCas(tsd);
-		jCas.setDocumentText(text);
-		AnalysisEngine analysisEngine = createPrimitive(RoomNumberAnnotator.class, tsd);
-		analysisEngine.process(jCas);
+  public static void main(String[] args) throws UIMAException {
+    String text = "The meeting was moved from Yorktown 01-144 to Hawthorne 1S-W33.";
+    TypeSystemDescription tsd = createTypeSystemDescription("org.apache.uima.fit.examples.tutorial.type.RoomNumber");
+    JCas jCas = createJCas(tsd);
+    jCas.setDocumentText(text);
+    AnalysisEngine analysisEngine = createPrimitive(RoomNumberAnnotator.class, tsd);
+    analysisEngine.process(jCas);
 
-		for (RoomNumber roomNumber : select(jCas, RoomNumber.class)) {
-			System.out.println(roomNumber.getCoveredText() + "\tbuilding = "
-					+ roomNumber.getBuilding());
-		}
-	}
+    for (RoomNumber roomNumber : select(jCas, RoomNumber.class)) {
+      System.out.println(roomNumber.getCoveredText() + "\tbuilding = " + roomNumber.getBuilding());
+    }
+  }
 }

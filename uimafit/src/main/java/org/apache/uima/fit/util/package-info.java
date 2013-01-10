@@ -20,3 +20,4 @@
  * Utility classes like {@link org.apache.uima.fit.util.CasUtil} and {@link org.apache.uima.fit.util.JCasUtil}.
  */
 package org.apache.uima.fit.util;
+

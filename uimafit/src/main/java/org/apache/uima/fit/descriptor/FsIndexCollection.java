@@ -32,8 +32,8 @@ import org.apache.uima.fit.factory.FsIndexFactory;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface FsIndexCollection {
-	/**
-	 * @see org.apache.uima.resource.metadata.FsIndexCollection#getFsIndexes()
-	 */
-	FsIndex[] fsIndexes();
+  /**
+   * @see org.apache.uima.resource.metadata.FsIndexCollection#getFsIndexes()
+   */
+  FsIndex[] fsIndexes();
 }

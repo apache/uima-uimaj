@@ -27,25 +27,24 @@ import org.apache.uima.jcas.tcas.Annotation;
  * 
  */
 public final class AnnotationFactory {
-	private AnnotationFactory() {
-		// This class is not meant to be instantiated
-	}
+  private AnnotationFactory() {
+    // This class is not meant to be instantiated
+  }
 
-	/**
-	 * Provides a convenient way to create an annotation and addToIndexes in a single line.
-	 */
-	public static <T extends Annotation> T createAnnotation(JCas jCas, int begin, int end,
-			Class<T> cls) throws UIMAException {
-		T annotation;
-		try {
-			annotation = cls.getConstructor(JCas.class, Integer.TYPE, Integer.TYPE).newInstance(
-					jCas, begin, end);
-		}
-		catch (Exception e) {
-			throw new UIMAException(e);
-		}
-		annotation.addToIndexes();
-		return annotation;
-	}
+  /**
+   * Provides a convenient way to create an annotation and addToIndexes in a single line.
+   */
+  public static <T extends Annotation> T createAnnotation(JCas jCas, int begin, int end,
+          Class<T> cls) throws UIMAException {
+    T annotation;
+    try {
+      annotation = cls.getConstructor(JCas.class, Integer.TYPE, Integer.TYPE).newInstance(jCas,
+              begin, end);
+    } catch (Exception e) {
+      throw new UIMAException(e);
+    }
+    annotation.addToIndexes();
+    return annotation;
+  }
 
 }

@@ -25,28 +25,26 @@ import org.apache.uima.fit.util.LocaleUtil;
 
 /**
  * Custom property editor for {@link Locale} that supports "-" as separator and sets the default
- * locale when {@code null} or {@code ""} is passed. This is used to be backwards-compatible with 
+ * locale when {@code null} or {@code ""} is passed. This is used to be backwards-compatible with
  * previous uimaFIT behavior.
  * 
  */
 public class LocaleEditor extends PropertyEditorSupport {
 
-	@Override
-	public void setAsText(String text) {
-		if (text == null) {
-			setValue(Locale.getDefault());
-		}
-		else if (text.length() == 0) {
-			setValue(Locale.getDefault());
-		}
-		else {
-			setValue(LocaleUtil.getLocale(text));
-		}
-	}
+  @Override
+  public void setAsText(String text) {
+    if (text == null) {
+      setValue(Locale.getDefault());
+    } else if (text.length() == 0) {
+      setValue(Locale.getDefault());
+    } else {
+      setValue(LocaleUtil.getLocale(text));
+    }
+  }
 
-	@Override
-	public String getAsText() {
-		Object value = getValue();
-		return (value != null ? value.toString() : "");
-	}
+  @Override
+  public String getAsText() {
+    Object value = getValue();
+    return (value != null ? value.toString() : "");
+  }
 }

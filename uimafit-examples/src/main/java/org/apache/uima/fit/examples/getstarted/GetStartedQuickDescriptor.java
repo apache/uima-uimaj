@@ -33,17 +33,17 @@ import org.xml.sax.SAXException;
  */
 public class GetStartedQuickDescriptor {
 
-	public static void main(String[] args) throws ResourceInitializationException,
-			FileNotFoundException, SAXException, IOException {
-		// uimaFIT automatically uses all type systems listed in META-INF/org.uimafit/types.txt
-		
-		// Instantiate the analysis engine using the value "uimaFIT" for the parameter
-		// PARAM_STRING ("stringParam").
-		AnalysisEngineDescription analysisEngineDescription = AnalysisEngineFactory
-				.createPrimitiveDescription(GetStartedQuickAE.class,
-						GetStartedQuickAE.PARAM_STRING, "uimaFIT");
-		
-		// Write the descriptor to an XML file
-		analysisEngineDescription.toXML(new FileOutputStream("GetStartedQuickAE.xml"));
-	}
+  public static void main(String[] args) throws ResourceInitializationException,
+          FileNotFoundException, SAXException, IOException {
+    // uimaFIT automatically uses all type systems listed in META-INF/org.uimafit/types.txt
+
+    // Instantiate the analysis engine using the value "uimaFIT" for the parameter
+    // PARAM_STRING ("stringParam").
+    AnalysisEngineDescription analysisEngineDescription = AnalysisEngineFactory
+            .createPrimitiveDescription(GetStartedQuickAE.class, GetStartedQuickAE.PARAM_STRING,
+                    "uimaFIT");
+
+    // Write the descriptor to an XML file
+    analysisEngineDescription.toXML(new FileOutputStream("GetStartedQuickAE.xml"));
+  }
 }

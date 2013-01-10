@@ -31,26 +31,26 @@ import org.junit.Test;
 
 public class DefaultPackageAETest extends ComponentTestBase {
 
-	@Test
-	public void testPackageLessAE() throws Exception {
-		AnalysisEngineDescription aed = AnalysisEngineFactory.createPrimitiveDescription(
-				DefaultPackageAE.class, (Object[]) null);
-		jCas.setDocumentText("some text");
-		SimplePipeline.runPipeline(jCas, aed);
+  @Test
+  public void testPackageLessAE() throws Exception {
+    AnalysisEngineDescription aed = AnalysisEngineFactory.createPrimitiveDescription(
+            DefaultPackageAE.class, (Object[]) null);
+    jCas.setDocumentText("some text");
+    SimplePipeline.runPipeline(jCas, aed);
 
-		aed = AnalysisEngineFactory.createPrimitiveDescription(DefaultPackageAE2.class,
-				(Object[]) null);
-		jCas.reset();
-		jCas.setDocumentText("some text");
-		SimplePipeline.runPipeline(jCas, aed);
+    aed = AnalysisEngineFactory
+            .createPrimitiveDescription(DefaultPackageAE2.class, (Object[]) null);
+    jCas.reset();
+    jCas.setDocumentText("some text");
+    SimplePipeline.runPipeline(jCas, aed);
 
-	}
+  }
 
-	public static class DefaultPackageAE2 extends JCasAnnotator_ImplBase {
-		@Override
-		public void process(JCas aJCas) throws AnalysisEngineProcessException {
-			// does nothing
-		}
-	}
+  public static class DefaultPackageAE2 extends JCasAnnotator_ImplBase {
+    @Override
+    public void process(JCas aJCas) throws AnalysisEngineProcessException {
+      // does nothing
+    }
+  }
 
 }

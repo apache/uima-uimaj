@@ -33,13 +33,13 @@ import org.apache.uima.jcas.tcas.Annotation;
 @TypeCapability(inputs = "org.apache.uima.fit.type.Token", outputs = "org.apache.uima.fit.type.Token:pos")
 public class Annotator4 extends JCasAnnotator_ImplBase {
 
-	@Override
-	public void process(JCas jCas) throws AnalysisEngineProcessException {
-		FSIterator<Annotation> tokens = jCas.getAnnotationIndex(Token.type).iterator();
-		while (tokens.hasNext()) {
-			Token token = (Token) tokens.next();
-			token.setPos("NN");
-		}
-	}
+  @Override
+  public void process(JCas jCas) throws AnalysisEngineProcessException {
+    FSIterator<Annotation> tokens = jCas.getAnnotationIndex(Token.type).iterator();
+    while (tokens.hasNext()) {
+      Token token = (Token) tokens.next();
+      token.setPos("NN");
+    }
+  }
 
 }

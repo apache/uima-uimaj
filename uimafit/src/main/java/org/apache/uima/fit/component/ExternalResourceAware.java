@@ -22,27 +22,25 @@ import org.apache.uima.fit.descriptor.ExternalResource;
 import org.apache.uima.fit.factory.ExternalResourceFactory;
 
 /**
- * Allows an external resource to use the {@link ExternalResource} annotation on member variables
- * to gain access to other external resources.
+ * Allows an external resource to use the {@link ExternalResource} annotation on member variables to
+ * gain access to other external resources.
  * 
  */
 public interface ExternalResourceAware {
-	/**
-	 * Get the name of the resource. This is set by {@link 
-	 * ExternalResourceFactory#bindExternalResource(org.apache.uima.resource.ResourceCreationSpecifier, 
-	 * String, org.apache.uima.resource.ExternalResourceDescription) bindExternalResource()} as the
-	 * parameter {@link ExternalResourceFactory#PARAM_RESOURCE_NAME PARAM_RESOURCE_NAME}. 
-	 * <br/>
-	 * <b>It is mandatory that any resource implementing this interface declares the configuration
-	 * parameter {@link ExternalResourceFactory#PARAM_RESOURCE_NAME PARAM_RESOURCE_NAME}.</b>
-	 * 
-	 * @return the resource name.
-	 */
-	String getResourceName();
-	
-	
-	/**
-	 * Called after the external resources have been initialized.
-	 */
-	void afterResourcesInitialized();
+  /**
+   * Get the name of the resource. This is set by
+   * {@link ExternalResourceFactory#bindExternalResource(org.apache.uima.resource.ResourceCreationSpecifier, String, org.apache.uima.resource.ExternalResourceDescription)
+   * bindExternalResource()} as the parameter {@link ExternalResourceFactory#PARAM_RESOURCE_NAME
+   * PARAM_RESOURCE_NAME}. <br/>
+   * <b>It is mandatory that any resource implementing this interface declares the configuration
+   * parameter {@link ExternalResourceFactory#PARAM_RESOURCE_NAME PARAM_RESOURCE_NAME}.</b>
+   * 
+   * @return the resource name.
+   */
+  String getResourceName();
+
+  /**
+   * Called after the external resources have been initialized.
+   */
+  void afterResourcesInitialized();
 }

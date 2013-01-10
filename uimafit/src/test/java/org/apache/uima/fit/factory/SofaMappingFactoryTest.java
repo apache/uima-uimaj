@@ -29,13 +29,12 @@ import org.junit.Test;
 
 public class SofaMappingFactoryTest {
 
-	@Test
-	public void test() {
-		SofaMapping sofaMapping = SofaMappingFactory.createSofaMapping(NoOpAnnotator.class,
-				"B", "A");
+  @Test
+  public void test() {
+    SofaMapping sofaMapping = SofaMappingFactory.createSofaMapping(NoOpAnnotator.class, "B", "A");
 
-		assertEquals("A", sofaMapping.getAggregateSofaName());
-		assertEquals(NoOpAnnotator.class.getName(), sofaMapping.getComponentKey());
-		assertEquals("B", sofaMapping.getComponentSofaName());
-	}
+    assertEquals("A", sofaMapping.getAggregateSofaName());
+    assertEquals(NoOpAnnotator.class.getName(), sofaMapping.getComponentKey());
+    assertEquals("B", sofaMapping.getComponentSofaName());
+  }
 }

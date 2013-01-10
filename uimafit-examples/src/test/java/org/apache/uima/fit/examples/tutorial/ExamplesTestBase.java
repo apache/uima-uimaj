@@ -39,46 +39,45 @@ import org.junit.Before;
  * 
  */
 public class ExamplesTestBase {
-	private static ThreadLocal<JCas> JCAS = new ThreadLocal<JCas>();
+  private static ThreadLocal<JCas> JCAS = new ThreadLocal<JCas>();
 
-	private static ThreadLocal<TypeSystemDescription> TYPE_SYSTEM_DESCRIPTION = new ThreadLocal<TypeSystemDescription>();
+  private static ThreadLocal<TypeSystemDescription> TYPE_SYSTEM_DESCRIPTION = new ThreadLocal<TypeSystemDescription>();
 
-	private static ThreadLocal<TypePriorities> TYPE_PRIORITIES = new ThreadLocal<TypePriorities>();
+  private static ThreadLocal<TypePriorities> TYPE_PRIORITIES = new ThreadLocal<TypePriorities>();
 
-	static {
-		try {
-			TypeSystemDescription tsd = createTypeSystemDescription("org.apache.uima.fit.examples.TypeSystem");
-			TYPE_SYSTEM_DESCRIPTION.set(tsd);
+  static {
+    try {
+      TypeSystemDescription tsd = createTypeSystemDescription("org.apache.uima.fit.examples.TypeSystem");
+      TYPE_SYSTEM_DESCRIPTION.set(tsd);
 
-			TypePriorities tp = createTypePriorities(DateAnnotation.class, DateTimeAnnotation.class, Meeting.class, RoomNumber.class,
-					TimeAnnotation.class, UimaAcronym.class, UimaMeeting.class);
-			TYPE_PRIORITIES.set(tp);
+      TypePriorities tp = createTypePriorities(DateAnnotation.class, DateTimeAnnotation.class,
+              Meeting.class, RoomNumber.class, TimeAnnotation.class, UimaAcronym.class,
+              UimaMeeting.class);
+      TYPE_PRIORITIES.set(tp);
 
-			JCas jCas = createJCas(tsd);
-			JCAS.set(jCas);
-		}
-		catch (Exception e) {
-			throw new IllegalStateException(e);
-		}
-	}
+      JCas jCas = createJCas(tsd);
+      JCAS.set(jCas);
+    } catch (Exception e) {
+      throw new IllegalStateException(e);
+    }
+  }
 
-	protected JCas jCas;
+  protected JCas jCas;
 
-	protected TypeSystemDescription typeSystemDescription;
+  protected TypeSystemDescription typeSystemDescription;
 
-	protected TypePriorities typeSystemPriorities;
+  protected TypePriorities typeSystemPriorities;
 
-	/**
-	 * we do not want to create a new JCas object every time we run a test
-	 * because it is expensive (~100ms on my laptop). Instead, we will have one
-	 * JCas per thread sitting around that we will reset everytime a new test is
-	 * called.
-	 */
-	@Before
-	public void setUp() {
-		jCas = JCAS.get();
-		jCas.reset();
-		typeSystemDescription = TYPE_SYSTEM_DESCRIPTION.get();
-		typeSystemPriorities = TYPE_PRIORITIES.get();
-	}
+  /**
+   * we do not want to create a new JCas object every time we run a test because it is expensive
+   * (~100ms on my laptop). Instead, we will have one JCas per thread sitting around that we will
+   * reset everytime a new test is called.
+   */
+  @Before
+  public void setUp() {
+    jCas = JCAS.get();
+    jCas.reset();
+    typeSystemDescription = TYPE_SYSTEM_DESCRIPTION.get();
+    typeSystemPriorities = TYPE_PRIORITIES.get();
+  }
 }

@@ -33,20 +33,20 @@ import org.apache.uima.resource.ResourceInitializationException;
  */
 @OperationalProperties(multipleDeploymentAllowed = false)
 public abstract class CasConsumer_ImplBase extends
-		org.apache.uima.analysis_component.CasAnnotator_ImplBase {
-	private ExtendedLogger logger;
-	
-	public ExtendedLogger getLogger() {
-		if (logger == null) {
-			logger = new ExtendedLogger(getContext());
-		}
-		return logger;
-	}
-	
-	@Override
-	public void initialize(final UimaContext context) throws ResourceInitializationException {
-		super.initialize(context);
-		ConfigurationParameterInitializer.initialize(this, context);
-		ExternalResourceInitializer.initialize(context, this);
-	}
+        org.apache.uima.analysis_component.CasAnnotator_ImplBase {
+  private ExtendedLogger logger;
+
+  public ExtendedLogger getLogger() {
+    if (logger == null) {
+      logger = new ExtendedLogger(getContext());
+    }
+    return logger;
+  }
+
+  @Override
+  public void initialize(final UimaContext context) throws ResourceInitializationException {
+    super.initialize(context);
+    ConfigurationParameterInitializer.initialize(this, context);
+    ExternalResourceInitializer.initialize(context, this);
+  }
 }

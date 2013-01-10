@@ -66,26 +66,26 @@ import org.apache.uima.util.XMLInputSource;
  * 
  */
 public class JCasGenPomFriendly {
-	/**
-	 * See class-level javadoc for instructions on running this program.
-	 */
-	public static void main(String[] args) throws Exception {
-		Jg jg = new Jg();
-		for (String file : TypeSystemDescriptionFactory.resolve(args[0].split(";"))) {
-			generate(jg, file, args[1], load(file));
-		}
-	}
+  /**
+   * See class-level javadoc for instructions on running this program.
+   */
+  public static void main(String[] args) throws Exception {
+    Jg jg = new Jg();
+    for (String file : TypeSystemDescriptionFactory.resolve(args[0].split(";"))) {
+      generate(jg, file, args[1], load(file));
+    }
+  }
 
-	private static TypeSystemDescription load(String location) throws IOException,
-			InvalidXMLException {
-		XMLInputSource xmlInputType1 = new XMLInputSource(location);
-		return getXMLParser().parseTypeSystemDescription(xmlInputType1);
-	}
+  private static TypeSystemDescription load(String location) throws IOException,
+          InvalidXMLException {
+    XMLInputSource xmlInputType1 = new XMLInputSource(location);
+    return getXMLParser().parseTypeSystemDescription(xmlInputType1);
+  }
 
-	private static void generate(Jg jg, String inputFile, String outputDirectory,
-			TypeSystemDescription tsd) throws IOException, ResourceInitializationException {
-		CAS cas = CasCreationUtils.createCas(tsd, null, null);
-		jg.mainForCde(null, new UimaLoggerProgressMonitor(), new LogThrowErrorImpl(), inputFile,
-				outputDirectory, tsd.getTypes(), (CASImpl) cas);
-	}
+  private static void generate(Jg jg, String inputFile, String outputDirectory,
+          TypeSystemDescription tsd) throws IOException, ResourceInitializationException {
+    CAS cas = CasCreationUtils.createCas(tsd, null, null);
+    jg.mainForCde(null, new UimaLoggerProgressMonitor(), new LogThrowErrorImpl(), inputFile,
+            outputDirectory, tsd.getTypes(), (CASImpl) cas);
+  }
 }

@@ -17,7 +17,6 @@
  * under the License.
  */
 
-
 package org.apache.uima.fit.spring;
 
 import java.lang.reflect.Constructor;
@@ -39,134 +38,114 @@ import org.springframework.context.ApplicationContextAware;
 
 /**
  * Allowing UIMA components to access beans from a {@link ApplicationContext context}.
- *
+ * 
  */
-public class SpringContextResourceManager
-	extends ResourceManager_impl
-	implements ApplicationContextAware
-{
-	private ApplicationContext context;
-	private boolean autowireEnabled = false;
+public class SpringContextResourceManager extends ResourceManager_impl implements
+        ApplicationContextAware {
+  private ApplicationContext context;
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@Override
-	public void initializeExternalResources(ResourceManagerConfiguration aConfiguration,
-			String aQualifiedContextName, java.util.Map<String, Object> aAdditionalParams)
-			throws ResourceInitializationException {
+  private boolean autowireEnabled = false;
 
-		for (String name : BeanFactoryUtils.beanNamesIncludingAncestors(context)) {
-			Object registration = mInternalResourceRegistrationMap.get(name);
+  @SuppressWarnings({ "rawtypes", "unchecked" })
+  @Override
+  public void initializeExternalResources(ResourceManagerConfiguration aConfiguration,
+          String aQualifiedContextName, java.util.Map<String, Object> aAdditionalParams)
+          throws ResourceInitializationException {
 
-			if (registration == null) {
-				try {
-					// Register resource
-					// ResourceRegistration unfortunately is package private
-					Object reg = newInstance(
-							"org.apache.uima.resource.impl.ResourceManager_impl$ResourceRegistration",
-							Object.class, context.getBean(name),
-							ExternalResourceDescription.class, null,
-							String.class, aQualifiedContextName);
-					((Map) mInternalResourceRegistrationMap).put(name, reg);
+    for (String name : BeanFactoryUtils.beanNamesIncludingAncestors(context)) {
+      Object registration = mInternalResourceRegistrationMap.get(name);
 
-					// Perform binding
-					if (isAutowireEnabled()) {
-						mResourceMap.put(aQualifiedContextName + name, context.getBean(name));
-					}
-				}
-				catch (Exception e1) {
-					throw new ResourceInitializationException(e1);
-				}
-			}
-			else {
-				try {
-					Object desc = getFieldValue(registration, "description");
+      if (registration == null) {
+        try {
+          // Register resource
+          // ResourceRegistration unfortunately is package private
+          Object reg = newInstance(
+                  "org.apache.uima.resource.impl.ResourceManager_impl$ResourceRegistration",
+                  Object.class, context.getBean(name), ExternalResourceDescription.class, null,
+                  String.class, aQualifiedContextName);
+          ((Map) mInternalResourceRegistrationMap).put(name, reg);
 
-					if (desc != null) {
-						String definingContext = getFieldValue(registration, "definingContext");
+          // Perform binding
+          if (isAutowireEnabled()) {
+            mResourceMap.put(aQualifiedContextName + name, context.getBean(name));
+          }
+        } catch (Exception e1) {
+          throw new ResourceInitializationException(e1);
+        }
+      } else {
+        try {
+          Object desc = getFieldValue(registration, "description");
 
-						if (aQualifiedContextName.startsWith(definingContext)) {
-							UIMAFramework.getLogger().logrb(
-									Level.CONFIG,
-									ResourceManager_impl.class.getName(),
-									"initializeExternalResources",
-									LOG_RESOURCE_BUNDLE,
-									"UIMA_overridden_resource__CONFIG",
-									new Object[] { name, aQualifiedContextName,
-											definingContext });
-						}
-						else {
-							UIMAFramework.getLogger().logrb(
-									Level.WARNING,
-									ResourceManager_impl.class.getName(),
-									"initializeExternalResources",
-									LOG_RESOURCE_BUNDLE,
-									"UIMA_duplicate_resource_name__WARNING",
-									new Object[] { name, definingContext,
-											aQualifiedContextName });
-						}
-					}
-				}
-				catch (Exception e1) {
-					throw new ResourceInitializationException(e1);
-				}
-			}
-		}
+          if (desc != null) {
+            String definingContext = getFieldValue(registration, "definingContext");
 
-		super.initializeExternalResources(aConfiguration, aQualifiedContextName, aAdditionalParams);
-	}
+            if (aQualifiedContextName.startsWith(definingContext)) {
+              UIMAFramework.getLogger().logrb(Level.CONFIG, ResourceManager_impl.class.getName(),
+                      "initializeExternalResources", LOG_RESOURCE_BUNDLE,
+                      "UIMA_overridden_resource__CONFIG",
+                      new Object[] { name, aQualifiedContextName, definingContext });
+            } else {
+              UIMAFramework.getLogger().logrb(Level.WARNING, ResourceManager_impl.class.getName(),
+                      "initializeExternalResources", LOG_RESOURCE_BUNDLE,
+                      "UIMA_duplicate_resource_name__WARNING",
+                      new Object[] { name, definingContext, aQualifiedContextName });
+            }
+          }
+        } catch (Exception e1) {
+          throw new ResourceInitializationException(e1);
+        }
+      }
+    }
 
-	public void setApplicationContext(ApplicationContext aApplicationContext)
-		throws BeansException
-	{
-		context = aApplicationContext;
-	}
+    super.initializeExternalResources(aConfiguration, aQualifiedContextName, aAdditionalParams);
+  }
 
-	/**
-	 * Instantiate a non-visible class.
-	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private static <T> T newInstance(String aClassName, Object... aArgs) throws ResourceInitializationException {
-		Constructor constr = null;
-		try {
-			Class<?> cl = Class.forName(aClassName);
+  public void setApplicationContext(ApplicationContext aApplicationContext) throws BeansException {
+    context = aApplicationContext;
+  }
 
-			List<Class> types = new ArrayList<Class>();
-			List<Object> values = new ArrayList<Object>();
-			for (int i = 0; i < aArgs.length; i += 2) {
-				types.add((Class) aArgs[i]);
-				values.add(aArgs[i+1]);
-			}
+  /**
+   * Instantiate a non-visible class.
+   */
+  @SuppressWarnings({ "unchecked", "rawtypes" })
+  private static <T> T newInstance(String aClassName, Object... aArgs)
+          throws ResourceInitializationException {
+    Constructor constr = null;
+    try {
+      Class<?> cl = Class.forName(aClassName);
 
-			constr = cl.getDeclaredConstructor(types.toArray(new Class[types.size()]));
-			constr.setAccessible(true);
-			return (T) constr.newInstance(values.toArray(new Object[values.size()]));
-		}
-		catch (Exception e) {
-			throw new ResourceInitializationException(e);
-		}
-		finally {
-			if (constr != null) {
-				constr.setAccessible(false);
-			}
-		}
-	}
+      List<Class> types = new ArrayList<Class>();
+      List<Object> values = new ArrayList<Object>();
+      for (int i = 0; i < aArgs.length; i += 2) {
+        types.add((Class) aArgs[i]);
+        values.add(aArgs[i + 1]);
+      }
 
-	/**
-	 * Get a field value from a non-visible field.
-	 */
-	@SuppressWarnings("unchecked")
-	private static <T> T getFieldValue(Object aObject, String aFieldName)
-	{
-		return (T) PropertyAccessorFactory.forDirectFieldAccess(aObject).getPropertyValue(aFieldName);
-	}
+      constr = cl.getDeclaredConstructor(types.toArray(new Class[types.size()]));
+      constr.setAccessible(true);
+      return (T) constr.newInstance(values.toArray(new Object[values.size()]));
+    } catch (Exception e) {
+      throw new ResourceInitializationException(e);
+    } finally {
+      if (constr != null) {
+        constr.setAccessible(false);
+      }
+    }
+  }
 
-	public void setAutowireEnabled(boolean aAutowireEnabled)
-	{
-		autowireEnabled = aAutowireEnabled;
-	}
+  /**
+   * Get a field value from a non-visible field.
+   */
+  @SuppressWarnings("unchecked")
+  private static <T> T getFieldValue(Object aObject, String aFieldName) {
+    return (T) PropertyAccessorFactory.forDirectFieldAccess(aObject).getPropertyValue(aFieldName);
+  }
 
-	public boolean isAutowireEnabled()
-	{
-		return autowireEnabled;
-	}
+  public void setAutowireEnabled(boolean aAutowireEnabled) {
+    autowireEnabled = aAutowireEnabled;
+  }
+
+  public boolean isAutowireEnabled() {
+    return autowireEnabled;
+  }
 }

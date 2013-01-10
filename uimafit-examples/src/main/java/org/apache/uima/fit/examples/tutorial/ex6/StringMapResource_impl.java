@@ -35,40 +35,38 @@ import org.apache.uima.resource.SharedResourceObject;
  * 
  */
 public class StringMapResource_impl implements StringMapResource, SharedResourceObject {
-	private Map<String, String> mMap = new HashMap<String, String>();
+  private Map<String, String> mMap = new HashMap<String, String>();
 
-	/**
-	 * @see org.apache.uima.resource.SharedResourceObject#load(DataResource)
-	 */
-	public void load(DataResource aData) throws ResourceInitializationException {
-		InputStream inStr = null;
-		try {
-			// open input stream to data
-			inStr = aData.getInputStream();
-			// read each line
-			BufferedReader reader = new BufferedReader(new InputStreamReader(inStr));
-			String line;
-			while ((line = reader.readLine()) != null) {
-				// the first tab on each line separates key from value.
-				// Keys cannot contain whitespace.
-				int tabPos = line.indexOf('\t');
-				String key = line.substring(0, tabPos);
-				String val = line.substring(tabPos + 1);
-				mMap.put(key, val);
-			}
-		}
-		catch (IOException e) {
-			throw new ResourceInitializationException(e);
-		}
-		finally {
-			IOUtils.closeQuietly(inStr);
-		}
-	}
+  /**
+   * @see org.apache.uima.resource.SharedResourceObject#load(DataResource)
+   */
+  public void load(DataResource aData) throws ResourceInitializationException {
+    InputStream inStr = null;
+    try {
+      // open input stream to data
+      inStr = aData.getInputStream();
+      // read each line
+      BufferedReader reader = new BufferedReader(new InputStreamReader(inStr));
+      String line;
+      while ((line = reader.readLine()) != null) {
+        // the first tab on each line separates key from value.
+        // Keys cannot contain whitespace.
+        int tabPos = line.indexOf('\t');
+        String key = line.substring(0, tabPos);
+        String val = line.substring(tabPos + 1);
+        mMap.put(key, val);
+      }
+    } catch (IOException e) {
+      throw new ResourceInitializationException(e);
+    } finally {
+      IOUtils.closeQuietly(inStr);
+    }
+  }
 
-	/**
-	 * @see StringMapResource#get(String)
-	 */
-	public String get(String aKey) {
-		return mMap.get(aKey);
-	}
+  /**
+   * @see StringMapResource#get(String)
+   */
+  public String get(String aKey) {
+    return mMap.get(aKey);
+  }
 }

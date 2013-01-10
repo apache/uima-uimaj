@@ -17,7 +17,6 @@
  * under the License.
  */
 
-
 package org.apache.uima.fit.factory;
 
 import static org.apache.uima.fit.component.initialize.ExternalResourceInitializer.getResourceDeclarations;
@@ -39,46 +38,46 @@ import org.junit.Test;
  * 
  */
 public class ExternalResourceConfiguratorTest extends ComponentTestBase {
-	@Test
-	public void testAnalyze() throws Exception {
-		Map<String, ExternalResourceDependency> deps = getResourceDeclarations(ParameterizedAE2.class);
+  @Test
+  public void testAnalyze() throws Exception {
+    Map<String, ExternalResourceDependency> deps = getResourceDeclarations(ParameterizedAE2.class);
 
-		verify(deps);
-	}
+    verify(deps);
+  }
 
-	@Test
-	public void testDescriptor() throws Exception {
-		AnalysisEngineDescription desc = createPrimitiveDescription(ParameterizedAE2.class,
-				typeSystemDescription);
+  @Test
+  public void testDescriptor() throws Exception {
+    AnalysisEngineDescription desc = createPrimitiveDescription(ParameterizedAE2.class,
+            typeSystemDescription);
 
-		Map<String, ExternalResourceDependency> deps = new HashMap<String, ExternalResourceDependency>();
-		for (ExternalResourceDependency dep : desc.getExternalResourceDependencies()) {
-			deps.put(dep.getKey(), dep);
-		}
+    Map<String, ExternalResourceDependency> deps = new HashMap<String, ExternalResourceDependency>();
+    for (ExternalResourceDependency dep : desc.getExternalResourceDependencies()) {
+      deps.put(dep.getKey(), dep);
+    }
 
-		verify(deps);
-	}
+    verify(deps);
+  }
 
-	private void verify(Map<String, ExternalResourceDependency> deps) {
-		assertEquals(3, deps.size());
+  private void verify(Map<String, ExternalResourceDependency> deps) {
+    assertEquals(3, deps.size());
 
-		String key = ParameterizedAE2.DummyResource.class.getName();
-		String api = ParameterizedAE2.DummyResource.class.getName();
-		ExternalResourceDependency d = deps.get(key);
-		assertEquals(key, d.getKey());
-		assertEquals(api, d.getInterfaceName());
-		assertEquals(false, d.isOptional());
+    String key = ParameterizedAE2.DummyResource.class.getName();
+    String api = ParameterizedAE2.DummyResource.class.getName();
+    ExternalResourceDependency d = deps.get(key);
+    assertEquals(key, d.getKey());
+    assertEquals(api, d.getInterfaceName());
+    assertEquals(false, d.isOptional());
 
-		key = ParameterizedAE2.RES_OTHER;
-		d = deps.get(key);
-		assertEquals(key, d.getKey());
-		assertEquals(api, d.getInterfaceName());
-		assertEquals(false, d.isOptional());
+    key = ParameterizedAE2.RES_OTHER;
+    d = deps.get(key);
+    assertEquals(key, d.getKey());
+    assertEquals(api, d.getInterfaceName());
+    assertEquals(false, d.isOptional());
 
-		key = ParameterizedAE2.RES_OPTIONAL;
-		d = deps.get(key);
-		assertEquals(key, d.getKey());
-		assertEquals(api, d.getInterfaceName());
-		assertEquals(true, d.isOptional());
-	}
+    key = ParameterizedAE2.RES_OPTIONAL;
+    d = deps.get(key);
+    assertEquals(key, d.getKey());
+    assertEquals(api, d.getInterfaceName());
+    assertEquals(true, d.isOptional());
+  }
 }

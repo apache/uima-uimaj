@@ -28,14 +28,13 @@ import org.springframework.beans.propertyeditors.CustomCollectionEditor;
  */
 public final class PropertyEditorUtil {
 
-	private PropertyEditorUtil() {
-		// Utility class
-	}
-	
-	public static void registerUimaFITEditors(PropertyEditorRegistry aRegistry)
-	{
-		aRegistry.registerCustomEditor(Locale.class, new LocaleEditor());
-		aRegistry.registerCustomEditor(String.class, new GetAsTextStringEditor(aRegistry));
-		aRegistry.registerCustomEditor(LinkedList.class, new CustomCollectionEditor(LinkedList.class));
-	}
+  private PropertyEditorUtil() {
+    // Utility class
+  }
+
+  public static void registerUimaFITEditors(PropertyEditorRegistry aRegistry) {
+    aRegistry.registerCustomEditor(Locale.class, new LocaleEditor());
+    aRegistry.registerCustomEditor(String.class, new GetAsTextStringEditor(aRegistry));
+    aRegistry.registerCustomEditor(LinkedList.class, new CustomCollectionEditor(LinkedList.class));
+  }
 }

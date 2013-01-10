@@ -29,19 +29,20 @@ import org.apache.uima.resource.SharedResourceObject;
 /**
  */
 public class TestSharedResourceObject implements SharedResourceObject {
-	public static final String EXPECTED_VALUE = "expected value";
-	
-	public final static String PARAM_VALUE = "value";
-	@ConfigurationParameter(name = PARAM_VALUE)
-	private String value;
+  public static final String EXPECTED_VALUE = "expected value";
 
-	public void assertConfiguredOk() {
-		System.out.println(getClass().getSimpleName()+".assertConfiguredOk()");
-		// Ensure normal parameters get passed to External Resource
-		assertEquals(EXPECTED_VALUE, value);
-	}
-	
-	public void load(DataResource aData) throws ResourceInitializationException {
-		ConfigurationParameterInitializer.initialize(this, aData);
-	}
+  public final static String PARAM_VALUE = "value";
+
+  @ConfigurationParameter(name = PARAM_VALUE)
+  private String value;
+
+  public void assertConfiguredOk() {
+    System.out.println(getClass().getSimpleName() + ".assertConfiguredOk()");
+    // Ensure normal parameters get passed to External Resource
+    assertEquals(EXPECTED_VALUE, value);
+  }
+
+  public void load(DataResource aData) throws ResourceInitializationException {
+    ConfigurationParameterInitializer.initialize(this, aData);
+  }
 }

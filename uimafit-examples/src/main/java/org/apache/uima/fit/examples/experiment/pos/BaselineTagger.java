@@ -26,25 +26,24 @@ import org.apache.uima.fit.examples.type.Token;
 import org.apache.uima.jcas.JCas;
 
 /**
- * This "baseline" part-of-speech tagger isn't very sophisticated! Notice,
- * however, that the tagger operates on the default view. This will be mapped to
- * the "system" view when we run our experiment.
+ * This "baseline" part-of-speech tagger isn't very sophisticated! Notice, however, that the tagger
+ * operates on the default view. This will be mapped to the "system" view when we run our
+ * experiment.
  * 
  * 
  */
 public class BaselineTagger extends JCasAnnotator_ImplBase {
 
-	@Override
-	public void process(JCas jCas) throws AnalysisEngineProcessException {
-		for (Token token : select(jCas, Token.class)) {
-			String word = token.getCoveredText();
-			if (word.equals("a") || word.equals("the")) {
-				token.setPos("DT");
-			}
-			else {
-				token.setPos("NN");
-			}
-		}
-	}
+  @Override
+  public void process(JCas jCas) throws AnalysisEngineProcessException {
+    for (Token token : select(jCas, Token.class)) {
+      String word = token.getCoveredText();
+      if (word.equals("a") || word.equals("the")) {
+        token.setPos("DT");
+      } else {
+        token.setPos("NN");
+      }
+    }
+  }
 
 }

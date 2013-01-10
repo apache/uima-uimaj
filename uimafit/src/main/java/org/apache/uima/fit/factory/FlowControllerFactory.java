@@ -42,84 +42,83 @@ import org.apache.uima.resource.metadata.ResourceMetaData;
  */
 
 public final class FlowControllerFactory {
-	private FlowControllerFactory() {
-		// This class is not meant to be instantiated
-	}
+  private FlowControllerFactory() {
+    // This class is not meant to be instantiated
+  }
 
-	/**
-	 * Creates a new FlowControllerDescription for a given class and configuration data
-	 * 
-	 * @param configurationData
-	 *            should be configuration parameter name / value pairs.
-	 */
-	public static FlowControllerDescription createFlowControllerDescription(
-			Class<? extends FlowController> flowControllerClass, Object... configurationData)
-			throws ResourceInitializationException {
+  /**
+   * Creates a new FlowControllerDescription for a given class and configuration data
+   * 
+   * @param configurationData
+   *          should be configuration parameter name / value pairs.
+   */
+  public static FlowControllerDescription createFlowControllerDescription(
+          Class<? extends FlowController> flowControllerClass, Object... configurationData)
+          throws ResourceInitializationException {
 
-		ensureParametersComeInPairs(configurationData);
+    ensureParametersComeInPairs(configurationData);
 
-		// Extract ExternalResourceDescriptions from configurationData
-		// <ParamterName, ExternalResourceDescription> will be stored in this map
-		Map<String, ExternalResourceDescription> externalResources = 
-				ExternalResourceFactory.extractExternalResourceParameters(configurationData);
+    // Extract ExternalResourceDescriptions from configurationData
+    // <ParamterName, ExternalResourceDescription> will be stored in this map
+    Map<String, ExternalResourceDescription> externalResources = ExternalResourceFactory
+            .extractExternalResourceParameters(configurationData);
 
-		// Create description normally
-		ConfigurationData cdata = createConfigurationData(configurationData);
-		return createFlowControllerDescription(flowControllerClass, cdata.configurationParameters,
-				cdata.configurationValues, externalResources);
-	}
+    // Create description normally
+    ConfigurationData cdata = createConfigurationData(configurationData);
+    return createFlowControllerDescription(flowControllerClass, cdata.configurationParameters,
+            cdata.configurationValues, externalResources);
+  }
 
-	public static FlowControllerDescription createFlowControllerDescription(
-			Class<? extends FlowController> flowControllerClass,
-			ConfigurationParameter[] configurationParameters, Object[] configurationValues)
-			throws ResourceInitializationException {
-		return createFlowControllerDescription(flowControllerClass, configurationParameters,
-				configurationValues, null);
-	}
-	
-	/**
-	 * Creates a new FlowControllerDescription for a given class and configuration parameters with
-	 * values
-	 */
-	public static FlowControllerDescription createFlowControllerDescription(
-			Class<? extends FlowController> flowControllerClass,
-			ConfigurationParameter[] configurationParameters, Object[] configurationValues,
-			Map<String, ExternalResourceDescription> externalResources)
-			throws ResourceInitializationException {
-		FlowControllerDescription desc = new FlowControllerDescription_impl();
-		desc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
-		desc.setImplementationName(flowControllerClass.getName());
+  public static FlowControllerDescription createFlowControllerDescription(
+          Class<? extends FlowController> flowControllerClass,
+          ConfigurationParameter[] configurationParameters, Object[] configurationValues)
+          throws ResourceInitializationException {
+    return createFlowControllerDescription(flowControllerClass, configurationParameters,
+            configurationValues, null);
+  }
 
-		ConfigurationData reflectedConfigurationData = ConfigurationParameterFactory
-				.createConfigurationData(flowControllerClass);
-		ResourceCreationSpecifierFactory.setConfigurationParameters(desc,
-				reflectedConfigurationData.configurationParameters,
-				reflectedConfigurationData.configurationValues);
-		if (configurationParameters != null) {
-			ResourceCreationSpecifierFactory.setConfigurationParameters(desc,
-					configurationParameters, configurationValues);
-		}
+  /**
+   * Creates a new FlowControllerDescription for a given class and configuration parameters with
+   * values
+   */
+  public static FlowControllerDescription createFlowControllerDescription(
+          Class<? extends FlowController> flowControllerClass,
+          ConfigurationParameter[] configurationParameters, Object[] configurationValues,
+          Map<String, ExternalResourceDescription> externalResources)
+          throws ResourceInitializationException {
+    FlowControllerDescription desc = new FlowControllerDescription_impl();
+    desc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
+    desc.setImplementationName(flowControllerClass.getName());
 
-		ResourceMetaData meta = desc.getMetaData();
-		meta.setName(flowControllerClass.getName());
-		meta.setVendor(flowControllerClass.getPackage().toString());
-		meta.setDescription("Descriptor automatically generated by uimaFIT");
-		meta.setVersion("unknown");
+    ConfigurationData reflectedConfigurationData = ConfigurationParameterFactory
+            .createConfigurationData(flowControllerClass);
+    ResourceCreationSpecifierFactory.setConfigurationParameters(desc,
+            reflectedConfigurationData.configurationParameters,
+            reflectedConfigurationData.configurationValues);
+    if (configurationParameters != null) {
+      ResourceCreationSpecifierFactory.setConfigurationParameters(desc, configurationParameters,
+              configurationValues);
+    }
 
-		// Extract external resource dependencies
-		Collection<ExternalResourceDependency> deps = ExternalResourceInitializer
-				.getResourceDeclarations(flowControllerClass).values();
-		desc.setExternalResourceDependencies(deps.toArray(new ExternalResourceDependency[deps
-				.size()]));
+    ResourceMetaData meta = desc.getMetaData();
+    meta.setName(flowControllerClass.getName());
+    meta.setVendor(flowControllerClass.getPackage().toString());
+    meta.setDescription("Descriptor automatically generated by uimaFIT");
+    meta.setVersion("unknown");
 
-		// Bind External Resources
-		if (externalResources != null) {
-			for (Entry<String, ExternalResourceDescription> e : externalResources.entrySet()) {
-				bindExternalResource(desc, e.getKey(), e.getValue());
-			}
-		}
+    // Extract external resource dependencies
+    Collection<ExternalResourceDependency> deps = ExternalResourceInitializer
+            .getResourceDeclarations(flowControllerClass).values();
+    desc.setExternalResourceDependencies(deps.toArray(new ExternalResourceDependency[deps.size()]));
 
-		return desc;
-	}
+    // Bind External Resources
+    if (externalResources != null) {
+      for (Entry<String, ExternalResourceDescription> e : externalResources.entrySet()) {
+        bindExternalResource(desc, e.getKey(), e.getValue());
+      }
+    }
+
+    return desc;
+  }
 
 }

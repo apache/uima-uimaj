@@ -30,16 +30,16 @@ import org.apache.uima.jcas.JCas;
 
 public class FlowAE2 extends JCasAnnotator_ImplBase {
 
-	@Override
-	public void process(JCas jCas) throws AnalysisEngineProcessException {
-		String analyzedText = TypeSystemUtil.getAnalyzedText(jCas);
-		String sortedText = sort(analyzedText);
-		TypeSystemUtil.setAnalyzedText(jCas, sortedText);
-	}
+  @Override
+  public void process(JCas jCas) throws AnalysisEngineProcessException {
+    String analyzedText = TypeSystemUtil.getAnalyzedText(jCas);
+    String sortedText = sort(analyzedText);
+    TypeSystemUtil.setAnalyzedText(jCas, sortedText);
+  }
 
-	public static String sort(String text) {
-		char[] chars = text.toCharArray();
-		Arrays.sort(chars);
-		return new String(chars).trim();
-	}
+  public static String sort(String text) {
+    char[] chars = text.toCharArray();
+    Arrays.sort(chars);
+    return new String(chars).trim();
+  }
 }

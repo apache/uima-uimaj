@@ -18,51 +18,51 @@
  */
 package org.apache.uima.fit.factory;
 
+import static org.apache.uima.fit.util.CasUtil.UIMA_BUILTIN_JCAS_PREFIX;
+
 import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypePriorityList;
 import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
-
-import static org.apache.uima.fit.util.CasUtil.UIMA_BUILTIN_JCAS_PREFIX;
 
 /**
  */
 
 public final class TypePrioritiesFactory {
-	private TypePrioritiesFactory() {
-		// This class is not meant to be instantiated
-	}
+  private TypePrioritiesFactory() {
+    // This class is not meant to be instantiated
+  }
 
-	/**
-	 * Create a TypePriorities given a sequence of ordered type classes
-	 *
-	 * @param prioritizedTypes
-	 *            a sequence of ordered type classes
-	 */
-	public static TypePriorities createTypePriorities(Class<?>... prioritizedTypes) {
-		String[] typeNames = new String[prioritizedTypes.length];
-		for (int i = 0; i < prioritizedTypes.length; i++) {
-			String typeName = prioritizedTypes[i].getName();
-			if (typeName.startsWith(UIMA_BUILTIN_JCAS_PREFIX)) {
-				typeName = "uima." + typeName.substring(UIMA_BUILTIN_JCAS_PREFIX.length());
-			}
+  /**
+   * Create a TypePriorities given a sequence of ordered type classes
+   * 
+   * @param prioritizedTypes
+   *          a sequence of ordered type classes
+   */
+  public static TypePriorities createTypePriorities(Class<?>... prioritizedTypes) {
+    String[] typeNames = new String[prioritizedTypes.length];
+    for (int i = 0; i < prioritizedTypes.length; i++) {
+      String typeName = prioritizedTypes[i].getName();
+      if (typeName.startsWith(UIMA_BUILTIN_JCAS_PREFIX)) {
+        typeName = "uima." + typeName.substring(UIMA_BUILTIN_JCAS_PREFIX.length());
+      }
 
-			typeNames[i] = typeName;
-		}
-		return createTypePriorities(typeNames);
-	}
+      typeNames[i] = typeName;
+    }
+    return createTypePriorities(typeNames);
+  }
 
-	/**
-	 * Create a TypePriorities given a sequence of ordered type names
-	 *
-	 * @param prioritizedTypeNames
-	 *            a sequence of ordered type names
-	 */
-	public static TypePriorities createTypePriorities(String... prioritizedTypeNames) {
-		TypePriorities typePriorities = new TypePriorities_impl();
-		TypePriorityList typePriorityList = typePriorities.addPriorityList();
-		for (String typeName : prioritizedTypeNames) {
-			typePriorityList.addType(typeName);
-		}
-		return typePriorities;
-	}
+  /**
+   * Create a TypePriorities given a sequence of ordered type names
+   * 
+   * @param prioritizedTypeNames
+   *          a sequence of ordered type names
+   */
+  public static TypePriorities createTypePriorities(String... prioritizedTypeNames) {
+    TypePriorities typePriorities = new TypePriorities_impl();
+    TypePriorityList typePriorityList = typePriorities.addPriorityList();
+    for (String typeName : prioritizedTypeNames) {
+      typePriorityList.addType(typeName);
+    }
+    return typePriorities;
+  }
 }

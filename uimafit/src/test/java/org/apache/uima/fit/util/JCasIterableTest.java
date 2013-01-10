@@ -29,15 +29,15 @@ import org.junit.Test;
 
 public class JCasIterableTest extends ComponentTestBase {
 
-	@Test
-	public void testResetViews() throws CASException {
-		jCas.createView("point");
-		Iterator<?> views = jCas.getViewIterator();
-		while (views.hasNext()) {
-			// JCas view = (JCas) views.next();
-			views.next();
-		}
-		jCas.reset();
+  @Test
+  public void testResetViews() throws CASException {
+    jCas.createView("point");
+    Iterator<?> views = jCas.getViewIterator();
+    while (views.hasNext()) {
+      // JCas view = (JCas) views.next();
+      views.next();
+    }
+    jCas.reset();
 
-	}
+  }
 }

@@ -34,12 +34,11 @@ import org.junit.Test;
 /**
  */
 public class CpePipelineTest {
-	@Test
-	public void test() throws Exception {
-		CpePipeline.runPipeline(
-				CollectionReaderFactory.createDescription(Reader.class),
-				AnalysisEngineFactory.createPrimitiveDescription(Annotator.class),
-				AnalysisEngineFactory.createPrimitiveDescription(Writer.class));
-		Assert.assertEquals(Arrays.asList(SENTENCE_TEXT), Writer.SENTENCES);
-	}
+  @Test
+  public void test() throws Exception {
+    CpePipeline.runPipeline(CollectionReaderFactory.createDescription(Reader.class),
+            AnalysisEngineFactory.createPrimitiveDescription(Annotator.class),
+            AnalysisEngineFactory.createPrimitiveDescription(Writer.class));
+    Assert.assertEquals(Arrays.asList(SENTENCE_TEXT), Writer.SENTENCES);
+  }
 }

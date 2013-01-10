@@ -34,60 +34,59 @@ import org.apache.uima.fit.examples.type.Token;
 import org.apache.uima.jcas.JCas;
 
 /**
- * This AE assumes that their is part-of-speech tagged text in the default view
- * with the format "word/tag word/tag...". It converts this data into Token
- * objects and plain text which are posted to the GOLD_VIEW.
+ * This AE assumes that their is part-of-speech tagged text in the default view with the format
+ * "word/tag word/tag...". It converts this data into Token objects and plain text which are posted
+ * to the GOLD_VIEW.
  * 
  * 
  */
 @SofaCapability(inputSofas = CAS.NAME_DEFAULT_SOFA, outputSofas = GOLD_VIEW)
 public class GoldTagger extends JCasAnnotator_ImplBase {
 
-	@Override
-	public void process(JCas jCas) throws AnalysisEngineProcessException {
-		try {
-			JCas defaultView = jCas.getView(CAS.NAME_DEFAULT_SOFA); // see
-																	// javadoc
-																	// comment
-																	// for
-																	// SofaCapability
-																	// for why
-																	// we have
-																	// to
-																	// retrieve
-																	// the
-																	// default
-																	// view from
-																	// the JCas
-			String tagData = defaultView.getDocumentText();
+  @Override
+  public void process(JCas jCas) throws AnalysisEngineProcessException {
+    try {
+      JCas defaultView = jCas.getView(CAS.NAME_DEFAULT_SOFA); // see
+      // javadoc
+      // comment
+      // for
+      // SofaCapability
+      // for why
+      // we have
+      // to
+      // retrieve
+      // the
+      // default
+      // view from
+      // the JCas
+      String tagData = defaultView.getDocumentText();
 
-			JCas goldView = ViewCreatorAnnotator.createViewSafely(jCas, GOLD_VIEW);
+      JCas goldView = ViewCreatorAnnotator.createViewSafely(jCas, GOLD_VIEW);
 
-			String[] wordTagPairs = tagData.split("\\s+");
-			StringBuffer text = new StringBuffer();
-			int offset = 0;
-			List<Token> tokens = new ArrayList<Token>();
-			for (String wordTagPair : wordTagPairs) {
-				String word = wordTagPair.split("/")[0];
-				String tag = wordTagPair.split("/")[1];
-				text.append(word);
-				Token token = new Token(goldView, offset, text.length());
-				token.setPos(tag);
-				tokens.add(token);
-				text.append(" ");
-				offset += word.length() + 1;
-			}
+      String[] wordTagPairs = tagData.split("\\s+");
+      StringBuffer text = new StringBuffer();
+      int offset = 0;
+      List<Token> tokens = new ArrayList<Token>();
+      for (String wordTagPair : wordTagPairs) {
+        String word = wordTagPair.split("/")[0];
+        String tag = wordTagPair.split("/")[1];
+        text.append(word);
+        Token token = new Token(goldView, offset, text.length());
+        token.setPos(tag);
+        tokens.add(token);
+        text.append(" ");
+        offset += word.length() + 1;
+      }
 
-			goldView.setDocumentText(text.toString().trim());
-			new Sentence(goldView, 0, goldView.getDocumentText().length()).addToIndexes();
+      goldView.setDocumentText(text.toString().trim());
+      new Sentence(goldView, 0, goldView.getDocumentText().length()).addToIndexes();
 
-			for (Token token : tokens) {
-				token.addToIndexes();
-			}
-		}
-		catch (CASException ce) {
-			throw new AnalysisEngineProcessException(ce);
-		}
-	}
+      for (Token token : tokens) {
+        token.addToIndexes();
+      }
+    } catch (CASException ce) {
+      throw new AnalysisEngineProcessException(ce);
+    }
+  }
 
 }

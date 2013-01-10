@@ -36,19 +36,19 @@ import org.xml.sax.SAXException;
 
 public class CreateSampleXMIFile {
 
-	public static void main(String[] args) throws UIMAException, SAXException, IOException {
-		TokenBuilder<Token, Sentence> tokenBuilder = new TokenBuilder<Token, Sentence>(Token.class,
-				Sentence.class, "pos", "stem");
-		JCas jCas = JCasFactory.createJCas();
-		String text = "Me and all my friends are non-conformists.";
-		tokenBuilder.buildTokens(jCas, text, "Me and all my friends are non - conformists .",
-				"M A A M F A N - C .", "me and all my friend are non - conformist .");
+  public static void main(String[] args) throws UIMAException, SAXException, IOException {
+    TokenBuilder<Token, Sentence> tokenBuilder = new TokenBuilder<Token, Sentence>(Token.class,
+            Sentence.class, "pos", "stem");
+    JCas jCas = JCasFactory.createJCas();
+    String text = "Me and all my friends are non-conformists.";
+    tokenBuilder.buildTokens(jCas, text, "Me and all my friends are non - conformists .",
+            "M A A M F A N - C .", "me and all my friend are non - conformist .");
 
-		FileOutputStream out = new FileOutputStream("src/test/resources/data/docs/test.xmi");
-		XmiCasSerializer ser = new XmiCasSerializer(jCas.getTypeSystem());
-		XMLSerializer xmlSer = new XMLSerializer(out, false);
-		ser.serialize(jCas.getCas(), xmlSer.getContentHandler());
-		out.close();
+    FileOutputStream out = new FileOutputStream("src/test/resources/data/docs/test.xmi");
+    XmiCasSerializer ser = new XmiCasSerializer(jCas.getTypeSystem());
+    XMLSerializer xmlSer = new XMLSerializer(out, false);
+    ser.serialize(jCas.getCas(), xmlSer.getContentHandler());
+    out.close();
 
-	}
+  }
 }

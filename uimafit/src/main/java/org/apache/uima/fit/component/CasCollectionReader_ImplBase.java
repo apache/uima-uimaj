@@ -30,36 +30,36 @@ import org.apache.uima.resource.ResourceInitializationException;
 
 /**
  * Base class for CAS collection readers which initializes itself based on annotations.
- *
+ * 
  */
-@OperationalProperties(outputsNewCases=true)
+@OperationalProperties(outputsNewCases = true)
 public abstract class CasCollectionReader_ImplBase extends CollectionReader_ImplBase {
-	private ExtendedLogger logger;
-	
-	@Override
-	public ExtendedLogger getLogger() {
-		if (logger == null) {
-			logger = new ExtendedLogger(getUimaContext());
-		}
-		return logger;
-	}
-	
-	@Override
-	// This method should not be overwritten. Overwrite initialize(UimaContext) instead.
-	public final void initialize() throws ResourceInitializationException {
-		ConfigurationParameterInitializer.initialize(this, getUimaContext());
-		ExternalResourceInitializer.initialize(getUimaContext(), this);
-		initialize(getUimaContext());
-	}
+  private ExtendedLogger logger;
 
-	/**
-	 * This method should be overwritten by subclasses.
-	 */
-	public void initialize(final UimaContext context) throws ResourceInitializationException {
-		// Nothing by default
-	}
+  @Override
+  public ExtendedLogger getLogger() {
+    if (logger == null) {
+      logger = new ExtendedLogger(getUimaContext());
+    }
+    return logger;
+  }
 
-	public void close() throws IOException {
-		// Nothing by default
-	}
+  @Override
+  // This method should not be overwritten. Overwrite initialize(UimaContext) instead.
+  public final void initialize() throws ResourceInitializationException {
+    ConfigurationParameterInitializer.initialize(this, getUimaContext());
+    ExternalResourceInitializer.initialize(getUimaContext(), this);
+    initialize(getUimaContext());
+  }
+
+  /**
+   * This method should be overwritten by subclasses.
+   */
+  public void initialize(final UimaContext context) throws ResourceInitializationException {
+    // Nothing by default
+  }
+
+  public void close() throws IOException {
+    // Nothing by default
+  }
 }

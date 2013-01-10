@@ -29,97 +29,98 @@ import org.apache.uima.jcas.JCas;
  * 
  */
 public class JCasBuilder {
-	private final StringBuilder documentText = new StringBuilder();
-	private final JCas jcas;
+  private final StringBuilder documentText = new StringBuilder();
 
-	/**
-	 * Create a new JCas builder working on the specified JCas. The JCas must not have any content
-	 * yet.
-	 * 
-	 * @param aJCas
-	 *            the working JCas.
-	 */
-	public JCasBuilder(JCas aJCas) {
-		jcas = aJCas;
-	}
+  private final JCas jcas;
 
-	/**
-	 * Append a text.
-	 * 
-	 * @param aText
-	 *            the text to append.
-	 */
-	public void add(String aText) {
-		documentText.append(aText);
-	}
+  /**
+   * Create a new JCas builder working on the specified JCas. The JCas must not have any content
+   * yet.
+   * 
+   * @param aJCas
+   *          the working JCas.
+   */
+  public JCasBuilder(JCas aJCas) {
+    jcas = aJCas;
+  }
 
-	/**
-	 * Append a text annotated with the specified annotation. The created annotation is returned and
-	 * further properties can be set on it. The annotation is already added to the indexes.
-	 * 
-	 * @param aText
-	 *            covered text
-	 * @param aClass
-	 *            annotation type
-	 * @param <T>
-	 *            annotation type
-	 * @return annotation instance - can be used to set features or determine offsets
-	 */
-	@SuppressWarnings("unchecked")
-	public <T> T add(String aText, Class<T> aClass) {
-		Type type = getType(jcas, aClass);
-		int begin = documentText.length();
-		add(aText);
-		int end = documentText.length();
-		AnnotationFS fs = jcas.getCas().createAnnotation(type, begin, end);
-		jcas.addFsToIndexes(fs);
-		return (T) fs;
-	}
+  /**
+   * Append a text.
+   * 
+   * @param aText
+   *          the text to append.
+   */
+  public void add(String aText) {
+    documentText.append(aText);
+  }
 
-	/**
-	 * Add an annotation starting at the specified position and ending at the current end of the
-	 * text. The created annotation is returned and further properties can be set on it. The
-	 * annotation is already added to the indexes.
-	 * 
-	 * @param <T>
-	 *            annotation type
-	 * @param aBegin
-	 *            begin offset.
-	 * @param aClass
-	 *            annotation type
-	 * @return annotation instance - can be used to set features or determine offsets
-	 */
-	@SuppressWarnings("unchecked")
-	public <T> T add(int aBegin, Class<T> aClass) {
-		Type type = getType(jcas, aClass);
-		int end = documentText.length();
-		AnnotationFS fs = jcas.getCas().createAnnotation(type, aBegin, end);
-		jcas.addFsToIndexes(fs);
-		return (T) fs;
-	}
+  /**
+   * Append a text annotated with the specified annotation. The created annotation is returned and
+   * further properties can be set on it. The annotation is already added to the indexes.
+   * 
+   * @param aText
+   *          covered text
+   * @param aClass
+   *          annotation type
+   * @param <T>
+   *          annotation type
+   * @return annotation instance - can be used to set features or determine offsets
+   */
+  @SuppressWarnings("unchecked")
+  public <T> T add(String aText, Class<T> aClass) {
+    Type type = getType(jcas, aClass);
+    int begin = documentText.length();
+    add(aText);
+    int end = documentText.length();
+    AnnotationFS fs = jcas.getCas().createAnnotation(type, begin, end);
+    jcas.addFsToIndexes(fs);
+    return (T) fs;
+  }
 
-	/**
-	 * Get the current "cursor" position (current text length).
-	 * 
-	 * @return current text length.
-	 */
-	public int getPosition() {
-		return documentText.length();
-	}
+  /**
+   * Add an annotation starting at the specified position and ending at the current end of the text.
+   * The created annotation is returned and further properties can be set on it. The annotation is
+   * already added to the indexes.
+   * 
+   * @param <T>
+   *          annotation type
+   * @param aBegin
+   *          begin offset.
+   * @param aClass
+   *          annotation type
+   * @return annotation instance - can be used to set features or determine offsets
+   */
+  @SuppressWarnings("unchecked")
+  public <T> T add(int aBegin, Class<T> aClass) {
+    Type type = getType(jcas, aClass);
+    int end = documentText.length();
+    AnnotationFS fs = jcas.getCas().createAnnotation(type, aBegin, end);
+    jcas.addFsToIndexes(fs);
+    return (T) fs;
+  }
 
-	/**
-	 * Get the JCas.
-	 * 
-	 * @return the JCas.
-	 */
-	public JCas getJCas() {
-		return jcas;
-	}
+  /**
+   * Get the current "cursor" position (current text length).
+   * 
+   * @return current text length.
+   */
+  public int getPosition() {
+    return documentText.length();
+  }
 
-	/**
-	 * Complete the building process by writing the text into the CAS. This can only be called once.
-	 */
-	public void close() {
-		jcas.setDocumentText(documentText.toString());
-	}
+  /**
+   * Get the JCas.
+   * 
+   * @return the JCas.
+   */
+  public JCas getJCas() {
+    return jcas;
+  }
+
+  /**
+   * Complete the building process by writing the text into the CAS. This can only be called once.
+   */
+  public void close() {
+    jcas.setDocumentText(documentText.toString());
+  }
 }

@@ -49,131 +49,113 @@ import org.xml.sax.SAXException;
  * 
  * @see http://maven.apache.org/plugin-tools/maven-plugin-tools-annotations/index.html
  */
-@Mojo(name = "generate", defaultPhase = LifecyclePhase.PROCESS_CLASSES,
-		requiresDependencyResolution = ResolutionScope.COMPILE,
-		requiresDependencyCollection = ResolutionScope.COMPILE)
-public class GenerateDescriptorsMojo
-	extends AbstractMojo
-{
-	@Component
-	private MavenProject project;
+@Mojo(name = "generate", defaultPhase = LifecyclePhase.PROCESS_CLASSES, requiresDependencyResolution = ResolutionScope.COMPILE, requiresDependencyCollection = ResolutionScope.COMPILE)
+public class GenerateDescriptorsMojo extends AbstractMojo {
+  @Component
+  private MavenProject project;
 
-	private ClassLoader componentLoader;
+  private ClassLoader componentLoader;
 
-	public void execute()
-		throws MojoExecutionException
-	{
-		String[] files = FileUtils.getFilesFromExtension(project.getBuild().getOutputDirectory(),
-				new String[] { "class" });
+  public void execute() throws MojoExecutionException {
+    String[] files = FileUtils.getFilesFromExtension(project.getBuild().getOutputDirectory(),
+            new String[] { "class" });
 
-		// Create a class loader which covers the classes compiled in the current project and all
-		// dependencies.
-		try {
-			List<URL> urls = new ArrayList<URL>();
-			for (Object object : project.getCompileClasspathElements()) {
-				String path = (String) object;
-				getLog().debug("Classpath entry: " + object);
-				urls.add(new File(path).toURI().toURL());
-			}
-			for (Artifact dep : (Set<Artifact>) project.getDependencyArtifacts()) {
-				getLog().debug("Classpath entry: " + dep.getFile());
-				urls.add(dep.getFile().toURI().toURL());
-			}
-			componentLoader = new URLClassLoader(urls.toArray(new URL[] {}), 
-					getClass().getClassLoader());
-		}
-		catch (Exception e) {
-			throw new MojoExecutionException("Cannot initialize classloader", e);
-		}
+    // Create a class loader which covers the classes compiled in the current project and all
+    // dependencies.
+    try {
+      List<URL> urls = new ArrayList<URL>();
+      for (Object object : project.getCompileClasspathElements()) {
+        String path = (String) object;
+        getLog().debug("Classpath entry: " + object);
+        urls.add(new File(path).toURI().toURL());
+      }
+      for (Artifact dep : (Set<Artifact>) project.getDependencyArtifacts()) {
+        getLog().debug("Classpath entry: " + dep.getFile());
+        urls.add(dep.getFile().toURI().toURL());
+      }
+      componentLoader = new URLClassLoader(urls.toArray(new URL[] {}), getClass().getClassLoader());
+    } catch (Exception e) {
+      throw new MojoExecutionException("Cannot initialize classloader", e);
+    }
 
-		for (String file : files) {
-			String base = file.substring(0, file.length() - 6);
-			String clazzName = base.substring(project.getBuild().getOutputDirectory().length() + 1)
-					.replace("/", ".");
-			try {
-				Class clazz = getClass(clazzName);
-				ResourceSpecifier desc = null;
-				switch (getType(clazz)) {
-				case ANALYSIS_ENGINE:
-					desc = AnalysisEngineFactory.createPrimitiveDescription(clazz);
-					break;
-				case COLLECTION_READER:
-					desc = CollectionReaderFactory.createDescription(clazz);
-				default:
-					// Do nothing
-				}
+    for (String file : files) {
+      String base = file.substring(0, file.length() - 6);
+      String clazzName = base.substring(project.getBuild().getOutputDirectory().length() + 1)
+              .replace("/", ".");
+      try {
+        Class clazz = getClass(clazzName);
+        ResourceSpecifier desc = null;
+        switch (getType(clazz)) {
+          case ANALYSIS_ENGINE:
+            desc = AnalysisEngineFactory.createPrimitiveDescription(clazz);
+            break;
+          case COLLECTION_READER:
+            desc = CollectionReaderFactory.createDescription(clazz);
+          default:
+            // Do nothing
+        }
 
-				if (desc != null) {
-					toXML(desc, base + ".xml");
-				}
-			}
-			catch (SAXException e) {
-				getLog().warn("Cannot serialize descriptor for [" + clazzName + "]", e);
-			}
-			catch (IOException e) {
-				getLog().warn("Cannot write descriptor for [" + clazzName + "]", e);
-			}
-			catch (ClassNotFoundException e) {
-				getLog().warn("Cannot analyze class [" + clazzName + "]", e);
-			}
-			catch (ResourceInitializationException e) {
-				getLog().warn("Cannot generate descriptor for [" + clazzName + "]", e);
-			}
-		}
-	}
+        if (desc != null) {
+          toXML(desc, base + ".xml");
+        }
+      } catch (SAXException e) {
+        getLog().warn("Cannot serialize descriptor for [" + clazzName + "]", e);
+      } catch (IOException e) {
+        getLog().warn("Cannot write descriptor for [" + clazzName + "]", e);
+      } catch (ClassNotFoundException e) {
+        getLog().warn("Cannot analyze class [" + clazzName + "]", e);
+      } catch (ResourceInitializationException e) {
+        getLog().warn("Cannot generate descriptor for [" + clazzName + "]", e);
+      }
+    }
+  }
 
-	/**
-	 * Save descriptor XML to file system.
-	 * @throws IOException 
-	 * @throws SAXException 
-	 */
-	private void toXML(ResourceSpecifier aDesc, String aFilename) throws SAXException, IOException
-	{
-		OutputStream os = null;
-		try {
-			File out = new File(aFilename);
-			getLog().info("Writing descriptor to: " + out);
-			os = new FileOutputStream(out);
-			aDesc.toXML(os);
-		}
-		finally {
-			IOUtils.closeQuietly(os);
-		}
-	}
+  /**
+   * Save descriptor XML to file system.
+   * 
+   * @throws IOException
+   * @throws SAXException
+   */
+  private void toXML(ResourceSpecifier aDesc, String aFilename) throws SAXException, IOException {
+    OutputStream os = null;
+    try {
+      File out = new File(aFilename);
+      getLog().info("Writing descriptor to: " + out);
+      os = new FileOutputStream(out);
+      aDesc.toXML(os);
+    } finally {
+      IOUtils.closeQuietly(os);
+    }
+  }
 
-	/**
-	 * Load class using the component classloader.
-	 * @throws ClassNotFoundException 
-	 */
-	private Class getClass(String aClassName)
-		throws ClassNotFoundException
-	{
-		return componentLoader.loadClass(aClassName);
-	}
+  /**
+   * Load class using the component classloader.
+   * 
+   * @throws ClassNotFoundException
+   */
+  private Class getClass(String aClassName) throws ClassNotFoundException {
+    return componentLoader.loadClass(aClassName);
+  }
 
-	/**
-	 * Determine what kind of class it is.
-	 * @throws ClassNotFoundException 
-	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private ComponentType getType(Class aClass)
-		throws ClassNotFoundException
-	{
-			Class iCR = getClass("org.apache.uima.collection.CollectionReader");
-			Class iAE = getClass("org.apache.uima.analysis_component.AnalysisComponent");
-			if (iCR.isAssignableFrom(aClass)) {
-				return ComponentType.COLLECTION_READER;
-			}
-			else if (iAE.isAssignableFrom(aClass)) {
-				return ComponentType.ANALYSIS_ENGINE;
-			}
-			else {
-				return ComponentType.NONE;
-			}
-	}
+  /**
+   * Determine what kind of class it is.
+   * 
+   * @throws ClassNotFoundException
+   */
+  @SuppressWarnings({ "rawtypes", "unchecked" })
+  private ComponentType getType(Class aClass) throws ClassNotFoundException {
+    Class iCR = getClass("org.apache.uima.collection.CollectionReader");
+    Class iAE = getClass("org.apache.uima.analysis_component.AnalysisComponent");
+    if (iCR.isAssignableFrom(aClass)) {
+      return ComponentType.COLLECTION_READER;
+    } else if (iAE.isAssignableFrom(aClass)) {
+      return ComponentType.ANALYSIS_ENGINE;
+    } else {
+      return ComponentType.NONE;
+    }
+  }
 
-	private enum ComponentType
-	{
-		COLLECTION_READER, ANALYSIS_ENGINE, NONE;
-	}
+  private enum ComponentType {
+    COLLECTION_READER, ANALYSIS_ENGINE, NONE;
+  }
 }

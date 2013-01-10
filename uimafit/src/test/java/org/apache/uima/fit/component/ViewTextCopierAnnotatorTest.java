@@ -37,57 +37,56 @@ import org.junit.Test;
  */
 public class ViewTextCopierAnnotatorTest extends ComponentTestBase {
 
-	@Test
-	public void testViewTextCopier() throws ResourceInitializationException,
-			AnalysisEngineProcessException, CASException {
+  @Test
+  public void testViewTextCopier() throws ResourceInitializationException,
+          AnalysisEngineProcessException, CASException {
 
-		String text = "sample text";
-		String sourceViewName = "SourceView";
-		String destinationViewName = "DestinationView";
+    String text = "sample text";
+    String sourceViewName = "SourceView";
+    String destinationViewName = "DestinationView";
 
-		jCas.setDocumentText(text);
-		AnalysisEngine viewCreator = AnalysisEngineFactory.createPrimitive(
-				ViewTextCopierAnnotator.class, typeSystemDescription,
-				ViewTextCopierAnnotator.PARAM_SOURCE_VIEW_NAME, CAS.NAME_DEFAULT_SOFA,
-				ViewTextCopierAnnotator.PARAM_DESTINATION_VIEW_NAME, destinationViewName);
-		viewCreator.process(jCas);
-		JCas destinationView = jCas.getView(destinationViewName);
-		assertNotNull(destinationView);
-		assertEquals(text, destinationView.getDocumentText());
+    jCas.setDocumentText(text);
+    AnalysisEngine viewCreator = AnalysisEngineFactory.createPrimitive(
+            ViewTextCopierAnnotator.class, typeSystemDescription,
+            ViewTextCopierAnnotator.PARAM_SOURCE_VIEW_NAME, CAS.NAME_DEFAULT_SOFA,
+            ViewTextCopierAnnotator.PARAM_DESTINATION_VIEW_NAME, destinationViewName);
+    viewCreator.process(jCas);
+    JCas destinationView = jCas.getView(destinationViewName);
+    assertNotNull(destinationView);
+    assertEquals(text, destinationView.getDocumentText());
 
-		jCas.reset();
-		jCas.setDocumentText(text);
-		jCas.createView(destinationViewName);
-		viewCreator.process(jCas);
-		destinationView = jCas.getView(destinationViewName);
-		assertNotNull(destinationView);
-		assertEquals(text, destinationView.getDocumentText());
+    jCas.reset();
+    jCas.setDocumentText(text);
+    jCas.createView(destinationViewName);
+    viewCreator.process(jCas);
+    destinationView = jCas.getView(destinationViewName);
+    assertNotNull(destinationView);
+    assertEquals(text, destinationView.getDocumentText());
 
-		viewCreator = AnalysisEngineFactory.createPrimitive(ViewTextCopierAnnotator.class,
-				typeSystemDescription, ViewTextCopierAnnotator.PARAM_SOURCE_VIEW_NAME,
-				sourceViewName, ViewTextCopierAnnotator.PARAM_DESTINATION_VIEW_NAME,
-				destinationViewName);
-		jCas.reset();
-		JCas sourceView = jCas.createView(sourceViewName);
-		sourceView.setDocumentText(text);
-		viewCreator.process(jCas);
-		destinationView = jCas.getView(destinationViewName);
-		assertNotNull(destinationView);
-		assertEquals(text, destinationView.getDocumentText());
-		assertNull(jCas.getDocumentText());
-	}
+    viewCreator = AnalysisEngineFactory.createPrimitive(ViewTextCopierAnnotator.class,
+            typeSystemDescription, ViewTextCopierAnnotator.PARAM_SOURCE_VIEW_NAME, sourceViewName,
+            ViewTextCopierAnnotator.PARAM_DESTINATION_VIEW_NAME, destinationViewName);
+    jCas.reset();
+    JCas sourceView = jCas.createView(sourceViewName);
+    sourceView.setDocumentText(text);
+    viewCreator.process(jCas);
+    destinationView = jCas.getView(destinationViewName);
+    assertNotNull(destinationView);
+    assertEquals(text, destinationView.getDocumentText());
+    assertNull(jCas.getDocumentText());
+  }
 
-	@Test(expected = AnalysisEngineProcessException.class)
-	public void testExceptions() throws ResourceInitializationException,
-			AnalysisEngineProcessException {
+  @Test(expected = AnalysisEngineProcessException.class)
+  public void testExceptions() throws ResourceInitializationException,
+          AnalysisEngineProcessException {
 
-		String sourceViewName = "SourceView";
-		String destinationViewName = "DestinationView";
+    String sourceViewName = "SourceView";
+    String destinationViewName = "DestinationView";
 
-		AnalysisEngine viewCreator = AnalysisEngineFactory.createPrimitive(
-				ViewTextCopierAnnotator.class, typeSystemDescription,
-				ViewTextCopierAnnotator.PARAM_SOURCE_VIEW_NAME, sourceViewName,
-				ViewTextCopierAnnotator.PARAM_DESTINATION_VIEW_NAME, destinationViewName);
-		viewCreator.process(jCas);
-	}
+    AnalysisEngine viewCreator = AnalysisEngineFactory.createPrimitive(
+            ViewTextCopierAnnotator.class, typeSystemDescription,
+            ViewTextCopierAnnotator.PARAM_SOURCE_VIEW_NAME, sourceViewName,
+            ViewTextCopierAnnotator.PARAM_DESTINATION_VIEW_NAME, destinationViewName);
+    viewCreator.process(jCas);
+  }
 }

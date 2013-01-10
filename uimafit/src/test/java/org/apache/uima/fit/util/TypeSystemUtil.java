@@ -26,21 +26,21 @@ import org.apache.uima.jcas.JCas;
 
 public class TypeSystemUtil {
 
-	public static String getAnalyzedText(JCas jCas) {
-		return _getAnalyzedText(jCas).getText();
-	}
+  public static String getAnalyzedText(JCas jCas) {
+    return _getAnalyzedText(jCas).getText();
+  }
 
-	public static void setAnalyzedText(JCas jCas, String text) {
-		_getAnalyzedText(jCas).setText(text);
-	}
+  public static void setAnalyzedText(JCas jCas, String text) {
+    _getAnalyzedText(jCas).setText(text);
+  }
 
-	private static AnalyzedText _getAnalyzedText(JCas jCas) {
-		AnalyzedText analyzedText = JCasUtil.selectByIndex(jCas, AnalyzedText.class, 0);
-		if (analyzedText == null) {
-			analyzedText = new AnalyzedText(jCas);
-			analyzedText.setText(jCas.getDocumentText());
-			analyzedText.addToIndexes();
-		}
-		return analyzedText;
-	}
+  private static AnalyzedText _getAnalyzedText(JCas jCas) {
+    AnalyzedText analyzedText = JCasUtil.selectByIndex(jCas, AnalyzedText.class, 0);
+    if (analyzedText == null) {
+      analyzedText = new AnalyzedText(jCas);
+      analyzedText.setText(jCas.getDocumentText());
+      analyzedText.addToIndexes();
+    }
+    return analyzedText;
+  }
 }

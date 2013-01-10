@@ -32,20 +32,19 @@ import org.apache.uima.jcas.JCas;
 @SofaCapability(inputSofas = CAS.NAME_DEFAULT_SOFA, outputSofas = ViewNames.PARENTHESES_VIEW)
 public class Annotator1 extends JCasAnnotator_ImplBase {
 
-	@Override
-	public void process(JCas jCas) throws AnalysisEngineProcessException {
-		try {
-			JCas parentheticalView = ViewCreatorAnnotator.createViewSafely(jCas,
-					ViewNames.PARENTHESES_VIEW);
-			jCas = jCas.getView(CAS.NAME_DEFAULT_SOFA);
-			String initialText = jCas.getDocumentText();
-			String parentheticalText = initialText.replaceAll("[aeiou]+", "($0)");
-			parentheticalView.setDocumentText(parentheticalText);
-		}
-		catch (CASException e) {
-			throw new AnalysisEngineProcessException(e);
-		}
+  @Override
+  public void process(JCas jCas) throws AnalysisEngineProcessException {
+    try {
+      JCas parentheticalView = ViewCreatorAnnotator.createViewSafely(jCas,
+              ViewNames.PARENTHESES_VIEW);
+      jCas = jCas.getView(CAS.NAME_DEFAULT_SOFA);
+      String initialText = jCas.getDocumentText();
+      String parentheticalText = initialText.replaceAll("[aeiou]+", "($0)");
+      parentheticalView.setDocumentText(parentheticalText);
+    } catch (CASException e) {
+      throw new AnalysisEngineProcessException(e);
+    }
 
-	}
+  }
 
 }

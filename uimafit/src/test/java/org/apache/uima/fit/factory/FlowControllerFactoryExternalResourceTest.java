@@ -36,7 +36,6 @@
  * under the License.
  */
 
-
 package org.apache.uima.fit.factory;
 
 import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDescription;
@@ -59,35 +58,36 @@ import org.junit.Test;
 /**
  */
 public class FlowControllerFactoryExternalResourceTest {
-	@Test
-	public void testAutoExternalResourceBinding() throws Exception {
-		AggregateBuilder builder = new AggregateBuilder();
-		builder.add(AnalysisEngineFactory.createPrimitiveDescription(NoOpAnnotator.class));
-		builder.setFlowControllerDescription(createFlowControllerDescription(
-				TestFlowController.class,
-				TestFlowController.PARAM_RESOURCE,
-				createExternalResourceDescription(TestExternalResource.class,
-						TestExternalResource.PARAM_VALUE, TestExternalResource.EXPECTED_VALUE)));
-		AnalysisEngine aggregateEngine = builder.createAggregate();
-		aggregateEngine.process(aggregateEngine.newCAS());
-	}
+  @Test
+  public void testAutoExternalResourceBinding() throws Exception {
+    AggregateBuilder builder = new AggregateBuilder();
+    builder.add(AnalysisEngineFactory.createPrimitiveDescription(NoOpAnnotator.class));
+    builder.setFlowControllerDescription(createFlowControllerDescription(
+            TestFlowController.class,
+            TestFlowController.PARAM_RESOURCE,
+            createExternalResourceDescription(TestExternalResource.class,
+                    TestExternalResource.PARAM_VALUE, TestExternalResource.EXPECTED_VALUE)));
+    AnalysisEngine aggregateEngine = builder.createAggregate();
+    aggregateEngine.process(aggregateEngine.newCAS());
+  }
 
-	public static class TestFlowController extends CasFlowController_ImplBase {
-		public final static String PARAM_RESOURCE = "resource";
-		@ExternalResource(key = PARAM_RESOURCE)
-		private TestExternalResource resource;
+  public static class TestFlowController extends CasFlowController_ImplBase {
+    public final static String PARAM_RESOURCE = "resource";
 
-		@Override
-		public Flow computeFlow(CAS aCAS) throws AnalysisEngineProcessException {
-			assertNotNull(resource);
-			resource.assertConfiguredOk();
-			return new TestFlowObject();
-		}
-	}
-	
-	public static class TestFlowObject extends CasFlow_ImplBase {
-		public Step next() throws AnalysisEngineProcessException {
-			return new FinalStep();
-		}
-	}
+    @ExternalResource(key = PARAM_RESOURCE)
+    private TestExternalResource resource;
+
+    @Override
+    public Flow computeFlow(CAS aCAS) throws AnalysisEngineProcessException {
+      assertNotNull(resource);
+      resource.assertConfiguredOk();
+      return new TestFlowObject();
+    }
+  }
+
+  public static class TestFlowObject extends CasFlow_ImplBase {
+    public Step next() throws AnalysisEngineProcessException {
+      return new FinalStep();
+    }
+  }
 }

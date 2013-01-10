@@ -33,23 +33,23 @@ import org.apache.uima.resource.metadata.FsIndexKeyDescription;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface FsIndexKey {
-	/**
-	 * @see FsIndexKeyDescription#STANDARD_COMPARE
-	 */
-	public static final int STANDARD_COMPARE = FsIndexKeyDescription.STANDARD_COMPARE;
+  /**
+   * @see FsIndexKeyDescription#STANDARD_COMPARE
+   */
+  public static final int STANDARD_COMPARE = FsIndexKeyDescription.STANDARD_COMPARE;
 
-	/**
-	 * @see FsIndexKeyDescription#REVERSE_STANDARD_COMPARE
-	 */
-	public static final int REVERSE_STANDARD_COMPARE = FsIndexKeyDescription.REVERSE_STANDARD_COMPARE;
+  /**
+   * @see FsIndexKeyDescription#REVERSE_STANDARD_COMPARE
+   */
+  public static final int REVERSE_STANDARD_COMPARE = FsIndexKeyDescription.REVERSE_STANDARD_COMPARE;
 
-	/**
-	 * @see FsIndexKeyDescription#getFeatureName()
-	 */
-	String featureName();
+  /**
+   * @see FsIndexKeyDescription#getFeatureName()
+   */
+  String featureName();
 
-	/**
-	 * @see FsIndexKeyDescription#getComparator()
-	 */
-	int comparator() default STANDARD_COMPARE;
+  /**
+   * @see FsIndexKeyDescription#getComparator()
+   */
+  int comparator() default STANDARD_COMPARE;
 }

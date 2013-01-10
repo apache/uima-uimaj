@@ -20,3 +20,4 @@
  * Reflection-based context and dependency injection.
  */
 package org.apache.uima.fit.component.initialize;
+

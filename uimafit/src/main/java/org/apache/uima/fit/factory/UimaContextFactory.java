@@ -26,24 +26,24 @@ import org.apache.uima.resource.ResourceInitializationException;
 /**
  */
 public final class UimaContextFactory {
-	private UimaContextFactory() {
-		// This class is not meant to be instantiated
-	}
+  private UimaContextFactory() {
+    // This class is not meant to be instantiated
+  }
 
-	/**
-	 * Create a new UimaContext with the given configuration parameters set.
-	 * 
-	 * @param configurationParameters
-	 *            The parameters to be set.
-	 * @return The new UimaContext.
-	 * @throws ResourceInitializationException
-	 *             If the context could not be created.
-	 */
-	public static UimaContext createUimaContext(Object... configurationParameters)
-			throws ResourceInitializationException {
-		AnalysisEngine engine = AnalysisEngineFactory.createPrimitive(NoOpAnnotator.class,
-				null, configurationParameters);
-		return engine.getUimaContext();
-	}
+  /**
+   * Create a new UimaContext with the given configuration parameters set.
+   * 
+   * @param configurationParameters
+   *          The parameters to be set.
+   * @return The new UimaContext.
+   * @throws ResourceInitializationException
+   *           If the context could not be created.
+   */
+  public static UimaContext createUimaContext(Object... configurationParameters)
+          throws ResourceInitializationException {
+    AnalysisEngine engine = AnalysisEngineFactory.createPrimitive(NoOpAnnotator.class, null,
+            configurationParameters);
+    return engine.getUimaContext();
+  }
 
 }

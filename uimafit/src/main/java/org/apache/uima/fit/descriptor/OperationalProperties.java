@@ -38,46 +38,48 @@ import org.apache.uima.analysis_engine.AnalysisEngine;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface OperationalProperties {
-	/**
-	 * the default value for multipleDeploymentAllowed if none is given.
-	 */
-	public static final boolean MULTIPLE_DEPLOYMENT_ALLOWED_DEFAULT = true;
-	/**
-	 * the default value for modifiesCas if none is given
-	 */
-	public static final boolean MODIFIES_CAS_DEFAULT = true;
-	/**
-	 * the default value for outputsNewCases if none is given
-	 */
-	public static final boolean OUTPUTS_NEW_CASES_DEFAULT = false;
+  /**
+   * the default value for multipleDeploymentAllowed if none is given.
+   */
+  public static final boolean MULTIPLE_DEPLOYMENT_ALLOWED_DEFAULT = true;
 
-	/**
-	 * Gets whether multiple instances of this component can be run in parallel, each receiving a
-	 * subset of the documents from a collection.
-	 * 
-	 * @return true if multiple instances can be run in parallel, false if not
-	 * @see org.apache.uima.resource.metadata.OperationalProperties#isMultipleDeploymentAllowed()
-	 */
-	boolean multipleDeploymentAllowed() default MULTIPLE_DEPLOYMENT_ALLOWED_DEFAULT;
+  /**
+   * the default value for modifiesCas if none is given
+   */
+  public static final boolean MODIFIES_CAS_DEFAULT = true;
 
-	/**
-	 * Gets whether this component will modify the CAS.
-	 * 
-	 * @return true if this component modifies the CAS, false if it does not.
-	 * @see org.apache.uima.resource.metadata.OperationalProperties#getModifiesCas()
-	 */
-	boolean modifiesCas() default MODIFIES_CAS_DEFAULT;
+  /**
+   * the default value for outputsNewCases if none is given
+   */
+  public static final boolean OUTPUTS_NEW_CASES_DEFAULT = false;
 
-	/**
-	 * Gets whether this AnalysisEngine may output new CASes. If this property is set to true, an
-	 * application can use the
-	 * {@link AnalysisEngine#processAndOutputNewCASes(org.apache.uima.cas.CAS)} to pass a CAS to
-	 * this this AnalysisEngine and then step through all of the output CASes that it produces. For
-	 * example, such an AnalysisEngine could segment a CAS into smaller pieces, emitting each as a
-	 * separate CAS.
-	 * 
-	 * @return true if this component may output new CASes, false if it does not
-	 * @see org.apache.uima.resource.metadata.OperationalProperties#getOutputsNewCASes()
-	 */
-	boolean outputsNewCases() default OUTPUTS_NEW_CASES_DEFAULT;
+  /**
+   * Gets whether multiple instances of this component can be run in parallel, each receiving a
+   * subset of the documents from a collection.
+   * 
+   * @return true if multiple instances can be run in parallel, false if not
+   * @see org.apache.uima.resource.metadata.OperationalProperties#isMultipleDeploymentAllowed()
+   */
+  boolean multipleDeploymentAllowed() default MULTIPLE_DEPLOYMENT_ALLOWED_DEFAULT;
+
+  /**
+   * Gets whether this component will modify the CAS.
+   * 
+   * @return true if this component modifies the CAS, false if it does not.
+   * @see org.apache.uima.resource.metadata.OperationalProperties#getModifiesCas()
+   */
+  boolean modifiesCas() default MODIFIES_CAS_DEFAULT;
+
+  /**
+   * Gets whether this AnalysisEngine may output new CASes. If this property is set to true, an
+   * application can use the
+   * {@link AnalysisEngine#processAndOutputNewCASes(org.apache.uima.cas.CAS)} to pass a CAS to this
+   * this AnalysisEngine and then step through all of the output CASes that it produces. For
+   * example, such an AnalysisEngine could segment a CAS into smaller pieces, emitting each as a
+   * separate CAS.
+   * 
+   * @return true if this component may output new CASes, false if it does not
+   * @see org.apache.uima.resource.metadata.OperationalProperties#getOutputsNewCASes()
+   */
+  boolean outputsNewCases() default OUTPUTS_NEW_CASES_DEFAULT;
 }

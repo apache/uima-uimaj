@@ -28,21 +28,21 @@ import org.apache.uima.jcas.JCas;
 
 public class FlowAE3 extends JCasAnnotator_ImplBase {
 
-	@Override
-	public void process(JCas jCas) throws AnalysisEngineProcessException {
-		String analyzedText = TypeSystemUtil.getAnalyzedText(jCas);
-		String reverseText = reverse(analyzedText);
-		org.apache.uima.fit.util.TypeSystemUtil.setAnalyzedText(jCas, reverseText);
-	}
+  @Override
+  public void process(JCas jCas) throws AnalysisEngineProcessException {
+    String analyzedText = TypeSystemUtil.getAnalyzedText(jCas);
+    String reverseText = reverse(analyzedText);
+    org.apache.uima.fit.util.TypeSystemUtil.setAnalyzedText(jCas, reverseText);
+  }
 
-	public static String reverse(String string) {
-		int stringLength = string.length();
-		StringBuffer returnValue = new StringBuffer();
+  public static String reverse(String string) {
+    int stringLength = string.length();
+    StringBuffer returnValue = new StringBuffer();
 
-		for (int i = stringLength - 1; i >= 0; i--) {
-			returnValue.append(string.charAt(i));
-		}
-		return returnValue.toString();
-	}
+    for (int i = stringLength - 1; i >= 0; i--) {
+      returnValue.append(string.charAt(i));
+    }
+    return returnValue.toString();
+  }
 
 }

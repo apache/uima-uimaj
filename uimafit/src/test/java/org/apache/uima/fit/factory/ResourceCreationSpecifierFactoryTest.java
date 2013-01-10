@@ -29,28 +29,28 @@ import org.junit.Test;
 
 public class ResourceCreationSpecifierFactoryTest {
 
-	@Test(expected = IllegalArgumentException.class)
-	public void test4() throws Exception {
-		ResourceCreationSpecifierFactory.createResourceCreationSpecifier(
-				"src/main/resources/org/apache/uima/fit/component/NoOpAnnotator.xml",
-				new String[] { "test" });
-	}
+  @Test(expected = IllegalArgumentException.class)
+  public void test4() throws Exception {
+    ResourceCreationSpecifierFactory.createResourceCreationSpecifier(
+            "src/main/resources/org/apache/uima/fit/component/NoOpAnnotator.xml",
+            new String[] { "test" });
+  }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void test3() throws Exception {
-		UimaContextFactory.createUimaContext("test");
-	}
+  @Test(expected = IllegalArgumentException.class)
+  public void test3() throws Exception {
+    UimaContextFactory.createUimaContext("test");
+  }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void test2() throws Exception {
-		ResourceCreationSpecifierFactory.createResourceCreationSpecifier(
-				"src/main/resources/org/apache/uima/fit/component/NoOpAnnotator.xml",
-				new Object[] { "test", new Point(0, 5) });
-	}
+  @Test(expected = IllegalArgumentException.class)
+  public void test2() throws Exception {
+    ResourceCreationSpecifierFactory.createResourceCreationSpecifier(
+            "src/main/resources/org/apache/uima/fit/component/NoOpAnnotator.xml", new Object[] {
+                "test", new Point(0, 5) });
+  }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void test1() {
-		ResourceCreationSpecifierFactory.setConfigurationParameters(
-				(ResourceCreationSpecifier) null, ParameterizedAE.PARAM_BOOLEAN_1);
-	}
+  @Test(expected = IllegalArgumentException.class)
+  public void test1() {
+    ResourceCreationSpecifierFactory.setConfigurationParameters((ResourceCreationSpecifier) null,
+            ParameterizedAE.PARAM_BOOLEAN_1);
+  }
 }

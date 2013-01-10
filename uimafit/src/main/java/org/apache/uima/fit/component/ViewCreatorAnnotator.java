@@ -39,40 +39,38 @@ import org.apache.uima.jcas.JCas;
  */
 public class ViewCreatorAnnotator extends JCasAnnotator_ImplBase {
 
-	/**
-	 * The parameter name for the name of the viewed to be created by this annotator
-	 */
-	public static final String PARAM_VIEW_NAME = ConfigurationParameterFactory
-			.createConfigurationParameterName(ViewCreatorAnnotator.class, "viewName");
+  /**
+   * The parameter name for the name of the viewed to be created by this annotator
+   */
+  public static final String PARAM_VIEW_NAME = ConfigurationParameterFactory
+          .createConfigurationParameterName(ViewCreatorAnnotator.class, "viewName");
 
-	@ConfigurationParameter(mandatory = true)
-	private String viewName;
+  @ConfigurationParameter(mandatory = true)
+  private String viewName;
 
-	@Override
-	public void process(final JCas aJCas) throws AnalysisEngineProcessException {
-		createViewSafely(aJCas, viewName);
-	}
+  @Override
+  public void process(final JCas aJCas) throws AnalysisEngineProcessException {
+    createViewSafely(aJCas, viewName);
+  }
 
-	/**
-	 * Provides a simple call that allows you to safely create a view if it has not been created
-	 * yet. If the view already exists, it is ok to call this method anyways without worrying about
-	 * checking for this yet.
-	 * 
-	 * @return true if the view was created as a result of calling this method. false if the view
-	 *         already existed.
-	 */
-	public static JCas createViewSafely(final JCas aJCas, final String aViewName)
-			throws AnalysisEngineProcessException {
-		try {
-			try {
-				return aJCas.getView(aViewName);
-			}
-			catch (CASRuntimeException ce) {
-				return aJCas.createView(aViewName);
-			}
-		}
-		catch (CASException ce) {
-			throw new AnalysisEngineProcessException(ce);
-		}
-	}
+  /**
+   * Provides a simple call that allows you to safely create a view if it has not been created yet.
+   * If the view already exists, it is ok to call this method anyways without worrying about
+   * checking for this yet.
+   * 
+   * @return true if the view was created as a result of calling this method. false if the view
+   *         already existed.
+   */
+  public static JCas createViewSafely(final JCas aJCas, final String aViewName)
+          throws AnalysisEngineProcessException {
+    try {
+      try {
+        return aJCas.getView(aViewName);
+      } catch (CASRuntimeException ce) {
+        return aJCas.createView(aViewName);
+      }
+    } catch (CASException ce) {
+      throw new AnalysisEngineProcessException(ce);
+    }
+  }
 }

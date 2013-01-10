@@ -34,51 +34,50 @@ import org.apache.uima.resource.ResourceInitializationException;
 
 /**
  * Base class for JCas collection readers which initializes itself based on annotations.
- *
+ * 
  */
-@OperationalProperties(outputsNewCases=true)
+@OperationalProperties(outputsNewCases = true)
 public abstract class JCasCollectionReader_ImplBase extends CollectionReader_ImplBase {
-	private ExtendedLogger logger;
-	
-	@Override
-	public ExtendedLogger getLogger() {
-		if (logger == null) {
-			logger = new ExtendedLogger(getUimaContext());
-		}
-		return logger;
-	}
-	
-	// This method should not be overwritten. Overwrite initialize(UimaContext) instead.
-	@Override
-	public final void initialize() throws ResourceInitializationException {
-		ConfigurationParameterInitializer.initialize(this, getUimaContext());
-		ExternalResourceInitializer.initialize(getUimaContext(), this);
-		initialize(getUimaContext());
-	}
+  private ExtendedLogger logger;
 
-	/**
-	 * This method should be overwritten by subclasses.
-	 */
-	public void initialize(final UimaContext context) throws ResourceInitializationException {
-		// Nothing by default
-	}
+  @Override
+  public ExtendedLogger getLogger() {
+    if (logger == null) {
+      logger = new ExtendedLogger(getUimaContext());
+    }
+    return logger;
+  }
 
-	// This method should not be overwritten. Overwrite getNext(JCas) instead.
-	public final void getNext(final CAS cas) throws IOException, CollectionException {
-		try {
-			getNext(cas.getJCas());
-		}
-		catch (CASException e) {
-			throw new CollectionException(e);
-		}
-	}
+  // This method should not be overwritten. Overwrite initialize(UimaContext) instead.
+  @Override
+  public final void initialize() throws ResourceInitializationException {
+    ConfigurationParameterInitializer.initialize(this, getUimaContext());
+    ExternalResourceInitializer.initialize(getUimaContext(), this);
+    initialize(getUimaContext());
+  }
 
-	/**
-	 * Subclasses should implement this method rather than {@link #getNext(CAS)}
-	 */
-	public abstract void getNext(JCas jCas) throws IOException, CollectionException;
+  /**
+   * This method should be overwritten by subclasses.
+   */
+  public void initialize(final UimaContext context) throws ResourceInitializationException {
+    // Nothing by default
+  }
 
-	public void close() throws IOException {
-		// Do nothing per default
-	}
+  // This method should not be overwritten. Overwrite getNext(JCas) instead.
+  public final void getNext(final CAS cas) throws IOException, CollectionException {
+    try {
+      getNext(cas.getJCas());
+    } catch (CASException e) {
+      throw new CollectionException(e);
+    }
+  }
+
+  /**
+   * Subclasses should implement this method rather than {@link #getNext(CAS)}
+   */
+  public abstract void getNext(JCas jCas) throws IOException, CollectionException;
+
+  public void close() throws IOException {
+    // Do nothing per default
+  }
 }

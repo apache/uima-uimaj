@@ -39,85 +39,79 @@ import org.junit.Test;
 
 public class SingleFileXReaderTest extends ComponentTestBase {
 
-	@Test
-	public void testXReader() throws UIMAException, IOException {
-		ResourceInitializationException rie = null;
-		try {
-			CollectionReaderFactory.createCollectionReader(SingleFileXReader.class, null,
-					SingleFileXReader.PARAM_XML_SCHEME, "XML");
-		}
-		catch (ResourceInitializationException e) {
-			rie = e;
-		}
-		assertNotNull(rie);
+  @Test
+  public void testXReader() throws UIMAException, IOException {
+    ResourceInitializationException rie = null;
+    try {
+      CollectionReaderFactory.createCollectionReader(SingleFileXReader.class, null,
+              SingleFileXReader.PARAM_XML_SCHEME, "XML");
+    } catch (ResourceInitializationException e) {
+      rie = e;
+    }
+    assertNotNull(rie);
 
-		rie = null;
-		try {
-			CollectionReaderFactory.createCollectionReader(SingleFileXReader.class, null,
-					SingleFileXReader.PARAM_XML_SCHEME, "XML", SingleFileXReader.PARAM_FILE_NAME,
-					"myxslt.xml");
-		}
-		catch (ResourceInitializationException e) {
-			rie = e;
-		}
-		assertNotNull(rie);
+    rie = null;
+    try {
+      CollectionReaderFactory.createCollectionReader(SingleFileXReader.class, null,
+              SingleFileXReader.PARAM_XML_SCHEME, "XML", SingleFileXReader.PARAM_FILE_NAME,
+              "myxslt.xml");
+    } catch (ResourceInitializationException e) {
+      rie = e;
+    }
+    assertNotNull(rie);
 
-		CollectionReader cr = CollectionReaderFactory
-				.createCollectionReader(SingleFileXReader.class, typeSystemDescription,
-						SingleFileXReader.PARAM_XML_SCHEME, "XCAS",
-						SingleFileXReader.PARAM_FILE_NAME, "src/test/resources/data/docs/test.xcas");
-		Progress[] progress = cr.getProgress();
-		assertEquals(1, progress.length);
-		assertEquals(0, progress[0].getCompleted());
-		assertTrue(cr.hasNext());
+    CollectionReader cr = CollectionReaderFactory.createCollectionReader(SingleFileXReader.class,
+            typeSystemDescription, SingleFileXReader.PARAM_XML_SCHEME, "XCAS",
+            SingleFileXReader.PARAM_FILE_NAME, "src/test/resources/data/docs/test.xcas");
+    Progress[] progress = cr.getProgress();
+    assertEquals(1, progress.length);
+    assertEquals(0, progress[0].getCompleted());
+    assertTrue(cr.hasNext());
 
-		new JCasIterable(cr).next();
-		progress = cr.getProgress();
-		assertEquals(1, progress.length);
-		assertEquals(1, progress[0].getCompleted());
+    new JCasIterable(cr).next();
+    progress = cr.getProgress();
+    assertEquals(1, progress.length);
+    assertEquals(1, progress[0].getCompleted());
 
-		cr.close();
+    cr.close();
 
-		cr = CollectionReaderFactory.createCollectionReader(SingleFileXReader.class,
-				typeSystemDescription, SingleFileXReader.PARAM_XML_SCHEME, "XCAS",
-				SingleFileXReader.PARAM_FILE_NAME, "test/data/docs/test.xcas");
-		UnsupportedOperationException uoe = null;
-		try {
-			new JCasIterable(cr).iterator().remove();
-		}
-		catch (UnsupportedOperationException e) {
-			uoe = e;
-		}
-		assertNotNull(uoe);
-		cr.close();
+    cr = CollectionReaderFactory.createCollectionReader(SingleFileXReader.class,
+            typeSystemDescription, SingleFileXReader.PARAM_XML_SCHEME, "XCAS",
+            SingleFileXReader.PARAM_FILE_NAME, "test/data/docs/test.xcas");
+    UnsupportedOperationException uoe = null;
+    try {
+      new JCasIterable(cr).iterator().remove();
+    } catch (UnsupportedOperationException e) {
+      uoe = e;
+    }
+    assertNotNull(uoe);
+    cr.close();
 
-		HideOutput hideOutput = new HideOutput();
-		cr = CollectionReaderFactory.createCollectionReader(SingleFileXReader.class,
-				typeSystemDescription, SingleFileXReader.PARAM_XML_SCHEME, "XCAS",
-				SingleFileXReader.PARAM_FILE_NAME, "test/data/docs/bad.xcas");
-		RuntimeException re = null;
-		try {
-			new JCasIterable(cr).next();
-		}
-		catch (RuntimeException e) {
-			re = e;
-		}
-		assertNotNull(re);
-		hideOutput.restoreOutput();
+    HideOutput hideOutput = new HideOutput();
+    cr = CollectionReaderFactory.createCollectionReader(SingleFileXReader.class,
+            typeSystemDescription, SingleFileXReader.PARAM_XML_SCHEME, "XCAS",
+            SingleFileXReader.PARAM_FILE_NAME, "test/data/docs/bad.xcas");
+    RuntimeException re = null;
+    try {
+      new JCasIterable(cr).next();
+    } catch (RuntimeException e) {
+      re = e;
+    }
+    assertNotNull(re);
+    hideOutput.restoreOutput();
 
-		cr = CollectionReaderFactory.createCollectionReader(SingleFileXReader.class,
-				typeSystemDescription, SingleFileXReader.PARAM_XML_SCHEME, "XMI",
-				SingleFileXReader.PARAM_FILE_NAME, "test/data/docs/dne.xmi");
-		re = null;
-		try {
-			JCasIterable jCases = new JCasIterable(cr);
-			assertTrue(jCases.hasNext());
-			jCases.next();
-		}
-		catch (RuntimeException e) {
-			re = e;
-		}
-		assertNotNull(re);
+    cr = CollectionReaderFactory.createCollectionReader(SingleFileXReader.class,
+            typeSystemDescription, SingleFileXReader.PARAM_XML_SCHEME, "XMI",
+            SingleFileXReader.PARAM_FILE_NAME, "test/data/docs/dne.xmi");
+    re = null;
+    try {
+      JCasIterable jCases = new JCasIterable(cr);
+      assertTrue(jCases.hasNext());
+      jCases.next();
+    } catch (RuntimeException e) {
+      re = e;
+    }
+    assertNotNull(re);
 
-	}
+  }
 }

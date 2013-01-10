@@ -47,256 +47,254 @@ import org.springframework.util.DigestUtils;
  * Dumps CAS content to a text file. This is useful when setting up test cases which contain a
  * reference output to which an actually produced CAS is compared. The format produced by this
  * component is more easily comparable than a XML or XMI format produced by {@link XWriter}.
- *
+ * 
  */
 public class CASDumpWriter extends CasConsumer_ImplBase {
-	/**
-	 * Pattern inclusion prefix.
-	 */
-	public static final String INCLUDE_PREFIX = "+|";
-	/**
-	 * Pattern exclusion prefix.
-	 */
-	public static final String EXCLUDE_PREFIX = "-|";
+  /**
+   * Pattern inclusion prefix.
+   */
+  public static final String INCLUDE_PREFIX = "+|";
 
-	/**
-	 * Output file. If multiple CASes as processed, their contents are concatenated into this file.
-	 * Mind that a test case using this consumer with multiple CASes requires a reader which
-	 * produced the CASes always in the same order. When this file is set to "-", the dump does to
-	 * {@link System#out} (default).
-	 */
-	public static final String PARAM_OUTPUT_FILE = "OutputFile";
-	@ConfigurationParameter(name = PARAM_OUTPUT_FILE, mandatory = true, defaultValue="-")
-	private File outFile;
+  /**
+   * Pattern exclusion prefix.
+   */
+  public static final String EXCLUDE_PREFIX = "-|";
 
-	/**
-	 * Whether to dump the content of the {@link CAS#getDocumentAnnotation()}.
-	 */
-	public static final String PARAM_WRITE_DOCUMENT_META_DATA = "WriteDocumentMetaData";
-	@ConfigurationParameter(name = PARAM_WRITE_DOCUMENT_META_DATA, mandatory = true, defaultValue = "true")
-	private boolean writeDocumentMetaData;
+  /**
+   * Output file. If multiple CASes as processed, their contents are concatenated into this file.
+   * Mind that a test case using this consumer with multiple CASes requires a reader which produced
+   * the CASes always in the same order. When this file is set to "-", the dump does to
+   * {@link System#out} (default).
+   */
+  public static final String PARAM_OUTPUT_FILE = "OutputFile";
 
-	/**
-	 * Include/exclude features according to the following patterns. Mind that the patterns do not
-	 * actually match feature names but lines produced by {@link FeatureStructure#toString()}.
-	 */
-	public static final String PARAM_FEATURE_PATTERNS = "FeaturePatterns";
-	@ConfigurationParameter(name = PARAM_FEATURE_PATTERNS, mandatory = true, defaultValue = {
-			"+|.*", "-|^.*documentUri:.*$", "-|^.*collectionId:.*$", "-|^.*documentBaseUri:.*$" })
-	private String[] rawFeaturePatterns;
-	private InExPattern[] featurePatterns;
+  @ConfigurationParameter(name = PARAM_OUTPUT_FILE, mandatory = true, defaultValue = "-")
+  private File outFile;
 
-	/**
-	 * Include/exclude specified UIMA types in the output.
-	 */
-	public static final String PARAM_TYPE_PATTERNS = "TypePatterns";
-	@ConfigurationParameter(name = PARAM_TYPE_PATTERNS, mandatory = true, defaultValue = { "+|.*" })
-	private String[] rawTypePatterns;
-	private InExPattern[] typePatterns;
+  /**
+   * Whether to dump the content of the {@link CAS#getDocumentAnnotation()}.
+   */
+  public static final String PARAM_WRITE_DOCUMENT_META_DATA = "WriteDocumentMetaData";
 
-	private PrintWriter out;
-	private int iCas;
+  @ConfigurationParameter(name = PARAM_WRITE_DOCUMENT_META_DATA, mandatory = true, defaultValue = "true")
+  private boolean writeDocumentMetaData;
 
-	@Override
-	public void initialize(UimaContext context) throws ResourceInitializationException {
-		super.initialize(context);
+  /**
+   * Include/exclude features according to the following patterns. Mind that the patterns do not
+   * actually match feature names but lines produced by {@link FeatureStructure#toString()}.
+   */
+  public static final String PARAM_FEATURE_PATTERNS = "FeaturePatterns";
 
-		try {
-			if (out == null) {
-				if ("-".equals(outFile.getName())) {
-					out = new PrintWriter(System.out);
-				}
-				else {
-					if (outFile.getParentFile() != null) {
-					outFile.getParentFile().mkdirs();
-					}
-					out = new PrintWriter(
-							new OutputStreamWriter(new FileOutputStream(outFile), "UTF-8"));
-				}
-			}
-		}
-		catch (IOException e) {
-			throw new ResourceInitializationException(e);
-		}
+  @ConfigurationParameter(name = PARAM_FEATURE_PATTERNS, mandatory = true, defaultValue = { "+|.*",
+      "-|^.*documentUri:.*$", "-|^.*collectionId:.*$", "-|^.*documentBaseUri:.*$" })
+  private String[] rawFeaturePatterns;
 
-		typePatterns = compilePatterns(rawTypePatterns);
-		featurePatterns = compilePatterns(rawFeaturePatterns);
-	}
+  private InExPattern[] featurePatterns;
 
-	@Override
-	public void process(CAS aCAS) throws AnalysisEngineProcessException {
-		out.println("======== CAS " + iCas + " begin ==================================");
-		out.println();
+  /**
+   * Include/exclude specified UIMA types in the output.
+   */
+  public static final String PARAM_TYPE_PATTERNS = "TypePatterns";
 
-		Iterator<CAS> viewIt = aCAS.getViewIterator();
-		while (viewIt.hasNext()) {
-			CAS view = viewIt.next();
-			processView(view);
+  @ConfigurationParameter(name = PARAM_TYPE_PATTERNS, mandatory = true, defaultValue = { "+|.*" })
+  private String[] rawTypePatterns;
 
-			if (view.getDocumentText() == null && view.getSofaDataStream() != null) {
-				processSofaData(view);
-			}
-		}
+  private InExPattern[] typePatterns;
 
-		out.println("======== CAS " + iCas + " end ==================================");
-		out.println();
-		out.println();
-		out.flush();
+  private PrintWriter out;
 
-		iCas++;
-	}
+  private int iCas;
 
-	@Override
-	public void collectionProcessComplete() {
-		IOUtils.closeQuietly(out);
-		out = null;
-	}
+  @Override
+  public void initialize(UimaContext context) throws ResourceInitializationException {
+    super.initialize(context);
 
-	private void processDocumentMetadata(CAS aCAS) {
-		if (!writeDocumentMetaData) {
-			return;
-		}
+    try {
+      if (out == null) {
+        if ("-".equals(outFile.getName())) {
+          out = new PrintWriter(System.out);
+        } else {
+          if (outFile.getParentFile() != null) {
+            outFile.getParentFile().mkdirs();
+          }
+          out = new PrintWriter(new OutputStreamWriter(new FileOutputStream(outFile), "UTF-8"));
+        }
+      }
+    } catch (IOException e) {
+      throw new ResourceInitializationException(e);
+    }
 
-		processFeatureStructure(aCAS.getDocumentAnnotation());
-	}
+    typePatterns = compilePatterns(rawTypePatterns);
+    featurePatterns = compilePatterns(rawFeaturePatterns);
+  }
 
-	private void processDocumentText(CAS aCAS) {
-		out.println();
-		out.println("CAS-Text:");
-		out.println(aCAS.getDocumentText());
-	}
+  @Override
+  public void process(CAS aCAS) throws AnalysisEngineProcessException {
+    out.println("======== CAS " + iCas + " begin ==================================");
+    out.println();
 
-	private void processFeatureStructures(CAS aCAS) {
-		Set<String> typesToPrint = getTypes(aCAS);
-		FSIterator<AnnotationFS> annotationIterator = aCAS.getAnnotationIndex().iterator();
-		while (annotationIterator.hasNext()) {
-			AnnotationFS annotation = annotationIterator.next();
-			if (!typesToPrint.contains(annotation.getType().getName())) {
-				continue;
-			}
-			try {
-				out.println("[" + annotation.getCoveredText() + "]");
-			}
-			catch (IndexOutOfBoundsException e) {
-				out.println("<OFFSETS OUT OF BOUNDS>");
-			}
-			processFeatureStructure(annotation);
-		}
-	}
+    Iterator<CAS> viewIt = aCAS.getViewIterator();
+    while (viewIt.hasNext()) {
+      CAS view = viewIt.next();
+      processView(view);
 
-	private void processFeatureStructure(FeatureStructure aFS) {
-		String meta = aFS.toString();
-		for (String line : meta.split("\n")) {
-			boolean print = false;
-			for (InExPattern p : featurePatterns) {
-				p.matchter.reset(line);
-				if (p.matchter.matches()) {
-					print = p.includeInOutput;
-				}
-			}
-			if (print) {
-				out.println(line);
-			}
-		}
-	}
+      if (view.getDocumentText() == null && view.getSofaDataStream() != null) {
+        processSofaData(view);
+      }
+    }
 
-	private void processView(CAS aCAS) {
-		out.println("-------- View " + aCAS.getViewName()
-				+ " begin ----------------------------------");
-		out.println();
+    out.println("======== CAS " + iCas + " end ==================================");
+    out.println();
+    out.println();
+    out.flush();
 
-		processDocumentMetadata(aCAS);
-		processDocumentText(aCAS);
-		processFeatureStructures(aCAS);
+    iCas++;
+  }
 
-		out.println("-------- View " + aCAS.getViewName()
-				+ " end ----------------------------------");
-		out.println();
-	}
+  @Override
+  public void collectionProcessComplete() {
+    IOUtils.closeQuietly(out);
+    out = null;
+  }
 
-	private void processSofaData(CAS aCAS) throws AnalysisEngineProcessException {
-		out.println("Sofa data:");
+  private void processDocumentMetadata(CAS aCAS) {
+    if (!writeDocumentMetaData) {
+      return;
+    }
 
-		//
+    processFeatureStructure(aCAS.getDocumentAnnotation());
+  }
 
-		// Mime type
-		String mimeType = aCAS.getSofaMimeType();
-		if (mimeType != null) {
-			out.println("   mime type:\t" + mimeType);
-		}
-		// Data
-		byte[] bytes = null;
-		InputStream in = null;
-		try {
-			in = aCAS.getSofaDataStream();
-			bytes = IOUtils.toByteArray(in);
-		} catch (IOException e) {
-			throw new AnalysisEngineProcessException(e);
-		}
-		finally {
-			IOUtils.closeQuietly(in);
-		}
-		if (bytes != null) {
-			// Data size
-			out.println("   size:\t" + bytes.length + " byte(s)");
-			// Hash value of the bytes
-			String hash = DigestUtils.md5DigestAsHex(bytes);
-			out.println("   hash value:\t" + hash);
-		}
+  private void processDocumentText(CAS aCAS) {
+    out.println();
+    out.println("CAS-Text:");
+    out.println(aCAS.getDocumentText());
+  }
 
-		out.println();
-	}
+  private void processFeatureStructures(CAS aCAS) {
+    Set<String> typesToPrint = getTypes(aCAS);
+    FSIterator<AnnotationFS> annotationIterator = aCAS.getAnnotationIndex().iterator();
+    while (annotationIterator.hasNext()) {
+      AnnotationFS annotation = annotationIterator.next();
+      if (!typesToPrint.contains(annotation.getType().getName())) {
+        continue;
+      }
+      try {
+        out.println("[" + annotation.getCoveredText() + "]");
+      } catch (IndexOutOfBoundsException e) {
+        out.println("<OFFSETS OUT OF BOUNDS>");
+      }
+      processFeatureStructure(annotation);
+    }
+  }
 
-	private static InExPattern[] compilePatterns(String[] aPatterns) {
-		InExPattern[] patterns = new InExPattern[aPatterns.length];
-		for (int i = 0; i < aPatterns.length; i++) {
-			if (aPatterns[i].startsWith(INCLUDE_PREFIX)) {
-				patterns[i] = new InExPattern(aPatterns[i].substring(INCLUDE_PREFIX.length()), true);
-			}
-			else if (aPatterns[i].startsWith(EXCLUDE_PREFIX)) {
-				patterns[i] = new InExPattern(aPatterns[i].substring(EXCLUDE_PREFIX.length()),
-						false);
-			}
-			else {
-				patterns[i] = new InExPattern(aPatterns[i], false);
-			}
-		}
-		return patterns;
-	}
+  private void processFeatureStructure(FeatureStructure aFS) {
+    String meta = aFS.toString();
+    for (String line : meta.split("\n")) {
+      boolean print = false;
+      for (InExPattern p : featurePatterns) {
+        p.matchter.reset(line);
+        if (p.matchter.matches()) {
+          print = p.includeInOutput;
+        }
+      }
+      if (print) {
+        out.println(line);
+      }
+    }
+  }
 
-	private Set<String> getTypes(CAS cas) {
-		Set<String> types = new HashSet<String>();
-		Iterator<Type> typeIt = cas.getTypeSystem().getTypeIterator();
-		nextType: while (typeIt.hasNext()) {
-			Type type = typeIt.next();
+  private void processView(CAS aCAS) {
+    out.println("-------- View " + aCAS.getViewName() + " begin ----------------------------------");
+    out.println();
 
-			if (type.getName().equals(cas.getDocumentAnnotation().getType().getName())) {
-				continue;
-			}
+    processDocumentMetadata(aCAS);
+    processDocumentText(aCAS);
+    processFeatureStructures(aCAS);
 
-			for (InExPattern p : typePatterns) {
-				p.matchter.reset(type.getName());
-				if (p.matchter.matches()) {
-					if (p.includeInOutput) {
-						types.add(type.getName());
-					}
-					else {
-						types.remove(type.getName());
-					}
-					continue nextType;
-				}
-			}
-		}
-		return types;
-	}
+    out.println("-------- View " + aCAS.getViewName() + " end ----------------------------------");
+    out.println();
+  }
 
-	private static class InExPattern {
-		final boolean includeInOutput;
-		final Matcher matchter;
+  private void processSofaData(CAS aCAS) throws AnalysisEngineProcessException {
+    out.println("Sofa data:");
 
-		public InExPattern(String aPattern, boolean aInclude) {
-			includeInOutput = aInclude;
-			matchter = Pattern.compile(aPattern).matcher("");
-		}
-	}
+    //
+
+    // Mime type
+    String mimeType = aCAS.getSofaMimeType();
+    if (mimeType != null) {
+      out.println("   mime type:\t" + mimeType);
+    }
+    // Data
+    byte[] bytes = null;
+    InputStream in = null;
+    try {
+      in = aCAS.getSofaDataStream();
+      bytes = IOUtils.toByteArray(in);
+    } catch (IOException e) {
+      throw new AnalysisEngineProcessException(e);
+    } finally {
+      IOUtils.closeQuietly(in);
+    }
+    if (bytes != null) {
+      // Data size
+      out.println("   size:\t" + bytes.length + " byte(s)");
+      // Hash value of the bytes
+      String hash = DigestUtils.md5DigestAsHex(bytes);
+      out.println("   hash value:\t" + hash);
+    }
+
+    out.println();
+  }
+
+  private static InExPattern[] compilePatterns(String[] aPatterns) {
+    InExPattern[] patterns = new InExPattern[aPatterns.length];
+    for (int i = 0; i < aPatterns.length; i++) {
+      if (aPatterns[i].startsWith(INCLUDE_PREFIX)) {
+        patterns[i] = new InExPattern(aPatterns[i].substring(INCLUDE_PREFIX.length()), true);
+      } else if (aPatterns[i].startsWith(EXCLUDE_PREFIX)) {
+        patterns[i] = new InExPattern(aPatterns[i].substring(EXCLUDE_PREFIX.length()), false);
+      } else {
+        patterns[i] = new InExPattern(aPatterns[i], false);
+      }
+    }
+    return patterns;
+  }
+
+  private Set<String> getTypes(CAS cas) {
+    Set<String> types = new HashSet<String>();
+    Iterator<Type> typeIt = cas.getTypeSystem().getTypeIterator();
+    nextType: while (typeIt.hasNext()) {
+      Type type = typeIt.next();
+
+      if (type.getName().equals(cas.getDocumentAnnotation().getType().getName())) {
+        continue;
+      }
+
+      for (InExPattern p : typePatterns) {
+        p.matchter.reset(type.getName());
+        if (p.matchter.matches()) {
+          if (p.includeInOutput) {
+            types.add(type.getName());
+          } else {
+            types.remove(type.getName());
+          }
+          continue nextType;
+        }
+      }
+    }
+    return types;
+  }
+
+  private static class InExPattern {
+    final boolean includeInOutput;
+
+    final Matcher matchter;
+
+    public InExPattern(String aPattern, boolean aInclude) {
+      includeInOutput = aInclude;
+      matchter = Pattern.compile(aPattern).matcher("");
+    }
+  }
 }

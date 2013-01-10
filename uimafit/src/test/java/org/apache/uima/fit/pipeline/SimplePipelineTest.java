@@ -43,64 +43,65 @@ import org.junit.Test;
  */
 public class SimplePipelineTest {
 
-	public static final String SENTENCE_TEXT = "Some text";
+  public static final String SENTENCE_TEXT = "Some text";
 
-	public static class Reader extends JCasCollectionReader_ImplBase {
+  public static class Reader extends JCasCollectionReader_ImplBase {
 
-		private int size = 1;
-		private int current = 0;
+    private int size = 1;
 
-		public Progress[] getProgress() {
-			return null;
-		}
+    private int current = 0;
 
-		public boolean hasNext() throws IOException, CollectionException {
-			return this.current < this.size;
-		}
+    public Progress[] getProgress() {
+      return null;
+    }
 
-		@Override
-		public void getNext(JCas jCas) throws IOException, CollectionException {
-			jCas.setDocumentText(SENTENCE_TEXT);
-			this.current += 1;
-		}
+    public boolean hasNext() throws IOException, CollectionException {
+      return this.current < this.size;
+    }
 
-	}
+    @Override
+    public void getNext(JCas jCas) throws IOException, CollectionException {
+      jCas.setDocumentText(SENTENCE_TEXT);
+      this.current += 1;
+    }
 
-	public static class Annotator extends JCasAnnotator_ImplBase {
+  }
 
-		@Override
-		public void process(JCas jCas) throws AnalysisEngineProcessException {
-			String text = jCas.getDocumentText();
-			Sentence sentence = new Sentence(jCas, 0, text.length());
-			sentence.addToIndexes();
-		}
+  public static class Annotator extends JCasAnnotator_ImplBase {
 
-	}
+    @Override
+    public void process(JCas jCas) throws AnalysisEngineProcessException {
+      String text = jCas.getDocumentText();
+      Sentence sentence = new Sentence(jCas, 0, text.length());
+      sentence.addToIndexes();
+    }
 
-	public static class Writer extends JCasAnnotator_ImplBase {
+  }
 
-		public static List<String> SENTENCES = new ArrayList<String>();
+  public static class Writer extends JCasAnnotator_ImplBase {
 
-		@Override
-		public void initialize(UimaContext context) throws ResourceInitializationException {
-			super.initialize(context);
-			SENTENCES = new ArrayList<String>();
-		}
-		
-		@Override
-		public void process(JCas jCas) throws AnalysisEngineProcessException {
-			for (Sentence sentence : JCasUtil.select(jCas, Sentence.class)) {
-				SENTENCES.add(sentence.getCoveredText());
-			}
-		}
+    public static List<String> SENTENCES = new ArrayList<String>();
 
-	}
+    @Override
+    public void initialize(UimaContext context) throws ResourceInitializationException {
+      super.initialize(context);
+      SENTENCES = new ArrayList<String>();
+    }
 
-	@Test
-	public void test() throws Exception {
-		SimplePipeline.runPipeline(CollectionReaderFactory.createCollectionReader(Reader.class),
-				AnalysisEngineFactory.createPrimitive(Annotator.class),
-				AnalysisEngineFactory.createPrimitive(Writer.class));
-		Assert.assertEquals(Arrays.asList(SENTENCE_TEXT), Writer.SENTENCES);
-	}
+    @Override
+    public void process(JCas jCas) throws AnalysisEngineProcessException {
+      for (Sentence sentence : JCasUtil.select(jCas, Sentence.class)) {
+        SENTENCES.add(sentence.getCoveredText());
+      }
+    }
+
+  }
+
+  @Test
+  public void test() throws Exception {
+    SimplePipeline.runPipeline(CollectionReaderFactory.createCollectionReader(Reader.class),
+            AnalysisEngineFactory.createPrimitive(Annotator.class),
+            AnalysisEngineFactory.createPrimitive(Writer.class));
+    Assert.assertEquals(Arrays.asList(SENTENCE_TEXT), Writer.SENTENCES);
+  }
 }

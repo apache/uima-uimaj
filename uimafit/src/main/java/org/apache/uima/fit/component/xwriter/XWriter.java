@@ -45,126 +45,121 @@ import org.xml.sax.SAXException;
 
 public class XWriter extends JCasConsumer_ImplBase {
 
-	/**
-	 * The parameter name for the configuration parameter that specifies the output directory
-	 */
-	public static final String PARAM_OUTPUT_DIRECTORY_NAME = ConfigurationParameterFactory
-			.createConfigurationParameterName(XWriter.class, "outputDirectoryName");
-	@ConfigurationParameter(mandatory = true, description = "takes a path to directory into which output files will be written.")
-	private String outputDirectoryName;
+  /**
+   * The parameter name for the configuration parameter that specifies the output directory
+   */
+  public static final String PARAM_OUTPUT_DIRECTORY_NAME = ConfigurationParameterFactory
+          .createConfigurationParameterName(XWriter.class, "outputDirectoryName");
 
-	/**
-	 * The parameter name for the configuration parameter that provides the name of the XML scheme
-	 * to use.
-	 */
-	public static final String PARAM_XML_SCHEME_NAME = ConfigurationParameterFactory
-			.createConfigurationParameterName(XWriter.class, "xmlSchemeName");
-	@ConfigurationParameter(mandatory = true, defaultValue = "XMI", description = "specifies the UIMA XML serialization scheme that should be used. "
-			+ "Valid values for this parameter are 'XMI' (default) and 'XCAS'.")
-	private String xmlSchemeName;
+  @ConfigurationParameter(mandatory = true, description = "takes a path to directory into which output files will be written.")
+  private String outputDirectoryName;
 
-	/**
-	 * The parameter name for the configuration parameter that specifies the name of the class that
-	 * implements the file namer
-	 */
-	public static final String PARAM_FILE_NAMER_CLASS_NAME = ConfigurationParameterFactory
-			.createConfigurationParameterName(XWriter.class, "fileNamerClassName");
-	@ConfigurationParameter(mandatory = true, description = "the class name of the XWriterFileNamer implementation to use", defaultValue = "org.apache.uima.fit.component.xwriter.IntegerFileNamer")
-	protected String fileNamerClassName;
+  /**
+   * The parameter name for the configuration parameter that provides the name of the XML scheme to
+   * use.
+   */
+  public static final String PARAM_XML_SCHEME_NAME = ConfigurationParameterFactory
+          .createConfigurationParameterName(XWriter.class, "xmlSchemeName");
 
-	/**
-	 * The name of the XMI XML scheme. This is a valid value for the parameter
-	 * {@value #PARAM_XML_SCHEME_NAME}
-	 */
-	public static final String XMI = "XMI";
+  @ConfigurationParameter(mandatory = true, defaultValue = "XMI", description = "specifies the UIMA XML serialization scheme that should be used. "
+          + "Valid values for this parameter are 'XMI' (default) and 'XCAS'.")
+  private String xmlSchemeName;
 
-	/**
-	 * The name of the XCAS XML scheme. This is a valid value for the parameter
-	 * {@value #PARAM_XML_SCHEME_NAME}
-	 */
-	public static final String XCAS = "XCAS";
+  /**
+   * The parameter name for the configuration parameter that specifies the name of the class that
+   * implements the file namer
+   */
+  public static final String PARAM_FILE_NAMER_CLASS_NAME = ConfigurationParameterFactory
+          .createConfigurationParameterName(XWriter.class, "fileNamerClassName");
 
-	private File outputDirectory;
+  @ConfigurationParameter(mandatory = true, description = "the class name of the XWriterFileNamer implementation to use", defaultValue = "org.apache.uima.fit.component.xwriter.IntegerFileNamer")
+  protected String fileNamerClassName;
 
-	private boolean useXMI = true;
+  /**
+   * The name of the XMI XML scheme. This is a valid value for the parameter
+   * {@value #PARAM_XML_SCHEME_NAME}
+   */
+  public static final String XMI = "XMI";
 
-	private XWriterFileNamer fileNamer;
+  /**
+   * The name of the XCAS XML scheme. This is a valid value for the parameter
+   * {@value #PARAM_XML_SCHEME_NAME}
+   */
+  public static final String XCAS = "XCAS";
 
-	@Override
-	public void initialize(UimaContext context) throws ResourceInitializationException {
-		super.initialize(context);
+  private File outputDirectory;
 
-		outputDirectory = new File(outputDirectoryName);
-		if (!outputDirectory.exists()) {
-			outputDirectory.mkdirs();
-		}
+  private boolean useXMI = true;
 
-		if (xmlSchemeName.equals(XMI)) {
-			useXMI = true;
-		}
-		else if (xmlSchemeName.equals(XCAS)) {
-			useXMI = false;
-		}
-		else {
-			throw new ResourceInitializationException(String.format(
-					"parameter '%1$s' must be either '%2$s' or '%3$s'.", PARAM_XML_SCHEME_NAME,
-					XMI, XCAS), null);
-		}
+  private XWriterFileNamer fileNamer;
 
-		fileNamer = InitializableFactory
-				.create(context, fileNamerClassName, XWriterFileNamer.class);
-	}
+  @Override
+  public void initialize(UimaContext context) throws ResourceInitializationException {
+    super.initialize(context);
 
-	@Override
-	public void process(JCas jcas) throws AnalysisEngineProcessException {
-		String fileName = fileNamer.nameFile(jcas);
-		try {
-			if (useXMI) {
-				writeXmi(jcas.getCas(), fileName);
-			}
-			else {
-				writeXCas(jcas.getCas(), fileName);
-			}
-		}
-		catch (IOException e) {
-			throw new AnalysisEngineProcessException(e);
-		}
-		catch (SAXException e) {
-			throw new AnalysisEngineProcessException(e);
-		}
-	}
+    outputDirectory = new File(outputDirectoryName);
+    if (!outputDirectory.exists()) {
+      outputDirectory.mkdirs();
+    }
 
-	private void writeXCas(CAS aCas, String fileName) throws IOException, SAXException {
-		File outFile = new File(outputDirectory, fileName + ".xcas");
-		FileOutputStream out = null;
-		try {
-			out = new FileOutputStream(outFile);
-			XCASSerializer ser = new XCASSerializer(aCas.getTypeSystem());
-			XMLSerializer xmlSer = new XMLSerializer(out, false);
-			ser.serialize(aCas, xmlSer.getContentHandler());
-		}
-		finally {
-			if (out != null) {
-				out.close();
-			}
-		}
-	}
+    if (xmlSchemeName.equals(XMI)) {
+      useXMI = true;
+    } else if (xmlSchemeName.equals(XCAS)) {
+      useXMI = false;
+    } else {
+      throw new ResourceInitializationException(
+              String.format("parameter '%1$s' must be either '%2$s' or '%3$s'.",
+                      PARAM_XML_SCHEME_NAME, XMI, XCAS), null);
+    }
 
-	private void writeXmi(CAS aCas, String id) throws IOException, SAXException {
-		File outFile = new File(outputDirectory, id + ".xmi");
-		FileOutputStream out = null;
+    fileNamer = InitializableFactory.create(context, fileNamerClassName, XWriterFileNamer.class);
+  }
 
-		try {
-			out = new FileOutputStream(outFile);
-			XmiCasSerializer ser = new XmiCasSerializer(aCas.getTypeSystem());
-			XMLSerializer xmlSer = new XMLSerializer(out, false);
-			ser.serialize(aCas, xmlSer.getContentHandler());
-		}
-		finally {
-			if (out != null) {
-				out.close();
-			}
-		}
-	}
+  @Override
+  public void process(JCas jcas) throws AnalysisEngineProcessException {
+    String fileName = fileNamer.nameFile(jcas);
+    try {
+      if (useXMI) {
+        writeXmi(jcas.getCas(), fileName);
+      } else {
+        writeXCas(jcas.getCas(), fileName);
+      }
+    } catch (IOException e) {
+      throw new AnalysisEngineProcessException(e);
+    } catch (SAXException e) {
+      throw new AnalysisEngineProcessException(e);
+    }
+  }
+
+  private void writeXCas(CAS aCas, String fileName) throws IOException, SAXException {
+    File outFile = new File(outputDirectory, fileName + ".xcas");
+    FileOutputStream out = null;
+    try {
+      out = new FileOutputStream(outFile);
+      XCASSerializer ser = new XCASSerializer(aCas.getTypeSystem());
+      XMLSerializer xmlSer = new XMLSerializer(out, false);
+      ser.serialize(aCas, xmlSer.getContentHandler());
+    } finally {
+      if (out != null) {
+        out.close();
+      }
+    }
+  }
+
+  private void writeXmi(CAS aCas, String id) throws IOException, SAXException {
+    File outFile = new File(outputDirectory, id + ".xmi");
+    FileOutputStream out = null;
+
+    try {
+      out = new FileOutputStream(outFile);
+      XmiCasSerializer ser = new XmiCasSerializer(aCas.getTypeSystem());
+      XMLSerializer xmlSer = new XMLSerializer(out, false);
+      ser.serialize(aCas, xmlSer.getContentHandler());
+    } finally {
+      if (out != null) {
+        out.close();
+      }
+    }
+  }
 
 }

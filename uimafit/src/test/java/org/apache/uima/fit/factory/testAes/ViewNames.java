@@ -25,14 +25,14 @@ import org.apache.uima.cas.CAS;
 
 public class ViewNames {
 
-	public static final String INITIAL_VIEW = CAS.NAME_DEFAULT_SOFA;
+  public static final String INITIAL_VIEW = CAS.NAME_DEFAULT_SOFA;
 
-	public static final String PARENTHESES_VIEW = "ParenthesesView";
+  public static final String PARENTHESES_VIEW = "ParenthesesView";
 
-	public static final String SORTED_VIEW = "SortedView";
+  public static final String SORTED_VIEW = "SortedView";
 
-	public static final String SORTED_PARENTHESES_VIEW = "SortedParenthesesView";
+  public static final String SORTED_PARENTHESES_VIEW = "SortedParenthesesView";
 
-	public static final String REVERSE_VIEW = "ReverseView";
+  public static final String REVERSE_VIEW = "ReverseView";
 
 }

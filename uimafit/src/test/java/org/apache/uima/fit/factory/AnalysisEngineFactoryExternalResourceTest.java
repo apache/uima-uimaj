@@ -17,7 +17,6 @@
  * under the License.
  */
 
-
 package org.apache.uima.fit.factory;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createAggregate;
@@ -58,348 +57,350 @@ import org.xml.sax.SAXException;
 /**
  */
 public class AnalysisEngineFactoryExternalResourceTest {
-	/**
-	 * Test simple injection.
-	 */
-	@Test
-	public void resource_testInjection() throws Exception {
-		AnalysisEngineDescription aeDesc = saveLoad(createPrimitiveDescription(
-				TestAnalysisEngineWithResource.class,
-				TestAnalysisEngineWithResource.PARAM_RESOURCE,
-				createExternalResourceDescription(TestExternalResource.class,
-						TestExternalResource.PARAM_VALUE, TestExternalResource.EXPECTED_VALUE)));
-		
-		AnalysisEngine ae = createPrimitive(aeDesc);
-		ae.process(ae.newCAS());
-	}
+  /**
+   * Test simple injection.
+   */
+  @Test
+  public void resource_testInjection() throws Exception {
+    AnalysisEngineDescription aeDesc = saveLoad(createPrimitiveDescription(
+            TestAnalysisEngineWithResource.class,
+            TestAnalysisEngineWithResource.PARAM_RESOURCE,
+            createExternalResourceDescription(TestExternalResource.class,
+                    TestExternalResource.PARAM_VALUE, TestExternalResource.EXPECTED_VALUE)));
 
-	/**
-	 * Test shared simple injection.
-	 */
-	@Test
-	public void resource_testSharedInjection() throws Exception {
-		ExternalResourceDescription resDesc = createExternalResourceDescription(
-				TestExternalResource.class,
-				TestExternalResource.PARAM_VALUE, TestExternalResource.EXPECTED_VALUE);
-		
-		AnalysisEngineDescription aeDesc1 = saveLoad(createPrimitiveDescription(
-				TestAnalysisEngineWithResource.class,
-				TestAnalysisEngineWithResource.PARAM_RESOURCE, resDesc));
+    AnalysisEngine ae = createPrimitive(aeDesc);
+    ae.process(ae.newCAS());
+  }
 
-		AnalysisEngineDescription aeDesc2 = saveLoad(createPrimitiveDescription(
-				TestAnalysisEngineWithResource.class,
-				TestAnalysisEngineWithResource.PARAM_RESOURCE, resDesc));
+  /**
+   * Test shared simple injection.
+   */
+  @Test
+  public void resource_testSharedInjection() throws Exception {
+    ExternalResourceDescription resDesc = createExternalResourceDescription(
+            TestExternalResource.class, TestExternalResource.PARAM_VALUE,
+            TestExternalResource.EXPECTED_VALUE);
 
-		dumpResourceConfiguration(aeDesc1);
-		dumpResourceConfiguration(aeDesc2);
-		
-		AnalysisEngine ae1 = createPrimitive(aeDesc1);
-		AnalysisEngine ae2 = createPrimitive(aeDesc2);
-		ae1.process(ae1.newCAS());
-		ae2.process(ae2.newCAS());
-		
-		AnalysisEngine ae3 = createAggregate(createAggregateDescription(aeDesc1, aeDesc2));
-		ae3.process(ae3.newCAS());
-	}
+    AnalysisEngineDescription aeDesc1 = saveLoad(createPrimitiveDescription(
+            TestAnalysisEngineWithResource.class, TestAnalysisEngineWithResource.PARAM_RESOURCE,
+            resDesc));
 
-	/**
-	 * Test simple nesting.
-	 */
-	@Test
-	public void resource_testSimpleNesting() throws Exception {
-		AnalysisEngineDescription aeDesc = saveLoad(createPrimitiveDescription(
-				TestAnalysisEngineWithResource.class,
-				TestAnalysisEngineWithResource.PARAM_RESOURCE,
-				createExternalResourceDescription(TestExternalResource2.class,
-						TestExternalResource.PARAM_VALUE, TestExternalResource.EXPECTED_VALUE,
-						TestExternalResource2.PARAM_RESOURCE, createExternalResourceDescription(
-								TestExternalResource.class,
-								TestExternalResource.PARAM_VALUE, TestExternalResource.EXPECTED_VALUE))));
+    AnalysisEngineDescription aeDesc2 = saveLoad(createPrimitiveDescription(
+            TestAnalysisEngineWithResource.class, TestAnalysisEngineWithResource.PARAM_RESOURCE,
+            resDesc));
 
-		AnalysisEngine ae = createPrimitive(aeDesc);
-		ae.process(ae.newCAS());
-	}
+    dumpResourceConfiguration(aeDesc1);
+    dumpResourceConfiguration(aeDesc2);
 
-	/**
-	 * Test simple nesting.
-	 */
-	@Test
-	public void resource_testSharedSimpleNesting() throws Exception {
-		ExternalResourceDescription resDesc = createExternalResourceDescription(
-				TestExternalResource2.class,
-				TestExternalResource.PARAM_VALUE, TestExternalResource.EXPECTED_VALUE,
-				TestExternalResource2.PARAM_RESOURCE, createExternalResourceDescription(
-						TestExternalResource.class,
-						TestExternalResource.PARAM_VALUE, TestExternalResource.EXPECTED_VALUE));	
-		
-		AnalysisEngineDescription aeDesc1 = saveLoad(createPrimitiveDescription(
-				TestAnalysisEngineWithResource.class,
-				TestAnalysisEngineWithResource.PARAM_RESOURCE, resDesc));
+    AnalysisEngine ae1 = createPrimitive(aeDesc1);
+    AnalysisEngine ae2 = createPrimitive(aeDesc2);
+    ae1.process(ae1.newCAS());
+    ae2.process(ae2.newCAS());
 
-		dumpResourceConfiguration(aeDesc1);
-		
-		AnalysisEngineDescription aeDesc2 = saveLoad(createPrimitiveDescription(
-				TestAnalysisEngineWithResource.class,
-				TestAnalysisEngineWithResource.PARAM_RESOURCE, resDesc));
+    AnalysisEngine ae3 = createAggregate(createAggregateDescription(aeDesc1, aeDesc2));
+    ae3.process(ae3.newCAS());
+  }
 
-		dumpResourceConfiguration(aeDesc1);
-		dumpResourceConfiguration(aeDesc2);
-		
-		AnalysisEngine ae1 = createPrimitive(aeDesc1);
-		AnalysisEngine ae2 = createPrimitive(aeDesc2);
-		ae1.process(ae1.newCAS());
-		ae2.process(ae2.newCAS());
-		
-		AnalysisEngine ae3 = createAggregate(createAggregateDescription(aeDesc1, aeDesc2));
-		ae3.process(ae3.newCAS());
-	}
+  /**
+   * Test simple nesting.
+   */
+  @Test
+  public void resource_testSimpleNesting() throws Exception {
+    AnalysisEngineDescription aeDesc = saveLoad(createPrimitiveDescription(
+            TestAnalysisEngineWithResource.class,
+            TestAnalysisEngineWithResource.PARAM_RESOURCE,
+            createExternalResourceDescription(
+                    TestExternalResource2.class,
+                    TestExternalResource.PARAM_VALUE,
+                    TestExternalResource.EXPECTED_VALUE,
+                    TestExternalResource2.PARAM_RESOURCE,
+                    createExternalResourceDescription(TestExternalResource.class,
+                            TestExternalResource.PARAM_VALUE, TestExternalResource.EXPECTED_VALUE))));
 
-	/**
-	 * Test deeper nesting level.
-	 */
-	@Test
-	public void resource_testDeeperNesting() throws Exception {
-		ExternalResourceDescription resDesc2 = createExternalResourceDescription(
-				TestExternalResource.class,
-				TestExternalResource.PARAM_VALUE, TestExternalResource.EXPECTED_VALUE);
+    AnalysisEngine ae = createPrimitive(aeDesc);
+    ae.process(ae.newCAS());
+  }
 
-		ExternalResourceDescription resDesc = createExternalResourceDescription(
-				TestExternalResource2.class,
-				TestExternalResource2.PARAM_RESOURCE, resDesc2,
-				TestExternalResource.PARAM_VALUE, TestExternalResource.EXPECTED_VALUE);
+  /**
+   * Test simple nesting.
+   */
+  @Test
+  public void resource_testSharedSimpleNesting() throws Exception {
+    ExternalResourceDescription resDesc = createExternalResourceDescription(
+            TestExternalResource2.class,
+            TestExternalResource.PARAM_VALUE,
+            TestExternalResource.EXPECTED_VALUE,
+            TestExternalResource2.PARAM_RESOURCE,
+            createExternalResourceDescription(TestExternalResource.class,
+                    TestExternalResource.PARAM_VALUE, TestExternalResource.EXPECTED_VALUE));
 
-		AnalysisEngineDescription aeDesc = saveLoad(createPrimitiveDescription(
-				TestAnalysisEngineWithResource.class,
-				TestAnalysisEngineWithResource.PARAM_RESOURCE,
-				createExternalResourceDescription(TestExternalResource2.class,
-						TestExternalResource.PARAM_VALUE, TestExternalResource.EXPECTED_VALUE,
-						TestExternalResource2.PARAM_RESOURCE, resDesc)));
+    AnalysisEngineDescription aeDesc1 = saveLoad(createPrimitiveDescription(
+            TestAnalysisEngineWithResource.class, TestAnalysisEngineWithResource.PARAM_RESOURCE,
+            resDesc));
 
-		dumpResourceConfiguration(aeDesc);
+    dumpResourceConfiguration(aeDesc1);
 
-		AnalysisEngine ae = createPrimitive(aeDesc);
-		ae.process(ae.newCAS());
-	}
+    AnalysisEngineDescription aeDesc2 = saveLoad(createPrimitiveDescription(
+            TestAnalysisEngineWithResource.class, TestAnalysisEngineWithResource.PARAM_RESOURCE,
+            resDesc));
 
-	/**
-	 * Test self-injection
-	 */
-	@Test
-	public void resource_testSelfInjection() throws Exception {
-		ExternalResourceDescription resDesc = createExternalResourceDescription(
-				TestExternalResource2.class,
-				TestExternalResource.PARAM_VALUE, TestExternalResource.EXPECTED_VALUE);
-		bindExternalResource(resDesc, TestExternalResource2.PARAM_RESOURCE, resDesc);
+    dumpResourceConfiguration(aeDesc1);
+    dumpResourceConfiguration(aeDesc2);
 
-		AnalysisEngineDescription aeDesc = saveLoad(createPrimitiveDescription(
-				TestAnalysisEngineWithResource.class,
-				TestAnalysisEngineWithResource.PARAM_RESOURCE, resDesc));
-		
-		dumpResourceConfiguration(aeDesc);
-		
-		AnalysisEngine ae = createPrimitive(aeDesc);
-		ae.process(ae.newCAS());
-	}
+    AnalysisEngine ae1 = createPrimitive(aeDesc1);
+    AnalysisEngine ae2 = createPrimitive(aeDesc2);
+    ae1.process(ae1.newCAS());
+    ae2.process(ae2.newCAS());
 
-	/**
-	 * Test self-injection
-	 */
-	@Test
-	public void resource_testDoubleSelfInjection() throws Exception {
-		ExternalResourceDescription resDesc = createExternalResourceDescription(
-				TestExternalResource2.class,
-				TestExternalResource.PARAM_VALUE, TestExternalResource.EXPECTED_VALUE);
-		bindExternalResource(resDesc, TestExternalResource2.PARAM_RESOURCE, resDesc);
+    AnalysisEngine ae3 = createAggregate(createAggregateDescription(aeDesc1, aeDesc2));
+    ae3.process(ae3.newCAS());
+  }
 
-		AnalysisEngineDescription aeDesc1 = saveLoad(createPrimitiveDescription(
-				TestAnalysisEngineWithResource.class,
-				TestAnalysisEngineWithResource.PARAM_RESOURCE, resDesc));
+  /**
+   * Test deeper nesting level.
+   */
+  @Test
+  public void resource_testDeeperNesting() throws Exception {
+    ExternalResourceDescription resDesc2 = createExternalResourceDescription(
+            TestExternalResource.class, TestExternalResource.PARAM_VALUE,
+            TestExternalResource.EXPECTED_VALUE);
 
-		AnalysisEngineDescription aeDesc2 = saveLoad(createPrimitiveDescription(
-				TestAnalysisEngineWithResource.class,
-				TestAnalysisEngineWithResource.PARAM_RESOURCE, resDesc));
+    ExternalResourceDescription resDesc = createExternalResourceDescription(
+            TestExternalResource2.class, TestExternalResource2.PARAM_RESOURCE, resDesc2,
+            TestExternalResource.PARAM_VALUE, TestExternalResource.EXPECTED_VALUE);
 
-		dumpResourceConfiguration(aeDesc1);
-		dumpResourceConfiguration(aeDesc2);
-		
-		AnalysisEngine ae1 = createPrimitive(aeDesc1);
-		AnalysisEngine ae2 = createPrimitive(aeDesc2);
-		ae1.process(ae1.newCAS());
-		ae2.process(ae2.newCAS());
-		
-		AnalysisEngine ae3 = createAggregate(createAggregateDescription(aeDesc1, aeDesc2));
-		ae3.process(ae3.newCAS());
-	}
-	
-	/**
-	 * Test simple injection.
-	 */
-	@Test
-	public void sharedObject_testInjection() throws Exception {
-		AnalysisEngineDescription aeDesc = saveLoad(createPrimitiveDescription(
-				TestAnalysisEngineWithSharedResourceObject.class,
-				TestAnalysisEngineWithSharedResourceObject.PARAM_RESOURCE,
-				createExternalResourceDescription(TestSharedResourceObject.class, "http://dumm.my",
-						TestSharedResourceObject.PARAM_VALUE, TestSharedResourceObject.EXPECTED_VALUE)));
-		
-		AnalysisEngine ae = createPrimitive(aeDesc);
-		ae.process(ae.newCAS());
-	}
+    AnalysisEngineDescription aeDesc = saveLoad(createPrimitiveDescription(
+            TestAnalysisEngineWithResource.class,
+            TestAnalysisEngineWithResource.PARAM_RESOURCE,
+            createExternalResourceDescription(TestExternalResource2.class,
+                    TestExternalResource.PARAM_VALUE, TestExternalResource.EXPECTED_VALUE,
+                    TestExternalResource2.PARAM_RESOURCE, resDesc)));
 
-	/**
-	 * Test shared simple injection.
-	 */
-	@Test
-	public void sharedObject_testSharedInjection() throws Exception {
-		ExternalResourceDescription resDesc = createExternalResourceDescription(
-				TestSharedResourceObject.class, "http://dumm.my",
-				TestSharedResourceObject.PARAM_VALUE, TestSharedResourceObject.EXPECTED_VALUE);
-		
-		AnalysisEngineDescription aeDesc1 = saveLoad(createPrimitiveDescription(
-				TestAnalysisEngineWithSharedResourceObject.class,
-				TestAnalysisEngineWithSharedResourceObject.PARAM_RESOURCE, resDesc));
+    dumpResourceConfiguration(aeDesc);
 
-		AnalysisEngineDescription aeDesc2 = saveLoad(createPrimitiveDescription(
-				TestAnalysisEngineWithSharedResourceObject.class,
-				TestAnalysisEngineWithSharedResourceObject.PARAM_RESOURCE, resDesc));
+    AnalysisEngine ae = createPrimitive(aeDesc);
+    ae.process(ae.newCAS());
+  }
 
-		dumpResourceConfiguration(aeDesc1);
-		dumpResourceConfiguration(aeDesc2);
-		
-		AnalysisEngine ae1 = createPrimitive(aeDesc1);
-		AnalysisEngine ae2 = createPrimitive(aeDesc2);
-		ae1.process(ae1.newCAS());
-		ae2.process(ae2.newCAS());
-		
-		AnalysisEngine ae3 = createAggregate(createAggregateDescription(aeDesc1, aeDesc2));
-		ae3.process(ae3.newCAS());
-	}
+  /**
+   * Test self-injection
+   */
+  @Test
+  public void resource_testSelfInjection() throws Exception {
+    ExternalResourceDescription resDesc = createExternalResourceDescription(
+            TestExternalResource2.class, TestExternalResource.PARAM_VALUE,
+            TestExternalResource.EXPECTED_VALUE);
+    bindExternalResource(resDesc, TestExternalResource2.PARAM_RESOURCE, resDesc);
 
-	/**
-	 * Test self-injection
-	 */
-	@Test
-	public void sharedObject_testSelfInjection() throws Exception {
-		ExternalResourceDescription resDesc = createExternalResourceDescription(
-				TestSharedResourceObject2.class, "http://dumm.my",
-				TestSharedResourceObject.PARAM_VALUE, TestSharedResourceObject.EXPECTED_VALUE);
-		bindExternalResource(resDesc, TestSharedResourceObject2.PARAM_RESOURCE, resDesc);
+    AnalysisEngineDescription aeDesc = saveLoad(createPrimitiveDescription(
+            TestAnalysisEngineWithResource.class, TestAnalysisEngineWithResource.PARAM_RESOURCE,
+            resDesc));
 
-		AnalysisEngineDescription aeDesc = saveLoad(createPrimitiveDescription(
-				TestAnalysisEngineWithSharedResourceObject.class,
-				TestAnalysisEngineWithSharedResourceObject.PARAM_RESOURCE, resDesc));
-		
-		dumpResourceConfiguration(aeDesc);
-		
-		AnalysisEngine ae = createPrimitive(aeDesc);
-		ae.process(ae.newCAS());
-	}
+    dumpResourceConfiguration(aeDesc);
 
-	public static class TestExternalResource2 extends TestExternalResource {
-		public final static String PARAM_RESOURCE = "resource2";
-		@ExternalResource(key = PARAM_RESOURCE)
-		private TestExternalResource resource;
+    AnalysisEngine ae = createPrimitive(aeDesc);
+    ae.process(ae.newCAS());
+  }
 
-		@Override
-		public void afterResourcesInitialized() {
-			System.out.println(getClass().getSimpleName()+".afterResourcesInitialized()");
-			// Ensure the External Resource is bound
-			assertNotNull(resource);
-			if (this != resource) {
-				resource.assertConfiguredOk();
-			}
-			assertConfiguredOk();
-		}
-	}
+  /**
+   * Test self-injection
+   */
+  @Test
+  public void resource_testDoubleSelfInjection() throws Exception {
+    ExternalResourceDescription resDesc = createExternalResourceDescription(
+            TestExternalResource2.class, TestExternalResource.PARAM_VALUE,
+            TestExternalResource.EXPECTED_VALUE);
+    bindExternalResource(resDesc, TestExternalResource2.PARAM_RESOURCE, resDesc);
 
-	public static class TestSharedResourceObject2 extends TestSharedResourceObject implements
-			ExternalResourceAware {
-		public final static String PARAM_RESOURCE = "resource2";
-		@ExternalResource(key = PARAM_RESOURCE)
-		private TestSharedResourceObject resource;
+    AnalysisEngineDescription aeDesc1 = saveLoad(createPrimitiveDescription(
+            TestAnalysisEngineWithResource.class, TestAnalysisEngineWithResource.PARAM_RESOURCE,
+            resDesc));
 
-		@ConfigurationParameter(name=ExternalResourceFactory.PARAM_RESOURCE_NAME)
-		private String resourceName;
+    AnalysisEngineDescription aeDesc2 = saveLoad(createPrimitiveDescription(
+            TestAnalysisEngineWithResource.class, TestAnalysisEngineWithResource.PARAM_RESOURCE,
+            resDesc));
 
-		public void afterResourcesInitialized() {
-			System.out.println(getClass().getSimpleName()+".afterResourcesInitialized()");
-			// Ensure the External Resource is bound
-			assertNotNull(resource);
-			if (this != resource) {
-				resource.assertConfiguredOk();
-			}
-			assertConfiguredOk();
-		}
+    dumpResourceConfiguration(aeDesc1);
+    dumpResourceConfiguration(aeDesc2);
 
-		public String getResourceName() {
-			return resourceName;
-		}
-	}
+    AnalysisEngine ae1 = createPrimitive(aeDesc1);
+    AnalysisEngine ae2 = createPrimitive(aeDesc2);
+    ae1.process(ae1.newCAS());
+    ae2.process(ae2.newCAS());
 
-	public static class TestAnalysisEngineWithResource extends CasAnnotator_ImplBase {
+    AnalysisEngine ae3 = createAggregate(createAggregateDescription(aeDesc1, aeDesc2));
+    ae3.process(ae3.newCAS());
+  }
 
-		public final static String PARAM_RESOURCE = "resource";
-		@ExternalResource(key = PARAM_RESOURCE)
-		private TestExternalResource resource;
-		
-		@Override
-		public void process(CAS aCAS) throws AnalysisEngineProcessException {
-			System.out.println(getClass().getSimpleName()+".process()");
-			assertNotNull(resource);
-			resource.assertConfiguredOk();
-		}
-	}
+  /**
+   * Test simple injection.
+   */
+  @Test
+  public void sharedObject_testInjection() throws Exception {
+    AnalysisEngineDescription aeDesc = saveLoad(createPrimitiveDescription(
+            TestAnalysisEngineWithSharedResourceObject.class,
+            TestAnalysisEngineWithSharedResourceObject.PARAM_RESOURCE,
+            createExternalResourceDescription(TestSharedResourceObject.class, "http://dumm.my",
+                    TestSharedResourceObject.PARAM_VALUE, TestSharedResourceObject.EXPECTED_VALUE)));
 
-	public static class TestAnalysisEngineWithSharedResourceObject extends CasAnnotator_ImplBase {
+    AnalysisEngine ae = createPrimitive(aeDesc);
+    ae.process(ae.newCAS());
+  }
 
-		public final static String PARAM_RESOURCE = "resource";
-		@ExternalResource(key = PARAM_RESOURCE)
-		private TestSharedResourceObject resource;
-		
-		@Override
-		public void process(CAS aCAS) throws AnalysisEngineProcessException {
-			System.out.println(getClass().getSimpleName()+".process()");
-			assertNotNull(resource);
-			resource.assertConfiguredOk();
-		}
-	}
+  /**
+   * Test shared simple injection.
+   */
+  @Test
+  public void sharedObject_testSharedInjection() throws Exception {
+    ExternalResourceDescription resDesc = createExternalResourceDescription(
+            TestSharedResourceObject.class, "http://dumm.my", TestSharedResourceObject.PARAM_VALUE,
+            TestSharedResourceObject.EXPECTED_VALUE);
 
-	AnalysisEngineDescription saveLoad(AnalysisEngineDescription aDesc)
-			throws InvalidXMLException, SAXException, IOException {
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		aDesc.toXML(bos);
-		return UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
-				new XMLInputSource(new ByteArrayInputStream(bos.toByteArray()), null));
-	}
-	
-	private void dumpResourceConfiguration(ResourceCreationSpecifier aSpec)
-	{
-		System.out.println("-- begin resource configuration");
-		for (ExternalResourceBinding b : aSpec.getResourceManagerConfiguration()
-				.getExternalResourceBindings()) {
-			System.out.printf("Binding : %s -> %s %n", b.getKey(), b.getResourceName());
-		}
+    AnalysisEngineDescription aeDesc1 = saveLoad(createPrimitiveDescription(
+            TestAnalysisEngineWithSharedResourceObject.class,
+            TestAnalysisEngineWithSharedResourceObject.PARAM_RESOURCE, resDesc));
 
-		for (ExternalResourceDescription r : aSpec.getResourceManagerConfiguration()
-				.getExternalResources()) {
-			if (r.getImplementationName() != null) {
-				System.out.printf("Resource: %s -> %s %n", r.getName(), r.getImplementationName());
-			}
-			else {
-				System.out
-						.printf("Resource: %s -> %s %n", r.getName(), ((CustomResourceSpecifier) r
-								.getResourceSpecifier()).getResourceClassName());
-			}
-		}
-		System.out.println("-- end resource configuration");
-	}
+    AnalysisEngineDescription aeDesc2 = saveLoad(createPrimitiveDescription(
+            TestAnalysisEngineWithSharedResourceObject.class,
+            TestAnalysisEngineWithSharedResourceObject.PARAM_RESOURCE, resDesc));
 
-	@Rule
-	public TestName name = new TestName();
+    dumpResourceConfiguration(aeDesc1);
+    dumpResourceConfiguration(aeDesc2);
 
-	@Before
-	public void printSeparator()
-	{
-		System.out.println("\n=== " + name.getMethodName() + " =====================");
-	}
+    AnalysisEngine ae1 = createPrimitive(aeDesc1);
+    AnalysisEngine ae2 = createPrimitive(aeDesc2);
+    ae1.process(ae1.newCAS());
+    ae2.process(ae2.newCAS());
+
+    AnalysisEngine ae3 = createAggregate(createAggregateDescription(aeDesc1, aeDesc2));
+    ae3.process(ae3.newCAS());
+  }
+
+  /**
+   * Test self-injection
+   */
+  @Test
+  public void sharedObject_testSelfInjection() throws Exception {
+    ExternalResourceDescription resDesc = createExternalResourceDescription(
+            TestSharedResourceObject2.class, "http://dumm.my",
+            TestSharedResourceObject.PARAM_VALUE, TestSharedResourceObject.EXPECTED_VALUE);
+    bindExternalResource(resDesc, TestSharedResourceObject2.PARAM_RESOURCE, resDesc);
+
+    AnalysisEngineDescription aeDesc = saveLoad(createPrimitiveDescription(
+            TestAnalysisEngineWithSharedResourceObject.class,
+            TestAnalysisEngineWithSharedResourceObject.PARAM_RESOURCE, resDesc));
+
+    dumpResourceConfiguration(aeDesc);
+
+    AnalysisEngine ae = createPrimitive(aeDesc);
+    ae.process(ae.newCAS());
+  }
+
+  public static class TestExternalResource2 extends TestExternalResource {
+    public final static String PARAM_RESOURCE = "resource2";
+
+    @ExternalResource(key = PARAM_RESOURCE)
+    private TestExternalResource resource;
+
+    @Override
+    public void afterResourcesInitialized() {
+      System.out.println(getClass().getSimpleName() + ".afterResourcesInitialized()");
+      // Ensure the External Resource is bound
+      assertNotNull(resource);
+      if (this != resource) {
+        resource.assertConfiguredOk();
+      }
+      assertConfiguredOk();
+    }
+  }
+
+  public static class TestSharedResourceObject2 extends TestSharedResourceObject implements
+          ExternalResourceAware {
+    public final static String PARAM_RESOURCE = "resource2";
+
+    @ExternalResource(key = PARAM_RESOURCE)
+    private TestSharedResourceObject resource;
+
+    @ConfigurationParameter(name = ExternalResourceFactory.PARAM_RESOURCE_NAME)
+    private String resourceName;
+
+    public void afterResourcesInitialized() {
+      System.out.println(getClass().getSimpleName() + ".afterResourcesInitialized()");
+      // Ensure the External Resource is bound
+      assertNotNull(resource);
+      if (this != resource) {
+        resource.assertConfiguredOk();
+      }
+      assertConfiguredOk();
+    }
+
+    public String getResourceName() {
+      return resourceName;
+    }
+  }
+
+  public static class TestAnalysisEngineWithResource extends CasAnnotator_ImplBase {
+
+    public final static String PARAM_RESOURCE = "resource";
+
+    @ExternalResource(key = PARAM_RESOURCE)
+    private TestExternalResource resource;
+
+    @Override
+    public void process(CAS aCAS) throws AnalysisEngineProcessException {
+      System.out.println(getClass().getSimpleName() + ".process()");
+      assertNotNull(resource);
+      resource.assertConfiguredOk();
+    }
+  }
+
+  public static class TestAnalysisEngineWithSharedResourceObject extends CasAnnotator_ImplBase {
+
+    public final static String PARAM_RESOURCE = "resource";
+
+    @ExternalResource(key = PARAM_RESOURCE)
+    private TestSharedResourceObject resource;
+
+    @Override
+    public void process(CAS aCAS) throws AnalysisEngineProcessException {
+      System.out.println(getClass().getSimpleName() + ".process()");
+      assertNotNull(resource);
+      resource.assertConfiguredOk();
+    }
+  }
+
+  AnalysisEngineDescription saveLoad(AnalysisEngineDescription aDesc) throws InvalidXMLException,
+          SAXException, IOException {
+    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    aDesc.toXML(bos);
+    return UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
+            new XMLInputSource(new ByteArrayInputStream(bos.toByteArray()), null));
+  }
+
+  private void dumpResourceConfiguration(ResourceCreationSpecifier aSpec) {
+    System.out.println("-- begin resource configuration");
+    for (ExternalResourceBinding b : aSpec.getResourceManagerConfiguration()
+            .getExternalResourceBindings()) {
+      System.out.printf("Binding : %s -> %s %n", b.getKey(), b.getResourceName());
+    }
+
+    for (ExternalResourceDescription r : aSpec.getResourceManagerConfiguration()
+            .getExternalResources()) {
+      if (r.getImplementationName() != null) {
+        System.out.printf("Resource: %s -> %s %n", r.getName(), r.getImplementationName());
+      } else {
+        System.out.printf("Resource: %s -> %s %n", r.getName(),
+                ((CustomResourceSpecifier) r.getResourceSpecifier()).getResourceClassName());
+      }
+    }
+    System.out.println("-- end resource configuration");
+  }
+
+  @Rule
+  public TestName name = new TestName();
+
+  @Before
+  public void printSeparator() {
+    System.out.println("\n=== " + name.getMethodName() + " =====================");
+  }
 }

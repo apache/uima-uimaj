@@ -32,41 +32,41 @@ import org.junit.Test;
 
 public class HideOutputTest {
 
-	@Test
-	public void testHideOutput() throws IOException {
-		// message that will be written to stdout and stderr
-		String className = this.getClass().getName();
-		String message = String.format("If you see this output, %s is failing\n", className);
+  @Test
+  public void testHideOutput() throws IOException {
+    // message that will be written to stdout and stderr
+    String className = this.getClass().getName();
+    String message = String.format("If you see this output, %s is failing\n", className);
 
-		// redirect stdout and stderr to streams we can read strings from
-		PrintStream oldOut = System.out;
-		PrintStream oldErr = System.err;
-		ByteArrayOutputStream stringOut = new ByteArrayOutputStream();
-		ByteArrayOutputStream stringErr = new ByteArrayOutputStream();
-		System.setOut(new PrintStream(stringOut));
-		System.setErr(new PrintStream(stringErr));
-		try {
-			// check that nothing is written to stdout or stderr while hidden
-			HideOutput ho = new HideOutput();
-			System.out.print(message);
-			System.err.print(message);
-			Assert.assertEquals("", stringOut.toString());
-			Assert.assertEquals("", stringErr.toString());
+    // redirect stdout and stderr to streams we can read strings from
+    PrintStream oldOut = System.out;
+    PrintStream oldErr = System.err;
+    ByteArrayOutputStream stringOut = new ByteArrayOutputStream();
+    ByteArrayOutputStream stringErr = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(stringOut));
+    System.setErr(new PrintStream(stringErr));
+    try {
+      // check that nothing is written to stdout or stderr while hidden
+      HideOutput ho = new HideOutput();
+      System.out.print(message);
+      System.err.print(message);
+      Assert.assertEquals("", stringOut.toString());
+      Assert.assertEquals("", stringErr.toString());
 
-			// check that data is again written to stdout and stderr after restoring
-			ho.restoreOutput();
-			System.out.print(message);
-			System.err.print(message);
-			Assert.assertEquals(message, stringOut.toString());
-			Assert.assertEquals(message, stringErr.toString());
-		}
-		// restore stdout and stderr at the end of the test
-		finally {
-			System.setOut(oldOut);
-			System.setErr(oldErr);
-			stringOut.close();
-			stringErr.close();
-		}
+      // check that data is again written to stdout and stderr after restoring
+      ho.restoreOutput();
+      System.out.print(message);
+      System.err.print(message);
+      Assert.assertEquals(message, stringOut.toString());
+      Assert.assertEquals(message, stringErr.toString());
+    }
+    // restore stdout and stderr at the end of the test
+    finally {
+      System.setOut(oldOut);
+      System.setErr(oldErr);
+      stringOut.close();
+      stringErr.close();
+    }
 
-	}
+  }
 }

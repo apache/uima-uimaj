@@ -24,5 +24,5 @@ package org.apache.uima.fit.examples.tutorial.ex6;
  */
 
 public interface StringMapResource {
-	String get(String aKey);
+  String get(String aKey);
 }

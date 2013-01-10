@@ -44,218 +44,212 @@ import org.apache.uima.util.CasCreationUtils;
  *
  */
 public final class SimplePipeline {
-	private SimplePipeline() {
-		// This class is not meant to be instantiated
-	}
+  private SimplePipeline() {
+    // This class is not meant to be instantiated
+  }
 
-	/**
-	 * Run the CollectionReader and AnalysisEngines as a pipeline. After processing all CASes
-	 * provided by the reader, the method calls {@link AnalysisEngine#collectionProcessComplete()
-	 * collectionProcessComplete()} on the engines and {@link Resource#destroy() destroy()} on all
-	 * engines.
-	 *
-	 * @param reader
-	 *            The CollectionReader that loads the documents into the CAS.
-	 * @param descs
-	 *            Primitive AnalysisEngineDescriptions that process the CAS, in order. If you have a
-	 *            mix of primitive and aggregate engines, then please create the AnalysisEngines
-	 *            yourself and call the other runPipeline method.
-	 */
-	public static void runPipeline(final CollectionReader reader,
-			final AnalysisEngineDescription... descs) throws UIMAException, IOException {
-		// Create AAE
-		final AnalysisEngineDescription aaeDesc = createAggregateDescription(descs);
+  /**
+   * Run the CollectionReader and AnalysisEngines as a pipeline. After processing all CASes provided
+   * by the reader, the method calls {@link AnalysisEngine#collectionProcessComplete()
+   * collectionProcessComplete()} on the engines and {@link Resource#destroy() destroy()} on all
+   * engines.
+   * 
+   * @param reader
+   *          The CollectionReader that loads the documents into the CAS.
+   * @param descs
+   *          Primitive AnalysisEngineDescriptions that process the CAS, in order. If you have a mix
+   *          of primitive and aggregate engines, then please create the AnalysisEngines yourself
+   *          and call the other runPipeline method.
+   */
+  public static void runPipeline(final CollectionReader reader,
+          final AnalysisEngineDescription... descs) throws UIMAException, IOException {
+    // Create AAE
+    final AnalysisEngineDescription aaeDesc = createAggregateDescription(descs);
 
-		// Instantiate AAE
-		final AnalysisEngine aae = createAggregate(aaeDesc);
+    // Instantiate AAE
+    final AnalysisEngine aae = createAggregate(aaeDesc);
 
-		// Create CAS from merged metadata
-		final CAS cas = CasCreationUtils.createCas(asList(reader.getMetaData(), aae.getMetaData()));
-		
-		try {
-			// Process
-			while (reader.hasNext()) {
-				reader.getNext(cas);
-				aae.process(cas);
-				cas.reset();
-			}
-			
-			// Signal end of processing
-			aae.collectionProcessComplete();
-		}
-		finally {
-			// Destroy
-			aae.destroy();
-		}
-	}
+    // Create CAS from merged metadata
+    final CAS cas = CasCreationUtils.createCas(asList(reader.getMetaData(), aae.getMetaData()));
 
-	/**
-	 * Run the CollectionReader and AnalysisEngines as a pipeline. After processing all CASes
-	 * provided by the reader, the method calls {@link AnalysisEngine#collectionProcessComplete()
-	 * collectionProcessComplete()} on the engines, {@link CollectionReader#close() close()} on the
-	 * reader and {@link Resource#destroy() destroy()} on the reader and all engines.
-	 *
-	 * @param readerDesc
-	 *            The CollectionReader that loads the documents into the CAS.
-	 * @param descs
-	 *            Primitive AnalysisEngineDescriptions that process the CAS, in order. If you have a
-	 *            mix of primitive and aggregate engines, then please create the AnalysisEngines
-	 *            yourself and call the other runPipeline method.
-	 */
-	public static void runPipeline(final CollectionReaderDescription readerDesc,
-			final AnalysisEngineDescription... descs) throws UIMAException, IOException {
-		// Create the components
-		final CollectionReader reader = createCollectionReader(readerDesc);
+    try {
+      // Process
+      while (reader.hasNext()) {
+        reader.getNext(cas);
+        aae.process(cas);
+        cas.reset();
+      }
 
-		try {
-			// Run the pipeline
-			runPipeline(reader, descs);
-		}
-		finally {
-			close(reader);
-			destroy(reader);
-		}
-	}
+      // Signal end of processing
+      aae.collectionProcessComplete();
+    } finally {
+      // Destroy
+      aae.destroy();
+    }
+  }
 
-	/**
-	 * Provides a simple way to run a pipeline for a given collection reader and sequence of
-	 * analysis engines. After processing all CASes provided by the reader, the method calls
-	 * {@link AnalysisEngine#collectionProcessComplete() collectionProcessComplete()} on the
-	 * engines.
-	 *
-	 * @param reader
-	 *            a collection reader
-	 * @param engines
-	 *            a sequence of analysis engines
-	 */
-	public static void runPipeline(final CollectionReader reader, final AnalysisEngine... engines)
-			throws UIMAException, IOException {
-		final List<ResourceMetaData> metaData = new ArrayList<ResourceMetaData>();
-		metaData.add(reader.getMetaData());
-		for (AnalysisEngine engine : engines) {
-			metaData.add(engine.getMetaData());
-		}
+  /**
+   * Run the CollectionReader and AnalysisEngines as a pipeline. After processing all CASes provided
+   * by the reader, the method calls {@link AnalysisEngine#collectionProcessComplete()
+   * collectionProcessComplete()} on the engines, {@link CollectionReader#close() close()} on the
+   * reader and {@link Resource#destroy() destroy()} on the reader and all engines.
+   * 
+   * @param readerDesc
+   *          The CollectionReader that loads the documents into the CAS.
+   * @param descs
+   *          Primitive AnalysisEngineDescriptions that process the CAS, in order. If you have a mix
+   *          of primitive and aggregate engines, then please create the AnalysisEngines yourself
+   *          and call the other runPipeline method.
+   */
+  public static void runPipeline(final CollectionReaderDescription readerDesc,
+          final AnalysisEngineDescription... descs) throws UIMAException, IOException {
+    // Create the components
+    final CollectionReader reader = createCollectionReader(readerDesc);
 
-		final CAS cas = CasCreationUtils.createCas(metaData);
-		while (reader.hasNext()) {
-			reader.getNext(cas);
-			runPipeline(cas, engines);
-			cas.reset();
-		}
+    try {
+      // Run the pipeline
+      runPipeline(reader, descs);
+    } finally {
+      close(reader);
+      destroy(reader);
+    }
+  }
 
-		collectionProcessComplete(engines);
-	}
+  /**
+   * Provides a simple way to run a pipeline for a given collection reader and sequence of analysis
+   * engines. After processing all CASes provided by the reader, the method calls
+   * {@link AnalysisEngine#collectionProcessComplete() collectionProcessComplete()} on the engines.
+   * 
+   * @param reader
+   *          a collection reader
+   * @param engines
+   *          a sequence of analysis engines
+   */
+  public static void runPipeline(final CollectionReader reader, final AnalysisEngine... engines)
+          throws UIMAException, IOException {
+    final List<ResourceMetaData> metaData = new ArrayList<ResourceMetaData>();
+    metaData.add(reader.getMetaData());
+    for (AnalysisEngine engine : engines) {
+      metaData.add(engine.getMetaData());
+    }
 
-	/**
-	 * Run a sequence of {@link AnalysisEngine analysis engines} over a {@link JCas}. The result of
-	 * the analysis can be read from the JCas.
-	 *
-	 * @param aCas
-	 *            the CAS to process
-	 * @param aDescs
-	 *            a sequence of analysis engines to run on the jCas
-	 */
-	public static void runPipeline(final CAS aCas, final AnalysisEngineDescription... aDescs)
-			throws UIMAException, IOException {
-		// Create aggregate AE
-		final AnalysisEngineDescription aaeDesc = createAggregateDescription(aDescs);
+    final CAS cas = CasCreationUtils.createCas(metaData);
+    while (reader.hasNext()) {
+      reader.getNext(cas);
+      runPipeline(cas, engines);
+      cas.reset();
+    }
 
-		// Instantiate
-		final AnalysisEngine aae = createAggregate(aaeDesc);
-		try {
-			// Process
-			aae.process(aCas);
-			
-			// Signal end of processing
-			aae.collectionProcessComplete();
-		}
-		finally {
-			// Destroy
-			aae.destroy();
-		}
-	}
+    collectionProcessComplete(engines);
+  }
 
-	/**
-	 * Run a sequence of {@link AnalysisEngine analysis engines} over a {@link JCas}. The result of
-	 * the analysis can be read from the JCas.
-	 *
-	 * @param jCas
-	 *            the jCas to process
-	 * @param descs
-	 *            a sequence of analysis engines to run on the jCas
-	 */
-	public static void runPipeline(final JCas jCas, final AnalysisEngineDescription... descs)
-			throws UIMAException, IOException {
-		runPipeline(jCas.getCas(), descs);
-	}
+  /**
+   * Run a sequence of {@link AnalysisEngine analysis engines} over a {@link JCas}. The result of
+   * the analysis can be read from the JCas.
+   * 
+   * @param aCas
+   *          the CAS to process
+   * @param aDescs
+   *          a sequence of analysis engines to run on the jCas
+   */
+  public static void runPipeline(final CAS aCas, final AnalysisEngineDescription... aDescs)
+          throws UIMAException, IOException {
+    // Create aggregate AE
+    final AnalysisEngineDescription aaeDesc = createAggregateDescription(aDescs);
 
-	/**
-	 * Run a sequence of {@link AnalysisEngine analysis engines} over a {@link JCas}. This method
-	 * does not {@link AnalysisEngine#destroy() destroy} the engines or send them other events like
-	 * {@link AnalysisEngine#collectionProcessComplete()}. This is left to the caller.
-	 *
-	 * @param jCas
-	 *            the jCas to process
-	 * @param engines
-	 *            a sequence of analysis engines to run on the jCas
-	 */
-	public static void runPipeline(final JCas jCas, final AnalysisEngine... engines)
-			throws UIMAException, IOException {
-		for (AnalysisEngine engine : engines) {
-			engine.process(jCas);
-		}
-	}
+    // Instantiate
+    final AnalysisEngine aae = createAggregate(aaeDesc);
+    try {
+      // Process
+      aae.process(aCas);
 
-	/**
-	 * Run a sequence of {@link AnalysisEngine analysis engines} over a {@link CAS}. This method
-	 * does not {@link AnalysisEngine#destroy() destroy} the engines or send them other events like
-	 * {@link AnalysisEngine#collectionProcessComplete()}. This is left to the caller.
-	 *
-	 * @param cas
-	 *            the CAS to process
-	 * @param engines
-	 *            a sequence of analysis engines to run on the jCas
-	 */
-	public static void runPipeline(final CAS cas, final AnalysisEngine... engines)
-			throws UIMAException, IOException {
-		for (AnalysisEngine engine : engines) {
-			engine.process(cas);
-		}
-	}
+      // Signal end of processing
+      aae.collectionProcessComplete();
+    } finally {
+      // Destroy
+      aae.destroy();
+    }
+  }
 
-	/**
-	 * Notify a set of {@link AnalysisEngine analysis engines} that the collection process is complete.
-	 */
-	private static void collectionProcessComplete(final AnalysisEngine... engines)
-			throws AnalysisEngineProcessException {
-		for (AnalysisEngine e : engines) {
-			e.collectionProcessComplete();
-		}
-	}
+  /**
+   * Run a sequence of {@link AnalysisEngine analysis engines} over a {@link JCas}. The result of
+   * the analysis can be read from the JCas.
+   * 
+   * @param jCas
+   *          the jCas to process
+   * @param descs
+   *          a sequence of analysis engines to run on the jCas
+   */
+  public static void runPipeline(final JCas jCas, final AnalysisEngineDescription... descs)
+          throws UIMAException, IOException {
+    runPipeline(jCas.getCas(), descs);
+  }
 
-	/**
-	 * Destroy a set of {@link Resource resources}.
-	 */
-	private static void destroy(final Resource... resources)
-	{
-		for (Resource r : resources) {
-			if (r != null) {
-				r.destroy();
-			}
-		}
-	}
-	
-	private static void close(final BaseCollectionReader aReader)
-	{
-		if (aReader == null) {
-			return;
-		}
-		
-		try {
-			aReader.close();
-		}
-		catch (IOException e) {
-			// Ignore.
-		}
-	}
+  /**
+   * Run a sequence of {@link AnalysisEngine analysis engines} over a {@link JCas}. This method does
+   * not {@link AnalysisEngine#destroy() destroy} the engines or send them other events like
+   * {@link AnalysisEngine#collectionProcessComplete()}. This is left to the caller.
+   * 
+   * @param jCas
+   *          the jCas to process
+   * @param engines
+   *          a sequence of analysis engines to run on the jCas
+   */
+  public static void runPipeline(final JCas jCas, final AnalysisEngine... engines)
+          throws UIMAException, IOException {
+    for (AnalysisEngine engine : engines) {
+      engine.process(jCas);
+    }
+  }
+
+  /**
+   * Run a sequence of {@link AnalysisEngine analysis engines} over a {@link CAS}. This method does
+   * not {@link AnalysisEngine#destroy() destroy} the engines or send them other events like
+   * {@link AnalysisEngine#collectionProcessComplete()}. This is left to the caller.
+   * 
+   * @param cas
+   *          the CAS to process
+   * @param engines
+   *          a sequence of analysis engines to run on the jCas
+   */
+  public static void runPipeline(final CAS cas, final AnalysisEngine... engines)
+          throws UIMAException, IOException {
+    for (AnalysisEngine engine : engines) {
+      engine.process(cas);
+    }
+  }
+
+  /**
+   * Notify a set of {@link AnalysisEngine analysis engines} that the collection process is
+   * complete.
+   */
+  private static void collectionProcessComplete(final AnalysisEngine... engines)
+          throws AnalysisEngineProcessException {
+    for (AnalysisEngine e : engines) {
+      e.collectionProcessComplete();
+    }
+  }
+
+  /**
+   * Destroy a set of {@link Resource resources}.
+   */
+  private static void destroy(final Resource... resources) {
+    for (Resource r : resources) {
+      if (r != null) {
+        r.destroy();
+      }
+    }
+  }
+
+  private static void close(final BaseCollectionReader aReader) {
+    if (aReader == null) {
+      return;
+    }
+
+    try {
+      aReader.close();
+    } catch (IOException e) {
+      // Ignore.
+    }
+  }
 }

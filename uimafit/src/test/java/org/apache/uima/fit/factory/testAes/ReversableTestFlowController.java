@@ -38,47 +38,49 @@ import org.apache.uima.jcas.JCas;
 
 /**
  * 
- *         NOTE: this class extends org.uimafit.component.JCasFlowController_ImplBase
+ * NOTE: this class extends org.uimafit.component.JCasFlowController_ImplBase
  */
 
-public class ReversableTestFlowController extends org.apache.uima.fit.component.JCasFlowController_ImplBase {
+public class ReversableTestFlowController extends
+        org.apache.uima.fit.component.JCasFlowController_ImplBase {
 
-	public static final String PARAM_REVERSE_ORDER = ConfigurationParameterFactory
-			.createConfigurationParameterName(ReversableTestFlowController.class, "reverseOrder");
-	@ConfigurationParameter
-	private boolean reverseOrder = false;
+  public static final String PARAM_REVERSE_ORDER = ConfigurationParameterFactory
+          .createConfigurationParameterName(ReversableTestFlowController.class, "reverseOrder");
 
-	@Override
-	public Flow computeFlow(JCas jCas) throws AnalysisEngineProcessException {
-		return new ReversableFlow(getContext(), reverseOrder);
-	}
+  @ConfigurationParameter
+  private boolean reverseOrder = false;
 
-	private static class ReversableFlow extends JCasFlow_ImplBase {
-		private List<String> keys = new ArrayList<String>();
+  @Override
+  public Flow computeFlow(JCas jCas) throws AnalysisEngineProcessException {
+    return new ReversableFlow(getContext(), reverseOrder);
+  }
 
-		private int i = 0;
+  private static class ReversableFlow extends JCasFlow_ImplBase {
+    private List<String> keys = new ArrayList<String>();
 
-		public ReversableFlow(FlowControllerContext context, boolean reverseOrder) {
-			Iterator<Map.Entry<String, AnalysisEngineMetaData>> iterator = context
-					.getAnalysisEngineMetaDataMap().entrySet().iterator();
-			while (iterator.hasNext()) {
-				Map.Entry<String, AnalysisEngineMetaData> entry = iterator.next();
-				String key = entry.getKey();
-				keys.add(key);
-			}
-			Collections.sort(keys);
-			if (reverseOrder) {
-				Collections.reverse(keys);
-			}
-		}
+    private int i = 0;
 
-		public Step next() throws AnalysisEngineProcessException {
-			if (i < keys.size()) {
-				return new SimpleStep(keys.get(i++));
-			}
+    public ReversableFlow(FlowControllerContext context, boolean reverseOrder) {
+      Iterator<Map.Entry<String, AnalysisEngineMetaData>> iterator = context
+              .getAnalysisEngineMetaDataMap().entrySet().iterator();
+      while (iterator.hasNext()) {
+        Map.Entry<String, AnalysisEngineMetaData> entry = iterator.next();
+        String key = entry.getKey();
+        keys.add(key);
+      }
+      Collections.sort(keys);
+      if (reverseOrder) {
+        Collections.reverse(keys);
+      }
+    }
 
-			return new FinalStep();
-		}
-	}
+    public Step next() throws AnalysisEngineProcessException {
+      if (i < keys.size()) {
+        return new SimpleStep(keys.get(i++));
+      }
+
+      return new FinalStep();
+    }
+  }
 
 }

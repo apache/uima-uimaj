@@ -35,50 +35,51 @@ import org.apache.uima.resource.metadata.FsIndexKeyDescription;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface FsIndex {
-	/**
-	 * @see FsIndexDescription#KIND_SORTED
-	 */
-	public static final String KIND_SORTED = FsIndexDescription.KIND_SORTED;
+  /**
+   * @see FsIndexDescription#KIND_SORTED
+   */
+  public static final String KIND_SORTED = FsIndexDescription.KIND_SORTED;
 
-	/**
-	 * @see FsIndexDescription#KIND_SET
-	 */
-	public static final String KIND_SET = FsIndexDescription.KIND_SET;
+  /**
+   * @see FsIndexDescription#KIND_SET
+   */
+  public static final String KIND_SET = FsIndexDescription.KIND_SET;
 
-	/**
-	 * @see FsIndexDescription#KIND_BAG
-	 */
-	public static final String KIND_BAG = FsIndexDescription.KIND_BAG;
+  /**
+   * @see FsIndexDescription#KIND_BAG
+   */
+  public static final String KIND_BAG = FsIndexDescription.KIND_BAG;
 
-	/**
-	 * @see FsIndexDescription#getLabel()
-	 */
-	String label();
+  /**
+   * @see FsIndexDescription#getLabel()
+   */
+  String label();
 
-	/**
-	 * @see FsIndexDescription#getTypeName()
-	 */
-	String typeName() default NO_NAME_TYPE_SET;
+  /**
+   * @see FsIndexDescription#getTypeName()
+   */
+  String typeName() default NO_NAME_TYPE_SET;
 
-	Class<? extends TOP> type() default NoClassSet.class;
+  Class<? extends TOP> type() default NoClassSet.class;
 
-	/**
-	 * @see FsIndexDescription#getKind()
-	 */
-	String kind() default KIND_BAG;
+  /**
+   * @see FsIndexDescription#getKind()
+   */
+  String kind() default KIND_BAG;
 
-	/**
-	 * @see FsIndexDescription#getKeys()
-	 */
-	FsIndexKey[] keys() default {};
+  /**
+   * @see FsIndexDescription#getKeys()
+   */
+  FsIndexKey[] keys() default {};
 
-	/**
-	 * @see FsIndexKeyDescription#isTypePriority()
-	 */
-	boolean typePriorities() default true;
+  /**
+   * @see FsIndexKeyDescription#isTypePriority()
+   */
+  boolean typePriorities() default true;
 
-	public static final class NoClassSet extends TOP { /* Nothing */ }
+  public static final class NoClassSet extends TOP { /* Nothing */
+  }
 
-	public static final String NO_NAME_TYPE_SET = "org.uimafit.descriptor.FsIndex.NO_NAME_TYPE_SET";
+  public static final String NO_NAME_TYPE_SET = "org.uimafit.descriptor.FsIndex.NO_NAME_TYPE_SET";
 
 }

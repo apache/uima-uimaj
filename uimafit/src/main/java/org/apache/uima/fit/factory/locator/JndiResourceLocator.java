@@ -31,34 +31,34 @@ import org.apache.uima.resource.ResourceSpecifier;
 
 /**
  * Locate an object via JNDI.
- *
+ * 
  */
 public class JndiResourceLocator extends Resource_ImplBase implements ExternalResourceLocator {
-	public static final String PARAM_NAME = "Name";
-	@ConfigurationParameter(name = PARAM_NAME, mandatory = true)
-	private String jndiName;
+  public static final String PARAM_NAME = "Name";
 
-	private Object resource;
+  @ConfigurationParameter(name = PARAM_NAME, mandatory = true)
+  private String jndiName;
 
-	@SuppressWarnings("rawtypes")
-	@Override
-	public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
-			throws ResourceInitializationException {
-		if (!super.initialize(aSpecifier, aAdditionalParams)) {
-			return false;
-		}
+  private Object resource;
 
-		try {
-			InitialContext ctx = new InitialContext();
-			resource = ctx.lookup(jndiName);
-		}
-		catch (NamingException e) {
-			throw new ResourceInitializationException(e);
-		}
-		return true;
-	}
+  @SuppressWarnings("rawtypes")
+  @Override
+  public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
+          throws ResourceInitializationException {
+    if (!super.initialize(aSpecifier, aAdditionalParams)) {
+      return false;
+    }
 
-	public Object getResource() {
-		return resource;
-	}
+    try {
+      InitialContext ctx = new InitialContext();
+      resource = ctx.lookup(jndiName);
+    } catch (NamingException e) {
+      throw new ResourceInitializationException(e);
+    }
+    return true;
+  }
+
+  public Object getResource() {
+    return resource;
+  }
 }

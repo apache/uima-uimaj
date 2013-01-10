@@ -28,11 +28,11 @@ import org.apache.uima.jcas.JCas;
 
 public class FlowAE1 extends JCasAnnotator_ImplBase {
 
-	@Override
-	public void process(JCas jCas) throws AnalysisEngineProcessException {
-		String analyzedText = TypeSystemUtil.getAnalyzedText(jCas);
-		String parentheticalText = analyzedText.replaceAll("[aeiou]+", "($0)");
-		TypeSystemUtil.setAnalyzedText(jCas, parentheticalText);
-	}
+  @Override
+  public void process(JCas jCas) throws AnalysisEngineProcessException {
+    String analyzedText = TypeSystemUtil.getAnalyzedText(jCas);
+    String parentheticalText = analyzedText.replaceAll("[aeiou]+", "($0)");
+    TypeSystemUtil.setAnalyzedText(jCas, parentheticalText);
+  }
 
 }

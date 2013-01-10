@@ -46,7 +46,7 @@ import org.apache.uima.fit.factory.ConfigurationParameterFactory;
  * <li>all other types that have a constructor that takes a string as the single argument, e.g.:
  * {@link File}, {@link URL}, {@link URI} ...</li>
  * </ul>
- *
+ * 
  * @see ConfigurationParameterInitializer
  */
 
@@ -54,54 +54,54 @@ import org.apache.uima.fit.factory.ConfigurationParameterFactory;
 @Target(ElementType.FIELD)
 public @interface ConfigurationParameter {
 
-	/**
-	 * the default value for name if none is given.
-	 */
-	public static final String USE_FIELD_NAME = "org.uimafit.descriptor.ConfigurationParameter.USE_FIELD_NAME";
+  /**
+   * the default value for name if none is given.
+   */
+  public static final String USE_FIELD_NAME = "org.uimafit.descriptor.ConfigurationParameter.USE_FIELD_NAME";
 
-	/**
-	 * If you do not specify a name then the default name will be given by {@link #USE_FIELD_NAME}
-	 * will be the default name. This tells ConfigurationParameterFactory to use the name of the
-	 * annotated field as the name of the configuration parameter. The exact name that is used is
-	 * determined by the method
-	 * {@link ConfigurationParameterFactory#getConfigurationParameterName(java.lang.reflect.Field)}
-	 */
-	String name() default USE_FIELD_NAME;
+  /**
+   * If you do not specify a name then the default name will be given by {@link #USE_FIELD_NAME}
+   * will be the default name. This tells ConfigurationParameterFactory to use the name of the
+   * annotated field as the name of the configuration parameter. The exact name that is used is
+   * determined by the method
+   * {@link ConfigurationParameterFactory#getConfigurationParameterName(java.lang.reflect.Field)}
+   */
+  String name() default USE_FIELD_NAME;
 
-	/**
-	 * A description for the configuration parameter
-	 */
-	String description() default "";
+  /**
+   * A description for the configuration parameter
+   */
+  String description() default "";
 
-	/**
-	 * specifies whether this configuration parameter is mandatory - i.e. the value must be provided
-	 */
-	boolean mandatory() default false;
+  /**
+   * specifies whether this configuration parameter is mandatory - i.e. the value must be provided
+   */
+  boolean mandatory() default false;
 
-	/**
-	 * What can be the value should correspond with the type of the field that is annotated. If for
-	 * example, the field is a String, then the default value can be any string - e.g. "asdf". If
-	 * the field is a boolean, then the default value can be "true" for true or any other string for
-	 * false. If the field is an integer, then the default value can be any string that
-	 * Integer.parseInt() can successfully parse. Remember that just because the default value is a
-	 * string here that you should give an actual integer (not an integer parseable string) value
-	 * when setting the parameter via e.g. AnalysisEngineFactory.createPrimitiveDescription(). If
-	 * the field is a float, then the default value can be any string that Float.parseFloat() can
-	 * successfully parse. Remember that just because the default value is a string here that you
-	 * should give an actual float value (not a float parseable string) when setting the parameter
-	 * via e.g. AnalysisEngineFactory.createPrimitiveDescription().
-	 * <p>
-	 * If the field is multiValued, then the value should look something like this '{"value1",
-	 * "value2"}'
-	 * <p>
-	 * If you want a field to be initialized with a null value, then do not specify a default value
-	 * or specify the value given by the field {@link #NO_DEFAULT_VALUE}
-	 */
-	String[] defaultValue() default NO_DEFAULT_VALUE;
+  /**
+   * What can be the value should correspond with the type of the field that is annotated. If for
+   * example, the field is a String, then the default value can be any string - e.g. "asdf". If the
+   * field is a boolean, then the default value can be "true" for true or any other string for
+   * false. If the field is an integer, then the default value can be any string that
+   * Integer.parseInt() can successfully parse. Remember that just because the default value is a
+   * string here that you should give an actual integer (not an integer parseable string) value when
+   * setting the parameter via e.g. AnalysisEngineFactory.createPrimitiveDescription(). If the field
+   * is a float, then the default value can be any string that Float.parseFloat() can successfully
+   * parse. Remember that just because the default value is a string here that you should give an
+   * actual float value (not a float parseable string) when setting the parameter via e.g.
+   * AnalysisEngineFactory.createPrimitiveDescription().
+   * <p>
+   * If the field is multiValued, then the value should look something like this '{"value1",
+   * "value2"}'
+   * <p>
+   * If you want a field to be initialized with a null value, then do not specify a default value or
+   * specify the value given by the field {@link #NO_DEFAULT_VALUE}
+   */
+  String[] defaultValue() default NO_DEFAULT_VALUE;
 
-	/**
-	 * Tells the ConfigurationParameterFactory that no default value has been provided
-	 */
-	public static final String NO_DEFAULT_VALUE = "org.uimafit.descriptor.ConfigurationParameter.NO_DEFAULT_VALUE";
+  /**
+   * Tells the ConfigurationParameterFactory that no default value has been provided
+   */
+  public static final String NO_DEFAULT_VALUE = "org.uimafit.descriptor.ConfigurationParameter.NO_DEFAULT_VALUE";
 
 }

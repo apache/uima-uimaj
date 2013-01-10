@@ -17,7 +17,6 @@
  * under the License.
  */
 
-
 package org.apache.uima.fit.spring.factory;
 
 import static org.apache.uima.fit.spring.util.ResourceInitializationUtil.initResource;
@@ -33,24 +32,19 @@ import org.springframework.context.ApplicationContextAware;
 
 /**
  */
-public class CustomResourceFactory_impl
-	extends org.apache.uima.impl.CustomResourceFactory_impl
-	implements ApplicationContextAware
-{
-	private ApplicationContext applicationContext;
+public class CustomResourceFactory_impl extends org.apache.uima.impl.CustomResourceFactory_impl
+        implements ApplicationContextAware {
+  private ApplicationContext applicationContext;
 
-	public void setApplicationContext(ApplicationContext aApplicationContext)
-		throws BeansException
-	{
-		applicationContext = aApplicationContext;
-	}
+  public void setApplicationContext(ApplicationContext aApplicationContext) throws BeansException {
+    applicationContext = aApplicationContext;
+  }
 
-	@Override
-	public Resource produceResource(Class<? extends Resource> aResourceClass,
-			ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
-		throws ResourceInitializationException
-	{
-		Resource resource = super.produceResource(aResourceClass, aSpecifier, aAdditionalParams);
-		return initResource(resource, applicationContext);
-	}
+  @Override
+  public Resource produceResource(Class<? extends Resource> aResourceClass,
+          ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
+          throws ResourceInitializationException {
+    Resource resource = super.produceResource(aResourceClass, aSpecifier, aAdditionalParams);
+    return initResource(resource, applicationContext);
+  }
 }

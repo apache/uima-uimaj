@@ -17,7 +17,6 @@
  * under the License.
  */
 
-
 package org.apache.uima.fit.descriptor;
 
 import java.lang.annotation.ElementType;
@@ -34,25 +33,25 @@ import org.apache.uima.resource.Resource;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface ExternalResource {
-	/**
-	 * The key to which external resources bind to. If no key is set, the class name of the
-	 * annotated field will be used.
-	 * 
-	 * @return the key;
-	 */
-	String key() default "";
+  /**
+   * The key to which external resources bind to. If no key is set, the class name of the annotated
+   * field will be used.
+   * 
+   * @return the key;
+   */
+  String key() default "";
 
-	/**
-	 * The interface that external resources need to implement. Normally this has to be the type of
-	 * the field, but if {@link ExternalResourceLocator}s are used, this should be set to
-	 * {@link ExternalResourceLocator} or to a derived interface.
-	 * 
-	 * @return the required interface.
-	 */
-	Class<? extends Resource> api() default Resource.class;
+  /**
+   * The interface that external resources need to implement. Normally this has to be the type of
+   * the field, but if {@link ExternalResourceLocator}s are used, this should be set to
+   * {@link ExternalResourceLocator} or to a derived interface.
+   * 
+   * @return the required interface.
+   */
+  Class<? extends Resource> api() default Resource.class;
 
-	/**
-	 * Determines if this external resource is mandatory.
-	 */
-	boolean mandatory() default true;
+  /**
+   * Determines if this external resource is mandatory.
+   */
+  boolean mandatory() default true;
 }

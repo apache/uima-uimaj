@@ -28,21 +28,21 @@ import org.apache.uima.resource.ResourceInitializationException;
  */
 
 public abstract class CasFlowController_ImplBase extends
-		org.apache.uima.flow.CasFlowController_ImplBase {
-	private ExtendedLogger logger;
-	
-	public ExtendedLogger getLogger() {
-		if (logger == null) {
-			logger = new ExtendedLogger(getContext());
-		}
-		return logger;
-	}
-	
-	@Override
-	public void initialize(final FlowControllerContext context)
-			throws ResourceInitializationException {
-		super.initialize(context);
-		ConfigurationParameterInitializer.initialize(this, context);
-		ExternalResourceInitializer.initialize(context, this);
-	}
+        org.apache.uima.flow.CasFlowController_ImplBase {
+  private ExtendedLogger logger;
+
+  public ExtendedLogger getLogger() {
+    if (logger == null) {
+      logger = new ExtendedLogger(getContext());
+    }
+    return logger;
+  }
+
+  @Override
+  public void initialize(final FlowControllerContext context)
+          throws ResourceInitializationException {
+    super.initialize(context);
+    ConfigurationParameterInitializer.initialize(this, context);
+    ExternalResourceInitializer.initialize(context, this);
+  }
 }

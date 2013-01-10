@@ -39,22 +39,21 @@ import org.apache.uima.jcas.JCas;
 @SofaCapability(inputSofas = { VIEW1, VIEW2 })
 public class SentenceAndTokenCopier extends JCasAnnotator_ImplBase {
 
-	@Override
-	public void process(JCas jCas) throws AnalysisEngineProcessException {
-		try {
-			JCas view1 = jCas.getView(VIEW1);
-			JCas view2 = jCas.getView(VIEW2);
+  @Override
+  public void process(JCas jCas) throws AnalysisEngineProcessException {
+    try {
+      JCas view1 = jCas.getView(VIEW1);
+      JCas view2 = jCas.getView(VIEW2);
 
-			for (Token token1 : select(view1, Token.class)) {
-				new Token(view2, token1.getBegin(), token1.getEnd()).addToIndexes();
-			}
+      for (Token token1 : select(view1, Token.class)) {
+        new Token(view2, token1.getBegin(), token1.getEnd()).addToIndexes();
+      }
 
-			for (Sentence sentence1 : select(view1, Sentence.class)) {
-				new Sentence(view2, sentence1.getBegin(), sentence1.getEnd()).addToIndexes();
-			}
-		}
-		catch (CASException ce) {
-			throw new AnalysisEngineProcessException(ce);
-		}
-	}
+      for (Sentence sentence1 : select(view1, Sentence.class)) {
+        new Sentence(view2, sentence1.getBegin(), sentence1.getEnd()).addToIndexes();
+      }
+    } catch (CASException ce) {
+      throw new AnalysisEngineProcessException(ce);
+    }
+  }
 }

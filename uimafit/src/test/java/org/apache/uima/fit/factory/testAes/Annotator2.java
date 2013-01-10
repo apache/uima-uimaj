@@ -32,34 +32,32 @@ import org.apache.uima.jcas.JCas;
  */
 
 @SofaCapability(inputSofas = { CAS.NAME_DEFAULT_SOFA, ViewNames.PARENTHESES_VIEW }, outputSofas = {
-		ViewNames.SORTED_VIEW, ViewNames.SORTED_PARENTHESES_VIEW })
+    ViewNames.SORTED_VIEW, ViewNames.SORTED_PARENTHESES_VIEW })
 public class Annotator2 extends JCasAnnotator_ImplBase {
 
-	@Override
-	public void process(JCas jCas) throws AnalysisEngineProcessException {
-		try {
-			JCas sortedView = ViewCreatorAnnotator.createViewSafely(jCas, ViewNames.SORTED_VIEW);
-			jCas = jCas.getView(CAS.NAME_DEFAULT_SOFA);
-			String initialText = jCas.getDocumentText();
-			char[] chars = initialText.toCharArray();
-			Arrays.sort(chars);
-			String sortedText = new String(chars).trim();
-			sortedView.setDocumentText(sortedText);
+  @Override
+  public void process(JCas jCas) throws AnalysisEngineProcessException {
+    try {
+      JCas sortedView = ViewCreatorAnnotator.createViewSafely(jCas, ViewNames.SORTED_VIEW);
+      jCas = jCas.getView(CAS.NAME_DEFAULT_SOFA);
+      String initialText = jCas.getDocumentText();
+      char[] chars = initialText.toCharArray();
+      Arrays.sort(chars);
+      String sortedText = new String(chars).trim();
+      sortedView.setDocumentText(sortedText);
 
-			sortedView = ViewCreatorAnnotator.createViewSafely(jCas,
-					ViewNames.SORTED_PARENTHESES_VIEW);
-			JCas parenthesesView = jCas.getView(ViewNames.PARENTHESES_VIEW);
-			String parenthesesText = parenthesesView.getDocumentText();
-			chars = parenthesesText.toCharArray();
-			Arrays.sort(chars);
-			sortedText = new String(chars).trim();
-			sortedView.setDocumentText(sortedText);
+      sortedView = ViewCreatorAnnotator.createViewSafely(jCas, ViewNames.SORTED_PARENTHESES_VIEW);
+      JCas parenthesesView = jCas.getView(ViewNames.PARENTHESES_VIEW);
+      String parenthesesText = parenthesesView.getDocumentText();
+      chars = parenthesesText.toCharArray();
+      Arrays.sort(chars);
+      sortedText = new String(chars).trim();
+      sortedView.setDocumentText(sortedText);
 
-		}
-		catch (CASException e) {
-			throw new AnalysisEngineProcessException(e);
-		}
+    } catch (CASException e) {
+      throw new AnalysisEngineProcessException(e);
+    }
 
-	}
+  }
 
 }

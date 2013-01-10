@@ -39,100 +39,91 @@ import org.xml.sax.SAXException;
 /**
  */
 public class CpePipeline {
-	/**
-	 * Run the CollectionReader and AnalysisEngines as a multi-threaded pipeline.
-	 *
-	 * @param readerDesc
-	 *            The CollectionReader that loads the documents into the CAS.
-	 * @param descs
-	 *            Primitive AnalysisEngineDescriptions that process the CAS, in order. If you have a
-	 *            mix of primitive and aggregate engines, then please create the AnalysisEngines
-	 *            yourself and call the other runPipeline method.
-	 */
-	public static void runPipeline(final CollectionReaderDescription readerDesc,
-			final AnalysisEngineDescription... descs) throws UIMAException, SAXException,
-			CpeDescriptorException, IOException {
-		// Create AAE
-		final AnalysisEngineDescription aaeDesc = createAggregateDescription(descs);
+  /**
+   * Run the CollectionReader and AnalysisEngines as a multi-threaded pipeline.
+   * 
+   * @param readerDesc
+   *          The CollectionReader that loads the documents into the CAS.
+   * @param descs
+   *          Primitive AnalysisEngineDescriptions that process the CAS, in order. If you have a mix
+   *          of primitive and aggregate engines, then please create the AnalysisEngines yourself
+   *          and call the other runPipeline method.
+   */
+  public static void runPipeline(final CollectionReaderDescription readerDesc,
+          final AnalysisEngineDescription... descs) throws UIMAException, SAXException,
+          CpeDescriptorException, IOException {
+    // Create AAE
+    final AnalysisEngineDescription aaeDesc = createAggregateDescription(descs);
 
-		CpeBuilder builder = new CpeBuilder();
-		builder.setReader(readerDesc);
-		builder.setAnalysisEngine(aaeDesc);
-		
-		StatusCallbackListenerImpl status = new StatusCallbackListenerImpl();
-		CollectionProcessingEngine engine = builder.createCpe(status);
-		
-		engine.process();
-		try {
-			synchronized (status) {
-				while (status.isProcessing) {
-					status.wait();
-				}
-			}
-		}
-		catch (InterruptedException e) {
-			// Do nothing
-		}
+    CpeBuilder builder = new CpeBuilder();
+    builder.setReader(readerDesc);
+    builder.setAnalysisEngine(aaeDesc);
 
-		if (status.exceptions.size() > 0) {
-			throw new AnalysisEngineProcessException(status.exceptions.get(0));
-		}
-	}
+    StatusCallbackListenerImpl status = new StatusCallbackListenerImpl();
+    CollectionProcessingEngine engine = builder.createCpe(status);
 
-	private static class StatusCallbackListenerImpl
-		implements StatusCallbackListener
-	{
+    engine.process();
+    try {
+      synchronized (status) {
+        while (status.isProcessing) {
+          status.wait();
+        }
+      }
+    } catch (InterruptedException e) {
+      // Do nothing
+    }
 
-		private final List<Exception> exceptions = new ArrayList<Exception>();
-		private boolean isProcessing = true;
-	
-		public void entityProcessComplete(CAS arg0, EntityProcessStatus arg1)
-		{
-			if (arg1.isException()) {
-				for (Exception e : arg1.getExceptions()) {
-					exceptions.add(e);
-				}
-			}
-		}
-	
-		public void aborted()
-		{
-			synchronized (this) {
-				if (isProcessing) {
-					isProcessing = false;
-					notify();
-				}
-			}
-		}
-	
-		public void batchProcessComplete()
-		{
-			// Do nothing
-		}
-	
-		public void collectionProcessComplete()
-		{
-			synchronized (this) {
-				if (isProcessing) {
-					isProcessing = false;
-					notify();
-				}
-			}
-		}
-	
-		public void initializationComplete()
-		{
-			// Do nothing
-		}
-	
-		public void paused()
-		{
-			// Do nothing
-		}
-	
-		public void resumed()
-		{
-			// Do nothing
-		}
-	}
+    if (status.exceptions.size() > 0) {
+      throw new AnalysisEngineProcessException(status.exceptions.get(0));
+    }
+  }
+
+  private static class StatusCallbackListenerImpl implements StatusCallbackListener {
+
+    private final List<Exception> exceptions = new ArrayList<Exception>();
+
+    private boolean isProcessing = true;
+
+    public void entityProcessComplete(CAS arg0, EntityProcessStatus arg1) {
+      if (arg1.isException()) {
+        for (Exception e : arg1.getExceptions()) {
+          exceptions.add(e);
+        }
+      }
+    }
+
+    public void aborted() {
+      synchronized (this) {
+        if (isProcessing) {
+          isProcessing = false;
+          notify();
+        }
+      }
+    }
+
+    public void batchProcessComplete() {
+      // Do nothing
+    }
+
+    public void collectionProcessComplete() {
+      synchronized (this) {
+        if (isProcessing) {
+          isProcessing = false;
+          notify();
+        }
+      }
+    }
+
+    public void initializationComplete() {
+      // Do nothing
+    }
+
+    public void paused() {
+      // Do nothing
+    }
+
+    public void resumed() {
+      // Do nothing
+    }
+  }
 }

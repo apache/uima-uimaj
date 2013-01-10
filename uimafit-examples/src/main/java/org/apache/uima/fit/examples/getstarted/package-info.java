@@ -20,3 +20,4 @@
  * Example for a simple analysis engine and pipeline.
  */
 package org.apache.uima.fit.examples.getstarted;
+

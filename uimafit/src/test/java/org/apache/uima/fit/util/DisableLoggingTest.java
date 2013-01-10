@@ -32,75 +32,75 @@ import org.junit.Test;
  */
 public class DisableLoggingTest {
 
-	@Test
-	public void test() {
-		// get the top logger and remove all handlers
-		Logger topLogger = Logger.getLogger("");
-		Handler[] handlers = topLogger.getHandlers();
-		for (Handler handler : handlers) {
-			topLogger.removeHandler(handler);
-		}
+  @Test
+  public void test() {
+    // get the top logger and remove all handlers
+    Logger topLogger = Logger.getLogger("");
+    Handler[] handlers = topLogger.getHandlers();
+    for (Handler handler : handlers) {
+      topLogger.removeHandler(handler);
+    }
 
-		// add a single hander that writes to a string buffer
-		final StringBuffer buffer = new StringBuffer();
-		Handler bufferhandler = new Handler() {
-			@Override
-			public void close() throws SecurityException {/* do nothing */
-			}
+    // add a single hander that writes to a string buffer
+    final StringBuffer buffer = new StringBuffer();
+    Handler bufferhandler = new Handler() {
+      @Override
+      public void close() throws SecurityException {/* do nothing */
+      }
 
-			@Override
-			public void flush() {/* do nothing */
-			}
+      @Override
+      public void flush() {/* do nothing */
+      }
 
-			@Override
-			public void publish(LogRecord record) {
-				buffer.append(record.getMessage());
-			}
-		};
-		topLogger.addHandler(bufferhandler);
+      @Override
+      public void publish(LogRecord record) {
+        buffer.append(record.getMessage());
+      }
+    };
+    topLogger.addHandler(bufferhandler);
 
-		// log to the buffer
-		Logger.getLogger("foo").info("Hello!");
-		Assert.assertEquals("Hello!", buffer.toString());
+    // log to the buffer
+    Logger.getLogger("foo").info("Hello!");
+    Assert.assertEquals("Hello!", buffer.toString());
 
-		// disable logging, and make sure nothing is written to the buffer
-		buffer.setLength(0);
-		Level level = DisableLogging.disableLogging();
-		Logger.getLogger("bar").info("Hello!");
-		Assert.assertEquals("", buffer.toString());
+    // disable logging, and make sure nothing is written to the buffer
+    buffer.setLength(0);
+    Level level = DisableLogging.disableLogging();
+    Logger.getLogger("bar").info("Hello!");
+    Assert.assertEquals("", buffer.toString());
 
-		// enable logging, and make sure things are written to the buffer
-		DisableLogging.enableLogging(level);
-		Logger.getLogger("baz").info("Hello!");
-		Assert.assertEquals("Hello!", buffer.toString());
+    // enable logging, and make sure things are written to the buffer
+    DisableLogging.enableLogging(level);
+    Logger.getLogger("baz").info("Hello!");
+    Assert.assertEquals("Hello!", buffer.toString());
 
-		// try disabling logging with a logger that has its own handler
-		buffer.setLength(0);
-		Logger logger = Logger.getLogger("foo.bar.baz");
-		logger.addHandler(new Handler() {
-			@Override
-			public void close() throws SecurityException {/* do nothing */
-			}
+    // try disabling logging with a logger that has its own handler
+    buffer.setLength(0);
+    Logger logger = Logger.getLogger("foo.bar.baz");
+    logger.addHandler(new Handler() {
+      @Override
+      public void close() throws SecurityException {/* do nothing */
+      }
 
-			@Override
-			public void flush() { /* do nothing */
-			}
+      @Override
+      public void flush() { /* do nothing */
+      }
 
-			@Override
-			public void publish(LogRecord record) {
-				buffer.append("Not disabled!");
-			}
-		});
-		level = DisableLogging.disableLogging();
-		logger.info("Hello!");
-		Assert.assertEquals("", buffer.toString());
-		DisableLogging.enableLogging(level);
+      @Override
+      public void publish(LogRecord record) {
+        buffer.append("Not disabled!");
+      }
+    });
+    level = DisableLogging.disableLogging();
+    logger.info("Hello!");
+    Assert.assertEquals("", buffer.toString());
+    DisableLogging.enableLogging(level);
 
-		// restore the original handlers
-		topLogger.removeHandler(bufferhandler);
-		for (Handler handler : handlers) {
-			topLogger.addHandler(handler);
-		}
+    // restore the original handlers
+    topLogger.removeHandler(bufferhandler);
+    for (Handler handler : handlers) {
+      topLogger.addHandler(handler);
+    }
 
-	}
+  }
 }

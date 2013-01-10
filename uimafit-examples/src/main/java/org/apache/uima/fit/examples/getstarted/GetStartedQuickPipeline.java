@@ -30,20 +30,19 @@ import org.apache.uima.jcas.JCas;
  */
 public class GetStartedQuickPipeline {
 
-	public static void main(String[] args) throws UIMAException {
-		// uimaFIT automatically uses all type systems listed in META-INF/org.uimafit/types.txt
+  public static void main(String[] args) throws UIMAException {
+    // uimaFIT automatically uses all type systems listed in META-INF/org.uimafit/types.txt
 
-		// uimaFIT doesn't provide any collection readers - so we will just instantiate a JCas and
-		// run it through our AE
-		JCas jCas = JCasFactory.createJCas();
-		
-		// Instantiate the analysis engine using the value "uimaFIT" for the parameter
-		// PARAM_STRING ("stringParam").
-		AnalysisEngine analysisEngine = AnalysisEngineFactory.createPrimitive(
-				GetStartedQuickAE.class, 
-				GetStartedQuickAE.PARAM_STRING, "uimaFIT");
-		
-		// run the analysis engine and look for a special greeting in your console.
-		analysisEngine.process(jCas);
-	}
+    // uimaFIT doesn't provide any collection readers - so we will just instantiate a JCas and
+    // run it through our AE
+    JCas jCas = JCasFactory.createJCas();
+
+    // Instantiate the analysis engine using the value "uimaFIT" for the parameter
+    // PARAM_STRING ("stringParam").
+    AnalysisEngine analysisEngine = AnalysisEngineFactory.createPrimitive(GetStartedQuickAE.class,
+            GetStartedQuickAE.PARAM_STRING, "uimaFIT");
+
+    // run the analysis engine and look for a special greeting in your console.
+    analysisEngine.process(jCas);
+  }
 }

@@ -28,32 +28,32 @@ import java.util.logging.Logger;
  * 
  */
 public final class DisableLogging {
-	private DisableLogging() {
-		// This class is not meant to be instantiated
-	}
+  private DisableLogging() {
+    // This class is not meant to be instantiated
+  }
 
-	/**
-	 * Disable all logging.
-	 * 
-	 * @return The original logging level.
-	 */
-	public static Level disableLogging() {
-		Logger logger = Logger.getLogger("");
-		Level level = logger.getLevel();
-		logger.setLevel(Level.OFF);
-		return level;
-	}
+  /**
+   * Disable all logging.
+   * 
+   * @return The original logging level.
+   */
+  public static Level disableLogging() {
+    Logger logger = Logger.getLogger("");
+    Level level = logger.getLevel();
+    logger.setLevel(Level.OFF);
+    return level;
+  }
 
-	/**
-	 * Enable all logging.
-	 * 
-	 * @param level
-	 *            The logging level to be restored. Usually this is the result returned by
-	 *            disableLogging().
-	 */
-	public static void enableLogging(Level level) {
-		Logger logger = Logger.getLogger("");
-		logger.setLevel(level);
-	}
+  /**
+   * Enable all logging.
+   * 
+   * @param level
+   *          The logging level to be restored. Usually this is the result returned by
+   *          disableLogging().
+   */
+  public static void enableLogging(Level level) {
+    Logger logger = Logger.getLogger("");
+    logger.setLevel(level);
+  }
 
 }

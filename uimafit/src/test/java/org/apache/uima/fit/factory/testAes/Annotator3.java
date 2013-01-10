@@ -31,28 +31,27 @@ import org.apache.uima.jcas.JCas;
 @SofaCapability(inputSofas = CAS.NAME_DEFAULT_SOFA, outputSofas = ViewNames.REVERSE_VIEW)
 public class Annotator3 extends JCasAnnotator_ImplBase {
 
-	@Override
-	public void process(JCas jCas) throws AnalysisEngineProcessException {
-		try {
-			jCas = jCas.getView(CAS.NAME_DEFAULT_SOFA);
-			String text = jCas.getDocumentText();
-			String reverseText = reverse(text);
-			JCas reverseView = ViewCreatorAnnotator.createViewSafely(jCas, ViewNames.REVERSE_VIEW);
-			reverseView.setDocumentText(reverseText);
-		}
-		catch (CASException e) {
-			throw new AnalysisEngineProcessException(e);
-		}
-	}
+  @Override
+  public void process(JCas jCas) throws AnalysisEngineProcessException {
+    try {
+      jCas = jCas.getView(CAS.NAME_DEFAULT_SOFA);
+      String text = jCas.getDocumentText();
+      String reverseText = reverse(text);
+      JCas reverseView = ViewCreatorAnnotator.createViewSafely(jCas, ViewNames.REVERSE_VIEW);
+      reverseView.setDocumentText(reverseText);
+    } catch (CASException e) {
+      throw new AnalysisEngineProcessException(e);
+    }
+  }
 
-	private String reverse(String string) {
-		int stringLength = string.length();
-		StringBuffer returnValue = new StringBuffer();
+  private String reverse(String string) {
+    int stringLength = string.length();
+    StringBuffer returnValue = new StringBuffer();
 
-		for (int i = stringLength - 1; i >= 0; i--) {
-			returnValue.append(string.charAt(i));
-		}
-		return returnValue.toString();
-	}
+    for (int i = stringLength - 1; i >= 0; i--) {
+      returnValue.append(string.charAt(i));
+    }
+    return returnValue.toString();
+  }
 
 }

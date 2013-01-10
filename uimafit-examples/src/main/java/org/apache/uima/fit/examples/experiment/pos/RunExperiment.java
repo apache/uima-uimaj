@@ -58,62 +58,61 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
  */
 public class RunExperiment {
 
-	public static void main(String[] args) throws UIMAException, IOException {
-		String samplePosFileName = "src/main/resources/org/uimafit/examples/pos/sample.txt.pos";
+  public static void main(String[] args) throws UIMAException, IOException {
+    String samplePosFileName = "src/main/resources/org/uimafit/examples/pos/sample.txt.pos";
 
-		TypeSystemDescription typeSystem = TypeSystemDescriptionFactory
-				.createTypeSystemDescription();
+    TypeSystemDescription typeSystem = TypeSystemDescriptionFactory.createTypeSystemDescription();
 
-		// The lineReader simply copies the lines from the input file into the
-		// default view - one line per CAS
-		CollectionReader lineReader = CollectionReaderFactory.createCollectionReader(
-				LineReader.class, typeSystem, LineReader.PARAM_INPUT_FILE, samplePosFileName);
+    // The lineReader simply copies the lines from the input file into the
+    // default view - one line per CAS
+    CollectionReader lineReader = CollectionReaderFactory.createCollectionReader(LineReader.class,
+            typeSystem, LineReader.PARAM_INPUT_FILE, samplePosFileName);
 
-		AggregateBuilder builder = new AggregateBuilder();
+    AggregateBuilder builder = new AggregateBuilder();
 
-		// The goldTagger parses the data in the default view into Token objects
-		// along with their part-of-speech tags which will be added to the
-		// GOLD_VIEW
-		AnalysisEngineDescription goldTagger = AnalysisEngineFactory.createPrimitiveDescription(
-				GoldTagger.class, typeSystem);
-		builder.add(goldTagger);
+    // The goldTagger parses the data in the default view into Token objects
+    // along with their part-of-speech tags which will be added to the
+    // GOLD_VIEW
+    AnalysisEngineDescription goldTagger = AnalysisEngineFactory.createPrimitiveDescription(
+            GoldTagger.class, typeSystem);
+    builder.add(goldTagger);
 
-		// The textCopier creates the SYSTEM_VIEW and set the text of this view
-		// to that of the text found in GOLD_VIEW
-		AnalysisEngineDescription textCopier = AnalysisEngineFactory.createPrimitiveDescription(
-				ViewTextCopierAnnotator.class, typeSystem,
-				ViewTextCopierAnnotator.PARAM_SOURCE_VIEW_NAME, ViewNames.GOLD_VIEW,
-				ViewTextCopierAnnotator.PARAM_DESTINATION_VIEW_NAME, ViewNames.SYSTEM_VIEW);
-		builder.add(textCopier);
+    // The textCopier creates the SYSTEM_VIEW and set the text of this view
+    // to that of the text found in GOLD_VIEW
+    AnalysisEngineDescription textCopier = AnalysisEngineFactory.createPrimitiveDescription(
+            ViewTextCopierAnnotator.class, typeSystem,
+            ViewTextCopierAnnotator.PARAM_SOURCE_VIEW_NAME, ViewNames.GOLD_VIEW,
+            ViewTextCopierAnnotator.PARAM_DESTINATION_VIEW_NAME, ViewNames.SYSTEM_VIEW);
+    builder.add(textCopier);
 
-		// The sentenceAndTokenCopier copies Token and Sentence annotations in
-		// the GOLD_VIEW into the SYSTEM_VIEW
-		AnalysisEngineDescription sentenceAndTokenCopier = AnalysisEngineFactory
-				.createPrimitiveDescription(SentenceAndTokenCopier.class, typeSystem);
-		builder.add(sentenceAndTokenCopier, ViewNames.VIEW1, ViewNames.GOLD_VIEW, ViewNames.VIEW2,
-				ViewNames.SYSTEM_VIEW);
+    // The sentenceAndTokenCopier copies Token and Sentence annotations in
+    // the GOLD_VIEW into the SYSTEM_VIEW
+    AnalysisEngineDescription sentenceAndTokenCopier = AnalysisEngineFactory
+            .createPrimitiveDescription(SentenceAndTokenCopier.class, typeSystem);
+    builder.add(sentenceAndTokenCopier, ViewNames.VIEW1, ViewNames.GOLD_VIEW, ViewNames.VIEW2,
+            ViewNames.SYSTEM_VIEW);
 
-		// The baselineTagger is run on the SYSTEM_VIEW
-		AnalysisEngineDescription baselineTagger = AnalysisEngineFactory
-				.createPrimitiveDescription(BaselineTagger.class, typeSystem);
-		builder.add(baselineTagger, CAS.NAME_DEFAULT_SOFA, ViewNames.SYSTEM_VIEW);
+    // The baselineTagger is run on the SYSTEM_VIEW
+    AnalysisEngineDescription baselineTagger = AnalysisEngineFactory.createPrimitiveDescription(
+            BaselineTagger.class, typeSystem);
+    builder.add(baselineTagger, CAS.NAME_DEFAULT_SOFA, ViewNames.SYSTEM_VIEW);
 
-		// The evaluator will compare the part-of-speech tags in the SYSTEM_VIEW
-		// with those in the GOLD_VIEW
-		AnalysisEngineDescription evaluator = AnalysisEngineFactory.createPrimitiveDescription(
-				Evaluator.class, typeSystem);
-		builder.add(evaluator);
+    // The evaluator will compare the part-of-speech tags in the SYSTEM_VIEW
+    // with those in the GOLD_VIEW
+    AnalysisEngineDescription evaluator = AnalysisEngineFactory.createPrimitiveDescription(
+            Evaluator.class, typeSystem);
+    builder.add(evaluator);
 
-		// The xWriter writes out the contents of each CAS (one per sentence) to
-		// an XMI file. It is instructive to open one of these
-		// xmi files in the CAS Visual Debugger and look at the contents of each
-		// view.
-		AnalysisEngineDescription xWriter = AnalysisEngineFactory.createPrimitiveDescription(
-				XWriter.class, typeSystem, XWriter.PARAM_OUTPUT_DIRECTORY_NAME,
-				"src/main/resources/org/uimafit/examples/pos/xmi");
-		builder.add(xWriter);
+    // The xWriter writes out the contents of each CAS (one per sentence) to
+    // an XMI file. It is instructive to open one of these
+    // xmi files in the CAS Visual Debugger and look at the contents of each
+    // view.
+    AnalysisEngineDescription xWriter = AnalysisEngineFactory.createPrimitiveDescription(
+            XWriter.class, typeSystem, XWriter.PARAM_OUTPUT_DIRECTORY_NAME,
+            "src/main/resources/org/uimafit/examples/pos/xmi");
+    builder.add(xWriter);
 
-		// runs the collection reader and the aggregate AE.
-		SimplePipeline.runPipeline(lineReader, builder.createAggregate());
-	}
+    // runs the collection reader and the aggregate AE.
+    SimplePipeline.runPipeline(lineReader, builder.createAggregate());
+  }
 }

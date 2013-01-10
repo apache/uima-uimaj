@@ -34,22 +34,23 @@ import org.apache.uima.resource.ResourceInitializationException;
 
 public class IntegerFileNamer implements XWriterFileNamer, Initializable {
 
-	/**
-	 * The parameter name for the configuration parameter that specifies a fixed prefix for all
-	 * returned file names.
-	 */
-	public static final String PARAM_PREFIX = ConfigurationParameterFactory
-			.createConfigurationParameterName(IntegerFileNamer.class, "prefix");
-	@ConfigurationParameter(description = "specify a prefix that is prepended to all returned file names", defaultValue="")
-	private String prefix;
+  /**
+   * The parameter name for the configuration parameter that specifies a fixed prefix for all
+   * returned file names.
+   */
+  public static final String PARAM_PREFIX = ConfigurationParameterFactory
+          .createConfigurationParameterName(IntegerFileNamer.class, "prefix");
 
-	int i = 1;
+  @ConfigurationParameter(description = "specify a prefix that is prepended to all returned file names", defaultValue = "")
+  private String prefix;
 
-	public String nameFile(JCas jCas) {
-		return prefix + i++;
-	}
+  int i = 1;
 
-	public void initialize(UimaContext context) throws ResourceInitializationException {
-		ConfigurationParameterInitializer.initialize(this, context);
-	}
+  public String nameFile(JCas jCas) {
+    return prefix + i++;
+  }
+
+  public void initialize(UimaContext context) throws ResourceInitializationException {
+    ConfigurationParameterInitializer.initialize(this, context);
+  }
 }

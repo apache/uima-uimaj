@@ -18,7 +18,6 @@
  */
 package org.apache.uima.fit.factory;
 
-
 import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTypeSystemDescription;
 import static org.junit.Assert.assertNotNull;
 
@@ -31,19 +30,19 @@ import org.junit.Test;
 /**
  */
 public class TypeSystemDescriptionFactoryTest {
-	@Test
-	public void testFromPath() throws Exception {
-		TypeSystemDescriptionFactory.createTypeSystemDescriptionFromPath(
-				"src/test/resources/org/apache/uima/fit/type/AnalyzedText.xml",
-				"src/test/resources/org/apache/uima/fit/type/Sentence.xml",
-				"src/test/resources/org/apache/uima/fit/type/Token.xml").resolveImports();
-	}
+  @Test
+  public void testFromPath() throws Exception {
+    TypeSystemDescriptionFactory.createTypeSystemDescriptionFromPath(
+            "src/test/resources/org/apache/uima/fit/type/AnalyzedText.xml",
+            "src/test/resources/org/apache/uima/fit/type/Sentence.xml",
+            "src/test/resources/org/apache/uima/fit/type/Token.xml").resolveImports();
+  }
 
-	@Test
-	public void testScanning() throws Exception {
-		TypeSystemDescription tsd = createTypeSystemDescription();
-		assertNotNull(tsd.getType(Token.class.getName()));
-		assertNotNull(tsd.getType(Sentence.class.getName()));
-		assertNotNull(tsd.getType(AnalyzedText.class.getName()));
-	}
+  @Test
+  public void testScanning() throws Exception {
+    TypeSystemDescription tsd = createTypeSystemDescription();
+    assertNotNull(tsd.getType(Token.class.getName()));
+    assertNotNull(tsd.getType(Sentence.class.getName()));
+    assertNotNull(tsd.getType(AnalyzedText.class.getName()));
+  }
 }

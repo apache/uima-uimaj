@@ -39,40 +39,38 @@ import org.apache.uima.jcas.JCas;
 
 public class ViewTextCopierAnnotator extends JCasAnnotator_ImplBase {
 
-	/**
-	 * The parameter name for the name of the source view
-	 */
-	public static final String PARAM_SOURCE_VIEW_NAME = ConfigurationParameterFactory
-			.createConfigurationParameterName(ViewTextCopierAnnotator.class, "sourceViewName");
+  /**
+   * The parameter name for the name of the source view
+   */
+  public static final String PARAM_SOURCE_VIEW_NAME = ConfigurationParameterFactory
+          .createConfigurationParameterName(ViewTextCopierAnnotator.class, "sourceViewName");
 
-	@ConfigurationParameter(mandatory = true)
-	private String sourceViewName;
+  @ConfigurationParameter(mandatory = true)
+  private String sourceViewName;
 
-	/**
-	 * The parameter name for the name of the destination view
-	 */
-	public static final String PARAM_DESTINATION_VIEW_NAME = ConfigurationParameterFactory
-			.createConfigurationParameterName(ViewTextCopierAnnotator.class, "destinationViewName");
+  /**
+   * The parameter name for the name of the destination view
+   */
+  public static final String PARAM_DESTINATION_VIEW_NAME = ConfigurationParameterFactory
+          .createConfigurationParameterName(ViewTextCopierAnnotator.class, "destinationViewName");
 
-	@ConfigurationParameter(mandatory = true)
-	private String destinationViewName;
+  @ConfigurationParameter(mandatory = true)
+  private String destinationViewName;
 
-	@Override
-	public void process(final JCas jCas) throws AnalysisEngineProcessException {
-		try {
-			final JCas sourceView = jCas.getView(sourceViewName);
-			JCas destinationView;
-			try {
-				destinationView = jCas.getView(destinationViewName);
-			}
-			catch (CASRuntimeException ce) {
-				destinationView = jCas.createView(destinationViewName);
-			}
-			destinationView.setDocumentText(sourceView.getDocumentText());
-		}
-		catch (CASException e) {
-			throw new AnalysisEngineProcessException(e);
-		}
-	}
+  @Override
+  public void process(final JCas jCas) throws AnalysisEngineProcessException {
+    try {
+      final JCas sourceView = jCas.getView(sourceViewName);
+      JCas destinationView;
+      try {
+        destinationView = jCas.getView(destinationViewName);
+      } catch (CASRuntimeException ce) {
+        destinationView = jCas.createView(destinationViewName);
+      }
+      destinationView.setDocumentText(sourceView.getDocumentText());
+    } catch (CASException e) {
+      throw new AnalysisEngineProcessException(e);
+    }
+  }
 
 }

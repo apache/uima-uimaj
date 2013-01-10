@@ -20,3 +20,4 @@
  * Factories to create different kinds of UIMA resource specifiers.
  */
 package org.apache.uima.fit.factory;
+

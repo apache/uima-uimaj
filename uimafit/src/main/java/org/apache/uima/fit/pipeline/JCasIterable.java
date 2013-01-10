@@ -43,85 +43,80 @@ import org.apache.uima.util.CasCreationUtils;
  */
 public class JCasIterable implements Iterator<JCas>, Iterable<JCas> {
 
-	private CollectionReader collectionReader;
+  private CollectionReader collectionReader;
 
-	private AnalysisEngine[] analysisEngines;
+  private AnalysisEngine[] analysisEngines;
 
-	private JCas jCas;
+  private JCas jCas;
 
-	/**
-	 * Iterate over the documents loaded by the CollectionReader. (Uses an JCasAnnotatorAdapter to
-	 * create the document JCas.)
-	 * 
-	 * @param aReader
-	 *            The CollectionReader for loading documents.
-	 * @param aTypeSystemDescription
-	 *            a type system description
-	 */
-	public JCasIterable(final CollectionReader aReader,
-			final TypeSystemDescription aTypeSystemDescription) throws UIMAException, IOException {
-		this(aReader, AnalysisEngineFactory.createPrimitive(NoOpAnnotator.class,
-				aTypeSystemDescription));
-	}
+  /**
+   * Iterate over the documents loaded by the CollectionReader. (Uses an JCasAnnotatorAdapter to
+   * create the document JCas.)
+   * 
+   * @param aReader
+   *          The CollectionReader for loading documents.
+   * @param aTypeSystemDescription
+   *          a type system description
+   */
+  public JCasIterable(final CollectionReader aReader,
+          final TypeSystemDescription aTypeSystemDescription) throws UIMAException, IOException {
+    this(aReader, AnalysisEngineFactory
+            .createPrimitive(NoOpAnnotator.class, aTypeSystemDescription));
+  }
 
-	/**
-	 * Iterate over the documents loaded by the CollectionReader, running the AnalysisEngine on each
-	 * one before yielding them.
-	 * 
-	 * @param aReader
-	 *            The CollectionReader for loading documents.
-	 * @param aEngines
-	 *            The AnalysisEngines for processing documents.
-	 */
-	public JCasIterable(final CollectionReader aReader, final AnalysisEngine... aEngines)
-			throws UIMAException, IOException {
-		this.collectionReader = aReader;
-		this.analysisEngines = aEngines;
-		final List<ResourceMetaData> metaData = new ArrayList<ResourceMetaData>();
-		metaData.add(aReader.getMetaData());
-		for (AnalysisEngine engine : aEngines) {
-			metaData.add(engine.getMetaData());
-		}
-		this.jCas = CasCreationUtils.createCas(metaData).getJCas();
-	}
+  /**
+   * Iterate over the documents loaded by the CollectionReader, running the AnalysisEngine on each
+   * one before yielding them.
+   * 
+   * @param aReader
+   *          The CollectionReader for loading documents.
+   * @param aEngines
+   *          The AnalysisEngines for processing documents.
+   */
+  public JCasIterable(final CollectionReader aReader, final AnalysisEngine... aEngines)
+          throws UIMAException, IOException {
+    this.collectionReader = aReader;
+    this.analysisEngines = aEngines;
+    final List<ResourceMetaData> metaData = new ArrayList<ResourceMetaData>();
+    metaData.add(aReader.getMetaData());
+    for (AnalysisEngine engine : aEngines) {
+      metaData.add(engine.getMetaData());
+    }
+    this.jCas = CasCreationUtils.createCas(metaData).getJCas();
+  }
 
-	public Iterator<JCas> iterator() {
-		return this;
-	}
+  public Iterator<JCas> iterator() {
+    return this;
+  }
 
-	public boolean hasNext() {
-		try {
-			return this.collectionReader.hasNext();
-		}
-		catch (CollectionException e) {
-			throw new IllegalStateException(e);
-		}
-		catch (IOException e) {
-			throw new IllegalStateException(e);
-		}
-	}
+  public boolean hasNext() {
+    try {
+      return this.collectionReader.hasNext();
+    } catch (CollectionException e) {
+      throw new IllegalStateException(e);
+    } catch (IOException e) {
+      throw new IllegalStateException(e);
+    }
+  }
 
-	public JCas next() {
-		this.jCas.reset();
-		try {
-			this.collectionReader.getNext(this.jCas.getCas());
-			for (AnalysisEngine engine : this.analysisEngines) {
-				engine.process(this.jCas);
-			}
-		}
-		catch (CollectionException e) {
-			throw new IllegalStateException(e);
-		}
-		catch (IOException e) {
-			throw new IllegalStateException(e);
-		}
-		catch (AnalysisEngineProcessException e) {
-			throw new IllegalStateException(e);
-		}
-		return this.jCas;
-	}
+  public JCas next() {
+    this.jCas.reset();
+    try {
+      this.collectionReader.getNext(this.jCas.getCas());
+      for (AnalysisEngine engine : this.analysisEngines) {
+        engine.process(this.jCas);
+      }
+    } catch (CollectionException e) {
+      throw new IllegalStateException(e);
+    } catch (IOException e) {
+      throw new IllegalStateException(e);
+    } catch (AnalysisEngineProcessException e) {
+      throw new IllegalStateException(e);
+    }
+    return this.jCas;
+  }
 
-	public void remove() {
-		throw new UnsupportedOperationException();
-	}
+  public void remove() {
+    throw new UnsupportedOperationException();
+  }
 }

@@ -32,31 +32,33 @@ import org.apache.uima.resource.metadata.ExternalResourceBinding;
  * 
  */
 public class ExtendedExternalResourceDescription_impl extends ExternalResourceDescription_impl {
-	private static final long serialVersionUID = 4901306350609836452L;
-	private List<ExternalResourceBinding> externalResourceBindings = new ArrayList<ExternalResourceBinding>();
-	private List<ExternalResourceDescription> externalResources = new ArrayList<ExternalResourceDescription>();
+  private static final long serialVersionUID = 4901306350609836452L;
 
-	public List<ExternalResourceBinding> getExternalResourceBindings() {
-		return externalResourceBindings;
-	}
+  private List<ExternalResourceBinding> externalResourceBindings = new ArrayList<ExternalResourceBinding>();
 
-	public void setExternalResourceBindings(
-			Collection<ExternalResourceBinding> aExternalResourceBindings) {
-		externalResourceBindings = new ArrayList<ExternalResourceBinding>();
-		if (aExternalResourceBindings != null) {
-			externalResourceBindings.addAll(aExternalResourceBindings);
-		}
-	}
+  private List<ExternalResourceDescription> externalResources = new ArrayList<ExternalResourceDescription>();
 
-	public List<ExternalResourceDescription> getExternalResources() {
-		return externalResources;
-	}
+  public List<ExternalResourceBinding> getExternalResourceBindings() {
+    return externalResourceBindings;
+  }
 
-	public void setExternalResources(
-			Collection<ExternalResourceDescription> aExternalResourceDescriptions) {
-		externalResources = new ArrayList<ExternalResourceDescription>();
-		if (externalResources != null) {
-			externalResources.addAll(aExternalResourceDescriptions);
-		}
-	}
+  public void setExternalResourceBindings(
+          Collection<ExternalResourceBinding> aExternalResourceBindings) {
+    externalResourceBindings = new ArrayList<ExternalResourceBinding>();
+    if (aExternalResourceBindings != null) {
+      externalResourceBindings.addAll(aExternalResourceBindings);
+    }
+  }
+
+  public List<ExternalResourceDescription> getExternalResources() {
+    return externalResources;
+  }
+
+  public void setExternalResources(
+          Collection<ExternalResourceDescription> aExternalResourceDescriptions) {
+    externalResources = new ArrayList<ExternalResourceDescription>();
+    if (externalResources != null) {
+      externalResources.addAll(aExternalResourceDescriptions);
+    }
+  }
 }

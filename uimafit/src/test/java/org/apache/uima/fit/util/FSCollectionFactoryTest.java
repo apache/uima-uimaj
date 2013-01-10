@@ -53,157 +53,158 @@ import org.junit.Test;
 /**
  */
 public class FSCollectionFactoryTest {
-	private JCas jcas;
-	private Collection<FeatureStructure> tokenFSs;
-	private Collection<Annotation> tokens;
-	
-	@Before
-	public void init() throws Exception {
-		jcas = JCasFactory.createJCas();
-		
-		tokenFSs = new ArrayList<FeatureStructure>();
-		tokens = new ArrayList<Annotation>();
+  private JCas jcas;
 
-		Token t1 = new Token(jcas, 0, 1);
-		tokenFSs.add(t1);
-		tokens.add(t1);
-		t1.addToIndexes();
+  private Collection<FeatureStructure> tokenFSs;
 
-		Token t2 = new Token(jcas, 2, 3);
-		tokenFSs.add(t2);
-		tokens.add(t2);
-		t2.addToIndexes();
-	}
+  private Collection<Annotation> tokens;
 
-	@Test
-	public void testCreateFSList() throws Exception {
-		assertEquals(tokens, create(createFSList(jcas, tokens)));
-		assertEquals(tokens, create(createFSList(jcas, tokens), Token.class));
-	}
-	
-	@Test
-	public void testCreateFSArray() throws Exception {
-		assertEquals(tokenFSs, create(createFSArray(jcas.getCas(), tokenFSs)));
-		assertEquals(tokenFSs, create(createFSArray(jcas.getCas(),
-				tokenFSs.toArray(new FeatureStructure[tokenFSs.size()]))));
-		assertEquals(tokens, create(createFSArray(jcas.getCas(), tokens)));
-		assertEquals(tokens, create(createFSArray(jcas, tokens)));
-		assertEquals(tokens,
-				create(createFSArray(jcas.getCas(), tokens.toArray(new Annotation[tokens.size()]))));
-		assertEquals(tokens,
-				create(createFSArray(jcas, tokens.toArray(new Annotation[tokens.size()]))));
-		assertEquals(tokens,
-				create(createFSArray(jcas, tokens.toArray(new Annotation[tokens.size()])), Token.class));
-	}
+  @Before
+  public void init() throws Exception {
+    jcas = JCasFactory.createJCas();
 
-	@Test
-	public void testCreateBooleanArray() throws Exception {
-		assertEquals(asList(true, false),
-				asList(toObject(createBooleanArray(jcas.getCas(), asList(true, false)).toArray())));
-		assertEquals(asList(true, false),
-				asList(toObject(createBooleanArray(jcas.getCas(), new boolean[] {true, false}).toArray())));
-		assertEquals(asList(true, false),
-				asList(toObject(createBooleanArray(jcas, asList(true, false)).toArray())));
-		assertEquals(asList(true, false),
-				asList(toObject(createBooleanArray(jcas, new boolean[] {true, false}).toArray())));
-	}
+    tokenFSs = new ArrayList<FeatureStructure>();
+    tokens = new ArrayList<Annotation>();
 
-	@Test
-	public void testCreateByteArray() throws Exception {
-		assertEquals(asList((byte) 0, (byte) 1),
-				asList(toObject(createByteArray(jcas.getCas(), asList((byte) 0, (byte) 1)).toArray())));
-		assertEquals(asList((byte) 0, (byte) 1),
-				asList(toObject(createByteArray(jcas.getCas(), new byte[] {0, 1}).toArray())));
-		assertEquals(asList((byte) 0, (byte) 1),
-				asList(toObject(createByteArray(jcas, asList((byte) 0, (byte) 1)).toArray())));
-		assertEquals(asList((byte) 0, (byte) 1),
-				asList(toObject(createByteArray(jcas, new byte[] {0, 1}).toArray())));
-	}
+    Token t1 = new Token(jcas, 0, 1);
+    tokenFSs.add(t1);
+    tokens.add(t1);
+    t1.addToIndexes();
 
-	@Test
-	public void testCreateDoubleArray() throws Exception {
-		assertEquals(asList(0.0, 1.0),
-				asList(toObject(createDoubleArray(jcas.getCas(), asList(0.0, 1.0)).toArray())));
-		assertEquals(asList(0.0, 1.0),
-				asList(toObject(createDoubleArray(jcas.getCas(), new double[] {0.0, 1.0}).toArray())));
-		assertEquals(asList(0.0, 1.0),
-				asList(toObject(createDoubleArray(jcas, asList(0.0, 1.0)).toArray())));
-		assertEquals(asList(0.0, 1.0),
-				asList(toObject(createDoubleArray(jcas, new double[] {0.0, 1.0}).toArray())));
-	}
+    Token t2 = new Token(jcas, 2, 3);
+    tokenFSs.add(t2);
+    tokens.add(t2);
+    t2.addToIndexes();
+  }
 
-	@Test
-	public void testCreateFloatArray() throws Exception {
-		assertEquals(asList(0.0f, 1.0f),
-				asList(toObject(createFloatArray(jcas.getCas(), asList(0.0f, 1.0f)).toArray())));
-		assertEquals(asList(0.0f, 1.0f),
-				asList(toObject(createFloatArray(jcas.getCas(), new float[] {0.0f, 1.0f}).toArray())));
-		assertEquals(asList(0.0f, 1.0f),
-				asList(toObject(createFloatArray(jcas, asList(0.0f, 1.0f)).toArray())));
-		assertEquals(asList(0.0f, 1.0f),
-				asList(toObject(createFloatArray(jcas, new float[] {0.0f, 1.0f}).toArray())));
-	}
+  @Test
+  public void testCreateFSList() throws Exception {
+    assertEquals(tokens, create(createFSList(jcas, tokens)));
+    assertEquals(tokens, create(createFSList(jcas, tokens), Token.class));
+  }
 
-	@Test
-	public void testCreateFloatList() throws Exception {
-		assertEquals(asList(0.0f, 1.0f), create(createFloatList(jcas, asList(0.0f, 1.0f))));
-	}
+  @Test
+  public void testCreateFSArray() throws Exception {
+    assertEquals(tokenFSs, create(createFSArray(jcas.getCas(), tokenFSs)));
+    assertEquals(
+            tokenFSs,
+            create(createFSArray(jcas.getCas(),
+                    tokenFSs.toArray(new FeatureStructure[tokenFSs.size()]))));
+    assertEquals(tokens, create(createFSArray(jcas.getCas(), tokens)));
+    assertEquals(tokens, create(createFSArray(jcas, tokens)));
+    assertEquals(tokens,
+            create(createFSArray(jcas.getCas(), tokens.toArray(new Annotation[tokens.size()]))));
+    assertEquals(tokens, create(createFSArray(jcas, tokens.toArray(new Annotation[tokens.size()]))));
+    assertEquals(tokens,
+            create(createFSArray(jcas, tokens.toArray(new Annotation[tokens.size()])), Token.class));
+  }
 
-	@Test
-	public void testCreateIntArray() throws Exception {
-		assertEquals(asList(0, 1),
-				asList(toObject(createIntArray(jcas.getCas(), asList(0, 1)).toArray())));
-		assertEquals(asList(0, 1),
-				asList(toObject(createIntArray(jcas.getCas(), new int[] {0, 1}).toArray())));
-		assertEquals(asList(0, 1),
-				asList(toObject(createIntArray(jcas, asList(0, 1)).toArray())));
-		assertEquals(asList(0, 1),
-				asList(toObject(createIntArray(jcas, new int[] {0, 1}).toArray())));
-	}
+  @Test
+  public void testCreateBooleanArray() throws Exception {
+    assertEquals(asList(true, false),
+            asList(toObject(createBooleanArray(jcas.getCas(), asList(true, false)).toArray())));
+    assertEquals(asList(true, false),
+            asList(toObject(createBooleanArray(jcas.getCas(), new boolean[] { true, false })
+                    .toArray())));
+    assertEquals(asList(true, false), asList(toObject(createBooleanArray(jcas, asList(true, false))
+            .toArray())));
+    assertEquals(asList(true, false),
+            asList(toObject(createBooleanArray(jcas, new boolean[] { true, false }).toArray())));
+  }
 
-	@Test
-	public void testCreateIntegerList() throws Exception {
-		assertEquals(asList(0, 1), create(createIntegerList(jcas, asList(0, 1))));
-	}
+  @Test
+  public void testCreateByteArray() throws Exception {
+    assertEquals(asList((byte) 0, (byte) 1),
+            asList(toObject(createByteArray(jcas.getCas(), asList((byte) 0, (byte) 1)).toArray())));
+    assertEquals(asList((byte) 0, (byte) 1),
+            asList(toObject(createByteArray(jcas.getCas(), new byte[] { 0, 1 }).toArray())));
+    assertEquals(asList((byte) 0, (byte) 1),
+            asList(toObject(createByteArray(jcas, asList((byte) 0, (byte) 1)).toArray())));
+    assertEquals(asList((byte) 0, (byte) 1),
+            asList(toObject(createByteArray(jcas, new byte[] { 0, 1 }).toArray())));
+  }
 
-	@Test
-	public void testCreateLongArray() throws Exception {
-		assertEquals(asList(0l, 1l),
-				asList(toObject(createLongArray(jcas.getCas(), asList(0l, 1l)).toArray())));
-		assertEquals(asList(0l, 1l),
-				asList(toObject(createLongArray(jcas.getCas(), new long[] {0l, 1l}).toArray())));
-		assertEquals(asList(0l, 1l),
-				asList(toObject(createLongArray(jcas, asList(0l, 1l)).toArray())));
-		assertEquals(asList(0l, 1l),
-				asList(toObject(createLongArray(jcas, new long[] {0l, 1l}).toArray())));
-	}
+  @Test
+  public void testCreateDoubleArray() throws Exception {
+    assertEquals(asList(0.0, 1.0),
+            asList(toObject(createDoubleArray(jcas.getCas(), asList(0.0, 1.0)).toArray())));
+    assertEquals(asList(0.0, 1.0),
+            asList(toObject(createDoubleArray(jcas.getCas(), new double[] { 0.0, 1.0 }).toArray())));
+    assertEquals(asList(0.0, 1.0), asList(toObject(createDoubleArray(jcas, asList(0.0, 1.0))
+            .toArray())));
+    assertEquals(asList(0.0, 1.0),
+            asList(toObject(createDoubleArray(jcas, new double[] { 0.0, 1.0 }).toArray())));
+  }
 
-	@Test
-	public void testCreateShortArray() throws Exception {
-		assertEquals(asList((short) 0, (short) 1),
-				asList(toObject(createShortArray(jcas.getCas(), asList((short) 0, (short) 1)).toArray())));
-		assertEquals(asList((short) 0, (short) 1),
-				asList(toObject(createShortArray(jcas.getCas(), new short[] {0, 1}).toArray())));
-		assertEquals(asList((short) 0, (short) 1),
-				asList(toObject(createShortArray(jcas, asList((short) 0, (short) 1)).toArray())));
-		assertEquals(asList((short) 0, (short) 1),
-				asList(toObject(createShortArray(jcas, new short[] {0, 1}).toArray())));
-	}
+  @Test
+  public void testCreateFloatArray() throws Exception {
+    assertEquals(asList(0.0f, 1.0f),
+            asList(toObject(createFloatArray(jcas.getCas(), asList(0.0f, 1.0f)).toArray())));
+    assertEquals(asList(0.0f, 1.0f),
+            asList(toObject(createFloatArray(jcas.getCas(), new float[] { 0.0f, 1.0f }).toArray())));
+    assertEquals(asList(0.0f, 1.0f), asList(toObject(createFloatArray(jcas, asList(0.0f, 1.0f))
+            .toArray())));
+    assertEquals(asList(0.0f, 1.0f),
+            asList(toObject(createFloatArray(jcas, new float[] { 0.0f, 1.0f }).toArray())));
+  }
 
-	@Test
-	public void testCreateStringArray() throws Exception {
-		assertEquals(asList("0", "1"),
-				asList(createStringArray(jcas.getCas(), asList("0", "1")).toArray()));
-		assertEquals(asList("0", "1"),
-				asList(createStringArray(jcas.getCas(), new String[] {"0", "1"}).toArray()));
-		assertEquals(asList("0", "1"),
-				asList(createStringArray(jcas, asList("0", "1")).toArray()));
-		assertEquals(asList("0", "1"),
-				asList(createStringArray(jcas, new String[] {"0", "1"}).toArray()));
-	}
-	
-	@Test
-	public void testCreateStringList() throws Exception {
-		assertEquals(asList("0", "1"), create(createStringList(jcas, asList("0", "1"))));
-	}
+  @Test
+  public void testCreateFloatList() throws Exception {
+    assertEquals(asList(0.0f, 1.0f), create(createFloatList(jcas, asList(0.0f, 1.0f))));
+  }
+
+  @Test
+  public void testCreateIntArray() throws Exception {
+    assertEquals(asList(0, 1), asList(toObject(createIntArray(jcas.getCas(), asList(0, 1))
+            .toArray())));
+    assertEquals(asList(0, 1), asList(toObject(createIntArray(jcas.getCas(), new int[] { 0, 1 })
+            .toArray())));
+    assertEquals(asList(0, 1), asList(toObject(createIntArray(jcas, asList(0, 1)).toArray())));
+    assertEquals(asList(0, 1), asList(toObject(createIntArray(jcas, new int[] { 0, 1 }).toArray())));
+  }
+
+  @Test
+  public void testCreateIntegerList() throws Exception {
+    assertEquals(asList(0, 1), create(createIntegerList(jcas, asList(0, 1))));
+  }
+
+  @Test
+  public void testCreateLongArray() throws Exception {
+    assertEquals(asList(0l, 1l), asList(toObject(createLongArray(jcas.getCas(), asList(0l, 1l))
+            .toArray())));
+    assertEquals(asList(0l, 1l),
+            asList(toObject(createLongArray(jcas.getCas(), new long[] { 0l, 1l }).toArray())));
+    assertEquals(asList(0l, 1l), asList(toObject(createLongArray(jcas, asList(0l, 1l)).toArray())));
+    assertEquals(asList(0l, 1l), asList(toObject(createLongArray(jcas, new long[] { 0l, 1l })
+            .toArray())));
+  }
+
+  @Test
+  public void testCreateShortArray() throws Exception {
+    assertEquals(
+            asList((short) 0, (short) 1),
+            asList(toObject(createShortArray(jcas.getCas(), asList((short) 0, (short) 1)).toArray())));
+    assertEquals(asList((short) 0, (short) 1),
+            asList(toObject(createShortArray(jcas.getCas(), new short[] { 0, 1 }).toArray())));
+    assertEquals(asList((short) 0, (short) 1),
+            asList(toObject(createShortArray(jcas, asList((short) 0, (short) 1)).toArray())));
+    assertEquals(asList((short) 0, (short) 1),
+            asList(toObject(createShortArray(jcas, new short[] { 0, 1 }).toArray())));
+  }
+
+  @Test
+  public void testCreateStringArray() throws Exception {
+    assertEquals(asList("0", "1"), asList(createStringArray(jcas.getCas(), asList("0", "1"))
+            .toArray()));
+    assertEquals(asList("0", "1"),
+            asList(createStringArray(jcas.getCas(), new String[] { "0", "1" }).toArray()));
+    assertEquals(asList("0", "1"), asList(createStringArray(jcas, asList("0", "1")).toArray()));
+    assertEquals(asList("0", "1"), asList(createStringArray(jcas, new String[] { "0", "1" })
+            .toArray()));
+  }
+
+  @Test
+  public void testCreateStringList() throws Exception {
+    assertEquals(asList("0", "1"), create(createStringList(jcas, asList("0", "1"))));
+  }
 }

@@ -20,3 +20,4 @@
  * Example for using the {@link org.apache.uima.fit.descriptor.ConfigurationParameter} annotation.
  */
 package org.apache.uima.fit.examples.tutorial.ex2;
+

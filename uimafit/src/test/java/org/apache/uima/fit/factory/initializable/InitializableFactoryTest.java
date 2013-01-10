@@ -36,105 +36,107 @@ import org.junit.Test;
  */
 public class InitializableFactoryTest {
 
-	@Test
-	public void testInitializableFactory() throws Exception {
-		UimaContext context = UimaContextFactory.createUimaContext(
-				InitializableClass.PARAM_BOOLEAN_PARAMETER, true);
-		InitializableClass ic = InitializableFactory.create(context, InitializableClass.class);
-		assertTrue(ic.booleanParameter);
+  @Test
+  public void testInitializableFactory() throws Exception {
+    UimaContext context = UimaContextFactory.createUimaContext(
+            InitializableClass.PARAM_BOOLEAN_PARAMETER, true);
+    InitializableClass ic = InitializableFactory.create(context, InitializableClass.class);
+    assertTrue(ic.booleanParameter);
 
-		NotInitializableClass nic = InitializableFactory.create(context,
-				NotInitializableClass.class);
-		assertFalse(nic.booleanParameter);
+    NotInitializableClass nic = InitializableFactory.create(context, NotInitializableClass.class);
+    assertFalse(nic.booleanParameter);
 
-		context = UimaContextFactory.createUimaContext(
-				InitializableFileNamer.PARAM_STRING_PARAMETER, "goodbye");
-		String className = InitializableFileNamer.class.getName();
-		XWriterFileNamer fn = InitializableFactory.create(context, className,
-				XWriterFileNamer.class);
-		assertEquals("goodbye", ((InitializableFileNamer) fn).stringParameter);
+    context = UimaContextFactory.createUimaContext(InitializableFileNamer.PARAM_STRING_PARAMETER,
+            "goodbye");
+    String className = InitializableFileNamer.class.getName();
+    XWriterFileNamer fn = InitializableFactory.create(context, className, XWriterFileNamer.class);
+    assertEquals("goodbye", ((InitializableFileNamer) fn).stringParameter);
 
-		className = NotInitializableFileNamer.class.getName();
-		fn = InitializableFactory.create(context, className, XWriterFileNamer.class);
-		assertEquals("hello", ((NotInitializableFileNamer) fn).stringParameter);
+    className = NotInitializableFileNamer.class.getName();
+    fn = InitializableFactory.create(context, className, XWriterFileNamer.class);
+    assertEquals("hello", ((NotInitializableFileNamer) fn).stringParameter);
 
-	}
+  }
 
-	@Test(expected = ResourceInitializationException.class)
-	public void testBadClass() throws ResourceInitializationException {
-		UimaContext context = UimaContextFactory.createUimaContext(
-				InitializableClass.PARAM_BOOLEAN_PARAMETER, true);
-		InitializableFactory.create(context, NotInitializableClass.class.getName(),
-				XWriterFileNamer.class);
-	}
+  @Test(expected = ResourceInitializationException.class)
+  public void testBadClass() throws ResourceInitializationException {
+    UimaContext context = UimaContextFactory.createUimaContext(
+            InitializableClass.PARAM_BOOLEAN_PARAMETER, true);
+    InitializableFactory.create(context, NotInitializableClass.class.getName(),
+            XWriterFileNamer.class);
+  }
 
-	@Test(expected = ResourceInitializationException.class)
-	public void testBadConstructor() throws ResourceInitializationException {
-		UimaContext context = UimaContextFactory.createUimaContext(
-				InitializableClass.PARAM_BOOLEAN_PARAMETER, true);
-		InitializableFactory.create(context, NoDefaultConstructor.class);
-	}
+  @Test(expected = ResourceInitializationException.class)
+  public void testBadConstructor() throws ResourceInitializationException {
+    UimaContext context = UimaContextFactory.createUimaContext(
+            InitializableClass.PARAM_BOOLEAN_PARAMETER, true);
+    InitializableFactory.create(context, NoDefaultConstructor.class);
+  }
 
-	public static class InitializableClass implements Initializable {
+  public static class InitializableClass implements Initializable {
 
-		public static final String PARAM_BOOLEAN_PARAMETER = ConfigurationParameterFactory
-				.createConfigurationParameterName(InitializableClass.class, "booleanParameter");
-		@ConfigurationParameter
-		public boolean booleanParameter = false;
+    public static final String PARAM_BOOLEAN_PARAMETER = ConfigurationParameterFactory
+            .createConfigurationParameterName(InitializableClass.class, "booleanParameter");
 
-		public void initialize(UimaContext context) throws ResourceInitializationException {
-			ConfigurationParameterInitializer.initialize(this, context);
-		}
-	}
+    @ConfigurationParameter
+    public boolean booleanParameter = false;
 
-	public static class NotInitializableClass {
+    public void initialize(UimaContext context) throws ResourceInitializationException {
+      ConfigurationParameterInitializer.initialize(this, context);
+    }
+  }
 
-		public static final String PARAM_BOOLEAN_PARAMETER = ConfigurationParameterFactory
-				.createConfigurationParameterName(InitializableClass.class, "booleanParameter");
-		@ConfigurationParameter
-		public boolean booleanParameter = false;
+  public static class NotInitializableClass {
 
-		public void initialize(UimaContext context) throws ResourceInitializationException {
-			ConfigurationParameterInitializer.initialize(this, context);
-		}
-	}
+    public static final String PARAM_BOOLEAN_PARAMETER = ConfigurationParameterFactory
+            .createConfigurationParameterName(InitializableClass.class, "booleanParameter");
 
-	public static class InitializableFileNamer implements Initializable, XWriterFileNamer {
+    @ConfigurationParameter
+    public boolean booleanParameter = false;
 
-		public static final String PARAM_STRING_PARAMETER = ConfigurationParameterFactory
-				.createConfigurationParameterName(InitializableFileNamer.class, "stringParameter");
-		@ConfigurationParameter
-		public String stringParameter = "hello";
+    public void initialize(UimaContext context) throws ResourceInitializationException {
+      ConfigurationParameterInitializer.initialize(this, context);
+    }
+  }
 
-		public void initialize(UimaContext context) throws ResourceInitializationException {
-			ConfigurationParameterInitializer.initialize(this, context);
-		}
+  public static class InitializableFileNamer implements Initializable, XWriterFileNamer {
 
-		public String nameFile(JCas jCas) {
-			return "some_name_for_this_jcas.xmi";
-		}
-	}
+    public static final String PARAM_STRING_PARAMETER = ConfigurationParameterFactory
+            .createConfigurationParameterName(InitializableFileNamer.class, "stringParameter");
 
-	public static class NotInitializableFileNamer implements XWriterFileNamer {
+    @ConfigurationParameter
+    public String stringParameter = "hello";
 
-		public static final String PARAM_STRING_PARAMETER = ConfigurationParameterFactory
-				.createConfigurationParameterName(InitializableFileNamer.class, "stringParameter");
-		@ConfigurationParameter
-		public String stringParameter = "hello";
+    public void initialize(UimaContext context) throws ResourceInitializationException {
+      ConfigurationParameterInitializer.initialize(this, context);
+    }
 
-		public void initialize(UimaContext context) throws ResourceInitializationException {
-			ConfigurationParameterInitializer.initialize(this, context);
-		}
+    public String nameFile(JCas jCas) {
+      return "some_name_for_this_jcas.xmi";
+    }
+  }
 
-		public String nameFile(JCas jCas) {
-			return "some_name_for_this_jcas.xmi";
-		}
-	}
+  public static class NotInitializableFileNamer implements XWriterFileNamer {
 
-	public static class NoDefaultConstructor {
-		public NoDefaultConstructor(String s) {
-			// do nothing
-		}
-	}
+    public static final String PARAM_STRING_PARAMETER = ConfigurationParameterFactory
+            .createConfigurationParameterName(InitializableFileNamer.class, "stringParameter");
+
+    @ConfigurationParameter
+    public String stringParameter = "hello";
+
+    public void initialize(UimaContext context) throws ResourceInitializationException {
+      ConfigurationParameterInitializer.initialize(this, context);
+    }
+
+    public String nameFile(JCas jCas) {
+      return "some_name_for_this_jcas.xmi";
+    }
+  }
+
+  public static class NoDefaultConstructor {
+    public NoDefaultConstructor(String s) {
+      // do nothing
+    }
+  }
 
 }

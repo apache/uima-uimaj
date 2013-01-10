@@ -46,83 +46,80 @@ import org.xml.sax.SAXException;
 
 public class SingleFileXReader extends CasCollectionReader_ImplBase {
 
-	public static final String PARAM_FILE_NAME = ConfigurationParameterFactory
-			.createConfigurationParameterName(SingleFileXReader.class, "fileName");
+  public static final String PARAM_FILE_NAME = ConfigurationParameterFactory
+          .createConfigurationParameterName(SingleFileXReader.class, "fileName");
 
-	@ConfigurationParameter(mandatory = true, description = "takes the name of a single xmi or xcas file to be processed.")
-	private String fileName;
+  @ConfigurationParameter(mandatory = true, description = "takes the name of a single xmi or xcas file to be processed.")
+  private String fileName;
 
-	public static final String XMI = "XMI";
-	public static final String XCAS = "XCAS";
+  public static final String XMI = "XMI";
 
-	public static final String PARAM_XML_SCHEME = ConfigurationParameterFactory
-			.createConfigurationParameterName(SingleFileXReader.class, "xmlScheme");
-	@ConfigurationParameter(mandatory = true, description = "specifies the UIMA XML serialization scheme that should be usedValid values for this parameter are 'XMI' and 'XCAS'. See XmiCasSerializer or XCASSerializer", defaultValue = XMI)
-	private String xmlScheme;
+  public static final String XCAS = "XCAS";
 
-	private boolean useXMI = true;
+  public static final String PARAM_XML_SCHEME = ConfigurationParameterFactory
+          .createConfigurationParameterName(SingleFileXReader.class, "xmlScheme");
 
-	private boolean hasNext = true;
+  @ConfigurationParameter(mandatory = true, description = "specifies the UIMA XML serialization scheme that should be usedValid values for this parameter are 'XMI' and 'XCAS'. See XmiCasSerializer or XCASSerializer", defaultValue = XMI)
+  private String xmlScheme;
 
-	private File file;
+  private boolean useXMI = true;
 
-	@Override
-	public void initialize(UimaContext context) throws ResourceInitializationException {
-		super.initialize(context);
+  private boolean hasNext = true;
 
-		file = new File(fileName);
+  private File file;
 
-		if (xmlScheme.equals(XMI)) {
-			useXMI = true;
-		}
-		else if (xmlScheme.equals(XCAS)) {
-			useXMI = false;
-		}
-		else {
-			throw new ResourceInitializationException(String.format(
-					"parameter '%1$s' must be either '%2$s' or '%3$s' or left empty.",
-					PARAM_XML_SCHEME, XMI, XCAS), null);
-		}
+  @Override
+  public void initialize(UimaContext context) throws ResourceInitializationException {
+    super.initialize(context);
 
-	}
+    file = new File(fileName);
 
-	public void getNext(CAS cas) throws IOException, CollectionException {
+    if (xmlScheme.equals(XMI)) {
+      useXMI = true;
+    } else if (xmlScheme.equals(XCAS)) {
+      useXMI = false;
+    } else {
+      throw new ResourceInitializationException(String.format(
+              "parameter '%1$s' must be either '%2$s' or '%3$s' or left empty.", PARAM_XML_SCHEME,
+              XMI, XCAS), null);
+    }
 
-		FileInputStream inputStream = new FileInputStream(file);
+  }
 
-		try {
-			if (useXMI) {
-				XmiCasDeserializer.deserialize(inputStream, cas);
-			}
-			else {
-				XCASDeserializer.deserialize(inputStream, cas);
-			}
-		}
-		catch (SAXException e) {
-			throw new CollectionException(e);
-		}
-		finally {
-			inputStream.close();
-		}
+  public void getNext(CAS cas) throws IOException, CollectionException {
 
-		inputStream.close();
-		hasNext = false;
-	}
+    FileInputStream inputStream = new FileInputStream(file);
 
-	@Override
-	public void close() throws IOException {
-		// do nothing
-	}
+    try {
+      if (useXMI) {
+        XmiCasDeserializer.deserialize(inputStream, cas);
+      } else {
+        XCASDeserializer.deserialize(inputStream, cas);
+      }
+    } catch (SAXException e) {
+      throw new CollectionException(e);
+    } finally {
+      inputStream.close();
+    }
 
-	public Progress[] getProgress() {
-		if (hasNext) {
-			return new Progress[] { new ProgressImpl(0, 1, Progress.ENTITIES) };
-		}
-		return new Progress[] { new ProgressImpl(1, 1, Progress.ENTITIES) };
-	}
+    inputStream.close();
+    hasNext = false;
+  }
 
-	public boolean hasNext() throws IOException, CollectionException {
-		return hasNext;
-	}
+  @Override
+  public void close() throws IOException {
+    // do nothing
+  }
+
+  public Progress[] getProgress() {
+    if (hasNext) {
+      return new Progress[] { new ProgressImpl(0, 1, Progress.ENTITIES) };
+    }
+    return new Progress[] { new ProgressImpl(1, 1, Progress.ENTITIES) };
+  }
+
+  public boolean hasNext() throws IOException, CollectionException {
+    return hasNext;
+  }
 
 }

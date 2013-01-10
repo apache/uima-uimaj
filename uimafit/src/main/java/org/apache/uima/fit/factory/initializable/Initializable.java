@@ -33,7 +33,7 @@ import org.apache.uima.resource.ResourceInitializationException;
  * is instantiated, it is useful to provide it a {@code UimaContext} so that it can initialize
  * itself based on configuration parameters.
  * </p>
- *
+ * 
  * <p>
  * As an example, consider the component {@link XWriter} which has a member variable of type
  * {@link XWriterFileNamer} which is an interface that provides a way for {@code XWriter} to come up
@@ -48,13 +48,13 @@ import org.apache.uima.resource.ResourceInitializationException;
  * {@code XWriterFileNamer} does not have to implement {@code Initializable} if it has no need for
  * the initialize method.
  * </p>
- *
+ * 
  */
 public interface Initializable {
 
-	/**
-	 * This method will be called automatically if the implementing class is instantiated with
-	 * InitializableFactory.
-	 */
-	public void initialize(UimaContext context) throws ResourceInitializationException;
+  /**
+   * This method will be called automatically if the implementing class is instantiated with
+   * InitializableFactory.
+   */
+  public void initialize(UimaContext context) throws ResourceInitializationException;
 }

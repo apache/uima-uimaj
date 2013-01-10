@@ -47,146 +47,142 @@ import org.junit.Test;
 
 /**
  * Test cases for {@link JCasUtil}.
- *
+ * 
  */
 public class CasUtilTest extends ComponentTestBase {
-	@Test
-	public void testGetType() throws UIMAException {
-		String text = "Rot wood cheeses dew?";
-		tokenBuilder.buildTokens(jCas, text);
+  @Test
+  public void testGetType() throws UIMAException {
+    String text = "Rot wood cheeses dew?";
+    tokenBuilder.buildTokens(jCas, text);
 
-		CAS cas = jCas.getCas();
+    CAS cas = jCas.getCas();
 
-		assertEquals(Token.class.getName(), getType(cas, Token.class.getName()).getName());
-		assertEquals(Token.class.getName(), getType(cas, Token.class).getName());
-		assertEquals(Token.class.getName(), getAnnotationType(cas, Token.class.getName()).getName());
-		assertEquals(Token.class.getName(), getAnnotationType(cas, Token.class).getName());
-		assertEquals("uima.cas.TOP", getType(cas, TOP.class).getName());
-		assertEquals("uima.cas.TOP", getType(cas, TOP.class.getName()).getName());
-		assertEquals("uima.tcas.Annotation", getType(cas, Annotation.class).getName());
-		assertEquals("uima.tcas.Annotation", getType(cas, Annotation.class.getName()).getName());
-		assertEquals("uima.tcas.Annotation", getAnnotationType(cas, Annotation.class).getName());
-		assertEquals("uima.tcas.Annotation", getAnnotationType(cas, Annotation.class.getName()).getName());
-	}
+    assertEquals(Token.class.getName(), getType(cas, Token.class.getName()).getName());
+    assertEquals(Token.class.getName(), getType(cas, Token.class).getName());
+    assertEquals(Token.class.getName(), getAnnotationType(cas, Token.class.getName()).getName());
+    assertEquals(Token.class.getName(), getAnnotationType(cas, Token.class).getName());
+    assertEquals("uima.cas.TOP", getType(cas, TOP.class).getName());
+    assertEquals("uima.cas.TOP", getType(cas, TOP.class.getName()).getName());
+    assertEquals("uima.tcas.Annotation", getType(cas, Annotation.class).getName());
+    assertEquals("uima.tcas.Annotation", getType(cas, Annotation.class.getName()).getName());
+    assertEquals("uima.tcas.Annotation", getAnnotationType(cas, Annotation.class).getName());
+    assertEquals("uima.tcas.Annotation", getAnnotationType(cas, Annotation.class.getName())
+            .getName());
+  }
 
-	@Test(expected=IllegalArgumentException.class)
-	public void testGetNonExistingType() throws UIMAException {
-		String text = "Rot wood cheeses dew?";
-		tokenBuilder.buildTokens(jCas, text);
+  @Test(expected = IllegalArgumentException.class)
+  public void testGetNonExistingType() throws UIMAException {
+    String text = "Rot wood cheeses dew?";
+    tokenBuilder.buildTokens(jCas, text);
 
-		CAS cas = jCas.getCas();
+    CAS cas = jCas.getCas();
 
-		getType(cas, Token.class.getName()+"_dummy");
-	}
+    getType(cas, Token.class.getName() + "_dummy");
+  }
 
-	@Test(expected=IllegalArgumentException.class)
-	public void testGetNonAnnotationType() throws UIMAException {
-		String text = "Rot wood cheeses dew?";
-		tokenBuilder.buildTokens(jCas, text);
+  @Test(expected = IllegalArgumentException.class)
+  public void testGetNonAnnotationType() throws UIMAException {
+    String text = "Rot wood cheeses dew?";
+    tokenBuilder.buildTokens(jCas, text);
 
-		CAS cas = jCas.getCas();
+    CAS cas = jCas.getCas();
 
-		getAnnotationType(cas, TOP.class);
-	}
+    getAnnotationType(cas, TOP.class);
+  }
 
-	@Test
-	public void testSelectByIndex() throws UIMAException {
-		String text = "Rot wood cheeses dew?";
-		tokenBuilder.buildTokens(jCas, text);
+  @Test
+  public void testSelectByIndex() throws UIMAException {
+    String text = "Rot wood cheeses dew?";
+    tokenBuilder.buildTokens(jCas, text);
 
-		CAS cas = jCas.getCas();
-		Type type = JCasUtil.getType(jCas, Token.class);
+    CAS cas = jCas.getCas();
+    Type type = JCasUtil.getType(jCas, Token.class);
 
-		assertEquals("dew?", selectByIndex(cas, type, -1).getCoveredText());
-		assertEquals("dew?", selectByIndex(cas, type, 3).getCoveredText());
-		assertEquals("Rot", selectByIndex(cas, type, 0).getCoveredText());
-		assertEquals("Rot", selectByIndex(cas, type, -4).getCoveredText());
-		assertNull(selectByIndex(cas, type, -5));
-		assertNull(selectByIndex(cas, type, 4));
-	}
+    assertEquals("dew?", selectByIndex(cas, type, -1).getCoveredText());
+    assertEquals("dew?", selectByIndex(cas, type, 3).getCoveredText());
+    assertEquals("Rot", selectByIndex(cas, type, 0).getCoveredText());
+    assertEquals("Rot", selectByIndex(cas, type, -4).getCoveredText());
+    assertNull(selectByIndex(cas, type, -5));
+    assertNull(selectByIndex(cas, type, 4));
+  }
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@Test
-	public void testSelectOnAnnotations() throws Exception {
-		String text = "Rot wood cheeses dew?";
-		tokenBuilder.buildTokens(jCas, text);
+  @SuppressWarnings({ "unchecked", "rawtypes" })
+  @Test
+  public void testSelectOnAnnotations() throws Exception {
+    String text = "Rot wood cheeses dew?";
+    tokenBuilder.buildTokens(jCas, text);
 
-		CAS cas = jCas.getCas();
+    CAS cas = jCas.getCas();
 
-		assertEquals(
-				asList("Rot", "wood", "cheeses", "dew?"),
-				toText(select(cas, getType(cas, Token.class.getName()))));
+    assertEquals(asList("Rot", "wood", "cheeses", "dew?"),
+            toText(select(cas, getType(cas, Token.class.getName()))));
 
-		assertEquals(
-				asList("Rot", "wood", "cheeses", "dew?"),
-				toText((Collection<AnnotationFS>)(Collection)selectFS(cas, getType(cas, Token.class.getName()))));
-	}
+    assertEquals(
+            asList("Rot", "wood", "cheeses", "dew?"),
+            toText((Collection<AnnotationFS>) (Collection) selectFS(cas,
+                    getType(cas, Token.class.getName()))));
+  }
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@Test
-	public void testSelectOnArrays() throws Exception {
-		String text = "Rot wood cheeses dew?";
-		tokenBuilder.buildTokens(jCas, text);
+  @SuppressWarnings({ "rawtypes", "unchecked" })
+  @Test
+  public void testSelectOnArrays() throws Exception {
+    String text = "Rot wood cheeses dew?";
+    tokenBuilder.buildTokens(jCas, text);
 
-		CAS cas = jCas.getCas();
+    CAS cas = jCas.getCas();
 
-		Collection<FeatureStructure> allFS = selectFS(cas, getType(cas, TOP.class.getName()));
-		ArrayFS allFSArray = cas.createArrayFS(allFS.size());
-		int i = 0;
-		for (FeatureStructure fs : allFS) {
-			allFSArray.set(i, fs);
-			i++;
-		}
+    Collection<FeatureStructure> allFS = selectFS(cas, getType(cas, TOP.class.getName()));
+    ArrayFS allFSArray = cas.createArrayFS(allFS.size());
+    int i = 0;
+    for (FeatureStructure fs : allFS) {
+      allFSArray.set(i, fs);
+      i++;
+    }
 
-		// Print what is expected
-		for (FeatureStructure fs : allFS) {
-			System.out.println("Type: "+fs.getType().getName()+"]");
-		}
-		System.out.println("Tokens: ["+toText(select(cas, getType(cas, Token.class.getName())))+"]");
+    // Print what is expected
+    for (FeatureStructure fs : allFS) {
+      System.out.println("Type: " + fs.getType().getName() + "]");
+    }
+    System.out
+            .println("Tokens: [" + toText(select(cas, getType(cas, Token.class.getName()))) + "]");
 
-		// Document Annotation, one sentence and 4 tokens.
-		assertEquals(6, allFS.size());
+    // Document Annotation, one sentence and 4 tokens.
+    assertEquals(6, allFS.size());
 
-		assertEquals(
-				toText(select(cas, getType(cas, Token.class.getName()))),
-				toText(select(allFSArray, getType(cas, Token.class.getName()))));
+    assertEquals(toText(select(cas, getType(cas, Token.class.getName()))),
+            toText(select(allFSArray, getType(cas, Token.class.getName()))));
 
-		assertEquals(
-				toText((Iterable) selectFS(cas, getType(cas, Token.class.getName()))),
-				toText((Iterable) selectFS(allFSArray, getType(cas, Token.class.getName()))));
-	}
+    assertEquals(toText((Iterable) selectFS(cas, getType(cas, Token.class.getName()))),
+            toText((Iterable) selectFS(allFSArray, getType(cas, Token.class.getName()))));
+  }
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@Test
-	public void testIterator() throws Exception {
-		String text = "Rot wood cheeses dew?";
-		tokenBuilder.buildTokens(jCas, text);
+  @SuppressWarnings({ "unchecked", "rawtypes" })
+  @Test
+  public void testIterator() throws Exception {
+    String text = "Rot wood cheeses dew?";
+    tokenBuilder.buildTokens(jCas, text);
 
-		CAS cas = jCas.getCas();
+    CAS cas = jCas.getCas();
 
-		assertEquals(
-				asList("Rot", "wood", "cheeses", "dew?"),
-				toText(iterator(cas, getType(cas, Token.class))));
+    assertEquals(asList("Rot", "wood", "cheeses", "dew?"),
+            toText(iterator(cas, getType(cas, Token.class))));
 
-		assertEquals(
-				asList("Rot", "wood", "cheeses", "dew?"),
-				toText((Iterator<AnnotationFS>)(Iterator)iteratorFS(cas, getType(cas, Token.class))));
-	}
+    assertEquals(asList("Rot", "wood", "cheeses", "dew?"),
+            toText((Iterator<AnnotationFS>) (Iterator) iteratorFS(cas, getType(cas, Token.class))));
+  }
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@Test
-	public void testIterate() throws Exception {
-		String text = "Rot wood cheeses dew?";
-		tokenBuilder.buildTokens(jCas, text);
+  @SuppressWarnings({ "unchecked", "rawtypes" })
+  @Test
+  public void testIterate() throws Exception {
+    String text = "Rot wood cheeses dew?";
+    tokenBuilder.buildTokens(jCas, text);
 
-		CAS cas = jCas.getCas();
+    CAS cas = jCas.getCas();
 
-		assertEquals(
-				asList("Rot", "wood", "cheeses", "dew?"),
-				toText(select(cas, getType(cas, Token.class))));
+    assertEquals(asList("Rot", "wood", "cheeses", "dew?"),
+            toText(select(cas, getType(cas, Token.class))));
 
-		assertEquals(
-				asList("Rot", "wood", "cheeses", "dew?"),
-				toText((Iterable<AnnotationFS>)(Iterable)selectFS(cas, getType(cas, Token.class))));
-	}
+    assertEquals(asList("Rot", "wood", "cheeses", "dew?"),
+            toText((Iterable<AnnotationFS>) (Iterable) selectFS(cas, getType(cas, Token.class))));
+  }
 }

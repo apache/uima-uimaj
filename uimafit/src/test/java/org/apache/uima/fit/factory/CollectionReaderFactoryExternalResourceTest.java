@@ -36,7 +36,6 @@
  * under the License.
  */
 
-
 package org.apache.uima.fit.factory;
 
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createCollectionReader;
@@ -58,34 +57,35 @@ import org.junit.Test;
 /**
  */
 public class CollectionReaderFactoryExternalResourceTest {
-	@Test
-	public void testAutoExternalResourceBinding() throws UIMAException, IOException {
-		CollectionReader reader = createCollectionReader(
-				TestReader.class,
-				TestReader.PARAM_RESOURCE,
-				createExternalResourceDescription(TestExternalResource.class,
-						TestExternalResource.PARAM_VALUE, TestExternalResource.EXPECTED_VALUE));
+  @Test
+  public void testAutoExternalResourceBinding() throws UIMAException, IOException {
+    CollectionReader reader = createCollectionReader(
+            TestReader.class,
+            TestReader.PARAM_RESOURCE,
+            createExternalResourceDescription(TestExternalResource.class,
+                    TestExternalResource.PARAM_VALUE, TestExternalResource.EXPECTED_VALUE));
 
-		reader.hasNext();
-	}
+    reader.hasNext();
+  }
 
-	public static class TestReader extends CasCollectionReader_ImplBase {
-		public final static String PARAM_RESOURCE = "resource";
-		@ExternalResource(key = PARAM_RESOURCE)
-		private TestExternalResource resource;
+  public static class TestReader extends CasCollectionReader_ImplBase {
+    public final static String PARAM_RESOURCE = "resource";
 
-		public boolean hasNext() throws IOException, CollectionException {
-			assertNotNull(resource);
-			resource.assertConfiguredOk();
-			return false;
-		}
-		
-		public void getNext(CAS aCAS) throws IOException, CollectionException {
-			// This is never called
-		}
-		
-		public Progress[] getProgress() {
-			return new Progress[0];
-		}
-	}
+    @ExternalResource(key = PARAM_RESOURCE)
+    private TestExternalResource resource;
+
+    public boolean hasNext() throws IOException, CollectionException {
+      assertNotNull(resource);
+      resource.assertConfiguredOk();
+      return false;
+    }
+
+    public void getNext(CAS aCAS) throws IOException, CollectionException {
+      // This is never called
+    }
+
+    public Progress[] getProgress() {
+      return new Progress[0];
+    }
+  }
 }

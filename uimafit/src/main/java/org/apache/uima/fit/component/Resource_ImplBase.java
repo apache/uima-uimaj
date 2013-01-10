@@ -29,45 +29,45 @@ import org.apache.uima.resource.ResourceSpecifier;
 
 /**
  * Base class for external resources which initializes itself based on annotations.
- *
+ * 
  */
 public abstract class Resource_ImplBase extends org.apache.uima.resource.Resource_ImplBase
-		implements ExternalResourceAware {
+        implements ExternalResourceAware {
 
-	private ExtendedLogger logger;
-	
-	@ConfigurationParameter(name=ExternalResourceFactory.PARAM_RESOURCE_NAME, mandatory=false)
-	private String resourceName;
-	
-	@Override
-	public ExtendedLogger getLogger() {
-		if (logger == null) {
-			logger = new ExtendedLogger(getUimaContext());
-		}
-		return logger;
-	}
-	
-	@Override
-	public boolean initialize(final ResourceSpecifier aSpecifier,
-			final Map<String, Object> aAdditionalParams) throws ResourceInitializationException {
-		if (!super.initialize(aSpecifier, aAdditionalParams)) {
-			return false;
-		}
+  private ExtendedLogger logger;
 
-		ConfigurationParameterInitializer.initialize(this, aSpecifier);
-		// We cannot call ExternalResourceInitializer.initialize() because the 
-		// ResourceManager_impl has not added the resources to the context yet.
-		// Resource initialization is handled by ExternalResourceInitializer.initialize()
-		// when it is called on the first pipeline component.
-		
-		return true;
-	}
-	
-	public String getResourceName() {
-		return resourceName;
-	}
-	
-	public void afterResourcesInitialized() {
-		// Per default nothing is done here.
-	}
+  @ConfigurationParameter(name = ExternalResourceFactory.PARAM_RESOURCE_NAME, mandatory = false)
+  private String resourceName;
+
+  @Override
+  public ExtendedLogger getLogger() {
+    if (logger == null) {
+      logger = new ExtendedLogger(getUimaContext());
+    }
+    return logger;
+  }
+
+  @Override
+  public boolean initialize(final ResourceSpecifier aSpecifier,
+          final Map<String, Object> aAdditionalParams) throws ResourceInitializationException {
+    if (!super.initialize(aSpecifier, aAdditionalParams)) {
+      return false;
+    }
+
+    ConfigurationParameterInitializer.initialize(this, aSpecifier);
+    // We cannot call ExternalResourceInitializer.initialize() because the
+    // ResourceManager_impl has not added the resources to the context yet.
+    // Resource initialization is handled by ExternalResourceInitializer.initialize()
+    // when it is called on the first pipeline component.
+
+    return true;
+  }
+
+  public String getResourceName() {
+    return resourceName;
+  }
+
+  public void afterResourcesInitialized() {
+    // Per default nothing is done here.
+  }
 }

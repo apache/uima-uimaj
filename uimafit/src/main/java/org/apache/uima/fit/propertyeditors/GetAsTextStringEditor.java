@@ -25,55 +25,52 @@ import org.springframework.beans.PropertyEditorRegistry;
 import org.springframework.beans.PropertyEditorRegistrySupport;
 
 /**
- * Custom property editor that tries to look convert and value to a string by checking if there is
- * a registered property editor for the source value.
+ * Custom property editor that tries to look convert and value to a string by checking if there is a
+ * registered property editor for the source value.
  * 
  */
 public class GetAsTextStringEditor extends PropertyEditorSupport {
-	private final PropertyEditorRegistry editorRegistry;
-	private final PropertyEditorRegistrySupport editorRegistrySupport;
-	
-	public GetAsTextStringEditor(final PropertyEditorRegistry aEditorRegistry) {
-		editorRegistry = aEditorRegistry;
-		if (aEditorRegistry instanceof PropertyEditorRegistrySupport) {
-			editorRegistrySupport = (PropertyEditorRegistrySupport) aEditorRegistry;
-		}
-		else {
-			editorRegistrySupport = new PropertyEditorRegistrySupport();
-		}
-	}
+  private final PropertyEditorRegistry editorRegistry;
 
-	@Override
-	public void setValue(Object value) {
-		if (value == null || value instanceof String) {
-			super.setValue(value);
-		}
-		else {
-			PropertyEditor editor = editorRegistry.findCustomEditor(value.getClass(), null);
-			if (editor == null) {
-				editor = editorRegistrySupport.getDefaultEditor(value.getClass());
-			}
-			if (editor != null) {
-				editor.setValue(value);
-				super.setValue(editor.getAsText());
-			}
-			else if (Enum.class.isAssignableFrom(value.getClass())) {
-				super.setValue(String.valueOf(value));
-			}
-			else {
-				throw new IllegalArgumentException("Unable to convert " + value.getClass()
-						+ " to String. No PropertyEditor found.");
-			}
-		}
-	}
-	
-	@Override
-	public void setAsText(String text) {
-		setValue(text);
-	}
+  private final PropertyEditorRegistrySupport editorRegistrySupport;
 
-	@Override
-	public String getAsText() {
-		return (String) getValue();
-	}
+  public GetAsTextStringEditor(final PropertyEditorRegistry aEditorRegistry) {
+    editorRegistry = aEditorRegistry;
+    if (aEditorRegistry instanceof PropertyEditorRegistrySupport) {
+      editorRegistrySupport = (PropertyEditorRegistrySupport) aEditorRegistry;
+    } else {
+      editorRegistrySupport = new PropertyEditorRegistrySupport();
+    }
+  }
+
+  @Override
+  public void setValue(Object value) {
+    if (value == null || value instanceof String) {
+      super.setValue(value);
+    } else {
+      PropertyEditor editor = editorRegistry.findCustomEditor(value.getClass(), null);
+      if (editor == null) {
+        editor = editorRegistrySupport.getDefaultEditor(value.getClass());
+      }
+      if (editor != null) {
+        editor.setValue(value);
+        super.setValue(editor.getAsText());
+      } else if (Enum.class.isAssignableFrom(value.getClass())) {
+        super.setValue(String.valueOf(value));
+      } else {
+        throw new IllegalArgumentException("Unable to convert " + value.getClass()
+                + " to String. No PropertyEditor found.");
+      }
+    }
+  }
+
+  @Override
+  public void setAsText(String text) {
+    setValue(text);
+  }
+
+  @Override
+  public String getAsText() {
+    return (String) getValue();
+  }
 }

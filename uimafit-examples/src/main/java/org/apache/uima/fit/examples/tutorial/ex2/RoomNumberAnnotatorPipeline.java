@@ -32,20 +32,19 @@ import org.apache.uima.jcas.JCas;
  */
 public class RoomNumberAnnotatorPipeline {
 
-	public static void main(String[] args) throws UIMAException {
-		AnalysisEngine analysisEngine = createPrimitive(RoomNumberAnnotator.class, "Patterns",
-				new String[] { "\\b[0-4]\\d-[0-2]\\d\\d\\b", "\\b[G1-4][NS]-[A-Z]\\d\\d\\b" },
-				"Locations", new String[] { "Downtown", "Uptown" });
+  public static void main(String[] args) throws UIMAException {
+    AnalysisEngine analysisEngine = createPrimitive(RoomNumberAnnotator.class, "Patterns",
+            new String[] { "\\b[0-4]\\d-[0-2]\\d\\d\\b", "\\b[G1-4][NS]-[A-Z]\\d\\d\\b" },
+            "Locations", new String[] { "Downtown", "Uptown" });
 
-		JCas jCas = analysisEngine.newJCas();
-		String text = "The meeting was moved from Yorktown 01-144 to Hawthorne 1S-W33.";
-		jCas.setDocumentText(text);
+    JCas jCas = analysisEngine.newJCas();
+    String text = "The meeting was moved from Yorktown 01-144 to Hawthorne 1S-W33.";
+    jCas.setDocumentText(text);
 
-		analysisEngine.process(jCas);
+    analysisEngine.process(jCas);
 
-		for (RoomNumber roomNumber : select(jCas, RoomNumber.class)) {
-			System.out.println(roomNumber.getCoveredText() + "\tbuilding = "
-					+ roomNumber.getBuilding());
-		}
-	}
+    for (RoomNumber roomNumber : select(jCas, RoomNumber.class)) {
+      System.out.println(roomNumber.getCoveredText() + "\tbuilding = " + roomNumber.getBuilding());
+    }
+  }
 }

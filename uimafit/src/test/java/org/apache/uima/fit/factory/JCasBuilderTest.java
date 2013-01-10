@@ -36,38 +36,38 @@ import org.junit.rules.TemporaryFolder;
 /**
  */
 public class JCasBuilderTest extends ComponentTestBase {
-	@Rule
-	public TemporaryFolder folder = new TemporaryFolder();
+  @Rule
+  public TemporaryFolder folder = new TemporaryFolder();
 
-	@Test
-	public void test() throws Exception {
-		JCasBuilder jb = new JCasBuilder(jCas);
-		jb.add("This sentence is not annotated. ");
-		jb.add("But this sentences is annotated. ", Sentence.class);
-		int begin = jb.getPosition();
-		jb.add("And", Token.class);
-		jb.add(" ");
-		jb.add("here", Token.class);
-		jb.add(" ");
-		jb.add("every", Token.class);
-		jb.add(" ");
-		jb.add("token", Token.class);
-		jb.add(" ");
-		jb.add("is", Token.class);
-		jb.add(".", Token.class);
-		jb.add(begin, Sentence.class);
-		jb.close();
+  @Test
+  public void test() throws Exception {
+    JCasBuilder jb = new JCasBuilder(jCas);
+    jb.add("This sentence is not annotated. ");
+    jb.add("But this sentences is annotated. ", Sentence.class);
+    int begin = jb.getPosition();
+    jb.add("And", Token.class);
+    jb.add(" ");
+    jb.add("here", Token.class);
+    jb.add(" ");
+    jb.add("every", Token.class);
+    jb.add(" ");
+    jb.add("token", Token.class);
+    jb.add(" ");
+    jb.add("is", Token.class);
+    jb.add(".", Token.class);
+    jb.add(begin, Sentence.class);
+    jb.close();
 
-		File outputFile = new File(folder.getRoot(), "dump-output.txt");
-		AnalysisEngine writer = createPrimitive(CASDumpWriter.class,
-				CASDumpWriter.PARAM_OUTPUT_FILE, outputFile.getPath());
-		writer.process(jb.getJCas());
+    File outputFile = new File(folder.getRoot(), "dump-output.txt");
+    AnalysisEngine writer = createPrimitive(CASDumpWriter.class, CASDumpWriter.PARAM_OUTPUT_FILE,
+            outputFile.getPath());
+    writer.process(jb.getJCas());
 
-		String reference = readFileToString(
-				new File("src/test/resources/data/reference/JCasBuilderTest.dump"), "UTF-8").trim();
-		String actual = readFileToString(outputFile, "UTF-8").trim();
-		actual = actual.replaceAll("\r\n", "\n");
+    String reference = readFileToString(
+            new File("src/test/resources/data/reference/JCasBuilderTest.dump"), "UTF-8").trim();
+    String actual = readFileToString(outputFile, "UTF-8").trim();
+    actual = actual.replaceAll("\r\n", "\n");
 
-		assertEquals(reference, actual);
-	}
+    assertEquals(reference, actual);
+  }
 }

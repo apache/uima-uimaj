@@ -23,11 +23,11 @@ import org.apache.uima.cas.CAS;
 
 /**
  * No-operation annotator. This annotator performs no operation whatsoever.
- *
+ * 
  */
 public class NoOpAnnotator extends CasAnnotator_ImplBase {
-	@Override
-	public void process(final CAS aCAS) throws AnalysisEngineProcessException {
-		// Do nothing at all
-	}
+  @Override
+  public void process(final CAS aCAS) throws AnalysisEngineProcessException {
+    // Do nothing at all
+  }
 }

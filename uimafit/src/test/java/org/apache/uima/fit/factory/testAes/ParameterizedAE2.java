@@ -17,7 +17,6 @@
  * under the License.
  */
 
-
 package org.apache.uima.fit.factory.testAes;
 
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -31,25 +30,27 @@ import org.apache.uima.resource.Resource_ImplBase;
  * 
  */
 public class ParameterizedAE2 extends JCasAnnotator_ImplBase {
-	@ExternalResource
-	DummyResource res;
+  @ExternalResource
+  DummyResource res;
 
-	public static final String RES_OTHER = "other";
-	@ExternalResource(key = RES_OTHER)
-	DummyResource res2;
+  public static final String RES_OTHER = "other";
 
-	public static final String RES_OPTIONAL = "optional";
-	@ExternalResource(key = RES_OPTIONAL, mandatory = false)
-	DummyResource res3;
+  @ExternalResource(key = RES_OTHER)
+  DummyResource res2;
 
-	@Override
-	public void process(JCas aJCas) throws AnalysisEngineProcessException {
-		// Nothing to do
-	}
+  public static final String RES_OPTIONAL = "optional";
 
-	public static final class DummyResource extends Resource_ImplBase {
-		public String getName() {
-			return DummyResource.class.getName();
-		}
-	}
+  @ExternalResource(key = RES_OPTIONAL, mandatory = false)
+  DummyResource res3;
+
+  @Override
+  public void process(JCas aJCas) throws AnalysisEngineProcessException {
+    // Nothing to do
+  }
+
+  public static final class DummyResource extends Resource_ImplBase {
+    public String getName() {
+      return DummyResource.class.getName();
+    }
+  }
 }

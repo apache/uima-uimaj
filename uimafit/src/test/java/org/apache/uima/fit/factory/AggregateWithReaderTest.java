@@ -39,158 +39,160 @@ import org.junit.Test;
 /**
  */
 public class AggregateWithReaderTest {
-	
-	/**
-	 * Demo of running a collection reader as part of an aggregate engine. This allows to run
-	 * a pipeline an access the output CASes directly - no need to write the data to files.
-	 */
-	@Test
-	public void demoAggregateWithReader() throws UIMAException {
-		ResourceSpecifierFactory factory = UIMAFramework.getResourceSpecifierFactory();
 
-		CollectionReaderDescription reader = factory.createCollectionReaderDescription();
-		reader.getMetaData().setName("reader");
-		reader.setImplementationName(SimpleReader.class.getName());
+  /**
+   * Demo of running a collection reader as part of an aggregate engine. This allows to run a
+   * pipeline an access the output CASes directly - no need to write the data to files.
+   */
+  @Test
+  public void demoAggregateWithReader() throws UIMAException {
+    ResourceSpecifierFactory factory = UIMAFramework.getResourceSpecifierFactory();
 
-		AnalysisEngineDescription analyzer = factory.createAnalysisEngineDescription();
-		analyzer.getMetaData().setName("analyzer");
-		analyzer.setPrimitive(true);
-		analyzer.setImplementationName(SimpleAnalyzer.class.getName());
+    CollectionReaderDescription reader = factory.createCollectionReaderDescription();
+    reader.getMetaData().setName("reader");
+    reader.setImplementationName(SimpleReader.class.getName());
 
-		FixedFlow flow = factory.createFixedFlow();
-		flow.setFixedFlow(new String[] { "reader", "analyzer" });
+    AnalysisEngineDescription analyzer = factory.createAnalysisEngineDescription();
+    analyzer.getMetaData().setName("analyzer");
+    analyzer.setPrimitive(true);
+    analyzer.setImplementationName(SimpleAnalyzer.class.getName());
 
-		AnalysisEngineDescription aggregate = factory.createAnalysisEngineDescription();
-		aggregate.getMetaData().setName("aggregate");
-		aggregate.getAnalysisEngineMetaData().setFlowConstraints(flow);
-		aggregate.getAnalysisEngineMetaData().getOperationalProperties().setOutputsNewCASes(true);
-		aggregate.getAnalysisEngineMetaData().getOperationalProperties()
-				.setMultipleDeploymentAllowed(false);
-		aggregate.setPrimitive(false);
-		aggregate.getDelegateAnalysisEngineSpecifiersWithImports().put("reader", reader);
-		aggregate.getDelegateAnalysisEngineSpecifiersWithImports().put("analyzer", analyzer);
+    FixedFlow flow = factory.createFixedFlow();
+    flow.setFixedFlow(new String[] { "reader", "analyzer" });
 
-		AnalysisEngine pipeline = UIMAFramework.produceAnalysisEngine(aggregate);
-		CasIterator iterator = pipeline.processAndOutputNewCASes(pipeline.newCAS());
-		while (iterator.hasNext()) {
-			CAS cas = iterator.next();
-			System.out.printf("[%s] is [%s]%n", cas.getDocumentText(), cas.getDocumentLanguage());
-		}
-	}
+    AnalysisEngineDescription aggregate = factory.createAnalysisEngineDescription();
+    aggregate.getMetaData().setName("aggregate");
+    aggregate.getAnalysisEngineMetaData().setFlowConstraints(flow);
+    aggregate.getAnalysisEngineMetaData().getOperationalProperties().setOutputsNewCASes(true);
+    aggregate.getAnalysisEngineMetaData().getOperationalProperties()
+            .setMultipleDeploymentAllowed(false);
+    aggregate.setPrimitive(false);
+    aggregate.getDelegateAnalysisEngineSpecifiersWithImports().put("reader", reader);
+    aggregate.getDelegateAnalysisEngineSpecifiersWithImports().put("analyzer", analyzer);
 
-	/**
-	 * Demo of disguising a reader as a CAS multiplier. This works because internally, UIMA wraps
-	 * the reader in a CollectionReaderAdapter. This nice thing about this is, that in principle
-	 * it would be possible to define sofa mappings. However, UIMA-2419 prevents this.
-	 */
-	@Test
-	public void demoAggregateWithDisguisedReader() throws UIMAException {
-		ResourceSpecifierFactory factory = UIMAFramework.getResourceSpecifierFactory();
-		
-		AnalysisEngineDescription reader = factory.createAnalysisEngineDescription();
-		reader.getMetaData().setName("reader");
-		reader.setPrimitive(true);
-		reader.setImplementationName(SimpleReader.class.getName());
-		reader.getAnalysisEngineMetaData().getOperationalProperties().setOutputsNewCASes(true);
-	
-		AnalysisEngineDescription analyzer = factory.createAnalysisEngineDescription();
-		analyzer.getMetaData().setName("analyzer");
-		analyzer.setPrimitive(true);
-		analyzer.setImplementationName(SimpleAnalyzer.class.getName());
-	
-		FixedFlow flow = factory.createFixedFlow();
-		flow.setFixedFlow(new String[] { "reader", "analyzer" });
-	
-		AnalysisEngineDescription aggregate = factory.createAnalysisEngineDescription();
-		aggregate.getMetaData().setName("aggregate");
-		aggregate.setPrimitive(false);
-		aggregate.getAnalysisEngineMetaData().setFlowConstraints(flow);
-		aggregate.getAnalysisEngineMetaData().getOperationalProperties().setOutputsNewCASes(true);
-		aggregate.getAnalysisEngineMetaData().getOperationalProperties()
-				.setMultipleDeploymentAllowed(false);
-		aggregate.getDelegateAnalysisEngineSpecifiersWithImports().put("reader", reader);
-		aggregate.getDelegateAnalysisEngineSpecifiersWithImports().put("analyzer", analyzer);
-	
-		AnalysisEngine pipeline = UIMAFramework.produceAnalysisEngine(aggregate);
-		CasIterator iterator = pipeline.processAndOutputNewCASes(pipeline.newCAS());
-		while (iterator.hasNext()) {
-			CAS cas = iterator.next();
-			System.out.printf("[%s] is [%s]%n", cas.getDocumentText(), cas.getDocumentLanguage());
-		}
-	}
+    AnalysisEngine pipeline = UIMAFramework.produceAnalysisEngine(aggregate);
+    CasIterator iterator = pipeline.processAndOutputNewCASes(pipeline.newCAS());
+    while (iterator.hasNext()) {
+      CAS cas = iterator.next();
+      System.out.printf("[%s] is [%s]%n", cas.getDocumentText(), cas.getDocumentLanguage());
+    }
+  }
 
-//	@Test
-//	public void testAggregateBuilderWithReaderAndSofaMapping() throws UIMAException {
-//		CollectionReaderDescription reader = CollectionReaderFactory.createDescription(TestReader.class);
-//		
-//		AnalysisEngineDescription readerAed = UIMAFramework.getResourceSpecifierFactory().createAnalysisEngineDescription();
-//		readerAed.setAnnotatorImplementationName(reader.getImplementationName());
-//		readerAed.setExternalResourceDependencies(reader.getExternalResourceDependencies());
-//		readerAed.setFrameworkImplementation(reader.getFrameworkImplementation());
-//		readerAed.setImplementationName(reader.getImplementationName());
-//		readerAed.setMetaData(reader.getMetaData());
-////		readerAed.getAnalysisEngineMetaData().getOperationalProperties().setModifiesCas(true);
-////		readerAed.getAnalysisEngineMetaData().getOperationalProperties().setOutputsNewCASes(true);
-//		readerAed.setPrimitive(true);
-//		readerAed.setResourceManagerConfiguration(reader.getResourceManagerConfiguration());
-//		readerAed.setSourceUrl(reader.getSourceUrl());
-//		
-//		AggregateBuilder builder = new AggregateBuilder();
-//		builder.add(readerAed, 
-//				ViewNames.INITIAL_VIEW, "A");
-//		builder.add(AnalysisEngineFactory.createPrimitiveDescription(Annotator3.class), 
-//				ViewNames.INITIAL_VIEW, "A",
-//				ViewNames.REVERSE_VIEW, "B");
-//		
-//		builder.setFlowControllerDescription(createFlowControllerDescription(FixedFlowController.class,
-//				FixedFlowController.PARAM_ACTION_AFTER_CAS_MULTIPLIER, "drop"));
-//		
-//		AnalysisEngineDescription aggregateEngineDesc = builder.createAggregateDescription();
-//		aggregateEngineDesc.getAnalysisEngineMetaData().getOperationalProperties().setOutputsNewCASes(true);
-//
-//		AnalysisEngine aggregateEngine = createAggregate(aggregateEngineDesc);
-//		
-//		jCas.reset();
-//		JCasIterator ji = aggregateEngine.processAndOutputNewCASes(jCas);
-//		while (ji.hasNext()) {
-//			JCas jc = ji.next();
-//			FSIterator<SofaFS> i = jc.getSofaIterator();
-//			while (i.hasNext()) {
-//				SofaFS s = i.next();
-//				System.out.printf("%s - %s%n", s.getSofaID(), jc.getView(s.getSofaID()).getDocumentText());
-//			}
-//
-//			assertEquals("Anyone up for a game of Foosball?", jc.getView("A").getDocumentText());
-//			assertEquals("?llabsooF fo emag a rof pu enoynA", jc.getView("B").getDocumentText());
-//		}
-//	}
-	
-	public static class SimpleReader extends CollectionReader_ImplBase {
-		private boolean done = false;
+  /**
+   * Demo of disguising a reader as a CAS multiplier. This works because internally, UIMA wraps the
+   * reader in a CollectionReaderAdapter. This nice thing about this is, that in principle it would
+   * be possible to define sofa mappings. However, UIMA-2419 prevents this.
+   */
+  @Test
+  public void demoAggregateWithDisguisedReader() throws UIMAException {
+    ResourceSpecifierFactory factory = UIMAFramework.getResourceSpecifierFactory();
 
-		public void getNext(CAS aCAS) throws IOException, CollectionException {
-			aCAS.setDocumentText("Anyone up for a game of Foosball?");
-			done = true;
-		}
+    AnalysisEngineDescription reader = factory.createAnalysisEngineDescription();
+    reader.getMetaData().setName("reader");
+    reader.setPrimitive(true);
+    reader.setImplementationName(SimpleReader.class.getName());
+    reader.getAnalysisEngineMetaData().getOperationalProperties().setOutputsNewCASes(true);
 
-		public boolean hasNext() throws IOException, CollectionException {
-			return !done;
-		}
+    AnalysisEngineDescription analyzer = factory.createAnalysisEngineDescription();
+    analyzer.getMetaData().setName("analyzer");
+    analyzer.setPrimitive(true);
+    analyzer.setImplementationName(SimpleAnalyzer.class.getName());
 
-		public Progress[] getProgress() {
-			return new Progress[0];
-		}
+    FixedFlow flow = factory.createFixedFlow();
+    flow.setFixedFlow(new String[] { "reader", "analyzer" });
 
-		public void close() throws IOException {
-			// Nothing to do
-		}
-	}
+    AnalysisEngineDescription aggregate = factory.createAnalysisEngineDescription();
+    aggregate.getMetaData().setName("aggregate");
+    aggregate.setPrimitive(false);
+    aggregate.getAnalysisEngineMetaData().setFlowConstraints(flow);
+    aggregate.getAnalysisEngineMetaData().getOperationalProperties().setOutputsNewCASes(true);
+    aggregate.getAnalysisEngineMetaData().getOperationalProperties()
+            .setMultipleDeploymentAllowed(false);
+    aggregate.getDelegateAnalysisEngineSpecifiersWithImports().put("reader", reader);
+    aggregate.getDelegateAnalysisEngineSpecifiersWithImports().put("analyzer", analyzer);
 
-	public static class SimpleAnalyzer extends CasAnnotator_ImplBase {
+    AnalysisEngine pipeline = UIMAFramework.produceAnalysisEngine(aggregate);
+    CasIterator iterator = pipeline.processAndOutputNewCASes(pipeline.newCAS());
+    while (iterator.hasNext()) {
+      CAS cas = iterator.next();
+      System.out.printf("[%s] is [%s]%n", cas.getDocumentText(), cas.getDocumentLanguage());
+    }
+  }
 
-		@Override
-		public void process(CAS aCas) throws AnalysisEngineProcessException {
-			aCas.setDocumentLanguage("en");
-		}
-	}
+  // @Test
+  // public void testAggregateBuilderWithReaderAndSofaMapping() throws UIMAException {
+  // CollectionReaderDescription reader =
+  // CollectionReaderFactory.createDescription(TestReader.class);
+  //
+  // AnalysisEngineDescription readerAed =
+  // UIMAFramework.getResourceSpecifierFactory().createAnalysisEngineDescription();
+  // readerAed.setAnnotatorImplementationName(reader.getImplementationName());
+  // readerAed.setExternalResourceDependencies(reader.getExternalResourceDependencies());
+  // readerAed.setFrameworkImplementation(reader.getFrameworkImplementation());
+  // readerAed.setImplementationName(reader.getImplementationName());
+  // readerAed.setMetaData(reader.getMetaData());
+  // // readerAed.getAnalysisEngineMetaData().getOperationalProperties().setModifiesCas(true);
+  // // readerAed.getAnalysisEngineMetaData().getOperationalProperties().setOutputsNewCASes(true);
+  // readerAed.setPrimitive(true);
+  // readerAed.setResourceManagerConfiguration(reader.getResourceManagerConfiguration());
+  // readerAed.setSourceUrl(reader.getSourceUrl());
+  //
+  // AggregateBuilder builder = new AggregateBuilder();
+  // builder.add(readerAed,
+  // ViewNames.INITIAL_VIEW, "A");
+  // builder.add(AnalysisEngineFactory.createPrimitiveDescription(Annotator3.class),
+  // ViewNames.INITIAL_VIEW, "A",
+  // ViewNames.REVERSE_VIEW, "B");
+  //
+  // builder.setFlowControllerDescription(createFlowControllerDescription(FixedFlowController.class,
+  // FixedFlowController.PARAM_ACTION_AFTER_CAS_MULTIPLIER, "drop"));
+  //
+  // AnalysisEngineDescription aggregateEngineDesc = builder.createAggregateDescription();
+  // aggregateEngineDesc.getAnalysisEngineMetaData().getOperationalProperties().setOutputsNewCASes(true);
+  //
+  // AnalysisEngine aggregateEngine = createAggregate(aggregateEngineDesc);
+  //
+  // jCas.reset();
+  // JCasIterator ji = aggregateEngine.processAndOutputNewCASes(jCas);
+  // while (ji.hasNext()) {
+  // JCas jc = ji.next();
+  // FSIterator<SofaFS> i = jc.getSofaIterator();
+  // while (i.hasNext()) {
+  // SofaFS s = i.next();
+  // System.out.printf("%s - %s%n", s.getSofaID(), jc.getView(s.getSofaID()).getDocumentText());
+  // }
+  //
+  // assertEquals("Anyone up for a game of Foosball?", jc.getView("A").getDocumentText());
+  // assertEquals("?llabsooF fo emag a rof pu enoynA", jc.getView("B").getDocumentText());
+  // }
+  // }
+
+  public static class SimpleReader extends CollectionReader_ImplBase {
+    private boolean done = false;
+
+    public void getNext(CAS aCAS) throws IOException, CollectionException {
+      aCAS.setDocumentText("Anyone up for a game of Foosball?");
+      done = true;
+    }
+
+    public boolean hasNext() throws IOException, CollectionException {
+      return !done;
+    }
+
+    public Progress[] getProgress() {
+      return new Progress[0];
+    }
+
+    public void close() throws IOException {
+      // Nothing to do
+    }
+  }
+
+  public static class SimpleAnalyzer extends CasAnnotator_ImplBase {
+
+    @Override
+    public void process(CAS aCas) throws AnalysisEngineProcessException {
+      aCas.setDocumentLanguage("en");
+    }
+  }
 }

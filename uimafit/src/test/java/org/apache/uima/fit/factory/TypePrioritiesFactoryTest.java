@@ -17,7 +17,6 @@
  * under the License.
  */
 
-
 package org.apache.uima.fit.factory;
 
 import static org.apache.uima.fit.factory.TypePrioritiesFactory.createTypePriorities;
@@ -31,18 +30,18 @@ import org.junit.Test;
 
 /**
  * Tests for the {@link TypePrioritiesFactory}.
- *
+ * 
  */
 public class TypePrioritiesFactoryTest {
 
-	@Test
-	public void testCreateTypePrioritiesClassOfQArray() throws Exception {
-		TypePriorities prio = createTypePriorities(Annotation.class);
+  @Test
+  public void testCreateTypePrioritiesClassOfQArray() throws Exception {
+    TypePriorities prio = createTypePriorities(Annotation.class);
 
-		CasCreationUtils.createCas(createTypeSystemDescription(), prio, null);
+    CasCreationUtils.createCas(createTypeSystemDescription(), prio, null);
 
-		assertEquals(1, prio.getPriorityLists().length);
-		assertEquals(1, prio.getPriorityLists()[0].getTypes().length);
-		assertEquals("uima.tcas.Annotation", prio.getPriorityLists()[0].getTypes()[0]);
-	}
+    assertEquals(1, prio.getPriorityLists().length);
+    assertEquals(1, prio.getPriorityLists()[0].getTypes().length);
+    assertEquals("uima.tcas.Annotation", prio.getPriorityLists()[0].getTypes()[0]);
+  }
 }

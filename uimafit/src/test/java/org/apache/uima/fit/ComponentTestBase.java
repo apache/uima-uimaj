@@ -35,51 +35,55 @@ import org.junit.Before;
  */
 public class ComponentTestBase {
 
-	private static ThreadLocal<JCas> JCAS = new ThreadLocal<JCas>();
-	private static ThreadLocal<TypeSystemDescription> TYPE_SYSTEM_DESCRIPTION = new ThreadLocal<TypeSystemDescription>();
-	private static ThreadLocal<TypePriorities> TYPE_PRIORITIES = new ThreadLocal<TypePriorities>();
-	private static ThreadLocal<TokenBuilder<Token, Sentence>> TOKEN_BUILDER = new ThreadLocal<TokenBuilder<Token, Sentence>>();
+  private static ThreadLocal<JCas> JCAS = new ThreadLocal<JCas>();
 
-	static {
-		try {
-			TYPE_SYSTEM_DESCRIPTION.set(TypeSystemDescriptionFactory.createTypeSystemDescription());
+  private static ThreadLocal<TypeSystemDescription> TYPE_SYSTEM_DESCRIPTION = new ThreadLocal<TypeSystemDescription>();
 
-			TypePriorities tp = TypePrioritiesFactory.createTypePriorities(new String[] {
-					"org.apache.uima.fit.type.Sentence", "org.apache.uima.fit.type.AnalyzedText",
-					"org.apache.uima.fit.type.Token" });
-			TYPE_PRIORITIES.set(tp);
+  private static ThreadLocal<TypePriorities> TYPE_PRIORITIES = new ThreadLocal<TypePriorities>();
 
-			JCas jCas = CasCreationUtils.createCas(TYPE_SYSTEM_DESCRIPTION.get(), tp, null)
-					.getJCas();
-			JCAS.set(jCas);
+  private static ThreadLocal<TokenBuilder<Token, Sentence>> TOKEN_BUILDER = new ThreadLocal<TokenBuilder<Token, Sentence>>();
 
-			TokenBuilder<Token, Sentence> tb = new TokenBuilder<Token, Sentence>(Token.class,
-					Sentence.class, "pos", "stem");
-			TOKEN_BUILDER.set(tb);
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-			System.exit(1);
-		}
-	}
+  static {
+    try {
+      TYPE_SYSTEM_DESCRIPTION.set(TypeSystemDescriptionFactory.createTypeSystemDescription());
 
-	protected JCas jCas;
-	protected TypeSystemDescription typeSystemDescription;
-	protected TypePriorities typePriorities;
-	protected TokenBuilder<Token, Sentence> tokenBuilder;
+      TypePriorities tp = TypePrioritiesFactory.createTypePriorities(new String[] {
+          "org.apache.uima.fit.type.Sentence", "org.apache.uima.fit.type.AnalyzedText",
+          "org.apache.uima.fit.type.Token" });
+      TYPE_PRIORITIES.set(tp);
 
-	/**
-	 * we do not want to create a new JCas object every time we run a test because it is expensive
-	 * (~100ms on my laptop). Instead, we will have one JCas per thread sitting around that we will
-	 * reset everytime a new test is called.
-	 */
-	@Before
-	public void setUp() {
-		jCas = JCAS.get();
-		jCas.reset();
-		typeSystemDescription = TYPE_SYSTEM_DESCRIPTION.get();
-		typePriorities = TYPE_PRIORITIES.get();
-		tokenBuilder = TOKEN_BUILDER.get();
-	}
+      JCas jCas = CasCreationUtils.createCas(TYPE_SYSTEM_DESCRIPTION.get(), tp, null).getJCas();
+      JCAS.set(jCas);
+
+      TokenBuilder<Token, Sentence> tb = new TokenBuilder<Token, Sentence>(Token.class,
+              Sentence.class, "pos", "stem");
+      TOKEN_BUILDER.set(tb);
+    } catch (Exception e) {
+      e.printStackTrace();
+      System.exit(1);
+    }
+  }
+
+  protected JCas jCas;
+
+  protected TypeSystemDescription typeSystemDescription;
+
+  protected TypePriorities typePriorities;
+
+  protected TokenBuilder<Token, Sentence> tokenBuilder;
+
+  /**
+   * we do not want to create a new JCas object every time we run a test because it is expensive
+   * (~100ms on my laptop). Instead, we will have one JCas per thread sitting around that we will
+   * reset everytime a new test is called.
+   */
+  @Before
+  public void setUp() {
+    jCas = JCAS.get();
+    jCas.reset();
+    typeSystemDescription = TYPE_SYSTEM_DESCRIPTION.get();
+    typePriorities = TYPE_PRIORITIES.get();
+    tokenBuilder = TOKEN_BUILDER.get();
+  }
 
 }

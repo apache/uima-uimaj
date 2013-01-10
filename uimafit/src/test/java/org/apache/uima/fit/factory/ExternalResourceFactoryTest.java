@@ -17,7 +17,6 @@
  * under the License.
  */
 
-
 package org.apache.uima.fit.factory;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createAggregate;
@@ -72,332 +71,342 @@ import org.springframework.mock.jndi.SimpleNamingContextBuilder;
 
 /**
  * Test case for {@link ExternalResource} annotations.
- *
+ * 
  */
 public class ExternalResourceFactoryTest extends ComponentTestBase {
-	private static final String EX_URI = "http://dum.my";
-	private static final String EX_FILE_1 = "src/test/resources/data/html/1.html";
-	private static final String EX_FILE_3 = "src/test/resources/data/html/3.html";
+  private static final String EX_URI = "http://dum.my";
 
-	@BeforeClass
-	public static void initJNDI() throws Exception
-	{
-		// Set up JNDI context to test the JndiResourceLocator
-		final SimpleNamingContextBuilder builder = new SimpleNamingContextBuilder();
-		Properties deDict = new Properties();
-		deDict.setProperty("Hans", "proper noun");
-		builder.bind("dictionaries/german", deDict);
-		builder.activate();
-	}
+  private static final String EX_FILE_1 = "src/test/resources/data/html/1.html";
 
-	@Test
-	public void testScanBind() throws Exception {
-		// Create analysis enginge description
-		AnalysisEngineDescription desc = createPrimitiveDescription(DummyAE.class);
+  private static final String EX_FILE_3 = "src/test/resources/data/html/3.html";
 
-		// Bind external resources
-		bindResources(desc);
+  @BeforeClass
+  public static void initJNDI() throws Exception {
+    // Set up JNDI context to test the JndiResourceLocator
+    final SimpleNamingContextBuilder builder = new SimpleNamingContextBuilder();
+    Properties deDict = new Properties();
+    deDict.setProperty("Hans", "proper noun");
+    builder.bind("dictionaries/german", deDict);
+    builder.activate();
+  }
 
-		// Test with the default resource manager implementation
-		AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(desc);
-		assertNotNull(ae);
-	}
+  @Test
+  public void testScanBind() throws Exception {
+    // Create analysis enginge description
+    AnalysisEngineDescription desc = createPrimitiveDescription(DummyAE.class);
 
-	@Test
-	public void testDirectInjection() throws Exception {
-		// Create analysis enginge description
-		AnalysisEngineDescription desc = createPrimitiveDescription(DummyAE2.class);
+    // Bind external resources
+    bindResources(desc);
 
-		// Bind external resources for DummyAE
-		bindResources(desc);
+    // Test with the default resource manager implementation
+    AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(desc);
+    assertNotNull(ae);
+  }
 
-		// Bind external resources for DummyAE2 - necessary because autowiring is disabled
-		bindExternalResource(desc, DummyAE2.RES_INJECTED_POJO1, "pojoName1");
-		bindExternalResource(desc, DummyAE2.RES_INJECTED_POJO2, "pojoName2");
+  @Test
+  public void testDirectInjection() throws Exception {
+    // Create analysis enginge description
+    AnalysisEngineDescription desc = createPrimitiveDescription(DummyAE2.class);
 
-		// Create a custom resource manager that allows to inject any Java object as an external
-		// dependency
-		final Map<String, Object> externalContext = new HashMap<String, Object>();
-		externalContext.put("pojoName1", "Just an injected POJO");
-		externalContext.put("pojoName2", new AtomicInteger(5));
+    // Bind external resources for DummyAE
+    bindResources(desc);
 
-		SimpleNamedResourceManager resMgr = new SimpleNamedResourceManager();
-		resMgr.setExternalContext(externalContext);
-		assertFalse(resMgr.isAutoWireEnabled());
+    // Bind external resources for DummyAE2 - necessary because autowiring is disabled
+    bindExternalResource(desc, DummyAE2.RES_INJECTED_POJO1, "pojoName1");
+    bindExternalResource(desc, DummyAE2.RES_INJECTED_POJO2, "pojoName2");
 
-		AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(desc, resMgr, null);
-		assertNotNull(ae);
+    // Create a custom resource manager that allows to inject any Java object as an external
+    // dependency
+    final Map<String, Object> externalContext = new HashMap<String, Object>();
+    externalContext.put("pojoName1", "Just an injected POJO");
+    externalContext.put("pojoName2", new AtomicInteger(5));
 
-		ae.process(ae.newJCas());
-	}
+    SimpleNamedResourceManager resMgr = new SimpleNamedResourceManager();
+    resMgr.setExternalContext(externalContext);
+    assertFalse(resMgr.isAutoWireEnabled());
 
-	@Test
-	public void testDirectInjectionAutowire() throws Exception {
-		// Create analysis enginge description
-		AnalysisEngineDescription desc = createPrimitiveDescription(DummyAE2.class);
+    AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(desc, resMgr, null);
+    assertNotNull(ae);
 
-		// Bind external resources for DummyAE
-		bindResources(desc);
+    ae.process(ae.newJCas());
+  }
 
-		// Create a custom resource manager that allows to inject any Java object as an external
-		// dependency
-		final Map<String, Object> externalContext = new HashMap<String, Object>();
-		externalContext.put(DummyAE2.RES_INJECTED_POJO1, "Just an injected POJO");
-		externalContext.put(DummyAE2.RES_INJECTED_POJO2, new AtomicInteger(5));
+  @Test
+  public void testDirectInjectionAutowire() throws Exception {
+    // Create analysis enginge description
+    AnalysisEngineDescription desc = createPrimitiveDescription(DummyAE2.class);
 
-		SimpleNamedResourceManager resMgr = new SimpleNamedResourceManager();
-		resMgr.setExternalContext(externalContext);
-		resMgr.setAutoWireEnabled(true);
-		assertTrue(resMgr.isAutoWireEnabled());
+    // Bind external resources for DummyAE
+    bindResources(desc);
 
-		AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(desc, resMgr, null);
-		assertNotNull(ae);
+    // Create a custom resource manager that allows to inject any Java object as an external
+    // dependency
+    final Map<String, Object> externalContext = new HashMap<String, Object>();
+    externalContext.put(DummyAE2.RES_INJECTED_POJO1, "Just an injected POJO");
+    externalContext.put(DummyAE2.RES_INJECTED_POJO2, new AtomicInteger(5));
 
-		ae.process(ae.newJCas());
-	}
-	
-	@Test
-	public void testMultiBinding() throws Exception {
-		ExternalResourceDescription extDesc = createExternalResourceDescription(
-				DummyResource.class);
-		
-		// Binding external resource to each Annotator individually
-		AnalysisEngineDescription aed1 = createPrimitiveDescription(MultiBindAE.class,
-				MultiBindAE.RES_KEY, extDesc);
-		AnalysisEngineDescription aed2 = createPrimitiveDescription(MultiBindAE.class,
-				MultiBindAE.RES_KEY, extDesc);
+    SimpleNamedResourceManager resMgr = new SimpleNamedResourceManager();
+    resMgr.setExternalContext(externalContext);
+    resMgr.setAutoWireEnabled(true);
+    assertTrue(resMgr.isAutoWireEnabled());
 
-		// Check the external resource was injected
-		AnalysisEngineDescription aaed = createAggregateDescription(aed1, aed2);
-		AnalysisEngine ae = createAggregate(aaed);
-		ae.process(ae.newJCas());
+    AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(desc, resMgr, null);
+    assertNotNull(ae);
 
-		MultiBindAE.reset();
-		
-		// Check the external resource was injected
-		SimplePipeline.runPipeline(CasCreationUtils.createCas(aaed.getAnalysisEngineMetaData()), aaed);
-	}
+    ae.process(ae.newJCas());
+  }
 
-	private static void bindResources(AnalysisEngineDescription desc) throws Exception {
-		bindResource(desc, DummyResource.class);
-		bindResource(desc, DummyAE.RES_KEY_1, ConfigurableResource.class,
-				ConfigurableResource.PARAM_VALUE, "1");
-		bindResource(desc, DummyAE.RES_KEY_2, ConfigurableResource.class,
-				ConfigurableResource.PARAM_VALUE, "2");
-		bindResource(desc, DummyAE.RES_KEY_3, ParametrizedResource.class,
-				ParametrizedResource.PARAM_EXTENSION, ".lala");
-		bindResource(desc, DummySharedResourceObject.class, EX_URI,
-				DummySharedResourceObject.PARAM_VALUE,"3");
-		// An undefined URL may be used if the specified file/remote URL does not exist or if
-		// the network is down.
-		bindResource(desc, DummyAE.RES_SOME_URL, new File(EX_FILE_1).toURI().toURL());
-		bindResource(desc, DummyAE.RES_SOME_OTHER_URL, new File(EX_FILE_3).toURI().toURL());
-		bindResource(desc, DummyAE.RES_SOME_FILE, new File(EX_FILE_1));
-		bindResource(desc, DummyAE.RES_JNDI_OBJECT, JndiResourceLocator.class,
-				JndiResourceLocator.PARAM_NAME, "dictionaries/german");
-		createDependencyAndBind(desc, "legacyResource", DummySharedResourceObject.class, EX_URI,
-				DummySharedResourceObject.PARAM_VALUE,"3");
-	}
+  @Test
+  public void testMultiBinding() throws Exception {
+    ExternalResourceDescription extDesc = createExternalResourceDescription(DummyResource.class);
 
-	public static class DummyAE extends JCasAnnotator_ImplBase {
-		@ExternalResource
-		DummyResource r;
+    // Binding external resource to each Annotator individually
+    AnalysisEngineDescription aed1 = createPrimitiveDescription(MultiBindAE.class,
+            MultiBindAE.RES_KEY, extDesc);
+    AnalysisEngineDescription aed2 = createPrimitiveDescription(MultiBindAE.class,
+            MultiBindAE.RES_KEY, extDesc);
 
-		static final String RES_KEY_1 = "Key1";
-		@ExternalResource(key = RES_KEY_1)
-		ConfigurableResource configRes1;
+    // Check the external resource was injected
+    AnalysisEngineDescription aaed = createAggregateDescription(aed1, aed2);
+    AnalysisEngine ae = createAggregate(aaed);
+    ae.process(ae.newJCas());
 
-		static final String RES_KEY_2 = "Key2";
-		@ExternalResource(key = RES_KEY_2)
-		ConfigurableResource configRes2;
+    MultiBindAE.reset();
 
-		static final String RES_KEY_3 = "Key3";
+    // Check the external resource was injected
+    SimplePipeline.runPipeline(CasCreationUtils.createCas(aaed.getAnalysisEngineMetaData()), aaed);
+  }
 
-		@ExternalResource
-		DummySharedResourceObject sharedObject;
+  private static void bindResources(AnalysisEngineDescription desc) throws Exception {
+    bindResource(desc, DummyResource.class);
+    bindResource(desc, DummyAE.RES_KEY_1, ConfigurableResource.class,
+            ConfigurableResource.PARAM_VALUE, "1");
+    bindResource(desc, DummyAE.RES_KEY_2, ConfigurableResource.class,
+            ConfigurableResource.PARAM_VALUE, "2");
+    bindResource(desc, DummyAE.RES_KEY_3, ParametrizedResource.class,
+            ParametrizedResource.PARAM_EXTENSION, ".lala");
+    bindResource(desc, DummySharedResourceObject.class, EX_URI,
+            DummySharedResourceObject.PARAM_VALUE, "3");
+    // An undefined URL may be used if the specified file/remote URL does not exist or if
+    // the network is down.
+    bindResource(desc, DummyAE.RES_SOME_URL, new File(EX_FILE_1).toURI().toURL());
+    bindResource(desc, DummyAE.RES_SOME_OTHER_URL, new File(EX_FILE_3).toURI().toURL());
+    bindResource(desc, DummyAE.RES_SOME_FILE, new File(EX_FILE_1));
+    bindResource(desc, DummyAE.RES_JNDI_OBJECT, JndiResourceLocator.class,
+            JndiResourceLocator.PARAM_NAME, "dictionaries/german");
+    createDependencyAndBind(desc, "legacyResource", DummySharedResourceObject.class, EX_URI,
+            DummySharedResourceObject.PARAM_VALUE, "3");
+  }
 
-		static final String RES_SOME_URL = "SomeUrl";
-		@ExternalResource(key = RES_SOME_URL)
-		DataResource someUrl;
+  public static class DummyAE extends JCasAnnotator_ImplBase {
+    @ExternalResource
+    DummyResource r;
 
-		static final String RES_SOME_OTHER_URL = "SomeOtherUrl";
-		@ExternalResource(key = RES_SOME_OTHER_URL)
-		DataResource someOtherUrl;
+    static final String RES_KEY_1 = "Key1";
 
-		static final String RES_SOME_FILE = "SomeFile";
-		@ExternalResource(key = RES_SOME_FILE)
-		DataResource someFile;
+    @ExternalResource(key = RES_KEY_1)
+    ConfigurableResource configRes1;
 
-		static final String RES_JNDI_OBJECT = "JndiObject";
-		@ExternalResource(key = RES_JNDI_OBJECT)
-		Properties jndiPropertes;
+    static final String RES_KEY_2 = "Key2";
 
-		@Override
-		public void process(JCas aJCas) throws AnalysisEngineProcessException {
-			assertNotNull(r);
+    @ExternalResource(key = RES_KEY_2)
+    ConfigurableResource configRes2;
 
-			assertNotNull(configRes1);
-			assertEquals("1", configRes1.getValue());
+    static final String RES_KEY_3 = "Key3";
 
-			assertNotNull(configRes2);
-			assertEquals("2", configRes2.getValue());
+    @ExternalResource
+    DummySharedResourceObject sharedObject;
 
-			try {
-				DataResource configuredResource = (DataResource) getContext().getResourceObject(RES_KEY_3,
-						new String[] { ConfigurableDataResource.PARAM_URI, "http://dum.my/conf" });
-				assertNotNull(configuredResource);
-				assertEquals("http://dum.my/conf.lala", configuredResource.getUri().toString());
-			}
-			catch (ResourceAccessException e) {
-				throw new AnalysisEngineProcessException(e);
-			}
+    static final String RES_SOME_URL = "SomeUrl";
 
-			assertNotNull(sharedObject);
-			assertEquals("3", sharedObject.getValue());
+    @ExternalResource(key = RES_SOME_URL)
+    DataResource someUrl;
 
-			assertNotNull(sharedObject);
-			assertEquals(EX_URI, sharedObject.getUrl().toString());
+    static final String RES_SOME_OTHER_URL = "SomeOtherUrl";
 
-			assertNotNull(jndiPropertes);
-			assertEquals("proper noun", jndiPropertes.get("Hans"));
+    @ExternalResource(key = RES_SOME_OTHER_URL)
+    DataResource someOtherUrl;
 
-			assertNotNull(someUrl);
-			assertEquals(new File(EX_FILE_1).toURI().toString(), someUrl.getUri().toString());
+    static final String RES_SOME_FILE = "SomeFile";
 
-			assertNotNull(someOtherUrl);
-			assertEquals(new File(EX_FILE_3).toURI().toString(), someOtherUrl.getUri().toString());
+    @ExternalResource(key = RES_SOME_FILE)
+    DataResource someFile;
 
-			assertTrue(someFile.getUrl().toString().startsWith("file:"));
-			assertTrue("URL [" + someFile.getUrl() + "] should end in [" + EX_FILE_1 + "]",
-					someFile.getUrl().toString().endsWith(EX_FILE_1));
+    static final String RES_JNDI_OBJECT = "JndiObject";
 
-			try {
-				assertNotNull(getContext().getResourceObject("legacyResource"));
-			}
-			catch (ResourceAccessException e) {
-				throw new AnalysisEngineProcessException(e);
-			}
-		}
-	}
+    @ExternalResource(key = RES_JNDI_OBJECT)
+    Properties jndiPropertes;
 
-	public static final class DummyAE2 extends DummyAE {
-		static final String RES_INJECTED_POJO1 = "InjectedPojo1";
-		@ExternalResource(key = RES_INJECTED_POJO1)
-		String injectedString;
+    @Override
+    public void process(JCas aJCas) throws AnalysisEngineProcessException {
+      assertNotNull(r);
 
-		static final String RES_INJECTED_POJO2 = "InjectedPojo2";
-		@ExternalResource(key = RES_INJECTED_POJO2)
-		Number injectedAtomicInt;
+      assertNotNull(configRes1);
+      assertEquals("1", configRes1.getValue());
 
-		@Override
-		public void process(JCas aJCas) throws AnalysisEngineProcessException {
-			super.process(aJCas);
-			assertEquals("Just an injected POJO", injectedString);
-			assertEquals(5, injectedAtomicInt.intValue());
-		}
-	}
-	
-	/**
-	 * Example annotator that uses the share model object. In the process() we only test if the
-	 * model was properly initialized by uimaFIT
-	 */
-	public static class MultiBindAE extends org.apache.uima.fit.component.JCasAnnotator_ImplBase {
-		static int prevHashCode = -1;
-		
-		static final String RES_KEY = "Res";
-		@ExternalResource(key = RES_KEY)
-		DummyResource res;
+      assertNotNull(configRes2);
+      assertEquals("2", configRes2.getValue());
 
-		@Override
-		public void process(JCas aJCas) throws AnalysisEngineProcessException {
-			if (prevHashCode == -1) {
-				prevHashCode = res.hashCode();
-			}
-			else {
-				assertEquals(prevHashCode, res.hashCode());
-			}
-			
-			System.out.println(getClass().getSimpleName() + ": " + res);
-		}
-		
-		public static void reset()
-		{
-			prevHashCode = -1;
-		}
-	}
+      try {
+        DataResource configuredResource = (DataResource) getContext().getResourceObject(RES_KEY_3,
+                new String[] { ConfigurableDataResource.PARAM_URI, "http://dum.my/conf" });
+        assertNotNull(configuredResource);
+        assertEquals("http://dum.my/conf.lala", configuredResource.getUri().toString());
+      } catch (ResourceAccessException e) {
+        throw new AnalysisEngineProcessException(e);
+      }
 
-	public static final class DummyResource extends Resource_ImplBase {
-		// Nothing
-	}
+      assertNotNull(sharedObject);
+      assertEquals("3", sharedObject.getValue());
 
-	public static final class ConfigurableResource extends Resource_ImplBase {
-		public static final String PARAM_VALUE = "Value";
-		@ConfigurationParameter(name = PARAM_VALUE, mandatory = true)
-		private String value;
+      assertNotNull(sharedObject);
+      assertEquals(EX_URI, sharedObject.getUrl().toString());
 
-		public String getValue() {
-			return value;
-		}
-	}
+      assertNotNull(jndiPropertes);
+      assertEquals("proper noun", jndiPropertes.get("Hans"));
 
-	public static final class ConfigurableDataResource extends Resource_ImplBase implements DataResource {
-		public static final String PARAM_URI = "Uri";
-		@ConfigurationParameter(name = PARAM_URI, mandatory = true)
-		private String uri;
+      assertNotNull(someUrl);
+      assertEquals(new File(EX_FILE_1).toURI().toString(), someUrl.getUri().toString());
 
-		public static final String PARAM_EXTENSION = "Extension";
-		@ConfigurationParameter(name = PARAM_EXTENSION, mandatory = true)
-		private String extension;
+      assertNotNull(someOtherUrl);
+      assertEquals(new File(EX_FILE_3).toURI().toString(), someOtherUrl.getUri().toString());
 
-		public InputStream getInputStream() throws IOException {
-			return null;
-		}
+      assertTrue(someFile.getUrl().toString().startsWith("file:"));
+      assertTrue("URL [" + someFile.getUrl() + "] should end in [" + EX_FILE_1 + "]", someFile
+              .getUrl().toString().endsWith(EX_FILE_1));
 
-		public URI getUri() {
-			return URI.create(uri+extension);
-		}
+      try {
+        assertNotNull(getContext().getResourceObject("legacyResource"));
+      } catch (ResourceAccessException e) {
+        throw new AnalysisEngineProcessException(e);
+      }
+    }
+  }
 
-		public URL getUrl() {
-			return null;
-		}
-	}
+  public static final class DummyAE2 extends DummyAE {
+    static final String RES_INJECTED_POJO1 = "InjectedPojo1";
 
-	public static final class ParametrizedResource extends Resource_ImplBase implements
-			ParameterizedDataResource {
-		public static final String PARAM_EXTENSION = "Extension";
-		@ConfigurationParameter(name = PARAM_EXTENSION, mandatory = true)
-		private String extension;
+    @ExternalResource(key = RES_INJECTED_POJO1)
+    String injectedString;
 
-		public DataResource getDataResource(String[] aParams)
-				throws ResourceInitializationException {
-			List<String> params = new ArrayList<String>(Arrays.asList(aParams));
-			params.add(ConfigurableDataResource.PARAM_EXTENSION);
-			params.add(extension);
-			ExternalResourceDescription desc = ExternalResourceFactory.createExternalResourceDescription(
-					null, ConfigurableDataResource.class, params.toArray(new String[params.size()]));
-			return (DataResource) UIMAFramework.produceResource(desc.getResourceSpecifier(), null);
-		}
-	}
+    static final String RES_INJECTED_POJO2 = "InjectedPojo2";
 
-	public static final class DummySharedResourceObject implements SharedResourceObject {
-		public static final String PARAM_VALUE = "Value";
-		@ConfigurationParameter(name = PARAM_VALUE, mandatory = true)
-		private String value;
+    @ExternalResource(key = RES_INJECTED_POJO2)
+    Number injectedAtomicInt;
 
-		private URI uri;
+    @Override
+    public void process(JCas aJCas) throws AnalysisEngineProcessException {
+      super.process(aJCas);
+      assertEquals("Just an injected POJO", injectedString);
+      assertEquals(5, injectedAtomicInt.intValue());
+    }
+  }
 
-		public void load(DataResource aData) throws ResourceInitializationException {
-			ConfigurationParameterInitializer.initialize(this, aData);
-			assertEquals(EX_URI, aData.getUri().toString());
-			uri = aData.getUri();
-		}
+  /**
+   * Example annotator that uses the share model object. In the process() we only test if the model
+   * was properly initialized by uimaFIT
+   */
+  public static class MultiBindAE extends org.apache.uima.fit.component.JCasAnnotator_ImplBase {
+    static int prevHashCode = -1;
 
-		public URI getUrl() {
-			return uri;
-		}
+    static final String RES_KEY = "Res";
 
-		public String getValue() {
-			return value;
-		}
-	}
+    @ExternalResource(key = RES_KEY)
+    DummyResource res;
+
+    @Override
+    public void process(JCas aJCas) throws AnalysisEngineProcessException {
+      if (prevHashCode == -1) {
+        prevHashCode = res.hashCode();
+      } else {
+        assertEquals(prevHashCode, res.hashCode());
+      }
+
+      System.out.println(getClass().getSimpleName() + ": " + res);
+    }
+
+    public static void reset() {
+      prevHashCode = -1;
+    }
+  }
+
+  public static final class DummyResource extends Resource_ImplBase {
+    // Nothing
+  }
+
+  public static final class ConfigurableResource extends Resource_ImplBase {
+    public static final String PARAM_VALUE = "Value";
+
+    @ConfigurationParameter(name = PARAM_VALUE, mandatory = true)
+    private String value;
+
+    public String getValue() {
+      return value;
+    }
+  }
+
+  public static final class ConfigurableDataResource extends Resource_ImplBase implements
+          DataResource {
+    public static final String PARAM_URI = "Uri";
+
+    @ConfigurationParameter(name = PARAM_URI, mandatory = true)
+    private String uri;
+
+    public static final String PARAM_EXTENSION = "Extension";
+
+    @ConfigurationParameter(name = PARAM_EXTENSION, mandatory = true)
+    private String extension;
+
+    public InputStream getInputStream() throws IOException {
+      return null;
+    }
+
+    public URI getUri() {
+      return URI.create(uri + extension);
+    }
+
+    public URL getUrl() {
+      return null;
+    }
+  }
+
+  public static final class ParametrizedResource extends Resource_ImplBase implements
+          ParameterizedDataResource {
+    public static final String PARAM_EXTENSION = "Extension";
+
+    @ConfigurationParameter(name = PARAM_EXTENSION, mandatory = true)
+    private String extension;
+
+    public DataResource getDataResource(String[] aParams) throws ResourceInitializationException {
+      List<String> params = new ArrayList<String>(Arrays.asList(aParams));
+      params.add(ConfigurableDataResource.PARAM_EXTENSION);
+      params.add(extension);
+      ExternalResourceDescription desc = ExternalResourceFactory.createExternalResourceDescription(
+              null, ConfigurableDataResource.class, params.toArray(new String[params.size()]));
+      return (DataResource) UIMAFramework.produceResource(desc.getResourceSpecifier(), null);
+    }
+  }
+
+  public static final class DummySharedResourceObject implements SharedResourceObject {
+    public static final String PARAM_VALUE = "Value";
+
+    @ConfigurationParameter(name = PARAM_VALUE, mandatory = true)
+    private String value;
+
+    private URI uri;
+
+    public void load(DataResource aData) throws ResourceInitializationException {
+      ConfigurationParameterInitializer.initialize(this, aData);
+      assertEquals(EX_URI, aData.getUri().toString());
+      uri = aData.getUri();
+    }
+
+    public URI getUrl() {
+      return uri;
+    }
+
+    public String getValue() {
+      return value;
+    }
+  }
 }

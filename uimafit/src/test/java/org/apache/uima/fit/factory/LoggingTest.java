@@ -57,257 +57,255 @@ import org.junit.Test;
 /**
  */
 public class LoggingTest {
-	@Test
-	public void testLogger() throws Exception {
-		final List<LogRecord> records = new ArrayList<LogRecord>();
-		
-		// Tell the logger to log everything
-		ConsoleHandler handler = (ConsoleHandler) LogManager.getLogManager().getLogger("").getHandlers()[0];
-		java.util.logging.Level oldLevel = handler.getLevel();
-		handler.setLevel(Level.ALL);
-		// Capture the logging output without actually logging it
-		handler.setFilter( new Filter() {
-			public boolean isLoggable(LogRecord record) {
-				records.add(record);
-				return false;
-			}
-		});
+  @Test
+  public void testLogger() throws Exception {
+    final List<LogRecord> records = new ArrayList<LogRecord>();
 
-		try {
-			JCas jcas = JCasFactory.createJCas();
-			createPrimitive(LoggingCasConsumerChristmasTree.class).process(jcas.getCas());
-			
-			assertEquals(10, records.size());
-			assertEquals(Level.FINER, records.get(0).getLevel());
-			assertEquals(Level.FINER, records.get(1).getLevel());
-			assertEquals(Level.FINE, records.get(2).getLevel());
-			assertEquals(Level.FINE, records.get(3).getLevel());
-			assertEquals(Level.INFO, records.get(4).getLevel());
-			assertEquals(Level.INFO, records.get(5).getLevel());
-			assertEquals(Level.WARNING, records.get(6).getLevel());
-			assertEquals(Level.WARNING, records.get(7).getLevel());
-			assertEquals(Level.SEVERE, records.get(8).getLevel());
-			assertEquals(Level.SEVERE, records.get(9).getLevel());
-		}
-		finally {
-			if (oldLevel != null) {
-				handler.setLevel(oldLevel);
-				handler.setFilter(null);
-			}
-		}
-	}
-	
-	@Test
-	public void testAllKindsOfComponents() throws Exception {
-		final List<LogRecord> records = new ArrayList<LogRecord>();
-		
-		// Tell the logger to log everything
-		ConsoleHandler handler = (ConsoleHandler) LogManager.getLogManager().getLogger("").getHandlers()[0];
-		java.util.logging.Level oldLevel = handler.getLevel();
-		handler.setLevel(Level.ALL);
-		handler.setFilter( new Filter() {
-			public boolean isLoggable(LogRecord record) {
-				records.add(record);
-				return true;
-			}
-		});
-		
-		try {
-			JCas jcas = JCasFactory.createJCas();
-			
-			createCollectionReader(LoggingCasCollectionReader.class).hasNext();
-			assertLogDone(records);
-			
-			createCollectionReader(LoggingJCasCollectionReader.class).hasNext();
-			assertLogDone(records);
-			
-//			createFlowControllerDescription(LoggingJCasFlowController.class).
-//			assertLogDone(records);
+    // Tell the logger to log everything
+    ConsoleHandler handler = (ConsoleHandler) LogManager.getLogManager().getLogger("")
+            .getHandlers()[0];
+    java.util.logging.Level oldLevel = handler.getLevel();
+    handler.setLevel(Level.ALL);
+    // Capture the logging output without actually logging it
+    handler.setFilter(new Filter() {
+      public boolean isLoggable(LogRecord record) {
+        records.add(record);
+        return false;
+      }
+    });
 
-			createPrimitive(LoggingCasAnnotator.class).process(jcas.getCas());
-			assertLogDone(records);
-			
-			createPrimitive(LoggingJCasAnnotator.class).process(jcas);
-			assertLogDone(records);
-			
-			createPrimitive(LoggingCasConsumer.class).process(jcas.getCas());
-			assertLogDone(records);
-			
-			createPrimitive(LoggingJCasConsumer.class).process(jcas);
-			assertLogDone(records);
-			
-			createPrimitive(LoggingCasMultiplier.class).process(jcas.getCas());
-			assertLogDone(records);
-			
-			createPrimitive(LoggingJCasMultiplier.class).process(jcas);
-			assertLogDone(records);
-		}
-		finally {
-			if (oldLevel != null) {
-				handler.setLevel(oldLevel);
-				handler.setFilter(null);
-			}
-		}
-	}
-	
-	private void assertLogDone(List<LogRecord> records)
-	{
-		assertEquals(1, records.size());
-		assertEquals(Level.INFO, records.get(0).getLevel());
-		records.clear();
-	}
+    try {
+      JCas jcas = JCasFactory.createJCas();
+      createPrimitive(LoggingCasConsumerChristmasTree.class).process(jcas.getCas());
 
-	public static class LoggingCasConsumerChristmasTree extends CasConsumer_ImplBase {
-		@Override
-		public void process(CAS aCAS) throws AnalysisEngineProcessException {
-			getLogger().setLevel(org.apache.uima.util.Level.ALL);
-			trigger();
-			getLogger().setLevel(org.apache.uima.util.Level.OFF);
-			trigger();
-		}
-		
-		private void trigger()
-		{
-			if (getLogger().isTraceEnabled()) {
-				getLogger().trace("Logging: " + getClass().getName());
-				getLogger().trace("Logging: " + getClass().getName(), new IllegalArgumentException());
-			}
-			if (getLogger().isDebugEnabled()) {
-				getLogger().debug("Logging: " + getClass().getName());
-				getLogger().debug("Logging: " + getClass().getName(), new IllegalArgumentException());
-			}
-			if (getLogger().isInfoEnabled()) {
-				getLogger().info("Logging: " + getClass().getName());
-				getLogger().info("Logging: " + getClass().getName(), new IllegalArgumentException());
-			}
-			if (getLogger().isWarnEnabled()) {
-				getLogger().warn("Logging: " + getClass().getName());
-				getLogger().warn("Logging: " + getClass().getName(), new IllegalArgumentException());
-			}
-			if (getLogger().isErrorEnabled()) {
-				getLogger().error("Logging: " + getClass().getName());
-				getLogger().error("Logging: " + getClass().getName(), new IllegalArgumentException());
-			}
-		}
-	}
+      assertEquals(10, records.size());
+      assertEquals(Level.FINER, records.get(0).getLevel());
+      assertEquals(Level.FINER, records.get(1).getLevel());
+      assertEquals(Level.FINE, records.get(2).getLevel());
+      assertEquals(Level.FINE, records.get(3).getLevel());
+      assertEquals(Level.INFO, records.get(4).getLevel());
+      assertEquals(Level.INFO, records.get(5).getLevel());
+      assertEquals(Level.WARNING, records.get(6).getLevel());
+      assertEquals(Level.WARNING, records.get(7).getLevel());
+      assertEquals(Level.SEVERE, records.get(8).getLevel());
+      assertEquals(Level.SEVERE, records.get(9).getLevel());
+    } finally {
+      if (oldLevel != null) {
+        handler.setLevel(oldLevel);
+        handler.setFilter(null);
+      }
+    }
+  }
 
-	public static class LoggingCasMultiplier extends CasMultiplier_ImplBase {
+  @Test
+  public void testAllKindsOfComponents() throws Exception {
+    final List<LogRecord> records = new ArrayList<LogRecord>();
 
-		public boolean hasNext() throws AnalysisEngineProcessException {
-			getLogger().info("Logging: " + getClass().getName());
-			return false;
-		}
+    // Tell the logger to log everything
+    ConsoleHandler handler = (ConsoleHandler) LogManager.getLogManager().getLogger("")
+            .getHandlers()[0];
+    java.util.logging.Level oldLevel = handler.getLevel();
+    handler.setLevel(Level.ALL);
+    handler.setFilter(new Filter() {
+      public boolean isLoggable(LogRecord record) {
+        records.add(record);
+        return true;
+      }
+    });
 
-		public AbstractCas next() throws AnalysisEngineProcessException {
-			// Never called
-			return null;
-		}
+    try {
+      JCas jcas = JCasFactory.createJCas();
 
-		@Override
-		public void process(CAS aCAS) throws AnalysisEngineProcessException {
-			// Never called
-		}
-	}
+      createCollectionReader(LoggingCasCollectionReader.class).hasNext();
+      assertLogDone(records);
 
-	public static class LoggingJCasMultiplier extends JCasMultiplier_ImplBase {
-		public boolean hasNext() throws AnalysisEngineProcessException {
-			getLogger().info("Logging: " + getClass().getName());
-			return false;
-		}
+      createCollectionReader(LoggingJCasCollectionReader.class).hasNext();
+      assertLogDone(records);
 
-		public AbstractCas next() throws AnalysisEngineProcessException {
-			// Never called
-			return null;
-		}
+      // createFlowControllerDescription(LoggingJCasFlowController.class).
+      // assertLogDone(records);
 
-		@Override
-		public void process(JCas aJCas) throws AnalysisEngineProcessException {
-			// Never called
-		}
-	}
+      createPrimitive(LoggingCasAnnotator.class).process(jcas.getCas());
+      assertLogDone(records);
 
-	public static class LoggingJCasCollectionReader extends JCasCollectionReader_ImplBase {
-		public boolean hasNext() throws IOException, CollectionException {
-			getLogger().info("Logging: " + getClass().getName());
-			return false;
-		}
+      createPrimitive(LoggingJCasAnnotator.class).process(jcas);
+      assertLogDone(records);
 
-		public Progress[] getProgress() {
-			return new Progress[0];
-		}
+      createPrimitive(LoggingCasConsumer.class).process(jcas.getCas());
+      assertLogDone(records);
 
-		@Override
-		public void getNext(JCas jCas) throws IOException, CollectionException {
-			// Never called
-		}
-	}
+      createPrimitive(LoggingJCasConsumer.class).process(jcas);
+      assertLogDone(records);
 
-	public static class LoggingResource extends Resource_ImplBase {
-		@Override
-		public boolean initialize(ResourceSpecifier aSpecifier,
-				Map<String, Object> aAdditionalParams) throws ResourceInitializationException {
-			boolean ret = super.initialize(aSpecifier, aAdditionalParams);
-			getLogger().info("Logging: " + getClass().getName());
-			return ret;
-		}
-	}
+      createPrimitive(LoggingCasMultiplier.class).process(jcas.getCas());
+      assertLogDone(records);
 
-	public static class LoggingCasCollectionReader extends CasCollectionReader_ImplBase {
-		public void getNext(CAS aCAS) throws IOException, CollectionException {
-			// Never called
-		}
+      createPrimitive(LoggingJCasMultiplier.class).process(jcas);
+      assertLogDone(records);
+    } finally {
+      if (oldLevel != null) {
+        handler.setLevel(oldLevel);
+        handler.setFilter(null);
+      }
+    }
+  }
 
-		public boolean hasNext() throws IOException, CollectionException {
-			getLogger().info("Logging: " + getClass().getName());
-			return false;
-		}
+  private void assertLogDone(List<LogRecord> records) {
+    assertEquals(1, records.size());
+    assertEquals(Level.INFO, records.get(0).getLevel());
+    records.clear();
+  }
 
-		public Progress[] getProgress() {
-			return new Progress[0];
-		}
-	}
+  public static class LoggingCasConsumerChristmasTree extends CasConsumer_ImplBase {
+    @Override
+    public void process(CAS aCAS) throws AnalysisEngineProcessException {
+      getLogger().setLevel(org.apache.uima.util.Level.ALL);
+      trigger();
+      getLogger().setLevel(org.apache.uima.util.Level.OFF);
+      trigger();
+    }
 
-	public static class LoggingCasAnnotator extends CasAnnotator_ImplBase {
-		@Override
-		public void process(CAS aCAS) throws AnalysisEngineProcessException {
-			getLogger().info("Logging: " + getClass().getName());
-		}
-	}
+    private void trigger() {
+      if (getLogger().isTraceEnabled()) {
+        getLogger().trace("Logging: " + getClass().getName());
+        getLogger().trace("Logging: " + getClass().getName(), new IllegalArgumentException());
+      }
+      if (getLogger().isDebugEnabled()) {
+        getLogger().debug("Logging: " + getClass().getName());
+        getLogger().debug("Logging: " + getClass().getName(), new IllegalArgumentException());
+      }
+      if (getLogger().isInfoEnabled()) {
+        getLogger().info("Logging: " + getClass().getName());
+        getLogger().info("Logging: " + getClass().getName(), new IllegalArgumentException());
+      }
+      if (getLogger().isWarnEnabled()) {
+        getLogger().warn("Logging: " + getClass().getName());
+        getLogger().warn("Logging: " + getClass().getName(), new IllegalArgumentException());
+      }
+      if (getLogger().isErrorEnabled()) {
+        getLogger().error("Logging: " + getClass().getName());
+        getLogger().error("Logging: " + getClass().getName(), new IllegalArgumentException());
+      }
+    }
+  }
 
-	public static class LoggingCasConsumer extends CasConsumer_ImplBase {
-		@Override
-		public void process(CAS aCAS) throws AnalysisEngineProcessException {
-			getLogger().info("Logging: " + getClass().getName());
-		}
-	}
+  public static class LoggingCasMultiplier extends CasMultiplier_ImplBase {
 
-	public static class LoggingJCasAnnotator extends JCasAnnotator_ImplBase {
-		@Override
-		public void process(JCas aJCas) throws AnalysisEngineProcessException {
-			getLogger().info("Logging: " + getClass().getName());
-		}
-	}
+    public boolean hasNext() throws AnalysisEngineProcessException {
+      getLogger().info("Logging: " + getClass().getName());
+      return false;
+    }
 
-	public static class LoggingJCasConsumer extends JCasConsumer_ImplBase {
-		@Override
-		public void process(JCas aJCas) throws AnalysisEngineProcessException {
-			getLogger().info("Logging: " + getClass().getName());
-		}
-	}
-	
-	public static class LoggingCasFlowController extends CasFlowController_ImplBase {
-		@Override
-		public Flow computeFlow(CAS aCAS) throws AnalysisEngineProcessException {
-			getLogger().info("Logging: " + getClass().getName());
-			return null;
-		}
-	}
+    public AbstractCas next() throws AnalysisEngineProcessException {
+      // Never called
+      return null;
+    }
 
-	public static class LoggingJCasFlowController extends JCasFlowController_ImplBase {
-		@Override
-		public Flow computeFlow(JCas aJCas) throws AnalysisEngineProcessException {
-			getLogger().info("Logging: " + getClass().getName());
-			return null;
-		}
-	}
+    @Override
+    public void process(CAS aCAS) throws AnalysisEngineProcessException {
+      // Never called
+    }
+  }
+
+  public static class LoggingJCasMultiplier extends JCasMultiplier_ImplBase {
+    public boolean hasNext() throws AnalysisEngineProcessException {
+      getLogger().info("Logging: " + getClass().getName());
+      return false;
+    }
+
+    public AbstractCas next() throws AnalysisEngineProcessException {
+      // Never called
+      return null;
+    }
+
+    @Override
+    public void process(JCas aJCas) throws AnalysisEngineProcessException {
+      // Never called
+    }
+  }
+
+  public static class LoggingJCasCollectionReader extends JCasCollectionReader_ImplBase {
+    public boolean hasNext() throws IOException, CollectionException {
+      getLogger().info("Logging: " + getClass().getName());
+      return false;
+    }
+
+    public Progress[] getProgress() {
+      return new Progress[0];
+    }
+
+    @Override
+    public void getNext(JCas jCas) throws IOException, CollectionException {
+      // Never called
+    }
+  }
+
+  public static class LoggingResource extends Resource_ImplBase {
+    @Override
+    public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
+            throws ResourceInitializationException {
+      boolean ret = super.initialize(aSpecifier, aAdditionalParams);
+      getLogger().info("Logging: " + getClass().getName());
+      return ret;
+    }
+  }
+
+  public static class LoggingCasCollectionReader extends CasCollectionReader_ImplBase {
+    public void getNext(CAS aCAS) throws IOException, CollectionException {
+      // Never called
+    }
+
+    public boolean hasNext() throws IOException, CollectionException {
+      getLogger().info("Logging: " + getClass().getName());
+      return false;
+    }
+
+    public Progress[] getProgress() {
+      return new Progress[0];
+    }
+  }
+
+  public static class LoggingCasAnnotator extends CasAnnotator_ImplBase {
+    @Override
+    public void process(CAS aCAS) throws AnalysisEngineProcessException {
+      getLogger().info("Logging: " + getClass().getName());
+    }
+  }
+
+  public static class LoggingCasConsumer extends CasConsumer_ImplBase {
+    @Override
+    public void process(CAS aCAS) throws AnalysisEngineProcessException {
+      getLogger().info("Logging: " + getClass().getName());
+    }
+  }
+
+  public static class LoggingJCasAnnotator extends JCasAnnotator_ImplBase {
+    @Override
+    public void process(JCas aJCas) throws AnalysisEngineProcessException {
+      getLogger().info("Logging: " + getClass().getName());
+    }
+  }
+
+  public static class LoggingJCasConsumer extends JCasConsumer_ImplBase {
+    @Override
+    public void process(JCas aJCas) throws AnalysisEngineProcessException {
+      getLogger().info("Logging: " + getClass().getName());
+    }
+  }
+
+  public static class LoggingCasFlowController extends CasFlowController_ImplBase {
+    @Override
+    public Flow computeFlow(CAS aCAS) throws AnalysisEngineProcessException {
+      getLogger().info("Logging: " + getClass().getName());
+      return null;
+    }
+  }
+
+  public static class LoggingJCasFlowController extends JCasFlowController_ImplBase {
+    @Override
+    public Flow computeFlow(JCas aJCas) throws AnalysisEngineProcessException {
+      getLogger().info("Logging: " + getClass().getName());
+      return null;
+    }
+  }
 }

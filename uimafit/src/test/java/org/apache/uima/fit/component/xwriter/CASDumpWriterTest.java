@@ -36,25 +36,25 @@ import org.junit.rules.TemporaryFolder;
  */
 public class CASDumpWriterTest {
 
-	@Rule
-	public TemporaryFolder folder = new TemporaryFolder();
+  @Rule
+  public TemporaryFolder folder = new TemporaryFolder();
 
-	@Test
-	public void testXWriter() throws Exception {
-		File outputFile = new File(folder.getRoot(), "dump-output.txt");
+  @Test
+  public void testXWriter() throws Exception {
+    File outputFile = new File(folder.getRoot(), "dump-output.txt");
 
-		AnalysisEngine writer = AnalysisEngineFactory.createPrimitive(CASDumpWriter.class,
-				CASDumpWriter.PARAM_OUTPUT_FILE, outputFile.getPath());
-		JCas jcas = writer.newJCas();
-		JCasFactory.loadJCas(jcas, "src/test/resources/data/docs/test.xmi");
-		writer.process(jcas);
-		assertTrue(outputFile.exists());
+    AnalysisEngine writer = AnalysisEngineFactory.createPrimitive(CASDumpWriter.class,
+            CASDumpWriter.PARAM_OUTPUT_FILE, outputFile.getPath());
+    JCas jcas = writer.newJCas();
+    JCasFactory.loadJCas(jcas, "src/test/resources/data/docs/test.xmi");
+    writer.process(jcas);
+    assertTrue(outputFile.exists());
 
-		String reference = readFileToString(
-				new File("src/test/resources/data/reference/test.xmi.dump"), "UTF-8").trim();
-		String actual = readFileToString(outputFile, "UTF-8").trim();
-		actual = actual.replaceAll("\r\n", "\n");
+    String reference = readFileToString(
+            new File("src/test/resources/data/reference/test.xmi.dump"), "UTF-8").trim();
+    String actual = readFileToString(outputFile, "UTF-8").trim();
+    actual = actual.replaceAll("\r\n", "\n");
 
-		assertEquals(reference, actual);
-	}
+    assertEquals(reference, actual);
+  }
 }

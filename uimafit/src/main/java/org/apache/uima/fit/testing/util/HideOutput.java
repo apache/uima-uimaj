@@ -40,26 +40,26 @@ import org.apache.commons.io.output.NullOutputStream;
  * 
  */
 public class HideOutput {
-	protected PrintStream out;
+  protected PrintStream out;
 
-	protected PrintStream err;
+  protected PrintStream err;
 
-	/**
-	 * calling this constructor will silence System.out and System.err until
-	 * {@link #restoreOutput()} is called by setting them to this OutputStream
-	 */
-	public HideOutput() {
-		this.out = System.out;
-		this.err = System.err;
-		System.setOut(new PrintStream(NullOutputStream.NULL_OUTPUT_STREAM));
-		System.setErr(new PrintStream(NullOutputStream.NULL_OUTPUT_STREAM));
-	}
+  /**
+   * calling this constructor will silence System.out and System.err until {@link #restoreOutput()}
+   * is called by setting them to this OutputStream
+   */
+  public HideOutput() {
+    this.out = System.out;
+    this.err = System.err;
+    System.setOut(new PrintStream(NullOutputStream.NULL_OUTPUT_STREAM));
+    System.setErr(new PrintStream(NullOutputStream.NULL_OUTPUT_STREAM));
+  }
 
-	/**
-	 * this method restores System.out and System.err
-	 */
-	public void restoreOutput() {
-		System.setOut(this.out);
-		System.setErr(this.err);
-	}
+  /**
+   * this method restores System.out and System.err
+   */
+  public void restoreOutput() {
+    System.setOut(this.out);
+    System.setErr(this.err);
+  }
 }

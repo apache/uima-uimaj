@@ -27,12 +27,13 @@ import org.apache.uima.jcas.JCas;
  */
 public class GetStartedQuickAE extends JCasAnnotator_ImplBase {
 
-	public static final String PARAM_STRING = "stringParam";
-	@ConfigurationParameter(name = PARAM_STRING)
-	private String stringParam;
+  public static final String PARAM_STRING = "stringParam";
 
-	@Override
-	public void process(JCas jCas) throws AnalysisEngineProcessException {
-		System.out.println("Hello world!  Say 'hi' to " + stringParam);
-	}
+  @ConfigurationParameter(name = PARAM_STRING)
+  private String stringParam;
+
+  @Override
+  public void process(JCas jCas) throws AnalysisEngineProcessException {
+    System.out.println("Hello world!  Say 'hi' to " + stringParam);
+  }
 }

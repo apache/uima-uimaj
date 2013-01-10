@@ -56,129 +56,118 @@ import org.xml.sax.SAXException;
  * {@link AnalysisEngineDescription}. If an aggregate analysis engine description is used, the
  * builder will add each child of the aggregate engine as one processor to the engine. This works
  * only for aggregate analysis engines using a {@link FixedFlow}.
- *
+ * 
  */
-public class CpeBuilder
-{
-//	private final Log log = LogFactory.getLog(getClass());
+public class CpeBuilder {
+  // private final Log log = LogFactory.getLog(getClass());
 
-	private static final String ACTION_ON_MAX_ERROR = "terminate";
+  private static final String ACTION_ON_MAX_ERROR = "terminate";
 
-	/**
-	 * used for calculating the CAS pool size which needs to be adjusted to the number of parallel
-	 * pipelines
-	 */
-	private int maxProcessingUnitThreadCount = 1;
+  /**
+   * used for calculating the CAS pool size which needs to be adjusted to the number of parallel
+   * pipelines
+   */
+  private int maxProcessingUnitThreadCount = 1;
 
-	private final CpeDescription cpeDesc = produceDescriptor();
+  private final CpeDescription cpeDesc = produceDescriptor();
 
-	public void setMaxProcessingUnitThreadCount(int aMaxProcessingUnitThreadCount)
-	{
-		maxProcessingUnitThreadCount = aMaxProcessingUnitThreadCount;
-	}
+  public void setMaxProcessingUnitThreadCount(int aMaxProcessingUnitThreadCount) {
+    maxProcessingUnitThreadCount = aMaxProcessingUnitThreadCount;
+  }
 
-	public void setReader(CollectionReaderDescription aDesc)
-		throws IOException, SAXException, CpeDescriptorException
-	{
-		// Remove all collection readers
-		cpeDesc.setAllCollectionCollectionReaders(new CpeCollectionReader[0]);
+  public void setReader(CollectionReaderDescription aDesc) throws IOException, SAXException,
+          CpeDescriptorException {
+    // Remove all collection readers
+    cpeDesc.setAllCollectionCollectionReaders(new CpeCollectionReader[0]);
 
-		URL descUrl = materializeDescriptor(aDesc).toURI().toURL();
-		CpeCollectionReader reader = produceCollectionReader(descUrl.toString());
-		cpeDesc.addCollectionReader(reader);
-	}
+    URL descUrl = materializeDescriptor(aDesc).toURI().toURL();
+    CpeCollectionReader reader = produceCollectionReader(descUrl.toString());
+    cpeDesc.addCollectionReader(reader);
+  }
 
-	public void setAnalysisEngine(AnalysisEngineDescription aDesc)
-		throws IOException, SAXException, CpeDescriptorException, InvalidXMLException
-	{
-		// Remove all CAS processors
-		cpeDesc.setCpeCasProcessors(null);
+  public void setAnalysisEngine(AnalysisEngineDescription aDesc) throws IOException, SAXException,
+          CpeDescriptorException, InvalidXMLException {
+    // Remove all CAS processors
+    cpeDesc.setCpeCasProcessors(null);
 
-		if (aDesc.isPrimitive()) {
-			// For a primitive AE we just add it.
-			CpeIntegratedCasProcessor proc = createProcessor("", aDesc);
-			cpeDesc.addCasProcessor(proc);
-		}
-		else {
-			// For an aggregate AE we dive into the first aggregation level and add each of the
-			// contained AEs separately, thus allowing us to control their properties separately
+    if (aDesc.isPrimitive()) {
+      // For a primitive AE we just add it.
+      CpeIntegratedCasProcessor proc = createProcessor("", aDesc);
+      cpeDesc.addCasProcessor(proc);
+    } else {
+      // For an aggregate AE we dive into the first aggregation level and add each of the
+      // contained AEs separately, thus allowing us to control their properties separately
 
-			Map<String, ResourceSpecifier> delegates = aDesc.getDelegateAnalysisEngineSpecifiers();
-			FixedFlow flow = (FixedFlow) aDesc.getAnalysisEngineMetaData().getFlowConstraints();
-			for (String key : flow.getFixedFlow()) {
-				AnalysisEngineDescription aeDesc = (AnalysisEngineDescription) delegates.get(key);
-//				boolean multi = aeDesc.getAnalysisEngineMetaData().getOperationalProperties()
-//						.isMultipleDeploymentAllowed();
-//				log.info("["+key+"] runs "+ (multi ? "multi-threaded" : "single-threaded"));
-				CpeIntegratedCasProcessor proc = createProcessor(key, aeDesc);
-				cpeDesc.addCasProcessor(proc);
-			}
-		}
-	}
+      Map<String, ResourceSpecifier> delegates = aDesc.getDelegateAnalysisEngineSpecifiers();
+      FixedFlow flow = (FixedFlow) aDesc.getAnalysisEngineMetaData().getFlowConstraints();
+      for (String key : flow.getFixedFlow()) {
+        AnalysisEngineDescription aeDesc = (AnalysisEngineDescription) delegates.get(key);
+        // boolean multi = aeDesc.getAnalysisEngineMetaData().getOperationalProperties()
+        // .isMultipleDeploymentAllowed();
+        // log.info("["+key+"] runs "+ (multi ? "multi-threaded" : "single-threaded"));
+        CpeIntegratedCasProcessor proc = createProcessor(key, aeDesc);
+        cpeDesc.addCasProcessor(proc);
+      }
+    }
+  }
 
-	public CpeDescription getCpeDescription()
-	{
-		return cpeDesc;
-	}
-	
-	public CollectionProcessingEngine createCpe(StatusCallbackListener aListener)
-		throws ResourceInitializationException, CpeDescriptorException
-	{
-		ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
-		if (maxProcessingUnitThreadCount == 0) {
-			cpeDesc.getCpeCasProcessors().setPoolSize(3);
-		}
-		else {
-			cpeDesc.getCpeCasProcessors().setPoolSize(maxProcessingUnitThreadCount + 2);
-			cpeDesc.setProcessingUnitThreadCount(maxProcessingUnitThreadCount);
-		}
-		CollectionProcessingEngine cpe = produceCollectionProcessingEngine(cpeDesc, resMgr, null);
-		cpe.addStatusCallbackListener(aListener);
-		return cpe;
-	}
+  public CpeDescription getCpeDescription() {
+    return cpeDesc;
+  }
 
-	/**
-	 * Writes a temporary file containing a XML descriptor of the given resource. Returns the file.
-	 *
-	 * @param resource
-	 *            A resource specifier that should we materialized.
-	 * @return The file containing the XML representation of the given resource.
-	 */
-	private static File materializeDescriptor(ResourceSpecifier resource)
-		throws IOException, SAXException
-	{
-		File tempDesc = File.createTempFile("desc", ".xml");
-		tempDesc.deleteOnExit();
-		
-		BufferedWriter out = null;
-		try {
-			out = new BufferedWriter(new FileWriter(tempDesc));
-			resource.toXML(out);
-		}
-		finally {
-			IOUtils.closeQuietly(out);
-		}
+  public CollectionProcessingEngine createCpe(StatusCallbackListener aListener)
+          throws ResourceInitializationException, CpeDescriptorException {
+    ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
+    if (maxProcessingUnitThreadCount == 0) {
+      cpeDesc.getCpeCasProcessors().setPoolSize(3);
+    } else {
+      cpeDesc.getCpeCasProcessors().setPoolSize(maxProcessingUnitThreadCount + 2);
+      cpeDesc.setProcessingUnitThreadCount(maxProcessingUnitThreadCount);
+    }
+    CollectionProcessingEngine cpe = produceCollectionProcessingEngine(cpeDesc, resMgr, null);
+    cpe.addStatusCallbackListener(aListener);
+    return cpe;
+  }
 
-		return tempDesc;
-	}
+  /**
+   * Writes a temporary file containing a XML descriptor of the given resource. Returns the file.
+   * 
+   * @param resource
+   *          A resource specifier that should we materialized.
+   * @return The file containing the XML representation of the given resource.
+   */
+  private static File materializeDescriptor(ResourceSpecifier resource) throws IOException,
+          SAXException {
+    File tempDesc = File.createTempFile("desc", ".xml");
+    tempDesc.deleteOnExit();
 
-	private static CpeIntegratedCasProcessor createProcessor(String key, AnalysisEngineDescription aDesc)
-		throws IOException, SAXException, CpeDescriptorException
-	{
-		URL descUrl = materializeDescriptor(aDesc).toURI().toURL();
+    BufferedWriter out = null;
+    try {
+      out = new BufferedWriter(new FileWriter(tempDesc));
+      resource.toXML(out);
+    } finally {
+      IOUtils.closeQuietly(out);
+    }
 
-		CpeInclude cpeInclude = getResourceSpecifierFactory().createInclude();
-		cpeInclude.set(descUrl.toString());
+    return tempDesc;
+  }
 
-		CpeComponentDescriptor ccd = getResourceSpecifierFactory().createDescriptor();
-		ccd.setInclude(cpeInclude);
+  private static CpeIntegratedCasProcessor createProcessor(String key,
+          AnalysisEngineDescription aDesc) throws IOException, SAXException, CpeDescriptorException {
+    URL descUrl = materializeDescriptor(aDesc).toURI().toURL();
 
-		CpeIntegratedCasProcessor proc = produceCasProcessor(key);
-		proc.setCpeComponentDescriptor(ccd);
-		proc.setAttributeValue(CpeDefaultValues.PROCESSING_UNIT_THREAD_COUNT, 1);
-		proc.setActionOnMaxError(ACTION_ON_MAX_ERROR);
-		proc.setMaxErrorCount(0);
+    CpeInclude cpeInclude = getResourceSpecifierFactory().createInclude();
+    cpeInclude.set(descUrl.toString());
 
-		return proc;
-	}
+    CpeComponentDescriptor ccd = getResourceSpecifierFactory().createDescriptor();
+    ccd.setInclude(cpeInclude);
+
+    CpeIntegratedCasProcessor proc = produceCasProcessor(key);
+    proc.setCpeComponentDescriptor(ccd);
+    proc.setAttributeValue(CpeDefaultValues.PROCESSING_UNIT_THREAD_COUNT, 1);
+    proc.setActionOnMaxError(ACTION_ON_MAX_ERROR);
+    proc.setMaxErrorCount(0);
+
+    return proc;
+  }
 }

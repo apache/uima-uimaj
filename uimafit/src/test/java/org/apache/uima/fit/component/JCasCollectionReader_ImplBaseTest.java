@@ -39,42 +39,43 @@ import org.junit.Test;
  * 
  */
 public class JCasCollectionReader_ImplBaseTest {
-	/**
-	 * Test using a simple reader reading one text file.
-	 * 
-	 * @throws Exception
-	 *             if an error occurs.
-	 */
-	@Test
-	public void test() throws Exception {
-		File file = new File("src/test/resources/data/docs/A.txt");
+  /**
+   * Test using a simple reader reading one text file.
+   * 
+   * @throws Exception
+   *           if an error occurs.
+   */
+  @Test
+  public void test() throws Exception {
+    File file = new File("src/test/resources/data/docs/A.txt");
 
-		CollectionReader reader = createCollectionReader(SingleTextReader.class,
-				SingleTextReader.PARAM_FILE, file.getPath());
+    CollectionReader reader = createCollectionReader(SingleTextReader.class,
+            SingleTextReader.PARAM_FILE, file.getPath());
 
-		CAS cas = CasCreationUtils.createCas(reader.getProcessingResourceMetaData());
-		reader.getNext(cas);
-		reader.close();
+    CAS cas = CasCreationUtils.createCas(reader.getProcessingResourceMetaData());
+    reader.getNext(cas);
+    reader.close();
 
-		assertEquals(FileUtils.readFileToString(file, "UTF-8"), cas.getDocumentText());
-	}
+    assertEquals(FileUtils.readFileToString(file, "UTF-8"), cas.getDocumentText());
+  }
 
-	public static class SingleTextReader extends JCasCollectionReader_ImplBase {
-		public static final String PARAM_FILE = "File";
-		@ConfigurationParameter(name = PARAM_FILE, mandatory = true)
-		private File file;
+  public static class SingleTextReader extends JCasCollectionReader_ImplBase {
+    public static final String PARAM_FILE = "File";
 
-		public boolean hasNext() throws IOException, CollectionException {
-			return file != null;
-		}
+    @ConfigurationParameter(name = PARAM_FILE, mandatory = true)
+    private File file;
 
-		public Progress[] getProgress() {
-			return new Progress[0];
-		}
+    public boolean hasNext() throws IOException, CollectionException {
+      return file != null;
+    }
 
-		@Override
-		public void getNext(JCas jCas) throws IOException, CollectionException {
-			jCas.setDocumentText(FileUtils.readFileToString(file, "UTF-8"));
-		}
-	}
+    public Progress[] getProgress() {
+      return new Progress[0];
+    }
+
+    @Override
+    public void getNext(JCas jCas) throws IOException, CollectionException {
+      jCas.setDocumentText(FileUtils.readFileToString(file, "UTF-8"));
+    }
+  }
 }
