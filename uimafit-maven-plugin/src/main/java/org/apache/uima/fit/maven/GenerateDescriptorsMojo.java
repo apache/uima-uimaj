@@ -60,7 +60,6 @@ public class GenerateDescriptorsMojo
 
 	private ClassLoader componentLoader;
 
-	@Override
 	public void execute()
 		throws MojoExecutionException
 	{

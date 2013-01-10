@@ -40,7 +40,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<java.target>1.6</java.target>
+		<java.target>1.5</java.target>
 		<spring.version>3.1.2.RELEASE</spring.version>
 		<uima.version>2.4.0</uima.version>
 	</properties>
@@ -73,7 +73,8 @@
 			<dependency>
 				<groupId>commons-io</groupId>
 				<artifactId>commons-io</artifactId>
-				<version>2.4</version>
+				<version>2.2</version>
+				<!-- 2.2 is the last Java 5 compatible version -->
 			</dependency>
 			<dependency>
 				<groupId>org.apache.uima</groupId>

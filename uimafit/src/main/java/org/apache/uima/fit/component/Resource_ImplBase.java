@@ -63,12 +63,10 @@ public abstract class Resource_ImplBase extends org.apache.uima.resource.Resourc
 		return true;
 	}
 	
-	@Override
 	public String getResourceName() {
 		return resourceName;
 	}
 	
-	@Override
 	public void afterResourcesInitialized() {
 		// Per default nothing is done here.
 	}

@@ -168,23 +168,19 @@ public class AggregateWithReaderTest {
 	public static class SimpleReader extends CollectionReader_ImplBase {
 		private boolean done = false;
 
-		@Override
 		public void getNext(CAS aCAS) throws IOException, CollectionException {
 			aCAS.setDocumentText("Anyone up for a game of Foosball?");
 			done = true;
 		}
 
-		@Override
 		public boolean hasNext() throws IOException, CollectionException {
 			return !done;
 		}
 
-		@Override
 		public Progress[] getProgress() {
 			return new Progress[0];
 		}
 
-		@Override
 		public void close() throws IOException {
 			// Nothing to do
 		}

@@ -24,7 +24,6 @@ public class Sentence_Type extends Annotation_Type {
 
 	/** @generated */
 	private final FSGenerator fsGenerator = new FSGenerator() {
-		@Override
 		public FeatureStructure createFS(int addr, CASImpl cas) {
 			if (Sentence_Type.this.useExistingInstance) {
 				// Return eq fs instance if already created

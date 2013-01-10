@@ -99,7 +99,6 @@ public class CollectionReaderFactoryTest extends ComponentTestBase {
 			rie = e;
 		}
 		assertNotNull(rie);
-
 	}
 
 	private class TestCR extends CollectionReader_ImplBase {
@@ -108,30 +107,22 @@ public class CollectionReaderFactoryTest extends ComponentTestBase {
 			// do not instantiate
 		}
 
-		@Override
 		public void getNext(CAS acas) throws IOException, CollectionException {
 			// TODO Auto-generated method stub
-
 		}
 
-		@Override
 		public void close() throws IOException {
 			// TODO Auto-generated method stub
-
 		}
 
-		@Override
 		public Progress[] getProgress() {
 			// TODO Auto-generated method stub
 			return null;
 		}
 
-		@Override
 		public boolean hasNext() throws IOException, CollectionException {
 			// TODO Auto-generated method stub
 			return false;
 		}
-
 	}
-
 }

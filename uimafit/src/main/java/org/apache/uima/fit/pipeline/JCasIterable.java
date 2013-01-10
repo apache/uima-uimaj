@@ -85,12 +85,10 @@ public class JCasIterable implements Iterator<JCas>, Iterable<JCas> {
 		this.jCas = CasCreationUtils.createCas(metaData).getJCas();
 	}
 
-	@Override
 	public Iterator<JCas> iterator() {
 		return this;
 	}
 
-	@Override
 	public boolean hasNext() {
 		try {
 			return this.collectionReader.hasNext();
@@ -103,7 +101,6 @@ public class JCasIterable implements Iterator<JCas>, Iterable<JCas> {
 		}
 	}
 
-	@Override
 	public JCas next() {
 		this.jCas.reset();
 		try {
@@ -124,7 +121,6 @@ public class JCasIterable implements Iterator<JCas>, Iterable<JCas> {
 		return this.jCas;
 	}
 
-	@Override
 	public void remove() {
 		throw new UnsupportedOperationException();
 	}
