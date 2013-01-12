@@ -64,7 +64,8 @@
   <build>
     <!-- normally, the resources spec copies into target/classes/ ... but if it's not a "jar" packaging, 
       it copies into target/ -->
-      <!-- 
+    <!-- This bit just copies in stuff that isn't needed for the update site, but makes it
+         show in a browser - supports IE and FireFox, not Chrome 
     <resources>
       <resource>
         <targetPath>eclipse-update-site/web</targetPath>
@@ -79,7 +80,8 @@
         </includes>
       </resource>
     </resources>
- -->
+    -->
+
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -134,8 +136,9 @@
                 </artifactItem>
                 -->
 
-              </artifactItems>
-              <outputDirectory>${project.build.directory}/work/plugins</outputDirectory>
+              </artifactItems>            
+              <outputDirectory>${eclipseUpdateSite}/plugins</outputDirectory>              
+              <!-- outputDirectory>${project.build.directory}/work/plugins</outputDirectory-->
             </configuration>
           </execution>
           <execution>
@@ -159,7 +162,8 @@
                                 -->
                 
               </artifactItems>
-              <outputDirectory>${project.build.directory}/work/features</outputDirectory>
+              <outputDirectory>${eclipseUpdateSite}/features</outputDirectory>              
+              <!-- outputDirectory>${project.build.directory}/work/features</outputDirectory-->
             </configuration>
           </execution>
         </executions>
@@ -234,8 +238,8 @@
                   <!-- arg line="-verbose"/-->
                   <!--  only pack the plugins.  The publisher won't copy packed "features", 
                         they are tiny anyways -->
-                  <arg line="-outputDir ${project.build.directory}/work/plugins"/>
-                  <arg line="${project.build.directory}/work/plugins"/>
+                  <arg line="-outputDir ${eclipseUpdateSite}/plugins"/>
+                  <arg line="${eclipseUpdateSite}/plugins"/>
                                 
                 </java>
                 
@@ -247,7 +251,7 @@
                   <arg line="-application org.eclipse.equinox.p2.publisher.FeaturesAndBundlesPublisher" />
                   <arg line="-metadataRepository file://${eclipseUpdateSite}" />
                   <arg line="-artifactRepository file://${eclipseUpdateSite}" />
-                  <arg line="-source ${project.build.directory}/work" />
+                  <arg line="-source ${eclipseUpdateSite}" />
                   <arg line="-configs ANY.ANY.ANY" />
                   <arg line="-publishArtifacts" />
                   <arg line="-reusePack200Files"/>
