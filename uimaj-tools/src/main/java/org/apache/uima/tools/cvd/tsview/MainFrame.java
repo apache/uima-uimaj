@@ -44,7 +44,6 @@ import javax.swing.tree.DefaultTreeSelectionModel;
 import javax.swing.tree.TreeSelectionModel;
 
 import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.admin.CASFactory;
 import org.apache.uima.cas.admin.CASMgr;
@@ -69,7 +68,7 @@ public class MainFrame extends JFrame {
       if (node == null) {
         return;
       }
-      Type t = (Type) node.getUserObject();
+      org.apache.uima.cas.Type t = (org.apache.uima.cas.Type) node.getUserObject();
       if (t != null) {
         MainFrame.this.selectedType = t;
         updateFeatureTable();
@@ -79,7 +78,7 @@ public class MainFrame extends JFrame {
 
   TypeSystem ts = null;
 
-  private Type selectedType;
+  private org.apache.uima.cas.Type selectedType;
 
   private JTable featureTable = null;
 
@@ -181,12 +180,12 @@ public class MainFrame extends JFrame {
     ((FeatureTableModel) this.featureTable.getModel()).setType(this.selectedType);
   }
 
-  private DefaultMutableTreeNode createTypeTree(Type type) {
+  private DefaultMutableTreeNode createTypeTree(org.apache.uima.cas.Type type) {
     DefaultMutableTreeNode node = new DefaultMutableTreeNode(type);
-    List<?> types = this.ts.getDirectSubtypes(type);
+    List<org.apache.uima.cas.Type> types = this.ts.getDirectSubtypes(type);
     final int max = types.size();
     for (int i = 0; i < max; i++) {
-      DefaultMutableTreeNode child = createTypeTree((Type) types.get(i));
+      DefaultMutableTreeNode child = createTypeTree(types.get(i));
       node.add(child);
     }
     return node;
@@ -198,11 +197,11 @@ public class MainFrame extends JFrame {
     }
     DefaultMutableTreeNode rootNode = (DefaultMutableTreeNode) this.typeTree.getModel().getRoot();
     rootNode.removeAllChildren();
-    Type top = this.ts.getTopType();
+    org.apache.uima.cas.Type top = this.ts.getTopType();
     rootNode.setUserObject(top);
-    List<?> types = this.ts.getDirectSubtypes(top);
+    List<org.apache.uima.cas.Type> types = this.ts.getDirectSubtypes(top);
     for (int i = 0; i < types.size(); i++) {
-      rootNode.add(createTypeTree((Type) types.get(i)));
+      rootNode.add(createTypeTree(types.get(i)));
     }
     DefaultTreeModel model = (DefaultTreeModel) this.typeTree.getModel();
     // 1.3 compatability hack.

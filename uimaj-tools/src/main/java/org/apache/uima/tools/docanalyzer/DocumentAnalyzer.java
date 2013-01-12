@@ -73,7 +73,6 @@ import org.apache.uima.analysis_engine.TypeOrFeature;
 import org.apache.uima.analysis_engine.metadata.FixedFlow;
 import org.apache.uima.analysis_engine.metadata.SofaMapping;
 import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.collection.CasConsumerDescription;
 import org.apache.uima.collection.CollectionProcessingManager;
@@ -1183,7 +1182,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
 
       // save AE output types for later use in configuring viewer
       if (aeSpecifier instanceof AnalysisEngineDescription) {
-        ArrayList outputTypeList = new ArrayList();
+        ArrayList<String> outputTypeList = new ArrayList<String>();
         Capability[] capabilities = ((AnalysisEngineDescription) aeSpecifier)
                 .getAnalysisEngineMetaData().getCapabilities();
         for (int i = 0; i < capabilities.length; i++) {
@@ -1192,12 +1191,13 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
             if (outputs[j].isType()) {
               outputTypeList.add(outputs[j].getName());
               // also add subsumed types
-              Type t = currentTypeSystem.getType(outputs[j].getName());
+              org.apache.uima.cas.Type t = currentTypeSystem.getType(outputs[j].getName());
               if (t != null) {
-                List subsumedTypes = currentTypeSystem.getProperlySubsumedTypes(t);
-                Iterator it = subsumedTypes.iterator();
+                List<org.apache.uima.cas.Type> subsumedTypes = currentTypeSystem
+                        .getProperlySubsumedTypes(t);
+                Iterator<org.apache.uima.cas.Type> it = subsumedTypes.iterator();
                 while (it.hasNext()) {
-                  outputTypeList.add(((Type) it.next()).getName());
+                  outputTypeList.add(it.next().getName());
                 }
               }
             }
@@ -1261,6 +1261,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
       this.encoding = encoding;
     }
 
+    @Override
     public void run() {
       // Code moved outside class to make accessible by programs that call
       // DocumentAnalyzer. JMP
@@ -1291,6 +1292,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
    * 
    * @see java.awt.Component#getPreferredSize()
    */
+  @Override
   public Dimension getPreferredSize() {
     return new Dimension(700, 350);
   }

@@ -96,7 +96,6 @@ import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIndexRepository;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.SofaFS;
-import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.XmiCasDeserializer;
@@ -1343,6 +1342,7 @@ public class MainFrame extends JFrame {
   private void init() {
     this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     this.addWindowListener(new WindowAdapter() {
+      @Override
       public void windowClosing(WindowEvent e) {
         // Do nothing.
       }
@@ -1653,13 +1653,12 @@ public class MainFrame extends JFrame {
     return res;
   }
 
-  @SuppressWarnings("unchecked")
-  private DefaultMutableTreeNode createTypeTree(Type type, TypeSystem ts, String label,
-      FSIndexRepository ir) {
+  private DefaultMutableTreeNode createTypeTree(org.apache.uima.cas.Type type, TypeSystem ts,
+          String label, FSIndexRepository ir) {
     int size = ir.getIndex(label, type).size();
     TypeTreeNode typeNode = new TypeTreeNode(type, label, size);
     DefaultMutableTreeNode node = new DefaultMutableTreeNode(typeNode);
-    List<Type> types = ts.getDirectSubtypes(type);
+    List<org.apache.uima.cas.Type> types = ts.getDirectSubtypes(type);
     final int max = types.size();
     for (int i = 0; i < max; i++) {
       if (ir.getIndex(label, types.get(i)) == null) {

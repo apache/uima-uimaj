@@ -48,7 +48,6 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 
 import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 
 /**
@@ -336,17 +335,17 @@ public class AnnotationDisplayCustomizationFrame extends JFrame {
   private TreeModel createTreeModel(TypeSystem ts) {
     String typeName = CAS.TYPE_NAME_ANNOTATION;
     DefaultMutableTreeNode node = new DefaultMutableTreeNode(typeName);
-    Type type = ts.getType(typeName);
+    org.apache.uima.cas.Type type = ts.getType(typeName);
     addChildren(node, type, ts);
     DefaultTreeModel treeModel = new DefaultTreeModel(node);
     return treeModel;
   }
 
-  @SuppressWarnings("unchecked")
-  private static void addChildren(DefaultMutableTreeNode node, Type type, TypeSystem ts) {
-    List<Type> dtrs = ts.getDirectSubtypes(type);
+  private static void addChildren(DefaultMutableTreeNode node, org.apache.uima.cas.Type type,
+          TypeSystem ts) {
+    List<org.apache.uima.cas.Type> dtrs = ts.getDirectSubtypes(type);
     DefaultMutableTreeNode dtrNode;
-    Type dtrType;
+    org.apache.uima.cas.Type dtrType;
     for (int i = 0; i < dtrs.size(); i++) {
       dtrType = dtrs.get(i);
       dtrNode = new DefaultMutableTreeNode(dtrType.getName());
@@ -354,5 +353,4 @@ public class AnnotationDisplayCustomizationFrame extends JFrame {
       addChildren(dtrNode, dtrType, ts);
     }
   }
-
 }
