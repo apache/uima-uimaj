@@ -33,7 +33,7 @@
   <version>2.4.0</version>
 
   <name>Apache UIMA Eclipse: ${project.artifactId}</name>
-  <description>The UIMA Eclipse update site</description>
+  <description>The UIMA Java SDK Eclipse update site</description>
   <url>${uimaWebsiteUrl}</url>
 
   <scm>
@@ -52,36 +52,12 @@
     <uimaScmRoot>uimaj</uimaScmRoot>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
     <eclipseUpdateSite>${project.build.directory}/eclipse-update-site</eclipseUpdateSite>
-    <eclipseUpdateSiteCompositeRoot>${basedir}/../eclipse-packagings</eclipseUpdateSiteCompositeRoot>
-    <eclipseUpdateSiteComposite>${eclipseUpdateSiteCompositeRoot}/eclipse-update-site</eclipseUpdateSiteComposite>
-    <item-maven-release-version>2.4.0</item-maven-release-version>
-    <item-eclipse-release-version>2.4.0</item-eclipse-release-version>
   </properties>
 
   <!-- don't use dependency mechanism - use dependency:copy because we need to get multiple versions 
-    for the eclipese-feature-projects, and Maven wants to resolve multiple versions into one. -->
+    for the eclipse-feature-projects, and Maven wants to resolve multiple versions into one. -->
 
   <build>
-    <!-- normally, the resources spec copies into target/classes/ ... but if it's not a "jar" packaging, 
-      it copies into target/ -->
-    <!-- This bit just copies in stuff that isn't needed for the update site, but makes it
-         show in a browser - supports IE and FireFox, not Chrome 
-    <resources>
-      <resource>
-        <targetPath>eclipse-update-site/web</targetPath>
-        <directory>web</directory>
-      </resource>
-      <resource>
-        <targetPath>eclipse-update-site</targetPath>
-        <directory>.</directory>
-        <includes>
-          <include>index.html</include>
-          <include>site.xml</include>
-        </includes>
-      </resource>
-    </resources>
-    -->
-
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -94,7 +70,7 @@
             </goals>
             <configuration>
               <!-- ===================================================================
-                List here all the plugins, with all versions - needed by P2 build 
+                List here all the PLUGINS, with all versions - needed by P2 build 
                 ======================================================================= -->
               <artifactItems>
                 <artifactItem><groupId>org.apache.uima</groupId><artifactId>uimaj-ep-cas-editor</artifactId><version>2.4.0</version><destFileName>org.apache.uima.caseditor_2.4.0.jar</destFileName></artifactItem>
@@ -118,24 +94,7 @@
                 <artifactItem><groupId>org.apache.uima</groupId><artifactId>uimaj-ep-runtime</artifactId><version>2.3.1</version><destFileName>org.apache.uima.runtime_2.3.1.jar</destFileName></artifactItem>
 
                 <artifactItem><groupId>org.apache.uima</groupId><artifactId>uimaj-ep-launcher</artifactId><version>2.4.0</version><destFileName>org.apache.uima.launcher_2.4.0.jar</destFileName></artifactItem>
-
-
-                <!-- Deploy editor released as part of uima-as update site
-                <artifactItem>
-                  <groupId>org.apache.uima</groupId>
-                  <artifactId>uimaj-ep-deployeditor</artifactId>
-                  <version>2.4.0</version>
-                  <destFileName>org.apache.uima.deployeditor_2.4.0.jar</destFileName>
-                </artifactItem>
-
-                <artifactItem>
-                  <groupId>org.apache.uima</groupId>
-                  <artifactId>uimaj-ep-runtime-deployeditor</artifactId>
-                  <version>2.4.0</version>
-                  <destFileName>org.apache.uima.runtime.fragments.deployeditor_2.4.0.jar</destFileName>
-                </artifactItem>
-                -->
-
+                
               </artifactItems>            
               <outputDirectory>${eclipseUpdateSite}/plugins</outputDirectory>              
               <!-- outputDirectory>${project.build.directory}/work/plugins</outputDirectory-->
@@ -147,23 +106,18 @@
               <goal>copy</goal>
             </goals>
             <configuration>
-              <!-- include here all of the features and all versions for this update site -->
+              <!-- ===================================================================
+                List here all the FEATURES, with all versions - needed by P2 build 
+                ======================================================================= -->
               <artifactItems>
                 <artifactItem><groupId>org.apache.uima</groupId><artifactId>uimaj-eclipse-feature-runtime</artifactId><version>2.4.0</version><destFileName>org.apache.uima.runtime_2.4.0.jar</destFileName></artifactItem>
                 <artifactItem><groupId>org.apache.uima</groupId><artifactId>uimaj-eclipse-feature-runtime</artifactId><version>2.3.1</version><destFileName>org.apache.uima.runtime_2.3.1.jar</destFileName></artifactItem>
 
                 <artifactItem><groupId>org.apache.uima</groupId><artifactId>uimaj-eclipse-feature-tools</artifactId><version>2.4.0</version><destFileName>org.apache.uima.tools_2.4.0.jar</destFileName></artifactItem>
                 <artifactItem><groupId>org.apache.uima</groupId><artifactId>uimaj-eclipse-feature-tools</artifactId><version>2.3.1</version><destFileName>org.apache.uima.tools_2.3.1.jar</destFileName></artifactItem>
-
-
-                <!-- not here - in uima-as update sub site 
-                <artifactItem><groupId>org.apache.uima</groupId><artifactId>uimaj-eclipse-feature-deployeditor</artifactId><version>2.4.0</version><destFileName>org.apache.uima.deployeditor_2.4.0.jar</destFileName></artifactItem>
-                <artifactItem><groupId>org.apache.uima</groupId><artifactId>uimaj-eclipse-feature-deployeditor</artifactId><version>2.3.1</version><destFileName>org.apache.uima.deployeditor_2.3.1.jar</destFileName></artifactItem>
-                                -->
                 
               </artifactItems>
               <outputDirectory>${eclipseUpdateSite}/features</outputDirectory>              
-              <!-- outputDirectory>${project.build.directory}/work/features</outputDirectory-->
             </configuration>
           </execution>
         </executions>
@@ -195,47 +149,12 @@
                 <fail unless="uima-eclipse-jar-processor"
                   message="********** Please add to your settings.xml file the property uima-eclipse-jar-processor, point to this within an Eclipse installation at level 4.2 or later, e.g. \$\{uima-maven-build-eclipse-home\}/plugins/org.eclipse.equinox.p2.jarprocessor_1.0.200.v20110808-1657.jar" />
                   
-                <echo>org.eclipse.update.core.siteOptimizer plugins</echo>
-                <!-- Define property: eclipse-equinox-launcher in m2/settings.xml to point to the ECLIPSE_HOME/plugins/org.eclipse.equinox.launcherXXX.jar -->
-<!-- 
-                <java jar="${eclipse-equinox-launcher}" fork="true" failonerror="true"
-                  maxmemory="256m">
-                  <arg line="-application org.eclipse.update.core.siteOptimizer" />
-                  <arg line="-jarProcessor -verbose -processAll -pack" />
-                  <arg line="-outputDir ${eclipseUpdateSite}/plugins" />
-                  <arg line="${project.build.directory}/work/plugins" />
-                </java>
-
-                <copy todir="${eclipseUpdateSite}/web" preservelastmodified="true">
-                  <fileset dir="web" />
-                </copy>
-                <copy todir="${eclipseUpdateSite}" file="index.html" preservelastmodified="true" />
-                <copy todir="${eclipseUpdateSite}" file="site.xml" preservelastmodified="true" />
--->
-                <!-- copy all feature jars preserved in SVN in the features/ folder to the target <copy 
-                  todir="${eclipseUpdateSite}/features" preservelastmodified="true"> <fileset dir="features" /> </copy> -->
-<!-- 
-                <echo>org.eclipse.update.core.siteOptimizer site.xml</echo>
--->
-                <!-- see http://wiki.eclipse.org/Update_Site_Optimization -->
-                <!-- Define property: eclipse-equinox-launcher in m2/settings.xml to point to the ECLIPSE_HOME/plugins/org.eclipse.equinox.launcherXXX.jar -->
-<!-- 
-                <java jar="${eclipse-equinox-launcher}" fork="true" failonerror="true"
-                  maxmemory="256m">
-                  <arg line="-application org.eclipse.update.core.siteOptimizer" />
-                  <arg
-                    line="-digestBuilder -digestOutputDir=target/eclipse-update-site" />
-                  <arg
-                    line="-siteXML=target/eclipse-update-site/site.xml" />
-                </java>
-
--->
                 <echo>Compress plugin Jars using pack200 - this may take a minute or 2</echo>
                 <java jar="${uima-eclipse-jar-processor}" fork="true" failonerror="true" maxmemory="256m">
                   <arg line="-processAll"/>
                   <arg line="-repack"/>
                   <arg line="-pack"/>
-                  <!-- arg line="-verbose"/-->
+                  <arg line="-verbose"/>
                   <!--  only pack the plugins.  The publisher won't copy packed "features", 
                         they are tiny anyways -->
                   <arg line="-outputDir ${eclipseUpdateSite}/plugins"/>
@@ -268,21 +187,6 @@
                   <arg line="-compress"/>
                 </java>
                 
-                
-                <!-- 
-                <echo>Extend composite repository</echo>
-                <copy todir="${eclipseUpdateSiteComposite}/uima-${item-eclipse-release-version}" preservelastmodified="true">
-                  <fileset dir="${eclipseUpdateSite}" />
-                </copy>
-                <java jar="${eclipse-equinox-launcher}" fork="true" failonerror="true"
-                  maxmemory="256m">
-                  <arg line="-application org.eclipse.ant.core.antRunner" />
-                  <arg line="-DeclipseUpdateSiteComposite=${eclipseUpdateSiteComposite}" />
-                  <arg line="-DeclipseUpdateSite=uima-${item-eclipse-release-version}" />
-                  <arg line="-f ${eclipseUpdateSiteCompositeRoot}/buildCompositeRepository.xml" />
-                </java>
-                 -->
-
               </target>
             </configuration>
             <goals>
