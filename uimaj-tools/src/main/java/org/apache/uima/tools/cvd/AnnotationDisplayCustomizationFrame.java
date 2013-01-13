@@ -335,6 +335,7 @@ public class AnnotationDisplayCustomizationFrame extends JFrame {
   private TreeModel createTreeModel(TypeSystem ts) {
     String typeName = CAS.TYPE_NAME_ANNOTATION;
     DefaultMutableTreeNode node = new DefaultMutableTreeNode(typeName);
+    // UIMA-2565 - Clash btw. cas.Type and Window.Type on JDK 7
     org.apache.uima.cas.Type type = ts.getType(typeName);
     addChildren(node, type, ts);
     DefaultTreeModel treeModel = new DefaultTreeModel(node);
@@ -343,6 +344,7 @@ public class AnnotationDisplayCustomizationFrame extends JFrame {
 
   private static void addChildren(DefaultMutableTreeNode node, org.apache.uima.cas.Type type,
           TypeSystem ts) {
+    // UIMA-2565 - Clash btw. cas.Type and Window.Type on JDK 7
     List<org.apache.uima.cas.Type> dtrs = ts.getDirectSubtypes(type);
     DefaultMutableTreeNode dtrNode;
     org.apache.uima.cas.Type dtrType;

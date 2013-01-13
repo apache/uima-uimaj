@@ -1658,6 +1658,8 @@ public class MainFrame extends JFrame {
     int size = ir.getIndex(label, type).size();
     TypeTreeNode typeNode = new TypeTreeNode(type, label, size);
     DefaultMutableTreeNode node = new DefaultMutableTreeNode(typeNode);
+    // UIMA-2565 - Clash btw. cas.Type and Window.Type on JDK 7
+    // also on method parameter "type" 
     List<org.apache.uima.cas.Type> types = ts.getDirectSubtypes(type);
     final int max = types.size();
     for (int i = 0; i < max; i++) {

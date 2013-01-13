@@ -68,6 +68,7 @@ public class MainFrame extends JFrame {
       if (node == null) {
         return;
       }
+      // UIMA-2565 - Clash btw. cas.Type and Window.Type on JDK 7
       org.apache.uima.cas.Type t = (org.apache.uima.cas.Type) node.getUserObject();
       if (t != null) {
         MainFrame.this.selectedType = t;
@@ -78,6 +79,7 @@ public class MainFrame extends JFrame {
 
   TypeSystem ts = null;
 
+  // UIMA-2565 - Clash btw. cas.Type and Window.Type on JDK 7
   private org.apache.uima.cas.Type selectedType;
 
   private JTable featureTable = null;
@@ -182,6 +184,8 @@ public class MainFrame extends JFrame {
 
   private DefaultMutableTreeNode createTypeTree(org.apache.uima.cas.Type type) {
     DefaultMutableTreeNode node = new DefaultMutableTreeNode(type);
+    // UIMA-2565 - Clash btw. cas.Type and Window.Type on JDK 7
+    // also on method parameter "type"
     List<org.apache.uima.cas.Type> types = this.ts.getDirectSubtypes(type);
     final int max = types.size();
     for (int i = 0; i < max; i++) {
@@ -197,6 +201,7 @@ public class MainFrame extends JFrame {
     }
     DefaultMutableTreeNode rootNode = (DefaultMutableTreeNode) this.typeTree.getModel().getRoot();
     rootNode.removeAllChildren();
+    // UIMA-2565 - Clash btw. cas.Type and Window.Type on JDK 7
     org.apache.uima.cas.Type top = this.ts.getTopType();
     rootNode.setUserObject(top);
     List<org.apache.uima.cas.Type> types = this.ts.getDirectSubtypes(top);

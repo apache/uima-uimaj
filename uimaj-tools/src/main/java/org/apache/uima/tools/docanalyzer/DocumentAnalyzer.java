@@ -1191,6 +1191,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
             if (outputs[j].isType()) {
               outputTypeList.add(outputs[j].getName());
               // also add subsumed types
+              // UIMA-2565 - Clash btw. cas.Type and Window.Type on JDK 7
               org.apache.uima.cas.Type t = currentTypeSystem.getType(outputs[j].getName());
               if (t != null) {
                 List<org.apache.uima.cas.Type> subsumedTypes = currentTypeSystem
