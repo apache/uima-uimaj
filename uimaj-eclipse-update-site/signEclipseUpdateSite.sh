@@ -29,17 +29,11 @@ then
   exit 1
 fi
 
-# Create PGP signatures
-for i in target/eclipse-update-site/features/org.apache.uima.*.jar; do gpg --output $i.asc --detach-sig --armor $i; done
-for i in  target/eclipse-update-site/plugins/org.apache.uima.*.jar;  do gpg --output $i.asc --detach-sig --armor $i; done
-for i in  target/eclipse-update-site/plugins/org.apache.uima.*.jar.pack.gz;  do gpg --output $i.asc --detach-sig --armor $i; done
-
-# Create MD5 checksums
-for i in target/eclipse-update-site/features/org.apache.uima.*.jar; do md5sum --binary $i > $i.md5; done
-for i in  target/eclipse-update-site/plugins/org.apache.uima.*.jar;  do md5sum --binary $i > $i.md5; done
-for i in  target/eclipse-update-site/plugins/org.apache.uima.*.jar.pack.gz;  do md5sum --binary $i > $i.md5; done
-
-# Create SHA1 checksums
-for i in target/eclipse-update-site/features/org.apache.uima.*.jar; do sha1sum --binary $i > $i.sha1; done
-for i in  target/eclipse-update-site/plugins/org.apache.uima.*.jar;  do sha1sum --binary $i > $i.sha1; done
-for i in  target/eclipse-update-site/plugins/org.apache.uima.*.jar.pack.gz;  do sha1sum --binary $i > $i.sha1; done
+# Create PGP signatures, MD5, and SHA1 checksums on all jars
+for i in $(find ./target/eclipse-update-site -name '*.jar') 
+  do 
+    rm -f $i.asc 
+    gpg --output $i.asc --detach-sig --armor $i
+    md5sum --binary $i > $i.md5
+    sha1sum --binary $i > $i.sha1
+  done
