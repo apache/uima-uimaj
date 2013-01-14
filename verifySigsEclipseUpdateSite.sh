@@ -30,18 +30,10 @@ then
   exit 1
 fi
 
-# Verify PGP signatures
-for i in target/eclipse-update-site/features/org.apache.uima.*.jar; do gpg --verify $i.asc; done
-for i in target/eclipse-update-site/plugins/org.apache.uima.*.jar;  do gpg --verify $i.asc; done
-for i in target/eclipse-update-site/plugins/org.apache.uima.*.jar.pack.gz;  do gpg --verify $i.asc; done
-
-# Verify MD5 checksums
-for i in target/eclipse-update-site/features/org.apache.uima.*.jar; do md5sum --check $i.md5; done
-for i in target/eclipse-update-site/plugins/org.apache.uima.*.jar;  do md5sum --check $i.md5; done
-for i in target/eclipse-update-site/plugins/org.apache.uima.*.jar.pack.gz;  do md5sum --check $i.md5; done
-
-# Verify SHA1 checksums
-for i in target/eclipse-update-site/features/org.apache.uima.*.jar; do sha1sum --check $i.sha1; done
-for i in target/eclipse-update-site/plugins/org.apache.uima.*.jar;  do sha1sum --check $i.sha1; done
-for i in target/eclipse-update-site/plugins/org.apache.uima.*.jar.pack.gz;  do sha1sum --check $i.sha1; done
-
+# Verify PGP signatures, MD5 and SHA1 checksums on all jars
+for i in $(find ./target/eclipse-update-site -name '*.jar') 
+  do 
+    gpg --verify $i.asc
+    md5sum --check $i.md5
+    sha1sum --check $i.sha1
+  done
