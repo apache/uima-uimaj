@@ -22,8 +22,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Share common underlying char[] among strings: Optimize sets of strings for
@@ -261,37 +264,22 @@ public class OptimizeStrings {
     optimizeI(sa); 
     inStrings = new ArrayList<String>();  // release space
   }
-  
-  /**
-   * Internal routine works on a copy of the original array and sorts it
-   */
-  public void optimize(String [] sa, int start, int end) {
-    int length = end - start;
-    String[] sortedStrings = new String[length];
-    System.arraycopy(sa, start, sortedStrings, 0, length);
-    optimizeI(sortedStrings);
-  }
-   
-  private void optimizeI(final String[] sortedStrings) {
+     
+  private void optimizeI(String[] sortedStrings) {
     savedCharsExact = 0;
     savedCharsSubstr = 0;
     StringBuilder sb = new StringBuilder();
+        
+    String[] sortedStrings2 = sortStrings(sortedStrings);
     
-    // debug intermittent sort failure
-//    String[] temp = new String[sortedStrings.length];
-//    
-//    for (debugi = 0; debugi < 1000; debugi++) {
-//      System.arraycopy(sortedStrings, 0, temp, 0, sortedStrings.length);
-//      sortStrings(temp);
-//      if ((debugi % 50) == 0) {
-//        System.out.println(" " + debugi);
-//      }
-//    }
-    
-    sortStrings(sortedStrings);
-    
-    int ssLength = eliminateSortedStringDuplicates(sortedStrings);
- 
+    int ssLength;
+    if (sortedStrings2 != sortedStrings) {
+      // in this case, duplicates have already been eliminated
+      ssLength = sortedStrings2.length;
+      sortedStrings = sortedStrings2;
+    } else {
+      ssLength = eliminateSortedStringDuplicates(sortedStrings);
+    }
     // create Offsets table
     // sorted so longer ones follow shorter subsumed string
     String previous = "";
@@ -369,23 +357,46 @@ public class OptimizeStrings {
     return to;  // to is length, is also where next string would be copied to
   }
   
-  private void sortStrings(String[] sa) {
-    int retryCount = 0;
-    while (true) {
-      try {
-        Arrays.sort(sa); 
-      } catch (StackOverflowError e) {
-//        throw e;
-        System.err.format("Caught ArraySort stack overflow, original array is " +
-            " %,d entries%n", inStrings.size());
-        sa = inStrings.toArray(new String[inStrings.size()]);
-        retryCount ++;
-        if (retryCount < 20) { // 2 is too low to avoid JIT issue
-          continue;
+  private String[] sortStrings(String[] sa) {
+    try {
+      Arrays.sort(sa);
+
+      // testing
+//      Set<String> orderedSet = new TreeSet<String>();
+//      for (String s : inStrings) {
+//        orderedSet.add(s);
+//      }
+//      Iterator<String> it = orderedSet.iterator();
+//      for (int i = 0; i < sa.length; i++) {
+//        String s = it.next();
+//        if (sa[i] != s) {
+//          throw new RuntimeException(String.format(
+//              "Mismatch, old way sort(i = %,d) = %s, new way is %s", i, s));
+//        }
+//        while ((i < sa.length - 1) && (sa[i + 1].equals(sa[i]))) {
+//         i++;
+//        }
+//      }
+      // end of test
+      
+      
+      return sa;
+    } catch (StackOverflowError e) {
+      // see https://issues.apache.org/jira/browse/UIMA-2515
+      // debug/test
+//      System.out.println("hit stack overflow");
+      Set<String> orderedSet = new TreeSet<String>();
+      for (String s : inStrings) {
+        if (!orderedSet.add(s)) {
+          savedCharsExact += s.length();
         }
-        throw e;
       }
-      break;
+      sa = new String[orderedSet.size()]; // has dups removed already
+      Iterator<String> it = orderedSet.iterator();
+      for (int i = 0; i < sa.length; i++) {
+        sa[i] = it.next();
+      }
+      return sa;
     }
   }
 }
