@@ -241,20 +241,18 @@
         </executions>
       </plugin>
       
-      <!-- 
       <plugin>
         <artifactId>maven-dependency-plugin</artifactId>
         <executions>
           <execution>
             <id>unpackDependentJars</id>
-            <goals><goal>unpack-dependencies</goal></goals>
+            <goals><goal>copy-dependencies</goal></goals>
             <configuration>
               <outputDirectory>${project.build.outputDirectory}</outputDirectory>
             </configuration>
           </execution>
         </executions>
       </plugin>      
-      -->
     </plugins>
   </build>
 </project>
