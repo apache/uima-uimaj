@@ -76,7 +76,8 @@ public final class ConfigurationParameterFactory {
    * {@link org.apache.uima.fit.descriptor.ConfigurationParameter}.
    */
   public static boolean isConfigurationParameterField(Field field) {
-    return field.isAnnotationPresent(org.apache.uima.fit.descriptor.ConfigurationParameter.class);
+    return ReflectionUtil.isAnnotationPresent(field,
+            org.apache.uima.fit.descriptor.ConfigurationParameter.class);
   }
 
   /**
@@ -87,8 +88,8 @@ public final class ConfigurationParameterFactory {
    */
   public static Object getDefaultValue(Field field) {
     if (isConfigurationParameterField(field)) {
-      org.apache.uima.fit.descriptor.ConfigurationParameter annotation = field
-              .getAnnotation(org.apache.uima.fit.descriptor.ConfigurationParameter.class);
+      org.apache.uima.fit.descriptor.ConfigurationParameter annotation = ReflectionUtil
+              .getAnnotation(field, org.apache.uima.fit.descriptor.ConfigurationParameter.class);
 
       String[] stringValue = annotation.defaultValue();
       if (stringValue.length == 1
@@ -181,8 +182,8 @@ public final class ConfigurationParameterFactory {
    */
   public static String getConfigurationParameterName(Field field) {
     if (isConfigurationParameterField(field)) {
-      org.apache.uima.fit.descriptor.ConfigurationParameter annotation = field
-              .getAnnotation(org.apache.uima.fit.descriptor.ConfigurationParameter.class);
+      org.apache.uima.fit.descriptor.ConfigurationParameter annotation = ReflectionUtil
+              .getAnnotation(field, org.apache.uima.fit.descriptor.ConfigurationParameter.class);
       String name = annotation.name();
       if (name.equals(org.apache.uima.fit.descriptor.ConfigurationParameter.USE_FIELD_NAME)) {
         name = field.getDeclaringClass().getName() + "." + field.getName();
@@ -212,8 +213,8 @@ public final class ConfigurationParameterFactory {
    */
   public static ConfigurationParameter createPrimitiveParameter(Field field) {
     if (isConfigurationParameterField(field)) {
-      org.apache.uima.fit.descriptor.ConfigurationParameter annotation = field
-              .getAnnotation(org.apache.uima.fit.descriptor.ConfigurationParameter.class);
+      org.apache.uima.fit.descriptor.ConfigurationParameter annotation = ReflectionUtil
+              .getAnnotation(field, org.apache.uima.fit.descriptor.ConfigurationParameter.class);
       String name = getConfigurationParameterName(field);
       boolean multiValued = isMultiValued(field);
       String parameterType = getConfigurationParameterType(field);

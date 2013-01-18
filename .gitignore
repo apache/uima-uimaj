@@ -1,3 +1,17 @@
 .project
 .classpath
 target
+.settings/org.eclipse.core.resources.prefs
+.settings/org.eclipse.m2e.core.prefs
+uimafit-examples/.settings/org.eclipse.core.resources.prefs
+uimafit-examples/.settings/org.eclipse.m2e.core.prefs
+uimafit-legacy-support/.settings/org.eclipse.core.resources.prefs
+uimafit-legacy-support/.settings/org.eclipse.m2e.core.prefs
+uimafit-maven-plugin/.settings/org.eclipse.core.resources.prefs
+uimafit-maven-plugin/.settings/org.eclipse.m2e.core.prefs
+uimafit-spring/.settings/org.eclipse.core.resources.prefs
+uimafit-spring/.settings/org.eclipse.m2e.core.prefs
+uimafit/.settings/org.eclipse.core.resources.prefs
+uimafit/.settings/org.eclipse.m2e.core.prefs
+uimafit-legacy-support/.settings/org.eclipse.core.resources.prefs
+uimafit-legacy-support/.settings/org.eclipse.m2e.core.prefs

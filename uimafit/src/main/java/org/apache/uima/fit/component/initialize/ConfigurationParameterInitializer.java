@@ -89,8 +89,8 @@ public final class ConfigurationParameterInitializer {
 
     for (Field field : ReflectionUtil.getFields(component)) { // component.getClass().getDeclaredFields())
       if (ConfigurationParameterFactory.isConfigurationParameterField(field)) {
-        org.apache.uima.fit.descriptor.ConfigurationParameter annotation = field
-                .getAnnotation(org.apache.uima.fit.descriptor.ConfigurationParameter.class);
+        org.apache.uima.fit.descriptor.ConfigurationParameter annotation = ReflectionUtil
+                .getAnnotation(field, org.apache.uima.fit.descriptor.ConfigurationParameter.class);
 
         Object parameterValue;
         String parameterName = ConfigurationParameterFactory.getConfigurationParameterName(field);

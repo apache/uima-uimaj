@@ -102,7 +102,7 @@ public class ExternalResourceInitializer {
     }
 
     for (Field field : cls.getDeclaredFields()) {
-      if (!field.isAnnotationPresent(ExternalResource.class)) {
+      if (!ReflectionUtil.isAnnotationPresent(field, ExternalResource.class)) {
         continue;
       }
 
@@ -235,7 +235,7 @@ public class ExternalResourceInitializer {
     }
 
     for (Field field : cls.getDeclaredFields()) {
-      if (!field.isAnnotationPresent(ExternalResource.class)) {
+      if (!ReflectionUtil.isAnnotationPresent(field, ExternalResource.class)) {
         continue;
       }
 
@@ -257,7 +257,7 @@ public class ExternalResourceInitializer {
    * @return whether the field is mandatory.
    */
   private static boolean isMandatory(Field field) {
-    return field.getAnnotation(ExternalResource.class).mandatory();
+    return ReflectionUtil.getAnnotation(field, ExternalResource.class).mandatory();
   }
 
   /**
@@ -268,7 +268,7 @@ public class ExternalResourceInitializer {
    * @return the binding key.
    */
   private static String getKey(Field field) {
-    ExternalResource cpa = field.getAnnotation(ExternalResource.class);
+    ExternalResource cpa = ReflectionUtil.getAnnotation(field, ExternalResource.class);
     String key = cpa.key();
     if (key.length() == 0) {
       key = field.getType().getName();
@@ -286,7 +286,7 @@ public class ExternalResourceInitializer {
    */
   @SuppressWarnings({ "unchecked", "rawtypes" })
   private static Class<? extends Resource> getApi(Field field) {
-    ExternalResource cpa = field.getAnnotation(ExternalResource.class);
+    ExternalResource cpa = ReflectionUtil.getAnnotation(field, ExternalResource.class);
     Class<? extends Resource> api = cpa.api();
     // If no api is specified, look at the annotated field
     if (api == Resource.class) {

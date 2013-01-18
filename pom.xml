@@ -22,7 +22,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>uimafit-parent</artifactId>
 	<packaging>pom</packaging>
-	<name>uimaFIT Parent</name>
+	<name>uimaFIT - Parent</name>
 	<version>2.0.0-SNAPSHOT</version>
 	<description>Factories, Injection, and Testing library for UIMA</description>
 	<url>http://uimafit.googlecode.com</url>
@@ -534,5 +534,7 @@
 		<module>uimafit-examples</module>
 		<module>uimafit-spring</module>
 		<module>uimafit-maven-plugin</module>
+		<module>uimafit-legacy-support</module>
+		
 	</modules>
 </project>
