@@ -19,41 +19,23 @@
 package org.apache.uima.fit.legacy.converter;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AccessibleObject;
+
+import org.apache.uima.fit.legacy.AnnotationConverter;
 
 /**
- * Fallback converter that does not convert anything.
- * 
- * @author Richard Eckart de Castilho
+ * Abstract base class for annotation converters that do not require a context.
  */
-public class NoConversionConverter extends ContextlessAnnotationConverterBase<Annotation, Annotation> {
+public abstract class ContextlessAnnotationConverterBase<L extends Annotation, M extends Annotation>
+        implements AnnotationConverter<L, M> {
 
-  private static NoConversionConverter instance = null;
+  abstract M convert(L aAnnotation);
   
-  public NoConversionConverter() {
-    // Nothing to do
-  }
-
-  @Override
-  public Annotation convert(Annotation aAnnotation) {
-    return null;
-  }
-
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-  public Class<Annotation> getModernType() {
-    return (Class) NoAnnotation.class;
-  }
-
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-  public Class<Annotation> getLegacyType() {
-    return (Class) NoAnnotation.class;
+  public M convert(AccessibleObject aContext, L aAnnotation) {
+    return convert(aAnnotation);
   }
   
-  public static NoConversionConverter getInstance() {
-    if (instance == null) {
-      instance = new NoConversionConverter();
-    }
-    return instance;
+  public M convert(Class<?> aContext, L aAnnotation) {
+    return convert(aAnnotation);
   }
-  
-  private @interface NoAnnotation {};
 }

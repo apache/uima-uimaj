@@ -22,7 +22,6 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
-import org.apache.uima.fit.factory.ConfigurationParameterFactory;
 import org.apache.uima.jcas.JCas;
 
 /**
@@ -42,18 +41,14 @@ public class ViewTextCopierAnnotator extends JCasAnnotator_ImplBase {
   /**
    * The parameter name for the name of the source view
    */
-  public static final String PARAM_SOURCE_VIEW_NAME = ConfigurationParameterFactory
-          .createConfigurationParameterName(ViewTextCopierAnnotator.class, "sourceViewName");
-
+  public static final String PARAM_SOURCE_VIEW_NAME = "sourceViewName";
   @ConfigurationParameter(mandatory = true)
   private String sourceViewName;
 
   /**
    * The parameter name for the name of the destination view
    */
-  public static final String PARAM_DESTINATION_VIEW_NAME = ConfigurationParameterFactory
-          .createConfigurationParameterName(ViewTextCopierAnnotator.class, "destinationViewName");
-
+  public static final String PARAM_DESTINATION_VIEW_NAME = "destinationViewName";
   @ConfigurationParameter(mandatory = true)
   private String destinationViewName;
 

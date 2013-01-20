@@ -19,16 +19,16 @@
 package org.apache.uima.fit.legacy.converter;
 
 import org.apache.uima.fit.descriptor.OperationalProperties;
-import org.apache.uima.fit.legacy.AnnotationConverter;
 
 public class OperationalPropertiesConverter
-        implements
-        AnnotationConverter<org.uimafit.descriptor.OperationalProperties, org.apache.uima.fit.descriptor.OperationalProperties> {
+        extends
+        ContextlessAnnotationConverterBase<org.uimafit.descriptor.OperationalProperties, org.apache.uima.fit.descriptor.OperationalProperties> {
 
   public OperationalPropertiesConverter() {
     // Nothing to do
   }
 
+  @Override
   public OperationalProperties convert(
           final org.uimafit.descriptor.OperationalProperties aAnnotation) {
     return new OperationalPropertiesSubstitute(aAnnotation);

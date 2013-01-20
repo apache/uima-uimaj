@@ -19,16 +19,16 @@
 package org.apache.uima.fit.legacy.converter;
 
 import org.apache.uima.fit.descriptor.FsIndexKey;
-import org.apache.uima.fit.legacy.AnnotationConverter;
 
 public class FsIndexKeyConverter
-        implements
-        AnnotationConverter<org.uimafit.descriptor.FsIndexKey, org.apache.uima.fit.descriptor.FsIndexKey> {
+        extends
+        ContextlessAnnotationConverterBase<org.uimafit.descriptor.FsIndexKey, org.apache.uima.fit.descriptor.FsIndexKey> {
 
   public FsIndexKeyConverter() {
     // Nothing to do
   }
 
+  @Override
   public FsIndexKey convert(
           final org.uimafit.descriptor.FsIndexKey aAnnotation) {
     return new FsIndexKeySubstitute(aAnnotation);

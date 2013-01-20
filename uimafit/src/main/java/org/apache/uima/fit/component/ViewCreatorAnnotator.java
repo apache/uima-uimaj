@@ -22,7 +22,6 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
-import org.apache.uima.fit.factory.ConfigurationParameterFactory;
 import org.apache.uima.jcas.JCas;
 
 /**
@@ -42,9 +41,7 @@ public class ViewCreatorAnnotator extends JCasAnnotator_ImplBase {
   /**
    * The parameter name for the name of the viewed to be created by this annotator
    */
-  public static final String PARAM_VIEW_NAME = ConfigurationParameterFactory
-          .createConfigurationParameterName(ViewCreatorAnnotator.class, "viewName");
-
+  public static final String PARAM_VIEW_NAME = "viewName";
   @ConfigurationParameter(mandatory = true)
   private String viewName;
 

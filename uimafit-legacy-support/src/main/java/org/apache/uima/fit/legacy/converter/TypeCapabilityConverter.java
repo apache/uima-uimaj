@@ -19,16 +19,16 @@
 package org.apache.uima.fit.legacy.converter;
 
 import org.apache.uima.fit.descriptor.TypeCapability;
-import org.apache.uima.fit.legacy.AnnotationConverter;
 
 public class TypeCapabilityConverter
-        implements
-        AnnotationConverter<org.uimafit.descriptor.TypeCapability, org.apache.uima.fit.descriptor.TypeCapability> {
+        extends
+        ContextlessAnnotationConverterBase<org.uimafit.descriptor.TypeCapability, org.apache.uima.fit.descriptor.TypeCapability> {
 
   public TypeCapabilityConverter() {
     // Nothing to do
   }
 
+  @Override
   public TypeCapability convert(
           final org.uimafit.descriptor.TypeCapability aAnnotation) {
     return new TypeCapabilitySubstitute(aAnnotation);

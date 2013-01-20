@@ -110,9 +110,8 @@ public class ConfigurationParameterFactoryTest {
     Field field1 = ConfigurationParameterFactoryTest.class.getDeclaredField("param1");
     org.apache.uima.resource.metadata.ConfigurationParameter cp = ConfigurationParameterFactory
             .createPrimitiveParameter(field1);
-    assertEquals("org.apache.uima.fit.factory.ConfigurationParameterFactoryTest.param1",
-            cp.getName());
-    assertEquals(org.apache.uima.resource.metadata.ConfigurationParameter.TYPE_STRING, cp.getType());
+    assertEquals("param1", cp.getName());
+   assertEquals(org.apache.uima.resource.metadata.ConfigurationParameter.TYPE_STRING, cp.getType());
     assertEquals("", cp.getDescription());
     assertFalse(cp.isMandatory());
     assertFalse(cp.isMultiValued());
@@ -150,8 +149,7 @@ public class ConfigurationParameterFactoryTest {
     Field field3 = ConfigurationParameterFactoryTest.class.getDeclaredField("param3");
     org.apache.uima.resource.metadata.ConfigurationParameter cp = ConfigurationParameterFactory
             .createPrimitiveParameter(field3);
-    assertEquals("org.apache.uima.fit.factory.ConfigurationParameterFactoryTest.param3",
-            cp.getName());
+    assertEquals("param3", cp.getName());
     assertEquals(org.apache.uima.resource.metadata.ConfigurationParameter.TYPE_INTEGER,
             cp.getType());
     assertEquals("", cp.getDescription());
@@ -171,8 +169,7 @@ public class ConfigurationParameterFactoryTest {
     Field field4 = CPFT.class.getDeclaredField("param4");
     org.apache.uima.resource.metadata.ConfigurationParameter cp = ConfigurationParameterFactory
             .createPrimitiveParameter(field4);
-    assertEquals("org.apache.uima.fit.factory.ConfigurationParameterFactoryTest$CPFT.param4",
-            cp.getName());
+    assertEquals("param4", cp.getName());
     assertEquals(org.apache.uima.resource.metadata.ConfigurationParameter.TYPE_STRING, cp.getType());
     assertEquals("", cp.getDescription());
     assertFalse(cp.isMandatory());
@@ -190,7 +187,7 @@ public class ConfigurationParameterFactoryTest {
     Field field = this.getClass().getDeclaredField("fileList");
     org.apache.uima.resource.metadata.ConfigurationParameter param;
     param = ConfigurationParameterFactory.createPrimitiveParameter(field);
-    assertEquals(this.getClass().getName() + ".fileList", param.getName());
+    assertEquals("fileList", param.getName());
     assertEquals(org.apache.uima.resource.metadata.ConfigurationParameter.TYPE_STRING,
             param.getType());
     assertEquals("", param.getDescription());
@@ -209,7 +206,7 @@ public class ConfigurationParameterFactoryTest {
     Field field = this.getClass().getDeclaredField("stringSet");
     org.apache.uima.resource.metadata.ConfigurationParameter param;
     param = ConfigurationParameterFactory.createPrimitiveParameter(field);
-    assertEquals(this.getClass().getName() + ".stringSet", param.getName());
+    assertEquals("stringSet", param.getName());
     assertEquals(org.apache.uima.resource.metadata.ConfigurationParameter.TYPE_STRING,
             param.getType());
     assertFalse(param.isMandatory());

@@ -25,7 +25,6 @@ import org.apache.uima.UimaContext;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.fit.component.JCasCollectionReader_ImplBase;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
-import org.apache.uima.fit.factory.ConfigurationParameterFactory;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.pear.util.FileUtil;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -43,9 +42,7 @@ import org.apache.uima.util.ProgressImpl;
  */
 public class LineReader extends JCasCollectionReader_ImplBase {
 
-  public static final String PARAM_INPUT_FILE = ConfigurationParameterFactory
-          .createConfigurationParameterName(LineReader.class, "inputFile");
-
+  public static final String PARAM_INPUT_FILE = "inputFile";
   @ConfigurationParameter
   private File inputFile;
 

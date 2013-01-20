@@ -19,6 +19,7 @@
 package org.apache.uima.fit.legacy;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AccessibleObject;
 
 /**
  * Annotation converters for legacy uimaFIT annotations to Apache uimaFIT annotations.
@@ -33,8 +34,10 @@ public interface AnnotationConverter<L extends Annotation,M extends Annotation> 
    * @param aAnnotation a legacy annotation.
    * @return the modern annotation.
    */
-  M convert(L aAnnotation);
-  
+  M convert(Class<?> aContext, L aAnnotation);
+
+  M convert(AccessibleObject aContext, L aAnnotation);
+
   Class<M> getModernType();
   
   Class<L> getLegacyType();

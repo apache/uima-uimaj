@@ -20,17 +20,17 @@ package org.apache.uima.fit.legacy.converter;
 
 import org.apache.uima.fit.descriptor.FsIndex;
 import org.apache.uima.fit.descriptor.FsIndexKey;
-import org.apache.uima.fit.legacy.AnnotationConverter;
 import org.apache.uima.jcas.cas.TOP;
 
 public class FsIndexConverter
-        implements
-        AnnotationConverter<org.uimafit.descriptor.FsIndex, org.apache.uima.fit.descriptor.FsIndex> {
+        extends
+        ContextlessAnnotationConverterBase<org.uimafit.descriptor.FsIndex, org.apache.uima.fit.descriptor.FsIndex> {
 
   public FsIndexConverter() {
     // Nothing to do
   }
 
+  @Override
   public FsIndex convert(
           final org.uimafit.descriptor.FsIndex aAnnotation) {
     return new FsIndexSubstitute(aAnnotation);

@@ -19,16 +19,16 @@
 package org.apache.uima.fit.legacy.converter;
 
 import org.apache.uima.fit.descriptor.SofaCapability;
-import org.apache.uima.fit.legacy.AnnotationConverter;
 
 public class SofaCapabilityConverter
-        implements
-        AnnotationConverter<org.uimafit.descriptor.SofaCapability, org.apache.uima.fit.descriptor.SofaCapability> {
+        extends
+        ContextlessAnnotationConverterBase<org.uimafit.descriptor.SofaCapability, org.apache.uima.fit.descriptor.SofaCapability> {
 
   public SofaCapabilityConverter() {
     // Nothing to do
   }
 
+  @Override
   public SofaCapability convert(
           final org.uimafit.descriptor.SofaCapability aAnnotation) {
     return new SofaCapabilitySubstitute(aAnnotation);

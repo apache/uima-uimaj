@@ -57,7 +57,7 @@ public @interface ConfigurationParameter {
   /**
    * the default value for name if none is given.
    */
-  public static final String USE_FIELD_NAME = "org.uimafit.descriptor.ConfigurationParameter.USE_FIELD_NAME";
+  public static final String USE_FIELD_NAME = "org.apache.uima.fit.descriptor.ConfigurationParameter.USE_FIELD_NAME";
 
   /**
    * If you do not specify a name then the default name will be given by {@link #USE_FIELD_NAME}

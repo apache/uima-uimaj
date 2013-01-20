@@ -29,7 +29,6 @@ import org.apache.uima.cas.impl.XmiCasDeserializer;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.fit.component.CasCollectionReader_ImplBase;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
-import org.apache.uima.fit.factory.ConfigurationParameterFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Progress;
 import org.apache.uima.util.ProgressImpl;
@@ -46,9 +45,7 @@ import org.xml.sax.SAXException;
 
 public class SingleFileXReader extends CasCollectionReader_ImplBase {
 
-  public static final String PARAM_FILE_NAME = ConfigurationParameterFactory
-          .createConfigurationParameterName(SingleFileXReader.class, "fileName");
-
+  public static final String PARAM_FILE_NAME = "fileName";
   @ConfigurationParameter(mandatory = true, description = "takes the name of a single xmi or xcas file to be processed.")
   private String fileName;
 
@@ -56,9 +53,7 @@ public class SingleFileXReader extends CasCollectionReader_ImplBase {
 
   public static final String XCAS = "XCAS";
 
-  public static final String PARAM_XML_SCHEME = ConfigurationParameterFactory
-          .createConfigurationParameterName(SingleFileXReader.class, "xmlScheme");
-
+  public static final String PARAM_XML_SCHEME = "xmlScheme";
   @ConfigurationParameter(mandatory = true, description = "specifies the UIMA XML serialization scheme that should be usedValid values for this parameter are 'XMI' and 'XCAS'. See XmiCasSerializer or XCASSerializer", defaultValue = XMI)
   private String xmlScheme;
 

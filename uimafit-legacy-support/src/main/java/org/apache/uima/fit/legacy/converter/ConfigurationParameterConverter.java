@@ -18,6 +18,9 @@
  */
 package org.apache.uima.fit.legacy.converter;
 
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Field;
+
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.legacy.AnnotationConverter;
 
@@ -29,9 +32,14 @@ public class ConfigurationParameterConverter
     // Nothing to do
   }
 
-  public ConfigurationParameter convert(
-          final org.uimafit.descriptor.ConfigurationParameter aAnnotation) {
-    return new ConfigurationParameterSubstitute(aAnnotation);
+  public ConfigurationParameter convert(AccessibleObject aContext,
+          org.uimafit.descriptor.ConfigurationParameter aAnnotation) {
+    return new ConfigurationParameterSubstitute(aAnnotation, (Field) aContext);
+  } 
+
+  public ConfigurationParameter convert(Class<?> aContext,
+          org.uimafit.descriptor.ConfigurationParameter aAnnotation) {
+    throw new UnsupportedOperationException("Annotation is not permitted on classes");
   }
 
   public Class<org.uimafit.descriptor.ConfigurationParameter> getLegacyType() {
@@ -48,12 +56,25 @@ public class ConfigurationParameterConverter
 
     private org.uimafit.descriptor.ConfigurationParameter legacyAnnotation;
     
-    public ConfigurationParameterSubstitute(org.uimafit.descriptor.ConfigurationParameter aAnnotation) {
+    private Field field;
+    
+    public ConfigurationParameterSubstitute(
+            org.uimafit.descriptor.ConfigurationParameter aAnnotation, Field aField) {
       legacyAnnotation = aAnnotation;
+      field = aField;
     }
     
+    /**
+     * Legacy uimaFIT used the class name + field name as default value.
+     */
     public String name() {
-      return legacyAnnotation.name();
+      if (org.uimafit.descriptor.ConfigurationParameter.USE_FIELD_NAME.equals(legacyAnnotation
+              .name())) {
+        return field.getDeclaringClass().getName() + "." + field.getName();
+
+      } else {
+        return legacyAnnotation.name();
+      }
     }
 
     public String description() {

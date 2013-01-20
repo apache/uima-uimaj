@@ -29,7 +29,6 @@ import org.apache.uima.cas.impl.XCASSerializer;
 import org.apache.uima.cas.impl.XmiCasSerializer;
 import org.apache.uima.fit.component.JCasConsumer_ImplBase;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
-import org.apache.uima.fit.factory.ConfigurationParameterFactory;
 import org.apache.uima.fit.factory.initializable.InitializableFactory;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -48,9 +47,7 @@ public class XWriter extends JCasConsumer_ImplBase {
   /**
    * The parameter name for the configuration parameter that specifies the output directory
    */
-  public static final String PARAM_OUTPUT_DIRECTORY_NAME = ConfigurationParameterFactory
-          .createConfigurationParameterName(XWriter.class, "outputDirectoryName");
-
+  public static final String PARAM_OUTPUT_DIRECTORY_NAME = "outputDirectoryName";
   @ConfigurationParameter(mandatory = true, description = "takes a path to directory into which output files will be written.")
   private String outputDirectoryName;
 
@@ -58,9 +55,7 @@ public class XWriter extends JCasConsumer_ImplBase {
    * The parameter name for the configuration parameter that provides the name of the XML scheme to
    * use.
    */
-  public static final String PARAM_XML_SCHEME_NAME = ConfigurationParameterFactory
-          .createConfigurationParameterName(XWriter.class, "xmlSchemeName");
-
+  public static final String PARAM_XML_SCHEME_NAME = "xmlSchemeName";
   @ConfigurationParameter(mandatory = true, defaultValue = "XMI", description = "specifies the UIMA XML serialization scheme that should be used. "
           + "Valid values for this parameter are 'XMI' (default) and 'XCAS'.")
   private String xmlSchemeName;
@@ -69,9 +64,7 @@ public class XWriter extends JCasConsumer_ImplBase {
    * The parameter name for the configuration parameter that specifies the name of the class that
    * implements the file namer
    */
-  public static final String PARAM_FILE_NAMER_CLASS_NAME = ConfigurationParameterFactory
-          .createConfigurationParameterName(XWriter.class, "fileNamerClassName");
-
+  public static final String PARAM_FILE_NAMER_CLASS_NAME = "fileNamerClassName";
   @ConfigurationParameter(mandatory = true, description = "the class name of the XWriterFileNamer implementation to use", defaultValue = "org.apache.uima.fit.component.xwriter.IntegerFileNamer")
   protected String fileNamerClassName;
 

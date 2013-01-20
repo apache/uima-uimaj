@@ -26,7 +26,6 @@ import org.apache.uima.UimaContext;
 import org.apache.uima.fit.component.initialize.ConfigurationParameterInitializer;
 import org.apache.uima.fit.component.xwriter.XWriterFileNamer;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
-import org.apache.uima.fit.factory.ConfigurationParameterFactory;
 import org.apache.uima.fit.factory.UimaContextFactory;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -75,9 +74,7 @@ public class InitializableFactoryTest {
 
   public static class InitializableClass implements Initializable {
 
-    public static final String PARAM_BOOLEAN_PARAMETER = ConfigurationParameterFactory
-            .createConfigurationParameterName(InitializableClass.class, "booleanParameter");
-
+    public static final String PARAM_BOOLEAN_PARAMETER = "booleanParameter";
     @ConfigurationParameter
     public boolean booleanParameter = false;
 
@@ -88,9 +85,7 @@ public class InitializableFactoryTest {
 
   public static class NotInitializableClass {
 
-    public static final String PARAM_BOOLEAN_PARAMETER = ConfigurationParameterFactory
-            .createConfigurationParameterName(InitializableClass.class, "booleanParameter");
-
+    public static final String PARAM_BOOLEAN_PARAMETER = "booleanParameter";
     @ConfigurationParameter
     public boolean booleanParameter = false;
 
@@ -101,9 +96,7 @@ public class InitializableFactoryTest {
 
   public static class InitializableFileNamer implements Initializable, XWriterFileNamer {
 
-    public static final String PARAM_STRING_PARAMETER = ConfigurationParameterFactory
-            .createConfigurationParameterName(InitializableFileNamer.class, "stringParameter");
-
+    public static final String PARAM_STRING_PARAMETER = "stringParameter";
     @ConfigurationParameter
     public String stringParameter = "hello";
 
@@ -118,9 +111,7 @@ public class InitializableFactoryTest {
 
   public static class NotInitializableFileNamer implements XWriterFileNamer {
 
-    public static final String PARAM_STRING_PARAMETER = ConfigurationParameterFactory
-            .createConfigurationParameterName(InitializableFileNamer.class, "stringParameter");
-
+    public static final String PARAM_STRING_PARAMETER = "stringParameter";
     @ConfigurationParameter
     public String stringParameter = "hello";
 

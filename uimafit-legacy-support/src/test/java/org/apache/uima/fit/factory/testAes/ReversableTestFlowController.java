@@ -27,7 +27,6 @@ import java.util.Map;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.uimafit.descriptor.ConfigurationParameter;
-import org.apache.uima.fit.factory.ConfigurationParameterFactory;
 import org.apache.uima.flow.FinalStep;
 import org.apache.uima.flow.Flow;
 import org.apache.uima.flow.FlowControllerContext;
@@ -35,6 +34,9 @@ import org.apache.uima.flow.JCasFlow_ImplBase;
 import org.apache.uima.flow.SimpleStep;
 import org.apache.uima.flow.Step;
 import org.apache.uima.jcas.JCas;
+
+import static org.uimafit.factory.ConfigurationParameterFactory.createConfigurationParameterName;
+
 
 /**
  * 
@@ -44,8 +46,8 @@ import org.apache.uima.jcas.JCas;
 public class ReversableTestFlowController extends
         org.apache.uima.fit.component.JCasFlowController_ImplBase {
 
-  public static final String PARAM_REVERSE_ORDER = ConfigurationParameterFactory
-          .createConfigurationParameterName(ReversableTestFlowController.class, "reverseOrder");
+  public static final String PARAM_REVERSE_ORDER = createConfigurationParameterName(
+          ReversableTestFlowController.class, "reverseOrder");
 
   @ConfigurationParameter
   private boolean reverseOrder = false;

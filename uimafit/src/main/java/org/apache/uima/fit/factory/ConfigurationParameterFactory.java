@@ -186,26 +186,11 @@ public final class ConfigurationParameterFactory {
               .getAnnotation(field, org.apache.uima.fit.descriptor.ConfigurationParameter.class);
       String name = annotation.name();
       if (name.equals(org.apache.uima.fit.descriptor.ConfigurationParameter.USE_FIELD_NAME)) {
-        name = field.getDeclaringClass().getName() + "." + field.getName();
+        name = field.getName();
       }
       return name;
     }
     return null;
-  }
-
-  /**
-   * This method provides a convenient way to generate a configuration parameter name for a member
-   * variable that is annotated with {@link org.apache.uima.fit.descriptor.ConfigurationParameter}
-   * and no name is provided in the annotation.
-   */
-  public static String createConfigurationParameterName(Class<?> clazz, String fieldName)
-          throws IllegalArgumentException {
-    try {
-      return ConfigurationParameterFactory.getConfigurationParameterName(clazz
-              .getDeclaredField(fieldName));
-    } catch (NoSuchFieldException e) {
-      throw new IllegalArgumentException(e);
-    }
   }
 
   /**

@@ -81,7 +81,7 @@ public class LegacySupportPluginImpl implements LegacySupportPlugin {
     L legacyAnnotation = aObject.getAnnotation(converter.getLegacyType());
     if (legacyAnnotation != null) {
       // If legacy annotation is present, convert it to a modern annotation
-      return converter.convert(legacyAnnotation);
+      return converter.convert(aObject, legacyAnnotation);
     } else {
       return null;
     }
@@ -95,7 +95,7 @@ public class LegacySupportPluginImpl implements LegacySupportPlugin {
     L legacyAnnotation = aObject.getAnnotation(converter.getLegacyType());
     if (legacyAnnotation != null) {
       // If legacy annotation is present, convert it to a modern annotation
-      return converter.convert(legacyAnnotation);
+      return converter.convert(aObject, legacyAnnotation);
     } else {
       return null;
     }

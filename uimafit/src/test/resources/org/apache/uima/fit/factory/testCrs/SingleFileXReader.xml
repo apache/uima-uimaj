@@ -27,13 +27,13 @@
     <vendor/>
     <configurationParameters>
       <configurationParameter>
-        <name>org.apache.uima.fit.factory.testCrs.SingleFileXReader.fileName</name>
+        <name>fileName</name>
         <type>String</type>
         <multiValued>false</multiValued>
         <mandatory>true</mandatory>
       </configurationParameter>
       <configurationParameter>
-        <name>org.apache.uima.fit.factory.testCrs.SingleFileXReader.xmlScheme</name>
+        <name>xmlScheme</name>
         <type>String</type>
         <multiValued>false</multiValued>
         <mandatory>false</mandatory>
