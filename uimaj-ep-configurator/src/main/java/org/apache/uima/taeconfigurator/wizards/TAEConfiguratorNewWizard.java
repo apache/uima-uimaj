@@ -19,6 +19,8 @@
 
 package org.apache.uima.taeconfigurator.wizards;
 
+import java.text.MessageFormat;
+
 import org.eclipse.ui.INewWizard;
 
 /**
@@ -44,22 +46,30 @@ public class TAEConfiguratorNewWizard extends AbstractNewWizard implements INewW
   }
 
   public String getPrototypeDescriptor(String name) {
-    return "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" + "<analysisEngineDescription "
-            + XMLNS_PART
-            + "<frameworkImplementation>org.apache.uima.java</frameworkImplementation>\n"
-            + "<primitive>true</primitive>\n"
-            + "<annotatorImplementationName></annotatorImplementationName>\n"
-            + "<analysisEngineMetaData>\n" + "<name>" + name + "</name>\n"
-            + "<description></description>\n" + "<version>1.0</version>\n" + "<vendor></vendor>\n"
-            + "<configurationParameters></configurationParameters>\n"
-            + "<configurationParameterSettings></configurationParameterSettings>\n"
-            + "<typeSystemDescription></typeSystemDescription>\n"
-            + "<typePriorities></typePriorities>\n" + "<fsIndexCollection></fsIndexCollection>\n"
-            + "<capabilities>\n" + "<capability>\n" + "<inputs></inputs>\n"
-            + "<outputs></outputs>\n" + "<languagesSupported></languagesSupported>\n"
-            + "</capability>\n" + "</capabilities>\n" + "</analysisEngineMetaData>\n"
-            + "<externalResourceDependencies></externalResourceDependencies>\n"
-            + "<resourceManagerConfiguration></resourceManagerConfiguration>\n"
-            + "</analysisEngineDescription>\n";
+    return MessageFormat.format(COMMON_FULL_DESCRIPTOR, 
+        name,                           // 0 = name of component (e.g. type name, type priority name, ae descriptor name)
+        "",                             // 1 parts at end of partial descriptor
+        "analysisEngineDescription",    // 2 = outer descriptor name
+        "analysisEngineMetaData",       // 3 = metadata element name
+        "annotatorImplementationName",  // 4 = implname element name (implementationName or annotatorImplementationName
+        "  <primitive>true</primitive>");  // 5 = "<primative>true</primitive>" or ""
+        
+//    "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" + "<analysisEngineDescription "
+//            + XMLNS_PART
+//            + "<frameworkImplementation>org.apache.uima.java</frameworkImplementation>\n"
+//            + "<primitive>true</primitive>\n"
+//            + "<annotatorImplementationName></annotatorImplementationName>\n"
+//            + "<analysisEngineMetaData>\n" + "<name>" + name + "</name>\n"
+//            + "<description></description>\n" + "<version>1.0</version>\n" + "<vendor></vendor>\n"
+//            + "<configurationParameters></configurationParameters>\n"
+//            + "<configurationParameterSettings></configurationParameterSettings>\n"
+//            + "<typeSystemDescription></typeSystemDescription>\n"
+//            + "<typePriorities></typePriorities>\n" + "<fsIndexCollection></fsIndexCollection>\n"
+//            + "<capabilities>\n" + "<capability>\n" + "<inputs></inputs>\n"
+//            + "<outputs></outputs>\n" + "<languagesSupported></languagesSupported>\n"
+//            + "</capability>\n" + "</capabilities>\n" + "</analysisEngineMetaData>\n"
+//            + "<externalResourceDependencies></externalResourceDependencies>\n"
+//            + "<resourceManagerConfiguration></resourceManagerConfiguration>\n"
+//            + "</analysisEngineDescription>\n";
   }
 }

@@ -32,14 +32,21 @@ import org.eclipse.ui.INewWizard;
 
 public class TypePrioritiesNewWizard extends AbstractNewWizard implements INewWizard {
 
-  public static final String TYPEPRIORITIES_TEMPLATE = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"
-          + "<typePriorities "
-          + XMLNS_PART
-          + "<name>{0}</name>\n"
-          + "<description></description>\n"
-          + "<version>1.0</version>\n"
-          + "<vendor></vendor>\n"
-          + "{1}" + "</typePriorities>\n";
+  public static final String TYPEPRIORITIES_TEMPLATE = 
+    MessageFormat.format(COMMON_PARTIAL_DESCRIPTOR,
+        "{0}",       // 0 = name of component (e.g. type name, type priority name, ae descriptor name)
+        "{1}",       // 1 = parts at end of partial descriptor
+        "typePriorities");  // 2 = outer descriptor name
+        
+    
+    //    "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"
+//          + "<typePriorities "
+//          + XMLNS_PART
+//          + "<name>{0}</name>\n"
+//          + "<description></description>\n"
+//          + "<version>1.0</version>\n"
+//          + "<vendor></vendor>\n"
+//          + "{1}" + "</typePriorities>\n";
 
   public TypePrioritiesNewWizard() {
     super("New Type Priorities Descriptor File");
@@ -51,8 +58,9 @@ public class TypePrioritiesNewWizard extends AbstractNewWizard implements INewWi
   }
 
   public String getPrototypeDescriptor(String name) {
-    return MessageFormat.format(TYPEPRIORITIES_TEMPLATE, new Object[] { name,
-        "<priorityLists></priorityLists>\n" });
+    return MessageFormat.format(TYPEPRIORITIES_TEMPLATE, 
+        name,
+        "<priorityLists></priorityLists>\n");
   }
 
 }

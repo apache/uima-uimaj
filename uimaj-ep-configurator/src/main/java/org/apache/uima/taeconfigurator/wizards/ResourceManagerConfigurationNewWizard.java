@@ -32,14 +32,20 @@ import org.eclipse.ui.INewWizard;
 
 public class ResourceManagerConfigurationNewWizard extends AbstractNewWizard implements INewWizard {
 
-  public static final String RESOURCEMANGERCONFIGURATION_TEMPLATE = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"
-          + "<resourceManagerConfiguration "
-          + XMLNS_PART
-          + "<name>{0}</name>\n"
-          + "<description></description>\n"
-          + "<version>1.0</version>\n"
-          + "{1}"
-          + "</resourceManagerConfiguration>\n";
+  public static final String RESOURCEMANGERCONFIGURATION_TEMPLATE = 
+    MessageFormat.format(COMMON_PARTIAL_DESCRIPTOR,
+        "{0}",       // 0 = name of component (e.g. type name, type priority name, ae descriptor name)
+        "{1}",       // 1 = parts at end of partial descriptor
+        "resourceManagerConfiguration");  // 2 = outer descriptor name
+        
+//    "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"
+//          + "<resourceManagerConfiguration "
+//          + XMLNS_PART
+//          + "<name>{0}</name>\n"
+//          + "<description></description>\n"
+//          + "<version>1.0</version>\n"
+//          + "{1}"
+//          + "</resourceManagerConfiguration>\n";
 
   public ResourceManagerConfigurationNewWizard() {
     super("External Resource and Bindings (Resource Manager Configuration) Descriptor File");
@@ -51,10 +57,10 @@ public class ResourceManagerConfigurationNewWizard extends AbstractNewWizard imp
   }
 
   public String getPrototypeDescriptor(String name) {
-    return MessageFormat.format(RESOURCEMANGERCONFIGURATION_TEMPLATE, new Object[] {
+    return MessageFormat.format(RESOURCEMANGERCONFIGURATION_TEMPLATE,
         name,
-        "<externalResources></externalResources>\n"
-                + "<externalResourceBindings></externalResourceBindings>\n" });
+        "  <externalResources></externalResources>\n"
+      + "  <externalResourceBindings></externalResourceBindings>\n");
   }
 
 }

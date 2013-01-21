@@ -19,6 +19,8 @@
 
 package org.apache.uima.taeconfigurator.wizards;
 
+import java.text.MessageFormat;
+
 import org.eclipse.ui.INewWizard;
 
 /**
@@ -40,22 +42,30 @@ public class CollectionReaderNewWizard extends AbstractNewWizard implements INew
   }
 
   public String getPrototypeDescriptor(String name) {
-    return "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" + "<collectionReaderDescription "
-            + XMLNS_PART
-            + "<frameworkImplementation>org.apache.uima.java</frameworkImplementation>\n"
-            + "<implementationName></implementationName>\n" + "<processingResourceMetaData>\n"
-            + "<name>" + name + "</name>\n" + "<description></description>\n"
-            + "<version>1.0</version>\n" + "<vendor></vendor>\n"
-            + "<configurationParameters></configurationParameters>\n"
-            + "<configurationParameterSettings></configurationParameterSettings>\n"
-            + "<typeSystemDescription></typeSystemDescription>\n"
-            + "<typePriorities></typePriorities>\n" + "<fsIndexCollection></fsIndexCollection>\n"
-            + "<capabilities>\n" + "<capability>\n" + "<inputs></inputs>\n"
-            + "<outputs></outputs>\n" + "<languagesSupported></languagesSupported>\n"
-            + "</capability>\n" + "</capabilities>\n" + "</processingResourceMetaData>\n"
-            + "<externalResourceDependencies></externalResourceDependencies>\n"
-            + "<resourceManagerConfiguration></resourceManagerConfiguration>\n"
-            + "</collectionReaderDescription>\n";
+    return MessageFormat.format(COMMON_FULL_DESCRIPTOR,
+        name,                          // 0 = name of component (e.g. type name, type priority name, ae descriptor name)
+        "",                            // 1 parts at end of partial descriptor
+        "collectionReaderDescription",      // 2 = outer descriptor name
+        "processingResourceMetaData",  // 3 = metadata element name
+        "implementationName",          // 4 = implname element name (implementationName or annotatorImplementationName
+        "");                           // 5 = "<primative>true</primitive>" or ""
+      
+//    "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" + "<collectionReaderDescription "
+//            + XMLNS_PART
+//            + "<frameworkImplementation>org.apache.uima.java</frameworkImplementation>\n"
+//            + "<implementationName></implementationName>\n" + "<processingResourceMetaData>\n"
+//            + "<name>" + name + "</name>\n" + "<description></description>\n"
+//            + "<version>1.0</version>\n" + "<vendor></vendor>\n"
+//            + "<configurationParameters></configurationParameters>\n"
+//            + "<configurationParameterSettings></configurationParameterSettings>\n"
+//            + "<typeSystemDescription></typeSystemDescription>\n"
+//            + "<typePriorities></typePriorities>\n" + "<fsIndexCollection></fsIndexCollection>\n"
+//            + "<capabilities>\n" + "<capability>\n" + "<inputs></inputs>\n"
+//            + "<outputs></outputs>\n" + "<languagesSupported></languagesSupported>\n"
+//            + "</capability>\n" + "</capabilities>\n" + "</processingResourceMetaData>\n"
+//            + "<externalResourceDependencies></externalResourceDependencies>\n"
+//            + "<resourceManagerConfiguration></resourceManagerConfiguration>\n"
+//            + "</collectionReaderDescription>\n";
   }
 
 }

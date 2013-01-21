@@ -32,14 +32,20 @@ import org.eclipse.ui.INewWizard;
 
 public class FsIndexCollectionNewWizard extends AbstractNewWizard implements INewWizard {
 
-  public static final String FSINDEXCOLLECTION_TEMPLATE = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"
-          + "<fsIndexCollection "
-          + XMLNS_PART
-          + "<name>{0}</name>\n"
-          + "<description></description>\n"
-          + "<version>1.0</version>\n"
-          + "<vendor></vendor>\n"
-          + "{1}" + "</fsIndexCollection>\n";
+  public static final String FSINDEXCOLLECTION_TEMPLATE =
+    MessageFormat.format(COMMON_PARTIAL_DESCRIPTOR,
+      "{0}",       // 0 = name of component (e.g. type name, type priority name, ae descriptor name)
+      "{1}",       // 1 = parts at end of partial descriptor
+      "fsIndexCollection");  // 2 = outer descriptor name
+//    "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"
+//          + "<fsIndexCollection "
+//          + XMLNS_PART
+//          + COMMON_NDVV 
+//          + "<name>{0}</name>\n"
+//          + "<description></description>\n"
+//          + "<version>1.0</version>\n"
+//          + "<vendor></vendor>\n"
+//          + "{1}" + "</fsIndexCollection>\n";
 
   public FsIndexCollectionNewWizard() {
     super("New Index Collection Descriptor File");
@@ -51,8 +57,9 @@ public class FsIndexCollectionNewWizard extends AbstractNewWizard implements INe
   }
 
   public String getPrototypeDescriptor(String name) {
-    return MessageFormat.format(FSINDEXCOLLECTION_TEMPLATE, new Object[] { name,
-        "<fsIndexDescription></fsIndexDescription>\n" });
+    return MessageFormat.format(FSINDEXCOLLECTION_TEMPLATE, 
+        name,                        // 0 = name of component (e.g. type name, type priority name, ae descriptor name)
+        "  <fsIndexDescription/>\n");  // 1 = parts at end of partial descriptor
   }
 
 }

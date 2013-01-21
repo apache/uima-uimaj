@@ -65,8 +65,57 @@ import org.apache.uima.taeconfigurator.TAEConfiguratorPlugin;
 
 public abstract class AbstractNewWizard extends Wizard implements INewWizard {
 
-  public final static String XMLNS_PART = "xmlns=\"http://uima.apache.org/resourceSpecifier\">\n";
+  // common parts of empty xml descriptors for Wizards to use
+  // 0 = name of component (e.g. type name, type priority name, ae descriptor name)
+  // 1 = parts at end of partial descriptor
+  // 2 = outer descriptor name
+  // 3 = metadata element name
+  // 4 = implname element name (implementationName or annotatorImplementationName
+  // 5 = "<primitive>true</primitive>\n"
+  
+  public final static String XMLNS_PART = "xmlns=\"http://uima.apache.org/resourceSpecifier\"";
 
+  public final static String COMMON_HEADER = 
+    "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" 
+    + "<{2} " + XMLNS_PART + ">\n" ;
+
+  public final static String COMMON_NDVV = 
+      "    <name>{0}</name>\n"    // 1 = name of component (e.g. type name, type priority name, ae descriptor name)
+    + "    <description></description>\n"
+    + "    <version>1.0</version>\n"
+    + "    <vendor></vendor>\n";
+  
+  public final static String COMMON_FULL_DESCRIPTOR =
+      COMMON_HEADER 
+    + "  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>\n"
+    + "{5}"                       // 5 = "" or "<primitive>true</primitive>\n"
+    + "  <{4}></{4}>\n"           // 4 = implname element name (implementationName or annotatorImplementationName
+    + "  <{3}>\n"                   // 3 = metadata element name
+    + COMMON_NDVV
+    + "    <configurationParameters></configurationParameters>\n"
+    + "    <configurationParameterSettings></configurationParameterSettings>\n"
+    + "    <typeSystemDescription></typeSystemDescription>\n"
+    + "    <typePriorities></typePriorities>\n" 
+    + "    <fsIndexCollection></fsIndexCollection>\n"
+    + "    <capabilities>\n" 
+    + "      <capability>\n" 
+    + "        <inputs></inputs>\n"
+    + "        <outputs></outputs>\n" 
+    + "        <languagesSupported></languagesSupported>\n"
+    + "      </capability>\n" 
+    + "    </capabilities>\n" 
+    + "  </{3}>\n"
+    + "  <externalResourceDependencies></externalResourceDependencies>\n"
+    + "  <resourceManagerConfiguration></resourceManagerConfiguration>\n"
+    + "</{2}>"
+    ;
+  
+  public static String COMMON_PARTIAL_DESCRIPTOR =
+      COMMON_HEADER 
+    + COMMON_NDVV
+    + "{1}" 
+    + "</{2}>\n";
+    
   protected AbstractNewWizardPage page;
 
   protected ISelection selection;
