@@ -53,6 +53,7 @@ import org.apache.uima.analysis_engine.TypeOrFeature;
 import org.apache.uima.analysis_engine.impl.AnalysisEngineDescription_impl;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.analysis_engine.metadata.FlowControllerDeclaration;
+import org.apache.uima.analysis_engine.metadata.impl.AnalysisEngineMetaData_impl;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.collection.CasConsumerDescription;
@@ -78,6 +79,8 @@ import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypePriorityList;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
+import org.apache.uima.resource.metadata.impl.MetaDataObject_impl;
+import org.apache.uima.resource.metadata.impl.ResourceMetaData_impl;
 import org.apache.uima.taeconfigurator.CDEpropertyPage;
 import org.apache.uima.taeconfigurator.InternalErrorCDE;
 import org.apache.uima.taeconfigurator.Messages;
@@ -1426,7 +1429,7 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
       XMLSerializer xmlSerializer = new XMLSerializer(true);
       xmlSerializer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", Integer.valueOf(
             MultiPageEditorContributor.getXMLindent()).toString());
-      xmlSerializer.setIndent(false);
+      xmlSerializer.setIndent(true);
       xmlSerializer.setWriter(writer);
       ContentHandler contentHandler = xmlSerializer.getContentHandler();
       contentHandler.startDocument();
@@ -1637,6 +1640,7 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
     d.setVendor(p.getVendor());
     d.setVersion(p.getVersion());
     d.setOperationalProperties(p.getOperationalProperties());
+    ((AnalysisEngineMetaData_impl)d).setInfoset(((MetaDataObject_impl)r).getInfoset());
     return d;
   }
 
@@ -1655,6 +1659,7 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
     d.setVendor(p.getVendor());
     d.setVersion(p.getVersion());
     d.setOperationalProperties(p.getOperationalProperties());
+    ((MetaDataObject_impl)d).setInfoset(((MetaDataObject_impl)p).getInfoset());
     return d;
   }
 
