@@ -126,13 +126,36 @@ import org.apache.uima.util.impl.SerializationMeasures;
  *   Read all bytes, 
  *   create separate ByteArrayInputStreams for each segment, sharing byte bfr
  *   create appropriate unzip data input streams for these
+ *   
+ * API design
+ *   Slow but expensive data: 
+ *     extra type system info - lazily created and added to shared TypeSystemImpl object
+ *       set up per type actually referenced
+ *     mapper for type system - lazily created and added to shared TypeSystemImpl object
+ *       in identity-map cache (size limit = 10?) - key is target typesystemimpl.
+ *   Defaulting:
+ *     flags:  doMeasurement, compressLevel, CompressStrategy
+ *   Per serialize call: cas, output, [target ts], [mark for delta]
+ *   Per deserialize call: cas, input, [target ts]
+ *   
+ *   This class has static methods with all args
+ *   CASImpl has instance method with defaulting args
+ *   
  */
 public class BinaryCasSerDes4 {
-  
-  public static final int TYPECODE_COMPR = 8;
+
+  /**
+   * Version of the serializer, used to allow deserialization of 
+   * older versions
+   * 
+   * Version 0 - initial SVN checkin
+   * Version 1 - changes to support CasTypeSystemMapper 
+   */
+  private static final int VERSION = 1;  
+
+  // next must be set to true if you want the cas type system mapping to work
   public static final boolean CHANGE_FS_REFS_TO_SEQUENTIAL = true;
   // may add more later - to specify differing trade-offs between speed and compression
-  public enum Compression {None, Compress};  
   public static final boolean IS_DIFF_ENCODE = true;
   public static final boolean CAN_BE_NEGATIVE = true;
   public static final boolean IGNORED = true;
@@ -250,20 +273,18 @@ public class BinaryCasSerDes4 {
 
     ;
 
-    public final int i;
     public final boolean isDiffEncode;
     public final boolean canBeNegative;
     public final boolean inMainHeap;
     public final int elementSize;
     
     public static final int NBR_SLOT_KIND_ZIP_STREAMS;
-    static {NBR_SLOT_KIND_ZIP_STREAMS = Slot_StrRef.i;}
+    static {NBR_SLOT_KIND_ZIP_STREAMS = Slot_StrRef.ordinal();}
     
     SlotKind(boolean isDiffEncode, 
              boolean canBeNegative, 
              int elementSize,
              boolean inMainHeap) {
-      this.i = this.ordinal();
       this.isDiffEncode = isDiffEncode;
       this.canBeNegative = isDiffEncode ? true : canBeNegative;
       this.elementSize = elementSize; 
@@ -280,24 +301,24 @@ public class BinaryCasSerDes4 {
   final private boolean doMeasurements;
   
   // speedups
-  final private static int arrayLength_i = Slot_ArrayLength.i;
-  final private static int heapRef_i = Slot_HeapRef.i;
-  final private static int int_i = Slot_Int.i;
+  final private static int arrayLength_i = Slot_ArrayLength.ordinal();
+  final private static int heapRef_i = Slot_HeapRef.ordinal();
+  final private static int int_i = Slot_Int.ordinal();
   final private static int byte_i = Slot_Byte.ordinal();
-  final private static int short_i = Slot_Short.i;
-  final private static int typeCode_i = Slot_TypeCode.i;
-  final private static int strOffset_i = Slot_StrOffset.i;
-  final private static int strLength_i = Slot_StrLength.i;
-  final private static int long_High_i = Slot_Long_High.i;
-  final private static int long_Low_i = Slot_Long_Low.i;
-  final private static int float_Mantissa_Sign_i = Slot_Float_Mantissa_Sign.i;
-  final private static int float_Exponent_i = Slot_Float_Exponent.i;
-  final private static int double_Mantissa_Sign_i = Slot_Double_Mantissa_Sign.i;
-  final private static int double_Exponent_i = Slot_Double_Exponent.i;
-  final private static int fsIndexes_i = Slot_FsIndexes.i;
-  final private static int strChars_i = Slot_StrChars.i;
-  final private static int control_i = Slot_Control.i;
-  final private static int strSeg_i = Slot_StrSeg.i;
+  final private static int short_i = Slot_Short.ordinal();
+  final private static int typeCode_i = Slot_TypeCode.ordinal();
+  final private static int strOffset_i = Slot_StrOffset.ordinal();
+  final private static int strLength_i = Slot_StrLength.ordinal();
+  final private static int long_High_i = Slot_Long_High.ordinal();
+  final private static int long_Low_i = Slot_Long_Low.ordinal();
+  final private static int float_Mantissa_Sign_i = Slot_Float_Mantissa_Sign.ordinal();
+  final private static int float_Exponent_i = Slot_Float_Exponent.ordinal();
+  final private static int double_Mantissa_Sign_i = Slot_Double_Mantissa_Sign.ordinal();
+  final private static int double_Exponent_i = Slot_Double_Exponent.ordinal();
+  final private static int fsIndexes_i = Slot_FsIndexes.ordinal();
+  final private static int strChars_i = Slot_StrChars.ordinal();
+  final private static int control_i = Slot_Control.ordinal();
+  final private static int strSeg_i = Slot_StrSeg.ordinal();
   
   /**
    * 
@@ -617,7 +638,7 @@ public class BinaryCasSerDes4 {
        ***************************/
       writeVnumber(control_dos, heapEnd - heapStart);  
       if (doMeasurement) {
-        sm.statDetails[Slot_MainHeap.i].original = (1 + heapEnd - heapStart) * 4;      
+        sm.statDetails[Slot_MainHeap.ordinal()].original = (1 + heapEnd - heapStart) * 4;      
       }
       
       resetIprevious();
@@ -777,7 +798,7 @@ public class BinaryCasSerDes4 {
                      (heap[iPrevHeap + 1] == 0) ? 0 :
                       heap[iPrevHeap + 2]; 
           for (int i = iHeap + 2; i < endi; i++) {
-            prev = writeIntOrHeapRef(arrayElementKind.i, i, prev);
+            prev = writeIntOrHeapRef(arrayElementKind.ordinal(), i, prev);
           }
         }
         break;
@@ -877,7 +898,7 @@ public class BinaryCasSerDes4 {
     
     private void serializeDiffWithPrevTypeSlot(SlotKind kind, int iHeap, int offset) throws IOException {
       int prev = (iPrevHeap == 0) ? 0 : heap[iPrevHeap + offset];
-      writeDiff(kind.i, heap[iHeap + offset], prev);
+      writeDiff(kind.ordinal(), heap[iHeap + offset], prev);
     }
     
     /**
@@ -1866,7 +1887,7 @@ public class BinaryCasSerDes4 {
     }
     
     private DataInput getInputStream(SlotKind kind) {
-      return dataInputs[kind.i];
+      return dataInputs[kind.ordinal()];
     }
 
     private int readVnumber(DataInputStream dis) throws IOException {
