@@ -19,6 +19,20 @@
 
 package org.apache.uima.cas.impl;
 
+import static org.apache.uima.cas.impl.BinaryCasSerDes4.SlotKind.Slot_ArrayLength;
+import static org.apache.uima.cas.impl.BinaryCasSerDes4.SlotKind.Slot_Boolean;
+import static org.apache.uima.cas.impl.BinaryCasSerDes4.SlotKind.Slot_Byte;
+import static org.apache.uima.cas.impl.BinaryCasSerDes4.SlotKind.Slot_ByteRef;
+import static org.apache.uima.cas.impl.BinaryCasSerDes4.SlotKind.Slot_DoubleRef;
+import static org.apache.uima.cas.impl.BinaryCasSerDes4.SlotKind.Slot_Float;
+import static org.apache.uima.cas.impl.BinaryCasSerDes4.SlotKind.Slot_HeapRef;
+import static org.apache.uima.cas.impl.BinaryCasSerDes4.SlotKind.Slot_Int;
+import static org.apache.uima.cas.impl.BinaryCasSerDes4.SlotKind.Slot_LongRef;
+import static org.apache.uima.cas.impl.BinaryCasSerDes4.SlotKind.Slot_Short;
+import static org.apache.uima.cas.impl.BinaryCasSerDes4.SlotKind.Slot_ShortRef;
+import static org.apache.uima.cas.impl.BinaryCasSerDes4.SlotKind.Slot_StrRef;
+import static org.apache.uima.cas.impl.BinaryCasSerDes4.SlotKind.Slot_TypeCode;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
@@ -36,6 +50,7 @@ import org.apache.uima.cas.TypeNameSpace;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.admin.CASAdminException;
 import org.apache.uima.cas.admin.TypeSystemMgr;
+import org.apache.uima.cas.impl.BinaryCasSerDes4.SlotKind;
 import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.internal.util.StringToIntMap;
 import org.apache.uima.internal.util.SymbolTable;
@@ -47,6 +62,8 @@ import org.apache.uima.internal.util.rb_trees.RedBlackTree;
  * 
  */
 public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
+  
+  private static int[] INT0 = new int[0];
 
   private static class ListIterator<T> implements Iterator<T> {
 
@@ -182,6 +199,10 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   private int numCommittedTypes = 0;
 
   final CASMetadata casMetadata; // needs to be visible in package
+  
+  // map from type code to TypeInfo instance for that type code,
+  // set up lazily
+  TypeInfo[] typeInfoArray;
 
   boolean areBuiltInTypesSetup = false;
 
@@ -549,11 +570,11 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   }
   
   static final String getArrayComponentName(String arrayTypeName) {
-  	return arrayTypeName.substring(0, arrayTypeName.length() - 2);
+    return arrayTypeName.substring(0, arrayTypeName.length() - 2);
   }
   
   static boolean isArrayTypeNameButNotBuiltIn(String typeName) {
-  	return typeName.endsWith(arrayTypeSuffix);
+    return typeName.endsWith(arrayTypeSuffix);
   }
 
   private static final String getBuiltinArrayComponent(String typeName) {
@@ -1080,6 +1101,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     // because subsumes depends on it
     // and generator initialization uses subsumes
     this.numCommittedTypes = this.types.size(); // do before
+    this.typeInfoArray = new TypeInfo[getTypeArraySize()];
     // cas.commitTypeSystem -
     // because it will call the type system iterator
     this.casMetadata.setupFeaturesAndCreatableTypes();
@@ -1402,5 +1424,131 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     }
     return this.stringSets.get(this.stringSetMap.get(typeCode));
   }
+
+  /**
+   * Each instance holds info needed in binary serialization
+   * of data for a particular type
+   */
+  class TypeInfo {
+    // constant data about a particular type
+    public final TypeImpl   type;             // for debug
+    public final SlotKind[] slotKinds;
+    public final int[] strRefOffsets;
+
+    public final boolean    isArray;
+    public final boolean    isHeapStoredArray; // true if array elements are
+                                               // stored on the main heap
+
+    public TypeInfo(TypeImpl type) {
+
+      this.type = type;
+      List<Feature> features = type.getFeatures();
+
+      isArray = type.isArray(); // feature structure array types named
+                                // type-of-fs[]
+      isHeapStoredArray = (type == intArrayType) || (type == floatArrayType)
+          || (type == fsArrayType) || (type == stringArrayType)
+          || (TypeSystemImpl.isArrayTypeNameButNotBuiltIn(type.getName()));
+
+      final ArrayList<Integer> strRefsTemp = new ArrayList<Integer>();
+      // set up slot kinds
+      if (isArray) {
+        // slotKinds has 2 slots: 1st is for array length, 2nd is the slotkind
+        // for the array element
+        SlotKind arrayKind;
+        if (isHeapStoredArray) {
+          if (type == intArrayType) {
+            arrayKind = Slot_Int;
+          } else if (type == floatArrayType) {
+            arrayKind = Slot_Float;
+          } else if (type == stringArrayType) {
+            arrayKind = Slot_StrRef;
+          } else {
+            arrayKind = Slot_HeapRef;
+          }
+        } else {
+
+          // array, but not heap-store-array
+          if (type == booleanArrayType || type == byteArrayType) {
+            arrayKind = Slot_ByteRef;
+          } else if (type == shortArrayType) {
+            arrayKind = Slot_ShortRef;
+          } else if (type == longArrayType) {
+            arrayKind = Slot_LongRef;
+          } else if (type == doubleArrayType) {
+            arrayKind = Slot_DoubleRef;
+          } else {
+            throw new RuntimeException("never get here");
+          }
+        }
+
+        slotKinds = new SlotKind[] { Slot_ArrayLength, arrayKind };
+        strRefOffsets = INT0;
+
+      } else {
+
+        // set up slot kinds for non-arrays
+        ArrayList<SlotKind> slots = new ArrayList<SlotKind>();
+        int i = -1;
+        for (Feature feat : features) {
+          i++;
+          TypeImpl slotType = (TypeImpl) feat.getRange();
+
+          if (slotType == stringType || (slotType instanceof StringTypeImpl)) {
+            slots.add(Slot_StrRef);
+            strRefsTemp.add(i + 1);  // first feature is offset 1 from fs addr
+          } else if (slotType == intType) {
+            slots.add(Slot_Int);
+          } else if (slotType == booleanType) {
+            slots.add(Slot_Boolean);
+          } else if (slotType == byteType) {
+            slots.add(Slot_Byte);
+          } else if (slotType == shortType) {
+            slots.add(Slot_Short);
+          } else if (slotType == floatType) {
+            slots.add(Slot_Float);
+          } else if (slotType == longType) {
+            slots.add(Slot_LongRef);
+          } else if (slotType == doubleType) {
+            slots.add(Slot_DoubleRef);
+          } else {
+            slots.add(Slot_HeapRef);
+          }
+        } // end of for loop
+        slotKinds = slots.toArray(new SlotKind[slots.size()]);
+        // convert to int []
+        final int srlength = strRefsTemp.size();
+        if (srlength > 0) {
+          strRefOffsets = new int[srlength];
+          for (int j = 0; j < srlength; j++) {
+            strRefOffsets[j] = strRefsTemp.get(j);
+          }
+        } else {
+          strRefOffsets = INT0;
+        }
+      }
+    }
+
+    SlotKind getSlotKind(int offset) {
+      if (0 == offset) {
+        return Slot_TypeCode;
+      }
+      return slotKinds[offset - 1];
+    }
+
+    @Override
+    public String toString() {
+      return type.toString();
+    }
+  }
+  
+  TypeInfo getTypeInfo(int typeCode) {
+    if (null == typeInfoArray[typeCode]) {
+      TypeImpl type = (TypeImpl) ll_getTypeForCode(typeCode);
+      typeInfoArray[typeCode] = new TypeInfo(type);
+    }
+    return typeInfoArray[typeCode];
+  }
+
 
 }
