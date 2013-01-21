@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"[
+<!ENTITY imgroot "images/tutorials_and_users_guides/tug.conf/">
+<!ENTITY % uimaents SYSTEM "../../target/docbook-shared/entities.ent">  
+%uimaents;
+]>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<chapter id="ugr.tug.conf">
+  <title>Top-level Pipeline Run Configuration Guide</title>
+  <titleabbrev>Top-level Configuration</titleabbrev>
+  
+  <para>This chapter describes an alternative, overriding method for specifying
+    many configuration settings for a particular UIMA pipeline <emphasis>run</emphasis>.
+    Its use is optional. 
+  </para>
+  
+  <section id="ugr.tug.conf.what-is-conf">
+    <title>What is Configuration?</title>
+    <para>Configuration is externally specified information that exists per 
+      UIMA pipeline run.  A common example is 
+      <xref id="ugr.tug.aae.configuration_logging">configuration parameters</xref>.
+      Other examples exist; for instance, you can specify where logging is to go.</para>
+      
+    <para>
+      Configuration consists of key - value pairs, typically stored in a 
+      separate file, and written in the style of Java properties files.  
+      The same syntax is followed, so you can write:
+      <preformat>  
+   my-key-name    :           my value string
+   my-key-name = my value string
+   my-key-name   my value string
+       or even
+   my-key-name
+      </preformat>
+    </para>
+    
+    <para>For the full set of rules, see the Javadocs for the Java <code>Properties</code>.
+    </para>
+    
+    <para>Multiple properties files are allowed; they are loaded in an order, such that
+      later ones take precidence over earlier ones.  So, if you have lots of properties,
+      you can put the defaults in one file, and then in another file, just override the
+      ones you need to.</para>
+      
+    <para>Individual key-value pairs can also be specified on the Java command line,
+      using the Java <code>-D</code> parameter; 
+      these override same-named keys that come from other sources.
+    </para>
+  </section>
+  
+  <section id="ugr.tug.conf.where-conf-comes-from">
+    <title>Where Configuration Information comes from</title>
+    <para>
+      The common use case is to put the key-value pairs into one (or more) properties files.
+      Properties can also be entered, individually, on the Java command line, as <code>-D</code>
+      parameters; properties entered in this way override other specifications.
+    </para>
+    
+    <para>
+      Properties may also be specified in a new XML element, &lt;topLevelSettings>, in the 
+      &lt;operationalProperties> element of a top level descriptor.   &lt;topLevelSettings> 
+      is ignored for other than the top level descriptor for a particular UIMA run.  
+    </para>
+    
+    <para>
+    &lt;topLevelSettings> can contain 0 or more standard UIMA &lt;import> elements, specifying
+    multiple properties files to import.  However, it can also have 0 or more &lt;settings
+    elements, the inner text of which is taken as the contents of a properties file, inline.
+    </para> 
+  </section>
+  
+  <section id="ugr.tug.conf.how-it-works">
+    <title>How it works</title>
+    <para>
+      At startup time, the property specifications are read and stored in a set of 
+      normal Java Properties class instances.  These are arranged according to the
+      defaulting order, in the case where there are more than one source.
+    </para>
+    
+    <para>
+      Individual configuration parameter specifications in the descriptors will
+      ignore this, unless a particular parameter declaration has an additional
+      &lt;topLevelName> element, which specifies the key name to be used at the 
+      top level to set this parameter's value.  If this name is present, and if
+      a value can be found for this key from among the top level property specifications
+      (including system properties set with the Java <code>-D</code> parameter), then
+      this value overrides the value otherwise specified for this parameter.
+    </para>
+    
+    <para>It is expected that the <emphasis>deployer</emphasis> will create 
+      the key names and add them to the configuration descriptors, where needed.
+    </para>
+    
+    <para>You may use the same top level name for multiple parameters; 
+    the effect of this is that one setting at the top level will override 
+    multiple parameters.</para>
+  </section>
+  
+</chapter>
+  
+  
