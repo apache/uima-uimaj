@@ -1455,6 +1455,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
       iterator.moveToNext();
     }
+    getInitialView();  // done for side effect of creating the initial view.
+    // must be done before the next line, because it sets the
+    // viewCount to 1.
     this.svd.viewCount = numViews; // total number of views
     
     for (int viewNbr = 1; viewNbr <= numViews; viewNbr++) {
