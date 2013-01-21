@@ -42,7 +42,6 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.AbstractCas_ImplBase;
 import org.apache.uima.cas.AnnotationBaseFS;
 import org.apache.uima.cas.ArrayFS;
@@ -85,7 +84,6 @@ import org.apache.uima.cas.text.Language;
 import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.impl.JCasImpl;
-import org.apache.uima.util.impl.SerializationMeasures;
 
 /**
  * Implements the CAS interfaces. This class must be public because we need to
