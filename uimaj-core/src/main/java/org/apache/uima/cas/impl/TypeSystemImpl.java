@@ -1558,6 +1558,9 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   Map<TypeSystemImpl, CasTypeSystemMapper> typeSystemMappers = new HashMap<TypeSystemImpl, CasTypeSystemMapper>();
   
   synchronized CasTypeSystemMapper getTypeSystemMapper(TypeSystemImpl tgtTs) {
+    if ((null == tgtTs) || (this == tgtTs)) {
+      return null;  // conventions for no type mapping
+    }
     CasTypeSystemMapper m = typeSystemMappers.get(tgtTs);
     if (null == m) {
       m = new CasTypeSystemMapper(this, tgtTs);

@@ -132,12 +132,14 @@ import org.apache.uima.util.impl.SerializationMeasures;
  *       in identity-map cache (size limit = 10?) - key is target typesystemimpl.
  *   Defaulting:
  *     flags:  doMeasurement, compressLevel, CompressStrategy
+ *     Defaulting set in call to create instance of this class
  *   Per serialize call: cas, output, [target ts], [mark for delta]
  *   Per deserialize call: cas, input, [target ts]
  *   
- *   This class has static methods with all args
- *   CASImpl has instance method with defaulting args
- *   
+ *   CASImpl has instance method with defaulting args for serialization.
+ *   CASImpl has reinit which works with compressed binary serialization objects
+ *     if no type mapping
+ *     If type mapping, (new BinaryCasSerDes4(sourceTypeSystem)).deserialize(in-steam, targetTypeSystem) 
  */
 public class BinaryCasSerDes4 {
 
@@ -315,28 +317,35 @@ public class BinaryCasSerDes4 {
    */
   final private TypeSystemImpl ts;
   final private boolean doMeasurements;
-    
+  final private CompressLevel compressLevel;
+  final private CompressStrat compressStrategy;    
   /**
    * 
-   * @param ts
-   * @param doMeasurements - normally set this to false. 
+   * @param ts Type System (the source type system)
+   * @param doMeasurements true if measurements should be collected
+   * @param compressLevel 
+   * @param compressStrategy
    */
-  public BinaryCasSerDes4(TypeSystemImpl ts, boolean doMeasurements) {
+  public BinaryCasSerDes4(TypeSystemImpl ts, boolean doMeasurements, 
+      CompressLevel compressLevel, CompressStrat compressStrategy) {
     this.ts = ts;
     this.doMeasurements = doMeasurements;
-
+    this.compressLevel = compressLevel;
+    this.compressStrategy = compressStrategy;
+  }
+  
+  public BinaryCasSerDes4(TypeSystemImpl ts) {
+    this(ts, false, CompressLevel.Default, CompressStrat.Default);
   }
 
   /**
-   * 
    * @param cas
    * @param out
    * @param trackingMark
    * @return null or serialization measurements (depending on setting of doMeasurements)
    * @throws IOException
    */
-  public SerializationMeasures serialize(AbstractCas cas, Object out, Marker trackingMark,
-      CompressLevel compressLevel, CompressStrat compressStrategy) throws IOException {
+  public SerializationMeasures serialize(AbstractCas cas, Object out, Marker trackingMark) throws IOException {
     SerializationMeasures sm = (doMeasurements) ? new SerializationMeasures() : null;
     CASImpl casImpl = (CASImpl) ((cas instanceof JCas) ? ((JCas)cas).getCas(): cas);
     if (null != trackingMark && !trackingMark.isValid() ) {
@@ -345,26 +354,44 @@ public class BinaryCasSerDes4 {
     }
     
     Serializer serializer = new Serializer(
-        casImpl, makeDataOutputStream(out), (MarkerImpl) trackingMark, sm,
-        compressLevel, compressStrategy);
+        casImpl, makeDataOutputStream(out), (MarkerImpl) trackingMark, sm);
    
     serializer.serialize();
     return sm;
-  }
-  
-  public SerializationMeasures serialize(AbstractCas cas, Object out, Marker trackingMark,
-      CompressLevel compressLevel) throws IOException {
-    return serialize(cas, out,trackingMark, compressLevel, CompressStrat.Default);
-  }
-  
-  public SerializationMeasures serialize(AbstractCas cas, Object out, Marker trackingMark) throws IOException {
-    return serialize(cas, out,trackingMark, CompressLevel.Default, CompressStrat.Default);
   }
 
   public SerializationMeasures serialize(AbstractCas cas, Object out) throws IOException {
     return serialize(cas, out, null);
   }
 
+  public void deserialize(CASImpl cas, InputStream istream) throws IOException {
+    final DataInputStream dis = (istream instanceof DataInputStream) ?  
+        (DataInputStream) istream : new DataInputStream(istream);
+
+     // key
+     // determine if byte swap if needed based on key
+     byte[] bytebuf = new byte[4];
+     bytebuf[0] = dis.readByte(); // U
+     bytebuf[1] = dis.readByte(); // I
+     bytebuf[2] = dis.readByte(); // M
+     bytebuf[3] = dis.readByte(); // A
+
+     // version      
+     // version bit in 2's place indicates this is in delta format.
+     final int version = dis.readInt();      
+     final boolean delta = ((version & 2) == 2);
+     
+     cas = cas.getBaseCAS();
+     if (!delta) {
+       cas.resetNoQuestions();
+     }
+     
+     if (0 == (version & 4)) {
+       throw new RuntimeException("non-compressed invalid object passed to BinaryCasSerDes4 deserialize");
+     }
+     deserialize(cas, istream, delta); 
+  }
+  
   public void deserialize(CASImpl cas, InputStream deserIn, boolean isDelta) throws IOException {
     DataInput in;
     if (deserIn instanceof DataInputStream) {
@@ -406,8 +433,6 @@ public class BinaryCasSerDes4 {
     final private Integer[] serializedTypeCode2Code = new Integer[ts.getTypeArraySize()]; // needs to be Integer to get comparator choice
     final private int[] estimatedZipSize = new int[NBR_SLOT_KIND_ZIP_STREAMS]; // one entry for each output stream kind
     final private OptimizeStrings os;
-    final private CompressLevel compressLevel;
-    final private CompressStrat compressStrategy;
 
     // typeInfo is local to this serialization instance to permit multiple threads
     private TypeInfo typeInfo; // type info for the current type being serialized
@@ -440,15 +465,11 @@ public class BinaryCasSerDes4 {
     final private DataOutputStream strSeg_dos;
 
     private Serializer(CASImpl cas, DataOutputStream serializedOut, MarkerImpl mark,
-                       SerializationMeasures sm,
-                       CompressLevel compressLevel,
-                       CompressStrat compressStrategy) {
+                       SerializationMeasures sm) {
       this.cas = cas;
       this.serializedOut = serializedOut;
       this.mark = mark;
       this.sm = sm;
-      this.compressLevel = compressLevel;
-      this.compressStrategy = compressStrategy;
       isDelta = (mark != null);
       doMeasurement = (sm != null);
       

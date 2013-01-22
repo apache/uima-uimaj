@@ -244,10 +244,6 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
      */
     private List<Marker> trackingMarkList;
     
-    // must be in svd part because has a field that is updated
-    // while serializing
-    private BinaryCasSerDes4 binaryCompressor;
-
     private SharedViewData(boolean useFSCache) {
       this.useFSCache = useFSCache;
     }
@@ -1193,10 +1189,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       }
       
       if (0 != (version & 4)) {
-        if (svd.binaryCompressor == null) {
-          svd.binaryCompressor = new BinaryCasSerDes4(this.getTypeSystemImpl(), false);
-        }
-        svd.binaryCompressor.deserialize(this, dis, delta);
+        (new BinaryCasSerDes4(this.getTypeSystemImpl())).deserialize(this, dis, delta);
         return;
       }
       
@@ -4294,10 +4287,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * @throws IOException
    */
   public void serializeWithCompression(Object out) throws IOException {
-    if (svd.binaryCompressor == null) {
-      svd.binaryCompressor = new BinaryCasSerDes4(this.getTypeSystemImpl(), false);
-    }
-    svd.binaryCompressor.serialize(this, out);
+    (new BinaryCasSerDes4(this.getTypeSystemImpl())).serialize(this, out);
   }
   
 }
