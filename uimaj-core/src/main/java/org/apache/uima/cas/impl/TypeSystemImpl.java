@@ -1550,5 +1550,20 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     return typeInfoArray[typeCode];
   }
 
-
+  /*********************************************************
+   * Type Mapping Objects
+   *   used in compressed binary (de)serialization
+   * These are in an identity map, key = target type system
+   *********************************************************/
+  Map<TypeSystemImpl, CasTypeSystemMapper> typeSystemMappers = new HashMap<TypeSystemImpl, CasTypeSystemMapper>();
+  
+  synchronized CasTypeSystemMapper getTypeSystemMapper(TypeSystemImpl tgtTs) {
+    CasTypeSystemMapper m = typeSystemMappers.get(tgtTs);
+    if (null == m) {
+      m = new CasTypeSystemMapper(this, tgtTs);
+      typeSystemMappers.put(tgtTs, m);
+    }
+    return m;
+  }
+  
 }
