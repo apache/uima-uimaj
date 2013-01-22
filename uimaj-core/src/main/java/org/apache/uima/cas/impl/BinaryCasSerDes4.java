@@ -313,7 +313,7 @@ public class BinaryCasSerDes4 {
    * Things set up for one instance of this class, and
    * reuse-able
    */
-  final private TypeSystemImpl ts;  // for debugging
+  final private TypeSystemImpl ts;
   final private boolean doMeasurements;
     
   /**
@@ -409,6 +409,7 @@ public class BinaryCasSerDes4 {
     final private CompressLevel compressLevel;
     final private CompressStrat compressStrategy;
 
+    // typeInfo is local to this serialization instance to permit multiple threads
     private TypeInfo typeInfo; // type info for the current type being serialized
     final private int[] iPrevHeapArray; // index of previous instance of this typecode in heap, by typecode
     private int iPrevHeap;        // 0 or heap addr of previous instance of current type
@@ -538,7 +539,7 @@ public class BinaryCasSerDes4 {
       int version = 4 | ((isDelta) ? 2 : 0);
       CASSerializer.outputVersion(version, serializedOut);
         
-      serializedOut.writeInt(0);  // reserved for future version info
+      serializedOut.writeInt(VERSION);  // reserved for future version info
       if (doMeasurement) {
         sm.header = 12;
       }
@@ -678,8 +679,8 @@ public class BinaryCasSerDes4 {
        ***************************/
 
       for (int iHeap = heapStart; iHeap < heapEnd; iHeap += incrToNextFs(heap, iHeap, typeInfo)) {
-        int tCode = heap[iHeap];  // get type code      
-        typeInfo = getTypeInfo(tCode);
+        final int tCode = heap[iHeap];  // get type code      
+        typeInfo = ts.getTypeInfo(tCode);
         iPrevHeap = iPrevHeapArray[tCode];
         
         writeVnumber(typeCode_dos, tCode);
@@ -716,12 +717,12 @@ public class BinaryCasSerDes4 {
     
     
     private void serializeIndexedFeatureStructures() throws IOException {
-      int[] fsIndexes = isDelta ? cas.getDeltaIndexedFSs(mark) : cas.getIndexedFSs();
+      final int[] fsIndexes = isDelta ? cas.getDeltaIndexedFSs(mark) : cas.getIndexedFSs();
       if (doMeasurement) {
         sm.statDetails[fsIndexes_i].original = fsIndexes.length * 4 + 1;      
       }
-      int nbrViews = fsIndexes[0];
-      int nbrSofas = fsIndexes[1];
+      final int nbrViews = fsIndexes[0];
+      final int nbrSofas = fsIndexes[1];
       writeVnumber(control_i, nbrViews);
       writeVnumber(control_i, nbrSofas);
       
@@ -751,8 +752,8 @@ public class BinaryCasSerDes4 {
 
     private int compressFsxPart(int[] fsIndexes, int fsNdxStart) throws IOException {
       int ix = fsNdxStart;
-      int nbrEntries = fsIndexes[ix++];
-      int end = ix + nbrEntries;
+      final int nbrEntries = fsIndexes[ix++];
+      final int end = ix + nbrEntries;
       writeVnumber(fsIndexes_dos, nbrEntries);  // number of entries
       if (doMeasurement) {
         sm.statDetails[typeCode_i].incr(DataIO.lengthVnumber(nbrEntries));
@@ -1272,7 +1273,7 @@ public class BinaryCasSerDes4 {
         for (int i = 0; i < modFSsLength; i++) {
           iHeap = modifiedFSs[i];     
           final int tCode = heap[iHeap];
-          typeInfo = getTypeInfo(tCode);
+          typeInfo = ts.getTypeInfo(tCode);
           
           // write out the address of the modified FS
           writeVnumber(fsIndexes_dos, iHeap - iPrevHeap);
@@ -1469,6 +1470,7 @@ public class BinaryCasSerDes4 {
     
     final private CASImpl cas;  // cas being serialized
     final private DataInput deserIn;
+    final private int version;
 
     final private DataInputStream[] dataInputs = new DataInputStream[NBR_SLOT_KIND_ZIP_STREAMS];
     private Inflater[] inflaters = new Inflater[NBR_SLOT_KIND_ZIP_STREAMS];
@@ -1486,11 +1488,11 @@ public class BinaryCasSerDes4 {
     private int stringTableOffset;
     
     /**
-     * Cache sharable common values in aux heaps
+     * These indexes remember sharable common values in aux heaps
      * Values must be in aux heap, but not part of arrays there
      *   so that rules out boolean, byte, and shorts
      */
-    private int longZeroIndex = -1; // also used for double 0 indix
+    private int longZeroIndex = -1; // also used for double 0 index
     private int double1Index = -1;
 
     final private boolean isDelta;        // if true, a delta is being deserialized
@@ -1541,7 +1543,7 @@ public class BinaryCasSerDes4 {
       shortHeapObj  = cas.getShortHeap();
       byteHeapObj   = cas.getByteHeap();
 
-      deserIn.readInt();    // reserved to record additional version info
+      version = deserIn.readInt();    // version of the compressed serializer
       final int nbrEntries = deserIn.readInt();  // number of compressed streams
       
       IntVector idxAndLen = new IntVector(nbrEntries * 3);
@@ -1634,7 +1636,7 @@ public class BinaryCasSerDes4 {
           fsStartIndexes.addItemAddr(iHeap);
         }        
         int tCode = heap[iHeap] = readVnumber(typeCode_dis); // get type code      
-        typeInfo = getTypeInfo(tCode);
+        typeInfo = ts.getTypeInfo(tCode);
         iPrevHeap = iPrevHeapArray[tCode];
 
         if (typeInfo.isHeapStoredArray) {
@@ -2058,7 +2060,7 @@ public class BinaryCasSerDes4 {
           iPrevHeap = iHeap;
   
           final int tCode = heap[iHeap];
-          typeInfo = getTypeInfo(tCode);
+          typeInfo = ts.getTypeInfo(tCode);
           
           final int numberOfModsInThisFs = readVnumber(fsIndexes_dis); 
   
@@ -2179,7 +2181,7 @@ public class BinaryCasSerDes4 {
       if ((null != histo) && (iHeap >= heapStart)) {
         histo[tCode] ++;
       }
-      TypeInfo typeInfo = getTypeInfo(tCode);
+      TypeInfo typeInfo = ts.getTypeInfo(tCode);
       iHeap += incrToNextFs(heap, iHeap, typeInfo);
     }
     fsStartIndexes.finishSetup();
@@ -2190,8 +2192,8 @@ public class BinaryCasSerDes4 {
   // the containing instance of BinaryCasSerDes4 can be
   // accessed for the type info
   
-  public CasCompare getCasCompare() {
-    return new CasCompare();
+  public boolean compareCASes(CASImpl c1, CASImpl c2) {
+    return (new CasCompare(c1, c2)).compareCASes();
   }
   
   public class CasCompare {
@@ -2199,35 +2201,45 @@ public class BinaryCasSerDes4 {
      * Compare 2 CASes for equal
      * The layout of refs to aux heaps does not have to match
      */
-      private CASImpl c1;
-      private CASImpl c2;
-      private Heap c1HO;
-      private Heap c2HO;
-      private int[] c1heap;
-      private int[] c2heap;
-      private TypeInfo typeInfo;
-      private int iHeap;
+      final private CASImpl c1;
+      final private CASImpl c2;
+      final private Heap c1HO;
+      final private Heap c2HO;
+      final private int[] c1heap;
+      final private int[] c2heap;
+      final private ComprItemRefs fsStartIndexes = new ComprItemRefs();
       
-    public boolean compareCASes(CASImpl c1, CASImpl c2) {
+      private TypeInfo typeInfo;
+      private int seqHeapSrc;
+      private int srcHeapAddr;
+      private int tgtHeapAddr;
+      
+      private int srcIfsIndex;
+      private int tgtIfsIndex;
+      
+    public CasCompare(CASImpl c1, CASImpl c2) {
       this.c1 = c1;
       this.c2 = c2;
       c1HO = c1.getHeap();
       c2HO = c2.getHeap();
+      c1heap = c1HO.heap;
+      c2heap = c2HO.heap;
+    }
+      
+    public boolean compareCASes() {
       final int endi = c1HO.getCellsUsed();
       final int end2 = c2HO.getCellsUsed();
       if (endi != end2) {
         System.err.format("CASes have different heap cells used: %,d %,d%n", endi, end2);
       }
-      c1heap = c1HO.heap;
-      c2heap = c2HO.heap;
       
       ComprItemRefs fsStartIndexes = new ComprItemRefs();
       initFsStartIndexes(fsStartIndexes, c1heap, 1, endi, null);
       
-      final int endsi = fsStartIndexes.getNbrOfItems();
-      for (int i = 1; i < endsi; i++) {
-        iHeap = fsStartIndexes.getItemAddr(i);
-//        System.out.println("");
+      final int endHeapSeqSrc = fsStartIndexes.getNbrOfItems();
+      srcHeapAddr = 1;
+      tgtHeapAddr = 1;
+      for (seqHeapSrc = 1; seqHeapSrc < endHeapSeqSrc; seqHeapSrc++) {
         if (!compareFss()) {
           return false;
         }
@@ -2240,9 +2252,9 @@ public class BinaryCasSerDes4 {
     }
 
     private boolean compareFss() {
-      int tCode = c1heap[iHeap];
-      typeInfo = getTypeInfo(tCode);
-      if (tCode != c2heap[iHeap]) {
+      int tCode = c1heap[srcHeapAddr];
+      typeInfo = ts.getTypeInfo(tCode);
+      if (tCode != c2heap[tgtHeapAddr]) {
         return mismatchFs();
       }
       if (typeInfo.isArray) {
@@ -2258,8 +2270,8 @@ public class BinaryCasSerDes4 {
     }
       
     private boolean compareFssArray() {
-      int len1 = c1heap[iHeap + 1];
-      int len2 = c2heap[iHeap + 1];
+      int len1 = c1heap[srcHeapAddr + 1];
+      int len2 = c2heap[tgtHeapAddr + 1];
       if (len1 != len2) {
         return false;
       }
@@ -2267,30 +2279,30 @@ public class BinaryCasSerDes4 {
         SlotKind kind = typeInfo.getSlotKind(2);
         if (typeInfo.isHeapStoredArray) {
           if (kind == Slot_StrRef) {
-            if (! compareStrings(c1.getStringForCode(c1heap[iHeap + 2 + i]),
-                                 c2.getStringForCode(c2heap[iHeap + 2 + i]))) {
+            if (! compareStrings(c1.getStringForCode(c1heap[srcHeapAddr + 2 + i]),
+                                 c2.getStringForCode(c2heap[tgtHeapAddr + 2 + i]))) {
               return mismatchFs();
             }
-          } else if (c1heap[iHeap + 2 + i] != c2heap[iHeap + 2 + i]) {
+          } else if (c1heap[srcHeapAddr + 2 + i] != c2heap[tgtHeapAddr + 2 + i]) {
             return mismatchFs();
           }
         } else {  // not heap stored array
           switch (kind) {
           case Slot_BooleanRef: case Slot_ByteRef:
-            if (c1.getByteHeap().getHeapValue(c1heap[iHeap + 2] + i) !=
-                c2.getByteHeap().getHeapValue(c2heap[iHeap + 2] + i)) {
+            if (c1.getByteHeap().getHeapValue(c1heap[srcHeapAddr + 2] + i) !=
+                c2.getByteHeap().getHeapValue(c2heap[tgtHeapAddr + 2] + i)) {
               return mismatchFs(); 
             }
             break;
           case Slot_ShortRef:
-            if (c1.getShortHeap().getHeapValue(c1heap[iHeap + 2] + i) !=
-                c2.getShortHeap().getHeapValue(c2heap[iHeap + 2] + i)) {
+            if (c1.getShortHeap().getHeapValue(c1heap[srcHeapAddr + 2] + i) !=
+                c2.getShortHeap().getHeapValue(c2heap[tgtHeapAddr + 2] + i)) {
               return mismatchFs();
             }
             break;
           case Slot_LongRef: case Slot_DoubleRef: {
-            if (c1.getLongHeap().getHeapValue(c1heap[iHeap + 2] + i)  !=
-                c1.getLongHeap().getHeapValue(c1heap[iHeap + 2] + i)) {
+            if (c1.getLongHeap().getHeapValue(c1heap[srcHeapAddr + 2] + i)  !=
+                c1.getLongHeap().getHeapValue(c1heap[tgtHeapAddr + 2] + i)) {
               return mismatchFs();
             }
             break;
@@ -2307,13 +2319,13 @@ public class BinaryCasSerDes4 {
       switch (kind) {
       case Slot_Int: case Slot_Short: case Slot_Boolean: case Slot_Byte: 
       case Slot_Float: case Slot_HeapRef:
-        return c1heap[iHeap + offset] == c2heap[iHeap + offset];
+        return c1heap[srcHeapAddr + offset] == c2heap[tgtHeapAddr + offset];
       case Slot_StrRef:
-        return compareStrings(c1.getStringForCode(c1heap[iHeap + offset]),
-                              c2.getStringForCode(c2heap[iHeap + offset]));
+        return compareStrings(c1.getStringForCode(c1heap[srcHeapAddr + offset]),
+                              c2.getStringForCode(c2heap[tgtHeapAddr + offset]));
       case Slot_LongRef: case Slot_DoubleRef:
-        return c1.getLongHeap().getHeapValue(c1heap[iHeap + offset]) ==
-               c2.getLongHeap().getHeapValue(c2heap[iHeap + offset]);
+        return c1.getLongHeap().getHeapValue(c1heap[srcHeapAddr + offset]) ==
+               c2.getLongHeap().getHeapValue(c2heap[tgtHeapAddr + offset]);
       default: throw new RuntimeException("internal error");      
       }
     }
@@ -2327,30 +2339,30 @@ public class BinaryCasSerDes4 {
      
     private boolean mismatchFs() {
       System.err.format("Mismatched Feature Structures:%n %s%n %s%n", 
-          dumpHeapFs(c1), dumpHeapFs(c2));
+          dumpHeapFs(c1, srcHeapAddr), dumpHeapFs(c2, tgtHeapAddr));
       return false;
     }
     
-    private StringBuilder dumpHeapFs(CASImpl cas) {
+    private StringBuilder dumpHeapFs(CASImpl cas, final int iHeap) {
       StringBuilder sb = new StringBuilder();
-      typeInfo = getTypeInfo(cas.getHeap().heap[iHeap]);
+      typeInfo = ts.getTypeInfo(cas.getHeap().heap[iHeap]);
       sb.append(typeInfo);
   
       if (typeInfo.isHeapStoredArray) {
-        sb.append(dumpHeapStoredArray(cas));
+        sb.append(dumpHeapStoredArray(cas, iHeap));
       } else if (typeInfo.isArray) {
-        sb.append(dumpNonHeapStoredArray(cas));
+        sb.append(dumpNonHeapStoredArray(cas, iHeap));
       } else {
         sb.append("   Slots:\n");
         for (int i = 1; i < typeInfo.slotKinds.length + 1; i++) {
           sb.append("  ").append(typeInfo.getSlotKind(i)).append(": ")
-              .append(dumpByKind(cas, i)).append('\n');
+              .append(dumpByKind(cas, i, iHeap)).append('\n');
         }
       }
       return sb;
     }
     
-    private StringBuilder dumpHeapStoredArray(CASImpl cas) {
+    private StringBuilder dumpHeapStoredArray(CASImpl cas, final int iHeap) {
       StringBuilder sb = new StringBuilder();
       int[] heap = cas.getHeap().heap;
       final int length = heap[iHeap + 1];
@@ -2381,7 +2393,7 @@ public class BinaryCasSerDes4 {
       return sb;
     }
   
-    private StringBuilder dumpNonHeapStoredArray(CASImpl cas) {
+    private StringBuilder dumpNonHeapStoredArray(CASImpl cas, final int iHeap) {
       StringBuilder sb = new StringBuilder();
       int[] heap = cas.getHeap().heap;
       final int length = heap[iHeap + 1];
@@ -2415,7 +2427,7 @@ public class BinaryCasSerDes4 {
       return sb;      
     }
   
-    private StringBuilder dumpByKind(CASImpl cas, int offset) {
+    private StringBuilder dumpByKind(CASImpl cas, int offset, final int iHeap) {
       StringBuilder sb = new StringBuilder();
       int[] heap = cas.getHeap().heap;
       SlotKind kind = typeInfo.getSlotKind(offset);
@@ -2500,10 +2512,6 @@ public class BinaryCasSerDes4 {
 //    deserCas = cas;
 //  }
     
-  private TypeInfo getTypeInfo(int typeCode) {
-    return ts.getTypeInfo(typeCode);
-  }
-  
 //  /**
 //   * An iterator-like object for Feature Structures on the heap
 //   * next() returns in order of ascending heap addresses those
