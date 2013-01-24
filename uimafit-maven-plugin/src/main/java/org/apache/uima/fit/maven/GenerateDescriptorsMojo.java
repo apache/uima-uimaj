@@ -29,12 +29,15 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
@@ -42,6 +45,7 @@ import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.codehaus.plexus.util.FileUtils;
+import org.sonatype.plexus.build.incremental.BuildContext;
 import org.xml.sax.SAXException;
 
 /**
@@ -54,34 +58,65 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
   @Component
   private MavenProject project;
 
+  @Component
+  private BuildContext buildContext;
+  
+  @Parameter(defaultValue="${project.build.directory}/generated-sources/uimafit", required=true)
+  private File outputDirectory;
+  
   private ClassLoader componentLoader;
 
   public void execute() throws MojoExecutionException {
+    
+    // add the generated sources to the build
+    if (!outputDirectory.exists()) {
+      outputDirectory.mkdirs();
+      buildContext.refresh(outputDirectory);
+    }
+    project.addCompileSourceRoot(outputDirectory.getPath());
+    
     String[] files = FileUtils.getFilesFromExtension(project.getBuild().getOutputDirectory(),
             new String[] { "class" });
 
     // Create a class loader which covers the classes compiled in the current project and all
     // dependencies.
+    List<URL> urls = new ArrayList<URL>();
     try {
-      List<URL> urls = new ArrayList<URL>();
       for (Object object : project.getCompileClasspathElements()) {
         String path = (String) object;
         getLog().debug("Classpath entry: " + object);
         urls.add(new File(path).toURI().toURL());
       }
-      for (Artifact dep : (Set<Artifact>) project.getDependencyArtifacts()) {
-        getLog().debug("Classpath entry: " + dep.getFile());
-        urls.add(dep.getFile().toURI().toURL());
-      }
-      componentLoader = new URLClassLoader(urls.toArray(new URL[] {}), getClass().getClassLoader());
-    } catch (Exception e) {
-      throw new MojoExecutionException("Cannot initialize classloader", e);
+    } catch (IOException e) {
+      throw new MojoExecutionException("Unable to assemble classpath: "
+              + ExceptionUtils.getRootCauseMessage(e), e);
+    } catch (DependencyResolutionRequiredException e) {
+      throw new MojoExecutionException("Unable to resolve dependencies: "
+              + ExceptionUtils.getRootCauseMessage(e), e);
     }
+    
+    for (Artifact dep : (Set<Artifact>) project.getDependencyArtifacts()) {
+      try {
+        if (dep.getFile() == null) {
+          // Unresolved file because it is in the wrong scope (e.g. test?)
+          continue;
+        }
+        getLog().debug(
+                "Classpath entry: " + dep.getGroupId() + ":" + dep.getArtifactId() + ":"
+                        + dep.getVersion() + " -> " + dep.getFile());
+        urls.add(dep.getFile().toURI().toURL());
+      } catch (Exception e) {
+        throw new MojoExecutionException("Unable get dependency artifact location for "
+                + dep.getGroupId() + ":" + dep.getArtifactId() + ":" + dep.getVersion()
+                + ExceptionUtils.getRootCauseMessage(e), e);
+      }
+    }
+    componentLoader = new URLClassLoader(urls.toArray(new URL[] {}), getClass().getClassLoader());
 
     for (String file : files) {
       String base = file.substring(0, file.length() - 6);
-      String clazzName = base.substring(project.getBuild().getOutputDirectory().length() + 1)
-              .replace("/", ".");
+      String clazzPath = base.substring(project.getBuild().getOutputDirectory().length() + 1);
+      String clazzName = clazzPath.replace("/", ".");
       try {
         Class clazz = getClass(clazzName);
         ResourceSpecifier desc = null;
@@ -96,7 +131,9 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
         }
 
         if (desc != null) {
-          toXML(desc, base + ".xml");
+          File out = new File(outputDirectory, clazzPath+".xml");
+          out.getParentFile().mkdirs();
+          toXML(desc, out.getPath());
         }
       } catch (SAXException e) {
         getLog().warn("Cannot serialize descriptor for [" + clazzName + "]", e);

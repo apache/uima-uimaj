@@ -27,7 +27,7 @@
 	</parent>
 	<artifactId>uimafit-maven-plugin</artifactId>
 	<name>uimaFIT - Maven Plugin</name>
-	
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -49,6 +49,11 @@
 			<version>2.0.10</version>
 		</dependency>
 		<dependency>
+			<groupId>org.sonatype.plexus</groupId>
+			<artifactId>plexus-build-api</artifactId>
+			<version>0.0.7</version>
+		</dependency>
+		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 		</dependency>
@@ -64,16 +69,13 @@
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
-	
+
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-plugin-plugin</artifactId>
 				<version>3.2</version>
-				<configuration>
-					<goalPrefix>descgen-maven-plugin</goalPrefix>
-				</configuration>
 				<executions>
 					<execution>
 						<id>generated-helpmojo</id>
@@ -86,7 +88,8 @@
 		</plugins>
 		<pluginManagement>
 			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
@@ -114,4 +117,5 @@
 			</plugins>
 		</pluginManagement>
 	</build>
+	<packaging>maven-plugin</packaging>
 </project>
