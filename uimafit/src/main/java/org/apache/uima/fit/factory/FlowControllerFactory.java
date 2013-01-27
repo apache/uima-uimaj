@@ -100,11 +100,9 @@ public final class FlowControllerFactory {
               configurationValues);
     }
 
+    // Configure resource meta data
     ResourceMetaData meta = desc.getMetaData();
-    meta.setName(flowControllerClass.getName());
-    meta.setVendor(flowControllerClass.getPackage().toString());
-    meta.setDescription(Defaults.DEFAULT_DESCRIPTION);
-    meta.setVersion(Defaults.DEFAULT_VERSION);
+    ResourceMetaDataFactory.configureResourceMetaData(meta, flowControllerClass);
 
     // Extract external resource dependencies
     Collection<ExternalResourceDependency> deps = ExternalResourceInitializer

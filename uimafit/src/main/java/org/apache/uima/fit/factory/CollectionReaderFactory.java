@@ -48,6 +48,7 @@ import org.apache.uima.resource.metadata.Capability;
 import org.apache.uima.resource.metadata.ConfigurationParameter;
 import org.apache.uima.resource.metadata.FsIndexCollection;
 import org.apache.uima.resource.metadata.Import;
+import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 
@@ -259,6 +260,10 @@ public final class CollectionReaderFactory {
               configurationValues);
     }
 
+    // Configure resource meta data
+    ResourceMetaData meta = desc.getMetaData();
+    ResourceMetaDataFactory.configureResourceMetaData(meta, readerClass);
+    
     // set the type system
     if (typeSystem != null) {
       desc.getCollectionReaderMetaData().setTypeSystem(typeSystem);

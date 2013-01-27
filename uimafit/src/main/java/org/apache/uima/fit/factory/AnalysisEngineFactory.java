@@ -293,14 +293,9 @@ public final class AnalysisEngineFactory {
       op.setOutputsNewCASes(OUTPUTS_NEW_CASES_DEFAULT);
     }
 
+    // Configure resource meta data
     AnalysisEngineMetaData meta = desc.getAnalysisEngineMetaData();
-    meta.setName(componentClass.getName());
-
-    if (componentClass.getPackage() != null) {
-      meta.setVendor(componentClass.getPackage().getName());
-    }
-    meta.setDescription(Defaults.DEFAULT_DESCRIPTION);
-    meta.setVersion(Defaults.DEFAULT_VERSION);
+    ResourceMetaDataFactory.configureResourceMetaData(meta, componentClass);
 
     ConfigurationData reflectedConfigurationData = createConfigurationData(componentClass);
     ResourceCreationSpecifierFactory.setConfigurationParameters(desc,

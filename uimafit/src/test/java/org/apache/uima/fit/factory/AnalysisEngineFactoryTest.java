@@ -44,6 +44,7 @@ import org.apache.uima.fit.ComponentTestBase;
 import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.fit.component.NoOpAnnotator;
 import org.apache.uima.fit.descriptor.OperationalProperties;
+import org.apache.uima.fit.descriptor.ResourceMetaData;
 import org.apache.uima.fit.factory.testAes.Annotator1;
 import org.apache.uima.fit.factory.testAes.Annotator2;
 import org.apache.uima.fit.factory.testAes.Annotator3;
@@ -440,6 +441,29 @@ public class AnalysisEngineFactoryTest extends ComponentTestBase {
 
       assertTrue("Multiple deployment should be prohibited on AAE", aae.getAnalysisEngineMetaData()
               .getOperationalProperties().isMultipleDeploymentAllowed());
+    }
+  }
+  
+  @Test
+  public void testResourceMetaData() throws Exception
+  {
+    AnalysisEngineDescription desc = AnalysisEngineFactory
+            .createPrimitiveDescription(AnnotatorWithMetaDataClass.class);
+    
+    org.apache.uima.resource.metadata.ResourceMetaData meta = desc.getMetaData();
+    
+    assertEquals("dummy", meta.getName());
+    assertEquals("1.0", meta.getVersion());
+    assertEquals("Just a dummy", meta.getDescription());
+    assertEquals("ASL 2.0", meta.getCopyright());
+    assertEquals("uimaFIT", meta.getVendor());
+  }
+
+  @ResourceMetaData(name = "dummy", version = "1.0", description = "Just a dummy", copyright = "ASL 2.0", vendor = "uimaFIT")
+  public static class AnnotatorWithMetaDataClass extends JCasAnnotator_ImplBase {
+    @Override
+    public void process(JCas aJCas) throws AnalysisEngineProcessException {
+      // Dummy
     }
   }
 

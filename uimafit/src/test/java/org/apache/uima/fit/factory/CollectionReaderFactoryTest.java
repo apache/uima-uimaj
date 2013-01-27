@@ -27,8 +27,10 @@ import org.apache.uima.UIMAException;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.collection.CollectionReader;
+import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.collection.CollectionReader_ImplBase;
 import org.apache.uima.fit.ComponentTestBase;
+import org.apache.uima.fit.descriptor.ResourceMetaData;
 import org.apache.uima.fit.factory.testCrs.SingleFileXReader;
 import org.apache.uima.fit.pipeline.JCasIterable;
 import org.apache.uima.fit.type.Token;
@@ -100,6 +102,22 @@ public class CollectionReaderFactoryTest extends ComponentTestBase {
     assertNotNull(rie);
   }
 
+  @Test
+  public void testResourceMetaData() throws Exception
+  {
+    CollectionReaderDescription desc = CollectionReaderFactory
+            .createDescription(TestCR.class);
+    
+    org.apache.uima.resource.metadata.ResourceMetaData meta = desc.getMetaData();
+    
+    assertEquals("dummy", meta.getName());
+    assertEquals("1.0", meta.getVersion());
+    assertEquals("Just a dummy", meta.getDescription());
+    assertEquals("ASL 2.0", meta.getCopyright());
+    assertEquals("uimaFIT", meta.getVendor());
+  }
+
+  @ResourceMetaData(name = "dummy", version = "1.0", description = "Just a dummy", copyright = "ASL 2.0", vendor = "uimaFIT")
   private class TestCR extends CollectionReader_ImplBase {
 
     private TestCR() {
@@ -107,20 +125,20 @@ public class CollectionReaderFactoryTest extends ComponentTestBase {
     }
 
     public void getNext(CAS acas) throws IOException, CollectionException {
-      // TODO Auto-generated method stub
+      // Not required for test
     }
 
     public void close() throws IOException {
-      // TODO Auto-generated method stub
+      // Not required for test
     }
 
     public Progress[] getProgress() {
-      // TODO Auto-generated method stub
+      // Not required for test
       return null;
     }
 
     public boolean hasNext() throws IOException, CollectionException {
-      // TODO Auto-generated method stub
+      // Not required for test
       return false;
     }
   }
