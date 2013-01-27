@@ -27,12 +27,29 @@
 	</parent>
 	<artifactId>uimafit-maven-plugin</artifactId>
 	<name>uimaFIT - Maven Plugin</name>
+	<packaging>maven-plugin</packaging>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
 	<dependencies>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.uima</groupId>
+			<artifactId>uimafit</artifactId>
+			<version>2.0.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.javassist</groupId>
+			<artifactId>javassist</artifactId>
+			<version>3.17.1-GA</version>
+		</dependency>
+
+		<!-- Dependencies on the Maven Plugin API and friends -->
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-plugin-api</artifactId>
@@ -49,24 +66,42 @@
 			<version>2.0.10</version>
 		</dependency>
 		<dependency>
-			<groupId>org.sonatype.plexus</groupId>
-			<artifactId>plexus-build-api</artifactId>
-			<version>0.0.7</version>
-		</dependency>
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.uima</groupId>
-			<artifactId>uimafit</artifactId>
-			<version>2.0.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
 			<groupId>org.apache.maven.plugin-tools</groupId>
 			<artifactId>maven-plugin-annotations</artifactId>
 			<version>3.2</version>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.sonatype.plexus</groupId>
+			<artifactId>plexus-build-api</artifactId>
+			<version>0.0.7</version>
+		</dependency>
+
+		<!-- Dependencies for accessing JavaDoc -->
+		<dependency>
+			<groupId>org.eclipse.jdt</groupId>
+			<artifactId>core</artifactId>
+			<version>3.2.0.666</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.core</groupId>
+			<artifactId>jobs</artifactId>
+			<version>3.3.0-v20070423</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.core</groupId>
+			<artifactId>runtime</artifactId>
+			<version>3.3.100-v20070530</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.core</groupId>
+			<artifactId>resources</artifactId>
+			<version>3.3.0-v20070604</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.equinox</groupId>
+			<artifactId>common</artifactId>
+			<version>3.3.0-v20070426</version>
 		</dependency>
 	</dependencies>
 
@@ -76,7 +111,18 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-plugin-plugin</artifactId>
 				<version>3.2</version>
+				<!-- BEGIN WORKAROUND http://jira.codehaus.org/browse/MNG-5346 -->
+				<configuration>
+					<skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
+				</configuration>
 				<executions>
+					<execution>
+						<id>mojo-descriptor</id>
+						<goals>
+							<goal>descriptor</goal>
+						</goals>
+					</execution>
+				<!-- END WORKAROUND http://jira.codehaus.org/browse/MNG-5346 -->
 					<execution>
 						<id>generated-helpmojo</id>
 						<goals>
@@ -88,7 +134,7 @@
 		</plugins>
 		<pluginManagement>
 			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings 
+				<!--This plugin's configuration is used to store Eclipse m2e settings
 					only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
@@ -117,5 +163,4 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-	<packaging>maven-plugin</packaging>
 </project>

@@ -22,16 +22,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.exception.ExceptionUtils;
-import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Component;
@@ -42,6 +34,8 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
+import org.apache.uima.fit.maven.util.Util;
+import org.apache.uima.resource.ResourceCreationSpecifier;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.codehaus.plexus.util.FileUtils;
@@ -60,14 +54,16 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
 
   @Component
   private BuildContext buildContext;
-  
+
+  private ClassLoader componentLoader;
+
+  /**
+   * Path where the generated resources are written.
+   */
   @Parameter(defaultValue="${project.build.directory}/generated-sources/uimafit", required=true)
   private File outputDirectory;
   
-  private ClassLoader componentLoader;
-
   public void execute() throws MojoExecutionException {
-    
     // add the generated sources to the build
     if (!outputDirectory.exists()) {
       outputDirectory.mkdirs();
@@ -75,52 +71,20 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
     }
     project.addCompileSourceRoot(outputDirectory.getPath());
     
+    // Get the compiled classes from this project
     String[] files = FileUtils.getFilesFromExtension(project.getBuild().getOutputDirectory(),
             new String[] { "class" });
 
-    // Create a class loader which covers the classes compiled in the current project and all
-    // dependencies.
-    List<URL> urls = new ArrayList<URL>();
-    try {
-      for (Object object : project.getCompileClasspathElements()) {
-        String path = (String) object;
-        getLog().debug("Classpath entry: " + object);
-        urls.add(new File(path).toURI().toURL());
-      }
-    } catch (IOException e) {
-      throw new MojoExecutionException("Unable to assemble classpath: "
-              + ExceptionUtils.getRootCauseMessage(e), e);
-    } catch (DependencyResolutionRequiredException e) {
-      throw new MojoExecutionException("Unable to resolve dependencies: "
-              + ExceptionUtils.getRootCauseMessage(e), e);
-    }
-    
-    for (Artifact dep : (Set<Artifact>) project.getDependencyArtifacts()) {
-      try {
-        if (dep.getFile() == null) {
-          // Unresolved file because it is in the wrong scope (e.g. test?)
-          continue;
-        }
-        getLog().debug(
-                "Classpath entry: " + dep.getGroupId() + ":" + dep.getArtifactId() + ":"
-                        + dep.getVersion() + " -> " + dep.getFile());
-        urls.add(dep.getFile().toURI().toURL());
-      } catch (Exception e) {
-        throw new MojoExecutionException("Unable get dependency artifact location for "
-                + dep.getGroupId() + ":" + dep.getArtifactId() + ":" + dep.getVersion()
-                + ExceptionUtils.getRootCauseMessage(e), e);
-      }
-    }
-    componentLoader = new URLClassLoader(urls.toArray(new URL[] {}), getClass().getClassLoader());
+    componentLoader = Util.getClassloader(project, getLog());
 
     for (String file : files) {
       String base = file.substring(0, file.length() - 6);
       String clazzPath = base.substring(project.getBuild().getOutputDirectory().length() + 1);
       String clazzName = clazzPath.replace("/", ".");
       try {
-        Class clazz = getClass(clazzName);
-        ResourceSpecifier desc = null;
-        switch (getType(clazz)) {
+        Class clazz = componentLoader.loadClass(clazzName);
+        ResourceCreationSpecifier desc = null;
+        switch (Util.getType(componentLoader, clazz)) {
           case ANALYSIS_ENGINE:
             desc = AnalysisEngineFactory.createPrimitiveDescription(clazz);
             break;
@@ -163,36 +127,5 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
     } finally {
       IOUtils.closeQuietly(os);
     }
-  }
-
-  /**
-   * Load class using the component classloader.
-   * 
-   * @throws ClassNotFoundException
-   */
-  private Class getClass(String aClassName) throws ClassNotFoundException {
-    return componentLoader.loadClass(aClassName);
-  }
-
-  /**
-   * Determine what kind of class it is.
-   * 
-   * @throws ClassNotFoundException
-   */
-  @SuppressWarnings({ "rawtypes", "unchecked" })
-  private ComponentType getType(Class aClass) throws ClassNotFoundException {
-    Class iCR = getClass("org.apache.uima.collection.CollectionReader");
-    Class iAE = getClass("org.apache.uima.analysis_component.AnalysisComponent");
-    if (iCR.isAssignableFrom(aClass)) {
-      return ComponentType.COLLECTION_READER;
-    } else if (iAE.isAssignableFrom(aClass)) {
-      return ComponentType.ANALYSIS_ENGINE;
-    } else {
-      return ComponentType.NONE;
-    }
-  }
-
-  private enum ComponentType {
-    COLLECTION_READER, ANALYSIS_ENGINE, NONE;
   }
 }
