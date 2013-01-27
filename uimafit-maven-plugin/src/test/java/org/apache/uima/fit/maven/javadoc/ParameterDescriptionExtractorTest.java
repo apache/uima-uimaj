@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.uima.fit.maven;
+package org.apache.uima.fit.maven.javadoc;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;

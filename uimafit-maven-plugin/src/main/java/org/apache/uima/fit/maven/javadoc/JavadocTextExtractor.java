@@ -20,6 +20,8 @@ package org.apache.uima.fit.maven.javadoc;
 
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.Javadoc;
+import org.eclipse.jdt.core.dom.SimpleName;
+import org.eclipse.jdt.core.dom.TagElement;
 import org.eclipse.jdt.core.dom.TextElement;
 
 /**
@@ -30,13 +32,21 @@ public class JavadocTextExtractor extends ASTVisitor {
 
   @Override
   public boolean visit(TextElement aNode) {
-    // In multi-line JavaDoc, each line is parsed as a separate node. We have to insert something
-    // (a line break or space) to prevent gluing words together.
-    if (text.length() > 0 && text.charAt(text.length()-1) != ' ') {
-      text.append(' ');
-    }
-    text.append(aNode.getText());
+    append(aNode.getText());
     return true;
+  }
+  
+  @Override
+  public boolean visit(SimpleName aNode) {
+    append(aNode.getIdentifier());
+    return true;
+  }
+  
+  @Override
+  public boolean visit(TagElement aNode) {
+    // Ignore any tags other then these.
+    String tn = aNode.getTagName();
+    return tn == null || "@link".equals(tn) || "@code".equals(tn);
   }
 
   @Override
@@ -46,5 +56,17 @@ public class JavadocTextExtractor extends ASTVisitor {
   
   public String getText() {
     return text.toString();
+  }
+
+  /**
+   * In multi-line JavaDoc, each line is parsed as a separate node. We have to insert something
+   * (a line break or space) to prevent gluing words together. This method adds such spaces.
+   */
+  private void append(String aText)
+  {
+    if (text.length() > 0 && text.charAt(text.length()-1) != ' ') {
+      text.append(' ');
+    }
+    text.append(aText);
   }
 }

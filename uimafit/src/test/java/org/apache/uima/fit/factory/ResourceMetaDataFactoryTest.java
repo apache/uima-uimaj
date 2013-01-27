@@ -30,9 +30,9 @@ public class ResourceMetaDataFactoryTest {
   public void testWithMetaData() {
     org.apache.uima.resource.metadata.ResourceMetaData meta = UIMAFramework
             .getResourceSpecifierFactory().createResourceMetaData();
-    
+
     ResourceMetaDataFactory.configureResourceMetaData(meta, DummyComponent1.class);
-    
+
     assertEquals("dummy", meta.getName());
     assertEquals("1.0", meta.getVersion());
     assertEquals("Just a dummy", meta.getDescription());
@@ -44,9 +44,9 @@ public class ResourceMetaDataFactoryTest {
   public void testWithPartialMetaData() {
     org.apache.uima.resource.metadata.ResourceMetaData meta = UIMAFramework
             .getResourceSpecifierFactory().createResourceMetaData();
-    
+
     ResourceMetaDataFactory.configureResourceMetaData(meta, DummyComponent2.class);
-    
+
     assertEquals("dummy", meta.getName());
     assertEquals("1.0", meta.getVersion());
     assertEquals(null, meta.getDescription());
@@ -58,14 +58,17 @@ public class ResourceMetaDataFactoryTest {
   public void testWithNoMetaData() {
     org.apache.uima.resource.metadata.ResourceMetaData meta = UIMAFramework
             .getResourceSpecifierFactory().createResourceMetaData();
-    
+
     ResourceMetaDataFactory.configureResourceMetaData(meta, DummyComponent3.class);
-    
+
     assertEquals(DummyComponent3.class.getName(), meta.getName());
-    assertEquals(Defaults.DEFAULT_VERSION, meta.getVersion());
-    assertEquals(Defaults.DEFAULT_DESCRIPTION, meta.getDescription());
-    assertEquals(null, meta.getCopyright());
-    assertEquals(DummyComponent3.class.getPackage().getName(), meta.getVendor());
+    assertEquals(ResourceMetaDataFactory.getDefaultVersion(DummyComponent3.class),
+            meta.getVersion());
+    assertEquals(ResourceMetaDataFactory.getDefaultDescription(DummyComponent3.class),
+            meta.getDescription());
+    assertEquals(ResourceMetaDataFactory.getDefaultCopyright(DummyComponent3.class),
+            meta.getCopyright());
+    assertEquals(ResourceMetaDataFactory.getDefaultVendor(DummyComponent3.class), meta.getVendor());
   }
 
   @ResourceMetaData(name = "dummy", version = "1.0", description = "Just a dummy", copyright = "ASL 2.0", vendor = "uimaFIT")

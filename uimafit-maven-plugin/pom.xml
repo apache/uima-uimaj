@@ -46,7 +46,9 @@
 		<dependency>
 			<groupId>org.javassist</groupId>
 			<artifactId>javassist</artifactId>
-			<version>3.17.1-GA</version>
+			<version>3.16.1-GA</version>
+			<!-- 3.16.1-GA appears to be the last Java 5 version, see also
+				https://issues.apache.org/jira/browse/OGNL-230 -->
 		</dependency>
 
 		<!-- Dependencies on the Maven Plugin API and friends -->
@@ -81,7 +83,7 @@
 		<dependency>
 			<groupId>org.eclipse.jdt</groupId>
 			<artifactId>core</artifactId>
-			<version>3.2.0.666</version>
+			<version>3.3.0-v_771</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.core</groupId>
@@ -89,19 +91,14 @@
 			<version>3.3.0-v20070423</version>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.core</groupId>
-			<artifactId>runtime</artifactId>
-			<version>3.3.100-v20070530</version>
+			<groupId>org.eclipse.equinox</groupId>
+			<artifactId>app</artifactId>
+			<version>1.0.0-v20070606</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.core</groupId>
 			<artifactId>resources</artifactId>
 			<version>3.3.0-v20070604</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.equinox</groupId>
-			<artifactId>common</artifactId>
-			<version>3.3.0-v20070426</version>
 		</dependency>
 	</dependencies>
 
@@ -122,7 +119,7 @@
 							<goal>descriptor</goal>
 						</goals>
 					</execution>
-				<!-- END WORKAROUND http://jira.codehaus.org/browse/MNG-5346 -->
+					<!-- END WORKAROUND http://jira.codehaus.org/browse/MNG-5346 -->
 					<execution>
 						<id>generated-helpmojo</id>
 						<goals>

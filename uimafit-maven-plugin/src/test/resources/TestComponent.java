@@ -16,10 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+package some.test.mypackage;
+
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
+import org.apache.uima.fit.maven.javadoc.JavadocTextExtractor;
 
 /**
- * A test component.
+ * A test component used to test {@link JavadocTextExtractor}.
+ * 
+ * @author some author
  */
 public class TestComponent {
   /**

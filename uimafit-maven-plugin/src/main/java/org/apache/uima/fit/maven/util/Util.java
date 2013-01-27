@@ -47,6 +47,9 @@ public final class Util {
   public static CompilationUnit parseSource(String aSourceFile, String aEncoding)
           throws IOException {
     ASTParser parser = ASTParser.newParser(AST.JLS3);
+    parser.setKind (ASTParser.K_COMPILATION_UNIT);
+    parser.setResolveBindings(true);
+    parser.setBindingsRecovery(true);
     parser.setSource(org.apache.commons.io.FileUtils.readFileToString(new File(aSourceFile),
             aEncoding).toCharArray());
     Map options = JavaCore.getOptions();

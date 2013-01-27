@@ -19,21 +19,20 @@
 package org.apache.uima.fit.maven.javadoc;
 
 import org.eclipse.jdt.core.dom.ASTVisitor;
-import org.eclipse.jdt.core.dom.FieldDeclaration;
+import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.Javadoc;
-import org.eclipse.jdt.core.dom.StringLiteral;
-import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
+import org.eclipse.jdt.core.dom.TypeDeclaration;
 
 /**
  * Find JavaDoc for a given uimaFIT parameter.
  */
 public class ComponentDescriptionExtractor extends ASTVisitor {
-  private String parameterName;
+  private String className;
 
   private Javadoc javadoc;
 
-  public ComponentDescriptionExtractor(String aParameterName) {
-    parameterName = aParameterName;
+  public ComponentDescriptionExtractor(String aClassName) {
+    className = aClassName;
   }
 
   public Javadoc getJavadoc() {
@@ -41,19 +40,25 @@ public class ComponentDescriptionExtractor extends ASTVisitor {
   }
 
   @Override
-  public boolean visit(FieldDeclaration aNode) {
-    if ((!aNode.fragments().isEmpty())
-            && (aNode.fragments().get(0) instanceof VariableDeclarationFragment)) {
-      VariableDeclarationFragment f = (VariableDeclarationFragment) aNode.fragments().get(0);
-      if (f.getName().getIdentifier().startsWith("PARAM_")
-              && (f.getInitializer() instanceof StringLiteral)) {
-        String name = f.getName().getIdentifier();
-        String value = ((StringLiteral) f.getInitializer()).getLiteralValue();
-        if (parameterName.equals(value)) {
-          javadoc = aNode.getJavadoc();
-        }
-      }
+  public boolean visit(TypeDeclaration aNode) {
+    StringBuilder name = new StringBuilder();
+    
+    // rec 2013-01-27: This should work, but for some reason resolveBinding() returns null even
+    // though binding resolving and binding recovery are both enabled in the parser.
+    // name = aNode.resolveBinding().getQualifiedName();
+    
+    // Different approach to try and get the qualified name at least for the top-level class
+    CompilationUnit root = (CompilationUnit) aNode.getRoot();
+    if (root.getPackage() != null) {
+      name.append(root.getPackage().getName());
+      name.append('.');
     }
-    return false;
+    name.append(aNode.getName().getIdentifier());
+   
+    if (name.toString().equals(className)) {
+      javadoc = aNode.getJavadoc();
+    }
+    
+    return true;
   }
 }

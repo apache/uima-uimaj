@@ -35,6 +35,7 @@ import javassist.bytecode.AnnotationsAttribute;
 import javassist.bytecode.ClassFile;
 import javassist.bytecode.ConstPool;
 import javassist.bytecode.annotation.Annotation;
+import javassist.bytecode.annotation.MemberValue;
 import javassist.bytecode.annotation.StringMemberValue;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -46,7 +47,10 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
+import org.apache.uima.fit.descriptor.ResourceMetaData;
 import org.apache.uima.fit.factory.ConfigurationParameterFactory;
+import org.apache.uima.fit.factory.ResourceMetaDataFactory;
+import org.apache.uima.fit.maven.javadoc.ComponentDescriptionExtractor;
 import org.apache.uima.fit.maven.javadoc.JavadocTextExtractor;
 import org.apache.uima.fit.maven.javadoc.ParameterDescriptionExtractor;
 import org.apache.uima.fit.maven.util.Util;
@@ -70,17 +74,23 @@ public class EnhanceMojo extends AbstractMojo {
   private ClassLoader componentLoader;
 
   /**
+   * Override component description in generated descriptors.
+   */
+  @Parameter(defaultValue = "false", required = true)
+  private boolean overrideComponentDescription;
+
+  /**
    * Override version in generated descriptors.
    * 
    * @see #componentVersion
    */
-  @Parameter(defaultValue="true", required=true)
+  @Parameter(defaultValue = "false", required = true)
   private boolean overrideComponentVersion;
 
   /**
    * Version to use in generated descriptors.
    */
-  @Parameter(defaultValue="${project.version}", required=false)
+  @Parameter(defaultValue = "${project.version}", required = false)
   private String componentVersion;
 
   /**
@@ -88,35 +98,35 @@ public class EnhanceMojo extends AbstractMojo {
    * 
    * @see #componentVendor
    */
-  @Parameter(defaultValue="true", required=true)
+  @Parameter(defaultValue = "false", required = true)
   private boolean overrideComponentVendor;
 
   /**
    * Vendor to use in generated descriptors.
    */
-  @Parameter(defaultValue="${project.organization.name}", required=false)
+  @Parameter(defaultValue = "${project.organization.name}", required = false)
   private String componentVendor;
 
   /**
    * Source file encoding.
    */
-  @Parameter(defaultValue="${project.build.sourceEncoding}", required=true)
+  @Parameter(defaultValue = "${project.build.sourceEncoding}", required = true)
   private String encoding;
 
-  public void execute() throws MojoExecutionException {   
+  public void execute() throws MojoExecutionException {
     // Get the compiled classes from this project
     String[] files = FileUtils.getFilesFromExtension(project.getBuild().getOutputDirectory(),
             new String[] { "class" });
 
     componentLoader = Util.getClassloader(project, getLog());
-    
+
     // Set up class pool with all the project dependencies and the project classes themselves
     ClassPool classPool = new ClassPool(true);
     classPool.appendClassPath(new LoaderClassPath(componentLoader));
 
     for (String file : files) {
       String clazzName = Util.getClassName(project, file);
-      
+
       // Check if this is a UIMA component
       Class clazz;
       try {
@@ -124,122 +134,209 @@ public class EnhanceMojo extends AbstractMojo {
         if (!Util.isComponent(componentLoader, clazz)) {
           continue;
         }
-      }
-      catch (ClassNotFoundException e) {
+      } catch (ClassNotFoundException e) {
         getLog().warn("Cannot analyze class [" + clazzName + "]", e);
         continue;
-      } 
-      
+      }
+
       // Get the Javassist class
       CtClass ctClazz;
       try {
         ctClazz = classPool.get(clazzName);
-//        if (ctClazz.isFrozen()) {
-//          getLog().info("Ignoring frozen class [" + clazzName + "]");
-//          continue;
-//        }
+      } catch (NotFoundException e) {
+        throw new MojoExecutionException("Class [" + clazzName + "] not found in class pool: "
+                + ExceptionUtils.getRootCauseMessage(e), e);
       }
-      catch(NotFoundException e) {
-        throw new MojoExecutionException("Class [" + clazzName + "] not found in class pool: " + 
-                ExceptionUtils.getRootCauseMessage(e), e);
-      }
-      ClassFile classFile = ctClazz.getClassFile();
-      ConstPool constPool = classFile.getConstPool();
-      
+
       // Get the source file
       String sourceFile = getSourceFile(clazzName);
-      
-      // Get the parameter name constants
-      Map<String, Field> nameFields = getParameterConstants(clazz);
-      
+
       // Try to extract parameter descriptions from JavaDoc in source file
       if (sourceFile != null) {
         getLog().info("Enhancing class [" + clazzName + "]");
-        
+
         // Parse source file so we can extract the JavaDoc
         CompilationUnit ast = parseSource(sourceFile);
-        
-        // Fetch configuration parameters from the @ConfigurationParameter annotations in the
-        // compiled class
-        
-        for (Field field : ReflectionUtil.getFields(clazz)) {
-          // Is this a configuration parameter?
-          if (!ConfigurationParameterFactory.isConfigurationParameterField(field)) {
-            continue;
-          }
 
-//          // Extract configuration parameter information from the uimaFIT annotation
-//          // We only want to override if the description is not set yet.
-          ConfigurationParameter p = ConfigurationParameterFactory.createPrimitiveParameter(field);
-//          if (StringUtils.isNotBlank(p.getDescription())) {
-//            continue;
-//          }
-          
-          // Extract JavaDoc for this parameter from the source file
-          String pdesc = getParameterDocumentation(ast, field, nameFields.get(p.getName()));
-          if (pdesc == null) {
-            getLog().warn("No description found for parameter [" + p.getName() + "]");
-            continue;
-          }
-          
-          // Update the "description" field of the annotation
-          try {
-            CtField ctField = ctClazz.getField(field.getName());
-            AnnotationsAttribute annoAttr = (AnnotationsAttribute) ctField.getFieldInfo()
-                    .getAttribute(AnnotationsAttribute.visibleTag);
-            
-            // Locate and update annotation
-            if (annoAttr != null) {
-              Annotation[] annotations = annoAttr.getAnnotations();
-              for (Annotation a : annotations) {
-                if (a.getTypeName().equals("org.apache.uima.fit.descriptor.ConfigurationParameter")
-                        || a.getTypeName().equals("org.uimafit.descriptor.ConfigurationParameter")) {
-                  if (a.getMemberValue("description") == null) {
-                    a.addMemberValue("description", new StringMemberValue(pdesc, constPool));
-                    getLog().info("Enhanced description of parameter [" + p.getName() + "]");
-                    // Replace updated annotation
-                    annoAttr.addAnnotation(a);
-                  } else {
-                    getLog().info(
-                            "Not enhancing parameter [" + p.getName()
-                                    + "] which already has a description");
+        // Enhance meta data
+        enhanceResourceMetaData(ast, clazz, ctClazz);
 
-                  }
-                }
-              }
-            }
-            
-            // Replace annotations
-            ctField.getFieldInfo().addAttribute(annoAttr);
-          } catch (NotFoundException e) {
-            throw new MojoExecutionException("Field [" + field.getName()
-                    + "] not found in byte code: " + ExceptionUtils.getRootCauseMessage(e), e);
-          }
-        }
+        // Enhance configuration parameters
+        enhanceConfigurationParameter(ast, clazz, ctClazz);
       } else {
         getLog().warn("No source file found for class [" + clazzName + "]");
       }
-      
+
       try {
         ctClazz.writeFile(project.getBuild().getOutputDirectory());
-      }
-      catch (IOException e) {
-        throw new MojoExecutionException("Enhanced class [" + clazzName + "] cannot be written: " + 
-                ExceptionUtils.getRootCauseMessage(e), e);
-        
+      } catch (IOException e) {
+        throw new MojoExecutionException("Enhanced class [" + clazzName + "] cannot be written: "
+                + ExceptionUtils.getRootCauseMessage(e), e);
+
       } catch (CannotCompileException e) {
-        throw new MojoExecutionException("Enhanced class [" + clazzName + "] cannot be compiled: " + 
-                ExceptionUtils.getRootCauseMessage(e), e);
+        throw new MojoExecutionException("Enhanced class [" + clazzName + "] cannot be compiled: "
+                + ExceptionUtils.getRootCauseMessage(e), e);
       }
     }
   }
+
+  /**
+   * Enhance resource meta data
+   */
+  private void enhanceResourceMetaData(CompilationUnit aAST, Class aClazz, CtClass aCtClazz) throws MojoExecutionException {
+    String doc = getComponnetDocumentation(aAST, aClazz);
+    
+    if (doc == null) {
+      getLog().warn("No description found for component [" + aClazz.getName() + "]");
+      return;
+    }
+    
+    ClassFile classFile = aCtClazz.getClassFile();
+    ConstPool constPool = classFile.getConstPool();
+
+    AnnotationsAttribute annoAttr = (AnnotationsAttribute) classFile.getAttribute(
+            AnnotationsAttribute.visibleTag);
+    
+    // Create annotation attribute if it does not exist
+    if (annoAttr == null) {
+      annoAttr = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
+    }
+    
+    // Create annotation if it does not exist
+    Annotation a = annoAttr.getAnnotation(ResourceMetaData.class.getName());
+    if (a == null) {
+      a = new Annotation(ResourceMetaData.class.getName(), constPool);
+    }
+    
+    // Update description from JavaDoc if none is set
+    enhanceMemberValue(a, "description", doc, overrideComponentDescription,
+            ResourceMetaDataFactory.getDefaultDescription(aClazz), constPool);
+    
+    // Update version if none is set
+    enhanceMemberValue(a, "version", componentVersion, overrideComponentVersion,
+            ResourceMetaDataFactory.getDefaultVersion(aClazz), constPool);
+
+    // Update vendor if none is set
+    enhanceMemberValue(a, "vendor", componentVendor, overrideComponentVendor,
+            ResourceMetaDataFactory.getDefaultVendor(aClazz), constPool);
+
+    // Replace annotation
+    annoAttr.addAnnotation(a);
+    
+    // Replace annotation attribute
+    classFile.addAttribute(annoAttr);
+  }
   
+  /**
+   * Set a annotation member value if no value is present, if the present value is the default
+   * generated by uimaFIT or if a override is active.
+   * 
+   * @param aAnnotation
+   *          an annotation
+   * @param aName
+   *          the name of the member value
+   * @param aNewValue
+   *          the value to set
+   * @param aOverride
+   *          set value even if it is already set
+   * @param aDefault
+   *          default value set by uimaFIT - if the member has this value, it is considered unset
+   */
+  private void enhanceMemberValue(Annotation aAnnotation, String aName, String aNewValue,
+          boolean aOverride, String aDefault, ConstPool aConstPool) {
+    String value = getStringMemberValue(aAnnotation, aName);
+    boolean isEmpty = value.length() == 0;
+    boolean isDefault = value.equals(aDefault);
+    
+    if ((aNewValue != null) && (isEmpty || isDefault || aOverride)) {
+      aAnnotation.addMemberValue(aName, new StringMemberValue(aNewValue, aConstPool));
+      getLog().info("Enhanced component meta data [" + aName + "]");
+    } else {
+      getLog().info("Not overwriting component meta data [" + aName + "]");
+    }
+  }
+  
+  private String getStringMemberValue(Annotation aAnnotation, String aValue)
+  {
+    MemberValue v = aAnnotation.getMemberValue(aValue);
+    if (v == null) {
+      return "";
+    }
+    else {
+      return ((StringMemberValue) v).getValue();
+    }
+  }
+
+  /**
+   * Enhance descriptions in configuration parameters.
+   */
+  private void enhanceConfigurationParameter(CompilationUnit aAST, Class aClazz, CtClass aCtClazz)
+          throws MojoExecutionException {
+    // Get the parameter name constants
+    Map<String, Field> nameFields = getParameterConstants(aClazz);
+
+    // Fetch configuration parameters from the @ConfigurationParameter annotations in the
+    // compiled class
+    for (Field field : ReflectionUtil.getFields(aClazz)) {
+      // Is this a configuration parameter?
+      if (!ConfigurationParameterFactory.isConfigurationParameterField(field)) {
+        continue;
+      }
+
+      // Extract configuration parameter information from the uimaFIT annotation
+      ConfigurationParameter p = ConfigurationParameterFactory.createPrimitiveParameter(field);
+
+      // Extract JavaDoc for this parameter from the source file
+      String pdesc = getParameterDocumentation(aAST, field, nameFields.get(p.getName()));
+      if (pdesc == null) {
+        getLog().warn("No description found for parameter [" + p.getName() + "]");
+        continue;
+      }
+
+      // Update the "description" field of the annotation
+      try {
+        CtField ctField = aCtClazz.getField(field.getName());
+        AnnotationsAttribute annoAttr = (AnnotationsAttribute) ctField.getFieldInfo().getAttribute(
+                AnnotationsAttribute.visibleTag);
+
+        // Locate and update annotation
+        if (annoAttr != null) {
+          Annotation[] annotations = annoAttr.getAnnotations();
+
+          // Update existing annotation
+          for (Annotation a : annotations) {
+            if (a.getTypeName().equals(
+                    org.apache.uima.fit.descriptor.ConfigurationParameter.class.getName())
+                    || a.getTypeName().equals("org.uimafit.descriptor.ConfigurationParameter")) {
+              if (a.getMemberValue("description") == null) {
+                a.addMemberValue("description", new StringMemberValue(pdesc, aCtClazz
+                        .getClassFile().getConstPool()));
+                getLog().info("Enhanced description of parameter [" + p.getName() + "]");
+                // Replace updated annotation
+                annoAttr.addAnnotation(a);
+              } else {
+                // Extract configuration parameter information from the uimaFIT annotation
+                // We only want to override if the description is not set yet.
+                getLog().info("Not overwriting description of parameter [" + p.getName() + "] ");
+              }
+            }
+          }
+        }
+
+        // Replace annotations
+        ctField.getFieldInfo().addAttribute(annoAttr);
+      } catch (NotFoundException e) {
+        throw new MojoExecutionException("Field [" + field.getName() + "] not found in byte code: "
+                + ExceptionUtils.getRootCauseMessage(e), e);
+      }
+    }
+  }
+
   /**
    * Get a map of parameter name to parameter name constant field, e.g. ("value",
    * Field("PARAM_VALUE")).
    */
-  private Map<String, Field> getParameterConstants(Class aClazz)
-  {
+  private Map<String, Field> getParameterConstants(Class aClazz) {
     Map<String, Field> result = new HashMap<String, Field>();
     for (Field f : aClazz.getFields()) {
       if (!f.getName().startsWith("PARAM_")) {
@@ -248,8 +345,7 @@ public class EnhanceMojo extends AbstractMojo {
       try {
         String parameterName = (String) f.get(null);
         result.put(parameterName, f);
-      }
-      catch (IllegalAccessException e) {
+      } catch (IllegalAccessException e) {
         getLog().warn(
                 "Unable to access parameter name constant field [" + f.getName() + "]: "
                         + ExceptionUtils.getRootCauseMessage(e), e);
@@ -257,13 +353,11 @@ public class EnhanceMojo extends AbstractMojo {
     }
     return result;
   }
-  
-  private CompilationUnit parseSource(String aSourceFile) throws MojoExecutionException
-  {
+
+  private CompilationUnit parseSource(String aSourceFile) throws MojoExecutionException {
     try {
       return Util.parseSource(aSourceFile, encoding);
-    }
-    catch (IOException e) {
+    } catch (IOException e) {
       throw new MojoExecutionException("Unable to parse source file [" + aSourceFile + "]: "
               + ExceptionUtils.getRootCauseMessage(e), e);
     }
@@ -274,12 +368,10 @@ public class EnhanceMojo extends AbstractMojo {
    * 
    * @return The path to the source file or {@code null} if no source file was found.
    */
-  private String getSourceFile(String aClassName)
-  {
+  private String getSourceFile(String aClassName) {
     String sourceName = aClassName.replace('.', '/') + ".java";
-    
-    for (String root : (List<String>) project.getCompileSourceRoots())
-    {
+
+    for (String root : (List<String>) project.getCompileSourceRoots()) {
       File f = new File(root, sourceName);
       if (f.exists()) {
         return f.getPath();
@@ -287,11 +379,31 @@ public class EnhanceMojo extends AbstractMojo {
     }
     return null;
   }
-  
+
+  private String getComponnetDocumentation(CompilationUnit aAst, Class aComponentType) {
+    if (aComponentType.getName().contains("$")) {
+      // rec 2013-01-27: see comment on bindings resolving in ComponentDescriptionExtractor
+      getLog().warn(
+              "Inner classes not supported. Component description for [" + aComponentType.getName()
+                      + "] cannot be extracted. ");
+      return null;
+    }
+
+    ComponentDescriptionExtractor visitor = new ComponentDescriptionExtractor(
+            aComponentType.getName());
+    aAst.accept(visitor);
+
+    if (visitor.getJavadoc() != null) {
+      JavadocTextExtractor textExtractor = new JavadocTextExtractor();
+      visitor.getJavadoc().accept(textExtractor);
+      return textExtractor.getText();
+    } else {
+      return null;
+    }
+  }
+
   private String getParameterDocumentation(CompilationUnit aAst, Field aParameter,
           Field aParameterNameConstant) {
-    
-    // Generate JavaDoc related annotations
     ParameterDescriptionExtractor visitor = new ParameterDescriptionExtractor(aParameter.getName(),
             (aParameterNameConstant != null) ? aParameterNameConstant.getName() : null);
     aAst.accept(visitor);

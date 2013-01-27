@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.reflect.Modifier;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.plugin.AbstractMojo;
@@ -83,6 +84,12 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
       String clazzName = clazzPath.replace("/", ".");
       try {
         Class clazz = componentLoader.loadClass(clazzName);
+        
+        // Do not generate descriptors for abstract classes, they cannot be instantiated.
+        if (Modifier.isAbstract(clazz.getModifiers())) {
+          continue;
+        }
+        
         ResourceCreationSpecifier desc = null;
         switch (Util.getType(componentLoader, clazz)) {
           case ANALYSIS_ENGINE:
