@@ -122,6 +122,8 @@ public final class Util {
   @SuppressWarnings({ "rawtypes", "unchecked" })
   public static ComponentType getType(ClassLoader aClassLoader, Class aClass)
           throws ClassNotFoundException {
+    // Loading this through the component class loader to make sure we really get the right
+    // class instance.
     Class iCR = aClassLoader.loadClass("org.apache.uima.collection.CollectionReader");
     Class iAE = aClassLoader.loadClass("org.apache.uima.analysis_component.AnalysisComponent");
     if (iCR.isAssignableFrom(aClass)) {

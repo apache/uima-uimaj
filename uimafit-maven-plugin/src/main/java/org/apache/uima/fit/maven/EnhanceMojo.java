@@ -54,6 +54,7 @@ import org.apache.uima.fit.maven.javadoc.ComponentDescriptionExtractor;
 import org.apache.uima.fit.maven.javadoc.JavadocTextExtractor;
 import org.apache.uima.fit.maven.javadoc.ParameterDescriptionExtractor;
 import org.apache.uima.fit.maven.util.Util;
+import org.apache.uima.fit.util.EnhancedClassFile;
 import org.apache.uima.fit.util.ReflectionUtil;
 import org.apache.uima.resource.metadata.ConfigurationParameter;
 import org.codehaus.plexus.util.FileUtils;
@@ -108,6 +109,20 @@ public class EnhanceMojo extends AbstractMojo {
   private String componentVendor;
 
   /**
+   * Override copyright in generated descriptors.
+   * 
+   * @see #component
+   */
+  @Parameter(defaultValue = "false", required = true)
+  private boolean overrideComponentCopyright;
+
+  /**
+   * Copyright to use in generated descriptors.
+   */
+  @Parameter(required = false)
+  private String componentCopyright;
+
+  /**
    * Source file encoding.
    */
   @Parameter(defaultValue = "${project.build.sourceEncoding}", required = true)
@@ -131,6 +146,14 @@ public class EnhanceMojo extends AbstractMojo {
       Class clazz;
       try {
         clazz = componentLoader.loadClass(clazzName);
+        
+        // Do not process a class twice
+        if (clazz.isAnnotationPresent(EnhancedClassFile.class)) {
+          getLog().info("Class [" + clazzName + "] already enhanced");
+          continue;
+        }
+
+        // Only process UIMA components
         if (!Util.isComponent(componentLoader, clazz)) {
           continue;
         }
@@ -163,12 +186,24 @@ public class EnhanceMojo extends AbstractMojo {
 
         // Enhance configuration parameters
         enhanceConfigurationParameter(ast, clazz, ctClazz);
+        
+        // Add the EnhancedClassFile annotation.
+        markAsEnhanced(ctClazz);
       } else {
         getLog().warn("No source file found for class [" + clazzName + "]");
       }
 
       try {
-        ctClazz.writeFile(project.getBuild().getOutputDirectory());
+        if (ctClazz.isModified()) {
+          getLog().info("Writing enhanced class [" + clazzName + "]");
+          // Trying to work around UIMA-2611, see 
+          // http://stackoverflow.com/questions/13797919/javassist-add-method-and-invoke
+          ctClazz.toBytecode(); 
+          ctClazz.writeFile(project.getBuild().getOutputDirectory());
+        }
+        else {
+          getLog().info("No changes to class [" + clazzName + "]");
+        }
       } catch (IOException e) {
         throw new MojoExecutionException("Enhanced class [" + clazzName + "] cannot be written: "
                 + ExceptionUtils.getRootCauseMessage(e), e);
@@ -181,52 +216,82 @@ public class EnhanceMojo extends AbstractMojo {
   }
 
   /**
-   * Enhance resource meta data
+   * Add the EnhancedClassFile annotation.
    */
-  private void enhanceResourceMetaData(CompilationUnit aAST, Class aClazz, CtClass aCtClazz) throws MojoExecutionException {
-    String doc = getComponnetDocumentation(aAST, aClazz);
-    
-    if (doc == null) {
-      getLog().warn("No description found for component [" + aClazz.getName() + "]");
-      return;
-    }
-    
+  private void markAsEnhanced(CtClass aCtClazz) {
     ClassFile classFile = aCtClazz.getClassFile();
     ConstPool constPool = classFile.getConstPool();
 
-    AnnotationsAttribute annoAttr = (AnnotationsAttribute) classFile.getAttribute(
-            AnnotationsAttribute.visibleTag);
-    
+    AnnotationsAttribute annoAttr = (AnnotationsAttribute) classFile
+            .getAttribute(AnnotationsAttribute.visibleTag);
+
     // Create annotation attribute if it does not exist
     if (annoAttr == null) {
       annoAttr = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
     }
-    
+
+    // Create annotation if it does not exist
+    Annotation a = new Annotation(EnhancedClassFile.class.getName(), constPool);
+
+    // Replace annotation
+    annoAttr.addAnnotation(a);
+
+    // Replace annotation attribute
+    classFile.addAttribute(annoAttr);
+  }
+  
+  /**
+   * Enhance resource meta data
+   */
+  private void enhanceResourceMetaData(CompilationUnit aAST, Class aClazz, CtClass aCtClazz)
+          throws MojoExecutionException {
+    String doc = getComponnetDocumentation(aAST, aClazz);
+
+    if (doc == null) {
+      getLog().warn("No description found for component [" + aClazz.getName() + "]");
+      return;
+    }
+
+    ClassFile classFile = aCtClazz.getClassFile();
+    ConstPool constPool = classFile.getConstPool();
+
+    AnnotationsAttribute annoAttr = (AnnotationsAttribute) classFile
+            .getAttribute(AnnotationsAttribute.visibleTag);
+
+    // Create annotation attribute if it does not exist
+    if (annoAttr == null) {
+      annoAttr = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
+    }
+
     // Create annotation if it does not exist
     Annotation a = annoAttr.getAnnotation(ResourceMetaData.class.getName());
     if (a == null) {
       a = new Annotation(ResourceMetaData.class.getName(), constPool);
     }
-    
-    // Update description from JavaDoc if none is set
+
+    // Update description from JavaDoc
     enhanceMemberValue(a, "description", doc, overrideComponentDescription,
             ResourceMetaDataFactory.getDefaultDescription(aClazz), constPool);
-    
-    // Update version if none is set
+
+    // Update version
     enhanceMemberValue(a, "version", componentVersion, overrideComponentVersion,
             ResourceMetaDataFactory.getDefaultVersion(aClazz), constPool);
 
-    // Update vendor if none is set
+    // Update vendor
     enhanceMemberValue(a, "vendor", componentVendor, overrideComponentVendor,
+            ResourceMetaDataFactory.getDefaultVendor(aClazz), constPool);
+
+    // Update copyright
+    enhanceMemberValue(a, "copyright", componentCopyright, overrideComponentCopyright,
             ResourceMetaDataFactory.getDefaultVendor(aClazz), constPool);
 
     // Replace annotation
     annoAttr.addAnnotation(a);
-    
+
     // Replace annotation attribute
     classFile.addAttribute(annoAttr);
   }
-  
+
   /**
    * Set a annotation member value if no value is present, if the present value is the default
    * generated by uimaFIT or if a override is active.
@@ -247,7 +312,7 @@ public class EnhanceMojo extends AbstractMojo {
     String value = getStringMemberValue(aAnnotation, aName);
     boolean isEmpty = value.length() == 0;
     boolean isDefault = value.equals(aDefault);
-    
+
     if ((aNewValue != null) && (isEmpty || isDefault || aOverride)) {
       aAnnotation.addMemberValue(aName, new StringMemberValue(aNewValue, aConstPool));
       getLog().info("Enhanced component meta data [" + aName + "]");
@@ -255,14 +320,12 @@ public class EnhanceMojo extends AbstractMojo {
       getLog().info("Not overwriting component meta data [" + aName + "]");
     }
   }
-  
-  private String getStringMemberValue(Annotation aAnnotation, String aValue)
-  {
+
+  private String getStringMemberValue(Annotation aAnnotation, String aValue) {
     MemberValue v = aAnnotation.getMemberValue(aValue);
     if (v == null) {
       return "";
-    }
-    else {
+    } else {
       return ((StringMemberValue) v).getValue();
     }
   }
