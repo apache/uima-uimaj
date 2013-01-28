@@ -4,12 +4,24 @@
       <pluginExecutionFilter>
         <goals>
           <goal>enhance</goal>
-          <goal>generate</goal>
         </goals>
       </pluginExecutionFilter>
       <action>
         <execute>
           <runOnIncremental>true</runOnIncremental>
+          <runOnConfiguration>false</runOnConfiguration>
+        </execute>
+      </action>
+    </pluginExecution>
+    <pluginExecution>
+      <pluginExecutionFilter>
+        <goals>
+          <goal>generate</goal>
+        </goals>
+      </pluginExecutionFilter>
+      <action>
+        <execute>
+          <runOnIncremental>false</runOnIncremental>
           <runOnConfiguration>true</runOnConfiguration>
         </execute>
       </action>
