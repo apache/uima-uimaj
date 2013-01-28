@@ -245,13 +245,6 @@ public class EnhanceMojo extends AbstractMojo {
    */
   private void enhanceResourceMetaData(CompilationUnit aAST, Class aClazz, CtClass aCtClazz)
           throws MojoExecutionException {
-    String doc = getComponnetDocumentation(aAST, aClazz);
-
-    if (doc == null) {
-      getLog().warn("No description found for component [" + aClazz.getName() + "]");
-      return;
-    }
-
     ClassFile classFile = aCtClazz.getClassFile();
     ConstPool constPool = classFile.getConstPool();
 
@@ -267,9 +260,13 @@ public class EnhanceMojo extends AbstractMojo {
     Annotation a = annoAttr.getAnnotation(ResourceMetaData.class.getName());
     if (a == null) {
       a = new Annotation(ResourceMetaData.class.getName(), constPool);
+      // Add a name, otherwise there will be none in the generated descriptor.
+      a.addMemberValue("name", new StringMemberValue(
+              ResourceMetaDataFactory.getDefaultName(aClazz), constPool));
     }
 
     // Update description from JavaDoc
+    String doc = getComponnetDocumentation(aAST, aClazz);
     enhanceMemberValue(a, "description", doc, overrideComponentDescription,
             ResourceMetaDataFactory.getDefaultDescription(aClazz), constPool);
 
@@ -313,9 +310,14 @@ public class EnhanceMojo extends AbstractMojo {
     boolean isEmpty = value.length() == 0;
     boolean isDefault = value.equals(aDefault);
 
-    if ((aNewValue != null) && (isEmpty || isDefault || aOverride)) {
-      aAnnotation.addMemberValue(aName, new StringMemberValue(aNewValue, aConstPool));
-      getLog().info("Enhanced component meta data [" + aName + "]");
+    if (isEmpty || isDefault || aOverride) {
+      if (aNewValue != null) {
+        aAnnotation.addMemberValue(aName, new StringMemberValue(aNewValue, aConstPool));
+        getLog().info("Enhanced component meta data [" + aName + "]");
+      }
+      else {
+        getLog().warn("No meta data [" + aName + "] found");
+      }
     } else {
       getLog().info("Not overwriting component meta data [" + aName + "]");
     }
