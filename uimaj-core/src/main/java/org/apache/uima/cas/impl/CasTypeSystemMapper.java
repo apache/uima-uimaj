@@ -43,15 +43,23 @@ import org.apache.uima.cas.Type;
  * Deserializing: Target ts -> generate deserialized form in Source ts
  *   - either from remote or
  *   - from disk-stored-form
- *   
+ * 
+ * Mapping details:
+ *   Types are mapped by name. 
+ *     Same-named types do not need to have the same number of features.
+ *     Same-named features must have same Range - otherwise, not mapped.
+ *     Types with 0 features mapped allowed.
  * LifeCycle:
  *   Instance of this are created for a CAS when needed, and then
  *   kept in the (source) TypeSystemImpl, in a map indexed by
  *   the target type system (identity map)
+ *   
+ * 
  */
 
 public class CasTypeSystemMapper {
   private final static int[] INT0 = new int[0];
+  private final static boolean[] BOOLEAN0 = new boolean[0];
   
   public final TypeSystemImpl tsSrc;  // source type system
   public final TypeSystemImpl tsTgt;  // target type system
@@ -65,10 +73,9 @@ public class CasTypeSystemMapper {
   
   /**
    * First index is src type code, 2nd index is src feature offset, 0 is 1st feature.
-   * Value is -1 if tgt doesn't have feature, else it is the feature offset in target.
-   * Only for type codes that are not arrays.
+   * Value is true if target has source feature
    */
-  final private int[][] fSrc2Tgt; 
+  final private boolean[][] fSrcInTgt; 
   
   /** 
    * First index is src type code, 2nd index is tgt feature offset, 0 is 1st feature.
@@ -78,7 +85,7 @@ public class CasTypeSystemMapper {
    *   the slots in the target feature order
    *   Also, when comparing the slots in the target with a given source
    */
-  final private int[][] tgtFoffsets2Src;
+  final private int[][] fTgt2Src;
 
   /** 
    * Same as tSrc2Tgt, but reversed 
@@ -95,30 +102,62 @@ public class CasTypeSystemMapper {
     
     this.tSrc2Tgt = addTypes(tsSrc, tsTgt);
     this.tTgt2Src = addTypes(tsTgt, tsSrc);
-    this.fSrc2Tgt        = new int[tsSrc.getTypeArraySize()] [];
-    this.tgtFoffsets2Src = new int[tsSrc.getTypeArraySize()] [];
+    this.fSrcInTgt = new boolean[tsSrc.getTypeArraySize()] [];
+    this.fTgt2Src = new int[tsSrc.getTypeArraySize()] [];
     addFeatures(tsSrc, tsTgt);
 //    this.fTgt2Src = addFeatures(tsTgt, tsSrc);
   }
   
-  // returns 0 if type doesn't have corresponding code in other type system
+  /**
+   * @param c
+   * @return 0 if type doesn't have corresponding code in other type system
+   */
   public int mapTypeCodeSrc2Tgt(int c) {
     return tSrc2Tgt[c];
   }
 
-  // returns 0 if type doesn't have corresponding code in other type system
+  /**
+   * @param c
+   * @return 0 if type doesn't have corresponding code in other type system
+   */
   public int mapTypeCodeTgt2Src(int c) {
     return tTgt2Src[c];
   }
+  /**
+   * 
+   * @param c
+   * @param src2tgt
+   * @return 0 if type doesn't have corresponding code in other type system
+   */
+  public int mapTypeCode2Other(int c, boolean src2tgt) {
+    if (src2tgt) {
+      return mapTypeCodeSrc2Tgt(c);
+    } 
+    return mapTypeCodeTgt2Src(c);
+  }
 
+  /**
+   * 
+   * @param tCode - source type code
+   * @return int vec of 0-based feat offsets in src of feats in tgt, in the order of the target
+   */
   public int[] getTgtFeatOffsets2Src(int tCode) {
-    return tgtFoffsets2Src[tCode];
+    return fTgt2Src[tCode];
   }
   
-  // returns -1 if feature doesn't have corresponding code in other type system
-  public int mapFeatureOffsetSrc2Tgt(int tCode, int offset) {
-    return fSrc2Tgt[tCode][offset];
+  public boolean[] getFSrcInTgt(int tCode) {
+    return fSrcInTgt[tCode];
   }
+  
+//  /**
+//   * 
+//   * @param tCode source type code
+//   * @param offset feature slot offset, 0 = first feature after type code
+//   * @return offset to slot in target, 0 = first feature slot after type code, -1 if feature doesn't have corresponding code in other type system
+//   */
+//  public int mapFeatureOffsetSrc2Tgt(int tCode, int offset) {
+//    return fSrc2Tgt[tCode][offset];
+//  }
 
   // returns 0 if feature doesn't have corresponding code in other type system
 //  public int mapFeatureCodeTgt2Src(int c) {
@@ -145,8 +184,8 @@ public class CasTypeSystemMapper {
     for (int tCodeSrc = 0; tCodeSrc < tsSrc.getTypeArraySize(); tCodeSrc++) {
       final int tCodeTgt = mapTypeCodeSrc2Tgt(tCodeSrc);
       if (tCodeTgt == 0) {  // this type not in target
-        fSrc2Tgt[tCodeSrc] = INT0;
-        tgtFoffsets2Src[tCodeSrc] = null;  // should never be referenced
+        fSrcInTgt[tCodeSrc] = BOOLEAN0;
+        fTgt2Src[tCodeSrc] = null;  // should never be referenced
         continue;
       }
       
@@ -156,22 +195,23 @@ public class CasTypeSystemMapper {
       
       if (fcSrc.length == 0) {
         // source has no features
-        fSrc2Tgt[tCodeSrc] = INT0;
-        tgtFoffsets2Src[tCodeSrc] = new int[fcTgt.length];
-        Arrays.fill(tgtFoffsets2Src[tCodeSrc], -1);
+        fSrcInTgt[tCodeSrc] = BOOLEAN0;
+        fTgt2Src[tCodeSrc] = new int[fcTgt.length];
+        Arrays.fill(fTgt2Src[tCodeSrc], -1);
         continue;  // source type has no features        
       }
       
-      final int[] src2tgtOffsets = new int[fcSrc.length];
-      fSrc2Tgt[tCodeSrc] = src2tgtOffsets;
+      final boolean[] srcInTgt = new boolean[fcSrc.length];
+      fSrcInTgt[tCodeSrc] = srcInTgt;
       
       if (fcTgt.length == 0) {
-        Arrays.fill(src2tgtOffsets, -1);
-        tgtFoffsets2Src[tCodeSrc] = INT0;
+        Arrays.fill(fSrcInTgt, false);
+        fTgt2Src[tCodeSrc] = INT0;
         continue;  // target type has no features        
       }
+      
       final int[] tgt2srcOffsets = new int[fcTgt.length];
-      tgtFoffsets2Src[tCodeSrc] = tgt2srcOffsets;
+      fTgt2Src[tCodeSrc] = tgt2srcOffsets;
       
 //      // debug 
 //      if (tCodeTgt == 228) {
@@ -228,7 +268,7 @@ public class CasTypeSystemMapper {
         final String nameSrc = namesSrc.get(fciSrc);
         // feature names are semi sorted, not completely sorted due to inheritence
         final int iTgt = namesTgt.indexOf(nameSrc);
-        src2tgtOffsets[fciSrc] = iTgt;  // -1 if not there
+        srcInTgt[fciSrc] = ((-1) != iTgt);  // -1 if not there
       } // end of for loop over all source features of a type code
       
       // for each feature in the target, find the corresponding source feature by name match (if any)
@@ -237,9 +277,7 @@ public class CasTypeSystemMapper {
         // feature names are semi sorted, not completely sorted due to inheritence
         final int iSrc = namesSrc.indexOf(nameTgt);
         tgt2srcOffsets[fciTgt] = iSrc;  // -1 if not there
-      } // end of for loop over all target features of a type code
-      
-      
+      } // end of for loop over all target features of a type code      
     }   // end of for loop over all typecodes
   }
 
