@@ -62,9 +62,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.Deflater;
@@ -85,14 +83,17 @@ import org.apache.uima.util.impl.SerializationMeasures;
 /**
  * User callable serialization and deserialization of the CAS in a compressed Binary Format
  * 
- * This serializes/deserializes the state of the CAS, assuming that the type
- * information remains constant.
+ * This serializes/deserializes the state of the CAS.  It has the capability to map type systems,
+ * so the sending and receiving type systems do not have to be the same.
+ *   - types and features are matched by name, and features must have the same range (slot kind)
+ *   - types and/or features in one type system not in the other are skipped over
  * 
  * Header specifies to reader the format, and the compression level.
  * 
  * How to Serialize:  
  * 
  * 1) create an instance of this class, specifying some options that don't change very much
+ *      type system, compression levels and strategy, and doing measurements
  * 2) call serialize(CAS) to serialize the cas * 
  * 
  * You can reuse the instance for a different CAS (as long as the type system is the same);
@@ -105,14 +106,21 @@ import org.apache.uima.util.impl.SerializationMeasures;
  * The form of the binary CAS is inserted at the beginning so that receivers can do the
  * proper deserialization.  
  *     
- * Binary format requires that the exact same type system be used when deserializing 
+ * Compressed Binary format no longer requires that the exact same type system be used when deserializing 
  * 
  * How to Deserialize:
  * 
- * 1) get an appropriate CAS to deserialize into.  For delta CAS, it does not have to be empty.
+ * 1) get an appropriate CAS to deserialize into.  For delta CAS, it does not have to be empty, but it must
+ *    be the originating CAS from which the delta was produced.
  * 2) call CASImpl: cas.reinit(inputStream)  This is the existing method
  *    for binary deserialization, and it now handles this compressed version, too.
- *    Delta cas is also supported.
+ *    Delta cas is also supported.  This form requires both source and target type systems to be exactly the same.
+ *    
+ * An alternative interface for Deserialization with type system mapping:
+ * 1) get an appropriate CAS to deserialize into (as above).
+ * 2) create (or reuse) an instance of this class -> xxx, with a type system corresponding to the receiving cas
+ * 3) call xxx.deserialize(receivingCas, inputStream, targetTypeSystemImpl)
+ *    where the targetTypeSystem is the type system of the cas being deserialized
  * 
  * Compression/Decompression
  * Works in two stages:
@@ -123,7 +131,7 @@ import org.apache.uima.util.impl.SerializationMeasures;
  *      control info, float-exponents, string chars
  * Deserialization:
  *   Read all bytes, 
- *   create separate ByteArrayInputStreams for each segment, sharing byte bfr
+ *   create separate ByteArrayInputStreams for each segment
  *   create appropriate unzip data input streams for these
  *   
  * API design
@@ -145,7 +153,7 @@ import org.apache.uima.util.impl.SerializationMeasures;
  *     
  * Use Cases, filtering and delta
  *   **************************************************************************
- *   * (de)serialize * filter? * delta? * comment
+ *   * (de)serialize * filter? * delta? * Use case
  *   **************************************************************************
  *   * serialize     *   N     *   N    * Saving a Cas, 
  *   *               *         *        * sending Cas to svc with identical ts
@@ -158,13 +166,13 @@ import org.apache.uima.util.impl.SerializationMeasures;
  *   **************************************************************************
  *   * serialize     *   Y     *   Y    * NOT SUPPORTED (not needed)  
  *   **************************************************************************
- *   * deserialize   *   N     *   N    * reading/(recv) CAS, identical TS
+ *   * deserialize   *   N     *   N    * reading/(receiving) CAS, identical TS
  *   **************************************************************************
- *   * deserialize   *   Y     *   N    * reading/(recv) CAS, different TS
+ *   * deserialize   *   Y     *   N    * reading/(receiving) CAS, different TS
  *   **************************************************************************
- *   * deserialize   *   N     *   Y    * recv CAS, identical TS, 
+ *   * deserialize   *   N     *   Y    * receiving CAS, identical TS, 
  *   **************************************************************************
- *   * deserialize   *   Y     *   Y    * recv CAS, different TS (tgt a subset)
+ *   * deserialize   *   Y     *   Y    * receiving CAS, different TS (tgt a subset)
  *   **************************************************************************
  */
 public class BinaryCasSerDes5 {
@@ -178,9 +186,6 @@ public class BinaryCasSerDes5 {
    */
   private static final int VERSION = 1;  
 
-  // next must be set to true if you want the cas type system mapping to work
-  public static final boolean CHANGE_FS_REFS_TO_SEQUENTIAL = true;
-  // may add more later - to specify differing trade-offs between speed and compression
   public static final boolean IS_DIFF_ENCODE = true;
   public static final boolean CAN_BE_NEGATIVE = true;
   public static final boolean IGNORED = true;
@@ -194,17 +199,17 @@ public class BinaryCasSerDes5 {
   public enum AuxHeap {ByteAH, ShortAH, LongAH,};
   final static int AuxHeapsCount = AuxHeap.values().length;
 
-  public static class AuxSkip implements Comparable<AuxSkip> {
-    final int skipIndex;
-    final int skipSize;
-    public AuxSkip(int index, int size) {
-      skipIndex = index;
-      skipSize = size;
-    }
-    public int compareTo(AuxSkip o) {
-      return (skipIndex < o.skipIndex) ? -1 : (skipIndex > o.skipIndex) ? 1 : 0; 
-    }
-  }
+//  public static class AuxSkip implements Comparable<AuxSkip> {
+//    final int skipIndex;
+//    final int skipSize;
+//    public AuxSkip(int index, int size) {
+//      skipIndex = index;
+//      skipSize = size;
+//    }
+//    public int compareTo(AuxSkip o) {
+//      return (skipIndex < o.skipIndex) ? -1 : (skipIndex > o.skipIndex) ? 1 : 0; 
+//    }
+//  }
 
   /**
    * Compression alternatives
@@ -270,6 +275,11 @@ public class BinaryCasSerDes5 {
    */
 
   /**
+   * NOTE: adding or altering slots breaks backward compatability and
+   * the ability do deserialize previously serialized things
+   * 
+   * This definition shared with BinaryCasSerDes4
+   * 
    * Define all the slot kinds.
    */
   public enum SlotKind {
@@ -382,6 +392,7 @@ public class BinaryCasSerDes5 {
    */
   private boolean isTypeMappingCmn;
   private CasTypeSystemMapper typeMapperCmn;
+  
   /**
    * 
    * @param ts Type System (the source type system)
@@ -401,13 +412,17 @@ public class BinaryCasSerDes5 {
     this(ts, false, CompressLevel.Default, CompressStrat.Default);
   }
 
-  /**
+  
+  /*************************************************************************************
+   *   S E R I A L I Z E
+   *************************************************************************************/   
+  /**   
    * @param cas
    * @param out
    * @param trackingMark
    * @return null or serialization measurements (depending on setting of doMeasurements)
    * @throws IOException
-   */
+   **************************************************************************************/
   public SerializationMeasures serialize(
       AbstractCas cas, 
       Object out, 
@@ -435,8 +450,11 @@ public class BinaryCasSerDes5 {
   public SerializationMeasures serialize(AbstractCas cas, Object out) throws IOException {
     return serialize(cas, out, null, null);
   }
-  /**
-   * Use to deserialize compressed file, no type system mapping
+  
+  /*************************************************************************************
+   *   D E S E R I A L I Z E
+   *************************************************************************************/   
+  /** Use to deserialize compressed file, no type system mapping
    * @param cas
    * @param istream
    * @throws IOException
@@ -516,12 +534,12 @@ public class BinaryCasSerDes5 {
     deserializer.deserialize();
   }
 
-  /**
+  /*********************************************************************************************
+   * S e r i a l i z e r   Class for sharing variables among routines
    * Class instantiated once per serialization
-   * Multiple serializations in parallel supported, with
-   * multiple instances of this
-   */
-  
+   * Multiple serializations in parallel supported, with multiple instances of this
+   *********************************************************************************************/
+    
   private class Serializer {
     final private DataOutputStream serializedOut;  // where to write out the serialized result
     final private CASImpl cas;  // cas being serialized
@@ -543,7 +561,7 @@ public class BinaryCasSerDes5 {
 
     final private boolean isDelta;        // if true, there is a marker indicating the start spot(s)
     final private boolean doMeasurement;  // if true, doing measurements
-    final private ComprItemRefs fsStartIndexes = (CHANGE_FS_REFS_TO_SEQUENTIAL) ? new ComprItemRefs() : null;
+    final private ComprItemRefs fsStartIndexes = new ComprItemRefs();
     final private int[] typeCodeHisto = new int[ts.getTypeArraySize()]; 
 //    final private Integer[] serializedTypeCode2Code = new Integer[ts.getTypeArraySize()]; // needs to be Integer to get comparator choice
     final private int[] estimatedZipSize = new int[NBR_SLOT_KIND_ZIP_STREAMS]; // one entry for each output stream kind
@@ -660,11 +678,13 @@ public class BinaryCasSerDes5 {
       for (int i = 0; i < baosZipSources.length; i++) {
         setupOutputStream(i);
       }
-
     }
     
+    /************************
+     * Main serialize method
+     * @throws IOException
+     ************************/
     private void serialize() throws IOException {   
-
       if (doMeasurement) {
         System.out.println(printCasInfo(cas));
         sm.origAuxBytes = cas.getByteHeap().getSize();
@@ -836,7 +856,6 @@ public class BinaryCasSerDes5 {
         heapStart = 1;  // slot 0 not serialized, it's null / 0
       }
 
-//      if (CHANGE_FS_REFS_TO_SEQUENTIAL) {
 //        // scan thru all fs and save their offsets in the heap
 //        // to allow conversion from addr to sequential fs numbers
 //        initFsStartIndexes(fsStartIndexes, heap, heapStart, heapEnd, typeCodeHisto);
@@ -860,8 +879,6 @@ public class BinaryCasSerDes5 {
 //            System.out.format("%2d %,9d instance of Type %s%n", i, c, typeInfoArray[tCode]);
 //          }
 //        }
-        
-//      }
 
       
       
@@ -1720,7 +1737,7 @@ public class BinaryCasSerDes5 {
     private int double1Index = -1;
 
     final private boolean isDelta;        // if true, a delta is being deserialized
-    final private ComprItemRefs fsStartIndexes = (CHANGE_FS_REFS_TO_SEQUENTIAL) ? new ComprItemRefs() : null;
+    final private ComprItemRefs fsStartIndexes = new ComprItemRefs();
     private String[] readCommonString;
 
     private TypeInfo typeInfo; // type info for the current type being serialized
@@ -2675,17 +2692,17 @@ public class BinaryCasSerDes5 {
             if (!fSrcInTgt[iSrcFeat] && (
                 (srcTypeInfo.slotKinds[iSrcFeat] == SlotKind.Slot_DoubleRef) ||
                 (srcTypeInfo.slotKinds[iSrcFeat] == SlotKind.Slot_LongRef))) { 
-              fsStartIndexes.recordSkippedAuxHeap(AuxHeap.LongAH, srcHeap[iSrcHeap + iSrcFeat + 1], 1);
+//              fsStartIndexes.recordSkippedAuxHeap(AuxHeap.LongAH, srcHeap[iSrcHeap + iSrcFeat + 1], 1);
             }
           }
         } else if (!isIncludedType) {
           // if the src Type is not in the target, and the src Type is a ref to one of the aux arrays
           if (!srcTypeInfo.isHeapStoredArray) {
             // is an array of boolean, byte, short, long or double
-            final int skipStart = srcHeap[iSrcHeap + 2];
-            final int skipSize  = srcHeap[iSrcHeap + 1];
-            final AuxHeap auxHeap = getAuxHeapFromSlotKind(srcTypeInfo.slotKinds[1]);
-            fsStartIndexes.recordSkippedAuxHeap(auxHeap, skipStart, skipSize);
+//            final int skipStart = srcHeap[iSrcHeap + 2];
+//            final int skipSize  = srcHeap[iSrcHeap + 1];
+//            final AuxHeap auxHeap = getAuxHeapFromSlotKind(srcTypeInfo.slotKinds[1]);
+//            fsStartIndexes.recordSkippedAuxHeap(auxHeap, skipStart, skipSize);
           }
         }
       }
@@ -2701,12 +2718,12 @@ public class BinaryCasSerDes5 {
       iSrcHeap += incrToNextFs(srcHeap, iSrcHeap, srcTypeInfo);
     }
     
-    if (isTypeMapping) {
-      // sort the skip information
-      for (List<AuxSkip> skips : fsStartIndexes.skips) {
-        Collections.sort(skips);
-      }
-    }
+//    if (isTypeMapping) {
+//      // sort the skip information
+//      for (List<AuxSkip> skips : fsStartIndexes.skips) {
+//        Collections.sort(skips);
+//      }
+//    }
     return tgtHeapUsed;  // side effect: set up fsStartIndexes
   } 
 
@@ -3262,13 +3279,13 @@ public class BinaryCasSerDes5 {
      * Indexed by AuxHeap kind: 
      */
 
-    final private List<List<AuxSkip>> skips = new ArrayList<List<AuxSkip>>(AuxHeap.values().length);
-    
-    { // initialize instance block
-      for (int i = 0; i < skips.size(); i++) {
-        skips.add(new ArrayList<AuxSkip>());
-      }
-    }
+//    final private List<List<AuxSkip>> skips = new ArrayList<List<AuxSkip>>(AuxHeap.values().length);
+//    
+//    { // initialize instance block
+//      for (int i = 0; i < skips.size(); i++) {
+//        skips.add(new ArrayList<AuxSkip>());
+//      }
+//    }
    
     private int nextTgt = 0;
 
@@ -3296,15 +3313,15 @@ public class BinaryCasSerDes5 {
       srcSeq2TgtSeq.add(inTarget ? nextTgt++ : 0);
     }
     
-    /**
-     * record skipped entries in an Aux heap
-     * @param auxHeap which heap this is for
-     * @param srcSkipIndex the index of the first skipped slot in the src heap
-     * @param srcSkipSize the number of entries skipped
-     */
-    public void recordSkippedAuxHeap(AuxHeap auxHeap, int srcSkipIndex, int srcSkipSize) {
-      skips.get(auxHeap.ordinal()).add(new AuxSkip(srcSkipIndex, srcSkipSize));
-    }
+//    /**
+//     * record skipped entries in an Aux heap
+//     * @param auxHeap which heap this is for
+//     * @param srcSkipIndex the index of the first skipped slot in the src heap
+//     * @param srcSkipSize the number of entries skipped
+//     */
+//    public void recordSkippedAuxHeap(AuxHeap auxHeap, int srcSkipIndex, int srcSkipSize) {
+//      skips.get(auxHeap.ordinal()).add(new AuxSkip(srcSkipIndex, srcSkipSize));
+//    }
     
     /**
      * Called during deserialize to incrementally add 
