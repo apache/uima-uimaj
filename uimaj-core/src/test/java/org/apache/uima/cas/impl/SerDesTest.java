@@ -724,18 +724,19 @@ public class SerDesTest extends TestCase {
 
   private void verify() {
     try {
-      BinaryCasSerDes4 bcs = new BinaryCasSerDes4(
-          ts, false);
+      BinaryCasSerDes5 bcs = new BinaryCasSerDes5(ts);
       ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
       if (doPlain) {
         (new CASSerializer()).addCAS(cas, baos);      
       } else {      
         SerializationMeasures sm = bcs.serialize(cas, baos);
-        System.out.println(sm);
+        if (null != sm) {
+          System.out.println(sm);
+        }
       }
       ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
       deserCas.reinit(bais);
-      assertTrue(bcs.getCasCompare().compareCASes(cas, deserCas));
+      assertTrue(BinaryCasSerDes5.compareCASes(cas, deserCas));
     } catch (IOException e) {
       throw new RuntimeException(e);
     }    
@@ -744,22 +745,21 @@ public class SerDesTest extends TestCase {
   private void verifyDelta(MarkerImpl mark) {
     try {
       ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
-      BinaryCasSerDes4 bcs = new BinaryCasSerDes4(
-          ts, false);
+      BinaryCasSerDes5 bcs = new BinaryCasSerDes5(ts);
       if (doPlain) {
         Serialization.serializeCAS(cas, baos);
       } else {
-        SerializationMeasures sm = bcs.serialize(cas, baos, mark);
+        SerializationMeasures sm = bcs.serialize(cas, baos, mark, cas.getTypeSystemImpl());
         System.out.println(sm);
       }
       ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
       deltaCas.reinit(bais);
-      assertTrue(bcs.getCasCompare().compareCASes(cas, deltaCas));
+      assertTrue(BinaryCasSerDes5.compareCASes(cas, deltaCas));
       
-      // verify indexed fs same, and in same order
-      int[] fsIndexes1 = cas.getIndexedFSs();
-      int[] fsIndexes2 = deltaCas.getIndexedFSs();
-      assertTrue(Arrays.equals(fsIndexes1, fsIndexes2));
+      // verify indexed fs same, and in same order - already done by compareCASes
+//      int[] fsIndexes1 = cas.getIndexedFSs();
+//      int[] fsIndexes2 = deltaCas.getIndexedFSs();
+//      assertTrue(Arrays.equals(fsIndexes1, fsIndexes2));
     } catch (IOException e) {
       throw new RuntimeException(e);
     }

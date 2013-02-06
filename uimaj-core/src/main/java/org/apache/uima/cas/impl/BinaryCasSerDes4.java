@@ -402,7 +402,7 @@ public class BinaryCasSerDes4 {
     } else {
       in = new DataInputStream(deserIn);
     }
-    Deserializer deserializer = new Deserializer(cas, in, isDelta);    
+    Deserializer deserializer = new Deserializer(cas, in, isDelta, 0);    
     deserializer.deserialize();
   }
 
@@ -1557,7 +1557,7 @@ public class BinaryCasSerDes4 {
      * @param deserIn
      * @throws IOException 
      */
-    Deserializer(CASImpl cas, DataInput deserIn, boolean isDelta) throws IOException {
+    Deserializer(CASImpl cas, DataInput deserIn, boolean isDelta, int version) throws IOException {
       this.cas = cas;
       this.deserIn = deserIn;
       this.isDelta = isDelta;
@@ -1567,7 +1567,7 @@ public class BinaryCasSerDes4 {
       shortHeapObj  = cas.getShortHeap();
       byteHeapObj   = cas.getByteHeap();
 
-      version = deserIn.readInt();    // version of the compressed serializer
+      this.version = deserIn.readInt();    // version of the compressed serializer - now read by caller
       final int nbrEntries = deserIn.readInt();  // number of compressed streams
       
       IntVector idxAndLen = new IntVector(nbrEntries * 3);

@@ -512,7 +512,7 @@ public class BinaryCasSerDes5 {
     } else {
       in = new DataInputStream(deserIn);
     }
-    Deserializer deserializer = new Deserializer(cas, in, isDelta, tgtTs);    
+    Deserializer deserializer = new Deserializer(cas, in, isDelta, tgtTs, 1);    
     deserializer.deserialize();
   }
 
@@ -1764,7 +1764,7 @@ public class BinaryCasSerDes5 {
      * @param deserIn
      * @throws IOException 
      */
-    Deserializer(CASImpl cas, DataInput deserIn, boolean isDelta, TypeSystemImpl tgtTs) throws IOException {
+    Deserializer(CASImpl cas, DataInput deserIn, boolean isDelta, TypeSystemImpl tgtTs, int version) throws IOException {
       this.cas = cas;
       this.deserIn = deserIn;
       this.isDelta = isDelta;
@@ -1777,7 +1777,8 @@ public class BinaryCasSerDes5 {
       shortHeapObj  = cas.getShortHeap();
       byteHeapObj   = cas.getByteHeap();
 
-      version = deserIn.readInt();    // version of the compressed serializer
+      this.version = version;
+//      version = deserIn.readInt();    // version of the compressed serializer
       final int nbrEntries = deserIn.readInt();  // number of compressed streams
       
       IntVector idxAndLen = new IntVector(nbrEntries * 3);
@@ -1878,6 +1879,9 @@ public class BinaryCasSerDes5 {
         final int tgtTypeCode = readVnumber(typeCode_dis); // get type code
         final int tCode = isTypeMapping ? typeMapper.mapTypeCodeTgt2Src(tgtTypeCode) : tgtTypeCode;
         final boolean storeIt = (tCode != 0);
+        if (storeIt) {
+          heap[iHeap] = tCode;
+        }
         fsStartIndexes.addSrcAddrForTgt(iHeap, storeIt);
           // A receiving client from a service always
           // has a superset of the service's types due to type merging so this
@@ -2765,23 +2769,40 @@ public class BinaryCasSerDes5 {
         return false;
       }
       
-      ComprItemRefs fsStartIndexes = new ComprItemRefs();
       initFsStartIndexesCompare();
       
 //      final int endHeapSeqSrc = fsStartIndexes.getNbrOfItems();
       c1heapIndex = 1;
       c2heapIndex = 1;
       seqHeapSrc = 1;
+      boolean pastEnd1 = false;
+      boolean pastEnd2 = false;
       for (; c1heapIndex < c1end;) {
         if (!advanceOverNonIncluded(1)) {  // 1 for c1, break if at end
+          pastEnd1 = true;
           break;
         }
         if (!advanceOverNonIncluded(2)) {  // 2 for c2, break if at end
+          pastEnd2 = true;
           break;
         }
         if (!compareFss()) {
           return false;
         }
+        c1heapIndex += incrToNextFs(c1heap, c1heapIndex, typeInfo);
+        c2heapIndex += incrToNextFs(c2heap, c2heapIndex, ts2.getTypeInfo(c2heap[c2heapIndex]));
+      }
+      if (!advanceOverNonIncluded(1)) {
+        pastEnd1 = true;
+      }
+      if (!advanceOverNonIncluded(2)) {  // 2 for c2, break if at end
+        pastEnd2 = true;
+      }
+      if ((pastEnd1 && (!pastEnd2)) ||
+          (pastEnd2 && (!pastEnd1))) {
+        System.err.format("Mismatched number of comparable Feature Structures; pastEnd1: %s, pastEnd2: %s%n",
+            pastEnd1, pastEnd2);
+        return false;
       }
       
       int[] ifs1 = c1.getIndexedFSs();
@@ -2881,18 +2902,19 @@ public class BinaryCasSerDes5 {
      * @return true if found an included type
      */
     private boolean advanceOverNonIncluded(int id) {
+      final boolean isSrc = (id == 1);
+      final TypeSystemImpl ts = isSrc ? ts1 : ts2;
+      final int[] heap = isSrc ? c1heap : c2heap;
+            int index  = isSrc ? c1heapIndex : c2heapIndex;
+      final int end = isSrc ? c1end : c2end;
+
       if (!isTypeMapping) {
-        return true;
+        return (index < end);
       }
-      final boolean src2tgt = (id == 1);
-      final TypeSystemImpl ts = src2tgt ? ts1 : ts2;
-      final int[] heap = src2tgt ? c1heap : c2heap;
-            int index  = src2tgt ? c1heapIndex : c2heapIndex;
-      final int end = src2tgt ? c1end : c2end;
       for (; index >= end;) {      
         final int tCode = heap[index];    
-        if (typeMapper.mapTypeCode2Other(tCode, src2tgt) != 0) {
-          if (src2tgt) {
+        if (typeMapper.mapTypeCode2Other(tCode, isSrc) != 0) {
+          if (isSrc) {
             c1heapIndex = index;
           } else {
             c2heapIndex = index;
@@ -2901,7 +2923,7 @@ public class BinaryCasSerDes5 {
         }
         index += incrToNextFs(heap, index, ts.getTypeInfo(tCode));
       }
-      if (src2tgt) {
+      if (isSrc) {
         c1heapIndex = index;
       } else {
         c2heapIndex = index;
@@ -3216,11 +3238,11 @@ public class BinaryCasSerDes5 {
      */
     final private IntVector srcSeq2TgtSeq = new IntVector();
     
-    /**
-     * (Not Used, currently)
-     * map from a target seq number to a target address.
-     */
-    final private IntVector tgtSeq2TgtAddr = new IntVector();  // used for comparing
+//    /**
+//     * (Not Used, currently)
+//     * map from a target seq number to a target address.
+//     */
+//    final private IntVector tgtSeq2TgtAddr = new IntVector();  // used for comparing
     
     /**
      * map from source address to target sequence number.
@@ -3263,7 +3285,7 @@ public class BinaryCasSerDes5 {
       int i = nextTgt;
       if (inTarget) {
         tgtSeq2SrcAddr.add(srcAddr);
-        tgtSeq2TgtAddr.add(tgtAddr);
+//        tgtSeq2TgtAddr.add(tgtAddr);
       }
       srcAddr2TgtSeq.put(srcAddr, inTarget ? i : 0);
 //      // debug
@@ -3295,7 +3317,7 @@ public class BinaryCasSerDes5 {
         srcSeq2TgtSeq.add(nextTgt);
         tgtSeq2SrcAddr.add(srcAddr);
       }
-      tgtSeq2TgtAddr.add(-1);  // not used I hope - need to check TODO
+//      tgtSeq2TgtAddr.add(-1);  // not used I hope - need to check TODO
       nextTgt++;
     }
                    
@@ -3303,9 +3325,9 @@ public class BinaryCasSerDes5 {
       return tgtSeq2SrcAddr.get(seq);
     }
 
-    public int getTgtAddrFromTgtSeq(int seq) {
-      return tgtSeq2TgtAddr.get(seq);
-    }
+//    public int getTgtAddrFromTgtSeq(int seq) {
+//      return tgtSeq2TgtAddr.get(seq);
+//    }
 
 //    public int getMappedItemAddr(int index) {
 //      if (null == typeMapper) {

@@ -20,6 +20,7 @@
 package org.apache.uima.cas.impl;
 
 import java.io.ByteArrayInputStream;
+import java.io.DataInput;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -1189,7 +1190,12 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       }
       
       if (0 != (version & 4)) {
-        (new BinaryCasSerDes4(this.getTypeSystemImpl())).deserialize(this, dis, delta);
+        final int compressedVersion = readInt(dis, swap);
+        if (compressedVersion == 0) {
+          (new BinaryCasSerDes4(this.getTypeSystemImpl())).deserialize(this, dis, delta);
+        } else {
+          (new BinaryCasSerDes5(this.getTypeSystemImpl())).deserialize(this, dis, delta);
+        }
         return;
       }
       
