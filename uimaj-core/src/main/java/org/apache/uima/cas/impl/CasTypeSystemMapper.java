@@ -205,7 +205,7 @@ public class CasTypeSystemMapper {
       fSrcInTgt[tCodeSrc] = srcInTgt;
       
       if (fcTgt.length == 0) {
-        Arrays.fill(fSrcInTgt, false);
+        Arrays.fill(srcInTgt, false);
         fTgt2Src[tCodeSrc] = INT0;
         continue;  // target type has no features        
       }

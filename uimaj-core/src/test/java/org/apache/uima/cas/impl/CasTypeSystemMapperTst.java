@@ -26,14 +26,153 @@ public class CasTypeSystemMapperTst extends TestCase {
   public void testCasTypeSystemMapperFull() {
     TypeSystemImpl ts1 = createTs(3, 0x1ffff, 0x1ffff);
     TypeSystemImpl ts2 = createTs(3, 0x1ffff, 0x1ffff); 
-    
+    CasTypeSystemMapper m = new CasTypeSystemMapper(ts1, ts2);
+    chkbase(m, 38);
+  }
+  
+  public void testMissingType1() {
+    TypeSystemImpl ts1 = createTs(3, 0x1ffff, 0x1ffff);
+    TypeSystemImpl ts2 = createTs(1, 0x1ffff, 0x1ffff); 
+    CasTypeSystemMapper m = new CasTypeSystemMapper(ts1, ts2);
+    chkbase(m, 37);
+    assertEquals(0, m.mapTypeCodeSrc2Tgt(38));
+  }
+
+  public void testMissingType2() {
+    TypeSystemImpl ts1 = createTs(3, 0x1ffff, 0x1ffff);
+    TypeSystemImpl ts2 = createTs(2, 0x1ffff, 0x1ffff); 
+    CasTypeSystemMapper m = new CasTypeSystemMapper(ts1, ts2);
+    chkbase(m, 36);
+    assertEquals( 0, m.mapTypeCodeSrc2Tgt(37));
+    assertEquals(37, m.mapTypeCodeSrc2Tgt(38));
+    assertEquals(38, m.mapTypeCodeTgt2Src(37));
+    chkfeats(m, 38);
+  }
+  
+  public void testMissingType3() {
+    TypeSystemImpl ts1 = createTs(1, 0x1ffff, 0x1ffff);
+    TypeSystemImpl ts2 = createTs(3, 0x1ffff, 0x1ffff); 
+    CasTypeSystemMapper m = new CasTypeSystemMapper(ts1, ts2);
+    chkbase(m, 37);
+    assertEquals(0, m.mapTypeCodeTgt2Src(38));
+  }
+  
+  public void testMissingType4() {
+    TypeSystemImpl ts1 = createTs(2, 0x1ffff, 0x1ffff);
+    TypeSystemImpl ts2 = createTs(3, 0x1ffff, 0x1ffff); 
+    CasTypeSystemMapper m = new CasTypeSystemMapper(ts1, ts2);
+    chkbase(m, 36);
+    assertEquals(38, m.mapTypeCodeSrc2Tgt(37));
+    assertEquals(37, m.mapTypeCodeTgt2Src(38));
+    assertEquals(0, m.mapTypeCodeTgt2Src(37));
+    chkfeats(m, 37);
+  }
+  
+  public void testMissingType5() {
+    TypeSystemImpl ts1 = createTs(3, 0x1ffff, 0x1ffff);
+    TypeSystemImpl ts2 = createTs(0, 0x1ffff, 0x1ffff); 
+    CasTypeSystemMapper m = new CasTypeSystemMapper(ts1, ts2);
+    chkbase(m, 36);
+    assertEquals( 0, m.mapTypeCodeSrc2Tgt(37));
+    assertEquals(0, m.mapTypeCodeSrc2Tgt(38));
+  }
+
+  public void testMissingType6() {
+    TypeSystemImpl ts1 = createTs(0, 0x1ffff, 0x1ffff);
+    TypeSystemImpl ts2 = createTs(3, 0x1ffff, 0x1ffff); 
+    CasTypeSystemMapper m = new CasTypeSystemMapper(ts1, ts2);
+    chkbase(m, 36);
+    assertEquals( 0, m.mapTypeCodeTgt2Src(37));
+    assertEquals(0, m.mapTypeCodeTgt2Src(38));
+  }
+
+  
+  public void testMissingFeature0() {
+    TypeSystemImpl ts1 = createTs(3, 0x1ffff, 0x1ffff);
+    for (int i = 0, mf = 1; i < 14; i++, mf = mf<<1) {
+      TypeSystemImpl ts2 = createTs(3, 0x1ffff - mf, 0x1ffff);  
+      CasTypeSystemMapper m = new CasTypeSystemMapper(ts1, ts2);
+      chkbase(m);
+      assertEquals(37, m.mapTypeCodeSrc2Tgt(37));
+      assertEquals(38, m.mapTypeCodeSrc2Tgt(38));
+      assertEquals(37, m.mapTypeCodeTgt2Src(37));
+      assertEquals(38, m.mapTypeCodeTgt2Src(38));
+      chkfeats(m, 38);
+      chkMissingFeats1(m, 37, mf);    
+    } 
+  }
+
+  public void testMissingFeature0r() {
+    TypeSystemImpl ts1 = createTs(3, 0x1ffff, 0x1ffff);
+    for (int i = 0, mf = 1; i < 14; i++, mf = mf<<1) {
+      TypeSystemImpl ts2 = createTs(3, 0x1ffff, 0x1ffff - mf);  
+      CasTypeSystemMapper m = new CasTypeSystemMapper(ts1, ts2);
+      chkbase(m);
+      assertEquals(37, m.mapTypeCodeSrc2Tgt(37));
+      assertEquals(38, m.mapTypeCodeSrc2Tgt(38));
+      assertEquals(37, m.mapTypeCodeTgt2Src(37));
+      assertEquals(38, m.mapTypeCodeTgt2Src(38));
+      chkfeats(m, 37);
+      chkMissingFeats1(m, 38, mf);      
+    }
+  }
+
+  public void testMissingFeature0f() {
+    TypeSystemImpl ts2 = createTs(3, 0x1ffff, 0x1ffff);  
+    for (int i = 0, mf = 1; i < 14; i++, mf = mf<<1) {
+      TypeSystemImpl ts1 = createTs(3, 0x1ffff - mf, 0x1ffff); // feat 8
+      CasTypeSystemMapper m = new CasTypeSystemMapper(ts1, ts2);
+      chkbase(m);
+      assertEquals(37, m.mapTypeCodeSrc2Tgt(37));
+      assertEquals(38, m.mapTypeCodeSrc2Tgt(38));
+      assertEquals(37, m.mapTypeCodeTgt2Src(37));
+      assertEquals(38, m.mapTypeCodeTgt2Src(38));
+      chkfeats(m, 38);
+      chkMissingFeats2(m, 37, mf);
+    }
+  }
+
+  public void testMissingFeature0f2() {
+    TypeSystemImpl ts2 = createTs(3, 0x1ffff, 0x1ffff);  
+    for (int i = 0, mf = 1; i < 14; i++, mf = mf<<1) {
+      TypeSystemImpl ts1 = createTs(3, 0x1ffff, 0x1ffff - mf); // feat 8
+      CasTypeSystemMapper m = new CasTypeSystemMapper(ts1, ts2);
+      chkbase(m);
+      assertEquals(37, m.mapTypeCodeSrc2Tgt(37));
+      assertEquals(38, m.mapTypeCodeSrc2Tgt(38));
+      assertEquals(37, m.mapTypeCodeTgt2Src(37));
+      assertEquals(38, m.mapTypeCodeTgt2Src(38));
+      chkfeats(m, 37);
+      chkMissingFeats2(m, 38, mf);
+    }
+  }
+  
+  public void testMissingAllFeat1() {
+    int mf = 0x1ffff;
+    TypeSystemImpl ts1 = createTs(3, 0x1ffff, 0x1ffff);
+    TypeSystemImpl ts2 = createTs(3, 0x1ffff, 0x1ffff - mf);  
     CasTypeSystemMapper m = new CasTypeSystemMapper(ts1, ts2);
     chkbase(m);
-    for (int i = 37; i < 39; i++) {
-      assertEquals(i, m.mapTypeCodeSrc2Tgt(i));
-      assertEquals(i, m.mapTypeCodeTgt2Src(i));
-      chkfeats(m, i);
-    }    
+    assertEquals(37, m.mapTypeCodeSrc2Tgt(37));
+    assertEquals(38, m.mapTypeCodeSrc2Tgt(38));
+    assertEquals(37, m.mapTypeCodeTgt2Src(37));
+    assertEquals(38, m.mapTypeCodeTgt2Src(38));
+    chkfeats(m, 37);
+    chkMissingFeats1(m, 38, mf);      
+  }
+
+  public void testMissingAllFeat2() {
+    int mf = 0x1ffff;
+    TypeSystemImpl ts1 = createTs(3, 0x1ffff, 0x1ffff - mf);
+    TypeSystemImpl ts2 = createTs(3, 0x1ffff, 0x1ffff);  
+    CasTypeSystemMapper m = new CasTypeSystemMapper(ts1, ts2);
+    chkbase(m);
+    assertEquals(37, m.mapTypeCodeSrc2Tgt(37));
+    assertEquals(38, m.mapTypeCodeSrc2Tgt(38));
+    assertEquals(37, m.mapTypeCodeTgt2Src(37));
+    assertEquals(38, m.mapTypeCodeTgt2Src(38));
+    chkfeats(m, 37);
+    chkMissingFeats2(m, 38, mf);      
   }
 
   private void chkfeats(CasTypeSystemMapper m, int tCode) {
@@ -48,110 +187,47 @@ public class CasTypeSystemMapperTst extends TestCase {
       }  
     } 
   }
-  
-  private void chkbase(CasTypeSystemMapper m) {
-    for (int i = 1; i < 37; i++) {
-      assertEquals(i, m.mapTypeCodeSrc2Tgt(i));
-      assertEquals(i, m.mapTypeCodeTgt2Src(i));
-      chkfeats(m, i);
-    }    
-  }
-  
-  public void testMissingType1() {
-    TypeSystemImpl ts1 = createTs(3, 0x1ffff, 0x1ffff);
-    TypeSystemImpl ts2 = createTs(1, 0x1ffff, 0x1ffff); 
-    
-    CasTypeSystemMapper m = new CasTypeSystemMapper(ts1, ts2);
-    chkbase(m);
-    assertEquals(37, m.mapTypeCodeSrc2Tgt(37));
-    assertEquals(0, m.mapTypeCodeSrc2Tgt(38));
-    assertEquals(37, m.mapTypeCodeTgt2Src(37));
-    chkfeats(m, 37);    
-  }
 
-  public void testMissingType2() {
-    TypeSystemImpl ts1 = createTs(3, 0x1ffff, 0x1ffff);
-    TypeSystemImpl ts2 = createTs(2, 0x1ffff, 0x1ffff); 
-    
-    CasTypeSystemMapper m = new CasTypeSystemMapper(ts1, ts2);
-    chkbase(m);
-    assertEquals(0, m.mapTypeCodeSrc2Tgt(37));
-    assertEquals(37, m.mapTypeCodeSrc2Tgt(38));
-    assertEquals(38, m.mapTypeCodeTgt2Src(37));
-  }
-  
-  public void testMissingFeature0() {
-    TypeSystemImpl ts1 = createTs(3, 0x1ffff, 0x1ffff);
-    TypeSystemImpl ts2 = createTs(3, 0x1ffff - 0x00100, 0x1ffff);  // feat 8
-    CasTypeSystemMapper m = new CasTypeSystemMapper(ts1, ts2);
-    chkbase(m);
-    assertEquals(37, m.mapTypeCodeSrc2Tgt(37));
-    assertEquals(38, m.mapTypeCodeSrc2Tgt(38));
-    assertEquals(37, m.mapTypeCodeTgt2Src(37));
-    assertEquals(38, m.mapTypeCodeTgt2Src(38));
-    chkfeats(m, 38);
-   
-    final int[] tgtFeatOffsets = m.getTgtFeatOffsets2Src(37);
-    for (int j = 0, k = 0; j < tgtFeatOffsets.length; j++, k++) {
-      if (j == 8) {
-        k++;
-      }
-      assertEquals(k, tgtFeatOffsets[j]);
-    }
-    final boolean[] featSrcInTg = m.getFSrcInTgt(37);
-    for (int j = 0; j < featSrcInTg.length; j++) {
-      assertEquals(j != 8, featSrcInTg[j]);
-    }  
-  }
-
-  public void testMissingFeature0r() {
-    TypeSystemImpl ts1 = createTs(3, 0x1ffff, 0x1ffff);
-    TypeSystemImpl ts2 = createTs(3, 0x1ffff, 0x1ffff - 0x00100);  // feat 8
-    CasTypeSystemMapper m = new CasTypeSystemMapper(ts1, ts2);
-    chkbase(m);
-    assertEquals(37, m.mapTypeCodeSrc2Tgt(37));
-    assertEquals(38, m.mapTypeCodeSrc2Tgt(38));
-    assertEquals(37, m.mapTypeCodeTgt2Src(37));
-    assertEquals(38, m.mapTypeCodeTgt2Src(38));
-    chkfeats(m, 37);
-   
-    final int[] tgtFeatOffsets = m.getTgtFeatOffsets2Src(38);
-    for (int j = 0, k = 0; j < tgtFeatOffsets.length; j++, k++) {
-      if (j == 8) {
-        k++;
-      }
-      assertEquals(k, tgtFeatOffsets[j]);
-    }
-    final boolean[] featSrcInTg = m.getFSrcInTgt(38);
-    for (int j = 0; j < featSrcInTg.length; j++) {
-      assertEquals(j != 8, featSrcInTg[j]);
-    }  
-  }
-
-  public void testMissingFeature0f() {
-    TypeSystemImpl ts1 = createTs(3, 0x1ffff - 0x00100, 0x1ffff); // feat 8
-    TypeSystemImpl ts2 = createTs(3, 0x1ffff, 0x1ffff);  
-    CasTypeSystemMapper m = new CasTypeSystemMapper(ts1, ts2);
-    chkbase(m);
-    assertEquals(37, m.mapTypeCodeSrc2Tgt(37));
-    assertEquals(38, m.mapTypeCodeSrc2Tgt(38));
-    assertEquals(37, m.mapTypeCodeTgt2Src(37));
-    assertEquals(38, m.mapTypeCodeTgt2Src(38));
-    chkfeats(m, 38);
-   
-    final int[] tgtFeatOffsets = m.getTgtFeatOffsets2Src(37);
-    for (int j = 0, k = 0; j < tgtFeatOffsets.length; j++, k++) {
-      if (j == 8) {
+  private void chkMissingFeats2(CasTypeSystemMapper m, int tCode, int mFeats) {
+    final int[] tgtFeatOffsets = m.getTgtFeatOffsets2Src(tCode);
+    for (int j = 0, k = 0, mf = 1; j < tgtFeatOffsets.length; j++, k++, mf = mf<<1) {
+      if ((mFeats & mf) == mf) {
         k--;
         assertEquals(-1, tgtFeatOffsets[j]);
         continue;
-      } 
+      }
       assertEquals(k, tgtFeatOffsets[j]);
     }
-    final boolean[] featSrcInTg = m.getFSrcInTgt(37);
+    final boolean[] featSrcInTg = m.getFSrcInTgt(tCode);
     for (int j = 0; j < featSrcInTg.length; j++) {
       assertEquals(true, featSrcInTg[j]);
     }  
+  }
+
+  private void chkMissingFeats1(CasTypeSystemMapper m, int tCode, int mFeats) {
+    final int[] tgtFeatOffsets = m.getTgtFeatOffsets2Src(tCode);
+    for (int j = 0, k = 0, mf = 1; j < tgtFeatOffsets.length; j++, k++, mf = mf<<1) {
+      if ((mFeats & mf) == mf) {
+        k++;
+      }
+      assertEquals(k, tgtFeatOffsets[j]);
+    }
+    final boolean[] featSrcInTg = m.getFSrcInTgt(tCode);
+    for (int j = 0, mf = 1; j < featSrcInTg.length; j++, mf = mf<<1) {
+      assertEquals((mFeats & mf) != mf, featSrcInTg[j]);
+    }  
+  }
+  
+  private void chkbase(CasTypeSystemMapper m) {
+    chkbase(m, 36);
+  }
+  
+  private void chkbase(CasTypeSystemMapper m, final int last) {
+    for (int i = 1; i <= last; i++) {
+      assertEquals(i, m.mapTypeCodeSrc2Tgt(i));
+      assertEquals(i, m.mapTypeCodeTgt2Src(i));
+      chkfeats(m, i);
+    }        
   }
 
   /**
