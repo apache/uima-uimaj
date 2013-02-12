@@ -19,6 +19,7 @@
 
 package org.apache.uima.fit.factory;
 
+import static java.util.Arrays.asList;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createAggregate;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createAggregateDescription;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription;
@@ -186,7 +187,8 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
     bindResource(desc, DummyAE.RES_KEY_3, ParametrizedResource.class,
             ParametrizedResource.PARAM_EXTENSION, ".lala");
     bindResource(desc, DummySharedResourceObject.class, EX_URI,
-            DummySharedResourceObject.PARAM_VALUE, "3");
+            DummySharedResourceObject.PARAM_VALUE, "3",
+            DummySharedResourceObject.PARAM_ARRAY_VALUE, new String[] {"1", "2", "3"});
     // An undefined URL may be used if the specified file/remote URL does not exist or if
     // the network is down.
     bindResource(desc, DummyAE.RES_SOME_URL, new File(EX_FILE_1).toURI().toURL());
@@ -195,7 +197,8 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
     bindResource(desc, DummyAE.RES_JNDI_OBJECT, JndiResourceLocator.class,
             JndiResourceLocator.PARAM_NAME, "dictionaries/german");
     createDependencyAndBind(desc, "legacyResource", DummySharedResourceObject.class, EX_URI,
-            DummySharedResourceObject.PARAM_VALUE, "3");
+            DummySharedResourceObject.PARAM_VALUE, "3",
+            DummySharedResourceObject.PARAM_ARRAY_VALUE, new String[] {"1", "2", "3"});
   }
 
   public static class DummyAE extends JCasAnnotator_ImplBase {
@@ -258,6 +261,7 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
 
       assertNotNull(sharedObject);
       assertEquals("3", sharedObject.getValue());
+      assertEquals(asList("1", "2", "3"), asList(sharedObject.getArrayValue()));
 
       assertNotNull(sharedObject);
       assertEquals(EX_URI, sharedObject.getUrl().toString());
@@ -389,9 +393,12 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
 
   public static final class DummySharedResourceObject implements SharedResourceObject {
     public static final String PARAM_VALUE = "Value";
-
     @ConfigurationParameter(name = PARAM_VALUE, mandatory = true)
     private String value;
+
+    public static final String PARAM_ARRAY_VALUE = "arrayValue";
+    @ConfigurationParameter(name = PARAM_ARRAY_VALUE, mandatory = true)
+    private String[] arrayValue;
 
     private URI uri;
 
@@ -407,6 +414,10 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
 
     public String getValue() {
       return value;
+    }
+    
+    public String[] getArrayValue() {
+      return arrayValue;
     }
   }
 }
