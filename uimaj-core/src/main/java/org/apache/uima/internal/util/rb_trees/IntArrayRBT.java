@@ -183,7 +183,7 @@ public class IntArrayRBT {
       if (!hasNext()) {
         throw new NoSuchElementException();
       }
-      this.currentNode = nextNode(this.currentNode);
+      this.currentNode = (this.currentNode == NIL) ? getFirstNode() : nextNode(this.currentNode);
       return IntArrayRBT.this.key[this.currentNode];
     }
 
