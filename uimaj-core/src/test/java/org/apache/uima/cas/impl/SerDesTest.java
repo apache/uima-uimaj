@@ -45,8 +45,11 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.admin.FSIndexRepositoryMgr;
 import org.apache.uima.cas.admin.TypeSystemMgr;
+import org.apache.uima.cas.impl.BinaryCasSerDes6.ReuseInfo;
 import org.apache.uima.cas.test.AnnotatorInitializer;
 import org.apache.uima.cas.test.CASInitializer;
+import org.apache.uima.internal.util.IntListIterator;
+import org.apache.uima.internal.util.rb_trees.IntArrayRBT;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.impl.SerializationMeasures;
 
@@ -724,19 +727,19 @@ public class SerDesTest extends TestCase {
 
   private void verify() {
     try {
-      BinaryCasSerDes5 bcs = new BinaryCasSerDes5(ts);
       ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
       if (doPlain) {
         (new CASSerializer()).addCAS(cas, baos);      
       } else {      
-        SerializationMeasures sm = bcs.serialize(cas, baos);
+        BinaryCasSerDes6 bcs = new BinaryCasSerDes6(cas);
+        SerializationMeasures sm = bcs.serialize(baos);
         if (null != sm) {
           System.out.println(sm);
         }
       }
       ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
       deserCas.reinit(bais);
-      assertTrue(BinaryCasSerDes5.compareCASes(cas, deserCas));
+      assertTrue(BinaryCasSerDes6.compareCASes(cas, deserCas));
     } catch (IOException e) {
       throw new RuntimeException(e);
     }    
@@ -744,17 +747,19 @@ public class SerDesTest extends TestCase {
 
   private void verifyDelta(MarkerImpl mark) {
     try {
+      ReuseInfo ri = null;
       ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
-      BinaryCasSerDes5 bcs = new BinaryCasSerDes5(ts);
       if (doPlain) {
         Serialization.serializeCAS(cas, baos);
       } else {
-        SerializationMeasures sm = bcs.serialize(cas, baos, mark, cas.getTypeSystemImpl());
-        System.out.println(sm);
+        BinaryCasSerDes6 bcs = new BinaryCasSerDes6(cas, mark);
+        SerializationMeasures sm = bcs.serialize(baos);
+        if (sm != null) {System.out.println(sm);}
+        ri = bcs.getReuseInfo();
       }
       ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-      deltaCas.reinit(bais);
-      assertTrue(BinaryCasSerDes5.compareCASes(cas, deltaCas));
+      deltaCas.reinit(bais, ri);
+      assertTrue(BinaryCasSerDes6.compareCASes(cas, deltaCas));
       
       // verify indexed fs same, and in same order - already done by compareCASes
 //      int[] fsIndexes1 = cas.getIndexedFSs();

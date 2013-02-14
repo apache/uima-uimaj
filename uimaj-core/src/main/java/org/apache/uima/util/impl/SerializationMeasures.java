@@ -18,27 +18,27 @@
  */
 package org.apache.uima.util.impl;
 
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.CAN_BE_NEGATIVE;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.IN_MAIN_HEAP;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_ArrayLength;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_Byte;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_Double_Exponent;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_Double_Mantissa_Sign;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_Float_Exponent;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_Float_Mantissa_Sign;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_FsIndexes;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_HeapRef;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_Int;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_Long_High;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_Long_Low;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_MainHeap;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_Short;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_StrChars;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_StrLength;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_StrOffset;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_TypeCode;
+import static org.apache.uima.cas.impl.SlotKinds.CAN_BE_NEGATIVE;
+import static org.apache.uima.cas.impl.SlotKinds.IN_MAIN_HEAP;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_ArrayLength;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Byte;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Double_Exponent;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Double_Mantissa_Sign;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Float_Exponent;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Float_Mantissa_Sign;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_FsIndexes;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_HeapRef;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Int;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Long_High;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Long_Low;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_MainHeap;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Short;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_StrChars;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_StrLength;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_StrOffset;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_TypeCode;
 
-import org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind;
+import org.apache.uima.cas.impl.SlotKinds.SlotKind;
 
 
 /**

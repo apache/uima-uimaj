@@ -19,32 +19,32 @@
 
 package org.apache.uima.cas.impl;
 
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.NBR_SLOT_KIND_ZIP_STREAMS;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_ArrayLength;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_BooleanRef;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_Byte;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_ByteRef;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_Control;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_DoubleRef;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_Double_Exponent;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_Double_Mantissa_Sign;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_Float_Exponent;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_Float_Mantissa_Sign;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_FsIndexes;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_HeapRef;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_Int;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_LongRef;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_Long_High;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_Long_Low;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_MainHeap;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_Short;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_ShortRef;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_StrChars;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_StrLength;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_StrOffset;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_StrRef;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_StrSeg;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_TypeCode;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.NBR_SLOT_KIND_ZIP_STREAMS;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_ArrayLength;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_BooleanRef;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Byte;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_ByteRef;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Control;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_DoubleRef;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Double_Exponent;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Double_Mantissa_Sign;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Float_Exponent;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Float_Mantissa_Sign;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_FsIndexes;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_HeapRef;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Int;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_LongRef;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Long_High;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Long_Low;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_MainHeap;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Short;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_ShortRef;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_StrChars;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_StrLength;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_StrOffset;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_StrRef;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_StrSeg;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_TypeCode;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -73,9 +73,7 @@ import java.util.zip.InflaterInputStream;
 import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.Marker;
-import org.apache.uima.cas.impl.BinaryCasSerDes5.CompressLevel;
-import org.apache.uima.cas.impl.BinaryCasSerDes5.CompressStrat;
-import org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind;
+import org.apache.uima.cas.impl.SlotKinds.SlotKind;
 import org.apache.uima.cas.impl.TypeSystemImpl.TypeInfo;
 import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.jcas.JCas;
@@ -201,32 +199,32 @@ public class BinaryCasSerDes4 {
    *     which can make for fewer bytes to represent the number.
    */
 
-//  /**
-//   * Compression alternatives
-//   */
-//  
-//  public enum CompressLevel {
-//    None(   Deflater.NO_COMPRESSION),
-//    Fast(   Deflater.BEST_SPEED),
-//    Default(Deflater.DEFAULT_COMPRESSION),
-//    Best(   Deflater.BEST_COMPRESSION),
-//    ;
-//    final public int lvl;
-//    CompressLevel(int lvl) {
-//      this.lvl = lvl;
-//    }
-//  }
-//  
-//  public enum CompressStrat {
-//    Default(      Deflater.DEFAULT_STRATEGY),
-//    Filtered(     Deflater.FILTERED),
-//    HuffmanOnly(  Deflater.HUFFMAN_ONLY),
-//    ;
-//    final public int strat;
-//    CompressStrat(int strat) {
-//      this.strat = strat;
-//    }
-//  }
+  /**
+   * Compression alternatives
+   */
+  
+  public enum CompressLevel {
+    None(   Deflater.NO_COMPRESSION),
+    Fast(   Deflater.BEST_SPEED),
+    Default(Deflater.DEFAULT_COMPRESSION),
+    Best(   Deflater.BEST_COMPRESSION),
+    ;
+    final public int lvl;
+    CompressLevel(int lvl) {
+      this.lvl = lvl;
+    }
+  }
+  
+  public enum CompressStrat {
+    Default(      Deflater.DEFAULT_STRATEGY),
+    Filtered(     Deflater.FILTERED),
+    HuffmanOnly(  Deflater.HUFFMAN_ONLY),
+    ;
+    final public int strat;
+    CompressStrat(int strat) {
+      this.strat = strat;
+    }
+  }
 //  
 //  /**
 //   * Define all the slot kinds.

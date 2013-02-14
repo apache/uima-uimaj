@@ -19,19 +19,19 @@
 
 package org.apache.uima.cas.impl;
 
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_ArrayLength;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_Boolean;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_Byte;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_ByteRef;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_DoubleRef;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_Float;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_HeapRef;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_Int;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_LongRef;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_Short;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_ShortRef;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_StrRef;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_TypeCode;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_ArrayLength;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Boolean;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Byte;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_ByteRef;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_DoubleRef;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Float;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_HeapRef;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Int;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_LongRef;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Short;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_ShortRef;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_StrRef;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_TypeCode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,7 +50,7 @@ import org.apache.uima.cas.TypeNameSpace;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.admin.CASAdminException;
 import org.apache.uima.cas.admin.TypeSystemMgr;
-import org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind;
+import org.apache.uima.cas.impl.SlotKinds.SlotKind;
 import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.internal.util.StringToIntMap;
 import org.apache.uima.internal.util.SymbolTable;

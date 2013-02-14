@@ -19,32 +19,32 @@
 
 package org.apache.uima.cas.impl;
 
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.NBR_SLOT_KIND_ZIP_STREAMS;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_ArrayLength;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_BooleanRef;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_Byte;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_ByteRef;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_Control;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_DoubleRef;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_Double_Exponent;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_Double_Mantissa_Sign;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_Float_Exponent;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_Float_Mantissa_Sign;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_FsIndexes;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_HeapRef;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_Int;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_LongRef;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_Long_High;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_Long_Low;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_MainHeap;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_Short;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_ShortRef;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_StrChars;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_StrLength;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_StrOffset;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_StrRef;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_StrSeg;
-import static org.apache.uima.cas.impl.BinaryCasSerDes5.SlotKind.Slot_TypeCode;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.NBR_SLOT_KIND_ZIP_STREAMS;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_ArrayLength;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_BooleanRef;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Byte;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_ByteRef;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Control;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_DoubleRef;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Double_Exponent;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Double_Mantissa_Sign;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Float_Exponent;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Float_Mantissa_Sign;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_FsIndexes;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_HeapRef;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Int;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_LongRef;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Long_High;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Long_Low;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_MainHeap;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Short;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_ShortRef;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_StrChars;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_StrLength;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_StrOffset;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_StrRef;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_StrSeg;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_TypeCode;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -58,13 +58,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InterruptedIOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.Inflater;
@@ -73,8 +71,11 @@ import java.util.zip.InflaterInputStream;
 import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.Marker;
+import org.apache.uima.cas.impl.SlotKinds.SlotKind;
 import org.apache.uima.cas.impl.TypeSystemImpl.TypeInfo;
+import org.apache.uima.internal.util.IntListIterator;
 import org.apache.uima.internal.util.IntVector;
+import org.apache.uima.internal.util.rb_trees.IntArrayRBT;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.util.impl.DataIO;
 import org.apache.uima.util.impl.OptimizeStrings;
@@ -186,7 +187,6 @@ public class BinaryCasSerDes5 {
    */
   private static final int VERSION = 1;  
 
-  public static final boolean IS_DIFF_ENCODE = true;
   public static final boolean CAN_BE_NEGATIVE = true;
   public static final boolean IGNORED = true;
   public static final boolean IN_MAIN_HEAP = true;
@@ -274,76 +274,6 @@ public class BinaryCasSerDes5 {
    *     which can make for fewer bytes to represent the number.
    */
 
-  /**
-   * NOTE: adding or altering slots breaks backward compatability and
-   * the ability do deserialize previously serialized things
-   * 
-   * This definition shared with BinaryCasSerDes4
-   * 
-   * Define all the slot kinds.
-   */
-  public enum SlotKind {
-    Slot_ArrayLength(! IS_DIFF_ENCODE, ! CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
-    Slot_HeapRef(    IS_DIFF_ENCODE,             IGNORED, 4, IN_MAIN_HEAP),
-    Slot_Int(        IS_DIFF_ENCODE,             IGNORED, 4, IN_MAIN_HEAP),
-    Slot_Byte(       ! IS_DIFF_ENCODE, ! CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
-    Slot_Short(      IS_DIFF_ENCODE,             IGNORED, 4, IN_MAIN_HEAP),
-    Slot_TypeCode(   ! IS_DIFF_ENCODE, ! CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
-
-    Slot_StrOffset(  ! IS_DIFF_ENCODE, ! CAN_BE_NEGATIVE, 4, !IN_MAIN_HEAP),
-    Slot_StrLength(  ! IS_DIFF_ENCODE, ! CAN_BE_NEGATIVE, 4, !IN_MAIN_HEAP),
-    Slot_Long_High(    IS_DIFF_ENCODE,           IGNORED, 0, !IN_MAIN_HEAP),
-    Slot_Long_Low (    IS_DIFF_ENCODE,           IGNORED, 0, !IN_MAIN_HEAP),
-
-    // the next are not actual slot kinds, but instead
-    // are codes used to control encoding of Floats and Doubles.
-    Slot_Float_Mantissa_Sign( ! IS_DIFF_ENCODE, CAN_BE_NEGATIVE, 0, !IN_MAIN_HEAP),
-    // exponent is 8 bits, and shifted in the expectation
-    // that many values may be between 1 and 0 (e.g., normalized values)
-    //   -- so sign moving is needed
-    Slot_Float_Exponent(      ! IS_DIFF_ENCODE, CAN_BE_NEGATIVE, 0, !IN_MAIN_HEAP),
-    
-    Slot_Double_Mantissa_Sign(! IS_DIFF_ENCODE, CAN_BE_NEGATIVE, 0, !IN_MAIN_HEAP),
-    Slot_Double_Exponent(     ! IS_DIFF_ENCODE, CAN_BE_NEGATIVE, 0, !IN_MAIN_HEAP),
-    Slot_FsIndexes(             IS_DIFF_ENCODE,         IGNORED, 4, !IN_MAIN_HEAP),
-    
-    Slot_StrChars(            IGNORED,          IGNORED, 2, !IN_MAIN_HEAP),
-    
-    Slot_Control(             IGNORED,          IGNORED, 0, !IN_MAIN_HEAP),
-    Slot_StrSeg(              ! IS_DIFF_ENCODE, ! CAN_BE_NEGATIVE, 0, ! IN_MAIN_HEAP),
-    
-    // the next slots are not serialized
-    Slot_StrRef(     IS_DIFF_ENCODE,             IGNORED, 4, IN_MAIN_HEAP),
-    Slot_BooleanRef( ! IS_DIFF_ENCODE, ! CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
-    Slot_ByteRef(    IS_DIFF_ENCODE,             IGNORED, 4, IN_MAIN_HEAP),
-    Slot_ShortRef(   IS_DIFF_ENCODE,             IGNORED, 4, IN_MAIN_HEAP),
-    Slot_LongRef(    IS_DIFF_ENCODE,             IGNORED, 4, IN_MAIN_HEAP),
-    Slot_DoubleRef(  IS_DIFF_ENCODE,             IGNORED, 4, IN_MAIN_HEAP),
-    Slot_Float(      ! IS_DIFF_ENCODE, ! CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
-    Slot_Boolean(    ! IS_DIFF_ENCODE, ! CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
-    // next used to capture original heap size
-    Slot_MainHeap(   IGNORED,          IGNORED,           4, !IN_MAIN_HEAP),
-
-    ;
-
-    public final boolean isDiffEncode;
-    public final boolean canBeNegative;
-    public final boolean inMainHeap;
-    public final int elementSize;
-    
-    public static final int NBR_SLOT_KIND_ZIP_STREAMS;
-    static {NBR_SLOT_KIND_ZIP_STREAMS = Slot_StrRef.ordinal();}
-    
-    SlotKind(boolean isDiffEncode, 
-             boolean canBeNegative, 
-             int elementSize,
-             boolean inMainHeap) {
-      this.isDiffEncode = isDiffEncode;
-      this.canBeNegative = isDiffEncode ? true : canBeNegative;
-      this.elementSize = elementSize; 
-      this.inMainHeap = inMainHeap;
-    }
-  }
   
   private static AuxHeap getAuxHeapFromSlotKind(SlotKind k) {
     if ((k == Slot_ByteRef) || (k == Slot_BooleanRef)) {
@@ -561,7 +491,7 @@ public class BinaryCasSerDes5 {
 
     final private boolean isDelta;        // if true, there is a marker indicating the start spot(s)
     final private boolean doMeasurement;  // if true, doing measurements
-    final private ComprItemRefs fsStartIndexes = new ComprItemRefs();
+    final private CasSeqAddrMaps fsStartIndexes = new CasSeqAddrMaps();
     final private int[] typeCodeHisto = new int[ts.getTypeArraySize()]; 
 //    final private Integer[] serializedTypeCode2Code = new Integer[ts.getTypeArraySize()]; // needs to be Integer to get comparator choice
     final private int[] estimatedZipSize = new int[NBR_SLOT_KIND_ZIP_STREAMS]; // one entry for each output stream kind
@@ -709,6 +639,13 @@ public class BinaryCasSerDes5 {
         sm.header = 12;
       }
        
+      /******************************************************************
+       * Find all FSs to be serialized via the indexes
+       *   including those FSs referenced  
+       ******************************************************************/
+      
+      IntArrayRBT foundFSs = processIndexedFeatureStructures(true /* pass 1 */);
+       
       /***************************
        * Prepare to walk main heap
        * We prescan the main heap and
@@ -724,6 +661,7 @@ public class BinaryCasSerDes5 {
         // As a side effect, also add all strings that are included
         // in the target type system to the set to be optimized.
       totalMappedHeapSize = initFsStartIndexes(
+          foundFSs,
           fsStartIndexes, heap, heapStart, heapEnd, typeCodeHisto, os, stringHeapObj, mark, false);
       if (heapStart == 0) {
         totalMappedHeapSize++;  // include the null at the start
@@ -927,7 +865,7 @@ public class BinaryCasSerDes5 {
         }
       }  // end of heap walk
       
-      serializeIndexedFeatureStructures();
+      processIndexedFeatureStructures(false /* pass 2 */);
 
       if (isDelta) {
         (new SerializeModifiedFSs()).serializeModifiedFSs();
@@ -940,10 +878,26 @@ public class BinaryCasSerDes5 {
       }
     }
     
-    
-    private void serializeIndexedFeatureStructures() throws IOException {
+ 
+    /**
+     * The indexes are processed twice.
+     * 
+     * The first time it is to generate an ordered set (by heap addr) 
+     * of all FSs that are to be serialized:
+     *   because they are in some index, or
+     *   are pointed to by something that is in some index (recursively)
+     *   
+     * The second time it is to serialize out the index information.
+     * This step has to wait until the first time call has completed and 
+     * the fsStartIndexes instance has a chance to be built.
+     * 
+     * @return
+     * @throws IOException
+     */
+    private IntArrayRBT processIndexedFeatureStructures(boolean isPass1) throws IOException {
+      IntArrayRBT foundFSs = isPass1 ? new IntArrayRBT() : null;
       final int[] fsIndexes = isDelta ? cas.getDeltaIndexedFSs(mark) : cas.getIndexedFSs();
-      if (doMeasurement) {
+      if (!isPass1 && doMeasurement) {
         sm.statDetails[fsIndexes_i].original = fsIndexes.length * 4 + 1;      
       }
       final int nbrViews = fsIndexes[0];
@@ -951,7 +905,7 @@ public class BinaryCasSerDes5 {
       writeVnumber(control_i, nbrViews);
       writeVnumber(control_i, nbrSofas);
       
-      if (doMeasurement) {
+      if (!isPass1 && doMeasurement) {
         sm.statDetails[fsIndexes_i].incr(1); // an approximation - probably correct
         sm.statDetails[fsIndexes_i].incr(1);
       }
@@ -960,24 +914,34 @@ public class BinaryCasSerDes5 {
       final int end1 = nbrSofas + 2;
       for (; fi < end1; fi++) {
 //      writeVnumber(control_i, fsIndexes[fi]);  // version 0
-        final int v = fsStartIndexes.getTgtSeqFromSrcAddr(fsIndexes[fi]);
-        writeVnumber(control_i, v);    // version 1
-        
-        if (doMeasurement) {
-          sm.statDetails[fsIndexes_i].incr(DataIO.lengthVnumber(v));
+        final int addrSofaFs = fsIndexes[fi];
+        if (!isPass1) {
+          final int v = fsStartIndexes.getTgtSeqFromSrcAddr(addrSofaFs);
+          writeVnumber(control_i, v);    // version 1
+           
+          if (doMeasurement) {
+            sm.statDetails[fsIndexes_i].incr(DataIO.lengthVnumber(v));
+          }
+        } else {
+          enqueueFS(foundFSs, addrSofaFs);
         }
       }
        
       for (int vi = 0; vi < nbrViews; vi++) {
-        fi = compressFsxPart(fsIndexes, fi);    // added FSs
-        if (isDelta) {
-          fi = compressFsxPart(fsIndexes, fi);  // removed FSs
-          fi = compressFsxPart(fsIndexes, fi);  // reindexed FSs
+        fi = compressFsxPart(fsIndexes, fi, foundFSs, isPass1);    // added FSs
+        if (!isPass1 && isDelta) {
+          fi = compressFsxPart(fsIndexes, fi, null, false);  // removed FSs
+          fi = compressFsxPart(fsIndexes, fi, null, false);  // reindexed FSs
         }
-      }      
+      } 
+      return foundFSs;
     }
 
-    private int compressFsxPart(int[] fsIndexes, int fsNdxStart) throws IOException {
+    private int compressFsxPart(
+        int[] fsIndexes, 
+        int fsNdxStart,
+        IntArrayRBT foundFSs, 
+        boolean isPass1) throws IOException {
       int ix = fsNdxStart;
       final int nbrEntries = fsIndexes[ix++];
       final int end = ix + nbrEntries;
@@ -999,27 +963,90 @@ public class BinaryCasSerDes5 {
       int entriesWritten = 0;  // can be less than nbrEntries if type mapping excludes some types in target
       
       for (int i = 0; i < ia.length; i++) {
-        final int v = ia[i];
-        final int tgtV = fsStartIndexes.getTgtSeqFromSrcAddr(v);
-        if (tgtV == 0) {
-          continue; // skip - the target doesn't have this Fs
+        final int fsAddr = ia[i];
+        // skip if not in target
+//        if (!isTypeMapping || (0 != typeMapper.mapTypeCodeSrc2Tgt(heap[fsAddr]))) {
+        if (!isPass1) {
+          final int tgtV = fsStartIndexes.getTgtSeqFromSrcAddr(fsAddr);
+          if (tgtV == -1) {
+            continue; // skip - the target doesn't have this Fs
+          }
+          final int delta = tgtV - prev;
+          entriesWritten++;
+          writeVnumber(fsIndexes_dos, delta);
+          if (doMeasurement) {
+            sm.statDetails[fsIndexes_i].incr(DataIO.lengthVnumber(delta));
+          }
+          prev = tgtV;
+        } else {    
+          enqueueFS(foundFSs, fsAddr);
         }
-        final int delta = tgtV - prev;
-        entriesWritten++;
-        writeVnumber(fsIndexes_dos, delta);
+      }
+      if (!isPass1) {
+        writeVnumber(control_dos, entriesWritten);  // version 1  
         if (doMeasurement) {
-          sm.statDetails[fsIndexes_i].incr(DataIO.lengthVnumber(delta));
+          sm.statDetails[typeCode_i].incr(DataIO.lengthVnumber(entriesWritten));
         }
-        prev = tgtV;
       }
-      writeVnumber(control_dos, entriesWritten);  // version 1  
-      if (doMeasurement) {
-        sm.statDetails[typeCode_i].incr(DataIO.lengthVnumber(entriesWritten));
-      }
-
       return end;
     } 
 
+    private void enqueueFS(IntArrayRBT foundFSs, int fsAddr) {
+      if (null == foundFSs) {
+        return;
+      }
+      if (0 != fsAddr) {
+        if (!foundFSs.containsKey(fsAddr)) {
+          if (!isDelta || mark.isNew(fsAddr)) {
+            foundFSs.insertKey(fsAddr);
+            enqueueFeatures(foundFSs, fsAddr);
+          }
+        }
+      }
+    }
+    
+    /**
+     * Enqueue all FSs reachable from features of the given FS.
+     */
+    private void enqueueFeatures(IntArrayRBT foundFSs, int addr) {
+      final int tCode = heap[addr];
+      final TypeInfo typeInfo = ts.getTypeInfo(tCode);
+      final SlotKind[] kinds = typeInfo.slotKinds;
+      
+      if (typeInfo.isHeapStoredArray && (Slot_HeapRef == kinds[1])) {
+        // fs array, add elements
+        final int length = heap[addr + 1];
+        for (int i = 0; i < length; i++) {
+          enqueueFS(foundFSs, heap[addr + 2 + i]);
+        }
+        return;
+      }
+      
+      // not an FS Array
+      if (typeInfo.isArray) {
+        return;
+      }
+    
+      if (isTypeMapping) {
+        final int[] tgtFeatOffsets2Src = typeMapper.getTgtFeatOffsets2Src(tCode);
+        for (int i = 0; i < tgtFeatOffsets2Src.length; i++) {
+          final int featOffsetInSrc = tgtFeatOffsets2Src[i] + 1;  // add one for origin 1
+          if (featOffsetInSrc == 0) {
+            throw new RuntimeException(); // never happen because for serialization, target is never a superset of features of src
+          }
+          if (kinds[featOffsetInSrc - 1] == Slot_HeapRef) {
+            enqueueFS(foundFSs, heap[addr + featOffsetInSrc]);
+          }
+        }
+      } else {
+        for (int i = 1; i < typeInfo.slotKinds.length + 1; i++) {
+          if (kinds[i - 1] == Slot_HeapRef) {
+            enqueueFS(foundFSs, heap[addr + i]);
+          }
+        }
+      }
+    }
+        
     private void serializeHeapStoredArray(int iHeap) throws IOException {
       final int length = serializeArrayLength(iHeap);
       // output values
@@ -1737,7 +1764,7 @@ public class BinaryCasSerDes5 {
     private int double1Index = -1;
 
     final private boolean isDelta;        // if true, a delta is being deserialized
-    final private ComprItemRefs fsStartIndexes = new ComprItemRefs();
+    final private CasSeqAddrMaps fsStartIndexes = new CasSeqAddrMaps();
     private String[] readCommonString;
 
     private TypeInfo typeInfo; // type info for the current type being serialized
@@ -1882,9 +1909,10 @@ public class BinaryCasSerDes5 {
       //     Below the merge line: only the 1st is possible
       //     Above the merge line: only the 2nd is possible
 
-      if (isDelta) { 
+      if (isDelta) {
+//        IntArrayRBT foundFSs = processIndexedFeatureStructures(true /* pass 1 */);
         // scan current source being added to / merged into
-        initFsStartIndexes(fsStartIndexes, heap, 1, heapStart, null, null, null, null, false);
+//        initFsStartIndexes(fpimdFSs. fsStartIndexes, heap, 1, heapStart, null, null, null, null, false);
       }
 
       fixupsNeeded = new IntVector(Math.max(16, heap.length / 10));
@@ -2585,6 +2613,7 @@ public class BinaryCasSerDes5 {
    * methods common to serialization / deserialization etc.
    ********************************************************************/
   
+  
   private static int incrToNextFs(int[] heap, int iHeap, TypeInfo typeInfo) {
     if (typeInfo.isHeapStoredArray) {
       return 2 + heap[iHeap + 1];
@@ -2609,7 +2638,8 @@ public class BinaryCasSerDes5 {
    * @return amount of heap used in target, side effect: set up fsStartIndexes (for both src and tgt)
    */
   private int initFsStartIndexes (
-      final ComprItemRefs fsStartIndexes, 
+      final IntArrayRBT foundFSs,
+      final CasSeqAddrMaps fsStartIndexes, 
       final int[] srcHeap, 
       final int srcHeapStart,   // might be 0, might be 1, might be start of delta TODO check 0/1?
       final int srcHeapEnd, 
@@ -2621,17 +2651,22 @@ public class BinaryCasSerDes5 {
    
     final boolean isTypeMapping = isTypeMappingCmn;
     final CasTypeSystemMapper typeMapper = typeMapperCmn;
+    final IntListIterator foundFSsIterator = foundFSs.iterator();
     
     int tgtHeapUsed = 0;
+    int nextTgtHeap = 1;
     int markStringHeap = (mark == null) ? 0 : mark.getNextStringHeapAddr();
     
-    for (int iSrcHeap = 1, iTgtHeap = 1; iSrcHeap < srcHeapEnd;) {
+    while (foundFSsIterator.hasNext()) {
+      final int iSrcHeap = foundFSsIterator.next();
+      final int iTgtHeap = nextTgtHeap;
+//    for (int iSrcHeap = 1, iTgtHeap = 1; iSrcHeap < srcHeapEnd;) {
       final int tCode = srcHeap[iSrcHeap];
       final int tgtTypeCode = isTypeMapping ? typeMapper.mapTypeCodeSrc2Tgt(tCode) : tCode;
       final boolean isIncludedType = (tgtTypeCode != 0);
       
       // record info for type
-      fsStartIndexes.addItemAddr(iSrcHeap, iTgtHeap, isIncludedType, isCompareCall);  // maps src heap to tgt seq
+      fsStartIndexes.addItemAddr(iSrcHeap, iTgtHeap, isIncludedType);  // maps src heap to tgt seq
 
       // maybe do histogram of typecodes
       if ((null != histo) && (iSrcHeap >= srcHeapStart)) {
@@ -2680,42 +2715,41 @@ public class BinaryCasSerDes5 {
         }
       }
       
-      // add "skip" entries for non-included type's
-      //   features which are stored in the Aux heap array
-      if (isTypeMapping) {
-        if (isIncludedType && !srcTypeInfo.isHeapStoredArray ) {
-          // scan features for omitted slot which is a long or double
-          final boolean[] fSrcInTgt = typeMapper.getFSrcInTgt(tCode);
-          for (int iSrcFeat = 0; iSrcFeat < srcTypeInfo.slotKinds.length; iSrcFeat++) {
-            // for each feature slot, in a normal included type,
-            // if the target doesn't have this feature, and it's a long/double, add this to the set of skipped slots in the aux array 
-            if (!fSrcInTgt[iSrcFeat] && (
-                (srcTypeInfo.slotKinds[iSrcFeat] == SlotKind.Slot_DoubleRef) ||
-                (srcTypeInfo.slotKinds[iSrcFeat] == SlotKind.Slot_LongRef))) { 
-//              fsStartIndexes.recordSkippedAuxHeap(AuxHeap.LongAH, srcHeap[iSrcHeap + iSrcFeat + 1], 1);
-            }
-          }
-        } else if (!isIncludedType) {
-          // if the src Type is not in the target, and the src Type is a ref to one of the aux arrays
-          if (!srcTypeInfo.isHeapStoredArray) {
-            // is an array of boolean, byte, short, long or double
-//            final int skipStart = srcHeap[iSrcHeap + 2];
-//            final int skipSize  = srcHeap[iSrcHeap + 1];
-//            final AuxHeap auxHeap = getAuxHeapFromSlotKind(srcTypeInfo.slotKinds[1]);
-//            fsStartIndexes.recordSkippedAuxHeap(auxHeap, skipStart, skipSize);
-          }
-        }
-      }
+//  //     add "skip" entries for non-included type's
+//  //       features which are stored in the Aux heap array
+//      if (isTypeMapping) {
+//        if (isIncludedType && !srcTypeInfo.isHeapStoredArray ) {
+//          // scan features for omitted slot which is a long or double
+//          final boolean[] fSrcInTgt = typeMapper.getFSrcInTgt(tCode);
+//          for (int iSrcFeat = 0; iSrcFeat < srcTypeInfo.slotKinds.length; iSrcFeat++) {
+//            // for each feature slot, in a normal included type,
+//            // if the target doesn't have this feature, and it's a long/double, add this to the set of skipped slots in the aux array 
+//            if (!fSrcInTgt[iSrcFeat] && (
+//                (srcTypeInfo.slotKinds[iSrcFeat] == SlotKind.Slot_DoubleRef) ||
+//                (srcTypeInfo.slotKinds[iSrcFeat] == SlotKind.Slot_LongRef))) { 
+////              fsStartIndexes.recordSkippedAuxHeap(AuxHeap.LongAH, srcHeap[iSrcHeap + iSrcFeat + 1], 1);
+//            }
+//          }
+//        } else if (!isIncludedType) {
+//          // if the src Type is not in the target, and the src Type is a ref to one of the aux arrays
+//          if (!srcTypeInfo.isHeapStoredArray) {
+//            // is an array of boolean, byte, short, long or double
+////            final int skipStart = srcHeap[iSrcHeap + 2];
+////            final int skipSize  = srcHeap[iSrcHeap + 1];
+////            final AuxHeap auxHeap = getAuxHeapFromSlotKind(srcTypeInfo.slotKinds[1]);
+////            fsStartIndexes.recordSkippedAuxHeap(auxHeap, skipStart, skipSize);
+//          }
+//        }
+//      }
       
       // Advance to next Feature Structure, in both source and target heap frame of reference
       if (isIncludedType) {
         final int deltaTgtHeap = incrToNextFs(srcHeap, iSrcHeap, tgtTypeInfo);
-        iTgtHeap += deltaTgtHeap;
+        nextTgtHeap += deltaTgtHeap;
         if (iSrcHeap >= srcHeapStart) {
           tgtHeapUsed += deltaTgtHeap;
         }
       }
-      iSrcHeap += incrToNextFs(srcHeap, iSrcHeap, srcTypeInfo);
     }
     
 //    if (isTypeMapping) {
@@ -2758,7 +2792,7 @@ public class BinaryCasSerDes5 {
       final private int[] c2heap;
       final private int c1end;
       final private int c2end;
-      final private ComprItemRefs fsStartIndexes = new ComprItemRefs();
+      final private CasSeqAddrMaps fsStartIndexes = new CasSeqAddrMaps();
       
       private TypeInfo typeInfo;
       private int seqHeapSrc;
@@ -2973,7 +3007,7 @@ public class BinaryCasSerDes5 {
         final boolean isIncludedType = (tgtTypeCode != 0);
         
         // record info for type
-        fsStartIndexes.addItemAddr(iSrcHeap, iTgtHeap, isIncludedType, isCompareCall);  // maps src heap to tgt seq
+        fsStartIndexes.addItemAddr(iSrcHeap, iTgtHeap, isIncludedType);  // maps src heap to tgt seq
         
         // for features in type - 
         //    strings: accumulate those strings that are in the target, if optimizeStrings != null
@@ -3213,154 +3247,5 @@ public class BinaryCasSerDes5 {
 //      }
 //    }
 //  }
-  
-
-  /**
-   * Manage the conversion of Items (FSrefs) to relative sequential index number, and back 
-   * Manage the difference in two type systems
-   *   both size of the FSs and
-   *   handling excluded types
-   * 
-   * During serialization, these maps are constructed before serialization.
-   * During deserialization, these maps are constructed while things are being deserialized, and
-   *   then used in a "fixup" call at the end.
-   *   This allows for forward references.
-   *   
-   * In addition to heap mappings between src/tgt, addr and sequential number, there are also mappings
-   * computed for the case where the type systems do not match to account for holes in the aux heaps.
-   * These holes are significant (to preserve and compute with) only when deserializing a delta cas,
-   *   because then the input includes aux heap addresses relative to the target, which must be converted
-   *   to equivalent addresses in the source being deserialized into.  
-   *   
-   * Maps from int to int
-   *   address to/from sequential index for feature structures
-   *   sequential index to/from sequential index for casTypeSystemMapping
-   *   target index in aux heaps to source index
-   */
-  private static class ComprItemRefs {
-    
-    /**
-     * map from a target FS sequence nbr to a source address.
-     *   value is 0 if the target instance doesn't exist in the source
-     *     (this doesn't occur for receiving remote CASes back
-     *      (because src ts is always a superset of tgt ts),
-     *      but can occur while deserializing from Disk.
-     */
-    final private IntVector tgtSeq2SrcAddr = new IntVector();
-    
-    /**
-     * (Not Used, currently)
-     * map from a source seq number to a target seq number.
-     * value is -1 if the source FS is not in the target
-     */
-    final private IntVector srcSeq2TgtSeq = new IntVector();
-    
-//    /**
-//     * (Not Used, currently)
-//     * map from a target seq number to a target address.
-//     */
-//    final private IntVector tgtSeq2TgtAddr = new IntVector();  // used for comparing
-    
-    /**
-     * map from source address to target sequence number.
-     * if source is not in target, value = -1;
-     */
-    final private Map<Integer, Integer>  srcAddr2TgtSeq = new HashMap<Integer, Integer>();
-    
-    /**
-     * info needed to do a map from target aux heap to source aux heap
-     * Used when applying delta modifications "below the line" to these elements
-     *   Assumes any target ts element exists in source ts, so target is a subset
-     *   (due to type merging, when delta cas is used to return updates from service)
-     */
-    
-  
-    /**
-     * Indexed by AuxHeap kind: 
-     */
-
-//    final private List<List<AuxSkip>> skips = new ArrayList<List<AuxSkip>>(AuxHeap.values().length);
-//    
-//    { // initialize instance block
-//      for (int i = 0; i < skips.size(); i++) {
-//        skips.add(new ArrayList<AuxSkip>());
-//      }
-//    }
    
-    private int nextTgt = 0;
-
-    public ComprItemRefs() {
-      addItemAddr(0, 0, true, true);
-    }
-          
-    /**
-     * Add a new FS address - done during prescan of source
-     * @param addr
-     * @param inTarget true if this type is in the target
-     */
-    public void addItemAddr(int srcAddr, int tgtAddr, boolean inTarget, boolean isCompareCall) {
-      int i = nextTgt;
-      if (inTarget) {
-        tgtSeq2SrcAddr.add(srcAddr);
-//        tgtSeq2TgtAddr.add(tgtAddr);
-      }
-      srcAddr2TgtSeq.put(srcAddr, inTarget ? i : 0);
-//      // debug
-//      if (srcAddr < 525) {
-//        System.out.format("Adding to srcAddr2TgtSeq: addr: %d tgtSeq: %d, type=%s%n", srcAddr, inTarget ? i : 0, 
-//           );
-//      }
-      srcSeq2TgtSeq.add(inTarget ? nextTgt++ : 0);
-    }
-    
-//    /**
-//     * record skipped entries in an Aux heap
-//     * @param auxHeap which heap this is for
-//     * @param srcSkipIndex the index of the first skipped slot in the src heap
-//     * @param srcSkipSize the number of entries skipped
-//     */
-//    public void recordSkippedAuxHeap(AuxHeap auxHeap, int srcSkipIndex, int srcSkipSize) {
-//      skips.get(auxHeap.ordinal()).add(new AuxSkip(srcSkipIndex, srcSkipSize));
-//    }
-    
-    /**
-     * Called during deserialize to incrementally add 
-     * @param srcAddr
-     * @param inSrc
-     */
-    public void addSrcAddrForTgt(int srcAddr, boolean inSrc) {
-      if (inSrc) {
-        srcAddr2TgtSeq.put(srcAddr, nextTgt);
-        srcSeq2TgtSeq.add(nextTgt);
-        tgtSeq2SrcAddr.add(srcAddr);
-      }
-//      tgtSeq2TgtAddr.add(-1);  // not used I hope - need to check TODO
-      nextTgt++;
-    }
-                   
-    public int getSrcAddrFromTgtSeq(int seq) {
-      return tgtSeq2SrcAddr.get(seq);
-    }
-
-//    public int getTgtAddrFromTgtSeq(int seq) {
-//      return tgtSeq2TgtAddr.get(seq);
-//    }
-
-//    public int getMappedItemAddr(int index) {
-//      if (null == typeMapper) {
-//        return tgtIndexToSeq.get(index);
-//      } else {
-//        return tgtItemIndexToAddr.get(index);
-//      }
-//    }
-    
-    public int getTgtSeqFromSrcAddr(int itemAddr) {
-      return srcAddr2TgtSeq.get(itemAddr);      
-    }
-    
-    public int getNumberSrcFss() {
-      return srcAddr2TgtSeq.size();
-    }
-  }
-  
 }

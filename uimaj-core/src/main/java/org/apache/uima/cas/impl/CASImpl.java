@@ -79,6 +79,7 @@ import org.apache.uima.cas.admin.CASMgr;
 import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.cas.admin.FSIndexRepositoryMgr;
 import org.apache.uima.cas.admin.TypeSystemMgr;
+import org.apache.uima.cas.impl.BinaryCasSerDes6.ReuseInfo;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.cas.text.Language;
@@ -1160,9 +1161,14 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * @param istream
    * @throws CASRuntimeException
    */
+  
   public void reinit(InputStream istream) throws CASRuntimeException {
+    reinit(istream, null);
+  }
+  
+  public void reinit(InputStream istream, ReuseInfo rfs) throws CASRuntimeException {
     if (this != this.svd.baseCAS) {
-      this.svd.baseCAS.reinit(istream);
+      this.svd.baseCAS.reinit(istream, rfs);
       return;
     }
    
@@ -1194,7 +1200,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
         if (compressedVersion == 0) {
           (new BinaryCasSerDes4(this.getTypeSystemImpl())).deserialize(this, dis, delta);
         } else {
-          (new BinaryCasSerDes5(this.getTypeSystemImpl())).deserialize(this, dis, delta);
+          (new BinaryCasSerDes6(this, rfs)).deserializeAfterVersion(dis, delta);
         }
         return;
       }
@@ -1369,8 +1375,12 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
         }
       } // of delta - modified processing
     } catch (IOException e) {
+      String msg = e.getMessage();
+      if (msg == null) {
+        msg = e.toString();
+      }
       CASRuntimeException exception = new CASRuntimeException(
-          CASRuntimeException.BLOB_DESERIALIZATION, new String[] { e.getMessage() });
+          CASRuntimeException.BLOB_DESERIALIZATION, new String[] { msg });
       throw exception;
     }
   }
