@@ -71,7 +71,8 @@ public final class SimplePipeline {
 
     // Create CAS from merged metadata
     final CAS cas = CasCreationUtils.createCas(asList(reader.getMetaData(), aae.getMetaData()));
-
+    reader.typeSystemInit(cas.getTypeSystem());
+    
     try {
       // Process
       while (reader.hasNext()) {
@@ -132,8 +133,10 @@ public final class SimplePipeline {
     for (AnalysisEngine engine : engines) {
       metaData.add(engine.getMetaData());
     }
-
+    
     final CAS cas = CasCreationUtils.createCas(metaData);
+    reader.typeSystemInit(cas.getTypeSystem());
+
     while (reader.hasNext()) {
       reader.getNext(cas);
       runPipeline(cas, engines);

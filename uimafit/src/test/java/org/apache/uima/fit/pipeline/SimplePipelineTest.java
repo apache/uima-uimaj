@@ -23,21 +23,22 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
+import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.fit.component.JCasCollectionReader_ImplBase;
-import org.apache.uima.fit.factory.AnalysisEngineFactory;
-import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.type.Sentence;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Progress;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
+import static org.apache.uima.fit.factory.CollectionReaderFactory.*;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.*;
 
 /**
  */
@@ -51,11 +52,19 @@ public class SimplePipelineTest {
 
     private int current = 0;
 
+    private boolean initTypeSystemCalled = false;
+    
+    @Override
+    public void typeSystemInit(TypeSystem aTypeSystem) throws ResourceInitializationException {
+      initTypeSystemCalled = true;
+    }
+    
     public Progress[] getProgress() {
       return null;
     }
 
     public boolean hasNext() throws IOException, CollectionException {
+      assertTrue("typeSystemInit() has not been called", initTypeSystemCalled);
       return this.current < this.size;
     }
 
@@ -98,10 +107,18 @@ public class SimplePipelineTest {
   }
 
   @Test
-  public void test() throws Exception {
-    SimplePipeline.runPipeline(CollectionReaderFactory.createCollectionReader(Reader.class),
-            AnalysisEngineFactory.createPrimitive(Annotator.class),
-            AnalysisEngineFactory.createPrimitive(Writer.class));
-    Assert.assertEquals(Arrays.asList(SENTENCE_TEXT), Writer.SENTENCES);
+  public void testWithInstances() throws Exception {
+    SimplePipeline.runPipeline(createCollectionReader(Reader.class),
+            createPrimitive(Annotator.class),
+            createPrimitive(Writer.class));
+    assertEquals(Arrays.asList(SENTENCE_TEXT), Writer.SENTENCES);
+  }
+
+  @Test
+  public void testWithDescriptors() throws Exception {
+    SimplePipeline.runPipeline(createDescription(Reader.class),
+            createPrimitiveDescription(Annotator.class),
+            createPrimitiveDescription(Writer.class));
+    assertEquals(Arrays.asList(SENTENCE_TEXT), Writer.SENTENCES);
   }
 }
