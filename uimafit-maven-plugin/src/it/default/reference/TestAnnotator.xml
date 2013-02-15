@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+    <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+    <primitive>true</primitive>
+    <annotatorImplementationName>TestAnnotator</annotatorImplementationName>
+    <analysisEngineMetaData>
+        <name>TestAnnotator</name>
+        <version>1.0-SNAPSHOT</version>
+        <vendor>Apache UIMA</vendor>
+        <copyright>Copyright by the respective authors.</copyright>
+        <configurationParameters>
+            <configurationParameter>
+                <name>value1</name>
+                <description>Parameter value 1.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
+        </configurationParameters>
+        <configurationParameterSettings/>
+        <typeSystemDescription/>
+        <fsIndexCollection/>
+        <capabilities/>
+        <operationalProperties>
+            <modifiesCas>true</modifiesCas>
+            <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+            <outputsNewCASes>false</outputsNewCASes>
+        </operationalProperties>
+    </analysisEngineMetaData>
+</analysisEngineDescription>

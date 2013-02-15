@@ -128,6 +128,40 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<artifactId>maven-invoker-plugin</artifactId>
+				<configuration>
+					<debug>true</debug>
+					<projectsDirectory>src/it</projectsDirectory>
+					<cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
+					<pomIncludes>
+						<pomInclude>*/pom.xml</pomInclude>
+					</pomIncludes>
+					<postBuildHookScript>verify</postBuildHookScript>
+					<localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
+					<settingsFile>src/it/settings.xml</settingsFile>
+					<goals>
+						<goal>clean</goal>
+						<goal>test-compile</goal>
+					</goals>
+				</configuration>
+				<executions>
+					<execution>
+						<id>integration-test</id>
+						<goals>
+							<goal>install</goal>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>commons-io</groupId>
+						<artifactId>commons-io</artifactId>
+						<version>2.4</version>
+					</dependency>
+				</dependencies>
+			</plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>

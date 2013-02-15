@@ -1,0 +1,22 @@
+import java.io.*;
+import java.util.*;
+import java.util.regex.*;
+import org.apache.commons.io.*;
+
+try
+{
+	String reference = IOUtils.toString(new File(basedir, "reference/TestAnnotator.xml").toURI().toURL());
+	String actual = IOUtils.toString(new File(basedir, "target/generated-sources/uimafit/TestAnnotator.xml").toURI().toURL());
+
+	if (!reference.equals(actual)) {
+        System.out.println("Actual descriptor does not match expected descriptor");
+        return false;
+	}	
+}
+catch( Throwable t )
+{
+    t.printStackTrace();
+    return false;
+}
+
+return true;
