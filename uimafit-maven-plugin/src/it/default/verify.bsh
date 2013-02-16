@@ -3,6 +3,7 @@ import java.util.*;
 import java.util.regex.*;
 import org.apache.commons.io.*;
 import org.custommonkey.xmlunit.Diff;
+import org.custommonkey.xmlunit.XMLUnit;
 
 try
 {
@@ -11,7 +12,10 @@ try
 	String actual = IOUtils.toString(new File(basedir, 
 		"target/generated-sources/uimafit/TestAnnotator.xml").toURI().toURL());
 
-	Diff diff = new Diff(reference, actual);
+    // In a local build, I get indented XML but on the Apache Jenkins I get non-indented XML. This
+    // settings tells XMLUnit to ignore this difference in whitespace - rec 2013-02-16
+	XMLUnit.setIgnoreWhitespace(true);
+	Diff diff = XMLUnit.compareXML(reference, actual);
 
 	if (!diff.identical()) {
         System.out.println("Actual descriptor does not match expected descriptor: " + diff);
