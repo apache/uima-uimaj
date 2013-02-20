@@ -33,6 +33,10 @@ import org.apache.uima.fit.legacy.converter.OperationalPropertiesConverter;
 import org.apache.uima.fit.legacy.converter.SofaCapabilityConverter;
 import org.apache.uima.fit.legacy.converter.TypeCapabilityConverter;
 import org.apache.uima.fit.util.LegacySupportPlugin;
+import org.apache.uima.fit.util.MetaDataType;
+import org.apache.uima.resource.ResourceInitializationException;
+import org.uimafit.factory.FsIndexFactory;
+import org.uimafit.factory.TypeSystemDescriptionFactory;
 
 /**
  * Legacy support plug in for the Google Code version of uimaFIT.
@@ -137,5 +141,16 @@ public class LegacySupportPluginImpl implements LegacySupportPlugin {
       converterRegistry = new HashMap<Class<? extends Annotation>, AnnotationConverter<?,?>>();
     }
     converterRegistry.put(aConverter.getModernType(), aConverter);
+  }
+
+  public String[] scanTypeDescriptors(MetaDataType aType) throws ResourceInitializationException {
+    switch (aType) {
+      case FS_INDEX:
+        return FsIndexFactory.scanIndexDescriptors();
+      case TYPE_SYSTEM:
+        return TypeSystemDescriptionFactory.scanTypeDescriptors();
+      default:
+        return new String[0];
+    }
   }
 }

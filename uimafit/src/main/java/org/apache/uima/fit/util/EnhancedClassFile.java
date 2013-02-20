@@ -25,7 +25,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Marks a class as having been processed by an uimaFIT class enhancer, such as the
+ * INTERNAL API - Marks a class as having been processed by an uimaFIT class enhancer, such as the
  * uimafit-maven-plugin. If the annotation is present, the enhancer does process the class again.
  */
 @Retention(RetentionPolicy.RUNTIME)

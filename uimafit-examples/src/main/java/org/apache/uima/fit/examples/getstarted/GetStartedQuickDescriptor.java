@@ -35,7 +35,7 @@ public class GetStartedQuickDescriptor {
 
   public static void main(String[] args) throws ResourceInitializationException,
           FileNotFoundException, SAXException, IOException {
-    // uimaFIT automatically uses all type systems listed in META-INF/org.uimafit/types.txt
+    // uimaFIT automatically uses all type systems listed in META-INF/org.apache.uima.fit/types.txt
 
     // Instantiate the analysis engine using the value "uimaFIT" for the parameter
     // PARAM_STRING ("stringParam").

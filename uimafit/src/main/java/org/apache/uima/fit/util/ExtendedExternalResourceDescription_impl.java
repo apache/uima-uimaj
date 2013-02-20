@@ -27,7 +27,7 @@ import org.apache.uima.resource.impl.ExternalResourceDescription_impl;
 import org.apache.uima.resource.metadata.ExternalResourceBinding;
 
 /**
- * Extended {@link ExternalResourceDescription_impl} which can carry
+ * INTERNAL API - Extended {@link ExternalResourceDescription_impl} which can carry
  * {@link ExternalResourceDescription}s.
  * 
  */

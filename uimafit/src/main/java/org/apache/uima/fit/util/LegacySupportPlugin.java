@@ -3,6 +3,11 @@ package org.apache.uima.fit.util;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
 
+import org.apache.uima.resource.ResourceInitializationException;
+
+/**
+ * INTERNAL API - Legacy support plug-in API.
+ */
 public interface LegacySupportPlugin {
   /**
    * Checks if a legacy version of the given modern annotation is present.
@@ -69,4 +74,13 @@ public interface LegacySupportPlugin {
 //   */
 //  <M extends Annotation> Object getDefaultValue(AccessibleObject aObject, Class<M> aAnnotationClass,
 //          String aProperty);
+
+  /**
+   * Get all currently accessible descriptor locations for the given type.
+   * 
+   * @return an array of locations.
+   * @throws ResourceInitializationException
+   *           if the locations could not be resolved.
+   */
+  String[] scanTypeDescriptors(MetaDataType aType) throws ResourceInitializationException;
 }

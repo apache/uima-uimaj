@@ -24,7 +24,6 @@ import java.io.IOException;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.impl.CASImpl;
-import org.apache.uima.fit.factory.TypeSystemDescriptionFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.tools.jcasgen.Jg;
@@ -55,9 +54,9 @@ import org.apache.uima.util.XMLInputSource;
  *   &lt;/executions>
  *   &lt;configuration>
  *     &lt;classpathScope>test&lt;/classpathScope>
- *     &lt;mainClass>org.uimafit.util.JCasGenPomFriendly&lt;/mainClass>
+ *     &lt;mainClass>org.apache.uima.fit.util.util.JCasGenPomFriendly&lt;/mainClass>
  *     &lt;arguments>
- *       &lt;argument>file:src/test/resources/META-INF/org.uimafit/type/**&#47;*.xml&lt;/argument>
+ *       &lt;argument>file:src/test/resources/META-INF/org.apache.uima.fit/type/**&#47;*.xml&lt;/argument>
  *       &lt;argument>${basedir}/src/test/java&lt;/argument>
  *     &lt;/arguments>
  *   &lt;/configuration>
@@ -71,7 +70,7 @@ public class JCasGenPomFriendly {
    */
   public static void main(String[] args) throws Exception {
     Jg jg = new Jg();
-    for (String file : TypeSystemDescriptionFactory.resolve(args[0].split(";"))) {
+    for (String file : MetaDataUtil.resolve(args[0].split(";"))) {
       generate(jg, file, args[1], load(file));
     }
   }

@@ -19,20 +19,15 @@
 package org.apache.uima.fit.factory;
 
 import static org.apache.uima.UIMAFramework.getXMLParser;
+import static org.apache.uima.fit.util.MetaDataUtil.scanDescriptors;
 import static org.apache.uima.util.CasCreationUtils.mergeTypeSystems;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.LogFactory;
+import org.apache.uima.fit.util.MetaDataType;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
@@ -40,8 +35,6 @@ import org.apache.uima.resource.metadata.impl.Import_impl;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 /**
  */
@@ -49,17 +42,6 @@ public final class TypeSystemDescriptionFactory {
   private TypeSystemDescriptionFactory() {
     // This class is not meant to be instantiated
   }
-
-  /**
-   * System property indicating which locations to scan for type descriptions. A list of locations
-   * may be given separated by ";".
-   */
-  public static final String TYPE_IMPORT_PATTERN = "org.apache.uima.fit.type.import_pattern";
-
-  /**
-   * Type manifest location.
-   */
-  public static final String TYPE_MANIFEST_PATTERN = "classpath*:META-INF/org.uimafit/types.txt";
 
   private static String[] typeDescriptorLocations;
 
@@ -134,8 +116,8 @@ public final class TypeSystemDescriptionFactory {
 
   /**
    * Creates a {@link TypeSystemDescription} from all type descriptions that can be found via the
-   * {@link #TYPE_IMPORT_PATTERN} or via the {@code META-INF/org.uimafit/types.txt} files in the
-   * classpath.
+   * {@link #TYPE_IMPORT_PATTERN} or via the {@code META-INF/org.apache.uima.fit/types.txt} files in
+   * the classpath.
    * 
    * @return the auto-scanned type system.
    */
@@ -170,8 +152,7 @@ public final class TypeSystemDescriptionFactory {
    */
   public static String[] scanTypeDescriptors() throws ResourceInitializationException {
     if (typeDescriptorLocations == null) {
-      typeDescriptorLocations = resolve(scanImportsAndManifests(TYPE_MANIFEST_PATTERN,
-              TYPE_IMPORT_PATTERN));
+      typeDescriptorLocations = scanDescriptors(MetaDataType.TYPE_SYSTEM);
     }
     return typeDescriptorLocations;
   }
@@ -182,66 +163,5 @@ public final class TypeSystemDescriptionFactory {
    */
   public static void forceTypeDescriptorsScan() {
     typeDescriptorLocations = null;
-  }
-
-  /**
-   * Scan patterns from manifest files and from the specified system property.
-   * 
-   * @param manifestPatterns
-   *          pattern matching the manifest files.
-   * @param importProperty
-   *          system property containing additional patterns.
-   * @return array or all patterns found.
-   */
-  public static String[] scanImportsAndManifests(String manifestPatterns, String importProperty)
-          throws ResourceInitializationException {
-    ArrayList<String> patterns = new ArrayList<String>();
-
-    // Scan auto-import locations
-    patterns.addAll(Arrays.asList(System.getProperty(importProperty, "").split(";")));
-
-    // Scan manifest
-    for (String mfUrl : resolve(manifestPatterns)) {
-      InputStream is = null;
-      try {
-        is = new URL(mfUrl).openStream();
-        @SuppressWarnings("unchecked")
-        List<? extends String> lines = IOUtils.readLines(is);
-        patterns.addAll(lines);
-      } catch (IOException e) {
-        throw new ResourceInitializationException(e);
-      } finally {
-        IOUtils.closeQuietly(is);
-      }
-    }
-
-    return patterns.toArray(new String[patterns.size()]);
-  }
-
-  /**
-   * Resolve a list of patterns to a set of URLs.
-   * 
-   * @return an array of locations.
-   * @throws ResourceInitializationException
-   *           if the locations could not be resolved.
-   */
-  public static String[] resolve(String... patterns) throws ResourceInitializationException {
-    Set<String> locations = new HashSet<String>();
-    PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-    try {
-      // Scan auto-import locations. Using a set to avoid scanning a pattern twice.
-      for (String pattern : new TreeSet<String>(Arrays.asList(patterns))) {
-        String p = pattern.trim();
-        if (p.length() == 0) {
-          continue;
-        }
-        for (Resource r : resolver.getResources(pattern)) {
-          locations.add(r.getURL().toString());
-        }
-      }
-      return locations.toArray(new String[locations.size()]);
-    } catch (IOException e) {
-      throw new ResourceInitializationException(e);
-    }
   }
 }

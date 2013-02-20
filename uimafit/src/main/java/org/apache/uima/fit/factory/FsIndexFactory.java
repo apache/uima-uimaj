@@ -20,8 +20,7 @@ package org.apache.uima.fit.factory;
 
 import static java.util.Arrays.asList;
 import static org.apache.uima.UIMAFramework.getXMLParser;
-import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.resolve;
-import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.scanImportsAndManifests;
+import static org.apache.uima.fit.util.MetaDataUtil.*;
 import static org.apache.uima.fit.util.ReflectionUtil.getInheritableAnnotation;
 
 import java.io.IOException;
@@ -31,6 +30,7 @@ import java.util.List;
 import org.apache.commons.logging.LogFactory;
 import org.apache.uima.fit.descriptor.FsIndex;
 import org.apache.uima.fit.descriptor.FsIndexKey;
+import org.apache.uima.fit.util.MetaDataType;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.FsIndexCollection;
 import org.apache.uima.resource.metadata.FsIndexDescription;
@@ -147,17 +147,6 @@ public final class FsIndexFactory {
     return key;
   }
 
-  /**
-   * System property indicating which locations to scan for index descriptions. A list of locations
-   * may be given separated by ";".
-   */
-  public static final String FS_INDEX_IMPORT_PATTERN = "org.uimafit.fsindex.import_pattern";
-
-  /**
-   * Index manifest location.
-   */
-  public static final String FS_INDEX_MANIFEST_PATTERN = "classpath*:META-INF/org.uimafit/fsindexes.txt";
-
   private static String[] indexDescriptorLocations;
 
   /**
@@ -204,8 +193,8 @@ public final class FsIndexFactory {
 
   /**
    * Creates a {@link FsIndexCollection} from all index descriptions that can be found via the
-   * {@link #FS_INDEX_IMPORT_PATTERN} or via the {@code META-INF/org.uimafit/fsindexes.txt} files in
-   * the classpath.
+   * {@link #FS_INDEX_IMPORT_PATTERN} or via the {@code META-INF/org.apache.uima.fit/fsindexes.txt}
+   * files in the classpath.
    * 
    * @return the auto-scanned indexes.
    */
@@ -240,8 +229,7 @@ public final class FsIndexFactory {
    */
   public static String[] scanIndexDescriptors() throws ResourceInitializationException {
     if (indexDescriptorLocations == null) {
-      indexDescriptorLocations = resolve(scanImportsAndManifests(FS_INDEX_MANIFEST_PATTERN,
-              FS_INDEX_IMPORT_PATTERN));
+      indexDescriptorLocations = scanDescriptors(MetaDataType.FS_INDEX);
     }
     return indexDescriptorLocations;
   }

@@ -26,50 +26,10 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
+ * INTERNAL API - Utility methods to access Java annotations.
  */
 public final class ReflectionUtil {
 
-  private static LegacySupportPlugin legacySupportPlugin;
-
-  // Initialize legacy support once on startup.
-  static {
-    try {
-      Class<?> plc = Class.forName("org.apache.uima.fit.legacy.LegacySupportPluginImpl");
-      legacySupportPlugin = (LegacySupportPlugin) plc.newInstance();
-    } catch (IllegalAccessException e) {
-      // Cannot access legacy support for some reason, where to log this?
-    } catch (ClassNotFoundException e) {
-      // Legacy support not available.
-    } catch (InstantiationException e) {
-      // Some other odd reason the plugin cannot be instantiated. Again, where to log this?
-    }
-
-    // If no legacy support is available, instantiate a dummy.
-    if (legacySupportPlugin == null) {
-      legacySupportPlugin = new LegacySupportPlugin() {
-        public boolean isAnnotationPresent(AccessibleObject aObject,
-                Class<? extends Annotation> aAnnotationClass) {
-          return false;
-        }
-
-        public <L extends Annotation, M extends Annotation> M getAnnotation(
-                AccessibleObject aObject, Class<M> aAnnotationClass) {
-          return null;
-        }
-
-        public boolean isAnnotationPresent(Class<?> aObject,
-                Class<? extends Annotation> aAnnotationClass) {
-          return false;
-        }
-
-        public <L extends Annotation, M extends Annotation> M getAnnotation(Class<?> aObject,
-                Class<M> aAnnotationClass) {
-          return null;
-        }
-      };
-    }
-  }
-  
   private ReflectionUtil() {
     // Library class
   }
@@ -173,7 +133,7 @@ public final class ReflectionUtil {
     }
     
     // If not present, check if an equivalent legacy annotation is present
-    return legacySupportPlugin.isAnnotationPresent(aObject, aAnnotationClass);
+    return LegacySupport.getInstance().isAnnotationPresent(aObject, aAnnotationClass);
   }
   
   /**
@@ -188,7 +148,7 @@ public final class ReflectionUtil {
     }
     
     // If not present, check if an equivalent legacy annotation is present
-    return legacySupportPlugin.isAnnotationPresent(aObject, aAnnotationClass);
+    return LegacySupport.getInstance().isAnnotationPresent(aObject, aAnnotationClass);
   }
   
   /**
@@ -200,7 +160,7 @@ public final class ReflectionUtil {
   {
     T annotation = aObject.getAnnotation(aAnnotationClass);
     if (annotation == null) {
-      annotation = legacySupportPlugin.getAnnotation(aObject, aAnnotationClass);
+      annotation = LegacySupport.getInstance().getAnnotation(aObject, aAnnotationClass);
     }
     return annotation;
   }
@@ -214,7 +174,7 @@ public final class ReflectionUtil {
   {
     T annotation = aObject.getAnnotation(aAnnotationClass);
     if (annotation == null) {
-      annotation = legacySupportPlugin.getAnnotation(aObject, aAnnotationClass);
+      annotation = LegacySupport.getInstance().getAnnotation(aObject, aAnnotationClass);
     }
     return annotation;
   }

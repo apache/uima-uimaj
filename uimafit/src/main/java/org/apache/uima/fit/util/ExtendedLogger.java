@@ -27,7 +27,7 @@ import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
 
 /**
- * Wrapper for the UIMA {@link Logger} offering a more convenient API similar to that of the Apache
+ * INTERNAL API - Wrapper for the UIMA {@link Logger} offering a more convenient API similar to that of the Apache
  * Commons Logging interface {@link org.apache.commons.logging.Log Log} or to that of Log4J's
  * {@code Category} and SLF4J's {@code Logger}, using the names {@code error}, {@code warn},
  * {@code info}, {@code debug} and {@code trace} and mapping these to UIMA logging levels.

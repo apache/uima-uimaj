@@ -31,7 +31,7 @@ import org.apache.uima.jcas.JCas;
 public class GetStartedQuickPipeline {
 
   public static void main(String[] args) throws UIMAException {
-    // uimaFIT automatically uses all type systems listed in META-INF/org.uimafit/types.txt
+    // uimaFIT automatically uses all type systems listed in META-INF/org.apache.uima.fit/types.txt
 
     // uimaFIT doesn't provide any collection readers - so we will just instantiate a JCas and
     // run it through our AE
