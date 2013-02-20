@@ -86,7 +86,13 @@ public class ConfigurationParameterConverter
     }
 
     public String[] defaultValue() {
-      return legacyAnnotation.defaultValue();
+      String[] values = legacyAnnotation.defaultValue();
+      if (values.length == 1
+              && org.uimafit.descriptor.ConfigurationParameter.NO_DEFAULT_VALUE.equals(values[0])) {
+        return new String[] { ConfigurationParameter.NO_DEFAULT_VALUE };
+      } else {
+        return values;
+      }
     }
   }
 }

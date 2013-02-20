@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
+import org.apache.uima.fit.component.JCasFlowController_ImplBase;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.flow.FinalStep;
 import org.apache.uima.flow.Flow;
@@ -37,7 +38,7 @@ import org.apache.uima.jcas.JCas;
 
 /**
  * 
- * NOTE: this class extends org.uimafit.component.JCasFlowController_ImplBase
+ * NOTE: this class extends {@link JCasFlowController_ImplBase}
  */
 
 public class ReversableTestFlowController extends

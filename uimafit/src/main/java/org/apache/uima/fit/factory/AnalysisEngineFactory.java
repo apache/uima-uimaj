@@ -201,7 +201,7 @@ public final class AnalysisEngineFactory {
    * 
    * @param componentClass
    *          a class that extends AnalysisComponent e.g.
-   *          org.uimafit.component.JCasAnnotator_ImplBase
+   *          {@link org.apache.uima.fit.component.JCasAnnotator_ImplBase}
    */
   public static AnalysisEngineDescription createPrimitiveDescription(
           Class<? extends AnalysisComponent> componentClass, TypeSystemDescription typeSystem,
@@ -217,7 +217,7 @@ public final class AnalysisEngineFactory {
    * 
    * @param componentClass
    *          a class that extends AnalysisComponent e.g.
-   *          org.uimafit.component.JCasAnnotator_ImplBase
+   *          {@link org.apache.uima.fit.component.JCasAnnotator_ImplBase}
    */
   public static AnalysisEngineDescription createPrimitiveDescription(
           Class<? extends AnalysisComponent> componentClass, Object... configurationData)

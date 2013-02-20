@@ -53,11 +53,23 @@ public class SofaCapabilityConverter
     }
 
     public String[] inputSofas() {
-      return legacyAnnotation.inputSofas();
+      String[] values = legacyAnnotation.inputSofas();
+      if (values.length == 1
+              && org.uimafit.descriptor.SofaCapability.NO_DEFAULT_VALUE.equals(values[0])) {
+        return new String[] { SofaCapability.NO_DEFAULT_VALUE };
+      } else {
+        return values;
+      }
     }
 
     public String[] outputSofas() {
-      return legacyAnnotation.outputSofas();
+      String[] values = legacyAnnotation.outputSofas();
+      if (values.length == 1
+              && org.uimafit.descriptor.SofaCapability.NO_DEFAULT_VALUE.equals(values[0])) {
+        return new String[] { SofaCapability.NO_DEFAULT_VALUE };
+      } else {
+        return values;
+      }
     }
   }
 }

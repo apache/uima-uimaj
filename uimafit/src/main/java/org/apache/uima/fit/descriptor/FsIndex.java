@@ -80,6 +80,6 @@ public @interface FsIndex {
   public static final class NoClassSet extends TOP { /* Nothing */
   }
 
-  public static final String NO_NAME_TYPE_SET = "org.uimafit.descriptor.FsIndex.NO_NAME_TYPE_SET";
+  public static final String NO_NAME_TYPE_SET = "org.apache.uima.fit.descriptor.FsIndex.NO_NAME_TYPE_SET";
 
 }

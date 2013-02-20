@@ -34,9 +34,9 @@ import org.apache.uima.jcas.tcas.Annotation;
  * 
  * 
  * @param <TOKEN_TYPE>
- *          the type system token type (e.g. org.uimafit.examples.type.Token)
+ *          the type system token type (e.g. {@link org.apache.uima.fit.examples.type.Token})
  * @param <SENTENCE_TYPE>
- *          the type system sentence type (e.g. org.uimafit.examples.type.Sentence)
+ *          the type system sentence type (e.g. {@link org.apache.uima.fit.examples.type.Sentence})
  */
 
 public class TokenBuilder<TOKEN_TYPE extends Annotation, SENTENCE_TYPE extends Annotation> {
@@ -86,15 +86,15 @@ public class TokenBuilder<TOKEN_TYPE extends Annotation, SENTENCE_TYPE extends A
    * tokens.
    * 
    * @param <T>
-   *          the type system token type (e.g. org.uimafit.examples.type.Token)
+   *          the type system token type (e.g. org.apache.uima.fit.examples.type.Token)
    * @param <S>
-   *          the type system sentence type (e.g. org.uimafit.examples.type.Sentence)
+   *          the type system sentence type (e.g. {@link org.apache.uima.fit.examples.type.Sentence})
    * @param tokenClass
    *          the class of your token type from your type system (e.g.
-   *          org.apache.uima.fit.type.Token.class)
+   *          {@link org.apache.uima.fit.type.Token})
    * @param sentenceClass
    *          the class of your sentence type from your type system (e.g.
-   *          org.apache.uima.fit.type.Sentence.class)
+   *          {@link org.apache.uima.fit.type.Sentence})
    * @return the builder.
    */
   public static <T extends Annotation, S extends Annotation> TokenBuilder<T, S> create(

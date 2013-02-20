@@ -53,11 +53,23 @@ public class TypeCapabilityConverter
     }
 
     public String[] inputs() {
-      return legacyAnnotation.inputs();
+      String[] values = legacyAnnotation.inputs();
+      if (values.length == 1
+              && org.uimafit.descriptor.TypeCapability.NO_DEFAULT_VALUE.equals(values[0])) {
+        return new String[] { TypeCapability.NO_DEFAULT_VALUE };
+      } else {
+        return values;
+      }
     }
 
     public String[] outputs() {
-      return legacyAnnotation.outputs();
+      String[] values = legacyAnnotation.outputs();
+      if (values.length == 1
+              && org.uimafit.descriptor.TypeCapability.NO_DEFAULT_VALUE.equals(values[0])) {
+        return new String[] { TypeCapability.NO_DEFAULT_VALUE };
+      } else {
+        return values;
+      }
     }
   }
 }

@@ -61,5 +61,5 @@ public @interface TypeCapability {
    * Provides the default value for the inputs and the outputs that tells the CapabilityFactory that
    * no value has been given to the inputs or outputs elements.
    */
-  public static final String NO_DEFAULT_VALUE = "org.uimafit.descriptor.TypeCapability.NO_DEFAULT_VALUE";
+  public static final String NO_DEFAULT_VALUE = "org.apache.uima.fit.descriptor.TypeCapability.NO_DEFAULT_VALUE";
 }

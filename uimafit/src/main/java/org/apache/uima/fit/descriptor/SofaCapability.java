@@ -67,6 +67,6 @@ public @interface SofaCapability {
    * no value has been given to the inputs or outputs elements.
    */
 
-  public static final String NO_DEFAULT_VALUE = "org.uimafit.descriptor.SofaCapability.NO_DEFAULT_VALUE";
+  public static final String NO_DEFAULT_VALUE = "org.apache.uima.fit.descriptor.SofaCapability.NO_DEFAULT_VALUE";
 
 }

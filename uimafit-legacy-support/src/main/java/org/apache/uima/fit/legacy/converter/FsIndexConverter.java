@@ -59,7 +59,11 @@ public class FsIndexConverter
     }
 
     public String typeName() {
-      return legacyAnnotation.typeName();
+      if (org.uimafit.descriptor.FsIndex.NO_NAME_TYPE_SET.equals(legacyAnnotation.typeName())) {
+        return FsIndex.NO_NAME_TYPE_SET;
+      } else {
+        return legacyAnnotation.typeName();
+      }
     }
 
     public Class<? extends TOP> type() {

@@ -102,6 +102,5 @@ public @interface ConfigurationParameter {
   /**
    * Tells the ConfigurationParameterFactory that no default value has been provided
    */
-  public static final String NO_DEFAULT_VALUE = "org.uimafit.descriptor.ConfigurationParameter.NO_DEFAULT_VALUE";
-
+  public static final String NO_DEFAULT_VALUE = "org.apache.uima.fit.descriptor.ConfigurationParameter.NO_DEFAULT_VALUE";
 }

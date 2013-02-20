@@ -46,7 +46,7 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
  * <blockquote>
  * 
  * <pre>
- * import static org.uimafit.factory.AnalysisEngineFactory.createPrimitiveDescription;
+ * import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription;
  * 
  * AggregateBuilder builder = new AggregateBuilder();
  * builder.add(createPrimitiveDescription(Annotator1.class, typeSystemDescription),
