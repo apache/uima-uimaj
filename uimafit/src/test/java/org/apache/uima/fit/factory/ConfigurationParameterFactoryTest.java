@@ -33,18 +33,13 @@ import java.util.Set;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.junit.Test;
 
-/**
- */
-
 public class ConfigurationParameterFactoryTest {
 
-  public static final String PARAM_DOUBLE_1 = "org.uimafit.factory.ConfigurationParameterFactoryTest.PARAM_STRING_1";
-
+  public static final String PARAM_DOUBLE_1 = "double1";
   @ConfigurationParameter(name = PARAM_DOUBLE_1, mandatory = true, defaultValue = "3.1415")
   private Double double1;
 
-  public static final String PARAM_DOUBLE_2 = "org.uimafit.factory.ConfigurationParameterFactoryTest.PARAM_DOUBLE_2";
-
+  public static final String PARAM_DOUBLE_2 = "double2";
   @ConfigurationParameter(name = PARAM_DOUBLE_2, mandatory = true, defaultValue = "3.3333")
   private Double[] double2;
 
