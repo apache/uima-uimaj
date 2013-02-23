@@ -24,7 +24,7 @@
 	<packaging>jar</packaging>
 	<name>uimaFIT - Spring integration</name>
 	<description>Factories, Injection, and Testing library for UIMA</description>
-	<url>http://uimafit.googlecode.com</url>
+	<url>${uimaWebsiteUrl}</url>
 	<parent>
 		<groupId>org.apache.uima</groupId>
 		<artifactId>uimafit-parent</artifactId>
@@ -66,22 +66,33 @@
 		</license>
 	</licenses>
 	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>rat-maven-plugin</artifactId>
-				<configuration>
-					<excludes>
-						<exclude>release.properties</exclude> <!-- release generated artifact -->
-						<exclude>CHANGES</exclude>
-						<exclude>NOTICE</exclude>
-						<exclude>README</exclude>
-						<exclude>src/main/resources/**/*</exclude>
-						<exclude>src/test/resources/**/*</exclude>
-						<exclude>apidocs/package-list</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
-		</plugins>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.rat</groupId>
+					<artifactId>apache-rat-plugin</artifactId>
+					<executions>
+						<execution>
+							<id>default-cli</id>
+							<goals>
+								<goal>check</goal>
+							</goals>
+							<phase>verify</phase>
+							<configuration>
+								<excludes>
+									<exclude>release.properties</exclude> <!-- release generated artifact -->
+									<exclude>CHANGES</exclude>
+									<exclude>NOTICE</exclude>
+									<exclude>README</exclude>
+									<exclude>src/main/resources/**/*</exclude>
+									<exclude>src/test/resources/**/*</exclude>
+									<exclude>apidocs/package-list</exclude>
+								</excludes>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 </project>

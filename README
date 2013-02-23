@@ -1,40 +1,48 @@
 #######
 SUMMARY
 #######
-uimaFIT is a library that provides factories, injection, and testing utilities for UIMA.  The following list 
-highlights some of the features uimaFIT provides:
+uimaFIT is a library that provides factories, injection, and testing utilities for UIMA.  The
+following list highlights some of the features uimaFIT provides:
 
  * Factories: simplify instantiating UIMA components programmatically without descriptor files.  
- 	For example, to instantiate an AnalysisEngine a call like this could be made: 
- 	AnalysisEngineFactory.createPrimitive(MyAEImpl.class, myTypeSystem, paramName, paramValue)
- * Injection: handles the binding of configuration parameter values to the corresponding member variables 
- 	in the analysis engines and handles the binding of external resources.  For example, to bind a configuration 
- 	parameter just annotate a member variable with @ConfigurationParameter.  Then add one line of code to 
- 	your initialize method - ConfigurationParameterInitializer.initialize(this, uimaContext).  This is handled 
- 	automatically if you extend the uimaFIT JCasAnnotator_ImplBase class.
- * Testing: uimaFIT simplifies testing in a number of ways described in the documentation.  By making it 
- 	easy to instantiate your components without descriptor files a large amount of difficult-to-maintain and 
- 	unnecessary XML can be eliminated from your test code.   This makes tests easier to write and maintain.  
- 	Also, running components as a pipeline can be accomplished with a method call like this:  
- 	SimplePipeline.runPipeline(reader, ae1, ..., aeN, consumer1, ... consumerN)
+   For example, to instantiate an AnalysisEngine a call like this could be made: 
+   AnalysisEngineFactory.createPrimitive(MyAEImpl.class, myTypeSystem, paramName, paramValue)
+
+ * Injection: handles the binding of configuration parameter values to the corresponding member
+   variables in the analysis engines and handles the binding of external resources.  For example,
+   to bind a configuration parameter just annotate a member variable with @ConfigurationParameter.
+   Then add one line of code to your initialize method:
+   
+     ConfigurationParameterInitializer.initialize(this, uimaContext).  
+     
+   This is handled  automatically if you extend the uimaFIT JCasAnnotator_ImplBase class.
+
+ * Testing: uimaFIT simplifies testing in a number of ways described in the documentation. By making
+   it easy to instantiate your components without descriptor files a large amount of 
+   difficult-to-maintain and unnecessary XML can be eliminated from your test code. This makes tests
+   easier to write and maintain. Also, running components as a pipeline can be accomplished with a
+   method call like this: 
+   
+     SimplePipeline.runPipeline(reader, ae1, ..., aeN, consumer1, ... consumerN)
 
 uimaFIT requires Java 1.5 or higher and UIMA 2.4.0 or higher.
 
 ############
 AVAILABILITY
 ############
-uimaFIT is licensed with Apache Software License 2.0 and is available from Google Code at:
+uimaFIT is licensed with Apache Software License 2.0 and is available from the Apache UIMA project:
 
 http://uimafit.googlecode.com
 http://code.google.com/p/uimafit/wiki/Documentation
+https://svn.apache.org/repos/asf/uima/sandbox/uimafit
 
-uimaFIT is available via Maven Central.  If you use maven for your build environment, then you can add uimaFIT 
-as a dependency to your pom.xml file with the following:
+uimaFIT is available via Maven Central. If you use Maven for your build environment, then you can
+add uimaFIT as a dependency to your pom.xml file with the following:
 
 <dependency>
-<groupId>org.uimafit</groupId>
+<groupId>org.apache.uima.fit</groupId>
 <artifactId>uimafit</artifactId>
-<version>1.4.0</version>
+<version>2.0.0</version>
 </dependency>
 
 #########
@@ -55,15 +63,18 @@ If you use uimaFIT to support academic research, then please cite the following 
   url       = {http://www.aclweb.org/anthology/W/W09/W09-1501}
 }
 
-########
-ABOUT US
-########
-uimaFIT is a collaborative effort between the Center for Computational Pharmacology at the University of 
-Colorado Denver, the Center for Computational Language and Education Research at the University of 
-Colorado at Boulder, and the Ubiquitous Knowledge Processing (UKP) Lab at the Technische Universität 
-Darmstadt.  uimaFIT is extensively used by projects being developed by these groups.
+#######
+HISTORY
+#######
+Since end of 2012, uimaFIT is part of the Apache UIMA project. 
 
-The uimaFIT development team is:
+Before, uimaFIT is was collaborative effort between the Center for Computational Pharmacology at the
+University of Colorado Denver, the Center for Computational Language and Education Research at the
+University of Colorado at Boulder, and the Ubiquitous Knowledge Processing (UKP) Lab at the
+Technische Universität Darmstadt. uimaFIT is extensively used by projects being developed by these
+groups.
+
+The initial uimaFIT development team was:
 
 Philip Ogren, University of Colorado, USA
 Richard Eckart de Castilho, Technische Universität Darmstadt, Germany
@@ -75,7 +86,7 @@ Torsten Zesch.
 #######
 SUPPORT
 #######
-Please address questions to uimafit-users@googlegroups.com.  
+Please address questions to user@uima.apache.org.  
 
 #####
 Misc.

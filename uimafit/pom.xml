@@ -24,7 +24,7 @@
 	<packaging>jar</packaging>
 	<name>uimaFIT</name>
 	<description>Factories, Injection, and Testing library for UIMA</description>
-	<url>http://uimafit.googlecode.com</url>
+	<url>${uimaWebsiteUrl}</url>
 	<parent>
 		<groupId>org.apache.uima</groupId>
 		<artifactId>uimafit-parent</artifactId>
@@ -117,46 +117,30 @@
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>rat-maven-plugin</artifactId>
-				<configuration>
-					<excludes>
-						<exclude>release.properties</exclude> <!-- release generated artifact -->
-						<exclude>CHANGES</exclude>
-						<exclude>NOTICE</exclude>
-						<exclude>README</exclude>
-						<exclude>src/main/resources/**/*</exclude>
-						<exclude>src/test/resources/**/*</exclude>
-						<exclude>src/test/java/org/apache/uima/fit/type/**/*</exclude> <!-- JCasGen -->
-						<exclude>apidocs/package-list</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<configuration>
-					<descriptors>
-						<descriptor>src/main/assembly/bin-packed.xml</descriptor>
-					</descriptors>
-				</configuration>
-				<executions>
-					<execution>
-						<id>make-assembly</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-						<configuration>
-							<!--
-								- Do not attach so it does not get deployed to Maven central.
-								- REC - 2011-05-07
-							-->
-							<attach>false</attach>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
 		</plugins>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.rat</groupId>
+					<artifactId>apache-rat-plugin</artifactId>
+					<executions>
+						<execution>
+							<id>default-cli</id>
+							<configuration>
+								<excludes>
+									<exclude>release.properties</exclude> <!-- release generated artifact -->
+									<exclude>CHANGES</exclude>
+									<exclude>NOTICE</exclude>
+									<exclude>README</exclude>
+									<exclude>src/main/resources/**/*</exclude>
+									<exclude>src/test/resources/**/*</exclude>
+									<exclude>src/test/java/org/apache/uima/fit/type/**/*</exclude> <!-- JCasGen -->
+								</excludes>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 </project>
