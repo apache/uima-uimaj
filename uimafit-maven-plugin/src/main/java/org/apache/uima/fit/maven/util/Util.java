@@ -19,24 +19,24 @@
 package org.apache.uima.fit.maven.util;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
-import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.core.dom.AST;
-import org.eclipse.jdt.core.dom.ASTParser;
-import org.eclipse.jdt.core.dom.CompilationUnit;
+
+import com.thoughtworks.qdox.JavaDocBuilder;
+import com.thoughtworks.qdox.model.JavaClass;
+import com.thoughtworks.qdox.model.JavaField;
+import com.thoughtworks.qdox.model.JavaSource;
 
 public final class Util {
 
@@ -44,18 +44,66 @@ public final class Util {
     // No instances
   }
 
-  public static CompilationUnit parseSource(String aSourceFile, String aEncoding)
-          throws IOException {
-    ASTParser parser = ASTParser.newParser(AST.JLS3);
-    parser.setKind (ASTParser.K_COMPILATION_UNIT);
-    parser.setResolveBindings(true);
-    parser.setBindingsRecovery(true);
-    parser.setSource(org.apache.commons.io.FileUtils.readFileToString(new File(aSourceFile),
-            aEncoding).toCharArray());
-    Map options = JavaCore.getOptions();
-    options.put(JavaCore.COMPILER_DOC_COMMENT_SUPPORT, JavaCore.ENABLED);
-    parser.setCompilerOptions(options);
-    return (CompilationUnit) parser.createAST(null);
+  public static JavaSource parseSource(String aSourceFile, String aEncoding) throws IOException {
+    JavaDocBuilder builder = new JavaDocBuilder();
+    builder.setEncoding(aEncoding);
+    builder.addSource(new FileReader(aSourceFile));
+    return builder.getSources()[0];
+  }
+
+  public static String getComponentDocumentation(JavaSource aAst, String aComponentTypeName) {
+//    if (aComponentType.getName().contains("$")) {
+//      // rec 2013-01-27: see comment on bindings resolving in ComponentDescriptionExtractor
+//      getLog().warn(
+//              "Inner classes not supported. Component description for [" + aComponentType.getName()
+//                      + "] cannot be extracted. ");
+//      return null;
+//    }
+
+    for (JavaClass clazz : aAst.getClasses()) {
+      if (clazz.asType().getFullyQualifiedName().equals(aComponentTypeName)) {
+        return postProcessJavaDoc(clazz.getComment());
+      }
+    }
+
+    return null;
+  }
+  
+  public static String postProcessJavaDoc(String aJavaDoc)
+  {
+    if (aJavaDoc == null) {
+      return null;
+    }
+    else {
+      return aJavaDoc.replaceAll("\\{@[^ ]+ ([^}]+)\\}", "$1");
+    }
+  }
+
+  public static String getParameterDocumentation(JavaSource aAst, String aParameterField,
+          String aParameterNameConstantField) {
+
+    String javadoc = null;
+
+    JavaClass clazz = aAst.getClasses()[0];
+    // CASE 1: JavaDoc is located on parameter name constant
+    if (aParameterNameConstantField != null) {
+      JavaField field = clazz.getFieldByName(aParameterNameConstantField);
+      if (field == null) {
+        throw new IllegalArgumentException("No such field ["+aParameterNameConstantField+"]");
+      }
+      javadoc = field.getComment();
+    }
+
+    // CASE 2: JavaDoc is located on the parameter field itself
+    if (javadoc == null) {
+      JavaField field = clazz.getFieldByName(aParameterField);
+      if (field == null) {
+        throw new IllegalArgumentException("No such field ["+aParameterField+"]");
+      }
+      javadoc = field.getComment();
+    }
+
+    return postProcessJavaDoc(javadoc);
   }
 
   /**

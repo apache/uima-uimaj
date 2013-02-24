@@ -88,24 +88,9 @@
 
 		<!-- Dependencies for accessing JavaDoc -->
 		<dependency>
-			<groupId>org.eclipse.jdt</groupId>
-			<artifactId>core</artifactId>
-			<version>3.3.0-v_771</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.core</groupId>
-			<artifactId>jobs</artifactId>
-			<version>3.3.0-v20070423</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.equinox</groupId>
-			<artifactId>app</artifactId>
-			<version>1.0.0-v20070606</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.core</groupId>
-			<artifactId>resources</artifactId>
-			<version>3.3.0-v20070604</version>
+			<groupId>com.thoughtworks.qdox</groupId>
+			<artifactId>qdox</artifactId>
+			<version>1.12.1</version>
 		</dependency>
 	</dependencies>
 

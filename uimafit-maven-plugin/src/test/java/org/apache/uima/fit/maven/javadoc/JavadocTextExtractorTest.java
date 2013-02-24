@@ -19,11 +19,13 @@
 package org.apache.uima.fit.maven.javadoc;
 
 import static org.junit.Assert.assertEquals;
+
 import java.io.IOException;
 
-import org.apache.uima.fit.maven.javadoc.JavadocTextExtractor;
-import org.apache.uima.fit.maven.javadoc.ParameterDescriptionExtractor;
+import org.apache.uima.fit.maven.util.Util;
 import org.junit.Test;
+
+import com.thoughtworks.qdox.model.JavaSource;
 
 public class JavadocTextExtractorTest {
 
@@ -41,13 +43,13 @@ public class JavadocTextExtractorTest {
 
   @Test
   public void testDocOnParameterWithoutName() throws Exception {
-    String doc = getJavadoc("value3", "PARAM_VALUE_3");
+    String doc = getJavadoc("value3", null);
     assertEquals("Documentation for value 3", doc);
   }
 
   @Test
   public void testWithoutDoc() throws Exception {
-    String doc = getJavadoc("value4", "PARAM_VALUE_4");
+    String doc = getJavadoc("value4", null);
     assertEquals(null, doc);
   }
 
@@ -57,17 +59,10 @@ public class JavadocTextExtractorTest {
     assertEquals("Documentation for value 5", doc);
   }
 
-  private String getJavadoc(String aParameter, String aNameConstanct) throws IOException {
-    ParameterDescriptionExtractor paramEx = ParameterDescriptionExtractorTest.getExtractor(
-            aParameter, aNameConstanct);
-
-    if (paramEx.getJavadoc() == null) {
-      return null;
-    }
-    else {
-      JavadocTextExtractor textEx = new JavadocTextExtractor();
-      paramEx.getJavadoc().accept(textEx);
-      return textEx.getText();
-    }
+  private String getJavadoc(String aParameter, String aNameConstant) throws IOException {
+    // Create the Java parser and parse the source code into an abstract syntax tree
+    JavaSource source = Util.parseSource("src/test/resources/TestComponent.java", "UTF-8");
+    
+    return Util.getParameterDocumentation(source, aParameter, aNameConstant);
   }
 }

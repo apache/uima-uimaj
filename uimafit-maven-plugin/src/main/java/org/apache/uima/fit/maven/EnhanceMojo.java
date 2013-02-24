@@ -50,16 +50,14 @@ import org.apache.maven.project.MavenProject;
 import org.apache.uima.fit.descriptor.ResourceMetaData;
 import org.apache.uima.fit.factory.ConfigurationParameterFactory;
 import org.apache.uima.fit.factory.ResourceMetaDataFactory;
-import org.apache.uima.fit.maven.javadoc.ComponentDescriptionExtractor;
-import org.apache.uima.fit.maven.javadoc.JavadocTextExtractor;
-import org.apache.uima.fit.maven.javadoc.ParameterDescriptionExtractor;
 import org.apache.uima.fit.maven.util.Util;
 import org.apache.uima.fit.util.EnhancedClassFile;
 import org.apache.uima.fit.util.ReflectionUtil;
 import org.apache.uima.resource.metadata.ConfigurationParameter;
 import org.codehaus.plexus.util.FileUtils;
-import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.sonatype.plexus.build.incremental.BuildContext;
+
+import com.thoughtworks.qdox.model.JavaSource;
 
 /**
  * Enhance UIMA components with automatically generated uimaFIT annotations.
@@ -179,7 +177,7 @@ public class EnhanceMojo extends AbstractMojo {
         getLog().info("Enhancing class [" + clazzName + "]");
 
         // Parse source file so we can extract the JavaDoc
-        CompilationUnit ast = parseSource(sourceFile);
+        JavaSource ast = parseSource(sourceFile);
 
         // Enhance meta data
         enhanceResourceMetaData(ast, clazz, ctClazz);
@@ -243,7 +241,7 @@ public class EnhanceMojo extends AbstractMojo {
   /**
    * Enhance resource meta data
    */
-  private void enhanceResourceMetaData(CompilationUnit aAST, Class aClazz, CtClass aCtClazz)
+  private void enhanceResourceMetaData(JavaSource aAST, Class aClazz, CtClass aCtClazz)
           throws MojoExecutionException {
     ClassFile classFile = aCtClazz.getClassFile();
     ConstPool constPool = classFile.getConstPool();
@@ -266,7 +264,7 @@ public class EnhanceMojo extends AbstractMojo {
     }
 
     // Update description from JavaDoc
-    String doc = getComponnetDocumentation(aAST, aClazz);
+    String doc = Util.getComponentDocumentation(aAST, aClazz.getName());
     enhanceMemberValue(a, "description", doc, overrideComponentDescription,
             ResourceMetaDataFactory.getDefaultDescription(aClazz), constPool);
 
@@ -335,7 +333,7 @@ public class EnhanceMojo extends AbstractMojo {
   /**
    * Enhance descriptions in configuration parameters.
    */
-  private void enhanceConfigurationParameter(CompilationUnit aAST, Class aClazz, CtClass aCtClazz)
+  private void enhanceConfigurationParameter(JavaSource aAST, Class aClazz, CtClass aCtClazz)
           throws MojoExecutionException {
     // Get the parameter name constants
     Map<String, Field> nameFields = getParameterConstants(aClazz);
@@ -352,7 +350,8 @@ public class EnhanceMojo extends AbstractMojo {
       ConfigurationParameter p = ConfigurationParameterFactory.createPrimitiveParameter(field);
 
       // Extract JavaDoc for this parameter from the source file
-      String pdesc = getParameterDocumentation(aAST, field, nameFields.get(p.getName()));
+      String pdesc = Util.getParameterDocumentation(aAST, field.getName(),
+              nameFields.get(p.getName()).getName());
       if (pdesc == null) {
         getLog().warn("No description found for parameter [" + p.getName() + "]");
         continue;
@@ -419,7 +418,7 @@ public class EnhanceMojo extends AbstractMojo {
     return result;
   }
 
-  private CompilationUnit parseSource(String aSourceFile) throws MojoExecutionException {
+  private JavaSource parseSource(String aSourceFile) throws MojoExecutionException {
     try {
       return Util.parseSource(aSourceFile, encoding);
     } catch (IOException e) {
@@ -443,44 +442,5 @@ public class EnhanceMojo extends AbstractMojo {
       }
     }
     return null;
-  }
-
-  private String getComponnetDocumentation(CompilationUnit aAst, Class aComponentType) {
-    if (aComponentType.getName().contains("$")) {
-      // rec 2013-01-27: see comment on bindings resolving in ComponentDescriptionExtractor
-      getLog().warn(
-              "Inner classes not supported. Component description for [" + aComponentType.getName()
-                      + "] cannot be extracted. ");
-      return null;
-    }
-
-    ComponentDescriptionExtractor visitor = new ComponentDescriptionExtractor(
-            aComponentType.getName());
-    aAst.accept(visitor);
-
-    if (visitor.getJavadoc() != null) {
-      JavadocTextExtractor textExtractor = new JavadocTextExtractor();
-      visitor.getJavadoc().accept(textExtractor);
-      return textExtractor.getText();
-    } else {
-      return null;
-    }
-  }
-
-  private String getParameterDocumentation(CompilationUnit aAst, Field aParameter,
-          Field aParameterNameConstant) {
-    ParameterDescriptionExtractor visitor = new ParameterDescriptionExtractor(aParameter.getName(),
-            (aParameterNameConstant != null) ? aParameterNameConstant.getName() : null);
-    aAst.accept(visitor);
-
-    if (visitor.getJavadoc() != null) {
-      JavadocTextExtractor textExtractor = new JavadocTextExtractor();
-      visitor.getJavadoc().accept(textExtractor);
-      // getLog().info(
-      // "Description found for parameter [" + aParameter + "]: " + textExtractor.getText());
-      return textExtractor.getText();
-    } else {
-      return null;
-    }
   }
 }

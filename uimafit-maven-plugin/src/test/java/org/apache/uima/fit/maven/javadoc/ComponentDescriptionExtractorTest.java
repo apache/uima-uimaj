@@ -19,8 +19,9 @@
 package org.apache.uima.fit.maven.javadoc;
 
 import org.apache.uima.fit.maven.util.Util;
-import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.junit.Test;
+
+import com.thoughtworks.qdox.model.JavaSource;
 
 import static org.junit.Assert.*;
 
@@ -29,17 +30,10 @@ public class ComponentDescriptionExtractorTest {
   @Test
   public void test() throws Exception {
     // Create the Java parser and parse the source code into an abstract syntax tree
-    CompilationUnit result = Util.parseSource("src/test/resources/TestComponent.java", "UTF-8");
+    JavaSource source = Util.parseSource("src/test/resources/TestComponent.java", "UTF-8");
 
-    ComponentDescriptionExtractor ex = new ComponentDescriptionExtractor(
-            "some.test.mypackage.TestComponent");
-    result.accept(ex);
+    String javadoc = Util.getComponentDocumentation(source, "some.test.mypackage.TestComponent");
 
-    assertNotNull(ex.getJavadoc());
-
-    JavadocTextExtractor textEx = new JavadocTextExtractor();
-    ex.getJavadoc().accept(textEx);
-
-    assertEquals("A test component used to test JavadocTextExtractor .", textEx.getText());
+    assertEquals("A test component used to test JavadocTextExtractor.", javadoc);
   }
 }
