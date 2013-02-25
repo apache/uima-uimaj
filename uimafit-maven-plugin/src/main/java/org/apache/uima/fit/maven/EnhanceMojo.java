@@ -140,10 +140,10 @@ public class EnhanceMojo extends AbstractMojo {
       String clazzName = Util.getClassName(project, file);
 
       // Check if this is a UIMA component
-      Class clazz;
+      Class<?> clazz;
       try {
         clazz = componentLoader.loadClass(clazzName);
-        
+
         // Do not process a class twice
         if (clazz.isAnnotationPresent(EnhancedClassFile.class)) {
           getLog().info("Class [" + clazzName + "] already enhanced");
@@ -183,7 +183,7 @@ public class EnhanceMojo extends AbstractMojo {
 
         // Enhance configuration parameters
         enhanceConfigurationParameter(ast, clazz, ctClazz);
-        
+
         // Add the EnhancedClassFile annotation.
         markAsEnhanced(ctClazz);
       } else {
@@ -193,12 +193,11 @@ public class EnhanceMojo extends AbstractMojo {
       try {
         if (ctClazz.isModified()) {
           getLog().info("Writing enhanced class [" + clazzName + "]");
-          // Trying to work around UIMA-2611, see 
+          // Trying to work around UIMA-2611, see
           // http://stackoverflow.com/questions/13797919/javassist-add-method-and-invoke
-          ctClazz.toBytecode(); 
+          ctClazz.toBytecode();
           ctClazz.writeFile(project.getBuild().getOutputDirectory());
-        }
-        else {
+        } else {
           getLog().info("No changes to class [" + clazzName + "]");
         }
       } catch (IOException e) {
@@ -236,11 +235,11 @@ public class EnhanceMojo extends AbstractMojo {
     // Replace annotation attribute
     classFile.addAttribute(annoAttr);
   }
-  
+
   /**
    * Enhance resource meta data
    */
-  private void enhanceResourceMetaData(JavaSource aAST, Class aClazz, CtClass aCtClazz)
+  private void enhanceResourceMetaData(JavaSource aAST, Class<?> aClazz, CtClass aCtClazz)
           throws MojoExecutionException {
     ClassFile classFile = aCtClazz.getClassFile();
     ConstPool constPool = classFile.getConstPool();
@@ -311,8 +310,7 @@ public class EnhanceMojo extends AbstractMojo {
       if (aNewValue != null) {
         aAnnotation.addMemberValue(aName, new StringMemberValue(aNewValue, aConstPool));
         getLog().info("Enhanced component meta data [" + aName + "]");
-      }
-      else {
+      } else {
         getLog().warn("No meta data [" + aName + "] found");
       }
     } else {
@@ -332,7 +330,7 @@ public class EnhanceMojo extends AbstractMojo {
   /**
    * Enhance descriptions in configuration parameters.
    */
-  private void enhanceConfigurationParameter(JavaSource aAST, Class aClazz, CtClass aCtClazz)
+  private void enhanceConfigurationParameter(JavaSource aAST, Class<?> aClazz, CtClass aCtClazz)
           throws MojoExecutionException {
     // Get the parameter name constants
     Map<String, Field> nameFields = getParameterConstants(aClazz);
@@ -400,7 +398,7 @@ public class EnhanceMojo extends AbstractMojo {
    * Get a map of parameter name to parameter name constant field, e.g. ("value",
    * Field("PARAM_VALUE")).
    */
-  private Map<String, Field> getParameterConstants(Class aClazz) {
+  private Map<String, Field> getParameterConstants(Class<?> aClazz) {
     Map<String, Field> result = new HashMap<String, Field>();
     for (Field f : aClazz.getFields()) {
       if (!f.getName().startsWith("PARAM_")) {
@@ -432,6 +430,7 @@ public class EnhanceMojo extends AbstractMojo {
    * 
    * @return The path to the source file or {@code null} if no source file was found.
    */
+  @SuppressWarnings("unchecked")
   private String getSourceFile(String aClassName) {
     String sourceName = aClassName.replace('.', '/') + ".java";
 
