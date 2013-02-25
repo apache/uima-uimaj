@@ -25,6 +25,7 @@ import java.io.OutputStream;
 import java.lang.reflect.Modifier;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Component;
@@ -64,6 +65,18 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
   @Parameter(defaultValue="${project.build.directory}/generated-sources/uimafit", required=true)
   private File outputDirectory;
   
+  /**
+   * Skip generation of META-INF/org.apache.uima.fit/components.txt
+   */
+  @Parameter(defaultValue = "false", required = true)
+  private boolean skipComponentsManifest;
+
+  /**
+   * Source file encoding.
+   */
+  @Parameter(defaultValue = "${project.build.sourceEncoding}", required = true)
+  private String encoding;
+
   public void execute() throws MojoExecutionException {
     // add the generated sources to the build
     if (!outputDirectory.exists()) {
@@ -77,6 +90,9 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
             new String[] { "class" });
 
     componentLoader = Util.getClassloader(project, getLog());
+
+    // List of components that is later written to META-INF/org.apache.uima.fit/components.txt
+    StringBuilder componentsManifest = new StringBuilder();
 
     for (String file : files) {
       String base = file.substring(0, file.length() - 6);
@@ -105,6 +121,9 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
           File out = new File(outputDirectory, clazzPath+".xml");
           out.getParentFile().mkdirs();
           toXML(desc, out.getPath());
+          
+          // Remember component
+          componentsManifest.append("classpath*:").append(clazzPath+".xml").append('\n');
         }
       } catch (SAXException e) {
         getLog().warn("Cannot serialize descriptor for [" + clazzName + "]", e);
@@ -114,6 +133,18 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
         getLog().warn("Cannot analyze class [" + clazzName + "]", e);
       } catch (ResourceInitializationException e) {
         getLog().warn("Cannot generate descriptor for [" + clazzName + "]", e);
+      }
+    }
+    
+    // Write META-INF/org.apache.uima.fit/components.txt
+    if (!skipComponentsManifest) {
+      File path = new File(outputDirectory, "META-INF/org.apache.uima.fit/components.txt");
+      FileUtils.mkdir(path.getParent());
+      try {
+        FileUtils.fileWrite(path.getPath(), encoding, componentsManifest.toString());
+      } catch (IOException e) {
+        throw new MojoExecutionException("Cannot write components manifest to [" + path + "]"
+                + ExceptionUtils.getRootCauseMessage(e), e);
       }
     }
   }
