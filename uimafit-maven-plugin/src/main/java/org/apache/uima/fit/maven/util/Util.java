@@ -89,7 +89,9 @@ public final class Util {
     if (aParameterNameConstantField != null) {
       JavaField field = clazz.getFieldByName(aParameterNameConstantField);
       if (field == null) {
-        throw new IllegalArgumentException("No such field ["+aParameterNameConstantField+"]");
+        throw new IllegalArgumentException("Parameter name constant ["
+                + aParameterNameConstantField + "] in class ["
+                + clazz.asType().getFullyQualifiedName() + "]");
       }
       javadoc = field.getComment();
     }
@@ -98,7 +100,8 @@ public final class Util {
     if (javadoc == null) {
       JavaField field = clazz.getFieldByName(aParameterField);
       if (field == null) {
-        throw new IllegalArgumentException("No such field ["+aParameterField+"]");
+        throw new IllegalArgumentException("No parameter field [" + aParameterField
+                + "] in class [" + clazz.asType().getFullyQualifiedName() + "]");
       }
       javadoc = field.getComment();
     }

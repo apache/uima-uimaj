@@ -16,6 +16,13 @@
                 <multiValued>false</multiValued>
                 <mandatory>true</mandatory>
             </configurationParameter>
+            <configurationParameter>
+                <name>valueParent1</name>
+                <description>Parameter value 1 in parent.</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>true</mandatory>
+            </configurationParameter>
         </configurationParameters>
         <configurationParameterSettings/>
         <typeSystemDescription/>

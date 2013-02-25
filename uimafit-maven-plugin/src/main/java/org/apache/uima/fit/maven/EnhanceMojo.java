@@ -52,7 +52,6 @@ import org.apache.uima.fit.factory.ConfigurationParameterFactory;
 import org.apache.uima.fit.factory.ResourceMetaDataFactory;
 import org.apache.uima.fit.maven.util.Util;
 import org.apache.uima.fit.util.EnhancedClassFile;
-import org.apache.uima.fit.util.ReflectionUtil;
 import org.apache.uima.resource.metadata.ConfigurationParameter;
 import org.codehaus.plexus.util.FileUtils;
 import org.sonatype.plexus.build.incremental.BuildContext;
@@ -339,8 +338,9 @@ public class EnhanceMojo extends AbstractMojo {
     Map<String, Field> nameFields = getParameterConstants(aClazz);
 
     // Fetch configuration parameters from the @ConfigurationParameter annotations in the
-    // compiled class
-    for (Field field : ReflectionUtil.getFields(aClazz)) {
+    // compiled class. We only need the fields in the class itself. Superclasses should be
+    // enhanced by themselves.
+    for (Field field : aClazz.getDeclaredFields()) {
       // Is this a configuration parameter?
       if (!ConfigurationParameterFactory.isConfigurationParameterField(field)) {
         continue;
