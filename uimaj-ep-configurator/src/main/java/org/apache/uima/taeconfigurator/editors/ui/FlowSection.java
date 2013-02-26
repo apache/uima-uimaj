@@ -439,7 +439,7 @@ public class FlowSection extends AbstractSection {
     FlowConstraints flowConstraints = getModelFlow();
     if (null == flowConstraints) {
       // no constraints declared
-      // set up Fix Flow style of contraints
+      // set up Fix Flow style of constraints
       //   This can happen if the style is user-defined flow
       flowConstraints = UIMAFramework.getResourceSpecifierFactory().createFixedFlow();
       getAnalysisEngineMetaData().setFlowConstraints(flowConstraints);

@@ -87,7 +87,7 @@ public class InlineXmlCasConsumer extends CasConsumer_ImplBase {
       throw new ResourceProcessException(e);
     }
 
-    // retreive the filename of the input file from the CAS
+    // retrieve the filename of the input file from the CAS
     FSIterator it = jcas.getAnnotationIndex(SourceDocumentInformation.type).iterator();
     File outFile = null;
     if (it.hasNext()) {

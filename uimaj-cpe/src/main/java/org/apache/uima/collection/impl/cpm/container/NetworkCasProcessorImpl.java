@@ -328,7 +328,7 @@ public class NetworkCasProcessorImpl implements CasDataProcessor {
 
   /**
    * This method gets called when the CPM completes processing the collection. Depending on the type
-   * of deploymnet this routine may issue a shutdown command to the service.
+   * of deployment this routine may issue a shutdown command to the service.
    * 
    * @see org.apache.uima.collection.base_cpm.CasProcessor#collectionProcessComplete(org.apache.uima.util.ProcessTrace)
    */
