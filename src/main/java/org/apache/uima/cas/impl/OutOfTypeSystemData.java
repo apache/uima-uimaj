@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This class is used by the XCASDeserializer to store feature sturctures that do not fit into the
+ * This class is used by the XCASDeserializer to store feature structures that do not fit into the
  * type system of the CAS it is deserializing into. This data can then be passed to the
  * XCASSerializer, which will include it in the XCAS it produces. In this way consumers of an XCAS
  * can safely ignore out-of-typesystem data without destroying it.

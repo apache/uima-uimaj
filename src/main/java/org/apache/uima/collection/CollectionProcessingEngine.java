@@ -83,7 +83,7 @@ public interface CollectionProcessingEngine {
           throws ResourceInitializationException;
 
   /**
-   * Registers a listsner to receive status callbacks.
+   * Registers a listener to receive status callbacks.
    * 
    * @param aListener
    *          the listener to add

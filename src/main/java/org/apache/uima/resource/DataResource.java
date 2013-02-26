@@ -32,7 +32,7 @@ import java.util.Map;
  * <p>
  * <code>DataResource</code>s may optionally implement {@link #getUrl()}, which would return the
  * URL where the data is located. This may be necessary for some applications, but it is strongly
- * recommnded the {@link #getInputStream()} be used whenever possible, because accessing the data
+ * recommended the {@link #getInputStream()} be used whenever possible, because accessing the data
  * directly via the URL does not allow the ResourceManager to assist in caching or sharing of data.
  * 
  * 
@@ -41,7 +41,7 @@ public interface DataResource extends Resource {
 
   /**
    * Gets an {@link InputStream} to the data. It is the caller's responsibility to close this input
-   * stream when finshed with it.
+   * stream when finished with it.
    * 
    * @return an InputStream to the data
    * 

@@ -103,7 +103,7 @@ public class CasToInlineXml {
    *          CAS to generate from
    * @param aFilter
    *          constraint that determines which annotations are included in the output. If null (or
-   *          ommitted), all annotations are included.
+   *          omitted), all annotations are included.
    */
   public String generateXML(CAS aCAS, FSMatchConstraint aFilter) throws CASException {
     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();

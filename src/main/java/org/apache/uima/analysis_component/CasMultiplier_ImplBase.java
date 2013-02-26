@@ -26,7 +26,7 @@ import org.apache.uima.cas.TypeSystem;
 
 /**
  * Base class to be extended by CAS Multipliers that use the {@link CAS} interface. A CAS Multiplier
- * can produce multiplie output CASes while processing an input CAS. See {@link AnalysisComponent}
+ * can produce multiple output CASes while processing an input CAS. See {@link AnalysisComponent}
  * for a description of how the framework calls the methods on this interface.
  */
 public abstract class CasMultiplier_ImplBase extends AnalysisComponent_ImplBase {

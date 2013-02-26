@@ -98,7 +98,7 @@ public interface ConfigurationParameter extends MetaDataObject {
    * Sets the description of this configuration parameter.
    * 
    * @param aDescription
-   *          the description of this configuraiton parameter.
+   *          the description of this configuration parameter.
    * 
    * @throws org.apache.uima.UIMA_UnsupportedOperationException
    *           if this object is not modifiable
@@ -108,7 +108,7 @@ public interface ConfigurationParameter extends MetaDataObject {
   /**
    * Retrieves the data type of this configuration parameter.
    * 
-   * @return the data type of this configuraiton parameter. This will be one of the TYPE constants
+   * @return the data type of this configuration parameter. This will be one of the TYPE constants
    *         defined on this interface.
    */
   public String getType();
@@ -117,7 +117,7 @@ public interface ConfigurationParameter extends MetaDataObject {
    * Sets the data type of this configuration parameter.
    * 
    * @param aType
-   *          the data type of this configuraiton parameter. This must be one of the TYPE constants
+   *          the data type of this configuration parameter. This must be one of the TYPE constants
    *          defined on this interface.
    * 
    * @throws org.apache.uima.UIMA_IllegalArgumentException

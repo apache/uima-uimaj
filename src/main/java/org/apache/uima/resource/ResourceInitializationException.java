@@ -347,14 +347,14 @@ public class ResourceInitializationException extends UIMAException {
 
   /**
    * Message key for a standard UIMA exception message: "The descriptor for aggregate AnalysisEngine
-   * "{0}" declared multipleDeploymentAllowed == true, but its copmonent "{1}" declared
+   * "{0}" declared multipleDeploymentAllowed == true, but its component "{1}" declared
    * multipleDeploymentAllowed == false, which is inconsistent."
    */
   public static final String INVALID_MULTIPLE_DEPLOYMENT_ALLOWED = "invalid_multiple_deployment_allowed";
 
   /**
    * Message key for a standard UIMA exception message: "The descriptor for aggregate AnalysisEngine
-   * "{0}" declared modifiesCas == false, but its copmonent "{1}" declared modifiesCas == true,
+   * "{0}" declared modifiesCas == false, but its component "{1}" declared modifiesCas == true,
    * which is inconsistent."
    */
   public static final String INVALID_MODIFIES_CAS = "invalid_modifies_cas";
@@ -457,7 +457,7 @@ public class ResourceInitializationException extends UIMAException {
   public static final String INVALID_ACTION_AFTER_CAS_MULTIPLIER = "invalid_action_after_cas_multiplier";
 
   /**
-   * Message key for a standard UIMA exception message: The Flow Controller "{0}" requires a flow contraints
+   * Message key for a standard UIMA exception message: The Flow Controller "{0}" requires a flow constraints
    * element of type "{1}" in the aggregate descriptor
    */
   public static final String FLOW_CONTROLLER_REQUIRES_FLOW_CONSTRAINTS = "flow_controller_requires_flow_constraints";

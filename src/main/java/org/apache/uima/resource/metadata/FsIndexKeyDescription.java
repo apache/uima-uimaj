@@ -46,7 +46,7 @@ public interface FsIndexKeyDescription extends MetaDataObject {
    * that Analysis Engine.
    * <p>
    * Type priority keys ignore any values assigned to the {@link #getFeatureName() featureName} and
-   * {@link #getComparator() comaprator} properties.
+   * {@link #getComparator() comparator} properties.
    * 
    * @return true if and only if this is a type priority key
    */
@@ -58,7 +58,7 @@ public interface FsIndexKeyDescription extends MetaDataObject {
    * that Analysis Engine.
    * <p>
    * Type priority keys ignore any values assigned to the {@link #getFeatureName() featureName} and
-   * {@link #getComparator() comaprator} properties.
+   * {@link #getComparator() comparator} properties.
    * 
    * @param aTypePriority
    *          true if and only if this is a type priority key

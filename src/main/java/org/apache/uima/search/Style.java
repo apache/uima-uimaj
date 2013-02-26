@@ -24,7 +24,7 @@ import java.io.Serializable;
 import org.apache.uima.util.XMLizable;
 
 /**
- * An indexing style. A set of indexing sytles make up a {@link IndexRule}, which is then applied
+ * An indexing style. A set of indexing styles make up a {@link IndexRule}, which is then applied
  * to an {@link IndexBuildItem} in order to assign indexing behavior to an annotation type.
  * <p>
  * We support an open-ended schema for styles. Each style has a {@link #getName() name} and zero or
@@ -92,7 +92,7 @@ public interface Style extends XMLizable, Serializable {
    * Gets the <code>Attribute</code>s for this style. See the class comment for a list of defined
    * attributes for each style name.
    * 
-   * @return the attibutes for this style.
+   * @return the attributes for this style.
    */
   public Attribute[] getAttributes();
 
@@ -101,7 +101,7 @@ public interface Style extends XMLizable, Serializable {
    * attributes for each style name.
    * 
    * @param aAttributes
-   *          the attibutes for this style.
+   *          the attributes for this style.
    */
   public void setAttributes(Attribute[] aAttributes);
 

@@ -23,7 +23,7 @@ import org.apache.uima.resource.metadata.NameValuePair;
 
 /**
  * Encapuslates state information about a {@link Resource_impl}. Note that this does not need to
- * include all state infomration, just that information that is modifiable by a client of a Resource
+ * include all state information, just that information that is modifiable by a client of a Resource
  * service. The purpose of this class is to enable instance pooling when Resources are deployed as
  * services.
  * <p>

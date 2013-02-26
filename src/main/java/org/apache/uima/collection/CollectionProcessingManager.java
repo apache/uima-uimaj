@@ -37,7 +37,7 @@ import org.apache.uima.util.Progress;
  * {@link #process(CollectionReader,int)} methods.
  * <p>
  * The <code>process</code> methods take a {@link CollectionReader} object as an argument. The
- * Collection Reader retreivies each artifact from the collection as a
+ * Collection Reader retrieves each artifact from the collection as a
  * {@link org.apache.uima.cas.CAS} object.
  * <p>
  * Listeners can register with the CPM by calling the
@@ -111,7 +111,7 @@ public interface CollectionProcessingManager {
 
   /**
    * Gets whether this CPM is required to process the collection's elements serially (as opposed to
-   * perfoming parallelization). Note that a value of <code>false</code> does not guarantee that
+   * performing parallelization). Note that a value of <code>false</code> does not guarantee that
    * parallelization is performed; this is left up to the CPM implementation.
    * 
    * @return true if and only if serial processing is required
@@ -120,7 +120,7 @@ public interface CollectionProcessingManager {
 
   /**
    * Sets whether this CPM is required to process the collection's elements serially* (as opposed to
-   * perfoming parallelization). If this method is not called,* the default is <code>false</code>.
+   * performing parallelization). If this method is not called,* the default is <code>false</code>.
    * Note that a value of <code>false</code> does not guarantee that parallelization is performed;
    * this is left up to the CPM implementation.
    * 
@@ -222,7 +222,7 @@ public interface CollectionProcessingManager {
    * method.
    * 
    * @throws org.apache.uima.UIMA_IllegalStateException
-   *           if no processing is currently occuring
+   *           if no processing is currently occurring
    */
   public void pause();
 

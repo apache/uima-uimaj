@@ -54,7 +54,7 @@ public interface BaseCPM {
   /**
    * Only used for alternate CasData forms of the CAS (not used in this UIMA SDK release). Name of
    * CasData CAS type that holds document text. When creating CasData forms of the CAS, a feature
-   * stucture of this type must be created by the collection reader.
+   * structure of this type must be created by the collection reader.
    */
   public static final String DOCUMENT_TEXT_TYPE = "uima.cpm.DocumentText";
 
@@ -143,7 +143,7 @@ public interface BaseCPM {
 
   /**
    * Gets whether this CPM is required to process the collection's elements serially (as opposed to
-   * perfoming parallelization). Note that a value of <code>false</code> does not guarantee that
+   * performing parallelization). Note that a value of <code>false</code> does not guarantee that
    * parallelization is performed; this is left up to the CPM implementation.
    * 
    * @return true if and only if serial processing is required
@@ -152,7 +152,7 @@ public interface BaseCPM {
 
   /**
    * Sets whether this CPM is required to process the collection's elements serially (as opposed to
-   * perfoming parallelization). If this method is not called, the default is <code>false</code>.
+   * performing parallelization). If this method is not called, the default is <code>false</code>.
    * Note that a value of <code>false</code> does not guarantee that parallelization is performed;
    * this is left up to the CPM implementation.
    * 

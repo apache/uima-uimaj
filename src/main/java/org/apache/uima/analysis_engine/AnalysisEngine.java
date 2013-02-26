@@ -54,7 +54,7 @@ import org.apache.uima.util.ProcessTrace;
  * <li>Call {@link #newCAS()} to create a new Common Analysis System appropriate for this
  * AnalysisEngine.</li>
  * <li>Use the {@link CAS} interface to populate the <code>CAS</code> with the artifact to be
- * analyzed any information known about this docuemnt (e.g. the language of a text document). </li>
+ * analyzed any information known about this document (e.g. the language of a text document). </li>
  * <li>Optionally, create a {@link org.apache.uima.analysis_engine.ResultSpecification} that
  * identifies the results you would like this AnalysisEngine to generate (e.g. people, places, and
  * dates), and call the {#link {@link #setResultSpecification(ResultSpecification)} method.</li>
@@ -104,7 +104,7 @@ public interface AnalysisEngine extends ConfigurableResource, CasObjectProcessor
    * {@link #process(CAS)} that will be supported. Analysis Engine implementations may use this to
    * create a pool of objects (e.g. Annotators), each of which can process only one request at a
    * time. Applications should be careful about setting this number higher than is necessary, since
-   * large pools of objects may increase initialiation time and consume resources. Not all analysis
+   * large pools of objects may increase initialization time and consume resources. Not all analysis
    * engine implementations pay attention to this parameter.
    * <p>
    * This value is used as a key in the <code>aAdditionalParams</code> Map that is passed to the
@@ -327,7 +327,7 @@ public interface AnalysisEngine extends ConfigurableResource, CasObjectProcessor
    * required by this AnalysisEngine (as defined by this AnalysisEngine's
    * {@link org.apache.uima.resource.metadata.Capability} specification.)
    * <p>
-   * This version of this method is not normally used directly by applictaions. It is used to call
+   * This version of this method is not normally used directly by applications. It is used to call
    * Analysis Engines that are components within an aggregate Analysis Engine, so that they can
    * share all information in the {@link AnalysisProcessData} object, which includes the CAS and the
    * ProcessTrace.

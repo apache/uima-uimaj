@@ -165,7 +165,7 @@ public class XmiCasSerializer {
     private MarkerImpl marker;
 
     /**
-     * Whether the serializer neeeds to check for filtered-out types/features. Set to true if type
+     * Whether the serializer needs to check for filtered-out types/features. Set to true if type
      * system of CAS does not match type system that was passed to constructor of serializer.
      */
     boolean isFiltering;
@@ -230,7 +230,7 @@ public class XmiCasSerializer {
      */
     private void serialize() throws SAXException {
       // populate nsUriToPrefixMap and xmiTypeNames structures based on CAS 
-      // type system, and out of typesytem data if any
+      // type system, and out of typesystem data if any
       initTypeAndNamespaceMappings();
 
       int iElementCount = 1; // start at 1 to account for special NULL object

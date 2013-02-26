@@ -30,7 +30,7 @@ import org.apache.uima.cas.ArrayFS;
  * The CAS Data is a collection of {@link FeatureStructure}s, where each FeatureStructure has an
  * optional ID, a type (represented as a string), and a collection of features, which are
  * attribute-value pairs. Feature names are strings, and their values may be primitives (String,
- * integer, or float) or references, via ID, to one or more other FeatureStuctures. Circular
+ * integer, or float) or references, via ID, to one or more other FeatureStructures. Circular
  * references are allowed.
  * <p>
  * Note on Arrays: Arrays are represented by {@link ArrayFS}, which is a subtype of

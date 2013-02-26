@@ -22,7 +22,7 @@ package org.apache.uima.resource;
 import org.apache.uima.UIMAException;
 
 /**
- * Thrown to indicate that a {@link Resource}'s configuration paramters could not be set. Most
+ * Thrown to indicate that a {@link Resource}'s configuration parameters could not be set. Most
  * commonly this will be because the caller has specified a nonexistent parameter name or a value of
  * the incorrect data type.
  * 

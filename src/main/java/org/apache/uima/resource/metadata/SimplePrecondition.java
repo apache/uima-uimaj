@@ -24,11 +24,11 @@ import org.apache.uima.UIMA_UnsupportedOperationException;
 import org.apache.uima.cas.FSMatchConstraint;
 
 /**
- * <code>SimplePrecondition</code> defines a few simple conditions that can be evaluted against a
+ * <code>SimplePrecondition</code> defines a few simple conditions that can be evaluated against a
  * {@link org.apache.uima.cas.CAS}.
  * <p>
  * A value in the CAS (see below) will be compared against the precondition's
- * {@link #getComparisonValue() comparisonValue} property using the speicified
+ * {@link #getComparisonValue() comparisonValue} property using the specified
  * {@link #getPredicate() predicate}.
  * <p>
  * The value in the CAS is specified by providing values for
@@ -36,7 +36,7 @@ import org.apache.uima.cas.FSMatchConstraint;
  * {@link #setFsMatchConstraint(FSMatchConstraint) fsMatchConstraint}, and
  * {@link #setFeatureName(String) featureName}. If any FeatureStructure in the specified index
  * matches the FS match constraint and has a feature value that satisfies this precondition's
- * precicate, the precondition will be considered satisfied. If the index name is ommitted, the
+ * precicate, the precondition will be considered satisfied. If the index name is omitted, the
  * default Annotation index (if present) will be used.
  * <p>
  * The possible predicates are defined by constants on this interface. The currently avaialble
@@ -169,7 +169,7 @@ public interface SimplePrecondition extends Precondition {
   public void setPredicate(String aPredicate);
 
   /**
-   * Retrieves the deafult value for this precondition. This is the value returned if there is no
+   * Retrieves the default value for this precondition. This is the value returned if there is no
    * applicable test value in the CAS.
    * 
    * @return the default value
@@ -177,7 +177,7 @@ public interface SimplePrecondition extends Precondition {
   public boolean getDefault();
 
   /**
-   * Sets the deafult value for this precondition. This is the value returned if there is no
+   * Sets the default value for this precondition. This is the value returned if there is no
    * applicable test value in the CAS.
    * 
    * @param aDefault

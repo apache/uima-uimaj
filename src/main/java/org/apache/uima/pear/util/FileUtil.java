@@ -882,7 +882,7 @@ public class FileUtil {
   }
 
   /**
-   * Makes and attempt to identify possible UTF signatute (BOM) in a given sequence of bytes.
+   * Makes and attempt to identify possible UTF signature (BOM) in a given sequence of bytes.
    * Returns the identified UTF signature name or <code>null</code>, if the signature could not
    * be identified. For more on UTF and its signatures see <a
    * href="http://www.unicode.org/faq/utf_bom.html" target="_blank"> FAQ - UTF and BOM</a>.
@@ -1312,7 +1312,7 @@ public class FileUtil {
   }
 
   /**
-   * Replaces all occurences of a given regular expression with a given string in a given text file.
+   * Replaces all occurrences of a given regular expression with a given string in a given text file.
    * Supports only 1 file encoding - ASCII - for all general text files. Supports 2 encodings -
    * UTF-8 (ASCII) and UTF-16 for XML files.
    * 

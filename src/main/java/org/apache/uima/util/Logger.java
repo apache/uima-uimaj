@@ -251,7 +251,7 @@ public void setOutputStream(OutputStream aStream);
    * messages produced by annotators. To change the logging level for an annotator, use
    * <code>UIMAFramework.getLogger(YourAnnotatorClass.class).setLevel(level)</code>.
    * <p>
-   * If you need more flexibilty it configuring the logger, consider using the standard Java logger
+   * If you need more flexibility it configuring the logger, consider using the standard Java logger
    * properties file or the java.util.logging APIs.
    * 
    * @param level

@@ -1051,7 +1051,7 @@ public abstract class UIMAFramework {
    * </pre>
    * 
    * <p>
-   * Valid keys for the {@link Properties} object rerturned by this method are specified as
+   * Valid keys for the {@link Properties} object returned by this method are specified as
    * constants on this interface.
    * 
    * @return the default set of performance tuning properties. A new object is returned each time

@@ -40,7 +40,7 @@ public class PropertyXmlInfo {
   public String xmlElementName;
 
   /**
-   * If true, this property should be ommitted from the XML entirely if its value is null. Defaults
+   * If true, this property should be omitted from the XML entirely if its value is null. Defaults
    * to true.
    */
   public boolean omitIfNull;
@@ -69,7 +69,7 @@ public class PropertyXmlInfo {
    * @param aPropName
    *          name of the property
    * @param aOmitIfNull
-   *          if true, this property should be ommitted entirely from the XML if its value is null
+   *          if true, this property should be omitted entirely from the XML if its value is null
    */
   public PropertyXmlInfo(String aPropName, boolean aOmitIfNull) {
     this(aPropName, aPropName, aOmitIfNull, null);
@@ -95,7 +95,7 @@ public class PropertyXmlInfo {
    * @param aXmlElementName
    *          name of xml element that represents this property (may be null - see {@link #xmlName}.
    * @param aOmitIfNull
-   *          if true, this property should be ommitted entirely from the XML if its value is null
+   *          if true, this property should be omitted entirely from the XML if its value is null
    */
   public PropertyXmlInfo(String aPropName, String aXmlName, boolean aOmitIfNull) {
     this(aPropName, aXmlName, aOmitIfNull, null);
@@ -110,7 +110,7 @@ public class PropertyXmlInfo {
    *          name of xml element that represents this property (may be null - see
    *          {@link #xmlElementName}.
    * @param aOmitIfNull
-   *          if true, this property should be ommitted entirely from the XML if its value is null
+   *          if true, this property should be omitted entirely from the XML if its value is null
    * @param aArrayElementTagName
    *          only used for properties with array values, this determines the tag name of each array
    *          element. As with <code>aXmlName</code>, this may be null, which will cause each

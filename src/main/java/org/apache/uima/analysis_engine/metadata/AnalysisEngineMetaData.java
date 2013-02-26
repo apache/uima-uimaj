@@ -34,7 +34,7 @@ public interface AnalysisEngineMetaData extends ProcessingResourceMetaData {
 
   /**
    * Determines if this AnalysisEngine supports asynchronous communication. Not yet implemented;
-   * reserved for furture use.
+   * reserved for future use.
    * 
    * @return true if and only if this AnalysisEngine supports asynchronous communication
    */
@@ -43,7 +43,7 @@ public interface AnalysisEngineMetaData extends ProcessingResourceMetaData {
   /**
    * Sets whether this AnalysisEngine supports asynchronous communication. If this is set to true
    * then the AnalysisEngine should implement the <code>AsynchronousAnalysisEngine</code>
-   * interface (not yet impleneted).
+   * interface (not yet implemented).
    * 
    * @param aSupported
    *          true if and only if this AnalysisEngine supports asynchronous communication
@@ -59,7 +59,7 @@ public interface AnalysisEngineMetaData extends ProcessingResourceMetaData {
    * may be used by the {@link org.apache.uima.flow.FlowController}, the component which ultimately
    * determines the flow.
    * <p>
-   * The returned <code>FlowConstraints</code> object refers to the delgate AnalysisEngines using
+   * The returned <code>FlowConstraints</code> object refers to the delegate AnalysisEngines using
    * String keys. These are the keys used to refer to the delegate AnalysisEngines in the
    * {@link org.apache.uima.analysis_engine.AnalysisEngineDescription#getDelegateAnalysisEngineSpecifiers()}
    * map.
