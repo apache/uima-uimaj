@@ -1081,7 +1081,7 @@ public class InstallationController {
    * <code>TestStatus</code> object with the test results.
    * 
    * @param pkgBrowser
-   *          The given package borwser object of the installed pear package.
+   *          The given package browser object of the installed pear package.
    * @return The <code>TestStatus</code> object that contains the return code and possible error
    *         message of the test.
    */

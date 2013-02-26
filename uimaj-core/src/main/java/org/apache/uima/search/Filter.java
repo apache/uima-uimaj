@@ -25,7 +25,7 @@ import org.apache.uima.util.XMLizable;
 
 /**
  * Specifies a constraint that matches against annotations in the CAS. Filters are assigned to
- * {@link IndexBuildItem}s in order to specify which annotation instnaces are subject to indexing
+ * {@link IndexBuildItem}s in order to specify which annotation instances are subject to indexing
  * according to the rule specified by the IndexBuildItem.
  * <p>
  * We support an open-ended schema for filters. Each Filter has a {@link #getSyntax() syntax}

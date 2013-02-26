@@ -92,7 +92,7 @@ public interface ConfigurableResource extends Resource {
    * 
    * @param aGroupName
    *          the name of a configuration group. If this parameter is
-   *          <code>null<code>, this method will have the same effet as
+   *          <code>null<code>, this method will have the same effect as
    *   {@link #setConfigParameterValue(String,Object) setParameterValue(String,Object)}.
    * @param aParamName the name of a parameter in the group
    * @param aValue the value to assign to the parameter.

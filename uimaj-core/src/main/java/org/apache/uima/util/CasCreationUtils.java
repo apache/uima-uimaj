@@ -129,7 +129,7 @@ public class CasCreationUtils {
    * analysis engines.
    * 
    * @param aDescription
-   *                description of the anlaysis engine that will process this CAS. This is used to
+   *                description of the analysis engine that will process this CAS. This is used to
    *                set up the CAS's type system and indexes.
    * 
    * @return a new CAS instance
@@ -147,7 +147,7 @@ public class CasCreationUtils {
    * analysis engines.
    * 
    * @param aDescription
-   *                description of the anlaysis engine that will process this CAS. This is used to
+   *                description of the analysis engine that will process this CAS. This is used to
    *                set up the CAS's type system and indexes.
    * @param aPerformanceTuningSettings
    *                Properties object containing framework performance tuning settings using key
@@ -661,7 +661,7 @@ public class CasCreationUtils {
    * @param aCASMgr
    *                the <code>CASMgr</code> object whose type system is to be modified.
    * @param aTypeSystem
-   *                desription of type system to install
+   *                description of type system to install
    * 
    * @throws ResourceInitializationException
    *                 if an error occurs during modification of the type system
@@ -1012,7 +1012,7 @@ public class CasCreationUtils {
    *         together
    * 
    * @throws ResourceInitializationException
-   *                 if an incompatibiliy exists or if an import could not be resolved
+   *                 if an incompatibility exists or if an import could not be resolved
    */
   public static TypeSystemDescription mergeTypeSystems(Collection<? extends TypeSystemDescription> aTypeSystems,
       ResourceManager aResourceManager) throws ResourceInitializationException {
@@ -1230,7 +1230,7 @@ public class CasCreationUtils {
    *         systems together
    * 
    * @throws ResourceInitializationException
-   *                 if an incompatibiliy exists or if an import could not be resolved
+   *                 if an incompatibility exists or if an import could not be resolved
    */
   public static TypeSystemDescription mergeDelegateAnalysisEngineTypeSystems(
       AnalysisEngineDescription aAggregateDescription, ResourceManager aResourceManager)
@@ -1500,7 +1500,7 @@ public class CasCreationUtils {
    *                Set}s containing Descriptor URLs (Strings) where those types are declared. You
    *                may pass null if you are not interested in this information.
    * @param aOutputFailedRemotes
-   *                If this paramter is non-null, and if a remote AE could not be contacted, then an
+   *                If this parameter is non-null, and if a remote AE could not be contacted, then an
    *                entry will be added to this map. The key will be the context name (e.g.,
    *                /myDelegate1/nestedRemoteDelegate) of the failed remote, and the value will be
    *                the Exception that occurred. If this parameter is null, an exception will be
@@ -1509,7 +1509,7 @@ public class CasCreationUtils {
    * @return an object containing the merged TypeSystem, TypePriorities, and FS Index definitions.
    * 
    * @throws ResourceInitializationException
-   *                 if an incompatibiliy exists or if an import could not be resolved
+   *                 if an incompatibility exists or if an import could not be resolved
    */
   public static ProcessingResourceMetaData mergeDelegateAnalysisEngineMetaData(
       AnalysisEngineDescription aAggregateDescription, ResourceManager aResourceManager,
@@ -1979,7 +1979,7 @@ public class CasCreationUtils {
   /**
    * Gets a list of ProcessingResourceMetadata objects from a list containing either
    * ResourceSpecifiers, ProcessingResourceMetadata objects, or subparts of
-   * ProcessingResourceMetadata objects (type sypstems, indexes, or type priorities). Subparts will
+   * ProcessingResourceMetadata objects (type systems, indexes, or type priorities). Subparts will
    * be wrapped inside a ProcessingResourceMetadata object. All objects will be cloned, so that
    * further processing (such as import resolution) does not affect the caller.
    * <p>

@@ -266,7 +266,7 @@ public interface CpeDescription extends MetaDataObject {
   public void setCpeCasProcessors(CpeCasProcessors aCasProcessors);
 
   /**
-   * Generates XML for the CPE Descriptor and writes it out to prvided OutputStream.
+   * Generates XML for the CPE Descriptor and writes it out to the provided OutputStream.
    * 
    * @param aStream -
    *          stream to write

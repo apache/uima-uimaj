@@ -27,8 +27,8 @@ import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 /**
  * A subtype of {@link UimaContext} used by {@link FlowController} components. In addition to access
  * to resources and configuration settings (provided by <code>UimaContext</code>), the
- * <code>FlowControllerContext</code> provides access to other infomration that the FlowController
- * can use to make routing decitions. This includes:
+ * <code>FlowControllerContext</code> provides access to other information that the FlowController
+ * can use to make routing decisions. This includes:
  * <ul>
  * <li>A map from AnalysisEngine key to AnalysisEngineMetaData for all AnalysisEngines that the
  * FlowController can route CASes to</li>

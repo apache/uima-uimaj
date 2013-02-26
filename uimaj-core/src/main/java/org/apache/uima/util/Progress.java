@@ -53,7 +53,7 @@ public interface Progress extends java.io.Serializable {
   public String getUnit();
 
   /**
-   * Returns true if the progress staistics are approximate, for example if the total number of
+   * Returns true if the progress statistics are approximate, for example if the total number of
    * entities in the collection is not known.
    * 
    * @return true if the statistics are approximate, false if they are exact

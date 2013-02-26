@@ -2016,7 +2016,7 @@ public class XmiCasDeserializer {
    *     When processing String, StringArrayFS and StringListFS features of a preexisting FS, 
    *     the string value in the CAS is updated only if it is not equal to the incoming string value.
    *     Processing of a StringListFS where a new string value has been inserted, all subsequent
-   *     strings in the list will be upadated with new strings.   
+   *     strings in the list will be updated with new strings.   
    *     
    */
   public static void deserialize(InputStream aStream, CAS aCAS, boolean aLenient,

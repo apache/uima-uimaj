@@ -21,7 +21,7 @@ package org.apache.uima;
 
 /**
  * Thrown to indicate that the requested operation is not supported. This extends
- * <code>RuntimeException</code> and so does not need to be delcared in the throws clause of
+ * <code>RuntimeException</code> and so does not need to be declared in the throws clause of
  * methods.
  * 
  * 

@@ -33,7 +33,7 @@ public interface SynchPoint extends Serializable {
    * Sets data from which to recover
    * 
    * @param aSynchPointData -
-   *          arbitrary object containing recovery infromation
+   *          arbitrary object containing recovery information
    * 
    * @throws InvalidClassException
    *           if aSynchPointData class is not supported by implementation

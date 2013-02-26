@@ -116,7 +116,7 @@ public class UIMAUtil {
    * 
    * @param xmlDescFile
    *          The given component XML descriptor file.
-   * @return UIMA component category ID or <code>null</code>, if the category cannot be idetified
+   * @return UIMA component category ID or <code>null</code>, if the category cannot be identified
    *         based on the given XML descriptor file.
    * @throws IOException
    *           If any I/O exception occurred.
@@ -135,7 +135,7 @@ public class UIMAUtil {
    * 
    * @param xmlDescUrl
    *          The given component XML descriptor URL.
-   * @return UIMA component category ID or <code>null</code>, if the category cannot be idetified
+   * @return UIMA component category ID or <code>null</code>, if the category cannot be identified
    *         based on the given XML descriptor file.
    * @throws IOException
    *           If any I/O exception occurred.
@@ -156,7 +156,7 @@ public class UIMAUtil {
    *          The given component XML descriptor file.
    * @param xmlDescUrl
    *          The given component XML descriptor URL.
-   * @return UIMA component category ID or <code>null</code>, if the category cannot be idetified
+   * @return UIMA component category ID or <code>null</code>, if the category cannot be identified
    *         based on the given XML descriptor file.
    * @throws IOException
    *           If any I/O exception occurred.

@@ -92,7 +92,7 @@ public class InstallationProcessor {
    * 
    * @param componentId
    *          The given component ID.
-   * @return The $component_id$root reqular expression string.
+   * @return The $component_id$root regular expression string.
    */
   protected static String componentIdRootRegExp(String componentId, String suffix) {
     synchronized (__regexBuffer) {

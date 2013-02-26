@@ -22,7 +22,7 @@ package org.apache.uima;
 /**
  * Signals that a method has been invoked at an illegal or inappropriate time. In other words, the
  * object on which the method was called is not in an appropriate state for the requested operation.
- * This extends <code>RuntimeException</code> and so does not need to be delcared in the throws
+ * This extends <code>RuntimeException</code> and so does not need to be declared in the throws
  * clause of methods.
  * 
  * 

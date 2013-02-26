@@ -22,7 +22,7 @@ package org.apache.uima.collection.metadata;
 import org.apache.uima.resource.metadata.MetaDataObject;
 
 /**
- * An object that holds configuration information used for bulding CPE Descriptor. It provides the
+ * An object that holds configuration information used for building CPE Descriptor. It provides the
  * means of configuring deployment parameter used by the CPE to deploy CasProcessor.
  * 
  * 
@@ -46,7 +46,7 @@ public interface CasProcessorDeploymentParam extends MetaDataObject {
   public String getParameterName() throws CpeDescriptorException;
 
   /**
-   * Sets the value of the deploymnet parameter
+   * Sets the value of the deployment parameter
    * 
    * @param aParamValue -
    *          parameter value

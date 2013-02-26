@@ -739,7 +739,7 @@ public interface CAS extends AbstractCas {
   AnnotationFS getDocumentAnnotation();
 
   /**
-   * Informs the CAS of relevant information about the component that is currently procesing it.
+   * Informs the CAS of relevant information about the component that is currently processing it.
    * This is called by the framework automatically; users do not need to call it.
    * 
    * @param info

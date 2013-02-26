@@ -46,7 +46,7 @@ public interface BaseCollectionReader extends Resource {
    * Gets whether there are any elements remaining to be read from this
    * <code>CollectionReader</code>.
    * 
-   * @return true if and only if there are more elements availble from this
+   * @return true if and only if there are more elements available from this
    *         <code>CollectionReader</code>.
    * 
    * @throws IOException

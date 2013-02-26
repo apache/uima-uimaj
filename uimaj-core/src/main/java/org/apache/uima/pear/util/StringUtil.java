@@ -209,12 +209,12 @@ public class StringUtil {
   }
 
   /**
-   * Converts a given input string to another string that can be used in all 'reqular expression'
+   * Converts a given input string to another string that can be used in all 'regular expression'
    * methods. <br/>Characters to be escaped => "\ . $ ^ { [ ( | ) * + ?".
    * 
    * @param string
    *          The given input string.
-   * @return The string that can be used in 'reqular expression' methods.
+   * @return The string that can be used in 'regular expression' methods.
    */
   public static String toRegExpString(String string) {
     final char[] chars2escape = { '.', '$', '^', '{', '[', '(', '|', ')', '*', '+', '?' };

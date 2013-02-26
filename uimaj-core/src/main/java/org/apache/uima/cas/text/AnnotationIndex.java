@@ -136,7 +136,7 @@ public interface AnnotationIndex<T extends AnnotationFS> extends FSIndex<T> {
    * have defined <code>Paragraph</code> before <code>Sentence</code> in your type priorities,
    * then <code>subiterator(p)</code> will give you an iterator that will return <code>s</code>,
    * but <code>subiterator(s)</code> will give you an iterator that will NOT return <code>p</code>.
-   * The intutition is that a Paragraph is conceptually larger than a Sentence, as defined by the
+   * The intuition is that a Paragraph is conceptually larger than a Sentence, as defined by the
    * type priorities.
    * </p>
    * 

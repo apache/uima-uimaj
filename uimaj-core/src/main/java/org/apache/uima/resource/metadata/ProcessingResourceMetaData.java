@@ -171,7 +171,7 @@ public interface ProcessingResourceMetaData extends ResourceMetaData {
   /**
    * Resolves any import declarations. This includes imports of type systems, type priorities, and
    * FS index collections. The imported types, type priorities, and FS index collections are added
-   * direclty onto their respective lists, and the import elements are deleted, so this results in a
+   * directly onto their respective lists, and the import elements are deleted, so this results in a
    * structure that is equivalent to the imported elements having been defined locally.
    * 
    * @throws InvalidXMLException
@@ -182,7 +182,7 @@ public interface ProcessingResourceMetaData extends ResourceMetaData {
   /**
    * Resolves any import declarations. This includes imports of type systems, type priorities, and
    * FS index collections. The imported types, type priorities, and FS index collections are added
-   * direclty onto their respective lists, and the import elements are deleted, so this results in a
+   * directly onto their respective lists, and the import elements are deleted, so this results in a
    * structure that is equivalent to the imported elements having been defined locally.
    * 
    * @param aResourceManager
