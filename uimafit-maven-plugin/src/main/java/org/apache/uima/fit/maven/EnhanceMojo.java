@@ -333,7 +333,7 @@ public class EnhanceMojo extends AbstractMojo {
   private void enhanceConfigurationParameter(JavaSource aAST, Class<?> aClazz, CtClass aCtClazz)
           throws MojoExecutionException {
     // Get the parameter name constants
-    Map<String, Field> nameFields = getParameterConstants(aClazz);
+    Map<String, String> nameFields = getParameterConstants(aClazz);
 
     // Fetch configuration parameters from the @ConfigurationParameter annotations in the
     // compiled class. We only need the fields in the class itself. Superclasses should be
@@ -349,7 +349,7 @@ public class EnhanceMojo extends AbstractMojo {
 
       // Extract JavaDoc for this parameter from the source file
       String pdesc = Util.getParameterDocumentation(aAST, field.getName(),
-              nameFields.get(p.getName()).getName());
+              nameFields.get(p.getName()));
       if (pdesc == null) {
         getLog().warn("No description found for parameter [" + p.getName() + "]");
         continue;
@@ -398,15 +398,15 @@ public class EnhanceMojo extends AbstractMojo {
    * Get a map of parameter name to parameter name constant field, e.g. ("value",
    * Field("PARAM_VALUE")).
    */
-  private Map<String, Field> getParameterConstants(Class<?> aClazz) {
-    Map<String, Field> result = new HashMap<String, Field>();
+  private Map<String, String> getParameterConstants(Class<?> aClazz) {
+    Map<String, String> result = new HashMap<String, String>();
     for (Field f : aClazz.getFields()) {
       if (!f.getName().startsWith("PARAM_")) {
         continue;
       }
       try {
         String parameterName = (String) f.get(null);
-        result.put(parameterName, f);
+        result.put(parameterName, f.getName());
       } catch (IllegalAccessException e) {
         getLog().warn(
                 "Unable to access parameter name constant field [" + f.getName() + "]: "
