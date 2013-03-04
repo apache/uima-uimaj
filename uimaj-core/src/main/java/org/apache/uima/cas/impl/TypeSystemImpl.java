@@ -181,6 +181,8 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
 
   private int numCommittedTypes = 0;
 
+  private int numTypeNames = 0;
+
   final CASMetadata casMetadata; // needs to be visible in package
 
   boolean areBuiltInTypesSetup = false;
@@ -827,6 +829,9 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
    * Get the overall number of types defined in the type system.
    */
   public int getNumberOfTypes() {
+    if (this.isCommitted()) {
+      return this.numTypeNames;
+    }
     return this.typeNameST.size();
   }
 
@@ -1080,6 +1085,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     // because subsumes depends on it
     // and generator initialization uses subsumes
     this.numCommittedTypes = this.types.size(); // do before
+    this.numTypeNames = this.typeNameST.size();
     // cas.commitTypeSystem -
     // because it will call the type system iterator
     this.casMetadata.setupFeaturesAndCreatableTypes();
