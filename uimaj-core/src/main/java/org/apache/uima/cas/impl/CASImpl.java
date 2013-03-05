@@ -1559,9 +1559,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     // Get indexes for base CAS
     fsLoopIndex = this.svd.baseCAS.indexRepository.getIndexedFSs();
     v.add(fsLoopIndex.length);
-    for (int k = 0; k < fsLoopIndex.length; k++) {
-      v.add(fsLoopIndex[k]);
-    }
+    v.add(fsLoopIndex, 0, fsLoopIndex.length);
+//    for (int k = 0; k < fsLoopIndex.length; k++) {
+//      v.add(fsLoopIndex[k]);
+//    }
 
     // Get indexes for each SofaFS in the CAS
     for (int sofaNum = 1; sofaNum <= numViews; sofaNum++) {
@@ -1613,9 +1614,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
     
     v.add(newSofas.size());
-    for (int k = 0; k < newSofas.size(); k++) {
-      v.add(newSofas.get(k));
-    }
+    v.add(newSofas.getArray(), 0, newSofas.size());
+//    for (int k = 0; k < newSofas.size(); k++) {
+//      v.add(newSofas.get(k));
+//    }
 
     // Get indexes for each SofaFS in the CAS
     for (int sofaNum = 1; sofaNum <= numViews; sofaNum++) {
@@ -1631,17 +1633,20 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
         fsReindexed = INT0;
       }
       v.add(fsLoopIndex.length);
-      for (int k = 0; k < fsLoopIndex.length; k++) {
-        v.add(fsLoopIndex[k]);
-      }
+      v.add(fsLoopIndex, 0, fsLoopIndex.length);
+//      for (int k = 0; k < fsLoopIndex.length; k++) {
+//        v.add(fsLoopIndex[k]);
+//      }
       v.add(fsDeletedFromIndex.length);
-      for (int k = 0; k < fsDeletedFromIndex.length; k++) {
-        v.add(fsDeletedFromIndex[k]);
-      }
+      v.add(fsDeletedFromIndex, 0, fsDeletedFromIndex.length);
+//      for (int k = 0; k < fsDeletedFromIndex.length; k++) {
+//        v.add(fsDeletedFromIndex[k]);
+//      }
       v.add(fsReindexed.length);
-      for (int k = 0; k < fsReindexed.length; k++) {
-        v.add(fsReindexed[k]);
-      }
+      v.add(fsReindexed, 0, fsReindexed.length);
+//      for (int k = 0; k < fsReindexed.length; k++) {
+//        v.add(fsReindexed[k]);
+//      }
     }
     return v.toArray();
   }
@@ -3796,6 +3801,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     final int offset = this.getHeap().heap[getArrayStartAddress(fsRef)];
     long value = Double.doubleToLongBits(d);
     this.getLongHeap().setHeapValue(value, offset + position);
+    if (this.svd.trackingMark != null) {
+      this.logFSUpdate(fsRef, offset+position, ModifiedHeap.LONGHEAP, 1);
+    }
+
   }
 
   public void ll_setDoubleArrayValue(int fsRef, int position, double value, boolean doTypeChecks) {

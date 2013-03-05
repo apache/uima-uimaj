@@ -127,6 +127,10 @@ public class SortedIntSet {
   public int[] toArray() {
     return this.vector.toArrayCopy();
   }
+  
+  public int[] getArray() {
+    return vector.getArray();
+  }
 
   // public static void main(String [] args) {
 

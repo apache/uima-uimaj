@@ -68,13 +68,13 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   private class IndexIteratorCachePair implements Comparable<IndexIteratorCachePair> {
 
     // The "root" index, i.e., index of the type of the iterator.
-    private FSLeafIndexImpl index = null;
+    private FSLeafIndexImpl<?> index = null;
 
     // A list of indexes (the sub-indexes that we need for an
     // iterator). I.e., one index for each type that's subsumed by the
     // iterator
     // type.
-    private ArrayList<FSLeafIndexImpl> iteratorCache = null;
+    private ArrayList<FSLeafIndexImpl<?>> iteratorCache = null;
 
     private IndexIteratorCachePair() {
       super();
@@ -102,7 +102,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       if (this.iteratorCache != null) {
         return;
       }
-      this.iteratorCache = new ArrayList<FSLeafIndexImpl>();
+      this.iteratorCache = new ArrayList<FSLeafIndexImpl<?>>();
       final Type rootType = this.index.getComparator().getType();
       ArrayList<Type> allTypes = null;
       if (this.index.getIndexingStrategy() == FSIndex.DEFAULT_BAG_INDEX) {
@@ -211,12 +211,12 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     private void initPointerIterator(IndexIteratorCachePair iicp0) {
       this.iicp = iicp0;
       // Make sure the iterator cache exists.
-      final ArrayList<FSLeafIndexImpl> iteratorCache = iicp0.iteratorCache;
+      final ArrayList<FSLeafIndexImpl<?>> iteratorCache = iicp0.iteratorCache;
       this.indexes = new ComparableIntPointerIterator[iteratorCache.size()];
       this.iteratorComparator = iteratorCache.get(0);
       ComparableIntPointerIterator it;
       for (int i = 0; i < this.indexes.length; i++) {
-        final FSLeafIndexImpl leafIndex = iteratorCache.get(i);
+        final FSLeafIndexImpl<?> leafIndex = iteratorCache.get(i);
         it = leafIndex.pointerIterator(this.iteratorComparator,
             FSIndexRepositoryImpl.this.detectIllegalIndexUpdates,
             ((TypeImpl) leafIndex.getType()).getCode());
@@ -645,8 +645,8 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     private void initPointerIterator(IndexIteratorCachePair iicp0) {
       this.iicp = iicp0;
       // Make sure the iterator cache exists.
-      final ArrayList<FSLeafIndexImpl> iteratorCache = iicp0.iteratorCache;
-      final FSLeafIndexImpl leafIndex = iteratorCache.get(0);
+      final ArrayList<FSLeafIndexImpl<?>> iteratorCache = iicp0.iteratorCache;
+      final FSLeafIndexImpl<?> leafIndex = iteratorCache.get(0);
       this.index = leafIndex.pointerIterator(leafIndex,
           FSIndexRepositoryImpl.this.detectIllegalIndexUpdates,
           ((TypeImpl) leafIndex.getType()).getCode());
@@ -833,7 +833,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       this.iicp.createIndexIteratorCache();
       // int size = this.iicp.index.size();
       int size = 0;
-      final ArrayList<FSLeafIndexImpl> subIndex = this.iicp.iteratorCache;
+      final ArrayList<FSLeafIndexImpl<?>> subIndex = this.iicp.iteratorCache;
       final int max = subIndex.size();
       for (int i = 0; i < max; i++) {
         size += subIndex.get(i).size();
@@ -1073,7 +1073,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     }
     final ArrayList<IndexIteratorCachePair> indexVector = this.indexArray[typeCode];
     // final int vecLen = indexVector.size();
-    FSLeafIndexImpl ind;
+    FSLeafIndexImpl<?> ind;
     switch (indexType) {
     case FSIndex.SET_INDEX: {
       ind = new FSRBTSetIndex(this.cas, type, indexType);
@@ -1458,8 +1458,8 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       // index, pick one arbitrarily and add its FSs (since it contains all
       // FSs that all other indexes for the same type contain). If there are
       // only set indexes, create a set of the FSs in those indexes, since they
-      // may all contain different elements (FSs that are duplicates for one
-      // index may not be duplicates for a different one).
+      // may all contain different elements (different FSs that have the same "key"
+      //   are duplicates for one index, but may not be duplicates for a different one).
       cv = new ArrayList<IndexIteratorCachePair>();
       for (int j = 0; j < jMax; j++) {
         iicp = iv.get(j);
@@ -1467,14 +1467,17 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
         if (indStrat == FSIndex.SET_INDEX) {
           cv.add(iicp);
         } else {
-          if (cv.size() > 0) {
-            cv = new ArrayList<IndexIteratorCachePair>();
-          }
+          cv.clear();  // only need to save this one
           cv.add(iicp);
           break;
         }
       }
       if (cv.size() > 0) {
+        // Note: This next loop removes duplicates (and also sorts
+        // the fs addrs associated with one type)
+        // Duplicates arise from having mulitple sets combined, and
+        // also if a non-set index had the same identical FS added
+        // multiple times.
         set = new SortedIntSet();
         for (int k = 0; k < cv.size(); k++) {
           it = cv.get(k).index.refIterator();
@@ -1483,9 +1486,10 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
             it.inc();
           }
         }
-        for (int k = 0; k < set.size(); k++) {
-          v.add(set.get(k));
-        }
+        v.add(set.getArray(), 0, set.size());  // bulk add of all elements
+//        for (int k = 0; k < set.size(); k++) {
+//          v.add(set.get(k));
+//        }
       }
     }
     return v.toArray();
