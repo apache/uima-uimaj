@@ -117,7 +117,7 @@ public class IntArrayRBT {
       if (!isValid()) {
         throw new NoSuchElementException();
       }
-      return IntArrayRBT.this.key[this.currentNode];
+      return IntArrayRBT.this.getKey(this.currentNode);
     }
 
     /**
@@ -184,7 +184,7 @@ public class IntArrayRBT {
         throw new NoSuchElementException();
       }
       this.currentNode = (this.currentNode == NIL) ? getFirstNode() : nextNode(this.currentNode);
-      return IntArrayRBT.this.key[this.currentNode];
+      return IntArrayRBT.this.getKey(this.currentNode);
     }
 
     /**
@@ -201,7 +201,7 @@ public class IntArrayRBT {
       if (!hasPrevious()) {
         throw new NoSuchElementException();
       }
-      final int currentKey = IntArrayRBT.this.key[this.currentNode];
+      final int currentKey = IntArrayRBT.this.getKey(this.currentNode);
       if (this.currentNode == getFirstNode()) {
         this.currentNode = NIL;
       } else {
@@ -225,7 +225,7 @@ public class IntArrayRBT {
     }
 
     protected final int getKey(int node) {
-      return IntArrayRBT.this.key[node];
+      return IntArrayRBT.this.getKey(node);
     }
 
   }
@@ -244,24 +244,135 @@ public class IntArrayRBT {
      */
     public int compareTo(Object o) {
       ComparableIterator it = (ComparableIterator) o;
-      return this.comparator.compare(IntArrayRBT.this.key[this.currentNode], it
+      return this.comparator.compare(IntArrayRBT.this.getKey(this.currentNode), it
               .getKey(it.currentNode));
     }
 
   }
 
+  static final private boolean useklrp = true;
   // Keys.
-  protected int[] key;
+  private int[] key;
 
   // Left daughters.
-  protected int[] left;
+  private int[] left;
 
   // Right daughters.
-  protected int[] right;
+  private int[] right;
 
   // Parents.
-  protected int[] parent;
+  private int[] parent;
+  
+  // alternate layout
+  private int[] klrp;
+  // the next 3 are for the rare cases where the number of entries
+  // in this instance exceeds 512 * 1024 * 1024 - 1
+  // which is the largest index that can be stored in klrp
+  //   because it is shifted left by 2
+  private int[] klrp1;
+  private int[] klrp2;
+  private int[] klrp3;
+  private static final int MAXklrp0 = 512 * 1024 * 1024;
+  private static final int MAXklrpMask = MAXklrp0 - 1;
 
+    
+  private int getXXX(int node, int offset) {
+    if (node < MAXklrp0) {
+      return klrp[(node << 2) + offset];
+    } else {
+      final int w = node >> 29;
+      final int i = ((node & MAXklrpMask) << 2) + offset;
+      switch (w) {
+      case 1:
+        return klrp1[i];
+      case 2:
+        return klrp2[i];
+      case 3:
+        return klrp3[i];
+      default:
+        throw new RuntimeException();
+      }
+    }
+  }
+
+  private int setXXX(int node, int offset, int value) {
+    if (node < MAXklrp0) {
+//      if (((node << 2) + offset) >= klrp.length) {
+//        System.out.println("caught");
+//      }
+      return klrp[(node << 2) + offset] = value;
+    } else {
+      final int w = node >> 29;
+      final int i = ((node & MAXklrpMask) << 2) + offset;
+      switch (w) {
+      case 1:
+        return klrp1[i] = value;
+      case 2:
+        return klrp2[i] = value;
+      case 3:
+        return klrp3[i] = value;
+      default:
+        throw new RuntimeException();
+      }
+    }
+  }
+
+  protected int getKey(int node) {
+    if (useklrp) {
+      return getXXX(node, 0);
+    }
+    return key[node];
+  }
+
+  protected int setKey(int node, int value) {
+    if (useklrp) {
+      return setXXX(node, 0, value);
+    }
+    return key[node] = value;
+  }
+  
+  protected int getLeft(int node) {
+    if (useklrp) {
+      return getXXX(node, 1);
+    }
+    return left[node];
+  }
+  
+  protected int setLeft(int node, int value) {
+    if (useklrp) {
+      return setXXX(node, 1, value);
+    }
+    return left[node] = value;
+  }
+  
+  protected int getRight(int node) {
+    if (useklrp) {
+      return getXXX(node, 2);
+    }
+    return right[node];
+  }
+  
+  protected int setRight(int node, int value) {
+    if (useklrp) {
+      return setXXX(node, 2, value);
+    }
+    return right[node] = value;
+  }
+  
+  protected int getParent(int node) {
+    if (useklrp) {
+      return getXXX(node, 3);
+    }
+    return parent[node];
+  }
+  
+  protected int setParent(int node, int value) {
+    if (useklrp) {
+      return setXXX(node, 3, value);
+    }
+    return parent[node] = value;
+  }
+  
   // Colors.
   protected boolean[] color;
 
@@ -320,14 +431,18 @@ public class IntArrayRBT {
     this.growth_factor = default_growth_factor;
     this.multiplication_limit = default_multiplication_limit;
     // Init the arrays.
-    this.key = new int[initialSize];
-    this.left = new int[initialSize];
-    this.right = new int[initialSize];
-    this.parent = new int[initialSize];
+    if (useklrp) {
+      klrp = new int[initialSize << 2];
+    } else {
+      this.key = new int[initialSize];
+      this.left = new int[initialSize];
+      this.right = new int[initialSize];
+      this.parent = new int[initialSize];
+    }
     this.color = new boolean[initialSize];
-    this.left[NIL] = NIL;
-    this.right[NIL] = NIL;
-    this.parent[NIL] = NIL;
+    setLeft(NIL, NIL);
+    setRight(NIL, NIL);
+    setParent(NIL, NIL);
     this.color[NIL] = black;
   }
 
@@ -347,22 +462,58 @@ public class IntArrayRBT {
     return this.size;
   }
 
-  private void grow(int initialSize) {
-    this.key = grow(this.key, initialSize);
-    this.left = grow(this.left, initialSize);
-    this.right = grow(this.right, initialSize);
-    this.parent = grow(this.parent, initialSize);
-    this.color = grow(this.color, initialSize);
+  private void grow(int requiredSize) {
+    if (useklrp) {
+      final int w = requiredSize >> 29;  // w is 0-3
+      switch (w) {
+      case 0:
+        if (klrp == null) {
+          klrp = new int[requiredSize << 2];
+        } else {
+          klrp = grow(klrp, requiredSize << 2);
+        }
+        break;
+      case 1:
+        if (klrp1 == null) {
+          klrp1 = new int[(requiredSize & MAXklrpMask) << 2];
+        } else {
+          klrp1 = grow(klrp1, (requiredSize & MAXklrpMask) << 2);
+        }
+        break;
+      case 2:
+        if (klrp2 == null) {
+          klrp2 = new int[(requiredSize & MAXklrpMask) << 2];
+        } else {
+          klrp2 = grow(klrp2, (requiredSize & MAXklrpMask) << 2);
+        }
+        break;
+      case 3:
+        if (klrp3 == null) {
+          klrp3 = new int[(requiredSize & MAXklrpMask) << 2];
+        } else {
+          klrp3 = grow(klrp3, (requiredSize & MAXklrpMask) << 2);
+        }
+        break;
+      default:
+        throw new RuntimeException();
+      }
+    } else {
+      this.key = grow(this.key, requiredSize);
+      this.left = grow(this.left, requiredSize);
+      this.right = grow(this.right, requiredSize);
+      this.parent = grow(this.parent, requiredSize);
+    }
+    this.color = grow(this.color, requiredSize);
   }
   
   public int getKeyForNode(final int node) {
-    return this.key[node];
+    return getKey(node);
   }
 
-  protected int treeInsert(int k) {
+  protected int treeInsert(final int k) {
     int x = this.root;
     int y, z;
-    if ((this.greatestNode != NIL) && (this.key[this.greatestNode] < k)) {
+    if ((this.greatestNode != NIL) && (getKey(this.greatestNode) < k)) {
       y = this.greatestNode;
       z = newNode(k);
       this.greatestNode = z;
@@ -371,13 +522,13 @@ public class IntArrayRBT {
       int xKey;
       while (x != NIL) {
         y = x;
-        xKey = this.key[x];
+        xKey = getKey(x);
         if (k < xKey) {
-          x = this.left[x];
+          x = getLeft(x);
         } else if (k == xKey) {
           return -x;
         } else { // k == key[x]
-          x = this.right[x];
+          x = getRight(x);
         }
       }
       // The key was not found, so we create a new node, inserting the
@@ -387,44 +538,44 @@ public class IntArrayRBT {
     if (y == NIL) {
       setAsRoot(z);
       this.greatestNode = z;
-      this.parent[z] = NIL;
+      setParent(z, NIL);
     } else {
-      this.parent[z] = y;
-      if (k < this.key[y]) {
-        this.left[y] = z;
+      setParent(z, y);
+      if (k < getKey(y)) {
+        setLeft(y, z);
       } else {
-        this.right[y] = z;
+        setRight(y, z);
       }
     }
     return z;
   }
 
-  protected int treeInsertWithDups(int k) {
+  protected int treeInsertWithDups(final int k) {
     int x = this.root;
     int y, z;
-    if ((this.greatestNode != NIL) && (this.key[this.greatestNode] <= k)) {
+    if ((this.greatestNode != NIL) && (getKey(this.greatestNode) <= k)) {
       y = this.greatestNode;
       z = newNode(k);
       this.greatestNode = z;
-      this.right[y] = z;
-      this.parent[z] = y;
+      setRight(y, z);
+      setParent(z, y);
       return z;
     }
     y = NIL;
     int xKey;
     while (x != NIL) {
       y = x;
-      xKey = this.key[x];
+      xKey = getKey(x);
       if (k < xKey) {
-        x = this.left[x];
+        x = getLeft(x);
       } else if (k > xKey) {
-        x = this.right[x];
+        x = getRight(x);
       } else { // k == key[x]
         // Randomly search to the left or right.
         if (this.rand.nextBoolean()) {
-          x = this.left[x];
+          x = getLeft(x);
         } else {
-          x = this.right[x];
+          x = getRight(x);
         }
       }
     }
@@ -432,47 +583,80 @@ public class IntArrayRBT {
     if (y == NIL) {
       setAsRoot(z);
       this.greatestNode = z;
-      this.parent[z] = NIL;
+      setParent(z, NIL);
     } else {
-      this.parent[z] = y;
-      if (k < this.key[y]) {
-        this.left[y] = z;
-      } else if (k > this.key[y]) {
-        this.right[y] = z;
+      setParent(z, y);
+      if (k < getKey(y)) {
+        setLeft(y, z);
+      } else if (k > getKey(y)) {
+        setRight(y, z);
       } else { // k == key[y]
         // Randomly insert node to the left or right.
         if (this.rand.nextBoolean()) {
-          this.left[y] = z;
+          setLeft(y, z);
         } else {
-          this.right[y] = z;
+          setRight(y, z);
         }
       }
     }
     return z;
   }
 
-  protected int newNode(int k) {
+  protected int newNode(final int k) {
     // Make sure the tree is big enough to accomodate a new node.
-    if (this.next >= this.key.length) {
-      grow(this.next + 1);
+
+    if (useklrp) {
+      final int lenKlrp = (klrp.length >> 2) +
+                    ((klrp1 != null) ? (klrp1.length >> 2) : 0) +
+                    ((klrp2 != null) ? (klrp2.length >> 2) : 0) +
+                    ((klrp3 != null) ? (klrp3.length >> 2) : 0);
+      if (this.next >= lenKlrp) {
+        grow(this.next + 1);
+      }
+    } else {
+      if (this.next >= this.key.length) {
+        grow(this.next + 1);
+      }
     }
     // assert(key.length > next);
     final int z = this.next;
     ++this.next;
     ++this.size;
-    this.key[z] = k;
-    this.left[z] = NIL;
-    this.right[z] = NIL;
+    setKey(z, k);
+    setLeft(z, NIL);
+    setRight(z, NIL);
     this.color[z] = red;
     return z;
   }
 
   private final void setAsRoot(int x) {
     this.root = x;
-    this.parent[this.root] = NIL;
+    setParent(this.root, NIL);
   }
 
   private final int[] grow(int[] array, int newSize) {
+    if (useklrp) {
+      if (newSize < MAXklrp0) {
+        return IntArrayUtils.ensure_size(array, newSize, this.growth_factor, this.multiplication_limit);
+      }
+      final int w = newSize >> 29;
+      switch (w) {
+      case 1:
+        if (klrp1 == null) {
+          klrp1 = new int[newSize + 1];
+        } else {
+          
+        }
+        break;
+      case 2:
+        break;
+      case 3:
+        break;
+      default:
+        throw new RuntimeException();
+      }
+      
+    }
     return IntArrayUtils.ensure_size(array, newSize, this.growth_factor, this.multiplication_limit);
   }
 
@@ -480,106 +664,138 @@ public class IntArrayRBT {
     return IntArrayUtils.ensure_size(array, newSize, this.growth_factor, this.multiplication_limit);
   }
 
-  private final void leftRotate(int x) {
-    final int y = this.right[x];
-    this.right[x] = this.left[y];
-    if (this.left[y] != NIL) {
-      this.parent[this.left[y]] = x;
+  private final void leftRotate(final int x) {
+    final int y = getRight(x);
+    final int left_of_y = getLeft(y);
+    setRight(x, left_of_y );
+    if (left_of_y  != NIL) {
+      setParent(left_of_y , x);
     }
-    this.parent[y] = this.parent[x];
+    setParent(y, getParent(x));
     if (this.root == x) {
       setAsRoot(y);
     } else {
-      if (x == this.left[this.parent[x]]) {
-        this.left[this.parent[x]] = y;
+      final int parent_x = getParent(x);
+      if (x == getLeft(parent_x)) {
+        setLeft(parent_x, y);
       } else {
-        this.right[this.parent[x]] = y;
+        setRight(parent_x, y);
       }
     }
-    this.left[y] = x;
-    this.parent[x] = y;
+    setLeft(y, x);
+    setParent(x, y);
   }
 
-  private final void rightRotate(int x) {
-    final int y = this.left[x];
-    this.left[x] = this.right[y];
-    if (this.right[y] != NIL) {
-      this.parent[this.right[y]] = x;
+  private final void rightRotate(final int x) {
+    final int y = getLeft(x);
+    final int right_y = getRight(y);
+    setLeft(x, right_y);
+    if (right_y != NIL) {
+      setParent(right_y, x);
     }
-    this.parent[y] = this.parent[x];
+    final int parent_x = getParent(x);
+    setParent(y, parent_x);
     if (this.root == x) {
       setAsRoot(y);
     } else {
-      if (x == this.right[this.parent[x]]) {
-        this.right[this.parent[x]] = y;
+      if (x == getRight(parent_x)) {
+        setRight(parent_x, y);
       } else {
-        this.left[this.parent[x]] = y;
+        setLeft(parent_x, y);
       }
     }
-    this.right[y] = x;
-    this.parent[x] = y;
+    setRight(y, x);
+    setParent(x, y);
   }
 
   public int insertKey(int k) {
     return insertKey(k, false);
+  }
+  
+  public int add(int k) {
+    return insertKey(k, false);
+  }
+  
+  /**
+   * @param k 
+   * @return true if added (not present before)
+   */
+  public boolean addAdded(int k) {
+    if (this.root == NIL) {
+      final int x = newNode(k);
+      setAsRoot(x);
+      this.color[this.root] = black;
+      this.greatestNode = x;
+      return true;
+    }
+    final int x = treeInsert(k);
+    if (x < NIL) {
+      return false;  // negative if found
+    }
+    commonInsertKey(x);
+    return true;
   }
 
   public int insertKeyWithDups(int k) {
     return insertKey(k, true);
   }
 
-  private int insertKey(int k, boolean withDups) {
-    int x;
+  private int insertKey(final int k, final boolean withDups) {
     if (this.root == NIL) {
-      x = newNode(k);
+      final int x = newNode(k);
       setAsRoot(x);
       this.color[this.root] = black;
       this.greatestNode = x;
       return x;
     }
-    if (withDups) {
-      x = treeInsertWithDups(k);
-    } else {
-      x = treeInsert(k);
-      if (x < NIL) {
-        return -x;
-      }
+    final int x = withDups ? treeInsertWithDups(k) : treeInsert(k);
+    if (x < NIL) {
+      return -x;
     }
+    return commonInsertKey(x);
+  }
+  
+  private int commonInsertKey(int x) {
     this.color[x] = red;
-    int y;
     final int node = x;
-    while ((x != this.root) && (this.color[this.parent[x]] == red)) {
-      if (this.parent[x] == this.left[this.parent[this.parent[x]]]) {
-        y = this.right[this.parent[this.parent[x]]];
+    while ((x != this.root) && (this.color[getParent(x)] == red)) {
+      final int parent_x = getParent(x);
+      final int parent_parent_x = getParent(parent_x);
+      if (parent_x == getLeft(parent_parent_x)) {
+        final int y = getRight(parent_parent_x);
         if (this.color[y] == red) {
-          this.color[this.parent[x]] = black;
+          this.color[parent_x] = black;
           this.color[y] = black;
-          this.color[this.parent[this.parent[x]]] = red;
-          x = this.parent[this.parent[x]];
+          this.color[parent_parent_x] = red;
+          x = parent_parent_x;
         } else {
-          if (x == this.right[this.parent[x]]) {
-            x = this.parent[x];
+          if (x == getRight(parent_x)) {
+            x = parent_x;
             leftRotate(x);
           }
-          this.color[this.parent[x]] = black;
-          this.color[this.parent[this.parent[x]]] = red;
-          rightRotate(this.parent[this.parent[x]]);
+          final int parent2_x = getParent(x);
+          this.color[parent2_x] = black;
+          final int parent2_parent2_x = getParent(parent2_x);
+          this.color[parent2_parent2_x] = red;
+          rightRotate(parent2_parent2_x);
         }
       } else {
-        y = this.left[this.parent[this.parent[x]]];
+        final int y = getLeft(parent_parent_x);
         if (this.color[y] == red) {
-          this.color[this.parent[x]] = black;
+          this.color[parent_x] = black;
           this.color[y] = black;
-          this.color[this.parent[this.parent[x]]] = red;
-          x = this.parent[this.parent[x]];
+          this.color[parent_parent_x] = red;
+          x = parent_parent_x;
         } else {
-          if (x == this.left[this.parent[x]]) {
-            x = this.parent[x];
+          if (x == getLeft(parent_x)) {
+            x = parent_x;
             rightRotate(x);
           }
-          this.color[this.parent[x]] = black;
-          this.color[this.parent[this.parent[x]]] = red;
-          leftRotate(this.parent[this.parent[x]]);
+          final int parent2_x = getParent(x);
+          this.color[parent2_x] = black;
+          final int parent2_parent2_x = getParent(parent2_x);
+          this.color[parent2_parent2_x] = red;
+          leftRotate(parent2_parent2_x);
         }
       }
     }
@@ -594,15 +810,16 @@ public class IntArrayRBT {
   /**
    * Find the first node such that k &lt;= key[node].
    */
-  public int findKey(int k) {
+  public int findKey(final int k) {
     int node = this.root;
     while (node != NIL) {
-      if (k < this.key[node]) {
-        node = this.left[node];
-      } else if (k == this.key[node]) {
+      final int keyNode = getKey(node);
+      if (k < keyNode) {
+        node = getLeft(node);
+      } else if (k == keyNode) {
         return node;
       } else {
-        node = this.right[node];
+        node = getRight(node);
       }
     }
     // node == NIL
@@ -612,23 +829,32 @@ public class IntArrayRBT {
   /**
    * Find the node such that key[node] >= k and key[previous(node)] < k.
    */
-  public int findInsertionPoint(int k) {
+  public int findInsertionPoint(final int k) {
     int node = this.root;
     int found = node;
     while (node != NIL) {
       found = node;
-      if (k < this.key[node]) {
-        node = this.left[node];
-      } else if (k == this.key[node]) {
+      final int keyNode = getKey(node);
+      if (k < keyNode) {
+        node = getLeft(node);
+      } else if (k == keyNode) {
         // In the presence of duplicates, we have to check if there are
         // identical
         // keys to the left of us.
-        while ((this.left[node] != NIL) && (this.key[this.left[node]] == this.key[node])) {
-          node = this.left[node];
+        while (true) {
+          final int left_node = getLeft(node);
+          if ((left_node == NIL) ||
+              (getKey(left_node) != keyNode)) {
+            break;
+          }
+          node = left_node;
         }
+//        while ((getLeft(node) != NIL) && (getKey(getLeft(node)) == keyNode)) {
+//          node = getLeft(node);
+//        }
         return node;
       } else {
-        node = this.right[node];
+        node = getRight(node);
       }
     }
     // node == NIL
@@ -638,17 +864,18 @@ public class IntArrayRBT {
   /**
    * Find the node such that key[node] >= k and key[previous(node)] < k.
    */
-  public int findInsertionPointNoDups(int k) {
+  public int findInsertionPointNoDups(final int k) {
     int node = this.root;
     int found = node;
     while (node != NIL) {
       found = node;
-      if (k < this.key[node]) {
-        node = this.left[node];
-      } else if (k == this.key[node]) {
+      final int keyNode = getKey(node);
+      if (k < keyNode) {
+        node = getLeft(node);
+      } else if (k == keyNode) {
         return node;
       } else {
-        node = this.right[node];
+        node = getRight(node);
       }
     }
     // node == NIL
@@ -658,10 +885,14 @@ public class IntArrayRBT {
   public final boolean containsKey(int k) {
     return (findKey(k) != NIL);
   }
-
-  private final boolean isLeftDtr(int node) {
-    return ((node != this.root) && (node == this.left[this.parent[node]]));
+  
+  public final boolean contains(int k) {
+    return (findKey(k) != NIL);
   }
+
+//  private final boolean isLeftDtr(int node) {
+//    return ((node != this.root) && (node == getLeft(getParent(node))));
+//  }
 
   // private final boolean isRightDtr(int node) {
   // return ((node != root) && (node == right[parent[node]]));
@@ -672,9 +903,16 @@ public class IntArrayRBT {
       return NIL;
     }
     int node = this.root;
-    while (this.left[node] != NIL) {
-      node = this.left[node];
+    while (true) {
+      final int left_node = getLeft(node);
+      if (left_node == NIL) {
+        break;
+      }
+      node = left_node;
     }
+//    while (getLeft(node) != NIL) {
+//      node = getLeft(node);
+//    }
     return node;
   }
 
@@ -699,16 +937,24 @@ public class IntArrayRBT {
 
   protected final int nextNode(int node) {
     int y;
-    if (this.right[node] != NIL) {
-      node = this.right[node];
-      while (this.left[node] != NIL) {
-        node = this.left[node];
+    final int rightNode = getRight(node);
+    if (rightNode != NIL) {
+      node = rightNode;
+      while (true) {
+        final int leftNode = getLeft(node);
+        if (leftNode == NIL) {
+          break;
+        }
+        node = leftNode;
       }
+//      while (getLeft(node) != NIL) {
+//        node = getLeft(node);
+//      }
     } else {
-      y = this.parent[node];
-      while ((y != NIL) && (node == this.right[y])) {
+      y = getParent(node);
+      while ((y != NIL) && (node == getRight(y))) {
         node = y;
-        y = this.parent[y];
+        y = getParent(y);
       }
       node = y;
     }
@@ -716,26 +962,43 @@ public class IntArrayRBT {
   }
 
   private final int previousNode(int node) {
-    if (this.left[node] != NIL) {
-      node = this.left[node];
-      while (this.right[node] != NIL) {
-        node = this.right[node];
+    final int leftNode = getLeft(node);
+    if (leftNode != NIL) {
+      node = leftNode;
+      while (true) {
+        final int rightNode = getRight(node);
+        if (rightNode == NIL) {
+          break;
+        }
+        node = rightNode;
       }
+//      while (getRight(node) != NIL) {
+//        node = getRight(node);
+//      }
     } else {
-      while (isLeftDtr(node)) {
-        node = this.parent[node];
+      while (true) {
+        final int parentNode = getParent(node);
+        if (node == this.root || (node != getLeft(parentNode))) {
+          break;
+        }
+        node = parentNode;
       }
+      
+//      (node != this.root) && (node == getLeft(getParent(node))))
+//      while (node != this.root && (node == getLeft(parentNode))) {
+//        node = getParent(node);
+//      }
       if (node == this.root) {
         return NIL;
       }
       // node is now a left dtr, so we can go one up.
-      node = this.parent[node];
+      node = getParent(node);
     }
     return node;
   }
 
   public boolean deleteKey(int aKey) {
-    int node = findKey(aKey);
+    final int node = findKey(aKey);
     if (node == NIL) {
       return false;
     }
@@ -744,30 +1007,33 @@ public class IntArrayRBT {
     return true;
   }
 
-  private void deleteNode(int z) {
-    int x, y;
-    if ((this.left[z] == NIL) || (this.right[z] == NIL)) {
-      y = z;
-    } else {
-      y = nextNode(z);
-    }
-    if (this.left[y] != NIL) {
-      x = this.left[y];
-    } else {
-      x = this.right[y];
-    }
-    this.parent[x] = this.parent[y];
-    if (this.parent[y] == NIL) {
+  private void deleteNode(final int z) {
+    final int y = ((getLeft(z) == NIL) || (getRight(z) == NIL)) ?  z : nextNode(z);
+//    if ((getLeft(z) == NIL) || (getRight(z) == NIL)) {
+//      y = z;
+//    } else {
+//      y = nextNode(z);
+//    }
+    final int left_y = getLeft(y);
+    final int x = (left_y != NIL) ? left_y : getRight(y);
+//    if (left_y != NIL) {
+//      x = left_y;
+//    } else {
+//      x = getRight(y);
+//    }
+    final int parent_y = getParent(y);
+    setParent(x, parent_y);
+    if (parent_y == NIL) {
       setAsRoot(x);
     } else {
-      if (y == this.left[this.parent[y]]) {
-        this.left[this.parent[y]] = x;
+      if (y == getLeft(parent_y)) {
+        setLeft(parent_y, x);
       } else {
-        this.right[this.parent[y]] = x;
+        setRight(parent_y, x);
       }
     }
     if (y != z) {
-      this.key[z] = this.key[y];
+      setKey(z, y);
     }
     if (this.color[y] == black) {
       deleteFixup(x);
@@ -777,52 +1043,53 @@ public class IntArrayRBT {
   private void deleteFixup(int x) {
     int w;
     while ((x != this.root) && (this.color[x] == black)) {
-      if (x == this.left[this.parent[x]]) {
-        w = this.right[this.parent[x]];
+      final int parent_x = getParent(x);
+      if (x == getLeft(parent_x)) {
+        w = getRight(parent_x);
         if (this.color[w] == red) {
           this.color[w] = black;
-          this.color[this.parent[x]] = red;
-          leftRotate(this.parent[x]);
-          w = this.right[this.parent[x]];
+          this.color[parent_x] = red;
+          leftRotate(parent_x);
+          w = getRight(parent_x);
         }
-        if ((this.color[this.left[w]] == black) && (this.color[this.right[w]] == black)) {
+        if ((this.color[getLeft(w)] == black) && (this.color[getRight(w)] == black)) {
           this.color[w] = red;
-          x = this.parent[x];
+          x = parent_x;
         } else {
-          if (this.color[this.right[w]] == black) {
-            this.color[this.left[w]] = black;
+          if (this.color[getRight(w)] == black) {
+            this.color[getLeft(w)] = black;
             this.color[w] = red;
             rightRotate(w);
-            w = this.right[this.parent[x]];
+            w = getRight(parent_x);
           }
-          this.color[w] = this.color[this.parent[x]];
-          this.color[this.parent[x]] = black;
-          this.color[this.right[w]] = black;
-          leftRotate(this.parent[x]);
+          this.color[w] = this.color[parent_x];
+          this.color[parent_x] = black;
+          this.color[getRight(w)] = black;
+          leftRotate(parent_x);
           x = this.root;
         }
       } else {
-        w = this.left[this.parent[x]];
+        w = getLeft(parent_x);
         if (this.color[w] == red) {
           this.color[w] = black;
-          this.color[this.parent[x]] = red;
-          rightRotate(this.parent[x]);
-          w = this.left[this.parent[x]];
+          this.color[parent_x] = red;
+          rightRotate(parent_x);
+          w = getLeft(parent_x);
         }
-        if ((this.color[this.left[w]] == black) && (this.color[this.right[w]] == black)) {
+        if ((this.color[getLeft(w)] == black) && (this.color[getRight(w)] == black)) {
           this.color[w] = red;
-          x = this.parent[x];
+          x = getParent(x);
         } else {
-          if (this.color[this.left[w]] == black) {
-            this.color[this.right[w]] = black;
+          if (this.color[getLeft(w)] == black) {
+            this.color[getRight(w)] = black;
             this.color[w] = red;
             leftRotate(w);
-            w = this.left[this.parent[x]];
+            w = getLeft(getParent(x));
           }
-          this.color[w] = this.color[this.parent[x]];
-          this.color[this.parent[x]] = black;
-          this.color[this.left[w]] = black;
-          rightRotate(this.parent[x]);
+          this.color[w] = this.color[parent_x];
+          this.color[parent_x] = black;
+          this.color[getLeft(w)] = black;
+          rightRotate(parent_x);
           x = this.root;
         }
       }
@@ -874,7 +1141,7 @@ public class IntArrayRBT {
       if (this.color[node] == black) {
         ++blackDepth;
       }
-      node = this.left[node];
+      node = getLeft(node);
     }
     return satisfiesRBProps(this.root, blackDepth, 0);
   }
@@ -884,14 +1151,14 @@ public class IntArrayRBT {
       return (currentBlack == blackDepth);
     }
     if (this.color[node] == red) {
-      if (this.color[this.left[node]] == red || this.color[this.right[node]] == red) {
+      if (this.color[getLeft(node)] == red || this.color[getRight(node)] == red) {
         return false;
       }
     } else {
       ++currentBlack;
     }
-    return (satisfiesRBProps(this.left[node], blackDepth, currentBlack) && satisfiesRBProps(
-            this.right[node], blackDepth, currentBlack));
+    return (satisfiesRBProps(getLeft(node), blackDepth, currentBlack) && satisfiesRBProps(
+            getRight(node), blackDepth, currentBlack));
   }
 
   public int maxDepth() {
@@ -910,12 +1177,12 @@ public class IntArrayRBT {
     if (node == NIL) {
       return -1;
     }
-    if (k == this.key[node]) {
+    if (k == getKey(node)) {
       return depth;
-    } else if (k < this.key[node]) {
-      return nodeDepth(this.left[node], depth + 1, k);
+    } else if (k < getKey(node)) {
+      return nodeDepth(getLeft(node), depth + 1, k);
     } else {
-      return nodeDepth(this.right[node], depth + 1, k);
+      return nodeDepth(getRight(node), depth + 1, k);
     }
   }
 
@@ -923,8 +1190,8 @@ public class IntArrayRBT {
     if (node == NIL) {
       return depth;
     }
-    int depth1 = maxDepth(this.left[node], depth + 1);
-    int depth2 = maxDepth(this.right[node], depth + 1);
+    int depth1 = maxDepth(getLeft(node), depth + 1);
+    int depth2 = maxDepth(getRight(node), depth + 1);
     return (depth1 > depth2) ? depth1 : depth2;
   }
 
@@ -932,8 +1199,8 @@ public class IntArrayRBT {
     if (node == NIL) {
       return depth;
     }
-    int depth1 = maxDepth(this.left[node], depth + 1);
-    int depth2 = maxDepth(this.right[node], depth + 1);
+    int depth1 = maxDepth(getLeft(node), depth + 1);
+    int depth2 = maxDepth(getRight(node), depth + 1);
     return (depth1 > depth2) ? depth2 : depth1;
   }
 
@@ -954,13 +1221,13 @@ public class IntArrayRBT {
       return;
     }
     StringUtils.printSpaces(offset, buf);
-    buf.append(Integer.toString(this.key[node]));
+    buf.append(Integer.toString(getKey(node)));
     if (this.color[node] == black) {
       buf.append(" BLACK");
     }
     buf.append("\n");
-    printKeys(this.left[node], offset + 2, buf);
-    printKeys(this.right[node], offset + 2, buf);
+    printKeys(getLeft(node), offset + 2, buf);
+    printKeys(getRight(node), offset + 2, buf);
   }
 
   public static void main(String[] args) {
