@@ -19,6 +19,7 @@
 
 package org.apache.uima.internal.util.rb_trees;
 
+
 /**
  * See the {@link org.apache.uima.internal.util.rb_trees.RedBlackTree RedBlackTree} class. This is a
  * specialized instance with ints as elements.
@@ -212,4 +213,12 @@ public class IntRedBlackTree {
     return this.root.toArray(offset);
   }
 
+  public IntRedBlackTree copy() {
+    IntRedBlackTree c = new IntRedBlackTree();
+    c.root = (null == root) ? null : root.copyNode(null);
+    c.size = size;
+    return c;
+  }
+
+  
 }
