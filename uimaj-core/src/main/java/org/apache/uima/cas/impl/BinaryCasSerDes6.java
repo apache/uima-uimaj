@@ -19,6 +19,33 @@
 
 package org.apache.uima.cas.impl;
 
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.NBR_SLOT_KIND_ZIP_STREAMS;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_ArrayLength;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_BooleanRef;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Byte;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_ByteRef;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Control;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_DoubleRef;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Double_Exponent;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Double_Mantissa_Sign;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Float_Exponent;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Float_Mantissa_Sign;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_FsIndexes;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_HeapRef;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Int;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_LongRef;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Long_High;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Long_Low;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_MainHeap;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Short;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_ShortRef;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_StrChars;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_StrLength;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_StrOffset;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_StrRef;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_StrSeg;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_TypeCode;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
@@ -44,7 +71,6 @@ import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.impl.SlotKinds.SlotKind;
 import org.apache.uima.cas.impl.TypeSystemImpl.TypeInfo;
-import org.apache.uima.internal.util.IntListIterator;
 import org.apache.uima.internal.util.IntPointerIterator;
 import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.internal.util.rb_trees.IntArrayRBT;
@@ -53,8 +79,6 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.util.impl.DataIO;
 import org.apache.uima.util.impl.OptimizeStrings;
 import org.apache.uima.util.impl.SerializationMeasures;
-
-import static org.apache.uima.cas.impl.SlotKinds.SlotKind.*;
 
 /**
  * User callable serialization and deserialization of the CAS in a compressed Binary Format
@@ -69,11 +93,12 @@ import static org.apache.uima.cas.impl.SlotKinds.SlotKind.*;
  * How to Serialize:  
  * 
  * 1) create an instance of this class
+ *    a) if doing a delta serialization, pass in the mark and a ReuseInfo object that was created
+ *       after deserializing this CAS initially.
  * 2) call serialize() to serialize the CAS
  * 3) If doing serialization to a target from which you expect to receive back a delta CAS,
- *    keep this object and reuse it for deserializing the delta CAS.
+ *    create a ReuseInfo object from this object and reuse it for deserializing the delta CAS.
  *    
- * Otherwise, you cannot reuse this object.
  * 
  * TypeSystemImpl objects are lazily augmented by customized TypeInfo instances for each type encountered in 
  * serializing or deserializing.  These are preserved for future calls, so their setup / initialization is only
@@ -100,7 +125,8 @@ import static org.apache.uima.cas.impl.SlotKinds.SlotKind.*;
  *    
  * An alternative interface for Deserialization with type system mapping:
  * 1) get an appropriate CAS to deserialize into (as above).
- * 2) create (or reuse, if delta deserializing) an instance of this class -> xxx 
+ * 2) create an instance of this class -> xxx
+ *    a) if delta deserializing, pass in the ReuseInfo object created when the CAS was serialized 
  * 3) call xxx.deserialize(receivingCas, inputStream, targetTypeSystemImpl)
  *    where the targetTypeSystem is the type system of the cas being deserialized
  * 
@@ -125,7 +151,7 @@ import static org.apache.uima.cas.impl.SlotKinds.SlotKind.*;
  *   Defaulting:
  *     flags:  doMeasurements, compressLevel, CompressStrategy
  *   Per serialize call: cas, output, [target ts], [mark for delta]
- *   Per deserialize call: cas, input, [target ts]
+ *   Per deserialize call: cas, input, [target ts], whether-to-save-info-for-delta-serialization
  *   
  *   CASImpl has instance method with defaulting args for serialization.
  *   CASImpl has reinit which works with compressed binary serialization objects
@@ -137,27 +163,32 @@ import static org.apache.uima.cas.impl.SlotKinds.SlotKind.*;
  *   * (de)serialize * filter? * delta? * Use case
  *   **************************************************************************
  *   * serialize     *   N     *   N    * Saving a Cas, 
- *   *               *         *        * sending Cas to svc with identical ts
+ *   *               *         *        * sending Cas to service with identical ts
  *   **************************************************************************
- *   * serialize     *   Y     *   N    * sending Cas to svc with 
- *   *               *         *        * different ts (a subset)
+ *   * serialize     *   Y     *   N    * sending Cas to service with 
+ *   *               *         *        * different ts (a guaranteed subset)
  *   **************************************************************************
  *   * serialize     *   N     *   Y    * returning Cas to client
+ *   *               *         *        *   uses info saved when deserializing
  *   *               *         *        * (?? saving just a delta to disk??)
  *   **************************************************************************
  *   * serialize     *   Y     *   Y    * NOT SUPPORTED (not needed)  
  *   **************************************************************************
  *   * deserialize   *   N     *   N    * reading/(receiving) CAS, identical TS
  *   **************************************************************************
- *   * deserialize   *   Y     *   N    * reading/(receiving) CAS, different TS
+ *   * deserialize   *   Y     *   N    * reading/receiving CAS, different TS
+ *   *               *         *        * ts not guaranteed to be superset
  *   **************************************************************************
- *   * deserialize   *   N     *   Y    * receiving CAS, identical TS, 
+ *   * deserialize   *   N     *   Y    * receiving CAS, identical TS 
+ *   *               *         *        *   uses info saved when serializing
  *   **************************************************************************
  *   * deserialize   *   Y     *   Y    * receiving CAS, different TS (tgt a feature subset)
+ *   *               *         *        *   uses info saved when serializing
  *   **************************************************************************
  */
 public class BinaryCasSerDes6 {
 
+  private static final int[] INT0 = new int[0];
   /**
    * Version of the serializer/deserializer, used to allow deserialization of 
    * older versions
@@ -196,28 +227,42 @@ public class BinaryCasSerDes6 {
     }
   }
   /**
-   * Info reused for multiple serializations of same cas to multiple targets, or
-   * for deserializing with a delta cas.
+   * Info reused for 
+   *   1) multiple serializations of same cas to multiple targets (a speedup), or
+   *   2) for delta cas serialization, where it represents the fsStartIndex info before any mods
+   *      were done which could change that info, or 
+   *   3) for deserializing with a delta cas, where it represents the fsStartIndex info at the time
+   *      the CAS was serialized out..
    * Reachable FSs and Sequence maps
-   * Reuseable in serialization, and for deserialization of delta cas
    */
   public static class ReuseInfo {
-    final private IntArrayRBT foundFSs; // ordered set of FSs found in indexes or linked from other found FSs
+    /**
+     * kept here only to avoid recomputation in the use case:
+     *   serialize to target 1, serialize same to target 2, etc.
+     *   if Null, recomputed when needed
+     */
+    final private IntArrayRBT foundFSs;
+    final private int[] foundFSsArray; // ordered set of FSs found in indexes or linked from other found FSs
+    
+    /**
+     * Multiple uses:
+     *   a) avoid recomputation when multiple serializations of same CAS to multiple targets
+     *   b) remembers required mapping for processing delta cas serializations and deserializations conversion of tgt seq # to src addr
+     */
     final private CasSeqAddrMaps fsStartIndexes;
-    final private TypeSystemImpl tgtTs;
     
     private ReuseInfo(
-        IntArrayRBT foundFSs, 
-        CasSeqAddrMaps fsStartIndexes,
-        TypeSystemImpl tgtTs) {
+        IntArrayRBT foundFSs,
+        int[] foundFSsArray, 
+        CasSeqAddrMaps fsStartIndexes) {
       this.foundFSs = foundFSs;
+      this.foundFSsArray = foundFSsArray;
       this.fsStartIndexes = fsStartIndexes;
-      this.tgtTs = tgtTs;
     }
   }
   
   public ReuseInfo getReuseInfo() {
-    return new ReuseInfo(foundFSs, fsStartIndexes, tgtTs);
+    return new ReuseInfo(foundFSs, foundFSsArray, fsStartIndexes);
   }
     
   // speedups - ints for SlotKind ordinals
@@ -272,7 +317,11 @@ public class BinaryCasSerDes6 {
         private boolean isReadingDelta;
   final private MarkerImpl mark;  // the mark to serialize from
 
+  /**
+   * 
+   */
   final private CasSeqAddrMaps fsStartIndexes;
+  final private boolean reuseInfoProvided;
   final private boolean doMeasurements;  // if true, doing measurements
 
   private OptimizeStrings os;
@@ -288,8 +337,12 @@ public class BinaryCasSerDes6 {
   private int iPrevHeap;        // 0 or heap addr of previous instance of current type
 
   private IntArrayRBT foundFSs; // ordered set of FSs found in indexes or linked from other found FSs
+  private IntArrayRBT foundFSsBelowMark; // for delta serialization use only
+  private int[] foundFSsArray;  // sorted fss's being serialized.  For delta, just the deltas
+//  private HashSetInt ffssBelowMark;  // sorted fss's found below the mark
 //  final private int[] typeCodeHisto = new int[ts.getTypeArraySize()]; 
 
+  final private boolean debugEOF = false;
   /********************************* 
    * Things for just serialization  
    *********************************/
@@ -298,30 +351,30 @@ public class BinaryCasSerDes6 {
   final private SerializationMeasures sm;  // null or serialization measurements
   final private ByteArrayOutputStream[] baosZipSources = new ByteArrayOutputStream[NBR_SLOT_KIND_ZIP_STREAMS];  // lazily created, indexed by SlotKind.i
   final private DataOutputStream[] dosZipSources = new DataOutputStream[NBR_SLOT_KIND_ZIP_STREAMS];      // lazily created, indexed by SlotKind.i
+  private int[] savedAllIndexesFSs;
 
   final private int[] estimatedZipSize = new int[NBR_SLOT_KIND_ZIP_STREAMS]; // one entry for each output stream kind
-
   // speedups
   
   // any use of these means caller handles measurement
   // some of these are never used, because the current impl
   //   is using the _i form to get measurements done
-  private DataOutputStream arrayLength_dos;
-  private DataOutputStream heapRef_dos;
-  private DataOutputStream int_dos;
+//  private DataOutputStream arrayLength_dos;
+//  private DataOutputStream heapRef_dos;
+//  private DataOutputStream int_dos;
   private DataOutputStream byte_dos;
-  private DataOutputStream short_dos;
+//  private DataOutputStream short_dos;
   private DataOutputStream typeCode_dos;
   private DataOutputStream strOffset_dos;
   private DataOutputStream strLength_dos;
-  private DataOutputStream long_High_dos;
-  private DataOutputStream long_Low_dos;
+//  private DataOutputStream long_High_dos;
+//  private DataOutputStream long_Low_dos;
   private DataOutputStream float_Mantissa_Sign_dos;
   private DataOutputStream float_Exponent_dos;
   private DataOutputStream double_Mantissa_Sign_dos;
   private DataOutputStream double_Exponent_dos;
   private DataOutputStream fsIndexes_dos;
-  private DataOutputStream strChars_dos;
+//  private DataOutputStream strChars_dos;
   private DataOutputStream control_dos;
   private DataOutputStream strSeg_dos;
 
@@ -372,10 +425,17 @@ public class BinaryCasSerDes6 {
 
   /**
    * 
-   * @param ts Type System (the source type system)
-   * @param doMeasurements true if measurements should be collected
-   * @param compressLevel 
-   * @param compressStrategy
+   * @param aCas required - refs the CAS being serialized or deserialized into
+   * @param mark if not null is the serialization mark for delta serialization.  Unused for deserialization.
+   * @param tgtTs if not null is the target type system.  For serialization - this is a subset of the CASs TS
+   * @param rfs For delta serialization - must be not null, and the saved value after deserializing the original
+   *                                      before any modifications / additions made.
+   *            For normal serialization - can be null, but if not, is used in place of re-calculating, for speed up
+   *            For delta deserialization - must not be null, and is the saved value after serializing to the service
+   *            For normal deserialization - must be null
+   * @param doMeasurements if true, measurements are done (on serialization)
+   * @param compressLevel if not null, specifies enum instance for compress level
+   * @param compressStrategy if not null, specifies enum instance for compress strategy
    */
   public BinaryCasSerDes6(
       AbstractCas aCas,
@@ -415,14 +475,17 @@ public class BinaryCasSerDes6 {
 
     this.compressLevel = compressLevel;
     this.compressStrategy = compressStrategy;
-    if (null != rfs) {
+    reuseInfoProvided = (rfs != null);
+    if (reuseInfoProvided) {
       foundFSs = rfs.foundFSs;
-      fsStartIndexes = rfs.fsStartIndexes;
-      this.tgtTs = rfs.tgtTs;
+      foundFSsArray = rfs.foundFSsArray;
+      fsStartIndexes = rfs.fsStartIndexes.copy();
     } else {
+      foundFSs = null;
+      foundFSsArray = null;
       fsStartIndexes = new CasSeqAddrMaps();
-      this.tgtTs = tgtTs;
     }
+    this.tgtTs = tgtTs;
   }
   
   public BinaryCasSerDes6(AbstractCas cas) {
@@ -436,6 +499,15 @@ public class BinaryCasSerDes6 {
   public BinaryCasSerDes6(AbstractCas cas, MarkerImpl mark, TypeSystemImpl tgtTs) {
     this(cas, mark, tgtTs, null, false, CompressLevel.Default, CompressStrat.Default);
   }
+
+  public BinaryCasSerDes6(AbstractCas cas, MarkerImpl mark, TypeSystemImpl tgtTs, ReuseInfo rfs) {
+    this(cas, mark, tgtTs, rfs, false, CompressLevel.Default, CompressStrat.Default);
+  }
+  
+  public BinaryCasSerDes6(AbstractCas cas, MarkerImpl mark, TypeSystemImpl tgtTs, ReuseInfo rfs, boolean doMeasurements) {
+    this(cas, mark, tgtTs, rfs, doMeasurements, CompressLevel.Default, CompressStrat.Default);
+  }
+
 
   public BinaryCasSerDes6(AbstractCas cas, ReuseInfo rfs) {
     this(cas, null, null, rfs, false, CompressLevel.Default, CompressStrat.Default);
@@ -457,6 +529,17 @@ public class BinaryCasSerDes6 {
     if (isSerializingDelta && (tgtTs != null)) {
       throw new UnsupportedOperationException("Can't do Delta Serialization with different target TS");
     }
+
+    if (fsStartIndexes == null) {
+      if (isSerializingDelta) {
+        throw new UnsupportedOperationException("Serializing a delta requires valid ReuseInfo for Cas being serialized," +
+        		" captured right after it was deserialized");
+      }
+      if (isReadingDelta) {
+        throw new UnsupportedOperationException("Deserializing a delta requires valid ReuseInfo for Cas being deserialized into");
+      }
+    }
+    
     setupOutputStreams(out);
     
     if (doMeasurements) {
@@ -473,11 +556,16 @@ public class BinaryCasSerDes6 {
     /******************************************************************
      * Find all FSs to be serialized via the indexes
      *   including those FSs referenced  
+     * For Delta Serialization - excludes those FSs below the line
      ******************************************************************/
     
-    if (foundFSs == null) {
+    if (!reuseInfoProvided || isSerializingDelta) {
+      long start = System.currentTimeMillis();
       processIndexedFeatureStructures(cas, false /* compute ref'd FSs, no write */);
+//      System.out.format("Time to enqueue reachable FSs: %,.3f seconds%n", (System.currentTimeMillis() - start)/ 1000f);
     }
+    
+    
     
     /***************************
      * Prepare to walk main heap
@@ -493,11 +581,22 @@ public class BinaryCasSerDes6 {
       // Also, compute sequential maps for non-equal type systems
       // As a side effect, also add all strings that are included
       // in the target type system to the set to be optimized.
+      //   Note: for delta cas, this only picks up strings 
+      //   referenced by FSs above the line
     totalMappedHeapSize = initFsStartIndexes();
     if (heapStart == 0) {
       totalMappedHeapSize++;  // include the null at the start
       heapStart = 1;  // slot 0 not serialized, it's null / 0
     }
+    
+    // add remaining strings for this case:
+    //   deltaCas, FS below the line modified, modification is new string.
+    //   use the deltaCasMod scanning
+    final SerializeModifiedFSs smfs = isSerializingDelta ? new SerializeModifiedFSs() : null;
+    if (isSerializingDelta) {
+      smfs.addModifiedStrings();
+    }
+    
 
     /**************************
      * Strings
@@ -520,11 +619,32 @@ public class BinaryCasSerDes6 {
      * walk main heap
      ***************************/
 
-    final IntListIterator foundFSsIterator = foundFSs.iterator();
     int iHeap;
-    while (foundFSsIterator.hasNext()) {
-      iHeap = foundFSsIterator.next();
-//    for (int iHeap = heapStart; iHeap < heapEnd; iHeap += incrToNextFs(heap, iHeap, typeInfo)) {
+    
+//    { // debug
+//      IntListIterator dit = foundFSs.iterator();
+//      int column = 0;
+//      int[] va = new int[100];
+//      while (dit.hasNext()) {
+//        va[column++] = dit.next();
+//        if (column == 100) {
+//          column = 0;
+//          for (int i = 0; i < 100; i++) {
+//            System.err.format("%,8d ", va[i]);
+//          }
+//          System.err.println("");
+//        }
+//      }
+//      for (int i = 0; i < column; i++) {
+//        System.err.format("%9d ", va[i]);
+//      }
+//      System.err.println("");
+//    }
+    for (int fssi = 0; fssi < foundFSsArray.length; fssi++) {
+      iHeap = foundFSsArray[fssi];
+      if (isDelta && iHeap < mark.nextFSId) {
+        continue;
+      }
       final int tCode = heap[iHeap];  // get type code
       final int mappedTypeCode = isTypeMapping ? typeMapper.mapTypeCodeSrc2Tgt(tCode) : tCode;
       if (mappedTypeCode == 0) { // means no corresponding type in target system
@@ -568,7 +688,7 @@ public class BinaryCasSerDes6 {
     processIndexedFeatureStructures(cas, true /* pass 2 */);
 
     if (isSerializingDelta) {
-      (new SerializeModifiedFSs()).serializeModifiedFSs();
+      smfs.serializeModifiedFSs();
     }
 
     collectAndZip();
@@ -776,15 +896,21 @@ public class BinaryCasSerDes6 {
       if (doMeasurements) {
         sm.statDetails[strLength_i].incr(1);
       }
+      if (debugEOF) {
+        System.out.format("writeString length null 0%n");
+      }
       return;
     } 
     
-    int indexOrSeq = os.getIndexOrSeqIndex(s);
+    final int indexOrSeq = os.getIndexOrSeqIndex(s);
     if (indexOrSeq < 0) {
       final int v = encodeIntSign(indexOrSeq);
       writeVnumber(strLength_dos, v);
       if (doMeasurements) {
         sm.statDetails[strLength_i].incr(DataIO.lengthVnumber(v));
+      }
+      if (debugEOF) {
+        System.out.format("writeString length %d%n", indexOrSeq);
       }
       return;
     }
@@ -793,6 +919,9 @@ public class BinaryCasSerDes6 {
       writeVnumber(strLength_dos, encodeIntSign(1));
       if (doMeasurements) {
         sm.statDetails[strLength_i].incr(1);
+      }
+      if (debugEOF) {
+        System.out.format("writeString length 0 as 1%n");
       }
       return;
     }
@@ -815,6 +944,10 @@ public class BinaryCasSerDes6 {
       if (doMeasurements) {
         sm.statDetails[strSeg_i].incr(DataIO.lengthVnumber(csi));
       }
+    }
+    if (debugEOF) {
+      System.out.format("writeString length %,d offset %,d%n",
+          length, offset);
     }
   }
 
@@ -1021,11 +1154,11 @@ public class BinaryCasSerDes6 {
    ******************************************************************************/
   public class SerializeModifiedFSs {
 
-    final int[] modifiedMainHeapAddrs = cas.getModifiedFSHeapAddrs().toArray();
-    final int[] modifiedFSs = cas.getModifiedFSList().toArray();
-    final int[] modifiedByteHeapAddrs = cas.getModifiedByteHeapAddrs().toArray();
-    final int[] modifiedShortHeapAddrs = cas.getModifiedShortHeapAddrs().toArray();
-    final int[] modifiedLongHeapAddrs = cas.getModifiedLongHeapAddrs().toArray();
+    final int[] modifiedMainHeapAddrs = toArrayOrINT0(cas.getModifiedFSHeapAddrs());
+    final int[] modifiedFSs = toArrayOrINT0(cas.getModifiedFSList());
+    final int[] modifiedByteHeapAddrs = toArrayOrINT0(cas.getModifiedByteHeapAddrs());
+    final int[] modifiedShortHeapAddrs = toArrayOrINT0(cas.getModifiedShortHeapAddrs());
+    final int[] modifiedLongHeapAddrs = toArrayOrINT0(cas.getModifiedLongHeapAddrs());
 
     {sortModifications();}  // a non-static initialization block
     
@@ -1053,9 +1186,30 @@ public class BinaryCasSerDes6 {
     int iHeap;
     TypeInfo typeInfo;
     
+    /**
+     * For Delta Serialization:
+     * Add any strings below the line 
+     * Assume: no TS mapping (because it's delta serialization)
+     */
+    private void addModifiedStrings() {
+//      System.out.println("Enter addModifiedStrings");
+      for (int i = 0; i < modFSsLength; i++) {
+        iHeap = modifiedFSs[i];
+        // skip if no longer indexed-reachable change
+        if (!foundFSsBelowMark.contains(iHeap)) {
+//          System.out.format("  skipping heap addr %,d%n", iHeap);
+          continue;        
+        }
+        final int tCode = heap[iHeap];
+        final TypeInfo typeInfo = ts.getTypeInfo(tCode);
+//        System.out.format("  maybe adding string ");
+        addStringFromFS(typeInfo, iHeap, tCode);
+      }
+//      System.out.println("Exit addModifiedStrings");
+    }
+    
     private void serializeModifiedFSs() throws IOException {
-      // write out number of modified Feature Structures
-      writeVnumber(control_dos, modFSsLength);
+      int skipped = 0;
       // iterate over all modified feature structures
       /**
        * Theorems about these data
@@ -1065,27 +1219,39 @@ public class BinaryCasSerDes6 {
        *   3) Assumption: String array element modifications are main heap slot changes
        *      and recorded as such
        */
-      
+      iPrevHeap = 0;
+      final int splitPoint = mark.nextFSId;
       for (int i = 0; i < modFSsLength; i++) {
-        iHeap = modifiedFSs[i];     
+        iHeap = modifiedFSs[i];
+        final boolean skipping = ((iHeap >= splitPoint) && !foundFSs.contains(iHeap)) ||
+                                 ((iHeap < splitPoint) && !foundFSsBelowMark.contains(iHeap));
         final int tCode = heap[iHeap];
         typeInfo = ts.getTypeInfo(tCode);
         
         // write out the address of the modified FS
         // will convert to seq# internally
-        writeDiff(fsIndexes_i, iHeap, iPrevHeap);
+        if (!skipping) {
+          writeDiff(fsIndexes_i, iHeap, iPrevHeap);
+        }
         // delay updating iPrevHeap until end of "for" loop
         
         /**************************************************
          * handle aux byte, short, long array modifications
          **************************************************/
         if (typeInfo.isArray && (!typeInfo.isHeapStoredArray)) {
-          writeAuxHeapMods();           
+          writeAuxHeapMods(skipping);           
         } else { 
-          writeMainHeapMods(); 
+          writeMainHeapMods(skipping); 
         }  // end of processing 1 modified FS
-        iPrevHeap = iHeap;
+        if (skipping) {
+          skipped ++;
+        } else {
+          iPrevHeap = iHeap;  // iPrevHeap must be 0 or point to a non-skipped one          
+        }
       }  // end of for loop over all modified FSs
+      // write out number of modified Feature Structures
+      writeVnumber(control_dos, modFSsLength - skipped);
+
     }  // end of method
     
     // sort and remove duplicates
@@ -1148,20 +1314,29 @@ public class BinaryCasSerDes6 {
       return i;
     }
     
-    private void writeMainHeapMods() throws IOException {
+    private void writeMainHeapMods(final boolean skipping) throws IOException {
       final int fsLength = incrToNextFs(heap, iHeap, typeInfo);
       final int numberOfModsInFs = countModifiedSlotsInFs(fsLength);
-      writeVnumber(fsIndexes_dos, numberOfModsInFs);
+      if (!skipping) {
+        writeVnumber(fsIndexes_dos, numberOfModsInFs);
+      }
       int iPrevOffsetInFs = 0;
 
       for (int i = 0; i < numberOfModsInFs; i++) {
         final int nextMainHeapIndex = modifiedMainHeapAddrs[imaModMainHeap++];
+        if (skipping) {
+          continue;
+        }
         final int offsetInFs = nextMainHeapIndex - iHeap;
         
         writeVnumber(fsIndexes_dos, offsetInFs - iPrevOffsetInFs);
         iPrevOffsetInFs = offsetInFs;
         
+//        if (typeInfo.isArray && (typeInfo.getSlotKind(2) == Slot_StrRef)) {
+//          System.out.println("writing string array mod");
+//        }
         final SlotKind kind = typeInfo.getSlotKind(typeInfo.isArray ? 2 : offsetInFs);
+//        System.out.format("mainHeapModWrite type: %s slot: %s%n", typeInfo, kind);
         
         switch (kind) {
         case Slot_HeapRef:
@@ -1195,7 +1370,7 @@ public class BinaryCasSerDes6 {
       }  // end of looping for all modified slots in this FS
     }
     
-    private void writeAuxHeapMods() throws IOException {
+    private void writeAuxHeapMods(final boolean skipping) throws IOException {
       final int auxHeapIndex = heap[iHeap + 2];
       int iPrevOffsetInAuxArray = 0;
       
@@ -1204,7 +1379,7 @@ public class BinaryCasSerDes6 {
       final boolean isAuxShort = (kind == Slot_ShortRef);
       final boolean isAuxLong = ((kind == Slot_LongRef) || (kind == Slot_DoubleRef));
       
-      if (!(isAuxByte | isAuxShort | isAuxLong)) {
+      if (!(isAuxByte || isAuxShort || isAuxLong)) {
         throw new RuntimeException();  // never happen
       }
       
@@ -1215,32 +1390,35 @@ public class BinaryCasSerDes6 {
                                         isAuxShort ? modShortHeapAddrsLength :
                                                      modLongHeapAddrsLength;
       int imaModXxxRef = isAuxByte  ? imaModByteRef :
-                               isAuxShort ? imaModShortRef : 
-                                            imaModLongRef;
+                         isAuxShort ? imaModShortRef : 
+                                      imaModLongRef;
       
       final int numberOfModsInAuxHeap = countModifiedSlotsInAuxHeap(modXxxHeapAddrs, imaModXxxRef, modXxxHeapAddrsLength);
-      writeVnumber(fsIndexes_dos, numberOfModsInAuxHeap);
+      if (!skipping) {
+        writeVnumber(fsIndexes_dos, numberOfModsInAuxHeap);
+      }
       
       for (int i = 0; i < numberOfModsInAuxHeap; i++) {
         final int nextModAuxIndex = modXxxHeapAddrs[imaModXxxRef++];
         final int offsetInAuxArray = nextModAuxIndex - auxHeapIndex;
-        
-        writeVnumber(fsIndexes_dos, offsetInAuxArray - iPrevOffsetInAuxArray);
-        iPrevOffsetInAuxArray = offsetInAuxArray;
-        
-        if (isAuxByte) {
-          writeUnsignedByte(byte_dos, byteHeapObj.getHeapValue(nextModAuxIndex));
-        } else if (isAuxShort) {
-          final short v = shortHeapObj.getHeapValue(nextModAuxIndex);
-          writeDiff(int_i, v, vPrevModShort);
-          vPrevModShort = v;
-        } else {
-          long v = longHeapObj.getHeapValue(nextModAuxIndex);
-          if (kind == Slot_LongRef) {
-            writeLong(v, vPrevModLong);
-            vPrevModLong = v;    
+        if (!skipping) {
+          writeVnumber(fsIndexes_dos, offsetInAuxArray - iPrevOffsetInAuxArray);
+          iPrevOffsetInAuxArray = offsetInAuxArray;
+          
+          if (isAuxByte) {
+            writeUnsignedByte(byte_dos, byteHeapObj.getHeapValue(nextModAuxIndex));
+          } else if (isAuxShort) {
+            final short v = shortHeapObj.getHeapValue(nextModAuxIndex);
+            writeDiff(int_i, v, vPrevModShort);
+            vPrevModShort = v;
           } else {
-            writeDouble(v);
+            long v = longHeapObj.getHeapValue(nextModAuxIndex);
+            if (kind == Slot_LongRef) {
+              writeLong(v, vPrevModLong);
+              vPrevModLong = v;    
+            } else {
+              writeDouble(v);
+            }
           }
         }
         
@@ -1267,7 +1445,7 @@ public class BinaryCasSerDes6 {
     readHeader();
 
     if (isReadingDelta) {
-      if (null == foundFSs) {
+      if (!reuseInfoProvided) {
         throw new UnsupportedOperationException("Deserializing Delta Cas, but original not serialized from");
       }
     } else {
@@ -1330,7 +1508,7 @@ public class BinaryCasSerDes6 {
 
     if (isReadingDelta) {
       // scan current source being added to / merged into
-      if (fsStartIndexes.getNumberSrcFss() == 1) {
+      if (!reuseInfoProvided) {
         throw new IllegalStateException("Reading Delta into CAS not serialized from");
       }
     }
@@ -1538,7 +1716,7 @@ public class BinaryCasSerDes6 {
       }
       break;
     case Slot_LongRef: {
-      long v = readLong(kind, (iPrevHeap == 0) ? 0L : longHeapObj.getHeapValue(heap[iPrevHeap + offset]));
+      long v = readLongOrDouble(kind, (iPrevHeap == 0) ? 0L : longHeapObj.getHeapValue(heap[iPrevHeap + offset]));
       if (v == 0L) {
         if (longZeroIndex == -1) {
           longZeroIndex = longHeapObj.addLong(0L);
@@ -1678,11 +1856,15 @@ public class BinaryCasSerDes6 {
       final int endPos = startPos + length;
       long prev = 0;
       for (int i = startPos; i < endPos; i++) {
-        h[i] = prev = readLong(kind, prev);
+        h[i] = prev = readLongOrDouble(kind, prev);
       }
       return startPos;
     } else {
-      skipLong(length);
+      if (kind == Slot_LongRef) {
+        skipLong(length);
+      } else {
+        skipDouble(length);
+      }
       return 0;
     }
   }
@@ -1722,7 +1904,7 @@ public class BinaryCasSerDes6 {
 
   }
       
-  private long readLong(SlotKind kind, long prev) throws IOException {
+  private long readLongOrDouble(SlotKind kind, long prev) throws IOException {
     if (kind == Slot_DoubleRef) {
       return readDouble();
     }
@@ -1733,10 +1915,16 @@ public class BinaryCasSerDes6 {
     return v;
   }
   
-  private void skipLong(int length) throws IOException {
+  private void skipLong(final int length) throws IOException {
     for (int i = 0; i < length; i++) {
       long_High_dis.skipBytes(8);
       long_Low_dis.skipBytes(8);
+    }
+  }
+  
+  private void skipDouble(final int length) throws IOException {
+    for (int i = 0; i < length; i++) {
+      readDouble();
     }
   }
      
@@ -1790,7 +1978,10 @@ public class BinaryCasSerDes6 {
   }
     
   private int readString(boolean storeIt) throws IOException {
-    int length = decodeIntSign(readVnumber(strLength_dis));
+    final int length = decodeIntSign(readVnumber(strLength_dis));
+    if (debugEOF) {
+//      System.out.format("readString length = %,d%n", length);
+    }
     if (0 == length) {
       return 0;
     }
@@ -1809,9 +2000,12 @@ public class BinaryCasSerDes6 {
         return 0;
       }
     }
-    int offset = readVnumber(strOffset_dis);
-    int segmentIndex = (only1CommonString) ? 0 :
+    final int offset = readVnumber(strOffset_dis);
+    final int segmentIndex = (only1CommonString) ? 0 :
       readVnumber(strSeg_dis);
+    if (debugEOF) {
+      System.out.format("readString offset = %,d%n", offset);
+    }
     if (storeIt) {
       String s =  readCommonString[segmentIndex].substring(offset, offset + length - 1);
       return stringHeapObj.addString(s);
@@ -1927,7 +2121,7 @@ public class BinaryCasSerDes6 {
           vPrevModShort = v;
           shortHeapObj.setHeapValue(v, auxHeapIndex + offset);
         } else {
-          final long v = readLong(kind, vPrevModLong);
+          final long v = readLongOrDouble(kind, vPrevModLong);
           if (kind == Slot_LongRef) {
             vPrevModLong = v;
           }
@@ -1937,6 +2131,7 @@ public class BinaryCasSerDes6 {
     }
     
     private void readModifiedMainHeap(int numberOfMods) throws IOException {
+      
       int iPrevTgtOffsetInFs = 0;
       for (int i = 0; i < numberOfMods; i++) {
         final int tgtOffsetInFs = readVnumber(fsIndexes_dis) + iPrevTgtOffsetInFs;
@@ -1948,7 +2143,7 @@ public class BinaryCasSerDes6 {
           throw new RuntimeException();
         }
         final SlotKind kind = typeInfo.getSlotKind(typeInfo.isArray ? 2 : srcOffsetInFs);
-        
+//        System.out.format("mainHeapModRead type: %s slot: %s%n", typeInfo, kind);
         switch (kind) {
         case Slot_HeapRef: {
             final int tgtSeq = readDiff(heapRef_dis, prevModHeapRefTgtSeq);
@@ -1969,11 +2164,14 @@ public class BinaryCasSerDes6 {
             heap[iHeap + srcOffsetInFs] = v;
           }
           break;
-        case Slot_LongRef: case Slot_DoubleRef: {
-            final long v = readLong(kind, vPrevModLong);
-            if (kind == Slot_LongRef) {
-              vPrevModLong = v;
-            }
+        case Slot_LongRef: {
+            final long v = readLongOrDouble(kind, vPrevModLong);
+            vPrevModLong = v;
+            heap[iHeap + srcOffsetInFs] = longHeapObj.addLong(v);
+          }
+          break;
+        case Slot_DoubleRef: {
+            final long v = readDouble();
             heap[iHeap + srcOffsetInFs] = longHeapObj.addLong(v);
           }
           break;
@@ -2013,6 +2211,7 @@ public class BinaryCasSerDes6 {
    *   of all FSs that are to be serialized:
    *     because they are in some index, or
    *     are pointed to by something that is in some index (recursively)
+   *   excluding those below the mark
    *   
    *   The second thing is to serialize out the index information.
    *   This step has to wait until the first time call has completed and 
@@ -2024,9 +2223,20 @@ public class BinaryCasSerDes6 {
    */
   private void processIndexedFeatureStructures(CASImpl cas, boolean isWrite) throws IOException {
     if (!isWrite) {
-      foundFSs = new IntArrayRBT();
+      // size the foundFSs at about 1/8 the guessed size
+      foundFSs = new IntArrayRBT(Math.max(1024, cas.getHeap().getCellsUsed() >> 6));
+      foundFSsBelowMark = isSerializingDelta ? new IntArrayRBT() : null;
     }
-    final int[] fsIndexes = isSerializingDelta ? cas.getDeltaIndexedFSs(mark) : cas.getIndexedFSs();
+    final int[] fsIndexes = isWrite ? 
+                              // this alternative collects just the new FSs above the line
+                              (isSerializingDelta ? cas.getDeltaIndexedFSs(mark) : savedAllIndexesFSs) :
+                              // this alternative picks up the following use case:
+                              //   A modification of something below the line now has a new fs ref to something
+                              //   above the line, not otherwise referenced
+                                cas.getIndexedFSs();  
+    if (!isWrite) {
+      savedAllIndexesFSs = fsIndexes;
+    }
     final int nbrViews = fsIndexes[0];
     final int nbrSofas = fsIndexes[1];
 
@@ -2058,22 +2268,34 @@ public class BinaryCasSerDes6 {
         enqueueFS(foundFSs, addrSofaFs);
       }
     }
-     
+    
+    heap = cas.getHeap().heap;   // referred to in processFsxPart
     for (int vi = 0; vi < nbrViews; vi++) {
       fi = processFsxPart(fsIndexes, fi, foundFSs, isWrite);    // added FSs
       if (isWrite && isSerializingDelta) {
-        fi = processFsxPart(fsIndexes, fi, null, false);  // removed FSs
-        fi = processFsxPart(fsIndexes, fi, null, false);  // reindexed FSs
+        fi = processFsxPart(fsIndexes, fi, null, true);  // removed FSs
+        fi = processFsxPart(fsIndexes, fi, null, true);  // reindexed FSs
       }
     } 
+    if (!isWrite) {
+      final IntPointerIterator foundFSsIteratorx = foundFSs.pointerIterator();
+      foundFSsIteratorx.moveToFirst();
+      final int fsslen = foundFSs.size();
+      foundFSsArray = new int[fsslen];
+      for (int i = 0; i < fsslen; i++) {
+        foundFSsArray[i] = foundFSsIteratorx.get();
+        foundFSsIteratorx.inc();
+      }
+//      Arrays.sort(foundFSsArray);
+    }
     return;
   }
 
   private int processFsxPart(
-      int[] fsIndexes, 
-      int fsNdxStart,
-      IntArrayRBT foundFSs, 
-      boolean isWrite) throws IOException {
+      final int[] fsIndexes, 
+      final int fsNdxStart,
+      final IntArrayRBT foundFSs, 
+      final boolean isWrite) throws IOException {
     int ix = fsNdxStart;
     final int nbrEntries = fsIndexes[ix++];
     final int end = ix + nbrEntries;
@@ -2128,12 +2350,20 @@ public class BinaryCasSerDes6 {
       return;
     }
     if (0 != fsAddr) {
-      if (!foundFSs.containsKey(fsAddr)) {
-        if (!isSerializingDelta || mark.isNew(fsAddr)) {
-          foundFSs.insertKey(fsAddr);
+      boolean added;
+//      if (!foundFSs.contains(fsAddr) && 
+//          ((foundFSsBelowMark == null) || 
+//           (fsAddr >= heapStart) || 
+//           !foundFSsBelowMark.contains(fsAddr))) {
+        if (fsAddr >= heapStart) { // don't add items below the line, but do scan their features
+          added = foundFSs.addAdded(fsAddr);
+        } else {
+          added = foundFSsBelowMark.addAdded(fsAddr);
+        }
+        if (added) {
           enqueueFeatures(foundFSs, fsAddr);
         }
-      }
+//      }
     }
   }
   
@@ -2182,9 +2412,8 @@ public class BinaryCasSerDes6 {
   
   /**
    * Serializing:
-   *   Called at beginning, scans whole CAS
-   * Deserializing (Delta Cas only):
-   *   Called at beginning if doing delta CAS, scans old CAS up to mark
+   *   Called at beginning of serialize, scans whole CAS or just delta CAS
+   *   If doing delta serialization, fsStartIndexes is passed in, pre-initialized with a copy of the map info below the line.
    * @param fsStartIndexes
    * @param srcHeap
    * @param srcHeapStart
@@ -2198,14 +2427,17 @@ public class BinaryCasSerDes6 {
    
     final boolean isTypeMapping = isTypeMappingCmn;
     final CasTypeSystemMapper typeMapper = typeMapperCmn;
-    final IntListIterator foundFSsIterator = foundFSs.iterator();
     
     int tgtHeapUsed = 0;
-    int nextTgtHeap = 1;
-    int markStringHeap = (isDelta) ? mark.getNextStringHeapAddr() : 0;
+    int nextTgtHeap = isSerializingDelta ? mark.nextFSId : 1;
     
-    while (foundFSsIterator.hasNext()) {
-      final int iSrcHeap = foundFSsIterator.next();
+    // for delta serialization - the iterator is only for things above the line.
+
+    for (int i = 0; i < foundFSsArray.length; i++) {
+      final int iSrcHeap = foundFSsArray[i];
+      // for delta serialization, no type mapping is supported, 
+      // however, some created FSs above the line may not be "reachable" and 
+      // therefore, skipped. 
       final int iTgtHeap = nextTgtHeap;
       final int tCode = heap[iSrcHeap];
       final int tgtTypeCode = isTypeMapping ? typeMapper.mapTypeCodeSrc2Tgt(tCode) : tCode;
@@ -2228,50 +2460,63 @@ public class BinaryCasSerDes6 {
       
       // add strings for included types (only when serializing)
       if (isIncludedType && (os != null)) { 
-
+        // skip if delta and fs is below the line
+        // Well, we can't do that - it may be that the fs is below the line, but the string slot 
+        //   has been updated  (modified).
+        // Well, this code is only called for FSs above the line... So need another method
+        //   to pick up those modified strings - see addModifiedStrings;
+            
         // next test only true if tgtTypeInfo.slotKinds[1] == Slot_StrRef
         // because this is the built-in type string array which is final
-        if (srcTypeInfo.isHeapStoredArray && (srcTypeInfo.slotKinds[1] == Slot_StrRef)) {
-          for (int i = 0; i < heap[iSrcHeap + 1]; i++) {
-            // this bit of strange logic depends on the fact that all new and updated strings
-            // are "added" at the end of the string heap in the current impl
-            final int strHeapIndex = heap[iSrcHeap + 2 + i];
-            if (strHeapIndex >= markStringHeap) {
-              os.add(stringHeapObj.getStringForCode(strHeapIndex));
-            }
-          }
-        } else {
-          final int[] strOffsets = srcTypeInfo.strRefOffsets;
-          final boolean[] fSrcInTgt = isTypeMapping ? typeMapper.getFSrcInTgt(tCode) : null;
-          for (int i = 0; i < strOffsets.length; i++ ) {
-            int srcOffset = strOffsets[i];  // offset to slot having str ref
-            // add only those strings in slots that are in target
-            if (!isTypeMapping || fSrcInTgt[srcOffset]) {
-              final int strHeapIndex = heap[iSrcHeap + strOffsets[i]];
-              // this bit of strange logic depends on the fact that all new and updated strings
-              // are "added" at the end of the string heap in the current impl
-              if (strHeapIndex >= markStringHeap) {
-                os.add(stringHeapObj.getStringForCode(strHeapIndex));
-              }
-            }
-          }
-        }
+        addStringFromFS(srcTypeInfo, iSrcHeap, tCode);
       }
             
       // Advance to next Feature Structure, in both source and target heap frame of reference
       if (isIncludedType) {
         final int deltaTgtHeap = incrToNextFs(heap, iSrcHeap, tgtTypeInfo);
         nextTgtHeap += deltaTgtHeap;
-        if (iSrcHeap >= heapStart) {  // don't use up tgt heap if delta, and below the mark
+//        if (iSrcHeap >= heapStart) {  // don't use up tgt heap if delta, and below the mark
+                                        // with current design is always true.
           tgtHeapUsed += deltaTgtHeap;
-        }
+//        }
       }
     }
     
     return tgtHeapUsed;  // side effect: set up fsStartIndexes
   } 
 
-
+  private void addStringFromFS(TypeInfo srcTypeInfo, int iSrcHeap, int tCode) {
+    final int markStringHeap = (isDelta) ? mark.getNextStringHeapAddr() : 0;
+    if (srcTypeInfo.isHeapStoredArray && (srcTypeInfo.slotKinds[1] == Slot_StrRef)) {
+      for (int i = 0; i < heap[iSrcHeap + 1]; i++) {
+        // this bit of strange logic depends on the fact that all new and updated strings
+        // are "added" at the end of the string heap in the current impl
+        final int strHeapIndex = heap[iSrcHeap + 2 + i];
+        if (strHeapIndex >= markStringHeap) {
+          os.add(stringHeapObj.getStringForCode(strHeapIndex));
+//          System.out.format("addStringFromFS:  %s%n", stringHeapObj.getStringForCode(strHeapIndex));
+        } else {
+//          System.out.format("addStringFromFS: skipping add of str %s%n", stringHeapObj.getStringForCode(strHeapIndex));
+        }
+        
+      }
+    } else {
+      final int[] strOffsets = srcTypeInfo.strRefOffsets;
+      final boolean[] fSrcInTgt = isTypeMapping ? typeMapper.getFSrcInTgt(tCode) : null;
+      for (int i = 0; i < strOffsets.length; i++ ) {
+        int srcOffset = strOffsets[i];  // offset to slot having str ref
+        // add only those strings in slots that are in target
+        if (!isTypeMapping || fSrcInTgt[srcOffset]) {
+          final int strHeapIndex = heap[iSrcHeap + strOffsets[i]];
+          // this bit of strange logic depends on the fact that all new and updated strings
+          // are "added" at the end of the string heap in the current impl
+          if (strHeapIndex >= markStringHeap) {
+            os.add(stringHeapObj.getStringForCode(strHeapIndex));
+          }
+        }
+      }
+    }
+  }
   /**
    * Compare 2 CASes, with perhaps different type systems.
    * If the type systems are different, construct a type mapper and use that
@@ -2326,34 +2571,29 @@ public class BinaryCasSerDes6 {
     }
       
     public boolean compareCASes() {
-      IntArrayRBT c1FoundFSs;
-      IntArrayRBT c2FoundFSs;
+      final int[] c1FoundFSs;
+      final int[] c2FoundFSs;
       try {
+        heapStart = 0;  // referenced by the following method
         processIndexedFeatureStructures(c1, false);
-        c1FoundFSs = foundFSs;
-        foundFSs = new IntArrayRBT();
+        c1FoundFSs = foundFSsArray;
         processIndexedFeatureStructures(c2, false);
-        c2FoundFSs = foundFSs;
+        c2FoundFSs = foundFSsArray;
       } catch (IOException e) {
         throw new RuntimeException(e);  // never happen
       }
-      IntPointerIterator c1Iterator = c1FoundFSs.pointerIterator();
-      IntPointerIterator c2Iterator = c2FoundFSs.pointerIterator();
 
-      int i = 0;
-      while (c1Iterator.isValid()) {
-        addr2seq1.put(c1Iterator.get(), i++);
-        c1Iterator.inc();
+      for (int i = 0; i < c1FoundFSs.length; i++) {
+        final int v = c1FoundFSs[i];
+//        System.out.format("compare 1: seq = %,d addr=%,d%n", i, v);
+        addr2seq1.put(v, i);
       }
-      i = 0;
-      while (c2Iterator.isValid()) {
-        addr2seq2.put(c2Iterator.get(), i++);
-        c2Iterator.inc();
+      for (int i = 0; i < c2FoundFSs.length; i++) {
+        final int v = c2FoundFSs[i];
+//        System.out.format("compare 2: seq = %,d addr=%,d%n", i, v);
+        addr2seq2.put(v, i);
       }
-      
-      c1Iterator.moveToFirst();
-      c2Iterator.moveToFirst();
-      
+            
 //      initFsStartIndexesCompare();
       
       // Iterating over both CASes
@@ -2370,9 +2610,12 @@ public class BinaryCasSerDes6 {
 //      boolean pastEnd1 = false;
 //      boolean pastEnd2 = false;      
       
-      while (c1Iterator.isValid() && c2Iterator.isValid()) {
-        c1heapIndex = c1Iterator.get();
-        c2heapIndex = c2Iterator.get();
+//      while (c1Iterator.isValid() && c2Iterator.isValid()) {
+      int i1 = 0;
+      int i2 = 0;
+      while (i1 < c1FoundFSs.length && i2 < c2FoundFSs.length) {
+        c1heapIndex = c1FoundFSs[i1];
+        c2heapIndex = c2FoundFSs[i2];
         if (isTypeMapping) {
           final int tCode1_2 = typeMapper.mapTypeCodeSrc2Tgt(c1heap[c1heapIndex]);
           final int tCode2_1 = typeMapper.mapTypeCodeTgt2Src(c2heap[c2heapIndex]);
@@ -2380,50 +2623,50 @@ public class BinaryCasSerDes6 {
             if (!compareFss()) {
               return false;
             }
-            c1Iterator.inc();
-            c2Iterator.inc();
+            i1++;
+            i2++;
             continue;
           }
           if ((tCode1_2 == 0) && (tCode2_1 == 0)) {
-            c1Iterator.inc();
-            c2Iterator.inc();
+            i1++;
+            i2++;
             continue;
           }
           if ((tCode1_2 == 0) && (tCode2_1 != 0)) {
-            c2Iterator.inc();
+            i2++;
             continue;
           }
           if ((tCode1_2 != 0) && (tCode2_1 == 0)) {
-            c1Iterator.inc();
+            i1++;
             continue;
           }
         } else {  // not type mapping
           if (!compareFss()) {
             return false;
           }
-          c1Iterator.inc();
-          c2Iterator.inc();
+          i1++;
+          i2++;
           continue;
         }
       }
       
-      if (!c1Iterator.isValid() && !c2Iterator.isValid()) {
+      if (i1 >= c1FoundFSs.length && i1 >= c2FoundFSs.length) {
         return true;  // end, everything compared
       }
       if (isTypeMapping) {
-        while (c1Iterator.isValid()) {
-          c1heapIndex = c1Iterator.get();
+        while (i1 < c1FoundFSs.length) {
+          c1heapIndex = c1FoundFSs[i1];
           if (typeMapper.mapTypeCodeSrc2Tgt(c1heap[c1heapIndex]) != 0) {
             return false;  // have more FSs in c1 than in c2
           }
-          c1Iterator.inc();
+          i1++;
         }
-        while (c2Iterator.isValid()) {
-          c2heapIndex = c2Iterator.get();
+        while (i2 < c2FoundFSs.length) {
+          c2heapIndex = c2FoundFSs[i2];
           if (typeMapper.mapTypeCodeTgt2Src(c2heap[c2heapIndex]) != 0) {
             return false;  // have more FSs in c2 than in c1
           }
-          c1Iterator.inc();
+          i2++;
         }
       }
       return true;
@@ -2451,7 +2694,7 @@ public class BinaryCasSerDes6 {
       int len1 = c1heap[c1heapIndex + 1];
       int len2 = c2heap[c2heapIndex + 1];
       if (len1 != len2) {
-        return false;
+        return mismatchFs();
       }
       for (int i = 0; i < len1; i++) {
         SlotKind kind = typeInfo.getSlotKind(2);
@@ -2462,8 +2705,11 @@ public class BinaryCasSerDes6 {
               return mismatchFs();
             }
           } else if (kind == Slot_HeapRef) {
-            if (addr2seq1.get(c1heap[c1heapIndex + 2 + i]) != 
-                addr2seq2.get(c2heap[c2heapIndex + 2 + i])) {
+            final int c1ref = c1heap[c1heapIndex + 2 + i];
+            final int c2ref = c2heap[c2heapIndex + 2 + i];
+            if ((c1ref != 0) && 
+                (c2ref != 0) && 
+                (addr2seq1.get(c1ref) != addr2seq2.get(c2ref))) {
               return mismatchFs();
             }
           } else if (c1heap[c1heapIndex + 2 + i] != c2heap[c2heapIndex + 2 + i]) {
@@ -2485,7 +2731,7 @@ public class BinaryCasSerDes6 {
             break;
           case Slot_LongRef: case Slot_DoubleRef: {
             if (c1.getLongHeap().getHeapValue(c1heap[c1heapIndex + 2] + i)  !=
-                c1.getLongHeap().getHeapValue(c1heap[c2heapIndex + 2] + i)) {
+                c2.getLongHeap().getHeapValue(c2heap[c2heapIndex + 2] + i)) {
               return mismatchFs();
             }
             break;
@@ -2503,9 +2749,13 @@ public class BinaryCasSerDes6 {
       case Slot_Int: case Slot_Short: case Slot_Boolean: case Slot_Byte: 
       case Slot_Float: 
         return c1heap[c1heapIndex + offset] == c2heap[c2heapIndex + offset];
-      case Slot_HeapRef:
-        return addr2seq1.get(c1heap[c1heapIndex + offset]) ==
-               addr2seq2.get(c2heap[c2heapIndex + offset]);
+      case Slot_HeapRef: {
+        final int c1ref = c1heap[c1heapIndex + offset];
+        final int c2ref = c2heap[c2heapIndex + offset];
+        return ((c1ref == 0) && (c2ref == 0)) ||
+               ((c1ref != 0) && (c2ref != 0) && 
+                (addr2seq1.get(c1ref) == addr2seq2.get(c2ref)));
+      }
       case Slot_StrRef:
         return compareStrings(c1.getStringForCode(c1heap[c1heapIndex + offset]),
                               c2.getStringForCode(c2heap[c2heapIndex + offset]));
@@ -2519,6 +2769,9 @@ public class BinaryCasSerDes6 {
     private boolean compareStrings(String s1, String s2) {
       if ((null == s1) && (null == s2)) {
         return true;
+      }
+      if (null == s1) {
+        return false;
       }
       return s1.equals(s2);
     }
@@ -2580,7 +2833,7 @@ public class BinaryCasSerDes6 {
     private StringBuilder dumpHeapFs(CASImpl cas, final int iHeap, final TypeSystemImpl ts) {
       StringBuilder sb = new StringBuilder();
       typeInfo = ts.getTypeInfo(cas.getHeap().heap[iHeap]);
-      sb.append(typeInfo);
+      sb.append(typeInfo).append(' ');
   
       if (typeInfo.isHeapStoredArray) {
         sb.append(dumpHeapStoredArray(cas, iHeap));
@@ -2779,22 +3032,22 @@ public class BinaryCasSerDes6 {
     }
     // below must follow the setupOutputStream calls above
     
-    arrayLength_dos = dosZipSources[arrayLength_i];
-    heapRef_dos = dosZipSources[heapRef_i];
-    int_dos = dosZipSources[int_i];
+//    arrayLength_dos = dosZipSources[arrayLength_i];
+//    heapRef_dos = dosZipSources[heapRef_i];
+//    int_dos = dosZipSources[int_i];
     byte_dos = dosZipSources[byte_i];
-    short_dos = dosZipSources[short_i];
+//    short_dos = dosZipSources[short_i];
     typeCode_dos = dosZipSources[typeCode_i];
     strOffset_dos = dosZipSources[strOffset_i];
     strLength_dos = dosZipSources[strLength_i];
-    long_High_dos = dosZipSources[long_High_i];
-    long_Low_dos = dosZipSources[long_Low_i];
+//    long_High_dos = dosZipSources[long_High_i];
+//    long_Low_dos = dosZipSources[long_Low_i];
     float_Mantissa_Sign_dos = dosZipSources[float_Mantissa_Sign_i];
     float_Exponent_dos = dosZipSources[float_Exponent_i];
     double_Mantissa_Sign_dos = dosZipSources[double_Mantissa_Sign_i];
     double_Exponent_dos = dosZipSources[double_Exponent_i];
     fsIndexes_dos = dosZipSources[fsIndexes_i];
-    strChars_dos = dosZipSources[strChars_i];
+//    strChars_dos = dosZipSources[strChars_i];
     control_dos = dosZipSources[control_i];
     strSeg_dos = dosZipSources[strSeg_i];
   } 
@@ -2987,5 +3240,12 @@ public class BinaryCasSerDes6 {
       sm.statDetails[strOffset_i].original = (stringHeapEnd - stringHeapStart) * 4;
     }
 
+  }
+  
+  private int[] toArrayOrINT0(IntVector v) {
+    if (null ==  v) {
+      return INT0;
+    }
+    return v.toArray();
   }
 }

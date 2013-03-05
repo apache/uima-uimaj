@@ -105,6 +105,7 @@ public class SerDesTest extends TestCase {
   private CASImpl cas;
   private CASImpl deserCas;
   private CASImpl deltaCas;
+  private CASImpl remoteCas;
 
   private TypeSystemImpl ts;
   private List<FeatureStructure> lfs;
@@ -186,6 +187,7 @@ public class SerDesTest extends TestCase {
       this.ts = (TypeSystemImpl) this.cas.getTypeSystem();
       deserCas = (CASImpl) CasCreationUtils.createCas(ts, null, null, null);
       deltaCas = (CASImpl) CasCreationUtils.createCas(ts, null, null, null);
+      remoteCas = (CASImpl) CasCreationUtils.createCas(ts, null, null, null);
       lfs = new ArrayList<FeatureStructure>();
     } catch (Exception e) {
       assertTrue(false);
@@ -197,7 +199,58 @@ public class SerDesTest extends TestCase {
     this.ts = null;
     deserCas = null;
     deltaCas = null;
+    remoteCas = null;
     lfs = null;
+  }
+
+  public void testDeltaWithStringArrayMod() throws IOException {
+    loadCas(cas);
+    ReuseInfo[] ri = serializeDeserialize(cas, remoteCas, null, null);
+    MarkerImpl marker = (MarkerImpl) remoteCas.createMarker();
+    lfs = getIndexedFSs(remoteCas);
+    FeatureStructure fs = lfs.get(10);
+    StringArrayFS sa = (StringArrayFS) fs.getFeatureValue(akofAstring);
+    sa.set(0, "change2");
+    verifyDelta(marker, ri);
+  }
+
+  public void testDeltaWithDblArrayMod() throws IOException {
+    loadCas(cas);
+    ReuseInfo[] ri = serializeDeserialize(cas, remoteCas, null, null);
+    MarkerImpl marker = (MarkerImpl) remoteCas.createMarker();
+    lfs = getIndexedFSs(remoteCas);
+    FeatureStructure fs = lfs.get(10);  /* has double array length 2 */
+    DoubleArrayFS d = (DoubleArrayFS) fs.getFeatureValue(akofAdouble);
+    d.set(0, 12.34D);
+    verifyDelta(marker, ri);
+  }
+  
+  public void testDeltaWithByteArrayMod() throws IOException {
+    loadCas(cas);
+    ReuseInfo[] ri = serializeDeserialize(cas, remoteCas, null, null);
+    MarkerImpl marker = (MarkerImpl) remoteCas.createMarker();
+    
+    lfs = getIndexedFSs(remoteCas); // gets FSs below the line
+
+    FeatureStructure fs = lfs.get(10);
+    ByteArrayFS sfs = (ByteArrayFS) fs.getFeatureValue(akofAbyte);
+    sfs.set(0, (byte)21);
+
+    verifyDelta(marker, ri);
+  }
+
+  public void testDeltaWithStrArrayMod() throws IOException {
+    loadCas(cas);
+    ReuseInfo[] ri = serializeDeserialize(cas, remoteCas, null, null);
+    MarkerImpl marker = (MarkerImpl) remoteCas.createMarker();
+    
+    lfs = getIndexedFSs(remoteCas);
+
+    FeatureStructure fs = lfs.get(10);
+    StringArrayFS sfs = (StringArrayFS) fs.getFeatureValue(akofAstring);
+    sfs.set(0, "change");
+
+    verifyDelta(marker, ri);
   }
   
   /**
@@ -206,60 +259,62 @@ public class SerDesTest extends TestCase {
    */
   
   public void testAllKinds() {
-    loadCas(lfs);  
+    loadCas(cas);  
     verify();
   }
   
   /**
    * 1) create a base cas with some data
-   * 1a) make a copy of the cas to that point
-   *      Don't use CasCopier - it will reorder the fs's in the heap.
-   *      Instead, use plain binary serialization / deserialization
-   * 2) create the mark: cas.createMarker()
-   * 3) add more cas data
+   * 2) serialize it out and then back into a remoteCas
+   *    This is needed to get the proper ordering in the remote cas of the 
+   *    feature structures - they will be ordered by their fs addr, but omitting
+   *    "skipped" FSs (not in the index or reachable, and not in the target ts)
+   * 2) create the mark in the remoteCAS: cas.createMarker()
+   * 3) add more cas data to the remoteCas
    * 4) serialize with marker
-   * 5) using copy, deserialize with marker
-   * 6) check resulting cas = original in 4)
+   * 5) deserialize back into base cas
+   * 6) check resulting base cas = remote cas
    * 
    * 
    */
   public void testDelta() {
-    loadCas(lfs);
-    // don't use CasCopier because it doesn't preserve the order of fs's in the heap
-    binaryCopyCas(cas, deltaCas);
+    loadCas(cas);
+    ReuseInfo[] ri = serializeDeserialize(cas, remoteCas, null, null);
     
-    MarkerImpl marker = (MarkerImpl) cas.createMarker();
-    loadCas(lfs);
-    verifyDelta(marker);
+    MarkerImpl marker = (MarkerImpl) remoteCas.createMarker();
+    loadCas(remoteCas);
+    verifyDelta(marker, ri);
   }
   
   public void testDeltaWithRefsBelow() {
     lfs.clear();
-    loadCas(lfs);
-    binaryCopyCas(cas, deltaCas);
-    MarkerImpl marker = (MarkerImpl) cas.createMarker();
+    loadCas(cas);
+    ReuseInfo ri[] = serializeDeserialize(cas, remoteCas, null, null);
+    MarkerImpl marker = (MarkerImpl) remoteCas.createMarker();
     
-    FeatureStructure fs = cas.createFS(akof);
+    lfs = getIndexedFSs(remoteCas);
+    FeatureStructure fs = remoteCas.createFS(akof);
     fs.setFeatureValue(akofFs, lfs.get(0));
-    ArrayFS fsafs = cas.createArrayFS(4);
+    ArrayFS fsafs = remoteCas.createArrayFS(4);
     fsafs.set(1, lfs.get(1));
     fsafs.set(2, lfs.get(2));
     fsafs.set(3, lfs.get(3));
     fs.setFeatureValue(akofAfs, fsafs);
     
-    verifyDelta(marker);
+    verifyDelta(marker, ri);
   }
 
   public void testDeltaWithMods() {
     lfs.clear();
-    loadCas(lfs);
-    binaryCopyCas(cas, deltaCas);
-    MarkerImpl marker = (MarkerImpl) cas.createMarker();
+    loadCas(cas);
+    ReuseInfo ri[] = serializeDeserialize(cas, remoteCas, null, null);
+    MarkerImpl marker = (MarkerImpl) remoteCas.createMarker();
     
-    FeatureStructure fs = cas.createFS(akof);
+    lfs = getIndexedFSs(remoteCas);
+    FeatureStructure fs = remoteCas.createFS(akof);
     lfs.get(0).setFeatureValue(akofFs, fs);
     
-    verifyDelta(marker);
+    verifyDelta(marker, ri);
   }
   
   /**
@@ -288,13 +343,14 @@ public class SerDesTest extends TestCase {
   }
 
   public void checkDeltaWithAllMods(Random r) {
-    makeRandomFss(7, lfs, r);
-    loadCas(lfs);
-    binaryCopyCas(cas, deltaCas);
-    MarkerImpl marker = (MarkerImpl) cas.createMarker();
-    int belowMarkSize = lfs.size();
+    makeRandomFss(cas, 7, r);
+    loadCas(cas);
+    ReuseInfo ri[] = serializeDeserialize(cas, remoteCas, null, null);
+    MarkerImpl marker = (MarkerImpl) remoteCas.createMarker();
     
-    makeRandomFss(8, lfs, r);
+    lfs = getIndexedFSs(remoteCas);
+    
+    makeRandomFss(remoteCas, 8, r);
 
     int i = 0;
     for (FeatureStructure fs : lfs) {
@@ -303,28 +359,33 @@ public class SerDesTest extends TestCase {
       }
     }
     
-    makeRandomUpdatesBelowMark(lfs, belowMarkSize, r);
+    makeRandomUpdatesBelowMark(remoteCas, r);
     
-    verifyDelta(marker);
+    verifyDelta(marker, ri);
 
   }
+  
 
-  public void testDeltaWithIndexMods() {
-    loadCas(lfs);
-    binaryCopyCas(cas, deltaCas);
-    MarkerImpl marker = (MarkerImpl) cas.createMarker();
-    List<FeatureStructure> lfs2 = new ArrayList<FeatureStructure>();
-    loadCas(lfs2);
+  
+  public void testDeltaWithIndexMods() throws IOException {
+    loadCas(cas);
+    ReuseInfo ri[] = serializeDeserialize(cas, remoteCas, null, null);
+    MarkerImpl marker = (MarkerImpl) remoteCas.createMarker();
     
-    cas.getIndexRepository().removeFS(lfs.get(0));
-    cas.getIndexRepository().removeFS(lfs.get(1));
-    cas.getIndexRepository().addFS(lfs.get(1));  // should appear as reindexed
+    lfs = new ArrayList<FeatureStructure>();
+    loadCas(remoteCas);
+    
+    List<FeatureStructure> lfs2 = getIndexedFSs(remoteCas);
 
-    cas.getIndexRepository().removeFS(lfs2.get(0));
-    cas.getIndexRepository().removeFS(lfs2.get(1));
-    cas.getIndexRepository().addFS(lfs2.get(1)); 
+    remoteCas.getIndexRepository().removeFS(lfs2.get(0));
+    remoteCas.getIndexRepository().removeFS(lfs2.get(1));
+    remoteCas.getIndexRepository().addFS(lfs2.get(1));  // should appear as reindexed
 
-    verifyDelta(marker);
+    remoteCas.getIndexRepository().removeFS(lfs.get(0));
+    remoteCas.getIndexRepository().removeFS(lfs.get(1));
+    remoteCas.getIndexRepository().addFS(lfs.get(1)); 
+
+    verifyDelta(marker, ri);
   }
   
   public void testWithOtherSerializer() {
@@ -333,7 +394,7 @@ public class SerDesTest extends TestCase {
     tearDown(); setUp();
     testDeltaWithRefsBelow();
     tearDown(); setUp();
-    testDeltaWithAllMods();
+//    testDeltaWithAllMods();
     tearDown(); setUp();
     testAllKinds();
     tearDown(); setUp();
@@ -347,13 +408,13 @@ public class SerDesTest extends TestCase {
      * Make equal items,
      * ser/deser, update one of the equal items, insure other not updated
      */
-    FeatureStructure fsAt1 = newAkof(fsl);
-    FeatureStructure fsAt2 = newAkof(fsl);
+    FeatureStructure fsAt1 = newAkof(cas, fsl);
+    FeatureStructure fsAt2 = newAkof(cas, fsl);
     cas.addFsToIndexes(fsAt1);
     cas.addFsToIndexes(fsAt2);
 
-    createStringA(fsAt1, "at");
-    createStringA(fsAt2, "at");
+    createStringA(cas, fsAt1, "at");
+    createStringA(cas, fsAt2, "at");
     verify();
     
     FSIterator<FeatureStructure> it = deserCas.indexRepository.getAllIndexedFS(akof);
@@ -366,13 +427,13 @@ public class SerDesTest extends TestCase {
     assertEquals(sa1.get(1), "def");
     cas.reset();
     
-    fsAt1 = newAkof(fsl);
-    fsAt2 = newAkof(fsl);
+    fsAt1 = newAkof(cas, fsl);
+    fsAt2 = newAkof(cas, fsl);
     cas.addFsToIndexes(fsAt1);
     cas.addFsToIndexes(fsAt2);
 
-    createLongA(fsAt1, 9);
-    createLongA(fsAt2, 9);
+    createLongA(cas, fsAt1, 9);
+    createLongA(cas, fsAt2, 9);
     verify();
     
     it = deserCas.indexRepository.getAllIndexedFS(akof);
@@ -387,11 +448,24 @@ public class SerDesTest extends TestCase {
   
   
   
-  /*******************************
-   * Helper functions
-   *******************************/
+//  /*******************************
+//   * Helper functions
+//   * @throws IOException 
+//   *******************************/
+//  private ReuseInfo getReuseInfo() {
+//    BinaryCasSerDes6 bcs = new BinaryCasSerDes6(cas); 
+//    ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
+//    try {
+//      bcs.serialize(baos);
+//    } catch (IOException e) {
+//      // TODO Auto-generated catch block
+//      e.printStackTrace();
+//    }
+//    return bcs.getReuseInfo();
+//  }
   
-  private void createStringA(FeatureStructure fs, String x) {
+  
+  private void createStringA(CASImpl cas, FeatureStructure fs, String x) {
     StringArrayFS strafs = cas.createStringArrayFS(5);
     strafs.set(3, null);
     strafs.set(2, "" + x);
@@ -401,7 +475,7 @@ public class SerDesTest extends TestCase {
     fs.setFeatureValue(akofAstring, strafs);
   }
   
-  private void createIntA (FeatureStructure fs, int x) {
+  private void createIntA (CASImpl cas, FeatureStructure fs, int x) {
     IntArrayFS iafs = cas.createIntArrayFS(4 + x);
     iafs.set(0, Integer.MAX_VALUE - x);
     iafs.set(1, Integer.MIN_VALUE + x);
@@ -409,7 +483,7 @@ public class SerDesTest extends TestCase {
     fs.setFeatureValue(akofAint, iafs);
   }
   
-  private void createFloatA (FeatureStructure fs, float x) {
+  private void createFloatA (CASImpl cas, FeatureStructure fs, float x) {
     FloatArrayFS fafs = cas.createFloatArrayFS(6);
     fafs.set(0, Float.MAX_VALUE - x);
 //    fafs.set(1, Float.MIN_NORMAL + x);
@@ -420,7 +494,7 @@ public class SerDesTest extends TestCase {
     fs.setFeatureValue(akofAfloat, fafs);
   }
 
-  private void createDoubleA (FeatureStructure fs, double x) {
+  private void createDoubleA (CASImpl cas, FeatureStructure fs, double x) {
     DoubleArrayFS fafs = cas.createDoubleArrayFS(6);
     fafs.set(0, Double.MAX_VALUE - x);
 //    fafs.set(1, Double.MIN_NORMAL + x);
@@ -431,7 +505,7 @@ public class SerDesTest extends TestCase {
     fs.setFeatureValue(akofAdouble, fafs);
   }
 
-  private void createLongA (FeatureStructure fs, long x) {
+  private void createLongA (CASImpl cas, FeatureStructure fs, long x) {
     LongArrayFS lafs = cas.createLongArrayFS(4);
     lafs.set(0, Long.MAX_VALUE - x);
     lafs.set(1, Long.MIN_VALUE + x);
@@ -439,21 +513,21 @@ public class SerDesTest extends TestCase {
     fs.setFeatureValue(akofAlong, lafs);
   }
   
-  private void binaryCopyCas(CASImpl c1, CASImpl c2) {
-    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    Serialization.serializeCAS(cas, baos);
-    ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-    c2.reinit(bais);
-  }
+//  private void binaryCopyCas(CASImpl c1, CASImpl c2) {
+//    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//    Serialization.serializeCAS(cas, baos);
+//    ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+//    c2.reinit(bais);
+//  }
   
-  private FeatureStructure newAkof(List<FeatureStructure> fsl) {
+  private FeatureStructure newAkof(CASImpl cas, List<FeatureStructure> fsl) {
     FeatureStructure fs = cas.createFS(akof);
     fsl.add(fs);
     return fs;
   }
   
   // make an instance of akof with all features set
-  private FeatureStructure makeAkof(Random r) {
+  private FeatureStructure makeAkof(CASImpl cas, Random r) {
     FeatureStructure fs = cas.createFS(akof);
     fs.setBooleanValue(akofBoolean, r.nextBoolean());
     fs.setByteValue(akofByte, (byte)r.nextInt());
@@ -465,15 +539,15 @@ public class SerDesTest extends TestCase {
     fs.setStringValue(akofString, randomString(r));
     fs.setFeatureValue(akofFs, fs);
     
-    fs.setFeatureValue(akofAint, randomIntA(r));
+    fs.setFeatureValue(akofAint, randomIntA(cas, r));
     fs.setFeatureValue(akofAfs, cas.createArrayFS(1));
-    fs.setFeatureValue(akofAfloat, randomFloatA(r));
-    fs.setFeatureValue(akofAdouble, randomDoubleA(r));
-    fs.setFeatureValue(akofAlong, randomLongA(r));
-    fs.setFeatureValue(akofAshort, randomShortA(r));
-    fs.setFeatureValue(akofAbyte, randomByteA(r));
+    fs.setFeatureValue(akofAfloat, randomFloatA(cas, r));
+    fs.setFeatureValue(akofAdouble, randomDoubleA(cas, r));
+    fs.setFeatureValue(akofAlong, randomLongA(cas, r));
+    fs.setFeatureValue(akofAshort, randomShortA(cas, r));
+    fs.setFeatureValue(akofAbyte, randomByteA(cas, r));
     fs.setFeatureValue(akofAboolean, cas.createBooleanArrayFS(2));
-    fs.setFeatureValue(akofAstring, randomStringA(r));
+    fs.setFeatureValue(akofAstring, randomStringA(cas, r));
 
     return fs;    
   }
@@ -485,7 +559,7 @@ public class SerDesTest extends TestCase {
     return stringValues[r.nextInt(7)];
   }
 
-  private StringArrayFS randomStringA(Random r) {
+  private StringArrayFS randomStringA(CASImpl cas, Random r) {
     int length = r.nextInt(2) + 1;
     StringArrayFS fs = cas.createStringArrayFS(length);
     for (int i = 0; i < length; i++) {
@@ -495,7 +569,7 @@ public class SerDesTest extends TestCase {
   }
 
   
-  private IntArrayFS randomIntA(Random r) {
+  private IntArrayFS randomIntA(CASImpl cas, Random r) {
     int length = r.nextInt(2) + 1;
     IntArrayFS fs = cas.createIntArrayFS(length);
     for (int i = 0; i < length; i++) {
@@ -507,7 +581,7 @@ public class SerDesTest extends TestCase {
   private static final byte[] byteValues = {
     1, 0, -1, Byte.MAX_VALUE, Byte.MIN_VALUE, 9, -9  };
   
-  private ByteArrayFS randomByteA(Random r) {
+  private ByteArrayFS randomByteA(CASImpl cas, Random r) {
     int length = r.nextInt(2) + 1;
     ByteArrayFS fs = cas.createByteArrayFS(length);
     for (int i = 0; i < length; i++) {
@@ -519,7 +593,7 @@ public class SerDesTest extends TestCase {
   private static final long[] longValues = {
     1L, 0L, -1L, Long.MAX_VALUE, Long.MIN_VALUE, 11L, -11L  };
   
-  private LongArrayFS randomLongA(Random r) {
+  private LongArrayFS randomLongA(CASImpl cas, Random r) {
     int length = r.nextInt(2) + 1;
     LongArrayFS fs = cas.createLongArrayFS(length);
     for (int i = 0; i < length; i++) {
@@ -531,7 +605,7 @@ public class SerDesTest extends TestCase {
   private static final short[] shortValues = {
     1, 0, -1, Short.MAX_VALUE, Short.MIN_VALUE, 22, -22  };
   
-  private ShortArrayFS randomShortA(Random r) {
+  private ShortArrayFS randomShortA(CASImpl cas, Random r) {
     int length = r.nextInt(2) + 1;
     ShortArrayFS fs = cas.createShortArrayFS(length);
     for (int i = 0; i < length; i++) {
@@ -543,7 +617,7 @@ public class SerDesTest extends TestCase {
   private static final double[] doubleValues = {
     1d, 0d, -1d, Double.MAX_VALUE, /*Double.MIN_NORMAL,*/ Double.MIN_VALUE, 33d, -33.33d  };
   
-  private DoubleArrayFS randomDoubleA(Random r) {
+  private DoubleArrayFS randomDoubleA(CASImpl cas, Random r) {
     int length = r.nextInt(2) + 1;
     DoubleArrayFS fs = cas.createDoubleArrayFS(length);
     for (int i = 0; i < length; i++) {
@@ -555,7 +629,7 @@ public class SerDesTest extends TestCase {
   private static final float[] floatValues = {
     1f, 0f, -1f, Float.MAX_VALUE, /*Float.MIN_NORMAL,*/ Float.MIN_VALUE, 17f, -22.33f  };
   
-  private FloatArrayFS randomFloatA(Random r) {
+  private FloatArrayFS randomFloatA(CASImpl cas, Random r) {
     int length = r.nextInt(2) + 1;
     FloatArrayFS fs = cas.createFloatArrayFS(length);
     for (int i = 0; i < length; i++) {
@@ -564,20 +638,24 @@ public class SerDesTest extends TestCase {
     return fs;
   }
   
-  private void makeRandomFss(int n, List<FeatureStructure> fss, Random r) {
+  private void makeRandomFss(CASImpl cas, int n, Random r) {
     List<FeatureStructure> lfss = new ArrayList<FeatureStructure>();
     for (int i = 0; i < n; i++) {
-      FeatureStructure fs = makeAkof(r);
-      lfss.add(fs);
-      fss.add(fs);
+      FeatureStructure fs = makeAkof(cas, r);
+      if (r.nextBoolean()) {
+        cas.addFsToIndexes(fs);
+        lfss.add(fs);
+        lfs.add(fs);
+      }
     }
     for (FeatureStructure fs : lfss) {
       fs.setFeatureValue(akofFs, lfss.get(r.nextInt(lfss.size())));
     }
   }
   
-  private void loadCas(List<FeatureStructure> fsl) {
-    FeatureStructure fs = newAkof(fsl);
+  private void loadCas(CASImpl cas) {
+    /* lfs index: 0 */
+    FeatureStructure fs = newAkof(cas, lfs);
     fs.setBooleanValue(akofBoolean, true);
     fs.setByteValue(akofByte, (byte)109);
     fs.setShortValue(akofShort, (short) 23);
@@ -591,7 +669,8 @@ public class SerDesTest extends TestCase {
     FeatureStructure fs1 = fs;
     
     //extreme or unusual values
-    fs = newAkof(fsl);
+    /* lfs index: 1 */
+    fs = newAkof(cas, lfs);
     fs.setBooleanValue(akofBoolean, false);
     fs.setByteValue(akofByte, Byte.MAX_VALUE);
     fs.setShortValue(akofShort, (short) Short.MAX_VALUE);
@@ -603,7 +682,8 @@ public class SerDesTest extends TestCase {
     fs.setFeatureValue(akofFs, fs1);
     cas.addFsToIndexes(fs);
 
-    fs = newAkof(fsl);
+    /* lfs index: 2 */
+    fs = newAkof(cas, lfs);
     fs.setByteValue(akofByte, Byte.MIN_VALUE);
     fs.setShortValue(akofShort, (short) Short.MIN_VALUE);
     fs.setIntValue(akofInt, Integer.MIN_VALUE);
@@ -615,7 +695,8 @@ public class SerDesTest extends TestCase {
     cas.addFsToIndexes(fs);
     FeatureStructure fs3 = fs;
 
-    fs = newAkof(fsl);
+    /* lfs index: 3 */
+    fs = newAkof(cas, lfs);
     fs.setByteValue(akofByte, (byte)0);
     fs.setShortValue(akofShort, (short) 0);
     fs.setIntValue(akofInt, 0);
@@ -627,7 +708,8 @@ public class SerDesTest extends TestCase {
     fs3.setFeatureValue(akofFs, fs);  // make a forward ref
     FeatureStructure fs4 = fs;
 
-    fs = newAkof(fsl);
+    /* lfs index: 4 */
+    fs = newAkof(cas, lfs);
     fs.setByteValue(akofByte, (byte)1);
     fs.setShortValue(akofShort, (short)1);
     fs.setIntValue(akofInt, 1);
@@ -636,34 +718,39 @@ public class SerDesTest extends TestCase {
     fs.setDoubleValue(akofDouble, 1.0D);
     cas.addFsToIndexes(fs);
     
-//    fs = newAkof(fsl);
+//    fs = newAkof(cas, lfs);
 //    fs.setFloatValue(akofFloat, Float.MIN_NORMAL);
 //    fs.setDoubleValue(akofDouble, Double.MIN_NORMAL);
 //    cas.addFsToIndexes(fs);
     
-    fs = newAkof(fsl);
+    /* lfs index: 5 */
+    fs = newAkof(cas, lfs);
     fs.setFloatValue(akofFloat, Float.MIN_VALUE);
     fs.setDoubleValue(akofDouble, Double.MIN_VALUE);
     cas.addFsToIndexes(fs);
 
-    fs = newAkof(fsl);
+    /* lfs index: 6 */
+    fs = newAkof(cas, lfs);
     fs.setFloatValue(akofFloat, Float.NaN);
     fs.setDoubleValue(akofDouble, Double.NaN);
     cas.addFsToIndexes(fs);
 
-    fs = newAkof(fsl);
+    /* lfs index: 7 */
+    fs = newAkof(cas, lfs);
     fs.setFloatValue(akofFloat, Float.POSITIVE_INFINITY);
     fs.setDoubleValue(akofDouble, Double.POSITIVE_INFINITY);
     cas.addFsToIndexes(fs);
 
-    fs = newAkof(fsl);
+    /* lfs index: 8 */
+    fs = newAkof(cas, lfs);
     fs.setFloatValue(akofFloat, Float.NEGATIVE_INFINITY);
     fs.setDoubleValue(akofDouble, Double.NEGATIVE_INFINITY);
     cas.addFsToIndexes(fs);
 
     
     // test arrays
-    fs = newAkof(fsl);
+    /* lfs index: 9 */
+    fs = newAkof(cas, lfs);
     fs.setFeatureValue(akofAint, cas.createIntArrayFS(0));
     fs.setFeatureValue(akofAfs, cas.createArrayFS(0));
     fs.setFeatureValue(akofAfloat, cas.createFloatArrayFS(0));
@@ -676,7 +763,8 @@ public class SerDesTest extends TestCase {
     cas.addFsToIndexes(fs);
     FeatureStructure fs8 = fs;
 
-    fs = newAkof(fsl);
+    /* lfs index: 10 */
+    fs = newAkof(cas, lfs);
     fs.setFeatureValue(akofAint, cas.createIntArrayFS(2));
     fs.setFeatureValue(akofAfs, cas.createArrayFS(2));
     fs.setFeatureValue(akofAfloat, cas.createFloatArrayFS(2));
@@ -688,21 +776,23 @@ public class SerDesTest extends TestCase {
     fs.setFeatureValue(akofAstring, cas.createStringArrayFS(2));
     cas.addFsToIndexes(fs);
     
-    fs = newAkof(fsl);
+    /* lfs index: 11 */
+    fs = newAkof(cas, lfs);
     cas.addFsToIndexes(fs);
     
-    createIntA(fs,0);
+    createIntA(cas, fs, 0);
     
     // feature structure array
+    /* lfs index: 12 */
     ArrayFS fsafs = cas.createArrayFS(4);
     fsafs.set(1, fs8);
     fsafs.set(2, fs1);
     fsafs.set(3, fs4);
     fs.setFeatureValue(akofAfs, fsafs);
     
-    createFloatA(fs, 0f);
-    createDoubleA(fs, 0d);
-    createLongA(fs, 0L);
+    createFloatA(cas, fs, 0f);
+    createDoubleA(cas, fs, 0d);
+    createLongA(cas, fs, 0L);
     
     ShortArrayFS safs = cas.createShortArrayFS(4);
     safs.set(0, Short.MAX_VALUE);
@@ -721,8 +811,8 @@ public class SerDesTest extends TestCase {
     booafs.set(1, false);
     fs.setFeatureValue(akofAboolean, booafs);
     
-    createStringA(fs, "");
-    makeRandomFss(15, fsl, new Random());
+    createStringA(cas, fs, "");
+    makeRandomFss(cas, 15, new Random());
   }
 
   private void verify() {
@@ -745,21 +835,59 @@ public class SerDesTest extends TestCase {
     }    
   }
 
-  private void verifyDelta(MarkerImpl mark) {
+  private ReuseInfo[] serializeDeserialize(
+      CASImpl casSrc, 
+      CASImpl casTgt, 
+      ReuseInfo ri, 
+      MarkerImpl mark) {
+    ReuseInfo[] riToReturn = new ReuseInfo[2];
     try {
-      ReuseInfo ri = null;
       ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
       if (doPlain) {
-        Serialization.serializeCAS(cas, baos);
+        if (null == mark) {
+          Serialization.serializeCAS(cas, baos);
+        } else {
+          Serialization.serializeCAS(casSrc, baos, mark);
+        }
       } else {
-        BinaryCasSerDes6 bcs = new BinaryCasSerDes6(cas, mark);
+        BinaryCasSerDes6 bcs = new BinaryCasSerDes6(casSrc, mark);
         SerializationMeasures sm = bcs.serialize(baos);
         if (sm != null) {System.out.println(sm);}
-        ri = bcs.getReuseInfo();
+        riToReturn[0] = bcs.getReuseInfo();
       }
       ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-      deltaCas.reinit(bais, ri);
-      assertTrue(BinaryCasSerDes6.compareCASes(cas, deltaCas));
+      if (doPlain) {
+        casTgt.reinit(bais);
+      } else {
+        BinaryCasSerDes6 bcsDeserRmt = new BinaryCasSerDes6(casTgt);
+        bcsDeserRmt.deserialize(bais);
+        riToReturn[1] = bcsDeserRmt.getReuseInfo();
+      }
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+    return riToReturn;
+  }
+  
+  private void verifyDelta(MarkerImpl mark, ReuseInfo[] ri) {
+    try {
+      ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
+      if (doPlain) {
+        Serialization.serializeCAS(remoteCas, baos, mark);
+      } else {
+        BinaryCasSerDes6 bcs = new BinaryCasSerDes6(remoteCas, mark, null, ri[1]);
+        SerializationMeasures sm = bcs.serialize(baos);
+        if (sm != null) {System.out.println(sm);}
+      }
+      ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+      if (doPlain) {
+        cas.reinit(bais);
+      } else {
+          BinaryCasSerDes6 bcsDeserialize = new BinaryCasSerDes6(cas, null, null, ri[0]);
+//        cas.reinit(bais, ri);
+          bcsDeserialize.deserialize(bais);
+      }
+      assertTrue(BinaryCasSerDes6.compareCASes(cas, remoteCas));
       
       // verify indexed fs same, and in same order - already done by compareCASes
 //      int[] fsIndexes1 = cas.getIndexedFSs();
@@ -770,13 +898,13 @@ public class SerDesTest extends TestCase {
     }
   }
   
-  private void makeRandomUpdatesBelowMark(List<FeatureStructure> fs, int belowMarkSize, Random r) {
-    for (int i = 0; i < belowMarkSize; i++ ) {
-      makeRandomUpdate(lfs.get(i), r);
+  private void makeRandomUpdatesBelowMark(CASImpl cas, Random r) {
+    for (FeatureStructure fs : lfs) {
+      makeRandomUpdate(cas, fs, r);
     }
   }
 
-  private void makeRandomUpdate(FeatureStructure fs, Random r) {
+  private void makeRandomUpdate(CASImpl cas, FeatureStructure fs, Random r) {
     int n = r.nextInt(3);
     for (int i = 0 ; i < n; i++) {
       switch (r.nextInt(26)) {
@@ -808,31 +936,31 @@ public class SerDesTest extends TestCase {
         fs.setFeatureValue(akofFs, fs);
         break;
       case 9:
-        fs.setFeatureValue(akofAint, randomIntA(r));
+        fs.setFeatureValue(akofAint, randomIntA(cas, r));
         break;
       case 10:
         fs.setFeatureValue(akofAfs, cas.createArrayFS(1));
         break;
       case 11:
-        fs.setFeatureValue(akofAfloat, randomFloatA(r));
+        fs.setFeatureValue(akofAfloat, randomFloatA(cas, r));
         break;
       case 12:
-        fs.setFeatureValue(akofAdouble, randomDoubleA(r));
+        fs.setFeatureValue(akofAdouble, randomDoubleA(cas, r));
         break;
       case 13:
-        fs.setFeatureValue(akofAlong, randomLongA(r));
+        fs.setFeatureValue(akofAlong, randomLongA(cas, r));
         break;
       case 14:
-        fs.setFeatureValue(akofAshort, randomShortA(r));
+        fs.setFeatureValue(akofAshort, randomShortA(cas, r));
         break;
       case 15:
-        fs.setFeatureValue(akofAbyte, randomByteA(r));
+        fs.setFeatureValue(akofAbyte, randomByteA(cas, r));
         break;
       case 16:
         fs.setFeatureValue(akofAboolean, cas.createBooleanArrayFS(2));
         break;
       case 17: 
-        fs.setFeatureValue(akofAstring, randomStringA(r));
+        fs.setFeatureValue(akofAstring, randomStringA(cas, r));
         break;
       case 18: {
           IntArrayFS sfs = (IntArrayFS) fs.getFeatureValue(akofAint);
@@ -894,4 +1022,12 @@ public class SerDesTest extends TestCase {
     }
   }
 
+  private List<FeatureStructure> getIndexedFSs(CASImpl cas) {
+    FSIterator<FeatureStructure> it = cas.getIndexRepository().getAllIndexedFS(akof);
+    List<FeatureStructure> lfs = new ArrayList<FeatureStructure>();
+    while (it.hasNext()) {
+      lfs.add(it.next());
+    }
+    return lfs;
+  }
 }

@@ -50,7 +50,7 @@ public class CasSeqAddrMaps {
    *      
    * First seq number is 0.
    */
-  final private IntVector tgtSeq2SrcAddr = new IntVector();
+  final private IntVector tgtSeq2SrcAddr;
   
 //  /**
 //   * (Not Used, currently)
@@ -69,7 +69,7 @@ public class CasSeqAddrMaps {
    * map from source address to target sequence number.
    * if source is not in target, value = -1;
    */
-  final private IntRedBlackTree srcAddr2TgtSeq = new IntRedBlackTree();
+  final private IntRedBlackTree srcAddr2TgtSeq;
   
   /**
    * info needed to do a map from target aux heap to source aux heap
@@ -96,7 +96,14 @@ public class CasSeqAddrMaps {
   public CasSeqAddrMaps() {
     // this call makes the first real seq number == 1.
     // seq 0 refers to the NULL fs value at heap location 0.
+    this.tgtSeq2SrcAddr = new IntVector();
+    this.srcAddr2TgtSeq = new IntRedBlackTree();
     addItemAddr(0, 0, true);
+  }
+  
+  public CasSeqAddrMaps(IntVector tgtSeq2SrcAddr, IntRedBlackTree srcAddr2TgtSeq) {
+    this.tgtSeq2SrcAddr = tgtSeq2SrcAddr;
+    this.srcAddr2TgtSeq = srcAddr2TgtSeq;
   }
         
   /**
@@ -169,4 +176,11 @@ public class CasSeqAddrMaps {
   public int getNumberSrcFss() {
     return srcAddr2TgtSeq.size();
   }
+
+  CasSeqAddrMaps copy() {
+    CasSeqAddrMaps c = new CasSeqAddrMaps(tgtSeq2SrcAddr.copy(), srcAddr2TgtSeq.copy());
+    c.nextTgt = nextTgt;
+    return c;    
+  }
+  
 }
