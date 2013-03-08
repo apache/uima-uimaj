@@ -288,7 +288,7 @@ public class BinaryCasSerDes6 {
   /**
    * Things set up for one instance of this class
    */
-  final private TypeSystemImpl ts;
+  private TypeSystemImpl ts;
   final private CompressLevel compressLevel;
   final private CompressStrat compressStrategy;  
   
@@ -331,7 +331,7 @@ public class BinaryCasSerDes6 {
 
   private TypeInfo typeInfo; // type info for the current type being serialized/deserialized
   final private CasTypeSystemMapper typeMapper;
-  final private boolean isTypeMapping;
+  private boolean isTypeMapping;
 
   final private int[] iPrevHeapArray; // index of previous instance of this typecode in heap, by typecode
   private int iPrevHeap;        // 0 or heap addr of previous instance of current type
@@ -560,7 +560,7 @@ public class BinaryCasSerDes6 {
      ******************************************************************/
     
     if (!reuseInfoProvided || isSerializingDelta) {
-      long start = System.currentTimeMillis();
+//      long start = System.currentTimeMillis();
       processIndexedFeatureStructures(cas, false /* compute ref'd FSs, no write */);
 //      System.out.format("Time to enqueue reachable FSs: %,.3f seconds%n", (System.currentTimeMillis() - start)/ 1000f);
     }
@@ -1479,16 +1479,10 @@ public class BinaryCasSerDes6 {
     heapStart = isReadingDelta ? heapObj.getNextId() : 0;
     stringTableOffset = isReadingDelta ? (stringHeapObj.getSize() - 1) : 0;
     
-    // This next is just an approximation - it may be too large or too small if type mapping is in effect.
-    // Subsequent code needs to check on each FS if there's enough space left.  If not, it needs to grow.
-    // At end, the next avail position in the heap needs to be set to its actual value,
-    //   in case the amount stored was smaller.
-    if (isReadingDelta) {
-      heapObj.grow(heapUsedInTarget);
-    } else {
-      heapObj.reinitSizeOnly(heapUsedInTarget);
-    } 
-    heap = heapObj.heap;  // because it may change if growing or reinit
+    if (!isReadingDelta) {
+      heapObj.reinitSizeOnly(1);
+      heap = heapObj.heap;
+    }
     
     Arrays.fill(iPrevHeapArray, 0);
     
@@ -1519,37 +1513,45 @@ public class BinaryCasSerDes6 {
      * Read in new FSs being deserialized and add them to heap
      **********************************************************/
     for (int iHeap = heapStart, targetHeapUsed = isReadingDelta ? 0 : 1; targetHeapUsed < heapUsedInTarget;) {
+      if (iHeap != heapObj.getNextId()) {
+        throw new RuntimeException();
+      }
       final int tgtTypeCode = readVnumber(typeCode_dis); // get type code
       final int srcTypeCode = isTypeMapping ? typeMapper.mapTypeCodeTgt2Src(tgtTypeCode) : tgtTypeCode;
       final boolean storeIt = (srcTypeCode != 0);
-      if (storeIt) {
-        heap[iHeap] = srcTypeCode;
-      }
+      // A receiving client from a service always
+      // has a superset of the service's types due to type merging so this
+      // won't happen for that use case. But 
+      // a deserialize-from-file could hit this if the receiving type system
+      // deleted a type.
+    
+      // The strategy for deserializing heap refs depends on finding
+      // the prev value for that type.  This can be skipped for 
+      // types being skipped because they don't exist in the source
+    
+    // typeInfo is Target Type Info
+    typeInfo = isTypeMapping ? tgtTs.getTypeInfo(tgtTypeCode) :
+                               ts.getTypeInfo(srcTypeCode);
+    final TypeInfo srcTypeInfo = 
+      (!isTypeMapping) ? typeInfo : 
+      storeIt ?       ts.getTypeInfo(srcTypeCode) : 
+                      null;
       fsStartIndexes.addSrcAddrForTgt(iHeap, storeIt);
-        // A receiving client from a service always
-        // has a superset of the service's types due to type merging so this
-        // won't happen for that use case. But 
-        // a deserialize-from-file could hit this if the receiving type system
-        // deleted a type.
-      
-        // The strategy for deserializing heap refs depends on finding
-        // the prev value for that type.  This can be skipped for 
-        // types being skipped because they don't exist in the source
-      
-      // typeInfo is Target Type Info
-      typeInfo = isTypeMapping ? tgtTs.getTypeInfo(tgtTypeCode) :
-                                 ts.getTypeInfo(srcTypeCode);
-      final TypeInfo srcTypeInfo = 
-        (!isTypeMapping) ? typeInfo : 
-        storeIt ?       ts.getTypeInfo(srcTypeCode) : 
-                        null;
       iPrevHeap = iPrevHeapArray[srcTypeCode];  // will be ignored for non-existant type
 
       if (typeInfo.isHeapStoredArray) {
-        readHeapStoredArray(iHeap, storeIt);
+        readHeapStoredArray(iHeap, storeIt, heapObj, srcTypeCode);
       } else if (typeInfo.isArray) {
+        if (storeIt) {
+          heapObj.add(3, srcTypeCode);
+          heap = heapObj.heap;
+        }
         readNonHeapStoredArray(iHeap, storeIt);
       } else {
+        if (storeIt) {
+          cas.ll_createFS(srcTypeCode);
+          heap = heapObj.heap;
+        }
         // is normal type with slots
         if (isTypeMapping && storeIt) {
           final int[] tgtFeatOffsets2Src = typeMapper.getTgtFeatOffsets2Src(srcTypeCode);
@@ -1593,7 +1595,11 @@ public class BinaryCasSerDes6 {
   }
   
   private void readNonHeapStoredArray(int iHeap, boolean storeIt) throws IOException {
-    final int length = readArrayLength(iHeap, storeIt);
+
+    final int length = readArrayLength();
+    if (storeIt) {
+      heap[iHeap + 1] = length;
+    }
     if (length == 0) {
       return;
     }
@@ -1622,16 +1628,17 @@ public class BinaryCasSerDes6 {
     }
   }
   
-  private int readArrayLength(int iHeap, boolean storeIt) throws IOException {
-    final int v =  readVnumber(arrayLength_dis);
-    if (storeIt) {
-      heap[iHeap + 1] = v;
-    }
-    return v;
+  private int readArrayLength() throws IOException {
+    return readVnumber(arrayLength_dis);
   }
 
-  private void readHeapStoredArray(int iHeap, boolean storeIt) throws IOException {
-    final int length = readArrayLength(iHeap, storeIt);
+  private void readHeapStoredArray(int iHeap, final boolean storeIt, final Heap heapObj, final int srcTypeCode) throws IOException {
+    final int length = readArrayLength();
+    if (storeIt) {
+      heapObj.add(2 + length, srcTypeCode);
+      heap = heapObj.heap;
+      heap[iHeap + 1] = length;
+    }
     // output values
     // special case 0 and 1st value
     if (length == 0) {
@@ -2318,12 +2325,13 @@ public class BinaryCasSerDes6 {
     
     for (int i = 0; i < ia.length; i++) {
       final int fsAddr = ia[i];
-      // skip if not in target
-//        if (!isTypeMapping || (0 != typeMapper.mapTypeCodeSrc2Tgt(heap[fsAddr]))) {
       if (isWrite) {
+        if (isTypeMapping && (0 == typeMapper.mapTypeCodeSrc2Tgt(heap[fsAddr]))) {
+          continue;
+        }
         final int tgtV = fsStartIndexes.getTgtSeqFromSrcAddr(fsAddr);
         if (tgtV == -1) {
-          continue; // skip - the target doesn't have this Fs
+          throw new RuntimeException();
         }
         final int delta = tgtV - prev;
         entriesWritten++;
@@ -2332,8 +2340,11 @@ public class BinaryCasSerDes6 {
           sm.statDetails[fsIndexes_i].incr(DataIO.lengthVnumber(delta));
         }
         prev = tgtV;
-      } else {    
-        enqueueFS(foundFSs, fsAddr);
+      } else {  
+        // skip if not in target
+        if (!isTypeMapping || (0 != typeMapper.mapTypeCodeSrc2Tgt(heap[fsAddr]))) {
+          enqueueFS(foundFSs, fsAddr);
+        }
       }
     }
     if (isWrite) {
@@ -2501,13 +2512,13 @@ public class BinaryCasSerDes6 {
         
       }
     } else {
-      final int[] strOffsets = srcTypeInfo.strRefOffsets;
+      final int[] strOffsets = srcTypeInfo.strRefOffsets;  // slot x (numbered 0 corresponding to 1st feature slot after type code) appears as x + 1
       final boolean[] fSrcInTgt = isTypeMapping ? typeMapper.getFSrcInTgt(tCode) : null;
       for (int i = 0; i < strOffsets.length; i++ ) {
         int srcOffset = strOffsets[i];  // offset to slot having str ref
         // add only those strings in slots that are in target
-        if (!isTypeMapping || fSrcInTgt[srcOffset]) {
-          final int strHeapIndex = heap[iSrcHeap + strOffsets[i]];
+        if (!isTypeMapping || fSrcInTgt[srcOffset - 1]) {  //to convert to 0 based indexing
+          final int strHeapIndex = heap[iSrcHeap + srcOffset];
           // this bit of strange logic depends on the fact that all new and updated strings
           // are "added" at the end of the string heap in the current impl
           if (strHeapIndex >= markStringHeap) {
@@ -2529,9 +2540,13 @@ public class BinaryCasSerDes6 {
    * @param c2 CAS to compare
    * @return true if equal (for types / features in both)
    */
-  public static boolean compareCASes(CASImpl c1, CASImpl c2) {
-    BinaryCasSerDes6 containingInstance = new BinaryCasSerDes6(c1);
-    return (containingInstance.new CasCompare(c1, c2)).compareCASes();
+//  public static boolean compareCASes(CASImpl c1, CASImpl c2) {
+//    BinaryCasSerDes6 containingInstance = new BinaryCasSerDes6(c1);
+//    return (containingInstance.new CasCompare(c1, c2)).compareCASes();
+//  }
+  
+  public boolean compareCASes(CASImpl c1, CASImpl c2) {
+    return new CasCompare(c1, c2).compareCASes();
   }
   
   public class CasCompare {
@@ -2543,8 +2558,6 @@ public class BinaryCasSerDes6 {
       final private CASImpl c2;
       final private TypeSystemImpl ts1;      
       final private TypeSystemImpl ts2;
-      final private boolean isTypeMapping;
-      final private CasTypeSystemMapper typeMapper;
       final private Heap c1HO;
       final private Heap c2HO;
       final private int[] c1heap;
@@ -2562,8 +2575,6 @@ public class BinaryCasSerDes6 {
       this.c2 = c2;
       ts1 = c1.getTypeSystemImpl();
       ts2 = c2.getTypeSystemImpl();
-      isTypeMapping = (ts1 != ts2);
-      typeMapper = isTypeMapping ? new CasTypeSystemMapper(ts1, ts2) : null;
       c1HO = c1.getHeap();
       c2HO = c2.getHeap();
       c1heap = c1HO.heap;
@@ -2575,9 +2586,18 @@ public class BinaryCasSerDes6 {
       final int[] c2FoundFSs;
       try {
         heapStart = 0;  // referenced by the following method
+        ts = ts1;
         processIndexedFeatureStructures(c1, false);
         c1FoundFSs = foundFSsArray;
+        boolean savedIsTypeMapping = isTypeMapping;
+        // next because while traversing the c2, if we used type mapping to go from c1 to c2, 
+        // c2 isn't aware of type mapping.
+        // This assumes c1 is the "src" and c2 is the "target"
+        isTypeMapping = false;
+        ts = ts2;
         processIndexedFeatureStructures(c2, false);
+        ts = null; // catch errors
+        isTypeMapping = savedIsTypeMapping;
         c2FoundFSs = foundFSsArray;
       } catch (IOException e) {
         throw new RuntimeException(e);  // never happen
@@ -2675,15 +2695,27 @@ public class BinaryCasSerDes6 {
     private boolean compareFss() {
       int tCode = c1heap[c1heapIndex];
       typeInfo = ts1.getTypeInfo(tCode);
-      if (tCode != c2heap[c2heapIndex]) {
+      final int tCodeTgt = c2heap[c2heapIndex];
+      int tCodeTgtInSrc = isTypeMapping ? typeMapper.mapTypeCodeTgt2Src(tCodeTgt) : tCodeTgt; 
+      if (tCode != tCodeTgtInSrc) {  
         return mismatchFs();   // types mismatch
       }
       if (typeInfo.isArray) {
         return compareFssArray();
       } else {
-        for (int i = 1; i < typeInfo.slotKinds.length + 1; i++) {
-          if (!compareSlot(i)) {
-            return mismatchFs();
+        if (isTypeMapping) {
+          final int[] srcSlots = typeMapper.getTgtFeatOffsets2Src(tCode);
+          final int len = srcSlots.length;
+          for (int i = 0; i < len; i++) {
+            if (!compareSlot(srcSlots[i] + 1, i + 1)) {
+              return mismatchFs(srcSlots[i], i);
+            }
+          }
+        } else {
+          for (int i = 1; i < typeInfo.slotKinds.length + 1; i++) {
+            if (!compareSlot(i, i)) {
+              return mismatchFs();
+            }
           }
         }
         return true;
@@ -2743,25 +2775,25 @@ public class BinaryCasSerDes6 {
       return true;
     }
     
-    private boolean compareSlot(int offset) {
-      SlotKind kind = typeInfo.getSlotKind(offset);
+    private boolean compareSlot(int offsetSrc, int offsetTgt) {
+      SlotKind kind = typeInfo.getSlotKind(offsetSrc);
       switch (kind) {
       case Slot_Int: case Slot_Short: case Slot_Boolean: case Slot_Byte: 
       case Slot_Float: 
-        return c1heap[c1heapIndex + offset] == c2heap[c2heapIndex + offset];
+        return c1heap[c1heapIndex + offsetSrc] == c2heap[c2heapIndex + offsetTgt];
       case Slot_HeapRef: {
-        final int c1ref = c1heap[c1heapIndex + offset];
-        final int c2ref = c2heap[c2heapIndex + offset];
+        final int c1ref = c1heap[c1heapIndex + offsetSrc];
+        final int c2ref = c2heap[c2heapIndex + offsetTgt];
         return ((c1ref == 0) && (c2ref == 0)) ||
                ((c1ref != 0) && (c2ref != 0) && 
                 (addr2seq1.get(c1ref) == addr2seq2.get(c2ref)));
       }
       case Slot_StrRef:
-        return compareStrings(c1.getStringForCode(c1heap[c1heapIndex + offset]),
-                              c2.getStringForCode(c2heap[c2heapIndex + offset]));
+        return compareStrings(c1.getStringForCode(c1heap[c1heapIndex + offsetSrc]),
+                              c2.getStringForCode(c2heap[c2heapIndex + offsetTgt]));
       case Slot_LongRef: case Slot_DoubleRef:
-        return c1.getLongHeap().getHeapValue(c1heap[c1heapIndex + offset]) ==
-               c2.getLongHeap().getHeapValue(c2heap[c2heapIndex + offset]);
+        return c1.getLongHeap().getHeapValue(c1heap[c1heapIndex + offsetSrc]) ==
+               c2.getLongHeap().getHeapValue(c2heap[c2heapIndex + offsetTgt]);
       default: throw new RuntimeException("internal error");      
       }
     }
@@ -2829,7 +2861,13 @@ public class BinaryCasSerDes6 {
           dumpHeapFs(c1, c1heapIndex, ts1), dumpHeapFs(c2, c2heapIndex, ts2));
       return false;
     }
-    
+
+    private boolean mismatchFs(int i1, int i2) {
+      System.err.format("Mismatched Feature Structures in srcSlot %d, tgtSlot %d%n %s%n %s%n", 
+          i1, i2, dumpHeapFs(c1, c1heapIndex, ts1), dumpHeapFs(c2, c2heapIndex, ts2));
+      return false;
+    }
+
     private StringBuilder dumpHeapFs(CASImpl cas, final int iHeap, final TypeSystemImpl ts) {
       StringBuilder sb = new StringBuilder();
       typeInfo = ts.getTypeInfo(cas.getHeap().heap[iHeap]);
