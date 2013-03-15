@@ -136,8 +136,9 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
       }
     }
     
-    // Write META-INF/org.apache.uima.fit/components.txt
-    if (!skipComponentsManifest) {
+    // Write META-INF/org.apache.uima.fit/components.txt unless skipped and unless there are no
+    // components
+    if (!skipComponentsManifest && componentsManifest.length() > 0) {
       File path = new File(outputDirectory, "META-INF/org.apache.uima.fit/components.txt");
       FileUtils.mkdir(path.getParent());
       try {
