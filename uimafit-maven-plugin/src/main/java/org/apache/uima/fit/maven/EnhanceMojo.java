@@ -19,8 +19,15 @@
 package org.apache.uima.fit.maven;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,9 +45,13 @@ import javassist.bytecode.annotation.Annotation;
 import javassist.bytecode.annotation.MemberValue;
 import javassist.bytecode.annotation.StringMemberValue;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.LineIterator;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -56,6 +67,8 @@ import org.apache.uima.resource.metadata.ConfigurationParameter;
 import org.codehaus.plexus.util.FileUtils;
 import org.sonatype.plexus.build.incremental.BuildContext;
 
+import com.google.common.collect.LinkedHashMultimap;
+import com.google.common.collect.Multimap;
 import com.thoughtworks.qdox.model.JavaSource;
 
 /**
@@ -125,7 +138,31 @@ public class EnhanceMojo extends AbstractMojo {
   @Parameter(defaultValue = "${project.build.sourceEncoding}", required = true)
   private String encoding;
 
-  public void execute() throws MojoExecutionException {
+  /**
+   * Generate a report of missing meta data in {@code 
+   * ${project.build.directory}/uimafit-missing-meta-data-report.txt}
+   */
+  @Parameter(defaultValue = "true", required = true)
+  private boolean generateMissingMetaDataReport;
+  
+  /**
+   * Fail on missing meta data. This setting has no effect unless
+   * {@code generateMissingMetaDataReport} is enabled.
+   */
+  @Parameter(defaultValue = "false", required = true)
+  private boolean failOnMissingMetaData;
+  
+  /**
+   * Start of a line containing a class name in the missing meta data report file
+   */
+  private static final String MARK_CLASS = "Class:";
+
+  /**
+   * Marker that no missing meta data report was found.
+   */
+  private static final String MARK_NO_MISSING_META_DATA = "No missing meta data was found.";
+
+  public void execute() throws MojoExecutionException, MojoFailureException {
     // Get the compiled classes from this project
     String[] files = FileUtils.getFilesFromExtension(project.getBuild().getOutputDirectory(),
             new String[] { "class" });
@@ -136,6 +173,21 @@ public class EnhanceMojo extends AbstractMojo {
     ClassPool classPool = new ClassPool(true);
     classPool.appendClassPath(new LoaderClassPath(componentLoader));
 
+    // Set up map to keep a report per class.
+    Multimap<String, String> reportData = LinkedHashMultimap.create();
+    
+    // Determine where to write the missing meta data report file
+    File reportFile = new File(project.getBuild().getDirectory(),
+            "uimafit-missing-meta-data-report.txt");
+    
+    // Read existing report
+    if (generateMissingMetaDataReport) {
+      readMissingMetaDataReport(reportFile, reportData);
+    }
+
+    // Remember the names of all examined components, whether processed or not.
+    List<String> examinedComponents = new ArrayList<String>();
+    
     for (String file : files) {
       String clazzName = Util.getClassName(project, file);
 
@@ -147,6 +199,8 @@ public class EnhanceMojo extends AbstractMojo {
         // Do not process a class twice
         if (clazz.isAnnotationPresent(EnhancedClassFile.class)) {
           getLog().info("Class [" + clazzName + "] already enhanced");
+          // Remember that class was examined
+          examinedComponents.add(clazzName);
           continue;
         }
 
@@ -158,6 +212,12 @@ public class EnhanceMojo extends AbstractMojo {
         getLog().warn("Cannot analyze class [" + clazzName + "]", e);
         continue;
       }
+
+      // Remember that class was examined
+      examinedComponents.add(clazzName);
+      
+      // Forget any previous missing meta data report we have on the class
+      reportData.removeAll(clazzName);
 
       // Get the Javassist class
       CtClass ctClazz;
@@ -179,10 +239,10 @@ public class EnhanceMojo extends AbstractMojo {
         JavaSource ast = parseSource(sourceFile);
 
         // Enhance meta data
-        enhanceResourceMetaData(ast, clazz, ctClazz);
+        enhanceResourceMetaData(ast, clazz, ctClazz, reportData);
 
         // Enhance configuration parameters
-        enhanceConfigurationParameter(ast, clazz, ctClazz);
+        enhanceConfigurationParameter(ast, clazz, ctClazz, reportData);
 
         // Add the EnhancedClassFile annotation.
         markAsEnhanced(ctClazz);
@@ -203,11 +263,25 @@ public class EnhanceMojo extends AbstractMojo {
       } catch (IOException e) {
         throw new MojoExecutionException("Enhanced class [" + clazzName + "] cannot be written: "
                 + ExceptionUtils.getRootCauseMessage(e), e);
-
       } catch (CannotCompileException e) {
         throw new MojoExecutionException("Enhanced class [" + clazzName + "] cannot be compiled: "
                 + ExceptionUtils.getRootCauseMessage(e), e);
       }
+    }
+    
+    if (generateMissingMetaDataReport) {
+      // Remove any classes from the report that are no longer part of the build
+      List<String> deletedClasses = new ArrayList<String>(reportData.keySet());
+      deletedClasses.removeAll(examinedComponents);
+      reportData.removeAll(deletedClasses);
+      
+      // Write updated report
+      writeMissingMetaDataReport(reportFile, reportData);
+      
+      if (failOnMissingMetaData && !reportData.isEmpty()) {
+        throw new MojoFailureException("Component meta data missing. A report of the missing "
+                + "meta data can be found in " + reportFile);
+      }    
     }
   }
 
@@ -239,8 +313,8 @@ public class EnhanceMojo extends AbstractMojo {
   /**
    * Enhance resource meta data
    */
-  private void enhanceResourceMetaData(JavaSource aAST, Class<?> aClazz, CtClass aCtClazz)
-          throws MojoExecutionException {
+  private void enhanceResourceMetaData(JavaSource aAST, Class<?> aClazz, CtClass aCtClazz,
+          Multimap<String, String> aReportData) throws MojoExecutionException {
     ClassFile classFile = aCtClazz.getClassFile();
     ConstPool constPool = classFile.getConstPool();
 
@@ -264,19 +338,19 @@ public class EnhanceMojo extends AbstractMojo {
     // Update description from JavaDoc
     String doc = Util.getComponentDocumentation(aAST, aClazz.getName());
     enhanceMemberValue(a, "description", doc, overrideComponentDescription,
-            ResourceMetaDataFactory.getDefaultDescription(aClazz), constPool);
+            ResourceMetaDataFactory.getDefaultDescription(aClazz), constPool, aReportData, aClazz);
 
     // Update version
     enhanceMemberValue(a, "version", componentVersion, overrideComponentVersion,
-            ResourceMetaDataFactory.getDefaultVersion(aClazz), constPool);
+            ResourceMetaDataFactory.getDefaultVersion(aClazz), constPool, aReportData, aClazz);
 
     // Update vendor
     enhanceMemberValue(a, "vendor", componentVendor, overrideComponentVendor,
-            ResourceMetaDataFactory.getDefaultVendor(aClazz), constPool);
+            ResourceMetaDataFactory.getDefaultVendor(aClazz), constPool, aReportData, aClazz);
 
     // Update copyright
     enhanceMemberValue(a, "copyright", componentCopyright, overrideComponentCopyright,
-            ResourceMetaDataFactory.getDefaultVendor(aClazz), constPool);
+            ResourceMetaDataFactory.getDefaultCopyright(aClazz), constPool, aReportData, aClazz);
 
     // Replace annotation
     annoAttr.addAnnotation(a);
@@ -301,7 +375,8 @@ public class EnhanceMojo extends AbstractMojo {
    *          default value set by uimaFIT - if the member has this value, it is considered unset
    */
   private void enhanceMemberValue(Annotation aAnnotation, String aName, String aNewValue,
-          boolean aOverride, String aDefault, ConstPool aConstPool) {
+          boolean aOverride, String aDefault, ConstPool aConstPool,
+          Multimap<String, String> aReportData, Class<?> aClazz) {
     String value = getStringMemberValue(aAnnotation, aName);
     boolean isEmpty = value.length() == 0;
     boolean isDefault = value.equals(aDefault);
@@ -311,7 +386,8 @@ public class EnhanceMojo extends AbstractMojo {
         aAnnotation.addMemberValue(aName, new StringMemberValue(aNewValue, aConstPool));
         getLog().info("Enhanced component meta data [" + aName + "]");
       } else {
-        getLog().warn("No meta data [" + aName + "] found");
+        getLog().info("No meta data [" + aName + "] found");
+        aReportData.put(aClazz.getName(), "No meta data [" + aName + "] found");
       }
     } else {
       getLog().info("Not overwriting component meta data [" + aName + "]");
@@ -330,7 +406,8 @@ public class EnhanceMojo extends AbstractMojo {
   /**
    * Enhance descriptions in configuration parameters.
    */
-  private void enhanceConfigurationParameter(JavaSource aAST, Class<?> aClazz, CtClass aCtClazz)
+  private void enhanceConfigurationParameter(JavaSource aAST, Class<?> aClazz, CtClass aCtClazz, 
+          Multimap<String, String> aReportData)
           throws MojoExecutionException {
     // Get the parameter name constants
     Map<String, String> nameFields = getParameterConstants(aClazz);
@@ -351,7 +428,9 @@ public class EnhanceMojo extends AbstractMojo {
       String pdesc = Util.getParameterDocumentation(aAST, field.getName(),
               nameFields.get(p.getName()));
       if (pdesc == null) {
-        getLog().warn("No description found for parameter [" + p.getName() + "]");
+        String msg = "No description found for parameter [" + p.getName() + "]";
+        getLog().info(msg);
+        aReportData.put(aClazz.getName(), msg);
         continue;
       }
 
@@ -441,5 +520,88 @@ public class EnhanceMojo extends AbstractMojo {
       }
     }
     return null;
+  }
+  
+  /**
+   * Write a report on any meta data missing from components.
+   */
+  private void writeMissingMetaDataReport(File aReportFile, Multimap<String, String> aReportData)
+          throws MojoExecutionException {
+    String[] classes = aReportData.keySet().toArray(new String[aReportData.keySet().size()]);
+    Arrays.sort(classes);
+
+    PrintWriter out = null;
+    FileUtils.mkdir(aReportFile.getParent());
+    try {
+      out = new PrintWriter(new OutputStreamWriter(new FileOutputStream(aReportFile), encoding));
+
+      if (classes.length > 0) {
+        for (String clazz : classes) {
+          out.printf("%s %s%n", MARK_CLASS, clazz);
+          Collection<String> messages = aReportData.get(clazz);
+          if (messages.isEmpty()) {
+            out.printf("  No problems");
+          } else {
+            for (String message : messages) {
+              out.printf("  %s%n", message);
+            }
+          }
+          out.printf("%n");
+        }
+      }
+      else {
+        out.printf("%s%n", MARK_NO_MISSING_META_DATA);
+      }
+    } catch (IOException e) {
+      throw new MojoExecutionException("Unable to write missing meta data report to ["
+              + aReportFile + "]" + ExceptionUtils.getRootCauseMessage(e), e);
+    } finally {
+      IOUtils.closeQuietly(out);
+    }
+  }
+  
+  /**
+   * Read the missing meta data report from a previous run.
+   */
+  private void readMissingMetaDataReport(File aReportFile, Multimap<String, String> aReportData)
+          throws MojoExecutionException  {
+    if (!aReportFile.exists()) {
+      // Ignore if the file is missing
+      return;
+    }
+    
+    LineIterator i = null;
+    try {
+      String clazz = null;
+      i = IOUtils.lineIterator(new FileInputStream(aReportFile), encoding);
+      while (i.hasNext()) {
+        String line = i.next();
+        // Report say there is no missing meta data
+        if (line.startsWith(MARK_NO_MISSING_META_DATA)) {
+          return;
+        }
+        // Line containing class name
+        if (line.startsWith(MARK_CLASS)) {
+          clazz = line.substring(MARK_CLASS.length()).trim();
+        }
+        else if (StringUtils.isBlank(line)) {
+          // Empty line, ignore
+        }
+        else {
+          // Line containing a missing meta data instance
+          if (clazz == null) {
+            throw new MojoExecutionException("Missing meta data report has invalid format.");
+          }
+          aReportData.put(clazz, line.trim());
+        }
+      }
+    }
+    catch (IOException e) {
+      throw new MojoExecutionException("Unable to read missing meta data report: "
+              + ExceptionUtils.getRootCauseMessage(e), e);
+    }
+    finally {
+      LineIterator.closeQuietly(i);
+    }
   }
 }
