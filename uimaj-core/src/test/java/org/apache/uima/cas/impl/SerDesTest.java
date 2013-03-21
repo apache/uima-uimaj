@@ -23,6 +23,7 @@ import static org.apache.uima.cas.impl.SerDesTest.TypeSystems.OneTypeSubsetFeatu
 import static org.apache.uima.cas.impl.SerDesTest.TypeSystems.TwoTypes;
 import static org.apache.uima.cas.impl.SerDesTest.TypeSystems.TwoTypesNoFeatures;
 import static org.apache.uima.cas.impl.SerDesTest.TypeSystems.TwoTypesSubsetFeatures;
+import static org.apache.uima.cas.impl.SerDesTest.TypeSystems.OneType;
 import static org.apache.uima.cas.impl.SerDesTest.Types.Akof1;
 import static org.apache.uima.cas.impl.SerDesTest.Types.Akof2;
 
@@ -223,7 +224,7 @@ public class SerDesTest extends TestCase {
   public SerDesTest() {
     Random sg = new Random();
     long seed = sg.nextLong();
-//    seed = 4666441987103258042L;
+//    seed = 1536337128105529870L;
     random = new Random(seed);
     System.out.format("RandomSeed: %,d%n", seed);
 
@@ -281,7 +282,50 @@ public class SerDesTest extends TestCase {
 
   public void tearDown() {
   }
+  
+  // Test chains going through filtered type
+  //   Repeat below with OneType, and TwoTypes with filtered slot == fsRef
+  
+  //   T1 fsArray ref -> T2 -> T1 (new) (not indexed)
+  //   T1         ref -> T2 -> T1 (new) (not indexed)
+  //   T1 fsArray ref -> T2 -> T1 (new) (indexed)
+  //   T1         ref -> T2 -> T1 (new) (indexed)
 
+  public void testRefThroughFilteredType() throws IOException {
+    reftft (OneType);
+    for (int i = 0; i < 10; i++) {
+      reftft (TwoTypesSubsetFeatures);
+    }
+    reftft(TwoTypesNoFeatures);
+  }
+  
+  private void reftft(TypeSystems tskind) {
+    reftft(tskind, true);
+    reftft(tskind, false);
+  }
+  
+  private void reftft(TypeSystems tskind, boolean indexed) {
+    lfs.clear();
+    
+    TTypeSystem m = getTT(tskind);
+    remoteCas = setupCas(m);
+    
+    TTypeSystem mSrc = getTT(TwoTypes);
+    makeFeaturesForAkof(casSrc, mSrc, Akof1);
+    
+    FeatureStructure otherTsFs = casSrc.createFS(mSrc.getType(Akof2));
+    FeatureStructure fsOrig = lfs.get(0);
+    fsOrig.setFeatureValue(mSrc.getFeature(fsOrig, "Fs"), otherTsFs);
+    
+    FeatureStructure ts1Fs = casSrc.createFS(mSrc.getType(Akof1));
+    otherTsFs.setFeatureValue(mSrc.getFeature(otherTsFs, "Fs"), ts1Fs);
+    
+    if (indexed) {
+      casSrc.addFsToIndexes(ts1Fs);
+    }
+    
+    verify(remoteCas);   
+  }
   // broken out special instances of random tests
   public void testDeltaWithStringArrayMod() throws IOException {
     // casSrc -> remoteCas,remoteCas updated, serialized back to srcCas
