@@ -152,7 +152,12 @@ public class CasSeqAddrMaps {
 //    tgtSeq2TgtAddr.add(-1);  // not used I hope - need to check TODO
     nextTgt++;
   }
-                 
+             
+  /**
+   * 
+   * @param seq
+   * @return 0 means target seq doesn't exist in source CAS
+   */
   public int getSrcAddrFromTgtSeq(int seq) {
     return tgtSeq2SrcAddr.get(seq);
   }
@@ -169,6 +174,9 @@ public class CasSeqAddrMaps {
 //    }
 //  }
   
+  /**
+   * returns -1 if src addr not in target seq
+   */
   public int getTgtSeqFromSrcAddr(int itemAddr) {
     return srcAddr2TgtSeq.get(itemAddr);      
   }
