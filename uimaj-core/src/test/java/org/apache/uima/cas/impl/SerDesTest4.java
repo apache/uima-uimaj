@@ -20,14 +20,17 @@ package org.apache.uima.cas.impl;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.nio.CharBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -65,8 +68,56 @@ import org.apache.uima.util.impl.SerializationMeasures;
  */
 public class SerDesTest4 extends TestCase {
   
-  private final Random random = new Random();;
+  class MyRandom extends Random {
+
+    @Override
+    public int nextInt(int n) {
+      int r = usePrevData ? readNextSavedInt() : super.nextInt(n);
+      if (capture) writeSavedInt(r);
+      return r;
+    }
+
+    @Override
+    public int nextInt() {
+      int r = usePrevData ? readNextSavedInt() : super.nextInt();
+      if (capture) writeSavedInt(r);
+      return r;
+    }
+
+    @Override
+    public long nextLong() {
+      int r = usePrevData ? readNextSavedInt() : super.nextInt();
+      if (capture) writeSavedInt(r);      
+      return r;
+    }
+
+    @Override
+    public boolean nextBoolean() {
+      int r = usePrevData ? readNextSavedInt() : super.nextInt(2);
+      if (capture) writeSavedInt(r);      
+      return r == 0;
+    }
+
+    @Override
+    public float nextFloat() {
+      int r = usePrevData ? readNextSavedInt() : super.nextInt(0x7ffff);
+      if (capture) writeSavedInt(r);
+      return Float.intBitsToFloat(r);
+    }
+
+    @Override
+    public double nextDouble() {
+      int r = usePrevData ? readNextSavedInt() : super.nextInt(0x7ffff);
+      if (capture) writeSavedInt(r);
+      return Double.longBitsToDouble((long) r);
+    }
+  }
+  
+  private final Random random = new MyRandom();
   private long seed;
+  private char[] sbSavedInts = new char[20];
+  private BufferedReader savedIntsStream;
+  private OutputStreamWriter savedIntsOutStream;
 
   private Type akof;
   private Type topType;
@@ -197,7 +248,7 @@ public class SerDesTest4 extends TestCase {
   }
   
   public void setUp() {
-    long seed = random.nextLong();
+    long seed = (new Random()).nextLong();
     random.setSeed(seed);
 //    System.out.format("RandomSeed: %,d%n", seed);
 
@@ -403,27 +454,8 @@ public class SerDesTest4 extends TestCase {
   }
 
   public void testWithPrevGenerated() throws IOException {
-    random.setSeed(readinRandomSeed());
     usePrevData = true;
-    testDeltaWithMods();
-    tearDown(); setUp();
-    testDeltaWithRefsBelow();
-    tearDown(); setUp();
-    testDeltaWithAllMods();
-    tearDown(); setUp();
-    testDeltaWithIndexMods();
-    tearDown(); setUp();
-    testAllKinds();
-    tearDown(); setUp();
-    testArrayAux();    
-  }
-
-  public void captureGenerated() throws IOException {
-    capture = true;
-    long seed = random.nextLong();
-    writeoutRandomSeed(seed);
-    setUp();
-    random.setSeed(seed);
+    initReadSavedInts();
     testDeltaWithMods();
     tearDown(); setUp();
     testDeltaWithRefsBelow();
@@ -435,6 +467,26 @@ public class SerDesTest4 extends TestCase {
     testAllKinds();
     tearDown(); setUp();
     testArrayAux();
+    usePrevData = false;
+    savedIntsStream.close();
+  }
+
+  public void captureGenerated() throws IOException {
+    capture = true;
+    initWriteSavedInts();
+    setUp();
+    testDeltaWithMods();
+    tearDown(); setUp();
+    testDeltaWithRefsBelow();
+    tearDown(); setUp();
+    testDeltaWithAllMods();
+    tearDown(); setUp();
+    testDeltaWithIndexMods();
+    tearDown(); setUp();
+    testAllKinds();
+    tearDown(); setUp();
+    testArrayAux();
+    savedIntsOutStream.close();
   }
 
   
@@ -533,7 +585,11 @@ public class SerDesTest4 extends TestCase {
     "abc", "abcdef", null, "", "ghijklm", "a", "b"
   };
   private String randomString(Random r) {
-    return stringValues[r.nextInt(7)];
+    int i = r.nextInt(7);
+    if (i >= 7) {
+      System.out.println("debug");
+    }
+    return stringValues[i];
   }
 
   private StringArrayFS randomStringA(Random r) {
@@ -881,25 +937,37 @@ public class SerDesTest4 extends TestCase {
     
   }
   
-  private void writeoutRandomSeed(long seed) {
+  private void initWriteSavedInts() {
     try {
-      OutputStreamWriter w = new OutputStreamWriter(setupFileOut("RandomSeed"));
-      w.append(Long.toString(seed));
-      w.close();
+      savedIntsOutStream = new OutputStreamWriter(setupFileOut("SavedInts"));
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
   }
   
-  private long readinRandomSeed() {
+  private void initReadSavedInts() {
     try {
-      InputStreamReader i = new InputStreamReader(new BufferedInputStream(new FileInputStream(new File("src/test/resources/SerDes4/RandomSeed.binary"))));
-      char[] cbuf = new char[20];
-      int len = i.read(cbuf);
-      return Long.parseLong(new String(cbuf, 0, len));
+      savedIntsStream = new BufferedReader(new FileReader("src/test/resources/SerDes4/SavedInts.binary"));
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
+  }
+  
+  private void writeSavedInt(int i) {
+    try {
+      savedIntsOutStream.write(Integer.toString(i) + '\n');
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+  
+  private int readNextSavedInt() {
+    try {
+      String s = savedIntsStream.readLine();
+      return Integer.parseInt(s);
+   } catch (IOException e) {
+      throw new RuntimeException(e);
+   }
   }
   
   private void makeRandomUpdatesBelowMark(List<FeatureStructure> fs, int belowMarkSize, Random r) {
