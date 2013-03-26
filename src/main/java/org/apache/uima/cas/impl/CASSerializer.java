@@ -56,10 +56,7 @@ import org.apache.uima.cas.Marker;
  * This class is for internal use.  Some of the serialized formats are readable by the C++
  * implementation, and used for efficiently transferring CASes between Java frameworks and other ones.
  * Others are used with Vinci or SOAP to communicate to remote annotators.
- * 
- * External interfaces to compressed forms of this serialization are provided by the 
- * user class org.apache.uima.util.Compression
- * 
+ *  
  * To serialize the shared common information among a group of CASes sharing the same
  * type definition and index specifications, 
  * @see org.apache.uima.cas.impl.CASMgrSerializer
