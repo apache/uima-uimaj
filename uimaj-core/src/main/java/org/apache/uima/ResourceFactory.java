@@ -38,7 +38,7 @@ import org.apache.uima.resource.ResourceSpecifier;
  * the {@link org.apache.uima.UIMAFramework} class.
  * <p>
  * Note that multiple threads may attempt to manufacture resources
- * simulatenously, so implementations of this interface MUST be threadsafe.
+ * simultaneously, so implementations of this interface MUST be threadsafe.
  * <p>
  * Developers needing to provide their own <code>ResourceFactory</code> may
  * wish to consider using the provided 

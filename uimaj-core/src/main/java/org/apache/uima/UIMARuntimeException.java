@@ -48,7 +48,7 @@ public class UIMARuntimeException extends InternationalizedRuntimeException {
   public static final String STANDARD_MESSAGE_CATALOG = "org.apache.uima.UIMAException_Messages";
 
   /**
-   * Message key for a standard UIMA exception message: CasManager.release(CAS) was called with a
+   * Message key for a standard UIMA exception message: CasManager.releaseCas(CAS) was called with a
    * CAS that does not belong to this CasManager.
    */
   public static final String CAS_RELEASED_TO_WRONG_CAS_MANAGER = "cas_released_to_wrong_cas_manager";
