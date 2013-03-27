@@ -165,7 +165,7 @@ public class XmiCasSerializer {
     private MarkerImpl marker;
 
     /**
-     * Whether the serializer neeeds to check for filtered-out types/features. Set to true if type
+     * Whether the serializer needs to check for filtered-out types/features. Set to true if type
      * system of CAS does not match type system that was passed to constructor of serializer.
      */
     boolean isFiltering;
