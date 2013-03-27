@@ -960,4 +960,30 @@ FSIterator it = cas.createFilteredIterator(annotIt, nounTokenCons);</programlist
         defined features within them.</para>
     </section>
   </section>
+  
+  <section id="ugr.ref.cas.typemerging">
+    <title>Type Merging</title>
+    
+    <para>When annotators are combined in an aggregate, their defined type systems are merged.
+    This is designed to support independent development of annotator components.  The merge
+    results in a single defined type system for CASes that flow through a particular set of
+    annotators.</para>
+    
+    <para>The basic operation of a type system merge is to iterate through all the defined types,
+    and if two annotators define the same fully qualified type name, 
+    to take the features defined for those types
+    and form a logical union of those features.  This operation requires that same-named features
+    have the same range type names.  The resulting type system has features comprising the union
+    of all features over all the various definitions for this type in different annotators.
+    </para>
+    
+    <para>Feature merging checks that for all features having the same name in a type, that the
+    range type is identical; otherwise an error is signaled.</para>
+    
+    <para>Types are combined for merging when their fully qualified names are the same.
+    Two different definitions can be merged even if their supertype definitions do not match, if
+    one supertype subsumes the other supertype; otherwise an error is signaled.  Likewise, two types
+    with the same name can be merged only if their features can be merged.
+    </para>
+    </section>
 </chapter>
