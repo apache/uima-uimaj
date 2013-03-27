@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.uima.internal.util.IntVector;
+import org.apache.uima.internal.util.rb_trees.Int2IntRBT;
 import org.apache.uima.internal.util.rb_trees.IntRedBlackTree;
 
 /**
@@ -69,7 +70,7 @@ public class CasSeqAddrMaps {
    * map from source address to target sequence number.
    * if source is not in target, value = -1;
    */
-  final private IntRedBlackTree srcAddr2TgtSeq;
+  final private Int2IntRBT srcAddr2TgtSeq;
   
   /**
    * info needed to do a map from target aux heap to source aux heap
@@ -97,11 +98,11 @@ public class CasSeqAddrMaps {
     // this call makes the first real seq number == 1.
     // seq 0 refers to the NULL fs value at heap location 0.
     this.tgtSeq2SrcAddr = new IntVector();
-    this.srcAddr2TgtSeq = new IntRedBlackTree();
+    this.srcAddr2TgtSeq = new Int2IntRBT();
     addItemAddr(0, 0, true);
   }
   
-  public CasSeqAddrMaps(IntVector tgtSeq2SrcAddr, IntRedBlackTree srcAddr2TgtSeq) {
+  public CasSeqAddrMaps(IntVector tgtSeq2SrcAddr, Int2IntRBT srcAddr2TgtSeq) {
     this.tgtSeq2SrcAddr = tgtSeq2SrcAddr;
     this.srcAddr2TgtSeq = srcAddr2TgtSeq;
   }
@@ -178,7 +179,8 @@ public class CasSeqAddrMaps {
    * returns -1 if src addr not in target seq
    */
   public int getTgtSeqFromSrcAddr(int itemAddr) {
-    return srcAddr2TgtSeq.get(itemAddr);      
+//    System.out.println(" " + itemAddr);
+    return srcAddr2TgtSeq.getMostlyClose(itemAddr);      
   }
   
   public int getNumberSrcFss() {

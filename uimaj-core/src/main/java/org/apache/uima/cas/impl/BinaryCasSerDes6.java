@@ -61,6 +61,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.BitSet;
 import java.util.List;
 import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
@@ -71,10 +72,8 @@ import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.impl.SlotKinds.SlotKind;
 import org.apache.uima.cas.impl.TypeSystemImpl.TypeInfo;
-import org.apache.uima.internal.util.IntPointerIterator;
 import org.apache.uima.internal.util.IntVector;
-import org.apache.uima.internal.util.rb_trees.IntArrayRBT;
-import org.apache.uima.internal.util.rb_trees.IntRedBlackTree;
+import org.apache.uima.internal.util.rb_trees.Int2IntRBT;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.util.impl.DataIO;
 import org.apache.uima.util.impl.OptimizeStrings;
@@ -251,7 +250,7 @@ public class BinaryCasSerDes6 {
      *   serialize to target 1, serialize same to target 2, etc.
      *   if Null, recomputed when needed
      */
-    final private IntArrayRBT foundFSs;
+    final private BitSet foundFSs;
     final private int[] foundFSsArray; // ordered set of FSs found in indexes or linked from other found FSs
     
     /**
@@ -262,7 +261,7 @@ public class BinaryCasSerDes6 {
     final private CasSeqAddrMaps fsStartIndexes;
     
     private ReuseInfo(
-        IntArrayRBT foundFSs,
+        BitSet foundFSs,
         int[] foundFSsArray, 
         CasSeqAddrMaps fsStartIndexes) {
       this.foundFSs = foundFSs;
@@ -357,9 +356,10 @@ public class BinaryCasSerDes6 {
    */
   final private int[] [] prevHeapInstanceWithIntValues;
   
-  private IntArrayRBT foundFSs; // ordered set of FSs found in indexes or linked from other found FSs
-  private IntArrayRBT foundFSsBelowMark; // for delta serialization use only
+  private BitSet foundFSs; // ordered set of FSs found in indexes or linked from other found FSs
+  private BitSet foundFSsBelowMark; // for delta serialization use only
   private int[] foundFSsArray;  // sorted fss's being serialized.  For delta, just the deltas
+  final private IntVector toBeScanned = new IntVector();
 //  private HashSetInt ffssBelowMark;  // sorted fss's found below the mark
 //  final private int[] typeCodeHisto = new int[ts.getTypeArraySize()]; 
 
@@ -1277,7 +1277,7 @@ public class BinaryCasSerDes6 {
       for (int i = 0; i < modFSsLength; i++) {
         iHeap = modifiedFSs[i];
         // skip if no longer indexed-reachable change
-        if (!foundFSsBelowMark.contains(iHeap)) {
+        if (!foundFSsBelowMark.get(iHeap)) {
 //          System.out.format("  skipping heap addr %,d%n", iHeap);
           continue;        
         }
@@ -1304,8 +1304,8 @@ public class BinaryCasSerDes6 {
       final int splitPoint = mark.nextFSId;
       for (int i = 0; i < modFSsLength; i++) {
         iHeap = modifiedFSs[i];
-        final boolean skipping = ((iHeap >= splitPoint) && !foundFSs.contains(iHeap)) ||
-                                 ((iHeap < splitPoint) && !foundFSsBelowMark.contains(iHeap));
+        final boolean skipping = ((iHeap >= splitPoint) && !foundFSs.get(iHeap)) ||
+                                 ((iHeap < splitPoint) && !foundFSsBelowMark.get(iHeap));
         final int tCode = heap[iHeap];
         typeInfo = ts.getTypeInfo(tCode);
         
@@ -2341,9 +2341,8 @@ public class BinaryCasSerDes6 {
    */
   private void processIndexedFeatureStructures(CASImpl cas, boolean isWrite) throws IOException {
     if (!isWrite) {
-      // size the foundFSs at about 1/8 the guessed size
-      foundFSs = new IntArrayRBT(Math.max(1024, cas.getHeap().getCellsUsed() >> 6));
-      foundFSsBelowMark = isSerializingDelta ? new IntArrayRBT() : null;
+      foundFSs = new BitSet(Math.max(1024, cas.getHeap().getCellsUsed()));
+      foundFSsBelowMark = isSerializingDelta ? new BitSet(mark.nextByteHeapAddr) : null;
     }
     final int[] fsIndexes = isWrite ? 
                               // this alternative collects just the new FSs above the line
@@ -2354,6 +2353,7 @@ public class BinaryCasSerDes6 {
                                 cas.getIndexedFSs();  
     if (!isWrite) {
       savedAllIndexesFSs = fsIndexes;
+      toBeScanned.removeAllElements();
     }
     final int nbrViews = fsIndexes[0];
     final int nbrSofas = fsIndexes[1];
@@ -2371,6 +2371,7 @@ public class BinaryCasSerDes6 {
     }
         
     int fi = 2;
+    
     final int end1 = nbrSofas + 2;
     for (; fi < end1; fi++) {
 //      writeVnumber(control_i, fsIndexes[fi]);  // version 0
@@ -2384,27 +2385,38 @@ public class BinaryCasSerDes6 {
           sm.statDetails[fsIndexes_i].incr(DataIO.lengthVnumber(v));
         }
       } else {
-        enqueueFS(foundFSs, addrSofaFs);  //sofa fs's always in the type system
+        enqueueFS(addrSofaFs);  //sofa fs's always in the type system
       }
     }
     
     heap = cas.getHeap().heap;   // referred to in processFsxPart
     for (int vi = 0; vi < nbrViews; vi++) {
-      fi = processFsxPart(fsIndexes, fi, foundFSs, isWrite);    // added FSs
+      fi = processFsxPart(fsIndexes, fi, true, isWrite);    // added FSs
       if (isWrite && isSerializingDelta) {
-        fi = processFsxPart(fsIndexes, fi, null, true);  // removed FSs
-        fi = processFsxPart(fsIndexes, fi, null, true);  // reindexed FSs
+        fi = processFsxPart(fsIndexes, fi, false, true);  // removed FSs
+        fi = processFsxPart(fsIndexes, fi, false, true);  // reindexed FSs
       }
-    } 
+    }
+    
+    processRefedFSs();
+    
     if (!isWrite) {
-      final IntPointerIterator foundFSsIteratorx = foundFSs.pointerIterator();
-      foundFSsIteratorx.moveToFirst();
-      final int fsslen = foundFSs.size();
+      final int fsslen = foundFSs.cardinality();
       foundFSsArray = new int[fsslen];
-      for (int i = 0; i < fsslen; i++) {
-        foundFSsArray[i] = foundFSsIteratorx.get();
-        foundFSsIteratorx.inc();
+      final int len = foundFSs.length();
+    
+      for (int b = 0, i = 0; b < len; b++, i++) {
+        b = foundFSs.nextSetBit(b);
+        foundFSsArray[i] = b;
       }
+//      final IntPointerIterator foundFSsIteratorx = foundFSs.pointerIterator();
+//      foundFSsIteratorx.moveToFirst();
+//      final int fsslen = foundFSs.size();
+//      foundFSsArray = new int[fsslen];
+//      for (int i = 0; i < fsslen; i++) {
+//        foundFSsArray[i] = foundFSsIteratorx.get();
+//        foundFSsIteratorx.inc();
+//      }
 //      Arrays.sort(foundFSsArray);
     }
     return;
@@ -2413,7 +2425,7 @@ public class BinaryCasSerDes6 {
   private int processFsxPart(
       final int[] fsIndexes, 
       final int fsNdxStart,
-      final IntArrayRBT foundFSs, 
+      final boolean isDoingEnqueue, 
       final boolean isWrite) throws IOException {
     int ix = fsNdxStart;
     final int nbrEntries = fsIndexes[ix++];
@@ -2452,8 +2464,10 @@ public class BinaryCasSerDes6 {
           sm.statDetails[fsIndexes_i].incr(DataIO.lengthVnumber(delta));
         }
         prev = tgtV;
-      } else {  
-        enqueueFS(foundFSs, fsAddr);
+      } else { 
+        if (isDoingEnqueue) {
+          enqueueFS(fsAddr);
+        }
       }
     }
     if (isWrite) {
@@ -2465,29 +2479,26 @@ public class BinaryCasSerDes6 {
     return end;
   } 
 
-  private void enqueueFS(IntArrayRBT foundFSs, int fsAddr) {
-    if (null == foundFSs) {
-      return;
-    }
+  private void enqueueFS(int fsAddr) {
     if (!isInstanceInTgtTs(fsAddr)) {
       return;
     }
 
     if (0 != fsAddr) {
       boolean added;
-//      if (!foundFSs.contains(fsAddr) && 
-//          ((foundFSsBelowMark == null) || 
-//           (fsAddr >= heapStart) || 
-//           !foundFSsBelowMark.contains(fsAddr))) {
-        if (fsAddr >= heapStart) { // don't add items below the line, but do scan their features
-          added = foundFSs.addAdded(fsAddr);
-        } else {
-          added = foundFSsBelowMark.addAdded(fsAddr);
-        }
+      if (fsAddr >= heapStart) { // separately track items below the line
+        added = !foundFSs.get(fsAddr);
         if (added) {
-          enqueueFeatures(foundFSs, fsAddr);
+          foundFSs.set(fsAddr);
+          toBeScanned.add(fsAddr);
         }
-//      }
+      } else {
+        added = !foundFSsBelowMark.get(fsAddr);
+        if (added) {
+          foundFSsBelowMark.set(fsAddr);
+          toBeScanned.add(fsAddr);
+        }
+      }
     }
   }
   
@@ -2495,10 +2506,17 @@ public class BinaryCasSerDes6 {
     return !isTypeMapping || (0 != typeMapper.mapTypeCodeSrc2Tgt(heap[fsAddr]));
   }
   
+  private void processRefedFSs() {
+    for (int i = 0; i < toBeScanned.size(); i++) {
+      enqueueFeatures(toBeScanned.get(i));
+    }
+  }
+  
+  
   /**
    * Enqueue all FSs reachable from features of the given FS.
    */
-  private void enqueueFeatures(IntArrayRBT foundFSs, int addr) {
+  private void enqueueFeatures(int addr) {
     final int tCode = heap[addr];
     final TypeInfo typeInfo = ts.getTypeInfo(tCode);
     final SlotKind[] kinds = typeInfo.slotKinds;
@@ -2507,7 +2525,7 @@ public class BinaryCasSerDes6 {
       // fs array, add elements
       final int length = heap[addr + 1];
       for (int i = 0; i < length; i++) {
-        enqueueFS(foundFSs, heap[addr + 2 + i]);
+        enqueueFS(heap[addr + 2 + i]);
       }
       return;
     }
@@ -2528,13 +2546,13 @@ public class BinaryCasSerDes6 {
           throw new RuntimeException(); // never happen because for serialization, target is never a superset of features of src
         }
         if (kinds[featOffsetInSrc - 1] == Slot_HeapRef) {
-          enqueueFS(foundFSs, heap[addr + featOffsetInSrc]);
+          enqueueFS(heap[addr + featOffsetInSrc]);
         }
       }
     } else {
       for (int i = 1; i < typeInfo.slotKinds.length + 1; i++) {
         if (kinds[i - 1] == Slot_HeapRef) {
-          enqueueFS(foundFSs, heap[addr + i]);
+          enqueueFS(heap[addr + i]);
         }
       }
     }
@@ -2687,8 +2705,8 @@ public class BinaryCasSerDes6 {
       private int c1heapIndex;
       private int c2heapIndex;
       
-      private IntRedBlackTree addr2seq1 = new IntRedBlackTree();
-      private IntRedBlackTree addr2seq2 = new IntRedBlackTree();
+      final private Int2IntRBT addr2seq1;
+      final private Int2IntRBT addr2seq2;
             
     public CasCompare(CASImpl c1, CASImpl c2) {
       this.c1 = c1;
@@ -2700,7 +2718,9 @@ public class BinaryCasSerDes6 {
       // note: heap global var used in some subroutines
       //   may have changed since setup of this instance
       c1heap = c1HO.heap;
-      c2heap = c2HO.heap;      
+      c2heap = c2HO.heap;
+      addr2seq1 = new Int2IntRBT(Math.max(1000, c1heap.length/100));
+      addr2seq2 = new Int2IntRBT(Math.max(1000, c2heap.length/100));
     }
       
     public boolean compareCASes() {
@@ -2726,6 +2746,7 @@ public class BinaryCasSerDes6 {
       }
 
       heap = c1heap;  // note: the processIndexedFeatureStructures call reset this to their cas parm's heap
+      
       for (int i = 0; i < c1FoundFSs.length; i++) {
         final int v = c1FoundFSs[i];
 //        System.out.format("compare 1: seq = %,d addr=%,d%n", i, v);
@@ -2868,7 +2889,7 @@ public class BinaryCasSerDes6 {
             }
             if ((c1ref != 0) && 
                 (c2ref != 0) && 
-                (addr2seq1.get(c1ref) != addr2seq2.get(c2ref))) {
+                (addr2seq1.getMostlyClose(c1ref) != addr2seq2.getMostlyClose(c2ref))) {
               return mismatchFs();
             }
           } else if (c1heap[c1heapIndex + 2 + i] != c2heap[c2heapIndex + 2 + i]) {
@@ -2911,13 +2932,14 @@ public class BinaryCasSerDes6 {
       case Slot_HeapRef: {
         final int c1ref = c1heap[c1heapIndex + offsetSrc];
         final int c2ref = c2heap[c2heapIndex + offsetTgt];
-        if (!isInstanceInTgtTs(c1ref)) {
-          // source ref is for type not in target.  Target value should be 0
-          return (c2ref == 0);
-        }
-        return ((c1ref == 0) && (c2ref == 0)) ||
-               ((c1ref != 0) && (c2ref != 0) && 
-                (addr2seq1.get(c1ref) == addr2seq2.get(c2ref)));
+        return diagnoseMiscompareHeapRef(c1ref, c2ref, offsetSrc);
+//        if (!isInstanceInTgtTs(c1ref)) {
+//          // source ref is for type not in target.  Target value should be 0
+//          return (c2ref == 0);
+//        }
+//        return ((c1ref == 0) && (c2ref == 0)) ||
+//               ((c1ref != 0) && (c2ref != 0) && 
+//                (addr2seq1.get(c1ref) == addr2seq2.get(c2ref)));
       }
       case Slot_StrRef:
         return compareStrings(c1.getStringForCode(c1heap[c1heapIndex + offsetSrc]),
@@ -2927,6 +2949,42 @@ public class BinaryCasSerDes6 {
                c2.getLongHeap().getHeapValue(c2heap[c2heapIndex + offsetTgt]);
       default: throw new RuntimeException("internal error");      
       }
+    }
+    
+    // debug
+    
+    private boolean diagnoseMiscompareHeapRef(int c1ref, int c2ref, int offsetSrc) {
+      if (!isInstanceInTgtTs(c1ref)) {
+        // source ref is for type not in target.  Target value should be 0
+        if (c2ref != 0) {
+          System.err.format("HeapRef original %,d is for a type not in target, target should have 0 but has %,d%n", c1ref, c2ref);
+          return false;
+        }
+        return true;
+      }
+      if (c1ref == 0) {
+        final int prevC1Ref = c1heap[c1heapIndex + offsetSrc];
+        if (prevC1Ref != 0){
+          System.err.format("HeapRef original c1Ref = %,d but instance not in target ts, so set to 0", prevC1Ref);
+          return false;
+        }
+        return true;
+      }
+      if (
+          ((c1ref == 0) && (c2ref != 0)) ||
+          ((c1ref != 0) && (c2ref == 0))) {
+        System.err.format("heapRef one is 0, other not: c1Ref = %,d c2Ref = %,d%n", c1ref, c2ref);
+        return false;
+      }
+    
+      final int seq1 = addr2seq1.getMostlyClose(c1ref);
+      final int seq2 = addr2seq2.getMostlyClose(c2ref);
+      
+      if (seq1 != seq2) {
+        System.err.format("heapRef seq1 not match seq2.  c1ref = %,d seq1 = %,d   c2ref= %,d seq2 = %,d%n", c1ref, seq1, c2ref, seq2);
+        return false;
+      }
+      return true;
     }
     
     private boolean compareStrings(String s1, String s2) {
