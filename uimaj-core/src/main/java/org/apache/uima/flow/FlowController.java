@@ -40,10 +40,10 @@ import org.apache.uima.resource.ResourceInitializationException;
  * <li>Declared Capabilities of the Aggregate AnalysisEngine containing this FlowController.</li>
  * </ul>
  * <p>
- * For each new CAS that is passed to the Aggegrate Analysis Engine containing the FlowController,
+ * For each new CAS that is passed to the Aggregate Analysis Engine containing the FlowController,
  * the FlowController's {@link #computeFlow(AbstractCas)} method will be called. This method must
  * construct and return a {@link Flow} object that is responsible for routing that CAS through the
- * copmonents of the Aggregate Analysis Engine.
+ * components of the Aggregate Analysis Engine.
  * <p>
  * A FlowController, like other components, can have custom configuration parameters that it
  * accesses through its Context. These parameters can define the flow using whatever flow language

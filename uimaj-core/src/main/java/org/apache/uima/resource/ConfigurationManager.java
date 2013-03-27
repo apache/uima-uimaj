@@ -115,7 +115,7 @@ public interface ConfigurationManager {
    *          <code>ContextName + / + ParameterName</code>.
    * @param aGroupName
    *          the name of a configuration group. If this parameter is
-   *          <code>null<code>, this method will have the same effet as
+   *          <code>null<code>, this method will have the same effect as
    *   {@link #setConfigParameterValue(String,Object) setParameterValue(String,Object)}.
    * @param aValue the value to assign to the parameter
    */

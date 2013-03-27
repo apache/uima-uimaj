@@ -122,7 +122,7 @@ public interface ConfigurationParameterDeclarations extends MetaDataObject {
 
   /**
    * Gets the configuration parameters that are common to all groups. This property is only
-   * meaninful if at least one group is defined.
+   * meaningful if at least one group is defined.
    * 
    * @return an array containing {@link ConfigurationParameter} objects, each of which describes a
    *         parameter common to all groups.
@@ -131,7 +131,7 @@ public interface ConfigurationParameterDeclarations extends MetaDataObject {
 
   /**
    * Sets the configuration parameters that are common to all groups. This property is only
-   * meaninful if at least one group is defined.
+   * meaningful if at least one group is defined.
    * 
    * @param aParams
    *          an array containing {@link ConfigurationParameter} objects, each of which describes a
@@ -237,7 +237,7 @@ public interface ConfigurationParameterDeclarations extends MetaDataObject {
   /**
    * A value for the <code>searchStrategy</code> property that is useful when ISO language and
    * country codes are used as configuration group names. If there is no value declared in a group,
-   * look in more general groups. The fallback seqauence is
+   * look in more general groups. The fallback sequence is
    * <code>lang-country-region -> lang-country -> 
    * lang -> default</code>. For example, if a
    * request is made for the value of a parameter in the "en-GB" group and no such group exists, the

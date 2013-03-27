@@ -55,7 +55,7 @@ public interface CasProcessorExecutable extends MetaDataObject {
   public void addCasProcessorExecArg(CasProcessorExecArg aArgs);
 
   /**
-   * Returns a {@link org.apache.uima.collection.metadata.CasProcessorExecArg} argument idenitied by
+   * Returns a {@link org.apache.uima.collection.metadata.CasProcessorExecArg} argument identified by
    * a given position in the list.
    * 
    * @param aIndex -
@@ -72,7 +72,7 @@ public interface CasProcessorExecutable extends MetaDataObject {
   public CasProcessorExecArg[] getAllCasProcessorExecArgs();
 
   /**
-   * Removes program argument from the list. The argument for deletion is idenitied by provided
+   * Removes program argument from the list. The argument for deletion is identified by provided
    * position in the list.
    * 
    * @param aIndex -

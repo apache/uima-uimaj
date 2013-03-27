@@ -246,7 +246,7 @@ public interface ResourceManagerConfiguration extends MetaDataObject {
   public void removeExternalResourceBinding(ExternalResourceBinding aExternalResourceBinding);
 
   /**
-   * Resolves any import declarations in this resource manager configruation, adding the imported
+   * Resolves any import declarations in this resource manager configuration, adding the imported
    * external resources and external resource bindings directly onto this
    * ResourceManagerConfiguration's {@link #getExternalResources() externalResources} and
    * {@link #getExternalResourceBindings() externalResourceBindings} lists.
@@ -257,7 +257,7 @@ public interface ResourceManagerConfiguration extends MetaDataObject {
   public void resolveImports() throws InvalidXMLException;
 
   /**
-   * Resolves any import declarations in this resource manager configruation, adding the imported
+   * Resolves any import declarations in this resource manager configuration, adding the imported
    * external resources and external resource bindings directly onto this
    * ResourceManagerConfiguration's {@link #getExternalResources() externalResources} and
    * {@link #getExternalResourceBindings() externalResourceBindings} lists.
@@ -273,7 +273,7 @@ public interface ResourceManagerConfiguration extends MetaDataObject {
   public void resolveImports(ResourceManager aResourceManager) throws InvalidXMLException;
 
   /**
-   * Resolves any import declarations in this resource manager configruation, adding the imported
+   * Resolves any import declarations in this resource manager configuration, adding the imported
    * external resources and external resource bindings directly onto this
    * ResourceManagerConfiguration's {@link #getExternalResources() externalResources} and
    * {@link #getExternalResourceBindings() externalResourceBindings} lists.

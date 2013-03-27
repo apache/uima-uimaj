@@ -70,7 +70,7 @@ import org.w3c.dom.Element;
 public interface XMLParser {
 
   /**
-   * Enables or disables XML scheam validation.
+   * Enables or disables XML schema validation.
    * 
    * @param aEnable
    *          true to enable validation, false to disable validation
@@ -819,7 +819,7 @@ public interface XMLParser {
 
     /**
      * Whether to expand &lt;envVarRef&gt;VARNAME&lt;/envVarRef&gt; elements by substituting the
-     * value of the System proprery VARNAME.
+     * value of the System property VARNAME.
      */
     public boolean expandEnvVarRefs;
     
@@ -835,7 +835,7 @@ public interface XMLParser {
      *          Whether to expand &lt;xi:include&gt; elements according to the XInclude spec.
      * @param aExpandEnvVarRefs
      *          Whether to expand &lt;envVarRef&gt;VARNAME&lt;/envVarRef&gt; elements by
-     *          substituting the value of the System proprery VARNAME.
+     *          substituting the value of the System property VARNAME.
      * @deprecated XInclude is no longer supported
      */
     @Deprecated
@@ -849,7 +849,7 @@ public interface XMLParser {
      * 
      * @param aExpandEnvVarRefs
      *          Whether to expand &lt;envVarRef&gt;VARNAME&lt;/envVarRef&gt; elements by
-     *          substituting the value of the System proprery VARNAME.
+     *          substituting the value of the System property VARNAME.
      */
     public ParsingOptions(boolean aExpandEnvVarRefs) {
       expandEnvVarRefs = aExpandEnvVarRefs;

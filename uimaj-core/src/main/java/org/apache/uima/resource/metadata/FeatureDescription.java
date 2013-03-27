@@ -75,7 +75,7 @@ public interface FeatureDescription extends MetaDataObject {
 
   /**
    * For a feature with a range type that is an array or list, gets the expected type of the
-   * elements of that array or list. This is optional; if ommitted the array or list can contain any
+   * elements of that array or list. This is optional; if omitted the array or list can contain any
    * type. There is currently no guarantee that the framework will enforce this type restriction.
    * This property should not be set for features whose range type is not an array or list.
    * 
@@ -85,7 +85,7 @@ public interface FeatureDescription extends MetaDataObject {
 
   /**
    * For a multi-valued (array or list) feature, sets the expected type of the elements of that
-   * array or list. This is optional; if ommitted the array or list can contain any type. There is
+   * array or list. This is optional; if omitted the array or list can contain any type. There is
    * currently no guarantee that the framework will enforce this type restriction. This property
    * should not be set for features whose range type is not an array or list.
    * 

@@ -25,7 +25,7 @@ import java.io.Serializable;
  * An object in the CAS. Each FeatureStructure has an optional ID, a type (represented as a string),
  * and a collection of features, which are attribute-value pairs. Feature names are strings, and
  * their values may be primitives (String, integer, float) or references (via ID) to another
- * FeatureStuctures. Circular references are allowed.
+ * FeatureStructures. Circular references are allowed.
  * <p>
  * Arrays are represented by the subtypes {@link PrimitiveArrayFS} and {@link ReferenceArrayFS}.
  * Arrays are not primitive values. This means that if the value of a feature is conceptually, for

@@ -145,7 +145,7 @@ public interface ResourceMetaData extends MetaDataObject {
   /**
    * Gets the configuration parameter declarations for this Resource.
    * 
-   * @return an object containig the configuration parameter declarations
+   * @return an object containing the configuration parameter declarations
    */
   public ConfigurationParameterDeclarations getConfigurationParameterDeclarations();
 
@@ -153,14 +153,14 @@ public interface ResourceMetaData extends MetaDataObject {
    * Gets the configuration parameter declarations for this Resource.
    * 
    * @param aDeclarations
-   *          an object containig the configuration parameter declarations
+   *          an object containing the configuration parameter declarations
    */
   public void setConfigurationParameterDeclarations(ConfigurationParameterDeclarations aDeclarations);
 
   /**
    * Gets the configuration parameter settings for this Resource.
    * 
-   * @return an object containing the settings for thie Resource's configuration parameters.
+   * @return an object containing the settings for this Resource's configuration parameters.
    */
   public ConfigurationParameterSettings getConfigurationParameterSettings();
 
@@ -180,7 +180,7 @@ public interface ResourceMetaData extends MetaDataObject {
    * exception if they are not valid.
    * <p>
    * This method checks to make sure that each configuration parameter setting corresponds to an
-   * declared configuraiton parameter, and that the data types are compatible. It does NOT check
+   * declared configuration parameter, and that the data types are compatible. It does NOT check
    * that all mandatory parameters have been assigned values - this should be done at resource
    * initialization time and not before.
    * 

@@ -136,7 +136,7 @@ public interface Capability extends MetaDataObject {
   public void setInputSofas(String[] aInputSofas);
 
   /**
-   * Sets the output Sofa names of this capabilitty
+   * Sets the output Sofa names of this capability
    * 
    * @param aOutputSofas
    *          an array of strings containing SoFA name

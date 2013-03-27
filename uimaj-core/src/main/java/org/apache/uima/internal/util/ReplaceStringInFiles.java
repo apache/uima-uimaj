@@ -84,7 +84,7 @@ public class ReplaceStringInFiles {
   }
 
   /**
-   * Replace occurences of <code>toReplace</code> in <code>text</code> by
+   * Replace occurrences of <code>toReplace</code> in <code>text</code> by
    * <code>replacement.</code>
    * 
    * @param text

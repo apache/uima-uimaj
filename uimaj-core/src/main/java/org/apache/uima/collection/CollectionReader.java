@@ -66,7 +66,7 @@ public interface CollectionReader extends BaseCollectionReader, ConfigurableReso
   public void typeSystemInit(TypeSystem aTypeSystem) throws ResourceInitializationException;
 
   /**
-   * Gets the next element of the collection. The element will be stored in the provided CAS objet.
+   * Gets the next element of the collection. The element will be stored in the provided CAS object.
    * If this is a consuming <code>CollectionReader</code> (see {@link #isConsuming()}), this
    * element will also be removed from the collection.
    * 

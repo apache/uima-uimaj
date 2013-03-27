@@ -60,7 +60,7 @@ public class PackageCreator {
    * 
    * @param datapath
    *          Specify the datapath for this component. Use macros like <code>$main_root</code> to
-   *          specify the datapath entiies.
+   *          specify the datapath entities.
    * 
    * @param mainComponentDir
    *          Specify the main component root directory that contains all the resources for the
@@ -105,7 +105,7 @@ public class PackageCreator {
    * 
    * @param datapath
    *          Specify the datapath for this component. Use macros like <code>$main_root</code> to
-   *          specify the datapath entiies.
+   *          specify the datapath entities.
    * 
    * @param mainComponentDir
    *          Specify the main component root directory that contains all the resources for the

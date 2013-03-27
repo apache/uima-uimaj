@@ -200,7 +200,7 @@ public class JCasPool {
    * Utility method used in the constructor to fill the pool with CAS instances.
    * 
    * @param aMetaData
-   *          metadata including the type sytsem for the CASes
+   *          metadata including the type system for the CASes
    * 
    * @throws ResourceInitializationException
    *           if the Resource instances could not be created

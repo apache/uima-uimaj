@@ -122,7 +122,7 @@ public class Level {
   }
 
   /**
-   * method isOn() returns ture if the message level is not OFF
+   * method isOn() returns true if the message level is not OFF
    * 
    * @return boolean true if the message level is less than OFF
    */

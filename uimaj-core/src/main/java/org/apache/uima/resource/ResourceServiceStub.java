@@ -28,7 +28,7 @@ import org.apache.uima.resource.metadata.ResourceMetaData;
  */
 public interface ResourceServiceStub {
   /**
-   * Performs service call to retreive resource meta data.
+   * Performs service call to retrieve resource meta data.
    * 
    * @return metadata for the Resource
    */

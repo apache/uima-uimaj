@@ -145,7 +145,7 @@ public interface Resource {
   /**
    * Key for the initialization parameter whose value is a
    * {@link org.apache.uima.resource.metadata.ConfigurationParameterSettings} object that holds
-   * configuration settings that will be used to configure this Resource, overridding any
+   * configuration settings that will be used to configure this Resource, overriding any
    * conflicting settings specified in this Resource's Descriptor. This value is used as a key in
    * the <code>aAdditionalParams</code> Map that is passed to the
    * {@link #initialize(ResourceSpecifier,Map)} method.

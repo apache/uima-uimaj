@@ -38,7 +38,7 @@ public class AnalysisEngineUtils {
 
   /**
    * Creates a FSMatchConstraint used when formatting the CAS for output. This constraint filters
-   * the feature structures in the CAS so that the only feature sturctures that are outputted are
+   * the feature structures in the CAS so that the only feature structures that are outputted are
    * those of types specified in the Analysis Engine's capability specification.
    * 
    * @param aMetaData
