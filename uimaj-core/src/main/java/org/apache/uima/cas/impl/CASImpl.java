@@ -1198,7 +1198,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       if (0 != (version & 4)) {
         final int compressedVersion = readInt(dis, swap);
         if (compressedVersion == 0) {
-          (new BinaryCasSerDes4(this.getTypeSystemImpl())).deserialize(this, dis, delta);
+          (new BinaryCasSerDes4(this.getTypeSystemImpl(), false)).deserialize(this, dis, delta);
         } else {
           (new BinaryCasSerDes6(this, rfs)).deserializeAfterVersion(dis, delta);
         }
@@ -4312,7 +4312,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * @throws IOException
    */
   public void serializeWithCompression(Object out) throws IOException {
-    (new BinaryCasSerDes4(this.getTypeSystemImpl())).serialize(this, out);
+    (new BinaryCasSerDes4(this.getTypeSystemImpl(), false)).serialize(this, out);
   }
   
 }
