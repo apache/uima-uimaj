@@ -1552,10 +1552,22 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   TypeInfo getTypeInfo(int typeCode) {
     if (null == typeInfoArray[typeCode]) {
       TypeImpl type = (TypeImpl) ll_getTypeForCode(typeCode);
+//      if (null == type) {
+//        diagnoseBadTypeCode(typeCode);
+//      }
       typeInfoArray[typeCode] = new TypeInfo(type);
     }
     return typeInfoArray[typeCode];
   }
+  
+//  // debugging
+//  private void diagnoseBadTypeCode(int typeCode) {
+//    System.err.format("Bad type code %,d passed to TypeSystem.getTypeInfo, largest type code is %,d, size of types list is %,d%n", 
+//        typeCode, getLargestTypeCode(), types.size());
+//    System.err.println(this.toString());
+//    System.err.format("Type in types: %s%n", types.get(typeCode));  
+//    throw new RuntimeException();
+//  }
 
   /*********************************************************
    * Type Mapping Objects
