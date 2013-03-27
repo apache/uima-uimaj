@@ -511,30 +511,28 @@ public class IntArrayRBT {
   }
 
   protected int treeInsert(final int k) {
-    int x = this.root;
-    int y, z;
     if ((this.greatestNode != NIL) && (getKey(this.greatestNode) < k)) {
-      y = this.greatestNode;
-      z = newNode(k);
+      final int y = this.greatestNode;
+      final int z = newNode(k);
       this.greatestNode = z;
-    } else {
-      y = NIL;
-      int xKey;
-      while (x != NIL) {
-        y = x;
-        xKey = getKey(x);
-        if (k < xKey) {
-          x = getLeft(x);
-        } else if (k == xKey) {
-          return -x;
-        } else { // k == key[x]
-          x = getRight(x);
-        }
+      setRight(y, z);
+      setParent(z, y);
+      return z;
+    } 
+    int y = NIL;
+    int x = this.root;
+    y = NIL;
+    while (x != NIL) {
+      y = x;
+      final int xKey = getKey(x);
+      if (k == xKey) {
+        return -x;
       }
-      // The key was not found, so we create a new node, inserting the
-      // key.
-      z = newNode(k);
+      x = (k < xKey) ? getLeft(x) : getRight(x);
     }
+    // The key was not found, so we create a new node, inserting the
+    // key.
+    final int z = newNode(k);
     if (y == NIL) {
       setAsRoot(z);
       this.greatestNode = z;
@@ -551,35 +549,25 @@ public class IntArrayRBT {
   }
 
   protected int treeInsertWithDups(final int k) {
-    int x = this.root;
-    int y, z;
     if ((this.greatestNode != NIL) && (getKey(this.greatestNode) <= k)) {
-      y = this.greatestNode;
-      z = newNode(k);
+      final int y = this.greatestNode;
+      final int z = newNode(k);
       this.greatestNode = z;
       setRight(y, z);
       setParent(z, y);
       return z;
     }
-    y = NIL;
-    int xKey;
+    int y = NIL;
+    int x = this.root;
     while (x != NIL) {
       y = x;
-      xKey = getKey(x);
-      if (k < xKey) {
-        x = getLeft(x);
-      } else if (k > xKey) {
-        x = getRight(x);
-      } else { // k == key[x]
-        // Randomly search to the left or right.
-        if (this.rand.nextBoolean()) {
-          x = getLeft(x);
-        } else {
-          x = getRight(x);
-        }
-      }
+      final int xKey = getKey(x);
+      x = (k < xKey) ? getLeft(x) :
+          (k > xKey) ? getRight(x) :
+        //(k == xKey)
+          (this.rand.nextBoolean()) ?  getLeft(x) : getRight(x);
     }
-    z = newNode(k);
+    final int z = newNode(k);
     if (y == NIL) {
       setAsRoot(z);
       this.greatestNode = z;
@@ -717,6 +705,7 @@ public class IntArrayRBT {
   }
   
   /**
+   * like add, but returns boolean flag true if not present before
    * @param k 
    * @return true if added (not present before)
    */
