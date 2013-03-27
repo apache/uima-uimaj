@@ -198,6 +198,10 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
 
   private int numCommittedTypes = 0;
 
+  private int numTypeNames = 0;
+
+  private int numFeatureNames = 0;
+
   final CASMetadata casMetadata; // needs to be visible in package
   
   // map from type code to TypeInfo instance for that type code,
@@ -841,6 +845,9 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
    * Get the overall number of features defined in the type system.
    */
   public int getNumberOfFeatures() {
+    if (this.isCommitted()) {
+      return this.numFeatureNames;
+    }
     return this.featureNameST.size();
   }
 
@@ -848,6 +855,9 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
    * Get the overall number of types defined in the type system.
    */
   public int getNumberOfTypes() {
+    if (this.isCommitted()) {
+      return this.numTypeNames;
+    }
     return this.typeNameST.size();
   }
 
@@ -1101,6 +1111,8 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     // because subsumes depends on it
     // and generator initialization uses subsumes
     this.numCommittedTypes = this.types.size(); // do before
+    this.numTypeNames = this.typeNameST.size();
+    this.numFeatureNames = this.featureNameST.size();
     this.typeInfoArray = new TypeInfo[getTypeArraySize()];
     // cas.commitTypeSystem -
     // because it will call the type system iterator
