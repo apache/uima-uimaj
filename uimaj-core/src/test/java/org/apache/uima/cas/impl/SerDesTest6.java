@@ -18,14 +18,14 @@
  */
 package org.apache.uima.cas.impl;
 
-import static org.apache.uima.cas.impl.SerDesTest.TypeSystems.EqTwoTypes;
-import static org.apache.uima.cas.impl.SerDesTest.TypeSystems.OneTypeSubsetFeatures;
-import static org.apache.uima.cas.impl.SerDesTest.TypeSystems.TwoTypes;
-import static org.apache.uima.cas.impl.SerDesTest.TypeSystems.TwoTypesNoFeatures;
-import static org.apache.uima.cas.impl.SerDesTest.TypeSystems.TwoTypesSubsetFeatures;
-import static org.apache.uima.cas.impl.SerDesTest.TypeSystems.OneType;
-import static org.apache.uima.cas.impl.SerDesTest.Types.Akof1;
-import static org.apache.uima.cas.impl.SerDesTest.Types.Akof2;
+import static org.apache.uima.cas.impl.SerDesTest6.TypeSystems.EqTwoTypes;
+import static org.apache.uima.cas.impl.SerDesTest6.TypeSystems.OneTypeSubsetFeatures;
+import static org.apache.uima.cas.impl.SerDesTest6.TypeSystems.TwoTypes;
+import static org.apache.uima.cas.impl.SerDesTest6.TypeSystems.TwoTypesNoFeatures;
+import static org.apache.uima.cas.impl.SerDesTest6.TypeSystems.TwoTypesSubsetFeatures;
+import static org.apache.uima.cas.impl.SerDesTest6.TypeSystems.OneType;
+import static org.apache.uima.cas.impl.SerDesTest6.Types.Akof1;
+import static org.apache.uima.cas.impl.SerDesTest6.Types.Akof2;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -68,7 +68,7 @@ import org.apache.uima.util.impl.SerializationMeasures;
  * 
  * 
  */
-public class SerDesTest extends TestCase {
+public class SerDesTest6 extends TestCase {
 
   enum TypeSystems {
     TwoTypes, EqTwoTypes, OneType, TwoTypesSubsetFeatures, OneTypeSubsetFeatures, TwoTypesNoFeatures,
@@ -221,7 +221,7 @@ public class SerDesTest extends TestCase {
   }
 
   // Constructor
-  public SerDesTest() {
+  public SerDesTest6() {
     Random sg = new Random();
     long seed = sg.nextLong();
 //    seed = 1536337128105529870L;
