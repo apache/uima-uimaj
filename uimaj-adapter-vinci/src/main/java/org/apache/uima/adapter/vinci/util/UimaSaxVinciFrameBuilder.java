@@ -48,7 +48,7 @@ public class UimaSaxVinciFrameBuilder extends SaxVinciFrameBuilder {
   /**
    * Overridden to supress document content and include annotation spans.
    * 
-   * @see SaxVinciFrameBuilder#getLeafContent(String, Attibutes, StringBuffer)
+   * @see SaxVinciFrameBuilder#getLeafContent(String, attributes, StringBuffer)
    */
   protected String getLeafContent(String aFrameName, Attributes aAttributes,
           StringBuffer aContentBuf) {

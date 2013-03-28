@@ -61,7 +61,7 @@ public class SimpleTextSegmenter extends JCasMultiplier_ImplBase {
   public void process(JCas aJCas) throws AnalysisEngineProcessException {
     mDoc = aJCas.getDocumentText();
     mPos = 0;
-    // retreive the filename of the input file from the CAS so that it can be added
+    // retrieve the filename of the input file from the CAS so that it can be added
     // to each segment
     FSIterator it = aJCas.getAnnotationIndex(SourceDocumentInformation.type).iterator();
     if (it.hasNext()) {

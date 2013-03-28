@@ -166,6 +166,14 @@ public class DefaultCasDocumentProvider extends
    */
   private Map<String, String> documentToTypeSystemMap = new HashMap<String, String>();
 
+  /**
+   * This map stores temporarily the type system that should be used to open the next document.
+   * This functionality is separated from documentToTypeSystemMap since the preference for using 
+   * the previously selected type system can be deactivated. The inlined file choose, for example, 
+   * uses this field to remember the chosen type system.
+   */
+  private Map<String, String> typeSystemForNextDocumentOnly = new HashMap<String, String>();
+  
   private Map<String, IPreferenceStore> sessionPreferenceStores = new HashMap<String, IPreferenceStore>();
 
   /**
@@ -220,12 +228,20 @@ public class DefaultCasDocumentProvider extends
       // set by the editor for this specific CAS.
       // apply that type system only if the setting is active in the preferences
       String typeSystemFileString = null;
+      
+      String document = casFile.getFullPath().toPortableString();
+      if(typeSystemForNextDocumentOnly.get(document) != null) {
+        // the type system was already set internally. Use this one and forget the information.
+        typeSystemFileString = typeSystemForNextDocumentOnly.get(document);
+        typeSystemForNextDocumentOnly.put(document, null);
+      }
+      
       IPreferenceStore prefStore = CasEditorIdePlugin.getDefault().getPreferenceStore();
       boolean useLastTypesystem = prefStore
               .getBoolean(CasEditorIdePreferenceConstants.CAS_EDITOR_REMEMBER_TYPESYSTEM);
       if (useLastTypesystem) {
         typeSystemFileString = documentToTypeSystemMap
-                .get(casFile.getFullPath().toPortableString());
+                .get(document);
       }
       if (typeSystemFileString != null)
         typeSystemFile = ResourcesPlugin.getWorkspace().getRoot()
@@ -359,7 +375,7 @@ public class DefaultCasDocumentProvider extends
           typeSystemPreferences.put(prefFile.getFullPath().toPortableString(), tsPrefStore);
         }
 
-        documentToTypeSystemMap.put(casFile.getFullPath().toPortableString(), typeSystemFile
+        documentToTypeSystemMap.put(document, typeSystemFile
                 .getFullPath().toPortableString());
 
         IPreferenceStore store = sessionPreferenceStores.get(getTypesystemId(element));
@@ -537,6 +553,11 @@ public class DefaultCasDocumentProvider extends
     documentToTypeSystemMap.put(document, typeSystem);
   }
 
+  void setTypeSystemForNextDocumentOnly(String document, String typeSystem) {
+    typeSystemForNextDocumentOnly.put(document, typeSystem);
+  }
+  
+  
   @Override
   public Composite createTypeSystemSelectorForm(final ICasEditor editor, Composite parent,
           IStatus status) {
@@ -565,8 +586,8 @@ public class DefaultCasDocumentProvider extends
         if (resource != null) {
 
           FileEditorInput editorInput = (FileEditorInput) editor.getEditorInput();
-          setTypeSystem(editorInput.getFile().getFullPath().toPortableString(), resource
-                  .getFullPath().toString());
+          setTypeSystemForNextDocumentOnly(editorInput.getFile().getFullPath().toPortableString(),
+                  resource.getFullPath().toString());
 
           // Now set the input again to open the editor with the
           // specified type system

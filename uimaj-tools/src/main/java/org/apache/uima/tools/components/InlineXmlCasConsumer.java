@@ -117,7 +117,7 @@ public class InlineXmlCasConsumer extends CasConsumer_ImplBase {
       throw new ResourceProcessException(e);
     }
 
-    // retreive the filename of the input file from the CAS
+    // retrieve the filename of the input file from the CAS
     File outFile = null;
     boolean hasDefaultView = false;
 
