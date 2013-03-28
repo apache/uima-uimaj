@@ -46,23 +46,23 @@ public class CompIntArrayRBT extends IntArrayRBT {
 
   // Insert a node for key. Returns index of new node if node was inserted, or
   // index of old node for the key.
-  protected int treeInsert(int k) {
+  protected int treeInsert(final int k) {
     int x = this.root;
     int y = NIL;
     int z;
-    int cv; // Return value of compare().
-    if ((this.greatestNode != NIL) && (this.comp.compare(this.key[this.greatestNode], k) < 0)) {
+//    int cv; // Return value of compare().
+    if ((this.greatestNode != NIL) && (this.comp.compare(getKey(this.greatestNode), k) < 0)) {
       y = this.greatestNode;
       z = newNode(k);
       this.greatestNode = z;
     } else {
       while (x != NIL) {
         y = x;
-        cv = this.comp.compare(k, this.key[x]);
+        final int cv = this.comp.compare(k, getKey(x));
         if (cv < 0) {
-          x = this.left[x];
+          x = getLeft(x);
         } else if (cv > 0) {
-          x = this.right[x];
+          x = getRight(x);
         } else { // cv == 0
           return x;
         }
@@ -74,50 +74,50 @@ public class CompIntArrayRBT extends IntArrayRBT {
     if (y == NIL) {
       this.root = z;
       this.greatestNode = z;
-      this.parent[z] = NIL;
+      setParent(z, NIL);
     } else {
-      this.parent[z] = y;
-      cv = this.comp.compare(k, this.key[y]);
+      setParent(z, y);
+      final int cv = this.comp.compare(k, getKey(y));
       if (cv < 0) {
-        this.left[y] = z;
+        setLeft(y, z);
       } else {
-        this.right[y] = z;
+        setRight(y, z);
       }
     }
     return z;
   }
 
-  protected int treeInsertWithDups(int k) {
+  protected int treeInsertWithDups(final int k) {
     int x = this.root;
-    int y, z, cv;
+    int y, z;
     boolean wentLeft = false;
-    if ((this.greatestNode != NIL) && (this.comp.compare(this.key[this.greatestNode], k) <= 0)) {
+    if ((this.greatestNode != NIL) && (this.comp.compare(getKey(this.greatestNode), k) <= 0)) {
       y = this.greatestNode;
       z = newNode(k);
       this.greatestNode = z;
-      this.parent[z] = y;
-      this.right[y] = z;
+      setParent(z, y);
+      setRight(y, z);
       return z;
     }
     y = NIL;
     int xKey;
     while (x != NIL) {
       y = x;
-      xKey = this.key[x];
-      cv = this.comp.compare(k, xKey);
+      xKey = getKey(x);
+      final int cv = this.comp.compare(k, xKey);
       if (cv < 0) {
-        x = this.left[x];
+        x = getLeft(x);
       } else if (cv > 0) {
-        x = this.right[x];
+        x = getRight(x);
       } else { // k == key[x]
         // Randomly search to the left or right.
         // if (false) {
         if (this.rand.nextBoolean()) {
           wentLeft = true;
-          x = this.left[x];
+          x = getLeft(x);
         } else {
           wentLeft = false;
-          x = this.right[x];
+          x = getRight(x);
         }
       }
     }
@@ -125,20 +125,20 @@ public class CompIntArrayRBT extends IntArrayRBT {
     if (y == NIL) {
       this.root = z;
       this.greatestNode = z;
-      this.parent[z] = NIL;
+      setParent(z, NIL);
     } else {
-      this.parent[z] = y;
-      cv = this.comp.compare(k, this.key[y]);
+      setParent(z, y);
+      final int cv = this.comp.compare(k, getKey(y));
       if (cv < 0) {
-        this.left[y] = z;
+        setLeft(y, z);
       } else if (cv > 0) {
-        this.right[y] = z;
+        setRight(y, z);
       } else { // k == key[y]
         // Randomly insert node to the left or right.
         if (wentLeft) {
-          this.left[y] = z;
+          setLeft(y, z);
         } else {
-          this.right[y] = z;
+          setRight(y, z);
         }
       }
     }
@@ -146,15 +146,15 @@ public class CompIntArrayRBT extends IntArrayRBT {
     return z;
   }
 
-  public int findKey(int k) {
+  public int findKey(final int k) {
     int node = this.root;
     int cv;
     while (node != NIL) {
-      cv = this.comp.compare(k, this.key[node]);
+      cv = this.comp.compare(k, getKey(node));
       if (cv < 0) {
-        node = this.left[node];
+        node = getLeft(node);
       } else if (cv > 0) {
-        node = this.right[node];
+        node = getRight(node);
       } else {
         return node;
       }
@@ -163,17 +163,17 @@ public class CompIntArrayRBT extends IntArrayRBT {
     return NIL;
   }
 
-  public int findInsertionPoint(int k) {
+  public int findInsertionPoint(final int k) {
     int node = this.root;
     int found = this.root;
     int cv = 0;
     while (node != NIL) {
       found = node;
-      cv = this.comp.compare(k, this.key[node]);
+      cv = this.comp.compare(k, getKey(node));
       if (cv < 0) {
-        node = this.left[node];
+        node = getLeft(node);
       } else if (cv > 0) {
-        node = this.right[node];
+        node = getRight(node);
       } else {
         return node;
       }

@@ -33,16 +33,16 @@ public final class IntArrayUtils {
   }
 
   // done this way to allow more inlining
-  public static final int[] ensure_size(int[] array, int req, int growth_factor,
-          int multiplication_limit) {
+  public static final int[] ensure_size(final int[] array, final int req, final int growth_factor,
+          final int multiplication_limit) {
     if (array.length < req) {
       return expand_size(array, req, growth_factor, multiplication_limit);
     }
     return array;
   }
 
-  private static final int[] expand_size(int[] array, int req, int growth_factor,
-          int multiplication_limit) {
+  private static final int[] expand_size(final int[] array, final int req, final int growth_factor,
+          final int multiplication_limit) {
     if (array.length == 0)
       return new int[req];
     int new_array_size = array.length;
@@ -54,7 +54,7 @@ public final class IntArrayUtils {
         new_array_size = new_array_size + multiplication_limit;
       }
     }
-    int[] new_array = new int[new_array_size];
+    final int[] new_array = new int[new_array_size];
     System.arraycopy(array, 0, new_array, 0, array.length);
     return new_array;
   }
