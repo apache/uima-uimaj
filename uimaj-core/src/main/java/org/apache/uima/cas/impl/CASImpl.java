@@ -20,6 +20,7 @@
 package org.apache.uima.cas.impl;
 
 import java.io.ByteArrayInputStream;
+import java.io.DataInput;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,7 +43,6 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.AbstractCas_ImplBase;
 import org.apache.uima.cas.AnnotationBaseFS;
 import org.apache.uima.cas.ArrayFS;
@@ -79,13 +79,13 @@ import org.apache.uima.cas.admin.CASMgr;
 import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.cas.admin.FSIndexRepositoryMgr;
 import org.apache.uima.cas.admin.TypeSystemMgr;
+import org.apache.uima.cas.impl.BinaryCasSerDes6.ReuseInfo;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.cas.text.Language;
 import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.impl.JCasImpl;
-import org.apache.uima.util.impl.SerializationMeasures;
 
 /**
  * Implements the CAS interfaces. This class must be public because we need to
@@ -246,10 +246,6 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
      */
     private List<Marker> trackingMarkList;
     
-    // must be in svd part because has a field that is updated
-    // while serializing
-    private BinaryCasSerDes4 binaryCompressor;
-
     private SharedViewData(boolean useFSCache) {
       this.useFSCache = useFSCache;
     }
@@ -1165,9 +1161,14 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * @param istream
    * @throws CASRuntimeException
    */
+  
   public void reinit(InputStream istream) throws CASRuntimeException {
+    reinit(istream, null);
+  }
+  
+  public void reinit(InputStream istream, ReuseInfo rfs) throws CASRuntimeException {
     if (this != this.svd.baseCAS) {
-      this.svd.baseCAS.reinit(istream);
+      this.svd.baseCAS.reinit(istream, rfs);
       return;
     }
    
@@ -1195,10 +1196,12 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       }
       
       if (0 != (version & 4)) {
-        if (svd.binaryCompressor == null) {
-          svd.binaryCompressor = new BinaryCasSerDes4(this.getTypeSystemImpl(), false);
+        final int compressedVersion = readInt(dis, swap);
+        if (compressedVersion == 0) {
+          (new BinaryCasSerDes4(this.getTypeSystemImpl(), false)).deserialize(this, dis, delta);
+        } else {
+          (new BinaryCasSerDes6(this, rfs)).deserializeAfterVersion(dis, delta);
         }
-        svd.binaryCompressor.deserialize(this, dis, delta);
         return;
       }
       
@@ -1372,8 +1375,12 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
         }
       } // of delta - modified processing
     } catch (IOException e) {
+      String msg = e.getMessage();
+      if (msg == null) {
+        msg = e.toString();
+      }
       CASRuntimeException exception = new CASRuntimeException(
-          CASRuntimeException.BLOB_DESERIALIZATION, new String[] { e.getMessage() });
+          CASRuntimeException.BLOB_DESERIALIZATION, new String[] { msg });
       throw exception;
     }
   }
@@ -1455,6 +1462,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
       iterator.moveToNext();
     }
+    getInitialView();  // done for side effect of creating the initial view.
+    // must be done before the next line, because it sets the
+    // viewCount to 1.
     this.svd.viewCount = numViews; // total number of views
     
     for (int viewNbr = 1; viewNbr <= numViews; viewNbr++) {
@@ -1549,9 +1559,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     // Get indexes for base CAS
     fsLoopIndex = this.svd.baseCAS.indexRepository.getIndexedFSs();
     v.add(fsLoopIndex.length);
-    for (int k = 0; k < fsLoopIndex.length; k++) {
-      v.add(fsLoopIndex[k]);
-    }
+    v.add(fsLoopIndex, 0, fsLoopIndex.length);
+//    for (int k = 0; k < fsLoopIndex.length; k++) {
+//      v.add(fsLoopIndex[k]);
+//    }
 
     // Get indexes for each SofaFS in the CAS
     for (int sofaNum = 1; sofaNum <= numViews; sofaNum++) {
@@ -1603,9 +1614,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
     
     v.add(newSofas.size());
-    for (int k = 0; k < newSofas.size(); k++) {
-      v.add(newSofas.get(k));
-    }
+    v.add(newSofas.getArray(), 0, newSofas.size());
+//    for (int k = 0; k < newSofas.size(); k++) {
+//      v.add(newSofas.get(k));
+//    }
 
     // Get indexes for each SofaFS in the CAS
     for (int sofaNum = 1; sofaNum <= numViews; sofaNum++) {
@@ -1621,17 +1633,20 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
         fsReindexed = INT0;
       }
       v.add(fsLoopIndex.length);
-      for (int k = 0; k < fsLoopIndex.length; k++) {
-        v.add(fsLoopIndex[k]);
-      }
+      v.add(fsLoopIndex, 0, fsLoopIndex.length);
+//      for (int k = 0; k < fsLoopIndex.length; k++) {
+//        v.add(fsLoopIndex[k]);
+//      }
       v.add(fsDeletedFromIndex.length);
-      for (int k = 0; k < fsDeletedFromIndex.length; k++) {
-        v.add(fsDeletedFromIndex[k]);
-      }
+      v.add(fsDeletedFromIndex, 0, fsDeletedFromIndex.length);
+//      for (int k = 0; k < fsDeletedFromIndex.length; k++) {
+//        v.add(fsDeletedFromIndex[k]);
+//      }
       v.add(fsReindexed.length);
-      for (int k = 0; k < fsReindexed.length; k++) {
-        v.add(fsReindexed[k]);
-      }
+      v.add(fsReindexed, 0, fsReindexed.length);
+//      for (int k = 0; k < fsReindexed.length; k++) {
+//        v.add(fsReindexed[k]);
+//      }
     }
     return v.toArray();
   }
@@ -3786,6 +3801,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     final int offset = this.getHeap().heap[getArrayStartAddress(fsRef)];
     long value = Double.doubleToLongBits(d);
     this.getLongHeap().setHeapValue(value, offset + position);
+    if (this.svd.trackingMark != null) {
+      this.logFSUpdate(fsRef, offset+position, ModifiedHeap.LONGHEAP, 1);
+    }
+
   }
 
   public void ll_setDoubleArrayValue(int fsRef, int position, double value, boolean doTypeChecks) {
@@ -4293,10 +4312,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * @throws IOException
    */
   public void serializeWithCompression(Object out) throws IOException {
-    if (svd.binaryCompressor == null) {
-      svd.binaryCompressor = new BinaryCasSerDes4(this.getTypeSystemImpl(), false);
-    }
-    svd.binaryCompressor.serialize(this, out);
+    (new BinaryCasSerDes4(this.getTypeSystemImpl(), false)).serialize(this, out);
   }
   
 }

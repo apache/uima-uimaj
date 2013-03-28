@@ -169,10 +169,12 @@ public class FSIndexComparatorImpl implements FSIndexComparator {
     FSIndexComparatorImpl copy = new FSIndexComparatorImpl(this.cas);
     copy.type = this.type;
     final int max = this.getNumberOfKeys();
+    copy.compVector.add(this.compVector.getArray(), 0, this.compVector.size());
+    copy.keyTypeVector.add(this.keyTypeVector.getArray(), 0, this.keyTypeVector.size());
     for (int i = 0; i < max; i++) {
       copy.keyVector.add(this.keyVector.get(i));
-      copy.compVector.add(this.compVector.get(i));
-      copy.keyTypeVector.add(this.keyTypeVector.get(i));
+//      copy.compVector.add(this.compVector.get(i));
+//      copy.keyTypeVector.add(this.keyTypeVector.get(i));
     }
     return copy;
   }

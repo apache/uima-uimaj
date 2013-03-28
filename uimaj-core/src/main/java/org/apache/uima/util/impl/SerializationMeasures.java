@@ -18,27 +18,27 @@
  */
 package org.apache.uima.util.impl;
 
-import static org.apache.uima.cas.impl.BinaryCasSerDes4.CAN_BE_NEGATIVE;
-import static org.apache.uima.cas.impl.BinaryCasSerDes4.IN_MAIN_HEAP;
-import static org.apache.uima.cas.impl.BinaryCasSerDes4.SlotKind.Slot_ArrayLength;
-import static org.apache.uima.cas.impl.BinaryCasSerDes4.SlotKind.Slot_Byte;
-import static org.apache.uima.cas.impl.BinaryCasSerDes4.SlotKind.Slot_Double_Exponent;
-import static org.apache.uima.cas.impl.BinaryCasSerDes4.SlotKind.Slot_Double_Mantissa_Sign;
-import static org.apache.uima.cas.impl.BinaryCasSerDes4.SlotKind.Slot_Float_Exponent;
-import static org.apache.uima.cas.impl.BinaryCasSerDes4.SlotKind.Slot_Float_Mantissa_Sign;
-import static org.apache.uima.cas.impl.BinaryCasSerDes4.SlotKind.Slot_FsIndexes;
-import static org.apache.uima.cas.impl.BinaryCasSerDes4.SlotKind.Slot_HeapRef;
-import static org.apache.uima.cas.impl.BinaryCasSerDes4.SlotKind.Slot_Int;
-import static org.apache.uima.cas.impl.BinaryCasSerDes4.SlotKind.Slot_Long_High;
-import static org.apache.uima.cas.impl.BinaryCasSerDes4.SlotKind.Slot_Long_Low;
-import static org.apache.uima.cas.impl.BinaryCasSerDes4.SlotKind.Slot_MainHeap;
-import static org.apache.uima.cas.impl.BinaryCasSerDes4.SlotKind.Slot_Short;
-import static org.apache.uima.cas.impl.BinaryCasSerDes4.SlotKind.Slot_StrChars;
-import static org.apache.uima.cas.impl.BinaryCasSerDes4.SlotKind.Slot_StrLength;
-import static org.apache.uima.cas.impl.BinaryCasSerDes4.SlotKind.Slot_StrOffset;
-import static org.apache.uima.cas.impl.BinaryCasSerDes4.SlotKind.Slot_TypeCode;
+import static org.apache.uima.cas.impl.SlotKinds.CAN_BE_NEGATIVE;
+import static org.apache.uima.cas.impl.SlotKinds.IN_MAIN_HEAP;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_ArrayLength;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Byte;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Double_Exponent;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Double_Mantissa_Sign;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Float_Exponent;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Float_Mantissa_Sign;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_FsIndexes;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_HeapRef;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Int;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Long_High;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Long_Low;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_MainHeap;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Short;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_StrChars;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_StrLength;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_StrOffset;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_TypeCode;
 
-import org.apache.uima.cas.impl.BinaryCasSerDes4.SlotKind;
+import org.apache.uima.cas.impl.SlotKinds.SlotKind;
 
 
 /**
@@ -294,7 +294,7 @@ public class SerializationMeasures {
   public final StatDetail[] statDetails = new StatDetail[SlotKind.values().length];
   {
     for (SlotKind kind : SlotKind.values()) {
-      statDetails[kind.i] = new StatDetail(kind.toString(), 
+      statDetails[kind.ordinal()] = new StatDetail(kind.toString(), 
                                            kind.canBeNegative,
                                            kind.inMainHeap,
                                            kind.elementSize);
@@ -337,7 +337,7 @@ public class SerializationMeasures {
     StatDetail[] sds= new StatDetail[kinds.length];
     int i = 0;
     for(SlotKind k : kinds) {
-      sds[i++] = statDetails[k.i];
+      sds[i++] = statDetails[k.ordinal()];
     }
     return sds;
   }
@@ -366,8 +366,8 @@ public class SerializationMeasures {
   public String toString() {
     // Strings
     
-    long origStringChars = statDetails[Slot_StrChars.i].getOriginal();
-    long origStringObjs = statDetails[Slot_StrLength.i].getOriginal() * 2;
+    long origStringChars = statDetails[Slot_StrChars.ordinal()].getOriginal();
+    long origStringObjs = statDetails[Slot_StrLength.ordinal()].getOriginal() * 2;
     long origStringsTot = origStringChars +   // space for the chars 
             origStringObjs +                  // space for the offset and length
             (origStringObjs / 2);             // space for the refs to the string heap 
@@ -376,7 +376,7 @@ public class SerializationMeasures {
     allSlots.aggregate();
     strSlots.aggregate();
     
-    long allOrig = statDetails[Slot_MainHeap.i].original +
+    long allOrig = statDetails[Slot_MainHeap.ordinal()].original +
                    origStringChars + origStringObjs +
                    origAuxBytes + 
                    origAuxShorts +
@@ -402,7 +402,7 @@ public class SerializationMeasures {
        strTotZ, percent(strTotZ, origStringsTot),
        strB4Z,  percent(strB4Z,  origStringsTot),
             
-       mainHeapFSs, stringsCommonChars, percent(stringsCommonChars, statDetails[Slot_StrChars.i].original),
+       mainHeapFSs, stringsCommonChars, percent(stringsCommonChars, statDetails[Slot_StrChars.ordinal()].original),
        stringsSavedExact, stringsSavedSubstr,
        allSlots.toString()
     );

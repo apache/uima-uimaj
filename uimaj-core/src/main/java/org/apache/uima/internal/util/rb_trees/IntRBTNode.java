@@ -596,5 +596,18 @@ class IntRBTNode {
     }
     return;
   }
-
+  
+  IntRBTNode copyNode(IntRBTNode parent) {
+    IntRBTNode copyOfNode = new IntRBTNode(key, color, parent, null, null, element);
+    copyOfNode.left = copyNode(copyOfNode, left);
+    copyOfNode.right = copyNode(copyOfNode, right);
+    return copyOfNode;
+  }
+  
+  static IntRBTNode copyNode(IntRBTNode parent, IntRBTNode n) {
+    if (null == n) {
+      return null;
+    }
+    return n.copyNode(parent);
+  }
 }

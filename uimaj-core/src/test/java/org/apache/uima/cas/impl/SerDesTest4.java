@@ -1094,7 +1094,8 @@ public class SerDesTest4 extends TestCase {
     }      
   }
 
-  static public void main(String[] args) throws IOException {
-    (new SerDesTest4()).captureGenerated();
-  }
+  // disable to avoid accidentally overwriting test data
+//  static public void main(String[] args) throws IOException {
+//    (new SerDesTest4()).captureGenerated();
+//  }
 }

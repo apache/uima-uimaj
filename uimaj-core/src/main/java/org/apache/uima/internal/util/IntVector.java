@@ -38,9 +38,9 @@ public class IntVector implements Serializable {
 
   private static final int default_multiplication_limit = 2000000;
 
-  private int growth_factor;
+  final private int growth_factor;
 
-  private int multiplication_limit;
+  final private int multiplication_limit;
 
   // Points to the next free cell in the array.
   protected int pos = 0;
@@ -114,6 +114,22 @@ public class IntVector implements Serializable {
     }
   }
 
+  /**
+   * Add an array of elements to the end.
+   * @param elements
+   */
+  public void add(int[] elements) {
+    add(elements, 0, elements.length);
+  }
+  
+  public void add(int[] elements, int startpos, int endpos) {
+    final int len = endpos - startpos;
+    final int posNow = this.pos;
+    ensure_size(this.pos + len);  // changes pos
+    System.arraycopy(elements, startpos, this.array, posNow, len);
+//    this.pos += len;  done by ensure_size    
+  }
+  
   /**
    * Add an element at the end of vector. Behaves like add(Object o) of
    * {@link java.util.Vector Vector}.
