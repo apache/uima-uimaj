@@ -224,9 +224,9 @@ public class SerDesTest6 extends TestCase {
   public SerDesTest6() {
     Random sg = new Random();
     long seed = sg.nextLong();
-//    seed = 1536337128105529870L;
+//    seed =  -2659090483652661635L;
     random = new Random(seed);
-    System.out.format("RandomSeed: %,d%n", seed);
+//    System.out.format("RandomSeed: %,d%n", seed);
 
     mSrc = setupTTypeSystem(TwoTypes);
     casSrc = mSrc.cas;

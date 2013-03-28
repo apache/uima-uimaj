@@ -1144,7 +1144,12 @@ public class BinaryCasSerDes4 {
       if (((v > 0) && (prev > 0)) ||
           ((v < 0) && (prev < 0))) {
         final int diff = v - prev;  // guaranteed not to overflow
-        final int absDiff = Math.abs(diff);
+//      Math.abs of Integer.MIN_VALUE + 1 sometimes (after jit?) (on some JVMs) gives wrong annswer
+        // failure observed on IBM Java 7 SR1 and SR2  3/28/2013 schor
+        // failure only observed when running entire suite of uimaj-core tests via eclipse - mvn test doesn't fail
+//        final int absDiff = Math.abs(diff);
+        // this seems to work around
+        final int absDiff = (diff < 0) ? -diff : diff; 
         writeVnumber(kind, 
             (absV <= absDiff) ? 
                 ((long)absV << 2)    + ((v < 0) ? 2L : 0L) :

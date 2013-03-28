@@ -1163,8 +1163,30 @@ public class BinaryCasSerDes6 {
     final int absV = Math.abs(v);
     if (((v > 0) && (prev > 0)) ||
         ((v < 0) && (prev < 0))) {
-      final int diff = v - prev;  // guaranteed not to overflow
-      final int absDiff = Math.abs(diff);
+      final int diff = v - prev;  // guaranteed to not overflow because signs are the same
+//      // handle strange behavior after JIT where the Math.abs(0x7fffffff) gives Integer.MIN_VALUE
+//      // for arguments v = 0xffffffff, and prev = Integer.MIN_VALUE
+//      final int diff = (prev == Integer.MIN_VALUE) ?
+//          // v is guaranteed to be negative
+//          (v & 0x7fffffff) :
+//          v - prev;  
+//      final int absDiff = Math.abs(diff);
+      // this seems to work around
+      final int absDiff = (diff < 0) ? -diff : diff; 
+      // debug failure in Math.abs
+      if (absDiff < 0) {
+        System.err.format("********* caught absdiff v = %s, prev = %s diff = %s absDiff = %s%n", 
+            Integer.toHexString(v),
+            Integer.toHexString(prev),
+            Integer.toHexString(diff),
+            Integer.toHexString(absDiff));
+      }
+      if (absV < 0) {
+        System.err.format("********* caught absv v = %s, absV = %s%n", 
+            Integer.toHexString(v),
+            Integer.toHexString(absV));
+      }
+
       writeVnumber(kind, 
           (absV <= absDiff) ? 
               ((long)absV << 2)    + ((v < 0) ? 2L : 0L) :
