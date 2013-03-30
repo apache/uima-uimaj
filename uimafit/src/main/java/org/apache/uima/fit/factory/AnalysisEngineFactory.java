@@ -24,6 +24,7 @@ import static org.apache.uima.fit.descriptor.OperationalProperties.MULTIPLE_DEPL
 import static org.apache.uima.fit.descriptor.OperationalProperties.OUTPUTS_NEW_CASES_DEFAULT;
 import static org.apache.uima.fit.factory.ConfigurationParameterFactory.createConfigurationData;
 import static org.apache.uima.fit.factory.ConfigurationParameterFactory.ensureParametersComeInPairs;
+import static org.apache.uima.fit.factory.ConfigurationParameterFactory.setParameters;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.bindExternalResource;
 import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTypeSystemDescription;
 
@@ -297,15 +298,9 @@ public final class AnalysisEngineFactory {
     AnalysisEngineMetaData meta = desc.getAnalysisEngineMetaData();
     ResourceMetaDataFactory.configureResourceMetaData(meta, componentClass);
 
-    ConfigurationData reflectedConfigurationData = createConfigurationData(componentClass);
-    ResourceCreationSpecifierFactory.setConfigurationParameters(desc,
-            reflectedConfigurationData.configurationParameters,
-            reflectedConfigurationData.configurationValues);
-    if (configurationParameters != null) {
-      ResourceCreationSpecifierFactory.setConfigurationParameters(desc, configurationParameters,
-              configurationValues);
-    }
-
+    // set parameters
+    setParameters(desc, componentClass, configurationParameters, configurationValues);
+    
     // set the type system
     if (typeSystem != null) {
       desc.getAnalysisEngineMetaData().setTypeSystem(typeSystem);

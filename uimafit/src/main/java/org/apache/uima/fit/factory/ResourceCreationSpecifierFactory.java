@@ -19,7 +19,9 @@
 package org.apache.uima.fit.factory;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.URL;
+import java.util.Collection;
 
 import org.apache.uima.UIMAException;
 import org.apache.uima.UIMAFramework;
@@ -152,12 +154,32 @@ public final class ResourceCreationSpecifierFactory {
             .getConfigurationParameterDeclarations();
     ConfigurationParameterSettings paramSettings = metaData.getConfigurationParameterSettings();
     for (int i = 0; i < configurationParameters.length; i++) {
-      if (paramDecls != null
-              && paramDecls.getConfigurationParameter(null, configurationParameters[i].getName()) == null) {
+      ConfigurationParameter decl = paramDecls.getConfigurationParameter(null, configurationParameters[i].getName());
+      if (paramDecls != null && decl == null) {
         paramDecls.addConfigurationParameter(configurationParameters[i]);
+        decl = configurationParameters[i];
       }
-      paramSettings.setParameterValue(configurationParameters[i].getName(), configurationValues[i]);
+      
+      // Upgrade single-value to multi-value if necessary
+      Object value = configurationValues[i];
+      if ((value != null) && decl.isMultiValued() && !isMultiValue(value)) {
+        value = Array.newInstance(value.getClass(), 1);
+        Array.set(value, 0, configurationValues[i]);
+      }
+      
+      paramSettings.setParameterValue(configurationParameters[i].getName(), value);
     }
   }
 
+  /**
+   * Check if the given parameter represents one value or multiple values.
+   */
+  private static boolean isMultiValue(Object aObject) {
+    if (aObject != null) {
+      return (aObject instanceof Collection) || aObject.getClass().isArray();
+    }
+    else {
+      return false;
+    }
+  }
 }

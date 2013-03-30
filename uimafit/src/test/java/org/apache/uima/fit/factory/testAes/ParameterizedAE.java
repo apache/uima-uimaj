@@ -71,7 +71,6 @@ public class ParameterizedAE extends JCasAnnotator_ImplBase {
   @ConfigurationParameter(name = PARAM_STRING_9, mandatory = false)
   private Set<String> strings9;
 
-  @SuppressWarnings("unused")
   @ConfigurationParameter(name = "strings10", mandatory = true, defaultValue = {})
   private Set<String> strings10;
 
@@ -89,6 +88,10 @@ public class ParameterizedAE extends JCasAnnotator_ImplBase {
 
   public Set<String> getStrings9() {
     return strings9;
+  }
+  
+  public Set<String> getStrings10() {
+    return strings10;
   }
 
   public static final String PARAM_BOOLEAN_1 = "boolean1";
@@ -125,6 +128,20 @@ public class ParameterizedAE extends JCasAnnotator_ImplBase {
 
   public LinkedList<Boolean> getBooleans6() {
     return booleans6;
+  }
+
+  @ConfigurationParameter(name = "booleans7", defaultValue = "true")
+  private LinkedList<Boolean> booleans7;
+
+  public LinkedList<Boolean> getBooleans7() {
+    return booleans7;
+  }
+
+  @ConfigurationParameter(name = "booleans8", mandatory = false)
+  private LinkedList<Boolean> booleans8;
+
+  public LinkedList<Boolean> getBooleans8() {
+    return booleans8;
   }
 
   public static final String PARAM_INT_1 = "int1";
@@ -236,6 +253,9 @@ public class ParameterizedAE extends JCasAnnotator_ImplBase {
   @ConfigurationParameter(name = "files9", mandatory = false)
   private List<File> files9;
 
+  @ConfigurationParameter(name = "files10", mandatory = false)
+  private List<File> files10;
+
   public EnumValue getEnum1() {
     return enum1;
   }
@@ -288,6 +308,10 @@ public class ParameterizedAE extends JCasAnnotator_ImplBase {
     return files9;
   }
 
+  public List<File> getFiles10() {
+    return files10;
+  }
+  
   public float[] getFloat4() {
     return float4;
   }

@@ -20,6 +20,7 @@ package org.apache.uima.fit.factory;
 
 import static org.apache.uima.fit.factory.ConfigurationParameterFactory.createConfigurationData;
 import static org.apache.uima.fit.factory.ConfigurationParameterFactory.ensureParametersComeInPairs;
+import static org.apache.uima.fit.factory.ConfigurationParameterFactory.setParameters;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.bindExternalResource;
 
 import java.util.Collection;
@@ -90,15 +91,8 @@ public final class FlowControllerFactory {
     desc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
     desc.setImplementationName(flowControllerClass.getName());
 
-    ConfigurationData reflectedConfigurationData = ConfigurationParameterFactory
-            .createConfigurationData(flowControllerClass);
-    ResourceCreationSpecifierFactory.setConfigurationParameters(desc,
-            reflectedConfigurationData.configurationParameters,
-            reflectedConfigurationData.configurationValues);
-    if (configurationParameters != null) {
-      ResourceCreationSpecifierFactory.setConfigurationParameters(desc, configurationParameters,
-              configurationValues);
-    }
+    // set parameters
+    setParameters(desc, flowControllerClass, configurationParameters, configurationValues);
 
     // Configure resource meta data
     ResourceMetaData meta = desc.getMetaData();
@@ -118,5 +112,4 @@ public final class FlowControllerFactory {
 
     return desc;
   }
-
 }

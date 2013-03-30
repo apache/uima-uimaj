@@ -20,6 +20,7 @@ package org.apache.uima.fit.factory;
 
 import static org.apache.uima.fit.factory.ConfigurationParameterFactory.createConfigurationData;
 import static org.apache.uima.fit.factory.ConfigurationParameterFactory.ensureParametersComeInPairs;
+import static org.apache.uima.fit.factory.ConfigurationParameterFactory.setParameters;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.bindExternalResource;
 import static org.apache.uima.fit.factory.FsIndexFactory.createFsIndexCollection;
 import static org.apache.uima.fit.factory.ResourceCreationSpecifierFactory.createResourceCreationSpecifier;
@@ -251,15 +252,9 @@ public final class CollectionReaderFactory {
     desc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
     desc.setImplementationName(readerClass.getName());
 
-    ConfigurationData reflectedConfigurationData = createConfigurationData(readerClass);
-    ResourceCreationSpecifierFactory.setConfigurationParameters(desc,
-            reflectedConfigurationData.configurationParameters,
-            reflectedConfigurationData.configurationValues);
-    if (configurationParameters != null) {
-      ResourceCreationSpecifierFactory.setConfigurationParameters(desc, configurationParameters,
-              configurationValues);
-    }
-
+    // set parameters
+    setParameters(desc, readerClass, configurationParameters, configurationValues);
+    
     // Configure resource meta data
     ResourceMetaData meta = desc.getMetaData();
     ResourceMetaDataFactory.configureResourceMetaData(meta, readerClass);

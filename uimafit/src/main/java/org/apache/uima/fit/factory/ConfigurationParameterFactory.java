@@ -289,8 +289,38 @@ public final class ConfigurationParameterFactory {
   }
 
   /**
+   * Analyze a component for parameters and default values, merge that with parameter values
+   * specified, potentially adding extra parameters. Set the merged result into the provided
+   * descriptor.
+   * 
+   * @param desc
+   *          the descriptor into which to merge the parameters
+   * @param componentClass
+   *          the component class which will be analyzed for parameters. Must match the
+   *          implementationName set in the descriptor.
+   * @param configurationParameters
+   *          additional parameters
+   * @param configurationValues
+   */
+  public static void setParameters(ResourceCreationSpecifier desc,
+          Class<?> componentClass, ConfigurationParameter[] configurationParameters,
+          Object[] configurationValues) {
+    ConfigurationData reflectedConfigurationData = ConfigurationParameterFactory
+            .createConfigurationData(componentClass);
+    ResourceCreationSpecifierFactory.setConfigurationParameters(desc,
+            reflectedConfigurationData.configurationParameters,
+            reflectedConfigurationData.configurationValues);
+    if (configurationParameters != null) {
+      ResourceCreationSpecifierFactory.setConfigurationParameters(desc, configurationParameters,
+              configurationValues);
+    }
+  }
+  
+  /**
    * This method converts configuration data provided as an array of objects and returns a
-   * {@link ConfigurationData} object
+   * {@link ConfigurationData} object. This should only be used to prepare values supplied in a
+   * factory method call for merging with existing parameter declarations, e.g. extracted from a
+   * class using {@link #createConfigurationData(Class)}.
    */
   public static ConfigurationData createConfigurationData(Object... configurationData) {
     if (configurationData == null) {
@@ -376,8 +406,8 @@ public final class ConfigurationParameterFactory {
 
   /**
    * Provides a mechanism to add configuration parameter information to a specifier for the given
-   * classes. this method may be useful in situations where a class definition has annotated
-   * configuration parameters that you want to include in the given specifier
+   * classes. This method may be useful in situations where a class definition has annotated
+   * configuration parameters that you want to include in the given specifier.
    */
   public static void addConfigurationParameters(ResourceCreationSpecifier specifier,
           List<Class<?>> dynamicallyLoadedClasses) {
@@ -388,12 +418,11 @@ public final class ConfigurationParameterFactory {
               reflectedConfigurationData.configurationParameters,
               reflectedConfigurationData.configurationValues);
     }
-
   }
 
   /**
    * Provides a mechanism to add configuration parameter information to a specifier for the given
-   * classes. this method may be useful in situations where a class definition has annotated
+   * classes. This method may be useful in situations where a class definition has annotated
    * configuration parameters that you want to include in the given specifier
    */
   public static void addConfigurationParameters(ResourceCreationSpecifier specifier,

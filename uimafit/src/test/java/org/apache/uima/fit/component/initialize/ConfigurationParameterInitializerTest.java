@@ -72,7 +72,8 @@ public class ConfigurationParameterInitializerTest extends ComponentTestBase {
             typeSystemDescription, ParameterizedAE.PARAM_FLOAT_3, 1.234f,
             ParameterizedAE.PARAM_FLOAT_6, new Float[] { 1.234f, 0.001f }, "file2", "foo/bar",
             "files9", new File[] { new File("test/data/file"), new File("test/data/file2") },
-            ParameterizedAE.PARAM_STRING_9, new String[] { "singleelementarray" });
+            ParameterizedAE.PARAM_STRING_9, "singleelementarray",
+            "files10", new File("test/data/file"), "booleans8", true);
 
     ParameterizedAE component = new ParameterizedAE();
     component.initialize(engine.getUimaContext());
@@ -89,6 +90,7 @@ public class ConfigurationParameterInitializerTest extends ComponentTestBase {
     assertEquals(1, component.getStrings8().size());
     assertTrue(component.getStrings8().contains("cherry"));
     assertTrue(component.getStrings9().contains("singleelementarray"));
+    assertEquals(0, component.getStrings10().size());
 
     assertFalse(component.isBoolean1());
 
@@ -114,6 +116,8 @@ public class ConfigurationParameterInitializerTest extends ComponentTestBase {
     assertTrue(component.getBooleans6().get(1));
     assertTrue(component.getBooleans6().get(2));
     assertFalse(component.getBooleans6().get(3));
+    assertTrue(component.getBooleans7().get(0));
+    assertTrue(component.getBooleans8().get(0));
 
     assertEquals(0, component.getInt1());
     assertEquals(42, component.getInt2());
@@ -161,6 +165,7 @@ public class ConfigurationParameterInitializerTest extends ComponentTestBase {
     assertEquals(2, component.getFiles9().size());
     assertEquals(new File("test/data/file"), component.getFiles9().get(0));
     assertEquals(new File("test/data/file2"), component.getFiles9().get(1));
+    assertEquals(new File("test/data/file"), component.getFiles10().get(0));
     
     assertNull(component.getRegex1());
     assertTrue(component.getRegex2().matcher("This is uimaFIT calling!").matches());
