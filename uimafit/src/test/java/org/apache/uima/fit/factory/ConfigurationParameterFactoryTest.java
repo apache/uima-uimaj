@@ -108,7 +108,7 @@ public class ConfigurationParameterFactoryTest {
     assertEquals("param1", cp.getName());
    assertEquals(org.apache.uima.resource.metadata.ConfigurationParameter.TYPE_STRING, cp.getType());
     assertEquals("", cp.getDescription());
-    assertFalse(cp.isMandatory());
+    assertTrue(cp.isMandatory());
     assertFalse(cp.isMultiValued());
     assertNull(ConfigurationParameterFactory.getDefaultValue(field1));
   }
@@ -148,7 +148,7 @@ public class ConfigurationParameterFactoryTest {
     assertEquals(org.apache.uima.resource.metadata.ConfigurationParameter.TYPE_INTEGER,
             cp.getType());
     assertEquals("", cp.getDescription());
-    assertFalse(cp.isMandatory());
+    assertTrue(cp.isMandatory());
     assertFalse(cp.isMultiValued());
     assertNull(ConfigurationParameterFactory.getDefaultValue(field3));
   }
@@ -167,7 +167,7 @@ public class ConfigurationParameterFactoryTest {
     assertEquals("param4", cp.getName());
     assertEquals(org.apache.uima.resource.metadata.ConfigurationParameter.TYPE_STRING, cp.getType());
     assertEquals("", cp.getDescription());
-    assertFalse(cp.isMandatory());
+    assertTrue(cp.isMandatory());
     assertTrue(cp.isMultiValued());
     assertArrayEquals(new String[] { "a", "b", "c" },
             (String[]) ConfigurationParameterFactory.getDefaultValue(field4));
@@ -186,7 +186,7 @@ public class ConfigurationParameterFactoryTest {
     assertEquals(org.apache.uima.resource.metadata.ConfigurationParameter.TYPE_STRING,
             param.getType());
     assertEquals("", param.getDescription());
-    assertFalse(param.isMandatory());
+    assertTrue(param.isMandatory());
     String[] expected = new String[] { "data/foo", "bar" };
     String[] actual = (String[]) ConfigurationParameterFactory.getDefaultValue(field);
     assertArrayEquals(expected, actual);
@@ -204,7 +204,7 @@ public class ConfigurationParameterFactoryTest {
     assertEquals("stringSet", param.getName());
     assertEquals(org.apache.uima.resource.metadata.ConfigurationParameter.TYPE_STRING,
             param.getType());
-    assertFalse(param.isMandatory());
+    assertTrue(param.isMandatory());
     String[] expected = new String[] { "5", "5", "4", "3" };
     String[] actual = (String[]) ConfigurationParameterFactory.getDefaultValue(field);
     assertArrayEquals(expected, actual);

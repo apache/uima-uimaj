@@ -74,9 +74,9 @@ public @interface ConfigurationParameter {
   String description() default "";
 
   /**
-   * specifies whether this configuration parameter is mandatory - i.e. the value must be provided
+   * Specifies whether this configuration parameter is mandatory - i.e. the value must be provided
    */
-  boolean mandatory() default false;
+  boolean mandatory() default true;
 
   /**
    * What can be the value should correspond with the type of the field that is annotated. If for

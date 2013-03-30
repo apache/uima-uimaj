@@ -45,8 +45,8 @@ public class ReversableTestFlowController extends
         org.apache.uima.fit.component.JCasFlowController_ImplBase {
 
   public static final String PARAM_REVERSE_ORDER = "reverseOrder";
-  @ConfigurationParameter
-  private boolean reverseOrder = false;
+  @ConfigurationParameter(defaultValue = "false")
+  private boolean reverseOrder;
 
   @Override
   public Flow computeFlow(JCas jCas) throws AnalysisEngineProcessException {

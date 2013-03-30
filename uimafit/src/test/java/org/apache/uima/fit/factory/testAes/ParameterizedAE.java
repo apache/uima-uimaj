@@ -47,7 +47,7 @@ public class ParameterizedAE extends JCasAnnotator_ImplBase {
   private String[] string2;
 
   public static final String PARAM_STRING_3 = "string3";
-  @ConfigurationParameter(name = PARAM_STRING_3)
+  @ConfigurationParameter(name = PARAM_STRING_3, mandatory = false)
   private String string3;
 
   public static final String PARAM_STRING_4 = "string4";
@@ -61,14 +61,14 @@ public class ParameterizedAE extends JCasAnnotator_ImplBase {
   @ConfigurationParameter(name = "strings6", defaultValue = { "kiwi fruit", "grape", "pear" })
   private Set<String> strings6;
 
-  @ConfigurationParameter(name = "strings7")
+  @ConfigurationParameter(name = "strings7", mandatory = false)
   private Set<String> strings7;
 
   @ConfigurationParameter(name = "strings8", defaultValue = "cherry")
   private Set<String> strings8;
 
   public static final String PARAM_STRING_9 = "strings9";
-  @ConfigurationParameter(name = PARAM_STRING_9)
+  @ConfigurationParameter(name = PARAM_STRING_9, mandatory = false)
   private Set<String> strings9;
 
   @SuppressWarnings("unused")
@@ -96,10 +96,10 @@ public class ParameterizedAE extends JCasAnnotator_ImplBase {
   private boolean boolean1;
 
   public static final String PARAM_BOOLEAN_2 = "boolean2";
-  @ConfigurationParameter(name = PARAM_BOOLEAN_2)
+  @ConfigurationParameter(name = PARAM_BOOLEAN_2, mandatory = false)
   private Boolean boolean2;
 
-  @ConfigurationParameter
+  @ConfigurationParameter(mandatory = false)
   private boolean boolean2b;
 
   public boolean isBoolean2b() {
@@ -215,7 +215,7 @@ public class ParameterizedAE extends JCasAnnotator_ImplBase {
   @ConfigurationParameter(name = "file2", mandatory = true)
   private File file2;
 
-  @ConfigurationParameter(name = "files3")
+  @ConfigurationParameter(name = "files3", mandatory = false)
   private File[] files3;
 
   @ConfigurationParameter(name = "files4", defaultValue = "test/data/file")
@@ -224,7 +224,7 @@ public class ParameterizedAE extends JCasAnnotator_ImplBase {
   @ConfigurationParameter(name = "files5", defaultValue = { "test/data/file", "test/data/file2" })
   private File[] files5;
 
-  @ConfigurationParameter(name = "files6")
+  @ConfigurationParameter(name = "files6", mandatory = false)
   private List<File> files6;
 
   @ConfigurationParameter(name = "files7", defaultValue = "test/data/file")
@@ -233,7 +233,7 @@ public class ParameterizedAE extends JCasAnnotator_ImplBase {
   @ConfigurationParameter(name = "files8", defaultValue = { "test/data/file", "test/data/file2" })
   private List<File> files8;
 
-  @ConfigurationParameter(name = "files9")
+  @ConfigurationParameter(name = "files9", mandatory = false)
   private List<File> files9;
 
   public EnumValue getEnum1() {
@@ -373,12 +373,19 @@ public class ParameterizedAE extends JCasAnnotator_ImplBase {
     return string5;
   }
 
-  @SuppressWarnings("unused")
-  @ConfigurationParameter(name = "regex1")
+  public static final String PARAM_REGEX_1 = "regex1";
+  @ConfigurationParameter(name = PARAM_REGEX_1, mandatory = false)
   private Pattern regex1;
 
-  @SuppressWarnings("unused")
-  @ConfigurationParameter(name = "regex2")
+  public static final String PARAM_REGEX_2 = "regex2";
+  @ConfigurationParameter(name = PARAM_REGEX_2, defaultValue=".*uimaFIT.*")
   private Pattern regex2;
-
+  
+  public Pattern getRegex1() {
+    return regex1;
+  }
+  
+  public Pattern getRegex2() {
+    return regex2;
+  }
 }

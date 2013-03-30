@@ -263,9 +263,9 @@ public class AnalysisEngineFactoryTest extends ComponentTestBase {
     testConfigurationParameter(aed, ParameterizedAE.PARAM_INT_1,
             ConfigurationParameter.TYPE_INTEGER, true, false, 0);
     testConfigurationParameter(aed, ParameterizedAE.PARAM_INT_2,
-            ConfigurationParameter.TYPE_INTEGER, false, false, 42);
+            ConfigurationParameter.TYPE_INTEGER, true, false, 42);
     testConfigurationParameter(aed, ParameterizedAE.PARAM_INT_3,
-            ConfigurationParameter.TYPE_INTEGER, false, true, new Integer[] { 42, 111 });
+            ConfigurationParameter.TYPE_INTEGER, true, true, new Integer[] { 42, 111 });
     testConfigurationParameter(aed, ParameterizedAE.PARAM_INT_4,
             ConfigurationParameter.TYPE_INTEGER, true, true, new Integer[] { 2 });
 

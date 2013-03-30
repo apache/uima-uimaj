@@ -71,11 +71,8 @@ public class ConfigurationParameterInitializerTest extends ComponentTestBase {
     AnalysisEngine engine = AnalysisEngineFactory.createPrimitive(ParameterizedAE.class,
             typeSystemDescription, ParameterizedAE.PARAM_FLOAT_3, 1.234f,
             ParameterizedAE.PARAM_FLOAT_6, new Float[] { 1.234f, 0.001f }, "file2", "foo/bar",
-            "files9", new File[] { new File("test/data/file"), new File("test/data/file2") });
-    // Test initializing a multi-valued parameter with a single value
-    // This is supposed to be fixed as part of issue #79
-    // -- REC 2011-05-02
-    // ParameterizedAE.PARAM_STRING_9, "singleelementarray");
+            "files9", new File[] { new File("test/data/file"), new File("test/data/file2") },
+            ParameterizedAE.PARAM_STRING_9, new String[] { "singleelementarray" });
 
     ParameterizedAE component = new ParameterizedAE();
     component.initialize(engine.getUimaContext());
@@ -91,7 +88,7 @@ public class ConfigurationParameterInitializerTest extends ComponentTestBase {
     assertNull(component.getStrings7());
     assertEquals(1, component.getStrings8().size());
     assertTrue(component.getStrings8().contains("cherry"));
-    // assertTrue(component.getStrings9().contains("singleelementarray"));
+    assertTrue(component.getStrings9().contains("singleelementarray"));
 
     assertFalse(component.isBoolean1());
 
@@ -164,6 +161,9 @@ public class ConfigurationParameterInitializerTest extends ComponentTestBase {
     assertEquals(2, component.getFiles9().size());
     assertEquals(new File("test/data/file"), component.getFiles9().get(0));
     assertEquals(new File("test/data/file2"), component.getFiles9().get(1));
+    
+    assertNull(component.getRegex1());
+    assertTrue(component.getRegex2().matcher("This is uimaFIT calling!").matches());
 
     engine = AnalysisEngineFactory.createPrimitive(ParameterizedAE.class, typeSystemDescription,
             ParameterizedAE.PARAM_FLOAT_3, 1.234f, ParameterizedAE.PARAM_FLOAT_6, new Float[] {
@@ -339,7 +339,7 @@ public class ConfigurationParameterInitializerTest extends ComponentTestBase {
   }
 
   public static class DefaultValueAE1 extends JCasAnnotator_ImplBase {
-    @ConfigurationParameter(defaultValue = "green")
+    @ConfigurationParameter(defaultValue = "green", mandatory = false)
     private String color;
 
     @Override
@@ -410,10 +410,10 @@ public class ConfigurationParameterInitializerTest extends ComponentTestBase {
     @ConfigurationParameter(name = "L2")
     public Locale locale2;
 
-    @ConfigurationParameter(name = "L3")
+    @ConfigurationParameter(name = "L3", mandatory = false)
     public Locale locale3;
 
-    @ConfigurationParameter(name = "L4")
+    @ConfigurationParameter(name = "L4", mandatory = false)
     public Locale locale4;
 
     @Override
