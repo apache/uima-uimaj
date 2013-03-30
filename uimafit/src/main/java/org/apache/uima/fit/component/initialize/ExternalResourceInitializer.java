@@ -261,7 +261,7 @@ public class ExternalResourceInitializer {
   }
 
   /**
-   * Get the binding key for the specified field. If no key is set, use the field class name as key.
+   * Get the binding key for the specified field. If no key is set, use the field name as key.
    * 
    * @param field
    *          the field to bind.
@@ -271,7 +271,7 @@ public class ExternalResourceInitializer {
     ExternalResource cpa = ReflectionUtil.getAnnotation(field, ExternalResource.class);
     String key = cpa.key();
     if (key.length() == 0) {
-      key = field.getType().getName();
+      key = field.getName();
     }
     return key;
   }

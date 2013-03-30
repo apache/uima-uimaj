@@ -34,8 +34,8 @@ import org.apache.uima.resource.Resource;
 @Target(ElementType.FIELD)
 public @interface ExternalResource {
   /**
-   * The key to which external resources bind to. If no key is set, the class name of the annotated
-   * field will be used.
+   * The key to which external resources bind to. If no key is set, the name of the annotated field
+   * will be used.
    * 
    * @return the key;
    */

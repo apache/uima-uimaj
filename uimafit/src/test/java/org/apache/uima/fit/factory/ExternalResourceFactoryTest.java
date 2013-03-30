@@ -134,7 +134,7 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
 
   @Test
   public void testDirectInjectionAutowire() throws Exception {
-    // Create analysis enginge description
+    // Create analysis engine description
     AnalysisEngineDescription desc = createPrimitiveDescription(DummyAE2.class);
 
     // Bind external resources for DummyAE

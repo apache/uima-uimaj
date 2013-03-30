@@ -22,6 +22,7 @@ package org.apache.uima.fit.factory;
 import static org.apache.uima.fit.component.initialize.ExternalResourceInitializer.getResourceDeclarations;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -61,23 +62,26 @@ public class ExternalResourceConfiguratorTest extends ComponentTestBase {
   private void verify(Map<String, ExternalResourceDependency> deps) {
     assertEquals(3, deps.size());
 
-    String key = ParameterizedAE2.DummyResource.class.getName();
+    String key1 = "res"; // This is the name of the field
     String api = ParameterizedAE2.DummyResource.class.getName();
-    ExternalResourceDependency d = deps.get(key);
-    assertEquals(key, d.getKey());
-    assertEquals(api, d.getInterfaceName());
-    assertEquals(false, d.isOptional());
+    ExternalResourceDependency d1 = deps.get(key1);
+    assertNotNull(d1);
+    assertEquals(key1, d1.getKey());
+    assertEquals(api, d1.getInterfaceName());
+    assertEquals(false, d1.isOptional());
 
-    key = ParameterizedAE2.RES_OTHER;
-    d = deps.get(key);
-    assertEquals(key, d.getKey());
-    assertEquals(api, d.getInterfaceName());
-    assertEquals(false, d.isOptional());
+    String key2 = ParameterizedAE2.RES_OTHER;
+    ExternalResourceDependency d2 = deps.get(key2);
+    assertNotNull(d2);
+    assertEquals(key2, d2.getKey());
+    assertEquals(api, d2.getInterfaceName());
+    assertEquals(false, d2.isOptional());
 
-    key = ParameterizedAE2.RES_OPTIONAL;
-    d = deps.get(key);
-    assertEquals(key, d.getKey());
-    assertEquals(api, d.getInterfaceName());
-    assertEquals(true, d.isOptional());
+    String key3 = ParameterizedAE2.RES_OPTIONAL;
+    ExternalResourceDependency d3 = deps.get(key3);
+    assertNotNull(3d);
+    assertEquals(key3, d3.getKey());
+    assertEquals(api, d3.getInterfaceName());
+    assertEquals(true, d3.isOptional());
   }
 }

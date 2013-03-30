@@ -18,43 +18,63 @@
  */
 package org.apache.uima.fit.legacy.converter;
 
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Field;
+
 import org.apache.uima.fit.descriptor.ExternalResource;
+import org.apache.uima.fit.legacy.AnnotationConverter;
 import org.apache.uima.resource.Resource;
 
 public class ExternalResourceConverter
-        extends
-        ContextlessAnnotationConverterBase<org.uimafit.descriptor.ExternalResource, org.apache.uima.fit.descriptor.ExternalResource> {
+        implements
+        AnnotationConverter<org.uimafit.descriptor.ExternalResource, org.apache.uima.fit.descriptor.ExternalResource> {
 
   public ExternalResourceConverter() {
     // Nothing to do
   }
 
-  @Override
-  public ExternalResource convert(
-          final org.uimafit.descriptor.ExternalResource aAnnotation) {
-    return new ExternalResourceSubstitute(aAnnotation);
+  public ExternalResource convert(AccessibleObject aContext,
+          org.uimafit.descriptor.ExternalResource aAnnotation) {
+    return new ExternalResourceSubstitute(aAnnotation, (Field) aContext);
+  }
+
+  public ExternalResource convert(Class<?> aContext,
+          org.uimafit.descriptor.ExternalResource aAnnotation) {
+    throw new UnsupportedOperationException("Annotation is not permitted on classes");
   }
 
   public Class<org.uimafit.descriptor.ExternalResource> getLegacyType() {
     return org.uimafit.descriptor.ExternalResource.class;
   }
-  
+
   public Class<ExternalResource> getModernType() {
     return ExternalResource.class;
   }
-  
+
   @SuppressWarnings("serial")
-  public class ExternalResourceSubstitute extends
-          AnnotationLiteral<ExternalResource> implements ExternalResource {
+  public class ExternalResourceSubstitute extends AnnotationLiteral<ExternalResource> implements
+          ExternalResource {
 
     private org.uimafit.descriptor.ExternalResource legacyAnnotation;
-    
-    public ExternalResourceSubstitute(org.uimafit.descriptor.ExternalResource aAnnotation) {
+
+    private Field field;
+
+    public ExternalResourceSubstitute(org.uimafit.descriptor.ExternalResource aAnnotation,
+            Field aField) {
       legacyAnnotation = aAnnotation;
+      field = aField;
     }
 
+    /**
+     * Legacy uimaFIT used the field class name as default value.
+     */
     public String key() {
-      return legacyAnnotation.key();
+      if (legacyAnnotation.key().equals("")) {
+        return field.getType().getName();
+      }
+      else {
+        return legacyAnnotation.key();
+      }
     }
 
     public Class<? extends Resource> api() {

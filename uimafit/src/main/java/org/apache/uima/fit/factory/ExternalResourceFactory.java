@@ -403,7 +403,7 @@ public final class ExternalResourceFactory {
 
   /**
    * Scan the given resource specifier for external resource dependencies and whenever a dependency
-   * is encounter that has a key equal to the resource class name, the resource will be bound.
+   * with a compatible type is found, the resource will be bound.
    * 
    * @param aDesc
    *          a description.
@@ -414,13 +414,13 @@ public final class ExternalResourceFactory {
    * @see CustomResourceSpecifier
    */
   public static void bindResource(ResourceSpecifier aDesc, Class<? extends Resource> aRes,
-          String... aParams) throws InvalidXMLException {
+          String... aParams) throws InvalidXMLException, ClassNotFoundException {
     bindResource(aDesc, aRes, aRes, aParams);
   }
 
   /**
    * Scan the given resource specifier for external resource dependencies and whenever a dependency
-   * is encounter that has a key equal to the API class name, the resource will be bound.
+   * with a compatible type is found, the resource will be bound.
    * 
    * @param aDesc
    *          a description.
@@ -433,17 +433,18 @@ public final class ExternalResourceFactory {
    * @see CustomResourceSpecifier
    */
   public static void bindResource(ResourceSpecifier aDesc, Class<?> aApi,
-          Class<? extends Resource> aRes, String... aParams) throws InvalidXMLException {
+          Class<? extends Resource> aRes, String... aParams) throws InvalidXMLException,
+          ClassNotFoundException {
     // Appending a disambiguation suffix it possible to have multiple instances of the same
     // resource with different settings to different keys.
     ExternalResourceDescription extRes = createExternalResourceDescription(
             uniqueResourceKey(aRes.getName()), aRes, (Object[]) aParams);
-    bindResource(aDesc, aApi.getName(), extRes);
+    bindResource(aDesc, extRes);
   }
 
   /**
    * Scan the given resource specifier for external resource dependencies and whenever a dependency
-   * is encountered that has a key equal to the resource class name, the resource will be bound.
+   * with a compatible type is found, the resource will be bound.
    * 
    * @param aDesc
    *          a description.
@@ -457,8 +458,10 @@ public final class ExternalResourceFactory {
    */
   public static void bindResource(ResourceSpecifier aDesc,
           Class<? extends SharedResourceObject> aRes, String aUrl, Object... aParams)
-          throws InvalidXMLException {
-    bindResource(aDesc, aRes, aRes, aUrl, aParams);
+          throws InvalidXMLException, ClassNotFoundException {
+    ExternalResourceDescription extRes = createExternalResourceDescription(
+            uniqueResourceKey(aRes.getName()), aRes, aUrl, aParams);
+    bind((AnalysisEngineDescription) aDesc, extRes);
   }
 
   /**
@@ -532,6 +535,23 @@ public final class ExternalResourceFactory {
     ExternalResourceDescription extRes = createExternalResourceDescription(
             uniqueResourceKey(aRes.getName()), aRes, (Object[]) aParams);
     bindResource(aDesc, aKey, extRes);
+  }
+
+  /**
+   * Scan the given resource specifier for external resource dependencies and whenever a dependency
+   * with a compatible type is found, the given resource is bound to it.
+   * 
+   * @param aDesc
+   *          a description.
+   * @param aResDesc
+   *          the resource description.
+   */
+  public static void bindResource(ResourceSpecifier aDesc, ExternalResourceDescription aResDesc)
+          throws InvalidXMLException, ClassNotFoundException {
+    // Dispatch
+    if (aDesc instanceof AnalysisEngineDescription) {
+      bind((AnalysisEngineDescription) aDesc, aResDesc);
+    }
   }
 
   /**
@@ -698,6 +718,40 @@ public final class ExternalResourceFactory {
               createExternalResourceDependency(aKey, aImpl, false)));
     }
     bindResource(aDesc, aKey, aImpl, aUrl, aParams);
+  }
+
+  /**
+   * Scan the given resource specifier for external resource dependencies and whenever a dependency
+   * a compatible type is found, the given resource is bound to it.
+   * 
+   * @param aDesc
+   *          a description.
+   * @param aResDesc
+   *          the resource description.
+   */
+  private static void bind(AnalysisEngineDescription aDesc, ExternalResourceDescription aResDesc)
+          throws InvalidXMLException, ClassNotFoundException {
+    // Recursively address delegates
+    if (!aDesc.isPrimitive()) {
+      for (Object delegate : aDesc.getDelegateAnalysisEngineSpecifiers().values()) {
+        bindResource((ResourceSpecifier) delegate, aResDesc);
+      }
+    }
+
+    // Bind if necessary
+    Class<?> resClass = Class.forName(getImplementationName(aResDesc));
+    for (ExternalResourceDependency dep : aDesc.getExternalResourceDependencies()) {
+      Class<?> apiClass = Class.forName(dep.getInterfaceName());
+
+      // Never bind fields of type Object. See also ExternalResourceInitializer#getApi()
+      if (apiClass.equals(Object.class)) {
+        continue;
+      }
+      
+      if (apiClass.isAssignableFrom(resClass)) {
+        bindExternalResource(aDesc, dep.getKey(), aResDesc);
+      }
+    }
   }
 
   /**
@@ -928,6 +982,24 @@ public final class ExternalResourceFactory {
     return aKey + '-' + DISAMBIGUATOR.getAndIncrement();
   }
 
+  /**
+   * Find the name of the class implementing this resource. The location where this name is stored
+   * varies, depending if the resource extends {@link SharedResourceObject} or implements
+   * {@link Resource}.
+   * 
+   * @param aDesc the external resource description.
+   * @return the implementation name.
+   */
+  protected static String getImplementationName(ExternalResourceDescription aDesc)
+  {
+    if (aDesc.getResourceSpecifier() instanceof CustomResourceSpecifier) {
+      return ((CustomResourceSpecifier) aDesc.getResourceSpecifier()).getResourceClassName();
+    }
+    else {
+      return aDesc.getImplementationName();
+    }
+  }
+  
   /**
    * Extracts the external resource from the configuration parameters and nulls out these
    * parameters. Mind that the array passed to this method is modified by the method.
