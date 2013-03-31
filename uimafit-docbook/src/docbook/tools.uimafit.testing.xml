@@ -1,0 +1,87 @@
+<chapter id="ugr.tools.uimafit.introduction">
+  <title>Testing UIMA components</title>
+  <para>Writing tests without uimaFIT can be a laborious process that results in fragile tests that
+    are very verbose and break easily when code is refactored. This page demonstrates how you can
+    write tests that are both concise and robust. Here's an outline of how you might create a test
+    for a UIMA component <emphasis>without</emphasis> uimaFIT:</para>
+  <orderedlist>
+    <listitem>
+      <para>write a descriptor file that configures your component appropriately for the test. This
+        requires a minimum of 30-50 lines of XML.</para>
+    </listitem>
+    <listitem>
+      <para>begin a test with 5-10 lines of code that instantiate the e.g. analysis engine.</para>
+    </listitem>
+    <listitem>
+      <para>run the analysis engine against some text and test the contents of the CAS.</para>
+    </listitem>
+    <listitem>
+      <para>repeat steps 1-3 for your next test usually by copying the descriptor file, renaming it,
+        and changing e.g. configuration parameters.</para>
+    </listitem>
+  </orderedlist>
+  <para>If you have gone through the pain of creating tests like these and then decided you should
+    refactor your code, then you know how tedious it is to maintain them. </para>
+  <para>Instead of pasting variants of the setup code (see step 2) into other tests we began to
+    create a library of utility methods that we could call which helped shorten our code. We
+    extended these methods so that we could instantiate our components directly without a descriptor
+    file. These utility methods became the initial core of uimaFIT. </para>
+  <section>
+    <title>Examples</title>
+    <para>There are several examples that can be found in the <emphasis>uimafit-examples</emphasis>
+      module.</para>
+    <itemizedlist>
+      <listitem>
+        <para>There are a number of examples of unit tests in both the test suite for the uimafit
+          project and the uimafit-examples project. In particular, there are some well-documented
+          unit tests in the latter which can be found in
+            <classname>RoomNumberAnnotator1Test</classname></para>
+      </listitem>
+      <listitem>
+        <para>You can improve your testing strategy by introducing a <classname>TestBase</classname>
+          class such as the one found in <classname>ExamplesTestBase</classname>. This class is
+          intended as a super class for your other test classes and sets up a
+            <interfacename>JCas</interfacename> that is always ready to use along with a
+            <interfacename>TypeSystemDescription</interfacename> and a
+            <interfacename>TypePriorities</interfacename>. An example test that subclasses from
+            <classname>ExamplesTestBase</classname> is
+            <classname>RoomNumberAnnotator2Test</classname>.</para>
+      </listitem>
+      <listitem>
+        <para>Most analysis engines that you want to test will generally be downstream of many other
+          components that add annotations to the CAS. These annotations will likely need to be in
+          the CAS so that a downstream analysis engine will do something sensible. This poses a
+          problem for tests because it may be undesirable to set up and run an entire pipeline every
+          time you want to test a downstream analysis engine. Furthermore, such tests can become
+          fragile in the face of behavior changes to upstream components. For this reason, it can be
+          advantageous to serialize a CAS as an XMI file and use this as a starting point rather
+          than running an entire pipeline. An example of this approach can be found in
+            <classname>XmiTest</classname>. </para>
+      </listitem>
+    </itemizedlist>
+  </section>
+  <section>
+    <title>Tips &amp; Tricks</title>
+    <para>The package <package>org.apache.uima.fit.testing</package> provides some utility classes
+      that can be handy when writing tests for UIMA components. You may find the following
+      suggestions useful:</para>
+    <itemizedlist>
+      <listitem>
+        <para>add a <classname>TokenBuilder</classname> to your <classname>TestBase</classname>
+          class. An example of this can be found in <classname>ComponentTestBase</classname>. This
+          makes it easy to add tokens and sentences to the CAS you are testing which is a common
+          task for many tests.</para>
+      </listitem>
+      <listitem>
+        <para>use a <classname>JCasBuilder</classname> to add text and annotations incrementally to
+          a JCas instead of first setting the text and then adding all annotations. </para>
+      </listitem>
+      <listitem>
+        <para>use a <classname>CasDumpWriter</classname> to write the CAS contents is a human
+          readable format to a file or to the console. Compare this with a previously written and
+          manually verifed file to see if changes in the component result in changes of the
+          components output.</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+</chapter>

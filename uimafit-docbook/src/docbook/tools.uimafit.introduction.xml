@@ -1,0 +1,142 @@
+<chapter id="ugr.tools.uimafit.introduction">
+  <title>Introduction</title>
+  <para>While uimaFIT provides many features for a UIMA developer, there are two overarching themes
+    that most features fall under. These two sides of uimaFIT are,while complementary, largely
+    independent of each other. One of the beauties of uimaFIT is that a developer that uses one side
+    of uimaFIT extensively is not required to use the other side at all. </para>
+  <section>
+    <title>Simplify Component Implementation</title>
+    <para>The first broad theme of uimaFIT provides features that <emphasis>simplify component
+        implementation</emphasis>. Our favorite example of this is the
+        <classname>@ConfigurationParameter</classname> annotation which allows you to annotate a
+      member variable as a configuration parameter. This annotation in combination with the method
+        <methodname>ConfigurationParameterInitializer.initialize()</methodname> completely automates
+      the process of initializing member variables with values from the
+        <interfacename>UimaContext</interfacename> passed into your analysis engine's initialize
+      method. Similarly, the annotation <classname>@ExternalResource</classname> annotation in
+      combination with the method <methodname>ExternalResourceInitializer.initialize()</methodname>
+      completely automates the binding of an external resource as defined in the
+        <interfacename>UimaContext</interfacename> to a member variable. Dispensing with manually
+      writing the code that performs these two tasks reduces effort, eliminates verbose and
+      potentially buggy boiler-plate code, and makes implementing a UIMA component more enjoyable.
+      Consider, for example, a member variable that is of type <classname>Locale</classname>. With
+      uimaFIT you can simply annotate the member variable with
+        <classname>@ConfigurationParameter</classname> and have your initialize method automatically
+      initialize the variable correctly with a string value in the
+        <interfacename>UimaContext</interfacename> such as <literal>en_US</literal>. </para>
+  </section>
+  <section>
+    <title>Simplify Component Instantiation</title>
+    <para>The second broad theme of uimaFIT provides features that <emphasis>simplify component
+        instantiation</emphasis>. Working with UIMA, have you ever said to yourself <quote>but I
+        just want to tag some text!?</quote> What does it take to <quote>just tag some text?</quote>
+      Here's a list of things you must do with the traditional approach:</para>
+    <itemizedlist>
+      <listitem>
+        <para>wrap your tagger as a UIMA analysis engine</para>
+      </listitem>
+      <listitem>
+        <para>write a descriptor file for your analysis engine</para>
+      </listitem>
+      <listitem>
+        <para>write a CAS consumer that produces the desired output</para>
+      </listitem>
+      <listitem>
+        <para>write another descriptor file for the CAS consumer</para>
+      </listitem>
+      <listitem>
+        <para>write a descriptor file for a collection reader</para>
+      </listitem>
+      <listitem>
+        <para>write a descriptor file that describes a pipeline</para>
+      </listitem>
+      <listitem>
+        <para>invoke the Collection Processing Manager with your pipeline descriptor file</para>
+      </listitem>
+    </itemizedlist>
+    <section>
+      <title>From a class</title>
+      <para>Each of these steps has its own pitfalls and can be rather time consuming. This is a
+        rather unsatisfying answer to our simple desire to just tag some text. With uimaFIT you can
+        literally eliminate all of these steps. </para>
+      <para>Here's a simple snippet of Java code that illustrates <quote>tagging some text</quote>
+        with uimaFIT:</para>
+      <programlisting>JCas jCas = JCasFactory.createJCas();
+
+jCas.setDocumentText("some text");
+
+AnalysisEngine tokenizer = createPrimitive(MyTokenizer.class);
+
+AnalysisEngine tagger = createPrimitive(MyTagger.class);
+
+runPipeline(jCas, tokenizer, tagger);
+
+for(Token token : iterate(jCas, Token.class)){
+    System.out.println(token.getTag());
+}</programlisting>
+      <para>This code assumes several static method imports (e.g.
+          <methodname>createPrimitive()</methodname>) provided by uimaFIT for brevity. And while the
+        terseness of this code won't make a Python programmer blush - it is certainly much easier
+        than the seven steps outlined above! </para>
+    </section>
+    <section>
+      <title>From an XML descriptor</title>
+      <para>uimaFIT provides mechanisms to instantiate and run UIMA components programmatically with
+        or without descriptor files. For example, if you have a descriptor file for your analysis
+        engine defined by <classname>MyTagger</classname> (as shown above), then you can instead
+        instantiate the analysis engine with:</para>
+      <programlisting>AnalysisEngine tagger = createAnalysisEngine("mypackage.MyTagger");</programlisting>
+      <para>This will find the descriptor file <filename>mypackage/!MyTagger.xml</filename> by name.
+        Similarly, you can find a descriptor file by location with
+          <methodname>createAnalysisEngineFromPath()</methodname>. However, if you want to dispense
+        with XML descriptor files altogether (and you probably do), you can use the method
+          <methodname>createPrimitive()</methodname> as shown above. One of the driving motivations
+        for creating the second side of uimaFIT is our frustration with descriptor files and our
+        desire to eliminate them. Descriptor files are difficult to maintain because they are
+        generally tightly coupled with java code, they decay without warning, they are wearisome to
+        test, and they proliferate, among other reasons.</para>
+    </section>
+  </section>
+  <section>
+    <title>Is this cheating?</title>
+    <para>One question that is often raised by new uimaFIT users is whether or not it breaks the
+        <emphasis>UIMA way</emphasis>. That is, does adopting uimaFIT lead me down a path of
+      creating UIMA components and systems that are incompatible with the traditional UIMA approach?
+      The answer to this question is <emphasis>no</emphasis>. For starters, uimaFIT does not skirt
+      the UIMA mechanism of describing components - it only skips the XML part of it. For example,
+      when the method <methodname>createPrimitive()</methodname> is called (as shown above) an
+        <interfacename>AnalysisEngineDescription</interfacename> is created for the analysis engine.
+      This is the same object type that is instantiated when a descriptor file is used. So, instead
+      of parsing XML to instantiate an analysis engine description from XML, uimaFIT uses a factory
+      method to instantiate it from method parameters. One of the happy benefits of this approach is
+      that for a given <interfacename>AnalysisEnginedDescription</interfacename> (which can be
+      obtained directly with <methodname>createPrimitiveDescription()</methodname>) you can generate
+      an XML descriptor file using <methodname>AnalysisEngineDescription.toXML()</methodname>. So,
+      uimaFIT actually provides a very simple and direct path for <emphasis>generating</emphasis>
+      XML descriptor files rather than manually creating and maintaining them! </para>
+    <para>It is also useful to clarify that if you only want to use one side or the other of
+      uimaFIT, then you are free to do so. This is possible precisely because uimaFIT does not
+      workaround UIMA's mechanisms for describing components but rather uses them directly. For
+      example, if the only thing you want to use in uimaFIT is the
+        <classname>@ConfigurationParameter</classname>, then you can do so without worrying about
+      what effect this will have on your descriptor files. This is because your analysis engine will
+      be initialized with exactly the same <interfacename>UimaContext</interfacename> regardless of
+      whether you instantiate your analysis engine in the <emphasis>UIMA way</emphasis> or use one
+      of uimaFIT's factory methods. Similarly, a UIMA component does not need to be annotated with
+        <classname>@ConfiguratioParameter</classname> for you to make use of the
+        <methodname>createPrimitive()</methodname> method. This is because when you pass
+      configuration parameter values in to the <methodname>createPrimitive()</methodname> method,
+      they are added to an <interfacename>AnalysisEngineDescription</interfacename> which is used by
+      UIMA to populate a <interfacename>UimaContext</interfacename> - just as it would if you used a
+      descriptor file. </para>
+  </section>
+  <section>
+    <title>Conclusion</title>
+    <para>Because uimaFIT can be used to simplify component implementation and instantiation it is
+      easy to assume that you can't do one without the other. This page has demonstrated that while
+      these two sides of uimaFIT complement each other, they are not coupled together and each can
+      be effectively used without the other. Similarly, by understanding how uimaFIT uses the UIMA
+      component description mechanisms directly, one can be assured that uimaFIT enables UIMA
+      development that is compatible and consistent with the UIMA standard and APIs. </para>
+  </section>
+</chapter>

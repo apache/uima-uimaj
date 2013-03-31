@@ -1,0 +1,130 @@
+<chapter id="ugr.tools.uimafit.typesystem">
+  <title>Type System Detection</title>
+  <para>UIMA requires that types that are used in the CAS are defined in XML files - so-called
+      <emphasis>type system descriptions</emphasis> (TSD). Whenever a UIMA component is created, it
+    must be associated with such a type system. While it is possible to manually load the type
+    system descriptors and pass them to each UIMA component and to each created CAS, it is quite
+    inconvenient to do so. For this reason, uimaFIT supports the automatic detection of such files
+    in the classpath. Thus is becomes possible for a UIMA component provider to have component's
+    type automatically detected and thus the components becomes immediately usable by adding it to
+    the classpath.</para>
+  <section>
+    <title>Making types auto-detectable</title>
+    <para>The provider of a type system should create a file
+        <filename>META-INF/org.apache.uima.fit/types.txt</filename> in the classpath. This file
+      should define the locations of the type system descriptions. Assume that a type
+        <classname>org.apache.uima.fit.type.Token</classname> is specified in the TSD
+        <filename>org/apache/uima/fit/type/Token.xml</filename>, then the file should have the
+      following contents:</para>
+    <programlisting>classpath*:org/apache/uima/fit/type/Token.xml</programlisting>
+    <para>To specify multiple TSDs, add additonal lines to the file. If you have a large number of
+      TSDs, you may prefer to add a pattern. Assume that we have a large number of TSDs under
+        <filename>org/apache/uima/fit/type</filename>, we can use the following pattern which
+      recursively scans the package <package>org.apache.uima.fit.type</package> and all sub-packages
+      for XML files and tries to load them as TSDs.</para>
+    <programlisting>classpath*:org/apache/uima/fit/type/**/*.xml</programlisting>
+    <para>Try to design your packages structure in a way that TSDs and JCas wrapper classes
+      generated from them are separate from the rest of your code.</para>
+    <para>If it is not possible or inconvenient to add the `types.txt` file, patterns can also be
+      specified using the system property
+        <parameter>org.apache.uima.fit.type.import_pattern</parameter>. Multiple patterns may be
+      specified separated by semicolon<footnote>
+        <para>The <literal>\</literal> in the example is used as a line-continuation indicator. It
+          and all spaces following it should be ommitted.</para>
+      </footnote>:</para>
+    <programlisting>-Dorg.apache.uima.fit.type.import_pattern=\
+  classpath*:org/apache/uima/fit/type/**/*.xml</programlisting>
+  </section>
+  <section>
+    <title>Using type auto-detection </title>
+    <para>The auto-detected type system can be obtained from the
+        <classname>TypeSystemDescriptionFactory</classname>:</para>
+    <programlisting>TypeSystemDescription tsd = 
+  TypeSystemDescriptionFactory.createTypeSystemDescription()</programlisting>
+    <para>Popular factory methods also support auto-detection:</para>
+    <programlisting>AnalysisEngine ae = createPrimitive(MyEngine.class);</programlisting>
+  </section>
+  <section>
+    <title>Multiple <filename>META-INF/org.uimafit/types.txt</filename> files</title>
+    <para>uimaFIT supports multiple `types.txt` files in the classpath (e.g. in differnt JARs). The
+        <filename>types.txt</filename> files are located via Spring using the classpath search
+      pattern: </para>
+    <programlisting>TYPE_MANIFEST_PATTERN = "classpath*:META-INF/org.uimafit/types.txt" </programlisting>
+    <para>This resolves to a list URLs pointing to ALL <filename>types.txt</filename> files. The
+      resolved URLs are unique and will point either to a specific point in the file system or into
+      a specific JAR. These URLs can be handled by the standard Java URL loading mechanism.
+      Example:</para>
+    <programlisting>jar:/path/to/syntax-types.jar!/META-INF/org.uimafit/types.txt 
+jar:/path/to/token-types.jar!/META-INF/org.uimafit/types.txt</programlisting>
+    <para>uimaFIT then reads all patters from all of these URLs and uses these to search the
+      classpath again. The patterns now resolve to a list of URLs pointing to the individual type
+      system XML descriptors. All of these URLs are collected in a set to avoid duplicate loading
+      (for performance optimization - not strictly necessary because the UIMA type system merger can
+      handle compatible duplicates). Then the descriptors are loaded into memory and merged using
+      the standard UIMA type system merger
+        (<methodname>CasCreationUtils.mergeTypeSystems()</methodname>). Example:</para>
+    <programlisting>jar:/path/to/syntax-types.jar!/desc/types/Syntax.xml 
+jar:/path/to/token-types.jar!/org/foobar/typesystems/Tokens.xml </programlisting>
+    <para>Voilá, the result is a type system covering all types could be found in the
+      classpath.</para>
+    <para>It is recommended <orderedlist>
+        <listitem>
+          <para>to put type system descriptors into packages resembling a namespace you "own" and to
+            use a package-scoped wildcard
+            search<programlisting>classpath*:org/apache/uima/fit/type/**/*.xml`</programlisting></para>
+        </listitem>
+        <listitem>
+          <para>or when putting descriptors into a "well-known" package like
+              <package>desc.type</package>, that <filename>types.txt</filename> file should
+            explicitly list all type system descriptors instead of using a wildcard
+            search<programlisting>classpath*:desc/type/Token.xml 
+classpath*:desc/type/Syntax.xml </programlisting></para>
+        </listitem>
+      </orderedlist>Method 1 should be preferred. Both methods can be mixed. </para>
+  </section>
+  <section>
+    <title>Performance note and caching</title>
+    <para>Currently uimaFIT evaluates the patterns for TSDs once and caches the locations, but not
+      the actual merged type system description. A rescan can be forced using
+        <methodname>TypeSystemDescriptionFactory.forceTypeDescriptorsScan()</methodname>. This may
+      change in future.</para>
+  </section>
+  <section>
+    <title>Potential problems</title>
+    <para>The mechanism works fine. However, there are specific issues with Java in general that one
+      should be aware of.</para>
+    <section>
+      <title>m2eclipse fails to copy descriptors to <filename>target/classes</filename></title>
+      <para>There seems to be a bug in some older versions of m2eclipse that causes resources not
+        always to be copied to <filename>target/classes</filename>. If UIMA complains about type
+        definitions missing at runtime, try to <emphasis>clean/rebuild</emphasis> your project and
+        carefully check the m2eclipse console in the console view for error messages that might
+        cause m2eclipse to abort.</para>
+    </section>
+    <section>
+      <title>Class version conflicts</title>
+      <para>A problem can occur if you end up having multiple incompatible versions of the same type
+        system in the classpath. This is a general problem and not related to the auto-detection
+        feature. It is the same as when you have incompatible version of a particular class (e.g.
+          <interfacename>JCas</interfacename> wrapper or some third-party-library) in the classpath.
+        The behavior of the Java Classloader is undefined in that case. The detection will do its
+        best to try and load everything it can find, but the UIMA type system merger may barf or you
+        may end up with undefined behavior at runtime because one of the class versions is used at
+        random. </para>
+    </section>
+    <section>
+      <title>Classes and resources in the default package</title>
+      <para>It is bad practice to place classes into the default (unnamed) package. In fact it is
+        not possible to import classes from the default package in another class. Similarly it is a
+        bad idea to put resources at the root of the classpath. The Spring documentation on
+        resources <ulink
+          url="http://static.springsource.org/spring/docs/3.0.x/reference/resources.html#resources-app-ctx-wildcards-in-resource-paths"
+          >explains this in detail</ulink>.</para>
+      <para>For this reason the <filename>types.txt</filename> resides in
+          <filename>/META-INF/org.apache.uima.fit</filename> and it is suggest that type system
+        descriptors reside either in a proper package like
+          <filename>/org/foobar/typesystems/XXX.xml</filename> or in
+          <filename>/desc/types/XXX.xml</filename>. </para>
+    </section>
+  </section>
+</chapter>

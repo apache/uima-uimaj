@@ -520,6 +520,7 @@
 		<module>uimafit-spring</module>
 		<module>uimafit-maven-plugin</module>
 		<module>uimafit-legacy-support</module>
+		<module>uimafit-docbook</module>
 	</modules>
 	<inceptionYear>2012</inceptionYear>
 </project>

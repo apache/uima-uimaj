@@ -1,0 +1,42 @@
+<chapter id="ugr.tools.uimafit.experiments">
+  <title>Running Experiments</title>
+  <para>The <emphasis>uimafit-examples</emphasis> module contains a package
+      <package>org.uimafit.examples.experiment.pos</package> which demonstrates a very simple
+    experimental setup for testing a part-of-speech tagger. You may find this example more
+    accessible if you check out the code from subversion and build it in your own
+    environment.</para>
+  <para>The documentation for this example can be found in the code itself. Please refer to
+      <classname>RunExperiment</classname> as a starting point. The following is copied from the
+    javadoc comments of that file:</para>
+  <blockquote>
+    <para><classname>RunExperiment</classname> demonstrates a very common (though simplified)
+      experimental setup in which gold standard data is available for some task and you want to
+      evaluate how well your analysis engine works against that data. Here we are evaluating
+        <classname>BaselineTagger</classname> which is a (ridiculously) simple part-of-speech tagger
+      against the part-of-speech tags found in
+        <filename>src/main/resources/org/uimafit/examples/pos/sample.txt.pos</filename></para>
+  </blockquote>
+  <para>The basic strategy is as follows:</para>
+  <itemizedlist>
+    <listitem>
+      <para>post the data <emphasis>as is</emphasis> into the default view,</para>
+    </listitem>
+    <listitem>
+      <para>parse the gold-standard tokens and part-of-speech tags and put the results into another
+        view we will call <emphasis>GOLD_VIEW</emphasis>,</para>
+    </listitem>
+    <listitem>
+      <para>create another view called <emphasis>SYSTEM_VIEW</emphasis> and copy the text and
+          <classname>Token</classname> annotations from the <emphasis>GOLD_VIEW</emphasis> into this
+        view,</para>
+    </listitem>
+    <listitem>
+      <para>run the <classname>BaselineTagger</classname> on the <emphasis>SYSTEM_VIEW</emphasis>
+        over the copied <classname>Token</classname> annoations,</para>
+    </listitem>
+    <listitem>
+      <para>evaluate the part-of-speech tags found in the <emphasis>SYSTEM_VIEW</emphasis> with
+        those in the <emphasis>GOLD_VIEW.</emphasis></para>
+    </listitem>
+  </itemizedlist>
+</chapter>

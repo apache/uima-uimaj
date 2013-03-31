@@ -1,0 +1,284 @@
+<chapter id="ugr.tools.uimafit.externalresources">
+  <title>External Resources</title>
+  <para>An analysis engine often uses some data model. This may be as simple as word frequency
+    counts or as complex as the model of a parser. Often these models can become quite large. If an
+    analysis engine is deployed multiple times in the same pipeline or runs on multiple CPU cores,
+    memory can be saved by using a shared instance of the data model. UIMA supports such a scenario
+    by so-called external resources. The following sections illustrates how external resources can
+    be used with uimaFIT.</para>
+  <para>First create a class for the shared data model. Usually this class would load its data from
+    some URI and then expose it via its methods. An example would be to load word frequency counts
+    and to provide a <methodname>getFrequency()</methodname> method. In our simple example we do not
+    load anything from the provided URI - we just offer a method to get the URI from which data be
+    loaded.</para>
+  <programlisting>// Simple model that only stores the URI it was loaded from. Normally data
+// would be loaded from the URI instead and made accessible through methods
+// in this class. This simple example only allows to access the URI.
+public static final class SharedModel implements SharedResourceObject {
+  private String uri;
+
+  public void load(DataResource aData) 
+      throws ResourceInitializationException {
+
+    uri = aData.getUri().toString();
+  }
+
+  public String getUri() { return uri; }
+}</programlisting>
+  <section>
+    <title>Resource injection</title>
+    <section>
+      <title>Regular UIMA components</title>
+      <para>When an external resource is used in a regular UIMA component, it is usually fetched
+        from the context, cast and copied to a class member variable.</para>
+      <programlisting>class MyAnalysisEngine extends CasAnnotator_ImplBase {
+  final static String MODEL_KEY = "Model";
+  private SharedModel model;
+
+  public void initialize(UimaContext context) 
+      throws ResourceInitializationException {
+
+    configuredResource = (SharedModel) getContext().getResourceObject(MODEL_KEY);
+  }
+}</programlisting>
+      <para>uimaFIT can be used to inject external resources into such traditional components using
+        the <methodname>createDependencyAndBind()</methodname> method. To show that this works with
+        any off-the-shelf UIMA component, the following example uses uimaFIT to configure the
+        OpenNLP Tokenizer:</para>
+      <programlisting>// Create descriptor
+AnalysisEngineDescription tokenizer = createPrimitiveDescription(
+  Tokenizer.class,
+  UimaUtil.TOKEN_TYPE_PARAMETER, Token.class.getName(),
+  UimaUtil.SENTENCE_TYPE_PARAMETER, Sentence.class.getName());
+
+// Create the external resource dependency for the model and bind it
+createDependencyAndBind(tokenizer, UimaUtil.MODEL_PARAMETER,
+  TokenizerModelResourceImpl.class,
+  "http://opennlp.sourceforge.net/models-1.5/en-token.bin");</programlisting>
+    </section>
+    <section>
+      <title>uimaFIT-aware components</title>
+      <para>uimaFIT provides the <classname>@ExternalResource</classname> annotation to inject
+        external resources directly into class member variables.</para>
+      <table frame="all">
+        <title><classname>@ExternalResource</classname> annotation</title>
+        <tgroup cols="3">
+          <colspec colname="c1" colnum="1" colwidth="1.0*"/>
+          <colspec colname="c2" colnum="2" colwidth="1.0*"/>
+          <colspec colname="c3" colnum="3" colwidth="1.0*"/>
+          <thead>
+            <row>
+              <entry>Parameter</entry>
+              <entry>Description</entry>
+              <entry>Default</entry>
+            </row>
+          </thead>
+          <tbody>
+            <row>
+              <entry>key</entry>
+              <entry>Resource key</entry>
+              <entry>field name</entry>
+            </row>
+            <row>
+              <entry>api</entry>
+              <entry>Used when the external resource type is different from the field type, e.g.
+                when using an ExternalResourceLocator</entry>
+              <entry>field type</entry>
+            </row>
+            <row>
+              <entry>mandatory</entry>
+              <entry>Whether a value must be specified</entry>
+              <entry>true</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+      <programlisting>// Example annotator that uses the SharedModel. In the process() we only test
+// if the model was properly initialized by uimaFIT
+public static class Annotator 
+    extends org.uimafit.component.JCasAnnotator_ImplBase {
+
+  final static String MODEL_KEY = "Model";
+  @ExternalResource(key = MODEL_KEY)
+  private SharedModel model;
+
+  public void process(JCas aJCas) throws AnalysisEngineProcessException {
+    assertTrue(model.getUri().endsWith("gene_model_v02.bin"));
+    // Prints the instance ID to the console - this proves the same
+    // instance of the SharedModel is used in both Annotator instances.
+    System.out.println(model);
+  }
+}</programlisting>
+      <para>Note, that it is no longer necessary to implement the
+          <methodname>initialize()</methodname> method. uimaFIT takes care of locating the external
+        resource <parameter>Model</parameter> in the UIMA context and assigns it to the field
+          <varname>model</varname>. If a mandatory resource is not present in the context, an
+        exception is thrown.</para>
+      <para>The resource injection mechanism is implemented in the
+          <classname>ExternalResourceInitializer</classname> class. uimaFIT provides several base
+        classes that already come with an <methodname>initialize()</methodname> method using the
+        initializer:</para>
+      <itemizedlist>
+        <listitem>
+          <para><classname>CasAnnotator_ImplBase</classname></para>
+        </listitem>
+        <listitem>
+          <para><classname>CasCollectionReader_ImplBase</classname></para>
+        </listitem>
+        <listitem>
+          <para><classname>CasConsumer_ImplBase</classname></para>
+        </listitem>
+        <listitem>
+          <para><classname>CasFlowController_ImplBase</classname></para>
+        </listitem>
+        <listitem>
+          <para><classname>CasMultiplier_ImplBase</classname></para>
+        </listitem>
+        <listitem>
+          <para><classname>JCasAnnotator_ImplBase</classname></para>
+        </listitem>
+        <listitem>
+          <para><classname>JCasCollectionReader_ImplBase</classname></para>
+        </listitem>
+        <listitem>
+          <para><classname>JCasConsumer_ImplBase</classname></para>
+        </listitem>
+        <listitem>
+          <para><classname>JCasFlowController_ImplBase</classname></para>
+        </listitem>
+        <listitem>
+          <para><classname>JCasMultiplier_ImplBase</classname></para>
+        </listitem>
+        <listitem>
+          <para><classname>Resource_ImplBase</classname></para>
+        </listitem>
+      </itemizedlist>
+      <para>When building a pipeline, external resources can be set of a component just like
+        configuration parameters. External resources and configuration parameters can be mixed and
+        appear in any order when creating a component description.</para>
+      <para>Note that in the following example, we create only one external resource description and
+        use it to configure two different analysis engines. Because we only use a single
+        description, also only a single instance of the external resource is created and shared
+        between the two engines.
+        <programlisting>ExternalResourceDescription extDesc = createExternalResourceDescription(
+  SharedModel.class, new File("somemodel.bin"));
+		
+// Binding external resource to each Annotator individually
+AnalysisEngineDescription aed1 = createPrimitiveDescription(
+  Annotator.class,
+  Annotator.MODEL_KEY, extDesc);
+
+AnalysisEngineDescription aed2 = createPrimitiveDescription(
+  Annotator.class,
+  Annotator.MODEL_KEY, extDesc);
+
+// Check the external resource was injected
+AnalysisEngineDescription aaed = createAggregateDescription(aed1, aed2);
+AnalysisEngine ae = createAggregate(aaed);
+ae.process(ae.newJCas());</programlisting></para>
+      <para>This example is given as a full JUnit-based example in the the
+          <emphasis>uimaFIT-examples</emphasis> project.</para>
+    </section>
+    <section>
+      <title>Resources extending <classname>Resource_ImplBase</classname></title>
+      <para>One kind of resources extend <classname>Resource_ImplBase</classname>. These are the
+        easiest to handle, because uimaFIT's version of <classname>Resource_ImplBase</classname>
+        already implements the necessary logic. Just be sure to call
+          <methodname>super.initialize()</methodname> when overriding
+          <methodname>initialize()</methodname>. Also mind that external resources are not available
+        yet when <methodname>initialize()</methodname> is called. For any initialization logic that
+        requires resources, override and implement
+          <methodname>afterResourcesInitialized()</methodname>. Other than that, injection of
+        external resources works as usual.</para>
+      <programlisting>public static class ChainableResource extends Resource_ImplBase {
+  public final static String PARAM_CHAINED_RESOURCE = "chainedResource";
+  @ExternalResource(key = PARAM_CHAINED_RESOURCE)
+  private ChainableResource chainedResource;
+
+  public void afterResourcesInitialized() {
+    // init logic that requires external resources
+  }
+}</programlisting>
+    </section>
+    <section>
+      <title>Resources implementing <interfacename>SharedResourceObject</interfacename></title>
+      <para>The other kind of resources implement
+          <interfacename>SharedResourceObject</interfacename>. Since this is an interface, uimaFIT
+        cannot provide the initialization logic, so you have to implement a couple of things in the
+        resource:</para>
+      <itemizedlist>
+        <listitem>
+          <para>implement <interfacename>ExternalResourceAware</interfacename></para>
+        </listitem>
+        <listitem>
+          <para>declare a configuration parameter
+              <constant>ExternalResourceFactory.PARAM_RESOURCE_NAME</constant> and return its value
+            in <methodname>getResourceName()</methodname></para>
+        </listitem>
+        <listitem>
+          <para>invoke <methodname>ConfigurationParameterInitializer.initialize()</methodname> in
+            the <methodname>load()</methodname> method.</para>
+        </listitem>
+      </itemizedlist>
+      <para>Again, mind that external resource not properly initialized until uimaFIT invokes
+          <methodname>afterResourcesInitialized()</methodname>.</para>
+      <programlisting>public class TestSharedResourceObject implements 
+    SharedResourceObject, ExternalResourceAware {
+
+  @ConfigurationParameter(name=ExternalResourceFactory.PARAM_RESOURCE_NAME)
+  private String resourceName;
+
+  public final static String PARAM_CHAINED_RESOURCE = "chainedResource";
+  @ExternalResource(key = PARAM_CHAINED_RESOURCE)
+  private ChainableResource chainedResource;
+
+  public String getResourceName() {
+    return resourceName;
+  }
+
+  public void load(DataResource aData) 
+      throws ResourceInitializationException {
+
+    ConfigurationParameterInitializer.initialize(this, aData);
+    // rest of the init logic that does not require external resources
+  }
+
+  public void afterResourcesInitialized() {
+   // init logic that requires external resources
+  }
+}</programlisting>
+    </section>
+    <section>
+      <title>Note on injecting resources into resources</title>
+      <para>Nested resources are only initialized if they are used in a pipeline which contains at
+        least one component that calls
+          <methodname>ConfigurationParameterInitializer.initialize()</methodname>. Any component
+        extending uimaFIT's component base classes qualifies. If you use nested resources in a
+        pipeline without any uimaFIT-aware components, you can just add uimaFIT's
+          <classname>NoopAnnotator</classname> to the pipeline.</para>
+    </section>
+  </section>
+  <section>
+    <title>Resource locators</title>
+    <para>Normally, in UIMA an external resource needs to implement either
+        <interfacename>SharedResourceObject</interfacename> or
+        <interfacename>Resource</interfacename>. In order to inject arbitrary objects, uimaFIT has
+      the concept of <interfacename>ExternalResourceLocator</interfacename>. When a resource
+      implements this interface, not the resource itself is injected, but the method
+        <methodname>getResource()</methodname> is called on the resource and the result is injected.
+      The following example illustrates how to inject an object from JNDI into a UIMA
+      component:</para>
+    <programlisting>class MyAnalysisEngine2 extends JCasAnnotator_ImplBase {
+  static final String RES_DICTIONARY = "dictionary";
+  @ExternalResource(key = RES_DICTIONARY)
+  Dictionary dictionary;
+}
+
+AnalysisEngineDescription desc = createPrimitiveDescription(
+  MyAnalysisEngine2.class);
+
+bindResource(desc, MyAnalysisEngine2.RES_DICTIONARY, 
+  JndiResourceLocator.class,
+  JndiResourceLocator.PARAM_NAME, "dictionaries/german");</programlisting>
+  </section>
+</chapter>

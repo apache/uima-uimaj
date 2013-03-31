@@ -1,0 +1,156 @@
+<chapter id="ugr.tools.uimafit.configurationparameters">
+  <title>Configuration Parameters</title>
+  <para>uimaFIT defines the <classname>@ConfigurationParameter</classname> annotation which can be
+    used to annotate the fields of an analysis engine or collection reader. The purpose of this
+    annotation is twofold:<itemizedlist>
+      <listitem>
+        <para>injection of parameters from the UIMA context into fields</para>
+      </listitem>
+      <listitem>
+        <para>declaration of parameter metadata (mandatory, default value, description) which can be
+          used to generate XML descriptors</para>
+      </listitem>
+    </itemizedlist>In a regular UIMA component, parameters need to be manually extracted from the
+    UIMA context, typically requiring a type cast. </para>
+  <programlisting format="linespecific">class MyAnalysisEngine extends CasAnnotator_ImplBase {
+  public static final String PARAM_SOURCE_DIRECTORY = "sourceDirectory";
+  private File sourceDirectory;
+
+  public void initialize(UimaContext context) 
+      throws ResourceInitializationException {
+
+    sourceDirectory = new File((String) context.getConfigParameterValue(
+      PARAM_SOURCE_DIRECTORY));
+  }
+}</programlisting>
+  <para>The component has no way to declare a default value or to declare if a parameter is optional
+    or mandatory. In addition, any documentation needs to be maintained in !JavaDoc and in the XML
+    descriptor for the component.</para>
+  <para>With uimaFIT, all this information can be declared in the component using the
+      <classname>@ConfigurationParameter</classname> annotation.<table frame="all">
+      <title><classname>@ConfigurationParameter</classname> annotation</title>
+      <tgroup cols="3">
+        <colspec colname="c1" colnum="1" colwidth="1.0*"/>
+        <colspec colname="c2" colnum="2" colwidth="1*"/>
+        <colspec colname="c3" colnum="3" colwidth="1.0*"/>
+        <thead>
+          <row>
+            <entry>Parameter</entry>
+            <entry>Description</entry>
+            <entry>Default</entry>
+          </row>
+        </thead>
+        <tbody>
+          <row>
+            <entry>name</entry>
+            <entry>parameter name</entry>
+            <entry>name of annotated field</entry>
+          </row>
+          <row>
+            <entry>description</entry>
+            <entry>description of the parameter</entry>
+            <entry/>
+          </row>
+          <row>
+            <entry>mandatory</entry>
+            <entry>whether a non-null value must be specified </entry>
+            <entry>true</entry>
+          </row>
+          <row>
+            <entry>defaultValue</entry>
+            <entry>the default value if no value is specified</entry>
+            <entry/>
+          </row>
+        </tbody>
+      </tgroup>
+    </table></para>
+  <programlisting>class MyAnalysisEngine 
+    extends org.uimafit.component.CasAnnotator_ImplBase {
+
+  /**
+   * Directory to read the data from.
+   */
+  public static final String PARAM_SOURCE_DIRECTORY = "sourceDirectory";
+  @ConfigurationParameter(name=PARAM_SOURCE_DIRECTORY, defaultValue=".")
+  private File sourceDirectory;
+}</programlisting>
+  <para>Note, that it is no longer necessary to implement the <methodname>initialize()</methodname>
+    method. uimaFIT takes care of locating the parameter <parameter>sourceDirectory</parameter> in
+    the UIMA context. It recognizes that the <classname>File</classname> class has a
+      <classname>String</classname> constructor and uses that to instantiate a new
+      <classname>File</classname> object from the parameter. A parameter is mandatory unless
+    specified otherwise. If a mandatory parameter is not specified in the context, an exception is
+    thrown.</para>
+  <para>The <parameter>defaultValue</parameter> is used when generating an UIMA component
+    description from the class. It should be pointed out in particular, that uimaFIT does not make
+    use of the default value when injecting parameters into fields. For this reason, it is possible
+    to have a parameter that is mandatory but does have a default value. The default value is used
+    as a parameter value when a component description is generated via the uimaFIT factories unless
+    a parameter is specified in the factory call. If a component description in created manually
+    without specifying a value for a mandatory parameter, uimaFIT will generate an exception.</para>
+  <note>
+    <para>You can use the <emphasis>enhance</emphasis> goal of the uimaFIT Maven plugin to pick up
+      the parameter description from the JavaDoc and post it to the
+        <parameter>description</parameter> field of the
+        <classname>@ConfigurationParameter</classname> annotation. This should be preferred to
+      specifying the description explicitly as part of the annotation.</para>
+  </note>
+  <para>The parameter injection mechanism is implemented in the
+      <classname>ConfigurationParameterInitializer</classname> class. uimaFIT provides several base
+    classes that already come with an <methodname>initialize()</methodname> method using the
+    initializer:</para>
+  <itemizedlist>
+    <listitem>
+      <para><classname>CasAnnotator_ImplBase</classname>`</para>
+    </listitem>
+    <listitem>
+      <para><classname>CasCollectionReader_ImplBase</classname></para>
+    </listitem>
+    <listitem>
+      <para><classname>CasConsumer_ImplBase</classname></para>
+    </listitem>
+    <listitem>
+      <para><classname>CasFlowController_ImplBase</classname></para>
+    </listitem>
+    <listitem>
+      <para><classname>CasMultiplier_ImplBase</classname></para>
+    </listitem>
+    <listitem>
+      <para><classname>JCasAnnotator_ImplBase</classname></para>
+    </listitem>
+    <listitem>
+      <para><classname>JCasCollectionReader_ImplBase</classname></para>
+    </listitem>
+    <listitem>
+      <para><classname>JCasConsumer_ImplBase</classname></para>
+    </listitem>
+    <listitem>
+      <para><classname>JCasFlowController_ImplBase</classname></para>
+    </listitem>
+    <listitem>
+      <para><classname>JCasMultiplier_ImplBase</classname></para>
+    </listitem>
+    <listitem>
+      <para><classname>Resource_ImplBase</classname></para>
+    </listitem>
+  </itemizedlist>
+  <para>The <classname>ConfigurationParameterInitializer</classname> can also be used with shared
+    resources:</para>
+  <programlisting>class MySharedResourceObject implements SharedResourceObject {
+  public static final String PARAM_VALUE = "Value";
+  @ConfigurationParameter(name = PARAM_VALUE, mandatory = true)
+  private String value;
+
+  public void load(DataResource aData)
+      throws ResourceInitializationException {
+
+    ConfigurationParameterInitializer.initialize(this, aData);
+  }
+}</programlisting>
+  <para>Fields that can be annotated with the <classname>@ConfigurationParameter</classname>
+    annotation are any array or collection types of primitive types (<type>int</type>,
+      <type>boolean</type>, <type>float</type>, <type>double</type>), any enum types, any types that
+    define a constructor accepting a single <classname>String</classname> (e.g.
+      <classname>File</classname>), as well as, fields of the types <classname>Pattern</classname>
+    and <classname>Locale</classname>.</para>
+</chapter>
