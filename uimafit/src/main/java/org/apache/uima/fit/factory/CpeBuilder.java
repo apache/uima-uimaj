@@ -92,7 +92,7 @@ public class CpeBuilder {
 
     if (aDesc.isPrimitive()) {
       // For a primitive AE we just add it.
-      CpeIntegratedCasProcessor proc = createProcessor("", aDesc);
+      CpeIntegratedCasProcessor proc = createProcessor("delegate", aDesc);
       cpeDesc.addCasProcessor(proc);
     } else {
       // For an aggregate AE we dive into the first aggregation level and add each of the
@@ -125,7 +125,9 @@ public class CpeBuilder {
       cpeDesc.setProcessingUnitThreadCount(maxProcessingUnitThreadCount);
     }
     CollectionProcessingEngine cpe = produceCollectionProcessingEngine(cpeDesc, resMgr, null);
-    cpe.addStatusCallbackListener(aListener);
+    if (aListener != null) {
+      cpe.addStatusCallbackListener(aListener);
+    }
     return cpe;
   }
 
