@@ -249,6 +249,7 @@ public class BinaryCasSerDes6 {
      * kept here only to avoid recomputation in the use case:
      *   serialize to target 1, serialize same to target 2, etc.
      *   if Null, recomputed when needed
+     * BitSet used to test if fsRef needs to be serialized   
      */
     final private BitSet foundFSs;
     final private int[] foundFSsArray; // ordered set of FSs found in indexes or linked from other found FSs
