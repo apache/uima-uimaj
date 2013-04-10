@@ -224,9 +224,9 @@ public class SerDesTest6 extends TestCase {
   public SerDesTest6() {
     Random sg = new Random();
     long seed = sg.nextLong();
-//    seed =  -2659090483652661635L;
+//    seed =  2934127305128325787L;
     random = new Random(seed);
-//    System.out.format("RandomSeed: %,d%n", seed);
+    System.out.format("RandomSeed: %,d%n", seed);
 
     mSrc = setupTTypeSystem(TwoTypes);
     casSrc = mSrc.cas;
@@ -282,6 +282,36 @@ public class SerDesTest6 extends TestCase {
 
   public void tearDown() {
   }
+  
+  /**
+   * Make one of each kind of artifact, including arrays
+   * serialize to byte stream, deserialize into new cas, compare
+   */
+  
+  public void testAllKinds() {
+    if (doPlain) {
+      serdesSimple(getTT(EqTwoTypes));
+    } else {
+      for (TTypeSystem m : alternateTTypeSystems) {
+        switch (m.kind){
+        // note: case statements *not* grouped in order to faclitate debugging
+        case OneTypeSubsetFeatures:
+          serdesSimple(m);
+          break;
+        case TwoTypesSubsetFeatures:
+          serdesSimple(m);
+          break;
+        case TwoTypes:
+        case EqTwoTypes:
+        case OneType:
+        case TwoTypesNoFeatures:
+          serdesSimple(m);
+          break;
+        }
+      }
+    }
+  }
+
   
   // Test chains going through filtered type
   //   Repeat below with OneType, and TwoTypes with filtered slot == fsRef
@@ -388,39 +418,17 @@ public class SerDesTest6 extends TestCase {
     verifyDelta(marker, ri);
   }
   
-  /**
-   * Make one of each kind of artifact, including arrays
-   * serialize to byte stream, deserialize into new cas, compare
-   */
-  
-  public void testAllKinds() {
-    if (doPlain) {
-      serdesSimple(getTT(EqTwoTypes));
-    } else {
-      for (TTypeSystem m : alternateTTypeSystems) {
-        switch (m.kind){
-        case OneTypeSubsetFeatures:
-          serdesSimple(m);
-          break;
-        case TwoTypesSubsetFeatures:
-          serdesSimple(m);
-          break;
-        case TwoTypes:
-        case EqTwoTypes:
-        case OneType:
-        case TwoTypesNoFeatures:
-          serdesSimple(m);
-          break;
-        }
-      }
-    }
-  }
   
   private void serdesSimple(TTypeSystem m) {
     remoteCas = setupCas(m);
     casSrc.reset();
     loadCas(casSrc, mSrc);  
-    verify(remoteCas);    
+    verify(remoteCas);  
+    
+    // test case where serialization is done without type filtering,
+    //   and deserialization is done with filtering
+    remoteCas.reset();
+    verifyDeserFilter(remoteCas); 
   }
   
   /**
@@ -1130,6 +1138,29 @@ public class SerDesTest6 extends TestCase {
     } catch (IOException e) {
       throw new RuntimeException(e);
     }    
+  }
+  
+  private void verifyDeserFilter(CASImpl casTgt) {
+    // serialize w/o filter
+    BinaryCasSerDes6 bcs = null;
+    try {
+      ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
+      if (doPlain) {
+        return;   
+      } else {      
+        bcs = new BinaryCasSerDes6(casSrc, (ReuseInfo) null);
+        bcs.serialize(baos);
+      }
+      ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+      bcs = new BinaryCasSerDes6(casTgt, null, casSrc.getTypeSystemImpl());
+      bcs.deserialize(bais);
+      
+      bcs = new BinaryCasSerDes6(casSrc, null, casTgt.getTypeSystemImpl());
+      assertTrue(bcs.compareCASes(casSrc, casTgt));
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }    
+   
   }
 
   // casSrc -> remoteCas
