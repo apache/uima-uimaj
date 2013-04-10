@@ -1200,7 +1200,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
         if (compressedVersion == 0) {
           (new BinaryCasSerDes4(this.getTypeSystemImpl(), false)).deserialize(this, dis, delta);
         } else {
-          (new BinaryCasSerDes6(this, rfs)).deserializeAfterVersion(dis, delta);
+          (new BinaryCasSerDes6(this, rfs)).deserializeAfterVersion(dis, delta, AllowPreexistingFS.allow);
         }
         return;
       }
