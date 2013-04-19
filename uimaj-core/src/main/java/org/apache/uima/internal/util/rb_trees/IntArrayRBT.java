@@ -1022,7 +1022,7 @@ public class IntArrayRBT {
       }
     }
     if (y != z) {
-      setKey(z, y);
+      setKey(z, getKey(y));
     }
     if (this.color[y] == black) {
       deleteFixup(x);
