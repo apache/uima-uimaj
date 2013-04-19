@@ -228,7 +228,7 @@
                      dependencies, at the proper version, to be
                      included in this, and also sets up the bundle
                      classpath to include them -->
-                <Embed-Dependency>*;scope=compile;inline=true</Embed-Dependency>
+                <Embed-Dependency>*;scope=compile</Embed-Dependency>
     
                 <!-- These just get made into the corresponding manifest entries -->
                 <Bundle-SymbolicName>org.apache.uima.runtime;singleton:=true</Bundle-SymbolicName>
@@ -240,19 +240,19 @@
           </execution>
         </executions>
       </plugin>
-      
+
       <plugin>
         <artifactId>maven-dependency-plugin</artifactId>
         <executions>
           <execution>
-            <id>unpackDependentJars</id>
-            <goals><goal>unpack-dependencies</goal></goals>
+            <id>copyDependentJars</id>
+            <goals><goal>copy-dependencies</goal></goals>
             <configuration>
               <outputDirectory>${project.build.outputDirectory}</outputDirectory>
             </configuration>
           </execution>
         </executions>
-      </plugin>      
+      </plugin>
     </plugins>
   </build>
 </project>
