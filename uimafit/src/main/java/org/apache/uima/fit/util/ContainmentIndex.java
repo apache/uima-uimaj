@@ -64,7 +64,7 @@ public class ContainmentIndex<S extends AnnotationFS, U extends AnnotationFS> {
    * @param aType
    *          the indexing strategy.
    */
-  public ContainmentIndex(CAS cas, org.apache.uima.cas.Type aSuper,
+  protected ContainmentIndex(CAS cas, org.apache.uima.cas.Type aSuper,
           org.apache.uima.cas.Type aUnder, Type aType) {
     Collection<AnnotationFS> over = select(cas, aSuper);
     for (AnnotationFS s : over) {
