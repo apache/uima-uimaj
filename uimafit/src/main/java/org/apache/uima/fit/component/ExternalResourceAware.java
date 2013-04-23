@@ -20,6 +20,7 @@ package org.apache.uima.fit.component;
 
 import org.apache.uima.fit.descriptor.ExternalResource;
 import org.apache.uima.fit.factory.ExternalResourceFactory;
+import org.apache.uima.resource.ResourceInitializationException;
 
 /**
  * Allows an external resource to use the {@link ExternalResource} annotation on member variables to
@@ -42,5 +43,5 @@ public interface ExternalResourceAware {
   /**
    * Called after the external resources have been initialized.
    */
-  void afterResourcesInitialized();
+  void afterResourcesInitialized() throws ResourceInitializationException;
 }
