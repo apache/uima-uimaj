@@ -82,7 +82,7 @@ under the License.
           The Apache UIMA project does not itself include a semantic search engine.  
           It can interface with the semantic search engine
             component (available from <ulink
-              url="www.alphaworks.ibm.com/tech/uima"/> for indexing and querying over
+              url="http://www.alphaworks.ibm.com/tech/uima"/> for indexing and querying over
             the results of analysis. Over time, we expect that additional search engines will
             add support for semantic searching.
           </para>

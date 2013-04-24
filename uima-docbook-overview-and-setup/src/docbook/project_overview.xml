@@ -1089,7 +1089,7 @@ under the License.
           </row>
           <row>
             <entry namest="col1" nameend="col2" align="center" role="tableSubhead"> Components available
-              from <ulink url="www.alphaworks.ibm.com/tech/uima"></ulink> </entry>
+              from <ulink url="http://www.alphaworks.ibm.com/tech/uima"></ulink> </entry>
           </row>
           <row>
             <entry>Semantic Search CAS Indexer</entry>
