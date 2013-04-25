@@ -38,6 +38,7 @@ public class RsLang {
    * @param language
    * @return x-unspecified if lang is null or a canonical version of the lang string
    */
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings("DM_STRING_CTOR")
   static String getCanonicalLanguageString(String language) {
     if (language == null || language.equals(Language.UNSPECIFIED_LANGUAGE)) {  // represents x-unspecified
       return Language.UNSPECIFIED_LANGUAGE;
