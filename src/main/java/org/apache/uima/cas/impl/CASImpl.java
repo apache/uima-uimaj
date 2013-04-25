@@ -1284,7 +1284,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
       if (!delta) {
         this.getByteHeap().heap = new byte[Math.max(16, heapsz)]; // must be > 0
-        dis.read(this.getByteHeap().heap, 0, heapsz);
+        dis.readFully(this.getByteHeap().heap, 0, heapsz);
         this.getByteHeap().heapPos = heapsz;
       }  else {
         for (int i=0; i < heapsz; i++) {
@@ -1293,7 +1293,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       }
       // word alignment
       int align = (4 - (heapsz % 4)) % 4;
-      dis.skipBytes(align);
+      BinaryCasSerDes6.skipBytes(dis, align);
 
       // short heap
       heapsz = readInt(dis, swap);
@@ -1343,7 +1343,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       	}
       	// word alignment
         align = (4 - (heapsz % 4)) % 4;
-        dis.skipBytes(align);
+        BinaryCasSerDes6.skipBytes(dis, align);
         
         //modified Short Heap
         heapsz = readInt(dis, swap);

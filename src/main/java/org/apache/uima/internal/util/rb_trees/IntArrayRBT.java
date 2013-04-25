@@ -244,8 +244,9 @@ public class IntArrayRBT {
      */
     public int compareTo(Object o) {
       ComparableIterator it = (ComparableIterator) o;
-      return this.comparator.compare(IntArrayRBT.this.getKey(this.currentNode), it
-              .getKey(it.currentNode));
+      return this.comparator.compare(
+          IntArrayRBT.this.getKey(this.currentNode), 
+          IntArrayRBT.this.getKey(it.currentNode));
     }
 
   }

@@ -2205,10 +2205,11 @@ public class BinaryCasSerDes6 {
 //    }
   }
   
-  private void skipBytes(DataInputStream stream, int skipNumber) throws IOException {
+  static void skipBytes(DataInputStream stream, int skipNumber) throws IOException {
     final int r = stream.skipBytes(skipNumber);
-    if (r == 0) {
-      throw new IOException("0 bytes skipped, causing out-of-synch while deserializing");
+    if (r != skipNumber) {
+      throw new IOException(String.format("%d bytes skipped when %d was requested, causing out-of-synch while deserializing from stream %s",
+          r, skipNumber, stream));
     }
   }
 
