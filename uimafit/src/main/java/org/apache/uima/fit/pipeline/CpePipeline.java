@@ -38,7 +38,11 @@ import org.xml.sax.SAXException;
 
 /**
  */
-public class CpePipeline {
+public final class CpePipeline {
+  private CpePipeline() {
+    // No instances
+  }
+  
   /**
    * Run the CollectionReader and AnalysisEngines as a multi-threaded pipeline.
    * 

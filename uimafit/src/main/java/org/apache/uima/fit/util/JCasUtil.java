@@ -40,7 +40,11 @@ import org.apache.uima.jcas.tcas.Annotation;
  * Utility methods for convenient access to the {@link JCas}.
  * 
  */
-public class JCasUtil {
+public final class JCasUtil {
+  private JCasUtil() {
+    // No instances
+  }
+  
   /**
    * Convenience method to iterator over all features structures of a given type.
    * 

@@ -48,11 +48,15 @@ import org.apache.uima.resource.impl.ResourceManager_impl;
  * Configurator class for {@link ExternalResource} annotations.
  * 
  */
-public class ExternalResourceInitializer {
+public final class ExternalResourceInitializer {
 
   private static final Object INITIALIZED = new Object();
 
   private static Map<Object, Object> initializedResources = new WeakHashMap<Object, Object>();
+
+  private ExternalResourceInitializer() {
+    // No instances
+  }
 
   /**
    * Configure a component from the given context.

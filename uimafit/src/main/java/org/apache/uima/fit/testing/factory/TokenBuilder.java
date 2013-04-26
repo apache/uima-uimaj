@@ -243,7 +243,7 @@ public class TokenBuilder<TOKEN_TYPE extends Annotation, SENTENCE_TYPE extends A
         }
         tokenIndex++;
       }
-      if (tokenAnnotations.size() > 0) {
+      if (!tokenAnnotations.isEmpty()) {
         int begin = tokenAnnotations.get(0).getBegin();
         int end = tokenAnnotations.get(tokenAnnotations.size() - 1).getEnd();
         AnnotationFactory.createAnnotation(aJCas, begin, end, sentenceClass);

@@ -20,7 +20,7 @@ package org.apache.uima.fit.factory;
 
 import static java.util.Arrays.asList;
 import static org.apache.uima.UIMAFramework.getXMLParser;
-import static org.apache.uima.fit.util.MetaDataUtil.*;
+import static org.apache.uima.fit.util.MetaDataUtil.scanDescriptors;
 import static org.apache.uima.fit.util.ReflectionUtil.getInheritableAnnotation;
 
 import java.io.IOException;
@@ -50,6 +50,8 @@ public final class FsIndexFactory {
   public static final int STANDARD_COMPARE = FsIndexKeyDescription.STANDARD_COMPARE;
 
   public static final int REVERSE_STANDARD_COMPARE = FsIndexKeyDescription.STANDARD_COMPARE;
+  
+  private static final Object SCAN_LOCK = new Object();
 
   private FsIndexFactory() {
     // Factory class
@@ -228,10 +230,12 @@ public final class FsIndexFactory {
    *           if the locations could not be resolved.
    */
   public static String[] scanIndexDescriptors() throws ResourceInitializationException {
-    if (indexDescriptorLocations == null) {
-      indexDescriptorLocations = scanDescriptors(MetaDataType.FS_INDEX);
+    synchronized (SCAN_LOCK) {
+      if (indexDescriptorLocations == null) {
+        indexDescriptorLocations = scanDescriptors(MetaDataType.FS_INDEX);
+      }
+      return indexDescriptorLocations;
     }
-    return indexDescriptorLocations;
   }
 
   /**

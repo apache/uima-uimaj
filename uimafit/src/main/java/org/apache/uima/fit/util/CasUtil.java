@@ -51,12 +51,16 @@ import org.apache.uima.jcas.tcas.Annotation;
  * Utility methods for convenient access to the {@link CAS}.
  * 
  */
-public class CasUtil {
+public final class CasUtil {
   /**
    * Package name of JCas wrapper classes built into UIMA.
    */
   public static final String UIMA_BUILTIN_JCAS_PREFIX = "org.apache.uima.jcas.";
 
+  private CasUtil() {
+    // No instances
+  }
+  
   /**
    * Convenience method to iterator over all feature structures of a given type.
    * 

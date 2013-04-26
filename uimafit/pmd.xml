@@ -33,7 +33,9 @@
 		<exclude name="CyclomaticComplexity" />
 		<exclude name="TooManyMethods" />
 	</rule>
-	<rule ref="rulesets/coupling.xml"></rule>
+	<rule ref="rulesets/coupling.xml">
+		<exclude name="ExcessiveImports" />
+	</rule>
 	<rule ref="rulesets/design.xml">
 		<exclude name="ConfusingTernary" />
 		<exclude name="ConstructorCallsOverridableMethod" />
@@ -44,6 +46,7 @@
 		<exclude name="TooManyStaticImports" />
 	</rule>
 	<rule ref="rulesets/naming.xml">
+		<exclude name="AbstractNaming"/>
 		<exclude name="LongVariable" />
 		<exclude name="ShortVariable" />
 	</rule>
@@ -53,7 +56,9 @@
 		<exclude name="MethodArgumentCouldBeFinal" />
 	</rule>
 	<rule ref="rulesets/strictexception.xml"></rule>
-	<rule ref="rulesets/strings.xml"></rule>
+	<rule ref="rulesets/strings.xml">
+		<exclude name="AvoidDuplicateLiterals" />
+	</rule>
 	<rule ref="rulesets/sunsecure.xml"></rule>
 	<rule ref="rulesets/typeresolution.xml"></rule>
 	<rule ref="rulesets/unusedcode.xml"></rule>

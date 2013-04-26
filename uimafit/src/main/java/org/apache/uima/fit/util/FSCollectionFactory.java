@@ -490,7 +490,7 @@ public abstract class FSCollectionFactory<T extends FeatureStructure> {
   }
 
   public static FSList createFSList(JCas aJCas, Collection<? extends TOP> aCollection) {
-    if (aCollection.size() == 0) {
+    if (aCollection.isEmpty()) {
       return new EmptyFSList(aJCas);
     }
 
@@ -511,7 +511,7 @@ public abstract class FSCollectionFactory<T extends FeatureStructure> {
   }
 
   public static FloatList createFloatList(JCas aJCas, Collection<Float> aCollection) {
-    if (aCollection.size() == 0) {
+    if (aCollection.isEmpty()) {
       return new EmptyFloatList(aJCas);
     }
 
@@ -532,7 +532,7 @@ public abstract class FSCollectionFactory<T extends FeatureStructure> {
   }
 
   public static IntegerList createIntegerList(JCas aJCas, Collection<Integer> aCollection) {
-    if (aCollection.size() == 0) {
+    if (aCollection.isEmpty()) {
       return new EmptyIntegerList(aJCas);
     }
 
@@ -553,7 +553,7 @@ public abstract class FSCollectionFactory<T extends FeatureStructure> {
   }
 
   public static StringList createStringList(JCas aJCas, Collection<String> aCollection) {
-    if (aCollection.size() == 0) {
+    if (aCollection.isEmpty()) {
       return new EmptyStringList(aJCas);
     }
 

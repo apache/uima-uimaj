@@ -47,9 +47,9 @@ public class ContainmentIndex<S extends AnnotationFS, U extends AnnotationFS> {
     DIRECT, REVERSE, BOTH
   }
 
-  private Map<AnnotationFS, Collection<AnnotationFS>> data = new LinkedHashMap<AnnotationFS, Collection<AnnotationFS>>();
+  private final Map<AnnotationFS, Collection<AnnotationFS>> data = new LinkedHashMap<AnnotationFS, Collection<AnnotationFS>>();
 
-  private Map<AnnotationFS, Collection<AnnotationFS>> dataRev = new LinkedHashMap<AnnotationFS, Collection<AnnotationFS>>();
+  private final Map<AnnotationFS, Collection<AnnotationFS>> dataRev = new LinkedHashMap<AnnotationFS, Collection<AnnotationFS>>();
 
   /**
    * Create a new index on the given JCas using the specified two types. The last argument indicates

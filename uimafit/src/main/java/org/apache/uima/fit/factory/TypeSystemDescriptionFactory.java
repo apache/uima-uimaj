@@ -39,11 +39,13 @@ import org.apache.uima.util.XMLInputSource;
 /**
  */
 public final class TypeSystemDescriptionFactory {
+  private static final Object SCAN_LOCK = new Object();
+
+  private static String[] typeDescriptorLocations;
+
   private TypeSystemDescriptionFactory() {
     // This class is not meant to be instantiated
   }
-
-  private static String[] typeDescriptorLocations;
 
   /**
    * Creates a TypeSystemDescription from a list of classes belonging to a type system - i.e.
@@ -151,10 +153,12 @@ public final class TypeSystemDescriptionFactory {
    *           if the locations could not be resolved.
    */
   public static String[] scanTypeDescriptors() throws ResourceInitializationException {
-    if (typeDescriptorLocations == null) {
-      typeDescriptorLocations = scanDescriptors(MetaDataType.TYPE_SYSTEM);
+    synchronized (SCAN_LOCK) {
+      if (typeDescriptorLocations == null) {
+        typeDescriptorLocations = scanDescriptors(MetaDataType.TYPE_SYSTEM);
+      }
+      return typeDescriptorLocations;
     }
-    return typeDescriptorLocations;
   }
 
   /**

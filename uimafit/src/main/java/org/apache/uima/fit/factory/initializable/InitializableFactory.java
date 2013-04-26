@@ -45,8 +45,7 @@ public final class InitializableFactory {
   public static <T> Class<? extends T> getClass(String className, Class<T> superClass)
           throws ResourceInitializationException {
     try {
-      Class<? extends T> cls = Class.forName(className).asSubclass(superClass);
-      return cls;
+      return Class.forName(className).asSubclass(superClass);
     } catch (Exception e) {
       throw new ResourceInitializationException(new IllegalStateException("classname = "
               + className + " superClass = " + superClass.getName(), e));
