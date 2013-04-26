@@ -511,12 +511,30 @@ public final class AnalysisEngineFactory {
 
   /**
    * A factory method for creating an aggregate description.
+   * 
+   * @param analysisEngineDescriptions list of analysis engine descriptions.
+   * @param componentNames list of component names - must be one name per description!
+   * @param typeSystem the type system to be used.
    */
   public static AnalysisEngineDescription createAggregateDescription(
           List<AnalysisEngineDescription> analysisEngineDescriptions, List<String> componentNames,
           TypeSystemDescription typeSystem, TypePriorities typePriorities,
           SofaMapping[] sofaMappings, FlowControllerDescription flowControllerDescription)
           throws ResourceInitializationException {
+
+    if (componentNames == null) {
+      throw new IllegalArgumentException("Parameter [componentNames] cannot be null");
+    }
+
+    if (analysisEngineDescriptions == null) {
+      throw new IllegalArgumentException("Parameter [analysisEngineDescriptions] cannot be null");
+    }
+    
+    if (analysisEngineDescriptions.size() != componentNames.size()) {
+      throw new IllegalArgumentException("Number of descriptions ["
+              + analysisEngineDescriptions.size() + "]does not match number of component names ["
+              + componentNames.size() + "].");
+    }
 
     // create the descriptor and set configuration parameters
     AnalysisEngineDescription desc = new AnalysisEngineDescription_impl();

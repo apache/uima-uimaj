@@ -501,4 +501,14 @@ public class AnalysisEngineFactoryTest extends ComponentTestBase {
     AnalysisEngineFactory.createPrimitive(ParameterizedAE.class, typeSystemDescription);
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void testUnbalancedComponentAndNames() throws ResourceInitializationException {
+    List<AnalysisEngineDescription> descriptions = new ArrayList<AnalysisEngineDescription>();
+    descriptions.add(AnalysisEngineFactory.createPrimitiveDescription(NoOpAnnotator.class));
+    descriptions.add(AnalysisEngineFactory.createPrimitiveDescription(NoOpAnnotator.class));
+    List<String> names = new ArrayList<String>();
+    
+    AnalysisEngineFactory.createAggregateDescription(descriptions, names,
+            TypeSystemDescriptionFactory.createTypeSystemDescription(), null, null, null);
+  }
 }
