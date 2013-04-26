@@ -219,7 +219,7 @@ public class CasUtil {
     if (!cas.getTypeSystem().subsumes(cas.getAnnotationType(), type)) {
       throw new IllegalArgumentException("Type [" + type.getName() + "] is not an annotation type");
     }
-    return (Collection) FSCollectionFactory.create(cas, type);
+    return (Collection) FSCollectionFactory.create(array, type);
   }
 
   /**
