@@ -24,6 +24,7 @@ package org.apache.uima.fit.util;
 import static java.util.Arrays.asList;
 import static org.apache.commons.lang.ArrayUtils.toObject;
 import static org.apache.uima.fit.util.FSCollectionFactory.create;
+import static org.apache.uima.fit.util.FSCollectionFactory.createArrayFS;
 import static org.apache.uima.fit.util.FSCollectionFactory.createBooleanArray;
 import static org.apache.uima.fit.util.FSCollectionFactory.createByteArray;
 import static org.apache.uima.fit.util.FSCollectionFactory.createDoubleArray;
@@ -85,15 +86,15 @@ public class FSCollectionFactoryTest {
 
   @Test
   public void testCreateFSArray() throws Exception {
-    assertEquals(tokenFSs, create(createFSArray(jcas.getCas(), tokenFSs)));
+    assertEquals(tokenFSs, create(createArrayFS(jcas.getCas(), tokenFSs)));
     assertEquals(
             tokenFSs,
-            create(createFSArray(jcas.getCas(),
+            create(createArrayFS(jcas.getCas(),
                     tokenFSs.toArray(new FeatureStructure[tokenFSs.size()]))));
-    assertEquals(tokens, create(createFSArray(jcas.getCas(), tokens)));
+    assertEquals(tokens, create(createArrayFS(jcas.getCas(), tokens)));
     assertEquals(tokens, create(createFSArray(jcas, tokens)));
     assertEquals(tokens,
-            create(createFSArray(jcas.getCas(), tokens.toArray(new Annotation[tokens.size()]))));
+            create(createArrayFS(jcas.getCas(), tokens.toArray(new Annotation[tokens.size()]))));
     assertEquals(tokens, create(createFSArray(jcas, tokens.toArray(new Annotation[tokens.size()]))));
     assertEquals(tokens,
             create(createFSArray(jcas, tokens.toArray(new Annotation[tokens.size()])), Token.class));

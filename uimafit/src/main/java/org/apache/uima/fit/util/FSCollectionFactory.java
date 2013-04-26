@@ -144,19 +144,19 @@ public abstract class FSCollectionFactory<T extends FeatureStructure> {
     return asList(data.toArray(new FeatureStructure[data.size()]));
   }
 
-  public static ArrayFS createFSArray(CAS aCas, Collection<? extends FeatureStructure> aCollection) {
+  public static ArrayFS createArrayFS(CAS aCas, Collection<? extends FeatureStructure> aCollection) {
     return fillArrayFS(aCas.createArrayFS(aCollection.size()), aCollection);
   }
 
-  public static ArrayFS createFSArray(CAS aCas, FeatureStructure[] aArray) {
+  public static ArrayFS createArrayFS(CAS aCas, FeatureStructure[] aArray) {
     return fillArrayFS(aCas.createArrayFS(aArray.length), asList(aArray));
   }
 
-  public static ArrayFS createFSArray(JCas aJCas, Collection<? extends FeatureStructure> aCollection) {
+  public static FSArray createFSArray(JCas aJCas, Collection<? extends FeatureStructure> aCollection) {
     return fillArrayFS(new FSArray(aJCas, aCollection.size()), aCollection);
   }
 
-  public static ArrayFS createFSArray(JCas aJCas, FeatureStructure[] aArray) {
+  public static FSArray createFSArray(JCas aJCas, FeatureStructure[] aArray) {
     return fillArrayFS(new FSArray(aJCas, aArray.length), asList(aArray));
   }
 
@@ -288,7 +288,7 @@ public abstract class FSCollectionFactory<T extends FeatureStructure> {
     return fillArrayFS(new StringArray(aJCas, aArray.length), aArray);
   }
 
-  public static ArrayFS fillArrayFS(ArrayFS aArrayFs,
+  public static <T extends ArrayFS> T fillArrayFS(T aArrayFs,
           Iterable<? extends FeatureStructure> aCollection) {
     int i = 0;
     for (FeatureStructure fs : aCollection) {
