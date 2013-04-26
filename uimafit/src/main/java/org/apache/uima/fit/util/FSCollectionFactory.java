@@ -73,11 +73,14 @@ import org.apache.uima.jcas.cas.TOP;
  * Bridge between Java {@link Collection Collections} from different representations of collections
  * of UIMA {@link FeatureStructure FeatureStructures}.
  * 
- * 
  * @param <T>
  *          data type.
  */
-public abstract class FSCollectionFactory<T extends FeatureStructure> extends AbstractCollection<T> {
+public abstract class FSCollectionFactory<T extends FeatureStructure> {
+
+  private FSCollectionFactory() {
+    // No instances.
+  }
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public static Collection<FeatureStructure> create(CAS cas, Type type) {
@@ -570,7 +573,7 @@ public abstract class FSCollectionFactory<T extends FeatureStructure> extends Ab
     return list;
   }
 
-  private static class FSIteratorAdapter<T extends FeatureStructure> extends FSCollectionFactory<T> {
+  private static class FSIteratorAdapter<T extends FeatureStructure> extends AbstractCollection<T> {
     private int sizeCache = -1;
 
     private final FSIterator<T> index;
@@ -608,8 +611,7 @@ public abstract class FSCollectionFactory<T extends FeatureStructure> extends Ab
     }
   }
 
-  private static class AnnotationIndexAdapter<T extends AnnotationFS> extends
-          FSCollectionFactory<T> {
+  private static class AnnotationIndexAdapter<T extends AnnotationFS> extends AbstractCollection<T> {
     private final AnnotationIndex<T> index;
 
     public AnnotationIndexAdapter(AnnotationIndex<T> aIndex) {
