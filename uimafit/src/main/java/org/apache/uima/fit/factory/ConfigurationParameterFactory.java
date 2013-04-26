@@ -57,17 +57,17 @@ public final class ConfigurationParameterFactory {
    * A mapping from Java class names to UIMA configuration parameter type names. Used by
    * setConfigurationParameters().
    */
-  public static final Map<String, String> javaUimaTypeMap = new HashMap<String, String>();
+  private static final Map<String, String> JAVA_UIMA_TYPE_MAP = new HashMap<String, String>();
   static {
-    javaUimaTypeMap.put(Boolean.class.getName(), ConfigurationParameter.TYPE_BOOLEAN);
-    javaUimaTypeMap.put(Float.class.getName(), ConfigurationParameter.TYPE_FLOAT);
-    javaUimaTypeMap.put(Double.class.getName(), ConfigurationParameter.TYPE_FLOAT);
-    javaUimaTypeMap.put(Integer.class.getName(), ConfigurationParameter.TYPE_INTEGER);
-    javaUimaTypeMap.put(String.class.getName(), ConfigurationParameter.TYPE_STRING);
-    javaUimaTypeMap.put("boolean", ConfigurationParameter.TYPE_BOOLEAN);
-    javaUimaTypeMap.put("float", ConfigurationParameter.TYPE_FLOAT);
-    javaUimaTypeMap.put("double", ConfigurationParameter.TYPE_FLOAT);
-    javaUimaTypeMap.put("int", ConfigurationParameter.TYPE_INTEGER);
+    JAVA_UIMA_TYPE_MAP.put(Boolean.class.getName(), ConfigurationParameter.TYPE_BOOLEAN);
+    JAVA_UIMA_TYPE_MAP.put(Float.class.getName(), ConfigurationParameter.TYPE_FLOAT);
+    JAVA_UIMA_TYPE_MAP.put(Double.class.getName(), ConfigurationParameter.TYPE_FLOAT);
+    JAVA_UIMA_TYPE_MAP.put(Integer.class.getName(), ConfigurationParameter.TYPE_INTEGER);
+    JAVA_UIMA_TYPE_MAP.put(String.class.getName(), ConfigurationParameter.TYPE_STRING);
+    JAVA_UIMA_TYPE_MAP.put("boolean", ConfigurationParameter.TYPE_BOOLEAN);
+    JAVA_UIMA_TYPE_MAP.put("float", ConfigurationParameter.TYPE_FLOAT);
+    JAVA_UIMA_TYPE_MAP.put("double", ConfigurationParameter.TYPE_FLOAT);
+    JAVA_UIMA_TYPE_MAP.put("int", ConfigurationParameter.TYPE_INTEGER);
 
   }
 
@@ -159,7 +159,7 @@ public final class ConfigurationParameterFactory {
     } else {
       parameterClassName = parameterClass.getName();
     }
-    String parameterType = javaUimaTypeMap.get(parameterClassName);
+    String parameterType = JAVA_UIMA_TYPE_MAP.get(parameterClassName);
     if (parameterType == null) {
       return ConfigurationParameter.TYPE_STRING;
     }
@@ -223,7 +223,7 @@ public final class ConfigurationParameterFactory {
       parameterClassName = parameterClass.getName();
     }
 
-    String parameterType = javaUimaTypeMap.get(parameterClassName);
+    String parameterType = JAVA_UIMA_TYPE_MAP.get(parameterClassName);
     if (parameterType == null) {
       // If we cannot map the type, we'll try to convert it to a String
       parameterType = ConfigurationParameter.TYPE_STRING;
