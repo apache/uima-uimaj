@@ -301,19 +301,4 @@ public final class CollectionReaderFactory {
 
     return desc;
   }
-
-  /**
-   * Since the configuration parameters of a CollectionReader with the given configuration parameter
-   * data
-   * 
-   * @deprecated use {@link ResourceCreationSpecifierFactory#setConfigurationParameters}
-   */
-  @Deprecated
-  public static void setConfigurationParameters(
-          CollectionReaderDescription collectionReaderDescription, Object... configurationData)
-          throws ResourceInitializationException {
-    ResourceCreationSpecifierFactory.setConfigurationParameters(collectionReaderDescription,
-            configurationData);
-  }
-
 }

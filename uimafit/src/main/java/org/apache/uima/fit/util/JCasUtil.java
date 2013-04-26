@@ -46,65 +46,6 @@ public final class JCasUtil {
   }
   
   /**
-   * Convenience method to iterator over all features structures of a given type.
-   * 
-   * @param <T>
-   *          the iteration type.
-   * @param jCas
-   *          a JCas.
-   * @param type
-   *          the type.
-   * @return An iterable.
-   * @see AnnotationIndex#iterator()
-   * @deprecated use {@link #select}
-   */
-  @Deprecated
-  public static <T extends TOP> Iterable<T> iterate(final JCas jCas, final Class<T> type) {
-    return select(jCas, type);
-  }
-
-  /**
-   * Convenience method to iterator over all annotations of a given type occurring within the scope
-   * of a provided annotation.
-   * 
-   * @param <T>
-   *          the iteration type.
-   * @param container
-   *          the containing annotation.
-   * @param type
-   *          the type.
-   * @return A iterable.
-   * @see #selectCovered(Class, AnnotationFS)
-   * @deprecated use {@link #selectCovered}
-   */
-  @Deprecated
-  public static <T extends Annotation> Iterable<T> iterate(final Class<T> type,
-          final AnnotationFS container) {
-    return selectCovered(type, container);
-  }
-
-  /**
-   * Convenience method to iterator over all annotations of a given type occurring within the scope
-   * of a provided annotation.
-   * 
-   * @param <T>
-   *          the iteration type.
-   * @param jCas
-   *          a JCas.
-   * @param container
-   *          the containing annotation.
-   * @param type
-   *          the type.
-   * @return A iterable.
-   * @deprecated use {@link #selectCovered}
-   */
-  @Deprecated
-  public static <T extends Annotation> Iterable<T> iterate(final JCas jCas, final Class<T> type,
-          final AnnotationFS container) {
-    return selectCovered(jCas, type, container);
-  }
-
-  /**
    * Convenience method to iterator over all annotations of a given type occurring within the scope
    * of a provided annotation (sub-iteration).
    * 
@@ -483,24 +424,6 @@ public final class JCasUtil {
           JCas jCas, Class<T> type, Class<S> coveredType) {
     return cast(CasUtil
             .indexCovered(jCas.getCas(), getType(jCas, type), getType(jCas, coveredType)));
-  }
-
-  /**
-   * Check if the given annotation contains any annotation of the given type.
-   * 
-   * @param jCas
-   *          a JCas containing the annotation.
-   * @param coveringAnnotation
-   *          the covering annotation.
-   * @param type
-   *          a UIMA type.
-   * @return if an annotation of the given type is present.
-   * @deprecated use {@link #contains}
-   */
-  @Deprecated
-  public static boolean isCovered(JCas jCas, AnnotationFS coveringAnnotation,
-          Class<? extends Annotation> type) {
-    return contains(jCas, coveringAnnotation, type);
   }
 
   /**

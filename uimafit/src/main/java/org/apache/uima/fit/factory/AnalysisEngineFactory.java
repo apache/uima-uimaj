@@ -345,20 +345,6 @@ public final class AnalysisEngineFactory {
     return desc;
   }
 
-  /**
-   * Provides a way to override configuration parameter settings with new values in an
-   * AnalysisEngineDescription
-   * 
-   * @deprecated use {@link ResourceCreationSpecifierFactory#setConfigurationParameters}
-   */
-  @Deprecated
-  public static void setConfigurationParameters(
-          AnalysisEngineDescription analysisEngineDescription, Object... configurationData)
-          throws ResourceInitializationException {
-    ResourceCreationSpecifierFactory.setConfigurationParameters(analysisEngineDescription,
-            configurationData);
-  }
-
   public static AnalysisEngine createPrimitive(Class<? extends AnalysisComponent> componentClass,
           TypeSystemDescription typeSystem, TypePriorities typePriorities,
           Object... configurationParameters) throws ResourceInitializationException {

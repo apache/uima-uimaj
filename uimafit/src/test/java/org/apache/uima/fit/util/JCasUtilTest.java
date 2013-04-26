@@ -29,7 +29,7 @@ import static org.apache.uima.fit.util.JCasUtil.getType;
 import static org.apache.uima.fit.util.JCasUtil.getView;
 import static org.apache.uima.fit.util.JCasUtil.indexCovered;
 import static org.apache.uima.fit.util.JCasUtil.indexCovering;
-import static org.apache.uima.fit.util.JCasUtil.isCovered;
+import static org.apache.uima.fit.util.JCasUtil.contains;
 import static org.apache.uima.fit.util.JCasUtil.select;
 import static org.apache.uima.fit.util.JCasUtil.selectBetween;
 import static org.apache.uima.fit.util.JCasUtil.selectCovered;
@@ -539,14 +539,14 @@ public class JCasUtilTest extends ComponentTestBase {
     assertEquals(6, selectCovered(Token.class, sentences.get(0)).size());
     assertEquals(4, selectCovered(Token.class, sentences.get(1)).size());
 
-    assertTrue(isCovered(jCas, sentences.get(0), Token.class));
+    assertTrue(contains(jCas, sentences.get(0), Token.class));
     tokens.get(0).removeFromIndexes();
     tokens.get(1).removeFromIndexes();
     tokens.get(2).removeFromIndexes();
     tokens.get(3).removeFromIndexes();
     tokens.get(4).removeFromIndexes();
     tokens.get(5).removeFromIndexes();
-    assertFalse(isCovered(jCas, sentences.get(0), Token.class));
+    assertFalse(contains(jCas, sentences.get(0), Token.class));
   }
 
   @Test

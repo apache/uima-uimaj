@@ -62,38 +62,6 @@ public final class CasUtil {
   }
   
   /**
-   * Convenience method to iterator over all feature structures of a given type.
-   * 
-   * @param cas
-   *          a CAS.
-   * @param type
-   *          the type.
-   * @return An iterable.
-   * @see AnnotationIndex#iterator()
-   * @deprecated use {@link #selectFS}
-   */
-  @Deprecated
-  public static Iterable<FeatureStructure> iterateFS(final CAS cas, final Type type) {
-    return selectFS(cas, type);
-  }
-
-  /**
-   * Convenience method to iterator over all annotations of a given type.
-   * 
-   * @param cas
-   *          a CAS.
-   * @param type
-   *          the type.
-   * @return An iterable.
-   * @see AnnotationIndex#iterator()
-   * @deprecated use {@link #select}
-   */
-  @Deprecated
-  public static Iterable<AnnotationFS> iterate(final CAS cas, final Type type) {
-    return select(cas, type);
-  }
-
-  /**
    * Get an iterator over the given feature structures type.
    * 
    * @param <T>
