@@ -36,6 +36,7 @@ public class JgPlugin extends Plugin {
   /**
    * The constructor.
    */
+//  @edu.umd.cs.findbugs.annotations.SuppressWarnings("ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD")
   public JgPlugin(IPluginDescriptor descriptor) {
     super(descriptor);
     plugin = this;

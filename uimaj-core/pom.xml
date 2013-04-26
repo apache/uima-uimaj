@@ -73,6 +73,17 @@
 			<version>${project.parent.version}</version>
 			<scope>test</scope>
 		</dependency>
+		
+		<!-- This next dependency is used to enable findbug rule suppression annotations
+		     Currently commented out - till more thought given to this. 
+		     For instance, we don't want to accidentally distribute this dependency in builds
+		<dependency>
+			<groupId>com.google.code.findbugs</groupId>
+			<artifactId>annotations</artifactId>
+			<version>2.0.0</version>
+			<scope>compile</scope>
+		</dependency>
+		 -->
 	</dependencies>
 	<build>
 		<finalName>uima-core</finalName>

@@ -73,19 +73,24 @@ public abstract class AbstractNewWizard extends Wizard implements INewWizard {
   // 4 = implname element name (implementationName or annotatorImplementationName
   // 5 = "<primitive>true</primitive>\n"
   
-  public final static String XMLNS_PART = "xmlns=\"http://uima.apache.org/resourceSpecifier\"";
+  // for explanation of this strange code, see JDK bug 6447475   found by findbugs
+  public final static String XMLNS_PART;
+  static {XMLNS_PART = "xmlns=\"http://uima.apache.org/resourceSpecifier\"";}
 
-  public final static String COMMON_HEADER = 
+  public final static String COMMON_HEADER;
+  static {COMMON_HEADER = 
     "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" 
-    + "<{2} " + XMLNS_PART + ">\n" ;
+    + "<{2} " + XMLNS_PART + ">\n";}
 
-  public final static String COMMON_NDVV = 
+  public final static String COMMON_NDVV;
+  static {COMMON_NDVV = 
       "    <name>{0}</name>\n"    // 1 = name of component (e.g. type name, type priority name, ae descriptor name)
     + "    <description></description>\n"
     + "    <version>1.0</version>\n"
-    + "    <vendor></vendor>\n";
+    + "    <vendor></vendor>\n";}
   
-  public final static String COMMON_FULL_DESCRIPTOR =
+  public final static String COMMON_FULL_DESCRIPTOR;
+  static {COMMON_FULL_DESCRIPTOR =
       COMMON_HEADER 
     + "  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>\n"
     + "{5}"                       // 5 = "" or "<primitive>true</primitive>\n"
@@ -108,13 +113,14 @@ public abstract class AbstractNewWizard extends Wizard implements INewWizard {
     + "  <externalResourceDependencies></externalResourceDependencies>\n"
     + "  <resourceManagerConfiguration></resourceManagerConfiguration>\n"
     + "</{2}>"
-    ;
+    ;}
   
-  public static String COMMON_PARTIAL_DESCRIPTOR =
+  public static String COMMON_PARTIAL_DESCRIPTOR;
+  static {COMMON_PARTIAL_DESCRIPTOR =
       COMMON_HEADER 
     + COMMON_NDVV
     + "{1}" 
-    + "</{2}>\n";
+    + "</{2}>\n";}
     
   protected AbstractNewWizardPage page;
 

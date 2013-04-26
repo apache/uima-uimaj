@@ -121,7 +121,7 @@ public class RsLangs {
    * @return true if any of the rsLangs subsumes the param lang
    */
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings("ES_COMPARING_PARAMETER_STRING_WITH_EQ")
+//  @edu.umd.cs.findbugs.annotations.SuppressWarnings("ES_COMPARING_PARAMETER_STRING_WITH_EQ")
   static boolean subsumesCanonical(RsLangs rsl, String lang) {
     if (null == rsl || null == rsl.languages) {  // don't test for size() == 0 - that's used by replace to indicate empty, not x-unspec
       return true;  // x-unspecified subsumes all
@@ -154,7 +154,7 @@ public class RsLangs {
     return false;
   }
   
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings("ES_COMPARING_PARAMETER_STRING_WITH_EQ")  
+//  @edu.umd.cs.findbugs.annotations.SuppressWarnings("ES_COMPARING_PARAMETER_STRING_WITH_EQ")  
   private static boolean subsumesCanonical(String containingLang, String langToTest, String langToTestBase) {
     return containingLang == langToTest || containingLang == langToTestBase; 
   }

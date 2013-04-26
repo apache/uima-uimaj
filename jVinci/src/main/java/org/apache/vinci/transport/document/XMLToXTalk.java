@@ -279,9 +279,13 @@ public class XMLToXTalk {
   }
 
   static private void skipString(RandomAccessFile raf) throws IOException {
-    int count = raf.readInt();
+    final int count = raf.readInt();
     // Debug.p("Skipping string of size: " + count);
-    raf.skipBytes(count);
+    final int skipped = raf.skipBytes(count); 
+    if (count != skipped) {
+      throw new RuntimeException(String.format("%d bytes skipped when %d was requested, while reading from stream %s",
+          skipped, count, raf));
+    }
   }
 
   public static void main(String[] args) throws Exception {
