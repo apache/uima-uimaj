@@ -195,7 +195,7 @@ public class AnalysisEngineFactoryTest extends ComponentTestBase {
     List<String> componentNames = Arrays.asList("ann1", "ann2", "ann3");
 
     AnalysisEngine aggregateEngine = AnalysisEngineFactory.createAggregate(primitiveDescriptors,
-            componentNames, typeSystemDescription, null, sofaMappings);
+            componentNames, null, sofaMappings);
 
     aggregateEngine.process(jCas);
 
@@ -508,7 +508,6 @@ public class AnalysisEngineFactoryTest extends ComponentTestBase {
     descriptions.add(AnalysisEngineFactory.createPrimitiveDescription(NoOpAnnotator.class));
     List<String> names = new ArrayList<String>();
     
-    AnalysisEngineFactory.createAggregateDescription(descriptions, names,
-            TypeSystemDescriptionFactory.createTypeSystemDescription(), null, null, null);
+    AnalysisEngineFactory.createAggregateDescription(descriptions, names, null, null, null);
   }
 }

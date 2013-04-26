@@ -410,17 +410,17 @@ public final class AnalysisEngineFactory {
       primitiveEngineDescriptions.add(primitiveDescription);
       componentNames.add(componentClass.getName());
     }
-    return createAggregateDescription(primitiveEngineDescriptions, componentNames, typeSystem,
-            typePriorities, sofaMappings, null);
+    return createAggregateDescription(primitiveEngineDescriptions, componentNames, typePriorities,
+            sofaMappings, null);
   }
 
   public static AnalysisEngine createAggregate(
           List<AnalysisEngineDescription> analysisEngineDescriptions, List<String> componentNames,
-          TypeSystemDescription typeSystem, TypePriorities typePriorities,
-          SofaMapping[] sofaMappings) throws ResourceInitializationException {
+          TypePriorities typePriorities, SofaMapping[] sofaMappings)
+          throws ResourceInitializationException {
 
     AnalysisEngineDescription desc = createAggregateDescription(analysisEngineDescriptions,
-            componentNames, typeSystem, typePriorities, sofaMappings, null);
+            componentNames, typePriorities, sofaMappings, null);
     // create the AnalysisEngine, initialize it and return it
     AnalysisEngine engine = new AggregateAnalysisEngine_impl();
     engine.initialize(desc, null);
@@ -439,7 +439,7 @@ public final class AnalysisEngineFactory {
     }
 
     return createAggregateDescription(asList(analysisEngineDescriptions), asList(names), null,
-            null, null, null);
+            null, null);
   }
 
   public static AnalysisEngineDescription createAggregateDescription(
@@ -457,18 +457,18 @@ public final class AnalysisEngineFactory {
       primitiveEngineDescriptions.add(primitiveDescription);
       componentNames.add(componentClass.getName());
     }
-    return createAggregateDescription(primitiveEngineDescriptions, componentNames, typeSystem,
+    return createAggregateDescription(primitiveEngineDescriptions, componentNames,
             typePriorities, sofaMappings, flowControllerDescription);
   }
 
   public static AnalysisEngine createAggregate(
           List<AnalysisEngineDescription> analysisEngineDescriptions, List<String> componentNames,
-          TypeSystemDescription typeSystem, TypePriorities typePriorities,
-          SofaMapping[] sofaMappings, FlowControllerDescription flowControllerDescription)
+          TypePriorities typePriorities, SofaMapping[] sofaMappings,
+          FlowControllerDescription flowControllerDescription)
           throws ResourceInitializationException {
 
     AnalysisEngineDescription desc = createAggregateDescription(analysisEngineDescriptions,
-            componentNames, typeSystem, typePriorities, sofaMappings, flowControllerDescription);
+            componentNames, typePriorities, sofaMappings, flowControllerDescription);
     // create the AnalysisEngine, initialize it and return it
     AnalysisEngine engine = new AggregateAnalysisEngine_impl();
     engine.initialize(desc, null);
@@ -492,7 +492,7 @@ public final class AnalysisEngineFactory {
     }
 
     return createAggregateDescription(asList(analysisEngineDescriptions), asList(names), null,
-            null, null, flowControllerDescription);
+            null, flowControllerDescription);
   }
 
   /**
@@ -504,8 +504,8 @@ public final class AnalysisEngineFactory {
    */
   public static AnalysisEngineDescription createAggregateDescription(
           List<AnalysisEngineDescription> analysisEngineDescriptions, List<String> componentNames,
-          TypeSystemDescription typeSystem, TypePriorities typePriorities,
-          SofaMapping[] sofaMappings, FlowControllerDescription flowControllerDescription)
+          TypePriorities typePriorities, SofaMapping[] sofaMappings,
+          FlowControllerDescription flowControllerDescription)
           throws ResourceInitializationException {
 
     if (componentNames == null) {
@@ -564,7 +564,7 @@ public final class AnalysisEngineFactory {
     if (sofaMappings != null) {
       desc.setSofaMappings(sofaMappings);
     }
-
+    
     return desc;
   }
 

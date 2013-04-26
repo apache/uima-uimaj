@@ -202,8 +202,8 @@ public class AggregateBuilder {
    */
   public AnalysisEngine createAggregate() throws ResourceInitializationException {
     return AnalysisEngineFactory.createAggregate(analysisEngineDescriptions, componentNames,
-            typeSystemDescription, typePriorities,
-            sofaMappings.toArray(new SofaMapping[sofaMappings.size()]), flowControllerDescription);
+            typePriorities, sofaMappings.toArray(new SofaMapping[sofaMappings.size()]),
+            flowControllerDescription);
   }
 
   /**
@@ -216,7 +216,7 @@ public class AggregateBuilder {
   public AnalysisEngineDescription createAggregateDescription()
           throws ResourceInitializationException {
     return AnalysisEngineFactory.createAggregateDescription(analysisEngineDescriptions,
-            componentNames, typeSystemDescription, typePriorities,
+            componentNames, typePriorities,
             sofaMappings.toArray(new SofaMapping[sofaMappings.size()]), flowControllerDescription);
   }
 }
