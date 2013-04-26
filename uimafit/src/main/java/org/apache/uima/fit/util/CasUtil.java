@@ -554,6 +554,47 @@ public class CasUtil {
    * <p>
    * <b>Note:</b> this is <b>REALLY SLOW!</b> You don't want to use this. Instead, consider using
    * {@link #indexCovering(CAS, Type, Type)} or a {@link ContainmentIndex}.
+   * @param type
+   *          a UIMA type.
+   * @param coveredAnnotation
+   *          the covered annotation.
+   * 
+   * @return a return value.
+   */
+  public static List<AnnotationFS> selectCovering(Type type, AnnotationFS coveredAnnotation) {
+
+    return selectCovering(coveredAnnotation.getView(), type, coveredAnnotation.getBegin(),
+            coveredAnnotation.getEnd());
+  }
+
+  /**
+   * Get a list of annotations of the given annotation type constraint by a certain annotation.
+   * Iterates over all annotations to find the covering annotations.
+   * 
+   * <p>
+   * <b>Note:</b> this is <b>REALLY SLOW!</b> You don't want to use this. Instead, consider using
+   * {@link #indexCovering(CAS, Type, Type)} or a {@link ContainmentIndex}.
+   * 
+   * @param cas
+   *          a CAS.
+   * @param type
+   *          a UIMA type.
+   * @param coveredAnnotation
+   *          the covered annotation.
+   * @return a return value.
+   */
+  public static List<AnnotationFS> selectCovering(CAS cas, Type type, AnnotationFS coveredAnnotation) {
+
+    return selectCovering(cas, type, coveredAnnotation.getBegin(), coveredAnnotation.getEnd());
+  }
+  
+  /**
+   * Get a list of annotations of the given annotation type constraint by a certain annotation.
+   * Iterates over all annotations to find the covering annotations.
+   * 
+   * <p>
+   * <b>Note:</b> this is <b>REALLY SLOW!</b> You don't want to use this. Instead, consider using
+   * {@link #indexCovering(CAS, Type, Type)} or a {@link ContainmentIndex}.
    * 
    * @param cas
    *          a CAS.

@@ -314,8 +314,8 @@ public class JCasUtil {
    */
   public static <T extends AnnotationFS> List<T> selectCovered(Class<T> type,
           AnnotationFS coveringAnnotation) {
-    CAS cas = coveringAnnotation.getCAS();
-    return cast(CasUtil.selectCovered(cas, CasUtil.getType(cas, type), coveringAnnotation));
+    return cast(CasUtil.selectCovered(CasUtil.getType(coveringAnnotation.getCAS(), type),
+            coveringAnnotation));
   }
 
   /**
@@ -366,6 +366,53 @@ public class JCasUtil {
     return cast(CasUtil.selectCovered(jCas.getCas(), getType(jCas, type), begin, end));
   }
 
+  /**
+   * Get a list of annotations of the given annotation type constraint by a certain annotation.
+   * Iterates over all annotations to find the covering annotations.
+   * 
+   * <p>
+   * <b>Note:</b> this is <b>REALLY SLOW!</b> You don't want to use this. Instead, consider using
+   * {@link #indexCovering(JCas, Class, Class)} or a {@link ContainmentIndex}.
+   * 
+   * @param <T>
+   *          the JCas type.
+   * @param type
+   *          a UIMA type.
+   * @param coveredAnnotation
+   *          the covered annotation.
+   * @return a return value.
+   */
+  public static <T extends Annotation> List<T> selectCovering(Class<T> type,
+          AnnotationFS coveredAnnotation) {
+
+    return cast(CasUtil.selectCovering(CasUtil.getType(coveredAnnotation.getCAS(), type),
+            coveredAnnotation));
+  }
+  
+  /**
+   * Get a list of annotations of the given annotation type constraint by a certain annotation.
+   * Iterates over all annotations to find the covering annotations.
+   * 
+   * <p>
+   * <b>Note:</b> this is <b>REALLY SLOW!</b> You don't want to use this. Instead, consider using
+   * {@link #indexCovering(JCas, Class, Class)} or a {@link ContainmentIndex}.
+   * 
+   * @param <T>
+   *          the JCas type.
+   * @param jCas
+   *          a CAS.
+   * @param type
+   *          a UIMA type.
+   * @param coveredAnnotation
+   *          the covered annotation.
+   * @return a return value.
+   */
+  public static <T extends Annotation> List<T> selectCovering(JCas jCas, Class<T> type,
+          AnnotationFS coveredAnnotation) {
+
+    return cast(CasUtil.selectCovering(jCas.getCas(), getType(jCas, type), coveredAnnotation));
+  }
+  
   /**
    * Get a list of annotations of the given annotation type constraint by a certain annotation.
    * Iterates over all annotations to find the covering annotations.
@@ -559,6 +606,25 @@ public class JCasUtil {
    * 
    * @param <T>
    *          the JCas type.
+   * @param aType
+   *          a type.
+   * @param annotation
+   *          anchor annotation
+   * @param count
+   *          number of annotations to collect
+   * @return List of aType annotations preceding anchor annotation
+   */
+  public static <T extends Annotation> List<T> selectPreceding(Class<T> aType,
+          AnnotationFS annotation, int count) {
+    Type t = CasUtil.getType(annotation.getCAS(), aType);
+    return cast(CasUtil.selectPreceding(annotation.getView(), t, annotation, count));
+  }
+
+  /**
+   * Returns the n annotations preceding the given annotation
+   * 
+   * @param <T>
+   *          the JCas type.
    * @param aJCas
    *          a JCas.
    * @param aType
@@ -573,6 +639,25 @@ public class JCasUtil {
           AnnotationFS annotation, int count) {
     Type t = getType(aJCas, aType);
     return cast(CasUtil.selectPreceding(aJCas.getCas(), t, annotation, count));
+  }
+
+  /**
+   * Returns the n annotations following the given annotation
+   * 
+   * @param <T>
+   *          the JCas type.
+   * @param aType
+   *          a type.
+   * @param annotation
+   *          anchor annotation
+   * @param count
+   *          number of annotations to collect
+   * @return List of aType annotations following anchor annotation
+   */
+  public static <T extends Annotation> List<T> selectFollowing(Class<T> aType,
+          AnnotationFS annotation, int count) {
+    Type t = CasUtil.getType(annotation.getCAS(), aType);
+    return cast(CasUtil.selectFollowing(annotation.getView(), t, annotation, count));
   }
 
   /**
