@@ -194,7 +194,7 @@ public class AnalysisEngineFactoryTest extends ComponentTestBase {
     List<String> componentNames = Arrays.asList("ann1", "ann2", "ann3");
 
     AnalysisEngine aggregateEngine = AnalysisEngineFactory.createAggregate(primitiveDescriptors,
-            componentNames, typeSystemDescription, null, sofaMappings);
+            componentNames, null, sofaMappings);
 
     aggregateEngine.process(jCas);
 
