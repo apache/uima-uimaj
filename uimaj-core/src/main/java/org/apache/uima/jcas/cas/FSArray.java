@@ -128,11 +128,31 @@ public final class FSArray extends TOP implements ArrayFS {
     return outArray;
   }
 
+  /**
+   * Not supported, will throw UnsupportedOperationException
+   */
   public void copyFromArray(String[] src, int srcOffset, int destOffset, int length) {
     throw new UnsupportedOperationException();
   }
     
-
+  /**
+   * Copies an array of Feature Structures to an Array of Strings.
+   * The strings are the "toString()" representation of the feature structures, 
+   * which are probably something that looks like FeatureStructure@123456
+   * 
+   * @param srcOffset
+   *                The index of the first element to copy.
+   * @param dest
+   *                The array to copy to.
+   * @param destOffset
+   *                Where to start copying into <code>dest</code>.
+   * @param length
+   *                The number of elements to copy.
+   * @exception ArrayIndexOutOfBoundsException
+   *                    If <code>srcOffset &lt; 0</code> or
+   *                    <code>length > size()</code> or
+   *                    <code>destOffset + length > destArray.length</code>.
+   */
   public void copyToArray(int srcOffset, String[] dest, int destOffset, int length) {
     CASImpl ll = jcasType.casImpl;
     ll.checkArrayBounds(addr, srcOffset, length);
