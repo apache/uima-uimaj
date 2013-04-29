@@ -1294,8 +1294,17 @@ while (timeIter.hasNext()) {
       <note>
       <para>You can also use the method
         <literal>JCAS.getJFSIndexRepository().getAllIndexedFS(YourClass.type)</literal>, which returns an iterator
-        over all instances of <literal>YourClass</literal> in no particular order. This can be useful for types
-        that are not subtypes of the built-in Annotation type and which therefore have no default sort order.</para>
+        over instances of <literal>YourClass</literal> in no particular order. But beware - if you've defined
+        a <literal>set</literal> index for this type, and haven't defined any non-set indexes for this type, then,
+        the method would return only those instances in the set.  So, in a pathological case, if you defined the
+        set so that the key was some particular field, and all instances of this type had the same key, then 
+        only one instance of this type would be found.</para>
+        <para>To guarantee the existance of an index for all types, you can define an bag or sorted index for the type.
+        If there is such an index, the same FeatureStructure could be added to the index multiple times.  In this case,
+        the iterator would return the same FeatureStructure multiple times.
+        </para>
+        <para>All types which are subtypes of the built-in Annotation type have a sorted index, and so all instances of those
+        types are guaranteed to be found (at least once) by this iterator.</para>
         
       <para>Also, if you've defined your own custom index as described in <olink targetdoc="&uima_docs_ref;"
           targetptr="ugr.ref.xml.component_descriptor.aes.index"/>, you can get an iterator over that
