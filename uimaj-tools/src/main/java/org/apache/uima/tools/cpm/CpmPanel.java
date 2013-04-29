@@ -1501,15 +1501,19 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     try {
       if (source == collectionReaderPanel) {
         if (fileString != null && fileString.length() > 0) {
+          // [UIMA-2841]
+          currentCpeDesc.setAllCollectionCollectionReaders(null);
+          currentCpeDesc.addCollectionReader(fileString);
           CpeCollectionReader[] readers = currentCpeDesc.getAllCollectionCollectionReaders();
-          if (readers.length == 0) {
-            currentCpeDesc.addCollectionReader(fileString);
-            readers = currentCpeDesc.getAllCollectionCollectionReaders();
-          } else {
-            readers[0].getCollectionIterator().getDescriptor().getInclude().set(fileString);
-            // clear config settings
-            readers[0].getCollectionIterator().setConfigurationParameterSettings(null);
-          }
+          
+//          CpeCollectionReader[] readers = currentCpeDesc.getAllCollectionCollectionReaders();
+//          if (readers.length == 0) {
+//            currentCpeDesc.addCollectionReader(fileString);
+//            readers = currentCpeDesc.getAllCollectionCollectionReaders();
+//          } else {
+//            readers[0].getCollectionIterator().getDescriptor().getInclude().set(fileString);
+//            readers[0].getCollectionIterator().setConfigurationParameterSettings(null);
+//          }
 
           rv = populateCollectionReaderPanel(readers[0].getCollectionIterator());
         } else {
@@ -1519,15 +1523,20 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
         selectedComponentsChanged = true;
       } else if (source == casInitializerPanel) {
         if (fileString != null && fileString.length() > 0) {
+          // [UIMA-2841]
+          currentCpeDesc.setAllCollectionCollectionReaders(null);
+          currentCpeDesc.addCasInitializer(fileString);
           CpeCollectionReader[] readers = currentCpeDesc.getAllCollectionCollectionReaders();
-          if (readers.length == 0 || readers[0].getCasInitializer() == null) {
-            currentCpeDesc.addCasInitializer(fileString);
-            readers = currentCpeDesc.getAllCollectionCollectionReaders();
-          } else {
-            readers[0].getCasInitializer().getDescriptor().getInclude().set(fileString);
-            // clear config settings
-            readers[0].getCasInitializer().setConfigurationParameterSettings(null);
-          }
+          
+//          CpeCollectionReader[] readers = currentCpeDesc.getAllCollectionCollectionReaders();
+//          if (readers.length == 0 || readers[0].getCasInitializer() == null) {
+//            currentCpeDesc.addCasInitializer(fileString);
+//            readers = currentCpeDesc.getAllCollectionCollectionReaders();
+//          } else {
+//            readers[0].getCasInitializer().getDescriptor().getInclude().set(fileString);
+//            // clear config settings
+//            readers[0].getCasInitializer().setConfigurationParameterSettings(null);
+//          }
           rv = populateCasInitializerPanel(readers[0].getCasInitializer());
         } else {
           // no CAS initializer selected - OK
