@@ -74,7 +74,7 @@ public final class CasUtil {
    */
   @SuppressWarnings("unchecked")
   public static <T extends FeatureStructure> Iterator<T> iteratorFS(CAS cas, Type type) {
-    return ((FSIterator<T>) cas.getIndexRepository().getAllIndexedFS(type));
+    return (Iterator<T>) FSCollectionFactory.create(cas, type).iterator();
   }
 
   /**
@@ -243,7 +243,7 @@ public final class CasUtil {
     if (!cas.getTypeSystem().subsumes(cas.getAnnotationType(), type)) {
       throw new IllegalArgumentException("Type [" + type.getName() + "] is not an annotation type");
     }
-    return (Collection) FSCollectionFactory.create(cas, type);
+    return (Collection) FSCollectionFactory.create(cas.getAnnotationIndex(type));
   }
 
   /**
@@ -673,40 +673,6 @@ public final class CasUtil {
       }
     }
     return unmodifiableMap(index);
-  }
-
-  /**
-   * This method exists simply as a convenience method for unit testing. It is not very efficient
-   * and should not, in general be used outside the context of unit testing.
-   * 
-   * @param cas
-   *          a CAS containing the feature structure.
-   * @param type
-   *          a UIMA type.
-   * @param index
-   *          this can be either positive (0 corresponds to the first annotation of a type) or
-   *          negative (-1 corresponds to the last annotation of a type.)
-   * @return an annotation of the given type
-   */
-  public static FeatureStructure selectFSByIndex(CAS cas, Type type, int index) {
-    FSIterator<FeatureStructure> i = cas.getIndexRepository().getAllIndexedFS(type);
-    int n = index;
-    i.moveToFirst();
-    if (n > 0) {
-      while (n > 0 && i.isValid()) {
-        i.moveToNext();
-        n--;
-      }
-    }
-    if (n < 0) {
-      i.moveToLast();
-      while (n < -1 && i.isValid()) {
-        i.moveToPrevious();
-        n++;
-      }
-    }
-
-    return i.isValid() ? i.get() : null;
   }
 
   /**

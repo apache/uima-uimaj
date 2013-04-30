@@ -25,7 +25,6 @@ import java.util.Map;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
-import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.Subiterator;
 import org.apache.uima.cas.text.AnnotationFS;
@@ -86,7 +85,7 @@ public final class JCasUtil {
    */
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public static <T extends TOP> Iterator<T> iterator(JCas jCas, Class<T> type) {
-    return (FSIterator) jCas.getIndexRepository().getAllIndexedFS(getType(jCas, type));
+    return (Iterator) FSCollectionFactory.create(jCas.getCas(), getType(jCas, type)).iterator();
   }
 
   /**
@@ -445,6 +444,10 @@ public final class JCasUtil {
   /**
    * This method exists simply as a convenience method for unit testing. It is not very efficient
    * and should not, in general be used outside the context of unit testing.
+   * <p>
+   * It is intentional that this method only allows annotation types. The CAS indexing mechanisms
+   * are not well defined for non-annotation types. There are no reliably, built-in indexes for
+   * non-annotation types.
    * 
    * @param <T>
    *          JCas wrapper type.
@@ -458,8 +461,8 @@ public final class JCasUtil {
    * @return an annotation of the given type
    */
   @SuppressWarnings("unchecked")
-  public static <T extends TOP> T selectByIndex(JCas jCas, Class<T> cls, int index) {
-    return (T) CasUtil.selectFSByIndex(jCas.getCas(), getType(jCas, cls), index);
+  public static <T extends Annotation> T selectByIndex(JCas jCas, Class<T> cls, int index) {
+    return (T) CasUtil.selectByIndex(jCas.getCas(), getType(jCas, cls), index);
   }
 
   /**
