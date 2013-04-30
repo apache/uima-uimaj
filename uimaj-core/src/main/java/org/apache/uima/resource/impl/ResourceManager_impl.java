@@ -688,7 +688,7 @@ public class ResourceManager_impl implements ResourceManager {
 
     String definingContext;
 
-    ResourceRegistration(Object resource, ExternalResourceDescription description,
+    public ResourceRegistration(Object resource, ExternalResourceDescription description,
             String definingContext) {
       this.resource = resource;
       this.description = description;
