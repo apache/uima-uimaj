@@ -72,7 +72,7 @@ public class CasComparer {
     Map<FeatureStructure, FeatureStructure> visited = new HashMap<FeatureStructure, FeatureStructure>();
     
     FSIterator<FeatureStructure> it1 = c1.getIndexRepository().getAllIndexedFS(c1.getTypeSystem().getTopType());
-    FSIterator<FeatureStructure> it2 = c2.getIndexRepository().getAllIndexedFS(c1.getTypeSystem().getTopType());
+    FSIterator<FeatureStructure> it2 = c2.getIndexRepository().getAllIndexedFS(c2.getTypeSystem().getTopType());
     while (it1.isValid()) {
       Assert.assertTrue(it2.isValid());
 
