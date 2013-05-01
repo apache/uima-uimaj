@@ -85,6 +85,8 @@ public class IteratorTest extends TestCase {
   private Feature startFeature;
 
   private Type sentenceType;
+  
+  private Type subsentenceType;
 
   /**
    * Constructor for FilteredIteratorTest.
@@ -153,6 +155,8 @@ public class IteratorTest extends TestCase {
     assertTrue(this.sentenceType != null);
     this.annotationType = this.ts.getType(CAS.TYPE_NAME_ANNOTATION);
     assertTrue(this.annotationType != null);
+    this.subsentenceType = this.ts.getType("SubTypeOfSentence");
+    assertTrue(this.subsentenceType != null);
   }
 
   public void tearDown() {
@@ -653,18 +657,32 @@ public class IteratorTest extends TestCase {
     assertTrue(ok);
 
   }
+  
+  private void addAnnotations(AnnotationFS[] fsArray, Type type) {
+    FSIndexRepository ir = this.cas.getIndexRepository();    
+    for (int i = 0; i < fsArray.length; i++) {
+      // key order:
+      //   0 ... 50 200 ... 160  66 66 66 ..
+      // item order
+      //   0 - 50, 90 - 99, 89 - 60
+      int j = (i >= 90) ? 66 :           // some constant keys
+              (i > 50) ? 200 - i :       // some decreasing keys
+              i;                         // some increasing keys
+      fsArray[i] = this.cas.createAnnotation(type, j * 5, (j * 5) + 4);
+      ir.addFS(fsArray[i]);
+    }
+  }
 
   /**
    * Test deleting FSs from indexes.
    */
   public void testDelete() {
     // Create a bunch of FSs.
+    // have 10% of them be the same key
+    // have the order be scrambled somewhat, not strictly increasing
     AnnotationFS[] fsArray = new AnnotationFS[100];
     FSIndexRepository ir = this.cas.getIndexRepository();
-    for (int i = 0; i < fsArray.length; i++) {
-      fsArray[i] = this.cas.createAnnotation(this.tokenType, i * 5, (i * 5) + 4);
-      ir.addFS(fsArray[i]);
-    }
+    addAnnotations(fsArray, this.tokenType);
     FSIndex<FeatureStructure> setIndex = this.cas.getIndexRepository().getIndex(
         CASTestSetup.ANNOT_SET_INDEX, this.tokenType);
     FSIterator<FeatureStructure> setIt = setIndex.iterator();
@@ -676,14 +694,26 @@ public class IteratorTest extends TestCase {
     for (int i = 0; i < fsArray.length; i++) {
       setIt.moveTo(fsArray[i]);
       assertTrue(setIt.isValid());
-      assertTrue(setIt.get().equals(fsArray[i]));
+      assertTrue(setIt.get().equals(fsArray[(i < 90) ? i : 90]));
       bagIt.moveTo(fsArray[i]);
       assertTrue(bagIt.isValid());
       assertTrue(bagIt.get().equals(fsArray[i]));
       sortedIt.moveTo(fsArray[i]);
       assertTrue(sortedIt.isValid());
-      assertTrue(sortedIt.get().equals(fsArray[i]));
+      fsBeginEndEqual(sortedIt.get(), fsArray[i]);
     }
+    sortedIt.moveToFirst();
+    // item order
+    //   0 - 50, 90 - 99, 89 - 60    
+    for (int i = 0; i < fsArray.length; i++) {
+      int j = (i >= 61) ? (89 - (i - 61)) :
+              (i >= 51) ? 90 :
+              i;
+      fsBeginEndEqual(sortedIt.get(), fsArray[j]);
+      sortedIt.moveToNext();
+    }
+    assertFalse(sortedIt.isValid());
+    
     // Remove an annotation, then add it again. Try setting the iterators to
     // that FS. The iterator should either be invalid, or point to a
     // different FS.
@@ -718,7 +748,102 @@ public class IteratorTest extends TestCase {
     sortedIt.moveToFirst();
     assertFalse(sortedIt.isValid());
   }
+  
+  private void verifyMoveToFirst(FSIterator it, boolean expected) {
+    it.moveToFirst();
+    assertEquals(it.isValid(), expected);
+  }
+  
+  private void verifyHaveSubset(FSIterator x, int nbr, Type type) {
+    x.moveToFirst();
+    int i = 0;
+    while (x.hasNext()) {
+      i++;
+      assertEquals(type, x.get().getType());
+      x.moveToNext();
+    }
+    assertEquals(nbr, i);
+  }
 
+  public void testRemoveAll() {
+    AnnotationFS[] fsArray = new AnnotationFS[100];
+    AnnotationFS[] subFsArray = new AnnotationFS[100];
+    FSIndexRepository ir = this.cas.getIndexRepository();
+    
+    FSIndex<FeatureStructure> setIndex = ir.getIndex(CASTestSetup.ANNOT_SET_INDEX, this.sentenceType);
+    FSIndex<FeatureStructure> bagIndex = ir.getIndex(CASTestSetup.ANNOT_BAG_INDEX, this.sentenceType);
+    FSIndex<AnnotationFS> sortedIndex = this.cas.getAnnotationIndex(this.sentenceType);
+
+    FSIterator<FeatureStructure> setIt = setIndex.iterator();
+    FSIterator<FeatureStructure> bagIt = bagIndex.iterator();
+    FSIterator<AnnotationFS> sortedIt = sortedIndex.iterator();
+    
+    // subindexes
+    
+    FSIndex<FeatureStructure> subsetIndex = ir.getIndex(CASTestSetup.ANNOT_SET_INDEX, this.subsentenceType);
+    FSIndex<FeatureStructure> subbagIndex = ir.getIndex(CASTestSetup.ANNOT_BAG_INDEX, this.sentenceType);
+    FSIndex<AnnotationFS>     subsortedIndex = this.cas.getAnnotationIndex(this.sentenceType);
+
+    FSIterator<FeatureStructure> subsetIt = subsetIndex.iterator();
+    FSIterator<FeatureStructure> subbagIt = subbagIndex.iterator();
+    FSIterator<AnnotationFS> subsortedIt = subsortedIndex.iterator();
+    
+    addAnnotations(fsArray, ts.getType("Sentence"));
+    addAnnotations(subFsArray, ts.getType("SubTypeOfSentence"));
+    
+    verifyMoveToFirst(setIt, true);
+    verifyMoveToFirst(bagIt, true);
+    verifyMoveToFirst(sortedIt, true);
+    verifyMoveToFirst(subsetIt, true);
+    verifyMoveToFirst(subbagIt, true);
+    verifyMoveToFirst(subsortedIt, true);
+
+    ir.removeAllExcludingSubtypes(this.sentenceType);
+    
+    subsetIndex = ir.getIndex(CASTestSetup.ANNOT_SET_INDEX, this.subsentenceType);
+    subbagIndex = ir.getIndex(CASTestSetup.ANNOT_BAG_INDEX, this.subsentenceType);
+    subsortedIndex = this.cas.getAnnotationIndex(this.subsentenceType);
+
+    subsetIt = subsetIndex.iterator();
+    subbagIt = subbagIndex.iterator();
+    subsortedIt = subsortedIndex.iterator();
+
+    verifyHaveSubset(setIt, 91, subsentenceType);
+    verifyHaveSubset(bagIt, 100, subsentenceType);
+    verifyHaveSubset(sortedIt, 100, subsentenceType);
+    verifyHaveSubset(subsetIt, 91, subsentenceType);
+    verifyHaveSubset(subbagIt, 100, subsentenceType);
+    verifyHaveSubset(subsortedIt, 100, subsentenceType);
+    
+    for (AnnotationFS fs : fsArray) {
+      ir.addFS(fs);
+    }
+    
+    ir.removeAllExcludingSubtypes(subsentenceType);
+    
+    verifyHaveSubset(setIt, 91, sentenceType);
+    verifyHaveSubset(bagIt, 100, sentenceType);
+    verifyHaveSubset(sortedIt, 100, sentenceType);
+    verifyMoveToFirst(subsetIt, false);
+    verifyMoveToFirst(subbagIt, false);
+    verifyMoveToFirst(subsortedIt, false);
+    
+    for (AnnotationFS fs : subFsArray) {
+      ir.addFS(fs);
+    }
+    
+    ir.removeAllIncludingSubtypes(sentenceType);
+    verifyMoveToFirst(setIt, false);
+    verifyMoveToFirst(bagIt, false);
+    verifyMoveToFirst(sortedIt, false);
+    verifyMoveToFirst(subsetIt, false);
+    verifyMoveToFirst(subbagIt, false);
+    verifyMoveToFirst(subsortedIt, false);
+    
+    
+  }
+  
+  
   public void testInvalidIndexRequest() {
     boolean exc = false;
     try {
@@ -733,4 +858,8 @@ public class IteratorTest extends TestCase {
     junit.textui.TestRunner.run(IteratorTest.class);
   }
 
+  private void fsBeginEndEqual(AnnotationFS fs1, AnnotationFS fs2) {
+    assertEquals(fs1.getBegin(), fs2.getBegin());
+    assertEquals(fs1.getEnd(), fs2.getEnd());     
+  }
 }

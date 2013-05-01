@@ -1331,6 +1331,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       return null;
     }
     // Why is this necessary?
+    // probably because we don't support indexes over FSArray<some-particular-type>
     if (type.isArray()) {
       final Type componentType = type.getComponentType();
       if ((componentType != null) && !componentType.isPrimitive()
@@ -1401,6 +1402,34 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     }
     return numFSs;
   }
+  
+  /**
+   * Remove all instances of a particular type (but not its subtypes) from all indexes
+   * @param type
+   */
+  public void removeAllExcludingSubtypes(Type type) {
+    final int typeCode = ((TypeImpl) type).getCode();
+    // get a list of all indexes defined over this type
+    // Includes indexes defined on supertypes of this type
+    final ArrayList<IndexIteratorCachePair> allIndexesForType = this.indexArray[typeCode];
+    for (IndexIteratorCachePair iicp : allIndexesForType) {
+      iicp.index.flush();
+//      boolean fff = iicp.iteratorCache.get(0) == iicp.index;
+    }
+  }
+  
+  /**
+   * Remove all instances of a particular type (including its subtypes) from all indexes
+   * @param type
+   */
+  public void removeAllIncludingSubtypes(Type type) {
+    removeAllExcludingSubtypes(type);
+    List<Type> subtypes = this.typeSystem.getDirectSubtypes(type);
+    for (Type subtype : subtypes) {
+      removeAllIncludingSubtypes(subtype);
+    }
+  }
+  
 
   /**
    * @see org.apache.uima.cas.admin.FSIndexRepositoryMgr#createComparator()

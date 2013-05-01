@@ -340,17 +340,44 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
    */
   public void deleteFS(FeatureStructure fs) {
     final int addr = ((FeatureStructureImpl) fs).getAddress();
-    final int pos = this.index.indexOf(addr);
-    if (pos >= 0) {
-      this.index.remove(pos);
-    }
+    remove(addr);
+//    final int pos = this.index.indexOf(addr);
+//    if (pos >= 0) {
+//      this.index.remove(pos);
+//    }
   }
 
   public void remove(int fsRef) {
-    final int pos = this.index.indexOf(fsRef);
-    if (pos >= 0) {
+    final int pos = find(fsRef);  // finds "same" element per compare key
+    if (this.index.get(pos) == fsRef) {
       this.index.remove(pos);
+      return;
     }
+    // search down and up for == fsRef, while key values ==
+    for (int movingPos = pos - 1; movingPos >= 0; movingPos --) { 
+      if (compare(this.index.get(movingPos), fsRef) != 0) {
+        break;  // not found
+      }
+      if (this.index.get(movingPos) == fsRef) {
+        this.index.remove(movingPos);
+        return;
+      }
+    }
+    // search up
+    for (int movingPos = pos + 1; movingPos < this.index.size(); movingPos ++) {
+      if (compare(this.index.get(movingPos), fsRef) != 0) {
+        return;  // not found
+      }
+      if (this.index.get(movingPos) == fsRef) {
+        this.index.remove(movingPos);
+        return;
+      }
+    }
+    
+//    final int pos = this.index.indexOf(fsRef);
+//    if (pos >= 0) {
+//      this.index.remove(pos);
+//    }
   }
 
 }

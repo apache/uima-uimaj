@@ -326,7 +326,7 @@ public class IntVector implements Serializable {
   }
 
   /**
-   * Returns the index of the first occurence of the element specified in this vector.
+   * Returns the index of the first occurrence of the element specified in this vector.
    * 
    * @return the index or <code>-1</code> if the element was not found.
    */
