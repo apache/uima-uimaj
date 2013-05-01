@@ -20,16 +20,15 @@ package org.apache.uima.fit.util;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
-
 import org.apache.uima.UimaContext;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
 
 /**
- * INTERNAL API - Wrapper for the UIMA {@link Logger} offering a more convenient API similar to that of the Apache
- * Commons Logging interface {@link org.apache.commons.logging.Log Log} or to that of Log4J's
- * {@code Category} and SLF4J's {@code Logger}, using the names {@code error}, {@code warn},
+ * INTERNAL API - Wrapper for the UIMA {@link Logger} offering a more convenient API similar to that
+ * of the Apache Commons Logging interface {@link org.apache.commons.logging.Log Log} or to that of
+ * Log4J's {@code Category} and SLF4J's {@code Logger}, using the names {@code error}, {@code warn},
  * {@code info}, {@code debug} and {@code trace} and mapping these to UIMA logging levels.
  * 
  */
@@ -167,6 +166,15 @@ public class ExtendedLogger implements Logger {
     }
   }
 
+  public void log(String wrapperFQCN, Level level, String message, Throwable thrown) {
+    if (context != null) {
+      Logger logger = context.getLogger();
+      if (logger != null) {
+        context.getLogger().log(wrapperFQCN, level, message, thrown);
+      }
+    }
+  }
+
   public boolean isLoggable(Level level) {
     if (context != null) {
       Logger logger = context.getLogger();
@@ -195,7 +203,8 @@ public class ExtendedLogger implements Logger {
     if (context != null) {
       Logger logger = context.getLogger();
       if (logger != null) {
-        context.getLogger().log(Level.FINE, String.valueOf(paramObject));
+        context.getLogger()
+                .log(getClass().getName(), Level.FINE, String.valueOf(paramObject), null);
       }
     }
   }
@@ -212,7 +221,8 @@ public class ExtendedLogger implements Logger {
     if (context != null) {
       Logger logger = context.getLogger();
       if (logger != null) {
-        context.getLogger().log(Level.FINE, String.valueOf(paramObject), paramThrowable);
+        context.getLogger().log(getClass().getName(), Level.FINE, String.valueOf(paramObject),
+                paramThrowable);
       }
     }
   }
@@ -227,7 +237,8 @@ public class ExtendedLogger implements Logger {
     if (context != null) {
       Logger logger = context.getLogger();
       if (logger != null) {
-        context.getLogger().log(Level.SEVERE, String.valueOf(paramObject));
+        context.getLogger().log(getClass().getName(), Level.SEVERE, String.valueOf(paramObject),
+                null);
       }
     }
   }
@@ -244,7 +255,8 @@ public class ExtendedLogger implements Logger {
     if (context != null) {
       Logger logger = context.getLogger();
       if (logger != null) {
-        context.getLogger().log(Level.SEVERE, String.valueOf(paramObject), paramThrowable);
+        context.getLogger().log(getClass().getName(), Level.SEVERE, String.valueOf(paramObject),
+                paramThrowable);
       }
     }
   }
@@ -259,7 +271,8 @@ public class ExtendedLogger implements Logger {
     if (context != null) {
       Logger logger = context.getLogger();
       if (logger != null) {
-        context.getLogger().log(Level.INFO, String.valueOf(paramObject));
+        context.getLogger()
+                .log(getClass().getName(), Level.INFO, String.valueOf(paramObject), null);
       }
     }
   }
@@ -276,7 +289,8 @@ public class ExtendedLogger implements Logger {
     if (context != null) {
       Logger logger = context.getLogger();
       if (logger != null) {
-        context.getLogger().log(Level.INFO, String.valueOf(paramObject), paramThrowable);
+        context.getLogger().log(getClass().getName(), Level.INFO, String.valueOf(paramObject),
+                paramThrowable);
       }
     }
   }
@@ -341,7 +355,8 @@ public class ExtendedLogger implements Logger {
     if (context != null) {
       Logger logger = context.getLogger();
       if (logger != null) {
-        context.getLogger().log(Level.FINER, String.valueOf(paramObject));
+        context.getLogger().log(getClass().getName(), Level.FINER, String.valueOf(paramObject),
+                null);
       }
     }
   }
@@ -358,7 +373,8 @@ public class ExtendedLogger implements Logger {
     if (context != null) {
       Logger logger = context.getLogger();
       if (logger != null) {
-        context.getLogger().log(Level.FINER, String.valueOf(paramObject), paramThrowable);
+        context.getLogger().log(getClass().getName(), Level.FINER, String.valueOf(paramObject),
+                paramThrowable);
       }
     }
   }
@@ -373,7 +389,8 @@ public class ExtendedLogger implements Logger {
     if (context != null) {
       Logger logger = context.getLogger();
       if (logger != null) {
-        context.getLogger().log(Level.WARNING, String.valueOf(paramObject));
+        context.getLogger().log(getClass().getName(), Level.WARNING, String.valueOf(paramObject),
+                null);
       }
     }
   }
@@ -390,7 +407,8 @@ public class ExtendedLogger implements Logger {
     if (context != null) {
       Logger logger = context.getLogger();
       if (logger != null) {
-        context.getLogger().log(Level.WARNING, String.valueOf(paramObject), paramThrowable);
+        context.getLogger().log(getClass().getName(), Level.WARNING, String.valueOf(paramObject),
+                paramThrowable);
       }
     }
   }

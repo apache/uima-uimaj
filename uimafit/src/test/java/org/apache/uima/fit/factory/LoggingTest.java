@@ -32,6 +32,12 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
 
+import org.apache.log4j.Appender;
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Logger;
+import org.apache.log4j.spi.LocationInfo;
+import org.apache.log4j.spi.LoggingEvent;
+import org.apache.uima.UimaContextAdmin;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CAS;
@@ -47,18 +53,20 @@ import org.apache.uima.fit.component.JCasConsumer_ImplBase;
 import org.apache.uima.fit.component.JCasFlowController_ImplBase;
 import org.apache.uima.fit.component.JCasMultiplier_ImplBase;
 import org.apache.uima.fit.component.Resource_ImplBase;
+import org.apache.uima.fit.util.ExtendedLogger;
 import org.apache.uima.flow.Flow;
+import org.apache.uima.impl.RootUimaContext_impl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.Progress;
+import org.apache.uima.util.impl.JSR47Logger_impl;
+import org.apache.uima.util.impl.Log4jLogger_impl;
 import org.junit.Test;
 
-/**
- */
 public class LoggingTest {
   @Test
-  public void testLogger() throws Exception {
+  public void testJSR47Logger() throws Exception {
     final List<LogRecord> records = new ArrayList<LogRecord>();
 
     // Tell the logger to log everything
@@ -70,13 +78,20 @@ public class LoggingTest {
     handler.setFilter(new Filter() {
       public boolean isLoggable(LogRecord record) {
         records.add(record);
+        System.out.printf("[%s] %s%n", record.getSourceClassName(), record.getMessage());
         return false;
       }
     });
 
     try {
-      JCas jcas = JCasFactory.createJCas();
-      createPrimitive(LoggingCasConsumerChristmasTree.class).process(jcas.getCas());
+      UimaContextAdmin ctx = new RootUimaContext_impl();
+      ctx.setLogger(JSR47Logger_impl.getInstance());
+      ExtendedLogger logger = new ExtendedLogger(ctx);
+           
+      logger.setLevel(org.apache.uima.util.Level.ALL);
+      trigger(logger);
+      logger.setLevel(org.apache.uima.util.Level.OFF);
+      trigger(logger);
 
       assertEquals(10, records.size());
       assertEquals(Level.FINER, records.get(0).getLevel());
@@ -94,6 +109,80 @@ public class LoggingTest {
         handler.setLevel(oldLevel);
         handler.setFilter(null);
       }
+    }
+  }
+
+  @Test
+  public void testLog4JLogger() throws Exception {
+    final List<LoggingEvent> records = new ArrayList<LoggingEvent>();
+
+    BasicConfigurator.configure();
+
+    // Tell the logger to log everything
+    Logger rootLogger = org.apache.log4j.LogManager.getRootLogger();
+    org.apache.log4j.Level oldLevel = rootLogger.getLevel();
+    rootLogger.setLevel(org.apache.log4j.Level.ALL);
+    Appender appender = (Appender) rootLogger.getAllAppenders().nextElement();
+    // Capture the logging output without actually logging it
+    appender.addFilter(new org.apache.log4j.spi.Filter() {
+      @Override
+      public int decide(LoggingEvent event) {
+        records.add(event);
+        LocationInfo l = event.getLocationInformation();
+        System.out.printf("[%s:%s] %s%n", l.getFileName(), l.getLineNumber(), event.getMessage());
+        return org.apache.log4j.spi.Filter.DENY;
+      }
+    });
+
+    try {
+      UimaContextAdmin ctx = new RootUimaContext_impl();
+      ctx.setLogger(Log4jLogger_impl.getInstance());
+      ExtendedLogger logger = new ExtendedLogger(ctx);
+
+      logger.setLevel(org.apache.uima.util.Level.ALL);
+      trigger(logger);
+      logger.setLevel(org.apache.uima.util.Level.OFF);
+      trigger(logger);
+
+      assertEquals(10, records.size());
+      assertEquals(org.apache.log4j.Level.ALL, records.get(0).getLevel());
+      assertEquals(org.apache.log4j.Level.ALL, records.get(1).getLevel());
+      assertEquals(org.apache.log4j.Level.DEBUG, records.get(2).getLevel());
+      assertEquals(org.apache.log4j.Level.DEBUG, records.get(3).getLevel());
+      assertEquals(org.apache.log4j.Level.INFO, records.get(4).getLevel());
+      assertEquals(org.apache.log4j.Level.INFO, records.get(5).getLevel());
+      assertEquals(org.apache.log4j.Level.WARN, records.get(6).getLevel());
+      assertEquals(org.apache.log4j.Level.WARN, records.get(7).getLevel());
+      assertEquals(org.apache.log4j.Level.ERROR, records.get(8).getLevel());
+      assertEquals(org.apache.log4j.Level.ERROR, records.get(9).getLevel());
+    } finally {
+      if (oldLevel != null) {
+        rootLogger.setLevel(oldLevel);
+        appender.clearFilters();
+      }
+    }
+  }
+
+  private void trigger(ExtendedLogger aLogger) {
+    if (aLogger.isTraceEnabled()) {
+      aLogger.trace("Logging: " + getClass().getName());
+      aLogger.trace("Logging: " + getClass().getName(), new IllegalArgumentException());
+    }
+    if (aLogger.isDebugEnabled()) {
+      aLogger.debug("Logging: " + getClass().getName());
+      aLogger.debug("Logging: " + getClass().getName(), new IllegalArgumentException());
+    }
+    if (aLogger.isInfoEnabled()) {
+      aLogger.info("Logging: " + getClass().getName());
+      aLogger.info("Logging: " + getClass().getName(), new IllegalArgumentException());
+    }
+    if (aLogger.isWarnEnabled()) {
+      aLogger.warn("Logging: " + getClass().getName());
+      aLogger.warn("Logging: " + getClass().getName(), new IllegalArgumentException());
+    }
+    if (aLogger.isErrorEnabled()) {
+      aLogger.error("Logging: " + getClass().getName());
+      aLogger.error("Logging: " + getClass().getName(), new IllegalArgumentException());
     }
   }
 
@@ -154,39 +243,6 @@ public class LoggingTest {
     assertEquals(1, records.size());
     assertEquals(Level.INFO, records.get(0).getLevel());
     records.clear();
-  }
-
-  public static class LoggingCasConsumerChristmasTree extends CasConsumer_ImplBase {
-    @Override
-    public void process(CAS aCAS) throws AnalysisEngineProcessException {
-      getLogger().setLevel(org.apache.uima.util.Level.ALL);
-      trigger();
-      getLogger().setLevel(org.apache.uima.util.Level.OFF);
-      trigger();
-    }
-
-    private void trigger() {
-      if (getLogger().isTraceEnabled()) {
-        getLogger().trace("Logging: " + getClass().getName());
-        getLogger().trace("Logging: " + getClass().getName(), new IllegalArgumentException());
-      }
-      if (getLogger().isDebugEnabled()) {
-        getLogger().debug("Logging: " + getClass().getName());
-        getLogger().debug("Logging: " + getClass().getName(), new IllegalArgumentException());
-      }
-      if (getLogger().isInfoEnabled()) {
-        getLogger().info("Logging: " + getClass().getName());
-        getLogger().info("Logging: " + getClass().getName(), new IllegalArgumentException());
-      }
-      if (getLogger().isWarnEnabled()) {
-        getLogger().warn("Logging: " + getClass().getName());
-        getLogger().warn("Logging: " + getClass().getName(), new IllegalArgumentException());
-      }
-      if (getLogger().isErrorEnabled()) {
-        getLogger().error("Logging: " + getClass().getName());
-        getLogger().error("Logging: " + getClass().getName(), new IllegalArgumentException());
-      }
-    }
   }
 
   public static class LoggingCasMultiplier extends CasMultiplier_ImplBase {
