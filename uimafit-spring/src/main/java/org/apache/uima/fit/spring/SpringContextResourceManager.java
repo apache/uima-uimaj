@@ -25,10 +25,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.UIMAFramework;
-import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.impl.ResourceManager_impl;
-import org.apache.uima.resource.impl.ResourceManager_impl.ResourceRegistration;
 import org.apache.uima.resource.metadata.ResourceManagerConfiguration;
 import org.apache.uima.util.Level;
 import org.springframework.beans.BeansException;
