@@ -674,6 +674,13 @@ private Feature initFeature(String featName, Type type)
       <listitem><para>update the value of the features being used as keys,</para></listitem>
       <listitem><para>add the item back to the indexes, in all views.</para></listitem> 
     </orderedlist></para>
+    
+    <para>There are two methods you can use on index repositories to efficiently bulk-remove all
+    instances of particular types of feature structures.  One of these, 
+    <code>removeAllIncludingSubtypes</code> removes all instances of a particular
+    type, including instances which are subtypes of the specified type.  The other, 
+    <code>removeAllExcludingSubtypes</code> remove all instances of a particular
+    type, only.</para>
   </section>
   
   <section id="ugr.ref.cas.accessing_modifying_features_of_feature_structures">
