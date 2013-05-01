@@ -75,6 +75,20 @@
     </featureDescription>
    </features>
   </typeDescription>
+  
+  <typeDescription>
+   <name>SubTypeOfSentence</name>
+   <description></description>
+   <supertypeName>Sentence</supertypeName>
+   <features>
+    <featureDescription>
+     <name>interest</name>
+     <description />
+     <rangeTypeName>uima.cas.Integer</rangeTypeName>
+    </featureDescription>
+   </features>
+  </typeDescription>
+  
   <typeDescription>
    <name>Separator</name>
    <description></description>

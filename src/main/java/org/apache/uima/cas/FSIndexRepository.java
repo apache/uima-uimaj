@@ -92,6 +92,20 @@ public interface FSIndexRepository {
   void removeFS(FeatureStructure fs);
 
   /**
+   * Remove all instances of type, including all subtypes from all indexes in the repository view.
+   * @param type
+   * @exception NullPointerException if the <code>type</code> parameter is <code>null</code>.
+  */
+  void removeAllIncludingSubtypes(Type type);
+  
+  /**
+   * Remove all instances of just this type, excluding subtypes, from all indexes in the repository view.
+   * @param type
+   * @exception NullPointerException if the <code>type</code> parameter is <code>null</code>.
+  */
+  void removeAllExcludingSubtypes(Type type);
+  
+  /**
    * Gets an iterator over all indexed FeatureStructures of the specified Type (and any of its
    * subtypes).
    * <p>

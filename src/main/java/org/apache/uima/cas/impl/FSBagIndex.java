@@ -186,7 +186,9 @@ public class FSBagIndex extends FSLeafIndexImpl {
   }
 
   public void flush() {
-    this.index = new IntVector(this.initialSize);
+    this.index.removeAllElements();
+    // don't do this - some iterators/ indexes are holding references to the index, and don't pick up the new one.
+//    this.index = new IntVector(this.initialSize);
   }
 
   public final boolean insert(int fs) {
@@ -211,7 +213,7 @@ public class FSBagIndex extends FSLeafIndexImpl {
     final int[] array = this.index.getArray();
     final int max = this.index.size();
     for (int i = 0; i < max; i++) {
-      if (compare(ele, array[i]) == 0) {
+      if (ele == array[i]) {
         return i;
       }
     }
@@ -229,12 +231,32 @@ public class FSBagIndex extends FSLeafIndexImpl {
   }
 
   /*
-   * // Do binary search on index. private final int binarySearch(int [] array, int ele, int start,
-   * int end) { --end; // Make end a legal value. int i; // Current position int comp; // Compare
-   * value while (start <= end) { i = (start + end) / 2; comp = compare(ele, array[i]); if (comp ==
-   * 0) { return i; } if (start == end) { if (comp < 0) { return (-i)-1; } else { // comp > 0 return
-   * (-i)-2; // (-(i+1))-1 } } if (comp < 0) { end = i-1; } else { // comp > 0 start = i+1; } } //
-   * This means that the input span is empty. return (-start)-1; }
+   * // Do binary search on index. 
+   * private final int binarySearch(int [] array, int ele, int start, int end) { 
+   *   --end;  // Make end a legal value. 
+   *   int i; // Current position 
+   *   int comp; // Compare value 
+   *   while (start <= end) { 
+   *     i = (start + end) / 2; 
+   *     comp = compare(ele, array[i]); 
+   *     if (comp ==  0) { 
+   *       return i; 
+   *     } 
+   *     if (start == end) {
+   *       if (comp < 0) {
+   *         return (-i)-1;
+   *       } else { // comp > 0 
+   *         return (-i)-2; // (-(i+1))-1
+   *       } 
+   *     } 
+   *     if (comp < 0) {
+   *       end = i-1; 
+   *     } else { // comp > 0 
+   *       start = i+1;
+   *     } 
+   *   } //This means that the input span is empty. 
+   *   return (-start)-1; 
+   * }
    */
 
   public ComparableIntPointerIterator pointerIterator(IntComparator comp,
