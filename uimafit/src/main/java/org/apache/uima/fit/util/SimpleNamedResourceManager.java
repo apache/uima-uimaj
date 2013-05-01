@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.uima.UIMAFramework;
-import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.impl.ResourceManager_impl;
@@ -113,11 +112,8 @@ public class SimpleNamedResourceManager extends ResourceManager_impl {
       if (registration == null) {
         try {
           // Register resource
-          // ResourceRegistration unfortunately is package private
-          Object reg = newInstance(
-                  "org.apache.uima.resource.impl.ResourceManager_impl$ResourceRegistration",
-                  Object.class, e.getValue(), ExternalResourceDescription.class, null,
-                  String.class, aQualifiedContextName);
+          ResourceRegistration reg = new ResourceRegistration(e.getValue(), null,
+                  aQualifiedContextName);
           ((Map) mInternalResourceRegistrationMap).put(e.getKey(), reg);
 
           // Perform binding

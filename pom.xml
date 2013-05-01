@@ -42,7 +42,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.target>1.5</java.target>
 		<spring.version>3.1.2.RELEASE</spring.version>
-		<uima.version>2.4.0</uima.version>
+		<uima.version>2.4.1-SNAPSHOT</uima.version>
 		<jiraVersion>12323969</jiraVersion>
 	</properties>
 

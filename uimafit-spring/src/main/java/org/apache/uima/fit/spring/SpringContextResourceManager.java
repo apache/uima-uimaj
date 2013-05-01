@@ -28,6 +28,7 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.impl.ResourceManager_impl;
+import org.apache.uima.resource.impl.ResourceManager_impl.ResourceRegistration;
 import org.apache.uima.resource.metadata.ResourceManagerConfiguration;
 import org.apache.uima.util.Level;
 import org.springframework.beans.BeansException;
@@ -58,11 +59,8 @@ public class SpringContextResourceManager extends ResourceManager_impl implement
       if (registration == null) {
         try {
           // Register resource
-          // ResourceRegistration unfortunately is package private
-          Object reg = newInstance(
-                  "org.apache.uima.resource.impl.ResourceManager_impl$ResourceRegistration",
-                  Object.class, context.getBean(name), ExternalResourceDescription.class, null,
-                  String.class, aQualifiedContextName);
+          ResourceRegistration reg = new ResourceRegistration(context.getBean(name), null,
+                  aQualifiedContextName);
           ((Map) mInternalResourceRegistrationMap).put(name, reg);
 
           // Perform binding
