@@ -770,27 +770,45 @@ public class IteratorTest extends TestCase {
     AnnotationFS[] subFsArray = new AnnotationFS[100];
     FSIndexRepository ir = this.cas.getIndexRepository();
     
+    addAnnotations(fsArray, ts.getType("Sentence"));
+    addAnnotations(subFsArray, ts.getType("SubTypeOfSentence"));
+    
     FSIndex<FeatureStructure> setIndex = ir.getIndex(CASTestSetup.ANNOT_SET_INDEX, this.sentenceType);
     FSIndex<FeatureStructure> bagIndex = ir.getIndex(CASTestSetup.ANNOT_BAG_INDEX, this.sentenceType);
     FSIndex<AnnotationFS> sortedIndex = this.cas.getAnnotationIndex(this.sentenceType);
+
+    FSIndex<FeatureStructure> subsetIndex = ir.getIndex(CASTestSetup.ANNOT_SET_INDEX, this.subsentenceType);
+    FSIndex<FeatureStructure> subbagIndex = ir.getIndex(CASTestSetup.ANNOT_BAG_INDEX, this.subsentenceType);
+    FSIndex<AnnotationFS>     subsortedIndex = this.cas.getAnnotationIndex(this.subsentenceType);
+
+    ir.removeAllIncludingSubtypes(sentenceType);
 
     FSIterator<FeatureStructure> setIt = setIndex.iterator();
     FSIterator<FeatureStructure> bagIt = bagIndex.iterator();
     FSIterator<AnnotationFS> sortedIt = sortedIndex.iterator();
     
     // subindexes
-    
-    FSIndex<FeatureStructure> subsetIndex = ir.getIndex(CASTestSetup.ANNOT_SET_INDEX, this.subsentenceType);
-    FSIndex<FeatureStructure> subbagIndex = ir.getIndex(CASTestSetup.ANNOT_BAG_INDEX, this.sentenceType);
-    FSIndex<AnnotationFS>     subsortedIndex = this.cas.getAnnotationIndex(this.sentenceType);
 
     FSIterator<FeatureStructure> subsetIt = subsetIndex.iterator();
     FSIterator<FeatureStructure> subbagIt = subbagIndex.iterator();
     FSIterator<AnnotationFS> subsortedIt = subsortedIndex.iterator();
-    
-    addAnnotations(fsArray, ts.getType("Sentence"));
-    addAnnotations(subFsArray, ts.getType("SubTypeOfSentence"));
-    
+
+    verifyMoveToFirst(setIt, false);
+    verifyMoveToFirst(bagIt, false);
+    verifyMoveToFirst(sortedIt, false);
+    verifyMoveToFirst(subsetIt, false);
+    verifyMoveToFirst(subbagIt, false);
+    verifyMoveToFirst(subsortedIt, false);
+
+//    addAnnotations(fsArray, ts.getType("Sentence"));
+//    addAnnotations(subFsArray, ts.getType("SubTypeOfSentence"));
+    for (AnnotationFS fs : fsArray) {
+      ir.addFS(fs);
+    }
+    for (AnnotationFS fs : subFsArray) {
+      ir.addFS(fs);
+    }
+
     verifyMoveToFirst(setIt, true);
     verifyMoveToFirst(bagIt, true);
     verifyMoveToFirst(sortedIt, true);
@@ -800,9 +818,9 @@ public class IteratorTest extends TestCase {
 
     ir.removeAllExcludingSubtypes(this.sentenceType);
     
-    subsetIndex = ir.getIndex(CASTestSetup.ANNOT_SET_INDEX, this.subsentenceType);
-    subbagIndex = ir.getIndex(CASTestSetup.ANNOT_BAG_INDEX, this.subsentenceType);
-    subsortedIndex = this.cas.getAnnotationIndex(this.subsentenceType);
+    setIt = setIndex.iterator();
+    bagIt = bagIndex.iterator();
+    sortedIt = sortedIndex.iterator();
 
     subsetIt = subsetIndex.iterator();
     subbagIt = subbagIndex.iterator();
@@ -820,27 +838,21 @@ public class IteratorTest extends TestCase {
     }
     
     ir.removeAllExcludingSubtypes(subsentenceType);
-    
+
+    setIt = setIndex.iterator();
+    bagIt = bagIndex.iterator();
+    sortedIt = sortedIndex.iterator();
+
+    subsetIt = subsetIndex.iterator();
+    subbagIt = subbagIndex.iterator();
+    subsortedIt = subsortedIndex.iterator();
+
     verifyHaveSubset(setIt, 91, sentenceType);
     verifyHaveSubset(bagIt, 100, sentenceType);
     verifyHaveSubset(sortedIt, 100, sentenceType);
     verifyMoveToFirst(subsetIt, false);
     verifyMoveToFirst(subbagIt, false);
     verifyMoveToFirst(subsortedIt, false);
-    
-    for (AnnotationFS fs : subFsArray) {
-      ir.addFS(fs);
-    }
-    
-    ir.removeAllIncludingSubtypes(sentenceType);
-    verifyMoveToFirst(setIt, false);
-    verifyMoveToFirst(bagIt, false);
-    verifyMoveToFirst(sortedIt, false);
-    verifyMoveToFirst(subsetIt, false);
-    verifyMoveToFirst(subbagIt, false);
-    verifyMoveToFirst(subsortedIt, false);
-    
-    
   }
   
   
