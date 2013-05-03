@@ -27,6 +27,12 @@ under the License.
   <title>Collection Processing Engine Developer&apos;s Guide</title>
   <titleabbrev>CPE Developer&apos;s Guide</titleabbrev>
   
+  <note><para>The CPE (Collection Processing Engine) was an early
+  approach to supporting some scale-out use cases.  It is an older
+  approach that doesn't support some of the newer features of CASes 
+  such as multiple views and CAS Multipliers.  It has been
+  supplanted by UIMA-AS, which has full support for the new features.</para></note>
+  
   <para>The UIMA Analysis Engine interface provides support for developing and integrating
     algorithms that analyze unstructured data. Analysis Engines are designed to operate on a
     per-document basis. Their interface handles one CAS at a time. UIMA provides additional

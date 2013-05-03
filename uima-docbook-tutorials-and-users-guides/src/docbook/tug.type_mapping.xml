@@ -57,32 +57,39 @@ under the License.
   
 	  <para>Servers, in providing service to multiple clients, may receive CASes from
 	  different Clients having different type systems.  UIMA has implemented several
-	  different approaches to support this.</para>
+	  different approaches to support this.</para> 
+	  
+	  <note><para>
+    Base UIMA includes support for SOAP and VINCI
+    protocols (but these are both older, and do not support newer features of the CAS like
+    CAS Multipliers and multiple Views).   
+    </para></note>
+	  
+	  
+	  <para>The SOAP remote service sends the entire
+	  CAS, along with the Client's type system.  At the remote, the Client's type 
+	  system is deserialized and used as the remote's type system.  For Vinci and UIMA-AS
+	  using XMI, the "reachable" Feature Structures (only) are sent.  A reachable 
+    Feature Structure is one that is indexed, or is reachable via a 
+    reference from another reachable Feature Structure.  The receiving service's 
+    type system is guaranteed to be a subset of the sender.  Special code in the 
+    deserializer saves aside any types and features not present in the server's type
+    system and re-merges these values back when returning the CAS to the client.
+    </para>
 	  
 	  <para>
-	  Base UIMA includes support for SOAP and VINCI
-	  protocols.  These send the Client's type system definition (which is 
-	  guaranteed to be a superset of the Server's), along with the CAS.  The Server
-	  Annotators will get a "typeSystemInit" call to let them reinitialize their type
-	  system information to correspond to the new CAS coming in.  
+	  UIMA-AS supports in addition binary CAS serialization protocols.
+	  The binary support is typically compressed.  This compression can greatly
+	  reduce the size of data, compared with plain binary serialization.
+	  The compressed form also supports having a target type system which is 
+	  different from the source's, as long as it is compatible. 
 	  </para>
 	  
-	  <para>When a server is a UIMA-AS server, the communication sends CASes without
-	  type system information.  Several protocols and variations are possible in this case.
-	  </para>
-	  <para>
-	  When using XMI serialization for sending/receiving CASes, the Client
-	  sends all reachable Feature Structures to the server.  The Server can receive a CAS 
-	  having instances of types it doesn't know about, or perhaps feature-slots it doesn't
-	  know about within a type it does know about.  In these cases, the Server, while
-	  deserializing, holds aside those type instances and/or feature instances that 
-	  are not defined it the Server's type system.  When the Server returns the CAS 
-	  back to the client, it combines
-	  those held-out types and/or features with the serialized FeatureStructures it sends back.
-	  </para>
-	  <para>
-    This approach avoids the need to send the type system along with the CAS on every
-    invocation of a remote part of a UIMA Pipeline.
+	  <para>Delta CAS support is available for both XMI and binary (and compressed binary) 
+	  protocols, used by UIMA-AS.  The Delta CAS refers to the CAS returned from the service back to the client -
+	  only the new Feature Structures added by the service, plus any modifications to existing
+	  feature structures and/or indexes, are returned.  This can greatly reduce the size of the
+	  returned data.  Delta CAS support is automatically used with more recent versions of UIMA-AS.
 	  </para>
   </section>
   
@@ -95,7 +102,7 @@ under the License.
     but not in another are not sent (when serializing) nor received 
     (when deserializing).  When deserializing, non-received features receive 0 
     as their value.  For built-in types, like integer, float, etc., this is the 
-    number 0. </para>
+    number 0; for other kinds of things, this is usually a "null" value. </para>
     
     <para>Some kinds of type mappings cannot be supported, and will signal errors.
     The two types being mapped between must be "mergable" according to the normal
@@ -105,33 +112,26 @@ under the License.
   <section id="ugr.tug.type_mapping.compressed">
     <title>Remote Services support with Compressed Binary Serialization</title>
     
-    <para>Using uncompressed Binary Serialization protocols for communicating to 
-    remote UIMA-AS services, requires that the Client and Server's type systems
+    <para>Uncompressed Binary Serialization protocols for communicating to 
+    remote UIMA-AS services require that the Client and Server's type systems
     be identical.  Compressed Binary Serialization protocols support
     Server type systems which are a subset of the Clients.  Types and/or features 
-    not in the Server's type system are not sent to the Server.  Because of this, there's
-    no need to hold-aside types and features at the Server, as is the case with Xmi
-    transports (see above).       
-    </para>
-    
-    <para>Typically, for efficiency reasons, services use the Delta-CAS protocol to return the 
-    CAS back to the Client.  Delta protocols send only newly created Feature Structures, 
-    along with modifications made to existing Feature Structures.
-    </para>
+    not in the Server's type system are not sent to the Server.  
+    </para>    
   </section>
   
   <section id="ugr.tug.type_filtering.compressed_file">
     <title>Compressed Binary serialization to/from files</title>
     
-    <para>When invoking compressed binary serialization to a file, you can specify
+    <para>Compressed binary serialization to a file can specify
     a target type system which is a subset of the original type system.  The
-    serialization will exclude types and features not in the target, when 
+    serialization will then exclude types and features not in the target, when 
     serializing.  You can use this to filter the CAS to serialize out just the parts
     you want to.
     </para>
     
-    <para>When using binary compressed deserialization from a file, the target type system
-    must be the one that went with the target when it was serialized.  The source
+    <para>Compressed binary deserialization from a file must specify as the target type system
+    the one that went with the target when it was serialized.  The source
     type system can be different; if it is missing types/features, these will be 
     filtered during deserialization.  If it has additional features, these will be 
     set to 0 (the default value) in the CAS heap.  For numeric features, this means

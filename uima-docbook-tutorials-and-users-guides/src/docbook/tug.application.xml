@@ -1012,6 +1012,10 @@ SimpleTokenAndSentenceAnnotator.xml</literallayout></para>
   <section id="ugr.tug.application.remote_services">
     <title>Working with Remote Services</title>
     
+    <note><para>This chapter describes older methods of working with Remote Services.  These approaches do not support
+    some of the newer CAS features, such as multiple views and CAS Multipliers.  These methods have been supplanted by
+    UIMA-AS, which has full support for the new CAS features.</para></note>
+    
     <para>The UIMA SDK allows you to easily take any Analysis Engine or CAS Consumer and deploy it as a service. That
       Analysis Engine or CAS Consumer can then be called from a remote machine using various network
       protocols.</para>

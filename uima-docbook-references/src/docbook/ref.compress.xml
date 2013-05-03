@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"[
+<!ENTITY imgroot "images/references/ref.compress/">
+<!ENTITY tp "ugr.ref.compress.">
+<!ENTITY % uimaents SYSTEM "../../target/docbook-shared/entities.ent" >  
+%uimaents;
+]>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<chapter id="ugr.ref.compress">
+  <title>Compressed Binary CASes</title>
+
+  <section id="ugr.ref.compress.overview">
+    <title>Binary CAS Compression overview</title>
+     
+    <para>UIMA has a proprietary binary serialization format, used internally
+    for several things, including communicating with embedded C++ annotators using
+    UIMA-CPP.  This binary format is also selectable for use with UIMA-AS.  Its use
+    requires that the source and target systems implement the identical type system
+    (because the type system is not sent, and internal coding is used within the
+    format that is keyed to the particular type system).</para>
+    
+    <para>Starting with version 2.4.1, two additional forms of binary serialization are added.
+    Both compress the data being serialized; typical size ratios can approach 50 : 1,
+    depending on the exact contents of the CAS, when compared to normal binary serialization.
+    </para>
+    
+    <para>The two forms are called 4 and 6, for historical/internal reasons.  The serialized forms
+    of both of these is fixed, but not currently standardized, and the form being used is encoded in the header so 
+    that the appropriate deserializer can be chosen.  Both forms include support for Delta CAS
+    being returned from a service.</para>
+
+    <para>Form 6 builds on form 4, and adds: serializing only those feature structures which
+    are reachable (that is, in some index, or referenced by other reachable feature structures),
+    and type filtering.</para>
+    
+    <para>Type filtering takes a source type system and a target type system, and for serializing 
+    (source to target), sends the binary representation of reachable feature structures in the target's type system.
+    For deserializing (reading a target into a source), the filtering takes the specification being read
+    as being encoded using the target's type system, and translates that into the source's type system.
+    In this process, types which exist in the source but not the target are skipped (when serializing); 
+    types which exist in the target, but not the source are skipped when deserializing.  Note that this 
+    never happens when the target is a remote service, as the client type system is guaranteed to be a superset
+    of the service's due to type merging that UIMA does when starting up pipelines.  Features that exist in some
+    source type but not in the version of the same type in the target are skipped (when serializing)
+    or set to default values (i.e., 0 or null) when being deserialized.</para>
+
+    <para>There are two main use cases for using these.  The first one is for communicating with 
+    UIMA-AS remote services.  Form 6 is automatically used when binary is selected as the method
+    in the &lt;serializer> element in the UIMA-AS deployment descriptor.  It is used with delta CAS
+    support for the returned CAS, and with type filtering - sending to the remote service only those
+    types and features it defines in its type system.</para>
+    
+    <para>The second use case is for saving compressed representations of CASes to other media, such as disk files,
+    where they can be deserialized later for use in other UIMA applications.</para>
+    
+  </section>
+
+  
+  <section id="ugr.ref.compress.usage">
+    <title>Using Compressed Binary CASes</title>
+    
+    <para>The main way to serialize or deserialize is to first create an instance of the serializer, then call serialize on that object,
+    passing in the stream to serialize to, and perhaps other parameters.  See the Javadocs for BinaryCasSerDes4 and
+    BinaryCasSerDes6 for details and options.
+    </para>
+    
+    <para>Form 6 has an additional object, ReuseInfo, which holds information which can speed up subsequent serializations of the same 
+    CAS (before it is further updated), for instance, if UIMA-AS is sending the CAS to multiple services in parallel.  This object is also
+    used for creating delta serializations:  It is set after the initial deserialization by a service of an incoming CAS, and then must
+    be provided when that CAS is being returned to the client in delta-cas format.</para>
+    
+    <para>Many examples of use of the interfaces are shown in the test cases, see classes SerDesTest4 and SerDesTest6.</para>
+    
+     
+  </section>
+
+  <section id="ugr.ref.compress.simple-deltas">
+    <title>Simple Delta CAS serialization</title>
+    <para>Form 6 supports delta CAS but requires that at the time of deserialization, an instance of the ReuseInfo must be saved, and that
+    same instance then used for delta serialization.</para>
+    
+    <para>Form 4 is not as efficient as form 6 in that it does not filter the CASes either by type systems nor by only sending reachable Feature Structure
+    instances.  But, it doesn't require a ReuseInfo object when doing delta serialization, so it may be more convenient to use when saving
+    delta CASes to files (as opposed to the other use case of returning delta CASes to a client).</para> 
+  </section>
+
+</chapter>
