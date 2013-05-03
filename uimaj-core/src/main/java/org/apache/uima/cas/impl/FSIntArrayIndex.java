@@ -155,9 +155,12 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
 
   // The index, a vector of FS references.
   private IntVector index;
+  
+  final private int initialSize;
 
   FSIntArrayIndex(CASImpl cas, Type type, int initialSize, int indexType) {
     super(cas, type, indexType);
+    this.initialSize = initialSize;
     this.index = new IntVector(initialSize);
   }
 
@@ -174,7 +177,12 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
   }
 
   public void flush() {
-    this.index.removeAllElements();
+    // do this way to reset size if it grew
+    if (this.index.size() > this.initialSize) {
+      this.index = new IntVector(initialSize);
+    } else {
+      this.index.removeAllElements();
+    }
   }
 
   // public final boolean insert(int fs) {

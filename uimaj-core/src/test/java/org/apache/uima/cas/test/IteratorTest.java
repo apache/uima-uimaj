@@ -781,17 +781,28 @@ public class IteratorTest extends TestCase {
     FSIndex<FeatureStructure> subbagIndex = ir.getIndex(CASTestSetup.ANNOT_BAG_INDEX, this.subsentenceType);
     FSIndex<AnnotationFS>     subsortedIndex = this.cas.getAnnotationIndex(this.subsentenceType);
 
-    ir.removeAllIncludingSubtypes(sentenceType);
-
     FSIterator<FeatureStructure> setIt = setIndex.iterator();
     FSIterator<FeatureStructure> bagIt = bagIndex.iterator();
     FSIterator<AnnotationFS> sortedIt = sortedIndex.iterator();
-    
-    // subindexes
 
     FSIterator<FeatureStructure> subsetIt = subsetIndex.iterator();
     FSIterator<FeatureStructure> subbagIt = subbagIndex.iterator();
     FSIterator<AnnotationFS> subsortedIt = subsortedIndex.iterator();
+
+    verifyMoveToFirst(setIt, true);
+    verifyMoveToFirst(bagIt, true);
+    verifyMoveToFirst(sortedIt, true);
+    verifyMoveToFirst(subsetIt, true);
+    verifyMoveToFirst(subbagIt, true);
+    verifyMoveToFirst(subsortedIt, true);
+    
+    ir.removeAllIncludingSubtypes(sentenceType);
+    verifyConcMod(setIt);
+    verifyConcMod(bagIt);
+    verifyConcMod(sortedIt);
+    verifyConcMod(subsetIt);
+    verifyConcMod(subbagIt);
+    verifyConcMod(subsortedIt);
 
     verifyMoveToFirst(setIt, false);
     verifyMoveToFirst(bagIt, false);
@@ -800,8 +811,6 @@ public class IteratorTest extends TestCase {
     verifyMoveToFirst(subbagIt, false);
     verifyMoveToFirst(subsortedIt, false);
 
-//    addAnnotations(fsArray, ts.getType("Sentence"));
-//    addAnnotations(subFsArray, ts.getType("SubTypeOfSentence"));
     for (AnnotationFS fs : fsArray) {
       ir.addFS(fs);
     }
@@ -818,14 +827,6 @@ public class IteratorTest extends TestCase {
 
     ir.removeAllExcludingSubtypes(this.sentenceType);
     
-    setIt = setIndex.iterator();
-    bagIt = bagIndex.iterator();
-    sortedIt = sortedIndex.iterator();
-
-    subsetIt = subsetIndex.iterator();
-    subbagIt = subbagIndex.iterator();
-    subsortedIt = subsortedIndex.iterator();
-
     verifyHaveSubset(setIt, 91, subsentenceType);
     verifyHaveSubset(bagIt, 100, subsentenceType);
     verifyHaveSubset(sortedIt, 100, subsentenceType);
@@ -839,20 +840,23 @@ public class IteratorTest extends TestCase {
     
     ir.removeAllExcludingSubtypes(subsentenceType);
 
-    setIt = setIndex.iterator();
-    bagIt = bagIndex.iterator();
-    sortedIt = sortedIndex.iterator();
-
-    subsetIt = subsetIndex.iterator();
-    subbagIt = subbagIndex.iterator();
-    subsortedIt = subsortedIndex.iterator();
-
     verifyHaveSubset(setIt, 91, sentenceType);
     verifyHaveSubset(bagIt, 100, sentenceType);
     verifyHaveSubset(sortedIt, 100, sentenceType);
     verifyMoveToFirst(subsetIt, false);
     verifyMoveToFirst(subbagIt, false);
     verifyMoveToFirst(subsortedIt, false);
+  }
+  
+
+  private void verifyConcMod(FSIterator<?> it) {
+    boolean caught = false;
+    try {
+      it.moveToNext();
+    } catch (Exception e) {
+      caught = true;
+    }
+    assertTrue(caught);
   }
   
   

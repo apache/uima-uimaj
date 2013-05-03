@@ -19,6 +19,7 @@
 
 package org.apache.uima.cas;
 
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -84,23 +85,25 @@ public interface FSIterator<T extends FeatureStructure> extends Iterator<T> {
 
   /**
    * Advance the iterator. This may invalidate the iterator.
+   * @exception ConcurrentModificationException if the underlying indexes being iterated over were modified
    */
   void moveToNext();
 
   /**
    * Move the iterator one element back. This may invalidate the iterator.
+   * @exception ConcurrentModificationException if the underlying indexes being iterated over were modified
    */
   void moveToPrevious();
 
   /**
    * Move the iterator to the first element. The iterator will be valid iff the underlying
-   * collection is non-empty.
+   * collection is non-empty.  Allowed even if the underlying indexes being iterated over were modified.
    */
   void moveToFirst();
 
   /**
    * Move the iterator to the last element. The iterator will be valid iff the underlying collection
-   * is non-empty.
+   * is non-empty.  Allowed even if the underlying indexes being iterated over were modified.
    */
   void moveToLast();
 
@@ -112,6 +115,7 @@ public interface FSIterator<T extends FeatureStructure> extends Iterator<T> {
    * 
    * @param fs
    *          The feature structure the iterator should be set to.
+   * @exception ConcurrentModificationException if the underlying indexes being iterated over were modified
    */
   void moveTo(FeatureStructure fs);
 

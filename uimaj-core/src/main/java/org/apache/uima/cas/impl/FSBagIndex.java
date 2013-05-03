@@ -186,9 +186,12 @@ public class FSBagIndex extends FSLeafIndexImpl {
   }
 
   public void flush() {
-    this.index.removeAllElements();
-    // don't do this - some iterators/ indexes are holding references to the index, and don't pick up the new one.
-//    this.index = new IntVector(this.initialSize);
+    // done this way to reset to initial size if it grows
+    if (this.index.size() > this.initialSize) {
+      this.index = new IntVector(this.initialSize);
+    } else {
+      this.index.removeAllElements();
+    }
   }
 
   public final boolean insert(int fs) {

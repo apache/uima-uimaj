@@ -397,6 +397,8 @@ public class IntArrayRBT {
   private static final int default_growth_factor = 2;
 
   private static final int default_multiplication_limit = 2000000;
+  
+  final private int initialSize;
 
   private int growth_factor;
 
@@ -429,8 +431,10 @@ public class IntArrayRBT {
     initVars();
     // Increase initialSize by one since we use one slot for sentinel.
     ++initialSize;
+    this.initialSize = initialSize;
     this.growth_factor = default_growth_factor;
     this.multiplication_limit = default_multiplication_limit;
+    setupArrays();
     // Init the arrays.
     if (useklrp) {
       klrp = new int[initialSize << 2];
@@ -446,6 +450,23 @@ public class IntArrayRBT {
     setParent(NIL, NIL);
     this.color[NIL] = black;
   }
+  
+  private void setupArrays() {
+    // Init the arrays.
+    if (useklrp) {
+      klrp = new int[initialSize << 2];
+    } else {
+      this.key = new int[initialSize];
+      this.left = new int[initialSize];
+      this.right = new int[initialSize];
+      this.parent = new int[initialSize];
+    }
+    this.color = new boolean[initialSize];
+    setLeft(NIL, NIL);
+    setRight(NIL, NIL);
+    setParent(NIL, NIL);
+    this.color[NIL] = black;    
+  }
 
   private void initVars() {
     this.root = NIL;
@@ -457,6 +478,16 @@ public class IntArrayRBT {
   public void flush() {
     // All we do for flush is set the root to NIL and the size to 0.
     initVars();
+    // and potentially release extra storage
+    if (useklrp) {
+      if (klrp.length > (initialSize << 2)) {
+        setupArrays();
+      }
+    } else {
+      if (key.length > initialSize) {
+        setupArrays();
+      }
+    }
   }
 
   public final int size() {
