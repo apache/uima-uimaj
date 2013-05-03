@@ -42,7 +42,7 @@ public abstract class JCasFlowController_ImplBase extends
   public void initialize(final FlowControllerContext context)
           throws ResourceInitializationException {
     super.initialize(context);
-    ConfigurationParameterInitializer.initialize(this, context);
+    ConfigurationParameterInitializer.initialize(context, this);
     ExternalResourceInitializer.initialize(context, this);
   }
 }

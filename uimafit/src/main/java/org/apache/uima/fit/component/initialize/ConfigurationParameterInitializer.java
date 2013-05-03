@@ -76,13 +76,12 @@ public final class ConfigurationParameterInitializer {
    * or to not provide one at all. If the context does not have a configuration parameter, then the
    * default value provided by the developer as specified by the defaultValue element of the
    * {@link ConfigurationParameter} will be used. See comments in the code for additional details.
-   * 
-   * @param component
-   *          the component to initialize.
    * @param context
    *          a UIMA context with configuration parameters.
+   * @param component
+   *          the component to initialize.
    */
-  public static void initialize(final Object component, final UimaContext context)
+  public static void initialize(final UimaContext context, final Object component)
           throws ResourceInitializationException {
     MutablePropertyValues values = new MutablePropertyValues();
     List<String> mandatoryValues = new ArrayList<String>();
@@ -185,7 +184,7 @@ public final class ConfigurationParameterInitializer {
    *          the component to initialize.
    * @param map
    *          a UIMA context with configuration parameters.
-   * @see #initialize(Object, UimaContext)
+   * @see #initialize(UimaContext, Object)
    */
   public static void initialize(final Object component, final Map<String, Object> map)
           throws ResourceInitializationException {
@@ -196,7 +195,7 @@ public final class ConfigurationParameterInitializer {
     for (Entry<String, Object> e : map.entrySet()) {
       cfgMgr.setConfigParameterValue(context.getQualifiedContextName() + e.getKey(), e.getValue());
     }
-    initialize(component, context);
+    initialize(context, component);
   }
 
   /**
@@ -206,7 +205,7 @@ public final class ConfigurationParameterInitializer {
    *          the component to initialize.
    * @param spec
    *          a resource specifier.
-   * @see #initialize(Object, UimaContext)
+   * @see #initialize(UimaContext, Object)
    */
   public static void initialize(Object component, ResourceSpecifier spec)
           throws ResourceInitializationException {
@@ -220,7 +219,7 @@ public final class ConfigurationParameterInitializer {
    *          the component to initialize.
    * @param parameters
    *          a list of parameters.
-   * @see #initialize(Object, UimaContext)
+   * @see #initialize(UimaContext, Object)
    */
   public static void initialize(Object component, Parameter... parameters)
           throws ResourceInitializationException {
@@ -238,7 +237,7 @@ public final class ConfigurationParameterInitializer {
    *          the component to initialize.
    * @param parameters
    *          a list of parameters.
-   * @see #initialize(Object, UimaContext)
+   * @see #initialize(UimaContext, Object)
    */
   public static void initialize(Object component, NameValuePair... parameters)
           throws ResourceInitializationException {
@@ -256,7 +255,7 @@ public final class ConfigurationParameterInitializer {
    *          the component to initialize.
    * @param dataResource
    *          a data resource with configuration meta data.
-   * @see #initialize(Object, UimaContext)
+   * @see #initialize(UimaContext, Object)
    */
   public static void initialize(Object component, DataResource dataResource)
           throws ResourceInitializationException {
