@@ -454,7 +454,7 @@ public class BinaryCasSerDes6 {
 
 
   /**
-   * 
+   * Setup to serialize or deserialize using binary compression, with (optional) type mapping and only processing reachable Feature Structures
    * @param aCas required - refs the CAS being serialized or deserialized into
    * @param mark if not null is the serialization mark for delta serialization.  Unused for deserialization.
    * @param tgtTs if not null is the target type system.  For serialization - this is a subset of the CASs TS
@@ -519,27 +519,61 @@ public class BinaryCasSerDes6 {
     this.tgtTs = tgtTs;
   }
   
+  /**
+   * Setup to serialize (not delta) or deserialize (not delta) using binary compression, no type mapping and only processing reachable Feature Structures
+   * @param cas
+   */
   public BinaryCasSerDes6(AbstractCas cas) {
     this(cas, null, null, null, false, CompressLevel.Default, CompressStrat.Default);
   }
   
+  /**
+   * Setup to serialize (maybe delta) or deserialize (not delta) using binary compression, no type mapping and only processing reachable Feature Structures
+   * @param cas
+   * @param mark
+   */
   public BinaryCasSerDes6(AbstractCas cas, MarkerImpl mark) {
     this(cas, mark, null, null, false, CompressLevel.Default, CompressStrat.Default);
   }
-  
+
+  /**
+   * Setup to serialize (maybe delta) or deserialize (not delta) using binary compression, with type mapping and only processing reachable Feature Structures
+   * @param cas
+   * @param mark
+   * @param tgtTs
+   */
   public BinaryCasSerDes6(AbstractCas cas, MarkerImpl mark, TypeSystemImpl tgtTs) {
     this(cas, mark, tgtTs, null, false, CompressLevel.Default, CompressStrat.Default);
   }
 
+  /**
+   * Setup to serialize (maybe delta) or deserialize (maybe delta) using binary compression, with type mapping and only processing reachable Feature Structures
+   * @param cas
+   * @param mark
+   * @param tgtTs
+   * @param rfs Reused Feature Structure information - speed up on serialization, required on delta deserialization
+   */
   public BinaryCasSerDes6(AbstractCas cas, MarkerImpl mark, TypeSystemImpl tgtTs, ReuseInfo rfs) {
     this(cas, mark, tgtTs, rfs, false, CompressLevel.Default, CompressStrat.Default);
   }
   
+  /**
+   * Setup to serialize (maybe delta) or deserialize (maybe delta) using binary compression, with type mapping and only processing reachable Feature Structures, output measurements
+   * @param cas
+   * @param mark
+   * @param tgtTs
+   * @param rfs Reused Feature Structure information - speed up on serialization, required on delta deserialization
+   * @param doMeasurements
+   */
   public BinaryCasSerDes6(AbstractCas cas, MarkerImpl mark, TypeSystemImpl tgtTs, ReuseInfo rfs, boolean doMeasurements) {
     this(cas, mark, tgtTs, rfs, doMeasurements, CompressLevel.Default, CompressStrat.Default);
   }
 
-
+  /**
+   * Setup to serialize (not delta) or deserialize (maybe delta) using binary compression, no type mapping and only processing reachable Feature Structures
+   * @param cas
+   * @param rfs
+   */
   public BinaryCasSerDes6(AbstractCas cas, ReuseInfo rfs) {
     this(cas, null, null, rfs, false, CompressLevel.Default, CompressStrat.Default);
   }
@@ -1268,7 +1302,7 @@ public class BinaryCasSerDes6 {
    *       if it is an aux array element, write the index in the aux array and the new value
    *       otherwise, write the slot offset and the new value
    ******************************************************************************/
-  public class SerializeModifiedFSs {
+  private class SerializeModifiedFSs {
 
     final int[] modifiedMainHeapAddrs = toArrayOrINT0(cas.getModifiedFSHeapAddrs());
     final int[] modifiedFSs = toArrayOrINT0(cas.getModifiedFSList());
@@ -2760,7 +2794,7 @@ public class BinaryCasSerDes6 {
    * If the type systems are different, construct a type mapper and use that
    *   to selectively ignore types or features not in other type system
    *   
-   * The Maopper filters C1 -> C2.  
+   * The Mapper filters C1 -> C2.  
    * 
    * Compare only feature structures reachable via indexes or refs
    *   The order must match
@@ -2769,16 +2803,12 @@ public class BinaryCasSerDes6 {
    * @param c2 CAS to compare
    * @return true if equal (for types / features in both)
    */
-//  public static boolean compareCASes(CASImpl c1, CASImpl c2) {
-//    BinaryCasSerDes6 containingInstance = new BinaryCasSerDes6(c1);
-//    return (containingInstance.new CasCompare(c1, c2)).compareCASes();
-//  }
   
   public boolean compareCASes(CASImpl c1, CASImpl c2) {
     return new CasCompare(c1, c2).compareCASes();
   }
   
-  public class CasCompare {
+  private class CasCompare {
     /** 
      * Compare 2 CASes for equal
      * The layout of refs to aux heaps does not have to match
@@ -3288,7 +3318,8 @@ public class BinaryCasSerDes6 {
     throw new RuntimeException(String.format("Invalid class passed to method, class was %s", f.getClass().getName()));
   }
   
-  public String printCasInfo(CASImpl cas) {
+  // for debugging
+  String printCasInfo(CASImpl cas) {
     int heapsz= cas.getHeap().getNextId() * 4;
     StringHeapDeserializationHelper shdh = cas.getStringHeap().serialize();
     

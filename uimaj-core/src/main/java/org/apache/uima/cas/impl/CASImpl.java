@@ -1166,6 +1166,12 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     reinit(istream, null);
   }
   
+  /**
+   * Called by services for delta deserialization with saved reuse info
+   * @param istream
+   * @param rfs - reuse info collected when serializaing out to service
+   * @throws CASRuntimeException
+   */
   public void reinit(InputStream istream, ReuseInfo rfs) throws CASRuntimeException {
     if (this != this.svd.baseCAS) {
       this.svd.baseCAS.reinit(istream, rfs);
