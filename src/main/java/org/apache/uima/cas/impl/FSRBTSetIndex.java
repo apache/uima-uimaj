@@ -56,7 +56,7 @@ class FSRBTSetIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T> {
 
   public void flush() {
     this.tree.flush();
-//    this.tree = new CompIntArrayRBT(this);  // not this way - some indexes/iterators are holding on to references to the old tree...
+//    this.tree = new CompIntArrayRBT(this);  // not this way - iterators are holding on to references to the old tree...
   }
 
   /**

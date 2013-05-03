@@ -181,7 +181,9 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     // The IICP
     private IndexIteratorCachePair iicp;
 
-    // An array of integer arrays, one for each subtype.
+    // An array of ComparableIntPointerIterators, one for each subtype.
+    //   Each instance of these has a Class.this kind of ref to a particular variety of FSLeafIndex (bag, set, sorted) corresponding to 1 type
+    //   This array has the indexes for all the subtypes
     private ComparableIntPointerIterator[] indexes;
 
     int lastValidIndex;
@@ -1409,12 +1411,12 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    */
   public void removeAllExcludingSubtypes(Type type) {
     final int typeCode = ((TypeImpl) type).getCode();
+    incrementIllegalIndexUpdateDetector(typeCode);
     // get a list of all indexes defined over this type
     // Includes indexes defined on supertypes of this type
     final ArrayList<IndexIteratorCachePair> allIndexesForType = this.indexArray[typeCode];
     for (IndexIteratorCachePair iicp : allIndexesForType) {
       iicp.index.flush();
-//      boolean fff = iicp.iteratorCache.get(0) == iicp.index;
     }
   }
   

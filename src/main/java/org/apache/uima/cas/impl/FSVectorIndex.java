@@ -153,9 +153,11 @@ public class FSVectorIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T
   }
 
   public void flush() {
-    this.index.removeAllElements();
-    // not this way in case someone's holding on to a ref to the actual index object
-//    this.index = new IntVector(this.initialSize);
+    if (this.index.size() > this.initialSize) {
+      this.index = new IntVector(this.initialSize); 
+    } else {
+      this.index.removeAllElements();
+    }
   }
 
   public final boolean insert(int fs) {
