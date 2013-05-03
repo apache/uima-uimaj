@@ -19,11 +19,11 @@
 package org.apache.uima.cas.impl;
 
 import static org.apache.uima.cas.impl.SerDesTest6.TypeSystems.EqTwoTypes;
+import static org.apache.uima.cas.impl.SerDesTest6.TypeSystems.OneType;
 import static org.apache.uima.cas.impl.SerDesTest6.TypeSystems.OneTypeSubsetFeatures;
 import static org.apache.uima.cas.impl.SerDesTest6.TypeSystems.TwoTypes;
 import static org.apache.uima.cas.impl.SerDesTest6.TypeSystems.TwoTypesNoFeatures;
 import static org.apache.uima.cas.impl.SerDesTest6.TypeSystems.TwoTypesSubsetFeatures;
-import static org.apache.uima.cas.impl.SerDesTest6.TypeSystems.OneType;
 import static org.apache.uima.cas.impl.SerDesTest6.Types.Akof1;
 import static org.apache.uima.cas.impl.SerDesTest6.Types.Akof2;
 
@@ -56,7 +56,6 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.admin.FSIndexRepositoryMgr;
 import org.apache.uima.cas.admin.TypeSystemMgr;
-import org.apache.uima.cas.impl.BinaryCasSerDes6.CasCompare;
 import org.apache.uima.cas.impl.BinaryCasSerDes6.ReuseInfo;
 import org.apache.uima.cas.test.AnnotatorInitializer;
 import org.apache.uima.cas.test.CASInitializer;
@@ -171,7 +170,7 @@ public class SerDesTest6 extends TestCase {
     "Int", "Fs", "Float", "Double", "Long", "Short", "Byte", "Boolean", "String", 
     "Aint", "Afs", "Afloat", "Adouble", "Along", "Ashort", "Abyte", "Aboolean", "Astring"});
   
-  class TTypeSystem {
+  static class TTypeSystem {
     final TypeSystems kind;
     final TypeSystemMgr tsm;
     Feature[][] featureTable = new Feature[Types.values().length][featureNameRoots.size()];
