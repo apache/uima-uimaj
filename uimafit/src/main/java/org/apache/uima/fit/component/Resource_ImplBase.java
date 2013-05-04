@@ -23,7 +23,7 @@ import java.util.Map;
 import org.apache.uima.fit.component.initialize.ConfigurationParameterInitializer;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.factory.ExternalResourceFactory;
-import org.apache.uima.fit.util.ExtendedLogger;
+import org.apache.uima.fit.internal.ExtendedLogger;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 

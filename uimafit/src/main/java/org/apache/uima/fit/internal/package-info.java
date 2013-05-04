@@ -16,12 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.uima.fit.util;
-
 /**
- * INTERNAL API - Kinds of meta data uimaFIT uses.
+ * INTERNAL API - May change without further notice.
  */
-public enum MetaDataType {
-  TYPE_SYSTEM,
-  FS_INDEX;
-}
+package org.apache.uima.fit.internal;

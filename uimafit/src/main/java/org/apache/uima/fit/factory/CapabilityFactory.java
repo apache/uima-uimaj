@@ -25,7 +25,7 @@ import org.apache.uima.analysis_engine.TypeOrFeature;
 import org.apache.uima.analysis_engine.impl.TypeOrFeature_impl;
 import org.apache.uima.fit.descriptor.SofaCapability;
 import org.apache.uima.fit.descriptor.TypeCapability;
-import org.apache.uima.fit.util.ReflectionUtil;
+import org.apache.uima.fit.internal.ReflectionUtil;
 import org.apache.uima.resource.metadata.Capability;
 import org.apache.uima.resource.metadata.impl.Capability_impl;
 

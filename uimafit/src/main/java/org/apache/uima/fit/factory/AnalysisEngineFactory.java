@@ -54,7 +54,7 @@ import org.apache.uima.analysis_engine.metadata.impl.FlowControllerDeclaration_i
 import org.apache.uima.cas.CAS;
 import org.apache.uima.fit.component.initialize.ExternalResourceInitializer;
 import org.apache.uima.fit.factory.ConfigurationParameterFactory.ConfigurationData;
-import org.apache.uima.fit.util.ReflectionUtil;
+import org.apache.uima.fit.internal.ReflectionUtil;
 import org.apache.uima.flow.FlowControllerDescription;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ExternalResourceDependency;

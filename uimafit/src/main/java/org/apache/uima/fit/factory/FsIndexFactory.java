@@ -20,8 +20,8 @@ package org.apache.uima.fit.factory;
 
 import static java.util.Arrays.asList;
 import static org.apache.uima.UIMAFramework.getXMLParser;
-import static org.apache.uima.fit.util.MetaDataUtil.scanDescriptors;
-import static org.apache.uima.fit.util.ReflectionUtil.getInheritableAnnotation;
+import static org.apache.uima.fit.internal.MetaDataUtil.scanDescriptors;
+import static org.apache.uima.fit.internal.ReflectionUtil.getInheritableAnnotation;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ import java.util.List;
 import org.apache.commons.logging.LogFactory;
 import org.apache.uima.fit.descriptor.FsIndex;
 import org.apache.uima.fit.descriptor.FsIndexKey;
-import org.apache.uima.fit.util.MetaDataType;
+import org.apache.uima.fit.internal.MetaDataType;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.FsIndexCollection;
 import org.apache.uima.resource.metadata.FsIndexDescription;

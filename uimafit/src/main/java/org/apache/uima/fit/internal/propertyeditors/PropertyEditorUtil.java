@@ -16,35 +16,26 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.uima.fit.propertyeditors;
+package org.apache.uima.fit.internal.propertyeditors;
 
-import java.beans.PropertyEditorSupport;
+import java.util.LinkedList;
 import java.util.Locale;
 
-import org.apache.uima.fit.util.LocaleUtil;
+import org.springframework.beans.PropertyEditorRegistry;
+import org.springframework.beans.propertyeditors.CustomCollectionEditor;
 
 /**
- * Custom property editor for {@link Locale} that supports "-" as separator and sets the default
- * locale when {@code null} or {@code ""} is passed. This is used to be backwards-compatible with
- * previous uimaFIT behavior.
- * 
+ * INTERNAL API
  */
-public class LocaleEditor extends PropertyEditorSupport {
+public final class PropertyEditorUtil {
 
-  @Override
-  public void setAsText(String text) {
-    if (text == null) {
-      setValue(Locale.getDefault());
-    } else if (text.length() == 0) {
-      setValue(Locale.getDefault());
-    } else {
-      setValue(LocaleUtil.getLocale(text));
-    }
+  private PropertyEditorUtil() {
+    // Utility class
   }
 
-  @Override
-  public String getAsText() {
-    Object value = getValue();
-    return (value != null ? value.toString() : "");
+  public static void registerUimaFITEditors(PropertyEditorRegistry aRegistry) {
+    aRegistry.registerCustomEditor(Locale.class, new LocaleEditor());
+    aRegistry.registerCustomEditor(String.class, new GetAsTextStringEditor(aRegistry));
+    aRegistry.registerCustomEditor(LinkedList.class, new CustomCollectionEditor(LinkedList.class));
   }
 }

@@ -22,7 +22,7 @@ import org.apache.uima.UimaContext;
 import org.apache.uima.fit.component.initialize.ConfigurationParameterInitializer;
 import org.apache.uima.fit.component.initialize.ExternalResourceInitializer;
 import org.apache.uima.fit.descriptor.OperationalProperties;
-import org.apache.uima.fit.util.ExtendedLogger;
+import org.apache.uima.fit.internal.ExtendedLogger;
 import org.apache.uima.resource.ResourceInitializationException;
 
 /**

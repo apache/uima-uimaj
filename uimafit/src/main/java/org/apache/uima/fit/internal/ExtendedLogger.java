@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.uima.fit.util;
+package org.apache.uima.fit.internal;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -24,6 +24,7 @@ import org.apache.uima.UimaContext;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
+import org.apache.uima.util.impl.JSR47Logger_impl;
 
 /**
  * INTERNAL API - Wrapper for the UIMA {@link Logger} offering a more convenient API similar to that
@@ -271,6 +272,10 @@ public class ExtendedLogger implements Logger {
     if (context != null) {
       Logger logger = context.getLogger();
       if (logger != null) {
+        if (context.getLogger() instanceof JSR47Logger_impl) {
+          JSR47Logger_impl impl = (JSR47Logger_impl) context.getLogger();
+          System.out.println(impl.isLoggable(Level.INFO));
+        }
         context.getLogger()
                 .log(getClass().getName(), Level.INFO, String.valueOf(paramObject), null);
       }

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.uima.fit.propertyeditors;
+package org.apache.uima.fit.internal.propertyeditors;
 
 import java.beans.PropertyEditor;
 import java.beans.PropertyEditorSupport;
@@ -25,9 +25,10 @@ import org.springframework.beans.PropertyEditorRegistry;
 import org.springframework.beans.PropertyEditorRegistrySupport;
 
 /**
+ * INTERNAL API
+ * 
  * Custom property editor that tries to look convert and value to a string by checking if there is a
  * registered property editor for the source value.
- * 
  */
 public class GetAsTextStringEditor extends PropertyEditorSupport {
   private final PropertyEditorRegistry editorRegistry;

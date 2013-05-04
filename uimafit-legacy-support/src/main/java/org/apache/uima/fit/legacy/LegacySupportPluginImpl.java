@@ -23,6 +23,8 @@ import java.lang.reflect.AccessibleObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.uima.fit.internal.LegacySupportPlugin;
+import org.apache.uima.fit.internal.MetaDataType;
 import org.apache.uima.fit.legacy.converter.ConfigurationParameterConverter;
 import org.apache.uima.fit.legacy.converter.ExternalResourceConverter;
 import org.apache.uima.fit.legacy.converter.FsIndexCollectionConverter;
@@ -32,8 +34,6 @@ import org.apache.uima.fit.legacy.converter.NoConversionConverter;
 import org.apache.uima.fit.legacy.converter.OperationalPropertiesConverter;
 import org.apache.uima.fit.legacy.converter.SofaCapabilityConverter;
 import org.apache.uima.fit.legacy.converter.TypeCapabilityConverter;
-import org.apache.uima.fit.util.LegacySupportPlugin;
-import org.apache.uima.fit.util.MetaDataType;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.uimafit.factory.FsIndexFactory;
 import org.uimafit.factory.TypeSystemDescriptionFactory;

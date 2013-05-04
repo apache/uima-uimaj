@@ -18,7 +18,7 @@
  */
 package org.apache.uima.fit.factory;
 
-import org.apache.uima.fit.util.ReflectionUtil;
+import org.apache.uima.fit.internal.ReflectionUtil;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 
 public final class ResourceMetaDataFactory {

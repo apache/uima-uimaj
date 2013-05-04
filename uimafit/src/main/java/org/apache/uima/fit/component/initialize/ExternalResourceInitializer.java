@@ -35,7 +35,7 @@ import org.apache.uima.UimaContextAdmin;
 import org.apache.uima.fit.component.ExternalResourceAware;
 import org.apache.uima.fit.descriptor.ExternalResource;
 import org.apache.uima.fit.descriptor.ExternalResourceLocator;
-import org.apache.uima.fit.util.ReflectionUtil;
+import org.apache.uima.fit.internal.ReflectionUtil;
 import org.apache.uima.resource.ExternalResourceDependency;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceAccessException;

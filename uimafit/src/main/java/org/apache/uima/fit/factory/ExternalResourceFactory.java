@@ -39,7 +39,7 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.descriptor.ExternalResource;
 import org.apache.uima.fit.factory.ConfigurationParameterFactory.ConfigurationData;
-import org.apache.uima.fit.util.ExtendedExternalResourceDescription_impl;
+import org.apache.uima.fit.internal.ExtendedExternalResourceDescription_impl;
 import org.apache.uima.resource.ConfigurableDataResourceSpecifier;
 import org.apache.uima.resource.CustomResourceSpecifier;
 import org.apache.uima.resource.DataResource;

@@ -16,20 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-package org.apache.uima.fit.util;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
 /**
- * INTERNAL API - Marks a class as having been processed by an uimaFIT class enhancer, such as the
- * uimafit-maven-plugin. If the annotation is present, the enhancer does process the class again.
+ * INTERNAL API - May change without further notice.
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface EnhancedClassFile {
-  // Just a marker annotation.
-}
+package org.apache.uima.fit.internal.propertyeditors;

@@ -37,6 +37,7 @@ import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.uima.UIMAFramework;
 import org.apache.uima.UimaContextAdmin;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.AbstractCas;
@@ -53,7 +54,7 @@ import org.apache.uima.fit.component.JCasConsumer_ImplBase;
 import org.apache.uima.fit.component.JCasFlowController_ImplBase;
 import org.apache.uima.fit.component.JCasMultiplier_ImplBase;
 import org.apache.uima.fit.component.Resource_ImplBase;
-import org.apache.uima.fit.util.ExtendedLogger;
+import org.apache.uima.fit.internal.ExtendedLogger;
 import org.apache.uima.flow.Flow;
 import org.apache.uima.impl.RootUimaContext_impl;
 import org.apache.uima.jcas.JCas;
@@ -82,6 +83,8 @@ public class LoggingTest {
         return false;
       }
     });
+
+    UIMAFramework.getLogger().setLevel(org.apache.uima.util.Level.INFO);
 
     try {
       UimaContextAdmin ctx = new RootUimaContext_impl();
@@ -188,6 +191,7 @@ public class LoggingTest {
 
   @Test
   public void testAllKindsOfComponents() throws Exception {
+    System.out.println("=== testAllKindsOfComponents ===");
     final List<LogRecord> records = new ArrayList<LogRecord>();
 
     // Tell the logger to log everything
@@ -195,12 +199,16 @@ public class LoggingTest {
             .getHandlers()[0];
     java.util.logging.Level oldLevel = handler.getLevel();
     handler.setLevel(Level.ALL);
+    // Capture the logging output without actually logging it
     handler.setFilter(new Filter() {
       public boolean isLoggable(LogRecord record) {
         records.add(record);
-        return true;
+        System.out.printf("[%s] %s%n", record.getSourceClassName(), record.getMessage());
+        return false;
       }
     });
+    
+    UIMAFramework.getLogger().setLevel(org.apache.uima.util.Level.INFO);
 
     try {
       JCas jcas = JCasFactory.createJCas();

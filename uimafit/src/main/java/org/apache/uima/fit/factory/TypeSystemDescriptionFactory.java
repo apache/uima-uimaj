@@ -19,7 +19,7 @@
 package org.apache.uima.fit.factory;
 
 import static org.apache.uima.UIMAFramework.getXMLParser;
-import static org.apache.uima.fit.util.MetaDataUtil.scanDescriptors;
+import static org.apache.uima.fit.internal.MetaDataUtil.scanDescriptors;
 import static org.apache.uima.util.CasCreationUtils.mergeTypeSystems;
 
 import java.io.IOException;
@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.LogFactory;
-import org.apache.uima.fit.util.MetaDataType;
+import org.apache.uima.fit.internal.MetaDataType;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
