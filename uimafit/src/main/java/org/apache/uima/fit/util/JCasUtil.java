@@ -43,7 +43,7 @@ public final class JCasUtil {
   private JCasUtil() {
     // No instances
   }
-  
+
   /**
    * Convenience method to iterator over all annotations of a given type occurring within the scope
    * of a provided annotation (sub-iteration).
@@ -62,6 +62,7 @@ public final class JCasUtil {
    *          Controls if annotations that overlap to the right are considered in or out.
    * @return A sub-iterator iterable.
    * @see AnnotationIndex#subiterator(AnnotationFS, boolean, boolean)
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   public static <T extends Annotation> Iterable<T> subiterate(final JCas jCas, final Class<T> type,
           final AnnotationFS container, final boolean ambiguous, final boolean strict) {
@@ -82,6 +83,7 @@ public final class JCasUtil {
    * @param type
    *          a type.
    * @return a return value.
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public static <T extends TOP> Iterator<T> iterator(JCas jCas, Class<T> type) {
@@ -102,6 +104,7 @@ public final class JCasUtil {
    * @param strict
    *          Controls if annotations that overlap to the right are considered in or out.
    * @return A sub-iterator.
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   @SuppressWarnings("unchecked")
   public static <T extends AnnotationFS> Iterator<T> iterator(AnnotationFS container,
@@ -148,7 +151,7 @@ public final class JCasUtil {
    * @param type
    *          the type.
    * @return A collection of the selected type.
-   * @see #selectCovered(Class, AnnotationFS)
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   public static <T extends TOP> Collection<T> select(final FSArray array, final Class<T> type) {
     return cast(CasUtil.selectFS(array, CasUtil.getType(array.getCAS(), type.getName())));
@@ -164,7 +167,7 @@ public final class JCasUtil {
    * @param type
    *          the type.
    * @return A collection of the selected type.
-   * @see #selectCovered(Class, AnnotationFS)
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   public static <T extends TOP> Collection<T> select(final FSList list, final Class<T> type) {
     return cast(FSCollectionFactory.create(list, CasUtil.getType(list.getCAS(), type.getName())));
@@ -180,6 +183,7 @@ public final class JCasUtil {
    * @param type
    *          the type.
    * @return A collection of the selected type.
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   public static <T extends TOP> Collection<T> select(final JCas jCas, final Class<T> type) {
     return cast(CasUtil.selectFS(jCas.getCas(), getType(jCas, type)));
@@ -191,6 +195,7 @@ public final class JCasUtil {
    * @param jCas
    *          the JCas containing the type system. the type.
    * @return A collection of the selected type.
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   public static Collection<TOP> selectAll(final JCas jCas) {
     return select(jCas, TOP.class);
@@ -212,6 +217,7 @@ public final class JCasUtil {
    *          the second boundary annotation.
    * @return a return value.
    * @see Subiterator
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   public static <T extends Annotation> List<T> selectBetween(final Class<T> type,
           AnnotationFS ann1, AnnotationFS ann2) {
@@ -236,6 +242,7 @@ public final class JCasUtil {
    *          the second boundary annotation.
    * @return a return value.
    * @see Subiterator
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   public static <T extends Annotation> List<T> selectBetween(JCas jCas, final Class<T> type,
           AnnotationFS ann1, AnnotationFS ann2) {
@@ -255,6 +262,7 @@ public final class JCasUtil {
    *          the covering annotation.
    * @return a return value.
    * @see Subiterator
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   public static <T extends AnnotationFS> List<T> selectCovered(Class<T> type,
           AnnotationFS coveringAnnotation) {
@@ -277,6 +285,7 @@ public final class JCasUtil {
    *          the covering annotation.
    * @return a return value.
    * @see Subiterator
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   public static <T extends Annotation> List<T> selectCovered(JCas jCas, final Class<T> type,
           AnnotationFS coveringAnnotation) {
@@ -304,6 +313,7 @@ public final class JCasUtil {
    * @param end
    *          end offset.
    * @return a return value.
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   public static <T extends Annotation> List<T> selectCovered(JCas jCas, final Class<T> type,
           int begin, int end) {
@@ -325,6 +335,7 @@ public final class JCasUtil {
    * @param coveredAnnotation
    *          the covered annotation.
    * @return a return value.
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   public static <T extends Annotation> List<T> selectCovering(Class<T> type,
           AnnotationFS coveredAnnotation) {
@@ -332,7 +343,7 @@ public final class JCasUtil {
     return cast(CasUtil.selectCovering(CasUtil.getType(coveredAnnotation.getCAS(), type),
             coveredAnnotation));
   }
-  
+
   /**
    * Get a list of annotations of the given annotation type constraint by a certain annotation.
    * Iterates over all annotations to find the covering annotations.
@@ -350,13 +361,14 @@ public final class JCasUtil {
    * @param coveredAnnotation
    *          the covered annotation.
    * @return a return value.
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   public static <T extends Annotation> List<T> selectCovering(JCas jCas, Class<T> type,
           AnnotationFS coveredAnnotation) {
 
     return cast(CasUtil.selectCovering(jCas.getCas(), getType(jCas, type), coveredAnnotation));
   }
-  
+
   /**
    * Get a list of annotations of the given annotation type constraint by a certain annotation.
    * Iterates over all annotations to find the covering annotations.
@@ -376,6 +388,7 @@ public final class JCasUtil {
    * @param end
    *          end offset.
    * @return a return value.
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   public static <T extends Annotation> List<T> selectCovering(JCas jCas, Class<T> type, int begin,
           int end) {
@@ -397,6 +410,7 @@ public final class JCasUtil {
    * @param coveringType
    *          type of covering annotations.
    * @return the index.
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   public static <T extends Annotation, S extends Annotation> Map<T, Collection<S>> indexCovering(
           JCas jCas, Class<T> type, Class<S> coveringType) {
@@ -418,6 +432,7 @@ public final class JCasUtil {
    * @param coveredType
    *          type of covered annotations.
    * @return the index.
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   public static <T extends Annotation, S extends Annotation> Map<T, Collection<S>> indexCovered(
           JCas jCas, Class<T> type, Class<S> coveredType) {
@@ -435,6 +450,7 @@ public final class JCasUtil {
    * @param type
    *          a UIMA type.
    * @return if an annotation of the given type is present.
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   public static boolean contains(JCas jCas, AnnotationFS coveringAnnotation,
           Class<? extends Annotation> type) {
@@ -459,6 +475,7 @@ public final class JCasUtil {
    *          this can be either positive (0 corresponds to the first annotation of a type) or
    *          negative (-1 corresponds to the last annotation of a type.)
    * @return an annotation of the given type
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   @SuppressWarnings("unchecked")
   public static <T extends Annotation> T selectByIndex(JCas jCas, Class<T> cls, int index) {
@@ -497,6 +514,7 @@ public final class JCasUtil {
    * @return the addressed annotation.
    * @throws IndexOutOfBoundsException
    *           if the relative index points beyond the type index bounds.
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   @SuppressWarnings("unchecked")
   public static <T extends Annotation> T selectSingleRelative(Class<T> aType,
@@ -523,6 +541,7 @@ public final class JCasUtil {
    * @return the addressed annotation.
    * @throws IndexOutOfBoundsException
    *           if the relative index points beyond the type index bounds.
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   @SuppressWarnings("unchecked")
   public static <T extends Annotation> T selectSingleRelative(JCas aJCas, Class<T> aType,
@@ -543,6 +562,7 @@ public final class JCasUtil {
    * @param count
    *          number of annotations to collect
    * @return List of aType annotations preceding anchor annotation
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   public static <T extends Annotation> List<T> selectPreceding(Class<T> aType,
           AnnotationFS annotation, int count) {
@@ -564,6 +584,7 @@ public final class JCasUtil {
    * @param count
    *          number of annotations to collect
    * @return List of aType annotations preceding anchor annotation
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   public static <T extends Annotation> List<T> selectPreceding(JCas aJCas, Class<T> aType,
           AnnotationFS annotation, int count) {
@@ -583,6 +604,7 @@ public final class JCasUtil {
    * @param count
    *          number of annotations to collect
    * @return List of aType annotations following anchor annotation
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   public static <T extends Annotation> List<T> selectFollowing(Class<T> aType,
           AnnotationFS annotation, int count) {
@@ -604,6 +626,7 @@ public final class JCasUtil {
    * @param count
    *          number of annotations to collect
    * @return List of aType annotations following anchor annotation
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   public static <T extends Annotation> List<T> selectFollowing(JCas aJCas, Class<T> aType,
           AnnotationFS annotation, int count) {

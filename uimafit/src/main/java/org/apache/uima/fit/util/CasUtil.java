@@ -71,6 +71,7 @@ public final class CasUtil {
    * @param type
    *          a type.
    * @return a return value.
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   @SuppressWarnings("unchecked")
   public static <T extends FeatureStructure> Iterator<T> iteratorFS(CAS cas, Type type) {
@@ -87,6 +88,7 @@ public final class CasUtil {
    * @param type
    *          a type.
    * @return a return value.
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   @SuppressWarnings("unchecked")
   public static <T extends AnnotationFS> Iterator<T> iterator(CAS cas, Type type) {
@@ -171,6 +173,7 @@ public final class CasUtil {
    * @param type
    *          the type.
    * @return A collection of the selected type.
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   public static Collection<FeatureStructure> selectFS(ArrayFS array, Type type) {
     return FSCollectionFactory.create(array, type);
@@ -184,6 +187,7 @@ public final class CasUtil {
    * @param type
    *          the type.
    * @return A collection of the selected type.
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public static Collection<AnnotationFS> select(ArrayFS array, Type type) {
@@ -200,6 +204,7 @@ public final class CasUtil {
    * @param aCas
    *          the CAS hosting the type system.
    * @return A collection of the selected type.
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   public static Collection<FeatureStructure> selectAllFS(final CAS aCas) {
     return selectFS(aCas, getType(aCas, CAS.TYPE_NAME_TOP));
@@ -213,6 +218,7 @@ public final class CasUtil {
    * @param type
    *          the type.
    * @return A collection of the selected type.
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   public static Collection<FeatureStructure> selectFS(final CAS cas, final Type type) {
     return FSCollectionFactory.create(cas, type);
@@ -224,6 +230,7 @@ public final class CasUtil {
    * @param aCas
    *          the CAS hosting the type system.
    * @return A collection of the selected type.
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   public static Collection<AnnotationFS> selectAll(final CAS aCas) {
     return select(aCas, getType(aCas, CAS.TYPE_NAME_ANNOTATION));
@@ -237,6 +244,7 @@ public final class CasUtil {
    * @param type
    *          the type.
    * @return A collection of the selected type.
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public static Collection<AnnotationFS> select(final CAS cas, final Type type) {
@@ -262,6 +270,7 @@ public final class CasUtil {
    *          the second boundary annotation.
    * @return a return value.
    * @see Subiterator
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   public static List<AnnotationFS> selectBetween(final Type type, final AnnotationFS ann1,
           final AnnotationFS ann2) {
@@ -286,6 +295,7 @@ public final class CasUtil {
    *          the second boundary annotation.
    * @return a return value.
    * @see Subiterator
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   public static List<AnnotationFS> selectBetween(final CAS cas, final Type type,
           final AnnotationFS ann1, final AnnotationFS ann2) {
@@ -377,6 +387,7 @@ public final class CasUtil {
    *          the covering annotation.
    * @return a return value.
    * @see Subiterator
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   public static List<AnnotationFS> selectCovered(Type type, AnnotationFS coveringAnnotation) {
     return selectCovered(coveringAnnotation.getView(), type, coveringAnnotation);
@@ -396,6 +407,7 @@ public final class CasUtil {
    *          the covering annotation.
    * @return a return value.
    * @see Subiterator
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   public static List<AnnotationFS> selectCovered(CAS cas, Type type, AnnotationFS coveringAnnotation) {
     int begin = coveringAnnotation.getBegin();
@@ -485,6 +497,7 @@ public final class CasUtil {
    *          end offset.
    * @return a return value.
    * @see Subiterator
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   public static List<AnnotationFS> selectCovered(CAS cas, Type type, int begin, int end) {
 
@@ -532,6 +545,7 @@ public final class CasUtil {
    *          the covered annotation.
    * 
    * @return a return value.
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   public static List<AnnotationFS> selectCovering(Type type, AnnotationFS coveredAnnotation) {
 
@@ -554,6 +568,7 @@ public final class CasUtil {
    * @param coveredAnnotation
    *          the covered annotation.
    * @return a return value.
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   public static List<AnnotationFS> selectCovering(CAS cas, Type type, AnnotationFS coveredAnnotation) {
 
@@ -577,6 +592,7 @@ public final class CasUtil {
    * @param end
    *          end offset.
    * @return a return value.
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   public static List<AnnotationFS> selectCovering(CAS cas, Type type, int begin, int end) {
 
@@ -605,6 +621,7 @@ public final class CasUtil {
    * @param coveringType
    *          type of covering annotations.
    * @return the index.
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   public static Map<AnnotationFS, Collection<AnnotationFS>> indexCovering(CAS cas, Type type,
           Type coveringType) {
@@ -646,6 +663,7 @@ public final class CasUtil {
    * @param coveredType
    *          type of covering annotations.
    * @return the index.
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   public static Map<AnnotationFS, Collection<AnnotationFS>> indexCovered(CAS cas, Type type,
           Type coveredType) {
@@ -687,6 +705,7 @@ public final class CasUtil {
    *          this can be either positive (0 corresponds to the first annotation of a type) or
    *          negative (-1 corresponds to the last annotation of a type.)
    * @return an annotation of the given type
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   public static AnnotationFS selectByIndex(CAS cas, Type type, int index) {
     if (!cas.getTypeSystem().subsumes(cas.getAnnotationType(), type)) {
@@ -749,6 +768,7 @@ public final class CasUtil {
    *          relative position to access. A negative value selects a preceding annotation while a
    *          positive number selects a following annotation.
    * @return the addressed annotation.
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   public static AnnotationFS selectSingleRelative(Type type, AnnotationFS annotation, int index) {
     return selectSingleRelative(annotation.getView(), type, annotation, index);
@@ -769,6 +789,7 @@ public final class CasUtil {
    * @return the addressed annotation.
    * @throws IndexOutOfBoundsException
    *           if the relative index points beyond the type index bounds.
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   public static AnnotationFS selectSingleRelative(CAS cas, Type type, AnnotationFS annotation,
           int index) {
@@ -827,6 +848,7 @@ public final class CasUtil {
    * @param count
    *          number of annotations to collect
    * @return List of aType annotations preceding anchor annotation
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   public static List<AnnotationFS> selectPreceding(CAS cas, Type type, AnnotationFS annotation,
           int count) {
@@ -866,6 +888,7 @@ public final class CasUtil {
    * @param count
    *          number of annotations to collect
    * @return List of aType annotations following anchor annotation
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   public static List<AnnotationFS> selectFollowing(CAS cas, Type type, AnnotationFS annotation,
           int count) {

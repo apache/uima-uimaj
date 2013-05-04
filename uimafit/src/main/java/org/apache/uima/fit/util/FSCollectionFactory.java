@@ -34,6 +34,7 @@ import org.apache.uima.cas.BooleanArrayFS;
 import org.apache.uima.cas.ByteArrayFS;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.DoubleArrayFS;
+import org.apache.uima.cas.FSIndexRepository;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.FloatArrayFS;
@@ -82,6 +83,18 @@ public abstract class FSCollectionFactory<T extends FeatureStructure> {
     // No instances.
   }
 
+  /**
+   * Create a {@link Collection} of the given type of feature structures. This collection is backed
+   * by the CAS, either via an {@link CAS#getAnnotationIndex(Type)} or
+   * {@link FSIndexRepository#getAllIndexedFS(Type)}.
+   * 
+   * @param cas
+   *          the CAS to select from.
+   * @param type
+   *          the type of feature structures to select. All sub-types are returned as well.
+   * @return a {@link Collection} of the given type of feature structures backed live by the CAS.
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
+   */
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public static Collection<FeatureStructure> create(CAS cas, Type type) {
     // If the type is an annotation type, we can use the annotation index, which directly
@@ -95,14 +108,38 @@ public abstract class FSCollectionFactory<T extends FeatureStructure> {
     }
   }
 
+  /**
+   * Convert an {@link FSIterator} to a {@link Collection}.
+   * 
+   * @param aIterator
+   *          the iterator to convert.
+   * @return the wrapped iterator.
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
+   */
   public static <T extends FeatureStructure> Collection<T> create(FSIterator<T> aIterator) {
     return new FSIteratorAdapter<T>(aIterator);
   }
 
+  /**
+   * Convert an {@link AnnotationIndex} to a {@link Collection}.
+   * 
+   * @param aIndex
+   *          the index to convert.
+   * @return the wrapped index.
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
+   */
   public static <T extends AnnotationFS> Collection<T> create(AnnotationIndex<T> aIndex) {
     return new AnnotationIndexAdapter<T>(aIndex);
   }
 
+  /**
+   * Convert an {@link ArrayFS} to a {@link Collection}.
+   * 
+   * @param aArray
+   *          the array to convert.
+   * @return a new collection containing the same feature structures as the provided array.
+   * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
+   */
   public static Collection<FeatureStructure> create(ArrayFS aArray) {
     return create(aArray, (Type) null);
   }
@@ -116,7 +153,7 @@ public abstract class FSCollectionFactory<T extends FeatureStructure> {
    *          the FS array
    * @param aType
    *          the JCas wrapper class.
-   * @return a collection of all annotations of the given type.
+   * @return a new collection of all feature structures of the given type.
    */
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public static <T extends TOP> Collection<T> create(ArrayFS aArray, Class<T> aType) {
@@ -130,7 +167,7 @@ public abstract class FSCollectionFactory<T extends FeatureStructure> {
    *          the FS array
    * @param aType
    *          the CAS type.
-   * @return a collection of all annotations of the given type.
+   * @return a new collection of all feature structures of the given type.
    */
   public static Collection<FeatureStructure> create(ArrayFS aArray, Type aType) {
     TypeSystem ts = aArray.getCAS().getTypeSystem();
@@ -429,7 +466,7 @@ public abstract class FSCollectionFactory<T extends FeatureStructure> {
    *          the FS list
    * @param aType
    *          the JCas wrapper class.
-   * @return a collection of all annotations of the given type.
+   * @return a new collection of all feature structures of the given type.
    */
   @SuppressWarnings("unchecked")
   public static <T extends TOP> Collection<T> create(FSList aList, Class<T> aType) {
