@@ -521,6 +521,7 @@
 		<module>uimafit-maven-plugin</module>
 		<module>uimafit-legacy-support</module>
 		<module>uimafit-docbook</module>
+		<module>uimafit-cpe</module>
 	</modules>
 	<inceptionYear>2012</inceptionYear>
 </project>
