@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.uima.fit.factory;
+package org.apache.uima.fit.cpe;
 
 import static org.apache.uima.UIMAFramework.getResourceSpecifierFactory;
 import static org.apache.uima.UIMAFramework.produceCollectionProcessingEngine;

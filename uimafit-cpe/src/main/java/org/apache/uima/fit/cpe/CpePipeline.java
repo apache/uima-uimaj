@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.uima.fit.pipeline;
+package org.apache.uima.fit.cpe;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createAggregateDescription;
 
@@ -33,7 +33,6 @@ import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.collection.EntityProcessStatus;
 import org.apache.uima.collection.StatusCallbackListener;
 import org.apache.uima.collection.metadata.CpeDescriptorException;
-import org.apache.uima.fit.factory.CpeBuilder;
 import org.xml.sax.SAXException;
 
 /**
