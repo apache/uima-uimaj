@@ -963,12 +963,18 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
       
       // TODO: Define constants for these settings!
       
-      String lastModeTypeName = sessionPreferences.getString("LastUsedModeType");
+      Type annotationModeType = getDocument().getType(
+          sessionPreferences.getString("LastUsedModeType"));
       
-      if (lastModeTypeName.length() == 0)
-        lastModeTypeName = CAS.TYPE_NAME_ANNOTATION;
+      // Note: The type in the configuration might not exist anymore, or there is
+      // no type stored yet, in these cases the built-in uima.tcas.Annotation type is used.
+      // Not setting the annotation type will cause NPEs after the editor opened.
       
-      setAnnotationMode(getDocument().getType(lastModeTypeName));
+      if (annotationModeType == null) {
+    	  annotationModeType = getDocument().getType(CAS.TYPE_NAME_ANNOTATION);
+      }
+      
+      setAnnotationMode(annotationModeType);
       
       String lastActiveViewName = sessionPreferences.getString("LastActiveCasViewName");
       
@@ -1070,6 +1076,10 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
    */
   protected void setAnnotationMode(Type type) {
     // TODO: check if this type is a subtype of Annotation
+
+    if (type == null) {
+      throw new IllegalArgumentException("type must not be null!");
+    }
 
     mAnnotationMode = type;
 
