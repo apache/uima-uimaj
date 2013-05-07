@@ -176,6 +176,32 @@ public class IteratorTest extends TestCase {
     this.annotationType = null;
   }
 
+//  public void testDebugSetIndex() {
+//    AnnotationFS[] fsArray = new AnnotationFS[2];
+//    FSIndexRepository ir = this.cas.getIndexRepository();
+//    
+//    fsArray[0] = this.cas.createAnnotation(tokenType, 5, 9);
+//    ir.addFS(fsArray[0]);
+//    fsArray[1] = this.cas.createAnnotation(tokenType, 5, 9);
+//    ir.addFS(fsArray[1]);
+//
+//    FSIndex<FeatureStructure> setIndex = this.cas.getIndexRepository().getIndex(
+//        CASTestSetup.ANNOT_SET_INDEX, this.tokenType);
+//    FSIterator<FeatureStructure> setIt = setIndex.iterator();
+//
+//    for (int i = 0; i < fsArray.length; i++) {
+//      setIt.moveTo(fsArray[i]);
+//      assertTrue(setIt.isValid());
+//      
+//      AnnotationFS expected = fsArray[0];
+//      AnnotationFS fromIterator = (AnnotationFS) setIt.get();
+//      if (!fromIterator.equals(expected)) {
+//        System.err.format("IteratorTest fail with set iterator, i = %d %n  expected = (addr: %d) %s%n  actual = (addr: %d) %s%n",
+//            i, expected.hashCode(), expected, fromIterator.hashCode(), fromIterator);
+//      }
+//    }
+//  }
+  
   public void testGetIndexes() {
     Iterator<FSIndex<FeatureStructure>> it = this.cas.getIndexRepository().getIndexes();
     while (it.hasNext()) {
@@ -697,8 +723,13 @@ public class IteratorTest extends TestCase {
       AnnotationFS expected = fsArray[(i < 90) ? i : 90];
       AnnotationFS fromIterator = (AnnotationFS) setIt.get();
       if (!fromIterator.equals(expected)) {
-        System.err.format("IteratorTest fail with set iterator, i = %d expected = %s, actual = %s%n",
-            i, expected, fromIterator);
+        System.err.format("IteratorTest fail with set iterator, i = %d %n  expected = (addr: %d) %s%n  actual = (addr: %d) %s%n",
+            i, expected.hashCode(), expected, fromIterator.hashCode(), fromIterator);
+        System.err.format("Java being used: %s", 
+          System.getProperty("java.version"),
+          System.getProperty("java.vm.specification.version"),
+          System.getProperty("java.vm.version"),
+          System.getProperty("java.specification.version"));
       }
       assertTrue(setIt.get().equals(fsArray[(i < 90) ? i : 90]));
       bagIt.moveTo(fsArray[i]);
