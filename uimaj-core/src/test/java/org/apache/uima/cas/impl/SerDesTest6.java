@@ -1120,7 +1120,7 @@ public class SerDesTest6 extends TestCase {
       if (doPlain) {
         (new CASSerializer()).addCAS(casSrc, baos);      
       } else {      
-        bcs = new BinaryCasSerDes6(casSrc, null, casTgt.getTypeSystemImpl());
+        bcs = new BinaryCasSerDes6(casSrc, casTgt.getTypeSystemImpl());
         SerializationMeasures sm = bcs.serialize(baos);
         if (null != sm) {
           System.out.println(sm);
@@ -1151,10 +1151,10 @@ public class SerDesTest6 extends TestCase {
         bcs.serialize(baos);
       }
       ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-      bcs = new BinaryCasSerDes6(casTgt, null, casSrc.getTypeSystemImpl());
+      bcs = new BinaryCasSerDes6(casTgt, casSrc.getTypeSystemImpl());
       bcs.deserialize(bais);
       
-      bcs = new BinaryCasSerDes6(casSrc, null, casTgt.getTypeSystemImpl());
+      bcs = new BinaryCasSerDes6(casSrc, casTgt.getTypeSystemImpl());
       assertTrue(bcs.compareCASes(casSrc, casTgt));
     } catch (IOException e) {
       throw new RuntimeException(e);
@@ -1178,7 +1178,7 @@ public class SerDesTest6 extends TestCase {
           Serialization.serializeCAS(casSrc, baos, mark);
         }
       } else {
-        BinaryCasSerDes6 bcs = new BinaryCasSerDes6(casSrc, mark, casTgt.getTypeSystemImpl());
+        BinaryCasSerDes6 bcs = new BinaryCasSerDes6(casSrc, casTgt.getTypeSystemImpl());
         SerializationMeasures sm = bcs.serialize(baos);
         if (sm != null) {System.out.println(sm);}
         riToReturn[0] = bcs.getReuseInfo();

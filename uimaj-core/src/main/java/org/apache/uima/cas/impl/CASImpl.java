@@ -20,7 +20,6 @@
 package org.apache.uima.cas.impl;
 
 import java.io.ByteArrayInputStream;
-import java.io.DataInput;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -2514,11 +2513,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   @Deprecated
   public JCas getJCas(SofaID aSofaID) throws CASException {
     SofaFS sofa = getSofa(aSofaID);
-    if (sofa == null) {
-      CASRuntimeException e = new CASRuntimeException(CASRuntimeException.SOFANAME_NOT_FOUND,
-          new String[] { aSofaID.getSofaID() });
-      throw e;
-    }
+    // sofa guaranteed to be non-null by above method.
     return getJCas(sofa);
   }
 
@@ -2575,11 +2570,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
     // get Sofa and switch to view
     SofaFS sofa = getSofa(absoluteSofaName);
-    if (sofa == null) {
-      CASRuntimeException e = new CASRuntimeException(CASRuntimeException.SOFANAME_NOT_FOUND,
-          new String[] { absoluteSofaName });
-      throw e;
-    }
+    // sofa guaranteed to be non-null by above method
     return getView(sofa);
   }
 
@@ -4313,12 +4304,34 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
   
   /**
-   * Serialize in compressed binary form
-   * @param out - an OutputStream, a DataOutputStream, or a File
-   * @throws IOException
+   * @see org.apache.uima.cas.CAS#serializeWithCompression(Object out)
    */
   public void serializeWithCompression(Object out) throws IOException {
     (new BinaryCasSerDes4(this.getTypeSystemImpl(), false)).serialize(this, out);
   }
   
+  /**
+   * @see org.apache.uima.cas.CAS#serializeWithCompression(Object out, Marker marker)
+   */
+  public void serializeWithCompression(Object out, Marker marker) throws IOException {
+    (new BinaryCasSerDes4(this.getTypeSystemImpl(), false)).serialize(this, out, marker);
+  }
+  
+  /**
+   * @see org.apache.uima.cas.CAS#serializeWithCompression(Object out, TypeSystem tgtTypeSystem, Marker marker)
+   */
+  public ReuseInfo serializeWithCompression(Object out, TypeSystem tgtTypeSystem) throws IOException {
+    BinaryCasSerDes6 bcs = new BinaryCasSerDes6(this, (TypeSystemImpl) tgtTypeSystem);
+    bcs.serialize(out);
+    return bcs.getReuseInfo();
+  }
+  
+  /**
+   * @see org.apache.uima.cas.CAS#serializeWithCompression(Object out, TypeSystem tgtTypeSystem, Marker mark, ReuseInfo reuseInfo)
+   */
+  public void serializeWithCompression(Object out, TypeSystem tgtTypeSystem, Marker mark, ReuseInfo reuseInfo) throws IOException {
+    BinaryCasSerDes6 bcs = new BinaryCasSerDes6(this, (MarkerImpl) mark, (TypeSystemImpl) tgtTypeSystem, reuseInfo);
+    bcs.serialize(out);
+  }
+   
 }
