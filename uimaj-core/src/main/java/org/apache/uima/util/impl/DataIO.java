@@ -190,7 +190,6 @@ public class DataIO {
       writeVnumber(out, 1);
     } else {
       if (v < 0) {
-        long pv = Math.abs(v);
         writeVnumber(out, (Math.abs(v) << 1) | 1);
       } else {
         writeVnumber(out, v << 1);
