@@ -725,9 +725,11 @@ public class IteratorTest extends TestCase {
       if (!fromIterator.equals(expected)) {
         System.err.format("IteratorTest fail with set iterator, i = %d %n  expected = (addr: %d) %s%n  actual = (addr: %d) %s%n",
             i, expected.hashCode(), expected, fromIterator.hashCode(), fromIterator);
-        System.err.format("Java being used: %s %s %s %s", 
+        System.err.format("Java being used: %s %s %s %s %s %s", 
           System.getProperty("java.version"),
+          System.getProperty("java.vendor"),          
           System.getProperty("java.vm.specification.version"),
+          System.getProperty("java.vm.specification.vendor"),
           System.getProperty("java.vm.version"),
           System.getProperty("java.specification.version"));
       }
