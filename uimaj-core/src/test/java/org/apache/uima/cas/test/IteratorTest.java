@@ -694,6 +694,12 @@ public class IteratorTest extends TestCase {
     for (int i = 0; i < fsArray.length; i++) {
       setIt.moveTo(fsArray[i]);
       assertTrue(setIt.isValid());
+      AnnotationFS expected = fsArray[(i < 90) ? i : 90];
+      AnnotationFS fromIterator = (AnnotationFS) setIt.get();
+      if (!fromIterator.equals(expected)) {
+        System.err.format("IteratorTest fail with set iterator, i = %d expected = %s, actual = %s%n",
+            i, expected, fromIterator);
+      }
       assertTrue(setIt.get().equals(fsArray[(i < 90) ? i : 90]));
       bagIt.moveTo(fsArray[i]);
       assertTrue(bagIt.isValid());
