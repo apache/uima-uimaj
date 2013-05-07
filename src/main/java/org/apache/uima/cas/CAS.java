@@ -19,13 +19,19 @@
 
 package org.apache.uima.cas;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
 import org.apache.uima.cas.admin.CASAdminException;
+import org.apache.uima.cas.impl.BinaryCasSerDes4;
+import org.apache.uima.cas.impl.BinaryCasSerDes6;
 import org.apache.uima.cas.impl.LowLevelCAS;
+import org.apache.uima.cas.impl.MarkerImpl;
+import org.apache.uima.cas.impl.TypeSystemImpl;
+import org.apache.uima.cas.impl.BinaryCasSerDes6.ReuseInfo;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.JCas;
@@ -1055,5 +1061,39 @@ public interface CAS extends AbstractCas {
   *   marker object for this CAS, or returns null if a marker was never created for this CAS.
   */
   List<Marker> getMarkers();
+  
+  /**
+   * Serialize in compressed binary form 4
+   * @param out - an OutputStream, a DataOutputStream, or a File
+   * @throws IOException
+   */
+  public void serializeWithCompression(Object out) throws IOException ;
+  
+  /**
+   * Serialize in compress binary form 4, only the delta part of a CAS
+   * @param out - an OutputStream, a DataOutputStream, or a File
+   * @param marker identifying where the delta starts
+   * @throws IOException
+   */
+  public void serializeWithCompression(Object out, Marker marker) throws IOException;
+  
+  /**
+   * Serialize in compressed binary form 6
+   * @param out an OutputStream, a DataOutputStream, or a File
+   * @param tgtTypeSystem null or a target TypeSystem, which must be mergable with this CAS's type system
+   * @return information to be used on subsequent serializations (to save time) or deserializations (for receiving delta CASs) 
+   * @throws IOException
+   */
+  public ReuseInfo serializeWithCompression(Object out, TypeSystem tgtTypeSystem) throws IOException;
+  
+  /**
+   * @param out an OutputStream, a DataOutputStream, or a File
+   * @param tgtTypeSystem null or a target TypeSystem, which must be mergable with this CAS's type system
+   * @param mark if not null, indicates doing a delta CAS serialization
+   * @param reuseInfo if mark is not null, this parameter is required 
+   * - and must have been computed when the service did the original deserialization of the CAS now being serialized as a delta CAS
+   * @throws IOException
+   */
+  public void serializeWithCompression(Object out, TypeSystem tgtTypeSystem, Marker mark, ReuseInfo reuseInfo) throws IOException;
   
 }

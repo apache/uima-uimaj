@@ -520,7 +520,7 @@ public class BinaryCasSerDes6 {
   }
   
   /**
-   * Setup to serialize (not delta) or deserialize (not delta) using binary compression, no type mapping and only processing reachable Feature Structures
+   * Setup to serialize (not delta) or deserialize (not delta) using binary compression, no type mapping but only processing reachable Feature Structures
    * @param cas
    */
   public BinaryCasSerDes6(AbstractCas cas) {
@@ -528,22 +528,13 @@ public class BinaryCasSerDes6 {
   }
   
   /**
-   * Setup to serialize (maybe delta) or deserialize (not delta) using binary compression, no type mapping and only processing reachable Feature Structures
-   * @param cas
-   * @param mark
-   */
-  public BinaryCasSerDes6(AbstractCas cas, MarkerImpl mark) {
-    this(cas, mark, null, null, false, CompressLevel.Default, CompressStrat.Default);
-  }
-
-  /**
-   * Setup to serialize (maybe delta) or deserialize (not delta) using binary compression, with type mapping and only processing reachable Feature Structures
+   * Setup to serialize (not delta) or deserialize (not delta) using binary compression, with type mapping and only processing reachable Feature Structures
    * @param cas
    * @param mark
    * @param tgtTs
    */
-  public BinaryCasSerDes6(AbstractCas cas, MarkerImpl mark, TypeSystemImpl tgtTs) {
-    this(cas, mark, tgtTs, null, false, CompressLevel.Default, CompressStrat.Default);
+  public BinaryCasSerDes6(AbstractCas cas, TypeSystemImpl tgtTs) {
+    this(cas, null, tgtTs, null, false, CompressLevel.Default, CompressStrat.Default);
   }
 
   /**
@@ -551,7 +542,7 @@ public class BinaryCasSerDes6 {
    * @param cas
    * @param mark
    * @param tgtTs
-   * @param rfs Reused Feature Structure information - speed up on serialization, required on delta deserialization
+   * @param rfs Reused Feature Structure information - required for both delta serialization and delta deserialization
    */
   public BinaryCasSerDes6(AbstractCas cas, MarkerImpl mark, TypeSystemImpl tgtTs, ReuseInfo rfs) {
     this(cas, mark, tgtTs, rfs, false, CompressLevel.Default, CompressStrat.Default);
