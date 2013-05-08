@@ -176,32 +176,6 @@ public class IteratorTest extends TestCase {
     this.annotationType = null;
   }
 
-//  public void testDebugSetIndex() {
-//    AnnotationFS[] fsArray = new AnnotationFS[2];
-//    FSIndexRepository ir = this.cas.getIndexRepository();
-//    
-//    fsArray[0] = this.cas.createAnnotation(tokenType, 5, 9);
-//    ir.addFS(fsArray[0]);
-//    fsArray[1] = this.cas.createAnnotation(tokenType, 5, 9);
-//    ir.addFS(fsArray[1]);
-//
-//    FSIndex<FeatureStructure> setIndex = this.cas.getIndexRepository().getIndex(
-//        CASTestSetup.ANNOT_SET_INDEX, this.tokenType);
-//    FSIterator<FeatureStructure> setIt = setIndex.iterator();
-//
-//    for (int i = 0; i < fsArray.length; i++) {
-//      setIt.moveTo(fsArray[i]);
-//      assertTrue(setIt.isValid());
-//      
-//      AnnotationFS expected = fsArray[0];
-//      AnnotationFS fromIterator = (AnnotationFS) setIt.get();
-//      if (!fromIterator.equals(expected)) {
-//        System.err.format("IteratorTest fail with set iterator, i = %d %n  expected = (addr: %d) %s%n  actual = (addr: %d) %s%n",
-//            i, expected.hashCode(), expected, fromIterator.hashCode(), fromIterator);
-//      }
-//    }
-//  }
-  
   public void testGetIndexes() {
     Iterator<FSIndex<FeatureStructure>> it = this.cas.getIndexRepository().getIndexes();
     while (it.hasNext()) {
@@ -709,34 +683,32 @@ public class IteratorTest extends TestCase {
     AnnotationFS[] fsArray = new AnnotationFS[100];
     FSIndexRepository ir = this.cas.getIndexRepository();
     addAnnotations(fsArray, this.tokenType);
+
     FSIndex<FeatureStructure> setIndex = this.cas.getIndexRepository().getIndex(
         CASTestSetup.ANNOT_SET_INDEX, this.tokenType);
     FSIterator<FeatureStructure> setIt = setIndex.iterator();
+    
     FSIndex<AnnotationFS> sortedIndex = this.cas.getAnnotationIndex(this.tokenType);
     FSIterator<AnnotationFS> sortedIt = sortedIndex.iterator();
+    
     FSIndex<FeatureStructure> bagIndex = ir.getIndex(CASTestSetup.ANNOT_BAG_INDEX, this.tokenType);
     FSIterator<FeatureStructure> bagIt = bagIndex.iterator();
+    
+    // verify that the index is the right type https://issues.apache.org/jira/browse/UIMA-2883
+    assertEquals(setIndex.getIndexingStrategy(),FSIndex.SET_INDEX);
+    assertEquals(sortedIndex.getIndexingStrategy(),FSIndex.SORTED_INDEX);
+    assertEquals(bagIndex.getIndexingStrategy(),FSIndex.BAG_INDEX);
+    
     // For each index, check that the FSs are actually in the index.
     for (int i = 0; i < fsArray.length; i++) {
       setIt.moveTo(fsArray[i]);
       assertTrue(setIt.isValid());
-      AnnotationFS expected = fsArray[(i < 90) ? i : 90];
-      AnnotationFS fromIterator = (AnnotationFS) setIt.get();
-      if (!fromIterator.equals(expected)) {
-        System.err.format("IteratorTest fail with set iterator, i = %d %n  expected = (addr: %d) %s%n  actual = (addr: %d) %s%n",
-            i, expected.hashCode(), expected, fromIterator.hashCode(), fromIterator);
-        System.err.format("Java being used: %s %s %s %s %s %s", 
-          System.getProperty("java.version"),
-          System.getProperty("java.vendor"),          
-          System.getProperty("java.vm.specification.version"),
-          System.getProperty("java.vm.specification.vendor"),
-          System.getProperty("java.vm.version"),
-          System.getProperty("java.specification.version"));
-      }
       assertTrue(setIt.get().equals(fsArray[(i < 90) ? i : 90]));
+
       bagIt.moveTo(fsArray[i]);
       assertTrue(bagIt.isValid());
       assertTrue(bagIt.get().equals(fsArray[i]));
+      
       sortedIt.moveTo(fsArray[i]);
       assertTrue(sortedIt.isValid());
       fsBeginEndEqual(sortedIt.get(), fsArray[i]);

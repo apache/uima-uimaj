@@ -1132,11 +1132,16 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   }
 
   private static final int findIndex(ArrayList<IndexIteratorCachePair> indexes,
-      FSIndexComparator comp) {
+      FSIndexComparator comp,
+      int indexType) {
     FSIndexComparator indexComp;
     final int max = indexes.size();
     for (int i = 0; i < max; i++) {
-      indexComp = indexes.get(i).index.getComparator();
+      FSLeafIndexImpl index = indexes.get(i).index;
+      if (index.getIndexingStrategy() != indexType) {
+        continue;
+      }
+      indexComp = index.getComparator();
       if (comp.equals(indexComp)) {
         return i;
       }
@@ -1352,7 +1357,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     final ArrayList<IndexIteratorCachePair> inds = this.indexArray[typeCode];
     // Since we found an index for the correct type, find() must return a
     // valid result -- unless this is a special auto-index.
-    final int indexCode = findIndex(inds, iicp.index.getComparator());
+    final int indexCode = findIndex(inds, iicp.index.getComparator(), iicp.index.getIndexingStrategy());
     if (indexCode < 0) {
       return null;
     }
@@ -1360,6 +1365,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     return new IndexImpl<FeatureStructure>(inds.get(indexCode));
     // return ((IndexIteratorCachePair)inds.get(indexCode)).index;
   }
+  
 
   /**
    * @see org.apache.uima.cas.FSIndexRepository#getIndex(String)
