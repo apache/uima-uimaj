@@ -34,4 +34,12 @@
             <outputsNewCASes>false</outputsNewCASes>
         </operationalProperties>
     </analysisEngineMetaData>
+    <externalResourceDependencies>
+        <externalResourceDependency>
+            <key>res</key>
+            <description>Documentation for resource</description>
+            <interfaceName>org.apache.uima.resource.Resource</interfaceName>
+            <optional>false</optional>
+        </externalResourceDependency>
+    </externalResourceDependencies>
 </analysisEngineDescription>

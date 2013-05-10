@@ -51,6 +51,11 @@ public @interface ExternalResource {
   Class<? extends Resource> api() default Resource.class;
 
   /**
+   * A description for the external resource.
+   */
+  String description() default "";
+
+  /**
    * Determines if this external resource is mandatory.
    */
   boolean mandatory() default true;

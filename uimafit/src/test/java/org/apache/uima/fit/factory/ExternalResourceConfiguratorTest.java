@@ -19,8 +19,8 @@
 
 package org.apache.uima.fit.factory;
 
-import static org.apache.uima.fit.component.initialize.ExternalResourceInitializer.getResourceDeclarations;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription;
+import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDependencies;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -29,7 +29,6 @@ import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.fit.ComponentTestBase;
-import org.apache.uima.fit.component.initialize.ExternalResourceInitializer;
 import org.apache.uima.fit.factory.testAes.ParameterizedAE2;
 import org.apache.uima.resource.ExternalResourceDependency;
 import org.junit.Test;
@@ -41,7 +40,7 @@ import org.junit.Test;
 public class ExternalResourceConfiguratorTest extends ComponentTestBase {
   @Test
   public void testAnalyze() throws Exception {
-    Map<String, ExternalResourceDependency> deps = getResourceDeclarations(ParameterizedAE2.class);
+    ExternalResourceDependency[] deps = createExternalResourceDependencies(ParameterizedAE2.class);
 
     verify(deps);
   }
@@ -50,16 +49,14 @@ public class ExternalResourceConfiguratorTest extends ComponentTestBase {
   public void testDescriptor() throws Exception {
     AnalysisEngineDescription desc = createPrimitiveDescription(ParameterizedAE2.class,
             typeSystemDescription);
-
-    Map<String, ExternalResourceDependency> deps = new HashMap<String, ExternalResourceDependency>();
-    for (ExternalResourceDependency dep : desc.getExternalResourceDependencies()) {
-      deps.put(dep.getKey(), dep);
-    }
-
-    verify(deps);
+    verify(desc.getExternalResourceDependencies());
   }
 
-  private void verify(Map<String, ExternalResourceDependency> deps) {
+  private void verify(ExternalResourceDependency[] depList) {
+    Map<String, ExternalResourceDependency> deps = new HashMap<String, ExternalResourceDependency>();
+    for (ExternalResourceDependency dep : depList) {
+      deps.put(dep.getKey(), dep);
+    }
     assertEquals(3, deps.size());
 
     String key1 = "res"; // This is the name of the field

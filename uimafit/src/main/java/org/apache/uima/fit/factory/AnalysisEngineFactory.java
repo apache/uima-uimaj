@@ -26,12 +26,12 @@ import static org.apache.uima.fit.factory.ConfigurationParameterFactory.createCo
 import static org.apache.uima.fit.factory.ConfigurationParameterFactory.ensureParametersComeInPairs;
 import static org.apache.uima.fit.factory.ConfigurationParameterFactory.setParameters;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.bindExternalResource;
+import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDependencies;
 import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTypeSystemDescription;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -50,13 +50,9 @@ import org.apache.uima.analysis_engine.metadata.SofaMapping;
 import org.apache.uima.analysis_engine.metadata.impl.FixedFlow_impl;
 import org.apache.uima.analysis_engine.metadata.impl.FlowControllerDeclaration_impl;
 import org.apache.uima.cas.CAS;
-import org.apache.uima.fit.component.initialize.ExternalResourceInitializer;
-import org.apache.uima.fit.descriptor.SofaCapability;
-import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.fit.factory.ConfigurationParameterFactory.ConfigurationData;
 import org.apache.uima.fit.internal.ReflectionUtil;
 import org.apache.uima.flow.FlowControllerDescription;
-import org.apache.uima.resource.ExternalResourceDependency;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
@@ -537,9 +533,7 @@ public final class AnalysisEngineFactory {
     }
 
     // Extract external resource dependencies
-    Collection<ExternalResourceDependency> deps = ExternalResourceInitializer
-            .getResourceDeclarations(componentClass).values();
-    desc.setExternalResourceDependencies(deps.toArray(new ExternalResourceDependency[deps.size()]));
+    desc.setExternalResourceDependencies(createExternalResourceDependencies(componentClass));
 
     // Bind External Resources
     if (externalResources != null) {

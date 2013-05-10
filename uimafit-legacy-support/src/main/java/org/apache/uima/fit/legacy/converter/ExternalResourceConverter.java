@@ -84,5 +84,9 @@ public class ExternalResourceConverter
     public boolean mandatory() {
       return legacyAnnotation.mandatory();
     }
+
+    public String description() {
+      return null;
+    }
   }
 }

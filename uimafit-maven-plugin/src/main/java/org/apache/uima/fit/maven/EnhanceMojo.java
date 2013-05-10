@@ -60,10 +60,10 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.apache.uima.fit.descriptor.ResourceMetaData;
 import org.apache.uima.fit.factory.ConfigurationParameterFactory;
+import org.apache.uima.fit.factory.ExternalResourceFactory;
 import org.apache.uima.fit.factory.ResourceMetaDataFactory;
 import org.apache.uima.fit.internal.EnhancedClassFile;
 import org.apache.uima.fit.maven.util.Util;
-import org.apache.uima.resource.metadata.ConfigurationParameter;
 import org.codehaus.plexus.util.FileUtils;
 import org.sonatype.plexus.build.incremental.BuildContext;
 
@@ -139,19 +139,31 @@ public class EnhanceMojo extends AbstractMojo {
   private String encoding;
 
   /**
-   * Generate a report of missing meta data in {@code 
-   * ${project.build.directory}/uimafit-missing-meta-data-report.txt}
+   * Generate a report of missing meta data in {@code $ project.build.directory}
+   * /uimafit-missing-meta-data-report.txt}
    */
   @Parameter(defaultValue = "true", required = true)
   private boolean generateMissingMetaDataReport;
-  
+
   /**
    * Fail on missing meta data. This setting has no effect unless
    * {@code generateMissingMetaDataReport} is enabled.
    */
   @Parameter(defaultValue = "false", required = true)
   private boolean failOnMissingMetaData;
-  
+
+  /**
+   * Constant name prefixes used for parameters and external resources, e.g. "PARAM_".
+   */
+  @Parameter(required = false)
+  private String[] parameterNameConstantPrefixes = { "PARAM_" };
+
+  /**
+   * Constant name prefixes used for parameters and external resources, e.g. "KEY_", and "RES_".
+   */
+  @Parameter(required = false)
+  private String[] externalResourceNameConstantPrefixes = { "KEY_", "RES_" };
+
   /**
    * Start of a line containing a class name in the missing meta data report file
    */
@@ -175,11 +187,11 @@ public class EnhanceMojo extends AbstractMojo {
 
     // Set up map to keep a report per class.
     Multimap<String, String> reportData = LinkedHashMultimap.create();
-    
+
     // Determine where to write the missing meta data report file
     File reportFile = new File(project.getBuild().getDirectory(),
             "uimafit-missing-meta-data-report.txt");
-    
+
     // Read existing report
     if (generateMissingMetaDataReport) {
       readMissingMetaDataReport(reportFile, reportData);
@@ -187,7 +199,7 @@ public class EnhanceMojo extends AbstractMojo {
 
     // Remember the names of all examined components, whether processed or not.
     List<String> examinedComponents = new ArrayList<String>();
-    
+
     for (String file : files) {
       String clazzName = Util.getClassName(project, file);
 
@@ -215,7 +227,7 @@ public class EnhanceMojo extends AbstractMojo {
 
       // Remember that class was examined
       examinedComponents.add(clazzName);
-      
+
       // Forget any previous missing meta data report we have on the class
       reportData.removeAll(clazzName);
 
@@ -268,20 +280,20 @@ public class EnhanceMojo extends AbstractMojo {
                 + ExceptionUtils.getRootCauseMessage(e), e);
       }
     }
-    
+
     if (generateMissingMetaDataReport) {
       // Remove any classes from the report that are no longer part of the build
       List<String> deletedClasses = new ArrayList<String>(reportData.keySet());
       deletedClasses.removeAll(examinedComponents);
       reportData.removeAll(deletedClasses);
-      
+
       // Write updated report
       writeMissingMetaDataReport(reportFile, reportData);
-      
+
       if (failOnMissingMetaData && !reportData.isEmpty()) {
         throw new MojoFailureException("Component meta data missing. A report of the missing "
                 + "meta data can be found in " + reportFile);
-      }    
+      }
     }
   }
 
@@ -406,29 +418,46 @@ public class EnhanceMojo extends AbstractMojo {
   /**
    * Enhance descriptions in configuration parameters.
    */
-  private void enhanceConfigurationParameter(JavaSource aAST, Class<?> aClazz, CtClass aCtClazz, 
-          Multimap<String, String> aReportData)
-          throws MojoExecutionException {
+  private void enhanceConfigurationParameter(JavaSource aAST, Class<?> aClazz, CtClass aCtClazz,
+          Multimap<String, String> aReportData) throws MojoExecutionException {
     // Get the parameter name constants
-    Map<String, String> nameFields = getParameterConstants(aClazz);
+    Map<String, String> parameterNameFields = getParameterConstants(aClazz,
+            parameterNameConstantPrefixes);
+    Map<String, String> resourceNameFields = getParameterConstants(aClazz,
+            externalResourceNameConstantPrefixes);
 
     // Fetch configuration parameters from the @ConfigurationParameter annotations in the
     // compiled class. We only need the fields in the class itself. Superclasses should be
     // enhanced by themselves.
     for (Field field : aClazz.getDeclaredFields()) {
+      final String pname;
+      final String type;
+      final String pdesc;
+
       // Is this a configuration parameter?
-      if (!ConfigurationParameterFactory.isConfigurationParameterField(field)) {
+      if (ConfigurationParameterFactory.isConfigurationParameterField(field)) {
+        type = "parameter";
+        // Extract configuration parameter information from the uimaFIT annotation
+        pname = ConfigurationParameterFactory.createPrimitiveParameter(field).getName();
+        // Extract JavaDoc for this resource from the source file
+        pdesc = Util.getParameterDocumentation(aAST, field.getName(),
+                parameterNameFields.get(pname));
+      }
+
+      // Is this an external resource?
+      else if (ExternalResourceFactory.isExternalResourceField(field)) {
+        type = "external resource";
+        // Extract resource key from the uimaFIT annotation
+        pname = ExternalResourceFactory.createExternalResourceDependency(field).getKey();
+        // Extract JavaDoc for this resource from the source file
+        pdesc = Util.getParameterDocumentation(aAST, field.getName(), 
+                resourceNameFields.get(pname));
+      } else {
         continue;
       }
 
-      // Extract configuration parameter information from the uimaFIT annotation
-      ConfigurationParameter p = ConfigurationParameterFactory.createPrimitiveParameter(field);
-
-      // Extract JavaDoc for this parameter from the source file
-      String pdesc = Util.getParameterDocumentation(aAST, field.getName(),
-              nameFields.get(p.getName()));
       if (pdesc == null) {
-        String msg = "No description found for parameter [" + p.getName() + "]";
+        String msg = "No description found for " + type + " [" + pname + "]";
         getLog().info(msg);
         aReportData.put(aClazz.getName(), msg);
         continue;
@@ -448,17 +477,20 @@ public class EnhanceMojo extends AbstractMojo {
           for (Annotation a : annotations) {
             if (a.getTypeName().equals(
                     org.apache.uima.fit.descriptor.ConfigurationParameter.class.getName())
-                    || a.getTypeName().equals("org.uimafit.descriptor.ConfigurationParameter")) {
+                    || a.getTypeName().equals(
+                            org.apache.uima.fit.descriptor.ExternalResource.class.getName())
+                    || a.getTypeName().equals("org.uimafit.descriptor.ConfigurationParameter")
+                    || a.getTypeName().equals("org.uimafit.descriptor.ExternalResource")) {
               if (a.getMemberValue("description") == null) {
                 a.addMemberValue("description", new StringMemberValue(pdesc, aCtClazz
                         .getClassFile().getConstPool()));
-                getLog().info("Enhanced description of parameter [" + p.getName() + "]");
+                getLog().info("Enhanced description of " + type + " [" + pname + "]");
                 // Replace updated annotation
                 annoAttr.addAnnotation(a);
               } else {
                 // Extract configuration parameter information from the uimaFIT annotation
                 // We only want to override if the description is not set yet.
-                getLog().info("Not overwriting description of parameter [" + p.getName() + "] ");
+                getLog().info("Not overwriting description of " + type + " [" + pname + "] ");
               }
             }
           }
@@ -477,18 +509,30 @@ public class EnhanceMojo extends AbstractMojo {
    * Get a map of parameter name to parameter name constant field, e.g. ("value",
    * Field("PARAM_VALUE")).
    */
-  private Map<String, String> getParameterConstants(Class<?> aClazz) {
+  private Map<String, String> getParameterConstants(Class<?> aClazz, String[] aPrefixes) {
     Map<String, String> result = new HashMap<String, String>();
     for (Field f : aClazz.getFields()) {
-      if (!f.getName().startsWith("PARAM_")) {
+      boolean hasPrefix = false;
+      // Check if any of the registered prefixes matches
+      for (String prefix : aPrefixes) {
+        if (f.getName().startsWith(prefix)) {
+          hasPrefix = true;
+          break;
+        }
+      }
+
+      // If none matched, continue
+      if (!hasPrefix) {
         continue;
       }
+
+      // If one matched, record the field
       try {
         String parameterName = (String) f.get(null);
         result.put(parameterName, f.getName());
       } catch (IllegalAccessException e) {
         getLog().warn(
-                "Unable to access parameter name constant field [" + f.getName() + "]: "
+                "Unable to access name constant field [" + f.getName() + "]: "
                         + ExceptionUtils.getRootCauseMessage(e), e);
       }
     }
@@ -521,7 +565,7 @@ public class EnhanceMojo extends AbstractMojo {
     }
     return null;
   }
-  
+
   /**
    * Write a report on any meta data missing from components.
    */
@@ -548,8 +592,7 @@ public class EnhanceMojo extends AbstractMojo {
           }
           out.printf("%n");
         }
-      }
-      else {
+      } else {
         out.printf("%s%n", MARK_NO_MISSING_META_DATA);
       }
     } catch (IOException e) {
@@ -559,17 +602,17 @@ public class EnhanceMojo extends AbstractMojo {
       IOUtils.closeQuietly(out);
     }
   }
-  
+
   /**
    * Read the missing meta data report from a previous run.
    */
   private void readMissingMetaDataReport(File aReportFile, Multimap<String, String> aReportData)
-          throws MojoExecutionException  {
+          throws MojoExecutionException {
     if (!aReportFile.exists()) {
       // Ignore if the file is missing
       return;
     }
-    
+
     LineIterator i = null;
     try {
       String clazz = null;
@@ -583,11 +626,9 @@ public class EnhanceMojo extends AbstractMojo {
         // Line containing class name
         if (line.startsWith(MARK_CLASS)) {
           clazz = line.substring(MARK_CLASS.length()).trim();
-        }
-        else if (StringUtils.isBlank(line)) {
+        } else if (StringUtils.isBlank(line)) {
           // Empty line, ignore
-        }
-        else {
+        } else {
           // Line containing a missing meta data instance
           if (clazz == null) {
             throw new MojoExecutionException("Missing meta data report has invalid format.");
@@ -595,12 +636,10 @@ public class EnhanceMojo extends AbstractMojo {
           aReportData.put(clazz, line.trim());
         }
       }
-    }
-    catch (IOException e) {
+    } catch (IOException e) {
       throw new MojoExecutionException("Unable to read missing meta data report: "
               + ExceptionUtils.getRootCauseMessage(e), e);
-    }
-    finally {
+    } finally {
       LineIterator.closeQuietly(i);
     }
   }

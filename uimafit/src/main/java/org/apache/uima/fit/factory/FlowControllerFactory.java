@@ -22,18 +22,16 @@ import static org.apache.uima.fit.factory.ConfigurationParameterFactory.createCo
 import static org.apache.uima.fit.factory.ConfigurationParameterFactory.ensureParametersComeInPairs;
 import static org.apache.uima.fit.factory.ConfigurationParameterFactory.setParameters;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.bindExternalResource;
+import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDependencies;
 
-import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.uima.Constants;
-import org.apache.uima.fit.component.initialize.ExternalResourceInitializer;
 import org.apache.uima.fit.factory.ConfigurationParameterFactory.ConfigurationData;
 import org.apache.uima.flow.FlowController;
 import org.apache.uima.flow.FlowControllerDescription;
 import org.apache.uima.flow.impl.FlowControllerDescription_impl;
-import org.apache.uima.resource.ExternalResourceDependency;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.ConfigurationParameter;
@@ -99,9 +97,7 @@ public final class FlowControllerFactory {
     ResourceMetaDataFactory.configureResourceMetaData(meta, flowControllerClass);
 
     // Extract external resource dependencies
-    Collection<ExternalResourceDependency> deps = ExternalResourceInitializer
-            .getResourceDeclarations(flowControllerClass).values();
-    desc.setExternalResourceDependencies(deps.toArray(new ExternalResourceDependency[deps.size()]));
+    desc.setExternalResourceDependencies(createExternalResourceDependencies(flowControllerClass));
 
     // Bind External Resources
     if (externalResources != null) {

@@ -19,7 +19,10 @@
 package some.test.mypackage;
 
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
+import org.apache.uima.fit.descriptor.ExternalResource;
+import org.apache.uima.fit.factory.ExternalResourceFactoryTest.DummyResource;
 import org.apache.uima.fit.maven.javadoc.JavadocTextExtractor;
+import org.apache.uima.resource.Resource;
 
 /**
  * A test component used to test {@link JavadocTextExtractor}.
@@ -57,6 +60,13 @@ public class TestComponent {
   public static final String PARAM_VALUE_5 = PARAM_DEFAULT_NAME_5;
   @ConfigurationParameter(name = PARAM_VALUE_5)
   private String value5;
+  
+  /**
+   * Documentation for resource
+   */
+  public static final String RES_KEY = "res";
+  @ExternalResource(key = RES_KEY)
+  private Resource res;
 
   public TestComponent() {
   }

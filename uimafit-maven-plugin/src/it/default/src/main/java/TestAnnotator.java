@@ -19,7 +19,9 @@
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
+import org.apache.uima.fit.descriptor.ExternalResource;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.resource.Resource;
 
 public class TestAnnotator extends AbstractAnnotator {
 
@@ -29,7 +31,14 @@ public class TestAnnotator extends AbstractAnnotator {
   public static final String PARAM_VALUE_1 = "value1";
   @ConfigurationParameter(name = PARAM_VALUE_1, mandatory=true)
   private String value1;
-  
+
+  /**
+   * Documentation for resource
+   */
+  public static final String RES_KEY = "res";
+  @ExternalResource(key = RES_KEY)
+  private Resource res;
+
   @Override
   public void process(JCas aJCas) throws AnalysisEngineProcessException {
     // Nothing to do

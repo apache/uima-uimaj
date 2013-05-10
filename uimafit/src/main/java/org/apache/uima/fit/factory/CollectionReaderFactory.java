@@ -22,6 +22,7 @@ import static org.apache.uima.fit.factory.ConfigurationParameterFactory.createCo
 import static org.apache.uima.fit.factory.ConfigurationParameterFactory.ensureParametersComeInPairs;
 import static org.apache.uima.fit.factory.ConfigurationParameterFactory.setParameters;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.bindExternalResource;
+import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDependencies;
 import static org.apache.uima.fit.factory.FsIndexFactory.createFsIndexCollection;
 import static org.apache.uima.fit.factory.ResourceCreationSpecifierFactory.createResourceCreationSpecifier;
 import static org.apache.uima.fit.factory.TypePrioritiesFactory.createTypePriorities;
@@ -29,7 +30,6 @@ import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTyp
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -38,9 +38,7 @@ import org.apache.uima.UIMAException;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.collection.CollectionReaderDescription;
-import org.apache.uima.fit.component.initialize.ExternalResourceInitializer;
 import org.apache.uima.fit.factory.ConfigurationParameterFactory.ConfigurationData;
-import org.apache.uima.resource.ExternalResourceDependency;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceCreationSpecifier;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -305,9 +303,7 @@ public final class CollectionReaderFactory {
     }
 
     // Extract external resource dependencies
-    Collection<ExternalResourceDependency> deps = ExternalResourceInitializer
-            .getResourceDeclarations(readerClass).values();
-    desc.setExternalResourceDependencies(deps.toArray(new ExternalResourceDependency[deps.size()]));
+    desc.setExternalResourceDependencies(createExternalResourceDependencies(readerClass));
 
     // Bind External Resources
     if (externalResources != null) {

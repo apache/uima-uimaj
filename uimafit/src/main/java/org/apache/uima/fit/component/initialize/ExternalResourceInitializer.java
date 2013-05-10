@@ -19,13 +19,10 @@
 package org.apache.uima.fit.component.initialize;
 
 import static org.apache.uima.fit.factory.ExternalResourceFactory.PREFIX_SEPARATOR;
-import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDependency;
-
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -36,12 +33,9 @@ import org.apache.uima.fit.component.ExternalResourceAware;
 import org.apache.uima.fit.descriptor.ExternalResource;
 import org.apache.uima.fit.descriptor.ExternalResourceLocator;
 import org.apache.uima.fit.internal.ReflectionUtil;
-import org.apache.uima.resource.ExternalResourceDependency;
-import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceAccessException;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
-import org.apache.uima.resource.SharedResourceObject;
 import org.apache.uima.resource.impl.ResourceManager_impl;
 
 /**
@@ -72,8 +66,7 @@ public final class ExternalResourceInitializer {
    */
   public static <T> void initialize(UimaContext context, T object)
           throws ResourceInitializationException {
-    configure(context, object.getClass(), object.getClass(), object,
-            getResourceDeclarations(object.getClass()));
+    configure(context, object.getClass(), object.getClass(), object);
   }
 
   /**
@@ -89,16 +82,13 @@ public final class ExternalResourceInitializer {
    *          the class currently being configured.
    * @param object
    *          the object being configured.
-   * @param dependencies
-   *          the dependencies.
    * @throws ResourceInitializationException
    *           if required resources could not be bound.
    */
-  private static <T> void configure(UimaContext context, Class<?> baseCls, Class<?> cls, T object,
-          Map<String, ExternalResourceDependency> dependencies)
+  private static <T> void configure(UimaContext context, Class<?> baseCls, Class<?> cls, T object)
           throws ResourceInitializationException {
     if (cls.getSuperclass() != null) {
-      configure(context, baseCls, cls.getSuperclass(), object, dependencies);
+      configure(context, baseCls, cls.getSuperclass(), object);
     } else {
       // Try to initialize the external resources only once, not for each step of the
       // class hierarchy of a component.
@@ -109,9 +99,14 @@ public final class ExternalResourceInitializer {
       if (!ReflectionUtil.isAnnotationPresent(field, ExternalResource.class)) {
         continue;
       }
+      
+      ExternalResource era = ReflectionUtil.getAnnotation(field, ExternalResource.class);
 
       // Get the resource key. If it is a nested resource, also get the prefix.
-      String key = getKey(field);
+      String key = era.key();
+      if (key.length() == 0) {
+        key = field.getName();
+      }
       if (object instanceof ExternalResourceAware) {
         String prefix = ((ExternalResourceAware) object).getResourceName();
         if (prefix != null) {
@@ -131,7 +126,7 @@ public final class ExternalResourceInitializer {
       }
 
       // Sanity checks
-      if (value == null && isMandatory(field)) {
+      if (value == null && era.mandatory()) {
         throw new ResourceInitializationException(new IllegalStateException("Mandatory resource ["
                 + key + "] is not set on [" + baseCls + "]"));
       }
@@ -222,90 +217,5 @@ public final class ExternalResourceInitializer {
         resourceMapField.setAccessible(false);
       }
     }
-  }
-
-  public static <T> Map<String, ExternalResourceDependency> getResourceDeclarations(Class<?> cls)
-          throws ResourceInitializationException {
-    Map<String, ExternalResourceDependency> deps = new HashMap<String, ExternalResourceDependency>();
-    getResourceDeclarations(cls, cls, deps);
-    return deps;
-  }
-
-  private static <T> void getResourceDeclarations(Class<?> baseCls, Class<?> cls,
-          Map<String, ExternalResourceDependency> dependencies)
-          throws ResourceInitializationException {
-    if (cls.getSuperclass() != null) {
-      getResourceDeclarations(baseCls, cls.getSuperclass(), dependencies);
-    }
-
-    for (Field field : cls.getDeclaredFields()) {
-      if (!ReflectionUtil.isAnnotationPresent(field, ExternalResource.class)) {
-        continue;
-      }
-
-      if (dependencies.containsKey(getKey(field))) {
-        throw new ResourceInitializationException(new IllegalStateException("Key [" + getKey(field)
-                + "] may only be used on a single field."));
-      }
-
-      dependencies.put(getKey(field),
-              createExternalResourceDependency(getKey(field), getApi(field), !isMandatory(field)));
-    }
-  }
-
-  /**
-   * Determine if the field is mandatory.
-   * 
-   * @param field
-   *          the field to bind.
-   * @return whether the field is mandatory.
-   */
-  private static boolean isMandatory(Field field) {
-    return ReflectionUtil.getAnnotation(field, ExternalResource.class).mandatory();
-  }
-
-  /**
-   * Get the binding key for the specified field. If no key is set, use the field name as key.
-   * 
-   * @param field
-   *          the field to bind.
-   * @return the binding key.
-   */
-  private static String getKey(Field field) {
-    ExternalResource cpa = ReflectionUtil.getAnnotation(field, ExternalResource.class);
-    String key = cpa.key();
-    if (key.length() == 0) {
-      key = field.getName();
-    }
-    return key;
-  }
-
-  /**
-   * Get the type of class/interface a resource has to implement to bind to the annotated field. If
-   * no API is set, get it from the annotated field type.
-   * 
-   * @param field
-   *          the field to bind.
-   * @return the API type.
-   */
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-  private static Class<? extends Resource> getApi(Field field) {
-    ExternalResource cpa = ReflectionUtil.getAnnotation(field, ExternalResource.class);
-    Class<? extends Resource> api = cpa.api();
-    // If no api is specified, look at the annotated field
-    if (api == Resource.class) {
-      if (Resource.class.isAssignableFrom(field.getType())
-              || SharedResourceObject.class.isAssignableFrom(field.getType())) {
-        // If no API is set, check if the field type is already a resource type
-        api = (Class<? extends Resource>) field.getType();
-      } else {
-        // If the field does not have a resource type, assume whatever. This allows to use
-        // a resource locator without having to specify the api parameter. It also allows
-        // to directly inject Java objects - yes, I know that Object does not extend
-        // Resource - REC, 2011-03-25
-        api = (Class) Object.class;
-      }
-    }
-    return api;
   }
 }

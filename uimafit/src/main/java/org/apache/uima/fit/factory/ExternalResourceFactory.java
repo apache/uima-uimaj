@@ -24,9 +24,11 @@ import static org.apache.uima.fit.factory.ConfigurationParameterFactory.canParam
 import static org.apache.uima.fit.factory.ConfigurationParameterFactory.createConfigurationData;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -40,7 +42,7 @@ import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.descriptor.ExternalResource;
 import org.apache.uima.fit.factory.ConfigurationParameterFactory.ConfigurationData;
 import org.apache.uima.fit.internal.ExtendedExternalResourceDescription_impl;
-import org.apache.uima.resource.ConfigurableDataResourceSpecifier;
+import org.apache.uima.fit.internal.ReflectionUtil;
 import org.apache.uima.resource.CustomResourceSpecifier;
 import org.apache.uima.resource.DataResource;
 import org.apache.uima.resource.ExternalResourceDependency;
@@ -50,7 +52,7 @@ import org.apache.uima.resource.Parameter;
 import org.apache.uima.resource.ParameterizedDataResource;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceCreationSpecifier;
-import org.apache.uima.resource.ResourceManager;
+import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.SharedResourceObject;
 import org.apache.uima.resource.impl.ConfigurableDataResourceSpecifier_impl;
@@ -84,6 +86,15 @@ public final class ExternalResourceFactory {
 
   private ExternalResourceFactory() {
     // This class is not meant to be instantiated
+  }
+
+  /**
+   * This method determines if the field is annotated with
+   * {@link org.apache.uima.fit.descriptor.ExternalResource}.
+   */
+  public static boolean isExternalResourceField(Field field) {
+    return ReflectionUtil.isAnnotationPresent(field,
+            org.apache.uima.fit.descriptor.ExternalResource.class);
   }
 
   /**
@@ -308,18 +319,86 @@ public final class ExternalResourceFactory {
   }
 
   /**
+   * Creates an ExternalResourceDependency for a field annotated with
+   * {@link org.apache.uima.fit.descriptor.ExternalResource}.
+   */
+  @SuppressWarnings({ "unchecked", "rawtypes" })
+  public static ExternalResourceDependency createExternalResourceDependency(Field field) {
+    ExternalResource era = ReflectionUtil.getAnnotation(field, ExternalResource.class);
+
+    // Get the binding key for the specified field. If no key is set, use the field name as key.
+    String key = era.key();
+    if (key.length() == 0) {
+      key = field.getName();
+    }
+
+    // Get the type of class/interface a resource has to implement to bind to the annotated field.
+    // If no API is set, get it from the annotated field type.
+    Class<? extends Resource> api = era.api();
+    // If no api is specified, look at the annotated field
+    if (api == Resource.class) {
+      if (Resource.class.isAssignableFrom(field.getType())
+              || SharedResourceObject.class.isAssignableFrom(field.getType())) {
+        // If no API is set, check if the field type is already a resource type
+        api = (Class<? extends Resource>) field.getType();
+      } else {
+        // If the field does not have a resource type, assume whatever. This allows to use
+        // a resource locator without having to specify the api parameter. It also allows
+        // to directly inject Java objects - yes, I know that Object does not extend
+        // Resource - REC, 2011-03-25
+        api = (Class) Object.class;
+      }
+    }
+
+    return ExternalResourceFactory.createExternalResourceDependency(key, api, !era.mandatory(),
+            era.description());
+  }
+
+  /**
    * Creates an ExternalResourceDependency for a given key and interface
    * 
    * @param aOptional
    *          determines whether the dependency is optional
    */
   public static ExternalResourceDependency createExternalResourceDependency(final String aKey,
-          final Class<?> aInterface, final boolean aOptional) {
+          final Class<?> aInterface, final boolean aOptional, String aDescription) {
     ExternalResourceDependency dep = new ExternalResourceDependency_impl();
     dep.setInterfaceName(aInterface.getName());
     dep.setKey(aKey);
     dep.setOptional(aOptional);
+    dep.setDescription(aDescription);
     return dep;
+  }
+
+  public static ExternalResourceDependency[] createExternalResourceDependencies(
+          Class<?> cls) throws ResourceInitializationException {
+    Map<String, ExternalResourceDependency> depMap = new HashMap<String, ExternalResourceDependency>();
+    ExternalResourceFactory.createExternalResourceDependencies(cls, cls, depMap);
+    Collection<ExternalResourceDependency> deps = depMap.values();
+    return deps.toArray(new ExternalResourceDependency[deps.size()]);
+  }
+
+  private static <T> void createExternalResourceDependencies(Class<?> baseCls, Class<?> cls,
+          Map<String, ExternalResourceDependency> dependencies)
+          throws ResourceInitializationException {
+    if (cls.getSuperclass() != null) {
+      createExternalResourceDependencies(baseCls, cls.getSuperclass(), dependencies);
+    }
+
+    for (Field field : cls.getDeclaredFields()) {
+      if (!ReflectionUtil.isAnnotationPresent(field, ExternalResource.class)) {
+        continue;
+      }
+
+      ExternalResourceDependency dep = createExternalResourceDependency(field);
+
+      if (dependencies.containsKey(dep.getKey())) {
+        throw new ResourceInitializationException(new IllegalStateException("Key [" + dep.getKey()
+                + "] may only be used on a single field."));
+      }
+
+      dependencies.put(dep.getKey(), dep);
+    }
   }
 
   /**
@@ -648,7 +727,7 @@ public final class ExternalResourceFactory {
       setExternalResourceDependencies(
               aDesc,
               (ExternalResourceDependency[]) ArrayUtils.add(deps,
-                      createExternalResourceDependency(aKey, aApi, false)));
+                      createExternalResourceDependency(aKey, aApi, false, null)));
     }
   }
 
@@ -715,7 +794,7 @@ public final class ExternalResourceFactory {
         deps = new ExternalResourceDependency[] {};
       }
       aDesc.setExternalResourceDependencies((ExternalResourceDependency[]) ArrayUtils.add(deps,
-              createExternalResourceDependency(aKey, aImpl, false)));
+              createExternalResourceDependency(aKey, aImpl, false, null)));
     }
     bindResource(aDesc, aKey, aImpl, aUrl, aParams);
   }
@@ -747,7 +826,7 @@ public final class ExternalResourceFactory {
       if (apiClass.equals(Object.class)) {
         continue;
       }
-      
+
       if (apiClass.isAssignableFrom(resClass)) {
         bindExternalResource(aDesc, dep.getKey(), aResDesc);
       }
@@ -987,19 +1066,18 @@ public final class ExternalResourceFactory {
    * varies, depending if the resource extends {@link SharedResourceObject} or implements
    * {@link Resource}.
    * 
-   * @param aDesc the external resource description.
+   * @param aDesc
+   *          the external resource description.
    * @return the implementation name.
    */
-  protected static String getImplementationName(ExternalResourceDescription aDesc)
-  {
+  protected static String getImplementationName(ExternalResourceDescription aDesc) {
     if (aDesc.getResourceSpecifier() instanceof CustomResourceSpecifier) {
       return ((CustomResourceSpecifier) aDesc.getResourceSpecifier()).getResourceClassName();
-    }
-    else {
+    } else {
       return aDesc.getImplementationName();
     }
   }
-  
+
   /**
    * Extracts the external resource from the configuration parameters and nulls out these
    * parameters. Mind that the array passed to this method is modified by the method.
