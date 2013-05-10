@@ -43,7 +43,6 @@ import org.apache.uima.cas.FSIterator;
 import org.apache.uima.fit.ComponentTestBase;
 import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.fit.component.NoOpAnnotator;
-import org.apache.uima.fit.descriptor.OperationalProperties;
 import org.apache.uima.fit.descriptor.ResourceMetaData;
 import org.apache.uima.fit.factory.testAes.Annotator1;
 import org.apache.uima.fit.factory.testAes.Annotator2;
@@ -89,21 +88,6 @@ public class AnalysisEngineFactoryTest extends ComponentTestBase {
     AnalysisEngine engine = AnalysisEngineFactory
             .createAnalysisEngineFromPath("src/main/resources/org/apache/uima/fit/component/NoOpAnnotator.xml");
     assertNotNull(engine);
-  }
-
-  @Test
-  public void testProcess1() throws UIMAException, IOException {
-    jCas = AnalysisEngineFactory.process(NoOpAnnotator.class.getName(), "There is no excuse!");
-
-    assertEquals("There is no excuse!", jCas.getDocumentText());
-  }
-
-  @Test
-  public void testProcess2() throws UIMAException, IOException {
-    jCas = AnalysisEngineFactory.process(NoOpAnnotator.class.getName(),
-            "src/test/resources/data/docs/A.txt");
-
-    assertEquals("Aaa Bbbb Cc Dddd eeee ff .", jCas.getDocumentText());
   }
 
   @Test

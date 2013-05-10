@@ -91,21 +91,6 @@ public class AnalysisEngineFactoryTest extends ComponentTestBase {
   }
 
   @Test
-  public void testProcess1() throws UIMAException, IOException {
-    jCas = AnalysisEngineFactory.process(NoOpAnnotator.class.getName(), "There is no excuse!");
-
-    assertEquals("There is no excuse!", jCas.getDocumentText());
-  }
-
-  @Test
-  public void testProcess2() throws UIMAException, IOException {
-    jCas = AnalysisEngineFactory.process(NoOpAnnotator.class.getName(),
-            "src/test/resources/data/docs/A.txt");
-
-    assertEquals("Aaa Bbbb Cc Dddd eeee ff .", jCas.getDocumentText());
-  }
-
-  @Test
   public void testCreateAnalysisEngineWithPrioritizedTypes() throws UIMAException {
     String[] prioritizedTypeNames = new String[] { "org.apache.uima.fit.type.Token",
         "org.apache.uima.fit.type.Sentence" };

@@ -28,7 +28,6 @@ import static org.apache.uima.fit.factory.ConfigurationParameterFactory.setParam
 import static org.apache.uima.fit.factory.ExternalResourceFactory.bindExternalResource;
 import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTypeSystemDescription;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -42,7 +41,6 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_component.AnalysisComponent;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
-import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.analysis_engine.impl.AggregateAnalysisEngine_impl;
 import org.apache.uima.analysis_engine.impl.AnalysisEngineDescription_impl;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
@@ -58,7 +56,6 @@ import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.fit.factory.ConfigurationParameterFactory.ConfigurationData;
 import org.apache.uima.fit.internal.ReflectionUtil;
 import org.apache.uima.flow.FlowControllerDescription;
-import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ExternalResourceDependency;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -70,7 +67,6 @@ import org.apache.uima.resource.metadata.OperationalProperties;
 import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.resource.metadata.impl.Import_impl;
-import org.apache.uima.util.FileUtils;
 import org.apache.uima.util.InvalidXMLException;
 
 /**
@@ -981,85 +977,4 @@ public final class AnalysisEngineFactory {
 
     return desc;
   }
-
-  /**
-   * Creates an AnalysisEngine from the given descriptor, and uses the engine to process the file or
-   * text.
-   * 
-   * @param descriptorFileName
-   *          The fully qualified, Java-style, dotted name of the XML descriptor file.
-   * @param fileNameOrText
-   *          Either the path of a file to be loaded, or a string to use as the text. If the string
-   *          given is not a valid path in the file system, it will be assumed to be text.
-   * @return A JCas object containing the processed document.
-   * @throws IOException
-   *           if an I/O error occurs
-   * @throws InvalidXMLException
-   *           if the input XML is not valid or does not specify a valid {@link ResourceSpecifier}
-   * @throws ResourceInitializationException
-   *           if a failure occurred during production of the resource.
-   * @throws AnalysisEngineProcessException
-   *           if a failure occurs during processing.
-   */
-  public static JCas process(String descriptorFileName, String fileNameOrText)
-          throws InvalidXMLException, ResourceInitializationException, IOException,
-          AnalysisEngineProcessException {
-    AnalysisEngine engine = createAnalysisEngine(descriptorFileName);
-    JCas jCas = process(engine, fileNameOrText);
-    engine.collectionProcessComplete();
-    return jCas;
-  }
-
-  /**
-   * Processes the file or text with the given AnalysisEngine.
-   * 
-   * @param analysisEngine
-   *          The AnalysisEngine object to process the text.
-   * @param fileNameOrText
-   *          Either the path of a file to be loaded, or a string to use as the text. If the string
-   *          given is not a valid path in the file system, it will be assumed to be text.
-   * @return A JCas object containing the processed document.
-   * @throws ResourceInitializationException
-   *           if a failure occurred during production of the resource.
-   * @throws IOException
-   *           if a file name was specified and the text could not be read from the file.
-   * @throws AnalysisEngineProcessException
-   *           if a failure occurs during processing.
-   */
-  public static JCas process(AnalysisEngine analysisEngine, String fileNameOrText)
-          throws ResourceInitializationException, AnalysisEngineProcessException, IOException {
-    JCas jCas = analysisEngine.newJCas();
-    process(jCas, analysisEngine, fileNameOrText);
-    return jCas;
-  }
-
-  /**
-   * Provides a convenience method for running an AnalysisEngine over some text with a given JCas.
-   * 
-   * @param jCas
-   *          the CAS to process.
-   * @param analysisEngine
-   *          The AnalysisEngine object to process the text.
-   * @param fileNameOrText
-   *          Either the path of a file to be loaded, or a string to use as the text. If the string
-   *          given is not a valid path in the file system, it will be assumed to be text.
-   * @throws IOException
-   *           if a file name was specified and the text could not be read from the file.
-   * @throws AnalysisEngineProcessException
-   *           if a failure occurs during processing.
-   */
-  public static void process(JCas jCas, AnalysisEngine analysisEngine, String fileNameOrText)
-          throws IOException, AnalysisEngineProcessException {
-    File textFile = new File(fileNameOrText);
-    String text;
-    if (textFile.exists()) {
-      text = FileUtils.file2String(textFile);
-    } else {
-      text = fileNameOrText;
-    }
-
-    jCas.setDocumentText(text);
-    analysisEngine.process(jCas);
-  }
-
 }
