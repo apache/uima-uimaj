@@ -28,6 +28,7 @@ import static org.apache.uima.fit.factory.ConfigurationParameterFactory.setParam
 import static org.apache.uima.fit.factory.ExternalResourceFactory.bindExternalResource;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDependencies;
 import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTypeSystemDescription;
+import static org.apache.uima.fit.factory.TypePrioritiesFactory.createTypePriorities;
 
 import java.io.IOException;
 import java.net.URL;
@@ -212,7 +213,9 @@ public final class AnalysisEngineFactory {
 
   /**
    * Create and configure a primitive {@link AnalysisEngine}. The type system is detected
-   * automatically using {@link TypeSystemDescriptionFactory#createTypeSystemDescription()}.
+   * automatically using {@link TypeSystemDescriptionFactory#createTypeSystemDescription()}. Type
+   * priorities are detected automatically using
+   * {@link TypePrioritiesFactory#createTypePriorities()}.
    * 
    * @param componentClass
    *          a class that extends {@link AnalysisComponent} e.g. via
@@ -230,7 +233,8 @@ public final class AnalysisEngineFactory {
   public static AnalysisEngine createPrimitive(Class<? extends AnalysisComponent> componentClass,
           Object... configurationData) throws ResourceInitializationException {
     TypeSystemDescription tsd = createTypeSystemDescription();
-    return createPrimitive(componentClass, tsd, (TypePriorities) null, configurationData);
+    TypePriorities typePriorities = createTypePriorities();
+    return createPrimitive(componentClass, tsd, typePriorities, configurationData);
   }
 
   /**
@@ -312,7 +316,9 @@ public final class AnalysisEngineFactory {
 
   /**
    * Create and configure a primitive {@link AnalysisEngine}. The type system is detected
-   * automatically using {@link TypeSystemDescriptionFactory#createTypeSystemDescription()}.
+   * automatically using {@link TypeSystemDescriptionFactory#createTypeSystemDescription()}. Type
+   * priorities are detected automatically using
+   * {@link TypePrioritiesFactory#createTypePriorities()}.
    * 
    * @param componentClass
    *          a class that extends {@link AnalysisComponent} e.g. via
@@ -328,7 +334,8 @@ public final class AnalysisEngineFactory {
           Class<? extends AnalysisComponent> componentClass, Object... configurationData)
           throws ResourceInitializationException {
     TypeSystemDescription tsd = createTypeSystemDescription();
-    return createPrimitiveDescription(componentClass, tsd, (TypePriorities) null, configurationData);
+    TypePriorities typePriorities = createTypePriorities();
+    return createPrimitiveDescription(componentClass, tsd, typePriorities, configurationData);
   }
 
   /**

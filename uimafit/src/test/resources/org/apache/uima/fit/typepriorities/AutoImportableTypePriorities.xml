@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<typePriorities xmlns="http://uima.apache.org/resourceSpecifier">
+	<name>AutoImportableTypePriorities</name>
+	<description></description>
+	<version>1.0</version>
+	<vendor></vendor>
+	<priorityLists>
+		<priorityList>
+			<type>org.apache.uima.fit.type.Sentence</type>
+			<type>org.apache.uima.fit.type.Token</type>
+		</priorityList>
+	</priorityLists>
+</typePriorities>

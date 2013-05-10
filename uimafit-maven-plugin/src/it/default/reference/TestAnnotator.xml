@@ -24,8 +24,16 @@
                 <mandatory>true</mandatory>
             </configurationParameter>
         </configurationParameters>
-        <configurationParameterSettings/>
+        <configurationParameterSettings>
+            <nameValuePair>
+                <name>valueParent1</name>
+                <value>
+                    <string>defaultValue</string>
+                </value>
+            </nameValuePair>
+        </configurationParameterSettings>
         <typeSystemDescription/>
+        <typePriorities/>
         <fsIndexCollection/>
         <capabilities/>
         <operationalProperties>

@@ -23,8 +23,11 @@ import static org.apache.uima.fit.factory.TypePrioritiesFactory.createTypePriori
 import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTypeSystemDescription;
 import static org.junit.Assert.assertEquals;
 
+import org.apache.uima.fit.type.Sentence;
+import org.apache.uima.fit.type.Token;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.metadata.TypePriorities;
+import org.apache.uima.resource.metadata.TypePriorityList;
 import org.apache.uima.util.CasCreationUtils;
 import org.junit.Test;
 
@@ -43,5 +46,16 @@ public class TypePrioritiesFactoryTest {
     assertEquals(1, prio.getPriorityLists().length);
     assertEquals(1, prio.getPriorityLists()[0].getTypes().length);
     assertEquals("uima.tcas.Annotation", prio.getPriorityLists()[0].getTypes()[0]);
+  }
+  
+
+  @Test
+  public void testAutoDetectTypePriorities() throws Exception {
+    TypePriorities typePriorities = createTypePriorities();
+
+    TypePriorityList[] typePrioritiesLists = typePriorities.getPriorityLists();
+    assertEquals(1, typePrioritiesLists.length);
+    assertEquals(Sentence.class.getName(), typePrioritiesLists[0].getTypes()[0]);
+    assertEquals(Token.class.getName(), typePrioritiesLists[0].getTypes()[1]);
   }
 }

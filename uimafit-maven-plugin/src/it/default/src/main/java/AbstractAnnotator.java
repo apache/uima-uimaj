@@ -27,6 +27,7 @@ public abstract class AbstractAnnotator extends JCasAnnotator_ImplBase {
    * Parameter value 1 in parent.
    */
   public static final String PARAM_VALUE_PARENT_1 = "valueParent1";
-  @ConfigurationParameter(name = PARAM_VALUE_PARENT_1, mandatory=true)
+
+  @ConfigurationParameter(name = PARAM_VALUE_PARENT_1, mandatory = true, defaultValue = "defaultValue")
   private String valueParent1;
 }

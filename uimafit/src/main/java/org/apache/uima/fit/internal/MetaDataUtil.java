@@ -66,7 +66,6 @@ public final class MetaDataUtil {
       InputStream is = null;
       try {
         is = new URL(mfUrl).openStream();
-        @SuppressWarnings("unchecked")
         List<? extends String> lines = IOUtils.readLines(is);
         patterns.addAll(lines);
       } catch (IOException e) {
@@ -118,6 +117,9 @@ public final class MetaDataUtil {
       case TYPE_SYSTEM:
         locations.add("classpath*:META-INF/org.apache.uima.fit/types.txt");
         break;
+      case TYPE_PRIORITIES:
+        locations.add("classpath*:META-INF/org.apache.uima.fit/typepriorities.txt");
+        break;        
     }
 
     return locations.toArray(new String[locations.size()]);
@@ -136,6 +138,9 @@ public final class MetaDataUtil {
       case TYPE_SYSTEM:
         locations.add("org.apache.uima.fit.type.import_pattern");
         break;
+      case TYPE_PRIORITIES:
+        locations.add("org.apache.uima.fit.typepriorities.import_pattern");
+        break;        
     }
 
     return locations.toArray(new String[locations.size()]);

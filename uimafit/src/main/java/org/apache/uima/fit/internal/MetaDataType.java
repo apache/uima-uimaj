@@ -23,5 +23,6 @@ package org.apache.uima.fit.internal;
  */
 public enum MetaDataType {
   TYPE_SYSTEM,
-  FS_INDEX;
+  FS_INDEX,
+  TYPE_PRIORITIES;
 }
