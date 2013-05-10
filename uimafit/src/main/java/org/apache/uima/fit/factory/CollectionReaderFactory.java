@@ -73,9 +73,26 @@ public final class CollectionReaderFactory {
    */
   public static CollectionReader createCollectionReaderFromPath(String descriptorPath,
           Object... configurationData) throws UIMAException, IOException {
+    CollectionReaderDescription desc = createCollectionReaderDescriptionFromPath(descriptorPath,
+            configurationData);
+    return UIMAFramework.produceCollectionReader(desc);
+  }
+
+  /**
+   * Create a CollectionReader from an XML descriptor file and a set of configuration parameters.
+   * 
+   * @param descriptorPath
+   *          The path to the XML descriptor file.
+   * @param configurationData
+   *          Any additional configuration parameters to be set. These should be supplied as (name,
+   *          value) pairs, so there should always be an even number of parameters.
+   * @return The CollectionReader created from the XML descriptor and the configuration parameters.
+   */
+  public static CollectionReaderDescription createCollectionReaderDescriptionFromPath(String descriptorPath,
+          Object... configurationData) throws UIMAException, IOException {
     ResourceCreationSpecifier specifier = createResourceCreationSpecifier(descriptorPath,
             configurationData);
-    return UIMAFramework.produceCollectionReader(specifier);
+    return (CollectionReaderDescription) specifier;
   }
 
   /**
