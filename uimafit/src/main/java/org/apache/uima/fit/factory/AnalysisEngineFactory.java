@@ -38,11 +38,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.uima.Constants;
-import org.apache.uima.UIMAException;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_component.AnalysisComponent;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.analysis_engine.impl.AggregateAnalysisEngine_impl;
 import org.apache.uima.analysis_engine.impl.AnalysisEngineDescription_impl;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
@@ -53,6 +53,8 @@ import org.apache.uima.analysis_engine.metadata.impl.FixedFlow_impl;
 import org.apache.uima.analysis_engine.metadata.impl.FlowControllerDeclaration_impl;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.fit.component.initialize.ExternalResourceInitializer;
+import org.apache.uima.fit.descriptor.SofaCapability;
+import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.fit.factory.ConfigurationParameterFactory.ConfigurationData;
 import org.apache.uima.fit.internal.ReflectionUtil;
 import org.apache.uima.flow.FlowControllerDescription;
@@ -69,14 +71,20 @@ import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.resource.metadata.impl.Import_impl;
 import org.apache.uima.util.FileUtils;
+import org.apache.uima.util.InvalidXMLException;
 
 /**
+ * A collection of static methods for creating UIMA {@link AnalysisEngineDescription
+ * AnalysisEngineDescriptions} and {@link AnalysisEngine AnalysisEngines}.
+ * 
+ * @see <a href="package-summary.html#InstancesVsDescriptors">Why are descriptors better than
+ *      component instances?</a>
  */
 public final class AnalysisEngineFactory {
   private AnalysisEngineFactory() {
     // This class is not meant to be instantiated
   }
-  
+
   /**
    * Get an AnalysisEngine from the name (Java-style, dotted) of an XML descriptor file, and a set
    * of configuration parameters.
@@ -86,10 +94,20 @@ public final class AnalysisEngineFactory {
    * @param configurationData
    *          Any additional configuration parameters to be set. These should be supplied as (name,
    *          value) pairs, so there should always be an even number of parameters.
-   * @return The AnalysisEngine created from the XML descriptor and the configuration parameters.
+   * @return the {@link AnalysisEngine} created from the XML descriptor and the configuration
+   *         parameters.
+   * @throws IOException
+   *           if an I/O error occurs
+   * @throws InvalidXMLException
+   *           if the input XML is not valid or does not specify a valid {@link ResourceSpecifier}
+   * @throws ResourceInitializationException
+   *           if a failure occurred during production of the resource.
+   * @see <a href="package-summary.html#InstancesVsDescriptors">Why are descriptors better than
+   *      component instances?</a>
    */
   public static AnalysisEngine createAnalysisEngine(String descriptorName,
-          Object... configurationData) throws UIMAException, IOException {
+          Object... configurationData) throws InvalidXMLException, IOException,
+          ResourceInitializationException {
     AnalysisEngineDescription aed = createAnalysisEngineDescription(descriptorName,
             configurationData);
     return UIMAFramework.produceAnalysisEngine(aed);
@@ -99,12 +117,22 @@ public final class AnalysisEngineFactory {
    * Provides a way to create an AnalysisEngineDescription using a descriptor file referenced by
    * name
    * 
+   * @param descriptorName
+   *          The fully qualified, Java-style, dotted name of the XML descriptor file.
    * @param configurationData
    *          should consist of name value pairs. Will override configuration parameter settings in
    *          the descriptor file
+   * @param configurationData
+   *          Any additional configuration parameters to be set. These should be supplied as (name,
+   *          value) pairs, so there should always be an even number of parameters.
+   * @return a description for this analysis engine.
+   * @throws IOException
+   *           if an I/O error occurs
+   * @throws InvalidXMLException
+   *           if the input XML is not valid or does not specify a valid {@link ResourceSpecifier}
    */
   public static AnalysisEngineDescription createAnalysisEngineDescription(String descriptorName,
-          Object... configurationData) throws UIMAException, IOException {
+          Object... configurationData) throws InvalidXMLException, IOException {
     Import_impl imprt = new Import_impl();
     imprt.setName(descriptorName);
     URL url = imprt.findAbsoluteUrl(UIMAFramework.newDefaultResourceManager());
@@ -117,10 +145,17 @@ public final class AnalysisEngineFactory {
    * This method provides a convenient way to instantiate an AnalysisEngine where the default view
    * is mapped to the view name passed into the method.
    * 
+   * @param analysisEngineDescription
+   *          the analysis engine description from which the engine is instantiated
    * @param viewName
    *          the view name to map the default view to
    * @return an aggregate analysis engine consisting of a single component whose default view is
    *         mapped to the the view named by viewName.
+   * @throws ResourceInitializationException
+   *           if a failure occurred during production of the resource.
+   * @see <a href="package-summary.html#InstancesVsDescriptors">Why are descriptors better than
+   *      component instances?</a>
+   * @see AggregateBuilder
    */
   public static AnalysisEngine createAnalysisEngine(
           AnalysisEngineDescription analysisEngineDescription, String viewName)
@@ -131,17 +166,28 @@ public final class AnalysisEngineFactory {
   }
 
   /**
-   * Get an AnalysisEngine from an XML descriptor file and a set of configuration parameters.
+   * Get an {@link AnalysisEngine} from an XML descriptor file and a set of configuration
+   * parameters.
    * 
    * @param descriptorPath
    *          The path to the XML descriptor file.
    * @param configurationData
    *          Any additional configuration parameters to be set. These should be supplied as (name,
    *          value) pairs, so there should always be an even number of parameters.
-   * @return The AnalysisEngine created from the XML descriptor and the configuration parameters.
+   * @return The {@link AnalysisEngine} created from the XML descriptor and the configuration
+   *         parameters.
+   * @throws IOException
+   *           if an I/O error occurs
+   * @throws InvalidXMLException
+   *           if the input XML is not valid or does not specify a valid {@link ResourceSpecifier}
+   * @throws ResourceInitializationException
+   *           if a failure occurred during production of the resource.
+   * @see <a href="package-summary.html#InstancesVsDescriptors">Why are descriptors better than
+   *      component instances?</a>
    */
   public static AnalysisEngine createAnalysisEngineFromPath(String descriptorPath,
-          Object... configurationData) throws UIMAException, IOException {
+          Object... configurationData) throws InvalidXMLException, IOException,
+          ResourceInitializationException {
     AnalysisEngineDescription desc = createAnalysisEngineDescriptionFromPath(descriptorPath,
             configurationData);
     return UIMAFramework.produceAnalysisEngine(desc);
@@ -158,9 +204,14 @@ public final class AnalysisEngineFactory {
    *          value) pairs, so there should always be an even number of parameters.
    * @return The {@link AnalysisEngineDescription} created from the XML descriptor and the
    *         configuration parameters.
+   * @throws IOException
+   *           if an I/O error occurs
+   * @throws InvalidXMLException
+   *           if the input XML is not valid or does not specify a valid {@link ResourceSpecifier}
    */
   public static AnalysisEngineDescription createAnalysisEngineDescriptionFromPath(
-          String descriptorPath, Object... configurationData) throws UIMAException, IOException {
+          String descriptorPath, Object... configurationData) throws InvalidXMLException,
+          IOException {
     ResourceSpecifier specifier;
     specifier = ResourceCreationSpecifierFactory.createResourceCreationSpecifier(descriptorPath,
             configurationData);
@@ -168,17 +219,21 @@ public final class AnalysisEngineFactory {
   }
 
   /**
-   * Get an AnalysisEngine from an OperationalProperties class, a type system and a set of
-   * configuration parameters. The type system is detected automatically using
-   * {@link TypeSystemDescriptionFactory#createTypeSystemDescription()}.
+   * Create and configure a primitive {@link AnalysisEngine}. The type system is detected
+   * automatically using {@link TypeSystemDescriptionFactory#createTypeSystemDescription()}.
    * 
    * @param componentClass
-   *          The class of the OperationalProperties to be created as an AnalysisEngine.
+   *          a class that extends {@link AnalysisComponent} e.g. via
+   *          {@link org.apache.uima.fit.component.JCasAnnotator_ImplBase}
    * @param configurationData
    *          Any additional configuration parameters to be set. These should be supplied as (name,
    *          value) pairs, so there should always be an even number of parameters.
-   * @return The AnalysisEngine created from the OperationalProperties class and initialized with
-   *         the type system and the configuration parameters.
+   * @return an {@link AnalysisEngine} created from the specified component class and initialized
+   *         with the configuration parameters.
+   * @throws ResourceInitializationException
+   *           if a failure occurred during production of the resource.
+   * @see <a href="package-summary.html#InstancesVsDescriptors">Why are descriptors better than
+   *      component instances?</a>
    */
   public static AnalysisEngine createPrimitive(Class<? extends AnalysisComponent> componentClass,
           Object... configurationData) throws ResourceInitializationException {
@@ -187,18 +242,22 @@ public final class AnalysisEngineFactory {
   }
 
   /**
-   * Get an AnalysisEngine from an OperationalProperties class, a type system and a set of
-   * configuration parameters.
+   * Create and configure a primitive {@link AnalysisEngine}.
    * 
    * @param componentClass
-   *          The class of the OperationalProperties to be created as an AnalysisEngine.
+   *          a class that extends {@link AnalysisComponent} e.g. via
+   *          {@link org.apache.uima.fit.component.JCasAnnotator_ImplBase}
    * @param typeSystem
-   *          A description of the types used by the OperationalProperties (may be null).
+   *          A description of the types (may be null).
    * @param configurationData
    *          Any additional configuration parameters to be set. These should be supplied as (name,
    *          value) pairs, so there should always be an even number of parameters.
-   * @return The AnalysisEngine created from the OperationalProperties class and initialized with
-   *         the type system and the configuration parameters.
+   * @return an {@link AnalysisEngine} created from the specified component class and initialized
+   *         with the configuration parameters.
+   * @throws ResourceInitializationException
+   *           if a failure occurred during production of the resource.
+   * @see <a href="package-summary.html#InstancesVsDescriptors">Why are descriptors better than
+   *      component instances?</a>
    */
   public static AnalysisEngine createPrimitive(Class<? extends AnalysisComponent> componentClass,
           TypeSystemDescription typeSystem, Object... configurationData)
@@ -206,22 +265,51 @@ public final class AnalysisEngineFactory {
     return createPrimitive(componentClass, typeSystem, (TypePriorities) null, configurationData);
   }
 
+  /**
+   * Create and configure a primitive {@link AnalysisEngine}.
+   * 
+   * @param componentClass
+   *          a class that extends {@link AnalysisComponent} e.g. via
+   *          {@link org.apache.uima.fit.component.JCasAnnotator_ImplBase}
+   * @param typeSystem
+   *          A description of the types (may be null).
+   * @param typePriorities
+   *          The type priorities as an array of type names (may be null).
+   * @param configurationData
+   *          Any additional configuration parameters to be set. These should be supplied as (name,
+   *          value) pairs, so there should always be an even number of parameters.
+   * @return an {@link AnalysisEngine} created from the specified component class and initialized
+   *         with the configuration parameters.
+   * @throws ResourceInitializationException
+   *           if a failure occurred during production of the resource.
+   * @see <a href="package-summary.html#InstancesVsDescriptors">Why are descriptors better than
+   *      component instances?</a>
+   */
   public static AnalysisEngine createPrimitive(Class<? extends AnalysisComponent> componentClass,
-          TypeSystemDescription typeSystem, String[] prioritizedTypeNames,
-          Object... configurationData) throws ResourceInitializationException {
-    TypePriorities typePriorities = TypePrioritiesFactory
-            .createTypePriorities(prioritizedTypeNames);
-    return createPrimitive(componentClass, typeSystem, typePriorities, configurationData);
+          TypeSystemDescription typeSystem, String[] typePriorities, Object... configurationData)
+          throws ResourceInitializationException {
+    TypePriorities tp = null;
+    if (typePriorities != null) {
+      tp = TypePrioritiesFactory.createTypePriorities(typePriorities);
+    }
+    return createPrimitive(componentClass, typeSystem, tp, configurationData);
 
   }
 
   /**
-   * A simple factory method for creating a primitive AnalysisEngineDescription for a given class,
-   * type system, and configuration parameter data
+   * Create and configure a primitive {@link AnalysisEngine}.
    * 
    * @param componentClass
-   *          a class that extends AnalysisComponent e.g.
+   *          a class that extends {@link AnalysisComponent} e.g. via
    *          {@link org.apache.uima.fit.component.JCasAnnotator_ImplBase}
+   * @param typeSystem
+   *          A description of the types (may be null).
+   * @param configurationData
+   *          Any additional configuration parameters to be set. These should be supplied as (name,
+   *          value) pairs, so there should always be an even number of parameters.
+   * @return a description for this analysis engine.
+   * @throws ResourceInitializationException
+   *           if a failure occurred during production of the resource.
    */
   public static AnalysisEngineDescription createPrimitiveDescription(
           Class<? extends AnalysisComponent> componentClass, TypeSystemDescription typeSystem,
@@ -231,13 +319,18 @@ public final class AnalysisEngineFactory {
   }
 
   /**
-   * A simple factory method for creating a primitive AnalysisEngineDescription for a given class,
-   * type system, and configuration parameter data The type system is detected automatically using
-   * {@link TypeSystemDescriptionFactory#createTypeSystemDescription()}.
+   * Create and configure a primitive {@link AnalysisEngine}. The type system is detected
+   * automatically using {@link TypeSystemDescriptionFactory#createTypeSystemDescription()}.
    * 
    * @param componentClass
-   *          a class that extends AnalysisComponent e.g.
+   *          a class that extends {@link AnalysisComponent} e.g. via
    *          {@link org.apache.uima.fit.component.JCasAnnotator_ImplBase}
+   * @param configurationData
+   *          Any additional configuration parameters to be set. These should be supplied as (name,
+   *          value) pairs, so there should always be an even number of parameters.
+   * @return a description for this analysis engine.
+   * @throws ResourceInitializationException
+   *           if a failure occurred during production of the resource.
    */
   public static AnalysisEngineDescription createPrimitiveDescription(
           Class<? extends AnalysisComponent> componentClass, Object... configurationData)
@@ -246,6 +339,23 @@ public final class AnalysisEngineFactory {
     return createPrimitiveDescription(componentClass, tsd, (TypePriorities) null, configurationData);
   }
 
+  /**
+   * Create and configure a primitive {@link AnalysisEngine}.
+   * 
+   * @param componentClass
+   *          a class that extends {@link AnalysisComponent} e.g. via
+   *          {@link org.apache.uima.fit.component.JCasAnnotator_ImplBase}
+   * @param typeSystem
+   *          A description of the types (may be null).
+   * @param typePriorities
+   *          The type priorities (may be null).
+   * @param configurationData
+   *          Any additional configuration parameters to be set. These should be supplied as (name,
+   *          value) pairs, so there should always be an even number of parameters.
+   * @return a description for this analysis engine.
+   * @throws ResourceInitializationException
+   *           if a failure occurred during production of the resource.
+   */
   public static AnalysisEngineDescription createPrimitiveDescription(
           Class<? extends AnalysisComponent> componentClass, TypeSystemDescription typeSystem,
           TypePriorities typePriorities, Object... configurationData)
@@ -255,7 +365,32 @@ public final class AnalysisEngineFactory {
   }
 
   /**
-   * The factory methods for creating an AnalysisEngineDescription
+   * Create and configure a primitive {@link AnalysisEngine}.
+   * 
+   * @param componentClass
+   *          a class that extends {@link AnalysisComponent} e.g. via
+   *          {@link org.apache.uima.fit.component.JCasAnnotator_ImplBase}
+   * @param typeSystem
+   *          A description of the types (may be null).
+   * @param typePriorities
+   *          The type priorities (may be null).
+   * @param indexes
+   *          the Feature Structure Index collection used by this analysis engine to iterate over
+   *          annotations in the {@link org.apache.uima.cas.CAS}. If this is not null explicitly,
+   *          any indexes declared via {@link org.apache.uima.fit.descriptor.FsIndexCollection} in
+   *          the class are ignored.
+   * @param capabilities
+   *          the operations the component can perform in terms of consumed and produced types, sofa
+   *          names, and languages. If this is set explicitly here, any capabilities declared via
+   *          {@link SofaCapability} or {@link TypeCapability} in the class are ignored.
+   * @param configurationData
+   *          Any additional configuration parameters to be set. These should be supplied as (name,
+   *          value) pairs, so there should always be an even number of parameters. In addition to
+   *          parameter names, external resource keys can also be specified. The value has to be an
+   *          {@link ExternalResourceDescription} in that case.
+   * @return a description for this analysis engine.
+   * @throws ResourceInitializationException
+   *           if a failure occurred during production of the resource.
    */
   public static AnalysisEngineDescription createPrimitiveDescription(
           Class<? extends AnalysisComponent> componentClass, TypeSystemDescription typeSystem,
@@ -276,6 +411,33 @@ public final class AnalysisEngineFactory {
             externalResources);
   }
 
+  /**
+   * Create and configure a primitive {@link AnalysisEngine}.
+   * 
+   * @param componentClass
+   *          a class that extends {@link AnalysisComponent} e.g. via
+   *          {@link org.apache.uima.fit.component.JCasAnnotator_ImplBase}
+   * @param typeSystem
+   *          A description of the types (may be null).
+   * @param typePriorities
+   *          The type priorities (may be null).
+   * @param indexes
+   *          the Feature Structure Index collection used by this analysis engine to iterate over
+   *          annotations in the {@link org.apache.uima.cas.CAS}. If this is not null explicitly,
+   *          any indexes declared via {@link org.apache.uima.fit.descriptor.FsIndexCollection} in
+   *          the class are ignored.
+   * @param capabilities
+   *          the operations the component can perform in terms of consumed and produced types, sofa
+   *          names, and languages. If this is set explicitly here, any capabilities declared via
+   *          {@link SofaCapability} or {@link TypeCapability} in the class are ignored.
+   * @param configurationParameters
+   *          the configuration parameter declarations.
+   * @param configurationValues
+   *          the configuration parameter values.
+   * @return a description for this analysis engine.
+   * @throws ResourceInitializationException
+   *           if a failure occurred during production of the resource.
+   */
   public static AnalysisEngineDescription createPrimitiveDescription(
           Class<? extends AnalysisComponent> componentClass, TypeSystemDescription typeSystem,
           TypePriorities typePriorities, FsIndexCollection indexes, Capability[] capabilities,
@@ -285,6 +447,35 @@ public final class AnalysisEngineFactory {
             capabilities, configurationParameters, configurationValues, null);
   }
 
+  /**
+   * Create and configure a primitive {@link AnalysisEngine}.
+   * 
+   * @param componentClass
+   *          a class that extends {@link AnalysisComponent} e.g. via
+   *          {@link org.apache.uima.fit.component.JCasAnnotator_ImplBase}
+   * @param typeSystem
+   *          A description of the types (may be null).
+   * @param typePriorities
+   *          The type priorities (may be null).
+   * @param indexes
+   *          the Feature Structure Index collection used by this analysis engine to iterate over
+   *          annotations in the {@link org.apache.uima.cas.CAS}. If this is set explicitly here,
+   *          any indexes declared via {@link org.apache.uima.fit.descriptor.FsIndexCollection} in
+   *          the class are ignored.
+   * @param capabilities
+   *          the operations the component can perform in terms of consumed and produced types, sofa
+   *          names, and languages. If this is set explicitly here, any capabilities declared via
+   *          {@link SofaCapability} or {@link TypeCapability} in the class are ignored.
+   * @param configurationParameters
+   *          the configuration parameter declarations.
+   * @param configurationValues
+   *          the configuration parameter values.
+   * @param externalResources
+   *          external resources to bind to the analysis engine. (may be null)
+   * @return a description for this analysis engine.
+   * @throws ResourceInitializationException
+   *           if a failure occurred during production of the resource.
+   */
   public static AnalysisEngineDescription createPrimitiveDescription(
           Class<? extends AnalysisComponent> componentClass, TypeSystemDescription typeSystem,
           TypePriorities typePriorities, FsIndexCollection indexes, Capability[] capabilities,
@@ -319,7 +510,7 @@ public final class AnalysisEngineFactory {
 
     // set parameters
     setParameters(desc, componentClass, configurationParameters, configurationValues);
-    
+
     // set the type system
     if (typeSystem != null) {
       desc.getAnalysisEngineMetaData().setTypeSystem(typeSystem);
@@ -364,17 +555,52 @@ public final class AnalysisEngineFactory {
     return desc;
   }
 
+  /**
+   * Create and configure a primitive {@link AnalysisEngine}.
+   * 
+   * @param componentClass
+   *          a class that extends {@link AnalysisComponent} e.g. via
+   *          {@link org.apache.uima.fit.component.JCasAnnotator_ImplBase}
+   * @param typeSystem
+   *          A description of the types (may be null).
+   * @param typePriorities
+   *          The type priorities (may be null).
+   * @param configurationData
+   *          Any additional configuration parameters to be set. These should be supplied as (name,
+   *          value) pairs, so there should always be an even number of parameters.
+   * @return an {@link AnalysisEngine} created from the specified component class and initialized
+   *         with the configuration parameters.
+   * @throws ResourceInitializationException
+   *           if a failure occurred during production of the resource.
+   * @see <a href="package-summary.html#InstancesVsDescriptors">Why are descriptors better than
+   *      component instances?</a>
+   */
   public static AnalysisEngine createPrimitive(Class<? extends AnalysisComponent> componentClass,
           TypeSystemDescription typeSystem, TypePriorities typePriorities,
-          Object... configurationParameters) throws ResourceInitializationException {
+          Object... configurationData) throws ResourceInitializationException {
 
     AnalysisEngineDescription desc = createPrimitiveDescription(componentClass, typeSystem,
-            typePriorities, configurationParameters);
+            typePriorities, configurationData);
 
     // create the AnalysisEngine, initialize it and return it
     return createPrimitive(desc);
   }
 
+  /**
+   * Create and configure a primitive {@link AnalysisEngine}.
+   * 
+   * @param desc
+   *          the descriptor to create the analysis engine from.
+   * @param configurationData
+   *          Any additional configuration parameters to be set. These should be supplied as (name,
+   *          value) pairs, so there should always be an even number of parameters.
+   * @return an {@link AnalysisEngine} created from the specified component class and initialized
+   *         with the configuration parameters.
+   * @throws ResourceInitializationException
+   *           if a failure occurred during production of the resource.
+   * @see <a href="package-summary.html#InstancesVsDescriptors">Why are descriptors better than
+   *      component instances?</a>
+   */
   public static AnalysisEngine createPrimitive(AnalysisEngineDescription desc,
           Object... configurationData) throws ResourceInitializationException {
     AnalysisEngineDescription descClone = (AnalysisEngineDescription) desc.clone();
@@ -382,42 +608,123 @@ public final class AnalysisEngineFactory {
     return UIMAFramework.produceAnalysisEngine(descClone);
   }
 
+  /**
+   * Create and configure an aggregate {@link AnalysisEngine} from several component classes.
+   * 
+   * @param componentClasses
+   *          a list of class that extend {@link AnalysisComponent} e.g. via
+   *          {@link org.apache.uima.fit.component.JCasAnnotator_ImplBase}
+   * @param typeSystem
+   *          A description of the types (may be null).
+   * @param typePriorities
+   *          The type priorities (may be null).
+   * @param sofaMappings
+   *          The SofA mappings (may be null).
+   * @param configurationData
+   *          Any additional configuration parameters to be set. These should be supplied as (name,
+   *          value) pairs, so there should always be an even number of parameters.
+   * @return an {@link AnalysisEngine} created from the specified component class and initialized
+   *         with the configuration parameters.
+   * @throws ResourceInitializationException
+   *           if a failure occurred during production of the resource.
+   * @see <a href="package-summary.html#InstancesVsDescriptors">Why are descriptors better than
+   *      component instances?</a>
+   */
   public static AnalysisEngine createAggregate(
           List<Class<? extends AnalysisComponent>> componentClasses,
           TypeSystemDescription typeSystem, TypePriorities typePriorities,
-          SofaMapping[] sofaMappings, Object... configurationParameters)
+          SofaMapping[] sofaMappings, Object... configurationData)
           throws ResourceInitializationException {
     AnalysisEngineDescription desc = createAggregateDescription(componentClasses, typeSystem,
-            typePriorities, sofaMappings, configurationParameters);
+            typePriorities, sofaMappings, configurationData);
     // create the AnalysisEngine, initialize it and return it
     AnalysisEngine engine = new AggregateAnalysisEngine_impl();
     engine.initialize(desc, null);
     return engine;
   }
 
+  /**
+   * Create and configure an aggregate {@link AnalysisEngine} from several component classes.
+   * 
+   * @param componentClasses
+   *          a list of class that extend {@link AnalysisComponent} e.g. via
+   *          {@link org.apache.uima.fit.component.JCasAnnotator_ImplBase}
+   * @param typeSystem
+   *          A description of the types (may be null).
+   * @param typePriorities
+   *          The type priorities (may be null).
+   * @param sofaMappings
+   *          The SofA mappings (may be null).
+   * @param flowControllerDescription
+   *          the flow controller description to be used by this aggregate (may be null).
+   * @param configurationData
+   *          Any additional configuration parameters to be set. These should be supplied as (name,
+   *          value) pairs, so there should always be an even number of parameters.
+   * @return an {@link AnalysisEngine} created from the specified component class and initialized
+   *         with the configuration parameters.
+   * @throws IOException
+   *           if an I/O error occurs
+   * @throws InvalidXMLException
+   *           if the input XML is not valid or does not specify a valid {@link ResourceSpecifier}
+   * @throws ResourceInitializationException
+   *           if a failure occurred during production of the resource.
+   * @see <a href="package-summary.html#InstancesVsDescriptors">Why are descriptors better than
+   *      component instances?</a>
+   */
   public static AnalysisEngine createAggregate(
           List<Class<? extends AnalysisComponent>> componentClasses,
           TypeSystemDescription typeSystem, TypePriorities typePriorities,
           SofaMapping[] sofaMappings, FlowControllerDescription flowControllerDescription,
-          Object... configurationParameters) throws ResourceInitializationException {
+          Object... configurationData) throws ResourceInitializationException {
     AnalysisEngineDescription desc = createAggregateDescription(componentClasses, typeSystem,
-            typePriorities, sofaMappings, configurationParameters, flowControllerDescription);
+            typePriorities, sofaMappings, configurationData, flowControllerDescription);
     // create the AnalysisEngine, initialize it and return it
     AnalysisEngine engine = new AggregateAnalysisEngine_impl();
     engine.initialize(desc, null);
     return engine;
   }
 
+  /**
+   * Create an aggregate {@link AnalysisEngine}.
+   * 
+   * @param desc
+   *          the descriptor to create the analysis engine from.
+   * @return an {@link AnalysisEngine} created from the specified component class and initialized
+   *         with the configuration parameters.
+   * @throws ResourceInitializationException
+   *           if a failure occurred during production of the resource.
+   * @see <a href="package-summary.html#InstancesVsDescriptors">Why are descriptors better than
+   *      component instances?</a>
+   */
   public static AnalysisEngine createAggregate(AnalysisEngineDescription desc)
           throws ResourceInitializationException {
     // create the AnalysisEngine, initialize it and return it
     return UIMAFramework.produceAnalysisEngine(desc, null, null);
   }
 
+  /**
+   * Create and configure an aggregate {@link AnalysisEngine} from several component classes.
+   * 
+   * @param componentClasses
+   *          a list of class that extend {@link AnalysisComponent} e.g. via
+   *          {@link org.apache.uima.fit.component.JCasAnnotator_ImplBase}
+   * @param typeSystem
+   *          A description of the types (may be null).
+   * @param typePriorities
+   *          The type priorities (may be null).
+   * @param sofaMappings
+   *          The SofA mappings (may be null).
+   * @param configurationData
+   *          Any additional configuration parameters to be set. These should be supplied as (name,
+   *          value) pairs, so there should always be an even number of parameters.
+   * @return a description for this aggregate analysis engine.
+   * @throws ResourceInitializationException
+   *           if a failure occurred during production of the resource.
+   */
   public static AnalysisEngineDescription createAggregateDescription(
           List<Class<? extends AnalysisComponent>> componentClasses,
           TypeSystemDescription typeSystem, TypePriorities typePriorities,
-          SofaMapping[] sofaMappings, Object... configurationParameters)
+          SofaMapping[] sofaMappings, Object... configurationData)
           throws ResourceInitializationException {
 
     List<AnalysisEngineDescription> primitiveEngineDescriptions = new ArrayList<AnalysisEngineDescription>();
@@ -425,7 +732,7 @@ public final class AnalysisEngineFactory {
 
     for (Class<? extends AnalysisComponent> componentClass : componentClasses) {
       AnalysisEngineDescription primitiveDescription = createPrimitiveDescription(componentClass,
-              typeSystem, typePriorities, configurationParameters);
+              typeSystem, typePriorities, configurationData);
       primitiveEngineDescriptions.add(primitiveDescription);
       componentNames.add(componentClass.getName());
     }
@@ -433,6 +740,25 @@ public final class AnalysisEngineFactory {
             sofaMappings, null);
   }
 
+  /**
+   * Create and configure an aggregate {@link AnalysisEngine} from several component descriptions.
+   * 
+   * @param analysisEngineDescriptions
+   *          a list of analysis engine descriptions from which the aggregate engine is instantiated
+   * @param componentNames
+   *          a list of names for the analysis engines in the aggregate. There must be exactly one
+   *          name for each analysis engine, given in the same order as the descriptions.
+   * @param typePriorities
+   *          The type priorities (may be null).
+   * @param sofaMappings
+   *          The SofA mappings (may be null).
+   * @return an {@link AnalysisEngine} created from the specified component class and initialized
+   *         with the configuration parameters.
+   * @throws ResourceInitializationException
+   *           if a failure occurred during production of the resource.
+   * @see <a href="package-summary.html#InstancesVsDescriptors">Why are descriptors better than
+   *      component instances?</a>
+   */
   public static AnalysisEngine createAggregate(
           List<AnalysisEngineDescription> analysisEngineDescriptions, List<String> componentNames,
           TypePriorities typePriorities, SofaMapping[] sofaMappings)
@@ -447,6 +773,15 @@ public final class AnalysisEngineFactory {
 
   }
 
+  /**
+   * Create and configure an aggregate {@link AnalysisEngine} from several component descriptions.
+   * 
+   * @param analysisEngineDescriptions
+   *          a list of analysis engine descriptions from which the aggregate engine is instantiated
+   * @return a description for this aggregate analysis engine.
+   * @throws ResourceInitializationException
+   *           if a failure occurred during production of the resource.
+   */
   public static AnalysisEngineDescription createAggregateDescription(
           AnalysisEngineDescription... analysisEngineDescriptions)
           throws ResourceInitializationException {
@@ -461,25 +796,67 @@ public final class AnalysisEngineFactory {
             null, null);
   }
 
+  /**
+   * Create and configure an aggregate {@link AnalysisEngine} from several component classes.
+   * 
+   * @param componentClasses
+   *          a list of class that extend {@link AnalysisComponent} e.g. via
+   *          {@link org.apache.uima.fit.component.JCasAnnotator_ImplBase}
+   * @param typeSystem
+   *          A description of the types (may be null).
+   * @param typePriorities
+   *          The type priorities (may be null).
+   * @param sofaMappings
+   *          The SofA mappings (may be null).
+   * @param flowControllerDescription
+   *          the flow controller description to be used by this aggregate (may be null).
+   * @param configurationData
+   *          Any additional configuration parameters to be set. These should be supplied as (name,
+   *          value) pairs, so there should always be an even number of parameters.
+   * @return a description for this aggregate analysis engine.
+   * @throws ResourceInitializationException
+   *           if a failure occurred during production of the resource.
+   */
   public static AnalysisEngineDescription createAggregateDescription(
           List<Class<? extends AnalysisComponent>> componentClasses,
           TypeSystemDescription typeSystem, TypePriorities typePriorities,
           SofaMapping[] sofaMappings, FlowControllerDescription flowControllerDescription,
-          Object... configurationParameters) throws ResourceInitializationException {
+          Object... configurationData) throws ResourceInitializationException {
 
     List<AnalysisEngineDescription> primitiveEngineDescriptions = new ArrayList<AnalysisEngineDescription>();
     List<String> componentNames = new ArrayList<String>();
 
     for (Class<? extends AnalysisComponent> componentClass : componentClasses) {
       AnalysisEngineDescription primitiveDescription = createPrimitiveDescription(componentClass,
-              typeSystem, typePriorities, configurationParameters);
+              typeSystem, typePriorities, configurationData);
       primitiveEngineDescriptions.add(primitiveDescription);
       componentNames.add(componentClass.getName());
     }
-    return createAggregateDescription(primitiveEngineDescriptions, componentNames,
-            typePriorities, sofaMappings, flowControllerDescription);
+    return createAggregateDescription(primitiveEngineDescriptions, componentNames, typePriorities,
+            sofaMappings, flowControllerDescription);
   }
 
+  /**
+   * Create and configure an aggregate {@link AnalysisEngine} from several component descriptions.
+   * 
+   * @param analysisEngineDescriptions
+   *          a list of analysis engine descriptions from which the aggregate engine is instantiated
+   * @param componentNames
+   *          a list of names for the analysis engines in the aggregate. There must be exactly one
+   *          name for each analysis engine, given in the same order as the descriptions.
+   * @param typePriorities
+   *          The type priorities (may be null).
+   * @param sofaMappings
+   *          The SofA mappings (may be null).
+   * @param flowControllerDescription
+   *          the flow controller description to be used by this aggregate (may be null).
+   * @return an {@link AnalysisEngine} created from the specified component class and initialized
+   *         with the configuration parameters.
+   * @throws ResourceInitializationException
+   *           if a failure occurred during production of the resource.
+   * @see <a href="package-summary.html#InstancesVsDescriptors">Why are descriptors better than
+   *      component instances?</a>
+   */
   public static AnalysisEngine createAggregate(
           List<AnalysisEngineDescription> analysisEngineDescriptions, List<String> componentNames,
           TypePriorities typePriorities, SofaMapping[] sofaMappings,
@@ -498,6 +875,14 @@ public final class AnalysisEngineFactory {
   /**
    * A simplified factory method for creating an aggregate description for a given flow controller
    * and a sequence of analysis engine descriptions
+   * 
+   * @param flowControllerDescription
+   *          the flow controller description to be used by this aggregate (may be null).
+   * @param analysisEngineDescriptions
+   *          a list of analysis engine descriptions from which the aggregate engine is instantiated
+   * @return a description for this aggregate analysis engine.
+   * @throws ResourceInitializationException
+   *           if a failure occurred during production of the resource.
    */
   public static AnalysisEngineDescription createAggregateDescription(
           FlowControllerDescription flowControllerDescription,
@@ -517,9 +902,19 @@ public final class AnalysisEngineFactory {
   /**
    * A factory method for creating an aggregate description.
    * 
-   * @param analysisEngineDescriptions list of analysis engine descriptions.
-   * @param componentNames list of component names - must be one name per description!
-   * @param typeSystem the type system to be used.
+   * @param analysisEngineDescriptions
+   *          list of analysis engine descriptions.
+   * @param componentNames
+   *          list of component names - must be one name per description!
+   * @param typePriorities
+   *          The type priorities (may be null).
+   * @param sofaMappings
+   *          The SofA mappings (may be null).
+   * @param flowControllerDescription
+   *          the flow controller description to be used by this aggregate (may be null).
+   * @return a description for this aggregate analysis engine.
+   * @throws ResourceInitializationException
+   *           if a failure occurred during production of the resource.
    */
   public static AnalysisEngineDescription createAggregateDescription(
           List<AnalysisEngineDescription> analysisEngineDescriptions, List<String> componentNames,
@@ -534,7 +929,7 @@ public final class AnalysisEngineFactory {
     if (analysisEngineDescriptions == null) {
       throw new IllegalArgumentException("Parameter [analysisEngineDescriptions] cannot be null");
     }
-    
+
     if (analysisEngineDescriptions.size() != componentNames.size()) {
       throw new IllegalArgumentException("Number of descriptions ["
               + analysisEngineDescriptions.size() + "]does not match number of component names ["
@@ -583,7 +978,7 @@ public final class AnalysisEngineFactory {
     if (sofaMappings != null) {
       desc.setSofaMappings(sofaMappings);
     }
-    
+
     return desc;
   }
 
@@ -597,9 +992,18 @@ public final class AnalysisEngineFactory {
    *          Either the path of a file to be loaded, or a string to use as the text. If the string
    *          given is not a valid path in the file system, it will be assumed to be text.
    * @return A JCas object containing the processed document.
+   * @throws IOException
+   *           if an I/O error occurs
+   * @throws InvalidXMLException
+   *           if the input XML is not valid or does not specify a valid {@link ResourceSpecifier}
+   * @throws ResourceInitializationException
+   *           if a failure occurred during production of the resource.
+   * @throws AnalysisEngineProcessException
+   *           if a failure occurs during processing.
    */
-  public static JCas process(String descriptorFileName, String fileNameOrText) throws IOException,
-          UIMAException {
+  public static JCas process(String descriptorFileName, String fileNameOrText)
+          throws InvalidXMLException, ResourceInitializationException, IOException,
+          AnalysisEngineProcessException {
     AnalysisEngine engine = createAnalysisEngine(descriptorFileName);
     JCas jCas = process(engine, fileNameOrText);
     engine.collectionProcessComplete();
@@ -615,9 +1019,15 @@ public final class AnalysisEngineFactory {
    *          Either the path of a file to be loaded, or a string to use as the text. If the string
    *          given is not a valid path in the file system, it will be assumed to be text.
    * @return A JCas object containing the processed document.
+   * @throws ResourceInitializationException
+   *           if a failure occurred during production of the resource.
+   * @throws IOException
+   *           if a file name was specified and the text could not be read from the file.
+   * @throws AnalysisEngineProcessException
+   *           if a failure occurs during processing.
    */
   public static JCas process(AnalysisEngine analysisEngine, String fileNameOrText)
-          throws IOException, UIMAException {
+          throws ResourceInitializationException, AnalysisEngineProcessException, IOException {
     JCas jCas = analysisEngine.newJCas();
     process(jCas, analysisEngine, fileNameOrText);
     return jCas;
@@ -625,9 +1035,21 @@ public final class AnalysisEngineFactory {
 
   /**
    * Provides a convenience method for running an AnalysisEngine over some text with a given JCas.
+   * 
+   * @param jCas
+   *          the CAS to process.
+   * @param analysisEngine
+   *          The AnalysisEngine object to process the text.
+   * @param fileNameOrText
+   *          Either the path of a file to be loaded, or a string to use as the text. If the string
+   *          given is not a valid path in the file system, it will be assumed to be text.
+   * @throws IOException
+   *           if a file name was specified and the text could not be read from the file.
+   * @throws AnalysisEngineProcessException
+   *           if a failure occurs during processing.
    */
   public static void process(JCas jCas, AnalysisEngine analysisEngine, String fileNameOrText)
-          throws IOException, UIMAException {
+          throws IOException, AnalysisEngineProcessException {
     File textFile = new File(fileNameOrText);
     String text;
     if (textFile.exists()) {

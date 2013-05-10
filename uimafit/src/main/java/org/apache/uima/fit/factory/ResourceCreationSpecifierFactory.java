@@ -23,13 +23,13 @@ import java.lang.reflect.Array;
 import java.net.URL;
 import java.util.Collection;
 
-import org.apache.uima.UIMAException;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.resource.ResourceCreationSpecifier;
 import org.apache.uima.resource.metadata.ConfigurationParameter;
 import org.apache.uima.resource.metadata.ConfigurationParameterDeclarations;
 import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
 import org.apache.uima.resource.metadata.ResourceMetaData;
+import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
 
@@ -51,9 +51,13 @@ public final class ResourceCreationSpecifierFactory {
    *          value) pairs, so there should always be an even number of parameters.
    * @return The ResourceCreationSpecifier for the XML descriptor with all the configuration
    *         parameters set.
+   * @throws IOException
+   *           if an I/O error occurs
+   * @throws InvalidXMLException
+   *           if the input XML is not valid or does not specify a valid {@link ResourceSpecifier}
    */
   public static ResourceCreationSpecifier createResourceCreationSpecifier(URL descriptorURL,
-          Object[] parameters) throws UIMAException, IOException {
+          Object[] parameters) throws InvalidXMLException, IOException {
     return createResourceCreationSpecifier(new XMLInputSource(descriptorURL), parameters);
   }
 
@@ -68,9 +72,11 @@ public final class ResourceCreationSpecifierFactory {
    *          value) pairs, so there should always be an even number of parameters.
    * @return The ResourceCreationSpecifier for the XML descriptor with all the configuration
    *         parameters set.
+   * @throws InvalidXMLException
+   *           if the input XML is not valid or does not specify a valid {@link ResourceSpecifier}
    */
   public static ResourceCreationSpecifier createResourceCreationSpecifier(XMLInputSource xmlInput,
-          Object[] parameters) throws UIMAException, IOException {
+          Object[] parameters) throws InvalidXMLException {
     ConfigurationParameterFactory.ensureParametersComeInPairs(parameters);
 
     ResourceCreationSpecifier specifier;
@@ -92,9 +98,13 @@ public final class ResourceCreationSpecifierFactory {
    *          value) pairs, so there should always be an even number of parameters.
    * @return The ResourceCreationSpecifier for the XML descriptor with all the configuration
    *         parameters set.
+   * @throws IOException
+   *           if an I/O error occurs
+   * @throws InvalidXMLException
+   *           if the input XML is not valid or does not specify a valid {@link ResourceSpecifier}
    */
   public static ResourceCreationSpecifier createResourceCreationSpecifier(String descriptorPath,
-          Object[] parameters) throws UIMAException, IOException {
+          Object[] parameters) throws InvalidXMLException, IOException {
     return createResourceCreationSpecifier(new XMLInputSource(descriptorPath), parameters);
   }
 
@@ -132,6 +142,13 @@ public final class ResourceCreationSpecifierFactory {
   /**
    * This method passes through to
    * {@link #setConfigurationParameters(ResourceMetaData, ConfigurationParameter[], Object[])}
+   * 
+   * @param specifier
+   *          The ResourceCreationSpecifier whose parameters are to be set.
+   * @param configurationParameters
+   *          the configuration parameter declarations.
+   * @param configurationValues
+   *          the configuration parameter values.
    */
   public static void setConfigurationParameters(ResourceCreationSpecifier specifier,
           ConfigurationParameter[] configurationParameters, Object[] configurationValues) {
@@ -143,6 +160,8 @@ public final class ResourceCreationSpecifierFactory {
    * This method sets the configuration parameters of a resource. The length of
    * configurationParameters and configurationValues should be equal
    * 
+   * @param metaData
+   *          The ResourceMetaData whose parameters are to be set.
    * @param configurationParameters
    *          an array of configuration parameters
    * @param configurationValues
@@ -154,19 +173,20 @@ public final class ResourceCreationSpecifierFactory {
             .getConfigurationParameterDeclarations();
     ConfigurationParameterSettings paramSettings = metaData.getConfigurationParameterSettings();
     for (int i = 0; i < configurationParameters.length; i++) {
-      ConfigurationParameter decl = paramDecls.getConfigurationParameter(null, configurationParameters[i].getName());
+      ConfigurationParameter decl = paramDecls.getConfigurationParameter(null,
+              configurationParameters[i].getName());
       if (paramDecls != null && decl == null) {
         paramDecls.addConfigurationParameter(configurationParameters[i]);
         decl = configurationParameters[i];
       }
-      
+
       // Upgrade single-value to multi-value if necessary
       Object value = configurationValues[i];
       if ((value != null) && decl.isMultiValued() && !isMultiValue(value)) {
         value = Array.newInstance(value.getClass(), 1);
         Array.set(value, 0, configurationValues[i]);
       }
-      
+
       paramSettings.setParameterValue(configurationParameters[i].getName(), value);
     }
   }
@@ -177,8 +197,7 @@ public final class ResourceCreationSpecifierFactory {
   private static boolean isMultiValue(Object aObject) {
     if (aObject != null) {
       return (aObject instanceof Collection) || aObject.getClass().isArray();
-    }
-    else {
+    } else {
       return false;
     }
   }
