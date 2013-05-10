@@ -29,6 +29,7 @@ import static org.apache.uima.fit.factory.ExternalResourceFactory.bindExternalRe
 import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDependencies;
 import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTypeSystemDescription;
 import static org.apache.uima.fit.factory.TypePrioritiesFactory.createTypePriorities;
+import static org.apache.uima.fit.factory.FsIndexFactory.createFsIndexCollection;
 
 import java.io.IOException;
 import java.net.URL;
@@ -215,7 +216,8 @@ public final class AnalysisEngineFactory {
    * Create and configure a primitive {@link AnalysisEngine}. The type system is detected
    * automatically using {@link TypeSystemDescriptionFactory#createTypeSystemDescription()}. Type
    * priorities are detected automatically using
-   * {@link TypePrioritiesFactory#createTypePriorities()}.
+   * {@link TypePrioritiesFactory#createTypePriorities()}. Indexes are detected automatically using
+   * {@link FsIndexFactory#createFsIndexCollection()}.
    * 
    * @param componentClass
    *          a class that extends {@link AnalysisComponent} e.g. via
@@ -232,9 +234,10 @@ public final class AnalysisEngineFactory {
    */
   public static AnalysisEngine createPrimitive(Class<? extends AnalysisComponent> componentClass,
           Object... configurationData) throws ResourceInitializationException {
-    TypeSystemDescription tsd = createTypeSystemDescription();
-    TypePriorities typePriorities = createTypePriorities();
-    return createPrimitive(componentClass, tsd, typePriorities, configurationData);
+    AnalysisEngineDescription desc = createPrimitiveDescription(componentClass, configurationData);
+
+    // create the AnalysisEngine, initialize it and return it
+    return createPrimitive(desc);
   }
 
   /**
@@ -318,7 +321,8 @@ public final class AnalysisEngineFactory {
    * Create and configure a primitive {@link AnalysisEngine}. The type system is detected
    * automatically using {@link TypeSystemDescriptionFactory#createTypeSystemDescription()}. Type
    * priorities are detected automatically using
-   * {@link TypePrioritiesFactory#createTypePriorities()}.
+   * {@link TypePrioritiesFactory#createTypePriorities()}. Indexes are detected automatically using
+   * {@link FsIndexFactory#createFsIndexCollection()}.
    * 
    * @param componentClass
    *          a class that extends {@link AnalysisComponent} e.g. via
@@ -333,9 +337,12 @@ public final class AnalysisEngineFactory {
   public static AnalysisEngineDescription createPrimitiveDescription(
           Class<? extends AnalysisComponent> componentClass, Object... configurationData)
           throws ResourceInitializationException {
-    TypeSystemDescription tsd = createTypeSystemDescription();
+    TypeSystemDescription typeSystem = createTypeSystemDescription();
     TypePriorities typePriorities = createTypePriorities();
-    return createPrimitiveDescription(componentClass, tsd, typePriorities, configurationData);
+    FsIndexCollection fsIndexCollection = createFsIndexCollection();
+
+    return createPrimitiveDescription(componentClass, typeSystem,
+            typePriorities, fsIndexCollection, (Capability[]) null, configurationData);
   }
 
   /**

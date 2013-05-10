@@ -36,7 +36,6 @@ import org.apache.uima.resource.metadata.FsIndexCollection;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.FsIndexKeyDescription;
 import org.apache.uima.resource.metadata.Import;
-import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.resource.metadata.impl.FsIndexCollection_impl;
 import org.apache.uima.resource.metadata.impl.FsIndexDescription_impl;
 import org.apache.uima.resource.metadata.impl.FsIndexKeyDescription_impl;
@@ -50,7 +49,7 @@ public final class FsIndexFactory {
   public static final int STANDARD_COMPARE = FsIndexKeyDescription.STANDARD_COMPARE;
 
   public static final int REVERSE_STANDARD_COMPARE = FsIndexKeyDescription.STANDARD_COMPARE;
-  
+
   private static final Object SCAN_LOCK = new Object();
 
   private FsIndexFactory() {
@@ -195,8 +194,9 @@ public final class FsIndexFactory {
 
   /**
    * Creates a {@link FsIndexCollection} from all index descriptions that can be found via the
-   * {@link #FS_INDEX_IMPORT_PATTERN} or via the {@code META-INF/org.apache.uima.fit/fsindexes.txt}
-   * files in the classpath.
+   * pattern specified in the system property
+   * {@code org.apache.uima.fit.fsindex.import_pattern} or via the
+   * {@code META-INF/org.apache.uima.fit/fsindexes.txt} files in the classpath.
    * 
    * @return the auto-scanned indexes.
    */
@@ -212,7 +212,7 @@ public final class FsIndexFactory {
       } catch (IOException e) {
         throw new ResourceInitializationException(e);
       } catch (InvalidXMLException e) {
-        LogFactory.getLog(TypeSystemDescription.class).warn(
+        LogFactory.getLog(FsIndexFactory.class).warn(
                 "[" + location + "] is not a index descriptor file. Ignoring.", e);
       }
     }
@@ -239,7 +239,7 @@ public final class FsIndexFactory {
   }
 
   /**
-   * Force rescan of type descriptors. The next call to {@link #scanIndexDescriptors()} will rescan
+   * Force rescan of index descriptors. The next call to {@link #scanIndexDescriptors()} will rescan
    * all auto-import locations.
    */
   public static void forceIndexDescriptorsScan() {
