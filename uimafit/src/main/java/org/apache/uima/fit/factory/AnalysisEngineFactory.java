@@ -142,10 +142,29 @@ public final class AnalysisEngineFactory {
    */
   public static AnalysisEngine createAnalysisEngineFromPath(String descriptorPath,
           Object... configurationData) throws UIMAException, IOException {
+    AnalysisEngineDescription desc = createAnalysisEngineDescriptionFromPath(descriptorPath,
+            configurationData);
+    return UIMAFramework.produceAnalysisEngine(desc);
+  }
+
+  /**
+   * Get an {@link AnalysisEngineDescription} from an XML descriptor file and a set of configuration
+   * parameters.
+   * 
+   * @param descriptorPath
+   *          The path to the XML descriptor file.
+   * @param configurationData
+   *          Any additional configuration parameters to be set. These should be supplied as (name,
+   *          value) pairs, so there should always be an even number of parameters.
+   * @return The {@link AnalysisEngineDescription} created from the XML descriptor and the
+   *         configuration parameters.
+   */
+  public static AnalysisEngineDescription createAnalysisEngineDescriptionFromPath(
+          String descriptorPath, Object... configurationData) throws UIMAException, IOException {
     ResourceSpecifier specifier;
     specifier = ResourceCreationSpecifierFactory.createResourceCreationSpecifier(descriptorPath,
             configurationData);
-    return UIMAFramework.produceAnalysisEngine(specifier);
+    return (AnalysisEngineDescription) specifier;
   }
 
   /**
