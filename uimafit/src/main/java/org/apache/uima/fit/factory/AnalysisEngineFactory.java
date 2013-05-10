@@ -65,6 +65,7 @@ import org.apache.uima.resource.metadata.OperationalProperties;
 import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.resource.metadata.impl.Import_impl;
+import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.InvalidXMLException;
 
 /**
@@ -526,14 +527,16 @@ public final class AnalysisEngineFactory {
       desc.getAnalysisEngineMetaData().setTypePriorities(typePriorities);
     }
 
-    // set indexes from the argument to this call or from the annotation present in the
-    // component if the argument is null
+    // set indexes from the argument to this call and from the annotation present in the
+    // component
+    List<FsIndexCollection> fsIndexes = new ArrayList<FsIndexCollection>();
     if (indexes != null) {
-      desc.getAnalysisEngineMetaData().setFsIndexCollection(indexes);
-    } else {
-      desc.getAnalysisEngineMetaData().setFsIndexCollection(
-              FsIndexFactory.createFsIndexCollection(componentClass));
-    }
+      fsIndexes.add(indexes);
+    } 
+    fsIndexes.add(FsIndexFactory.createFsIndexCollection(componentClass));
+    FsIndexCollection aggIndexColl = CasCreationUtils.mergeFsIndexes(fsIndexes,
+            UIMAFramework.newDefaultResourceManager());
+    desc.getAnalysisEngineMetaData().setFsIndexCollection(aggIndexColl);    
 
     // set capabilities from the argument to this call or from the annotation present in the
     // component if the argument is null
