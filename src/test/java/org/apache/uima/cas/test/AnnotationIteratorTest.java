@@ -77,6 +77,7 @@ public class AnnotationIteratorTest extends TestCase {
     super(arg0);
   }
 
+  @Override
   public void setUp() {
     try {
       this.cas = CASInitializer.initCas(new CASTestSetup());
@@ -117,6 +118,7 @@ public class AnnotationIteratorTest extends TestCase {
     assertTrue(this.sentenceType != null);
   }
 
+  @Override
   public void tearDown() {
     this.cas = null;
     this.ts = null;
@@ -285,7 +287,7 @@ public class AnnotationIteratorTest extends TestCase {
    * index the subiterator was applied to always to be returned, even if outside the boundary
    * annotation.
    */
-  public void testSubiteratorOnIndex() {
+  public void testUnambiguousSubiteratorOnIndex() {
     try {
       //                        0    0    1    1    2    2    3    3    4    4    5
       //                        0    5    0    5    0    5    0    5    0    5    0
