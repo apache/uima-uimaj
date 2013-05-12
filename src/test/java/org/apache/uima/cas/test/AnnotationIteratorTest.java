@@ -279,6 +279,36 @@ public class AnnotationIteratorTest extends TestCase {
       assertTrue(false);
     }
   }
+  
+  /**
+   * UIMA-2808 - There was a bug in Subiterator causing the first annotation of the type of the
+   * index the subiterator was applied to always to be returned, even if outside the boundary
+   * annotation.
+   */
+  public void testSubiteratorOnIndex() {
+    try {
+      //                        0    0    1    1    2    2    3    3    4    4    5
+      //                        0    5    0    5    0    5    0    5    0    5    0
+      this.cas.setDocumentText("Sentence A with no value. Sentence B with value 377.");
+    } catch (CASRuntimeException e) {
+      assertTrue(false);
+    }      
+          
+    cas.addFsToIndexes(cas.createAnnotation(this.sentenceType, 0, 25));
+    cas.addFsToIndexes(cas.createAnnotation(this.sentenceType, 26, 52));
+    cas.addFsToIndexes(cas.createAnnotation(this.tokenType, 48, 51));
+
+    AnnotationIndex<AnnotationFS> si = cas.getAnnotationIndex(this.sentenceType);
+    for (AnnotationFS sa : si) {
+      AnnotationIndex<AnnotationFS> ti = cas.getAnnotationIndex(this.tokenType);
+      FSIterator<AnnotationFS> ti2 = ti.subiterator(sa, false, false);
+      
+      while (ti2.hasNext()) {
+        AnnotationFS t = ti2.next();
+        assertTrue("Subiterator returned annotation outside boundaries", t.getBegin() < sa.getEnd());
+      }
+    }
+  }
 
   public static void main(String[] args) {
     AnnotationIteratorTest test = new AnnotationIteratorTest(null);

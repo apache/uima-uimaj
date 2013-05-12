@@ -132,13 +132,11 @@ public class Subiterator<T extends AnnotationFS> extends FSIteratorImplBase<T> {
     if (!it.isValid()) {
       return;
     }
-    current = it.get();
-    this.list.add(current);
-    it.moveToNext();
+    current = null;
     while (it.isValid()) {
       next =  it.get();
-      // If the next annotation overlaps, skip it.
-      if (next.getBegin() < current.getEnd()) {
+      // If the next annotation overlaps, skip it. Don't check while there is no "current" yet.
+      if ((current != null) && (next.getBegin() < current.getEnd())) {
         it.moveToNext();
         continue;
       }
