@@ -66,6 +66,7 @@ import org.apache.uima.cas.FloatArrayFS;
 import org.apache.uima.cas.IntArrayFS;
 import org.apache.uima.cas.LongArrayFS;
 import org.apache.uima.cas.Marker;
+import org.apache.uima.cas.SerialFormat;
 import org.apache.uima.cas.ShortArrayFS;
 import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.SofaID;
@@ -1161,8 +1162,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * @throws CASRuntimeException
    */
   
-  public void reinit(InputStream istream) throws CASRuntimeException {
-    reinit(istream, null);
+  public SerialFormat reinit(InputStream istream) throws CASRuntimeException {
+    return reinit(istream, null);
   }
   
   /**
@@ -1171,10 +1172,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * @param rfs - reuse info collected when serializaing out to service
    * @throws CASRuntimeException
    */
-  public void reinit(InputStream istream, ReuseInfo rfs) throws CASRuntimeException {
+  public SerialFormat reinit(InputStream istream, ReuseInfo rfs) throws CASRuntimeException {
     if (this != this.svd.baseCAS) {
-      this.svd.baseCAS.reinit(istream, rfs);
-      return;
+      return this.svd.baseCAS.reinit(istream, rfs);
     }
    
     final DataInputStream dis = (istream instanceof DataInputStream) ?  
@@ -1204,10 +1204,11 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
         final int compressedVersion = readInt(dis, swap);
         if (compressedVersion == 0) {
           (new BinaryCasSerDes4(this.getTypeSystemImpl(), false)).deserialize(this, dis, delta);
+          return SerialFormat.COMPRESSED;
         } else {
           (new BinaryCasSerDes6(this, rfs)).deserializeAfterVersion(dis, delta, AllowPreexistingFS.allow);
+          return SerialFormat.COMPRESSED_FILTERED;
         }
-        return;
       }
       
       // main fsheap
@@ -1388,6 +1389,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
           CASRuntimeException.BLOB_DESERIALIZATION, new String[] { msg });
       throw exception;
     }
+    return SerialFormat.BINARY;
   }
   
   private long readLong(DataInputStream dis, boolean swap) throws IOException {
