@@ -37,3 +37,11 @@ for i in $(find ./target/eclipse-update-site -name '*.jar')
     md5sum --check $i.md5
     sha1sum --check $i.sha1
   done
+
+# Verify PGP signatures, MD5 and SHA1 checksums on all gz files
+for i in $(find ./target/eclipse-update-site -name '*.gz') 
+  do 
+    gpg --verify $i.asc
+    md5sum --check $i.md5
+    sha1sum --check $i.sha1
+  done
