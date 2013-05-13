@@ -58,6 +58,7 @@ public class CasCopier {
   private CAS mDestCas;
   private LowLevelCAS mLowLevelDestCas;
   private Feature mDestSofaFeature;
+  private boolean lenient = false; //true: ignore feature structures and features that are not defined in the destination CAS
 
   private Map<FeatureStructure, FeatureStructure> mFsMap = new HashMap<FeatureStructure, FeatureStructure>();
   
@@ -72,16 +73,39 @@ public class CasCopier {
    * Note that if you are merging data from multiple CASes, you must create a new CasCopier
    * for each source CAS.
    * 
+   * Note: If the feature structure and/or feature is not defined in the type system of
+   *       the destination CAS, the copy will fail (in other words, the lenient setting is false,
+   *       by default).
+   *
    * @param aSrcCas
    *          the CAS to copy from.
    * @param aDestCas
    *          the CAS to copy into.
    */
   public CasCopier(CAS aSrcCas, CAS aDestCas) {
+    this(aSrcCas, aDestCas, false);
+  }
+
+  /**
+   * Creates a new CasCopier that can be used to copy FeatureStructures from one CAS to another.
+   * Note that if you are merging data from multiple CASes, you must create a new CasCopier
+   * for each source CAS. This version of the constructor supports a "lenient copy" option. When set,
+   * the CAS copy function will ignore (not attempt to copy) FSs and features not defined in the type system
+   * of the destination CAS, rather than throwing an exception.
+   *
+   * @param aSrcCas
+   *          the CAS to copy from.
+   * @param aDestCas
+   *          the CAS to copy into.
+   * @param lenient
+   *          ignore FSs and features not defined in the type system of the destination CAS
+   */
+  public CasCopier(CAS aSrcCas, CAS aDestCas, boolean lenient) {
     mSrcCas = aSrcCas;
     mDestCas = aDestCas;
     mLowLevelDestCas = aDestCas.getLowLevelCAS();
     mDestSofaFeature = aDestCas.getTypeSystem().getFeatureByFullName(CAS.FEATURE_FULL_NAME_SOFA);    
+    this.lenient = lenient;
   }
   
   /**
@@ -91,6 +115,10 @@ public class CasCopier {
    * indexed in a view in the source CAS will become indexed in the same-named view in the
    * destination CAS.
    * 
+   * Note: If the feature structure and/or feature is not defined in the type system of
+   *       the destination CAS, the copy will fail (in other words, the lenient setting is false,
+   *       by default).
+   *
    * @param aSrcCas
    *          the CAS to copy from
    * @param aDestCas
@@ -99,7 +127,29 @@ public class CasCopier {
    *          if true, the sofa data and mimeType of each view will be copied. If false they will not.
    */  
   public static void copyCas(CAS aSrcCas, CAS aDestCas, boolean aCopySofa) {
-    CasCopier copier = new CasCopier(aSrcCas, aDestCas);
+   copyCas(aSrcCas, aDestCas, aCopySofa, false);
+  }
+
+  /**
+   * Does a complete deep copy of one CAS into another CAS.  The contents of each view
+   * in the source CAS will be copied to the same-named view in the destination CAS.  If
+   * the view does not already exist it will be created.  All FeatureStructures that are
+   * indexed in a view in the source CAS will become indexed in the same-named view in the
+   * destination CAS. This version of the method supports a "lenient copy" option. When set,
+   * the CAS copy function will ignore (not attempt to copy) FSs and features not defined in the type system
+   * of the destination CAS, rather than throwing an exception.
+   *
+   * @param aSrcCas
+   *          the CAS to copy from
+   * @param aDestCas
+   *          the CAS to copy to
+   * @param aCopySofa
+   *          if true, the sofa data and mimeType of each view will be copied. If false they will not.
+   * @param lenient
+   *          ignore FSs and features not defined in the type system of the destination CAS
+   */
+  public static void copyCas(CAS aSrcCas, CAS aDestCas, boolean aCopySofa, boolean lenient) {
+    CasCopier copier = new CasCopier(aSrcCas, aDestCas, lenient);
     
     // oops, this misses the initial view if a sofa FS has not yet been created
 //    Iterator<SofaFS> sofaIter = aSrcCas.getSofaIterator();
@@ -129,13 +179,13 @@ public class CasCopier {
    *          if true, the sofa data and mimeType will be copied. If false they will not.
    */
   public void copyCasView(CAS aSrcCasView, boolean aCopySofa) {
-    //get or create the target view
+    // get or create the target view
     CAS targetView = getOrCreateView(mDestCas, aSrcCasView.getViewName());
-    
+
     if (aCopySofa) {
       // can't copy the SofaFS - just copy the sofa data and mime type
       SofaFS sofa = aSrcCasView.getSofa();
-      if (null != sofa) { 
+      if (null != sofa) {
         String sofaMime = sofa.getSofaMime();
         if (aSrcCasView.getDocumentText() != null) {
           targetView.setSofaDataString(aSrcCasView.getDocumentText(), sofaMime);
@@ -157,15 +207,23 @@ public class CasCopier {
         FeatureStructure fs = iter.next();
         if (!indexedFs.contains(fs)) {
           FeatureStructure copyOfFs = copyFs(fs);
-          //check for annotations with null Sofa reference - this can happen
-          //if the annotations were created with the Low Level CAS API.  If the
-          //Sofa reference isn't set, attempting to add the FS to the indexes
-          //will fail.
+          // If the lenient option is used, it's possible that no FS was
+          // created (e.g., FS is not defined in the target CAS. So ignore
+          // this FS in the source CAS and move on to the next FS.
+          if (lenient && copyOfFs == null) {
+            continue; // Move to the next FS in the source CAS
+          }
+          // otherwise, won't be null (error thrown instead)
+
+          // check for annotations with null Sofa reference - this can happen
+          // if the annotations were created with the Low Level CAS API. If the
+          // Sofa reference isn't set, attempting to add the FS to the indexes
+          // will fail.
           if (fs instanceof AnnotationFS) {
-              FeatureStructure sofa =((AnnotationFS)copyOfFs).getFeatureValue(mDestSofaFeature);
-              if (sofa == null) {
-                copyOfFs.setFeatureValue(mDestSofaFeature, targetView.getSofa());               
-              }
+            FeatureStructure sofa = ((AnnotationFS) copyOfFs).getFeatureValue(mDestSofaFeature);
+            if (sofa == null) {
+              copyOfFs.setFeatureValue(mDestSofaFeature, targetView.getSofa());
+            }
           }
           // also don't index the DocumentAnnotation (it's indexed by default)
           if (!isDocumentAnnotation(copyOfFs)) {
@@ -211,8 +269,8 @@ public class CasCopier {
    * @return the copy of <code>aFS</code> in the target CAS.
    */
   public FeatureStructure copyFsInner(FeatureStructure aFS) {
-    //FS must be in the source CAS
-    assert ((CASImpl)aFS.getCAS()).getBaseCAS() == ((CASImpl)mSrcCas).getBaseCAS();
+    // FS must be in the source CAS
+    assert ((CASImpl) aFS.getCAS()).getBaseCAS() == ((CASImpl) mSrcCas).getBaseCAS();
 
     // check if we already copied this FS
     FeatureStructure copy = (FeatureStructure) mFsMap.get(aFS);
@@ -224,17 +282,17 @@ public class CasCopier {
 
     // Certain types need to be handled specially
 
-    // Sofa - cannot be created by normal methods.  Instead, we return the Sofa with the
-    // same Sofa ID in the target CAS.  If it does not exist it will be created.
+    // Sofa - cannot be created by normal methods. Instead, we return the Sofa with the
+    // same Sofa ID in the target CAS. If it does not exist it will be created.
     if (aFS instanceof SofaFS) {
-      String sofaId = ((SofaFS)aFS).getSofaID();
+      String sofaId = ((SofaFS) aFS).getSofaID();
       return getOrCreateView(mDestCas, sofaId).getSofa();
     }
 
     // DocumentAnnotation - instead of creating a new instance, reuse the automatically created
-    // instance in the destination view. 
-    if (isDocumentAnnotation(aFS)) {         
-      String viewName = ((AnnotationFS)aFS).getView().getViewName();
+    // instance in the destination view.
+    if (isDocumentAnnotation(aFS)) {
+      String viewName = ((AnnotationFS) aFS).getView().getViewName();
       CAS destView = mDestCas.getView(viewName);
       FeatureStructure destDocAnnot = destView.getDocumentAnnotation();
       if (destDocAnnot != null) {
@@ -251,21 +309,22 @@ public class CasCopier {
     }
 
     // create a new FS of the same type in the target CAS
-    Type destType;
-    if (mDestCas.getTypeSystem() == mSrcCas.getTypeSystem()) {
-      //optimize type lookup if type systems are identical
-      destType = srcType;
-    } else {
-      destType = mDestCas.getTypeSystem().getType(srcType.getName());
-    }
+    Type destType = (mDestCas.getTypeSystem() == mSrcCas.getTypeSystem()) ? srcType : mDestCas
+        .getTypeSystem().getType(srcType.getName());
     if (destType == null) {
-      throw new UIMARuntimeException(UIMARuntimeException.TYPE_NOT_FOUND_DURING_CAS_COPY,
-              new Object[] { srcType.getName() });
+      // If in lenient mode, do not act on this FS. Instead just
+      // return (null) to the caller and let the caller deal with this case.
+      if (lenient) {
+        return null; // No FS to create
+      } else {
+        throw new UIMARuntimeException(UIMARuntimeException.TYPE_NOT_FOUND_DURING_CAS_COPY,
+            new Object[] { srcType.getName() });
+      }
     }
-    //We need to use the LowLevel CAS interface to create the FS, because the usual
-    //CAS.createFS() call doesn't allow us to create subtypes of AnnotationBase from
-    //a base CAS.  In any case we don't need the Sofa reference to be automatically
-    //set because we'll set it manually when in the copyFeatures method. 
+    // We need to use the LowLevel CAS interface to create the FS, because the usual
+    // CAS.createFS() call doesn't allow us to create subtypes of AnnotationBase from
+    // a base CAS. In any case we don't need the Sofa reference to be automatically
+    // set because we'll set it manually when in the copyFeatures method.
     int typeCode = mLowLevelDestCas.ll_getTypeSystem().ll_getCodeForType(destType);
     int destFsAddr = mLowLevelDestCas.ll_createFS(typeCode);
     FeatureStructure destFs = mDestCas.getLowLevelCAS().ll_getFSForRef(destFsAddr);
@@ -273,7 +332,7 @@ public class CasCopier {
     // add to map so we don't try to copy this more than once
     mFsMap.put(aFS, destFs);
 
-    fsToDo.add(aFS);  // order important
+    fsToDo.add(aFS); // order important
     fsToDo.add(destFs);
     return destFs;
   }
@@ -291,7 +350,7 @@ public class CasCopier {
     // set feature values
     Type srcType = aSrcFS.getType();
     Type destType = aDestFS.getType();
-    for (Feature srcFeat : srcType.getFeatures()) {      
+    for (Feature srcFeat : srcType.getFeatures()) {
       Feature destFeat;
       if (destType == aSrcFS.getType()) {
         // sharing same type system, so destFeat == srcFeat
@@ -300,8 +359,15 @@ public class CasCopier {
         // not sharing same type system, so do a name loop up in destination type system
         destFeat = destType.getFeatureByBaseName(srcFeat.getShortName());
         if (destFeat == null) {
-          throw new UIMARuntimeException(UIMARuntimeException.FEATURE_NOT_FOUND_DURING_CAS_COPY,
-                  new Object[] { srcFeat.getName() });
+          // If in lenient mode, ignore this feature and move on to the next
+          // feature in this FS (if one exists)
+          if (lenient) {
+            continue; // Ignore this feature in the source CAS since it doesn't exist in
+                      // in the target CAS.
+          } else {
+            throw new UIMARuntimeException(UIMARuntimeException.FEATURE_NOT_FOUND_DURING_CAS_COPY,
+                new Object[] { srcFeat.getName() });
+          }
         }
       }
 
@@ -311,11 +377,9 @@ public class CasCopier {
       String srcRangeName = srcFeat.getRange().getName();
       if (srcRangeName.equals(CAS.TYPE_NAME_STRING)) {
         aDestFS.setStringValue(destFeat, aSrcFS.getStringValue(srcFeat));
-      } else
-      if (srcRangeName.equals(CAS.TYPE_NAME_INTEGER)) {
+      } else if (srcRangeName.equals(CAS.TYPE_NAME_INTEGER)) {
         aDestFS.setIntValue(destFeat, aSrcFS.getIntValue(srcFeat));
-      } else
-      if (srcFeat.getRange().isPrimitive()) {
+      } else if (srcFeat.getRange().isPrimitive()) {
         aDestFS.setFeatureValueFromString(destFeat, aSrcFS.getFeatureValueAsString(srcFeat));
       } else {
         // recursive copy no longer done recursively, to avoid blowing the stack
