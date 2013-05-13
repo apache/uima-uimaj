@@ -25,6 +25,7 @@ import java.io.OutputStream;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.Marker;
+import org.apache.uima.cas.SerialFormat;
 import org.apache.uima.cas.admin.CASMgr;
 
 public class Serialization {
@@ -75,8 +76,8 @@ public class Serialization {
     ser.addCAS((CASImpl) cas, ostream);
   }
 
-  public static void deserializeCAS(CAS cas, InputStream istream) {
-    ((CASImpl) cas).reinit(istream);
+  public static SerialFormat deserializeCAS(CAS cas, InputStream istream) {
+    return ((CASImpl) cas).reinit(istream);
   }
 
   /**
