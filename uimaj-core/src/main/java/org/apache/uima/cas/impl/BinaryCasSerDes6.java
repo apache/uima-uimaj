@@ -75,6 +75,7 @@ import org.apache.uima.cas.impl.TypeSystemImpl.TypeInfo;
 import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.internal.util.rb_trees.Int2IntRBT;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.impl.DataIO;
 import org.apache.uima.util.impl.OptimizeStrings;
 import org.apache.uima.util.impl.SerializationMeasures;
@@ -467,6 +468,7 @@ public class BinaryCasSerDes6 {
    * @param doMeasurements if true, measurements are done (on serialization)
    * @param compressLevel if not null, specifies enum instance for compress level
    * @param compressStrategy if not null, specifies enum instance for compress strategy
+   * @throws ResourceInitializationException if the target type system is incompatible with the source type system
    */
   public BinaryCasSerDes6(
       AbstractCas aCas,
@@ -475,7 +477,7 @@ public class BinaryCasSerDes6 {
       ReuseInfo rfs,
       boolean doMeasurements,
       CompressLevel compressLevel, 
-      CompressStrat compressStrategy) {
+      CompressStrat compressStrategy) throws ResourceInitializationException {
     cas = ((CASImpl) ((aCas instanceof JCas) ? ((JCas)aCas).getCas(): aCas)).getBaseCAS();
     
     this.ts = cas.getTypeSystemImpl();
@@ -522,8 +524,9 @@ public class BinaryCasSerDes6 {
   /**
    * Setup to serialize (not delta) or deserialize (not delta) using binary compression, no type mapping but only processing reachable Feature Structures
    * @param cas
+   * @throws ResourceInitializationException never thrown 
    */
-  public BinaryCasSerDes6(AbstractCas cas) {
+  public BinaryCasSerDes6(AbstractCas cas) throws ResourceInitializationException {
     this(cas, null, null, null, false, CompressLevel.Default, CompressStrat.Default);
   }
   
@@ -532,8 +535,9 @@ public class BinaryCasSerDes6 {
    * @param cas
    * @param mark
    * @param tgtTs
+   * @throws ResourceInitializationException if the target type system is incompatible with the source type system
    */
-  public BinaryCasSerDes6(AbstractCas cas, TypeSystemImpl tgtTs) {
+  public BinaryCasSerDes6(AbstractCas cas, TypeSystemImpl tgtTs) throws ResourceInitializationException {
     this(cas, null, tgtTs, null, false, CompressLevel.Default, CompressStrat.Default);
   }
 
@@ -543,8 +547,9 @@ public class BinaryCasSerDes6 {
    * @param mark
    * @param tgtTs
    * @param rfs Reused Feature Structure information - required for both delta serialization and delta deserialization
+   * @throws ResourceInitializationException if the target type system is incompatible with the source type system
    */
-  public BinaryCasSerDes6(AbstractCas cas, MarkerImpl mark, TypeSystemImpl tgtTs, ReuseInfo rfs) {
+  public BinaryCasSerDes6(AbstractCas cas, MarkerImpl mark, TypeSystemImpl tgtTs, ReuseInfo rfs) throws ResourceInitializationException {
     this(cas, mark, tgtTs, rfs, false, CompressLevel.Default, CompressStrat.Default);
   }
   
@@ -555,8 +560,9 @@ public class BinaryCasSerDes6 {
    * @param tgtTs
    * @param rfs Reused Feature Structure information - speed up on serialization, required on delta deserialization
    * @param doMeasurements
+   * @throws ResourceInitializationException if the target type system is incompatible with the source type system
    */
-  public BinaryCasSerDes6(AbstractCas cas, MarkerImpl mark, TypeSystemImpl tgtTs, ReuseInfo rfs, boolean doMeasurements) {
+  public BinaryCasSerDes6(AbstractCas cas, MarkerImpl mark, TypeSystemImpl tgtTs, ReuseInfo rfs, boolean doMeasurements) throws ResourceInitializationException {
     this(cas, mark, tgtTs, rfs, doMeasurements, CompressLevel.Default, CompressStrat.Default);
   }
 
@@ -564,8 +570,9 @@ public class BinaryCasSerDes6 {
    * Setup to serialize (not delta) or deserialize (maybe delta) using binary compression, no type mapping and only processing reachable Feature Structures
    * @param cas
    * @param rfs
+   * @throws ResourceInitializationException never thrown
    */
-  public BinaryCasSerDes6(AbstractCas cas, ReuseInfo rfs) {
+  public BinaryCasSerDes6(AbstractCas cas, ReuseInfo rfs) throws ResourceInitializationException {
     this(cas, null, null, rfs, false, CompressLevel.Default, CompressStrat.Default);
   }
 

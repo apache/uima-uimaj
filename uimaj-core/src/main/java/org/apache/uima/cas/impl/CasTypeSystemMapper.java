@@ -28,6 +28,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.uima.cas.Type;
+import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.resource.ResourceInitializationException;
 
 /**
  * This class gets initialized with two type systems, and then provides 
@@ -93,18 +95,39 @@ public class CasTypeSystemMapper {
    */
   final private int[] tTgt2Src;
   
-  public CasTypeSystemMapper(TypeSystemImpl tsSrc, TypeSystemImpl tsTgt) {
+  final private boolean typeSystemsSame;
+  
+  public boolean isEqual() {
+    return this.typeSystemsSame;
+  }
+  
+  public CasTypeSystemMapper(TypeSystemImpl tsSrc, TypeSystemImpl tsTgt) throws ResourceInitializationException {
     if (!tsSrc.isCommitted() || !tsTgt.isCommitted()) {
       throw new RuntimeException("Type Systems must be committed before calling this method");
     }
     this.tsSrc = tsSrc;
     this.tsTgt = tsTgt;
     
-    this.tSrc2Tgt = addTypes(tsSrc, tsTgt);
-    this.tTgt2Src = addTypes(tsTgt, tsSrc);
-    this.fSrcInTgt = new boolean[tsSrc.getTypeArraySize()] [];
-    this.fTgt2Src = new int[tsSrc.getTypeArraySize()] [];
-    addFeatures(tsSrc, tsTgt);
+    int[] temptSrc2Tgt = null;
+    int[] temptTgt2Src = null;
+    boolean[][] localFSrcInTgt = null;
+    int[][] localFTgt2Src = null;
+    if (tsSrc == tsTgt) {
+      typeSystemsSame = true;
+    } else {
+      temptSrc2Tgt = addTypes(tsSrc, tsTgt);
+      temptTgt2Src = addTypes(tsTgt, tsSrc);
+    
+      localFSrcInTgt = new boolean[tsSrc.getTypeArraySize()] [];
+      localFTgt2Src = new int[tsSrc.getTypeArraySize()] [];
+      typeSystemsSame = addFeatures(tsSrc, tsTgt, localFSrcInTgt, localFTgt2Src, temptSrc2Tgt);
+    }
+    
+    this.tSrc2Tgt = temptSrc2Tgt;
+    this.tTgt2Src = temptTgt2Src;
+    this.fSrcInTgt =localFSrcInTgt;
+    this.fTgt2Src = localFTgt2Src;
+    
 //    this.fTgt2Src = addFeatures(tsTgt, tsSrc);
   }
   
@@ -164,7 +187,7 @@ public class CasTypeSystemMapper {
 //    return fTgt2Src[c];
 //  }
 
-  private int[] addTypes(TypeSystemImpl tsSrc, TypeSystemImpl tsTgt) {
+  private static int[] addTypes(TypeSystemImpl tsSrc, TypeSystemImpl tsTgt) {
     Map<TypeImpl, TypeImpl> mSrc2Tgt = new LinkedHashMap<TypeImpl, TypeImpl>();
     for (Iterator<Type> it = tsSrc.getTypeIterator(); it.hasNext();) {
       TypeImpl tSrc = (TypeImpl) it.next();
@@ -180,12 +203,16 @@ public class CasTypeSystemMapper {
     return r;  
   }
   
-  private void addFeatures(TypeSystemImpl tsSrc, TypeSystemImpl tsTgt) {
+  private boolean addFeatures(final TypeSystemImpl tsSrc, final TypeSystemImpl tsTgt, final boolean[][] localFSrcInTgt, final int[][] localFTgt2Src, final int[] temptSrc2Tgt) throws ResourceInitializationException {
+    boolean isEqual = tsSrc.getTypeArraySize() == tsTgt.getTypeArraySize();
     for (int tCodeSrc = 0; tCodeSrc < tsSrc.getTypeArraySize(); tCodeSrc++) {
-      final int tCodeTgt = mapTypeCodeSrc2Tgt(tCodeSrc);
+      final int tCodeTgt = temptSrc2Tgt[tCodeSrc];
+      if (tCodeTgt != tCodeSrc) {
+        isEqual = false;
+      }
       if (tCodeTgt == 0) {  // this type not in target
-        fSrcInTgt[tCodeSrc] = BOOLEAN0;
-        fTgt2Src[tCodeSrc] = null;  // should never be referenced
+        localFSrcInTgt[tCodeSrc] = BOOLEAN0;
+        localFTgt2Src[tCodeSrc] = null;  // should never be referenced
         continue;
       }
       
@@ -193,25 +220,29 @@ public class CasTypeSystemMapper {
       final int[] fcSrc = tsSrc.ll_getAppropriateFeatures(tCodeSrc);
       final int[] fcTgt = tsTgt.ll_getAppropriateFeatures(tCodeTgt);
       
+      if (fcSrc.length != fcTgt.length) {
+        isEqual = false;
+      }
+      
       if (fcSrc.length == 0) {
         // source has no features
-        fSrcInTgt[tCodeSrc] = BOOLEAN0;
-        fTgt2Src[tCodeSrc] = new int[fcTgt.length];
-        Arrays.fill(fTgt2Src[tCodeSrc], -1);
+        localFSrcInTgt[tCodeSrc] = BOOLEAN0;
+        localFTgt2Src[tCodeSrc] = new int[fcTgt.length];
+        Arrays.fill(localFTgt2Src[tCodeSrc], -1);
         continue;  // source type has no features        
       }
       
       final boolean[] srcInTgt = new boolean[fcSrc.length];
-      fSrcInTgt[tCodeSrc] = srcInTgt;
+      localFSrcInTgt[tCodeSrc] = srcInTgt;
       
       if (fcTgt.length == 0) {
         Arrays.fill(srcInTgt, false);
-        fTgt2Src[tCodeSrc] = INT0;
+        localFTgt2Src[tCodeSrc] = INT0;
         continue;  // target type has no features        
       }
       
       final int[] tgt2srcOffsets = new int[fcTgt.length];
-      fTgt2Src[tCodeSrc] = tgt2srcOffsets;
+      localFTgt2Src[tCodeSrc] = tgt2srcOffsets;
       
 //      // debug 
 //      if (tCodeTgt == 228) {
@@ -268,7 +299,23 @@ public class CasTypeSystemMapper {
         final String nameSrc = namesSrc.get(fciSrc);
         // feature names are semi sorted, not completely sorted due to inheritence
         final int iTgt = namesTgt.indexOf(nameSrc);
-        srcInTgt[fciSrc] = ((-1) != iTgt);  // -1 if not there
+        if (iTgt == -1) {
+          isEqual = false;          
+          srcInTgt[fciSrc] = false;
+        } else {
+          if (! tsSrc.ll_getFeatureForCode(fcSrc[fciSrc]).getRange().getName().equals(
+                tsTgt.ll_getFeatureForCode(fcTgt[iTgt]).getRange().getName())) {
+            throw new ResourceInitializationException(
+                ResourceInitializationException.INCOMPATIBLE_RANGE_TYPES, new Object[] {
+                    tsSrc.ll_getTypeForCode(tCodeSrc).getName() + ":" + nameSrc, 
+                    tsSrc.ll_getFeatureForCode(fcSrc[fciSrc]).getRange().getName(), 
+                    tsTgt.ll_getFeatureForCode(fcTgt[iTgt]).getRange().getName(),
+                    ""});
+          }
+          srcInTgt[fciSrc] = true;
+          
+          
+        } 
       } // end of for loop over all source features of a type code
       
       // for each feature in the target, find the corresponding source feature by name match (if any)
@@ -277,8 +324,12 @@ public class CasTypeSystemMapper {
         // feature names are semi sorted, not completely sorted due to inheritence
         final int iSrc = namesSrc.indexOf(nameTgt);
         tgt2srcOffsets[fciTgt] = iSrc;  // -1 if not there
+        if (fciTgt != iSrc) {
+          isEqual = false;
+        }
       } // end of for loop over all target features of a type code      
     }   // end of for loop over all typecodes
+    return isEqual;
   }
 
   

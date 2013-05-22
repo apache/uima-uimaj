@@ -1136,6 +1136,9 @@ public class SerDesTest6 extends TestCase {
       }
     } catch (IOException e) {
       throw new RuntimeException(e);
+    } catch (ResourceInitializationException e) {
+      e.printStackTrace();
+      fail();
     }    
   }
   
@@ -1158,6 +1161,9 @@ public class SerDesTest6 extends TestCase {
       assertTrue(bcs.compareCASes(casSrc, casTgt));
     } catch (IOException e) {
       throw new RuntimeException(e);
+    } catch (ResourceInitializationException e) {
+      e.printStackTrace();
+      fail();
     }    
    
   }
@@ -1193,6 +1199,9 @@ public class SerDesTest6 extends TestCase {
       }
     } catch (IOException e) {
       throw new RuntimeException(e);
+    } catch (ResourceInitializationException e) {
+      e.printStackTrace();
+      fail();
     }
     return riToReturn;
   }
@@ -1218,6 +1227,9 @@ public class SerDesTest6 extends TestCase {
       }      
     } catch (IOException e) {
       throw new RuntimeException(e);
+    } catch (ResourceInitializationException e) {
+      e.printStackTrace();
+      fail();
     }
   }
   

@@ -35,6 +35,7 @@ import org.apache.uima.cas.impl.BinaryCasSerDes6.ReuseInfo;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.resource.ResourceInitializationException;
 
 /**
  * Object-oriented CAS (Common Analysis System) API.
@@ -1083,8 +1084,9 @@ public interface CAS extends AbstractCas {
    * @param tgtTypeSystem null or a target TypeSystem, which must be mergable with this CAS's type system
    * @return information to be used on subsequent serializations (to save time) or deserializations (for receiving delta CASs) 
    * @throws IOException
+   * @throws ResourceInitializationException if target type system is incompatible with this CAS's type system
    */
-  public ReuseInfo serializeWithCompression(Object out, TypeSystem tgtTypeSystem) throws IOException;
+  public ReuseInfo serializeWithCompression(Object out, TypeSystem tgtTypeSystem) throws IOException, ResourceInitializationException;
   
   /**
    * @param out an OutputStream, a DataOutputStream, or a File
@@ -1093,7 +1095,8 @@ public interface CAS extends AbstractCas {
    * @param reuseInfo if mark is not null, this parameter is required 
    * - and must have been computed when the service did the original deserialization of the CAS now being serialized as a delta CAS
    * @throws IOException
+   * @throws ResourceInitializationException if target type system is incompatible with this CAS's type system
    */
-  public void serializeWithCompression(Object out, TypeSystem tgtTypeSystem, Marker mark, ReuseInfo reuseInfo) throws IOException;
+  public void serializeWithCompression(Object out, TypeSystem tgtTypeSystem, Marker mark, ReuseInfo reuseInfo) throws IOException, ResourceInitializationException;
   
 }

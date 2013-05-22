@@ -56,6 +56,7 @@ import org.apache.uima.internal.util.StringToIntMap;
 import org.apache.uima.internal.util.SymbolTable;
 import org.apache.uima.internal.util.rb_trees.IntRedBlackTree;
 import org.apache.uima.internal.util.rb_trees.RedBlackTree;
+import org.apache.uima.resource.ResourceInitializationException;
 
 /**
  * Type system implementation.
@@ -1588,7 +1589,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
    *********************************************************/
   Map<TypeSystemImpl, CasTypeSystemMapper> typeSystemMappers = new HashMap<TypeSystemImpl, CasTypeSystemMapper>();
   
-  synchronized CasTypeSystemMapper getTypeSystemMapper(TypeSystemImpl tgtTs) {
+  synchronized CasTypeSystemMapper getTypeSystemMapper(TypeSystemImpl tgtTs) throws ResourceInitializationException {
     if ((null == tgtTs) || (this == tgtTs)) {
       return null;  // conventions for no type mapping
     }
@@ -1597,7 +1598,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
       m = new CasTypeSystemMapper(this, tgtTs);
       typeSystemMappers.put(tgtTs, m);
     }
-    return m;
+    return (m.isEqual()) ? null : m;
   }
   
 }

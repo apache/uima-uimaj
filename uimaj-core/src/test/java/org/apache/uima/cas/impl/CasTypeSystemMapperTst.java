@@ -12,6 +12,7 @@ import org.apache.uima.cas.admin.FSIndexRepositoryMgr;
 import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.cas.test.AnnotatorInitializer;
 import org.apache.uima.cas.test.CASInitializer;
+import org.apache.uima.resource.ResourceInitializationException;
 
 public class CasTypeSystemMapperTst extends TestCase {
   
@@ -23,22 +24,24 @@ public class CasTypeSystemMapperTst extends TestCase {
     super.tearDown();
   }
 
-  public void testCasTypeSystemMapperFull() {
+  public void testCasTypeSystemMapperFull() throws ResourceInitializationException {
     TypeSystemImpl ts1 = createTs(3, 0x1ffff, 0x1ffff);
     TypeSystemImpl ts2 = createTs(3, 0x1ffff, 0x1ffff); 
     CasTypeSystemMapper m = new CasTypeSystemMapper(ts1, ts2);
     chkbase(m, 38);
+    assertTrue(m.isEqual());
   }
   
-  public void testMissingType1() {
+  public void testMissingType1() throws ResourceInitializationException {
     TypeSystemImpl ts1 = createTs(3, 0x1ffff, 0x1ffff);
     TypeSystemImpl ts2 = createTs(1, 0x1ffff, 0x1ffff); 
     CasTypeSystemMapper m = new CasTypeSystemMapper(ts1, ts2);
     chkbase(m, 37);
     assertEquals(0, m.mapTypeCodeSrc2Tgt(38));
+    assertFalse(m.isEqual());
   }
 
-  public void testMissingType2() {
+  public void testMissingType2() throws ResourceInitializationException {
     TypeSystemImpl ts1 = createTs(3, 0x1ffff, 0x1ffff);
     TypeSystemImpl ts2 = createTs(2, 0x1ffff, 0x1ffff); 
     CasTypeSystemMapper m = new CasTypeSystemMapper(ts1, ts2);
@@ -47,17 +50,19 @@ public class CasTypeSystemMapperTst extends TestCase {
     assertEquals(37, m.mapTypeCodeSrc2Tgt(38));
     assertEquals(38, m.mapTypeCodeTgt2Src(37));
     chkfeats(m, 38);
+    assertFalse(m.isEqual());
   }
   
-  public void testMissingType3() {
+  public void testMissingType3() throws ResourceInitializationException {
     TypeSystemImpl ts1 = createTs(1, 0x1ffff, 0x1ffff);
     TypeSystemImpl ts2 = createTs(3, 0x1ffff, 0x1ffff); 
     CasTypeSystemMapper m = new CasTypeSystemMapper(ts1, ts2);
     chkbase(m, 37);
     assertEquals(0, m.mapTypeCodeTgt2Src(38));
+    assertFalse(m.isEqual());
   }
   
-  public void testMissingType4() {
+  public void testMissingType4() throws ResourceInitializationException {
     TypeSystemImpl ts1 = createTs(2, 0x1ffff, 0x1ffff);
     TypeSystemImpl ts2 = createTs(3, 0x1ffff, 0x1ffff); 
     CasTypeSystemMapper m = new CasTypeSystemMapper(ts1, ts2);
@@ -66,28 +71,31 @@ public class CasTypeSystemMapperTst extends TestCase {
     assertEquals(37, m.mapTypeCodeTgt2Src(38));
     assertEquals(0, m.mapTypeCodeTgt2Src(37));
     chkfeats(m, 37);
+    assertFalse(m.isEqual());
   }
   
-  public void testMissingType5() {
+  public void testMissingType5() throws ResourceInitializationException {
     TypeSystemImpl ts1 = createTs(3, 0x1ffff, 0x1ffff);
     TypeSystemImpl ts2 = createTs(0, 0x1ffff, 0x1ffff); 
     CasTypeSystemMapper m = new CasTypeSystemMapper(ts1, ts2);
     chkbase(m, 36);
     assertEquals( 0, m.mapTypeCodeSrc2Tgt(37));
     assertEquals(0, m.mapTypeCodeSrc2Tgt(38));
+    assertFalse(m.isEqual());
   }
 
-  public void testMissingType6() {
+  public void testMissingType6() throws ResourceInitializationException {
     TypeSystemImpl ts1 = createTs(0, 0x1ffff, 0x1ffff);
     TypeSystemImpl ts2 = createTs(3, 0x1ffff, 0x1ffff); 
     CasTypeSystemMapper m = new CasTypeSystemMapper(ts1, ts2);
     chkbase(m, 36);
     assertEquals( 0, m.mapTypeCodeTgt2Src(37));
     assertEquals(0, m.mapTypeCodeTgt2Src(38));
+    assertFalse(m.isEqual());
   }
 
   
-  public void testMissingFeature0() {
+  public void testMissingFeature0() throws ResourceInitializationException {
     TypeSystemImpl ts1 = createTs(3, 0x1ffff, 0x1ffff);
     for (int i = 0, mf = 1; i < 14; i++, mf = mf<<1) {
       TypeSystemImpl ts2 = createTs(3, 0x1ffff - mf, 0x1ffff);  
@@ -99,10 +107,11 @@ public class CasTypeSystemMapperTst extends TestCase {
       assertEquals(38, m.mapTypeCodeTgt2Src(38));
       chkfeats(m, 38);
       chkMissingFeats1(m, 37, mf);    
-    } 
+      assertFalse(m.isEqual());
+   } 
   }
 
-  public void testMissingFeature0r() {
+  public void testMissingFeature0r() throws ResourceInitializationException {
     TypeSystemImpl ts1 = createTs(3, 0x1ffff, 0x1ffff);
     for (int i = 0, mf = 1; i < 14; i++, mf = mf<<1) {
       TypeSystemImpl ts2 = createTs(3, 0x1ffff, 0x1ffff - mf);  
@@ -114,10 +123,11 @@ public class CasTypeSystemMapperTst extends TestCase {
       assertEquals(38, m.mapTypeCodeTgt2Src(38));
       chkfeats(m, 37);
       chkMissingFeats1(m, 38, mf);      
+      assertFalse(m.isEqual());
     }
   }
 
-  public void testMissingFeature0f() {
+  public void testMissingFeature0f() throws ResourceInitializationException {
     TypeSystemImpl ts2 = createTs(3, 0x1ffff, 0x1ffff);  
     for (int i = 0, mf = 1; i < 14; i++, mf = mf<<1) {
       TypeSystemImpl ts1 = createTs(3, 0x1ffff - mf, 0x1ffff); // feat 8
@@ -129,10 +139,11 @@ public class CasTypeSystemMapperTst extends TestCase {
       assertEquals(38, m.mapTypeCodeTgt2Src(38));
       chkfeats(m, 38);
       chkMissingFeats2(m, 37, mf);
+      assertFalse(m.isEqual());
     }
   }
 
-  public void testMissingFeature0f2() {
+  public void testMissingFeature0f2() throws ResourceInitializationException {
     TypeSystemImpl ts2 = createTs(3, 0x1ffff, 0x1ffff);  
     for (int i = 0, mf = 1; i < 14; i++, mf = mf<<1) {
       TypeSystemImpl ts1 = createTs(3, 0x1ffff, 0x1ffff - mf); // feat 8
@@ -144,10 +155,11 @@ public class CasTypeSystemMapperTst extends TestCase {
       assertEquals(38, m.mapTypeCodeTgt2Src(38));
       chkfeats(m, 37);
       chkMissingFeats2(m, 38, mf);
+      assertFalse(m.isEqual());
     }
   }
   
-  public void testMissingAllFeat1() {
+  public void testMissingAllFeat1() throws ResourceInitializationException {
     int mf = 0x1ffff;
     TypeSystemImpl ts1 = createTs(3, 0x1ffff, 0x1ffff);
     TypeSystemImpl ts2 = createTs(3, 0x1ffff, 0x1ffff - mf);  
@@ -159,9 +171,10 @@ public class CasTypeSystemMapperTst extends TestCase {
     assertEquals(38, m.mapTypeCodeTgt2Src(38));
     chkfeats(m, 37);
     chkMissingFeats1(m, 38, mf);      
+    assertFalse(m.isEqual());
   }
 
-  public void testMissingAllFeat2() {
+  public void testMissingAllFeat2() throws ResourceInitializationException {
     int mf = 0x1ffff;
     TypeSystemImpl ts1 = createTs(3, 0x1ffff, 0x1ffff - mf);
     TypeSystemImpl ts2 = createTs(3, 0x1ffff, 0x1ffff);  
@@ -173,6 +186,7 @@ public class CasTypeSystemMapperTst extends TestCase {
     assertEquals(38, m.mapTypeCodeTgt2Src(38));
     chkfeats(m, 37);
     chkMissingFeats2(m, 38, mf);      
+    assertFalse(m.isEqual());
   }
 
   private void chkfeats(CasTypeSystemMapper m, int tCode) {
