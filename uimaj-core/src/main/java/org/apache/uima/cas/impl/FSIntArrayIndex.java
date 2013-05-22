@@ -250,6 +250,7 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
   // }
 
   // Do binary search on index.
+  // return negative number of insertion point if not found
   private final int binarySearch(int[] array, int ele, int start, int end) {
     --end; // Make end a legal value.
     int i; // Current position
@@ -355,8 +356,26 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
 //    }
   }
 
+  
+  /*
+   * Some day we may want to remove all occurrances of this feature structure, not just the
+   * first one we come to (in the case where the exact identical FS has been added to the 
+   * index multiple times).  The issues around this are:
+   *   multiple adds are lost on serialization/ deserialization
+   *   it take time to remove all instances - especially from bag indexes
+   */
+  
+  /**
+   * This code is written to remove (if it exists)
+   * the exact FS, not just one which matches in the sort comparator.
+   * 
+   *   
+   */
   public void remove(int fsRef) {
     final int pos = find(fsRef);  // finds "same" element per compare key
+    if (pos < 0) {
+      return;  // not in index
+    }
     if (this.index.get(pos) == fsRef) {
       this.index.remove(pos);
       return;

@@ -175,7 +175,7 @@ public class IteratorTest extends TestCase {
     this.sentenceType = null;
     this.annotationType = null;
   }
-
+  
   public void testGetIndexes() {
     Iterator<FSIndex<FeatureStructure>> it = this.cas.getIndexRepository().getIndexes();
     while (it.hasNext()) {
@@ -730,6 +730,7 @@ public class IteratorTest extends TestCase {
     // different FS.
     for (int i = 0; i < fsArray.length; i++) {
       ir.removeFS(fsArray[i]);
+      ir.removeFS(fsArray[i]);  // a 2nd remove should be a no-op https://issues.apache.org/jira/browse/UIMA-2934
       setIt.moveTo(fsArray[i]);
       if (setIt.isValid()) {
         int oldRef = this.cas.ll_getFSRef(fsArray[i]);
@@ -808,12 +809,12 @@ public class IteratorTest extends TestCase {
     verifyMoveToFirst(subsortedIt, true);
     
     ir.removeAllIncludingSubtypes(sentenceType);
-    verifyConcMod(setIt);
-    verifyConcMod(bagIt);
-    verifyConcMod(sortedIt);
-    verifyConcMod(subsetIt);
-    verifyConcMod(subbagIt);
-    verifyConcMod(subsortedIt);
+    verifyConcurrantModificationDetected(setIt);
+    verifyConcurrantModificationDetected(bagIt);
+    verifyConcurrantModificationDetected(sortedIt);
+    verifyConcurrantModificationDetected(subsetIt);
+    verifyConcurrantModificationDetected(subbagIt);
+    verifyConcurrantModificationDetected(subsortedIt);
 
     verifyMoveToFirst(setIt, false);
     verifyMoveToFirst(bagIt, false);
@@ -859,8 +860,8 @@ public class IteratorTest extends TestCase {
     verifyMoveToFirst(subsortedIt, false);
   }
   
-
-  private void verifyConcMod(FSIterator<?> it) {
+  
+  private void verifyConcurrantModificationDetected(FSIterator<?> it) {
     boolean caught = false;
     try {
       it.moveToNext();
