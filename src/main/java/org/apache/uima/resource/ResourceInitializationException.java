@@ -98,6 +98,12 @@ public class ResourceInitializationException extends UIMAException {
   public static final String INCOMPATIBLE_MULTI_REFS = "incompatible_multi_refs";
 
   /**
+   * Message key for a standard UIMA exception message: The String subtype {0} is declared twice, 
+   * with different sets of allowed values: {1} and {2}.  (Descriptor: {3})
+   */
+  public static final String ALLOWED_VALUES_NOT_IDENTICAL = "string_allowed_values_not_the_same";
+  
+  /**
    * Message key for a standard UIMA exception message: "Undefined type "{0}", referenced in feature
    * "{1}" declared on type "{2}"."
    */
