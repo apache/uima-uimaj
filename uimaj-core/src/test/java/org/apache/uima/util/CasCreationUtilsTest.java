@@ -66,6 +66,27 @@ public class CasCreationUtilsTest extends TestCase {
     super(arg0);
   }
 
+  // this test is a skeleton
+  // it is currently disabled - it doesn't actually check anything
+  // using debug one can see that no errors are thrown if the allowed values for subtypes of string differ when merging
+  // and that no merging occurs of the allowed values - the 1st one "wins"  (as of 5/2013)
+  // See Jira https://issues.apache.org/jira/browse/UIMA-2917
+  public void testStringSubtype() throws Exception {
+    try {
+
+      TypeSystemDescription ts1desc = UIMAFramework.getXMLParser()
+          .parseTypeSystemDescription(
+              new XMLInputSource(JUnitExtension
+                  .getFile("CasCreationUtilsTest/TypeSystemMergeStringSubtypeBasePlus.xml")));
+      
+      TypeSystemDescription result = checkMergeTypeSystem(ts1desc, "TypeSystemMergeStringSubtypeBase.xml",
+          ResourceInitializationException.ALLOWED_VALUES_NOT_IDENTICAL);
+      
+    } catch (Exception e) {
+      JUnitExtension.handleException(e);
+    }    
+  }
+
   public void testMergeTypeSystems() throws Exception {
     try {
       TypeSystemDescription ts1desc = UIMAFramework.getXMLParser().parseTypeSystemDescription(
@@ -138,9 +159,10 @@ public class CasCreationUtilsTest extends TestCase {
       JUnitExtension.handleException(e);
     }
   }
-  
-  private void checkMergeTypeSystem(TypeSystemDescription ts1desc, String typeFile, String msgKey)
+    
+  private TypeSystemDescription checkMergeTypeSystem(TypeSystemDescription ts1desc, String typeFile, String msgKey)
   throws Exception {
+    TypeSystemDescription mergedTS = null;
     try {
 
 
@@ -158,7 +180,7 @@ public class CasCreationUtilsTest extends TestCase {
 
       boolean rightExceptionThrown = (null != msgKey) ? false : true;
       try {
-        CasCreationUtils.mergeTypeSystems(
+        mergedTS = CasCreationUtils.mergeTypeSystems(
             tsList, UIMAFramework.newDefaultResourceManager(), new HashMap());
       } catch (ResourceInitializationException rie) {
         rightExceptionThrown = (null != msgKey) && rie.hasMessageKey(msgKey);
@@ -168,6 +190,7 @@ public class CasCreationUtilsTest extends TestCase {
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
+    return mergedTS;
   }
   
   public void testMergeTypeSystemsWithDifferentSupertypes() throws Exception {

@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -1151,19 +1152,70 @@ public class CasCreationUtils {
                   type.getSourceUrlString() });
         }
       }
-      // merge features
-      int prevNumFeatures = existingType.getFeatures().length;
-      FeatureDescription[] features = type.getFeatures();
-      if (features != null) {
-        mergeFeatures(existingType, type.getFeatures());
-        // if feature-merged occurred, the number of features on the type will have
-        // changed. Report this by adding to the aOutputMergedTypeNames collection.
-        if (existingType.getFeatures().length != prevNumFeatures) {
-          reportMerge(aOutputMergedTypes, type, existingType);
+      // merge features or check string allowed values are the same
+      if (supertypeName.equals("uima.cas.String")) {
+        AllowedValue[] av1 = getAllowedValues(type);
+        AllowedValue[] av2 = getAllowedValues(existingType);
+        if (!isAllowedValuesMatch(av1, av2)) {
+          throw new ResourceInitializationException(
+              ResourceInitializationException.ALLOWED_VALUES_NOT_IDENTICAL, new Object[] {
+                  typeName, avAsString(av1), avAsString(av2), 
+                  type.getSourceUrlString() });
+        }
+      } else {
+        int prevNumFeatures = existingType.getFeatures().length;
+        FeatureDescription[] features = type.getFeatures();
+        if (features != null) {
+          mergeFeatures(existingType, type.getFeatures());
+          // if feature-merged occurred, the number of features on the type will have
+          // changed. Report this by adding to the aOutputMergedTypeNames collection.
+          if (existingType.getFeatures().length != prevNumFeatures) {
+            reportMerge(aOutputMergedTypes, type, existingType);
+          }
         }
       }
-      
     }
+  }
+
+  private static boolean isAllowedValuesMatch(AllowedValue[] av1, AllowedValue[] av2) {
+    if (av1.length != av2.length) {
+      return false;
+    }
+    
+    Set<String> s1 = new HashSet<String>(av1.length);
+    Set<String> s2 = new HashSet<String>(av1.length);
+    
+    for (AllowedValue av : av1) {
+      s1.add(av.getString());
+    }
+    
+    for (AllowedValue av : av2) {
+      s2.add(av.getString());
+    }
+    
+    return s1.equals(s2);
+  }
+  
+  
+  private static String avAsString(AllowedValue[] av) {
+    StringBuilder sb = new StringBuilder("{");
+    for (int i = 0; i < av.length; i++) {
+      sb.append(av[i].getString());
+      if (i < av.length - 1) {
+        sb.append(", ");
+      }
+    }
+    sb.append('}');
+    return sb.toString();
+  }
+
+
+  private static AllowedValue[] getAllowedValues(TypeDescription type) {
+    AllowedValue[] r = type.getAllowedValues();
+    if (r == null) {
+      return new AllowedValue[0];
+    }
+    return r;
   }
 
   /**
