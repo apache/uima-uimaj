@@ -86,6 +86,7 @@ import org.apache.uima.cas.text.Language;
 import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.impl.JCasImpl;
+import org.apache.uima.resource.ResourceInitializationException;
 
 /**
  * Implements the CAS interfaces. This class must be public because we need to
@@ -1206,7 +1207,11 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
           (new BinaryCasSerDes4(this.getTypeSystemImpl(), false)).deserialize(this, dis, delta);
           return SerialFormat.COMPRESSED;
         } else {
-          (new BinaryCasSerDes6(this, rfs)).deserializeAfterVersion(dis, delta, AllowPreexistingFS.allow);
+          try {
+            (new BinaryCasSerDes6(this, rfs)).deserializeAfterVersion(dis, delta, AllowPreexistingFS.allow);
+          } catch (ResourceInitializationException e) {
+            // never thrown
+          }
           return SerialFormat.COMPRESSED_FILTERED;
         }
       }
@@ -4320,18 +4325,20 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
   
   /**
+   * @throws ResourceInitializationException if target type system is incompatible with this CAS's type system
    * @see org.apache.uima.cas.CAS#serializeWithCompression(Object out, TypeSystem tgtTypeSystem, Marker marker)
    */
-  public ReuseInfo serializeWithCompression(Object out, TypeSystem tgtTypeSystem) throws IOException {
+  public ReuseInfo serializeWithCompression(Object out, TypeSystem tgtTypeSystem) throws IOException, ResourceInitializationException {
     BinaryCasSerDes6 bcs = new BinaryCasSerDes6(this, (TypeSystemImpl) tgtTypeSystem);
     bcs.serialize(out);
     return bcs.getReuseInfo();
   }
   
   /**
+   * @throws ResourceInitializationException if target type system is incompatible with this CAS's type system
    * @see org.apache.uima.cas.CAS#serializeWithCompression(Object out, TypeSystem tgtTypeSystem, Marker mark, ReuseInfo reuseInfo)
    */
-  public void serializeWithCompression(Object out, TypeSystem tgtTypeSystem, Marker mark, ReuseInfo reuseInfo) throws IOException {
+  public void serializeWithCompression(Object out, TypeSystem tgtTypeSystem, Marker mark, ReuseInfo reuseInfo) throws IOException, ResourceInitializationException {
     BinaryCasSerDes6 bcs = new BinaryCasSerDes6(this, (MarkerImpl) mark, (TypeSystemImpl) tgtTypeSystem, reuseInfo);
     bcs.serialize(out);
   }
