@@ -22,13 +22,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.List;
+import java.io.FileInputStream;
+import java.io.InputStream;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngine;
-import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
+import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.impl.XCASDeserializer;
+import org.apache.uima.cas.impl.XmiCasDeserializer;
 import org.apache.uima.fit.ComponentTestBase;
 import org.apache.uima.fit.factory.AggregateBuilder;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
@@ -37,12 +39,11 @@ import org.apache.uima.fit.factory.testAes.Annotator1;
 import org.apache.uima.fit.factory.testAes.Annotator2;
 import org.apache.uima.fit.factory.testAes.Annotator3;
 import org.apache.uima.fit.factory.testAes.ViewNames;
+import org.apache.uima.fit.type.Sentence;
+import org.apache.uima.fit.type.Token;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.apache.uima.util.FileUtils;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
+import org.apache.uima.util.CasCreationUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -125,25 +126,18 @@ public class XWriterTest extends ComponentTestBase {
     engine.process(jCas);
     engine.collectionProcessComplete();
 
-    File outputFile = new File(this.outputDirectory, "1.xmi");
-
-    SAXBuilder builder = new SAXBuilder();
-    builder.setDTDHandler(null);
-    Element root = null;
+    CAS cas = CasCreationUtils.createCas(typeSystemDescription, null, null);
+    InputStream is = null;
     try {
-      Document doc = builder.build(new StringReader(FileUtils.file2String(outputFile)));
-      root = doc.getRootElement();
-    } catch (JDOMException e) {
-      throw new AnalysisEngineProcessException(e);
-    } catch (IOException e) {
-      throw new AnalysisEngineProcessException(e);
+      is = new FileInputStream(new File(this.outputDirectory, "1.xmi"));
+      XmiCasDeserializer.deserialize(is, cas);
     }
-
-    List<?> elements = root.getChildren("Sentence", root.getNamespace("type"));
-    Assert.assertEquals(1, elements.size());
-    elements = root.getChildren("Token", root.getNamespace("type"));
-    Assert.assertEquals(4, elements.size());
-
+    finally {
+      IOUtils.closeQuietly(is);
+    }
+    
+    Assert.assertEquals(1, JCasUtil.select(cas.getJCas(), Sentence.class).size());
+    Assert.assertEquals(4, JCasUtil.select(cas.getJCas(), Token.class).size());
   }
 
   @Test
@@ -155,25 +149,18 @@ public class XWriterTest extends ComponentTestBase {
     engine.process(jCas);
     engine.collectionProcessComplete();
 
-    File outputFile = new File(this.outputDirectory, "1.xcas");
-
-    SAXBuilder builder = new SAXBuilder();
-    builder.setDTDHandler(null);
-    Element root = null;
+    CAS cas = CasCreationUtils.createCas(typeSystemDescription, null, null);
+    InputStream is = null;
     try {
-      Document doc = builder.build(new StringReader(FileUtils.file2String(outputFile)));
-      root = doc.getRootElement();
-    } catch (JDOMException e) {
-      throw new AnalysisEngineProcessException(e);
-    } catch (IOException e) {
-      throw new AnalysisEngineProcessException(e);
+      is = new FileInputStream(new File(this.outputDirectory, "1.xcas"));
+      XCASDeserializer.deserialize(is, cas);
     }
-
-    List<?> elements = root.getChildren("org.apache.uima.fit.type.Sentence");
-    Assert.assertEquals(1, elements.size());
-    elements = root.getChildren("org.apache.uima.fit.type.Token");
-    Assert.assertEquals(4, elements.size());
-
+    finally {
+      IOUtils.closeQuietly(is);
+    }
+    
+    Assert.assertEquals(1, JCasUtil.select(cas.getJCas(), Sentence.class).size());
+    Assert.assertEquals(4, JCasUtil.select(cas.getJCas(), Token.class).size());
   }
 
   @Test(expected = ResourceInitializationException.class)
