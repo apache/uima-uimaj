@@ -18,12 +18,16 @@
  */
 package org.apache.uima.fit.factory;
 
+import static java.util.Arrays.asList;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createAggregateDescription;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createAggregate;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
@@ -61,8 +65,10 @@ import org.apache.uima.resource.metadata.Capability;
 import org.apache.uima.resource.metadata.ConfigurationParameter;
 import org.apache.uima.resource.metadata.ConfigurationParameterDeclarations;
 import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
+import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypePriorityList;
+import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.junit.Test;
 
 /**
@@ -427,15 +433,14 @@ public class AnalysisEngineFactoryTest extends ComponentTestBase {
               .getOperationalProperties().isMultipleDeploymentAllowed());
     }
   }
-  
+
   @Test
-  public void testResourceMetaData() throws Exception
-  {
+  public void testResourceMetaData() throws Exception {
     AnalysisEngineDescription desc = AnalysisEngineFactory
             .createPrimitiveDescription(AnnotatorWithMetaDataClass.class);
-    
+
     org.apache.uima.resource.metadata.ResourceMetaData meta = desc.getMetaData();
-    
+
     assertEquals("dummy", meta.getName());
     assertEquals("1.0", meta.getVersion());
     assertEquals("Just a dummy", meta.getDescription());
@@ -491,7 +496,44 @@ public class AnalysisEngineFactoryTest extends ComponentTestBase {
     descriptions.add(AnalysisEngineFactory.createPrimitiveDescription(NoOpAnnotator.class));
     descriptions.add(AnalysisEngineFactory.createPrimitiveDescription(NoOpAnnotator.class));
     List<String> names = new ArrayList<String>();
-    
+
     AnalysisEngineFactory.createAggregateDescription(descriptions, names, null, null, null);
+  }
+
+  /**
+   * Configuring new types on an aggregate is not allowed, but configuring new priorities is
+   * allowed. Just testing if it actually works.
+   * 
+   * @see <a href="https://issues.apache.org/jira/browse/UIMA-2891">UIMA-2891</a>
+   */
+  @Test
+  public void testExtraTypeConfigsOnAggregate() throws Exception {
+    TypeSystemDescription typeSystem = TypeSystemDescriptionFactory.createTypeSystemDescription();
+    TypePriorities extraPrios = TypePrioritiesFactory.createTypePriorities(Sentence.class,
+            Token.class);
+
+    // This one doesn't use any auto-configuration
+    AnalysisEngineDescription ae = createPrimitiveDescription(UnannotatedAnnotatorClass.class,
+            typeSystem, null, null, null, null, null, null);
+
+    // Try configuring priorities on the aggregate
+    AnalysisEngineDescription aae = createAggregateDescription(asList(ae), asList("ae1"),
+            extraPrios, null, null);
+
+    AnalysisEngine engine = createAggregate(aae);
+    ProcessingResourceMetaData meta = engine.getProcessingResourceMetaData();
+    
+    // When the meta data from the ae and the aae are merged in the engine, then it should be a 
+    // new instance.
+    assertFalse("Merged meta-data is same instance as original",
+            aae.getMetaData().hashCode() == meta.hashCode());
+    assertFalse("Merged meta-data is same instance as original",
+            ae.getMetaData().hashCode() == meta.hashCode());
+    
+    // Check that the priorities arrived
+    TypePriorities expected = ((ProcessingResourceMetaData) aae.getMetaData()).getTypePriorities();
+    TypePriorities actual = meta.getTypePriorities();
+    assertArrayEquals(expected.getPriorityLists()[0].getTypes(),
+            actual.getPriorityLists()[0].getTypes());
   }
 }
