@@ -226,6 +226,7 @@
                   <exclude>src/main/resources/docbook-shared/titlepage/*.xsl</exclude>
                   <exclude>marker-file-identifying-*</exclude> <!-- empty file -->
                   <exclude>DEPENDENCIES</exclude>  <!-- generated file -->
+                  <exclude>.idea/**</exclude>
                   
                   <!--  workaround https://issues.apache.org/jira/browse/RAT-97 -->
                   <exclude>aggregate-uimaj*/**</exclude>
