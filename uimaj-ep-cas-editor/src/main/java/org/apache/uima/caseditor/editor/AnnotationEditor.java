@@ -590,12 +590,32 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
             CasDocumentProviderFactory.instance().getDocumentProvider(input);
     
     setDocumentProvider(new TextDocumentProvider(casDocumentProvider));
-    
+
     super.init(site, input);
   }
   
   public CasDocumentProvider getCasDocumentProvider() {
     return casDocumentProvider;
+  }
+  
+  /**
+   * Retrieves the tooltip of the title.
+   *
+   * @return string of tooltip
+   */
+  @Override
+  public String getTitleToolTip() {
+    if (getEditorInput() == null) {
+      return super.getTitleToolTip();
+    }
+    ICasDocument document = getDocument();
+    String typeSystemText = document.getTypeSystemText();
+    String toolTipText = getEditorInput().getToolTipText();
+    if (typeSystemText != null) {
+      return toolTipText + " (" + typeSystemText + ")";
+    } else {
+      return toolTipText;
+    }
   }
   
   /**

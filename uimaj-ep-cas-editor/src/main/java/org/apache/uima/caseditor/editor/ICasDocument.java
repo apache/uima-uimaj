@@ -134,6 +134,11 @@ public interface ICasDocument {
    */
   Type getType(String type);
 
-
+  /**
+   * Retrieves the string representation of the applied type system
+   * 
+   * @return the string representation of the applied type system
+   */
+  String getTypeSystemText();
 
 }

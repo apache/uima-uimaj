@@ -73,22 +73,39 @@ public class DocumentUimaImpl extends AbstractDocument {
 
   private final DocumentFormat format;
 
+  private final String typeSystemText;
+  
   /**
    * Initializes a new instance.
    * 
    * @param project
    */
   public DocumentUimaImpl(CAS cas, InputStream in, DocumentFormat format) throws CoreException {
+    this(cas, in, format, null);
+  }
 
+  
+  /**
+   * Initializes a new instance.
+   * 
+   * @param cas
+   * @param inputstream
+   * @param format
+   * @param type system string
+   */
+  public DocumentUimaImpl(CAS cas, InputStream in, DocumentFormat format, String typeSystemText) throws CoreException {
     mCAS = cas;
 
     mTypeSystem = cas.getTypeSystem();
 
     this.format = format;
 
+    this.typeSystemText = typeSystemText;
+
     setContent(in);
   }
-
+  
+  
   /**
    * Retrieves the {@link CAS}.
    */
@@ -96,6 +113,12 @@ public class DocumentUimaImpl extends AbstractDocument {
     return mCAS;
   }
 
+  @Override
+  public String getTypeSystemText() {
+    return typeSystemText;
+  }
+  
+  
   /**
    * Internally removes an annotation from the {@link CAS}.
    * 

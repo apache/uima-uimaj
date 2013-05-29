@@ -420,7 +420,7 @@ public class DefaultCasDocumentProvider extends
         org.apache.uima.caseditor.editor.ICasDocument doc;
 
         try {
-          doc = new DocumentUimaImpl(cas, casIn, documentFormat);
+          doc = new DocumentUimaImpl(cas, casIn, documentFormat, typeSystemFile.getFullPath().makeRelative().toString());
         } finally {
           try {
             casIn.close();

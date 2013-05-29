@@ -270,5 +270,12 @@ class AnnotationDocument extends Document implements ICasDocument {
 
   }
 
+  public String getTypeSystemText() {
+    if(mDocument != null) {
+      return mDocument.getTypeSystemText();
+    }
+    return null;
+  }
+
 
 }

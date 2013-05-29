@@ -187,4 +187,10 @@ public abstract class AbstractDocument implements ICasDocument {
       });
     }
   }
+  
+  public String getTypeSystemText() {
+    return null;
+  }
+  
+  
 }
