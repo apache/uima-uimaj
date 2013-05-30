@@ -1,4 +1,4 @@
-package org.cleartk.plugin;
+package org.apache.uima.tools.jcasgen.maven;
 
 import java.io.File;
 import java.io.IOException;

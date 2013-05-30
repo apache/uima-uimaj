@@ -1,4 +1,4 @@
-package org.cleartk.plugin;
+package org.apache.uima.tools.jcasgen.maven;
 
 import java.util.HashSet;
 import java.util.Set;

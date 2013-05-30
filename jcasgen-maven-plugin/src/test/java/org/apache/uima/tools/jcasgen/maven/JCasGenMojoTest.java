@@ -1,4 +1,4 @@
-package org.cleartk.plugin;
+package org.apache.uima.tools.jcasgen.maven;
 
 import java.io.File;
 
@@ -12,6 +12,7 @@ import org.apache.maven.plugin.testing.AbstractMojoTestCase;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuilder;
 import org.apache.maven.project.ProjectBuildingRequest;
+import org.apache.uima.tools.jcasgen.maven.JCasGenMojo;
 
 public class JCasGenMojoTest extends AbstractMojoTestCase {
 
