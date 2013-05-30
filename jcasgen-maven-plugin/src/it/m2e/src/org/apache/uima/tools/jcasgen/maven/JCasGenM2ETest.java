@@ -28,6 +28,7 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.m2e.core.project.ResolverConfiguration;
+import org.eclipse.m2e.tests.common.AbstractMavenProjectTestCase;
 
 @SuppressWarnings("restriction")
 public class JCasGenM2ETest extends AbstractMavenProjectTestCase {
