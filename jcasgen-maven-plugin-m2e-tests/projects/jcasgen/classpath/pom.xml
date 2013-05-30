@@ -7,7 +7,7 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.cleartk</groupId>
+				<groupId>org.apache.uima</groupId>
 				<artifactId>jcasgen-maven-plugin</artifactId>
 				<version>0.9.3-SNAPSHOT</version>
 				<configuration>
