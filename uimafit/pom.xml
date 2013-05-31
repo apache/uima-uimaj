@@ -44,10 +44,6 @@
 			<artifactId>uimaj-core</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.uima</groupId>
-			<artifactId>uimaj-tools</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
 		</dependency>
@@ -95,24 +91,20 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>exec-maven-plugin</artifactId>
+				<groupId>org.apache.uima</groupId>
+				<artifactId>jcasgen-maven-plugin</artifactId>
 				<executions>
 					<execution>
-						<phase>generate-test-sources</phase>
 						<goals>
-							<goal>java</goal>
+							<goal>generate</goal>
 						</goals>
+						<configuration>
+							<typeSystemIncludes>
+								<typeSystemInclude>src/test/resources/org/apache/uima/fit/type/**/*.xml</typeSystemInclude>
+							</typeSystemIncludes>
+						</configuration>
 					</execution>
 				</executions>
-				<configuration>
-					<mainClass>org.apache.uima.fit.util.JCasGenPomFriendly</mainClass>
-					<arguments>
-						<argument>file:${project.basedir}/src/test/resources/org/apache/uima/fit/type/**/*.xml</argument>
-						<argument>${project.build.directory}/generated-sources/jcasgen</argument>
-					</arguments>
-					<classpathScope>test</classpathScope>
-				</configuration>
 			</plugin>
 			<plugin>
 				<!--
