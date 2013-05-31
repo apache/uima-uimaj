@@ -73,6 +73,7 @@
     <!--module>distr-superPom</module-->
     <module>../uimaj-document-annotation</module>
     <module>../PearPackagingMavenPlugin</module>
+    <module>../jcasgen-maven-plugin</module>
     <!-- the internal tools project is not part of any release 
          and can't be built automatically - to build it,
          cd to the project directory and do mvn install -->

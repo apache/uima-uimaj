@@ -232,6 +232,7 @@
                   <exclude>aggregate-uimaj*/**</exclude>
                   <exclude>jVinci/**</exclude>
                   <exclude>PearPackagingMavenPlugin/**</exclude>
+                  <exclude>jcasgen-maven-plugin/**</exclude>
                   <exclude>uima-docbook-*/**</exclude>
                   <exclude>uimaj-adapter-*/**</exclude>
                   <exclude>uimaj-component-test-util/**</exclude>
