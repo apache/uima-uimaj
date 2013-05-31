@@ -93,7 +93,6 @@ public class JCasGenMojo
     @Parameter(defaultValue = "${project.build.directory}/generated-sources/jcasgen", required = true)
     private File outputDirectory;
 
-    @Override
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
@@ -202,23 +201,19 @@ public class JCasGenMojo
         {
         }
 
-        @Override
         public void done()
         {
         }
 
-        @Override
         public void beginTask(String name, int totalWorked)
         {
         }
 
-        @Override
         public void subTask(String message)
         {
             getLog().info("JCasGen: " + message);
         }
 
-        @Override
         public void worked(int work)
         {
         }
@@ -232,7 +227,6 @@ public class JCasGenMojo
         {
         }
 
-        @Override
         public void newError(int severity, String message, Exception exception)
         {
             String fullMessage = "JCasGen: " + message;
