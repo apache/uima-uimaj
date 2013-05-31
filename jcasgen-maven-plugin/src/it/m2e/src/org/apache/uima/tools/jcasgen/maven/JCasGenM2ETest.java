@@ -29,12 +29,15 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.m2e.core.project.ResolverConfiguration;
 import org.eclipse.m2e.tests.common.AbstractMavenProjectTestCase;
+import org.eclipse.m2e.core.MavenPlugin;
 
 @SuppressWarnings("restriction")
 public class JCasGenM2ETest extends AbstractMavenProjectTestCase {
   public void testSimple() throws Exception {
+    System.out.println("Using this repository: " + MavenPlugin.getMaven().getLocalRepository());
+    
     ResolverConfiguration configuration = new ResolverConfiguration();
-    IProject project = importProject("projects/jcasgen/simple/pom.xml", configuration);
+    IProject project = importProject("target/projects/jcasgen/simple/pom.xml", configuration);
     waitForJobsToComplete();
     assertNoErrors(project);
 
@@ -72,7 +75,7 @@ public class JCasGenM2ETest extends AbstractMavenProjectTestCase {
 
   public void testEmptyOutputDirectory() throws Exception {
     ResolverConfiguration configuration = new ResolverConfiguration();
-    IProject project = importProject("projects/jcasgen/simple/pom.xml", configuration);
+    IProject project = importProject("target/projects/jcasgen/simple/pom.xml", configuration);
     waitForJobsToComplete();
     assertNoErrors(project);
 
@@ -98,7 +101,7 @@ public class JCasGenM2ETest extends AbstractMavenProjectTestCase {
 
   public void testTypeSystemReferences() throws Exception {
     ResolverConfiguration configuration = new ResolverConfiguration();
-    IProject project = importProject("projects/jcasgen/classpath/pom.xml", configuration);
+    IProject project = importProject("target/projects/jcasgen/classpath/pom.xml", configuration);
     waitForJobsToComplete();
     assertNoErrors(project);
 
@@ -178,7 +181,7 @@ public class JCasGenM2ETest extends AbstractMavenProjectTestCase {
   public void testCrossProjectReferences() throws Exception {
     ResolverConfiguration configuration = new ResolverConfiguration();
     String[] projectPoms = new String[] { "crossref1/pom.xml", "crossref2/pom.xml" };
-    IProject[] projects = importProjects("projects/jcasgen", projectPoms, configuration);
+    IProject[] projects = importProjects("target/projects/jcasgen", projectPoms, configuration);
     waitForJobsToComplete();
     for (IProject project : projects) {
       assertNoErrors(project);

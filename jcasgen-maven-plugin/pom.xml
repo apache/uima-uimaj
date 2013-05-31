@@ -87,6 +87,11 @@
 					<settingsFile>src/it/settings.xml</settingsFile>
 					<localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
 					<postBuildHookScript>verify.bsh</postBuildHookScript>
+					<goals>
+						<goal>clean</goal>
+						<goal>package</goal>
+						<goal>integration-test</goal>
+					</goals>
 				</configuration>
 				<executions>
 					<execution>
