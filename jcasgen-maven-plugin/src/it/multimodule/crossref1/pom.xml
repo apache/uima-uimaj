@@ -29,7 +29,9 @@
 				<artifactId>jcasgen-maven-plugin</artifactId>
 				<version>@project.version@</version>
 				<configuration>
-					<typeSystem>src/main/resources/type/Token.xml</typeSystem>
+					<typeSystemIncludes>
+						<typeSystemInclude>src/main/resources/type/Token.xml</typeSystemInclude>
+					</typeSystemIncludes>
 				</configuration>
 				<executions>
 					<execution>

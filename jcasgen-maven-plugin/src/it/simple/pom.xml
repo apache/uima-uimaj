@@ -29,7 +29,9 @@
 				<artifactId>jcasgen-maven-plugin</artifactId>
 				<version>@project.version@</version>
 				<configuration>
-					<typeSystem>src/main/resources/TypeSystem.xml</typeSystem>
+					<typeSystemIncludes>
+						<typeSystemInclude>src/main/resources/TypeSystem.xml</typeSystemInclude>
+					</typeSystemIncludes>
 				</configuration>
 				<executions>
 					<execution>

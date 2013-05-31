@@ -19,10 +19,13 @@
 package org.apache.uima.tools.jcasgen.maven;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -41,15 +44,19 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.resource.ResourceManager;
+import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
+import org.apache.uima.resource.metadata.impl.Import_impl;
+import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.tools.jcasgen.IError;
 import org.apache.uima.tools.jcasgen.IProgressMonitor;
 import org.apache.uima.tools.jcasgen.Jg;
 import org.apache.uima.util.InvalidXMLException;
-import org.apache.uima.util.XMLInputSource;
 import org.codehaus.plexus.util.DirectoryScanner;
+import org.codehaus.plexus.util.IOUtil;
 import org.sonatype.plexus.build.incremental.BuildContext;
+import org.xml.sax.SAXException;
 
 /**
  * Applies JCasGen to create Java files from XML type system descriptions.
@@ -69,10 +76,16 @@ public class JCasGenMojo
     private BuildContext buildContext;
 
     /**
-     * The path to the XML type system description.
+     * Type system descriptors to be included in JCas generation.
      */
     @Parameter(required = true)
-    private String typeSystem;
+    private String[] typeSystemIncludes;
+
+    /**
+     * Type system descriptors to be excluded in JCas generation.
+     */
+    @Parameter(required = false)
+    private String[] typeSystemExcludes;
 
     /**
      * The directory where the generated sources will be written.
@@ -84,16 +97,12 @@ public class JCasGenMojo
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
-
         // add the generated sources to the build
         if (!this.outputDirectory.exists()) {
             this.outputDirectory.mkdirs();
             this.buildContext.refresh(this.outputDirectory);
         }
         this.project.addCompileSourceRoot(this.outputDirectory.getPath());
-
-        // the type system is relative to the base directory
-        File typeSystemFile = new File(this.project.getBasedir(), this.typeSystem);
 
         // assemble the classpath
         List<String> elements;
@@ -112,23 +121,73 @@ public class JCasGenMojo
         }
         String classpath = classpathBuilder.toString();
 
-        // skip JCasGen if there are no changes in the type system file or the files it references
-        if (!this.buildContext.hasDelta(this.typeSystem)
-                && !this.hasDelta(typeSystemFile, classpath)) {
-            this.getLog().info("JCasGen: Skipped, since no type system changes were detected");
-            return;
-        }
+        // Locate the files to include
+        DirectoryScanner ds = new DirectoryScanner();
+        ds.setIncludes(typeSystemIncludes);
+        ds.setExcludes(typeSystemExcludes);
+        ds.setBasedir(this.project.getBasedir());
+        ds.setCaseSensitive(true);
+        ds.scan();
 
-        // run JCasGen to generate the Java sources
-        Jg jCasGen = new Jg();
-        String[] args = new String[] { "-jcasgeninput", typeSystemFile.toString(),
-                "-jcasgenoutput", this.outputDirectory.getAbsolutePath(), "=jcasgenclasspath",
-                classpath };
-        try {
-            jCasGen.main0(args, null, new JCasGenProgressMonitor(), new JCasGenErrors());
+        // Create a merged type system and check if any of the files has a delta
+        TypeSystemDescription typeSystem = new TypeSystemDescription_impl();
+        List<Import> imports = new ArrayList<Import>();
+        boolean contextDelta = false;
+        for (String descriptorLocation : ds.getIncludedFiles()) {
+            Import imp = new Import_impl();
+            imp.setLocation(new File(ds.getBasedir(), descriptorLocation).getAbsolutePath());
+            imports.add(imp);
+            
+            contextDelta |= this.buildContext
+                    .hasDelta(new File(ds.getBasedir(), descriptorLocation));
         }
-        catch (JCasGenException e) {
-            throw new MojoExecutionException(e.getMessage(), e.getCause());
+        Import[] importArray = new Import[imports.size()];
+        typeSystem.setImports(imports.toArray(importArray));
+
+        // Save type system to a file so we can pass it to the Jg
+        // Do this before resolving the imports
+        File typeSystemFile = null;
+        try {
+            OutputStream typeSystemOs = null;
+            try {
+                typeSystemFile = File.createTempFile("jcasgen-aggregate-types", ".xml");
+                typeSystemOs = new FileOutputStream(typeSystemFile);
+                typeSystem.toXML(typeSystemOs);
+            }
+            catch (IOException e) {
+                throw new MojoExecutionException(e.getMessage(), e.getCause());
+            }
+            catch (SAXException e) {
+                throw new MojoExecutionException(e.getMessage(), e.getCause());
+            }
+            finally {
+                IOUtil.close(typeSystemOs);
+            }
+    
+            // skip JCasGen if there are no changes in the type system file or the files it
+            // references
+            // hasDelta resolves the imports!
+            if (!contextDelta && !this.hasDelta(typeSystem, classpath)) {
+                this.getLog().info("JCasGen: Skipped, since no type system changes were detected");
+                return;
+            }
+            
+            // run JCasGen to generate the Java sources
+            Jg jCasGen = new Jg();
+            String[] args = new String[] { "-jcasgeninput", typeSystemFile.getAbsolutePath(),
+                    "-jcasgenoutput", this.outputDirectory.getAbsolutePath(), "=jcasgenclasspath",
+                    classpath };
+            try {
+                jCasGen.main0(args, null, new JCasGenProgressMonitor(), new JCasGenErrors());
+            }
+            catch (JCasGenException e) {
+                throw new MojoExecutionException(e.getMessage(), e.getCause());
+            }
+        }
+        finally {
+            if (typeSystemFile != null) {
+                typeSystemFile.delete();
+            }
         }
 
         // signal that the output directory has changed
@@ -203,13 +262,13 @@ public class JCasGenMojo
         }
     }
 
-    private boolean hasDelta(File typeSystemFile, String classpath)
+    private boolean hasDelta(TypeSystemDescription typeSystemDescription, String classpath)
     {
         // load the type system and resolve the imports using the classpath
-        TypeSystemDescription typeSystemDescription;
+//        TypeSystemDescription typeSystemDescription;
         try {
-            XMLInputSource in = new XMLInputSource(typeSystemFile.toURI().toURL());
-            typeSystemDescription = UIMAFramework.getXMLParser().parseTypeSystemDescription(in);
+//            XMLInputSource in = new XMLInputSource(typeSystemFile.toURI().toURL());
+//            typeSystemDescription = UIMAFramework.getXMLParser().parseTypeSystemDescription(in);
             ResourceManager resourceManager = UIMAFramework.newDefaultResourceManager();
             resourceManager.setExtensionClassPath(classpath, true);
             typeSystemDescription.resolveImports(resourceManager);
@@ -221,9 +280,9 @@ public class JCasGenMojo
         catch (MalformedURLException e) {
             return false;
         }
-        catch (IOException e) {
-            return false;
-        }
+//        catch (IOException e) {
+//            return false;
+//        }
 
         File buildOutputDirectory = new File(this.project.getBuild().getOutputDirectory());
 

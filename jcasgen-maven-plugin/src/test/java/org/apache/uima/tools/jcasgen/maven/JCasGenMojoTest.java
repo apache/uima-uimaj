@@ -19,6 +19,8 @@
 package org.apache.uima.tools.jcasgen.maven;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import junit.framework.Assert;
 
@@ -30,19 +32,27 @@ import org.apache.maven.plugin.testing.AbstractMojoTestCase;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuilder;
 import org.apache.maven.project.ProjectBuildingRequest;
-import org.apache.uima.tools.jcasgen.maven.JCasGenMojo;
+import org.codehaus.plexus.util.DirectoryScanner;
 
 public class JCasGenMojoTest extends AbstractMojoTestCase {
 
   public void testSimple() throws Exception {
-    this.test("simple");
+    this.test("simple", "type.span.Sentence", "type.span.Token", "type.relation.Dependency");
   }
 
   public void testClasspath() throws Exception {
-    this.test("classpath");
+    this.test("classpath", "type.span.Sentence", "type.span.Token", "type.relation.Dependency");
   }
 
-  public void test(String projectName) throws Exception {
+  public void testWildcard() throws Exception {
+    this.test("wildcard", "type.span.Sentence", "type.span.Token");
+  }
+
+  public void testExclude() throws Exception {
+    this.test("exclude", "type.span.Sentence");
+  }
+
+  public void test(String projectName, String... types) throws Exception {
 
     File projectDirectory = getTestFile("src/test/resources/" + projectName);
     File buildDirectory = getTestFile("target/project-" + projectName + "-test");
@@ -81,12 +91,30 @@ public class JCasGenMojoTest extends AbstractMojoTestCase {
 
     // check that the Java files have been generated
     File jCasGenDirectory = new File(buildDirectory, "generated-sources/jcasgen");
-    Assert.assertTrue(new File(jCasGenDirectory + "/type/span/Sentence.java").exists());
-    Assert.assertTrue(new File(jCasGenDirectory + "/type/span/Sentence_Type.java").exists());
-    Assert.assertTrue(new File(jCasGenDirectory + "/type/span/Token.java").exists());
-    Assert.assertTrue(new File(jCasGenDirectory + "/type/span/Token_Type.java").exists());
-    Assert.assertTrue(new File(jCasGenDirectory + "/type/relation/Dependency.java").exists());
-    Assert.assertTrue(new File(jCasGenDirectory + "/type/relation/Dependency_Type.java").exists());
+    
+    // Record all the files that were generated
+    DirectoryScanner ds = new DirectoryScanner();
+    ds.setBasedir(jCasGenDirectory);
+    ds.setIncludes(new String[] { "**/*.java" });
+    ds.scan();
+    List<File> files = new ArrayList<File>();
+    for (String scannedFile : ds.getIncludedFiles()) {
+      files.add(new File(ds.getBasedir(), scannedFile));
+    }
+    
+    for (String type : types) {
+      File wrapperFile = new File(jCasGenDirectory + "/" + type.replace('.', '/') + ".java");
+      File typeFile = new File(jCasGenDirectory + "/" + type.replace('.', '/') + "_Type.java");
+      
+      Assert.assertTrue(files.contains(wrapperFile));
+      Assert.assertTrue(files.contains(typeFile));
+      
+      files.remove(wrapperFile);
+      files.remove(typeFile);
+    }
+    
+    // check that no extra files were generated
+    Assert.assertTrue(files.isEmpty());
 
     // check that the generated sources are on the compile path
     Assert.assertTrue(project.getCompileSourceRoots().contains(jCasGenDirectory.getAbsolutePath()));
