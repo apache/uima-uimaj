@@ -23,13 +23,6 @@
 	<packaging>maven-plugin</packaging>
 	<name>JCasGen Maven Plugin</name>
 	<description>A Maven Plugin for using JCasGen to generate Java classes from XML type system descriptions</description>
-	<developers>
-		<developer>
-			<id>steven.bethard</id>
-			<email>steven.bethard@gmail.com</email>
-			<name>Steven Bethard</name>
-		</developer>
-	</developers>
 	<prerequisites>
 		<maven>3.0</maven>
 	</prerequisites>

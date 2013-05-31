@@ -27,13 +27,6 @@
 	<packaging>eclipse-test-plugin</packaging>
 	<name>JCasGen Maven plugin Eclipse tests</name>
 	<description>The tests for the JCasGen Maven plugin when used in Eclipse</description>
-	<developers>
-		<developer>
-			<id>steven.bethard</id>
-			<email>steven.bethard@gmail.com</email>
-			<name>Steven Bethard</name>
-		</developer>
-	</developers>
 	<repositories>
 		<repository>
 			<id>juno</id>
