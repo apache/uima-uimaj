@@ -33,10 +33,12 @@ import org.apache.uima.fit.component.ExternalResourceAware;
 import org.apache.uima.fit.descriptor.ExternalResource;
 import org.apache.uima.fit.descriptor.ExternalResourceLocator;
 import org.apache.uima.fit.internal.ReflectionUtil;
+import org.apache.uima.fit.internal.ResourceList;
 import org.apache.uima.resource.ResourceAccessException;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.impl.ResourceManager_impl;
+import org.springframework.beans.SimpleTypeConverter;
 
 /**
  * Configurator class for {@link ExternalResource} annotations.
@@ -115,12 +117,7 @@ public final class ExternalResourceInitializer {
       }
 
       // Obtain the resource
-      Object value;
-      try {
-        value = context.getResourceObject(key);
-      } catch (ResourceAccessException e) {
-        throw new ResourceInitializationException(e);
-      }
+      Object value = getResourceObject(context, key);
       if (value instanceof ExternalResourceLocator) {
         value = ((ExternalResourceLocator) value).getResource();
       }
@@ -135,14 +132,48 @@ public final class ExternalResourceInitializer {
       // instance.
       if (value != null) {
         field.setAccessible(true);
+        
         try {
-          field.set(object, value);
-        } catch (IllegalAccessException e) {
-          throw new ResourceInitializationException(e);
+          if (value instanceof ResourceList) {
+            // Value is a multi-valued resource
+            ResourceList resList = (ResourceList) value;
+            
+            // We cannot do this in ResourceList because the resource doesn't have access to
+            // the UIMA context we use here. Resources are initialize with their own contexts
+            // by the UIMA framework!
+            List<Object> elements = new ArrayList<Object>();
+            for (int i = 0; i < resList.getSize(); i++) {
+              Object elementValue = getResourceObject(context, resList.getResourceName()
+                      + PREFIX_SEPARATOR + ResourceList.ELEMENT_KEY + "[" + i + "]");
+              elements.add(elementValue);
+            }
+
+            SimpleTypeConverter converter = new SimpleTypeConverter();
+            value = converter.convertIfNecessary(elements, field.getType());
+          }
+          
+          try {
+            field.set(object, value);
+          } catch (IllegalAccessException e) {
+            throw new ResourceInitializationException(e);
+          }
         }
-        field.setAccessible(false);
+        finally {          
+          field.setAccessible(false);
+        }
       }
     }
+  }
+  
+  private static Object getResourceObject(UimaContext aContext, String aKey)
+          throws ResourceInitializationException {
+    Object value;
+    try {
+      value = aContext.getResourceObject(aKey);
+    } catch (ResourceAccessException e) {
+      throw new ResourceInitializationException(e);
+    }
+    return value;
   }
 
   /**

@@ -67,7 +67,7 @@ public abstract class Resource_ImplBase extends org.apache.uima.resource.Resourc
     return resourceName;
   }
 
-  public void afterResourcesInitialized() {
+  public void afterResourcesInitialized() throws ResourceInitializationException {
     // Per default nothing is done here.
   }
 }

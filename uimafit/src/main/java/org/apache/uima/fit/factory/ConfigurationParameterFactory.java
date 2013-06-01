@@ -29,11 +29,11 @@ import java.util.Map;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.IllegalClassException;
 import org.apache.uima.UIMA_IllegalArgumentException;
+import org.apache.uima.fit.factory.ExternalResourceFactory.ResourceValueType;
 import org.apache.uima.fit.internal.ReflectionUtil;
 import org.apache.uima.fit.internal.propertyeditors.PropertyEditorUtil;
 import org.apache.uima.resource.ConfigurableDataResourceSpecifier;
 import org.apache.uima.resource.CustomResourceSpecifier;
-import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.Parameter;
 import org.apache.uima.resource.ResourceCreationSpecifier;
 import org.apache.uima.resource.ResourceSpecifier;
@@ -337,7 +337,8 @@ public final class ConfigurationParameterFactory {
       String name = (String) configurationData[i * 2];
       Object value = configurationData[i * 2 + 1];
 
-      if (value == null || value instanceof ExternalResourceDescription) {
+      if (value == null
+              || ExternalResourceFactory.getExternalResourceParameterType(value) != ResourceValueType.NO_RESOURCE) {
         continue;
       }
 

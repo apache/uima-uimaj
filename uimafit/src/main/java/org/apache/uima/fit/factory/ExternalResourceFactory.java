@@ -19,6 +19,7 @@
 
 package org.apache.uima.fit.factory;
 
+import static java.util.Arrays.asList;
 import static org.apache.uima.UIMAFramework.getResourceSpecifierFactory;
 import static org.apache.uima.fit.factory.ConfigurationParameterFactory.canParameterBeSet;
 import static org.apache.uima.fit.factory.ConfigurationParameterFactory.createConfigurationData;
@@ -43,6 +44,7 @@ import org.apache.uima.fit.descriptor.ExternalResource;
 import org.apache.uima.fit.factory.ConfigurationParameterFactory.ConfigurationData;
 import org.apache.uima.fit.internal.ExtendedExternalResourceDescription_impl;
 import org.apache.uima.fit.internal.ReflectionUtil;
+import org.apache.uima.fit.internal.ResourceList;
 import org.apache.uima.resource.CustomResourceSpecifier;
 import org.apache.uima.resource.DataResource;
 import org.apache.uima.resource.ExternalResourceDependency;
@@ -142,7 +144,7 @@ public final class ExternalResourceFactory {
     List<Parameter> params = new ArrayList<Parameter>();
     if (aParams != null) {
       for (int i = 0; i < aParams.length / 2; i++) {
-        if (aParams[i * 2 + 1] instanceof ExternalResourceDescription) {
+        if (ExternalResourceFactory.getExternalResourceParameterType(aParams[i * 2 + 1]) != ResourceValueType.NO_RESOURCE) {
           continue;
         }
 
@@ -1097,13 +1099,88 @@ public final class ExternalResourceFactory {
       String key = (String) configurationData[i];
       Object value = configurationData[i + 1];
 
+      if (value == null) {
+        continue;
+      }
+      
       // Store External Resource parameters separately
-      if (value instanceof ExternalResourceDescription) {
+      ResourceValueType type = getExternalResourceParameterType(value);
+      if (type == ResourceValueType.PRIMITIVE) {
         ExternalResourceDescription description = (ExternalResourceDescription) value;
         extRes.put(key, description);
+      }
+      else if (type.isMultiValued()) {
+        Collection<ExternalResourceDescription> resList;
+        if (type == ResourceValueType.ARRAY) {
+          resList = asList((ExternalResourceDescription[]) value);
+        }
+        else {
+          resList = (Collection<ExternalResourceDescription>) value;
+        }
+
+        // Record the list elements
+        List<Object> params = new ArrayList<Object>();
+        params.add(ResourceList.PARAM_SIZE);
+        params.add(String.valueOf(resList.size())); // "Resource" only supports String parameters!
+        int n = 0;
+        for (ExternalResourceDescription res : resList) {
+          params.add(ResourceList.ELEMENT_KEY + "[" + n + "]");
+          params.add(res);
+          n++;
+        }
+        
+        // Record the list and attach the list elements to the list
+        extRes.put(key, createExternalResourceDescription(ResourceList.class, params.toArray()));
       }
     }
 
     return extRes;
+  }
+  
+  /**
+   * Determine which kind of external resource the given value is. This is only meant for
+   * uimaFIT internal use. This method is required by the ConfigurationParameterFactory, so it is
+   * package private instead of private.
+   */
+  static ResourceValueType getExternalResourceParameterType(Object aValue)
+  {
+    if (aValue == null) {
+      return ResourceValueType.NO_RESOURCE;
+    }
+    
+    boolean isResourcePrimitive = aValue instanceof ExternalResourceDescription;
+    boolean isResourceArray = aValue.getClass().isArray()
+            && ExternalResourceDescription.class.isAssignableFrom(aValue.getClass()
+                    .getComponentType());
+    boolean isResourceCollection = (Collection.class.isAssignableFrom(aValue
+            .getClass()) && !((Collection) aValue).isEmpty() && ((Collection) aValue)
+            .iterator().next() instanceof ExternalResourceDescription);
+    if (isResourcePrimitive) {
+      return ResourceValueType.PRIMITIVE;
+    }
+    else if (isResourceArray) {
+      return ResourceValueType.ARRAY;
+    }
+    else if (isResourceCollection) {
+      return ResourceValueType.COLLECTION;
+    }
+    else {
+      return ResourceValueType.NO_RESOURCE;
+    }
+  }
+  
+  /**
+   * Types of external resource values.
+   */
+  static enum ResourceValueType {
+    NO_RESOURCE,
+    PRIMITIVE,
+    ARRAY,
+    COLLECTION;
+    
+    public boolean isMultiValued()
+    {
+      return this == COLLECTION || this == ARRAY;
+    }
   }
 }
