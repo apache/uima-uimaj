@@ -76,7 +76,7 @@ public class JCasGenMojoTest extends AbstractMojoTestCase {
     // copy resources
     File source = new File(projectDirectory, "src/main/resources");
     if (source.exists()) {
-      FileUtils.copyDirectory(source, outputDirectory);
+      FileUtils.copyDirectoryStructure(source, outputDirectory);
     }
 
     // load the Mojo
