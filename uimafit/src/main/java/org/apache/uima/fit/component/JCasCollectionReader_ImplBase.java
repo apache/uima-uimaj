@@ -51,8 +51,8 @@ public abstract class JCasCollectionReader_ImplBase extends CollectionReader_Imp
   // This method should not be overwritten. Overwrite initialize(UimaContext) instead.
   @Override
   public final void initialize() throws ResourceInitializationException {
-    ConfigurationParameterInitializer.initialize(getUimaContext(), this);
-    ExternalResourceInitializer.initialize(getUimaContext(), this);
+    ConfigurationParameterInitializer.initialize(this, getUimaContext());
+    ExternalResourceInitializer.initialize(this, getUimaContext());
     initialize(getUimaContext());
   }
 

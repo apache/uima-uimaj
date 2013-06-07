@@ -56,17 +56,17 @@ public final class ExternalResourceInitializer {
 
   /**
    * Configure a component from the given context.
+   * @param object
+   *          the component.
+   * @param context
+   *          the UIMA context.
    * 
    * @param <T>
    *          the component type.
-   * @param context
-   *          the UIMA context.
-   * @param object
-   *          the component.
    * @throws ResourceInitializationException
    *           if the external resource cannot be configured.
    */
-  public static <T> void initialize(UimaContext context, T object)
+  public static <T> void initialize(T object, UimaContext context)
           throws ResourceInitializationException {
     configure(context, object.getClass(), object.getClass(), object);
   }
@@ -195,7 +195,7 @@ public final class ExternalResourceInitializer {
           // Already mark the resource as initialized so we do not run into an
           // endless recursive loop when initialize() is called again.
           initializedResources.put(r, INITIALIZED);
-          initialize(aContext, r);
+          initialize(r, aContext);
           awareResources.add((ExternalResourceAware) r);
         }
       }

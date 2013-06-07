@@ -82,7 +82,7 @@ public class InitializableFactoryTest {
     public boolean booleanParameter = false;
 
     public void initialize(UimaContext context) throws ResourceInitializationException {
-      ConfigurationParameterInitializer.initialize(context, this);
+      ConfigurationParameterInitializer.initialize(this, context);
     }
   }
 
@@ -95,7 +95,7 @@ public class InitializableFactoryTest {
     public boolean booleanParameter = false;
 
     public void initialize(UimaContext context) throws ResourceInitializationException {
-      ConfigurationParameterInitializer.initialize(context, this);
+      ConfigurationParameterInitializer.initialize(this, context);
     }
   }
 
@@ -108,7 +108,7 @@ public class InitializableFactoryTest {
     public String stringParameter = "hello";
 
     public void initialize(UimaContext context) throws ResourceInitializationException {
-      ConfigurationParameterInitializer.initialize(context, this);
+      ConfigurationParameterInitializer.initialize(this, context);
     }
 
     public String nameFile(JCas jCas) {
@@ -125,7 +125,7 @@ public class InitializableFactoryTest {
     public String stringParameter = "hello";
 
     public void initialize(UimaContext context) throws ResourceInitializationException {
-      ConfigurationParameterInitializer.initialize(context, this);
+      ConfigurationParameterInitializer.initialize(this, context);
     }
 
     public String nameFile(JCas jCas) {

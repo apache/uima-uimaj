@@ -42,7 +42,7 @@ public abstract class JCasAnnotator_ImplBase extends
   @Override
   public void initialize(final UimaContext context) throws ResourceInitializationException {
     super.initialize(context);
-    ConfigurationParameterInitializer.initialize(context, this);
-    ExternalResourceInitializer.initialize(context, this);
+    ConfigurationParameterInitializer.initialize(this, context);
+    ExternalResourceInitializer.initialize(this, context);
   }
 }
