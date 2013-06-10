@@ -23,7 +23,7 @@ public enum SerialFormat {
   XCAS,         // with reachability filtering
   XMI,          // with reachability filtering
   BINARY,       // no filtering
-  COMPRESSED,   // no filtering
-  COMPRESSED_FILTERED,   // with reachability and type and feature filtering
+  COMPRESSED,   // no filtering  (form 4)
+  COMPRESSED_FILTERED,   // with reachability and type and feature filtering (form 6)
   COMPRESSED_PROJECTION, // with subset of views
 }
