@@ -134,7 +134,7 @@ public class JCasGenMojo
         boolean contextDelta = false;
         for (String descriptorLocation : ds.getIncludedFiles()) {
             Import imp = new Import_impl();
-            imp.setLocation(new File(ds.getBasedir(), descriptorLocation).getAbsolutePath());
+            imp.setLocation("file:///" + (new File(ds.getBasedir(), descriptorLocation)).getAbsolutePath());
             imports.add(imp);
             
             contextDelta |= this.buildContext
