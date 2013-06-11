@@ -30,7 +30,7 @@
 	<artifactId>uimaj-core</artifactId>
 	<packaging>jar</packaging>
 	<version>2.4.1-SNAPSHOT</version>
-	<name>UIMA Base: ${project.artifactId}</name>
+	<name>Apache UIMA Base: ${project.artifactId}</name>
   <description>The core implementation of the UIMA Java Framework</description>
   <url>${uimaWebsiteUrl}</url>
 

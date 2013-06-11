@@ -30,10 +30,26 @@
 	<artifactId>uimaj-bootstrap</artifactId>
 	<packaging>jar</packaging>
 	<version>2.4.1-SNAPSHOT</version>
-	<name>Apache UIMA Base: ${project.artifactId}: Bootstrap launcher</name>
+	<name>Apache UIMA Base: ${project.artifactId}</name>
   <description>Configures a classpath from directories, and runs
     a Java application using that</description>
   <url>${uimaWebsiteUrl}</url>
+  
+  <scm>
+    <connection>
+      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-bootstrap
+    </connection>
+    <developerConnection>
+      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-bootstrap
+    </developerConnection>
+    <url>
+      http://svn.apache.org/viewvc/uima/uimaj/trunk/uimaj-bootstrap
+    </url>
+  </scm>
+  
+  <properties>
+    <uimaScmProject>uimaj-bootstrap</uimaScmProject>
+  </properties>
   
   <build>
     <plugins>

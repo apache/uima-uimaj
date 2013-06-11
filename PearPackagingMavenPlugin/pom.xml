@@ -30,7 +30,7 @@
 	<artifactId>PearPackagingMavenPlugin</artifactId>
   <version>2.4.1-SNAPSHOT</version>
 	<packaging>maven-plugin</packaging>
-	<name>Apache UIMA Maven Plugin ${project.artifactId}</name>
+	<name>Apache UIMA Maven: ${project.artifactId}</name>
   <description>This is a maven plugin that produces a pear artifact.</description>
   <url>${uimaWebsiteUrl}</url>
 

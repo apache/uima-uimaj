@@ -30,7 +30,7 @@
 	<artifactId>aggregate-uimaj</artifactId>
 	<packaging>pom</packaging>
 	<version>2.4.1-SNAPSHOT</version>
-	<name>Apache UIMA Aggregate: ${project.artifactId}: UIMA Base</name>
+	<name>Apache UIMA Aggregate: ${project.artifactId}</name>
   <description>The aggregate for the base UIMA framework build and release</description>
   <url>${uimaWebsiteUrl}</url>
 
