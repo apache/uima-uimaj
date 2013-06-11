@@ -72,6 +72,12 @@
   <!-- default scope is compile -->
   <!-- Used for assemblies, to insure they're built *before* the assembly -->
   
+  <!-- Note: as of 6/2013 it seems these dependencies may not be needed
+       They are not up-to-date with all the subprojects, but that doesn't
+       seem to matter.
+       
+       Consider deleting at some point -->
+        
   <dependencies>
     <dependency>
       <groupId>org.apache.uima</groupId> 
@@ -150,6 +156,7 @@
     </dependency>
   </dependencies>
 
+  
   <modules>
     <module>uimaj-parent</module>
     <module>aggregate-uimaj</module>
