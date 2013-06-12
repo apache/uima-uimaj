@@ -134,7 +134,14 @@ public class JCasGenMojo
         boolean contextDelta = false;
         for (String descriptorLocation : ds.getIncludedFiles()) {
             Import imp = new Import_impl();
-            imp.setLocation("file:///" + (new File(ds.getBasedir(), descriptorLocation)).getAbsolutePath());
+            // setLocation takes a string which must be a URL https://issues.apache.org/jira/browse/UIMA-2983 
+            URL url;
+            try {
+              url = (new File(ds.getBasedir(), descriptorLocation)).toURI().toURL();
+            } catch (MalformedURLException e) {
+              throw new RuntimeException(e);  // this should never happen for files
+            }
+            imp.setLocation(url.toString());
             imports.add(imp);
             
             contextDelta |= this.buildContext
