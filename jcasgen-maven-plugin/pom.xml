@@ -88,6 +88,9 @@
 						<goal>package</goal>
 						<goal>integration-test</goal>
 					</goals>
+					<!-- change this next line by toggling the "!" character to include / exclude the long-running m2e test
+					     It is normally excluded -->
+					<invokerTest>classpath,multimodule,simple,!m2e</invokerTest>
 				</configuration>
 				<executions>
 					<execution>
