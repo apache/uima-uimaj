@@ -105,6 +105,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-plugin-plugin</artifactId>
+				<version>3.2</version>  <!-- is the version in apache-wide parent -->
 				<!-- BEGIN WORKAROUND http://jira.codehaus.org/browse/MNG-5346 -->
 				<configuration>
 					<skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
@@ -115,6 +116,10 @@
 						<goals>
 							<goal>descriptor</goal>
 						</goals>
+		        <configuration>
+		          <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
+		        </configuration>
+						
 					</execution>
 					<!-- END WORKAROUND http://jira.codehaus.org/browse/MNG-5346 -->
 					<execution>
@@ -122,6 +127,9 @@
 						<goals>
 							<goal>helpmojo</goal>
 						</goals>
+            <configuration>
+              <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
+            </configuration>
 					</execution>
 				</executions>
 			</plugin>
