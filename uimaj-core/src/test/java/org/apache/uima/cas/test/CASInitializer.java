@@ -60,9 +60,9 @@ public class CASInitializer {
       init.initIndexes(irm, casMgr.getTypeSystemMgr());
       irm.commit();
     } catch (ResourceInitializationException e) {
-      e.printStackTrace();
+      throw new RuntimeException(e);
     } catch (CASException e) {
-      e.printStackTrace();
+      throw new RuntimeException(e);
     }
 
     // Create the default text Sofa and return CAS view
