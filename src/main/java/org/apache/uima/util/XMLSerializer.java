@@ -339,18 +339,26 @@ public class XMLSerializer {
     private final void checkForInvalidXmlChars(String s, boolean xml11) throws SAXParseException {
       final int index = XMLUtils.checkForNonXmlCharacters(s, xml11);
       if (index >= 0) {
-        throw new SAXParseException("Trying to serialize non-XML " + (xml11 ? "1.1" : "1.0") + 
-                " character: " + s.charAt(index)
-            + ", 0x" + Integer.toHexString(s.charAt(index)), null);
+        String msg =  String.format("Trying to serialize non-XML %s character: %c, 0x%x at offset %,d in string starting with %s",
+            (xml11 ? "1.1" : "1.0"),
+            s.charAt(index), 
+            (int)s.charAt(index),
+            index,
+            s.substring(0, Math.min(100,  s.length()))); 
+        throw new SAXParseException(msg, null);
       }
     }
     
     private final void checkForInvalidXmlChars(char[] ch, int start, int length, boolean xml11) throws SAXParseException {
       final int index = XMLUtils.checkForNonXmlCharacters(ch, start, length, xml11);
       if (index >= 0) {
-        throw new SAXParseException("Trying to serialize non-XML " + (xml11 ? "1.1" : "1.0") + 
-                " character: " + ch[index]
-            + ", 0x" + Integer.toHexString(ch[index]), null);
+        String msg =  String.format("Trying to serialize non-XML %s character: %c, 0x%x at offset %,d in string starting with %s",
+            (xml11 ? "1.1" : "1.0"),
+            ch[index], 
+            (int)(ch[index]),
+            index,
+            (new String(ch)).substring(0, Math.min(100,  ch.length))); 
+        throw new SAXParseException(msg, null);
       }
     }
 

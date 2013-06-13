@@ -25,6 +25,7 @@ import javax.xml.transform.OutputKeys;
 import junit.framework.TestCase;
 
 import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.AttributesImpl;
 
 public class XMLSerializerTest extends TestCase {
@@ -53,4 +54,66 @@ public class XMLSerializerTest extends TestCase {
     String xmlStr = new String(baos.toByteArray(), "UTF-8");
     assertEquals("<?xml version=\"1.1\" encoding=\"UTF-8\"?><foo/>", xmlStr);
   }
+  
+  public void testXml10Error() throws Exception {
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    XMLSerializer sax2xml = new XMLSerializer(baos, false);
+    ContentHandler ch = sax2xml.getContentHandler();    
+    ch.startDocument();
+    char[] data = new char[] {32, 33, 5, 34};
+    
+    ch.startElement("","foo","foo", new AttributesImpl());
+    boolean eh = false;
+    try {
+      ch.characters(data, 0, 4);
+    } catch (SAXParseException e) {
+      String msg = e.getMessage();
+      String expected = "Trying to serialize non-XML 1.0 character: " + (char)5 + ", 0x5 at offset 2";
+      assertEquals(msg.substring(0, expected.length()), expected);
+      eh = true;
+    }  
+    assertTrue(eh);
+  }
+
+  public void testXml11Error() throws Exception {
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    XMLSerializer sax2xml = new XMLSerializer(baos, false);
+    sax2xml.setOutputProperty(OutputKeys.VERSION, "1.1");
+    ContentHandler ch = sax2xml.getContentHandler();    
+    ch.startDocument();
+    char[] data = new char[] {32, 33, 5, 34};
+    
+    ch.startElement("","foo","foo", new AttributesImpl());
+    boolean eh = false;
+    try {
+      ch.characters(data, 0, 4);
+    } catch (SAXParseException e) {
+      eh = true;
+    }  
+    assertFalse(eh);
+  }
+
+  public void testXml11Error2() throws Exception {
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    XMLSerializer sax2xml = new XMLSerializer(baos, false);
+    sax2xml.setOutputProperty(OutputKeys.VERSION, "1.1");
+    ContentHandler ch = sax2xml.getContentHandler();    
+    ch.startDocument();
+    char[] data = new char[] {32, 33, 0, 34};
+    
+    ch.startElement("","foo","foo", new AttributesImpl());
+    boolean eh = false;
+    try {
+      ch.characters(data, 0, 4);
+    } catch (SAXParseException e) {
+      String msg = e.getMessage();
+      System.out.println(msg);
+      String expected = "Trying to serialize non-XML 1.1 character: " + (char)0 + ", 0x0 at offset 2";
+      assertEquals(msg.substring(0, expected.length()), expected);
+      eh = true;
+    }  
+    assertTrue(eh);
+  }
+
+
 }
