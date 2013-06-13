@@ -780,7 +780,7 @@ implements Listener, StandardStrings {
 
   protected String setValueChanged(String newValue, String oldValue) {
     if (null == newValue)
-      valueChanged = valueChanged || (null == oldValue);
+      valueChanged = valueChanged || (null != oldValue);
     else if (!newValue.equals(oldValue))
       valueChanged = true;
     return newValue;
