@@ -82,7 +82,7 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
     Composite buttonContainer = new2ColumnComposite(sectionClient);
     ((GridData) buttonContainer.getLayoutData()).grabExcessVerticalSpace = false;
     createOverrideButton = newPushButton(buttonContainer, "Create Override",
-            "Click here to create a new override for this parameter");
+            "Overrides allow an aggregate to replace a parameter's value in one or more of its delegates");
     createNonSharedOverrideButton = newPushButton(buttonContainer, "Create non-shared Override",
             "Click here to create a non-shared override for this parameter");
 

@@ -217,8 +217,10 @@ public class ParameterSection extends AbstractSectionParm {
 
     defaultGroup = newLabeledTextField(groupingControl, "Default Group",
             "Specify the name of the default group.");
-    newLabelWithData(groupingControl, "SearchStrategy");
-    searchStrategy = newCComboWithTip(groupingControl, "SearchStrategyToolTip");
+    newLabelWithTip(groupingControl, "SearchStrategy", 
+            "Fallback strategy when a parameter is not found in the specified group");
+    searchStrategy = newCComboWithTip(groupingControl, 
+            "Fallback strategy when a parameter is not found in the specified group");
     searchStrategy.add("language_fallback");
     searchStrategy.add("default_fallback");
     searchStrategy.add("none");
@@ -930,6 +932,7 @@ public class ParameterSection extends AbstractSectionParm {
     existingCP
             .setMultiValued(setValueChangedBoolean(dialog.multiValue, existingCP.isMultiValued()));
     existingCP.setType(setValueChanged(dialog.parmType, existingCP.getType()));
+    existingCP.setExternalOverrideName(setValueChanged(dialog.extParmName, existingCP.getExternalOverrideName()));
     if (valueChanged)
       setFileDirty();
   }

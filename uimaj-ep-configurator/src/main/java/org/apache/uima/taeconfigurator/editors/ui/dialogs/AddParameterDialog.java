@@ -43,6 +43,8 @@ import org.apache.uima.taeconfigurator.editors.ui.ParameterSection;
 public class AddParameterDialog extends AbstractDialogKeyVerifyJavaNames {
   private StyledText parmNameUI;
 
+  private StyledText extParmNameUI;
+  
   public Button multiValueUI;
 
   private Button mandatoryUI;
@@ -52,6 +54,8 @@ public class AddParameterDialog extends AbstractDialogKeyVerifyJavaNames {
   private Text descriptionUI;
 
   public String parmName;
+  
+  public String extParmName;
 
   public boolean multiValue;
 
@@ -68,7 +72,7 @@ public class AddParameterDialog extends AbstractDialogKeyVerifyJavaNames {
   private String originalParmName;
 
   public AddParameterDialog(AbstractSection aSection) {
-    super(aSection, "Add Parameter", "Specify a parameter name and press OK");
+    super(aSection, "Add Parameter", "Specify a parameter name && type");
     parmSection = (ParameterSection) section;
   }
 
@@ -108,7 +112,11 @@ public class AddParameterDialog extends AbstractDialogKeyVerifyJavaNames {
     parmTypeUI.add("Integer");
     parmTypeUI.add("Boolean");
 
-    descriptionUI = newDescription(twoCol, S_);
+    descriptionUI = newDescription(twoCol, "Description of parameter (optional)");
+
+    extParmNameUI = newLabeledSingleLineStyledText(twoCol, "External Override",
+            "External overrides allow a parameter's value to be overriden by an entry in\n" + 
+            "an external settings file, independent of the descriptor hierarchy (optional)");
 
     multiValueUI = newButton(mainArea, SWT.CHECK, "Parameter is multi-valued",
             "Check the box if the parameter is multi-valued");
@@ -129,6 +137,7 @@ public class AddParameterDialog extends AbstractDialogKeyVerifyJavaNames {
       mandatoryUI.setSelection(existingCP.isMandatory());
       parmNameUI.setText(convertNull(existingCP.getName()));
       parmTypeUI.setText(convertNull(existingCP.getType()));
+      extParmNameUI.setText(convertNull(existingCP.getExternalOverrideName()));
     }
     originalParmName = parmNameUI.getText(); // for validity testing in edit case
     return mainArea;
@@ -140,6 +149,7 @@ public class AddParameterDialog extends AbstractDialogKeyVerifyJavaNames {
     mandatory = mandatoryUI.getSelection();
     description = nullIf0lengthString(descriptionUI.getText());
     parmType = parmTypeUI.getText();
+    extParmName = nullIf0lengthString(extParmNameUI.getText());
   }
 
   public boolean isValid() {

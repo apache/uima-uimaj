@@ -78,22 +78,27 @@ public abstract class AbstractSectionParm extends AbstractSection {
   // subclass
   // //$NON-NLS-1$
 
-  protected final static String MULTI_VALUE_INDICATOR = "Multi   "; //$NON-NLS-1$
+  protected final static String MULTI_VALUE_INDICATOR  = "Multi  "; //$NON-NLS-1$
 
   protected final static String SINGLE_VALUE_INDICATOR = "Single "; //$NON-NLS-1$
 
-  protected final static String OPTIONAL_INDICATOR = "Opt  "; //$NON-NLS-1$
+  protected final static String OPTIONAL_INDICATOR = "Opt "; //$NON-NLS-1$
 
   protected final static String REQUIRED_INDICATOR = "Req "; //$NON-NLS-1$
-
+  
+  protected final static String EXTERNAL_OVERRIDE_INDICATOR    = "XO "; //$NON-NLS-1$
+  
+  protected final static String NO_EXTERNAL_OVERRIDE_INDICATOR = "      ";
+  
   protected final String nameHeader = "  Name: "; //$NON-NLS-1$
 
-  protected final static Map typeNamesW = new HashMap(4);
+  protected final static Map<String,String> typeNamesW = new HashMap<String,String>(4);
   static { // map extra spaces to get these to take the same
-    typeNamesW.put("Boolean", "Boolean"); //$NON-NLS-1$ //$NON-NLS-2$
-    typeNamesW.put("Float", "Float     "); //$NON-NLS-1$ //$NON-NLS-2$
-    typeNamesW.put(Messages.getString("AbstractSectionParm.16"), "Integer  "); //$NON-NLS-1$ //$NON-NLS-2$
-    typeNamesW.put("String", "String    "); //$NON-NLS-1$ //$NON-NLS-2$
+    typeNamesW.put("Boolean", "Boolean "); //$NON-NLS-1$ //$NON-NLS-2$
+    typeNamesW.put("Float",   "Float      "); //$NON-NLS-1$ //$NON-NLS-2$
+    typeNamesW.put(Messages.getString("AbstractSectionParm.16"), 
+                              "Integer   "); //$NON-NLS-1$ //$NON-NLS-2$
+    typeNamesW.put("String",  "String     "); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   protected Tree tree;
@@ -339,8 +344,9 @@ public abstract class AbstractSectionParm extends AbstractSection {
   protected String parmGuiString(ConfigurationParameter parm) {
     return ((parm.isMultiValued()) ? MULTI_VALUE_INDICATOR : SINGLE_VALUE_INDICATOR)
             + ((parm.isMandatory()) ? REQUIRED_INDICATOR : OPTIONAL_INDICATOR)
-            + typeNamesW.get(parm.getType()) + " " + nameHeader + //$NON-NLS-1$
-            (parm.getName());
+            + typeNamesW.get(parm.getType())
+            + ((parm.getExternalOverrideName()==null) ? NO_EXTERNAL_OVERRIDE_INDICATOR : EXTERNAL_OVERRIDE_INDICATOR)
+            + nameHeader + parm.getName();    //$NON-NLS-1$
   }
 
   protected void setGroupText(TreeItem groupItem, String names) {
@@ -788,8 +794,20 @@ public abstract class AbstractSectionParm extends AbstractSection {
 
   protected void showDescriptionAsToolTip(Event event) {
     TreeItem item = tree.getItem(new Point(event.x, event.y));
+    String text = null;
     if (null != item && isParameter(item)) {
-      setToolTipText(tree, getCorrespondingModelParm(item).getDescription());
+      text = getCorrespondingModelParm(item).getDescription();
+      String extOvr = getCorrespondingModelParm(item).getExternalOverrideName();
+      if (extOvr != null) {
+        if (text == null) {
+          text = "(ExternalOverrideName = " + extOvr + ")";
+        } else {
+          text += " (ExternalOverrideName = " + extOvr + ")";
+        }
+      }
+    }
+    if (text != null) {
+      setToolTipText(tree, text);
     } else
       tree.setToolTipText(""); //$NON-NLS-1$
   }
