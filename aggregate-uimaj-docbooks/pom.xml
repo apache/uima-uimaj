@@ -57,6 +57,30 @@
     <uimaScmProject>${project.artifactId}</uimaScmProject>
   </properties>
   
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals><goal>copy-resources</goal></goals>
+            <phase>process-resources</phase>
+            <configuration>
+              <outputDirectory>${project.build.directory}</outputDirectory>
+              <resources>
+                <resource>
+                  <filtering>true</filtering>
+                  <directory>src/main/resources</directory>
+                  <includes><include>**/*.*</include></includes>
+                </resource>                
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  
   <modules>
     <module>../uima-docbook-overview-and-setup</module>
     <module>../uima-docbook-references</module>
