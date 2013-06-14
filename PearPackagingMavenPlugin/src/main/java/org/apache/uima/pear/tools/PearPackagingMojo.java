@@ -50,7 +50,7 @@ public class PearPackagingMojo extends AbstractMojo {
     * Main component directory of the UIMA project that contains the UIMA
     * nature.
     * 
-    * @parameter expression="${basedir}"
+    * @Parameter( expression = "${basedir}" )
     * @required
     */
    private String mainComponentDir = null;
@@ -58,14 +58,14 @@ public class PearPackagingMojo extends AbstractMojo {
    /**
     * Required classpath settings for the PEAR package.
     * 
-    * @parameter expression="${pear.classpath}"
+    * @Parameter ( expression = "${pear.classpath}" )
     */
    private String classpath = null;
 
    /**
     * Main Component Descriptor path relative to the main component directory
     * 
-    * @parameter expression="${pear.mainComponentDesc}"
+    * @Parameter ( expression = "${pear.mainComponentDesc}" )
     * @required
     */
    private String mainComponentDesc = null;
@@ -73,7 +73,7 @@ public class PearPackagingMojo extends AbstractMojo {
    /**
     * PEAR package component ID
     * 
-    * @parameter expression="${pear.componentId}"
+    * @Parameter ( expression = "${pear.componentId}" )
     * @required
     */
    private String componentId = null;
@@ -81,7 +81,7 @@ public class PearPackagingMojo extends AbstractMojo {
    /**
     * Target directory for the PEAR package
     * 
-    * @parameter expression="${basedir}/target"
+    * @Parameter ( expression = "${basedir}/target" )
     * @required
     */
    private String targetDir = null;
@@ -89,21 +89,21 @@ public class PearPackagingMojo extends AbstractMojo {
    /**
     * Required UIMA datapath settings for the PEAR package
     * 
-    * @parameter default-value="$main_root/resources"
+    * @Parameter ( default-value = "$main_root/resources" )
     */
    private String datapath = null;
 
    /**
     * Required environment variables for the PEAR package
     * 
-    * @parameter
+    * @Parameter
     */
    private Properties props = null;
 
    /**
     * The maven project.
     * 
-    * @parameter expression="${project}"
+    * @Parameter ( expression="${project}" )
     * @required
     * @readonly
     * @description "the maven project"
