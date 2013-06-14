@@ -193,6 +193,9 @@ public class CASRuntimeException extends UIMARuntimeException {
 
   /** Deserializing Binary Header invalid */
   public static final String DESERIALIZING_BINARY_INVALID_HEADER = "DESERIALIZING_BINARY_INVALID_HEADER";
+  
+  /** Deserializing compressed binary other than form 4 not supported by this method */
+  public static final String DESERIALIZING_COMPRESSED_BINARY_UNSUPPORTED = "DESERIALIZING_COMPRESSED_BINARY_UNSUPPORTED";
 
   
 	public CASRuntimeException() {

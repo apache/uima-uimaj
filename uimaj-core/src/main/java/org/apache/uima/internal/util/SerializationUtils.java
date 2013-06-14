@@ -27,9 +27,17 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 /**
- * Utilities for serializing and deserializing objects.
+ * Serialize and Deserialize arbitrary objects to/from byte arrays, 
+ * using standard Java object serialization/deserialization support.
+ * 
+ * Used in the Vinci and Soap transports to serialize/deserialize 
+ * CASSerializer objects or
+ * CASCompleteSerializer objects (includes type system and index definitions) or
+ * (for SOAP) arbitrary objects
  * 
  * 
+ * This class is abstract only to prevent instantiation.
+ * All the methods are static.
  */
 public abstract class SerializationUtils {
 

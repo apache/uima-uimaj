@@ -1162,20 +1162,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * @param istream
    * @throws CASRuntimeException
    */
-  
+
   public SerialFormat reinit(InputStream istream) throws CASRuntimeException {
-    return reinit(istream, null);
-  }
-  
-  /**
-   * Called by services for delta deserialization with saved reuse info
-   * @param istream
-   * @param rfs - reuse info collected when serializaing out to service
-   * @throws CASRuntimeException
-   */
-  public SerialFormat reinit(InputStream istream, ReuseInfo rfs) throws CASRuntimeException {
     if (this != this.svd.baseCAS) {
-      return this.svd.baseCAS.reinit(istream, rfs);
+      return this.svd.baseCAS.reinit(istream);
     }
    
     final DataInputStream dis = (istream instanceof DataInputStream) ?  
@@ -1207,10 +1197,12 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
           (new BinaryCasSerDes4(this.getTypeSystemImpl(), false)).deserialize(this, dis, delta);
           return SerialFormat.COMPRESSED;
         } else {
+//          throw new CASRuntimeException(CASRuntimeException.DESERIALIZING_COMPRESSED_BINARY_UNSUPPORTED);
+          // Only works for cases where the type systems match, and delta is false.
           try {
-            (new BinaryCasSerDes6(this, rfs)).deserializeAfterVersion(dis, delta, AllowPreexistingFS.allow);
+            (new BinaryCasSerDes6(this)).deserializeAfterVersion(dis, delta, AllowPreexistingFS.allow);
           } catch (ResourceInitializationException e) {
-            // never thrown
+            throw new CASRuntimeException(CASRuntimeException.DESERIALIZING_COMPRESSED_BINARY_UNSUPPORTED, null, e);
           }
           return SerialFormat.COMPRESSED_FILTERED;
         }
@@ -4310,37 +4302,4 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 		return this.svd.modifiedLongHeapCells;  
   }
   
-  /**
-   * @see org.apache.uima.cas.CAS#serializeWithCompression(Object out)
-   */
-  public void serializeWithCompression(Object out) throws IOException {
-    (new BinaryCasSerDes4(this.getTypeSystemImpl(), false)).serialize(this, out);
-  }
-  
-  /**
-   * @see org.apache.uima.cas.CAS#serializeWithCompression(Object out, Marker marker)
-   */
-  public void serializeWithCompression(Object out, Marker marker) throws IOException {
-    (new BinaryCasSerDes4(this.getTypeSystemImpl(), false)).serialize(this, out, marker);
-  }
-  
-  /**
-   * @throws ResourceInitializationException if target type system is incompatible with this CAS's type system
-   * @see org.apache.uima.cas.CAS#serializeWithCompression(Object out, TypeSystem tgtTypeSystem, Marker marker)
-   */
-  public ReuseInfo serializeWithCompression(Object out, TypeSystem tgtTypeSystem) throws IOException, ResourceInitializationException {
-    BinaryCasSerDes6 bcs = new BinaryCasSerDes6(this, (TypeSystemImpl) tgtTypeSystem);
-    bcs.serialize(out);
-    return bcs.getReuseInfo();
-  }
-  
-  /**
-   * @throws ResourceInitializationException if target type system is incompatible with this CAS's type system
-   * @see org.apache.uima.cas.CAS#serializeWithCompression(Object out, TypeSystem tgtTypeSystem, Marker mark, ReuseInfo reuseInfo)
-   */
-  public void serializeWithCompression(Object out, TypeSystem tgtTypeSystem, Marker mark, ReuseInfo reuseInfo) throws IOException, ResourceInitializationException {
-    BinaryCasSerDes6 bcs = new BinaryCasSerDes6(this, (MarkerImpl) mark, (TypeSystemImpl) tgtTypeSystem, reuseInfo);
-    bcs.serialize(out);
-  }
-   
 }

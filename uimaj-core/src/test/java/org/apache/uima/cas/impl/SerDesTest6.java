@@ -1154,9 +1154,8 @@ public class SerDesTest6 extends TestCase {
         bcs.serialize(baos);
       }
       ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-      bcs = new BinaryCasSerDes6(casTgt, casSrc.getTypeSystemImpl());
-      bcs.deserialize(bais);
-      
+      Serialization.deserializeCAS(casTgt, bais, casSrc.getTypeSystemImpl(), null);
+
       bcs = new BinaryCasSerDes6(casSrc, casTgt.getTypeSystemImpl());
       assertTrue(bcs.compareCASes(casSrc, casTgt));
     } catch (IOException e) {
@@ -1193,9 +1192,7 @@ public class SerDesTest6 extends TestCase {
       if (doPlain) {
         casTgt.reinit(bais);
       } else {
-        BinaryCasSerDes6 bcsDeserRmt = new BinaryCasSerDes6(casTgt);
-        bcsDeserRmt.deserialize(bais);
-        riToReturn[1] = bcsDeserRmt.getReuseInfo();
+        riToReturn[1] = Serialization.deserializeCAS(casTgt, bais, null, null).getReuseInfo();
       }
     } catch (IOException e) {
       throw new RuntimeException(e);
@@ -1221,8 +1218,7 @@ public class SerDesTest6 extends TestCase {
         casSrc.reinit(bais);
         assertTrue(new BinaryCasSerDes6(casSrc).compareCASes(casSrc, remoteCas));
       } else {
-          BinaryCasSerDes6 bcsDeserialize = new BinaryCasSerDes6(casSrc, null, remoteCas.getTypeSystemImpl(), ri[0]);
-          bcsDeserialize.deserialize(bais);
+          BinaryCasSerDes6 bcsDeserialize = Serialization.deserializeCAS(casSrc, bais, remoteCas.getTypeSystemImpl(), ri[0]);
           assertTrue(bcsDeserialize.compareCASes(casSrc, remoteCas));
       }      
     } catch (IOException e) {

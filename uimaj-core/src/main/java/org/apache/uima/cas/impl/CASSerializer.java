@@ -30,14 +30,19 @@ import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.Marker;
 
 /**
- * Binary Serialization for CAS. This serializes the state of the CAS, assuming that the type and index
- * information remains constant. <code>CASSerializer</code> objects can be serialized with
- * standard Java serialization; many uses of this class follow this form:
+ * This object has 2 purposes.
+ *   - it can hold a collection of individually Java-object-serializable objects representing a CAS +
+ *     the list of FS's indexed in the CAS
+ *     
+ *   - it has special methods to do a custom binary serialization (no compression) of a CAS + lists
+ *     of its indexed FSs.
+ * 
+ * One use of this class follows this form:
  * 
  * 1) create an instance of this class
  * 2) add a Cas to it (via addCAS methods)
  * 3) use the instance of this class as the argument to anObjectOutputStream.writeObject(anInstanceOfThisClass)
- *    In UIMA this is done in the SerializationUtils class.
+ *    In UIMA this is done in the SerializationUtils class; it appears to be used for SOAP and Vinci service adapters.
  * 
  * There are also custom serialization methods that serialize to outputStreams.
  * 
@@ -48,17 +53,14 @@ import org.apache.uima.cas.Marker;
  *     full / delta:
  *       full - the entire cas
  *       delta - only differences from a previous "mark" are serialized
- *     uncompressed / compressed / compressed (fast)
- *       uncompressed
- *       compressed - trades off time for space to give the most compression
- *       compressed (fast) - less compression, but faster 
+ *       
+ *   This class only does uncompressed forms of custom binary serialization.    
  *     
  * This class is for internal use.  Some of the serialized formats are readable by the C++
  * implementation, and used for efficiently transferring CASes between Java frameworks and other ones.
  * Others are used with Vinci or SOAP to communicate to remote annotators.
  * 
- * To serialize the shared common information among a group of CASes sharing the same
- * type definition and index specifications, 
+ * To serialize the type definition and index specifications for a CAS
  * @see org.apache.uima.cas.impl.CASMgrSerializer
  * 
  * 

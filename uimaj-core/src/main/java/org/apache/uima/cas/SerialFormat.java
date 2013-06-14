@@ -18,6 +18,10 @@
  */
 package org.apache.uima.cas;
 
+/**
+ * The various forms of serialization (typically of the CAS)  
+ *
+ */
 public enum SerialFormat {
   UNKNOWN,
   XCAS,         // with reachability filtering
