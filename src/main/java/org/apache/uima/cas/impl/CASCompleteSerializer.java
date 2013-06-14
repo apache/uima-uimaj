@@ -22,9 +22,9 @@ package org.apache.uima.cas.impl;
 import java.io.Serializable;
 
 /**
- * Class comment for CASCompleteSerializer.java goes here.
- * 
- * 
+ * This is a small object which contains 
+ *   - CASMgrSerializer instance - a Java serializable form of the type system + index definitions
+ *   - CASSerializer instance - a Java serializable form of the CAS including lists of which FSs are indexed  
  */
 public class CASCompleteSerializer implements Serializable {
 

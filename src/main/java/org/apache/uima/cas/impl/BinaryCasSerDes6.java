@@ -123,13 +123,8 @@ import org.apache.uima.util.impl.SerializationMeasures;
  * 
  * 1) get an appropriate CAS to deserialize into.  For delta CAS, it does not have to be empty, but it must
  *    be the originating CAS from which the delta was produced.
- * 2) call CASImpl: cas.reinit(inputStream)  This is the existing method
- *    for binary deserialization, and it now handles this compressed version, too.
- *    Delta cas is also supported.  This form requires both source and target type systems to be exactly the same.
- *    
- * An alternative interface for Deserialization with type system mapping:
- * 1) get an appropriate CAS to deserialize into (as above).
- * 2) create an instance of this class -> xxx
+ * 2) If the case is one where the target type system == the CAS's, and the serialized for is not Delta,
+ *    then, call aCAS.reinit(source).  Otherwise, create an instance of this class -> xxx
  *    a) Assuming the object being deserialized has a different type system, 
  *       set the "target" type system to the TypeSystemImpl instance of the 
  *       object being deserialized.    
@@ -252,8 +247,10 @@ public class BinaryCasSerDes6 {
    */
   public static class ReuseInfo {
     /**
-     * kept here only to avoid recomputation in the use case:
-     *   serialize to target 1, serialize same to target 2, etc.
+     * kept to avoid recomputation in the use case:
+     *   - serialize to target 1, serialize same to target 2, etc.
+     *   - Delta serialization (uses reuse info saved during initial deserialization)
+     *   - Delta deserialization 
      *   if Null, recomputed when needed
      * BitSet used to test if fsRef needs to be serialized   
      */
@@ -3537,7 +3534,7 @@ public class BinaryCasSerDes6 {
     
     version = deserIn.readInt();
     if (version == 0) {
-      throw new RuntimeException(String.format("Wrong version: %d in compressed file passed to BinaryCasSerDes6", version));
+      throw new RuntimeException(String.format("Wrong version: %d in input source passed to BinaryCasSerDes6 for deserialization", version));
     }
   }
   
