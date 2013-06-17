@@ -1442,6 +1442,21 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
     casImpl.removeFsFromIndexes(instance);
   }
 
+  
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.JCas#removeAllIncludingSubtypes(int)
+   */
+  public void removeAllIncludingSubtypes(int i) {
+    getFSIndexRepository().removeAllIncludingSubtypes(getCasType(i));    
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.JCas#removeAllExcludingSubtypes(int)
+   */
+  public void removeAllExcludingSubtypes(int i) {
+    getFSIndexRepository().removeAllExcludingSubtypes(getCasType(i));    
+  }
+
   /**
    * @see org.apache.uima.cas.CAS#fs2listIterator(FSIterator)
    */

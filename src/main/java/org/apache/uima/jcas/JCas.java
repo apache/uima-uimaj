@@ -552,6 +552,18 @@ public interface JCas extends AbstractCas {
    *              If the <code>fs</code> parameter is <code>null</code>.
    */
   void removeFsFromIndexes(FeatureStructure fs);
+  
+  /**
+   * Remove all feature structures of a given type (including subtypes) from all indexes in the repository associated with this CAS View.
+   * @param i the CAS type constant, written as Foo.type (for a given JCas Type) or anInstanceOfFoo.getTypeIndexID(), for an instance
+   */
+  void removeAllIncludingSubtypes(int i);
+  
+  /**
+   * Remove all feature structures of a given type (excluding subtypes) from all indexes in the repository associated with this CAS View.
+   * @param i the CAS type constant, written as Foo.type (for a given JCas Type) or anInstanceOfFoo.getTypeIndexID(), for an instance
+   */
+  void removeAllExcludingSubtypes(int i);
 
   /**
    * Get the standard annotation index.
