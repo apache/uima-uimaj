@@ -811,12 +811,13 @@ public class ArtifactProducer extends Thread {
                   "Process", "failure");
         }
         // e.printStackTrace();
-        if (UIMAFramework.getLogger().isLoggable(Level.FINER)) {
-          UIMAFramework.getLogger(this.getClass()).logrb(Level.FINER, this.getClass().getName(),
-                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_exception__FINER",
+        // changed from FINER to WARNING: https://issues.apache.org/jira/browse/UIMA-2440
+        if (UIMAFramework.getLogger().isLoggable(Level.WARNING)) {
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.WARNING, this.getClass().getName(),
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_exception__WARNING",
                   new Object[] { Thread.currentThread().getName(), e.getMessage() });
 
-          UIMAFramework.getLogger(this.getClass()).log(Level.FINER, e.getMessage(), e);
+          UIMAFramework.getLogger(this.getClass()).log(Level.WARNING, e.getMessage(), e);
         }
         if (casList == null) {
           notifyListeners(null, e);
