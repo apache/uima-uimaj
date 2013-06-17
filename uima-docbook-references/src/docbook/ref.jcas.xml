@@ -553,6 +553,19 @@ myView2.addFsToIndexes(myInstance); // index myInstance in myView2</programlisti
         Otherwise, if the instance was created by any of the Feature Structure Iterator operations over some index,
         then it is the view associated with the index.
       </para>
+      
+      <para>As of release 2.4.1, there are two efficient bulk-remove methods to remove all instances of a given type, 
+      or all instances of a given type and its subtypes.
+        These are invoked on an instance of an IndexRepository,
+      for a particular view.  For example, to remove instances of Token:
+            </para> 
+       <programlisting>jcas.getFsIndexRepository().
+       removeAllIncludingSubtypes(jcas.getCasType(Token.type))
+       or
+jcas.getFsIndexRepository().
+       removeAllExcludingSubtypes(jcas.getCasType(Token.type))
+      </programlisting>
+
     </section>
     
     <section id="ugr.ref.jcas.using_iterators">

@@ -675,12 +675,14 @@ private Feature initFeature(String featName, Type type)
       <listitem><para>add the item back to the indexes, in all views.</para></listitem> 
     </orderedlist></para>
     
-    <para>There are two methods you can use on index repositories to efficiently bulk-remove all
-    instances of particular types of feature structures.  One of these, 
-    <code>removeAllIncludingSubtypes</code> removes all instances of a particular
+    <para>As of version 2.4.1, there are two methods you can use on an index repository 
+    to efficiently bulk-remove all
+    instances of particular types of feature structures from a particular view.  One of these, 
+    <code>aCas.getIndexRepository().removeAllIncludingSubtypes(aType)</code> removes all instances of a particular
     type, including instances which are subtypes of the specified type.  The other, 
-    <code>removeAllExcludingSubtypes</code> remove all instances of a particular
-    type, only.</para>
+    <code>aCas.getIndexRepository().removeAllExcludingSubtypes(aType)</code> remove all instances of a particular
+    type, only.  In both cases, the removal is done from the particular view of the CAS referenced
+    by aCas.</para>
   </section>
   
   <section id="ugr.ref.cas.accessing_modifying_features_of_feature_structures">
