@@ -33,13 +33,17 @@ public class OptimizeStringsTest extends TestCase {
     } catch (SecurityException e) {
       throw new RuntimeException(e);
     } catch (NoSuchFieldException e) {
-      throw new RuntimeException(e);
+      System.err.println("OptimizeStringsTest could not find the String offset field, skipping that part of the test.");
+      STRING_OFFSET = null;
     }
   }
     
   public static int getStringOffset(String s) {
     try {
-      return STRING_OFFSET.getInt(s);
+      if (STRING_OFFSET != null) {
+        return STRING_OFFSET.getInt(s);
+      }
+      return -1;
     } catch (IllegalArgumentException e) {
       throw new RuntimeException(e);
     } catch (IllegalAccessException e) {
@@ -68,14 +72,21 @@ public class OptimizeStringsTest extends TestCase {
     assertEquals(d, "d");
     assertEquals(e, "e");
     assertEquals(f, "f");
-    assertEquals(getStringOffset(f), 0);
-    assertEquals(getStringOffset(e), 1);
-    assertEquals(getStringOffset(d), 2);
-    assertEquals(getStringOffset(c), 3);
-    assertEquals(getStringOffset(b), 0);
-    assertEquals(getStringOffset(a), 1);
+    checkOffset(f, 0);
+    checkOffset(e, 1);
+    checkOffset(d, 2);
+    checkOffset(c, 3);
+    checkOffset(b, 0);
+    checkOffset(a, 1);
     
  }
+  
+  private void checkOffset(String s, int offset) {
+    int so = getStringOffset(s);
+    if (so >= 0) {
+      assertEquals(so, offset);
+    }
+  }
   
   public void testSort() {
     OptimizeStrings os = new OptimizeStrings(true, 5);
@@ -98,10 +109,10 @@ public class OptimizeStringsTest extends TestCase {
     assertEquals(os.getCommonStrings()[1], "defgh");
     assertEquals(os.getCommonStrings()[2], "abcde");
     assertEquals(os.getSavedCharsExact() + os.getSavedCharsSubstr(), 3);
-    assertEquals(getStringOffset(fg), 0);
-    assertEquals(getStringOffset(defgh), 0);
-    assertEquals(getStringOffset(abc), 0);
-    assertEquals(getStringOffset(abcde), 0);   
+    checkOffset(fg, 0);
+    checkOffset(defgh, 0);
+    checkOffset(abc, 0);
+    checkOffset(abcde, 0);   
   }
  
   public void testSort2() {
@@ -124,10 +135,10 @@ public class OptimizeStringsTest extends TestCase {
     assertEquals(os.getCommonStrings()[0], "fgdefgh");
     assertEquals(os.getCommonStrings()[1], "abcde");
     assertEquals(os.getSavedCharsExact() + os.getSavedCharsSubstr(), 3);
-    assertEquals(getStringOffset(fg), 0);
-    assertEquals(getStringOffset(defgh), 2);
-    assertEquals(getStringOffset(abc), 0);
-    assertEquals(getStringOffset(abcde), 0);   
+    checkOffset(fg, 0);
+    checkOffset(defgh, 2);
+    checkOffset(abc, 0);
+    checkOffset(abcde, 0);   
   }
   
   public void testSort3() {
@@ -149,9 +160,9 @@ public class OptimizeStringsTest extends TestCase {
     assertEquals("fg", fg);
     assertEquals(os.getCommonStrings()[0], "fgdefghabcde");
     assertEquals(os.getSavedCharsExact() + os.getSavedCharsSubstr(), 3);
-    assertEquals(getStringOffset(fg), 0);
-    assertEquals(getStringOffset(defgh), 2);
-    assertEquals(getStringOffset(abc), 7);
-    assertEquals(getStringOffset(abcde), 7);   
+    checkOffset(fg, 0);
+    checkOffset(defgh, 2);
+    checkOffset(abc, 7);
+    checkOffset(abcde, 7);   
   }
 }
