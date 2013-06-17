@@ -117,12 +117,16 @@ under the License.
 
   <section id="ugr.ref.compress.simple-deltas">
     <title>Simple Delta CAS serialization</title>
-    <para>Form 6 supports delta CAS but requires that at the time of deserialization, an instance of the ReuseInfo must be saved, and that
+    <para>Use Form 4 for this, becuase form 6 supports delta CAS but requires 
+    that at the time of deserialization, an instance of the ReuseInfo must be saved, and that
     same instance then used for delta serialization.</para>
     
-    <para>Form 4 is not as efficient as form 6 in that it does not filter the CASes either by type systems nor by only sending reachable Feature Structure
-    instances.  But, it doesn't require a ReuseInfo object when doing delta serialization, so it may be more convenient to use when saving
-    delta CASes to files (as opposed to the other use case of returning delta CASes to a client).</para> 
+    <para>Form 4 is not as efficient as form 6 in that it does not filter the CASes 
+    either by type systems nor by only sending reachable Feature Structure
+    instances.  But, it doesn't require a ReuseInfo object when doing delta serialization, 
+    so it may be more convenient to use when saving
+    delta CASes to files (as opposed to the other use case of 
+    a remote service returning delta CASes to a remote client).</para> 
   </section>
   
   <section id="ugr.ref.compress.use-cases">
@@ -132,15 +136,17 @@ under the License.
     </para>
     
       <para>
-        One time save:</para>
+        To save a CAS to an output stream, using form 4 (no type system filtering), use this approach:
+      </para>
           <programlisting>// set up an output stream.  In this example, an internal byte array.
-ByteArrayOutputStream baos = new ByteArrayOutputStream(INITIAL_SIZE_OF_OUTPUT_BUFFER);
+ByteArrayOutputStream baos = new ByteArrayOutputStream(OUT_BFR_INIT_SZ);
 Serialization.serializeWithCompression(casSrc, baos);
 </programlisting>
  
       <para>To deserialize from a stream into an existing CAS:</para>
       <programlisting>// assume the stream is a byte array input stream
-// For example, one could be created from the above ByteArrayOutputStream as follows:
+// For example, one could be created 
+//   from the above ByteArrayOutputStream as follows:
 ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
 // Deserialize into a cas having the identical type system
 Serialization.deserializeCAS(cas, bais);
@@ -153,10 +159,8 @@ The method reads a common header, and based on what it finds, selects the approp
 deserialization routine.</para>
 
 <note><para>The <code>deserialization</code> method with just 2 arguments method doesn't support type filtering, or
-delta cas deserializating for form 6. To do those, use the form:</para>
-<code>Serialization.deserializeCAS(cas, bais, tgtTypeSystem, reuseInfo)</code>.
-If the target type system is identical to the one in the CAS, you may pass null for it.
-If a delta cas is not being received, you must pass null for the reuseInfo.
+delta cas deserializating for form 6. To do those, see example below. 
+</para>
 </note>
 
 <para>Serialize to an output stream, filtering out some types and/or features.
@@ -166,13 +170,16 @@ The <code>out</code> parameter may be an OutputStream, a DataOutputStream, or a 
 </para>
 
 <programlisting>// set up an output stream.  In this example, an internal byte array.
-ByteArrayOutputStream baos = new ByteArrayOutputStream(INITIAL_SIZE_OF_OUTPUT_BUFFER);
+ByteArrayOutputStream baos = new ByteArrayOutputStream(OUT_BFR_INIT_SZ);
 Serialization.serializeWithCompression(cas, out, tgtTypeSystem);
 </programlisting>
 
 <para>Deserializing with type filtering: the reuseInfo should be null unless 
 deserializing a delta CAS, in which case, it must be the reuse info captured when 
-the original CAS was serialized out.</para>
+the original CAS was serialized out. 
+If the target type system is identical to the one in the CAS, you may pass null for it.
+If a delta cas is not being received, you must pass null for the reuseInfo.
+</para>
 <programlisting>ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
 Serialization.deserializeCAS(cas, bais, tgtTypeSystem, reuseInfo);
 </programlisting> 
