@@ -557,14 +557,13 @@ myView2.addFsToIndexes(myInstance); // index myInstance in myView2</programlisti
       <para>As of release 2.4.1, there are two efficient bulk-remove methods to remove all instances of a given type, 
       or all instances of a given type and its subtypes.
         These are invoked on an instance of an IndexRepository,
-      for a particular view.  For example, to remove instances of Token:
+      for a particular view.  For example, to remove all instances of Token from a particular JCas instance:
             </para> 
-       <programlisting>jcas.getFsIndexRepository().
-       removeAllIncludingSubtypes(jcas.getCasType(Token.type))
-       or
+       <programlisting>jcas.removeAllIncludingSubtypes(Token.type) or
+jcas.removeAllIncludingSubtypes(aTokenInstance.getTypeIndexID()) or
 jcas.getFsIndexRepository().
-       removeAllExcludingSubtypes(jcas.getCasType(Token.type))
-      </programlisting>
+       removeAllIncludingSubtypes(jcas.getCasType(Token.type))
+</programlisting>
 
     </section>
     
