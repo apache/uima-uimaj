@@ -102,6 +102,11 @@ public class UIMARuntimeException extends InternationalizedRuntimeException {
 
   /**
    * Message key for a standard UIMA exception message: 
+   * "CAS Copying of the same view to the same CAS with the same view name is not allowed."
+   */
+  public static final String ILLEGAL_CAS_COPY_TO_SAME_CAS_SAME_VIEW = "illegal_copy_same_cas_same_view";
+  /**
+   * Message key for a standard UIMA exception message: 
    * Saved UIMA context is null; probable cause: Annotator initialize(context) method failed to call super.initialize(context). 
    */
   public static final String UIMA_CONTEXT_NULL = "uima_context_null";

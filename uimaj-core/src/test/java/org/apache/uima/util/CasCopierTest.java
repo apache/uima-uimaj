@@ -35,6 +35,7 @@ import org.apache.uima.cas.impl.LowLevelCAS;
 import org.apache.uima.cas.impl.XCASDeserializer;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas_data.impl.CasComparer;
+import org.apache.uima.cas_data.impl.CasComparerViewChange;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
@@ -159,6 +160,18 @@ public class CasCopierTest extends TestCase {
 
     // verify copy
     CasComparer.assertEquals(srcCas, destCas);
+    
+    // do the copy to a different view
+    // create a destination CAS
+    destCas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
+
+    // do the copy
+    copier = new CasCopier(srcCas, destCas);
+    copier.copyCasView(srcCas, "aNewView", true);
+
+    // verify copy
+    (new CasComparerViewChange(srcCas, destCas.getView("aNewView"))).assertEqualViews();
+    
   }
 
   public void testCopyFs() throws Exception {

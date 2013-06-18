@@ -2570,6 +2570,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     // get Sofa and switch to view
     SofaFS sofa = getSofa(absoluteSofaName);
     // sofa guaranteed to be non-null by above method
+    // unless sofa doesn't exist, which will cause a throw.
     return getView(sofa);
   }
 
