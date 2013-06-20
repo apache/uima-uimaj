@@ -33,6 +33,5 @@ under the License.
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="tug.multi_views.xml"/>
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="tug.cas_multiplier.xml"/>
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="tug.xmi_emf.xml"/>
-  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="tug.configuration.xml"/>  
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="tug.type_mapping.xml"/>
 </book>

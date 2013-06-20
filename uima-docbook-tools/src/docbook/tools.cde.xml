@@ -483,10 +483,13 @@ under the License.
     <para>The first checkbox at the top simplifies things if you are not using Parameter
       Groups (see the following section for a discussion of groups). In this case, leave the
       check box unchecked. The main area shows a list of parameter definitions. Each
-      parameter has a name, which must be unique for this Analysis Engine. The other three
+      parameter has a name, which must be unique for this Analysis Engine. The first three
       attributes specify whether the parameter can have a single or multiple values (an array
       of values), whether it is Optional or Mandatory, and what the value type it can hold
-      (String, Integer, Float, and Boolean).</para>
+      (String, Integer, Float, and Boolean).  If an external override name has been specified 
+      an attribute of "XO" is included. See <olink targetdoc="&uima_docs_ref;" 
+      targetptr="ugr.ref.xml.component_descriptor.aes.external_configuration_parameter_overrides"/>
+      for a discussion of external configuration parameter overrides.</para>
     
     <para>In addition to using the buttons on the right to edit this information, you can
       double-click a parameter to edit it, or remove (delete) a selected parameter by
@@ -494,7 +497,8 @@ under the License.
     
     <para>Parameters have an additional description field, which you can specify when you
       add or edit a parameter. To see the value of the description, hover the mouse over the
-      item, as shown in the picture below:
+      item, as shown in the picture below. If the parameter has an external override name its value
+      is included in the hover.
       
       
       <screenshot>
@@ -559,6 +563,24 @@ under the License.
       
     </section>
     
+    <section id="ugr.tools.cde.parm_definition.adding">
+      <title>Adding or Editing a Parameter</title>
+
+      <para>When creating or modifying a parameter both a unique name and a valid type must be
+       specified. The Description and External Name fields are optional.  The defaults for the two
+       checkboxs indicate a single-valued optional parameter in the example below:
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata width="4.7in" format="JPG" fileref="&imgroot;image025.jpg"/>
+            </imageobject>
+            <textobject><phrase>Aggregate parameters</phrase>
+            </textobject>
+          </mediaobject>
+        </screenshot></para>
+
+    </section>
+
     <section id="ugr.tools.cde.parm_definition.aggregates">
       <title>Parameter declarations for Aggregates</title>
       

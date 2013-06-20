@@ -895,6 +895,25 @@ public void initialize(UimaContext aContext)
           of <literal>UimaContext.getConfigParameterValue</literal>, which takes
           both the group name and the parameter name as its arguments.</para>
       </section>
+
+      <section id="ugr.tug.aae.configuration_parameter_overrides">
+        <title>Overriding Configuration Parameter Settings</title>
+
+        <para>There are two ways that the value assigned to a configuration parameter can be
+        overridden. An aggregate may declare a parameter that overrides one or more of the
+        parameters in one or more of its delegates.  The aggregate must also define a value for the
+        parameter, unless the parameter is itself overridden by a setting in the parent
+        aggregate.</para>
+
+        <para>An alternative method that avoids these strict hierarchical override constraints is to
+        associate an external global name with a parameter and to assign values to these external
+        names in an external properties file.</para>
+
+        <para>For details see 
+          <olink targetdoc="&uima_docs_ref;" 
+          targetptr="ugr.ref.xml.component_descriptor.aes.aggregate.configuration_parameter_overrides"/>
+        </para> 
+      </section>
     </section>
     
     <section id="ugr.tug.aae.logging">

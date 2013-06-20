@@ -514,10 +514,11 @@ uima.tcas.Annotation.</programlisting>
             required, but providing values for the other fields is recommended. The
             <literal>name</literal> field is just a descriptive name meant to be read by
             users; it does not need to be unique across all Analysis Engines.</para>
+
+          <para>Configuration parameters are described in 
+            <xref linkend="&tp;aes.configuration_parameters"/>.</para>
           
           <para>The other sub-elements &ndash;
-            <literal>configurationParameters</literal>,
-            <literal>configurationParameterSettings</literal>,
             <literal>typeSystemDescription</literal>,
             <literal>typePriorities</literal>, <literal>fsIndexes</literal>,
             <literal>capabilities</literal> and
@@ -527,323 +528,6 @@ uima.tcas.Annotation.</programlisting>
           
         </section>
         
-        <section id="&tp;aes.configuration_parameter_declaration">
-          <title>Configuration Parameter Declaration</title>
-          
-          <para>Configuration Parameters are made available to annotator
-            implementations and applications by the following interfaces:
-            <literal>AnnotatorContext</literal> <footnote><para>Deprecated; use
-            UimaContext instead.</para></footnote> (passed as an argument to the
-            initialize() method of a version 1 annotator),
-            <literal>ConfigurableResource</literal> (every Analysis Engine
-            implements this interface), and the <literal>UimaContext</literal> (passed
-            as an argument to the initialize() method of a version 2 annotator) (you can get
-            this from any resource, including Analysis Engines, using the method
-            <literal>getUimaContext</literal>()).</para>
-          
-          <para>Use AnnotatorContext within version 1 annotators and UimaContext for
-            version 2 annotators and outside of annotators (for instance, in CasConsumers,
-            or the containing application) to access configuration parameters.</para>
-          
-          <para>Configuration parameters are set from the corresponding elements in the
-            XML descriptor for the application. If you need to programmatically change
-            parameter settings within an application, you can use methods in
-            ConfigurableResource; if you do this, you need to call reconfigure()
-            afterwards to have the UIMA framework notify all the contained analysis
-            components that the parameter configuration has changed (the analysis
-            engine&apos;s reinitialize() methods will be called). Note that in the current
-            implementation, only integrated deployment components have configuration
-            parameters passed to them; remote components obtain their parameters from
-            their remote startup environment. This will likely change in the
-            future.</para>
-          
-          <para>There are two ways to specify the
-            <literal>&lt;configurationParameters&gt;</literal> section &ndash; as a
-            list of configuration parameters or a list of groups. A list of parameters, which
-            are not part of any group, looks like this:
-            
-            
-            <programlisting><![CDATA[<configurationParameters>
-  <configurationParameter>
-    <name>[String]</name> 
-    <description>[String]</description> 
-    <type>String|Integer|Float|Boolean</type> 
-    <multiValued>true|false</multiValued> 
-    <mandatory>true|false</mandatory>
-    <overrides>
-      <parameter>[String]</parameter>
-      <parameter>[String]</parameter>
-        ...
-    </overrides>
-  </configurationParameter>
-  <configurationParameter>
-    ...
-  </configurationParameter>
-    ...
-</configurationParameters>]]></programlisting></para>
-          
-          <para>For each configuration parameter, the following are specified:</para>
-          
-          <itemizedlist><listitem><para><emphasis role="bold">name</emphasis>
-            &ndash; the name by which the annotator code refers to the parameter. All
-            parameters declared in an analysis engine descriptor must have distinct names.
-            (required). The name is composed of normal Java identifier characters.</para>
-            </listitem>
-            
-            <listitem><para><emphasis role="bold">description</emphasis> &ndash; a
-              natural language description of the intent of the parameter
-              (optional)</para></listitem>
-            
-            <listitem><para><emphasis role="bold">type</emphasis> &ndash; the data
-              type of the parameter&apos;s value &ndash; must be one of
-              <literal>String</literal>, <literal>Integer</literal>,
-              <literal>Float</literal>, or <literal>Boolean</literal>
-              (required).</para></listitem>
-            
-            <listitem><para><emphasis role="bold">multiValued</emphasis> &ndash;
-              <literal>true</literal> if the parameter can take multiple-values (an
-              array), <literal>false</literal> if the parameter takes only a single value
-              (optional, defaults to false).</para></listitem>
-            
-            <listitem><para><emphasis role="bold">mandatory</emphasis> &ndash;
-              <literal>true</literal> if a value must be provided for the parameter
-              (optional, defaults to false).</para></listitem>
-            
-            <listitem><para><emphasis role="bold">overrides</emphasis> &ndash; this
-              is used only in aggregate Analysis Engines, but is included here for
-              completeness. See <xref
-                linkend="&tp;aes.aggregate.configuration_parameter_overrides"/>
-              for a discussion of configuration parameter overriding in aggregate
-              Analysis Engines. (optional) </para></listitem></itemizedlist>
-          
-          <para>A list of groups looks like this:
-            
-            
-            <programlisting><![CDATA[<configurationParameters defaultGroup="[String]"
-    searchStrategy="none|default_fallback|language_fallback" >
-
-  <commonParameters>
-    [zero or more parameters]
-  </commonParameters>
-
-  <configurationGroup names="name1 name2 name3 ...">
-    [zero or more parameters]
-  </configurationGroup>
-
-  <configurationGroup names="name4 name5 ...">
-    [zero or more parameters]
-  </configurationGroup>
-
-  ...
-
-</configurationParameters>]]></programlisting></para>
-          
-          <para>Both the<literal> &lt;commonParameters&gt;</literal> and
-            <literal>&lt;configurationGroup&gt;</literal> elements contain zero or
-            more <literal>&lt;configurationParameter&gt;</literal> elements, with
-            the same syntax described above.</para>
-          
-          <para>The <literal>&lt;commonParameters&gt;</literal> element declares
-            parameters that exist in all groups. Each
-            <literal>&lt;configurationGroup&gt;</literal> element has a names
-            attribute, which contains a list of group names separated by whitespace (space
-            or tab characters). Names consist of any number of non-whitespace characters;
-            however the Component Descriptor Editor tool restricts this to be normal Java
-            identifiers, including the period (.) and the dash (-). One configuration group
-            will be created for each name, and all of the groups will contain the same set of
-            parameters.</para>
-          
-          <para>The <literal>defaultGroup</literal> attribute specifies the name of the
-            group to be used in the case where an annotator does a lookup for a configuration
-            parameter without specifying a group name. It may also be used as a fallback if the
-            annotator specifies a group that does not exist &ndash; see below.</para>
-          
-          <para>The <literal>searchStrategy</literal> attribute determines the action
-            to be taken when the context is queried for the value of a parameter belonging to a
-            particular configuration group, if that group does not exist or does not contain
-            a value for the requested parameter. There are currently three possible values:
-            
-            <itemizedlist><listitem><para><emphasis role="bold">none</emphasis>
-              &ndash; there is no fallback; return null if there is no value in the exact group
-              specified by the user.</para></listitem>
-              
-              <listitem><para><emphasis role="bold">default_fallback</emphasis>
-                &ndash; if there is no value found in the specified group, look in the default
-                group (as defined by the <literal>default</literal> attribute)</para>
-                </listitem>
-              
-              <listitem><para><emphasis role="bold">language_fallback</emphasis>
-                &ndash; this setting allows for a specific use of configuration parameter
-                groups where the groups names correspond to ISO language and country codes
-                (for an example, see below). The fallback sequence is:
-                <literal>&lt;lang&gt;_&lt;country&gt;_&lt;region&gt; &rarr;
-                &lt;lang&gt;_&lt;country&gt; &rarr; &lt;lang&gt; &rarr;
-                &lt;default&gt;.</literal> </para></listitem></itemizedlist>
-            </para>
-          
-          <section id="&tp;aes.configuration_parameter_declaration.example">
-            <title>Example</title>
-            
-            
-            <programlisting><![CDATA[<configurationParameters defaultGroup="en"
-        searchStrategy="language_fallback">
-
-  <commonParameters>
-    <configurationParameter>
-      <name>DictionaryFile</name>
-      <description>Location of dictionary for this
-           language</description>
-      <type>String</type>
-      <multiValued>false</multiValued>
-      <mandatory>false</mandatory>
-    </configurationParameter>
-  </commonParameters>
-
-  <configurationGroup names="en de en-US"/>
-
-  <configurationGroup names="zh">
-    <configurationParameter>
-      <name>DBC_Strategy</name>
-      <description>Strategy for dealing with double-byte
-          characters.</description>
-      <type>String</type>
-      <multiValued>false</multiValued>
-      <mandatory>false</mandatory>
-    </configurationParameter>
-  </configurationGroup>
-
-</configurationParameters>]]></programlisting>
-            
-            <para>In this example, we are declaring a <literal>DictionaryFile</literal>
-              parameter that can have a different value for each of the languages that our AE
-              supports
-              &ndash; English (general), German, U.S. English, and Chinese. For Chinese
-              only, we also declare a <literal>DBC_Strategy</literal>
-              parameter.</para>
-            
-            <para>We are using the <literal>language_fallback</literal> search
-              strategy, so if an annotator requests the dictionary file for the
-              <literal>en-GB</literal> (British English) group, we will fall back to the
-              more general <literal>en</literal> group.</para>
-            
-            <para>Since we have defined <literal>en</literal> as the default group, this
-              value will be returned if the context is queried for the
-              <literal>DictionaryFile</literal> parameter without specifying any
-              group name, or if a nonexistent group name is specified.</para>
-          </section>
-        </section>
-        
-        <section id="&tp;aes.configuration_parameter_settings">
-          <title>Configuration Parameter Settings</title>
-          
-          <para>If no configuration groups were declared, the
-            <literal>&lt;configurationParameterSettings&gt;</literal> element
-            looks like this:
-            
-            
-            <programlisting><![CDATA[<configurationParameterSettings>
-  <nameValuePair>
-    <name>[String]</name> 
-    <value>
-      <string>[String]</string>  | 
-      <integer>[Integer]</integer> |
-      <float>[Float]</float> |
-      <boolean>true|false</boolean>  |
-      <array> ... </array>
-    </value>
-  </nameValuePair>
-
-  <nameValuePair>
-    ...
-  </nameValuePair>
-  ...
-</configurationParameterSettings>]]></programlisting></para>
-          
-          <para>There are zero or more <literal>nameValuePair</literal> elements. Each
-            <literal>nameValuePair</literal> contains a name (which refers to one of the
-            configuration parameters) and a value for that parameter.</para>
-          
-          <para>The <literal>value</literal> element contains an element that matches
-            the type of the parameter. For single-valued parameters, this is either
-            <literal>&lt;string&gt;</literal>, <literal>&lt;integer&gt;</literal>
-            , <literal>&lt;float&gt;</literal>, or
-            <literal>&lt;boolean&gt;</literal>. For multi-valued parameters, this is
-            an <literal>&lt;array&gt;</literal> element, which then contains zero or
-            more instances of the appropriate type of primitive value, e.g.:
-            
-            
-            <programlisting>&lt;array&gt;&lt;string&gt;One&lt;/string&gt;&lt;string&gt;Two&lt;/string&gt;&lt;/array&gt;</programlisting></para>
-          
-          <para>If configuration groups were declared, then the
-            <literal>&lt;configurationParameterSettings&gt;</literal> element
-            looks like this:
-            
-            
-            <programlisting><![CDATA[<configurationParameterSettings>
-
-  <settingsForGroup name="[String]">
-    [one or more <nameValuePair> elements]
-  </settingsForGroup>
-
-  <settingsForGroup name="[String]">
-    [one or more <nameValuePair> elements]
-  </settingsForGroup>
-
-...
-
-</configurationParameterSettings>]]></programlisting>
-            where each <literal>&lt;settingsForGroup&gt;</literal> element has a name
-            that matches one of the configuration groups declared under the
-            <literal>&lt;configurationParameters&gt;</literal> element and contains
-            the parameter settings for that group.</para>
-          
-          <section id="&tp;aes.configuration_parameter_settings.example">
-            <title>Example</title>
-            
-            <para>Here are the settings that correspond to the parameter declarations in
-              the previous example:
-              
-              
-              <programlisting><![CDATA[<configurationParameterSettings>
-
-  <settingsForGroup name="en">
-    <nameValuePair>
-      <name>DictionaryFile</name>
-      <value><string>resourcesEnglishdictionary.dat></string></value>
-    </nameValuePair>
-  </settingsForGroup>     
-
-  <settingsForGroup name="en-US">
-    <nameValuePair>
-      <name>DictionaryFile</name>
-      <value><string>resourcesEnglish_USdictionary.dat</string></value>
-    </nameValuePair>
-  </settingsForGroup>
-
-  <settingsForGroup name="de">
-    <nameValuePair>
-      <name>DictionaryFile</name>
-      <value><string>resourcesDeutschdictionary.dat</string></value>
-    </nameValuePair>
-  </settingsForGroup>
-
-  <settingsForGroup name="zh">
-    <nameValuePair>
-      <name>DictionaryFile</name>
-      <value><string>resourcesChinesedictionary.dat</string></value>
-    </nameValuePair>
-
-    <nameValuePair>
-      <name>DBC_Strategy</name>
-      <value><string>default</string></value>
-    </nameValuePair>
-
-  </settingsForGroup>
-
-</configurationParameterSettings>]]></programlisting></para>
-          </section>
-          </section>
-      
           <section id="&tp;aes.type_system">
             <title>Type System Definition</title>
             
@@ -1276,7 +960,7 @@ uima.tcas.Annotation.</programlisting>
                 be unique within this annotator.</para></listitem>
                 
                 <listitem><para><literal>description</literal> &ndash; a textual
-                  description of the dependency</para></listitem>
+                  description of the dependency.</para></listitem>
                 
                 <listitem><para><literal>interfaceName</literal> &ndash; the
                   fully-qualified name of the Java interface through which the annotator
@@ -1349,7 +1033,7 @@ uima.tcas.Annotation.</programlisting>
                 recommended.</para></listitem>
                 
                 <listitem><para><literal>description</literal> &ndash; English
-                  description of the resource</para></listitem>
+                  description of the resource.</para></listitem>
                 
                 <listitem><para>Resource Specifier &ndash;
                   Declares the location of the resource. There are different
@@ -1689,69 +1373,6 @@ uima.tcas.Annotation.</programlisting>
             </section>
           </section>
           
-          <section id="&tp;aes.aggregate.configuration_parameter_overrides">
-            <title>Configuration Parameter Overrides</title>
-            
-            <para>In an aggregate Analysis Engine Descriptor, each
-              <literal>&lt;configurationParameter&gt; </literal>element should
-              contain an <literal>&lt;overrides&gt;</literal> element, with the
-              following syntax:</para>
-            
-            
-            <programlisting><![CDATA[<overrides>
-
-  <parameter>
-    [delegateAnalysisEngineKey]/[parameterName]
-  </parameter>
-
-  <parameter>
-    [delegateAnalysisEngineKey]/[parameterName]
-  </parameter>
-  ...
-
-</overrides>]]></programlisting>
-            
-            <para>Since aggregate Analysis Engines have no code associated with them, the
-              only way in which their configuration parameters can affect their processing
-              is by overriding the parameter values of one or more delegate analysis
-              engines. The <literal>&lt;overrides&gt; </literal>element determines
-              which parameters, in which delegate Analysis Engines, are overridden by this
-              configuration parameter.</para>
-            
-            <para>For example, consider an aggregate Analysis Engine Descriptor that
-              contains delegate Analysis Engines with keys
-              <literal>annotator1</literal> and <literal>annotator2</literal> (as
-              declared in the &lt;delegateAnalysisEngine&gt; element &ndash; see <xref
-                linkend="&tp;aes.aggregate.delegates"/>) and also declares a
-              configuration parameter as follows:
-              
-              
-              <programlisting><![CDATA[<configurationParameter>
-  <name>AggregateParam</name>
-  <type>String</type>
-  <overrides>
-    <parameter>annotator1/param1</parameter>
-    <parameter>annotator2/param2</parameter>
-  </overrides>
-</configurationParameter>]]></programlisting></para>
-            
-            <para>The value of the <literal>AggregateParam</literal> parameter
-              (whether assigned in the aggregate descriptor or at runtime by an
-              application) will override the value of parameter
-              <literal>param1</literal> in <literal>annotator1</literal> and also
-              override the value of parameter <literal>param2</literal> in
-              <literal>annotator2</literal>. No other parameters will be
-              affected.</para>
-            
-            <para>For historical reasons only, if an aggregate Analysis Engine descriptor
-              declares a configuration parameter with no explicit overrides, that
-              parameter will override any parameters having the same name within any
-              delegate analysis engine. This usage is strongly discouraged. The UIMA SDK
-              currently supports this usage but logs a warning message to the log file. This
-              support may be dropped in future versions.</para>
-            
-          </section>
-          
           <section id="&tp;aes.aggregate.external_resource_bindings">
             <title>External Resource Bindings</title>
             
@@ -1842,6 +1463,492 @@ uima.tcas.Annotation.</programlisting>
             <para>The sofaNames used must be declared as input or output sofas in some
               capability set.</para>
           </section>
+        </section>
+
+        <section id="&tp;aes.configuration_parameters">
+          <title>Configuration Parameters</title>
+          <para>Configuration parameters may be declared and set in both Primitive and 
+          Aggregate descriptors. Parameters set in an aggregate override parameters set in one or
+          more of its delegates.
+          </para>
+        <section id="&tp;aes.configuration_parameter_declaration">
+          <title>Configuration Parameter Declaration</title>
+          
+          <para>Configuration Parameters are made available to annotator
+            implementations and applications by the following interfaces:
+            <literal>AnnotatorContext</literal> <footnote><para>Deprecated; use
+            UimaContext instead.</para></footnote> (passed as an argument to the
+            initialize() method of a version 1 annotator),
+            <literal>ConfigurableResource</literal> (every Analysis Engine
+            implements this interface), and the <literal>UimaContext</literal> (passed
+            as an argument to the initialize() method of a version 2 annotator) (you can get
+            this from any resource, including Analysis Engines, using the method
+            <literal>getUimaContext</literal>()).</para>
+          
+          <para>Use AnnotatorContext within version 1 annotators and UimaContext for
+            version 2 annotators and outside of annotators (for instance, in CasConsumers,
+            or the containing application) to access configuration parameters.</para>
+          
+          <para>Configuration parameters are set from the corresponding elements in the
+            XML descriptor for the application. If you need to programmatically change
+            parameter settings within an application, you can use methods in
+            ConfigurableResource; if you do this, you need to call reconfigure()
+            afterwards to have the UIMA framework notify all the contained analysis
+            components that the parameter configuration has changed (the analysis
+            engine&apos;s reinitialize() methods will be called). Note that in the current
+            implementation, only integrated deployment components have configuration
+            parameters passed to them; remote components obtain their parameters from
+            their remote startup environment. This will likely change in the
+            future.</para>
+          
+          <para>There are two ways to specify the
+            <literal>&lt;configurationParameters&gt;</literal> section &ndash; as a
+            list of configuration parameters or a list of groups. A list of parameters, which
+            are not part of any group, looks like this:
+            
+            
+            <programlisting><![CDATA[<configurationParameters>
+  <configurationParameter>
+    <name>[String]</name> 
+    <externalOverrideName>[String]</externalOverrideName> 
+    <description>[String]</description> 
+    <type>String|Integer|Float|Boolean</type> 
+    <multiValued>true|false</multiValued> 
+    <mandatory>true|false</mandatory>
+    <overrides>
+      <parameter>[String]</parameter>
+      <parameter>[String]</parameter>
+        ...
+    </overrides>
+  </configurationParameter>
+  <configurationParameter>
+    ...
+  </configurationParameter>
+    ...
+</configurationParameters>]]></programlisting></para>
+          
+          <para>For each configuration parameter, the following are specified:</para>
+          
+          <itemizedlist><listitem><para><emphasis role="bold">name</emphasis>
+            &ndash; the name by which the annotator code refers to the parameter. All
+            parameters declared in an analysis engine descriptor must have distinct names.
+            (required). The name is composed of normal Java identifier characters.</para>
+            </listitem>
+            
+            <listitem><para><emphasis role="bold">externalOverrideName</emphasis> &ndash; the
+              name of a property in an external settings file that if defined overrides
+              any value set in this descriptor or in its parent. See <xref
+                linkend="&tp;aes.external_configuration_parameter_overrides"/>
+              for a discussion of external configuration parameter overrides.
+              (optional)</para></listitem>
+            
+            <listitem><para><emphasis role="bold">description</emphasis> &ndash; a
+              natural language description of the intent of the parameter
+              (optional)</para></listitem>
+            
+            <listitem><para><emphasis role="bold">type</emphasis> &ndash; the data
+              type of the parameter&apos;s value &ndash; must be one of
+              <literal>String</literal>, <literal>Integer</literal>,
+              <literal>Float</literal>, or <literal>Boolean</literal>
+              (required).</para></listitem>
+            
+            <listitem><para><emphasis role="bold">multiValued</emphasis> &ndash;
+              <literal>true</literal> if the parameter can take multiple-values (an
+              array), <literal>false</literal> if the parameter takes only a single value
+              (optional, defaults to false).</para></listitem>
+            
+            <listitem><para><emphasis role="bold">mandatory</emphasis> &ndash;
+              <literal>true</literal> if a value must be provided for the parameter
+              (optional, defaults to false).</para></listitem>
+            
+            <listitem><para><emphasis role="bold">overrides</emphasis> &ndash; this
+              is used only in aggregate Analysis Engines, but is included here for
+              completeness. See <xref
+                linkend="&tp;aes.aggregate.configuration_parameter_overrides"/>
+              for a discussion of configuration parameter overriding in aggregate
+              Analysis Engines. (optional).</para></listitem></itemizedlist>
+          
+          <para>A list of groups looks like this:
+            
+            
+            <programlisting><![CDATA[<configurationParameters defaultGroup="[String]"
+    searchStrategy="none|default_fallback|language_fallback" >
+
+  <commonParameters>
+    [zero or more parameters]
+  </commonParameters>
+
+  <configurationGroup names="name1 name2 name3 ...">
+    [zero or more parameters]
+  </configurationGroup>
+
+  <configurationGroup names="name4 name5 ...">
+    [zero or more parameters]
+  </configurationGroup>
+
+  ...
+
+</configurationParameters>]]></programlisting></para>
+          
+          <para>Both the<literal> &lt;commonParameters&gt;</literal> and
+            <literal>&lt;configurationGroup&gt;</literal> elements contain zero or
+            more <literal>&lt;configurationParameter&gt;</literal> elements, with
+            the same syntax described above.</para>
+          
+          <para>The <literal>&lt;commonParameters&gt;</literal> element declares
+            parameters that exist in all groups. Each
+            <literal>&lt;configurationGroup&gt;</literal> element has a names
+            attribute, which contains a list of group names separated by whitespace (space
+            or tab characters). Names consist of any number of non-whitespace characters;
+            however the Component Descriptor Editor tool restricts this to be normal Java
+            identifiers, including the period (.) and the dash (-). One configuration group
+            will be created for each name, and all of the groups will contain the same set of
+            parameters.</para>
+          
+          <para>The <literal>defaultGroup</literal> attribute specifies the name of the
+            group to be used in the case where an annotator does a lookup for a configuration
+            parameter without specifying a group name. It may also be used as a fallback if the
+            annotator specifies a group that does not exist &ndash; see below.</para>
+          
+          <para>The <literal>searchStrategy</literal> attribute determines the action
+            to be taken when the context is queried for the value of a parameter belonging to a
+            particular configuration group, if that group does not exist or does not contain
+            a value for the requested parameter. There are currently three possible values:
+            
+            <itemizedlist><listitem><para><emphasis role="bold">none</emphasis>
+              &ndash; there is no fallback; return null if there is no value in the exact group
+              specified by the user.</para></listitem>
+              
+              <listitem><para><emphasis role="bold">default_fallback</emphasis>
+                &ndash; if there is no value found in the specified group, look in the default
+                group (as defined by the <literal>default</literal> attribute)</para>
+                </listitem>
+              
+              <listitem><para><emphasis role="bold">language_fallback</emphasis>
+                &ndash; this setting allows for a specific use of configuration parameter
+                groups where the groups names correspond to ISO language and country codes
+                (for an example, see below). The fallback sequence is:
+                <literal>&lt;lang&gt;_&lt;country&gt;_&lt;region&gt; &rarr;
+                &lt;lang&gt;_&lt;country&gt; &rarr; &lt;lang&gt; &rarr;
+                &lt;default&gt;.</literal> </para></listitem></itemizedlist>
+            </para>
+          
+          <section id="&tp;aes.configuration_parameter_declaration.example">
+            <title>Example</title>
+            
+            
+            <programlisting><![CDATA[<configurationParameters defaultGroup="en"
+        searchStrategy="language_fallback">
+
+  <commonParameters>
+    <configurationParameter>
+      <name>DictionaryFile</name>
+      <description>Location of dictionary for this
+           language</description>
+      <type>String</type>
+      <multiValued>false</multiValued>
+      <mandatory>false</mandatory>
+    </configurationParameter>
+  </commonParameters>
+
+  <configurationGroup names="en de en-US"/>
+
+  <configurationGroup names="zh">
+    <configurationParameter>
+      <name>DBC_Strategy</name>
+      <description>Strategy for dealing with double-byte
+          characters.</description>
+      <type>String</type>
+      <multiValued>false</multiValued>
+      <mandatory>false</mandatory>
+    </configurationParameter>
+  </configurationGroup>
+
+</configurationParameters>]]></programlisting>
+            
+            <para>In this example, we are declaring a <literal>DictionaryFile</literal>
+              parameter that can have a different value for each of the languages that our AE
+              supports
+              &ndash; English (general), German, U.S. English, and Chinese. For Chinese
+              only, we also declare a <literal>DBC_Strategy</literal>
+              parameter.</para>
+            
+            <para>We are using the <literal>language_fallback</literal> search
+              strategy, so if an annotator requests the dictionary file for the
+              <literal>en-GB</literal> (British English) group, we will fall back to the
+              more general <literal>en</literal> group.</para>
+            
+            <para>Since we have defined <literal>en</literal> as the default group, this
+              value will be returned if the context is queried for the
+              <literal>DictionaryFile</literal> parameter without specifying any
+              group name, or if a nonexistent group name is specified.</para>
+          </section>
+        </section>
+        
+        <section id="&tp;aes.configuration_parameter_settings">
+          <title>Configuration Parameter Settings</title>
+          
+          <para>If no configuration groups were declared, the
+            <literal>&lt;configurationParameterSettings&gt;</literal> element
+            looks like this:
+            
+            
+            <programlisting><![CDATA[<configurationParameterSettings>
+  <nameValuePair>
+    <name>[String]</name> 
+    <value>
+      <string>[String]</string>  | 
+      <integer>[Integer]</integer> |
+      <float>[Float]</float> |
+      <boolean>true|false</boolean>  |
+      <array> ... </array>
+    </value>
+  </nameValuePair>
+
+  <nameValuePair>
+    ...
+  </nameValuePair>
+  ...
+</configurationParameterSettings>]]></programlisting></para>
+          
+          <para>There are zero or more <literal>nameValuePair</literal> elements. Each
+            <literal>nameValuePair</literal> contains a name (which refers to one of the
+            configuration parameters) and a value for that parameter.</para>
+          
+          <para>The <literal>value</literal> element contains an element that matches
+            the type of the parameter. For single-valued parameters, this is either
+            <literal>&lt;string&gt;</literal>, <literal>&lt;integer&gt;</literal>
+            , <literal>&lt;float&gt;</literal>, or
+            <literal>&lt;boolean&gt;</literal>. For multi-valued parameters, this is
+            an <literal>&lt;array&gt;</literal> element, which then contains zero or
+            more instances of the appropriate type of primitive value, e.g.:
+            
+            
+            <programlisting>&lt;array&gt;&lt;string&gt;One&lt;/string&gt;&lt;string&gt;Two&lt;/string&gt;&lt;/array&gt;</programlisting></para>
+          
+          <para>If configuration groups were declared, then the
+            <literal>&lt;configurationParameterSettings&gt;</literal> element
+            looks like this:
+            
+            
+            <programlisting><![CDATA[<configurationParameterSettings>
+
+  <settingsForGroup name="[String]">
+    [one or more <nameValuePair> elements]
+  </settingsForGroup>
+
+  <settingsForGroup name="[String]">
+    [one or more <nameValuePair> elements]
+  </settingsForGroup>
+
+...
+
+</configurationParameterSettings>]]></programlisting>
+            where each <literal>&lt;settingsForGroup&gt;</literal> element has a name
+            that matches one of the configuration groups declared under the
+            <literal>&lt;configurationParameters&gt;</literal> element and contains
+            the parameter settings for that group.</para>
+          
+          <section id="&tp;aes.configuration_parameter_settings.example">
+            <title>Example</title>
+            
+            <para>Here are the settings that correspond to the parameter declarations in
+              the previous example:
+              
+              
+              <programlisting><![CDATA[<configurationParameterSettings>
+
+  <settingsForGroup name="en">
+    <nameValuePair>
+      <name>DictionaryFile</name>
+      <value><string>resourcesEnglishdictionary.dat></string></value>
+    </nameValuePair>
+  </settingsForGroup>     
+
+  <settingsForGroup name="en-US">
+    <nameValuePair>
+      <name>DictionaryFile</name>
+      <value><string>resourcesEnglish_USdictionary.dat</string></value>
+    </nameValuePair>
+  </settingsForGroup>
+
+  <settingsForGroup name="de">
+    <nameValuePair>
+      <name>DictionaryFile</name>
+      <value><string>resourcesDeutschdictionary.dat</string></value>
+    </nameValuePair>
+  </settingsForGroup>
+
+  <settingsForGroup name="zh">
+    <nameValuePair>
+      <name>DictionaryFile</name>
+      <value><string>resourcesChinesedictionary.dat</string></value>
+    </nameValuePair>
+
+    <nameValuePair>
+      <name>DBC_Strategy</name>
+      <value><string>default</string></value>
+    </nameValuePair>
+
+  </settingsForGroup>
+
+</configurationParameterSettings>]]></programlisting></para>
+          </section>
+          </section>
+
+          <section id="&tp;aes.aggregate.configuration_parameter_overrides">
+            <title>Configuration Parameter Overrides</title>
+            
+            <para>In an aggregate Analysis Engine Descriptor, each
+              <literal>&lt;configurationParameter&gt; </literal>element should
+              contain an <literal>&lt;overrides&gt;</literal> element, with the
+              following syntax:</para>
+            
+            
+            <programlisting><![CDATA[<overrides>
+
+  <parameter>
+    [delegateAnalysisEngineKey]/[parameterName]
+  </parameter>
+
+  <parameter>
+    [delegateAnalysisEngineKey]/[parameterName]
+  </parameter>
+  ...
+
+</overrides>]]></programlisting>
+            
+            <para>Since aggregate Analysis Engines have no code associated with them, the
+              only way in which their configuration parameters can affect their processing
+              is by overriding the parameter values of one or more delegate analysis
+              engines. The <literal>&lt;overrides&gt; </literal>element determines
+              which parameters, in which delegate Analysis Engines, are overridden by this
+              configuration parameter.</para>
+            
+            <para>For example, consider an aggregate Analysis Engine Descriptor that
+              contains delegate Analysis Engines with keys
+              <literal>annotator1</literal> and <literal>annotator2</literal> (as
+              declared in the &lt;delegateAnalysisEngine&gt; element &ndash; see <xref
+                linkend="&tp;aes.aggregate.delegates"/>) and also declares a
+              configuration parameter as follows:
+              
+              
+              <programlisting><![CDATA[<configurationParameter>
+  <name>AggregateParam</name>
+  <type>String</type>
+  <overrides>
+    <parameter>annotator1/param1</parameter>
+    <parameter>annotator2/param2</parameter>
+  </overrides>
+</configurationParameter>]]></programlisting></para>
+            
+            <para>The value of the <literal>AggregateParam</literal> parameter
+              (whether assigned in the aggregate descriptor or at runtime by an
+              application) will override the value of parameter
+              <literal>param1</literal> in <literal>annotator1</literal> and also
+              override the value of parameter <literal>param2</literal> in
+              <literal>annotator2</literal>. No other parameters will be
+              affected.</para>
+            
+            <para>Prior to release 2.4.1, if an aggregate Analysis Engine descriptor
+              declared a configuration parameter with no explicit overrides, that
+              parameter would override any parameters having the same name within any
+              delegate analysis engine. Starting with release 2.4.1, support for this
+              usage has been dropped.</para>
+            
+          </section>
+          
+    
+          <section id="&tp;aes.external_configuration_parameter_overrides">
+            <title>External Configuration Parameter Overrides</title>
+
+            <para>
+            Configuration parameter specifications in primitive and aggregate descriptors may
+            include an <literal>&lt;externalOverrideName&gt;</literal> element, 
+            which specifies the name of a property that may be defined in an external settings file.
+            If this element is present, and if
+            a entry can be found for its name from among the settings files, then
+            this value overrides the value otherwise specified for this parameter.
+            </para>  
+
+            <para>
+            The value overrides any value set in this descriptor or set by an override in a parent
+            aggregate.  This means that an external override in an aggregate cannot override an
+            external override in one of its delegates.
+            </para>  
+
+            <para>
+            The same external name may be used for multiple parameters; 
+            the effect of this is that one setting will override multiple parameters.
+            </para>
+
+            <para>
+            The settings for all descriptors in a pipeline are usually loaded from one or more files
+            whose names are obtained from the Java system property <emphasis>UimaExternalOverrides</emphasis>
+            e.g. <literal>-DUimaExternalOverrides=file1.settings,file2.settings</literal>
+            </para>
+
+            <para>
+            Override settings may also be specified when creating an analysis engine by putting a 
+            <literal>Settings</literal> object in the additional parameters map for the
+            <literal>produceAnalysisEngine</literal> method.  In this case the
+            Java system property <emphasis>UimaExternalOverrides</emphasis> is ignored.
+            <programlisting>  // Construct an analysis engine that uses two settings files
+  Settings extSettings = new Settings_impl();
+  for (String fname : new String[] { "externalOverride.settings", "default.settings" }) {
+    FileInputStream fis = new FileInputStream(fname);
+    extSettings.load(fis);
+    fis.close();
+  }
+  Map&lt;String,Object&gt; additionalParams = new HashMap&lt;String,Object&gt;();
+  additionalParams.put(Resource.PARAM_EXTERNAL_OVERRIDE_SETTINGS, extSettings);
+  AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(desc, additionalParams);    </programlisting>
+            </para>
+
+            <para>
+            These external settings consist of key - value pairs stored in a 
+            file using the UTF-8 character encoding, and written in a style similar to that 
+            of Java properties files.  
+            One difference is that duplicate key values are ignored &emdash; once a value is assigned to a key
+            it cannot be changed.  
+            Array values are represented as a list of strings separated by commas or line breaks,
+            and bracketed by the '[]' characters.
+            Values may reference other properties using the syntax '${key}'.
+            The back-slash character '\' can be used in values to escape the special characters '$' '[' ',' ']' '\'
+            as well as the line-end character, but is ignored in keys.
+      <programlisting><![CDATA[
+key1  :  value string 1
+key2  =  value string 2
+key3     value string 3
+# Next assignment is ignored as key3 has already been set
+key3  :   value ignored
+key4  =  [ array element1, element2
+           element3 ]
+key5     value with a reference ${key1} to key1
+key6  :  long value string \
+         continued from previous line
+key7  =  value without a reference \${not-a-key} 
+key8     \[ value that is not an array ]
+key9  :  [ array element1\, with embedded comma, element2 ]
+key\= :  key ends with \ and value starts with : as escapes are ignored in keys
+]]></programlisting>
+            </para>
+    
+            <para>
+            Multiple settings files are allowed; they are loaded in order, such that
+            early ones take precedence over later ones, following the first-assignment-wins rule. 
+            So, if you have lots of properties,
+            you can put the defaults in one file, and then in a earlier file, override just the
+            ones you need to.
+            </para>
+
+            <para>
+            An external override name may be specified for a parameter declared in a group, but if
+            the parameter is in the common group or the group is declared with multiple names, the
+            external name is shared amongst all, i.e. these parameters cannot be given group-specific values.
+            </para>
+          </section>
+
         </section>
       </section>
  
