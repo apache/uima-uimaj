@@ -403,6 +403,7 @@ uima.tcas.Annotation.</programlisting>
       Engine is a container for a single <emphasis>annotator</emphasis>, where as an
       <emphasis>Aggregate</emphasis> Analysis Engine is composed of a collection of other
       Analysis Engines. (For more information on this and other terminology, see <olink
+        targetdoc="&uima_docs_overview;"/> <olink
         targetdoc="&uima_docs_overview;" targetptr="ugr.ovv.conceptual"/>).</para>
     
     <para>Both Primitive and Aggregate Analysis Engines have descriptors, and the two types
@@ -928,6 +929,7 @@ uima.tcas.Annotation.</programlisting>
             <para><literal>outputsNewCASes</literal>, if true, allows the component to
               create new CASes during processing, for example to break a large artifact into
               smaller pieces. See <olink targetdoc="&uima_docs_tutorial_guides;"
+                /> <olink targetdoc="&uima_docs_tutorial_guides;"
                 targetptr="ugr.tug.cm"/> for details.</para>
           </section>
           
@@ -2251,6 +2253,7 @@ key\= :  key ends with \ and value starts with : as escapes are ignored in keys
       actual Analysis Engine or CAS Consumer Descriptor. The UIMA SDK will handle the details
       of calling the remote service. (For details on <emphasis>deploying</emphasis> an
       Analysis Engine or CAS Consumer as a service, see <olink targetdoc="&uima_docs_tutorial_guides;"
+      /> <olink targetdoc="&uima_docs_tutorial_guides;"
         targetptr="ugr.tug.application.remote_services"/>.</para>
     
     <para>The UIMA SDK is extensible to support different types of remote services. In future
@@ -2316,6 +2319,7 @@ key\= :  key ends with \ and value starts with : as escapes are ignored in keys
     
     <para>For details on how to deploy and call Analysis Engine and CAS Consumer services, see
         <olink targetdoc="&uima_docs_tutorial_guides;"
+        /> <olink targetdoc="&uima_docs_tutorial_guides;"
         targetptr="ugr.tug.application.remote_services"/>.</para>
     
   </section>

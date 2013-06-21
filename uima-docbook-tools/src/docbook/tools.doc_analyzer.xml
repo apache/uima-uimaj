@@ -34,7 +34,7 @@ Document Analyzer is designed to work with text files and cannot be used with
 Analysis Engines that process other types of data.</para>
 
 <para>For an introduction to developing annotators and Analysis
-Engines, read 
+Engines, read <olink targetdoc="&uima_docs_tutorial_guides;"/>
  <olink targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.aae"/>.  
   This chapter is a user&apos;s guide for using the Document Analyzer tool, and
 does not describe the process of developing annotators and Analysis Engines.</para>

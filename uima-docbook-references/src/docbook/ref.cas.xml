@@ -68,6 +68,7 @@ under the License.
     
     <para>There are three<footnote><para>A fourth part, the Subject of Analysis,
       is discussed in <olink targetdoc="&uima_docs_tutorial_guides;"
+        /> <olink targetdoc="&uima_docs_tutorial_guides;"
         targetptr="ugr.tug.aas"/>.</para></footnote> main parts to the CAS: the type system, data creation and
       manipulation, and indexing.  We will start with a brief
       description of these components.</para>
@@ -165,6 +166,7 @@ under the License.
       <para>Indexes are named and are associated with a CAS Type; they are used to index
         instances of that CAS type (including instances of that type&apos;s subtypes). If
         you are using multiple views (see <olink
+          targetdoc="&uima_docs_tutorial_guides;"/> <olink
           targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.mvs"/>),
         each view contains a separate instantiation of all of the indexes.
         To access an index, you
@@ -305,6 +307,7 @@ under the License.
       to.</para>
     
     <para>Annotations are always with respect to some Sofa (Subject of Analysis &ndash; see
+        <olink targetdoc="&uima_docs_tutorial_guides;"/>
         <olink targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.aas"/>
       .</para>
     <note><para>Artifacts which are not text strings may have a different interpretation of

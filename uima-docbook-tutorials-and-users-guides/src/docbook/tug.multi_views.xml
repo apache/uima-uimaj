@@ -173,10 +173,11 @@ aView.removeFsFromIndexes(aFeatureStructure)</programlisting>
 &lt;/capabilities&gt;</programlisting>
       
       <para>Details on this specification are found in <olink
+          targetdoc="&uima_docs_ref;"/> <olink
           targetdoc="&uima_docs_ref;"
           targetptr="ugr.ref.xml.component_descriptor"/>. The Component Descriptor
         Editor supports Sofa declarations on the <olink targetdoc="&uima_docs_tools;"
-          targetptr="ugr.tools.cde.capabilities"/>.</para>
+          targetptr="ugr.tools.cde.capabilities">Capabilites Page</olink>.</para>
       
     </section>
   </section>
@@ -293,7 +294,8 @@ aView.removeFsFromIndexes(aFeatureStructure)</programlisting>
 </sofaMappings>]]></programlisting>
       
       <para>The Component Descriptor Editor supports Sofa name mapping in aggregates and
-        simplifies the task. See <olink targetdoc="&uima_docs_tools;"
+        simplifies the task. See <olink targetdoc="&uima_docs_tools;"/>
+        <olink targetdoc="&uima_docs_tools;"
           targetptr="ugr.tools.cde.capabilities.sofa_name_mapping"/> for details.</para> 
     </section>
     
@@ -310,6 +312,7 @@ aView.removeFsFromIndexes(aFeatureStructure)</programlisting>
         casProcessor). Because of this the<literal>
         &lt;componentKey&gt;</literal> element is not needed. Finally, rather than
         sub-elements for the parts, the XML markup for these uses attributes. See <olink
+          targetdoc="&uima_docs_ref;"/> <olink
           targetdoc="&uima_docs_ref;"
           targetptr="ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.individual.sofa_name_mappings"/>.</para>
       

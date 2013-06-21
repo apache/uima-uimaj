@@ -30,7 +30,8 @@ under the License.
     Information Management Architecture) components. The PEAR package can be used for
     distribution and reuse by other components or applications. It also allows applications
     and tools to manage UIMA components automatically for verification, deployment,
-    invocation, testing, etc. Please refer to <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.pear"/>
+    invocation, testing, etc. Please refer to <olink targetdoc="&uima_docs_ref;"/>
+    <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.pear"/>
     for more information about the internal structure of a PEAR file.</para>
   
   <para>This chapter describes how to use the PEAR Eclipse plugin or the PEAR command line packager 
@@ -40,6 +41,7 @@ under the License.
     <title>Using the PEAR Eclipse Plugin</title>
     
     <para>The PEAR Eclipse plugin is automatically installed if you followed the directions in
+      <olink targetdoc="&uima_docs_overview;"/>
       <olink targetdoc="&uima_docs_overview;" targetptr="ugr.ovv.eclipse_setup"/>. The use of the 
       plugin involves the following two steps:</para>
     

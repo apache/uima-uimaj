@@ -72,7 +72,8 @@ under the License.
     structure from the previous paragraph would be an instance of a Java class Person with
     getFullName() and setFullName() methods. Though the examples in this guide all use the
     JCas, it is also possible to directly access the underlying CAS system; for more
-    information see <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.cas"/>
+    information see <olink targetdoc="&uima_docs_ref;"/>
+    <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.cas"/>
     .</para>
   
   <para>The remainder of this chapter will refer to the analysis of text documents and the
@@ -142,11 +143,11 @@ under the License.
     <para>This section is a step-by-step tutorial that will get you started developing UIMA
       annotators. All of the files referred to by the examples in this chapter are in the
       <literal>examples</literal> directory of the UIMA SDK. This directory is designed to
-      be imported into your Eclipse workspace; see <olink
-        targetdoc="&uima_docs_overview;"
+      be imported into your Eclipse workspace; see <olink targetdoc="&uima_docs_overview;"/>
+      <olink targetdoc="&uima_docs_overview;"
         targetptr="ugr.ovv.eclipse_setup.example_code"/> for instructions on how to do
       this. 
-      See <olink  targetdoc="&uima_docs_overview;"
+      See <olink targetdoc="&uima_docs_overview;"/> <olink  targetdoc="&uima_docs_overview;"
         targetptr="ugr.ovv.eclipse_setup.linking_uima_javadocs"/> for how to attach the UIMA 
         Javadocs to the jar files.
       Also you may wish to refer to the UIMA SDK Javadocs located in the <ulink
@@ -157,6 +158,7 @@ under the License.
     class or method in a browser, by pressing Shift + F2.</para></note>
     <note><para>If you downloaded the source distribution for UIMA, you can attach that as
     well to the library Jar files; for information on how to do this, see
+    <olink targetdoc="&uima_docs_ref;"/>
     <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.javadocs"/>.</para></note>
 
     <para>The example annotator that we are going to walk through will detect room numbers for
@@ -205,7 +207,7 @@ under the License.
       
       <para>UIMA includes an Eclipse plug-in that will help you edit Type System
         Descriptors, so if you are using Eclipse you will not need to worry about the details of
-        the XML syntax. See <olink targetdoc="&uima_docs_overview;"
+        the XML syntax. See <olink targetdoc="&uima_docs_overview;"/> <olink targetdoc="&uima_docs_overview;"
           targetptr="ugr.ovv.eclipse_setup"/> for instructions on setting up Eclipse and
         installing the plugin.</para>
       
@@ -213,7 +215,8 @@ under the License.
         <literal>descriptors/tutorial/ex1/TutorialTypeSystem.xml.</literal> (This
         and all other examples are located in the <literal>examples</literal> directory of
         the installation of the UIMA SDK, which can be imported into an Eclipse project for
-        your convenience, as described in <olink targetdoc="&uima_docs_overview;"
+        your convenience, as described in <olink targetdoc="&uima_docs_overview;"/>
+        <olink targetdoc="&uima_docs_overview;"
           targetptr="ugr.ovv.eclipse_setup.example_code"/>.)</para>
       
       <para>In Eclipse, expand the <literal>uimaj-examples</literal> project in the
@@ -344,7 +347,7 @@ under the License.
         generated under the specified output directory.</para>
       
       <para>There are some additional options to choose from when running JCasGen; please
-        refer to the <olink targetdoc="&uima_docs_tools;"
+        refer to the <olink targetdoc="&uima_docs_tools;"/> <olink targetdoc="&uima_docs_tools;"
           targetptr="ugr.tools.jcasgen"/> for details.</para>
     </section>
     
@@ -500,7 +503,8 @@ annotation.setBuilding("Yorktown");</programlisting>
       <note>
       <para>You can also call <literal>addToIndexes()</literal> on Feature Structures that are not subtypes of
         <literal>uima.tcas.Annotation</literal>, but these will not be sorted in any particular way. If you want
-        to specify a sort order, you can define your own custom indexes in the CAS: see <olink
+        to specify a sort order, you can define your own custom indexes in the CAS: see 
+        <olink targetdoc="&uima_docs_ref;"/> <olink
           targetdoc="&uima_docs_ref;" targetptr="ugr.ref.cas"/> and <olink targetdoc="&uima_docs_ref;"
           targetptr="ugr.ref.xml.component_descriptor.aes.index"/> for details.</para></note>
       
@@ -889,7 +893,8 @@ public void initialize(UimaContext aContext)
           settings for the different languages.</para>
         
         <para>The syntax for defining parameter groups in your descriptor is fairly
-          straightforward &ndash; see <olink targetdoc="&uima_docs_ref;"
+          straightforward &ndash; see <olink targetdoc="&uima_docs_ref;"/>
+          <olink targetdoc="&uima_docs_ref;"
             targetptr="ugr.ref.xml.component_descriptor"/> for details. Values of
           parameters defined within groups are accessed through the two-argument version
           of <literal>UimaContext.getConfigParameterValue</literal>, which takes
@@ -910,6 +915,7 @@ public void initialize(UimaContext aContext)
         names in an external properties file.</para>
 
         <para>For details see 
+          <olink targetdoc="&uima_docs_ref;"/>
           <olink targetdoc="&uima_docs_ref;" 
           targetptr="ugr.ref.xml.component_descriptor.aes.aggregate.configuration_parameter_overrides"/>
         </para> 
@@ -1226,6 +1232,7 @@ public void initialize(UimaContext aContext)
         type definition that contains all of the features defined on that type by all of your
         components.  However, it is not recommended to use this feature in conjunction with JCAS,
         since the JCAS Java Class definitions cannot be so easily merged.  See
+        <olink targetdoc="&uima_docs_ref;"/>
         <olink
           targetdoc="&uima_docs_ref;"
           targetptr="ugr.ref.jcas.merging_types_from_other_specs"/> for more information.
@@ -1325,7 +1332,8 @@ while (timeIter.hasNext()) {
         <para>All types which are subtypes of the built-in Annotation type have a sorted index, and so all instances of those
         types are guaranteed to be found (at least once) by this iterator.</para>
         
-      <para>Also, if you've defined your own custom index as described in <olink targetdoc="&uima_docs_ref;"
+      <para>Also, if you've defined your own custom index as described in <olink targetdoc="&uima_docs_ref;"/>
+        <olink targetdoc="&uima_docs_ref;"
           targetptr="ugr.ref.xml.component_descriptor.aes.index"/>, you can get an iterator over that
         specific index by calling <literal>aJCas.getJFSIndexRepository().getIndex(label)</literal>.
         The <literal>getIndex(...)</literal> method has also a 2 argument form; the second argument, 
@@ -2213,8 +2221,9 @@ catch (PatternSyntaxException e) {
       
       <para>For more details on issues around setting up this class path, including
         deployment issues where class loaders are being used to isolate multiple UIMA
-        applications inside a single running Java Virtual Machine, please see <olink
-          targetdoc="&uima_docs_ref;" targetptr="ugr.ref.jcas.class_loaders"/>
+        applications inside a single running Java Virtual Machine, please see 
+        <olink targetdoc="&uima_docs_ref;"/>
+        <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.jcas.class_loaders"/>
         .</para>
       
     </section>
@@ -2271,7 +2280,8 @@ documentAnalyzer</programlisting>
               <row>
                 <entry>UIMA_DATAPATH</entry>
                 <entry>(Optional) if specified, a path specification to use as the default
-                  DataPath (see <olink targetdoc="&uima_docs_ref;"
+                  DataPath (see <olink targetdoc="&uima_docs_ref;"/>
+                  <olink targetdoc="&uima_docs_ref;"
                     targetptr="ugr.ref.xml.component_descriptor.datapath"/>)</entry>
               </row>
               <row>
@@ -2400,8 +2410,9 @@ documentAnalyzer</programlisting>
       example introduced in section <xref linkend="ugr.tug.aae.getting_started"/>. The
       discussion is divided into several logical sections of the descriptor.</para>
     
-    <para>The full specification for Analysis Engine Descriptors is defined in <olink
-        targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.component_descriptor"/>
+    <para>The full specification for Analysis Engine Descriptors is defined in 
+    <olink targetdoc="&uima_docs_ref;"/>
+    <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.component_descriptor"/>
       .</para>
     
     <section id="ugr.tug.aae.header_annotator_class_identification">

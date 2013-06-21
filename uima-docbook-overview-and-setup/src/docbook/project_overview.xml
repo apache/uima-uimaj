@@ -408,6 +408,7 @@ under the License.
       </listitem>
       <listitem>
         <para> Develop sample UIMA annotators, run them and explore the results. Read <olink
+            targetdoc="&uima_docs_tutorial_guides;"/> <olink
             targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.aae"/> and follow it like a tutorial
           to learn how to develop your first UIMA annotator and set up and run your first UIMA analysis engines.
           <itemizedlist>
@@ -416,10 +417,12 @@ under the License.
                 <itemizedlist>
                   <listitem>
                     <para> The UIMA Component Descriptor Editor, described in more detail in <olink
+                        targetdoc="&uima_docs_tools;"/> <olink
                         targetdoc="&uima_docs_tools;" targetptr="ugr.tools.cde"/> and </para>
                   </listitem>
                   <listitem>
                     <para> The Document Analyzer, described in more detail in <olink
+                        targetdoc="&uima_docs_tools;"/> <olink
                         targetdoc="&uima_docs_tools;" targetptr="ugr.tools.doc_analyzer"/>. </para>
                   </listitem>
                   
@@ -427,16 +430,18 @@ under the License.
               
             </listitem>
             <listitem>
-              <para>While following along in <olink targetdoc="&uima_docs_tutorial_guides;"
+              <para>While following along in <olink targetdoc="&uima_docs_tutorial_guides;"/>
+                <olink targetdoc="&uima_docs_tutorial_guides;"
                   targetptr="ugr.tug.aae"/>, reference documents that may help are:
                 <itemizedlist>
                   <listitem>
-                    <para> <olink targetdoc="&uima_docs_ref;"
+                    <para> <olink targetdoc="&uima_docs_ref;"/> <olink targetdoc="&uima_docs_ref;"
                         targetptr="ugr.ref.xml.component_descriptor"/> for understanding the analysis
                       engine descriptors </para>
                   </listitem>
                   <listitem>
-                    <para> <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.jcas"/> for
+                    <para> <olink targetdoc="&uima_docs_ref;"/> 
+                      <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.jcas"/> for
                       understanding the JCas </para>
                   </listitem>
                 </itemizedlist> </para>
@@ -447,13 +452,16 @@ under the License.
         <para> Learn how to create, run and manage a UIMA analysis engine as part of an application. 
           Connect your analysis engine to the provided semantic search engine to learn how a
           complete analysis and search application may be built with Apache UIMA. <olink
+            targetdoc="&uima_docs_tutorial_guides;"/> <olink
             targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.application"/> will guide you
           through this process.
           <itemizedlist>
             <listitem>
               <para> As part of this you will use the document analyzer (described in more detail in <olink
+                  targetdoc="&uima_docs_tools;"/> <olink
                   targetdoc="&uima_docs_tools;" targetptr="ugr.tools.doc_analyzer"/> and semantic search
-                GUI tools (see <olink targetdoc="&uima_docs_tutorial_guides;"
+                GUI tools (see <olink targetdoc="&uima_docs_tutorial_guides;"/>
+                <olink targetdoc="&uima_docs_tutorial_guides;"
                   targetptr="ugr.tug.application.search.query_tool"/>. </para>
             </listitem>
           </itemizedlist> </para>
@@ -467,22 +475,27 @@ under the License.
       </listitem>
       <listitem>
         <para> Develop and run a Collection Processing Engine (CPE) to analyze and gather the results of an entire
-          collection of documents. <olink targetdoc="&uima_docs_tutorial_guides;"
+          collection of documents. <olink targetdoc="&uima_docs_tutorial_guides;"/>
+          <olink targetdoc="&uima_docs_tutorial_guides;"
             targetptr="ugr.tug.cpe"/> will guide you through this process.
           <itemizedlist>
             <listitem>
               <para> As part of this you will use the CPE Configurator tool. For details see <olink
+                  targetdoc="&uima_docs_tools;"/> <olink
                   targetdoc="&uima_docs_tools;" targetptr="ugr.tools.cpe"/>. </para>
             </listitem>
             <listitem>
               <para> You will also learn about CPE Descriptors. The detailed format for these may be found in <olink
+                  targetdoc="&uima_docs_ref;"/> <olink
                   targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe_descriptor"/>. </para>
             </listitem>
           </itemizedlist> </para>
       </listitem>
       <listitem>
         <para> Learn how to package up an analysis engine for easy installation into another UIMA environment.
+            <olink targetdoc="&uima_docs_tools;"/>
             <olink targetdoc="&uima_docs_tools;" targetptr="ugr.tools.pear.packager"/> and <olink
+            targetdoc="&uima_docs_tools;"/> <olink
             targetdoc="&uima_docs_tools;" targetptr="ugr.tools.pear.installer"/> will teach you how to
           create UIMA analysis engine archives so that you can easily share your components with a broader
           community. </para>
@@ -610,6 +623,7 @@ under the License.
           multiple new CASes, in addition to returning the original CAS that is passed in.
           This allows components to have Collection Reader-like capabilities, but be
           placed anywhere in the flow. See <olink
+            targetdoc="&uima_docs_tutorial_guides;"/> <olink
             targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.cm"/>
           .</para>
       </formalpara>
@@ -618,6 +632,7 @@ under the License.
         <para>A new component, the Flow Controller, can be supplied by the user to implement
           arbitrary flow control for CASes within an Aggregate. This is in addition to the two
           built-in flow control choices of linear and language-capability flow. See <olink
+            targetdoc="&uima_docs_tutorial_guides;"/> <olink
             targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.fc"/>
           .</para>
       </formalpara>
@@ -790,7 +805,8 @@ under the License.
           <literal>uima-document-annotation.jar</literal> file that is included in Apache UIMA. If you
           <emphasis>have</emphasis> made custom changes, then you should not delete the file but instead move it to
           the correct package <literal>org.apache.uima.jcas.tcas</literal>. For more information about JCas
-          and DocumentAnnotation please see <olink targetdoc="&uima_docs_ref;"
+          and DocumentAnnotation please see <olink targetdoc="&uima_docs_ref;"/>
+          <olink targetdoc="&uima_docs_ref;"
             targetptr="ugr.ref.jcas.documentannotation_issues"/> </para>
       </section>
       <section id="ugr.project_overview_running_the_migration_utility.manual_migration_needed.getdocumentannotation">
@@ -799,7 +815,8 @@ under the License.
           must be replaced with <literal>JCas.getDocumentAnnotationFs</literal>. The method
           <literal>JCas.getDocumentAnnotationFs()</literal> returns type <literal>TOP</literal>, so your
           code must cast this to type <literal>DocumentAnnotation</literal>. The reasons for this are described
-          in <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.jcas.documentannotation_issues"/>.
+          in <olink targetdoc="&uima_docs_ref;"/>
+          <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.jcas.documentannotation_issues"/>.
           </para>
       </section>      
       
@@ -818,6 +835,7 @@ under the License.
         <para>The use of &lt;xi:include> in UIMA component descriptors has been discouraged for some time, and in
           Apache UIMA support for it has been removed. If you have descriptors that use that, you must change them to
           use UIMA's &lt;import> syntax instead. The proper syntax is described in <olink
+            targetdoc="&uima_docs_ref;"/> <olink
             targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.component_descriptor.imports"/>.
           </para>
       </section>
@@ -912,6 +930,7 @@ under the License.
       <title>Multi-Modal Support</title>
       <para>The UIMA architecture supports the development, discovery, composition and deployment of
         multi-modal analytics, including text, audio and video. <olink
+          targetdoc="&uima_docs_tutorial_guides;"/> <olink
           targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.aas"/> discuss this is more
         detail.</para>
     </section>

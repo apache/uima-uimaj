@@ -3,6 +3,7 @@
 "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"[
 <!ENTITY imgroot "images/tools/tools.cde/" >
 <!ENTITY % uimaents SYSTEM "../../target/docbook-shared/entities.ent" >  
+<!ENTITY uima_docs_overview_title "UIMA Overview &amp; SDK Setup" >
 %uimaents;
 ]>
 <!--
@@ -47,9 +48,10 @@ under the License.
       
       <listitem><para>Right-click on this file and select Open With &rarr; Component
         Descriptor Editor. (If this option is not present, check to make sure you installed
-        the plug-ins as described <olink targetdoc="&uima_docs_overview;"
-          targetptr="ugr.ovv.eclipse_setup.installation"/>. The EMF plugin is also
-        required.).</para></listitem>
+        the plug-ins as described in <olink targetdoc="&uima_docs_overview;"
+          targetptr="ugr.ovv.eclipse_setup.installation"/> of the <olink targetdoc="&uima_docs_overview;"/> book. 
+        The EMF plugin is also
+        required.)</para></listitem>
       
       <listitem><para>This should open a graphical editor and display the contents of the
         RoomNumberAnnotator descriptor. </para></listitem></itemizedlist>
@@ -204,7 +206,8 @@ under the License.
         defaults to unchecked for new CAS Consumer descriptors).</para>
       
       <para>Analysis engines are written using the CAS Multiplier APIs 
-        (see <olink targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.cm"/>) 
+        (see <olink targetdoc="&uima_docs_tutorial_guides;"/> 
+             <olink targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.cm"/>) 
         can create additional CASes for analysis. To specify that they
         do this, check the <quote>returns new artifacts</quote>.</para>
       
@@ -333,10 +336,10 @@ under the License.
         information needed to create a remote service descriptor for a remote AE - one that
         runs on a different computer connected over the network. There are 3 kinds of 
         these: two are variants of the Service Client
-        descriptor, described in <olink targetdoc="&uima_docs_ref;"
+        descriptor, described in <olink targetdoc="&uima_docs_ref;"/> <olink targetdoc="&uima_docs_ref;"
           targetptr="ugr.ref.xml.component_descriptor.service_client"/>;
           the other is the UIMA-AS JMS Service descriptor, described in
-          <olink targetdoc="&uima_docs_as;"  
+          <olink targetdoc="&uima_docs_as;"/> <olink targetdoc="&uima_docs_as;"  
           targetptr="ugr.async.ov.concepts.jms_descriptor"/>. The Add
         Remote button creates an instance of one of these descriptors, 
         saves it as a file in the workspace, and
@@ -424,9 +427,10 @@ under the License.
       <title>Component Engine Flow</title>
       
       <para>The UIMA SDK currently supports three kinds of sequencing flows: Fixed,
-        CapabilityLanguageFlow (see <olink targetdoc="&uima_docs_ref;"
-          targetptr="ugr.ref.xml.component_descriptor.aes.aggregate.flow_constraints.capability_language_flow"/>
-        ), and user-defined. The first two require specification of a linear flow sequence;
+        CapabilityLanguageFlow, and user-defined
+        (see <olink targetdoc="&uima_docs_ref;"/> <olink targetdoc="&uima_docs_ref;"
+          targetptr="ugr.ref.xml.component_descriptor.aes.aggregate.flow_constraints"/>).
+        The first two require specification of a linear flow sequence;
         this linear flow sequence can also be read by a user-defined flow controller (what use
         is made of it is up to the user-defined flow controller). The Component Engine Flow
         section allows specification of these items.</para>
@@ -487,7 +491,8 @@ under the License.
       attributes specify whether the parameter can have a single or multiple values (an array
       of values), whether it is Optional or Mandatory, and what the value type it can hold
       (String, Integer, Float, and Boolean).  If an external override name has been specified 
-      an attribute of "XO" is included. See <olink targetdoc="&uima_docs_ref;" 
+      an attribute of "XO" is included. See <olink targetdoc="&uima_docs_ref;"/> 
+      <olink targetdoc="&uima_docs_ref;" 
       targetptr="ugr.ref.xml.component_descriptor.aes.external_configuration_parameter_overrides"/>
       for a discussion of external configuration parameter overrides.</para>
     
@@ -544,8 +549,8 @@ under the License.
       
       <para>The Search strategy specifies what to do when a parameter is not available for the
         group requested. It can have the values of None, language_fallback, or
-        default_fallback. These are more fully described in the section <olink
-          targetdoc="&uima_docs_ref;"
+        default_fallback. These are more fully described in the section 
+        <olink targetdoc="&uima_docs_ref;"/> <olink targetdoc="&uima_docs_ref;"
           targetptr="ugr.ref.xml.component_descriptor.aes.configuration_parameter_declaration"/>
         .</para>
       
@@ -567,7 +572,7 @@ under the License.
       <title>Adding or Editing a Parameter</title>
 
       <para>When creating or modifying a parameter both a unique name and a valid type must be
-       specified. The Description and External Name fields are optional.  The defaults for the two
+       specified. The Description and External Override fields are optional.  The defaults for the two
        checkboxs indicate a single-valued optional parameter in the example below:
         <screenshot>
           <mediaobject>
@@ -725,7 +730,8 @@ under the License.
       on the Source tab and look in the list box under the text that reads: <quote>Source folder
       on build path.</quote> If no source folders are defined, you will get a warning that you
       have no source folders defined and JCasGen will not be run. (For information on JCasGen
-      see <olink targetdoc="&uima_docs_tools;" targetptr="ugr.tools.jcasgen"/>).
+      see <olink targetdoc="&uima_docs_tools;"/> 
+      <olink targetdoc="&uima_docs_tools;" targetptr="ugr.tools.jcasgen"/>).
       When JCasGen is run, you can monitor the progress of the generation by observing the
       status on the Eclipse status line (normally at the bottom of the Eclipse window).
       JCasGen runs on the fully-merged type system, consisting of the type specification
@@ -739,8 +745,8 @@ under the License.
     type definition that contains all of the features defined on that type by all of your
     components).  However, it is not recommended to use this feature 
     (of having different definitions for the same type name) since it can make it 
-    difficult to combine/package your annotator with others. See <olink
-      targetdoc="&uima_docs_ref;"
+    difficult to combine/package your annotator with others. See <olink targetdoc="&uima_docs_ref;"/> 
+    <olink targetdoc="&uima_docs_ref;"
       targetptr="ugr.ref.jcas.merging_types_from_other_specs"/> for more information.
   </para></warning>    
     
@@ -1268,7 +1274,7 @@ under the License.
     <para>The Name must be unique within this Analysis Engine. The URL identifies a file
       resource. If both the URL and URL suffix are used, the file resource is formed by
       combining the first URL part with the language-identifier, followed by the URL suffix;
-      see <olink targetdoc="&uima_docs_ref;"
+      see <olink targetdoc="&uima_docs_ref;"/> <olink targetdoc="&uima_docs_ref;"
         targetptr="ugr.ref.xml.component_descriptor.aes.primitive.resource_manager_configuration"/>
       . URLs may be written as <quote>relative</quote> URLs; in this case they are resolved by
       looking them up relative to the classpath and/or datapath. A relative URL has the path

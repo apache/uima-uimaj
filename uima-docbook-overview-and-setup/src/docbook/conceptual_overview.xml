@@ -196,7 +196,8 @@ under the License.
         video. The majority of examples we provide are for text. We use the term <emphasis
           role="bold">document, </emphasis>therefore, to generally refer to any unit of
         content that an AE may process, whether it is a text document or a segment of audio, for
-        example. See the section <olink targetdoc="&uima_docs_tutorial_guides;"
+        example. See the <olink targetdoc="&uima_docs_tutorial_guides;"/>
+        <olink targetdoc="&uima_docs_tutorial_guides;"
           targetptr="ugr.tug.mvs"/> for more information on multimodal processing
         in UIMA.</para>
       
@@ -248,8 +249,8 @@ under the License.
       
       <para>In UIMA the person who codes analysis algorithms takes on the role of the
           <emphasis role="bold">Annotator Developer</emphasis>. <olink
-          targetdoc="&uima_docs_tutorial_guides;"
-          targetptr="ugr.tug.aae"/> will take the reader
+          targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.aae"/> 
+          in <olink targetdoc="&uima_docs_tutorial_guides;"/> will take the reader
         through the details involved in creating UIMA annotators and analysis
         engines.</para>
       
@@ -280,6 +281,7 @@ under the License.
       
       <para>The UIMA framework includes an implementation and interfaces to the CAS. For a
         more detailed description of the CAS and its interfaces see <olink
+          targetdoc="&uima_docs_ref;"/> <olink
           targetdoc="&uima_docs_ref;" targetptr="ugr.ref.cas"/>.</para>
       
       <para>A CAS that logically contains statement 2 (repeated here for your
@@ -403,6 +405,7 @@ under the License.
           document. Each translation may be represented with a different CAS View. Each
           translation may be described by a different set of analysis results. For more
           details on CAS Views and Sofas see <olink
+            targetdoc="&uima_docs_tutorial_guides;"/> <olink
             targetdoc="&uima_docs_tutorial_guides;"
             targetptr="ugr.tug.mvs"/> and <olink
             targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.aas"/>. </para>
@@ -420,7 +423,7 @@ under the License.
         interfaces. Through these interfaces, the annotator developer interacts with the
         document and reads and writes analysis results. The CAS interfaces provide a suite of
         access methods that allow the developer to obtain indexed iterators to the different
-        objects in the CAS. See <olink targetdoc="&uima_docs_ref;"
+        objects in the CAS. See <olink targetdoc="&uima_docs_ref;"/> <olink targetdoc="&uima_docs_ref;"
           targetptr="ugr.ref.cas"/>. While many objects may exist in a CAS, the annotator
         developer can obtain a specialized iterator to all Person objects associated with a
         particular view, for example.</para>
@@ -431,6 +434,7 @@ under the License.
         Person class in Java. As the analysis algorithm detects mentions of persons in the
         documents, it can create Person objects in the CAS. For more details on how to interact
         with the CAS using this interface, refer to <olink targetdoc="&uima_docs_ref;"
+        /> <olink targetdoc="&uima_docs_ref;"
           targetptr="ugr.ref.jcas"/>.</para>
       
       <para>The component developer, in addition to interacting with the CAS, can access
@@ -440,6 +444,7 @@ under the License.
         flow may share the same instance of an external file or remote resource accessed
         via its URL, for example. For details on using
         the UIMA Context see <olink targetdoc="&uima_docs_tutorial_guides;"
+        /> <olink targetdoc="&uima_docs_tutorial_guides;"
           targetptr="ugr.tug.aae"/>.</para>
       
     </section>
@@ -475,9 +480,11 @@ under the License.
         reuse, composition and development tooling. The UIMA SDK provides tools for easily
         creating and maintaining the component descriptors that relieve the developer from
         editing XML directly. This tool is described briefly in <olink
+          targetdoc="&uima_docs_tutorial_guides;"/> <olink
           targetdoc="&uima_docs_tutorial_guides;"
           targetptr="ugr.tug.aae"/>, and more
-        thoroughly in <olink targetdoc="&uima_docs_tools;" targetptr="ugr.tools.cde"/>
+        thoroughly in <olink targetdoc="&uima_docs_tools;"/>
+        <olink targetdoc="&uima_docs_tools;" targetptr="ugr.tools.cde"/>
         .</para>
       
       <para>Component descriptors contain standard metadata including the
@@ -496,6 +503,7 @@ under the License.
         composition based on desired results. UIMA analysis engines provide an interface
         for accessing the component metadata represented in their descriptors. For more
         details on the structure of UIMA component descriptors refer to <olink
+          targetdoc="&uima_docs_ref;"/> <olink
           targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.component_descriptor"/>.</para>
       
     </section>
@@ -568,7 +576,8 @@ under the License.
       The Flow Contoller has access to the CAS and any external resources it may require 
       for determining the flow. It can do this dynamically at run-time, it can 
       make multi-step decisions and it can consider any sort of flow specification 
-      included in the aggregate AE's descriptor. See 
+      included in the aggregate AE's descriptor. See
+      <olink targetdoc="&uima_docs_tutorial_guides;"/> 
       <olink targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.fc"/> 
       for details on the UIMA Flow Controller interface.
     </para>
@@ -591,18 +600,22 @@ under the License.
       adapter layer that automatically creates the necessary infrastructure in response to
       a declaration in the component&apos;s descriptor. For more details on creating
       aggregate analysis engines refer to <olink targetdoc="&uima_docs_ref;"
+        /> <olink targetdoc="&uima_docs_ref;"
         targetptr="ugr.ref.xml.component_descriptor"/> The component descriptor editor tool
       assists in the specification of aggregate AEs from a repository of available engines.
       For more details on this tool refer to <olink targetdoc="&uima_docs_tools;"
+        /> <olink targetdoc="&uima_docs_tools;"
         targetptr="ugr.tools.cde"/>.</para>
     
     <para>The UIMA framework implementation has two built-in flow implementations: one
       that support a linear flow between components, and one with conditional branching
       based on the language of the document. It also supports user-provided flow
       controllers, as described in <olink targetdoc="&uima_docs_tutorial_guides;"
+        /> <olink targetdoc="&uima_docs_tutorial_guides;"
         targetptr="ugr.tug.fc"/>. Furthermore, the application developer is
       free to create multiple AEs and provide their own logic to combine the AEs in arbitrarily
       complex flows. For more details on this the reader may refer to <olink
+        targetdoc="&uima_docs_tutorial_guides;"/> <olink
         targetdoc="&uima_docs_tutorial_guides;"
         targetptr="ugr.tug.application.using_aes"/>.</para>
     
@@ -660,6 +673,7 @@ under the License.
       <para>The UIMA framework provides methods to support the application developer in
         creating and managing CASes and instantiating, running and managing AEs. Details
         may be found in <olink targetdoc="&uima_docs_tutorial_guides;"
+        /> <olink targetdoc="&uima_docs_tutorial_guides;"
           targetptr="ugr.tug.application"/>.</para>
     </section>
     
@@ -734,6 +748,7 @@ under the License.
         site</ulink> which will allow the developer to experiment with indexing analysis
         results and querying for documents based on all the annotations in the CAS. See the
         section on integrating text analysis and search in <olink
+          targetdoc="&uima_docs_tutorial_guides;"/> <olink
           targetdoc="&uima_docs_tutorial_guides;"
           targetptr="ugr.tug.application"/>.</para>
       
@@ -747,6 +762,7 @@ under the License.
         analysis engines and CAS Consumers) and indicate a flow among them. The flow
         specification allows for filtering capabilities to, for example, skip over AEs
         based on CAS contents. Details about the format of CPE Descriptors may be found in
+        <olink targetdoc="&uima_docs_ref;"/>
           <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe_descriptor"/>.
         </para>
       
@@ -783,6 +799,7 @@ under the License.
       <para>This deployment option requires that the CPM run in a separate process or a
         machine distinct from the CPE components. A CPE may be configured to run with a variety
         of deployment options that control the features provided by the CPM. For details see
+        <olink targetdoc="&uima_docs_ref;"/>
           <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe_descriptor"/>
         .</para>
       
@@ -790,10 +807,12 @@ under the License.
         the developer with a user interface that simplifies the process of connecting up all
         the components in a CPE and running the result. For details on using the CPE
         Configurator see <olink targetdoc="&uima_docs_tools;"
+        /> <olink targetdoc="&uima_docs_tools;"
           targetptr="ugr.tools.cpe"/>. This tool currently does not provide
         access to the full set of CPE deployment options supported by the CPM; however, you can
         configure other parts of the CPE descriptor by editing it directly. For details on how
         to create and run CPEs refer to <olink targetdoc="&uima_docs_tutorial_guides;"
+        /> <olink targetdoc="&uima_docs_tutorial_guides;"
           targetptr="ugr.tug.cpe"/>.</para>
       
     </section>
@@ -869,6 +888,7 @@ under the License.
       
       <para>For more details about using UIMA and Semantic Search see the section on
         integrating text analysis and search in <olink
+          targetdoc="&uima_docs_tutorial_guides;"/> <olink
           targetdoc="&uima_docs_tutorial_guides;"
           targetptr="ugr.tug.application"/>.</para>
     </section>
@@ -943,6 +963,7 @@ under the License.
       single-view mode components, it is up to the person assembling the component to supply
       the needed information to insure a particular view is passed to the component at run
       time. This is done using XML descriptors for Sofa mapping (see <olink
+        targetdoc="&uima_docs_tutorial_guides;"/> <olink
         targetdoc="&uima_docs_tutorial_guides;"
         targetptr="ugr.tug.mvs.sofa_name_mapping"/>).</para>
     

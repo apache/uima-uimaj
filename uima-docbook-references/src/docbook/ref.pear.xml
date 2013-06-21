@@ -43,6 +43,7 @@
 		Currently, there is an Eclipse plugin and a command line tool
 		available to create PEAR packages for standard UIMA components.
 		Please refer to
+		<olink targetdoc="&uima_docs_tools;"/>
 		<olink targetdoc="&uima_docs_tools;"
 			targetptr="ugr.tools.pear.packager" />
 		for more information about these tools.
@@ -51,6 +52,7 @@
   <para>
     PEARs distributed to new targets can be installed at those targets.
     UIMA includes a tool for installing PEARs; see 
+		<olink targetdoc="&uima_docs_tools;"/>
     <olink targetdoc="&uima_docs_tools;"
       targetptr="ugr.tools.pear.installer"/> for 
     more information about installing PEARs.
@@ -341,12 +343,14 @@
 					deployment, but must contain the network AE
 					descriptor (see
 					<olink targetdoc="&uima_docs_tutorial_guides;"
+          /> <olink targetdoc="&uima_docs_tutorial_guides;"
 						targetptr="ugr.tug.aae.creating_xml_descriptor" />
 					) and the &lt;DESC&gt; tag in the installation
 					descriptor must point to the network AE descriptor.
 					For more information about Network Analysis Engines,
 					please refer to
 					<olink targetdoc="&uima_docs_tutorial_guides;"
+          /> <olink targetdoc="&uima_docs_tutorial_guides;"
 						targetptr="ugr.tug.application.remote_services" />
 					.
 				</para>
@@ -786,6 +790,7 @@ local_root_directory_for_1st_delegate_component/resources/dict/
         including the root folder itself</emphasis>) to a PEAR file with the extension <quote>.pear</quote>.</para>
         
       <para>To do this you can either use the PEAR packaging tools that are described in <quote><olink targetdoc="&uima_docs_tools;"
+      /> <olink targetdoc="&uima_docs_tools;"
       targetptr="ugr.tools.pear.packager"/></quote> or you can use the PEAR packaging API that is shown below.</para>
       
       <para>
@@ -824,6 +829,7 @@ local_root_directory_for_1st_delegate_component/resources/dict/
     
     <para>The installation of a PEAR package can be done using 
       the PEAR installer tool (see <olink targetdoc="&uima_docs_tools;" 
+      /> <olink targetdoc="&uima_docs_tools;"
           targetptr="ugr.tools.pear.installer"/>, or by an application using
       the PEAR APIs, directly. </para>
     

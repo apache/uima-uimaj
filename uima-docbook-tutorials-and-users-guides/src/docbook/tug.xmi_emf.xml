@@ -62,8 +62,8 @@ under the License.
     <para>For more information on EMF, see Budinsky et al. <emphasis>Eclipse Modeling Framework 2.0.</emphasis>
       Addison-Wesley. 2006.</para>
     
-    <para>For details of how the UIMA CAS is represented in XMI format, see <olink targetdoc="&uima_docs_ref;"
-        targetptr="ugr.ref.xmi"/> .</para>
+    <para>For details of how the UIMA CAS is represented in XMI format, see <olink targetdoc="&uima_docs_ref;"/>
+          <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xmi"/> .</para>
     
   </section>
   

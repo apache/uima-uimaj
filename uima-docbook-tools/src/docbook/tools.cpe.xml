@@ -39,8 +39,8 @@ under the License.
     CPEs.</para>
   
   <para>For an introduction to Collection Processing Engine concepts, including
-    developing the components that make up a CPE, read <olink
-      targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.cpe"/>. This
+    developing the components that make up a CPE, read <olink targetdoc="&uima_docs_tutorial_guides;"/>
+    <olink targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.cpe"/>. This
     chapter is a user&apos;s guide for using the CPE Configurator tool, and does not describe
     UIMA&apos;s Collection Processing Architecture itself.</para>
   
@@ -57,8 +57,8 @@ under the License.
       mapped. It sets up a fixed-sized CAS Pool.</para>
     
     <para>To set these additional options, you must edit the CPE Descriptor XML file
-      directly.  See <olink
-      targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe_descriptor"/> for the syntax.
+      directly.  See <olink targetdoc="&uima_docs_ref;"/>
+      <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe_descriptor"/> for the syntax.
       You may then open the CPE Descriptor in the CPE Configurator and run it.  The changes
       you applied to the CPE Descriptor <emphasis>will</emphasis> be respected, although you
       will not be able to see them or edit them from the GUI.
@@ -70,8 +70,8 @@ under the License.
     
     <para>The CPE Configurator tool can be run using the <literal>cpeGui</literal> shell
       script, which is located in the <literal>bin</literal> directory of the UIMA SDK. If
-      you&apos;ve installed the example Eclipse project (see <olink
-        targetdoc="&uima_docs_overview;"
+      you&apos;ve installed the example Eclipse project (see <olink targetdoc="&uima_docs_overview;"/>
+      <olink targetdoc="&uima_docs_overview;"
         targetptr="ugr.ovv.eclipse_setup.example_code"/>, you can also run it using the
       <quote>UIMA CPE GUI</quote> run configuration provided in that project.</para>
     <note><para>If you are planning to build a CPE using components other than the examples
@@ -169,16 +169,18 @@ examples/descriptors/cas_consumer/XmiWriterCasConsumer.xml</programlisting></par
       identify the components that constitute the CPE, as well as the configuration settings
       you have specified for each of these components. Later, you can use <quote>Open CPE
       Descriptor</quote> to restore the CPE Configurator to the state. Also, CPE
-      Descriptors can be used to easily run a CPE from a Java program &ndash; see <olink
+      Descriptors can be used to easily run a CPE from a Java program &ndash; see 
+      <olink targetdoc="&uima_docs_tutorial_guides;"/> <olink
         targetdoc="&uima_docs_tutorial_guides;"
         targetptr="ugr.tug.application.running_a_cpe_from_a_descriptor"/>
       .</para>
     
     <para>CPE Descriptors also allow specifying operational parameters, such as error
       handling options that are not currently available for configuration through the CPE
-      Configurator. For more information on manually creating a CPE Descriptor, see <olink
-        targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe_descriptor"/>
-      .</para>
+      Configurator. For more information on manually creating a CPE Descriptor, see 
+      <olink targetdoc="&uima_docs_ref;"/>
+      <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe_descriptor"/>.
+    </para>
     
     <para>The <emphasis role="bold">Save Options</emphasis> submenu has one item,
       "Use &lt;import>".  If this item is checked (the default), saved CPE descriptors

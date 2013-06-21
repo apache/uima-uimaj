@@ -43,15 +43,15 @@ under the License.
     type definition containing all of the features defined on that type by all of the
     components).  It is recommended that you do not use this capability (of having 
     two different definitions for the same type name, with different feature sets) since it can make it 
-    difficult to combine/package your annotator with others. See <olink
-      targetdoc="&uima_docs_ref;"
+    difficult to combine/package your annotator with others. See <olink targetdoc="&uima_docs_ref;"/>
+    <olink targetdoc="&uima_docs_ref;"
       targetptr="ugr.ref.jcas.merging_types_from_other_specs"/> for more information.
   </para>
   
   <para>Also note that if your type system declares a custom version of the 
     <literal>uima.tcas.DocumentAnnotation</literal> 
     built-in type, then JCasGen will generate a Java source file for it.  If you do this, you need to be
-    aware of the issues discussed in 
+    aware of the issues discussed in <olink targetdoc="&uima_docs_ref;"/>
     <olink
        targetdoc="&uima_docs_ref;"
        targetptr="ugr.ref.jcas.documentannotation_issues"/>.</para></warning>
@@ -60,7 +60,7 @@ under the License.
     which contains a type system descriptor, and generates the corresponding Java Class
     Models for those types. Variants exist for the Eclipse environment that allow merging the
     newly generated Java source code with previously augmented versions; see <olink
-      targetdoc="&uima_docs_ref;"
+    targetdoc="&uima_docs_ref;"/> <olink targetdoc="&uima_docs_ref;"
       targetptr="ugr.ref.jcas.augmenting_generated_code"/> for a discussion of how the
     Java Class Models can be augmented by adding additional methods and fields.</para>
   

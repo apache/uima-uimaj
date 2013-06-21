@@ -147,9 +147,11 @@ AnalysisEngine ae =
       <title>Analyzing Text Documents</title>
       
       <para>There are two ways to use the AE interface to analyze documents. You can either use the
-        <emphasis>JCas</emphasis> interface, which is described in detail by <olink
+        <emphasis>JCas</emphasis> interface, which is described in detail in <olink
+          targetdoc="&uima_docs_ref;"/> <olink
           targetdoc="&uima_docs_ref;" targetptr="ugr.ref.jcas"/> or you can directly use the
         <emphasis>CAS</emphasis> interface, which is described in detail in <olink
+          targetdoc="&uima_docs_ref;"/> <olink
           targetdoc="&uima_docs_ref;" targetptr="ugr.ref.cas"/>. Besides text documents, other kinds of
         artifacts can also be analyzed; see <olink targetdoc="&uima_docs_tutorial_guides;"
           targetptr="ugr.tug.aas"/> for more information.</para>
@@ -252,7 +254,8 @@ ae.destroy();</programlisting></para>
           </listitem>
           
           <listitem>
-            <para> <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.jcas"/></para>
+            <para> <olink targetdoc="&uima_docs_ref;"/> 
+                   <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.jcas"/></para>
           </listitem>
           
           <listitem>
@@ -269,7 +272,8 @@ ae.destroy();</programlisting></para>
         
         <itemizedlist>
           <listitem>
-            <para> <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.cas"/></para>
+            <para> <olink targetdoc="&uima_docs_ref;"/>
+                   <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.cas"/></para>
           </listitem>
           
           <listitem>
@@ -789,6 +793,7 @@ consumerParamSettings.setParameterValue(
         
         <para>The index build specification is a series of index build items, each of which identifies a CAS
           annotation type (a subtype of <literal>uima.tcas.Annotation</literal> &ndash; see <olink
+            targetdoc="&uima_docs_ref;"/> <olink
             targetdoc="&uima_docs_ref;" targetptr="ugr.ref.cas"/>) and a style.</para>
         
         <para>The first item in this example specifies that the annotation type
@@ -842,7 +847,8 @@ consumerParamSettings.setParameterValue(
             url="http://www.alphaworks.ibm.com/tech/uima"/>. For more information on the Index Build
           Specification format, see the UIMA Javadocs for class
           <literal>org.apache.uima.search.IndexBuildSpecification</literal>. Accessing the Javadocs is
-          described <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.javadocs"/>.</para>
+          described in <olink targetdoc="&uima_docs_ref;"/> 
+          <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.javadocs"/>.</para>
         
       </section>
       
@@ -858,6 +864,7 @@ consumerParamSettings.setParameterValue(
         
         <para>Run the CPE Configurator tool by executing the <literal>cpeGui</literal> shell script in the
           <literal>bin</literal> directory of the UIMA SDK. (For instructions on using this tool, see the <olink
+            targetdoc="&uima_docs_tools;"/> <olink
             targetdoc="&uima_docs_tools;" targetptr="ugr.tools.cpe"/>.)</para>
         
         <para>In the CPE Configurator tool, select the following components by browsing to their
@@ -1542,7 +1549,9 @@ Exception: Connection refused: connect</programlisting>
       See <xref linkend="ugr.tug.applications.multi_threaded"/>.</para></listitem>
         
         <listitem><para><emphasis role="bold">Reassembling chunks of a large document</emphasis>
-        See <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe_descriptor.descriptor.operational_parameters"/></para>
+        See <olink targetdoc="&uima_docs_ref;"/>
+            <olink targetdoc="&uima_docs_ref;" 
+                   targetptr="ugr.ref.xml.cpe_descriptor.descriptor.operational_parameters"/></para>
         </listitem>
       
       </itemizedlist></para>
@@ -1586,7 +1595,8 @@ Exception: Connection refused: connect</programlisting>
         <para>If the service does not respond within this amount of time, processing of the current CAS will abort. If
           you called the <literal>AnalysisEngine.process</literal> method directly from your application, an
           Exception will be thrown. If you are running a CPE, what happens next is dependent on the error handling
-          settings in your CPE descriptor (see <olink targetdoc="&uima_docs_ref;"
+          settings in your CPE descriptor (see <olink targetdoc="&uima_docs_ref;"/>
+          <olink targetdoc="&uima_docs_ref;"
             targetptr="ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.individual.error_handling"/>
           ). The default action is for the CPE to terminate, but you can override this. </para>
         
@@ -1609,6 +1619,7 @@ Exception: Connection refused: connect</programlisting>
           <literal>errorRateThreshold</literal>. These settings support such things as restarting the process
           (for <quote>managed</quote> deployment mode), dropping and reestablishing the connection (for
           <quote>non-managed</quote> deployment mode), and removing the offending service from the pipeline. See
+            <olink targetdoc="&uima_docs_ref;"/>
             <olink targetdoc="&uima_docs_ref;"
             targetptr="ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.individual.error_handling"/>
           ) for details. </para>
@@ -1617,7 +1628,7 @@ Exception: Connection refused: connect</programlisting>
           request that is made when the client first connects to the service.  This call is typically
           very fast and does not need a large timeout (the default is 60 seconds).  However, if many
           clients are competing for a small number of services, it may be necessary to increase this
-          value.  See <olink targetdoc="&uima_docs_ref;"
+          value.  See <olink targetdoc="&uima_docs_ref;"/> <olink targetdoc="&uima_docs_ref;"
             targetptr="ugr.ref.xml.component_descriptor.service_client"/></para>
       </section>
       
@@ -1675,6 +1686,7 @@ Exception: Connection refused: connect</programlisting>
       replicated processing pipelines, to a value greater than 1, and insure that the size of the CAS pool is equal to or
       greater than this number (the attribute of <literal>&lt;casProcessors&gt;</literal> to set is
       <literal>casPoolSize</literal>). For more details on these settings, see <olink
+        targetdoc="&uima_docs_ref;"/> <olink
         targetdoc="&uima_docs_ref;"
         targetptr="ugr.ref.xml.cpe_descriptor.descriptor.cas_processors"/> .</para>
     
@@ -1706,6 +1718,7 @@ Exception: Connection refused: connect</programlisting>
       single Java Virtual Machine &ndash; which can take advantage of multi-processor and hyper-threaded
       architectures).</para> <note>
     <para>When using Vinci in <quote>exclusive</quote> mode (see service access under <olink
+        targetdoc="&uima_docs_ref;"/> <olink
         targetdoc="&uima_docs_ref;"
         targetptr="ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.individual.deployment_parameters"/>
       ), only one thread is used. To achieve multi-processing on a server in this case, use multiple instances of the

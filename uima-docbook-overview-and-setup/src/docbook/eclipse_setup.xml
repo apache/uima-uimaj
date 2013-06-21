@@ -35,7 +35,8 @@ under the License.
     form that's easy to import into your Eclipse environment.</para>
   
   <para>If you are not planning on using the UIMA SDK with Eclipse, you may skip this chapter and
-    read <olink targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.aae"/>
+    read <olink targetdoc="&uima_docs_tutorial_guides;"/>
+    <olink targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.aae"/>
     next.</para>
   
   <para>This chapter provides instructions for
@@ -360,7 +361,8 @@ under the License.
      <para>Eclipse also has a Javadoc "view" which you can show, using the Window &rarr;
      Show View &rarr; Javadoc.</para>
    
-     <para>See <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.javadocs.libraries"/>
+     <para>See <olink targetdoc="&uima_docs_ref;"/>
+     <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.javadocs.libraries"/>
      for information on how to set up a UIMA "library" with the Javadocs attached, which
      can be reused for other projects in your Eclipse workspace.</para>
                 
@@ -413,7 +415,8 @@ under the License.
         the tools by clicking the <quote>X</quote> in the upper right corner on the GUI.
         </para></listitem></itemizedlist>
     
-    <para>For instructions on using the Document Analyzer and CPE Configurator, see <olink
+    <para>For instructions on using the Document Analyzer and CPE Configurator, 
+      in the <olink targetdoc="&uima_docs_tools;"/> book see <olink
         targetdoc="&uima_docs_tools;" targetptr="ugr.tools.doc_analyzer"/>, and
         <olink targetdoc="&uima_docs_tools;" targetptr="ugr.tools.cpe"/> For
       instructions on using the CAS Visual Debugger and JCasGen, see <olink

@@ -178,6 +178,7 @@ uima.cas.String  &rarr; String</programlisting>
         Structure reference), a new JCas cover object instance may be created. If you need these values, you can (a)
         make them CAS values if possible, or (b) hold a reference to the the particular JCas cover object instance in
         your Java code. For some simple cases, setting the the performance tuning option JCAS_CACHE_ENABLE (see
+          <olink targetdoc="&uima_docs_tutorial_guides;"/>
           <olink targetdoc="&uima_docs_tutorial_guides;" targetptr="tug.application.pto"/>)
          to true
         will cause the same JCas cover object that was previously used for a particular CAS Feature Structure to be
@@ -316,6 +317,7 @@ uima.cas.String  &rarr; String</programlisting>
         can be re-run on the merged type system, to create one set of JCas Class definitions for the merged types,
         which can then be shared by all the components. 
         Directions for running JCasGen can be found in <olink
+          targetdoc="&uima_docs_tools;"/> <olink
           targetdoc="&uima_docs_tools;" targetptr="ugr.tools.jcasgen"/>. This is typically done by the person who
         is assembling the Aggregate Analysis Engine or Collection Processing Engine. The resulting merged Java
         Class Model will then contain get and set methods for the complete set of features. These Java classes must

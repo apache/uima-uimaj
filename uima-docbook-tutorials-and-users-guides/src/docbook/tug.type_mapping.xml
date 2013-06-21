@@ -36,6 +36,7 @@ under the License.
 	  The combining rules say that the range of same-named feature slots must be the same.
 	  This combined type system is then used for the CAS that will be passed to
 	  all of the annotators.   Details of type merging are described in
+    <olink targetdoc="&uima_docs_ref;"/>
 	  <olink targetdoc="%uima_docs_ref;" targetptr="ugr.ref.cas.typemerging"/>.
 	  </para>
 	  

@@ -269,7 +269,8 @@ under the License.
     <para>Flow Controller Descriptors are very similar to Primitive Analysis Engine Descriptors &ndash; for
       example you can specify configuration parameters and external resources if you wish.</para>
     
-    <para>If you wish to edit a Flow Controller Descriptor by hand, see section <olink targetdoc="&uima_docs_ref;"
+    <para>If you wish to edit a Flow Controller Descriptor by hand, see <olink targetdoc="&uima_docs_ref;"/>
+    <olink targetdoc="&uima_docs_ref;"
         targetptr="ugr.ref.xml.component_descriptor.flow_controller"/> for the syntax.</para>
   </section>
   
@@ -308,6 +309,7 @@ under the License.
   &lt;/flowController&gt;</emphasis></programlisting></para>
     
     <para>As usual, you can use either in import by location or import by name &ndash; see <olink
+        targetdoc="&uima_docs_ref;"/> <olink
         targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.component_descriptor.imports"/>.</para>
     
     <para>The key that you assign to the FlowController can be used elsewhere in the Aggregate Analysis Engine

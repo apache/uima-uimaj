@@ -32,6 +32,7 @@ under the License.
   
   <para>Eclipse supports the ability to attach the Javadocs to your project. The Javadoc should already be attached
     to the <literal>uimaj-examples</literal> project, if you followed the setup instructions in <olink
+      targetdoc="&uima_docs_overview;"/> <olink
       targetdoc="&uima_docs_overview;" targetptr="ugr.ovv.eclipse_setup.example_code"/>. To attach
     Javadocs to your own Eclipse project, use the following instructions.</para>
   
@@ -39,6 +40,7 @@ under the License.
   do this you not only will have the Javadocs automatically available (you can skip the following
   setup), you will have the ability to step through the UIMA framework code while debugging.
   To add the source, follow the instructions as described in the setup chapter: 
+  <olink targetdoc="&uima_docs_overview;"/>
   <olink targetdoc="&uima_docs_overview;" targetptr="ugr.ovv.eclipse_setup.adding_source"/>.</para></note>
   
   <para>To add the Javadocs, open a project which is referring to the UIMA APIs in its class path, and open the project properties. Then pick

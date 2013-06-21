@@ -78,11 +78,13 @@ under the License.
   <para>A user creates a CPE by assembling the components mentioned above. The UIMA SDK
     provides a graphical tool, called the CPE Configurator, for assisting in the assembly of
     CPEs. Use of this tool is summarized in <xref
-      linkend="ugr.tug.cpe.cpe_configurator"/>, and more details can be found in <olink
-      targetdoc="&uima_docs_tools;" targetptr="ugr.tools.cpe"/>.
+      linkend="ugr.tug.cpe.cpe_configurator"/>, and more details can be found in 
+      <olink targetdoc="&uima_docs_tools;"/>
+      <olink targetdoc="&uima_docs_tools;" targetptr="ugr.tools.cpe"/>.
     Alternatively, a CPE can be assembled by writing an XML CPE descriptor. Details on the CPE
-    descriptor, including its syntax and content, can be found in the <olink
-      targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe_descriptor"/>. The individual
+    descriptor, including its syntax and content, can be found in the 
+    <olink targetdoc="&uima_docs_ref;"/>
+    <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe_descriptor"/>. The individual
     components have associated XML descriptors, each of which can be created and / or edited
     using the <olink targetdoc="&uima_docs_tools;" targetptr="ugr.tools.cde">
     Component Description Editor</olink>.</para>
@@ -153,11 +155,13 @@ under the License.
       <title>Using the CPE Configurator</title>
       
       <para>A CPE can be assembled by writing an XML CPE descriptor. Details on the CPE
-        descriptor, including its syntax and content, can be found in <olink
-          targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe_descriptor"/>. Rather than
+        descriptor, including its syntax and content, can be found in 
+        <olink targetdoc="&uima_docs_ref;"/>
+        <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe_descriptor"/>. Rather than
         edit raw XML, you may develop a CPE Descriptor using the CPE Configurator tool. The CPE
-        Configurator tool is described briefly in this section, and in more detail in <olink
-          targetdoc="&uima_docs_tools;" targetptr="ugr.tools.cpe"/>.</para>
+        Configurator tool is described briefly in this section, and in more detail in 
+        <olink targetdoc="&uima_docs_tools;"/>
+        <olink targetdoc="&uima_docs_tools;" targetptr="ugr.tools.cpe"/>.</para>
       
       <para>The CPE Configurator tool can be run from Eclipse (see <xref
           linkend="ugr.tug.cpe.running_cpe_configurator_from_eclipse"/>, or using
@@ -235,8 +239,9 @@ CAS Consumer:
           linkend="ugr.tug.cpe.running_cpe_from_application"/>. CPE Descriptors
         allow specifying operational parameters, such as error handling options, that are
         not currently available for configuration through the CPE Configurator. For more
-        information on manually creating a CPE Descriptor, see the <olink
-          targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe_descriptor"/>.</para>
+        information on manually creating a CPE Descriptor, see the 
+        <olink targetdoc="&uima_docs_ref;"/>
+        <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe_descriptor"/>.</para>
             
       <para>The CPE configured above runs a simple name and title annotator on the sample data
         provided with the UIMA SDK and stores the results using the XMI Writer CAS Consumer. To
@@ -305,8 +310,8 @@ CAS Consumer:
     <section id="ugr.tug.cpe.running_cpe_configurator_from_eclipse">
       <title>Running the CPE Configurator from Eclipse</title>
       
-      <para>If you have followed the instructions in <olink
-          targetdoc="&uima_docs_overview;"
+      <para>If you have followed the instructions in <olink targetdoc="&uima_docs_overview;"/>
+        <olink targetdoc="&uima_docs_overview;"
           targetptr="ugr.ovv.eclipse_setup"/> and imported the example Eclipse
         project, then you should already have a Run configuration for the CPE Configurator
         tool (called <literal>UIMA CPE GUI</literal>) configured to run in the example
@@ -550,8 +555,9 @@ mCPE.process();</programlisting></para>
           <para>The File System Collection Reader also stores additional metadata about
             the document in the CAS. In particular, it sets the document&apos;s language in
             the special built-in feature structure
-            <literal>uima.tcas.DocumentAnnotation </literal>(see <olink
-              targetdoc="&uima_docs_ref;"
+            <literal>uima.tcas.DocumentAnnotation </literal>(see 
+            <olink targetdoc="&uima_docs_ref;"/>
+            <olink targetdoc="&uima_docs_ref;"
               targetptr="ugr.ref.cas.document_annotation"/> for details about this
             built-in type) and creates an instance of
             <literal>org.apache.uima.examples.SourceDocumentInformation</literal>
@@ -999,7 +1005,8 @@ mCPE.process();</programlisting></para>
     <para>Eventually the CPE Configurator tool will support configuring these options and a
       detailed tutorial for these settings will be provided. In the meantime, we provide only
       a high-level, conceptual overview of these advanced features in the rest of this
-      chapter, and refer the advanced user to <olink targetdoc="&uima_docs_ref;"
+      chapter, and refer the advanced user to <olink targetdoc="&uima_docs_ref;"/>
+      <olink targetdoc="&uima_docs_ref;"
         targetptr="ugr.ref.xml.cpe_descriptor"/> for details on setting these options in the CPE
       Descriptor.</para>
     
@@ -1061,7 +1068,8 @@ mCPE.process();</programlisting></para>
       CAS Processors in integrated mode. To deploy CAS Processors in any other mode, the CPE
       descriptor must be edited by hand (better tooling may be provided later). Details on the
       CPE descriptor and the required settings for various CAS Processor deployment modes
-      can be found in <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe_descriptor"/>
+      can be found in <olink targetdoc="&uima_docs_ref;"/>
+      <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe_descriptor"/>
       . In the following sections we merely summarize the various CAS Processor deployment
       options.</para>
     
@@ -1132,7 +1140,8 @@ mCPE.process();</programlisting></para>
   &lt;checkpoint batch="10000"/&gt;
 &lt;/casProcessor&gt;</programlisting>
       
-      <para>See <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe_descriptor"/> for
+      <para>See <olink targetdoc="&uima_docs_ref;"/>
+        <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe_descriptor"/> for
         details and required settings.</para>
       
     </section>
@@ -1194,7 +1203,8 @@ mCPE.process();</programlisting></para>
   &lt;checkpoint batch="10000"/&gt;
 &lt;/casProcessor&gt;</programlisting>
       
-      <para>See <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe_descriptor"/> for
+      <para>See <olink targetdoc="&uima_docs_ref;"/>
+        <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe_descriptor"/> for
         details and required settings.</para>
       
     </section>
@@ -1242,7 +1252,8 @@ mCPE.process();</programlisting></para>
   &lt;checkpoint batch="10000"/&gt;
 &lt;/casProcessor&gt;</programlisting>
       
-      <para>See <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe_descriptor"/> for
+      <para>See <olink targetdoc="&uima_docs_ref;"/>
+        <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe_descriptor"/> for
         details and required settings.</para>
       
     </section>

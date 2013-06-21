@@ -42,6 +42,7 @@ under the License.
   
   <para>Details about the CPE, including its function, sub-components, APIs, and related
     tools, can be found in <olink targetdoc="&uima_docs_tutorial_guides;"
+    /> <olink targetdoc="&uima_docs_tutorial_guides;"
       targetptr="ugr.tug.cpe"/>. Here we briefly summarize the CPE to define terms and
     provide context for the later sections that describe the CPE Descriptor.</para>
   
@@ -375,6 +376,7 @@ under the License.
         happens with the CAS when an exception happens during processing. If the value of this
         attribute is set to true and an exception happens, the CPM will notify all registered
         listeners of the exception (see <olink targetdoc="&uima_docs_tutorial_guides;"
+        /> <olink targetdoc="&uima_docs_tutorial_guides;"
           targetptr="ugr.tug.cpe.using_listeners"/>), clear the CAS and check the CAS
         back into the CAS Pool so that it can be re-used. The presumption is that an exception
         may leave the CAS in an inconsistent state and therefore that CAS should not be allowed
@@ -445,6 +447,7 @@ under the License.
                 in the <literal>&lt;descriptor&gt;</literal> element must be a Vinci
                 <emphasis>Service Client Descriptor</emphasis>, which identifies a
                 remotely deployed CAS Processor service (see <olink
+                  targetdoc="&uima_docs_tutorial_guides;"/> <olink
                   targetdoc="&uima_docs_tutorial_guides;"
                   targetptr="ugr.tug.application.remote_services"/>). The CPM
                 assumes that the CAS Processor is already running as a remote service and
@@ -462,6 +465,7 @@ under the License.
                 <literal>&lt;descriptor&gt;</literal> element must be a Vinci
                 <emphasis>Service Deployment Descriptor</emphasis>, which configures
                 a CAS Processor for deployment as a Vinci service (see <olink
+                  targetdoc="&uima_docs_tutorial_guides;"/> <olink
                   targetdoc="&uima_docs_tutorial_guides;"
                   targetptr="ugr.tug.application.remote_services"/>). The CPM
                 deploys the CAS Processor in a separate process and manages the life cycle
@@ -501,6 +505,7 @@ under the License.
                 (primitive or aggregate). </para></listitem></itemizedlist> </para>
           
           <para>See <olink targetdoc="&uima_docs_tutorial_guides;"
+              /> <olink targetdoc="&uima_docs_tutorial_guides;"
               targetptr="ugr.tug.application.remote_services"/> for more
             information on creating these descriptors and deploying services.</para>
           
@@ -1151,6 +1156,7 @@ vinci.VinciAnalysisEngineService_impl</arg>
         metadata to a local cache of invalid documents. </para>
       
       <para>If the time out occurs, the CPM notifies all registered listeners (see <olink
+          targetdoc="&uima_docs_tutorial_guides;"/> <olink
           targetdoc="&uima_docs_tutorial_guides;"
           targetptr="ugr.tug.cpe.using_listeners"/>) by calling
         entityProcessComplete(). As part of this call, the SequencedQueue will pass null
@@ -1250,6 +1256,7 @@ vinci.VinciAnalysisEngineService_impl</arg>
         <programlisting>&lt;resourceManagerConfiguration href="..."/&gt;</programlisting></para>
       
       <para>For an introduction to external resources, refer to <olink
+          targetdoc="&uima_docs_tutorial_guides;"/> <olink
           targetdoc="&uima_docs_tutorial_guides;"
           targetptr="ugr.tug.aae.accessing_external_resource_files"/>.</para>
       
