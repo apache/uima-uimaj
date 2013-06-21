@@ -361,7 +361,7 @@ public class CasCopier {
    * same identical copy will be returned rather than making another copy.
    * 
    * @param aFS
-   * @return
+   * @return a deep copy of the Feature Structure - any referred to FSs will also be copied.
    */
   
   public FeatureStructure copyFs(FeatureStructure aFS) {
@@ -549,7 +549,7 @@ public class CasCopier {
 
   /**
    * @param arrayFS
-   * @return
+   * @return a copy of the array
    */
   private FeatureStructure copyArray(FeatureStructure aSrcFs) {
     // TODO: there should be a way to do this without enumerating all the array types!
