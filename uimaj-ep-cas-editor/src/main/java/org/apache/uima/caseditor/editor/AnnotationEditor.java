@@ -609,6 +609,9 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
       return super.getTitleToolTip();
     }
     ICasDocument document = getDocument();
+    if(document == null) {
+      return super.getTitleToolTip();
+    }
     String typeSystemText = document.getTypeSystemText();
     String toolTipText = getEditorInput().getToolTipText();
     if (typeSystemText != null) {
