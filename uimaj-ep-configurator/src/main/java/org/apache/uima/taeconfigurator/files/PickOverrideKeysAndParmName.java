@@ -19,6 +19,8 @@
 
 package org.apache.uima.taeconfigurator.files;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -33,7 +35,7 @@ import org.apache.uima.resource.metadata.ConfigurationParameterDeclarations;
 import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 import org.apache.uima.taeconfigurator.editors.ui.ParameterDelegatesSection;
 import org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog;
-import org.apache.uima.taeconfigurator.editors.ui.dialogs.AddParameterDialog;
+import org.apache.uima.taeconfigurator.model.ConfigGroup;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -44,11 +46,9 @@ import org.eclipse.swt.widgets.TableItem;
 
 public class PickOverrideKeysAndParmName extends AbstractDialog {
 
-  private AddParameterDialog parameterDialog = null; // not currently used
+  //private AddParameterDialog parameterDialog = null; // not currently used
 
   private ConfigurationParameter cp;
-
-  private ConfigurationParameterDeclarations cpd;
 
   private boolean adding;
 
@@ -61,6 +61,8 @@ public class PickOverrideKeysAndParmName extends AbstractDialog {
   //returned values
   public String delegateKeyName;
   public String delegateParameterName;
+
+  private ConfigGroup cg;
 
    /*
    * Shows 2 side-by-side windows.
@@ -75,12 +77,12 @@ public class PickOverrideKeysAndParmName extends AbstractDialog {
    */
   public PickOverrideKeysAndParmName(AbstractSection aSection,
           Map delegateMap,
-          String message, ConfigurationParameter aCp, ConfigurationParameterDeclarations aCpd,
+          String message, ConfigurationParameter aCp, ConfigGroup aCg,
           boolean aAdding) {
     super(aSection, "Delegate Keys and Parameter Name Selection", message);
     delegates = delegateMap;
     cp = aCp;
-    cpd = aCpd;
+    cg = aCg;
     adding = aAdding; // true if we're adding, not editing
   }
 
@@ -140,30 +142,71 @@ public class PickOverrideKeysAndParmName extends AbstractDialog {
             || rs instanceof FlowControllerDescription) {
       ConfigurationParameterDeclarations delegateCpd = ((ResourceCreationSpecifier) rs)
               .getMetaData().getConfigurationParameterDeclarations();
-      addSelectedParms(delegateCpd.getCommonParameters(), keyName);
+      
+      addSelectedParms(delegateCpd, keyName);
 
-      ConfigurationGroup[] groups = delegateCpd.getConfigurationGroups();
-      if (null != groups) {
-        for (int i = 0; i < groups.length; i++) {
-          addSelectedParms(groups[i].getConfigurationParameters(), keyName);
-        }
-      }
-      addSelectedParms(delegateCpd.getConfigurationParameters(), keyName);
     }
     if (0 < paramsUI.getItemCount()) {
       paramsUI.setSelection(0);
     }
     paramsUI.setRedraw(true);
   }
- 
+
+  
   /*
-   * Filter overridable parameters to exclude: - already overridden (can't override same parameter
-   * twice) - those with different type or multi-valued-ness (Group match not required)
+   * Filter overridable parameters to exclude: 
+   * - any that are not in the same set of groups
+   */
+  private void addSelectedParms(ConfigurationParameterDeclarations delegateCpd, String keyName) {
+
+    // If not using groups then it's easy
+    if (cg.getKind() == ConfigGroup.NOT_IN_ANY_GROUP) {
+      addSelectedParms(delegateCpd.getConfigurationParameters(), keyName);
+      return;
+    }
+
+    // If a group override must find parameters that are in all of the groups.
+    // First add all the matching parameters in the COMMON group
+    addSelectedParms(delegateCpd.getCommonParameters(), keyName);
+    
+    // Then build a list of all config params in the first group
+    String[] groupNames = cg.getNameArray();
+    ConfigurationGroup[] dcgs = delegateCpd.getConfigurationGroupDeclarations(groupNames[0]);
+    ArrayList<ConfigurationParameter> cps = new ArrayList<ConfigurationParameter>();
+    for (ConfigurationGroup dcg : dcgs) {
+      cps.addAll(Arrays.asList(dcg.getConfigurationParameters()));
+    }
+    
+    // Then for each of the other groups keep only those parameters in that group
+    // Quite inefficient as searches for each parameter in turn in the group, but .... !!
+    for (int i = 1; i < groupNames.length; ++i) {
+      ArrayList<ConfigurationParameter> newCps = new ArrayList<ConfigurationParameter>();
+      for (ConfigurationParameter cp : cps) {
+        ConfigurationParameter sameCp = delegateCpd.getConfigurationParameter(groupNames[i], cp.getName());
+        if (sameCp != null) {
+          newCps.add(cp);
+        }
+      }
+      if (newCps.size() == 0) {
+        return; // no parameters found in all groups
+      }
+      cps = newCps;  // Repeat for other groups using the filtered list
+    }
+    // Finally apply the type matching & add to display
+    addSelectedParms(cps.toArray(new ConfigurationParameter[cps.size()]), keyName);
+  }
+  
+  /*
+   * Filter overridable parameters to exclude: 
+   * - already overridden (can't override same parameter twice) 
+   * - those with different type or multi-valued-ness 
    */
   private void addSelectedParms(ConfigurationParameter[] parms, String keyName) {
-    boolean isMultiValued = (null != parameterDialog) ? parameterDialog.multiValueUI
+    /*boolean isMultiValued = (null != parameterDialog) ? parameterDialog.multiValueUI
             .getSelection() : cp.isMultiValued();
-    String type = (null != parameterDialog) ? parameterDialog.parmTypeUI.getText() : cp.getType();
+    String type = (null != parameterDialog) ? parameterDialog.parmTypeUI.getText() : cp.getType();*/
+    boolean isMultiValued = cp.isMultiValued();
+    String type = cp.getType();
 
     if (null != parms) {
       for (int i = 0; i < parms.length; i++) {
@@ -176,7 +219,7 @@ public class PickOverrideKeysAndParmName extends AbstractDialog {
           continue;
         // parameter must not be already overridden, unless we're editing an existing one
         String override = keyName + '/' + parms[i].getName();
-        if (adding && null != ParameterDelegatesSection.getOverridingParmName(override, cpd))
+        if (adding && null != ParameterDelegatesSection.getOverridingParmName(override, cg))
           continue;
 
         TableItem tableItem = new TableItem(paramsUI, SWT.NULL);

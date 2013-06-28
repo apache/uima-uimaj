@@ -28,6 +28,10 @@ package org.apache.uima.taeconfigurator.editors.ui.dialogs;
  * optional - user may not have fully defined things below. So won't be an error, here, but will be
  * when validated.
  */
+import org.apache.uima.resource.metadata.ConfigurationParameter;
+import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
+import org.apache.uima.taeconfigurator.editors.ui.ParameterSection;
+import org.apache.uima.taeconfigurator.model.ConfigGroup;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.StyledText;
@@ -35,10 +39,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
-
-import org.apache.uima.resource.metadata.ConfigurationParameter;
-import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
-import org.apache.uima.taeconfigurator.editors.ui.ParameterSection;
 
 public class AddParameterDialog extends AbstractDialogKeyVerifyJavaNames {
   private StyledText parmNameUI;
@@ -71,7 +71,9 @@ public class AddParameterDialog extends AbstractDialogKeyVerifyJavaNames {
 
   private String originalParmName;
 
-  public AddParameterDialog(AbstractSection aSection) {
+  private ConfigGroup configGroup;
+
+  private AddParameterDialog(AbstractSection aSection) {
     super(aSection, "Add Parameter", "Specify a parameter name && type");
     parmSection = (ParameterSection) section;
   }
@@ -85,6 +87,17 @@ public class AddParameterDialog extends AbstractDialogKeyVerifyJavaNames {
   public AddParameterDialog(AbstractSection aSection, ConfigurationParameter aExistingCP) {
     this(aSection);
     existingCP = aExistingCP;
+  }
+
+  /**
+   * Constructor for Adding a new parameter to a group (may be the not-in-any one)
+   * 
+   * @param aSection
+   * @param aGroup
+   */
+  public AddParameterDialog(AbstractSection aSection, ConfigGroup cg) {
+    this(aSection);
+    configGroup = cg;
   }
 
   protected Control createDialogArea(Composite parent) {
@@ -155,7 +168,7 @@ public class AddParameterDialog extends AbstractDialogKeyVerifyJavaNames {
   public boolean isValid() {
     if (parmName.length() == 0)
       return false;
-    if (!parmName.equals(originalParmName) && parmSection.parameterNameAlreadyDefined(parmName))
+    if (!parmName.equals(originalParmName) && parmSection.parameterNameAlreadyDefined(parmName,configGroup))
       return false;
     if (parmType.length() == 0)
       return false;

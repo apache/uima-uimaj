@@ -280,9 +280,9 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
     ConfigurationParameter parmInGroup;
     String override = key + "/" + parm.getName();
     String overrideParmName;
-    if (null != (overrideParmName = getOverridingParmName(override, cpd))) {
+    if (null != (overrideParmName = getOverridingParmName(override, group))) {
       Utility.popMessage("Only one override allowed",
-              "This delegate parameter already is being overridden by '" + overrideParmName
+              "This delegate parameter is currently overridden by '" + overrideParmName
                       + "'.  To override "
                       + "with a different parameter, first remove this override",
               MessageDialog.ERROR);
@@ -301,31 +301,41 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
         parmSection.addParm(newName, parm, group, override);
       }
     } else {
-      if (ParameterSection.parameterNameAlreadyDefinedNoMsg(parm.getName(),
-              getConfigurationParameterDeclarations())) {
-        // parm names must be unique across this descriptor, even among different groups
-        String newName = generateUniqueName(parm.getName());
-        parmSection.addParm(newName, parm, group, override);
-      } else {
-        parmSection.addParm(parm.getName(), parm, group, override);
-      }
+      // Not already in this group
+      parmSection.addParm(parm.getName(), parm, group, override);
     }
   }
 
-  public static String getOverridingParmName(String override, ConfigurationParameterDeclarations cpd) {
-    String result;
-
-    if (null != (result = getOverridingParmName(override, cpd.getConfigurationParameters())))
+  /*
+   * Check if already have an override for this delegate parameter
+   * If parameter is in a group-set with multiple groups, check if override is in 
+   * any group-set that has a matching group.
+   * i.e. if already have an override for "P" in an aggregate group-set for groups "A B" 
+   * cannot add an override for "P" in the delegate group-set for groups "B C" as
+   * this would produce 2 overrides for "P" in group "B"
+   */
+  public static String getOverridingParmName(String override, ConfigGroup cgset) {
+    ConfigurationParameterDeclarations cpd = cgset.getCPD();
+    if (cgset.getKind() == ConfigGroup.NOT_IN_ANY_GROUP) {
+      return getOverridingParmName(override, cpd.getConfigurationParameters());
+    }
+    // Using groups so must check the COMMON set
+    String result = getOverridingParmName(override, cpd.getCommonParameters());
+    if (result != null) {
       return result;
-    if (null != (result = getOverridingParmName(override, cpd.getCommonParameters())))
-      return result;
-    ConfigurationGroup[] groups = cpd.getConfigurationGroups();
-    if (null != groups)
-      for (int i = 0; i < groups.length; i++) {
-        if (null != (result = getOverridingParmName(override, groups[i]
-                .getConfigurationParameters())))
+    }
+    
+    // If in the delegate COMMON group check all aggregate named group-sets, 
+    // otherwise check only the group-sets that share a group name
+    for (ConfigurationGroup  cg : cpd.getConfigurationGroups()) {
+      if (cgset.getKind() == ConfigGroup.COMMON || 
+              ParameterSection.haveSharedGroup(cgset.getNameArray(), cg.getNames())) {
+        result = getOverridingParmName(override, cg.getConfigurationParameters());
+        if (result != null) {
           return result;
+        }
       }
+    }
     return null;
   }
 

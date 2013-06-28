@@ -375,7 +375,8 @@ public class ParameterSection extends AbstractSectionParm {
         if (isParmSelection())
           parentGroup = parentGroup.getParentItem();
 
-        AddParameterDialog dialog = new AddParameterDialog(this);
+        AddParameterDialog dialog = new AddParameterDialog(this, getCorrespondingModelGroup(parentGroup));
+                //getName(parentGroup));
         if (dialog.open() == Window.CANCEL)
           return;
 
@@ -461,9 +462,11 @@ public class ParameterSection extends AbstractSectionParm {
     enable();
   }
 
-  private void addOrEditOverride(TreeItem parent, int overrideIndex) {
-    ConfigurationParameter cp = getCorrespondingModelParm(parent);
-
+  private void addOrEditOverride(TreeItem parmItem, int overrideIndex) {
+    ConfigurationParameter cp = getCorrespondingModelParm(parmItem);
+    TreeItem groupItem = parmItem.getParentItem();
+    ConfigGroup cg = getCorrespondingModelGroup(groupItem);
+    
     Map delegateMap1 = editor.getResolvedDelegates();
     Map delegateMap = null;
     if (null != delegateMap1) {
@@ -477,7 +480,7 @@ public class ParameterSection extends AbstractSectionParm {
     // only picks one override key - but code is from earlier design where multiple keys were
     // possible
     PickOverrideKeysAndParmName dialog = new PickOverrideKeysAndParmName(this, delegateMap,
-            "Override Keys and Parameter Name Selection", cp, cpd, overrideIndex == -1);
+            "Override Keys and Parameter Name Selection", cp, cg, overrideIndex == -1);
 
     dialog.setTitle("Delegate Keys and Parameter Name Selection");
     dialog
@@ -500,7 +503,7 @@ public class ParameterSection extends AbstractSectionParm {
       String[] overrides = cp.getOverrides();
       overrides[overrideIndex] = setValueChanged(overrideSpec, overrides[overrideIndex]);
       cp.setOverrides(overrides);
-      parent.getItems()[overrideIndex].setText(OVERRIDE_HEADER + overrideSpec);
+      parmItem.getItems()[overrideIndex].setText(OVERRIDE_HEADER + overrideSpec);
     }
     // TODO consequences of changes in rest of model?
     commonActionFinishDirtyIfChange();
@@ -631,7 +634,7 @@ public class ParameterSection extends AbstractSectionParm {
   public void addParm(String name, ConfigurationParameter modelParm, ConfigGroup group,
           String override) {
     TreeItem parentGroup = getTreeItemGroup(group);
-    AddParameterDialog dialog = new AddParameterDialog(this);
+    AddParameterDialog dialog = new AddParameterDialog(this, group);
     dialog.parmName = name;
     dialog.description = modelParm.getDescription();
     dialog.mandatory = modelParm.isMandatory();
@@ -1037,12 +1040,59 @@ public class ParameterSection extends AbstractSectionParm {
     return false;
   }
 
-  public boolean parameterNameAlreadyDefined(String name) {
-    boolean alreadyDefined = parameterNameAlreadyDefinedNoMsg(name, cpd);
+  /**
+   * Check if safe to add a parameter to a group-set.
+   * If in the no-name set check just it.
+   * If in the COMMON set check it and all of the named group-sets
+   * If in a named group-set check if in the COMMON group, and
+   * also if in any other group-set that has a group name in common
+   *
+   * @param name  - Parameter name
+   * @param cgset - Group-set (may be not-in-any, common, or a named set)
+   * @return
+   */
+  public boolean parameterNameAlreadyDefinedNoMsg(String name, ConfigGroup cgset) {
+    if (cgset.getKind() == ConfigGroup.NOT_IN_ANY_GROUP) {
+      return parameterInArray(name, cgset.getConfigParms());
+    }
+    // Using groups so must check the COMMON set
+    if (parameterInArray(name, cgset.getCPD().getCommonParameters())) {
+      return true;
+    }
+    // If adding to COMMON group check all named group-sets, 
+    // otherwise check only the group-sets that share a group name
+    for (ConfigurationGroup  cg : cgset.getCPD().getConfigurationGroups()) {
+      if (cgset.getKind() == ConfigGroup.COMMON || haveSharedGroup(cgset.getNameArray(), cg.getNames())) {
+        if (parameterInArray(name, cg.getConfigurationParameters())) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+  
+  /*
+   * Check if arrays have an element in common
+   */
+  public static boolean haveSharedGroup(String[] set1, String[] set2) {
+    for (String s1 : set1) {
+      for (String s2 : set2) {
+        if (s1.equals(s2)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+  
+  public boolean parameterNameAlreadyDefined(String name, ConfigGroup cgset) {
+    boolean alreadyDefined = parameterNameAlreadyDefinedNoMsg(name, cgset);
     if (alreadyDefined) {
       Utility.popMessage("Parameter Already Defined",
               "The following parameter is already defined in the list. Parameter names must be unique."
-                      + "\n\nParameter: " + name, MessageDialog.ERROR);
+                      + "\n\nParameter: " + name
+                      + (cgset.getKind() == ConfigGroup.NOT_IN_ANY_GROUP ? "" : "\nGroup: " + cgset.getName()),
+                      MessageDialog.ERROR);
     }
     return alreadyDefined;
   }
