@@ -1097,7 +1097,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
    *
    * @param type
    */
-  protected void setAnnotationMode(Type type) {
+  public void setAnnotationMode(Type type) {
     // TODO: check if this type is a subtype of Annotation
 
     if (type == null) {
