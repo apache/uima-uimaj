@@ -477,11 +477,12 @@ public class Jg {
         xmlSourceFileName = inputFile.replaceAll("\\\\", "/");
         URL url;
         if(inputFile.substring(0, 4).equalsIgnoreCase("jar:")) {
+          // https://issues.apache.org/jira/browse/UIMA-1793 get things out of Jars
         	try {
         		url = new URL(inputFile);
-          	if (null == url) {
-          		error.newError(IError.ERROR, getString("fileNotFound", new Object[] { inputFile }), null);
-          	}
+//          	if (null == url) {     // is never null from above line
+//          		error.newError(IError.ERROR, getString("fileNotFound", new Object[] { inputFile }), null);
+//          	}
           	if(null == outputDirectory || outputDirectory.equals("")) {
           		error.newError(IError.ERROR, getString("sourceArgNeedsDirectory", new Object[] { inputFile }), null);
           	}
