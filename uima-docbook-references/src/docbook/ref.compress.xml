@@ -118,12 +118,18 @@ under the License.
   <section id="ugr.ref.compress.simple-deltas">
     <title>Simple Delta CAS serialization</title>
     <para>Use Form 4 for this, becuase form 6 supports delta CAS but requires 
-    that at the time of deserialization, an instance of the ReuseInfo must be saved, and that
-    same instance then used for delta serialization.</para>
+    that at the time of deserialization of a CAS (on the receiver side) which will later be delta serialized
+    back to the sender, 
+    an instance of the ReuseInfo must be saved, and that
+    same instance then used for delta serialization; furthermore, the original serialization 
+    (on the sender side)
+    also must save an instance of the ReuseInfo and use this when deserializing the delta CAS.
+    </para>
     
-    <para>Form 4 is not as efficient as form 6 in that it does not filter the CASes 
+    <para>Form 4 may not be as efficient as form 6 in that it does not filter the CASes 
     either by type systems nor by only sending reachable Feature Structure
-    instances.  But, it doesn't require a ReuseInfo object when doing delta serialization, 
+    instances.  But, it doesn't require a ReuseInfo object when doing delta serialization or
+    deserialization,  
     so it may be more convenient to use when saving
     delta CASes to files (as opposed to the other use case of 
     a remote service returning delta CASes to a remote client).</para> 
@@ -135,15 +141,15 @@ under the License.
     Here are some use cases, together with a suggested approach and example of how to use the APIs.
     </para>
     
-      <para>
-        To save a CAS to an output stream, using form 4 (no type system filtering), use this approach:
-      </para>
+    <para>
+      <emphasis role="strong">Save a CAS to an output stream, using form 4 (no type system filtering):</emphasis>
+    </para>
           <programlisting>// set up an output stream.  In this example, an internal byte array.
 ByteArrayOutputStream baos = new ByteArrayOutputStream(OUT_BFR_INIT_SZ);
 Serialization.serializeWithCompression(casSrc, baos);
 </programlisting>
  
-      <para>To deserialize from a stream into an existing CAS:</para>
+      <para><emphasis role="strong">Deserialize from a stream into an existing CAS:</emphasis></para>
       <programlisting>// assume the stream is a byte array input stream
 // For example, one could be created 
 //   from the above ByteArrayOutputStream as follows:
@@ -152,7 +158,7 @@ ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
 Serialization.deserializeCAS(cas, bais);
 </programlisting>
 
-<para>Note that the <code>deserializeCAS(inputStream)</code> method is a general way to
+<para>Note that the <code>deserializeCAS(cas, inputStream)</code> method is a general way to
 deserialize into a CAS from an inputStream for all forms of binary serialized data
 (with exceptions as noted above).
 The method reads a common header, and based on what it finds, selects the appropriate
@@ -163,7 +169,9 @@ delta cas deserializating for form 6. To do those, see example below.
 </para>
 </note>
 
-<para>Serialize to an output stream, filtering out some types and/or features.
+<para><emphasis role="strong">Serialize to an output stream, filtering out some types and/or features:</emphasis>
+</para>
+<para>
 To do this, an additional input specifying the Type System of the target must
 be supplied; this Type System should be a subset of the source CAS's.
 The <code>out</code> parameter may be an OutputStream, a DataOutputStream, or a File.
@@ -174,7 +182,8 @@ ByteArrayOutputStream baos = new ByteArrayOutputStream(OUT_BFR_INIT_SZ);
 Serialization.serializeWithCompression(cas, out, tgtTypeSystem);
 </programlisting>
 
-<para>Deserializing with type filtering: the reuseInfo should be null unless 
+<para><emphasis role="strong">Deserialize with type filtering:</emphasis></para>
+<para>The reuseInfo should be null unless 
 deserializing a delta CAS, in which case, it must be the reuse info captured when 
 the original CAS was serialized out. 
 If the target type system is identical to the one in the CAS, you may pass null for it.
