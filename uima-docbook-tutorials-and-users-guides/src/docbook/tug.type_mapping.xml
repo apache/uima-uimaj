@@ -86,7 +86,7 @@ under the License.
 	  different from the source's, as long as it is compatible. 
 	  </para>
 	  
-	  <para>Delta CAS support is available for both XMI and binary (and compressed binary) 
+	  <para>Delta CAS support is available for XMI, binary and compressed binary 
 	  protocols, used by UIMA-AS.  The Delta CAS refers to the CAS returned from the service back to the client -
 	  only the new Feature Structures added by the service, plus any modifications to existing
 	  feature structures and/or indexes, are returned.  This can greatly reduce the size of the
