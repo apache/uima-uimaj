@@ -1125,7 +1125,7 @@ uima.tcas.Annotation.</programlisting>
               environment variables. In Java, these are actually references to Java system
               properties. To reference system environment variables from a Java analysis
               engine you must pass the environment variables into the Java virtual machine
-              by using the <literal>-D</literal> option on the <literal>java</literal>
+              by using the <literal>&minus;D</literal> option on the <literal>java</literal>
               command line.</para>
             
             <para>The syntax for environment variable references is
@@ -1470,7 +1470,7 @@ uima.tcas.Annotation.</programlisting>
         <section id="&tp;aes.configuration_parameters">
           <title>Configuration Parameters</title>
           <para>Configuration parameters may be declared and set in both Primitive and 
-          Aggregate descriptors. Parameters set in an aggregate override parameters set in one or
+          Aggregate descriptors. Parameters set in an aggregate may override parameters set in one or
           more of its delegates.
           </para>
         <section id="&tp;aes.configuration_parameter_declaration">
@@ -1478,14 +1478,23 @@ uima.tcas.Annotation.</programlisting>
           
           <para>Configuration Parameters are made available to annotator
             implementations and applications by the following interfaces:
+            <itemizedlist spacing="compact" mark="circle">
+            <listitem>
             <literal>AnnotatorContext</literal> <footnote><para>Deprecated; use
             UimaContext instead.</para></footnote> (passed as an argument to the
-            initialize() method of a version 1 annotator),
+            initialize() method of a version 1 annotator)
+            </listitem>
+            <listitem>
             <literal>ConfigurableResource</literal> (every Analysis Engine
-            implements this interface), and the <literal>UimaContext</literal> (passed
+            implements this interface)
+            </listitem>
+            <listitem>
+            <literal>UimaContext</literal> (passed
             as an argument to the initialize() method of a version 2 annotator) (you can get
             this from any resource, including Analysis Engines, using the method
-            <literal>getUimaContext</literal>()).</para>
+            <literal>getUimaContext</literal>()).
+            </listitem>
+            </itemizedlist></para>
           
           <para>Use AnnotatorContext within version 1 annotators and UimaContext for
             version 2 annotators and outside of annotators (for instance, in CasConsumers,
@@ -1690,7 +1699,7 @@ uima.tcas.Annotation.</programlisting>
         <section id="&tp;aes.configuration_parameter_settings">
           <title>Configuration Parameter Settings</title>
           
-          <para>If no configuration groups were declared, the
+          <para>For configuration parameters that are not part of any group, the
             <literal>&lt;configurationParameterSettings&gt;</literal> element
             looks like this:
             
@@ -1728,7 +1737,7 @@ uima.tcas.Annotation.</programlisting>
             
             <programlisting>&lt;array&gt;&lt;string&gt;One&lt;/string&gt;&lt;string&gt;Two&lt;/string&gt;&lt;/array&gt;</programlisting></para>
           
-          <para>If configuration groups were declared, then the
+          <para>For parameters declared in configuration groups the
             <literal>&lt;configurationParameterSettings&gt;</literal> element
             looks like this:
             
@@ -1850,7 +1859,9 @@ uima.tcas.Annotation.</programlisting>
               <literal>param1</literal> in <literal>annotator1</literal> and also
               override the value of parameter <literal>param2</literal> in
               <literal>annotator2</literal>. No other parameters will be
-              affected.</para>
+              affected.  Note that <literal>AggregateParam</literal> may itself be overridden by a
+              parameter in an outer aggregate that has this aggregate as one of its delegates.
+            </para>
             
             <para>Prior to release 2.4.1, if an aggregate Analysis Engine descriptor
               declared a configuration parameter with no explicit overrides, that
@@ -1865,19 +1876,35 @@ uima.tcas.Annotation.</programlisting>
             <title>External Configuration Parameter Overrides</title>
 
             <para>
-            Configuration parameter specifications in primitive and aggregate descriptors may
+            External parameter overrides are usually declared in primitive descriptors as a way to
+            easily modify the parameters in some or all of an application's annotators.  
+            By using external settings files and global parameter names the configuration
+            information can be specified without regard for a particular descriptor hierachy.
+            </para>
+
+            <para>
+            Configuration parameter declarations in primitive and aggregate descriptors may
             include an <literal>&lt;externalOverrideName&gt;</literal> element, 
             which specifies the name of a property that may be defined in an external settings file.
-            If this element is present, and if
-            a entry can be found for its name from among the settings files, then
-            this value overrides the value otherwise specified for this parameter.
+            If this element is present, and if a entry can be found for its name in a settings
+            files, then this value overrides the value otherwise specified for this parameter.
             </para>  
 
             <para>
             The value overrides any value set in this descriptor or set by an override in a parent
-            aggregate.  This means that an external override in an aggregate cannot override an
-            external override in one of its delegates.
+            aggregate.  In primitive descriptors the value set by an external override is always
+            applied.  In aggregate descriptors the value set by an external override applies to the
+            aggregate parameter, and is passed down to the overridden delegate parameters in the
+            usual way, i.e. only if the delegate's parameter has not been set by an external override.
             </para>  
+
+            <para>
+            Im the absence of external overrides,            
+            parameter evaluation can be viewed as proceeding from the primitive descriptor up through
+            any aggregates containing overrides, taking the last setting found.  With external
+            overrides the search ends with the first external override found that has a value
+            assigned by a settings file.
+            </para>
 
             <para>
             The same external name may be used for multiple parameters; 
@@ -1886,8 +1913,9 @@ uima.tcas.Annotation.</programlisting>
 
             <para>
             The settings for all descriptors in a pipeline are usually loaded from one or more files
-            whose names are obtained from the Java system property <emphasis>UimaExternalOverrides</emphasis>
-            e.g. <literal>-DUimaExternalOverrides=file1.settings,file2.settings</literal>
+            whose names are obtained from the Java system property <emphasis>UimaExternalOverrides</emphasis>.
+            The value of the property must be a list of file names, each separated by single comma,
+            e.g. <literal>&minus;DUimaExternalOverrides=file1.settings,file2.settings</literal>
             </para>
 
             <para>
@@ -1897,42 +1925,72 @@ uima.tcas.Annotation.</programlisting>
             Java system property <emphasis>UimaExternalOverrides</emphasis> is ignored.
             <programlisting>  // Construct an analysis engine that uses two settings files
   Settings extSettings = new Settings_impl();
-  for (String fname : new String[] { "externalOverride.settings", "default.settings" }) {
+  for (String fname : new String[] { "externalOverride.settings", 
+                                     "default.settings" }) {
     FileInputStream fis = new FileInputStream(fname);
     extSettings.load(fis);
     fis.close();
   }
-  Map&lt;String,Object&gt; additionalParams = new HashMap&lt;String,Object&gt;();
-  additionalParams.put(Resource.PARAM_EXTERNAL_OVERRIDE_SETTINGS, extSettings);
-  AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(desc, additionalParams);    </programlisting>
+  Map&lt;String,Object&gt; aeParms = new HashMap&lt;String,Object&gt;();
+  aeParms.put(Resource.PARAM_EXTERNAL_OVERRIDE_SETTINGS, extSettings);
+  AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(desc, aeParms);
+            </programlisting>
             </para>
 
             <para>
             These external settings consist of key - value pairs stored in a 
             file using the UTF-8 character encoding, and written in a style similar to that 
-            of Java properties files.  
-            One difference is that duplicate key values are ignored &emdash; once a value is assigned to a key
-            it cannot be changed.  
-            Array values are represented as a list of strings separated by commas or line breaks,
-            and bracketed by the '[]' characters.
+            of Java properties files.
+            <itemizedlist spacing="compact" mark="circle">  
+            <listitem>
+            Leading whitespace is ignored.
+            </listitem>
+            <listitem>
+            Comment lines start with '#' or '!'.
+            </listitem>
+            <listitem>
+            The key and value are separated by whitespace, '=' or ':', so keys cannot contain any
+            of these characters.
+            </listitem>
+            <listitem>
+            If a line ends with '\' it is extended with the following line (after removing any
+            leading whitespace.)
+            </listitem>
+            Whitespace is trimmed from both keys and values.
+            <listitem>
+            Duplicate key values are ignored &ndash; once a value is assigned to a key it cannot be changed.  
+            </listitem>
+            <listitem>
             Values may reference other properties using the syntax '${key}'.
-            The back-slash character '\' can be used in values to escape the special characters '$' '[' ',' ']' '\'
-            as well as the line-end character, but is ignored in keys.
+            </listitem>
+            <listitem>
+            Array values are represented as a list of strings separated by commas or line breaks,
+            and bracketed by the '[ ]' characters.  The value must start with an '[' and is
+            terminated by the first unescaped ']' which must be at the end of a line.
+            The elements of an array (and hence the array size) may be indirectly specified using
+            the '${key}' syntax but the brackets '[ ]' must be explicitly specified.
+            </listitem>
+            <listitem>
+            The special characters '$ { } [ , ] \' are treated as regular characters if
+            preceeded by the escape character '\', but only in values; '\' has no special meaning
+            in keys.
+            </listitem>
+            </itemizedlist>
       <programlisting><![CDATA[
-key1  :  value string 1
-key2  =  value string 2
-key3     value string 3
-# Next assignment is ignored as key3 has already been set
+key1  :  value1
+ key2 =  value  2
+  key3   element2, element3, element4
+ # Next assignment is ignored as key3 has already been set
 key3  :   value ignored
-key4  =  [ array element1, element2
-           element3 ]
+key4  =  [ array element1, ${key3}, element5
+           element6 ]
 key5     value with a reference ${key1} to key1
 key6  :  long value string \
-         continued from previous line
+         continued from previous line (with leading whitespace stripped)
 key7  =  value without a reference \${not-a-key} 
 key8     \[ value that is not an array ]
 key9  :  [ array element1\, with embedded comma, element2 ]
-key\= :  key ends with \ and value starts with : as escapes are ignored in keys
+key\= :  value starts with : as escapes are ignored in keys
 ]]></programlisting>
             </para>
     
@@ -2311,8 +2369,8 @@ key\= :  key ends with \ and value starts with : as escapes are ignored in keys
     <para>If the <literal>VNS_HOST</literal> and <literal>VNS_PORT</literal> are not specified
       in the descriptor, the values used for these comes from
       parameters passed on the Java command line using the
-      <literal>-DVNS_HOST=&lt;host&gt;</literal> and/or
-      <literal>-DVNS_PORT=&lt;port&gt;</literal> system arguments. If not present, and
+      <literal>&minus;DVNS_HOST=&lt;host&gt;</literal> and/or
+      <literal>&minus;DVNS_PORT=&lt;port&gt;</literal> system arguments. If not present, and
       a system argument is also not present, the values for these default to
       <literal>localhost</literal> for the <literal>VNS_HOST</literal> and
       <literal>9000</literal> for the <literal>VNS_PORT</literal>.</para>

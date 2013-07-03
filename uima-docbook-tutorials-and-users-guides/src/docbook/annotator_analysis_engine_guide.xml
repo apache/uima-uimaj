@@ -912,7 +912,10 @@ public void initialize(UimaContext aContext)
 
         <para>An alternative method that avoids these strict hierarchical override constraints is to
         associate an external global name with a parameter and to assign values to these external
-        names in an external properties file.</para>
+        names in an external properties file.  With this approach a particular parameter setting can
+        be easily shared by multiple descriptors, even across different applications.  For applications
+        with many levels of descriptor nesting it avoids the need to edit aggregate override
+        definitions when the location of an annotator in the hierarchy is changed.</para>
 
         <para>For details see 
           <olink targetdoc="&uima_docs_ref;"/>

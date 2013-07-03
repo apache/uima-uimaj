@@ -308,7 +308,7 @@ under the License.
         
         <para>The CPM will abort if the Collection Reader throws a large number of
           consecutive exceptions (default = 100). This default can by changed by using the
-          Java initialization parameter <literal>-DMaxCRErrorThreshold
+          Java initialization parameter <literal>&minus;DMaxCRErrorThreshold
           xxx.</literal></para>
       </section>
     </section>
@@ -637,8 +637,8 @@ under the License.
             
             <programlisting><![CDATA[<runInSeparateProcess>
     <exec executable="java">
-        <arg>-DVNS_HOST=localhost</arg> 
-        <arg>-DVNS_PORT=9099</arg>
+        <arg>&minus;DVNS_HOST=localhost</arg> 
+        <arg>&minus;DVNS_PORT=9099</arg>
         <arg>org.apache.uima.reference_impl.analysis_engine.service.
 vinci.VinciAnalysisEngineService_impl</arg> 
         <arg>C:uimadescdeployCasProcessor.xml</arg>
