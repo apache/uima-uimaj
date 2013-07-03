@@ -46,12 +46,40 @@
 		<jiraVersion>12323969</jiraVersion>
 	</properties>
 
-	<!-- override pom setting in the build project. JIRA 5.1 needs different
+	<!-- override pom setting in the build project. JIRA 5.1 needs different 
 		URL -->
 	<issueManagement>
 		<system>Jira</system>
 		<url>https://issues.apache.org/jira/browse/UIMA</url>
 	</issueManagement>
+
+	<repositories>
+		<repository>
+			<id>apache.snapshots</id>
+			<name>Apache Snapshot Repository</name>
+			<url>http://repository.apache.org/snapshots</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>apache.snapshots.plugins</id>
+			<name>Apache Snapshot Repository - Maven plugins</name>
+			<url>http://repository.apache.org/snapshots</url>
+			<layout>default</layout>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+				<checksumPolicy>fail</checksumPolicy>
+				<updatePolicy>never</updatePolicy>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
 
 	<dependencies>
 		<dependency>
@@ -189,7 +217,8 @@
 						</goals>
 						<configuration>
 							<source>
-								def noticeFile = new File(project.basedir.path + "/NOTICE");
+								def noticeFile = new File(project.basedir.path +
+								"/NOTICE");
 								if (noticeFile.exists()) {
 								project.properties.postNoticeText = noticeFile.text;
 								}
