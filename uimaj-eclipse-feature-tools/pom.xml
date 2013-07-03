@@ -58,45 +58,4 @@
     <uimaScmProject>${project.artifactId}</uimaScmProject>
   </properties>
 
-  <build>
-    <!-- parsedVersion set in parent-pom by builder-helper -->    
-<!--     <finalName>${project.artifactId}_${parsedVersion.osgiVersion}</finalName> -->
-    <!-- turn on filtering for these resources -->         
-<!--     <resources> -->
-<!--       <resource> -->
-<!--         <directory>${basedir}</directory> -->
-<!--         <includes> -->
-<!--           <include>feature.properties</include> -->
-<!--           <include>feature.xml</include> -->
-<!--         </includes> -->
-<!--         <filtering>true</filtering> -->
-<!--       </resource> -->
-<!--     </resources> -->
-    
-<!--     <plugins> -->
-      <!-- filter the feature.xml to have the right version info 
-           for Eclipse at the top level-->
-<!--       <plugin> -->
-<!--         <artifactId>maven-resources-plugin</artifactId> -->
-<!--         <executions> -->
-<!--           <execution> -->
-<!--             <id>filter feature.xml</id> -->
-<!--             run before process-resources, which uses this result -->
-<!--             <phase>generate-resources</phase> -->
-<!--             <goals><goal>copy-resources</goal></goals> -->
-<!--             <configuration> -->
-<!--               <outputDirectory>${basedir}</outputDirectory> -->
-<!--               <resources> -->
-<!--                 <resource> -->
-<!--                   <directory>src/main/resources</directory> -->
-<!--                   <includes><include>feature.xml</include></includes> -->
-<!--                   <filtering>true</filtering> -->
-<!--                 </resource> -->
-<!--               </resources>  -->
-<!--             </configuration> -->
-<!--           </execution> -->
-<!--         </executions> -->
-<!--       </plugin> -->
-<!--     </plugins> -->
-  </build>
 </project>
