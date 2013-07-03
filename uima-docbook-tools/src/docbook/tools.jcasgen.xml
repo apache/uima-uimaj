@@ -56,6 +56,11 @@ under the License.
        targetdoc="&uima_docs_ref;"
        targetptr="ugr.ref.jcas.documentannotation_issues"/>.</para></warning>
   
+  <para>JCasGen can be run in many ways.  For Eclipse users using the Component Descriptor Editor, there's a button
+  on the Type System Description page to run it on that type system.  There's also a jcasgen-maven-plugin to use 
+  in maven build scripts.  There's a menu-driven GUI tool for it.    
+  And, there are command line scripts you can use to invoke it.</para>
+  
   <para>There are several versions of JCasGen. The basic version reads an XML descriptor
     which contains a type system descriptor, and generates the corresponding Java Class
     Models for those types. Variants exist for the Eclipse environment that allow merging the
@@ -180,6 +185,66 @@ under the License.
       operation completely regenerates the files, even if just a small thing changed. For
       very large type systems, you probably don&apos;t want to enable this all the time. The
       configurator tool has an option to enable/disable this function.</para>
+  </section>
+  
+  <section id="ugr.tools.jcasgen.maven_plugin">
+    <title>Using the jcasgen-maven-plugin</title>
+    
+    <para>For Maven builds, you can use the jcasgen-maven-plugin to take one or more
+    top level descriptors (Type System or Analysis Engine descriptors), merge them
+    together in the standard way UIMA merges type definitions, and produce the corresponding
+    JCas source classes.  These, by default, are generated to the standard spot for Maven
+    builds for generated files.</para>
+    
+    <para>You can use ant-like include / exclude patterns to specify the top level descriptor
+    files.  If you set &lt;limitToProject> to true, then after a complete UIMA type system
+    merge is done with all of the types, including those that are imported, only those
+    types which are defined within this Maven project (that is, in some subdirectory of the project)
+    will be generated.</para>
+    
+    <para>To use the jcasgen-maven-plugin, specify it in the POM as follows:</para>
+    <programlisting><![CDATA[<plugin>
+  <groupId>org.apache.uima</groupId>
+  <artifactId>jcasgen-maven-plugin</artifactId>
+  <version>2.4.1</version>  <!-- change this to the latest version -->
+  <executions>
+    <execution>
+      <goals><goal>generate</goal></goals>  <!-- this is the only goal -->
+      <!-- runs in phase process-resources by default -->
+      <configuration>
+
+        <!-- REQUIRED -->
+  	    <typeSystemIncludes>
+		      <!-- one or more ant-like file patterns 
+		           identifying top level descriptors --> 
+		      <typeSystemInclude>src/main/resources/MyTs.xml</typeSystemInclude
+		    </typeSystemIncludes>
+
+        <!-- OPTIONAL -->
+        <!-- a sequence of ant-like file patterns 
+             to exclude from the above include list -->
+		    <typeSystemExcludes>
+		    </typeSystemExcludes>
+
+        <!-- OPTIONAL -->
+        <!-- where the generated files go -->
+        <!-- default value: 
+             ${project.build.directory}/generated-sources/jcasgen" -->
+		    <outputDirectory> 
+        </outputDirectory>
+
+        <!-- true or false, default = false -->
+        <!-- if true, then although the complete merged type system 
+             will be created internally, only those types whose
+             definition is contained within this maven project will be
+             generated.  The others will be presumed to be 
+             available via other projects. -->
+        <!-- OPTIONAL -->
+        <limitToProject>false</limitToProject>
+		  </configuration>     
+    </execution>
+  </executions>
+</plugin>]]></programlisting>
   </section>
   
 </chapter>
