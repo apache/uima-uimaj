@@ -26,7 +26,6 @@ import junit.framework.Assert;
 
 import org.apache.maven.execution.DefaultMavenExecutionRequest;
 import org.apache.maven.execution.MavenExecutionRequest;
-import org.apache.maven.model.Build;
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuilder;
@@ -54,8 +53,12 @@ public class JCasGenMojoTest extends AbstractMojoTestCase {
 
   public void test(String projectName, String... types) throws Exception {
 
-    File projectDirectory = getTestFile("src/test/resources/" + projectName);
-    File buildDirectory = getTestFile("target/project-" + projectName + "-test");
+    File projectSourceDirectory = getTestFile("src/test/resources/" + projectName);
+    File projectDirectory = getTestFile("target/project-" + projectName + "-test");
+
+    // Stage project to target folder
+    FileUtils.copyDirectoryStructure(projectSourceDirectory, projectDirectory);
+    
     File pomFile = new File(projectDirectory, "/pom.xml");
     assertNotNull(pomFile);
     assertTrue(pomFile.exists());
@@ -67,18 +70,12 @@ public class JCasGenMojoTest extends AbstractMojoTestCase {
     MavenProject project = projectBuilder.build(pomFile, buildingRequest).getProject();
     assertNotNull(project);
 
-    // set the base directory (or it will write to src/test/resources/)
-    Build build = project.getModel().getBuild();
-    build.setDirectory(buildDirectory.getPath());
-    File outputDirectory = new File(buildDirectory, "target/classes");
-    build.setOutputDirectory(outputDirectory.getPath());
-
     // copy resources
     File source = new File(projectDirectory, "src/main/resources");
     if (source.exists()) {
-      FileUtils.copyDirectoryStructure(source, outputDirectory);
+      FileUtils.copyDirectoryStructure(source, new File(project.getBuild().getOutputDirectory()));
     }
-
+    
     // load the Mojo
     JCasGenMojo generate = (JCasGenMojo) this.lookupConfiguredMojo(project, "generate");
     assertNotNull(generate);
@@ -90,7 +87,7 @@ public class JCasGenMojoTest extends AbstractMojoTestCase {
     generate.execute();
 
     // check that the Java files have been generated
-    File jCasGenDirectory = new File(buildDirectory, "generated-sources/jcasgen");
+    File jCasGenDirectory = new File(project.getBasedir(), "target/generated-sources/jcasgen");
     
     // Record all the files that were generated
     DirectoryScanner ds = new DirectoryScanner();
