@@ -196,7 +196,7 @@ public class Serialization {
    * @param out - an OutputStream, a DataOutputStream, or a File
    * @throws IOException
    */
-  public void serializeWithCompression(CAS cas, Object out) throws IOException {
+  public static void serializeWithCompression(CAS cas, Object out) throws IOException {
     (new BinaryCasSerDes4(((CASImpl)cas).getTypeSystemImpl(), false)).serialize(cas, out);
   }
   
@@ -206,7 +206,7 @@ public class Serialization {
    * @param marker identifying where the delta starts
    * @throws IOException
    */  
-  public void serializeWithCompression(CAS cas, Object out, Marker marker) throws IOException {
+  public static void serializeWithCompression(CAS cas, Object out, Marker marker) throws IOException {
     (new BinaryCasSerDes4(((CASImpl)cas).getTypeSystemImpl(), false)).serialize(cas, out, marker);
   }
   
@@ -222,7 +222,7 @@ public class Serialization {
    * @throws IOException
    * @throws ResourceInitializationException if target type system is incompatible with this CAS's type system
    */  
-  public ReuseInfo serializeWithCompression(CAS cas, Object out, TypeSystem tgtTypeSystem) throws IOException, ResourceInitializationException {
+  public static ReuseInfo serializeWithCompression(CAS cas, Object out, TypeSystem tgtTypeSystem) throws IOException, ResourceInitializationException {
     BinaryCasSerDes6 bcs = new BinaryCasSerDes6(cas, (TypeSystemImpl) tgtTypeSystem);
     bcs.serialize(out);
     return bcs.getReuseInfo();
@@ -242,7 +242,7 @@ public class Serialization {
    * @throws IOException
    * @throws ResourceInitializationException if the target type system and the CAS's type system can't be merged
    */
-  public void serializeWithCompression(CAS cas, Object out, TypeSystem tgtTypeSystem, Marker mark, ReuseInfo reuseInfo) throws IOException, ResourceInitializationException {
+  public static void serializeWithCompression(CAS cas, Object out, TypeSystem tgtTypeSystem, Marker mark, ReuseInfo reuseInfo) throws IOException, ResourceInitializationException {
     BinaryCasSerDes6 bcs = new BinaryCasSerDes6(cas, (MarkerImpl) mark, (TypeSystemImpl) tgtTypeSystem, reuseInfo);
     bcs.serialize(out);
   }  
