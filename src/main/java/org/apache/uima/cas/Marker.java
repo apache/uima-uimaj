@@ -33,9 +33,10 @@ public interface Marker {
  boolean isNew(FeatureStructure fs);
  
  /**
-  * represented by this <code>Markere</code> is modified.
+  * Test if a FeatureStructure in a CAS represented by this <code>Marker</code> existed before the mark was set, and has been modified.
+  * isModified(fs) == true implies that isNew(fs) == false.
   * @param fs
-  * @return true if a  <code>FeatureStructure</code> that existed prior to the mark
+  * @return true if a  <code>FeatureStructure</code> that existed prior to the mark being set has been modified
   */
  boolean isModified(FeatureStructure fs);
  
