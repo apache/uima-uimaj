@@ -19,23 +19,16 @@
 
 package org.apache.uima.cas;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
 import org.apache.uima.cas.admin.CASAdminException;
-import org.apache.uima.cas.impl.BinaryCasSerDes4;
-import org.apache.uima.cas.impl.BinaryCasSerDes6;
 import org.apache.uima.cas.impl.LowLevelCAS;
-import org.apache.uima.cas.impl.MarkerImpl;
-import org.apache.uima.cas.impl.TypeSystemImpl;
-import org.apache.uima.cas.impl.BinaryCasSerDes6.ReuseInfo;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.resource.ResourceInitializationException;
 
 /**
  * Object-oriented CAS (Common Analysis System) API.
