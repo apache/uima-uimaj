@@ -1967,7 +1967,8 @@ public class BinaryCasSerDes6 {
     fsIndexes.add(nbrViews);
     fsIndexes.add(nbrSofas);
     for (int i = 0; i < nbrSofas; i++) {
-      fsIndexes.add(readVnumber(control_dis));
+      final int realAddrOfSofa = fsStartIndexes.getSrcAddrFromTgtSeq(readVnumber(control_dis));
+      fsIndexes.add(realAddrOfSofa);
     }
       
     for (int i = 0; i < nbrViews; i++) {

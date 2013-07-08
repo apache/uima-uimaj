@@ -29,7 +29,12 @@ import static org.apache.uima.cas.impl.SerDesTest6.Types.Akof2;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -60,6 +65,7 @@ import org.apache.uima.cas.impl.BinaryCasSerDes6.ReuseInfo;
 import org.apache.uima.cas.test.AnnotatorInitializer;
 import org.apache.uima.cas.test.CASInitializer;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.impl.SerializationMeasures;
 /**
@@ -77,6 +83,7 @@ public class SerDesTest6 extends TestCase {
     Akof1, Akof2,
   }
 
+  private final String testDocText = "test document text";
   private CASImpl remoteCas;
 
   private List<FeatureStructure> lfs;
@@ -280,6 +287,40 @@ public class SerDesTest6 extends TestCase {
   }
 
   public void tearDown() {
+  }
+  
+  public void testDocText() throws Exception
+  {
+      CAS cas = CasCreationUtils.createCas((TypeSystemDescription) null, null, null);
+      cas.setDocumentLanguage("latin");
+      cas.setDocumentText("test");
+
+      ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
+      
+      Serialization.serializeWithCompression(cas, baos, cas.getTypeSystem());
+      
+      CAS cas2 = CasCreationUtils.createCas((TypeSystemDescription) null, null, null);
+      ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+      Serialization.deserializeCAS(cas2, bais); 
+
+      assertEquals("latin", cas2.getDocumentLanguage());
+      assertEquals("test", cas2.getDocumentText());
+  }
+  
+  public void testDocumentText() {
+//     serdesSimple(getTT(EqTwoTypes));
+    remoteCas = setupCas(getTT(EqTwoTypes));
+    casSrc.reset();
+    casSrc.setDocumentText(testDocText);
+    loadCas(casSrc, mSrc);  
+    verify(remoteCas);
+    assertEquals(remoteCas.getDocumentText(), testDocText);
+    
+    // test case where serialization is done without type filtering,
+    //   and deserialization is done with filtering
+    remoteCas.reset();
+    verifyDeserFilter(remoteCas); 
+    assertEquals(remoteCas.getDocumentText(), testDocText);
   }
   
   /**
@@ -1119,12 +1160,14 @@ public class SerDesTest6 extends TestCase {
       ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
       if (doPlain) {
         (new CASSerializer()).addCAS(casSrc, baos);      
-      } else {      
+      } else {
         bcs = new BinaryCasSerDes6(casSrc, casTgt.getTypeSystemImpl());
-        SerializationMeasures sm = bcs.serialize(baos);
-        if (null != sm) {
-          System.out.println(sm);
-        }
+        Serialization.serializeWithCompression(casSrc, baos, casTgt.getTypeSystemImpl());
+//        bcs = new BinaryCasSerDes6(casSrc, casTgt.getTypeSystemImpl());
+//        SerializationMeasures sm = bcs.serialize(baos);
+//        if (null != sm) {
+//          System.out.println(sm);
+//        }
       }
       ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
       casTgt.reinit(bais);
