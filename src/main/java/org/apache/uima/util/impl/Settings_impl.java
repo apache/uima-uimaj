@@ -69,10 +69,19 @@ public class Settings_impl implements Settings {
     // Process each logical line (after blanks & comments removed and continuations extended)
     rdr = new BufferedReader(new InputStreamReader(in, "UTF-8"));
     String line;
+    final String legalPunc = "./-~_";   // Acceptable punctuation characters
     while ((line = getLine()) != null) {
       // Remove surrounding white-space and split on first '=' or ':' or white-space
       String[] parts = line.split("\\s*[:=\\s]\\s*", 2);
       String name = parts[0];
+      // Restrict names to alphanumeric plus "joining" punctuation: ./-~_
+      boolean validName = name.length() > 0;
+      for (int i = 0; i < name.length() && validName; ++i) {
+        validName = Character.isLetterOrDigit(name.charAt(i)) || legalPunc.indexOf(name.charAt(i))>=0;
+      }
+      if (!validName) {
+        throw new IOException("Invalid name '" + name + "' --- characters must be alphanumeric or " + legalPunc);
+      }
       String value;
       // When RHS is empty get a split only for the := separators
       if (parts.length == 1) {
