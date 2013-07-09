@@ -21,7 +21,6 @@ package org.apache.uima.cas;
 
 import java.io.InputStream;
 import java.util.Iterator;
-import java.util.List;
 import java.util.ListIterator;
 
 import org.apache.uima.cas.admin.CASAdminException;
@@ -1041,20 +1040,6 @@ public interface CAS extends AbstractCas {
    * 
    * @return a marker object.
    */
-  Marker createMarker();
-  
- /**
-  * Get a list of all marker objects associated with this CAS.  A given marker 
-  * can be used to identify new and changed FSs in this CAS after the given marker
-  * was created (see the {@link #createMarker()} method).
-  * 
-  * Note: Since createMarker only supports adding a single marker to this CAS, this method 
-  * can return at most one element (at this time).
-  *  
-  * @return a list of marker objects, with the first element being the oldest created 
-  *   marker object for this CAS, or returns null if a marker was never created for this CAS.
-  */
-  List<Marker> getMarkers();
-  
+  Marker createMarker();  
 
 }
