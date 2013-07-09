@@ -33,7 +33,6 @@ import java.nio.LongBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -79,7 +78,6 @@ import org.apache.uima.cas.admin.CASMgr;
 import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.cas.admin.FSIndexRepositoryMgr;
 import org.apache.uima.cas.admin.TypeSystemMgr;
-import org.apache.uima.cas.impl.BinaryCasSerDes6.ReuseInfo;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.cas.text.Language;
@@ -245,7 +243,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
      * If Journaling is implemented, it may contain an
      * element per component being journaled.
      */
-    private List<Marker> trackingMarkList;
+    private List<MarkerImpl> trackingMarkList;
     
     private SharedViewData(boolean useFSCache) {
       this.useFSCache = useFSCache;
@@ -1121,7 +1119,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     // Future impl may have one element per component for component Journaling
     if (this.svd.trackingMarkList != null) {
       for (int i=0; i < this.svd.trackingMarkList.size(); i++) {
-        ((MarkerImpl)(this.svd.trackingMarkList.get(i))).isValid = false;
+        this.svd.trackingMarkList.get(i).isValid = false;
       }
     }
 
@@ -4225,19 +4223,12 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
         this.svd.modifiedLongHeapCells = new IntVector();
   	} else {errorMultipleMarkers();}
   	if (this.svd.trackingMarkList == null) {
-  	  this.svd.trackingMarkList = new ArrayList<Marker>();
+  	  this.svd.trackingMarkList = new ArrayList<MarkerImpl>();
   	} else {errorMultipleMarkers();}
   	this.svd.trackingMarkList.add(this.svd.trackingMark);
   	return this.svd.trackingMark;
   }
-  
-  public List<Marker> getMarkers() {
-    if (this.svd.trackingMarkList == null || this.svd.trackingMarkList.size() == 0) {
-      return null;
-    }
-    return (Collections.unmodifiableList(this.svd.trackingMarkList));
-  }
-  
+    
   private void errorMultipleMarkers() {
     throw new CASRuntimeException(CASRuntimeException.MULTIPLE_CREATE_MARKER);
   }
@@ -4279,7 +4270,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 	}
   }
   
-  MarkerImpl getCurrentMark() {
+  // made public https://issues.apache.org/jira/browse/UIMA-2478
+  public MarkerImpl getCurrentMark() {
 	  return this.svd.trackingMark;
   }
   
