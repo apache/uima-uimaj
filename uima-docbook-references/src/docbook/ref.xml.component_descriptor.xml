@@ -1949,8 +1949,10 @@ uima.tcas.Annotation.</programlisting>
             Comment lines start with '#' or '!'.
             </listitem>
             <listitem>
-            The key and value are separated by whitespace, '=' or ':', so keys cannot contain any
-            of these characters.
+            The key and value are separated by whitespace, '=' or ':'.
+            </listitem>
+            <listitem>
+            Keys must contain at least one character and only letters, digits, or the characters '. / - ~ _'.
             </listitem>
             <listitem>
             If a line ends with '\' it is extended with the following line (after removing any
@@ -1961,7 +1963,7 @@ uima.tcas.Annotation.</programlisting>
             Duplicate key values are ignored &ndash; once a value is assigned to a key it cannot be changed.  
             </listitem>
             <listitem>
-            Values may reference other properties using the syntax '${key}'.
+            Values may reference other settings using the syntax '${key}'.
             </listitem>
             <listitem>
             Array values are represented as a list of strings separated by commas or line breaks,
@@ -1971,9 +1973,8 @@ uima.tcas.Annotation.</programlisting>
             the '${key}' syntax but the brackets '[ ]' must be explicitly specified.
             </listitem>
             <listitem>
-            The special characters '$ { } [ , ] \' are treated as regular characters if
-            preceeded by the escape character '\', but only in values; '\' has no special meaning
-            in keys.
+            In values the special characters '$ { } [ , ] \' are treated as regular characters if
+            preceeded by the escape character '\'.
             </listitem>
             </itemizedlist>
       <programlisting><![CDATA[
@@ -1990,14 +1991,13 @@ key6  :  long value string \
 key7  =  value without a reference \${not-a-key} 
 key8     \[ value that is not an array ]
 key9  :  [ array element1\, with embedded comma, element2 ]
-key\= :  value starts with : as escapes are ignored in keys
 ]]></programlisting>
             </para>
     
             <para>
             Multiple settings files are allowed; they are loaded in order, such that
             early ones take precedence over later ones, following the first-assignment-wins rule. 
-            So, if you have lots of properties,
+            So, if you have lots of settings,
             you can put the defaults in one file, and then in a earlier file, override just the
             ones you need to.
             </para>
