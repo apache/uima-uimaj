@@ -282,17 +282,7 @@ public class Serialization {
    * @throws IOException 
    * @throws ResourceInitializationException if the target type system and the CAS's type system can't be merged
    */
-  /**
-   * 
-   * @param cas
-   * @param istream
-   * @param tgtTypeSystem
-   * @param reuseInfo
 
-   * @return
-   * @throws IOException
-   * @throws ResourceInitializationException
-   */
   public static BinaryCasSerDes6 deserializeCAS(CAS cas, InputStream istream, TypeSystem tgtTypeSystem, ReuseInfo reuseInfo, AllowPreexistingFS allowPreexisting) throws IOException, ResourceInitializationException {
     BinaryCasSerDes6 bcs = new BinaryCasSerDes6(cas, null, (TypeSystemImpl) tgtTypeSystem, reuseInfo);
     bcs.deserialize(istream, allowPreexisting);
