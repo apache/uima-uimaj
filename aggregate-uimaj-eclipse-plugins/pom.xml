@@ -69,9 +69,9 @@
     <module>../uimaj-ep-cas-editor-ide</module>
     <module>../uimaj-ep-runtime</module>
 
-    <!-- remove because of Jenkins / versioning issues    
+    <!-- remove because of Jenkins / versioning issues -->
+    <!-- see  https://issues.apache.org/jira/browse/UIMA-2497 -->
     <module>../uimaj-eclipse-feature-tools</module>
     <module>../uimaj-eclipse-feature-runtime</module>
-     -->
   </modules>
 </project>
