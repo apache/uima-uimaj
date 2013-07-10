@@ -30,6 +30,10 @@ import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.util.Level;
@@ -39,80 +43,63 @@ import org.apache.uima.util.Level;
  * information from the UIMA nature is gathered and added to the PEAR package.
  * Additionally the generated jar file from the Maven build is added with the
  * according classpath information.
- * 
- * @goal package
- * 
- * @phase package
  */
+@Mojo(name = "package", defaultPhase = LifecyclePhase.PACKAGE)
 public class PearPackagingMojo extends AbstractMojo {
 
-   /**
-    * Main component directory of the UIMA project that contains the UIMA
-    * nature.
-    * 
-    * @Parameter( expression = "${basedir}" )
-    * @required
-    */
-   private String mainComponentDir = null;
+  /**
+   * Main component directory of the UIMA project that contains the UIMA nature.
+   */
+  @Parameter(defaultValue = "${basedir}", property = "basedir", required = true)
+  private String            mainComponentDir  = null;
 
-   /**
-    * Required classpath settings for the PEAR package.
-    * 
-    * @Parameter ( expression = "${pear.classpath}" )
-    */
-   private String classpath = null;
+  /**
+   * Required classpath settings for the PEAR package.
+   */
+  @Parameter(defaultValue = "${pear.classpath}", property = "pear.classpath")
+  private String            classpath         = null;
 
-   /**
-    * Main Component Descriptor path relative to the main component directory
-    * 
-    * @Parameter ( expression = "${pear.mainComponentDesc}" )
-    * @required
-    */
-   private String mainComponentDesc = null;
+  /**
+   * Main Component Descriptor path relative to the main component directory
+   */
+  @Parameter(defaultValue = "${pear.mainComponentDesc}", property = "pear.mainComponentDesc", required = true)
+  private String            mainComponentDesc = null;
 
-   /**
-    * PEAR package component ID
-    * 
-    * @Parameter ( expression = "${pear.componentId}" )
-    * @required
-    */
-   private String componentId = null;
+  /**
+   * PEAR package component ID
+   */
+  @Parameter(defaultValue = "${pear.componentId}", property = "pear.componentId", required = true)
+  private String            componentId       = null;
 
-   /**
-    * Target directory for the PEAR package
-    * 
-    * @Parameter ( expression = "${basedir}/target" )
-    * @required
-    */
-   private String targetDir = null;
+  /**
+   * Target directory for the PEAR package
+   */
+  @Parameter(defaultValue = "${basedir}/target", required = true)
+  private String            targetDir         = null;
 
-   /**
-    * Required UIMA datapath settings for the PEAR package
-    * 
-    * @Parameter ( default-value = "$main_root/resources" )
-    */
-   private String datapath = null;
+  /**
+   * Required UIMA datapath settings for the PEAR package
+   */
+  @Parameter(defaultValue = "$main_root/resources")
+  private String            datapath          = null;
 
-   /**
-    * Required environment variables for the PEAR package
-    * 
-    * @Parameter
-    */
-   private Properties props = null;
+  /**
+   * Required environment variables for the PEAR package
+   * 
+   * 
+   */
+  @Parameter
+  private Properties        props             = null;
 
-   /**
-    * The maven project.
-    * 
-    * @Parameter ( expression="${project}" )
-    * @required
-    * @readonly
-    * @description "the maven project"
-    */
-   private MavenProject project;
+  /**
+   * The maven project.
+   */
+  @Component
+  private MavenProject      project;
 
-   // the PEAR packaging directory contains all the stuff that is added to
-   // the PEAR
-   private File pearPackagingDir;
+  // the PEAR packaging directory contains all the stuff that is added to
+  // the PEAR
+  private File              pearPackagingDir;
 
   private ArrayList<String> classpathsInOrder;
 
@@ -202,7 +189,7 @@ public class PearPackagingMojo extends AbstractMojo {
          
          maybeAddClasspath(mainJar);
          
-         if (classpath != null && classpath != "") {
+         if (classpath != null && !classpath.equals("")) {
            if (classpath.indexOf(':') != -1) {
              throw new MojoExecutionException(
              "classpath: " + classpath + " must use semicolons as separators.");
