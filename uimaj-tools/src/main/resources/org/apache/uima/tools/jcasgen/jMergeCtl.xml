@@ -19,12 +19,20 @@
 	 * under the License.
 	 ***************************************************************
 	-->
+  <!-- See http://www.ibm.com/developerworks/library/os-ecemf3/
+       for info on this format -->
+       
 <merge:options
   indent="  "
   braceStyle="matching"
   redirect="Gen"
   xmlns:merge="http://www.eclipse.org/org/eclipse/emf/codegen/jmerge/Options">
 
+    <merge:dictionaryPattern
+      name="featureGetSetMembers"
+      select="Member/getComment"
+      match="^\s*/\*\*\s(?:g|s)(etter)\sfor\s"/>    
+    
     <merge:dictionaryPattern
       name="generatedMembers"
       select="Member/getComment"
@@ -51,7 +59,7 @@
       match="\s*@\s*generated\s*(modifiable)\s*\n"/>
 
     <merge:dictionaryPattern
-      name="generatedModifiableMembers"
+      name="generatedModifiableMembers1"
       select="Member/getComment"
       match="\s*@\s*generated\s*(modifiable)\s*\*/"/>
 
@@ -84,6 +92,12 @@
       sourceGet="Member/getComment"
       sourceTransfer="(\* Updated by JCasGen)"
       targetMarkup="^gen$"
+      targetPut="Member/setComment"/>
+      
+    <merge:pull
+      sourceMarkup="^etter$"
+      sourceGet="Member/getComment"
+      targetMarkup="^etter$"
       targetPut="Member/setComment"/>
 
     <merge:pull
