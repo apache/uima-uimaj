@@ -45,6 +45,7 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
@@ -89,8 +90,8 @@ import org.apache.uima.tools.components.XmlDetagger;
 import org.apache.uima.tools.images.Images;
 import org.apache.uima.tools.stylemap.StyleMapEditor;
 import org.apache.uima.tools.stylemap.StyleMapEntry;
-import org.apache.uima.tools.util.gui.Caption;
 import org.apache.uima.tools.util.gui.AboutDialog;
+import org.apache.uima.tools.util.gui.Caption;
 import org.apache.uima.tools.util.gui.SpringUtilities;
 import org.apache.uima.util.AnalysisEnginePerformanceReports;
 import org.apache.uima.util.CasCreationUtils;
@@ -110,27 +111,36 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
   private static final long serialVersionUID = 8795969283257780425L;
 
   private static final String HELP_MESSAGE = "Instructions for using UIMA Document Analyzer:\n\n"
-          + "1) In the \"Input Directory\" field, either type or use the browse\n"
+          + "* In the \"Input Directory\" field, either type or use the browse\n"
           + "button to select a directory containing the documents that you want\n"
           + "to analyze.\n\n"
-          + "2) In the \"Output Directory\" field, either type or use the browse\n"
+          + "* In the \"Input File Format\" field, type or use the browse]n"
+          + "button to select \"xcas\" or \"xmi\", as well as \"true\"\n"
+          + "(which for historical reasons means the same as \"xcas\").\n" 
+          + "Any other value will cause the input file to be treated as a text document.\n\n"
+          + "* If using XMI or XCAS, check the \"Lenient\" box to indicate that if it's OK if the annotator's type system doesn't define all the types or features in the input CAS.\n\n"
+          + "* In the \"Output Directory\" field, either type or use the browse\n"
           + "button to select a directory where you would like the analyzed\n"
           + "documents to be placed.\n\n"
-          + "3) In the \"Location of Analysis Engine XML Descriptor\" field, either type or use\n"
+          + "* In the \"Location of Analysis Engine XML Descriptor\" field, either type or use\n"
           + "the browse button to select the XML Descriptor file for the Analysis Engine you\n"
           + "want to use.\n\n"
-          + "4) Optionally, if your input documents are XML files and you only\n"
+          + "* Optionally, if your input documents are XML files and you only\n"
           + "want to analyze the contents of a particular tag within those files,\n"
           + "you may enter in the \"XML Tag Containing Text\" field the name of\n"
           + "the XML tag that contains the text to be analyzed.\n\n "
-          + "5) In the \"Language\" field, you may select or type the language \n"
+          + "* In the \"Language\" field, you may select or type the language \n"
           + "of your input documents.  Some Analysis Engines may require this.\n\n"
-          + "6) Click the \"Run\" button at the buttom of the window.\n\n\n"
+          + "* Click the \"Run\" button at the buttom of the window.\n\n\n"
           + "When processing is complete, a list of the analyzed documents will\n"
           + "be displayed.  Select the view format (Java Viewer is recommended),\n"
           + "and double-click on a document to view it.\n\n";
 
   private FileSelector inputFileSelector;
+  
+  private JComboBox inputFileFormatComboBox;
+  
+  private JCheckBox lenientCheckbox;
 
   protected FileSelector outputFileSelector; // JMP
 
@@ -205,7 +215,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
   private Timer progressTimer;
 
   private boolean usingXmlDetagger;
-
+  
   /**
    * Constructor. Sets up the GUI.
    */
@@ -267,6 +277,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
 
     // Labels to identify the text fields
     final Caption labelInputFile;
+    final Caption labelInputFileFormat;
     final Caption labelOutputFile;
     final Caption labelXmlFile;
     final Caption labelRunParameters;
@@ -275,6 +286,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
 
     // Strings for the labels
     final String inputString = "Input Directory: ";
+    final String inputFileFormatString = "Input File Format: ";
     final String outputString = "Output Directory: ";
     final String xmlString = "Location of Analysis Engine XML Descriptor: ";
     final String runParametersString = "XML Tag containing Text (optional): ";
@@ -282,6 +294,8 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     // Create field label captions (right-aligned JLabel):
 
     labelInputFile = new Caption(inputString);
+    
+    labelInputFileFormat = new Caption(inputFileFormatString);
 
     labelOutputFile = new Caption(outputString);
 
@@ -316,6 +330,54 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     inputFileSelector.addFileSelectorListener(fsl);
     inputFileSelector.addDocumentListener(dl);
 
+        
+    // UIMA-2305.
+    
+    lenientCheckbox = new JCheckBox("Lenient deserialization");
+    lenientCheckbox.setToolTipText("Allow extra types and features in the input CAS, not defined by the annotator type system, to be ignored");
+    lenientCheckbox.setSelected(prefsMed.getLenient());
+    
+    JPanel inputFileFormatPanel = new JPanel();
+
+    inputFileFormatPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+    
+    inputFileFormatComboBox = new JComboBox(new Object[] { "textDocument", "xmi", "xcas" });
+    inputFileFormatComboBox.setEditable(true);
+    inputFileFormatComboBox.setSelectedItem(prefsMed.getInputFileFormat());
+    inputFileFormatComboBox.addActionListener(new ActionListener() {      
+      public void actionPerformed(ActionEvent e) {
+        String inputFileFormat = (String) inputFileFormatComboBox.getSelectedItem();
+        lenientCheckbox.setEnabled(
+            "xcas".equalsIgnoreCase(inputFileFormat) ||
+            "xmi".equalsIgnoreCase(inputFileFormat));
+      }
+    });
+    
+    String inputFileFormat = (String) inputFileFormatComboBox.getSelectedItem();
+    lenientCheckbox.setEnabled(
+        "xcas".equalsIgnoreCase(inputFileFormat) ||
+        "xmi".equalsIgnoreCase(inputFileFormat));
+
+    
+    inputFileFormatPanel.add(inputFileFormatComboBox);        
+       
+    inputFileFormatPanel.add(lenientCheckbox);
+    
+    Map<String, Charset> charsetMap = Charset.availableCharsets();
+    Set<String> charsets = charsetMap.keySet();
+    String[] charsetArr = charsets.toArray(new String[charsets.size()]);
+    encodingComboBox = new JComboBox(charsetArr);
+    encodingComboBox.setEditable(false);
+    encodingComboBox.setSelectedItem(prefsMed.getEncoding());
+    
+    JPanel displayEncodingFormatPanel = new JPanel();
+    displayEncodingFormatPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+    displayEncodingFormatPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));   
+    displayEncodingFormatPanel.add(labelEncoding);
+    displayEncodingFormatPanel.add(encodingComboBox);
+ 
+    inputFileFormatPanel.add(displayEncodingFormatPanel);
+        
     outputFileSelector = new FileSelector(prefsMed.getOutputDir(), "Output Directory",
             JFileChooser.DIRECTORIES_ONLY, browserRootDir);
     // outputFileSelector.addFocusListener( tlf);
@@ -344,18 +406,11 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     languagePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 2, 2));
     languagePanel.add(languageComboBox);
 
-    Map charsetMap = Charset.availableCharsets();
-    Set charsets = charsetMap.keySet();
-    Object[] charsetArr = charsets.toArray();
-    encodingComboBox = new JComboBox(charsetArr);
-    encodingComboBox.setEditable(true);
-    encodingComboBox.setSelectedItem(prefsMed.getEncoding());
-    JPanel encodingPanel = new JPanel();
-    encodingPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 2, 2));
-    encodingPanel.add(encodingComboBox);
 
     controlPanel.add(labelInputFile);
     controlPanel.add(inputFileSelector);
+    controlPanel.add(labelInputFileFormat);
+    controlPanel.add(inputFileFormatPanel);
     controlPanel.add(labelOutputFile);
     controlPanel.add(outputFileSelector);
     controlPanel.add(labelXmlFile);
@@ -364,8 +419,6 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     controlPanel.add(runParametersPanel);
     controlPanel.add(labelLanguage);
     controlPanel.add(languagePanel);
-    controlPanel.add(labelEncoding);
-    controlPanel.add(encodingPanel);
 
     SpringUtilities.makeCompactGrid(controlPanel, 6, 2, // rows, cols
             4, 4, // initX, initY
@@ -536,8 +589,10 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
       xmlTag = null;
     }
 
+    String inputFileFormat = (String) inputFileFormatComboBox.getSelectedItem();
     String language = (String) languageComboBox.getSelectedItem();
     String encoding = (String) encodingComboBox.getSelectedItem();
+    Boolean lenient = lenientCheckbox.isSelected();
 
     // validate parameters
     if (aeSpecifierFile.getName().equals("")) {
@@ -622,7 +677,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
 
       // start separate thread to do component initialization and
       // processing
-      ProcessingThread thread = new ProcessingThread(inputDir, outputDirectory, aeSpecifierFile,
+      ProcessingThread thread = new ProcessingThread(inputDir, inputFileFormat, lenient, outputDirectory, aeSpecifierFile,
               xmlTag, language, encoding);
       thread.start();
     }
@@ -837,11 +892,13 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
   public void savePreferences() {
     // all now set and managed in the Mediator class
     prefsMed.setInputDir(inputFileSelector.getSelected());
+    prefsMed.setInputFileFormat((String) inputFileFormatComboBox.getSelectedItem());
     prefsMed.setOutputDir(outputFileSelector.getSelected());
     prefsMed.setTAEfile(xmlFileSelector.getSelected());
     prefsMed.setXmlTag(runParametersField.getText());
     prefsMed.setLanguage((String) languageComboBox.getSelectedItem());
     prefsMed.setEncoding((String) encodingComboBox.getSelectedItem());
+    prefsMed.setLenient(lenientCheckbox.isSelected());
   }
 
   /**
@@ -1050,7 +1107,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
 
   }
 
-  public void runProcessingThread(File inputDir, File outputDir, File aeSpecifierFile,
+  public void runProcessingThread(File inputDir, String inputFileFormat, Boolean lenient, File outputDir, File aeSpecifierFile,
           String xmlTag, String language, String encoding) {
     try {
       // create and configure collection reader that will read input docs
@@ -1060,6 +1117,8 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
               .getConfigurationParameterSettings();
       paramSettings.setParameterValue(FileSystemCollectionReader.PARAM_INPUTDIR, inputDir
               .getAbsolutePath());
+      paramSettings.setParameterValue(FileSystemCollectionReader.PARAM_XCAS, inputFileFormat);
+      paramSettings.setParameterValue(FileSystemCollectionReader.PARAM_LENIENT, lenient ? "true" : "false");
       paramSettings.setParameterValue(FileSystemCollectionReader.PARAM_LANGUAGE, language);
       paramSettings.setParameterValue(FileSystemCollectionReader.PARAM_ENCODING, encoding);
       collectionReader = (FileSystemCollectionReader) UIMAFramework
@@ -1242,6 +1301,8 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
   class ProcessingThread extends Thread {
     File inputDir;
 
+    String inputFileFormat;
+    
     File outputDir;
 
     File taeSpecifierFile;
@@ -1251,22 +1312,26 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     String language;
 
     String encoding;
+    
+    Boolean lenient;
 
-    ProcessingThread(File inputDir, File outputDir, File taeSpecifierFile, String xmlTag,
+    ProcessingThread(File inputDir, String inputFileFormat, Boolean lenient, File outputDir, File taeSpecifierFile, String xmlTag,
             String language, String encoding) {
       this.inputDir = inputDir;
+      this.inputFileFormat = inputFileFormat;
       this.outputDir = outputDir;
       this.taeSpecifierFile = taeSpecifierFile;
       this.xmlTag = xmlTag;
       this.language = language;
       this.encoding = encoding;
+      this.lenient = lenient;
     }
 
     @Override
     public void run() {
       // Code moved outside class to make accessible by programs that call
       // DocumentAnalyzer. JMP
-      runProcessingThread(inputDir, outputDir, taeSpecifierFile, xmlTag, language, encoding);
+      runProcessingThread(inputDir, inputFileFormat, lenient, outputDir, taeSpecifierFile, xmlTag, language, encoding);
     }
   }
 
@@ -1293,9 +1358,9 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
    * 
    * @see java.awt.Component#getPreferredSize()
    */
-  @Override
-  public Dimension getPreferredSize() {
-    return new Dimension(700, 350);
-  }
+//  @Override
+//  public Dimension getPreferredSize() {
+//    return new Dimension(800, 350);
+//  }
 
 }

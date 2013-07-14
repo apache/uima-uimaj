@@ -81,6 +81,10 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
    */
   public static final String PARAM_XCAS = "XCAS";
 
+  /**
+   * Name of the configuration parameter that must be set to indicate if the
+   * execution proceeds if an encountered type is unknown
+   */
   public static final String PARAM_LENIENT = "LENIENT";
 
   private ArrayList mFiles;

@@ -51,6 +51,8 @@ public class PrefsMediator {
 
   private String defaultOutputDir;
 
+  private String inputFileFormat;
+  
   private String language;
 
   private String encoding;
@@ -58,12 +60,16 @@ public class PrefsMediator {
   private String viewType;
 
   private String xmlTag;
+  
+  private boolean lenient;
 
   // constants describing preference entries
   private static final String VIEWTYPE = "viewType";
 
   private static final String ENCODING = "encoding";
 
+  private static final String INPUTFILEFORMAT = "inputFileFormat";
+  
   private static final String LANGUAGE = "language";
 
   private static final String TAEDESCRIPTOR = "taeDescriptor";
@@ -73,6 +79,8 @@ public class PrefsMediator {
   private static final String INDIR = "inDir";
   
   private static final String XMLTAG = "xmlTag";
+  
+  private static final String LENIENT = "lenient";
 
   public PrefsMediator() {
     // get the installed UIMA home directory
@@ -84,12 +92,15 @@ public class PrefsMediator {
 
   public void restorePreferences() {
     inputDir = prefs.get(INDIR, defaultInputDir);
+    inputFileFormat = prefs.get(INPUTFILEFORMAT, "textDocument");
     outputDir = prefs.get(OUTDIR, defaultOutputDir);
     taeDir = prefs.get(TAEDESCRIPTOR, "");
     language = prefs.get(LANGUAGE, "en");
     encoding = prefs.get(ENCODING, "UTF-8");
     viewType = prefs.get(VIEWTYPE, "Java Viewer");
     xmlTag = prefs.get(XMLTAG, "");
+    lenient = prefs.getBoolean(LENIENT, true);
+
   }
 
   // saves current preferences
@@ -225,6 +236,22 @@ public class PrefsMediator {
     this.encoding = encoding;
     prefs.put(ENCODING, encoding);
   }
+  
+  /**
+   * @return Returns the input file format.
+   */
+  public String getInputFileFormat() {
+    return inputFileFormat;
+  }
+
+  /**
+   * @param input file format
+   *          The input file format to set.
+   */
+  public void setInputFileFormat(String inputFileFormat) {
+    this.inputFileFormat = inputFileFormat;
+    prefs.put(INPUTFILEFORMAT, inputFileFormat);
+  }
 
   /**
    * @return Returns the language.
@@ -274,6 +301,22 @@ public class PrefsMediator {
     prefs.put(XMLTAG, xmlTag);
   }
 
+  /**
+   * @return Returns lenient.
+   */
+  public Boolean getLenient() {
+    return lenient;
+  }
+
+  /**
+   * @param lenient
+   *          The lenient to set.
+   */
+  public void setLenient(Boolean lenient) {
+    this.lenient = lenient;
+    prefs.putBoolean(LENIENT, lenient);
+  }
+  
   /** returns the new edited stylemap file */
   public File getStylemapFile() {
     String s = getTAEPath() + getTAEFileNameRoot() + "StyleMap.xml";
