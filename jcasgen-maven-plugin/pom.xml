@@ -124,18 +124,10 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-plugin-plugin</artifactId>
-				<!-- BEGIN WORKAROUND http://jira.codehaus.org/browse/MNG-5346 -->
 				<configuration>
-					<skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
-				</configuration>
+          <extractors><extractor>java-annotations</extractor></extractors>
+ 				</configuration>				
 				<executions>
-					<execution>
-						<id>mojo-descriptor</id>
-						<goals>
-							<goal>descriptor</goal>
-						</goals>
-					</execution>
-					<!-- END WORKAROUND http://jira.codehaus.org/browse/MNG-5346 -->
 					<execution>
 						<id>generated-helpmojo</id>
 						<goals>
