@@ -104,6 +104,7 @@
                   <exclude>src/test/resources/pearTests/*.pear</exclude> <!-- test pear files -->
                   <exclude>src/test/resources/pearTests/encodingTests/*</exclude> <!-- test data, RAT can't reliably read these -->
                   <exclude>src/test/resources/SequencerTest/*.txt</exclude> <!-- test data -->
+                  <exclude>src/test/resources/SerDes4/SavedInts.binary</exclude> <!-- test data -->
                 </excludes>              
               </configuration>
             </execution>
