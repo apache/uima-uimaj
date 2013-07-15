@@ -15,7 +15,8 @@
  #  * KIND, either express or implied.  See the License for the
  #  * specific language governing permissions and limitations
  #  * under the License.
- #  ***************************************************************prefix-suffix     Prefix-${suffix}
+ #  ***************************************************************
+prefix-suffix     Prefix-${suffix}
 # The following key should have already been set by an earlier import
 suffix = should be ignored
 # Empty array
