@@ -57,7 +57,7 @@ screen that looks like this:
   <screenshot>
     <mediaobject>
       <imageobject>
-        <imagedata width="5.8in" format="JPG" fileref="&imgroot;image002.jpg"/>
+        <imagedata width="5.8in" format="PNG" fileref="&imgroot;DocAnalyzerScr1.png"/>
       </imageobject>
       <textobject><phrase>Document Analyzer GUI</phrase>
       </textobject>
@@ -80,6 +80,18 @@ the main screen of the Document Analyzer.</para>
 want to analyze.  Some sample documents
 are provided in the UIMA SDK under the <literal>examples/data</literal>
 directory.</para>
+
+<para><emphasis role="bold">Input File Format:</emphasis> Set this to "text".  It can, alternatively, 
+be set to one of the two serialized forms for CASes, if you have previously generated and saved these.
+For the CAS formats only, you can also specify "Lenient deserialization"; if checked, then extra
+types and features in the CAS being deserialized and loaded (that are not defined by the Annotator-to-be-run's
+type system) will not cause a deserialization error, but will instead be ignored.</para>
+
+<para><emphasis role="bold">Character Encoding:</emphasis>  
+  The character encoding of the input files.  The default, UTF-8, also works fine for ASCII
+text files.  If you have a different
+encoding, select it here.  For more information on character sets and their names, see the Javadocs for 
+  <literal>java.nio.charset.Charset</literal>.</para>
 
 <para><emphasis role="bold">Output Directory:</emphasis> Browse to or type the path of a directory where you want
   output to be written. (As we&apos;ll see later, you won&apos;t normally need to look directly at these files, but the
@@ -110,12 +122,6 @@ here must be an ISO language identifier, the list of which can be found here:
   <ulink url="http://www.ics.uci.edu/pub/ietf/http/related/iso639.txt"/>.
 </para>
 
-<para><emphasis role="bold">Character Encoding:</emphasis>  
-  The character encoding of the input files.  The default, UTF-8, also works fine for ASCII
-text files.  If you have a different
-encoding, enter it here.  For more
-information on character sets and their names, see the Javadocs for 
-  <literal>java.nio.charset.Charset</literal>.</para>
 
 <para>Once you&apos;ve filled in the appropriate values, press the
 <quote>Run</quote> button.</para>

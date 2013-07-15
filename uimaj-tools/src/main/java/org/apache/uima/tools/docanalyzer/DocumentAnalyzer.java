@@ -114,11 +114,9 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
           + "* In the \"Input Directory\" field, either type or use the browse\n"
           + "button to select a directory containing the documents that you want\n"
           + "to analyze.\n\n"
-          + "* In the \"Input File Format\" field, type or use the browse]n"
-          + "button to select \"xcas\" or \"xmi\", as well as \"true\"\n"
-          + "(which for historical reasons means the same as \"xcas\").\n" 
-          + "Any other value will cause the input file to be treated as a text document.\n\n"
-          + "* If using XMI or XCAS, check the \"Lenient\" box to indicate that if it's OK if the annotator's type system doesn't define all the types or features in the input CAS.\n\n"
+          + "* In the \"Input File Format\" field, type or use the browse\n"
+          + "button to select \"text\", \"xcas\", or \"xmi\".\n"
+          + "* If using \"xmi\" or \"xcas\", check the \"Lenient\" box to indicate if it's OK if the annotator's type system doesn't define all the types or features in the input CAS.\n\n"
           + "* In the \"Output Directory\" field, either type or use the browse\n"
           + "button to select a directory where you would like the analyzed\n"
           + "documents to be placed.\n\n"
@@ -341,8 +339,8 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
 
     inputFileFormatPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
     
-    inputFileFormatComboBox = new JComboBox(new Object[] { "textDocument", "xmi", "xcas" });
-    inputFileFormatComboBox.setEditable(true);
+    inputFileFormatComboBox = new JComboBox(new Object[] { "text", "xmi", "xcas" });
+    inputFileFormatComboBox.setEditable(false);
     inputFileFormatComboBox.setSelectedItem(prefsMed.getInputFileFormat());
     inputFileFormatComboBox.addActionListener(new ActionListener() {      
       public void actionPerformed(ActionEvent e) {
