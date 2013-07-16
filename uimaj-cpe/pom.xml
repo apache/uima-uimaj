@@ -23,12 +23,12 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>2.4.1</version>
+    <version>2.4.2-SNAPSHOT</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
   
 	<artifactId>uimaj-cpe</artifactId>
-	<version>2.4.1</version>
+	<version>2.4.2-SNAPSHOT</version>
 	<name>Apache UIMA Base: ${project.artifactId}: Collection Processing Engine</name>
   <description>The implementation of a simple scaleout capability, called
     the Collection Processing Engine.  New implementations may find 
@@ -45,13 +45,13 @@
        element, and just changing the following two properties -->  
   <scm>
     <connection>
-      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-2.4.1-rc1/uimaj-cpe
+      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-cpe
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-2.4.1-rc1/uimaj-cpe
+      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-cpe
     </developerConnection>
     <url>
-      http://svn.apache.org/viewvc/uima/uimaj/tags/uimaj-2.4.1-rc1/uimaj-cpe
+      http://svn.apache.org/viewvc/uima/uimaj/trunk/uimaj-cpe
     </url>
   </scm>
   

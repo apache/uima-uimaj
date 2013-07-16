@@ -23,13 +23,13 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>2.4.1</version>
+    <version>2.4.2-SNAPSHOT</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
   
 	<artifactId>uimaj-examples</artifactId>
 	<packaging>jar</packaging>
-	<version>2.4.1</version>
+	<version>2.4.2-SNAPSHOT</version>
 	<name>Apache UIMA Base: ${project.artifactId}: SDK Examples</name>
   <description>Examples and sample code</description>
   <url>${uimaWebsiteUrl}</url>
@@ -44,13 +44,13 @@
        element, and just changing the following two properties -->  
   <scm>
     <connection>
-      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-2.4.1-rc1/uimaj-examples
+      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-examples
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-2.4.1-rc1/uimaj-examples
+      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-examples
     </developerConnection>
     <url>
-      http://svn.apache.org/viewvc/uima/uimaj/tags/uimaj-2.4.1-rc1/uimaj-examples
+      http://svn.apache.org/viewvc/uima/uimaj/trunk/uimaj-examples
     </url>
   </scm>
   

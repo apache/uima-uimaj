@@ -23,12 +23,12 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>2.4.1</version>
+    <version>2.4.2-SNAPSHOT</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
 
 	<artifactId>uimaj-ep-debug</artifactId>
-  <version>2.4.1</version>
+  <version>2.4.2-SNAPSHOT</version>
 	<packaging>jar</packaging> 
 	<name>Apache UIMA Eclipse: ${project.artifactId}</name>
   <!-- continuation lines need to start in col 1 else manifest has extra blanks -->
@@ -46,13 +46,13 @@ UIMA data structures to the Eclipse Debug displays</description>
        element, and just changing the following two properties -->  
   <scm>
     <connection>
-      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-2.4.1-rc1/uimaj-ep-debug
+      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-ep-debug
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-2.4.1-rc1/uimaj-ep-debug
+      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-ep-debug
     </developerConnection>
     <url>
-      http://svn.apache.org/viewvc/uima/uimaj/tags/uimaj-2.4.1-rc1/uimaj-ep-debug
+      http://svn.apache.org/viewvc/uima/uimaj/trunk/uimaj-ep-debug
     </url>
   </scm>
   
