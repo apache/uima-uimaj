@@ -17,8 +17,7 @@
    specific language governing permissions and limitations
    under the License.    
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -30,7 +29,7 @@
 
   <artifactId>uimaj-eclipse-update-site</artifactId>
   <packaging>pom</packaging>
-  <version>2.4.1-SNAPSHOT</version>
+  <version>2.4.1</version>
 
   <name>Apache UIMA Eclipse: ${project.artifactId}</name>
   <description>The UIMA Java SDK Eclipse update site</description>
@@ -38,13 +37,13 @@
 
   <scm>
     <connection>
-      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-eclipse-update-site
+      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-eclipse-update-site-2.4.1-rc1
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-eclipse-update-site
+      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-eclipse-update-site-2.4.1-rc1
     </developerConnection>
     <url>
-      http://svn.apache.org/viewvc/uima/uimaj/trunk/uimaj-eclipse-update-site
+      http://svn.apache.org/viewvc/uima/uimaj/tags/uimaj-eclipse-update-site-2.4.1-rc1
     </url>
   </scm>
 
@@ -113,8 +112,8 @@
             <id>BuildUpdateSite-pack-svnget-buildMetadata-commit-to-dev</id>
             <configuration>
               <target>
-                <condition/>  <!-- don't add anything to the 1st condition element -->
-                <condition/>  <!-- don't add anything to the 2nd condition element -->
+                <condition />  <!-- don't add anything to the 1st condition element -->
+                <condition />  <!-- don't add anything to the 2nd condition element -->
                               <!-- insert this as the 3rd condition element -->
                 <condition property="apacheRelease">
                   <equals arg1="${isApacheRelease}" arg2="true" />
