@@ -27,6 +27,7 @@ import java.util.Iterator;
 import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;
+import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FeatureStructure;
@@ -97,6 +98,15 @@ public class CasCopierTest extends TestCase {
     CAS destCasBase = ((CASImpl) destCas).getBaseCAS();
     CasCopier.copyCas(srcCasBase, destCasBase, true);
     CasComparer.assertEquals(srcCasBase, destCasBase);
+    
+    //try with source and dest cas the same
+    Exception ee = null;
+    try {
+      CasCopier.copyCas(srcCasBase,  srcCasBase, false);
+    } catch (Exception e) {
+      ee = e;
+    }
+    assertTrue(ee instanceof UIMARuntimeException);
   }
   
   public void testCopyCasWithDifferentTypeSystemObject() throws Exception {
@@ -209,6 +219,17 @@ public class CasCopierTest extends TestCase {
     arrFS.set(2, relFS);
     FeatureStructure copyArrFS = copier.copyFs(arrFS);
     CasComparer.assertEquals(arrFS, copyArrFS);
+    
+    // test with using base cas
+    destCas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
+    destCas.setDocumentText(srcCas.getDocumentText());
+    copier = new CasCopier(((CASImpl)srcCas).getBaseCAS(), ((CASImpl)destCas).getBaseCAS());
+
+    annotIter = srcCas.getAnnotationIndex().iterator();
+    annot = (FeatureStructure) annotIter.next();
+    copy = copier.copyFs(annot);
+    // verify copy
+    CasComparer.assertEquals(annot, copy);
   }
 
   public void testAnnotationWithNullSofaRef() throws Exception {

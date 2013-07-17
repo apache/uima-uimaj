@@ -118,6 +118,24 @@ public class UIMARuntimeException extends InternationalizedRuntimeException {
   public static final String RESULT_SPEC_NULL = "result_spec_null";
 
   /**
+   * Message key for a standard UIMA exception message:
+   * In CasCopier, the {0} view is doesn't belong to the original {0} CAS specified when creating the CasCopier instance 
+   */
+  public static final String VIEW_NOT_PART_OF_CAS = "view_not_part_of_cas";
+  
+  /**
+   * Message key for a standard UIMA exception message:
+   * Unsupported invocation of CasCopier copyCasView, specifying a source or destination as a base CAS.  
+   */
+  public static final String UNSUPPORTED_CAS_COPY_TO_OR_FROM_BASE_CAS = "unsupported_cas_copy_view_base_cas";
+ 
+  /**
+   * Message key for a standard UIMA exception message:
+   * It is not permitted to use CasCopier to copy a Cas to itself, even in another view.  
+   */
+  public static final String ILLEGAL_CAS_COPY_TO_SAME_CAS = "illegal_cas_copy_to_same_cas";
+  
+  /**
    * Creates a new exception with a null message.
    */
   public UIMARuntimeException() {
