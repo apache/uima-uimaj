@@ -1,5 +1,5 @@
 
-			Apache UIMA (Unstructured Information Management Architecture) v2.4.0 SDK
+			Apache UIMA (Unstructured Information Management Architecture) v2.4.1 SDK
 		  -------------------------------------------------------------------------
 
 Building from the Source Distribution
@@ -21,57 +21,26 @@ Look for the result here:
 
 For more details, please see http://uima.apache.org/building-uima.html   
 
-What's New in 2.4.0
+What's New in 2.4.1
 -------------------
 
-  There was a change in the API (methods added) used for JMX monitoring of performance statistics;
-  because of this, we incremented the version from 2.3.x to 2.4.0.
+  There are many improvements, some bug fixes, and tooling enhancements in this release.  The major changes include:
   
-  Other than this, there are some bug fixes, and some tooling enhancements.
-  
-  CAS Editor (Eclipse Tooling)
-  ----------------------------
-  The Cas Editor received a few important enhancements to make it
-  extensible by user provided plugins. It is now possible to save
-  generic preferences based on a type system scope and the Cas Editor
-  was split into two parts to allow the integration into RCP applications.
-
-  Support for Cas Editor projects is now removed, existing Cas Editor
-  projects will be migrated automatically. Before this happens a dialog
-  ask for confirmation.
-  
-  There have been a couple of minor improvements: Adding of annotations
-  to a CAS is now much faster, reusing of Annotation Editor instances is
-  now possible, CAS file changes can now be detected and the changed file
-  is shown in the editor, many things are now remembered after a dialog
-  is reopened or an editor is reopened.
-  
-  Eclipse Analysis Engine Launcher Plugin
-  ---------------------------------------
-  We added a new launcher plugin to run and debug Analysis Engines directly
-  from Eclipse. The plugin can load input CASes in the XCAS or XMI format
-  from a specified folder and then processes them with the Analysis Engine.
-  The files can optionally be written to an output folder for inspection
-  with the Cas Editor. Plain text input files are supported as well.
-  
-  A command line Pear Installer tool was added.
-
-  
-  Build
-  -----
-  
-  The build process was redone to align it with normal Maven build procedures, where possible.
-  This includes moving the top level project, uimaj, up one level in SVN, so it now contains the
-  modules. 
-  
+    * A new maven plugin that runs JCasGen (see tools documentation for how to configure and use this)
+    * Binary serialization has been documented.
+    * New kinds of compressed binary serialization that compress the data significantly
+      and one form that supports unequal source/target type systems
+    * Some "bulk" methods for removing Feature Structures from Indexes
+    * A new facility for specifying parameter settings for collections of annotators, that uses properties files
+    * The DocumentAnalyzer utility was enhanced with a patch from the community to support reading CASes in various formats 
  
 Supported Platforms
 --------------------
 
-Apache UIMA requires Java level 1.5; it has been tested with Sun Java SDK v5.0 and v6.0, and IBM Java 6.0.
-Running the Eclipse plugin tooling for UIMA requires you start Eclipse using a Java 1.5 or later, as well.
+Apache UIMA requires Java level 1.5; it has been tested with Sun/Oracle Java SDK v5 and v6 amd v7, and IBM Java 6 and 7.
+Running the Eclipse plugin tooling for UIMA requires you start Eclipse using a Java 5 or later, as well.
 The supported platforms are: Windows, Linux, Solaris, AIX and Mac OS X.  
-Other platforms and Java (1.5+) implementations should work, but have not been significantly tested.
+Other platforms and Java (5+) implementations should work, but have not been significantly tested.
 
 Many of the scripts in the /bin directory invoke Java. They use the value of the environment variable, JAVA_HOME, 
 to locate the Java to use; if it is not set, they invoke "java" expecting to find an appropriate Java in your PATH. 
