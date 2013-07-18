@@ -239,7 +239,7 @@ public class DefaultCasDocumentProvider extends
       IPreferenceStore prefStore = CasEditorIdePlugin.getDefault().getPreferenceStore();
       boolean useLastTypesystem = prefStore
               .getBoolean(CasEditorIdePreferenceConstants.CAS_EDITOR_REMEMBER_TYPESYSTEM);
-      if (useLastTypesystem) {
+      if (typeSystemFileString == null && useLastTypesystem) {
         typeSystemFileString = documentToTypeSystemMap
                 .get(document);
       }
