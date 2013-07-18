@@ -23,13 +23,13 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>2.4.2-SNAPSHOT</version>
+    <version>2.4.1-SNAPSHOT</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
   
 	<artifactId>uimaj-component-test-util</artifactId>
 	<packaging>jar</packaging>
-	<version>2.4.2-SNAPSHOT</version>
+	<version>2.4.1-SNAPSHOT</version>
 	<name>Apache UIMA Base: ${project.artifactId}: for JUnit</name>
   <description>Supporting utilities used in various JUnit tests</description>
   <url>${uimaWebsiteUrl}</url>
