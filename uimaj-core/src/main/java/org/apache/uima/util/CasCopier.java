@@ -95,9 +95,6 @@ public class CasCopier {
    * Note: If the feature structure and/or feature is not defined in the type system of
    *       the destination CAS, the copy will fail (in other words, the lenient setting is false,
    *       by default).
-   *
-   * Note: The source and destination CASes must be different, and have different
-   *       base CASs (they cannot be two different views of the same CAS)
    *       
    * @param aSrcCas
    *          the CAS to copy from.
@@ -115,9 +112,6 @@ public class CasCopier {
    * the CAS copy function will ignore (not attempt to copy) FSs and features not defined in the type system
    * of the destination CAS, rather than throwing an exception.
    * 
-   * Note: The source and destination CASes must be different, and have different
-   *       base CASs (they cannot be two different views of the same CAS)
-   *
    * @param aSrcCas
    *          the CAS to copy from.
    * @param aDestCas
@@ -133,10 +127,6 @@ public class CasCopier {
     
     mDestSofaFeature = aDestCas.getTypeSystem().getFeatureByFullName(CAS.FEATURE_FULL_NAME_SOFA);    
     this.lenient = lenient;
-    
-    if (mSrcBaseCas == mDestBaseCas) {
-      throw new UIMARuntimeException(UIMARuntimeException.ILLEGAL_CAS_COPY_TO_SAME_CAS, null); 
-    }
   }
   
   /**
@@ -207,11 +197,6 @@ public class CasCopier {
    * Cross-view references may result in creating additional views in the destination CAS;
    * for these views, any Sofa data in the source is *not* copied.
    * 
-   * If the source and destination CASes (as set in the constructor for this class) 
-   * are the same, or are two different views of the same CAS, then
-   * this method will make a deep copy of all the feature structures in the view,
-   * duplicating them, and indexing them.
-   * 
    * @param aSrcCasView the CAS to copy from.  This must be a view in the src Cas set by the constructor
    * @param aCopySofa if true, the sofa data and mimeType will be copied. If false they will not.
    */
@@ -229,11 +214,6 @@ public class CasCopier {
    * Cross-view references may result in creating additional views in the destination CAS;
    * for these views, any Sofa data in the source is *not* copied.  Any views created because
    * of cross-view references will have the same view name as in the source.
-   * 
-   * If the source and destination CASes (as set in the constructor for this class) 
-   * are the same, or are two different views of the same CAS, then
-   * this method will make a deep copy of all the feature structures in the view,
-   * duplicating them, and indexing them.
    *
    * @param aSrcCasViewName the name of the view in the source CAS to copy from
    * @param aCopySofa if true, the sofa data and mimeType will be copied. If false they will not.
@@ -254,11 +234,6 @@ public class CasCopier {
    * for these views, any Sofa data in the source is *not* copied.  Any views created because
    * of cross-view references will have the same view name as in the source.
    * 
-   * If the source and destination CASes (as set in the constructor for this class) 
-   * are the same, or are two different views of the same CAS, then
-   * this method will make a deep copy of all the feature structures in the view,
-   * duplicating them, and indexing them.
-   * 
    * @param aSrcCasView The view in the source to copy from
    * @param aTgtCasViewName The name of the view in the destination CAS to copy into
    * @param aCopySofa if true, the sofa data and mimeType will be copied. If false they will not.
@@ -276,11 +251,6 @@ public class CasCopier {
    * Cross-view references may result in creating additional views in the destination CAS;
    * for these views, any Sofa data in the source is *not* copied.  Any views created because
    * of cross-view references will have the same view name as in the source.
-   * 
-   * If the source and destination CASes (as set in the constructor for this class) 
-   * are the same, or are two different views of the same CAS, then
-   * this method will make a deep copy of all the feature structures in the view,
-   * duplicating them, and indexing them.
    * 
    * @param aSrcCasViewName The name of the view in the Source CAS to copy from
    * @param aTgtCasView The view in the destination CAS to copy into
@@ -302,9 +272,6 @@ public class CasCopier {
    * Cross-view references may result in creating additional views in the destination CAS;
    * for these views, any Sofa data in the source is *not* copied.  Any views created because
    * of cross-view references will have the same view name as in the source.
-   * 
-   * If called on the same CAS (to copy one view into another one, within one CAS), it will
-   * create duplicates of the Feature Structures.
    * 
    * @param aSrcCasView
    *          the CAS to copy from. This must be a view of the srcCas set in the constructor

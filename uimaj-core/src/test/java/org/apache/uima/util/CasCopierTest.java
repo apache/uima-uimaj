@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 
 import junit.framework.TestCase;
@@ -100,13 +101,24 @@ public class CasCopierTest extends TestCase {
     CasComparer.assertEquals(srcCasBase, destCasBase);
     
     //try with source and dest cas the same
+    // test throws concurrent update exception
     Exception ee = null;
     try {
       CasCopier.copyCas(srcCasBase,  srcCasBase, false);
     } catch (Exception e) {
       ee = e;
     }
-    assertTrue(ee instanceof UIMARuntimeException);
+    assertTrue(ee instanceof ConcurrentModificationException);
+    
+    ee = null;
+    CAS v2 = srcCas.createView("v2");
+    CasCopier cc = new CasCopier(srcCas, v2);
+    try {
+      cc.copyCasView(srcCas, v2, false);
+    } catch (Exception e) {
+      ee = e;
+    }
+    assertEquals(ee, null);
   }
   
   public void testCopyCasWithDifferentTypeSystemObject() throws Exception {
