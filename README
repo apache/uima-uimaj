@@ -26,14 +26,43 @@ What's New in 2.4.1
 
   There are many improvements, some bug fixes, and tooling enhancements in this release.  The major changes include:
   
-    * A new maven plugin that runs JCasGen (see tools documentation for how to configure and use this)
-    * Binary serialization has been documented.
+    * Documentation of binary serialization.
     * New kinds of compressed binary serialization that compress the data significantly
       and one form that supports unequal source/target type systems
-    * Some "bulk" methods for removing Feature Structures from Indexes
-    * A new facility for specifying parameter settings for collections of annotators, that uses properties files
-    * The DocumentAnalyzer utility was enhanced with a patch from the community to support reading CASes in various formats 
+      
+    * A new facility called External Parameter Overrides for specifying parameter settings for annotators 
+      that uses properties files and is independent of the annotator hierarchy
+
+    * CasCopier enhancements to allow copying one view to a different view.
+    
+    * Additional options to restrict JCasGen operation to generating just those types that are defined in a project,
+      excluding other types that are imported from other projects
+    * A new Maven plugin that runs JCasGen (see tools documentation for how to configure and use this)
+
+    * a new ability to preserve white space (indentation) when parsing XML descriptors; this is now used in the
+      Component Descriptor Editor (CDE), to preserve indentation when editing an existing descriptor.
+
+    * Performance and space improvements
+    * Some "bulk" methods for efficiently removing Feature Structures from Indexes
+
+    * The CDE supports 3 new things: the preserving of existing white-space in XML descriptors, 
+      External Parameter Overrides, and a configuration option to restrict JCasGen to just those
+      types defined in the project.
+    * Enhancements to the DocumentAnalyzer utility to support reading CASes in various formats
  
+ Some User-facing Interfaces and Classes have new methods:
+    * FsIndexRepository - new methods for bulk removal of all instances of a type from the indexes
+    * JCas - same methods added for bulk removal, as above
+    * Serialization - Javadocs added to document the kinds of serialization and deserialization supported (binary and compressed binary forms)
+                    - Methods added to support Binary Compressed serialization / deserialization
+    * CasCopier - new copyCasView methods for copying to a different view
+    
+ Some interfaces and classes, less likely to be used by users, were changed:
+    * ConfigurationManager's createContext method has additional parameter for the new external parameter override mechanism
+    * ConfigurationParameter - has new support for external parameter override names               
+    
+    
+    
 Supported Platforms
 --------------------
 
