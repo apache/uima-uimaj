@@ -69,7 +69,8 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
     if ("/ExternalOverrides/".equals(contextName)) {
       String actual = null;
       try {
-        actual = aContext.getExternalParameterValue("test.externalFloatArray");
+        Settings settings = ((UimaContext_ImplBase)aContext).getExternalOverrides();
+        actual = settings.lookUp("test.externalFloatArray");
       } catch (ResourceConfigurationException e) {
         Assert.fail(e.getMessage());
       }

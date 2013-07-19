@@ -479,15 +479,6 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   }
 
   /**
-   * Lookup and evaluate an arbitrary (string) parameter from the External Override Settings
-   * Lets annotator configuration bypass the descriptor parameters. 
-   * @throws ResourceConfigurationException 
-   */
-  public String getExternalParameterValue(String name) throws ResourceConfigurationException {
-    return mExternalOverrides == null ? null : mExternalOverrides.lookUp(name);
-  }
-
-  /**
    * (non-Javadoc)
    * 
    * @see org.apache.uima.UimaContextAdmin#getExternalOverrides()
