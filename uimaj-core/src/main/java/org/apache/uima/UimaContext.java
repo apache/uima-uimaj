@@ -27,7 +27,6 @@ import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.SofaID;
 import org.apache.uima.resource.ResourceAccessException;
-import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.Session;
 import org.apache.uima.util.InstrumentationFacility;
 import org.apache.uima.util.Logger;
