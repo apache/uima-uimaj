@@ -51,7 +51,6 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.CasManager;
 import org.apache.uima.resource.ResourceAccessException;
-import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.ConfigurationGroup;
 import org.apache.uima.resource.metadata.ConfigurationParameter;
