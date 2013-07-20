@@ -20,7 +20,6 @@
 package org.apache.uima.fit.factory;
 
 import static java.util.Arrays.asList;
-import static org.apache.uima.UIMAFramework.getResourceSpecifierFactory;
 import static org.apache.uima.fit.factory.ConfigurationParameterFactory.canParameterBeSet;
 import static org.apache.uima.fit.factory.ConfigurationParameterFactory.createConfigurationData;
 
@@ -38,6 +37,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.descriptor.ExternalResource;
@@ -45,6 +45,7 @@ import org.apache.uima.fit.factory.ConfigurationParameterFactory.ConfigurationDa
 import org.apache.uima.fit.internal.ExtendedExternalResourceDescription_impl;
 import org.apache.uima.fit.internal.ReflectionUtil;
 import org.apache.uima.fit.internal.ResourceList;
+import org.apache.uima.resource.ConfigurableDataResourceSpecifier;
 import org.apache.uima.resource.CustomResourceSpecifier;
 import org.apache.uima.resource.DataResource;
 import org.apache.uima.resource.ExternalResourceDependency;
@@ -55,9 +56,11 @@ import org.apache.uima.resource.ParameterizedDataResource;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceCreationSpecifier;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.SharedResourceObject;
 import org.apache.uima.resource.impl.ConfigurableDataResourceSpecifier_impl;
+import org.apache.uima.resource.impl.ConfigurableDataResource_impl;
 import org.apache.uima.resource.impl.ExternalResourceDependency_impl;
 import org.apache.uima.resource.impl.ExternalResourceDescription_impl;
 import org.apache.uima.resource.impl.FileResourceSpecifier_impl;
@@ -141,23 +144,43 @@ public final class ExternalResourceFactory {
       descs.add(res.getValue());
     }
 
-    List<Parameter> params = new ArrayList<Parameter>();
-    if (aParams != null) {
-      for (int i = 0; i < aParams.length / 2; i++) {
-        if (ExternalResourceFactory.getExternalResourceParameterType(aParams[i * 2 + 1]) != ResourceValueType.NO_RESOURCE) {
-          continue;
+    ResourceSpecifier spec;
+    if (ConfigurableDataResource_impl.class.isAssignableFrom(aInterface)) {
+      ConfigurationData cfg = ConfigurationParameterFactory.createConfigurationData(aParams);
+      ResourceMetaData_impl meta = new ResourceMetaData_impl();
+
+      ConfigurationData reflectedConfigurationData = createConfigurationData(aInterface);
+      ResourceCreationSpecifierFactory.setConfigurationParameters(meta,
+              reflectedConfigurationData.configurationParameters,
+              reflectedConfigurationData.configurationValues);
+      ResourceCreationSpecifierFactory.setConfigurationParameters(meta,
+              cfg.configurationParameters, cfg.configurationValues);
+
+      ConfigurableDataResourceSpecifier_impl spec1 = new ConfigurableDataResourceSpecifier_impl();
+      spec1.setUrl("");
+      spec1.setMetaData(meta);
+      spec = spec1;
+    } else {
+      List<Parameter> params = new ArrayList<Parameter>();
+      if (aParams != null) {
+        for (int i = 0; i < aParams.length / 2; i++) {
+          if (ExternalResourceFactory.getExternalResourceParameterType(aParams[i * 2 + 1]) != ResourceValueType.NO_RESOURCE) {
+            continue;
+          }
+
+          Parameter param = new Parameter_impl();
+          param.setName((String) aParams[i * 2]);
+          param.setValue((String) aParams[i * 2 + 1]);
+          params.add(param);
         }
-
-        Parameter param = new Parameter_impl();
-        param.setName((String) aParams[i * 2]);
-        param.setValue((String) aParams[i * 2 + 1]);
-        params.add(param);
       }
-    }
 
-    CustomResourceSpecifier spec = getResourceSpecifierFactory().createCustomResourceSpecifier();
-    spec.setResourceClassName(aInterface.getName());
-    spec.setParameters(params.toArray(new Parameter[params.size()]));
+      CustomResourceSpecifier spec1 = UIMAFramework.getResourceSpecifierFactory()
+              .createCustomResourceSpecifier();
+      spec1.setResourceClassName(aInterface.getName());
+      spec1.setParameters(params.toArray(new Parameter[params.size()]));
+      spec = spec1;
+    }
 
     ExtendedExternalResourceDescription_impl extRes = new ExtendedExternalResourceDescription_impl();
     extRes.setName(aName);
