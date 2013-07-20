@@ -19,9 +19,9 @@
 
 package org.apache.uima.fit.examples.resource;
 
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createAggregate;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createAggregateDescription;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.bindResource;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDescription;
 import static org.junit.Assert.assertTrue;
@@ -90,14 +90,14 @@ public class ExternalResourceExample {
             new File("somemodel.bin"));
 
     // Binding external resource to each Annotator individually
-    AnalysisEngineDescription aed1 = createPrimitiveDescription(Annotator.class,
+    AnalysisEngineDescription aed1 = createEngineDescription(Annotator.class,
             Annotator.MODEL_KEY, extDesc);
-    AnalysisEngineDescription aed2 = createPrimitiveDescription(Annotator.class,
+    AnalysisEngineDescription aed2 = createEngineDescription(Annotator.class,
             Annotator.MODEL_KEY, extDesc);
 
     // Check the external resource was injected
-    AnalysisEngineDescription aaed = createAggregateDescription(aed1, aed2);
-    AnalysisEngine ae = createAggregate(aaed);
+    AnalysisEngineDescription aaed = createEngineDescription(aed1, aed2);
+    AnalysisEngine ae = createEngine(aaed);
     ae.process(ae.newJCas());
   }
 
@@ -109,16 +109,16 @@ public class ExternalResourceExample {
    */
   @Test
   public void configureAggregatedExample() throws Exception {
-    AnalysisEngineDescription aed1 = createPrimitiveDescription(Annotator.class);
-    AnalysisEngineDescription aed2 = createPrimitiveDescription(Annotator.class);
+    AnalysisEngineDescription aed1 = createEngineDescription(Annotator.class);
+    AnalysisEngineDescription aed2 = createEngineDescription(Annotator.class);
 
     // Bind external resource to the aggregate
-    AnalysisEngineDescription aaed = createAggregateDescription(aed1, aed2);
+    AnalysisEngineDescription aaed = createEngineDescription(aed1, aed2);
     bindResource(aaed, Annotator.MODEL_KEY, SharedModel.class, new File("somemodel.bin").toURI()
             .toURL().toString());
 
     // Check the external resource was injected
-    AnalysisEngine ae = createAggregate(aaed);
+    AnalysisEngine ae = createEngine(aaed);
     ae.process(ae.newJCas());
   }
 
@@ -159,7 +159,7 @@ public class ExternalResourceExample {
    */
   @Test
   public void configureAnnotatorWithChainedResource() throws Exception {
-    AnalysisEngineDescription aed = createPrimitiveDescription(
+    AnalysisEngineDescription aed = createEngineDescription(
             Annotator2.class,
             Annotator2.MODEL_KEY,
             createExternalResourceDescription(ChainableResource.class,
@@ -167,7 +167,7 @@ public class ExternalResourceExample {
                     createExternalResourceDescription(ChainableResource.class)));
 
     // Check the external resource was injected
-    AnalysisEngine ae = createAggregate(aed);
+    AnalysisEngine ae = createEngine(aed);
     ae.process(ae.newJCas());
   }
 }

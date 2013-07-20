@@ -19,7 +19,7 @@
 
 package org.apache.uima.fit.spring;
 
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.bindExternalResource;
 import static org.junit.Assert.assertEquals;
 
@@ -56,7 +56,7 @@ public class SpringContextResourceManagerTest {
     resMgr.setApplicationContext(ctx);
 
     // Create component description
-    AnalysisEngineDescription desc = createPrimitiveDescription(MyAnalysisEngine.class);
+    AnalysisEngineDescription desc = createEngineDescription(MyAnalysisEngine.class);
     bindExternalResource(desc, "injectedBean", "springBean");
 
     // Instantiate component

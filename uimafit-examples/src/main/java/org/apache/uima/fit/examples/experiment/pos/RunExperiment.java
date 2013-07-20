@@ -73,13 +73,13 @@ public class RunExperiment {
     // The goldTagger parses the data in the default view into Token objects
     // along with their part-of-speech tags which will be added to the
     // GOLD_VIEW
-    AnalysisEngineDescription goldTagger = AnalysisEngineFactory.createPrimitiveDescription(
+    AnalysisEngineDescription goldTagger = AnalysisEngineFactory.createEngineDescription(
             GoldTagger.class, typeSystem);
     builder.add(goldTagger);
 
     // The textCopier creates the SYSTEM_VIEW and set the text of this view
     // to that of the text found in GOLD_VIEW
-    AnalysisEngineDescription textCopier = AnalysisEngineFactory.createPrimitiveDescription(
+    AnalysisEngineDescription textCopier = AnalysisEngineFactory.createEngineDescription(
             ViewTextCopierAnnotator.class, typeSystem,
             ViewTextCopierAnnotator.PARAM_SOURCE_VIEW_NAME, ViewNames.GOLD_VIEW,
             ViewTextCopierAnnotator.PARAM_DESTINATION_VIEW_NAME, ViewNames.SYSTEM_VIEW);
@@ -88,18 +88,18 @@ public class RunExperiment {
     // The sentenceAndTokenCopier copies Token and Sentence annotations in
     // the GOLD_VIEW into the SYSTEM_VIEW
     AnalysisEngineDescription sentenceAndTokenCopier = AnalysisEngineFactory
-            .createPrimitiveDescription(SentenceAndTokenCopier.class, typeSystem);
+            .createEngineDescription(SentenceAndTokenCopier.class, typeSystem);
     builder.add(sentenceAndTokenCopier, ViewNames.VIEW1, ViewNames.GOLD_VIEW, ViewNames.VIEW2,
             ViewNames.SYSTEM_VIEW);
 
     // The baselineTagger is run on the SYSTEM_VIEW
-    AnalysisEngineDescription baselineTagger = AnalysisEngineFactory.createPrimitiveDescription(
+    AnalysisEngineDescription baselineTagger = AnalysisEngineFactory.createEngineDescription(
             BaselineTagger.class, typeSystem);
     builder.add(baselineTagger, CAS.NAME_DEFAULT_SOFA, ViewNames.SYSTEM_VIEW);
 
     // The evaluator will compare the part-of-speech tags in the SYSTEM_VIEW
     // with those in the GOLD_VIEW
-    AnalysisEngineDescription evaluator = AnalysisEngineFactory.createPrimitiveDescription(
+    AnalysisEngineDescription evaluator = AnalysisEngineFactory.createEngineDescription(
             Evaluator.class, typeSystem);
     builder.add(evaluator);
 
@@ -107,7 +107,7 @@ public class RunExperiment {
     // an XMI file. It is instructive to open one of these
     // xmi files in the CAS Visual Debugger and look at the contents of each
     // view.
-    AnalysisEngineDescription xWriter = AnalysisEngineFactory.createPrimitiveDescription(
+    AnalysisEngineDescription xWriter = AnalysisEngineFactory.createEngineDescription(
             XWriter.class, typeSystem, XWriter.PARAM_OUTPUT_DIRECTORY_NAME,
             "src/main/resources/org/uimafit/examples/pos/xmi");
     builder.add(xWriter);

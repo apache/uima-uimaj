@@ -19,9 +19,9 @@
 
 package org.apache.uima.fit.factory;
 
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createAggregate;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createAggregateDescription;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.bindExternalResource;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.bindResource;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.createDependencyAndBind;
@@ -52,8 +52,6 @@ import org.apache.uima.fit.ComponentTestBase;
 import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.fit.component.Resource_ImplBase;
 import org.apache.uima.fit.component.initialize.ConfigurationParameterInitializer;
-import org.uimafit.descriptor.ConfigurationParameter;
-import org.uimafit.descriptor.ExternalResource;
 import org.apache.uima.fit.factory.locator.JndiResourceLocator;
 import org.apache.uima.fit.pipeline.SimplePipeline;
 import org.apache.uima.fit.util.SimpleNamedResourceManager;
@@ -68,6 +66,8 @@ import org.apache.uima.util.CasCreationUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.mock.jndi.SimpleNamingContextBuilder;
+import org.uimafit.descriptor.ConfigurationParameter;
+import org.uimafit.descriptor.ExternalResource;
 
 /**
  * Test case for {@link ExternalResource} annotations.
@@ -93,7 +93,7 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
   @Test
   public void testScanBind() throws Exception {
     // Create analysis enginge description
-    AnalysisEngineDescription desc = createPrimitiveDescription(DummyAE.class);
+    AnalysisEngineDescription desc = createEngineDescription(DummyAE.class);
 
     // Bind external resources
     bindResources(desc);
@@ -106,7 +106,7 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
   @Test
   public void testDirectInjection() throws Exception {
     // Create analysis enginge description
-    AnalysisEngineDescription desc = createPrimitiveDescription(DummyAE2.class);
+    AnalysisEngineDescription desc = createEngineDescription(DummyAE2.class);
 
     // Bind external resources for DummyAE
     bindResources(desc);
@@ -134,7 +134,7 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
   @Test
   public void testDirectInjectionAutowire() throws Exception {
     // Create analysis enginge description
-    AnalysisEngineDescription desc = createPrimitiveDescription(DummyAE2.class);
+    AnalysisEngineDescription desc = createEngineDescription(DummyAE2.class);
 
     // Bind external resources for DummyAE
     bindResources(desc);
@@ -161,14 +161,14 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
     ExternalResourceDescription extDesc = createExternalResourceDescription(DummyResource.class);
 
     // Binding external resource to each Annotator individually
-    AnalysisEngineDescription aed1 = createPrimitiveDescription(MultiBindAE.class,
+    AnalysisEngineDescription aed1 = createEngineDescription(MultiBindAE.class,
             MultiBindAE.RES_KEY, extDesc);
-    AnalysisEngineDescription aed2 = createPrimitiveDescription(MultiBindAE.class,
+    AnalysisEngineDescription aed2 = createEngineDescription(MultiBindAE.class,
             MultiBindAE.RES_KEY, extDesc);
 
     // Check the external resource was injected
-    AnalysisEngineDescription aaed = createAggregateDescription(aed1, aed2);
-    AnalysisEngine ae = createAggregate(aaed);
+    AnalysisEngineDescription aaed = createEngineDescription(aed1, aed2);
+    AnalysisEngine ae = createEngine(aaed);
     ae.process(ae.newJCas());
 
     MultiBindAE.reset();

@@ -28,11 +28,11 @@
     TextReader.PARAM_INPUT, "/home/uimafit/documents");
 
 AnalysisEngineDescription tokenizer = 
-  AnalysisEngineFactory.createPrimitiveDescription(
+  AnalysisEngineFactory.createEngineDescription(
     Tokenizer.class);
 
 AnalysisEngineDescription tokenFrequencyWriter = 
-  AnalysisEngineFactory.createPrimitiveDescription(
+  AnalysisEngineFactory.createEngineDescription(
     TokenFrequencyWriter.class, 
     TokenFrequencyWriter.PARAM_OUTPUT, "counts.txt");
 

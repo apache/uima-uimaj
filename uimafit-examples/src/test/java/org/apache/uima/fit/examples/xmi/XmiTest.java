@@ -54,11 +54,11 @@ public class XmiTest extends ExamplesTestBase {
    */
   @Test
   public void testWithoutXmi() throws Exception {
-    AnalysisEngine a1 = AnalysisEngineFactory.createPrimitive(Annotator1.class,
+    AnalysisEngine a1 = AnalysisEngineFactory.createEngine(Annotator1.class,
             typeSystemDescription);
-    AnalysisEngine a2 = AnalysisEngineFactory.createPrimitive(Annotator2.class,
+    AnalysisEngine a2 = AnalysisEngineFactory.createEngine(Annotator2.class,
             typeSystemDescription);
-    AnalysisEngine a3 = AnalysisEngineFactory.createPrimitive(Annotator3.class,
+    AnalysisEngine a3 = AnalysisEngineFactory.createEngine(Annotator3.class,
             typeSystemDescription);
     jCas.setDocumentText("betgetjetletmetnetpetsetvetwetyet");
     SimplePipeline.runPipeline(jCas, a1, a2, a3);
@@ -87,7 +87,7 @@ public class XmiTest extends ExamplesTestBase {
   public void testWithXmi() throws Exception {
     jCas = JCasFactory.createJCas("src/main/resources/org/apache/uima/fit/examples/xmi/1.xmi",
             typeSystemDescription);
-    AnalysisEngine a3 = AnalysisEngineFactory.createPrimitive(Annotator3.class,
+    AnalysisEngine a3 = AnalysisEngineFactory.createEngine(Annotator3.class,
             typeSystemDescription);
     a3.process(jCas);
     Sentence sentence = JCasUtil.selectByIndex(jCas, Sentence.class, 0);
@@ -102,9 +102,9 @@ public class XmiTest extends ExamplesTestBase {
    */
   public static void main(String[] args) throws Exception {
     TypeSystemDescription tsd = createTypeSystemDescription("org.apache.uima.fit.examples.TypeSystem");
-    AnalysisEngine a1 = AnalysisEngineFactory.createPrimitive(Annotator1.class, tsd);
-    AnalysisEngine a2 = AnalysisEngineFactory.createPrimitive(Annotator2.class, tsd);
-    AnalysisEngine xWriter = AnalysisEngineFactory.createPrimitive(XWriter.class, tsd,
+    AnalysisEngine a1 = AnalysisEngineFactory.createEngine(Annotator1.class, tsd);
+    AnalysisEngine a2 = AnalysisEngineFactory.createEngine(Annotator2.class, tsd);
+    AnalysisEngine xWriter = AnalysisEngineFactory.createEngine(XWriter.class, tsd,
             XWriter.PARAM_OUTPUT_DIRECTORY_NAME,
             "src/main/resources/org/apache/uima/fit/examples/xmi");
     JCas jCas = JCasFactory.createJCas(tsd);

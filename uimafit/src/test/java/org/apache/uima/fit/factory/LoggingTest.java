@@ -18,7 +18,7 @@
  */
 package org.apache.uima.fit.factory;
 
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitive;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createCollectionReader;
 import static org.junit.Assert.assertEquals;
 
@@ -222,22 +222,22 @@ public class LoggingTest {
       // createFlowControllerDescription(LoggingJCasFlowController.class).
       // assertLogDone(records);
 
-      createPrimitive(LoggingCasAnnotator.class).process(jcas.getCas());
+      createEngine(LoggingCasAnnotator.class).process(jcas.getCas());
       assertLogDone(records);
 
-      createPrimitive(LoggingJCasAnnotator.class).process(jcas);
+      createEngine(LoggingJCasAnnotator.class).process(jcas);
       assertLogDone(records);
 
-      createPrimitive(LoggingCasConsumer.class).process(jcas.getCas());
+      createEngine(LoggingCasConsumer.class).process(jcas.getCas());
       assertLogDone(records);
 
-      createPrimitive(LoggingJCasConsumer.class).process(jcas);
+      createEngine(LoggingJCasConsumer.class).process(jcas);
       assertLogDone(records);
 
-      createPrimitive(LoggingCasMultiplier.class).process(jcas.getCas());
+      createEngine(LoggingCasMultiplier.class).process(jcas.getCas());
       assertLogDone(records);
 
-      createPrimitive(LoggingJCasMultiplier.class).process(jcas);
+      createEngine(LoggingJCasMultiplier.class).process(jcas);
       assertLogDone(records);
     } finally {
       if (oldLevel != null) {

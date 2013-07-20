@@ -42,7 +42,7 @@
     <programlisting>TypeSystemDescription tsd = 
   TypeSystemDescriptionFactory.createTypeSystemDescription()</programlisting>
     <para>Popular factory methods also support auto-detection:</para>
-    <programlisting>AnalysisEngine ae = createPrimitive(MyEngine.class);</programlisting>
+    <programlisting>AnalysisEngine ae = createEngine(MyEngine.class);</programlisting>
   </section>
   <section>
     <title>Multiple <filename>META-INF/org.uimafit/types.txt</filename> files</title>

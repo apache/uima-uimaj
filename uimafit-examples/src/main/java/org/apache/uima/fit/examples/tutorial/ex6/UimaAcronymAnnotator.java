@@ -18,7 +18,7 @@
  */
 package org.apache.uima.fit.examples.tutorial.ex6;
 
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.bindResource;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDescription;
 import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTypeSystemDescription;
@@ -77,7 +77,7 @@ public class UimaAcronymAnnotator extends JCasAnnotator_ImplBase {
   public static AnalysisEngineDescription createDescription() throws InvalidXMLException,
           ResourceInitializationException {
     TypeSystemDescription tsd = createTypeSystemDescription("org.apache.uima.fit.examples.tutorial.type.TypeSystem");
-    AnalysisEngineDescription aed = createPrimitiveDescription(UimaAcronymAnnotator.class, tsd);
+    AnalysisEngineDescription aed = createEngineDescription(UimaAcronymAnnotator.class, tsd);
     ExternalResourceDescription erd = createExternalResourceDescription("UimaAcronymTableFile",
             StringMapResource_impl.class, "file:org/uimafit/tutorial/ex6/uimaAcronyms.txt");
     bindResource(aed, RESOURCE_ACRONYM_TABLE, erd);

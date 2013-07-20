@@ -18,7 +18,7 @@
  */
 package org.apache.uima.fit.cpe;
 
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createAggregateDescription;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -56,7 +56,7 @@ public final class CpePipeline {
           final AnalysisEngineDescription... descs) throws UIMAException, SAXException,
           CpeDescriptorException, IOException {
     // Create AAE
-    final AnalysisEngineDescription aaeDesc = createAggregateDescription(descs);
+    final AnalysisEngineDescription aaeDesc = createEngineDescription(descs);
 
     CpeBuilder builder = new CpeBuilder();
     builder.setReader(readerDesc);

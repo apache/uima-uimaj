@@ -39,7 +39,7 @@ public class GetStartedQuickPipeline {
 
     // Instantiate the analysis engine using the value "uimaFIT" for the parameter
     // PARAM_STRING ("stringParam").
-    AnalysisEngine analysisEngine = AnalysisEngineFactory.createPrimitive(GetStartedQuickAE.class,
+    AnalysisEngine analysisEngine = AnalysisEngineFactory.createEngine(GetStartedQuickAE.class,
             GetStartedQuickAE.PARAM_STRING, "uimaFIT");
 
     // run the analysis engine and look for a special greeting in your console.

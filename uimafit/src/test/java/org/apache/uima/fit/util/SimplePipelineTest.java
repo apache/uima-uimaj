@@ -39,11 +39,11 @@ public class SimplePipelineTest extends ComponentTestBase {
   @Test
   public void test1() throws UIMAException, IOException {
     JCasFactory.loadJCas(jCas, "src/test/resources/data/docs/test.xmi");
-    AnalysisEngineDescription aed1 = AnalysisEngineFactory.createPrimitiveDescription(
+    AnalysisEngineDescription aed1 = AnalysisEngineFactory.createEngineDescription(
             Annotator1.class, typeSystemDescription);
-    AnalysisEngineDescription aed2 = AnalysisEngineFactory.createPrimitiveDescription(
+    AnalysisEngineDescription aed2 = AnalysisEngineFactory.createEngineDescription(
             Annotator2.class, typeSystemDescription);
-    AnalysisEngineDescription aed3 = AnalysisEngineFactory.createPrimitiveDescription(
+    AnalysisEngineDescription aed3 = AnalysisEngineFactory.createEngineDescription(
             Annotator3.class, typeSystemDescription);
     SimplePipeline.runPipeline(jCas, aed1, aed2, aed3);
 

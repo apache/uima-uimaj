@@ -18,7 +18,7 @@
  */
 package org.apache.uima.fit.factory;
 
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitive;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.FsIndexFactory.createFsIndexCollection;
 import static org.junit.Assert.assertEquals;
 
@@ -30,15 +30,15 @@ import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.fit.ComponentTestBase;
 import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
-import org.uimafit.descriptor.FsIndex;
-import org.uimafit.descriptor.FsIndexCollection;
-import org.uimafit.descriptor.FsIndexKey;
 import org.apache.uima.fit.type.Sentence;
 import org.apache.uima.fit.type.Token;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.FsIndexKeyDescription;
 import org.junit.Test;
+import org.uimafit.descriptor.FsIndex;
+import org.uimafit.descriptor.FsIndexCollection;
+import org.uimafit.descriptor.FsIndexKey;
 
 /**
  */
@@ -78,7 +78,7 @@ public class FsIndexFactoryTest extends ComponentTestBase {
   public void testIndexesWork() throws Exception {
     // Index should be added the descriptor and thus end up in the CAS generated from the
     // analysis engine.
-    AnalysisEngine desc = createPrimitive(IndexTestComponent.class);
+    AnalysisEngine desc = createEngine(IndexTestComponent.class);
     JCas jcas = desc.newJCas();
 
     Token token1 = new Token(jcas, 1, 2);

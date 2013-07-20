@@ -19,10 +19,9 @@
 
 package org.apache.uima.fit.factory;
 
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createAggregate;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createAggregateDescription;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitive;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.bindExternalResource;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDescription;
 import static org.junit.Assert.assertNotNull;
@@ -62,13 +61,13 @@ public class AnalysisEngineFactoryExternalResourceTest {
    */
   @Test
   public void resource_testInjection() throws Exception {
-    AnalysisEngineDescription aeDesc = saveLoad(createPrimitiveDescription(
+    AnalysisEngineDescription aeDesc = saveLoad(createEngineDescription(
             TestAnalysisEngineWithResource.class,
             TestAnalysisEngineWithResource.PARAM_RESOURCE,
             createExternalResourceDescription(TestExternalResource.class,
                     TestExternalResource.PARAM_VALUE, TestExternalResource.EXPECTED_VALUE)));
 
-    AnalysisEngine ae = createPrimitive(aeDesc);
+    AnalysisEngine ae = createEngine(aeDesc);
     ae.process(ae.newCAS());
   }
 
@@ -81,23 +80,23 @@ public class AnalysisEngineFactoryExternalResourceTest {
             TestExternalResource.class, TestExternalResource.PARAM_VALUE,
             TestExternalResource.EXPECTED_VALUE);
 
-    AnalysisEngineDescription aeDesc1 = saveLoad(createPrimitiveDescription(
+    AnalysisEngineDescription aeDesc1 = saveLoad(createEngineDescription(
             TestAnalysisEngineWithResource.class, TestAnalysisEngineWithResource.PARAM_RESOURCE,
             resDesc));
 
-    AnalysisEngineDescription aeDesc2 = saveLoad(createPrimitiveDescription(
+    AnalysisEngineDescription aeDesc2 = saveLoad(createEngineDescription(
             TestAnalysisEngineWithResource.class, TestAnalysisEngineWithResource.PARAM_RESOURCE,
             resDesc));
 
     dumpResourceConfiguration(aeDesc1);
     dumpResourceConfiguration(aeDesc2);
 
-    AnalysisEngine ae1 = createPrimitive(aeDesc1);
-    AnalysisEngine ae2 = createPrimitive(aeDesc2);
+    AnalysisEngine ae1 = createEngine(aeDesc1);
+    AnalysisEngine ae2 = createEngine(aeDesc2);
     ae1.process(ae1.newCAS());
     ae2.process(ae2.newCAS());
 
-    AnalysisEngine ae3 = createAggregate(createAggregateDescription(aeDesc1, aeDesc2));
+    AnalysisEngine ae3 = createEngine(createEngineDescription(aeDesc1, aeDesc2));
     ae3.process(ae3.newCAS());
   }
 
@@ -106,7 +105,7 @@ public class AnalysisEngineFactoryExternalResourceTest {
    */
   @Test
   public void resource_testSimpleNesting() throws Exception {
-    AnalysisEngineDescription aeDesc = saveLoad(createPrimitiveDescription(
+    AnalysisEngineDescription aeDesc = saveLoad(createEngineDescription(
             TestAnalysisEngineWithResource.class,
             TestAnalysisEngineWithResource.PARAM_RESOURCE,
             createExternalResourceDescription(
@@ -117,7 +116,7 @@ public class AnalysisEngineFactoryExternalResourceTest {
                     createExternalResourceDescription(TestExternalResource.class,
                             TestExternalResource.PARAM_VALUE, TestExternalResource.EXPECTED_VALUE))));
 
-    AnalysisEngine ae = createPrimitive(aeDesc);
+    AnalysisEngine ae = createEngine(aeDesc);
     ae.process(ae.newCAS());
   }
 
@@ -134,25 +133,25 @@ public class AnalysisEngineFactoryExternalResourceTest {
             createExternalResourceDescription(TestExternalResource.class,
                     TestExternalResource.PARAM_VALUE, TestExternalResource.EXPECTED_VALUE));
 
-    AnalysisEngineDescription aeDesc1 = saveLoad(createPrimitiveDescription(
+    AnalysisEngineDescription aeDesc1 = saveLoad(createEngineDescription(
             TestAnalysisEngineWithResource.class, TestAnalysisEngineWithResource.PARAM_RESOURCE,
             resDesc));
 
     dumpResourceConfiguration(aeDesc1);
 
-    AnalysisEngineDescription aeDesc2 = saveLoad(createPrimitiveDescription(
+    AnalysisEngineDescription aeDesc2 = saveLoad(createEngineDescription(
             TestAnalysisEngineWithResource.class, TestAnalysisEngineWithResource.PARAM_RESOURCE,
             resDesc));
 
     dumpResourceConfiguration(aeDesc1);
     dumpResourceConfiguration(aeDesc2);
 
-    AnalysisEngine ae1 = createPrimitive(aeDesc1);
-    AnalysisEngine ae2 = createPrimitive(aeDesc2);
+    AnalysisEngine ae1 = createEngine(aeDesc1);
+    AnalysisEngine ae2 = createEngine(aeDesc2);
     ae1.process(ae1.newCAS());
     ae2.process(ae2.newCAS());
 
-    AnalysisEngine ae3 = createAggregate(createAggregateDescription(aeDesc1, aeDesc2));
+    AnalysisEngine ae3 = createEngine(createEngineDescription(aeDesc1, aeDesc2));
     ae3.process(ae3.newCAS());
   }
 
@@ -169,7 +168,7 @@ public class AnalysisEngineFactoryExternalResourceTest {
             TestExternalResource2.class, TestExternalResource2.PARAM_RESOURCE, resDesc2,
             TestExternalResource.PARAM_VALUE, TestExternalResource.EXPECTED_VALUE);
 
-    AnalysisEngineDescription aeDesc = saveLoad(createPrimitiveDescription(
+    AnalysisEngineDescription aeDesc = saveLoad(createEngineDescription(
             TestAnalysisEngineWithResource.class,
             TestAnalysisEngineWithResource.PARAM_RESOURCE,
             createExternalResourceDescription(TestExternalResource2.class,
@@ -178,7 +177,7 @@ public class AnalysisEngineFactoryExternalResourceTest {
 
     dumpResourceConfiguration(aeDesc);
 
-    AnalysisEngine ae = createPrimitive(aeDesc);
+    AnalysisEngine ae = createEngine(aeDesc);
     ae.process(ae.newCAS());
   }
 
@@ -192,13 +191,13 @@ public class AnalysisEngineFactoryExternalResourceTest {
             TestExternalResource.EXPECTED_VALUE);
     bindExternalResource(resDesc, TestExternalResource2.PARAM_RESOURCE, resDesc);
 
-    AnalysisEngineDescription aeDesc = saveLoad(createPrimitiveDescription(
+    AnalysisEngineDescription aeDesc = saveLoad(createEngineDescription(
             TestAnalysisEngineWithResource.class, TestAnalysisEngineWithResource.PARAM_RESOURCE,
             resDesc));
 
     dumpResourceConfiguration(aeDesc);
 
-    AnalysisEngine ae = createPrimitive(aeDesc);
+    AnalysisEngine ae = createEngine(aeDesc);
     ae.process(ae.newCAS());
   }
 
@@ -212,23 +211,23 @@ public class AnalysisEngineFactoryExternalResourceTest {
             TestExternalResource.EXPECTED_VALUE);
     bindExternalResource(resDesc, TestExternalResource2.PARAM_RESOURCE, resDesc);
 
-    AnalysisEngineDescription aeDesc1 = saveLoad(createPrimitiveDescription(
+    AnalysisEngineDescription aeDesc1 = saveLoad(createEngineDescription(
             TestAnalysisEngineWithResource.class, TestAnalysisEngineWithResource.PARAM_RESOURCE,
             resDesc));
 
-    AnalysisEngineDescription aeDesc2 = saveLoad(createPrimitiveDescription(
+    AnalysisEngineDescription aeDesc2 = saveLoad(createEngineDescription(
             TestAnalysisEngineWithResource.class, TestAnalysisEngineWithResource.PARAM_RESOURCE,
             resDesc));
 
     dumpResourceConfiguration(aeDesc1);
     dumpResourceConfiguration(aeDesc2);
 
-    AnalysisEngine ae1 = createPrimitive(aeDesc1);
-    AnalysisEngine ae2 = createPrimitive(aeDesc2);
+    AnalysisEngine ae1 = createEngine(aeDesc1);
+    AnalysisEngine ae2 = createEngine(aeDesc2);
     ae1.process(ae1.newCAS());
     ae2.process(ae2.newCAS());
 
-    AnalysisEngine ae3 = createAggregate(createAggregateDescription(aeDesc1, aeDesc2));
+    AnalysisEngine ae3 = createEngine(createEngineDescription(aeDesc1, aeDesc2));
     ae3.process(ae3.newCAS());
   }
 
@@ -237,13 +236,13 @@ public class AnalysisEngineFactoryExternalResourceTest {
    */
   @Test
   public void sharedObject_testInjection() throws Exception {
-    AnalysisEngineDescription aeDesc = saveLoad(createPrimitiveDescription(
+    AnalysisEngineDescription aeDesc = saveLoad(createEngineDescription(
             TestAnalysisEngineWithSharedResourceObject.class,
             TestAnalysisEngineWithSharedResourceObject.PARAM_RESOURCE,
             createExternalResourceDescription(TestSharedResourceObject.class, "http://dumm.my",
                     TestSharedResourceObject.PARAM_VALUE, TestSharedResourceObject.EXPECTED_VALUE)));
 
-    AnalysisEngine ae = createPrimitive(aeDesc);
+    AnalysisEngine ae = createEngine(aeDesc);
     ae.process(ae.newCAS());
   }
 
@@ -256,23 +255,23 @@ public class AnalysisEngineFactoryExternalResourceTest {
             TestSharedResourceObject.class, "http://dumm.my", TestSharedResourceObject.PARAM_VALUE,
             TestSharedResourceObject.EXPECTED_VALUE);
 
-    AnalysisEngineDescription aeDesc1 = saveLoad(createPrimitiveDescription(
+    AnalysisEngineDescription aeDesc1 = saveLoad(createEngineDescription(
             TestAnalysisEngineWithSharedResourceObject.class,
             TestAnalysisEngineWithSharedResourceObject.PARAM_RESOURCE, resDesc));
 
-    AnalysisEngineDescription aeDesc2 = saveLoad(createPrimitiveDescription(
+    AnalysisEngineDescription aeDesc2 = saveLoad(createEngineDescription(
             TestAnalysisEngineWithSharedResourceObject.class,
             TestAnalysisEngineWithSharedResourceObject.PARAM_RESOURCE, resDesc));
 
     dumpResourceConfiguration(aeDesc1);
     dumpResourceConfiguration(aeDesc2);
 
-    AnalysisEngine ae1 = createPrimitive(aeDesc1);
-    AnalysisEngine ae2 = createPrimitive(aeDesc2);
+    AnalysisEngine ae1 = createEngine(aeDesc1);
+    AnalysisEngine ae2 = createEngine(aeDesc2);
     ae1.process(ae1.newCAS());
     ae2.process(ae2.newCAS());
 
-    AnalysisEngine ae3 = createAggregate(createAggregateDescription(aeDesc1, aeDesc2));
+    AnalysisEngine ae3 = createEngine(createEngineDescription(aeDesc1, aeDesc2));
     ae3.process(ae3.newCAS());
   }
 
@@ -286,13 +285,13 @@ public class AnalysisEngineFactoryExternalResourceTest {
             TestSharedResourceObject.PARAM_VALUE, TestSharedResourceObject.EXPECTED_VALUE);
     bindExternalResource(resDesc, TestSharedResourceObject2.PARAM_RESOURCE, resDesc);
 
-    AnalysisEngineDescription aeDesc = saveLoad(createPrimitiveDescription(
+    AnalysisEngineDescription aeDesc = saveLoad(createEngineDescription(
             TestAnalysisEngineWithSharedResourceObject.class,
             TestAnalysisEngineWithSharedResourceObject.PARAM_RESOURCE, resDesc));
 
     dumpResourceConfiguration(aeDesc);
 
-    AnalysisEngine ae = createPrimitive(aeDesc);
+    AnalysisEngine ae = createEngine(aeDesc);
     ae.process(ae.newCAS());
   }
 

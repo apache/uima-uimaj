@@ -20,8 +20,8 @@
 package org.apache.uima.fit.cpe;
 
 import static java.util.Arrays.asList;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createAggregateDescription;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDescription;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -61,14 +61,14 @@ public class ExternalResourceFactoryTest {
     ExternalResourceDescription extDesc = createExternalResourceDescription(ResourceWithAssert.class);
 
     // Binding external resource to each Annotator individually
-    AnalysisEngineDescription aed1 = createPrimitiveDescription(MultiBindAE.class,
+    AnalysisEngineDescription aed1 = createEngineDescription(MultiBindAE.class,
             MultiBindAE.RES_KEY, extDesc);
-    AnalysisEngineDescription aed2 = createPrimitiveDescription(MultiBindAE.class,
+    AnalysisEngineDescription aed2 = createEngineDescription(MultiBindAE.class,
             MultiBindAE.RES_KEY, extDesc);
 
     // Check the external resource was injected
     MultiBindAE.reset();
-    AnalysisEngineDescription aaed = createAggregateDescription(aed1, aed2);
+    AnalysisEngineDescription aaed = createEngineDescription(aed1, aed2);
     CpePipeline.runPipeline(CollectionReaderFactory.createDescription(Reader.class), aaed);
   }
 
@@ -80,7 +80,7 @@ public class ExternalResourceFactoryTest {
     ExternalResourceDescription extDesc1 = createExternalResourceDescription(ResourceWithAssert.class);
     ExternalResourceDescription extDesc2 = createExternalResourceDescription(ResourceWithAssert.class);
 
-    AnalysisEngineDescription aed = createPrimitiveDescription(MultiValuedResourceAE.class,
+    AnalysisEngineDescription aed = createEngineDescription(MultiValuedResourceAE.class,
             MultiValuedResourceAE.RES_RESOURCE_ARRAY, asList(extDesc1, extDesc2));
 
     CpePipeline.runPipeline(CollectionReaderFactory.createDescription(Reader.class), aed);
@@ -96,10 +96,10 @@ public class ExternalResourceFactoryTest {
     ExternalResourceDescription extDesc1 = createExternalResourceDescription(ResourceWithAssert.class);
     ExternalResourceDescription extDesc2 = createExternalResourceDescription(ResourceWithAssert.class);
 
-    AnalysisEngineDescription aed = createAggregateDescription(
-            createPrimitiveDescription(MultiValuedResourceAE.class,
+    AnalysisEngineDescription aed = createEngineDescription(
+            createEngineDescription(MultiValuedResourceAE.class,
                     MultiValuedResourceAE.RES_RESOURCE_ARRAY, asList(extDesc1, extDesc2)),
-            createPrimitiveDescription(MultiValuedResourceAE.class,
+            createEngineDescription(MultiValuedResourceAE.class,
                     MultiValuedResourceAE.RES_RESOURCE_ARRAY, asList(extDesc1, extDesc2)));
 
     CpePipeline.runPipeline(CollectionReaderFactory.createDescription(Reader.class), aed);
@@ -119,10 +119,10 @@ public class ExternalResourceFactoryTest {
     ExternalResourceDescription extDesc1 = createExternalResourceDescription(ResourceWithAssert.class);
     ExternalResourceDescription extDesc2 = createExternalResourceDescription(ResourceWithAssert.class);
 
-    AnalysisEngineDescription aed = createAggregateDescription(
-            createPrimitiveDescription(MultiValuedResourceAE.class,
+    AnalysisEngineDescription aed = createEngineDescription(
+            createEngineDescription(MultiValuedResourceAE.class,
                     MultiValuedResourceAE.RES_RESOURCE_ARRAY, asList(extDesc1, extDesc2)),
-            createAggregateDescription(createPrimitiveDescription(MultiValuedResourceAE.class,
+            createEngineDescription(createEngineDescription(MultiValuedResourceAE.class,
                     MultiValuedResourceAE.RES_RESOURCE_ARRAY, asList(extDesc1, extDesc2))));
 
     CpePipeline.runPipeline(CollectionReaderFactory.createDescription(Reader.class), aed);
@@ -151,7 +151,7 @@ public class ExternalResourceFactoryTest {
             MultiValuedResource.RES_RESOURCE_LIST, new ExternalResourceDescription[] { extDesc3,
                 extDesc4 });
 
-    AnalysisEngineDescription aed = createPrimitiveDescription(MultiValuedResourceAE.class,
+    AnalysisEngineDescription aed = createEngineDescription(MultiValuedResourceAE.class,
             MultiValuedResourceAE.RES_RESOURCE_ARRAY, asList(mv1, mv2));
 
     CpePipeline.runPipeline(CollectionReaderFactory.createDescription(Reader.class), aed);

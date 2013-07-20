@@ -109,16 +109,16 @@ public class SimplePipelineTest {
   @Test
   public void testWithInstances() throws Exception {
     SimplePipeline.runPipeline(createCollectionReader(Reader.class),
-            createPrimitive(Annotator.class),
-            createPrimitive(Writer.class));
+            createEngine(Annotator.class),
+            createEngine(Writer.class));
     assertEquals(Arrays.asList(SENTENCE_TEXT), Writer.SENTENCES);
   }
 
   @Test
   public void testWithDescriptors() throws Exception {
     SimplePipeline.runPipeline(createDescription(Reader.class),
-            createPrimitiveDescription(Annotator.class),
-            createPrimitiveDescription(Writer.class));
+            createEngineDescription(Annotator.class),
+            createEngineDescription(Writer.class));
     assertEquals(Arrays.asList(SENTENCE_TEXT), Writer.SENTENCES);
   }
 }

@@ -44,7 +44,7 @@ public class RoomNumberAnnotator2Test extends ExamplesTestBase {
    */
   @Test
   public void testRNA1() throws Exception {
-    AnalysisEngine roomNumberAnnotatorAE = AnalysisEngineFactory.createPrimitive(
+    AnalysisEngine roomNumberAnnotatorAE = AnalysisEngineFactory.createEngine(
             RoomNumberAnnotator.class, typeSystemDescription);
     jCas.setDocumentText("The meeting is over at Yorktown 01-144");
     roomNumberAnnotatorAE.process(jCas);

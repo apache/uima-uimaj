@@ -195,27 +195,27 @@ public class AggregateBuilder {
 
   /**
    * This method simply delegates to
-   * {@link AnalysisEngineFactory#createAggregate(List, TypeSystemDescription, TypePriorities, SofaMapping[], Object...)}
+   * {@link AnalysisEngineFactory#createEngine(List, TypeSystemDescription, TypePriorities, SofaMapping[], Object...)}
    * with the data collected by this builder.
    * 
    * @return an aggregate analysis engine
    */
   public AnalysisEngine createAggregate() throws ResourceInitializationException {
-    return AnalysisEngineFactory.createAggregate(analysisEngineDescriptions, componentNames,
+    return AnalysisEngineFactory.createEngine(analysisEngineDescriptions, componentNames,
             typePriorities, sofaMappings.toArray(new SofaMapping[sofaMappings.size()]),
             flowControllerDescription);
   }
 
   /**
    * This method simply delegates to
-   * {@link AnalysisEngineFactory#createAggregateDescription(List, TypeSystemDescription, TypePriorities, SofaMapping[], Object...)}
+   * {@link AnalysisEngineFactory#createEngineDescription(List, TypeSystemDescription, TypePriorities, SofaMapping[], Object...)}
    * with the data collected by this builder.
    * 
    * @return a description of an aggregate analysis engine
    */
   public AnalysisEngineDescription createAggregateDescription()
           throws ResourceInitializationException {
-    return AnalysisEngineFactory.createAggregateDescription(analysisEngineDescriptions,
+    return AnalysisEngineFactory.createEngineDescription(analysisEngineDescriptions,
             componentNames, typePriorities,
             sofaMappings.toArray(new SofaMapping[sofaMappings.size()]), flowControllerDescription);
   }

@@ -38,7 +38,7 @@ public class TypeCapabilityTest extends ComponentTestBase {
 
   @Test
   public void testTC() throws ResourceInitializationException {
-    AnalysisEngineDescription aed = AnalysisEngineFactory.createPrimitiveDescription(
+    AnalysisEngineDescription aed = AnalysisEngineFactory.createEngineDescription(
             Annotator4.class, typeSystemDescription);
     Capability[] capabilities = aed.getAnalysisEngineMetaData().getCapabilities();
     assertEquals(1, capabilities.length);

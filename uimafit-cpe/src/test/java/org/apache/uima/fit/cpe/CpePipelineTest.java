@@ -44,8 +44,8 @@ public class CpePipelineTest
 		throws Exception
 	{
 		CpePipeline.runPipeline(CollectionReaderFactory.createDescription(Reader.class),
-				AnalysisEngineFactory.createPrimitiveDescription(Annotator.class),
-				AnalysisEngineFactory.createPrimitiveDescription(Writer.class));
+				AnalysisEngineFactory.createEngineDescription(Annotator.class),
+				AnalysisEngineFactory.createEngineDescription(Writer.class));
 		Assert.assertEquals(MARKER, Writer.MARKER_SEEN);
 	}
 

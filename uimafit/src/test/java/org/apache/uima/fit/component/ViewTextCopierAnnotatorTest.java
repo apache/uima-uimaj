@@ -46,7 +46,7 @@ public class ViewTextCopierAnnotatorTest extends ComponentTestBase {
     String destinationViewName = "DestinationView";
 
     jCas.setDocumentText(text);
-    AnalysisEngine viewCreator = AnalysisEngineFactory.createPrimitive(
+    AnalysisEngine viewCreator = AnalysisEngineFactory.createEngine(
             ViewTextCopierAnnotator.class, typeSystemDescription,
             ViewTextCopierAnnotator.PARAM_SOURCE_VIEW_NAME, CAS.NAME_DEFAULT_SOFA,
             ViewTextCopierAnnotator.PARAM_DESTINATION_VIEW_NAME, destinationViewName);
@@ -63,7 +63,7 @@ public class ViewTextCopierAnnotatorTest extends ComponentTestBase {
     assertNotNull(destinationView);
     assertEquals(text, destinationView.getDocumentText());
 
-    viewCreator = AnalysisEngineFactory.createPrimitive(ViewTextCopierAnnotator.class,
+    viewCreator = AnalysisEngineFactory.createEngine(ViewTextCopierAnnotator.class,
             typeSystemDescription, ViewTextCopierAnnotator.PARAM_SOURCE_VIEW_NAME, sourceViewName,
             ViewTextCopierAnnotator.PARAM_DESTINATION_VIEW_NAME, destinationViewName);
     jCas.reset();
@@ -83,7 +83,7 @@ public class ViewTextCopierAnnotatorTest extends ComponentTestBase {
     String sourceViewName = "SourceView";
     String destinationViewName = "DestinationView";
 
-    AnalysisEngine viewCreator = AnalysisEngineFactory.createPrimitive(
+    AnalysisEngine viewCreator = AnalysisEngineFactory.createEngine(
             ViewTextCopierAnnotator.class, typeSystemDescription,
             ViewTextCopierAnnotator.PARAM_SOURCE_VIEW_NAME, sourceViewName,
             ViewTextCopierAnnotator.PARAM_DESTINATION_VIEW_NAME, destinationViewName);

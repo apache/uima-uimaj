@@ -18,8 +18,7 @@
  */
 package org.apache.uima.fit.examples.tutorial.ex6;
 
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createAnalysisEngineDescription;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.bindResource;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDescription;
 import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTypeSystemDescription;
@@ -136,13 +135,13 @@ public class UimaMeetingAnnotator extends JCasAnnotator_ImplBase {
     outputDirectory.mkdirs();
 
     TypeSystemDescription tsd = createTypeSystemDescription("org.apache.uima.fit.tutorial.type.TypeSystem");
-    AnalysisEngineDescription aed = createPrimitiveDescription(UimaMeetingAnnotator.class, tsd);
+    AnalysisEngineDescription aed = createEngineDescription(UimaMeetingAnnotator.class, tsd);
 
     aed.toXML(new FileOutputStream(new File(outputDirectory, "UimaMeetingAnnotator.xml")));
 
     AggregateBuilder builder = new AggregateBuilder();
-    builder.add(createAnalysisEngineDescription("org.apache.uima.fit.tutorial.ex6.UimaAcronymAnnotator"));
-    builder.add(createAnalysisEngineDescription("org.apache.uima.fit.tutorial.ex6.UimaMeetingAnnotator"));
+    builder.add(createEngineDescription("org.apache.uima.fit.tutorial.ex6.UimaAcronymAnnotator"));
+    builder.add(createEngineDescription("org.apache.uima.fit.tutorial.ex6.UimaMeetingAnnotator"));
     AnalysisEngineDescription aggregate = builder.createAggregateDescription();
 
     ExternalResourceDescription erd = createExternalResourceDescription("UimaAcronymTableFile",

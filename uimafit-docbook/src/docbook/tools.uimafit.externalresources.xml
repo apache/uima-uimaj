@@ -46,7 +46,7 @@ public static final class SharedModel implements SharedResourceObject {
         any off-the-shelf UIMA component, the following example uses uimaFIT to configure the
         OpenNLP Tokenizer:</para>
       <programlisting>// Create descriptor
-AnalysisEngineDescription tokenizer = createPrimitiveDescription(
+AnalysisEngineDescription tokenizer = createEngineDescription(
   Tokenizer.class,
   UimaUtil.TOKEN_TYPE_PARAMETER, Token.class.getName(),
   UimaUtil.SENTENCE_TYPE_PARAMETER, Sentence.class.getName());
@@ -164,17 +164,17 @@ public static class Annotator
   SharedModel.class, new File("somemodel.bin"));
 		
 // Binding external resource to each Annotator individually
-AnalysisEngineDescription aed1 = createPrimitiveDescription(
+AnalysisEngineDescription aed1 = createEngineDescription(
   Annotator.class,
   Annotator.MODEL_KEY, extDesc);
 
-AnalysisEngineDescription aed2 = createPrimitiveDescription(
+AnalysisEngineDescription aed2 = createEngineDescription(
   Annotator.class,
   Annotator.MODEL_KEY, extDesc);
 
 // Check the external resource was injected
-AnalysisEngineDescription aaed = createAggregateDescription(aed1, aed2);
-AnalysisEngine ae = createAggregate(aaed);
+AnalysisEngineDescription aaed = createEngineDescription(aed1, aed2);
+AnalysisEngine ae = createEngine(aaed);
 ae.process(ae.newJCas());</programlisting></para>
       <para>This example is given as a full JUnit-based example in the the
           <emphasis>uimaFIT-examples</emphasis> project.</para>
@@ -274,7 +274,7 @@ ae.process(ae.newJCas());</programlisting></para>
   Dictionary dictionary;
 }
 
-AnalysisEngineDescription desc = createPrimitiveDescription(
+AnalysisEngineDescription desc = createEngineDescription(
   MyAnalysisEngine2.class);
 
 bindResource(desc, MyAnalysisEngine2.RES_DICTIONARY, 

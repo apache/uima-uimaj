@@ -33,13 +33,13 @@ public class DefaultPackageAETest extends ComponentTestBase {
 
   @Test
   public void testPackageLessAE() throws Exception {
-    AnalysisEngineDescription aed = AnalysisEngineFactory.createPrimitiveDescription(
+    AnalysisEngineDescription aed = AnalysisEngineFactory.createEngineDescription(
             DefaultPackageAE.class, (Object[]) null);
     jCas.setDocumentText("some text");
     SimplePipeline.runPipeline(jCas, aed);
 
     aed = AnalysisEngineFactory
-            .createPrimitiveDescription(DefaultPackageAE2.class, (Object[]) null);
+            .createEngineDescription(DefaultPackageAE2.class, (Object[]) null);
     jCas.reset();
     jCas.setDocumentText("some text");
     SimplePipeline.runPipeline(jCas, aed);

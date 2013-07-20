@@ -19,7 +19,7 @@
 
 package org.apache.uima.fit.factory;
 
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDependencies;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -29,6 +29,7 @@ import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.fit.ComponentTestBase;
+import org.apache.uima.fit.component.initialize.ExternalResourceInitializer;
 import org.apache.uima.fit.factory.testAes.ParameterizedAE2;
 import org.apache.uima.resource.ExternalResourceDependency;
 import org.junit.Test;
@@ -47,7 +48,7 @@ public class ExternalResourceConfiguratorTest extends ComponentTestBase {
 
   @Test
   public void testDescriptor() throws Exception {
-    AnalysisEngineDescription desc = createPrimitiveDescription(ParameterizedAE2.class,
+    AnalysisEngineDescription desc = createEngineDescription(ParameterizedAE2.class,
             typeSystemDescription);
     verify(desc.getExternalResourceDependencies());
   }

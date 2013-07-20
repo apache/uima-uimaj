@@ -19,7 +19,7 @@
 package org.apache.uima.fit.factory;
 
 import static org.apache.commons.io.FileUtils.readFileToString;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitive;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
@@ -59,7 +59,7 @@ public class JCasBuilderTest extends ComponentTestBase {
     jb.close();
 
     File outputFile = new File(folder.getRoot(), "dump-output.txt");
-    AnalysisEngine writer = createPrimitive(CASDumpWriter.class, CASDumpWriter.PARAM_OUTPUT_FILE,
+    AnalysisEngine writer = createEngine(CASDumpWriter.class, CASDumpWriter.PARAM_OUTPUT_FILE,
             outputFile.getPath());
     writer.process(jb.getJCas());
 

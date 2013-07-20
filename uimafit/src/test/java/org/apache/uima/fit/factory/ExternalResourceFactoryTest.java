@@ -20,9 +20,9 @@
 package org.apache.uima.fit.factory;
 
 import static java.util.Arrays.asList;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createAggregate;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createAggregateDescription;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.bindExternalResource;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.bindResource;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.createDependencyAndBind;
@@ -94,7 +94,7 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
   @Test
   public void testScanBind() throws Exception {
     // Create analysis enginge description
-    AnalysisEngineDescription desc = createPrimitiveDescription(DummyAE.class);
+    AnalysisEngineDescription desc = createEngineDescription(DummyAE.class);
 
     // Bind external resources
     bindResources(desc);
@@ -107,7 +107,7 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
   @Test
   public void testDirectInjection() throws Exception {
     // Create analysis enginge description
-    AnalysisEngineDescription desc = createPrimitiveDescription(DummyAE2.class);
+    AnalysisEngineDescription desc = createEngineDescription(DummyAE2.class);
 
     // Bind external resources for DummyAE
     bindResources(desc);
@@ -135,7 +135,7 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
   @Test
   public void testDirectInjectionAutowire() throws Exception {
     // Create analysis engine description
-    AnalysisEngineDescription desc = createPrimitiveDescription(DummyAE2.class);
+    AnalysisEngineDescription desc = createEngineDescription(DummyAE2.class);
 
     // Bind external resources for DummyAE
     bindResources(desc);
@@ -162,15 +162,15 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
     ExternalResourceDescription extDesc = createExternalResourceDescription(ResourceWithAssert.class);
 
     // Binding external resource to each Annotator individually
-    AnalysisEngineDescription aed1 = createPrimitiveDescription(MultiBindAE.class,
+    AnalysisEngineDescription aed1 = createEngineDescription(MultiBindAE.class,
             MultiBindAE.RES_KEY, extDesc);
-    AnalysisEngineDescription aed2 = createPrimitiveDescription(MultiBindAE.class,
+    AnalysisEngineDescription aed2 = createEngineDescription(MultiBindAE.class,
             MultiBindAE.RES_KEY, extDesc);
 
     // Check the external resource was injected
     MultiBindAE.reset();
-    AnalysisEngineDescription aed = createAggregateDescription(aed1, aed2);
-    AnalysisEngine ae = createAggregate(aed);
+    AnalysisEngineDescription aed = createEngineDescription(aed1, aed2);
+    AnalysisEngine ae = createEngine(aed);
     ae.process(ae.newJCas());
 
 
@@ -187,15 +187,15 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
             createExternalResourceDescription(ResourceWithAssert.class));
 
     // Binding external resource to each Annotator individually
-    AnalysisEngineDescription aed1 = createPrimitiveDescription(MultiBindAE.class,
+    AnalysisEngineDescription aed1 = createEngineDescription(MultiBindAE.class,
             MultiBindAE.RES_KEY, extDesc);
-    AnalysisEngineDescription aed2 = createPrimitiveDescription(MultiBindAE.class,
+    AnalysisEngineDescription aed2 = createEngineDescription(MultiBindAE.class,
             MultiBindAE.RES_KEY, extDesc);
 
     // Check the external resource was injected
     MultiBindAE.reset();
-    AnalysisEngineDescription aed = createAggregateDescription(aed1, aed2);
-    AnalysisEngine ae = createAggregate(aed);
+    AnalysisEngineDescription aed = createEngineDescription(aed1, aed2);
+    AnalysisEngine ae = createEngine(aed);
     ae.process(ae.newJCas());
 
 
@@ -213,10 +213,10 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
     ExternalResourceDescription extDesc1 = createExternalResourceDescription(ResourceWithAssert.class);
     ExternalResourceDescription extDesc2 = createExternalResourceDescription(ResourceWithAssert.class);
 
-    AnalysisEngineDescription aed = createPrimitiveDescription(MultiValuedResourceAE.class,
+    AnalysisEngineDescription aed = createEngineDescription(MultiValuedResourceAE.class,
             MultiValuedResourceAE.RES_RESOURCE_ARRAY, asList(extDesc1, extDesc2));
     
-    AnalysisEngine ae = createAggregate(aed);
+    AnalysisEngine ae = createEngine(aed);
     ae.process(ae.newJCas());
     ae.collectionProcessComplete();
   }
@@ -231,13 +231,13 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
     ExternalResourceDescription extDesc1 = createExternalResourceDescription(ResourceWithAssert.class);
     ExternalResourceDescription extDesc2 = createExternalResourceDescription(ResourceWithAssert.class);
 
-    AnalysisEngineDescription aed = createAggregateDescription(
-            createPrimitiveDescription(MultiValuedResourceAE.class,
+    AnalysisEngineDescription aed = createEngineDescription(
+            createEngineDescription(MultiValuedResourceAE.class,
                     MultiValuedResourceAE.RES_RESOURCE_ARRAY, asList(extDesc1, extDesc2)),
-            createPrimitiveDescription(MultiValuedResourceAE.class,
+            createEngineDescription(MultiValuedResourceAE.class,
                     MultiValuedResourceAE.RES_RESOURCE_ARRAY, asList(extDesc1, extDesc2)));
     
-    AnalysisEngine ae = createAggregate(aed);
+    AnalysisEngine ae = createEngine(aed);
     ae.process(ae.newJCas());
     
     // Check that the shared resources are really the same
@@ -255,13 +255,13 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
     ExternalResourceDescription extDesc1 = createExternalResourceDescription(ResourceWithAssert.class);
     ExternalResourceDescription extDesc2 = createExternalResourceDescription(ResourceWithAssert.class);
 
-    AnalysisEngineDescription aed = createAggregateDescription(
-            createPrimitiveDescription(MultiValuedResourceAE.class,
+    AnalysisEngineDescription aed = createEngineDescription(
+            createEngineDescription(MultiValuedResourceAE.class,
                     MultiValuedResourceAE.RES_RESOURCE_ARRAY, asList(extDesc1, extDesc2)),
-            createAggregateDescription(createPrimitiveDescription(MultiValuedResourceAE.class,
+            createEngineDescription(createEngineDescription(MultiValuedResourceAE.class,
                     MultiValuedResourceAE.RES_RESOURCE_ARRAY, asList(extDesc1, extDesc2))));
     
-    AnalysisEngine ae = createAggregate(aed);
+    AnalysisEngine ae = createEngine(aed);
     ae.process(ae.newJCas());
 
     // Check that the shared resources are really the same
@@ -288,10 +288,10 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
             MultiValuedResource.RES_RESOURCE_LIST, new ExternalResourceDescription[] { extDesc3,
                 extDesc4 });
 
-    AnalysisEngineDescription aed = createPrimitiveDescription(MultiValuedResourceAE.class,
+    AnalysisEngineDescription aed = createEngineDescription(MultiValuedResourceAE.class,
             MultiValuedResourceAE.RES_RESOURCE_ARRAY, asList(mv1, mv2));
     
-    AnalysisEngine ae = createAggregate(aed);
+    AnalysisEngine ae = createEngine(aed);
     ae.process(ae.newJCas());
     ae.collectionProcessComplete();
   }

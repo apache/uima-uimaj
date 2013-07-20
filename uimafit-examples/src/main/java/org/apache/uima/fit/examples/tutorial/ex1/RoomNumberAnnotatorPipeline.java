@@ -18,7 +18,7 @@
  */
 package org.apache.uima.fit.examples.tutorial.ex1;
 
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitive;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.JCasFactory.createJCas;
 import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTypeSystemDescription;
 import static org.apache.uima.fit.util.JCasUtil.select;
@@ -40,7 +40,7 @@ public class RoomNumberAnnotatorPipeline {
     TypeSystemDescription tsd = createTypeSystemDescription("org.apache.uima.fit.examples.tutorial.type.RoomNumber");
     JCas jCas = createJCas(tsd);
     jCas.setDocumentText(text);
-    AnalysisEngine analysisEngine = createPrimitive(RoomNumberAnnotator.class, tsd);
+    AnalysisEngine analysisEngine = createEngine(RoomNumberAnnotator.class, tsd);
     analysisEngine.process(jCas);
 
     for (RoomNumber roomNumber : select(jCas, RoomNumber.class)) {

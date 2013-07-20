@@ -48,7 +48,7 @@ public class ViewCreatorAnnotatorTest extends ComponentTestBase {
   @Test
   public void testViewCreatorAnnotator() throws ResourceInitializationException,
           AnalysisEngineProcessException, CASException {
-    AnalysisEngine viewCreator = AnalysisEngineFactory.createPrimitive(ViewCreatorAnnotator.class,
+    AnalysisEngine viewCreator = AnalysisEngineFactory.createEngine(ViewCreatorAnnotator.class,
             typeSystemDescription, ViewCreatorAnnotator.PARAM_VIEW_NAME, "myView");
     viewCreator.process(jCas);
     JCas myView = jCas.getView("myView");
@@ -63,12 +63,12 @@ public class ViewCreatorAnnotatorTest extends ComponentTestBase {
   @Test
   public void testDefaultView() throws ResourceInitializationException,
           AnalysisEngineProcessException {
-    AnalysisEngine engine = AnalysisEngineFactory.createPrimitive(SofaAwareAnnotator.class,
+    AnalysisEngine engine = AnalysisEngineFactory.createEngine(SofaAwareAnnotator.class,
             typeSystemDescription);
     engine.process(jCas);
     assertEquals("some", JCasUtil.selectByIndex(jCas, Token.class, 0).getCoveredText());
 
-    engine = AnalysisEngineFactory.createPrimitive(SofaUnawareAnnotator.class,
+    engine = AnalysisEngineFactory.createEngine(SofaUnawareAnnotator.class,
             typeSystemDescription);
     jCas.reset();
     engine.process(jCas);
@@ -83,9 +83,9 @@ public class ViewCreatorAnnotatorTest extends ComponentTestBase {
   @Test(expected = AnalysisEngineProcessException.class)
   public void testOtherViewAware() throws ResourceInitializationException,
           AnalysisEngineProcessException {
-    AnalysisEngineDescription description = AnalysisEngineFactory.createPrimitiveDescription(
+    AnalysisEngineDescription description = AnalysisEngineFactory.createEngineDescription(
             SofaAwareAnnotator.class, typeSystemDescription);
-    AnalysisEngine engine = AnalysisEngineFactory.createAnalysisEngine(description, "myView");
+    AnalysisEngine engine = AnalysisEngineFactory.createEngine(description, "myView");
     HideOutput hider = new HideOutput();
     engine.process(jCas);
     hider.restoreOutput();
@@ -94,9 +94,9 @@ public class ViewCreatorAnnotatorTest extends ComponentTestBase {
   @Test(expected = AnalysisEngineProcessException.class)
   public void testOtherViewUnaware() throws ResourceInitializationException,
           AnalysisEngineProcessException {
-    AnalysisEngineDescription description = AnalysisEngineFactory.createPrimitiveDescription(
+    AnalysisEngineDescription description = AnalysisEngineFactory.createEngineDescription(
             SofaUnawareAnnotator.class, typeSystemDescription);
-    AnalysisEngine engine = AnalysisEngineFactory.createAnalysisEngine(description, "myView");
+    AnalysisEngine engine = AnalysisEngineFactory.createEngine(description, "myView");
     engine.process(jCas);
   }
 
@@ -107,10 +107,10 @@ public class ViewCreatorAnnotatorTest extends ComponentTestBase {
   @Test
   public void testSofaInitializer() throws ResourceInitializationException,
           AnalysisEngineProcessException, CASException {
-    AnalysisEngineDescription description = AnalysisEngineFactory.createPrimitiveDescription(
+    AnalysisEngineDescription description = AnalysisEngineFactory.createEngineDescription(
             SofaAwareAnnotator.class, typeSystemDescription);
-    AnalysisEngine engine = AnalysisEngineFactory.createAnalysisEngine(description, "myView");
-    AnalysisEngine viewCreator = AnalysisEngineFactory.createPrimitive(ViewCreatorAnnotator.class,
+    AnalysisEngine engine = AnalysisEngineFactory.createEngine(description, "myView");
+    AnalysisEngine viewCreator = AnalysisEngineFactory.createEngine(ViewCreatorAnnotator.class,
             typeSystemDescription, ViewCreatorAnnotator.PARAM_VIEW_NAME, "myView");
     viewCreator.process(jCas);
     engine.process(jCas);
@@ -127,9 +127,9 @@ public class ViewCreatorAnnotatorTest extends ComponentTestBase {
     assertEquals("some", JCasUtil.selectByIndex(jCas.getView("myView"), Token.class, 0)
             .getCoveredText());
 
-    description = AnalysisEngineFactory.createPrimitiveDescription(SofaUnawareAnnotator.class,
+    description = AnalysisEngineFactory.createEngineDescription(SofaUnawareAnnotator.class,
             typeSystemDescription);
-    engine = AnalysisEngineFactory.createAnalysisEngine(description, "myView");
+    engine = AnalysisEngineFactory.createEngine(description, "myView");
     jCas.reset();
     viewCreator.process(jCas);
     engine.process(jCas);

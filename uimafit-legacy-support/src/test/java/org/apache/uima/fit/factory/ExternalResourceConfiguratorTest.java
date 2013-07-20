@@ -19,7 +19,7 @@
 
 package org.apache.uima.fit.factory;
 
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDependencies;
 import static org.junit.Assert.assertEquals;
 
@@ -47,7 +47,7 @@ public class ExternalResourceConfiguratorTest extends ComponentTestBase {
 
   @Test
   public void testDescriptor() throws Exception {
-    AnalysisEngineDescription desc = createPrimitiveDescription(ParameterizedAE2.class,
+    AnalysisEngineDescription desc = createEngineDescription(ParameterizedAE2.class,
             typeSystemDescription);
     verify(desc.getExternalResourceDependencies());
   }

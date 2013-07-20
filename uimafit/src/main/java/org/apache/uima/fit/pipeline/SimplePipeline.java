@@ -19,8 +19,8 @@
 package org.apache.uima.fit.pipeline;
 
 import static java.util.Arrays.asList;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createAggregate;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createAggregateDescription;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createCollectionReader;
 
 import java.io.IOException;
@@ -64,10 +64,10 @@ public final class SimplePipeline {
   public static void runPipeline(final CollectionReader reader,
           final AnalysisEngineDescription... descs) throws UIMAException, IOException {
     // Create AAE
-    final AnalysisEngineDescription aaeDesc = createAggregateDescription(descs);
+    final AnalysisEngineDescription aaeDesc = createEngineDescription(descs);
 
     // Instantiate AAE
-    final AnalysisEngine aae = createAggregate(aaeDesc);
+    final AnalysisEngine aae = createEngine(aaeDesc);
 
     // Create CAS from merged metadata
     final CAS cas = CasCreationUtils.createCas(asList(reader.getMetaData(), aae.getMetaData()));
@@ -158,10 +158,10 @@ public final class SimplePipeline {
   public static void runPipeline(final CAS aCas, final AnalysisEngineDescription... aDescs)
           throws UIMAException, IOException {
     // Create aggregate AE
-    final AnalysisEngineDescription aaeDesc = createAggregateDescription(aDescs);
+    final AnalysisEngineDescription aaeDesc = createEngineDescription(aDescs);
 
     // Instantiate
-    final AnalysisEngine aae = createAggregate(aaeDesc);
+    final AnalysisEngine aae = createEngine(aaeDesc);
     try {
       // Process
       aae.process(aCas);

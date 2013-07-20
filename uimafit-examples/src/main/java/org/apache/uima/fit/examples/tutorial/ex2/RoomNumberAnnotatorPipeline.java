@@ -18,7 +18,7 @@
  */
 package org.apache.uima.fit.examples.tutorial.ex2;
 
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitive;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.util.JCasUtil.select;
 
 import org.apache.uima.UIMAException;
@@ -33,7 +33,7 @@ import org.apache.uima.jcas.JCas;
 public class RoomNumberAnnotatorPipeline {
 
   public static void main(String[] args) throws UIMAException {
-    AnalysisEngine analysisEngine = createPrimitive(RoomNumberAnnotator.class, "Patterns",
+    AnalysisEngine analysisEngine = createEngine(RoomNumberAnnotator.class, "Patterns",
             new String[] { "\\b[0-4]\\d-[0-2]\\d\\d\\b", "\\b[G1-4][NS]-[A-Z]\\d\\d\\b" },
             "Locations", new String[] { "Downtown", "Uptown" });
 

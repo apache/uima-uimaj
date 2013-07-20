@@ -18,6 +18,7 @@
  */
 package org.apache.uima.fit.factory;
 
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
@@ -50,12 +51,12 @@ public class AggregateBuilderTest extends ComponentTestBase {
     tokenBuilder.buildTokens(jCas, "Anyone up for a game of Foosball?");
 
     AggregateBuilder builder = new AggregateBuilder();
-    builder.add(AnalysisEngineFactory.createPrimitiveDescription(Annotator1.class,
+    builder.add(AnalysisEngineFactory.createEngineDescription(Annotator1.class,
             typeSystemDescription), ViewNames.PARENTHESES_VIEW, "A");
-    builder.add(AnalysisEngineFactory.createPrimitiveDescription(Annotator2.class,
+    builder.add(AnalysisEngineFactory.createEngineDescription(Annotator2.class,
             typeSystemDescription), ViewNames.SORTED_VIEW, "B", ViewNames.SORTED_PARENTHESES_VIEW,
             "C", ViewNames.PARENTHESES_VIEW, "A");
-    builder.add(AnalysisEngineFactory.createPrimitiveDescription(Annotator3.class,
+    builder.add(AnalysisEngineFactory.createEngineDescription(Annotator3.class,
             typeSystemDescription), ViewNames.INITIAL_VIEW, "B");
     AnalysisEngine aggregateEngine = builder.createAggregate();
 
@@ -71,7 +72,7 @@ public class AggregateBuilderTest extends ComponentTestBase {
             .getDocumentText());
 
     JCasFactory.loadJCas(jCas, "src/test/resources/data/docs/test.xmi");
-    AnalysisEngine ae1 = AnalysisEngineFactory.createPrimitive(NoOpAnnotator.class,
+    AnalysisEngine ae1 = AnalysisEngineFactory.createEngine(NoOpAnnotator.class,
             typeSystemDescription);
 
     SimplePipeline.runPipeline(jCas, ae1, aggregateEngine);
@@ -79,7 +80,7 @@ public class AggregateBuilderTest extends ComponentTestBase {
     AnalysisEngineDescription aggregateDescription = builder.createAggregateDescription();
     builder = new AggregateBuilder();
     builder.add(aggregateDescription);
-    builder.add(AnalysisEngineFactory.createPrimitiveDescription(Annotator1.class,
+    builder.add(AnalysisEngineFactory.createEngineDescription(Annotator1.class,
             typeSystemDescription), ViewNames.PARENTHESES_VIEW, "PARENS");
     aggregateEngine = builder.createAggregate();
 
@@ -107,11 +108,11 @@ public class AggregateBuilderTest extends ComponentTestBase {
     tokenBuilder.buildTokens(jCas, "'Verb' is a noun!?");
 
     AggregateBuilder builder = new AggregateBuilder();
-    String componentName1 = builder.add(AnalysisEngineFactory.createPrimitiveDescription(
+    String componentName1 = builder.add(AnalysisEngineFactory.createEngineDescription(
             Annotator1.class, typeSystemDescription));
-    String componentName2 = builder.add(AnalysisEngineFactory.createPrimitiveDescription(
+    String componentName2 = builder.add(AnalysisEngineFactory.createEngineDescription(
             Annotator1.class, typeSystemDescription));
-    String componentName3 = builder.add(AnalysisEngineFactory.createPrimitiveDescription(
+    String componentName3 = builder.add(AnalysisEngineFactory.createEngineDescription(
             Annotator1.class, typeSystemDescription));
 
     assertEquals("org.apache.uima.fit.factory.testAes.Annotator1", componentName1);
@@ -123,8 +124,7 @@ public class AggregateBuilderTest extends ComponentTestBase {
     builder.addSofaMapping(componentName3, ViewNames.PARENTHESES_VIEW, "C");
     AnalysisEngineDescription aggregateEngineDescription = builder.createAggregateDescription();
 
-    AnalysisEngine aggregateEngine = AnalysisEngineFactory
-            .createAggregate(aggregateEngineDescription);
+    AnalysisEngine aggregateEngine = createEngine(aggregateEngineDescription);
 
     aggregateEngine.process(jCas);
 
@@ -138,16 +138,16 @@ public class AggregateBuilderTest extends ComponentTestBase {
   @Test(expected = IllegalArgumentException.class)
   public void testOddNumberOfViewNames() throws ResourceInitializationException {
     AggregateBuilder builder = new AggregateBuilder();
-    builder.add(AnalysisEngineFactory.createPrimitiveDescription(Annotator1.class,
+    builder.add(AnalysisEngineFactory.createEngineDescription(Annotator1.class,
             typeSystemDescription), ViewNames.PARENTHESES_VIEW);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testDuplicateComponentNames() throws ResourceInitializationException {
     AggregateBuilder builder = new AggregateBuilder();
-    builder.add("name", AnalysisEngineFactory.createPrimitiveDescription(Annotator1.class,
+    builder.add("name", AnalysisEngineFactory.createEngineDescription(Annotator1.class,
             typeSystemDescription));
-    builder.add("name", AnalysisEngineFactory.createPrimitiveDescription(Annotator1.class,
+    builder.add("name", AnalysisEngineFactory.createEngineDescription(Annotator1.class,
             typeSystemDescription));
   }
 
@@ -162,11 +162,11 @@ public class AggregateBuilderTest extends ComponentTestBase {
     tokenBuilder.buildTokens(jCas, "An honest man can never surrender an honest doubt.");
 
     AggregateBuilder builder = new AggregateBuilder();
-    builder.add(AnalysisEngineFactory.createPrimitiveDescription(FlowAE1.class,
+    builder.add(AnalysisEngineFactory.createEngineDescription(FlowAE1.class,
             typeSystemDescription));
-    builder.add(AnalysisEngineFactory.createPrimitiveDescription(FlowAE2.class,
+    builder.add(AnalysisEngineFactory.createEngineDescription(FlowAE2.class,
             typeSystemDescription));
-    builder.add(AnalysisEngineFactory.createPrimitiveDescription(FlowAE3.class,
+    builder.add(AnalysisEngineFactory.createEngineDescription(FlowAE3.class,
             typeSystemDescription));
 
     FlowControllerDescription fcd = FlowControllerFactory

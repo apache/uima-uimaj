@@ -109,7 +109,7 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
         ResourceCreationSpecifier desc = null;
         switch (Util.getType(componentLoader, clazz)) {
           case ANALYSIS_ENGINE:
-            desc = AnalysisEngineFactory.createPrimitiveDescription(clazz);
+            desc = AnalysisEngineFactory.createEngineDescription(clazz);
             break;
           case COLLECTION_READER:
             desc = CollectionReaderFactory.createDescription(clazz);

@@ -41,7 +41,7 @@ public final class UimaContextFactory {
    */
   public static UimaContext createUimaContext(Object... configurationParameters)
           throws ResourceInitializationException {
-    AnalysisEngine engine = AnalysisEngineFactory.createPrimitive(NoOpAnnotator.class, null,
+    AnalysisEngine engine = AnalysisEngineFactory.createEngine(NoOpAnnotator.class, null,
             configurationParameters);
     return engine.getUimaContext();
   }

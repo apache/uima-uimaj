@@ -67,7 +67,7 @@
       from a main method:</para>
     <programlisting>JCas jCas = JCasFactory.createJCas();
   
-AnalysisEngine analysisEngine = AnalysisEngineFactory.createPrimitive(
+AnalysisEngine analysisEngine = AnalysisEngineFactory.createEngine(
   GetStartedQuickAE.class,
   GetStartedQuickAE.PARAM_STRING, "uimaFIT");
   
@@ -99,7 +99,7 @@ classpath*:org/uimafit/examples/tutorial/type/*.xml </programlisting>
     <para>The following lines of code demonstrate how a descriptor file can be generated using the
       class definition:</para>
 
-    <programlisting>AnalysisEngine analysisEngine = AnalysisEngineFactory.createPrimitive(
+    <programlisting>AnalysisEngine analysisEngine = AnalysisEngineFactory.createEngine(
   GetStartedQuickAE.class,
   GetStartedQuickAE.PARAM_STRING, "uimaFIT");
 
@@ -111,7 +111,7 @@ analysisEngineDescription.toXML(
         <literal>uimaFIT</literal>. We could now instantiate an analysis engine using this
       descriptor file with a line of code like this:</para>
 
-    <programlisting>AnalysisEngineFactory.createAnalysisEngine("GetStartedQuickAE");</programlisting>
+    <programlisting>AnalysisEngineFactory.createEngine("GetStartedQuickAE");</programlisting>
 
     <para>But, of course, we really wouldn't want to do that now that we can instantiate analysis
       engines using the class definition as was done above!</para>

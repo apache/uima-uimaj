@@ -61,7 +61,7 @@ public class FlowControllerFactoryExternalResourceTest {
   @Test
   public void testAutoExternalResourceBinding() throws Exception {
     AggregateBuilder builder = new AggregateBuilder();
-    builder.add(AnalysisEngineFactory.createPrimitiveDescription(NoOpAnnotator.class));
+    builder.add(AnalysisEngineFactory.createEngineDescription(NoOpAnnotator.class));
     builder.setFlowControllerDescription(createFlowControllerDescription(
             TestFlowController.class,
             TestFlowController.PARAM_RESOURCE,

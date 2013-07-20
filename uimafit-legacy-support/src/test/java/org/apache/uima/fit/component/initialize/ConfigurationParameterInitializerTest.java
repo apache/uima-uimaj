@@ -63,12 +63,12 @@ public class ConfigurationParameterInitializerTest extends ComponentTestBase {
 
     ResourceInitializationException rie = null;
     try {
-      AnalysisEngineFactory.createPrimitive(ParameterizedAE.class, typeSystemDescription);
+      AnalysisEngineFactory.createEngine(ParameterizedAE.class, typeSystemDescription);
     } catch (ResourceInitializationException e) {
       rie = e;
     }
     assertNotNull(rie);
-    AnalysisEngine engine = AnalysisEngineFactory.createPrimitive(ParameterizedAE.class,
+    AnalysisEngine engine = AnalysisEngineFactory.createEngine(ParameterizedAE.class,
             typeSystemDescription, ParameterizedAE.PARAM_FLOAT_3, 1.234f,
             ParameterizedAE.PARAM_FLOAT_6, new Float[] { 1.234f, 0.001f }, "file2", "foo/bar",
             "files9", new File[] { new File("test/data/file"), new File("test/data/file2") });
@@ -165,7 +165,7 @@ public class ConfigurationParameterInitializerTest extends ComponentTestBase {
     assertEquals(new File("test/data/file"), component.getFiles9().get(0));
     assertEquals(new File("test/data/file2"), component.getFiles9().get(1));
 
-    engine = AnalysisEngineFactory.createPrimitive(ParameterizedAE.class, typeSystemDescription,
+    engine = AnalysisEngineFactory.createEngine(ParameterizedAE.class, typeSystemDescription,
             ParameterizedAE.PARAM_FLOAT_3, 1.234f, ParameterizedAE.PARAM_FLOAT_6, new Float[] {
                 1.234f, 0.001f }, ParameterizedAE.PARAM_STRING_1, "lime",
             ParameterizedAE.PARAM_STRING_2, new String[] { "banana", "strawberry" },
@@ -222,7 +222,7 @@ public class ConfigurationParameterInitializerTest extends ComponentTestBase {
     assertEquals(new File("test/data/file"), component.getFiles9().get(0));
     assertEquals(new File("test/data/file2"), component.getFiles9().get(1));
 
-    engine = AnalysisEngineFactory.createPrimitive(ParameterizedAE.class, typeSystemDescription,
+    engine = AnalysisEngineFactory.createEngine(ParameterizedAE.class, typeSystemDescription,
             ParameterizedAE.PARAM_FLOAT_3, 1.234f, ParameterizedAE.PARAM_FLOAT_6, new Float[] {
                 1.234f, 0.001f }, ParameterizedAE.PARAM_BOOLEAN_1, true,
             ParameterizedAE.PARAM_BOOLEAN_3, new boolean[3], ParameterizedAE.PARAM_FLOAT_5,
@@ -237,7 +237,7 @@ public class ConfigurationParameterInitializerTest extends ComponentTestBase {
 
     rie = null;
     try {
-      engine = AnalysisEngineFactory.createPrimitive(ParameterizedAE.class, typeSystemDescription,
+      engine = AnalysisEngineFactory.createEngine(ParameterizedAE.class, typeSystemDescription,
               ParameterizedAE.PARAM_FLOAT_3, 1.234f, ParameterizedAE.PARAM_FLOAT_6, new Float[] {
                   1.234f, 0.001f }, ParameterizedAE.PARAM_STRING_1, true);
     } catch (ResourceInitializationException e) {
@@ -249,7 +249,7 @@ public class ConfigurationParameterInitializerTest extends ComponentTestBase {
 
   @Test
   public void testInitialize2() throws ResourceInitializationException {
-    AnalysisEngine engine = AnalysisEngineFactory.createPrimitive(Annotator1.class,
+    AnalysisEngine engine = AnalysisEngineFactory.createEngine(Annotator1.class,
             typeSystemDescription);
     assertEquals(1, engine.getAnalysisEngineMetaData().getCapabilities().length);
   }
@@ -259,7 +259,7 @@ public class ConfigurationParameterInitializerTest extends ComponentTestBase {
     // here we test an optional parameter that is missing from the
     // configuration to ensure that it is filled in with the default value
     AnalysisEngine aed = AnalysisEngineFactory
-            .createAnalysisEngineFromPath("src/test/resources/data/descriptor/DefaultValueAE1.xml");
+            .createEngineFromPath("src/test/resources/data/descriptor/DefaultValueAE1.xml");
     DefaultValueAE1 ae = new DefaultValueAE1();
     ae.initialize(aed.getUimaContext());
     assertEquals("green", ae.color);
@@ -270,7 +270,7 @@ public class ConfigurationParameterInitializerTest extends ComponentTestBase {
     ResourceInitializationException rie = null;
     try {
       aed = AnalysisEngineFactory
-              .createAnalysisEngineFromPath("src/test/resources/data/descriptor/DefaultValueAE2.xml");
+              .createEngineFromPath("src/test/resources/data/descriptor/DefaultValueAE2.xml");
     } catch (ResourceInitializationException e) {
       rie = e;
     }
@@ -284,7 +284,7 @@ public class ConfigurationParameterInitializerTest extends ComponentTestBase {
   @Test
   public void testParameterSetToNull() throws Exception {
     String paramColor = DefaultValueAE1.class.getName() + ".color";
-    AnalysisEngine aed = AnalysisEngineFactory.createPrimitive(DefaultValueAE1.class, null,
+    AnalysisEngine aed = AnalysisEngineFactory.createEngine(DefaultValueAE1.class, null,
             paramColor, null);
     DefaultValueAE1 ae = new DefaultValueAE1();
     ae.initialize(aed.getUimaContext());
@@ -298,7 +298,7 @@ public class ConfigurationParameterInitializerTest extends ComponentTestBase {
   @Test(expected = ResourceInitializationException.class)
   public void testMandatoryParameterSetToNull() throws Exception {
     String paramColor = DefaultValueAE2.class.getName() + ".color";
-    AnalysisEngine aed = AnalysisEngineFactory.createPrimitive(DefaultValueAE2.class, null,
+    AnalysisEngine aed = AnalysisEngineFactory.createEngine(DefaultValueAE2.class, null,
             paramColor, null);
     DefaultValueAE2 ae = new DefaultValueAE2();
     ae.initialize(aed.getUimaContext());
@@ -311,7 +311,7 @@ public class ConfigurationParameterInitializerTest extends ComponentTestBase {
   @Test(expected = IllegalArgumentException.class)
   public void testNonUimaCompatibleParameterValue() throws Exception {
     String paramColor = DefaultValueAE2.class.getName() + ".color";
-    AnalysisEngine aed = AnalysisEngineFactory.createPrimitive(DefaultValueAE2.class, null,
+    AnalysisEngine aed = AnalysisEngineFactory.createEngine(DefaultValueAE2.class, null,
             paramColor, new Point(1, 2));
     DefaultValueAE2 ae = new DefaultValueAE2();
     ae.initialize(aed.getUimaContext());
@@ -323,7 +323,7 @@ public class ConfigurationParameterInitializerTest extends ComponentTestBase {
    */
   @Test
   public void testUnsetOptionalParameter() throws Exception {
-    AnalysisEngineDescription aed = AnalysisEngineFactory.createPrimitiveDescription(
+    AnalysisEngineDescription aed = AnalysisEngineFactory.createEngineDescription(
             DefaultValueAE1.class, (Object[]) null);
     // Remove the settings from the descriptor, but leave the declarations.
     // The settings are already filled with default values by createPrimitiveDescription,
@@ -374,7 +374,7 @@ public class ConfigurationParameterInitializerTest extends ComponentTestBase {
   @Test
   public void testEnumDefaultValue() throws Exception {
     try {
-      AnalysisEngine aed = AnalysisEngineFactory.createPrimitive(DefaultEnumValueAE.class,
+      AnalysisEngine aed = AnalysisEngineFactory.createEngine(DefaultEnumValueAE.class,
               (Object[]) null);
       DefaultEnumValueAE ae = new DefaultEnumValueAE();
       ae.initialize(aed.getUimaContext());
@@ -424,7 +424,7 @@ public class ConfigurationParameterInitializerTest extends ComponentTestBase {
 
   @Test
   public void testLocaleParams() throws Exception {
-    AnalysisEngine aed = AnalysisEngineFactory.createPrimitive(DefaultLocaleValueAE.class, "L2",
+    AnalysisEngine aed = AnalysisEngineFactory.createEngine(DefaultLocaleValueAE.class, "L2",
             "en-CA", "L3", "CANADA_FRENCH", "L4", "zh");
     DefaultLocaleValueAE ae = new DefaultLocaleValueAE();
     ae.initialize(aed.getUimaContext());
@@ -433,7 +433,7 @@ public class ConfigurationParameterInitializerTest extends ComponentTestBase {
     assertEquals(Locale.CANADA_FRENCH, ae.locale3);
     assertEquals(new Locale("zh"), ae.locale4);
 
-    aed = AnalysisEngineFactory.createPrimitive(DefaultLocaleValueAE.class, "L1",
+    aed = AnalysisEngineFactory.createEngine(DefaultLocaleValueAE.class, "L1",
             "es-ES-Traditional_WIN", "L2", "CHINA", "L3", "es", "L4", "en-CA");
     ae = new DefaultLocaleValueAE();
     ae.initialize(aed.getUimaContext());
@@ -442,7 +442,7 @@ public class ConfigurationParameterInitializerTest extends ComponentTestBase {
     assertEquals(new Locale("es"), ae.locale3);
     assertEquals(new Locale("en", "CA"), ae.locale4);
 
-    aed = AnalysisEngineFactory.createPrimitive(DefaultLocaleValueAE.class, "L1", "", "L2", "",
+    aed = AnalysisEngineFactory.createEngine(DefaultLocaleValueAE.class, "L1", "", "L2", "",
             "L3", null);
     ae = new DefaultLocaleValueAE();
     ae.initialize(aed.getUimaContext());
@@ -462,10 +462,10 @@ public class ConfigurationParameterInitializerTest extends ComponentTestBase {
    */
   public static void main(String[] args) throws ResourceInitializationException,
           FileNotFoundException, SAXException, IOException {
-    AnalysisEngineDescription aed = AnalysisEngineFactory.createPrimitiveDescription(
+    AnalysisEngineDescription aed = AnalysisEngineFactory.createEngineDescription(
             DefaultValueAE1.class, (Object[]) null);
     aed.toXML(new FileOutputStream("src/test/resources/data/descriptor/DefaultValueAE1.xml"));
-    aed = AnalysisEngineFactory.createPrimitiveDescription(DefaultValueAE2.class, (Object[]) null);
+    aed = AnalysisEngineFactory.createEngineDescription(DefaultValueAE2.class, (Object[]) null);
     aed.toXML(new FileOutputStream("src/test/resources/data/descriptor/DefaultValueAE2.xml"));
   }
 

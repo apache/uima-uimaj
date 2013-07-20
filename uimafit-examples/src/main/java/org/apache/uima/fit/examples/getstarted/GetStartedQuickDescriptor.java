@@ -40,7 +40,7 @@ public class GetStartedQuickDescriptor {
     // Instantiate the analysis engine using the value "uimaFIT" for the parameter
     // PARAM_STRING ("stringParam").
     AnalysisEngineDescription analysisEngineDescription = AnalysisEngineFactory
-            .createPrimitiveDescription(GetStartedQuickAE.class, GetStartedQuickAE.PARAM_STRING,
+            .createEngineDescription(GetStartedQuickAE.class, GetStartedQuickAE.PARAM_STRING,
                     "uimaFIT");
 
     // Write the descriptor to an XML file

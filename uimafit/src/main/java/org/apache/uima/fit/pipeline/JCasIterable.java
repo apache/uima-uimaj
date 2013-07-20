@@ -61,7 +61,7 @@ public class JCasIterable implements Iterator<JCas>, Iterable<JCas> {
   public JCasIterable(final CollectionReader aReader,
           final TypeSystemDescription aTypeSystemDescription) throws UIMAException, IOException {
     this(aReader, AnalysisEngineFactory
-            .createPrimitive(NoOpAnnotator.class, aTypeSystemDescription));
+            .createEngine(NoOpAnnotator.class, aTypeSystemDescription));
   }
 
   /**

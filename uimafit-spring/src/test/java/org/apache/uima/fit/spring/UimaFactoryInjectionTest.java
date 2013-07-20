@@ -19,7 +19,7 @@
 
 package org.apache.uima.fit.spring;
 
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitive;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.junit.Assert.assertEquals;
 
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
@@ -62,7 +62,7 @@ public class UimaFactoryInjectionTest {
     initUimaApplicationContext(ctx);
 
     // Instantiate component
-    AnalysisEngine ae = createPrimitive(MyAnalysisEngine.class);
+    AnalysisEngine ae = createEngine(MyAnalysisEngine.class);
 
     // Test that injection works
     ae.process(ae.newJCas());

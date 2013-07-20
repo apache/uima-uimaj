@@ -51,7 +51,7 @@ public class RoomNumberAnnotator1Test {
   @Test
   public void testRNA1() throws Exception {
     AnalysisEngine roomNumberAnnotatorAE = AnalysisEngineFactory
-            .createAnalysisEngine("org.apache.uima.fit.examples.tutorial.ex1.RoomNumberAnnotator");
+            .createEngine("org.apache.uima.fit.examples.tutorial.ex1.RoomNumberAnnotator");
     JCas jCas = roomNumberAnnotatorAE.newJCas();
     jCas.setDocumentText("The meeting is over at Yorktown 01-144");
     roomNumberAnnotatorAE.process(jCas);
@@ -74,7 +74,7 @@ public class RoomNumberAnnotator1Test {
   public void testRNA2() throws Exception {
     TypeSystemDescription typeSystemDescription = TypeSystemDescriptionFactory
             .createTypeSystemDescription("org.apache.uima.fit.examples.TypeSystem");
-    AnalysisEngine roomNumberAnnotatorAE = AnalysisEngineFactory.createPrimitive(
+    AnalysisEngine roomNumberAnnotatorAE = AnalysisEngineFactory.createEngine(
             RoomNumberAnnotator.class, typeSystemDescription);
     JCas jCas = roomNumberAnnotatorAE.newJCas();
     jCas.setDocumentText("The meeting is over at Yorktown 01-144");
@@ -95,7 +95,7 @@ public class RoomNumberAnnotator1Test {
   @Test
   public void testRNA3() throws Exception {
     AnalysisEngine roomNumberAnnotatorAE = AnalysisEngineFactory
-            .createPrimitive(RoomNumberAnnotator.class);
+            .createEngine(RoomNumberAnnotator.class);
     JCas jCas = roomNumberAnnotatorAE.newJCas();
     jCas.setDocumentText("The meeting is over at Yorktown 01-144");
     roomNumberAnnotatorAE.process(jCas);

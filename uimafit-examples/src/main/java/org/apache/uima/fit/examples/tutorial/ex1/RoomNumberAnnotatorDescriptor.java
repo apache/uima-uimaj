@@ -40,7 +40,7 @@ public class RoomNumberAnnotatorDescriptor {
   public static AnalysisEngineDescription createDescriptor() throws ResourceInitializationException {
     TypeSystemDescription typeSystemDescription = TypeSystemDescriptionFactory
             .createTypeSystemDescription();
-    return AnalysisEngineFactory.createPrimitiveDescription(RoomNumberAnnotator.class,
+    return AnalysisEngineFactory.createEngineDescription(RoomNumberAnnotator.class,
             typeSystemDescription);
   }
 
