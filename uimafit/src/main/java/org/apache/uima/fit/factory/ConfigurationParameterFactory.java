@@ -566,8 +566,7 @@ public final class ConfigurationParameterFactory {
       ResourceMetaData md = ((ConfigurableDataResourceSpecifier) aSpec).getMetaData();
       return md.getConfigurationParameterDeclarations().getConfigurationParameter(null, name) != null;
     } else {
-      throw new IllegalClassException("Unsupported resource specifier class [" + aSpec.getClass()
-              + "]");
+      return false;
     }
   }
 }
