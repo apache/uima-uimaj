@@ -214,6 +214,25 @@ public final class AnalysisEngineFactory {
   }
 
   /**
+   * Create an aggregate {@link AnalysisEngine}.
+   * 
+   * @param desc
+   *          the descriptor to create the analysis engine from.
+   * @return an {@link AnalysisEngine} created from the specified component class and initialized
+   *         with the configuration parameters.
+   * @throws ResourceInitializationException
+   *           if a failure occurred during production of the resource.
+   * @see <a href="package-summary.html#InstancesVsDescriptors">Why are descriptors better than
+   *      component instances?</a>
+   * @deprecated use {@link #createEngine(AnalysisEngineDescription, Object...)}
+   */
+  @Deprecated
+  public static AnalysisEngine createAggregate(AnalysisEngineDescription desc)
+          throws ResourceInitializationException {
+    return createEngine(desc);
+  }
+  
+  /**
    * Create and configure a primitive {@link AnalysisEngine}.
    * 
    * @param desc
