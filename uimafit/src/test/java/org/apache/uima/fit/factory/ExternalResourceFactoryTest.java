@@ -168,14 +168,43 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
             MultiBindAE.RES_KEY, extDesc);
 
     // Check the external resource was injected
-    AnalysisEngineDescription aaed = createAggregateDescription(aed1, aed2);
-    AnalysisEngine ae = createAggregate(aaed);
+    MultiBindAE.reset();
+    AnalysisEngineDescription aed = createAggregateDescription(aed1, aed2);
+    aed = AnalysisEngineFactory.consolidate(aed);
+    AnalysisEngine ae = createAggregate(aed);
     ae.process(ae.newJCas());
 
-    MultiBindAE.reset();
 
     // Check the external resource was injected
-    SimplePipeline.runPipeline(CasCreationUtils.createCas(aaed.getAnalysisEngineMetaData()), aaed);
+    MultiBindAE.reset();
+    SimplePipeline.runPipeline(CasCreationUtils.createCas(aed), aed);
+  }
+  
+  @Test
+  public void testMultiBoundNested() throws Exception {
+    ExternalResourceDescription extDesc = createExternalResourceDescription(
+            IntermediateResourceWithAssert.class,
+            IntermediateResourceWithAssert.PARAM_NESTED_RESOURCE,
+            createExternalResourceDescription(ResourceWithAssert.class));
+
+    // Binding external resource to each Annotator individually
+    AnalysisEngineDescription aed1 = createPrimitiveDescription(MultiBindAE.class,
+            MultiBindAE.RES_KEY, extDesc);
+    AnalysisEngineDescription aed2 = createPrimitiveDescription(MultiBindAE.class,
+            MultiBindAE.RES_KEY, extDesc);
+
+    // Check the external resource was injected
+    MultiBindAE.reset();
+    AnalysisEngineDescription aed = createAggregateDescription(aed1, aed2);
+    aed = AnalysisEngineFactory.consolidate(aed);
+    AnalysisEngine ae = createAggregate(aed);
+    ae.process(ae.newJCas());
+
+
+    // Check the external resource was injected
+    MultiBindAE.reset();
+//    SimplePipeline.runPipeline(CasCreationUtils.createCas(aed.getAnalysisEngineMetaData()), aed);
+    SimplePipeline.runPipeline(ae.newCAS(), aed);
   }
   
   /**
@@ -272,12 +301,12 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
   
   private static void bindResources(AnalysisEngineDescription desc) throws Exception {
     bindResource(desc, ResourceWithAssert.class);
-    bindResource(desc, DummyAE.RES_KEY_1, ConfigurableResource.class,
-            ConfigurableResource.PARAM_VALUE, "1");
-    bindResource(desc, DummyAE.RES_KEY_2, ConfigurableResource.class,
-            ConfigurableResource.PARAM_VALUE, "2");
-    bindResource(desc, DummyAE.RES_KEY_3, ParametrizedResource.class,
-            ParametrizedResource.PARAM_EXTENSION, ".lala");
+    bindResource(desc, DummyAE.RES_KEY_1, AnnotatedResource.class,
+            AnnotatedResource.PARAM_VALUE, "1");
+    bindResource(desc, DummyAE.RES_KEY_2, AnnotatedResource.class,
+            AnnotatedResource.PARAM_VALUE, "2");
+    bindResource(desc, DummyAE.RES_KEY_3, AnnotatedParametrizedDataResource.class,
+            AnnotatedParametrizedDataResource.PARAM_EXTENSION, ".lala");
     bindResource(desc, DummySharedResourceObject.class, EX_URI,
             DummySharedResourceObject.PARAM_VALUE, "3",
             DummySharedResourceObject.PARAM_ARRAY_VALUE, new String[] {"1", "2", "3"});
@@ -300,12 +329,12 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
     static final String RES_KEY_1 = "Key1";
 
     @ExternalResource(key = RES_KEY_1)
-    ConfigurableResource configRes1;
+    AnnotatedResource configRes1;
 
     static final String RES_KEY_2 = "Key2";
 
     @ExternalResource(key = RES_KEY_2)
-    ConfigurableResource configRes2;
+    AnnotatedResource configRes2;
 
     static final String RES_KEY_3 = "Key3";
 
@@ -344,7 +373,7 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
 
       try {
         DataResource configuredResource = (DataResource) getContext().getResourceObject(RES_KEY_3,
-                new String[] { ConfigurableDataResource.PARAM_URI, "http://dum.my/conf" });
+                new String[] { AnnotatedDataResource.PARAM_URI, "http://dum.my/conf" });
         assertNotNull(configuredResource);
         assertEquals("http://dum.my/conf.lala", configuredResource.getUri().toString());
       } catch (ResourceAccessException e) {
@@ -490,7 +519,20 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
     }
   }
 
-  public static final class ConfigurableResource extends Resource_ImplBase {
+  public static class IntermediateResourceWithAssert extends ResourceWithAssert {
+    
+    public static final String PARAM_NESTED_RESOURCE = "nestedResource";
+    @ExternalResource(key = PARAM_NESTED_RESOURCE)
+    private ResourceWithAssert nestedResource;
+    
+    @Override
+    public void doAsserts() {
+      assertNotNull(nestedResource);
+      nestedResource.doAsserts();
+    }
+  }
+
+  public static final class AnnotatedResource extends Resource_ImplBase {
     public static final String PARAM_VALUE = "Value";
 
     @ConfigurationParameter(name = PARAM_VALUE, mandatory = true)
@@ -501,7 +543,7 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
     }
   }
 
-  public static final class ConfigurableDataResource extends Resource_ImplBase implements
+  public static final class AnnotatedDataResource extends Resource_ImplBase implements
           DataResource {
     public static final String PARAM_URI = "Uri";
 
@@ -526,7 +568,7 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
     }
   }
 
-  public static final class ParametrizedResource extends Resource_ImplBase implements
+  public static final class AnnotatedParametrizedDataResource extends Resource_ImplBase implements
           ParameterizedDataResource {
     public static final String PARAM_EXTENSION = "Extension";
 
@@ -535,10 +577,10 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
 
     public DataResource getDataResource(String[] aParams) throws ResourceInitializationException {
       List<String> params = new ArrayList<String>(Arrays.asList(aParams));
-      params.add(ConfigurableDataResource.PARAM_EXTENSION);
+      params.add(AnnotatedDataResource.PARAM_EXTENSION);
       params.add(extension);
       ExternalResourceDescription desc = ExternalResourceFactory.createExternalResourceDescription(
-              null, ConfigurableDataResource.class, params.toArray(new String[params.size()]));
+              null, AnnotatedDataResource.class, params.toArray(new String[params.size()]));
       return (DataResource) UIMAFramework.produceResource(desc.getResourceSpecifier(), null);
     }
   }
