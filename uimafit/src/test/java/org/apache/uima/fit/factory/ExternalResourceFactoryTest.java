@@ -170,7 +170,6 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
     // Check the external resource was injected
     MultiBindAE.reset();
     AnalysisEngineDescription aed = createAggregateDescription(aed1, aed2);
-    aed = AnalysisEngineFactory.consolidate(aed);
     AnalysisEngine ae = createAggregate(aed);
     ae.process(ae.newJCas());
 
@@ -196,7 +195,6 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
     // Check the external resource was injected
     MultiBindAE.reset();
     AnalysisEngineDescription aed = createAggregateDescription(aed1, aed2);
-    aed = AnalysisEngineFactory.consolidate(aed);
     AnalysisEngine ae = createAggregate(aed);
     ae.process(ae.newJCas());
 
