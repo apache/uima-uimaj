@@ -19,9 +19,12 @@
 package org.apache.uima.fit.pipeline;
 
 import static java.util.Arrays.asList;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createCollectionReader;
+import static org.apache.uima.fit.util.LifeCycleUtil.close;
+import static org.apache.uima.fit.util.LifeCycleUtil.collectionProcessComplete;
+import static org.apache.uima.fit.util.LifeCycleUtil.destroy;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,11 +33,9 @@ import java.util.List;
 import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
-import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.collection.CollectionReaderDescription;
-import org.apache.uima.collection.base_cpm.BaseCollectionReader;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.metadata.ResourceMetaData;
@@ -219,40 +220,6 @@ public final class SimplePipeline {
           throws UIMAException, IOException {
     for (AnalysisEngine engine : engines) {
       engine.process(cas);
-    }
-  }
-
-  /**
-   * Notify a set of {@link AnalysisEngine analysis engines} that the collection process is
-   * complete.
-   */
-  private static void collectionProcessComplete(final AnalysisEngine... engines)
-          throws AnalysisEngineProcessException {
-    for (AnalysisEngine e : engines) {
-      e.collectionProcessComplete();
-    }
-  }
-
-  /**
-   * Destroy a set of {@link Resource resources}.
-   */
-  private static void destroy(final Resource... resources) {
-    for (Resource r : resources) {
-      if (r != null) {
-        r.destroy();
-      }
-    }
-  }
-
-  private static void close(final BaseCollectionReader aReader) {
-    if (aReader == null) {
-      return;
-    }
-
-    try {
-      aReader.close();
-    } catch (IOException e) {
-      // Ignore.
     }
   }
 }
