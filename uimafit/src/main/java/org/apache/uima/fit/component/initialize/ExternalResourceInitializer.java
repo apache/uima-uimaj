@@ -19,6 +19,7 @@
 package org.apache.uima.fit.component.initialize;
 
 import static org.apache.uima.fit.factory.ExternalResourceFactory.PREFIX_SEPARATOR;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;

@@ -23,13 +23,13 @@ package org.apache.uima.fit.util;
 
 import static java.util.Arrays.asList;
 import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTypeSystemDescription;
+import static org.apache.uima.fit.util.JCasUtil.contains;
 import static org.apache.uima.fit.util.JCasUtil.exists;
 import static org.apache.uima.fit.util.JCasUtil.getAnnotationType;
 import static org.apache.uima.fit.util.JCasUtil.getType;
 import static org.apache.uima.fit.util.JCasUtil.getView;
 import static org.apache.uima.fit.util.JCasUtil.indexCovered;
 import static org.apache.uima.fit.util.JCasUtil.indexCovering;
-import static org.apache.uima.fit.util.JCasUtil.contains;
 import static org.apache.uima.fit.util.JCasUtil.select;
 import static org.apache.uima.fit.util.JCasUtil.selectBetween;
 import static org.apache.uima.fit.util.JCasUtil.selectCovered;

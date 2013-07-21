@@ -18,12 +18,12 @@
  */
 package org.apache.uima.fit.maven.javadoc;
 
+import static org.junit.Assert.assertEquals;
+
 import org.apache.uima.fit.maven.util.Util;
 import org.junit.Test;
 
 import com.thoughtworks.qdox.model.JavaSource;
-
-import static org.junit.Assert.*;
 
 public class ComponentDescriptionExtractorTest {
 

@@ -20,6 +20,7 @@ package org.apache.uima.fit.internal;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
+
 import org.apache.uima.UimaContext;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.util.Level;

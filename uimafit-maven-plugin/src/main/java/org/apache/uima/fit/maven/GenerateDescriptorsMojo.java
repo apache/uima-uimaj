@@ -112,7 +112,7 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
             desc = AnalysisEngineFactory.createEngineDescription(clazz);
             break;
           case COLLECTION_READER:
-            desc = CollectionReaderFactory.createDescription(clazz);
+            desc = CollectionReaderFactory.createReaderDescription(clazz);
           default:
             // Do nothing
         }

@@ -21,7 +21,7 @@ package org.apache.uima.fit.pipeline;
 import static java.util.Arrays.asList;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
-import static org.apache.uima.fit.factory.CollectionReaderFactory.createCollectionReader;
+import static org.apache.uima.fit.factory.CollectionReaderFactory.createReader;
 import static org.apache.uima.fit.util.LifeCycleUtil.close;
 import static org.apache.uima.fit.util.LifeCycleUtil.collectionProcessComplete;
 import static org.apache.uima.fit.util.LifeCycleUtil.destroy;
@@ -106,7 +106,7 @@ public final class SimplePipeline {
   public static void runPipeline(final CollectionReaderDescription readerDesc,
           final AnalysisEngineDescription... descs) throws UIMAException, IOException {
     // Create the components
-    final CollectionReader reader = createCollectionReader(readerDesc);
+    final CollectionReader reader = createReader(readerDesc);
 
     try {
       // Run the pipeline

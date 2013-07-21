@@ -21,10 +21,10 @@ package org.apache.uima.fit.factory.testAes;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
-import org.uimafit.descriptor.TypeCapability;
 import org.apache.uima.fit.type.Token;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
+import org.uimafit.descriptor.TypeCapability;
 
 /**
  * 

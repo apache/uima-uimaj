@@ -19,7 +19,7 @@
 package org.apache.uima.fit.pipeline;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
-import static org.apache.uima.fit.factory.CollectionReaderFactory.createDescription;
+import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -40,7 +40,7 @@ public class JCasIterableTest {
 
   @Test
   public void test() throws Exception {
-    for (JCas jcas : new JCasIterable(createDescription(ThreeDocsReader.class),
+    for (JCas jcas : new JCasIterable(createReaderDescription(ThreeDocsReader.class),
             createEngineDescription(GetTextAE.class))) {
       System.out.println(jcas.getDocumentText());
     }

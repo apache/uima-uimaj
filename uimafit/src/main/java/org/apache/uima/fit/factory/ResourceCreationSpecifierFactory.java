@@ -25,6 +25,7 @@ import java.util.Collection;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.resource.ResourceCreationSpecifier;
+import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.metadata.ConfigurationParameter;
 import org.apache.uima.resource.metadata.ConfigurationParameterDeclarations;
 import org.apache.uima.resource.metadata.ConfigurationParameterSettings;

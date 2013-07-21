@@ -21,7 +21,6 @@ package org.apache.uima.fit.cpe;
 
 import static java.util.Arrays.asList;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDescription;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -69,7 +68,7 @@ public class ExternalResourceFactoryTest {
     // Check the external resource was injected
     MultiBindAE.reset();
     AnalysisEngineDescription aaed = createEngineDescription(aed1, aed2);
-    CpePipeline.runPipeline(CollectionReaderFactory.createDescription(Reader.class), aaed);
+    CpePipeline.runPipeline(CollectionReaderFactory.createReaderDescription(Reader.class), aaed);
   }
 
   /**
@@ -83,7 +82,7 @@ public class ExternalResourceFactoryTest {
     AnalysisEngineDescription aed = createEngineDescription(MultiValuedResourceAE.class,
             MultiValuedResourceAE.RES_RESOURCE_ARRAY, asList(extDesc1, extDesc2));
 
-    CpePipeline.runPipeline(CollectionReaderFactory.createDescription(Reader.class), aed);
+    CpePipeline.runPipeline(CollectionReaderFactory.createReaderDescription(Reader.class), aed);
   }
 
   /**
@@ -102,7 +101,7 @@ public class ExternalResourceFactoryTest {
             createEngineDescription(MultiValuedResourceAE.class,
                     MultiValuedResourceAE.RES_RESOURCE_ARRAY, asList(extDesc1, extDesc2)));
 
-    CpePipeline.runPipeline(CollectionReaderFactory.createDescription(Reader.class), aed);
+    CpePipeline.runPipeline(CollectionReaderFactory.createReaderDescription(Reader.class), aed);
 
     // Check that the shared resources are really the same
     assertEquals(MultiValuedResourceAE.resources.get(0), MultiValuedResourceAE.resources.get(2));
@@ -125,7 +124,7 @@ public class ExternalResourceFactoryTest {
             createEngineDescription(createEngineDescription(MultiValuedResourceAE.class,
                     MultiValuedResourceAE.RES_RESOURCE_ARRAY, asList(extDesc1, extDesc2))));
 
-    CpePipeline.runPipeline(CollectionReaderFactory.createDescription(Reader.class), aed);
+    CpePipeline.runPipeline(CollectionReaderFactory.createReaderDescription(Reader.class), aed);
 
     // Check that the shared resources are really the same
     assertEquals(MultiValuedResourceAE.resources.get(0), MultiValuedResourceAE.resources.get(2));
@@ -154,7 +153,7 @@ public class ExternalResourceFactoryTest {
     AnalysisEngineDescription aed = createEngineDescription(MultiValuedResourceAE.class,
             MultiValuedResourceAE.RES_RESOURCE_ARRAY, asList(mv1, mv2));
 
-    CpePipeline.runPipeline(CollectionReaderFactory.createDescription(Reader.class), aed);
+    CpePipeline.runPipeline(CollectionReaderFactory.createReaderDescription(Reader.class), aed);
   }
 
   public static final class MultiValuedResourceAE extends

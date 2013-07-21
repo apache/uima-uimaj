@@ -43,7 +43,6 @@ import org.apache.uima.cas.FSIterator;
 import org.apache.uima.fit.ComponentTestBase;
 import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.fit.component.NoOpAnnotator;
-import org.uimafit.descriptor.OperationalProperties;
 import org.apache.uima.fit.factory.testAes.Annotator1;
 import org.apache.uima.fit.factory.testAes.Annotator2;
 import org.apache.uima.fit.factory.testAes.Annotator3;
@@ -64,6 +63,7 @@ import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
 import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypePriorityList;
 import org.junit.Test;
+import org.uimafit.descriptor.OperationalProperties;
 
 /**
  */

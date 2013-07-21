@@ -38,7 +38,7 @@
 
 package org.apache.uima.fit.factory;
 
-import static org.apache.uima.fit.factory.CollectionReaderFactory.createCollectionReader;
+import static org.apache.uima.fit.factory.CollectionReaderFactory.createReader;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDescription;
 import static org.junit.Assert.assertNotNull;
 
@@ -49,17 +49,17 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.fit.component.CasCollectionReader_ImplBase;
-import org.uimafit.descriptor.ExternalResource;
 import org.apache.uima.fit.factory.testRes.TestExternalResource;
 import org.apache.uima.util.Progress;
 import org.junit.Test;
+import org.uimafit.descriptor.ExternalResource;
 
 /**
  */
 public class CollectionReaderFactoryExternalResourceTest {
   @Test
   public void testAutoExternalResourceBinding() throws UIMAException, IOException {
-    CollectionReader reader = createCollectionReader(
+    CollectionReader reader = createReader(
             TestReader.class,
             TestReader.PARAM_RESOURCE,
             createExternalResourceDescription(TestExternalResource.class,

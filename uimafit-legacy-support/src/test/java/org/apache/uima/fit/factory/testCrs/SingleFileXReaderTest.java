@@ -43,7 +43,7 @@ public class SingleFileXReaderTest extends ComponentTestBase {
   public void testXReader() throws UIMAException, IOException {
     ResourceInitializationException rie = null;
     try {
-      CollectionReaderFactory.createCollectionReader(SingleFileXReader.class, null,
+      CollectionReaderFactory.createReader(SingleFileXReader.class, null,
               SingleFileXReader.PARAM_XML_SCHEME, "XML");
     } catch (ResourceInitializationException e) {
       rie = e;
@@ -52,7 +52,7 @@ public class SingleFileXReaderTest extends ComponentTestBase {
 
     rie = null;
     try {
-      CollectionReaderFactory.createCollectionReader(SingleFileXReader.class, null,
+      CollectionReaderFactory.createReader(SingleFileXReader.class, null,
               SingleFileXReader.PARAM_XML_SCHEME, "XML", SingleFileXReader.PARAM_FILE_NAME,
               "myxslt.xml");
     } catch (ResourceInitializationException e) {
@@ -60,7 +60,7 @@ public class SingleFileXReaderTest extends ComponentTestBase {
     }
     assertNotNull(rie);
 
-    CollectionReader cr = CollectionReaderFactory.createCollectionReader(SingleFileXReader.class,
+    CollectionReader cr = CollectionReaderFactory.createReader(SingleFileXReader.class,
             typeSystemDescription, SingleFileXReader.PARAM_XML_SCHEME, "XCAS",
             SingleFileXReader.PARAM_FILE_NAME, "src/test/resources/data/docs/test.xcas");
     Progress[] progress = cr.getProgress();
@@ -75,7 +75,7 @@ public class SingleFileXReaderTest extends ComponentTestBase {
 
     cr.close();
 
-    cr = CollectionReaderFactory.createCollectionReader(SingleFileXReader.class,
+    cr = CollectionReaderFactory.createReader(SingleFileXReader.class,
             typeSystemDescription, SingleFileXReader.PARAM_XML_SCHEME, "XCAS",
             SingleFileXReader.PARAM_FILE_NAME, "test/data/docs/test.xcas");
     UnsupportedOperationException uoe = null;
@@ -88,7 +88,7 @@ public class SingleFileXReaderTest extends ComponentTestBase {
     cr.close();
 
     HideOutput hideOutput = new HideOutput();
-    cr = CollectionReaderFactory.createCollectionReader(SingleFileXReader.class,
+    cr = CollectionReaderFactory.createReader(SingleFileXReader.class,
             typeSystemDescription, SingleFileXReader.PARAM_XML_SCHEME, "XCAS",
             SingleFileXReader.PARAM_FILE_NAME, "test/data/docs/bad.xcas");
     RuntimeException re = null;
@@ -100,7 +100,7 @@ public class SingleFileXReaderTest extends ComponentTestBase {
     assertNotNull(re);
     hideOutput.restoreOutput();
 
-    cr = CollectionReaderFactory.createCollectionReader(SingleFileXReader.class,
+    cr = CollectionReaderFactory.createReader(SingleFileXReader.class,
             typeSystemDescription, SingleFileXReader.PARAM_XML_SCHEME, "XMI",
             SingleFileXReader.PARAM_FILE_NAME, "test/data/docs/dne.xmi");
     re = null;

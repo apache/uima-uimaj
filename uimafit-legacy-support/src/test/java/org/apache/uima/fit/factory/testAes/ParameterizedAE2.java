@@ -21,9 +21,9 @@ package org.apache.uima.fit.factory.testAes;
 
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
-import org.uimafit.descriptor.ExternalResource;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.Resource_ImplBase;
+import org.uimafit.descriptor.ExternalResource;
 
 /**
  * Parametrized AE for testing {@link ExternalResource} annotations.

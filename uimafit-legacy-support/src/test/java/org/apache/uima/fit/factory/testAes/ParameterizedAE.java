@@ -27,9 +27,9 @@ import java.util.regex.Pattern;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
+import org.apache.uima.jcas.JCas;
 import org.uimafit.descriptor.ConfigurationParameter;
 import org.uimafit.descriptor.SofaCapability;
-import org.apache.uima.jcas.JCas;
 
 /**
  */

@@ -42,7 +42,6 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.ComponentTestBase;
 import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
-import org.uimafit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.testAes.Annotator1;
 import org.apache.uima.fit.factory.testAes.ParameterizedAE;
@@ -51,6 +50,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.impl.ConfigurationParameterSettings_impl;
 import org.junit.Test;
+import org.uimafit.descriptor.ConfigurationParameter;
 import org.xml.sax.SAXException;
 
 /**

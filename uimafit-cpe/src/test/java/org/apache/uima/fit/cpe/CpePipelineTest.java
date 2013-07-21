@@ -21,6 +21,7 @@ package org.apache.uima.fit.cpe;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+
 import junit.framework.Assert;
 
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -43,7 +44,7 @@ public class CpePipelineTest
 	public void test()
 		throws Exception
 	{
-		CpePipeline.runPipeline(CollectionReaderFactory.createDescription(Reader.class),
+		CpePipeline.runPipeline(CollectionReaderFactory.createReaderDescription(Reader.class),
 				AnalysisEngineFactory.createEngineDescription(Annotator.class),
 				AnalysisEngineFactory.createEngineDescription(Writer.class));
 		Assert.assertEquals(MARKER, Writer.MARKER_SEEN);

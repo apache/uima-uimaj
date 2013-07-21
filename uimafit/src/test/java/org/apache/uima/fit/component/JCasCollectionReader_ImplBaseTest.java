@@ -18,7 +18,7 @@
  */
 package org.apache.uima.fit.component;
 
-import static org.apache.uima.fit.factory.CollectionReaderFactory.createCollectionReader;
+import static org.apache.uima.fit.factory.CollectionReaderFactory.createReader;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
@@ -49,7 +49,7 @@ public class JCasCollectionReader_ImplBaseTest {
   public void test() throws Exception {
     File file = new File("src/test/resources/data/docs/A.txt");
 
-    CollectionReader reader = createCollectionReader(SingleTextReader.class,
+    CollectionReader reader = createReader(SingleTextReader.class,
             SingleTextReader.PARAM_FILE, file.getPath());
 
     CAS cas = CasCreationUtils.createCas(reader.getProcessingResourceMetaData());

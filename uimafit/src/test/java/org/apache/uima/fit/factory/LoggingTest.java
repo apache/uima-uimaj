@@ -19,7 +19,7 @@
 package org.apache.uima.fit.factory;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
-import static org.apache.uima.fit.factory.CollectionReaderFactory.createCollectionReader;
+import static org.apache.uima.fit.factory.CollectionReaderFactory.createReader;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
@@ -213,10 +213,10 @@ public class LoggingTest {
     try {
       JCas jcas = JCasFactory.createJCas();
 
-      createCollectionReader(LoggingCasCollectionReader.class).hasNext();
+      createReader(LoggingCasCollectionReader.class).hasNext();
       assertLogDone(records);
 
-      createCollectionReader(LoggingJCasCollectionReader.class).hasNext();
+      createReader(LoggingJCasCollectionReader.class).hasNext();
       assertLogDone(records);
 
       // createFlowControllerDescription(LoggingJCasFlowController.class).

@@ -47,7 +47,7 @@ public class CollectionReaderFactoryTest extends ComponentTestBase {
   @Test
   public void testCreateCollectionReader() throws UIMAException, IOException {
 
-    CollectionReader reader = CollectionReaderFactory.createCollectionReader(
+    CollectionReader reader = CollectionReaderFactory.createReader(
             SingleFileXReader.class, typeSystemDescription, SingleFileXReader.PARAM_FILE_NAME,
             "src/test/resources/data/docs/test.xmi", SingleFileXReader.PARAM_XML_SCHEME,
             SingleFileXReader.XMI);
@@ -61,7 +61,7 @@ public class CollectionReaderFactoryTest extends ComponentTestBase {
     assertEquals("A", token.getPos());
     assertEquals("all", token.getStem());
 
-    reader = CollectionReaderFactory.createCollectionReader(
+    reader = CollectionReaderFactory.createReader(
             "org.apache.uima.fit.factory.testCrs.SingleFileXReader",
             SingleFileXReader.PARAM_FILE_NAME, "src/test/resources/data/docs/test.xmi",
             SingleFileXReader.PARAM_XML_SCHEME, SingleFileXReader.XMI);
@@ -75,7 +75,7 @@ public class CollectionReaderFactoryTest extends ComponentTestBase {
     assertEquals(".", token.getPos());
     assertEquals(".", token.getStem());
 
-    reader = CollectionReaderFactory.createCollectionReaderFromPath(
+    reader = CollectionReaderFactory.createReaderFromPath(
             "src/test/resources/org/apache/uima/fit/factory/testCrs/SingleFileXReader.xml",
             SingleFileXReader.PARAM_FILE_NAME, "src/test/resources/data/docs/test.xmi",
             SingleFileXReader.PARAM_XML_SCHEME, SingleFileXReader.XMI);
@@ -95,7 +95,7 @@ public class CollectionReaderFactoryTest extends ComponentTestBase {
   public void testExceptions() {
     ResourceInitializationException rie = null;
     try {
-      CollectionReaderFactory.createCollectionReader(TestCR.class, (Object[]) null);
+      CollectionReaderFactory.createReader(TestCR.class, (Object[]) null);
     } catch (ResourceInitializationException e) {
       rie = e;
     }
@@ -106,7 +106,7 @@ public class CollectionReaderFactoryTest extends ComponentTestBase {
   public void testResourceMetaData() throws Exception
   {
     CollectionReaderDescription desc = CollectionReaderFactory
-            .createDescription(TestCR.class);
+            .createReaderDescription(TestCR.class);
     
     org.apache.uima.resource.metadata.ResourceMetaData meta = desc.getMetaData();
     

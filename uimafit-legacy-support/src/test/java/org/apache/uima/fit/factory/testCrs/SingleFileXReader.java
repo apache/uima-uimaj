@@ -18,6 +18,8 @@
  */
 package org.apache.uima.fit.factory.testCrs;
 
+import static org.uimafit.factory.ConfigurationParameterFactory.createConfigurationParameterName;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -28,13 +30,11 @@ import org.apache.uima.cas.impl.XCASDeserializer;
 import org.apache.uima.cas.impl.XmiCasDeserializer;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.fit.component.CasCollectionReader_ImplBase;
-import org.uimafit.descriptor.ConfigurationParameter;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Progress;
 import org.apache.uima.util.ProgressImpl;
+import org.uimafit.descriptor.ConfigurationParameter;
 import org.xml.sax.SAXException;
-
-import static org.uimafit.factory.ConfigurationParameterFactory.createConfigurationParameterName;
 
 
 /**

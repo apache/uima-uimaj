@@ -18,6 +18,8 @@
  */
 package org.apache.uima.fit.factory.testAes;
 
+import static org.uimafit.factory.ConfigurationParameterFactory.createConfigurationParameterName;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -26,7 +28,6 @@ import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
-import org.uimafit.descriptor.ConfigurationParameter;
 import org.apache.uima.flow.FinalStep;
 import org.apache.uima.flow.Flow;
 import org.apache.uima.flow.FlowControllerContext;
@@ -34,8 +35,7 @@ import org.apache.uima.flow.JCasFlow_ImplBase;
 import org.apache.uima.flow.SimpleStep;
 import org.apache.uima.flow.Step;
 import org.apache.uima.jcas.JCas;
-
-import static org.uimafit.factory.ConfigurationParameterFactory.createConfigurationParameterName;
+import org.uimafit.descriptor.ConfigurationParameter;
 
 
 /**

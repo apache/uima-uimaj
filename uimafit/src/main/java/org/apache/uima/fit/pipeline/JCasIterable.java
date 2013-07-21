@@ -20,7 +20,7 @@ package org.apache.uima.fit.pipeline;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
-import static org.apache.uima.fit.factory.CollectionReaderFactory.createCollectionReader;
+import static org.apache.uima.fit.factory.CollectionReaderFactory.createReader;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -107,7 +107,7 @@ public class JCasIterable implements Iterator<JCas>, Iterable<JCas> {
           final AnalysisEngineDescription... aEngines) throws UIMAException, IOException {
     setSelfComplete(true);
     setSelfDestroy(true);
-    collectionReader = createCollectionReader(aReader);
+    collectionReader = createReader(aReader);
     analysisEngines = new AnalysisEngine[] { createEngine(createEngineDescription(aEngines)) };
     jCas = CasCreationUtils.createCas(collectMetaData()).getJCas();
   }

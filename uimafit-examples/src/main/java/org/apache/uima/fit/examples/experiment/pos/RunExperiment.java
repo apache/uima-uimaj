@@ -65,7 +65,7 @@ public class RunExperiment {
 
     // The lineReader simply copies the lines from the input file into the
     // default view - one line per CAS
-    CollectionReader lineReader = CollectionReaderFactory.createCollectionReader(LineReader.class,
+    CollectionReader lineReader = CollectionReaderFactory.createReader(LineReader.class,
             typeSystem, LineReader.PARAM_INPUT_FILE, samplePosFileName);
 
     AggregateBuilder builder = new AggregateBuilder();

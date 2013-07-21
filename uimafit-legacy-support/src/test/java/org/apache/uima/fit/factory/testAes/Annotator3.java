@@ -23,8 +23,8 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.fit.component.ViewCreatorAnnotator;
-import org.uimafit.descriptor.SofaCapability;
 import org.apache.uima.jcas.JCas;
+import org.uimafit.descriptor.SofaCapability;
 
 /**
  */

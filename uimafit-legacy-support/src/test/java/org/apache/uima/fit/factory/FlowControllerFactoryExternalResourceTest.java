@@ -47,13 +47,13 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.fit.component.CasFlowController_ImplBase;
 import org.apache.uima.fit.component.NoOpAnnotator;
-import org.uimafit.descriptor.ExternalResource;
 import org.apache.uima.fit.factory.testRes.TestExternalResource;
 import org.apache.uima.flow.CasFlow_ImplBase;
 import org.apache.uima.flow.FinalStep;
 import org.apache.uima.flow.Flow;
 import org.apache.uima.flow.Step;
 import org.junit.Test;
+import org.uimafit.descriptor.ExternalResource;
 
 /**
  */

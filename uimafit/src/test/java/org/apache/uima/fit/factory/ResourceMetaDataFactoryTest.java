@@ -18,7 +18,7 @@
  */
 package org.apache.uima.fit.factory;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.fit.descriptor.ResourceMetaData;

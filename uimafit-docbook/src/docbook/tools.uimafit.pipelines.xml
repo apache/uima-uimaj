@@ -23,7 +23,7 @@
   </itemizedlist>
   <para>We create descriptors for all components and run them as a pipeline:</para>
   <programlisting>CollectionReaderDescription reader = 
-  CollectionReaderFactory.createDescription(
+  CollectionReaderFactory.createReaderDescription(
     TextReader.class, 
     TextReader.PARAM_INPUT, "/home/uimafit/documents");
 

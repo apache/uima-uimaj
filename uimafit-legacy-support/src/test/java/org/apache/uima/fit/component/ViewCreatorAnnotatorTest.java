@@ -27,7 +27,6 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.fit.ComponentTestBase;
-import org.uimafit.descriptor.SofaCapability;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.testing.util.HideOutput;
 import org.apache.uima.fit.type.Token;
@@ -35,6 +34,7 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.junit.Test;
+import org.uimafit.descriptor.SofaCapability;
 
 /**
  * I initially thought that the behavior of mapping the default view to another yet-to-be-created

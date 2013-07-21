@@ -18,6 +18,13 @@
  */
 package org.apache.uima.fit.pipeline;
 
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
+import static org.apache.uima.fit.factory.CollectionReaderFactory.createReader;
+import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,10 +42,6 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Progress;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
-import static org.apache.uima.fit.factory.CollectionReaderFactory.*;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.*;
 
 /**
  */
@@ -108,7 +111,7 @@ public class SimplePipelineTest {
 
   @Test
   public void testWithInstances() throws Exception {
-    SimplePipeline.runPipeline(createCollectionReader(Reader.class),
+    SimplePipeline.runPipeline(createReader(Reader.class),
             createEngine(Annotator.class),
             createEngine(Writer.class));
     assertEquals(Arrays.asList(SENTENCE_TEXT), Writer.SENTENCES);
@@ -116,7 +119,7 @@ public class SimplePipelineTest {
 
   @Test
   public void testWithDescriptors() throws Exception {
-    SimplePipeline.runPipeline(createDescription(Reader.class),
+    SimplePipeline.runPipeline(createReaderDescription(Reader.class),
             createEngineDescription(Annotator.class),
             createEngineDescription(Writer.class));
     assertEquals(Arrays.asList(SENTENCE_TEXT), Writer.SENTENCES);
