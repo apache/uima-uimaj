@@ -23,13 +23,13 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>2.4.1</version>
+    <version>2.4.2-SNAPSHOT</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
 
 	<artifactId>uimaj-bootstrap</artifactId>
 	<packaging>jar</packaging>
-	<version>2.4.1</version>
+	<version>2.4.2-SNAPSHOT</version>
 	<name>Apache UIMA Base: ${project.artifactId}</name>
   <description>Configures a classpath from directories, and runs
     a Java application using that</description>
@@ -37,13 +37,13 @@
   
   <scm>
     <connection>
-      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-2.4.1-rc4/uimaj-bootstrap
+      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-bootstrap
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-2.4.1-rc4/uimaj-bootstrap
+      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-bootstrap
     </developerConnection>
     <url>
-      http://svn.apache.org/viewvc/uima/uimaj/tags/uimaj-2.4.1-rc4/uimaj-bootstrap
+      http://svn.apache.org/viewvc/uima/uimaj/trunk/uimaj-bootstrap
     </url>
   </scm>
   
