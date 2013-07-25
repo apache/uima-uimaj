@@ -262,6 +262,11 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   // the sofaFS this view is based on
   // SofaFS mySofa;
+  /**
+   * The heap address of the sofa FS for this view, or
+   * -1 if the sofa FS is for the initial view, or
+   * 0 if there is no sofa FS - for instance, in the "base cas"
+   */
   private int mySofaRef = 0;
 
   private JCas jcas = null;
