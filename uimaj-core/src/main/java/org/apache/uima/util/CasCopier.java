@@ -43,7 +43,7 @@ import org.apache.uima.cas.ShortArrayFS;
 import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.Type;
-import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.LowLevelCAS;
 import org.apache.uima.cas.text.AnnotationFS;
 
@@ -56,8 +56,6 @@ import org.apache.uima.cas.text.AnnotationFS;
  * 
  */
 public class CasCopier {
-  private final CAS mSrcBaseCas;
-  private final CAS mDestBaseCas;
   
   private final CAS mOriginalSrcCasView;
   private final CAS mOriginalTgtCasView;
@@ -122,8 +120,6 @@ public class CasCopier {
   public CasCopier(CAS aSrcCas, CAS aDestCas, boolean lenient) {
     mOriginalSrcCasView = aSrcCas;
     mOriginalTgtCasView = aDestCas;
-    mSrcBaseCas = ((CASImpl)aSrcCas).getBaseCAS();
-    mDestBaseCas = ((CASImpl)aDestCas).getBaseCAS();
     
     mDestSofaFeature = aDestCas.getTypeSystem().getFeatureByFullName(CAS.FEATURE_FULL_NAME_SOFA);    
     this.lenient = lenient;
@@ -201,7 +197,7 @@ public class CasCopier {
    * @param aCopySofa if true, the sofa data and mimeType will be copied. If false they will not.
    */
   public void copyCasView(CAS aSrcCasView, boolean aCopySofa) {
-    copyCasView(aSrcCasView, getOrCreateView(mDestBaseCas, aSrcCasView.getViewName()), aCopySofa);
+    copyCasView(aSrcCasView, getOrCreateView(mOriginalTgtCasView, aSrcCasView.getViewName()), aCopySofa);
   }
   
   /**
@@ -219,7 +215,7 @@ public class CasCopier {
    * @param aCopySofa if true, the sofa data and mimeType will be copied. If false they will not.
    */
   public void copyCasView(String aSrcCasViewName, boolean aCopySofa) {
-    copyCasView(getOrCreateView(mSrcBaseCas, aSrcCasViewName), aCopySofa);
+    copyCasView(getOrCreateView(mOriginalSrcCasView, aSrcCasViewName), aCopySofa);
   }
   
   /**
@@ -239,7 +235,7 @@ public class CasCopier {
    * @param aCopySofa if true, the sofa data and mimeType will be copied. If false they will not.
    */
   public void copyCasView(CAS aSrcCasView, String aTgtCasViewName, boolean aCopySofa) {
-    copyCasView(aSrcCasView, getOrCreateView(mDestBaseCas, aTgtCasViewName), aCopySofa);
+    copyCasView(aSrcCasView, getOrCreateView(mOriginalTgtCasView, aTgtCasViewName), aCopySofa);
   }
 
   /**
@@ -257,7 +253,7 @@ public class CasCopier {
    * @param aCopySofa if true, the sofa data and mimeType will be copied. If false they will not.
    */
   public void copyCasView(String aSrcCasViewName, CAS aTgtCasView, boolean aCopySofa) {
-    copyCasView(getOrCreateView(mSrcBaseCas, aSrcCasViewName), aTgtCasView, aCopySofa);
+    copyCasView(getOrCreateView(mOriginalSrcCasView, aSrcCasViewName), aTgtCasView, aCopySofa);
   }
 
   /**
@@ -288,10 +284,10 @@ public class CasCopier {
 //        aTgtCasView == ((CASImpl)aTgtCasView).getBaseCAS())
 //      throw new UIMARuntimeException(UIMARuntimeException.UNSUPPORTED_CAS_COPY_TO_OR_FROM_BASE_CAS, null);
     
-    if (mSrcBaseCas != ((CASImpl)aSrcCasView).getBaseCAS()) {
+    if (!casViewsInSameCas(aSrcCasView, mOriginalSrcCasView)) {
       throw new UIMARuntimeException(UIMARuntimeException.VIEW_NOT_PART_OF_CAS, new Object[] {"Source"});
     }
-    if (mDestBaseCas != ((CASImpl)aTgtCasView).getBaseCAS()) {
+    if (!casViewsInSameCas(aTgtCasView, mOriginalTgtCasView)) {
       throw new UIMARuntimeException(UIMARuntimeException.VIEW_NOT_PART_OF_CAS, new Object[] {"Destination"});
     }
     
@@ -302,7 +298,7 @@ public class CasCopier {
       throw new UIMARuntimeException(UIMARuntimeException.UNSUPPORTED_CAS_COPY_TO_OR_FROM_BASE_CAS, null);
     }
         
-    mLowLevelDestCas = mDestBaseCas.getLowLevelCAS();
+    mLowLevelDestCas = aTgtCasView.getLowLevelCAS();
     
     // The top level sofa associated with this view is copied (or not)
     
@@ -407,7 +403,7 @@ public class CasCopier {
     }
     
     if (null == mLowLevelDestCas) {
-      mLowLevelDestCas = mDestBaseCas.getLowLevelCAS();
+      mLowLevelDestCas = mOriginalTgtCasView.getLowLevelCAS();
     }
     
     return copyFs2(aFS);
@@ -434,7 +430,7 @@ public class CasCopier {
    */
   private FeatureStructure copyFsInner(FeatureStructure aFS) {
     // FS must be in the source CAS
-    assert ((CASImpl) aFS.getCAS()).getBaseCAS() == mSrcBaseCas;
+    assert (casViewsInSameCas(aFS.getCAS(), mOriginalSrcCasView));
 
     // check if we already copied this FS
     FeatureStructure copy = (FeatureStructure) mFsMap.get(aFS);
@@ -450,7 +446,7 @@ public class CasCopier {
     // same Sofa ID in the target CAS. If it does not exist it will be created.
     if (aFS instanceof SofaFS) {
       String destSofaId = getDestSofaId(((SofaFS) aFS).getSofaID());
-      return getOrCreateView(mDestBaseCas, destSofaId).getSofa();
+      return getOrCreateView(mOriginalTgtCasView, destSofaId).getSofa();
     }
 
     // DocumentAnnotation - instead of creating a new instance, reuse the automatically created
@@ -463,7 +459,7 @@ public class CasCopier {
       //   but this is unlikely.  To have this case this would require
       //   indexing some other feature structure in this view, which, in turn,
       //   has a reference to the DocumentAnnotation FS belonging to another view
-      CAS destView = getOrCreateView(mDestBaseCas, destViewName);
+      CAS destView = getOrCreateView(mOriginalTgtCasView, destViewName);
       FeatureStructure destDocAnnot = destView.getDocumentAnnotation();
       if (destDocAnnot != null) {  // Note: is always non-null, getDocumentAnnotation creates if not exist
         copyFeatures(aFS, destDocAnnot);
@@ -479,8 +475,10 @@ public class CasCopier {
     }
 
     // create a new FS of the same type in the target CAS
-    Type destType = (mDestBaseCas.getTypeSystem() == mSrcBaseCas.getTypeSystem()) ? srcType : mDestBaseCas
-        .getTypeSystem().getType(srcType.getName());
+    TypeSystem destTs = mOriginalTgtCasView.getTypeSystem();
+    Type destType = (destTs == mOriginalSrcCasView.getTypeSystem()) ? 
+        srcType : 
+        destTs.getType(srcType.getName());
     if (destType == null) {
       // If in lenient mode, do not act on this FS. Instead just
       // return (null) to the caller and let the caller deal with this case.
@@ -587,7 +585,7 @@ public class CasCopier {
     if (aSrcFs instanceof StringArrayFS) {
       StringArrayFS arrayFs = (StringArrayFS) aSrcFs;
       int len = arrayFs.size();
-      StringArrayFS destFS = mDestBaseCas.createStringArrayFS(len);
+      StringArrayFS destFS = mOriginalTgtCasView.createStringArrayFS(len);
       for (int i = 0; i < len; i++) {
         destFS.set(i, arrayFs.get(i));
       }
@@ -596,7 +594,7 @@ public class CasCopier {
     if (aSrcFs instanceof IntArrayFS) {
       IntArrayFS arrayFs = (IntArrayFS) aSrcFs;
       int len = arrayFs.size();
-      IntArrayFS destFS = mDestBaseCas.createIntArrayFS(len);
+      IntArrayFS destFS = mOriginalTgtCasView.createIntArrayFS(len);
       for (int i = 0; i < len; i++) {
         destFS.set(i, arrayFs.get(i));
       }
@@ -605,7 +603,7 @@ public class CasCopier {
     if (aSrcFs instanceof ByteArrayFS) {
       ByteArrayFS arrayFs = (ByteArrayFS) aSrcFs;
       int len = arrayFs.size();
-      ByteArrayFS destFS = mDestBaseCas.createByteArrayFS(len);
+      ByteArrayFS destFS = mOriginalTgtCasView.createByteArrayFS(len);
       for (int i = 0; i < len; i++) {
         destFS.set(i, arrayFs.get(i));
       }
@@ -614,7 +612,7 @@ public class CasCopier {
     if (aSrcFs instanceof ShortArrayFS) {
       ShortArrayFS arrayFs = (ShortArrayFS) aSrcFs;
       int len = arrayFs.size();
-      ShortArrayFS destFS = mDestBaseCas.createShortArrayFS(len);
+      ShortArrayFS destFS = mOriginalTgtCasView.createShortArrayFS(len);
       for (int i = 0; i < len; i++) {
         destFS.set(i, arrayFs.get(i));
       }
@@ -623,7 +621,7 @@ public class CasCopier {
     if (aSrcFs instanceof LongArrayFS) {
       LongArrayFS arrayFs = (LongArrayFS) aSrcFs;
       int len = arrayFs.size();
-      LongArrayFS destFS = mDestBaseCas.createLongArrayFS(len);
+      LongArrayFS destFS = mOriginalTgtCasView.createLongArrayFS(len);
       for (int i = 0; i < len; i++) {
         destFS.set(i, arrayFs.get(i));
       }
@@ -632,7 +630,7 @@ public class CasCopier {
     if (aSrcFs instanceof FloatArrayFS) {
       FloatArrayFS arrayFs = (FloatArrayFS) aSrcFs;
       int len = arrayFs.size();
-      FloatArrayFS destFS = mDestBaseCas.createFloatArrayFS(len);
+      FloatArrayFS destFS = mOriginalTgtCasView.createFloatArrayFS(len);
       for (int i = 0; i < len; i++) {
         destFS.set(i, arrayFs.get(i));
       }
@@ -641,7 +639,7 @@ public class CasCopier {
     if (aSrcFs instanceof DoubleArrayFS) {
       DoubleArrayFS arrayFs = (DoubleArrayFS) aSrcFs;
       int len = arrayFs.size();
-      DoubleArrayFS destFS = mDestBaseCas.createDoubleArrayFS(len);
+      DoubleArrayFS destFS = mOriginalTgtCasView.createDoubleArrayFS(len);
       for (int i = 0; i < len; i++) {
         destFS.set(i, arrayFs.get(i));
       }
@@ -650,7 +648,7 @@ public class CasCopier {
     if (aSrcFs instanceof BooleanArrayFS) {
       BooleanArrayFS arrayFs = (BooleanArrayFS) aSrcFs;
       int len = arrayFs.size();
-      BooleanArrayFS destFS = mDestBaseCas.createBooleanArrayFS(len);
+      BooleanArrayFS destFS = mOriginalTgtCasView.createBooleanArrayFS(len);
       for (int i = 0; i < len; i++) {
         destFS.set(i, arrayFs.get(i));
       }
@@ -659,7 +657,7 @@ public class CasCopier {
     if (aSrcFs instanceof ArrayFS) {
       ArrayFS arrayFs = (ArrayFS) aSrcFs;
       int len = arrayFs.size();
-      ArrayFS destFS = mDestBaseCas.createArrayFS(len);
+      ArrayFS destFS = mOriginalTgtCasView.createArrayFS(len);
       for (int i = 0; i < len; i++) {
         FeatureStructure srcElem = arrayFs.get(i);
         if (srcElem != null) {
@@ -695,5 +693,32 @@ public class CasCopier {
   private static boolean isDocumentAnnotation(FeatureStructure aFS) {
     return (aFS instanceof AnnotationFS) &&
       aFS.equals(((AnnotationFS)aFS).getView().getDocumentAnnotation());
+  }
+  
+  /**
+   * Important: only use CAS apis, not CASImpl APIs (https://issues.apache.org/jira/browse/UIMA-3112)
+   * @param c1
+   * @param c2
+   * @return true if both views are in the same CAS (e.g., they have the same base CAS)
+   */
+  private boolean casViewsInSameCas(CAS c1, CAS c2) {
+    if (null == c1 || null == c2) {
+      return false;
+    }
+    String v1 = c1.getViewName();
+    String v2 = c2.getViewName();
+    
+    if (v1 == null) {
+      // means it's not the initial view, and 
+      // this view has no sofa FS (yet)
+      // -- likely is a base CAS
+      if (v2 == null) {
+        // two base CASes case
+        return v1 == v2;
+      }
+      return c1.getView(v2) == c2;
+    }
+    
+    return c2.getView(v1) == c1;
   }
 }
