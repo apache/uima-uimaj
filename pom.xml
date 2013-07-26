@@ -26,11 +26,12 @@
 	<version>2.0.0-SNAPSHOT</version>
 	<description>Factories, Injection, and Testing library for UIMA</description>
 	<url>${uimaWebsiteUrl}</url>
+	<inceptionYear>2012</inceptionYear>
 	<parent>
 		<groupId>org.apache.uima</groupId>
 		<artifactId>parent-pom</artifactId>
-		<version>4</version>
 		<relativePath />
+		<version>6</version>
 	</parent>
 	<scm>
 		<connection>scm:svn:http://svn.apache.org/repos/asf/uima/sandbox/uimafit/trunk/</connection>
@@ -42,7 +43,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.target>1.5</java.target>
 		<spring.version>3.1.2.RELEASE</spring.version>
-		<uima.version>2.4.1-SNAPSHOT</uima.version>
+		<uima.version>2.4.1</uima.version>
 		<jiraVersion>12323969</jiraVersion>
 	</properties>
 
@@ -557,5 +558,4 @@
 		<module>uimafit-docbook</module>
 		<module>uimafit-cpe</module>
 	</modules>
-	<inceptionYear>2012</inceptionYear>
 </project>
