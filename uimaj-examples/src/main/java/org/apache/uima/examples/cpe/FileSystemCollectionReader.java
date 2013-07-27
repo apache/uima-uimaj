@@ -151,7 +151,7 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
 
     // set language if it was explicitly specified as a configuration parameter
     if (mLanguage != null) {
-      ((DocumentAnnotation) jcas.getDocumentAnnotationFs()).setLanguage(mLanguage);
+      jcas.setDocumentLanguage(mLanguage);
     }
 
     // Also store location of source document in CAS. This information is critical
