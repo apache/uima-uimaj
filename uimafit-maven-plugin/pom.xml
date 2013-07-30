@@ -122,7 +122,6 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-invoker-plugin</artifactId>
-				<version>1.8</version>
 				<configuration>
 					<debug>true</debug>
 					<projectsDirectory>src/it</projectsDirectory>
