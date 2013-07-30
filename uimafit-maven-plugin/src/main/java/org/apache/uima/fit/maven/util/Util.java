@@ -116,7 +116,7 @@ public final class Util {
   public static String getClassName(MavenProject aProject, String aFile) {
     String base = aFile.substring(0, aFile.length() - 6);
     String clazzPath = base.substring(aProject.getBuild().getOutputDirectory().length() + 1);
-    return clazzPath.replace("/", ".");
+    return clazzPath.replace(File.separator, ".");
   }
 
   /**
