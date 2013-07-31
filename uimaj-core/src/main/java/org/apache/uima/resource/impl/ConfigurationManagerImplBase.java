@@ -118,7 +118,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
 
     // parameters in no group
     ConfigurationParameter[] paramsInNoGroup = paramDecls.getConfigurationParameters();
-    if (paramsInNoGroup.length > 0) // no groups declared
+    if (paramsInNoGroup.length > 0) // group-less parameters
     {
       declareParameters(null, paramsInNoGroup, settings, aContextName, externalOverrides);
     }

@@ -59,9 +59,9 @@ import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.resource.Resource;
+import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
-import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.impl.URISpecifier_impl;
 import org.apache.uima.resource.metadata.AllowedValue;
 import org.apache.uima.resource.metadata.Capability;
@@ -387,6 +387,26 @@ public class AnalysisEngine_implTest extends TestCase {
     Assert.assertNotNull(ex);
     Assert.assertNotNull(ex.getMessage());
     Assert.assertFalse(ex.getMessage().startsWith("EXCEPTION MESSAGE LOCALIZATION FAILED"));
+  }
+
+  public void testParameterGroups() throws Exception {
+    // Check that both groups parameters and non-group parameters are validated
+    XMLInputSource in = new XMLInputSource(
+            JUnitExtension.getFile("TextAnalysisEngineImplTest/AnnotatorWithGroupParameterError.xml"));
+    AnalysisEngineDescription desc = null;
+    InvalidXMLException ex = null;
+    try {
+      desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
+    } catch (InvalidXMLException e) {
+      ex = e;
+    }
+    in.close();
+    // Parse should fail unless special environment variable set
+    if (System.getenv("UIMA_Jira3123") == null) {
+      Assert.assertNotNull(ex);
+    } else {
+      Assert.assertNotNull(desc);
+    }
   }
 
   public void testProcess() throws Exception {

@@ -89,27 +89,33 @@ public class ConfigurationManager_impl extends ConfigurationManagerImplBase {
         mSharedParamMap.put(qname, paramValue);
         
         // Log parameter & value & how it was found ... could do when validate them?
-        Object realValue = paramValue;
-        if (from.length() == 0) {
-          String linkedTo = qname;
-          while (getLink(linkedTo) != null) {
-            linkedTo = getLink(linkedTo);
+        if (UIMAFramework.getLogger(this.getClass()).isLoggable(Level.CONFIG)) {
+          Object realValue = paramValue;
+          if (from.length() == 0) {
+            String linkedTo = qname;
+            while (getLink(linkedTo) != null) {
+              linkedTo = getLink(linkedTo);
+            }
+            if (linkedTo != qname && lookup(linkedTo) != null) {
+              realValue = lookup(linkedTo);
+              from = "(overridden from " + linkedTo + ")";
+            }
           }
-          if (linkedTo != qname && lookup(linkedTo) != null) {
-            realValue = lookup(linkedTo);
-            from = "(overridden from " + linkedTo + ")";
+          if (realValue == null) {
+            continue;
           }
+          if (aParams[i].isMultiValued()) {
+            try {
+              Object[] array = (Object[]) realValue;
+              realValue = Arrays.toString(array);
+            } catch (ClassCastException e) {
+              // Ignore errors caused by failure to validate parameter settings (see Jira 3123)
+            }
+          }
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(), "declareParameters",
+                  LOG_RESOURCE_BUNDLE, "UIMA_parameter_set__CONFIG",
+                  new Object[] { aParams[i].getName(), aContextName, realValue, from });
         }
-        if (realValue == null) {
-          continue;
-        }
-        if (aParams[i].isMultiValued()) {
-          Object[] array = (Object[]) realValue;
-          realValue = Arrays.toString(array);
-        }
-        UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(), "declareParameters",
-                LOG_RESOURCE_BUNDLE, "UIMA_parameter_set__CONFIG",
-                new Object[] { aParams[i].getName(), aContextName, realValue, from });
       }
     }
   }

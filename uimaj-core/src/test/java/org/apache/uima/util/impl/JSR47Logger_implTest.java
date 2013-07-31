@@ -51,6 +51,9 @@ public class JSR47Logger_implTest extends TestCase {
   }
 
   public void testLogWrapperCreation() throws Exception {
+    // Set the root logger's level to INFO ... may not be the default
+    java.util.logging.Logger.getLogger("").setLevel(java.util.logging.Level.INFO);
+
     org.apache.uima.util.Logger uimaLogger = JSR47Logger_impl.getInstance();
     org.apache.uima.util.Logger classLogger = JSR47Logger_impl.getInstance(this.getClass());
 
