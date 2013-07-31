@@ -97,7 +97,7 @@ public class Serialization {
    * Convert a CAS + the type system and index definitions into a
    * CASCompleteSerializer object
    * @param casMgr
-   * @return
+   * @return a Java Object which is serializable and has both the type system, index definitions, and the CAS contents
    */
   public static CASCompleteSerializer serializeCASComplete(CASMgr casMgr) {
     return new CASCompleteSerializer((CASImpl) casMgr);
@@ -117,7 +117,7 @@ public class Serialization {
    * Deserialize a type system and index repository definition and use to initialize
    * a new instance of a CAS.
    * @param ser
-   * @return
+   * @return the initialized CAS loaded with the deserialized info about the CAS Type systen and Index repositories
    */
   public static CASMgr createCASMgr(CASMgrSerializer ser) {
     return new CASImpl(ser);
@@ -132,7 +132,7 @@ public class Serialization {
    * return the currentview in that Cas.
    * @param casMgr
    * @param casSer
-   * @return
+   * @return the initialized CAS loaded with the deserialized data
    */
   public static CAS createCAS(CASMgr casMgr, CASSerializer casSer) {
     ((CASImpl) casMgr).reinit(casSer);
