@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import org.apache.uima.UIMAFramework;
 import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.metadata.ConfigurationParameter;
@@ -33,6 +34,7 @@ import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
 import org.apache.uima.resource.metadata.NameValuePair;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.util.InvalidXMLException;
+import org.apache.uima.util.Level;
 import org.apache.uima.util.XMLParser;
 import org.w3c.dom.Element;
 
@@ -232,10 +234,17 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
 
     // check that all settings refer to declared parameters and are of the
     // correct data type
+    // Must check both the group-less ones AND any group ones'
+    // For backwards compatibility (see Jira 3123) if have some group-less settings and 
+    // if special environment variable is set then ignore any errors in group parameter settings. 
+    boolean support240bug = false;
     NameValuePair[] nvps = cfgParamSettings.getParameterSettings();
     if (nvps.length > 0) {
       validateConfigurationParameterSettings(nvps, null, cfgParamDecls);
-    } else {
+      support240bug = System.getenv("UIMA_Jira3123") != null;
+    }
+    
+    try {
       Map<String, NameValuePair[]> settingsForGroups = cfgParamSettings.getSettingsForGroups();
       Set<Map.Entry<String, NameValuePair[]>> entrySet = settingsForGroups.entrySet();
       Iterator<Entry<String, NameValuePair[]>> it = entrySet.iterator();
@@ -247,6 +256,10 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
           validateConfigurationParameterSettings(nvps, groupName, cfgParamDecls);
         }
       }
+    } catch (ResourceConfigurationException e) {
+      // Propagate the exception unless in back-level compatibility mode
+      if (!support240bug) throw e;
+      System.out.println("WARNING: Ignoring error in parameter setting: " + e.getMessage());
     }
   }
 
@@ -325,6 +338,9 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
       throw new ResourceConfigurationException(
               ResourceConfigurationException.PARAMETER_TYPE_MISMATCH, new Object[] { getName(),
                   valClass.getName(), paramName, paramType });
+      /*  Parameter type mismatch in component "{0}".  A value of class {1} cannot be 
+          assigned to the configuration parameter {2}, which has type {3}.
+       */
     }
   }
 
