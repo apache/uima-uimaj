@@ -144,44 +144,47 @@ public class AnalysisEngineLaunchConfigurationDelegate extends JavaLaunchDelegat
     Collections.addAll(extendedClasspath, super.getClasspath(configuration));
     
     // Normal mode, add the launcher plugin and uima runtime jar to the classpath
-    if (!Platform.inDevelopmentMode()) {
-      try {
+    try {
+      if (!Platform.inDevelopmentMode()) {     
         // Add this plugin jar to the classpath 
-        extendedClasspath.add(pluginIdToJarPath(LauncherPlugin.ID));
-        
-        // UIMA jar should be added the end of the class path, because user uima jars
-        // (maybe a different version) should appear first on the class path
-        extendedClasspath.add(pluginIdToJarPath("org.apache.uima.runtime"));
-      } catch (IOException e) {
-        throw new CoreException(new Status(IStatus.ERROR, LauncherPlugin.ID, IStatus.OK, 
-                "Failed to compose classpath!", e));
-      }
-    }
-    // When running inside eclipse with PDE in development mode the plugins
-    // are not installed inform of jar files and the classes must be loaded
-    // from the target/classes folder or target/org.apache.uima.runtime.*.jar file
-    else {
-      try {
-        // Add classes folder of this plugin to class path
+        extendedClasspath.add(pluginIdToJarPath(LauncherPlugin.ID)); }
+      else {
+        // When running inside eclipse with PDE in development mode the plugins
+        // are not installed inform of jar files and the classes must be loaded
+        // from the target/classes folder or target/org.apache.uima.runtime.*.jar file
         extendedClasspath.add(pluginIdToJarPath(LauncherPlugin.ID) + "target/classes");
-        
-        // Add org.apache.uima.runtime jar to class path
-        Bundle bundle = LauncherPlugin.getDefault().getBundle("org.apache.uima.runtime");
-        
-        // Ignore the case when runtime bundle does not exist ...
-        if (bundle != null) {
-          Enumeration<?> jarEnum = bundle.findEntries("/", "*.jar", true);
-          while (jarEnum != null && jarEnum.hasMoreElements()) {
-            URL element = (URL) jarEnum.nextElement();
-            extendedClasspath.add(FileLocator.toFileURL(element).getFile());
-          }
-        }
-      } catch (IOException e) {
-        throw new CoreException(new Status(IStatus.ERROR, LauncherPlugin.ID, IStatus.OK, 
-                "Failed to compose classpath!", e));
       }
+      // UIMA jar should be added the end of the class path, because user uima jars
+      // (maybe a different version) should appear first on the class path
+
+      // Add org.apache.uima.runtime jar to class path
+      Bundle bundle = LauncherPlugin.getDefault().getBundle("org.apache.uima.runtime");
+      
+      // Ignore the case when runtime bundle does not exist ...
+      if (bundle != null) {
+        // find entries: starting point, pattern, whether or not to recurse
+        //   all the embedded jars are at the top level, no recursion needed
+        //   All the jars are not needed - only the uimaj core one
+        //     any other jars will be provided by the launching project's class path
+        //     uimaj-core provided because the launcher itself needs uimaj-core classes
+        Enumeration<?> jarEnum = bundle.findEntries("/", "uimaj-core*.jar", false);
+        while (jarEnum != null && jarEnum.hasMoreElements()) {
+          URL element = (URL) jarEnum.nextElement();
+          extendedClasspath.add(FileLocator.toFileURL(element).getFile());
+        }
+      }        
+      // adds things like the top level metainf info, 
+      // probably not required in most cases
+      extendedClasspath.add(pluginIdToJarPath("org.apache.uima.runtime"));
+    } catch (IOException e) {
+      throw new CoreException(new Status(IStatus.ERROR, LauncherPlugin.ID, IStatus.OK, 
+              "Failed to compose classpath!", e));
     }
     
+    // Dump classpath
+//    for (String cp : extendedClasspath) {
+//      System.out.println("Uima Launcher CP entry: " + cp);
+//    }
     return extendedClasspath.toArray(new String[extendedClasspath.size()]);
   }
   
