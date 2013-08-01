@@ -97,7 +97,7 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
     for (String file : files) {
       String base = file.substring(0, file.length() - 6);
       String clazzPath = base.substring(project.getBuild().getOutputDirectory().length() + 1);
-      String clazzName = clazzPath.replace("/", ".");
+      String clazzName = clazzPath.replace(File.separator, ".");
       try {
         Class clazz = componentLoader.loadClass(clazzName);
         
