@@ -39,6 +39,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jdt.launching.JavaLaunchDelegate;
 import org.osgi.framework.Bundle;
 
@@ -103,6 +104,7 @@ public class AnalysisEngineLaunchConfigurationDelegate extends JavaLaunchDelegat
       
       cmdline.append(RemoteLauncher.INPUT_LANGUAGE_PARAM + " ");
       cmdline.append(configuration.getAttribute(LauncherConstants.ATTR_INPUT_LANGUAGE_NAME, "") + " "); 
+      
     }
     
     cmdline.append(RemoteLauncher.INPUT_RECURSIVE_PARAM + " ");
@@ -126,7 +128,12 @@ public class AnalysisEngineLaunchConfigurationDelegate extends JavaLaunchDelegat
 			  cmdline.append(configuration.getAttribute(LauncherConstants.ATTR_OUTPUT_CLEAR_NAME, false));
 		  }
     }
-    
+
+    String pgmArgs = configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS, "");
+    if (pgmArgs != null) {
+      cmdline.append(' ').append(pgmArgs);
+    }
+
     return cmdline.toString();
   }
 

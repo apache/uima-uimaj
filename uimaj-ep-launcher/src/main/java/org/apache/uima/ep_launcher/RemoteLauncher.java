@@ -24,9 +24,6 @@ import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.management.ManagementFactory;
-import java.lang.management.MemoryMXBean;
-import java.util.List;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -299,6 +296,12 @@ public class RemoteLauncher {
 //    MemoryMXBean memoryMxBean = ManagementFactory.getMemoryMXBean();
 //    long maxHeap = memoryMxBean.getHeapMemoryUsage().getMax();
 //    System.out.println("JVM MaxHeap: " + maxHeap);
+    
+    // show what command line args (not jvm args) got passed
+//    System.out.println("Cmdline args: ");
+//    for (int i = 0; i < args.length; i++) {
+//      System.out.println("  arg " + i + " = " + args[i]);      
+//    }
     
     if (!parseCmdLineArgs(args)) {
       throw new IllegalArgumentException("Passed arguments are invalid!");
