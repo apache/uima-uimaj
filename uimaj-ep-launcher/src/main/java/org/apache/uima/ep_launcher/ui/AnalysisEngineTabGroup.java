@@ -24,6 +24,8 @@ import org.eclipse.debug.ui.CommonTab;
 import org.eclipse.debug.ui.EnvironmentTab;
 import org.eclipse.debug.ui.ILaunchConfigurationDialog;
 import org.eclipse.debug.ui.ILaunchConfigurationTab;
+import org.eclipse.debug.ui.sourcelookup.SourceLookupTab;
+import org.eclipse.jdt.debug.ui.launchConfigurations.JavaArgumentsTab;
 import org.eclipse.jdt.debug.ui.launchConfigurations.JavaClasspathTab;
 import org.eclipse.jdt.debug.ui.launchConfigurations.JavaJRETab;
 
@@ -37,11 +39,12 @@ public class AnalysisEngineTabGroup extends AbstractLaunchConfigurationTabGroup 
 
     ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] {
             new AnalysisEngineMainTab(),
-            new JavaJRETab(),
+            new JavaArgumentsTab(),
+            new JavaJRETab(),  // Java Runtime Environment
             new JavaClasspathTab(),
             // TODO: Error launch configuration does not support source lookup, why not?
             // It should be on the tab.
-            // new SourceLookupTab(),
+            new SourceLookupTab(),
             new EnvironmentTab(),
             new CommonTab()
             };
