@@ -167,7 +167,8 @@ public class AnalysisEngineLaunchConfigurationDelegate extends JavaLaunchDelegat
         //   All the jars are not needed - only the uimaj core one
         //     any other jars will be provided by the launching project's class path
         //     uimaj-core provided because the launcher itself needs uimaj-core classes
-        Enumeration<?> jarEnum = bundle.findEntries("/", "uimaj-core*.jar", false);
+        //  Found empirically that recursion is need to find the jar in development mode
+        Enumeration<?> jarEnum = bundle.findEntries("/", "uimaj-core*.jar", Platform.inDevelopmentMode());
         while (jarEnum != null && jarEnum.hasMoreElements()) {
           URL element = (URL) jarEnum.nextElement();
           extendedClasspath.add(FileLocator.toFileURL(element).getFile());
