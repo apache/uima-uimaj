@@ -232,16 +232,16 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
     ConfigurationParameterDeclarations cfgParamDecls = getConfigurationParameterDeclarations();
     ConfigurationParameterSettings cfgParamSettings = getConfigurationParameterSettings();
 
-    // check that all settings refer to declared parameters and are of the
-    // correct data type
+    // check that all settings refer to declared parameters and are of the correct data type
     // Must check both the group-less ones AND any group ones'
     // For backwards compatibility (see Jira 3123) if have some group-less settings and 
-    // if special environment variable is set then ignore any errors in group parameter settings. 
-    boolean support240bug = false;
+    // if special environment variable is set then ignore any errors in group parameter settings.
+    // NOTE - for 2.4.1 act as if backwards compatibility is enabled.
+    boolean support240bug = true;
     NameValuePair[] nvps = cfgParamSettings.getParameterSettings();
     if (nvps.length > 0) {
       validateConfigurationParameterSettings(nvps, null, cfgParamDecls);
-      support240bug = System.getenv("UIMA_Jira3123") != null;
+      //support240bug = System.getenv("UIMA_Jira3123") != null;  // restore this post 2.4.1
     }
     
     try {
@@ -251,15 +251,21 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
       while (it.hasNext()) {
         Map.Entry<String, NameValuePair[]> entry = it.next();
         String groupName = entry.getKey();
-        nvps = entry.getValue();
-        if (nvps != null) {
-          validateConfigurationParameterSettings(nvps, groupName, cfgParamDecls);
+        NameValuePair[] gnvps = entry.getValue();
+        if (gnvps != null) {
+          validateConfigurationParameterSettings(gnvps, groupName, cfgParamDecls);
         }
       }
     } catch (ResourceConfigurationException e) {
       // Propagate the exception unless in back-level compatibility mode
-      if (!support240bug) throw e;
-      System.out.println("WARNING: Ignoring error in parameter setting: " + e.getMessage());
+      // If the error was ignored in old releases describe the work-around
+      if (!support240bug) {
+        if (nvps.length > 0) {
+          UIMAFramework.getLogger().log(Level.SEVERE, "To restore back-level support for this error set environment variable UIMA_Jira3123");
+        }
+        throw e;
+      }
+      UIMAFramework.getLogger().log(Level.WARNING, "Ignoring error in parameter setting: " + e.getMessage());
     }
   }
 

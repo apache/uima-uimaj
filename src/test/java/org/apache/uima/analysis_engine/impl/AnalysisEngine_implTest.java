@@ -395,17 +395,18 @@ public class AnalysisEngine_implTest extends TestCase {
             JUnitExtension.getFile("TextAnalysisEngineImplTest/AnnotatorWithGroupParameterError.xml"));
     AnalysisEngineDescription desc = null;
     InvalidXMLException ex = null;
-    try {
+    //try {
       desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
-    } catch (InvalidXMLException e) {
-      ex = e;
-    }
+    //} catch (InvalidXMLException e) {
+      //ex = e;
+    //}
     in.close();
-    // Parse should fail unless special environment variable set
-    if (System.getenv("UIMA_Jira3123") == null) {
-      Assert.assertNotNull(ex);
-    } else {
+    // For now parse should always work ... in a later release will fail unless special environment variable set
+    boolean support240bug = true; // System.getenv("UIMA_Jira3123") != null;
+    if (support240bug) {
       Assert.assertNotNull(desc);
+    } else {
+      Assert.assertNotNull(ex);
     }
   }
 
