@@ -31,6 +31,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.output.CloseShieldOutputStream;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.CAS;
@@ -112,7 +113,7 @@ public class CASDumpWriter extends CasConsumer_ImplBase {
     try {
       if (out == null) {
         if ("-".equals(outFile.getName())) {
-          out = new PrintWriter(System.out);
+          out = new PrintWriter(new CloseShieldOutputStream(System.out));
         } else {
           if (outFile.getParentFile() != null) {
             outFile.getParentFile().mkdirs();
