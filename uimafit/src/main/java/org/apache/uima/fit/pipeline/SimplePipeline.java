@@ -73,7 +73,7 @@ public final class SimplePipeline {
     // Create CAS from merged metadata
     final CAS cas = CasCreationUtils.createCas(asList(reader.getMetaData(), aae.getMetaData()));
     reader.typeSystemInit(cas.getTypeSystem());
-    
+
     try {
       // Process
       while (reader.hasNext()) {
@@ -134,7 +134,7 @@ public final class SimplePipeline {
     for (AnalysisEngine engine : engines) {
       metaData.add(engine.getMetaData());
     }
-    
+
     final CAS cas = CasCreationUtils.createCas(metaData);
     reader.typeSystemInit(cas.getTypeSystem());
 
@@ -221,5 +221,20 @@ public final class SimplePipeline {
     for (AnalysisEngine engine : engines) {
       engine.process(cas);
     }
+  }
+
+  /**
+   * Step through the {@link JCas JCases} processed by the pipeline, allowing to access each one
+   * after it has been processed.
+   * 
+   * @param aReader
+   *          the collection reader.
+   * @param aEngines
+   *          the analysis engines.
+   * @return an {@link Iterable}&lt;{@link JCas}&gt; which can be used in an extended for-loop.
+   */
+  public static JCasIterable stepPipeline(final CollectionReaderDescription aReader,
+          AnalysisEngineDescription... aEngines) {
+    return new JCasIterable(aReader, aEngines);
   }
 }

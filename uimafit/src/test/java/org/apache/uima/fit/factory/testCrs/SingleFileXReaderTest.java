@@ -28,7 +28,7 @@ import org.apache.uima.UIMAException;
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.fit.ComponentTestBase;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
-import org.apache.uima.fit.pipeline.JCasIterable;
+import org.apache.uima.fit.pipeline.JCasIterator;
 import org.apache.uima.fit.testing.util.HideOutput;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Progress;
@@ -68,7 +68,7 @@ public class SingleFileXReaderTest extends ComponentTestBase {
     assertEquals(0, progress[0].getCompleted());
     assertTrue(cr.hasNext());
 
-    new JCasIterable(cr).next();
+    new JCasIterator(cr).next();
     progress = cr.getProgress();
     assertEquals(1, progress.length);
     assertEquals(1, progress[0].getCompleted());
@@ -80,7 +80,7 @@ public class SingleFileXReaderTest extends ComponentTestBase {
             SingleFileXReader.PARAM_FILE_NAME, "test/data/docs/test.xcas");
     UnsupportedOperationException uoe = null;
     try {
-      new JCasIterable(cr).iterator().remove();
+      new JCasIterator(cr).remove();
     } catch (UnsupportedOperationException e) {
       uoe = e;
     }
@@ -93,7 +93,7 @@ public class SingleFileXReaderTest extends ComponentTestBase {
             SingleFileXReader.PARAM_FILE_NAME, "test/data/docs/bad.xcas");
     RuntimeException re = null;
     try {
-      new JCasIterable(cr).next();
+      new JCasIterator(cr).next();
     } catch (RuntimeException e) {
       re = e;
     }
@@ -105,7 +105,7 @@ public class SingleFileXReaderTest extends ComponentTestBase {
             SingleFileXReader.PARAM_FILE_NAME, "test/data/docs/dne.xmi");
     re = null;
     try {
-      JCasIterable jCases = new JCasIterable(cr);
+      JCasIterator jCases = new JCasIterator(cr);
       assertTrue(jCases.hasNext());
       jCases.next();
     } catch (RuntimeException e) {

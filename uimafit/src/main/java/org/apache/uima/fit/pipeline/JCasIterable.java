@@ -23,24 +23,11 @@ import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDesc
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReader;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 import org.apache.uima.UIMAException;
-import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
-import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
-import org.apache.uima.collection.CollectionException;
-import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.collection.CollectionReaderDescription;
-import org.apache.uima.fit.component.NoOpAnnotator;
-import org.apache.uima.fit.factory.AnalysisEngineFactory;
-import org.apache.uima.fit.util.LifeCycleUtil;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.resource.metadata.ResourceMetaData;
-import org.apache.uima.resource.metadata.TypeSystemDescription;
-import org.apache.uima.util.CasCreationUtils;
 
 /**
  * A class implementing iteration over a the documents of a collection. Each element in the Iterable
@@ -48,55 +35,17 @@ import org.apache.uima.util.CasCreationUtils;
  * and processed by the AnalysisEngine (if any).
  * 
  */
-public class JCasIterable implements Iterator<JCas>, Iterable<JCas> {
+public class JCasIterable implements Iterable<JCas> {
 
-  private CollectionReader collectionReader;
+  private final CollectionReaderDescription reader;
 
-  private AnalysisEngine[] analysisEngines;
-
-  private JCas jCas;
-  
-  private boolean selfComplete = false;
-  
-  private boolean selfDestroy = false;
-
-  /**
-   * Iterate over the documents loaded by the CollectionReader. (Uses an JCasAnnotatorAdapter to
-   * create the document JCas.) By default, components get no lifecycle events, such as 
-   * collectionProcessComplete or destroy when this constructor is used.
-   * 
-   * @param aReader
-   *          The CollectionReader for loading documents.
-   * @param aTypeSystemDescription
-   *          a type system description
-   */
-  public JCasIterable(final CollectionReader aReader,
-          final TypeSystemDescription aTypeSystemDescription) throws UIMAException, IOException {
-    this(aReader, AnalysisEngineFactory.createEngine(NoOpAnnotator.class, aTypeSystemDescription));
-  }
-
-  /**
-   * Iterate over the documents loaded by the CollectionReader, running the AnalysisEngine on each
-   * one before yielding them. By default, components get no lifecycle events, such as 
-   * collectionProcessComplete or destroy when this constructor is used.
-   * 
-   * @param aReader
-   *          The CollectionReader for loading documents.
-   * @param aEngines
-   *          The AnalysisEngines for processing documents.
-   */
-  public JCasIterable(final CollectionReader aReader, final AnalysisEngine... aEngines)
-          throws UIMAException, IOException {
-    collectionReader = aReader;
-    analysisEngines = aEngines;
-    jCas = CasCreationUtils.createCas(collectMetaData()).getJCas();
-  }
+  private final AnalysisEngineDescription[] engines;
 
   /**
    * Iterate over the documents loaded by the CollectionReader, running the AnalysisEngine on each
    * one before yielding them. When created with this constructor, analysis engines by default
-   * receive a collectionProcessComplete call when all documents have been read from the reader
-   * and all components get destroyed.
+   * receive a collectionProcessComplete call when all documents have been read from the reader and
+   * all components get destroyed.
    * 
    * @param aReader
    *          The CollectionReader for loading documents.
@@ -104,114 +53,22 @@ public class JCasIterable implements Iterator<JCas>, Iterable<JCas> {
    *          The AnalysisEngines for processing documents.
    */
   public JCasIterable(final CollectionReaderDescription aReader,
-          final AnalysisEngineDescription... aEngines) throws UIMAException, IOException {
-    setSelfComplete(true);
-    setSelfDestroy(true);
-    collectionReader = createReader(aReader);
-    analysisEngines = new AnalysisEngine[] { createEngine(createEngineDescription(aEngines)) };
-    jCas = CasCreationUtils.createCas(collectMetaData()).getJCas();
-  }
-  
-  private List<ResourceMetaData> collectMetaData() {
-    final List<ResourceMetaData> metaData = new ArrayList<ResourceMetaData>();
-    metaData.add(collectionReader.getMetaData());
-    for (AnalysisEngine engine : analysisEngines) {
-      metaData.add(engine.getMetaData());
-    }
-    return metaData;
+          final AnalysisEngineDescription... aEngines) {
+    reader = aReader;
+    engines = aEngines;
   }
 
-  public Iterator<JCas> iterator() {
-    return this;
-  }
-
-  public boolean hasNext() {
+  public JCasIterator iterator() {
     try {
-      return collectionReader.hasNext();
-    } catch (CollectionException e) {
-      throw new IllegalStateException(e);
+      JCasIterator i = new JCasIterator(createReader(reader),
+              createEngine(createEngineDescription(engines)));
+      i.setSelfComplete(true);
+      i.setSelfDestroy(true);
+      return i;
     } catch (IOException e) {
       throw new IllegalStateException(e);
-    }
-    finally {
-      if (selfDestroy) {
-        destroy();
-      }
-    }
-  }
-
-  public JCas next() {
-    jCas.reset();
-    boolean error = true;
-    boolean destroyed = false;
-    try {
-      collectionReader.getNext(jCas.getCas());
-      for (AnalysisEngine engine : analysisEngines) {
-        engine.process(jCas);
-      }
-
-      if (!hasNext() && selfComplete) {
-        collectionProcessComplete();
-      }
-
-      if (!hasNext() && selfDestroy) {
-        destroy();
-        destroyed = true;
-      }
-
-      error = false;
-    } catch (CollectionException e) {
-      throw new IllegalStateException(e);
-    } catch (IOException e) {
-      throw new IllegalStateException(e);
-    } catch (AnalysisEngineProcessException e) {
+    } catch (UIMAException e) {
       throw new IllegalStateException(e);
     }
-    finally {
-      if (error && selfDestroy && !destroyed) {
-        destroy();
-      }
-    }
-    
-    return jCas;
-  }
-
-  public void remove() {
-    throw new UnsupportedOperationException();
-  }
-  
-  public void collectionProcessComplete() throws AnalysisEngineProcessException
-  {
-    LifeCycleUtil.collectionProcessComplete(analysisEngines);
-  }
-  
-  public void destroy() {
-    LifeCycleUtil.close(collectionReader);
-    LifeCycleUtil.destroy(collectionReader);
-    LifeCycleUtil.destroy(analysisEngines);
-  }
-
-  public boolean isSelfComplete() {
-    return selfComplete;
-  }
-
-  /**
-   * Send a collectionProcessComplete call to analysis engines when the reader has no further
-   * CASes to produce.
-   */
-  public void setSelfComplete(boolean aSelfComplete) {
-    selfComplete = aSelfComplete;
-  }
-
-  public boolean isSelfDestroy() {
-    return selfDestroy;
-  }
-
-  /**
-   * Send a destroy call to analysis engines when the reader has no further CASes to produce or
-   * if an error occurs.
-   */
-  public void setSelfDestroy(boolean aSelfDestroy) {
-    selfDestroy = aSelfDestroy;
   }
 }

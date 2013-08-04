@@ -30,7 +30,7 @@ import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.collection.CollectionReader_ImplBase;
 import org.apache.uima.fit.ComponentTestBase;
 import org.apache.uima.fit.factory.testCrs.SingleFileXReader;
-import org.apache.uima.fit.pipeline.JCasIterable;
+import org.apache.uima.fit.pipeline.JCasIterator;
 import org.apache.uima.fit.type.Token;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -50,8 +50,8 @@ public class CollectionReaderFactoryTest extends ComponentTestBase {
             "src/test/resources/data/docs/test.xmi", SingleFileXReader.PARAM_XML_SCHEME,
             SingleFileXReader.XMI);
 
-    JCasIterable jCasIterable = new JCasIterable(reader, typeSystemDescription);
-    jCas = jCasIterable.next();
+    JCasIterator jCasIterator = new JCasIterator(reader);
+    jCas = jCasIterator.next();
     assertNotNull(jCas);
     assertEquals("Me and all my friends are non-conformists.", jCas.getDocumentText());
     Token token = JCasUtil.selectByIndex(jCas, Token.class, 2);
@@ -64,8 +64,8 @@ public class CollectionReaderFactoryTest extends ComponentTestBase {
             SingleFileXReader.PARAM_FILE_NAME, "src/test/resources/data/docs/test.xmi",
             SingleFileXReader.PARAM_XML_SCHEME, SingleFileXReader.XMI);
 
-    jCasIterable = new JCasIterable(reader, typeSystemDescription);
-    jCas = jCasIterable.next();
+    jCasIterator = new JCasIterator(reader, typeSystemDescription);
+    jCas = jCasIterator.next();
     assertNotNull(jCas);
     assertEquals("Me and all my friends are non-conformists.", jCas.getDocumentText());
     token = JCasUtil.selectByIndex(jCas, Token.class, 9);
@@ -78,8 +78,8 @@ public class CollectionReaderFactoryTest extends ComponentTestBase {
             SingleFileXReader.PARAM_FILE_NAME, "src/test/resources/data/docs/test.xmi",
             SingleFileXReader.PARAM_XML_SCHEME, SingleFileXReader.XMI);
 
-    jCasIterable = new JCasIterable(reader, typeSystemDescription);
-    jCas = jCasIterable.next();
+    jCasIterator = new JCasIterator(reader, typeSystemDescription);
+    jCas = jCasIterator.next();
     assertNotNull(jCas);
     assertEquals("Me and all my friends are non-conformists.", jCas.getDocumentText());
     token = JCasUtil.selectByIndex(jCas, Token.class, 4);
