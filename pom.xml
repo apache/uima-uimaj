@@ -131,6 +131,16 @@
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-context</artifactId>
 				<version>${spring.version}</version>
+				<!--  
+				 - This is excluded in the assembly and not here to avoid unwanted side-effects
+				 - on users' projects.
+				<exclusions>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-aop</artifactId>
+					</exclusion>
+				</exclusions>
+				-->
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
@@ -170,11 +180,10 @@
 				<executions>
 					<execution>
 						<id>javadocs-distr</id> <!-- name should match one in parent-pom -->
-						<phase>prepare-package</phase>  <!-- must come before package which uses the results -->
-						<!--phase>deploy</phase --> <!-- comment above and uncomment to disable javadocs, for testing/experimentation,
-							with assembly:assembly -->
+						<inherited>false</inherited>
+						<phase>prepare-package</phase>
 						<goals>
-							<goal>javadoc</goal>
+							<goal>aggregate</goal>
 						</goals>
 					</execution>
 				</executions>
@@ -187,19 +196,19 @@
 						<link>http://uima.apache.org/d/uimaj-${uima.version}/apidocs/</link>
 					</links>
 					<!-- Exclude UIMA types -->
-					<excludePackageNames>*.type</excludePackageNames>
+					<excludePackageNames>*.type:org.apache.uima.fit.maven*:org.apache.uima.fit.legacy*:org.apache.uima.fit.internal*:org.apache.uima.fit.spring*</excludePackageNames>
 					<groups>
 						<group>
 							<title>uimaFIT</title>
-							<packages>org.uimafit.component*:org.uimafit.descriptor*:org.uimafit.factory*:org.uimafit.pipeline*:org.uimafit.testing*:org.uimafit.util*</packages>
+							<packages>org.apache.uima.fit.component*:org.apache.uima.fit.descriptor*:org.apache.uima.fit.factory*:org.apache.uima.fit.pipeline*:org.apache.uima.fit.testing*:org.apache.uima.fit.util*</packages>
+						</group>
+						<group>
+							<title>CPE support</title>
+							<packages>org.apache.uima.fit.cpe*</packages>
 						</group>
 						<group>
 							<title>Examples</title>
-							<packages>org.uimafit.examples*</packages>
-						</group>
-						<group>
-							<title>Spring support (experimental)</title>
-							<packages>org.uimafit.spring*</packages>
+							<packages>org.apache.uima.fit.examples*</packages>
 						</group>
 					</groups>
 				</configuration>
@@ -557,5 +566,6 @@
 		<module>uimafit-legacy-support</module>
 		<module>uimafit-docbook</module>
 		<module>uimafit-cpe</module>
+		<module>uimafit-dist</module>
 	</modules>
 </project>
