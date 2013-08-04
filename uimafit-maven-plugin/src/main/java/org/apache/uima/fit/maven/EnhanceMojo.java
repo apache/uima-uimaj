@@ -326,7 +326,7 @@ public class EnhanceMojo extends AbstractMojo {
    * Enhance resource meta data
    */
   private void enhanceResourceMetaData(JavaSource aAST, Class<?> aClazz, CtClass aCtClazz,
-          Multimap<String, String> aReportData) throws MojoExecutionException {
+          Multimap<String, String> aReportData) {
     ClassFile classFile = aCtClazz.getClassFile();
     ConstPool constPool = classFile.getConstPool();
 

@@ -80,7 +80,7 @@ public class JCasUtilTest extends ComponentTestBase {
    * Test Tokens (Stems + Lemmas) overlapping with each other.
    */
   @Test
-  public void testSelectCoveredOverlapping() throws Exception {
+  public void testSelectCoveredOverlapping() {
     add(jCas, 3, 16);
     add(jCas, 37, 61);
     add(jCas, 49, 75);
@@ -99,7 +99,7 @@ public class JCasUtilTest extends ComponentTestBase {
    * Test what happens if there is actually nothing overlapping with the Token.
    */
   @Test
-  public void testSelectCoveredNoOverlap() throws Exception {
+  public void testSelectCoveredNoOverlap() {
     new Sentence(jCas, 3, 31).addToIndexes();
     new Sentence(jCas, 21, 21).addToIndexes();
     new Sentence(jCas, 24, 44).addToIndexes();
@@ -157,7 +157,7 @@ public class JCasUtilTest extends ComponentTestBase {
    * Test what happens if there is actually nothing overlapping with the Token.
    */
   @Test
-  public void testSelectBetweenInclusion() throws Exception {
+  public void testSelectBetweenInclusion() {
     Token t1 = new Token(jCas, 45, 57);
     t1.addToIndexes();
     Token t2 = new Token(jCas, 52, 52);
@@ -224,7 +224,7 @@ public class JCasUtilTest extends ComponentTestBase {
    * Test Tokens (Stems + Lemmas) overlapping with each other.
    */
   @Test
-  public void testSelectCoveringOverlapping() throws Exception {
+  public void testSelectCoveringOverlapping() {
     add(jCas, 3, 16);
     add(jCas, 37, 61);
     add(jCas, 49, 75);

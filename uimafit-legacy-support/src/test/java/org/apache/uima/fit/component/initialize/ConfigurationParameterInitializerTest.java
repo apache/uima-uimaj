@@ -372,7 +372,7 @@ public class ConfigurationParameterInitializerTest extends ComponentTestBase {
   }
 
   @Test
-  public void testEnumDefaultValue() throws Exception {
+  public void testEnumDefaultValue() {
     try {
       AnalysisEngine aed = AnalysisEngineFactory.createEngine(DefaultEnumValueAE.class,
               (Object[]) null);
