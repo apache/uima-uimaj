@@ -80,6 +80,8 @@ public final class ConfigurationParameterInitializer {
    *          the component to initialize.
    * @param context
    *          a UIMA context with configuration parameters.
+   * @throws ResourceInitializationException
+   *           if a failure occurs during initialization.
    */
   public static void initialize(final Object component, final UimaContext context)
           throws ResourceInitializationException {

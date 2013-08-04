@@ -33,11 +33,13 @@ import java.util.List;
 import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.Resource;
+import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.util.CasCreationUtils;
 
@@ -157,7 +159,7 @@ public final class SimplePipeline {
    *          a sequence of analysis engines to run on the jCas
    */
   public static void runPipeline(final CAS aCas, final AnalysisEngineDescription... aDescs)
-          throws UIMAException, IOException {
+          throws ResourceInitializationException, AnalysisEngineProcessException {
     // Create aggregate AE
     final AnalysisEngineDescription aaeDesc = createEngineDescription(aDescs);
 
@@ -183,9 +185,11 @@ public final class SimplePipeline {
    *          the jCas to process
    * @param descs
    *          a sequence of analysis engines to run on the jCas
+   * @throws ResourceInitializationException 
+   * @throws AnalysisEngineProcessException 
    */
   public static void runPipeline(final JCas jCas, final AnalysisEngineDescription... descs)
-          throws UIMAException, IOException {
+          throws AnalysisEngineProcessException, ResourceInitializationException {
     runPipeline(jCas.getCas(), descs);
   }
 
@@ -198,9 +202,10 @@ public final class SimplePipeline {
    *          the jCas to process
    * @param engines
    *          a sequence of analysis engines to run on the jCas
+   * @throws AnalysisEngineProcessException 
    */
   public static void runPipeline(final JCas jCas, final AnalysisEngine... engines)
-          throws UIMAException, IOException {
+          throws AnalysisEngineProcessException {
     for (AnalysisEngine engine : engines) {
       engine.process(jCas);
     }
@@ -215,9 +220,10 @@ public final class SimplePipeline {
    *          the CAS to process
    * @param engines
    *          a sequence of analysis engines to run on the jCas
+   * @throws AnalysisEngineProcessException 
    */
   public static void runPipeline(final CAS cas, final AnalysisEngine... engines)
-          throws UIMAException, IOException {
+          throws AnalysisEngineProcessException {
     for (AnalysisEngine engine : engines) {
       engine.process(cas);
     }

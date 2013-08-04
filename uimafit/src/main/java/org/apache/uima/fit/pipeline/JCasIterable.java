@@ -22,8 +22,6 @@ import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReader;
 
-import java.io.IOException;
-
 import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
@@ -65,8 +63,6 @@ public class JCasIterable implements Iterable<JCas> {
       i.setSelfComplete(true);
       i.setSelfDestroy(true);
       return i;
-    } catch (IOException e) {
-      throw new IllegalStateException(e);
     } catch (UIMAException e) {
       throw new IllegalStateException(e);
     }

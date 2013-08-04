@@ -34,7 +34,7 @@ import org.junit.Test;
 public class LocaleUtilTest {
 
   @Test
-  public void testGetLocaleConstant() throws Exception {
+  public void testGetLocaleConstant() {
     assertEquals(Locale.US, getLocaleConstant("US"));
     assertNull(getLocaleConstant("UN"));
     assertEquals(Locale.ENGLISH, getLocaleConstant("ENGLISH"));
@@ -44,7 +44,7 @@ public class LocaleUtilTest {
   }
 
   @Test
-  public void testCreateLocale() throws Exception {
+  public void testCreateLocale() {
     assertEquals(new Locale("en", "US"), createLocale("en-US"));
     assertEquals(new Locale("es"), createLocale("es"));
     assertEquals(new Locale("ko", "KR"), createLocale("ko-KR"));

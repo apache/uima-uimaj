@@ -58,6 +58,9 @@ public abstract class JCasCollectionReader_ImplBase extends CollectionReader_Imp
 
   /**
    * This method should be overwritten by subclasses.
+   * 
+   * @throws ResourceInitializationException
+   *           if a failure occurs during initialization.
    */
   public void initialize(final UimaContext context) throws ResourceInitializationException {
     // Nothing by default

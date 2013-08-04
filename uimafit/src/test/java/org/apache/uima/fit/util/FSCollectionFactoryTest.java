@@ -79,13 +79,13 @@ public class FSCollectionFactoryTest {
   }
 
   @Test
-  public void testCreateFSList() throws Exception {
+  public void testCreateFSList() {
     assertEquals(tokens, create(createFSList(jcas, tokens)));
     assertEquals(tokens, create(createFSList(jcas, tokens), Token.class));
   }
 
   @Test
-  public void testCreateFSArray() throws Exception {
+  public void testCreateFSArray() {
     assertEquals(tokenFSs, create(createArrayFS(jcas.getCas(), tokenFSs)));
     assertEquals(
             tokenFSs,
@@ -101,7 +101,7 @@ public class FSCollectionFactoryTest {
   }
 
   @Test
-  public void testCreateBooleanArray() throws Exception {
+  public void testCreateBooleanArray() {
     assertEquals(asList(true, false),
             asList(toObject(createBooleanArray(jcas.getCas(), asList(true, false)).toArray())));
     assertEquals(asList(true, false),
@@ -114,7 +114,7 @@ public class FSCollectionFactoryTest {
   }
 
   @Test
-  public void testCreateByteArray() throws Exception {
+  public void testCreateByteArray() {
     assertEquals(asList((byte) 0, (byte) 1),
             asList(toObject(createByteArray(jcas.getCas(), asList((byte) 0, (byte) 1)).toArray())));
     assertEquals(asList((byte) 0, (byte) 1),
@@ -126,7 +126,7 @@ public class FSCollectionFactoryTest {
   }
 
   @Test
-  public void testCreateDoubleArray() throws Exception {
+  public void testCreateDoubleArray() {
     assertEquals(asList(0.0, 1.0),
             asList(toObject(createDoubleArray(jcas.getCas(), asList(0.0, 1.0)).toArray())));
     assertEquals(asList(0.0, 1.0),
@@ -138,7 +138,7 @@ public class FSCollectionFactoryTest {
   }
 
   @Test
-  public void testCreateFloatArray() throws Exception {
+  public void testCreateFloatArray() {
     assertEquals(asList(0.0f, 1.0f),
             asList(toObject(createFloatArray(jcas.getCas(), asList(0.0f, 1.0f)).toArray())));
     assertEquals(asList(0.0f, 1.0f),
@@ -150,12 +150,12 @@ public class FSCollectionFactoryTest {
   }
 
   @Test
-  public void testCreateFloatList() throws Exception {
+  public void testCreateFloatList() {
     assertEquals(asList(0.0f, 1.0f), create(createFloatList(jcas, asList(0.0f, 1.0f))));
   }
 
   @Test
-  public void testCreateIntArray() throws Exception {
+  public void testCreateIntArray() {
     assertEquals(asList(0, 1), asList(toObject(createIntArray(jcas.getCas(), asList(0, 1))
             .toArray())));
     assertEquals(asList(0, 1), asList(toObject(createIntArray(jcas.getCas(), new int[] { 0, 1 })
@@ -165,12 +165,12 @@ public class FSCollectionFactoryTest {
   }
 
   @Test
-  public void testCreateIntegerList() throws Exception {
+  public void testCreateIntegerList() {
     assertEquals(asList(0, 1), create(createIntegerList(jcas, asList(0, 1))));
   }
 
   @Test
-  public void testCreateLongArray() throws Exception {
+  public void testCreateLongArray() {
     assertEquals(asList(0l, 1l), asList(toObject(createLongArray(jcas.getCas(), asList(0l, 1l))
             .toArray())));
     assertEquals(asList(0l, 1l),
@@ -181,7 +181,7 @@ public class FSCollectionFactoryTest {
   }
 
   @Test
-  public void testCreateShortArray() throws Exception {
+  public void testCreateShortArray() {
     assertEquals(
             asList((short) 0, (short) 1),
             asList(toObject(createShortArray(jcas.getCas(), asList((short) 0, (short) 1)).toArray())));
@@ -194,7 +194,7 @@ public class FSCollectionFactoryTest {
   }
 
   @Test
-  public void testCreateStringArray() throws Exception {
+  public void testCreateStringArray() {
     assertEquals(asList("0", "1"), asList(createStringArray(jcas.getCas(), asList("0", "1"))
             .toArray()));
     assertEquals(asList("0", "1"),
@@ -205,7 +205,7 @@ public class FSCollectionFactoryTest {
   }
 
   @Test
-  public void testCreateStringList() throws Exception {
+  public void testCreateStringList() {
     assertEquals(asList("0", "1"), create(createStringList(jcas, asList("0", "1"))));
   }
 }

@@ -731,8 +731,7 @@ public final class ExternalResourceFactory {
    * @param aApi
    *          the resource API.
    */
-  public static void createDependency(ResourceSpecifier aDesc, String aKey, Class<?> aApi)
-          throws InvalidXMLException {
+  public static void createDependency(ResourceSpecifier aDesc, String aKey, Class<?> aApi) {
     ExternalResourceDependency[] deps = getExternalResourceDependencies(aDesc);
     if (deps == null) {
       deps = new ExternalResourceDependency[] {};

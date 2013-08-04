@@ -116,7 +116,7 @@ public class LoggingTest {
   }
 
   @Test
-  public void testLog4JLogger() throws Exception {
+  public void testLog4JLogger() {
     final List<LoggingEvent> records = new ArrayList<LoggingEvent>();
 
     BasicConfigurator.configure();
