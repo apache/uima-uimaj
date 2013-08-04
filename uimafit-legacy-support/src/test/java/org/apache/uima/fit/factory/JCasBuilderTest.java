@@ -26,7 +26,7 @@ import java.io.File;
 
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.fit.ComponentTestBase;
-import org.apache.uima.fit.component.xwriter.CASDumpWriter;
+import org.apache.uima.fit.component.xwriter.CasDumpWriter;
 import org.apache.uima.fit.type.Sentence;
 import org.apache.uima.fit.type.Token;
 import org.junit.Rule;
@@ -59,7 +59,7 @@ public class JCasBuilderTest extends ComponentTestBase {
     jb.close();
 
     File outputFile = new File(folder.getRoot(), "dump-output.txt");
-    AnalysisEngine writer = createEngine(CASDumpWriter.class, CASDumpWriter.PARAM_OUTPUT_FILE,
+    AnalysisEngine writer = createEngine(CasDumpWriter.class, CasDumpWriter.PARAM_OUTPUT_FILE,
             outputFile.getPath());
     writer.process(jb.getJCas());
 

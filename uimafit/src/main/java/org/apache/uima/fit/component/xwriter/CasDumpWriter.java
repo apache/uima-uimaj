@@ -50,7 +50,7 @@ import org.springframework.util.DigestUtils;
  * component is more easily comparable than a XML or XMI format produced by {@link XWriter}.
  * 
  */
-public class CASDumpWriter extends CasConsumer_ImplBase {
+public class CasDumpWriter extends CasConsumer_ImplBase {
   /**
    * Pattern inclusion prefix.
    */

@@ -34,7 +34,7 @@ import org.junit.rules.TemporaryFolder;
 
 /**
  */
-public class CASDumpWriterTest {
+public class CasDumpWriterTest {
 
   @Rule
   public TemporaryFolder folder = new TemporaryFolder();
@@ -43,8 +43,8 @@ public class CASDumpWriterTest {
   public void testXWriter() throws Exception {
     File outputFile = new File(folder.getRoot(), "dump-output.txt");
 
-    AnalysisEngine writer = AnalysisEngineFactory.createEngine(CASDumpWriter.class,
-            CASDumpWriter.PARAM_OUTPUT_FILE, outputFile.getPath());
+    AnalysisEngine writer = AnalysisEngineFactory.createEngine(CasDumpWriter.class,
+            CasDumpWriter.PARAM_OUTPUT_FILE, outputFile.getPath());
     JCas jcas = writer.newJCas();
     JCasFactory.loadJCas(jcas, "src/test/resources/data/docs/test.xmi");
     writer.process(jcas);
