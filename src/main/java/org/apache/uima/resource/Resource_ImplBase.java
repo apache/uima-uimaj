@@ -19,6 +19,7 @@
 
 package org.apache.uima.resource;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.uima.UIMAFramework;
@@ -171,6 +172,12 @@ public abstract class Resource_ImplBase implements Resource {
           resMgrCfg.resolveImports(getResourceManager());
         } catch (InvalidXMLException e) {
           throw new ResourceInitializationException(e);
+        }
+        if (aAdditionalParams == null) {
+            aAdditionalParams = new HashMap<String, Object>();
+        }
+        if (!aAdditionalParams.containsKey(PARAM_RESOURCE_MANAGER)) {
+            aAdditionalParams.put(PARAM_RESOURCE_MANAGER, mUimaContextAdmin.getResourceManager());
         }
         mUimaContextAdmin.getResourceManager().initializeExternalResources(resMgrCfg,
                 mUimaContextAdmin.getQualifiedContextName(), aAdditionalParams);
