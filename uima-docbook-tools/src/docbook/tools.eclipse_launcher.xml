@@ -32,7 +32,7 @@ under the License.
 	<para>
 	The Analysis Engine Launcher is an Eclipse plug-in that provides debug and run support 
 	for Analysis Engines directly within eclipse, like a Java program can be debugged.
-	It supports most of the descriptor formats expect CPE, UIMA AS and
+	It supports most of the descriptor formats except CPE, UIMA AS and
 	some remote deployment descriptors.
 	</para>
 	
