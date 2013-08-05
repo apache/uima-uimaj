@@ -292,9 +292,20 @@ ae.destroy();</programlisting></para>
     <section id="ugr.tug.applications.multi_threaded">
       <title>Multi-threaded Applications</title>
       
-      <para>The simplest way to use an AE in a multi-threaded environment is to use the Java synchronized keyword to
+      <para>You may be running on a multi-core system, and want to run multiple CASes at once through your pipeline.  To support this, UIMA provides multiple approaches.
+      The most flexible and recommended way to do this is to use the features of UIMA-AS, which not only allows scale-up (multiple threads in one CPU), but also
+      supports scale-out (exploiting a cluster of machines).</para>
+      
+      <para>This section describes the simplest way to use an AE in a multi-threaded environment. 
+      First, note that most Analysis Engines are written with the assumption that only one thread will be accessing 
+      it at any one time; that is, Analysis Engines are not written to be thread safe.  The writers of these 
+      assume that multiple instances of the Annotator Engine class will be instantiated as needed to support multiple 
+      threads.
+      </para>
+      <para>If your application has multiple threads that might invoke an Analysis Engine, to insure that 
+      only one thread at a time uses a CAS and runs in the pipeline, 
+      you can use the Java synchronized keyword to
         ensure that only one thread is using an AE at any given time. For example:
-        
         
         <programlisting>public class MyApplication {
   private AnalysisEngine mAnalysisEngine;
@@ -312,7 +323,7 @@ ae.destroy();</programlisting></para>
   }
 
   // Assume some other part of your multi-threaded application could
-  // call <quote>analyzeDocument</quote> on different threads, asynchronusly
+  // call <quote>analyzeDocument</quote> on different threads, asynchronously
 
   public synchronized void analyzeDocument(String aDoc) {
     //analyze a document
@@ -328,7 +339,7 @@ ae.destroy();</programlisting></para>
         called the analyzeDocument method simultaneously, they would both use the same CAS and clobber each others'
         results. The synchronized keyword ensures that no more than one thread is executing this method at any given
         time. For more information on thread synchronization in Java, see <ulink
-          url="http://java.sun.com/docs/books/tutorial/essential/threads/multithreaded.html"/>
+          url="http://docs.oracle.com/javase/tutorial/essential/concurrency/"/>
         .</para>
       
       <para>The synchronized keyword ensures thread-safety, but does not allow you to process more than one
@@ -372,6 +383,7 @@ ae.destroy();</programlisting></para>
     mCasPool = new CasPool(3, mAnalysisEngine);
   }
 
+  // Notice this is no longer "synchronized"
   public void analyzeDocument(String aDoc) {
     //check out a CAS instance (argument 0 means no timeout)
     CAS cas = mCasPool.getCas(0);  
@@ -416,6 +428,13 @@ ae.destroy();</programlisting></para>
         available in the pool. If this time elapses, the getCas method will return null, and the application can do
         something intelligent, like ask the user to try again later. A value of 0 will cause the thread to wait for an
         available CAS, potentially forever.</para>
+        
+      <para>All of this can better be done using UIMA-AS.  Besides taking care of setting up the CAS pools, etc.,
+      UIMA-AS allows a pipe line having several delegates to be scaled-up optimally for each delegate; 
+      one delegate might have 5 instances, while another might have 3.  It also does
+      a different kind of initialization, in that it creates a thread pool itself, and insures that each
+      annotator instance gets its process() method called using the same thread that was used for that annotator 
+      instance's initialization call; some annotators could be written assuming that this is the case.</para>
     </section>
     
     <section id="ugr.tug.application.using_multiple_aes">
@@ -1809,87 +1828,86 @@ Exception: Connection refused: connect</programlisting>
   </section>
   
   <section id="tug.application.pto">
-  <title>Performance Tuning Options</title>
-
-  <para>
-  	There are a small number of performance tuning options available to
-  	influence the runtime behavior of UIMA applications. Performance
-  	tuning options need to be set programmatically when an analysis
-  	engine is created. You simply create a Java Properties object with
-  	the relevant options and pass it to the UIMA framework on the call
-  	to create an analysis engine. Below is an example.
-  	
-  	<programlisting>
-  	  XMLParser parser = UIMAFramework.getXMLParser();
-      ResourceSpecifier spec = parser.parseResourceSpecifier(
-            new XMLInputSource(descriptorFile));
-      // Create a new properties object to hold the settings.
-      Properties performanceTuningSettings = new Properties();
-      // Set the initial CAS heap size.
-      performanceTuningSettings.setProperty(
-            UIMAFramework.CAS_INITIAL_HEAP_SIZE, 
-            "1000000");
-      // Disable JCas cache.
-      performanceTuningSettings.setProperty(
-            UIMAFramework.JCAS_CACHE_ENABLED, 
-            "false");
-      // Create a wrapper properties object that can
-      // be passed to the framework.
-      Properties additionalParams = new Properties();
-      // Set the performance tuning properties as value to
-      // the appropriate parameter.
-      additionalParams.put(
-            Resource.PARAM_PERFORMANCE_TUNING_SETTINGS, 
-            performanceTuningSettings);
-      // Create the analysis engine with the parameters.
-      // The second, unused argument here is a custom 
-      // resource manager.
-      this.ae = UIMAFramework.produceAnalysisEngine(
-          spec, null, additionalParams);
-  	
-  	</programlisting>
-  </para>
+	  <title>Performance Tuning Options</title>
+	
+	  <para>
+	  	There are a small number of performance tuning options available to
+	  	influence the runtime behavior of UIMA applications. Performance
+	  	tuning options need to be set programmatically when an analysis
+	  	engine is created. You simply create a Java Properties object with
+	  	the relevant options and pass it to the UIMA framework on the call
+	  	to create an analysis engine. Below is an example.
+	  	
+	  	<programlisting>
+	  	  XMLParser parser = UIMAFramework.getXMLParser();
+	      ResourceSpecifier spec = parser.parseResourceSpecifier(
+	            new XMLInputSource(descriptorFile));
+	      // Create a new properties object to hold the settings.
+	      Properties performanceTuningSettings = new Properties();
+	      // Set the initial CAS heap size.
+	      performanceTuningSettings.setProperty(
+	            UIMAFramework.CAS_INITIAL_HEAP_SIZE, 
+	            "1000000");
+	      // Disable JCas cache.
+	      performanceTuningSettings.setProperty(
+	            UIMAFramework.JCAS_CACHE_ENABLED, 
+	            "false");
+	      // Create a wrapper properties object that can
+	      // be passed to the framework.
+	      Properties additionalParams = new Properties();
+	      // Set the performance tuning properties as value to
+	      // the appropriate parameter.
+	      additionalParams.put(
+	            Resource.PARAM_PERFORMANCE_TUNING_SETTINGS, 
+	            performanceTuningSettings);
+	      // Create the analysis engine with the parameters.
+	      // The second, unused argument here is a custom 
+	      // resource manager.
+	      this.ae = UIMAFramework.produceAnalysisEngine(
+	          spec, null, additionalParams);
+	  	
+	  	</programlisting>
+	  </para>
   
-  <para>
-  The following options are supported:
-  <itemizedlist>
-  <listitem>
-  <para><literal>UIMAFramework.JCAS_CACHE_ENABLED</literal>: allows you to disable
-  the JCas cache (true/false).  The JCas cache is an internal datastructure that caches any JCas 
-  object created
-  by the CAS.  This may result in better performance for applications that make extensive use of
-  the JCas, but also incurs a steep memory overhead.  If you're processing large documents and have
-  memory issues, you should disable this option.  In general, just try running a few experiments to
-  see what setting works better for your application.  The JCas cache is enabled by default.  
-  </para>
-  </listitem>
-  <listitem>
-  <para><literal>UIMAFramework.CAS_INITIAL_HEAP_SIZE</literal>: set the initial CAS heap size in
-  number of cells (integer valued).  The CAS uses 32bit integer cells, so four times the initial 
-  size is the
-  approximate minimum size of the CAS in bytes.  This is another space/time trade-off as growing
-  the CAS heap is relatively expensive.  On the other hand, setting the initial size too high is
-  wasting memory.  Unless you know you are processing very small or very large documents, you should
-  probably leave this option unchanged.
-  </para>
-  </listitem>
-  <listitem>
-  <para><literal>UIMAFramework.PROCESS_TRACE_ENABLED</literal>: enable the process trace mechanism
-  (true/false).  When enabled, UIMA tracks the time spent in individual components of an aggregate 
-  AE or CPE.  For more information, see the API documentation of 
-  <literal>org.apache.uima.util.ProcessTrace</literal>.
-  </para>
-  </listitem>
-  <listitem>
-  <para><literal>UIMAFramework.SOCKET_KEEPALIVE_ENABLED</literal>: enable socket KeepAlive
-  (true/false).  This setting is currently only supported by Vinci clients.  Defaults to 
-  <literal>true</literal>.
-  </para>
-  </listitem>
-  </itemizedlist>
-  </para>
+	  <para>
+		  The following options are supported:
+		  <itemizedlist>
+		    <listitem>
+		      <para><literal>UIMAFramework.JCAS_CACHE_ENABLED</literal>: allows you to disable
+				  the JCas cache (true/false).  The JCas cache is an internal datastructure that caches any JCas 
+				  object created
+				  by the CAS.  This may result in better performance for applications that make extensive use of
+				  the JCas, but also incurs a steep memory overhead.  If you're processing large documents and have
+				  memory issues, you should disable this option.  In general, just try running a few experiments to
+				  see what setting works better for your application.  The JCas cache is enabled by default.  
+				  </para>
+		    </listitem>
+		    <listitem>
+				  <para><literal>UIMAFramework.CAS_INITIAL_HEAP_SIZE</literal>: set the initial CAS heap size in
+				  number of cells (integer valued).  The CAS uses 32bit integer cells, so four times the initial 
+				  size is the
+				  approximate minimum size of the CAS in bytes.  This is another space/time trade-off as growing
+				  the CAS heap is relatively expensive.  On the other hand, setting the initial size too high is
+				  wasting memory.  Unless you know you are processing very small or very large documents, you should
+				  probably leave this option unchanged.
+				  </para>
+		   </listitem>
+		    <listitem>
+				  <para><literal>UIMAFramework.PROCESS_TRACE_ENABLED</literal>: enable the process trace mechanism
+				  (true/false).  When enabled, UIMA tracks the time spent in individual components of an aggregate 
+				  AE or CPE.  For more information, see the API documentation of 
+				  <literal>org.apache.uima.util.ProcessTrace</literal>.
+				  </para>
+		   </listitem>
+		   <listitem>
+			   <para><literal>UIMAFramework.SOCKET_KEEPALIVE_ENABLED</literal>: enable socket KeepAlive
+			   (true/false).  This setting is currently only supported by Vinci clients.  Defaults to 
+			   <literal>true</literal>.
+		   </para>
+		  </listitem>
+		 </itemizedlist>
+		</para>
   
-
   </section>
-  
+    
 </chapter>
