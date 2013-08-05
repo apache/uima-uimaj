@@ -205,6 +205,7 @@
                 ${basedir}/uimaj-core/src/main/java/org/apache/uima/cas/impl/XmiCasDeserializer.java
                 ${basedir}/uimaj-core/src/main/java/org/apache/uima/cas/impl/XmiCasSerializer.java
                 ${basedir}/uimaj-core/src/main/java/org/apache/uima/cas/impl/XmiSerializationSharedData.java
+                ${basedir}/uimaj-core/src/main/java/org/apache/uima/cas/impl/Serialization.java                
                 ${basedir}/uimaj-cpe/src/main/java/org/apache/uima/collection/impl/metadata/cpe/CpeDescriptorFactory.java
                 ${basedir}/uimaj-cpe/src/main/java/org/apache/uima/collection/impl/cpm/engine/CPMChunkTimeoutException.java
               </additionalparam>
