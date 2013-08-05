@@ -23,13 +23,13 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>2.4.2-SNAPSHOT</version>
+    <version>2.4.2</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
   
 	<artifactId>uima-docbook-overview-and-setup</artifactId>
 	<packaging>pom</packaging>
-	<version>2.4.2-SNAPSHOT</version>
+	<version>2.4.2</version>
 	<name>Apache UIMA SDK Documentation - overview and setup</name>	
   <url>${uimaWebsiteUrl}</url>
  
@@ -43,13 +43,13 @@
        element, and just changing the following two properties -->  
   <scm>
     <connection>
-      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/trunk/uima-docbook-overview-and-setup
+      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-2.4.2-rc1/uima-docbook-overview-and-setup
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/trunk/uima-docbook-overview-and-setup
+      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-2.4.2-rc1/uima-docbook-overview-and-setup
     </developerConnection>
     <url>
-      http://svn.apache.org/viewvc/uima/uimaj/trunk/uima-docbook-overview-and-setup
+      http://svn.apache.org/viewvc/uima/uimaj/tags/uimaj-2.4.2-rc1/uima-docbook-overview-and-setup
     </url>
   </scm>
   

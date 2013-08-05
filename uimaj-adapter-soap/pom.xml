@@ -23,13 +23,13 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>2.4.2-SNAPSHOT</version>
+    <version>2.4.2</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
 
 	<artifactId>uimaj-adapter-soap</artifactId>
 	<packaging>jar</packaging>
-	<version>2.4.2-SNAPSHOT</version>
+	<version>2.4.2</version>
 	<name>Apache UIMA Base: ${project.artifactId}: SOAP Adapter</name>
   <description>Provides the capability to connect to a remote
     component, using the SOAP protocol</description>
@@ -45,13 +45,13 @@
        element, and just changing the following two properties -->  
   <scm>
     <connection>
-      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-adapter-soap
+      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-2.4.2-rc1/uimaj-adapter-soap
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-adapter-soap
+      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-2.4.2-rc1/uimaj-adapter-soap
     </developerConnection>
     <url>
-      http://svn.apache.org/viewvc/uima/uimaj/trunk/uimaj-adapter-soap
+      http://svn.apache.org/viewvc/uima/uimaj/tags/uimaj-2.4.2-rc1/uimaj-adapter-soap
     </url>
   </scm>
   
