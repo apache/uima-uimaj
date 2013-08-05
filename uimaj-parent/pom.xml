@@ -38,7 +38,7 @@
   <groupId>org.apache.uima</groupId>
   <artifactId>uimaj-parent</artifactId>
   <packaging>pom</packaging>
-  <version>2.4.3-SNAPSHOT</version>
+  <version>2.4.2-SNAPSHOT</version>
   <name>Apache UIMA Java SDK: ${project.artifactId}</name>
   <description>The common parent pom for the uimaj SDK</description>
   <url>${uimaWebsiteUrl}</url>
@@ -177,11 +177,11 @@
 	                  <target>
 	                    <taskdef name="if" classname="net.sf.antcontrib.logic.IfTask" />                
 	                    <if>
-	                      <available file="${project.build.directory}/site/apidocs/" />
+	                      <available file="${project.build.directory}/site/apidocs/"/>
 	                      <then>
 	                        <echo>Fixing line-endings for ${project.build.directory}/site/apidocs/</echo>
 	                        <fixcrlf srcdir="${project.build.directory}/site/apidocs/">
-	                          <include name="**/*.html" />
+	                          <include name="**/*.html"/>
 	                        </fixcrlf>
 	                      </then>
 	                    </if>
