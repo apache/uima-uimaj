@@ -23,12 +23,12 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>2.4.2-SNAPSHOT</version>
+    <version>2.4.2</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
 
   <artifactId>uimaj-ep-configurator</artifactId>
-  <version>2.4.2-SNAPSHOT</version>
+  <version>2.4.2</version>
   <packaging>jar</packaging>  
   <name>Apache UIMA Eclipse: ${project.artifactId}: Descriptor Editor</name>
   <description>A frame-based editor for most of the UIMA XML 
@@ -45,13 +45,13 @@
        element, and just changing the following two properties -->  
   <scm>
     <connection>
-      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-ep-configurator
+      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-2.4.2-rc1/uimaj-ep-configurator
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-ep-configurator
+      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-2.4.2-rc1/uimaj-ep-configurator
     </developerConnection>
     <url>
-      http://svn.apache.org/viewvc/uima/uimaj/trunk/uimaj-ep-configurator
+      http://svn.apache.org/viewvc/uima/uimaj/tags/uimaj-2.4.2-rc1/uimaj-ep-configurator
     </url>
   </scm>
   
