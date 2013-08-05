@@ -237,11 +237,11 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
     // For backwards compatibility (see Jira 3123) if have some group-less settings and 
     // if special environment variable is set then ignore any errors in group parameter settings.
     // NOTE - for 2.4.1 act as if backwards compatibility is enabled.
-    boolean support240bug = true;
+    boolean support240bug = false;
     NameValuePair[] nvps = cfgParamSettings.getParameterSettings();
     if (nvps.length > 0) {
       validateConfigurationParameterSettings(nvps, null, cfgParamDecls);
-      //support240bug = System.getenv("UIMA_Jira3123") != null;  // restore this post 2.4.1
+      support240bug = true; // System.getenv("UIMA_Jira3123") != null;  // restore this post 2.4.1
     }
     
     try {
