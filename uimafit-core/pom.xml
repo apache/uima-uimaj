@@ -140,6 +140,7 @@
 							<configuration>
 								<excludes>
 									<exclude>release.properties</exclude> <!-- release generated artifact -->
+									<exclude>.pmd</exclude>
 									<exclude>CHANGES</exclude>
 									<exclude>NOTICE</exclude>
 									<exclude>README</exclude>
