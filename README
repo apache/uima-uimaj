@@ -41,7 +41,7 @@ add uimaFIT as a dependency to your pom.xml file with the following:
 
 <dependency>
 <groupId>org.apache.uima.fit</groupId>
-<artifactId>uimafit</artifactId>
+<artifactId>uimafit-core</artifactId>
 <version>2.0.0</version>
 </dependency>
 

@@ -40,7 +40,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.uima</groupId>
-			<artifactId>uimafit</artifactId>
+			<artifactId>uimafit-core</artifactId>
 			<version>2.0.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
@@ -55,6 +55,53 @@
 		</dependency>
 	</dependencies>
 	<properties>
-		<assemblyFinalName>apache-uimafit-${version}</assemblyFinalName>
+		<assemblyFinalName>apache-uimafit-${project.version}</assemblyFinalName>
 	</properties>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>javadocs-distr</id> <!-- name should match one in parent-pom -->
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>javadoc</goal>
+						</goals>
+						<configuration>
+							<doctitle>Apache uimaFIT ${project.version} User-Level API Documentation</doctitle>
+							<windowtitle>Apache uimaFIT ${project.version} User-Level API Documentation</windowtitle>
+							<notimestamp>true</notimestamp>
+							<linksource>true</linksource>
+							<!-- fix java api links because Oracle bought Sun -->
+							<javaApiLinks>
+								<property>
+									<name>api_1.5</name>
+									<value>http://download.oracle.com/javase/1.5.0/docs/api/</value>
+								</property>
+							</javaApiLinks>
+							<links>
+								<link>http://uima.apache.org/d/uimaj-${uima.version}/apidocs/</link>
+							</links>
+							<groups>
+								<group>
+									<title>uimaFIT</title>
+									<packages>org.apache.uima.fit.component*:org.apache.uima.fit.descriptor*:org.apache.uima.fit.factory*:org.apache.uima.fit.pipeline*:org.apache.uima.fit.testing*:org.apache.uima.fit.util*</packages>
+								</group>
+								<group>
+									<title>CPE support</title>
+									<packages>org.apache.uima.fit.cpe*</packages>
+								</group>
+							</groups>
+							<sourcepath>../uimafit-core/src/main/java;../uimafit-cpe/src/main/java</sourcepath>
+							<!-- Exclude UIMA types and internal API -->
+							<excludePackageNames>*.type:*.internal.*:*.impl.*</excludePackageNames>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+	</build>
 </project>

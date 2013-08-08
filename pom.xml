@@ -54,6 +54,9 @@
 		<url>https://issues.apache.org/jira/browse/UIMA</url>
 	</issueManagement>
 
+    <!--
+      - Only required while uimaFIT depends on unreleased versions of UIMA.
+      -
 	<repositories>
 		<repository>
 			<id>apache.snapshots</id>
@@ -81,6 +84,7 @@
 			</snapshots>
 		</pluginRepository>
 	</pluginRepositories>
+	-->
 
 	<dependencies>
 		<dependency>
@@ -172,45 +176,6 @@
 				<artifactId>maven-resources-plugin</artifactId>
 				<configuration>
 					<encoding>${project.build.sourceEncoding}</encoding>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>javadocs-distr</id> <!-- name should match one in parent-pom -->
-						<inherited>false</inherited>
-						<phase>prepare-package</phase>
-						<goals>
-							<goal>aggregate</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<windowtitle>uimaFIT ${project.version} API</windowtitle>
-					<doctitle>uimaFIT ${project.version} API</doctitle>
-					<notimestamp>true</notimestamp>
-					<linksource>true</linksource>
-					<links>
-						<link>http://uima.apache.org/d/uimaj-${uima.version}/apidocs/</link>
-					</links>
-					<!-- Exclude UIMA types -->
-					<excludePackageNames>*.type:org.apache.uima.fit.maven*:org.apache.uima.fit.legacy*:org.apache.uima.fit.internal*:org.apache.uima.fit.spring*</excludePackageNames>
-					<groups>
-						<group>
-							<title>uimaFIT</title>
-							<packages>org.apache.uima.fit.component*:org.apache.uima.fit.descriptor*:org.apache.uima.fit.factory*:org.apache.uima.fit.pipeline*:org.apache.uima.fit.testing*:org.apache.uima.fit.util*</packages>
-						</group>
-						<group>
-							<title>CPE support</title>
-							<packages>org.apache.uima.fit.cpe*</packages>
-						</group>
-						<group>
-							<title>Examples</title>
-							<packages>org.apache.uima.fit.examples*</packages>
-						</group>
-					</groups>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -559,7 +524,7 @@
 		</profile>
 	</profiles>
 	<modules>
-		<module>uimafit</module>
+		<module>uimafit-core</module>
 		<module>uimafit-examples</module>
 		<module>uimafit-spring</module>
 		<module>uimafit-maven-plugin</module>
