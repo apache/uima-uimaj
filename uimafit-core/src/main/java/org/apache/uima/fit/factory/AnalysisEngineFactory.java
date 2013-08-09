@@ -102,9 +102,8 @@ public final class AnalysisEngineFactory {
    * @see <a href="package-summary.html#InstancesVsDescriptors">Why are descriptors better than
    *      component instances?</a>
    */
-  public static AnalysisEngine createEngine(String descriptorName,
-          Object... configurationData) throws InvalidXMLException, IOException,
-          ResourceInitializationException {
+  public static AnalysisEngine createEngine(String descriptorName, Object... configurationData)
+          throws InvalidXMLException, IOException, ResourceInitializationException {
     AnalysisEngineDescription aed = createEngineDescription(descriptorName, configurationData);
     return UIMAFramework.produceAnalysisEngine(aed);
   }
@@ -153,9 +152,8 @@ public final class AnalysisEngineFactory {
    *      component instances?</a>
    * @see AggregateBuilder
    */
-  public static AnalysisEngine createEngine(
-          AnalysisEngineDescription analysisEngineDescription, String viewName)
-          throws ResourceInitializationException {
+  public static AnalysisEngine createEngine(AnalysisEngineDescription analysisEngineDescription,
+          String viewName) throws ResourceInitializationException {
     AggregateBuilder builder = new AggregateBuilder();
     builder.add(analysisEngineDescription, CAS.NAME_DEFAULT_SOFA, viewName);
     return builder.createAggregate();
@@ -185,7 +183,6 @@ public final class AnalysisEngineFactory {
     return createEngine(analysisEngineDescription, viewName);
   }
 
-  
   /**
    * Create and configure a primitive {@link AnalysisEngine}.
    * 
@@ -205,8 +202,7 @@ public final class AnalysisEngineFactory {
           Object... configurationData) throws ResourceInitializationException {
     if (configurationData == null || configurationData.length == 0) {
       return UIMAFramework.produceAnalysisEngine(desc, null, null);
-    }
-    else {
+    } else {
       AnalysisEngineDescription descClone = (AnalysisEngineDescription) desc.clone();
       ResourceCreationSpecifierFactory.setConfigurationParameters(descClone, configurationData);
       return UIMAFramework.produceAnalysisEngine(descClone);
@@ -231,7 +227,7 @@ public final class AnalysisEngineFactory {
           throws ResourceInitializationException {
     return createEngine(desc);
   }
-  
+
   /**
    * Create and configure a primitive {@link AnalysisEngine}.
    * 
@@ -447,7 +443,7 @@ public final class AnalysisEngineFactory {
     // create the AnalysisEngine, initialize it and return it
     return createEngine(desc);
   }
-  
+
   /**
    * Create and configure a primitive {@link AnalysisEngine}.
    * 
@@ -532,7 +528,8 @@ public final class AnalysisEngineFactory {
    *           if a failure occurred during production of the resource.
    * @see <a href="package-summary.html#InstancesVsDescriptors">Why are descriptors better than
    *      component instances?</a>
-   * @deprecated use {@link #createEngine(List, TypeSystemDescription, TypePriorities, SofaMapping[], Object...)}
+   * @deprecated use
+   *             {@link #createEngine(List, TypeSystemDescription, TypePriorities, SofaMapping[], Object...)}
    */
   @Deprecated
   public static AnalysisEngine createAggregate(
@@ -612,7 +609,8 @@ public final class AnalysisEngineFactory {
    *           if a failure occurred during production of the resource.
    * @see <a href="package-summary.html#InstancesVsDescriptors">Why are descriptors better than
    *      component instances?</a>
-   * @deprecated use {@link #createEngine(List, TypeSystemDescription, TypePriorities, SofaMapping[], FlowControllerDescription, Object...)}
+   * @deprecated use
+   *             {@link #createEngine(List, TypeSystemDescription, TypePriorities, SofaMapping[], FlowControllerDescription, Object...)}
    */
   @Deprecated
   public static AnalysisEngine createAggregate(
@@ -681,8 +679,7 @@ public final class AnalysisEngineFactory {
           List<AnalysisEngineDescription> analysisEngineDescriptions, List<String> componentNames,
           TypePriorities typePriorities, SofaMapping[] sofaMappings)
           throws ResourceInitializationException {
-    return createEngine(analysisEngineDescriptions, componentNames, typePriorities,
-            sofaMappings);
+    return createEngine(analysisEngineDescriptions, componentNames, typePriorities, sofaMappings);
   }
 
   /**
@@ -740,7 +737,8 @@ public final class AnalysisEngineFactory {
    *           if a failure occurred during production of the resource.
    * @see <a href="package-summary.html#InstancesVsDescriptors">Why are descriptors better than
    *      component instances?</a>
-   * @deprecated use {@link #createEngine(List, List, TypePriorities, SofaMapping[], FlowControllerDescription)}
+   * @deprecated use
+   *             {@link #createEngine(List, List, TypePriorities, SofaMapping[], FlowControllerDescription)}
    */
   @Deprecated
   public static AnalysisEngine createAggregate(
@@ -748,8 +746,8 @@ public final class AnalysisEngineFactory {
           TypePriorities typePriorities, SofaMapping[] sofaMappings,
           FlowControllerDescription flowControllerDescription)
           throws ResourceInitializationException {
-    return createEngine(analysisEngineDescriptions, componentNames, typePriorities,
-            sofaMappings, flowControllerDescription);
+    return createEngine(analysisEngineDescriptions, componentNames, typePriorities, sofaMappings,
+            flowControllerDescription);
   }
 
   /**
@@ -824,9 +822,8 @@ public final class AnalysisEngineFactory {
    * @throws InvalidXMLException
    *           if the input XML is not valid or does not specify a valid {@link ResourceSpecifier}
    */
-  public static AnalysisEngineDescription createEngineDescriptionFromPath(
-          String descriptorPath, Object... configurationData) throws InvalidXMLException,
-          IOException {
+  public static AnalysisEngineDescription createEngineDescriptionFromPath(String descriptorPath,
+          Object... configurationData) throws InvalidXMLException, IOException {
     ResourceSpecifier specifier;
     specifier = ResourceCreationSpecifierFactory.createResourceCreationSpecifier(descriptorPath,
             configurationData);
@@ -864,11 +861,9 @@ public final class AnalysisEngineFactory {
    * @param descriptorName
    *          The fully qualified, Java-style, dotted name of the XML descriptor file.
    * @param configurationData
-   *          should consist of name value pairs. Will override configuration parameter settings in
-   *          the descriptor file
-   * @param configurationData
    *          Any additional configuration parameters to be set. These should be supplied as (name,
-   *          value) pairs, so there should always be an even number of parameters.
+   *          value) pairs, so there should always be an even number of parameters. Will override
+   *          configuration parameter settings in the descriptor file
    * @return a description for this analysis engine.
    * @throws IOException
    *           if an I/O error occurs
@@ -892,11 +887,9 @@ public final class AnalysisEngineFactory {
    * @param descriptorName
    *          The fully qualified, Java-style, dotted name of the XML descriptor file.
    * @param configurationData
-   *          should consist of name value pairs. Will override configuration parameter settings in
-   *          the descriptor file
-   * @param configurationData
    *          Any additional configuration parameters to be set. These should be supplied as (name,
-   *          value) pairs, so there should always be an even number of parameters.
+   *          value) pairs, so there should always be an even number of parameters. Will override
+   *          configuration parameter settings in the descriptor file
    * @return a description for this analysis engine.
    * @throws IOException
    *           if an I/O error occurs
@@ -979,8 +972,8 @@ public final class AnalysisEngineFactory {
     TypePriorities typePriorities = createTypePriorities();
     FsIndexCollection fsIndexCollection = createFsIndexCollection();
 
-    return createEngineDescription(componentClass, typeSystem,
-            typePriorities, fsIndexCollection, (Capability[]) null, configurationData);
+    return createEngineDescription(componentClass, typeSystem, typePriorities, fsIndexCollection,
+            (Capability[]) null, configurationData);
   }
 
   /**
@@ -1049,15 +1042,15 @@ public final class AnalysisEngineFactory {
    * @return a description for this analysis engine.
    * @throws ResourceInitializationException
    *           if a failure occurred during production of the resource.
-   * @deprecated use {@link #createEngineDescription(Class, TypeSystemDescription, TypePriorities, Object...)}
+   * @deprecated use
+   *             {@link #createEngineDescription(Class, TypeSystemDescription, TypePriorities, Object...)}
    */
   @Deprecated
   public static AnalysisEngineDescription createPrimitiveDescription(
           Class<? extends AnalysisComponent> componentClass, TypeSystemDescription typeSystem,
           TypePriorities typePriorities, Object... configurationData)
           throws ResourceInitializationException {
-    return createEngineDescription(componentClass, typeSystem, typePriorities,
-            configurationData);
+    return createEngineDescription(componentClass, typeSystem, typePriorities, configurationData);
   }
 
   /**
@@ -1134,7 +1127,8 @@ public final class AnalysisEngineFactory {
    * @return a description for this analysis engine.
    * @throws ResourceInitializationException
    *           if a failure occurred during production of the resource.
-   * @deprecated use {@link #createEngineDescription(Class, TypeSystemDescription, TypePriorities, FsIndexCollection, Capability[], Object...)}
+   * @deprecated use
+   *             {@link #createEngineDescription(Class, TypeSystemDescription, TypePriorities, FsIndexCollection, Capability[], Object...)}
    */
   @Deprecated
   public static AnalysisEngineDescription createPrimitiveDescription(
@@ -1207,7 +1201,8 @@ public final class AnalysisEngineFactory {
    * @return a description for this analysis engine.
    * @throws ResourceInitializationException
    *           if a failure occurred during production of the resource.
-   * @deprecated use {@link #createEngineDescription(Class, TypeSystemDescription, TypePriorities, FsIndexCollection, Capability[], ConfigurationParameter[], Object[])}
+   * @deprecated use
+   *             {@link #createEngineDescription(Class, TypeSystemDescription, TypePriorities, FsIndexCollection, Capability[], ConfigurationParameter[], Object[])}
    */
   @Deprecated
   public static AnalysisEngineDescription createPrimitiveDescription(
@@ -1297,11 +1292,11 @@ public final class AnalysisEngineFactory {
     List<FsIndexCollection> fsIndexes = new ArrayList<FsIndexCollection>();
     if (indexes != null) {
       fsIndexes.add(indexes);
-    } 
+    }
     fsIndexes.add(FsIndexFactory.createFsIndexCollection(componentClass));
     FsIndexCollection aggIndexColl = CasCreationUtils.mergeFsIndexes(fsIndexes,
             UIMAFramework.newDefaultResourceManager());
-    desc.getAnalysisEngineMetaData().setFsIndexCollection(aggIndexColl);    
+    desc.getAnalysisEngineMetaData().setFsIndexCollection(aggIndexColl);
 
     // set capabilities from the argument to this call or from the annotation present in the
     // component if the argument is null
@@ -1355,7 +1350,8 @@ public final class AnalysisEngineFactory {
    * @return a description for this analysis engine.
    * @throws ResourceInitializationException
    *           if a failure occurred during production of the resource.
-   * @deprecated use {@link #createEngineDescription(Class, TypeSystemDescription, TypePriorities, FsIndexCollection, Capability[], ConfigurationParameter[], Object[], Map)}
+   * @deprecated use
+   *             {@link #createEngineDescription(Class, TypeSystemDescription, TypePriorities, FsIndexCollection, Capability[], ConfigurationParameter[], Object[], Map)}
    */
   @Deprecated
   public static AnalysisEngineDescription createPrimitiveDescription(
@@ -1424,7 +1420,8 @@ public final class AnalysisEngineFactory {
    * @return a description for this aggregate analysis engine.
    * @throws ResourceInitializationException
    *           if a failure occurred during production of the resource.
-   * @deprecated use {@link #createEngineDescription(List, TypeSystemDescription, TypePriorities, SofaMapping[], Object...)}
+   * @deprecated use
+   *             {@link #createEngineDescription(List, TypeSystemDescription, TypePriorities, SofaMapping[], Object...)}
    */
   @Deprecated
   public static AnalysisEngineDescription createAggregateDescription(
@@ -1432,8 +1429,8 @@ public final class AnalysisEngineFactory {
           TypeSystemDescription typeSystem, TypePriorities typePriorities,
           SofaMapping[] sofaMappings, Object... configurationData)
           throws ResourceInitializationException {
-    return createEngineDescription(componentClasses, typeSystem, typePriorities,
-            sofaMappings, configurationData);
+    return createEngineDescription(componentClasses, typeSystem, typePriorities, sofaMappings,
+            configurationData);
   }
 
   /**
@@ -1455,8 +1452,8 @@ public final class AnalysisEngineFactory {
       i++;
     }
 
-    return createEngineDescription(asList(analysisEngineDescriptions), asList(names), null,
-            null, null);
+    return createEngineDescription(asList(analysisEngineDescriptions), asList(names), null, null,
+            null);
   }
 
   /**
@@ -1536,7 +1533,8 @@ public final class AnalysisEngineFactory {
    * @return a description for this aggregate analysis engine.
    * @throws ResourceInitializationException
    *           if a failure occurred during production of the resource.
-   * @deprecated use {@link #createEngineDescription(List, TypeSystemDescription, TypePriorities, SofaMapping[], FlowControllerDescription, Object...)}
+   * @deprecated use
+   *             {@link #createEngineDescription(List, TypeSystemDescription, TypePriorities, SofaMapping[], FlowControllerDescription, Object...)}
    */
   @Deprecated
   public static AnalysisEngineDescription createAggregateDescription(
@@ -1544,8 +1542,8 @@ public final class AnalysisEngineFactory {
           TypeSystemDescription typeSystem, TypePriorities typePriorities,
           SofaMapping[] sofaMappings, FlowControllerDescription flowControllerDescription,
           Object... configurationData) throws ResourceInitializationException {
-    return createEngineDescription(componentClasses, typeSystem, typePriorities,
-            sofaMappings, flowControllerDescription, configurationData);
+    return createEngineDescription(componentClasses, typeSystem, typePriorities, sofaMappings,
+            flowControllerDescription, configurationData);
   }
 
   /**
@@ -1571,8 +1569,8 @@ public final class AnalysisEngineFactory {
       i++;
     }
 
-    return createEngineDescription(asList(analysisEngineDescriptions), asList(names), null,
-            null, flowControllerDescription);
+    return createEngineDescription(asList(analysisEngineDescriptions), asList(names), null, null,
+            flowControllerDescription);
   }
 
   /**
@@ -1586,7 +1584,8 @@ public final class AnalysisEngineFactory {
    * @return a description for this aggregate analysis engine.
    * @throws ResourceInitializationException
    *           if a failure occurred during production of the resource.
-   * @deprecated use {@link #createEngineDescription(FlowControllerDescription, AnalysisEngineDescription...)}
+   * @deprecated use
+   *             {@link #createEngineDescription(FlowControllerDescription, AnalysisEngineDescription...)}
    */
   @Deprecated
   public static AnalysisEngineDescription createAggregateDescription(
@@ -1695,7 +1694,8 @@ public final class AnalysisEngineFactory {
    * @return a description for this aggregate analysis engine.
    * @throws ResourceInitializationException
    *           if a failure occurred during production of the resource.
-   * @deprecated use {@link #createEngine(List, List, TypePriorities, SofaMapping[], FlowControllerDescription)}
+   * @deprecated use
+   *             {@link #createEngine(List, List, TypePriorities, SofaMapping[], FlowControllerDescription)}
    */
   @Deprecated
   public static AnalysisEngineDescription createAggregateDescription(
@@ -1703,7 +1703,7 @@ public final class AnalysisEngineFactory {
           TypePriorities typePriorities, SofaMapping[] sofaMappings,
           FlowControllerDescription flowControllerDescription)
           throws ResourceInitializationException {
-    return createEngineDescription(analysisEngineDescriptions, componentNames,
-            typePriorities, sofaMappings, flowControllerDescription);
+    return createEngineDescription(analysisEngineDescriptions, componentNames, typePriorities,
+            sofaMappings, flowControllerDescription);
   }
 }

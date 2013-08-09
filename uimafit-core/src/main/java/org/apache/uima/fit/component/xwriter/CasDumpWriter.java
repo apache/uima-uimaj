@@ -82,7 +82,7 @@ public class CasDumpWriter extends CasConsumer_ImplBase {
 
   /**
    * Include/exclude features according to the following patterns. Mind that the patterns do not
-   * actually match feature names but lines produced by {@link FeatureStructure#toString()}.
+   * actually match feature names but lines produced by {@code FeatureStructure.toString()}.
    */
   public static final String PARAM_FEATURE_PATTERNS = "FeaturePatterns";
 

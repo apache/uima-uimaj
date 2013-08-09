@@ -46,8 +46,6 @@ import org.xml.sax.SAXException;
 
 /**
  * Generate descriptor files for uimaFIT-based UIMA components.
- * 
- * @see http://maven.apache.org/plugin-tools/maven-plugin-tools-annotations/index.html
  */
 @Mojo(name = "generate", defaultPhase = LifecyclePhase.PROCESS_CLASSES, requiresDependencyResolution = ResolutionScope.COMPILE, requiresDependencyCollection = ResolutionScope.COMPILE)
 public class GenerateDescriptorsMojo extends AbstractMojo {

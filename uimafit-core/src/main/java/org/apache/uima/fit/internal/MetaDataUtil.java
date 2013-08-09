@@ -46,10 +46,6 @@ public final class MetaDataUtil {
   /**
    * Scan patterns from manifest files and from the specified system property.
    * 
-   * @param manifestPatterns
-   *          pattern matching the manifest files.
-   * @param importProperty
-   *          system property containing additional patterns.
    * @return array or all patterns found.
    */
   public static String[] scanImportsAndManifests(MetaDataType aType)

@@ -40,7 +40,7 @@
  * to access these feature structures.</li>
  * </ol>
  * 
- * <h4>Selecting from a {@link org.apache.uima.cas.ArrayFS ArrayFS/FSArray}/{@link FSList}</h4>
+ * <h4>Selecting from a {@link org.apache.uima.cas.ArrayFS ArrayFS/FSArray}/{@link org.apache.uima.jcas.cas.FSList}</h4>
  * 
  * When selecting from a feature structure list or array, the order is determined by the order of
  * the annotations inside the list/array.

@@ -25,11 +25,13 @@ import java.lang.annotation.Target;
 
 /**
  * 
- * <pre>
- *   		@SofaCapability(inputSofas = { GOLD_VIEW, SYSTEM_VIEW })
- *   		or
- *   		@SofaCapability(inputSofas = CAS.NAME_DEFAULT_SOFA, outputSofas = GOLD_VIEW)
- * </pre>
+ * <pre>{@code
+ * @SofaCapability(inputSofas = { GOLD_VIEW, SYSTEM_VIEW })
+ * }</pre>
+ * or
+ * <pre>{@code
+ * @SofaCapability(inputSofas = CAS.NAME_DEFAULT_SOFA, outputSofas = GOLD_VIEW)
+ * }</pre>
  * 
  * Adding this annotation to your analysis engine description makes your component "sofa aware." The
  * base CAS delivered to "sofa aware" components has no explicit view associated with it. The logic
