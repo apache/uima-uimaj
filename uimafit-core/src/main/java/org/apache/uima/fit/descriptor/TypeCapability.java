@@ -26,19 +26,19 @@ import java.lang.annotation.Target;
 /**
  * A typical use of this annotation might look something like:
  * 
- * <pre>{@code
- * @TypeCapability(
+ * <code><pre>
+ * {@literal @}TypeCapability(
  *   inputs="org.apache.uima.fit.type.Token", 
  *   outputs="org.apache.uima.fit.type.Token:pos")
- * }</pre>
+ * </code></pre>
  * 
  * or
  * 
- * <pre>{@code
- * @TypeCapability(
+ * <code><pre>
+ * {@literal @}TypeCapability(
  *   inputs={"org.apache.uima.fit.type.Token","org.apache.uima.fit.type.Sentence"}, 
  *   outputs={"org.apache.uima.fit.type.Token:pos", "org.apache.uima.tutorial.RoomNumber"})
- * }</pre>
+ * </code></pre>
  * 
  */
 

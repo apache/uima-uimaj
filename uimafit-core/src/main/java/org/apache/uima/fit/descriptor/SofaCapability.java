@@ -25,13 +25,13 @@ import java.lang.annotation.Target;
 
 /**
  * 
- * <pre>{@code
- * @SofaCapability(inputSofas = { GOLD_VIEW, SYSTEM_VIEW })
- * }</pre>
+ * <code><pre>
+ * {@literal @}SofaCapability(inputSofas = { GOLD_VIEW, SYSTEM_VIEW })
+ * </pre></code>
  * or
- * <pre>{@code
- * @SofaCapability(inputSofas = CAS.NAME_DEFAULT_SOFA, outputSofas = GOLD_VIEW)
- * }</pre>
+ * <code><pre>
+ * {@literal @}SofaCapability(inputSofas = CAS.NAME_DEFAULT_SOFA, outputSofas = GOLD_VIEW)
+ * </pre></code>
  * 
  * Adding this annotation to your analysis engine description makes your component "sofa aware." The
  * base CAS delivered to "sofa aware" components has no explicit view associated with it. The logic
@@ -39,7 +39,9 @@ import java.lang.annotation.Target;
  * as needed. You should therefore be aware that if you need to work with the "_InitialView" view,
  * then you must explicitly request it with a call like:
  * 
+ * <code><pre>
  * JCas initialView = jCas.getView(CAS.NAME_DEFAULT_SOFA);
+ * </pre></code>
  * 
  * This is because the base CAS that it passed into the process method to "sofa aware" components is
  * not the same as the "_InitialView". See how the following member variable is used to understand
