@@ -77,7 +77,6 @@
 							<doctitle>Apache uimaFIT ${project.version} User-Level API Documentation</doctitle>
 							<windowtitle>Apache uimaFIT ${project.version} User-Level API Documentation</windowtitle>
 							<notimestamp>true</notimestamp>
-							<linksource>true</linksource>
 							<!-- fix java api links because Oracle bought Sun -->
 							<javaApiLinks>
 								<property>
