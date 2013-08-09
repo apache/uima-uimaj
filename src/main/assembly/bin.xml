@@ -58,7 +58,7 @@
     
     <!-- copy standard top level files -->        
     <fileSet>
-      <directory>..</directory>
+      <directory>.</directory>
       <outputDirectory></outputDirectory>
       <fileMode>644</fileMode>
       <directoryMode>755</directoryMode> 
@@ -71,8 +71,9 @@
       </includes>       
     </fileSet>
 
+    <!-- copy files specific to the binary release -->        
     <fileSet>
-      <directory>.</directory>
+      <directory>src/main/dist-bin</directory>
       <outputDirectory></outputDirectory>
       <fileMode>644</fileMode>
       <directoryMode>755</directoryMode> 
@@ -101,13 +102,13 @@
 
     <!-- examples -->
     <fileSet>
-      <directory>../uimafit-examples/src/main/java</directory>
+      <directory>uimafit-examples/src/main/java</directory>
       <outputDirectory>examples/src</outputDirectory>
       <fileMode>644</fileMode>
       <directoryMode>755</directoryMode>        
     </fileSet>
     <fileSet>
-      <directory>../uimafit-examples/src/main/resources</directory>
+      <directory>uimafit-examples/src/main/resources</directory>
       <outputDirectory>examples/src</outputDirectory>
       <fileMode>644</fileMode>
       <directoryMode>755</directoryMode>        
@@ -115,7 +116,7 @@
 
     <!-- docbooks -->
     <fileSet>
-      <directory>../uimafit-docbook/target/site/</directory>
+      <directory>uimafit-docbook/target/site/</directory>
       <outputDirectory>docs</outputDirectory>
       <fileMode>644</fileMode>
       <directoryMode>755</directoryMode>        
