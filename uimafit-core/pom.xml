@@ -40,6 +40,10 @@
 			<artifactId>commons-io</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging-api</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-core</artifactId>
 		</dependency>
@@ -50,6 +54,10 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>

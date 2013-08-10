@@ -75,8 +75,18 @@
 				<!-- 2.2 is the last Java 5 compatible version -->
 			</dependency>
 			<dependency>
+				<groupId>commons-logging</groupId>
+				<artifactId>commons-logging-api</artifactId>
+				<version>1.1</version>
+			</dependency>
+			<dependency>
 				<groupId>org.apache.uima</groupId>
 				<artifactId>uimaj-core</artifactId>
+				<version>${uima.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.uima</groupId>
+				<artifactId>uimaj-cpe</artifactId>
 				<version>${uima.version}</version>
 			</dependency>
 			<dependency>
@@ -92,6 +102,11 @@
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-core</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-beans</artifactId>
 				<version>${spring.version}</version>
 			</dependency>
 			<dependency>

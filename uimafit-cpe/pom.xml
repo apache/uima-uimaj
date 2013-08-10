@@ -35,7 +35,15 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.uima</groupId>
-			<artifactId>uimaj-tools</artifactId>
+			<artifactId>uimaj-cpe</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.uima</groupId>
+			<artifactId>uimaj-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
 		</dependency>
 	</dependencies>
 </project>
