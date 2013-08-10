@@ -377,8 +377,8 @@
 								</execution>
 							</executions>
 							<configuration>
-								<sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
 								<targetJdk>${java.target}</targetJdk>
+								<linkXRef>false</linkXRef>
 							</configuration>
 						</plugin>
 					</plugins>
