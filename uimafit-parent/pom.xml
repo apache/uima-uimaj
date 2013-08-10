@@ -15,7 +15,7 @@
 	<inceptionYear>2012</inceptionYear>
 	<properties>
 		<spring.version>3.1.2.RELEASE</spring.version>
-		<uima.version>2.4.1</uima.version>
+		<uima.version>2.4.2</uima.version>
 		<jiraVersion>12323969</jiraVersion>
 	</properties>
     <!--
