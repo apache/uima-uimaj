@@ -96,14 +96,17 @@ public class JCasIterator implements Iterator<JCas> {
   }
 
   public boolean hasNext() {
+    boolean error = true;
     try {
-      return collectionReader.hasNext();
+      boolean hasOneMore = collectionReader.hasNext();
+      error = false;
+      return hasOneMore;
     } catch (CollectionException e) {
       throw new IllegalStateException(e);
     } catch (IOException e) {
       throw new IllegalStateException(e);
     } finally {
-      if (selfDestroy) {
+      if (error && selfDestroy) {
         destroy();
       }
     }
@@ -119,13 +122,16 @@ public class JCasIterator implements Iterator<JCas> {
         engine.process(jCas);
       }
 
-      if (!hasNext() && selfComplete) {
-        collectionProcessComplete();
-      }
+      // Only call hasNext() if auto complete or destroy is enabled.
+      if ((selfComplete || selfDestroy) && !hasNext()) {
+        if (selfComplete) {
+          collectionProcessComplete();
+        }
 
-      if (!hasNext() && selfDestroy) {
-        destroy();
-        destroyed = true;
+        if (selfDestroy) {
+          destroy();
+          destroyed = true;
+        }
       }
 
       error = false;
