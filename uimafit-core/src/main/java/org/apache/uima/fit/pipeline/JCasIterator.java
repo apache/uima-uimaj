@@ -54,6 +54,8 @@ public class JCasIterator implements Iterator<JCas> {
   private boolean selfComplete = false;
 
   private boolean selfDestroy = false;
+  
+  private boolean destroyed = false;
 
   /**
    * Iterate over the documents loaded by the CollectionReader, running the AnalysisEngine on each
@@ -96,6 +98,10 @@ public class JCasIterator implements Iterator<JCas> {
   }
 
   public boolean hasNext() {
+    if (destroyed) {
+      return false;
+    }
+    
     boolean error = true;
     try {
       boolean hasOneMore = collectionReader.hasNext();
@@ -159,9 +165,12 @@ public class JCasIterator implements Iterator<JCas> {
   }
 
   public void destroy() {
-    LifeCycleUtil.close(collectionReader);
-    LifeCycleUtil.destroy(collectionReader);
-    LifeCycleUtil.destroy(analysisEngines);
+    if (!destroyed) {
+      LifeCycleUtil.close(collectionReader);
+      LifeCycleUtil.destroy(collectionReader);
+      LifeCycleUtil.destroy(analysisEngines);
+      destroyed = true;
+    }
   }
 
   public boolean isSelfComplete() {
