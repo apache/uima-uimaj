@@ -275,7 +275,6 @@ public class ExtendedLogger implements Logger {
       if (logger != null) {
         if (context.getLogger() instanceof JSR47Logger_impl) {
           JSR47Logger_impl impl = (JSR47Logger_impl) context.getLogger();
-          System.out.println(impl.isLoggable(Level.INFO));
         }
         context.getLogger()
                 .log(getClass().getName(), Level.INFO, String.valueOf(paramObject), null);
