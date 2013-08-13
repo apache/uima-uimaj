@@ -287,6 +287,10 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
     for (int i = 0; i < aNVPs.length; i++) {
       // look up the parameter info
       String name = aNVPs[i].getName();
+      if (name == null) {
+        throw new ResourceConfigurationException(InvalidXMLException.ELEMENT_NOT_FOUND,
+                new Object[] { "name", "nameValuePair" });
+      }
       ConfigurationParameter param = aParamDecls.getConfigurationParameter(aGroupName, name);
       if (param == null) {
         if (aGroupName == null) {
@@ -324,6 +328,10 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
           NameValuePair aNVP) throws ResourceConfigurationException {
     String paramName = aParam.getName();
     String paramType = aParam.getType();
+    if (aNVP.getValue() == null) {
+      throw new ResourceConfigurationException(ResourceConfigurationException.CONFIG_SETTING_ABSENT,
+              new Object[] { paramName });
+    }
     Class<?> valClass = aNVP.getValue().getClass();
 
     if (aParam.isMultiValued()) // value must be an array
