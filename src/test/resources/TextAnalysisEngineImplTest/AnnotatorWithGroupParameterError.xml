@@ -87,10 +87,6 @@
 
 <settingsForGroup name="en">
   <nameValuePair>
-    <name>StringParam</name>
-    <value><string>en</string></value>
-  </nameValuePair>
-  <nameValuePair>
     <name>StringArrayParam</name>
     <value><array>
       <string>e</string>
@@ -128,7 +124,7 @@
   </nameValuePair>
   <nameValuePair>
     <name>IntegerArrayParam</name>
-    <!-- Value should be an array ... will fail unless UIMA_Jira3123 is set -->
+    <!-- Value should be an array ... will fail in a future release unless UIMA_Jira3123 is set -->
     <value><integer>1776</integer></value>
   </nameValuePair>
 </settingsForGroup>
