@@ -20,8 +20,11 @@ package org.apache.uima.fit.internal;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.text.MessageFormat;
 
 import org.apache.uima.UimaContext;
+import org.apache.uima.UimaContextAdmin;
+import org.apache.uima.internal.util.I18nUtil;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
@@ -57,7 +60,7 @@ public class ExtendedLogger implements Logger {
     if (context != null) {
       Logger logger = context.getLogger();
       if (logger != null) {
-        context.getLogger().log(aResourceBundleName, aMessageKey, aArguments);
+        logger.log(aResourceBundleName, aMessageKey, aArguments);
       }
     }
   }
@@ -67,7 +70,7 @@ public class ExtendedLogger implements Logger {
     if (context != null) {
       Logger logger = context.getLogger();
       if (logger != null) {
-        context.getLogger().logException(aException);
+        logger.logException(aException);
       }
     }
   }
@@ -95,8 +98,8 @@ public class ExtendedLogger implements Logger {
   public void log(Level level, String aMessage) {
     if (context != null) {
       Logger logger = context.getLogger();
-      if (logger != null) {
-        context.getLogger().log(level, aMessage);
+      if (logger != null && logger.isLoggable(level)) {
+        logger.log(getClass().getName(), level, aMessage, null);
       }
     }
   }
@@ -104,8 +107,9 @@ public class ExtendedLogger implements Logger {
   public void log(Level level, String aMessage, Object param1) {
     if (context != null) {
       Logger logger = context.getLogger();
-      if (logger != null) {
-        context.getLogger().log(level, aMessage, param1);
+      if (logger != null && logger.isLoggable(level)) {
+        String result = MessageFormat.format(aMessage, new Object[] { param1 });
+        logger.log(getClass().getName(), level, result, null);
       }
     }
   }
@@ -113,8 +117,9 @@ public class ExtendedLogger implements Logger {
   public void log(Level level, String aMessage, Object[] params) {
     if (context != null) {
       Logger logger = context.getLogger();
-      if (logger != null) {
-        context.getLogger().log(level, aMessage, params);
+      if (logger != null && logger.isLoggable(level)) {
+        String result = MessageFormat.format(aMessage, params);
+        logger.log(getClass().getName(), level, result, null);
       }
     }
   }
@@ -122,8 +127,8 @@ public class ExtendedLogger implements Logger {
   public void log(Level level, String aMessage, Throwable thrown) {
     if (context != null) {
       Logger logger = context.getLogger();
-      if (logger != null) {
-        context.getLogger().log(level, aMessage, thrown);
+      if (logger != null && logger.isLoggable(level)) {
+        logger.log(getClass().getName(), level, aMessage, thrown);
       }
     }
   }
@@ -132,8 +137,10 @@ public class ExtendedLogger implements Logger {
           String msgKey) {
     if (context != null) {
       Logger logger = context.getLogger();
-      if (logger != null) {
-        context.getLogger().logrb(level, sourceClass, sourceMethod, bundleName, msgKey);
+      if (logger != null && logger.isLoggable(level)) {
+        String result = I18nUtil.localizeMessage(bundleName, msgKey, null,
+                getExtensionClassLoader());
+        logger.log(getClass().getName(), level, result, null);
       }
     }
   }
@@ -142,8 +149,10 @@ public class ExtendedLogger implements Logger {
           String msgKey, Object param1) {
     if (context != null) {
       Logger logger = context.getLogger();
-      if (logger != null) {
-        context.getLogger().logrb(level, sourceClass, sourceMethod, bundleName, msgKey, param1);
+      if (logger != null && logger.isLoggable(level)) {
+        String result = I18nUtil.localizeMessage(bundleName, msgKey, new Object[] { param1 },
+                getExtensionClassLoader());
+        logger.log(getClass().getName(), level, result, null);
       }
     }
   }
@@ -152,8 +161,10 @@ public class ExtendedLogger implements Logger {
           String msgKey, Object[] params) {
     if (context != null) {
       Logger logger = context.getLogger();
-      if (logger != null) {
-        context.getLogger().logrb(level, sourceClass, sourceMethod, bundleName, msgKey, params);
+      if (logger != null && logger.isLoggable(level)) {
+        String result = I18nUtil.localizeMessage(bundleName, msgKey, params,
+                getExtensionClassLoader());
+        logger.log(getClass().getName(), level, result, null);
       }
     }
   }
@@ -162,8 +173,10 @@ public class ExtendedLogger implements Logger {
           String msgKey, Throwable thrown) {
     if (context != null) {
       Logger logger = context.getLogger();
-      if (logger != null) {
-        context.getLogger().logrb(level, sourceClass, sourceMethod, bundleName, msgKey, thrown);
+      if (logger != null && logger.isLoggable(level)) {
+        String result = I18nUtil.localizeMessage(bundleName, msgKey, null,
+                getExtensionClassLoader());
+        logger.log(getClass().getName(), level, result, thrown);
       }
     }
   }
@@ -416,5 +429,22 @@ public class ExtendedLogger implements Logger {
                 paramThrowable);
       }
     }
+  }
+  
+  /**
+   * Gets the extension ClassLoader to used to locate the message digests. If this returns null,
+   * then message digests will be searched for using this.class.getClassLoader().
+   */
+  private ClassLoader getExtensionClassLoader() {
+    if (context instanceof UimaContextAdmin) {
+      ResourceManager resMgr = ((UimaContextAdmin) context).getResourceManager();
+      if (resMgr != null) {
+        return resMgr.getExtensionClassLoader();
+      }
+      else {
+        return null;
+      }
+    }
+    return null;
   }
 }
