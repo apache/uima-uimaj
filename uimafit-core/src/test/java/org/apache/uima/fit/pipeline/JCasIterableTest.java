@@ -41,7 +41,7 @@ public class JCasIterableTest {
 
   @Test
   public void test() throws Exception {
-    for (JCas jcas : stepPipeline(createReaderDescription(ThreeDocsReader.class),
+    for (JCas jcas : iteratePipeline(createReaderDescription(ThreeDocsReader.class),
             createEngineDescription(GetTextAE.class))) {
       System.out.println(jcas.getDocumentText());
     }

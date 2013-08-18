@@ -230,7 +230,7 @@ public final class SimplePipeline {
   }
 
   /**
-   * Step through the {@link JCas JCases} processed by the pipeline, allowing to access each one
+   * Iterate through the {@link JCas JCases} processed by the pipeline, allowing to access each one
    * after it has been processed.
    * 
    * @param aReader
@@ -239,7 +239,7 @@ public final class SimplePipeline {
    *          the analysis engines.
    * @return an {@link Iterable}&lt;{@link JCas}&gt; which can be used in an extended for-loop.
    */
-  public static JCasIterable stepPipeline(final CollectionReaderDescription aReader,
+  public static JCasIterable iteratePipeline(final CollectionReaderDescription aReader,
           AnalysisEngineDescription... aEngines) {
     return new JCasIterable(aReader, aEngines);
   }
