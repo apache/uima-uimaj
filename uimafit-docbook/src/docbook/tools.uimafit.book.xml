@@ -32,6 +32,8 @@ under the License.
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="tools.uimafit.pipelines.xml"/>
 
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="tools.uimafit.experiments.xml"/>
+
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="tools.uimafit.casutil.xml"/>
   
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="tools.uimafit.configurationparameters.xml"/>
 

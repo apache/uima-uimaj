@@ -55,4 +55,18 @@ AnalysisEngineDescription tokenFrequencyWriter =
     TokenFrequencyWriter.PARAM_OUTPUT, "counts.txt");
 
 SimplePipeline.runPipeline(reader, tokenizer, writer);</programlisting>
+  <para>Instead of running the full pipeline end-to-end, we can also process one document at a time
+    and inspect the analysis results:</para>
+  <programlisting>CollectionReaderDescription reader = 
+  CollectionReaderFactory.createReaderDescription(
+    TextReader.class, 
+    TextReader.PARAM_INPUT, "/home/uimafit/documents");
+
+AnalysisEngineDescription tokenizer = 
+  AnalysisEngineFactory.createEngineDescription(
+    Tokenizer.class);
+
+for (JCas jcas : SimplePipeline.iteratePipeline(reader, tokenizer)) {
+  System.out.printf("Found %d tokens%n", JCasUtil.select(jcas, Token.class).size());
+}</programlisting>
 </chapter>
