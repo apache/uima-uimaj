@@ -25,7 +25,7 @@ following list highlights some of the features uimaFIT provides:
    
      SimplePipeline.runPipeline(reader, ae1, ..., aeN, consumer1, ... consumerN)
 
-uimaFIT requires Java 1.5 or higher and UIMA 2.4.0 or higher.
+uimaFIT requires Java 1.5 or higher and UIMA 2.4.2 or higher.
 
 ############
 AVAILABILITY
