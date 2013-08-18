@@ -27,11 +27,12 @@
   
   <includeBaseDirectory>true</includeBaseDirectory>
   
-  <baseDirectory>/apache-uimafit</baseDirectory>
+  <baseDirectory>/uimafit-${project.version}</baseDirectory>
     
   <dependencySets>
     <!-- uimaFIT artifacts -->
     <dependencySet>
+      <useProjectArtifact>false</useProjectArtifact>
       <outputDirectory>lib</outputDirectory>
       <unpack>false</unpack>
       <useTransitiveFiltering>true</useTransitiveFiltering>
