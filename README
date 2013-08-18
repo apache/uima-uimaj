@@ -15,7 +15,7 @@ following list highlights some of the features uimaFIT provides:
    
      ConfigurationParameterInitializer.initialize(this, uimaContext).  
      
-   This is handled  automatically if you extend the uimaFIT JCasAnnotator_ImplBase class.
+   This is handled automatically if you extend the uimaFIT JCasAnnotator_ImplBase class.
 
  * Testing: uimaFIT simplifies testing in a number of ways described in the documentation. By making
    it easy to instantiate your components without descriptor files a large amount of 
@@ -32,17 +32,16 @@ AVAILABILITY
 ############
 uimaFIT is licensed with Apache Software License 2.0 and is available from the Apache UIMA project:
 
-http://uimafit.googlecode.com
-http://code.google.com/p/uimafit/wiki/Documentation
-https://svn.apache.org/repos/asf/uima/sandbox/uimafit
+http://uima.apache.org
+http://svn.apache.org/repos/asf/uima/sandbox/uimafit
 
 uimaFIT is available via Maven Central. If you use Maven for your build environment, then you can
 add uimaFIT as a dependency to your pom.xml file with the following:
 
 <dependency>
-<groupId>org.apache.uima.fit</groupId>
-<artifactId>uimafit-core</artifactId>
-<version>2.0.0</version>
+  <groupId>org.apache.uima.fit</groupId>
+  <artifactId>uimafit-core</artifactId>
+  <version>2.0.0</version>
 </dependency>
 
 #########
