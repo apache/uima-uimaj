@@ -1,7 +1,7 @@
 #######
 SUMMARY
 #######
-uimaFIT is a library that provides factories, injection, and testing utilities for UIMA.  The
+uimaFIT is a library that provides factories, injection, and testing utilities for UIMA. The
 following list highlights some of the features uimaFIT provides:
 
  * Factories: simplify instantiating UIMA components programmatically without descriptor files.  
@@ -9,7 +9,7 @@ following list highlights some of the features uimaFIT provides:
    AnalysisEngineFactory.createPrimitive(MyAEImpl.class, myTypeSystem, paramName, paramValue)
 
  * Injection: handles the binding of configuration parameter values to the corresponding member
-   variables in the analysis engines and handles the binding of external resources.  For example,
+   variables in the analysis engines and handles the binding of external resources. For example,
    to bind a configuration parameter just annotate a member variable with @ConfigurationParameter.
    Then add one line of code to your initialize method:
    
@@ -39,7 +39,7 @@ uimaFIT is available via Maven Central. If you use Maven for your build environm
 add uimaFIT as a dependency to your pom.xml file with the following:
 
 <dependency>
-  <groupId>org.apache.uima.fit</groupId>
+  <groupId>org.apache.uima</groupId>
   <artifactId>uimafit-core</artifactId>
   <version>2.0.0</version>
 </dependency>
