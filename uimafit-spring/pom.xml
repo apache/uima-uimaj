@@ -56,34 +56,4 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
-	<build>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.apache.rat</groupId>
-					<artifactId>apache-rat-plugin</artifactId>
-					<executions>
-						<execution>
-							<id>default-cli</id>
-							<goals>
-								<goal>check</goal>
-							</goals>
-							<phase>verify</phase>
-							<configuration>
-								<excludes>
-									<exclude>release.properties</exclude> <!-- release generated artifact -->
-									<exclude>CHANGES</exclude>
-									<exclude>NOTICE</exclude>
-									<exclude>README</exclude>
-									<exclude>src/main/resources/**/*</exclude>
-									<exclude>src/test/resources/**/*</exclude>
-									<exclude>apidocs/package-list</exclude>
-								</excludes>
-							</configuration>
-						</execution>
-					</executions>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-	</build>
 </project>

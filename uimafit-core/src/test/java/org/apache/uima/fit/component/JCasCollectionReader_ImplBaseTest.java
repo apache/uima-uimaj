@@ -32,13 +32,19 @@ import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.Progress;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 /**
  * Test {@link JCasCollectionReader_ImplBase}
  * 
  */
 public class JCasCollectionReader_ImplBaseTest {
+
+  @Rule
+  public TemporaryFolder folder = new TemporaryFolder();
+
   /**
    * Test using a simple reader reading one text file.
    * 
@@ -47,7 +53,8 @@ public class JCasCollectionReader_ImplBaseTest {
    */
   @Test
   public void test() throws Exception {
-    File file = new File("src/test/resources/data/docs/A.txt");
+    File file = folder.newFile("test.txt");
+    FileUtils.write(file, "Aaa Bbbb Cc Dddd eeee ff .", "UTF-8");
 
     CollectionReader reader = createReader(SingleTextReader.class,
             SingleTextReader.PARAM_FILE, file.getPath());

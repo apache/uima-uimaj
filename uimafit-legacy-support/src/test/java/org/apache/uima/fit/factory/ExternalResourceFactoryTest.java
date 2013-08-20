@@ -75,9 +75,9 @@ import org.uimafit.descriptor.ExternalResource;
 public class ExternalResourceFactoryTest extends ComponentTestBase {
   private static final String EX_URI = "http://dum.my";
 
-  private static final String EX_FILE_1 = "src/test/resources/data/html/1.html";
+  private static final String EX_FILE_1 = "src/test/resources/data/docs/test.xcas";
 
-  private static final String EX_FILE_3 = "src/test/resources/data/html/3.html";
+  private static final String EX_FILE_3 = "src/test/resources/data/docs/test.xmi";
 
   @BeforeClass
   public static void initJNDI() throws Exception {

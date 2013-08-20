@@ -205,26 +205,6 @@
 					</executions>
 				</plugin>
 				<plugin>
-					<groupId>org.apache.rat</groupId>
-					<artifactId>apache-rat-plugin</artifactId>
-					<executions>
-						<execution>
-							<id>default-cli</id>
-							<configuration>
-								<excludes>
-									<exclude>release.properties</exclude> <!-- release generated artifact -->
-									<exclude>CHANGES</exclude>
-									<exclude>NOTICE</exclude>
-									<exclude>README</exclude>
-									<exclude>wiki/**/*</exclude>
-									<exclude>.gitignore</exclude>
-									<exclude>issuesFixed/**/*</exclude>
-								</excludes>
-							</configuration>
-						</execution>
-					</executions>
-				</plugin>
-				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>cobertura-maven-plugin</artifactId>
 					<version>2.5.2</version>

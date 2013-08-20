@@ -194,25 +194,6 @@
 		</plugins>
 		<pluginManagement>
 			<plugins>
-				<plugin>
-					<groupId>org.apache.rat</groupId>
-					<artifactId>apache-rat-plugin</artifactId>
-					<executions>
-						<execution>
-							<id>default-cli</id>
-							<configuration>
-								<excludes>
-									<exclude>release.properties</exclude> <!-- release generated artifact -->
-									<exclude>CHANGES</exclude>
-									<exclude>NOTICE</exclude>
-									<exclude>README</exclude>
-									<exclude>wiki/**/*</exclude>
-									<exclude>src/it/default/reference/TestAnnotator.xml</exclude>
-								</excludes>
-							</configuration>
-						</execution>
-					</executions>
-				</plugin>
 				<!--This plugin's configuration is used to store Eclipse m2e settings
 					only. It has no influence on the Maven build itself. -->
 				<plugin>
