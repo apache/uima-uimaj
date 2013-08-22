@@ -242,11 +242,11 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
       this.nodeMap.remove(node.getElement());
       final int max = node.outRank();
       for (int i = 0; i < max; i++) {
-	Node n = (Node) node.getSuccessor(i);
-	n.removeAncestor(node);
-	if (n.inRank() == 0) {
-	  rank0s.add(n);
-	}
+        Node n = (Node) node.getSuccessor(i);
+        n.removeAncestor(node);
+        if (n.inRank() == 0) {
+          rank0s.add(n);
+        }
       }
       return rank0s;
     }
