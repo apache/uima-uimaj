@@ -66,13 +66,13 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
       int[] a = new int[typeList.length];
       LowLevelTypeSystem llts = (LowLevelTypeSystem) ts;
       for (int i = 0; i < a.length; i++) {
-	int t = llts.ll_getCodeForTypeName(typeList[i]);
-	if (t == LowLevelTypeSystem.UNKNOWN_TYPE_CODE) {
-	  CASException e = new CASException(CASException.TYPEORDER_UNKNOWN_TYPE,
-	      new String[] { typeList[i] });
-	  throw e;
-	}
-	a[i] = t;
+        int t = llts.ll_getCodeForTypeName(typeList[i]);
+        if (t == LowLevelTypeSystem.UNKNOWN_TYPE_CODE) {
+          CASException e = new CASException(CASException.TYPEORDER_UNKNOWN_TYPE,
+              new String[] { typeList[i] });
+          throw e;
+        }
+        a[i] = t;
       }
       return a;
     }
@@ -84,7 +84,7 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
       this.order = typeList;
       this.typeCodeToOrder = new int[this.order.length + tsi.getSmallestType()];
       for (int i = 0; i < this.order.length; i++) {
-	this.typeCodeToOrder[this.order[i]] = i;
+        this.typeCodeToOrder[this.order[i]] = i;
       }
     }
 
@@ -139,29 +139,29 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
 
     private void addAllPredecessors(ArrayList<? extends GraphNode> pred) {
       for (Iterator<? extends GraphNode> it = pred.iterator(); it.hasNext();) {
-	Node n = (Node) it.next();
-	if (!LinearTypeOrderBuilderImpl.this.order.pathFromTo(this, n)) {
-	  n.connect(this);
-	}
-	// else {
-	// System.out.println("Testing: add predec: found loop from " +
+        Node n = (Node) it.next();
+        if (!LinearTypeOrderBuilderImpl.this.order.pathFromTo(this, n)) {
+          n.connect(this);
+        }
+        // else {
+        // System.out.println("Testing: add predec: found loop from " +
         // this.getElement() + " to " +
-	// n.getElement());
-	// }
+        // n.getElement());
+        // }
       }
     }
 
     private void addAllSuccessors(ArrayList<? extends GraphNode> successors1) {
       for (Iterator<? extends GraphNode> it = successors1.iterator(); it.hasNext();) {
-	Node n = (Node) it.next();
-	if (!LinearTypeOrderBuilderImpl.this.order.pathFromTo(n, this)) {
-	  connect(n);
-	}
-	// else {
-	// System.out.println("Testing: add succ: found loop from " +
+        Node n = (Node) it.next();
+        if (!LinearTypeOrderBuilderImpl.this.order.pathFromTo(n, this)) {
+          connect(n);
+        }
+        // else {
+        // System.out.println("Testing: add succ: found loop from " +
         // this.getElement() + " to " +
-	// n.getElement());
-	// }
+        // n.getElement());
+        // }
       }
     }
 
@@ -187,8 +187,8 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
     private Node getNode(String name) {
       Node node = (Node) this.nodeMap.get(name);
       if (node == null) {
-	node = new Node(name);
-	this.nodeMap.put(name, node);
+        node = new Node(name);
+        this.nodeMap.put(name, node);
       }
       return node;
     }
@@ -200,30 +200,30 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
       String key;
       // Copy the nodes.
       while (it.hasNext()) {
-	entry = it.next();
-	key = entry.getKey();
-	copy.nodeMap.put(key, copy.getNode(key)); // getNode makes a new
-                                                        // node
+        entry = it.next();
+        key = entry.getKey();
+        copy.nodeMap.put(key, copy.getNode(key)); // getNode makes a new
+                                                  // node
       }
       // Set pred's and succ's for nodes.
       it = this.nodeMap.entrySet().iterator();
       Node origNode, copyNode;
       while (it.hasNext()) {
-	entry = it.next();
-	key = entry.getKey();
-	origNode = entry.getValue();
-	copyNode = copy.nodeMap.get(key);
-	for (int i = 0; i < origNode.inRank(); i++) {
-	  key = (String) origNode.getPredecessor(i).getElement();
-	  copyNode.addPredecessor(copy.getNode(key));
-	}
-	for (int i = 0; i < origNode.outRank(); i++) {
-	  key = (String) origNode.getSuccessor(i).getElement();
-	  copyNode.addSuccessor(copy.getNode(key));
-	}
-	if (origNode.inRank() == 0) {
-	  inRank0nodes.addSuccessor(origNode);
-	}
+        entry = it.next();
+        key = entry.getKey();
+        origNode = entry.getValue();
+        copyNode = copy.nodeMap.get(key);
+        for (int i = 0; i < origNode.inRank(); i++) {
+          key = (String) origNode.getPredecessor(i).getElement();
+          copyNode.addPredecessor(copy.getNode(key));
+        }
+        for (int i = 0; i < origNode.outRank(); i++) {
+          key = (String) origNode.getSuccessor(i).getElement();
+          copyNode.addSuccessor(copy.getNode(key));
+        }
+        if (origNode.inRank() == 0) {
+          inRank0nodes.addSuccessor(origNode);
+        }
       }
       return copy;
     }
