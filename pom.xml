@@ -31,6 +31,9 @@
 		<version>2.0.0-SNAPSHOT</version>
 		<relativePath>uimafit-parent</relativePath>
 	</parent>
+	<properties>
+		<jiraVersion>12323969</jiraVersion>
+	</properties>
 	<scm>
 		<connection>scm:svn:http://svn.apache.org/repos/asf/uima/sandbox/uimafit/trunk/</connection>
 		<developerConnection>scm:svn:https://svn.apache.org/repos/asf/uima/sandbox/uimafit/trunk/</developerConnection>
@@ -118,4 +121,34 @@
 		<module>uimafit-cpe</module>
 		<module>uimafit-parent</module>
 	</modules>
+
+	<profiles>
+		<profile>
+			<id>apache-release</id>
+			<build>
+				<!-- Run jira report -->
+				<!-- depends on having -DjiraVersion set -->
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-changes-plugin</artifactId>
+						<inherited>false</inherited>
+						<executions>
+							<execution>
+								<id>default-cli</id>
+								<goals>
+									<goal>jira-report</goal>
+								</goals>
+								<phase>generate-resources</phase>
+								<configuration>
+									<fixVersionIds>${jiraVersion}</fixVersionIds>
+									<component>uimaFIT,uimaFIT-Maven-Plugin</component>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>    
 </project>

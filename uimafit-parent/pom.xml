@@ -15,7 +15,6 @@
 	<properties>
 		<spring.version>3.1.2.RELEASE</spring.version>
 		<uima.version>2.4.2</uima.version>
-		<jiraVersion>12323969</jiraVersion>
 	</properties>
     <!--
       - Only required while uimaFIT depends on unreleased versions of UIMA.
@@ -180,31 +179,6 @@
 					<version>${uima.version}</version>
 				</plugin>
 				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-changes-plugin</artifactId>
-					<inherited>false</inherited>
-					<executions>
-						<execution>
-							<id>default-cli</id>
-							<goals>
-								<goal>jira-report</goal>
-							</goals>
-							<phase>generate-resources</phase>
-							<configuration>
-								<useJql>true</useJql>
-								<fixVersionIds>${jiraVersion}</fixVersionIds>
-								<component>uimaFIT,uimaFIT-Maven-Plugin</component>
-								<columnNames>Type,Key,Status,Summary</columnNames>
-								<resolution>Fixed</resolution>
-								<status>Closed,Resolved</status>
-								<sortColumnNames>Type, Status, Key</sortColumnNames>
-								<outputDirectory>${basedir}/issuesFixed/</outputDirectory>
-								<maxEntries>1000</maxEntries>
-							</configuration>
-						</execution>
-					</executions>
-				</plugin>
-				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>cobertura-maven-plugin</artifactId>
 					<version>2.5.2</version>
@@ -250,27 +224,6 @@
 	</build>
 
 	<profiles>
-		<profile>
-			<id>apache-release</id>
-			<build>
-				<plugins>
-					<!-- Run jira report -->
-					<!-- depends on having -DjiraVersion set -->
-					<plugin>
-						<artifactId>maven-changes-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>default-cli</id>
-								<configuration>
-									<fixVersionIds>${jiraVersion}</fixVersionIds>
-									<sortColumnNames>Type, Status, Key</sortColumnNames>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
 		<profile>
 			<id>findbugs</id>
 			<build>
