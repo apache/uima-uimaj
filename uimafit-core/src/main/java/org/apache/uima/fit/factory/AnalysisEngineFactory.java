@@ -560,10 +560,6 @@ public final class AnalysisEngineFactory {
    *          value) pairs, so there should always be an even number of parameters.
    * @return an {@link AnalysisEngine} created from the specified component class and initialized
    *         with the configuration parameters.
-   * @throws IOException
-   *           if an I/O error occurs
-   * @throws InvalidXMLException
-   *           if the input XML is not valid or does not specify a valid {@link ResourceSpecifier}
    * @throws ResourceInitializationException
    *           if a failure occurred during production of the resource.
    * @see <a href="package-summary.html#InstancesVsDescriptors">Why are descriptors better than
@@ -601,10 +597,6 @@ public final class AnalysisEngineFactory {
    *          value) pairs, so there should always be an even number of parameters.
    * @return an {@link AnalysisEngine} created from the specified component class and initialized
    *         with the configuration parameters.
-   * @throws IOException
-   *           if an I/O error occurs
-   * @throws InvalidXMLException
-   *           if the input XML is not valid or does not specify a valid {@link ResourceSpecifier}
    * @throws ResourceInitializationException
    *           if a failure occurred during production of the resource.
    * @see <a href="package-summary.html#InstancesVsDescriptors">Why are descriptors better than

@@ -185,8 +185,6 @@ public final class SimplePipeline {
    *          the jCas to process
    * @param descs
    *          a sequence of analysis engines to run on the jCas
-   * @throws ResourceInitializationException 
-   * @throws AnalysisEngineProcessException 
    */
   public static void runPipeline(final JCas jCas, final AnalysisEngineDescription... descs)
           throws AnalysisEngineProcessException, ResourceInitializationException {
@@ -202,7 +200,6 @@ public final class SimplePipeline {
    *          the jCas to process
    * @param engines
    *          a sequence of analysis engines to run on the jCas
-   * @throws AnalysisEngineProcessException 
    */
   public static void runPipeline(final JCas jCas, final AnalysisEngine... engines)
           throws AnalysisEngineProcessException {
@@ -220,7 +217,6 @@ public final class SimplePipeline {
    *          the CAS to process
    * @param engines
    *          a sequence of analysis engines to run on the jCas
-   * @throws AnalysisEngineProcessException 
    */
   public static void runPipeline(final CAS cas, final AnalysisEngine... engines)
           throws AnalysisEngineProcessException {

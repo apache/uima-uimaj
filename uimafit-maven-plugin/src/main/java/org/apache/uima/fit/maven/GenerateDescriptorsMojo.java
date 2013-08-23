@@ -150,9 +150,6 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
 
   /**
    * Save descriptor XML to file system.
-   * 
-   * @throws IOException
-   * @throws SAXException
    */
   private void toXML(ResourceSpecifier aDesc, String aFilename) throws SAXException, IOException {
     OutputStream os = null;

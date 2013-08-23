@@ -122,8 +122,6 @@ public final class Util {
   /**
    * Create a class loader which covers the classes compiled in the current project and all
    * dependencies.
-   * 
-   * @throws MojoExecutionException
    */
   public static URLClassLoader getClassloader(MavenProject aProject, Log aLog)
           throws MojoExecutionException {

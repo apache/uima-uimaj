@@ -49,8 +49,6 @@ public class XmiTest extends ExamplesTestBase {
   /**
    * Here we are testing Annotator3 by setting up the "pipeline" and running it before testing the
    * final annotator.
-   * 
-   * @throws Exception
    */
   @Test
   public void testWithoutXmi() throws Exception {
@@ -80,8 +78,6 @@ public class XmiTest extends ExamplesTestBase {
    * <p>
    * The xmi file is generated once by running {@link #main(String[])}. Hopefully, it will not be
    * necessary to regenerate the xmi file often.
-   * 
-   * @throws Exception
    */
   @Test
   public void testWithXmi() throws Exception {
@@ -96,9 +92,6 @@ public class XmiTest extends ExamplesTestBase {
 
   /**
    * Here we generate an xmi file that will be used by {@link #testWithXmi()}.
-   * 
-   * @param args
-   * @throws Exception
    */
   public static void main(String[] args) throws Exception {
     TypeSystemDescription tsd = createTypeSystemDescription("org.apache.uima.fit.examples.TypeSystem");

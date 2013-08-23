@@ -121,7 +121,7 @@ public class EnhanceMojo extends AbstractMojo {
   /**
    * Override copyright in generated descriptors.
    * 
-   * @see #component
+   * @see #componentCopyright
    */
   @Parameter(defaultValue = "false", required = true)
   private boolean overrideComponentCopyright;

@@ -45,8 +45,6 @@ public class RoomNumberAnnotator1Test {
    * descriptor was automatically generated, you might not want your tests to rely on descriptor
    * files. This test also creates a new JCas object. Creating a new JCas is a bit expensive (>40 ms
    * on my laptop) - so this can really add up over a large test suite.
-   * 
-   * @throws Exception
    */
   @Test
   public void testRNA1() throws Exception {
@@ -67,8 +65,6 @@ public class RoomNumberAnnotator1Test {
    * still need a descriptor file for the type system but this isn't so bad as we expect there to be
    * a descriptor file for the type system as it is used to generate the Java jCas types. We are
    * still, unfortunately, creating a new JCas which is not so great.
-   * 
-   * @throws Exception
    */
   @Test
   public void testRNA2() throws Exception {
@@ -89,8 +85,6 @@ public class RoomNumberAnnotator1Test {
   /**
    * This test requires no descriptor files for either the TypeSystemDescription or the
    * AnalysisEngine.
-   * 
-   * @throws Exception
    */
   @Test
   public void testRNA3() throws Exception {
@@ -105,5 +99,4 @@ public class RoomNumberAnnotator1Test {
     assertEquals("01-144", roomNumber.getCoveredText());
     assertEquals("Yorktown", roomNumber.getBuilding());
   }
-
 }

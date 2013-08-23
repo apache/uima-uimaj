@@ -299,8 +299,9 @@ public final class ConfigurationParameterFactory {
    *          the component class which will be analyzed for parameters. Must match the
    *          implementationName set in the descriptor.
    * @param configurationParameters
-   *          additional parameters
+   *          additional parameter names
    * @param configurationValues
+   *          additional parameters values
    */
   public static void setParameters(ResourceCreationSpecifier desc,
           Class<?> componentClass, ConfigurationParameter[] configurationParameters,

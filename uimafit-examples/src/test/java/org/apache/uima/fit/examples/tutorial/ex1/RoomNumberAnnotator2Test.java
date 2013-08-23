@@ -39,8 +39,6 @@ public class RoomNumberAnnotator2Test extends ExamplesTestBase {
   /**
    * This test is nice because the super classes provides the typeSystemDescription and jCas
    * objects.
-   * 
-   * @throws Exception
    */
   @Test
   public void testRNA1() throws Exception {
