@@ -1,6 +1,14 @@
-#######
-SUMMARY
-#######
+
+      Apache uimaFIT (TM) v2.0.0
+      --------------------------
+
+
+What is uimaFIT?
+----------------
+
+uimaFIT is a part of the Apache UIMA(TM) project. uimaFIT can only be used in conjunction with 
+a compatible version of the Java version of the Apache UIMA SDK.
+
 uimaFIT is a library that provides factories, injection, and testing utilities for UIMA. The
 following list highlights some of the features uimaFIT provides:
 
@@ -25,11 +33,23 @@ following list highlights some of the features uimaFIT provides:
    
      SimplePipeline.runPipeline(reader, ae1, ..., aeN, consumer1, ... consumerN)
 
-uimaFIT requires Java 1.5 or higher and UIMA 2.4.2 or higher.
 
-############
-AVAILABILITY
-############
+What's New in 2.0.0
+-------------------
+
+uimaFIT 2.0.0 is the first Apache release. The migration to Apache has been used to address several
+incompatible changes since 1.x.x. Please refer to the Migration Guide section in the reference
+manual for further details.
+
+
+Supported Platforms
+-------------------
+uimaFIT requires Java 1.5 or higher, UIMA 2.4.2 or higher, and the Spring Framework 3.1.2 or higher.
+
+
+Availability
+------------
+
 uimaFIT is licensed with Apache Software License 2.0 and is available from the Apache UIMA project:
 
 http://uima.apache.org
@@ -44,11 +64,34 @@ add uimaFIT as a dependency to your pom.xml file with the following:
   <version>2.0.0</version>
 </dependency>
 
-#########
-Reference
-#########
 
-If you use uimaFIT to support academic research, then please cite the following paper as appropriate:
+Modules
+-------
+
+uimafit-core           - the main uimaFIT module
+uimafit-cpe            - support for the Collection Processing Engine (multi-threaded pipelines)
+uimafit-maven          - a Maven plugin to automatically enhance UIMA components with uimaFIT
+                         metadata and to generate XML descriptors for uimaFIT-enabled components.
+uimafit-legacy-support - allows uimaFIT 2.0.0 to use uimaFIT 1.4.x meta data like Java annotations
+                         and META-INF/org.uimafit/types.txt files. Pipelines mixing uimaFIT 1.4.x
+                         and 2.x componens MUST be created using the 2.x factories, because the
+                         1.4.x factories will NOT understand how to handle uimaFIT 2.x components
+                         or auto-configuration.
+uimafit-spring         - an experimental module serving as a proof-of-concept for the integration of
+                         UIMA with the Spring Framework. It is currently not considered finished and
+                         uses invasive reflection in order to patch the UIMA framework such that it
+                         passes all components created by UIMA through Spring to provide for the 
+                         wiring of Spring context dependencies. This module is made available for 
+                         the adventurous but currently not considered stable, finished, or even a 
+                         proper part of the ackage. E.g. it is not included in the binary 
+                         distribution package. 
+
+
+Reference
+---------
+
+If you use uimaFIT to support academic research, then please consider citing the following paper as
+appropriate:
 
 @InProceedings{ogren-bethard:2009:SETQA-NLP,
   author    = {Ogren, Philip  and  Bethard, Steven},
@@ -62,16 +105,17 @@ If you use uimaFIT to support academic research, then please cite the following 
   url       = {http://www.aclweb.org/anthology/W/W09/W09-1501}
 }
 
-#######
-HISTORY
-#######
+History
+-------
+
 Since end of 2012, uimaFIT is part of the Apache UIMA project. 
 
-Before, uimaFIT is was collaborative effort between the Center for Computational Pharmacology at the
-University of Colorado Denver, the Center for Computational Language and Education Research at the
-University of Colorado at Boulder, and the Ubiquitous Knowledge Processing (UKP) Lab at the
-Technische Universität Darmstadt. uimaFIT is extensively used by projects being developed by these
-groups.
+Apache uimaFIT was formerly known as uimaFIT, which in turn was formerly known as UUTUC.
+
+Before uimaFIT has become an sub-project within the Apache UIMA project, it is was collaborative 
+effort between the Center for Computational Pharmacology at the University of Colorado Denver, the
+Center for Computational Language and Education Research at the University of Colorado at Boulder,
+and the Ubiquitous Knowledge Processing (UKP) Lab at the Technische Universität Darmstadt.
 
 The initial uimaFIT development team was:
 
@@ -82,12 +126,8 @@ Steven Bethard, Stanford University, USA
 with contributions from Niklas Jakob, Fabio Mancinelli, Chris Roeder, Philipp Wetzler, Shuo Yang, 
 Torsten Zesch.
 
-#######
-SUPPORT
-#######
-Please address questions to user@uima.apache.org.  
 
-#####
-Misc.
-#####
-uimaFIT was formerly known as UUTUC.
+Support
+-------
+
+Please address questions to user@uima.apache.org.  
