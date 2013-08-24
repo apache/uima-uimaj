@@ -39,7 +39,7 @@ under the License.
     <programlisting>&lt;plugin>
   &lt;groupId>org.apache.uima&lt;/groupId>
   &lt;artifactId>uimafit-maven-plugin&lt;/artifactId>
-  &lt;version>2.0.0&lt;/version> &lt;!-- change to latest version -->
+  &lt;version><?eval ${project.version}?>&lt;/version> &lt;!-- change to latest version -->
   &lt;configuration>
     &lt;!-- OPTIONAL -->
     &lt;!-- Override component description in generated descriptors. -->
@@ -137,7 +137,7 @@ private MyResource resource;</programlisting>
     <programlisting>&lt;plugin>
   &lt;groupId>org.apache.uima&lt;/groupId>
   &lt;artifactId>uimafit-maven-plugin&lt;/artifactId>
-  &lt;version>2.0.0&lt;/version> &lt;!-- change to latest version -->
+  &lt;version><?eval ${project.version}?>&lt;/version> &lt;!-- change to latest version -->
   &lt;configuration>
     &lt;!-- OPTIONAL -->
     &lt;!-- Path where the generated resources are written. -->
