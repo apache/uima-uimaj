@@ -43,6 +43,9 @@ uimaFIT 2.0.0 is the first Apache release. The migration to Apache has been used
 incompatible changes since 1.x.x. Please refer to the Migration Guide section in the reference
 manual for further details.
 
+A full list of issues addressed in this release can be found on the Apache issue tracker:
+
+  https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12310570&version=12323969
 
 Supported Platforms
 -------------------
