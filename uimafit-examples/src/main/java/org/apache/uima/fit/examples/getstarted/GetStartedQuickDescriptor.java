@@ -18,6 +18,7 @@
  */
 package org.apache.uima.fit.examples.getstarted;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -40,6 +41,8 @@ public class GetStartedQuickDescriptor {
                     "uimaFIT");
 
     // Write the descriptor to an XML file
-    analysisEngineDescription.toXML(new FileOutputStream("target/examples/GetStartedQuickAE.xml"));
+    File output = new File("target/examples/GetStartedQuickAE.xml");
+    output.getParentFile().mkdirs();
+    analysisEngineDescription.toXML(new FileOutputStream(output));
   }
 }
