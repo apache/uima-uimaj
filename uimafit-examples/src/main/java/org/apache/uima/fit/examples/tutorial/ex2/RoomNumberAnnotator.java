@@ -47,9 +47,7 @@ import org.apache.uima.util.Level;
  * <li>mPatterns and mLocations is annotated with @ConfigurationParameters</li>
  * <li>the initialize method was removed</li>
  * </ul>
- * 
  */
-
 @TypeCapability(outputs = { "org.apache.uima.tutorial.RoomNumber",
     "org.apache.uima.tutorial.RoomNumber:building" })
 public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {

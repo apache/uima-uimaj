@@ -32,10 +32,7 @@ import org.apache.uima.jcas.JCas;
 
 /**
  * This simple AE copies tokens and sentences from one view to another.
- * 
- * 
  */
-
 @SofaCapability(inputSofas = { VIEW1, VIEW2 })
 public class SentenceAndTokenCopier extends JCasAnnotator_ImplBase {
 

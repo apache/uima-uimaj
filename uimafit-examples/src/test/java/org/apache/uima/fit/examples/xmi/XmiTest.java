@@ -18,7 +18,6 @@
  */
 package org.apache.uima.fit.examples.xmi;
 
-import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTypeSystemDescription;
 import static org.apache.uima.fit.util.JCasUtil.select;
 import static org.junit.Assert.assertEquals;
 
@@ -34,15 +33,12 @@ import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.fit.pipeline.SimplePipeline;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.junit.Test;
 
 /**
  * This test demonstrates testing a "downstream" AnalysisEngine by means of an XMI-serialized CAS.
  * Here we have two "upstream" analysis engines, Annotator1 and Annotator2, which add annotations
  * used by Annotator3.
- * 
- * 
  */
 public class XmiTest extends ExamplesTestBase {
 
@@ -76,8 +72,8 @@ public class XmiTest extends ExamplesTestBase {
    * Annotator3 manually, but this approach can be tedious, time consuming, error prone, and results
    * in a lot of code.
    * <p>
-   * The xmi file is generated once by running {@link #main(String[])}. Hopefully, it will not be
-   * necessary to regenerate the xmi file often.
+   * The XMI file is generated once by running {@link #main(String[])}. Hopefully, it will not be
+   * necessary to regenerate the XMI file often.
    */
   @Test
   public void testWithXmi() throws Exception {
@@ -91,16 +87,15 @@ public class XmiTest extends ExamplesTestBase {
   }
 
   /**
-   * Here we generate an xmi file that will be used by {@link #testWithXmi()}.
+   * Here we generate an XMI file that will be used by {@link #testWithXmi()}.
    */
   public static void main(String[] args) throws Exception {
-    TypeSystemDescription tsd = createTypeSystemDescription("org.apache.uima.fit.examples.TypeSystem");
-    AnalysisEngine a1 = AnalysisEngineFactory.createEngine(Annotator1.class, tsd);
-    AnalysisEngine a2 = AnalysisEngineFactory.createEngine(Annotator2.class, tsd);
-    AnalysisEngine xWriter = AnalysisEngineFactory.createEngine(XWriter.class, tsd,
+    AnalysisEngine a1 = AnalysisEngineFactory.createEngine(Annotator1.class);
+    AnalysisEngine a2 = AnalysisEngineFactory.createEngine(Annotator2.class);
+    AnalysisEngine xWriter = AnalysisEngineFactory.createEngine(XWriter.class,
             XWriter.PARAM_OUTPUT_DIRECTORY_NAME,
             "src/main/resources/org/apache/uima/fit/examples/xmi");
-    JCas jCas = JCasFactory.createJCas(tsd);
+    JCas jCas = JCasFactory.createJCas();
     jCas.setDocumentText("betgetjetletmetnetpetsetvetwetyet");
     a1.process(jCas);
     a2.process(jCas);
@@ -134,7 +129,7 @@ public class XmiTest extends ExamplesTestBase {
   }
 
   /**
-   * creates a sentence from the begining of each token whose pos tag is "m" to the end of the text.
+   * creates a sentence from the beginning of each token whose pos tag is "m" to the end of the text.
    */
   public static class Annotator3 extends JCasAnnotator_ImplBase {
     @Override
@@ -146,5 +141,4 @@ public class XmiTest extends ExamplesTestBase {
       }
     }
   }
-
 }

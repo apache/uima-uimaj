@@ -26,7 +26,7 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 /**
  * Updated by JCasGen Fri Jun 11 20:10:52 MDT 2010 XML source: C:/Users/Philip/Documents
- * /Academic/workspace/uimaFIT-examples/src/main/resources /org/uimafit/examples/TypeSystem.xml
+ * /Academic/workspace/uimaFIT-examples/src/main/resources /org/apache/uima/fit/examples/TypeSystem.xml
  * 
  * @generated
  */

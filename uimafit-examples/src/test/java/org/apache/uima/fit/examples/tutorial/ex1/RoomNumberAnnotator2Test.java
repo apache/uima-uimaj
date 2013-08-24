@@ -31,8 +31,6 @@ import org.junit.Test;
 /**
  * This class demonstrates some simple tests using uimaFIT using the ExamplesTestBase. These tests
  * have the advantage that a new JCas is not created for each test.
- * 
- * 
  */
 public class RoomNumberAnnotator2Test extends ExamplesTestBase {
 
@@ -52,5 +50,4 @@ public class RoomNumberAnnotator2Test extends ExamplesTestBase {
     assertEquals("01-144", roomNumber.getCoveredText());
     assertEquals("Yorktown", roomNumber.getBuilding());
   }
-
 }

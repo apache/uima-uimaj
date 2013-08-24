@@ -19,9 +19,7 @@
 package org.apache.uima.fit.examples.tutorial.ex6;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
-import static org.apache.uima.fit.factory.ExternalResourceFactory.bindResource;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDescription;
-import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTypeSystemDescription;
 import static org.apache.uima.fit.util.JCasUtil.select;
 
 import java.io.File;
@@ -30,8 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import org.apache.uima.UimaContext;
-import org.apache.uima.analysis_component.AnalysisComponent;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
@@ -42,37 +38,19 @@ import org.apache.uima.fit.examples.tutorial.type.UimaMeeting;
 import org.apache.uima.fit.factory.AggregateBuilder;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ExternalResourceDescription;
-import org.apache.uima.resource.ResourceAccessException;
-import org.apache.uima.resource.ResourceInitializationException;
-import org.apache.uima.resource.metadata.TypeSystemDescription;
 
 /**
  * Example annotator that iterates over Meeting annotations and annotates a meeting as a UimaMeeting
  * if a UIMA acronym occurs in close proximity to that meeting. When combined in an aggregate TAE
  * with the UimaAcronymAnnotator, demonstrates the use of the ResourceManager to share data between
  * annotators.
- * 
  */
 @TypeCapability(inputs = "org.apache.uima.tutorial.Meeting", outputs = "org.apache.uima.tutorial.UimaMeeting")
 public class UimaMeetingAnnotator extends JCasAnnotator_ImplBase {
-  static final String RESOURCE_UIMA_TERM_TABLE = "UimaTermTable";
+  static final String RES_UIMA_TERM_TABLE = "uimaTermTable";
 
-  @ExternalResource(key = RESOURCE_UIMA_TERM_TABLE)
-  private StringMapResource mMap;
-
-  /**
-   * @see AnalysisComponent#initialize(UimaContext)
-   */
-  @Override
-  public void initialize(UimaContext aContext) throws ResourceInitializationException {
-    super.initialize(aContext);
-    try {
-      // get a reference to the String Map Resource
-      mMap = (StringMapResource) getContext().getResourceObject("UimaTermTable");
-    } catch (ResourceAccessException e) {
-      throw new ResourceInitializationException(e);
-    }
-  }
+  @ExternalResource(key = RES_UIMA_TERM_TABLE)
+  private StringMapResource uimaTermTable;
 
   /**
    * @see JCasAnnotator_ImplBase#process(JCas)
@@ -92,7 +70,7 @@ public class UimaMeetingAnnotator extends JCasAnnotator_ImplBase {
 
     for (Meeting meeting : select(aJCas, Meeting.class)) {
       // get span of text within 50 chars on either side of meeting
-      // (window size should probably be a config. param)
+      // (window size should probably be a configuration parameter)
       int begin = meeting.getBegin() - 50;
       int end = meeting.getEnd() + 50;
       if (begin < 0) {
@@ -108,15 +86,14 @@ public class UimaMeetingAnnotator extends JCasAnnotator_ImplBase {
       while (tokenizer.hasMoreTokens()) {
         String token = tokenizer.nextToken();
         // look up token in map to see if it is an acronym
-        if (mMap.get(token) != null) {
+        if (uimaTermTable.get(token) != null) {
           // create annotation
           UimaMeeting annot = new UimaMeeting(aJCas, meeting.getBegin(), meeting.getEnd());
           annot.setRoom(meeting.getRoom());
           annot.setDate(meeting.getDate());
           annot.setStartTime(meeting.getStartTime());
           annot.setEndTime(meeting.getEndTime());
-          // Add annotation to a list, to be later added to the
-          // indexes.
+          // Add annotation to a list, to be later added to the indexes.
           // We need to do this because it's not allowed to add to an
           // index that you're currently iterating over.
           uimaMeetings.add(annot);
@@ -131,29 +108,19 @@ public class UimaMeetingAnnotator extends JCasAnnotator_ImplBase {
   }
 
   public static void main(String[] args) throws Exception {
-    File outputDirectory = new File("src/main/resources/org/uimafit/tutorial/ex6/");
+    File outputDirectory = new File("target/examples/tutorial/ex6/");
     outputDirectory.mkdirs();
 
-    TypeSystemDescription tsd = createTypeSystemDescription("org.apache.uima.fit.tutorial.type.TypeSystem");
-    AnalysisEngineDescription aed = createEngineDescription(UimaMeetingAnnotator.class, tsd);
-
-    aed.toXML(new FileOutputStream(new File(outputDirectory, "UimaMeetingAnnotator.xml")));
+    ExternalResourceDescription resource = createExternalResourceDescription(
+            StringMapResource_impl.class,
+            "file:org/apache/uima/fit/examples/tutorial/ex6/uimaAcronyms.txt");
 
     AggregateBuilder builder = new AggregateBuilder();
-    builder.add(createEngineDescription("org.apache.uima.fit.tutorial.ex6.UimaAcronymAnnotator"));
-    builder.add(createEngineDescription("org.apache.uima.fit.tutorial.ex6.UimaMeetingAnnotator"));
+    builder.add(createEngineDescription(UimaAcronymAnnotator.class,
+            UimaAcronymAnnotator.RES_ACRONYM_TABLE, resource));
+    builder.add(createEngineDescription(UimaMeetingAnnotator.class,
+            UimaMeetingAnnotator.RES_UIMA_TERM_TABLE, resource));
     AnalysisEngineDescription aggregate = builder.createAggregateDescription();
-
-    ExternalResourceDescription erd = createExternalResourceDescription("UimaAcronymTableFile",
-            StringMapResource_impl.class, "file:org/uimafit/tutorial/ex6/uimaAcronyms.txt");
-
-    // bindResource(aggregate,
-    // UimaAcronymAnnotator.class.getName()+"/"+UimaAcronymAnnotator.RESOURCE_ACRONYM_TABLE,
-    // erd);
-    bindResource(aggregate, RESOURCE_UIMA_TERM_TABLE, erd); // UimaMeetingAnnotator.class.getName()+"/"+
-
-    // bindResource(aggregate, "UimaAcronymTableFile", erd);
-    // bindResource(aggregate, RESOURCE_UIMA_TERM_TABLE, erd);
 
     aggregate.toXML(new FileOutputStream(new File(outputDirectory, "UimaMeetingDetectorTAE.xml")));
   }

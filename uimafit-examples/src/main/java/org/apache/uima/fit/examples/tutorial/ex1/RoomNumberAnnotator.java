@@ -37,8 +37,6 @@ import org.apache.uima.jcas.JCas;
  * <li>The super class was changed to org.apache.uima.fit.component.JCasAnnotator_ImplBase</li>
  * <li>The class is annotated with org.apache.uima.fit.descriptor.TypeCapability</li>
  * </ul>
- * 
- * 
  */
 @TypeCapability(outputs = { "org.apache.uima.tutorial.RoomNumber",
     "org.apache.uima.tutorial.RoomNumber:building" })

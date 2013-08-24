@@ -19,28 +19,20 @@
 package org.apache.uima.fit.examples.tutorial.ex1;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
-import static org.apache.uima.fit.factory.JCasFactory.createJCas;
-import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTypeSystemDescription;
 import static org.apache.uima.fit.util.JCasUtil.select;
 
 import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.fit.examples.tutorial.type.RoomNumber;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.resource.metadata.TypeSystemDescription;
 
-/**
- * 
- * 
- */
 public class RoomNumberAnnotatorPipeline {
 
   public static void main(String[] args) throws UIMAException {
     String text = "The meeting was moved from Yorktown 01-144 to Hawthorne 1S-W33.";
-    TypeSystemDescription tsd = createTypeSystemDescription("org.apache.uima.fit.examples.tutorial.type.RoomNumber");
-    JCas jCas = createJCas(tsd);
+    AnalysisEngine analysisEngine = createEngine(RoomNumberAnnotator.class);
+    JCas jCas = analysisEngine.newJCas();
     jCas.setDocumentText(text);
-    AnalysisEngine analysisEngine = createEngine(RoomNumberAnnotator.class, tsd);
     analysisEngine.process(jCas);
 
     for (RoomNumber roomNumber : select(jCas, RoomNumber.class)) {

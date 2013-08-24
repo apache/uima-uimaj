@@ -34,10 +34,6 @@ import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.junit.Before;
 
-/**
- * 
- * 
- */
 public class ExamplesTestBase {
   private static ThreadLocal<JCas> JCAS = new ThreadLocal<JCas>();
 

@@ -23,8 +23,6 @@ import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 
-/**
- */
 public class GetStartedQuickAE extends JCasAnnotator_ImplBase {
 
   public static final String PARAM_STRING = "stringParam";

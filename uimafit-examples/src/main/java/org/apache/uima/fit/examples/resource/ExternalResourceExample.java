@@ -66,7 +66,7 @@ public class ExternalResourceExample {
    * was properly initialized by uimaFIT
    */
   public static class Annotator extends org.apache.uima.fit.component.JCasAnnotator_ImplBase {
-    final static String MODEL_KEY = "Model";
+    final static String MODEL_KEY = "model";
 
     @ExternalResource(key = MODEL_KEY)
     private SharedModel model;

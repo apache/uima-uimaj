@@ -27,10 +27,6 @@ import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.xml.sax.SAXException;
 
-/**
- * 
- * 
- */
 public class GetStartedQuickDescriptor {
 
   public static void main(String[] args) throws ResourceInitializationException,
@@ -44,6 +40,6 @@ public class GetStartedQuickDescriptor {
                     "uimaFIT");
 
     // Write the descriptor to an XML file
-    analysisEngineDescription.toXML(new FileOutputStream("GetStartedQuickAE.xml"));
+    analysisEngineDescription.toXML(new FileOutputStream("target/examples/GetStartedQuickAE.xml"));
   }
 }

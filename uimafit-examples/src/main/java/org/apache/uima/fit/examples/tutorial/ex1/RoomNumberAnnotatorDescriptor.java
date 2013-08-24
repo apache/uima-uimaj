@@ -23,32 +23,20 @@ import java.io.FileOutputStream;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
-import org.apache.uima.fit.factory.TypeSystemDescriptionFactory;
-import org.apache.uima.resource.ResourceInitializationException;
-import org.apache.uima.resource.metadata.TypeSystemDescription;
 
 /**
- * This class provides a main method which shows how to generate an xml descriptor file using the
+ * This class provides a main method which shows how to generate an XML descriptor file using the
  * RoomNumberAnnotator class definition. The resulting XML descriptor file is the same as the one
  * provided in the uimaj-examples except that instead of building the file in parallel with the
  * class definition, it is now built completely by using the class definition.
- * 
- * 
  */
 public class RoomNumberAnnotatorDescriptor {
 
-  public static AnalysisEngineDescription createDescriptor() throws ResourceInitializationException {
-    TypeSystemDescription typeSystemDescription = TypeSystemDescriptionFactory
-            .createTypeSystemDescription();
-    return AnalysisEngineFactory.createEngineDescription(RoomNumberAnnotator.class,
-            typeSystemDescription);
-  }
-
   public static void main(String[] args) throws Exception {
-    File outputDirectory = new File("target/example-output/ex1/");
+    File outputDirectory = new File("target/examples/ex1/");
     outputDirectory.mkdirs();
-    AnalysisEngineDescription aed = createDescriptor();
+    AnalysisEngineDescription aed = AnalysisEngineFactory
+            .createEngineDescription(RoomNumberAnnotator.class);
     aed.toXML(new FileOutputStream(new File(outputDirectory, "RoomNumberAnnotator.xml")));
   }
-
 }

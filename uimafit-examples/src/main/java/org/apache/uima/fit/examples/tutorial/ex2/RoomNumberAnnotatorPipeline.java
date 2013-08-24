@@ -26,10 +26,6 @@ import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.fit.examples.tutorial.type.RoomNumber;
 import org.apache.uima.jcas.JCas;
 
-/**
- * 
- * 
- */
 public class RoomNumberAnnotatorPipeline {
 
   public static void main(String[] args) throws UIMAException {

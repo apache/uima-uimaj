@@ -29,16 +29,14 @@ import org.apache.uima.fit.component.xwriter.XWriter;
 import org.apache.uima.fit.factory.AggregateBuilder;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
-import org.apache.uima.fit.factory.TypeSystemDescriptionFactory;
 import org.apache.uima.fit.pipeline.SimplePipeline;
-import org.apache.uima.resource.metadata.TypeSystemDescription;
 
 /**
  * This class demonstrates a very common (though simplified) experimental setup in which gold
  * standard data is available for some task and you want to evaluate how well your analysis engine
  * works against that data. Here we are evaluating "BaselineTagger" which is a (ridiculously) simple
  * part-of-speech tagger against the part-of-speech tags found in
- * "src/main/resources/org/uimafit/examples/pos/sample.txt.pos".
+ * "src/main/resources/org/apache/uima/fit/examples/pos/sample.txt.pos".
  * <p>
  * The basic strategy is as follows:
  * <ul>
@@ -53,20 +51,16 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
  * 
  * Please see comments in the code for details on how the UIMA pipeline is set up and run for this
  * task.
- * 
- * 
  */
 public class RunExperiment {
 
   public static void main(String[] args) throws UIMAException, IOException {
-    String samplePosFileName = "src/main/resources/org/uimafit/examples/pos/sample.txt.pos";
-
-    TypeSystemDescription typeSystem = TypeSystemDescriptionFactory.createTypeSystemDescription();
+    String samplePosFileName = "src/main/resources/org/apache/uima/fit/examples/pos/sample.txt.pos";
 
     // The lineReader simply copies the lines from the input file into the
     // default view - one line per CAS
     CollectionReader lineReader = CollectionReaderFactory.createReader(LineReader.class,
-            typeSystem, LineReader.PARAM_INPUT_FILE, samplePosFileName);
+            LineReader.PARAM_INPUT_FILE, samplePosFileName);
 
     AggregateBuilder builder = new AggregateBuilder();
 
@@ -74,13 +68,13 @@ public class RunExperiment {
     // along with their part-of-speech tags which will be added to the
     // GOLD_VIEW
     AnalysisEngineDescription goldTagger = AnalysisEngineFactory.createEngineDescription(
-            GoldTagger.class, typeSystem);
+            GoldTagger.class);
     builder.add(goldTagger);
 
     // The textCopier creates the SYSTEM_VIEW and set the text of this view
     // to that of the text found in GOLD_VIEW
     AnalysisEngineDescription textCopier = AnalysisEngineFactory.createEngineDescription(
-            ViewTextCopierAnnotator.class, typeSystem,
+            ViewTextCopierAnnotator.class,
             ViewTextCopierAnnotator.PARAM_SOURCE_VIEW_NAME, ViewNames.GOLD_VIEW,
             ViewTextCopierAnnotator.PARAM_DESTINATION_VIEW_NAME, ViewNames.SYSTEM_VIEW);
     builder.add(textCopier);
@@ -88,28 +82,27 @@ public class RunExperiment {
     // The sentenceAndTokenCopier copies Token and Sentence annotations in
     // the GOLD_VIEW into the SYSTEM_VIEW
     AnalysisEngineDescription sentenceAndTokenCopier = AnalysisEngineFactory
-            .createEngineDescription(SentenceAndTokenCopier.class, typeSystem);
+            .createEngineDescription(SentenceAndTokenCopier.class);
     builder.add(sentenceAndTokenCopier, ViewNames.VIEW1, ViewNames.GOLD_VIEW, ViewNames.VIEW2,
             ViewNames.SYSTEM_VIEW);
 
     // The baselineTagger is run on the SYSTEM_VIEW
     AnalysisEngineDescription baselineTagger = AnalysisEngineFactory.createEngineDescription(
-            BaselineTagger.class, typeSystem);
+            BaselineTagger.class);
     builder.add(baselineTagger, CAS.NAME_DEFAULT_SOFA, ViewNames.SYSTEM_VIEW);
 
     // The evaluator will compare the part-of-speech tags in the SYSTEM_VIEW
     // with those in the GOLD_VIEW
     AnalysisEngineDescription evaluator = AnalysisEngineFactory.createEngineDescription(
-            Evaluator.class, typeSystem);
+            Evaluator.class);
     builder.add(evaluator);
 
     // The xWriter writes out the contents of each CAS (one per sentence) to
     // an XMI file. It is instructive to open one of these
-    // xmi files in the CAS Visual Debugger and look at the contents of each
+    // XMI files in the CAS Visual Debugger and look at the contents of each
     // view.
     AnalysisEngineDescription xWriter = AnalysisEngineFactory.createEngineDescription(
-            XWriter.class, typeSystem, XWriter.PARAM_OUTPUT_DIRECTORY_NAME,
-            "src/main/resources/org/uimafit/examples/pos/xmi");
+            XWriter.class, XWriter.PARAM_OUTPUT_DIRECTORY_NAME, "target/examples/pos/xmi");
     builder.add(xWriter);
 
     // runs the collection reader and the aggregate AE.

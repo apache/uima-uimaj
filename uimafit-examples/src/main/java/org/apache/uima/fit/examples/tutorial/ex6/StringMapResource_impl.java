@@ -30,10 +30,6 @@ import org.apache.uima.resource.DataResource;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.SharedResourceObject;
 
-/**
- * 
- * 
- */
 public class StringMapResource_impl implements StringMapResource, SharedResourceObject {
   private Map<String, String> mMap = new HashMap<String, String>();
 

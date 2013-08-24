@@ -18,10 +18,6 @@
  */
 package org.apache.uima.fit.examples.experiment.pos;
 
-/**
- * 
- * 
- */
 public class ViewNames {
 
   public static final String GOLD_VIEW = "GOLD_VIEW";

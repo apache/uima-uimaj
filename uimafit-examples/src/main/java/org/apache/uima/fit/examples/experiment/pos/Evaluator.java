@@ -39,8 +39,6 @@ import org.apache.uima.jcas.JCas;
  * very simple approach to evaluation of part-of-speech tags that will not likely suffice in
  * real-world scenarios for a number of reasons (e.g. no confusion matrix, assumes gold-standard
  * tokens and sentences in the system view, etc.)
- * 
- * 
  */
 @SofaCapability(inputSofas = { GOLD_VIEW, SYSTEM_VIEW })
 public class Evaluator extends JCasAnnotator_ImplBase {
@@ -88,5 +86,4 @@ public class Evaluator extends JCasAnnotator_ImplBase {
     float accuracy = (float) totalCorrect / total;
     System.out.println("accuracy: " + NumberFormat.getPercentInstance().format(accuracy));
   }
-
 }

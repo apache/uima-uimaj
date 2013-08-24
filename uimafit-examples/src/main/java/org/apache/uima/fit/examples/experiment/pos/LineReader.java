@@ -37,8 +37,6 @@ import org.apache.uima.util.ProgressImpl;
  * 
  * This collection reader takes a single file and produces one JCas for each line in the file
  * putting the text of the line into the default view.
- * 
- * 
  */
 public class LineReader extends JCasCollectionReader_ImplBase {
 
@@ -73,5 +71,4 @@ public class LineReader extends JCasCollectionReader_ImplBase {
     Progress progress = new ProgressImpl(lineIndex, lines.length, Progress.ENTITIES);
     return new Progress[] { progress };
   }
-
 }

@@ -24,10 +24,6 @@ import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
 
-/**
- * 
- * 
- */
 public class GetStartedQuickPipeline {
 
   public static void main(String[] args) throws UIMAException {
