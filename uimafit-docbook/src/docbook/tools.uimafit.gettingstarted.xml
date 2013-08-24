@@ -31,7 +31,7 @@
         a project dependency by adding the following snippet of XML to your pom.xml file:</para>
       <programlisting>&lt;dependency>
   &lt;groupId>org.apache.uima&lt;/groupId>
-  &lt;artifactId>uimafit&lt;/artifactId>
+  &lt;artifactId>uimafit-core&lt;/artifactId>
   &lt;version><?eval ${project.version}?>&lt;/version>
 &lt;/dependency></programlisting>
       <para>uimaFIT distributions are hosted by Maven Central and so no repository needs to be added
@@ -52,7 +52,7 @@
     <para> Here is the complete analysis engine implementation for this example.</para>
 
     <programlisting format="linespecific">public class GetStartedQuickAE 
-    extends org.uimafit.component.JCasAnnotator_ImplBase {
+    extends org.apache.uima.fit.component.JCasAnnotator_ImplBase {
   
   public static final String PARAM_STRING = "stringParam";
   @ConfigurationParameter(name = PARAM_STRING)
@@ -103,12 +103,12 @@ analysisEngine.process(jCas);  </programlisting>
     <para>Normally you would be using a type system with your analysis components. When using
       uimaFIT, it is easiest to keep your type system descriptors in your source folders and make
       them known to uimaFIT. To do so, create a file
-        <filename>META-INF/org.uimafit/types.txt</filename> in a source folder and add references to
+        <filename>META-INF/org.apache.uima.fit/types.txt</filename> in a source folder and add references to
       all your type descriptors to the file, one per line. You can also use wildcards. For example: </para>
 
-    <programlisting>classpath*:org/uimafit/examples/type/Token.xml
-classpath*:org/uimafit/examples/type/Sentence.xml
-classpath*:org/uimafit/examples/tutorial/type/*.xml </programlisting>
+    <programlisting>classpath*:org/apache/uima/fit/examples/type/Token.xml
+classpath*:org/apache/uima/fit/examples/type/Sentence.xml
+classpath*:org/apache/uima/fit/examples/tutorial/type/*.xml </programlisting>
   </section>
 
   <section>

@@ -83,7 +83,7 @@
       </tgroup>
     </table></para>
   <programlisting>class MyAnalysisEngine 
-    extends org.uimafit.component.CasAnnotator_ImplBase {
+    extends org.apache.uima.fit.component.CasAnnotator_ImplBase {
 
   /**
    * Directory to read the data from.

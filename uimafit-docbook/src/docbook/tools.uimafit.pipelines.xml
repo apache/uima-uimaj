@@ -18,7 +18,7 @@
 -->
 <chapter id="ugr.tools.uimafit.pipelines">
   <title>Pipelines</title>
-  <para>UIMA is a component-based architecture that allows to compose various processing components
+  <para>UIMA is a component-based architecture that allows composing various processing components
     into a complex processing pipeline. A pipeline typically involves a <emphasis>collection
       reader</emphasis> which ingests documents and <emphasis>analysis engines</emphasis> that do
     the actual processing.</para>
@@ -67,6 +67,7 @@ AnalysisEngineDescription tokenizer =
     Tokenizer.class);
 
 for (JCas jcas : SimplePipeline.iteratePipeline(reader, tokenizer)) {
-  System.out.printf("Found %d tokens%n", JCasUtil.select(jcas, Token.class).size());
+  System.out.printf("Found %d tokens%n", 
+    JCasUtil.select(jcas, Token.class).size());
 }</programlisting>
 </chapter>

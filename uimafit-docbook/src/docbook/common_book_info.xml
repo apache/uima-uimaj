@@ -23,10 +23,10 @@ under the License.
 
     <releaseinfo>Version <?eval ${project.version}?></releaseinfo>
 
-    <productname>Apache uimaFIT</productname>
+    <productname>Apache uimaFIT&#8482;</productname>
 
     <authorgroup>
-      <corpauthor>Written and maintained by the Apache UIMA Development Community</corpauthor>
+      <corpauthor>Written and maintained by the Apache UIMA&#8482; Development Community</corpauthor>
     </authorgroup>
 
  <!--
@@ -47,7 +47,7 @@ under the License.
            with the License.  You may obtain a copy of the License at
          
          <blockquote>
-           <ulink url="http://www.apache.org/licenses/LICENSE-2.0"/>
+           <para><ulink url="http://www.apache.org/licenses/LICENSE-2.0"/></para>
          </blockquote>
          
            Unless required by applicable law or agreed to in writing,

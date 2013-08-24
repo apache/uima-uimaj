@@ -140,6 +140,34 @@
 	<build>
 		<plugins>
 			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>buildnumber-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>create-build-year</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>create-timestamp</goal>
+						</goals>
+						<configuration>
+							<timestampFormat>yyyy</timestampFormat>
+							<timestampPropertyName>buildYear</timestampPropertyName>
+						</configuration>
+					</execution>
+					<execution>
+						<id>create-build-month</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>create-timestamp</goal>
+						</goals>
+						<configuration>
+							<timestampFormat>MMMM</timestampFormat>
+							<timestampPropertyName>buildMonth</timestampPropertyName>
+						</configuration>
+					</execution>
+				</executions>			
+			</plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
 				<configuration>
@@ -173,6 +201,11 @@
 		</plugins>
 		<pluginManagement>
 			<plugins>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>buildnumber-maven-plugin</artifactId>
+					<version>1.2</version>
+				</plugin>
 				<plugin>
 					<groupId>org.apache.uima</groupId>
 					<artifactId>jcasgen-maven-plugin</artifactId>

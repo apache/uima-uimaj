@@ -31,7 +31,7 @@
     loaded.</para>
   <programlisting>// Simple model that only stores the URI it was loaded from. Normally data
 // would be loaded from the URI instead and made accessible through methods
-// in this class. This simple example only allows to access the URI.
+// in this class. This simple example only allows accessing the URI.
 public static final class SharedModel implements SharedResourceObject {
   private String uri;
 
@@ -56,7 +56,8 @@ public static final class SharedModel implements SharedResourceObject {
   public void initialize(UimaContext context) 
       throws ResourceInitializationException {
 
-    configuredResource = (SharedModel) getContext().getResourceObject(MODEL_KEY);
+    configuredResource = (SharedModel) 
+      getContext().getResourceObject(MODEL_KEY);
   }
 }</programlisting>
       <para>uimaFIT can be used to inject external resources into such traditional components using
@@ -111,10 +112,10 @@ createDependencyAndBind(tokenizer, UimaUtil.MODEL_PARAMETER,
           </tbody>
         </tgroup>
       </table>
-      <programlisting>// Example annotator that uses the SharedModel. In the process() we only test
-// if the model was properly initialized by uimaFIT
+      <programlisting>// Example annotator that uses the SharedModel. In the process() we only
+// test if the model was properly initialized by uimaFIT
 public static class Annotator 
-    extends org.uimafit.component.JCasAnnotator_ImplBase {
+    extends org.apache.uima.fit.component.JCasAnnotator_ImplBase {
 
   final static String MODEL_KEY = "Model";
   @ExternalResource(key = MODEL_KEY)
@@ -198,7 +199,7 @@ ae.process(ae.newJCas());</programlisting></para>
           <emphasis>uimaFIT-examples</emphasis> project.</para>
     </section>
     <section>
-      <title>Resources extending <classname>Resource_ImplBase</classname></title>
+      <title>Resources extending Resource_ImplBase</title>
       <para>One kind of resources extend <classname>Resource_ImplBase</classname>. These are the
         easiest to handle, because uimaFIT's version of <classname>Resource_ImplBase</classname>
         already implements the necessary logic. Just be sure to call
@@ -219,7 +220,7 @@ ae.process(ae.newJCas());</programlisting></para>
 }</programlisting>
     </section>
     <section>
-      <title>Resources implementing <interfacename>SharedResourceObject</interfacename></title>
+      <title>Resources implementing SharedResourceObject</title>
       <para>The other kind of resources implement
           <interfacename>SharedResourceObject</interfacename>. Since this is an interface, uimaFIT
         cannot provide the initialization logic, so you have to implement a couple of things in the

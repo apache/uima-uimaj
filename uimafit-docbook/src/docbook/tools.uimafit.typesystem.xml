@@ -63,17 +63,17 @@
     <programlisting>AnalysisEngine ae = createEngine(MyEngine.class);</programlisting>
   </section>
   <section>
-    <title>Multiple <filename>META-INF/org.uimafit/types.txt</filename> files</title>
+    <title>Multiple META-INF/org.apache.uima.fit/types.txt files</title>
     <para>uimaFIT supports multiple `types.txt` files in the classpath (e.g. in differnt JARs). The
         <filename>types.txt</filename> files are located via Spring using the classpath search
       pattern: </para>
-    <programlisting>TYPE_MANIFEST_PATTERN = "classpath*:META-INF/org.uimafit/types.txt" </programlisting>
+    <programlisting>TYPE_MANIFEST_PATTERN = "classpath*:META-INF/org.apache.uima.fit/types.txt" </programlisting>
     <para>This resolves to a list URLs pointing to ALL <filename>types.txt</filename> files. The
       resolved URLs are unique and will point either to a specific point in the file system or into
       a specific JAR. These URLs can be handled by the standard Java URL loading mechanism.
       Example:</para>
-    <programlisting>jar:/path/to/syntax-types.jar!/META-INF/org.uimafit/types.txt 
-jar:/path/to/token-types.jar!/META-INF/org.uimafit/types.txt</programlisting>
+    <programlisting>jar:/path/to/syntax-types.jar!/META-INF/org.apache.uima.fit/types.txt 
+jar:/path/to/token-types.jar!/META-INF/org.apache.uima.fit/types.txt</programlisting>
     <para>uimaFIT then reads all patters from all of these URLs and uses these to search the
       classpath again. The patterns now resolve to a list of URLs pointing to the individual type
       system XML descriptors. All of these URLs are collected in a set to avoid duplicate loading
@@ -112,7 +112,7 @@ classpath*:desc/type/Syntax.xml </programlisting></para>
     <para>The mechanism works fine. However, there are specific issues with Java in general that one
       should be aware of.</para>
     <section>
-      <title>m2eclipse fails to copy descriptors to <filename>target/classes</filename></title>
+      <title>m2eclipse fails to copy descriptors to target/classes</title>
       <para>There seems to be a bug in some older versions of m2eclipse that causes resources not
         always to be copied to <filename>target/classes</filename>. If UIMA complains about type
         definitions missing at runtime, try to <emphasis>clean/rebuild</emphasis> your project and

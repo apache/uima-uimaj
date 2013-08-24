@@ -19,7 +19,7 @@
 <chapter id="ugr.tools.uimafit.experiments">
   <title>Running Experiments</title>
   <para>The <emphasis>uimafit-examples</emphasis> module contains a package
-      <package>org.uimafit.examples.experiment.pos</package> which demonstrates a very simple
+      <package>org.apache.uima.fit.examples.experiment.pos</package> which demonstrates a very simple
     experimental setup for testing a part-of-speech tagger. You may find this example more
     accessible if you check out the code from subversion and build it in your own
     environment.</para>
@@ -32,7 +32,7 @@
       evaluate how well your analysis engine works against that data. Here we are evaluating
         <classname>BaselineTagger</classname> which is a (ridiculously) simple part-of-speech tagger
       against the part-of-speech tags found in
-        <filename>src/main/resources/org/uimafit/examples/pos/sample.txt.pos</filename></para>
+        <filename>src/main/resources/org/apache/uima/fit/examples/pos/sample-gold.txt</filename></para>
   </blockquote>
   <para>The basic strategy is as follows:</para>
   <itemizedlist>

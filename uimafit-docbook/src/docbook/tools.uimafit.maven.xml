@@ -31,8 +31,8 @@ under the License.
     annotations in already compiled classes and to automatically generate XML descriptors from the
     annotated classes.</para>
   <section>
-    <title><literal>enhance</literal> goal</title>
-    <para>The goal enhance allows to automatically augment compiled classes with uimaFIT
+    <title>enhance goal</title>
+    <para>The goal enhance allows automatically augmenting compiled classes with uimaFIT
       annotations. Information like vendor, copyright, or version can be obtained from the Maven
       POM. Additionally, descriptions for parameters and components can be generated from Javadoc
       comments. Existing annotations are not overwritten unless forced. </para>
@@ -87,15 +87,15 @@ under the License.
     &lt;!-- Constant name prefixes used for parameters and external resources,
          e.g. "PARAM_". -->
     &lt;parameterNameConstantPrefixes>
-      &lt;parameterNameConstantPrefix>PARAM_&lt;parameterNameConstantPrefix/>
+      &lt;prefix>PARAM_&lt;prefix/>
     &lt;/parameterNameConstantPrefixes>
     
     &lt;!-- OPTIONAL -->
     &lt;!-- Fail on missing meta data. This setting has no effect unless
          generateMissingMetaDataReport is enabled. -->
     &lt;externalResourceNameConstantPrefixes>
-      &lt;externalResourceNameConstantPrefix>KEY_&lt;externalResourceNameConstantPrefix/>
-      &lt;externalResourceNameConstantPrefix>RES_&lt;externalResourceNameConstantPrefix/>
+      &lt;prefix>KEY_&lt;prefix/>
+      &lt;prefix>RES_&lt;prefix/>
    &lt;/externalResourceNameConstantPrefixes>
   &lt;/configuration>
   &lt;executions>
@@ -132,7 +132,7 @@ private MyResource resource;</programlisting>
       directory.</para>
   </section>
   <section>
-    <title><literal>generate</literal> goal</title>
+    <title>generate goal</title>
     <para>The generate goal generates XML component descriptors for UIMA components. </para>
     <programlisting>&lt;plugin>
   &lt;groupId>org.apache.uima&lt;/groupId>
@@ -141,7 +141,9 @@ private MyResource resource;</programlisting>
   &lt;configuration>
     &lt;!-- OPTIONAL -->
     &lt;!-- Path where the generated resources are written. -->
-    &lt;outputDirectory>${project.build.directory}/generated-sources/uimafit&lt;/outputDirectory>
+    &lt;outputDirectory>
+      ${project.build.directory}/generated-sources/uimafit
+    &lt;/outputDirectory>
 
     &lt;!-- OPTIONAL -->
     &lt;!-- Skip generation of META-INF/org.apache.uima.fit/components.txt -->

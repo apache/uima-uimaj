@@ -109,7 +109,8 @@
       structures, e.g. <code>selectFS</code>.</para>
     <para>Examples:</para>
     <programlisting>// CAS version
-for (AnnotationFS token : CasUtil.select(cas, CasUtil.getType(cas, "my.Token"))) {
+Type tokenType = CasUtil.getType(cas, "my.Token");
+for (AnnotationFS token : CasUtil.select(cas, tokenType)) {
   ...
 }
 
