@@ -198,9 +198,9 @@ public class TokenBuilderTest extends ComponentTestBase {
 
   @Test
   public void testNewlinesFromFile() throws Exception {
-    String text = FileUtil.loadTextFile(new File("src/test/resources/data/docs/unix-newlines.txt"),
+    String text = FileUtil.loadTextFile(new File("src/test/resources/data/docs/unix-newlines.txt.bin"),
             "UTF-8");
-    text = text.substring(1); // remove "\uFEFF" character from begining of text
+    text = text.substring(1); // remove "\uFEFF" character from beginning of text
     tokenBuilder.buildTokens(jCas, text);
 
     Collection<Sentence> sentences = JCasUtil.select(jCas, Sentence.class);
@@ -212,9 +212,9 @@ public class TokenBuilderTest extends ComponentTestBase {
     assertEquals("sentence 4.", iterator.next().getCoveredText());
 
     jCas.reset();
-    text = FileUtil.loadTextFile(new File("src/test/resources/data/docs/windows-newlines.txt"),
+    text = FileUtil.loadTextFile(new File("src/test/resources/data/docs/windows-newlines.txt.bin"),
             "UTF-8");
-    text = text.substring(1); // remove "\uFEFF" character from begining of text
+    text = text.substring(1); // remove "\uFEFF" character from beginning of text
     tokenBuilder.buildTokens(jCas, text);
 
     sentences = JCasUtil.select(jCas, Sentence.class);
@@ -224,7 +224,5 @@ public class TokenBuilderTest extends ComponentTestBase {
     assertEquals("sentence 2.", iterator.next().getCoveredText());
     assertEquals("sentence 3.", iterator.next().getCoveredText());
     assertEquals("sentence 4.", iterator.next().getCoveredText());
-
   }
-
 }
