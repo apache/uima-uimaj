@@ -21,7 +21,7 @@ package org.apache.uima.fit.examples.resource;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
-import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDescription;
+import static org.apache.uima.fit.factory.ExternalResourceFactory.bindResource;
 
 import java.io.File;
 
@@ -31,15 +31,14 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ExternalResource;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.DataResource;
-import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.SharedResourceObject;
+import org.junit.Test;
 
 /**
  * Example for the use of external resources with uimaFIT.
- * 
  */
-public class ExternalResourceExample {
+public class ExternalResourceExample2 {
   /**
    * Simple model that only stores the URI it was loaded from. Normally data would be loaded from
    * the URI instead and made accessible through methods in this class. This simple example only
@@ -76,20 +75,22 @@ public class ExternalResourceExample {
   }
 
   /**
-   * Illustrate how to configure the annotator with the shared model object.
+   * Illustrate how to configure the Annotator with the SharedModel. You should avoid this approach
+   * unless you are absolutely sure you need this. For this approach to work it must be guaranteed
+   * that no two components in the aggregate use the same resource key for different resoures, e.g.
+   * one "model" for different kinds of models.
    */
-  public static void main(String[] args) throws Exception {
-    ExternalResourceDescription extDesc = createExternalResourceDescription(SharedModel.class,
-            new File("somemodel.bin"));
+  @Test
+  public void configureAggregatedExample() throws Exception {
+    AnalysisEngineDescription aed1 = createEngineDescription(Annotator.class);
+    AnalysisEngineDescription aed2 = createEngineDescription(Annotator.class);
 
-    // Binding external resource to each Annotator individually
-    AnalysisEngineDescription aed1 = createEngineDescription(Annotator.class, Annotator.RES_MODEL,
-            extDesc);
-    AnalysisEngineDescription aed2 = createEngineDescription(Annotator.class, Annotator.RES_MODEL,
-            extDesc);
+    // Bind external resource to the aggregate
+    AnalysisEngineDescription aaed = createEngineDescription(aed1, aed2);
+    bindResource(aaed, Annotator.RES_MODEL, SharedModel.class, new File("somemodel.bin").toURI()
+            .toURL().toString());
 
     // Check the external resource was injected
-    AnalysisEngineDescription aaed = createEngineDescription(aed1, aed2);
     AnalysisEngine ae = createEngine(aaed);
     ae.process(ae.newJCas());
   }

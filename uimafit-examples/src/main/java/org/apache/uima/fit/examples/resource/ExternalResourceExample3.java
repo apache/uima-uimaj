@@ -23,74 +23,62 @@ import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDescription;
 
-import java.io.File;
-
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
+import org.apache.uima.fit.component.Resource_ImplBase;
 import org.apache.uima.fit.descriptor.ExternalResource;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.resource.DataResource;
-import org.apache.uima.resource.ExternalResourceDescription;
-import org.apache.uima.resource.ResourceInitializationException;
-import org.apache.uima.resource.SharedResourceObject;
 
 /**
  * Example for the use of external resources with uimaFIT.
- * 
  */
-public class ExternalResourceExample {
+public class ExternalResourceExample3 {
   /**
-   * Simple model that only stores the URI it was loaded from. Normally data would be loaded from
-   * the URI instead and made accessible through methods in this class. This simple example only
-   * allows to access the URI.
+   * Simple example resource that can use another resource.
    */
-  public static final class SharedModel implements SharedResourceObject {
-    private String uri;
+  public static class ChainableResource extends Resource_ImplBase {
+    public final static String RES_CHAINED_RESOURCE = "chainedResource";
 
-    public void load(DataResource aData) throws ResourceInitializationException {
-      uri = aData.getUri().toString();
-    }
+    @ExternalResource(key = RES_CHAINED_RESOURCE, mandatory = false)
+    private ChainableResource chainedResource;
 
-    public String getUri() {
-      return uri;
+    @Override
+    public void afterResourcesInitialized() {
+      // init logic that requires external resources
+      System.out.println(getClass().getSimpleName() + ": " + chainedResource);
     }
   }
 
   /**
-   * Example annotator that uses the share model object. In the process() we only test if the model
-   * was properly initialized by uimaFIT
+   * Example annotator that uses the resource. In the process() we only test if the model was
+   * properly initialized by uimaFIT
    */
-  public static class Annotator extends org.apache.uima.fit.component.JCasAnnotator_ImplBase {
+  public static class Annotator2 extends org.apache.uima.fit.component.JCasAnnotator_ImplBase {
     final static String RES_MODEL = "model";
 
     @ExternalResource(key = RES_MODEL)
-    private SharedModel model;
+    private ChainableResource model;
 
     @Override
     public void process(JCas aJCas) throws AnalysisEngineProcessException {
-      // Prints the instance ID to the console - this proves the same instance
-      // of the SharedModel is used in both Annotator instances.
       System.out.println(getClass().getSimpleName() + ": " + model);
     }
   }
 
   /**
-   * Illustrate how to configure the annotator with the shared model object.
+   * Illustrate how to configure the annotator with a chainable resource
    */
   public static void main(String[] args) throws Exception {
-    ExternalResourceDescription extDesc = createExternalResourceDescription(SharedModel.class,
-            new File("somemodel.bin"));
-
-    // Binding external resource to each Annotator individually
-    AnalysisEngineDescription aed1 = createEngineDescription(Annotator.class, Annotator.RES_MODEL,
-            extDesc);
-    AnalysisEngineDescription aed2 = createEngineDescription(Annotator.class, Annotator.RES_MODEL,
-            extDesc);
+    AnalysisEngineDescription aed = createEngineDescription(
+            Annotator2.class,
+            Annotator2.RES_MODEL,
+            createExternalResourceDescription(ChainableResource.class,
+                    ChainableResource.RES_CHAINED_RESOURCE,
+                    createExternalResourceDescription(ChainableResource.class)));
 
     // Check the external resource was injected
-    AnalysisEngineDescription aaed = createEngineDescription(aed1, aed2);
-    AnalysisEngine ae = createEngine(aaed);
+    AnalysisEngine ae = createEngine(aed);
     ae.process(ae.newJCas());
   }
 }
