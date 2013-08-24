@@ -22,9 +22,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.Collection;
 import java.util.Iterator;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.uima.UIMAException;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIterator;
@@ -198,8 +200,14 @@ public class TokenBuilderTest extends ComponentTestBase {
 
   @Test
   public void testNewlinesFromFile() throws Exception {
-    String text = FileUtil.loadTextFile(new File("src/test/resources/data/docs/unix-newlines.txt.bin"),
-            "UTF-8");
+    File unixNewlines = new File("src/test/resources/data/docs/unix-newlines.txt.bin");
+    assertEquals(55, unixNewlines.length());
+    byte[] unixNewlinesBytes = IOUtils.toByteArray(new FileInputStream(unixNewlines));
+    assertEquals('.', unixNewlinesBytes[13]);
+    assertEquals(0x0A, unixNewlinesBytes[14]);
+    assertEquals('s', unixNewlinesBytes[15]);
+    
+    String text = FileUtil.loadTextFile(unixNewlines, "UTF-8");
     text = text.substring(1); // remove "\uFEFF" character from beginning of text
     tokenBuilder.buildTokens(jCas, text);
 
@@ -212,8 +220,14 @@ public class TokenBuilderTest extends ComponentTestBase {
     assertEquals("sentence 4.", iterator.next().getCoveredText());
 
     jCas.reset();
-    text = FileUtil.loadTextFile(new File("src/test/resources/data/docs/windows-newlines.txt.bin"),
-            "UTF-8");
+    File windowsNewlines = new File("src/test/resources/data/docs/windows-newlines.txt.bin");
+    text = FileUtil.loadTextFile(windowsNewlines, "UTF-8");
+    assertEquals(65, windowsNewlines.length());
+    byte[] windowsNewlinesBytes = IOUtils.toByteArray(new FileInputStream(windowsNewlines));
+    assertEquals('.', windowsNewlinesBytes[13]);
+    assertEquals(0x0D, windowsNewlinesBytes[14]);
+    assertEquals(0x0A, windowsNewlinesBytes[15]);
+    assertEquals('s', windowsNewlinesBytes[16]);
     text = text.substring(1); // remove "\uFEFF" character from beginning of text
     tokenBuilder.buildTokens(jCas, text);
 
