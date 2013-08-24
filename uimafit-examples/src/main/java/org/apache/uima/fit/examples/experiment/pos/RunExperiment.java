@@ -18,6 +18,7 @@
  */
 package org.apache.uima.fit.examples.experiment.pos;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.apache.uima.UIMAException;
@@ -55,7 +56,15 @@ import org.apache.uima.fit.pipeline.SimplePipeline;
 public class RunExperiment {
 
   public static void main(String[] args) throws UIMAException, IOException {
-    String samplePosFileName = "src/main/resources/org/apache/uima/fit/examples/pos/sample-gold.txt";
+    // Choosing different location depending on whether we are in the actual uimaFIT source tree
+    // or in the extracted examples from the binary distribution.
+    String samplePosFileName;
+    if (new File("src/main/resources").exists()) {
+        samplePosFileName = "src/main/resources/org/apache/uima/fit/examples/pos/sample-gold.txt";
+    }
+    else {
+        samplePosFileName = "src/org/apache/uima/fit/examples/pos/sample-gold.txt";
+    }
 
     // The lineReader simply copies the lines from the input file into the
     // default view - one line per CAS
