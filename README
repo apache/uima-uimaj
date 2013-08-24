@@ -7,7 +7,9 @@ What is uimaFIT?
 ----------------
 
 uimaFIT is a part of the Apache UIMA(TM) project. uimaFIT can only be used in conjunction with 
-a compatible version of the Java version of the Apache UIMA SDK.
+a compatible version of the Java version of the Apache UIMA SDK. For your convenient, the binary
+distribution package of uimaFIT includes all libraries necessary to use uimaFIT. In particular for
+novice users, it is strongly advised to obtain a copy of the full UIMA SDK separately.
 
 uimaFIT is a library that provides factories, injection, and testing utilities for UIMA. The
 following list highlights some of the features uimaFIT provides:
