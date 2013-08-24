@@ -33,7 +33,6 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.DataResource;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.SharedResourceObject;
-import org.junit.Test;
 
 /**
  * Example for the use of external resources with uimaFIT.
@@ -80,8 +79,7 @@ public class ExternalResourceExample2 {
    * that no two components in the aggregate use the same resource key for different resoures, e.g.
    * one "model" for different kinds of models.
    */
-  @Test
-  public void configureAggregatedExample() throws Exception {
+  public static void main(String[] args) throws Exception {
     AnalysisEngineDescription aed1 = createEngineDescription(Annotator.class);
     AnalysisEngineDescription aed2 = createEngineDescription(Annotator.class);
 
