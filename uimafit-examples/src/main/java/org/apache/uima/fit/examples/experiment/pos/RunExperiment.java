@@ -36,7 +36,7 @@ import org.apache.uima.fit.pipeline.SimplePipeline;
  * standard data is available for some task and you want to evaluate how well your analysis engine
  * works against that data. Here we are evaluating "BaselineTagger" which is a (ridiculously) simple
  * part-of-speech tagger against the part-of-speech tags found in
- * "src/main/resources/org/apache/uima/fit/examples/pos/sample.txt.pos".
+ * "src/main/resources/org/apache/uima/fit/examples/pos/sample-gold.txt".
  * <p>
  * The basic strategy is as follows:
  * <ul>
@@ -55,7 +55,7 @@ import org.apache.uima.fit.pipeline.SimplePipeline;
 public class RunExperiment {
 
   public static void main(String[] args) throws UIMAException, IOException {
-    String samplePosFileName = "src/main/resources/org/apache/uima/fit/examples/pos/sample.txt.pos";
+    String samplePosFileName = "src/main/resources/org/apache/uima/fit/examples/pos/sample-gold.txt";
 
     // The lineReader simply copies the lines from the input file into the
     // default view - one line per CAS
