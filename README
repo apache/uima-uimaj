@@ -7,7 +7,7 @@ What is uimaFIT?
 ----------------
 
 uimaFIT is a part of the Apache UIMA(TM) project. uimaFIT can only be used in conjunction with 
-a compatible version of the Java version of the Apache UIMA SDK. For your convenient, the binary
+a compatible version of the Java version of the Apache UIMA SDK. For your convenience, the binary
 distribution package of uimaFIT includes all libraries necessary to use uimaFIT. In particular for
 novice users, it is strongly advised to obtain a copy of the full UIMA SDK separately.
 
