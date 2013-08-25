@@ -38,6 +38,7 @@ public class XmiWriter extends JCasConsumer_ImplBase {
   @Override
   public void process(JCas aJCas) throws AnalysisEngineProcessException {
     try {
+      outputDirectory.mkdirs();
       CasIOUtil.writeXmi(aJCas, new File(outputDirectory, count + ".xmi"));
       count++;
     }
