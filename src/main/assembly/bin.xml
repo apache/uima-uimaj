@@ -43,7 +43,21 @@
          -->
         <exclude>org.springframework:spring-aop</exclude>
         <exclude>aopalliance:aopalliance</exclude>
+        <exclude>org.apache.uima:uimafit-cpe</exclude>
+        <exclude>org.apache.uima:uimafit-legacy-support</exclude>
       </excludes>
+    </dependencySet>
+    
+    <!-- uimaFIT extra artifact -->
+    <dependencySet>
+      <useProjectArtifact>false</useProjectArtifact>
+      <outputDirectory>extras</outputDirectory>
+      <unpack>false</unpack>
+      <useTransitiveFiltering>true</useTransitiveFiltering>
+      <includes>
+        <include>org.apache.uima:uimafit-cpe</include>
+        <include>org.apache.uima:uimafit-legacy-support</include>
+      </includes>
     </dependencySet>
   </dependencySets>  
     
