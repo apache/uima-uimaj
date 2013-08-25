@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.uima.fit.component.xwriter;
+package org.apache.uima.fit.component;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -39,7 +39,6 @@ import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationFS;
-import org.apache.uima.fit.component.CasConsumer_ImplBase;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.springframework.util.DigestUtils;
@@ -47,7 +46,7 @@ import org.springframework.util.DigestUtils;
 /**
  * Dumps CAS content to a text file. This is useful when setting up test cases which contain a
  * reference output to which an actually produced CAS is compared. The format produced by this
- * component is more easily comparable than a XML or XMI format produced by {@link XWriter}.
+ * component is more easily comparable than a XCAS or XMI format.
  * 
  */
 public class CasDumpWriter extends CasConsumer_ImplBase {
@@ -67,15 +66,15 @@ public class CasDumpWriter extends CasConsumer_ImplBase {
    * the CASes always in the same order. When this file is set to "-", the dump does to
    * {@link System#out} (default).
    */
-  public static final String PARAM_OUTPUT_FILE = "OutputFile";
+  public static final String PARAM_OUTPUT_FILE = "outputFile";
 
   @ConfigurationParameter(name = PARAM_OUTPUT_FILE, mandatory = true, defaultValue = "-")
-  private File outFile;
+  private File outputFile;
 
   /**
    * Whether to dump the content of the {@link CAS#getDocumentAnnotation()}.
    */
-  public static final String PARAM_WRITE_DOCUMENT_META_DATA = "WriteDocumentMetaData";
+  public static final String PARAM_WRITE_DOCUMENT_META_DATA = "writeDocumentMetaData";
 
   @ConfigurationParameter(name = PARAM_WRITE_DOCUMENT_META_DATA, mandatory = true, defaultValue = "true")
   private boolean writeDocumentMetaData;
@@ -84,23 +83,23 @@ public class CasDumpWriter extends CasConsumer_ImplBase {
    * Include/exclude features according to the following patterns. Mind that the patterns do not
    * actually match feature names but lines produced by {@code FeatureStructure.toString()}.
    */
-  public static final String PARAM_FEATURE_PATTERNS = "FeaturePatterns";
+  public static final String PARAM_FEATURE_PATTERNS = "featurePatterns";
 
   @ConfigurationParameter(name = PARAM_FEATURE_PATTERNS, mandatory = true, defaultValue = { "+|.*",
       "-|^.*documentUri:.*$", "-|^.*collectionId:.*$", "-|^.*documentBaseUri:.*$" })
-  private String[] rawFeaturePatterns;
+  private String[] featurePatterns;
 
-  private InExPattern[] featurePatterns;
+  private InExPattern[] cookedFeaturePatterns;
 
   /**
    * Include/exclude specified UIMA types in the output.
    */
-  public static final String PARAM_TYPE_PATTERNS = "TypePatterns";
+  public static final String PARAM_TYPE_PATTERNS = "typePatterns";
 
   @ConfigurationParameter(name = PARAM_TYPE_PATTERNS, mandatory = true, defaultValue = { "+|.*" })
-  private String[] rawTypePatterns;
+  private String[] typePatterns;
 
-  private InExPattern[] typePatterns;
+  private InExPattern[] cookedTypePatterns;
 
   private PrintWriter out;
 
@@ -112,21 +111,21 @@ public class CasDumpWriter extends CasConsumer_ImplBase {
 
     try {
       if (out == null) {
-        if ("-".equals(outFile.getName())) {
+        if ("-".equals(outputFile.getName())) {
           out = new PrintWriter(new CloseShieldOutputStream(System.out));
         } else {
-          if (outFile.getParentFile() != null) {
-            outFile.getParentFile().mkdirs();
+          if (outputFile.getParentFile() != null) {
+            outputFile.getParentFile().mkdirs();
           }
-          out = new PrintWriter(new OutputStreamWriter(new FileOutputStream(outFile), "UTF-8"));
+          out = new PrintWriter(new OutputStreamWriter(new FileOutputStream(outputFile), "UTF-8"));
         }
       }
     } catch (IOException e) {
       throw new ResourceInitializationException(e);
     }
 
-    typePatterns = compilePatterns(rawTypePatterns);
-    featurePatterns = compilePatterns(rawFeaturePatterns);
+    cookedTypePatterns = compilePatterns(typePatterns);
+    cookedFeaturePatterns = compilePatterns(featurePatterns);
   }
 
   @Override
@@ -193,7 +192,7 @@ public class CasDumpWriter extends CasConsumer_ImplBase {
     String meta = aFS.toString();
     for (String line : meta.split("\n")) {
       boolean print = false;
-      for (InExPattern p : featurePatterns) {
+      for (InExPattern p : cookedFeaturePatterns) {
         p.matchter.reset(line);
         if (p.matchter.matches()) {
           print = p.includeInOutput;
@@ -273,7 +272,7 @@ public class CasDumpWriter extends CasConsumer_ImplBase {
         continue;
       }
 
-      for (InExPattern p : typePatterns) {
+      for (InExPattern p : cookedTypePatterns) {
         p.matchter.reset(type.getName());
         if (p.matchter.matches()) {
           if (p.includeInOutput) {

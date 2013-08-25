@@ -25,6 +25,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -52,6 +53,7 @@ import org.apache.uima.fit.factory.testAes.ViewNames;
 import org.apache.uima.fit.pipeline.SimplePipeline;
 import org.apache.uima.fit.type.Sentence;
 import org.apache.uima.fit.type.Token;
+import org.apache.uima.fit.util.CasIOUtil;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
@@ -192,7 +194,7 @@ public class AnalysisEngineFactoryTest extends ComponentTestBase {
     assertEquals("yusrpooooonnmllgffeebaaaFA?", jCas.getView(ViewNames.REVERSE_VIEW)
             .getDocumentText());
 
-    JCasFactory.loadJCas(jCas, "src/test/resources/data/docs/test.xmi");
+    CasIOUtil.readJCas(jCas, new File("src/test/resources/data/docs/test.xmi"));
     AnalysisEngine ae1 = AnalysisEngineFactory.createEngine(NoOpAnnotator.class,
             typeSystemDescription);
 

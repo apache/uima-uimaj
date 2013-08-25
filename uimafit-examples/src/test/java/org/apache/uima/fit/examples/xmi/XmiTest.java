@@ -24,7 +24,7 @@ import static org.junit.Assert.assertEquals;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
-import org.apache.uima.fit.component.xwriter.XWriter;
+import org.apache.uima.fit.examples.experiment.pos.XmiWriter;
 import org.apache.uima.fit.examples.tutorial.ExamplesTestBase;
 import org.apache.uima.fit.examples.type.Sentence;
 import org.apache.uima.fit.examples.type.Token;
@@ -77,7 +77,7 @@ public class XmiTest extends ExamplesTestBase {
    */
   @Test
   public void testWithXmi() throws Exception {
-    jCas = JCasFactory.createJCas("src/main/resources/org/apache/uima/fit/examples/xmi/1.xmi",
+    jCas = JCasFactory.createJCas("src/test/resources/org/apache/uima/fit/examples/xmi/1.xmi",
             typeSystemDescription);
     AnalysisEngine a3 = AnalysisEngineFactory.createEngine(Annotator3.class,
             typeSystemDescription);
@@ -92,9 +92,9 @@ public class XmiTest extends ExamplesTestBase {
   public static void main(String[] args) throws Exception {
     AnalysisEngine a1 = AnalysisEngineFactory.createEngine(Annotator1.class);
     AnalysisEngine a2 = AnalysisEngineFactory.createEngine(Annotator2.class);
-    AnalysisEngine xWriter = AnalysisEngineFactory.createEngine(XWriter.class,
-            XWriter.PARAM_OUTPUT_DIRECTORY_NAME,
-            "src/main/resources/org/apache/uima/fit/examples/xmi");
+    AnalysisEngine xWriter = AnalysisEngineFactory.createEngine(XmiWriter.class,
+            XmiWriter.PARAM_OUTPUT_DIRECTORY,
+            "src/test/resources/org/apache/uima/fit/examples/xmi");
     JCas jCas = JCasFactory.createJCas();
     jCas.setDocumentText("betgetjetletmetnetpetsetvetwetyet");
     a1.process(jCas);

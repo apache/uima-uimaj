@@ -20,11 +20,13 @@ package org.apache.uima.fit.factory;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.apache.uima.UIMAException;
 import org.apache.uima.fit.ComponentTestBase;
 import org.apache.uima.fit.type.Token;
+import org.apache.uima.fit.util.CasIOUtil;
 import org.apache.uima.fit.util.JCasUtil;
 import org.junit.Test;
 
@@ -35,13 +37,13 @@ public class JCasFactoryTest extends ComponentTestBase {
 
   @Test
   public void testXMI() throws IOException {
-    JCasFactory.loadJCas(jCas, "src/test/resources/data/docs/test.xmi");
+    CasIOUtil.readJCas(jCas, new File("src/test/resources/data/docs/test.xmi"));
     assertEquals("Me and all my friends are non-conformists.", jCas.getDocumentText());
   }
 
   @Test
   public void testXCAS() throws IOException {
-    JCasFactory.loadJCas(jCas, "src/test/resources/data/docs/test.xcas", false);
+    CasIOUtil.readJCas(jCas, new File("src/test/resources/data/docs/test.xcas"));
     assertEquals(
             "... the more knowledge advances the more it becomes possible to condense it into little books.",
             jCas.getDocumentText());

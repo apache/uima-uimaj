@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.uima.fit.component.xwriter;
+package org.apache.uima.fit.component;
 
 import static org.apache.commons.io.FileUtils.readFileToString;
 import static org.junit.Assert.assertEquals;
@@ -25,8 +25,9 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 
 import org.apache.uima.analysis_engine.AnalysisEngine;
+import org.apache.uima.fit.component.CasDumpWriter;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
-import org.apache.uima.fit.factory.JCasFactory;
+import org.apache.uima.fit.util.CasIOUtil;
 import org.apache.uima.jcas.JCas;
 import org.junit.Rule;
 import org.junit.Test;
@@ -40,13 +41,13 @@ public class CasDumpWriterTest {
   public TemporaryFolder folder = new TemporaryFolder();
 
   @Test
-  public void testXWriter() throws Exception {
+  public void test() throws Exception {
     File outputFile = new File(folder.getRoot(), "dump-output.txt");
 
     AnalysisEngine writer = AnalysisEngineFactory.createEngine(CasDumpWriter.class,
             CasDumpWriter.PARAM_OUTPUT_FILE, outputFile.getPath());
     JCas jcas = writer.newJCas();
-    JCasFactory.loadJCas(jcas, "src/test/resources/data/docs/test.xmi");
+    CasIOUtil.readJCas(jcas, new File("src/test/resources/data/docs/test.xmi"));
     writer.process(jcas);
     assertTrue(outputFile.exists());
 

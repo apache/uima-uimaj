@@ -19,10 +19,6 @@
 package org.apache.uima.fit.factory.initializable;
 
 import org.apache.uima.UimaContext;
-import org.apache.uima.fit.component.xwriter.IntegerFileNamer;
-import org.apache.uima.fit.component.xwriter.XWriter;
-import org.apache.uima.fit.component.xwriter.XWriterFileNamer;
-import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 
 /**
@@ -33,22 +29,6 @@ import org.apache.uima.resource.ResourceInitializationException;
  * is instantiated, it is useful to provide it a {@code UimaContext} so that it can initialize
  * itself based on configuration parameters.
  * </p>
- * 
- * <p>
- * As an example, consider the component {@link XWriter} which has a member variable of type
- * {@link XWriterFileNamer} which is an interface that provides a way for {@code XWriter} to come up
- * with a name each file that is generated given a {@link JCas}. The default
- * {@code XWriterFileNamer} that is provided, {@link IntegerFileNamer}, provides a single
- * configuration parameter for specifying a prefix to each file name that is generated. This
- * parameter is initialized in the {@link IntegerFileNamer#initialize} method. This initialize
- * method is called because {@code XWriter} instantiates its XWriterFileNamer member variable using
- * a {@link InitializableFactory#create} method. Therefore, when XWriter is instantiated it should
- * be given a value for the configuration parameter {@link IntegerFileNamer#PARAM_PREFIX}. See the
- * unit tests for {@code XWriter} for a complete code example. Note that the implementation of
- * {@code XWriterFileNamer} does not have to implement {@code Initializable} if it has no need for
- * the initialize method.
- * </p>
- * 
  */
 public interface Initializable {
 

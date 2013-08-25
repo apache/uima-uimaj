@@ -26,7 +26,6 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.fit.component.ViewTextCopierAnnotator;
-import org.apache.uima.fit.component.xwriter.XWriter;
 import org.apache.uima.fit.factory.AggregateBuilder;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
@@ -111,7 +110,7 @@ public class RunExperiment {
     // XMI files in the CAS Visual Debugger and look at the contents of each
     // view.
     AnalysisEngineDescription xWriter = AnalysisEngineFactory.createEngineDescription(
-            XWriter.class, XWriter.PARAM_OUTPUT_DIRECTORY_NAME, "target/examples/pos/xmi");
+            XmiWriter.class, XmiWriter.PARAM_OUTPUT_DIRECTORY, "target/examples/pos/xmi");
     builder.add(xWriter);
 
     // runs the collection reader and the aggregate AE.

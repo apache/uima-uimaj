@@ -21,22 +21,15 @@ package org.apache.uima.fit.factory;
 import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTypeSystemDescription;
 import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTypeSystemDescriptionFromPath;
 
-import java.io.FileInputStream;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.uima.UIMAException;
-import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.impl.XCASDeserializer;
-import org.apache.uima.cas.impl.XmiCasDeserializer;
+import org.apache.uima.fit.util.CasIOUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasCreationUtils;
-import org.xml.sax.SAXException;
 
-/**
- */
 public final class JCasFactory {
   private JCasFactory() {
     // This class is not meant to be instantiated
@@ -77,88 +70,15 @@ public final class JCasFactory {
   }
 
   /**
-   * This method creates a new JCas and loads the contents of an XMI file into it.
-   * 
-   * @param xmiFileName
-   *          a file name for an XMI file.
-   */
-  public static JCas createJCas(String xmiFileName, TypeSystemDescription typeSystemDescription)
-          throws UIMAException, IOException {
-    return createJCas(xmiFileName, typeSystemDescription, true);
-  }
-
-  /**
    * This method creates a new JCas and loads the contents of an XMI or XCAS file into it.
    * 
-   * @param xmlFileName
-   *          a file name for an XML file containing XMI or XCAS content.
-   * @param isXmi
-   *          if true, than assume XMI format. Otherwise, assume XCAS.
+   * @param fileName
+   *          a file name for the serialized CAS data
    */
-  public static JCas createJCas(String xmlFileName, TypeSystemDescription typeSystemDescription,
-          boolean isXmi) throws UIMAException, IOException {
+  public static JCas createJCas(String fileName, TypeSystemDescription typeSystemDescription)
+          throws UIMAException, IOException {
     JCas jCas = createJCas(typeSystemDescription);
-    loadJCas(jCas, xmlFileName, isXmi);
+    CasIOUtil.readJCas(jCas, new File(fileName));
     return jCas;
-  }
-
-  /**
-   * This method passes through to {@link #loadJCas(JCas, String, boolean)}
-   * 
-   * @param xmiFileName
-   *          a file name for an XMI file
-   */
-  public static void loadJCas(JCas jCas, String xmiFileName) throws IOException {
-    loadJCas(jCas, xmiFileName, true);
-  }
-
-  /**
-   * This method takes a JCas, resets it, and loads it with the contents of an XMI or XCAS file
-   * 
-   * @param xmlFileName
-   *          a file name for an XML file containing XMI or XCAS content.
-   * @param isXmi
-   *          if true, than assume XMI format. Otherwise, assume XCAS.
-   */
-  public static void loadJCas(JCas jCas, String xmlFileName, boolean isXmi) throws IOException {
-    FileInputStream inputStream = new FileInputStream(xmlFileName);
-    loadJCas(jCas, inputStream, isXmi);
-  }
-
-  /**
-   * This method passes through to {@link #loadJCas(JCas, InputStream, boolean)}
-   */
-  public static void loadJCas(JCas jCas, InputStream xmiInputStream) throws IOException {
-    loadJCas(jCas, xmiInputStream, true);
-  }
-
-  /**
-   * This method takes a JCas, resets it, and loads it with the contents of an XMI or XCAS input
-   * stream
-   * 
-   * @param xmlInputStream
-   *          should contain the contents of a serialized CAS in the form of XMI or XCAS XML
-   * @param isXmi
-   *          if true, than assume XMI format. Otherwise, assume XCAS.
-   */
-  public static void loadJCas(JCas jCas, InputStream xmlInputStream, boolean isXmi)
-          throws IOException {
-    jCas.reset();
-    try {
-      CAS cas = jCas.getCas();
-      if (isXmi) {
-        XmiCasDeserializer.deserialize(xmlInputStream, cas);
-      } else {
-        XCASDeserializer.deserialize(xmlInputStream, cas);
-      }
-    } catch (SAXException e) {
-      IOException ioe = new IOException(e.getMessage());
-      ioe.initCause(e);
-      throw ioe; // NOPMD
-      // If we were using Java 1.6 and add the wrapped exception to the IOException
-      // constructor, we would not get a warning here
-    } finally {
-      IOUtils.closeQuietly(xmlInputStream);
-    }
   }
 }

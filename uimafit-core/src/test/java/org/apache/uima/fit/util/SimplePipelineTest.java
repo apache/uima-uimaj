@@ -18,13 +18,13 @@
  */
 package org.apache.uima.fit.util;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.fit.ComponentTestBase;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
-import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.fit.factory.testAes.Annotator1;
 import org.apache.uima.fit.factory.testAes.Annotator2;
 import org.apache.uima.fit.factory.testAes.Annotator3;
@@ -38,7 +38,7 @@ public class SimplePipelineTest extends ComponentTestBase {
 
   @Test
   public void test1() throws UIMAException, IOException {
-    JCasFactory.loadJCas(jCas, "src/test/resources/data/docs/test.xmi");
+    CasIOUtil.readJCas(jCas, new File("src/test/resources/data/docs/test.xmi"));
     AnalysisEngineDescription aed1 = AnalysisEngineFactory.createEngineDescription(
             Annotator1.class, typeSystemDescription);
     AnalysisEngineDescription aed2 = AnalysisEngineFactory.createEngineDescription(

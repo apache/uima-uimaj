@@ -20,6 +20,7 @@ package org.apache.uima.fit.factory;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.apache.uima.UIMAException;
@@ -36,6 +37,7 @@ import org.apache.uima.fit.factory.testAes.FlowAE3;
 import org.apache.uima.fit.factory.testAes.ReversableTestFlowController;
 import org.apache.uima.fit.factory.testAes.ViewNames;
 import org.apache.uima.fit.pipeline.SimplePipeline;
+import org.apache.uima.fit.util.CasIOUtil;
 import org.apache.uima.fit.util.TypeSystemUtil;
 import org.apache.uima.flow.FlowControllerDescription;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -70,7 +72,7 @@ public class AggregateBuilderTest extends ComponentTestBase {
     assertEquals("yusrpooooonnmllgffeebaaaFA?", jCas.getView(ViewNames.REVERSE_VIEW)
             .getDocumentText());
 
-    JCasFactory.loadJCas(jCas, "src/test/resources/data/docs/test.xmi");
+    CasIOUtil.readJCas(jCas, new File("src/test/resources/data/docs/test.xmi"));
     AnalysisEngine ae1 = AnalysisEngineFactory.createEngine(NoOpAnnotator.class,
             typeSystemDescription);
 

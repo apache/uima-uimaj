@@ -91,14 +91,26 @@
       </formalpara>
       <formalpara>
         <title>CasDumpWriter</title>
-        <para><literal>CASDumpWriter</literal> has been renamed to
-          <literal>CasDumpWriter</literal>.</para>
+        <para><literal>org.uimafit.component.xwriter.CASDumpWriter</literal> has been renamed to
+            <literal>org.apache.uima.fit.component.CasDumpWriter</literal>.</para>
       </formalpara>
       <formalpara>
         <title>CpePipeline</title>
         <para><literal>CpePipeline</literal> has been moved to a separate module with the artifact
           ID <literal>uimafit-cpe</literal> to reduce the dependencies incurred by the main uimaFIT
           artifact.</para>
+      </formalpara>
+      <formalpara>
+        <title>XWriter removed</title>
+        <para>The <literal>XWriter</literal> and associated file namers have been removed as they
+          were much more complex then acutally needed. As an alternative,
+            <literal>CasIOUtil</literal> has been introduced providing several convenience methods
+          to read/write JCas/CAS data. </para>
+      </formalpara>
+      <formalpara>
+        <title>JCasFactory</title>
+        <para>Methods only loading JCas data have been removed from <literal>JCasFactory</literal>.
+          The new methods in <literal>CasIOUtil</literal> can be used instead.</para>
       </formalpara>
     </section>
     <section>
