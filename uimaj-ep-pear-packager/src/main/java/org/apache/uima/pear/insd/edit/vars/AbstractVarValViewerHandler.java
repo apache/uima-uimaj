@@ -78,8 +78,6 @@ abstract class AbstractVarValViewerHandler {
 
   /**
    * Create a new shell, add the widgets, open the shell
-   * 
-   * @return the shell that was created
    */
   protected void addChildControls(Composite composite, int numColumns) {
 

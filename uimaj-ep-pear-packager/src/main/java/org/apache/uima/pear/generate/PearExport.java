@@ -34,7 +34,7 @@ public class PearExport {
 
   /**
    * @param targetFile
-   * @return
+   * @return true
    * @throws PearException
    */
   protected boolean ensureTargetFileIsValid(File targetFile) throws PearException {
