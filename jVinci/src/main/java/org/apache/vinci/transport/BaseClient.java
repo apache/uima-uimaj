@@ -170,7 +170,7 @@ public class BaseClient {
    * Create a base client without establishing a connection. This is useful for client classes which
    * extend this class and which to perform their own connection establishment.
    * 
-   * @param factory
+   * @param f
    *          A factory for creating documents of the desired type.
    * 
    * @pre f != null
@@ -183,7 +183,7 @@ public class BaseClient {
    * Create a base client without establishing a connection. This is useful for client classes which
    * extend this class and which to perform their own connection establishment.
    * 
-   * @param factory
+   * @param f
    *          A factory for creating documents of the desired type.
    * @param timeout
    *          The number of milliseconds that will elapse before a connect attempt fails.
@@ -366,9 +366,9 @@ public class BaseClient {
    * Same as sendAndReceive(Transportable, timeout) except the provided factory is used to create
    * the return document in place of the default factory.
    * 
-   * @param factory
-   *          The factory to used to create the return document.
-   * 
+   * @param in
+   * @param f  The factory to used to create the return document.
+   * @param timeout
    * @pre in != null
    * @pre f != null
    * @pre getHost() != null

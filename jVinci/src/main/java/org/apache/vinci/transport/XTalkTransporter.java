@@ -112,7 +112,6 @@ public class XTalkTransporter implements FrameTransporter {
   /**
    * 
    * @param is
-   * @return
    * @throws IOException
    * 
    * @pre is != null
@@ -147,7 +146,7 @@ public class XTalkTransporter implements FrameTransporter {
    * 
    * @param is
    * @param f
-   * @return
+   * @return key value 
    * @throws IOException
    * 
    * @pre is != null
@@ -183,7 +182,7 @@ public class XTalkTransporter implements FrameTransporter {
    * 
    * @param is
    * @param f
-   * @return
+   * @return key value
    * @throws IOException
    * 
    * @pre is != null
@@ -310,7 +309,6 @@ public class XTalkTransporter implements FrameTransporter {
    * to reduce allocations to a single string object.
    * 
    * @param is
-   * @return
    * @throws IOException
    * 
    * @pre is != null
@@ -356,7 +354,6 @@ public class XTalkTransporter implements FrameTransporter {
    * 
    * @param is
    * @param f
-   * @return
    * @throws IOException
    * 
    * @pre is != null
@@ -513,7 +510,7 @@ public class XTalkTransporter implements FrameTransporter {
   /**
    * 
    * @param in
-   * @return
+   * @return the integer
    * @throws IOException
    * 
    * @pre in != null

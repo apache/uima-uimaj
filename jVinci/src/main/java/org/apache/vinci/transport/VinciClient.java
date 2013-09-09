@@ -309,7 +309,7 @@ public class VinciClient extends BaseClient {
    * Connects the client to the specified service as delegated by VNS. Use this open method in
    * conjunction with the no-arg VinciClient constructor.
    * 
-   * @param serviceName
+   * @param service_name
    *          The name of the service to connect to.
    * @throws ServiceDownException
    *           Thrown when either (1) VNS is inaccessible or (2) none of the servers registered

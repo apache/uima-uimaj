@@ -393,7 +393,7 @@ public class VinciFrame extends QueryableFrame {
   /**
    * Recursively strip any raw PCDATA fields that are entirely whitespace.
    * 
-   * @returns true if there was whitespace to strip.
+   * @return true if there was whitespace to strip.
    * @since 2.1.2a
    */
   public boolean stripWhitespace() {
