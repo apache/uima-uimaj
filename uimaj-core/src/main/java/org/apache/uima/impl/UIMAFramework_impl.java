@@ -230,7 +230,7 @@ public class UIMAFramework_impl extends UIMAFramework {
 
   /**
    * To be implemented by subclasses; this should return a reference to the UIMA
-   * {@link XMLParser) used by this implementation.
+   * {@link XMLParser} used by this implementation.
    * 
    * @return the <code>XMLParser</code> to be used by the application.
    */
@@ -239,7 +239,7 @@ public class UIMAFramework_impl extends UIMAFramework {
   }
 
   /**
-   * @see org.apache.uima.UIMAFramework#_newCollectionProcessingManager()
+   * @see org.apache.uima.UIMAFramework#newCollectionProcessingManager()
    */
   protected CollectionProcessingManager _newCollectionProcessingManager(
           ResourceManager aResourceManager) {
@@ -258,7 +258,7 @@ public class UIMAFramework_impl extends UIMAFramework {
 
   /**
    * To be implemented by subclasses; this should return a reference to the UIMA
-   * {@link Logger) used by this implementation.
+   * {@link Logger} used by this implementation.
    * 
    * @return the <code>Logger</code> to be used by the application.
    */
@@ -323,7 +323,7 @@ public class UIMAFramework_impl extends UIMAFramework {
 
   /**
    * To be implemented by subclasses; this should return a new instance of the default
-   * {@link ResourceManager) used by this implementation.
+   * {@link ResourceManager} used by this implementation.
    * 
    * @return a new <code>ResourceManager</code> to be used by the application.
    */
@@ -341,7 +341,7 @@ public class UIMAFramework_impl extends UIMAFramework {
 
   /**
    * To be implemented by subclasses; this should return a new instance of the default
-   * {@link ResourceManager) used by this implementation.
+   * {@link ResourceManager} used by this implementation.
    * 
    * @return a new <code>ResourceManager</code> to be used by the application.
    */
@@ -359,7 +359,7 @@ public class UIMAFramework_impl extends UIMAFramework {
 
   /**
    * To be implemented by subclasses; this should return a new instance of the
-   * {@link ConfigurationManager) used by this implementation.
+   * {@link ConfigurationManager} used by this implementation.
    * 
    * @return a new <code>ConfigurationManager</code> to be used by the application.
    */

@@ -576,7 +576,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   }
 
   /**
-   * @see UimaContextAdmin#returnedCAS()
+   * @see UimaContextAdmin#returnedCAS(AbstractCas)
    */
   public void returnedCAS(AbstractCas aCAS) {
     //remove Base CAS from outstanding CASes set
@@ -637,7 +637,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   }
 
   /**
-   * @return
+   * @return the component info
    */
   public ComponentInfo getComponentInfo() {
     return mComponentInfo;
