@@ -74,8 +74,10 @@ public class VinciAnalysisEngineService_impl extends VinciServableAdapter {
   /**
    * Instantiate Analysis Engine from a given descriptor, debug mode, and instance Id
    * 
-   * @param aResourceSpecifierPath -
-   *          descriptor location
+   * @param serviceConfigPath descriptor location
+   * @param debug
+   * @param instanceId
+   * @throws Exception
    */
   public VinciAnalysisEngineService_impl(String serviceConfigPath, boolean debug, String instanceId)
           throws Exception {
@@ -86,8 +88,8 @@ public class VinciAnalysisEngineService_impl extends VinciServableAdapter {
   /**
    * Instantiate Analysis Engine service from a given descriptor - possibly in debug mode.
    * 
-   * @param aResourceSpecifierPath -
-   *          descriptor location
+   * @param serviceConfigPath descriptor location
+   * @param debug
    */
   public VinciAnalysisEngineService_impl(String serviceConfigPath, boolean debug) throws Exception {
     this.debug = debug;
@@ -128,8 +130,7 @@ public class VinciAnalysisEngineService_impl extends VinciServableAdapter {
   /**
    * Instantiate Analysis Engine service from a given descriptor.
    * 
-   * @param aResourceSpecifierPath -
-   *          descriptor location
+   * @param serviceConfigPath descriptor location
    */
   public VinciAnalysisEngineService_impl(String serviceConfigPath) throws Exception {
     this(serviceConfigPath, false);
@@ -208,7 +209,7 @@ public class VinciAnalysisEngineService_impl extends VinciServableAdapter {
    * VINCI:COMMAND. Currently, two such operations are supported: 1) Annotate - triggers document
    * analysis 2) GetData - triggers return of the AE meta data ( descriptor)
    * 
-   * @param {@link org.apache.vinci.transport.Transportable} -
+   * @param doc {@link org.apache.vinci.transport.Transportable} -
    *          a VinciFrame containing client request
    * @return {@link org.apache.vinci.transport.Transportable} - a VinciFrame containg result of
    *         performing the service

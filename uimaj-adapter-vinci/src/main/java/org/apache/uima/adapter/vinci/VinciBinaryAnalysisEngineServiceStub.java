@@ -39,6 +39,7 @@ import org.apache.uima.internal.util.SerializationUtils;
 import org.apache.uima.resource.Parameter;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceServiceException;
+import org.apache.uima.resource.ResourceServiceStub;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.util.SaxDeserializer;
 import org.apache.vinci.transport.VinciClient;
@@ -144,7 +145,7 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
   }
 
   /**
-   * @see org.apache.uima.resource.service.ResourceServiceStb#callGetMetaData()
+   * @see ResourceServiceStub#callGetMetaData()
    */
   public ResourceMetaData callGetMetaData() throws ResourceServiceException {
     try {
@@ -195,7 +196,7 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.service.AnalysisEngineServiceStub#callProcess(CAS)
+   * @see AnalysisEngineServiceStub#callProcess(CAS)
    */
   public void callProcess(CAS aCAS) throws ResourceServiceException {
     try {
@@ -228,7 +229,7 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.service.AnalysisEngineServiceStub#callBatchProcessComplete()
+   * @see AnalysisEngineServiceStub#callBatchProcessComplete()
    */
   public void callBatchProcessComplete() throws ResourceServiceException {
     try {
@@ -244,7 +245,7 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.service.AnalysisEngineServiceStub#callCollectionProcessComplete()
+   * @see AnalysisEngineServiceStub#callCollectionProcessComplete()
    */
   public void callCollectionProcessComplete() throws ResourceServiceException {
     try {
@@ -261,7 +262,7 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
   }
 
   /**
-   * @see org.apache.uima.resource.service.impl.ResourceServiceStub#destroy()
+   * @see ResourceServiceStub#destroy()
    */
   public void destroy() {
     mVinciClient.close();

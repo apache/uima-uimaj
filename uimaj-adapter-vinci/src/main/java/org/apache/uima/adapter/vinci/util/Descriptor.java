@@ -59,8 +59,7 @@ public class Descriptor extends DefaultHandler {
   /**
    * Constructor responsible for parsing the descriptor file named in filePath.
    * 
-   * @param Fully
-   *          qualified path the xml descriptor.
+   * @param filePath Fully qualified path the xml descriptor.
    */
   public Descriptor(String filePath) {
     try {

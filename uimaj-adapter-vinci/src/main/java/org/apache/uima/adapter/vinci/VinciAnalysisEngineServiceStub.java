@@ -31,13 +31,14 @@ import org.apache.uima.adapter.vinci.util.VinciSaxParser;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineServiceStub;
 import org.apache.uima.analysis_engine.impl.AnalysisEngineManagementImpl;
-import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.collection.base_cpm.CasObjectProcessor;
 import org.apache.uima.resource.Parameter;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceServiceException;
+import org.apache.uima.resource.ResourceServiceStub;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.util.SaxDeserializer;
@@ -141,7 +142,7 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
 
 
   /**
-   * @see org.apache.uima.resource.service.ResourceServiceStub#callGetMetaData()
+   * @see ResourceServiceStub#callGetMetaData()
    */
   public ResourceMetaData callGetMetaData() throws ResourceServiceException {
     try {
@@ -191,14 +192,14 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.service.AnalysisEngineServiceStub#callProcess(CAS)
+   * @see AnalysisEngineServiceStub#callProcess(CAS)
    */
   public void callProcess(CAS aCAS) throws ResourceServiceException {
     doProcess(aCAS);
   }
 
   /**
-   * @see CasObjectProcessorServiceStub#callProcessCas(CAS)
+   * @see CasObjectProcessor#processCas(CAS)
    */
   public void callProcessCas(CAS aCAS) throws ResourceServiceException {
     doProcess(aCAS);
@@ -236,14 +237,14 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
   }
 
   /**
-   * @see org.apache.uima.resource.service.impl.ResourceServiceStub#destroy()
+   * @see ResourceServiceStub#destroy()
    */
   public void destroy() {
     mVinciClient.close();
   }
 
   /**
-   * @see org.apache.uima.collection.impl.service.CasObjectProcessorServiceStub#callBatchProcessComplete()
+   * @see CasObjectProcessor#batchProcessComplete(org.apache.uima.util.ProcessTrace)
    */
   public void callBatchProcessComplete() throws ResourceServiceException {
     try {
@@ -259,7 +260,7 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
   }
 
   /**
-   * @see org.apache.uima.collection.impl.service.CasObjectProcessorServiceStub#callCollectionProcessComplete()
+   * @see CasObjectProcessor#collectionProcessComplete(org.apache.uima.util.ProcessTrace)
    */
   public void callCollectionProcessComplete() throws ResourceServiceException {
     try {
@@ -276,7 +277,7 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
   }
 
   /**
-   * @see org.apache.uima.collection.impl.service.CasObjectProcessorServiceStub#callIsReadOnly()
+   * @see CasObjectProcessor#isReadOnly()
    */
   public boolean callIsReadOnly() throws ResourceServiceException {
     try {
@@ -295,7 +296,7 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
   }
 
   /**
-   * @see org.apache.uima.collection.impl.service.CasObjectProcessorServiceStub#callIsStateless()
+   * @see CasObjectProcessor#isStateless()
    */
   public boolean callIsStateless() throws ResourceServiceException {
     try {
