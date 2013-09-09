@@ -45,9 +45,9 @@ import org.apache.uima.util.ProcessTrace;
  * <code>ServiceDataCargo</code> and send that to the remote service.
  * <p>
  * A <code>ServiceDataCargo</code> can be unmarshalled into an existing
- * <code>AnalysisProcessData</code> by calling the {@link #unmarshalInto(AnalysisProcessData)}
+ * <code>AnalysisProcessData</code> by calling the {@link #unmarshalInto(AnalysisProcessData, boolean)}
  * method. Alternatively, the CAS state can be unmarshalled separately by calling the
- * {@link #unmarshalCas(CAS)} method.
+ * {@link #unmarshalCas(CAS, boolean)} method.
  * 
  * 
  */
@@ -110,10 +110,11 @@ public class ServiceDataCargo implements Serializable {
    * <code>CAS</code> instance. The data in the exsiting CAS will be replaced by the CAS data in
    * this object.
    * 
-   * @param aDataContainer
-   *          the AnalysisProcessData to unmarshal into
+   * @param aCas the CAS to unmarshal into
+   * @param aReplaceCasTypeSystem if true, assumes serialized data contains the type system
+   * @throws CASException
    */
-  public void unmarshalCas(CAS aCas, boolean aReplaceCasTypeSystem) throws CASException {
+   public void unmarshalCas(CAS aCas, boolean aReplaceCasTypeSystem) throws CASException {
     CASMgr casMgr = (CASMgr) aCas;
     if (aReplaceCasTypeSystem) {
       Serialization.deserializeCASComplete(mCasSer, casMgr);
