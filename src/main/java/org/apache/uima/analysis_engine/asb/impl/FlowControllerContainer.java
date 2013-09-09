@@ -153,9 +153,7 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
     super.finalize();
   }
 
-  /**
-   * @return
-   */
+
   private FlowControllerContext getFlowControllerContext() {
     return (FlowControllerContext) getUimaContext();
   }
