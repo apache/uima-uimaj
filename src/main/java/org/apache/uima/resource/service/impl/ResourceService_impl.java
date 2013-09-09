@@ -61,7 +61,6 @@ public class ResourceService_impl {
   /**
    * Gets metadata for this Resource service.
    * 
-   * @param metadata
    */
   public ResourceMetaData getMetaData() throws ResourceServiceException {
     return getResource().getMetaData();
