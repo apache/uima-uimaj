@@ -54,8 +54,7 @@ public interface CasProcessorController {
   /**
    * Sets status of CasProcessor
    * 
-   * @param int
-   *          aStatus
+   * @param aStatus
    */
   public void setStatus(int aStatus);
 
