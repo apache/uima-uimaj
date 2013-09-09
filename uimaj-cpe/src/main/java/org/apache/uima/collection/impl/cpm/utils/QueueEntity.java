@@ -41,14 +41,14 @@ public class QueueEntity {
   }
 
   /**
-   * @return
+   * @return the entity
    */
   public Object getEntity() {
     return entity;
   }
 
   /**
-   * @return
+   * @return true if timed out
    */
   public boolean isTimedOut() {
     return timedOut;

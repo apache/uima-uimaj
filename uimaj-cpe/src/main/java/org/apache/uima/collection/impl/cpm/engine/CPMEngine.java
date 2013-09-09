@@ -375,7 +375,7 @@ public class CPMEngine extends Thread {
    * queue. The CollectionReader is decoupled from the consumer of entities, and continuously
    * replenishes the input queue.
    * 
-   * @param aBatchSize
+   * @param aInputQueueSize
    *          the size of the batch.
    */
   public void setInputQueueSize(int aInputQueueSize) {
@@ -387,7 +387,7 @@ public class CPMEngine extends Thread {
    * processing pipeline thread.The results of analysis are dumped into this queue for consumer
    * thread to consume its contents.
    * 
-   * @param aBatchSize
+   * @param aOutputQueueSize
    *          the size of the batch.
    */
   public void setOutputQueueSize(int aOutputQueueSize) {
@@ -411,7 +411,7 @@ public class CPMEngine extends Thread {
   /**
    * Defines number of threads executing the processing pipeline concurrently.
    * 
-   * @param aBatchSize
+   * @param aConcurrentThreadSize
    *          the size of the batch.
    */
   public void setConcurrentThreadSize(int aConcurrentThreadSize) {
@@ -451,7 +451,7 @@ public class CPMEngine extends Thread {
   /**
    * Returns true if this engine has been killed
    * 
-   * @return
+   * @return true if this engine has been killed
    */
   public boolean isKilled() {
     return killed;
@@ -584,7 +584,7 @@ public class CPMEngine extends Thread {
    * in-transit CASes. Hard kill causes the CPM to stop processing and to throw away all unprocessed
    * CASes from its queues.
    * 
-   * @return
+   * @return true if the CPE was killed hard
    */
   public boolean isHardKilled() {
     return hardKill;
@@ -866,7 +866,7 @@ public void asynchStop() {
    * 
    * @param aName
    * @param aList
-   * @return
+   * @return the position in the list of the Cas Processor with a given name
    */
   private int getPositionInListIfExists(String aName, List aList) {
     for (int i = 0; i < aList.size(); i++) {
@@ -1136,7 +1136,7 @@ public void asynchStop() {
    * Adds a CASProcessor to the processing pipeline. If a CasProcessor already exists and its
    * status=DISABLED this method will re-enable the CasProcesser.
    * 
-   * @param aProcessor
+   * @param aCasProcessor
    *          CASProcessor to be added to the processing pipeline
    */
   public void addCasProcessor(CasProcessor aCasProcessor) throws ResourceConfigurationException {
@@ -1167,7 +1167,7 @@ public void asynchStop() {
    * 
    * Adds a CASProcessor to the processing pipeline at a given place in the processing pipeline
    * 
-   * @param aProcessor
+   * @param aCasProcessor
    *          CASProcessor to be added to the processing pipeline
    * @param aIndex -
    *          insertion point for a given CasProcessor
@@ -1195,7 +1195,7 @@ public void asynchStop() {
    * 
    * Disable a CASProcessor in the processing pipeline
    * 
-   * @param aProcessor
+   * @param aCasProcessorIndex
    *          CASProcessor to be added to the processing pipeline
    */
   public void disableCasProcessor(int aCasProcessorIndex) {
@@ -1217,7 +1217,7 @@ public void asynchStop() {
    * 
    * Disable a CASProcessor in the processing pipeline
    * 
-   * @param aProcessor
+   * @param aCasProcessorName
    *          CASProcessor to be added to the processing pipeline
    */
   public void disableCasProcessor(String aCasProcessorName) {
@@ -1238,7 +1238,7 @@ public void asynchStop() {
    * 
    * Disable a CASProcessor in the processing pipeline
    * 
-   * @param aProcessor
+   * @param aCasProcessorName
    *          CASProcessor to be added to the processing pipeline
    */
   public void enableCasProcessor(String aCasProcessorName) {
@@ -1589,7 +1589,7 @@ public void asynchStop() {
   /**
    * Sets CollectionReader to use during processing
    * 
-   * @param BaseCollectionReader
+   * @param aCollectionReader
    *          aCollectionReader
    */
   public void setCollectionReader(BaseCollectionReader aCollectionReader) {
@@ -2845,8 +2845,7 @@ public void asynchStop() {
   /**
    * Stops All Cas Processors and optionally changes the status according to kill flag
    * 
-   * @param -
-   *          kill - true if CPE has been stopped before completing normally
+   * @param kill - true if CPE has been stopped before completing normally
    */
 
   public void stopCasProcessors(boolean kill) throws CasProcessorDeploymentException {
@@ -2988,7 +2987,7 @@ public void asynchStop() {
    * @param aPerformanceTuningSettings
    *          the new settings
    * 
-   * @see UIMAFramework#getDefaultPerformanceTuningSettings()
+   * @see UIMAFramework#getDefaultPerformanceTuningProperties()
    */
   public void setPerformanceTuningSettings(Properties aPerformanceTuningSettings) {
     mPerformanceTuningSettings = aPerformanceTuningSettings;
@@ -3162,7 +3161,7 @@ public void asynchStop() {
 
   /**
    * 
-   * @return
+   * @return true if needsTCas 
    */
   private boolean needsView() {
     if (definedCapabilities == null) {
@@ -3267,7 +3266,7 @@ public void asynchStop() {
    * 
    * @param entity -
    *          container for CAS
-   * @return
+   * @return true if a given CAS should be skipped
    */
   private boolean skipDroppedDocument(Object[] entity) {
     if (entity instanceof CAS[]) {

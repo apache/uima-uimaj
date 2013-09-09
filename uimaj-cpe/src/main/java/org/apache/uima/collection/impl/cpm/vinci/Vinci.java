@@ -71,10 +71,11 @@ public class Vinci {
    * Package the {@link org.apache.vinci.transport.VinciFrame} containing result of the requested
    * operation into a Vinci Data frame.
    * 
-   * @param {@link org.apache.vinci.transport.VinciFrame}
-   *          containing result of thsi service operation
-   * 
+   * @param conn the connection
+   * @param requestFrame {@link org.apache.vinci.transport.VinciFrame}
+   *          containing result of thsi service operation 
    * @return {@link org.apache.vinci.transport.VinciFrame} VinciData frame.
+   * @throws Exception
    */
   public static AFrame replyWithAnalysis(BaseClient conn, VinciFrame requestFrame) throws Exception {
     AFFactory af = new AFFactory();
@@ -85,7 +86,8 @@ public class Vinci {
    * Package the {@link org.apache.vinci.transport.VinciFrame} containing result of the requested
    * operation into a Vinci Data frame.
    * 
-   * @param {@link org.apache.vinci.transport.VinciFrame}
+   * @param conn the connection
+   * @param requestFrame {@link org.apache.vinci.transport.VinciFrame}
    *          containing result of thsi service operation
    * 
    * @return {@link org.apache.vinci.transport.VinciFrame} VinciData frame.

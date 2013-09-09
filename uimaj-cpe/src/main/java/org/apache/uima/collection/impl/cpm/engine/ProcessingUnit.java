@@ -180,8 +180,6 @@ public class ProcessingUnit extends Thread {
 
   /**
    * Define a CasConsumer Pipeline identity for this instance
-   * 
-   * @param aInputQueue
    */
   public void setCasConsumerPipelineIdentity() {
     isCasConsumerPipeline = true;
@@ -308,7 +306,7 @@ public class ProcessingUnit extends Thread {
    * called sequentially. Each Cas Processor is contained in the container that is managing errors,
    * counts and totals, and restarts.
    * 
-   * @param aProcessor
+   * @param processorList
    *          CASProcessor to be added to the processing pipeline
    */
   public void setContainers(LinkedList processorList) {
@@ -685,10 +683,8 @@ public class ProcessingUnit extends Thread {
    * The first operates on instances of CasData the latter operates on instances of CAS. The results
    * produced by Cas Processors are added to the output queue.
    * 
-   * @param -
-   *          aCasObjectList - bundle of Cas to analyze
-   * @param -
-   *          pTrTemp - object used to aggregate stats
+   * @param aCasObjectList - bundle of Cas to analyze
+   * @param pTrTemp - object used to aggregate stats
    */
   protected boolean processNext(Object[] aCasObjectList, ProcessTrace pTrTemp)
           throws ResourceProcessException, IOException, CollectionException, AbortCPMException,
@@ -1793,7 +1789,7 @@ public class ProcessingUnit extends Thread {
    * @param aCas -
    *          Cas to get the size for
    * 
-   * @return
+   * @return the size of the CAS object. Currently only CASData is supported.
    */
   protected long getBytes(Object aCas) {
     try {
@@ -1807,7 +1803,7 @@ public class ProcessingUnit extends Thread {
   }
 
   /**
-   * @param tcasPool
+   * @param aPool
    */
   public void setCasPool(CPECasPool aPool) {
     casPool = aPool;

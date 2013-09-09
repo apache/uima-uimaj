@@ -270,7 +270,7 @@ public class NonThreadedProcessingUnit {
    * called sequentially. Each Cas Processor is contained in the container that is managing errors,
    * counts and totals, and restarts.
    * 
-   * @param aProcessor
+   * @param processorList
    *          CASProcessor to be added to the processing pipeline
    */
   public void setContainers(LinkedList processorList) {
@@ -586,7 +586,7 @@ public class NonThreadedProcessingUnit {
   }
 
   /**
-   * @param tcasPool
+   * @param aPool
    */
   public void setCasPool(CPECasPool aPool) {
     casPool = aPool;
@@ -1544,7 +1544,7 @@ public class NonThreadedProcessingUnit {
    * @param aCas -
    *          Cas to get the size for
    * 
-   * @return
+   * @return the size of the CAS object. Currently only CASData is supported.
    */
   protected long getBytes(Object aCas) {
     try {

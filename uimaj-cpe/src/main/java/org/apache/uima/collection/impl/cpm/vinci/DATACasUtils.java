@@ -76,7 +76,7 @@ public class DATACasUtils {
   /**
    * 
    * @param aDataCas
-   * @return
+   * @return true if the data cas is empty
    */
   public static boolean isCasEmpty(CasData aDataCas) {
     Iterator it = aDataCas.getFeatureStructures();
@@ -108,7 +108,7 @@ public class DATACasUtils {
   /**
    * 
    * @param aDataCas
-   * @return
+   * @return the byte count
    * @throws Exception
    */
   public static long getByteCount(CasData aDataCas) throws Exception {
@@ -134,7 +134,7 @@ public class DATACasUtils {
    * 
    * @param aCAS
    * @param aFilterList
-   * @return
+   * @return true if this cas should be analyzed
    */
   public static boolean shouldAnalyzeCAS(CasData aCAS, LinkedList aFilterList) {
 
@@ -187,7 +187,7 @@ public class DATACasUtils {
    * 
    * @param aKey
    * @param dropKeyList
-   * @return
+   * @return true if this key is in the dropKeyList
    */
   public static boolean dropIt(String aKey, String[] dropKeyList) {
     for (int i = 0; aKey != null && dropKeyList != null && i < dropKeyList.length
@@ -202,8 +202,8 @@ public class DATACasUtils {
   /**
    * 
    * @param aKey
-   * @param dropKeyList
-   * @return
+   * @param typeList
+   * @return true if tbd 
    */
   public static boolean isValidType(String aKey, String[] typeList) {
 
@@ -230,7 +230,7 @@ public class DATACasUtils {
    * 
    * @param aCAS
    * @param featureName
-   * @return
+   * @return true if
    */
   public static boolean hasFeature(CasData aCAS, String featureName) {
     Iterator it = aCAS.getFeatureStructures();
@@ -251,7 +251,7 @@ public class DATACasUtils {
    * 
    * @param aCAS
    * @param aName
-   * @return
+   * @return true if tbd
    */
   public static boolean hasFeatureStructure(CasData aCAS, String aName) {
     Iterator it = aCAS.getFeatureStructures();
@@ -312,7 +312,7 @@ public class DATACasUtils {
    * 
    * @param aCAS
    * @param featureName
-   * @return
+   * @return true if tbd
    */
   public static String getFeatureValueByType(CasData aCAS, String featureName) {
     Iterator it = aCAS.getFeatureStructures();
@@ -369,7 +369,7 @@ public class DATACasUtils {
    * @param aCAS
    * @param featureStructureName
    * @param featureName
-   * @return
+   * @return tbd
    */
   public static String[] getFeatureStructureValues(CasData aCAS, String featureStructureName,
           String featureName) {
@@ -405,7 +405,7 @@ public class DATACasUtils {
    * @param aCAS
    * @param aFeatureStructure
    * @param featureName
-   * @return
+   * @return tbd
    */
   public static String getFeatureValueByType(CasData aCAS, String aFeatureStructure,
           String featureName) {
@@ -463,7 +463,7 @@ public class DATACasUtils {
    * 
    * @param aCasData
    * @param aFeatureStructureName
-   * @return
+   * @return tbd
    */
   public static NameValuePair[] getCasDataFeatures(CasData aCasData, String aFeatureStructureName) {
     NameValuePair[] valuePairSet = null;

@@ -70,7 +70,7 @@ public class SequencedQueue extends BoundedWorkQueue {
   /**
    * 
    * @param achunkMetadata
-   * @return
+   * @return true if it timed out
    */
   private boolean sequenceTimedOut(ChunkMetadata achunkMetadata) {
 
@@ -523,8 +523,6 @@ public class SequencedQueue extends BoundedWorkQueue {
    * 
    * @param aCas -
    *          Cas to pass to listener
-   * @param isCasObject -
-   *          true is Cas is of type CAS
    * @param aEntityProcStatus -
    *          status object containing exceptions and trace info
    */

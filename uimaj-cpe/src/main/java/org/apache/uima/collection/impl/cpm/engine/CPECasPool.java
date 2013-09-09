@@ -77,7 +77,7 @@ public class CPECasPool {
   /**
    * Fills the pool with initialized instances of CAS.
    * 
-   * @param aCasDef -
+   * @param aCasManager -
    *          definition (type system, indexes, etc.) of CASes to create
    * @param aPerformanceTuningSettings
    * @throws ResourceInitializationException

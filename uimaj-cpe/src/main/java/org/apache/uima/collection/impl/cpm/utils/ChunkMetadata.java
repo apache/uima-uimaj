@@ -80,7 +80,7 @@ public class ChunkMetadata {
   }
 
   /**
-   * @return
+   * @return true if timed out
    */
   public boolean isTimedOut() {
     return timedOut;

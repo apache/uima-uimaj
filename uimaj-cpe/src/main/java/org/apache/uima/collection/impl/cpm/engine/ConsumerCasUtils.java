@@ -86,7 +86,7 @@ public class ConsumerCasUtils {
    * @param aTypeS -
    *          Feature Type
    * 
-   * @return
+   * @return the first Feature Structure of a given type
    */
   public static FeatureStructure getTcasFS(CAS aCasView, String aTypeS) {
     org.apache.uima.cas.FeatureStructure idFS = null;

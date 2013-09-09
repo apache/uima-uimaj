@@ -72,7 +72,7 @@ public class CPMUtils {
 
   /**
    * 
-   * @return
+   * @return the timer
    */
   public static UimaTimer getTimer() {
     return timer;
@@ -83,7 +83,7 @@ public class CPMUtils {
    * @param aSystemVar
    * @param aExpr
    * @param aPathToConvert
-   * @return
+   * @return absolute path
    */
   public static String convertToAbsolutePath(String aSystemVar, String aExpr, String aPathToConvert) {
     if (aPathToConvert == null || aSystemVar == null || !aPathToConvert.startsWith(aExpr)) {
@@ -207,7 +207,7 @@ public class CPMUtils {
   /**
    * 
    * @param entityNode
-   * @return
+   * @return a configurable feature
    * @throws ConfigurationException
    */
   private static ConfigurableFeature getConfigurableFeature(Node entityNode)
@@ -262,7 +262,7 @@ public class CPMUtils {
   /**
    * 
    * @param attributesNode
-   * @return
+   * @return a list of features
    * @throws ConfigurationException
    */
   private static ArrayList getFeatures(Node attributesNode) throws ConfigurationException {
@@ -305,7 +305,7 @@ public class CPMUtils {
   /**
    * 
    * @param aServiceName
-   * @return
+   * @return the deploy directory
    * @throws Exception
    */
   public static File findDeployDirectory(String aServiceName) throws Exception {
@@ -338,7 +338,7 @@ public class CPMUtils {
 
   /**
    * 
-   * @return
+   * @return an array of directories
    * @throws Exception
    */
   private static File[] getDirectories() throws Exception {
