@@ -239,8 +239,6 @@ public class CPEFactory {
   /**
    * Creates an object representation from default cpe descriptor.
    * 
-   * @param aDescriptorStream -
-   *          stream containing cpe description
    * @throws InstantiationException
    */
 
@@ -799,7 +797,7 @@ public class CPEFactory {
   /**
    * Instantiates a ResourceSpecifier from a given URL.
    * 
-   * @param aDescriptorURL - URL of descriptor
+   * @param aDescriptorUrl - URL of descriptor
    * @return - ResourceSpecifier
    * 
    * @throws Exception
@@ -1186,7 +1184,7 @@ public class CPEFactory {
 
   /**
    * 
-   * @return
+   * @return true if the configuration is the default
    */
   public boolean isDefault() {
     return defaultConfig;
@@ -1195,7 +1193,7 @@ public class CPEFactory {
   /**
    * Returns Cpe Descriptor
    * 
-   * @return
+   * @return the Cpe Descriptor
    */
   public CpeDescription getCpeDescriptor() {
     return cpeDescriptor;
@@ -1436,7 +1434,7 @@ public class CPEFactory {
   /**
    * 
    * @param aList
-   * @return
+   * @return the cpe descriptor constructed from the list
    * @throws ResourceConfigurationException
    */
   public String getDescriptor(List aList) throws ResourceConfigurationException {
@@ -1559,7 +1557,7 @@ public class CPEFactory {
   /**
    * Gets the ResourceManager that all components of this CPE should share.
    * 
-   * @return
+   * @return the resource manager
    */
   public ResourceManager getResourceManager() {
     return uimaContext.getResourceManager();

@@ -26,21 +26,21 @@ package org.apache.uima.collection.impl.cpm.container;
  * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
 public class CPEContext {
-  private String cpeDesctriptorPath = null;
+  private String cpeDescriptorPath = null;
 
   /**
    * 
    * @param aDescriptorPath
    */
   public CPEContext(String aDescriptorPath) {
-    cpeDesctriptorPath = aDescriptorPath;
+    cpeDescriptorPath = aDescriptorPath;
   }
 
   /**
    * 
-   * @return
+   * @return the path to the descriptor
    */
   public String getCPEDescriptorPath() {
-    return cpeDesctriptorPath;
+    return cpeDescriptorPath;
   }
 }

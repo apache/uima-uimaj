@@ -104,7 +104,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
   /**
    * Initializes instance and copies configuation from cpe descriptor.
    * 
-   * @param aJaxbCasProcessorConfig - -
+   * @param aCasProcessorConfig -
    *          configuration object containing Cas Processor configuration
    * @param aResourceManager - 
    *          needed to resolve import by name
@@ -684,8 +684,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
   /**
    * Returns a value for a given deployment parameter
    * 
-   * @param -
-   *          aDeployParameter - name of the parameter
+   * @param aDeployParameter - name of the parameter
    * @return - value for parameter name
    */
   public String getDeploymentParameter(String aDeployParameter) {

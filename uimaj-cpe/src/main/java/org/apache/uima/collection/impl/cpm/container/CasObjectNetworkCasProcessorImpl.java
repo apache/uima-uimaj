@@ -67,7 +67,7 @@ public class CasObjectNetworkCasProcessorImpl implements CasObjectProcessor {
    * Using information from the CPE descriptor creates an instance of Transport class. The transport
    * class will delegate analysis of CAS to a remote object.
    * 
-   * @param aCasProcessorType -
+   * @param aCasProcessor -
    *          Cas Process configuration from the CPE descriptor
    */
   public CasObjectNetworkCasProcessorImpl(CpeCasProcessor aCasProcessor)
@@ -182,8 +182,7 @@ public class CasObjectNetworkCasProcessorImpl implements CasObjectProcessor {
   /**
    * Uses configured transport to delegate given CASes to the remote service
    * 
-   * @param aCASes[] -
-   *          CASes to be analyzed
+   * @param aCASes - an array of CASes to be analyzed
    * 
    * @throws ResourceInitializationException
    */

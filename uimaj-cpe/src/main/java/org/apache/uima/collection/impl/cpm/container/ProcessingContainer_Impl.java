@@ -192,8 +192,7 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
   /**
    * Sets component's input/output capabilities
    * 
-   * @param Capability -
-   *          component capabilities
+   * @param aMetadata       component capabilities
    */
   public void setMetadata(ProcessingResourceMetaData aMetadata) {
     metadata = aMetadata;
@@ -365,8 +364,7 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
   /**
    * Aggregate total bytes ingested by the CasProcessor.
    * 
-   * @param -
-   *          aBytesIn - number of ingested bytes
+   * @param aBytesIn - number of ingested bytes
    */
   public void addBytesIn(long aBytesIn) {
     bytesIn += aBytesIn;
@@ -385,7 +383,6 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
   /**
    * Aggregate total bytes processed by this CasProcessor
    * 
-   * @return - number of bytes added to the Cas
    */
   public void addBytesOut(long aBytesOut) {
     bytesOut += aBytesOut;
@@ -394,8 +391,7 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
   /**
    * Increment number of times the casProcessor was restarted due to failures
    * 
-   * @param -
-   *          aCount - restart count
+   * @param aCount - restart count
    */
   public void incrementRestartCount(int aCount) {
     restartCount += aCount;
@@ -404,8 +400,7 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
   /**
    * Returns total number of all CasProcessor restarts.
    * 
-   * @param -
-   *          number of restarts
+   * @return number of restarts
    */
   public int getRestartCount() {
     return restartCount;
@@ -415,8 +410,7 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
    * Increments number of times CasProceesor failed analyzing Cas'es due to timeout or some other
    * problems
    * 
-   * @param -
-   *          aCount - failure count
+   * @param aCount - failure count
    */
   public void incrementRetryCount(int aCount) {
     retryCount += aCount;
@@ -434,8 +428,7 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
   /**
    * Increment number of aborted Cas'es due to inability to process the Cas
    * 
-   * @param -
-   *          aCount - number of aborts while processing Cas'es
+   * @param aCount - number of aborts while processing Cas'es
    */
   public void incrementAbortCount(int aCount) {
     abortCount += aCount;
@@ -494,8 +487,7 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
   /**
    * Copies id of the last entity processed by the CasProcessor
    * 
-   * @param -
-   *          aEntityId - id of the entity
+   * @param aEntityId - id of the entity
    */
   public void setLastProcessedEntityId(String aEntityId) {
     processedEntityIds.push(aEntityId);
@@ -540,8 +532,7 @@ public Object getLastCas() {
   /**
    * Used when recovering from checkpoint, sets the total number of entities before CPE stopped.
    * 
-   * @param -
-   *          aProcessedCount - number of entities processed before CPE stopped
+   * @param aProcessedCount - number of entities processed before CPE stopped
    */
   public void setProcessed(long aProcessedCount) {
     processed = aProcessedCount;
@@ -626,7 +617,7 @@ public Object getLastCas() {
    * run, if it should disable the CasProcessor (and all its instances), or disregard the error and
    * continue.
    * 
-   * @apram aThrowable - exception to examine
+   * @param aThrowable - exception to examine
    * 
    * @exception AbortCPMException -
    *              force the CPE to stop processing
@@ -1501,7 +1492,7 @@ public boolean isIntegrated() {
   /**
    * Returns all stats aggregate during the CPM run
    * 
-   * @return
+   * @return a map of all stats aggregated during the CPM run
    */
   public HashMap getAllStats() {
     synchronized (statMap) {

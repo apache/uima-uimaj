@@ -129,9 +129,8 @@ public class NetworkCasProcessorImpl implements CasDataProcessor {
    * Main method used during analysis. The ProcessingUnit calls this method to initiate analysis of
    * the content in the CasData instance. This handles one Cas at a time processing mode.
    * 
-   * @param CasData
-   *          aCas - instance of CasData to analyze
-   * @return CasData - instance containing result of the analysis
+   * @param aCas - instance of CasData to analyze
+   * @return instance containing result of the analysis
    */
   public CasData process(CasData aCas) throws ResourceProcessException {
     if (textAnalysisProxy == null) {
@@ -176,8 +175,7 @@ public class NetworkCasProcessorImpl implements CasDataProcessor {
    * Main method used during analysis. The ProcessingUnit calls this method to initiate analysis of
    * the content in the CasData instance. This handles processing of multiple Cas'es at a time.
    * 
-   * @param CasData[]
-   *          aCas - array of CasData instances to analyze
+   * @param aCasList - array of CasData instances to analyze
    * @return CasData - array of CasData instances containing results of the analysis
    */
   public CasData[] process(CasData[] aCasList) throws ResourceProcessException {
