@@ -58,28 +58,28 @@ public class URISpecifier_impl extends MetaDataObject_impl implements URISpecifi
   }
 
   /**
-   * @see org.apache.uima.resrouce.URISpecifier#getURI()
+   * @see org.apache.uima.resource.URISpecifier#getUri()
    */
   public String getUri() {
     return mUri;
   }
 
   /**
-   * @see org.apache.uima.resrouce.URISpecifier#setURI(String)
+   * @see org.apache.uima.resource.URISpecifier#setUri(String)
    */
   public void setUri(String aUri) {
     mUri = aUri;
   }
 
   /**
-   * @see org.apache.uima.resrouce.URISpecifier#getProtocol()
+   * @see org.apache.uima.resource.URISpecifier#getProtocol()
    */
   public String getProtocol() {
     return mProtocol;
   }
 
   /**
-   * @see org.apache.uima.resrouce.URISpecifier#setProtocol(String)
+   * @see org.apache.uima.resource.URISpecifier#setProtocol(String)
    */
   public void setProtocol(String aProtocol) {
     mProtocol = aProtocol;
@@ -93,7 +93,7 @@ public class URISpecifier_impl extends MetaDataObject_impl implements URISpecifi
   }
 
   /**
-   * @see org.apache.uima.resource.URISpecifier#setTimeout(int)
+   * @see org.apache.uima.resource.URISpecifier#setTimeout(Integer)
    */
   public void setTimeout(Integer aTimeout) {
     mTimeout = aTimeout;

@@ -63,7 +63,7 @@ public class ConfigurableDataResource_impl extends Resource_ImplBase implements 
    * @return true if and only if initialization completed successfully. Returns false if this
    *         implementation cannot handle the given <code>ResourceSpecifier</code>.
    * 
-   * @see org.apache.uima.resource.Resource#initialize(ResourceSpecifier)
+   * @see org.apache.uima.resource.Resource#initialize(ResourceSpecifier, Map)
    */
   public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {

@@ -43,49 +43,49 @@ public class ExternalResourceDependency_impl extends MetaDataObject_impl impleme
   private boolean mOptional;
 
   /**
-   * @see org.apache.uima.analysis_engine.ExternalResourceDependency#getKey()
+   * @see org.apache.uima.resource.ExternalResourceDependency#getKey()
    */
   public String getKey() {
     return mKey;
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.ExternalResourceDependency#getInterfaceName()
+   * @see org.apache.uima.resource.ExternalResourceDependency#getInterfaceName()
    */
   public String getInterfaceName() {
     return mInterfaceName;
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.ExternalResourceDependency#setKey(String)
+   * @see org.apache.uima.resource.ExternalResourceDependency#setKey(String)
    */
   public void setKey(String aKey) {
     mKey = aKey;
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.ExternalResourceDependency#setInterfaceName(String)
+   * @see org.apache.uima.resource.ExternalResourceDependency#setInterfaceName(String)
    */
   public void setInterfaceName(String aName) {
     mInterfaceName = aName;
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.ExternalResourceDependency#getDescription()
+   * @see org.apache.uima.resource.ExternalResourceDependency#getDescription()
    */
   public String getDescription() {
     return mDescription;
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.ExternalResourceDependency#isOptional()
+   * @see org.apache.uima.resource.ExternalResourceDependency#isOptional()
    */
   public boolean isOptional() {
     return mOptional;
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.ExternalResourceDependency#setDescription(java.lang.String)
+   * @see org.apache.uima.resource.ExternalResourceDependency#setDescription(java.lang.String)
    */
   public void setDescription(String aDescription) {
     mDescription = aDescription;
@@ -93,7 +93,7 @@ public class ExternalResourceDependency_impl extends MetaDataObject_impl impleme
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.ExternalResourceDependency#setOptional(boolean)
+   * @see org.apache.uima.resource.ExternalResourceDependency#setOptional(boolean)
    */
   public void setOptional(boolean aOptional) {
     mOptional = aOptional;

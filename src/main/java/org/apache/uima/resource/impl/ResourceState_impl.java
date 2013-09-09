@@ -19,18 +19,24 @@
 
 package org.apache.uima.resource.impl;
 
+import org.apache.uima.resource.Resource_ImplBase;
 import org.apache.uima.resource.metadata.NameValuePair;
 
 /**
- * Encapuslates state information about a {@link Resource_impl}. Note that this does not need to
+ * Encapsulates state information about a  Resource_impl . Note that this does not need to
  * include all state information, just that information that is modifiable by a client of a Resource
  * service. The purpose of this class is to enable instance pooling when Resources are deployed as
  * services.
  * <p>
  * Note that the methods of this class have default (package) visibility since only a
- * {@link Resource_impl} object should be able to get and set its state.
+ *  Resource_Impl  object should be able to get and set its state.
  * 
  * 
+ */
+
+/**
+ * This class is not referenced by anything 9/2013
+ *
  */
 public class ResourceState_impl {
 

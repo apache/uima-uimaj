@@ -54,7 +54,7 @@ public class ConfigurableDataResourceSpecifier_impl extends MetaDataObject_impl 
   }
 
   /**
-   * @see org.apache.uima.resource.ConfigurableDataResourceSpecifier#getUrl(String)
+   * @see org.apache.uima.resource.ConfigurableDataResourceSpecifier#setUrl(String)
    */
   public void setUrl(String aUrl) {
     mUrl = aUrl;

@@ -54,7 +54,7 @@ public class FileResourceSpecifier_impl extends MetaDataObject_impl implements
   }
 
   /**
-   * @see org.apache.uima.resource.FileResourceSpecifier#getFileUrl(String)
+   * @see org.apache.uima.resource.FileResourceSpecifier#setFileUrl(String)
    */
   public void setFileUrl(String aUrl) {
     mFileUrl = aUrl;
