@@ -105,7 +105,7 @@ public class Style_impl extends MetaDataObject_impl implements Style {
   /**
    * Overridden to write the name property as an XML attribute.
    * 
-   * @see org.apache.uima.resource.impl.MetaDataObject_impl#getXMLAttributeString()
+   * @see MetaDataObject_impl#getXMLAttributes()
    */
   protected AttributesImpl getXMLAttributes() {
     AttributesImpl attrs = super.getXMLAttributes();

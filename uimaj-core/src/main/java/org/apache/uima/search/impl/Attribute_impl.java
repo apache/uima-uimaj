@@ -78,7 +78,7 @@ public class Attribute_impl extends MetaDataObject_impl implements Attribute {
   /**
    * Overridden to write the name and value properties as XML attributes.
    * 
-   * @see org.apache.uima.resource.impl.MetaDataObject_impl#getXMLAttributeString()
+   * @see MetaDataObject_impl#getXMLAttributes()
    */
   protected AttributesImpl getXMLAttributes() {
     AttributesImpl attrs = super.getXMLAttributes();
