@@ -19,6 +19,9 @@
 
 package org.apache.uima.collection.impl.cpm;
 
+import org.apache.uima.collection.CollectionReader;
+import org.apache.uima.util.UimaTimer;
+
 /**
  * Object containing global cpe configuration.
  * 
@@ -100,7 +103,7 @@ public class CPEConfig {
   /**
    * Copies CPE startup mode
    * 
-   * @param string -
+   * @param aCpeDeployMode -
    *          startup mode
    */
   public void setDeployAs(String aCpeDeployMode) {
@@ -120,7 +123,7 @@ public class CPEConfig {
   /**
    * Copies ind of the first entity to start reading
    * 
-   * @param string -
+   * @param aStartEntityId -
    *          id of entity
    */
   public void setStartWith(String aStartEntityId) {
@@ -130,7 +133,7 @@ public class CPEConfig {
   /**
    * Copies a name of the custom {@link UimaTimer} class
    * 
-   * @param string -
+   * @param aTimerClass -
    *          timer class
    */
   public void setTimerClass(String aTimerClass) {
