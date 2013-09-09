@@ -916,7 +916,7 @@ public CasInitializerDescription parseCasInitializerDescription(XMLInputSource a
   }
 
   /**
-   * @see org.apache.uima.util.XMLParser#newSaxDeserializer(java.lang.String, java.net.URL, boolean)
+   * @see org.apache.uima.util.XMLParser#newSaxDeserializer(org.apache.uima.util.XMLParser.ParsingOptions)
    */
   public SaxDeserializer newSaxDeserializer(XMLParser.ParsingOptions aOptions) {
     return new SaxDeserializer_impl(this, aOptions);

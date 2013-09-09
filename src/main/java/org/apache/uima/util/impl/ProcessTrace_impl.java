@@ -231,7 +231,7 @@ public class ProcessTrace_impl implements ProcessTrace {
   }
 
   /**
-   * @see org.apache.uima.util.ProcessTrace#getEventsByComponentName(String)
+   * @see org.apache.uima.util.ProcessTrace#getEventsByComponentName(String, boolean)
    */
   public List<ProcessTraceEvent> getEventsByComponentName(String aComponentName, boolean aRecurseAfterMatch) {
     List<ProcessTraceEvent> result = new ArrayList<ProcessTraceEvent>();
@@ -242,7 +242,7 @@ public class ProcessTrace_impl implements ProcessTrace {
   }
 
   /**
-   * @see org.apache.uima.util.ProcessTrace#getEventsByType(String)
+   * @see org.apache.uima.util.ProcessTrace#getEventsByType(String, boolean)
    */
   public List<ProcessTraceEvent> getEventsByType(String aType, boolean aRecurseAfterMatch) {
     List<ProcessTraceEvent> result = new ArrayList<ProcessTraceEvent>();
