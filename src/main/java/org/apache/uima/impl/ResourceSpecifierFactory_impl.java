@@ -351,7 +351,7 @@ public class ResourceSpecifierFactory_impl implements ResourceSpecifierFactory {
   }
 
   /**
-   * @see org.apache.uima.ResourceSpecifierFactory#createProcesingResourceMetaData()
+   * @see org.apache.uima.ResourceSpecifierFactory#createProcessingResourceMetaData()
    */
   public ProcessingResourceMetaData createProcessingResourceMetaData() {
     return (ProcessingResourceMetaData) createObject(ProcessingResourceMetaData.class);
