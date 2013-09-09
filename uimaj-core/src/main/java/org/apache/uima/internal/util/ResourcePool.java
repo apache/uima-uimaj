@@ -40,7 +40,7 @@ import org.apache.uima.util.Level;
  * <p>
  * This resource pool implementation does not deal with differently configured resources in the same
  * pool. All resources are assumed to be equivalent and to share the same metadata. Therefore, the
- * resource metadata can be retrieved via the {@link #getMetaDAta()} method without checking out a
+ * resource metadata can be retrieved via the {@link #getMetaData()} method without checking out a
  * Resource instance from the pool.
  * 
  * 

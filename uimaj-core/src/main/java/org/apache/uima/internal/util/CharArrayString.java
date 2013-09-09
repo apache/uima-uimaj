@@ -391,7 +391,7 @@ public class CharArrayString {
   /**
    * Check for equality with another CharArrayString.
    * 
-   * @param s
+   * @param o
    *          The other string.
    * @return <code>true</code> iff the two strings are equal.
    */

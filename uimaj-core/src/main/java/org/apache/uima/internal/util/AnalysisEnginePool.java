@@ -107,7 +107,7 @@ public class AnalysisEnginePool {
    * Checks in an AnalysisEngine to the pool. Also notifies other Threads that may be waiting for a
    * connection.
    * 
-   * @param aResource
+   * @param aAE
    *          the resource to release
    */
   public void releaseAnalysisEngine(AnalysisEngine aAE) {
@@ -179,7 +179,7 @@ public class AnalysisEnginePool {
 //  }
   
   /**
-   * @see org.apache.uima.analysis_engine.MultithreadableAnalysisEngine#reconfigure()
+   * @see org.apache.uima.resource.ConfigurableResource#reconfigure()
    */
   public synchronized void reconfigure() throws ResourceConfigurationException {
     // reconfigure each AnalysisEngine in the pool

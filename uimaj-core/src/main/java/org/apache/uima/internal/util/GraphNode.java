@@ -83,7 +83,7 @@ public class GraphNode {
   /**
    * Add a new successor node.
    * 
-   * @param dtr
+   * @param succ
    *          The node to be added.
    */
   public void addSuccessor(GraphNode succ) {
