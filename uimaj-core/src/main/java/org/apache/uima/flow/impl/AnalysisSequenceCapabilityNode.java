@@ -66,7 +66,7 @@ public class AnalysisSequenceCapabilityNode implements Cloneable {
    * 
    * @param aKey
    *          key for AnalysisEngine to be executed at this point in sequence
-   * @param aAnalysisEngine
+   * @param aCasProcessor
    *          reference to the AnalysisEngine instance
    * @param aResultSpec
    *          result specification to be passed to this AnalysisEngine
@@ -94,7 +94,7 @@ public class AnalysisSequenceCapabilityNode implements Cloneable {
    * Creates a new AnalysisSequenceCapabilityNode from a AnalysisEngine Key. This is to be used when
    * a direct reference to a AnalysisEngine is not available.
    * 
-   * @param aAnalysisEngine_Key
+   * @param aCasProcessorKey
    *          Key of a AnalysisEngine
    * @param aCasProcessorCapabilities
    *          Capabilities for this AnalysisEngine
