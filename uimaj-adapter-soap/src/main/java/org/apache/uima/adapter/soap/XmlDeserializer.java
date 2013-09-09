@@ -80,8 +80,7 @@ public class XmlDeserializer extends DeserializerImpl {
   }
 
   /**
-   * @see org.apache.axis.message.SOAPHandler#onStartElement(java.lang.String, java.lang.String,
-   *      java.lang.String, org.xml.sax.Attributes, org.apache.axis.encoding.DeserializationContext)
+   * @see org.apache.axis.message.SOAPHandler#onStartChild(String, String, String, Attributes, DeserializationContext)
    */
   public void onStartElement(String arg0, String arg1, String arg2, Attributes arg3,
           DeserializationContext arg4) throws SAXException {

@@ -29,7 +29,7 @@ import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.util.Level;
 
 /**
- * A class used to deploy a {@link AnalysisEngineService} as an Axis (SOAP) service.
+ * A class used to deploy a {@link AnalysisEngineService_impl} as an Axis (SOAP) service.
  */
 public class AxisAnalysisEngineService_impl {
   /**
@@ -48,7 +48,7 @@ public class AxisAnalysisEngineService_impl {
   /**
    * Gets metadata for this Resource service.
    * 
-   * @param metadata
+   * @return metadata
    */
   public ResourceMetaData getMetaData() throws ResourceServiceException {
     try {

@@ -30,9 +30,10 @@ import org.apache.axis.client.Service;
 import org.apache.uima.resource.ResourceServiceException;
 import org.apache.uima.resource.ResourceServiceStub;
 import org.apache.uima.resource.metadata.ResourceMetaData;
+import org.apache.uima.resource.service.impl.ResourceService_impl;
 
 /**
- * Proxy to a {@link ResourceService} that uses Axis SOAP to communicate with the service.
+ * Proxy to a {@link ResourceService_impl} that uses Axis SOAP to communicate with the service.
  * 
  * 
  */
@@ -65,7 +66,7 @@ public abstract class AxisResourceServiceStub implements ResourceServiceStub {
   }
 
   /**
-   * @see org.apache.uima.resource.service.ResourceService#getMetaData()
+   * @see ResourceService_impl#getMetaData()
    */
   public ResourceMetaData callGetMetaData() throws ResourceServiceException {
     final QName operationQName = new QName("http://uima.apache.org/resource", "getMetaData");

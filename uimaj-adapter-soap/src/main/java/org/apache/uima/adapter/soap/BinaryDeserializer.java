@@ -116,8 +116,7 @@ public class BinaryDeserializer extends DeserializerImpl {
   }
 
   /**
-   * @see org.apache.axis.message.SOAPHandler#onStartElement(java.lang.String, java.lang.String,
-   *      java.lang.String, org.xml.sax.Attributes, org.apache.axis.encoding.DeserializationContext)
+   * @see org.apache.axis.message.SOAPHandler#onStartChild(String, String, String, Attributes, DeserializationContext)
    */
   public void onStartElement(String namespace, String localName, String prefix,
           Attributes attributes, DeserializationContext context) throws SAXException {

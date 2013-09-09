@@ -35,14 +35,16 @@ import org.apache.axis.client.Service;
 import org.apache.uima.analysis_engine.AnalysisEngineServiceStub;
 import org.apache.uima.analysis_engine.ResultSpecification;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
+import org.apache.uima.analysis_engine.service.impl.AnalysisEngineService_impl;
 import org.apache.uima.analysis_engine.service.impl.ServiceDataCargo;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.resource.ResourceServiceException;
+import org.apache.uima.resource.ResourceServiceStub;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 
 /**
- * Proxy to an {@link AnalysisEngineService} that makes use of Axis SOAP to communicate with the
+ * Proxy to an {@link AnalysisEngineService_impl} that makes use of Axis SOAP to communicate with the
  * service.
  * 
  * 
@@ -91,7 +93,7 @@ public class AxisAnalysisEngineServiceStub extends AxisResourceServiceStub imple
   }
 
   /**
-   * @see org.apache.uima.reference_impl.analysis_engine.service.AnalysisEngineServiceStub#callProcess(CAS)
+   * @see AnalysisEngineServiceStub#callProcess(CAS)
    */
   public void callProcess(CAS aCAS) throws ResourceServiceException {
     final QName operationQName = new QName("http://uima.apache.org/analysis_engine", "process");
@@ -167,7 +169,7 @@ public class AxisAnalysisEngineServiceStub extends AxisResourceServiceStub imple
   }
 
   /**
-   * @see org.apache.uima.reference_impl.resource.service.ResourceServiceStub#destroy()
+   * @see ResourceServiceStub#destroy()
    */
   public void destroy() {
     // no resources to clean up

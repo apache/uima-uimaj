@@ -83,7 +83,7 @@ public class AxisResourceServiceManager {
    * returned. Otherwise, a new <code>ResourceService_impl</code> object will be created from the
    * information in the MessageContext.
    * 
-   * @param aResourceImplClass
+   * @param aServiceImplClass
    *          the class that will be instantiated when a new <code>ResourceService_impl</code> is
    *          to be created. This must be a subclass of ResourceService_impl.
    * @throws AxisFault
