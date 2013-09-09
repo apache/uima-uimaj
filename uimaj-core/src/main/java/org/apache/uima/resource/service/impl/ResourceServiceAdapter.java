@@ -20,6 +20,7 @@
 package org.apache.uima.resource.service.impl;
 
 import org.apache.uima.UIMARuntimeException;
+import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceServiceException;
 import org.apache.uima.resource.ResourceServiceStub;
 import org.apache.uima.resource.Resource_ImplBase;
@@ -27,7 +28,7 @@ import org.apache.uima.resource.metadata.ResourceMetaData;
 
 /**
  * Insulates applications from the knowledge that they are interacting with a
- * {@link ResourceService} rather than a local instance of a {@link Resource}. This is an abstract
+ * {@link ResourceService_impl} rather than a local instance of a {@link Resource}. This is an abstract
  * base class that specific resource adapter implementations may extend.
  * <p>
  * This class implements the {@link Resource} interface and encapsulates all communications with a
