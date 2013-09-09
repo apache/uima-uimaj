@@ -63,28 +63,28 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
   static final long serialVersionUID = 7946890459654653436L;
 
   /**
-   * @see org.apache.uima.collection.processing.CasConsumerDescription#getFrameworkImplementation()
+   * @see ResourceCreationSpecifier#getFrameworkImplementation()
    */
   public String getFrameworkImplementation() {
     return mFrameworkImplementation;
   }
 
   /**
-   * @see org.apache.uima.collection.processing.CasConsumerDescription#setFrameworkImplementation(java.lang.String)
+   * @see ResourceCreationSpecifier#setFrameworkImplementation(java.lang.String)
    */
   public void setFrameworkImplementation(String aFrameworkImplementation) {
     mFrameworkImplementation = aFrameworkImplementation;
   }
 
   /**
-   * @see org.apache.uima.collection.processing.CasConsumerDescription#getImplementationName()
+   * @see ResourceCreationSpecifier#getImplementationName()
    */
   public String getImplementationName() {
     return mImplementationName;
   }
 
   /**
-   * @see org.apache.uima.collection.processing.CasConsumerDescription#setImplementationName(java.lang.String)
+   * @see ResourceCreationSpecifier#setImplementationName(java.lang.String)
    */
   public void setImplementationName(String aImplementationName) {
     mImplementationName = aImplementationName;
@@ -92,7 +92,7 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
   }
 
   /**
-   * @see org.apache.uima.resource.ResourceCreationSpecifier#getMetaData()
+   * @see ResourceCreationSpecifier#getMetaData()
    */
   public ResourceMetaData getMetaData() {
     return mMetaData;
@@ -196,9 +196,6 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
    * check configuration parameter settings - that must be done by an explicit call to
    * validateConfigurationParameterSettings.
    * 
-   * @param aDesc
-   *          the AnalysisEngineDescripion to validate
-   * 
    * @throws ResourceInitializationException
    *           if <code>aDesc</code> is invalid
    * @throws ResourceConfigurationException
@@ -227,9 +224,7 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
    * overrides are valid, and logs a warning for parameters with no overrides. (For primitives,
    * there should be no overrides.)
    * 
-   * @param aMetaData
-   *          ResourceMetaData object containing parameters to validate
-   * @param aResourceManger used to resolve import by name.  This is necessary to validate
+   * @param aResourceManager used to resolve import by name.  This is necessary to validate
    *         configuration parameter overrides.
    * 
    * @throws ResourceInitializationException
@@ -325,7 +320,7 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
    *          an array of ConfigurationParameters
    * @param aGroupName
    *          name of groups in which these parameters are contained. Null if no group
-   * @param aResourceManger used to resolve imports by name.
+   * @param aResourceManager used to resolve imports by name.
    *          
    * @throws ResourceInitializationException
    *           if there is an invalid parameter override declaration

@@ -19,6 +19,7 @@
 
 package org.apache.uima.resource.impl;
 
+import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.metadata.impl.MetaDataObject_impl;
@@ -28,8 +29,11 @@ import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 /**
  * Reference implementation of {@link AnalysisEngineDescription}. Note that this class has a
  * slightly nonstandard XML representation because the "key" property is represented in XML by an
- * attribute rather than a child element. Therefore, we override the {@link #toXML()} method and the
- * {@link #buildFromXMLElement(Element,XMLParser)} method.
+ * attribute rather than a child element. 
+ * 
+ * 9/2013: toXML and buildFromXMLElement not overridden...
+ * Therefore, we override the toXML() method and the
+ * buildFromXMLElement(Element,XMLParser) method.
  * 
  * 
  */
@@ -47,56 +51,56 @@ public class ExternalResourceDescription_impl extends MetaDataObject_impl implem
   private String mImplementationName;
 
   /**
-   * @see org.apache.uima.analysis_engine.ExternalResourceDescription#getName()
+   * @see org.apache.uima.resource.ExternalResourceDescription#getName()
    */
   public String getName() {
     return mName;
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.ExternalResourceDescription#getResourceSpecifier()
+   * @see org.apache.uima.resource.ExternalResourceDescription#getResourceSpecifier()
    */
   public ResourceSpecifier getResourceSpecifier() {
     return mResourceSpecifier;
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.ExternalResourceDescription#getImplementationName()
+   * @see org.apache.uima.resource.ExternalResourceDescription#getImplementationName()
    */
   public String getImplementationName() {
     return mImplementationName;
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.ExternalResourceDescription#setName(String)
+   * @see org.apache.uima.resource.ExternalResourceDescription#setName(String)
    */
   public void setName(String aName) {
     mName = aName;
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.ExternalResourceDescription#setResourceSpecifier(ResourceSpecifier)
+   * @see org.apache.uima.resource.ExternalResourceDescription#setResourceSpecifier(ResourceSpecifier)
    */
   public void setResourceSpecifier(ResourceSpecifier aSpecifier) {
     mResourceSpecifier = aSpecifier;
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.ExternalResourceDescription#setImpelmentationName(String)
+   * @see org.apache.uima.resource.ExternalResourceDescription#setImplementationName(String)
    */
   public void setImplementationName(String aName) {
     mImplementationName = aName;
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.ExternalResourceDescription#getDescription()
+   * @see org.apache.uima.resource.ExternalResourceDescription#getDescription()
    */
   public String getDescription() {
     return mDescription;
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.ExternalResourceDescription#setDescription(java.lang.String)
+   * @see org.apache.uima.resource.ExternalResourceDescription#setDescription(java.lang.String)
    */
   public void setDescription(String aDescription) {
     mDescription = aDescription;

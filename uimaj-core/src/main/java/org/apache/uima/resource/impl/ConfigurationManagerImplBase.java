@@ -45,7 +45,7 @@ import org.apache.uima.util.Settings;
 /**
  * Convenience base class for Configuration Manager implementations. Subclasses just need to
  * implement the abstract methods
- * {@link #declareParameters(String, ConfigurationParameter[], ConfigurationParameterSettings, String, String)}
+ * {@link #declareParameters(String, ConfigurationParameter[], ConfigurationParameterSettings, String, Settings)}
  * and {@link #lookupSharedParamNoLinks(String)}.
  * 
  * 
