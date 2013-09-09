@@ -167,7 +167,7 @@ public class TypeOrFeature_impl extends MetaDataObject_impl implements TypeOrFea
   }
 
   /**
-   * @see org.apache.uima.resource.impl.MetaDataObject_impl#getXmlizationInfo()
+   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
    */
   protected XmlizationInfo getXmlizationInfo() {
     return new XmlizationInfo(null, null);

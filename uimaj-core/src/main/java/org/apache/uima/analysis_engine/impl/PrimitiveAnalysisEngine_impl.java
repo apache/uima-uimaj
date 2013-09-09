@@ -328,10 +328,6 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
    * 
    * @param aCAS
    *          CAS to be processed by annotator
-   * @param aResultSpec
-   *          result specification to be passed to annotator
-   * @param aProcessTrace
-   *          keeps track of time spent in each component
    */
   protected void callAnalysisComponentProcess(CAS aCAS) throws AnalysisEngineProcessException {
     // logging and instrumentation
@@ -532,7 +528,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
   }
 
   /**
-   * @see org.apache.uima.resource.AnalysisEngine#reconfigure()
+   * @see org.apache.uima.analysis_engine.AnalysisEngine#reconfigure()
    */
   public void reconfigure() throws ResourceConfigurationException {
     // do base resource reconfiguration

@@ -244,7 +244,7 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
   }
 
   /**
-   * @see org.apache.uima.resource.AnalysisEngine#reconfigure()
+   * @see org.apache.uima.analysis_engine.AnalysisEngine#reconfigure()
    */
   public void reconfigure() throws ResourceConfigurationException {
     // do base resource reconfiguration
@@ -258,10 +258,6 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
    * 
    * @param aCAS
    *          CAS to be processed by annotator
-   * @param aResultSpec
-   *          result specification to be passed to annotator
-   * @param aProcessTrace
-   *          keeps track of time spent in each component
    */
   protected void callAnalysisComponentProcess(CAS aCAS) throws AnalysisEngineProcessException {
     // logging and instrumentation
@@ -311,12 +307,6 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
 
   /**
    * A utility method that performs initialization logic for a primitive AnalysisEngine.
-   * 
-   * @param aDescription
-   *          the AnalysisEngine description for this AnalysisEngine
-   * @param aConfigParamSettings
-   *          the configuration parameter settings that are the result of merging this primitive
-   *          AE's parameter settings with those specified in any enclosing aggregate AE.
    * 
    * @throws ResourceInitializationException
    *           if an initialization failure occurs

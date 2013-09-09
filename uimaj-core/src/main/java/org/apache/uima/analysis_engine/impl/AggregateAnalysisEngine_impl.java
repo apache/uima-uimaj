@@ -227,7 +227,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
   /**
    * Gets an array containing all capabilities of all components of this aggregate
    * 
-   * @return
+   * @return all capabilities of all components of this aggregate
    */
   private Capability[] getAllComponentCapabilities() {
     ArrayList<Capability> capabilityList = new ArrayList<Capability>();
@@ -279,7 +279,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
   }
 
   /**
-   * @see org.apache.uima.resource.AnalysisEngine#reconfigure()
+   * @see org.apache.uima.analysis_engine.AnalysisEngine#reconfigure()
    */
   public void reconfigure() throws ResourceConfigurationException {
     // do base resource reconfiguration
@@ -384,9 +384,9 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
    * A utility method that creates and configures the ASB component. The ASB will create and
    * initialize the delegate AnalysisEngines. This method also retrieves delegate AnalysisEngine
    * metadata from the ASB and provides access to that method via the
-   * {@link _getDelegateAnalysisEngineMetaData()} method.
+   * {@link #_getComponentMetaData()} method.
    * 
-   * @param aDescription
+   * @param aAnalysisEngineDescription
    *          the AnalysisEngine description for this AnalysisEngine
    * @param aAdditionalParams
    *          parameters that will be passed to the ASB's initialize method.
@@ -497,9 +497,6 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
    * operational properties of the components. For example, an aggregate cannot have
    * multipleDeploymentAlloiwed == true if it contains a component with multipleDeploymentAllowed ==
    * false.
-   * 
-   * @param aDesc
-   *          the aggregate analysis engine description to validate
    * 
    * @throws ResourceInitializationException
    *           if there is an invalid parameter override declaration

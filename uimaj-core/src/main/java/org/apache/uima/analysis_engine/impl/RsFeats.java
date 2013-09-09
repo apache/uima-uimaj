@@ -97,7 +97,7 @@ public class RsFeats implements Iterable<RsFeat> {
   /**
    * linear search in list for short feat name
    * @param shortFeatName - canonicalized short feature name
-   * @return
+   * @return the RsFeat or null
    */
   RsFeat get(String shortFeatName) {
     for (RsFeat r : features) {

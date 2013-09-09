@@ -59,6 +59,7 @@ import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.resource.metadata.MetaDataObject;
 import org.apache.uima.resource.metadata.OperationalProperties;
 import org.apache.uima.resource.metadata.impl.Import_impl;
+import org.apache.uima.resource.metadata.impl.MetaDataObject_impl;
 import org.apache.uima.resource.metadata.impl.PropertyXmlInfo;
 import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 import org.apache.uima.util.InvalidXMLException;
@@ -73,8 +74,8 @@ import org.xml.sax.SAXException;
 /**
  * Reference implementation of {@link AnalysisEngineDescription}. Note that this class contains two
  * attributes of class Map, which are not supported by the default XML input/output routines.
- * Therefore we override the {@link #writeAttributeAsElement(String,Class,Object,Writer)} and
- * {@link #readAttributeFromXMLElement(String,Class,Element,XMLParser)} methods.
+ * Therefore we override the {@link MetaDataObject_impl#writePropertyAsElement(PropertyXmlInfo, String, ContentHandler)} and
+ * {@link MetaDataObject_impl#readPropertyValueFromXMLElement(PropertyXmlInfo, Element, XMLParser, ParsingOptions)} methods.
  * 
  * 
  */
@@ -326,7 +327,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
   }
 
   /**
-   * Overrides{@link ResourceCreationSpecifier_impl#checkForInvalidParameterOverrides(ConfigurationParameter[], String)
+   * Overrides{@link ResourceCreationSpecifier_impl#checkForInvalidParameterOverrides(ConfigurationParameter[], String, ResourceManager)}
    * to validate parameter overrides in an aggregate AE. Also logs a warning for aggregate
    * parameters with no declared overrides.
    * 
@@ -442,8 +443,6 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
 
   /**
    * Validate SofA mappings and inputs/outputs for an aggregate AE.
-   * 
-   * @param aDesc
    */
   protected void validateSofaMappings() throws ResourceInitializationException {
     if (this.isPrimitive())
@@ -635,7 +634,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    * implementation won't return it because it has no set method. We've also overridden the XML
    * import/export methods, though, so that set methods are not required.
    * 
-   * @see org.apache.uima.resource.MetaDataObject#listAttributes()
+   * @see MetaDataObject#listAttributes()
    */
   public List<NameClassPair> listAttributes() {
     List<NameClassPair> result = super.listAttributes();
@@ -851,8 +850,9 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    * attribute has a value of type <code>Map</code>, which is not handled by the default XML
    * export logic.
    * 
-   * @see org.apache.uima.MetaDataObject_impl#writePropertyAsElement(PropertyXmlInfo,String,ContentHandler)
+   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#writePropertyAsElement(PropertyXmlInfo,String,ContentHandler)
    */
+  @Override
   protected void writePropertyAsElement(PropertyXmlInfo aPropInfo, String aNamespace,
           ContentHandler aContentHandler) throws SAXException {
     if (PROP_DELEGATE_ANALYSIS_ENGINE_SPECIFIERS_WITH_IMPORTS.equals(aPropInfo.propertyName)) {
@@ -880,9 +880,9 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    * attribute has a value of type <code>Map</code>, which is not handled by the default XML
    * import logic.
    * 
-   * @see org.apache.uima.resource.impl.MetaDataObject_impl#readPropertyValueFromXMLElement(org.apache.uima.resource.impl.PropertyXmlInfo,
-   *      org.w3c.dom.Element, org.apache.uima.util.XMLParser)
+   * @see MetaDataObject_impl#readPropertyValueFromXMLElement(PropertyXmlInfo, Element, XMLParser, ParsingOptions)
    */
+  @Override
   protected void readPropertyValueFromXMLElement(PropertyXmlInfo aPropXmlInfo, Element aElement,
           XMLParser aParser, XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
     String propName = aPropXmlInfo.propertyName;
