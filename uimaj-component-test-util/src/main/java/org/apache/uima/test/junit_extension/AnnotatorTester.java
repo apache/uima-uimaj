@@ -239,7 +239,7 @@ public class AnnotatorTester {
 
    /**
     * Creates a new fresh CAS instance which can be used for testing.
-    * @return
+    * @return a new fresh CAS instance which can be used for testing
     * @throws Exception
     */
     public CAS createCAS()  throws Exception {
