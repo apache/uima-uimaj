@@ -148,7 +148,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   }
 
   /**
-   * @see org.apache.uima.cas.Type#getFeature(java.lang.String)
+   * @see org.apache.uima.cas.Type#getFeatureByBaseName(String)
    */
   public Feature getFeatureByBaseName(String featureName) {
     return this.ts.getFeatureByFullName(this.name + TypeSystem.FEATURE_SEPARATOR + featureName);

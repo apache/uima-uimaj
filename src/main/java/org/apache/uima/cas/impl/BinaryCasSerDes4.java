@@ -2445,7 +2445,7 @@ public class BinaryCasSerDes4 {
    * @param f can be a DataOutputStream,
    *                 an OutputStream
    *                 a File
-   * @return
+   * @return a data output stream
    * @throws FileNotFoundException
    */
   private static DataOutputStream makeDataOutputStream(Object f) throws FileNotFoundException {

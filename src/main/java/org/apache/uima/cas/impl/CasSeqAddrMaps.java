@@ -110,7 +110,8 @@ public class CasSeqAddrMaps {
   /**
    * Add a new FS address - done during prescan of source
    * Must call in heap scan order
-   * @param addr
+   * @param srcAddr
+   * @param tgtAddr
    * @param inTarget true if this type is in the target
    */
   public void addItemAddr(int srcAddr, int tgtAddr, boolean inTarget) {

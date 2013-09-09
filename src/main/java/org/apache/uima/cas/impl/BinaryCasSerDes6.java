@@ -461,7 +461,6 @@ public class BinaryCasSerDes6 {
    *            For normal serialization - can be null, but if not, is used in place of re-calculating, for speed up
    *            For delta deserialization - must not be null, and is the saved value after serializing to the service
    *            For normal deserialization - must be null
-   * @param allowPreexistingFSs - if false, throws error if deserializing delta cas has modifications below the mark, for parallel remotes
    * @param doMeasurements if true, measurements are done (on serialization)
    * @param compressLevel if not null, specifies enum instance for compress level
    * @param compressStrategy if not null, specifies enum instance for compress strategy
@@ -530,7 +529,6 @@ public class BinaryCasSerDes6 {
   /**
    * Setup to serialize (not delta) or deserialize (not delta) using binary compression, with type mapping and only processing reachable Feature Structures
    * @param cas
-   * @param mark
    * @param tgtTs
    * @throws ResourceInitializationException if the target type system is incompatible with the source type system
    */
@@ -921,7 +919,7 @@ public class BinaryCasSerDes6 {
    * 
    * @param iHeap
    * @param offset true offset, 1 = first feature...
-   * @return
+   * @return the previous int value for use in difference calculations
    */
   private int getPrevIntValue(final int iHeap, final int offset) {
     final int[] featCache = prevHeapInstanceWithIntValues[heap[iHeap]];
@@ -1598,7 +1596,7 @@ public class BinaryCasSerDes6 {
   /**
    * Version used by uima-as to read delta cas from remote parallel steps
    * @param istream
-   * @param allowPreexistingFSs
+   * @param allowPreexistingFS
    * @throws IOException
    */
   public void deserialize(InputStream istream, AllowPreexistingFS allowPreexistingFS) throws IOException {
@@ -3296,7 +3294,7 @@ public class BinaryCasSerDes6 {
    * @param f can be a DataOutputStream,
    *                 an OutputStream
    *                 a File
-   * @return
+   * @return a data output stream
    * @throws FileNotFoundException
    */
   private static DataOutputStream makeDataOutputStream(Object f) throws FileNotFoundException {
