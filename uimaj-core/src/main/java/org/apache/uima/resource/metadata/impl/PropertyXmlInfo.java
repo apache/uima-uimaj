@@ -80,8 +80,8 @@ public class PropertyXmlInfo {
    * 
    * @param aPropName
    *          name of the property
-   * @param aXmlElementName
-   *          name of xml element that represents this property (may be null - see {@link #xmlName}).
+   * @param aXmlName
+   *          name of xml element that represents this property (may be null - see {@link #xmlElementName}).
    */
   public PropertyXmlInfo(String aPropName, String aXmlName) {
     this(aPropName, aXmlName, true, null);
@@ -92,8 +92,8 @@ public class PropertyXmlInfo {
    * 
    * @param aPropName
    *          name of the property
-   * @param aXmlElementName
-   *          name of xml element that represents this property (may be null - see {@link #xmlName}.
+   * @param aXmlName
+   *          name of xml element that represents this property (may be null - see {@link #xmlElementName}.
    * @param aOmitIfNull
    *          if true, this property should be omitted entirely from the XML if its value is null
    */

@@ -92,7 +92,7 @@ public class MimeTypePrecondition_impl extends SimplePrecondition_impl implement
   }
 
   /**
-   * @see org.apache.uima.resource.metadata.SimplePrecondition#setMetaDataKeyName(java.lang.String)
+   * This method throws UNSUPPORTED_METHOD 
    */
   public void setMetaDataKeyName(String aKey) {
     throw new UIMA_UnsupportedOperationException(

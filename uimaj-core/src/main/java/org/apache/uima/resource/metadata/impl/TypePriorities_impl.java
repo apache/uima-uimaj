@@ -32,8 +32,10 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMA_IllegalArgumentException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.metadata.Import;
+import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypePriorityList;
+import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLizable;
@@ -60,74 +62,70 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
   private List<TypePriorityList> mPriorityLists = new ArrayList<TypePriorityList>();
 
   /**
-   * @see org.apache.uima.resource.ResourceMetaData#getName()
+   * @see ResourceMetaData#getName()
    */
   public String getName() {
     return mName;
   }
 
   /**
-   * @see org.apache.uima.resource.ResourceMetaData#setName(String)
+   * @see ResourceMetaData#setName(String)
    */
   public void setName(String aName) {
     mName = aName;
   }
 
   /**
-   * @see org.apache.uima.resource.ResourceMetaData#getVersion()
+   * @see ResourceMetaData#getVersion()
    */
   public String getVersion() {
     return mVersion;
   }
 
   /**
-   * @see org.apache.uima.resource.ResourceMetaData#setVersion(String)
+   * @see ResourceMetaData#setVersion(String)
    */
   public void setVersion(String aVersion) {
     mVersion = aVersion;
   }
 
   /**
-   * @see org.apache.uima.resource.ResourceMetaData#getDescription()
+   * @see ResourceMetaData#getDescription()
    */
   public String getDescription() {
     return mDescription;
   }
 
   /**
-   * @see org.apache.uima.resource.ResourceMetaData#setDescription(String)
+   * @see ResourceMetaData#setDescription(String)
    */
   public void setDescription(String aDescription) {
     mDescription = aDescription;
   }
 
   /**
-   * @see org.apache.uima.resource.ResourceMetaData#getVendor()
+   * @see ResourceMetaData#getVendor()
    */
   public String getVendor() {
     return mVendor;
   }
 
   /**
-   * @see org.apache.uima.resource.ResourceMetaData#setVendor(String)
+   * @see ResourceMetaData#setVendor(String)
    */
   public void setVendor(String aVendor) {
     mVendor = aVendor;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.metadata.TypeSystemDescription#getImports()
+  /**
+   * @see TypeSystemDescription#getImports()
    */
   public Import[] getImports() {
     return mImports;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.metadata.TypeSystemDescription#setImports(org.apache.uima.resource.metadata.Import[])
+  /**
+   * @see TypeSystemDescription#setImports(Import[])
    */
   public void setImports(Import[] aImports) {
     if (aImports == null) {
@@ -138,7 +136,7 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.metadata.TypePriorities#getPriorityLists()
+   * @see TypePriorities#getPriorityLists()
    */
   public TypePriorityList[] getPriorityLists() {
     TypePriorityList[] result = new TypePriorityList[mPriorityLists.size()];
@@ -147,7 +145,7 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.metadata.TypePriorities#setPriorityLists(org.apache.uima.analysis_engine.metadata.TypePriorityList[])
+   * @see TypePriorities#setPriorityLists(TypePriorityList[])
    */
   public void setPriorityLists(TypePriorityList[] aPriorityLists) {
     mPriorityLists.clear();
@@ -157,14 +155,14 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.metadata.TypePriorities#addPriorityList(org.apache.uima.analysis_engine.metadata.TypePriorityList)
+   * @see TypePriorities#addPriorityList(TypePriorityList)
    */
   public void addPriorityList(TypePriorityList aPriorityList) {
     mPriorityLists.add(aPriorityList);
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.metadata.TypePriorities#addPriorityList()
+   * @see TypePriorities#addPriorityList()
    */
   public TypePriorityList addPriorityList() {
     TypePriorityList newPriorityList = new TypePriorityList_impl();
@@ -173,16 +171,14 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.metadata.TypePriorities#removePriorityList(org.apache.uima.analysis_engine.metadata.TypePriorityList)
+   * @see TypePriorities#removePriorityList(TypePriorityList)
    */
   public void removePriorityList(TypePriorityList aPriorityList) {
     mPriorityLists.remove(aPriorityList);
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.metadata.TypeSystemDescription#resolveImports()
+  /**
+   * @see TypeSystemDescription#resolveImports()
    */
   public void resolveImports() throws InvalidXMLException {
     resolveImports(new TreeSet<String>(), UIMAFramework.newDefaultResourceManager());
@@ -256,10 +252,10 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
     aResults.addAll(Arrays.asList(desc.getPriorityLists()));
   }
 
-  /*
-   * (non-Javadoc) Overridden to supress <priorityLists> tag for TAF compatibility
+  /**
+   * Overridden to supress <priorityLists> tag for TAF compatibility
    * 
-   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#writePropertyAsElement(org.apache.uima.resource.metadata.impl.PropertyXmlInfo,
+   * @see MetaDataObject_impl#writePropertyAsElement(org.apache.uima.resource.metadata.impl.PropertyXmlInfo,
    *      java.lang.String, org.xml.sax.ContentHandler)
    */
   protected void writePropertyAsElement(PropertyXmlInfo aPropInfo, String aNamespace,
@@ -291,7 +287,7 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
   }
 
   /**
-   * @see org.apache.uima.resource.impl.MetaDataObject_impl#getXmlizationInfo()
+   * @see MetaDataObject_impl#getXmlizationInfo()
    */
   protected XmlizationInfo getXmlizationInfo() {
     return new XmlizationInfo("typePriorities", new PropertyXmlInfo[] {

@@ -69,56 +69,56 @@ public class TypeDescription_impl extends MetaDataObject_impl implements TypeDes
   }
 
   /**
-   * @see org.apache.uima.cas.TypeDescription#getName()
+   * @see TypeDescription#getName()
    */
   public String getName() {
     return mName;
   }
 
   /**
-   * @see org.apache.uima.cas.TypeDescription#setName(String)
+   * @see TypeDescription#setName(String)
    */
   public void setName(String aName) {
     mName = aName;
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.metadata.TypeDescription#getDescription()
+   * @see TypeDescription#getDescription()
    */
   public String getDescription() {
     return mDescription;
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.metadata.TypeDescription#setDescription(java.lang.String)
+   * @see TypeDescription#setDescription(java.lang.String)
    */
   public void setDescription(String aDescription) {
     mDescription = aDescription;
   }
 
   /**
-   * @see org.apache.uima.cas.TypeDescription#getSupertypeName()
+   * @see TypeDescription#getSupertypeName()
    */
   public String getSupertypeName() {
     return mSupertypeName;
   }
 
   /**
-   * @see org.apache.uima.cas.TypeDescription#setSupertypeName(String)
+   * @see TypeDescription#setSupertypeName(String)
    */
   public void setSupertypeName(String aTypeName) {
     mSupertypeName = aTypeName;
   }
 
   /**
-   * @see org.apache.uima.cas.TypeDescription#getFeatures()
+   * @see TypeDescription#getFeatures()
    */
   public FeatureDescription[] getFeatures() {
     return mFeatures;
   }
 
   /**
-   * @see org.apache.uima.cas.TypeDescription#setFeatures(FeatureDescription[])
+   * @see TypeDescription#setFeatures(FeatureDescription[])
    */
   public void setFeatures(FeatureDescription[] aFeatures) {
     if (aFeatures == null) {
@@ -129,32 +129,29 @@ public class TypeDescription_impl extends MetaDataObject_impl implements TypeDes
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.metadata.TypeDescription#getAllowedValues()
+   * @see TypeDescription#getAllowedValues()
    */
   public AllowedValue[] getAllowedValues() {
     return mAllowedValues;
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.metadata.TypeDescription#setAllowedValues(org.apache.uima.analysis_engine.metadata.AllowedValue[])
+   * @see TypeDescription#setAllowedValues(AllowedValue[])
    */
   public void setAllowedValues(AllowedValue[] aAllowedValues) {
     mAllowedValues = aAllowedValues;
   }
 
   /**
-   * @see org.apache.uima.cas.TypeDescription#addFeature(String, String, String)
+   * @see TypeDescription#addFeature(String, String, String)
    */
   public FeatureDescription addFeature(String aFeatureName, String aDescription,
           String aRangeTypeName) {
     return addFeature(aFeatureName, aDescription, aRangeTypeName, null, null);
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.metadata.TypeDescription#addFeature(java.lang.String,
-   *      java.lang.String, java.lang.String, java.lang.String, java.lang.Boolean)
+  /**
+   * @see TypeDescription#addFeature(String, String, String, String, Boolean)
    */
   public FeatureDescription addFeature(String aFeatureName, String aDescription,
           String aRangeTypeName, String aElementTypeName, Boolean aMultipleReferencesAllowed) {

@@ -22,6 +22,7 @@ package org.apache.uima.resource.metadata.impl;
 import org.apache.uima.UIMA_IllegalArgumentException;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSMatchConstraint;
+import org.apache.uima.resource.metadata.Precondition;
 import org.apache.uima.resource.metadata.SimplePrecondition;
 
 /**
@@ -52,7 +53,7 @@ public class SimplePrecondition_impl extends MetaDataObject_impl implements Simp
   private boolean mDefault;
 
   /**
-   * @see org.apache.uima.analysis_engine.metadata.Precondition#getPreconditionType()
+   * @see Precondition#getPreconditionType()
    */
   public String getPreconditionType() {
     return PRECONDITION_TYPE;
@@ -123,28 +124,28 @@ public class SimplePrecondition_impl extends MetaDataObject_impl implements Simp
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.metadata.SimplePrecondition#getComparisonValue()
+   * @see SimplePrecondition#getComparisonValue()
    */
   public Object getComparisonValue() {
     return mComparisonValue;
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.metadata.SimplePrecondition#setComparisonValue(Object)
+   * @see SimplePrecondition#setComparisonValue(Object)
    */
   public void setComparisonValue(Object aValue) {
     mComparisonValue = aValue;
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.metadata.SimplePrecondition#getPredicate()
+   * @see SimplePrecondition#getPredicate()
    */
   public String getPredicate() {
     return mPredicate;
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.metadata.SimplePrecondition#setPredicate(String)
+   * @see SimplePrecondition#setPredicate(String)
    */
   public void setPredicate(String aPredicate) {
     // check to make sure value is legal
@@ -158,7 +159,7 @@ public class SimplePrecondition_impl extends MetaDataObject_impl implements Simp
 
   /**
    * Determines whether the given String is a valid name a predicate defined by this class. Valid
-   * predicate names are legal arguments to the {@link setPredicate(String)} method, and are defined
+   * predicate names are legal arguments to the {@link #setPredicate(String)} method, and are defined
    * by constants on the {@link SimplePrecondition} interface.
    * 
    * @param aName

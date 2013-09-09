@@ -33,6 +33,7 @@ import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.metadata.FsIndexCollection;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.Import;
+import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLizable;
@@ -58,56 +59,56 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
   private FsIndexDescription[] mFsIndexes = new FsIndexDescription[0];
 
   /**
-   * @see org.apache.uima.resource.ResourceMetaData#getName()
+   * @see ResourceMetaData#getName()
    */
   public String getName() {
     return mName;
   }
 
   /**
-   * @see org.apache.uima.resource.ResourceMetaData#setName(String)
+   * @see ResourceMetaData#setName(String)
    */
   public void setName(String aName) {
     mName = aName;
   }
 
   /**
-   * @see org.apache.uima.resource.ResourceMetaData#getVersion()
+   * @see ResourceMetaData#getVersion()
    */
   public String getVersion() {
     return mVersion;
   }
 
   /**
-   * @see org.apache.uima.resource.ResourceMetaData#setVersion(String)
+   * @see ResourceMetaData#setVersion(String)
    */
   public void setVersion(String aVersion) {
     mVersion = aVersion;
   }
 
   /**
-   * @see org.apache.uima.resource.ResourceMetaData#getDescription()
+   * @see ResourceMetaData#getDescription()
    */
   public String getDescription() {
     return mDescription;
   }
 
   /**
-   * @see org.apache.uima.resource.ResourceMetaData#setDescription(String)
+   * @see ResourceMetaData#setDescription(String)
    */
   public void setDescription(String aDescription) {
     mDescription = aDescription;
   }
 
   /**
-   * @see org.apache.uima.resource.ResourceMetaData#getVendor()
+   * @see ResourceMetaData#getVendor()
    */
   public String getVendor() {
     return mVendor;
   }
 
   /**
-   * @see org.apache.uima.resource.ResourceMetaData#setVendor(String)
+   * @see ResourceMetaData#setVendor(String)
    */
   public void setVendor(String aVendor) {
     mVendor = aVendor;

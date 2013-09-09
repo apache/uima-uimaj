@@ -50,28 +50,28 @@ public class ConfigurationGroup_impl extends MetaDataObject_impl implements Conf
   private ConfigurationParameter[] mConfigurationParameters = new ConfigurationParameter[0];
 
   /**
-   * @see org.apache.uima.resource.ConfigurationGroup#getNames()
+   * @see ConfigurationGroup#getNames()
    */
   public String[] getNames() {
     return mNames;
   }
 
   /**
-   * @see org.apache.uima.resource.ConfigurationGroup#setNames(java.lang.String[])
+   * @see ConfigurationGroup#setNames(java.lang.String[])
    */
   public void setNames(String[] aNames) {
     mNames = aNames;
   }
 
   /**
-   * @see org.apache.uima.resource.ConfigurationGroup#getConfigurationParameters()
+   * @see ConfigurationGroup#getConfigurationParameters()
    */
   public ConfigurationParameter[] getConfigurationParameters() {
     return mConfigurationParameters;
   }
 
   /**
-   * @see org.apache.uima.resource.ConfigurationGroup#setConfigurationParameters(org.apache.uima.resource.ConfigurationParameter[])
+   * @see ConfigurationGroup#setConfigurationParameters(ConfigurationParameter[])
    */
   public void setConfigurationParameters(ConfigurationParameter[] aParams) {
     mConfigurationParameters = aParams;
@@ -111,7 +111,7 @@ public class ConfigurationGroup_impl extends MetaDataObject_impl implements Conf
   /**
    * Overridden to write the <code>names</code> property as an XML attribute.
    * 
-   * @see org.apache.uima.resource.impl.MetaDataObject_impl#getXMLAttributeString()
+   * @see MetaDataObject_impl#getXMLAttributes()
    */
   protected AttributesImpl getXMLAttributes() {
     AttributesImpl attrs = super.getXMLAttributes();
@@ -153,7 +153,7 @@ public class ConfigurationGroup_impl extends MetaDataObject_impl implements Conf
   }
 
   /**
-   * @see org.apache.uima.resource.impl.MetaDataObject_impl#getXmlizationInfo()
+   * @see MetaDataObject_impl#getXmlizationInfo()
    */
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;

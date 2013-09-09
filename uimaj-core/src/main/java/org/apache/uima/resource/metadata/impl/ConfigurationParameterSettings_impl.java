@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.apache.uima.UIMA_IllegalArgumentException;
 import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
+import org.apache.uima.resource.metadata.MetaDataObject;
 import org.apache.uima.resource.metadata.NameValuePair;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.NameClassPair;
@@ -59,14 +60,14 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
   private Map<String, NameValuePair[]> mSettingsForGroups = new HashMap<String, NameValuePair[]>();
 
   /**
-   * @see org.apache.uima.resource.ConfigurationParameterSettings#getParameterSettings()
+   * @see ConfigurationParameterSettings#getParameterSettings()
    */
   public NameValuePair[] getParameterSettings() {
     return mParameterSettings;
   }
 
   /**
-   * @see org.apache.uima.resource.ConfigurationParameterSettings#setParameterSettings(org.apache.uima.resource.NameValuePair[])
+   * @see ConfigurationParameterSettings#setParameterSettings(NameValuePair[])
    */
   public void setParameterSettings(NameValuePair[] aSettings) {
     if (aSettings == null) {
@@ -77,14 +78,14 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
   }
 
   /**
-   * @see org.apache.uima.resource.ConfigurationParameterSettings#getSettingsForGroups()
+   * @see ConfigurationParameterSettings#getSettingsForGroups()
    */
   public Map<String, NameValuePair[]> getSettingsForGroups() {
     return mSettingsForGroups;
   }
 
   /**
-   * @see org.apache.uima.resource.ConfigurationParameterSettings#getParameterValue(java.lang.String)
+   * @see ConfigurationParameterSettings#getParameterValue(java.lang.String)
    */
   public Object getParameterValue(String aParamName) {
     NameValuePair[] nvps = getParameterSettings();
@@ -99,7 +100,7 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
   }
 
   /**
-   * @see org.apache.uima.resource.ConfigurationParameterSettings#getParameterValue(java.lang.String,
+   * @see ConfigurationParameterSettings#getParameterValue(java.lang.String,
    *      java.lang.String)
    */
   public Object getParameterValue(String aGroupName, String aParamName) {
@@ -119,7 +120,7 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
   }
 
   /**
-   * @see org.apache.uima.resource.ConfigurationParameterSettings#setParameterValue(java.lang.String,
+   * @see ConfigurationParameterSettings#setParameterValue(java.lang.String,
    *      java.lang.Object)
    */
   public void setParameterValue(String aParamName, Object aValue) {
@@ -162,7 +163,7 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
   }
 
   /**
-   * @see org.apache.uima.resource.ConfigurationParameterSettings#setParameterValue(java.lang.String,
+   * @see ConfigurationParameterSettings#setParameterValue(java.lang.String,
    *      java.lang.String, java.lang.Object)
    */
   public void setParameterValue(String aGroupName, String aParamName, Object aValue) {
@@ -209,7 +210,7 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
   }
 
   /**
-   * @see org.apache.uima.resource.impl.MetaDataObject_impl#getXmlizationInfo()
+   * @see MetaDataObject_impl#getXmlizationInfo()
    */
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
@@ -220,7 +221,7 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
    * implementation won't return it because it has no set method. We've also overridden the XML
    * import/export methods, though, so that set methods are not required.
    * 
-   * @see org.apache.uima.resource.MetaDataObject#listAttributes()
+   * @see MetaDataObject#listAttributes()
    */
   public List<NameClassPair> listAttributes() {
     List<NameClassPair> result = super.listAttributes();
@@ -232,7 +233,7 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
    * Overridden becuase of settingsForGroups property, which is a Map and isn't handled by default
    * XMLization routines.
    * 
-   * @see org.apache.uima.util.XMLizable#buildFromXMLElement(org.w3c.dom.Element,
+   * @see XMLizable#buildFromXMLElement(org.w3c.dom.Element,
    *      org.apache.uima.util.XMLParser)
    */
   public void buildFromXMLElement(Element aElement, XMLParser aParser,
@@ -280,8 +281,7 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
    * Overridden to write the settingsForGroups property, whose value is a Map, which is not
    * supported by the default XMLization routines.
    * 
-   * @see org.apache.uima.resource.impl.MetaDataObject_impl#writePropertyAsElement(org.apache.uima.resource.impl.PropertyXmlInfo,
-   *      java.lang.String, ContentHandler)
+   * @see MetaDataObject_impl#writePropertyAsElement(PropertyXmlInfo, String, ContentHandler)
    */
   protected void writePropertyAsElement(PropertyXmlInfo aPropInfo, String aNamespace,
           ContentHandler aContentHandler) throws SAXException {

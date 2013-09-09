@@ -36,7 +36,7 @@ public class TypePriorityList_impl extends MetaDataObject_impl implements TypePr
   private List<String> mTypeNames = new ArrayList<String>();
 
   /**
-   * @see org.apache.uima.analysis_engine.metadata.TypePriorityList#getTypes()
+   * @see TypePriorityList#getTypes()
    */
   public String[] getTypes() {
     String[] result = new String[mTypeNames.size()];
@@ -45,7 +45,7 @@ public class TypePriorityList_impl extends MetaDataObject_impl implements TypePr
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.metadata.TypePriorityList#setTypes(java.lang.String[])
+   * @see TypePriorityList#setTypes(java.lang.String[])
    */
   public void setTypes(String[] aTypeNames) {
     mTypeNames.clear();
@@ -55,7 +55,7 @@ public class TypePriorityList_impl extends MetaDataObject_impl implements TypePr
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.metadata.TypePriorityList#addType(java.lang.String)
+   * @see TypePriorityList#addType(java.lang.String)
    */
   public void addType(String aTypeName) {
     mTypeNames.add(aTypeName);
@@ -63,7 +63,7 @@ public class TypePriorityList_impl extends MetaDataObject_impl implements TypePr
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.metadata.TypePriorityList#removeType(java.lang.String)
+   * @see TypePriorityList#removeType(java.lang.String)
    */
   public void removeType(String aTypeName) {
     mTypeNames.remove(aTypeName);
@@ -84,7 +84,7 @@ public class TypePriorityList_impl extends MetaDataObject_impl implements TypePr
   }
 
   /**
-   * @see org.apache.uima.resource.impl.MetaDataObject_impl#getXmlizationInfo()
+   * @see MetaDataObject_impl#getXmlizationInfo()
    */
   protected XmlizationInfo getXmlizationInfo() {
     return new XmlizationInfo("priorityList", new PropertyXmlInfo[] { new PropertyXmlInfo("types",

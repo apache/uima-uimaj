@@ -28,7 +28,7 @@ import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
  * reason we need this class is because its XML tag name needs to be
  * &lt;processingResourceMetaData>, not
  * 
- * @lt;analysisEngienMetaData>, for compatibility with existing descriptors.
+ * &lt;analysisEngienMetaData>, for compatibility with existing descriptors.
  */
 public class ProcessingResourceMetaData_impl extends AnalysisEngineMetaData_impl implements
         ProcessingResourceMetaData {
