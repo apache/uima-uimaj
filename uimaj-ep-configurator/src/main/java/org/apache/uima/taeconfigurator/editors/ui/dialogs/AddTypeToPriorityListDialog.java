@@ -41,8 +41,12 @@ public class AddTypeToPriorityListDialog extends AbstractDialog {
 
   private List typeList;
 
+
   /**
-   * @param parentShell
+   * 
+   * @param aSection
+   * @param allowableTypeNameHash
+   * @param typesInList
    */
   public AddTypeToPriorityListDialog(AbstractSection aSection, Set allowableTypeNameHash,
           String[] typesInList) {

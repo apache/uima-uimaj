@@ -76,7 +76,9 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
   protected String dialogDescription;
 
   /**
-   * @param parentShell
+   * @param section
+   * @param title
+   * @param description
    */
   protected AbstractDialog(AbstractSection section, String title, String description) {
     // maintainers: don't use new shell; see comment in Dialog class

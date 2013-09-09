@@ -964,7 +964,6 @@ public class CapabilitySection extends AbstractSection {
    *          A string representing the fully qualified type name
    * @param features -
    *          associated with the type
-   * @return
    */
   private TypeOrFeature[] replaceFeaturesKeepingTypes(TypeOrFeature[] items, String typeName,
           List features) {
@@ -989,7 +988,6 @@ public class CapabilitySection extends AbstractSection {
    * @param typeName
    * @param isAllFeatures
    *          AllFeatures value
-   * @return
    */
   private TypeOrFeature[] setAllFeatures(TypeOrFeature[] items, String typeName,
           boolean isAllFeatures) {

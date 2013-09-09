@@ -93,7 +93,7 @@ public class AddParameterDialog extends AbstractDialogKeyVerifyJavaNames {
    * Constructor for Adding a new parameter to a group (may be the not-in-any one)
    * 
    * @param aSection
-   * @param aGroup
+   * @param cg
    */
   public AddParameterDialog(AbstractSection aSection, ConfigGroup cg) {
     this(aSection);

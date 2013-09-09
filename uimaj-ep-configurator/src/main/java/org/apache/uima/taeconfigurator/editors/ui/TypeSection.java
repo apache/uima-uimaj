@@ -635,7 +635,7 @@ public class TypeSection extends AbstractImportablePartSection {
    * 
    * @param td
    * @param dialog
-   * @return
+   * @return error message or null
    */
   private String newFeatureTests(TypeDescription td, AddFeatureDialog dialog) {
     FeatureDescription fd;
@@ -664,7 +664,9 @@ public class TypeSection extends AbstractImportablePartSection {
    * itself). If name used in index, and range is not indexable - error
    * 
    * @param dialog
-   * @return
+   * @param td
+   * @param oldFd
+   * @return error message or null
    */
   public String checkFeature(AddFeatureDialog dialog, TypeDescription td, FeatureDescription oldFd) {
     if (null == oldFd) { // adding new feature
@@ -1330,7 +1332,7 @@ public class TypeSection extends AbstractImportablePartSection {
    * 
    * @param oldTypeName
    * @param newTypeName
-   * @return
+   * @return true if refresh is needed
    */
   private boolean alterTypeMentionsInOtherTypes(String oldTypeName, String newTypeName) {
     // only modify locally modifiable types, but scan all types to give appropriate error msgs

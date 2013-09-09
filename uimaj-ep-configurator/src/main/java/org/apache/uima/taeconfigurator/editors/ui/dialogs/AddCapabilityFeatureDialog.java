@@ -120,7 +120,7 @@ public class AddCapabilityFeatureDialog extends AbstractDialogMultiColTable {
    * return the actual type name : short-feature-name
    * 
    * @param feature
-   * @return
+   * @return the actual type name : short-feature-name
    */
   protected String getTypeFeature(Feature feature) {
     return selectedType.getName() + ':' + feature.getShortName();

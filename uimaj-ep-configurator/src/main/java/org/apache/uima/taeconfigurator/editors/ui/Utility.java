@@ -80,7 +80,6 @@ public class Utility extends MessageDialog {
    *          with an error image MessageDialog.INFORMATION for a dialog with an information image
    *          MessageDialog.QUESTION for a dialog with a question image MessageDialog.WARNING for a
    *          dialog with a warning image
-   * @return Window.OK or Window.CANCEL. If window is closed, Window.CANCEL is returned.
    */
 
   public static void popMessage(String title, String message, int type) {
@@ -116,12 +115,12 @@ public class Utility extends MessageDialog {
     return popMessage(w.getDisplay().getActiveShell(), title, message, type, buttons);
   }
   /**
-   * remove 1 element (must be present) use == test
+   * remove element(s) (must be present) using == test
    * 
    * @param source
    * @param element
    * @param componentClass
-   * @return
+   * @return a copy of the array with == element(s) removed
    */
 
   public static Object[] removeElementFromArray(Object[] source, Object element,
@@ -135,12 +134,12 @@ public class Utility extends MessageDialog {
   }
 
   /**
-   * remove 1 element (must be present) use == test
+   * remove element(s) (must be present) using equals test
    * 
    * @param source
    * @param element
    * @param componentClass
-   * @return
+   * @return a copy of the array with equal element(s) removed
    */
 
   public static Object[] removeEqualElementFromArray(Object[] source, Object element,

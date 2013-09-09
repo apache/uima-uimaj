@@ -34,7 +34,6 @@ public interface IUimaEditorExtension {
    * The first method called by the CDE after the implementation class of this 
    * interface is instantiated.
    * 
-   * @return void
    */
   public void init ();
   
@@ -44,7 +43,7 @@ public interface IUimaEditorExtension {
    * 
    * @param cde       An instance of CDE
    * @param xmlizable New type of descriptor to be edited
-   * @return boolean  Return true if the external editor can edit the specified type of descriptor
+   * @return true if the external editor can edit the specified type of descriptor
    */
   public boolean canEdit (MultiPageEditor cde, XMLizable xmlizable);
   
@@ -60,8 +59,7 @@ public interface IUimaEditorExtension {
    * @param cde       An instance of CDE
    * @param xmlizable New type of descriptor to be edited
    * @throws PartInitException
-   *             If the initialization of the part fails 
-   * @return void
+   *             If the initialization of the part fails
    */
   public void activateEditor(IEditorSite site, IEditorInput editorInput,
           MultiPageEditor cde, XMLizable xmlizable) throws PartInitException;

@@ -76,9 +76,12 @@ public class AddFeatureDialog extends AbstractDialogKeyVerify {
 
   private int typeFilter;
 
+
   /**
+   * 
    * @param aSection
-   * @param aExistingTd
+   * @param aTd
+   * @param aExistingFd
    */
   public AddFeatureDialog(AbstractSection aSection, TypeDescription aTd,
           FeatureDescription aExistingFd) {

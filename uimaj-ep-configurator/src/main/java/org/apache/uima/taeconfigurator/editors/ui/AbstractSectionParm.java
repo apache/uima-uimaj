@@ -126,9 +126,10 @@ public abstract class AbstractSectionParm extends AbstractSection {
   }
 
   /**
-   * @param editor
+   * @param aEditor
    * @param parent
-   * @param hasDescription
+   * @param header
+   * @param description
    */
   public AbstractSectionParm(MultiPageEditor aEditor, Composite parent, String header,
           String description) {
@@ -516,7 +517,6 @@ public abstract class AbstractSectionParm extends AbstractSection {
    * 
    * @param containingGroup
    *          in parm section; if null = means all groups (common parms)
-   * @return
    */
   protected TreeItem[] getSettingsParameter(TreeItem containingGroup, String sourceItemName) {
     if (null == settingsTree)
@@ -557,7 +557,7 @@ public abstract class AbstractSectionParm extends AbstractSection {
    * get set of settings group from settingsTree that correspond to parmsection group
    * 
    * @param group
-   * @return
+   * @return set of settings group from settingsTree that correspond to parm-section group
    */
   protected TreeItem[] getSettingsGroups(TreeItem group) {
     if (null == settingsTree)
@@ -592,7 +592,7 @@ public abstract class AbstractSectionParm extends AbstractSection {
    * find settings tree item for group name
    * 
    * @param name
-   * @return
+   * @return settings tree item for group name
    */
   protected TreeItem getSettingsGroupTreeItemByName(String name) {
     TreeItem[] items = settingsTree.getItems();
@@ -633,8 +633,9 @@ public abstract class AbstractSectionParm extends AbstractSection {
    * Remove a parameter from all groups it lives in the Settings. If settings page is shown, also
    * update the GUI.
    * 
-   * @param treeItem
+   * @param parmItem
    *          in ParameterSection of parameter belonging to (multiple) groups
+   * @param removeFromGUI
    */
   public void removeParmSettingFromMultipleGroups(TreeItem parmItem, boolean removeFromGUI) {
     if (!isParameter(parmItem))
@@ -749,7 +750,8 @@ public abstract class AbstractSectionParm extends AbstractSection {
 
   /**
    * 
-   * @param treeItem
+   * @param groupName
+   * @param cps
    *          in ParameterSection of items an array of tree items to remove Can be all items under a
    *          particular group, or a set of items from different groups
    */

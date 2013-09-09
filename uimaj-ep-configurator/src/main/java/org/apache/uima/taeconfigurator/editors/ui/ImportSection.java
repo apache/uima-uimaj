@@ -238,9 +238,9 @@ public abstract class ImportSection extends AbstractSection {
    * Called with either byLocation non-null or byName non-null Adds multiple (by location) or one
    * (by name)
    * 
-   * @param location
+   * @param locations
    *          objects returned from dialog
-   * @param true
+   * @param isByName true
    *          if imports should be done by name
    * @return false if any import caused an error, true of all OK
    */

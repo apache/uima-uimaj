@@ -30,16 +30,15 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
  */
 public class HeaderPageWithSash extends HeaderPage {
 
+  protected Action haction;
+
+  protected Action vaction;
+
   /**
    * @param formEditor
    * @param id
    * @param keyPageTitle
    */
-
-  protected Action haction;
-
-  protected Action vaction;
-
   public HeaderPageWithSash(MultiPageEditor formEditor, String id, String keyPageTitle) {
     super(formEditor, id, keyPageTitle);
   }

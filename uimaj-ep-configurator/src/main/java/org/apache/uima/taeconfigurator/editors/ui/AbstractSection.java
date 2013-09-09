@@ -386,8 +386,9 @@ implements Listener, StandardStrings {
    * add pushbutton to container, set enabled, add listener for it
    * 
    * @param parent
-   * @param root
-   * @return
+   * @param label
+   * @param tip
+   * @return the push button
    */
   public Button newPushButton(Composite parent, String label, String tip) {
     return newPushButton(parent, label, tip, true); // set enabled by default
@@ -397,9 +398,9 @@ implements Listener, StandardStrings {
    * Add a push button to a container, add a listener for it too
    * 
    * @param parent
-   * @param root
+   * @param label
    * @param enabled
-   * @return
+   * @return the pushbutton
    */
   public Button newPushButton(Composite parent, String label, String tip, boolean enabled) {
     return newPushButton(parent, label, tip, enabled, 0);
@@ -501,7 +502,7 @@ implements Listener, StandardStrings {
    * @param parent
    * @param style
    *          SWT.SINGLE SWT.MULTI SWT.CHECK SWT.FULL_SELECTION
-   * @return
+   * @return the TableTree
    */
   protected TableTree newTableTree(Composite parent, int style) {
     TableTree tt = new TableTree(parent, style);
@@ -1006,7 +1007,7 @@ implements Listener, StandardStrings {
    * 
    * @param td
    * @param featureName
-   * @return
+   * @return a feature description for a type, including supertypes
    */
   public FeatureDescription getFeature(TypeDescription td, String featureName) {
     FeatureDescription[] features = td.getFeatures();
@@ -1176,7 +1177,7 @@ implements Listener, StandardStrings {
    * Get the metadata for a local or remote descriptor. If the descriptor is remote, but cannot be
    * currently connected to, return null. Note that this make take some time to determine.
    * 
-   * @param r
+   * @param o
    *          is the AnalysisEngineDescription or the URISpecifier for remotes.
    * @return AnalysisEngineMetaData or null
    */
@@ -1300,7 +1301,7 @@ implements Listener, StandardStrings {
 
   /**
    * @param location
-   * @return
+   * @return a location import
    * @throws MalformedURLException
    */
   public Import createLocationImport(String location) throws MalformedURLException {
@@ -1384,7 +1385,7 @@ implements Listener, StandardStrings {
    * Produce Unique key for a newly added descriptor file
    * 
    * @param fileName
-   * @return
+   * @return Unique key for a newly added descriptor file
    */
   protected String produceUniqueComponentKey(String fileName) {
     // get existing set of delegates from model, with imports
@@ -1448,7 +1449,7 @@ implements Listener, StandardStrings {
   /**
    * Update the model while checking for validity If invalid - ask if want to continue or not
    * 
-   * @return
+   * @return validity state
    */
   protected boolean isValidAggregateChange() {
 

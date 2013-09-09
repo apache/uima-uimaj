@@ -31,7 +31,7 @@ import org.eclipse.swt.widgets.Composite;
 public abstract class AbstractImportablePartSection extends AbstractSection {
 
   /**
-   * @param editor
+   * @param aEditor
    * @param parent
    * @param headerText
    * @param description
@@ -56,7 +56,6 @@ public abstract class AbstractImportablePartSection extends AbstractSection {
    * 
    * @param name
    * @param td
-   * @return
    */
   public FeatureDescription getFeatureFromTypeDescription(String name, TypeDescription td) {
     FeatureDescription[] fds = td.getFeatures();

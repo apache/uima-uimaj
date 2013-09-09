@@ -65,7 +65,9 @@ public class AddSofaDialog extends AbstractDialogKeyVerify {
    * Constructor for Editing an existing Sofa Name
    * 
    * @param aSection
-   * @param aExistingTd
+   * @param c
+   * @param aExistingSofa
+   * @param aIsInput
    */
   public AddSofaDialog(AbstractSection aSection, Capability c, String aExistingSofa,
           boolean aIsInput) {

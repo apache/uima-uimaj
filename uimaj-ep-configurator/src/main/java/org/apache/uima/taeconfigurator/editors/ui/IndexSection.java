@@ -404,7 +404,6 @@ public class IndexSection extends AbstractSection {
    * This has to check the resolvedImports, mergedWithDelegates version of the fsindexes
    * 
    * @param indexLabel
-   * @return
    */
   public boolean isDuplicateIndexLabel(String indexLabel) {
     FsIndexDescription[] indexes = getAnalysisEngineMetaData().getFsIndexes();

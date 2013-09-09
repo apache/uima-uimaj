@@ -56,7 +56,11 @@ public class FindComponentDialog extends AbstractDialog {
   private String[] componentHeaders;
 
   /**
-   * @param parentShell
+   * 
+   * @param aSection
+   * @param title
+   * @param header
+   * @param componentHeaders
    */
   public FindComponentDialog(AbstractSection aSection, String title, String header,
           String[] componentHeaders) {

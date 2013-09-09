@@ -1098,7 +1098,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
    * We create a new resource manager every time it's needed to pick up any changes the user may
    * have made to any classes that could have been loaded.
    * 
-   * @return
+   * @return a resource manager that has a class loader that will search the compiled output of the
+   * current project, in addition to the plug-in's classpath
    */
   public ResourceManager createResourceManager() {
     // long time = System.currentTimeMillis();
@@ -1241,7 +1242,7 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
    * 
    * We do this without changing the typeSystemDescription
    * 
-   * @return
+   * @return is valid state
    */
   private boolean validateIndexes() {
     CAS localCAS = descriptorCAS.get();
@@ -1464,7 +1465,6 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   }
 
   /**
-   * @return
    * @throws ResourceInitializationException
    */
   public void setAeDescription(AnalysisEngineDescription aAnalysisEngineDescription)
@@ -1868,7 +1868,7 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
    * updates it in some cases
    * 
    * @param aed
-   * @return
+   * @return the Map of resolved AE delegates
    */
   public Map getDelegateAEdescriptions(AnalysisEngineDescription aed) {
     Map result = new HashMap();

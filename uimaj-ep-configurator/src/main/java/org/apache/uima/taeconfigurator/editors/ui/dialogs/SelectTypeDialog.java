@@ -42,9 +42,8 @@ public class SelectTypeDialog extends AbstractDialog {
   public String nameSpaceName = "error-NameSpaceName-never-set";
   private TypesWithNameSpaces types;
   /**
-   * @param aSection
-   * @param title
-   * @param description
+   * @param section
+   * @param types
    */
   public SelectTypeDialog(AbstractSection section, TypesWithNameSpaces types) {
     super(section, "Select Type Name", "Select an Existing CAS Type name from the set of defined types");

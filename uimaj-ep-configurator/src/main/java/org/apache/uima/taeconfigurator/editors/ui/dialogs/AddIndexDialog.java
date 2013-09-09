@@ -94,7 +94,7 @@ public class AddIndexDialog extends AbstractDialogKeyVerifyJavaNames {
    * Constructor for Editing an existing XRD
    * 
    * @param aSection
-   * @param aExistingXRD
+   * @param aExistingNDX
    */
   public AddIndexDialog(AbstractSection aSection, FsIndexDescription aExistingNDX) {
     this(aSection);

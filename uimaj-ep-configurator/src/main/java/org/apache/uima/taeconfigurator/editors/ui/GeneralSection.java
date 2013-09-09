@@ -56,8 +56,9 @@ public class GeneralSection extends AbstractSection {
   /**
    * Creates a section to edit general information like primitive or aggregate and C++ or Java
    * 
-   * @param editor
+   * @param aEditor
    *          the referenced multipage editor
+   * @param parent
    */
   public GeneralSection(MultiPageEditor aEditor, Composite parent) {
     super(aEditor, parent, "Implementation Details", null);

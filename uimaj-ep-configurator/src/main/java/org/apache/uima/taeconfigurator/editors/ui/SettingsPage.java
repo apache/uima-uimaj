@@ -47,16 +47,10 @@ public class SettingsPage extends HeaderPageWithSash {
     createToolBarActions(managedForm);
   }
 
-  /**
-   * @return
-   */
   public ParameterSettingsSection getParameterSettingsSection() {
     return parameterSettingsSection;
   }
 
-  /**
-   * @return
-   */
   public ValueSection getValueSection() {
     return valueSection;
   }

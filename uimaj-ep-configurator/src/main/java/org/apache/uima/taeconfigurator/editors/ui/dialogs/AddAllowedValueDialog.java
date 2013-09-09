@@ -42,7 +42,7 @@ public class AddAllowedValueDialog extends AbstractDialogKeyVerify {
    * Constructor for Adding or Editing an Allowed Value.
    * 
    * @param aSection
-   * @param aExistingTd
+   * @param aExistingAv
    */
   public AddAllowedValueDialog(AbstractSection aSection, AllowedValue aExistingAv) {
     super(aSection, "Add an Allowed Value for a String subtype",

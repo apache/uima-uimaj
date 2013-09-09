@@ -185,7 +185,6 @@ public abstract class HeaderPage extends FormPage {
    * 
    * @param managedForm
    * @param equalWidth
-   * @return
    */
   public Form2Panel setup2ColumnLayout(IManagedForm managedForm, boolean equalWidth) {
     if (equalWidth)

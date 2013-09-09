@@ -89,8 +89,9 @@ public class FlowSection extends AbstractSection {
   /**
    * creates a section only for aggregate specifiers to define the flow of their delegates
    * 
-   * @param editor
+   * @param aEditor
    *          the referenced multipage editor
+   * @param parent         
    */
   public FlowSection(MultiPageEditor aEditor, Composite parent) {
     super(aEditor, parent, Messages.getString("FlowSection.ComponentEngineFlowTitle"), //$NON-NLS-1$
@@ -270,7 +271,7 @@ public class FlowSection extends AbstractSection {
   }
 
   /**
-   * @return
+   * @return the flow constraints
    */
   private FlowConstraints getModelFlow() {
     return getAnalysisEngineMetaData().getFlowConstraints();
@@ -516,21 +517,21 @@ public class FlowSection extends AbstractSection {
   }
 
   /**
-   * @return
+   * @return the down button
    */
   public Button getDownButton() {
     return downButton;
   }
 
   /**
-   * @return
+   * @return the flow list
    */
   public Table getFlowList() {
     return flowList;
   }
 
   /**
-   * @return
+   * @return the up button
    */
   public Button getUpButton() {
     return upButton;

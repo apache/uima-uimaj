@@ -223,7 +223,7 @@ public class AddCapabilityTypeDialog extends AbstractDialogMultiColTable {
    * 
    * @param typeName
    * @param IO
-   * @return
+   * @return true if the type has a feature (except all-features) marked as INPUT (OUTPUT)
    */
   private boolean someFeatureOnType(String typeName, int IO) {
     // special case for all-features

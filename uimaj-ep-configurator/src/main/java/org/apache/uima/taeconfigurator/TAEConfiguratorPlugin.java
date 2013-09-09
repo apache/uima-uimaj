@@ -196,7 +196,7 @@ public class TAEConfiguratorPlugin extends AbstractUIPlugin {
    * On first call, gets a formColors instance; on subsequent calls, returns that instance.
    * 
    * @param display
-   * @return
+   * @return  a formColors instance
    */
   public FormColors getFormColors(Display display) {
     if (null == formColors) {

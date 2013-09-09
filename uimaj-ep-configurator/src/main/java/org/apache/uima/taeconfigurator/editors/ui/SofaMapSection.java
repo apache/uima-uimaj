@@ -466,9 +466,11 @@ public class SofaMapSection extends AbstractSection {
    * Called when removing a delegate from the aggr. Removes from the sofaMappings, any and all
    * mappings associated with the delegate.
    * 
-   * @param componentSofa
+   * @param componentKey
+   * @param delegate
+   * @param pEditor
    */
-  public static void removeSofaMappings(String componentKey, ResourceSpecifier delegate,
+   public static void removeSofaMappings(String componentKey, ResourceSpecifier delegate,
           MultiPageEditor pEditor) {
     if (delegate instanceof AnalysisEngineDescription || delegate instanceof CasConsumerDescription) {
       Set[] inOut = getCapabilitySofaNames((ResourceCreationSpecifier) delegate, componentKey);

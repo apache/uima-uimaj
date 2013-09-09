@@ -106,7 +106,6 @@ public class ParameterSettingsSection extends AbstractSectionParm {
   /**
    * called by the Values section
    * 
-   * @return
    */
   public String getSelectedParamName() {
     TreeItem[] items = tree.getSelection();
@@ -134,10 +133,6 @@ public class ParameterSettingsSection extends AbstractSectionParm {
     return null;
   }
 
-  /**
-   * 
-   * @return
-   */
   public ConfigurationParameter getSelectedModelParameter() {
     TreeItem[] items = tree.getSelection();
     if (items.length == 0)

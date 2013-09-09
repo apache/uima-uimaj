@@ -78,7 +78,11 @@ public class PickTaeForTypesDialog extends AbstractDialog {
   }
 
   /**
-   * @param parentShell
+   * 
+   * @param aSection
+   * @param aggregateFileName
+   * @param delegateComponentDescriptors
+   * @param delegateComponentDescriptions
    */
   public PickTaeForTypesDialog(AbstractSection aSection, String aggregateFileName,
           java.util.List delegateComponentDescriptors, java.util.List delegateComponentDescriptions) {

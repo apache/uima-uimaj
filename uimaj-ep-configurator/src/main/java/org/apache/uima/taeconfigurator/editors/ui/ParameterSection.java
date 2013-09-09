@@ -792,7 +792,7 @@ public class ParameterSection extends AbstractSectionParm {
    * 
    * @param s1
    * @param s2
-   * @return
+   * @return s1 - s2 set
    */
   private String[] setDiff(String[] s1, String[] s2) {
     Set result = new TreeSet();
@@ -946,7 +946,6 @@ public class ParameterSection extends AbstractSectionParm {
    * 
    * @param dialog
    * @param group
-   * @return
    */
   private ConfigurationParameter addNewConfigurationParameter(AddParameterDialog dialog,
           TreeItem group) {
@@ -1049,7 +1048,6 @@ public class ParameterSection extends AbstractSectionParm {
    *
    * @param name  - Parameter name
    * @param cgset - Group-set (may be not-in-any, common, or a named set)
-   * @return
    */
   public boolean parameterNameAlreadyDefinedNoMsg(String name, ConfigGroup cgset) {
     if (cgset.getKind() == ConfigGroup.NOT_IN_ANY_GROUP) {
@@ -1151,7 +1149,7 @@ public class ParameterSection extends AbstractSectionParm {
    * do an "EQ" test
    * 
    * @param p
-   * @return
+   * @return the tree item corresponding to the configuration parameter
    */
   private TreeItem getTreeItemParm(ConfigurationParameter p) {
     TreeItem[] groups = tree.getItems();
@@ -1170,7 +1168,7 @@ public class ParameterSection extends AbstractSectionParm {
    * of the name(s), with special casing for the not-in-any-group and common.
    * 
    * @param g
-   * @return
+   * @return the tree itme corresponding to a configuration group
    */
   private TreeItem getTreeItemGroup(ConfigGroup g) {
     switch (g.getKind()) {

@@ -81,7 +81,7 @@ public class AggregateSection extends AbstractSection {
   /**
    * Creates a section for aggregate specifiers to add their delegates
    * 
-   * @param editor
+   * @param aEditor
    *          backpointer to the main multipage editor
    * @param parent
    *          the Composite where this section lives

@@ -356,7 +356,7 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
    * Add a suffix to the name to make it unique within all parameters defined for the cpd
    * 
    * @param name
-   * @return
+   * @return name with suffix making it unique
    */
   private String generateUniqueName(String name) {
     List allNames = new ArrayList();
@@ -442,7 +442,6 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
    * 
    * @param a
    * @param b
-   * @return
    */
   private boolean setEquals(Object[] a, Object[] b) {
     if (null == a && null == b)
