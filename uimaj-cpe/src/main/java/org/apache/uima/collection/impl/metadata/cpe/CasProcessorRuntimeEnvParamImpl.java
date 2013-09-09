@@ -111,7 +111,7 @@ public class CasProcessorRuntimeEnvParamImpl extends MetaDataObject_impl impleme
           new PropertyXmlInfo[0]);
 
   /**
-   * @return
+   * @return the value
    */
   public String getValue() {
     return value;
@@ -125,7 +125,7 @@ public class CasProcessorRuntimeEnvParamImpl extends MetaDataObject_impl impleme
   }
 
   /**
-   * @return
+   * @return the key
    */
   public String getKey() {
     return key;

@@ -91,7 +91,7 @@ public class CasProcessorFilterImpl extends MetaDataObject_impl implements CasPr
           new PropertyXmlInfo[0]);
 
   /**
-   * @return
+   * @return the filter
    */
   public String getFilter() {
     return filter;

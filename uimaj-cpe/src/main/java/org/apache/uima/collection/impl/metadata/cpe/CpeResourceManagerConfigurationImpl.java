@@ -88,9 +88,6 @@ public class CpeResourceManagerConfigurationImpl extends MetaDataObject_impl imp
     return XMLIZATION_INFO;
   }
 
-  /**
-   * @return
-   */
   public String getHref() {
     return href;
   }

@@ -44,7 +44,7 @@ public class CpeCollectionReaderIteratorImpl extends MetaDataObject_impl impleme
   private ConfigurationParameterSettings configParameterSettings;
 
   /**
-   * @return
+   * @return the component descriptor
    */
   public CpeComponentDescriptor getDescriptor() {
     return descriptor;
@@ -69,7 +69,7 @@ public class CpeCollectionReaderIteratorImpl extends MetaDataObject_impl impleme
           });
 
   /**
-   * @return
+   * @return the parameter settings
    */
 
   public CasProcessorConfigurationParameterSettings getConfigurationParameterSettings() {
@@ -99,7 +99,7 @@ public class CpeCollectionReaderIteratorImpl extends MetaDataObject_impl impleme
   }
 
   /**
-   * @return
+   * @return the parameter settings
    */
   public ConfigurationParameterSettings getConfigParameterSettings() {
     ConfigurationParameterSettings local = null;
@@ -129,7 +129,7 @@ public class CpeCollectionReaderIteratorImpl extends MetaDataObject_impl impleme
   }
 
   /**
-   * @return
+   * @return the sofa name mappings
    */
   public CpeSofaMappings getSofaNameMappings() {
     return sofaNameMappings;

@@ -101,7 +101,7 @@ public class CpeCollectionReaderCasInitializerImpl extends MetaDataObject_impl i
   }
 
   /**
-   * @return
+   * @return the parameter settings
    */
   public ConfigurationParameterSettings getParameterSettings() {
     ConfigurationParameterSettings local = null;
@@ -143,7 +143,7 @@ public class CpeCollectionReaderCasInitializerImpl extends MetaDataObject_impl i
           });
 
   /**
-   * @return
+   * @return the sofa mappings
    */
   public CpeSofaMappings getSofaNameMappings() {
     return sofaNameMappings;

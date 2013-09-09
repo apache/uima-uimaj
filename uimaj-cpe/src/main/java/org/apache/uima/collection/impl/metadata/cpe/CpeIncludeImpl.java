@@ -86,9 +86,6 @@ public class CpeIncludeImpl extends MetaDataObject_impl implements CpeInclude {
           new PropertyXmlInfo[0]);
 
   /** METHODS CALLED BY THE PARSER * */
-  /**
-   * @return
-   */
   public String getHref() {
     return href;
   }

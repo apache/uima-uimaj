@@ -149,32 +149,18 @@ public class CpeConfigurationImpl extends MetaDataObject_impl implements CpeConf
     timerImpl = "";
   }
 
-  /** * */
-
-  /**
-   * @return
-   */
   public String getDeployAs() {
     return deployAs;
   }
 
-  /**
-   * @return
-   */
   public long getNum2Process() {
     return num2Process;
   }
 
-  /**
-   * @return
-   */
   public String getStartAt() {
     return startAt;
   }
 
-  /**
-   * @return
-   */
   public String getTimerImpl() {
     return timerImpl;
   }
@@ -194,7 +180,7 @@ public class CpeConfigurationImpl extends MetaDataObject_impl implements CpeConf
   }
 
   /**
-   * @param i
+   * @param aStartAt
    */
   public void setStartAt(String aStartAt) {
 
@@ -208,9 +194,6 @@ public class CpeConfigurationImpl extends MetaDataObject_impl implements CpeConf
     timerImpl = string;
   }
 
-  /**
-   * @return
-   */
   public OutputQueue getOutputQueue() {
     return outputQueue;
   }

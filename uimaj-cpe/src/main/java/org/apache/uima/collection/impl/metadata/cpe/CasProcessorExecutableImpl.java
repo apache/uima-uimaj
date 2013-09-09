@@ -97,14 +97,14 @@ public class CasProcessorExecutableImpl extends MetaDataObject_impl implements
   }
 
   /**
-   * @return
+   * @return the directory
    */
   public String getDir() {
     return dir;
   }
 
   /**
-   * @return
+   * @return the executable
    */
   public String getExecutable() {
     return executable;
@@ -125,14 +125,14 @@ public class CasProcessorExecutableImpl extends MetaDataObject_impl implements
   }
 
   /**
-   * @return
+   * @return an array of arguments
    */
   protected CasProcessorExecArg[] getArgs() {
     return args.getAll();
   }
 
   /**
-   * @param args
+   * @param aargs
    */
   protected void setArgs(CasProcessorExecArg[] aargs) {
     for (int i = 0; aargs != null && i < aargs.length; i++) {
@@ -226,7 +226,7 @@ public class CasProcessorExecutableImpl extends MetaDataObject_impl implements
           new PropertyXmlInfo[] { new PropertyXmlInfo("arg"), new PropertyXmlInfo("env"), });
 
   /**
-   * @return
+   * @return the environment items
    */
   public ArrayList getEnvs() {
     return envs;

@@ -327,7 +327,7 @@ public String getDescriptor() {
   /**
    * Returns deployment parameters for this CasProcessor.
    * 
-   * @return
+   * @return the deployment parameters
    * @see org.apache.uima.collection.metadata.CasProcessorDeploymentParams instance
    */
   public CasProcessorDeploymentParams getDeploymentParams() {
@@ -444,8 +444,7 @@ public String getSOFA() {
    * sample size is defined seperately.
    * 
    * 
-   * @param aErrorCount -
-   *          max error tolerance
+   * @return max error tolerance
    */
   public int getMaxErrorCount() {
 
@@ -463,7 +462,7 @@ public String getSOFA() {
    * sample size is defined seperately.
    * 
    * 
-   * @param aErrorCount -
+   * @param aErrorSampleSize -
    *          max error tolerance
    */
   public void setMaxErrorSampleSize(int aErrorSampleSize) {
@@ -658,7 +657,7 @@ public String getSOFA() {
   }
 
   /**
-   * @param settings
+   * @return configuration parameter settings
    */
   public ConfigurationParameterSettings getParameterSettings() {
     ConfigurationParameterSettings local = null;
@@ -678,14 +677,14 @@ public String getSOFA() {
   }
 
   /**
-   * @return
+   * @return parameters
    */
   public Parameter[] getParameters() {
     return parameters;
   }
 
   /**
-   * @return
+   * @return filter
    */
   public CasProcessorFilter getFilter() {
     return filter;
@@ -699,42 +698,42 @@ public String getSOFA() {
   }
 
   /**
-   * @param parameters
+   * @param aparameters
    */
   public void setParameters(Parameter[] aparameters) {
     parameters = aparameters;
   }
 
   /**
-   * @param string
+   * @param aFilter
    */
   public void setFilter(CasProcessorFilter aFilter) {
     filter = aFilter;
   }
 
   /**
-   * @return
+   * @return container with configuration info for running CasProcessor in separate process
    */
   public CasProcessorRunInSeperateProcess getRunInSeparateProcess() {
     return runInSeparateProcess;
   }
 
   /**
-   * @param process
+   * @param process container with configuration info for running CasProcessor in separate process
    */
   public void setRunInSeparateProcess(CasProcessorRunInSeperateProcess process) {
     runInSeparateProcess = process;
   }
 
   /**
-   * @return
+   * @return deployment parameters
    */
   public CasProcessorDeploymentParams getDeploymentParameters() {
     return deploymentParameters;
   }
 
   /**
-   * @param parameters
+   * @param parameters deployment parameters
    */
   public void setDeploymentParameters(CasProcessorDeploymentParams parameters) {
     deploymentParameters = parameters;
@@ -790,21 +789,21 @@ public String getSOFA() {
               new PropertyXmlInfo("parameterSettings", null), });
 
   /**
-   * @return
+   * @return configuration for a checkpoint
    */
   public CpeCheckpoint getCheckpoint() {
     return checkpoint;
   }
 
   /**
-   * @return
+   * @return sofa name mappings
    */
   public CpeSofaMappings getSofaNameMappings() {
     return sofaNameMappings;
   }
 
   /**
-   * @param mappings
+   * @param mappings sofa name mappings
    */
   public void setSofaNameMappings(CpeSofaMappings mappings) {
     sofaNameMappings = mappings;

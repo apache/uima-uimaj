@@ -79,7 +79,7 @@ public class CasProcessorMaxRestartsImpl extends MetaDataObject_impl implements
   }
 
   /**
-   * @return
+   * @return the value
    */
   public String getValue() {
     return value;
@@ -137,7 +137,7 @@ public class CasProcessorMaxRestartsImpl extends MetaDataObject_impl implements
           "maxConsecutiveRestarts", new PropertyXmlInfo[0]);
 
   /**
-   * @return
+   * @return the wait time between retries
    */
   public int getWaitTimeBetweenRetries() {
     return waitTimeBetweenRetries;

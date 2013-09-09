@@ -80,14 +80,14 @@ public class CpeSofaMappingImpl extends MetaDataObject_impl implements CpeSofaMa
   }
 
   /**
-   * @return
+   * @return component sofa name
    */
   public String getComponentSofaName() {
     return componentSofaName;
   }
 
   /**
-   * @return
+   * @return cpe sofa name
    */
   public String getCpeSofaName() {
     return cpeSofaName;

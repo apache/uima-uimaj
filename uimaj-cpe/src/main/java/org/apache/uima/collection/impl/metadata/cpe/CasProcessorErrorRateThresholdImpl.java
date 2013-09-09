@@ -146,7 +146,7 @@ public class CasProcessorErrorRateThresholdImpl extends MetaDataObject_impl impl
           new PropertyXmlInfo[0]);
 
   /**
-   * @return
+   * @return the value
    */
   public String getValue() {
     return value;

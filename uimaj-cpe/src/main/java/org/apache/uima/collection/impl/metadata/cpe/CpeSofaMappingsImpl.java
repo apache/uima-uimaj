@@ -104,7 +104,7 @@ public class CpeSofaMappingsImpl extends MetaDataObject_impl implements CpeSofaM
           new PropertyXmlInfo[] { new PropertyXmlInfo("sofaNameMapping", null), });
 
   /**
-   * @return
+   * @return sofa name mappings
    */
   public CpeSofaMapping[] getSofaNameMappings() {
     CpeSofaMapping[] sofaMappings = new CpeSofaMapping[sofaNameMappings.size()];
@@ -112,7 +112,7 @@ public class CpeSofaMappingsImpl extends MetaDataObject_impl implements CpeSofaM
   }
 
   /**
-   * @param list
+   * @param sofaMappings
    */
   public void setSofaNameMappings(CpeSofaMapping[] sofaMappings) {
     for (int i = 0; sofaMappings != null && i < sofaMappings.length; i++) {

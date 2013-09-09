@@ -168,21 +168,21 @@ public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpo
 
   /** METHODS CALLED BY THE PARSER * */
   /**
-   * @return
+   * @return the batch size
    */
   public int getBatch() {
     return batch;
   }
 
   /**
-   * @return
+   * @return a file
    */
   public String getFile() {
     return file;
   }
 
   /**
-   * @return
+   * @return a time
    */
   public String getTime() {
     return time;

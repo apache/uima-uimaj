@@ -103,7 +103,7 @@ public class CasProcessorExecArgImpl extends MetaDataObject_impl implements CasP
 
   /** PROTECTED METHODS USED BY THE PARSER * */
   /**
-   * @return
+   * @return the value
    */
   public String getValue() {
     return value;

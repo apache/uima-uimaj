@@ -61,7 +61,7 @@ public class CasProcessorRunInSeperateProcessImpl extends MetaDataObject_impl im
           new PropertyXmlInfo[] { new PropertyXmlInfo("exec", null), });
 
   /**
-   * @return
+   * @return the executable
    */
   public CasProcessorExecutable getExec() {
     return exec;

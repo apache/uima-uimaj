@@ -73,14 +73,14 @@ public class OutputQueue_impl extends MetaDataObject_impl implements OutputQueue
           new PropertyXmlInfo[0]);
 
   /**
-   * @return
+   * @return dequeue timeout
    */
   public int getDequeueTimeout() {
     return dequeueTimeout;
   }
 
   /**
-   * @return
+   * @return queue class
    */
   public String getQueueClass() {
     return queueClass;

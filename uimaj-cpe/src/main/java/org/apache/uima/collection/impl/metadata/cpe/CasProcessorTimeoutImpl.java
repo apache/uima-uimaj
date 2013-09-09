@@ -91,7 +91,7 @@ public class CasProcessorTimeoutImpl extends MetaDataObject_impl implements CasP
           new PropertyXmlInfo[0]);
 
   /**
-   * @return
+   * @return the XMLization info
    */
   public static XmlizationInfo getXMLIZATION_INFO() {
     return XMLIZATION_INFO;
@@ -99,14 +99,14 @@ public class CasProcessorTimeoutImpl extends MetaDataObject_impl implements CasP
 
   /** PROTECTED METHODS USED BY THE PARSER */
   /**
-   * @return
+   * @return the max
    */
   public String getMax() {
     return max;
   }
 
   /**
-   * @return
+   * @return the default timeout
    */
   public String getDefaultTimeout() {
     return defaultTimeout;
