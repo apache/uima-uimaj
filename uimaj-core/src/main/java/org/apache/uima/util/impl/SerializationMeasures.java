@@ -59,7 +59,7 @@ public class SerializationMeasures {
   /** 
    * helper method to truncate printing of lots of trailing 0s
    * @param c
-   * @return
+   * @return the index of the 1st 0 where all the rest are 0's, or the last index
    */
   private static int maxIndexToZeros(int[] c) {
     for (int i = c.length - 1; i >= 0; i--) {
@@ -269,7 +269,7 @@ public class SerializationMeasures {
       return 100F;
     }
       
-    return  ((100F * a)/ b);
+    return ((100F * a)/ b);
   }
         
   // all measures in counts or bytes

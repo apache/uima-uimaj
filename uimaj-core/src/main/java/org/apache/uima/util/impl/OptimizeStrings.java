@@ -119,7 +119,7 @@ public class OptimizeStrings {
 
   /**
    * The number of characters saved - for statistical reporting only
-   * @return
+   * @return the number of characters saved
    */
   public long getSavedCharsExact() {
     return savedCharsExact;
@@ -131,7 +131,7 @@ public class OptimizeStrings {
 
   /**
    * The list of common strings
-   * @return
+   * @return the list of common strings
    */
   public String[] getCommonStrings() {
     return commonStringsA;
@@ -166,15 +166,14 @@ public class OptimizeStrings {
     return stringToIndexMap.get(s);
   }
   
-  /**
-   * returns a (positive or 0) or negative number.
+  /** 
+   * 
+   * @param s  must not be null
+   * @return a (positive or 0) or negative number.
    * If positive, it is the offset in the common string
    * If negative, -v is the index (starting at 1) that sequentially
    * increases, for each new unique string fetched using this
    * method.
-   * 
-   * @param s, must not be null
-   * @return
    */
   public int getIndexOrSeqIndex(String s) {
     if (null == s) {
@@ -334,7 +333,7 @@ public class OptimizeStrings {
    * Copy refs so that final array has no dups up to new length
    * Return new length, but don't trim array
    * @param sortedStrings
-   * @return
+   * @return new length
    */
   private int eliminateSortedStringDuplicates(String[] sortedStrings) {
     if (sortedStrings.length == 0) {
