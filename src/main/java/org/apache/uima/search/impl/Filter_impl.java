@@ -47,8 +47,8 @@ public class Filter_impl extends MetaDataObject_impl implements Filter {
   }
 
   /**
-   * @param string
-   * @param string2
+   * @param aSyntax
+   * @param aExpression
    */
   public Filter_impl(String aSyntax, String aExpression) {
     setSyntax(aSyntax);
