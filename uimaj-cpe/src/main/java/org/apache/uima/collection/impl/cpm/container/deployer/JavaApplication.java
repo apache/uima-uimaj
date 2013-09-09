@@ -58,12 +58,12 @@ public class JavaApplication extends RunnableApplication {
   }
 
   /**
-   * Sets up command line used to launch Cas Processor in a seperate process. Combines environment
+   * Sets up command line used to launch Cas Processor in a separate process. Combines environment
    * variables setup in the CPE descriptor with a System environment variables.
    * 
    * @param aCasProcessorConfiguration -
    *          access to Cas Processor configuration
-   * @param aJaxbCasProcessorConfig
+   * @param aCasProcessor
    * @throws ResourceConfigurationException
    */
   protected void addApplicationInfo(CasProcessorConfiguration aCasProcessorConfiguration,
@@ -186,9 +186,9 @@ public class JavaApplication extends RunnableApplication {
   }
 
   /**
-   * Returns exceutable section of the CPE Descriptor for
+   * Returns executable section of the CPE Descriptor for
    * 
-   * @return
+   * @return executable section of the CPE Descriptor
    */
   public Execute getExecSpec() {
     return exec;

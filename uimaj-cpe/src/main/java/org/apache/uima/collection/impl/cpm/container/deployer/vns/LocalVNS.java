@@ -62,8 +62,6 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
   /**
    * Instantiates Local Vinci Naming Service
    * 
-   * @param aProcessor -
-   *          CASProcessor instantiating this VNS (the owner)
    * @param aStartPort -
    *          a starting port # for clients (services)
    * @param aEndPort -
@@ -183,8 +181,7 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
    * Determines if a given port is free. It establishes a short lived connection to the port and if
    * successful returns false.
    * 
-   * @param -
-   *          port number to check
+   * @param port number to check
    */
   public boolean isAvailable(int port) {
     ServerSocket socket = null;

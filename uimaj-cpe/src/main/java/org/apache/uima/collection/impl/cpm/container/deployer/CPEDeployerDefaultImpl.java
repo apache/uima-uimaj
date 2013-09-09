@@ -72,9 +72,9 @@ public class CPEDeployerDefaultImpl implements CasProcessorDeployer {
    * processing thread created here. The <i>aCasProcessorList</i> contains instantiated Cas
    * Processors. These are instantiated by the CPEFactory.
    * 
-   * @param -
-   *          aCasProcessorList - list containing instantiated Cas Processors
-   * @redeploy - true when redeploying failed Cas Processor
+   * @param aCasProcessorList - list containing instantiated Cas Processors
+   * @param aEngine the CPM engine
+   * @param redeploy - true when redeploying failed Cas Processor
    * 
    * @return - ProcessingContainer containing pool of CasProcessors
    */
@@ -90,9 +90,8 @@ public class CPEDeployerDefaultImpl implements CasProcessorDeployer {
    * processing thread created here. The <i>aCasProcessorList</i> contains instantiated Cas
    * Processors. These are instantiated by the CPEFactory.
    * 
-   * @param -
-   *          aCasProcessorList - list containing instantiated Cas Processors
-   * @redeploy - true when redeploying failed Cas Processor
+   * @param aCasProcessorList - list containing instantiated Cas Processors
+   * @param redeploy - true when redeploying failed Cas Processor
    * 
    * @return - ProcessingContainer containing pool of CasProcessors
    */

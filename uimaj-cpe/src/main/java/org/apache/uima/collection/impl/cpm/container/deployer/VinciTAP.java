@@ -411,7 +411,7 @@ public class VinciTAP {
   /**
    * Send a given Vinci Frame to the remote vinci service and return result
    * 
-   * @param AFrame -
+   * @param aFrame -
    *          Vinci Frame containing request
    * 
    * @return AFrame - Frame containing result
@@ -1389,7 +1389,7 @@ public class VinciTAP {
   /**
    * Sets the VNS host this proxy will use to locate service
    * 
-   * @param host -
+   * @param aVNSHost -
    *          name of the VNS host
    */
   public void setVNSHost(String aVNSHost) {

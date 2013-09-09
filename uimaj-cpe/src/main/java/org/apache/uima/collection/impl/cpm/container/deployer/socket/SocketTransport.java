@@ -44,10 +44,8 @@ public interface SocketTransport {
    * Creates a socket connection to a given endpoint. This method blocks until all Connections are
    * resolved or an error occurs.
    * 
-   * @param -
-   *          aURI - URI containing service endpoint info: host&port
-   * @param -
-   *          aTimeout - max time in millis to wait for response
+   * @param aURI - URI containing service endpoint info: host&port
+   * @param aTimeout - max time in millis to wait for response
    * 
    * @return - Socket bound to a given endpoint
    * 
@@ -59,10 +57,8 @@ public interface SocketTransport {
   /**
    * Invokes fenced CasProcessor.
    * 
-   * @param -
-   *          aSocket - Socket bound to fenced CasProcessor
-   * @param -
-   *          aCas - CAS to be sent to the CasProcessor for analysis
+   * @param aSocket - Socket bound to fenced CasProcessor
+   * @param aCas - CAS to be sent to the CasProcessor for analysis
    * 
    * @return - CAS - CAS returned from the fenced CasProcessor
    * 

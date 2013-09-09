@@ -54,7 +54,7 @@ public class NonJavaApplication extends RunnableApplication {
    * 
    * @param aCasProcessorConfiguration -
    *          access to Cas Processor configuration
-   * @param aJaxbCasProcessorConfig
+   * @param aCasProcessor
    * @throws ResourceConfigurationException
    */
   protected void addApplicationInfo(CasProcessorConfiguration aCasProcessorConfiguration,
@@ -122,7 +122,7 @@ public class NonJavaApplication extends RunnableApplication {
   }
 
   /**
-   * @return
+   * @return the executable part
    */
   public Execute getExecSpec() {
     return exec;

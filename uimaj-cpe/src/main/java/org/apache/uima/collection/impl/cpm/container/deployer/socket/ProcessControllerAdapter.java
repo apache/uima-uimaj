@@ -31,11 +31,9 @@ public interface ProcessControllerAdapter {
    * Deploys given number of CasProcessors and returns their endpoint configuration( host,port).
    * This method blocks until all Connections are resolved or an error occurs.
    * 
-   * @param -
-   *          aCasProcessorName -name of the fenced CasProcessor
+   * @param aCasProcessorName -name of the fenced CasProcessor
    * 
-   * @param -
-   *          howMany - how many CasProcessor instances to deploy
+   * @param howMany - how many CasProcessor instances to deploy
    * 
    * @return - URL[] - list of URLs containing endpoint info
    * 
@@ -47,8 +45,7 @@ public interface ProcessControllerAdapter {
   /**
    * Stops a given CasProcessor service.
    * 
-   * @param -
-   *          aURL - service endpoint.
+   * @param aURL - service endpoint.
    * 
    */
   public void undeploy(URL aURL);

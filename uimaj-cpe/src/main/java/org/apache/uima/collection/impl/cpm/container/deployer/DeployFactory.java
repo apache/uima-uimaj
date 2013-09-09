@@ -49,18 +49,16 @@ public class DeployFactory {
 
   private DeployFactory() {
   }
-
+  
   /**
    * Returns a
    * {@link org.apache.uima.collection.impl.base_cpm.container.deployer.CasProcessorDeployer} object
    * that specializes in deploying components as either local, remote, or integrated.
    * 
-   * @param aCpeFactory -
-   *          cpe configuration reference
-   * @param aDeployMode -
-   *          mode of deployment.
-   * @return - appropriate deployer object for the mode of depolyment
-   * 
+   * @param aCpeFactory cpe factory
+   * @param aCasProcessorConfig cpe configuration reference
+   * @param aPca mode of deployment.
+   * @return appropriate deployer object for the mode of depolyment
    * @throws ResourceConfigurationException
    */
 
