@@ -96,14 +96,14 @@ public class FeatureStructureImpl implements FeatureStructure {
   }
 
   /**
-   * @return
+   * @return an ID string
    */
   public String getId() {
     return mId;
   }
 
   /**
-   * @return
+   * @return true if it is indexed
    * @deprecated
    */
   @Deprecated

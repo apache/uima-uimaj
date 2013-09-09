@@ -66,7 +66,7 @@ public class CasDataImpl implements CasData {
   /**
    * Removes named FeatureStructure from the list
    * 
-   * @param AFS -
+   * @param aFS -
    *          FeatureStructure to remove
    */
   public void removeFeatureStructure(FeatureStructure aFS) {
