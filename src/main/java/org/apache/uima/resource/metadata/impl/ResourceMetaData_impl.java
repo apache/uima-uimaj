@@ -39,7 +39,7 @@ import org.apache.uima.util.XMLParser;
 import org.w3c.dom.Element;
 
 /**
- * Reference implementation of {@link org.apache.uima.resource.ResourceMetaData}.
+ * Reference implementation of {@link ResourceMetaData}.
  * 
  * 
  */
@@ -72,20 +72,16 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
   /** Configuration Parameter Settings for the Resource */
   private ConfigurationParameterSettings mConfigurationParameterSettings = new ConfigurationParameterSettings_impl();
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.metadata.ResourceMetaData#resolveImports()
+  /**
+   * @see ResourceMetaData#resolveImports()
    */
   public void resolveImports() throws InvalidXMLException {
     // does nothing by default; may be overriden in subclasses
 
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.metadata.ResourceMetaData#resolveImports(org.apache.uima.resource.ResourceManager)
+  /**
+   * @see ResourceMetaData#resolveImports(ResourceManager)
    */
   public void resolveImports(ResourceManager aResourceManager) throws InvalidXMLException {
     // does nothing by default; may be overriden in subclasses
@@ -98,112 +94,112 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
   }
 
   /**
-   * @see org.apache.uima.resource.ResourceMetaData#getUUID()
+   * @see ResourceMetaData#getUUID()
    */
   public String getUUID() {
     return mUUID;
   }
 
   /**
-   * @see org.apache.uima.resource.ResourceMetaData#setUUID(String)
+   * @see ResourceMetaData#setUUID(String)
    */
   public void setUUID(String aUUID) {
     mUUID = aUUID;
   }
 
   /**
-   * @see org.apache.uima.resource.ResourceMetaData#getName()
+   * @see ResourceMetaData#getName()
    */
   public String getName() {
     return mName;
   }
 
   /**
-   * @see org.apache.uima.resource.ResourceMetaData#setName(String)
+   * @see ResourceMetaData#setName(String)
    */
   public void setName(String aName) {
     mName = aName;
   }
 
   /**
-   * @see org.apache.uima.resource.ResourceMetaData#getVersion()
+   * @see ResourceMetaData#getVersion()
    */
   public String getVersion() {
     return mVersion;
   }
 
   /**
-   * @see org.apache.uima.resource.ResourceMetaData#setVersion(String)
+   * @see ResourceMetaData#setVersion(String)
    */
   public void setVersion(String aVersion) {
     mVersion = aVersion;
   }
 
   /**
-   * @see org.apache.uima.resource.ResourceMetaData#getDescription()
+   * @see ResourceMetaData#getDescription()
    */
   public String getDescription() {
     return mDescription;
   }
 
   /**
-   * @see org.apache.uima.resource.ResourceMetaData#setDescription(String)
+   * @see ResourceMetaData#setDescription(String)
    */
   public void setDescription(String aDescription) {
     mDescription = aDescription;
   }
 
   /**
-   * @see org.apache.uima.resource.ResourceMetaData#getVendor()
+   * @see ResourceMetaData#getVendor()
    */
   public String getVendor() {
     return mVendor;
   }
 
   /**
-   * @see org.apache.uima.resource.ResourceMetaData#setVendor(String)
+   * @see ResourceMetaData#setVendor(String)
    */
   public void setVendor(String aVendor) {
     mVendor = aVendor;
   }
 
   /**
-   * @see org.apache.uima.resource.ResourceMetaData#getCopyright()
+   * @see ResourceMetaData#getCopyright()
    */
   public String getCopyright() {
     return mCopyright;
   }
 
   /**
-   * @see org.apache.uima.resource.ResourceMetaData#setCopyright(String)
+   * @see ResourceMetaData#setCopyright(String)
    */
   public void setCopyright(String aCopyright) {
     mCopyright = aCopyright;
   }
 
   /**
-   * @see org.apache.uima.resource.ResourceMetaData#getConfigurationParameterSettings()
+   * @see ResourceMetaData#getConfigurationParameterSettings()
    */
   public ConfigurationParameterSettings getConfigurationParameterSettings() {
     return mConfigurationParameterSettings;
   }
 
   /**
-   * @see org.apache.uima.resource.ResourceMetaData#setConfigurationParameterSettings(org.apache.uima.resource.ConfigurationParameterSettings)
+   * @see ResourceMetaData#setConfigurationParameterSettings(ConfigurationParameterSettings)
    */
   public void setConfigurationParameterSettings(ConfigurationParameterSettings aSettings) {
     mConfigurationParameterSettings = aSettings;
   }
 
   /**
-   * @see org.apache.uima.resource.ResourceMetaData#getConfigurationParameterDeclarations()
+   * @see ResourceMetaData#getConfigurationParameterDeclarations()
    */
   public ConfigurationParameterDeclarations getConfigurationParameterDeclarations() {
     return mConfigurationParameterDeclarations;
   }
 
   /**
-   * @see org.apache.uima.resource.ResourceMetaData#setConfigurationParameterDeclarations(org.apache.uima.resource.ConfigurationParameterDeclarations)
+   * @see ResourceMetaData#setConfigurationParameterDeclarations(ConfigurationParameterDeclarations)
    */
   public void setConfigurationParameterDeclarations(ConfigurationParameterDeclarations aDeclarations) {
     mConfigurationParameterDeclarations = aDeclarations;

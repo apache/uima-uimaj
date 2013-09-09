@@ -39,64 +39,62 @@ public class FsIndexDescription_impl extends MetaDataObject_impl implements FsIn
 
   private FsIndexKeyDescription[] mKeys = new FsIndexKeyDescription[0];
 
-  /**
-   * @see org.apache.uima.resource.impl.MetaDataObject_impl#getXMLElementTagName()
-   */
+  /* Doesn't override a super method */
   protected String getXMLElementTagName() {
     return "fsIndexDescription";
   }
 
   /**
-   * @see org.apache.uima.cas.FsIndexDescription#getLabel()
+   * @see FsIndexDescription#getLabel()
    */
   public String getLabel() {
     return mLabel;
   }
 
   /**
-   * @see org.apache.uima.cas.FsIndexDescription#setLabel(String)
+   * @see FsIndexDescription#setLabel(String)
    */
   public void setLabel(String aLabel) {
     mLabel = aLabel;
   }
 
   /**
-   * @see org.apache.uima.cas.FsIndexDescription#getTypeName()
+   * @see FsIndexDescription#getTypeName()
    */
   public String getTypeName() {
     return mTypeName;
   }
 
   /**
-   * @see org.apache.uima.cas.FsIndexDescription#setTypeName(String)
+   * @see FsIndexDescription#setTypeName(String)
    */
   public void setTypeName(String aTypeName) {
     mTypeName = aTypeName;
   }
 
   /**
-   * @see org.apache.uima.cas.FsIndexDescription#getKind
+   * @see FsIndexDescription#getKind
    */
   public String getKind() {
     return mKind;
   }
 
   /**
-   * @see org.apache.uima.cas.FsIndexDescription#setKind(String)
+   * @see FsIndexDescription#setKind(String)
    */
   public void setKind(String aKind) {
     mKind = aKind;
   }
 
   /**
-   * @see org.apache.uima.cas.FsIndexDescription#getKeys()
+   * @see FsIndexDescription#getKeys()
    */
   public FsIndexKeyDescription[] getKeys() {
     return mKeys;
   }
 
   /**
-   * @see org.apache.uima.cas.FsIndexDescription#setKeys(FsIndexKeyDescription[])
+   * @see FsIndexDescription#setKeys(FsIndexKeyDescription[])
    */
   public void setKeys(FsIndexKeyDescription[] aKeys) {
     if (aKeys == null) {

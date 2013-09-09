@@ -122,7 +122,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * 
    * Several subclasses override this, to add additional items to the list.
    * 
-   * @see org.apache.uima.resource.MetaDataObject#listAttributes()
+   * @see org.apache.uima.resource.metadata.MetaDataObject#listAttributes()
    */
   public List<NameClassPair> listAttributes() {
     try {
@@ -153,7 +153,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
   }
 
   /**
-   * @see org.apache.uima.resource.MetaDataObject#getAttributeValue(String)
+   * @see org.apache.uima.resource.metadata.MetaDataObject#getAttributeValue(String)
    */
   public Object getAttributeValue(String aName) {
     try {
@@ -200,14 +200,14 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
   /**
    * Returns whether this object is modifiable. MetaDataObjects are modifiable by default.
    * 
-   * @see org.apache.uima.resource.MetaDataObject#isModifiable()
+   * @see org.apache.uima.resource.metadata.MetaDataObject#isModifiable()
    */
   public boolean isModifiable() {
     return true;
   }
 
   /**
-   * @see org.apache.uima.resource.MetaDataObject#setAttributeValue(String, Object)
+   * @see org.apache.uima.resource.metadata.MetaDataObject#setAttributeValue(String, Object)
    */
   public void setAttributeValue(String aName, Object aValue) {
     try {
@@ -340,7 +340,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
   }
 
   /**
-   * @see org.apache.uima.resource.MetaDataObject#clone()
+   * @see org.apache.uima.resource.metadata.MetaDataObject#clone()
    */
   public Object clone() {
     // System.out.println("MetaDataObject_impl: clone");
@@ -457,7 +457,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    *   
    * @param val1
    * @param val2
-   * @return
+   * @return true if equal
    */
   private boolean valuesEqual(Object val1, Object val2) {
     if (val1 == null) {
@@ -590,7 +590,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
   }
 
   /**
-   * @see org.apache.uima.util.XMLizable#toXML(java.net.ContentHandler)
+   * @see org.apache.uima.util.XMLizable#toXML(ContentHandler)
    */
   public void toXML(ContentHandler aContentHandler) throws SAXException {
     toXML(aContentHandler, false);
@@ -633,7 +633,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
   }
 
   /**
-   * Called by the {@link toXML(Writer,String)} method to get the XML attributes that will be
+   * Called by the {@link #toXML(ContentHandler, boolean)} method to get the XML attributes that will be
    * written as part of the element's tag. By default this method returns an empty Attributes
    * object. Subclasses may override it in order to write attributes to the XML.
    * 
@@ -831,7 +831,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    *          name of the property to write to XML
    * @param aXmlElementName
    *          name of the XML element for the property, <code>null</code> if none
-   * @param aKeyXmlAttributeName
+   * @param aKeyXmlAttribute
    *          name of the XML attribute for the key
    * @param aValueTagName
    *          XML element tag name to use for each entry in the Map
@@ -842,7 +842,9 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    *          namespace for this object
    * @param aContentHandler
    *          ContentHandler to which this object will send events describing its XML representation
+   * @throws SAXException         
    */
+
   protected void writeMapPropertyToXml(String aPropName, String aXmlElementName,
           String aKeyXmlAttribute, String aValueTagName, boolean aOmitIfNull, String aNamespace,
           ContentHandler aContentHandler) throws SAXException {
@@ -1329,7 +1331,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * @return the <code>PropertyDescriptors</code> for all properties introduced by subclasses of
    *         <code>MetaDataObject_impl</code>.
    * 
-   * @throw IntrospectionException if introspection fails
+   * @throws IntrospectionException if introspection fails
    */
   protected PropertyDescriptor[] getPropertyDescriptors() throws IntrospectionException { 
     PropertyDescriptor[] pd = mPropertyDescriptorsMap.get(this.getClass());
@@ -1618,7 +1620,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * 
    * NOTE: never called with original == the top node
    * @param r - guaranteed non-null
-   * @return
+   * @return first node after a new line
    */
   private Node getFirstPrevCoIw(Node original) {
     boolean newlineFound = false;
@@ -1691,7 +1693,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * we consider it to be ignorable white space.
    * 
    * @param n
-   * @return
+   * @return true if node is a comment or is ignorable whitespace (approximately)
    */
   private boolean isCoIw(Node n) {
     return (n != null) && ((n instanceof Comment) || isWhitespaceText(n));

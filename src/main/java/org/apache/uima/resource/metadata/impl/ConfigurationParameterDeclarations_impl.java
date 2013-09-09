@@ -59,14 +59,14 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
   private String mSearchStrategy;
 
   /**
-   * @see org.apache.uima.resource.ConfigurationParameterDeclarations#getConfigurationParameters()
+   * @see ConfigurationParameterDeclarations#getConfigurationParameters()
    */
   public ConfigurationParameter[] getConfigurationParameters() {
     return mConfigurationParameters;
   }
 
   /**
-   * @see org.apache.uima.resource.ConfigurationParameterDeclarations#setConfigurationParameters(ConfigurationParameter[])
+   * @see ConfigurationParameterDeclarations#setConfigurationParameters(ConfigurationParameter[])
    */
   public void setConfigurationParameters(ConfigurationParameter[] aParams) {
     if (aParams == null) {
@@ -77,35 +77,35 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
   }
 
   /**
-   * @see org.apache.uima.resource.ConfigurationParameterDeclarations#getCommonParameters()
+   * @see ConfigurationParameterDeclarations#getCommonParameters()
    */
   public ConfigurationParameter[] getCommonParameters() {
     return mCommonParameters;
   }
 
   /**
-   * @see org.apache.uima.resource.ConfigurationParameterDeclarations#getConfigurationGroups()
+   * @see ConfigurationParameterDeclarations#getConfigurationGroups()
    */
   public ConfigurationGroup[] getConfigurationGroups() {
     return mConfigurationGroups;
   }
 
   /**
-   * @see org.apache.uima.resource.ConfigurationParameterDeclarations#getDefaultGroupName()
+   * @see ConfigurationParameterDeclarations#getDefaultGroupName()
    */
   public String getDefaultGroupName() {
     return mDefaultGroupName;
   }
 
   /**
-   * @see org.apache.uima.resource.ConfigurationParameterDeclarations#getSearchStragtegy()
+   * @see ConfigurationParameterDeclarations#getSearchStrategy()
    */
   public String getSearchStrategy() {
     return mSearchStrategy;
   }
 
   /**
-   * @see org.apache.uima.resource.ConfigurationParameterDeclarations#setCommonParameters(org.apache.uima.resource.ConfigurationParameter[])
+   * @see ConfigurationParameterDeclarations#setCommonParameters(ConfigurationParameter[])
    */
   public void setCommonParameters(ConfigurationParameter[] aParams) {
     if (aParams == null) {
@@ -116,7 +116,7 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
   }
 
   /**
-   * @see org.apache.uima.resource.ConfigurationParameterDeclarations#setConfigurationGroups(org.apache.uima.resource.ConfigurationGroup[])
+   * @see ConfigurationParameterDeclarations#setConfigurationGroups(ConfigurationGroup[])
    */
   public void setConfigurationGroups(ConfigurationGroup[] aGroups) {
     if (aGroups == null) {
@@ -127,22 +127,21 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
   }
 
   /**
-   * @see org.apache.uima.resource.ConfigurationParameterDeclarations#setDefaultGroupName(java.lang.String)
+   * @see ConfigurationParameterDeclarations#setDefaultGroupName(String)
    */
   public void setDefaultGroupName(String aGroupName) {
     mDefaultGroupName = aGroupName;
   }
 
   /**
-   * @see org.apache.uima.resource.ConfigurationParameterDeclarations#setSearchStrategy(java.lang.String)
+   * @see ConfigurationParameterDeclarations#setSearchStrategy(java.lang.String)
    */
   public void setSearchStrategy(String aStrategy) {
     mSearchStrategy = aStrategy;
   }
 
   /**
-   * @see org.apache.uima.resource.ConfigurationParameterDeclarations#getConfigurationParameter(java.lang.String,
-   *      java.lang.String)
+   * @see ConfigurationParameterDeclarations#getConfigurationParameter(String, String)
    */
   public ConfigurationParameter getConfigurationParameter(String aGroupName, String aParamName) {
     if (aGroupName == null) {
@@ -168,7 +167,7 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
   }
 
   /**
-   * @see org.apache.uima.resource.ConfigurationParameterDeclarations#getConfigurationGroup(java.lang.String)
+   * @see ConfigurationParameterDeclarations#getConfigurationGroupDeclarations(String)
    */
   public ConfigurationGroup[] getConfigurationGroupDeclarations(String aGroupName) {
     List<ConfigurationGroup> results = new ArrayList<ConfigurationGroup>();
@@ -189,10 +188,9 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
     return resultArr;
   }
 
-  /*
-   * (non-Javadoc)
+  /**
    * 
-   * @see org.apache.uima.resource.metadata.ConfigurationParameterDeclarations#addConfigurationParameter(org.apache.uima.resource.metadata.ConfigurationParameter)
+   * @see ConfigurationParameterDeclarations#addConfigurationParameter(ConfigurationParameter)
    */
   public void addConfigurationParameter(ConfigurationParameter aConfigurationParameter) {
     ConfigurationParameter[] current = getConfigurationParameters();
@@ -202,10 +200,9 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
     setConfigurationParameters(newArr);
   }
 
-  /*
-   * (non-Javadoc)
+  /**
    * 
-   * @see org.apache.uima.resource.metadata.ConfigurationParameterDeclarations#removeConfigurationParameter(org.apache.uima.resource.metadata.ConfigurationParameter)
+   * @see ConfigurationParameterDeclarations#removeConfigurationParameter(ConfigurationParameter)
    */
   public void removeConfigurationParameter(ConfigurationParameter aConfigurationParameter) {
     ConfigurationParameter[] current = getConfigurationParameters();
@@ -220,10 +217,8 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
     }
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.metadata.ConfigurationParameterDeclarations#addConfigurationParameter(org.apache.uima.resource.metadata.ConfigurationParameter)
+  /**
+   * @see ConfigurationParameterDeclarations#addConfigurationParameter(ConfigurationParameter)
    */
   public void addCommonParameter(ConfigurationParameter aConfigurationParameter) {
     ConfigurationParameter[] current = getCommonParameters();
@@ -233,10 +228,8 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
     setCommonParameters(newArr);
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.metadata.ConfigurationParameterDeclarations#removeConfigurationParameter(org.apache.uima.resource.metadata.ConfigurationParameter)
+  /**
+   * @see ConfigurationParameterDeclarations#removeConfigurationParameter(.ConfigurationParameter)
    */
   public void removeCommonParameter(ConfigurationParameter aConfigurationParameter) {
     ConfigurationParameter[] current = getCommonParameters();
@@ -251,10 +244,8 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
     }
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.metadata.ConfigurationGroupDeclarations#addConfigurationGroup(org.apache.uima.resource.metadata.ConfigurationGroup)
+  /**
+   * @see ConfigurationParameterDeclarations#addConfigurationGroup(ConfigurationGroup)
    */
   public void addConfigurationGroup(ConfigurationGroup aConfigurationGroup) {
     ConfigurationGroup[] current = getConfigurationGroups();
@@ -264,10 +255,8 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
     setConfigurationGroups(newArr);
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.metadata.ConfigurationGroupDeclarations#removeConfigurationGroup(org.apache.uima.resource.metadata.ConfigurationGroup)
+  /**
+   * @see ConfigurationParameterDeclarations#removeConfigurationGroup(ConfigurationGroup)
    */
   public void removeConfigurationGroup(ConfigurationGroup aConfigurationGroup) {
     ConfigurationGroup[] current = getConfigurationGroups();
@@ -349,7 +338,9 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
   /**
    * Overridden to return defaultGroup and searchStrategy as XML attributes.
    * 
-   * @see org.apache.uima.resource.impl.MetaDataObject_impl#getXMLAttributeString()
+   * 9/2013: superclasses don't have this method, so can't be overridden.
+   * 9/2013: method never called
+   * 
    */
   protected String getXMLAttributeString() {
     StringBuffer buf = new StringBuffer();
@@ -369,10 +360,8 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
     return buf.toString();
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXMLAttributes()
+  /**
+   * @see MetaDataObject_impl#getXMLAttributes()
    */
   protected AttributesImpl getXMLAttributes() {
     AttributesImpl attrs = new AttributesImpl();
@@ -386,7 +375,7 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
   }
 
   /**
-   * @see org.apache.uima.resource.impl.MetaDataObject_impl#getXmlizationInfo()
+   * @see MetaDataObject_impl#getXmlizationInfo()
    */
   protected XmlizationInfo getXmlizationInfo() {
     // NOTE: custom XMLization is used for reading. This information

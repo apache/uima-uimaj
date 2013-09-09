@@ -32,7 +32,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * Reference implementation of {@link org.apache.uima.resource.ConfigurationParameter}.
+ * Reference implementation of {@link ConfigurationParameter}.
  * 
  * 
  */
@@ -67,56 +67,56 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
   private String[] mOverrides = new String[0];
 
   /**
-   * @see org.apache.uima.resource.ConfigurationParameter#getName()
+   * @see ConfigurationParameter#getName()
    */
   public String getName() {
     return mName;
   }
 
   /**
-   * @see org.apache.uima.resource.ConfigurationParameter#setName(String)
+   * @see ConfigurationParameter#setName(String)
    */
   public void setName(String aName) {
     mName = aName;
   }
 
   /**
-   * @see org.apache.uima.resource.ConfigurationParameter#getExternalOverrideName()
+   * @see ConfigurationParameter#getExternalOverrideName()
    */
   public String getExternalOverrideName() {
     return mExternalOverrideName;
   }
 
   /**
-   * @see org.apache.uima.resource.ConfigurationParameter#setExternalOverrideName(String)
+   * @see ConfigurationParameter#setExternalOverrideName(String)
    */
   public void setExternalOverrideName(String aExternalOverrideName) {
     mExternalOverrideName = aExternalOverrideName;
   }
 
   /**
-   * @see org.apache.uima.resource.ConfigurationParameter#getDescription()
+   * @see ConfigurationParameter#getDescription()
    */
   public String getDescription() {
     return mDescription;
   }
 
   /**
-   * @see org.apache.uima.resource.ConfigurationParameter#setDescription(String)
+   * @see ConfigurationParameter#setDescription(String)
    */
   public void setDescription(String aDescription) {
     mDescription = aDescription;
   }
 
   /**
-   * @see org.apache.uima.resource.ConfigurationParameter#getType()
+   * @see ConfigurationParameter#getType()
    */
   public String getType() {
     return mType;
   }
 
   /**
-   * @see org.apache.uima.resource.ConfigurationParameter#setType(int)
+   * @see ConfigurationParameter#setType(String)
    */
   public void setType(String aType) throws UIMA_IllegalArgumentException {
     // check to make sure value is legal
@@ -129,41 +129,41 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
   }
 
   /**
-   * @see org.apache.uima.resource.ConfigurationParameter#isMultiValued()
+   * @see ConfigurationParameter#isMultiValued()
    */
   public boolean isMultiValued() {
     return mMultiValued;
   }
 
   /**
-   * @see org.apache.uima.resource.ConfigurationParameter#setMultiValued(boolean)
+   * @see ConfigurationParameter#setMultiValued(boolean)
    */
   public void setMultiValued(boolean aMultiValued) {
     mMultiValued = aMultiValued;
   }
 
   /**
-   * @see org.apache.uima.resource.ConfigurationParameter#isMandatory()
+   * @see ConfigurationParameter#isMandatory()
    */
   public boolean isMandatory() {
     return mMandatory;
   }
 
   /**
-   * @see org.apache.uima.resource.ConfigurationParameter#setMandatory(boolean)
+   * @see ConfigurationParameter#setMandatory(boolean)
    */
   public void setMandatory(boolean aMandatory) {
     mMandatory = aMandatory;
   }
 
   /**
-   * @see org.apache.uima.resource.ConfigurationParameter#isPublished()
+   * @see ConfigurationParameter#isPublished()
    */
   /*
    * public boolean isPublished() { return mPublished; }
    */
-  /**
-   * @see org.apache.uima.resource.ConfigurationParameter#setPublished(boolean)
+  /*
+   * @see ConfigurationParameter#setPublished(boolean)
    */
   /*
    * public void setPublished(boolean aPublished) { mPublished = aPublished; }
@@ -263,7 +263,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
 
   /**
    * Determines whether the given String is a valid name for a data type. Valid data type names are
-   * legal arguments to the {@link setType(String)} method, and are defined by the TYPE constants on
+   * legal arguments to the {@link #setType(String)} method, and are defined by the TYPE constants on
    * the {@link ConfigurationParameter} interface.
    * 
    * @param aTypeName

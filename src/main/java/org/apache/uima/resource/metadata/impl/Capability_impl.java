@@ -77,28 +77,28 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.metadata.Capability#getInputs()
+   * @see org.apache.uima.resource.metadata.Capability#getInputs()
    */
   public TypeOrFeature[] getInputs() {
     return mInputs;
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.metadata.Capability#getOutputs()
+   * @see org.apache.uima.resource.metadata.Capability#getOutputs()
    */
   public TypeOrFeature[] getOutputs() {
     return mOutputs;
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.metadata.Capability#getPreconditions()
+   * @see org.apache.uima.resource.metadata.Capability#getPreconditions()
    */
   public Precondition[] getPreconditions() {
     return mPreconditions;
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.metadata.Capability#getLanguagesSupported()
+   * @see org.apache.uima.resource.metadata.Capability#getLanguagesSupported()
    */
   public String[] getLanguagesSupported() {
     // search for LanguagePreconditions
@@ -130,28 +130,28 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.metadata.Capability#setInputs(TypeOrFeature[])
+   * @see org.apache.uima.resource.metadata.Capability#setInputs(TypeOrFeature[])
    */
   public void setInputs(TypeOrFeature[] aInputs) {
     mInputs = aInputs;
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.metadata.Capability#setOutputs(TypeOrFeature[])
+   * @see org.apache.uima.resource.metadata.Capability#setOutputs(TypeOrFeature[])
    */
   public void setOutputs(TypeOrFeature[] aOutputs) {
     mOutputs = aOutputs;
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.metadata.Capability#setPreconditions(Precondition[])
+   * @see org.apache.uima.resource.metadata.Capability#setPreconditions(Precondition[])
    */
   public void setPreconditions(Precondition[] aPreconditions) {
     mPreconditions = aPreconditions;
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.metadata.Capability#setLanguagesSupported(String[])
+   * @see org.apache.uima.resource.metadata.Capability#setLanguagesSupported(String[])
    */
   public void setLanguagesSupported(String[] aLanguageIDs) {
     // create a list of existing preconditions
@@ -217,7 +217,7 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.metadata.Capability#addInputType(java.lang.String,
+   * @see org.apache.uima.resource.metadata.Capability#addInputType(java.lang.String,
    *      boolean)
    */
   public void addInputType(String aTypeName, boolean aAllAnnotatorFeatures) {
@@ -234,7 +234,7 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.metadata.Capability#addInputFeature(java.lang.String)
+   * @see org.apache.uima.resource.metadata.Capability#addInputFeature(java.lang.String)
    */
   public void addInputFeature(String aFeatureName) {
     TypeOrFeature feat = UIMAFramework.getResourceSpecifierFactory().createTypeOrFeature();
@@ -249,7 +249,7 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.metadata.Capability#addOutputType(java.lang.String,
+   * @see org.apache.uima.resource.metadata.Capability#addOutputType(java.lang.String,
    *      boolean)
    */
   public void addOutputType(String aTypeName, boolean aAllAnnotatorFeatures) {
@@ -266,7 +266,7 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.metadata.Capability#addOutputFeature(java.lang.String)
+   * @see org.apache.uima.resource.metadata.Capability#addOutputFeature(java.lang.String)
    */
   public void addOutputFeature(String aFeatureName) {
     TypeOrFeature feat = UIMAFramework.getResourceSpecifierFactory().createTypeOrFeature();
@@ -281,7 +281,7 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.metadata.Capability#addSupportedLanguage(java.lang.String)
+   * @see org.apache.uima.resource.metadata.Capability#addSupportedLanguage(java.lang.String)
    */
   public void addSupportedLanguage(String aLanguage) {
     String[] oldArr = getLanguagesSupported();

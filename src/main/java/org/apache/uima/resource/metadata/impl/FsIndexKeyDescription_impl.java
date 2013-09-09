@@ -50,42 +50,42 @@ public class FsIndexKeyDescription_impl extends MetaDataObject_impl implements
   private int mComparator;
 
   /**
-   * @see org.apache.uima.analysis_engine.metadata.FsIndexKeyDescription#isTypePriority()
+   * @see FsIndexKeyDescription#isTypePriority()
    */
   public boolean isTypePriority() {
     return mTypePriority;
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.metadata.FsIndexKeyDescription#setTypePriority(boolean)
+   * @see FsIndexKeyDescription#setTypePriority(boolean)
    */
   public void setTypePriority(boolean aTypePriority) {
     mTypePriority = aTypePriority;
   }
 
   /**
-   * @see org.apache.uima.cas.FsIndexKeyDescription#getFeatureName()
+   * @see FsIndexKeyDescription#getFeatureName()
    */
   public String getFeatureName() {
     return mFeatureName;
   }
 
   /**
-   * @see org.apache.uima.cas.FsIndexKeyDescription#setFeatureName(String)
+   * @see FsIndexKeyDescription#setFeatureName(String)
    */
   public void setFeatureName(String aName) {
     mFeatureName = aName;
   }
 
   /**
-   * @see org.apache.uima.cas.FsIndexKeyDescription#getComparator()
+   * @see FsIndexKeyDescription#getComparator()
    */
   public int getComparator() {
     return mComparator;
   }
 
   /**
-   * @see org.apache.uima.cas.FsIndexKeyDescription#setComparator(int)
+   * @see FsIndexKeyDescription#setComparator(int)
    */
   public void setComparator(int aComparator) {
     mComparator = aComparator;
@@ -95,7 +95,7 @@ public class FsIndexKeyDescription_impl extends MetaDataObject_impl implements
    * Overridden to handle XML export of the <code>typePriority</code> and <code>comparator</code>
    * properties.
    * 
-   * @see org.apache.uima.MetaDataObject_impl#writeAttributeAsElement(String,Class,Object,String,ContentHandler)
+   * @see MetaDataObject_impl#writePropertyAsElement(PropertyXmlInfo, String, ContentHandler)
    */
   protected void writePropertyAsElement(PropertyXmlInfo aPropInfo, String aNamespace,
           ContentHandler aContentHandler) throws SAXException {
@@ -137,8 +137,7 @@ public class FsIndexKeyDescription_impl extends MetaDataObject_impl implements
    * Overridden to handle XML import of the <code>typePriority</code> and <code>comparator</code>
    * properties.
    * 
-   * @see org.apache.uima.resource.impl.MetaDataObject_impl#readPropertyValueFromXMLElement(org.apache.uima.resource.impl.PropertyXmlInfo,
-   *      org.w3c.dom.Element, org.apache.uima.util.XMLParser)
+   * @see MetaDataObject_impl#readPropertyValueFromXMLElement(PropertyXmlInfo, Element, XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
   protected void readPropertyValueFromXMLElement(PropertyXmlInfo aPropXmlInfo, Element aElement,
           XMLParser aParser, XMLParser.ParsingOptions aOptions) throws InvalidXMLException {

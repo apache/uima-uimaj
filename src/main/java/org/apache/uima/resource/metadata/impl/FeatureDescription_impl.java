@@ -92,42 +92,42 @@ public class FeatureDescription_impl extends MetaDataObject_impl implements Feat
   }
 
   /**
-   * @see org.apache.uima.cas.FeatureDescription#getName()
+   * @see FeatureDescription#getName()
    */
   public String getName() {
     return mName;
   }
 
   /**
-   * @see org.apache.uima.cas.FeatureDescription#setName(String)
+   * @see FeatureDescription#setName(String)
    */
   public void setName(String aName) {
     mName = aName;
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.metadata.FeatureDescription#getDescription()
+   * @see FeatureDescription#getDescription()
    */
   public String getDescription() {
     return mDescription;
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.metadata.FeatureDescription#setDescription(java.lang.String)
+   * @see FeatureDescription#setDescription(java.lang.String)
    */
   public void setDescription(String aDescription) {
     mDescription = aDescription;
   }
 
   /**
-   * @see org.apache.uima.cas.FeatureDescription#getRangeTypeName()
+   * @see FeatureDescription#getRangeTypeName()
    */
   public String getRangeTypeName() {
     return mRangeTypeName;
   }
 
   /**
-   * @see org.apache.uima.cas.FeatureDescription#setRangeTypeName(String)
+   * @see FeatureDescription#setRangeTypeName(String)
    */
   public void setRangeTypeName(String aTypeName) {
     mRangeTypeName = aTypeName;

@@ -169,7 +169,7 @@ public class Import_impl extends MetaDataObject_impl implements Import {
   }
 
   /**
-   * @see org.apache.uima.resource.impl.MetaDataObject_impl#getXmlizationInfo()
+   * @see MetaDataObject_impl#getXmlizationInfo()
    */
   protected XmlizationInfo getXmlizationInfo() {
     return new XmlizationInfo(null, null);

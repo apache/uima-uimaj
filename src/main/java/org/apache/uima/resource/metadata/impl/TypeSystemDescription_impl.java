@@ -31,6 +31,7 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMA_IllegalArgumentException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.metadata.Import;
+import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.InvalidXMLException;
@@ -67,74 +68,70 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
   }
 
   /**
-   * @see org.apache.uima.resource.ResourceMetaData#getName()
+   * @see ResourceMetaData#getName()
    */
   public String getName() {
     return mName;
   }
 
   /**
-   * @see org.apache.uima.resource.ResourceMetaData#setName(String)
+   * @see ResourceMetaData#setName(String)
    */
   public void setName(String aName) {
     mName = aName;
   }
 
   /**
-   * @see org.apache.uima.resource.ResourceMetaData#getVersion()
+   * @see ResourceMetaData#getVersion()
    */
   public String getVersion() {
     return mVersion;
   }
 
   /**
-   * @see org.apache.uima.resource.ResourceMetaData#setVersion(String)
+   * @see ResourceMetaData#setVersion(String)
    */
   public void setVersion(String aVersion) {
     mVersion = aVersion;
   }
 
   /**
-   * @see org.apache.uima.resource.ResourceMetaData#getDescription()
+   * @see ResourceMetaData#getDescription()
    */
   public String getDescription() {
     return mDescription;
   }
 
   /**
-   * @see org.apache.uima.resource.ResourceMetaData#setDescription(String)
+   * @see ResourceMetaData#setDescription(String)
    */
   public void setDescription(String aDescription) {
     mDescription = aDescription;
   }
 
   /**
-   * @see org.apache.uima.resource.ResourceMetaData#getVendor()
+   * @see ResourceMetaData#getVendor()
    */
   public String getVendor() {
     return mVendor;
   }
 
   /**
-   * @see org.apache.uima.resource.ResourceMetaData#setVendor(String)
+   * @see ResourceMetaData#setVendor(String)
    */
   public void setVendor(String aVendor) {
     mVendor = aVendor;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.metadata.TypeSystemDescription#getImports()
+  /**
+   * @see TypeSystemDescription#getImports()
    */
   public Import[] getImports() {
     return mImports;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.metadata.TypeSystemDescription#setImports(org.apache.uima.resource.metadata.Import[])
+  /**
+   * @see TypeSystemDescription#setImports(Import[])
    */
   public void setImports(Import[] aImports) {
     if (aImports == null) {
@@ -145,14 +142,14 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
   }
 
   /**
-   * @see org.apache.uima.cas.TypeSystemDescription#getTypes()
+   * @see TypeSystemDescription#getTypes()
    */
   public TypeDescription[] getTypes() {
     return mTypes;
   }
 
   /**
-   * @see org.apache.uima.cas.TypeSystemDescription#setTypes(TypeDescription[])
+   * @see TypeSystemDescription#setTypes(TypeDescription[])
    */
   public void setTypes(TypeDescription[] aTypes) {
     if (aTypes == null) {
@@ -163,7 +160,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
   }
 
   /**
-   * @see org.apache.uima.cas.TypeSystemDescription#addType(String, String, String)
+   * @see TypeSystemDescription#addType(String, String, String)
    */
   public TypeDescription addType(String aTypeName, String aDescription, String aSupertypeName) {
     // create new type description
@@ -184,7 +181,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.metadata.TypeSystemDescription#getType(java.lang.String)
+   * @see TypeSystemDescription#getType(java.lang.String)
    */
   public TypeDescription getType(String aTypeName) {
     for (int i = 0; i < mTypes.length; i++) {
@@ -194,10 +191,8 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
     return null;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.metadata.TypeSystemDescription#resolveImports()
+  /**
+   * @see TypeSystemDescription#resolveImports()
    */
   public void resolveImports() throws InvalidXMLException {
     resolveImports(new TreeSet<String>(), UIMAFramework.newDefaultResourceManager());
