@@ -46,8 +46,8 @@ import org.apache.uima.util.UimaTimer;
  * know whether it is calling a local AnalysisEngine or a remote service.
  * <p>
  * Subclasses must provide an implementation of the {@link #initialize(ResourceSpecifier,Map)}
- * method, which must create an {@link AnalysisEngineStub} object that can communicate with the
- * remote service. The stub must be passed to the {@link #setStub(AnalysisEngineStub)} method of
+ * method, which must create an {@link AnalysisEngineServiceStub} object that can communicate with the
+ * remote service. The stub must be passed to the {@link #setStub(AnalysisEngineServiceStub)} method of
  * this class.
  * 
  * 

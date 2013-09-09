@@ -56,8 +56,7 @@ public class AnalysisEngineService_impl extends ResourceService_impl {
   /**
    * Initialize this service. This is where the CAS pool is created.
    * 
-   * @see org.apache.uima.resource.service.impl.ResourceService_impl#initialize(org.apache.uima.resource.ResourceSpecifier,
-   *      int, java.util.Map, int)
+   * @see org.apache.uima.resource.service.impl.ResourceService_impl#initialize(ResourceSpecifier, Map)
    */
   public void initialize(ResourceSpecifier aResourceSpecifier, Map<String, Object> aResourceInitParams)
           throws ResourceInitializationException {
