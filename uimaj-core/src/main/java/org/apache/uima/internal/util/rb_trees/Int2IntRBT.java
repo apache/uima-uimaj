@@ -251,7 +251,7 @@ public class Int2IntRBT {
   /**
    * Given a node, get the key
    * @param node
-   * @return
+   * @return the key
    */
   private int getKey(int node) {
     if (useklrp) {
@@ -560,7 +560,7 @@ public class Int2IntRBT {
    * 
    * @param array - the array to expand - may be klrp0, 1, 2, 3, etc.
    * @param newSize = the total size - if in parts, the size of the part
-   * @return
+   * @return expanded array
    */
   private final int[] grow(final int[] array, final int newSize) {
     if (useklrp) {
@@ -628,7 +628,7 @@ public class Int2IntRBT {
   /**
    * Get the value for a given key
    * @param k
-   * @return
+   * @return the value
    */
   public int get(final int k) {
     final int node = findKey(k);
