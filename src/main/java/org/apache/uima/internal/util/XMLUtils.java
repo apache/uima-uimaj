@@ -268,7 +268,7 @@ public abstract class XMLUtils {
 
   /**
    * Reads a primitive value from its standard DOM representation. (This is the representation
-   * produced by {@link #writePrimitiveValue(Object, ContentHandler)}.
+   * produced by {@link #writePrimitiveValue(Object, Writer)}.
    * <p>
    * This is intended to be used for Java Strings and wrappers for primitive value classes (e.g.
    * Integer, Boolean).

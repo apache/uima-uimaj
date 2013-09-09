@@ -22,6 +22,7 @@ package org.apache.uima.internal.util;
 import java.util.Map;
 
 import org.apache.uima.analysis_engine.TextAnalysisEngine;
+import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 
@@ -63,7 +64,7 @@ public class TextAnalysisEnginePool extends AnalysisEnginePool {
    *          specifier that describes how to create the Resource instances for the pool
    * @param aResourceInitParams
    *          additional parameters to be passed to
-   *          {@link Resource#initialize(ResourceSpecifier,Map)} methods. May be null if there are
+   *          {@link Resource#initialize(ResourceSpecifier, Map)} methods. May be null if there are
    *          no parameters.
    * 
    * @throws ResourceInitializationException
@@ -89,7 +90,7 @@ public class TextAnalysisEnginePool extends AnalysisEnginePool {
   /**
    * Checks in a TAE to the pool. Also notifies other Threads that may be waiting for a connection.
    * 
-   * @param aResource
+   * @param aTAE
    *          the resource to release
    */
   public void releaseTAE(TextAnalysisEngine aTAE) {

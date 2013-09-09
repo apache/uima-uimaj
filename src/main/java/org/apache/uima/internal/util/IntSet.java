@@ -85,7 +85,7 @@ public class IntSet {
    * overflows. If the sums are not equal, the two sets cannot be equal. In case the sums are equal,
    * the two sets are compared element by element.
    * 
-   * @param s
+   * @param o
    *          the set to be tested for equality with this set.
    * @return <code>true</code> if the sets are equal, <code>false</code> otherwise.
    */
