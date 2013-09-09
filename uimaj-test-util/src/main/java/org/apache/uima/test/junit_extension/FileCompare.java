@@ -173,7 +173,6 @@ public class FileCompare {
    * Compare 2 strings, ignoring whitespace characters
    * @param in1
    * @param in2
-   * @return
    */
   public static boolean compareStrings(String in1, String in2) {
     char c1, c2;
@@ -216,7 +215,6 @@ public class FileCompare {
    *          Filename of the first XML file.
    * @param filename2
    *          Filename of the second XML file.
-   * @return
    * @throws IOException
    */
   public static boolean compareXML(String filename1, String filename2) throws IOException {
@@ -267,7 +265,6 @@ public class FileCompare {
    *          Filename of the second XML file.
    * @param pattern 
    *          an instance of Pattern which matches all substrings which should be filtered out of the match
-   * @return
    * @throws IOException
    */
   public static boolean compareWithFilter(String filename1, String filename2, Pattern pattern)
@@ -307,7 +304,6 @@ public class FileCompare {
    * @param s1
    * @param s2
    * @param pattern
-   * @return
    */
 
   public static boolean compareStringsWithFilter(String s1, String s2, Pattern pattern) {

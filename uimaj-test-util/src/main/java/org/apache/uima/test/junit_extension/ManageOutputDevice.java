@@ -44,7 +44,7 @@ public class ManageOutputDevice {
    * sets the <code>System.out</code> to a file based <code>java.io.PrintStream</code>
    * 
    * @param descriptor
-   *          a full qualified filename {@see java.io.File#File(String pathname)}
+   *          a full qualified filename, see {@link java.io.File#File(String pathname)}
    * @throws FileNotFoundException
    */
   public static void setSysOutToFile(String descriptor) throws FileNotFoundException {
