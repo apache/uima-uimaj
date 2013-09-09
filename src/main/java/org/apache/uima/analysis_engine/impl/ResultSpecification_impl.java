@@ -454,7 +454,7 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
    * 
    * @param rsLangs
    * @param language
-   * @return  
+   * @return true if the rsLangs subsumes the language 
    */
   private static boolean hasLanguage(RsLangs rsLangs, String language) {
     language = Language.normalize(language);
@@ -466,7 +466,7 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
 
 
   /**
-   * @see org.apache.uima.resource.impl.MetaDataObject_impl#getXmlizationInfo()
+   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
    */
   @Override
   protected XmlizationInfo getXmlizationInfo() {

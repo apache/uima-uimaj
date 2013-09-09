@@ -110,7 +110,7 @@ public class RsLangs {
    * 
    * @param rsl may be null (means x-unspec, subsumes all)
    * @param lang
-   * @return
+   * @return true if rsl subsumes lang
    */
   static boolean subsumes(RsLangs rsl, String lang) {
     return subsumesCanonical(rsl, RsLang.getCanonicalLanguageString(lang));
@@ -143,7 +143,7 @@ public class RsLangs {
    * @param rsl assumed to be not null, not x-unspec
    * @param lang assumed to be not null, not x-unspec
    * @param baseLang
-   * @return
+   * @return true if any of the rsl languages is equal to the lang or the base lang
    */
   private static boolean subsumesCanonical(RsLangs rsl, String lang, String baseLang) {
     for (String rsLang : rsl.languages) {

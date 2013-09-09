@@ -87,7 +87,7 @@ public class RsType {
   /**
    * returns the Features for a type in a result spec 
    * @param ts The type system, may be null
-   * @return
+   * @return list of features for a type in a result spec
    */
   List<Feature> getAllAppropriateFeatures(final TypeSystem ts) {
     if (null == ts) {

@@ -217,7 +217,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
   }
 
   /**
-   * @see org.apache.uima.cas_processor.CasProcessor#getProcessingResourceMetaData()
+   * @see org.apache.uima.collection.base_cpm.CasProcessor#getProcessingResourceMetaData()
    */
   public ProcessingResourceMetaData getProcessingResourceMetaData() {
     return (ProcessingResourceMetaData) getMetaData();
@@ -274,14 +274,14 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.AnalysisEngine#process(org.apache.uima.jcas.impl.JCas)
+   * @see org.apache.uima.analysis_engine.AnalysisEngine#process(org.apache.uima.jcas.JCas)
    */
   public ProcessTrace process(JCas aJCas) throws AnalysisEngineProcessException {
     return process(aJCas.getCas());
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.AnalysisEngine#process(org.apache.uima.jcas.impl.JCas,
+   * @see org.apache.uima.analysis_engine.AnalysisEngine#process(org.apache.uima.jcas.JCas,
    *      org.apache.uima.analysis_engine.ResultSpecification)
    */
   public ProcessTrace process(JCas aJCas, ResultSpecification aResultSpec)
@@ -290,7 +290,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.AnalysisEngine#process(org.apache.uima.jcas.impl.JCas,
+   * @see org.apache.uima.analysis_engine.AnalysisEngine#process(org.apache.uima.jcas.JCas,
    *      org.apache.uima.analysis_engine.ResultSpecification, org.apache.uima.util.ProcessTrace)
    */
   public void process(JCas aJCas, ResultSpecification aResultSpec, ProcessTrace aTrace)
@@ -311,7 +311,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.cas_processor.CasObjectProcessor#process(org.apache.uima.cas.CAS)
+   * @see org.apache.uima.collection.base_cpm.CasObjectProcessor#process(org.apache.uima.cas.CAS)
    */
   public void processCas(CAS aCAS) throws ResourceProcessException {
     try {
@@ -322,7 +322,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
   }
 
   /**
-   * @see org.apache.uima.cas_processor.CasObjectProcessor#processCas(org.apache.uima.cas.CAS[])
+   * @see org.apache.uima.collection.base_cpm.CasObjectProcessor#processCas(org.apache.uima.cas.CAS[])
    */
   public void processCas(CAS[] aCASes) throws ResourceProcessException {
     for (int i = 0; i < aCASes.length; i++) {
@@ -380,7 +380,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.cas_processor.CasProcessor#isStateless()
+   * @see org.apache.uima.collection.base_cpm.CasProcessor#isStateless()
    */
   public boolean isStateless() {
     return false;
@@ -389,7 +389,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.cas_processor.CasProcessor#isReadOnly()
+   * @see org.apache.uima.collection.base_cpm.CasProcessor#isReadOnly()
    */
   public boolean isReadOnly() {
     OperationalProperties opProps = getAnalysisEngineMetaData().getOperationalProperties();
@@ -484,7 +484,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    * Kludge - make this public (but not part of AnalysisEngine interface) so that TAFAnnotator can
    * access it.
    * 
-   * @see org.apache.uima.resource.ConfigurableResource_ImplBase#getCurrentConfigParameterSettings()
+   * @see org.apache.uima.resource.ConfigurationManager#getCurrentConfigParameterSettings(String)
    */
   protected ConfigurationParameterSettings getCurrentConfigParameterSettings() {
     return getUimaContextAdmin().getConfigurationManager().getCurrentConfigParameterSettings(
