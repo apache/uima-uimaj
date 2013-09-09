@@ -54,8 +54,8 @@ public class CasConsumerAdapter implements AnalysisComponent {
   /**
    * Create a new annotator adapter.
    * 
-   * @param aAnnotator
-   *          the annotator instance
+   * @param aCasConsumer
+   *          the CasConsumer instance
    * @param aMetaData
    *          metadata for the annotator. Needed to compute ResultSpecification.
    */

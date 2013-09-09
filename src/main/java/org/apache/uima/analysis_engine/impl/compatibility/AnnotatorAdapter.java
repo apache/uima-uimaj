@@ -157,7 +157,7 @@ public class AnnotatorAdapter implements AnalysisComponent {
 
   /**
    * @param language
-   * @return
+   * @return the ResultSpecification for the language
    */
   private ResultSpecification getResultSpecForLanguage(String language) {
     // we cache this since it is called for each document
