@@ -57,8 +57,8 @@ public class CollectionReaderAdapter implements AnalysisComponent {
   /**
    * Create a new annotator adapter.
    * 
-   * @param aAnnotator
-   *          the annotator instance
+   * @param aCollectionReader
+   *          the CollectionReader instance
    * @param aMetaData
    *          metadata for the annotator. Needed to compute ResultSpecification.
    */

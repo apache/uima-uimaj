@@ -29,7 +29,7 @@ import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.resource.ResourceInitializationException;
 
 /**
- * Factory that builds {@link CasProcessorComponent} instances from AnalysisEngineDescription,
+ * Factory that builds {@link AnalysisComponent} instances from AnalysisEngineDescription,
  * CasConsumerDescription, or CollectionReaderDescription objects.
  */
 public class AnalysisComponentAdapterFactory {
