@@ -67,7 +67,7 @@ public class AnnotationImpl extends AnnotationBaseImpl implements AnnotationFS {
   }
 
   /**
-   * @see org.apache.uima.cas.text.AnnotationFS#getStart()
+   * @see org.apache.uima.cas.text.AnnotationFS#getBegin()
    */
   public int getBegin() {
     return this.casImpl.getFeatureValue(addr, this.casImpl.getTypeSystemImpl().startFeatCode);
