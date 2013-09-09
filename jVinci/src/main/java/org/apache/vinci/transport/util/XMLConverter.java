@@ -36,8 +36,7 @@ public class XMLConverter {
    * ampersand encoding.
    * 
    * @param convert_me
-   * @return
-   * 
+   * @return the converted string
    * @pre convert_me != null
    */
   static public String convertStringToXMLString(String convert_me) {
@@ -50,7 +49,7 @@ public class XMLConverter {
    * Convert to XML string format without ever using CDATA encoding.
    * 
    * @param convert_me
-   * @return
+   * @return the converted string
    * 
    * @pre convert_me != null
    */
