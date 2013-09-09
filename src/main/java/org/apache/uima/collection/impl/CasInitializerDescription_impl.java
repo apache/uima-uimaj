@@ -66,7 +66,7 @@ public class CasInitializerDescription_impl extends ResourceCreationSpecifier_im
   }
 
   /**
-   * @see org.apache.uima.collection.processing.CasInitializerDescription#getCasInitializerMetaData()
+   * @see org.apache.uima.collection.CasInitializerDescription#getCasInitializerMetaData()
    */
   public ProcessingResourceMetaData getCasInitializerMetaData() {
     return (ProcessingResourceMetaData) getMetaData();

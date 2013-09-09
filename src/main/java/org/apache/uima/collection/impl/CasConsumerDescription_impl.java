@@ -66,7 +66,7 @@ public class CasConsumerDescription_impl extends ResourceCreationSpecifier_impl 
   }
 
   /**
-   * @see org.apache.uima.collection.processing.CasConsumerDescription#getCasConsumerMetaData()
+   * @see org.apache.uima.collection.CasConsumerDescription#getCasConsumerMetaData()
    */
   public ProcessingResourceMetaData getCasConsumerMetaData() {
     return (ProcessingResourceMetaData) getMetaData();
