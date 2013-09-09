@@ -507,7 +507,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * This is only called when the JCas is already set up
    * 
    * @param cl
-   *                class loader to switch to
+   *                class loader to switch to 
    * @throws CASException
    */
   public void switchClassLoader(ClassLoader cl) {
@@ -531,7 +531,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * for each class loader.
    * 
    * @param cl
-   * @return
+   * @return a Map from the string of the fully qualified type name to LoadedJCasType instances
    */
   private synchronized Map<String, LoadedJCasType> loadJCasClasses(ClassLoader cl) {
     final TypeSystem ts = casImpl.getTypeSystem();
