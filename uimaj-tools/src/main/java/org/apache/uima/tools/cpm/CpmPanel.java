@@ -878,9 +878,6 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     consumersPanel.validate();
   }
 
-  /**
-   * @return
-   */
   private CpeDescription createEmptyCpeDescription() {
     CpeDescription cpeDesc = CpeDescriptorFactory.produceDescriptor();
     // We use CAS pool size default of 3
@@ -1726,7 +1723,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
    * Returns whether the GUI is dirty; that is, whether configuration settings have been modified
    * since the last save.
    * 
-   * @return
+   * @return whether the GUI is dirty
    */
   private boolean isDirty() {
     // have components been added or removed?
@@ -1816,7 +1813,6 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
 
   /**
    * @param specifier
-   * @return
    */
   private boolean isCasConsumerSpecifier(ResourceSpecifier specifier) {
     if (specifier instanceof CasConsumerDescription) {

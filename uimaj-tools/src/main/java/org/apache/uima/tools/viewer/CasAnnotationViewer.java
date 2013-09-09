@@ -411,7 +411,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
    * is to show all types in the CAS (except those specifically hidden by a call to
    * {@link #setHiddenTypes(String[])}.
    * 
-   * @param aTypeNames
+   * @param aDisplayedTypeNames
    *          names of types that are to be highlighted. Null indicates that all types in the CAS
    *          should be highlighted.
    */
@@ -466,7 +466,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
   /**
    * Configures the viewer to hide certain features in the annotation deatail pane.
    * 
-   * @param aFeatureName
+   * @param aFeatureNames
    *          array of (short) feature names to be hidden
    */
   public void setHiddenFeatures(String[] aFeatureNames) {
@@ -483,7 +483,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
    * {@link #setEntityResolver(EntityResolver)} method has been called with a user-supplied
    * class that can determine which annotations refer to the same entity.
    * 
-   * @param aDisplayEntities
+   * @param aEnabled
    *          true to enable entity viewing mode, false to allow annotation viewing only.
    *          The default is false.
    */
@@ -534,9 +534,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
    * mode makes for a cleaner legend at the expense of making it more difficult to toggle which
    * types are selected. There's also a button in the GUI that lets the user change this setting.
    * 
-   * @param aConsistent
-   *          true (the default) causes colors to be consistent across documents, false allows them
-   *          to vary
+   * @param aHideUnselected
    */
   public void setHideUnselectedCheckboxes(boolean aHideUnselected) {
     mHideUnselectedCheckboxes = aHideUnselected;
@@ -611,8 +609,8 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
 
   /**
    * Causes the specified words to appear in boldface wherever they occur in the document. This is
-   * case-insensitive. Call this method after {@link #setCAS()}. It wil apply only to the current
-   * document, and will be reset on the next call to {@link #setCAS()}.
+   * case-insensitive. Call this method after {@link #setCAS(CAS)}. It wil apply only to the current
+   * document, and will be reset on the next call to {@link #setCAS(CAS)}.
    * 
    * @param aWords
    *          array of words to highlight in boldface.
@@ -624,8 +622,8 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
 
   /**
    * Causes the specified spans to appear in boldface. This is case-insensitive. Call this method
-   * after {@link #setCAS()}. It wil apply only to the current document, and will be reset on the
-   * next call to {@link #setCAS()}.
+   * after {@link #setCAS(CAS)}. It wil apply only to the current document, and will be reset on the
+   * next call to {@link #setCAS(CAS)}.
    * 
    * @param aSpans
    *          spans to appear in boldface (begin1, end1, begin2, end2, ...)
@@ -639,7 +637,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
    * Configures the viewer appropriately for displaying a hit against an XML fragments query. This
    * does not use a sophisticated algorithm for determining the location of the document that
    * matched the query. Currently all it does is call {@link #setInitiallySelectedTypes(String[])}
-   * with the list of types mentioned in the query and {@link #applyBoldfaceToKeyword(String[])} on
+   * with the list of types mentioned in the query and {@link #applyBoldfaceToKeywords(String[])} on
    * any keywords mentioned in the query.
    * 
    * @param aQuery
@@ -691,7 +689,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
    * Configures the viewer appropriately for displaying a hit against an XML fragments query. This
    * does not use a sophisticated algorithm for determining the location of the document that
    * matched the query. Currently all it does is call {@link #setInitiallySelectedTypes(String[])}
-   * with the list of types mentioned in the query and {@link #applyBoldfaceToKeyword(String[])} on
+   * with the list of types mentioned in the query and {@link #applyBoldfaceToKeywords(String[])} on
    * any keywords mentioned in the query.
    * 
    * @param aQuery

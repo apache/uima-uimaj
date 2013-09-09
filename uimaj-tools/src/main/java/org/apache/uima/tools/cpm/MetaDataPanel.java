@@ -200,7 +200,7 @@ public class MetaDataPanel extends FormPanel {
    * Returns whether this panel is dirty; that is, whether a field has been modified since
    * clearDirty() was last called.
    * 
-   * @return
+   * @return whether this panel is dirty
    */
   public boolean isDirty() {
     List fields = getValues();

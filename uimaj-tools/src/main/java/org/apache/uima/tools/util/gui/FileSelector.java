@@ -77,7 +77,6 @@ public class FileSelector extends JPanel implements FocusListener {
    * @param initialValue filename initially displayed in the text field
    * @param fileChooserTitle title of the JFileChooser launched when the user clicks Browse
    * @param selectionMode Can be either JFileChooser.FILES_ONLY, JFileChooser.DIRECTORIES_ONLY or JFileChooser.FILES_AND_DIRECTORIES
-   * @param currentDir default directory for the file chooser
    */
   public FileSelector(String initialValue, String fileChooserTitle, int selectionMode) // 
   {

@@ -139,10 +139,10 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
    * 
    * @param aParentFrame
    *          frame containing this panel
-   * @param aTitle
+   * @param aDialogTitle
    *          title to display for the dialog
-   * @param aInputDir
-   *          directory containing input files (in XCAS foramt) to read
+   * @param med
+   *         
    * @param aStyleMapFile
    *          filename of style map to be used to view files in HTML
    * @param aPerformanceStats
@@ -152,6 +152,11 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
    * @param aTypesToDisplay
    *          array of types that should be highlighted in the viewer. This can be set to the output
    *          types of the Analysis Engine. A value of null means to display all types.
+   * @param interactiveTempFN
+   * @param javaViewerRBisSelected
+   * @param javaViewerUCRBisSelected
+   * @param xmlRBisSelected
+   * @param cas
    */
   public AnnotationViewerDialog(JFrame aParentFrame, String aDialogTitle, PrefsMediator med,
           File aStyleMapFile, String aPerformanceStats, TypeSystem aTypeSystem,

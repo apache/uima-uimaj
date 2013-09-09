@@ -296,9 +296,9 @@ public class AnnotationViewerMain extends JFrame {
   }
 
   /**
-   * @param tae // *
-   * @param taeDescFileName
-   * @return
+   * @param tad 
+   * @param descFileName
+   * @return the style map file
    * @throws IOException
    */
   private File getStyleMapFile(AnalysisEngineDescription tad, String descFileName)
@@ -317,9 +317,9 @@ public class AnnotationViewerMain extends JFrame {
   }
 
   /**
-   * @param tae // *
-   * @param taeDescFileName
-   * @return
+   * @param tsd
+   * @param descFileName
+   * @return the style map file
    * @throws IOException
    */
   private File getStyleMapFile(TypeSystemDescription tsd, String descFileName) throws IOException {

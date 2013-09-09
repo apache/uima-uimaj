@@ -64,7 +64,7 @@ import org.apache.uima.tools.util.htmlview.AnnotationViewGenerator;
  * <li>A label used to identify the annotations in the annotation viewer</li>
  * </ul>
  * <p>
- * To invoke the editor, call the {@link launchEditor(TextAnalysisEngine,String)} method.
+ * To invoke the editor, call the {@link #launchEditor(AnalysisEngineMetaData, String, CAS)} method.
  * 
  * 
  * 

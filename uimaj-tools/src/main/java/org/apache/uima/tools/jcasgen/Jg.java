@@ -432,7 +432,6 @@ public class Jg {
    *   -jcasgenclasspath xxxx
    *   
    * @param arguments
-   * @return
    */
   public int main1(String[] arguments) {
     boolean hadError = false;

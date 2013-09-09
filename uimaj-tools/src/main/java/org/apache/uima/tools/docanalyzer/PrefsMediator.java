@@ -213,7 +213,7 @@ public class PrefsMediator {
   }
 
   /**
-   * @param TAEdir
+   * @param edir
    *          set the TAE directory
    */
   public void setTAEfile(String edir) {
@@ -245,7 +245,7 @@ public class PrefsMediator {
   }
 
   /**
-   * @param input file format
+   * @param inputFileFormat
    *          The input file format to set.
    */
   public void setInputFileFormat(String inputFileFormat) {
