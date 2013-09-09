@@ -25,6 +25,7 @@ import java.io.OutputStream;
 import org.xml.sax.SAXException;
 
 import org.apache.uima.resource.metadata.MetaDataObject;
+import org.apache.uima.util.XMLInputSource;
 
 /**
  * Java representation of a Collection Processing Engine (CPE) XML descriptor. Generate an instance
