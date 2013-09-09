@@ -112,7 +112,7 @@ public class TypeCombo extends Composite {
    * Retrieves the selected type. Behavior is undefined when called
    * before setInput.
    * 
-   * @return
+   * @return the selected type
    */
   public Type getType() {
     return typeSystem.getType(typeCombo.getText());

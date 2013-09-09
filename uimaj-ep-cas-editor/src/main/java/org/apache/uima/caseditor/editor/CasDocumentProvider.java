@@ -107,7 +107,7 @@ public abstract class CasDocumentProvider {
    * 
    * @param element
    * 
-   * @return
+   * @return the session preference store
    */
   public abstract IPreferenceStore getSessionPreferenceStore(Object element);
 

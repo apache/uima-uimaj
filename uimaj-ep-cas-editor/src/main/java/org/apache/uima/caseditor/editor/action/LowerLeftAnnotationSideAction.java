@@ -41,7 +41,7 @@ public final class LowerLeftAnnotationSideAction extends BaseSelectionListenerAc
   /**
    * Initializes a new instance.
    *
-   * @param document
+   * @param editor
    *
    */
   public LowerLeftAnnotationSideAction(ICasEditor editor) {

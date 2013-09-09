@@ -44,8 +44,8 @@ public class ModeMenu extends TypeMenu {
   /**
    * Initializes a new instance.
    *
-   * @param type
    * @param typeSystem
+   * @param editor
    */
   public ModeMenu(TypeSystem typeSystem, AnnotationEditor editor) {
     super(typeSystem.getType(CAS.TYPE_NAME_ANNOTATION), typeSystem);

@@ -811,8 +811,6 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 
   /**
    * Used to inform about input changes
-   * 
-   * @param parent
    */
   @Override
   protected void handleElementContentReplaced() {
@@ -1140,9 +1138,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   /**
    * Retrieves an <code>AnnotationStyle</code> from the underlying storage.
    *
-   * @param element
    * @param type
-   * @return
    */
   public AnnotationStyle getAnnotationStyle(Type type) {
     if (type == null)
@@ -1160,7 +1156,6 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
    * 
    * Note: Internal usage only!
    * 
-   * @param element
    * @param style
    */
   // TODO: Disk must be accessed for every changed annotation style
@@ -1379,7 +1374,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   /**
    * Returns the caret position relative to the start of the text.
    * 
-   * @return
+   * @return the caret position relative to the start of the text
    */
   public int getCaretOffset() {
     return getSourceViewer().getTextWidget().getCaretOffset();

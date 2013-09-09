@@ -77,8 +77,6 @@ public class DocumentUimaImpl extends AbstractDocument {
   
   /**
    * Initializes a new instance.
-   * 
-   * @param project
    */
   public DocumentUimaImpl(CAS cas, InputStream in, DocumentFormat format) throws CoreException {
     this(cas, in, format, null);
@@ -89,9 +87,9 @@ public class DocumentUimaImpl extends AbstractDocument {
    * Initializes a new instance.
    * 
    * @param cas
-   * @param inputstream
+   * @param in
    * @param format
-   * @param type system string
+   * @param typeSystemText type system string
    */
   public DocumentUimaImpl(CAS cas, InputStream in, DocumentFormat format, String typeSystemText) throws CoreException {
     mCAS = cas;

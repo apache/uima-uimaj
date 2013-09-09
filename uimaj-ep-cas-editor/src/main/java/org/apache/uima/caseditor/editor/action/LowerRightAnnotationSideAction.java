@@ -41,7 +41,7 @@ public final class LowerRightAnnotationSideAction extends BaseSelectionListenerA
   /**
    * Initializes the current instance.
    *
-   * @param document
+   * @param editor
    */
   public LowerRightAnnotationSideAction(ICasEditor editor) {
     super("LowerRightAnnotationSide");

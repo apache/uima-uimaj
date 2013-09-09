@@ -40,7 +40,7 @@ public class MergeAnnotationAction extends BaseSelectionListenerAction {
   /**
    * Initializes the current instance.
    *
-   * @param document
+   * @param editor
    */
   public MergeAnnotationAction(ICasEditor editor) {
     super("MergeAnnotationAction");

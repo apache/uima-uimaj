@@ -78,7 +78,7 @@ abstract class OutlineContentProviderBase extends AbstractAnnotationDocumentList
 	/**
 	 * Updates the given annotation in the viewer.
 	 *
-	 * @param annotations
+	 * @param featureStructres
 	 */
 	@Override
 	protected void updatedAnnotation(Collection<AnnotationFS> featureStructres) {

@@ -87,7 +87,6 @@ public interface ICasDocumentListener {
    * 
    * @param oldViewName
    * @param newViewName
-   * @return
    */
   void viewChanged(String oldViewName, String newViewName);
 

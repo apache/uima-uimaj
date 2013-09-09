@@ -57,8 +57,8 @@ public class ShowAnnotationsMenu extends TypeMenu {
 	/**
 	 * Initializes a new instance.
 	 * 
-	 * @param type
 	 * @param typeSystem
+	 * @param shownTypes
 	 */
 	public ShowAnnotationsMenu(TypeSystem typeSystem, Collection<Type> shownTypes) {
 		super(typeSystem.getType(CAS.TYPE_NAME_ANNOTATION), typeSystem);

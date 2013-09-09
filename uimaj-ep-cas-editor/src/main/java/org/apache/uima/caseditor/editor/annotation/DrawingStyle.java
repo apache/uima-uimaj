@@ -29,7 +29,7 @@ import org.eclipse.jface.text.source.AnnotationPainter.IDrawingStrategy;
 /**
  * A factory for drawing styles.
  * 
- *  @see AnnotationStyle.Style
+ *  @see org.apache.uima.caseditor.editor.AnnotationStyle.Style
  */
 public class DrawingStyle {
 

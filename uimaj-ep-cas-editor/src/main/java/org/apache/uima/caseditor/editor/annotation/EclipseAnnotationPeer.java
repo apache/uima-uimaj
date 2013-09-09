@@ -32,9 +32,7 @@ public class EclipseAnnotationPeer extends org.eclipse.jface.text.source.Annotat
   /**
    * Initializes a new instance.
    *
-   * @param name
-   * @param isPersistent
-   * @param text
+   * @param annotation
    */
   public EclipseAnnotationPeer(AnnotationFS annotation) {
     super(annotation.getType().getName(), false, "");

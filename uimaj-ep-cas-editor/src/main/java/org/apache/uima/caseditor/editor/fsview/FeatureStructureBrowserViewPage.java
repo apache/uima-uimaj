@@ -341,7 +341,7 @@ public final class FeatureStructureBrowserViewPage extends Page {
   /**
    * Initializes a new instance.
    *
-   * @param document
+   * @param editor
    */
   public FeatureStructureBrowserViewPage(ICasEditor editor) {
 
@@ -487,8 +487,8 @@ public final class FeatureStructureBrowserViewPage extends Page {
   }
 
   /**
-   * Adds the following actions to the toolbar: {@link CreateAction} {@link DereferenceAction}
-   * {@link DeleteAction}
+   * Adds the following actions to the toolbar: {@link FeatureStructureBrowserViewPage.CreateAction}
+   * DeleteAction
    *
    * @param menuManager
    * @param toolBarManager

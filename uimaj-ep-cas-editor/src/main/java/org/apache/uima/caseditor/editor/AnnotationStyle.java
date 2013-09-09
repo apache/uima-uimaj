@@ -163,7 +163,7 @@ public final class AnnotationStyle {
   /**
    * Retrieves the drawing layer.
    *
-   * @return
+   * @return the drawing layer
    */
   public int getLayer() {
     return layer;
@@ -287,7 +287,7 @@ public final class AnnotationStyle {
    * 
    * @param store
    * @param typeName
-   * @return
+   * @return an annotation style from the provided preference store
    */
   public static AnnotationStyle getAnnotationStyleFromStore(IPreferenceStore store, String typeName) {
     

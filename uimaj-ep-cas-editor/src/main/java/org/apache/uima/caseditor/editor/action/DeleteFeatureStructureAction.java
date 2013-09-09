@@ -34,7 +34,7 @@ public class DeleteFeatureStructureAction extends BaseSelectionListenerAction {
   /**
    * Initializes the current instance.
    *
-   * @param document
+   * @param editor
    */
   public DeleteFeatureStructureAction(ICasEditor editor) {
     super("DeleteAction");

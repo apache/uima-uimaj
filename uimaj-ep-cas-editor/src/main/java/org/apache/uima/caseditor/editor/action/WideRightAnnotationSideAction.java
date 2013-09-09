@@ -41,7 +41,7 @@ public final class WideRightAnnotationSideAction extends BaseSelectionListenerAc
   /**
    * Initializes a new instance.
    *
-   * @param document
+   * @param editor
    */
   public WideRightAnnotationSideAction(ICasEditor editor) {
     super("WideRightAnnotationSide");

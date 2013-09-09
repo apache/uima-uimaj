@@ -34,7 +34,7 @@ public class Primitives {
   /**
    * Retrieve the primitive java class for a primitive type.
    * 
-   * @param cas
+   * @param ts
    * @param type
    * 
    * @return the primitive java class

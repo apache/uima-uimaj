@@ -35,8 +35,9 @@ public final class FeatureValue implements IAdaptable {
   /**
    * Initializes a new instance.
    *
+   * @param document
+   * @param structure
    * @param feature
-   * @param value
    */
   public FeatureValue(ICasDocument document, FeatureStructure structure, Feature feature) {
     Assert.isNotNull(document);

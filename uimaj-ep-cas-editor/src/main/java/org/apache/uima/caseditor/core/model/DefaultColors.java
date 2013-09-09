@@ -86,7 +86,6 @@ public class DefaultColors {
    * 
    * @param ts the <code>TypeSystem</code>
    * @param styles already existing styles which map an annotation to a color
-   * @return
    */
   public static Collection<AnnotationStyle> assignColors(TypeSystem ts, Collection<AnnotationStyle> styles) {
     
