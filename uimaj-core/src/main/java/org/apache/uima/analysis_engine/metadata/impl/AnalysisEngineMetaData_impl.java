@@ -95,14 +95,14 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl implement
   }
 
   /**
-   * @see org.apache.uima.resource.metadata.AnalysisEngineMetaData#getCapabilities()
+   * @see org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData#getCapabilities()
    */
   public Capability[] getCapabilities() {
     return mCapabilities;
   }
 
   /**
-   * @see org.apache.uima.resource.metadata.AnalysisEngineMetaData#setCapabilities(Capability[])
+   * @see org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData#setCapabilities(Capability[])
    */
   public void setCapabilities(Capability[] aCapabilities) {
     if (aCapabilities == null) {
@@ -113,60 +113,56 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl implement
   }
 
   /**
-   * @see org.apache.uima.resource.metadata.AnalysisEngineMetaData#getTypeSystem()
+   * @see org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData#getTypeSystem()
    */
   public TypeSystemDescription getTypeSystem() {
     return mTypeSystem;
   }
 
   /**
-   * @see org.apache.uima.resource.metadata.AnalysisEngineMetaData#setTypeSystem(TypeSystemDescription)
+   * @see org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData#setTypeSystem(TypeSystemDescription)
    */
   public void setTypeSystem(TypeSystemDescription aTypeSystem) {
     mTypeSystem = aTypeSystem;
   }
 
   /**
-   * @see org.apache.uima.resource.metadata.AnalysisEngineMetaData#getTypePriorities()
+   * @see org.apache.uima.resource.metadata.ProcessingResourceMetaData#getTypePriorities()
    */
   public TypePriorities getTypePriorities() {
     return mTypePriorities;
   }
 
   /**
-   * @see org.apache.uima.resource.metadata.AnalysisEngineMetaData#setTypePriorities(org.apache.uima.analysis_engine.metadata.TypePriorities)
+   * @see org.apache.uima.resource.metadata.ProcessingResourceMetaData#setTypePriorities(TypePriorities)
    */
   public void setTypePriorities(TypePriorities aTypePriorities) {
     mTypePriorities = aTypePriorities;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
+  /** 
    * @see org.apache.uima.resource.metadata.ProcessingResourceMetaData#getFsIndexCollection()
    */
   public FsIndexCollection getFsIndexCollection() {
     return mFsIndexCollection;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.metadata.ProcessingResourceMetaData#setFsIndexCollection(org.apache.uima.resource.metadata.FsIndexCollection)
+  /**
+   * @see org.apache.uima.resource.metadata.ProcessingResourceMetaData#setFsIndexCollection(FsIndexCollection)
    */
   public void setFsIndexCollection(FsIndexCollection aFsIndexCollection) {
     mFsIndexCollection = aFsIndexCollection;
   }
 
   /**
-   * @see org.apache.uima.resource.metadata.AnalysisEngineMetaData#getFsIndexes()
+   * @see org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData#getFsIndexes()
    */
   public FsIndexDescription[] getFsIndexes() {
     return mFsIndexCollection == null ? null : mFsIndexCollection.getFsIndexes();
   }
 
   /**
-   * @see org.apache.uima.resource.metadata.AnalysisEngineMetaData#setFsIndexes(FsIndexDescription[])
+   * @see org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData#setFsIndexes(FsIndexDescription[])
    */
   public void setFsIndexes(FsIndexDescription[] aFsIndexes) {
     if (mFsIndexCollection == null) {
