@@ -75,7 +75,7 @@ import org.xml.sax.SAXException;
  * Reference implementation of {@link AnalysisEngineDescription}. Note that this class contains two
  * attributes of class Map, which are not supported by the default XML input/output routines.
  * Therefore we override the {@link MetaDataObject_impl#writePropertyAsElement(PropertyXmlInfo, String, ContentHandler)} and
- * {@link MetaDataObject_impl#readPropertyValueFromXMLElement(PropertyXmlInfo, Element, XMLParser, ParsingOptions)} methods.
+ * {@link MetaDataObject_impl#readPropertyValueFromXMLElement(PropertyXmlInfo, Element, XMLParser, XMLParser.ParsingOptions)} methods.
  * 
  * 
  */
@@ -880,7 +880,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    * attribute has a value of type <code>Map</code>, which is not handled by the default XML
    * import logic.
    * 
-   * @see MetaDataObject_impl#readPropertyValueFromXMLElement(PropertyXmlInfo, Element, XMLParser, ParsingOptions)
+   * @see MetaDataObject_impl#readPropertyValueFromXMLElement(PropertyXmlInfo, Element, XMLParser, XMLParser.ParsingOptions)
    */
   @Override
   protected void readPropertyValueFromXMLElement(PropertyXmlInfo aPropXmlInfo, Element aElement,

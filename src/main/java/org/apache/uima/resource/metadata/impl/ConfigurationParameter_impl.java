@@ -156,7 +156,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
     mMandatory = aMandatory;
   }
 
-  /**
+  /*
    * @see ConfigurationParameter#isPublished()
    */
   /*

@@ -232,7 +232,7 @@ public abstract class UIMAFramework {
    *          {@link Resource#initialize(ResourceSpecifier,Map)} method. May be <code>null</code>
    *          if there are no parameters. Parameter names are defined as constants on the
    *          {@link AnalysisEngine}, and {@link Resource}.
-   *          Furthermore, the entry under the key {@link Resource.PARAM_PERFORMANCE_TUNING_SETTINGS}
+   *          Furthermore, the entry under the key {@link Resource#PARAM_PERFORMANCE_TUNING_SETTINGS}
    *          is a map which may contain settings with keys defined as constants here {@link UIMAFramework} interfaces. 
    *          For example this can be used to set
    *          performance-tuning settings as described in
@@ -262,7 +262,7 @@ public abstract class UIMAFramework {
    *          {@link Resource#initialize(ResourceSpecifier,Map)} method. May be <code>null</code>
    *          if there are no parameters. Parameter names are defined as constants on the
    *          {@link AnalysisEngine}, and {@link Resource}.
-   *          Furthermore, the entry under the key {@link Resource.PARAM_PERFORMANCE_TUNING_SETTINGS}
+   *          Furthermore, the entry under the key {@link Resource#PARAM_PERFORMANCE_TUNING_SETTINGS}
    *          is a map which may contain settings with keys defined as constants here {@link UIMAFramework} interfaces. 
    *          For example this can be used to set
    *          performance-tuning settings as described in
@@ -303,7 +303,7 @@ public abstract class UIMAFramework {
    *          {@link Resource#initialize(ResourceSpecifier,Map)} method. May be <code>null</code>
    *          if there are no parameters. Parameter names are defined as constants on the
    *          {@link AnalysisEngine}, and {@link Resource}.
-   *          Furthermore, the entry under the key {@link Resource.PARAM_PERFORMANCE_TUNING_SETTINGS}
+   *          Furthermore, the entry under the key {@link Resource#PARAM_PERFORMANCE_TUNING_SETTINGS}
    *          is a map which may contain settings with keys defined as constants here {@link UIMAFramework} interfaces. 
    *          For example this can be used to set
    *          performance-tuning settings as described in
@@ -386,7 +386,7 @@ public abstract class UIMAFramework {
    *          {@link Resource#initialize(ResourceSpecifier,Map)} method. May be <code>null</code>
    *          if there are no parameters. Parameter names are defined as constants on the
    *          {@link AnalysisEngine}, and {@link Resource}.
-   *          Furthermore, the entry under the key {@link Resource.PARAM_PERFORMANCE_TUNING_SETTINGS}
+   *          Furthermore, the entry under the key {@link Resource#PARAM_PERFORMANCE_TUNING_SETTINGS}
    *          is a map which may contain settings with keys defined as constants here {@link UIMAFramework} interfaces. 
    *          For example this can be used to set
    *          performance-tuning settings as described in
@@ -426,7 +426,7 @@ public abstract class UIMAFramework {
    *          {@link Resource#initialize(ResourceSpecifier,Map)} method. May be <code>null</code>
    *          if there are no parameters. Parameter names are defined as constants on the
    *          {@link AnalysisEngine}, and {@link Resource}.
-   *          Furthermore, the entry under the key {@link Resource.PARAM_PERFORMANCE_TUNING_SETTINGS}
+   *          Furthermore, the entry under the key {@link Resource#PARAM_PERFORMANCE_TUNING_SETTINGS}
    *          is a map which may contain settings with keys defined as constants here {@link UIMAFramework} interfaces. 
    *          For example this can be used to set
    *          performance-tuning settings as described in
@@ -539,7 +539,7 @@ public abstract class UIMAFramework {
    *          {@link Resource#initialize(ResourceSpecifier,Map)} method. May be <code>null</code>
    *          if there are no parameters. Parameter names are defined as constants on the
    *          {@link AnalysisEngine}, and {@link Resource}.
-   *          Furthermore, the entry under the key {@link Resource.PARAM_PERFORMANCE_TUNING_SETTINGS}
+   *          Furthermore, the entry under the key {@link Resource#PARAM_PERFORMANCE_TUNING_SETTINGS}
    *          is a map which may contain settings with keys defined as constants here {@link UIMAFramework} interfaces. 
    *          For example this can be used to set
    *          performance-tuning settings as described in
@@ -577,7 +577,7 @@ public abstract class UIMAFramework {
    *          {@link Resource#initialize(ResourceSpecifier,Map)} method. May be <code>null</code>
    *          if there are no parameters. Parameter names are defined as constants on the
    *          {@link AnalysisEngine}, and {@link Resource}.
-   *          Furthermore, the entry under the key {@link Resource.PARAM_PERFORMANCE_TUNING_SETTINGS}
+   *          Furthermore, the entry under the key {@link Resource#PARAM_PERFORMANCE_TUNING_SETTINGS}
    *          is a map which may contain settings with keys defined as constants here {@link UIMAFramework} interfaces. 
    *          For example this can be used to set
    *          performance-tuning settings as described in
@@ -678,7 +678,7 @@ public abstract class UIMAFramework {
    *          {@link Resource#initialize(ResourceSpecifier,Map)} method. May be <code>null</code>
    *          if there are no parameters. Parameter names are defined as constants on the
    *          {@link AnalysisEngine}, and {@link Resource}.
-   *          Furthermore, the entry under the key {@link Resource.PARAM_PERFORMANCE_TUNING_SETTINGS}
+   *          Furthermore, the entry under the key {@link Resource#PARAM_PERFORMANCE_TUNING_SETTINGS}
    *          is a map which may contain settings with keys defined as constants here {@link UIMAFramework} interfaces. 
    *          For example this can be used to set
    *          performance-tuning settings as described in
@@ -710,7 +710,7 @@ public abstract class UIMAFramework {
    *          {@link Resource#initialize(ResourceSpecifier,Map)} method. May be <code>null</code>
    *          if there are no parameters. Parameter names are defined as constants on the
    *          {@link AnalysisEngine}, and {@link Resource}.
-   *          Furthermore, the entry under the key {@link Resource.PARAM_PERFORMANCE_TUNING_SETTINGS}
+   *          Furthermore, the entry under the key {@link Resource#PARAM_PERFORMANCE_TUNING_SETTINGS}
    *          is a map which may contain settings with keys defined as constants here {@link UIMAFramework} interfaces. 
    *          For example this can be used to set
    *          performance-tuning settings as described in
@@ -760,7 +760,7 @@ public abstract class UIMAFramework {
    *          {@link Resource#initialize(ResourceSpecifier,Map)} method. May be <code>null</code>
    *          if there are no parameters. Parameter names are defined as constants on the
    *          {@link AnalysisEngine}, and {@link Resource}.
-   *          Furthermore, the entry under the key {@link Resource.PARAM_PERFORMANCE_TUNING_SETTINGS}
+   *          Furthermore, the entry under the key {@link Resource#PARAM_PERFORMANCE_TUNING_SETTINGS}
    *          is a map which may contain settings with keys defined as constants here {@link UIMAFramework} interfaces. 
    *          For example this can be used to set
    *          performance-tuning settings as described in
@@ -793,7 +793,7 @@ public abstract class UIMAFramework {
    *          {@link Resource#initialize(ResourceSpecifier,Map)} method. May be <code>null</code>
    *          if there are no parameters. Parameter names are defined as constants on the
    *          {@link AnalysisEngine}, and {@link Resource}.
-   *          Furthermore, the entry under the key {@link Resource.PARAM_PERFORMANCE_TUNING_SETTINGS}
+   *          Furthermore, the entry under the key {@link Resource#PARAM_PERFORMANCE_TUNING_SETTINGS}
    *          is a map which may contain settings with keys defined as constants here {@link UIMAFramework} interfaces. 
    *          For example this can be used to set
    *          performance-tuning settings as described in
@@ -848,7 +848,7 @@ public abstract class UIMAFramework {
    *          {@link Resource#initialize(ResourceSpecifier,Map)} method. May be <code>null</code>
    *          if there are no parameters. Parameter names are defined as constants on the
    *          {@link AnalysisEngine}, and {@link Resource}.
-   *          Furthermore, the entry under the key {@link Resource.PARAM_PERFORMANCE_TUNING_SETTINGS}
+   *          Furthermore, the entry under the key {@link Resource#PARAM_PERFORMANCE_TUNING_SETTINGS}
    *          is a map which may contain settings with keys defined as constants here {@link UIMAFramework} interfaces. 
    *          For example this can be used to set
    *          performance-tuning settings as described in
@@ -881,7 +881,7 @@ public abstract class UIMAFramework {
    *          {@link Resource#initialize(ResourceSpecifier,Map)} method. May be <code>null</code>
    *          if there are no parameters. Parameter names are defined as constants on the
    *          {@link AnalysisEngine}, and {@link Resource}.
-   *          Furthermore, the entry under the key {@link Resource.PARAM_PERFORMANCE_TUNING_SETTINGS}
+   *          Furthermore, the entry under the key {@link Resource#PARAM_PERFORMANCE_TUNING_SETTINGS}
    *          is a map which may contain settings with keys defined as constants here {@link UIMAFramework} interfaces. 
    *          For example this can be used to set
    *          performance-tuning settings as described in
@@ -927,7 +927,7 @@ public abstract class UIMAFramework {
    *          {@link CollectionProcessingEngine#initialize(CpeDescription,Map)} method. May be
    *          <code>null</code> if there are no parameters. Parameter names are defined as constants on the
    *          {@link AnalysisEngine}, and {@link Resource}.
-   *          Furthermore, the entry under the key {@link Resource.PARAM_PERFORMANCE_TUNING_SETTINGS}
+   *          Furthermore, the entry under the key {@link Resource#PARAM_PERFORMANCE_TUNING_SETTINGS}
    *          is a map which may contain settings with keys defined as constants here {@link UIMAFramework} interfaces. 
    *          For example this can be used to set
    *          performance-tuning settings as described in
@@ -959,7 +959,7 @@ public abstract class UIMAFramework {
    *          {@link CollectionProcessingEngine#initialize(CpeDescription,Map)} method. May be
    *          <code>null</code> if there are no parameters. Parameter names are defined as constants on the
    *          {@link AnalysisEngine}, and {@link Resource}.
-   *          Furthermore, the entry under the key {@link Resource.PARAM_PERFORMANCE_TUNING_SETTINGS}
+   *          Furthermore, the entry under the key {@link Resource#PARAM_PERFORMANCE_TUNING_SETTINGS}
    *          is a map which may contain settings with keys defined as constants here {@link UIMAFramework} interfaces. 
    *          For example this can be used to set
    *          performance-tuning settings as described in
@@ -1277,7 +1277,7 @@ public abstract class UIMAFramework {
    *          {@link CollectionProcessingEngine#initialize(CpeDescription,Map)} method. May be
    *          <code>null</code> if there are no parameters. Parameter names are defined as constants on the
    *          {@link AnalysisEngine}, and {@link Resource}.
-   *          Furthermore, the entry under the key {@link Resource.PARAM_PERFORMANCE_TUNING_SETTINGS}
+   *          Furthermore, the entry under the key {@link Resource#PARAM_PERFORMANCE_TUNING_SETTINGS}
    *          is a map which may contain settings with keys defined as constants here {@link UIMAFramework} interfaces. 
    *          For example this can be used to set
    *          performance-tuning settings as described in
