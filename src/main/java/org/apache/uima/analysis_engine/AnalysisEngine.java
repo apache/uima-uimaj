@@ -93,7 +93,7 @@ public interface AnalysisEngine extends ConfigurableResource, CasObjectProcessor
   /**
    * Key for the initialization parameter whose value is a {@link ConfigurationParameterSettings}
    * object that holds configuration settings that will be used to configure this AnalysisEngine,
-   * overridding any conflicting settings specified in this AnalysisEngine's Descriptor. This value
+   * overriding any conflicting settings specified in this AnalysisEngine's Descriptor. This value
    * is used as a key in the <code>aAdditionalParams</code> Map that is passed to the
    * {@link #initialize(ResourceSpecifier,Map)} method.
    */
