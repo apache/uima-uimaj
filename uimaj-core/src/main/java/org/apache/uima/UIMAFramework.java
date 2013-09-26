@@ -230,8 +230,13 @@ public abstract class UIMAFramework {
    * @param aAdditionalParams
    *          a Map containing additional parameters to pass to the
    *          {@link Resource#initialize(ResourceSpecifier,Map)} method. May be <code>null</code>
-   *          if there are no parameters. For example this can be used to set performance-tuning
-   *          settings as described in {@link #getDefaultPerformanceTuningProperties()}.
+   *          if there are no parameters. Parameter names are defined as constants on the
+   *          {@link AnalysisEngine}, and {@link Resource}.
+   *          Furthermore, the entry under the key {@link Resource.PARAM_PERFORMANCE_TUNING_SETTINGS}
+   *          is a map which may contain settings with keys defined as constants here {@link UIMAFramework} interfaces. 
+   *          For example this can be used to set
+   *          performance-tuning settings as described in
+   *          {@link #getDefaultPerformanceTuningProperties()}.
    * 
    * @return a <code>Resource</code> instance.
    * 
@@ -255,8 +260,13 @@ public abstract class UIMAFramework {
    * @param aAdditionalParams
    *          a Map containing additional parameters to pass to the
    *          {@link Resource#initialize(ResourceSpecifier,Map)} method. May be <code>null</code>
-   *          if there are no parameters. For example this can be used to set performance-tuning
-   *          settings as described in {@link #getDefaultPerformanceTuningProperties()}.
+   *          if there are no parameters. Parameter names are defined as constants on the
+   *          {@link AnalysisEngine}, and {@link Resource}.
+   *          Furthermore, the entry under the key {@link Resource.PARAM_PERFORMANCE_TUNING_SETTINGS}
+   *          is a map which may contain settings with keys defined as constants here {@link UIMAFramework} interfaces. 
+   *          For example this can be used to set
+   *          performance-tuning settings as described in
+   *          {@link #getDefaultPerformanceTuningProperties()}.
    * 
    * @return a <code>Resource</code> instance. This will be a subclass of
    *         <code>aResourceClass</code>.
@@ -291,8 +301,13 @@ public abstract class UIMAFramework {
    * @param aAdditionalParams
    *          a Map containing additional parameters to pass to the
    *          {@link Resource#initialize(ResourceSpecifier,Map)} method. May be <code>null</code>
-   *          if there are no parameters. For example this can be used to set performance-tuning
-   *          settings as described in {@link #getDefaultPerformanceTuningProperties()}.
+   *          if there are no parameters. Parameter names are defined as constants on the
+   *          {@link AnalysisEngine}, and {@link Resource}.
+   *          Furthermore, the entry under the key {@link Resource.PARAM_PERFORMANCE_TUNING_SETTINGS}
+   *          is a map which may contain settings with keys defined as constants here {@link UIMAFramework} interfaces. 
+   *          For example this can be used to set
+   *          performance-tuning settings as described in
+   *          {@link #getDefaultPerformanceTuningProperties()}.
    * 
    * @return a <code>Resource</code> instance. This will be a subclass of
    *         <code>aResourceClass</code>.
@@ -369,8 +384,11 @@ public abstract class UIMAFramework {
    * @param aAdditionalParams
    *          a Map containing additional parameters to pass to the
    *          {@link Resource#initialize(ResourceSpecifier,Map)} method. May be <code>null</code>
-   *          if there are no parameters. Valid parameter names are defined as constants on the
-   *          {@link AnalysisEngine} interface. For example this can be used to set
+   *          if there are no parameters. Parameter names are defined as constants on the
+   *          {@link AnalysisEngine}, and {@link Resource}.
+   *          Furthermore, the entry under the key {@link Resource.PARAM_PERFORMANCE_TUNING_SETTINGS}
+   *          is a map which may contain settings with keys defined as constants here {@link UIMAFramework} interfaces. 
+   *          For example this can be used to set
    *          performance-tuning settings as described in
    *          {@link #getDefaultPerformanceTuningProperties()}.
    * 
@@ -406,8 +424,11 @@ public abstract class UIMAFramework {
    * @param aAdditionalParams
    *          a Map containing additional parameters to pass to the
    *          {@link Resource#initialize(ResourceSpecifier,Map)} method. May be <code>null</code>
-   *          if there are no parameters. Valid parameter names are defined as constants on the
-   *          {@link AnalysisEngine} interface. For example this can be used to set
+   *          if there are no parameters. Parameter names are defined as constants on the
+   *          {@link AnalysisEngine}, and {@link Resource}.
+   *          Furthermore, the entry under the key {@link Resource.PARAM_PERFORMANCE_TUNING_SETTINGS}
+   *          is a map which may contain settings with keys defined as constants here {@link UIMAFramework} interfaces. 
+   *          For example this can be used to set
    *          performance-tuning settings as described in
    *          {@link #getDefaultPerformanceTuningProperties()}.
    * 
@@ -516,8 +537,11 @@ public abstract class UIMAFramework {
    * @param aAdditionalParams
    *          a Map containing additional parameters to pass to the
    *          {@link Resource#initialize(ResourceSpecifier,Map)} method. May be <code>null</code>
-   *          if there are no parameters. Valid parameter names are defined as constants on the
-   *          {@link AnalysisEngine} interface. For example this can be used to set
+   *          if there are no parameters. Parameter names are defined as constants on the
+   *          {@link AnalysisEngine}, and {@link Resource}.
+   *          Furthermore, the entry under the key {@link Resource.PARAM_PERFORMANCE_TUNING_SETTINGS}
+   *          is a map which may contain settings with keys defined as constants here {@link UIMAFramework} interfaces. 
+   *          For example this can be used to set
    *          performance-tuning settings as described in
    *          {@link #getDefaultPerformanceTuningProperties()}.
    * 
@@ -551,8 +575,11 @@ public abstract class UIMAFramework {
    * @param aAdditionalParams
    *          a Map containing additional parameters to pass to the
    *          {@link Resource#initialize(ResourceSpecifier,Map)} method. May be <code>null</code>
-   *          if there are no parameters. Valid parameter names are defined as constants on the
-   *          {@link AnalysisEngine} interface. For example this can be used to set
+   *          if there are no parameters. Parameter names are defined as constants on the
+   *          {@link AnalysisEngine}, and {@link Resource}.
+   *          Furthermore, the entry under the key {@link Resource.PARAM_PERFORMANCE_TUNING_SETTINGS}
+   *          is a map which may contain settings with keys defined as constants here {@link UIMAFramework} interfaces. 
+   *          For example this can be used to set
    *          performance-tuning settings as described in
    *          {@link #getDefaultPerformanceTuningProperties()}.
    * 
@@ -649,8 +676,13 @@ public abstract class UIMAFramework {
    * @param aAdditionalParams
    *          a Map containing additional parameters to pass to the
    *          {@link Resource#initialize(ResourceSpecifier,Map)} method. May be <code>null</code>
-   *          if there are no parameters. For example this can be used to set performance-tuning
-   *          settings as described in {@link #getDefaultPerformanceTuningProperties()}.
+   *          if there are no parameters. Parameter names are defined as constants on the
+   *          {@link AnalysisEngine}, and {@link Resource}.
+   *          Furthermore, the entry under the key {@link Resource.PARAM_PERFORMANCE_TUNING_SETTINGS}
+   *          is a map which may contain settings with keys defined as constants here {@link UIMAFramework} interfaces. 
+   *          For example this can be used to set
+   *          performance-tuning settings as described in
+   *          {@link #getDefaultPerformanceTuningProperties()}.
    * 
    * @return a <code>CasConsumer</code> instance.
    * 
@@ -676,9 +708,13 @@ public abstract class UIMAFramework {
    * @param aAdditionalParams
    *          a Map containing additional parameters to pass to the
    *          {@link Resource#initialize(ResourceSpecifier,Map)} method. May be <code>null</code>
-   *          if there are no parameters. Valid parameter names are defined as constants on the
-   *          {@link CasConsumer} interface. For example this can be used to set performance-tuning
-   *          settings as described in {@link #getDefaultPerformanceTuningProperties()}.
+   *          if there are no parameters. Parameter names are defined as constants on the
+   *          {@link AnalysisEngine}, and {@link Resource}.
+   *          Furthermore, the entry under the key {@link Resource.PARAM_PERFORMANCE_TUNING_SETTINGS}
+   *          is a map which may contain settings with keys defined as constants here {@link UIMAFramework} interfaces. 
+   *          For example this can be used to set
+   *          performance-tuning settings as described in
+   *          {@link #getDefaultPerformanceTuningProperties()}.
    * 
    * @return an <code>CasConsumer</code> instance.
    * 
@@ -722,8 +758,13 @@ public abstract class UIMAFramework {
    * @param aAdditionalParams
    *          a Map containing additional parameters to pass to the
    *          {@link Resource#initialize(ResourceSpecifier,Map)} method. May be <code>null</code>
-   *          if there are no parameters. For example this can be used to set performance-tuning
-   *          settings as described in {@link #getDefaultPerformanceTuningProperties()}.
+   *          if there are no parameters. Parameter names are defined as constants on the
+   *          {@link AnalysisEngine}, and {@link Resource}.
+   *          Furthermore, the entry under the key {@link Resource.PARAM_PERFORMANCE_TUNING_SETTINGS}
+   *          is a map which may contain settings with keys defined as constants here {@link UIMAFramework} interfaces. 
+   *          For example this can be used to set
+   *          performance-tuning settings as described in
+   *          {@link #getDefaultPerformanceTuningProperties()}.
    * 
    * @return a <code>CollectionReader</code> instance.
    * 
@@ -750,8 +791,11 @@ public abstract class UIMAFramework {
    * @param aAdditionalParams
    *          a Map containing additional parameters to pass to the
    *          {@link Resource#initialize(ResourceSpecifier,Map)} method. May be <code>null</code>
-   *          if there are no parameters. Valid parameter names are defined as constants on the
-   *          {@link CollectionReader} interface. For example this can be used to set
+   *          if there are no parameters. Parameter names are defined as constants on the
+   *          {@link AnalysisEngine}, and {@link Resource}.
+   *          Furthermore, the entry under the key {@link Resource.PARAM_PERFORMANCE_TUNING_SETTINGS}
+   *          is a map which may contain settings with keys defined as constants here {@link UIMAFramework} interfaces. 
+   *          For example this can be used to set
    *          performance-tuning settings as described in
    *          {@link #getDefaultPerformanceTuningProperties()}.
    * 
@@ -802,8 +846,13 @@ public abstract class UIMAFramework {
    * @param aAdditionalParams
    *          a Map containing additional parameters to pass to the
    *          {@link Resource#initialize(ResourceSpecifier,Map)} method. May be <code>null</code>
-   *          if there are no parameters. For example this can be used to set performance-tuning
-   *          settings as described in {@link #getDefaultPerformanceTuningProperties()}.
+   *          if there are no parameters. Parameter names are defined as constants on the
+   *          {@link AnalysisEngine}, and {@link Resource}.
+   *          Furthermore, the entry under the key {@link Resource.PARAM_PERFORMANCE_TUNING_SETTINGS}
+   *          is a map which may contain settings with keys defined as constants here {@link UIMAFramework} interfaces. 
+   *          For example this can be used to set
+   *          performance-tuning settings as described in
+   *          {@link #getDefaultPerformanceTuningProperties()}.
    * 
    * @return a <code>CasInitializer</code> instance.
    * 
@@ -830,8 +879,11 @@ public abstract class UIMAFramework {
    * @param aAdditionalParams
    *          a Map containing additional parameters to pass to the
    *          {@link Resource#initialize(ResourceSpecifier,Map)} method. May be <code>null</code>
-   *          if there are no parameters. Valid parameter names are defined as constants on the
-   *          {@link CasInitializer} interface. For example this can be used to set
+   *          if there are no parameters. Parameter names are defined as constants on the
+   *          {@link AnalysisEngine}, and {@link Resource}.
+   *          Furthermore, the entry under the key {@link Resource.PARAM_PERFORMANCE_TUNING_SETTINGS}
+   *          is a map which may contain settings with keys defined as constants here {@link UIMAFramework} interfaces. 
+   *          For example this can be used to set
    *          performance-tuning settings as described in
    *          {@link #getDefaultPerformanceTuningProperties()}.
    * 
@@ -873,7 +925,11 @@ public abstract class UIMAFramework {
    * @param aAdditionalParams
    *          a Map containing additional parameters to pass to the
    *          {@link CollectionProcessingEngine#initialize(CpeDescription,Map)} method. May be
-   *          <code>null</code> if there are no parameters. For example this can be used to set
+   *          <code>null</code> if there are no parameters. Parameter names are defined as constants on the
+   *          {@link AnalysisEngine}, and {@link Resource}.
+   *          Furthermore, the entry under the key {@link Resource.PARAM_PERFORMANCE_TUNING_SETTINGS}
+   *          is a map which may contain settings with keys defined as constants here {@link UIMAFramework} interfaces. 
+   *          For example this can be used to set
    *          performance-tuning settings as described in
    *          {@link #getDefaultPerformanceTuningProperties()}.
    * 
@@ -901,7 +957,11 @@ public abstract class UIMAFramework {
    * @param aAdditionalParams
    *          a Map containing additional parameters to pass to the
    *          {@link CollectionProcessingEngine#initialize(CpeDescription,Map)} method. May be
-   *          <code>null</code> if there are no parameters. For example this can be used to set
+   *          <code>null</code> if there are no parameters. Parameter names are defined as constants on the
+   *          {@link AnalysisEngine}, and {@link Resource}.
+   *          Furthermore, the entry under the key {@link Resource.PARAM_PERFORMANCE_TUNING_SETTINGS}
+   *          is a map which may contain settings with keys defined as constants here {@link UIMAFramework} interfaces. 
+   *          For example this can be used to set
    *          performance-tuning settings as described in
    *          {@link #getDefaultPerformanceTuningProperties()}.
    * 
@@ -1043,8 +1103,8 @@ public abstract class UIMAFramework {
    * initial heap size allocated in the CAS to 100,000:
    * 
    * <pre>
-   * Properties perfProps = UIMAFramework.getDefaultPerformanceTuningProperties();
-   * perfProps.setProperty(UIMAFramework.CAS_INITIAL_HEAP_SIZE, &quot;100000&quot;);
+   * Properties uimaPerfProps = UIMAFramework.getDefaultPerformanceTuningProperties();
+   * uimaPerfProps.setProperty(UIMAFramework.CAS_INITIAL_HEAP_SIZE, &quot;100000&quot;);
    * HashMap params = new HashMap();
    * params.put(Resource.PARAM_PERFORMANCE_TUNING_SETTINGS, uimaPerfProps);
    * AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(specifier, params);
@@ -1215,7 +1275,11 @@ public abstract class UIMAFramework {
    * @param aAdditionalParams
    *          a Map containing additional parameters to pass to the
    *          {@link CollectionProcessingEngine#initialize(CpeDescription,Map)} method. May be
-   *          <code>null</code> if there are no parameters. For example this can be used to set
+   *          <code>null</code> if there are no parameters. Parameter names are defined as constants on the
+   *          {@link AnalysisEngine}, and {@link Resource}.
+   *          Furthermore, the entry under the key {@link Resource.PARAM_PERFORMANCE_TUNING_SETTINGS}
+   *          is a map which may contain settings with keys defined as constants here {@link UIMAFramework} interfaces. 
+   *          For example this can be used to set
    *          performance-tuning settings as described in
    *          {@link #getDefaultPerformanceTuningProperties()}.
    * 

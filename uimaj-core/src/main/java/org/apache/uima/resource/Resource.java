@@ -179,8 +179,8 @@ public interface Resource {
   // * This value is used as a key in the <code>additionalParams</code> Map that
   // * is passed to the {@link #initialize(ResourceSpecifier,Map)} method.
   // */
-  /** Reserved for future use. */
-  public static final String PARAM_AGGREGATE_SOFA_MAPPINGS = "AGGREGATE_SOFA_MAPPINGS";
+  /** Used to pass the sofa mappings to the ASB */
+  public static final String PARAM_AGGREGATE_SOFA_MAPPINGS = "AGGREGATE_SOFA_MAPPINGS";  // internal use only
   
   /**
    * Key to specify a pre-existing 

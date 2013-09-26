@@ -398,7 +398,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
           throws ResourceInitializationException {
     // add this analysis engine's name to the parameters sent to the ASB
     Map<String, Object> asbParams = new HashMap<String, Object>(aAdditionalParams);
-    asbParams.put(ASB.PARAM_AGGREGATE_ANALYSIS_ENGINE_NAME, this.getMetaData().getName());
+    asbParams.put(ASB.PARAM_AGGREGATE_ANALYSIS_ENGINE_NAME, this.getMetaData().getName());  // not used 9/2013 scan
     asbParams.put(Resource.PARAM_RESOURCE_MANAGER, getResourceManager());
 
     // Pass sofa mappings defined in this aggregate as additional ASB parameters
