@@ -88,7 +88,7 @@ public interface AnalysisEngine extends ConfigurableResource, CasObjectProcessor
    * that this AnalysisEngine should use. This value is used as a key in the
    * <code>aAdditionalParams</code> Map that is passed to the
    * {@link #initialize(ResourceSpecifier,Map)} method.
-   * @deprecated use {@link Resource.PARAM_RESOURCE_MANAGER}
+   * @deprecated use {@link Resource#PARAM_RESOURCE_MANAGER}
    */
   public static final String PARAM_RESOURCE_MANAGER = Resource.PARAM_RESOURCE_MANAGER;
 
@@ -98,7 +98,7 @@ public interface AnalysisEngine extends ConfigurableResource, CasObjectProcessor
    * overriding any conflicting settings specified in this AnalysisEngine's Descriptor. This value
    * is used as a key in the <code>aAdditionalParams</code> Map that is passed to the
    * {@link #initialize(ResourceSpecifier,Map)} method.
-   * @deprecated use {@link Resource.PARAM_CONFIG_PARAM_SETTINGS}
+   * @deprecated use {@link Resource#PARAM_CONFIG_PARAM_SETTINGS}
    */
   public static final String PARAM_CONFIG_PARAM_SETTINGS = Resource.PARAM_CONFIG_PARAM_SETTINGS;
 
