@@ -288,9 +288,8 @@ public class ConfigurationParameterInitializerTest extends ComponentTestBase {
    */
   @Test
   public void testParameterSetToNull() throws Exception {
-    String paramColor = DefaultValueAE1.class.getName() + ".color";
-    AnalysisEngine aed = AnalysisEngineFactory.createEngine(DefaultValueAE1.class, null,
-            paramColor, null);
+    AnalysisEngine aed = AnalysisEngineFactory.createEngine(DefaultValueAE1.class,
+            DefaultValueAE1.PARAM_COLOR, null);
     DefaultValueAE1 ae = new DefaultValueAE1();
     ae.initialize(aed.getUimaContext());
     assertEquals("green", ae.color);
@@ -302,12 +301,33 @@ public class ConfigurationParameterInitializerTest extends ComponentTestBase {
    */
   @Test(expected = ResourceInitializationException.class)
   public void testMandatoryParameterSetToNull() throws Exception {
-    String paramColor = DefaultValueAE2.class.getName() + ".color";
-    AnalysisEngine aed = AnalysisEngineFactory.createEngine(DefaultValueAE2.class, null,
-            paramColor, null);
+    AnalysisEngine aed = AnalysisEngineFactory.createEngine(DefaultValueAE2.class, 
+            DefaultValueAE2.PARAM_COLOR, null);
     DefaultValueAE2 ae = new DefaultValueAE2();
     ae.initialize(aed.getUimaContext());
+  }
 
+  /**
+   * If a parameter value is set to enum value.
+   */
+  @Test
+  public void testParameterSetEnumExplicitly() throws Exception {
+    AnalysisEngine aed = AnalysisEngineFactory.createEngine(DefaultValueAE3.class,
+            DefaultValueAE3.PARAM_COLOR, Color.RED);
+    DefaultValueAE3 ae = new DefaultValueAE3();
+    ae.initialize(aed.getUimaContext());
+    assertEquals(Color.RED, ae.color);
+  }
+
+  /**
+   * If a parameter value is set to enum value via default.
+   */
+  @Test
+  public void testParameterSetEnumDefault() throws Exception {
+    AnalysisEngine aed = AnalysisEngineFactory.createEngine(DefaultValueAE3.class);
+    DefaultValueAE3 ae = new DefaultValueAE3();
+    ae.initialize(aed.getUimaContext());
+    assertEquals(Color.GREEN, ae.color);
   }
 
   /**
@@ -315,9 +335,8 @@ public class ConfigurationParameterInitializerTest extends ComponentTestBase {
    */
   @Test(expected = IllegalArgumentException.class)
   public void testNonUimaCompatibleParameterValue() throws Exception {
-    String paramColor = DefaultValueAE2.class.getName() + ".color";
     AnalysisEngine aed = AnalysisEngineFactory.createEngine(DefaultValueAE2.class, null,
-            paramColor, new Point(1, 2));
+            DefaultValueAE2.PARAM_COLOR, new Point(1, 2));
     DefaultValueAE2 ae = new DefaultValueAE2();
     ae.initialize(aed.getUimaContext());
   }
@@ -344,6 +363,7 @@ public class ConfigurationParameterInitializerTest extends ComponentTestBase {
   }
 
   public static class DefaultValueAE1 extends JCasAnnotator_ImplBase {
+    public static final String PARAM_COLOR = "color";
     @ConfigurationParameter(defaultValue = "green", mandatory = false)
     private String color;
 
@@ -356,11 +376,10 @@ public class ConfigurationParameterInitializerTest extends ComponentTestBase {
     public void process(JCas aJCas) throws AnalysisEngineProcessException {
       /* do nothing */
     }
-
   }
 
   public static class DefaultValueAE2 extends JCasAnnotator_ImplBase {
-    @SuppressWarnings("unused")
+    public static final String PARAM_COLOR = "color";
     @ConfigurationParameter(mandatory = true)
     private String color;
 
@@ -373,7 +392,22 @@ public class ConfigurationParameterInitializerTest extends ComponentTestBase {
     public void process(JCas aJCas) throws AnalysisEngineProcessException {
       /* do nothing */
     }
+  }
 
+  public static class DefaultValueAE3 extends JCasAnnotator_ImplBase {
+    public static final String PARAM_COLOR = "color";
+    @ConfigurationParameter(defaultValue = "GREEN", mandatory = false)
+    private Color color;
+
+    @Override
+    public void initialize(UimaContext aContext) throws ResourceInitializationException {
+      super.initialize(aContext);
+    }
+
+    @Override
+    public void process(JCas aJCas) throws AnalysisEngineProcessException {
+      /* do nothing */
+    }
   }
 
   @Test
