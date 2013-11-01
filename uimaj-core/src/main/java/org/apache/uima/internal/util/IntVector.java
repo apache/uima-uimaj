@@ -20,6 +20,7 @@
 package org.apache.uima.internal.util;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 /**
  * Like {@link java.util.Vector java.util.Vector}, but elements are <code>int</code>s. This is a
@@ -309,6 +310,39 @@ public class IntVector implements Serializable {
     trimToSize();
     return this.array;
   }
+  
+  /**
+   * 
+   * @return an updated value for this vector, with the values sorted and duplicates removed
+   */
+  public IntVector sortDedup() {
+    Arrays.sort(array, 0, pos);
+    int prev = array[0];
+    int cpyfromIndex = 1;
+    int cpytoIndex = 1; 
+    
+    // go past first part of array until find first duplicate
+    for (; cpyfromIndex < pos; cpyfromIndex ++) {
+      final int v = array[cpyfromIndex];
+      if (v == prev) {
+        break;
+      }
+      prev = v;
+    }
+
+    // copyfromIndex == 1 past end or the index of first duplicate
+    cpytoIndex = cpyfromIndex ++;  
+    
+    for (; cpyfromIndex < pos; ) {
+      final int v = array[cpyfromIndex++];
+      if (v == prev) {
+        continue;
+      }
+      array[cpytoIndex++] = prev = v;
+    }
+    pos = cpytoIndex;
+    return this;
+  }
 
   /**
    * Return a copy of the underlying array.
@@ -397,4 +431,14 @@ public class IntVector implements Serializable {
     }
     return sum;
   }
+  // testing
+//  public static void main(String[] args) {
+//    IntVector iv = new IntVector();
+//    iv.add(new int[] {5, 3, 2, 7, 5, 3, 4, 5, 6, 5, 9, 8, 7});
+//    iv.sortDedup();
+//    for (int i = 0; i < iv.size(); i++) {
+//      System.out.print(iv.get(i) + " ");
+//    }
+//  }
+ 
 }
