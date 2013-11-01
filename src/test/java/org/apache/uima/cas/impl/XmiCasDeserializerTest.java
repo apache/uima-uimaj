@@ -44,6 +44,7 @@ import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FSIndex;
+import org.apache.uima.cas.FSIndexRepository;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
@@ -58,6 +59,7 @@ import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas_data.impl.CasComparer;
 import org.apache.uima.internal.util.XmlAttribute;
 import org.apache.uima.internal.util.XmlElementNameAndContents;
+import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
@@ -96,8 +98,11 @@ public class XmiCasDeserializerTest extends TestCase {
     File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
     File indexesFile = JUnitExtension.getFile("ExampleCas/testIndexes.xml");
 
+    // large type system
     typeSystem = UIMAFramework.getXMLParser().parseTypeSystemDescription(
             new XMLInputSource(typeSystemFile));
+    
+    // bag index for Entities and Relations
     indexes = UIMAFramework.getXMLParser().parseFsIndexCollection(new XMLInputSource(indexesFile))
             .getFsIndexes();
   }
@@ -190,6 +195,51 @@ public class XmiCasDeserializerTest extends TestCase {
     ContentHandler deserHandler3 = deser3.getXmiCasHandler(cas3, true);
     xmlReader.setContentHandler(deserHandler3);
     xmlReader.parse(new InputSource(new StringReader(xml)));
+  }
+  
+  /**
+   * https://issues.apache.org/jira/browse/UIMA-3396
+   * @throws Exception
+   */
+  public void testDeltaCasIndexing() throws Exception {
+    try {
+      CAS cas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
+              indexes);
+      CAS cas2 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
+              indexes);
+      cas1.setDocumentText("This is a test document in the initial view");
+      FSIndexRepositoryImpl ir1 = (FSIndexRepositoryImpl) cas1.getIndexRepository();
+      
+      AnnotationFS anAnnotBefore = cas1.createAnnotation(cas1.getAnnotationType(), 0, 2);
+      ir1.addFS(anAnnotBefore);
+      
+      cas1.createMarker();  // will start journaling index updates
+      
+      AnnotationFS anAnnot1 = cas1.createAnnotation(cas1.getAnnotationType(), 0, 4);
+      ir1.addFS(anAnnot1);
+      ir1.removeFS(anAnnot1);
+      ir1.addFS(anAnnot1);
+      
+      assertTrue(ir1.getAddedFSs().length == 1);
+      assertTrue(ir1.getDeletedFSs().length == 0);
+      assertTrue(ir1.getReindexedFSs().length == 0);
+      
+      ir1.removeFS(anAnnotBefore);
+      ir1.addFS(anAnnotBefore);
+      
+      assertTrue(ir1.getAddedFSs().length == 1);
+      assertTrue(ir1.getDeletedFSs().length == 0);
+      assertTrue(ir1.getReindexedFSs().length == 1);      
+      
+      ir1.removeFS(anAnnotBefore);
+      assertTrue(ir1.getAddedFSs().length == 1);
+      assertTrue(ir1.getDeletedFSs().length == 1);
+      assertTrue(ir1.getReindexedFSs().length == 0);      
+
+      
+    } catch (Exception e) {
+    JUnitExtension.handleException(e);
+    }
   }
   
   public void testMultiThreadedSerialize() throws Exception {
@@ -959,7 +1009,7 @@ public class XmiCasDeserializerTest extends TestCase {
       cas1.getIndexRepository().addFS(anAnnot1);
       AnnotationFS anAnnot2 = cas1.createAnnotation(cas1.getAnnotationType(), 5, 10);
       cas1.getIndexRepository().addFS(anAnnot2);
-      FSIndex tIndex = cas1.getAnnotationIndex();
+      FSIndex<AnnotationFS> tIndex = cas1.getAnnotationIndex();
       assertTrue(tIndex.size() == 3); //doc annot plus 2 annots
       
       //serialize complete  

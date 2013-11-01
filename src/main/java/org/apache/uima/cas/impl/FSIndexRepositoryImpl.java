@@ -1471,9 +1471,13 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   // Serialization support
 
   /**
-   * Return an array containing all FSs in any index. This is intended to be used for serialization.
-   * Note that duplicate entries in indexes will appear in the array as many times as they occur in
-   * an index. The order in which FSs occur in the array does not reflect the order in which they
+   * For one particular view (the one associated with this instance of FsIndexRepositoryImpl),
+   * return an array containing all FSs in any defined index, in this view. 
+   * This is intended to be used for serialization.
+   * 
+   * Note that duplicate entries are removed, and the results are sorted by FS address.
+   * 
+   * The order in which FSs occur in the array does not reflect the order in which they
    * were added to the repository. This means that set indexes deserialized from this list may
    * contain different but equal elements than the original index.
    */
@@ -1484,9 +1488,9 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     ArrayList<IndexIteratorCachePair> iv, cv;
     // We may need to profile this. If this is a bottleneck, use a different
     // implementation.
-    SortedIntSet set;
+    IntVector indexedFSs = new IntVector();
     int jMax, indStrat;
-    // Iterate over indexes with something in there
+    // Iterate over index by type, with something in there
     for (int i = 0; i < this.usedIndexes.size(); i++) {
       iv = this.indexArray[this.usedIndexes.get(i)];
       // Iterate over the indexes for the type.
@@ -1515,15 +1519,17 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
         // Duplicates arise from having mulitple sets combined, and
         // also if a non-set index had the same identical FS added
         // multiple times.
-        set = new SortedIntSet();
+        indexedFSs.removeAllElements();
         for (int k = 0; k < cv.size(); k++) {
           it = cv.get(k).index.refIterator();
           while (it.isValid()) {
-            set.add(it.get());
+            indexedFSs.add(it.get());
             it.inc();
           }
         }
-        v.add(set.getArray(), 0, set.size());  // bulk add of all elements
+        // sort and remove duplicates
+        indexedFSs.sortDedup();
+        v.add(indexedFSs.getArray(), 0, indexedFSs.size());  // bulk add of all elements
 //        for (int k = 0; k < set.size(); k++) {
 //          v.add(set.get(k));
 //        }
@@ -1738,28 +1744,59 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   }
 
   // Delta Serialization support
+  /**
+   * Go through the journal, and use those entries to update
+   *   added, deleted, and reindexed lists
+   * in such a way as to guarantee:
+   *   a FS is in only one of these lists, (or in none)
+   *   
+   * For a journal "add-to-indexes" event:
+   *   fs in "deleted":  remove from "deleted", add to "reindexed"
+   *   fs in "reindexed": do nothing
+   *   fs in "added": do nothing
+   *   fs not in any of these: add to "added"
+   *   
+   * For a journal "remove-from-indexes" event:
+   *   fs in "added": remove from "added" (don't add to "deleted")
+   *   fs in "reindexed": remove from "reindexed" and add to "deleted")
+   *   fs in "deleted": do nothing
+   *   fs not in any of these: add to "deleted"
+   *   
+   * The journal is cleared after processing.
+   */
   private void processIndexUpdates() {
     for (int i = 0; i < this.indexUpdates.size(); i++) {
       final int fsRef = this.indexUpdates.get(i);
       final boolean added = this.indexUpdateOperation.get(i);
       if (added) {
-        if (this.fsDeletedFromIndex.contains(fsRef)) {
-          this.fsDeletedFromIndex.remove(this.fsDeletedFromIndex.indexOf(fsRef));
+        final int indexOfDeletedItem = this.fsDeletedFromIndex.indexOf(fsRef);
+        if (indexOfDeletedItem >= 0) {
+          this.fsDeletedFromIndex.remove(indexOfDeletedItem);
           this.fsReindexed.add(fsRef);
+        } else if (this.fsReindexed.contains(fsRef)) {
+          continue;  // skip adding this to anything
         } else {
-          this.fsAddedToIndex.add(fsRef);
+          this.fsAddedToIndex.add(fsRef);  // this is a set, so dups not added
         }
       } else {
-        if (this.fsAddedToIndex.contains(fsRef)) {
-          this.fsAddedToIndex.remove(this.fsAddedToIndex.indexOf(fsRef));
-        } else if (this.fsReindexed.contains(fsRef)) {
-          this.fsReindexed.remove(fsRef);
+        final int indexOfaddedItem = this.fsAddedToIndex.indexOf(fsRef);
+        if (indexOfaddedItem >= 0) {
+          this.fsAddedToIndex.remove(indexOfaddedItem);
         } else {
-          this.fsDeletedFromIndex.add(fsRef);
+          final int indexOfReindexedItem = this.fsReindexed.indexOf(fsRef);
+          if (indexOfReindexedItem >= 0) {
+            this.fsReindexed.remove(indexOfReindexedItem);
+            this.fsDeletedFromIndex.add(fsRef);
+          }
+          else {
+            this.fsDeletedFromIndex.add(fsRef);
+          }
         }
       }
     }
     this.logProcessed = true;
+    this.indexUpdates.removeAllElements();
+    this.indexUpdateOperation.clear();
   }
 
   public int[] getAddedFSs() {
