@@ -23,6 +23,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.OutputKeys;
 
 import junit.framework.TestCase;
@@ -34,6 +36,8 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLSerializer;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.SAXParseException;
 
 /**
@@ -41,6 +45,17 @@ import org.xml.sax.SAXParseException;
  * serialization are tested elsewhere.
  */
 public class XmiCasSerializerTest extends TestCase {
+  
+  private  static boolean XML1_1_SUPPORTED = false;
+  
+  static {
+    try {
+      XML1_1_SUPPORTED = SAXParserFactory.newInstance().getFeature("http://xml.org/sax/features/xml-1.1");
+    } catch (SAXNotRecognizedException e) {
+    } catch (SAXNotSupportedException e) {
+    } catch (ParserConfigurationException e) {
+    }
+  }
 
   private TypeSystemDescription typeSystemDesc = null;
 
@@ -85,14 +100,16 @@ public class XmiCasSerializerTest extends TestCase {
         caughtException);
     
     //but when XML 1.1 output is being generated, don't fail on control chracters which are valid in 1.1.
-    out = new FileOutputStream(this.outputFile);
-    try {
-      XMLSerializer xml11Serializer = new XMLSerializer(out);
-      xml11Serializer.setOutputProperty(OutputKeys.VERSION,"1.1");
-      xmiCasSerializer.serialize(cas, xml11Serializer.getContentHandler());
-    }
-    finally {
-      out.close();
+    if (XML1_1_SUPPORTED) {
+      out = new FileOutputStream(this.outputFile);
+      try {
+        XMLSerializer xml11Serializer = new XMLSerializer(out);
+        xml11Serializer.setOutputProperty(OutputKeys.VERSION,"1.1");
+        xmiCasSerializer.serialize(cas, xml11Serializer.getContentHandler());
+      }
+      finally {
+        out.close();
+      }
     }
   }
 
@@ -113,16 +130,18 @@ public class XmiCasSerializerTest extends TestCase {
     assertTrue("XMI serialization of document text with bad XML 1.0 char should throw exception",
         caughtException);
     
-    //but when XML 1.1 output is being generated, don't fail on control chracters which are valid in 1.1.
-    out = new FileOutputStream(this.outputFile);
-    try {
-      XMLSerializer xml11Serializer = new XMLSerializer(out);
-      xml11Serializer.setOutputProperty(OutputKeys.VERSION,"1.1");
-      xmiCasSerializer.serialize(cas, xml11Serializer.getContentHandler());
+    //but when XML 1.1 output is being generated, don't fail on control characters which are valid in 1.1.
+    if (XML1_1_SUPPORTED) {
+      out = new FileOutputStream(this.outputFile);
+      try {
+        XMLSerializer xml11Serializer = new XMLSerializer(out);
+        xml11Serializer.setOutputProperty(OutputKeys.VERSION,"1.1");
+        xmiCasSerializer.serialize(cas, xml11Serializer.getContentHandler());
+      }
+      finally {
+        out.close();
+      }
     }
-    finally {
-      out.close();
-    }    
   }
 
   /*
