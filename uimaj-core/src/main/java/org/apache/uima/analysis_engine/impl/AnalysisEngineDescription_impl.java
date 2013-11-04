@@ -104,8 +104,10 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
 
   private FlowControllerDeclaration mFlowControllerDeclaration;
 
+  // This holds delegates after imports have been resolved (merged from xmlComments 1187355)
   private Map<String, ResourceSpecifier> mDelegateAnalysisEngineSpecifiers = new LinkedHashMap<String, ResourceSpecifier>();
 
+  // This holds delegates as they come from reading the descriptor, may have import elements (unresolved) (merged from xmlComments 1187355)
   private Map<String, MetaDataObject> mDelegateAnalysisEngineSpecifiersWithImports = new LinkedHashMap<String, MetaDataObject>();
 
   private Map<String, Import> mProcessedImports = new HashMap<String, Import>();
