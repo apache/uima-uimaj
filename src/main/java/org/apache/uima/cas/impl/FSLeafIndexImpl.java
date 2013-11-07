@@ -205,14 +205,10 @@ public abstract class FSLeafIndexImpl<T extends FeatureStructure> implements Int
   }
 
   public int compare(int fs1, int fs2) {
-    int[] heap = this.lowLevelCAS.getHeap().heap;
-    int val1, val2;
-    int compVal;
-    float float1, float2;
-    String string1, string2;
+    final int[] heap = this.lowLevelCAS.getHeap().heap;
     for (int i = 0; i < this.numKeys; i++) {
-      val1 = heap[fs1 + this.keyOffset[i]];
-      val2 = heap[fs2 + this.keyOffset[i]];
+      final int val1 = heap[fs1 + this.keyOffset[i]];
+      final int val2 = heap[fs2 + this.keyOffset[i]];
       switch (this.keyType[i]) {
         case STRING_CODE: {
           // System.out.println("Comparing string codes " + val1 + " and "
@@ -228,8 +224,9 @@ public abstract class FSLeafIndexImpl<T extends FeatureStructure> implements Int
           // if (lowLevelCAS.getStringForCode(val2) == null) {
           // System.out.println("Value for " + val2 + " is <null>.");
           // }
-          string1 = this.lowLevelCAS.getStringForCode(val1);
-          string2 = this.lowLevelCAS.getStringForCode(val2);
+          final String string1 = this.lowLevelCAS.getStringForCode(val1);
+          final String string2 = this.lowLevelCAS.getStringForCode(val2);
+          int compVal;
           if (string1 == null) {
             if (string2 == null) {
               compVal = 0;
@@ -253,8 +250,8 @@ public abstract class FSLeafIndexImpl<T extends FeatureStructure> implements Int
           break;
         }
         case FLOAT_CODE: {
-          float1 = CASImpl.int2float(val1);
-          float2 = CASImpl.int2float(val2);
+          final float float1 = CASImpl.int2float(val1);
+          final float float2 = CASImpl.int2float(val2);
           if (float1 < float2) {
             if (this.keyComp[i] == FSIndexComparator.STANDARD_COMPARE) {
               return -1;
@@ -284,8 +281,8 @@ public abstract class FSLeafIndexImpl<T extends FeatureStructure> implements Int
           return -1;
         }
         case LONG_CODE: {
-          long long1 = this.lowLevelCAS.getLongHeap().getHeapValue(val1);
-          long long2 = this.lowLevelCAS.getLongHeap().getHeapValue(val2);
+          final long long1 = this.lowLevelCAS.getLongHeap().getHeapValue(val1);
+          final long long2 = this.lowLevelCAS.getLongHeap().getHeapValue(val2);
           if (long1 < long2) {
             if (this.keyComp[i] == FSIndexComparator.STANDARD_COMPARE) {
               return -1;
@@ -300,8 +297,8 @@ public abstract class FSLeafIndexImpl<T extends FeatureStructure> implements Int
           break;
         }
         case DOUBLE_CODE: {
-          double double1 = Double.longBitsToDouble(this.lowLevelCAS.getLongHeap().getHeapValue(val1));
-          double double2 = Double.longBitsToDouble(this.lowLevelCAS.getLongHeap().getHeapValue(val2));
+          final double double1 = Double.longBitsToDouble(this.lowLevelCAS.getLongHeap().getHeapValue(val1));
+          final double double2 = Double.longBitsToDouble(this.lowLevelCAS.getLongHeap().getHeapValue(val2));
           if (double1 < double2) {
             if (this.keyComp[i] == FSIndexComparator.STANDARD_COMPARE) {
               return -1;
