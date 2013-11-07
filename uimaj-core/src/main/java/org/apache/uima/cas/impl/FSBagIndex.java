@@ -332,15 +332,11 @@ public class FSBagIndex extends FSLeafIndexImpl {
    * @see org.apache.uima.cas.impl.FSLeafIndexImpl#deleteFS(org.apache.uima.cas.FeatureStructure)
    */
   public void deleteFS(FeatureStructure fs) {
-    final int addr = ((FeatureStructureImpl) fs).getAddress();
-    final int pos = this.index.indexOf(addr);
-    if (pos >= 0) {
-      this.index.remove(pos);
-    }
+    remove( ((FeatureStructureImpl) fs).getAddress());  
   }
 
   public void remove(int fsRef) {
-    final int pos = this.index.indexOf(fsRef);
+    final int pos = this.index.indexOfOptimizeAscending(fsRef);
     if (pos >= 0) {
       this.index.remove(pos);
     }

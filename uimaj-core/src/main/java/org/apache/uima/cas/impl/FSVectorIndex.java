@@ -274,11 +274,7 @@ public class FSVectorIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T
    * @see org.apache.uima.cas.impl.FSLeafIndexImpl#deleteFS(org.apache.uima.cas.FeatureStructure)
    */
   public void deleteFS(FeatureStructure fs) {
-    final int addr = ((FeatureStructureImpl) fs).getAddress();
-    final int pos = this.index.indexOf(addr);
-    if (pos >= 0) {
-      this.index.remove(pos);
-    }
+    remove(((FeatureStructureImpl) fs).getAddress());
   }
 
   /*
@@ -296,7 +292,7 @@ public class FSVectorIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T
    * @see org.apache.uima.cas.impl.FSLeafIndexImpl#remove(int)
    */
   void remove(int fs) {
-    final int pos = this.index.indexOf(fs);
+    final int pos = this.index.indexOfOptimizeAscending(fs);
     if (pos >= 0) {
       this.index.remove(pos);
     }

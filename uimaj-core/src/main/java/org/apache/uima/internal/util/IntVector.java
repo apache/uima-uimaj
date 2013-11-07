@@ -365,15 +365,46 @@ public class IntVector implements Serializable {
    * @return the index or <code>-1</code> if the element was not found.
    */
   public int indexOf(int element) {
-    int index = -1;
     for (int i = 0; i < this.pos; i++) {
       if (element == this.array[i]) {
-        index = i;
-        break;
+        return i;
       }
     }
+    return -1;
+  }
 
-    return index;
+  /**
+   * Returns the index of the first or last occurrence of the element specified in this vector.
+   * optimization: 
+   * this is used only in bag index implementations
+   * Other optimizations for that are done for the major use case
+   * that the order of adding elements results in the elements being
+   * more-or-less ordered, ascending.
+   *
+   * Exploit this by assuming ascending, and testing if the 
+   * element is above or below the mid-element, and ordering the
+   * direction of the search.
+   * 
+   * @return the index or <code>-1</code> if the element was not found.
+   */
+  public int indexOfOptimizeAscending(int element) {
+//    return indexOf(element);
+    final int midValue = this.array[this.pos >>> 1];
+    if (element > midValue) {
+      for (int i = this.pos - 1; i >=0; i--) {
+        if (element == this.array[i]) {
+          return i;
+        }
+      }
+      return -1;
+    }
+    
+    for (int i = 0; i < this.pos; i++) {
+      if (element == this.array[i]) {
+        return i;
+      }
+    }
+    return -1;
   }
 
   /**
