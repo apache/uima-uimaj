@@ -572,9 +572,8 @@ public class IntArrayRBT {
       setParent(z, y);
       return z;
     } 
-    int y = NIL;
     int x = this.root;
-    y = NIL;
+    int y = NIL;
     while (x != NIL) {
       y = x;
       final int xKey = getKey(x);
