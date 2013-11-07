@@ -392,17 +392,17 @@ public class IntArrayRBT {
   // keys that are larger than all keys already in the tree.
   protected int greatestNode;
 
-  protected static final int default_size = 1024;
+  protected static final int default_size = 1024;  // must be pwr of 2 for useklrp true
 
-  private static final int default_growth_factor = 2;
+  private static final int default_growth_factor = 2;  // must be pwr of 2 for useklrp true
 
-  private static final int default_multiplication_limit = 2000000;
+  private static final int default_multiplication_limit = 1024 * 1024 * 2;  // must be pwr of 2 for useklrp true
   
   final private int initialSize;
 
-  private int growth_factor;
+  final private int growth_factor;  // must be pwr of 2 for useklrp true
 
-  private int multiplication_limit;
+  final private int multiplication_limit;  // must be pwr of 2 for useklrp true
 
   // The NIL sentinel
   public static final int NIL = 0;
@@ -431,24 +431,16 @@ public class IntArrayRBT {
     initVars();
     // Increase initialSize by one since we use one slot for sentinel.
     ++initialSize;
-    this.initialSize = initialSize;
+    this.initialSize = nextPowerOf2(initialSize);
     this.growth_factor = default_growth_factor;
     this.multiplication_limit = default_multiplication_limit;
     setupArrays();
-    // Init the arrays.
-    if (useklrp) {
-      klrp = new int[initialSize << 2];
-    } else {
-      this.key = new int[initialSize];
-      this.left = new int[initialSize];
-      this.right = new int[initialSize];
-      this.parent = new int[initialSize];
-    }
-    this.color = new boolean[initialSize];
-    setLeft(NIL, NIL);
-    setRight(NIL, NIL);
-    setParent(NIL, NIL);
-    this.color[NIL] = black;
+  }
+  
+  private int nextPowerOf2(int v) {
+    // v is >= 0
+    int v2 = Integer.highestOneBit(v);
+    return (v2 < v) ? (v2 << 1) : v2;
   }
   
   private void setupArrays() {
@@ -496,34 +488,53 @@ public class IntArrayRBT {
 
   private void grow(int requiredSize) {
     if (useklrp) {
+       
+      // the klrp design stacks 4 pointers together into the int array
+      // When growing, the last array is grown by the needed amount.
+      //   Edge case: if the new required size jumps up by more than 
+      //     about 2 million, the previous array might need to be 
+      //     expanded too.
+      //        This could in a real edge case require all previous arrays
+      //        to be expanded.
+      
       final int w = requiredSize >> 29;  // w is 0-3
+      final int requiredSizeForLastSegment = requiredSize - w * MAXklrp0;
       switch (w) {
+      case 3: {
+        if (klrp3 == null) {
+          klrp3 = new int[requiredSizeForLastSegment << 2];
+        } else {
+          klrp3 = grow(klrp3, requiredSizeForLastSegment << 2);
+        }
+        maximize(klrp2);
+        maximize(klrp1);
+        maximize(klrp);
+      }
+      break;
+      case 2: {
+        if (klrp2 == null) {
+          klrp2 = new int[requiredSizeForLastSegment << 2];
+        } else {
+          klrp2 = grow(klrp2, requiredSizeForLastSegment << 2);
+        }
+        maximize(klrp1);
+        maximize(klrp);
+      }
+      break;
+      case 1: {
+        if (klrp1 == null) {
+          klrp1 = new int[requiredSizeForLastSegment << 2];
+        } else {
+          klrp1 = grow(klrp1, requiredSizeForLastSegment << 2);
+        }
+        maximize(klrp);
+      }
+      break;
       case 0:
         if (klrp == null) {
-          klrp = new int[requiredSize << 2];
+          klrp = new int[requiredSizeForLastSegment << 2];
         } else {
-          klrp = grow(klrp, requiredSize << 2);
-        }
-        break;
-      case 1:
-        if (klrp1 == null) {
-          klrp1 = new int[(requiredSize & MAXklrpMask) << 2];
-        } else {
-          klrp1 = grow(klrp1, (requiredSize & MAXklrpMask) << 2);
-        }
-        break;
-      case 2:
-        if (klrp2 == null) {
-          klrp2 = new int[(requiredSize & MAXklrpMask) << 2];
-        } else {
-          klrp2 = grow(klrp2, (requiredSize & MAXklrpMask) << 2);
-        }
-        break;
-      case 3:
-        if (klrp3 == null) {
-          klrp3 = new int[(requiredSize & MAXklrpMask) << 2];
-        } else {
-          klrp3 = grow(klrp3, (requiredSize & MAXklrpMask) << 2);
+          klrp = grow(klrp, requiredSizeForLastSegment << 2);
         }
         break;
       default:
@@ -536,6 +547,16 @@ public class IntArrayRBT {
       this.parent = grow(this.parent, requiredSize);
     }
     this.color = grow(this.color, requiredSize);
+  }
+  
+  // only called for krlp style
+  private int[] maximize(int[] array) {
+    if (array.length < MAXklrp0) {
+      int[] a = new int[MAXklrp0];
+      System.arraycopy(array, 0, a, 0, array.length);
+      return a;
+    }
+    return array;
   }
   
   public int getKeyForNode(final int node) {
@@ -654,30 +675,9 @@ public class IntArrayRBT {
     setParent(this.root, NIL);
   }
 
+  // grow an array to the new size
   private final int[] grow(int[] array, int newSize) {
-    if (useklrp) {
-      if (newSize < MAXklrp0) {
-        return IntArrayUtils.ensure_size(array, newSize, this.growth_factor, this.multiplication_limit);
-      }
-      final int w = newSize >> 29;
-      switch (w) {
-      case 1:
-        if (klrp1 == null) {
-          klrp1 = new int[newSize + 1];
-        } else {
-          
-        }
-        break;
-      case 2:
-        break;
-      case 3:
-        break;
-      default:
-        throw new RuntimeException();
-      }
-      
-    }
-    return IntArrayUtils.ensure_size(array, newSize, this.growth_factor, this.multiplication_limit);
+    return IntArrayUtils.ensure_size(array, newSize, this.growth_factor, this.multiplication_limit * (useklrp ? 4 : 1));
   }
 
   private final boolean[] grow(boolean[] array, int newSize) {
@@ -1025,6 +1025,9 @@ public class IntArrayRBT {
     }
     deleteNode(node);
     --this.size;
+    if (size == 0 && next > multiplication_limit) {
+      flush();  // recover space 
+    }
     return true;
   }
 
