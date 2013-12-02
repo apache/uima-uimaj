@@ -37,7 +37,7 @@ import java.util.StringTokenizer;
  */
 public class UIMAClassLoader extends URLClassLoader {
   /**
-   * Transforms the string classpath to and URL array based classpath.
+   * Transforms the string classpath to a URL array based classpath.
    * 
    * The classpath string must be separated with the filesystem path separator.
    * 
