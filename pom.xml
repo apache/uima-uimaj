@@ -169,7 +169,9 @@
            posted on our website.  It is not a complete javadoc - it only has user-level API info.
         
            There is another javadoc config in the parent POM that builds all the java docs - intended
-           for use by developers (currently not used) -->
+           for use by developers (currently not used) 
+           
+           There is also a javadoc config for each individual maven Jar artifact -->
       
       <plugin>
         <artifactId>maven-javadoc-plugin</artifactId>
