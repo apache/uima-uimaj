@@ -176,6 +176,22 @@ public class FeatureStructureTest extends TestCase {
 		this.descr = null;
 	}
 
+	public void testErrorDerefDifferentCAS() {
+	  CAS cas2 = CASInitializer.initCas(new CASTestSetup());
+	  Type tokenType1 = this.ts.getType(CASTestSetup.TOKEN_TYPE);
+	  Feature tokenTypeFeature = this.ts.getFeatureByFullName(CASTestSetup.TOKEN_TYPE + ":" + CASTestSetup.TOKEN_TYPE_FEAT);
+	  FeatureStructure fs1 = cas2.createFS(tokenType1);
+	  FeatureStructure fs = cas.createFS(tokenType1);
+	  boolean caught = false;
+	  try {
+   	  fs.setFeatureValue(tokenTypeFeature, fs1);
+	  } catch (Exception e) {
+	    assertTrue( e instanceof CASRuntimeException);
+	    caught = true;
+	  }
+	  assertTrue(caught);
+	}
+	
 	public void testGetType() {
 		Type tokenType1 = this.ts.getType(CASTestSetup.TOKEN_TYPE);
 		Type wordType1 = this.ts.getType(CASTestSetup.WORD_TYPE);

@@ -2991,7 +2991,15 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     if (null == fsImpl) {
       return NULL;
     }
-    return ((FeatureStructureImpl) fsImpl).getAddress();
+    final FeatureStructureImpl fsi = (FeatureStructureImpl) fsImpl;
+    if (this != fsi.getCASImpl()) {
+      if (this.getBaseCAS() != fsi.getCASImpl().getBaseCAS()) {  
+        // https://issues.apache.org/jira/browse/UIMA-3429
+        throw new CASRuntimeException(CASRuntimeException.DEREF_FS_OTHER_CAS, 
+            new Object[] {fsi.toString(), this.toString() } );
+      }
+    }
+    return fsi.getAddress();
   }
 
   public FeatureStructure ll_getFSForRef(int fsRef) {
