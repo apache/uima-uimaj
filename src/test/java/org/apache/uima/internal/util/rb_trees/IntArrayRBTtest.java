@@ -22,6 +22,7 @@ package org.apache.uima.internal.util.rb_trees;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import org.apache.uima.internal.util.IntListIterator;
 import org.apache.uima.internal.util.IntPointerIterator;
@@ -67,5 +68,30 @@ public class IntArrayRBTtest extends TestCase {
 //    it.dec();  // causes infinite loop
 //    assertFalse(it.isValid());
     
+  }
+  
+  public void testLargeInsertsDeletes() {
+    IntArrayRBT ia = new IntArrayRBT();
+    Random r = new Random();
+    System.gc();
+    long fm1 = Runtime.getRuntime().freeMemory();
+    int[] ks = new int[10000];
+    System.out.print("freemem after intArrayRBT keys deleted to 0 (should be about the same): " + fm1 + " ");
+    for (int j = 0; j < 10; j++) {
+      for (int i = 0; i < 10000; i++) {
+        int k = r.nextInt(1000);
+        ks[i] = k;
+        ia.insertKey(k);
+      }
+      assertTrue(ia.size <= 1000 && ia.size > 750);
+      for (int i = 0; i < 10000; i++) {
+        ia.deleteKey(ks[i]);
+      }
+      assertEquals(0, ia.size);
+      System.gc();
+      System.out.print(Runtime.getRuntime().freeMemory() + " ");
+     
+    }
+    System.out.println("");
   }
 }
