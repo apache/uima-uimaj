@@ -71,7 +71,7 @@ import org.apache.uima.tools.util.gui.AboutDialog;
 
 /**
  * This GUI is used to install a pear file locally in a directory chosen by the user and then run
- * the installed AE in CVD. <br />
+ * the installed AE in CVD. <br>
  * The required field is : The pear file must be specified. The User may or may not specify the
  * installation directory. If the installation directory is not specified, the current working
  * directory is used by default.

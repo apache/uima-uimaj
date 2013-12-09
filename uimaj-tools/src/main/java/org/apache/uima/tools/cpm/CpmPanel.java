@@ -1885,7 +1885,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
   }
 
   /**
-   * MetaDataPanel used for Collection Reader & AE selection and configuration. Adds a reset method
+   * MetaDataPanel used for Collection Reader &amp; AE selection and configuration. Adds a reset method
    * to clear out related components when specifier file selection changes.
    */
   static class ResetableMetaDataPanel extends MetaDataPanel {

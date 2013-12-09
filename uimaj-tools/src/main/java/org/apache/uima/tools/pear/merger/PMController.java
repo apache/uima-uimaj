@@ -126,7 +126,7 @@ public class PMController {
    * <ul>
    * <li>pear_file_1 ... pear_file_n - input PEAR files (required)</li>
    * <li>-n agg_name - a name of the output aggregate analysis engine (required) </li>
-   * <li>-f agg_pear_file - output aggregate PEAR file (optional). <br />
+   * <li>-f agg_pear_file - output aggregate PEAR file (optional). <br>
    * If the output PEAR file is not specified, the default output PEAR file is created in the
    * current working directory.</li>
     * </ul>

@@ -181,17 +181,17 @@ public class PMUimaAgent {
   }
 
   /**
-   * Merges source <code>Capability<code> objects specified in a given 
-   * <code>ArrayList</code>, creating one <code>Capability<code> object 
+   * Merges source <code>Capability</code> objects specified in a given 
+   * <code>ArrayList</code>, creating one <code>Capability</code> object 
    * that contains all non-duplicated inputs and outputs of the source 
-   * <code>Capability<code> objects. Returns an array of 
-   * <code>Capability<code> objects, containing the merged object.
+   * <code>Capability</code> objects. Returns an array of 
+   * <code>Capability</code> objects, containing the merged object.
    * 
    * @param allCapabilities The given <code>ArrayList</code> of the source 
-   * <code>Capability<code> objects.
+   * <code>Capability</code> objects.
    * @param rsFactory The <code>ResourceSpecifierFactory</code> object 
-   * used to create new <code>Capability<code> object.
-   * @return Array of <code>Capability<code> objects, containing the merged 
+   * used to create new <code>Capability</code> object.
+   * @return Array of <code>Capability</code> objects, containing the merged 
    * object.
    */
   private static Capability[] mergeCapabilities(ArrayList allCapabilities,
