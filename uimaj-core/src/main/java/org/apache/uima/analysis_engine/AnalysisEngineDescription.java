@@ -204,7 +204,7 @@ public interface AnalysisEngineDescription extends ResourceCreationSpecifier {
    * indicate the delegate AnalysisEngines that comprise the aggregate.
    * <p>
    * This is a direct representation of what is in the XML syntax for the descriptor. That is, if
-   * the XML had an &lt;import> element, the Map will contain an <code>Import</code> object. If
+   * the XML had an &lt;import&gt; element, the Map will contain an <code>Import</code> object. If
    * you do not want to deal with imports, use the {@link #getDelegateAnalysisEngineSpecifiers()}
    * method instead.
    * 
@@ -376,13 +376,14 @@ public interface AnalysisEngineDescription extends ResourceCreationSpecifier {
    * @param aWriter
    *          a Writer to which the XML string will be written
    * @param aPreserveDelegateAnalysisEngineImports
-   *          if true, XML serialization will always preserve &lt;import> elements used to import
+   *          if true, XML serialization will always preserve &lt;import&gt; elements used to import
    *          delegate analysis engine specifiers into an aggregate. If false, the default import
-   *          serialization behavior applies, which is to write &lt;import> elements only in the
+   *          serialization behavior applies, which is to write &lt;import&gt; elements only in the
    *          case where they have not previously been resolved.
    * 
    * @throws IOException
    *           if an I/O failure occurs
+   * @throws SAXException if a SAX exception occurs
    */
   public void toXML(Writer aWriter, boolean aPreserveDelegateAnalysisEngineImports)
           throws SAXException, IOException;
@@ -393,13 +394,14 @@ public interface AnalysisEngineDescription extends ResourceCreationSpecifier {
    * @param aOutputStream
    *          an OutputStream to which the XML string will be written, in UTF-8 encoding.
    * @param aPreserveDelegateAnalysisEngineImports
-   *          if true, XML serialization will always preserve &lt;import> elements used to import
+   *          if true, XML serialization will always preserve &lt;import&gt; elements used to import
    *          delegate analysis engine specifiers into an aggregate. If false, the default import
-   *          serialization behavior applies, which is to write &lt;import> elements only in the
+   *          serialization behavior applies, which is to write &lt;import&gt; elements only in the
    *          case where they have not previously been resolved.
    * 
    * @throws IOException
    *           if an I/O failure occurs
+   * @throws SAXException if a SAX exception occurs
    */
   public void toXML(OutputStream aOutputStream, boolean aPreserveDelegateAnalysisEngineImports)
           throws SAXException, IOException;
@@ -414,13 +416,12 @@ public interface AnalysisEngineDescription extends ResourceCreationSpecifier {
    *          whether the namespace of this element should be written as the default namespace. This
    *          should be done only for the root element, and it defaults to false.
    * @param aPreserveDelegateAnalysisEngineImports
-   *          if true, XML serialization will always preserve &lt;import> elements used to import
+   *          if true, XML serialization will always preserve &lt;import&gt; elements used to import
    *          delegate analysis engine specifiers into an aggregate. If false, the default import
-   *          serialization behavior applies, which is to write &lt;import> elements only in the
+   *          serialization behavior applies, which is to write &lt;import&gt; elements only in the
    *          case where they have not previously been resolved.
    * 
-   * @throws IOException
-   *           if an I/O failure occurs
+   * @throws SAXException if a SAX exception occurs
    */
   public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute,
           boolean aPreserveDelegateAnalysisEngineImports) throws SAXException;

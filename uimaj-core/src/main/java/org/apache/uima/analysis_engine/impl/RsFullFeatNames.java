@@ -27,7 +27,7 @@ import org.apache.uima.cas.TypeSystem;
 
 /**
  * Implements a globally shared weak-reference map between
- *   types & features to the corresponding Full Feature name
+ *   types &amp; features to the corresponding Full Feature name
  * Used to avoid creating new full feature names when compiling
  *   result feature specs.
  * Indexable for features via a 2 step index: typeName (weak) and shortFeatName

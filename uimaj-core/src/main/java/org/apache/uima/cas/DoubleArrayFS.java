@@ -29,7 +29,7 @@ public interface DoubleArrayFS extends CommonArrayFS {
 
   /**
    * Get the i-th element from the array.
-   * 
+   * @param i the index
    * @return The i-th element.
    * @exception ArrayIndexOutOfBoundsException
    *              If the index is out of bounds.
@@ -68,8 +68,8 @@ public interface DoubleArrayFS extends CommonArrayFS {
    * @param length
    *          The number of elements to copy.
    * @exception ArrayIndexOutOfBoundsException
-   *              If <code>srcOffset &lt; 0</code> or <code>length > size()</code> or
-   *              <code>destOffset + length > destArray.length</code>.
+   *              If <code>srcOffset &lt; 0</code> or <code>length &gt; size()</code> or
+   *              <code>destOffset + length &gt; destArray.length</code>.
    */
   void copyToArray(int srcOffset, double[] dest, int destOffset, int length)
           throws ArrayIndexOutOfBoundsException;

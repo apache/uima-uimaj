@@ -33,7 +33,7 @@ import java.io.InputStream;
  * data outside the CAS.
  * </ul>
  * <p>
- * SofaFS (the feature structure that represents a sofa) are created as a side effect of
+ * SofaFS (the feature structure that represents a SofA) are created as a side effect of
  * creating a new CAS view.  To create a new CAS view, use 
  * {@link org.apache.uima.cas.CAS#createView CAS.createView(string-view-name)}. 
  * From the returned CAS view, you can get the associated SofaFS instance, using
@@ -55,7 +55,7 @@ public interface SofaFS extends FeatureStructure {
 
   /**
    * Set the URI for a Remote Subject of Analysis. Once set, this URI may not be changed.
-   * 
+   * @param aURI the URI for a remote Sofa 
    * @throws CASRuntimeException
    *           if the Sofa data has already been set
    */
@@ -64,7 +64,7 @@ public interface SofaFS extends FeatureStructure {
   /**
    * Set the Local Subject of Analysis to be a predefined ArrayFS. Once set, the Sofa data cannot be
    * changed.
-   * 
+   * @param aFS the SofA
    * @throws CASRuntimeException
    *           if given FS is not an ArrayFS, or if the Sofa data has already been set
    */
@@ -72,7 +72,7 @@ public interface SofaFS extends FeatureStructure {
 
   /**
    * Set the Local Subject of Analysis to be a String. Once set, the Sofa data cannot be changed.
-   * 
+   * @param aString  The subject of analysis 
    * @throws CASRuntimeException
    *           if the Sofa data has already been set
    */
@@ -80,11 +80,13 @@ public interface SofaFS extends FeatureStructure {
 
   /**
    * Get the Local Subject of Analysis returns null if not previously set.
+   * @return the local SofA 
    */
   FeatureStructure getLocalFSData();
 
   /**
    * Get the Local Subject of Analysis returns null if not previously set.
+   * @return the SofA 
    */
   String getLocalStringData();
 
@@ -111,13 +113,14 @@ public interface SofaFS extends FeatureStructure {
 
   /**
    * Get the Sofa Ref value.
+   * @return the Sofa Reference value
    */
   int getSofaRef();
 
   /**
    * Provides stream access to both local and remote Sofa data.
    * 
-   * For remote sofa data, a custom URLStreamHandler may be registered for a protocol via the
+   * For remote SofA data, a custom URLStreamHandler may be registered for a protocol via the
    * java.protocol.handler.pkgs system property.
    * 
    * @return an InputStream for reading Sofa data. null returned if there is no Sofa data.

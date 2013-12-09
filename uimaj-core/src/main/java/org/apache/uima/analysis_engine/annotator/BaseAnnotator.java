@@ -56,6 +56,7 @@ public interface BaseAnnotator {
    * and Features to the actual {@link org.apache.uima.cas.Type} and
    * {@link org.apache.uima.cas.Feature} objects, which can then be used during processing.
    * 
+   * @param aTypeSystem the new type system
    * @throws AnnotatorInitializationException
    *           if the annotator cannot initialize itself.
    * @throws AnnotatorConfigurationException

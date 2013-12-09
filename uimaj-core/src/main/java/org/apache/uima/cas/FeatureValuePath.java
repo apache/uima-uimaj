@@ -37,7 +37,7 @@ import org.apache.uima.cas.impl.LowLevelTypeSystem;
  * CAS chunks)
  * </ul>
  * 
- * <b>Handling of Arrays </b> <br/>
+ * <b>Handling of Arrays </b> <br>
  * <ul>
  * <li>A feature path may contain 0 or more features of type <code>FSArray</code>, but not as
  * the last path snippet. The next path snippet must contain the fully qualified type name, example:
@@ -67,8 +67,8 @@ import org.apache.uima.cas.impl.LowLevelTypeSystem;
  * operator can be used directly. Unlike FSArray, this access operator must be the only entry in the
  * path.
  * 
- * <br/><b>Usage </b>
- * <ul>
+ * <br><b>Usage </b>
+ * <ol>
  * <li>To create the feature path, use <code>FeaturePath.getFeaturePath</code>. Note that the
  * client code needs to keep track of the "start type" of the feature path, that is, the type that
  * contains the attribute used in the first snippet of the path.
@@ -76,7 +76,7 @@ import org.apache.uima.cas.impl.LowLevelTypeSystem;
  * <code>typeSystemInit</code> of the feature path.
  * <li>Call <code>getValueType</code> to find out whether the feature path evaluates to a String,
  * and int, a float, or their array counterparts.
- * <li>Depending on the leaf type, call the appropriate <coce>evaluateAs </code> methods
+ * <li>Depending on the leaf type, call the appropriate <code>evaluateAs </code> methods
  * </ol>
  * 
  * @deprecated use {@link org.apache.uima.cas.FeaturePath FeaturePath}
