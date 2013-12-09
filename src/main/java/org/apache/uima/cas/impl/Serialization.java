@@ -55,7 +55,7 @@ public class Serialization {
   /**
    * Convert a CAS to a CASSerializer object.
    * This object used in testing , and also to pass things via the CPP JNI interface, and the Vinci protocol
-   * @param cas
+   * @param cas the CAS which serves as the source for a new CASSerializer object
    * @return a corresponding CASSerializer object
    */
   public static CASSerializer serializeCAS(CAS cas) {
@@ -68,7 +68,7 @@ public class Serialization {
    * Convert a CAS to a CASSerializer object.
    * This object used in testing
    * Excludes metadata about the CAS
-   * @param cas
+   * @param cas the source for a new CASSerializer object
    * @return a corresponding CASSerializer object
    */
 
@@ -83,7 +83,7 @@ public class Serialization {
    * CASMgrSerializer object which can be serialized
    * 
    * @param casMgr the type system and index repo definitions
-   * @return a seriailzable object version of these
+   * @return a serializable object version of these
    */
   public static CASMgrSerializer serializeCASMgr(CASMgr casMgr) {
     CASMgrSerializer ser = new CASMgrSerializer();
@@ -96,7 +96,7 @@ public class Serialization {
   /**
    * Convert a CAS + the type system and index definitions into a
    * CASCompleteSerializer object
-   * @param casMgr
+   * @param casMgr the source for a new CASCompleteSerializer object
    * @return a Java Object which is serializable and has both the type system, index definitions, and the CAS contents
    */
   public static CASCompleteSerializer serializeCASComplete(CASMgr casMgr) {
@@ -106,8 +106,8 @@ public class Serialization {
   /**
    * Deserialize the data in a CASCompleteSerializer into an 
    * existing CAS
-   * @param casCompSer
-   * @param casMgr
+   * @param casCompSer the source for deserialization 
+   * @param casMgr the CAS to receive the data
    */
   public static void deserializeCASComplete(CASCompleteSerializer casCompSer, CASMgr casMgr) {
     ((CASImpl) casMgr).reinit(casCompSer);
@@ -116,7 +116,7 @@ public class Serialization {
   /**
    * Deserialize a type system and index repository definition and use to initialize
    * a new instance of a CAS.
-   * @param ser
+   * @param ser the CAS to receive the type system
    * @return the initialized CAS loaded with the deserialized info about the CAS Type systen and Index repositories
    */
   public static CASMgr createCASMgr(CASMgrSerializer ser) {
@@ -130,8 +130,8 @@ public class Serialization {
   /**
    * Deserialize the data in a CASSerializer into an existing CAS,
    * return the currentview in that Cas.
-   * @param casMgr
-   * @param casSer
+   * @param casMgr the CAS Manager
+   * @param casSer the serializer
    * @return the initialized CAS loaded with the deserialized data
    */
   public static CAS createCAS(CASMgr casMgr, CASSerializer casSer) {
@@ -148,8 +148,8 @@ public class Serialization {
   /**
    * Serialize a CAS including what's indexed, to an output stream
    * Uses uncompressed binary serialization
-   * @param cas
-   * @param ostream
+   * @param cas the CAS to serialize
+   * @param ostream the output stream
    */
   public static void serializeCAS(CAS cas, OutputStream ostream) {
     CASSerializer ser = new CASSerializer();
@@ -164,7 +164,7 @@ public class Serialization {
    *     - compressed, no type filtering (form 6), not-delta only.
    *     If this form encounters a non-conforming kind of input, it will throw a runtime exception.  
    * @param cas the CAS to deserialize into.  If the incoming representation is a Delta Cas, then the receiving CAS is not reset, but is added to.
-   * @param istream 
+   * @param istream the input stream
    * @return The form of the serialized CAS (from its header)
    */
   public static SerialFormat deserializeCAS(CAS cas, InputStream istream) {
@@ -175,9 +175,9 @@ public class Serialization {
    * Serializes CAS data added or modified after the tracking Marker was created and writes it
    * to the output stream in Delta CAS format
    * using uncompressed binary format
-   * @param cas
-   * @param ostream
-   * @param mark
+   * @param cas the Cas to serialize
+   * @param ostream the output stream
+   * @param mark the cas mark (for delta CASes)
    */
   public static void serializeCAS(CAS cas, OutputStream ostream, Marker mark) {
   	if (!mark.isValid() ) {
@@ -193,8 +193,9 @@ public class Serialization {
   
   /**
    * Serialize in compressed binary form 4
+   * @param cas the CAS to serialize
    * @param out - an OutputStream, a DataOutputStream, or a File
-   * @throws IOException
+   * @throws IOException if IO exception
    */
   public static void serializeWithCompression(CAS cas, Object out) throws IOException {
     (new BinaryCasSerDes4(((CASImpl)cas).getTypeSystemImpl(), false)).serialize(cas, out);
@@ -202,9 +203,10 @@ public class Serialization {
   
   /**
    * Serialize in compress binary form 4, only the delta part of a CAS
+   * @param cas the CAS to serialize
    * @param out - an OutputStream, a DataOutputStream, or a File
    * @param marker identifying where the delta starts
-   * @throws IOException
+   * @throws IOException if IO exception
    */  
   public static void serializeWithCompression(CAS cas, Object out, Marker marker) throws IOException {
     (new BinaryCasSerDes4(((CASImpl)cas).getTypeSystemImpl(), false)).serialize(cas, out, marker);
@@ -216,10 +218,11 @@ public class Serialization {
    *   - To omit type filtering, use null for the target type system
    * It also only sends those feature structures which are reachable either from an index or references from other reachable feature structures.
    * 
+   * @param cas the CAS to serialize
    * @param out an OutputStream, a DataOutputStream, or a File
    * @param tgtTypeSystem null or a target TypeSystem, which must be mergable with this CAS's type system
    * @return information to be used on subsequent serializations (to save time) or deserializations (for receiving delta CASs), or reserializations (if sending delta CASs)
-   * @throws IOException
+   * @throws IOException if IO exception
    * @throws ResourceInitializationException if target type system is incompatible with this CAS's type system
    */  
   public static ReuseInfo serializeWithCompression(CAS cas, Object out, TypeSystem tgtTypeSystem) throws IOException, ResourceInitializationException {
@@ -234,12 +237,13 @@ public class Serialization {
    *   - To omit type filtering, use null for the target type system
    * It also only sends those feature structures which are reachable either from an index or references from other reachable feature structures.
    *
+   * @param cas the CAS to serialize
    * @param out an OutputStream, a DataOutputStream, or a File
    * @param tgtTypeSystem null or a target TypeSystem, which must be mergable with this CAS's type system
    * @param mark null or where the mark is in the CAS. If not null, indicates doing a delta CAS serialization
    * @param reuseInfo if mark is not null, this parameter is required 
    *                  and must have been computed when the original deserialization (of the CAS now being serialized as a delta CAS) was done
-   * @throws IOException
+   * @throws IOException if IO exception
    * @throws ResourceInitializationException if the target type system and the CAS's type system can't be merged
    */
   public static void serializeWithCompression(CAS cas, Object out, TypeSystem tgtTypeSystem, Marker mark, ReuseInfo reuseInfo) throws IOException, ResourceInitializationException {
@@ -253,12 +257,12 @@ public class Serialization {
    *     - compressed, type filtering (form 6), delta and not-delta.
    *   
    * @param cas the CAS to deserialize into.  If the incoming representation is a Delta Cas, then the receiving CAS is not reset, but is added to.
-   * @param istream 
+   * @param istream the input stream
    * @param tgtTypeSystem The typeSystem of the serialized form of the CAS; must be compatible with the type system of the receiving cas.
    * @param reuseInfo If delta CAS is being received and form 6 compression is being used, then this must be the reuseInfo captured when the
    *                  original CAS (being updated by the delta coming in) was sent out.
    * @return The instance of BinaryCasSerDes6 used for deserialization
-   * @throws IOException 
+   * @throws IOException if IO exception
    * @throws ResourceInitializationException if the target type system and the CAS's type system can't be merged
    */
   public static BinaryCasSerDes6 deserializeCAS(CAS cas, InputStream istream, TypeSystem tgtTypeSystem, ReuseInfo reuseInfo) throws IOException, ResourceInitializationException {
@@ -273,13 +277,13 @@ public class Serialization {
    *     - compressed, type filtering (form 6), delta and not-delta.
    *   
    * @param cas the CAS to deserialize into.  If the incoming representation is a Delta Cas, then the receiving CAS is not reset, but is added to.
-   * @param istream 
+   * @param istream the input stream 
    * @param tgtTypeSystem The typeSystem of the serialized form of the CAS; must be compatible with the type system of the receiving cas.
    * @param reuseInfo If delta CAS is being received and form 6 compression is being used, then this must be the reuseInfo captured when the
    *                  original CAS (being updated by the delta coming in) was sent out.
    * @param allowPreexisting used to control what happens when a delta cas is modifying Feature Structures below the line
    * @return The instance of BinaryCasSerDes6 used for deserialization
-   * @throws IOException 
+   * @throws IOException if IO exception
    * @throws ResourceInitializationException if the target type system and the CAS's type system can't be merged
    */
 

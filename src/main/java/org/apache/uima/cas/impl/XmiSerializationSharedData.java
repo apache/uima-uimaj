@@ -51,7 +51,7 @@ import org.apache.uima.internal.util.rb_trees.RedBlackTree;
  *   <li>After calling the XmiCasSerializer and passing an <code>XmiSerializationSharedData</code>, you can call the
  *       {@link #getMaxXmiId()} method to get the maximum xmi:id value in the serialized CAS.  This feature, along with the consistency of
  *       xmi:id values, allows merging multiple XMI documents into a single CAS.  See TODO.</li>
- *       
+ * </ul>       
  * 
  */
 public class XmiSerializationSharedData {
@@ -324,8 +324,8 @@ public class XmiSerializationSharedData {
   
   /**
    * 
-   * @param nonsharedFS
-   * @return the int handle to the encompassing FS
+   * @param nonsharedFS an id of a nonsharedFS
+   * @return the int handle to the encompassing FS or -1 if not found
    */
   public int getEncompassingFS(int nonsharedFS) {
 	Integer addr = (Integer) this.nonsharedfeatureIdToFSId.get(nonsharedFS);

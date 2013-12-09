@@ -1738,6 +1738,7 @@ public class XmiCasDeserializer {
    * 
    * @param ts
    *          The type system of the CASes to be deserialized.
+   * @param uimaContext the UIMA Context to use for the deserialization
    */
   public XmiCasDeserializer(TypeSystem ts, UimaContext uimaContext) {
     super();
@@ -1847,6 +1848,7 @@ public class XmiCasDeserializer {
    *          content will be deserialized. If the mergePoint is nonnegative (including 0), the
    *          target CAS will not be reset, and only Feature Structures whose xmi:id is strictly
    *          greater than the mergePoint value will be deserialized.
+   * @param allow indicates what action to do if a pre-existing FS is found 
    * @return The <code>DefaultHandler</code> to pass to the SAX parser.
    */
   public DefaultHandler getXmiCasHandler(CAS cas, boolean lenient,

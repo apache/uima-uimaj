@@ -863,8 +863,8 @@ public class XCASSerializer {
    *          The CAS to be serialized.
    * @param contentHandler
    *          The SAX content handler the data is written to.
-   * @throws IOException
-   * @throws SAXException
+   * @throws IOException passed thru
+   * @throws SAXException passed thru
    */
   public void serialize(CAS cas, ContentHandler contentHandler) throws IOException, SAXException {
     serialize(cas, contentHandler, true);
@@ -880,8 +880,8 @@ public class XCASSerializer {
    * @param encodeDoc
    *          If set to false, no uima.tcas.Document structure will be created, and the document
    *          text will not be serialized.
-   * @throws IOException
-   * @throws SAXException
+   * @throws IOException passed thru
+   * @throws SAXException passed thru
    */
   public void serialize(CAS cas, ContentHandler contentHandler, boolean encodeDoc)
           throws IOException, SAXException {
@@ -901,8 +901,8 @@ public class XCASSerializer {
    * @param outOfTypeSystemData
    *          data not part of the CAS type system, which should be inserted into the XCAS output
    * 
-   * @throws IOException
-   * @throws SAXException
+   * @throws IOException passed thru
+   * @throws SAXException passed thru
    */
   public void serialize(CAS cas, ContentHandler contentHandler, boolean encodeDoc,
           OutOfTypeSystemData outOfTypeSystemData) throws IOException, SAXException {

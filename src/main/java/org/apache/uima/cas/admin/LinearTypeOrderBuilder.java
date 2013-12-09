@@ -36,7 +36,7 @@ public interface LinearTypeOrderBuilder {
    * relation is no longer a partial order. If you need to know exactly which pair fails, always
    * call add() with a two-element array.
    * 
-   * @param types
+   * @param types types to add
    * @exception CASException
    *              When adding pairs would make order inconsistent.
    */
@@ -47,6 +47,7 @@ public interface LinearTypeOrderBuilder {
    * defined through calls to add().
    * 
    * @return An array of Strings in ascending order.
+   * @throws CASException if any error
    */
   LinearTypeOrder getOrder() throws CASException;
 
