@@ -54,53 +54,53 @@ import org.xml.sax.SAXException;
 
 /**
  * The <code>InstallationController</code> class allows installing PEAR files that contain UIMA
- * compliant components. <br />
+ * compliant components. <br>
  * <b>Note:</b> current version works both in Windows and Linux.
  * 
- * <br />
+ * <br>
  * This class may be used in the following ways:
  * <ul>
- * <li>As a standalone Java application - <br />
+ * <li>As a standalone Java application - <br>
  * <code>
  * java -DUIMA_HOME=%UIMA_HOME% org.apache.uima.pear.tools.InstallationController 
  * {-local pear_file | component_id} [-root] [installation_directory]
- * </code><br />
+ * </code><br>
  * where the <code>-local pear_file</code> option allows to install local PEAR file in the local
- * file system (without using SITH services); <br />
+ * file system (without using SITH services); <br>
  * the <code>component_id</code> is the ID of the component to be installed using SITH services;
- * <br />
+ * <br>
  * the <code>-root</code> option enables component installation directly in the specified
  * installation directory, as opposed to installing component in a <code>component_id</code>
- * subdirectory of the specified installation directory; <br />
+ * subdirectory of the specified installation directory; <br>
  * the <code>installation_directory</code> is the directory where the new component will be
  * installed - if the <code>-root</code> option is specified, the component is installed in this
  * directory, otherwise it is installed in a <code>component_id</code> subdirectory of this
  * directory; by default - current working directory. </li>
- * <li>As a Java object - <br />
+ * <li>As a Java object - <br>
  * in this case, the caller is expected to set the <code>UIMA_HOME</code> variable, using the
  * <code>setUimaHomePath()</code> method, immediately after creating a new instance of the
- * <code>InstallationController</code> class. <br />
- * Installation is performed by using the <code>installComponent()</code> method. <br />
+ * <code>InstallationController</code> class. <br>
+ * Installation is performed by using the <code>installComponent()</code> method. <br>
  * Installation verification is performed by using the <code>verifyComponent()</code> method.
- * <br />
+ * <br>
  * Error messages can be retrieved by using the <code>getInstallationMsg()</code> and
- * <code>getVerificationMsg()</code> methods. <br />
+ * <code>getVerificationMsg()</code> methods. <br>
  * <b>Note 1:</b> Starting from version 0.6, the <code>InstallationController</code> class
- * utilizes intra-process message routing (see <code>{@link MessageRouter}</code> class).
+ * utilizes intra-process message routing (see {@link MessageRouter}).
  * Applications need to call the <code>terminate()</code> method on each instance of the
- * <code>InstallationController</code> class after all their operations are completed. <br />
+ * <code>InstallationController</code> class after all their operations are completed. <br>
  * The application can get output and error messages, printed by the
  * <code>InstallationController</code>, by adding standard channel listeners (see the
  * <code>addMsgListener()</code> method). By default, the output and error messages are printed to
  * the standard console streams. Alternatively, the application can use the
  * <code>InstallationController</code> constructor that accepts a custom message listener. In this
- * case, the output and error messages will not be printed to the standard console streams. <br />
+ * case, the output and error messages will not be printed to the standard console streams. <br>
  * <b>Note 2:</b> Starting from version 1.4, the <code>InstallationController</code> class
- * defines the <code>{@link PackageSelector}</code> interface and allows to plug-in custom package
+ * defines the {@link PackageSelector} interface and allows to plug-in custom package
  * selectors for manually or automatically selecting root directories of installed PEAR packages, as
- * well as PEAR package files that need to be installed. <br />
+ * well as PEAR package files that need to be installed. <br>
  * <b>Note 2:</b> Starting from version 1.5, the <code>InstallationController</code> class
- * defines the <code>{@link InstallationMonitor}</code> interface and allows to plug-in custom
+ * defines the {@link InstallationMonitor} interface and allows to plug-in custom
  * installation monitors for reporting component installation status and location of installed
  * components. </li>
  * </ul>
@@ -124,7 +124,7 @@ public class InstallationController {
      * @param componentId
      *          The ID of the given component.
      * @param status
-     *          Current installation status of the given component. <br />
+     *          Current installation status of the given component. <br>
      *          Note: Acceptable status values are defined in the
      *          <code>InstallationController</code> class.
      */
@@ -706,7 +706,7 @@ public class InstallationController {
    * @param targetDir
    *          The given target directory.
    * @param controller
-   *          The instance of the <code>InstallationController<code> class that provides OUT and ERR 
+   *          The instance of the <code>InstallationController</code> class that provides OUT and ERR 
    * @param cleanTarget
    *          If true, the target directory is cleaned before the PEAR file is installed to it. 
    * message routing, or <code>null</code>.
@@ -842,7 +842,7 @@ public class InstallationController {
    * @param installationDir
    *          The given target directory.
    * @param controller
-   *          The instance of the <code>InstallationController<code> class that provides OUT and ERR 
+   *          The instance of the <code>InstallationController</code> class that provides OUT and ERR 
    * message routing, or <code>null</code>.
    * @param cleanTarget
    *          If true, the target directory is cleaned before the PEAR file is installed to it. 
@@ -907,7 +907,7 @@ public class InstallationController {
    *          The given installed component ID.
    * @param pkgSelector
    *          The instance of the
-   *          <code>PackageSelector<code> class that allows selecting root directory 
+   *          <code>PackageSelector</code> class that allows selecting root directory 
    * of the installed component in the local file system.
    * @return The root directory path of the given component in the local 
    * file system, or <code>null</code>, if the component is not installed.
@@ -933,7 +933,7 @@ public class InstallationController {
    *          The given component ID.
    * @param pkgSelector
    *          The instance of the
-   *          <code>PackageSelector<code> class that allows selecting location of the 
+   *          <code>PackageSelector</code> class that allows selecting location of the 
    * given component PEAR file in the local file system, or in the network.
    * @return The location of the PEAR file for the given component, or 
    * <code>null</code>, if the PEAR file was not found.
@@ -958,7 +958,7 @@ public class InstallationController {
   /**
    * Starts the application. This application expects the following JVM run-time settings:
    * <ul>
-   * <li>-DUIMA_HOME=<local_uima_root_dir>
+   * <li>-DUIMA_HOME=&lt;local_uima_root_dir&gt;
    * </ul>
    * 
    * @param args
@@ -1736,8 +1736,8 @@ public class InstallationController {
    * @param mainComponentId
    *          main component ID of the installed pear file
    * 
-   * @throws IOException
-   * @throws SAXException
+   * @throws IOException if IO Exception
+   * @throws SAXException if SAX Exception
    */
   protected static synchronized void generatePearSpecifier(String mainComponentRootPath,
           String mainComponentId) throws IOException, SAXException {

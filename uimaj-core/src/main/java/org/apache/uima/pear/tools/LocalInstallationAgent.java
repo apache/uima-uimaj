@@ -39,32 +39,32 @@ import org.apache.uima.resource.ResourceInitializationException;
  * within the single PEAR structure, and verifying localized component's files using UIMA framework
  * API.
  * 
- * <br />
+ * <br>
  * This class may be used in the following ways:
  * <ul>
- * <li>As a standalone Java application - <br />
+ * <li>As a standalone Java application - <br>
  * <code>
  * java -Xmx512M -DUIMA_HOME=%UIMA_HOME% 
  * org.apache.uima.pear.tools.LocalInstallationAgent  
  * main_component_root_directory
- * </code><br />
+ * </code><br>
  * where the <code>main_component_root_directory</code> is the path to the root directory of the
  * main component (root directory of the single PEAR structure); </li>
- * <li>As a Java object - <br />
+ * <li>As a Java object - <br>
  * in this case the caller is expected to set the <code>UIMA_HOME</code> variable, using the
  * <code>setUimaHomePath()</code> method, immediately after creating a new instance of the
- * <code>LocalInstallationAgent</code> class. <br />
+ * <code>LocalInstallationAgent</code> class. <br>
  * <b>Note:</b> Some TAEs require large heap size, so the '-Xmx[heapSize]' JVM option may be
- * needed. <br />
+ * needed. <br>
  * Localization of component files is performed by using the <code>localizeComponent()</code>
- * method. <br />
- * Verification of localized files is performed by using the </code>verifyLocalizedComponent()</code>
- * method. <br />
+ * method. <br>
+ * Verification of localized files is performed by using the <code>verifyLocalizedComponent()</code>
+ * method. <br>
  * The applications prints all messages to the standard output and error messages to the standard
  * error output. </li>
  * </ul>
  * In both modes the application uses the <code>metadata/PEAR.properties</code> file for the
- * component localization information. <br />
+ * component localization information. <br>
  * <b>Note:</b> during the localization phase the application creates backup copies of all files in
  * both the <code>conf</code> and <code>desc</code> directories, adding the extension ".$" to
  * each backup file. If the application fails, please make sure all original files in both the
@@ -182,8 +182,8 @@ public class LocalInstallationAgent {
    * Performs localization of a given installation descriptor object using information from a
    * specified PEAR configuration.
    * 
-   * @param insdObject
-   * @param packageConfig
+   * @param insdObject installation descriptor object
+   * @param packageConfig pear configuration properties
    */
   public static void localizeInstallationDescriptor(InstallationDescriptor insdObject,
           Properties packageConfig) {
@@ -203,7 +203,7 @@ public class LocalInstallationAgent {
   /**
    * Starts the application. This application expects the following JVM run-time settings:
    * <ul>
-   * <li>-DUIMA_HOME=<local_uima_root_dir>
+   * <li>-DUIMA_HOME=&lt;local_uima_root_dir&gt;
    * </ul>
    * 
    * @param args

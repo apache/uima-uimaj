@@ -31,7 +31,7 @@ import java.util.List;
  * <code>PrintWriter</code> class. The <code>MessageRouter</code> class, by default, defines 2
  * standard message channels - for standard output and standard error messages. Applications can
  * publish their standard output and standard error messages using the <code>outWriter()</code>
- * and <code>errWriter()</code> methods correspondingly. <br/>The <code>MessageRouter</code>
+ * and <code>errWriter()</code> methods correspondingly. <br>The <code>MessageRouter</code>
  * class distributes the messages to a number of message channel listeners, added by applications.
  * Standard message channel listeners should implement the
  * <code>MessageRouter.StdChannelListener</code> interface. The <code>MessageRouter</code> class
@@ -41,7 +41,7 @@ import java.util.List;
  * The <code>MessageRouter</code> code runs in a separate thread that should be started and
  * terminated by applications. Applications should use the <code>start()</code> and
  * <code>terminate()</code> methods to start and terminate the <code>MessageRouter</code> thread
- * correspondingly. <br/>For terminology see the <a
+ * correspondingly. <br>For terminology see the <a
  * href="http://www.eaipatterns.com/MessageRouter.html"> Enterprise Integration Patterns</a> book.
  * </p>
  * 

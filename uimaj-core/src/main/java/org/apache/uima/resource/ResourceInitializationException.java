@@ -264,7 +264,7 @@ public class ResourceInitializationException extends UIMAException {
   /**
    * Message key for a standard UIMA exception message: Invalid configuration parameter override
    * syntax "{0}" in parameter "{1}" of Analysis Engine "{2}". Overrides must be of the form
-   * "&lt;delegateKey>/&lt;paramName>"
+   * "&lt;delegateKey&gt;/&lt;paramName&gt;"
    */
   public static final String INVALID_PARAM_OVERRIDE_SYNTAX = "invalid_param_override_syntax";
 
@@ -429,7 +429,7 @@ public class ResourceInitializationException extends UIMAException {
 
   /**
    * Message key for a standard UIMA exception message: "Component descriptor did not specify the
-   * required &lt;frameworkImplementation> element."
+   * required &lt;frameworkImplementation&gt; element."
    */
   public static final String MISSING_FRAMEWORK_IMPLEMENTATION = "missing_framework_implementation";
 
@@ -451,7 +451,7 @@ public class ResourceInitializationException extends UIMAException {
   /**
    * Message key for a standard UIMA exception message: The descriptor for Aggregate Analysis Engine "{0}" 
    * specified an invalid flow.  The key "{1}" was used in the flow but is not defined as a key in the
-   * &lt;delegateAnalysisEngineSpecifiers> element of the descriptor.
+   * &lt;delegateAnalysisEngineSpecifiers&gt; element of the descriptor.
    */
   public static final String UNDEFINED_KEY_IN_FLOW = "undefined_key_in_flow";
 
