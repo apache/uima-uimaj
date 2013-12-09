@@ -83,7 +83,7 @@ public interface CasProcessorExecutable extends MetaDataObject {
   public ArrayList<CasProcessorRuntimeEnvParam> getEnvs();
 
   /**
-   * @param params
+   * @param params the CAS Processor Runtime Environment parameters
    */
   public void setEnvs(ArrayList<CasProcessorRuntimeEnvParam> params);
 

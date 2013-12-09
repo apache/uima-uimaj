@@ -44,7 +44,7 @@ public interface CasProcessorExecArgs extends Serializable// extends MetaDataObj
    *          position of argument in the list
    * 
    * @return - {@link org.apache.uima.collection.metadata.CasProcessorExecArg} instance
-   * @throws CpeDescriptorException
+   * @throws CpeDescriptorException tbd
    */
   public CasProcessorExecArg get(int aIndex) throws CpeDescriptorException;
 

@@ -33,7 +33,7 @@ public interface CasProcessorDeploymentParam extends MetaDataObject {
    * 
    * @param aParamName -
    *          a name
-   * @throws CpeDescriptorException
+   * @throws CpeDescriptorException tbd
    */
   public void setParameterName(String aParamName) throws CpeDescriptorException;
 
@@ -41,7 +41,7 @@ public interface CasProcessorDeploymentParam extends MetaDataObject {
    * Returns the name of the parameter
    * 
    * @return - name as String
-   * @throws CpeDescriptorException
+   * @throws CpeDescriptorException tbd
    */
   public String getParameterName() throws CpeDescriptorException;
 
@@ -50,7 +50,7 @@ public interface CasProcessorDeploymentParam extends MetaDataObject {
    * 
    * @param aParamValue -
    *          parameter value
-   * @throws CpeDescriptorException
+   * @throws CpeDescriptorException tbd
    */
   public void setParameterValue(String aParamValue) throws CpeDescriptorException;
 
@@ -58,7 +58,7 @@ public interface CasProcessorDeploymentParam extends MetaDataObject {
    * Returns deployment parameter value
    * 
    * @return - value as String
-   * @throws CpeDescriptorException
+   * @throws CpeDescriptorException tbd
    */
   public String getParameterValue() throws CpeDescriptorException;
 
@@ -67,7 +67,7 @@ public interface CasProcessorDeploymentParam extends MetaDataObject {
    * 
    * @param aParamType -
    *          value type (string, int, etc)
-   * @throws CpeDescriptorException
+   * @throws CpeDescriptorException tbd
    */
   public void setParameterType(String aParamType) throws CpeDescriptorException;
 
@@ -75,7 +75,7 @@ public interface CasProcessorDeploymentParam extends MetaDataObject {
    * Returns deployment parameter value type
    * 
    * @return - value type (string, int, etc)
-   * @throws CpeDescriptorException
+   * @throws CpeDescriptorException tbd
    */
   public String getParameterType() throws CpeDescriptorException;
 }

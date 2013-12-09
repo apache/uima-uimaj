@@ -26,7 +26,7 @@ public interface CpeTimer {
    * @param aTimerClass -
    *          name of a timer class
    * 
-   * @throws CpeDescriptorException
+   * @throws CpeDescriptorException tbd
    */
   public void set(String aTimerClass) throws CpeDescriptorException;
 

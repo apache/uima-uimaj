@@ -52,7 +52,7 @@ public interface CpeLocalCasProcessor extends CpeCasProcessor {
    * @param aCasProcessorExecutable -
    *          name of a program
    * 
-   * @throws CpeDescriptorException
+   * @throws CpeDescriptorException tbd
    */
   public void setExecutable(String aCasProcessorExecutable) throws CpeDescriptorException;
 
@@ -60,7 +60,7 @@ public interface CpeLocalCasProcessor extends CpeCasProcessor {
    * Returns a name of a program to use when launching this CasProcessor
    * 
    * @return the name of the program to execute
-   * @throws CpeDescriptorException
+   * @throws CpeDescriptorException tbd
    */
   public String getExecutable() throws CpeDescriptorException;
 

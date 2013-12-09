@@ -77,7 +77,7 @@ public interface CpeComponentDescriptor extends MetaDataObject {
    * 
    * @return the absolute URL of the component descriptor
    * 
-   * @throws ResourceConfiguration
+   * @throws ResourceConfigurationException
    *           if an import could not be resolved
    */
   public URL findAbsoluteUrl(ResourceManager aResourceManager) throws ResourceConfigurationException;  

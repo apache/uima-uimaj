@@ -34,7 +34,7 @@ public interface CpeCheckpoint extends MetaDataObject {
    * 
    * @param aCheckpointFilePath -
    *          checkpoint file path
-   * @throws CpeDescriptorException
+   * @throws CpeDescriptorException tbd
    */
   public void setFilePath(String aCheckpointFilePath) throws CpeDescriptorException;
 
@@ -71,7 +71,7 @@ public interface CpeCheckpoint extends MetaDataObject {
 
   /**
    * 
-   * @param aBatchSize
+   * @param aBatchSize the size of the batch
    */
   public void setBatchSize(int aBatchSize);
 

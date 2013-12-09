@@ -31,6 +31,7 @@ import org.apache.uima.resource.metadata.MetaDataObject;
  * <li> Feature! Process CAS if the Feature is not present (e.g. where Person!)
  * <li> Feature=value Process CAS if the Feature has this value( e.g. where Person=Bush)
  * <li> Feature!=value Process CAS if the Feature does not have this value (e.g. where Person!=Bush)
+ * </ul>
  * 
  * The featurespecs are implicitly connected with and operators and precedence rules are currently
  * not supported.

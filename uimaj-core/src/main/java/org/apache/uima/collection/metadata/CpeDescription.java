@@ -47,15 +47,15 @@ public interface CpeDescription extends MetaDataObject {
    * Adds a path to the descriptor file containing CollectionReader's configuration.
    * The CPE supports only one CollectionReader instance.
    * <p>
-   * This method causes the CPE descriptor to use the older &lt;include> syntax.  To use the 
-   * &lt;import> syntax, you must use {@link #addCollectionReader(CpeCollectionReader)} instead.
+   * This method causes the CPE descriptor to use the older &lt;include&gt; syntax.  To use the 
+   * &lt;import&gt; syntax, you must use {@link #addCollectionReader(CpeCollectionReader)} instead.
    * 
    * @param aCollectionReaderPath -
    *          path to the CollectionReader descriptor.  A relative path is interpreted as
    *          relative to the current working directory.
    * @return {@link org.apache.uima.collection.metadata.CpeCollectionReader}
    * 
-   * @throws CpeDescriptorException
+   * @throws CpeDescriptorException tbd
    */
   public CpeCollectionReader addCollectionReader(String aCollectionReaderPath)
           throws CpeDescriptorException;
@@ -67,7 +67,7 @@ public interface CpeDescription extends MetaDataObject {
    *          path to the CasInitializer descriptor
    * @return {@link org.apache.uima.collection.metadata.CpeCollectionReaderCasInitializer}
    * 
-   * @throws CpeDescriptorException
+   * @throws CpeDescriptorException tbd
    * 
    * @deprecated As of v2.0 CAS Initializers are deprecated.
    */
@@ -81,7 +81,7 @@ public interface CpeDescription extends MetaDataObject {
    * 
    * @return array of {@link org.apache.uima.collection.metadata.CpeCollectionReader} instances.
    * 
-   * @throws CpeDescriptorException
+   * @throws CpeDescriptorException tbd
    */
   public CpeCollectionReader[] getAllCollectionCollectionReaders() throws CpeDescriptorException;
 
@@ -99,11 +99,10 @@ public interface CpeDescription extends MetaDataObject {
    * <li> a list of Analysis Engines
    * <li> a list of CasConsumers
    * </ul>
-   * </p>
    * 
    * @return {@link org.apache.uima.collection.metadata.CpeCasProcessors}
    * 
-   * @throws CpeDescriptorException
+   * @throws CpeDescriptorException tbd
    */
   public CpeCasProcessors getCpeCasProcessors() throws CpeDescriptorException;
 
@@ -119,7 +118,7 @@ public interface CpeDescription extends MetaDataObject {
    * 
    * @param aCasProcessor -
    *          instance of {@link org.apache.uima.collection.metadata.CpeCasProcessor} to add.
-   * @throws CpeDescriptorException
+   * @throws CpeDescriptorException tbd
    */
   public void addCasProcessor(CpeCasProcessor aCasProcessor) throws CpeDescriptorException;
 
@@ -133,7 +132,7 @@ public interface CpeDescription extends MetaDataObject {
    * @param aCasProcessor -
    *          CasProcessor to add
    * 
-   * @throws CpeDescriptorException
+   * @throws CpeDescriptorException tbd
    */
   public void addCasProcessor(int index, CpeCasProcessor aCasProcessor)
           throws CpeDescriptorException;
@@ -154,7 +153,7 @@ public interface CpeDescription extends MetaDataObject {
    * 
    * @return {@link org.apache.uima.collection.metadata.CpeConfiguration}
    * 
-   * @throws CpeDescriptorException
+   * @throws CpeDescriptorException tbd
    */
   public CpeConfiguration getCpeConfiguration() throws CpeDescriptorException;
 
@@ -168,14 +167,14 @@ public interface CpeDescription extends MetaDataObject {
    * @param aSize -
    *          size of the queue
    * 
-   * @throws CpeDescriptorException
+   * @throws CpeDescriptorException tbd
    */
   public void setInputQueueSize(int aSize) throws CpeDescriptorException;
 
   /**
    * 
-   * @param aSize
-   * @throws CpeDescriptorException
+   * @param aSize the number of threads
+   * @throws CpeDescriptorException tbd
    */
   public void setProcessingUnitThreadCount(int aSize) throws CpeDescriptorException;
 
@@ -189,7 +188,7 @@ public interface CpeDescription extends MetaDataObject {
    * @param aSize -
    *          size of the queue
    * 
-   * @throws CpeDescriptorException
+   * @throws CpeDescriptorException tbd
    */
   public void setOutputQueueSize(int aSize) throws CpeDescriptorException;
 

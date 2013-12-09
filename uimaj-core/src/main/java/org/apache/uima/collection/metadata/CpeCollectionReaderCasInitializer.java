@@ -60,6 +60,7 @@ public interface CpeCollectionReaderCasInitializer extends MetaDataObject {
    * 
    * @param aSettings
    *          object containing parameter setting overrides
+   * @throws CpeDescriptorException tbd         
    */
   public void setConfigurationParameterSettings(CasProcessorConfigurationParameterSettings aSettings)
           throws CpeDescriptorException;
@@ -67,7 +68,7 @@ public interface CpeCollectionReaderCasInitializer extends MetaDataObject {
   public CpeSofaMappings getSofaNameMappings();
 
   /**
-   * @param mappings
+   * @param mappings the sofa mappings
    */
   public void setSofaNameMappings(CpeSofaMappings mappings);
 
