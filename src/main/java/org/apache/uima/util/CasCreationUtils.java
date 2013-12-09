@@ -630,6 +630,9 @@ public class CasCreationUtils {
    *                names defined on {@link UIMAFramework} interface
    * 
    * @return a new CAS matching the given CasDefinition
+   * @throws ResourceInitializationException
+   *                 if CAS creation fails
+
    */
   public static CAS createCas(CasDefinition casDef, Properties performanceTuningSettings)
       throws ResourceInitializationException {
@@ -649,6 +652,8 @@ public class CasCreationUtils {
    *                type system object to reuse
    * 
    * @return a new CAS matching the given CasDefinition
+   * @throws ResourceInitializationException
+   *                 if CAS creation fails
    */
   public static CAS createCas(CasDefinition casDef, Properties performanceTuningSettings,
       TypeSystem typeSystem) throws ResourceInitializationException {
@@ -842,7 +847,7 @@ public class CasCreationUtils {
    * @param aTypePriorities
    *                description of the type priorities to add
    * 
-   * @throws CASException
+   * @throws ResourceInitializationException
    *                 if an error occurs during type priority setup
    */
   public static void setupTypePriorities(CASMgr aCASMgr, TypePriorities aTypePriorities)

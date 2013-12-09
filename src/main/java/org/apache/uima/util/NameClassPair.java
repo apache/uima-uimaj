@@ -91,7 +91,7 @@ public class NameClassPair implements java.io.Serializable {
 
   /**
    * Gets the hash code for this object. The hash codes of two NameClassPairs <code>x</code> and
-   * </code>y</code> must be equal if <code>x.equals(y)</code> returns true;
+   * <code>y</code> must be equal if <code>x.equals(y)</code> returns true;
    * 
    * @return the hash code for this object
    */

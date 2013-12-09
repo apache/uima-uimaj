@@ -726,7 +726,7 @@ public interface XMLParser {
    * <p>
    * This method is similar to {@link #buildObject(Element, XMLParser.ParsingOptions)} but can also
    * parse primitive-typed objects wrapped as XML elements, such as
-   * <code>&lt;integer>42&lt;/integer</code>.
+   * <code>&lt;integer&gt;42&lt;/integer</code>.
    * 
    * @param aElement
    *          a DOM Element
@@ -756,8 +756,6 @@ public interface XMLParser {
    * @return an object that implements {@link org.xml.sax.ContentHandler} and can be used to
    *         deserialize an {@link XMLizable} object from SAX events.
    * 
-   * @throws InvalidXMLException
-   *           if the XML element does not specify a valid object
    */
   public SaxDeserializer newSaxDeserializer();
 
@@ -770,8 +768,6 @@ public interface XMLParser {
    * @return an object that implements {@link org.xml.sax.ContentHandler} and can be used to
    *         deserialize an {@link XMLizable} object from SAX events.
    * 
-   * @throws InvalidXMLException
-   *           if the XML element does not specify a valid object
    * @see #newSaxDeserializer()
    * 
    */

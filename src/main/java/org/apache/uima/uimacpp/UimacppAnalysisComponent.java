@@ -90,7 +90,8 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
 	  }
 
   /**
-   * @throws ResourceInitializationException
+   * @param context the UIMA Context 
+   * @throws ResourceInitializationException wraps exceptions thrown from called routines
    * @see org.apache.uima.analysis_component.AnalysisComponent#initialize(org.apache.uima.UimaContext)
    */
   public void initialize(UimaContext context) throws ResourceInitializationException {
@@ -171,6 +172,8 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
 
   /**
    * @see org.apache.uima.analysis_component.CasAnnotator_ImplBase#typeSystemInit(TypeSystem)
+   * @param ts TypeSystem to use in the initialization
+   * @throws AnnotatorConfigurationException pass thru
    */
   public void typeSystemInit(TypeSystem ts) throws AnnotatorConfigurationException,
           AnnotatorInitializationException {
@@ -193,6 +196,9 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
 
   /**
    * @see org.apache.uima.analysis_engine.annotator.GenericAnnotator#process(CAS, ResultSpecification)
+   * @param cas the CAS to process
+   * @param aResultSpec the Result Specification to use
+   * @throws AnnotatorProcessException wraps exceptions thrown from called methods
    */
   public void process(CAS cas, ResultSpecification aResultSpec) throws AnnotatorProcessException {
     try {
@@ -357,6 +363,7 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
   /**
    * Get the logging level of the logger for TAFAnnotator. TAF only supports three levels of
    * logging. All logging levels INFO and below are mapped to the TAF message level.
+   * @return the logging level
    */
   public static int getLoggingLevel() {
 
