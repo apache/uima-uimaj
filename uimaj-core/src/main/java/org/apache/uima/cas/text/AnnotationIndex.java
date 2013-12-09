@@ -26,7 +26,7 @@ import org.apache.uima.cas.FSIterator;
  * An annotation index provides additional iterator functionality that applies only to instances of
  * <code>uima.tcas.Annotation</code>. You can obtain an AnnotationIndex by calling:
  * <p>
- * <code>AnnotationIndex idx = (AnnotationIndex)cas.getAnnotationIndex();</code> <br/>(the
+ * <code>AnnotationIndex idx = (AnnotationIndex)cas.getAnnotationIndex();</code> <br>(the
  * typecast is necessary for historical reasons).
  * </p>
  * <p>
@@ -49,6 +49,8 @@ import org.apache.uima.cas.FSIterator;
  * have two annotations of the exact same type that also have the same span. It will also occur if
  * you have not defined any type priority between two annotations that have the same span.</li>
  * </ul>
+ * </p>
+ * <p>
  * In the method descriptions below, the notation <code>a &lt; b</code>, where <code>a</code>
  * and <code>b</code> are annotations, should be taken to mean <code>a</code> comes before
  * <code>b</code> in the index, according to the above rules.

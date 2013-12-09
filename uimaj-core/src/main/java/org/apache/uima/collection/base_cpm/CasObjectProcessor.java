@@ -63,7 +63,8 @@ public interface CasObjectProcessor extends CasProcessor {
    * and Features to the actual {@link org.apache.uima.cas.Type} and
    * {@link org.apache.uima.cas.Feature} objects, which can then be used during processing.
    * 
-   * @throws ResourceInitializatinException
+   * @param aTypeSystem the type system to use
+   * @throws ResourceInitializationException
    *           if the type system is not compatible with this Cas Consumer
    */
   public void typeSystemInit(TypeSystem aTypeSystem) throws ResourceInitializationException;

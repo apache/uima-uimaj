@@ -74,7 +74,7 @@ public interface CollectionProcessingManager {
    *          the <code>AnalysisEngine</code> that this CPM will use to analyze each CAS in the
    *          collection.
    * 
-   * @throws org.apache.uima.UIMA_IllegalStateException
+   * @throws ResourceConfigurationException
    *           if this CPM is currently processing
    */
   public void setAnalysisEngine(AnalysisEngine aAnalysisEngine)
@@ -93,7 +93,7 @@ public interface CollectionProcessingManager {
    * @param aCasConsumer
    *          a <code>CasConsumer</code> to add
    * 
-   * @throws org.apache.uima.UIMA_IllegalStateException
+   * @throws ResourceConfigurationException
    *           if this CPM is currently processing
    */
   public void addCasConsumer(CasConsumer aCasConsumer) throws ResourceConfigurationException;
@@ -211,7 +211,7 @@ public interface CollectionProcessingManager {
   /**
    * Determines whether this CPM is currently processing. This means that a processing request has
    * been submitted and has not yet completed or been {@link #stop()}ped. If processing is paused,
-   * this method will still return <code>true<code>.
+   * this method will still return <code>true</code>.
    * 
    * @return true if and only if this CPM is currently processing.
    */

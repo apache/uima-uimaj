@@ -118,7 +118,7 @@ public interface CollectionProcessingEngine {
   /**
    * Determines whether this CPE is currently processing. This means that a processing request has
    * been submitted and has not yet completed or been {@link #stop()}ped. If processing is paused,
-   * this method will still return <code>true<code>.
+   * this method will still return <code>true</code>.
    * 
    * @return true if and only if this CPE is currently processing.
    */

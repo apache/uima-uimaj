@@ -95,7 +95,7 @@ public interface BaseCPM {
    * @param aCasProcessor
    *          a <code>CasProcessor</code> to add
    * 
-   * @throws org.apache.uima.UIMA_IllegalStateException
+   * @throws ResourceConfigurationException
    *           if this CPM is currently processing
    */
   public void addCasProcessor(CasProcessor aCasProcessor) throws ResourceConfigurationException;
@@ -109,10 +109,8 @@ public interface BaseCPM {
    * @param aIndex
    *          the index at which to add the CasProcessor
    * 
-   * @throws org.apache.uima.UIMA_IllegalStateException
+   * @throws ResourceConfigurationException
    *           if this CPM is currently processing
-   * @throws IndexOutOfBoundsException
-   *           if aIndex is out of range
    */
   public void addCasProcessor(CasProcessor aCasProcessor, int aIndex)
           throws ResourceConfigurationException;
@@ -123,8 +121,6 @@ public interface BaseCPM {
    * @param aCasProcessor
    *          the <code>CasProcessor</code> to remove
    * 
-   * @throws org.apache.uima.UIMA_IllegalStateException
-   *           if this CPM is currently processing
    */
   public void removeCasProcessor(CasProcessor aCasProcessor);
 
@@ -134,10 +130,6 @@ public interface BaseCPM {
    * @param aCasProcessorName
    *          the name of the <code>CasProcessor</code> to disable
    * 
-   * @throws UIMA_IllegalStateException
-   *           if this CPM is currently processing
-   * @throws IOException
-   *           if an I/O failure occurs
    */
   public void disableCasProcessor(String aCasProcessorName);
 
@@ -159,8 +151,6 @@ public interface BaseCPM {
    * @param aRequired
    *          true if and only if serial processing is required
    * 
-   * @throws org.apache.uima.UIMA_IllegalStateException
-   *           if this CPM is currently processing
    */
   public void setSerialProcessingRequired(boolean aRequired);
 
@@ -179,8 +169,6 @@ public interface BaseCPM {
    * @param aPause
    *          true if and only if this CPM should pause on exception
    * 
-   * @throws org.apache.uima.UIMA_IllegalStateException
-   *           if this CPM is currently processing
    */
   public void setPauseOnException(boolean aPause);
 
@@ -212,15 +200,13 @@ public interface BaseCPM {
    * 
    * @throws ResourceInitializationException
    *           if an error occurs during initialization
-   * @throws org.apache.uima.UIMA_IllegalStateException
-   *           if this CPM is currently processing
    */
   public void process() throws ResourceInitializationException;
 
   /**
    * Determines whether this CPM is currently processing. This means that a processing request has
    * been submitted and has not yet completed or been {@link #stop()}ped. If processing is paused,
-   * this method will still return <code>true<code>.
+   * this method will still return <code>true</code>.
    * 
    * @return true if and only if this CPM is currently processing.
    */
@@ -230,8 +216,6 @@ public interface BaseCPM {
    * Pauses processing. Processing can later be resumed by calling the {@link #resume(boolean)}
    * method.
    * 
-   * @throws org.apache.uima.UIMA_IllegalStateException
-   *           if no processing is currently occuring
    */
   public void pause();
 
@@ -252,24 +236,18 @@ public interface BaseCPM {
    *          <code>false</code> (the default) will cause processing to continue with the next
    *          entity after the failure.
    * 
-   * @throws org.apache.uima.UIMA_IllegalStateException
-   *           if processing is not currently paused
    */
   public void resume(boolean aRetryFailed);
 
   /**
    * Resumes processing that has been paused.
    * 
-   * @throws org.apache.uima.UIMA_IllegalStateException
-   *           if processing is not currently paused
    */
   public void resume();
 
   /**
    * Stops processing.
    * 
-   * @throws org.apache.uima.UIMA_IllegalStateException
-   *           if no processing is currently occuring
    */
   public void stop();
 

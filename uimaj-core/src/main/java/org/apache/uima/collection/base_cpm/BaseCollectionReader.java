@@ -61,7 +61,7 @@ public interface BaseCollectionReader extends Resource {
    * <code>CollectionReader</code>s remove each element from the <code>Collection</code> as it
    * is read.
    * 
-   * @return true if and only if this is a consuming <code>CollectionReader<code>
+   * @return true if and only if this is a consuming <code>CollectionReader</code>
    */
   public boolean isConsuming();
 

@@ -39,12 +39,7 @@ import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.XMLParser.ParsingOptions;
 import org.w3c.dom.Element;
 
-/**
- * 
- * 
- * To change the template for this generated type comment go to Window>Preferences>Java>Code
- * Generation>Code and Comments
- */
+
 public class CollectionReaderDescription_impl extends ResourceCreationSpecifier_impl implements
         CollectionReaderDescription {
 
