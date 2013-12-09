@@ -47,12 +47,16 @@ public final class StringArray extends TOP implements StringArrayFS {
   private StringArray() {
   }
 
-  /** Internal - Constructor used by generator */
+ /* Internal - Constructor used by generator */
   public StringArray(int addr, TOP_Type type) {
     super(addr, type);
   }
 
-  /** Make a new StringArray of given size */
+  /**
+   * Make a new StringArray of given size
+   * @param jcas The JCas
+   * @param length The number of elements in the new array
+   */
   public StringArray(JCas jcas, int length) {
     this(
     /* addr */jcas.getLowLevelCas().ll_createArray(jcas.getType(typeIndexID).casTypeCode, length,

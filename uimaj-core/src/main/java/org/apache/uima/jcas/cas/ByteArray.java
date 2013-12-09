@@ -47,12 +47,16 @@ public final class ByteArray extends TOP implements ByteArrayFS {
   private ByteArray() {
   }
 
-  /** Internal - Constructor used by generator */
+ /* Internal - Constructor used by generator */
   public ByteArray(int addr, TOP_Type type) {
     super(addr, type);
   }
 
-  /** Make a new ByteArray of given size */
+  /**
+   * Make a new ByteArray of given size
+   * @param jcas the JCas
+   * @param length the length of the array in bytes
+   */
   public ByteArray(JCas jcas, int length) {
     this(jcas.getLowLevelCas().ll_createByteArray(length), jcas.getType(typeIndexID));
   }

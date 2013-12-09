@@ -36,7 +36,7 @@ public class NonEmptyIntegerList extends IntegerList {
   protected NonEmptyIntegerList() {
   }
 
-  /** Internal - Constructor used by generator */
+ /* Internal - Constructor used by generator */
   public NonEmptyIntegerList(int addr, TOP_Type type) {
     super(addr, type);
   }
@@ -47,7 +47,7 @@ public class NonEmptyIntegerList extends IntegerList {
 
   // *------------------*
   // * Feature: head
-  /** getter for head * */
+  /* getter for head * */
   public int getHead() {
     if (NonEmptyIntegerList_Type.featOkTst
             && ((NonEmptyIntegerList_Type) jcasType).casFeat_head == null)
@@ -56,7 +56,7 @@ public class NonEmptyIntegerList extends IntegerList {
             ((NonEmptyIntegerList_Type) jcasType).casFeatCode_head);
   }
 
-  /** setter for head * */
+  /* setter for head * */
   public void setHead(int v) {
     if (NonEmptyIntegerList_Type.featOkTst
             && ((NonEmptyIntegerList_Type) jcasType).casFeat_head == null)
@@ -66,7 +66,7 @@ public class NonEmptyIntegerList extends IntegerList {
 
   // *------------------*
   // * Feature: tail
-  /** getter for tail * */
+  /* getter for tail * */
   public IntegerList getTail() {
     if (NonEmptyIntegerList_Type.featOkTst
             && ((NonEmptyIntegerList_Type) jcasType).casFeat_tail == null)
@@ -75,7 +75,7 @@ public class NonEmptyIntegerList extends IntegerList {
             ((NonEmptyIntegerList_Type) jcasType).casFeatCode_tail)));
   }
 
-  /** setter for tail * */
+  /* setter for tail * */
   public void setTail(IntegerList v) {
     if (NonEmptyIntegerList_Type.featOkTst
             && ((NonEmptyIntegerList_Type) jcasType).casFeat_tail == null)

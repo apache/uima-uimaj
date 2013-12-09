@@ -47,12 +47,16 @@ public final class LongArray extends TOP implements LongArrayFS {
   private LongArray() {
   }
 
-  /** Internal - Constructor used by generator */
+ /* Internal - Constructor used by generator */
   public LongArray(int addr, TOP_Type type) {
     super(addr, type);
   }
 
-  /** Make a new LongArray of given size */
+  /**
+   * Make a new LongArray of given size
+   * @param jcas The JCas
+   * @param length The number of elements in the new array
+   */
   public LongArray(JCas jcas, int length) {
     this(jcas.getLowLevelCas().ll_createLongArray(length), jcas.getType(typeIndexID));
   }

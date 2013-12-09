@@ -76,9 +76,11 @@ public class FSArray_Type extends CommonArray_Type {
   // ******************************************************
 
   /**
-   * return the indexed value from the corresponding Cas FSArray as a JCas object.
-   * 
    * @see org.apache.uima.cas.ArrayFS#get(int)
+   * 
+   * @param addr the low level CAS Feature Structure reference
+   * @param i the index
+   * @return the indexed value from the corresponding Cas FSArray as a JCas object.
    */
   public FeatureStructure get(int addr, int i) {
     if (lowLevelTypeChecks)
@@ -92,6 +94,10 @@ public class FSArray_Type extends CommonArray_Type {
    * updates the Cas, setting the indexed value to the passed in FeatureStructure value.
    * 
    * @see org.apache.uima.cas.ArrayFS#set(int, FeatureStructure)
+   * 
+   * @param addr the low level CAS Feature Structure reference
+   * @param i the index
+   * @param v the value
    */
   public void set(int addr, int i, FeatureStructure v) {
     if (lowLevelTypeChecks)
@@ -103,6 +109,13 @@ public class FSArray_Type extends CommonArray_Type {
 
   /**
    * @see org.apache.uima.cas.ArrayFS#copyFromArray(FeatureStructure[], int, int, int)
+   * 
+   * @param addr the low level CAS Feature Structure reference
+   * @param src the Java array object to copy from
+   * @param srcOffset the source offset
+   * @param destOffset the destination offset
+   * @param length the number of items to copy
+   * @throws ArrayIndexOutOfBoundsException if index out of bounds
    */
   public void copyFromArray(int addr, FeatureStructure[] src, int srcOffset, int destOffset,
           int length) throws ArrayIndexOutOfBoundsException {
@@ -117,9 +130,16 @@ public class FSArray_Type extends CommonArray_Type {
       ++srcOffset;
     }
   }
-
+  
   /**
    * @see org.apache.uima.cas.ArrayFS#copyToArray(int, FeatureStructure[], int, int)
+   * 
+   * @param addr the low level CAS Feature Structure reference
+   * @param srcOffset the CAS source offset
+   * @param dest the Java object to copy into
+   * @param destOffset the destination offset
+   * @param length the number of items to copy
+   * @throws ArrayIndexOutOfBoundsException if index out of bounds
    */
   public void copyToArray(int addr, int srcOffset, FeatureStructure[] dest, int destOffset,
           int length) throws ArrayIndexOutOfBoundsException {
@@ -137,6 +157,9 @@ public class FSArray_Type extends CommonArray_Type {
 
   /**
    * @see org.apache.uima.cas.ArrayFS#toArray()
+   * 
+   * @param addr the low level CAS Feature Structure reference
+   * @return a copy of the CAS array as a Java object
    */
   public FeatureStructure[] toArray(int addr) {
     final int size = size(addr);

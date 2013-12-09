@@ -51,12 +51,16 @@ public final class FloatArray extends TOP implements FloatArrayFS {
   // * 1 - create via factory.create() a new one
   // * 2 - iterator or dereferencing calling generator to create
 
-  /** Internal - Constructor used by generator */
+ /* Internal - Constructor used by generator */
   public FloatArray(int addr, TOP_Type type) {
     super(addr, type);
   }
 
-  /** Make a new FloatArray of given size */
+  /**
+   * Make a new FloatArray of given size
+   * @param jcas the JCas
+   * @param length the size of the array
+   */
   public FloatArray(JCas jcas, int length) {
     this(
     /* addr */

@@ -76,9 +76,11 @@ public final class ByteArray_Type extends CommonArray_Type {
   // ******************************************************
 
   /**
-   * return the indexed value from the corresponding Cas StringArray as a Java String.
-   * 
    * @see org.apache.uima.cas.ByteArrayFS#get(int)
+   * 
+   * @param addr low level CAS Feature Structure reference to get value from
+   * @param i the index
+   * @return the indexed value from the corresponding Cas ByesArray.
    */
   public byte get(int addr, int i) {
     if (lowLevelTypeChecks)
@@ -89,9 +91,11 @@ public final class ByteArray_Type extends CommonArray_Type {
   }
 
   /**
-   * updates the Cas, setting the indexed value to the passed in Java String value.
-   * 
+   * updates the Cas, setting the indexed value to the passed in Java value
    * @see org.apache.uima.cas.ByteArrayFS#set(int, byte)
+   * @param addr low level CAS Feature Structure reference to set value into
+   * @param i the index
+   * @param v the value
    */
   public void set(int addr, int i, byte v) {
     if (lowLevelTypeChecks)
@@ -103,6 +107,12 @@ public final class ByteArray_Type extends CommonArray_Type {
 
   /**
    * @see org.apache.uima.cas.ByteArrayFS#copyFromArray(byte[], int, int, int)
+   * 
+   * @param addr low level reference to the FS in the CAS
+   * @param src where to copy data from
+   * @param srcOffset the source offset
+   * @param destOffset the destination offset
+   * @param length the number of bytes to copy
    */
   public void copyFromArray(int addr, byte[] src, int srcOffset, int destOffset, int length) {
     if (lowLevelArrayBoundChecks)
@@ -114,6 +124,12 @@ public final class ByteArray_Type extends CommonArray_Type {
 
   /**
    * @see org.apache.uima.cas.ByteArrayFS#copyToArray(int, byte[], int, int)
+   * 
+   * @param addr low level reference to the FS in the CAS
+   * @param srcOffset the source offset
+   * @param dest the array to copy into
+   * @param destOffset the destination offset
+   * @param length the number of bytes to copy
    */
   public void copyToArray(int addr, int srcOffset, byte[] dest, int destOffset, int length) {
     if (lowLevelArrayBoundChecks)
@@ -125,6 +141,9 @@ public final class ByteArray_Type extends CommonArray_Type {
 
   /**
    * @see org.apache.uima.cas.ByteArrayFS#toArray()
+   * 
+   * @param addr low level reference to the FS in the CAS
+   * @return a copy of the byte array as a Java object
    */
   public byte[] toArray(int addr) {
     final int size = size(addr);

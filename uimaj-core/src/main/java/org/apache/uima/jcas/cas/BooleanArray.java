@@ -47,12 +47,16 @@ public final class BooleanArray extends TOP implements BooleanArrayFS {
   private BooleanArray() {
   }
 
-  /** Internal - Constructor used by generator */
+ /* Internal - Constructor used by generator */
   public BooleanArray(int addr, TOP_Type type) {
     super(addr, type);
   }
 
-  /** Make a new BooleanArray of given size */
+  /**
+   * Make a new BooleanArray of given size
+   * @param jcas JCas reference
+   * @param length of array
+   */
   public BooleanArray(JCas jcas, int length) {
     this(jcas.getLowLevelCas().ll_createBooleanArray(length), jcas.getType(typeIndexID));
   }

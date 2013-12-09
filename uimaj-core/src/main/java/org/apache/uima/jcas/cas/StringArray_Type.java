@@ -77,9 +77,11 @@ public final class StringArray_Type extends CommonArray_Type {
   // ******************************************************
 
   /**
-   * return the indexed value from the corresponding Cas StringArray as a Java String.
-   * 
    * @see org.apache.uima.cas.StringArrayFS#get(int)
+   * 
+   * @param addr the low level CAS Feature Structure reference
+   * @param i the index
+   * @return the indexed value from the corresponding Cas StringArray as a Java String.
    */
   public String get(int addr, int i) {
     if (lowLevelTypeChecks)
@@ -93,6 +95,10 @@ public final class StringArray_Type extends CommonArray_Type {
    * updates the Cas, setting the indexed value to the passed in Java String value.
    * 
    * @see org.apache.uima.cas.StringArrayFS#set(int, String)
+   * 
+   * @param addr the low level CAS Feature Structure reference
+   * @param i the index
+   * @param v the value
    */
   public void set(int addr, int i, String v) {
     if (lowLevelTypeChecks)
@@ -104,6 +110,12 @@ public final class StringArray_Type extends CommonArray_Type {
 
   /**
    * @see org.apache.uima.cas.StringArrayFS#copyFromArray(String[], int, int, int)
+   * 
+   * @param addr the low level CAS Feature Structure reference
+   * @param src the Java object source
+   * @param srcOffset the source offset
+   * @param destOffset the destination offset in the CAS Feature Structure
+   * @param length the number of items to copy
    */
   public void copyFromArray(int addr, String[] src, int srcOffset, int destOffset, int length) {
     if (lowLevelArrayBoundChecks)
@@ -115,6 +127,12 @@ public final class StringArray_Type extends CommonArray_Type {
 
   /**
    * @see org.apache.uima.cas.StringArrayFS#copyToArray(int, String[], int, int)
+   * 
+   * @param addr the low level CAS Feature Structure reference
+   * @param srcOffset the offset in the CAS Feature Structure
+   * @param dest the Java object destination
+   * @param destOffset the destination offset
+   * @param length the number of items to copy
    */
   public void copyToArray(int addr, int srcOffset, String[] dest, int destOffset, int length) {
     if (lowLevelArrayBoundChecks)
@@ -126,6 +144,9 @@ public final class StringArray_Type extends CommonArray_Type {
 
   /**
    * @see org.apache.uima.cas.StringArrayFS#toArray()
+   * 
+   * @param addr the low level CAS Feature Structure reference
+   * @return a copy of the string array
    */
   public String[] toArray(int addr) {
     final int size = size(addr);

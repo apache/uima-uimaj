@@ -46,12 +46,16 @@ public final class IntegerArray extends TOP implements IntArrayFS {
   private IntegerArray() { // never called. Here to disable default constructor
   }
 
-  /** Internal - Constructor used by generator */
+ /* Internal - Constructor used by generator */
   public IntegerArray(int addr, TOP_Type type) {
     super(addr, type);
   }
 
-  /** Make a new IntegerArray of given size */
+  /**
+   * Make a new IntegerArray of given size
+   * @param jcas The JCas
+   * @param length The number of elements in the new array
+   */  
   public IntegerArray(JCas jcas, int length) {
     this(
     /* addr */jcas.getLowLevelCas().ll_createArray(jcas.getType(typeIndexID).casTypeCode, length),

@@ -76,9 +76,11 @@ public final class BooleanArray_Type extends CommonArray_Type {
   // ******************************************************
 
   /**
-   * return the indexed value from the corresponding Cas StringArray as a Java String.
-   * 
    * @see org.apache.uima.cas.BooleanArrayFS#get(int)
+   * 
+   * @param addr low-level int reference to the boolean array to get the value from
+   * @param i index (in bits, 0 origin)
+   * @return the indexed value from the corresponding Cas StringArray as a Java String.
    */
   public boolean get(int addr, int i) {
     if (lowLevelTypeChecks)
@@ -89,9 +91,11 @@ public final class BooleanArray_Type extends CommonArray_Type {
   }
 
   /**
-   * updates the Cas, setting the indexed value to the passed in Java String value.
-   * 
    * @see org.apache.uima.cas.BooleanArrayFS#set(int, boolean)
+   * updates the Cas, setting the indexed value to the value passed in.
+   * @param addr low-level int reference to the boolean array to set the value into
+   * @param i index (in bits, 0 origin)
+   * @param v the value to set
    */
   public void set(int addr, int i, boolean v) {
     if (lowLevelTypeChecks)
@@ -103,7 +107,14 @@ public final class BooleanArray_Type extends CommonArray_Type {
 
   /**
    * @see org.apache.uima.cas.BooleanArrayFS#copyFromArray(boolean[], int, int, int)
+   * 
+   * @param addr low-level int reference to the boolean array to set values into
+   * @param src a Java boolean array to copy from
+   * @param srcOffset the source offset
+   * @param destOffset the destination offset
+   * @param length the length (number of bits)
    */
+   
   public void copyFromArray(int addr, boolean[] src, int srcOffset, int destOffset, int length) {
     if (lowLevelArrayBoundChecks)
       casImpl.checkArrayBounds(addr, destOffset, length);
@@ -114,6 +125,12 @@ public final class BooleanArray_Type extends CommonArray_Type {
 
   /**
    * @see org.apache.uima.cas.BooleanArrayFS#copyToArray(int, boolean[], int, int)
+   * 
+   * @param addr low-level int reference to the boolean array to get values from
+   * @param srcOffset the source offset
+   * @param dest the target to put boolean values into
+   * @param destOffset the destination offset
+   * @param length the length, in bits
    */
   public void copyToArray(int addr, int srcOffset, boolean[] dest, int destOffset, int length) {
     if (lowLevelArrayBoundChecks)
@@ -125,6 +142,9 @@ public final class BooleanArray_Type extends CommonArray_Type {
 
   /**
    * @see org.apache.uima.cas.BooleanArrayFS#toArray()
+   * 
+   * @param addr low-level int reference to the boolean array
+   * @return a Java boolean array
    */
   public boolean[] toArray(int addr) {
     final int size = size(addr);

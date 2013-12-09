@@ -47,12 +47,16 @@ public final class ShortArray extends TOP implements ShortArrayFS {
   private ShortArray() {
   }
 
-  /** Internal - Constructor used by generator */
+ /* Internal - Constructor used by generator */
   public ShortArray(int addr, TOP_Type type) {
     super(addr, type);
   }
 
-  /** Make a new ShortArray of given size */
+  /**
+   * Make a new ShortArray of given size
+   * @param jcas The JCas
+   * @param length The number of elements in the new array
+   */
   public ShortArray(JCas jcas, int length) {
     this(jcas.getLowLevelCas().ll_createShortArray(length), jcas.getType(typeIndexID));
   }
