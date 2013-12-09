@@ -29,7 +29,7 @@ public interface IntArrayFS extends CommonArrayFS {
 
   /**
    * Get the element at position <code>index</code>.
-   * 
+   * @param index the index
    * @return The element.
    * @exception ArrayIndexOutOfBoundsException
    *              If <code>index</code> is out of bounds.
@@ -61,8 +61,8 @@ public interface IntArrayFS extends CommonArrayFS {
    * @param length
    *          The number of elements to copy.
    * @exception ArrayIndexOutOfBoundsException
-   *              If <code>srcOffset &lt; 0</code> or <code>length > size()</code> or
-   *              <code>destOffset + length > destArray.length</code>.
+   *              If <code>srcOffset &lt; 0</code> or <code>length &gt; size()</code> or
+   *              <code>destOffset + length &gt; destArray.length</code>.
    */
   void copyToArray(int srcOffset, int[] dest, int destOffset, int length)
           throws ArrayIndexOutOfBoundsException;

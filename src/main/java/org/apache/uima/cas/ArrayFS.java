@@ -36,7 +36,7 @@ public interface ArrayFS extends CommonArrayFS {
 
   /**
    * Get the i-th feature structure from the array.
-   * 
+   * @param i index
    * @return The i-th feature structure.
    * @exception ArrayIndexOutOfBoundsException
    *              If the index is out of bounds.
@@ -68,8 +68,8 @@ public interface ArrayFS extends CommonArrayFS {
    * @param length
    *          The number of elements to copy.
    * @exception ArrayIndexOutOfBoundsException
-   *              If <code>srcOffset &lt; 0</code> or <code>length > size()</code> or
-   *              <code>destOffset + length > destArray.length</code>.
+   *              If <code>srcOffset &lt; 0</code> or <code>length &gt; size()</code> or
+   *              <code>destOffset + length &gt; destArray.length</code>.
    */
   void copyToArray(int srcOffset, FeatureStructure[] dest, int destOffset, int length)
           throws ArrayIndexOutOfBoundsException;
@@ -85,6 +85,9 @@ public interface ArrayFS extends CommonArrayFS {
    *          Where to start copying to in the destination array.
    * @param length
    *          The number of elements to copy.
+   * @exception ArrayIndexOutOfBoundsException
+   *              If <code>srcOffset &lt; 0</code> or <code>length &gt; size()</code> or
+   *              <code>destOffset + length &gt; destArray.length</code>.
    */
   void copyFromArray(FeatureStructure[] src, int srcOffset, int destOffset, int length)
           throws ArrayIndexOutOfBoundsException;

@@ -93,6 +93,7 @@ public abstract class CasMultiplier_ImplBase extends AnalysisComponent_ImplBase 
    * and Features to the actual {@link org.apache.uima.cas.Type} and
    * {@link org.apache.uima.cas.Feature} objects, which can then be used during processing.
    * 
+   * @param aTypeSystem the new type system to use as input to your initialization
    * @throws AnalysisEngineProcessException
    *           if the provided type system is missing types or features required by this annotator
    */

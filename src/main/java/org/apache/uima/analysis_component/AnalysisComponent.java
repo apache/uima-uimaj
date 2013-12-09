@@ -67,9 +67,8 @@ import org.apache.uima.resource.ResourceInitializationException;
  * <li>The AnalysisComponent, in its <code>next</code> method, can create a new CAS by calling
  * {@link UimaContext#getEmptyCas(Class)} (or instead, one of the helper methods in the ImplBase
  * class that it extended). It then populates the empty CAS and returns it.</li>
- * <li>Steps 2 & 3 continue for each subsequent output CAS, until <code>hasNext()</code> returns
+ * <li>Steps 2 &amp; 3 continue for each subsequent output CAS, until <code>hasNext()</code> returns
  * false.</li>
- * </ul>
  * </ol>
  * 
  * From the time when <code>process</code> is called until the time when <code>hasNext</code>
@@ -77,7 +76,7 @@ import org.apache.uima.resource.ResourceInitializationException;
  * The AnalysisComponent is permitted to make changes to this CAS. Once <code>hasNext</code>
  * returns false, the AnalysisComponent releases control of the initial CAS. This means that the
  * AnalysisComponent must finish all updates to the initial CAS prior to returning false from
- * <code>hasNext<code>.
+ * <code>hasNext</code>.
  * <p>
  * However, if the <code>process</code> method is called a second time, before <code>hasNext</code> has returned
  * false, this is a signal to the AnalysisComponent to cancel all processing of the previous CAS and begin

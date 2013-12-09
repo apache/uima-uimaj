@@ -155,7 +155,7 @@ public interface AnnotatorContext {
    * 
    * @return the <code>URL</code> at which the named resource is located, <code>null</code> if
    *         the named resource could not be found.
-   * 
+   * @throws AnnotatorContextException if there's a problem
    * @see org.apache.uima.UimaContext#getResourceURL(String)
    */
   public URL getResourceURL(String aKey) throws AnnotatorContextException;
@@ -180,7 +180,7 @@ public interface AnnotatorContext {
    * 
    * @return the <code>URI</code> at which the named resource is located, <code>null</code> if
    *         the named resource could not be found.
-   * 
+   * @throws AnnotatorContextException if there's an exception
    * @see org.apache.uima.UimaContext#getResourceURI(String)
    */
   public URI getResourceURI(String aKey) throws AnnotatorContextException;
@@ -207,7 +207,7 @@ public interface AnnotatorContext {
    * 
    * @return the absolute file path at which the named resource is located, <code>null</code> if
    *         the named resource could not be found.
-   * 
+   * @throws AnnotatorContextException if there's an exception
    * 
    * @see org.apache.uima.UimaContext#getResourceFilePath(String)
    */
@@ -230,6 +230,7 @@ public interface AnnotatorContext {
    * @return an <code>InputStream</code> for reading from the named resource, <code>null</code>
    *         if the named resource could not be found. It is the caller's responsibility to close
    *         this stream once it is no longer needed.
+   * @throws AnnotatorContextException if an error occurs
    * 
    * @see org.apache.uima.UimaContext#getResourceAsStream(String)
    */
@@ -245,6 +246,7 @@ public interface AnnotatorContext {
    *          &lt;externalResourceDependencies&gt; section of the descriptor.
    * 
    * @return the object bound to <code>aName</code>, <code>null</code> if none.
+   * @throws AnnotatorContextException if an error occurs
    * 
    * @see org.apache.uima.UimaContext#getResourceObject(String)
    */
@@ -267,7 +269,7 @@ public interface AnnotatorContext {
    * <p>
    * This version of this method takes an array of parameters used to further identify the resource.
    * This can be used, for example, with resources that vary depending on the language of the
-   * document being analyzed, such as when the &lt;fileLanguageResourceSpecifier> element is used in
+   * document being analyzed, such as when the &lt;fileLanguageResourceSpecifier&gt; element is used in
    * the component descriptor.
    * 
    * @param aKey
@@ -275,11 +277,12 @@ public interface AnnotatorContext {
    *          &lt;externalResourceDependencies&gt; section of the descriptor.
    * @param aParams
    *          parameters used to further identify the resource. When used to identify the language
-   *          for a &lt;fileLanguageResourceSpecifier>, this array should contain a single element,
+   *          for a &lt;fileLanguageResourceSpecifier&gt;, this array should contain a single element,
    *          the ISO language code for the language of the document (e.g. "en", "de").
    * 
    * @return the <code>URL</code> at which the named resource is located, <code>null</code> if
    *         the named resource could not be found.
+   * @throws AnnotatorContextException if an error occurs
    * 
    * @see org.apache.uima.UimaContext#getResourceURL(String,String[])
    */
@@ -301,16 +304,17 @@ public interface AnnotatorContext {
    * <p>
    * This version of this method takes an array of parameters used to further identify the resource.
    * This can be used, for example, with resources that vary depending on the language of the
-   * document being analyzed, such as when the &lt;fileLanguageResourceSpecifier> element is used in
+   * document being analyzed, such as when the &lt;fileLanguageResourceSpecifier&gt; element is used in
    * the component descriptor.
    * 
    * @param aKey
    *          the key by which the resource is identified. This key should be declared in the
    *          &lt;externalResourceDependencies&gt; section of the descriptor.
-   * 
+   * @param aParams the additional parameters to further identify the resource
    * @return the <code>URI</code> at which the named resource is located, <code>null</code> if
    *         the named resource could not be found.
    * 
+   * @throws AnnotatorContextException if an error occurs
    * @see org.apache.uima.UimaContext#getResourceURI(String,String[])
    */
   public URI getResourceURI(String aKey, String[] aParams) throws AnnotatorContextException;
@@ -333,15 +337,17 @@ public interface AnnotatorContext {
    * <p>
    * This version of this method takes an array of parameters used to further identify the resource.
    * This can be used, for example, with resources that vary depending on the language of the
-   * document being analyzed, such as when the &lt;fileLanguageResourceSpecifier> element is used in
+   * document being analyzed, such as when the &lt;fileLanguageResourceSpecifier&gt; element is used in
    * the component descriptor.
    * 
    * @param aKey
    *          the key by which the resource is identified. This key should be declared in the
    *          &lt;externalResourceDependencies&gt; section of the descriptor.
+   * @param aParams The parameters used to further specify the resource
    * 
    * @return the absolute file path at which the named resource is located, <code>null</code> if
    *         the named resource could not be found.
+   * @throws AnnotatorContextException if an error occurs
    * 
    * @see org.apache.uima.UimaContext#getResourceFilePath(String,String[])
    */
@@ -359,7 +365,7 @@ public interface AnnotatorContext {
    * <p>
    * This version of this method takes an array of parameters used to further identify the resource.
    * This can be used, for example, with resources that vary depending on the language of the
-   * document being analyzed, such as when the &lt;fileLanguageResourceSpecifier> element is used in
+   * document being analyzed, such as when the &lt;fileLanguageResourceSpecifier&gt; element is used in
    * the component descriptor.
    * 
    * @param aKey
@@ -367,12 +373,13 @@ public interface AnnotatorContext {
    *          &lt;externalResourceDependencies&gt; section of the descriptor.
    * @param aParams
    *          parameters used to further identify the resource. When used to identify the language
-   *          for a &lt;fileLanguageResourceSpecifier>, this array should contain a single element,
+   *          for a &lt;fileLanguageResourceSpecifier&gt;, this array should contain a single element,
    *          the ISO language code for the language of the document (e.g. "en", "de").
    * 
    * @return an <code>InputStream</code> for reading from the named resource, <code>null</code>
    *         if the named resource could not be found. It is the caller's responsibility to close
    *         this stream once it is no longer needed.
+   * @throws AnnotatorContextException if an error occurs
    * 
    * @see org.apache.uima.UimaContext#getResourceAsStream(String,String[])
    */
@@ -386,7 +393,7 @@ public interface AnnotatorContext {
    * <p>
    * This version of this method takes an array of parameters used to further identify the resource.
    * This can be used, for example, with resources that vary depending on the language of the
-   * document being analyzed, such as when the &lt;fileLanguageResourceSpecifier> element is used in
+   * document being analyzed, such as when the &lt;fileLanguageResourceSpecifier&gt; element is used in
    * the component descriptor.
    * 
    * @param aKey
@@ -394,10 +401,11 @@ public interface AnnotatorContext {
    *          &lt;externalResourceDependencies&gt; section of the descriptor.
    * @param aParams
    *          parameters used to further identify the resource. When used to identify the language
-   *          for a &lt;fileLanguageResourceSpecifier>, this array should contain a single element,
+   *          for a &lt;fileLanguageResourceSpecifier&gt;, this array should contain a single element,
    *          the ISO language code for the language of the document (e.g. "en", "de").
    * 
    * @return the object bound to <code>aName</code>, <code>null</code> if none.
+   * @throws AnnotatorContextException if an error occurs
    * 
    * @see org.apache.uima.UimaContext#getResourceObject(String,String[])
    */
