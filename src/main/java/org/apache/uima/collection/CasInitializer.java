@@ -47,6 +47,7 @@ public interface CasInitializer extends ConfigurableResource {
    * Type and Features to the actual {@link org.apache.uima.cas.Type} and
    * {@link org.apache.uima.cas.Feature} objects, which can then be used during processing.
    * 
+   * @param aTypeSystem the type system to use
    * @throws ResourceInitializationException
    *           if the type system is not compatible with this CAS Initializer
    */
