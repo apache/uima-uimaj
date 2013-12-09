@@ -34,7 +34,7 @@ public interface CpeCasProcessor extends MetaDataObject {
    * 
    * @param aName -
    *          CasProcessor name
-   * @throws CpeDescriptorException
+   * @throws CpeDescriptorException tbd
    */
   public void setName(String aName) throws CpeDescriptorException;
 
@@ -54,7 +54,7 @@ public interface CpeCasProcessor extends MetaDataObject {
    * 
    * @param aDescriptor -
    *          descriptor path
-   * @throws CpeDescriptorException
+   * @throws CpeDescriptorException tbd
    * @deprecated Doesn't support the new import syntax.  Use setCpeComponentDescriptor() instead.
    */
   @Deprecated
@@ -82,7 +82,7 @@ public interface CpeCasProcessor extends MetaDataObject {
    * object contains a path to the component descriptor.
    * 
    * @param aDescriptor {@link CpeComponentDescriptor} instance
-   * @throws CpeDescriptorException 
+   * @throws CpeDescriptorException tbd
    */ 
   public void setCpeComponentDescriptor(CpeComponentDescriptor aDescriptor) throws CpeDescriptorException;
 
@@ -109,13 +109,13 @@ public interface CpeCasProcessor extends MetaDataObject {
    * <li> Feature=value Process CAS if the Feature has this value( e.g. where Person=Bush)
    * <li> Feature!=value Process CAS if the Feature does not have this value (e.g. where
    * Person!=Bush)
-   * 
+   * </ul>
    * The featurespecs are implicitly connected with and operators and precedence rules are currently
    * not supported.
    * 
    * @param aFilterExpression -
    *          filter
-   * @throws CpeDescriptorException
+   * @throws CpeDescriptorException tbd
    */
   public void setCasProcessorFilter(String aFilterExpression) throws CpeDescriptorException;
 
@@ -129,7 +129,7 @@ public interface CpeCasProcessor extends MetaDataObject {
    * <li> Feature=value Process CAS if the Feature has this value( e.g. where Person=Bush)
    * <li> Feature!=value Process CAS if the Feature does not have this value (e.g. where
    * Person!=Bush)
-   * 
+   * </ul>
    * The featurespecs are implicitly connected with and operators and precedence rules are currently
    * not supported.
    * 
@@ -206,7 +206,7 @@ public interface CpeCasProcessor extends MetaDataObject {
    * actual max error tolerance and 1000 is a sample size. So the above is interpreted as 3 errors
    * per thousand entities processed.
    * 
-   * @param aErrorSampleSize
+   * @param aErrorSampleSize the sample size
    */
   public void setMaxErrorSampleSize(int aErrorSampleSize);
 
@@ -309,7 +309,7 @@ public interface CpeCasProcessor extends MetaDataObject {
    *          param name
    * @param aParamValue -
    *          param value
-   * @throws CpeDescriptorException
+   * @throws CpeDescriptorException tbd
    */
   public void addDeployParam(String aParamName, String aParamValue) throws CpeDescriptorException;
 
@@ -327,6 +327,7 @@ public interface CpeCasProcessor extends MetaDataObject {
    * 
    * @param aSettings
    *          object containing parameter setting overrides
+   * @throws CpeDescriptorException tbd
    */
   public void setConfigurationParameterSettings(CasProcessorConfigurationParameterSettings aSettings)
           throws CpeDescriptorException;

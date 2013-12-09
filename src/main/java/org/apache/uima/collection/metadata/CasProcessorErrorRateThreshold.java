@@ -55,7 +55,7 @@ public interface CasProcessorErrorRateThreshold extends MetaDataObject {
    * actual max error tolerance and 1000 is a sample size. So the above is interpreted as 3 errors
    * per thousand entities processed.
    * 
-   * @param aSampleSize
+   * @param aSampleSize the sample size
    */
   public void setMaxErrorSampleSize(int aSampleSize);
 

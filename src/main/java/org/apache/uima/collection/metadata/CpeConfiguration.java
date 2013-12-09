@@ -28,7 +28,7 @@ import org.apache.uima.resource.metadata.MetaDataObject;
  * <li> Number of entities to process
  * <li> Checkpoint file and frequency of checkpoints
  * <li> Plug-in timer class
- * 
+ * </ul>
  * 
  */
 public interface CpeConfiguration extends MetaDataObject {
@@ -51,7 +51,7 @@ public interface CpeConfiguration extends MetaDataObject {
    * 
    * @param aDeploy -
    *          deployment mode of the CPE
-   * @throws CpeDescriptorException
+   * @throws CpeDescriptorException tbd
    */
   public void setDeployment(String aDeploy) throws CpeDescriptorException;
 
@@ -69,7 +69,7 @@ public interface CpeConfiguration extends MetaDataObject {
    * 
    * @param aNumToProcess -
    *          number of entities to process (-1 - for ALL)
-   * @throws CpeDescriptorException
+   * @throws CpeDescriptorException tbd
    */
   public void setNumToProcess(int aNumToProcess) throws CpeDescriptorException;
 
@@ -102,7 +102,7 @@ public interface CpeConfiguration extends MetaDataObject {
    * 
    * @param aCheckpoint -
    *          checkpoint object
-   * @throws CpeDescriptorException
+   * @throws CpeDescriptorException tbd
    */
   public void setCheckpoint(CpeCheckpoint aCheckpoint) throws CpeDescriptorException;
 
@@ -136,10 +136,6 @@ public interface CpeConfiguration extends MetaDataObject {
    */
   public CpeTimer getCpeTimer();
 
-  /**
-   * Removes timer class
-   * 
-   */
   public String getTimerImpl();
 
   public void removeCpeTimer();

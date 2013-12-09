@@ -38,7 +38,7 @@ public interface CpeCasProcessors extends MetaDataObject {
    * 
    * @param aOutputQueueSize -
    *          Output queue size
-   * @throws CpeDescriptorException
+   * @throws CpeDescriptorException tbd
    */
   public void setOutputQueueSize(int aOutputQueueSize) throws CpeDescriptorException;
 
@@ -62,7 +62,7 @@ public interface CpeCasProcessors extends MetaDataObject {
    * 
    * @param aOutputQueueSize -
    *          queue size
-   * @throws CpeDescriptorException
+   * @throws CpeDescriptorException tbd
    */
   public void setInputQueueSize(int aOutputQueueSize) throws CpeDescriptorException;
 
@@ -84,7 +84,7 @@ public interface CpeCasProcessors extends MetaDataObject {
    * 
    * @param aConcurrentPUCount -
    *          number of ProcessingUnits(processing threads)
-   * @throws CpeDescriptorException
+   * @throws CpeDescriptorException tbd
    */
   public void setConcurrentPUCount(int aConcurrentPUCount) throws CpeDescriptorException;
 
@@ -104,7 +104,7 @@ public interface CpeCasProcessors extends MetaDataObject {
    *          CasProcessor to add
    * @param aInsertPosition -
    *          position where to insert the CasProcessor
-   * @throws CpeDescriptorException
+   * @throws CpeDescriptorException tbd
    */
   public void addCpeCasProcessor(CpeCasProcessor aCasProcessor, int aInsertPosition)
           throws CpeDescriptorException;
@@ -114,7 +114,7 @@ public interface CpeCasProcessors extends MetaDataObject {
    * 
    * @param aCasProcessor -
    *          CasProcessor to add
-   * @throws CpeDescriptorException
+   * @throws CpeDescriptorException tbd
    */
   public void addCpeCasProcessor(CpeCasProcessor aCasProcessor) throws CpeDescriptorException;
 
@@ -124,7 +124,7 @@ public interface CpeCasProcessors extends MetaDataObject {
    * @param aPosition -
    *          position of the CasProcessor
    * @return - {@link org.apache.uima.collection.metadata.CpeCasProcessor}
-   * @throws CpeDescriptorException
+   * @throws CpeDescriptorException tbd
    */
   public CpeCasProcessor getCpeCasProcessor(int aPosition) throws CpeDescriptorException;
 
@@ -133,7 +133,7 @@ public interface CpeCasProcessors extends MetaDataObject {
    * pipeline.
    * 
    * @return array of {@link org.apache.uima.collection.metadata.CpeCasProcessor}
-   * @throws CpeDescriptorException
+   * @throws CpeDescriptorException tbd
    */
   public CpeCasProcessor[] getAllCpeCasProcessors() throws CpeDescriptorException;
 
@@ -143,7 +143,7 @@ public interface CpeCasProcessors extends MetaDataObject {
    * 
    * @param aPosition -
    *          position of the CasProcessor in the pipeline
-   * @throws CpeDescriptorException
+   * @throws CpeDescriptorException tbd
    */
   public void removeCpeCasProcessor(int aPosition) throws CpeDescriptorException;
 
@@ -151,7 +151,7 @@ public interface CpeCasProcessors extends MetaDataObject {
    * Removes ALL {@link org.apache.uima.collection.metadata.CpeCasProcessor} objects from processing
    * pipeline.
    * 
-   * @throws CpeDescriptorException
+   * @throws CpeDescriptorException tbd
    */
   public void removeAllCpeCasProcessors() throws CpeDescriptorException;
 

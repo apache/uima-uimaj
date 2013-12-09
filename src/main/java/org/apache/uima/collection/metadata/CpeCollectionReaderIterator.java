@@ -35,7 +35,7 @@ public interface CpeCollectionReaderIterator extends MetaDataObject {
   /**
    * Associate Descriptor with the Collection Reader Iterator
    * 
-   * @param descriptor
+   * @param descriptor the component descriptor
    */
   public void setDescriptor(CpeComponentDescriptor descriptor);
 
@@ -48,7 +48,7 @@ public interface CpeCollectionReaderIterator extends MetaDataObject {
   /**
    * Set parameters that will override params defined in the Collection Reader component descriptor.
    * 
-   * @param settings
+   * @param settings the configuration parameter settings
    */
   public void setConfigurationParameterSettings(CasProcessorConfigurationParameterSettings settings);
 
@@ -57,7 +57,7 @@ public interface CpeCollectionReaderIterator extends MetaDataObject {
   /**
    * Set Sofa Name Mappings
    * 
-   * @param mappings
+   * @param mappings the sofa mappings
    */
   public void setSofaNameMappings(CpeSofaMappings mappings);
 

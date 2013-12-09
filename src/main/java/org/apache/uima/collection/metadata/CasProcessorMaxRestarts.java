@@ -49,7 +49,7 @@ public interface CasProcessorMaxRestarts extends MetaDataObject {
    * <li> terminate - termines the CPE
    * <li> continue - continue despite the error
    * <li> disable - disable CasProcessor
-   * 
+   * </ul>
    * @param aAction -
    *          action to take
    */
@@ -62,7 +62,7 @@ public interface CasProcessorMaxRestarts extends MetaDataObject {
    * <li> terminate - termines the CPE
    * <li> continue - continue despite the error
    * <li> disable - disable CasProcessor
-   * 
+   * </ul>
    * @return - action as String
    */
   public String getAction();

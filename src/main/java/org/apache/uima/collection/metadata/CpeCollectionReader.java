@@ -34,7 +34,7 @@ public interface CpeCollectionReader extends MetaDataObject {
    * 
    * @param aCasInitializer -
    *          {@link org.apache.uima.collection.metadata.CpeCollectionReaderCasInitializer}
-   * @throws CpeDescriptorException
+   * @throws CpeDescriptorException tbd
    * 
    * @deprecated As of v2.0 CAS Initializers are deprecated.
    */
@@ -47,7 +47,7 @@ public interface CpeCollectionReader extends MetaDataObject {
    * SoFas.
    * 
    * @return {@link org.apache.uima.collection.metadata.CpeCollectionReaderCasInitializer}
-   * @throws CpeDescriptorException
+   * @throws CpeDescriptorException tbd
    * 
    * @deprecated As of v2.0 CAS Initializers are deprecated.
    */
@@ -91,6 +91,7 @@ public interface CpeCollectionReader extends MetaDataObject {
    * 
    * @param aSettings
    *          object containing parameter setting overrides
+   * @throws CpeDescriptorException tbd
    */
   public void setConfigurationParameterSettings(CasProcessorConfigurationParameterSettings aSettings)
           throws CpeDescriptorException;
