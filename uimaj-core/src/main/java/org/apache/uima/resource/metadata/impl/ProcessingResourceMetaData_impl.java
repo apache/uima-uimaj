@@ -26,9 +26,9 @@ import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
  * Reference implementation of {@link ProcessingResourceMetaData}. This class only exists for
  * historical reasons. It inherits almost everything from AnalysisEngineMetaData_impl. The only
  * reason we need this class is because its XML tag name needs to be
- * &lt;processingResourceMetaData>, not
+ * &lt;processingResourceMetaData&gt;, not
  * 
- * &lt;analysisEngienMetaData>, for compatibility with existing descriptors.
+ * &lt;analysisEngienMetaData&gt;, for compatibility with existing descriptors.
  */
 public class ProcessingResourceMetaData_impl extends AnalysisEngineMetaData_impl implements
         ProcessingResourceMetaData {

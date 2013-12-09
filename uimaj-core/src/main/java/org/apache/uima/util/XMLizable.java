@@ -63,6 +63,7 @@ public interface XMLizable {
    * 
    * @throws IOException
    *           if an I/O failure occurs
+   * @throws SAXException pass thru
    */
   public void toXML(OutputStream aOutputStream) throws SAXException, IOException;
 
@@ -75,8 +76,7 @@ public interface XMLizable {
    *          the content handler to which this object will write events that describe its XML
    *          representation.
    * 
-   * @throws IOException
-   *           if an I/O failure occurs
+   * @throws SAXException pass thru
    */
   public void toXML(ContentHandler aContentHandler) throws SAXException;
 
@@ -90,8 +90,7 @@ public interface XMLizable {
    *          whether the namespace of this element should be written as the default namespace. This
    *          should be done only for the root element, and it defaults to false.
    * 
-   * @throws IOException
-   *           if an I/O failure occurs
+   * @throws SAXException pass thru
    */
   public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute)
           throws SAXException;

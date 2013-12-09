@@ -71,7 +71,7 @@ public interface ConfigurationParameterSettings extends MetaDataObject {
    * 
    * @param aGroupName
    *          the name of a configuration group. If this parameter is
-   *          <code>null<code>, this method will return the same value as
+   *          <code>null</code>, this method will return the same value as
    *   {@link #getParameterValue(String)}.
    * @param aParamName the name of a parameter in the group
    * 

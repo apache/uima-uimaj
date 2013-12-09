@@ -126,9 +126,9 @@ public interface MetaDataObject extends Cloneable, java.io.Serializable, XMLizab
 
   /**
    * If the sourceURL of this object is non-null, returns its string representation. If it is null,
-   * returns "&lt;unknown>". Useful for error messages.
+   * returns "&lt;unknown&gt;". Useful for error messages.
    * 
-   * @return the source URL as a string, or "&lt;unknown>"
+   * @return the source URL as a string, or "&lt;unknown&gt;"
    */
   public String getSourceUrlString();
 

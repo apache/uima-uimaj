@@ -108,7 +108,7 @@ public class UimacppEngine {
 
   private native void resetJNI() throws InternalTafException;
 
-  /**
+  /*
    * private native void fillCASJNI(int[] heapArray, int[] fsIndex, String[] stringTable);
    */
   private native void fillCASJNI(int[] heapArray, int[] fsIndex, String[] stringTable,
@@ -196,6 +196,9 @@ public class UimacppEngine {
 
   /**
    * Configure the TAF Resource Manager.
+   * @param workDirectory the work directory
+   * @param dataDirectory the data directory
+   * @throws UimacppException wraps any exception
    */
   public static void configureResourceManager(String workDirectory, String dataDirectory)
           throws UimacppException {
@@ -220,6 +223,8 @@ public class UimacppEngine {
 
   /**
    * create a TAF engine with a config file
+   * @param configFile the configuration file used for initialization
+   * @throws UimacppException pass thru
    */
   public static UimacppEngine createJTafTAE(String configFile) throws UimacppException {
     UimacppEngine result = new UimacppEngine();
@@ -291,6 +296,7 @@ public class UimacppEngine {
 
   /**
    * de-initializes the TAF engine.
+   * @throws UimacppException wraps any exception
    */
   public void destroy() throws UimacppException {
     try {
@@ -317,6 +323,10 @@ public class UimacppEngine {
 
   /**
    * process the document.
+   * @param rs the result specification
+   * @param aCas the CAS
+   * @param casIsEmpty tbd
+   * @throws UimacppException wraps any exception
    */
   public void process(ResultSpecification rs, CAS aCas, boolean casIsEmpty) throws UimacppException {
 
@@ -366,6 +376,8 @@ public class UimacppEngine {
 
   /**
    * hasNext
+   * @return true if there's a next element
+   * @throws UimacppException wraps any exception
    */
   public boolean hasNext() throws UimacppException {
 
@@ -399,6 +411,8 @@ public class UimacppEngine {
 
   /**
    * next
+   * @param segment tbd 
+   * @throws UimacppException wraps any exception
    */
   public void next(CAS segment) throws UimacppException {
 
@@ -437,6 +451,7 @@ public class UimacppEngine {
 
   /**
    * batchProcessComplete
+   * @throws UimacppException wraps any exception
    */
   public void batchProcessComplete() throws UimacppException {
     try {
@@ -448,6 +463,7 @@ public class UimacppEngine {
 
   /**
    * CasConsumer collectionProcessComplete
+   * @throws UimacppException wraps any exception
    */
   public void collectionProcessComplete() throws UimacppException {
     try {
@@ -459,6 +475,9 @@ public class UimacppEngine {
 
   /**
    * helper function to get the error message for some TAF error ID.
+   * @param errorCode the code used as the key to look up the error message
+   * @return the error message
+   * @throws UimacppException wraps any exception
    */
   public static String getErrorMessage(long errorCode) throws UimacppException {
     try {
@@ -471,6 +490,7 @@ public class UimacppEngine {
 
   /**
    * helper function to get the TAF JNI version.
+   * @throws UimacppException wraps any exception
    */
   public static String getTafJNIVersion() throws UimacppException {
     try {
