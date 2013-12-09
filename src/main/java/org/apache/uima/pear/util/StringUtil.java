@@ -192,7 +192,7 @@ public class StringUtil {
 
   /**
    * Converts a given input string to another string that can be used as a 'replacement' string in
-   * the <code>String::replaceAll(String regex, String replacement)</code> method. <br/>Characters
+   * the <code>String::replaceAll(String regex, String replacement)</code> method. <br>Characters
    * to be escaped => "\ $".
    * 
    * @param string
@@ -210,7 +210,7 @@ public class StringUtil {
 
   /**
    * Converts a given input string to another string that can be used in all 'regular expression'
-   * methods. <br/>Characters to be escaped => "\ . $ ^ { [ ( | ) * + ?".
+   * methods. <br>Characters to be escaped => "\ . $ ^ { [ ( | ) * + ?".
    * 
    * @param string
    *          The given input string.

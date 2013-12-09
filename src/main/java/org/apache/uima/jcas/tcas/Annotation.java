@@ -45,7 +45,7 @@ public class Annotation extends AnnotationBase implements AnnotationFS {
   protected Annotation() {
   }
 
-  /** Internal - Constructor used by generator */
+ /* Internal - Constructor used by generator */
   public Annotation(int addr, TOP_Type type) {
     super(addr, type);
   }
@@ -57,7 +57,7 @@ public class Annotation extends AnnotationBase implements AnnotationFS {
   // *------------------*
   // * Feature: begin
   // * beginning of span of annotation
-  /**
+  /*
    * getter for begin - gets beginning of span of annotation
    */
   public int getBegin() {
@@ -66,7 +66,7 @@ public class Annotation extends AnnotationBase implements AnnotationFS {
     return jcasType.ll_cas.ll_getIntValue(addr, ((Annotation_Type) jcasType).casFeatCode_begin);
   }
 
-  /**
+  /*
    * setter for begin - sets beginning of span of annotation
    */
   public void setBegin(int v) {
@@ -79,7 +79,7 @@ public class Annotation extends AnnotationBase implements AnnotationFS {
   // * Feature: end
   // * ending of span of annotation
 
-  /**
+  /*
    * getter for end - gets ending of span of annotation
    */
   public int getEnd() {
@@ -88,7 +88,7 @@ public class Annotation extends AnnotationBase implements AnnotationFS {
     return jcasType.ll_cas.ll_getIntValue(addr, ((Annotation_Type) jcasType).casFeatCode_end);
   }
 
-  /**
+  /*
    * setter for end - sets ending of span of annotation
    */
   public void setEnd(int v) {

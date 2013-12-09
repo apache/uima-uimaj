@@ -85,13 +85,17 @@ public class InstallationProcessor {
   private InstallationController _controller = null;
 
   /**
-   * Builds $component_id$<suffix> regular expression string for a given component ID and a given
+   * Builds $component_id$&lt;suffix&gt; regular expression string for a given component ID and a given
    * 'suffix' string. Valid 'suffix' strings are InstallationDescriptor.DELEGATE_ROOT_SUFFIX_REGEX
    * for absolute path, InstallationDescriptor.DELEGATE_ROOT_REL_SUFFIX_REGEX for relative path,
    * InstallationDescriptor.DELEGATE_ROOT_URL_SUFFIX_REGEX for URL.
    * 
    * @param componentId
    *          The given component ID.
+   * @param suffix a suffix to be added to the component ID
+   * Valid 'suffix' strings are InstallationDescriptor.DELEGATE_ROOT_SUFFIX_REGEX
+   * for absolute path, InstallationDescriptor.DELEGATE_ROOT_REL_SUFFIX_REGEX for relative path,
+   * InstallationDescriptor.DELEGATE_ROOT_URL_SUFFIX_REGEX for URL.
    * @return The $component_id$root regular expression string.
    */
   protected static String componentIdRootRegExp(String componentId, String suffix) {

@@ -95,6 +95,7 @@ public class PackageBrowser {
    * 
    * @param pearPackage
    *          The given archived PEAR package to browse.
+   * @throws IOException if a problem with IO
    */
   public PackageBrowser(JarFile pearPackage) throws IOException {
     _pearPackage = pearPackage;
@@ -116,6 +117,7 @@ public class PackageBrowser {
    * 
    * @param pearPackageDir
    *          The root directory where the PEAR package was unarchived.
+   * @throws IOException if a problem with IO
    */
   public PackageBrowser(File pearPackageDir) throws IOException {
     _rootDir = pearPackageDir;
@@ -144,7 +146,7 @@ public class PackageBrowser {
   /**
    * Like {@link #buildComponentClassPath()}, but without all jars from the lib dir.
    * @return The runtime classpath for the component.
-   * @throws IOException
+   * @throws IOException if there was an IO problem
    */
   public String buildComponentRuntimeClassPath() throws IOException {
     return buildComponentClassPath(false, false);
@@ -402,7 +404,7 @@ public class PackageBrowser {
    * @return returns the pear component pearSpecifier file path or null if an archived package was
    *         used.
    * 
-   * @throws IOException
+   * @throws IOException if there was an IO problem
    */
   public String getComponentPearDescPath() throws IOException {
 
