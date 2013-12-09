@@ -514,7 +514,7 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
 
   public void getColorsForTypesFromFile(CasAnnotationViewer viewer, File aStyleMapFile) {
     List colorList = new ArrayList();
-    ArrayList typeList = new ArrayList();
+    ArrayList<String> typeList = new ArrayList<String>();
     ArrayList notCheckedList = new ArrayList();
     ArrayList hiddenList = new ArrayList();
     hiddenList.add("uima.cpm.FileLocation");
