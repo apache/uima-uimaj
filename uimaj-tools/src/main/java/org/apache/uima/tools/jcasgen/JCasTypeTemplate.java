@@ -145,7 +145,7 @@ public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
     stringBuffer.append(jg.setFeatureValue(fd, td));
     stringBuffer.append(";}    \n  ");
   if (jg.hasArrayRange(fd)) {
-    stringBuffer.append("  \n  /** indexed getter for ");
+    stringBuffer.append("  \n  /* indexed getter for ");
     stringBuffer.append(featName);
     stringBuffer.append(" - gets an indexed value - ");
     stringBuffer.append(featDescCmt);
@@ -173,7 +173,7 @@ public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
     stringBuffer.append("), i);\n");
     stringBuffer.append("    return ");
     stringBuffer.append(jg.getArrayFeatureValue(fd, td));
-    stringBuffer.append(";}\n\n  /** indexed setter for ");
+    stringBuffer.append(";}\n\n  /* indexed setter for ");
     stringBuffer.append(featName);
     stringBuffer.append(" - sets an indexed value - ");
     stringBuffer.append(featDescCmt);

@@ -116,27 +116,27 @@ public class <%=typeName%> extends <%=jg.getJavaName(td.getSupertypeName())%> {
   //*--------------*
   //* Feature: <%=featName%>
 
-  /** getter for <%=featName%> - gets <%=featDescCmt%>
+  /* getter for <%=featName%> - gets <%=featDescCmt%>
    * @generated */
   public <%=rangeType%> get<%=featUName%>() {
     <%@ include file="../includedTemplates/FeatOkTesting.javajet"%>
     return <%=jg.getFeatureValue(fd, td)%>;}
     
-  /** setter for <%=featName%> - sets <%=featDescCmt%> 
+  /* setter for <%=featName%> - sets <%=featDescCmt%> 
    * @generated */
   public void set<%=featUName%>(<%=rangeType%> v) {
     <%@ include file="../includedTemplates/FeatOkTesting.javajet"%>
     <%=jg.setFeatureValue(fd, td)%>;}    
   <%if (jg.hasArrayRange(fd)) {%>
   
-  /** indexed getter for <%=featName%> - gets an indexed value - <%=featDescCmt%>
+  /* indexed getter for <%=featName%> - gets an indexed value - <%=featDescCmt%>
    * @generated */
   public <%=elemType%> get<%=featUName%>(int i) {
     <%@ include file="../includedTemplates/FeatOkTesting.javajet"%>
     <%@ include file="../includedTemplates/ArrayBoundsChecking.javajet"%>
     return <%=jg.getArrayFeatureValue(fd, td)%>;}
 
-  /** indexed setter for <%=featName%> - sets an indexed value - <%=featDescCmt%>
+  /* indexed setter for <%=featName%> - sets an indexed value - <%=featDescCmt%>
    * @generated */
   public void set<%=featUName%>(int i, <%=elemType%> v) { 
     <%@ include file="../includedTemplates/FeatOkTesting.javajet"%>
