@@ -1083,6 +1083,7 @@ public class XCASDeserializer {
    * 
    * @param ts
    *          The type system of the CASes to be deserialized.
+   * @param uimaContext the UIMA Context for the deserialization
    */
   public XCASDeserializer(TypeSystem ts, UimaContext uimaContext) {
     super();

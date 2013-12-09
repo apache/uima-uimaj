@@ -134,7 +134,7 @@ public interface TypeSystemMgr extends TypeSystem {
    * Block any further inheritance from this type. Does not mean that the type can have no
    * sub-types, just that no new ones can be introduced.
    * 
-   * @param type
+   * @param type the type to block subtypes on
    */
   void setInheritanceFinal(Type type);
 

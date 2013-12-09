@@ -37,9 +37,8 @@ public interface CASMgr {
   TypeSystemMgr getTypeSystemMgr();
 
   /**
-   * Return a writable version of the index repository. Note that the type system must be committed
+   * @return a writable version of the index repository. Note that the type system must be committed
    * before this method can be called.
-   * 
    * @exception CASAdminException
    *              If the type system has not been committed.
    */
@@ -72,7 +71,7 @@ public interface CASMgr {
   /**
    * Enable/disable resetting the CAS with {@link CAS#reset CAS.reset()}.
    * 
-   * @param flag
+   * @param flag true to enable reset
    */
   void enableReset(boolean flag);
 
@@ -80,7 +79,7 @@ public interface CASMgr {
 
   /**
    * Install the standard built-in indexes into the base CAS
-   * @throws CASException
+   * @throws CASException if an error occurs
    */
   void initCASIndexes() throws CASException;
 

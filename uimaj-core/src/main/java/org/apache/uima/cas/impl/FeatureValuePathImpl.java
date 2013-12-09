@@ -48,7 +48,7 @@ import org.apache.uima.cas.text.AnnotationFS;
  * CAS chunks)
  * </ul>
  * 
- * <b>Handling of Arrays </b> <br/>
+ * <b>Handling of Arrays </b> <br>
  * <ul>
  * <li>A feature path may contain 0 or more features of type <code>FSArray</code>, but not as
  * the last path snippet. The next path snippet must contain the fully qualified type name, example:
@@ -92,7 +92,7 @@ import org.apache.uima.cas.text.AnnotationFS;
  *                         
  * </pre>
  * 
- * <br/><b>Usage </b>
+ * <br><b>Usage </b>
  * <ul>
  * <li>To create the feature path, use <code>FeaturePath.getFeaturePath</code>. Note that the
  * client code needs to keep track of the "start type" of the feature path, that is, the type that
@@ -101,7 +101,7 @@ import org.apache.uima.cas.text.AnnotationFS;
  * <code>typeSystemInit</code> of the feature path.
  * <li>Call <code>getValueType</code> to find out whether the feature path evaluates to a String,
  * and int, a float, or their array counterparts.
- * <li>Depending on the leaf type, call the appropriate <coce>evaluateAs </code> methods
+ * <li>Depending on the leaf type, call the appropriate <code>evaluateAs </code> methods
  * </ol>
  * 
  */

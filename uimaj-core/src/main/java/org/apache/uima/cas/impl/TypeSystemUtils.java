@@ -330,7 +330,7 @@ public abstract class TypeSystemUtils {
    * <code>path</code> can ever be defined.</li>
    * <li><code>PathValid.ALWAYS</code>: if all intermediate objects are non-null, this
    * <code>path</code> will always be defined on any object of <code>type</code>. </li>
-   * <li><code>PathValid.POSSIBLE: some objects of <code>type</code> will have<code>path</code> 
+   * <li><code>PathValid.POSSIBLE</code>: some objects of <code>type</code> will have<code>path</code> 
    * defined, while others may not.</li>
    * </ol>
    * <b>Note:</b> we always assume that all references are not null.  A return value of ALWAYS

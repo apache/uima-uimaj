@@ -1488,8 +1488,7 @@ public class XmiCasSerializer {
    *          The SAX content handler the data is written to. should be inserted into the XCAS
    *          output
    * 
-   * @throws IOException
-   * @throws SAXException
+   * @throws SAXException if there was a SAX exception
    */
   public void serialize(CAS cas, ContentHandler contentHandler) throws SAXException {
     this.serialize(cas, contentHandler, null);
@@ -1503,9 +1502,9 @@ public class XmiCasSerializer {
    * @param contentHandler
    *          The SAX content handler the data is written to. should be inserted into the XCAS
    *          output
+   * @param errorHandler the SAX Error Handler to use
    * 
-   * @throws IOException
-   * @throws SAXException
+   * @throws SAXException if there was a SAX exception
    */
   public void serialize(CAS cas, ContentHandler contentHandler, ErrorHandler errorHandler)
           throws SAXException {
@@ -1527,8 +1526,9 @@ public class XmiCasSerializer {
    * @param sharedData
    *          data structure used to allow the XmiCasSerializer and XmiCasDeserializer to share
    *          information.
-   * @throws IOException
-   * @throws SAXException
+   * @param errorHandler the SAX Error Handler to use
+   * 
+   * @throws SAXException if there was a SAX exception
    */
   public void serialize(CAS cas, ContentHandler contentHandler, ErrorHandler errorHandler,
           XmiSerializationSharedData sharedData) throws SAXException {
@@ -1547,6 +1547,7 @@ public class XmiCasSerializer {
    * @param contentHandler
    *          The SAX content handler the data is written to. should be inserted into the XCAS
    *          output
+   * @param errorHandler the SAX Error Handler to use
    * @param sharedData
    *          data structure used to allow the XmiCasSerializer and XmiCasDeserializer to share
    *          information.
@@ -1554,8 +1555,8 @@ public class XmiCasSerializer {
    * 	      an object used to filter the FSs and Views to determine if these were created after
    *          the mark was set. Used to serialize a Delta CAS consisting of only new FSs and views and
    *          preexisting FSs and Views that have been modified.
-   * @throws IOException
-   * @throws SAXException
+   *          
+   * @throws SAXException if there was a SAX exception
    */
   public void serialize(CAS cas, ContentHandler contentHandler, ErrorHandler errorHandler,
           XmiSerializationSharedData sharedData, Marker marker) throws SAXException {
@@ -1577,8 +1578,6 @@ public class XmiCasSerializer {
    * 
    * @throws SAXException
    *           if a problem occurs during XMI serialization
-   * @throws IOException
-   *           if an I/O failure occurs
    */
   public static void serialize(CAS aCAS, OutputStream aStream) throws SAXException {
     serialize(aCAS, null, aStream, false, null);
@@ -1599,8 +1598,6 @@ public class XmiCasSerializer {
    * 
    * @throws SAXException
    *           if a problem occurs during XMI serialization
-   * @throws IOException
-   *           if an I/O failure occurs
    */
   public static void serialize(CAS aCAS, TypeSystem aTargetTypeSystem, OutputStream aStream)
           throws SAXException {
@@ -1626,8 +1623,6 @@ public class XmiCasSerializer {
    * 
    * @throws SAXException
    *           if a problem occurs during XMI serialization
-   * @throws IOException
-   *           if an I/O failure occurs
    */
   public static void serialize(CAS aCAS, TypeSystem aTargetTypeSystem, OutputStream aStream, boolean aPrettyPrint, 
           XmiSerializationSharedData aSharedData)
@@ -1660,8 +1655,6 @@ public class XmiCasSerializer {
    *          See the JavaDocs for {@link Marker} for details.
    * @throws SAXException
    *           if a problem occurs during XMI serialization
-   * @throws IOException
-   *           if an I/O failure occurs
    */
   public static void serialize(CAS aCAS, TypeSystem aTargetTypeSystem, OutputStream aStream, boolean aPrettyPrint, 
           XmiSerializationSharedData aSharedData, Marker aMarker)
