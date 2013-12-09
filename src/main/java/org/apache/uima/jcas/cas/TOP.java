@@ -73,7 +73,7 @@ public class TOP extends FeatureStructureImpl {
 		throw new RuntimeException("Internal Error: TOP() constructor should never be called.");
 	}
 
-	/**
+	/*
    * (Internal) make a new instance of TOP, linking it with a pre-existing Cas FeatureStructure
    * object. Note: this function invoked via the generator in TOP_Type whenever the CAS needs to
    * make a java instance
@@ -83,7 +83,7 @@ public class TOP extends FeatureStructureImpl {
 		this.jcasType = jcasType;
 	}
 
-	/**
+	/*
    * (Internal) create a new instance of TOP (or subclass of TOP) in Java and Cas, and make them
    * correspond.
    */
@@ -109,28 +109,36 @@ public class TOP extends FeatureStructureImpl {
 		}
 	}
 
-	/** add the corresponding FeatureStructure to all Cas indexes */
+	/** add the corresponding FeatureStructure to all Cas indexes in the view where this FS was created*/
 	public void addToIndexes() {
 		addToIndexes(jcasType.jcas);
 	}
-
+  
+	/**
+	 * add this FS to indexes in a specific view, perhaps different from the creation view
+	 * @param jcas the JCas
+	 */
 	public void addToIndexes(JCas jcas) {
 		jcas.getCas().addFsToIndexes(this);
 	}
 
-	/** remove the corresponding FeatureStructure from all Cas indexes */
+	/** remove the corresponding FeatureStructure from all Cas indexes in the view where this FS was created */
 	public void removeFromIndexes() {
 		removeFromIndexes(jcasType.jcas);
 	}
 
+	/**
+	 * remove this FS from indices in a specific view, perhaps different from the view where this was created.
+	 * @param jcas the JCas
+	 */
 	public void removeFromIndexes(JCas jcas) {
 		jcas.getLowLevelIndexRepository().ll_removeFS(this.addr);
 	}
 
 	/*
-   * functions needed to to implement the FeatureStructure interface Note we don't simply implement
-   * this class as a subclass of FeatureStructureImpl because that would add one more slot to every
-   * instance
+   * functions needed to to implement the FeatureStructure interface 
+   * Note we don't simply implement this class as a subclass of FeatureStructureImpl 
+   * because that would add one more slot to every instance
    */
 
 	public int getAddress() {
@@ -141,6 +149,9 @@ public class TOP extends FeatureStructureImpl {
 		return jcasType.casImpl;
 	}
 
+	/**
+	 * @return the CAS view where this FS was created
+	 */
 	public CAS getCAS() {
 		return jcasType.casImpl;
 	}

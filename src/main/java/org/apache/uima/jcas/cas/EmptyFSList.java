@@ -36,7 +36,7 @@ public class EmptyFSList extends FSList {
   protected EmptyFSList() {
   }
 
-  /** Internal - Constructor used by generator */
+ /* Internal - Constructor used by generator */
   public EmptyFSList(int addr, TOP_Type type) {
     super(addr, type);
   }

@@ -36,7 +36,7 @@ public class EmptyIntegerList extends IntegerList {
   protected EmptyIntegerList() {
   }
 
-  /** Internal - Constructor used by generator */
+ /* Internal - Constructor used by generator */
   public EmptyIntegerList(int addr, TOP_Type type) {
     super(addr, type);
   }

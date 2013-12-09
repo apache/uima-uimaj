@@ -76,9 +76,10 @@ public final class DoubleArray_Type extends CommonArray_Type {
   // ******************************************************
 
   /**
-   * return the indexed value from the corresponding Cas StringArray as a Java String.
-   * 
-   * @see org.apache.uima.cas.DoubleArrayFS#get(int)
+   * return the indexed value from the corresponding Cas DoubleArray as a Java double. 
+   * @param addr low level CAS FS reference
+   * @param i the index
+   * @return the value
    */
   public double get(int addr, int i) {
     if (lowLevelTypeChecks)
@@ -89,9 +90,11 @@ public final class DoubleArray_Type extends CommonArray_Type {
   }
 
   /**
-   * updates the Cas, setting the indexed value to the passed in Java String value.
-   * 
+   * updates the Cas, setting the indexed value to the passed in Java double value.
    * @see org.apache.uima.cas.DoubleArrayFS#set(int, double)
+   * @param addr low level CAS FS reference
+   * @param i the index
+   * @param v the value
    */
   public void set(int addr, int i, double v) {
     if (lowLevelTypeChecks)
@@ -103,6 +106,11 @@ public final class DoubleArray_Type extends CommonArray_Type {
 
   /**
    * @see org.apache.uima.cas.DoubleArrayFS#copyFromArray(double[], int, int, int)
+   * @param addr low level CAS Feature Structure reference for the destination
+   * @param src the source array to copy from
+   * @param srcOffset the source offset
+   * @param destOffset the destination offset
+   * @param length the number of items to copy
    */
   public void copyFromArray(int addr, double[] src, int srcOffset, int destOffset, int length) {
     if (lowLevelArrayBoundChecks)
@@ -114,6 +122,11 @@ public final class DoubleArray_Type extends CommonArray_Type {
 
   /**
    * @see org.apache.uima.cas.DoubleArrayFS#copyToArray(int, double[], int, int)
+   * @param addr the low level CAS Feature Structure reference for the source
+   * @param srcOffset the source offset
+   * @param dest the destination to copy into
+   * @param destOffset the destination offset
+   * @param length the number of items to copy
    */
   public void copyToArray(int addr, int srcOffset, double[] dest, int destOffset, int length) {
     if (lowLevelArrayBoundChecks)
@@ -125,6 +138,8 @@ public final class DoubleArray_Type extends CommonArray_Type {
 
   /**
    * @see org.apache.uima.cas.DoubleArrayFS#toArray()
+   * @param addr the low level CAS Feature Structure reference to copy from
+   * @return a Java object which is a copy of the values in the array
    */
   public double[] toArray(int addr) {
     final int size = size(addr);

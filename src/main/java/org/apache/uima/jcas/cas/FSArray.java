@@ -51,12 +51,16 @@ public final class FSArray extends TOP implements ArrayFS {
   private FSArray() {
   }
 
-  /** Internal - Constructor used by generator */
+ /* Internal - Constructor used by generator */
   public FSArray(int addr, TOP_Type type) {
     super(addr, type);
   }
 
-  /** Make a new FSArray of given size */
+  /**
+   * Make a new FSArray of given size
+   * @param jcas The JCas
+   * @param length The number of elements in the new array
+   */
   public FSArray(JCas jcas, int length) {
     this(
     /* addr */jcas.getLowLevelCas().ll_createArray(jcas.getType(typeIndexID).casTypeCode, length),
@@ -150,8 +154,8 @@ public final class FSArray extends TOP implements ArrayFS {
    *                The number of elements to copy.
    * @exception ArrayIndexOutOfBoundsException
    *                    If <code>srcOffset &lt; 0</code> or
-   *                    <code>length > size()</code> or
-   *                    <code>destOffset + length > destArray.length</code>.
+   *                    <code>length &gt; size()</code> or
+   *                    <code>destOffset + length &gt; destArray.length</code>.
    */
   public void copyToArray(int srcOffset, String[] dest, int destOffset, int length) {
     CASImpl ll = jcasType.casImpl;

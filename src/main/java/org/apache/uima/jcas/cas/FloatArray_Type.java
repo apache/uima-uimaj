@@ -76,9 +76,11 @@ public class FloatArray_Type extends CommonArray_Type {
   // ******************************************************
 
   /**
-   * return the indexed value from the corresponding Cas floatArray as a Java float.
-   * 
    * @see org.apache.uima.cas.ArrayFS#get(int)
+   * 
+   * @param addr the low level CAS Feature Structure reference
+   * @param i the index
+   * @return the indexed value from the corresponding Cas floatArray as a Java float.
    */
   public float get(int addr, int i) {
     if (lowLevelTypeChecks)
@@ -90,19 +92,28 @@ public class FloatArray_Type extends CommonArray_Type {
 
   /**
    * updates the Cas, setting the indexed value to the passed in Java float value.
-   * 
    * @see org.apache.uima.cas.ArrayFS#set(int, FeatureStructure)
+   * 
+   * @param addr the low level CAS Feature Structure reference
+   * @param i the index
+   * @param value the value to set
    */
-  public void set(int addr, int i, float str) {
+  public void set(int addr, int i, float value) {
     if (lowLevelTypeChecks)
-      ll_cas.ll_setFloatArrayValue(addr, i, str, true);
+      ll_cas.ll_setFloatArrayValue(addr, i, value, true);
     if (lowLevelArrayBoundChecks)
       casImpl.checkArrayBounds(addr, i);
-    ll_cas.ll_setFloatArrayValue(addr, i, str);
+    ll_cas.ll_setFloatArrayValue(addr, i, value);
   }
 
   /**
    * @see org.apache.uima.cas.FloatArrayFS#copyFromArray(float[], int, int, int)
+   * 
+   * @param addr the low level CAS Feature Structure reference to copy into
+   * @param src the array to copy from
+   * @param srcOffset the source offset
+   * @param destOffset the destination offset
+   * @param length the number of items to copy
    */
   public void copyFromArray(int addr, float[] src, int srcOffset, int destOffset, int length) {
     if (lowLevelArrayBoundChecks)
@@ -111,9 +122,13 @@ public class FloatArray_Type extends CommonArray_Type {
       ll_cas.ll_setFloatArrayValue(addr, i + destOffset, src[i + srcOffset]);
     }
   }
-
   /**
-   * @see org.apache.uima.cas.FloatArrayFS#copyToArray(int, float[], int, int)
+   * 
+   * @param addr the low level CAS Feature Structure reference to copy from
+   * @param srcOffset the source offset
+   * @param dest the target to copy into
+   * @param destOffset the destination offset
+   * @param length the number of items to copy
    */
   public void copyToArray(int addr, int srcOffset, float[] dest, int destOffset, int length) {
     if (lowLevelArrayBoundChecks)
@@ -125,6 +140,9 @@ public class FloatArray_Type extends CommonArray_Type {
 
   /**
    * @see org.apache.uima.cas.FloatArrayFS#toArray()
+   * 
+   * @param addr the low level CAS Feature Structure reference to copy from
+   * @return a copy of the array
    */
   public float[] toArray(int addr) {
     final int size = size(addr);

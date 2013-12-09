@@ -36,7 +36,7 @@ public class NonEmptyFloatList extends FloatList {
   protected NonEmptyFloatList() {
   }
 
-  /** Internal - Constructor used by generator */
+ /* Internal - Constructor used by generator */
   public NonEmptyFloatList(int addr, TOP_Type type) {
     super(addr, type);
   }
@@ -47,7 +47,7 @@ public class NonEmptyFloatList extends FloatList {
 
   // *------------------*
   // * Feature: head
-  /** getter for head * */
+  /* getter for head * */
   public float getHead() {
     if (NonEmptyFloatList_Type.featOkTst
             && ((NonEmptyFloatList_Type) jcasType).casFeat_head == null)
@@ -56,7 +56,7 @@ public class NonEmptyFloatList extends FloatList {
             ((NonEmptyFloatList_Type) jcasType).casFeatCode_head);
   }
 
-  /** setter for head * */
+  /* setter for head * */
   public void setHead(float v) {
     if (NonEmptyFloatList_Type.featOkTst
             && ((NonEmptyFloatList_Type) jcasType).casFeat_head == null)
@@ -66,7 +66,7 @@ public class NonEmptyFloatList extends FloatList {
 
   // *------------------*
   // * Feature: tail
-  /** getter for tail * */
+  /* getter for tail * */
   public FloatList getTail() {
     if (NonEmptyFloatList_Type.featOkTst
             && ((NonEmptyFloatList_Type) jcasType).casFeat_tail == null)
@@ -75,7 +75,7 @@ public class NonEmptyFloatList extends FloatList {
             ((NonEmptyFloatList_Type) jcasType).casFeatCode_tail)));
   }
 
-  /** setter for tail * */
+  /* setter for tail * */
   public void setTail(FloatList v) {
     if (NonEmptyFloatList_Type.featOkTst
             && ((NonEmptyFloatList_Type) jcasType).casFeat_tail == null)

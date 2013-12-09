@@ -62,7 +62,7 @@ public class Sofa extends TOP implements SofaFS {
 	protected Sofa() {
 	}
 
-	/**
+	/*
    * Internal - constructor used by generator
    * 
    * @generated
@@ -73,9 +73,15 @@ public class Sofa extends TOP implements SofaFS {
 	}
 
 	/**
+	 * 
+	 * @param jcas JCas
+	 * @param ID the sofa ID
+	 * @param mimeType the mime type
+	 * 
    * @deprecated As of v2.0, use {@link JCasImpl#createView(String)} to create a view, which will
    *             also create the Sofa for that view.
-   */
+
+	 */
 	@Deprecated
 	public Sofa(JCas jcas, SofaID ID, String mimeType) {
 		super(jcas);
@@ -96,7 +102,7 @@ public class Sofa extends TOP implements SofaFS {
 	// *--------------*
 	// * Feature: sofaNum
   // ** Note: this gets the same feature, sofaNum, as getSofaRef, below
-	/**
+	/*
    * getter for sofaNum - gets
    * 
    * @generated
@@ -110,7 +116,7 @@ public class Sofa extends TOP implements SofaFS {
 	// *--------------*
 	// * Feature: sofaID
 
-	/**
+	/*
    * getter for sofaID - gets
    * 
    * @generated
@@ -124,7 +130,7 @@ public class Sofa extends TOP implements SofaFS {
 	// *--------------*
 	// * Feature: mimeType
 
-	/**
+	/*
    * getter for mimeType - gets
    * 
    * @generated

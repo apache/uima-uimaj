@@ -36,7 +36,7 @@ public class NonEmptyStringList extends StringList {
   protected NonEmptyStringList() {
   }
 
-  /** Internal - Constructor used by generator */
+ /* Internal - Constructor used by generator */
   public NonEmptyStringList(int addr, TOP_Type type) {
     super(addr, type);
   }
@@ -47,7 +47,7 @@ public class NonEmptyStringList extends StringList {
 
   // *------------------*
   // * Feature: head
-  /** getter for head * */
+  /* getter for head * */
   public String getHead() {
     if (NonEmptyStringList_Type.featOkTst
             && ((NonEmptyStringList_Type) jcasType).casFeat_head == null)
@@ -56,7 +56,7 @@ public class NonEmptyStringList extends StringList {
             ((NonEmptyStringList_Type) jcasType).casFeatCode_head);
   }
 
-  /** setter for head * */
+  /* setter for head * */
   public void setHead(String v) {
     if (NonEmptyStringList_Type.featOkTst
             && ((NonEmptyStringList_Type) jcasType).casFeat_head == null)
@@ -67,7 +67,7 @@ public class NonEmptyStringList extends StringList {
 
   // *------------------*
   // * Feature: tail
-  /** getter for tail * */
+  /* getter for tail * */
   public StringList getTail() {
     if (NonEmptyStringList_Type.featOkTst
             && ((NonEmptyStringList_Type) jcasType).casFeat_tail == null)
@@ -76,7 +76,7 @@ public class NonEmptyStringList extends StringList {
             ((NonEmptyStringList_Type) jcasType).casFeatCode_tail)));
   }
 
-  /** setter for tail * */
+  /* setter for tail * */
   public void setTail(StringList v) {
     if (NonEmptyStringList_Type.featOkTst
             && ((NonEmptyStringList_Type) jcasType).casFeat_tail == null)

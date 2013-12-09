@@ -76,9 +76,11 @@ public final class ShortArray_Type extends CommonArray_Type {
   // ******************************************************
 
   /**
-   * return the indexed value from the corresponding Cas StringArray as a Java String.
-   * 
    * @see org.apache.uima.cas.ShortArrayFS#get(int)
+   * 
+   * @param addr the low level CAS Feature Structure reference
+   * @param i the index
+   * @return the indexed value from the corresponding Cas Feature Structure
    */
   public short get(int addr, int i) {
     if (lowLevelTypeChecks)
@@ -90,9 +92,13 @@ public final class ShortArray_Type extends CommonArray_Type {
 
   /**
    * updates the Cas, setting the indexed value to the passed in Java String value.
-   * 
    * @see org.apache.uima.cas.ShortArrayFS#set(int, short)
+   * 
+   * @param addr the low level CAS Feature Structure reference
+   * @param i the index
+   * @param v the value
    */
+  
   public void set(int addr, int i, short v) {
     if (lowLevelTypeChecks)
       ll_cas.ll_setShortArrayValue(addr, i, v, true);
@@ -103,6 +109,12 @@ public final class ShortArray_Type extends CommonArray_Type {
 
   /**
    * @see org.apache.uima.cas.ShortArrayFS#copyFromArray(short[], int, int, int)
+   * 
+   * @param addr the low level CAS Feature Structure reference
+   * @param src the Java object used as the source
+   * @param srcOffset the source offset
+   * @param destOffset the destination (in the CAS FS) offset
+   * @param length the number of items to copy
    */
   public void copyFromArray(int addr, short[] src, int srcOffset, int destOffset, int length) {
     if (lowLevelArrayBoundChecks)
@@ -114,6 +126,12 @@ public final class ShortArray_Type extends CommonArray_Type {
 
   /**
    * @see org.apache.uima.cas.ShortArrayFS#copyToArray(int, short[], int, int)
+   * 
+   * @param addr the low level CAS Feature Structure reference
+   * @param srcOffset the source offset
+   * @param dest the Java object to copy into
+   * @param destOffset the destination offset
+   * @param length the number of items to copy
    */
   public void copyToArray(int addr, int srcOffset, short[] dest, int destOffset, int length) {
     if (lowLevelArrayBoundChecks)
@@ -125,6 +143,9 @@ public final class ShortArray_Type extends CommonArray_Type {
 
   /**
    * @see org.apache.uima.cas.ShortArrayFS#toArray()
+   * 
+   * @param addr the low level CAS Feature Structure reference
+   * @return a copy of the CAS Feature Structure Array as a Java Object
    */
   public short[] toArray(int addr) {
     final int size = size(addr);

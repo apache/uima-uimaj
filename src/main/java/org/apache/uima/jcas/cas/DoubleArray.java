@@ -47,12 +47,16 @@ public final class DoubleArray extends TOP implements DoubleArrayFS {
   private DoubleArray() {
   }
 
-  /** Internal - Constructor used by generator */
+ /* Internal - Constructor used by generator */
   public DoubleArray(int addr, TOP_Type type) {
     super(addr, type);
   }
 
-  /** Make a new DoubleArray of given size */
+  /**
+   *  Make a new DoubleArray of given size
+   * @param jcas The JCas
+   * @param length the length of the array 
+   */
   public DoubleArray(JCas jcas, int length) {
     this(jcas.getLowLevelCas().ll_createDoubleArray(length), jcas.getType(typeIndexID));
   }

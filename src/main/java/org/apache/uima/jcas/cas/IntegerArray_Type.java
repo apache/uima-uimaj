@@ -79,9 +79,11 @@ public class IntegerArray_Type extends CommonArray_Type {
   // ******************************************************
 
   /**
-   * return the indexed value from the corresponding Cas StringArray as a Java String.
-   * 
    * @see org.apache.uima.cas.IntArrayFS#get(int)
+   * 
+   * @param addr low level CAS Feature Structure reference
+   * @param i the index
+   * @return the indexed value from the corresponding Cas IntegerArray 
    */
   public int get(int addr, int i) {
     if (lowLevelTypeChecks)
@@ -92,9 +94,12 @@ public class IntegerArray_Type extends CommonArray_Type {
   }
 
   /**
-   * updates the Cas, setting the indexed value to the passed in Java String value.
-   * 
+   * updates the Cas from the passed in Java value.
    * @see org.apache.uima.cas.IntArrayFS#set(int, int)
+   * 
+   * @param addr low level CAS Feature Structure reference
+   * @param i the index
+   * @param v the value
    */
   public void set(int addr, int i, int v) {
     if (lowLevelTypeChecks)
@@ -106,6 +111,12 @@ public class IntegerArray_Type extends CommonArray_Type {
 
   /**
    * @see org.apache.uima.cas.IntArrayFS#copyFromArray(int[], int, int, int)
+   * 
+   * @param addr low level CAS Feature Structure reference
+   * @param src the source (Java object) to copy from
+   * @param srcOffset the source offset
+   * @param destOffset the destination (the CAS Feature Structure) offset
+   * @param length number of items to copy
    */
   public void copyFromArray(int addr, int[] src, int srcOffset, int destOffset, int length) {
     if (lowLevelArrayBoundChecks)
@@ -117,6 +128,12 @@ public class IntegerArray_Type extends CommonArray_Type {
 
   /**
    * @see org.apache.uima.cas.IntArrayFS#copyToArray(int, int[], int, int)
+   * 
+   * @param addr low level CAS Feature Structure reference
+   * @param srcOffset The CAS source offset
+   * @param dest the Java object to copy into
+   * @param destOffset the destination offset
+   * @param length number of items to copy
    */
   public void copyToArray(int addr, int srcOffset, int[] dest, int destOffset, int length) {
     if (lowLevelArrayBoundChecks)
@@ -128,6 +145,9 @@ public class IntegerArray_Type extends CommonArray_Type {
 
   /**
    * @see org.apache.uima.cas.IntArrayFS#toArray()
+   * 
+   * @param addr low level CAS Feature Structure reference
+   * @return a copy of the CAS array as a Java object
    */
   public int[] toArray(int addr) {
     final int size = size(addr);

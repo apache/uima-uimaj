@@ -76,9 +76,11 @@ public final class LongArray_Type extends CommonArray_Type {
   // ******************************************************
 
   /**
-   * return the indexed value from the corresponding Cas StringArray as a Java String.
-   * 
    * @see org.apache.uima.cas.LongArrayFS#get(int)
+   * 
+   * @param addr low level CAS Feature Structure reference
+   * @param i the index
+   * @return the indexed value from the corresponding Cas LongArray as a Java long.
    */
   public long get(int addr, int i) {
     if (lowLevelTypeChecks)
@@ -88,11 +90,14 @@ public final class LongArray_Type extends CommonArray_Type {
     return ll_cas.ll_getLongArrayValue(addr, i);
   }
 
-  /**
-   * updates the Cas, setting the indexed value to the passed in Java String value.
-   * 
+   /**
+   * updates the Cas, setting the indexed value to the passed in Java long.
    * @see org.apache.uima.cas.LongArrayFS#set(int, long)
-   */
+    * 
+    * @param addr low level CAS Feature Structure reference
+    * @param i the index
+    * @param v the value to set
+    */
   public void set(int addr, int i, long v) {
     if (lowLevelTypeChecks)
       ll_cas.ll_setLongArrayValue(addr, i, v, true);
@@ -103,6 +108,12 @@ public final class LongArray_Type extends CommonArray_Type {
 
   /**
    * @see org.apache.uima.cas.LongArrayFS#copyFromArray(long[], int, int, int)
+   * 
+   * @param addr low level CAS Feature Structure reference
+   * @param src the Java object to coyp from
+   * @param srcOffset the source offset
+   * @param destOffset the destination (in the CAS) offset
+   * @param length the number of items to copy
    */
   public void copyFromArray(int addr, long[] src, int srcOffset, int destOffset, int length) {
     if (lowLevelArrayBoundChecks)
@@ -114,6 +125,12 @@ public final class LongArray_Type extends CommonArray_Type {
 
   /**
    * @see org.apache.uima.cas.LongArrayFS#copyToArray(int, long[], int, int)
+   * 
+   * @param addr low level CAS Feature Structure reference
+   * @param srcOffset the source offset in the CAS
+   * @param dest the Java object to copy into
+   * @param destOffset the destination offset
+   * @param length the number of items to copy
    */
   public void copyToArray(int addr, int srcOffset, long[] dest, int destOffset, int length) {
     if (lowLevelArrayBoundChecks)
@@ -125,6 +142,9 @@ public final class LongArray_Type extends CommonArray_Type {
 
   /**
    * @see org.apache.uima.cas.LongArrayFS#toArray()
+   * 
+   * @param addr low level CAS Feature Structure reference
+   * @return a copy of the CAS Object as a Java object
    */
   public long[] toArray(int addr) {
     final int size = size(addr);

@@ -44,7 +44,7 @@ public class AnnotationBase extends org.apache.uima.jcas.cas.TOP implements Anno
   protected AnnotationBase() {
   }
 
-  /** Internal - Constructor used by generator */
+ /* Internal - Constructor used by generator */
   public AnnotationBase(int addr, TOP_Type type) {
     super(addr, type);
   }
@@ -56,7 +56,7 @@ public class AnnotationBase extends org.apache.uima.jcas.cas.TOP implements Anno
   // *------------------*
   // * Feature: sofa
   // * Sofa reference of the annotation
-  /**
+  /*
    * getter for sofa - gets Sofaref for annotation
    */
   public SofaFS getSofa() {

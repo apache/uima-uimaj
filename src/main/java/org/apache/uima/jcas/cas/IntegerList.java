@@ -37,7 +37,7 @@ public class IntegerList extends org.apache.uima.jcas.cas.TOP {
 	protected IntegerList() { // Disable default constructor
 	}
 
-	/** Internal - Constructor used by generator */
+	/* Internal - Constructor used by generator */
 	public IntegerList(int addr, TOP_Type type) {
 		super(addr, type);
 	}

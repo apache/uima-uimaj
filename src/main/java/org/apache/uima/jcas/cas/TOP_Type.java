@@ -129,7 +129,7 @@ public class TOP_Type {
 		throw new RuntimeException("Internal Error-this constructor should never be called.");
 	}
 
-	/**
+	/*
    * Internal - this constructor is called when new CAS creates corresponding jcas instance. During
    * this process, all the types defined in the CAS are used to see if there are any corresponding
    * jcas type defs defined. If so, they are loaded. This constructor is called via its being the
@@ -141,7 +141,7 @@ public class TOP_Type {
 		this(jcas, casType, true);
 	}
 
-	/**
+	/*
    * DO NOT USE - for backwards compatibility only.
    */
 	// constructor execution order: 1: super, 2: instance expr, 3: body
@@ -185,12 +185,18 @@ public class TOP_Type {
 		throw e;
 	}
 
-	/** add the corresponding FeatureStructure to all Cas indexes */
+	/**
+	 * add the corresponding FeatureStructure to all Cas indexes
+	 * @param inst the low level CAS Feature Structure reference
+	 */
 	public void addToIndexes(int inst) {
 		jcas.getLowLevelIndexRepository().ll_addFS(inst);
 	}
 
-	/** remove the corresponding FeatureStructure from all Cas indexes */
+	/**
+	 * remove the corresponding FeatureStructure from all Cas indexes
+	 * @param inst the low level CAS Feature Structure reference
+	 */
 	public void removeFromIndexes(int inst) {
 		jcas.getLowLevelIndexRepository().ll_removeFS(inst);
 	}

@@ -37,7 +37,7 @@ public class FSList extends org.apache.uima.jcas.cas.TOP {
 	protected FSList() {// Disable default constructor
 	}
 
-	/** Internal - Constructor used by generator */
+	/* Internal - Constructor used by generator */
 	public FSList(int addr, TOP_Type type) {
 		super(addr, type);
 	}

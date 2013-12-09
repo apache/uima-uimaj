@@ -36,7 +36,7 @@ public class EmptyFloatList extends FloatList {
   protected EmptyFloatList() {
   }
 
-  /** Internal - Constructor used by generator */
+ /* Internal - Constructor used by generator */
   public EmptyFloatList(int addr, TOP_Type type) {
     super(addr, type);
   }

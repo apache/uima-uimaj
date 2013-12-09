@@ -42,7 +42,10 @@ public class CommonArray_Type extends TOP_Type {
    * public int noObjCreate(int length) { casImpl.checkArrayPreconditions(length); return
    * casImpl.createTempArray(casTypeCode, length); }
    */
-  /** return the size of the array */
+  /**
+   * @param addr the low level reference to the array in the CAS
+   * @return the size of the array
+   */
   public int size(int addr) {
     return casImpl.ll_getArraySize(addr);
   }

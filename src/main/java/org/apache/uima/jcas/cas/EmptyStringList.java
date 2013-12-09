@@ -36,7 +36,7 @@ public class EmptyStringList extends StringList {
   protected EmptyStringList() {
   }
 
-  /** Internal - Constructor used by generator */
+ /* Internal - Constructor used by generator */
   public EmptyStringList(int addr, TOP_Type type) {
     super(addr, type);
   }

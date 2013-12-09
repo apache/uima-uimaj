@@ -37,7 +37,7 @@ public class FloatList extends org.apache.uima.jcas.cas.TOP {
 	protected FloatList() {// Disable default constructor
 	}
 
-	/** Internal - Constructor used by generator */
+	/* Internal - Constructor used by generator */
 	public FloatList(int addr, TOP_Type type) {
 		super(addr, type);
 	}

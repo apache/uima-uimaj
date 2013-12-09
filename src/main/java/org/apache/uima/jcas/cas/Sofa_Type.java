@@ -84,7 +84,7 @@ public class Sofa_Type extends TOP_Type {
   /** @generated */
   final int casFeatCode_mimeType;
 
-  /**
+  /*
    * initialize variables to correspond with Cas Type and Features
    * 
    * @generated
