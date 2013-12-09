@@ -69,7 +69,7 @@ public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
     stringBuffer.append(typeName);
     stringBuffer.append(".class);\n  /** @generated\n   * @ordered \n   */\n  @SuppressWarnings (\"hiding\")\n  public final static int type = typeIndexID;\n  /** @generated  */\n  @Override\n  public              int getTypeIndexID() {return typeIndexID;}\n \n  /** Never called.  Disable default constructor\n   * @generated */\n  protected ");
     stringBuffer.append(typeName);
-    stringBuffer.append("() {/* intentionally empty block */}\n    \n  /** Internal - constructor used by generator \n   * @generated */\n  public ");
+    stringBuffer.append("() {/* intentionally empty block */}\n    \n /* Internal - Constructor used by generator */\n  public ");
     stringBuffer.append(typeName);
     stringBuffer.append("(int addr, TOP_Type type) {\n    super(addr, type);\n    readObject();\n  }\n  \n  /** @generated */\n  public ");
     stringBuffer.append(typeName);
@@ -99,7 +99,7 @@ public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
 
     stringBuffer.append(" \n    \n  //*--------------*\n  //* Feature: ");
     stringBuffer.append(featName);
-    stringBuffer.append("\n\n  /** getter for ");
+    stringBuffer.append("\n\n  /* getter for ");
     stringBuffer.append(featName);
     stringBuffer.append(" - gets ");
     stringBuffer.append(featDescCmt);
@@ -121,7 +121,7 @@ public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
     stringBuffer.append("\");\n");
     stringBuffer.append("    return ");
     stringBuffer.append(jg.getFeatureValue(fd, td));
-    stringBuffer.append(";}\n    \n  /** setter for ");
+    stringBuffer.append(";}\n    \n  /* setter for ");
     stringBuffer.append(featName);
     stringBuffer.append(" - sets ");
     stringBuffer.append(featDescCmt);
