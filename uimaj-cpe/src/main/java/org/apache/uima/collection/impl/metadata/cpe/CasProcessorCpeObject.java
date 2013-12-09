@@ -130,7 +130,7 @@ public class CasProcessorCpeObject extends MetaDataObject_impl implements CpeCas
    * 
    * @param aDescriptorPath -
    *          path to the descriptor
-   * @throws CpeDescriptorException
+   * @throws CpeDescriptorException tbd
    */
   public void setDescriptor(String aDescriptorPath) throws CpeDescriptorException {
     if (descriptor == null) {
@@ -210,7 +210,7 @@ public String getDescriptor() {
   /**
    * Adds default configuration shared by CasProcessors
    * 
-   * @throws CpeDescriptorException
+   * @throws CpeDescriptorException tbd
    */
   protected void addDefaults() throws CpeDescriptorException {
     if (getCasProcessorFilter() == null) {
@@ -295,7 +295,7 @@ public String getDescriptor() {
    * @param aParamValue -
    *          value of the new parameter
    * 
-   * @throws CpeDescriptorException
+   * @throws CpeDescriptorException tbd
    */
   public void addDeployParam(String aParamName, String aParamValue) throws CpeDescriptorException {
     boolean found = false;
@@ -317,7 +317,7 @@ public String getDescriptor() {
   /**
    * 
    * @param aParams
-   * @throws CpeDescriptorException
+   * @throws CpeDescriptorException tbd
    */
   protected void setDeploymentParams(CasProcessorDeploymentParams aParams)
           throws CpeDescriptorException {
@@ -340,7 +340,7 @@ public String getDescriptor() {
    * @param aName -
    *          name as string
    * 
-   * @throws CpeDescriptorException
+   * @throws CpeDescriptorException tbd
    */
   public void setName(String aName) throws CpeDescriptorException {
 
@@ -365,7 +365,7 @@ public String getDescriptor() {
   /**
    * @deprecated
    * @param aSoFa
-   * @throws CpeDescriptorException
+   * @throws CpeDescriptorException tbd
    */
   @Deprecated
 public void setSOFA(String aSoFa) throws CpeDescriptorException {
