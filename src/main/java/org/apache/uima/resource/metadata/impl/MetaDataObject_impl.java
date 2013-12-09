@@ -290,9 +290,9 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
 
   /**
    * If the sourceURL of this object is non-null, returns its string representation. If it is null,
-   * returns "&lt;unknown>". Useful for error messages.
+   * returns "&lt;unknown&gt;". Useful for error messages.
    * 
-   * @return the source URL as a string, or "&lt;unknown>"
+   * @return the source URL as a string, or "&lt;unknown&gt;"
    */
   public String getSourceUrlString() {
     return mSourceUrl != null ? mSourceUrl.toString() : "<unknown>";
@@ -624,10 +624,13 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     }
 
     // start element
-    outputStartElement(aContentHandler, infoset, inf.namespace, inf.elementTagName, inf.elementTagName, attrs);    
-    CharacterValidatingContentHandler cc = (CharacterValidatingContentHandler) aContentHandler;
-    cc.setLastOutputNode(infoset);
-    cc.lastOutputNodeAddLevel();
+    outputStartElement(aContentHandler, infoset, inf.namespace, inf.elementTagName, inf.elementTagName, attrs);
+    CharacterValidatingContentHandler cc = maybeGetCharacterValidatingContentHandler(aContentHandler);
+    // https://issues.apache.org/jira/browse/UIMA-3477
+    if (cc != null) {
+      cc.setLastOutputNode(infoset);
+      cc.lastOutputNodeAddLevel();
+    }
     // write child elements
     try {
       for (int i = 0; i < inf.propertyInfo.length; i++) {
@@ -635,7 +638,9 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
         writePropertyAsElement(propInf, inf.namespace, aContentHandler);
       }
     } finally {
-      cc.lastOutputNodeClearLevel();
+      if (cc != null) {
+        cc.lastOutputNodeClearLevel();
+      }
     }
      
     // end element
@@ -701,8 +706,8 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
       return;
 
     // if XML element name was supplied, write a tag
-    String elementName = aPropInfo.xmlElementName;      
-    CharacterValidatingContentHandler cc = (CharacterValidatingContentHandler) aContentHandler;
+    String elementName = aPropInfo.xmlElementName; 
+    CharacterValidatingContentHandler cc = maybeGetCharacterValidatingContentHandler(aContentHandler);
     Node elementNode = null;
 
     if (null != elementName) { // can be null in this case:
@@ -714,7 +719,9 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
       elementNode = findMatchingSubElement(aContentHandler, aPropInfo.xmlElementName);
       outputStartElement(aContentHandler, elementNode, aNamespace, aPropInfo.xmlElementName, aPropInfo.xmlElementName,
                 EMPTY_ATTRIBUTES);
-      cc.lastOutputNodeAddLevel();
+      if (cc != null) {
+        cc.lastOutputNodeAddLevel();
+      }
     }
     // get class of property
     Class propClass = getAttributeClass(aPropInfo.propertyName);
@@ -747,7 +754,9 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     }
     } finally {
       if (null != elementName) {
-        cc.lastOutputNodeClearLevel();
+        if (cc != null) {
+          cc.lastOutputNodeClearLevel();
+        }
       }
     }
 
@@ -778,7 +787,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
   protected void writeArrayPropertyAsElement(String aPropName, Class aPropClass, Object aValue,
           String aArrayElementTagName, String aNamespace, ContentHandler aContentHandler)
           throws SAXException {
-    CharacterValidatingContentHandler cc = (CharacterValidatingContentHandler) aContentHandler;
+    CharacterValidatingContentHandler cc = maybeGetCharacterValidatingContentHandler(aContentHandler);
 
     // if aPropClass is generic Object, reader won't know whether to expect
     // an array, so we tell it be writing an "array" element here.
@@ -787,7 +796,9 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     if (aPropClass == Object.class) {  // skip writting <array> unless the property class (of objects in the array) is "Object"
                                        // skipped e.g. in <fixedFlow> values, where aPropClass is String
       outputStartElement(aContentHandler, arraySubElement, aNamespace, "array", "array", EMPTY_ATTRIBUTES);
-      cc.lastOutputNodeAddLevel();
+      if (null != cc) {
+        cc.lastOutputNodeAddLevel();
+      }
     }
 
     // iterate through elements of the array (at this point we don't allow
@@ -823,7 +834,9 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
       }
     } finally {
       if (aPropClass == Object.class) {
-        cc.lastOutputNodeClearLevel();
+        if (null != cc) {
+          cc.lastOutputNodeClearLevel();
+        }
       }
     }
 
@@ -873,8 +886,10 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
       // write start tag for attribute if desired
       outputStartElement(aContentHandler, matchingNode, aNamespace, aXmlElementName, aXmlElementName, EMPTY_ATTRIBUTES);        
 
-      CharacterValidatingContentHandler cc = (CharacterValidatingContentHandler) aContentHandler;
-      cc.lastOutputNodeAddLevel();
+      CharacterValidatingContentHandler cc = maybeGetCharacterValidatingContentHandler(aContentHandler);
+      if (null != cc) {
+        cc.lastOutputNodeAddLevel();
+      } 
       try {
         // iterate over entries in the Map
         for (Map.Entry<String, Object> curEntry : theMap.entrySet()) {
@@ -895,11 +910,15 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
               elem.toXML(aContentHandler);
             }
           } else {
-            cc.lastOutputNodeAddLevel();
+            if (null != cc) {
+              cc.lastOutputNodeAddLevel();
+            }
             try {
             ((XMLizable) val).toXML(aContentHandler);
             } finally {
-              cc.lastOutputNodeClearLevel();              
+              if (null != cc) {
+                cc.lastOutputNodeClearLevel();
+              }
             }
           }
   
@@ -907,7 +926,9 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
           outputEndElement(aContentHandler, innerMatchingNode, aNamespace, aValueTagName, aValueTagName);
         }
       } finally {
-        cc.lastOutputNodeClearLevel();
+        if (null != cc) {
+          cc.lastOutputNodeClearLevel();
+        }
       }
 
       // if we wrote start tag for attribute, now write end tag
@@ -1602,12 +1623,15 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     if (null == infoset || null == elementName) {
       return null;
     }
-    CharacterValidatingContentHandler c = (CharacterValidatingContentHandler) contentHandler;
-    Node lastOutput = c.getLastOutputNode();
+    CharacterValidatingContentHandler cc = maybeGetCharacterValidatingContentHandler(contentHandler);
+    if (null == cc) {
+      return null;
+    }
+    Node lastOutput = cc.getLastOutputNode();
     Node n = null;
     
     if (lastOutput == null) {
-      lastOutput = c.getLastOutputNodePrevLevel();
+      lastOutput = cc.getLastOutputNodePrevLevel();
       if (lastOutput == null) {
         return null;
       }
@@ -1618,7 +1642,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     for (; n != null; n = n.getNextSibling()) {
       if ((n instanceof Element) && 
           elementName.equals(((Element)n).getTagName())) {
-        c.setLastOutputNode(n);
+        cc.setLastOutputNode(n);
         return n;
       }
     }
@@ -1815,5 +1839,15 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     aContentHandler.characters(valStr.toCharArray(), 0, valStr.length());
     outputEndElement(aContentHandler, node, null, className, className);
 //    aContentHandler.endElement(null, className, className);
+  }
+  
+  // https://issues.apache.org/jira/browse/UIMA-3477
+  private CharacterValidatingContentHandler maybeGetCharacterValidatingContentHandler(ContentHandler contentHandler) {
+    CharacterValidatingContentHandler cc = null;
+    try {
+      cc = (CharacterValidatingContentHandler) contentHandler;
+    } catch (ClassCastException e) {
+    }
+    return cc;
   }
 }
