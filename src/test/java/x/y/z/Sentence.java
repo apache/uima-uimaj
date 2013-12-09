@@ -38,7 +38,7 @@ public class Sentence extends Annotation {
   protected Sentence() {
   }
 
-  /** Internal - Constructor used by generator */
+ /* Internal - Constructor used by generator */
   public Sentence(int addr, TOP_Type type) {
     super(addr, type);
   }

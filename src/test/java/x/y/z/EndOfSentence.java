@@ -37,7 +37,7 @@ public class EndOfSentence extends TokenType {
   protected EndOfSentence() {
   }
 
-  /** Internal - Constructor used by generator */
+ /* Internal - Constructor used by generator */
   public EndOfSentence(int addr, TOP_Type type) {
     super(addr, type);
   }

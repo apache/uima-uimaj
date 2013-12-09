@@ -55,7 +55,7 @@ public class MissingFeatureInCas extends TOP {
   protected MissingFeatureInCas() {
   }
 
-  /**
+  /*
    * Internal - constructor used by generator
    * 
    * @generated
@@ -82,7 +82,7 @@ public class MissingFeatureInCas extends TOP {
   // *--------------*
   // * Feature: haveThisOne
 
-  /**
+  /*
    * getter for haveThisOne - gets
    * 
    * @generated
@@ -95,7 +95,7 @@ public class MissingFeatureInCas extends TOP {
             ((MissingFeatureInCas_Type) jcasType).casFeatCode_haveThisOne);
   }
 
-  /**
+  /*
    * setter for haveThisOne - sets
    * 
    * @generated
@@ -111,7 +111,7 @@ public class MissingFeatureInCas extends TOP {
   // *--------------*
   // * Feature: missingThisOne
 
-  /**
+  /*
    * getter for missingThisOne - gets
    * 
    * @generated
@@ -124,7 +124,7 @@ public class MissingFeatureInCas extends TOP {
             ((MissingFeatureInCas_Type) jcasType).casFeatCode_missingThisOne);
   }
 
-  /**
+  /*
    * setter for missingThisOne - sets
    * 
    * @generated
@@ -140,7 +140,7 @@ public class MissingFeatureInCas extends TOP {
   // *--------------*
   // * Feature: changedFType
 
-  /**
+  /*
    * getter for changedFType - gets
    * 
    * @generated
@@ -153,7 +153,7 @@ public class MissingFeatureInCas extends TOP {
             ((MissingFeatureInCas_Type) jcasType).casFeatCode_changedFType);
   }
 
-  /**
+  /*
    * setter for changedFType - sets
    * 
    * @generated

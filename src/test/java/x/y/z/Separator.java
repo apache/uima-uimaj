@@ -37,7 +37,7 @@ public class Separator extends TokenType {
   protected Separator() {
   }
 
-  /** Internal - Constructor used by generator */
+ /* Internal - Constructor used by generator */
   public Separator(int addr, TOP_Type type) {
     super(addr, type);
   }

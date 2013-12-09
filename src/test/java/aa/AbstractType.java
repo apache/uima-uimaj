@@ -55,7 +55,7 @@ public class AbstractType extends TOP {
   protected AbstractType() {
   }
 
-  /**
+  /*
    * Internal - constructor used by generator
    * 
    * @generated
@@ -82,7 +82,7 @@ public class AbstractType extends TOP {
   // *--------------*
   // * Feature: abstractInt
 
-  /**
+  /*
    * getter for abstractInt - gets
    * 
    * @generated
@@ -94,7 +94,7 @@ public class AbstractType extends TOP {
             ((AbstractType_Type) jcasType).casFeatCode_abstractInt);
   }
 
-  /**
+  /*
    * setter for abstractInt - sets
    * 
    * @generated
