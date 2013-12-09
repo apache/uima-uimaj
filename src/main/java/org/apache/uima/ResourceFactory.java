@@ -29,7 +29,7 @@ import org.apache.uima.resource.ResourceSpecifier;
  * A <code>ResourceFactory</code> is used to acquire instances of {@link Resource}s.
  * <p>
  * The method {@link #produceResource(Class,ResourceSpecifier,Map)} is used to produce an instance
- * of a <code>Resource<code>.  The input to this method
+ * of a <code>Resource</code>.  The input to this method
  * is a {@link ResourceSpecifier}, which contains all of the information that
  * this factory can use to acquire a reference to the resource.
  * <p>

@@ -63,13 +63,13 @@ public abstract class Constants {
   public static final String PROTOCOL_JMS = "JMS";
   
   /**
-   * Name of the UIMA Java framework, to be used in &lt;frameworkImplementation> 
+   * Name of the UIMA Java framework, to be used in &lt;frameworkImplementation&gt; 
    * element of descriptors.
    */
   public static final String JAVA_FRAMEWORK_NAME = "org.apache.uima.java";
   
   /**
-   * Name of the UIMA C++ framework, to be used in &lt;frameworkImplementation> 
+   * Name of the UIMA C++ framework, to be used in &lt;frameworkImplementation&gt; 
    * element of descriptors.
    */
   public static final String CPP_FRAMEWORK_NAME = "org.apache.uima.cpp";

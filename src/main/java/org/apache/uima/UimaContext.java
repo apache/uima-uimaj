@@ -38,7 +38,7 @@ import org.apache.uima.util.Logger;
  * include:
  * <ul>
  * <li>Configuration Parameters</li>
- * <li>Logging & Instrumentation Facilities</li>
+ * <li>Logging &amp; Instrumentation Facilities</li>
  * <li>Access to External Analysis Resources, such as dictionary files</li>
  * </ul>
  * 
@@ -267,7 +267,7 @@ public interface UimaContext {
    * <p>
    * This version of this method takes an array of parameters used to further identify the resource.
    * This can be used, for example, with resources that vary depending on the language of the
-   * document being analyzed, such as when the &lt;fileLanguageResourceSpecifier> element is used in
+   * document being analyzed, such as when the &lt;fileLanguageResourceSpecifier&gt; element is used in
    * the component descriptor.
    * 
    * @param aKey
@@ -275,7 +275,7 @@ public interface UimaContext {
    *          &lt;externalResourceDependencies&gt; section of the descriptor.
    * @param aParams
    *          parameters used to further identify the resource. When used to identify the language
-   *          for a &lt;fileLanguageResourceSpecifier>, this array should contain a single element,
+   *          for a &lt;fileLanguageResourceSpecifier&gt;, this array should contain a single element,
    *          the ISO language code for the language of the document (e.g. "en", "de").
    * 
    * @return the <code>URL</code> at which the named resource is located, <code>null</code> if
@@ -302,7 +302,7 @@ public interface UimaContext {
    * <p>
    * This version of this method takes an array of parameters used to further identify the resource.
    * This can be used, for example, with resources that vary depending on the language of the
-   * document being analyzed, such as when the &lt;fileLanguageResourceSpecifier> element is used in
+   * document being analyzed, such as when the &lt;fileLanguageResourceSpecifier&gt; element is used in
    * the component descriptor.
    * 
    * @param aKey
@@ -335,7 +335,7 @@ public interface UimaContext {
    * <p>
    * This version of this method takes an array of parameters used to further identify the resource.
    * This can be used, for example, with resources that vary depending on the language of the
-   * document being analyzed, such as when the &lt;fileLanguageResourceSpecifier> element is used in
+   * document being analyzed, such as when the &lt;fileLanguageResourceSpecifier&gt; element is used in
    * the component descriptor.
    * 
    * @param aKey
@@ -362,7 +362,7 @@ public interface UimaContext {
    * <p>
    * This version of this method takes an array of parameters used to further identify the resource.
    * This can be used, for example, with resources that vary depending on the language of the
-   * document being analyzed, such as when the &lt;fileLanguageResourceSpecifier> element is used in
+   * document being analyzed, such as when the &lt;fileLanguageResourceSpecifier&gt; element is used in
    * the component descriptor.
    * 
    * @param aKey
@@ -370,7 +370,7 @@ public interface UimaContext {
    *          &lt;externalResourceDependencies&gt; section of the descriptor.
    * @param aParams
    *          parameters used to further identify the resource. When used to identify the language
-   *          for a &lt;fileLanguageResourceSpecifier>, this array should contain a single element,
+   *          for a &lt;fileLanguageResourceSpecifier&gt;, this array should contain a single element,
    *          the ISO language code for the language of the document (e.g. "en", "de").
    * 
    * @return an <code>InputStream</code> for reading from the named resource, <code>null</code>
@@ -390,7 +390,7 @@ public interface UimaContext {
    * <p>
    * This version of this method takes an array of parameters used to further identify the resource.
    * This can be used, for example, with resources that vary depending on the language of the
-   * document being analyzed, such as when the &lt;fileLanguageResourceSpecifier> element is used in
+   * document being analyzed, such as when the &lt;fileLanguageResourceSpecifier&gt; element is used in
    * the component descriptor.
    * 
    * @param aKey
@@ -398,7 +398,7 @@ public interface UimaContext {
    *          &lt;externalResourceDependencies&gt; section of the descriptor.
    * @param aParams
    *          parameters used to further identify the resource. When used to identify the language
-   *          for a &lt;fileLanguageResourceSpecifier>, this array should contain a single element,
+   *          for a &lt;fileLanguageResourceSpecifier&gt;, this array should contain a single element,
    *          the ISO language code for the language of the document (e.g. "en", "de").
    * 
    * @return the object bound to <code>aName</code>, <code>null</code> if none.
