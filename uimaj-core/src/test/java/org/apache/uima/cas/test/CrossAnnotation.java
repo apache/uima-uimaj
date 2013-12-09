@@ -41,7 +41,7 @@ public class CrossAnnotation extends Annotation {
     //do nothing
   }
 
-  /** Internal - Constructor used by generator */
+ /* Internal - Constructor used by generator */
   public CrossAnnotation(int addr, TOP_Type type) {
     super(addr, type);
   }
@@ -52,7 +52,7 @@ public class CrossAnnotation extends Annotation {
 
   // *------------------*
   // * Feature: otherAnnotation
-  /** getter for otherAnnotation * */
+  /* getter for otherAnnotation * */
   public Annotation getOtherAnnotation() {
     if (CrossAnnotation_Type.featOkTst
             && ((CrossAnnotation_Type) jcasType).casFeat_otherAnnotation == null)
@@ -61,7 +61,7 @@ public class CrossAnnotation extends Annotation {
             ((CrossAnnotation_Type) jcasType).casFeatCode_otherAnnotation)));
   }
 
-  /** setter for otherAnnotation * */
+  /* setter for otherAnnotation * */
   public void setOtherAnnotation(Annotation v) {
     if (CrossAnnotation_Type.featOkTst
             && ((CrossAnnotation_Type) jcasType).casFeat_otherAnnotation == null)

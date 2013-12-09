@@ -38,7 +38,7 @@ public class LanguagePair extends TOP {
   protected LanguagePair() {
   }
 
-  /** Internal - Constructor used by generator */
+ /* Internal - Constructor used by generator */
   public LanguagePair(int addr, TOP_Type type) {
     super(addr, type);
   }
@@ -57,7 +57,7 @@ public class LanguagePair extends TOP {
 
   // *------------------*
   // * Feature: lang1
-  /** getter for lang1 * */
+  /* getter for lang1 * */
   public String getLang1() {
     if (LanguagePair_Type.featOkTst && ((LanguagePair_Type) jcasType).casFeat_lang1 == null)
       this.jcasType.jcas.throwFeatMissing("lang1", "org.apache.lang.LanguagePair");
@@ -65,7 +65,7 @@ public class LanguagePair extends TOP {
             .ll_getStringValue(addr, ((LanguagePair_Type) jcasType).casFeatCode_lang1);
   }
 
-  /** setter for lang1 * */
+  /* setter for lang1 * */
   public void setLang1(String v) {
     if (LanguagePair_Type.featOkTst && ((LanguagePair_Type) jcasType).casFeat_lang1 == null)
       this.jcasType.jcas.throwFeatMissing("lang1", "org.apache.lang.LanguagePair");
@@ -74,7 +74,7 @@ public class LanguagePair extends TOP {
 
   // *------------------*
   // * Feature: lang2
-  /** getter for lang2 * */
+  /* getter for lang2 * */
   public String getLang2() {
     if (LanguagePair_Type.featOkTst && ((LanguagePair_Type) jcasType).casFeat_lang2 == null)
       this.jcasType.jcas.throwFeatMissing("lang2", "org.apache.lang.LanguagePair");
@@ -82,7 +82,7 @@ public class LanguagePair extends TOP {
             .ll_getStringValue(addr, ((LanguagePair_Type) jcasType).casFeatCode_lang2);
   }
 
-  /** setter for lang2 * */
+  /* setter for lang2 * */
   public void setLang2(String v) {
     if (LanguagePair_Type.featOkTst && ((LanguagePair_Type) jcasType).casFeat_lang2 == null)
       this.jcasType.jcas.throwFeatMissing("lang2", "org.apache.lang.LanguagePair");
@@ -91,7 +91,7 @@ public class LanguagePair extends TOP {
 
   // *------------------*
   // * Feature: description
-  /** getter for description * */
+  /* getter for description * */
   public String getDescription() {
     if (LanguagePair_Type.featOkTst && ((LanguagePair_Type) jcasType).casFeat_description == null)
       this.jcasType.jcas.throwFeatMissing("description", "org.apache.lang.LanguagePair");
@@ -99,7 +99,7 @@ public class LanguagePair extends TOP {
             ((LanguagePair_Type) jcasType).casFeatCode_description);
   }
 
-  /** setter for description * */
+  /* setter for description * */
   public void setDescription(String v) {
     if (LanguagePair_Type.featOkTst && ((LanguagePair_Type) jcasType).casFeat_description == null)
       this.jcasType.jcas.throwFeatMissing("description", "org.apache.lang.LanguagePair");

@@ -37,7 +37,7 @@ public class Word extends TokenType {
   protected Word() {
   }
 
-  /** Internal - Constructor used by generator */
+ /* Internal - Constructor used by generator */
   public Word(int addr, TOP_Type type) {
     super(addr, type);
   }
