@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>parent-pom</artifactId>
-    <version>6</version>
+    <version>8-SNAPSHOT</version>
     <relativePath />
   </parent>
 
@@ -69,7 +69,11 @@
             <goals><goal>copy</goal></goals>
             <configuration>
               <!-- ===================================================================
-                                       the PLUGINS 
+                                       the PLUGINS
+                      note: rename to add org.apache.uima. and 
+                                   hyphen change to underscore in destination to follow
+                                   Eclipse conventions
+                            Name must be the same as the ID for the plugin or feature                         
                 ======================================================================= -->
               <artifactItems>
                 <artifactItem><groupId>org.apache.uima</groupId><artifactId>uimaj-ep-cas-editor</artifactId>    <version>${project.version}</version><destFileName>org.apache.uima.caseditor_${project.version}.jar    </destFileName></artifactItem>
@@ -92,6 +96,10 @@
             <configuration>
               <!-- ===================================================================
                                          the FEATURES
+                      note: rename to add org.apache.uima. and 
+                                   hyphen change to underscore in destination to follow
+                                   Eclipse conventions
+                            Name must be the same as the ID for the plugin or feature                         
                 ======================================================================= -->
               <artifactItems>
                 <artifactItem><groupId>org.apache.uima</groupId><artifactId>uimaj-eclipse-feature-runtime</artifactId><version>${project.version}</version><destFileName>org.apache.uima.runtime_${project.version}.jar</destFileName></artifactItem>
@@ -103,26 +111,6 @@
         </executions>
       </plugin>
 
-      <plugin>
-        <!-- Override v 6 parent pom incorrect use of apacheRelease ant property
-             See https://issues.apache.org/jira/browse/UIMA-3080 -->
-        <artifactId>maven-antrun-plugin</artifactId>
-        <executions>       
-          <execution>
-            <id>BuildUpdateSite-pack-svnget-buildMetadata-commit-to-dev</id>
-            <configuration>
-              <target>
-                <condition />  <!-- don't add anything to the 1st condition element -->
-                <condition />  <!-- don't add anything to the 2nd condition element -->
-                              <!-- insert this as the 3rd condition element -->
-                <condition property="apacheRelease">
-                  <equals arg1="${isApacheRelease}" arg2="true" />
-                </condition>
-              </target>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
    </plugins>
   </build>
  
