@@ -461,8 +461,9 @@ public class Jg {
             outputDirectory = arguments[++i];
             continue;
           }
-          // This next is not apparently used  5/2012 schor
-          if (arguments[i].equalsIgnoreCase("=jcasgenclasspath")) {
+          // This is used by the jcasgen maven plugin 
+          if (arguments[i].equalsIgnoreCase("=jcasgenclasspath") || // https://issues.apache.org/jira/browse/UIMA-3044
+              arguments[i].equalsIgnoreCase("-jcasgenclasspath")) { // https://issues.apache.org/jira/browse/UIMA-3044
             classPath = arguments[++i];
             continue;
           }
@@ -750,9 +751,9 @@ public class Jg {
    * @param outputDirectory           output directory
    * @param jcasTypeInstance          Template instance used to generate class
    * @param jcas_TypeInstance         Template instance used to generate class
-   * @throws IOException
-   * @throws InstantiationException
-   * @throws IllegalAccessException
+   * @throws IOException -
+   * @throws InstantiationException -
+   * @throws IllegalAccessException -
    * @return void
    */
   private void generateClassesFromTemplate(TypeDescription td, String outputDirectory,

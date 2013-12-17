@@ -190,7 +190,7 @@ public class JCasGenMojo extends AbstractMojo {
       args.addAll(asList("-limitToDirectory", limitToDirectory.toString()));
     }
     args.addAll(asList("-jcasgeninput", typeSystemFile.getAbsolutePath(), "-jcasgenoutput",
-            this.outputDirectory.getAbsolutePath(), "=jcasgenclasspath", classpath));
+            this.outputDirectory.getAbsolutePath(), "-jcasgenclasspath", classpath));
 
     // run JCasGen to generate the Java sources
     Jg jCasGen = new Jg();
