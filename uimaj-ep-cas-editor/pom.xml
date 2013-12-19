@@ -150,6 +150,14 @@
 			<version>[3.3.0.0,4.0.0)</version>
 			<scope>provided</scope>
 		</dependency>
+		
+		<!-- https://issues.apache.org/jira/browse/UIMA-3510 -->
+		<dependency>
+		  <groupId>org.eclipse.equinox</groupId>
+		  <artifactId>app</artifactId>
+		  <version>[1.0.0,1.0.1)</version>
+		</dependency>
+		
 	</dependencies>
 
 	<build>
