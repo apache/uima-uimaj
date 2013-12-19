@@ -29,7 +29,7 @@ try
 	String reference = IOUtils.toString(new File(basedir, 
 		"reference/TestAnnotator.xml").toURI().toURL());
 	String actual = IOUtils.toString(new File(basedir, 
-		"target/generated-sources/uimafit/TestAnnotator.xml").toURI().toURL());
+		"target/classes/TestAnnotator.xml").toURI().toURL());
 
     // In a local build, I get indented XML but on the Apache Jenkins I get non-indented XML. This
     // settings tells XMLUnit to ignore this difference in whitespace - rec 2013-02-16

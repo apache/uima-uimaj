@@ -60,7 +60,7 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
   /**
    * Path where the generated resources are written.
    */
-  @Parameter(defaultValue="${project.build.directory}/generated-sources/uimafit", required=true)
+  @Parameter(defaultValue="${project.build.directory}/classes", required=true)
   private File outputDirectory;
   
   /**
@@ -81,7 +81,6 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
       outputDirectory.mkdirs();
       buildContext.refresh(outputDirectory);
     }
-    project.addCompileSourceRoot(outputDirectory.getPath());
     
     // Get the compiled classes from this project
     String[] files = FileUtils.getFilesFromExtension(project.getBuild().getOutputDirectory(),
