@@ -35,9 +35,9 @@
 		<jiraVersion>12323969</jiraVersion>
 	</properties>
 	<scm>
-		<connection>scm:svn:http://svn.apache.org/repos/asf/uima/uimafit/branches/2.0.x</connection>
-		<developerConnection>scm:svn:https://svn.apache.org/repos/asf/uima/uimafit/branches/2.0.x</developerConnection>
-		<url>http://svn.apache.org/repos/asf/uima/uimafit/branches/2.0.x</url>
+		<connection>scm:svn:http://svn.apache.org/repos/asf/uima/uimafit/trunk/</connection>
+		<developerConnection>scm:svn:https://svn.apache.org/repos/asf/uima/uimafit/trunk/</developerConnection>
+		<url>http://svn.apache.org/repos/asf/uima/uimafit/trunk/</url>
 	</scm>
 
 	<licenses>

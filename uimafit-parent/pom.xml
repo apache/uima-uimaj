@@ -338,10 +338,4 @@
 			</build>
 		</profile>
 	</profiles>
-
-  <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/uima/build/branches/2.0.x/uimafit-parent</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/uima/build/branches/2.0.x/uimafit-parent</developerConnection>
-    <url>http://svn.apache.org/viewvc/uima/build/branches/2.0.x/uimafit-parent</url>
-  </scm>
 </project>
