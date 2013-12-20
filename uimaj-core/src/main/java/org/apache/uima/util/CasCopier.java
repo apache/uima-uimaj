@@ -159,7 +159,7 @@ public class CasCopier {
    * @param aSrcCas
    *          the CAS to copy from
    * @param aDestCas
-   *          the CAS to copy to
+   *          the CAS to copy to; must be a completely different CAS than the source (that is, not an alternative "view" of the source)
    * @param aCopySofa
    *          if true, the sofa data and mimeType of each view will be copied. If false they will not.
    * @param lenient
@@ -270,7 +270,9 @@ public class CasCopier {
    * of cross-view references will have the same view name as in the source.
    * 
    * @param aSrcCasView
-   *          the CAS to copy from. This must be a view of the srcCas set in the constructor
+   *          the CAS view to copy from. This must be a view of the srcCas set in the constructor
+   * @param aTgtCasView 
+   *          the CAS view to copy to. This must be a view of the tgtCas set in the constructor
    * @param aCopySofa
    *          if true, the sofa data and mimeType will be copied. If false they will not.  
    *          If true and the sofa data is already set in the target, will throw CASRuntimeException        
@@ -387,7 +389,7 @@ public class CasCopier {
    * If the FS has been copied previously (using this CasCopier instance) the 
    * same identical copy will be returned rather than making another copy.
    * 
-   * @param aFS
+   * @param aFS the Feature Structure to copy
    * @return a deep copy of the Feature Structure - any referred to FSs will also be copied.
    */
   
@@ -676,7 +678,7 @@ public class CasCopier {
    */
   private static CAS getOrCreateView(CAS aCas, String aViewName) {
     //TODO: there should be some way to do this without the try...catch
-    try {
+    try { // throws if view doesn't exist
       return aCas.getView(aViewName); 
     }
     catch(CASRuntimeException e) {
@@ -705,6 +707,16 @@ public class CasCopier {
     if (null == c1 || null == c2) {
       return false;
     }
+    
+    // if the cas's are equal, then both views are in the same CAS, of course
+    // This test isn't logically needed, but it allows this case to pass if 
+    // incorrect wrappers are supplied, where the wrapper fails to 
+    // notice that a getView returns the same original CAS, (which the wrapper would
+    // need to replace with the wrapped version)
+    if (c1.equals(c2)) {
+      return true;
+    }
+    
     String v1 = c1.getViewName();
     String v2 = c2.getViewName();
     
@@ -714,11 +726,19 @@ public class CasCopier {
       // -- likely is a base CAS
       if (v2 == null) {
         // two base CASes case
-        return v1 == v2;
+        return c1.equals(c2);  // // defaults to object ==, but wrappers might implement something else
       }
-      return c1.getView(v2) == c2;
+      // we don't have a way to get to the base cas directly in the CAS Api
+      try { // throws if view doesn't exist
+        return c1.getView(v2).equals(c2);  // defaults to object ==, but wrappers might implement something else
+      } catch (CASRuntimeException e) {
+        return false;
+      }
     }
-    
-    return c2.getView(v1) == c1;
+    try { // throws if view doesn't exist
+      return c2.getView(v1).equals(c1); // defaults to object ==, but wrappers might implement something else
+    } catch (CASRuntimeException e) {
+      return false;
+    }
   }
 }
