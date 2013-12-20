@@ -45,9 +45,7 @@ import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
-/**
- * 
- */
+
 public class CasCopierTest extends TestCase {
   private TypeSystemDescription typeSystem;
 
@@ -193,6 +191,41 @@ public class CasCopierTest extends TestCase {
 
     // verify copy
     (new CasComparerViewChange(srcCas, destCas.getView("aNewView"))).assertEqualViews();
+    
+  }
+  
+  public void testCopyCasViewsWithWrapper() throws Exception {
+    // create a source CAS by deserializing from XCAS
+    CAS srcCas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
+    InputStream serCasStream = new FileInputStream(JUnitExtension.getFile("ExampleCas/cas.xml"));
+    XCASDeserializer.deserialize(serCasStream, srcCas);
+    serCasStream.close();
+
+    // create a destination CAS
+    CAS tgtCas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
+
+    // make wrappers
+    CAS wrappedSrcCas = new CasWrapperForTstng(srcCas);
+    CAS wrappedTgtCas = new CasWrapperForTstng(tgtCas);
+    
+    // do the copy
+    CasCopier copier = new CasCopier(wrappedSrcCas, wrappedTgtCas);
+    copier.copyCasView(wrappedSrcCas, true);
+
+    // verify copy
+    CasComparer.assertEquals(wrappedSrcCas, wrappedTgtCas);
+    
+    // do the copy to a different view
+    // create a destination CAS
+    tgtCas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
+
+    wrappedTgtCas = new CasWrapperForTstng(tgtCas);
+    // do the copy
+    copier = new CasCopier(wrappedSrcCas, wrappedTgtCas);
+    copier.copyCasView(wrappedSrcCas, "aNewView", true);
+
+    // verify copy
+    (new CasComparerViewChange(wrappedSrcCas, wrappedTgtCas.getView("aNewView"))).assertEqualViews();
     
   }
 
