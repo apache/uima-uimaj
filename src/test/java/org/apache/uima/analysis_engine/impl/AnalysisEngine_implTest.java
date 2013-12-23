@@ -20,9 +20,11 @@
 package org.apache.uima.analysis_engine.impl;
 
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -59,7 +61,6 @@ import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.resource.Resource;
-import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.impl.URISpecifier_impl;
@@ -1533,7 +1534,7 @@ public class AnalysisEngine_implTest extends TestCase {
     UIMAFramework.getXMLParser().enableSchemaValidation(false);
     manyDelegatesCommon();
   }
-  public void manyDelegatesCommon() throws Exception {
+  private void manyDelegatesCommon() throws Exception {
     // Test that an aggregate can be copied preserving all comments and ordering of delegates
     XMLParser.ParsingOptions parsingOptions = new XMLParser.ParsingOptions(false);
     parsingOptions.preserveComments = true;
@@ -1556,7 +1557,9 @@ public class AnalysisEngine_implTest extends TestCase {
     contentHandler.endDocument();
     os.close();
     
-    long diff = cloneFile.length() - inFile.length();
+    // When building from a source distribution the descriptor may not have
+    // appropriate line-ends so compute the length as if always 1 byte.
+    int diff = fileLength(cloneFile) - fileLength(inFile);
     // One platform inserts a blank line and a final newline, so don't insist on perfection
     assertTrue("File size changed by "+diff+" should be no more than 2", diff >= -2 && diff <= 2);
 
@@ -1570,8 +1573,20 @@ public class AnalysisEngine_implTest extends TestCase {
     TestAnnotator2.allContexts = "";
     UIMAFramework.produceAnalysisEngine(desc);
     assertEquals("D/C/B/A/F/E/", TestAnnotator2.allContexts);
-//    cloneFile.delete();
+    cloneFile.delete();
   }
   
-  
+  /*
+   * Get size of file asif has a single line-end character
+   */
+  private int fileLength(File f) throws IOException {
+    int len = 0;
+    BufferedReader rdr = new BufferedReader(new FileReader(f));
+    String line;
+    while (null != (line = rdr.readLine())) {
+      len += line.length() + 1;
+    }
+    rdr.close();
+    return len;
+  }
 }
