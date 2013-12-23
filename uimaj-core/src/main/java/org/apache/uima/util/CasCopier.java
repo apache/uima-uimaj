@@ -707,7 +707,11 @@ public class CasCopier {
     if (null == c1 || null == c2) {
       return false;
     }
-    
+
+    // These next 2 are an attempt to get to the real CAS if what is passed is a CAS Wrapper.
+    c1 = (CAS) c1.getLowLevelCAS();
+    c2 = (CAS) c2.getLowLevelCAS();
+        
     // if the cas's are equal, then both views are in the same CAS, of course
     // This test isn't logically needed, but it allows this case to pass if 
     // incorrect wrappers are supplied, where the wrapper fails to 
