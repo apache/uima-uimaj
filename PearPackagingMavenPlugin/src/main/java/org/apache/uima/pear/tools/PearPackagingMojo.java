@@ -304,7 +304,7 @@ public class PearPackagingMojo extends AbstractMojo {
     * @param directory
     *           directory to copy
     * 
-    * @throws IOException
+    * @throws IOException passthru
     */
    private void copyDirIfAvailable(String directory) throws IOException {
 
@@ -324,7 +324,7 @@ public class PearPackagingMojo extends AbstractMojo {
     * @param dir
     *           directory to check for Dot-directories
     * 
-    * @throws IOException
+    * @throws IOException passthru
     */
    private void removeDotDirectories(File dir) throws IOException {
       ArrayList<File> subdirs = org.apache.uima.util.FileUtils.getSubDirs(dir);
@@ -343,7 +343,7 @@ public class PearPackagingMojo extends AbstractMojo {
     * Copies all the necessary PEAR directories (UIMA nature) to the PEAR
     * packaging directory
     * 
-    * @throws IOException
+    * @throws IOException passthru
     */
    private void copyPearData() throws IOException {
 
@@ -367,7 +367,7 @@ public class PearPackagingMojo extends AbstractMojo {
    /**
     * create a PEAR package with
     * 
-    * @throws PackageCreatorException
+    * @throws PackageCreatorException passthru
     */
    private void createPear() throws PackageCreatorException {
       //generates the PEAR packages with the given information
