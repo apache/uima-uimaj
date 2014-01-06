@@ -51,7 +51,7 @@ public class CpmProcessingTest extends TestCase {
   }
 
   /**
-   * @throws Exception
+   * @throws Exception -
    * @see junit.framework.TestCase#tearDown()
    */
   protected void tearDown() throws Exception {
@@ -62,7 +62,7 @@ public class CpmProcessingTest extends TestCase {
   /**
    * Create a single processor which have to work on only on document
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   public void testCasConsumerProcessingSingleThreadSingleDocument() throws Exception {
     // process only a single document and a single thread
@@ -99,7 +99,7 @@ public class CpmProcessingTest extends TestCase {
   /**
    * Create a single processor which have to process multiple documents
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   public void testCasConsumerProcessingSingleThreadMultipleDocuments() throws Exception {
     // process 100 documents and a single thread
@@ -136,7 +136,7 @@ public class CpmProcessingTest extends TestCase {
   /**
    * Create multiple processors which have to process only one single document!
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   public void testCasConsumerProcessingMultipleThreadsSingleDocument() throws Exception {
     // process only a single document and multiple threads
@@ -173,7 +173,7 @@ public class CpmProcessingTest extends TestCase {
   /**
    * Create multiple processors which have to process multiple documents
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   public void testCasConsumerProcessingMultipleThreadsMultipleDocuments() throws Exception {
     // process 100 documents and multiple threads

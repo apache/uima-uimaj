@@ -58,9 +58,7 @@ public class CasProcessorDeploymentParamImpl extends MetaDataObject_impl impleme
     return name;
   }
 
-  /**
-   * 
-   */
+  
   public void setParameterValue(String aParamValue) throws CpeDescriptorException {
     value = aParamValue;
   }
@@ -83,9 +81,7 @@ public class CasProcessorDeploymentParamImpl extends MetaDataObject_impl impleme
     type = aParamType;
   }
 
-  /**
-   * 
-   */
+  
   public String getParameterType() throws CpeDescriptorException {
     return type;
   }

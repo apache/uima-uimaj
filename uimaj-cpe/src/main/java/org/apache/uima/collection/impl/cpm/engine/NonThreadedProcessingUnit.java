@@ -56,9 +56,7 @@ import org.apache.uima.util.ProcessTrace;
 import org.apache.uima.util.UimaTimer;
 import org.apache.uima.util.impl.ProcessTrace_impl;
 
-/**
- * 
- */
+
 public class NonThreadedProcessingUnit {
   public int threadState = 0;
 
@@ -100,9 +98,7 @@ public class NonThreadedProcessingUnit {
 
   private CAS[] casCache = null;
 
-  /**
-   * 
-   */
+  
   /**
    * Initialize the PU
    * 
@@ -599,7 +595,7 @@ public class NonThreadedProcessingUnit {
    * @param casObjects
    * @param aProcessTr
    * @param doneAlready
-   * @throws Exception
+   * @throws Exception -
    */
   private void postAnalysis(Object[] aCasObjectList, boolean isCasObject, Object[] casObjects,
           ProcessTrace aProcessTr, boolean doneAlready) throws Exception {
@@ -759,7 +755,7 @@ public class NonThreadedProcessingUnit {
    * @param isCasObject -
    *          determines type of CAS in the aCasObjectList ( CasData or CasObject)
    * @return boolean
-   * @throws Exception
+   * @throws Exception -
    */
   private boolean handleErrors(Throwable e, ProcessingContainer aContainer,
           CasProcessor aProcessor, ProcessTrace aProcessTrace, Object[] aCasObjectList,
@@ -921,7 +917,7 @@ public class NonThreadedProcessingUnit {
    * @param aCasObjectList
    * @param pTrTemp
    * @param isCasObject
-   * @throws Exception
+   * @throws Exception -
    */
   private void invokeCasObjectCasProcessor(ProcessingContainer container, CasProcessor processor,
           Object[] aCasObjectList, ProcessTrace pTrTemp, boolean isCasObject) throws Exception {
@@ -1032,7 +1028,7 @@ public class NonThreadedProcessingUnit {
    * @param casIndex
    * @param aContainerName
    * @param aCasObjectList
-   * @throws Exception
+   * @throws Exception -
    */
   private void convertCasDataToCasObject(int casIndex, String aContainerName,
           Object[] aCasObjectList) throws Exception {
@@ -1085,7 +1081,7 @@ public class NonThreadedProcessingUnit {
    * @param pTrTemp
    * @param isCasObject
    * @param retry
-   * @throws Exception
+   * @throws Exception -
    */
   private void invokeCasDataCasProcessor(ProcessingContainer container, CasProcessor processor,
           Object[] aCasObjectList, ProcessTrace pTrTemp, boolean isCasObject, boolean retry)
@@ -1390,7 +1386,7 @@ public class NonThreadedProcessingUnit {
    * @param aProcessor
    * @param aProcessTr
    * @param ex
-   * @throws Exception
+   * @throws Exception -
    */
   private void handleServiceException(ProcessingContainer aContainer, CasProcessor aProcessor,
           ProcessTrace aProcessTr, Exception ex) throws Exception {
@@ -1493,7 +1489,7 @@ public class NonThreadedProcessingUnit {
    * @param aContainer
    * @param aCasObjectList
    * @param isLastCP
-   * @throws Exception
+   * @throws Exception -
    */
   private void handleSkipCasProcessor(ProcessingContainer aContainer, Object[] aCasObjectList,
           boolean isLastCP) throws Exception {

@@ -151,7 +151,7 @@ public class VinciTAP {
    * @param aPort -
    *          port number where the service listens for requests
    * 
-   * @throws ConnectException
+   * @throws ConnectException wraps Exception or unable to connect
    */
   public void connect(String aHost, int aPort) throws ConnectException {
     int attemptCount = 0;
@@ -562,7 +562,7 @@ public class VinciTAP {
    *          source of keys (data)
    * @return - modified CasData
    * 
-   * @throws Exception
+   * @throws Exception passthru
    */
   public static CasData addKeysToDataCas(CasData dataCas, AFrame aFrame) throws Exception {
     try {
@@ -646,7 +646,7 @@ public class VinciTAP {
    * @param aDropKeyList -
    *          list of types to exclude from XCas
    * 
-   * @throws Exception
+   * @throws Exception passthru
    */
   private void produceXCASRequestFrame(CasData aCasData, AFrame dataFrame, String[] aDropKeyList)
           throws Exception {
@@ -732,8 +732,8 @@ public class VinciTAP {
    *          name of the Cas Processor
    * @return - CAS containing results of analysis
    * 
-   * @throws ServiceException -
-   * @throws ServiceConnectionException
+   * @throws ServiceException - passthru, wraps Exception
+   * @throws ServiceConnectionException passthru
    */
   public CasData analyze(CasData aCas, ProcessTrace aPT, String aResourceName)
           throws ServiceException, ServiceConnectionException {
@@ -857,9 +857,8 @@ public class VinciTAP {
    * @param aResourceName -
    *          name of the Cas Processor
    * @return - List of Cas instances containing results of analysis
-   * @throws ServiceException
-   * @throws ServiceConnectionException
-   */
+   * @throws ServiceException - passthru, wraps Exception
+   * @throws ServiceConnectionException passthru   */
   public CasData[] analyze(CasData[] aCasList, ProcessTrace aPT, String aResourceName)
           throws ServiceException, ServiceConnectionException {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
@@ -1182,7 +1181,7 @@ public class VinciTAP {
    * service before returning. This ensures that the request is accepted and the desired logic
    * handling end of processing has completed.
    * 
-   * @throws ResourceServiceException
+   * @throws ResourceServiceException wraps Exception
    */
   public void collectionProcessComplete() throws ResourceServiceException {
     try {

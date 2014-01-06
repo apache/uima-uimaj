@@ -21,9 +21,7 @@ package org.apache.uima.collection.impl.cpm.engine;
 
 import org.apache.uima.cas.CAS;
 
-/**
- * 
- */
+
 public class WorkUnit {
   private Object payload = null;
 
@@ -31,9 +29,7 @@ public class WorkUnit {
 
   private boolean timedout = false;
 
-  /**
-   * 
-   */
+  
   public WorkUnit(Object aPayload) {
     super();
     payload = aPayload;

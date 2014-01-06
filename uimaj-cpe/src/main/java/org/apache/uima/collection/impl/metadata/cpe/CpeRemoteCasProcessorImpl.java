@@ -36,9 +36,7 @@ public class CpeRemoteCasProcessorImpl extends CasProcessorCpeObject implements
     }
   }
 
-  /**
-   * 
-   */
+  
   protected void addDefaults() {
     try {
       if (super.getDeploymentParams() == null) {

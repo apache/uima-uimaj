@@ -90,7 +90,7 @@ public class CpmCollectionReader_ErrorTest extends TestCase {
     * propagate the error in the EntityProcessStatus. After that, the cpm is
     * shut down and the abort method is called.
     * 
-    * @throws Exception
+    * @throws Exception -
     */
    public void testGetNextWithOutOfMemoryError() throws Exception {
       int documentCount = 20; // number of documents processed
@@ -130,7 +130,7 @@ public class CpmCollectionReader_ErrorTest extends TestCase {
     * The cpm should finish. The cpm by itself is shut down, and the
     * collectionProcessComplete-method of the listener was called
     * 
-    * @throws Exception
+    * @throws Exception -
     */
    public void testGetNextWithCollectionException() throws Exception {
       int documentCount = 20; // number of documents processed
@@ -166,7 +166,7 @@ public class CpmCollectionReader_ErrorTest extends TestCase {
     * The cpm should finish. The cpm by itself is shut down, and the
     * collectionProcessComplete-method of the listener was called
     * 
-    * @throws Exception
+    * @throws Exception -
     */
    public void testGetNextWithIOException() throws Exception {
       int TIMEOUT = 10; // seconds, till the test is aborted
@@ -221,7 +221,7 @@ public class CpmCollectionReader_ErrorTest extends TestCase {
     * The cpm should finish. The cpm by itself is shut down, and the
     * collectionProcessComplete-method of the listener was called
     * 
-    * @throws Exception
+    * @throws Exception -
     */
    public void testGetNextWithNullPointerException() throws Exception {
       int documentCount = 20; // number of documents processed
@@ -258,7 +258,7 @@ public class CpmCollectionReader_ErrorTest extends TestCase {
     * propagate the error in the EntityProcessStatus. After that, the cpm is
     * shut down and the abort method is called.
     * 
-    * @throws Exception
+    * @throws Exception -
     */
    public void testHasNextWithOutOfMemoryError() throws Exception {
       int documentCount = 20; // number of documents processed
@@ -293,7 +293,7 @@ public class CpmCollectionReader_ErrorTest extends TestCase {
     * The cpm should automatically finish. No error should be reported and the
     * finished method
     * 
-    * @throws Exception
+    * @throws Exception -
     */
    public void testHasNextWithNullPointerException() throws Exception {
       int TIMEOUT = 20; // seconds, till the test is aborted
@@ -345,7 +345,7 @@ public class CpmCollectionReader_ErrorTest extends TestCase {
     * <b>expected behavior:</b><br>
     * The cpm should not finish. An exception is thrown to the caller class.
     * 
-    * @throws Exception
+    * @throws Exception -
     */
    public void testInitializeWithResourceInitializationException()
          throws Exception {
@@ -399,7 +399,7 @@ public class CpmCollectionReader_ErrorTest extends TestCase {
     * <b>expected behavior:</b><br>
     * The cpm should not finish. An exception is thrown to the caller class.
     * 
-    * @throws Exception
+    * @throws Exception -
     */
    public void testInitializeWithNullPointerException() throws Exception {
       int documentCount = 20; // number of documents processed
@@ -448,7 +448,7 @@ public class CpmCollectionReader_ErrorTest extends TestCase {
     * The cpm should not finish correctly. An exception is thrown to the caller
     * class.
     * 
-    * @throws Exception
+    * @throws Exception -
     */
    public void testInitializeWithOutOfMemoryError() throws Exception {
       boolean outOfMemoryError = false;
@@ -497,7 +497,7 @@ public class CpmCollectionReader_ErrorTest extends TestCase {
     * The cpm should finish. The cpm by itself is shut down, and the
     * collectionProcessComplete-method of the listener was called
     * 
-    * @throws Exception
+    * @throws Exception -
     */
    public void testGetProgressWithIOException() throws Exception {
       int documentCount = 20; // number of documents processed
@@ -538,7 +538,7 @@ public class CpmCollectionReader_ErrorTest extends TestCase {
     * propagate the error in the EntityProcessStatus. After that, the cpm is
     * shut down and the abort method is called.
     * 
-    * @throws Exception
+    * @throws Exception -
     */
    public void testGetProcessWithOutOfMemoryError() throws Exception {
       int documentCount = 20; // number of documents processed
@@ -579,7 +579,7 @@ public class CpmCollectionReader_ErrorTest extends TestCase {
     * The cpm should finish. The cpm by itself is shut down, and the
     * collectionProcessComplete-method of the listener was called
     * 
-    * @throws Exception
+    * @throws Exception -
     */
    public void testGetProgressWithNullPointerException() throws Exception {
       int documentCount = 20; // number of documents processed

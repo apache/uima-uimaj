@@ -51,7 +51,7 @@ public class CPECasPool {
    *          max size of the pool
    * @param aCasManager -
    *          CAS Manager to use to create the CASes
-   * @throws ResourceInitializationException
+   * @throws ResourceInitializationException -
    */
   public CPECasPool(int aNumInstances, CasManager aCasManager)
           throws ResourceInitializationException {
@@ -67,7 +67,7 @@ public class CPECasPool {
    * @param aCasManager -
    *          CAS Manager to use to create the CASes
    * @param aPerformanceTuningSettings
-   * @throws ResourceInitializationException
+   * @throws ResourceInitializationException -
    */
   public CPECasPool(int aNumInstances, CasManager aCasManager, Properties aPerformanceTuningSettings) throws ResourceInitializationException {
     mNumInstances = aNumInstances;
@@ -80,7 +80,7 @@ public class CPECasPool {
    * @param aCasManager -
    *          definition (type system, indexes, etc.) of CASes to create
    * @param aPerformanceTuningSettings
-   * @throws ResourceInitializationException
+   * @throws ResourceInitializationException -
    */
   protected void fillPool(CasManager aCasManager, Properties aPerformanceTuningSettings) throws ResourceInitializationException {
     for (int i = 0; i < mNumInstances; i++) {

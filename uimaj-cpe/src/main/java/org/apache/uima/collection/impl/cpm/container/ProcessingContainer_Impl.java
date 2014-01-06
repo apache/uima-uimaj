@@ -1283,9 +1283,7 @@ public boolean isIntegrated() {
     return false;
   }
 
-  /**
-   * 
-   */
+  
   public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
           throws ResourceInitializationException {
     try {
@@ -1540,9 +1538,7 @@ public boolean isIntegrated() {
     return casProcessorPool;
   }
 
-  /**
-   * 
-   */
+  
   public void setSingleFencedService(boolean aSingleFencedInstance) {
     singleFencedInstance = aSingleFencedInstance;
   }

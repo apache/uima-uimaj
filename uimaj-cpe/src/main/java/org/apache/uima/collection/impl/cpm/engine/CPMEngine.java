@@ -325,7 +325,7 @@ public class CPMEngine extends Thread {
    * Returns number of processing threads
    * 
    * @return - number of processing threads
-   * @throws ResourceConfigurationException
+   * @throws ResourceConfigurationException -
    */
   public int getThreadCount() throws ResourceConfigurationException {
     return cpeFactory.getProcessingUnitThreadCount();
@@ -894,7 +894,7 @@ public void asynchStop() {
    *          true if the CP is a Cas Consumer, false otherwise
    * @return - true if CP is parallelizable, false otherwise
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   private boolean isMultipleDeploymentAllowed(String aDescPath, String aCpName, boolean isConsumer)
           throws Exception {
@@ -931,7 +931,7 @@ public void asynchStop() {
    *          name of the CP
    * @return - true if CP is parallelizable, false otherwise
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   public boolean isParallizable(CasProcessor aProcessor, String aCpName) throws Exception {
     boolean isConsumer = false;
@@ -1002,7 +1002,7 @@ public void asynchStop() {
    * @param aCpName -
    *          name of the Cas Processor
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   private void addCasConsumer(CasProcessor aProcessor, String aCpName) throws Exception {
     if (consumers.containsKey(aCpName)) {
@@ -1044,7 +1044,7 @@ public void asynchStop() {
    * @param aCpName -
    *          name of the CP
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   private void addParallizableCasProcessor(CasProcessor aProcessor, String aCpName)
           throws Exception {
@@ -1086,7 +1086,7 @@ public void asynchStop() {
    * parallelizable pipeline there simply will be a single instance of it that will be shared by all
    * processing threads.
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   private void classifyCasProcessors() throws Exception {
     boolean allowReorder = true;
@@ -1315,7 +1315,7 @@ public void asynchStop() {
   /**
    * Deploys all Cas Consumers
    * 
-   * @throws AbortCPMException
+   * @throws AbortCPMException -
    */
   private void deployConsumers() throws AbortCPMException {
 
@@ -1368,7 +1368,7 @@ public void asynchStop() {
    * Deploys All Analysis Engines. Analysis Engines run in a replicated processing units seperate
    * from Cas Consumers.
    * 
-   * @throws AbortCPMException
+   * @throws AbortCPMException -
    */
   private void deployAnalysisEngines() throws AbortCPMException {
     // When restoring the CPM from a checkpoint, its processing pipeline must be restored
@@ -1519,7 +1519,7 @@ public void asynchStop() {
    * @param aList -
    *          list of events to copy
    * @param aPTr -
-   * @throws IOException
+   * @throws IOException -
    */
   private void copyComponentEvents(String aEvType, List aList, ProcessTrace aPTr)
           throws IOException {
@@ -1648,7 +1648,7 @@ public void asynchStop() {
    * 
    * @return - an instance of the ProcessingUnit
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   private ProcessingUnit producePU(String aClassName) throws Exception {
     Class currentClass = Class.forName(aClassName);
@@ -1670,7 +1670,7 @@ public void asynchStop() {
    *          max size of the queue
    * @return - new instance of the output queue
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   private BoundedWorkQueue createOutputQueue(int aQueueSize) throws Exception {
     // Get the class that implements the queue
@@ -2611,7 +2611,7 @@ public void asynchStop() {
    * 
    * @return - customer timer or JavaTimer (default)
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   private UimaTimer getTimer() throws Exception {
     String uimaTimerClass = cpeFactory.getCPEConfig().getCpeTimer().get();
@@ -3191,7 +3191,7 @@ public void asynchStop() {
   /**
    * Initialize the CPE
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   private void bootstrapCPE() throws Exception {
     registerTypeSystemsWithCasManager();
@@ -3205,7 +3205,7 @@ public void asynchStop() {
   /**
    * Setup single threaded pipeline
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   private void setupProcessingPipeline() throws Exception {
     // activeProcessingUnits = 1;
@@ -3228,7 +3228,7 @@ public void asynchStop() {
   /**
    * Setup Cas Consumer pipeline as single threaded
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   private void setupConsumerPipeline() throws Exception {
     if (consumerList != null && consumerList.size() > 0) {
@@ -3281,7 +3281,7 @@ public void asynchStop() {
   /**
    * Runs the CPE in a single thread without queues.
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   public void runSingleThreaded() throws Exception {
     Object entity = null;

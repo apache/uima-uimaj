@@ -55,7 +55,7 @@ public class NonJavaApplication extends RunnableApplication {
    * @param aCasProcessorConfiguration -
    *          access to Cas Processor configuration
    * @param aCasProcessor
-   * @throws ResourceConfigurationException
+   * @throws ResourceConfigurationException passthru
    */
   protected void addApplicationInfo(CasProcessorConfiguration aCasProcessorConfiguration,
           CpeCasProcessor aCasProcessor) throws ResourceConfigurationException {

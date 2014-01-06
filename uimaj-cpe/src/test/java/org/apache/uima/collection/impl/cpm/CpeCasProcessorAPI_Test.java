@@ -128,7 +128,7 @@ public class CpeCasProcessorAPI_Test extends TestCase {
   /**
    * test the config of a remote CasProcessor with all possible values set
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   public void testAddRemoteCasProcessor() throws Exception {
     CpeCasProcessors processors = cpe.getCpeCasProcessors();
@@ -168,7 +168,7 @@ public class CpeCasProcessorAPI_Test extends TestCase {
   /**
    * test the config of a local CasProcessor with all possible values set
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   public void testAddLocalCasProcessor() throws Exception {
     CpeCasProcessors processors = cpe.getCpeCasProcessors();
@@ -212,7 +212,7 @@ public class CpeCasProcessorAPI_Test extends TestCase {
   /**
    * test the config of a integrated CasProcessor with all possible values set
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   public void testAddIntegratedCasProcessor() throws Exception {
     CpeCasProcessors processors = cpe.getCpeCasProcessors();

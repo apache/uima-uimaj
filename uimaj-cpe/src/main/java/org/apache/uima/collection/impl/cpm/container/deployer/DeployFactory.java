@@ -59,7 +59,7 @@ public class DeployFactory {
    * @param aCasProcessorConfig cpe configuration reference
    * @param aPca mode of deployment.
    * @return appropriate deployer object for the mode of depolyment
-   * @throws ResourceConfigurationException
+   * @throws ResourceConfigurationException missing protocol or other deployment error
    */
 
   public static CasProcessorDeployer getDeployer(CPEFactory aCpeFactory,
@@ -108,7 +108,7 @@ public class DeployFactory {
    * @param aResourceManager needed to resolve import by name        
    * @return - protocol as string (vinci, socket)
    * 
-   * @throws ResourceConfigurationException
+   * @throws ResourceConfigurationException wraps Exception
    */
   public static String getProtocol(CpeCasProcessor aCasProcessorConfig, ResourceManager aResourceManager)
           throws ResourceConfigurationException {

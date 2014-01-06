@@ -78,7 +78,8 @@ public interface SocketTransport {
    * @param aSocket -
    *          socket to the fenced CasProcessor
    * @return - metadata
-   * @throws SocketException
+   * @throws SocketException passthru
+   * @throws AnalysisEngineProcessException passthru
    */
   public ProcessingResourceMetaData getProcessingResourceMetaData(Socket aSocket)
           throws SocketException, AnalysisEngineProcessException;

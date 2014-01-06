@@ -96,7 +96,7 @@ public class CpmAE_ErrorTest extends TestCase {
    * the cpm should regular finish after processing all documents. No error and no abort should
    * occur.
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   public void testProcessWithAnnotatorProcessException() throws Exception {
     int documentCount = 20; // number of document to process
@@ -130,7 +130,7 @@ public class CpmAE_ErrorTest extends TestCase {
    * the cpm should regular finish after processing all documents. No error and no abort should
    * occur.
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   public void testProcessWithOutOfMemoryException() throws Exception {
     int documentCount = 20; // number of documents to process
@@ -165,7 +165,7 @@ public class CpmAE_ErrorTest extends TestCase {
    * the cpm should regular finish after processing all documents. No error and no abort should
    * occur.
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   public void testProcessWithNullPointerException() throws Exception {
     int documentCount = 20; // number of documents to process
@@ -200,7 +200,7 @@ public class CpmAE_ErrorTest extends TestCase {
    * The cpm should not finish. Instead, the exception is passed back to the testscript. Neither the
    * collectionProcessComplete-, nor the aborted- method of the listener is called.
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   public void testInitializeWithNullPointerException() throws Exception {
     int documentCount = 20; // number of document to process
@@ -241,7 +241,7 @@ public class CpmAE_ErrorTest extends TestCase {
    * the cpm should regular finish, but don't process the documents. No error and no abort should
    * occur. the collectionProcessComplete -method of the listener is called.
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   public void testInitializeWithOutOfMemoryException() throws Exception {
     int documentCount = 20; // number of document to process
@@ -278,7 +278,7 @@ public class CpmAE_ErrorTest extends TestCase {
    * the testclass. Neither the collectionProcessComplete-, nor the aborted- method of the listener
    * is called.
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   public void testInitializeWithAnnotatorInitializationException() throws Exception {
     int documentCount = 20; // number of document to process
@@ -320,7 +320,7 @@ public class CpmAE_ErrorTest extends TestCase {
    * the testclass. Neither the collectionProcessComplete-, nor the aborted- method of the listener
    * is called.
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   public void testInitializeWithAnnotatorConfigurationException() throws Exception {
     int documentCount = 20; // number of documents processed
@@ -401,7 +401,7 @@ public class CpmAE_ErrorTest extends TestCase {
    * the testclass. Neither the collectionProcessComplete-, nor the aborted- method of the listener
    * is called.
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   public void testAeProcessingUnitThreadCount() throws Exception {
     int documentCount = 20; // number of documents processed
@@ -440,7 +440,7 @@ public class CpmAE_ErrorTest extends TestCase {
    * The cpm should not finish. Instead, after 100 Exceptions + 1 the aborted -method is called by
    * the cpm. The cpm shut down.
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   public void testAeErrorRateThresholdTerminateDefault() throws Exception {
     int documentCount = 1000; // number of documents to process
@@ -484,7 +484,7 @@ public class CpmAE_ErrorTest extends TestCase {
    * The cpm should not finish. Instead, after 5 Exceptions + 1 the aborted -method is called by the
    * cpm. The cpm shut down.
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   public void testAeErrorRateThresholdTerminateModified1() throws Exception {
     int documentCount = 500; // number of documents to process
@@ -527,7 +527,7 @@ public class CpmAE_ErrorTest extends TestCase {
    * <b>expected behaviour:</b><br>
    * The cpm should finish, because this failure-rate is in the accepted range.
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   public void testAeErrorRateThresholdTerminateModified2() throws Exception {
     int exceptionSequence = 5;
@@ -574,7 +574,7 @@ public class CpmAE_ErrorTest extends TestCase {
    * <b>expected behaviour:</b><br>
    * The cpm should finish, because of the continue action.
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   public void testAeErrorRateThresholdContinue() throws Exception {
     int exceptionSequence = 4;
@@ -619,7 +619,7 @@ public class CpmAE_ErrorTest extends TestCase {
    * <b>expected behaviour:</b><br>
    * The annotator should stop working. The cpm changes to the "isFinished" state.
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   public void testAeErrorRateThresholdDisable() throws Exception {
     int exceptionSequence = 2;
@@ -698,7 +698,7 @@ public class CpmAE_ErrorTest extends TestCase {
    * <b>expected behaviour:</b><br>
    * After havening successfully processed the given number of documents the process should finish.
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   public void testNumToProcess() throws Exception {
     int exceptionSequence = 25;

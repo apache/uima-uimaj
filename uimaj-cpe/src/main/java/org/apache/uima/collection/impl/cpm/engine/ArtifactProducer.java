@@ -356,7 +356,7 @@ public class ArtifactProducer extends Thread {
    * 
    * @throws IOException -
    *           error while reading corpus
-   * @throws CollectionException
+   * @throws CollectionException -
    */
   private Object[] readNext(int fetchSize) throws IOException, CollectionException {
     ProcessTrace localTrace = new ProcessTrace_impl(cpm.getPerformanceTuningSettings());

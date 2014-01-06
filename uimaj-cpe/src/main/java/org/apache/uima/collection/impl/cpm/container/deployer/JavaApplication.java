@@ -50,7 +50,7 @@ public class JavaApplication extends RunnableApplication {
    * @param aCasProcessorConfiguration -
    *          configuration for CasProcessor
    * @param aJaxbCasProcessorConfig
-   * @throws ResourceConfigurationException
+   * @throws ResourceConfigurationException passthru
    */
   public JavaApplication(CasProcessorConfiguration aCasProcessorConfiguration,
           CpeCasProcessor aJaxbCasProcessorConfig) throws ResourceConfigurationException {
@@ -64,7 +64,7 @@ public class JavaApplication extends RunnableApplication {
    * @param aCasProcessorConfiguration -
    *          access to Cas Processor configuration
    * @param aCasProcessor
-   * @throws ResourceConfigurationException
+   * @throws ResourceConfigurationException passthru
    */
   protected void addApplicationInfo(CasProcessorConfiguration aCasProcessorConfiguration,
           CpeCasProcessor aCasProcessor) throws ResourceConfigurationException {

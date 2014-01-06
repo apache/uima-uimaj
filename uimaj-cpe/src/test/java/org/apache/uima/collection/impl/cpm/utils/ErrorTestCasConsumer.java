@@ -29,9 +29,7 @@ import org.apache.uima.resource.ResourceProcessException;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
 
-/**
- * 
- */
+
 public class ErrorTestCasConsumer extends CasConsumer_ImplBase {
 
   // Parameter fields in the xml

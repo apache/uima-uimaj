@@ -55,7 +55,7 @@ public class CpeImportTest extends TestCase {
   }
 
   /**
-   * @throws Exception
+   * @throws Exception -
    * @see junit.framework.TestCase#tearDown()
    */
   protected void tearDown() throws Exception {

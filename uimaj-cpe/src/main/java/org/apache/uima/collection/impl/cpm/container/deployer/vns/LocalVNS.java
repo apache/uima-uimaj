@@ -129,7 +129,7 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
    * @param aVNSPort -
    *          port on which this VNS will listen for requests
    * 
-   * @throws PortUnreachableException
+   * @throws PortUnreachableException unreachable port after retries
    */
   public LocalVNS(int aStartPort, int aEndPort, int aVNSPort) throws PortUnreachableException {
     startport = aStartPort;
@@ -223,7 +223,7 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
    * 
    * @return - free port
    * 
-   * @throws PortUnreachableException
+   * @throws PortUnreachableException can't get port in configured range
    */
   public synchronized int getPort() throws PortUnreachableException {
     boolean portAvailable = false;

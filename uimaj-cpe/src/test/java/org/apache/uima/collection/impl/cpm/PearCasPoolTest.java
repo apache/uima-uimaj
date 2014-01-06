@@ -71,7 +71,7 @@ public class PearCasPoolTest extends TestCase {
   }
 
   /**
-   * @throws Exception
+   * @throws Exception -
    * @see junit.framework.TestCase#tearDown()
    */
   protected void tearDown() throws Exception {
@@ -83,7 +83,7 @@ public class PearCasPoolTest extends TestCase {
   /**
    * Create multiple processors which have to process multiple documents
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   public void testCasPool() throws Exception {
     ResourceManager rm = UIMAFramework.newDefaultResourceManager();

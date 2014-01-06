@@ -55,7 +55,7 @@ public class CPMUtils {
    *          Processor. Currently not used.
    * 
    * @return - Array of empty Strings
-   * @throws ResourceConfigurationException
+   * @throws ResourceConfigurationException -
    */
   public static String[] getKeys2Drop(String aKeyDropMapFile) throws ResourceConfigurationException {
     return new String[] { "", "" };
@@ -98,7 +98,7 @@ public class CPMUtils {
    * 
    * @return - customer timer or JavaTimer (default)
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   public static UimaTimer getTimer(String aTimerClass) throws Exception {
     if (aTimerClass != null) {
@@ -208,7 +208,7 @@ public class CPMUtils {
    * 
    * @param entityNode
    * @return a configurable feature
-   * @throws ConfigurationException
+   * @throws ConfigurationException -
    */
   private static ConfigurableFeature getConfigurableFeature(Node entityNode)
           throws ConfigurationException // SITHException
@@ -263,7 +263,7 @@ public class CPMUtils {
    * 
    * @param attributesNode
    * @return a list of features
-   * @throws ConfigurationException
+   * @throws ConfigurationException -
    */
   private static ArrayList getFeatures(Node attributesNode) throws ConfigurationException {
     ArrayList attributeList = new ArrayList();
@@ -306,7 +306,7 @@ public class CPMUtils {
    * 
    * @param aServiceName
    * @return the deploy directory
-   * @throws Exception
+   * @throws Exception -
    */
   public static File findDeployDirectory(String aServiceName) throws Exception {
     if (aServiceName == null) {
@@ -339,7 +339,7 @@ public class CPMUtils {
   /**
    * 
    * @return an array of directories
-   * @throws Exception
+   * @throws Exception -
    */
   private static File[] getDirectories() throws Exception {
     String rootPath = System.getProperty("CPM_HOME");

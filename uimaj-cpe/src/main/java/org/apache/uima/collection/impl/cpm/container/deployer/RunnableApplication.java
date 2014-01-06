@@ -55,7 +55,7 @@ public class RunnableApplication {
    * @param aCasProcessorConfiguration -
    *          access to Cas Processor configuration
    * @param aCasProcessor
-   * @throws ResourceConfigurationException
+   * @throws ResourceConfigurationException wraps Exception
    */
   protected void addApplicationInfo(CasProcessorConfiguration aCasProcessorConfiguration,
           CpeCasProcessor aCasProcessor) throws ResourceConfigurationException {

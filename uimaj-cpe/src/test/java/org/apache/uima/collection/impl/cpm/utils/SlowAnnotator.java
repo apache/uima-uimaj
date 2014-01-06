@@ -24,9 +24,7 @@ import org.apache.uima.analysis_engine.annotator.AnnotatorProcessException;
 import org.apache.uima.analysis_engine.annotator.JTextAnnotator_ImplBase;
 import org.apache.uima.jcas.JCas;
 
-/**
- * 
- */
+
 public class SlowAnnotator extends JTextAnnotator_ImplBase {
 
   /*

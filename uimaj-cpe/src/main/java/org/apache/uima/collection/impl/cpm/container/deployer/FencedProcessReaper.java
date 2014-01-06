@@ -28,9 +28,7 @@ import org.apache.uima.util.Level;
  */
 public class FencedProcessReaper {
 
-  /**
-   * 
-   */
+  
   public FencedProcessReaper() {
     super();
 

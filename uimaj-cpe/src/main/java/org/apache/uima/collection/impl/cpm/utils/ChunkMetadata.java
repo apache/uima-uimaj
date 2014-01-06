@@ -46,9 +46,7 @@ public class ChunkMetadata {
 
   private String throttleID;
 
-  /**
-   * 
-   */
+  
   public ChunkMetadata(String aDocId, int aSequence, boolean aLast) {
     docId = aDocId;
     sequence = aSequence;

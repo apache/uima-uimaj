@@ -75,7 +75,7 @@ public class Vinci {
    * @param requestFrame {@link org.apache.vinci.transport.VinciFrame}
    *          containing result of thsi service operation 
    * @return {@link org.apache.vinci.transport.VinciFrame} VinciData frame.
-   * @throws Exception
+   * @throws Exception -
    */
   public static AFrame replyWithAnalysis(BaseClient conn, VinciFrame requestFrame) throws Exception {
     AFFactory af = new AFFactory();

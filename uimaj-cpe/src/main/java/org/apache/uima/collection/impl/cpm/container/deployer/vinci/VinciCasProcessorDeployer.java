@@ -290,7 +290,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    * @param redeploy -
    *          flag indicating if this re-deployment of CasProcessor that failed
    * 
-   * @throws ResourceConfigurationException
+   * @throws ResourceConfigurationException if unknown deployment type
    */
   private void deployBasedOnModel(ProcessingContainer aProcessingContainer,
           CasProcessorConfiguration aCasProcessorConfig, boolean redeploy)
@@ -341,7 +341,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    *          container object that will hold proxies to Cas Processor when it is launched
    * @param redeploy -
    *          true if intent is to redeploy failed service
-   * @throws ResourceConfigurationException
+   * @throws ResourceConfigurationException if the descriptor is invalid or for any internal Exception (wrapped)
    */
   private void deployLocal(ProcessingContainer aProcessingContainer, boolean redeploy)
           throws ResourceConfigurationException {
@@ -450,7 +450,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    *          true if intent is to redeploy failed application
    * @param howMany -
    *          how many seperate process to spawn
-   * @throws CasProcessorDeploymentException
+   * @throws CasProcessorDeploymentException wraps any exception
    */
   private void launchLocalService(ProcessingContainer aProcessingContainer,
           CasProcessorConfiguration casProcessorConfig, boolean redeploy, int howMany)
@@ -593,7 +593,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    * 
    * @param aProcessingContainer
    * @param redeploy
-   * @throws ResourceConfigurationException
+   * @throws ResourceConfigurationException tbd
    */
   private void deployIntegrated(ProcessingContainer aProcessingContainer, boolean redeploy)
           throws ResourceConfigurationException {
@@ -610,7 +610,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    *          container that will manage instances of the CasProcessor
    * @param redeploy -
    *          flag indicating if this redeployment of failed CasProcessor
-   * @throws ResourceConfigurationException
+   * @throws ResourceConfigurationException wraps exception
    */
   private void deployRemote(ProcessingContainer aProcessingContainer, boolean redeploy)
           throws ResourceConfigurationException {
@@ -938,7 +938,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    *          Cas Processor configuration
    * @return - List of services provided by VNS
    * 
-   * @throws Exception
+   * @throws Exception passthru
    */
   private ArrayList getNewServiceList(String aServiceUri,
           CasProcessorConfiguration aCasProcessorConfig) throws Exception {
@@ -956,7 +956,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    * @param aProcessingContainer -
    *          container holding CasProcessor configuration
    * 
-   * @throws ResourceConfigurationException
+   * @throws ResourceConfigurationException when max restarts limit reached
    */
   private void handleMaxRestartThresholdReached(ProcessingContainer aProcessingContainer)
           throws ResourceConfigurationException {
@@ -1030,7 +1030,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    * @param aCasProcessorConfig -
    *          CasProcessor configuration containing service descriptor path
    * @return - name of the service
-   * @throws ResourceConfigurationException
+   * @throws ResourceConfigurationException if the uri is missing or empty
    */
   private String getServiceUri(CasProcessorConfiguration aCasProcessorConfig)
           throws ResourceConfigurationException {
@@ -1053,7 +1053,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    * 
    * @param aFileName
    * @return URISpecifier
-   * @throws ResourceConfigurationException
+   * @throws ResourceConfigurationException if the resource specifier in the URI is not a URISpecifier
    */
   private URISpecifier getURISpecifier(URL aDescriptorUrl) throws ResourceConfigurationException {
     ResourceSpecifier resourceSpecifier = getSpecifier(aDescriptorUrl);
@@ -1072,7 +1072,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    * @param aUrl -
    *          URL of the descriptor
    * @return - ResourceSpecifier parsed from descriptor
-   * @throws ResourceConfigurationException
+   * @throws ResourceConfigurationException wraps Exception
    */
   private ResourceSpecifier getSpecifier(URL aUrl) throws ResourceConfigurationException {
     try {
@@ -1093,7 +1093,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    *          CasProcessor configuration
    * @param redeploy -
    *          flag indicating if VNS being redeployed
-   * @throws CasProcessorDeploymentException
+   * @throws CasProcessorDeploymentException wraps Exception
    */
   private void deployVNS(CasProcessorConfiguration casProcessorConfig, boolean redeploy)
           throws CasProcessorDeploymentException {
@@ -1213,12 +1213,12 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    *          port wher vinci service is listening
    * @return Connected proxy to service
    * 
-   * @throws ResourceInitializationException
-   * @throws ResourceConfigurationException
+   * @throws ResourceConfigurationException wraps Exception
+   * @throws Exception passthru
    */
   private synchronized boolean activateProcessor(CasProcessorConfiguration aCasProcessorConfig,
           String aHost, int aPort, ProcessingContainer aProcessingContainer, boolean redeploy)
-          throws Exception {
+          throws ResourceConfigurationException, Exception {
     // Instantiate proxy from given configuration
     VinciTAP tap = getTextAnalysisProxy(aCasProcessorConfig);
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
@@ -1270,8 +1270,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    *          name of the vinci service
    * @return - connected Proxy
    * 
-   * @throws ResourceInitializationException
-   * @throws ResourceConfigurationException
+   * @throws Exception passthru 
    */
   private synchronized boolean activateProcessor(CasProcessorConfiguration aCasProcessorConfig,
           String aService, ProcessingContainer aProcessingContainer, boolean redeploy) // throws
@@ -1624,7 +1623,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    *          CasProcessor configuration
    * @return - new proxy (not yet connected to service)
    * 
-   * @throws ResourceConfigurationException
+   * @throws ResourceConfigurationException wraps Exception
    */
   private VinciTAP getTextAnalysisProxy(CasProcessorConfiguration aCasProcessorConfig)
           throws ResourceConfigurationException {
@@ -1697,6 +1696,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    *          default value for the named parameter if parameter is not defined
    * 
    * @return - value for a named VNS parameter
+   * @throws ResourceConfigurationException passthru
    */
   private String getVNSSettingFor(String aVNSParamKey,
           CasProcessorConfiguration aCasProcessorConfig, String aDefault)
@@ -1848,7 +1848,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    * @param portQueue -
    *          queue containing ports assigned to services by local VNS
    * @return - port as String
-   * @throws TimeLimitExceededException
+   * @throws TimeLimitExceededException timeout waiting for port
    */
   private String getPort(BoundedWorkQueue portQueue) throws TimeLimitExceededException {
     int waitCount = MAX_WAIT_TRIES; // default

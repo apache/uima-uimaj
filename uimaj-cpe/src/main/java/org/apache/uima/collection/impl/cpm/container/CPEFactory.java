@@ -190,7 +190,7 @@ public class CPEFactory {
    * @param aDescriptor -
    *          path to the descriptor
    * 
-   * @throws InstantiationException
+   * @throws InstantiationException -
    */
   public void parse(String aDescriptor) throws InstantiationException {
     defaultConfig = false;
@@ -217,7 +217,7 @@ public class CPEFactory {
    * 
    * @param aDescriptorStream -
    *          stream containing cpe description
-   * @throws InstantiationException
+   * @throws InstantiationException -
    */
   public void parse(InputStream aDescriptorStream) throws InstantiationException {
     defaultConfig = false;
@@ -239,7 +239,7 @@ public class CPEFactory {
   /**
    * Creates an object representation from default cpe descriptor.
    * 
-   * @throws InstantiationException
+   * @throws InstantiationException -
    */
 
   public void parse() {
@@ -262,7 +262,7 @@ public class CPEFactory {
   /**
    * Checks if cpe description has been created
    * 
-   * @throws ConfigurationException
+   * @throws ConfigurationException -
    */
   private void checkForErrors() throws ResourceConfigurationException {
     if (cpeDescriptor == null) {
@@ -280,7 +280,7 @@ public class CPEFactory {
    * 
    * @return - CollectionReader instance
    * 
-   * @throws ConfigurationException
+   * @throws ConfigurationException -
    */
   public BaseCollectionReader getCollectionReader() throws ResourceConfigurationException {
     checkForErrors();
@@ -466,7 +466,7 @@ public class CPEFactory {
    * 
    * @return - array of CasProcessor instances
    * 
-   * @throws ResourceConfigurationException
+   * @throws ResourceConfigurationException -
    */
   public CasProcessor[] getCasProcessors() throws ResourceConfigurationException {
     checkForErrors();
@@ -614,7 +614,7 @@ public class CPEFactory {
    * 
    * @return true - if class matches type
    * 
-   * @throws ResourceConfigurationException
+   * @throws ResourceConfigurationException -
    */
   public boolean isDefinitionInstanceOf(Class aResourceClass, ResourceSpecifier resourceSpecifier,
           String aDescriptor) throws ResourceConfigurationException {
@@ -673,7 +673,7 @@ public class CPEFactory {
    *          parameters used to initialize CasDataConsumer
    * @return - instance of CasProcessor
    * 
-   * @throws ResourceInitializationException
+   * @throws ResourceInitializationException -
    */
   public CasProcessor produceCasDataConsumer(Class aResourceClass, ResourceSpecifier aSpecifier,
           Map aAdditionalParams) throws ResourceInitializationException {
@@ -728,7 +728,7 @@ public class CPEFactory {
    *          parameters to initialize Cas Initializer
    * 
    * @return instance of CasDataInitializer or CasInitializer
-   * @throws ResourceInitializationException
+   * @throws ResourceInitializationException -
    */
   private Object produceInitializer(ResourceSpecifier aSpecifier, Map aAdditionalParams)
           throws ResourceInitializationException {
@@ -780,7 +780,7 @@ public class CPEFactory {
    *          Cas Processor configuration
    * @return - Descriptor path
    * 
-   * @throws ResourceConfigurationException
+   * @throws ResourceConfigurationException -
    */
   public URL getDescriptorURL(CpeCasProcessor aCasProcessorCfg)
           throws ResourceConfigurationException {
@@ -800,7 +800,7 @@ public class CPEFactory {
    * @param aDescriptorUrl - URL of descriptor
    * @return - ResourceSpecifier
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   public ResourceSpecifier getSpecifier(URL aDescriptorUrl) throws Exception {
     XMLInputSource in = new XMLInputSource(aDescriptorUrl);
@@ -815,7 +815,7 @@ public class CPEFactory {
    *          Cas Processor configuration
    * @return - Local CasProcessor
    * 
-   * @throws ResourceConfigurationException
+   * @throws ResourceConfigurationException -
    */
   private CasProcessor produceLocalCasProcessor(CpeCasProcessor aCasProcessorCfg)
           throws ResourceConfigurationException {
@@ -867,7 +867,7 @@ public class CPEFactory {
    *          parameter settings from the component's descriptor
    * @param aCPE_nvp -
    *          parameter containing array of values to replace values in the component's descriptor
-   * @throws Exception
+   * @throws Exception -
    */
   private void replacePrimitive(String aType, boolean aMandatoryParam,
           ConfigurationParameterSettings aCps,
@@ -1032,7 +1032,7 @@ public class CPEFactory {
    * @param aCasProcessorCfg -
    *          Cas processor configuration
    * @return - Integrated CasProcessor
-   * @throws ResourceConfigurationException
+   * @throws ResourceConfigurationException -
    */
   private CasProcessor produceIntegratedCasProcessor(CpeCasProcessor aCasProcessorType)
           throws ResourceConfigurationException {
@@ -1121,7 +1121,7 @@ public class CPEFactory {
    *          Cas Processor Configuration
    * @return - Remote CasProcessor
    * 
-   * @throws ResourceConfigurationException
+   * @throws ResourceConfigurationException -
    */
   private CasProcessor produceRemoteCasProcessor(CpeCasProcessor aCasProcessorType)
           throws ResourceConfigurationException {
@@ -1147,7 +1147,7 @@ public class CPEFactory {
    * <li>id of the document begin processing</li>
    * 
    * @return - Global CPE Configuration
-   * @throws InstantiationException
+   * @throws InstantiationException -
    */
   public CpeConfiguration getCPEConfig() throws InstantiationException {
     try {
@@ -1162,7 +1162,7 @@ public class CPEFactory {
    * 
    * @return Number of processing threads
    * 
-   * @throws ResourceConfigurationException
+   * @throws ResourceConfigurationException -
    */
   public int getProcessingUnitThreadCount() throws ResourceConfigurationException {
     int threadCount;
@@ -1240,7 +1240,7 @@ public class CPEFactory {
    * 
    * @param aCasProcessorName
    * @param aDepParams
-   * @throws ResourceConfigurationException
+   * @throws ResourceConfigurationException -
    */
   private void verifyDeploymentParams(String aCasProcessorName,
           CasProcessorDeploymentParams aDepParams) throws ResourceConfigurationException {
@@ -1435,7 +1435,7 @@ public class CPEFactory {
    * 
    * @param aList
    * @return the cpe descriptor constructed from the list
-   * @throws ResourceConfigurationException
+   * @throws ResourceConfigurationException -
    */
   public String getDescriptor(List aList) throws ResourceConfigurationException {
     if (aList.size() == 0) {

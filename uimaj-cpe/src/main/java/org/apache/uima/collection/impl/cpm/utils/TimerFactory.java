@@ -77,7 +77,7 @@ public class TimerFactory {
    * @param aClassName -
    *          class implementing UimaTimer
    * 
-   * @throws ResourceInitializationException
+   * @throws ResourceInitializationException -
    */
   private void initialize(String aClassName) throws ResourceInitializationException {
 

@@ -112,12 +112,12 @@ public class CasObjectNetworkCasProcessorImpl implements CasObjectProcessor {
   }
 
   /**
-   * Create Transport object from a given class and ssociate it with this CasProcessor
+   * Create Transport object from a given class and associate it with this CasProcessor
    * 
    * @param aTransportClass -
    *          name of the Transport class
    * @return - instance of SocketTransport
-   * @throws Exception
+   * @throws Exception passthru
    */
   private SocketTransport pluginTransport(String aTransportClass) throws Exception {
     Object instance = Class.forName(aTransportClass).newInstance();
@@ -149,7 +149,7 @@ public class CasObjectNetworkCasProcessorImpl implements CasObjectProcessor {
    * @param aURL -
    *          contains service endpoint info (hots and port)
    * 
-   * @throws ResourceInitializationException
+   * @throws ResourceInitializationException wraps SocketException
    */
   public void connect(URL aURL) throws ResourceInitializationException {
     try {
@@ -166,7 +166,7 @@ public class CasObjectNetworkCasProcessorImpl implements CasObjectProcessor {
    * @param aCAS -
    *          CAS to be analyzed
    * 
-   * @throws ResourceInitializationException
+   * @throws ResourceInitializationException wraps Exception, SocketException
    */
   public void processCas(CAS aCAS) throws ResourceProcessException {
     try {
@@ -184,7 +184,7 @@ public class CasObjectNetworkCasProcessorImpl implements CasObjectProcessor {
    * 
    * @param aCASes - an array of CASes to be analyzed
    * 
-   * @throws ResourceInitializationException
+   * @throws ResourceInitializationException wraps SocketException, SocketTimeoutException
    */
   public void processCas(CAS[] aCASes) throws ResourceProcessException {
     try {

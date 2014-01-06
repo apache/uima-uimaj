@@ -43,9 +43,7 @@ public class CPMImpl extends BaseCPMImpl implements CollectionProcessingManager 
     super(null, null, aResourceManager);
   }
 
-  /**
-   * 
-   */
+  
   public AnalysisEngine getAnalysisEngine() {
     if (super.getCasProcessors()[0] != null) {
       try {
@@ -60,9 +58,7 @@ public class CPMImpl extends BaseCPMImpl implements CollectionProcessingManager 
     return null;
   }
 
-  /**
-   * 
-   */
+  
   public void setAnalysisEngine(AnalysisEngine aAnalysisEngine)
           throws ResourceConfigurationException {
     if (super.getCasProcessors().length > 0
@@ -74,9 +70,7 @@ public class CPMImpl extends BaseCPMImpl implements CollectionProcessingManager 
     }
   }
 
-  /**
-   * 
-   */
+  
   public CasConsumer[] getCasConsumers() {
     if (consumers != null) {
       return consumers;
@@ -93,48 +87,36 @@ public class CPMImpl extends BaseCPMImpl implements CollectionProcessingManager 
     return consumers;
   }
 
-  /**
-   * 
-   */
+  
   public void addCasConsumer(CasConsumer aCasConsumer) throws ResourceConfigurationException {
     super.addCasProcessor(aCasConsumer);
 
   }
 
-  /**
-   * 
-   */
+  
   public void removeCasConsumer(CasConsumer aCasConsumer) {
     super.removeCasProcessor(aCasConsumer);
 
   }
 
-  /**
-   * 
-   */
+  
   public void addStatusCallbackListener(StatusCallbackListener aListener) {
     super.addStatusCallbackListener(aListener);
 
   }
 
-  /**
-   * 
-   */
+  
   public void removeStatusCallbackListener(StatusCallbackListener aListener) {
     super.removeStatusCallbackListener(aListener);
   }
 
-  /**
-   * 
-   */
+  
   public void process(CollectionReader aCollectionReader) throws ResourceInitializationException {
     super.process(aCollectionReader);
 
   }
 
-  /**
-   * 
-   */
+  
   public void process(CollectionReader aCollectionReader, int aBatchSize)
           throws ResourceInitializationException {
     super.process(aCollectionReader, aBatchSize);

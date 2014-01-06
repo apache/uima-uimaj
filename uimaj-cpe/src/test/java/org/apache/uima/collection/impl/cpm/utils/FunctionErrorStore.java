@@ -31,9 +31,7 @@ import org.apache.uima.resource.ResourceProcessException;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
 
-/**
- * 
- */
+
 public class FunctionErrorStore {
 
   private static final String LS = System.getProperties().getProperty("line.separator");

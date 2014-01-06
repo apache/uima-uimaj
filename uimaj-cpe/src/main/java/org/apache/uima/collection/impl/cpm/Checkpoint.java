@@ -354,7 +354,7 @@ public class Checkpoint implements Runnable {
    * Retrieves the checkpoint from the filesystem.
    * 
    * @return - desirialized object containing recovery information.
-   * @throws IOException
+   * @throws IOException -
    */
   public synchronized Object restoreFromCheckpoint() throws IOException {
     ObjectInputStream stream = null;

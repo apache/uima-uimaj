@@ -240,7 +240,7 @@ public class CPEDeployerDefaultImpl implements CasProcessorDeployer {
    *          Cas Processor descriptor
    * @return - instantiated CasProcessor
    * 
-   * @throws ResourceConfigurationException
+   * @throws ResourceConfigurationException wraps Exception
    */
   private CasProcessor produceIntegratedCasProcessor(URL aDescriptor)
           throws ResourceConfigurationException {
@@ -299,9 +299,7 @@ public class CPEDeployerDefaultImpl implements CasProcessorDeployer {
 
   }
 
-  /**
-   * 
-   */
+  
   public void undeploy() throws CasProcessorDeploymentException {
 
   }

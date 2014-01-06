@@ -100,7 +100,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
    * 
    * @param aDescriptor -
    *          parsed CPE descriptor
-   * @throws Exception
+   * @throws Exception -
    */
   public BaseCPMImpl(CpeDescription aDescriptor) throws Exception {
     this(aDescriptor, null, true, UIMAFramework.getDefaultPerformanceTuningProperties());
@@ -117,7 +117,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
    *          ResourceManager instance to be used by the CPE
    * @param aDefaultProcessTrace -
    *          ProcessTrace instance to capture events and stats
-   * @throws Exception
+   * @throws Exception -
    */
   public BaseCPMImpl(CpeDescription aDescriptor, ResourceManager aResourceManager,
           boolean aDefaultProcessTrace, Properties aProps) throws Exception {
@@ -137,7 +137,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
    * @param aResourceManager
    *          ResourceManager to be used by CPM
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   public BaseCPMImpl(Boolean mode, String aDescriptor, ResourceManager aResourceManager)
           throws Exception {
@@ -193,7 +193,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
    * 
    * @param aDummyCasProcessor -
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   public void init(boolean aDummyCasProcessor, Properties aProps) throws Exception {
     String uimaTimerClass = cpeFactory.getCPEConfig().getTimerImpl();
@@ -314,7 +314,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
    * 
    * @return CPEConfig instance
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   public CpeConfiguration getCPEConfig() throws Exception {
     return cpeFactory.getCPEConfig();

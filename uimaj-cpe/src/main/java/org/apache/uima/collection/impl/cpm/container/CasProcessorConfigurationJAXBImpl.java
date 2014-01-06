@@ -108,7 +108,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
    *          configuration object containing Cas Processor configuration
    * @param aResourceManager - 
    *          needed to resolve import by name
-   * @throws ResourceConfigurationException
+   * @throws ResourceConfigurationException if descriptor error
    */
   public CasProcessorConfigurationJAXBImpl(CpeCasProcessor aCasProcessorConfig, ResourceManager aResourceManager)
           throws ResourceConfigurationException {
@@ -350,7 +350,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
    * 
    * @param aJaxbCasProcessorConfig - -
    *          configuration object containing Cas Processor configuration
-   * @throws ResourceConfigurationException
+   * @throws ResourceConfigurationException -
    */
   private void addDeploymentType(CpeCasProcessor aCasProcessorConfig)
           throws ResourceConfigurationException {
@@ -437,7 +437,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
    * @param aJaxbCasProcessorConfig -
    *          configuration object holding path to the descriptor
    * 
-   * @throws ResourceConfigurationException
+   * @throws ResourceConfigurationException -
    */
   private void addDescriptor(CpeCasProcessor aCasProcessorConfig)
           throws ResourceConfigurationException {

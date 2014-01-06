@@ -33,9 +33,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
 
-/**
- * 
- */
+
 public class ErrorTestAnnotator extends JTextAnnotator_ImplBase {
 
   // Parameter fields in the xml

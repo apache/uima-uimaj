@@ -39,9 +39,7 @@ import org.apache.uima.util.Level;
  */
 public class OFSocketTransportImpl implements SocketTransport {
 
-  /**
-   * 
-   */
+  
   public OFSocketTransportImpl() {
     super();
 

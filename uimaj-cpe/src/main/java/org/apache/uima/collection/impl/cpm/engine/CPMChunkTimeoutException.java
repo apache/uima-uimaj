@@ -21,9 +21,7 @@ package org.apache.uima.collection.impl.cpm.engine;
 
 import org.apache.uima.resource.ResourceProcessException;
 
-/**
- * 
- */
+
 public class CPMChunkTimeoutException extends ResourceProcessException {
   private static final long serialVersionUID = 358067081843640078L;
 
@@ -35,6 +33,9 @@ public class CPMChunkTimeoutException extends ResourceProcessException {
 
   /**
    * 
+   * @param aDocumentId the document ID
+   * @param aThrottleID tbd
+   * @param aDocumentURL document URL
    */
   public CPMChunkTimeoutException(long aDocumentId, String aThrottleID, String aDocumentURL) {
     super();

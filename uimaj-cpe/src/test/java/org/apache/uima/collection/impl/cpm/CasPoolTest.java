@@ -52,7 +52,7 @@ public class CasPoolTest extends TestCase {
   }
 
   /**
-   * @throws Exception
+   * @throws Exception -
    * @see junit.framework.TestCase#tearDown()
    */
   protected void tearDown() throws Exception {
@@ -64,7 +64,7 @@ public class CasPoolTest extends TestCase {
   /**
    * Create multiple processors which have to process multiple documents
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   public void testCasPool() throws Exception {
     // process 100 documents and multiple threads

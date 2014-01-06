@@ -65,7 +65,7 @@ public class CpeDescriptorSerialization_Test extends TestCase {
    * test to be sure, that first reading and then writing a discriptor produces the same file as the
    * original.(old configuration file format)
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   public void testReadDescriptor() throws Exception {
 
@@ -94,7 +94,7 @@ public class CpeDescriptorSerialization_Test extends TestCase {
    * test to be sure, that first reading and then writing a discriptor produces the same file as the
    * original (new configuration file format).
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   public void testReadDescriptor2() throws Exception {
 
@@ -123,7 +123,7 @@ public class CpeDescriptorSerialization_Test extends TestCase {
    * given descriptor from a file. Write the new descriptor back to a file and compare this with an
    * expected descriptor configuration.
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   public void testAddRemoteCasProcessor() throws Exception {
 
@@ -159,7 +159,7 @@ public class CpeDescriptorSerialization_Test extends TestCase {
    * given descriptor from a file. Write the new descriptor back to a file and compare this with an
    * expected descriptor configuration.
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   public void testAddLocalCasProcessor() throws Exception {
 
@@ -193,7 +193,7 @@ public class CpeDescriptorSerialization_Test extends TestCase {
    * a given descriptor from a file. Write the new descriptor back to a file and compare this with
    * an expected descriptor configuration.
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   public void testAddIntegratedCasProcessor() throws Exception {
 

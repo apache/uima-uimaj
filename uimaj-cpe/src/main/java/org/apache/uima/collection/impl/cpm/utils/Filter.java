@@ -50,7 +50,7 @@ public class Filter {
    *          filter expression to parse
    * @return - list of filters
    * 
-   * @throws ParseException
+   * @throws ParseException -
    */
   public LinkedList parse(String expression) throws ParseException {
     StringTokenizer tokenizer = new StringTokenizer(expression, " !=", true);
@@ -84,7 +84,7 @@ public class Filter {
    * @param aTokenizer -
    *          tokenized filter expression
    * 
-   * @throws ParseException
+   * @throws ParseException -
    */
   private void parseTokens(StringTokenizer aTokenizer) throws ParseException {
     boolean leftPartInStack = false;
@@ -126,7 +126,7 @@ public class Filter {
   /**
    * Builds filter expression from values from the stack
    * 
-   * @throws ParseException
+   * @throws ParseException -
    */
   private void evaluate(String anOp) throws ParseException {
     Expression ex = new Expression(this);

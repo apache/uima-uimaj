@@ -36,9 +36,7 @@ import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.util.ProcessTrace;
 import org.apache.uima.util.Progress;
 
-/**
- * 
- */
+
 public class CollectionProcessingEngine_impl implements CollectionProcessingEngine {
   /**
    * CPM instance that handles the processing

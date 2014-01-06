@@ -88,7 +88,7 @@ public class CpmCasConsumer_ErrorTest extends TestCase {
    * The cpm should not finish. Instead, the exception is passed back to the testscript. Neither the
    * collectionProcessComplete-, nor the aborted- method of the listener is called.
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   public void testInitializeWithResourceInitializationException() throws Exception {
     int documentCount = 20; // number of documents processed
@@ -127,7 +127,7 @@ public class CpmCasConsumer_ErrorTest extends TestCase {
    * The cpm should not finish. Instead, the exception is passed back to the testscript. Neither the
    * collectionProcessComplete-, nor the aborted- method of the listener is called.
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   public void testInitializeWithNullPointerException() throws Exception {
     int documentCount = 20; // number of documents processed
@@ -167,7 +167,7 @@ public class CpmCasConsumer_ErrorTest extends TestCase {
    * The cpm should not finish. Instead, the exception is passed back to the testscript. Neither the
    * collectionProcessComplete-, nor the aborted- method of the listener is called.
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   public void testInitializeWithOutOfMemoryError() throws Exception {
     int documentCount = 20; // number of documents processed
@@ -205,7 +205,7 @@ public class CpmCasConsumer_ErrorTest extends TestCase {
    * <b>expected behaviour:</b><br>
    * The cpm should finish correctly.
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   public void testProcessCasWithIOException() throws Exception {
     int documentCount = 20; // number of documents processed
@@ -238,7 +238,7 @@ public class CpmCasConsumer_ErrorTest extends TestCase {
    * <b>expected behaviour:</b><br>
    * The cpm should finish correctly. The aborted- method of the listener is not called.
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   public void testProcessCasWithResourceProcessException() throws Exception {
     int documentCount = 20; // number of documents processed
@@ -270,7 +270,7 @@ public class CpmCasConsumer_ErrorTest extends TestCase {
    * abort-methode is called, to comunicate the status of the cpm to everyone who is listening for
    * errors.
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   public void testProcessCasWithOutOfMemoryError() throws Exception {
     int documentCount = 20; // number of documents processed
@@ -299,7 +299,7 @@ public class CpmCasConsumer_ErrorTest extends TestCase {
    * <b>expected behaviour:</b><br>
    * The cpm should finish correctly. The aborted- method of the listener is not called.
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   public void testProcessCasWithNullPointerException() throws Exception {
     int documentCount = 20; // number of documents processed

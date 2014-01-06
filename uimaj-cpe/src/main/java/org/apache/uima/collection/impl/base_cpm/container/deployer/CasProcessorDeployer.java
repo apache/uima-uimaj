@@ -58,17 +58,8 @@ public interface CasProcessorDeployer {
   public void deployCasProcessor(ProcessingContainer aProcessingContainer)
           throws ResourceConfigurationException;
 
-  /**
-   * 
-   * @throws CasProcessorDeploymentException
-   */
   public void undeploy() throws CasProcessorDeploymentException;
 
-  /**
-   * 
-   * @param aUrl
-   * @throws CasProcessorDeploymentException
-   */
   public void undeploy(URL aUrl) throws CasProcessorDeploymentException;
 
 }

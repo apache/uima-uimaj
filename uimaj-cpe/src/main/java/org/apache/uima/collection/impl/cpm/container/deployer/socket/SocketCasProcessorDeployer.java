@@ -57,9 +57,7 @@ public class SocketCasProcessorDeployer implements CasProcessorDeployer {
 
   private ProcessControllerAdapter controller = null;
 
-  /**
-   * 
-   */
+  
   public SocketCasProcessorDeployer(ProcessControllerAdapter aController, CPEFactory aCpeFactory) {
     controller = aController;
     cpeFactory = aCpeFactory;

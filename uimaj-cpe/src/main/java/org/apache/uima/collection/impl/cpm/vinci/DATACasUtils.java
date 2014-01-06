@@ -109,7 +109,7 @@ public class DATACasUtils {
    * 
    * @param aDataCas
    * @return the byte count
-   * @throws Exception
+   * @throws Exception -
    */
   public static long getByteCount(CasData aDataCas) throws Exception {
     long byteCount = 0;
