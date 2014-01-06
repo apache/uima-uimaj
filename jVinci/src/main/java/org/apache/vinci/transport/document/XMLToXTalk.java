@@ -144,8 +144,8 @@ public class XMLToXTalk {
 
     /**
      * @pre ch != null
-     * @pre start < ch.length
-     * @pre length >= start
+     * @pre start &lt; ch.length
+     * @pre length &ge; start
      * @pre top != null
      * @pre top.sub_entries != null
      */

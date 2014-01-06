@@ -42,8 +42,8 @@ public class UTFConverter {
    * @param bytearr
    *          Array of bytes.
    * @return float.
-   * @throws UTFDataFormatException
-   * @throws NumberFormatException
+   * @throws UTFDataFormatException if the UTF-8 is encoded improperly
+   * @throws NumberFormatException if conversion to a number can't be done
    */
   static public float convertUTFToFloat(byte[] bytearr) throws UTFDataFormatException,
           NumberFormatException {
@@ -56,8 +56,8 @@ public class UTFConverter {
    * @param bytearr
    *          Array of bytes.
    * @return double.
-   * @throws UTFDataFormatException
-   * @throws NumberFormatException
+   * @throws UTFDataFormatException if the UTF-8 is encoded improperly
+   * @throws NumberFormatException if conversion to a number can't be done
    */
   static public double convertUTFToDouble(byte[] bytearr) throws UTFDataFormatException,
           NumberFormatException {
@@ -70,7 +70,7 @@ public class UTFConverter {
    * @param bytearr
    *          Array of bytes.
    * @return boolean.
-   * @throws UTFDataFormatException
+   * @throws UTFDataFormatException if the UTF-8 is encoded improperly
    */
   static public boolean convertUTFToBool(byte[] bytearr) throws UTFDataFormatException {
     return TRUE_VALUE.equals(UTFConverter.convertUTFToString(bytearr));
@@ -82,8 +82,8 @@ public class UTFConverter {
    * @param bytearr
    *          Array of bytes.
    * @return int.
-   * @throws UTFDataFormatException
-   * @throws NumberFormatException
+   * @throws UTFDataFormatException if the UTF-8 is encoded improperly
+   * @throws NumberFormatException if conversion to a number can't be done
    */
   static public int convertUTFToInt(byte[] bytearr) throws UTFDataFormatException,
           NumberFormatException {
@@ -96,8 +96,8 @@ public class UTFConverter {
    * @param bytearr
    *          Array of bytes.
    * @return long.
-   * @throws UTFDataFormatException
-   * @throws NumberFormatException
+   * @throws UTFDataFormatException if the UTF-8 is encoded improperly
+   * @throws NumberFormatException if conversion to a number can't be done
    */
   static public long convertUTFToLong(byte[] bytearr) throws UTFDataFormatException,
           NumberFormatException {
@@ -110,7 +110,7 @@ public class UTFConverter {
    * @param bytearr
    *          Array of bytes.
    * @return String.
-   * @throws UTFDataFormatException
+   * @throws UTFDataFormatException if the UTF-8 is encoded improperly
    */
   static public String convertUTFToString(byte[] bytearr) throws UTFDataFormatException {
     char[] result = new char[bytearr.length];
@@ -132,7 +132,7 @@ public class UTFConverter {
    * @param result
    *          Character array containing the converted characters.
    * @return The length of the converted characters.
-   * @throws UTFDataFormatException
+   * @throws UTFDataFormatException if the UTF-8 is encoded improperly
    */
   static public int convertUTFToString(byte[] bytearr, final int beginOffset,
           final int inputLength, char[] result) throws UTFDataFormatException {

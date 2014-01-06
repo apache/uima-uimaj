@@ -49,6 +49,8 @@ public class XTalkTransporter implements FrameTransporter {
   /**
    * Parse the data-stream according to the XTalk protocol.
    * 
+   * @param is input stream
+   * @param f frame
    * @return If the first tag belongs to the Vinci namespace, then this tag/value combination is
    *         returned. Otherwise returns null. Should there be a non-null return, then the value
    *         object of the KeyValuePair can be either FrameLeaf or Frame.
@@ -73,7 +75,12 @@ public class XTalkTransporter implements FrameTransporter {
    * 
    * @pre is != null
    * @pre f != null
-   */
+
+   * @param is input stream
+   * @param f frame
+   * @return the key value pair
+   * @throws IOException if the versions don't match, or have unexpected element marker
+   * */
   public KeyValuePair fromStreamWork(InputStream is, Frame f) throws IOException {
     return fromStreamWork(is, f, new byte[128], new char[128]);
   }
@@ -111,8 +118,8 @@ public class XTalkTransporter implements FrameTransporter {
 
   /**
    * 
-   * @param is
-   * @throws IOException
+   * @param is the input stream
+   * @throws IOException passthru
    * 
    * @pre is != null
    */
@@ -132,8 +139,8 @@ public class XTalkTransporter implements FrameTransporter {
 
   /**
    * 
-   * @param is
-   * @throws IOException
+   * @param is the input stream
+   * @throws IOException passthru
    * 
    * @pre is != null
    */
@@ -144,10 +151,10 @@ public class XTalkTransporter implements FrameTransporter {
 
   /**
    * 
-   * @param is
-   * @param f
+   * @param is the input stream
+   * @param f frame
    * @return key value 
-   * @throws IOException
+   * @throws IOException passthru
    * 
    * @pre is != null
    * @pre f != null
@@ -180,10 +187,10 @@ public class XTalkTransporter implements FrameTransporter {
 
   /**
    * 
-   * @param is
-   * @param f
+   * @param is the input stream
+   * @param f the Frame
    * @return key value
-   * @throws IOException
+   * @throws IOException passthru
    * 
    * @pre is != null
    * @pre f != null
@@ -234,11 +241,11 @@ public class XTalkTransporter implements FrameTransporter {
 
   /**
    * 
-   * @param is
-   * @param f
-   * @param field_count
-   * @param marker
-   * @throws IOException
+   * @param is input stream
+   * @param f frame
+   * @param field_count field count
+   * @param marker marker
+   * @throws IOException passthru
    * 
    * @pre is != null
    * @pre f != null
@@ -286,8 +293,8 @@ public class XTalkTransporter implements FrameTransporter {
 
   /**
    * 
-   * @param is
-   * @throws IOException
+   * @param is input stream
+   * @throws IOException an EOFException if number to be skipped is bigger than the stream
    * 
    * @pre is != null
    */
@@ -308,8 +315,9 @@ public class XTalkTransporter implements FrameTransporter {
    * Consume a string from the input stream. TODO: Make a faster version that exploits work buffers
    * to reduce allocations to a single string object.
    * 
-   * @param is
-   * @throws IOException
+   * @param is input stream
+   * @return the string
+   * @throws IOException if key is longer than limit
    * 
    * @pre is != null
    */
@@ -343,6 +351,12 @@ public class XTalkTransporter implements FrameTransporter {
   /**
    * Consume the string of bytesToRead utf-8 bytes. assumes buffers are big enough to hold
    * bytesToRead bytes/chars
+   * @param is input stream
+   * @param byteBuf a byte buffer
+   * @param charBuf a character buffer
+   * @param bytesToRead the number of bytes to read
+   * @return the length of the converted characters
+   * @throws IOException passthru
    */
   static public int consumeCharacters(InputStream is, byte[] byteBuf, char[] charBuf,
           int bytesToRead) throws IOException {
@@ -352,9 +366,9 @@ public class XTalkTransporter implements FrameTransporter {
 
   /**
    * 
-   * @param is
-   * @param f
-   * @throws IOException
+   * @param is input stream
+   * @param f frame
+   * @throws IOExcetion if the key length is too large
    * 
    * @pre is != null
    * @pre f != null
@@ -372,6 +386,9 @@ public class XTalkTransporter implements FrameTransporter {
   public static final byte[] HEADER = { DOCUMENT_MARKER, VERSION_CODE, 0, 0, 0, 1, ELEMENT_MARKER };
 
   /**
+   * @param os output stream
+   * @param f frame
+   * @throws IOException passthru
    * @pre os != null
    * @pre f != null
    */
@@ -389,11 +406,9 @@ public class XTalkTransporter implements FrameTransporter {
 
   /**
    * 
-   * @param os
-   * @param f
-   * @throws IOException
-   * @throws UnsupportedOperationException
-   *           if the frame doesn't support key iteration.
+   * @param os output stream
+   * @param f frame
+   * @throws IOException  passthru
    * 
    * @pre os != null
    * @pre f != null
@@ -434,6 +449,9 @@ public class XTalkTransporter implements FrameTransporter {
 
   /**
    * Sends a string over, without the type byte.
+   * @param str the string to send
+   * @param os the output stream
+   * @throws IOException passthru
    * 
    * @pre str != null
    * @pre os != null
@@ -447,6 +465,10 @@ public class XTalkTransporter implements FrameTransporter {
   /**
    * Sends a string as utf8, using the temporary buffer if it is big enough to avoid allocating new
    * memory.
+   * @param str the string to send
+   * @param os the output stream
+   * @param buffer a buffer
+   * @throws IOException passthru
    */
   static public void stringToBin(String str, OutputStream os, byte[] buffer) throws IOException {
     byte[] newbuf;
@@ -494,9 +516,9 @@ public class XTalkTransporter implements FrameTransporter {
 
   /**
    * 
-   * @param write_me
-   * @param out
-   * @throws IOException
+   * @param write_me the integer to write
+   * @param out the output stream
+   * @throws IOException passthru
    * 
    * @pre out != null
    */
@@ -509,9 +531,9 @@ public class XTalkTransporter implements FrameTransporter {
 
   /**
    * 
-   * @param in
+   * @param in the input stream
    * @return the integer
-   * @throws IOException
+   * @throws IOException if any of the pieces read are negative
    * 
    * @pre in != null
    */
@@ -528,9 +550,9 @@ public class XTalkTransporter implements FrameTransporter {
 
   /**
    * 
-   * @param b
-   * @param in
-   * @throws IOException
+   * @param b the byte array to read into
+   * @param in the input stream
+   * @throws IOException passthru
    * 
    * @pre b != null
    * @pre in != null
@@ -552,9 +574,10 @@ public class XTalkTransporter implements FrameTransporter {
 
   /**
    * 
-   * @param os
-   * @param attributes
-   * @throws IOException
+   * @param os the output stream
+   * @param attributes attributes
+   * @param workbuf a working buffer
+   * @throws IOException passthru
    * 
    * @pre os != null
    * @pre attributes != null

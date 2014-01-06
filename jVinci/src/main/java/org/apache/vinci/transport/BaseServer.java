@@ -254,8 +254,8 @@ public class BaseServer {
    *          The port on which to listen for requests.
    * @exception IOException
    *              Thrown if there was some problem with the server socket.
-   * @pre port >= 0
-   * @pre port < 65536
+   * @pre port &ge; 0
+   * @pre port &lt; 65536
    * @since 2.0.15
    */
   public void startServing(int port) throws IOException {
@@ -281,8 +281,8 @@ public class BaseServer {
    *          The port on which to listen for requests.
    * @exception IOException
    *              Thrown if there was some problem with the server socket.
-   * @pre port >= 0
-   * @pre port < 65536
+   * @pre port &ge; 0
+   * @pre port &lt; 65536
    */
   public void serve(int port) throws IOException {
     configureServerSocket(port);
@@ -313,8 +313,8 @@ public class BaseServer {
    * @return The server socket to be used by this server for accepting requests.
    * @param port
    *          The port which is to be listened to by the created socket.
-   * @pre port >= 0
-   * @pre port < 65536
+   * @pre port &ge; 0
+   * @pre port &lt; 65536
    */
   protected ServerSocket createServerSocket(int port) throws IOException {
     ServerSocket s = new ServerSocket(port);

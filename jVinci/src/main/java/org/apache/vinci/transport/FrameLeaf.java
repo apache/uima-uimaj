@@ -74,7 +74,7 @@ public class FrameLeaf extends FrameComponent {
    * This method does NOT support null values in the array.
    * 
    * @pre mystring != null
-   * @pre { for (int i = 0; i < mystring.length; i++) $assert(mystring[i] != null, "array elements
+   * @pre { for (int i = 0; i &lt; mystring.length; i++) $assert(mystring[i] != null, "array elements
    *      are non-null"); }
    */
   public FrameLeaf(String[] mystring) {

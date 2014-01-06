@@ -147,8 +147,8 @@ public class VinciContext {
   };
 
   /**
-   * @pre myport >= 0
-   * @pre myport < 65536
+   * @pre myport &ge; 0
+   * @pre myport &lt; 65536
    */
   public VinciContext(String myhost, int myport) {
     this.host = myhost;
@@ -163,7 +163,7 @@ public class VinciContext {
    * System.setProperty("VNS_HOST", [hostname]) before ever invoking any Vinci client code.
    * Otherwise, you can set the hostname using the setVNSHost() method provided by this class.
    * 
-   * @throws IllegalStateException
+   * @throws IllegalStateException 
    *           if the VNS host has not been specified.
    */
   public String getVNSHost() {
@@ -199,8 +199,8 @@ public class VinciContext {
   /**
    * Set the VNS port.
    * 
-   * @pre port >= 0
-   * @pre port < 65536
+   * @pre port &ge; 0
+   * @pre port &lt; 65536
    */
   public void setVNSPort(int p) {
     port = p;
@@ -386,7 +386,7 @@ public class VinciContext {
    * @pre in != null
    * @pre service_name != null
    * @pre factory != null
-   * @pre socket_timeout >= 0
+   * @pre socket_timeout &ge; 0
    */
   public Transportable sendAndReceive(Transportable in, String service_name,
           TransportableFactory factory, int socket_timeout) throws IOException, ServiceException {
@@ -413,7 +413,7 @@ public class VinciContext {
    * @pre in != null
    * @pre service_name != null
    * @pre factory != null
-   * @pre socket_timeout >= 0
+   * @pre socket_timeout &ge; 0
    */
   public Transportable sendAndReceive(Transportable in, String service_name,
           TransportableFactory factory, int socket_timeout, int connect_timeout)
@@ -458,7 +458,7 @@ public class VinciContext {
    * 
    * @pre in != null
    * @pre service_name != null
-   * @pre timeout >= 0
+   * @pre timeout &ge; 0
    */
   public VinciFrame rpc(Transportable in, String service_name, int timeout) throws IOException,
           ServiceException, ServiceDownException, VNSException {
@@ -484,7 +484,7 @@ public class VinciContext {
    * 
    * @pre in != null
    * @pre service_name != null
-   * @pre timeout >= 0
+   * @pre timeout &ge; 0
    */
   public VinciFrame rpc(Transportable in, String service_name, int socket_timeout,
           int connect_timeout) throws IOException, ServiceException, ServiceDownException,

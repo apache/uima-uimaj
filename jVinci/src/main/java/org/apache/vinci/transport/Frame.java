@@ -94,7 +94,7 @@ public abstract class Frame extends FrameComponent implements Transportable {
    *          The tag name with which to associate the value.
    * @param val
    *          The (Frame | FrameLeaf) value to associate with the tag.
-   * @throws UnsupportedOperationException
+   * @throws UnsupportedOperationException not implemented
    */
   /* abstract */public void add(String tag, FrameComponent val) {
     throw new UnsupportedOperationException("not implemented");
@@ -111,7 +111,7 @@ public abstract class Frame extends FrameComponent implements Transportable {
    * 
    * @param which
    *          The index of the KeyValuePair to retrieve.
-   * @throws UnsupportedOperationException
+   * @throws UnsupportedOperationException not implemented
    * @return The requested KeyValuePair.
    */
   /* abstract */public KeyValuePair getKeyValuePair(int which) {
@@ -126,7 +126,7 @@ public abstract class Frame extends FrameComponent implements Transportable {
    * define it in cases where alternative getters are provided for querying the document, and the
    * object is never marshalled to a stream.
    * 
-   * @throws UnsupportedOperationException
+   * @throws UnsupportedOperationException not implemented
    * @return The total number of key/value pairs in this frame.
    */
   /* abstract */public int getKeyValuePairCount() {
@@ -295,7 +295,7 @@ public abstract class Frame extends FrameComponent implements Transportable {
    * @return the created sub-frame.
    * 
    * @pre tag_name != null
-   * @pre initialCapacity >= 0
+   * @pre initialCapacity &ge; 0
    */
   public Frame createSubFrame(String tag_name, int initialCapacity) {
     try {
@@ -335,7 +335,7 @@ public abstract class Frame extends FrameComponent implements Transportable {
    * Helper method for toXML(StringBuffer).
    * 
    * @pre rval != null
-   * @pre offset >= 0
+   * @pre offset &ge; 0
    */
   protected void toXML(StringBuffer rval, int offset) {
     KeyValuePair keyVal = null;
@@ -555,7 +555,7 @@ public abstract class Frame extends FrameComponent implements Transportable {
    * @return This frame.
    * 
    * @pre key != null
-   * @pre { for (int i = 0; i < val.length; i++) $assert(val[i] != null, "array elements are
+   * @pre { for (int i = 0; i &lt; val.length; i++) $assert(val[i] != null, "array elements are
    *      non-null"); }
    */
   public Frame fadd(String key, String[] val) {

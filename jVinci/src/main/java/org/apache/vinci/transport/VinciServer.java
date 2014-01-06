@@ -89,8 +89,8 @@ public class VinciServer extends BaseServer {
    * @pre service_name != null
    * @pre host_name != null
    * @pre servable != null
-   * @pre myPriority >= -1
-   * @pre myInstance >= 0
+   * @pre myPriority &ge; -1
+   * @pre myInstance &ge; 0
    */
   public VinciServer(String service_name, String host_name, VinciServable servable, int myPriority,
           int myInstance) {
@@ -105,7 +105,7 @@ public class VinciServer extends BaseServer {
    * @pre service_name != null
    * @pre host_name != null
    * @pre servable != null
-   * @pre myPriority >= -1
+   * @pre myPriority &ge; -1
    */
   public VinciServer(String service_name, String host_name, VinciServable servable, int myPriority) {
     this(service_name, host_name, servable, myPriority, 0);
@@ -114,7 +114,7 @@ public class VinciServer extends BaseServer {
   /**
    * @pre service_name != null
    * @pre servable != null
-   * @pre myPriority >= -1
+   * @pre myPriority &ge; -1
    */
   public VinciServer(String service_name, VinciServable servable, int myPriority)
           throws UnknownHostException {
@@ -124,8 +124,8 @@ public class VinciServer extends BaseServer {
   /**
    * @pre service_name != null
    * @pre servable != null
-   * @pre myPriority >= -1
-   * @pre myInstance >= 0
+   * @pre myPriority &ge; -1
+   * @pre myInstance &ge; 0
    */
   public VinciServer(String service_name, VinciServable servable, int myPriority, int myInstance)
           throws UnknownHostException {

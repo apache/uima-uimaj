@@ -77,8 +77,8 @@ public class BaseClient {
    *           if the underlying socket fails to connect
    * 
    * @pre h != null
-   * @pre p >= 0
-   * @pre p < 65536
+   * @pre p &ge; 0
+   * @pre p &lt; 65536
    */
   public BaseClient(String h, int p) throws IOException {
     this(h, p, VinciFrame.getVinciFrameFactory());
@@ -98,8 +98,8 @@ public class BaseClient {
    *           if the underlying socket fails to connect
    * 
    * @pre h != null
-   * @pre p >= 0
-   * @pre p < 65536
+   * @pre p &ge; 0
+   * @pre p &lt; 65536
    */
   public BaseClient(String h, int p, int connect_timeout) throws IOException {
     this(h, p, VinciFrame.getVinciFrameFactory(), connect_timeout);
@@ -119,8 +119,8 @@ public class BaseClient {
    * 
    * @pre h != null
    * @pre f != null
-   * @pre p >= 0
-   * @pre p < 65536
+   * @pre p &ge; 0
+   * @pre p &lt; 65536
    */
   public BaseClient(String h, int p, TransportableFactory f) throws IOException {
     this.factory = f;
@@ -145,9 +145,9 @@ public class BaseClient {
    * 
    * @pre h != null
    * @pre f != null
-   * @pre p >= 0
-   * @pre p < 65536
-   * @pre timeout > 0
+   * @pre p &ge; 0
+   * @pre p &lt; 65536
+   * @pre timeout &gt; 0
    */
   public BaseClient(String h, int p, TransportableFactory f, int timeout) throws IOException {
     this.factory = f;
@@ -533,8 +533,8 @@ public class BaseClient {
    * 
    * @pre host_name != null
    * @pre f != null
-   * @pre p >= 0
-   * @pre p < 65536
+   * @pre p &ge; 0
+   * @pre p &lt; 65536
    */
   static public Transportable sendAndReceive(Transportable in, String host_name, int p,
           TransportableFactory f) throws IOException, ServiceException {
@@ -553,8 +553,8 @@ public class BaseClient {
    * @pre in != null
    * @pre host_name != null
    * @pre f != null
-   * @pre p >= 0
-   * @pre p < 65536
+   * @pre p &ge; 0
+   * @pre p &lt; 65536
    */
   static public Transportable sendAndReceive(Transportable in, String host_name, int p,
           TransportableFactory f, int socket_timeout) throws IOException, ServiceException {
@@ -575,8 +575,8 @@ public class BaseClient {
    * @pre in != null
    * @pre host_name != null
    * @pre f != null
-   * @pre p >= 0
-   * @pre p < 65536
+   * @pre p &ge; 0
+   * @pre p &lt; 65536
    */
   static public Transportable sendAndReceive(Transportable in, String host_name, int p,
           TransportableFactory f, int socket_timeout, int connect_timeout) throws IOException,
@@ -597,8 +597,8 @@ public class BaseClient {
    * 
    * @pre in != null
    * @pre host_name != null
-   * @pre p >= 0
-   * @pre p < 65536
+   * @pre p &ge; 0
+   * @pre p &lt; 65536
    */
   static public VinciFrame rpc(Transportable in, String host_name, int p) throws IOException,
           ServiceException {
@@ -611,8 +611,8 @@ public class BaseClient {
    * 
    * @pre host_name != null
    * @pre in != null
-   * @pre p >= 0
-   * @pre p < 65536
+   * @pre p &ge; 0
+   * @pre p &lt; 65536
    */
   static public VinciFrame rpc(Transportable in, String host_name, int p, int socket_timeout)
           throws IOException, ServiceException {
@@ -626,8 +626,8 @@ public class BaseClient {
    * 
    * @pre host_name != null
    * @pre in != null
-   * @pre p >= 0
-   * @pre p < 65536
+   * @pre p &ge; 0
+   * @pre p &lt; 65536
    */
   static public VinciFrame rpc(Transportable in, String host_name, int p, int socket_timeout,
           int connect_timeout) throws IOException, ServiceException {
@@ -693,8 +693,8 @@ public class BaseClient {
    *           Thrown by underlying Socket open() call.
    * 
    * @pre h != null
-   * @pre p >= 0
-   * @pre p < 65536
+   * @pre p &ge; 0
+   * @pre p &lt; 65536
    */
   protected final void open(String h, int p) throws IOException {
     this.host = h;

@@ -76,7 +76,7 @@ public class VinciFrame extends QueryableFrame {
    *          the capacity value to be passed on to the internal ArrayList used for holding
    *          KeyValuePairs.
    * 
-   * @pre initialCapacity >= 0
+   * @pre initialCapacity &ge; 0
    */
   public VinciFrame(int initialCapacity) {
     capacity = initialCapacity;
@@ -131,7 +131,7 @@ public class VinciFrame extends QueryableFrame {
    * Override the createSubFrame to create a VinciFrame of precise capacity.
    * 
    * @pre tag_name != null
-   * @pre initialCapacity >= 0
+   * @pre initialCapacity &ge; 0
    */
   public Frame createSubFrame(String tag_name, int initialCapacity) {
     return new VinciFrame(initialCapacity);
@@ -376,8 +376,8 @@ public class VinciFrame extends QueryableFrame {
   /**
    * Implementation of the abstract Frame method.
    * 
-   * @pre which < getKeyValuePairCount()
-   * @pre which >= 0
+   * @pre which &lt; getKeyValuePairCount()
+   * @pre which &ge; 0
    */
   public KeyValuePair getKeyValuePair(int which) {
     return elements[which];

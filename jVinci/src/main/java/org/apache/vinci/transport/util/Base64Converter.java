@@ -68,7 +68,7 @@ public class Base64Converter {
   }
 
   /**
-   * @pre count <= from.length
+   * @pre count &le; from.length
    */
   static public byte[] convertBinaryToBase64(byte[] from, final int count, boolean line_breaks) {
     int size = calculateBase64OutputSize(count, line_breaks);
@@ -127,7 +127,7 @@ public class Base64Converter {
 
   /**
    * @pre input != null
-   * @pre input_size <= input.length
+   * @pre input_size &le; input.length
    */
   static public byte[] convertBase64ToBinary(byte[] input, final int input_size)
           throws Base64FormatException {
@@ -146,7 +146,7 @@ public class Base64Converter {
    * Calculate the number of bytes encoded by a given Base64 input.
    * 
    * @pre input != null
-   * @pre input_size <= input.length
+   * @pre input_size &le; input.length
    */
   static public int calculateBinaryOutputSize(byte[] input, final int input_size)
           throws Base64FormatException {
@@ -340,7 +340,7 @@ public class Base64Converter {
    * to); byte[] input = new byte[to]; for (int i=0; i<to; i++) { input[i] = (byte)i; } byte[]
    * output = convertBinaryToBase64(input); String output_me = new String(output, 0, output.length);
    * System.out.println("Encoded string:\n" + output_me); input = convertBase64ToBinary(output); for
-   * (int i=0; i<to; i++) { if (input[i] >= 0) { Debug.Assert(i == (int)input[i]); } else {
+   * (int i=0; i<to; i++) { if (input[i] &ge; 0) { Debug.Assert(i == (int)input[i]); } else {
    * Debug.Assert(i == ((int)input[i]) + 256); } } if (to != 0 && args.length > 0) { // Test all
    * cases all the way down to 0 length arrays args[0] = Integer.toString(to-1); main(args); } }
    */

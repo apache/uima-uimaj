@@ -79,7 +79,7 @@ public class AFrame extends VinciFrame {
   }
 
   /**
-   * @pre capacity >= 0
+   * @pre capacity &ge; 0
    */
   public AFrame(int capacity) {
     super(capacity);
@@ -98,7 +98,7 @@ public class AFrame extends VinciFrame {
    * Override the createSubFrame to create an AFrame of precise capacity.
    * 
    * @pre tag_name != null
-   * @pre initialCapacity >= 0
+   * @pre initialCapacity &ge; 0
    */
   public Frame createSubFrame(String tag_name, int initialCapacity) {
     return new AFrame(initialCapacity);
@@ -431,7 +431,7 @@ public class AFrame extends VinciFrame {
   /**
    * @pre in != null
    * @pre service_name != null
-   * @pre socket_timeout >= 0
+   * @pre socket_timeout &ge; 0
    * 
    * @throws IllegalStateException
    *           if VNS_HOST is not specified.
@@ -445,7 +445,7 @@ public class AFrame extends VinciFrame {
   /**
    * @pre in != null
    * @pre service_name != null
-   * @pre socket_timeout >= 0
+   * @pre socket_timeout &ge; 0
    * 
    * WARNING: This method relies on JDK-1.4 specific functions. USE IT ONLY if you don't need to
    * maintain JDK1.3 compatability.

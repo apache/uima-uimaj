@@ -240,7 +240,7 @@ public class VinciClient extends BaseClient {
    * @pre in != null
    * @pre service_name != null
    * @pre factory != null
-   * @pre socket_timeout >= 0
+   * @pre socket_timeout &ge; 0
    */
   static public Transportable sendAndReceive(Transportable in, String service_name,
           TransportableFactory factory, int socket_timeout) throws IOException, ServiceException {
@@ -258,7 +258,7 @@ public class VinciClient extends BaseClient {
    * @pre in != null
    * @pre service_name != null
    * @pre factory != null
-   * @pre socket_timeout >= 0
+   * @pre socket_timeout &ge; 0
    */
   static public Transportable sendAndReceive(Transportable in, String service_name,
           TransportableFactory factory, int socket_timeout, int connect_timeout)
@@ -482,7 +482,7 @@ public class VinciClient extends BaseClient {
    * 
    * @pre in != null
    * @pre service_name != null
-   * @pre timeout >= 0
+   * @pre timeout &ge; 0
    */
   static public VinciFrame rpc(Transportable in, String service_name, int timeout)
           throws IOException, ServiceException, ServiceDownException, VNSException {
@@ -500,8 +500,8 @@ public class VinciClient extends BaseClient {
    * 
    * @pre in != null
    * @pre service_name != null
-   * @pre timeout >= 0
-   * @pre connect_timeout > 0
+   * @pre timeout &ge; 0
+   * @pre connect_timeout &gt; 0
    */
   static public VinciFrame rpc(Transportable in, String service_name, int timeout,
           int connect_timeout) throws IOException, ServiceException, ServiceDownException,
