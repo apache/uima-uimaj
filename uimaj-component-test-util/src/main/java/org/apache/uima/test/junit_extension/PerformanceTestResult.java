@@ -107,7 +107,7 @@ public interface PerformanceTestResult {
    * @param file
    *          Output file where the results are written to
    * 
-   * @throws Exception
+   * @throws Exception passthru
    */
   public void writePerfResultsAsColumn(String level, File file) throws Exception;
   

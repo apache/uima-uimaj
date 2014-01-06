@@ -55,17 +55,6 @@ public class UimaBootstrap {
 
   private static boolean suppressClassPathDisplay;
 
-  /**
-   * @param args
-   * @throws NoSuchMethodException 
-   * @throws SecurityException 
-   * @throws InvocationTargetException 
-   * @throws IllegalAccessException 
-   * @throws IllegalArgumentException 
-   * @throws IOException 
-   * @throws MalformedURLException 
-   * @throws URISyntaxException 
-   */
   public static void main(String[] args) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, MalformedURLException, IOException, URISyntaxException {
     if (args == null || args.length == 0) {
       System.err.println("Usage: specify -Dorg.apache.uima.jarpath=XXXX, where");

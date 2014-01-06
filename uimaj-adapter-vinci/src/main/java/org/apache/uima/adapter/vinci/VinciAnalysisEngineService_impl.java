@@ -77,7 +77,7 @@ public class VinciAnalysisEngineService_impl extends VinciServableAdapter {
    * @param serviceConfigPath descriptor location
    * @param debug
    * @param instanceId
-   * @throws Exception
+   * @throws Exception passthru
    */
   public VinciAnalysisEngineService_impl(String serviceConfigPath, boolean debug, String instanceId)
           throws Exception {

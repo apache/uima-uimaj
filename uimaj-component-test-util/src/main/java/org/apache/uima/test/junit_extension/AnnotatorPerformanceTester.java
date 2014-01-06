@@ -89,7 +89,7 @@ public class AnnotatorPerformanceTester {
    *          do warum for analysis engine - runs an short english sample document
    * @return PerformanceTestResult - returns the performance test results
    * 
-   * @throws Exception
+   * @throws Exception passthru
    */
   public static PerformanceTestResult runPerformanceTest(boolean repeatSingle, int numsToRun,
           File taeDescFilePath, File testFileDir, String dataPath, boolean doWarmup)

@@ -65,7 +65,7 @@ public class AnnotatorTester {
     * 
     * @param descFilePath
     *           descriptor file path
-    * @throws Exception
+    * @throws Exception passthru
     *            if an analysis engine initialize error occurs.
     */
    public AnnotatorTester(String descFilePath) throws Exception {
@@ -80,7 +80,7 @@ public class AnnotatorTester {
     * 
     * @param descFile
     *           descriptor file
-    * @throws Exception
+    * @throws Exception passthru
     *            if an analysis engine initialize error occurs.
     */
    public AnnotatorTester(File descFile) throws Exception {
@@ -110,7 +110,7 @@ public class AnnotatorTester {
    /**
     * initialize the analysis engine with the specified specifier.
     * 
-    * @throws Exception
+    * @throws Exception passthru
     */
    private void setup() throws Exception {
       try {
@@ -138,7 +138,7 @@ public class AnnotatorTester {
     * @param paramValue
     *           parameter value
     * 
-    * @throws ResourceConfigurationException
+    * @throws ResourceConfigurationException passthru
     */
    public void changeParameterSetting(String groupName, String paramName,
          Object paramValue) throws ResourceConfigurationException {
@@ -163,9 +163,9 @@ public class AnnotatorTester {
     * @param paramValue
     *           parameter value
     * 
-    * @throws InvalidXMLException
-    * @throws ResourceInitializationException
-    * @throws IOException
+    * @throws InvalidXMLException passthru
+    * @throws ResourceInitializationException passthru
+    * @throws IOException passthru
     */
    public void changeDelegateParameterSetting(String delegeteKey,
          String groupName, String paramName, Object paramValue)
@@ -205,7 +205,7 @@ public class AnnotatorTester {
     * @param configDescFilePath
     * @return AnalysisEngine
     * 
-    * @throws Exception
+    * @throws Exception passthru
     */
    public static AnalysisEngine doConfigurationTest(String configDescFilePath)
          throws Exception {
@@ -240,7 +240,7 @@ public class AnnotatorTester {
    /**
     * Creates a new fresh CAS instance which can be used for testing.
     * @return a new fresh CAS instance which can be used for testing
-    * @throws Exception
+    * @throws Exception passthru
     */
     public CAS createCAS()  throws Exception {
         try {
@@ -260,7 +260,7 @@ public class AnnotatorTester {
     * @param language
     *           the document text language
     * @return CAS - results of the analysis
-    * @throws Exception
+    * @throws Exception passthru
     */
    public CAS performTest(String text, String language) throws Exception {
       try {
@@ -288,7 +288,7 @@ public class AnnotatorTester {
     * @param cas
     *           a CAS for processing
     * @return CAS - results of the analysis
-    * @throws Exception
+    * @throws Exception passthru
     */
    public CAS performTest(CAS cas) throws Exception {
       try {
@@ -316,7 +316,7 @@ public class AnnotatorTester {
     * @param language
     *           the document text language
     * @return CAS - results of the analysis
-    * @throws Exception
+    * @throws Exception passthru
     */
    public static CAS performTest(String descFilePath, String text,
          String language) throws Exception {
@@ -356,7 +356,7 @@ public class AnnotatorTester {
     *           a xcas file
     * 
     * @return CAS - CAS object created from the given input data
-    * @throws Exception
+    * @throws Exception passthru
     */
    public static CAS getCASfromXCAS(File tsFile, File xcasFile)
          throws Exception {
@@ -389,7 +389,7 @@ public class AnnotatorTester {
     * @param encoding
     *           file encoding
     * @return String - file content
-    * @throws Exception
+    * @throws Exception passthru
     */
    public static String readFileContent(File file, String encoding)
          throws Exception {
@@ -413,7 +413,7 @@ public class AnnotatorTester {
     *           reference output
     * @param testFile
     *           test file for the current output
-    * @throws Exception
+    * @throws Exception passthru
     */
    public static void checkResult(CAS cas, String[] AnnotationTypes,
          File refFile, File testFile) throws Exception {
