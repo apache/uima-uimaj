@@ -165,7 +165,7 @@ public class PearExportOperation implements IRunnableWithProgress {
    *          The file to read
    * @param monitor
    * @return A byte array with the file contents
-   * @throws IOException
+   * @throws IOException -
    */
   private byte[] readContents(final IFile file, IProgressMonitor monitor) throws IOException {
     final ByteArrayOutputStream output = new ByteArrayOutputStream();

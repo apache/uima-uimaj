@@ -35,7 +35,7 @@ public class PearExport {
   /**
    * @param targetFile
    * @return true
-   * @throws PearException
+   * @throws PearException -
    */
   protected boolean ensureTargetFileIsValid(File targetFile) throws PearException {
     if (targetFile.exists() && targetFile.isDirectory()) {

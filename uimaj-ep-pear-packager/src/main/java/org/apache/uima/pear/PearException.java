@@ -38,9 +38,7 @@ public class PearException extends Exception {
 
   private static final long serialVersionUID = 1L;
 
-  /**
-   * 
-   */
+  
   public PearException() {
     super();
   }
