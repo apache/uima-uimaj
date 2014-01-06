@@ -24,9 +24,7 @@ import org.apache.uima.resource.metadata.impl.PropertyXmlInfo;
 import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 import org.apache.uima.search.Mapping;
 
-/**
- * 
- */
+
 public class Mapping_impl extends MetaDataObject_impl implements Mapping {
 
   private static final long serialVersionUID = -2371976614485187381L;

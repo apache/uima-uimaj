@@ -35,7 +35,7 @@ public interface ResourceManagerPearWrapper extends ResourceManager {
    * This method is called immediately after the factory creates the 
    * object (using the 0-argument constructor), and it initializes all
    * the fields in this wrapper to share the values with their parent.
-   * @param resourceManager
+   * @param resourceManager the parent ResourceManager
    */
   void initializeFromParentResourceManager(ResourceManager resourceManager);
 }

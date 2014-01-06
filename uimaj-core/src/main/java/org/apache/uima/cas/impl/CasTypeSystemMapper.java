@@ -41,8 +41,8 @@ import org.apache.uima.resource.ResourceInitializationException;
  * 
  * Use cases:
  * 
- * Serializing:  Source ts -> generate serialized form in Target ts 
- * Deserializing: Target ts -> generate deserialized form in Source ts
+ * Serializing:  Source ts -%gt; generate serialized form in Target ts 
+ * Deserializing: Target ts -%gt; generate deserialized form in Source ts
  *   - either from remote or
  *   - from disk-stored-form
  * 

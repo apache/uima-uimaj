@@ -68,9 +68,6 @@ public class PearInstallerTest extends TestCase {
     }
   }
   
-  /**
-   * @throws Exception
-   */
   public void testPearInstall() throws Exception {
     
     // check temporary working directory

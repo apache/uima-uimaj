@@ -79,14 +79,14 @@ public class StringSubtypeAnnotation extends Annotation {
   //*--------------*
   //* Feature: stringSetFeature
 
-  /* getter for stringSetFeature - gets 
+  /** getter for stringSetFeature - gets 
    * @generated */
   public String getStringSetFeature() {
     if (StringSubtypeAnnotation_Type.featOkTst && ((StringSubtypeAnnotation_Type)jcasType).casFeat_stringSetFeature == null)
       this.jcasType.jcas.throwFeatMissing("stringSetFeature", "org.apache.uima.cas.test.StringSubtypeAnnotation");
     return jcasType.ll_cas.ll_getStringValue(addr, ((StringSubtypeAnnotation_Type)jcasType).casFeatCode_stringSetFeature);}
     
-  /* setter for stringSetFeature - sets  
+  /** setter for stringSetFeature - sets  
    * @generated */
   public void setStringSetFeature(String v) {
     if (StringSubtypeAnnotation_Type.featOkTst && ((StringSubtypeAnnotation_Type)jcasType).casFeat_stringSetFeature == null)

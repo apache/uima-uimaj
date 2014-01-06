@@ -50,7 +50,7 @@ public interface Settings {
    *   can span multiple lines without using a final \ 
    * 
    * @param in - Stream holding properties
-   * @throws IOException
+   * @throws IOException if name characters illegal
    */
   public void load(InputStream in) throws IOException;
 
@@ -59,7 +59,7 @@ public interface Settings {
    *   UimaExternalOverrides
    * Files are loaded in order --- so in descending priority.
    * 
-   * @throws ResourceConfigurationException 
+   * @throws ResourceConfigurationException wraps IOException
    */
   public void loadSystemDefaults() throws ResourceConfigurationException;
   

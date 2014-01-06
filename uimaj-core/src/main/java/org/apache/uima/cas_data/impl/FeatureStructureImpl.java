@@ -26,13 +26,9 @@ import java.util.TreeMap;
 import org.apache.uima.cas_data.FeatureStructure;
 import org.apache.uima.cas_data.FeatureValue;
 
-/**
- * 
- */
+
 public class FeatureStructureImpl implements FeatureStructure {
-  /**
-   * 
-   */
+  
   private static final long serialVersionUID = -1828536763993413045L;
 
   private Map<String, FeatureValue> mFeatureMap;

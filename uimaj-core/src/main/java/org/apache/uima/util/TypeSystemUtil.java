@@ -136,6 +136,7 @@ public class TypeSystemUtil {
    * 
    * @param aType
    *          the type, which must be a subtype of uima.cas.String
+   * @param aTypeSystem the type system to use
    * @return array of allowed values for <code>aType</code> TODO - this should be a method on
    *         Type.
    */

@@ -52,9 +52,7 @@ import org.apache.uima.util.ProcessTrace;
  * 
  */
 public class ServiceDataCargo implements Serializable {
-  /**
-   * 
-   */
+  
   private static final long serialVersionUID = 2433836175315405277L;
 
   private CASCompleteSerializer mCasSer;
@@ -112,7 +110,7 @@ public class ServiceDataCargo implements Serializable {
    * 
    * @param aCas the CAS to unmarshal into
    * @param aReplaceCasTypeSystem if true, assumes serialized data contains the type system
-   * @throws CASException
+   * @throws CASException passthru
    */
    public void unmarshalCas(CAS aCas, boolean aReplaceCasTypeSystem) throws CASException {
     CASMgr casMgr = (CASMgr) aCas;

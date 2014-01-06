@@ -58,9 +58,7 @@ import org.apache.uima.util.Level;
 import org.apache.uima.util.Settings;
 import org.apache.uima.util.UriUtils;
 
-/**
- * 
- */
+
 public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   /**
    * resource bundle for log messages

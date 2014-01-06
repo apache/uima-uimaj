@@ -21,13 +21,9 @@ package org.apache.uima.cas_data.impl;
 
 import org.apache.uima.cas_data.PrimitiveValue;
 
-/**
- * 
- */
+
 public class PrimitiveValueImpl implements PrimitiveValue {
-  /**
-   * 
-   */
+  
   private static final long serialVersionUID = -5889249846359051538L;
 
   private Object aValueObject = null;

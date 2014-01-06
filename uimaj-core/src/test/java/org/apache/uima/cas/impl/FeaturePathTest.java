@@ -46,10 +46,8 @@ import org.apache.uima.util.XMLInputSource;
 
 public class FeaturePathTest extends TestCase {
 
-   /**
+   /*
     * Tests all primitive feature path types.
-    * 
-    * @throws Exception
     */
    public void testPrimitiveFeaturePathTypes() throws Exception {
 
@@ -222,10 +220,8 @@ public class FeaturePathTest extends TestCase {
 
    }
 
-   /**
+   /*
     * Tests advanced feature paths.
-    * 
-    * @throws Exception
     */
    public void testAdvancedFeaturePaths() throws Exception {
 
@@ -340,10 +336,8 @@ public class FeaturePathTest extends TestCase {
 
    }
 
-   /**
+   /*
     * Tests the supported built-in functions for the feature path
-    * 
-    * @throws Exception
     */
    public void testBuiltInFeaturePathFunctions() throws Exception {
 
@@ -446,10 +440,8 @@ public class FeaturePathTest extends TestCase {
 
    }
 
-   /**
+   /*
     * Tests some error conditions for the feature path implementation
-    * 
-    * @throws Exception
     */
    public void testErrorCases() throws Exception {
 
@@ -598,10 +590,8 @@ public class FeaturePathTest extends TestCase {
       assertEquals(null, featurePath.getType(null));
    }
 
-   /**
+   /*
     * Tests the addFeature() API
-    * 
-    * @throws Exception
     */
    public void testAddAPI() throws Exception {
 
@@ -654,10 +644,8 @@ public class FeaturePathTest extends TestCase {
 
    }
 
-   /**
+   /*
     * Tests the addFeature() API together with initialize()
-    * 
-    * @throws Exception
     */
    public void testInitializeWithAddAPI() throws Exception {
 
@@ -695,10 +683,8 @@ public class FeaturePathTest extends TestCase {
       assertTrue(featurePath.getFeature(1) == stringFeat);
    }
 
-   /**
+   /*
     * Tests all array types.
-    * 
-    * @throws Exception
     */
    public void testArrayTypes() throws Exception {
 

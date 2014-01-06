@@ -28,9 +28,7 @@ import org.apache.uima.resource.ResourceCreationSpecifier;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
-/**
- * 
- */
+
 public class ResourceCreationSpecifier_implTest extends TestCase {
   public void testDoFullValidation() throws Exception {
     try {

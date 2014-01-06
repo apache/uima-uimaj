@@ -508,7 +508,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * 
    * @param cl
    *                class loader to switch to 
-   * @throws CASException
+   * @throws CASException passthru
    */
   public void switchClassLoader(ClassLoader cl) {
 

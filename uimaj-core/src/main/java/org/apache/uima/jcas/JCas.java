@@ -79,18 +79,22 @@ public interface JCas extends AbstractCas {
   // *********************************
   // * Getters for read-only objects *
   // *********************************
-  /** return the FSIndexRepository object for this Cas. */
+  /**
+   * @return the FSIndexRepository object for this Cas
+   */
   public abstract FSIndexRepository getFSIndexRepository();
 
   public abstract LowLevelIndexRepository getLowLevelIndexRepository();
 
-  /** return the Cas object for this JCas instantiation */
+  /** 
+   * @return the CAS object for this JCas instantiation 
+   */
   public abstract CAS getCas();
 
-  /** internal use */
+  /* internal use */
   public abstract CASImpl getCasImpl();
 
-  /** internal use */
+  /* internal use */
   public abstract LowLevelCAS getLowLevelCas();
 
   /**
@@ -115,48 +119,48 @@ public interface JCas extends AbstractCas {
   /**
    * get the JCas x_Type instance for a particular Java instance of a type
    * 
-   * @param instance
+   * @param instance instance
    * @return the associated xxx_Type instance
    * @deprecated use instance.jcasType instead - faster
    */
   @Deprecated
   public abstract TOP_Type getType(TOP instance);
 
-  /**
+  /*
    * Internal use - looks up a type-name-string in the CAS type system and returns the Cas Type
    * object. Throws CASException if the type isn't found
    */
   public abstract Type getRequiredType(String s) throws CASException;
 
-  /**
+  /*
    * Internal use - look up a feature-name-string in the CAS type system and returns the Cas Feature
    * object. Throws CASException if the feature isn't found
    */
   public abstract Feature getRequiredFeature(Type t, String s) throws CASException;
 
-  /**
+  /*
    * Internal Use - look up a feature-name-string in the CAS type system and returns the Cas Feature
    * object. If the feature isn't found, adds an exception to the errorSet but doesn't throw
    */
 
   public abstract Feature getRequiredFeatureDE(Type t, String s, String rangeName, boolean featOkTst);
 
-  /**
+  /*
    * Internal Use - sets the corresponding Java instance for a Cas instance
    */
   public abstract void putJfsFromCaddr(int casAddr, FeatureStructure fs);
 
-  /**
+  /*
    * Internal Use - sets the corresponding Java instance for a Cas instance
    */
   public abstract TOP getJfsFromCaddr(int casAddr);
 
-  /**
+  /*
    * Internal Use. 
    */
   public abstract void checkArrayBounds(int fsRef, int pos);
 
-  /**
+  /*
    * Internal Use - throw missing feature exception at runtime.
    */
   public void throwFeatMissing(String feat, String type);
@@ -164,6 +168,8 @@ public interface JCas extends AbstractCas {
   /**
    * @deprecated As of v2.0, use {#getView(String)}. From the view you can access the Sofa data, or
    *             call {@link #getSofa()} if you truly need to access the SofaFS object.
+   * @param sofaID -
+   * @return the Sofa
    */
   @Deprecated
   public abstract Sofa getSofa(SofaID sofaID);
@@ -190,7 +196,7 @@ public interface JCas extends AbstractCas {
    *          same as the associated Sofa name).
    * 
    * @return The view corresponding to this local name.
-   * @throws CASRuntimeException
+   * @throws CASException -
    *           if a View with this name already exists in this CAS
    */
   public abstract JCas createView(String sofaID) throws CASException;
@@ -202,6 +208,7 @@ public interface JCas extends AbstractCas {
    *          a Sofa feature structure in this CAS.
    * 
    * @return The JCas view for the given Sofa.
+   * @throws CASException -
    */  
   public abstract JCas getJCas(Sofa sofa) throws CASException;
 
@@ -233,6 +240,7 @@ public interface JCas extends AbstractCas {
    * avoid creating multiple copies of it. All uses can use the same valuee because it is not
    * updatable (it has no subfields). This is initialized lazily on first reference, and reset when
    * the CAS is reset.
+   * @return 0-length instance of a StringArray
    */
 
   public abstract StringArray getStringArray0L();
@@ -242,6 +250,7 @@ public interface JCas extends AbstractCas {
    * avoid creating multiple copies of it. All uses can use the same valuee because it is not
    * updatable (it has no subfields). This is initialized lazily on first reference, and reset when
    * the CAS is reset.
+   * @return 0-length instance of an IntegerArray
    */
   public abstract IntegerArray getIntegerArray0L();
 
@@ -250,7 +259,7 @@ public interface JCas extends AbstractCas {
    * avoid creating multiple copies of it. All uses can use the same valuee because it is not
    * updatable (it has no subfields). This is initialized lazily on first reference, and reset when
    * the CAS is reset.
-   */
+   * @return 0-length instance of a FloatArray
   public abstract FloatArray getFloatArray0L();
 
   /**
@@ -258,6 +267,7 @@ public interface JCas extends AbstractCas {
    * avoid creating multiple copies of it. All uses can use the same valuee because it is not
    * updatable (it has no subfields). This is initialized lazily on first reference, and reset when
    * the CAS is reset.
+   * @return 0-length instance of a FSArray
    */
   public abstract FSArray getFSArray0L();
 
@@ -279,7 +289,7 @@ public interface JCas extends AbstractCas {
    *          same as the associated Sofa name).
    * 
    * @return The view corresponding to this local name.
-   * @throws CASException
+   * @throws CASException passthru
    *           
    */
   JCas getView(String localViewName) throws CASException;
@@ -293,6 +303,7 @@ public interface JCas extends AbstractCas {
    *          a Sofa feature structure in the CAS
    * 
    * @return The view for the given Sofa
+   * @throws CASException passthru
    */
   JCas getView(SofaFS aSofa) throws CASException;
 
@@ -319,7 +330,8 @@ public interface JCas extends AbstractCas {
   
   /**
    * Create a Subject of Analysis. The new sofaFS is automatically added to the SofaIndex.
-   * 
+   * @param sofaID the SofA ID
+   * @param mimeType the mime type
    * @return The sofaFS.
    * 
    * @deprecated As of v2.0, use {@link #createView(String)} instead.
@@ -342,6 +354,7 @@ public interface JCas extends AbstractCas {
    *          The input iterator.
    * @param cons
    *          The constraint specifying what structures should be returned.
+   * @param <T> the particular FeatureStructure type
    * @return An iterator over FSs.
    */
   <T extends FeatureStructure> FSIterator<T> createFilteredIterator(FSIterator<T> it, FSMatchConstraint cons);
@@ -375,6 +388,7 @@ public interface JCas extends AbstractCas {
    * 
    * @param it
    *          The <code>FSListIterator</code> to be wrapped.
+   * @param <T> The particular Feature Structure type
    * @return An equivalent <code>ListIterator</code>.
    */
   <T extends FeatureStructure> ListIterator<T> fs2listIterator(FSIterator<T> it);
@@ -458,8 +472,8 @@ public interface JCas extends AbstractCas {
    * Sets the language for this document. This value sets the language feature of the special
    * instance of DocumentAnnotation associated with this CAS.
    * 
-   * @param languageCode
-   * @throws CASRuntimeException
+   * @param languageCode the language code
+   * @throws CASRuntimeException passthru
    */
   void setDocumentLanguage(String languageCode) throws CASRuntimeException;
 
@@ -589,6 +603,7 @@ public interface JCas extends AbstractCas {
    *          passed as an integer using the form
    *          MyAnnotationType.type
    * @return The standard annotation index, restricted to <code>type</code>.
+   * @throws CASRuntimeException -
    */
   AnnotationIndex<Annotation> getAnnotationIndex(int type) throws CASRuntimeException;
 
@@ -599,7 +614,8 @@ public interface JCas extends AbstractCas {
    * 
    * @return an iterator which returns all views.  Each object returned by
    *   the iterator is of type JCas.
-   */
+   * @throws CASException -
+  */
   Iterator<JCas> getViewIterator() throws CASException;  
   
   /**
@@ -616,6 +632,7 @@ public interface JCas extends AbstractCas {
    * 
    * @return an iterator which returns all views with the given name prefix.  
    *   Each object returned by the iterator is of type JCas.
+   * @throws CASException -
    */
   Iterator<JCas> getViewIterator(String localViewNamePrefix) throws CASException;
 }

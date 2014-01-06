@@ -43,7 +43,7 @@ public interface XMLizable {
    * instead, as it ensures that output is written in UTF-8 encoding, which is the default encoding 
    * that should be used for XML files.
    * <p>
-   * The XML String that is produced will have a header <code>&lt;?xml version="1.0" encoding="UTF-8"?></code>.  
+   * The XML String that is produced will have a header <code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</code>.  
    * Therefore you should not write this string out in any encoding other than UTF-8 (for example do not use the
    * default platform encoding), or you will produce output that will not be able to be parsed.
    * 
@@ -52,6 +52,7 @@ public interface XMLizable {
    * 
    * @throws IOException
    *           if an I/O failure occurs
+   * @throws SAXException passthru
    */
   public void toXML(Writer aWriter) throws SAXException, IOException;
 

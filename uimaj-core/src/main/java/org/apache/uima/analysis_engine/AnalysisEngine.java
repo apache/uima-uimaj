@@ -531,7 +531,7 @@ public interface AnalysisEngine extends ConfigurableResource, CasObjectProcessor
    * A factory method used to create an instance of {@link ResultSpecification} for use with this
    * AnalysisEngine. Applications use this method to construct <code>ResultSpecification</code>s
    * to pass to this AnalysisEngine's {@link #setResultSpecification(ResultSpecification)} method.
-   * 
+   * @param aTypeSystem the type system
    * @return a new instance of <code>ResultSpecification</code>
    */
   public ResultSpecification createResultSpecification(TypeSystem aTypeSystem);

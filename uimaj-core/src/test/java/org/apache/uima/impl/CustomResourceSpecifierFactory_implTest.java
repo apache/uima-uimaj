@@ -27,9 +27,7 @@ import org.apache.uima.resource.CustomResourceSpecifier;
 import org.apache.uima.resource.Parameter;
 import org.apache.uima.resource.Resource;
 
-/**
- * 
- */
+
 public class CustomResourceSpecifierFactory_implTest extends TestCase {
  
   private CustomResourceFactory_impl crFactory;

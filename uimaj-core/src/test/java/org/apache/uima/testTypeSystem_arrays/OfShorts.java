@@ -81,14 +81,14 @@ public class OfShorts extends Annotation {
   //*--------------*
   //* Feature: f1Shorts
 
-  /* getter for f1Shorts - gets 
+  /** getter for f1Shorts - gets 
    * @generated */
   public ShortArray getF1Shorts() {
     if (OfShorts_Type.featOkTst && ((OfShorts_Type)jcasType).casFeat_f1Shorts == null)
       jcasType.jcas.throwFeatMissing("f1Shorts", "org.apache.uima.testTypeSystem_arrays.OfShorts");
     return (ShortArray)(jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr, ((OfShorts_Type)jcasType).casFeatCode_f1Shorts)));}
     
-  /* setter for f1Shorts - sets  
+  /** setter for f1Shorts - sets  
    * @generated */
   public void setF1Shorts(ShortArray v) {
     if (OfShorts_Type.featOkTst && ((OfShorts_Type)jcasType).casFeat_f1Shorts == null)

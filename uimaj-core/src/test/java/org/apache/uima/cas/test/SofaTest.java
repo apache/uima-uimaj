@@ -332,10 +332,8 @@ public class SofaTest extends TestCase {
 
   }
 
-  /**
+  /*
    * Test stream access to Sofa Data.
-   * 
-   * @throws Exception
    */
   public void testSofaDataStream() throws Exception {
     try {

@@ -470,7 +470,9 @@ public class IntArrayRBT extends IntArrayRBTcommon {
   }
 
   /**
-   * Find the node such that key[node] >= k and key[previous(node)] < k.
+   * Find the node such that key[node] &ge; k and key[previous(node)] &lt; k.
+   * @param k the key
+   * @return the index of the node
    */
   public int findInsertionPoint(final int k) {
     int node = this.root;

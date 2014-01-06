@@ -26,9 +26,7 @@ import org.apache.uima.cas_data.ReferenceArrayFS;
  * 
  */
 public class ReferenceArrayFSImpl extends FeatureStructureImpl implements ReferenceArrayFS {
-  /**
-   * 
-   */
+  
   private static final long serialVersionUID = -1748415737830294866L;
 
   private String[] mIdRefs;

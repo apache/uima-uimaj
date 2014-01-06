@@ -34,18 +34,21 @@ public interface AnalysisEngineServiceStub extends ResourceServiceStub {
    * 
    * @param aCAS
    *          the CAS to process
+   * @throws ResourceServiceException tbd         
    */
   public abstract void callProcess(CAS aCAS) throws ResourceServiceException;
 
   /**
    * Performs service call to inform the AnalysisEngine that the processing of a batch has been
    * completed.
+   * @throws ResourceServiceException tbd        
    */
   public abstract void callBatchProcessComplete() throws ResourceServiceException;
 
   /**
    * Performs service call to inform the AnalysisEngine that the processing of a collection has been
    * completed.
+   * @throws ResourceServiceException tbd         
    */
   public abstract void callCollectionProcessComplete() throws ResourceServiceException;
 }

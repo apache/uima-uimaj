@@ -350,6 +350,7 @@ public class FileUtils {
    * @param relativeToDir
    *          directory that the path should be relative to
    * @return a relative path. This always uses / as the separator character.
+   * @throws IOException -
    */
   public static String findRelativePath(File file, File relativeToDir) throws IOException {
     String canonicalFile = file.getCanonicalPath();

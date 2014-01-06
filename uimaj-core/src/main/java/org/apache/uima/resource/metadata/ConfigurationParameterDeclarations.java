@@ -238,8 +238,8 @@ public interface ConfigurationParameterDeclarations extends MetaDataObject {
    * A value for the <code>searchStrategy</code> property that is useful when ISO language and
    * country codes are used as configuration group names. If there is no value declared in a group,
    * look in more general groups. The fallback sequence is
-   * <code>lang-country-region -> lang-country -> 
-   * lang -> default</code>. For example, if a
+   * <code>lang-country-region -%gt; lang-country -%gt; 
+   * lang -%gt; default</code>. For example, if a
    * request is made for the value of a parameter in the "en-GB" group and no such group exists, the
    * value from the "en" group will be used instead.
    */

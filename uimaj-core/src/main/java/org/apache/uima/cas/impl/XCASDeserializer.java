@@ -306,8 +306,8 @@ public class XCASDeserializer {
      * @param addr
      * @param attrs
      * @param toIndex
-     *          Special hack to accomodate document annotation, which is already in the index.
-     * @throws SAXParseException
+     *          Special hack to accommodate document annotation, which is already in the index.
+     * @throws SAXParseException passthru
      */
     private void readFS(final int addr, Attributes attrs, boolean toIndex) throws SAXParseException {
       // Hang on address for setting content feature
@@ -863,7 +863,7 @@ public class XCASDeserializer {
       }
     }
 
-    /**
+    /*
      * Finalizes an Out Of Type System FS by assigning a unique ID (prepending a letter) and
      * remapping ID references appropriately (both In-Type-System and Out-Of-TypeSystem refs).
      */
@@ -892,7 +892,7 @@ public class XCASDeserializer {
       }
     }
 
-    /**
+    /*
      * Finalizes the Out Of Type System features (extra features on in-typesystem types).
      */
     private void finalizeOutOfTypeSystemFeatures() {
@@ -993,7 +993,7 @@ public class XCASDeserializer {
       throw e;
     }
 
-    /**
+    /*
      * Adds a feature sturcture to the out-of-typesystem data, and sets the parser's state
      * appropriately. (APL)
      */

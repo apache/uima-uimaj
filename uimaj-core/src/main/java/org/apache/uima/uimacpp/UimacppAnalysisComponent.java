@@ -302,9 +302,7 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
     return 1;
   }
 
-  /**
-   * 
-   */
+  
   public void batchProcessComplete() throws AnalysisEngineProcessException {
     try {
       if (engine != null) {
@@ -316,9 +314,7 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
     }
   }
 
-  /**
-   * 
-   */
+  
   public void collectionProcessComplete() throws AnalysisEngineProcessException {
     try {
       if (engine != null) {

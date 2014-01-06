@@ -35,7 +35,7 @@ import org.apache.uima.cas.FSIterator;
  * <li>Annotations are sorted in increasing order of their start offset. That is, for any
  * annotations a and b, if <code>a.start &lt; b.start</code> then <code> a &lt; b</code>.</li>
  * <li>Annotations whose start offsets are equal are next sorted by <i>decreasing</i> order of
- * their end offsets. That is, if <code>a.start = b.start</code> and <code>a.end > b.end</code>,
+ * their end offsets. That is, if <code>a.start = b.start</code> and <code>a.end &gt; b.end</code>,
  * then <code> a &lt; b</code>. This causes annotations with larger to be sorted before
  * annotations with smaller spans, which produces an iteration order similar to a preorder tree
  * traversal.</li>
@@ -49,7 +49,6 @@ import org.apache.uima.cas.FSIterator;
  * have two annotations of the exact same type that also have the same span. It will also occur if
  * you have not defined any type priority between two annotations that have the same span.</li>
  * </ul>
- * </p>
  * <p>
  * In the method descriptions below, the notation <code>a &lt; b</code>, where <code>a</code>
  * and <code>b</code> are annotations, should be taken to mean <code>a</code> comes before

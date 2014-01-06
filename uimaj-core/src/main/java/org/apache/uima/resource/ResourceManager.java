@@ -67,6 +67,7 @@ public interface ResourceManager {
    * 
    * @return the absolute URL of an actual file in the datapath or classpath, null if no file
    *         matching <code>aRelativePath</code> is found.
+   * @throws MalformedURLException if the path cannot be converted to a URL
    */
   public URL resolveRelativePath(String aRelativePath) throws MalformedURLException;
 
@@ -79,10 +80,11 @@ public interface ResourceManager {
    * @return the Resource registered under <code>aName</code>, <code>null</code> if none
    *         exists.
    * 
-   * @throws ResourceInitializationException
+   * @throws ResourceAccessException
    *           if the requested resource could not be initialized. A common cause is that it
    *           requires parameters and the {@link #getResource(String,String[])} method should have
    *           been called instead of this method.
+   * @throws ResourceAccessException tbd
    */
   public Object getResource(String aName) throws ResourceAccessException;
 
@@ -98,7 +100,7 @@ public interface ResourceManager {
    * @return the requested Resource, <code>null</code> if there is no resource registered under
    *         the name <code>aName</code>.
    * 
-   * @throws ResourceInitializationException
+   * @throws ResourceAccessException
    *           if there is a resource registered under <code>aName</code> but it could not be
    *           instantiated for the specified parameters.
    */
@@ -279,6 +281,7 @@ public interface ResourceManager {
 
   /**
    * Gets the CasManager, which manages the creation and pooling of CASes.
+   * @return the CasManager
    */
   public CasManager getCasManager();
 

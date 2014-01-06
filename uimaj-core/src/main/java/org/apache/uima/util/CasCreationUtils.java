@@ -344,7 +344,8 @@ public class CasCreationUtils {
    * @param aPerformanceTuningSettings
    *                Properties object containing framework performance tuning settings using key
    *                names defined on {@link UIMAFramework} interface
-   * 
+   * @param aResourceManager 
+   *                the resource manager
    * @return a new CAS instance
    * 
    * @throws ResourceInitializationException
@@ -473,7 +474,8 @@ public class CasCreationUtils {
    *                type priorities to install in the CAS
    * @param aFsIndexes
    *                indexes to install in the CAS
-   * 
+   * @param aPerformanceTuningSettings
+   *                the settings for performance tuning
    * @return a new CAS instance
    * 
    * @throws ResourceInitializationException
@@ -495,6 +497,8 @@ public class CasCreationUtils {
    *                type priorities to install in the CAS
    * @param aFsIndexes
    *                indexes to install in the CAS
+   * @param aPerformanceTuningSettings
+   *                the settings for performance tuning
    * @param aResourceManager
    *                resource manager, which is used to set the JCas ClassLoader for the new CAS
    * 
@@ -1896,7 +1900,7 @@ public class CasCreationUtils {
    *         information in all of the objects in <code>aComponentDescriptionOrMetaData</code>
    *         (including all components of aggregate AnalysisEngines)
    * 
-   * @throws ResourceInitialziationException
+   * @throws ResourceInitializationException
    *                 if a failure occurs because an import could not be resolved
    */
   public static List<ProcessingResourceMetaData> getMetaDataList(Collection<? extends MetaDataObject> aComponentDescriptionOrMetaData,
@@ -2061,7 +2065,7 @@ public class CasCreationUtils {
    *         information in all of the objects in <code>aComponentDescriptionOrMetaData</code>
    *         (including all components of aggregate AnalysisEngines)
    * 
-   * @throws ResourceInitialziationException
+   * @throws ResourceInitializationException
    *                 if a failure occurs because an import could not be resolved
    */
   public static List<ProcessingResourceMetaData> getMetaDataList(Collection<? extends MetaDataObject> aComponentDescriptionOrMetaData,

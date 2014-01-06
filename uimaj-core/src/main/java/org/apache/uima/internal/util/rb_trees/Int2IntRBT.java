@@ -397,9 +397,7 @@ public class Int2IntRBT extends IntArrayRBTcommon {
   }
   
  
-  /**
-   * 
-   */
+  
   
   private int findKeyFromLast(final int k) {
     int node = lastNodeGotten;

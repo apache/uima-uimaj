@@ -93,10 +93,10 @@ public abstract class CasFlow_ImplBase implements Flow {
    *          the key of the CAS Multiplier that produced this CAS
    * 
    * @return a Flow object that will be used to route the new CAS
+   * @throws AnalysisEngineProcessException passthru
    * @see Flow#newCasProduced(AbstractCas, String)
    */
-  protected Flow newCasProduced(CAS newCas, String producedBy)
-          throws AnalysisEngineProcessException {
+  protected Flow newCasProduced(CAS newCas, String producedBy) throws AnalysisEngineProcessException {
     throw new UIMA_UnsupportedOperationException(
             UIMA_UnsupportedOperationException.CAS_MULTIPLIER_NOT_SUPPORTED, new Object[] { this
                     .getClass().getName() });

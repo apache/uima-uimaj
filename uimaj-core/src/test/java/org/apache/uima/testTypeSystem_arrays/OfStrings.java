@@ -81,14 +81,14 @@ public class OfStrings extends Annotation {
   //*--------------*
   //* Feature: f1Strings
 
-  /* getter for f1Strings - gets 
+  /** getter for f1Strings - gets 
    * @generated */
   public StringArray getF1Strings() {
     if (OfStrings_Type.featOkTst && ((OfStrings_Type)jcasType).casFeat_f1Strings == null)
       jcasType.jcas.throwFeatMissing("f1Strings", "org.apache.uima.testTypeSystem_arrays.OfStrings");
     return (StringArray)(jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr, ((OfStrings_Type)jcasType).casFeatCode_f1Strings)));}
     
-  /* setter for f1Strings - sets  
+  /** setter for f1Strings - sets  
    * @generated */
   public void setF1Strings(StringArray v) {
     if (OfStrings_Type.featOkTst && ((OfStrings_Type)jcasType).casFeat_f1Strings == null)

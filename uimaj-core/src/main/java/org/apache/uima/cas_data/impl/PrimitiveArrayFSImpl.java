@@ -28,9 +28,7 @@ import org.apache.uima.cas_data.PrimitiveArrayFS;
  * 
  */
 public class PrimitiveArrayFSImpl extends FeatureStructureImpl implements PrimitiveArrayFS {
-  /**
-   * 
-   */
+  
   private static final long serialVersionUID = -2050313181387759103L;
 
   private Object mArrayObject;

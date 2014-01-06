@@ -970,9 +970,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     reset();
   }
 
-  /**
-   * 
-   */
+  
   public FSIndexRepository getIndexRepository() {
     if (this == this.svd.baseCAS) {
       // BaseCas has no indexes for users
@@ -1163,7 +1161,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * native byte order.
    * 
    * @param istream
-   * @throws CASRuntimeException
+   * @throws CASRuntimeException wraps IOException
    */
 
   public SerialFormat reinit(InputStream istream) throws CASRuntimeException {
@@ -2467,9 +2465,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return (CAS) this.svd.sofaNbr2ViewMap.get(Integer.valueOf(sofaNum));
   }
 
-  /**
-   * 
-   */
+  
   public CAS getCurrentView() {
     return getView(CAS.NAME_DEFAULT_SOFA);
   }
@@ -2594,7 +2590,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * heap dumping (binary) or generic fs creators (xmi).
    * 
    * Goal is to detect case where check is needed (sofa exists, but view not yet
-   * created). This is done by looking for cases where sofaNbr > curViewCount.
+   * created). This is done by looking for cases where sofaNbr &gt; curViewCount.
    * This only works if the sofaNbrs go up by 1 (except for the initial sofa) in
    * the input sequence of calls.
    */
@@ -2626,7 +2622,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   /*
-   * for Sofas being added (determined by sofaNbr > curViewCount): verify sofa
+   * for Sofas being added (determined by sofaNbr &gt; curViewCount): verify sofa
    * name is not already present, and record it for future tests
    * 
    * Only should do the name test & update in the case of deserialized new sofas

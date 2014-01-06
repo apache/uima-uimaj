@@ -39,9 +39,7 @@ public class Language {
 
   private String territoryPart = null;
 
-  /**
-   * 
-   */
+  
   public Language(String language) {
     super();
     this.lang = normalize(language);

@@ -97,9 +97,7 @@ public class PearRuntimeTest extends TestCase {
     desc.setSofaMappings(sofaMappings);
     CAS cas = runDesc(desc);
   }
-  /**
-   * @throws Exception
-   */
+
   public void testPearRuntime() throws Exception {
 
     CAS cas = this.runPearRuntimeTestcase(new String[]{"pearTests/DateTime.pear", "pearTests/RoomNumber.pear"});
@@ -115,9 +113,7 @@ public class PearRuntimeTest extends TestCase {
 //    }
    }
 
-  /**
-   * @throws Exception
-   */
+  
 
   public void testPearRuntimeDocAnnot() throws Exception {
 
@@ -212,9 +208,7 @@ public class PearRuntimeTest extends TestCase {
     return cas;
   }
   
-  /**
-   * @throws Exception
-   */
+
   private CAS runPearRuntimeTestcase(String[] pears) throws Exception {
     
     AnalysisEngineDescription desc = createAeDescriptionFromPears(pears);    

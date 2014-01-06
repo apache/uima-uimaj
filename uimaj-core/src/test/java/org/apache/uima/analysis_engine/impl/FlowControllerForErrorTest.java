@@ -140,9 +140,7 @@ public class FlowControllerForErrorTest extends CasFlowController_ImplBase {
     
   }
 
-  /**
-   * 
-   */
+  
   public static void reset() {
     abortedDocuments.clear();
     failedAEs.clear();    

@@ -29,9 +29,7 @@ import org.apache.uima.resource.metadata.impl.XmlizationInfo;
  * Implementation of {@link SofaMapping}.
  */
 public class SofaMapping_impl extends MetaDataObject_impl implements SofaMapping {
-  /**
-   * 
-   */
+  
   private static final long serialVersionUID = -6115544748030506703L;
 
   private String mComponentKey = CAS.NAME_DEFAULT_TEXT_SOFA;

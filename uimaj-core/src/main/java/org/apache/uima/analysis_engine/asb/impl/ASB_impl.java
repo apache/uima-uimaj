@@ -196,7 +196,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
    * @param aFlowControllerDeclaration
    *          declaration (key and specifier) of FlowController to be used for this aggregate.
    * @param aAggregateMetadata metadata for the aggregate AE
-   * @throws ResourceInitializationException
+   * @throws ResourceInitializationException passthru
    */
   public void setup(Map<String, ResourceSpecifier> aSpecifiers, UimaContextAdmin aParentContext,
           FlowControllerDeclaration aFlowControllerDeclaration,
@@ -279,7 +279,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
     mAllComponentMetaDataMap = Collections.unmodifiableMap(mAllComponentMetaDataMap);
   }
 
-  /**
+  /*
    * Initializes the FlowController for this aggregate.
    */
   protected void initFlowController(FlowControllerDeclaration aFlowControllerDeclaration,

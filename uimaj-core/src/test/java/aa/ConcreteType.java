@@ -54,7 +54,7 @@ public class ConcreteType extends AbstractType {
   protected ConcreteType() {
   }
 
-  /*
+  /**
    * Internal - constructor used by generator
    * 
    * @generated
@@ -81,7 +81,7 @@ public class ConcreteType extends AbstractType {
   // *--------------*
   // * Feature: concreteString
 
-  /*
+  /**
    * getter for concreteString - gets
    * 
    * @generated
@@ -94,7 +94,7 @@ public class ConcreteType extends AbstractType {
             ((ConcreteType_Type) jcasType).casFeatCode_concreteString);
   }
 
-  /*
+  /**
    * setter for concreteString - sets
    * 
    * @generated

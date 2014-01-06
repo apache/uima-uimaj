@@ -29,9 +29,7 @@ public class ParsingException extends Exception {
 
   private static final long serialVersionUID = -8526988900901941980L;
 
-  /**
-   * 
-   */
+  
   public ParsingException() {
     super();
     // TODO Auto-generated constructor stub

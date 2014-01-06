@@ -36,7 +36,7 @@ import org.apache.uima.util.XMLizable;
  * The only syntax the indexers are required to import is the <code>FeatureValue</code> syntax,
  * which permits very simple expressions that test the values of features. Expressions using this
  * syntax take the form <code>&lt;FeatureName&gt; &lt;Operator&gt; &lt;Literal&gt;</code>, where
- * FeatureName is a CAS feature name, Operator is either =, !=, &lt;, &lt;=, &gt, or &gt;=, and
+ * FeatureName is a CAS feature name, Operator is either =, !=, &lt;, &lt;=, &gt;, or &ge;=, and
  * Literal is an integer, floating point number (no exponent syntax supported) or string literal
  * enclosed in double quotes, with embedded quotes and backslashes escaped by a backslash. For
  * example, the following are valid filters:
@@ -44,7 +44,7 @@ import org.apache.uima.util.XMLizable;
  * <li>foo = "hello world"</li>
  * <li>foo &lt; 42 </li>
  * <li>bar7 = "\"Blah,\" he said."
- * <li>bar7 >= 0.5</li>
+ * <li>bar7 &gt;= 0.5</li>
  * </ul>
  * This object implements the {@link XMLizable} interface and can be parsed from an XML
  * representation.

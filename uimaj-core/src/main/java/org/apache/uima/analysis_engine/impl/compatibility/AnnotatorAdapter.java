@@ -71,7 +71,7 @@ public class AnnotatorAdapter implements AnalysisComponent {
    * @param aAdditionalParams
    *          parameters passed to AE's initialize method. Used to allow containing Aggregate to
    *          influence ResultSpecification, for backwards compatibility with CapabilityLanguageFlow.
-   * @throws ResourceInitializationException
+   * @throws ResourceInitializationException if the component is sofa-aware
    */
   public AnnotatorAdapter(BaseAnnotator aAnnotator, AnalysisEngineMetaData aMetaData,
           Map<String, Object> aAdditionalParams) throws ResourceInitializationException {

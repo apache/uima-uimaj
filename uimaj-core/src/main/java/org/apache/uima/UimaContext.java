@@ -308,6 +308,10 @@ public interface UimaContext {
    * @param aKey
    *          the key by which the resource is identified. This key should be declared in the
    *          &lt;externalResourceDependencies&gt; section of the descriptor.
+   * @param aParams
+   *          parameters used to further identify the resource. When used to identify the language
+   *          for a &lt;fileLanguageResourceSpecifier&gt;, this array should contain a single element,
+   *          the ISO language code for the language of the document (e.g. "en", "de").
    * 
    * @return the <code>URI</code> at which the named resource is located, <code>null</code> if
    *         the named resource could not be found.
@@ -341,6 +345,10 @@ public interface UimaContext {
    * @param aKey
    *          the key by which the resource is identified. This key should be declared in the
    *          &lt;externalResourceDependencies&gt; section of the descriptor.
+   * @param aParams
+   *          parameters used to further identify the resource. When used to identify the language
+   *          for a &lt;fileLanguageResourceSpecifier&gt;, this array should contain a single element,
+   *          the ISO language code for the language of the document (e.g. "en", "de").
    * 
    * @return the absolute file path at which the named resource is located, <code>null</code> if
    *         the named resource could not be found.
@@ -479,6 +487,7 @@ public interface UimaContext {
    * @param aCasInterface
    *          the specific CAS interface that the component wants to use (e.g. CAS or JCas). Must
    *          specify a subtype of {@link AbstractCas}.
+   * @param <T> the type of the CAS interface (CAS or JCas)
    * 
    * @return an empty CAS. This will be an implementation of <code>aCasInterface</code>.
    */

@@ -30,7 +30,8 @@ import org.apache.uima.resource.ManagementObject;
  * <p>
  * In this implementation, objects implementing this interface will always be JMX-compatible MBeans
  * that you can register with an MBeanServer. For information on JMX see <a
- * href="http://java.sun.com/j2se/1.5.0/docs/api/javax/management/package-summary.html"/>
+ * href="http://java.sun.com/j2se/1.5.0/docs/api/javax/management/package-summary.html">
+ * http://java.sun.com/j2se/1.5.0/docs/api/javax/management/package-summary.html</a>
  */
 public interface AnalysisEngineManagement extends ManagementObject {
 	public static enum State {Unavailable,Initializing, Ready};
@@ -112,6 +113,7 @@ public interface AnalysisEngineManagement extends ManagementObject {
   
   /**
    * Gets the current state of an AnalysisEngine. The AE should either be in Initializing or Ready state.
+   * @return the state of the analysis engine, from the State enum above
    */
   String getState();
   

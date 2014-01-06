@@ -38,9 +38,9 @@ public class UriUtils {
    *   String has quoted (e.g. %20) characters but no other chars needing quoting
    *   String has quoted (e.g. %20) characters and chars needing quoting, not currently quoted
    *     -- this case will throw an exception
-   * @param s
+   * @param s the string to quote
    * @return URI with proper quoting
-   * @throws URISyntaxException 
+   * @throws URISyntaxException passthru
    */
   public static URI quote (String s) throws URISyntaxException {
     if (-1 == s.indexOf('%')) {
@@ -56,9 +56,9 @@ public class UriUtils {
   /**
    * Create a URI from a URL, with proper quoting.
    * Already quoted things in the input string are not re-quoted.
-   * @param u
+   * @param u the input URL
    * @return URI with proper quoting
-   * @throws URISyntaxException 
+   * @throws URISyntaxException passthru
    */
 
   public static URI quote(URL u) throws URISyntaxException {
@@ -69,7 +69,7 @@ public class UriUtils {
    * Create a URI from a String, with proper quoting.
    * Already quoted things in the input string are not re-quoted.
    * Mimic exception treatment of URI.create
-   * @param s
+   * @param s the input string
    * @return URI with proper quoting
    */
 

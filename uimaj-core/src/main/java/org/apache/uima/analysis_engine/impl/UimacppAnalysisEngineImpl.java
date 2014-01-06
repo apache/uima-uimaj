@@ -93,7 +93,8 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
   private boolean mVerificationMode = false;
 
   /**
-   * @throws ResourceConfigurationException
+   * @throws ResourceConfigurationException wrapping ResourceInitializationExceptions or 
+   * wraps invalid xml exception when processing imports
    * @see org.apache.uima.resource.Resource#initialize(ResourceSpecifier, Map)
    */
   public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)

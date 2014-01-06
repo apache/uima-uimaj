@@ -74,6 +74,8 @@ public class CasToInlineXml {
 
   /**
    * Formats a CAS as a String.
+   * @param aCAS the cas to format as an xml string
+   * @return the XML representation of the CAS
    */
   public String format(CAS aCAS) throws CASException {
     return generateXML(aCAS, null);
@@ -81,6 +83,10 @@ public class CasToInlineXml {
 
   /**
    * Formats a CAS as a String. Only FeatureStructures matching the given filter will be output.
+   * @param aCAS CAS
+   * @param aFilter a filter to limit the Feature Structures 
+   * @return the XML representation
+   * @throws CASException -
    */
   public String format(CAS aCAS, FSMatchConstraint aFilter) throws CASException {
     return generateXML(aCAS, aFilter);
@@ -91,6 +97,7 @@ public class CasToInlineXml {
    * 
    * @param aCAS
    *          CAS to generate from
+   * @return the inline XML version of the CAS
    */
   public String generateXML(CAS aCAS) throws CASException {
     return generateXML(aCAS, null);
@@ -104,6 +111,8 @@ public class CasToInlineXml {
    * @param aFilter
    *          constraint that determines which annotations are included in the output. If null (or
    *          omitted), all annotations are included.
+   * @return the inline XML version of the CAS
+   * @throws CASException -
    */
   public String generateXML(CAS aCAS, FSMatchConstraint aFilter) throws CASException {
     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();

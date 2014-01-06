@@ -29,9 +29,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.Resource_ImplBase;
 
-/**
- * 
- */
+
 public class SomeCustomResource extends Resource_ImplBase {
   
   public Map<String, String> paramMap = new HashMap<String, String>();

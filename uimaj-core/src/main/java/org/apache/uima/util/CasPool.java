@@ -136,7 +136,7 @@ public class CasPool {
    *          the number of CAS instances in the pool
    * @param aMetaData
    *          metadata that includes the type system for the CAS
-   * 
+   * @param aResourceManager Resource Manager
    * @throws ResourceInitializationException
    *           if the CAS instances could not be created
    */
@@ -161,6 +161,7 @@ public class CasPool {
    * @param aPerformanceTuningSettings
    *          Properties object containing framework performance tuning settings using key names
    *          defined on {@link UIMAFramework} interface
+   * @throws ResourceInitializationException -
    */
   public CasPool(int aNumInstances, CasDefinition aCasDefinition,
           Properties aPerformanceTuningSettings) throws ResourceInitializationException {
@@ -180,6 +181,7 @@ public class CasPool {
    * @param aPerformanceTuningSettings
    *          Properties object containing framework performance tuning settings using key names
    *          defined on {@link UIMAFramework} interface
+   * @throws ResourceInitializationException -
    */
   public CasPool(int aNumInstances, CasManager aCasManager,
           Properties aPerformanceTuningSettings) throws ResourceInitializationException {

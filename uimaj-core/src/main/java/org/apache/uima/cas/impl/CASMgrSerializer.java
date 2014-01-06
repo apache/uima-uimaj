@@ -128,7 +128,7 @@ public class CASMgrSerializer implements Serializable {
   public int[] typeInheritance;
 
   /**
-   * Feature declarations. For each feature code <code>i</code> (which is an integer >= 1), 
+   * Feature declarations. For each feature code <code>i</code> (which is an integer &ge; 1), 
    * <code>featDecls[(i-1)*3]</code> is the domain type code, <code>featDecls[(i-1)*3+1]</code> is 
    * the range type code, and <code>featDecls[(i-1)*3+2]</code> is the multipleReferencesAllowed 
    * flag (0 or 1).

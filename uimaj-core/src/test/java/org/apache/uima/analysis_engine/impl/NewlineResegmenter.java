@@ -29,9 +29,7 @@ import org.apache.uima.examples.SourceDocumentInformation;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 
-/**
- * 
- */
+
 public class NewlineResegmenter extends JCasMultiplier_ImplBase {
   JCas mCurrentInputCas;
 

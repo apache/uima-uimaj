@@ -278,9 +278,7 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
 
   private TypeSystem ts;
 
-  /**
-         * 
-         */
+
   public LinearTypeOrderBuilderImpl(TypeSystem ts) {
     super();
     this.order = new Graph();

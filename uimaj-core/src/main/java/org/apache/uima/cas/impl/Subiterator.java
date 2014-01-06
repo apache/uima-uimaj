@@ -39,9 +39,7 @@ public class Subiterator<T extends AnnotationFS> extends FSIteratorImplBase<T> {
 
   private Comparator<FeatureStructure> annotationComparator = null;
 
-  /**
-   * 
-   */
+  
   private Subiterator() {
     super();
     this.list = new ArrayList<T>();

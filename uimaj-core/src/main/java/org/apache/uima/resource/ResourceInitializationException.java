@@ -415,7 +415,7 @@ public class ResourceInitializationException extends UIMAException {
 
   /**
    * Message key for a standard UIMA exception message: "The aggregate AnalysisEngine "{0}" declared
-   * an empty <flowController/> element. You must specify an import or a flowControllerDescription."
+   * an empty &lt;flowController/&gt; element. You must specify an import or a flowControllerDescription."
    */
   public static final String EMPTY_FLOW_CONTROLLER_DECLARATION = "empty_flow_controller_declaration";
 

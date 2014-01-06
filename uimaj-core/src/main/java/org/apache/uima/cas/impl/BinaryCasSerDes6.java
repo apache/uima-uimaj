@@ -124,7 +124,7 @@ import org.apache.uima.util.impl.SerializationMeasures;
  * 1) get an appropriate CAS to deserialize into.  For delta CAS, it does not have to be empty, but it must
  *    be the originating CAS from which the delta was produced.
  * 2) If the case is one where the target type system == the CAS's, and the serialized for is not Delta,
- *    then, call aCAS.reinit(source).  Otherwise, create an instance of this class -> xxx
+ *    then, call aCAS.reinit(source).  Otherwise, create an instance of this class -%gt; xxx
  *    a) Assuming the object being deserialized has a different type system, 
  *       set the "target" type system to the TypeSystemImpl instance of the 
  *       object being deserialized.    
@@ -330,9 +330,7 @@ public class BinaryCasSerDes6 {
         private boolean isReadingDelta;
   final private MarkerImpl mark;  // the mark to serialize from
 
-  /**
-   * 
-   */
+  
   final private CasSeqAddrMaps fsStartIndexes;
   final private boolean reuseInfoProvided;
   final private boolean doMeasurements;  // if true, doing measurements
@@ -581,7 +579,7 @@ public class BinaryCasSerDes6 {
   /*************************************************************************************
    *   S E R I A L I Z E
    * @return null or serialization measurements (depending on setting of doMeasurements)
-   * @throws IOException
+   * @throws IOException passthru
    *************************************************************************************/
   public SerializationMeasures serialize(Object out) throws IOException {
     if (isSerializingDelta && (tgtTs != null)) {
@@ -898,8 +896,8 @@ public class BinaryCasSerDes6 {
   
   /**
    * 
-   * @param iHeap
-   * @param offset
+   * @param iHeap index in the heap
+   * @param offset offset to the slot
    * @param newValue for heap refs, is the converted-from-addr-to-seq-number value
    */
   private void updatePrevIntValue(final int iHeap, final int offset, final int newValue) {
@@ -917,7 +915,7 @@ public class BinaryCasSerDes6 {
   
   /**
    * 
-   * @param iHeap
+   * @param iHeap index in the heap
    * @param offset true offset, 1 = first feature...
    * @return the previous int value for use in difference calculations
    */
@@ -944,7 +942,7 @@ public class BinaryCasSerDes6 {
    *     the Slot_Control stream
    *     all the zipped streams
    *
-   * @throws IOException 
+   * @throws IOException passthru
    */
   private void collectAndZip() throws IOException {
     ByteArrayOutputStream baosZipped = new ByteArrayOutputStream(4096);
@@ -990,7 +988,7 @@ public class BinaryCasSerDes6 {
     writeDiff(long_Low_i,  (int)v, (int)prev);    
   }
 
-  /**
+  /*
    * String encoding
    *   Length = 0 - used for null, no offset written
    *   Length = 1 - used for "", no offset written 
@@ -999,7 +997,6 @@ public class BinaryCasSerDes6 {
    *   Length < 0 - use (-length) as slot index  (minimum is 1, slot 0 is NULL)
    *   
    *   For length > 0, write also the offset.
-   *   
    */
   private void writeString(final String s) throws IOException {
     if (null == s) {
@@ -1062,7 +1059,7 @@ public class BinaryCasSerDes6 {
     }
   }
 
-  /**
+  /*
    * Need to support NAN sets, 
    * 0x7fc.... for NAN
    * 0xff8.... for NAN, negative infinity
@@ -1161,7 +1158,7 @@ public class BinaryCasSerDes6 {
    * @param i  runs from iHeap + 3 to end of array
    * sets isUpdatePrevOK true if ok to update prev, false if writing 0 for any reason, or max neg nbr
    * @returns possibly converted input value (converted if was heap ref to seq heap ref)
-   * @throws IOException 
+   * @throws IOException passthru 
    */
   private int writeDiff(int kind, int v, int prev) throws IOException {
     if (v == 0) {
@@ -1595,9 +1592,9 @@ public class BinaryCasSerDes6 {
   
   /**
    * Version used by uima-as to read delta cas from remote parallel steps
-   * @param istream
-   * @param allowPreexistingFS
-   * @throws IOException
+   * @param istream input stream
+   * @param allowPreexistingFS what to do if item already exists below the mark
+   * @throws IOException passthru
    */
   public void deserialize(InputStream istream, AllowPreexistingFS allowPreexistingFS) throws IOException {
     readHeader(istream);
@@ -1875,9 +1872,9 @@ public class BinaryCasSerDes6 {
   
   /**
    *       
-   * @param iHeap
+   * @param iHeap index in the heap
    * @param offset can be -1 - in which case read, but don't store
-   * @throws IOException
+   * @throws IOException passthru
    */
   private void readByKind(int iHeap, int offset, SlotKind kind, boolean storeIt) throws IOException {
     
@@ -2327,7 +2324,7 @@ public class BinaryCasSerDes6 {
     
     // update the byte/short/long aux heap entries
     // for arrays
-    /**
+    /*
      * update the byte/short/long aux heap entries
      * Only called for arrays
      * No aux heap offset adjustments needed since we get
@@ -2427,7 +2424,7 @@ public class BinaryCasSerDes6 {
   }
   
 
-  /********************************************************************
+  /* *******************************************************************
    * methods common to serialization / deserialization etc.
    ********************************************************************/
   
@@ -2440,7 +2437,7 @@ public class BinaryCasSerDes6 {
     }
   }
 
-  /**
+  /*
    * This routine uses the same "scanning" to do two completely different things:
    *   The first thing is to generate an ordered set (by heap addr) 
    *   of all FSs that are to be serialized:
@@ -2454,7 +2451,6 @@ public class BinaryCasSerDes6 {
    * 
    * The cas is passed in so that the Compare can use this for two different CASes
    * 
-   * @throws IOException
    */
   private void processIndexedFeatureStructures(CASImpl cas, boolean isWrite) throws IOException {
     if (!isWrite) {
@@ -2680,13 +2676,6 @@ public class BinaryCasSerDes6 {
    * Serializing:
    *   Called at beginning of serialize, scans whole CAS or just delta CAS
    *   If doing delta serialization, fsStartIndexes is passed in, pre-initialized with a copy of the map info below the line.
-   * @param fsStartIndexes
-   * @param srcHeap
-   * @param srcHeapStart
-   * @param srcHeapEnd
-   * @param histo
-   * @param optimizeStrings
-   * @param stringHeapObj
    * @return amount of heap used in target, side effect: set up fsStartIndexes (for both src and tgt)
    */
   private int initFsStartIndexes () {
@@ -2788,7 +2777,7 @@ public class BinaryCasSerDes6 {
    * If the type systems are different, construct a type mapper and use that
    *   to selectively ignore types or features not in other type system
    *   
-   * The Mapper filters C1 -> C2.  
+   * The Mapper filters C1 -%gt; C2.  
    * 
    * Compare only feature structures reachable via indexes or refs
    *   The order must match
@@ -3295,7 +3284,7 @@ public class BinaryCasSerDes6 {
    *                 an OutputStream
    *                 a File
    * @return a data output stream
-   * @throws FileNotFoundException
+   * @throws FileNotFoundException passthru
    */
   private static DataOutputStream makeDataOutputStream(Object f) throws FileNotFoundException {
     if (f instanceof DataOutputStream) {
@@ -3341,7 +3330,7 @@ public class BinaryCasSerDes6 {
 
   /********************************************
    * Set up Streams
-   * @throws FileNotFoundException 
+   * @throws FileNotFoundException passthru
    ********************************************/
   private void setupOutputStreams(Object out) throws FileNotFoundException { 
     serializedOut = makeDataOutputStream(out);
@@ -3493,7 +3482,7 @@ public class BinaryCasSerDes6 {
 
   /*********************************************
    * HEADERS
-   * @throws IOException 
+   * @throws IOException passthru
    *********************************************/
   private void writeHeader() throws IOException {
     // encode: bits 7 6 5 4 3 2 1 0
@@ -3537,9 +3526,8 @@ public class BinaryCasSerDes6 {
     }
   }
   
-  /*********************************************
+  /* *******************************************
    * String info
-   * @throws IOException 
    *********************************************/
   private void writeStringInfo() throws IOException {
     String [] commonStrings = os.getCommonStrings();

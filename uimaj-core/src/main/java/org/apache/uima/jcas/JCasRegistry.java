@@ -32,7 +32,7 @@ public class JCasRegistry {
    * Registers a JCas cover class with this registry.  The registry will assign
    * it a unique index, which is then used by the cover-class to identify itself
    * to the JCas implementation.
-   * 
+   * @param aJCasCoverClass the class to register
    * @return the unique index value for this class.
    */
   public static synchronized int register(Class aJCasCoverClass) {
@@ -47,6 +47,11 @@ public class JCasRegistry {
    * this allows the runtime to skip this test.
    * <p>
    * This is reserved for future use; it currently always returns true.
+   * @param fullyQualTypeName fully qualified type name
+   * @return true if that type should have run-time checking for use of fields
+   * defined in the JCas Model which are not present in the CAS. If false, all fields
+   * in the JCas must be in the CAS type system at instantiation time, or an exception is thrown;
+   * this allows the runtime to skip this test. 
    */
   public static boolean getFeatOkTst(String fullyQualTypeName) {
     return true;
