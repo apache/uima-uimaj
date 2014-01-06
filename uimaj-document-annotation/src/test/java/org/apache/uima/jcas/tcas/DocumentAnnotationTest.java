@@ -26,9 +26,7 @@ import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 
-/**
- * 
- */
+
 public class DocumentAnnotationTest extends TestCase {
   JCas jcas;
   

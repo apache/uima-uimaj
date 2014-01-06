@@ -44,7 +44,7 @@ public class DocumentAnnotation extends Annotation {
   protected DocumentAnnotation() {
   }
 
-  /** Internal - Constructor used by generator */
+ /* Internal - Constructor used by generator */
   public DocumentAnnotation(int addr, TOP_Type type) {
     super(addr, type);
   }
@@ -57,6 +57,7 @@ public class DocumentAnnotation extends Annotation {
   // * Feature: language
   /**
    * getter for language
+   * @return the language
    */
   public String getLanguage() {
     if (DocumentAnnotation_Type.featOkTst
@@ -68,6 +69,7 @@ public class DocumentAnnotation extends Annotation {
 
   /**
    * setter for language
+   * @param the language
    */
   public void setLanguage(String v) {
     if (DocumentAnnotation_Type.featOkTst
