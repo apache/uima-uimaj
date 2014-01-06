@@ -81,7 +81,7 @@ public class FeatureStructureSelectionIterator implements Iterator<FeatureStruct
   /**
    * Not supported, it throws an {@link UnsupportedOperationException}.
    *
-   * @throws UnsupportedOperationException
+   * @throws UnsupportedOperationException -
    */
   public void remove() {
     throw new UnsupportedOperationException();

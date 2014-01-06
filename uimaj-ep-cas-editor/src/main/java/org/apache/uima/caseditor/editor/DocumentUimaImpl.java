@@ -135,9 +135,7 @@ public class DocumentUimaImpl extends AbstractDocument {
     fireAddedFeatureStructure(annotation);
   }
 
-  /**
-	 *
-	 */
+  
   public void addFeatureStructures(Collection<? extends FeatureStructure> annotations) {
     for (FeatureStructure annotation : annotations) {
       addFeatureStructureInternal(annotation);

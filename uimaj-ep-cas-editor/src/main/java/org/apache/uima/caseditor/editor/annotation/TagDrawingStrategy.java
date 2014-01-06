@@ -31,9 +31,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 
 
-/**
- * 
- */
+
 // TODO: Check if its possible to increase the space between characters,
 //       or suggest to use mono space font for long tags ...
 class TagDrawingStrategy implements IDrawingStrategy {

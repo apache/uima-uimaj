@@ -1302,7 +1302,7 @@ implements Listener, StandardStrings {
   /**
    * @param location
    * @return a location import
-   * @throws MalformedURLException
+   * @throws MalformedURLException -
    */
   public Import createLocationImport(String location) throws MalformedURLException {
 

@@ -29,9 +29,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 
-/**
- *
- */
+
 public class FeatureStructureSelection {
   private List<FeatureStructure> mFeatureStructures;
 

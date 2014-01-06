@@ -38,8 +38,8 @@ class OutlineTableSorter extends ViewerSorter {
   /**
    * Uses <code>AnnotationComparator</code> to compare the both objects.
    *
-   * @return int the return value is if aObject < bObject negative number, if aObject == bObject 0,
-   *         aObject > bObject a positive number or if both objects have different types 1.
+   * @return int the return value is if aObject &lt; bObject negative number, if aObject == bObject 0,
+   *         aObject &gt; bObject a positive number or if both objects have different types 1.
    *
    * @see ViewerSorter
    */

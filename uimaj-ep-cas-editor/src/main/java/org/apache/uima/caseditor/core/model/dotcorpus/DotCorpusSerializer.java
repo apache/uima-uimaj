@@ -88,7 +88,7 @@ public class DotCorpusSerializer {
    * 
    * @param dotCorpusStream
    * @return the {@link DotCorpus} instance.
-   * @throws CoreException
+   * @throws CoreException -
    */
   public static DotCorpus parseDotCorpus(InputStream dotCorpusStream) throws CoreException {
     DocumentBuilderFactory documentBuilderFacoty = DocumentBuilderFactory.newInstance();
@@ -223,7 +223,7 @@ public class DotCorpusSerializer {
    *          the {@link DotCorpus} object to serialize.
    * @param out
    *          - the stream to write the current <code>DotCorpus</code> instance.
-   * @throws CoreException
+   * @throws CoreException -
    */
   public static void serialize(DotCorpus dotCorpus, OutputStream out) throws CoreException {
 

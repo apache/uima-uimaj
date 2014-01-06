@@ -76,7 +76,7 @@ public final class AnnotationStyle {
   }
 
   /**
-   * The default <code>DrawingStyle<code>.
+   * The default <code>DrawingStyle</code>.
    */
   public static final Style DEFAULT_STYLE = Style.SQUIGGLES;
 

@@ -62,7 +62,7 @@ public class CasEditorPlugin extends AbstractUIPlugin {
    * This method is called upon plug-in activation
    *
    * @param context
-   * @throws Exception
+   * @throws Exception -
    */
   @Override
   public void start(BundleContext context) throws Exception {
@@ -73,7 +73,7 @@ public class CasEditorPlugin extends AbstractUIPlugin {
    * This method is called when the plug-in is stopped.
    *
    * @param context
-   * @throws Exception
+   * @throws Exception -
    */
   @Override
   public void stop(BundleContext context) throws Exception {

@@ -24,9 +24,7 @@ package org.apache.uima.caseditor.editor;
  */
 public class CasEditorError extends RuntimeException {
 
-  /**
-   *
-   */
+  
   private static final long serialVersionUID = 1L;
 
   /**

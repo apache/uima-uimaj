@@ -90,7 +90,7 @@ package org.apache.uima.taeconfigurator.editors.ui;
  * ParameterSettingsSection 2aa) For Edit of each kind including changing name consider effect on
  * settings OK 3) Checking: if change type - what to do about existing setting? Message it will be
  * deleted OK 4) Checking: if change MultiV - same as above. OK 5) Checking: overrides: only show
- * parm names which match on type and mv and mandatory < override OK 6) Model for editing overrides:
+ * parm names which match on type and mv and mandatory &lt; override OK 6) Model for editing overrides:
  * using same dialog, plus combo to select which override, autoselected when dbl-clicking / edit
  * existing , or adding new. Make base parm info read-only to avoid accidents NO 7) detail window:
  * for groups: has list of group names; line per name, editable. for parm: has description; editable

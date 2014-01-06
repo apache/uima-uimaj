@@ -178,8 +178,8 @@ import org.xml.sax.SAXException;
  * Stale = model (on disk, saved) is ahead of widgets Dirty = widgets are ahead of model <<< NOT
  * USED HERE
  * 
- * Each page of the multipage editor has its own class. ownclass -> HeaderPage -> FormPage (impl
- * IFormPage) has instance of PageForm -> ManagedForm ManagedForm (impl IManagedForm): has instance
+ * Each page of the multipage editor has its own class. ownclass -%gt; HeaderPage -%gt; FormPage (impl
+ * IFormPage) has instance of PageForm -%gt; ManagedForm ManagedForm (impl IManagedForm): has instance
  * of ScrolledForm has subparts (IFormPart - which live on the scrolled form) A part can be a
  * section. A part can implement IPartSelectionListener to get selectionChanged(IFormPart,
  * ISelection) calls. initialize() call propagated to all parts. dispose() call propagated to all
@@ -190,8 +190,8 @@ import org.xml.sax.SAXException;
  * fireSelectionChanged(IFormPart, ISelection) - can be used to notify other parts that implement
  * IPartSelectionListener about selection changes
  * 
- * Each page has one or more sections. sectionSpecific -> (AbstractTableSection) -> AbstractSection ->
- * SectionPart -> AbstractFormPart (impl IFormPart, see above)
+ * Each page has one or more sections. sectionSpecific -%gt; (AbstractTableSection) -%gt; AbstractSection ->
+ * SectionPart -%gt; AbstractFormPart (impl IFormPart, see above)
  * 
  * AbstractFormPart holds back ref to managed form, a dirty and stale bit. Stale = model is ahead of
  * widgets (Not used) Dirty = widgets are ahead of model Stale brought into sync by 'refresh'
@@ -1465,7 +1465,7 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   }
 
   /**
-   * @throws ResourceInitializationException
+   * @throws ResourceInitializationException -
    */
   public void setAeDescription(AnalysisEngineDescription aAnalysisEngineDescription)
           throws ResourceInitializationException {
@@ -1785,7 +1785,7 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
    * Only called when editing a resources/bindings descriptor
    * 
    * @param rb
-   * @throws ResourceInitializationException
+   * @throws ResourceInitializationException -
    */
   private void setExtResAndBindings(ResourceManagerConfiguration rb)
           throws ResourceInitializationException {
@@ -2677,7 +2677,7 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
    * 
    * But: resolving does fit. So we name this differently
    * 
-   * @throws InvalidXMLException
+   * @throws InvalidXMLException -
    */
   public void setResolvedExternalResourcesAndBindings() throws InvalidXMLException {
     AnalysisEngineDescription clonedAe = (AnalysisEngineDescription) aeDescription.clone();

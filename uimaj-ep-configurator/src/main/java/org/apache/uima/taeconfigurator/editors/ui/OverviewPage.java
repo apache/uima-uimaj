@@ -24,9 +24,7 @@ import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.forms.IManagedForm;
 
-/**
- * 
- */
+
 public class OverviewPage extends HeaderPageWithSash {
 
   private PrimitiveSection primitiveSection;

@@ -40,7 +40,7 @@ public class DotCorpusSerializerTest {
   /**
    * Tests if serialization and recreations creates and object that is equal to the original.
    *
-   * @throws CoreException
+   * @throws CoreException -
    */
   @Test
   public void testSerializeAndCreate() throws CoreException {

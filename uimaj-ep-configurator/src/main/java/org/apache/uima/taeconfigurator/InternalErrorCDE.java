@@ -23,9 +23,7 @@ package org.apache.uima.taeconfigurator;
  */
 public class InternalErrorCDE extends RuntimeException {
 
-  /**
-   * 
-   */
+  
   public InternalErrorCDE() {
     super();
   }
