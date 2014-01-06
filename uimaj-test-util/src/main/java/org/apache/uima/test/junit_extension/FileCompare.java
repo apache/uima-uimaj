@@ -60,7 +60,7 @@ public class FileCompare {
    *          filename of the second file
    * @return - true if the files have the same content
    * 
-   * @throws IOException
+   * @throws IOException -
    */
   public static boolean compare(String filename1, String filename2) throws IOException {
     InputStream file1 = null;
@@ -88,7 +88,7 @@ public class FileCompare {
    *          second file
    * @return - true if the files have the same content
    * 
-   * @throws IOException
+   * @throws IOException -
    */
   public static boolean compare(File file1, File file2) throws IOException {
     InputStream inputStream1 = null;
@@ -118,7 +118,7 @@ public class FileCompare {
    * 
    * @return - true if the content is the same
    * 
-   * @throws IOException
+   * @throws IOException -
    */
   public static boolean compare(String filename1, InputStream in) throws IOException {
     InputStream file1 = null;
@@ -215,7 +215,7 @@ public class FileCompare {
    *          Filename of the first XML file.
    * @param filename2
    *          Filename of the second XML file.
-   * @throws IOException
+   * @throws IOException -
    */
   public static boolean compareXML(String filename1, String filename2) throws IOException {
     File file1 = null;
@@ -265,7 +265,7 @@ public class FileCompare {
    *          Filename of the second XML file.
    * @param pattern 
    *          an instance of Pattern which matches all substrings which should be filtered out of the match
-   * @throws IOException
+   * @throws IOException -
    */
   public static boolean compareWithFilter(String filename1, String filename2, Pattern pattern)
       throws IOException {
@@ -435,7 +435,7 @@ public class FileCompare {
    * Read a bufferedReader into a string, using the default platform encoding.
    * 
    * @param reader to be read in
-   * @param bufSize - size of stream, in bytes.  Size in chars is <= size in bytes, because
+   * @param bufSize - size of stream, in bytes.  Size in chars is &le; size in bytes, because
    * chars take 1 or more bytes to encode.
    * @return String The contents of the stream.
    * @throws IOException

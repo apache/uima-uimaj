@@ -45,7 +45,7 @@ public class ManageOutputDevice {
    * 
    * @param descriptor
    *          a full qualified filename, see {@link java.io.File#File(String pathname)}
-   * @throws FileNotFoundException
+   * @throws FileNotFoundException -
    */
   public static void setSysOutToFile(String descriptor) throws FileNotFoundException {
     File f = new File(descriptor);
@@ -73,7 +73,7 @@ public class ManageOutputDevice {
    * sets the <code>System.err</code> to a file based <code>java.io.PrintStream</code>
    * 
    * @param descriptor
-   * @throws FileNotFoundException
+   * @throws FileNotFoundException -
    */
   public static void setSysErrToFile(String descriptor) throws FileNotFoundException {
     File f = new File(descriptor);
