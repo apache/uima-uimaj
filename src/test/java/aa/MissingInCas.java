@@ -55,7 +55,7 @@ public class MissingInCas extends TOP {
   protected MissingInCas() {
   }
 
-  /*
+  /**
    * Internal - constructor used by generator
    * 
    * @generated

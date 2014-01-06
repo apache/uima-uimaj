@@ -907,7 +907,7 @@ public interface CAS extends AbstractCas {
    * instance of DocumentAnnotation associated with this CAS.
    * 
    * @param languageCode
-   * @throws CASRuntimeException
+   * @throws CASRuntimeException passthru
    */
   void setDocumentLanguage(String languageCode) throws CASRuntimeException;
 

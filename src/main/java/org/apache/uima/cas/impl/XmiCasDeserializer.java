@@ -669,12 +669,6 @@ public class XmiCasDeserializer {
       }
     }
 
-    /**
-     * 
-     * @param addr
-     * @param attrs
-     * @throws SAXException 
-     */
     private void readFS(final int addr, Attributes attrs) throws SAXException {
       // Hang on to address for handle features encoded as child elements
       this.currentAddr = addr;
@@ -812,7 +806,7 @@ public class XmiCasDeserializer {
       return feat.getCode();
     }
 
-    /**
+    /*
      * Set a CAS feature from an XMI attribute.
      * 
      * @param addr
@@ -821,7 +815,7 @@ public class XmiCasDeserializer {
      *          code of feature to set
      * @param featVal
      *          string representation of the feature value
-     * @throws SAXException 
+     * @throws SAXException - 
      */
     private void handleFeature(int addr, int featCode, String featVal) throws SAXException {
       switch (featureType[featCode]) {
@@ -972,7 +966,7 @@ public class XmiCasDeserializer {
       return arrayVals;
     }
 
-    /**
+    /*
      * Set a CAS feature from an array of Strings. This supports the XMI syntax where each value is
      * listed as a separate subelement.
      * 
@@ -982,7 +976,7 @@ public class XmiCasDeserializer {
      *          code of feature to set
      * @param featVals
      *          List of Strings, each String representing one value for the feature
-     * @throws SAXException 
+     * @throws SAXException - 
      */
     private void handleFeature(int addr, int featCode, List<String> featVals) throws SAXException {
       switch (featureType[featCode]) {
@@ -1025,13 +1019,13 @@ public class XmiCasDeserializer {
           }
           break;
         }
-        /**
+        /* 
         case LowLevelCAS.TYPE_CLASS_FSARRAY: {
           int casArray = createArray(casBeingFilled.getTypeSystemImpl().range(featCode), featVals, -1);
           casBeingFilled.setFeatureValue(addr, featCode, casArray);
           break;
         }
-        **/
+        */
         case XmiCasSerializer.TYPE_CLASS_INTLIST: {
           int listFS = casBeingFilled.getFeatureValue(addr, featCode);
           if (listFS == 0) {
@@ -1154,7 +1148,7 @@ public class XmiCasDeserializer {
      *  	CAS type code for the array
      * @param values
      *      List of strings, each containing the value of an element of the array.
-     * @return
+     * @return a reference to the array FS
      */
     private int createNewArray(int arrayType, List<String> values) {
       FeatureStructureImpl fs;
@@ -1211,7 +1205,7 @@ public class XmiCasDeserializer {
      * @param addr 
      *          the current address of the non-shared ByteArrayFS used when processing 
      *          a Delta CAS.
-     * @return
+     * @return a reference to the Feature Structure in the CAS
      */
     private int createByteArray(String hexString, int xmiId, int addr) {
       int arrayLen = hexString.length() / 2;
@@ -1411,12 +1405,10 @@ public class XmiCasDeserializer {
       }
     }
 
-    /**
+    /*
      * Adds this FS to the appropriate index, and applies ID remappings. For each nonprimitive,
      * non-multivalued-property feature, we need to update the feature value to point to the correct
      * heap address of the target FS.
-     * 
-     * @param fsInfo
      */
     private void finalizeFS(int addr) throws SAXParseException {
       final int type = casBeingFilled.getHeapValue(addr);
@@ -1456,12 +1448,10 @@ public class XmiCasDeserializer {
       }
     }
 
-    /**
+    /*
      * Rempas ID for the "head" feature of NonEmptyFSList, but not the "tail" feature. Used for
      * FSList nodes deserialized from multi-valued properties, which already have their tail set
      * correctly.
-     * 
-     * @param i
      */
     private void remapFSListHeads(int addr) throws SAXParseException {
       final int type = casBeingFilled.getHeapValue(addr);
@@ -1645,15 +1635,12 @@ public class XmiCasDeserializer {
       }
     }
     
-    /**
+    /*
      * Gets the FS address into which the XMI element with the given ID
      * was deserialized.  This method supports merging multiple XMI documents
      * into a single CAS, by checking the XmiSerializationSharedData
      * structure to get the address of elements that are below the mergePoint
      * and are expected to already be present in the CAS.
-     * 
-     * @param xmiId
-     * @return
      */
     private int getFsAddrForXmiId(int xmiId) {
       //first check shared data (but if we're doing a merge, do so only
@@ -1678,7 +1665,7 @@ public class XmiCasDeserializer {
       }
     }
     
-    /**
+    /*
      * Adds a feature sturcture to the out-of-typesystem data.  Also sets the
      * this.outOfTypeSystemElement field, which is referred to later if we have to
      * handle features recorded as child elements.
@@ -1702,7 +1689,7 @@ public class XmiCasDeserializer {
       this.sharedData.addOutOfTypeSystemElement(this.outOfTypeSystemElement);
     }    
 
-    /**
+    /*
      * Adds a feature to the out-of-typesystem features list.
      * @param ootsElem object to which to add the feature
      * @param featName name of feature

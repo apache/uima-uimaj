@@ -81,7 +81,7 @@ public class Settings_impl implements Settings {
    * May be called multiple times.
    * 
    * @param in - Stream holding properties
-   * @throws IOException
+   * @throws IOException if name characters illegal
    */
   public void load(InputStream in) throws IOException {
     // Process each logical line (after blanks & comments removed and continuations extended)
@@ -125,7 +125,7 @@ public class Settings_impl implements Settings {
   /**
    * Load the files specified in the system property UimaExternalOverrides
    *
-   * @throws ResourceConfigurationException 
+   * @throws ResourceConfigurationException wraps IOException
    */
   
   public void loadSystemDefaults() throws ResourceConfigurationException {
@@ -162,7 +162,7 @@ public class Settings_impl implements Settings {
    * 
    * @param name - name to look up
    * @return     - value of property
-   * @throws ResourceConfigurationException
+   * @throws ResourceConfigurationException if override variable references undefined variable
    */
   public String lookUp(String name) throws ResourceConfigurationException {
     String value;
@@ -199,7 +199,7 @@ public class Settings_impl implements Settings {
   
   /*
    * Create a string representing an array from one or more logical lines
-   * Assert: line length > 0
+   * Assert: line length &gt; 0
    */
   private String getArray(String line) throws IOException {
     int iend = line.indexOf(']');
@@ -274,7 +274,7 @@ public class Settings_impl implements Settings {
 
   /*
    * Check if a character in the string is escaped, i.e. preceded by an odd number of '\'s
-   * Correctly returns false if ichar <= 0
+   * Correctly returns false if ichar &le; 0
    */
   private boolean isEscaped(String line, int ichar) {
     int i = ichar - 1;

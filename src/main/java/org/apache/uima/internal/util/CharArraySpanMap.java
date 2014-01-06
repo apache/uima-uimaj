@@ -191,9 +191,9 @@ public class CharArraySpanMap {
    *          Length of sub-range.
    * @return <code>true</code> iff the map contains the key.
    * @pre characterArray != null
-   * @pre start >= 0
-   * @pre length >= 0
-   * @pre length <= (characterArray.length - start)
+   * @pre start &ge; 0
+   * @pre length &ge; 0
+   * @pre length &le; (characterArray.length - start)
    */
   public final boolean containsKey(char[] characterArray, int start, int length) {
     final int hashCode = CharArrayString.hashCode(characterArray, start, (start + length));

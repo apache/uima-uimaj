@@ -130,9 +130,7 @@ public class IndexComparitorTest extends TestCase {
       type1Sub2Ignored = tsm.addFeature("ignored", type1Sub2, integerType);
     }
 
-    /**
-     * 
-     */
+    
     public void initIndexes(FSIndexRepositoryMgr parmIrm, TypeSystem parmTs) {
       IndexComparitorTest.this.ts = parmTs;
       IndexComparitorTest.this.irm = parmIrm;

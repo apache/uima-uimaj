@@ -37,9 +37,7 @@ import org.xml.sax.helpers.AttributesImpl;
  * 
  */
 public class Import_impl extends MetaDataObject_impl implements Import {
-  /**
-   * 
-   */
+  
   private static final long serialVersionUID = 6876757002913848998L;
 
   private String mName;

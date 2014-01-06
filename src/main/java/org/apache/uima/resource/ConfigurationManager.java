@@ -45,6 +45,7 @@ public interface ConfigurationManager {
    *          corresponds to the path through the aggregate resource, e.g /subAE1/annotator1.
    * @param aResourceMetaData
    *          metadata object containing the configuration parameter declarations and settings.
+   * @param externalSettings the external overrides
    * 
    * @throws ResourceConfigurationException
    *           if the configuration settings are invalid
@@ -86,6 +87,7 @@ public interface ConfigurationManager {
    * @param aQualifiedParamName
    *          the fully-qualified configuration parameter name. This is of the form
    *          <code>ContextName + / + ParameterName</code>.
+   * @param aGroupName the name of the parameter group
    * 
    * @return the value of the parameter with the given name. The caller is expected to know the data
    *         type of the parameter. If the parameter does not exist,<code>null</code> is

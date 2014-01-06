@@ -353,6 +353,8 @@ public class XMLUtil {
 
   /**
    * Prints SAX error message.
+   * @param type type
+   * @param ex exception
    */
   public static void printError(String type, SAXParseException ex) {
 

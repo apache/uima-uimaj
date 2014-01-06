@@ -400,10 +400,6 @@ public class XmiCasSerializer {
       endElement(elemName);
     }
 
-    /**
-     * @param workAttrs2
-     * @throws SAXException 
-     */
     private void computeNamespaceDeclarationAttrs(AttributesImpl workAttrs2) throws SAXException {
       Iterator<Map.Entry<String, String>> it = nsUriToPrefixMap.entrySet().iterator();
       while (it.hasNext()) {
@@ -526,7 +522,7 @@ public class XmiCasSerializer {
       }
     }
 
-    /**
+    /*
      * Enqueues an indexed FS. Does NOT enqueue features at this point.
      */
     private void enqueueIndexedFs(int addr) {
@@ -687,11 +683,8 @@ public class XmiCasSerializer {
       }
     }
 
-    /**
+    /*
      * Encode the indexed FS in the queue.
-     * 
-     * @throws IOException
-     * @throws SAXException
      */
     private void encodeIndexed() throws SAXException {
       final int max = indexedFSs.size();
@@ -700,12 +693,8 @@ public class XmiCasSerializer {
       }
     }
 
-    /**
+    /*
      * Encode all other enqueued (non-indexed) FSs.
-     * 
-     * @throws XMLException
-     * @throws IOException
-     * @throws SAXException
      */
     private void encodeQueued() throws SAXException {
       int addr;
@@ -720,7 +709,7 @@ public class XmiCasSerializer {
      * 
      * @param addr
      *          The address to be encoded.
-     * @throws SAXException
+     * @throws SAXException passthru
      */
     private void encodeFS(int addr) throws SAXException {
       ++fsCount;
@@ -817,7 +806,7 @@ public class XmiCasSerializer {
      * 
      * @param elements
      *          a list of XmlElementNameAndContents objects representing the elements to generate
-     * @throws SAXException
+     * @throws SAXException passthru
      */
     private void sendElementEvents(List<? extends XmlElementNameAndContents> elements) throws SAXException {
       Iterator<? extends XmlElementNameAndContents> childIter = elements.iterator();
@@ -845,6 +834,7 @@ public class XmiCasSerializer {
      * 
      * @return a List of XmlElementNameAndContents objects, each of which represents an element that
      *         should be added as a child of the FS
+     * @throws SAXException passthru
      */
     private List<XmlElementNameAndContents> encodeFeatures(int addr, AttributesImpl attrs, boolean insideListNode)
             throws SAXException {
@@ -1006,12 +996,6 @@ public class XmiCasSerializer {
       ch.endElement(name.nsUri, name.localName, name.qName);
     }
 
-    /**
-     * @param featName
-     * @param addr
-     * @param resultList
-     * @throws SAXException
-     */
     private void stringArrayToElementList(String featName, int addr, List<? super XmlElementNameAndContents> resultList)
             throws SAXException {
       if (addr == CASImpl.NULL) {
@@ -1146,7 +1130,7 @@ public class XmiCasSerializer {
      *          type of the List (defined by constants on this class)
      * 
      * @return String representation of the array
-     * @throws SAXException
+     * @throws SAXException passthru
      */
     private String listToString(int addr, int arrayType) throws SAXException {
       if (addr == CASImpl.NULL) {
@@ -1303,7 +1287,7 @@ public class XmiCasSerializer {
       return new XmlElementName(nsUri, shortName, getUniqueString(prefix + ':' + shortName));
     }
 
-    /** 
+    /*
      *  convert to shared string, without interning, reduce GCs
      */
     private String getUniqueString(String s) { 

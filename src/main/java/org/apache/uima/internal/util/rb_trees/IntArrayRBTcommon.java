@@ -473,7 +473,7 @@ public class IntArrayRBTcommon {
   }
 
   /**
-   * Find the node such that key[node] >= k and key[previous(node)] < k.
+   * Find the node such that key[node] &ge; k and key[previous(node)] &lt; k.
    */
   public int findInsertionPointNoDups(final int k) {
     int node = this.root;

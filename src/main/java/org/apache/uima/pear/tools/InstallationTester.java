@@ -140,7 +140,7 @@ public class InstallationTester {
    * 
    * @return a ResourceManager object with the information from the PackageBrowser object.
    * 
-   * @throws IOException
+   * @throws IOException passthru
    */
   private static ResourceManager getResourceManager(PackageBrowser pkgBrowser) throws IOException {
     ResourceManager resourceMgr = UIMAFramework.newDefaultResourceManager();
@@ -163,7 +163,7 @@ public class InstallationTester {
    * @param pkgBrowser
    *          packageBrowser object of an installed PEAR package
    * 
-   * @throws IOException
+   * @throws IOException passthru
    */
   private static void setSystemProperties(PackageBrowser pkgBrowser) throws IOException {
 

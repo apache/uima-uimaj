@@ -23,9 +23,7 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 
-/**
- * 
- */
+
 public class FileUtilsTest extends TestCase {
   public void testFindRelativePath() throws Exception {
     File target = new File("/this/is/a/file.txt");

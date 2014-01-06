@@ -27,9 +27,7 @@ import org.apache.uima.util.UimaTimer;
  * 
  */
 public class JavaTimer implements UimaTimer {
-  /**
-   * 
-   */
+  
   private static final long serialVersionUID = 4644107369628471363L;
 
   private long start = 0;

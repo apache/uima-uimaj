@@ -50,9 +50,7 @@ public class UnambiguousIteratorImpl<T extends AnnotationFS> extends FSIteratorI
     this.pos = 0;
   }
 
-  /**
-   * 
-   */
+  
   public UnambiguousIteratorImpl(FSIterator<T> it) {
     this();
     this.list = new ArrayList<T>();
@@ -74,9 +72,7 @@ public class UnambiguousIteratorImpl<T extends AnnotationFS> extends FSIteratorI
     }
   }
 
-  /**
-   * 
-   */
+  
   public UnambiguousIteratorImpl(FSIterator<T> it, final int start, final int end, final boolean strict) {
     super();
     initUnambiguousSubiterator(it, start, end, strict);

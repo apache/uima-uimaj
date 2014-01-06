@@ -47,7 +47,7 @@ public class CASException extends UIMAException {
   public static final String NOT_A_STRING = "NOT_A_STRING";
 
   /**
-   * The types are added in the wrong sort order. Adding {0} < {1} makes the sort order
+   * The types are added in the wrong sort order. Adding {0} &lt; {1} makes the sort order
    * inconsistent.
    */
   public static final String CYCLE_IN_TYPE_ORDER = "CYCLE_IN_TYPE_ORDER";

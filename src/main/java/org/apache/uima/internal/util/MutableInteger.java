@@ -19,9 +19,7 @@
 
 package org.apache.uima.internal.util;
 
-/**
- * 
- */
+
 public class MutableInteger {
   public int intValue;
 

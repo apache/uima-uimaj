@@ -34,7 +34,7 @@ public interface RecoverableCollectionReader {
    * 
    * @param aSynchPoint -
    *          contains recovery information
-   * @throws CollectionException
+   * @throws CollectionException passthru
    */
   public void moveTo(SynchPoint aSynchPoint) throws CollectionException;
 

@@ -26,9 +26,7 @@ import org.apache.uima.cas_data.ReferenceValue;
  * 
  */
 public class ReferenceValueImpl implements ReferenceValue {
-  /**
-   * 
-   */
+  
   private static final long serialVersionUID = -2890705944833477494L;
 
   private String mTargetId;

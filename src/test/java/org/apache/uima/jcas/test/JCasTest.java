@@ -369,7 +369,7 @@ public class JCasTest extends TestCase {
 		}
 	}
 
-	/**
+	/*
    * Tests for Memory Leaks and Performance
    * 
    * Core: randomly creating lots of CAS objects of all kinds with a simple computation for what
@@ -380,9 +380,6 @@ public class JCasTest extends TestCase {
    * field values based on that objects' ID in ID-Hash sense. System.identityHashCode(object)
    * 
    * Timing: System.currentTimeMillis()
-   * 
-   * @throws Exception
-   * 
    * 
    */
 

@@ -865,7 +865,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    *          namespace for this object
    * @param aContentHandler
    *          ContentHandler to which this object will send events describing its XML representation
-   * @throws SAXException         
+   * @throws SAXException  passthru       
    */
 
   protected void writeMapPropertyToXml(String aPropName, String aXmlElementName,
@@ -1397,10 +1397,10 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    *     maybeOutputCommentsAfter  
    *   
    * Detect top level (by fact that parent is null), and for top level:
-   *   collect all above -> output before startelement  
+   *   collect all above -%gt; output before startelement  
    *     BUT, note that the sax parser doesn't do callbacks for text (blank lines) before the
    *       start element, so all we can collect are the comment lines.
-   *   collect all below -> output after endelement
+   *   collect all below -%gt; output after endelement
    *   
    * For normal element node, "start":
    *   --> output before element
@@ -1532,9 +1532,9 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    *      <someElement>  some text
    *         
    * @param startNode - the node corresponding to the start or end element just outputted
-   * @param contentHandler
-   * @throws DOMException
-   * @throws SAXException
+   * @param contentHandler the content handler
+   * @throws DOMException passthru
+   * @throws SAXException passthru
    */
   private void outputCoIwAfterElement(Node startNode, ContentHandler contentHandler) throws DOMException, SAXException {
     if (null != startNode) {

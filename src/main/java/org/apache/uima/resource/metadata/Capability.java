@@ -132,7 +132,7 @@ public interface Capability extends MetaDataObject {
    * @param aInputSofas
    *          an array of strings containing SofA names
    */
-  /** Reserved for future use. */
+  /* Reserved for future use. */
   public void setInputSofas(String[] aInputSofas);
 
   /**
@@ -223,14 +223,14 @@ public interface Capability extends MetaDataObject {
   /**
    * A convenience method that adds an input Sofa name to this Capability.
    * 
-   * @param aSofaName
+   * @param aSofaName the sofa to add to the inputs
    */
   public void addInputSofa(String aSofaName);
 
   /**
    * A convenience method that adds an output Sofa name to this Capability.
    * 
-   * @param aSofaName
+   * @param aSofaName the sofa to add as an output 
    */
   public void addOutputSofa(String aSofaName);
 

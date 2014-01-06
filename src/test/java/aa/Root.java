@@ -59,7 +59,7 @@ public class Root extends TOP {
   protected Root() {
   }
 
-  /*
+  /**
    * Internal - constructor used by generator
    * 
    * @generated
@@ -86,7 +86,7 @@ public class Root extends TOP {
   // *--------------*
   // * Feature: arrayInt
 
-  /*
+  /**
    * getter for arrayInt - gets
    * 
    * @generated
@@ -98,7 +98,7 @@ public class Root extends TOP {
             ((Root_Type) jcasType).casFeatCode_arrayInt)));
   }
 
-  /*
+  /**
    * setter for arrayInt - sets
    * 
    * @generated
@@ -141,7 +141,7 @@ public class Root extends TOP {
   // *--------------*
   // * Feature: arrayRef
 
-  /*
+  /**
    * getter for arrayRef - gets
    * 
    * @generated
@@ -153,7 +153,7 @@ public class Root extends TOP {
             ((Root_Type) jcasType).casFeatCode_arrayRef)));
   }
 
-  /*
+  /**
    * setter for arrayRef - sets
    * 
    * @generated
@@ -196,7 +196,7 @@ public class Root extends TOP {
   // *--------------*
   // * Feature: arrayFloat
 
-  /*
+  /**
    * getter for arrayFloat - gets
    * 
    * @generated
@@ -208,7 +208,7 @@ public class Root extends TOP {
             ((Root_Type) jcasType).casFeatCode_arrayFloat)));
   }
 
-  /*
+  /**
    * setter for arrayFloat - sets
    * 
    * @generated
@@ -251,7 +251,7 @@ public class Root extends TOP {
   // *--------------*
   // * Feature: arrayString
 
-  /*
+  /**
    * getter for arrayString - gets
    * 
    * @generated
@@ -263,7 +263,7 @@ public class Root extends TOP {
             ((Root_Type) jcasType).casFeatCode_arrayString)));
   }
 
-  /*
+  /**
    * setter for arrayString - sets
    * 
    * @generated
@@ -306,7 +306,7 @@ public class Root extends TOP {
   // *--------------*
   // * Feature: plainInt
 
-  /*
+  /**
    * getter for plainInt - gets
    * 
    * @generated
@@ -317,7 +317,7 @@ public class Root extends TOP {
     return jcasType.ll_cas.ll_getIntValue(addr, ((Root_Type) jcasType).casFeatCode_plainInt);
   }
 
-  /*
+  /**
    * setter for plainInt - sets
    * 
    * @generated
@@ -331,7 +331,7 @@ public class Root extends TOP {
   // *--------------*
   // * Feature: plainFloat
 
-  /*
+  /**
    * getter for plainFloat - gets
    * 
    * @generated
@@ -342,7 +342,7 @@ public class Root extends TOP {
     return jcasType.ll_cas.ll_getFloatValue(addr, ((Root_Type) jcasType).casFeatCode_plainFloat);
   }
 
-  /*
+  /**
    * setter for plainFloat - sets
    * 
    * @generated
@@ -356,7 +356,7 @@ public class Root extends TOP {
   // *--------------*
   // * Feature: plainString
 
-  /*
+  /**
    * getter for plainString - gets
    * 
    * @generated
@@ -367,7 +367,7 @@ public class Root extends TOP {
     return jcasType.ll_cas.ll_getStringValue(addr, ((Root_Type) jcasType).casFeatCode_plainString);
   }
 
-  /*
+  /**
    * setter for plainString - sets
    * 
    * @generated
@@ -381,7 +381,7 @@ public class Root extends TOP {
   // *--------------*
   // * Feature: plainRef
 
-  /*
+  /**
    * getter for plainRef - gets
    * 
    * @generated
@@ -393,7 +393,7 @@ public class Root extends TOP {
             ((Root_Type) jcasType).casFeatCode_plainRef)));
   }
 
-  /*
+  /**
    * setter for plainRef - sets
    * 
    * @generated
@@ -408,7 +408,7 @@ public class Root extends TOP {
   // *--------------*
   // * Feature: concreteString
 
-  /*
+  /**
    * getter for concreteString - gets
    * 
    * @generated
@@ -420,7 +420,7 @@ public class Root extends TOP {
             ((Root_Type) jcasType).casFeatCode_concreteString);
   }
 
-  /*
+  /**
    * setter for concreteString - sets
    * 
    * @generated

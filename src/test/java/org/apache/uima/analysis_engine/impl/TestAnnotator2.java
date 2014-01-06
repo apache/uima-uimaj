@@ -54,8 +54,8 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
     return lastDocument;  
   }
 
-  /**
-   * @throws ResourceInitializationException 
+  /*
+   * @throws ResourceInitializationException tbd
    * @see org.apache.uima.analysis_component.CasAnnotator_ImplBase#initialize(UimaContext)
    */
   public void initialize(UimaContext aContext) throws ResourceInitializationException {

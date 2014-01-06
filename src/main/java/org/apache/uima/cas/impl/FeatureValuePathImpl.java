@@ -193,9 +193,9 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 	}
 
 	/**
-   * @param pathSnippet
-   * @param child
-   * @throws ParserTokenizerException
+   * @param pathSnippet feature path part
+   * @param child a feature value path object
+   * @throws CASRuntimeException if the feature path is invalid
    */
 	private FeatureValuePathImpl(String pathSnippet, FeatureValuePathImpl child)
 			throws CASRuntimeException {
@@ -572,8 +572,8 @@ public class FeatureValuePathImpl implements FeatureValuePath {
    * leaf snippet is <code>COVERED_TEXT</code>, returns the covered text of
    * <code>currentFS</code>.
    * 
-   * @param currentFS
-   * @param cas
+   * @param currentFS the current Feature Structure
+   * @param cas CAS
    * @return A string representation of the leaf value.
    */
 	public String evaluateAsString(int currentFS, LowLevelCAS cas) {
@@ -761,7 +761,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
    * type that was used in <code>typeSystemInit</code>
    * </ul>
    * 
-   * @return int the type for which the last feature in the feature path is defined.
+   * @return the type for which the last feature in the feature path is defined.
    */
 	public int getFSType() {
 		if (this.isSimpleRangeType) {
@@ -1070,9 +1070,10 @@ public class FeatureValuePathImpl implements FeatureValuePath {
    * Assumes that <code>arrayIndex</code>!=<code>USE_ALL_ENTRIES</code>, and that the
    * <code>listType</code> is <code>TYPE_CLASS_FSLIST</code>
    * 
+   * @param cas the low level CAS
+   * @param the list feature structure
    * @return int A reference to the fs given in <code>arrayIndex</code>, or 0 if the list does
    *         not contain an entry for that index.
-   * 
    */
 	private int getFsAtListIndex(LowLevelCAS cas, int listFS) {
 		if (this.arrayIndex == USE_ALL_ENTRIES || this.listType != TYPE_CLASS_FSLIST) {
@@ -1143,7 +1144,8 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 	}
 
 	/**
-   * @param listFS
+	 * @param cas CAS
+   * @param listFS the list Feature Structure
    * @return Object If arrayIndex = USE_ALL_ENTRIES, returns an <code>ArrayList</code> containing
    *         all entries. Otherwise, returns a String, Integer, or Float. Returns <code>null</code>
    *         if the list does not contain an entry for arrayIndex, or is empty.

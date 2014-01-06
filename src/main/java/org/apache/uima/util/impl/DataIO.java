@@ -95,11 +95,11 @@ public class DataIO {
    * For DataOutput, DataInput
    ***************************************************************************************/
   /**
-   * Similar to writeUTF, but ok for strings > 32K bytes long and better for strings < 127
-   * string utf-8 length must be <= Integer.MAX_VALUE - 1 
-   * @param string
-   * @param out
-   * @throws IOException
+   * Similar to writeUTF, but ok for strings &gt; 32K bytes long and better for strings &lt; 127
+   * string utf-8 length must be &le; Integer.MAX_VALUE - 1 
+   * @param string the string to write
+   * @param out the output sink
+   * @throws IOException passthru
    */
   public static void writeUTFv(String string, DataOutput out) throws IOException {
     if (null == string) {
@@ -139,9 +139,9 @@ public class DataIO {
   
   /**
    * DataOutputStream writeShort with checking of argument
-   * @param out
-   * @param v
-   * @throws IOException
+   * @param out the output sink
+   * @param v the value to write
+   * @throws IOException passthru
    */
   public static void writeShort(DataOutput out, int v) throws IOException {
     if (v > Short.MAX_VALUE ||
@@ -154,9 +154,9 @@ public class DataIO {
  
   /**
    * DataOutputStream writeByte with checking of argument
-   * @param out
-   * @param v
-   * @throws IOException
+   * @param out output sink 
+   * @param v the value to write
+   * @throws IOException passthru
    */
   public static void writeByte(DataOutput out, int v) throws IOException {
     if (v > Byte.MAX_VALUE || 
@@ -169,9 +169,9 @@ public class DataIO {
 
   /**
    * Write lower 8 bits 
-   * @param out
-   * @param v
-   * @throws IOException
+   * @param out output sink
+   * @param v the value to write
+   * @throws IOException passthru
    */
   public static void writeUnsignedByte(DataOutput out, int v) throws IOException {
     out.write(v);
@@ -181,9 +181,9 @@ public class DataIO {
    * write a positive or negative number, optimized for fewer bytes near 0
    *   sign put in low order bit, rest of number converted to positive and shifted left 1
    *   max negative written as - 0.
-   * @param out
-   * @param v
-   * @throws IOException
+   * @param out output sink
+   * @param v the value to write
+   * @throws IOException passthru
    */
   // special handling for MIN_VALUE because
   // Math.abs of it "fails".  We instead code it as
@@ -250,9 +250,9 @@ public class DataIO {
    * 
    * Note: value treated as unsigned 32 bit int
    * 
-   * @param out
-   * @param v
-   * @throws IOException
+   * @param out output sink
+   * @param v the value to write
+   * @throws IOException passthru
    */
   public static void writeVnumber(final DataOutput out, final int v) throws IOException {
     if ((v >= 0) && v < 128) {
@@ -312,9 +312,9 @@ public class DataIO {
    * Write a positive long with the fewest bytes possible; up to 127 written as a byte, high order
    * bit on means get another byte.
    * 
-   * @param out
-   * @param v is never negative
-   * @throws IOException
+   * @param out output sink
+   * @param v the value to write is never negative
+   * @throws IOException passthru
    */
   public static void writeVnumber(final DataOutput out, final long v) throws IOException {
     if ((v >= 0) && v < 128) {
@@ -403,9 +403,9 @@ public class DataIO {
 
   /**
    * write array preceded by its length
-   * @param out
-   * @param v
-   * @throws IOException
+   * @param out output sink
+   * @param v the value to write
+   * @throws IOException passthru
    */
   public static void writeIntArray(DataOutput out, int[] v) throws IOException {
     writeVnumber(out, v.length);
@@ -425,9 +425,9 @@ public class DataIO {
   
   /**
    * Write delta encoded value, for increasing values
-   * @param out
-   * @param v
-   * @throws IOException
+   * @param out output sink
+   * @param v the value to write
+   * @throws IOException passthru
    */
   public static void writeIntArrayDelta(DataOutput out, int[] v) throws IOException {
     writeVnumber(out, v.length);

@@ -54,7 +54,7 @@ public class AnalysisComponentAdapterFactory {
    * 
    * @return an object that wraps <code>aAdaptee</code> and implements the
    *         <code>AnalysisComponent> interface.
-   * @throws ResourceInitializationException
+   * @throws ResourceInitializationException if passed an adaptee which is not an analysis component
    */
   public static AnalysisComponent createAdapter(Object aAdaptee, AnalysisEngineMetaData aMetaData,
           Map<String, Object> aAdditionalParams) throws ResourceInitializationException {

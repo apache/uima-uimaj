@@ -62,6 +62,7 @@ public interface UimaContextAdmin extends UimaContext {
    *          parent context.
    * @param aSofaMappings
    *          mappings from child's sofa name to parent's sofa name. May be null.
+   * @return the Administrative interface to the UIMA Context
    */
   public UimaContextAdmin createChild(String aContextName, Map<String, String> aSofaMappings);
 
@@ -114,6 +115,7 @@ public interface UimaContextAdmin extends UimaContext {
    * created. In a multi-client deployment, the deployment wrapper is responsible for ensuring that
    * an appropriate Session object is installed here prior to invoking components that use this
    * UimaContext.
+   * @param aSession the session object
    */
   public void setSession(Session aSession);
 
@@ -190,7 +192,7 @@ public interface UimaContextAdmin extends UimaContext {
   /**
    * Sets the Settings for external parameter overrides
    * 
-   * @param externalOverrides
+   * @param externalOverrides the external overrides settings
    */
   public void setExternalOverrides(Settings externalOverrides);
 

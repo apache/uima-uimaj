@@ -62,7 +62,7 @@ public class Sofa extends TOP implements SofaFS {
 	protected Sofa() {
 	}
 
-	/*
+	/**
    * Internal - constructor used by generator
    * 
    * @generated
@@ -102,7 +102,7 @@ public class Sofa extends TOP implements SofaFS {
 	// *--------------*
 	// * Feature: sofaNum
   // ** Note: this gets the same feature, sofaNum, as getSofaRef, below
-	/*
+	/**
    * getter for sofaNum - gets
    * 
    * @generated
@@ -116,7 +116,7 @@ public class Sofa extends TOP implements SofaFS {
 	// *--------------*
 	// * Feature: sofaID
 
-	/*
+	/**
    * getter for sofaID - gets
    * 
    * @generated
@@ -130,7 +130,7 @@ public class Sofa extends TOP implements SofaFS {
 	// *--------------*
 	// * Feature: mimeType
 
-	/*
+	/**
    * getter for mimeType - gets
    * 
    * @generated

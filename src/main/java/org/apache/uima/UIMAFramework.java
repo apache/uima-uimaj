@@ -1213,7 +1213,7 @@ public abstract class UIMAFramework {
   /**
    * To be implemented by subclasses; this should return a reference to the UIMA {@link Logger} of
    * the specified source class.
-   * 
+   * @param component the class to get the logger for 
    * @return the <code>Logger</code> of the specified source class
    */
   protected abstract Logger _getLogger(Class<?> component);

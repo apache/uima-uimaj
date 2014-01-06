@@ -341,7 +341,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    *          name of context containing this parameter
    * @param aExternalOverrides
    *          settings for parameters with external overrides 
-   * @throws ResourceConfigurationException 
+   * @throws ResourceConfigurationException passthru
    */
   protected void declareParameters(String aGroupName, ConfigurationParameter[] aParams,
           ConfigurationParameterSettings aSettings, String aContextName, Settings aExternalOverrides)

@@ -275,7 +275,7 @@ public interface AnalysisEngineDescription extends ResourceCreationSpecifier {
   // *
   // * @return SofaMapping[]
   // */
-  /**
+  /*
    * Reserved for future use.
    */
   public SofaMapping[] getSofaMappings();
@@ -284,7 +284,7 @@ public interface AnalysisEngineDescription extends ResourceCreationSpecifier {
   // *
   // * @param aSofaMappings
   // */
-  /**
+  /*
    * Reserved for future use.
    */
   public void setSofaMappings(SofaMapping[] aSofaMappings);

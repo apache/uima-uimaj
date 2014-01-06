@@ -232,13 +232,10 @@ public class XCASSerializer {
       return KEY_NOT_FOUND;
     }
 
-    /**
+    /*
      * Version of serialize which also includes OutOfTypeSystemData (obtained from previous
      * deserialization) in the produced XCAS.
      * 
-     * @throws XMLException
-     * @throws IOException
-     * @throws SAXException
      */
     private void serialize(boolean encodeDoc, OutOfTypeSystemData outOfTypeSystemData)
             throws IOException, SAXException {
@@ -332,12 +329,8 @@ public class XCASSerializer {
       ch.endElement("", "", tag);
     }
 
-    /**
+    /*
      * Encode the indexed FS in the queue.
-     * 
-     * @throws XMLException
-     * @throws IOException
-     * @throws SAXException
      */
     private void encodeIndexed() throws IOException, SAXException {
       final int max = indexedFSs.size();
@@ -394,12 +387,9 @@ public class XCASSerializer {
       }
     }
 
-    /**
+    /*
      * Encode all other enqueued (non-indexed) FSs.
      * 
-     * @throws XMLException
-     * @throws IOException
-     * @throws SAXException
      */
     private void encodeQueued() throws IOException, SAXException {
       int addr;
@@ -416,9 +406,8 @@ public class XCASSerializer {
      *          The address to be encoded.
      * @param isIndexed
      *          If the FS is indexed or not.
-     * @throws XMLException
-     * @throws IOException
-     * @throws SAXException
+     * @throws IOException passthru
+     * @throws SAXException passthru
      */
     private void encodeFS(int addr, IntVector indexRep) throws IOException, SAXException {
       ++fsCount;
@@ -608,10 +597,8 @@ public class XCASSerializer {
       }
     }
 
-    /**
+    /*
      * Encode features of a regular (non-array) FS.
-     * 
-     * @param addr
      */
     private void encodeFeatures(int addr, AttributesImpl attrs) {
       int heapValue = cas.getHeapValue(addr);
@@ -666,10 +653,8 @@ public class XCASSerializer {
       }
     }
 
-    /**
+    /*
      * Encode Out-Of-TypeSystem Features.
-     * 
-     * @param addr
      */
     private void encodeOutOfTypeSystemFeatures(int addr, AttributesImpl attrs) {
       List<String[]> attrList = mOutOfTypeSystemData.extraFeatureValues.get(Integer.valueOf(addr));
@@ -687,10 +672,8 @@ public class XCASSerializer {
       }
     }
 
-    /**
+    /*
      * Encode Out-Of-TypeSystem Features.
-     * 
-     * @param addr
      */
     private void enqueueOutOfTypeSystemFeatures(int addr) {
       List<String[]> attrList = mOutOfTypeSystemData.extraFeatureValues.get(Integer.valueOf(addr));
@@ -719,7 +702,7 @@ public class XCASSerializer {
       return cas.ll_getTypeClass(type);
     }
 
-    /**
+    /*
      * Produces XCAS from Out-Of-Typesystem data. (APL)
      */
     private void enqueueOutOfTypeSystemData(OutOfTypeSystemData aData) {

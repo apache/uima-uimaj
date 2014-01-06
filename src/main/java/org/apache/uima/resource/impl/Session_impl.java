@@ -25,9 +25,7 @@ import java.util.Map;
 
 import org.apache.uima.resource.Session;
 
-/**
- * 
- */
+
 public class Session_impl implements Session {
 
   private static final long serialVersionUID = -8525494546736102324L;

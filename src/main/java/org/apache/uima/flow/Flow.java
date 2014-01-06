@@ -58,7 +58,7 @@ public interface Flow {
    * @return a new Flow object that has responsibility for routing <code>aCAS</code> through the
    *         Aggregate Analysis Engine.
    * 
-   * @throws AnalysisEngineProcessException
+   * @throws AnalysisEngineProcessException passthru
    */
   Flow newCasProduced(AbstractCas newCas, String producedBy) throws AnalysisEngineProcessException;
 

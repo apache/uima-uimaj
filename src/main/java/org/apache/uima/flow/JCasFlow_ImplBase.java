@@ -91,7 +91,9 @@ public abstract class JCasFlow_ImplBase implements Flow {
    *          the key of the CAS Multiplier that produced this JCas
    * 
    * @return a Flow object that will be used to route the new JCas
+   * @throws AnalysisEngineProcessException -
    * @see Flow#newCasProduced(AbstractCas, String)
+   * 
    */
   protected Flow newCasProduced(JCas newCas, String producedBy)
           throws AnalysisEngineProcessException {

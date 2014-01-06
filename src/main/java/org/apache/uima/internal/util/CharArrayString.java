@@ -79,10 +79,10 @@ public class CharArrayString {
    * @param length
    *          The length of the string.
    * @pre charArray != null
-   * @pre startPos >= 0
-   * @pre startPos <= charArray.length
-   * @pre length >= 0
-   * @pre length <= charArray.length - startPos
+   * @pre startPos &ge; 0
+   * @pre startPos &le; charArray.length
+   * @pre length &ge; 0
+   * @pre length &le; charArray.length - startPos
    */
   public CharArrayString(char[] charArray, int startPos, int length) {
     super();
@@ -349,9 +349,9 @@ public class CharArrayString {
    * @param endPos
    * @return The hash code.
    * @pre charArray != null
-   * @pre startPos >= 0
-   * @pre endPos >= startPos
-   * @pre charArray.length >= endPos
+   * @pre startPos &ge; 0
+   * @pre endPos &ge; startPos
+   * @pre charArray.length &ge; endPos
    */
   public static final int hashCode(char[] charArray, int startPos, int endPos) {
     // Universal hashing (pseudo-random), out of Sedgewick.

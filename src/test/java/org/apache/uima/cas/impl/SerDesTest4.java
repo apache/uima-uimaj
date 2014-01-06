@@ -333,7 +333,7 @@ public class SerDesTest4 extends TestCase {
     verifyDelta(marker, "DeltaWithMods");
   }
   
-  /**
+  /*
    * Variations to cover:
    *   all kinds of slots
    *   multiple sets of values
@@ -342,9 +342,6 @@ public class SerDesTest4 extends TestCase {
    *   
    * Driver for random values
    *   pick among random and "interesting" edge case values
-   * @throws IOException 
-   *     
-   *   
    */
   public void testDeltaWithAllMods() throws IOException {
 

@@ -200,12 +200,6 @@ public class XCasToCasDataSaxHandler extends DefaultHandler {
     return StringUtils.replaceAll(StringUtils.replaceAll(aTagName, ":", "_colon_"), "-", "_dash_");
   }
 
-  /**
-   * 
-   * @param addr
-   * @param attrs
-   * @throws SAXParseException
-   */
   private void readFS(FeatureStructureImpl fsImpl, Attributes attrs) throws SAXParseException {
     String attrName, attrValue;
     for (int i = 0; i < attrs.getLength(); i++) {

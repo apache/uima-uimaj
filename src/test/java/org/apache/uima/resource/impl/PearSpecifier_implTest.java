@@ -37,10 +37,8 @@ import static org.apache.uima.analysis_engine.impl.AnalysisEngineDescription_imp
  */
 public class PearSpecifier_implTest extends TestCase {
  
-  /**
+  /*
    * pearSpecifier creation test
-   * 
-   * @throws Exception
    */
   public void testProducePearResource() throws Exception {
     PearSpecifier specifier = UIMAFramework.getResourceSpecifierFactory().createPearSpecifier();
@@ -75,10 +73,8 @@ public class PearSpecifier_implTest extends TestCase {
 
   }
   
-  /**
+  /*
    * pearSpecifier xmlization test
-   * 
-   * @throws Exception
    */
   public void testXmlization() throws Exception {
     try {

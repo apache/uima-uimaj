@@ -51,7 +51,7 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 @Deprecated
 public class TCasToInlineXml implements TCasFormatter {
-  /**
+  /*
    * This destroy method does nothing.
    * 
    * @see org.apache.uima.resource.Resource#destroy()
@@ -59,21 +59,21 @@ public class TCasToInlineXml implements TCasFormatter {
   public void destroy() {
   }
 
-  /**
+  /*
    * @see org.apache.uima.util.TCasFormatter#format(CAS)
    */
   public String format(CAS aCAS) throws CASException {
     return generateXML(aCAS, null);
   }
 
-  /**
+  /*
    * @see org.apache.uima.util.TCasFormatter#format(CAS, FSMatchConstraint)
    */
   public String format(CAS aCAS, FSMatchConstraint aFilter) throws CASException {
     return generateXML(aCAS, aFilter);
   }
 
-  /**
+  /*
    * Generates inline XML from a CAS.
    * 
    * @param aCAS
@@ -83,7 +83,7 @@ public class TCasToInlineXml implements TCasFormatter {
     return generateXML(aCAS, null);
   }
 
-  /**
+  /*
    * Generates inline XML from a CAS.
    * 
    * @param aCAS

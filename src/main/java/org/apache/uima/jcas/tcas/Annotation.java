@@ -99,6 +99,9 @@ public class Annotation extends AnnotationBase implements AnnotationFS {
 
   /**
    * Constructor with begin and end passed as arguments
+   * @param jcas JCas
+   * @param begin begin offset
+   * @param end   end offset
    */
   public Annotation(JCas jcas, int begin, int end) {
     this(jcas); // forward to constructor
@@ -121,6 +124,8 @@ public class Annotation extends AnnotationBase implements AnnotationFS {
 
   /**
    * @deprecated
+   * @see Annotation#getBegin()
+   * @return the Annotation "begin" feature value
    */
   @Deprecated
   public int getStart() {

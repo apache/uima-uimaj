@@ -446,8 +446,8 @@ public class JSR47Logger_impl implements Logger {
   /**
    * JSR-47 level mapping to UIMA level mapping.
    * 
-   * SEVERE (highest value) -> SEVERE WARNING -> WARNING INFO -> INFO CONFIG -> CONFIG FINE -> FINE
-   * FINER -> FINER FINEST (lowest value) -> FINEST OFF -> OFF ALL -> ALL
+   * SEVERE (highest value) -%gt; SEVERE WARNING -%gt; WARNING INFO -%gt; INFO CONFIG -%gt; CONFIG FINE -%gt; FINE
+   * FINER -%gt; FINER FINEST (lowest value) -%gt; FINEST OFF -%gt; OFF ALL -%gt; ALL
    * 
    * @param level
    *          uima level

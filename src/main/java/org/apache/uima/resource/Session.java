@@ -36,9 +36,17 @@ import java.io.Serializable;
  * 
  */
 public interface Session extends Serializable {
-  /** Stores an object in the Session */
+  /**
+   * Stores an object in the Session
+   * @param aKey Key
+   * @param aValue Value
+   */
   public void put(String aKey, Object aValue);
 
-  /** Gets an object from the Session */
+  /**
+   * Gets an object from the Session
+   * @param aKey Key  
+   * @return the associated value
+   */
   public Object get(String aKey);
 }

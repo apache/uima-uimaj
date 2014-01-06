@@ -34,9 +34,7 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.testTypeSystem_arrays.OfShorts;
 import org.apache.uima.testTypeSystem_arrays.OfStrings;
 
-/**
- * 
- */
+
 public class CasToInlineXmlTest extends TestCase {
   private TypeSystemDescription typeSystem;
 

@@ -33,8 +33,8 @@ import org.apache.uima.analysis_engine.ResultSpecification;
 public class SimpleStepWithResultSpec extends SimpleStep {
 
   /**
-   * @param aCasProcessorKey
-   * @param aResultSpec
+   * @param aCasProcessorKey key
+   * @param aResultSpec Result Specification
    */
   public SimpleStepWithResultSpec(String aCasProcessorKey, ResultSpecification aResultSpec) {
     super(aCasProcessorKey);

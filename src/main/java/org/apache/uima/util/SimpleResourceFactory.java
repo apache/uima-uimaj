@@ -191,6 +191,7 @@ public class SimpleResourceFactory implements ResourceFactory {
    * @param aResourceClassName
    *          the name of a subclass of <code>Resource</code> that is to be instantiated from
    *          resource specifiers of the given class.
+   * @throws ClassNotFoundException -
    */
   @SuppressWarnings("unchecked")
   public void addMapping(String aSpecifierInterfaceName, String aResourceClassName)

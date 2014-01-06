@@ -90,7 +90,7 @@ public interface CasManager extends CasOwner {
 
   /**
    * Gets an empty CAS. An AnalysisEngine may only call this method after it has first called
-   * {@link #defineCasPool(String, int, Properties)} and established a CAS Pool of size > 0. The CAS
+   * {@link #defineCasPool(String, int, Properties)} and established a CAS Pool of size &gt; 0. The CAS
    * Manager maintains a separate pool for each AnalysisEngine. This method may block if the CAS
    * pool does not contain any free instances.
    * 
@@ -122,6 +122,7 @@ public interface CasManager extends CasOwner {
    *          The CAS
    * @param requiredInterface
    *          interface to get. Currently must be either CAS or JCas.
+   * @return the CAS Interface
    */
   AbstractCas getCasInterface(CAS cas, Class<? extends AbstractCas> requiredInterface);
   

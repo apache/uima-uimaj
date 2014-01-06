@@ -85,7 +85,7 @@ public interface FlowController {
    * calling <code>destroy</code> followed by <code>initialize</code>. If a more efficient
    * implementation is needed, you can override that implementation.
    * 
-   * @throws ResourceConfiguartionException
+   * @throws ResourceConfigurationException
    *           if the new configuration is invalid
    * @throws ResourceInitializationException
    *           if this component encounters a problem in reinitializing itself from the new
@@ -142,7 +142,7 @@ public interface FlowController {
    * @return a Flow object that has responsibility for routing <code>aCAS</code> through the
    *         Aggregate Analysis Engine.
    * 
-   * @throws AnalysisEngineComponentException
+   * @throws AnalysisEngineProcessException
    *           if this FlowController encounters a problem computing the flow for the CAS
    */
   Flow computeFlow(AbstractCas aCAS) throws AnalysisEngineProcessException;

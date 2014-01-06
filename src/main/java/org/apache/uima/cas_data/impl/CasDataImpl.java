@@ -26,13 +26,9 @@ import java.util.List;
 import org.apache.uima.cas_data.CasData;
 import org.apache.uima.cas_data.FeatureStructure;
 
-/**
- * 
- */
+
 public class CasDataImpl implements CasData {
-  /**
-   * 
-   */
+  
   private static final long serialVersionUID = 400887901813129040L;
 
   private List<FeatureStructure> fsList = null;

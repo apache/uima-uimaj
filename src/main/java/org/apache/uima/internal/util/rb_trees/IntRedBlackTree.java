@@ -200,7 +200,7 @@ public class IntRedBlackTree {
    * {@link org.apache.uima.internal.util.rb_trees.IntRBTArray IntRBTArray} object.
    * 
    * @param offset
-   *          An offset for internal addressing. If <code>offset > 0</code>, the addresses
+   *          An offset for internal addressing. If <code>offset &gt; 0</code>, the addresses
    *          generated for right daughters in two-daughter nodes are shifted to the right. This is
    *          useful if the resulting array will be copied to a certain <code>offset</code>
    *          position in a different array.

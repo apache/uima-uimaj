@@ -61,7 +61,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -301,7 +300,7 @@ public class BinaryCasSerDes4 {
   
   /**
    * 
-   * @param ts
+   * @param ts the type system
    * @param doMeasurements - normally set this to false. 
    */
   public BinaryCasSerDes4(TypeSystemImpl ts, boolean doMeasurements) {
@@ -313,11 +312,11 @@ public class BinaryCasSerDes4 {
 
   /**
    * 
-   * @param cas
-   * @param out
-   * @param trackingMark
+   * @param cas CAS to serialize
+   * @param out output object
+   * @param trackingMark tracking mark (for delta serialization)
    * @return null or serialization measurements (depending on setting of doMeasurements)
-   * @throws IOException
+   * @throws IOException if the marker is invalid
    */
   public SerializationMeasures serialize(AbstractCas cas, Object out, Marker trackingMark,
       CompressLevel compressLevel, CompressStrat compressStrategy) throws IOException {
@@ -895,7 +894,7 @@ public class BinaryCasSerDes4 {
      *     the Slot_Control stream
      *     all the zipped streams
      *
-     * @throws IOException 
+     * @throws IOException passthru
      */
     private void collectAndZip() throws IOException {
       ByteArrayOutputStream baosZipped = new ByteArrayOutputStream(4096);
@@ -960,12 +959,13 @@ public class BinaryCasSerDes4 {
      * String encoding
      *   Length = 0 - used for null, no offset written
      *   Length = 1 - used for "", no offset written 
-     *   Length > 0 (subtract 1): used for actual string length
+     *   Length &gt; 0 (subtract 1): used for actual string length
      *   
-     *   Length < 0 - use (-length) as slot index  (minimum is 1, slot 0 is NULL)
+     *   Length &lt; 0 - use (-length) as slot index  (minimum is 1, slot 0 is NULL)
      *   
-     *   For length > 0, write also the offset.
+     *   For length &gt; 0, write also the offset.
      *   
+     * @throws IOException passthru  
      */
     private void writeString(final String s) throws IOException {
       if (null == s) {
@@ -1024,6 +1024,7 @@ public class BinaryCasSerDes4 {
      * Because 0 occurs frequently, we reserve 
      * exp of 0 for the value 0
      *  
+     * @param raw the number to write
      */
     
     private void writeFloat(int raw) throws IOException {
@@ -1110,9 +1111,9 @@ public class BinaryCasSerDes4 {
      * Encoding:
      *    bit 6 = sign:   1 = negative
      *    bit 7 = delta:  1 = delta
-     * @param kind
+     * @param kind the kind of slot
      * @param i  runs from iHeap + 3 to end of array
-     * @throws IOException 
+     * @throws IOException passthru
      */
     private void writeDiff(int kind, int v, int prev) throws IOException {
       if (v == 0) {
@@ -1513,9 +1514,9 @@ public class BinaryCasSerDes4 {
     /**
      * Called after header was read and determined that
      * this was a compressed binary 
-     * @param cas
-     * @param deserIn
-     * @throws IOException 
+     * @param cas CAS
+     * @param deserIn input data
+     * @throws IOException passthru
      */
     Deserializer(CASImpl cas, DataInput deserIn, boolean isDelta) throws IOException {
       this.cas = cas;
@@ -1801,7 +1802,7 @@ public class BinaryCasSerDes4 {
       }
     }
 
-    /**
+    /*
      * Each FS index is sorted, and output is by delta 
      */
     private void readFsxPart(IntVector fsIndexes) throws IOException {
@@ -2446,7 +2447,7 @@ public class BinaryCasSerDes4 {
    *                 an OutputStream
    *                 a File
    * @return a data output stream
-   * @throws FileNotFoundException
+   * @throws FileNotFoundException passthru
    */
   private static DataOutputStream makeDataOutputStream(Object f) throws FileNotFoundException {
     if (f instanceof DataOutputStream) {

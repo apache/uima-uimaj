@@ -29,9 +29,7 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
-/**
- * 
- */
+
 public class ComponentInfoTest extends TestCase {
   public void testComponentInfo() throws Exception {
     //test the CAS.getCurrentComponentInfo() is null after a component has

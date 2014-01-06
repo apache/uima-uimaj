@@ -122,7 +122,7 @@ public interface ResultSpecification extends XMLizable, Serializable, Cloneable 
    * The set of types and features returned are just the ones that have been 
    * explicitly set or added to the ResultSpecification, and doesn't include
    * any derived subtypes, even if this ResultSpecification has been compiled. 
-    * 
+   * @param language the language specifier 
    * @return an array of {@link TypeOrFeature} objects that define the result types and features for
    *         the specified language.
    */
@@ -396,6 +396,7 @@ public interface ResultSpecification extends XMLizable, Serializable, Cloneable 
 
   /**
    * get the type system associated with this result specification.
+   * @return the type system
    */
   public TypeSystem getTypeSystem();
 

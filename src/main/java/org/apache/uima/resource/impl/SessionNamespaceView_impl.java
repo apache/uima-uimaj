@@ -21,9 +21,7 @@ package org.apache.uima.resource.impl;
 
 import org.apache.uima.resource.Session;
 
-/**
- * 
- */
+
 public class SessionNamespaceView_impl implements Session {
   private static final long serialVersionUID = 7585276862479207970L;
 

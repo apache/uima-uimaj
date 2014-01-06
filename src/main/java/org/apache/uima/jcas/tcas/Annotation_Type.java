@@ -88,6 +88,8 @@ public class Annotation_Type extends org.apache.uima.jcas.cas.AnnotationBase_Typ
 
   /**
    * @see org.apache.uima.cas.text.AnnotationFS#getCoveredText()
+   * @param inst low level reference to a Feature Structure
+   * @return null or the covered text
    */
   public String getCoveredText(int inst) { 
     final CASImpl casView = ll_cas.ll_getSofaCasView(inst);

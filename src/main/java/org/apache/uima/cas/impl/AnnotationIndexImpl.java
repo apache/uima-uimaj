@@ -34,9 +34,7 @@ public class AnnotationIndexImpl<T extends AnnotationFS> implements AnnotationIn
 
   private FSIndex<AnnotationFS> index;
 
-  /**
-   * 
-   */
+  
   public AnnotationIndexImpl(FSIndex<AnnotationFS> index) {
     super();
     this.index = index;

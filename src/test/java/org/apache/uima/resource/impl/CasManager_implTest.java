@@ -26,9 +26,7 @@ import org.apache.uima.cas.admin.CASAdminException;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.resource.CasManager;
 
-/**
- * 
- */
+
 public class CasManager_implTest extends TestCase {
   public void testEnableReset() throws Exception {
     CasManager mgr = UIMAFramework.newDefaultResourceManager().getCasManager();

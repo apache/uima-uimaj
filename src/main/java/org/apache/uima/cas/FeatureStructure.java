@@ -149,7 +149,7 @@ public interface FeatureStructure {
    * @param feat
    *          The feature whose value we want to set.
    * @return The value byte; <code>0</code> if the value has not been set.
-   * @throws CASRuntimeException
+   * @throws CASRuntimeException tbd
    */
   byte getByteValue(Feature feat) throws CASRuntimeException;
 
@@ -160,6 +160,7 @@ public interface FeatureStructure {
    *          The feature whose value we want to set.
    * @param i
    *          The 8bit value we're setting the feature to.
+   * @throws CASRuntimeException tbd
    */
   void setByteValue(Feature feat, byte i) throws CASRuntimeException;
 
@@ -297,7 +298,7 @@ public interface FeatureStructure {
    * float, string) will be shared between the clone and it's source FS.
    * 
    * @return a FeatureStructure that is the cloned copy of this FeatureStructure.
-   * @throws CASRuntimeException
+   * @throws CASRuntimeException passthru
    */
   Object clone() throws CASRuntimeException;
 

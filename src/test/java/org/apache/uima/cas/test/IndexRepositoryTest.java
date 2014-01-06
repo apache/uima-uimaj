@@ -30,9 +30,7 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.text.AnnotationFS;
 
-/**
- * 
- */
+
 public class IndexRepositoryTest extends TestCase {
 
   CAS cas;

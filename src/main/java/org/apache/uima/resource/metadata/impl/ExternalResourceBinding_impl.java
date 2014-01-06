@@ -28,9 +28,7 @@ import org.apache.uima.resource.metadata.ExternalResourceBinding;
 public class ExternalResourceBinding_impl extends MetaDataObject_impl implements
         ExternalResourceBinding {
 
-  /**
-   * 
-   */
+  
   private static final long serialVersionUID = 8736222753308388218L;
 
   private String mResourceName;

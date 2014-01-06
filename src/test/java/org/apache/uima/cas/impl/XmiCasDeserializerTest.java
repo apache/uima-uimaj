@@ -197,9 +197,8 @@ public class XmiCasDeserializerTest extends TestCase {
     xmlReader.parse(new InputSource(new StringReader(xml)));
   }
   
-  /**
+  /*
    * https://issues.apache.org/jira/browse/UIMA-3396
-   * @throws Exception
    */
   public void testDeltaCasIndexing() throws Exception {
     try {

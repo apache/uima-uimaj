@@ -27,9 +27,7 @@ import org.apache.uima.collection.CasConsumerDescription;
 import org.apache.uima.collection.impl.CasConsumerDescription_impl;
 import org.apache.uima.resource.ResourceInitializationException;
 
-/**
- * 
- */
+
 public class CasConsumerFactory_implTest extends TestCase {
  
   private CasConsumerFactory_impl ccFactory;

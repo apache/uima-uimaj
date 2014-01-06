@@ -41,8 +41,6 @@ import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
  * physical machines. The ASB hides all such details from the rest of the AnalysisEngine, which
  * should be able to operate with no knowledge of whether Analysis Engines are co-located or
  * distributed.
- * <p>
- * 
  */
 public interface ASB extends Resource {
   /**
@@ -128,6 +126,7 @@ public interface ASB extends Resource {
    *          the CAS to process
    * 
    * @return an iterator over all output CASes
+   * @throws AnalysisEngineProcessException -
    */
   public CasIterator process(CAS aCAS) throws AnalysisEngineProcessException;
   

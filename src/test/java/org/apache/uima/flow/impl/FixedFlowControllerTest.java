@@ -43,9 +43,7 @@ import org.apache.uima.resource.metadata.impl.OperationalProperties_impl;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.util.CasCreationUtils;
 
-/**
- * 
- */
+
 public class FixedFlowControllerTest extends TestCase {
 
   private Map<String, AnalysisEngineMetaData> analysisEngineMetaDataMap;

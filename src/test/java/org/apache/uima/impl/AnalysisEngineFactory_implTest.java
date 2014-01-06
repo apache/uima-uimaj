@@ -27,9 +27,7 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.impl.AnalysisEngineDescription_impl;
 import org.apache.uima.resource.ResourceInitializationException;
 
-/**
- * 
- */
+
 public class AnalysisEngineFactory_implTest extends TestCase {
  
   private AnalysisEngineFactory_impl aeFactory;

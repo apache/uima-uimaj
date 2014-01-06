@@ -91,7 +91,7 @@ public abstract class CasFlowController_ImplBase extends FlowController_ImplBase
    * @param aTypeSystem
    *          the typesystem
    * 
-   * @throws CasProcessorComponentException
+   * @throws AnalysisEngineProcessException
    *           if a problem occurs during processing
    */
   public void typeSystemInit(TypeSystem aTypeSystem) throws AnalysisEngineProcessException {

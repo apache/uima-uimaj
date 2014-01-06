@@ -31,7 +31,7 @@ import org.apache.uima.UIMA_UnsupportedOperationException;
 public interface ConfigurationGroup extends MetaDataObject {
 
   /**
-   * Gets the group names for this <code>ConfigurationGroup</object> object.
+   * Gets the group names for this <code>ConfigurationGroup</code> object.
    * 
    * @return an array of group names.  Names are not allowed to contain
    *   whitespace.
@@ -39,7 +39,7 @@ public interface ConfigurationGroup extends MetaDataObject {
   public String[] getNames();
 
   /**
-   * Sets the group names for this <code>ConfigurationGroup</object> object.
+   * Sets the group names for this <code>ConfigurationGroup</code> object.
    * 
    * @param aNames an array of group names.  Names are not allowed to
    *   contain whitespace.

@@ -117,6 +117,8 @@ public interface FSIndex<T extends FeatureStructure> extends Iterable<T> {
    * Compare two feature structures according to the ordering relation of the index. If the input
    * feature structures are not of the type of the index, the result is undefined.
    * 
+   * @param fs1 the first  Feature Structure to compare
+   * @param fs2 the second Feature Structure to compare
    * @return <code>-1</code> if <code>fs1 &lt; fs2</code>; <code>0</code> if
    *         <code>fs1 = fs2</code>; <code>1</code> else.
    */

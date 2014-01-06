@@ -28,7 +28,7 @@ public interface CasOwner {
 
   /**
    * Releases a CAS back to its owner. After calling this method, the caller should no longer access
-   * <code>aCAS</code..
+   * <code>aCAS</code>.
    * 
    * @param aCAS the CAS to release
    */

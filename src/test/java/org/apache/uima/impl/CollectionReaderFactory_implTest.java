@@ -27,9 +27,7 @@ import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.collection.impl.CollectionReaderDescription_impl;
 import org.apache.uima.resource.ResourceInitializationException;
 
-/**
- * 
- */
+
 public class CollectionReaderFactory_implTest extends TestCase {
  
   private CollectionReaderFactory_impl ccFactory;

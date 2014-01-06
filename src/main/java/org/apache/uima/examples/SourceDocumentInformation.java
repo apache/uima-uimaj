@@ -60,7 +60,7 @@ public class SourceDocumentInformation extends Annotation {
   protected SourceDocumentInformation() {
   }
 
-  /*
+  /**
    * Internal - constructor used by generator
    * 
    * @generated
@@ -95,7 +95,7 @@ public class SourceDocumentInformation extends Annotation {
   // *--------------*
   // * Feature: uri
 
-  /*
+  /**
    * getter for uri - gets URI of document. (For example, file:///MyDirectory/myFile.txt for a
    * simple file or http://incubator.apache.org/uima/index.html for content from a web source.)
    * 
@@ -109,7 +109,7 @@ public class SourceDocumentInformation extends Annotation {
             ((SourceDocumentInformation_Type) jcasType).casFeatCode_uri);
   }
 
-  /*
+  /**
    * setter for uri - sets URI of document. (For example, file:///MyDirectory/myFile.txt for a
    * simple file or http://incubator.apache.org/uima/index.html for content from a web source.)
    * 
@@ -126,7 +126,7 @@ public class SourceDocumentInformation extends Annotation {
   // *--------------*
   // * Feature: offsetInSource
 
-  /*
+  /**
    * getter for offsetInSource - gets Byte offset of the start of document content within original
    * source file or other input source. Only used if the CAS document was retrieved from an source
    * where one physical source file contained several conceptual documents. Zero otherwise.
@@ -141,7 +141,7 @@ public class SourceDocumentInformation extends Annotation {
             ((SourceDocumentInformation_Type) jcasType).casFeatCode_offsetInSource);
   }
 
-  /*
+  /**
    * setter for offsetInSource - sets Byte offset of the start of document content within original
    * source file or other input source. Only used if the CAS document was retrieved from an source
    * where one physical source file contained several conceptual documents. Zero otherwise.
@@ -159,7 +159,7 @@ public class SourceDocumentInformation extends Annotation {
   // *--------------*
   // * Feature: documentSize
 
-  /*
+  /**
    * getter for documentSize - gets Size of original document in bytes before processing by CAS
    * Initializer. Either absolute file size of size within file or other source.
    * 
@@ -173,7 +173,7 @@ public class SourceDocumentInformation extends Annotation {
             ((SourceDocumentInformation_Type) jcasType).casFeatCode_documentSize);
   }
 
-  /*
+  /**
    * setter for documentSize - sets Size of original document in bytes before processing by CAS
    * Initializer. Either absolute file size of size within file or other source.
    * 
@@ -190,7 +190,7 @@ public class SourceDocumentInformation extends Annotation {
   // *--------------*
   // * Feature: lastSegment
 
-  /*
+  /**
    * getter for lastSegment - gets For a CAS that represents a segment of a larger source document,
    * this flag indicates whether this CAS is the final segment of the source document. This is
    * useful for downstream components that want to take some action after having seen all of the
@@ -206,7 +206,7 @@ public class SourceDocumentInformation extends Annotation {
             ((SourceDocumentInformation_Type) jcasType).casFeatCode_lastSegment);
   }
 
-  /*
+  /**
    * setter for lastSegment - sets For a CAS that represents a segment of a larger source document,
    * this flag indicates whether this CAS is the final segment of the source document. This is
    * useful for downstream components that want to take some action after having seen all of the
