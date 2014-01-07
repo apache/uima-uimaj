@@ -69,7 +69,7 @@ public class DocumentAnnotation extends Annotation {
 
   /**
    * setter for language
-   * @param the language
+   * @param v the language
    */
   public void setLanguage(String v) {
     if (DocumentAnnotation_Type.featOkTst
