@@ -36,9 +36,7 @@ public class ColorIcon implements Icon {
 
   private Color color = Color.black;
 
-  /**
-   * 
-   */
+  
   public ColorIcon() {
     super();
   }

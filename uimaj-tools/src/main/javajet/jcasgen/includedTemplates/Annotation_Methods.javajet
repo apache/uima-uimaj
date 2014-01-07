@@ -17,7 +17,10 @@
  * under the License.
  */
   /** @see org.apache.uima.cas.text.AnnotationFS#getCoveredText() 
-    * @generated */ 
+    * @generated
+    * @param inst the low level Feature Structure reference 
+    * @return the covered text 
+    */ 
   public String getCoveredText(int inst) { 
     final CASImpl casView = ll_cas.ll_getSofaCasView(inst);
     final String text = casView.getDocumentText();

@@ -33,9 +33,7 @@ public class MarkupExtent {
 
   private int markupDepth;
 
-  /**
-   * 
-   */
+  
   public MarkupExtent(int start, int end, int markupDepth) {
     super();
     this.start = start;

@@ -136,9 +136,7 @@ public class IbmUimaToApacheUima {
     }    
   }
 
-  /**
-   * 
-   */
+  
   private static void printUsageAndExit() {
     System.err.println("Usage: java " + IbmUimaToApacheUima.class.getName() + " <directory> [-ext <fileExtensions>]");
     System.err.println("<fileExtensions> is a comma separated list of file extensions to process, e.g.: java,xml,properties");
@@ -242,7 +240,7 @@ public class IbmUimaToApacheUima {
     
   }
 
-  /**
+  /*
    * Applies changes needed due to JCas/JCasRegistry refactoring.  These are a little
    * more complicated than simple regex replacements.
    * 

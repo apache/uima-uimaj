@@ -50,7 +50,9 @@ import <%=imp%>;
  * Updated by JCasGen <%=jg.getDate()%>
  * @generated */
 public class <%=typeName_Type%> extends <%=jg.getJavaName(td.getSupertypeName()) + "_Type"%> {
-  /** @generated */
+  /** @generated 
+   * @return the generator for this type
+   */
   @Override
   protected FSGenerator getFSGenerator() {return fsGenerator;}
   /** @generated */
@@ -97,18 +99,28 @@ public class <%=typeName_Type%> extends <%=jg.getJavaName(td.getSupertypeName())
   final Feature casFeat_<%=featName%>;
   /** @generated */
   final int     <%=casFeatCode%>;
-  /** @generated */ 
+  /** @generated
+   * @param addr low level Feature Structure reference
+   * @return the feature value 
+   */ 
   public <%=returnType%> get<%=featUName%>(int addr) {
     <%@ include file="../includedTemplates/FeatOk_Testing.javajet"%>
     return ll_cas.ll_get<%=getSetNamePart%>Value(addr, <%=casFeatCode%>);
   }
-  /** @generated */    
+  /** @generated
+   * @param addr low level Feature Structure reference
+   * @param v value to set 
+   */    
   public void set<%=featUName%>(int addr, <%=returnType%> v) {
     <%@ include file="../includedTemplates/FeatOk_Testing.javajet"%>
     ll_cas.ll_set<%=getSetNamePart%>Value(addr, <%=casFeatCode%>, v);}
     
  <%if (jg.hasArrayRange(fd)) {%>
-  /** @generated */
+  /** @generated
+   * @param addr low level Feature Structure reference
+   * @param i index of item in the array
+   * @return value at index i in the array 
+   */
   public <%=elemType%> get<%=featUName%>(int addr, int i) {
     <%@ include file="../includedTemplates/FeatOk_Testing.javajet"%>
     if (lowLevelTypeChecks)
@@ -117,7 +129,11 @@ public class <%=typeName_Type%> extends <%=jg.getJavaName(td.getSupertypeName())
 	return ll_cas.ll_get<%=getSetArrayNamePart%>ArrayValue(ll_cas.ll_getRefValue(addr, <%=casFeatCode%>), i);
   }
    
-  /** @generated */ 
+  /** @generated
+   * @param addr low level Feature Structure reference
+   * @param i index of item in the array
+   * @param v value to set
+   */ 
   public void set<%=featUName%>(int addr, int i, <%=elemType%> v) {
     <%@ include file="../includedTemplates/FeatOk_Testing.javajet"%>
     if (lowLevelTypeChecks)
@@ -134,7 +150,10 @@ public class <%=typeName_Type%> extends <%=jg.getJavaName(td.getSupertypeName())
 
 
   /** initialize variables to correspond with Cas Type and Features
-	* @generated */
+	 * @generated
+	 * @param jcas JCas
+	 * @param casType Type 
+	 */
   public <%=typeName_Type%>(JCas jcas, Type casType) {
     super(jcas, casType);
     casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl)this.casType, getFSGenerator());

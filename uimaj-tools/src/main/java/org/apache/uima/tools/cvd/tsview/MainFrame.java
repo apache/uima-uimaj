@@ -89,7 +89,7 @@ public class MainFrame extends JFrame {
   /**
    * Constructor for MainFrame.
    * 
-   * @throws HeadlessException
+   * @throws HeadlessException -
    */
   public MainFrame() {
     super();
@@ -110,7 +110,7 @@ public class MainFrame extends JFrame {
    * Constructor for MainFrame.
    * 
    * @param title
-   * @throws HeadlessException
+   * @throws HeadlessException -
    */
   public MainFrame(String title) {
     super(title);

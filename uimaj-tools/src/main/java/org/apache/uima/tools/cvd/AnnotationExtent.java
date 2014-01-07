@@ -33,9 +33,7 @@ public class AnnotationExtent {
 
   private Style style;
 
-  /**
-   * 
-   */
+  
   public AnnotationExtent(int start, int end, Style style) {
     super();
     this.start = start;

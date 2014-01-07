@@ -34,9 +34,7 @@ public class ArrayNode extends FSTreeNode {
 
   private int end;
 
-  /**
-   * 
-   */
+  
   public ArrayNode(int start, int end) {
     super();
     this.start = start;

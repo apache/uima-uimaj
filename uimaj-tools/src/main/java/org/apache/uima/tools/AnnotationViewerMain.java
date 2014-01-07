@@ -299,7 +299,7 @@ public class AnnotationViewerMain extends JFrame {
    * @param tad 
    * @param descFileName
    * @return the style map file
-   * @throws IOException
+   * @throws IOException -
    */
   private File getStyleMapFile(AnalysisEngineDescription tad, String descFileName)
           throws IOException {
@@ -320,7 +320,7 @@ public class AnnotationViewerMain extends JFrame {
    * @param tsd
    * @param descFileName
    * @return the style map file
-   * @throws IOException
+   * @throws IOException -
    */
   private File getStyleMapFile(TypeSystemDescription tsd, String descFileName) throws IOException {
     File styleMapFile = getStyleMapFileName(descFileName);

@@ -34,9 +34,7 @@ import org.apache.uima.tools.cvd.TypeTreeNode;
 
 public class IndexPopupListener extends MouseAdapter {
 
-  /**
-   * 
-   */
+  
   private final MainFrame main;
 
   /**

@@ -87,7 +87,7 @@ public class PearMergerTest extends TestCase {
    * org.apache.uima.pear.tools.InstallationController, and the installed component is verified by
    * instantiating the aggregate TAE and creating CAS object.
    * 
-   * @throws Exception
+   * @throws Exception -
    */
   public void testPearMerger() throws Exception {
     // check temporary working directory

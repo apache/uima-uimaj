@@ -410,7 +410,7 @@ public class MainFrame extends JFrame {
   /**
    * Constructor for MainFrame.
    * 
-   * @throws HeadlessException
+   * @throws HeadlessException -
    */
   public MainFrame(File iniFile) {
     super();
@@ -2128,9 +2128,7 @@ public class MainFrame extends JFrame {
     this.languagePrefsList = languagePrefsList;
   }
 
-  /**
-   * 
-   */
+  
   public void handleSofas() {
     // Populate sofa combo box with the names of all text
     // Sofas in the CAS

@@ -31,9 +31,7 @@ public abstract class FSTreeNode {
 
   protected List<FSTreeNode> children = null;
 
-  /**
-   * 
-   */
+  
   public FSTreeNode() {
     super();
     // TODO Auto-generated constructor stub

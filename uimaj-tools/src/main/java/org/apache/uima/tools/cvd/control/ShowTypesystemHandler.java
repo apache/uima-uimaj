@@ -30,9 +30,7 @@ import org.apache.uima.tools.cvd.MainFrame;
 
 public class ShowTypesystemHandler implements ActionListener {
 
-  /**
-   * 
-   */
+  
   private final MainFrame main;
 
   /**

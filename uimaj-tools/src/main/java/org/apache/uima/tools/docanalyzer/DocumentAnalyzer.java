@@ -821,9 +821,9 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
    * Creates a CAS from an descriptor. Supports both local AE descriptors and remote service
    * specifiers. In the latter case the service is contacted to obtain its type system.
    * 
-   * @throws ResourceInitializationException
-   * @throws InvalidXMLException
-   * @throws IOException
+   * @throws ResourceInitializationException -
+   * @throws InvalidXMLException -
+   * @throws IOException -
    */
   protected CAS createCasFromDescriptor(String aDescriptorFile) // JMP
           throws ResourceInitializationException, InvalidXMLException, IOException {

@@ -29,9 +29,7 @@ import org.apache.uima.tools.cvd.MainFrame;
 
 public class FileOpenEventHandler implements ActionListener {
 
-  /**
-   * 
-   */
+  
   private final MainFrame main;
 
   public FileOpenEventHandler(MainFrame frame) {

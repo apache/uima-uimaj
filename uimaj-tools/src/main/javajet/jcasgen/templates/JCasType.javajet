@@ -58,7 +58,9 @@ public class <%=typeName%> extends <%=jg.getJavaName(td.getSupertypeName())%> {
    */
   @SuppressWarnings ("hiding")
   public final static int type = typeIndexID;
-  /** @generated  */
+  /** @generated
+   * @return index of the type  
+   */
   @Override
   public              int getTypeIndexID() {return typeIndexID;}
  
@@ -67,20 +69,29 @@ public class <%=typeName%> extends <%=jg.getJavaName(td.getSupertypeName())%> {
   protected <%=typeName%>() {/* intentionally empty block */}
     
   /** Internal - constructor used by generator 
-   * @generated */
+   * @generated
+   * @param addr low level Feature Structure reference
+   * @param type the type of this Feature Structure 
+   */
   public <%=typeName%>(int addr, TOP_Type type) {
     super(addr, type);
     readObject();
   }
   
-  /** @generated */
+  /** @generated
+   * @param jcas JCas to which this Feature Structure belongs 
+   */
   public <%=typeName%>(JCas jcas) {
     super(jcas);
     readObject();   
   } 
 <%if (jg.isSubTypeOfAnnotation(td)) { %>
 
-  /** @generated */  
+  /** @generated
+   * @param jcas JCas to which this Feature Structure belongs
+   * @param begin offset to the begin spot in the SofA
+   * @param end offset to the end spot in the SofA 
+  */  
   public <%=typeName%>(JCas jcas, int begin, int end) {
     super(jcas);
     setBegin(begin);
@@ -89,10 +100,13 @@ public class <%=typeName%> extends <%=jg.getJavaName(td.getSupertypeName())%> {
   }   
 <%} %>
 
-  /** <!-- begin-user-doc -->
-    * Write your own initialization here
-    * <!-- end-user-doc -->
-  @generated modifiable */
+  /** 
+   * <!-- begin-user-doc -->
+   * Write your own initialization here
+   * <!-- end-user-doc -->
+   *
+   * @generated modifiable 
+   */
   private void readObject() {/*default - does nothing empty block */}
      
 <% FeatureDescription [] fds = td.getFeatures();
@@ -117,27 +131,37 @@ public class <%=typeName%> extends <%=jg.getJavaName(td.getSupertypeName())%> {
   //* Feature: <%=featName%>
 
   /** getter for <%=featName%> - gets <%=featDescCmt%>
-   * @generated */
+   * @generated
+   * @return value of the feature 
+   */
   public <%=rangeType%> get<%=featUName%>() {
     <%@ include file="../includedTemplates/FeatOkTesting.javajet"%>
     return <%=jg.getFeatureValue(fd, td)%>;}
     
   /** setter for <%=featName%> - sets <%=featDescCmt%> 
-   * @generated */
+   * @generated
+   * @param v value to set into the feature 
+   */
   public void set<%=featUName%>(<%=rangeType%> v) {
     <%@ include file="../includedTemplates/FeatOkTesting.javajet"%>
     <%=jg.setFeatureValue(fd, td)%>;}    
   <%if (jg.hasArrayRange(fd)) {%>
   
   /** indexed getter for <%=featName%> - gets an indexed value - <%=featDescCmt%>
-   * @generated */
+   * @generated
+   * @param i index in the array to get
+   * @return value of the element at index i 
+   */
   public <%=elemType%> get<%=featUName%>(int i) {
     <%@ include file="../includedTemplates/FeatOkTesting.javajet"%>
     <%@ include file="../includedTemplates/ArrayBoundsChecking.javajet"%>
     return <%=jg.getArrayFeatureValue(fd, td)%>;}
 
   /** indexed setter for <%=featName%> - sets an indexed value - <%=featDescCmt%>
-   * @generated */
+   * @generated
+   * @param i index in the array to set
+   * @param v value to set into the array 
+   */
   public void set<%=featUName%>(int i, <%=elemType%> v) { 
     <%@ include file="../includedTemplates/FeatOkTesting.javajet"%>
     <%@ include file="../includedTemplates/ArrayBoundsChecking.javajet"%>

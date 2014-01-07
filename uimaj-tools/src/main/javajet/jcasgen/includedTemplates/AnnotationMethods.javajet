@@ -17,7 +17,11 @@
  * under the License.
  */
   /** Constructor with begin and end passed as arguments 
-    * @generated */
+    * @generated
+    * @param jcas JCas this Annotation is in
+    * @param begin the begin offset
+    * @param end the end offset
+    */
   public Annotation(JCas jcas, int begin, int end) { 
 	  this(jcas); // forward to constructor 
 	  this.setBegin(begin); 
@@ -25,7 +29,9 @@
   } 
   
   /** @see org.apache.uima.cas.text.AnnotationFS#getCoveredText() 
-    * @generated */ 
+    * @generated
+    * @return the covered Text 
+    */ 
   public String getCoveredText() { 
     final CAS casView = this.getView();
     final String text = casView.getDocumentText();
@@ -36,5 +42,7 @@
   } 
   
   /** @deprecated 
-    * @generated */
+    * @generated
+    * @return the begin offset 
+    */
   public int getStart() {return getBegin();}
