@@ -96,9 +96,7 @@ public class SimpleRunCPE extends Thread {
     }
   }
 
-  /**
-   * 
-   */
+  
   private static void printUsageMessage() {
     System.out.println(" Arguments to the program are as follows : \n"
             + "args[0] : path to CPE descriptor file");

@@ -125,10 +125,10 @@ public class XmiWriterCasConsumer extends CasConsumer_ImplBase {
    *          CAS to serialize
    * @param name
    *          output file
-   * @throws SAXException
-   * @throws Exception
+   * @throws SAXException -
+   * @throws Exception -
    * 
-   * @throws ResourceProcessException
+   * @throws ResourceProcessException -
    */
   private void writeXmi(CAS aCas, File name, String modelFileName) throws IOException, SAXException {
     FileOutputStream out = null;

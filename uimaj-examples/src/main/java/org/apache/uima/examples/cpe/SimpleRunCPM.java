@@ -122,9 +122,7 @@ public class SimpleRunCPM extends Thread {
     mCPM.process(collectionReader, 10);
   }
 
-  /**
-   * 
-   */
+  
   private static void printUsageMessage() {
     System.out.println(" Arguments to the program are as follows : \n"
             + "args[0] : Collection Reader descriptor file \n "
