@@ -67,19 +67,19 @@ public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
     stringBuffer.append(jg.getJavaName(td.getSupertypeName()));
     stringBuffer.append(" {\n  /** @generated\n   * @ordered \n   */\n  @SuppressWarnings (\"hiding\")\n  public final static int typeIndexID = JCasRegistry.register(");
     stringBuffer.append(typeName);
-    stringBuffer.append(".class);\n  /** @generated\n   * @ordered \n   */\n  @SuppressWarnings (\"hiding\")\n  public final static int type = typeIndexID;\n  /** @generated  */\n  @Override\n  public              int getTypeIndexID() {return typeIndexID;}\n \n  /** Never called.  Disable default constructor\n   * @generated */\n  protected ");
+    stringBuffer.append(".class);\n  /** @generated\n   * @ordered \n   */\n  @SuppressWarnings (\"hiding\")\n  public final static int type = typeIndexID;\n  /** @generated\n   * @return index of the type  \n   */\n  @Override\n  public              int getTypeIndexID() {return typeIndexID;}\n \n  /** Never called.  Disable default constructor\n   * @generated */\n  protected ");
     stringBuffer.append(typeName);
-    stringBuffer.append("() {/* intentionally empty block */}\n    \n /* Internal - Constructor used by generator */\n  public ");
+    stringBuffer.append("() {/* intentionally empty block */}\n    \n  /** Internal - constructor used by generator \n   * @generated\n   * @param addr low level Feature Structure reference\n   * @param type the type of this Feature Structure \n   */\n  public ");
     stringBuffer.append(typeName);
-    stringBuffer.append("(int addr, TOP_Type type) {\n    super(addr, type);\n    readObject();\n  }\n  \n  /** @generated */\n  public ");
+    stringBuffer.append("(int addr, TOP_Type type) {\n    super(addr, type);\n    readObject();\n  }\n  \n  /** @generated\n   * @param jcas JCas to which this Feature Structure belongs \n   */\n  public ");
     stringBuffer.append(typeName);
     stringBuffer.append("(JCas jcas) {\n    super(jcas);\n    readObject();   \n  } \n");
   if (jg.isSubTypeOfAnnotation(td)) { 
-    stringBuffer.append("\n  /** @generated */  \n  public ");
+    stringBuffer.append("\n  /** @generated\n   * @param jcas JCas to which this Feature Structure belongs\n   * @param begin offset to the begin spot in the SofA\n   * @param end offset to the end spot in the SofA \n  */  \n  public ");
     stringBuffer.append(typeName);
     stringBuffer.append("(JCas jcas, int begin, int end) {\n    super(jcas);\n    setBegin(begin);\n    setEnd(end);\n    readObject();\n  }   \n");
   } 
-    stringBuffer.append("\n  /** <!-- begin-user-doc -->\n    * Write your own initialization here\n    * <!-- end-user-doc -->\n  @generated modifiable */\n  private void readObject() {/*default - does nothing empty block */}\n     \n");
+    stringBuffer.append("\n  /** \n   * <!-- begin-user-doc -->\n   * Write your own initialization here\n   * <!-- end-user-doc -->\n   *\n   * @generated modifiable \n   */\n  private void readObject() {/*default - does nothing empty block */}\n     \n");
    FeatureDescription [] fds = td.getFeatures();
    for (int i = 0; i < fds.length; i++) { 
      FeatureDescription fd = fds[i];
@@ -99,11 +99,11 @@ public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
 
     stringBuffer.append(" \n    \n  //*--------------*\n  //* Feature: ");
     stringBuffer.append(featName);
-    stringBuffer.append("\n\n  /* getter for ");
+    stringBuffer.append("\n\n  /** getter for ");
     stringBuffer.append(featName);
     stringBuffer.append(" - gets ");
     stringBuffer.append(featDescCmt);
-    stringBuffer.append("\n   * @generated */\n  public ");
+    stringBuffer.append("\n   * @generated\n   * @return value of the feature \n   */\n  public ");
     stringBuffer.append(rangeType);
     stringBuffer.append(" get");
     stringBuffer.append(featUName);
@@ -121,11 +121,11 @@ public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
     stringBuffer.append("\");\n");
     stringBuffer.append("    return ");
     stringBuffer.append(jg.getFeatureValue(fd, td));
-    stringBuffer.append(";}\n    \n  /* setter for ");
+    stringBuffer.append(";}\n    \n  /** setter for ");
     stringBuffer.append(featName);
     stringBuffer.append(" - sets ");
     stringBuffer.append(featDescCmt);
-    stringBuffer.append(" \n   * @generated */\n  public void set");
+    stringBuffer.append(" \n   * @generated\n   * @param v value to set into the feature \n   */\n  public void set");
     stringBuffer.append(featUName);
     stringBuffer.append("(");
     stringBuffer.append(rangeType);
@@ -145,11 +145,11 @@ public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
     stringBuffer.append(jg.setFeatureValue(fd, td));
     stringBuffer.append(";}    \n  ");
   if (jg.hasArrayRange(fd)) {
-    stringBuffer.append("  \n  /* indexed getter for ");
+    stringBuffer.append("  \n  /** indexed getter for ");
     stringBuffer.append(featName);
     stringBuffer.append(" - gets an indexed value - ");
     stringBuffer.append(featDescCmt);
-    stringBuffer.append("\n   * @generated */\n  public ");
+    stringBuffer.append("\n   * @generated\n   * @param i index in the array to get\n   * @return value of the element at index i \n   */\n  public ");
     stringBuffer.append(elemType);
     stringBuffer.append(" get");
     stringBuffer.append(featUName);
@@ -173,11 +173,11 @@ public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
     stringBuffer.append("), i);\n");
     stringBuffer.append("    return ");
     stringBuffer.append(jg.getArrayFeatureValue(fd, td));
-    stringBuffer.append(";}\n\n  /* indexed setter for ");
+    stringBuffer.append(";}\n\n  /** indexed setter for ");
     stringBuffer.append(featName);
     stringBuffer.append(" - sets an indexed value - ");
     stringBuffer.append(featDescCmt);
-    stringBuffer.append("\n   * @generated */\n  public void set");
+    stringBuffer.append("\n   * @generated\n   * @param i index in the array to set\n   * @param v value to set into the array \n   */\n  public void set");
     stringBuffer.append(featUName);
     stringBuffer.append("(int i, ");
     stringBuffer.append(elemType);
@@ -208,7 +208,7 @@ public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
     stringBuffer.append("");
    if (td.getName().equals("uima.cas.Annotation")) { 
     stringBuffer.append("  ");
-    stringBuffer.append("  /** Constructor with begin and end passed as arguments \n    * @generated */\n  public Annotation(JCas jcas, int begin, int end) { \n	  this(jcas); // forward to constructor \n	  this.setBegin(begin); \n	  this.setEnd(end); \n  } \n  \n  /** @see org.apache.uima.cas.text.AnnotationFS#getCoveredText() \n    * @generated */ \n  public String getCoveredText() { \n    final CAS casView = this.getView();\n    final String text = casView.getDocumentText();\n    if (text == null) {\n      return null;\n    }\n    return text.substring(getBegin(), getEnd());\n  } \n  \n  /** @deprecated \n    * @generated */\n  public int getStart() {return getBegin();}\n");
+    stringBuffer.append("  /** Constructor with begin and end passed as arguments \n    * @generated\n    * @param jcas JCas this Annotation is in\n    * @param begin the begin offset\n    * @param end the end offset\n    */\n  public Annotation(JCas jcas, int begin, int end) { \n	  this(jcas); // forward to constructor \n	  this.setBegin(begin); \n	  this.setEnd(end); \n  } \n  \n  /** @see org.apache.uima.cas.text.AnnotationFS#getCoveredText() \n    * @generated\n    * @return the covered Text \n    */ \n  public String getCoveredText() { \n    final CAS casView = this.getView();\n    final String text = casView.getDocumentText();\n    if (text == null) {\n      return null;\n    }\n    return text.substring(getBegin(), getEnd());\n  } \n  \n  /** @deprecated \n    * @generated\n    * @return the begin offset \n    */\n  public int getStart() {return getBegin();}\n");
     stringBuffer.append("");
    } /* of Annotation if-statement */ 
     stringBuffer.append("}\n\n    ");

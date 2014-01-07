@@ -65,7 +65,7 @@ public class JCas_TypeTemplate implements Jg.IJCasTypeTemplate {
     stringBuffer.append(typeName_Type);
     stringBuffer.append(" extends ");
     stringBuffer.append(jg.getJavaName(td.getSupertypeName()) + "_Type");
-    stringBuffer.append(" {\n  /** @generated */\n  @Override\n  protected FSGenerator getFSGenerator() {return fsGenerator;}\n  /** @generated */\n  private final FSGenerator fsGenerator = \n    new FSGenerator() {\n      public FeatureStructure createFS(int addr, CASImpl cas) {\n  			 if (");
+    stringBuffer.append(" {\n  /** @generated \n   * @return the generator for this type\n   */\n  @Override\n  protected FSGenerator getFSGenerator() {return fsGenerator;}\n  /** @generated */\n  private final FSGenerator fsGenerator = \n    new FSGenerator() {\n      public FeatureStructure createFS(int addr, CASImpl cas) {\n  			 if (");
     stringBuffer.append(typeName_Type);
     stringBuffer.append(".this.useExistingInstance) {\n  			   // Return eq fs instance if already created\n  		     FeatureStructure fs = ");
     stringBuffer.append(typeName_Type);
@@ -105,7 +105,7 @@ public class JCas_TypeTemplate implements Jg.IJCasTypeTemplate {
     stringBuffer.append(featName);
     stringBuffer.append(";\n  /** @generated */\n  final int     ");
     stringBuffer.append(casFeatCode);
-    stringBuffer.append(";\n  /** @generated */ \n  public ");
+    stringBuffer.append(";\n  /** @generated\n   * @param addr low level Feature Structure reference\n   * @return the feature value \n   */ \n  public ");
     stringBuffer.append(returnType);
     stringBuffer.append(" get");
     stringBuffer.append(featUName);
@@ -125,7 +125,7 @@ public class JCas_TypeTemplate implements Jg.IJCasTypeTemplate {
     stringBuffer.append(getSetNamePart);
     stringBuffer.append("Value(addr, ");
     stringBuffer.append(casFeatCode);
-    stringBuffer.append(");\n  }\n  /** @generated */    \n  public void set");
+    stringBuffer.append(");\n  }\n  /** @generated\n   * @param addr low level Feature Structure reference\n   * @param v value to set \n   */    \n  public void set");
     stringBuffer.append(featUName);
     stringBuffer.append("(int addr, ");
     stringBuffer.append(returnType);
@@ -147,7 +147,7 @@ public class JCas_TypeTemplate implements Jg.IJCasTypeTemplate {
     stringBuffer.append(casFeatCode);
     stringBuffer.append(", v);}\n    \n ");
   if (jg.hasArrayRange(fd)) {
-    stringBuffer.append("  /** @generated */\n  public ");
+    stringBuffer.append("  /** @generated\n   * @param addr low level Feature Structure reference\n   * @param i index of item in the array\n   * @return value at index i in the array \n   */\n  public ");
     stringBuffer.append(elemType);
     stringBuffer.append(" get");
     stringBuffer.append(featUName);
@@ -173,7 +173,7 @@ public class JCas_TypeTemplate implements Jg.IJCasTypeTemplate {
     stringBuffer.append(getSetArrayNamePart);
     stringBuffer.append("ArrayValue(ll_cas.ll_getRefValue(addr, ");
     stringBuffer.append(casFeatCode);
-    stringBuffer.append("), i);\n  }\n   \n  /** @generated */ \n  public void set");
+    stringBuffer.append("), i);\n  }\n   \n  /** @generated\n   * @param addr low level Feature Structure reference\n   * @param i index of item in the array\n   * @param v value to set\n   */ \n  public void set");
     stringBuffer.append(featUName);
     stringBuffer.append("(int addr, int i, ");
     stringBuffer.append(elemType);
@@ -206,10 +206,10 @@ public class JCas_TypeTemplate implements Jg.IJCasTypeTemplate {
     stringBuffer.append("\n");
    if (td.getName().equals("uima.cas.Annotation")) { 
     stringBuffer.append("  ");
-    stringBuffer.append("  /** @see org.apache.uima.cas.text.AnnotationFS#getCoveredText() \n    * @generated */ \n  public String getCoveredText(int inst) { \n    final CASImpl casView = ll_cas.ll_getSofaCasView(inst);\n    final String text = casView.getDocumentText();\n    if (text == null) {\n      return null;\n    }\n    return text.substring(getBegin(inst), getEnd(inst)); \n  }\n");
+    stringBuffer.append("  /** @see org.apache.uima.cas.text.AnnotationFS#getCoveredText() \n    * @generated\n    * @param inst the low level Feature Structure reference \n    * @return the covered text \n    */ \n  public String getCoveredText(int inst) { \n    final CASImpl casView = ll_cas.ll_getSofaCasView(inst);\n    final String text = casView.getDocumentText();\n    if (text == null) {\n      return null;\n    }\n    return text.substring(getBegin(inst), getEnd(inst)); \n  }\n");
     stringBuffer.append("");
    } /* of Annotation if-statement */ 
-    stringBuffer.append("\n\n  /** initialize variables to correspond with Cas Type and Features\n	* @generated */\n  public ");
+    stringBuffer.append("\n\n  /** initialize variables to correspond with Cas Type and Features\n	 * @generated\n	 * @param jcas JCas\n	 * @param casType Type \n	 */\n  public ");
     stringBuffer.append(typeName_Type);
     stringBuffer.append("(JCas jcas, Type casType) {\n    super(jcas, casType);\n    casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl)this.casType, getFSGenerator());\n\n");
    for (int i = 0; i < fds.length; i++) { 
