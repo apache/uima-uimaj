@@ -176,7 +176,6 @@
                    org.apache.uima.impl,
                    org.apache.uima.internal.util,
                    org.apache.uima.internal.util.rb_trees,
-                   org.apache.uima.internal.util.text,
                    org.apache.uima.jcas,
                    org.apache.uima.jcas.cas,
                    org.apache.uima.jcas.impl,
