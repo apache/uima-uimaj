@@ -1,5 +1,5 @@
 
-      Apache UIMA (Unstructured Information Management Architecture) v2.4.2 SDK
+      Apache UIMA (Unstructured Information Management Architecture) v2.5.0 SDK
       -------------------------------------------------------------------------
 
 Building from the Source Distribution
@@ -21,10 +21,10 @@ Look for the result here:
 
 For more details, please see http://uima.apache.org/building-uima.html   
 
-What's New in 2.4.2
+What's New in 2.5.0
 -------------------
 
-  This is a bug fix release, only.    
+  This is a mainly a bug fix release, with a few performance improvements.    
     
 Supported Platforms
 --------------------
