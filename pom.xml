@@ -29,7 +29,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>2.5.0</version>
+    <version>2.5.1-SNAPSHOT</version>
     <relativePath>uimaj-parent/pom.xml</relativePath>
   </parent>
 
@@ -49,13 +49,13 @@
        element, and just changing the following two properties -->
   <scm>
     <connection>
-      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-2.5.0
+      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/trunk/
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-2.5.0
+      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/trunk/
     </developerConnection>
     <url>
-      http://svn.apache.org/viewvc/uima/uimaj/tags/uimaj-2.5.0
+      http://svn.apache.org/viewvc/uima/uimaj/trunk/
     </url>
   </scm>
 
