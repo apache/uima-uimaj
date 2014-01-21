@@ -21,6 +21,9 @@ package org.apache.uima.fit.factory;
 import org.apache.uima.fit.internal.ReflectionUtil;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 
+/**
+ * Convenience methods to create resource metadata.
+ */
 public final class ResourceMetaDataFactory {
 
   private ResourceMetaDataFactory() {
@@ -74,6 +77,10 @@ public final class ResourceMetaDataFactory {
 
   /**
    * Get the default copyright of a component class.
+   * 
+   * @param aComponentClass
+   *          the class to analyze
+   * @return the default copyright
    */
   public static String getDefaultCopyright(Class<?> aComponentClass)
   {
@@ -85,6 +92,10 @@ public final class ResourceMetaDataFactory {
 
   /**
    * Get the default version of a component class.
+   * 
+   * @param aComponentClass
+   *          the class to analyze
+   * @return the default version
    */
   public static String getDefaultVersion(Class<?> aComponentClass)
   {
@@ -95,6 +106,10 @@ public final class ResourceMetaDataFactory {
 
   /**
    * Get the default description of a component class.
+   * 
+   * @param aComponentClass
+   *          the class to analyze
+   * @return the default description
    */
   public static String getDefaultDescription(Class<?> aComponentClass)
   {
@@ -104,7 +119,9 @@ public final class ResourceMetaDataFactory {
   /**
    * Get the default vendor of a component class.
    * 
-   * @return the package name of the component, if the component is in a package, otherwise
+   * @param aComponentClass
+   *          the class to analyze
+      * @return the package name of the component, if the component is in a package, otherwise
    *         {@code null}.
    */
   public static String getDefaultVendor(Class<?> aComponentClass)
@@ -122,6 +139,8 @@ public final class ResourceMetaDataFactory {
   /**
    * Get the default name of a component class.
    * 
+   * @param aComponentClass
+   *          the class to analyze
    * @return the fully qualified name of the class.
    */
   public static String getDefaultName(Class<?> aComponentClass)

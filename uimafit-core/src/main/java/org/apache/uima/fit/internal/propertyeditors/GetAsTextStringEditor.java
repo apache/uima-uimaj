@@ -35,6 +35,10 @@ public class GetAsTextStringEditor extends PropertyEditorSupport {
 
   private final PropertyEditorRegistrySupport editorRegistrySupport;
 
+  /**
+   * @param aEditorRegistry
+   *          a property editor registry used to look up an editor for the source value.
+   */
   public GetAsTextStringEditor(final PropertyEditorRegistry aEditorRegistry) {
     editorRegistry = aEditorRegistry;
     if (aEditorRegistry instanceof PropertyEditorRegistrySupport) {

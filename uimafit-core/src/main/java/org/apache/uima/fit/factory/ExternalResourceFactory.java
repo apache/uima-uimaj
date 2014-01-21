@@ -96,6 +96,10 @@ public final class ExternalResourceFactory {
   /**
    * This method determines if the field is annotated with
    * {@link org.apache.uima.fit.descriptor.ExternalResource}.
+   * 
+   * @param field
+   *          the field to analyze
+   * @return whether the field is marked as an external resource
    */
   public static boolean isExternalResourceField(Field field) {
     return ReflectionUtil.isAnnotationPresent(field,
@@ -346,6 +350,10 @@ public final class ExternalResourceFactory {
   /**
    * Creates an ExternalResourceDependency for a field annotated with
    * {@link org.apache.uima.fit.descriptor.ExternalResource}.
+   * 
+   * @param field
+   *          the field to analyze
+   * @return a external resource dependency
    */
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public static ExternalResourceDependency createExternalResourceDependency(Field field) {
@@ -382,8 +390,15 @@ public final class ExternalResourceFactory {
   /**
    * Creates an ExternalResourceDependency for a given key and interface
    * 
+   * @param aKey
+   *          the resource key
+   * @param aInterface
+   *          the resource interface
    * @param aOptional
    *          determines whether the dependency is optional
+   * @param aDescription
+   *          a description of the resource
+   * @return the external resource dependency
    */
   public static ExternalResourceDependency createExternalResourceDependency(final String aKey,
           final Class<?> aInterface, final boolean aOptional, String aDescription) {
@@ -395,6 +410,13 @@ public final class ExternalResourceFactory {
     return dep;
   }
 
+  /**
+   * @param cls
+   *          the class to analyze
+   * @return the external resource dependencies
+   * @throws ResourceInitializationException
+   *           if the external resource dependencies could not be created
+   */
   public static ExternalResourceDependency[] createExternalResourceDependencies(
           Class<?> cls) throws ResourceInitializationException {
     Map<String, ExternalResourceDependency> depMap = new HashMap<String, ExternalResourceDependency>();
@@ -443,6 +465,8 @@ public final class ExternalResourceFactory {
    *          the key to bind to.
    * @param aUrl
    *          a URL.
+   * @throws InvalidXMLException
+   *           if import resolution failed
    * @see FileResourceSpecifier
    */
   public static void bindResource(ResourceSpecifier aDesc, String aKey, URL aUrl)
@@ -467,6 +491,8 @@ public final class ExternalResourceFactory {
    *          the key to bind to.
    * @param aFile
    *          a file.
+   * @throws InvalidXMLException
+   *           if import resolution failed
    * @see FileResourceSpecifier
    */
   public static void bindResource(ResourceSpecifier aDesc, String aKey, File aFile)
@@ -497,6 +523,8 @@ public final class ExternalResourceFactory {
    *          the key to bind to.
    * @param aUrl
    *          a URL.
+   * @throws InvalidXMLException
+   *           if import resolution failed
    * @see FileResourceSpecifier
    */
   public static void bindResource(ResourceSpecifier aDesc, String aKey, String aUrl)
@@ -515,6 +543,10 @@ public final class ExternalResourceFactory {
    *          the resource to bind.
    * @param aParams
    *          parameters passed to the resource when it is created.
+   * @throws InvalidXMLException
+   *           if import resolution failed
+   * @throws ClassNotFoundException
+   *           if the resource implementation class or interface class could not be accessed
    * @see CustomResourceSpecifier
    */
   public static void bindResource(ResourceSpecifier aDesc, Class<? extends Resource> aRes,
@@ -534,6 +566,10 @@ public final class ExternalResourceFactory {
    *          the resource to bind.
    * @param aParams
    *          parameters passed to the resource when it is created.
+   * @throws InvalidXMLException
+   *           if import resolution failed
+   * @throws ClassNotFoundException
+   *           if the resource implementation class or interface class could not be accessed
    * @see CustomResourceSpecifier
    */
   public static void bindResource(ResourceSpecifier aDesc, Class<?> aApi,
@@ -558,6 +594,10 @@ public final class ExternalResourceFactory {
    *          the URL from which the resource is initialized.
    * @param aParams
    *          parameters passed to the resource when it is created.
+   * @throws InvalidXMLException
+   *           if import resolution failed
+   * @throws ClassNotFoundException
+   *           if the resource implementation class or interface class could not be accessed
    * @see SharedResourceObject
    */
   public static void bindResource(ResourceSpecifier aDesc,
@@ -582,6 +622,8 @@ public final class ExternalResourceFactory {
    *          the URL from which the resource is initialized.
    * @param aParams
    *          parameters passed to the resource when it is created.
+   * @throws InvalidXMLException
+   *           if import resolution failed
    * @see SharedResourceObject
    */
   public static void bindResource(ResourceSpecifier aDesc, Class<?> aApi,
@@ -604,6 +646,8 @@ public final class ExternalResourceFactory {
    *          the URL from which the resource is initialized.
    * @param aParams
    *          parameters passed to the resource when it is created.
+   * @throws InvalidXMLException
+   *           if import resolution failed
    * @see SharedResourceObject
    */
   public static void bindResource(ResourceSpecifier aDesc, String aKey,
@@ -626,6 +670,8 @@ public final class ExternalResourceFactory {
    *          the resource to bind.
    * @param aParams
    *          parameters passed to the resource when it is created.
+   * @throws InvalidXMLException
+   *           if import resolution failed
    * @see CustomResourceSpecifier
    */
   public static void bindResource(ResourceSpecifier aDesc, String aKey,
@@ -649,6 +695,10 @@ public final class ExternalResourceFactory {
    *          a description.
    * @param aResDesc
    *          the resource description.
+   * @throws InvalidXMLException
+   *           if import resolution failed
+   * @throws ClassNotFoundException
+   *           if the resource implementation class or interface class could not be accessed
    */
   public static void bindResource(ResourceSpecifier aDesc, ExternalResourceDescription aResDesc)
           throws InvalidXMLException, ClassNotFoundException {
@@ -668,6 +718,8 @@ public final class ExternalResourceFactory {
    *          the key to bind to.
    * @param aResDesc
    *          the resource description.
+   * @throws InvalidXMLException
+   *           if import resolution failed
    */
   public static void bindResource(ResourceSpecifier aDesc, String aKey,
           ExternalResourceDescription aResDesc) throws InvalidXMLException {
@@ -690,6 +742,8 @@ public final class ExternalResourceFactory {
    *          the resource implementation.
    * @param aParams
    *          additional parameters supported by the resource.
+   * @throws InvalidXMLException
+   *           if import resolution failed
    */
   public static void createDependencyAndBind(ResourceSpecifier aDesc, String aKey,
           Class<? extends Resource> aImpl, String... aParams) throws InvalidXMLException {
@@ -709,8 +763,12 @@ public final class ExternalResourceFactory {
    *          the key to bind to.
    * @param aImpl
    *          the resource implementation.
+   * @param aApi
+   *          the resource interface
    * @param aParams
    *          additional parameters supported by the resource.
+   * @throws InvalidXMLException
+   *           if import resolution failed
    */
   public static void createDependencyAndBind(ResourceSpecifier aDesc, String aKey,
           Class<? extends Resource> aImpl, Class<?> aApi, String... aParams)
@@ -808,6 +866,8 @@ public final class ExternalResourceFactory {
    *          the resource URL.
    * @param aParams
    *          additional parameters supported by the resource.
+   * @throws InvalidXMLException
+   *           if import resolution failed
    */
   public static void createDependencyAndBind(AnalysisEngineDescription aDesc, String aKey,
           Class<? extends SharedResourceObject> aImpl, String aUrl, Object... aParams)

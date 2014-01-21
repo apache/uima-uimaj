@@ -33,6 +33,11 @@ public abstract class CasAnnotator_ImplBase extends
         org.apache.uima.analysis_component.CasAnnotator_ImplBase {
   private ExtendedLogger logger;
 
+  /**
+   * Get the logger.
+   * 
+   * @return the logger.
+   */
   public ExtendedLogger getLogger() {
     if (logger == null) {
       logger = new ExtendedLogger(getContext());

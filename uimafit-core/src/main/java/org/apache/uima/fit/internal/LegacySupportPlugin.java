@@ -54,6 +54,10 @@ public interface LegacySupportPlugin {
    * this method looks for a legacy version of the annotation, converts it to a modern annotation
    * and returns that.
    * 
+   * @param <L>
+   *          legacy annotation type
+   * @param <M>
+   *          modern annotation type
    * @param aObject
    *          an object that has a legacy annotation.
    * @param aAnnotationClass
@@ -68,6 +72,10 @@ public interface LegacySupportPlugin {
    * this method looks for a legacy version of the annotation, converts it to a modern annotation
    * and returns that.
    * 
+   * @param <L>
+   *          legacy annotation type
+   * @param <M>
+   *          modern annotation type
    * @param aObject
    *          an object that has a legacy annotation.
    * @param aAnnotationClass
@@ -96,6 +104,8 @@ public interface LegacySupportPlugin {
   /**
    * Get all currently accessible descriptor locations for the given type.
    * 
+   * @param aType
+   *          the type of metadata to scan for
    * @return an array of locations.
    * @throws ResourceInitializationException
    *           if the locations could not be resolved.

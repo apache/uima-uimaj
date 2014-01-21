@@ -45,11 +45,15 @@ public @interface FsIndexKey {
 
   /**
    * @see FsIndexKeyDescription#getFeatureName()
+   * 
+   * @return the name of this key's Feature
    */
   String featureName();
 
   /**
    * @see FsIndexKeyDescription#getComparator()
+   * 
+   * @return this key's comparator
    */
   int comparator() default STANDARD_COMPARE;
 }

@@ -40,6 +40,9 @@ public final class CapabilityFactory {
   /**
    * Creates a single capability consisting of the information in the {@link SofaCapability} and
    * {@link TypeCapability} annotations for the class.
+   * 
+   * @param componentClass a class with capability annotations
+   * @return capabilities extracted from the class
    */
   public static Capability createCapability(Class<?> componentClass) {
     if (!ReflectionUtil.isAnnotationPresent(componentClass, SofaCapability.class)

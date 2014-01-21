@@ -35,6 +35,11 @@ public interface Initializable {
   /**
    * This method will be called automatically if the implementing class is instantiated with
    * InitializableFactory.
+   * 
+   * @param context
+   *          the UIMA context containing the parameter settings
+   * @throws ResourceInitializationException
+   *           if there was a problem during initialization
    */
   public void initialize(UimaContext context) throws ResourceInitializationException;
 }

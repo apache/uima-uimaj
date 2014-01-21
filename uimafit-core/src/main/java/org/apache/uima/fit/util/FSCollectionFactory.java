@@ -111,6 +111,8 @@ public abstract class FSCollectionFactory<T extends FeatureStructure> {
   /**
    * Convert an {@link FSIterator} to a {@link Collection}.
    * 
+   * @param <T>
+   *          the feature structure type
    * @param aIterator
    *          the iterator to convert.
    * @return the wrapped iterator.
@@ -123,7 +125,9 @@ public abstract class FSCollectionFactory<T extends FeatureStructure> {
   /**
    * Convert an {@link AnnotationIndex} to a {@link Collection}.
    * 
-   * @param aIndex
+   * @param <T>
+   *          the feature structure type
+      * @param aIndex
    *          the index to convert.
    * @return the wrapped index.
    * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>

@@ -55,6 +55,7 @@ public final class TypePrioritiesFactory {
    * 
    * @param prioritizedTypes
    *          a sequence of ordered type classes
+   * @return type priorities created from the ordered JCas classes
    */
   public static TypePriorities createTypePriorities(Class<?>... prioritizedTypes) {
     String[] typeNames = new String[prioritizedTypes.length];
@@ -74,6 +75,7 @@ public final class TypePrioritiesFactory {
    * 
    * @param prioritizedTypeNames
    *          a sequence of ordered type names
+   * @return type priorities created from the ordered type names
    */
   public static TypePriorities createTypePriorities(String... prioritizedTypeNames) {
     TypePriorities typePriorities = new TypePriorities_impl();
@@ -91,6 +93,8 @@ public final class TypePrioritiesFactory {
    * {@code META-INF/org.apache.uima.fit/typepriorities.txt} files in the classpath.
    * 
    * @return the auto-scanned type priorities.
+   * @throws ResourceInitializationException
+   *           if the collected type priorities cannot be merged.
    */
   public static TypePriorities createTypePriorities() throws ResourceInitializationException {
     List<TypePriorities> typePrioritiesList = new ArrayList<TypePriorities>();

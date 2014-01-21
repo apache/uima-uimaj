@@ -37,6 +37,11 @@ public final class LifeCycleUtil {
   /**
    * Notify a set of {@link AnalysisEngine analysis engines} that the collection process is
    * complete.
+   * 
+   * @param engines
+   *          the engines to notify of completion
+   * @throws AnalysisEngineProcessException
+   *           if there was a problem in the engines reacting to completion
    */
   public static void collectionProcessComplete(final AnalysisEngine... engines)
           throws AnalysisEngineProcessException {
@@ -47,6 +52,9 @@ public final class LifeCycleUtil {
 
   /**
    * Destroy a set of {@link Resource resources}.
+   * 
+   * @param resources
+   *          the resources to destroy
    */
   public static void destroy(final Resource... resources) {
     for (Resource r : resources) {
@@ -58,6 +66,9 @@ public final class LifeCycleUtil {
 
   /**
    * Close a reader.
+   * 
+   * @param aReader
+   *          the reader to close
    */
   public static void close(final BaseCollectionReader aReader) {
     if (aReader == null) {

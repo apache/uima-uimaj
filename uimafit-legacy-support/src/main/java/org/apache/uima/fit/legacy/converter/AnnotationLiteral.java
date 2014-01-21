@@ -53,8 +53,8 @@ import java.util.Arrays;
  * @param <T>
  *          the annotation type
  * 
- * @see javax.enterprise.inject.Instance#select(Annotation...)
- * @see javax.enterprise.event.Event#select(Annotation...)
+ * @see <a href="http://docs.oracle.com/javaee/6/api/javax/enterprise/inject/Instance.html#select(java.lang.annotation.Annotation...)">javax.enterprise.inject.Instance.select(Annotation...)</a>
+ * @see <a href="http://docs.oracle.com/javaee/6/api/javax/enterprise/event/Event.html#select(java.lang.annotation.Annotation...)">javax.enterprise.event.Event.select(Annotation...)</a>
  * 
  */
 // 2013-01-20 rec

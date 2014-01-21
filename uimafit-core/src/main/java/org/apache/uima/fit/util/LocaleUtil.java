@@ -56,6 +56,9 @@ public final class LocaleUtil {
    * a hyphen. If it does, then the string is split on the hyphen and the resulting strings are
    * passed into the multi-parameter constructors of Locale. The passed in string should not contain
    * more than two hyphens as the Locale constructor with the most params is three.
+   * 
+   * @param localeString the locale string
+   * @return the parsed locale
    */
   public static Locale createLocale(String localeString) {
     String[] parts = localeString.split("[_-]", 3);
@@ -74,6 +77,9 @@ public final class LocaleUtil {
   /**
    * passes through to getLocaleConstant. If this returns null, then this method passes through to
    * createLocale.
+   * 
+   * @param localeString the locale string
+   * @return the parsed locale
    */
   public static Locale getLocale(String localeString) {
     Locale locale = getLocaleConstant(localeString);

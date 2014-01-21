@@ -74,6 +74,10 @@ public final class ConfigurationParameterFactory {
   /**
    * This method determines if the field is annotated with
    * {@link org.apache.uima.fit.descriptor.ConfigurationParameter}.
+   * 
+   * @param field
+   *          the field to analyze
+   * @return whether the field is marked as a configuration parameter
    */
   public static boolean isConfigurationParameterField(Field field) {
     return ReflectionUtil.isAnnotationPresent(field,
@@ -85,6 +89,10 @@ public final class ConfigurationParameterFactory {
    * necessarily the value that the annotated member variable will be instantiated with in
    * ConfigurationParameterInitializer which does extra work to convert the UIMA configuration
    * parameter value to comply with the type of the member variable.
+   * 
+   * @param field
+   *          the field to analyze
+   * @return the default value
    */
   public static Object getDefaultValue(Field field) {
     if (isConfigurationParameterField(field)) {
@@ -179,6 +187,10 @@ public final class ConfigurationParameterFactory {
   /**
    * This method generates the default name of a configuration parameter that is defined by an
    * {@link org.apache.uima.fit.descriptor.ConfigurationParameter} annotation when no name is given
+   * 
+   * @param field
+   *          the field to analyze
+   * @return the parameter name
    */
   public static String getConfigurationParameterName(Field field) {
     if (isConfigurationParameterField(field)) {
@@ -195,6 +207,10 @@ public final class ConfigurationParameterFactory {
 
   /**
    * A factory method for creating a ConfigurationParameter from a given field definition
+   * 
+   * @param field
+   *          the field to analyze
+   * @return the configuration parameter.
    */
   public static ConfigurationParameter createPrimitiveParameter(Field field) {
     if (isConfigurationParameterField(field)) {
@@ -213,6 +229,16 @@ public final class ConfigurationParameterFactory {
 
   /**
    * A factory method for creating a ConfigurationParameter object.
+   * 
+   * @param name
+   *          the parameter name
+   * @param parameterClass
+   *          the parameter class
+   * @param parameterDescription
+   *          the parameter description
+   * @param isMandatory
+   *          whether the parameter is mandatory
+   * @return the configuration parameter
    */
   public static ConfigurationParameter createPrimitiveParameter(String name,
           Class<?> parameterClass, String parameterDescription, boolean isMandatory) {
@@ -276,6 +302,18 @@ public final class ConfigurationParameterFactory {
 
   /**
    * A factory method for creating a ConfigurationParameter object.
+   * 
+   * @param name
+   *          the parameter name
+   * @param parameterType
+   *          the parameter type
+   * @param parameterDescription
+   *          the parameter description
+   * @param isMultiValued
+   *          whether the parameter is multi-valued
+   * @param isMandatory
+   *          whether the parameter is mandatory
+   * @return the configuration parameter
    */
   public static ConfigurationParameter createPrimitiveParameter(String name, String parameterType,
           String parameterDescription, boolean isMultiValued, boolean isMandatory) {
@@ -322,6 +360,11 @@ public final class ConfigurationParameterFactory {
    * {@link ConfigurationData} object. This should only be used to prepare values supplied in a
    * factory method call for merging with existing parameter declarations, e.g. extracted from a
    * class using {@link #createConfigurationData(Class)}.
+   * 
+   * @param configurationData
+   *          configuration parameters as (name, value) pairs, so there should always be an even
+   *          number of parameters.
+   * @return the configuration data
    */
   public static ConfigurationData createConfigurationData(Object... configurationData) {
     if (configurationData == null) {
@@ -356,6 +399,10 @@ public final class ConfigurationParameterFactory {
   /**
    * This method creates configuration data for a given class definition using reflection and the
    * configuration parameter annotation
+   * 
+   * @param componentClass
+   *          the class to analyze
+   * @return the configuration settings extracted from the class
    */
   public static ConfigurationData createConfigurationData(Class<?> componentClass) {
     List<ConfigurationParameter> configurationParameters = new ArrayList<ConfigurationParameter>();
@@ -376,13 +423,18 @@ public final class ConfigurationParameterFactory {
   /**
    * A simple class for storing an array of configuration parameters along with an array of the
    * values that will fill in those configuration parameters
-   * 
    */
   public static class ConfigurationData {
     public ConfigurationParameter[] configurationParameters;
 
     public Object[] configurationValues;
 
+    /**
+     * @param configurationParameters
+     *          the configuration parameters
+     * @param configurationValues
+     *          the configuration parameter values
+     */
     public ConfigurationData(ConfigurationParameter[] configurationParameters,
             Object[] configurationValues) {
       this.configurationParameters = configurationParameters;
@@ -395,6 +447,8 @@ public final class ConfigurationParameterFactory {
    * This method adds configuration parameter information to the specifier given the provided
    * configuration data
    * 
+   * @param specifier
+   *          the specified to add the parameters to
    * @param configurationData
    *          should consist of name value pairs.
    */
@@ -410,6 +464,11 @@ public final class ConfigurationParameterFactory {
    * Provides a mechanism to add configuration parameter information to a specifier for the given
    * classes. This method may be useful in situations where a class definition has annotated
    * configuration parameters that you want to include in the given specifier.
+   * 
+   * @param specifier
+   *          the specified to add the parameters to
+   * @param dynamicallyLoadedClasses
+   *          the classes to analyze and extract parameter information from
    */
   public static void addConfigurationParameters(ResourceCreationSpecifier specifier,
           List<Class<?>> dynamicallyLoadedClasses) {
@@ -426,6 +485,11 @@ public final class ConfigurationParameterFactory {
    * Provides a mechanism to add configuration parameter information to a specifier for the given
    * classes. This method may be useful in situations where a class definition has annotated
    * configuration parameters that you want to include in the given specifier
+   * 
+   * @param specifier
+   *          the specified to add the parameters to
+   * @param dynamicallyLoadedClasses
+   *          the classes to analyze and extract parameter information from
    */
   public static void addConfigurationParameters(ResourceCreationSpecifier specifier,
           Class<?>... dynamicallyLoadedClasses) {
@@ -440,6 +504,13 @@ public final class ConfigurationParameterFactory {
 
   /**
    * Adds a single configuration parameter name value pair to a specifier
+   * 
+   * @param specifier
+   *          the specifier to add the parameter setting to
+   * @param name
+   *          the name of the parameter
+   * @param value
+   *          the parameter value
    */
   public static void addConfigurationParameter(ResourceCreationSpecifier specifier, String name,
           Object value) {
@@ -556,6 +627,12 @@ public final class ConfigurationParameterFactory {
   /**
    * Check if the given parameter can be set on the provided specifier. Some specifier types require
    * parameters to be declared before they can be set.
+   * 
+   * @param aSpec
+   *          the specifier to test
+   * @param name
+   *          the parameter to be tested
+   * @return if the parameter can be set
    */
   public static boolean canParameterBeSet(ResourceSpecifier aSpec, String name) {
     if (aSpec instanceof CustomResourceSpecifier) {

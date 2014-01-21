@@ -36,6 +36,8 @@ public @interface ResourceMetaData {
    * Gets the name of this Resource.
    * 
    * @see org.apache.uima.resource.metadata.ResourceMetaData#getName()
+   * 
+   * @return the name of this Resource
    */
   String name() default "";
   
@@ -43,6 +45,8 @@ public @interface ResourceMetaData {
    * Gets the copyright notice for this Resource.
    * 
    * @see org.apache.uima.resource.metadata.ResourceMetaData#getCopyright()
+   * 
+   * @return the copyright notice for this Resource
    */
   String copyright() default "";
 
@@ -50,6 +54,8 @@ public @interface ResourceMetaData {
    * Gets the description of this Resource.
    * 
    * @see org.apache.uima.resource.metadata.ResourceMetaData#getDescription()
+   * 
+   * @return the description of this Resource
    */
   String description() default "";
   
@@ -57,6 +63,8 @@ public @interface ResourceMetaData {
    * Gets the vendor of this Resource.
    * 
    * @see org.apache.uima.resource.metadata.ResourceMetaData#getVendor()
+   * 
+   * @return the vendor of this Resource, as a String
    */
   String vendor() default "";
   
@@ -64,6 +72,8 @@ public @interface ResourceMetaData {
    * Gets the version number of this Resource.
    * 
    * @see org.apache.uima.resource.metadata.ResourceMetaData#getVersion()
+   * 
+   * @return the version number of this Resource, as a String
    */
   String version() default "";
 }

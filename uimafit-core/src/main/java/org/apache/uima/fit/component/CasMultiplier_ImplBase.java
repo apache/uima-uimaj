@@ -34,6 +34,11 @@ public abstract class CasMultiplier_ImplBase extends
         org.apache.uima.analysis_component.CasMultiplier_ImplBase {
   private ExtendedLogger logger;
 
+  /**
+   * Get the logger.
+   * 
+   * @return the logger.
+   */
   public ExtendedLogger getLogger() {
     if (logger == null) {
       logger = new ExtendedLogger(getContext());

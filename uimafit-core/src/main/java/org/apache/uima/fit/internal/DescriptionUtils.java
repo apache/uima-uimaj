@@ -42,10 +42,15 @@ public final class DescriptionUtils {
   }
 
   /**
-   * Consolidate duplicate information in the AE description. 
+   * Consolidate duplicate information in the AE description.
    * 
-   * @param aDesc an AE description
+   * @param aDesc
+   *          an AE description
    * @return a consolidated AE description
+   * @throws ResourceInitializationException
+   *           if a descriptions could not be aggregated
+   * @throws InvalidXMLException
+   *           if import resolution failed
    */
   public static AnalysisEngineDescription consolidate(AnalysisEngineDescription aDesc)
           throws ResourceInitializationException, InvalidXMLException {

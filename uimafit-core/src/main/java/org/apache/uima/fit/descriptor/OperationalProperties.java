@@ -32,8 +32,7 @@ import java.lang.annotation.Target;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 
 /**
- * Control aspects of the UIMA analysis component.<br/>
- * 
+ * Control aspects of the UIMA analysis component.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)

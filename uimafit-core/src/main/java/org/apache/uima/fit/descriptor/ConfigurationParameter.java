@@ -65,16 +65,22 @@ public @interface ConfigurationParameter {
    * annotated field as the name of the configuration parameter. The exact name that is used is
    * determined by the method
    * {@link ConfigurationParameterFactory#getConfigurationParameterName(java.lang.reflect.Field)}
+   * 
+   * @return the parameter name.
    */
   String name() default USE_FIELD_NAME;
 
   /**
    * A description for the configuration parameter
+   * 
+   * @return the description.
    */
   String description() default "";
 
   /**
    * Specifies whether this configuration parameter is mandatory - i.e. the value must be provided
+   * 
+   * @return whether this configuration parameter is mandatory.
    */
   boolean mandatory() default true;
 
@@ -96,6 +102,8 @@ public @interface ConfigurationParameter {
    * <p>
    * If you want a field to be initialized with a null value, then do not specify a default value or
    * specify the value given by the field {@link #NO_DEFAULT_VALUE}
+   * 
+   * @return the default value.
    */
   String[] defaultValue() default NO_DEFAULT_VALUE;
 

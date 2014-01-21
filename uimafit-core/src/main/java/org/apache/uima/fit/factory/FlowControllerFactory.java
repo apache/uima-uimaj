@@ -48,8 +48,13 @@ public final class FlowControllerFactory {
   /**
    * Creates a new FlowControllerDescription for a given class and configuration data
    * 
+   * @param flowControllerClass
+   *          the flow controller class
    * @param configurationData
    *          should be configuration parameter name / value pairs.
+   * @return a flow controller description
+   * @throws ResourceInitializationException
+   *           if the description could not be created
    */
   public static FlowControllerDescription createFlowControllerDescription(
           Class<? extends FlowController> flowControllerClass, Object... configurationData)
@@ -68,6 +73,17 @@ public final class FlowControllerFactory {
             cdata.configurationValues, externalResources);
   }
 
+  /**
+   * @param flowControllerClass
+   *          the flow controller class
+   * @param configurationParameters
+   *          the configuration parameters
+   * @param configurationValues
+   *          the configuration parameter values
+   * @return a flow controller description
+   * @throws ResourceInitializationException
+   *           if the description could not be created
+   */
   public static FlowControllerDescription createFlowControllerDescription(
           Class<? extends FlowController> flowControllerClass,
           ConfigurationParameter[] configurationParameters, Object[] configurationValues)
@@ -79,6 +95,18 @@ public final class FlowControllerFactory {
   /**
    * Creates a new FlowControllerDescription for a given class and configuration parameters with
    * values
+   * 
+   * @param flowControllerClass
+   *          the flow controller class
+   * @param configurationParameters
+   *          the configuration parameters
+   * @param configurationValues
+   *          the configuration parameter values
+   * @param externalResources
+   *          the external resources
+   * @return a flow controller description
+   * @throws ResourceInitializationException
+   *           if the description could not be created
    */
   public static FlowControllerDescription createFlowControllerDescription(
           Class<? extends FlowController> flowControllerClass,

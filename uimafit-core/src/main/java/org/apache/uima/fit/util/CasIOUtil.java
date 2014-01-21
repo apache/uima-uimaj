@@ -45,8 +45,12 @@ public class CasIOUtil {
    * This method loads the contents of an XMI or XCAS file into the given CAS. The file type is
    * detected by the extension.
    * 
+   * @param aCas
+   *          the target CAS
    * @param aFile
-   *          a file name
+   *          the file to read from
+   * @throws IOException
+   *           if there is a problem reading the file
    */
   public static void readCas(CAS aCas, File aFile) throws IOException {
     String lowerCaseFileName = aFile.getName().toLowerCase();
@@ -59,6 +63,15 @@ public class CasIOUtil {
     }
   }
 
+  /**
+   * 
+   * @param aCas
+   *          the target CAS
+   * @param aFile
+   *          the file to read from
+   * @throws IOException
+   *           if there is a problem reading the file
+   */
   public static void readXmi(CAS aCas, File aFile) throws IOException {
     InputStream is = null;
     try {
@@ -75,6 +88,15 @@ public class CasIOUtil {
     }
   }
 
+  /**
+   * 
+   * @param aCas
+   *          the source CAS
+   * @param aFile
+   *          the file to write to
+   * @throws IOException
+   *           if there is a problem writing the file
+   */
   public static void writeXmi(CAS aCas, File aFile) throws IOException {
     OutputStream os = null;
     try {
@@ -91,6 +113,15 @@ public class CasIOUtil {
     }
   }
 
+  /**
+   * 
+   * @param aCas
+   *          the target CAS
+   * @param aFile
+   *          the file to read from
+   * @throws IOException
+   *           if there is a problem reading the file
+   */
   public static void readXCas(CAS aCas, File aFile) throws IOException {
     InputStream is = null;
     try {
@@ -107,6 +138,15 @@ public class CasIOUtil {
     }
   }
 
+  /**
+   * 
+   * @param aCas
+   *          the source CAS
+   * @param aFile
+   *          the file to write to
+   * @throws IOException
+   *           if there is a problem writing the file
+   */
   public static void writeXCas(CAS aCas, File aFile) throws IOException {
     OutputStream os = null;
     try {
@@ -127,25 +167,65 @@ public class CasIOUtil {
    * This method loads the contents of an XMI or XCAS file into the given CAS. The file type is
    * detected by the extension.
    * 
+   * @param aJCas
+   *          the target JCas
    * @param aFile
-   *          a file name
+   *          the file to read from
+   * @throws IOException
+   *           if there is a problem reading the file
    */
   public static void readJCas(JCas aJCas, File aFile) throws IOException {
     CasIOUtil.readCas(aJCas.getCas(), aFile);
   }
-
+  
+  /**
+   * 
+   * @param aJCas
+   *          the target JCas
+   * @param aFile
+   *          the file to read from
+   * @throws IOException
+   *           if there is a problem reading the file
+   */
   public static void readXmi(JCas aJCas, File aFile) throws IOException {
     CasIOUtil.readXmi(aJCas.getCas(), aFile);
   }
-
+  
+  /**
+   * 
+   * @param aJCas
+   *          the source JCas
+   * @param aFile
+   *          the file to write to
+   * @throws IOException
+   *           if there is a problem writing the file
+   */
   public static void writeXmi(JCas aJCas, File aFile) throws IOException {
     CasIOUtil.writeXmi(aJCas.getCas(), aFile);
   }
 
+  /**
+   * 
+   * @param aJCas
+   *          the target JCas
+   * @param aFile
+   *          the file to read from
+   * @throws IOException
+   *           if there is a problem reading the file
+   */
   public static void readXCas(JCas aJCas, File aFile) throws IOException {
     CasIOUtil.readXCas(aJCas.getCas(), aFile);
   }
 
+  /**
+   * 
+   * @param aJCas
+   *          the source JCas
+   * @param aFile
+   *          the file to write to
+   * @throws IOException
+   *           if there is a problem writing the file
+   */
   public static void writeXCas(JCas aJCas, File aFile) throws IOException {
     CasIOUtil.writeXCas(aJCas.getCas(), aFile);
   }

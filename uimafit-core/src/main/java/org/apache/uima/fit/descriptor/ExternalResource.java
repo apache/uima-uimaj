@@ -52,11 +52,15 @@ public @interface ExternalResource {
 
   /**
    * A description for the external resource.
+   * 
+   * @return the description.
    */
   String description() default "";
 
   /**
    * Determines if this external resource is mandatory.
+   * 
+   * @return if this external resource is mandatory.
    */
   boolean mandatory() default true;
 }

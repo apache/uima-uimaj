@@ -42,10 +42,7 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
  * This is an example taken from our test cases:
  * </p>
  * 
- * <p>
- * <blockquote>
- * 
- * <pre>
+ * <pre><code>
  * import static org.apache.uima.fit.factory.AnalysisEngineFactory.createPrimitiveDescription;
  * 
  * AggregateBuilder builder = new AggregateBuilder();
@@ -58,11 +55,7 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
  * builder.add(createPrimitiveDescription(Annotator3.class, typeSystemDescription),
  *     ViewNames.INITIAL_VIEW, "B");
  * AnalysisEngine aggregateEngine = builder.createAggregate();
- * </pre>
- * 
- * </blockquote>
- * </p>
- * 
+ * </code></pre>
  */
 public class AggregateBuilder {
 
@@ -109,6 +102,14 @@ public class AggregateBuilder {
    * This method simply calls {@link #add(String, AnalysisEngineDescription, String...)} using the
    * result of {@link AnalysisEngineDescription#getAnnotatorImplementationName()} for the component
    * name
+   * 
+   * @param aed
+   *          an analysis engine description to add to the aggregate analysis engine
+   * @param viewNames
+   *          pairs of view names corresponding to a componentSofaName followed by the
+   *          aggregateSofaName that it is mapped to. An even number of names must be passed in or
+   *          else an IllegalArgumentException will be thrown. See
+   *          {@link SofaMappingFactory#createSofaMapping(String, String, String)}
    * 
    * @return the name of the component generated for the {@link AnalysisEngineDescription}
    */
@@ -199,6 +200,8 @@ public class AggregateBuilder {
    * with the data collected by this builder.
    * 
    * @return an aggregate analysis engine
+   * @throws ResourceInitializationException
+   *           if there is a problem during initialization
    */
   public AnalysisEngine createAggregate() throws ResourceInitializationException {
     return AnalysisEngineFactory.createEngine(analysisEngineDescriptions, componentNames,
@@ -212,6 +215,8 @@ public class AggregateBuilder {
    * with the data collected by this builder.
    * 
    * @return a description of an aggregate analysis engine
+   * @throws ResourceInitializationException
+   *           if there is a problem during initialization
    */
   public AnalysisEngineDescription createAggregateDescription()
           throws ResourceInitializationException {

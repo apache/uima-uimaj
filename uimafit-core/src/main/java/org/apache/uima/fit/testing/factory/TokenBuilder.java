@@ -28,10 +28,8 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 
 /**
- * 
  * This class provides convenience methods for creating tokens and sentences and add them to a
  * {@link JCas}.
- * 
  * 
  * @param <TOKEN_TYPE>
  *          the type system token type (e.g. {@code org.apache.uima.fit.examples.type.Token})
@@ -51,34 +49,41 @@ public class TokenBuilder<TOKEN_TYPE extends Annotation, SENTENCE_TYPE extends A
   /**
    * Calls {@link TokenBuilder#TokenBuilder(Class, Class, String, String)} with the last two
    * arguments as null.
+   * 
+   * @param aTokenClass
+   *          the class of your token type from your type system (e.g.
+   *          org.apache.uima.fit.type.Token.class)
+   * @param aSentenceClass
+   *          the class of your sentence type from your type system (e.g.
+   *          org.apache.uima.fit.type.Sentence.class)
    */
-  public TokenBuilder(Class<TOKEN_TYPE> tokenClass, Class<SENTENCE_TYPE> sentenceClass) {
-    this(tokenClass, sentenceClass, null, null);
+  public TokenBuilder(Class<TOKEN_TYPE> aTokenClass, Class<SENTENCE_TYPE> aSentenceClass) {
+    this(aTokenClass, aSentenceClass, null, null);
   }
 
   /**
    * Instantiates a TokenBuilder with the type system information that the builder needs to build
    * tokens.
    * 
-   * @param tokenClass
+   * @param aTokenClass
    *          the class of your token type from your type system (e.g.
    *          org.apache.uima.fit.type.Token.class)
-   * @param sentenceClass
+   * @param aSentenceClass
    *          the class of your sentence type from your type system (e.g.
    *          org.apache.uima.fit.type.Sentence.class)
-   * @param posFeatureName
+   * @param aPosFeatureName
    *          the feature name for the part-of-speech tag for your token type. This assumes that
    *          there is a single string feature for which to put your pos tag. null is an ok value.
-   * @param stemFeatureName
+   * @param aStemFeatureName
    *          the feature name for the stem for your token type. This assumes that there is a single
    *          string feature for which to put your stem. null is an ok value.
    */
-  public TokenBuilder(final Class<TOKEN_TYPE> tokenClass, final Class<SENTENCE_TYPE> sentenceClass,
-          String posFeatureName, String stemFeatureName) {
-    this.tokenClass = tokenClass;
-    this.sentenceClass = sentenceClass;
-    setPosFeatureName(posFeatureName);
-    setStemFeatureName(stemFeatureName);
+  public TokenBuilder(final Class<TOKEN_TYPE> aTokenClass, final Class<SENTENCE_TYPE> aSentenceClass,
+          String aPosFeatureName, String aStemFeatureName) {
+    tokenClass = aTokenClass;
+    sentenceClass = aSentenceClass;
+    setPosFeatureName(aPosFeatureName);
+    setStemFeatureName(aStemFeatureName);
   }
 
   /**
@@ -89,72 +94,98 @@ public class TokenBuilder<TOKEN_TYPE extends Annotation, SENTENCE_TYPE extends A
    *          the type system token type (e.g. org.apache.uima.fit.examples.type.Token)
    * @param <S>
    *          the type system sentence type (e.g. {@code org.apache.uima.fit.examples.type.Sentence})
-   * @param tokenClass
+   * @param aTokenClass
    *          the class of your token type from your type system (e.g.
    *          {@code org.apache.uima.fit.type.Token})
-   * @param sentenceClass
+   * @param aSentenceClass
    *          the class of your sentence type from your type system (e.g.
    *          {@code org.apache.uima.fit.type.Sentence})
    * @return the builder.
    */
   public static <T extends Annotation, S extends Annotation> TokenBuilder<T, S> create(
-          Class<T> tokenClass, Class<S> sentenceClass) {
-    return new TokenBuilder<T, S>(tokenClass, sentenceClass);
+          Class<T> aTokenClass, Class<S> aSentenceClass) {
+    return new TokenBuilder<T, S>(aTokenClass, aSentenceClass);
   }
 
   /**
    * Set the feature name for the part-of-speech tag for your token type. This assumes that there is
    * a single string feature for which to put your pos tag. null is an ok value.
    * 
-   * @param posFeatureName
+   * @param aPosFeatureName
    *          the part-of-speech feature name.
    */
-  public void setPosFeatureName(String posFeatureName) {
-    this.posFeatureName = posFeatureName;
+  public void setPosFeatureName(String aPosFeatureName) {
+    posFeatureName = aPosFeatureName;
   }
 
   /**
    * Set the feature name for the stem for your token type. This assumes that there is a single
    * string feature for which to put your stem. null is an ok value.
    * 
-   * @param stemFeatureName
+   * @param aStemFeatureName
    *          the stem feature name.
    */
-  public void setStemFeatureName(String stemFeatureName) {
-    this.stemFeatureName = stemFeatureName;
+  public void setStemFeatureName(String aStemFeatureName) {
+    stemFeatureName = aStemFeatureName;
   }
 
   /**
    * Builds white-space delimited tokens from the input text.
    * 
-   * @param jCas
-   *          the JCas to add the tokens to
-   * @param text
-   *          the JCas will have its document text set to this.
+   * @param aJCas
+   *          the JCas to add the Token annotations to
+   * @param aText
+   *          the text to initialize the {@link JCas} with
+   * @throws UIMAException if an annotation could not be created
    */
-  public void buildTokens(JCas jCas, String text) throws UIMAException {
-    if (text == null) {
+  public void buildTokens(JCas aJCas, String aText) throws UIMAException {
+    if (aText == null) {
       throw new IllegalArgumentException("text may not be null.");
     }
-    buildTokens(jCas, text, text, null, null);
+    buildTokens(aJCas, aText, aText, null, null);
   }
 
   /**
-   * see {@link #buildTokens(JCas, String, String, String, String)}
+   * @param aJCas
+   *          the JCas to add the Token annotations to
+   * @param aText
+   *          the text to initialize the {@link JCas} with
+   * @param aTokensString
+   *          the tokensString must have the same non-white space characters as the text. The
+   *          tokensString is used to identify token boundaries using white space - i.e. the only
+   *          difference between the 'text' parameter and the 'tokensString' parameter is that the
+   *          latter may have more whitespace characters. For example, if the text is "She ran."
+   *          then the tokensString might be "She ran ."
+   * @see #buildTokens(JCas, String, String, String, String)
+   * @throws UIMAException if an annotation could not be created
    */
-  public void buildTokens(JCas jCas, String text, String tokensString) throws UIMAException {
-    if (tokensString == null) {
-      throw new IllegalArgumentException("tokensText may not be null.");
+  public void buildTokens(JCas aJCas, String aText, String aTokensString) throws UIMAException {
+    if (aTokensString == null) {
+      throw new IllegalArgumentException("tokensString may not be null.");
     }
-    buildTokens(jCas, text, tokensString, null, null);
+    buildTokens(aJCas, aText, aTokensString, null, null);
   }
 
   /**
-   * see {@link #buildTokens(JCas, String, String, String, String)}
+   * @param aJCas
+   *          the JCas to add the Token annotations to
+   * @param aText
+   *          the text to initialize the {@link JCas} with
+   * @param aTokensString
+   *          the tokensString must have the same non-white space characters as the text. The
+   *          tokensString is used to identify token boundaries using white space - i.e. the only
+   *          difference between the 'text' parameter and the 'tokensString' parameter is that the
+   *          latter may have more whitespace characters. For example, if the text is "She ran."
+   *          then the tokensString might be "She ran ."
+   * @param aPosTagsString
+   *          the posTagsString should be a space delimited string of part-of-speech tags - one for
+   *          each token
+   * @see #buildTokens(JCas, String, String, String, String)
+   * @throws UIMAException if an annotation could not be created
    */
-  public void buildTokens(JCas jCas, String text, String tokensString, String posTagsString)
+  public void buildTokens(JCas aJCas, String aText, String aTokensString, String aPosTagsString)
           throws UIMAException {
-    buildTokens(jCas, text, tokensString, posTagsString, null);
+    buildTokens(aJCas, aText, aTokensString, aPosTagsString, null);
   }
 
   /**
@@ -163,9 +194,7 @@ public class TokenBuilder<TOKEN_TYPE extends Annotation, SENTENCE_TYPE extends A
    * @param aJCas
    *          the JCas to add the Token annotations to
    * @param aText
-   *          this method sets the text of the JCas to this method. Therefore, it is generally a
-   *          good idea to call JCas.reset() before calling this method when passing in the default
-   *          view.
+   *          the text to initialize the {@link JCas} with
    * @param aTokensString
    *          the tokensString must have the same non-white space characters as the text. The
    *          tokensString is used to identify token boundaries using white space - i.e. the only
@@ -176,7 +205,8 @@ public class TokenBuilder<TOKEN_TYPE extends Annotation, SENTENCE_TYPE extends A
    *          the posTagsString should be a space delimited string of part-of-speech tags - one for
    *          each token
    * @param aStemsString
-   *          the stemsString should be a space delimitied string of stems - one for each token
+   *          the stemsString should be a space delimited string of stems - one for each token
+   * @throws UIMAException if an annotation could not be created
    */
   public void buildTokens(JCas aJCas, String aText, String aTokensString, String aPosTagsString,
           String aStemsString) throws UIMAException {
@@ -249,7 +279,5 @@ public class TokenBuilder<TOKEN_TYPE extends Annotation, SENTENCE_TYPE extends A
         AnnotationFactory.createAnnotation(aJCas, begin, end, sentenceClass);
       }
     }
-
   }
-
 }

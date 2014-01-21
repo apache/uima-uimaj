@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
 /**
  * A typical use of this annotation might look something like:
  * 
- * <code><pre>
+ * <pre><code>
  * {@literal @}TypeCapability(
  *   inputs="org.apache.uima.fit.type.Token", 
  *   outputs="org.apache.uima.fit.type.Token:pos")
@@ -34,7 +34,7 @@ import java.lang.annotation.Target;
  * 
  * or
  * 
- * <code><pre>
+ * <pre><code>
  * {@literal @}TypeCapability(
  *   inputs={"org.apache.uima.fit.type.Token","org.apache.uima.fit.type.Sentence"}, 
  *   outputs={"org.apache.uima.fit.type.Token:pos", "org.apache.uima.tutorial.RoomNumber"})
@@ -51,6 +51,7 @@ public @interface TypeCapability {
    * followed by a colon (':') followed by the feature name. A valid feature name from the uimaFIT
    * test type system is "org.apache.uima.fit.type.Token:pos"
    * 
+   * @return the input types
    */
   String[] inputs() default NO_DEFAULT_VALUE;
 
@@ -58,6 +59,8 @@ public @interface TypeCapability {
    * outputs can be type names or feature names. A feature name typically looks like a type name
    * followed by a colon (':') followed by the feature name. A valid feature name from the uimaFIT
    * test type system is "org.apache.uima.fit.type.Token:pos"
+   * 
+   * @return the output types
    */
   String[] outputs() default NO_DEFAULT_VALUE;
 

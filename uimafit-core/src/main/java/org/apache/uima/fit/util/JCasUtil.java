@@ -209,6 +209,8 @@ public final class JCasUtil {
    * annotations, the result is empty. The method properly handles cases where the second boundary
    * annotations occurs before the first boundary annotation by switching their roles.
    * 
+   * @param <T>
+   *          the JCas type.
    * @param type
    *          a UIMA type.
    * @param ann1
@@ -232,6 +234,8 @@ public final class JCasUtil {
    * annotations, the result is empty. The method properly handles cases where the second boundary
    * annotations occurs before the first boundary annotation by switching their roles.
    * 
+   * @param <T>
+   *          the JCas type.
    * @param jCas
    *          a JCas containing the annotation.
    * @param type
@@ -402,7 +406,9 @@ public final class JCasUtil {
    * scanning the CAS occurs only when the index is build. Subsequent lookups to the index are fast.
    * 
    * @param <T>
-   *          the JCas type.
+   *          the covered JCAs type.
+   * @param <S>
+   *          the covering JCas type.
    * @param jCas
    *          a JCas.
    * @param type
@@ -424,7 +430,9 @@ public final class JCasUtil {
    * scanning the CAS occurs only when the index is build. Subsequent lookups to the index are fast.
    * 
    * @param <T>
-   *          the JCas type.
+   *          the covering JCas type.
+   * @param <S>
+   *          the covered JCas type.
    * @param jCas
    *          a JCas.
    * @param type

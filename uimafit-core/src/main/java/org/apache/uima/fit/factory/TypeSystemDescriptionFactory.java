@@ -89,10 +89,12 @@ public final class TypeSystemDescriptionFactory {
 
   /**
    * Creates a {@link TypeSystemDescription} from all type descriptions that can be found via the
-   * default import pattern or via the {@code META-INF/org.apache.uima.fit/types.txt} files in
-   * the classpath.
+   * default import pattern or via the {@code META-INF/org.apache.uima.fit/types.txt} files in the
+   * classpath.
    * 
    * @return the auto-scanned type system.
+   * @throws ResourceInitializationException
+   *           if the collected type system descriptions cannot be merged.
    */
   public static TypeSystemDescription createTypeSystemDescription()
           throws ResourceInitializationException {

@@ -30,6 +30,9 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasCreationUtils;
 
+/**
+ * Convenience methods to create {@link JCas} objects.
+ */
 public final class JCasFactory {
   private JCasFactory() {
     // This class is not meant to be instantiated
@@ -38,6 +41,10 @@ public final class JCasFactory {
   /**
    * Creates a new JCas for the automatically derived type system. See
    * {@link TypeSystemDescriptionFactory#createTypeSystemDescription()}
+   * 
+   * @return a new JCas
+   * @throws UIMAException
+   *           if the JCas could not be initialized
    */
   public static JCas createJCas() throws UIMAException {
     return CasCreationUtils.createCas(createTypeSystemDescription(), null, null).getJCas();
@@ -46,6 +53,13 @@ public final class JCasFactory {
 
   /**
    * Creates a new JCas from type system descriptor files found by name
+   * 
+   * @param typeSystemDescriptorNames
+   *          names of the type system descriptors on the classpath used to initialize the JCas (in
+   *          Java notation, e.g. "my.package.TypeSystem" without the ".xml" extension)
+   * @return a new JCas
+   * @throws UIMAException
+   *           if the JCas could not be initialized
    */
   public static JCas createJCas(String... typeSystemDescriptorNames) throws UIMAException {
     return CasCreationUtils.createCas(createTypeSystemDescription(typeSystemDescriptorNames), null,
@@ -57,6 +71,9 @@ public final class JCasFactory {
    * 
    * @param typeSystemDescriptorPaths
    *          paths to type system descriptor files
+   * @return a new JCas
+   * @throws UIMAException
+   *           if the JCas could not be initialized
    */
   public static JCas createJCasFromPath(String... typeSystemDescriptorPaths) throws UIMAException {
     return createJCas(createTypeSystemDescriptionFromPath(typeSystemDescriptorPaths));
@@ -64,6 +81,12 @@ public final class JCasFactory {
 
   /**
    * Create a new JCas for the given type system description
+   * 
+   * @param typeSystemDescription
+   *          a type system description to initialize the JCas
+   * @return a new JCas
+   * @throws UIMAException
+   *           if the JCas could not be initialized
    */
   public static JCas createJCas(TypeSystemDescription typeSystemDescription) throws UIMAException {
     return CasCreationUtils.createCas(typeSystemDescription, null, null).getJCas();
@@ -74,6 +97,13 @@ public final class JCasFactory {
    * 
    * @param fileName
    *          a file name for the serialized CAS data
+   * @param typeSystemDescription
+   *          a type system description to initialize the JCas
+   * @return a new JCas
+   * @throws UIMAException
+   *           if the JCas could not be initialized
+   * @throws IOException
+   *           if there is a problem reading the file
    */
   public static JCas createJCas(String fileName, TypeSystemDescription typeSystemDescription)
           throws UIMAException, IOException {

@@ -81,6 +81,8 @@ public final class LegacySupport {
   /**
    * Get legacy support instance. Never returns {@code null}. If no legacy support plug-in is 
    * available, a dummy plug-in is returned.
+   * 
+   * @return the legacy support plugin.
    */
   public static LegacySupportPlugin getInstance() {
     return legacySupportPlugin;

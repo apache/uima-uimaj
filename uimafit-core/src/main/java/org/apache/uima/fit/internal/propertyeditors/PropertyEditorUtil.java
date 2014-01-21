@@ -33,6 +33,11 @@ public final class PropertyEditorUtil {
     // Utility class
   }
 
+  /**
+   * Register the property editors provided by uimaFIT in the given property editor registry.
+   * 
+   * @param aRegistry a property editor registry
+   */
   public static void registerUimaFITEditors(PropertyEditorRegistry aRegistry) {
     aRegistry.registerCustomEditor(Locale.class, new LocaleEditor());
     aRegistry.registerCustomEditor(String.class, new GetAsTextStringEditor(aRegistry));

@@ -31,6 +31,11 @@ public abstract class CasFlowController_ImplBase extends
         org.apache.uima.flow.CasFlowController_ImplBase {
   private ExtendedLogger logger;
 
+  /**
+   * Get the logger.
+   * 
+   * @return the logger.
+   */
   public ExtendedLogger getLogger() {
     if (logger == null) {
       logger = new ExtendedLogger(getContext());

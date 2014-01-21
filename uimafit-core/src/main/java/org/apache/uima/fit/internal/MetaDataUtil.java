@@ -46,7 +46,11 @@ public final class MetaDataUtil {
   /**
    * Scan patterns from manifest files and from the specified system property.
    * 
+   * @param aType
+   *          the type of metadata to scan for
    * @return array or all patterns found.
+   * @throws ResourceInitializationException
+   *           if there was a problem resolving the metadata locations from the patterns
    */
   public static String[] scanImportsAndManifests(MetaDataType aType)
           throws ResourceInitializationException {
@@ -77,6 +81,8 @@ public final class MetaDataUtil {
   /**
    * Resolve a list of patterns to a set of URLs.
    * 
+   * @param patterns
+   *          the patterns to resolve
    * @return an array of locations.
    * @throws ResourceInitializationException
    *           if the locations could not be resolved.
@@ -103,6 +109,10 @@ public final class MetaDataUtil {
 
   /**
    * Get manifest locations for the specified type.
+   * 
+   * @param aType
+   *          the type of metadata to scan for
+   * @return the manifest locations for this kind of metadata to scan
    */
   public static String[] getManifestLocations(MetaDataType aType) {
     List<String> locations = new ArrayList<String>();
@@ -124,6 +134,10 @@ public final class MetaDataUtil {
   /**
    * Get system properties indicating which locations to scan for descriptions of the given type. A
    * list of locations may be given separated by ";".
+   * 
+   * @param aType
+   *          the type of metadata to scan for
+   * @return the locations for this kind of metadata to scan
    */
   public static String[] getImportProperties(MetaDataType aType) {
     List<String> locations = new ArrayList<String>();
@@ -145,7 +159,9 @@ public final class MetaDataUtil {
   /**
    * Get all currently accessible descriptor locations for the given type.
    * 
-   * @return an array of locations.
+   * @param aType
+   *          the type of metadata to scan for
+      * @return an array of locations.
    * @throws ResourceInitializationException
    *           if the locations could not be resolved.
    */

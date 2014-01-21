@@ -31,9 +31,11 @@ import org.apache.uima.resource.ResourceSpecifier;
 
 /**
  * Locate an object via JNDI.
- * 
  */
 public class JndiResourceLocator extends Resource_ImplBase implements ExternalResourceLocator {
+  /**
+   * The name of the JNDI resource to look up.
+   */
   public static final String PARAM_NAME = "Name";
 
   @ConfigurationParameter(name = PARAM_NAME, mandatory = true)

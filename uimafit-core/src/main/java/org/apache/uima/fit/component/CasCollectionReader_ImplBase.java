@@ -55,6 +55,9 @@ public abstract class CasCollectionReader_ImplBase extends CollectionReader_Impl
   /**
    * This method should be overwritten by subclasses.
    * 
+   * @param context
+   *          the UIMA context the component is running in
+   * 
    * @throws ResourceInitializationException
    *           if a failure occurs during initialization.
    */

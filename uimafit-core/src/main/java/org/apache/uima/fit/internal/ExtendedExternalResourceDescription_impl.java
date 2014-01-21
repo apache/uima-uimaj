@@ -38,10 +38,16 @@ public class ExtendedExternalResourceDescription_impl extends ExternalResourceDe
 
   private List<ExternalResourceDescription> externalResources = new ArrayList<ExternalResourceDescription>();
 
+  /**
+   * @return the external resource bindings
+   */
   public List<ExternalResourceBinding> getExternalResourceBindings() {
     return externalResourceBindings;
   }
 
+  /**
+   * @param aExternalResourceBindings the external resource bindings
+   */
   public void setExternalResourceBindings(
           Collection<ExternalResourceBinding> aExternalResourceBindings) {
     externalResourceBindings = new ArrayList<ExternalResourceBinding>();
@@ -50,10 +56,16 @@ public class ExtendedExternalResourceDescription_impl extends ExternalResourceDe
     }
   }
 
+  /**
+   * @return the external resource descriptions
+   */
   public List<ExternalResourceDescription> getExternalResources() {
     return externalResources;
   }
 
+  /**
+   * @param aExternalResourceDescriptions the external resource descriptions
+   */
   public void setExternalResources(
           Collection<ExternalResourceDescription> aExternalResourceDescriptions) {
     externalResources = new ArrayList<ExternalResourceDescription>();

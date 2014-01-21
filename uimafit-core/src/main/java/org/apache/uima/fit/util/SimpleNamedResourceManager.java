@@ -38,13 +38,14 @@ import org.apache.uima.util.Level;
  * <p>
  * Simple {@link ResourceManager} allowing for direct injection of Java objects into UIMA components
  * as external resources.
+ * </p>
  * <p>
  * This implementation uses a simple map to look up an Java object by key. If any component using
  * this resource manager declares an external resource by the given key, the Java object will be
  * bound to that external resource.
  * <p>
  * Example:
- * <p>
+ * </p>
  * <blockquote>
  * 
  * <pre>

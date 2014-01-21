@@ -51,6 +51,16 @@ public final class CpePipeline {
    *          Primitive AnalysisEngineDescriptions that process the CAS, in order. If you have a mix
    *          of primitive and aggregate engines, then please create the AnalysisEngines yourself
    *          and call the other runPipeline method.
+   * @throws SAXException
+   *           if there was a XML-related problem materializing the component descriptors that are
+   *           referenced from the CPE descriptor
+   * @throws IOException
+   *           if there was a I/O-related problem materializing the component descriptors that are
+   *           referenced from the CPE descriptor
+   * @throws CpeDescriptorException
+   *           if there was a problem configuring the CPE descriptor
+   * @throws UIMAException
+   *           if there was a problem initializing or running the CPE.
    */
   public static void runPipeline(final CollectionReaderDescription readerDesc,
           final AnalysisEngineDescription... descs) throws UIMAException, SAXException,

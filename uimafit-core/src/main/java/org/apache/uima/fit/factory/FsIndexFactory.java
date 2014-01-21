@@ -46,8 +46,17 @@ import org.apache.uima.util.XMLInputSource;
 /**
  */
 public final class FsIndexFactory {
+  /**
+   * Comparator that orders FeatureStructures according to the standard order of their key features.
+   * For integer and float values, this is the standard linear order, and for strings it is
+   * lexicographic order.
+   */
   public static final int STANDARD_COMPARE = FsIndexKeyDescription.STANDARD_COMPARE;
 
+  /**
+   * Comparator that orders FeatureStructures according to the reverse order of their key features
+   * (the opposite order as that defined by STANDARD_COMPARE.
+   */
   public static final int REVERSE_STANDARD_COMPARE = FsIndexKeyDescription.STANDARD_COMPARE;
 
   private static final Object SCAN_LOCK = new Object();
@@ -59,6 +68,10 @@ public final class FsIndexFactory {
   /**
    * Create index configuration data for a given class definition using reflection and the
    * configuration parameter annotation.
+   * 
+   * @param componentClass
+   *          the class to analyze
+   * @return the index collection
    */
   public static FsIndexCollection createFsIndexCollection(Class<?> componentClass) {
     List<FsIndex> anFsIndexList = new ArrayList<FsIndex>();
@@ -120,6 +133,19 @@ public final class FsIndexFactory {
     return fsIndexCollection;
   }
 
+  /**
+   * @param label
+   *          the index label
+   * @param kind
+   *          the type of index
+   * @param typeName
+   *          the indexed feature structure type
+   * @param useTypePriorities
+   *          whether to respect type priorities
+   * @param keys
+   *          the index keys
+   * @return the index description
+   */
   public static FsIndexDescription createFsIndexDescription(String label, String kind,
           String typeName, boolean useTypePriorities, FsIndexKeyDescription... keys) {
     FsIndexDescription_impl fsIndexDescription = new FsIndexDescription_impl();
@@ -130,16 +156,35 @@ public final class FsIndexFactory {
     return fsIndexDescription;
   }
 
+  /**
+   * Create a index collection from a set of descriptions.
+   * 
+   * @param descriptions
+   *          the index descriptions
+   * @return the index collection
+   */
   public static FsIndexCollection createFsIndexCollection(FsIndexDescription... descriptions) {
     FsIndexCollection_impl fsIndexCollection = new FsIndexCollection_impl();
     fsIndexCollection.setFsIndexes(descriptions);
     return fsIndexCollection;
   }
 
+  /**
+   * @param featureName
+   *          the feature to index
+   * @return the index key description
+   */
   public static FsIndexKeyDescription createFsIndexKeyDescription(String featureName) {
     return createFsIndexKeyDescription(featureName, STANDARD_COMPARE);
   }
 
+  /**
+   * @param featureName
+   *          the feature to index
+   * @param comparator
+   *          the index comparator
+   * @return the index key description
+   */
   public static FsIndexKeyDescription createFsIndexKeyDescription(String featureName, int comparator) {
     FsIndexKeyDescription_impl key = new FsIndexKeyDescription_impl();
     key.setFeatureName(featureName);
@@ -194,11 +239,12 @@ public final class FsIndexFactory {
 
   /**
    * Creates a {@link FsIndexCollection} from all index descriptions that can be found via the
-   * pattern specified in the system property
-   * {@code org.apache.uima.fit.fsindex.import_pattern} or via the
-   * {@code META-INF/org.apache.uima.fit/fsindexes.txt} files in the classpath.
+   * pattern specified in the system property {@code org.apache.uima.fit.fsindex.import_pattern} or
+   * via the {@code META-INF/org.apache.uima.fit/fsindexes.txt} files in the classpath.
    * 
    * @return the auto-scanned indexes.
+   * @throws ResourceInitializationException
+   *           if the index collection could not be assembled
    */
   public static FsIndexCollection createFsIndexCollection() throws ResourceInitializationException {
     List<FsIndexDescription> fsIndexList = new ArrayList<FsIndexDescription>();

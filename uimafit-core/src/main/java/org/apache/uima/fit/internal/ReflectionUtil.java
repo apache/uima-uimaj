@@ -70,7 +70,11 @@ public final class ReflectionUtil {
    * 
    * @param aObject
    *          any object will do
+   * @param aName
+   *          the name of the field
    * @return the fields for the class of the object
+   * @throws NoSuchFieldException
+   *           if there is no such field
    */
   public static Field getField(final Object aObject, final String aName)
           throws NoSuchFieldException {
@@ -82,7 +86,10 @@ public final class ReflectionUtil {
    * 
    * @param aClass
    *          any class will do
+   * @param aName
+   *          the field name
    * @return the fields for the class of the object
+   * @throws NoSuchFieldException if there is no such field
    */
   public static Field getField(final Class<?> aClass, final String aName)
           throws NoSuchFieldException {
@@ -125,6 +132,12 @@ public final class ReflectionUtil {
   /**
    * Equivalent to {@link AccessibleObject#isAnnotationPresent(Class)} but handles uimaFIT legacy
    * annotations.
+   * 
+   * @param aObject
+   *          the object to analyze
+   * @param aAnnotationClass
+   *          the annotation to check for
+   * @return whether the annotation is present
    */
   public static boolean isAnnotationPresent(AccessibleObject aObject,
           Class<? extends Annotation> aAnnotationClass) {
@@ -140,6 +153,12 @@ public final class ReflectionUtil {
   /**
    * Equivalent to {@link Class#isAnnotationPresent(Class)} but handles uimaFIT legacy
    * annotations.
+   * 
+   * @param aObject
+   *          the object to analyze
+   * @param aAnnotationClass
+   *          the annotation to check for
+   * @return whether the annotation is present
    */
   public static boolean isAnnotationPresent(Class<?> aObject,
           Class<? extends Annotation> aAnnotationClass) {
@@ -155,6 +174,14 @@ public final class ReflectionUtil {
   /**
    * Equivalent to {@link AccessibleObject#getAnnotation(Class)} but handles uimaFIT legacy
    * annotations.
+   * 
+   * @param <T>
+   *          the annotation type
+   * @param aObject
+   *          the object to analyze
+   * @param aAnnotationClass
+   *          the annotation to check for
+   * @return the annotation
    */
   public static <T extends Annotation> T getAnnotation(AccessibleObject aObject,
           Class<T> aAnnotationClass) 
@@ -169,6 +196,14 @@ public final class ReflectionUtil {
   /**
    * Equivalent to {@link Class#getAnnotation(Class)} but handles uimaFIT legacy
    * annotations.
+   * 
+   * @param <T>
+   *          the annotation type
+   * @param aObject
+   *          the object to analyze
+   * @param aAnnotationClass
+   *          the annotation to check for
+   * @return the annotation
    */
   public static <T extends Annotation> T getAnnotation(Class<?> aObject,
           Class<T> aAnnotationClass) 

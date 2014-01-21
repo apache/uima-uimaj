@@ -71,10 +71,29 @@ public class CpeBuilder {
 
   private final CpeDescription cpeDesc = produceDescriptor();
 
+  /**
+   * Set the maximum number of threads the CPE may use.
+   * 
+   * @param aMaxProcessingUnitThreadCount
+   *          the maximum number of threads the CPE may use.
+   */
   public void setMaxProcessingUnitThreadCount(int aMaxProcessingUnitThreadCount) {
     maxProcessingUnitThreadCount = aMaxProcessingUnitThreadCount;
   }
 
+  /**
+   * Set the reader used by the CPE.
+   * 
+   * @param aDesc
+   *          the reader description.
+   * @throws IOException
+   *           if the descriptor cannot be written to the temporary space from where it is imported
+   *           by the CPE.
+   * @throws SAXException
+   *           if the reader descriptor cannot be serialized to XML.
+   * @throws CpeDescriptorException
+   *           if there was a problem adding the reader to the CPE.
+   */
   public void setReader(CollectionReaderDescription aDesc) throws IOException, SAXException,
           CpeDescriptorException {
     // Remove all collection readers
@@ -85,6 +104,22 @@ public class CpeBuilder {
     cpeDesc.addCollectionReader(reader);
   }
 
+  /**
+   * Set the analysis engine used by the CPE. If this is an aggregate analysis engine, it will be
+   * disassembled and each delegate becomes one CPE CAS processor.
+   * 
+   * @param aDesc
+   *          the analysis engine description.
+   * @throws IOException
+   *           if the descriptor cannot be written to the temporary space from where it is imported
+   *           by the CPE.
+   * @throws SAXException
+   *           if the analysis engine descriptor cannot be serialized to XML.
+   * @throws CpeDescriptorException
+   *           if there was a problem adding the analysis engine to the CPE.
+   * @throws InvalidXMLException
+   *           if import resolution failed
+   */
   public void setAnalysisEngine(AnalysisEngineDescription aDesc) throws IOException, SAXException,
           CpeDescriptorException, InvalidXMLException {
     // Remove all CAS processors

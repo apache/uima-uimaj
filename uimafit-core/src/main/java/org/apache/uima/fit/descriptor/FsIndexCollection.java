@@ -34,6 +34,8 @@ import org.apache.uima.fit.factory.FsIndexFactory;
 public @interface FsIndexCollection {
   /**
    * @see org.apache.uima.resource.metadata.FsIndexCollection#getFsIndexes()
+   * 
+   * @return a description of the FS Indexes that comprise this FS Index Collection
    */
   FsIndex[] fsIndexes();
 }

@@ -52,34 +52,61 @@ public @interface FsIndex {
 
   /**
    * @see FsIndexDescription#getLabel()
+   * 
+   * @return the label of this index
    */
   String label();
 
   /**
+   * The type of the index as name. As an alternative, the index can be defined using a class with
+   * {@link #type()}. One method or the other must be used to set the index type. 
+   * 
    * @see FsIndexDescription#getTypeName()
+   * 
+   * @return the type name for this index
    */
   String typeName() default NO_NAME_TYPE_SET;
 
+  /**
+   * The type of the index as class. As an alternative, the index can be defined using a type name
+   * with {@link #typeName()}. One method or the other must be used to set the index type. 
+   * 
+   * @see FsIndexDescription#getTypeName()
+   * 
+   * @return the type for this index
+   */
   Class<? extends TOP> type() default NoClassSet.class;
 
   /**
    * @see FsIndexDescription#getKind()
+   * 
+   * @return the kind of index
    */
   String kind() default KIND_BAG;
 
   /**
    * @see FsIndexDescription#getKeys()
+   * 
+   * @return the keys for this index
    */
   FsIndexKey[] keys() default {};
 
   /**
    * @see FsIndexKeyDescription#isTypePriority()
+   * 
+   * @return true if and only if this is a type priority key
    */
   boolean typePriorities() default true;
 
+  /**
+   * Indicates that no type has been set.
+   */
   public static final class NoClassSet extends TOP { /* Nothing */
   }
 
+  /**
+   * Indicated that no type name has been set.
+   */
   public static final String NO_NAME_TYPE_SET = "org.apache.uima.fit.descriptor.FsIndex.NO_NAME_TYPE_SET";
 
 }

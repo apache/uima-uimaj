@@ -25,13 +25,13 @@ import java.lang.annotation.Target;
 
 /**
  * 
- * <code><pre>
+ * <pre><code>
  * {@literal @}SofaCapability(inputSofas = { GOLD_VIEW, SYSTEM_VIEW })
- * </pre></code>
+ * </code></pre>
  * or
- * <code><pre>
+ * <pre><code>
  * {@literal @}SofaCapability(inputSofas = CAS.NAME_DEFAULT_SOFA, outputSofas = GOLD_VIEW)
- * </pre></code>
+ * </code></pre>
  * 
  * Adding this annotation to your analysis engine description makes your component "sofa aware." The
  * base CAS delivered to "sofa aware" components has no explicit view associated with it. The logic
@@ -39,30 +39,35 @@ import java.lang.annotation.Target;
  * as needed. You should therefore be aware that if you need to work with the "_InitialView" view,
  * then you must explicitly request it with a call like:
  * 
- * <code><pre>
+ * <pre><code>
  * JCas initialView = jCas.getView(CAS.NAME_DEFAULT_SOFA);
- * </pre></code>
+ * </code></pre>
  * 
  * This is because the base CAS that it passed into the process method to "sofa aware" components is
  * not the same as the "_InitialView". See how the following member variable is used to understand
  * why/how:
  * 
- * org.apache.uima.analysis_engine.impl.PrimitiveAnalysisEngine_impl. mSofaAware
- * 
+ * <pre><code>
+ * org.apache.uima.analysis_engine.impl.PrimitiveAnalysisEngine_impl.mSofaAware
+ * </code></pre>
  */
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface SofaCapability {
   /**
-   * the values should be string vales corresponding to view names such as e.g.
+   * The values should be string vales corresponding to view names such as e.g.
    * CAS.NAME_DEFAULT_SOFA that this analysis component expects to be present in the CAS.
+   * 
+   * @return the input sofas
    */
   String[] inputSofas() default NO_DEFAULT_VALUE;
 
   /**
-   * the values should be string vales corresponding to view names that this analysis component will
+   * The values should be string vales corresponding to view names that this analysis component will
    * create.
+   * 
+   * @return the output sofas
    */
   String[] outputSofas() default NO_DEFAULT_VALUE;
 
@@ -70,7 +75,5 @@ public @interface SofaCapability {
    * Provides the default value for the inputs and the outputs that tells the CapabilityFactory that
    * no value has been given to the inputs or outputs elements.
    */
-
   public static final String NO_DEFAULT_VALUE = "org.apache.uima.fit.descriptor.SofaCapability.NO_DEFAULT_VALUE";
-
 }

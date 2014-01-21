@@ -31,6 +31,11 @@ public abstract class JCasFlowController_ImplBase extends
         org.apache.uima.flow.JCasFlowController_ImplBase {
   private ExtendedLogger logger;
 
+  /**
+   * Get the logger.
+   * 
+   * @return the logger.
+   */
   public ExtendedLogger getLogger() {
     if (logger == null) {
       logger = new ExtendedLogger(getContext());

@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.CASException;
@@ -32,6 +33,7 @@ import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.fit.component.NoOpAnnotator;
 import org.apache.uima.fit.util.LifeCycleUtil;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.MetaDataObject;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
@@ -66,6 +68,10 @@ public class JCasIterator implements Iterator<JCas> {
    *          The CollectionReader for loading documents.
    * @param aEngines
    *          The AnalysisEngines for processing documents.
+   * @throws ResourceInitializationException
+   *           if a failure occurs during initialization of the components
+   * @throws CASException
+   *           if the JCas could not be initialized
    */
   public JCasIterator(final CollectionReader aReader, final AnalysisEngine... aEngines)
           throws CASException, ResourceInitializationException {
@@ -90,6 +96,10 @@ public class JCasIterator implements Iterator<JCas> {
    *          The CollectionReader for loading documents.
    * @param aTypeSystemDescription
    *          a type system description
+   * @throws ResourceInitializationException
+   *           if a failure occurs during initialization of the components
+   * @throws CASException
+   *           if the JCas could not be initialized
    */
   public JCasIterator(final CollectionReader aReader,
           final TypeSystemDescription aTypeSystemDescription) throws CASException,
@@ -160,10 +170,19 @@ public class JCasIterator implements Iterator<JCas> {
     throw new UnsupportedOperationException();
   }
 
+  /**
+   * Notify analysis engines that the collection process is complete.
+   * 
+   * @throws AnalysisEngineProcessException
+   *           if there was a problem completing the process
+   */
   public void collectionProcessComplete() throws AnalysisEngineProcessException {
     LifeCycleUtil.collectionProcessComplete(analysisEngines);
   }
 
+  /**
+   * Close and destroy all components.s
+   */
   public void destroy() {
     if (!destroyed) {
       LifeCycleUtil.close(collectionReader);
@@ -173,18 +192,31 @@ public class JCasIterator implements Iterator<JCas> {
     }
   }
 
+  /**
+   * Get whether {@link #collectionProcessComplete()} is automatically called.
+   * 
+   * @return whether {@link #collectionProcessComplete()} is automatically called.
+   */
   public boolean isSelfComplete() {
     return selfComplete;
   }
 
   /**
-   * Send a collectionProcessComplete call to analysis engines when the reader has no further CASes
-   * to produce.
+   * Send a {@link #collectionProcessComplete()} call to analysis engines when the reader has no
+   * further CASes to produce.
+   * 
+   * @param aSelfComplete
+   *          whether to enable the automatic call to {@link #collectionProcessComplete()}
    */
   public void setSelfComplete(boolean aSelfComplete) {
     selfComplete = aSelfComplete;
   }
 
+  /**
+   * Get whether {@link #destroy()} is automatically called.
+   * 
+   * @return whether {@link #destroy()} is automatically called.
+   */
   public boolean isSelfDestroy() {
     return selfDestroy;
   }
@@ -192,6 +224,9 @@ public class JCasIterator implements Iterator<JCas> {
   /**
    * Send a destroy call to analysis engines when the reader has no further CASes to produce or if
    * an error occurs.
+   * 
+   * @param aSelfDestroy
+   *          whether to enable the automatic call to {@link Resource#destroy()}
    */
   public void setSelfDestroy(boolean aSelfDestroy) {
     selfDestroy = aSelfDestroy;

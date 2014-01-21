@@ -187,6 +187,8 @@ public final class ConfigurationParameterInitializer {
    * @param map
    *          a UIMA context with configuration parameters.
    * @see #initialize(Object, UimaContext)
+   * @throws ResourceInitializationException
+   *           if a failure occurs during initialization.
    */
   public static void initialize(final Object component, final Map<String, Object> map)
           throws ResourceInitializationException {
@@ -208,6 +210,8 @@ public final class ConfigurationParameterInitializer {
    * @param spec
    *          a resource specifier.
    * @see #initialize(Object, UimaContext)
+   * @throws ResourceInitializationException
+   *           if a failure occurs during initialization.
    */
   public static void initialize(Object component, ResourceSpecifier spec)
           throws ResourceInitializationException {
@@ -222,6 +226,8 @@ public final class ConfigurationParameterInitializer {
    * @param parameters
    *          a list of parameters.
    * @see #initialize(Object, UimaContext)
+   * @throws ResourceInitializationException
+   *           if a failure occurs during initialization.
    */
   public static void initialize(Object component, Parameter... parameters)
           throws ResourceInitializationException {
@@ -240,6 +246,8 @@ public final class ConfigurationParameterInitializer {
    * @param parameters
    *          a list of parameters.
    * @see #initialize(Object, UimaContext)
+   * @throws ResourceInitializationException
+   *           if a failure occurs during initialization.
    */
   public static void initialize(Object component, NameValuePair... parameters)
           throws ResourceInitializationException {
@@ -258,6 +266,8 @@ public final class ConfigurationParameterInitializer {
    * @param dataResource
    *          a data resource with configuration meta data.
    * @see #initialize(Object, UimaContext)
+   * @throws ResourceInitializationException
+   *           if a failure occurs during initialization.
    */
   public static void initialize(Object component, DataResource dataResource)
           throws ResourceInitializationException {
