@@ -296,6 +296,9 @@ under the License.
   <section id="ugr.ovv.eclipse_setup.adding_source">
     <title>Adding the UIMA source code to the jar files</title>
     
+    <note><para>If you are running a current version of Eclipse, and have the m2e (Maven extensions for Eclipse) 
+    plugin installed, Eclipse should be able to automatically download the source for the jars, so you may not need
+    to do anything special (it does take a few seconds, and you need an internet connection).</para></note>
     <para>If you would like to be able to jump to the UIMA source code in Eclipse or to step
     through it with the debugger, you can add the UIMA source code to the jar files.  This is
     done via a shell script that comes with the source distribution.  To add the source code
@@ -318,8 +321,12 @@ under the License.
     </listitem>
     
     <listitem>
+      <para>"cd" to the root directory of the source distribution</para>
+    </listitem>
+    
+    <listitem>
     <para>
-    Execute the <command>addSourceToJars</command> script in the root directory of the 
+    Execute the <command>src\main\readme_src\addSourceToJars</command> script in the root directory of the 
     source distribution.
     </para>
     </listitem>

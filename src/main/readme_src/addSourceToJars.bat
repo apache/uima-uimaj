@@ -26,7 +26,7 @@ goto EXIT
 
 :RUN
 
-if "%JAVA_HOME%"=="" (set UIMA_JAR_CALL=jar) else (set UIMA_JAR_CALL=%JAVA_HOME%\bin\jar)
+if "%JAVA_HOME%"=="" (set UIMA_JAR_CALL=jar) else (set "UIMA_JAR_CALL=%JAVA_HOME%\bin\jar")
 @echo on
 
 cd jVinci\src\main\java
