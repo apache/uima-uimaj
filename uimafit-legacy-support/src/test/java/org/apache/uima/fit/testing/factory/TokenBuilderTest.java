@@ -45,7 +45,7 @@ import org.junit.Test;
 public class TokenBuilderTest extends ComponentTestBase {
 
   @Test
-  public void test1() throws UIMAException {
+  public void test1() {
     String text = "What if we built a rocket ship made of cheese?"
             + "We could fly it to the moon for repairs.";
     tokenBuilder
@@ -84,7 +84,7 @@ public class TokenBuilderTest extends ComponentTestBase {
   }
 
   @Test
-  public void test2() throws UIMAException {
+  public void test2() {
     String text = "What if we built a rocket ship made of cheese? \n"
             + "We could fly it to the moon for repairs.";
     tokenBuilder
@@ -116,7 +116,7 @@ public class TokenBuilderTest extends ComponentTestBase {
   }
 
   @Test
-  public void test3() throws UIMAException {
+  public void test3() {
     String text = "If you like line writer, then you should really check out line rider.";
     tokenBuilder.buildTokens(jCas, text);
 
@@ -148,7 +148,7 @@ public class TokenBuilderTest extends ComponentTestBase {
   }
 
   @Test
-  public void testBadInput() throws UIMAException {
+  public void testBadInput() {
     String text = "If you like line writer, then you should really check out line rider.";
     IllegalArgumentException iae = null;
     try {
@@ -161,7 +161,7 @@ public class TokenBuilderTest extends ComponentTestBase {
   }
 
   @Test
-  public void testStems() throws UIMAException {
+  public void testStems() {
     String text = "Me and all my friends are non-conformists.";
     tokenBuilder.buildTokens(jCas, text, "Me and all my friends are non - conformists .",
             "M A A M F A N - C .", "me and all my friend are non - conformist .");
@@ -174,7 +174,7 @@ public class TokenBuilderTest extends ComponentTestBase {
   }
 
   @Test
-  public void test4() throws UIMAException {
+  public void test4() {
     String text = "a b-c de--fg h,i,j,k";
     tokenBuilder.buildTokens(jCas, text, "a b - c d e - - f g h , i , j , k");
 

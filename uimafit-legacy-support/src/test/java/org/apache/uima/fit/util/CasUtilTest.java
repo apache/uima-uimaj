@@ -51,7 +51,7 @@ import org.junit.Test;
  */
 public class CasUtilTest extends ComponentTestBase {
   @Test
-  public void testGetType() throws UIMAException {
+  public void testGetType() {
     String text = "Rot wood cheeses dew?";
     tokenBuilder.buildTokens(jCas, text);
 
@@ -71,7 +71,7 @@ public class CasUtilTest extends ComponentTestBase {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void testGetNonExistingType() throws UIMAException {
+  public void testGetNonExistingType() {
     String text = "Rot wood cheeses dew?";
     tokenBuilder.buildTokens(jCas, text);
 
@@ -81,7 +81,7 @@ public class CasUtilTest extends ComponentTestBase {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void testGetNonAnnotationType() throws UIMAException {
+  public void testGetNonAnnotationType() {
     String text = "Rot wood cheeses dew?";
     tokenBuilder.buildTokens(jCas, text);
 
@@ -91,7 +91,7 @@ public class CasUtilTest extends ComponentTestBase {
   }
 
   @Test
-  public void testSelectByIndex() throws UIMAException {
+  public void testSelectByIndex() {
     String text = "Rot wood cheeses dew?";
     tokenBuilder.buildTokens(jCas, text);
 

@@ -301,7 +301,7 @@ public class JCasUtilTest extends ComponentTestBase {
   }
 
   @Test
-  public void testSelectByIndex() throws UIMAException {
+  public void testSelectByIndex() {
     String text = "Rot wood cheeses dew?";
     tokenBuilder.buildTokens(jCas, text);
 
@@ -380,14 +380,14 @@ public class JCasUtilTest extends ComponentTestBase {
   }
 
   @Test
-  public void testToText() throws UIMAException {
+  public void testToText() {
     String text = "Rot wood cheeses dew?";
     tokenBuilder.buildTokens(jCas, text);
     assertEquals(asList(text.split(" ")), toText(select(jCas, Token.class)));
   }
 
   @Test
-  public void testSelectSingleRelative() throws UIMAException {
+  public void testSelectSingleRelative() {
     String text = "one two three";
     tokenBuilder.buildTokens(jCas, text);
     List<Token> token = new ArrayList<Token>(select(jCas, Token.class));
@@ -400,7 +400,7 @@ public class JCasUtilTest extends ComponentTestBase {
   }
 
   @Test
-  public void testSelectFollowingPreceding() throws UIMAException {
+  public void testSelectFollowingPreceding() {
     String text = "one two three";
     tokenBuilder.buildTokens(jCas, text);
     List<Token> token = new ArrayList<Token>(select(jCas, Token.class));
@@ -529,7 +529,7 @@ public class JCasUtilTest extends ComponentTestBase {
   }
 
   @Test
-  public void testSelectIsCovered() throws UIMAException {
+  public void testSelectIsCovered() {
     String text = "Will you come home today ? \n No , tomorrow !";
     tokenBuilder.buildTokens(jCas, text);
 
@@ -571,7 +571,7 @@ public class JCasUtilTest extends ComponentTestBase {
   }
 
   @Test
-  public void testGetType() throws UIMAException {
+  public void testGetType() {
     String text = "Rot wood cheeses dew?";
     tokenBuilder.buildTokens(jCas, text);
 
@@ -583,7 +583,7 @@ public class JCasUtilTest extends ComponentTestBase {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void testGetNonAnnotationType() throws UIMAException {
+  public void testGetNonAnnotationType() {
     String text = "Rot wood cheeses dew?";
     tokenBuilder.buildTokens(jCas, text);
 

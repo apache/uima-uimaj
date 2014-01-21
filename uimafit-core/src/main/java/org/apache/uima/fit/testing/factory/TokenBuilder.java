@@ -136,9 +136,8 @@ public class TokenBuilder<TOKEN_TYPE extends Annotation, SENTENCE_TYPE extends A
    *          the JCas to add the Token annotations to
    * @param aText
    *          the text to initialize the {@link JCas} with
-   * @throws UIMAException if an annotation could not be created
    */
-  public void buildTokens(JCas aJCas, String aText) throws UIMAException {
+  public void buildTokens(JCas aJCas, String aText) {
     if (aText == null) {
       throw new IllegalArgumentException("text may not be null.");
     }
@@ -157,9 +156,8 @@ public class TokenBuilder<TOKEN_TYPE extends Annotation, SENTENCE_TYPE extends A
    *          latter may have more whitespace characters. For example, if the text is "She ran."
    *          then the tokensString might be "She ran ."
    * @see #buildTokens(JCas, String, String, String, String)
-   * @throws UIMAException if an annotation could not be created
    */
-  public void buildTokens(JCas aJCas, String aText, String aTokensString) throws UIMAException {
+  public void buildTokens(JCas aJCas, String aText, String aTokensString) {
     if (aTokensString == null) {
       throw new IllegalArgumentException("tokensString may not be null.");
     }
@@ -181,10 +179,8 @@ public class TokenBuilder<TOKEN_TYPE extends Annotation, SENTENCE_TYPE extends A
    *          the posTagsString should be a space delimited string of part-of-speech tags - one for
    *          each token
    * @see #buildTokens(JCas, String, String, String, String)
-   * @throws UIMAException if an annotation could not be created
    */
-  public void buildTokens(JCas aJCas, String aText, String aTokensString, String aPosTagsString)
-          throws UIMAException {
+  public void buildTokens(JCas aJCas, String aText, String aTokensString, String aPosTagsString) {
     buildTokens(aJCas, aText, aTokensString, aPosTagsString, null);
   }
 
@@ -206,10 +202,9 @@ public class TokenBuilder<TOKEN_TYPE extends Annotation, SENTENCE_TYPE extends A
    *          each token
    * @param aStemsString
    *          the stemsString should be a space delimited string of stems - one for each token
-   * @throws UIMAException if an annotation could not be created
    */
   public void buildTokens(JCas aJCas, String aText, String aTokensString, String aPosTagsString,
-          String aStemsString) throws UIMAException {
+          String aStemsString) {
     aJCas.setDocumentText(aText);
 
     if (aPosTagsString != null && posFeatureName == null) {

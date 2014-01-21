@@ -19,21 +19,16 @@
 package org.apache.uima.fit.factory;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
-import org.apache.uima.UIMAException;
 import org.apache.uima.fit.ComponentTestBase;
 import org.apache.uima.fit.type.Sentence;
 import org.apache.uima.fit.type.Token;
 import org.junit.Test;
 
-/**
- */
-
 public class AnnotationFactoryTest extends ComponentTestBase {
 
   @Test
-  public void testCreateAnnotation() throws UIMAException {
+  public void testCreateAnnotation() {
     Token token = AnnotationFactory.createAnnotation(jCas, 0, 10, Token.class);
     assertEquals(0, token.getBegin());
     assertEquals(10, token.getEnd());
@@ -41,14 +36,5 @@ public class AnnotationFactoryTest extends ComponentTestBase {
     Sentence sentence = AnnotationFactory.createAnnotation(jCas, 0, 10, Sentence.class);
     assertEquals(0, sentence.getBegin());
     assertEquals(10, sentence.getEnd());
-
-    UIMAException ue = null;
-    try {
-      AnnotationFactory.createAnnotation(null, 0, 10, Sentence.class);
-    } catch (UIMAException e) {
-      ue = e;
-    }
-    assertNotNull(ue);
-
   }
 }
