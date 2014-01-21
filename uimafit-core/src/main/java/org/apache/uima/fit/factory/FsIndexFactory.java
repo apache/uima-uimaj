@@ -55,9 +55,9 @@ public final class FsIndexFactory {
 
   /**
    * Comparator that orders FeatureStructures according to the reverse order of their key features
-   * (the opposite order as that defined by STANDARD_COMPARE.
+   * (the opposite order as that defined by STANDARD_COMPARE).
    */
-  public static final int REVERSE_STANDARD_COMPARE = FsIndexKeyDescription.STANDARD_COMPARE;
+  public static final int REVERSE_STANDARD_COMPARE = FsIndexKeyDescription.REVERSE_STANDARD_COMPARE;
 
   private static final Object SCAN_LOCK = new Object();
 
