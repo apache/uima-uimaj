@@ -14,7 +14,7 @@
 	<inceptionYear>2012</inceptionYear>
 	<properties>
 		<spring.version>3.1.2.RELEASE</spring.version>
-		<uima.version>2.4.2</uima.version>
+		<uima.version>2.5.0</uima.version>
 	</properties>
     <!--
       - Only required while uimaFIT depends on unreleased versions of UIMA.
