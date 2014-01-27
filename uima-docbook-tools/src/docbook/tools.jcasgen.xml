@@ -214,23 +214,23 @@ under the License.
       <configuration>
 
         <!-- REQUIRED -->
-  	    <typeSystemIncludes>
-		      <!-- one or more ant-like file patterns 
-		           identifying top level descriptors --> 
-		      <typeSystemInclude>src/main/resources/MyTs.xml</typeSystemInclude
-		    </typeSystemIncludes>
+        <typeSystemIncludes>
+          <!-- one or more ant-like file patterns 
+               identifying top level descriptors --> 
+          <typeSystemInclude>src/main/resources/MyTs.xml</typeSystemInclude
+        </typeSystemIncludes>
 
         <!-- OPTIONAL -->
         <!-- a sequence of ant-like file patterns 
              to exclude from the above include list -->
-		    <typeSystemExcludes>
-		    </typeSystemExcludes>
+        <typeSystemExcludes>
+        </typeSystemExcludes>
 
         <!-- OPTIONAL -->
         <!-- where the generated files go -->
         <!-- default value: 
              ${project.build.directory}/generated-sources/jcasgen" -->
-		    <outputDirectory> 
+        <outputDirectory> 
         </outputDirectory>
 
         <!-- true or false, default = false -->
@@ -241,7 +241,7 @@ under the License.
              available via other projects. -->
         <!-- OPTIONAL -->
         <limitToProject>false</limitToProject>
-		  </configuration>     
+      </configuration>     
     </execution>
   </executions>
 </plugin>]]></programlisting>
