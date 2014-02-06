@@ -43,6 +43,21 @@ public class IntVectorTest extends TestCase {
     iv.sortDedup();
     assertTrue(Arrays.equals(iv.toArray(), new int[] {2, 3, 4, 5, 6, 7, 8, 9}));    
 
+    // check 3 edge cases: no dups, and last 2 items are dups, and 0 length
+    iv = new IntVector();
+    iv.add(new int[] {1, 3, 5, 7});
+    iv.sortDedup();
+    assertTrue(Arrays.equals(iv.toArray(), new int[] {1, 3, 5, 7}));
+    
+    iv = new IntVector();
+    iv.add(new int[] {1,3, 5, 7, 7});
+    iv.sortDedup();
+    assertTrue(Arrays.equals(iv.toArray(), new int[] {1, 3, 5, 7}));
+    
+    iv = new IntVector();
+    iv.sortDedup();
+    assertTrue(Arrays.equals(iv.toArray(), new int[] {}));
+    
   }
   
   // verify that several CASes in a pool in different views share the same type system
