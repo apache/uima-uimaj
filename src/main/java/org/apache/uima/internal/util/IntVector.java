@@ -316,6 +316,9 @@ public class IntVector implements Serializable {
    * @return an updated value for this vector, with the values sorted and duplicates removed
    */
   public IntVector sortDedup() {
+    if (pos == 0) {
+      return this;  // handle empty edge case https://issues.apache.org/jira/browse/UIMA-3603
+    }
     Arrays.sort(array, 0, pos);
     int prev = array[0];
     int cpyfromIndex = 1;
@@ -331,7 +334,9 @@ public class IntVector implements Serializable {
     }
 
     // copyfromIndex == 1 past end or the index of first duplicate
-    cpytoIndex = cpyfromIndex ++;  
+    cpytoIndex = cpyfromIndex ++;
+    // now cpytoIndex = 1 past end or index of 1st duplicate,
+    //     cpyfromIndex is one beyond that (next one to check)
     
     for (; cpyfromIndex < pos; ) {
       final int v = array[cpyfromIndex++];
