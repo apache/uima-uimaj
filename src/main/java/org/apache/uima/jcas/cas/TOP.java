@@ -102,7 +102,7 @@ public class TOP extends FeatureStructureImpl {
           new String[] { this.getClass().getName() });
     }
 		this.addr = jcasType.ll_cas.ll_createFS(jcasType.casTypeCode);
-		jcas.putJfsFromCaddr(addr, this);
+		jcas.putJfsFromCaddrNew(addr, this);
 		
 		if (casImpl.isSubtypeOfAnnotationBaseType(jcasType.casTypeCode)) {
       casImpl.setSofaFeat(addr, casImpl.getSofaRef());
