@@ -1032,6 +1032,15 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * @see org.apache.uima.jcas.JCas#putJfsFromCaddr(int, org.apache.uima.cas.FeatureStructure)
    */
   public void putJfsFromCaddr(int casAddr, FeatureStructure fs) {
+    sharedView.cAddr2Jfs.putAfterFindingEmptyCell((FeatureStructureImpl) fs);
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.jcas.JCas#putJfsFromCaddr(int, org.apache.uima.cas.FeatureStructure)
+   */
+  public void putJfsFromCaddrNew(int casAddr, FeatureStructure fs) {
     sharedView.cAddr2Jfs.put((FeatureStructureImpl) fs);
   }
 
