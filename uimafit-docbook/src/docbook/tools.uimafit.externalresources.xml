@@ -74,6 +74,12 @@ AnalysisEngineDescription tokenizer = createEngineDescription(
 createDependencyAndBind(tokenizer, UimaUtil.MODEL_PARAMETER,
   TokenizerModelResourceImpl.class,
   "http://opennlp.sourceforge.net/models-1.5/en-token.bin");</programlisting>
+      <note>
+        <para>We recommend declaring parameter constants in the classes that use them, e.g. here
+        in  <classname>Tokenizer</classname>. This way, the parameters for a class can be found
+        easily. However, OpenNLP declares parameters centrally in <classname>UimaUtil</classname>.
+        Thus, the example above is correct, although unconvential.</para>
+      </note>
     </section>
     <section>
       <title>uimaFIT-aware components</title>
