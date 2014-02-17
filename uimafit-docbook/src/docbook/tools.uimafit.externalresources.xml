@@ -80,6 +80,18 @@ createDependencyAndBind(tokenizer, UimaUtil.MODEL_PARAMETER,
         easily. However, OpenNLP declares parameters centrally in <classname>UimaUtil</classname>.
         Thus, the example above is correct, although unconvential.</para>
       </note>
+      <note>
+        <para>Note that uimaFIT is unable to perform type-coercion on parameters if a descriptor
+          is created from a class that does not contain <classname>@ConfigurationParameter</classname>
+          annotations, such as the OpenNLP <classname>Tokenizer</classname>. Such a descriptor does
+          not contain any parameter declarations! However, it is
+          still possible to configure such a component using uimaFIT by passing exactly the expected
+          types as parameter values. Thus, we need use the <methodname>getName()</methodname> method 
+          to get the class name as a string, instead of simply passing the class itself. Also, setting
+          multi-valued parameter from a list or single value does not work here. Multi-values parameters
+          must be passed as an array of the required type. Only the default UIMA types are possible:
+          <type>String</type>, <type>boolean</type>, <type>int</type>, and <type>float</type>.</para>
+      </note>
     </section>
     <section>
       <title>uimaFIT-aware components</title>
