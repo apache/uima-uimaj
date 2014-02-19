@@ -19,9 +19,7 @@
 
 package org.apache.uima.analysis_engine.impl;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.uima.cas.TypeSystem;
 
@@ -30,37 +28,30 @@ import org.apache.uima.cas.TypeSystem;
  *   types &amp; features to the corresponding Full Feature name
  * Used to avoid creating new full feature names when compiling
  *   result feature specs.
- * Indexable for features via a 2 step index: typeName (weak) and shortFeatName
+ * Indexable for features via a 2 step index: typeName and shortFeatName
+ * 
+ * NOTE: this static table ends up holding on to string representations of all types,
+ * all features, and all valid full feature names; there's no "cleanup".
  *
  */
 public class RsFullFeatNames {
-  
-  private static class TypeFeats {
-    private Map<String, String> short2Full = null;  // null till used 
-  }
-  
-  private static final Map<String, TypeFeats> typeName2TypeFeats = new WeakHashMap<String, TypeFeats>(); 
-  
+    
+  private static final ConcurrentHashMap<String, ConcurrentHashMap<String, String>> typeName2TypeFeats = 
+      new ConcurrentHashMap<String, ConcurrentHashMap<String, String>>();  
   
   public static String getFullFeatName(String typeName, String shortFeatName) {
-    synchronized (typeName2TypeFeats) {
-      TypeFeats tf = typeName2TypeFeats.get(typeName);
-      if (null == tf) {
-        tf = new TypeFeats();
-        typeName2TypeFeats.put(typeName, tf);
-      }
-      if (null == tf.short2Full) {
-        tf.short2Full = new HashMap<String, String>(3);
-      } else {
-        String s = tf.short2Full.get(shortFeatName);
-        if (null != s) {
-          return s;
-        }
-      }
-      String fullFeatName = makeFullFeatName(typeName, shortFeatName);
-      tf.short2Full.put(shortFeatName, fullFeatName);
-      return fullFeatName;
-    } 
+    
+    ConcurrentHashMap<String, String> tf = typeName2TypeFeats.get(typeName), tfOther;
+    if (null == tf) {
+      tfOther = typeName2TypeFeats.putIfAbsent(typeName, tf = new ConcurrentHashMap<String, String>());
+      tf = (tfOther != null) ? tfOther : tf; 
+    }
+    String s = tf.get(shortFeatName), otherS;
+    if (null == s) {
+      otherS = tf.putIfAbsent(shortFeatName, s = makeFullFeatName(typeName, shortFeatName));
+      s = (otherS != null) ? otherS : s;
+    }
+    return s;
   }
   
   private static String makeFullFeatName(String typeName, String shortFeatName) {
