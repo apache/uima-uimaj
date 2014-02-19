@@ -18,8 +18,8 @@
  */
 package org.apache.uima.analysis_engine.impl;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.apache.uima.cas.text.Language;
 
@@ -31,7 +31,7 @@ public class RsLang {
  /**
    * global set for canonical language strings
    */
-  private static final Map<String, String> canonicalLanguageStrings = new HashMap<String, String>();
+  private static final ConcurrentMap<String, String> canonicalLanguageStrings = new ConcurrentHashMap<String, String>();
  
   /**
    * 
@@ -43,15 +43,15 @@ public class RsLang {
     if (language == null || language.equals(Language.UNSPECIFIED_LANGUAGE)) {  // represents x-unspecified
       return Language.UNSPECIFIED_LANGUAGE;
     }
-    synchronized(canonicalLanguageStrings) {
-      String cl = canonicalLanguageStrings.get(language);
-      if (cl == null) {
-        // make new string based on trimmed chars if needed, in case holding on to big string
-        language = new String(language);
-        canonicalLanguageStrings.put(language, language);
-        return language;
-      }
-      return cl;
+    String cl = canonicalLanguageStrings.get(language), clOther;
+    if (cl == null) {
+      // make new string based on trimmed chars if needed, in case holding on to big string
+      // This strange construct is intended to drop references to big char arrays  
+      //   where only a part the big char arrays constitute this string.
+      language = new StringBuilder(language.length()).append(language).toString();
+      clOther = canonicalLanguageStrings.putIfAbsent(language, language);
+      cl = (clOther != null) ? clOther : language;
     }
+    return cl;
   }
 }
