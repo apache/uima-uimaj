@@ -20,6 +20,8 @@
 package org.apache.uima.internal.util;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -37,10 +39,20 @@ import java.util.StringTokenizer;
  */
 public class UIMAClassLoader extends URLClassLoader {
   
-  private final static boolean SUPPORTS_PARALLEL_LOADING = Float.parseFloat(System.getProperty("java.version").substring(0,3)) >= 1.7;
+  //public so other users can use this
+  public final static boolean SUPPORTS_PARALLEL_LOADING = Float.parseFloat(System.getProperty("java.version").substring(0,3)) >= 1.7;
   static {
     if (SUPPORTS_PARALLEL_LOADING) {
-      ClassLoader.registerAsParallelCapable();
+      try {
+        Method m = ClassLoader.class.getDeclaredMethod("registerAsParallelCapable");
+        m.setAccessible(true);
+        m.invoke(null);
+      } catch (NoSuchMethodException e) {
+      } catch (SecurityException e) {
+      } catch (IllegalAccessException e) {
+      } catch (IllegalArgumentException e) {
+      } catch (InvocationTargetException e) {
+      }
     }
   }
   /**
@@ -173,4 +185,5 @@ public class UIMAClassLoader extends URLClassLoader {
     }
     return c;    
   }
+  
 }
