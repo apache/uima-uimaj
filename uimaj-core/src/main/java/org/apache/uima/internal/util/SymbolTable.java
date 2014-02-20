@@ -23,8 +23,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Vector;
 
 /**
  * The SymbolTable class provides a generic symbol table. A symbol table is a bijective mapping
@@ -41,10 +41,10 @@ public class SymbolTable {
   // The actual starting point
   private int start;
 
-  private HashMap<String, Integer> hashtable; // String -> Integer
+  private HashMap<String, Integer> symbol2intMap; // String -> Integer
 
-  private Vector<String> symbols; // Vector<String>
-
+  private ArrayList<String> int2symbolMap; // switch from Vector to avoid sync contention 
+  
   /**
    * Use this constructor if you need your symbol numbering to start at a different point than 0.
    * 
@@ -53,8 +53,8 @@ public class SymbolTable {
    *          larger code points.
    */
   public SymbolTable(int start) {
-    this.hashtable = new HashMap<String, Integer>();
-    this.symbols = new Vector<String>();
+    this.symbol2intMap = new HashMap<String, Integer>();
+    this.int2symbolMap = new ArrayList<String>();
     this.start = start;
   }
 
@@ -97,10 +97,11 @@ public class SymbolTable {
    * @return A copy of <code>this</code>.
    */
   public SymbolTable copy() {
+    // not efficient, but no internal callers Feb 2914 scan
     SymbolTable copy = new SymbolTable(this.start);
-    int max = this.symbols.size();
+    int max = this.int2symbolMap.size();
     for (int i = 0; i < max; i++) {
-      copy.set((String) this.symbols.get(i));
+      copy.set((String) this.int2symbolMap.get(i));
     }
     return copy;
   }
@@ -126,18 +127,18 @@ public class SymbolTable {
    * @return the symbol's number.
    */
   public int set(String symbol) {
-    if (this.hashtable.containsKey(symbol)) {
-      return ((Integer) this.hashtable.get(symbol)).intValue();
+    if (this.symbol2intMap.containsKey(symbol)) {
+      return ((Integer) this.symbol2intMap.get(symbol)).intValue();
     }
     int rel;
     int abs;
     synchronized (this) { // synchronize write access to internal data
       // structures
-      abs = this.hashtable.size();
+      abs = this.symbol2intMap.size();
       rel = abs2rel(abs);
       // System.out.println("Adding symbol " + symbol + " at pos: " + i);
-      this.hashtable.put(symbol, Integer.valueOf(rel));
-      this.symbols.insertElementAt(symbol, abs);
+      this.symbol2intMap.put(symbol, Integer.valueOf(rel));
+      int2symbolMap.add(symbol);
     }
     return rel;
   }
@@ -151,10 +152,8 @@ public class SymbolTable {
    *         (where <code>start</code> is the code point of the first symbol).
    */
   public int get(String symbol) {
-    if (this.hashtable.containsKey(symbol)) {
-      return (this.hashtable.get(symbol)).intValue();
-    }
-    return (this.start - 1);
+    Integer i = symbol2intMap.get(symbol);
+    return (i == null) ? start - 1 : i;
   }
 
   /**
@@ -166,12 +165,11 @@ public class SymbolTable {
    */
   public String getSymbol(int i) {
     int abs = rel2abs(i);
-    if (abs < 0 || abs >= this.symbols.size()) {
+    if (abs < 0 || abs >= this.int2symbolMap.size()) {
       // System.out.println("Out of bounds error in SymbolTable object");
       return null;
     }
-    return (String) this.symbols.get(abs);
-
+    return int2symbolMap.get(abs);
   }
 
   /**
@@ -180,7 +178,7 @@ public class SymbolTable {
    * @return The number of symbols in the table.
    */
   public int size() {
-    return this.symbols.size();
+    return this.int2symbolMap.size();
   }
 
   /**
