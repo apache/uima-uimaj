@@ -29,6 +29,10 @@ import org.apache.uima.internal.util.IntComparator;
 import org.apache.uima.internal.util.IntPointerIterator;
 import org.apache.uima.internal.util.IntVector;
 
+/**
+ * Used for sorted indexes only
+ * @param <T> -
+ */
 public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T> {
 
   private class IntVectorIterator implements ComparableIntPointerIterator, LowLevelIterator {
@@ -216,9 +220,8 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
   // return new IntVectorIterator();
   // }
 
-  private final int find(int ele) {
-    // return this.index.indexOf(ele);
-    return binarySearch(this.index.getArray(), ele, 0, this.index.size());
+  private final int find(int fsRef) {
+    return binarySearch(this.index.getArray(), fsRef, 0, this.index.size());
   }
 
   // private final int find(int ele)
@@ -251,6 +254,7 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
 
   // Do binary search on index.
   // return negative number of insertion point if not found
+  // return index of an arbitrary FS that matches on the compare function
   private final int binarySearch(int[] array, int ele, int start, int end) {
     --end; // Make end a legal value.
     int i; // Current position
@@ -276,6 +280,38 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
     }
     // This means that the input span is empty.
     return (-start) - 1;
+  }
+  
+  // do a search of equal-comparing FSs to find one (of among several possible) where the 
+  // FS address is == to fsRef
+  // Must be called with fsRef pointing to an element which compares equal
+  // returns the index to (one of the possibly many) entry which references
+  //   the same address as fsRef, or
+  //   -1 if not found
+  private final int refineToExactFsSearch(int fsRef, int startingPos) {
+    final int[] array = this.index.getArray();
+    // search down and up for == fsRef, while key values ==
+    for (int movingPos = startingPos; movingPos >= 0; movingPos --) {
+      final int v = array[movingPos];
+      if (v == fsRef) {
+        return movingPos;
+      }
+      if (compare(v, fsRef) != 0) {
+        break;  // not found
+      }
+    }
+    // search up
+    final int lenArray = this.index.size();
+    for (int movingPos = startingPos + 1; movingPos < lenArray; movingPos ++) {
+      final int v = array[movingPos];
+      if (v == fsRef) {
+        return movingPos;
+      }
+      if (compare(v, fsRef) != 0) {
+       break;  // not found
+      }
+    }
+    return -1;
   }
 
   public ComparableIntPointerIterator pointerIterator(IntComparator comp,
@@ -327,11 +363,14 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
   public FeatureStructure find(FeatureStructure fs) {
     // Cast to implementation.
     FeatureStructureImpl fsi = (FeatureStructureImpl) fs;
+    final int fsRef = fsi.getAddress();
     // Use internal find method.
-    final int resultAddr = find(fsi.getAddress());
+    final int resultAddr = find(fsRef);
     // If found, create new FS to return.
     if (resultAddr >= 0) {
-      return fsi.getCASImpl().createFS(this.index.get(resultAddr));
+      return (fsRef == resultAddr) ? 
+          fs : 
+          fsi.getCASImpl().createFS(this.index.get(resultAddr));
     }
     // Not found.
     return null;
@@ -350,61 +389,33 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
   public void deleteFS(FeatureStructure fs) {
     final int addr = ((FeatureStructureImpl) fs).getAddress();
     remove(addr);
-//    final int pos = this.index.indexOf(addr);
-//    if (pos >= 0) {
-//      this.index.remove(pos);
-//    }
   }
-
   
   /*
-   * Some day we may want to remove all occurrances of this feature structure, not just the
+   * Some day we may want to remove all occurrences of this feature structure, not just the
    * first one we come to (in the case where the exact identical FS has been added to the 
    * index multiple times).  The issues around this are:
    *   multiple adds are lost on serialization/ deserialization
    *   it take time to remove all instances - especially from bag indexes
    */
   
-  /**
+  /*
    * This code is written to remove (if it exists)
    * the exact FS, not just one which matches in the sort comparator.
    * 
-   *   
+   * It only removes one of the exact FSs, if the same FS was indexed more than once.
+   * 
+   * No error is reported if the item is not in the index  
    */
   public void remove(int fsRef) {
-    final int pos = find(fsRef);  // finds "same" element per compare key
+    int pos = find(fsRef);  // finds "same" element per compare key
     if (pos < 0) {
       return;  // not in index
     }
-    if (this.index.get(pos) == fsRef) {
+    pos = refineToExactFsSearch(fsRef, pos);
+    if (pos >= 0) {
       this.index.remove(pos);
-      return;
     }
-    // search down and up for == fsRef, while key values ==
-    for (int movingPos = pos - 1; movingPos >= 0; movingPos --) { 
-      if (compare(this.index.get(movingPos), fsRef) != 0) {
-        break;  // not found
-      }
-      if (this.index.get(movingPos) == fsRef) {
-        this.index.remove(movingPos);
-        return;
-      }
-    }
-    // search up
-    for (int movingPos = pos + 1; movingPos < this.index.size(); movingPos ++) {
-      if (compare(this.index.get(movingPos), fsRef) != 0) {
-        return;  // not found
-      }
-      if (this.index.get(movingPos) == fsRef) {
-        this.index.remove(movingPos);
-        return;
-      }
-    }
-    
-//    final int pos = this.index.indexOf(fsRef);
-//    if (pos >= 0) {
-//      this.index.remove(pos);
-//    }
   }
 
 }
