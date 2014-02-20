@@ -36,6 +36,13 @@ import java.util.StringTokenizer;
  * 
  */
 public class UIMAClassLoader extends URLClassLoader {
+  
+  private final static boolean SUPPORTS_PARALLEL_LOADING = Float.parseFloat(System.getProperty("java.version").substring(0,3)) >= 1.7;
+  static {
+    if (SUPPORTS_PARALLEL_LOADING) {
+      ClassLoader.registerAsParallelCapable();
+    }
+  }
   /**
    * Transforms the string classpath to a URL array based classpath.
    * 
@@ -138,8 +145,18 @@ public class UIMAClassLoader extends URLClassLoader {
   /*
    * Try to load the class itself before delegate the class loading to its parent
    */
-  protected synchronized Class<?> loadClass(String name, boolean resolve)
+  protected Class<?> loadClass(String name, boolean resolve)
           throws ClassNotFoundException {
+    if (SUPPORTS_PARALLEL_LOADING) {
+      return loadClassImpl(name, resolve);
+    } else {
+      synchronized (this) {
+        return loadClassImpl(name, resolve);
+      }
+    }
+  }
+
+  private Class<?> loadClassImpl(String name, boolean resolve) throws ClassNotFoundException {
     // First, check if the class has already been loaded
     Class<?> c = findLoadedClass(name);
     if (c == null) {
@@ -154,7 +171,6 @@ public class UIMAClassLoader extends URLClassLoader {
     if (resolve) {
       resolveClass(c);
     }
-    return c;
+    return c;    
   }
-
 }
