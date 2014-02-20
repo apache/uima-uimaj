@@ -33,12 +33,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.UIMA_IllegalArgumentException;
@@ -103,8 +103,9 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
   private static final Attributes EMPTY_ATTRIBUTES = new AttributesImpl();
 
   // Class level cache (static) for introspection - 30x speedup in CDE for large descriptor
-  private static transient Map<Class<? extends MetaDataObject_impl>, PropertyDescriptor[]> mPropertyDescriptorsMap = 
-    Collections.synchronizedMap(new IdentityHashMap<Class<? extends MetaDataObject_impl>, PropertyDescriptor[]>());  
+  private static transient ConcurrentMap<Class<? extends MetaDataObject_impl>, PropertyDescriptor[]> mPropertyDescriptorsMap =
+      new ConcurrentHashMap<Class<? extends MetaDataObject_impl>, PropertyDescriptor[]>();
+//    Collections.synchronizedMap(new IdentityHashMap<Class<? extends MetaDataObject_impl>, PropertyDescriptor[]>());  
 
   private transient URL mSourceUrl;
   
@@ -1368,12 +1369,12 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * @throws IntrospectionException if introspection fails
    */
   protected PropertyDescriptor[] getPropertyDescriptors() throws IntrospectionException { 
-    PropertyDescriptor[] pd = mPropertyDescriptorsMap.get(this.getClass());
+    PropertyDescriptor[] pd = mPropertyDescriptorsMap.get(this.getClass()), pdOther = null;
     if (null == pd) {
       pd = Introspector.getBeanInfo(this.getClass(), Introspector.IGNORE_ALL_BEANINFO).getPropertyDescriptors();
-      mPropertyDescriptorsMap.put(this.getClass(), pd);
+      pdOther = mPropertyDescriptorsMap.putIfAbsent(this.getClass(), pd);
     }
-    return pd;
+    return (pdOther != null) ? pdOther : pd;
   }
 
   
