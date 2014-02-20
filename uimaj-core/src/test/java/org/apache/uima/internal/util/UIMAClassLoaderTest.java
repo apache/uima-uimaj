@@ -20,6 +20,7 @@
 package org.apache.uima.internal.util;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import java.net.URL;
 
 import junit.framework.Assert;
@@ -60,8 +61,21 @@ public class UIMAClassLoaderTest extends TestCase {
     Assert.assertNull(rsrcMgr.getExtensionClassLoader());
 
     rsrcMgr.setExtensionClassPath("../this/is/a/simple/test.jar", false);
-
-    Assert.assertNotNull(rsrcMgr.getExtensionClassLoader());
+    ClassLoader cl = rsrcMgr.getExtensionClassLoader();
+    Assert.assertNotNull(cl);
+    if (UIMAClassLoader.SUPPORTS_PARALLEL_LOADING) {
+      //assertTrue(cl != cl.getClassLoadingLock("Aclass"));
+      Class classOfLoader = cl.getClass().getSuperclass();
+      while (classOfLoader.getName() != "java.lang.ClassLoader") {
+        classOfLoader = classOfLoader.getSuperclass(); 
+      }
+      Method m = classOfLoader.getDeclaredMethod("getClassLoadingLock", String.class);
+      m.setAccessible(true);
+      Object o = m.invoke(cl, "someString");
+      Object o2 = m.invoke(cl, "s2");
+      assertTrue(o != o2);
+      assertTrue(cl != o);      
+    }
   }
 
   public void testAdvancedRsrcMgrCLassLoaderCreation() throws Exception {
