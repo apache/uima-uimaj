@@ -1127,7 +1127,7 @@ public abstract class UIMAFramework {
    * 
    * @return the <code>UIMAFramework</code> instance currently in use
    */
-  protected static synchronized UIMAFramework getInstance() {
+  protected static UIMAFramework getInstance() {
     return mInstance;
   }
 
