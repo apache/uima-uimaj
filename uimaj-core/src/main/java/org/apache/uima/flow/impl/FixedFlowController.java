@@ -82,7 +82,12 @@ public class FixedFlowController extends CasFlowController_ImplBase {
     mSequence = new ArrayList<String>();
     if (flowConstraints instanceof FixedFlow) {
       String[] sequence = ((FixedFlow) flowConstraints).getFixedFlow();
-      mSequence.addAll(Arrays.asList(sequence));
+      for( String key : sequence ) {
+    	  if( !aContext.getAnalysisEngineMetaDataMap().containsKey(key) )
+    		  throw new ResourceInitializationException(ResourceInitializationException.FLOW_CONTROLLER_MISSING_DELEGATE,
+                  new Object[]{this.getClass().getName(), key, aContext.getAggregateMetadata().getSourceUrlString()});
+    	  mSequence.add(key);
+      }
     } else {
       throw new ResourceInitializationException(ResourceInitializationException.FLOW_CONTROLLER_REQUIRES_FLOW_CONSTRAINTS,
               new Object[]{this.getClass().getName(), "fixedFlow", aContext.getAggregateMetadata().getSourceUrlString()});
