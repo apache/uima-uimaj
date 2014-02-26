@@ -469,6 +469,12 @@ public class ResourceInitializationException extends UIMAException {
   public static final String FLOW_CONTROLLER_REQUIRES_FLOW_CONSTRAINTS = "flow_controller_requires_flow_constraints";
 
   /**
+   * Message key for a standard UIMA exception message: The aggregate "{0}" references a non-existent delegate
+   * "{1}" in it's Flow Controller's flow constraints
+   */
+  public static final String FLOW_CONTROLLER_MISSING_DELEGATE = "flow_controller_missing_delegate";
+
+  /**
    * Message key for a standard UIMA exception message: 
    * Unexpected Exception thrown when initializing Custom Resource "{0}" from descriptor "{1}". 
    */
