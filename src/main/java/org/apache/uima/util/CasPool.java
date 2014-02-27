@@ -215,6 +215,7 @@ public class CasPool {
    */
   public synchronized void releaseCas(CAS aCas) {
     // note the pool stores references to the InitialView of each CAS
+    aCas.setCurrentComponentInfo(null);  // https://issues.apache.org/jira/browse/UIMA-3655
     CAS cas = aCas.getView(CAS.NAME_DEFAULT_SOFA);
 
     // make sure this CAS actually belongs to this pool and is checked out
