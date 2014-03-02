@@ -400,6 +400,42 @@ public class JCasUtilTest extends ComponentTestBase {
   }
 
   @Test
+  public void testSingleRelativePreceedingDifferentType() {
+    String text = "one two three";
+    tokenBuilder.buildTokens(jCas, text);
+
+    List<Token> tokens = new ArrayList<Token>(select(jCas, Token.class));
+    
+    for (Token token : tokens) {
+      new AnalyzedText(jCas, token.getBegin(), token.getEnd()).addToIndexes();
+    }    
+    
+    Token lastToken = tokens.get(tokens.size()-1);
+    Token preLastToken = tokens.get(tokens.size()-2);
+    AnalyzedText a = selectSingleRelative(jCas, AnalyzedText.class, lastToken, -1);
+    assertEquals(preLastToken.getBegin(), a.getBegin());
+    assertEquals(preLastToken.getEnd(), a.getEnd());
+  }
+
+  @Test
+  public void testSingleRelativeFollowingDifferentType() {
+    String text = "one two three";
+    tokenBuilder.buildTokens(jCas, text);
+
+    List<Token> tokens = new ArrayList<Token>(select(jCas, Token.class));
+    
+    for (Token token : tokens) {
+      new AnalyzedText(jCas, token.getBegin(), token.getEnd()).addToIndexes();
+    }    
+    
+    Token firstToken = tokens.get(0);
+    Token secondToken = tokens.get(1);
+    AnalyzedText a = selectSingleRelative(jCas, AnalyzedText.class, firstToken, 1);
+    assertEquals(secondToken.getBegin(), a.getBegin());
+    assertEquals(secondToken.getEnd(), a.getEnd());
+  }
+
+  @Test
   public void testSelectFollowingPreceding() {
     String text = "one two three";
     tokenBuilder.buildTokens(jCas, text);
@@ -409,6 +445,42 @@ public class JCasUtilTest extends ComponentTestBase {
             .get(0).getCoveredText());
     assertEquals(token.get(2).getCoveredText(), selectFollowing(jCas, Token.class, token.get(1), 1)
             .get(0).getCoveredText());
+  }
+
+  @Test
+  public void testPrecedingDifferentType() {
+    String text = "one two three";
+    tokenBuilder.buildTokens(jCas, text);
+
+    List<Token> tokens = new ArrayList<Token>(select(jCas, Token.class));
+    
+    for (Token token : tokens) {
+      new AnalyzedText(jCas, token.getBegin(), token.getEnd()).addToIndexes();
+    }    
+    
+    Token lastToken = tokens.get(tokens.size()-1);
+    Token preLastToken = tokens.get(tokens.size()-2);
+    AnalyzedText a = selectPreceding(jCas, AnalyzedText.class, lastToken, 1).get(0);
+    assertEquals(preLastToken.getBegin(), a.getBegin());
+    assertEquals(preLastToken.getEnd(), a.getEnd());
+  }
+
+  @Test
+  public void testFollowingDifferentType() {
+    String text = "one two three";
+    tokenBuilder.buildTokens(jCas, text);
+
+    List<Token> tokens = new ArrayList<Token>(select(jCas, Token.class));
+    
+    for (Token token : tokens) {
+      new AnalyzedText(jCas, token.getBegin(), token.getEnd()).addToIndexes();
+    }    
+    
+    Token firstToken = tokens.get(0);
+    Token secondToken = tokens.get(1);
+    AnalyzedText a = selectFollowing(jCas, AnalyzedText.class, firstToken, 1).get(0);
+    assertEquals(secondToken.getBegin(), a.getBegin());
+    assertEquals(secondToken.getEnd(), a.getEnd());
   }
 
   @Test

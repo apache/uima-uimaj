@@ -802,6 +802,18 @@ public final class CasUtil {
     itr.moveTo(annotation);
 
     if (index < 0) {
+      // If the insertion point is beyond the index, move back to the last.
+      if (!itr.isValid()) {
+        itr.moveToLast();
+        if (!itr.isValid()) {
+          throw new IndexOutOfBoundsException("Reached end of index while seeking.");
+        }
+      }
+
+      // No need to do additional seeks here (as done in selectCovered) because the current method
+      // does not have to worry about type priorities - it never returns annotations that have
+      // the same offset as the reference annotation.
+
       // make sure we're past the beginning of the reference annotation
       while (itr.isValid() && itr.get().getEnd() > annotation.getBegin()) {
         itr.moveToPrevious();
@@ -817,6 +829,16 @@ public final class CasUtil {
         return itr.get();
       }
     } else if (index > 0) {
+      // When seeking forward, there is no need to check if the insertion point is beyond the
+      // index. If it was, there would be nothing beyond it that could be found and returned.
+      // The moveTo operation also does not yield an iterator being invalid because it points
+      // *before the first* index entry, at max it points *to the first* index entry, so this
+      // case also does not need to be handled.
+      
+      // No need to do additional seeks here (as done in selectCovered) because the current method
+      // does not have to worry about type priorities - it never returns annotations that have
+      // the same offset as the reference annotation.
+      
       // make sure we're past the end of the reference annotation
       while (itr.isValid() && itr.get().getBegin() < annotation.getEnd()) {
         itr.moveToNext();
@@ -856,18 +878,31 @@ public final class CasUtil {
       throw new IllegalArgumentException("Type [" + type.getName() + "] is not an annotation type");
     }
 
-    // move to first previous annotation
+    List<AnnotationFS> precedingAnnotations = new LinkedList<AnnotationFS>();
+
+    // Seek annotation in index
     FSIterator<AnnotationFS> itr = cas.getAnnotationIndex(type).iterator();
     itr.moveTo(annotation);
+    
+    // If the insertion point is beyond the index, move back to the last.
+    if (!itr.isValid()) {
+      itr.moveToLast();
+      if (!itr.isValid()) {
+        return precedingAnnotations;
+      }
+    }
 
+    // No need to do additional seeks here (as done in selectCovered) because the current method
+    // does not have to worry about type priorities - it never returns annotations that have
+    // the same offset as the reference annotation.
+    
     // make sure we're past the beginning of the reference annotation
     while (itr.isValid() && itr.get().getEnd() > annotation.getBegin()) {
       itr.moveToPrevious();
     }
 
     // add annotations from the iterator into the result list
-    List<AnnotationFS> precedingAnnotations = new LinkedList<AnnotationFS>();
-    for (int i = 0; i < count && itr.isValid(); ++i, itr.moveToPrevious()) {
+    for (int i = 0; i < count && itr.isValid(); i++, itr.moveToPrevious()) {
       precedingAnnotations.add(itr.get());
     }
 
@@ -896,9 +931,19 @@ public final class CasUtil {
       throw new IllegalArgumentException("Type [" + type.getName() + "] is not an annotation type");
     }
 
-    // move to first previous annotation
+    // Seek annotation in index
     FSIterator<AnnotationFS> itr = cas.getAnnotationIndex(type).iterator();
     itr.moveTo(annotation);
+
+    // When seeking forward, there is no need to check if the insertion point is beyond the
+    // index. If it was, there would be nothing beyond it that could be found and returned.
+    // The moveTo operation also does not yield an iterator being invalid because it points
+    // *before the first* index entry, at max it points *to the first* index entry, so this
+    // case also does not need to be handled.
+
+    // No need to do additional seeks here (as done in selectCovered) because the current method
+    // does not have to worry about type priorities - it never returns annotations that have
+    // the same offset as the reference annotation.
 
     // make sure we're past the end of the reference annotation
     while (itr.isValid() && itr.get().getBegin() < annotation.getEnd()) {
@@ -907,7 +952,7 @@ public final class CasUtil {
 
     // add annotations from the iterator into the result list
     List<AnnotationFS> followingAnnotations = new LinkedList<AnnotationFS>();
-    for (int i = 0; i < count && itr.isValid(); ++i, itr.moveToNext()) {
+    for (int i = 0; i < count && itr.isValid(); i++, itr.moveToNext()) {
       followingAnnotations.add(itr.get());
     }
     return followingAnnotations;
