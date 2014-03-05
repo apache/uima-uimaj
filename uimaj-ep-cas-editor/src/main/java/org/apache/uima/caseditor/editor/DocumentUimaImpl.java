@@ -22,6 +22,7 @@ package org.apache.uima.caseditor.editor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.util.Collection;
 import java.util.LinkedList;
 
@@ -45,6 +46,7 @@ import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.caseditor.CasEditorPlugin;
 import org.apache.uima.caseditor.editor.util.StrictTypeConstraint;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
@@ -57,6 +59,7 @@ import org.apache.uima.util.XMLSerializer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.xml.sax.SAXException;
@@ -363,14 +366,19 @@ public class DocumentUimaImpl extends AbstractDocument {
     try {
       typeSystemDesciptor = (TypeSystemDescription) xmlParser.parse(xmlTypeSystemSource);
 
-      typeSystemDesciptor.resolveImports();
+      ResourceManager resourceManager = UIMAFramework.newDefaultResourceManager();
+      String dataPath = typeSystemFile.getProject().getPersistentProperty((new QualifiedName("", "CDEdataPath")));
+      if(dataPath != null) {
+        resourceManager.setDataPath(dataPath);
+      }
+      typeSystemDesciptor.resolveImports(resourceManager);
     } catch (InvalidXMLException e) {
-
       String message = e.getMessage() != null ? e.getMessage() : "";
-
-      // TODO: Change plugin ID
-      IStatus s = new Status(IStatus.ERROR, "org.apache.uima.dev", IStatus.OK, message, e);
-
+      IStatus s = new Status(IStatus.ERROR, CasEditorPlugin.ID, IStatus.OK, message, e);
+      throw new CoreException(s);
+    } catch (MalformedURLException e) {
+      String message = e.getMessage() != null ? e.getMessage() : "";
+      IStatus s = new Status(IStatus.ERROR, CasEditorPlugin.ID, IStatus.OK, message, e);
       throw new CoreException(s);
     }
 
@@ -387,10 +395,7 @@ public class DocumentUimaImpl extends AbstractDocument {
               new FsIndexDescription[] { indexDesciptor });
     } catch (ResourceInitializationException e) {
       String message = e.getMessage() != null ? e.getMessage() : "";
-
-      // TODO: Change plugin ID
-      IStatus s = new Status(IStatus.ERROR, "org.apache.uima.dev", IStatus.OK, message, e);
-
+      IStatus s = new Status(IStatus.ERROR, CasEditorPlugin.ID, IStatus.OK, message, e);
       throw new CoreException(s);
     }
 
