@@ -948,23 +948,19 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
       mShowAnnotationsMenu.addListener(new IShowAnnotationsListener() {
 
         public void selectionChanged(Collection<Type> selection) {
-          
-          // if changes selection is either larger, or smaller
-          // if larger an annotation type was added
-          // if smaller one was removed
-          if (shownAnnotationTypes.size() < selection.size()) {
-            List<Type> clonedCollection = new ArrayList<Type>(selection);
-            clonedCollection.removeAll(shownAnnotationTypes);
-            
-            Type addedAnnotationType = clonedCollection.get(0);
-            showAnnotationType(addedAnnotationType, true);
+          // compute change sets and apply changes:
+
+          Collection<Type> notShownAnymore = new HashSet<Type>(shownAnnotationTypes);
+          notShownAnymore.removeAll(selection);
+          for (Type type : notShownAnymore) {
+            showAnnotationType(type, false);
           }
-          else if (selection.size() < shownAnnotationTypes.size()) {
-            List<Type> clonedCollection = new ArrayList<Type>(shownAnnotationTypes);
-            clonedCollection.removeAll(selection);
-            
-            Type removedAnnotationType = clonedCollection.get(0);
-            showAnnotationType(removedAnnotationType, false);
+
+          Collection<Type> newShownTypes = new HashSet<Type>(selection);
+          newShownTypes.removeAll(shownAnnotationTypes);
+          for (Iterator<Type> iterator = newShownTypes.iterator(); iterator.hasNext();) {
+            Type type = iterator.next();
+            showAnnotationType(type, true);
           }
           
           // Repaint after annotations are changed
@@ -1123,6 +1119,10 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   
   public void setShownAnnotationType(Type type, boolean isShown) {
     mShowAnnotationsMenu.setSelectedType(type, isShown);
+  }
+
+  public void setShownAnnotationTypes(Collection<Type> types) {
+    mShowAnnotationsMenu.setSelectedTypes(types);
   }
 
   /**
