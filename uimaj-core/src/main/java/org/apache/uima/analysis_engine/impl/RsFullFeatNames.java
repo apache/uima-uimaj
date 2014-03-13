@@ -46,10 +46,10 @@ public class RsFullFeatNames {
       tfOther = typeName2TypeFeats.putIfAbsent(typeName, tf = new ConcurrentHashMap<String, String>());
       tf = (tfOther != null) ? tfOther : tf; 
     }
-    String s = tf.get(shortFeatName), otherS;
+    String s = tf.get(shortFeatName), otherString;
     if (null == s) {
-      otherS = tf.putIfAbsent(shortFeatName, s = makeFullFeatName(typeName, shortFeatName));
-      s = (otherS != null) ? otherS : s;
+      otherString = tf.putIfAbsent(shortFeatName, s = makeFullFeatName(typeName, shortFeatName));
+      s = (otherString != null) ? otherString : s;
     }
     return s;
   }
