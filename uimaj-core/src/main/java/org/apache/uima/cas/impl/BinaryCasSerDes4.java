@@ -2313,8 +2313,8 @@ public class BinaryCasSerDes4 {
     }
     
     private boolean compareStrings(String s1, String s2) {
-      if ((null == s1) && (null == s2)) {
-        return true;
+      if (null == s1) {
+        return null == s2;
       }
       return s1.equals(s2);
     }
