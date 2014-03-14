@@ -25,6 +25,11 @@ import org.apache.uima.internal.util.IntPointerIterator;
 
 public class FSIteratorWrapper<T extends FeatureStructure> extends FSIteratorImplBase<T> {
 
+  @Override
+  public String toString() {
+    return "FSIteratorWrapper [it=" + it + "]";
+  }
+
   IntPointerIterator it;
 
   CASImpl casImpl;

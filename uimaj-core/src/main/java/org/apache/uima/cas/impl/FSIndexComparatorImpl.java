@@ -128,18 +128,27 @@ public class FSIndexComparatorImpl implements FSIndexComparator {
       return false;
     }
     for (int i = 0; i < max; i++) {
-      if ((this.getKeyFeature(i) != comp.getKeyFeature(i))
-              || (this.getKeyComparator(i) != comp.getKeyComparator(i))) {
+      if ((this.getKeyFeature(i) != comp.getKeyFeature(i)) || 
+          (this.getKeyComparator(i) != comp.getKeyComparator(i))) {
         return false;
       }
     }
     return true;
   }
-
+  
+  @Override
   public int hashCode() {
-    throw new UnsupportedOperationException();
+    final int prime = 31;
+    int result = 1;
+    final int max = this.getNumberOfKeys();
+    for (int i = 0; i < max; i++) {
+      Feature f = this.getKeyFeature(i);
+      result = prime * result + ((f == null) ? 31 : f.hashCode());
+      result = prime * result + this.getKeyComparator(i);
+    }
+    return result;
   }
-
+  
   CASImpl getLowLevelCAS() {
     return this.cas;
   }
@@ -164,6 +173,7 @@ public class FSIndexComparatorImpl implements FSIndexComparator {
     }
     return true;
   }
+
 
   synchronized FSIndexComparatorImpl copy() {
     FSIndexComparatorImpl copy = new FSIndexComparatorImpl(this.cas);
