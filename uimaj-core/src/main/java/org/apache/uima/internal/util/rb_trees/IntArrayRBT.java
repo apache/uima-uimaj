@@ -85,6 +85,13 @@ public class IntArrayRBT extends IntArrayRBTcommon {
       copy.currentNode = this.currentNode;
       return copy;
     }
+
+    @Override
+    public String toString() {
+      return "ComparablePointerIterator [comp=" + comp + ", typeCode=" + typeCode + ", currentNode=" + currentNode
+          + "]";
+    }
+    
   }
 
   /**
