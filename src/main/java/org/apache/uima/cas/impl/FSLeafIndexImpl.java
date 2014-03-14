@@ -32,7 +32,8 @@ import org.apache.uima.internal.util.IntComparator;
 import org.apache.uima.internal.util.IntPointerIterator;
 
 /**
- * Class comment for FSLeafIndexImpl.java goes here.
+ * The common (among all index kinds - set, sorted, bag) info for an index
+ * Subtypes define the actual index repository (integers indexing the CAS) for each kind.
  * 
  * 
  */
@@ -82,6 +83,17 @@ public abstract class FSLeafIndexImpl<T extends FeatureStructure> implements Int
   private int numKeys;
 
   private Type type; // The type of this
+
+  
+  
+  @Override
+  public String toString() {
+    return "FSLeafIndexImpl ["  
+//        + "indexType=" + indexType + ", comparator=" + comparator + ", keyType="
+//        + Arrays.toString(keyType) + ", keyOffset=" + Arrays.toString(keyOffset) + ", typeOrder="
+//        + Arrays.toString(typeOrder) + ", keyComp=" + Arrays.toString(keyComp) + ", numKeys=" + numKeys 
+        + ", type=" + type + "]";
+  }
 
   // never called
   // declared private to block external calls
@@ -338,22 +350,51 @@ public abstract class FSLeafIndexImpl<T extends FeatureStructure> implements Int
   }
 
   // Eclipse says this method is never called by uimaj-core methods 9-2009
-  public final boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    return this.comparator.equals(o);
-    // if (o instanceof FSIndexComparator) {
-    // return this.comparator.equals(o);
-    // } else if (o instanceof FSVectorIndex) {
-    // return this.comparator.equals(((FSLeafIndexImpl)o).comparator);
-    // } else {
-    // return false;
-    // }
+//  public final boolean equals(Object o) {
+//    if (this == o) {
+//      return true;
+//    }
+//    return this.comparator.equals(o);
+//    // if (o instanceof FSIndexComparator) {
+//    // return this.comparator.equals(o);
+//    // } else if (o instanceof FSVectorIndex) {
+//    // return this.comparator.equals(((FSLeafIndexImpl)o).comparator);
+//    // } else {
+//    // return false;
+//    // }
+//  }
+  
+  
+
+//  public int hashCode() {
+//    // if this throws exception, then Eclipse debugger fails to show data in inspector
+//    // throw new UnsupportedOperationException(); 
+//    return 0;
+//  }
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((comparator == null) ? 0 : comparator.hashCode());
+    return result;
   }
 
-  public int hashCode() {
-    throw new UnsupportedOperationException();
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    FSLeafIndexImpl other = (FSLeafIndexImpl) obj;
+    if (comparator == null) {
+      if (other.comparator != null)
+        return false;
+    } else if (!comparator.equals(other.comparator))
+      return false;
+    return true;
   }
 
   /**
