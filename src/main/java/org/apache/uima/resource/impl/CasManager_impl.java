@@ -109,7 +109,7 @@ public class CasManager_impl implements CasManager {
       throw new UIMARuntimeException(UIMARuntimeException.REQUESTED_TOO_MANY_CAS_INSTANCES,
               new Object[] { aRequestorContextName, "1", "0" });
     }
-    return pool.getCas(0);
+    return pool.getCas(0);  // 0 means wait forever
   }
 
   /*
