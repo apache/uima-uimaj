@@ -186,16 +186,7 @@ public class IteratorTest extends TestCase {
   public void testMoveTo() {
     // Add some arbitrary annotations
     for (int i = 0; i < 10; i++) {
-      this.cas.getIndexRepository().addFS(
-          this.cas.createAnnotation(this.annotationType, i * 2, (i * 2) + 1));
-      this.cas.getIndexRepository().addFS(
-          this.cas.createAnnotation(this.sentenceType, i * 2, (i * 2) + 1));
-      this.cas.getIndexRepository().addFS(
-          this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
-      this.cas.getIndexRepository().addFS(
-          this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
-      this.cas.getIndexRepository().addFS(
-          this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
+      createFSs(i);
     }
     final int start = 5;
     final int end = 7;
@@ -214,103 +205,89 @@ public class IteratorTest extends TestCase {
     assertTrue(index.compare(match, it.get()) > 0);
   }
 
-  public void testIterator() {
+  private void createFSs(int i) {
+    this.cas.getIndexRepository().addFS(
+        this.cas.createAnnotation(this.annotationType, i * 2, (i * 2) + 1));
+    this.cas.getIndexRepository().addFS(
+        this.cas.createAnnotation(this.sentenceType, i * 2, (i * 2) + 1));
+    this.cas.getIndexRepository().addFS(
+        this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
+    this.cas.getIndexRepository().addFS(
+        this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
+    this.cas.getIndexRepository().addFS(
+        this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
+  }
+  
+  private void setupFSs() {
     for (int i = 0; i < 10; i++) {
-      this.cas.getIndexRepository().addFS(
-          this.cas.createAnnotation(this.annotationType, i * 2, (i * 2) + 1));
-      this.cas.getIndexRepository().addFS(
-          this.cas.createAnnotation(this.sentenceType, i * 2, (i * 2) + 1));
-      this.cas.getIndexRepository().addFS(
-          this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
-      this.cas.getIndexRepository().addFS(
-          this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
-      this.cas.getIndexRepository().addFS(
-          this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
+      createFSs(i);
     }
     for (int i = 19; i >= 10; i--) {
-      this.cas.getIndexRepository().addFS(
-          this.cas.createAnnotation(this.annotationType, i * 2, (i * 2) + 1));
-      this.cas.getIndexRepository().addFS(
-          this.cas.createAnnotation(this.sentenceType, i * 2, (i * 2) + 1));
-      this.cas.getIndexRepository().addFS(
-          this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
-      this.cas.getIndexRepository().addFS(
-          this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
-      this.cas.getIndexRepository().addFS(
-          this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
+      createFSs(i);
     }
-
-    // /////////////////////////////////////////////////////////////////////////
-    // Create a reverse iterator for the set index and check that the result
-    // is the same as for forward iteration.
-    IntVector v = new IntVector();
+  }
+  
+  public void testMultithreadedIterator() {
+    setupFSs();
+    final FSIndex<FeatureStructure> bagIndex = this.cas.getIndexRepository().getIndex(
+        CASTestSetup.ANNOT_BAG_INDEX);
+    final FSIndex<FeatureStructure> setIndex = this.cas.getIndexRepository().getIndex(
+        CASTestSetup.ANNOT_SET_INDEX);
+    final FSIndex<FeatureStructure> sortedIndex = this.cas.getIndexRepository().getIndex(
+        CASTestSetup.ANNOT_SORT_INDEX);
+  
+    int numberOfCores = Runtime.getRuntime().availableProcessors() * 5;
+    
+    System.out.println("test multicore iterator with " + numberOfCores + " threads");
+    Thread[] threads = new Thread[numberOfCores];
+    final Throwable[] tthrowable = new Throwable[1];
+    tthrowable[0] = null;
+    for (int r = 0; r < 10; r++) {
+      for (int i = 0; i < numberOfCores; i++) {
+        final int finalI = i;
+        threads[i] = new Thread(new Runnable() {
+  
+          public void run() {
+            try {
+              setIteratorWithoutMods(setIndex, finalI);
+              sortedIteratorWithoutMods(sortedIndex);
+              bagIteratorWithoutMods(bagIndex);
+            } catch (Throwable e) {
+              tthrowable[0] = e;
+              e.printStackTrace();
+              throw new RuntimeException(e);
+            }
+          }} );
+        threads[i].start();
+      }
+      for (int i = 0; i < numberOfCores; i++) {
+        try {
+          if (tthrowable[0] != null) {
+            assertTrue(false);
+          }
+          threads[i].join();
+          if (tthrowable[0] != null) {
+            assertTrue(false);
+          }
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+          assertTrue(false);
+        }
+      }
+    }
+  }
+  
+  public void testIterator() {
+    setupFSs();
+    
     FSIndex<FeatureStructure> bagIndex = this.cas.getIndexRepository().getIndex(
         CASTestSetup.ANNOT_BAG_INDEX);
     FSIndex<FeatureStructure> setIndex = this.cas.getIndexRepository().getIndex(
         CASTestSetup.ANNOT_SET_INDEX);
     FSIndex<FeatureStructure> sortedIndex = this.cas.getIndexRepository().getIndex(
         CASTestSetup.ANNOT_SORT_INDEX);
-
-    FSIterator<FeatureStructure> it = setIndex.iterator();
-    AnnotationFS a, b = null;
-    while (it.isValid()) {
-      a = (AnnotationFS) it.get();
-      if (b != null) {
-        assertTrue(setIndex.compare(b, a) <= 0);
-      }
-      b = a;
-      // System.out.println(
-      // a.getType().getName() + " - " + a.getStart() + " - " +
-      // a.getEnd());
-      v.add(it.get().hashCode());
-      it.moveToNext();
-    }
-    // System.out.println("Number of annotations: " + v.size());
-    assertTrue(v.size() == ((10 * 3) + (10 * 3)));
-
-    it = setIndex.iterator();
-    it.moveToLast();
-    int current = v.size() - 1;
-    while (it.isValid() && (current >= 0)) {
-      // System.out.println("Current: " + current);
-      a = (AnnotationFS) it.get();
-      // System.out.println(
-      // a.getType().getName() + " - " + a.getStart() + " - " +
-      // a.getEnd());
-      assertTrue(it.get().hashCode() == v.get(current));
-      it.moveToPrevious();
-      --current;
-    }
-    assertTrue(current == -1);
-    assertFalse(it.isValid());
-
-    // /////////////////////////////////////////////////////////////////////////
-    // Use an iterator to move forwards and backwards and make sure the
-    // sequence
-    // remains constant.
-    it = setIndex.iterator();
-    it.moveToFirst(); // This is redundant.
-    current = 1;
-    // System.out.println("Codes: " + v);
-    while (current < (v.size() - 1)) {
-      it.moveToNext();
-      assertTrue(it.isValid());
-      assertTrue(it.get().hashCode() == v.get(current));
-      it.moveToNext();
-      assertTrue(it.isValid());
-      assertTrue(it.get().hashCode() == v.get(current + 1));
-      it.moveToPrevious();
-      assertTrue(it.isValid());
-      assertTrue(it.get().hashCode() == v.get(current));
-      ++current;
-    }
-
-    // also test Java-style iteration
-    Iterator<FeatureStructure> javaIt = setIndex.iterator();
-    current = 0;
-    while (javaIt.hasNext()) {
-      assertEquals(javaIt.next().hashCode(), v.get(current++));
-    }
+    
+    setIteratorWithoutMods(setIndex, -1);
 
     // test find()
     AnnotationFS annot = (AnnotationFS) setIndex.iterator().get();
@@ -322,11 +299,10 @@ public class IteratorTest extends TestCase {
     try {
       jcas = this.cas.getJCas();
     } catch (CASException e1) {
-      // TODO Auto-generated catch block
       e1.printStackTrace();
       assertTrue(false);
     }
-    FSIndex jcasSetIndex = jcas.getJFSIndexRepository().getIndex(CASTestSetup.ANNOT_SET_INDEX);
+    FSIndex<?> jcasSetIndex = jcas.getJFSIndexRepository().getIndex(CASTestSetup.ANNOT_SET_INDEX);
     Annotation jcasAnnotation = (Annotation) jcasSetIndex.find(annot);
     assertNotNull(jcasAnnotation);
     assertNull(jcasSetIndex.find(this.cas.createAnnotation(this.annotationType, -1, -1)));
@@ -334,7 +310,8 @@ public class IteratorTest extends TestCase {
     // /////////////////////////////////////////////////////////////////////////
     // Test fast fail.
 
-    it = bagIndex.iterator(); // use bag index, remove add last one
+    FSIterator<FeatureStructure> it = bagIndex.iterator(); // use bag index, remove add last one
+    AnnotationFS a = null;
     // (preserves order for other tests).
     it.moveToLast();
     a = (AnnotationFS) it.get();
@@ -393,91 +370,9 @@ public class IteratorTest extends TestCase {
     Type t1 = fs.getType();
     Type t2 = wordSetIndex.find(fs).getType();
     assertSame(t1, t2);
+    
+    sortedIteratorWithoutMods(sortedIndex);
 
-    // /////////////////////////////////////////////////////////////////////////
-    // Test sorted index.
-
-    // FSIndex sortedIndex = cas.getAnnotationIndex(); // using different
-    // typeOrder
-    // System.out.println("Number of annotations: " + sortedIndex.size());
-    // for (it = sortedIndex.iterator(); it.hasNext(); it.next()) {
-    // System.out.println(it.get());
-    // }
-
-    assertTrue(sortedIndex.size() == 100);
-    v = new IntVector();
-    it = sortedIndex.iterator();
-    it.moveToFirst();
-    b = null;
-    while (it.isValid()) {
-      a = (AnnotationFS) it.get();
-      // System.out.println(a);
-      assertTrue(a != null);
-      if (b != null) {
-        // System.out.println("b = " + b);
-        assertTrue(sortedIndex.compare(b, a) <= 0);
-      }
-      b = a;
-      v.add(a.hashCode());
-      it.moveToNext();
-    }
-    assertTrue(sortedIndex.size() == v.size());
-
-    // Test moveTo()
-    List<AnnotationFS> list = new ArrayList<AnnotationFS>();
-    FSIterator<AnnotationFS> it2 = this.cas.getAnnotationIndex().iterator();
-    for (it2.moveToFirst(); it2.isValid(); it2.moveToNext()) {
-      list.add(it2.get());
-    }
-    // AnnotationFS an;
-    for (int i = 0; i < list.size(); i++) {
-      // System.out.println("Iteration: " + i);
-      it2.moveToFirst();
-      it2.moveTo(list.get(i));
-      assertTrue(((AnnotationFS) it2.get()).getBegin() == ((AnnotationFS) list.get(i)).getBegin());
-      assertTrue(((AnnotationFS) it2.get()).getEnd() == ((AnnotationFS) list.get(i)).getEnd());
-    }
-
-    // Check that reverse iterator produces reverse sequence.
-    // Note: this test is not valid. It is by no means guaranteed that reverse iteration of a
-    // sorted index will produce the reverse result of forward iteration. I no two annotations
-    // are equal wrt the sort order, this works of course. However, if some FSs are equal wrt
-    // the sort order, those may be returned in any order.
-    // it.moveToLast();
-    // System.out.println(it.get());
-    // for (int i = v.size() - 1; i >= 0; i--) {
-    // assertTrue(it.isValid());
-    // assertTrue(it.get().hashCode() == v.get(i));
-    // it.moveToPrevious();
-    // }
-
-    // /////////////////////////////////////////////////////////////////////////
-    // Use an iterator to move forwards and backwards and make sure the
-    // sequence
-    // remains constant.
-    it = sortedIndex.iterator();
-    it.moveToFirst(); // This is redundant.
-    current = 1;
-    // System.out.println("Codes: " + v);
-    while (current < (v.size() - 1)) {
-      it.moveToNext();
-      assertTrue(it.isValid());
-      assertTrue(it.get().hashCode() == v.get(current));
-      it.moveToNext();
-      assertTrue(it.isValid());
-      assertTrue(it.get().hashCode() == v.get(current + 1));
-      it.moveToPrevious();
-      assertTrue(it.isValid());
-      assertTrue(it.get().hashCode() == v.get(current));
-      ++current;
-    }
-
-    // also test Java-style iteration
-    javaIt = sortedIndex.iterator();
-    current = 0;
-    while (javaIt.hasNext()) {
-      assertEquals(javaIt.next().hashCode(), v.get(current++));
-    }
     // /////////////////////////////////////////////////////////////////////////
     // Test fast fail.
 
@@ -526,87 +421,7 @@ public class IteratorTest extends TestCase {
 
     sortedIndex = null;
 
-    // /////////////////////////////////////////////////////////////////////////
-    // Test bag index.
-    // System.out.println("Number of annotations: " + sortedIndex.size());
-    assertTrue(bagIndex.size() == 100);
-    v = new IntVector();
-    it = bagIndex.iterator();
-    b = null;
-    while (it.isValid()) {
-      a = (AnnotationFS) it.get();
-      assertTrue(a != null);
-      if (b != null) {
-        assertTrue(bagIndex.compare(b, a) <= 0);
-      }
-      b = a;
-      v.add(a.hashCode());
-      it.moveToNext();
-    }
-    assertTrue(bagIndex.size() == v.size());
-
-    // Check that reverse iterator produces reverse sequence.
-    it.moveToLast();
-    for (int i = v.size() - 1; i >= 0; i--) {
-      assertTrue(it.isValid());
-      assertTrue(it.get().hashCode() == v.get(i));
-      it.moveToPrevious();
-    }
-
-    // /////////////////////////////////////////////////////////////////////////
-    // Use an iterator to move forwards and backwards and make sure the
-    // sequence
-    // remains constant.
-    it = bagIndex.iterator();
-    it.moveToFirst(); // This is redundant.
-    current = 1;
-    // System.out.println("Codes: " + v);
-    while (current < (v.size() - 1)) {
-      it.moveToNext();
-      assertTrue(it.isValid());
-      assertTrue(it.get().hashCode() == v.get(current));
-      it.moveToNext();
-      assertTrue(it.isValid());
-      assertTrue(it.get().hashCode() == v.get(current + 1));
-      it.moveToPrevious();
-      assertTrue(it.isValid());
-      assertTrue(it.get().hashCode() == v.get(current));
-      ++current;
-    }
-
-    // also test Java-style iteration
-    javaIt = bagIndex.iterator();
-    current = 0;
-    while (javaIt.hasNext()) {
-      assertEquals(javaIt.next().hashCode(), v.get(current++));
-    }
-
-    // Test iterator copy.
-    FSIterator<AnnotationFS> source, copy;
-    source = this.cas.getAnnotationIndex().iterator();
-    // Count items.
-    int count = 0;
-    for (source.moveToFirst(); source.isValid(); source.moveToNext()) {
-      ++count;
-    }
-
-    final int max = count;
-    count = 0;
-    source.moveToFirst();
-    copy = source.copy();
-    copy.moveToFirst();
-    // System.out.println("Max: " + max);
-    while (count < max) {
-      // System.out.println("Count: " + count);
-      assertTrue(source.isValid());
-      assertTrue(copy.isValid());
-      String out = source.get().toString() + copy.get().toString();
-      assertTrue(out, source.get().equals(copy.get()));
-      source.moveToNext();
-      copy.moveToNext();
-      ++count;
-    }
-
+    bagIteratorWithoutMods(bagIndex);
     // /////////////////////////////////////////////////////////////////////////
     // Test fast fail.
 
@@ -655,6 +470,273 @@ public class IteratorTest extends TestCase {
       // checking with boolean "ok"
     }
     assertTrue(ok);
+
+  }
+  
+  private void setIteratorWithoutMods(FSIndex<FeatureStructure> setIndex, int thrd) {
+    // /////////////////////////////////////////////////////////////////////////
+    // Create a reverse iterator for the set index and check that the result
+    // is the same as for forward iteration.
+
+    IntVector v = new IntVector();
+    FSIterator<FeatureStructure> it = setIndex.iterator();
+    AnnotationFS a, b = null;
+    int ii = 0;
+    StringBuilder sb = new StringBuilder();
+    while (it.isValid()) {
+      a = (AnnotationFS) it.get();
+      if (b != null) {
+        // note compare may be equal for two items of different types 
+        assertTrue(setIndex.compare(b, a) <= 0);
+        if (a.hashCode() == b.hashCode()) {
+          System.err.format("set Iterator: should not have 2 identical elements%n%s%n", it);
+          assertTrue(false);
+        }
+//        if (a.getType() == b.getType()) {
+//          assertTrue(setIndex.compare(b, a) < 0);
+//          System.out.println("diff types");
+//        }
+      }
+      b = a;
+       sb.append(String.format("%d %d debug: n=%d, type=%s, start=%d, end-%d%n",
+           thrd,
+           ii++,
+           a.hashCode(),
+           a.getType().getName(),
+           a.getBegin(),
+           a.getEnd()));
+      v.add(it.get().hashCode());
+      it.moveToNext();
+    }
+    // System.out.println("Number of annotations: " + v.size());
+    if (v.size() != ((10 * 3) + (10 * 3))) {
+      System.err.format("Expected number in set was 60, but has %d elements%n%s%n", v.size(), it);
+      System.err.println(sb);
+      assertTrue(false);
+    }
+//    else
+//      System.out.println(sb);
+
+    it = setIndex.iterator();
+    it.moveToLast();
+    int current = v.size() - 1;
+    while (it.isValid() && (current >= 0)) {
+      // System.out.println("Current: " + current);
+      a = (AnnotationFS) it.get();
+      // System.out.println(
+      // a.getType().getName() + " - " + a.getStart() + " - " +
+      // a.getEnd());
+      assertTrue(it.get().hashCode() == v.get(current));
+      it.moveToPrevious();
+      --current;
+    }
+    assertTrue(current == -1);
+    assertFalse(it.isValid());
+
+    // /////////////////////////////////////////////////////////////////////////
+    // Use an iterator to move forwards and backwards and make sure the
+    // sequence
+    // remains constant.
+    it = setIndex.iterator();
+    it.moveToFirst(); // This is redundant.
+    current = 1;
+    // System.out.println("Codes: " + v);
+    while (current < (v.size() - 1)) {
+      it.moveToNext();
+      assertTrue(it.isValid());
+      assertTrue(it.get().hashCode() == v.get(current));
+      it.moveToNext();
+      assertTrue(it.isValid());
+      assertTrue(it.get().hashCode() == v.get(current + 1));
+      it.moveToPrevious();
+      assertTrue(it.isValid());
+      assertTrue(it.get().hashCode() == v.get(current));
+      ++current;
+    }
+
+    // also test Java-style iteration
+    Iterator<FeatureStructure> javaIt = setIndex.iterator();
+    current = 0;
+    while (javaIt.hasNext()) {
+      assertEquals(javaIt.next().hashCode(), v.get(current++));
+    }
+  }
+  
+  private void sortedIteratorWithoutMods(FSIndex<FeatureStructure> sortedIndex) {
+    // /////////////////////////////////////////////////////////////////////////
+    // Test sorted index.
+
+    // FSIndex sortedIndex = cas.getAnnotationIndex(); // using different
+    // typeOrder
+    // System.out.println("Number of annotations: " + sortedIndex.size());
+    // for (it = sortedIndex.iterator(); it.hasNext(); it.next()) {
+    // System.out.println(it.get());
+    // }
+
+    if (sortedIndex.size() != 100) {  
+      assertTrue(false);
+    }    
+    IntVector v = new IntVector();
+    FSIterator<FeatureStructure> it = sortedIndex.iterator();
+    it.moveToFirst();
+    AnnotationFS a, b = null;
+    while (it.isValid()) {
+      a = (AnnotationFS) it.get();
+      // System.out.println(a);
+      assertTrue(a != null);
+      if (b != null) {
+        // System.out.println("b = " + b);
+        assertTrue(sortedIndex.compare(b, a) <= 0);
+      }
+      b = a;
+      int hc = a.hashCode();
+      v.add(hc);
+//      if ((hc % 2) == 1) {
+        Thread.yield();
+//      }
+      it.moveToNext();
+    }
+    assertTrue(sortedIndex.size() == v.size());
+
+    // Test moveTo()
+    List<AnnotationFS> list = new ArrayList<AnnotationFS>();
+    FSIterator<AnnotationFS> it2 = this.cas.getAnnotationIndex().iterator();
+    for (it2.moveToFirst(); it2.isValid(); it2.moveToNext()) {
+      list.add(it2.get());
+    }
+    // AnnotationFS an;
+    for (int i = 0; i < list.size(); i++) {
+      // System.out.println("Iteration: " + i);
+      it2.moveToFirst();
+      it2.moveTo(list.get(i));
+      assertTrue(((AnnotationFS) it2.get()).getBegin() == ((AnnotationFS) list.get(i)).getBegin());
+      assertTrue(((AnnotationFS) it2.get()).getEnd() == ((AnnotationFS) list.get(i)).getEnd());
+    }
+
+    // Check that reverse iterator produces reverse sequence.
+    // Note: this test is not valid. It is by no means guaranteed that reverse iteration of a
+    // sorted index will produce the reverse result of forward iteration. I no two annotations
+    // are equal wrt the sort order, this works of course. However, if some FSs are equal wrt
+    // the sort order, those may be returned in any order.
+    // it.moveToLast();
+    // System.out.println(it.get());
+    // for (int i = v.size() - 1; i >= 0; i--) {
+    // assertTrue(it.isValid());
+    // assertTrue(it.get().hashCode() == v.get(i));
+    // it.moveToPrevious();
+    // }
+
+    // /////////////////////////////////////////////////////////////////////////
+    // Use an iterator to move forwards and backwards and make sure the
+    // sequence
+    // remains constant.
+    it = sortedIndex.iterator();
+    it.moveToFirst(); // This is redundant.
+    int current = 1;
+    // System.out.println("Codes: " + v);
+    while (current < (v.size() - 1)) {
+      it.moveToNext();
+      assertTrue(it.isValid());
+      assertTrue(it.get().hashCode() == v.get(current));
+      it.moveToNext();
+      assertTrue(it.isValid());
+      assertTrue(it.get().hashCode() == v.get(current + 1));
+      it.moveToPrevious();
+      assertTrue(it.isValid());
+      assertTrue(it.get().hashCode() == v.get(current));
+      ++current;
+    }
+
+    // also test Java-style iteration
+    Iterator<FeatureStructure> javaIt = sortedIndex.iterator();
+    current = 0;
+    while (javaIt.hasNext()) {
+      assertEquals(javaIt.next().hashCode(), v.get(current++));
+    }
+  
+  }
+  
+  private void bagIteratorWithoutMods(FSIndex<FeatureStructure> bagIndex) {
+    // /////////////////////////////////////////////////////////////////////////
+    // Test bag index.
+    // System.out.println("Number of annotations: " + sortedIndex.size());
+    assertTrue(bagIndex.size() == 100);
+    IntVector v = new IntVector();
+    FSIterator<FeatureStructure> it = bagIndex.iterator();
+    AnnotationFS a, b = null;
+    while (it.isValid()) {
+      a = (AnnotationFS) it.get();
+      assertTrue(a != null);
+      if (b != null) {
+        assertTrue(bagIndex.compare(b, a) <= 0);
+      }
+      b = a;
+      v.add(a.hashCode());
+      it.moveToNext();
+    }
+    assertTrue(bagIndex.size() == v.size());
+
+    // Check that reverse iterator produces reverse sequence.
+    it.moveToLast();
+    for (int i = v.size() - 1; i >= 0; i--) {
+      assertTrue(it.isValid());
+      assertTrue(it.get().hashCode() == v.get(i));
+      it.moveToPrevious();
+    }
+
+    // /////////////////////////////////////////////////////////////////////////
+    // Use an iterator to move forwards and backwards and make sure the
+    // sequence
+    // remains constant.
+    it = bagIndex.iterator();
+    it.moveToFirst(); // This is redundant.
+    int current = 1;
+    // System.out.println("Codes: " + v);
+    while (current < (v.size() - 1)) {
+      it.moveToNext();
+      assertTrue(it.isValid());
+      assertTrue(it.get().hashCode() == v.get(current));
+      it.moveToNext();
+      assertTrue(it.isValid());
+      assertTrue(it.get().hashCode() == v.get(current + 1));
+      it.moveToPrevious();
+      assertTrue(it.isValid());
+      assertTrue(it.get().hashCode() == v.get(current));
+      ++current;
+    }
+
+    // also test Java-style iteration
+    Iterator<FeatureStructure> javaIt = bagIndex.iterator();
+    current = 0;
+    while (javaIt.hasNext()) {
+      assertEquals(javaIt.next().hashCode(), v.get(current++));
+    }
+
+    // Test iterator copy.
+    FSIterator<AnnotationFS> source, copy;
+    source = this.cas.getAnnotationIndex().iterator();
+    // Count items.
+    int count = 0;
+    for (source.moveToFirst(); source.isValid(); source.moveToNext()) {
+      ++count;
+    }
+
+    final int max = count;
+    count = 0;
+    source.moveToFirst();
+    copy = source.copy();
+    copy.moveToFirst();
+    // System.out.println("Max: " + max);
+    while (count < max) {
+      // System.out.println("Count: " + count);
+      assertTrue(source.isValid());
+      assertTrue(copy.isValid());
+      String out = source.get().toString() + copy.get().toString();
+      assertTrue(out, source.get().equals(copy.get()));
+      source.moveToNext();
+      copy.moveToNext();
+      ++count;
+    }
 
   }
   
@@ -761,12 +843,12 @@ public class IteratorTest extends TestCase {
     assertFalse(sortedIt.isValid());
   }
   
-  private void verifyMoveToFirst(FSIterator it, boolean expected) {
+  private void verifyMoveToFirst(FSIterator<?> it, boolean expected) {
     it.moveToFirst();
     assertEquals(it.isValid(), expected);
   }
   
-  private void verifyHaveSubset(FSIterator x, int nbr, Type type) {
+  private void verifyHaveSubset(FSIterator<?> x, int nbr, Type type) {
     x.moveToFirst();
     int i = 0;
     while (x.hasNext()) {
