@@ -21,6 +21,7 @@ package org.apache.uima.analysis_engine.impl;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,6 +37,7 @@ import java.util.TreeMap;
 
 import org.apache.uima.Constants;
 import org.apache.uima.UIMAFramework;
+import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
@@ -82,21 +84,29 @@ import org.xml.sax.SAXException;
 public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_impl implements
         AnalysisEngineDescription {
 
+  static final private Method getterForAEwImports;
+  static { 
+    try {
+      getterForAEwImports = AnalysisEngineDescription_impl.class.getDeclaredMethod("getDelegateAnalysisEngineSpecifiersWithImports");
+    } catch (Exception e) {
+      throw new UIMARuntimeException(e);
+    }
+  }
   /**
    * Name of the "delegateAnalysisEngineSpecifiers" property. Change this if interface changes.
    */
-  protected String PROP_DELEGATE_ANALYSIS_ENGINE_SPECIFIERS = "delegateAnalysisEngineSpecifiers";
-
+  final protected String PROP_DELEGATE_ANALYSIS_ENGINE_SPECIFIERS = "delegateAnalysisEngineSpecifiers";
+  
   /**
    * Name of the "delegateAnalysisEngineSpecifiersWithImports" property. Change this if interface
    * changes.
    */
-  protected String PROP_DELEGATE_ANALYSIS_ENGINE_SPECIFIERS_WITH_IMPORTS = "delegateAnalysisEngineSpecifiersWithImports";
+  final protected String PROP_DELEGATE_ANALYSIS_ENGINE_SPECIFIERS_WITH_IMPORTS = "delegateAnalysisEngineSpecifiersWithImports";
 
   /**
    * Name of the "delegateAnalysisEngineSpecifiers" XML Element. Change this if schema changes.
    */
-  protected String ELEM_DELEGATE_ANALYSIS_ENGINE_SPECIFIERS = "delegateAnalysisEngineSpecifiers";
+  final protected String ELEM_DELEGATE_ANALYSIS_ENGINE_SPECIFIERS = "delegateAnalysisEngineSpecifiers";
 
   private String mFrameworkImplementation;
 
@@ -630,6 +640,16 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
     }
     return false;
   }
+  
+  @Override
+  public List<MetaDataAttr> getAdditionalAttributes() {
+    return Collections.singletonList(
+        new MetaDataAttr(
+            PROP_DELEGATE_ANALYSIS_ENGINE_SPECIFIERS_WITH_IMPORTS,
+            getterForAEwImports,
+            null,  // no writer
+            Map.class));
+  }
 
   /**
    * Overridden to add Delegate AE Specifiers to the result list. Default introspection
@@ -637,7 +657,9 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    * import/export methods, though, so that set methods are not required.
    * 
    * @see MetaDataObject#listAttributes()
+   * @deprecated never called anymore - getAdditionalAttributes called instead
    */
+  @Deprecated
   public List<NameClassPair> listAttributes() {
     List<NameClassPair> result = super.listAttributes();
     result.add(new NameClassPair(PROP_DELEGATE_ANALYSIS_ENGINE_SPECIFIERS_WITH_IMPORTS, Map.class

@@ -22,7 +22,9 @@ package org.apache.uima.resource.metadata.impl;
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -35,6 +37,7 @@ import org.apache.uima.internal.util.SerializationUtils;
 import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
 import org.apache.uima.resource.metadata.MetaDataObject;
 import org.apache.uima.resource.metadata.NameValuePair;
+import org.apache.uima.resource.metadata.impl.MetaDataObject_impl.MetaDataAttr;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.NameClassPair;
 import org.apache.uima.util.XMLParser;
@@ -95,23 +98,47 @@ public class MetaDataObject_implTest extends TestCase {
     fruitBag.setAttributeValue("fruits", fruitArray);
   }
 
-  /**
-   * Tests the {@link MetaDataObject#listAttributes()} method.
-   */
-  public void testListAttributes() throws Exception {
-    try {
-      HashSet<NameClassPair> apple1Attrs = new HashSet<NameClassPair>(apple1.listAttributes());
-      HashSet<NameClassPair> orangeAttrs = new HashSet<NameClassPair>(orange.listAttributes());
-      HashSet<NameClassPair> bagAttrs = new HashSet<NameClassPair>(fruitBag.listAttributes());
+//  /**
+//   * Tests the {@link MetaDataObject#listAttributes()} method.
+//   */
+//  public void testListAttributes() throws Exception {
+//    try {
+//      HashSet<NameClassPair> apple1Attrs = new HashSet<NameClassPair>(apple1.listAttributes());
+//      HashSet<NameClassPair> orangeAttrs = new HashSet<NameClassPair>(orange.listAttributes());
+//      HashSet<NameClassPair> bagAttrs = new HashSet<NameClassPair>(fruitBag.listAttributes());
+//
+//      Assert.assertEquals(TestFruitObject.getAttributeSet(), apple1Attrs);
+//      Assert.assertEquals(TestFruitObject.getAttributeSet(), orangeAttrs);
+//      Assert.assertEquals(TestFruitBagObject.getAttributeSet(), bagAttrs);
+//    } catch (RuntimeException e) {
+//      JUnitExtension.handleException(e);
+//    }
+//  }
 
-      Assert.assertEquals(TestFruitObject.getAttributeSet(), apple1Attrs);
-      Assert.assertEquals(TestFruitObject.getAttributeSet(), orangeAttrs);
-      Assert.assertEquals(TestFruitBagObject.getAttributeSet(), bagAttrs);
+  /**
+   * Test the getAttributes method
+   */
+  public void testGetAttributes() throws Exception {
+    try {
+      HashSet<MetaDataAttr> apple1Attrs = new HashSet<MetaDataAttr>(Arrays.asList(apple1.getAttributes()));
+      HashSet<MetaDataAttr> orangeAttrs = new HashSet<MetaDataAttr>(Arrays.asList(orange.getAttributes()));
+      HashSet<MetaDataAttr> bagAttrs = new HashSet<MetaDataAttr>(Arrays.asList(fruitBag.getAttributes()));
+      
+      Set<MetaDataAttr> r = TestFruitObject.getMetaDataAttrSet();
+      for (MetaDataAttr r1 : r) {
+        if (!apple1Attrs.contains(r1)) {
+          System.out.println("found bad one");
+        }
+      }
+      System.out.println(r.equals (apple1Attrs));
+      assertEquals(TestFruitObject.getMetaDataAttrSet(), apple1Attrs);
+      assertEquals(TestFruitObject.getMetaDataAttrSet(), orangeAttrs);
+      assertEquals(TestFruitBagObject.getMetaDataAttrSet(), bagAttrs);
     } catch (RuntimeException e) {
-      JUnitExtension.handleException(e);
+    JUnitExtension.handleException(e);
     }
   }
-
+  
   /**
    * Tests the {@link MetaDataObject#equals(Object)} method.
    */

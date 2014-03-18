@@ -33,18 +33,18 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.UIMA_IllegalArgumentException;
 import org.apache.uima.UIMA_UnsupportedOperationException;
 import org.apache.uima.internal.util.XMLUtils;
 import org.apache.uima.resource.metadata.MetaDataObject;
+import org.apache.uima.util.ConcurrentHashMapWithProducer;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.NameClassPair;
 import org.apache.uima.util.XMLParser;
@@ -79,10 +79,9 @@ import org.xml.sax.helpers.AttributesImpl;
  * Therefore subclasses of this class must be valid JavaBeans and either use the standard naming
  * conventions for getters and setters. BeanInfo augmentation is ignored; the implementation here
  * uses the flag IGNORE_ALL_BEANINFO. See <a href="http://java.sun.com/docs/books/tutorial/javabeans/"> 
- * The Java Beans Tutorial</a> for more
- * information.
+ * The Java Beans Tutorial</a> for more information.
  * 
- * To support XML Comments, which can occur inbetween any sub-elements, including array values,
+ * To support XML Comments, which can occur between any sub-elements, including array values,
  * the "data" for all objects is stored in a pair of ArrayLists; one holds the "name" of the slot,
  * the other the value; comments are interspersed within this list where they occur.
  * 
@@ -102,11 +101,69 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
 
   private static final Attributes EMPTY_ATTRIBUTES = new AttributesImpl();
 
-  // Class level cache (static) for introspection - 30x speedup in CDE for large descriptor
-  private static transient ConcurrentMap<Class<? extends MetaDataObject_impl>, PropertyDescriptor[]> mPropertyDescriptorsMap =
-      new ConcurrentHashMap<Class<? extends MetaDataObject_impl>, PropertyDescriptor[]>();
-//    Collections.synchronizedMap(new IdentityHashMap<Class<? extends MetaDataObject_impl>, PropertyDescriptor[]>());  
+  /*
+   * Cache for Java Bean lookup
+   * 
+   *   Key: the Class object of the MetaDataObject, corresponds to some XML element
+   *   Value: a list of objects, one for each "attribute", holding:
+   *     the attribute name
+   *     the reader (a Method)
+   *     the writer (a Method)
+   *     the java Class of the data type of this attribute <converted to a wrapper class for primitives>
+   */
+  
+  public static class MetaDataAttr {
+    @Override
+    public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((clazz == null) ? 0 : clazz.hashCode());
+      result = prime * result + ((name == null) ? 0 : name.hashCode());
+      return result;
+    }
 
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj)
+        return true;
+      if (obj == null)
+        return false;
+      if (getClass() != obj.getClass())
+        return false;
+      MetaDataAttr other = (MetaDataAttr) obj;
+      if (clazz == null) {
+        if (other.clazz != null)
+          return false;
+      } else if (!clazz.equals(other.clazz))
+        return false;
+      if (name == null) {
+        if (other.name != null)
+          return false;
+      } else if (!name.equals(other.name))
+        return false;
+      return true;
+    }
+
+    final String name;
+    final Method reader;
+    final Method writer;
+    final Class clazz;
+    
+    public MetaDataAttr(String name, Method reader, Method writer, Class clazz) {
+      this.name = name;
+      this.reader = reader;
+      this.writer = writer;
+      this.clazz = clazz;
+    }
+  }
+    
+  private static final List<MetaDataAttr> ATTRIBUTE_0 = new ArrayList<MetaDataObject_impl.MetaDataAttr>(0);
+  
+  // Cache for Java Bean info lookup
+  // Class level cache (static) for introspection - 30x speedup in CDE for large descriptor
+  private static final transient ConcurrentHashMapWithProducer<Class<? extends MetaDataObject_impl>, MetaDataAttr[]> class2attrsMap =
+      new ConcurrentHashMapWithProducer<Class<? extends MetaDataObject_impl>, MetaDataAttr[]>();
+      
   private transient URL mSourceUrl;
   
   // This is only used if we are capturing comments and ignorable whitespace in the XML
@@ -127,6 +184,60 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
   }
 
   /**
+   * Override this method to include additional attributes
+   * @return additional attributes
+   */
+  public List<MetaDataAttr> getAdditionalAttributes() {
+    return ATTRIBUTE_0;
+  }
+  
+  /**
+   * On first call, looks up the information using JavaBeans introspection, but then
+   * caches the result for subsequent calls.
+   * 
+   * Any class which wants to add additional parameters needs to implement / override
+   * getAdditionalParameters.
+   * @return an array of Attribute objects associated with this class
+   * @throws  
+   */
+  MetaDataAttr[] getAttributes() {
+    final Class<? extends MetaDataObject_impl> clazz = this.getClass();
+    MetaDataAttr[] attrs = class2attrsMap.get(clazz), otherAttrs = null;
+    if (null == attrs) {
+      PropertyDescriptor[] pds;
+      try {
+        pds = Introspector.getBeanInfo(clazz, Introspector.IGNORE_ALL_BEANINFO).getPropertyDescriptors();
+      } catch (IntrospectionException e) {
+        throw new UIMARuntimeException(e);
+      }
+      ArrayList<MetaDataAttr> resultList = new ArrayList<MetaDataAttr>(pds.length);
+      for (PropertyDescriptor pd : pds) {
+        // only include properties with read and write methods,
+        // and don't include the SourceUrl property, which is for
+        // internal bookkeeping and shouldn't affect object equality
+        // and don't include infoset, which is for internal bookkeeping
+        // related to comments and whitespace
+        if (pd.getReadMethod() != null && pd.getWriteMethod() != null
+                && !pd.getName().equals(PROP_NAME_SOURCE_URL)
+                && !pd.getName().equals(PROP_NAME_INFOSET)) {
+          String propName = pd.getName();
+          Class<?> propClass = pd.getPropertyType();
+          // translate primitive types (int, boolean, etc.) to wrapper classes
+          if (propClass.isPrimitive()) {
+            propClass = getWrapperClass(propClass);
+          }
+          resultList.add(new MetaDataAttr(propName, pd.getReadMethod(), pd.getWriteMethod(), propClass));
+        }
+      }
+      resultList.addAll(getAdditionalAttributes());
+      attrs = resultList.toArray(new MetaDataAttr[resultList.size()]);
+      otherAttrs = class2attrsMap.putIfAbsent(clazz, attrs);
+      attrs = (otherAttrs != null) ? otherAttrs : attrs;
+    }
+    return attrs;
+  }
+  
+  /**
    * Returns a list of <code>NameClassPair</code> objects indicating the attributes of this object
    * and the String names of the Classes of the attributes' values. 
    *   For primitive types, the wrapper classes will be
@@ -135,8 +246,11 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * Several subclasses override this, to add additional items to the list.
    * 
    * @see org.apache.uima.resource.metadata.MetaDataObject#listAttributes()
+   * @deprecated - use getAttributes
    */
+  @Deprecated
   public List<NameClassPair> listAttributes() {
+    
     try {
       PropertyDescriptor[] props = getPropertyDescriptors();
       List<NameClassPair> resultList = new ArrayList<NameClassPair>(props.length);
@@ -164,17 +278,29 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     }
   }
 
+  private Object getAttributeValue(MetaDataAttr attr) {
+    final Method reader = attr.reader;
+    if (reader != null) {
+      try {
+        return reader.invoke(this);
+      } catch (Exception e) {
+        throw new UIMARuntimeException(e);
+      }
+    }
+    return null;
+  }
+  
   /**
    * @see org.apache.uima.resource.metadata.MetaDataObject#getAttributeValue(String)
    */
   public Object getAttributeValue(String aName) {
     try {
-      PropertyDescriptor[] props = getPropertyDescriptors();
-      for (int i = 0; i < props.length; i++) {
-        if (props[i].getName().equals(aName)) {
-          Method reader = props[i].getReadMethod();
+      MetaDataAttr[] attrs = getAttributes();
+      for (MetaDataAttr attr : attrs) {
+        if (attr.name.equals(aName)) {
+          Method reader = attr.reader;
           if (reader != null) {
-            return reader.invoke(this, new Object[0]);
+            return reader.invoke(this);
           }
         }
       }
@@ -195,18 +321,13 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    *         if there is no attribute with the given name.
    */
   public Class getAttributeClass(String aName) {
-    try {
-      // note: listAttributes() is overridden in some subclasses to add additional items
-      List<NameClassPair> attrList = listAttributes();
-      for (NameClassPair ncp : attrList) {
-        if (ncp.getName().equals(aName)) {
-          return Class.forName(ncp.getClassName()); 
-        }
+    MetaDataAttr[] attrList = getAttributes();
+    for (MetaDataAttr attr : attrList) {
+      if (attr.name.equals(aName)) {
+        return attr.clazz; 
       }
-      return null;
-    } catch (Exception e) {
-      throw new UIMARuntimeException(e);
     }
+    return null;
   }
 
   /**
@@ -218,15 +339,30 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     return true;
   }
 
+  private void setAttributeValue(MetaDataAttr attr, Object aValue) {
+    Method writer = attr.writer;
+    if (writer != null) {
+      try {
+        writer.invoke(this, aValue);
+      } catch (IllegalArgumentException e) {
+        throw new UIMA_IllegalArgumentException(
+                UIMA_IllegalArgumentException.METADATA_ATTRIBUTE_TYPE_MISMATCH, new Object[] {
+                    aValue, attr.name }, e);
+      } catch (Exception e) {
+        throw new UIMARuntimeException(e);
+      }
+    }
+  }
+  
   /**
    * @see org.apache.uima.resource.metadata.MetaDataObject#setAttributeValue(String, Object)
    */
   public void setAttributeValue(String aName, Object aValue) {
     try {
-      PropertyDescriptor[] props = getPropertyDescriptors();
-      for (int i = 0; i < props.length; i++) {
-        if (props[i].getName().equals(aName)) {
-          Method writer = props[i].getWriteMethod();
+      MetaDataAttr[] attrs = getAttributes();
+      for (MetaDataAttr attr : attrs) {
+        if (attr.name.equals(aName)) {
+          Method writer = attr.writer;
           if (writer != null) {
             try {
               writer.invoke(this, new Object[] { aValue });
@@ -317,6 +453,8 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * Sets the URL from which this object was parsed. Typically only the XML parser sets this. This
    * recursively sets the source URL of all descendants of this object.
    * 
+   * Recursion doesn't happen for sub arrays/maps of maps or arrays.
+   * 
    * @param aUrl
    *          the location of the XML file from which this object was parsed
    */
@@ -324,27 +462,23 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     mSourceUrl = aUrl;
 
     // set recursively on subobjects
-    List<NameClassPair> attrs = listAttributes();
-    Iterator<NameClassPair> i = attrs.iterator();
-    while (i.hasNext()) {
-      String attrName = ((NameClassPair) i.next()).getName();
-      Object val = getAttributeValue(attrName);
+    MetaDataAttr[] attrs = getAttributes();
+    for (MetaDataAttr attr : attrs) {
+      Object val = getAttributeValue(attr);
       if (val instanceof MetaDataObject_impl) {
         ((MetaDataObject_impl) val).setSourceUrl(aUrl);
       } else if (val != null && val.getClass().isArray()) {
-        int len = Array.getLength(val);
-        for (int j = 0; j < len; j++) {
-          Object arrayElem = Array.get(val, j);
-          if (arrayElem instanceof MetaDataObject_impl) {
-            ((MetaDataObject_impl) arrayElem).setSourceUrl(aUrl);
+        Object[] arrayVal = (Object[]) val;
+        for (Object item : arrayVal) {
+          if (item instanceof MetaDataObject_impl) {
+            ((MetaDataObject_impl) item).setSourceUrl(aUrl);
           }
         }
       } else if (val instanceof Map) {
-        Iterator valIter = ((Map) val).values().iterator();
-        while (valIter.hasNext()) {
-          Object mapVal = valIter.next();
-          if (mapVal instanceof MetaDataObject_impl) {
-            ((MetaDataObject_impl) mapVal).setSourceUrl(aUrl);
+        Collection values = ((Map) val).values();
+        for (Object value : values) {
+          if (value instanceof MetaDataObject_impl) {
+            ((MetaDataObject_impl) value).setSourceUrl(aUrl);
           }
         }
       }
@@ -366,13 +500,13 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     }
 
     // now clone all values that are MetaDataObjects
-    List<NameClassPair> attrs = listAttributes();
-    for (NameClassPair ncp : attrs) {
-      String attrName = ncp.getName();
-      Object val = getAttributeValue(attrName);
+    MetaDataAttr[] attrs = getAttributes();
+    for (MetaDataAttr attr : attrs) {
+//      String attrName = ncp.name;
+      Object val = getAttributeValue(attr);
       if (val instanceof MetaDataObject) {
         Object clonedVal = ((MetaDataObject) val).clone();
-        clone.setAttributeValue(attrName, clonedVal);
+        clone.setAttributeValue(attr, clonedVal);
       } else if (val != null && val.getClass().isArray()) {
         // clone the array, and clone any MetaDataObjects in the array
         Class componentType = val.getClass().getComponentType();
@@ -385,7 +519,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
           }
           Array.set(arrayClone, j, component);
         }
-        clone.setAttributeValue(attrName, arrayClone);
+        clone.setAttributeValue(attr, arrayClone);
       }
     }
     return clone;
@@ -397,12 +531,10 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
   public String toString() {
     StringBuffer buf = new StringBuffer();
     buf.append(getClass().getName()).append(": \n");
-    List<NameClassPair> attrList = listAttributes();
-    Iterator<NameClassPair> i = attrList.iterator();
-    while (i.hasNext()) {
-      NameClassPair ncp = (NameClassPair) i.next();
-      buf.append(ncp.getName() + " = ");
-      Object val = getAttributeValue(ncp.getName());
+    MetaDataAttr[] attrList = getAttributes();
+    for (MetaDataAttr attr : attrList) {
+      buf.append(attr.name + " = ");
+      Object val = getAttributeValue(attr);
       if (val == null)
         buf.append("NULL");
       else if (val instanceof Object[]) {
@@ -429,28 +561,28 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * @return true if and only if this object is equal to <code>aObj</code>
    */
   public boolean equals(Object aObj) {
-    if (!(aObj instanceof MetaDataObject)) {
+    if (!(aObj instanceof MetaDataObject_impl)) {
       return false;
     }
-    MetaDataObject mdo = (MetaDataObject) aObj;
+    MetaDataObject_impl mdo = (MetaDataObject_impl) aObj;
     // get the attributes (and classes) for the two objects
-    List<NameClassPair> theseAttrs = this.listAttributes();
-    List<NameClassPair> thoseAttrs = mdo.listAttributes();
+    
+    MetaDataAttr[] theseAttrs = this.getAttributes();
+    MetaDataAttr[] thoseAttrs = mdo.getAttributes();
     // attribute lists must be same length
-    if (theseAttrs.size() != thoseAttrs.size()) {
+    if (theseAttrs.length != thoseAttrs.length) {
       return false;
     }
     // iterate through all attributes in this object
-    Iterator<NameClassPair> i = theseAttrs.iterator();
-    while (i.hasNext()) {
-      NameClassPair ncp = i.next();
+    List<MetaDataAttr> thoseAttrsAsList = Arrays.asList(thoseAttrs);
+    for (MetaDataAttr attr : theseAttrs) {
       // other object must contain this attribute
-      if (!thoseAttrs.contains(ncp)) {
+      if (!thoseAttrsAsList.contains(attr)) {
         return false;
       }
       // get values and test equivalency
-      Object val1 = this.getAttributeValue(ncp.getName());
-      Object val2 = mdo.getAttributeValue(ncp.getName());
+      Object val1 = this.getAttributeValue(attr);
+      Object val2 = mdo.getAttributeValue(attr);
       if (!valuesEqual(val1, val2)) {
         return false;
       }
@@ -533,34 +665,21 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     int hashCode = 0;
 
     // add the hash codes of all attributes
-    List<NameClassPair> attrs = listAttributes();
-    Iterator<NameClassPair> i = attrs.iterator();
-    while (i.hasNext()) {
-      String attrName = ((NameClassPair) i.next()).getName();
-      Object val = getAttributeValue(attrName);
+    MetaDataAttr[] attrs = getAttributes();
+    for (MetaDataAttr attr : attrs) {
+      String attrName = attr.name;
+      Object val = getAttributeValue(attr);
       if (val != null) {
         if (val instanceof Object[]) {
-          Object[] arr = (Object[]) val;
-          for (int j = 0; j < arr.length; j++) {
-            if (arr[j] != null) {
-              hashCode += arr[j].hashCode();
-            }
-          }
-        } else if (val instanceof Map) // only need to do this to handle Maps w/ array vals
-        {
-          Set entrySet = ((Map) val).entrySet();
-          Iterator it = entrySet.iterator();
-          while (it.hasNext()) {
-            Map.Entry entry = (Map.Entry) it.next();
+          hashCode += Arrays.hashCode((Object[]) val);
+        } else if (val instanceof Map) {// only need to do this to handle Maps w/ array vals
+             // note doesn't handle maps whose values are maps.  
+          Set<Map.Entry> entrySet = ((Map) val).entrySet();
+          for (Map.Entry entry : entrySet) {
             hashCode += entry.getKey().hashCode();
             Object subval = entry.getValue();
             if (subval instanceof Object[]) {
-              Object[] arr = (Object[]) subval;
-              for (int j = 0; j < arr.length; j++) {
-                if (arr[j] != null) {
-                  hashCode += arr[j].hashCode();
-                }
-              }
+              hashCode += Arrays.hashCode((Object[]) subval);
             } else {
               hashCode += subval.hashCode();
             }
@@ -1367,14 +1486,12 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    *         <code>MetaDataObject_impl</code>.
    * 
    * @throws IntrospectionException if introspection fails
+   * @deprecated - use getAttributes instead
    */
-  protected PropertyDescriptor[] getPropertyDescriptors() throws IntrospectionException { 
-    PropertyDescriptor[] pd = mPropertyDescriptorsMap.get(this.getClass()), pdOther = null;
-    if (null == pd) {
-      pd = Introspector.getBeanInfo(this.getClass(), Introspector.IGNORE_ALL_BEANINFO).getPropertyDescriptors();
-      pdOther = mPropertyDescriptorsMap.putIfAbsent(this.getClass(), pd);
-    }
-    return (pdOther != null) ? pdOther : pd;
+  @Deprecated
+  // never called, we hope.  No longer caches anything.  
+  protected PropertyDescriptor[] getPropertyDescriptors() throws IntrospectionException {    
+    return Introspector.getBeanInfo(this.getClass(), Introspector.IGNORE_ALL_BEANINFO).getPropertyDescriptors();
   }
 
   

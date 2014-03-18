@@ -19,11 +19,14 @@
 
 package org.apache.uima.resource.metadata.impl;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.UIMA_IllegalArgumentException;
 import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
 import org.apache.uima.resource.metadata.MetaDataObject;
@@ -48,6 +51,14 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
 
   static final long serialVersionUID = 3476535733588304983L;
 
+  private static final Method methodGetSettingsForGroups;
+  static {
+    try {
+      methodGetSettingsForGroups = ConfigurationParameterSettings.class.getDeclaredMethod("getSettingsForGroups");
+    } catch (Exception e) {
+      throw new UIMARuntimeException(e);
+    }
+  }
   /**
    * Settings for parameters that are not in any group.
    */
@@ -216,13 +227,25 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
     return XMLIZATION_INFO;
   }
 
+  @Override
+  public List<MetaDataAttr> getAdditionalAttributes() {
+    return Collections.singletonList(
+        new MetaDataAttr(
+            "settingsForGroups",
+            methodGetSettingsForGroups,
+            null,  // no writer
+            Map.class));
+  }
+  
   /**
    * Overridden to add the settingsForGroups property to the result list. Default introspection
    * implementation won't return it because it has no set method. We've also overridden the XML
    * import/export methods, though, so that set methods are not required.
    * 
    * @see MetaDataObject#listAttributes()
+   * @deprecated - use getAdditionalAttributes instead
    */
+  @Deprecated
   public List<NameClassPair> listAttributes() {
     List<NameClassPair> result = super.listAttributes();
     result.add(new NameClassPair("settingsForGroups", Map.class.getName()));
