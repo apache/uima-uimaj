@@ -20,6 +20,7 @@
 package org.apache.uima.cas.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.BitSet;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
@@ -62,7 +63,11 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 
   /**
    * A pair of an index and an iterator cache. An iterator cache is the set of all indexes necessary
-   * to create an iterator for the type of the index. compareTo() is based on types and the
+   * to create an iterator for the type of the index.
+   * 
+   *  This includes the index for the type of this index, as well as all subtypes.
+   *  
+   * compareTo() is based on types and the
    * comparator of the index.
    */
   private class IndexIteratorCachePair implements Comparable<IndexIteratorCachePair> {
@@ -72,9 +77,22 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 
     // A list of indexes (the sub-indexes that we need for an
     // iterator). I.e., one index for each type that's subsumed by the
-    // iterator
-    // type.
-    private ArrayList<FSLeafIndexImpl<?>> iteratorCache = null;
+    // iterator's type.
+    // VOLATILE to permit double-checked locking technique
+    private volatile ArrayList<FSLeafIndexImpl<?>> iteratorCache = null;
+
+    @Override
+    public String toString() {
+      StringBuilder sb = new StringBuilder("IndexIteratorCachePair, index=");
+      sb.append(index).append('\n');
+      int i = 0;
+      for (FSLeafIndexImpl lii : iteratorCache) {
+        sb.append("  cache ").append(i++);
+        sb.append("  ").append(lii).append('\n');
+      }
+      
+      return sb.toString();
+    }
 
     private IndexIteratorCachePair() {
       super();
@@ -82,6 +100,9 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 
     // Two IICPs are equal iff their index comparators are equal AND their
     // indexing strategy is the same.
+    // Equal is used when creating the index iterator cache to select
+    //   from the set of all IndexIteratorCachePairs for a particular type,
+    //   the one that goes with the same index definition
     @Override
     public boolean equals(Object o) {
       if (!(o instanceof IndexIteratorCachePair)) {
@@ -92,37 +113,57 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
           && (this.index.getIndexingStrategy() == iicp.index.getIndexingStrategy());
     }
 
+// if this throws, then the Eclipse debugger fails to show the object saying 
+// com.sun.jdi.InvocationException occurred invoking method. 
     @Override
     public int hashCode() {
-      throw new UnsupportedOperationException();
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + this.index.getComparator().hashCode();
+      result = prime * result + this.index.getIndexingStrategy();
+      return result;
     }
 
+
+
     // Populate the cache.
+    // For read-only CASes, this may be called on multiple threads, so do some synchronization
+        
     private void createIndexIteratorCache() {
+      // using double-checked sync - see http://en.wikipedia.org/wiki/Double-checked_locking#Usage_in_Java
       if (this.iteratorCache != null) {
         return;
       }
-      this.iteratorCache = new ArrayList<FSLeafIndexImpl<?>>();
-      final Type rootType = this.index.getComparator().getType();
-      ArrayList<Type> allTypes = null;
-      if (this.index.getIndexingStrategy() == FSIndex.DEFAULT_BAG_INDEX) {
-        allTypes = new ArrayList<Type>();
-        allTypes.add(rootType);
-      } else {
-        allTypes = getAllSubsumedTypes(rootType, FSIndexRepositoryImpl.this.typeSystem);
-      }
-      final int len = allTypes.size();
-      int typeCode, indexPos;
-      ArrayList<IndexIteratorCachePair> indexList;
-      for (int i = 0; i < len; i++) {
-        typeCode = ((TypeImpl) allTypes.get(i)).getCode();
-        indexList = FSIndexRepositoryImpl.this.indexArray[typeCode];
-        indexPos = indexList.indexOf(this);
-        if (indexPos >= 0) {
-          this.iteratorCache.add(indexList.get(indexPos).index);
+      synchronized (this) {
+        if (this.iteratorCache != null) {
+          return;
         }
-      }
+        final ArrayList<FSLeafIndexImpl<?>> tempIteratorCache = new ArrayList<FSLeafIndexImpl<?>>();
+        final Type rootType = this.index.getComparator().getType();
+        ArrayList<Type> allTypes = null;
+        if (this.index.getIndexingStrategy() == FSIndex.DEFAULT_BAG_INDEX) {
+          allTypes = new ArrayList<Type>();
+          allTypes.add(rootType);
+        } else {
+          // includes the original type as element 0
+          allTypes = getAllSubsumedTypes(rootType, FSIndexRepositoryImpl.this.typeSystem);
+        }
+        final int len = allTypes.size();
+        int typeCode, indexPos;
+        ArrayList<IndexIteratorCachePair> indexList;
+        for (int i = 0; i < len; i++) {
+          typeCode = ((TypeImpl) allTypes.get(i)).getCode();
+          indexList = FSIndexRepositoryImpl.this.indexArray[typeCode];
+          indexPos = indexList.indexOf(this);
+          if (indexPos >= 0) {
+            tempIteratorCache.add(indexList.get(indexPos).index);
+          }
+        }
+        // assign to "volatile" at end, after all initialization is complete
+        this.iteratorCache = tempIteratorCache;   
+      }  // end of synchronized block
     }
+
 
     /**
      * @see java.lang.Comparable#compareTo(Object)
@@ -208,6 +249,18 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 
     private PointerIterator() {
       super();
+    }
+
+    @Override
+    public String toString() {
+      StringBuilder sb = new StringBuilder("PointerIterator [iicp=" + iicp + ", indexes=\n");
+      int i = 0;
+      for (ComparableIntPointerIterator item : indexes) {
+        sb.append("  ").append(i++).append("  ").append(item).append('\n');
+      }
+      sb.append("  lastValidIndex="
+          + lastValidIndex + ", wentForward=" + wentForward + ", iteratorComparator=" + iteratorComparator + "]");
+      return sb.toString();
     }
 
     private void initPointerIterator(IndexIteratorCachePair iicp0) {
@@ -640,6 +693,12 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     // An array of integer arrays, one for each subtype.
     private ComparableIntPointerIterator index;
 
+    
+    @Override
+    public String toString() {
+      return "LeafPointerIterator [iicp=" + iicp + ", index=" + index + "]";
+    }
+
     private LeafPointerIterator() {
       super();
     }
@@ -912,7 +971,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 
   // An array of ArrayLists, one for each type in the type hierarchy.
   // The ArrayLists are unordered lists of IndexIteratorCachePairs for
-  // that type.
+  // that type, corresponding to the different index definitions over that type
   private ArrayList<IndexIteratorCachePair>[] indexArray;
 
   // an array of ints, one for each type in the type hierarchy.
@@ -1177,12 +1236,14 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     return iicp;
   }
 
+  // includes the original type as element 0  
   private static final ArrayList<Type> getAllSubsumedTypes(Type t, TypeSystem ts) {
     final ArrayList<Type> v = new ArrayList<Type>();
     addAllSubsumedTypes(t, ts, v);
     return v;
   }
 
+  // includes the original type as element 0
   private static final void addAllSubsumedTypes(Type t, TypeSystem ts, ArrayList<Type> v) {
     v.add(t);
     final List<Type> sub = ts.getDirectSubtypes(t);
