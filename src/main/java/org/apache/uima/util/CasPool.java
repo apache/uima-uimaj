@@ -19,10 +19,16 @@
 
 package org.apache.uima.util;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Properties;
+import java.util.Set;
 import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -42,8 +48,15 @@ import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
  * <p>
  * Clients check-out CAS instances from the pool using the {@link #getCas()} method and check-in CAS
  * instances using the {@link #releaseCas(CAS)} method.
- * 
- * 
+ * <p>
+ * Design considerations:
+ *   The pool favors reuse of CASes is some arbitrary preferred priority order.  For example if there is a pool
+ *   of 10 CASes, but only 2 are being check-out at any given time, the same 2 CASes will be used (as opposed
+ *   to a FIFO approach where all the CASes would be cycled through).
+ *   
+ *   If more threads request CASes from the pool than are available, the pool (optionally) puts requesting
+ *   threads into a wait state.  When CASes become available, the longest-waiting thread gets the CAS; this
+ *   approach prevents starvation behavior (where some threads get all the CASes and others get none).
  * 
  */
 public class CasPool {
@@ -58,11 +71,29 @@ public class CasPool {
    */
   private static final Class<CasPool> CLASS_NAME = CasPool.class;
 
-  private Vector<CAS> mAllInstances = new Vector<CAS>();
+  // no sync needed because this list is filled during initialization of this instance, and
+  // from then on is read-only, which can occur in parallel
+  final private Set<CAS> mAllInstances;
 
-  private Vector<CAS> mFreeInstances = new Vector<CAS>();
-
-  private int mNumInstances;
+  
+  // We use this rather than a form of BlockingQueue, to achieve an (arbitrary) LIFO-like reuse of CASes
+  // this is a set rather than an array, to speed up "contains()" check used when releasing
+  //   (user code could call release multiple times on same cas...)
+  final private Set<CAS> mFreeInstances;
+ 
+  final private int mNumInstances;
+  
+  // a fair lock to prevent starvation of a thread
+  final private Semaphore permits;
+  
+  private CasPool(int aNumInstances, Set<CAS> allInstances) {
+    mNumInstances = aNumInstances;
+    permits = new Semaphore(mNumInstances, true);
+    mAllInstances = allInstances;
+    Set<CAS> free = Collections.newSetFromMap(new ConcurrentHashMap<CAS, Boolean>());;
+    free.addAll(mAllInstances);
+    mFreeInstances = free;  // concurrent safe publishing idiom 
+  }
 
   /**
    * Creates a new CasPool
@@ -84,10 +115,9 @@ public class CasPool {
   public CasPool(int aNumInstances, Collection<? extends ProcessingResourceMetaData> aCollectionOfProcessingResourceMetaData,
           Properties aPerformanceTuningSettings, ResourceManager aResourceManager)
           throws ResourceInitializationException {
-    mNumInstances = aNumInstances;
-
-    fillPool(aCollectionOfProcessingResourceMetaData, aPerformanceTuningSettings, aResourceManager);
+    this(aNumInstances, fillPool(aNumInstances, aCollectionOfProcessingResourceMetaData, aPerformanceTuningSettings, aResourceManager));
   }
+  
 
   /**
    * Creates a new CasPool
@@ -103,11 +133,11 @@ public class CasPool {
    */
   public CasPool(int aNumInstances, AnalysisEngine aAnalysisEngine)
           throws ResourceInitializationException {
-    mNumInstances = aNumInstances;
-    ArrayList<ProcessingResourceMetaData> mdList = new ArrayList<ProcessingResourceMetaData>();
-    mdList.add((ProcessingResourceMetaData) aAnalysisEngine.getMetaData());
-    fillPool(mdList, aAnalysisEngine.getPerformanceTuningSettings(), aAnalysisEngine
-            .getResourceManager());
+    this(aNumInstances, 
+         fillPool(aNumInstances, 
+                  Collections.singletonList((ProcessingResourceMetaData) aAnalysisEngine.getMetaData()),
+                  aAnalysisEngine.getPerformanceTuningSettings(),
+                  aAnalysisEngine.getResourceManager()));
   }
 
   /**
@@ -123,10 +153,7 @@ public class CasPool {
    */
   public CasPool(int aNumInstances, ProcessingResourceMetaData aMetaData)
           throws ResourceInitializationException {
-    mNumInstances = aNumInstances;
-    ArrayList<ProcessingResourceMetaData> mdList = new ArrayList<ProcessingResourceMetaData>();
-    mdList.add(aMetaData);
-    fillPool(mdList, null, null);
+    this(aNumInstances, fillPool(aNumInstances, Collections.singletonList(aMetaData), null, null));
   }
 
   /**
@@ -142,11 +169,7 @@ public class CasPool {
    */
   public CasPool(int aNumInstances, ProcessingResourceMetaData aMetaData,
           ResourceManager aResourceManager) throws ResourceInitializationException {
-    mNumInstances = aNumInstances;
-
-    ArrayList<ProcessingResourceMetaData> mdList = new ArrayList<ProcessingResourceMetaData>();
-    mdList.add(aMetaData);
-    fillPool(mdList, null, aResourceManager);
+    this(aNumInstances, fillPool(aNumInstances, Collections.singletonList(aMetaData), null, aResourceManager));
   }
 
   /**
@@ -165,8 +188,7 @@ public class CasPool {
    */
   public CasPool(int aNumInstances, CasDefinition aCasDefinition,
           Properties aPerformanceTuningSettings) throws ResourceInitializationException {
-    mNumInstances = aNumInstances;
-    fillPool(aCasDefinition, aPerformanceTuningSettings);
+    this(aNumInstances, fillPool(aNumInstances, aCasDefinition, aPerformanceTuningSettings));
   }
 
   /**
@@ -185,8 +207,7 @@ public class CasPool {
    */
   public CasPool(int aNumInstances, CasManager aCasManager,
           Properties aPerformanceTuningSettings) throws ResourceInitializationException {
-    mNumInstances = aNumInstances;
-    fillPool(aCasManager, aPerformanceTuningSettings);
+    this(aNumInstances, fillPool(aNumInstances, aCasManager, aPerformanceTuningSettings));
   }
   
   /**
@@ -196,48 +217,16 @@ public class CasPool {
    *         client may {@link Object#wait()} on this object in order to be notified when an
    *         instance becomes available).
    */
-  public synchronized CAS getCas() {
-    if (!mFreeInstances.isEmpty()) {
-      return (CAS) mFreeInstances.remove(0);
-    } else {
-      // no instances available
+  public CAS getCas() {
+    boolean gotPermit;
+    gotPermit = permits.tryAcquire();
+    if (!gotPermit) {
       return null;
     }
+    
+    return getCasAfterPermitAcquired();      
   }
-
-  /**
-   * Checks in a CAS to the pool. This automatically calls the {@link CAS#reset()} method, to ensure
-   * that when the CAS is later retrieved from the pool it will be ready to use. Also notifies other
-   * Threads that may be waiting for an instance to become available.
-   * 
-   * @param aCas
-   *          the Cas to release
-   */
-  public synchronized void releaseCas(CAS aCas) {
-    // note the pool stores references to the InitialView of each CAS
-    aCas.setCurrentComponentInfo(null);  // https://issues.apache.org/jira/browse/UIMA-3655
-    CAS cas = aCas.getView(CAS.NAME_DEFAULT_SOFA);
-
-    // make sure this CAS actually belongs to this pool and is checked out
-    if (!mAllInstances.contains(cas) || mFreeInstances.contains(cas)) {
-      UIMAFramework.getLogger(CLASS_NAME).logrb(Level.WARNING, CLASS_NAME.getName(), "releaseCas",
-              LOG_RESOURCE_BUNDLE, "UIMA_return_cas_to_pool__WARNING");
-    } else {
-      // restore the ClassLoader and unlock the CAS, since release() can be called 
-      // from within a CAS Multiplier.
-      ((CASImpl)cas).restoreClassLoaderUnlockCas(); 
-      
-      // reset CAS
-      cas.reset();
-      
-      // Add the CAS to the end of the free instances List
-      mFreeInstances.add(cas);
-    }
-
-    // Notify any threads waiting on this object
-    notifyAll();
-  }
-
+  
   /**
    * Checks out a CAS from the pool. If none is currently available, wait for the specified amount
    * of time for one to be checked in.
@@ -248,23 +237,88 @@ public class CasPool {
    * @return a CAS instance. Returns <code>null</code> if none are available within the specified
    *         timeout period.
    */
-  public synchronized CAS getCas(long aTimeout) {
-//    long startTime = new Date().getTime();
-    long startTime = System.currentTimeMillis();
-    CAS cas;
-    while ((cas = getCas()) == null) {
-      try {
-        wait(aTimeout);
-      } catch (InterruptedException e) {
+  public CAS getCas(long aTimeout) {
+    if (aTimeout == 0) {
+      permits.acquireUninterruptibly();
+      return getCasAfterPermitAcquired();
+    }
+    boolean gotIt;
+    try {
+      gotIt = permits.tryAcquire(aTimeout, TimeUnit.MILLISECONDS);
+    } catch (InterruptedException e) {
+      return null;
+    }
+    
+    if (!gotIt) {
+      return null;
+    }    
+    return getCasAfterPermitAcquired();
+  }
+
+  
+  private CAS getCasAfterPermitAcquired() {
+    // synchronize so only one iterator is running
+    synchronized (mFreeInstances) {
+      final Iterator<CAS> freeIterator = mFreeInstances.iterator();
+      if (!freeIterator.hasNext()) {
+        throw new RuntimeException("internal error");
       }
-//    if (aTimeout > 0 && (new Date().getTime() - startTime) >= aTimeout) {
-    if (aTimeout > 0 && (System.currentTimeMillis() - startTime) >= aTimeout) {
-        // Timeout has expired
-        return null;
+      final CAS cas = freeIterator.next();
+      freeIterator.remove();
+//      mFreeInstances.remove(cas);
+//      int debugFree = mFreeInstances.size();
+//      int debugAvail = permits.availablePermits();
+//      if (debugFree != debugAvail) {
+//        System.out.println("  on acquire permits != free: " + debugAvail + " " + debugFree);
+//      }
+      return cas;
+    }
+  }
+
+  /**
+   * Checks in a CAS to the pool. This automatically calls the {@link CAS#reset()} method, to ensure
+   * that when the CAS is later retrieved from the pool it will be ready to use. Also notifies other
+   * Threads that may be waiting for an instance to become available.
+   * 
+   * Synchronized on the CAS to avoid the unnatural case where 
+   * multiple threads attempt to return the same CAS to the pool
+   * at the same time. 
+   * 
+   * @param aCas
+   *          the Cas to release
+   */
+  public void releaseCas(CAS aCas) {
+    // note the pool stores references to the InitialView of each CAS
+    aCas.setCurrentComponentInfo(null);  // https://issues.apache.org/jira/browse/UIMA-3655
+    CAS cas = aCas.getView(CAS.NAME_DEFAULT_SOFA);
+
+    // make sure this CAS actually belongs to this pool and is checked out
+    // synchronize to avoid the same CAS being released on 2 threads
+    synchronized (cas) {
+      if (!mAllInstances.contains(cas) || mFreeInstances.contains(cas)) {
+        UIMAFramework.getLogger(CLASS_NAME).logrb(Level.WARNING, CLASS_NAME.getName(), "releaseCas",
+                LOG_RESOURCE_BUNDLE, "UIMA_return_cas_to_pool__WARNING");
+      } else {
+        // restore the ClassLoader and unlock the CAS, since release() can be called 
+        // from within a CAS Multiplier.
+        ((CASImpl)cas).restoreClassLoaderUnlockCas(); 
+        
+        // reset CAS
+        cas.reset();
+        
+        // Add the CAS to the end of the free instances List
+        mFreeInstances.add(cas);
+        permits.release();  // should follow adding cas back to mFreeInstances
       }
     }
-    return cas;
+
+    // Notify any threads waiting on this object
+    // not needed by UIMA Core - other users may need.
+    synchronized (this) {
+      notifyAll();
+    }
   }
+
 
   /**
    * Gets the size of this pool (the total number of CAS instances that it can hold).
@@ -280,7 +334,7 @@ public class CasPool {
    * @return the numberof available CASes 
    */
   public int getNumAvailable() {
-    return getFreeInstances().size();
+    return mFreeInstances.size();
   }  
 
   /**
@@ -288,45 +342,50 @@ public class CasPool {
    * @param performanceTuningSettings
    * @param resourceManager
    */
-  private void fillPool(Collection<? extends ProcessingResourceMetaData> mdList, Properties performanceTuningSettings,
+  private static Set<CAS> fillPool(int aNumInstances, Collection<? extends ProcessingResourceMetaData> mdList, Properties performanceTuningSettings,
           ResourceManager resourceManager) throws ResourceInitializationException {
     CasDefinition casDef = new CasDefinition(mdList, resourceManager);
-    fillPool(casDef, performanceTuningSettings);
+    return fillPool(aNumInstances, casDef, performanceTuningSettings);
   }
 
-  private void fillPool(CasDefinition casDef, Properties performanceTuningSettings)
+  private static Set<CAS> fillPool(int aNumInstances, CasDefinition casDef, Properties performanceTuningSettings)
           throws ResourceInitializationException {
     // create first CAS from metadata
     CAS c0 = CasCreationUtils.createCas(casDef, performanceTuningSettings);
+    Set<CAS> all = new HashSet<CAS>(aNumInstances);
     // set owner so cas.release() can return it to the pool
     ((CASImpl) c0).setOwner(casDef.getCasManager());
-    mAllInstances.add(c0);
-    mFreeInstances.add(c0);
+    all.add(c0);
     // create additional CASes that share same type system
-    for (int i = 1; i < mNumInstances; i++) {
+    for (int i = 1; i < aNumInstances; i++) {
       CAS c = CasCreationUtils.createCas(casDef, performanceTuningSettings, c0.getTypeSystem());
       ((CASImpl) c).setOwner(casDef.getCasManager());
-      mAllInstances.add(c);
-      mFreeInstances.add(c);
+      all.add(c);
     }
+    return all;
   }
 
-  private void fillPool(CasManager casManager, Properties performanceTuningSettings)
+  private static Set<CAS> fillPool(int aNumInstances, CasManager casManager, Properties performanceTuningSettings)
           throws ResourceInitializationException {
+    Set<CAS> all = new HashSet<CAS>(aNumInstances);
     // create additional CASes that share same type system
-    for (int i = 0; i < mNumInstances; i++) {
+    for (int i = 0; i < aNumInstances; i++) {
       CAS c = casManager.createNewCas(performanceTuningSettings);
       ((CASImpl) c).setOwner(casManager);
-      mAllInstances.add(c);
-      mFreeInstances.add(c);
+      all.add(c);
     }
+    return all;
   }  
   
+  // no callers as of March 2014
+  // left as Vector
   protected Vector<CAS> getAllInstances() {
-    return mAllInstances;
+    return new Vector<CAS>(mAllInstances);
   }
 
+  // no callers as of March 2014
+  // left as Vector
   protected Vector<CAS> getFreeInstances() {
-    return mFreeInstances;
+    return new Vector<CAS>(mFreeInstances);
   }
 }
