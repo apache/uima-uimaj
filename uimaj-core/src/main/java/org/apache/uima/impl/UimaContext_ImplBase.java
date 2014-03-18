@@ -29,7 +29,6 @@ import java.rmi.server.UID;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +36,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMARuntimeException;
@@ -58,14 +58,17 @@ import org.apache.uima.util.Level;
 import org.apache.uima.util.Settings;
 import org.apache.uima.util.UriUtils;
 
-
+/**
+ * Instances of this class shared by multiple threads
+ */
 public abstract class UimaContext_ImplBase implements UimaContextAdmin {
+
   /**
    * resource bundle for log messages
    */
   private static final String LOG_RESOURCE_BUNDLE = "org.apache.uima.impl.log_messages";
-
-  private ComponentInfo mComponentInfo = new ComponentInfoImpl();
+  
+  final private ComponentInfo mComponentInfo = new ComponentInfoImpl();
 
   /**
    * Fully-qualified name of this context.
@@ -81,6 +84,17 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
 
   /**
    * Size of the CAS pool used to support the {@link #getEmptyCas(Class)} method.
+   * Note: CASes obtained by a CAS Multiplier, which then leave (exit) the CAS Multiplier, 
+   * are not counted toward this limit.
+   * 
+   * Rather, this limit limits the number of CASes that can be obtained while inside an annotator.
+   * The (maybe unobvious) use-case:  Consider an annotator that receives hundreds of CASes, and
+   * sorts them into 3 kinds of aggregations, each of which accumulates information in a separate CAS 
+   * for a while, and then releases these CASes for further processing.  The limit would need to 
+   * be set to 3 for this annotator instance, for this to work.
+   * 
+   * The value of this max is set by calling the annotator's method getCasInstancesRequired method,
+   * a user-supplied method that is used to configure this.  The default is 1.
    */
   protected int mCasPoolSize = 0;
 
@@ -99,25 +113,39 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   /**
    * Keeps track of whether we've created a CAS pool yet, which happens on the first call to
    * {@link #getEmptyCas(Class)}.
+   *   See http://en.wikipedia.org/wiki/Double-checked_locking#Usage_in_Java for why this is volatile
    */
-  private boolean mCasPoolCreated = false;
+  private volatile boolean mCasPoolCreated = false;
 
   /**
    * CASes that have been requested via {@link #getEmptyCas(Class)} minus the number calls
    * the framework has made to {@link #returnedCAS(AbstractCas)} (which indicate that the 
-   * AnalysisComponent has returned a CAS from its next() method or released the CAS. If this 
-   * Set includes all CASes in the Cas Pool and the Analysis Component requests any additional
-   * CASes, then the AnalysisComponent has requested more CASes than it is allocated and we throw 
+   * AnalysisComponent has returned a CAS from its next() method or released the CAS. 
+   * 
+   * If this Set size is at the maximum for this annotator, and the Analysis Component requests any additional
+   * CASes, then the AnalysisComponent has requested more CASes than it is allowed to and we throw 
    * an exception.
+   * 
+   * This was changed from a simple int count to a set, in https://issues.apache.org/jira/browse/UIMA-437
+   * revision 546169 (see history).  CAS Multiplier use counts the CAS as returned after it is produced by the 
+   * next() method when that method returns.  Note that the CAS is not at that point "released" back into the 
+   * CasPool - it is typically following a flow path and will eventually be released at some later point.
+   * The reason it is counted as released in this context's count is that this count limit is for limiting the 
+   * number of CASes that can be requested within one process(), next(), or hasNext() methods, 
+   * simultaneously, before that CAS is set onwards.  Normally this is just 1 (at a time).
+   * 
+   * The set is managed as a ConcurrentMap, to allow "remove" operations to not interlock with add or size operations.
+   * The size check followed by an add is in one sync block within getEmptyCas(), 
+   * locked on the set object itself (not shared with any other locks).
    */
-  protected Set<CAS> mOutstandingCASes = new HashSet<CAS>();
+  final protected Set<CAS> mOutstandingCASes = Collections.newSetFromMap(new ConcurrentHashMap<CAS, Boolean>());
 
   /**
    * Object that implements management interface to the AE.
    */
   protected AnalysisEngineManagementImpl mMBean = new AnalysisEngineManagementImpl();
 
-  private String uniqueIdentifier = "";
+  final private String uniqueIdentifier;
   
   protected Settings mExternalOverrides;
 
@@ -127,10 +155,19 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    */
   public UimaContext_ImplBase() {
     //  Generate unique name for this component
-    uniqueIdentifier = new UID().toString();
-    //  Strip colons and un
-    uniqueIdentifier = uniqueIdentifier.replaceAll(":", "");
-    uniqueIdentifier = uniqueIdentifier.replaceAll("-", "");
+    // this method generates less garbage than replaceAll, etc.
+    String u = new UID().toString();
+    StringBuilder sb = new StringBuilder(u.length());
+    sb.append(u);    
+    // replace colons and minus sign because
+    //   this string is used as a JMX Bean name and those chars are not allowed
+    for (int i = u.length() - 1; i >=0; i--) {
+      char c = sb.charAt(i);
+      if (c == ':' || c == '-') {
+        sb.setCharAt(i, '_');
+      }
+    }
+    uniqueIdentifier = sb.toString();
   }
   /* Returns a unique name of this component
    * 
@@ -585,39 +622,54 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
     else if (aCAS instanceof CASImpl) {
       baseCas = ((CASImpl)aCAS).getBaseCAS();
     }
-    mOutstandingCASes.remove(baseCas);
+    mOutstandingCASes.remove(baseCas); // mOutstandingCASes is thread-safe (Concurrent hash map)
   }
 
   /*
    * (non-Javadoc)
    * 
    * @see org.apache.uima.UimaContext#getEmptyCas(java.lang.Class)
-   * synchronized because tests, then sets mCasPoolCreated
+   * see http://en.wikipedia.org/wiki/Double-checked_locking#Usage_in_Java
    */
-  public synchronized AbstractCas getEmptyCas(Class aCasInterface) {
+  public AbstractCas getEmptyCas(Class aCasInterface) {
     if (!mCasPoolCreated) {
-      // define CAS Pool in the CasManager
-      try {
-        getResourceManager().getCasManager().defineCasPool(this, mCasPoolSize,
-                mPerformanceTuningSettings);
-      } catch (ResourceInitializationException e) {
-        throw new UIMARuntimeException(e);
+      synchronized (this) {
+        if (!mCasPoolCreated) {
+          // define CAS Pool in the CasManager
+          try {
+            getResourceManager().getCasManager().defineCasPool(this, mCasPoolSize,
+                    mPerformanceTuningSettings);
+          } catch (ResourceInitializationException e) {
+            throw new UIMARuntimeException(e);
+          }
+          mCasPoolCreated = true;
+        }
       }
-      mCasPoolCreated = true;
     }
 
     //check if component has exceeded its CAS pool
-    if (mOutstandingCASes.size() == mCasPoolSize) {
-      throw new UIMARuntimeException(UIMARuntimeException.REQUESTED_TOO_MANY_CAS_INSTANCES,
-              new Object[] { getQualifiedContextName(), Integer.toString(mCasPoolSize + 1),
-                  Integer.toString(mCasPoolSize) });
+    CAS cas = null;
+    // note: this sync will block other threads 
+    //  from attempting to get a cas for this instance of UimaContext
+    //  The attempt by the thread to get an instance that gets this
+    //  monitor may, itself, wait for a cas to be available in the pool
+    //    If that happens, the lock on mOutstandingCASes is not released
+    //    during the wait. Because of this, no other request for this
+    //    instance of the cas pool will happen, so no deadlock should result.
+    synchronized (mOutstandingCASes) {
+      if (mOutstandingCASes.size() >= mCasPoolSize) {
+        throw new UIMARuntimeException(UIMARuntimeException.REQUESTED_TOO_MANY_CAS_INSTANCES,
+                new Object[] { getQualifiedContextName(), Integer.toString(mCasPoolSize + 1),
+                    Integer.toString(mCasPoolSize) });
+      }
+      CasManager casManager = getResourceManager().getCasManager();
+//      CAS cas = casManager.getCas(getQualifiedContextName());
+      // this might wait, if the cas pool is empty
+      cas = casManager.getCas(getUniqueName());
+      
+      //add to the set of outstanding CASes
+      mOutstandingCASes.add(((CASImpl)cas).getBaseCAS());
     }
-    CasManager casManager = getResourceManager().getCasManager();
-//    CAS cas = casManager.getCas(getQualifiedContextName());
-    CAS cas = casManager.getCas(getUniqueName());
-    
-    //add to the set of outstanding CASes
-    mOutstandingCASes.add(((CASImpl)cas).getBaseCAS());
 
     // The CAS returned by this method will not be locked 
     //   so users can call the reset() method.  This is due to 
