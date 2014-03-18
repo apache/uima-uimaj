@@ -52,7 +52,9 @@ public interface MetaDataObject extends Cloneable, java.io.Serializable, XMLizab
    *         contains the name of a parameter and the Class of its value. For primitive types, the
    *         wrapper classes will be returned (e.g. <code>java.lang.Integer</code> instead of
    *         int).
+   * @deprecated - use getAttributes() instead, don't override it, use getAdditionalAttributes to specify additional ones
    */
+  @Deprecated
   public List<NameClassPair> listAttributes();
 
   /**

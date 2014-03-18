@@ -22,17 +22,13 @@ package org.apache.uima.resource.metadata.impl;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.uima.util.NameClassPair;
-
 /**
  * A simple concrete MetaDataObject implementation for use in testing the MetaDataObject_impl class.
  */
 public class TestFruitBagObject extends MetaDataObject_impl {
-  
+
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("fruitBag",
           new PropertyXmlInfo[] { new PropertyXmlInfo("fruits") });
-
-  private String mName;
 
   private TestFruitObject[] mFruits;
   
@@ -48,13 +44,26 @@ public class TestFruitBagObject extends MetaDataObject_impl {
     mFruits = aFruits;
   }
 
-  /**
-   * For testing purposes - a hardcoded attribute set. Should be compared with the results of
-   * {@link #listAttributes()}.
-   */
-  static public Set<NameClassPair> getAttributeSet() {
-    Set<NameClassPair> result = new HashSet<NameClassPair>();
-    result.add(new NameClassPair("fruits", TestFruitObject[].class.getName()));
+//  /**
+//   * For testing purposes - a hardcoded attribute set. Should be compared with the results of
+//   * {@link #listAttributes()}.
+//   */
+//  static public Set<NameClassPair> getAttributeSet() {
+//    Set<NameClassPair> result = new HashSet<NameClassPair>();
+//    result.add(new NameClassPair("fruits", TestFruitObject[].class.getName()));
+//    return result;
+//  }
+  
+  static public Set<MetaDataAttr> getMetaDataAttrSet() {
+    Set<MetaDataAttr> result = new HashSet<MetaDataAttr>();
+    try {
+    result.add(new MetaDataAttr("fruits", 
+        TestFruitBagObject.class.getDeclaredMethod("getFruits"), 
+        TestFruitBagObject.class.getDeclaredMethod("setFruits", TestFruitObject[].class),
+        TestFruitObject[].class));
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
     return result;
   }
 
