@@ -84,6 +84,28 @@ public class XMLParser_impl implements XMLParser {
   private static final Class<XMLParser_impl> CLASS_NAME = XMLParser_impl.class;
 
   /**
+   * @return The URL to the Resource Specifier XML Schema file
+   */
+  
+  private static final URL SCHEMA_URL;
+  static
+  {
+    URL schemaURL = XMLParser_impl.class.getResource(RESOURCE_SPECIFIER_SCHEMA_NAME);
+    if (schemaURL == null) {
+      UIMAFramework.getLogger(CLASS_NAME).logrb(Level.WARNING, CLASS_NAME.getName(),
+              "getSchemaURL", LOG_RESOURCE_BUNDLE,
+              "UIMA_resource_specifier_schema_not_found__WARNING");
+    }
+      else {
+        String urlString = schemaURL.toString().replaceAll(" ", "%20");
+      try {
+        schemaURL = new URL(urlString);
+        } catch (MalformedURLException e) { }
+      }
+    SCHEMA_URL = schemaURL;
+    }
+
+  /**
    * Map from XML element names to Class objects.
    */
   protected Map<String, Class<? extends XMLizable>> mElementToClassMap = Collections.synchronizedMap(
@@ -372,8 +394,7 @@ public class XMLParser_impl implements XMLParser {
   public ResourceSpecifier parseResourceSpecifier(XMLInputSource aInput, ParsingOptions aOptions)
           throws InvalidXMLException {
     // attempt to locate resource specifier schema
-    URL schemaURL = getResourceSpecifierSchemaUrl();
-    XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, schemaURL, aOptions);
+    XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, SCHEMA_URL, aOptions);
     if (object instanceof ResourceSpecifier) {
       return (ResourceSpecifier) object;
     } else {
@@ -413,8 +434,7 @@ public class XMLParser_impl implements XMLParser {
   public ResourceMetaData parseResourceMetaData(XMLInputSource aInput, ParsingOptions aOptions)
           throws InvalidXMLException {
     // attempt to locate resource specifier schema
-    URL schemaURL = getResourceSpecifierSchemaUrl();
-    XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, schemaURL, aOptions);
+    XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, SCHEMA_URL, aOptions);
 
     if (object instanceof ResourceMetaData) {
       return (ResourceMetaData) object;
@@ -455,8 +475,7 @@ public class XMLParser_impl implements XMLParser {
   public URISpecifier parseURISpecifier(XMLInputSource aInput, ParsingOptions aOptions)
           throws InvalidXMLException {
     // attempt to locate resource specifier schema
-    URL schemaURL = getResourceSpecifierSchemaUrl();
-    XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, schemaURL, aOptions);
+    XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, SCHEMA_URL, aOptions);
 
     if (object instanceof URISpecifier) {
       return (URISpecifier) object;
@@ -498,8 +517,7 @@ public class XMLParser_impl implements XMLParser {
   public AnalysisEngineDescription parseAnalysisEngineDescription(XMLInputSource aInput,
           ParsingOptions aOptions) throws InvalidXMLException {
     // attempt to locate resource specifier schema
-    URL schemaURL = getResourceSpecifierSchemaUrl();
-    XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, schemaURL, aOptions);
+    XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, SCHEMA_URL, aOptions);
 
     if (object instanceof AnalysisEngineDescription) {
       return (AnalysisEngineDescription) object;
@@ -546,8 +564,7 @@ public class XMLParser_impl implements XMLParser {
   public TaeDescription parseTaeDescription(XMLInputSource aInput, ParsingOptions aOptions)
           throws InvalidXMLException {
     // attempt to locate resource specifier schema
-    URL schemaURL = getResourceSpecifierSchemaUrl();
-    XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, schemaURL, aOptions);
+    XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, SCHEMA_URL, aOptions);
 
     if (object instanceof TaeDescription) {
       return (TaeDescription) object;
@@ -594,8 +611,7 @@ public class XMLParser_impl implements XMLParser {
   public CasConsumerDescription parseCasConsumerDescription(XMLInputSource aInput,
           ParsingOptions aOptions) throws InvalidXMLException {
     // attempt to locate resource specifier schema
-    URL schemaURL = getResourceSpecifierSchemaUrl();
-    XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, schemaURL, aOptions);
+    XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, SCHEMA_URL, aOptions);
 
     if (object instanceof CasConsumerDescription) {
       return (CasConsumerDescription) object;
@@ -621,8 +637,7 @@ public CasInitializerDescription parseCasInitializerDescription(XMLInputSource a
 public CasInitializerDescription parseCasInitializerDescription(XMLInputSource aInput,
           ParsingOptions aOptions) throws InvalidXMLException {
     // attempt to locate resource specifier schema
-    URL schemaURL = getResourceSpecifierSchemaUrl();
-    XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, schemaURL, aOptions);
+    XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, SCHEMA_URL, aOptions);
 
     if (object instanceof CasInitializerDescription) {
       return (CasInitializerDescription) object;
@@ -640,8 +655,7 @@ public CasInitializerDescription parseCasInitializerDescription(XMLInputSource a
   public CollectionReaderDescription parseCollectionReaderDescription(XMLInputSource aInput,
           ParsingOptions aOptions) throws InvalidXMLException {
     // attempt to locate resource specifier schema
-    URL schemaURL = getResourceSpecifierSchemaUrl();
-    XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, schemaURL, aOptions);
+    XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, SCHEMA_URL, aOptions);
 
     if (object instanceof CollectionReaderDescription) {
       return (CollectionReaderDescription) object;
@@ -684,8 +698,7 @@ public CasInitializerDescription parseCasInitializerDescription(XMLInputSource a
   public TypePriorities parseTypePriorities(XMLInputSource aInput, ParsingOptions aOptions)
           throws InvalidXMLException {
     // attempt to locate resource specifier schema
-    URL schemaURL = getResourceSpecifierSchemaUrl();
-    XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, schemaURL, aOptions);
+    XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, SCHEMA_URL, aOptions);
 
     if (object instanceof TypePriorities) {
       return (TypePriorities) object;
@@ -713,9 +726,7 @@ public CasInitializerDescription parseCasInitializerDescription(XMLInputSource a
   public TypeSystemDescription parseTypeSystemDescription(XMLInputSource aInput,
           ParsingOptions aOptions) throws InvalidXMLException {
     // attempt to locate resource specifier schema
-    URL schemaURL = getResourceSpecifierSchemaUrl();
-
-    XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, schemaURL, aOptions);
+    XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, SCHEMA_URL, aOptions);
 
     if (object instanceof TypeSystemDescription) {
       return (TypeSystemDescription) object;
@@ -742,8 +753,7 @@ public CasInitializerDescription parseCasInitializerDescription(XMLInputSource a
   public FsIndexCollection parseFsIndexCollection(XMLInputSource aInput, ParsingOptions aOptions)
           throws InvalidXMLException {
     // attempt to locate resource specifier schema
-    URL schemaURL = getResourceSpecifierSchemaUrl();
-    XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, schemaURL, aOptions);
+    XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, SCHEMA_URL, aOptions);
 
     if (object instanceof FsIndexCollection) {
       return (FsIndexCollection) object;
@@ -771,8 +781,7 @@ public CasInitializerDescription parseCasInitializerDescription(XMLInputSource a
   public ResourceManagerConfiguration parseResourceManagerConfiguration(XMLInputSource aInput,
           ParsingOptions aOptions) throws InvalidXMLException {
     // attempt to locate resource specifier schema
-    URL schemaURL = getResourceSpecifierSchemaUrl();
-    XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, schemaURL, aOptions);
+    XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, SCHEMA_URL, aOptions);
 
     if (object instanceof ResourceManagerConfiguration) {
       return (ResourceManagerConfiguration) object;
@@ -794,8 +803,7 @@ public CasInitializerDescription parseCasInitializerDescription(XMLInputSource a
    */
   public FlowControllerDescription parseFlowControllerDescription(XMLInputSource aInput, ParsingOptions aOptions) throws InvalidXMLException {
     // attempt to locate resource specifier schema
-    URL schemaURL = getResourceSpecifierSchemaUrl();
-    XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, schemaURL, aOptions);
+    XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, SCHEMA_URL, aOptions);
 
     if (object instanceof FlowControllerDescription) {
       return (FlowControllerDescription) object;
@@ -817,8 +825,7 @@ public CasInitializerDescription parseCasInitializerDescription(XMLInputSource a
    */
   public CustomResourceSpecifier parseCustomResourceSpecifier(XMLInputSource aInput, ParsingOptions aOptions) throws InvalidXMLException {
     // attempt to locate resource specifier schema
-    URL schemaURL = getResourceSpecifierSchemaUrl();
-    XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, schemaURL, aOptions);
+    XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, SCHEMA_URL, aOptions);
 
     if (object instanceof CustomResourceSpecifier) {
       return (CustomResourceSpecifier) object;
@@ -840,8 +847,7 @@ public CasInitializerDescription parseCasInitializerDescription(XMLInputSource a
    */
   public PearSpecifier parsePearSpecifier(XMLInputSource aInput, ParsingOptions aOptions) throws InvalidXMLException {
     // attempt to locate resource specifier schema
-    URL schemaURL = getResourceSpecifierSchemaUrl();
-    XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, schemaURL, aOptions);
+    XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, SCHEMA_URL, aOptions);
 
     if (object instanceof PearSpecifier) {
       return (PearSpecifier) object;
@@ -920,30 +926,6 @@ public CasInitializerDescription parseCasInitializerDescription(XMLInputSource a
    */
   public SaxDeserializer newSaxDeserializer(XMLParser.ParsingOptions aOptions) {
     return new SaxDeserializer_impl(this, aOptions);
-  }
-
-  /**
-   * @return The URL to the Resource Specifier XML Schema file
-   */
-  private URL getResourceSpecifierSchemaUrl() {
-    // TODO: could cache this
-    URL schemaURL = getClass().getResource(RESOURCE_SPECIFIER_SCHEMA_NAME);
-    if (schemaURL == null) {
-      UIMAFramework.getLogger(CLASS_NAME).logrb(Level.WARNING, CLASS_NAME.getName(),
-              "getSchemaURL", LOG_RESOURCE_BUNDLE,
-              "UIMA_resource_specifier_schema_not_found__WARNING");
-      return null;
-    }
-    String urlString = schemaURL.toString();
-    if (0 <= urlString.indexOf(" ")) {
-    	urlString = urlString.replaceAll(" ", "%20");
-    	try {
-				schemaURL = new URL(urlString);
-			} catch (MalformedURLException e) {
-			}
-    }
-//    System.out.println("*** " + schemaURL);
-    return schemaURL;
   }
 
   /**
