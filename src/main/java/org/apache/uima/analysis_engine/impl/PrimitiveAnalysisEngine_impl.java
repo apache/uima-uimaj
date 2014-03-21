@@ -162,7 +162,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       resetResultSpecificationToDefault();
 
       logger.logrb(Level.CONFIG, CLASS_NAME.getName(), "initialize", LOG_RESOURCE_BUNDLE,
-              "UIMA_analysis_engine_init_successful__CONFIG", md.getName());
+              "UIMA_analysis_engine_init_successful__CONFIG", md != null ? md.getName(): "null");
       return true;
     } catch (ResourceConfigurationException e) {
       throw new ResourceInitializationException(
@@ -183,8 +183,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
   protected void initializeAnalysisComponent(Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
     // instantiate Annotator class
-    String annotatorClassName;
-    annotatorClassName = mDescription.getImplementationName();
+    final String annotatorClassName = mDescription.getImplementationName();
 
     if (annotatorClassName == null || annotatorClassName.length() == 0) {
       throw new ResourceInitializationException(
@@ -196,7 +195,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
     Class<?> annotatorClass = null;
     try {
       // get UIMA extension ClassLoader if available
-      ClassLoader cl = getUimaContextAdmin().getResourceManager().getExtensionClassLoader();
+      final ClassLoader cl = getUimaContextAdmin().getResourceManager().getExtensionClassLoader();
 
       if (cl != null) {
         // use UIMA extension ClassLoader to load the class
@@ -567,9 +566,10 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
      */
     public boolean hasNext() throws AnalysisEngineProcessException {
       enterProcess();
+      if (casAvailable) {
+        return true;
+      }
       try {
-        if (casAvailable)
-          return true;
         casAvailable = mMyAnalysisComponent.hasNext();
         if (!casAvailable) {
           //when hasNext returns false, by contract the AnalysisComponent is done processing its
