@@ -50,6 +50,8 @@ public class CommandLineParser {
     }
 
   }
+  
+  private final static String[] EMPTY_STRINGS = new String[0];
 
   private HashMap<String, CmdLineParam> paramMap = null;
 
@@ -144,7 +146,7 @@ public class CommandLineParser {
       }
       ++i;
     }
-    this.restArgs = new String[0];
+    this.restArgs = EMPTY_STRINGS;
   }
 
   /**
