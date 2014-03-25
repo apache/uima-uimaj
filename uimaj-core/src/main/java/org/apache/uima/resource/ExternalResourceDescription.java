@@ -39,6 +39,7 @@ import org.apache.uima.resource.metadata.MetaDataObject;
  */
 public interface ExternalResourceDescription extends MetaDataObject {
 
+  public static final ExternalResourceDescription[] EMPTY_EXTERNAL_RESORUCE_DESCRIPTIONS = new ExternalResourceDescription[0];
   /**
    * Retrieves the name by which the resource is identified.
    * 
