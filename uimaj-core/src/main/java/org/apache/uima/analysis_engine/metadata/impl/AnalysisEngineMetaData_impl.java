@@ -58,7 +58,7 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl implement
 
   private AnalysisEngineMetaData[] mDelegateAnalysisEngineMetaData;
 
-  private Capability[] mCapabilities = new Capability[0];
+  private Capability[] mCapabilities = Capability.EMPTY_CAPABILITIES;
 
   private TypeSystemDescription mTypeSystem;
 
