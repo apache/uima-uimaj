@@ -1767,6 +1767,9 @@ public class CasCreationUtils {
 
     @Override
     public boolean equals(Object obj) {
+      if (null == obj) {
+        return false;
+      }
       MetaDataCacheKey k = (MetaDataCacheKey) obj;
       if (rmDataPath == null) {
         if (k.rmDataPath != null) {
