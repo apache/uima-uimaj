@@ -46,6 +46,7 @@ import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceCreationSpecifier;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
+import org.apache.uima.resource.impl.ResourceCreationSpecifier_impl;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.util.Level;
@@ -122,6 +123,10 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
 
       super.initialize(aSpecifier, aAdditionalParams);
       ProcessingResourceMetaData md = (ProcessingResourceMetaData) mDescription.getMetaData();
+      if (null == md) {
+        md = UIMAFramework.getResourceSpecifierFactory().createProcessingResourceMetaData();
+        md.setName("(null)");
+      }
 
       // Get logger for this class
       Logger logger = getLogger();
@@ -162,7 +167,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       resetResultSpecificationToDefault();
 
       logger.logrb(Level.CONFIG, CLASS_NAME.getName(), "initialize", LOG_RESOURCE_BUNDLE,
-              "UIMA_analysis_engine_init_successful__CONFIG", md != null ? md.getName(): "null");
+              "UIMA_analysis_engine_init_successful__CONFIG", md.getName());
       return true;
     } catch (ResourceConfigurationException e) {
       throw new ResourceInitializationException(
