@@ -99,6 +99,8 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
   private static String PROP_NAME_SOURCE_URL = "sourceUrl";
   private static String PROP_NAME_INFOSET = "infoset";
 
+  // note: AttributesImpl is just a "getter" for attributes, has no setter methods, 
+  // see javadocs for Attributes (sax) 
   private static final Attributes EMPTY_ATTRIBUTES = new AttributesImpl();
 
   /*
@@ -157,7 +159,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     }
   }
     
-  private static final List<MetaDataAttr> ATTRIBUTE_0 = new ArrayList<MetaDataObject_impl.MetaDataAttr>(0);
+  private static final List<MetaDataAttr> EMPTY_ATTRIBUTE_LIST = new ArrayList<MetaDataObject_impl.MetaDataAttr>(0);
   
   // Cache for Java Bean info lookup
   // Class level cache (static) for introspection - 30x speedup in CDE for large descriptor
@@ -188,7 +190,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * @return additional attributes
    */
   public List<MetaDataAttr> getAdditionalAttributes() {
-    return ATTRIBUTE_0;
+    return EMPTY_ATTRIBUTE_LIST;
   }
   
   /**
@@ -1943,7 +1945,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    */
   private void writePrimitiveValue(Object aObj, ContentHandler aContentHandler)
       throws SAXException {
-    final Attributes EMPTY_ATTRIBUTES = new AttributesImpl();
+//    final Attributes EMPTY_ATTRIBUTES = new AttributesImpl();
 
     String className = aObj.getClass().getName();
     int lastDotIndex = className.lastIndexOf(".");
