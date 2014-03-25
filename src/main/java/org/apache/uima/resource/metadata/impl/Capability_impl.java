@@ -40,6 +40,7 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
 
   static final long serialVersionUID = -2821073595288674925L;
 
+  private static final String[] EMPTY_STRINGS = new String[0];
   /** a description of this capability */
   private String mDescription;
 
@@ -53,10 +54,10 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
   private Precondition[] mPreconditions = new Precondition[0];
 
   /** input SofAs */
-  private String[] mInputSofas = new String[0];
+  private String[] mInputSofas = EMPTY_STRINGS;
 
   /** output SofAs */
-  private String[] mOutputSofas = new String[0];
+  private String[] mOutputSofas = EMPTY_STRINGS;
 
   /*
    * (non-Javadoc)
@@ -110,7 +111,7 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
     }
 
     // No language precondition found. Return an empty array.
-    return new String[0];
+    return EMPTY_STRINGS;
   }
 
   /**
@@ -126,7 +127,7 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
     }
 
     // No language precondition found. Return an empty array.
-    return new String[0];
+    return EMPTY_STRINGS;
   }
 
   /**

@@ -28,6 +28,7 @@ package org.apache.uima.resource.metadata;
  */
 public interface TypeDescription extends MetaDataObject {
 
+  public final static TypeDescription[] EMPTY_TYPE_DESCRIPTIONS = new TypeDescription[0];
   /**
    * Gets the name of this Type.
    * 

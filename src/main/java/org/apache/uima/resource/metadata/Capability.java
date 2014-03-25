@@ -39,6 +39,7 @@ import org.apache.uima.analysis_engine.TypeOrFeature;
  * 
  */
 public interface Capability extends MetaDataObject {
+  public final static Capability[] EMPTY_CAPABILITIES = new Capability[0];
   /**
    * Gets the description of this Capability.
    * 

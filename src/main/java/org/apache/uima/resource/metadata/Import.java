@@ -33,6 +33,8 @@ import org.apache.uima.util.InvalidXMLException;
  */
 public interface Import extends MetaDataObject {
 
+ public static final Import[] EMPTY_IMPORTS = new Import[0];
+
   /**
    * Gets the name of this import's target.
    * 
