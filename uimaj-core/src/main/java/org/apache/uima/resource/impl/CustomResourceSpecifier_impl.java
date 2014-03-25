@@ -31,7 +31,8 @@ public class CustomResourceSpecifier_impl extends MetaDataObject_impl implements
         CustomResourceSpecifier {
   private static final long serialVersionUID = 8922306013278525153L;
   
-  private Parameter[] mParameters = new Parameter[0];
+  private static final Parameter[] EMPTY_PARAMETERS = new Parameter[0];
+  private Parameter[] mParameters = EMPTY_PARAMETERS;
   private String mResourceClassName;
   
   /* (non-Javadoc)
@@ -55,7 +56,7 @@ public class CustomResourceSpecifier_impl extends MetaDataObject_impl implements
     if (aParameters != null) {
       mParameters = aParameters;
     } else {
-      mParameters = new Parameter[0];
+      mParameters = EMPTY_PARAMETERS;
     }
     
   }
