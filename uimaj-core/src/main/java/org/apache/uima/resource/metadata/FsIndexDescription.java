@@ -28,6 +28,7 @@ package org.apache.uima.resource.metadata;
  */
 public interface FsIndexDescription extends MetaDataObject {
 
+  public final static FsIndexDescription[] EMPTY_FS_INDEX_DESCRIPTIONS = new FsIndexDescription[0];
   /**
    * Gets the label of this index. This is the identifier used to retrieve the index from the CAS's
    * Index Repository.

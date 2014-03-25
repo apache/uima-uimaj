@@ -46,6 +46,7 @@ import org.apache.uima.util.InvalidXMLException;
  */
 public interface TypeSystemDescription extends MetaDataObject {
 
+  public final static TypeSystemDescription[] EMPTY_TYPE_SYSTEM_DESCRIPTIONS = new TypeSystemDescription[0];
   /**
    * Gets the name of this Type System.
    * 

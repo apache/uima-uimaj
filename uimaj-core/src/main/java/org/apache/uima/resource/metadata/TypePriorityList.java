@@ -33,6 +33,7 @@ package org.apache.uima.resource.metadata;
  */
 public interface TypePriorityList extends MetaDataObject {
 
+  public final static TypePriorityList[] EMPTY_TYPE_PRIORITY_LISTS = new TypePriorityList[0];
   /**
    * Gets the type names, in order of their priority.
    * 
