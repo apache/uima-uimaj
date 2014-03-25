@@ -792,80 +792,86 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    * @param aRecursive If true, this method will call {@link #resolveImports(Collection, ResourceManager)} 
    *   on each delegate. If a circular import is found, an exception will be thrown.
    */
-  protected void resolveDelegateAnalysisEngineImports(Collection<String> aEnclosingAggregateAeUrls,
+  protected synchronized void resolveDelegateAnalysisEngineImports(Collection<String> aEnclosingAggregateAeUrls,
           ResourceManager aResourceManager, boolean aRecursive) throws InvalidXMLException {
-    Set<String> keys = new HashSet<String>(); // keep track of keys we've encountered
-    // so we can remove stale entries
-    for (Map.Entry<String, MetaDataObject> entry : 
-    	getDelegateAnalysisEngineSpecifiersWithImports().entrySet()) {
-      String key = entry.getKey();
-      keys.add(key);
-      if (entry.getValue() instanceof Import) {
-        Import aeImport = ((Import) entry.getValue());
-        // see if we processed this already
-        if (entry.getValue().equals(mProcessedImports.get(key))) {
-          continue;
-        }
-        // make sure Import's relative path base is set, to allow for
-        // users who create
-        // new import objects
-        if (aeImport instanceof Import_impl) {
-          ((Import_impl) aeImport).setSourceUrlIfNull(this.getSourceUrl());
-        }
-        // locate import target
-        URL url = aeImport.findAbsoluteUrl(aResourceManager);
-
-        // check for resursive import
-        if (aEnclosingAggregateAeUrls.contains(url.toString())) {
-          String name = getMetaData() == null ? "<null>" : getMetaData().getName();
-          throw new InvalidXMLException(InvalidXMLException.CIRCULAR_AE_IMPORT, new Object[] {
-              name, url });
-        }
-
-        // parse import target
-        XMLInputSource input;
-        try {
-          input = new XMLInputSource(url);
-        } catch (IOException e) {
-          throw new InvalidXMLException(InvalidXMLException.IMPORT_FAILED_COULD_NOT_READ_FROM_URL,
-                  new Object[] { url, aeImport.getSourceUrlString() }, e);
-        }
-        ResourceSpecifier spec = UIMAFramework.getXMLParser().parseResourceSpecifier(input);
-
-        // update entry in derived mDelegateAnalysisEngineSpecifiers map.
-        mDelegateAnalysisEngineSpecifiers.put(key, spec);
-
-        // add to processed imports map so we don't redo
-        mProcessedImports.put(key, aeImport);
-
-        // now resolve imports in ths delegate
-        if (spec instanceof AnalysisEngineDescription) {
-          Set<String> alreadyImportedUrls = new HashSet<String>(aEnclosingAggregateAeUrls);
-          alreadyImportedUrls.add(url.toString());
-          ((AnalysisEngineDescription) spec).resolveImports(alreadyImportedUrls, aResourceManager);
-        }
-      } else {
-        // not an import -- copy directly to derived mDelegateAnalysisEngineSpecifiers map.
-        mDelegateAnalysisEngineSpecifiers.put(entry.getKey(), (ResourceSpecifier) entry.getValue());
-        // resolve imports recursively on the delegate
-        if (entry.getValue() instanceof AnalysisEngineDescription) {
-          ((AnalysisEngineDescription) entry.getValue()).resolveImports(
-                  aEnclosingAggregateAeUrls, aResourceManager);
+    Set<String> keys = null;
+    if (getDelegateAnalysisEngineSpecifiersWithImports().size() > 0) {
+      keys = new HashSet<String>(); // keep track of keys we've encountered
+      // so we can remove stale entries
+      for (Map.Entry<String, MetaDataObject> entry : 
+      	getDelegateAnalysisEngineSpecifiersWithImports().entrySet()) {
+        String key = entry.getKey();
+        keys.add(key);
+        if (entry.getValue() instanceof Import) {
+          Import aeImport = ((Import) entry.getValue());
+          // see if we processed this already
+          if (entry.getValue().equals(mProcessedImports.get(key))) {
+            continue;
+          }
+          // make sure Import's relative path base is set, to allow for
+          // users who create
+          // new import objects
+          if (aeImport instanceof Import_impl) {
+            ((Import_impl) aeImport).setSourceUrlIfNull(this.getSourceUrl());
+          }
+          // locate import target
+          URL url = aeImport.findAbsoluteUrl(aResourceManager);
+  
+          // check for recursive import
+          if (aEnclosingAggregateAeUrls.contains(url.toString())) {
+            String name = getMetaData() == null ? "<null>" : getMetaData().getName();
+            throw new InvalidXMLException(InvalidXMLException.CIRCULAR_AE_IMPORT, new Object[] {
+                name, url });
+          }
+  
+          // parse import target
+          XMLInputSource input;
+          try {
+            input = new XMLInputSource(url);
+          } catch (IOException e) {
+            throw new InvalidXMLException(InvalidXMLException.IMPORT_FAILED_COULD_NOT_READ_FROM_URL,
+                    new Object[] { url, aeImport.getSourceUrlString() }, e);
+          }
+          ResourceSpecifier spec = UIMAFramework.getXMLParser().parseResourceSpecifier(input);
+  
+          // update entry in derived mDelegateAnalysisEngineSpecifiers map.
+          mDelegateAnalysisEngineSpecifiers.put(key, spec);
+  
+          // add to processed imports map so we don't redo
+          mProcessedImports.put(key, aeImport);
+  
+          // now resolve imports in ths delegate
+          if (spec instanceof AnalysisEngineDescription) {
+            Set<String> alreadyImportedUrls = new HashSet<String>(aEnclosingAggregateAeUrls);
+            alreadyImportedUrls.add(url.toString());
+            ((AnalysisEngineDescription) spec).resolveImports(alreadyImportedUrls, aResourceManager);
+          }
+        } else {
+          // not an import -- copy directly to derived mDelegateAnalysisEngineSpecifiers map.
+          mDelegateAnalysisEngineSpecifiers.put(entry.getKey(), (ResourceSpecifier) entry.getValue());
+          // resolve imports recursively on the delegate
+          if (entry.getValue() instanceof AnalysisEngineDescription) {
+            ((AnalysisEngineDescription) entry.getValue()).resolveImports(
+                    aEnclosingAggregateAeUrls, aResourceManager);
+          }
         }
       }
     }
     // remove stale entries
-    List<String> staleKeys = new ArrayList<String>();
-    for (Map.Entry<String, ResourceSpecifier> entry : mDelegateAnalysisEngineSpecifiers.entrySet()) {
-      String key = entry.getKey();
-      if (!keys.contains(key)) {
-        staleKeys.add(key);
-      }
-    }
     
-    for (String key : staleKeys) {
-      mDelegateAnalysisEngineSpecifiers.remove(key);
-      mProcessedImports.remove(key);
+    if (mDelegateAnalysisEngineSpecifiers.size() > 0) {
+      final Set<Map.Entry<String, ResourceSpecifier>> staleEntries = mDelegateAnalysisEngineSpecifiers.entrySet();
+      List<String> staleKeys = new ArrayList<String>();
+      for (Map.Entry<String, ResourceSpecifier> entry : staleEntries) {
+        String key = entry.getKey();
+        if (null == keys || !keys.contains(key)) {
+          staleKeys.add(key);
+        }
+      }
+      for (String key : staleKeys) {
+        mDelegateAnalysisEngineSpecifiers.remove(key);
+        mProcessedImports.remove(key);
+      }
     }
   }
 
