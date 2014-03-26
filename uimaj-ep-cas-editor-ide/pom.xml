@@ -161,7 +161,10 @@
     <dependency>
       <groupId>org.eclipse.equinox</groupId>
       <artifactId>app</artifactId>
-      <version>[1.0.0,1.0.1)</version>
+      <!-- https://issues.apache.org/jira/browse/UIMA-3695
+          <version>[1.0.0,1.0.1)</version>
+       -->
+       <version>[1.2.0,2.0.0)</version>
     </dependency>		
 	</dependencies>
 
