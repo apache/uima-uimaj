@@ -47,6 +47,8 @@ public class ConfigurationManager_impl extends ConfigurationManagerImplBase {
   /**
    * Map containing configuration parameter values and links for parameter values shared by all
    * sessions.
+   * 
+   * Can't (currently) be a concurrentHashMap because it stores nulls
    */
   private Map<String, Object> mSharedParamMap = Collections.synchronizedMap(new HashMap<String, Object>());
 
@@ -96,7 +98,7 @@ public class ConfigurationManager_impl extends ConfigurationManagerImplBase {
             while (getLink(linkedTo) != null) {
               linkedTo = getLink(linkedTo);
             }
-            if (linkedTo != qname && lookup(linkedTo) != null) {
+            if ((!linkedTo.equals(qname)) && lookup(linkedTo) != null) {
               realValue = lookup(linkedTo);
               from = "(overridden from " + linkedTo + ")";
             }
