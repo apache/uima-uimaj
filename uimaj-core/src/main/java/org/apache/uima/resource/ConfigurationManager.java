@@ -40,6 +40,9 @@ public interface ConfigurationManager {
    * performed on the configuration parameters declared in this context; if an error is found an
    * exception will be thrown.
    * 
+   * Multi-threading: This may be called with the same parameters on multiple threads.  
+   * Implementations should check for repeated calls to create the same context and just return in that case
+   * 
    * @param aContextName
    *          the name of the context in which the configuration parameter is being accessed. This
    *          corresponds to the path through the aggregate resource, e.g /subAE1/annotator1.
