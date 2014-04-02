@@ -207,6 +207,8 @@ public interface ResourceManager {
 
   /**
    * Initializes all external resources declared in a ResourceCreationSpecifier.
+   * Multi-threading: may be called on multiple threads.  
+   *   Initialization should be done once, on the first call
    * 
    * @param aConfiguration
    *          the ResourceManagerConfiguration containing resource declarations and bindings
@@ -226,6 +228,9 @@ public interface ResourceManager {
   /**
    * Resolves a component's external resource dependencies using this resource manager. Throws an
    * exception if any required dependencies are not satisfied.
+   * 
+   * Multi-threading: may be called on multiple threads, repeatedly for the same set of resources.
+   * Implementations should avoid wasting time do this work.
    * 
    * @param aDependencies
    *          declarations of a component's dependencies on external resources
