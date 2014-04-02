@@ -146,6 +146,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
 
       // resolve component AnalysisEngine and FlowController specifiers
       try {
+        // next call only done for side effect of resolving imports
         mDescription.getDelegateAnalysisEngineSpecifiers(getResourceManager());
         if (mDescription.getFlowControllerDeclaration() != null) {
           if (mDescription.getFlowControllerDeclaration().getImport() == null
