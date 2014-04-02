@@ -489,6 +489,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
 
   /**
    * @see org.apache.uima.resource.metadata.MetaDataObject#clone()
+   * multi-core: could be cloning while another thread is modifying?
    */
   public Object clone() {
     // System.out.println("MetaDataObject_impl: clone");
