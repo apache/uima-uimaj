@@ -76,7 +76,7 @@ public class JCasHashMap {
   
   private final boolean useCache;
   
-  private int indexOfLastFreeCell;
+  private boolean secondTimeShrinkable = false;
 
   // for testing only:
   int getbitsMask() {return bitsMask;}
@@ -110,15 +110,34 @@ public class JCasHashMap {
   }
     
   // cleared when cas reset
+  // storage management:
+  //   shrink if current number of entries
+  //      wouldn't trigger an expansion if the size was reduced by 1/2 
   public void clear() {
     if (!this.useCache) {
       return;
     }
-    size = 0;
-    if (table.length >>> 4 > initialCapacity) {
-      newTable(table.length >>> 1);  // shrink table
-      return;
+    // see if size is less than the 1/2 size that triggers expansion
+    if (size <  (sizeWhichTriggersExpansion >>> 1)) {
+      // if 2nd time then shrink by 50%
+      //   this is done to avoid thrashing around the threshold
+      if (secondTimeShrinkable) {
+        secondTimeShrinkable = false;
+        final int newCapacity = Math.max(initialCapacity, table.length >>> 1);
+        if (newCapacity < table.length) { 
+          newTable(newCapacity);  // shrink table by 50%
+        } else { // don't shrink below minimum
+          Arrays.fill(table,  null);
+        }
+        size = 0;
+        return;
+      } else {
+        secondTimeShrinkable = true;
+      }
+    } else {
+      secondTimeShrinkable = false; // reset this to require 2 triggers in a row
     }
+    size = 0;
     Arrays.fill(table, null);
   }
 
@@ -126,7 +145,6 @@ public class JCasHashMap {
     if (!this.useCache) {
       return null;
     }
-    
     int probeAddr = hashInt(key);
     int probeDelta = 1;
     FeatureStructureImpl maybe = table[probeAddr];
@@ -142,14 +160,14 @@ public class JCasHashMap {
       histogram[Math.min(histogram.length - 1, nbrProbes)]++;
       maxProbe = Math.max(maxProbe, nbrProbes);
     }
-    indexOfLastFreeCell = (maybe == null) ? probeAddr : -1;
+    // doesn't work - requires no intervening get between save and use
+    // and user code running in readObject() of create instance of JCas cover object
+    //   *could* do something here.
+//    indexOfLastFreeCell = (maybe == null) ? probeAddr : -1;
     return maybe;    
   }
   
-  public void findEmptySlot(int key) {
-    if (!this.useCache) {
-      return;
-    }
+  private int findEmptySlot(int key) {
     int probeAddr = hashInt(key);
     int probeDelta = 1;
     while (null != table[probeAddr]) {
@@ -162,7 +180,8 @@ public class JCasHashMap {
       histogram[Math.min(histogram.length - 1, nbrProbes)]++;
       maxProbe = Math.max(maxProbe, nbrProbes);
     }
-    indexOfLastFreeCell = probeAddr;
+//    indexOfLastFreeCell = probeAddr;
+    return probeAddr;
   }
   
   /**
@@ -170,21 +189,27 @@ public class JCasHashMap {
    * previously used get or findEmptySlot to set the indexOfLastFreeCell
    * @param value
    */
-  public void putAfterFindingEmptyCell(FeatureStructureImpl value) {
+//  public void putAfterFindingEmptyCell(FeatureStructureImpl value) {
+//    if (!this.useCache) {
+//      return;
+//    }
+//    if (size >= sizeWhichTriggersExpansion) {
+//      increaseSize();
+//      findEmptySlot(value.getAddress());  //reset the indexOfLastFreeCell
+//    }
+//    size++;
+//    table[indexOfLastFreeCell] = value;   
+//  }
+  
+  public void put(FeatureStructureImpl value) {
     if (!this.useCache) {
       return;
     }
     if (size >= sizeWhichTriggersExpansion) {
-      increaseSize();
-      findEmptySlot(value.getAddress());  //reset the indexOfLastFreeCell
+      increaseTableCapacity();
     }
     size++;
-    table[indexOfLastFreeCell] = value;   
-  }
-  
-  public void put(FeatureStructureImpl value) {
-    findEmptySlot(value.getAddress());
-    putAfterFindingEmptyCell(value);
+    table[findEmptySlot(value.getAddress())] = value;   
   }
   
   public int size() {
@@ -220,14 +245,15 @@ public class JCasHashMap {
     return h1 & bitsMask;
   }
      
-  private void increaseSize() {
+  private void increaseTableCapacity() {
     final FeatureStructureImpl [] oldTable = table; 
     final int oldCapacity = oldTable.length;
   
     int newCapacity = 2 * oldCapacity;
     
-   if (TUNE)
+    if (TUNE) {
       System.out.println("Size increasing from " + oldCapacity + " to " + newCapacity);
+    }
     newTable(newCapacity);
     size = 0;
     for (int i = 0; i < oldCapacity; i++) {
@@ -235,7 +261,7 @@ public class JCasHashMap {
       if (fs != null) {
         put(fs);
       }   
-    }    
+    }
   }
   
   public void showHistogram() {
