@@ -23,7 +23,6 @@ import java.util.Random;
 
 import junit.framework.TestCase;
 
-import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.TOP;
 
 /**
@@ -86,11 +85,9 @@ public class JCasHashMapTest extends TestCase {
 //  }
    
   private void arun(int n) {
-    JCasHashMap m = new JCasHashMap(200, true); 
+    JCasHashMap m = new JCasHashMap(200, true); // true = do use cache 
     assertTrue(m.size() == 0);
-    
-    JCas jcas = null;
-    
+       
     long start = System.currentTimeMillis();
     for (int i = 0; i < n; i++) {
       final int key = addrs[i];
@@ -98,8 +95,7 @@ public class JCasHashMapTest extends TestCase {
 //      FeatureStructureImpl v = m.get(fs.getAddress());
 //      if (null == v) {
 //        m.get(7 * i);
-        m.findEmptySlot(key);
-        m.putAfterFindingEmptyCell(fs);
+        m.put(fs);
 //      }
     }
     System.out.format("time for v1 %,d is %,d ms%n",
@@ -109,8 +105,7 @@ public class JCasHashMapTest extends TestCase {
   }
   
   private void arunCk(int n) {
-    JCasHashMap m = new JCasHashMap(200, true); 
-    JCas jcas = null;
+    JCasHashMap m = new JCasHashMap(200, true); // true = do use cache
     
     for (int i = 0; i < n; i++) {
       final int key = addrs[i];
@@ -118,8 +113,8 @@ public class JCasHashMapTest extends TestCase {
 //      FeatureStructureImpl v = m.get(fs.getAddress());
 //      if (null == v) {
 //        m.get(7 * i);
-        m.findEmptySlot(key);
-        m.putAfterFindingEmptyCell(fs);
+//        m.findEmptySlot(key);
+        m.put(fs);
 //      }
     }
     
@@ -133,5 +128,43 @@ public class JCasHashMapTest extends TestCase {
     }
 
   }
+  
+  public void testGrowth() {
+    JCasHashMap m = new JCasHashMap(64, true); // true = do use cache 
+    assertTrue(m.size() == 0);
+     
+    fill32(m);
+    assertTrue(m.getbitsMask() == 63);
+    m.put(new TOP(addrs[32], null));
+    assertTrue(m.getbitsMask() == 127);
+    
+    m.clear();
+    assertTrue(m.getbitsMask() == 127);
 
+    fill32(m);
+    assertTrue(m.getbitsMask() == 127);
+    m.put(new TOP(addrs[32], null));
+    assertTrue(m.getbitsMask() == 127);
+
+    m.clear();  // size is 33, so no shrinkage
+    assertTrue(m.getbitsMask() == 127);
+    m.clear();  // size is 0, so first time shrinkage a possibility
+    assertTrue(m.getbitsMask() == 127);  // but we don't shrink on first time
+    m.clear(); 
+    assertTrue(m.getbitsMask() == 63);  // but we don't shrink on first time
+    m.clear(); 
+    assertTrue(m.getbitsMask() == 63);  
+    m.clear(); 
+    assertTrue(m.getbitsMask() == 63);  // don't shrink below minimum
+
+    
+  }
+
+  private void fill32 (JCasHashMap m) {
+    for (int i = 0; i < 32; i++) {
+      final int key = addrs[i];
+      TOP fs = new TOP(key, null);
+      m.put(fs);
+    }
+  }
 }
