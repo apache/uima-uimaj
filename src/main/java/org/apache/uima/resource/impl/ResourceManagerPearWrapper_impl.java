@@ -21,6 +21,7 @@ package org.apache.uima.resource.impl;
 
 import java.net.MalformedURLException;
 
+import org.apache.uima.analysis_engine.impl.PearAnalysisEngineWrapper;
 import org.apache.uima.internal.util.UIMAClassLoader;
 import org.apache.uima.resource.RelativePathResolver;
 import org.apache.uima.resource.ResourceManager;
@@ -41,27 +42,42 @@ public class ResourceManagerPearWrapper_impl extends ResourceManager_impl implem
    * UIMA extension ClassLoader. ClassLoader is created if an extension classpath is specified at
    * the ResourceManager
    */
-  private UIMAClassLoader uimaCL = null;
-
+  private volatile UIMAClassLoader uimaCL = null;
+  
   /**
    * Object used for resolving relative paths. This is built by parsing the data path.
    */
-  private RelativePathResolver mRelativePathResolver;
+  private final RelativePathResolver mRelativePathResolver = new RelativePathResolver_impl();
 
+  public ResourceManagerPearWrapper_impl() {
+    super(
+        PearAnalysisEngineWrapper.newPearsParent.get().mResourceMap,
+        PearAnalysisEngineWrapper.newPearsParent.get().mInternalResourceRegistrationMap,
+        PearAnalysisEngineWrapper.newPearsParent.get().mParameterizedResourceImplClassMap,
+        PearAnalysisEngineWrapper.newPearsParent.get().mInternalParameterizedResourceImplClassMap,
+        PearAnalysisEngineWrapper.newPearsParent.get().mParameterizedResourceInstanceMap);
+//    ResourceManager_impl r = PearAnalysisEngineWrapper.newPearsParent.get();
+//    mResourceMap = r.mResourceMap;
+//    mInternalResourceRegistrationMap = r.mInternalResourceRegistrationMap;
+//    mParameterizedResourceImplClassMap = r.mParameterizedResourceImplClassMap;
+//    mInternalParameterizedResourceImplClassMap = r.mInternalParameterizedResourceImplClassMap;
+//    mParameterizedResourceInstanceMap = r.mParameterizedResourceInstanceMap;
+    mCasManager = PearAnalysisEngineWrapper.newPearsParent.get().getCasManager();   
+  }
   /**
    * Initializes from the parent, a new <code>ResourceManagerForPearWrapper_impl</code>.
    */
+  @Deprecated
   public void initializeFromParentResourceManager(ResourceManager resourceManager) {
-    ResourceManager_impl r = (ResourceManager_impl) resourceManager;
-    mRelativePathResolver = new RelativePathResolver_impl();
-    mResourceMap = r.mResourceMap;
-    mInternalResourceRegistrationMap = r.mInternalResourceRegistrationMap;
-    mParameterizedResourceImplClassMap = r.mParameterizedResourceImplClassMap;
-    mInternalParameterizedResourceImplClassMap = r.mInternalParameterizedResourceImplClassMap;
-    mParameterizedResourceInstanceMap = r.mParameterizedResourceInstanceMap;
-    synchronized(this) {
-      mCasManager = r.getCasManager();  // synchronized - avoid findbugs noise
-    }
+//    ResourceManager_impl r = (ResourceManager_impl) resourceManager;
+//    mResourceMap = r.mResourceMap;
+//    mInternalResourceRegistrationMap = r.mInternalResourceRegistrationMap;
+//    mParameterizedResourceImplClassMap = r.mParameterizedResourceImplClassMap;
+//    mInternalParameterizedResourceImplClassMap = r.mInternalParameterizedResourceImplClassMap;
+//    mParameterizedResourceInstanceMap = r.mParameterizedResourceInstanceMap;
+//    synchronized(this) {
+//      mCasManager = r.getCasManager();  // synchronized - avoid findbugs noise
+//    }
   }
  
   /**
