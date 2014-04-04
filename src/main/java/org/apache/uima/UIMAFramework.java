@@ -1070,7 +1070,12 @@ public abstract class UIMAFramework {
   public static ConfigurationManager newConfigurationManager() {
     return getInstance()._newConfigurationManager();
   }
-
+  
+  // ugly way to pass vars to 0-arg constructors
+  //    for root uima context
+  public static final ThreadLocal<ResourceManager> newContextResourceManager = new ThreadLocal<ResourceManager>();
+  public static final ThreadLocal<ConfigurationManager> newContextConfigManager = new ThreadLocal<ConfigurationManager>();
+  
   /**
    * Gets a new instance of a {@link UimaContext}. Applications do not generally need to call this
    * method.
@@ -1088,7 +1093,17 @@ public abstract class UIMAFramework {
    */
   public static UimaContextAdmin newUimaContext(Logger aLogger, ResourceManager aResourceManager,
           ConfigurationManager aConfigManager) {
-    UimaContextAdmin context = getInstance()._newUimaContext();
+    // We use an ugly trick to make the 3 values available to the new UIMA context during its initialization - 
+    //   we put them in threadlocals for this class (UIMAFramework).
+    UimaContextAdmin context; 
+    try {
+      newContextResourceManager.set(aResourceManager);
+      newContextConfigManager.set(aConfigManager);     
+      context = getInstance()._newUimaContext();
+    } finally {
+      newContextResourceManager.set(null);
+      newContextConfigManager.set(null);
+    }
     context.initializeRoot(aLogger, aResourceManager, aConfigManager);
     return context;
   }
