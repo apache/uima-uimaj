@@ -151,7 +151,7 @@ public class JCasHashMapTest extends TestCase {
     m.clear();  // size is 0, so first time shrinkage a possibility
     assertTrue(m.getbitsMask() == 127);  // but we don't shrink on first time
     m.clear(); 
-    assertTrue(m.getbitsMask() == 63);  // but we don't shrink on first time
+    assertTrue(m.getbitsMask() == 63);  // but we do on second time
     m.clear(); 
     assertTrue(m.getbitsMask() == 63);  
     m.clear(); 
