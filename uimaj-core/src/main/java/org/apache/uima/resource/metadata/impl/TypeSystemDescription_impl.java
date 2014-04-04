@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeSet;
 
 import org.apache.uima.UIMAFramework;
@@ -47,7 +48,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
         TypeSystemDescription {
 
   static final long serialVersionUID = -3372766232454730201L;
-
+  
   private String mName;
 
   private String mVersion;
@@ -56,7 +57,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
 
   private String mVendor;
 
-  private Import[] mImports = new Import[0];
+  private Import[] mImports = Import.EMPTY_IMPORTS;
 
   /** Descriptions of all Types in this type system. */
   private TypeDescription[] mTypes = new TypeDescription[0];
@@ -194,54 +195,63 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
   /**
    * @see TypeSystemDescription#resolveImports()
    */
-  public void resolveImports() throws InvalidXMLException {
-    resolveImports(new TreeSet<String>(), UIMAFramework.newDefaultResourceManager());
-  }
-
-  public void resolveImports(ResourceManager aResourceManager) throws InvalidXMLException {
-    resolveImports(new TreeSet<String>(), aResourceManager);
-  }
-
-  public void resolveImports(Collection<String> aAlreadyImportedTypeSystemURLs,
-          ResourceManager aResourceManager) throws InvalidXMLException {
-    // add our own URL, if known, to the collection of already imported URLs
-    if (getSourceUrl() != null) {
-      aAlreadyImportedTypeSystemURLs.add(getSourceUrl().toString());
+  // allow these calls to be done multiple times on this same object, in different threads
+  public synchronized void resolveImports() throws InvalidXMLException {
+    if (getImports().length == 0) {
+      resolveImports(null, null);
+    } else {
+      resolveImports(new TreeSet<String>(), UIMAFramework.newDefaultResourceManager());
     }
+  }
 
-    List<TypeDescription> importedTypes = new ArrayList<TypeDescription>();
-    Import[] imports = getImports();
-    for (int i = 0; i < imports.length; i++) {
-      // make sure Import's relative path base is set, to allow for users who create
-      // new import objects
-      if (imports[i] instanceof Import_impl) {
-        ((Import_impl) imports[i]).setSourceUrlIfNull(this.getSourceUrl());
+  public synchronized void resolveImports(ResourceManager aResourceManager) throws InvalidXMLException {
+    resolveImports((getImports().length == 0) ? null : new TreeSet<String>(), aResourceManager);
+  }
+
+  public synchronized void resolveImports(Collection<String> aAlreadyImportedTypeSystemURLs,
+          ResourceManager aResourceManager) throws InvalidXMLException {
+    List<TypeDescription> importedTypes = null;
+    if (getImports().length != 0) {
+      // add our own URL, if known, to the collection of already imported URLs
+      if (getSourceUrl() != null) {
+        aAlreadyImportedTypeSystemURLs.add(getSourceUrl().toString());
       }
-      URL url = imports[i].findAbsoluteUrl(aResourceManager);
-      if (!aAlreadyImportedTypeSystemURLs.contains(url.toString())) {
-        aAlreadyImportedTypeSystemURLs.add(url.toString());
-        try {
-          resolveImport(url, aAlreadyImportedTypeSystemURLs, importedTypes, aResourceManager);
-        } catch (IOException e) {
-          throw new InvalidXMLException(InvalidXMLException.IMPORT_FAILED_COULD_NOT_READ_FROM_URL,
-                  new Object[] { url, imports[i].getSourceUrlString() }, e);
+  
+      importedTypes = new ArrayList<TypeDescription>();
+      Import[] imports = getImports();
+      for (int i = 0; i < imports.length; i++) {
+        // make sure Import's relative path base is set, to allow for users who create
+        // new import objects
+        if (imports[i] instanceof Import_impl) {
+          ((Import_impl) imports[i]).setSourceUrlIfNull(this.getSourceUrl());
+        }
+        URL url = imports[i].findAbsoluteUrl(aResourceManager);
+        if (!aAlreadyImportedTypeSystemURLs.contains(url.toString())) {
+          aAlreadyImportedTypeSystemURLs.add(url.toString());
+          try {
+            resolveImport(url, aAlreadyImportedTypeSystemURLs, importedTypes, aResourceManager);
+          } catch (IOException e) {
+            throw new InvalidXMLException(InvalidXMLException.IMPORT_FAILED_COULD_NOT_READ_FROM_URL,
+                    new Object[] { url, imports[i].getSourceUrlString() }, e);
+          }
         }
       }
     }
-    // update this object
+    // maybe update this object
     TypeDescription[] existingTypes = this.getTypes();
     if (existingTypes == null) {
-      existingTypes = new TypeDescription[0];
+      this.setTypes(existingTypes = TypeDescription.EMPTY_TYPE_DESCRIPTIONS);
     }
-    TypeDescription[] newTypes = new TypeDescription[existingTypes.length + importedTypes.size()];
-    System.arraycopy(existingTypes, 0, newTypes, 0, existingTypes.length);
-    for (int i = 0; i < importedTypes.size(); i++) {
-      newTypes[existingTypes.length + i] = (TypeDescription) importedTypes.get(i);
+    if (null != importedTypes) {      
+      TypeDescription[] newTypes = new TypeDescription[existingTypes.length + importedTypes.size()];
+      System.arraycopy(existingTypes, 0, newTypes, 0, existingTypes.length);
+      for (int i = 0; i < importedTypes.size(); i++) {
+        newTypes[existingTypes.length + i] = (TypeDescription) importedTypes.get(i);
+      }
+      this.setTypes(newTypes);
     }
-    this.setTypes(newTypes);
-
     // clear imports
-    this.setImports(new Import[0]);
+    this.setImports(Import.EMPTY_IMPORTS);
   }
 
   private void resolveImport(URL aURL, Collection<String> aAlreadyImportedTypeSystemURLs,
@@ -250,15 +260,18 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
     //check the import cache
     TypeSystemDescription desc;    
     String urlString = aURL.toString();
-    XMLizable cachedObject = aResourceManager.getImportCache().get(urlString);
-    if (cachedObject instanceof TypeSystemDescription) {
-      desc = (TypeSystemDescription)cachedObject;
-    } else {   
-      XMLInputSource input;
-      input = new XMLInputSource(aURL);
-      desc = UIMAFramework.getXMLParser().parseTypeSystemDescription(input);
-      desc.resolveImports(aAlreadyImportedTypeSystemURLs, aResourceManager);
-      aResourceManager.getImportCache().put(urlString, desc);
+    Map<String, XMLizable> importCache = aResourceManager.getImportCache();
+    synchronized(importCache) {
+      XMLizable cachedObject = importCache.get(urlString);
+      if (cachedObject instanceof TypeSystemDescription) {
+        desc = (TypeSystemDescription)cachedObject;
+      } else {   
+        XMLInputSource input;
+        input = new XMLInputSource(aURL);
+        desc = UIMAFramework.getXMLParser().parseTypeSystemDescription(input);
+        desc.resolveImports(aAlreadyImportedTypeSystemURLs, aResourceManager);
+        importCache.put(urlString, desc);
+      }
     }
     aResults.addAll(Arrays.asList(desc.getTypes()));
   }

@@ -76,43 +76,43 @@ public class ResourceManager_impl implements ResourceManager {
 
   /**
    * Map from qualified key names (declared in resource dependency XML) to Resource objects.
+   * 
+   * Can't be concurrentMap because it (currently) depends on storing nulls
    */
-  protected Map<String, Object> mResourceMap = new ConcurrentHashMap<String, Object>();
-
+  final protected Map<String, Object> mResourceMap;
+  
   /**
    * Internal map from resource names (declared in resource declaration XML) to ResourceRegistration
    * objects. Used during initialization only.
    */
-  protected Map<String, ResourceRegistration> mInternalResourceRegistrationMap = 
-      new ConcurrentHashMap<String, ResourceRegistration>();
+  final protected Map<String, ResourceRegistration> mInternalResourceRegistrationMap;
 
   /**
    * Map from String keys to Class objects. For ParameterizedResources only, stores the
    * implementation class corresponding to each resource name.
    */
-  protected Map<String, Class<?>> mParameterizedResourceImplClassMap = 
-      new ConcurrentHashMap<String, Class<?>>();
+  final protected Map<String, Class<?>> mParameterizedResourceImplClassMap;
 
   /**
    * Internal map from resource names (declared in resource declaration XML) to Class objects. Used
    * internally during resource initialization.
    */
-  protected Map<String, Class<?>> mInternalParameterizedResourceImplClassMap = 
-      new ConcurrentHashMap<String, Class<?>>();
+  final protected Map<String, Class<?>> mInternalParameterizedResourceImplClassMap;
 
   /**
    * Map from ParameterizedResourceKey to Resource objects. For
    * ParameterizedResources only, stores the DataResources that have already been encountered, and
    * the Resources that have been instantiated therefrom.
    */
-  protected Map<List<Object>, Object> mParameterizedResourceInstanceMap = 
-      new ConcurrentHashMap<List<Object>, Object>();
+  final protected Map<List<Object>, Object> mParameterizedResourceInstanceMap;
 
   /**
    * UIMA extension ClassLoader. ClassLoader is created if an extension classpath is specified at
    * the ResourceManager
+   * 
+   * volatile might be better than synch sets/gets
    */
-  private UIMAClassLoader uimaCL = null;
+  private volatile UIMAClassLoader uimaCL = null;
 
   /** CasManager - manages creation and pooling of CASes. */
   // volatile to support double-checked locking idiom
@@ -136,13 +136,23 @@ public class ResourceManager_impl implements ResourceManager {
    *   simultaneously is not.
    */
   // leaving this as a synchronizedMap - for backwards compatibility
-  private Map<String,XMLizable> importCache = Collections.synchronizedMap(new HashMap<String,XMLizable>());
+  // internal users do sync around get/set pairs anyways, but can't rely on
+  // what external users do
+  //   Because internal users do a sync, only one thread at a time is using this
+  //   (for internal calls) anyways, so there's no advantage to the extra overhead
+  //   of making this a ConcurrentHashMap  (March 2014)
+  final private Map<String,XMLizable> importCache = Collections.synchronizedMap(new HashMap<String,XMLizable>());
   
   /**
    * Creates a new <code>ResourceManager_impl</code>.
    */
   public ResourceManager_impl() {
-    mRelativePathResolver = new RelativePathResolver_impl();
+    mResourceMap = Collections.synchronizedMap(new HashMap<String, Object>());
+    mInternalResourceRegistrationMap = new ConcurrentHashMap<String, ResourceRegistration>();
+    mParameterizedResourceImplClassMap =  new ConcurrentHashMap<String, Class<?>>();
+    mInternalParameterizedResourceImplClassMap = new ConcurrentHashMap<String, Class<?>>();
+    mParameterizedResourceInstanceMap =  new ConcurrentHashMap<List<Object>, Object>();
+    mRelativePathResolver = new RelativePathResolver_impl(); 
   }
 
   /**
@@ -150,9 +160,31 @@ public class ResourceManager_impl implements ResourceManager {
    * resources.
    */
   public ResourceManager_impl(ClassLoader aClassLoader) {
+    mResourceMap = Collections.synchronizedMap(new HashMap<String, Object>());
+    mInternalResourceRegistrationMap = new ConcurrentHashMap<String, ResourceRegistration>();
+    mParameterizedResourceImplClassMap =  new ConcurrentHashMap<String, Class<?>>();
+    mInternalParameterizedResourceImplClassMap = new ConcurrentHashMap<String, Class<?>>();
+    mParameterizedResourceInstanceMap =  new ConcurrentHashMap<List<Object>, Object>();
     mRelativePathResolver = new RelativePathResolver_impl(aClassLoader);
   }
 
+  /*
+   * Version for Pear wrapper 
+   */
+  public ResourceManager_impl(
+      Map<String, Object> resourceMap,
+      Map<String, ResourceRegistration> internalResourceRegistrationMap,
+      Map<String, Class<?>> parameterizedResourceImplClassMap,
+      Map<String, Class<?>> internalParameterizedResourceImplClassMap,
+      Map<List<Object>, Object> parameterizedResourceInstanceMap) {
+    mResourceMap = resourceMap;
+    mInternalResourceRegistrationMap = internalResourceRegistrationMap;
+    mParameterizedResourceImplClassMap =  parameterizedResourceImplClassMap;
+    mInternalParameterizedResourceImplClassMap = internalParameterizedResourceImplClassMap;
+    mParameterizedResourceInstanceMap =  parameterizedResourceInstanceMap;
+    mRelativePathResolver = new RelativePathResolver_impl(); 
+  }
+  
  /**
   * Support reusing UIMA Class Loader instances to speed up
   * things including the Component Description Editor when
@@ -204,7 +236,7 @@ public class ResourceManager_impl implements ResourceManager {
   /**
    * @see org.apache.uima.resource.ResourceManager#getExtensionClassLoader()
    */
-  public synchronized ClassLoader getExtensionClassLoader() {
+  public ClassLoader getExtensionClassLoader() {
     return uimaCL;
   }
 
@@ -409,7 +441,7 @@ public class ResourceManager_impl implements ResourceManager {
    * @see org.apache.uima.resource.ResourceManager#initializeExternalResources(org.apache.uima.resource.metadata.ResourceManagerConfiguration,
    *      java.lang.String, java.util.Map)
    */
-  public void initializeExternalResources(ResourceManagerConfiguration aConfiguration,
+  public synchronized void initializeExternalResources(ResourceManagerConfiguration aConfiguration,
           String aQualifiedContextName, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
     // register resources
@@ -464,8 +496,11 @@ public class ResourceManager_impl implements ResourceManager {
    * 
    * @see org.apache.uima.resource.ResourceManager#resolveAndValidateResourceDependencies(org.apache.uima.resource.ExternalResourceDependency[],
    *      java.lang.String)
+   *      
+   * Multi-threaded.  Partial avoidance of re-resolving, but if a resource fails to resolve, it will be 
+   *   reattempted on every call
    */
-  public void resolveAndValidateResourceDependencies(ExternalResourceDependency[] aDependencies,
+  public synchronized void resolveAndValidateResourceDependencies(ExternalResourceDependency[] aDependencies,
           String aQualifiedContextName) throws ResourceInitializationException {
     for (int i = 0; i < aDependencies.length; i++) {
       // get resource

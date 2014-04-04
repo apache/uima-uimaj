@@ -63,30 +63,42 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
 
   /**
    * Map from context name to ConfigurationParameterDeclarations for that context.
+   * Not sync'd based on belief:
+   *   setup of values must be complete before any reference occurs, even in multi-threaded context.
+   *   The setup is done under a sync'd control to insure only one setup is done, and to
+   *   publish the updated results to other threads
    */
-  private Map<String, ConfigurationParameterDeclarations> mContextNameToParamDeclsMap = new HashMap<String, ConfigurationParameterDeclarations>();
+  final private Map<String, ConfigurationParameterDeclarations> mContextNameToParamDeclsMap = 
+      new HashMap<String, ConfigurationParameterDeclarations>();
 
   /**
    * Map the fully-qualified name of a parameter to the fully-qualified name of the parameter it is
    * linked to (from which it takes its value).
+   * Not sync'd based on belief:
+   *   setup of values must be complete before any reference occurs, even in multi-threaded context.
+   *   The setup is done under a sync'd control to insure only one setup is done
+   * 
    */
-  protected Map<String, String> mLinkMap = new HashMap<String, String>();
+  final protected Map<String, String> mLinkMap = new HashMap<String, String>();
 
   /**
    * Set of parameters (fully qualified names) that explicitly declare overrides. This is used to
    * prevent implicit (name-based) overrides for these parameters.
    */
-  private Set<String> mExplicitlyOverridingParameters = new HashSet<String>();
+//  final private Set<String> mExplicitlyOverridingParameters = new HashSet<String>();
 
   /**
-   * Current session. Used to store parmater overrides.
+   * Current session. Used to store parameter settings done by the
+   * settings via API tae.setConfigParameterValue(...)
+   * 
+   * can be set by multiple threads, but ought to be set to the same session object
    */
-  private Session mSession = null;
+  private volatile Session mSession = null;
 
-  /**
-   * Holds the externalOverrideSettings from the top-level Analysis Engine
-   */
-  protected OperationalProperties mOperationalProperties = null;
+//  /**
+//   * Holds the externalOverrideSettings from the top-level Analysis Engine
+//   */
+//  protected OperationalProperties mOperationalProperties = null;
 
   /*
    * (non-Javadoc)
@@ -96,15 +108,20 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
   public void setSession(Session aSession) {
     mSession = aSession;
   }
-
+         
   /*
    * (non-Javadoc)
    * 
    * @see org.apache.uima.resource.ConfigurationManager#createContext(java.lang.String,
    *      org.apache.uima.resource.metadata.ResourceMetaData)
+   *      
+   * Could be called multiple times on different threads - first one does the context creation
    */
-  public void createContext(String aContextName, ResourceMetaData aResourceMetaData, Settings externalOverrides)
+  public synchronized void createContext(String aContextName, ResourceMetaData aResourceMetaData, Settings externalOverrides)
           throws ResourceConfigurationException {
+    if (mContextNameToParamDeclsMap.containsKey(aContextName)) {
+      return;
+    }
     // first internally validate settings in the ResourceMetaData (catches data type problems,
     // settings for undefined parameters, etc.)
     aResourceMetaData.validateConfigurationParameterSettings();
@@ -151,6 +168,8 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
     // validate
     validateConfigurationParameterSettings(aContextName);
   }
+  
+  
 
   /*
    * (non-Javadoc)

@@ -60,17 +60,16 @@ public abstract class Resource_ImplBase implements Resource {
   /**
    * @see org.apache.uima.resource.Resource#initialize(org.apache.uima.resource.ResourceSpecifier,
    *      java.util.Map)
+   *      
+   * multi-thread safe, given that each instance of this class is only called on one thread, once.
+   * The critical parts that update shared information (in shared uima context) are inside a synchronize block
    */
   public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
 
     // get name of resource, to be used in error messages
-    String name;
-    if (getMetaData() != null) {
-      name = getMetaData().getName();
-    } else {
-      name = getClass().getName();
-    }
+    final ResourceMetaData metadata1 = getMetaData();
+    String name = (metadata1 == null) ? getClass().getName() : metadata1.getName();
 
     // check for repeat initialization
     if (mInitialized) {
@@ -79,11 +78,11 @@ public abstract class Resource_ImplBase implements Resource {
     }
 
     // is there a UIMAContext provided in the aAdditionalParams map?
+    // if so, use it - it could be a shared context for scale-up of the same resource
     if (aAdditionalParams != null) {
       mUimaContextAdmin = (UimaContextAdmin) aAdditionalParams.get(PARAM_UIMA_CONTEXT);
     }
-    if (mUimaContextAdmin == null) // no, we have to create one
-    {
+    if (mUimaContextAdmin == null) {// no, we have to create one    
       // get or create ResourceManager
       ResourceManager resMgr = null;
       if (aAdditionalParams != null) {
@@ -126,6 +125,7 @@ public abstract class Resource_ImplBase implements Resource {
       ResourceMetaData metadata = ((ResourceCreationSpecifier) aSpecifier).getMetaData();
       name = metadata.getName();
       try {
+        // the resolveImports method has synch block around updates to the metadata
         metadata.resolveImports(getResourceManager());
       } catch (InvalidXMLException e) {
         throw new ResourceInitializationException(e);
@@ -141,20 +141,24 @@ public abstract class Resource_ImplBase implements Resource {
       if (externalOverrides != null) {
         mUimaContextAdmin.setExternalOverrides(externalOverrides);
       } else {
-        if (mUimaContextAdmin.getExternalOverrides() == null) {
-          externalOverrides = new Settings_impl();
-          try {
-            externalOverrides.loadSystemDefaults();
-          } catch (ResourceConfigurationException e) {
-            throw new ResourceInitializationException(ResourceInitializationException.ERROR_INITIALIZING_FROM_DESCRIPTOR,
-                    new Object[] { name, metadata.getSourceUrlString() }, e);
+        // synch around test/set of the (possibly shared) uima-context info about external param overrides
+        synchronized(mUimaContextAdmin) {
+          if (mUimaContextAdmin.getExternalOverrides() == null) {
+            externalOverrides = new Settings_impl();
+            try {
+              externalOverrides.loadSystemDefaults();
+            } catch (ResourceConfigurationException e) {
+              throw new ResourceInitializationException(ResourceInitializationException.ERROR_INITIALIZING_FROM_DESCRIPTOR,
+                      new Object[] { name, metadata.getSourceUrlString() }, e);
+            }
+            mUimaContextAdmin.setExternalOverrides(externalOverrides);
           }
-          mUimaContextAdmin.setExternalOverrides(externalOverrides);
         }
       }
 
       // initialize configuration
       try {
+        // createContext checks and skips repeated calls with same args (on different threads, for example)
         mUimaContextAdmin.getConfigurationManager().createContext(
                 mUimaContextAdmin.getQualifiedContextName(), getMetaData(), mUimaContextAdmin.getExternalOverrides());
         mUimaContextAdmin.getConfigurationManager().setSession(mUimaContextAdmin.getSession());
@@ -179,6 +183,7 @@ public abstract class Resource_ImplBase implements Resource {
         if (!aAdditionalParams.containsKey(PARAM_RESOURCE_MANAGER)) {
             aAdditionalParams.put(PARAM_RESOURCE_MANAGER, mUimaContextAdmin.getResourceManager());
         }
+        // initializeExternalResources is synchronized
         mUimaContextAdmin.getResourceManager().initializeExternalResources(resMgrCfg,
                 mUimaContextAdmin.getQualifiedContextName(), aAdditionalParams);
       }
@@ -187,6 +192,7 @@ public abstract class Resource_ImplBase implements Resource {
       ExternalResourceDependency[] resourceDependencies = ((ResourceCreationSpecifier) aSpecifier)
               .getExternalResourceDependencies();
       if (resourceDependencies != null) {
+        // resolveAndValidateResourceDependencies is synchronized
         mUimaContextAdmin.getResourceManager().resolveAndValidateResourceDependencies(
                 resourceDependencies, mUimaContextAdmin.getQualifiedContextName());
       }

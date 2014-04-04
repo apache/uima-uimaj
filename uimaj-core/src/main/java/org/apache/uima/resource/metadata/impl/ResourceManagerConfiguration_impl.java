@@ -55,7 +55,7 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
 
   private String mVendor;
 
-  private Import[] mImports = new Import[0];
+  private Import[] mImports = Import.EMPTY_IMPORTS;
 
   private ExternalResourceBinding[] mBindings = new ExternalResourceBinding[0];
 
@@ -265,69 +265,82 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
    * 
    * @see org.apache.uima.resource.metadata.TypeSystemDescription#resolveImports()
    */
-  public void resolveImports() throws InvalidXMLException {
-    resolveImports(new TreeSet<String>(), UIMAFramework.newDefaultResourceManager());
-  }
-
-  public void resolveImports(ResourceManager aResourceManager) throws InvalidXMLException {
-    resolveImports(new TreeSet<String>(), aResourceManager);
-  }
-
-  public void resolveImports(Collection<String> aAlreadyImportedURLs, ResourceManager aResourceManager)
-          throws InvalidXMLException {
-    // add our own URL, if known, to the collection of already imported URLs
-    if (getSourceUrl() != null) {
-      aAlreadyImportedURLs.add(getSourceUrl().toString());
+  // support multi-threading, avoid object creation if no imports
+  public synchronized void resolveImports() throws InvalidXMLException {
+    if (getImports().length == 0) {
+      resolveImports(null, null);
+    } else {
+      resolveImports(new TreeSet<String>(), UIMAFramework.newDefaultResourceManager());
     }
-    List<ExternalResourceDescription> importedResources = new ArrayList<ExternalResourceDescription>();
-    List<ExternalResourceBinding> importedBindings = new ArrayList<ExternalResourceBinding>();
-    Import[] imports = getImports();
-    for (int i = 0; i < imports.length; i++) {
-      // make sure Import's relative path base is set, to allow for users who create
-      // new import objects
-      if (imports[i] instanceof Import_impl) {
-        ((Import_impl) imports[i]).setSourceUrlIfNull(this.getSourceUrl());
+  }
+
+  public synchronized void resolveImports(ResourceManager aResourceManager) throws InvalidXMLException {
+    resolveImports((getImports().length == 0) ? null : new TreeSet<String>(), aResourceManager);
+  }
+
+  public synchronized void resolveImports(Collection<String> aAlreadyImportedURLs, ResourceManager aResourceManager)
+          throws InvalidXMLException {
+    List<ExternalResourceDescription> importedResources = null;
+    List<ExternalResourceBinding> importedBindings = null;
+    if (getImports().length != 0) {
+      // add our own URL, if known, to the collection of already imported URLs
+      if (getSourceUrl() != null) {
+        aAlreadyImportedURLs.add(getSourceUrl().toString());
       }
-      URL url = imports[i].findAbsoluteUrl(aResourceManager);
-      if (!aAlreadyImportedURLs.contains(url.toString())) {
-        aAlreadyImportedURLs.add(url.toString());
-        try {
-          resolveImport(url, aAlreadyImportedURLs, importedResources, importedBindings,
-                  aResourceManager);
-        } catch (IOException e) {
-          throw new InvalidXMLException(InvalidXMLException.IMPORT_FAILED_COULD_NOT_READ_FROM_URL,
-                  new Object[] { url, imports[i].getSourceUrlString() }, e);
+      importedResources = new ArrayList<ExternalResourceDescription>();
+      importedBindings = new ArrayList<ExternalResourceBinding>();
+      Import[] imports = getImports();
+      for (int i = 0; i < imports.length; i++) {
+        // make sure Import's relative path base is set, to allow for users who create
+        // new import objects
+        if (imports[i] instanceof Import_impl) {
+          ((Import_impl) imports[i]).setSourceUrlIfNull(this.getSourceUrl());
+        }
+        URL url = imports[i].findAbsoluteUrl(aResourceManager);
+        if (!aAlreadyImportedURLs.contains(url.toString())) {
+          aAlreadyImportedURLs.add(url.toString());
+          try {
+            resolveImport(url, aAlreadyImportedURLs, importedResources, importedBindings,
+                    aResourceManager);
+          } catch (IOException e) {
+            throw new InvalidXMLException(InvalidXMLException.IMPORT_FAILED_COULD_NOT_READ_FROM_URL,
+                    new Object[] { url, imports[i].getSourceUrlString() }, e);
+          }
         }
       }
     }
-
+    
     // update this object
     ExternalResourceDescription[] existingResources = this.getExternalResources();
     if (existingResources == null) {
-      existingResources = new ExternalResourceDescription[0];
+      this.setExternalResources(existingResources = ExternalResourceDescription.EMPTY_EXTERNAL_RESORUCE_DESCRIPTIONS);
     }
-    ExternalResourceDescription[] newResources = new ExternalResourceDescription[existingResources.length
-            + importedResources.size()];
-    System.arraycopy(existingResources, 0, newResources, 0, existingResources.length);
-    for (int i = 0; i < importedResources.size(); i++) {
-      newResources[existingResources.length + i] = (ExternalResourceDescription) importedResources
-              .get(i);
+    if (importedResources != null) {
+      ExternalResourceDescription[] newResources = new ExternalResourceDescription[existingResources.length
+              + importedResources.size()];
+      System.arraycopy(existingResources, 0, newResources, 0, existingResources.length);
+      for (int i = 0; i < importedResources.size(); i++) {
+        newResources[existingResources.length + i] = (ExternalResourceDescription) importedResources
+                .get(i);
+      }
+      this.setExternalResources(newResources);
     }
-    this.setExternalResources(newResources);
-
+    
     ExternalResourceBinding[] existingBindings = this.getExternalResourceBindings();
     if (existingBindings == null) {
-      existingBindings = new ExternalResourceBinding[0];
+      this.setExternalResourceBindings(existingBindings = ExternalResourceBinding.EMPTY_RESOURCE_BINDINGS);
     }
-    ExternalResourceBinding[] newBindings = new ExternalResourceBinding[existingBindings.length
-            + importedBindings.size()];
-    System.arraycopy(existingBindings, 0, newBindings, 0, existingBindings.length);
-    for (int i = 0; i < importedBindings.size(); i++) {
-      newBindings[existingBindings.length + i] = (ExternalResourceBinding) importedBindings.get(i);
+    if (null != importedBindings) {
+      ExternalResourceBinding[] newBindings = new ExternalResourceBinding[existingBindings.length
+              + importedBindings.size()];
+      System.arraycopy(existingBindings, 0, newBindings, 0, existingBindings.length);
+      for (int i = 0; i < importedBindings.size(); i++) {
+        newBindings[existingBindings.length + i] = (ExternalResourceBinding) importedBindings.get(i);
+      }
+      this.setExternalResourceBindings(newBindings);
     }
-    this.setExternalResourceBindings(newBindings);
     // clear imports
-    this.setImports(new Import[0]);
+    this.setImports(Import.EMPTY_IMPORTS);
   }
 
   private void resolveImport(URL aURL, Collection<String> aAlreadyImportedURLs,

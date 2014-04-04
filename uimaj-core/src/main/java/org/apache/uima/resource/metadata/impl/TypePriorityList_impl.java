@@ -37,8 +37,9 @@ public class TypePriorityList_impl extends MetaDataObject_impl implements TypePr
 
   /**
    * @see TypePriorityList#getTypes()
+   * synchronized to prevent concurrent modification exceptions
    */
-  public String[] getTypes() {
+  public synchronized String[] getTypes() {
     String[] result = new String[mTypeNames.size()];
     mTypeNames.toArray(result);
     return result;
@@ -47,7 +48,7 @@ public class TypePriorityList_impl extends MetaDataObject_impl implements TypePr
   /**
    * @see TypePriorityList#setTypes(java.lang.String[])
    */
-  public void setTypes(String[] aTypeNames) {
+  public synchronized void setTypes(String[] aTypeNames) {
     mTypeNames.clear();
     for (int i = 0; i < aTypeNames.length; i++) {
       mTypeNames.add(aTypeNames[i]);
@@ -57,25 +58,25 @@ public class TypePriorityList_impl extends MetaDataObject_impl implements TypePr
   /**
    * @see TypePriorityList#addType(java.lang.String)
    */
-  public void addType(String aTypeName) {
+  public synchronized void addType(String aTypeName) {
     mTypeNames.add(aTypeName);
-
   }
 
   /**
    * @see TypePriorityList#removeType(java.lang.String)
    */
-  public void removeType(String aTypeName) {
+  public synchronized void removeType(String aTypeName) {
     mTypeNames.remove(aTypeName);
   }
 
   /*
    * (non-Javadoc) Special purpose clone method to deal with ArrayList.
    */
-  public Object clone() {
+  public synchronized Object clone() {
+    //surprise: super.clone sets the final field to the same array list as the original
     TypePriorityList_impl clone = (TypePriorityList_impl) super.clone();
-
-    clone.mTypeNames = new ArrayList<String>();
+    
+    clone.mTypeNames = new ArrayList();  // because above clone has set it to the == object
     for (String name : mTypeNames) {
       clone.addType(name);
     }

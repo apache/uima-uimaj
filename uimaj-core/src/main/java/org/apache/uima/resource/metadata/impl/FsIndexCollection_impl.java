@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeSet;
 
 import org.apache.uima.UIMAFramework;
@@ -54,7 +55,7 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
 
   private String mVendor;
 
-  private Import[] mImports;
+  private Import[] mImports = Import.EMPTY_IMPORTS;
 
   private FsIndexDescription[] mFsIndexes = new FsIndexDescription[0];
 
@@ -120,10 +121,8 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
    * @see org.apache.uima.resource.metadata.TypeSystemDescription#getImports()
    */
   public Import[] getImports() {
-    // don't all this to return null
-    if (mImports == null)
-      mImports = new Import[0];
-    return mImports;
+    // don't allow this to return null
+    return (mImports == null) ? Import.EMPTY_IMPORTS : mImports;
   }
 
   /*
@@ -190,55 +189,65 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
    * 
    * @see org.apache.uima.resource.metadata.TypeSystemDescription#resolveImports()
    */
-  public void resolveImports() throws InvalidXMLException {
-    resolveImports(new TreeSet<String>(), UIMAFramework.newDefaultResourceManager());
-  }
-
-  public void resolveImports(ResourceManager aResourceManager) throws InvalidXMLException {
-    resolveImports(new TreeSet<String>(), aResourceManager);
-  }
-
-  public void resolveImports(Collection<String> aAlreadyImportedFsIndexURLs,
-          ResourceManager aResourceManager) throws InvalidXMLException {
-    // add our own URL, if known, to the collection of already imported URLs
-    if (getSourceUrl() != null) {
-      aAlreadyImportedFsIndexURLs.add(getSourceUrl().toString());
+  // support multi-threading, avoid object creation if no imports
+  public synchronized void resolveImports() throws InvalidXMLException {
+    if (getImports().length == 0) {
+      resolveImports(null, null);
+    } else {
+      resolveImports(new TreeSet<String>(), UIMAFramework.newDefaultResourceManager());
     }
-    
-    List<FsIndexDescription> importedIndexes = new ArrayList<FsIndexDescription>();
-    Import[] imports = getImports();
-    for (int i = 0; i < imports.length; i++) {
-      // make sure Import's relative path base is set, to allow for users who create
-      // new import objects
-      if (imports[i] instanceof Import_impl) {
-        ((Import_impl) imports[i]).setSourceUrlIfNull(this.getSourceUrl());
-      }
+  }
 
-      URL url = imports[i].findAbsoluteUrl(aResourceManager);
-      if (!aAlreadyImportedFsIndexURLs.contains(url.toString())) {
-        aAlreadyImportedFsIndexURLs.add(url.toString());
-        try {
-          resolveImport(url, aAlreadyImportedFsIndexURLs, importedIndexes, aResourceManager);
-        } catch (IOException e) {
-          throw new InvalidXMLException(InvalidXMLException.IMPORT_FAILED_COULD_NOT_READ_FROM_URL,
-                  new Object[] { url, imports[i].getSourceUrlString() }, e);
+  public synchronized void resolveImports(ResourceManager aResourceManager) throws InvalidXMLException {
+    resolveImports((getImports().length == 0) ? null : new TreeSet<String>(), aResourceManager);
+  }
+
+  public synchronized void resolveImports(Collection<String> aAlreadyImportedFsIndexURLs,
+          ResourceManager aResourceManager) throws InvalidXMLException {
+    List<FsIndexDescription> importedIndexes = null;
+    if (getImports().length != 0) {
+      // add our own URL, if known, to the collection of already imported URLs
+      if (getSourceUrl() != null) {
+        aAlreadyImportedFsIndexURLs.add(getSourceUrl().toString());
+      }
+      
+      importedIndexes = new ArrayList<FsIndexDescription>();
+      Import[] imports = getImports();
+      for (int i = 0; i < imports.length; i++) {
+        // make sure Import's relative path base is set, to allow for users who create
+        // new import objects
+        if (imports[i] instanceof Import_impl) {
+          ((Import_impl) imports[i]).setSourceUrlIfNull(this.getSourceUrl());
+        }
+  
+        URL url = imports[i].findAbsoluteUrl(aResourceManager);
+        if (!aAlreadyImportedFsIndexURLs.contains(url.toString())) {
+          aAlreadyImportedFsIndexURLs.add(url.toString());
+          try {
+            resolveImport(url, aAlreadyImportedFsIndexURLs, importedIndexes, aResourceManager);
+          } catch (IOException e) {
+            throw new InvalidXMLException(InvalidXMLException.IMPORT_FAILED_COULD_NOT_READ_FROM_URL,
+                    new Object[] { url, imports[i].getSourceUrlString() }, e);
+          }
         }
       }
     }
     // update this object
     FsIndexDescription[] existingIndexes = this.getFsIndexes();
     if (existingIndexes == null) {
-      existingIndexes = new FsIndexDescription[0];
+      this.setFsIndexes(existingIndexes = FsIndexDescription.EMPTY_FS_INDEX_DESCRIPTIONS);
     }
-    FsIndexDescription[] newIndexes = new FsIndexDescription[existingIndexes.length
-            + importedIndexes.size()];
-    System.arraycopy(existingIndexes, 0, newIndexes, 0, existingIndexes.length);
-    for (int i = 0; i < importedIndexes.size(); i++) {
-      newIndexes[existingIndexes.length + i] = (FsIndexDescription) importedIndexes.get(i);
+    if (null != importedIndexes) {
+      FsIndexDescription[] newIndexes = new FsIndexDescription[existingIndexes.length
+              + importedIndexes.size()];
+      System.arraycopy(existingIndexes, 0, newIndexes, 0, existingIndexes.length);
+      for (int i = 0; i < importedIndexes.size(); i++) {
+        newIndexes[existingIndexes.length + i] = (FsIndexDescription) importedIndexes.get(i);
+      }
+      this.setFsIndexes(newIndexes);
     }
-    this.setFsIndexes(newIndexes);
     // clear imports
-    this.setImports(new Import[0]);
+    this.setImports(Import.EMPTY_IMPORTS);
   }
 
   private void resolveImport(URL aURL, Collection<String> aAlreadyImportedFsIndexCollectionURLs,
@@ -247,15 +256,18 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
     //check the import cache
     FsIndexCollection desc;    
     String urlString = aURL.toString();
-    XMLizable cachedObject = aResourceManager.getImportCache().get(urlString);
-    if (cachedObject instanceof FsIndexCollection) {
-      desc = (FsIndexCollection)cachedObject;
-    } else {   
-      XMLInputSource input;
-      input = new XMLInputSource(aURL);
-      desc = UIMAFramework.getXMLParser().parseFsIndexCollection(input);
-      desc.resolveImports(aAlreadyImportedFsIndexCollectionURLs, aResourceManager);
-      aResourceManager.getImportCache().put(urlString, desc);
+    Map<String, XMLizable> importCache = aResourceManager.getImportCache();
+    synchronized(importCache) {
+      XMLizable cachedObject = importCache.get(urlString);
+      if (cachedObject instanceof FsIndexCollection) {
+        desc = (FsIndexCollection)cachedObject;
+      } else {   
+        XMLInputSource input;
+        input = new XMLInputSource(aURL);
+        desc = UIMAFramework.getXMLParser().parseFsIndexCollection(input);
+        desc.resolveImports(aAlreadyImportedFsIndexCollectionURLs, aResourceManager);
+        importCache.put(urlString, desc);
+      }
     }
     aResults.addAll(Arrays.asList(desc.getFsIndexes()));
   }

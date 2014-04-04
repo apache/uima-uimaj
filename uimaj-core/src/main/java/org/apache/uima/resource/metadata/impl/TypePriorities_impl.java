@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeSet;
 
 import org.apache.uima.UIMAFramework;
@@ -48,7 +49,7 @@ import org.xml.sax.SAXException;
 public class TypePriorities_impl extends MetaDataObject_impl implements TypePriorities {
 
   static final long serialVersionUID = -4773863151055424438L;
-
+  
   private String mName;
 
   private String mVersion;
@@ -57,10 +58,10 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
 
   private String mVendor;
 
-  private Import[] mImports = new Import[0];
+  private Import[] mImports = Import.EMPTY_IMPORTS;
 
   private List<TypePriorityList> mPriorityLists = new ArrayList<TypePriorityList>();
-
+  
   /**
    * @see ResourceMetaData#getName()
    */
@@ -137,20 +138,27 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
 
   /**
    * @see TypePriorities#getPriorityLists()
+   * synchronized to prevent concurrent mod exceptions
    */
   public TypePriorityList[] getPriorityLists() {
-    TypePriorityList[] result = new TypePriorityList[mPriorityLists.size()];
-    mPriorityLists.toArray(result);
-    return result;
+    synchronized (mPriorityLists) { // saw concurrent mod exception 3/2014
+      TypePriorityList[] result = new TypePriorityList[mPriorityLists.size()];
+      mPriorityLists.toArray(result);
+      return result;
+    }
   }
 
   /**
    * @see TypePriorities#setPriorityLists(TypePriorityList[])
+   * could be called by thread doing resolve imports,
+   * while another thread was iterating over them
    */
   public void setPriorityLists(TypePriorityList[] aPriorityLists) {
-    mPriorityLists.clear();
-    for (int i = 0; i < aPriorityLists.length; i++) {
-      mPriorityLists.add(aPriorityLists[i]);
+    synchronized (mPriorityLists) { // saw concurrent mod exceptions 3/2014      
+      mPriorityLists.clear();
+      for (int i = 0; i < aPriorityLists.length; i++) {
+        mPriorityLists.add(aPriorityLists[i]);
+      }
     }
   }
 
@@ -158,7 +166,9 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
    * @see TypePriorities#addPriorityList(TypePriorityList)
    */
   public void addPriorityList(TypePriorityList aPriorityList) {
-    mPriorityLists.add(aPriorityList);
+    synchronized (mPriorityLists) { // saw concurrent mod exceptions 3/2014 
+      mPriorityLists.add(aPriorityList);
+    }
   }
 
   /**
@@ -166,7 +176,9 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
    */
   public TypePriorityList addPriorityList() {
     TypePriorityList newPriorityList = new TypePriorityList_impl();
-    mPriorityLists.add(newPriorityList);
+    synchronized (mPriorityLists) { // saw concurrent mod exceptions while iterating on this 3/2014
+      mPriorityLists.add(newPriorityList);
+    }
     return newPriorityList;
   }
 
@@ -174,63 +186,77 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
    * @see TypePriorities#removePriorityList(TypePriorityList)
    */
   public void removePriorityList(TypePriorityList aPriorityList) {
-    mPriorityLists.remove(aPriorityList);
+    synchronized (mPriorityLists) { // saw concurrent mod exceptions while iterating on this 3/2014
+      mPriorityLists.remove(aPriorityList);
+    }
   }
 
   /**
    * @see TypeSystemDescription#resolveImports()
    */
-  public void resolveImports() throws InvalidXMLException {
-    resolveImports(new TreeSet<String>(), UIMAFramework.newDefaultResourceManager());
-  }
-
-  public void resolveImports(ResourceManager aResourceManager) throws InvalidXMLException {
-    resolveImports(new TreeSet<String>(), aResourceManager);
-  }
-
-  public void resolveImports(Collection<String> aAlreadyImportedTypePrioritiesURLs,
-          ResourceManager aResourceManager) throws InvalidXMLException {
-    // add our own URL, if known, to the collection of already imported URLs
-    if (getSourceUrl() != null) {
-      aAlreadyImportedTypePrioritiesURLs.add(getSourceUrl().toString());
+  // support multithreading,
+  // avoid object creation if already resolved
+  public synchronized void resolveImports() throws InvalidXMLException {
+    if (getImports().length == 0) {
+      resolveImports(null, null);
+    } else {
+      resolveImports(new TreeSet<String>(), UIMAFramework.newDefaultResourceManager());
     }
-    
-    List<TypePriorityList> importedPriorityLists = new ArrayList<TypePriorityList>();
-    Import[] imports = getImports();
-    for (int i = 0; i < imports.length; i++) {
-      // make sure Import's relative path base is set, to allow for users who create
-      // new import objects
-      if (imports[i] instanceof Import_impl) {
-        ((Import_impl) imports[i]).setSourceUrlIfNull(this.getSourceUrl());
-      }
+  }
 
-      URL url = imports[i].findAbsoluteUrl(aResourceManager);
-      if (!aAlreadyImportedTypePrioritiesURLs.contains(url.toString())) {
-        aAlreadyImportedTypePrioritiesURLs.add(url.toString());
-        try {
-          resolveImport(url, aAlreadyImportedTypePrioritiesURLs, importedPriorityLists,
-                  aResourceManager);
-        } catch (IOException e) {
-          throw new InvalidXMLException(InvalidXMLException.IMPORT_FAILED_COULD_NOT_READ_FROM_URL,
-                  new Object[] { url, imports[i].getSourceUrlString() }, e);
+  public synchronized void resolveImports(ResourceManager aResourceManager) throws InvalidXMLException {
+    resolveImports((getImports().length == 0) ? null : new TreeSet<String>(), aResourceManager);
+  }
+
+  public synchronized void resolveImports(Collection<String> aAlreadyImportedTypePrioritiesURLs,
+          ResourceManager aResourceManager) throws InvalidXMLException {
+    List<TypePriorityList> importedPriorityLists = null;
+    if (getImports().length != 0) {
+  
+      // add our own URL, if known, to the collection of already imported URLs
+      if (getSourceUrl() != null) {
+        aAlreadyImportedTypePrioritiesURLs.add(getSourceUrl().toString());
+      }
+      
+      importedPriorityLists = new ArrayList<TypePriorityList>();
+      Import[] imports = getImports();
+      for (int i = 0; i < imports.length; i++) {
+        // make sure Import's relative path base is set, to allow for users who create
+        // new import objects
+        if (imports[i] instanceof Import_impl) {
+          ((Import_impl) imports[i]).setSourceUrlIfNull(this.getSourceUrl());
+        }
+  
+        URL url = imports[i].findAbsoluteUrl(aResourceManager);
+        if (!aAlreadyImportedTypePrioritiesURLs.contains(url.toString())) {
+          aAlreadyImportedTypePrioritiesURLs.add(url.toString());
+          try {
+            resolveImport(url, aAlreadyImportedTypePrioritiesURLs, importedPriorityLists,
+                    aResourceManager);
+          } catch (IOException e) {
+            throw new InvalidXMLException(InvalidXMLException.IMPORT_FAILED_COULD_NOT_READ_FROM_URL,
+                    new Object[] { url, imports[i].getSourceUrlString() }, e);
+          }
         }
       }
     }
-    // update this object
+    //update this object
     TypePriorityList[] existingPriorityLists = this.getPriorityLists();
     if (existingPriorityLists == null) {
-      existingPriorityLists = new TypePriorityList[0];
+      this.setPriorityLists(existingPriorityLists = TypePriorityList.EMPTY_TYPE_PRIORITY_LISTS);
     }
-    TypePriorityList[] newPriorityLists = new TypePriorityList[existingPriorityLists.length
-            + importedPriorityLists.size()];
-    System.arraycopy(existingPriorityLists, 0, newPriorityLists, 0, existingPriorityLists.length);
-    for (int i = 0; i < importedPriorityLists.size(); i++) {
-      newPriorityLists[existingPriorityLists.length + i] = (TypePriorityList) importedPriorityLists
-              .get(i);
+    if (importedPriorityLists != null ) {
+      TypePriorityList[] newPriorityLists = new TypePriorityList[existingPriorityLists.length
+              + importedPriorityLists.size()];
+      System.arraycopy(existingPriorityLists, 0, newPriorityLists, 0, existingPriorityLists.length);
+      for (int i = 0; i < importedPriorityLists.size(); i++) {
+        newPriorityLists[existingPriorityLists.length + i] = (TypePriorityList) importedPriorityLists
+                .get(i);
+      }
+      this.setPriorityLists(newPriorityLists);
     }
-    this.setPriorityLists(newPriorityLists);
     // clear imports
-    this.setImports(new Import[0]);
+    this.setImports(Import.EMPTY_IMPORTS);
   }
 
   private void resolveImport(URL aURL, Collection<String> aAlreadyImportedTypePrioritiesURLs,
@@ -239,15 +265,18 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
     //check the import cache
     TypePriorities desc;    
     String urlString = aURL.toString();
-    XMLizable cachedObject = aResourceManager.getImportCache().get(urlString);
-    if (cachedObject instanceof TypePriorities) {
-      desc = (TypePriorities)cachedObject;
-    } else {   
-      XMLInputSource input;
-      input = new XMLInputSource(aURL);
-      desc = UIMAFramework.getXMLParser().parseTypePriorities(input);
-      desc.resolveImports(aAlreadyImportedTypePrioritiesURLs, aResourceManager);
-      aResourceManager.getImportCache().put(urlString, desc);
+    Map<String, XMLizable> importCache = aResourceManager.getImportCache();
+    synchronized(importCache) {
+      XMLizable cachedObject = importCache.get(urlString);
+      if (cachedObject instanceof TypePriorities) {
+        desc = (TypePriorities)cachedObject;
+      } else {   
+        XMLInputSource input;
+        input = new XMLInputSource(aURL);
+        desc = UIMAFramework.getXMLParser().parseTypePriorities(input);
+        desc.resolveImports(aAlreadyImportedTypePrioritiesURLs, aResourceManager);
+        importCache.put(urlString, desc);
+      }
     }
     aResults.addAll(Arrays.asList(desc.getPriorityLists()));
   }
@@ -277,12 +306,13 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
   public Object clone() {
     TypePriorities_impl clone = (TypePriorities_impl) super.clone();
     clone.mPriorityLists = new ArrayList<TypePriorityList>();
-    Iterator<TypePriorityList> priListIter = mPriorityLists.iterator();
-    while (priListIter.hasNext()) {
-      TypePriorityList priList = priListIter.next();
-      clone.addPriorityList((TypePriorityList) priList.clone());
+    synchronized (mPriorityLists) { // saw concurrent mod exceptions while iterating on this 3/2014
+      Iterator<TypePriorityList> priListIter = mPriorityLists.iterator();
+      while (priListIter.hasNext()) {
+        TypePriorityList priList = priListIter.next();
+        clone.addPriorityList((TypePriorityList) priList.clone());
+      }
     }
-
     return clone;
   }
 
