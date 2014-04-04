@@ -47,6 +47,7 @@ import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.ResourceManagerPearWrapper;
 import org.apache.uima.resource.ResourceProcessException;
 import org.apache.uima.resource.ResourceSpecifier;
+import org.apache.uima.resource.impl.ResourceManager_impl;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.util.InvalidXMLException;
@@ -101,6 +102,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
       return result;
    }
 
+   public static final ThreadLocal<ResourceManager_impl> newPearsParent = new ThreadLocal<ResourceManager_impl>();
    private synchronized ResourceManager createRM(StringPair sp, PackageBrowser pkgBrowser, ResourceManager parentResourceManager)
          throws MalformedURLException {
       // create UIMA resource manager and apply pear settings
@@ -110,8 +112,10 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
        // could be null for top level Pear not in an aggregate
        rsrcMgr = UIMAFramework.newDefaultResourceManager();
      } else {
+       newPearsParent.set((ResourceManager_impl) parentResourceManager);
        rsrcMgr = UIMAFramework.newDefaultResourceManagerPearWrapper();
-       ((ResourceManagerPearWrapper)rsrcMgr).initializeFromParentResourceManager(parentResourceManager);
+       newPearsParent.remove();
+//       ((ResourceManagerPearWrapper)rsrcMgr).initializeFromParentResourceManager(parentResourceManager);
      }
      rsrcMgr.setExtensionClassPath(sp.classPath, true);
      UIMAFramework.getLogger(this.getClass()).logrb(
