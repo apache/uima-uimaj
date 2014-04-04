@@ -24,13 +24,18 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
+import java.util.Random;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.uima.Constants;
 import org.apache.uima.UIMAFramework;
+import org.apache.uima.UimaContext;
+import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.analysis_engine.metadata.FixedFlow;
@@ -40,13 +45,18 @@ import org.apache.uima.analysis_engine.metadata.impl.FlowControllerDeclaration_i
 import org.apache.uima.cas.CAS;
 import org.apache.uima.flow.FlowControllerDescription;
 import org.apache.uima.flow.impl.FlowControllerDescription_impl;
+import org.apache.uima.internal.util.MultiThreadUtils;
 import org.apache.uima.internal.util.SerializationUtils;
+import org.apache.uima.resource.ConfigurationManager;
 import org.apache.uima.resource.ExternalResourceDependency;
 import org.apache.uima.resource.ExternalResourceDescription;
+import org.apache.uima.resource.FileResourceSpecifier;
+import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.URISpecifier;
+import org.apache.uima.resource.impl.FileResourceSpecifier_impl;
 import org.apache.uima.resource.impl.URISpecifier_impl;
 import org.apache.uima.resource.metadata.AllowedValue;
 import org.apache.uima.resource.metadata.Capability;
@@ -77,6 +87,7 @@ import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.InvalidXMLException;
+import org.apache.uima.util.Logger;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
 
@@ -89,6 +100,9 @@ public class AnalysisEngineDescription_implTest extends TestCase {
   // Text encoding to use for the various byte/character conversions happening in this test case.
   // Public because also used by other test cases.
   public static final String encoding = "utf-8";
+  
+  private static final File TEST_DATA_FILE = JUnitExtension
+      .getFile("ResourceTest/ResourceManager_implTest_tempDataFile.dat");
   
   private AnalysisEngineDescription primitiveDesc;
 
@@ -151,7 +165,7 @@ public class AnalysisEngineDescription_implTest extends TestCase {
       primitiveDesc = new AnalysisEngineDescription_impl();
       primitiveDesc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
       primitiveDesc.setPrimitive(true);
-      primitiveDesc.setAnnotatorImplementationName("org.apache.uima.examples.TestAnnotator");
+      primitiveDesc.setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
       AnalysisEngineMetaData md = primitiveDesc.getAnalysisEngineMetaData();
       md.setName("Test TAE");
       md.setDescription("Does not do anything useful.");
@@ -162,7 +176,7 @@ public class AnalysisEngineDescription_implTest extends TestCase {
       Capability cap1 = new Capability_impl();
       cap1.setDescription("First fake capability");
       cap1.addOutputType("Fake", false);
-      cap1.addOutputFeature("TestFeature");
+      cap1.addOutputFeature("Fake:TestFeature");
       Capability cap2 = new Capability_impl();
       cap2.setDescription("Second fake capability");
       cap2.addInputType("Fake", true);
@@ -213,18 +227,24 @@ public class AnalysisEngineDescription_implTest extends TestCase {
       delegateTaeMap.put("Test", primitiveDesc);
       AnalysisEngineDescription_impl primDesc2 = new AnalysisEngineDescription_impl();
       primDesc2.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
-      primDesc2.setAnnotatorImplementationName("fakeClass");
+      primDesc2.setPrimitive(true);
+      primDesc2.setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
       primDesc2.getAnalysisEngineMetaData().setName("fakeAnnotator");
       primDesc2.getAnalysisEngineMetaData().setCapabilities(
               new Capability[] { new Capability_impl() });
       delegateTaeMap.put("Empty", primDesc2);
-      URISpecifier uriSpec = new URISpecifier_impl();
-      uriSpec.setUri("http://incubator.apache.org/uima");
-      uriSpec.setProtocol(Constants.PROTOCOL_SOAP);
+      // Can't use URI specifier if we try to produce resource, because it maps to either a SOAP or VINCI adapter,
+      //   and that adapter is not on the class path for this causes a failure in loading
+//      URISpecifier uriSpec = new URISpecifier_impl();
+//      uriSpec.setUri("http://incubator.apache.org/uima");
+//      uriSpec.setProtocol(Constants.PROTOCOL_SOAP);
+      FileResourceSpecifier fileResSpec = new FileResourceSpecifier_impl();
+      fileResSpec.setFileUrl(TEST_DATA_FILE.toURL().toString());
       FlowControllerDeclaration fcDecl = new FlowControllerDeclaration_impl();
       fcDecl.setKey("TestFlowController");
       FlowControllerDescription fcDesc = new FlowControllerDescription_impl();
       fcDesc.getMetaData().setName("MyTestFlowController");
+      fcDesc.setImplementationName("org.apache.uima.analysis_engine.impl.FlowControllerForErrorTest");
       fcDecl.setSpecifier(fcDesc);
       aggregateDesc.setFlowControllerDeclaration(fcDecl);
 
@@ -237,7 +257,7 @@ public class AnalysisEngineDescription_implTest extends TestCase {
               .createResourceManagerConfiguration();
       ExternalResourceDescription extRes = UIMAFramework.getResourceSpecifierFactory()
               .createExternalResourceDescription();
-      extRes.setResourceSpecifier(uriSpec);
+      extRes.setResourceSpecifier(fileResSpec);
       extRes.setName("Resource1");
       extRes.setDescription("Test");
       resMgrCfg.setExternalResources(new ExternalResourceDescription[] { extRes });
@@ -246,6 +266,7 @@ public class AnalysisEngineDescription_implTest extends TestCase {
               .createExternalResourceBinding();
       binding.setKey("ResourceKey");
       binding.setResourceName("Resource1");
+      resMgrCfg.setExternalResourceBindings(new ExternalResourceBinding[] {binding});
       aggregateDesc.setResourceManagerConfiguration(resMgrCfg);
 
       // AsbCreationSpecifier asbSpec = new AsbCreationSpecifier_impl();
@@ -272,6 +293,65 @@ public class AnalysisEngineDescription_implTest extends TestCase {
     }
   }
 
+  public void testMulticoreInitialize() throws Exception {
+    ResourceManager resourceManager = UIMAFramework.newDefaultResourceManager();
+    ConfigurationManager configManager = UIMAFramework.newConfigurationManager();
+    Logger logger = UIMAFramework.getLogger(this.getClass());
+    logger.setResourceManager(resourceManager);
+ 
+    UimaContext uimaContext = UIMAFramework.newUimaContext(logger, resourceManager, configManager);
+    
+    final Map<String, Object> p = new HashMap<String, Object>();
+    p.put(UIMAFramework.CAS_INITIAL_HEAP_SIZE,  200);
+    p.put(Resource.PARAM_CONFIG_MANAGER, configManager);
+    p.put(Resource.PARAM_RESOURCE_MANAGER,  UIMAFramework.newDefaultResourceManager());
+    p.put(Resource.PARAM_UIMA_CONTEXT, uimaContext);
+    int numberOfThreads = MultiThreadUtils.PROCESSORS * 5; 
+    final AnalysisEngine[] aes = new AnalysisEngine[numberOfThreads];
+    System.out.format("test multicore initialize with %d threads%n",
+        numberOfThreads);
+    
+    
+    MultiThreadUtils.Run2isb run2isb = new MultiThreadUtils.Run2isb() {
+      
+      public void call(int i, int r, StringBuilder sb) throws Exception {
+        Random random = new Random();
+        for (int j = 0; j < 2; j++) {
+          aes[i] = UIMAFramework.produceAnalysisEngine(primitiveDesc, p);     
+  //        System.out.println(sb.toString());
+  //        System.out.print('.');
+          if ((i % 2) == 0) {
+            Thread.sleep(0, random.nextInt(2000));
+          }
+        }
+      }
+    };  
+    MultiThreadUtils.tstMultiThread("MultiCoreInitialize",  numberOfThreads,  100, run2isb);
+    assertTrue(!aes[0].equals(aes[1]));
+    
+    run2isb = new MultiThreadUtils.Run2isb() {
+      
+      public void call(int i, int r, StringBuilder sb) throws Exception {
+        Random random = new Random();
+        for (int j = 0; j < 2; j++) {
+          aes[i] = UIMAFramework.produceAnalysisEngine(aggregateDesc, p);     
+  //        System.out.println(sb.toString());
+  //        System.out.print('.');
+          if ((i % 2) == 0) {
+            Thread.sleep(0, random.nextInt(5000));
+          }
+        }
+      }
+    };
+    MultiThreadUtils.tstMultiThread("MultiCoreInitialize",  numberOfThreads,  100, run2isb);
+    assertTrue(!aes[0].equals(aes[1]));
+
+    
+//    System.out.println("");
+  }
+  
+  
+  
   public void testXMLization() throws Exception {
     try {
       // write objects to XML
