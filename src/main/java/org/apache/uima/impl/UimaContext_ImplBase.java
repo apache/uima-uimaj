@@ -68,19 +68,29 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    */
   private static final String LOG_RESOURCE_BUNDLE = "org.apache.uima.impl.log_messages";
   
+  private static final String[] EMPTY_STRINGS = new String[0];
+  
+  /**
+   * The ComponentInfoImpl class (an inner non-static class) has no fields and 
+   *   just one method that refers to fields in
+   *   this (containing, outer) class.  So it seems the method could just be used directly,
+   *   and putting it into an inner class is silly.
+   */
   final private ComponentInfo mComponentInfo = new ComponentInfoImpl();
-
+  
   /**
    * Fully-qualified name of this context.
    */
-  protected String mQualifiedContextName;
+  final protected String mQualifiedContextName;
 
   /**
    * Mapping between sofa names assigned by an aggregate engine to sofa names assigned by the
    * component engines. The key is the component sofa name and the value is the absolute sofa name
    * assigned by a top level aggregate in this process.
+   * 
+   * Multi-threading:  This map is constructed at Constructor time, and never updated, only referenced, subsequently.
    */
-  protected Map<String, String> mSofaMappings;
+  final protected Map<String, String> mSofaMappings;
 
   /**
    * Size of the CAS pool used to support the {@link #getEmptyCas(Class)} method.
@@ -96,24 +106,34 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    * The value of this max is set by calling the annotator's method getCasInstancesRequired method,
    * a user-supplied method that is used to configure this.  The default is 1.
    */
-  protected int mCasPoolSize = 0;
+  protected volatile int mCasPoolSize = 0;
 
   /**
    * Performance tuning settings. Needed to specify CAS heap size for {@link #getEmptyCas(Class)}
    * method.
+   * 
+   * Set during initialize calls for Analysis Engine components.
+   * Referenced during later lazy creation of Cas Pool upon first getEmptyCas call.
+   * Not expected to be modified after set.
    */
-  private Properties mPerformanceTuningSettings;
+  private volatile Properties mPerformanceTuningSettings;
 
   /**
    * Whether the component that accesses the CAS pool is sofa-aware. Needed to determine which view
    * is returned by the {@link #getEmptyCas(Class)} method.
+   * 
+   * Set during initialize calls for Analysis Engine components.
+   * Referenced during later lazy creation of Cas Pool upon first getEmptyCas call.
+   * Not expected to be modified after set.
    */
-  private boolean mSofaAware;
+  private volatile boolean mSofaAware;
 
   /**
    * Keeps track of whether we've created a CAS pool yet, which happens on the first call to
    * {@link #getEmptyCas(Class)}.
    *   See http://en.wikipedia.org/wiki/Double-checked_locking#Usage_in_Java for why this is volatile
+   *   
+   * Ref'd and set inside getEmptyCas, part of lazy initialization of cas pool  
    */
   private volatile boolean mCasPoolCreated = false;
 
@@ -143,17 +163,31 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   /**
    * Object that implements management interface to the AE.
    */
-  protected AnalysisEngineManagementImpl mMBean = new AnalysisEngineManagementImpl();
+  final protected AnalysisEngineManagementImpl mMBean = new AnalysisEngineManagementImpl();
 
   final private String uniqueIdentifier;
   
-  protected Settings mExternalOverrides;
-
-  /*  Default constructor. Its main purpose is to create a UUID-like
-   *  unique name for this component.
-   *
+  /**
+   * Default constructor. 
+   * Only Called for creating a "Root" instance.
    */
-  public UimaContext_ImplBase() {
+  public UimaContext_ImplBase() { 
+    mQualifiedContextName = "/";  // This constructor for root call only
+    uniqueIdentifier = constructUniqueName();
+    mSofaMappings = new TreeMap<String, String>();
+
+  }
+  
+  /**
+   * Constructor for non Root instances
+   */
+  public UimaContext_ImplBase(String contextName, Map<String, String> sofaMappings) {
+    mQualifiedContextName = contextName;
+    uniqueIdentifier = constructUniqueName();
+    mSofaMappings = sofaMappings;
+  }
+  
+  private String constructUniqueName() {
     //  Generate unique name for this component
     // this method generates less garbage than replaceAll, etc.
     String u = new UID().toString();
@@ -167,7 +201,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
         sb.setCharAt(i, '_');
       }
     }
-    uniqueIdentifier = sb.toString();
+    return sb.toString();
   }
   /* Returns a unique name of this component
    * 
@@ -450,7 +484,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
     ConfigurationGroup[] groups = getConfigurationManager().getConfigParameterDeclarations(
             getQualifiedContextName()).getConfigurationGroups();
     if (groups == null) {
-      return new String[0];
+      return EMPTY_STRINGS;
     } else {
       Set<String> names = new TreeSet<String>();
       for (int i = 0; i < groups.length; i++) {
@@ -471,7 +505,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
     ConfigurationParameter[] params = getConfigurationManager().getConfigParameterDeclarations(
             getQualifiedContextName()).getConfigurationParameters();
     if (params == null) {
-      return new String[0];
+      return EMPTY_STRINGS;
     } else {
       String[] names = new String[params.length];
       for (int i = 0; i < params.length; i++) {
@@ -490,7 +524,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
     ConfigurationGroup[] groups = getConfigurationManager().getConfigParameterDeclarations(
             getQualifiedContextName()).getConfigurationGroupDeclarations(aGroup);
     if (groups.length == 0) {
-      return new String[0];
+      return EMPTY_STRINGS;
     } else {
       List<String> names = new ArrayList<String>();
       ConfigurationParameter[] commonParams = getConfigurationManager()
@@ -518,7 +552,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    * @see org.apache.uima.UimaContextAdmin#getExternalOverrides()
    */
   public Settings getExternalOverrides() {
-    return mExternalOverrides;
+    return getRootContext().getExternalOverrides();
   }
 
   /**
@@ -527,7 +561,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    * @see org.apache.uima.UimaContextAdmin#setExternalOverrides(org.apache.uima.util.Settings)
    */
   public void setExternalOverrides(Settings externalOverrides) {
-    mExternalOverrides = externalOverrides; 
+    getRootContext().setExternalOverrides(externalOverrides);
   }
   
   /**

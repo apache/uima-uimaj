@@ -41,24 +41,24 @@ public class ChildUimaContext_impl extends UimaContext_ImplBase implements UimaC
   /**
    * Logger
    */
-  private Logger mLogger;
+  private volatile Logger mLogger;
 
   /**
    * Root Context (if root, points to self)
    */
-  private UimaContextAdmin mRootContext;
+  private final UimaContextAdmin mRootContext;
 
   /**
    * This Context's view of the Session object
    */
-  private SessionNamespaceView_impl mSessionNamespaceView;
+  private final SessionNamespaceView_impl mSessionNamespaceView;
 
   /**
    * ResourceManager used to locate and access external resources
    * Set non-null only for Pear resources contained in an aggregate
    */
   
-  private ResourceManager mPearResourceManager = null;
+  private volatile ResourceManager mPearResourceManager = null;
 
   /**
    * ref to the parent.  
@@ -73,14 +73,12 @@ public class ChildUimaContext_impl extends UimaContext_ImplBase implements UimaC
    */
   public ChildUimaContext_impl(UimaContextAdmin aParentContext, String aContextName,
           Map<String, String> aSofaMappings) {
+    super(aParentContext.getQualifiedContextName() + aContextName + '/', aSofaMappings);
     mRootContext = aParentContext.getRootContext();
     mLogger = aParentContext.getRootContext().getLogger();
-    mQualifiedContextName = aParentContext.getQualifiedContextName() + aContextName + '/';
     mSessionNamespaceView = new SessionNamespaceView_impl(mRootContext.getSession(),
             mQualifiedContextName);
-    mSofaMappings = aSofaMappings;
     parentContext = aParentContext;
-    mExternalOverrides = aParentContext.getExternalOverrides();
   }
 
   /*

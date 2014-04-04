@@ -21,6 +21,7 @@ package org.apache.uima.impl;
 
 import java.util.TreeMap;
 
+import org.apache.uima.UIMAFramework;
 import org.apache.uima.UimaContext;
 import org.apache.uima.UimaContextAdmin;
 import org.apache.uima.internal.util.InstrumentationFacility_impl;
@@ -31,6 +32,7 @@ import org.apache.uima.resource.impl.Session_impl;
 import org.apache.uima.util.InstrumentationFacility;
 import org.apache.uima.util.Logger;
 import org.apache.uima.util.ProcessTrace;
+import org.apache.uima.util.Settings;
 
 /**
  * Implementation of the root {@link UimaContext}. UIMA Contexts are arranged in a tree structure
@@ -42,30 +44,58 @@ public class RootUimaContext_impl extends UimaContext_ImplBase {
 
   /**
    * Logger
+   * 
+   * Volatile because mLogger can be updated on one thread and accessed on another
+   * 
    */
-  private Logger mLogger;
+  private volatile Logger mLogger;
 
   /**
    * ResourceManager used to locate and access external resources
    */
-  private ResourceManager mResourceManager;
+  private final ResourceManager mResourceManager;
 
   /**
    * ConfigurationManager used to access configuration parameter settings
    */
-  private ConfigurationManager mConfigurationManager;
+  private final ConfigurationManager mConfigurationManager;
 
   /**
    * Instrumentation Facility (wraps ProcessTrace)
    */
-  private InstrumentationFacility_impl mInstrumentationFacility = new InstrumentationFacility_impl(
+  final private InstrumentationFacility_impl mInstrumentationFacility = new InstrumentationFacility_impl(
           null);
 
   /**
    * Current Session
+   * 
+   * Has general setter and getter;
+   * marked volatile to allow effect of setting to be seen on another thread
    */
-  private Session mSession;
+  private volatile Session mSession;
+  
+  /**
+   * External parameter override specifications - held at the root context level
+   */
+  protected volatile Settings mExternalOverrides;
+  
+  public Settings getExternalOverrides() {
+    return mExternalOverrides;
+  }
+  
+  public void setExternalOverrides(Settings externalOverrides) {
+    mExternalOverrides = externalOverrides;
+  }
 
+  public RootUimaContext_impl() {
+    // ugly trick - passing parameters in thread local of one known caller,
+    // to allow these to be final,
+    // which causes a store memory barrier to be inserted for them
+    // which makes other accesses to them "safe" from other threads
+    //   without further synchronization
+    mResourceManager = UIMAFramework.newContextResourceManager.get();
+    mConfigurationManager = UIMAFramework.newContextConfigManager.get();
+  }
   /*
    * (non-Javadoc)
    * 
@@ -76,11 +106,9 @@ public class RootUimaContext_impl extends UimaContext_ImplBase {
   public void initializeRoot(Logger aLogger, ResourceManager aResourceManager,
           ConfigurationManager aConfigurationManager) {
     mLogger = aLogger;
-    mResourceManager = aResourceManager;
-    mConfigurationManager = aConfigurationManager;
-    mQualifiedContextName = "/";
+//    mResourceManager = aResourceManager;
+//    mConfigurationManager = aConfigurationManager;
     mSession = new Session_impl();
-    mSofaMappings = new TreeMap<String, String>();
   }
 
   /**

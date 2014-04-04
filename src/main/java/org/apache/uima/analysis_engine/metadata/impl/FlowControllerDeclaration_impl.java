@@ -112,15 +112,19 @@ public class FlowControllerDeclaration_impl extends MetaDataObject_impl implemen
    * @see FlowControllerDeclaration#resolveImports()
    */
   public void resolveImports() throws InvalidXMLException {
-    resolveImports(UIMAFramework.newDefaultResourceManager());
+    if (getImport() != null) {
+      resolveImports(UIMAFramework.newDefaultResourceManager());      
+    }
   }
 
   /*
    * (non-Javadoc)
    * 
    * @see FlowControllerDeclaration#resolveImports(org.apache.uima.resource.ResourceManager)
+   * Synchronized to support parallel initialization calls on primitive AEs, sharing
+   * a common Resource Manager, and perhaps common UIMA Contexts
    */
-  public void resolveImports(ResourceManager aResourceManager) throws InvalidXMLException {
+  public synchronized void resolveImports(ResourceManager aResourceManager) throws InvalidXMLException {
     Import theImport = getImport();
     if (theImport != null) {
       URL url = theImport.findAbsoluteUrl(aResourceManager);
