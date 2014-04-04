@@ -36,6 +36,7 @@ import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.impl.ChildUimaContext_impl;
 import org.apache.uima.impl.RootUimaContext_impl;
 import org.apache.uima.impl.UimaContext_ImplBase;
+import org.apache.uima.internal.util.MultiThreadUtils;
 import org.apache.uima.resource.CasManager;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.test.junit_extension.JUnitExtension;
@@ -75,58 +76,26 @@ public class CasPoolTest extends TestCase {
     
   }
   
-  public void testMultiThread() throws ResourceInitializationException {
+  public void testMultiThread() throws Exception {
     Properties p = new Properties();
     p.put(UIMAFramework.CAS_INITIAL_HEAP_SIZE,  200);   
-    int numberOfThreads = Runtime.getRuntime().availableProcessors() * 10;    
+    int numberOfThreads = MultiThreadUtils.PROCESSORS * 10;    
     int casPoolSize = numberOfThreads / 3 ;
     System.out.format("test multicore iterator with %d threads and %d CASes",
         numberOfThreads, casPoolSize);
-    Thread[] threads = new Thread[numberOfThreads];
-    
-    final Throwable[] thrown = new Throwable[1];
-    thrown[0] = null;
     casManager.defineCasPool("id",  casPoolSize, p);
-    for (int r = 0; r < 10; r++) {
-      for (int i = 0; i < numberOfThreads; i++) {
-        final int finalI = i;
-        threads[i] = new Thread(new Runnable() {
-          public void run() {
-            Random r = new Random();
-            StringBuilder sb = new StringBuilder(80);
-            try {
-              sb.append("CasPoolTest, thread ").append(finalI).append(' ');
-              for (int k = 0; k < 5; k++) {
-                getAndRelease(sb, r);
-              }             
-//              System.out.println(sb);
-            } catch (Throwable e) {
-              System.err.format("CasPoolTest: Runnable threw exception%n");
-              e.printStackTrace(System.err);
-              thrown[0] = e;
-              throw new RuntimeException(e);
-            }
-          }} );
-        threads[i].setName("CasPoolTest Thread " + i);
-        threads[i].setPriority(Thread.NORM_PRIORITY - 1);
-        threads[i].start();
-      }
+    
+    MultiThreadUtils.Run2isb run2isb = new MultiThreadUtils.Run2isb() {
       
-      for (int i = 0; i < numberOfThreads; i++) {
-        try {
-          if (thrown[0] != null) {
-            assertTrue(false);
-          }
-          threads[i].join();
-          if (thrown[0] != null) {
-            assertTrue(false);
-          }
-        } catch (InterruptedException e) {
-          e.printStackTrace();
-          assertTrue(false);
+      public void call(int i, int r, StringBuilder sb) {
+        Random random = new Random();
+        for (int k = 0; k < 5; k++) {
+          getAndRelease(sb, random);
         }
+//        System.out.println(sb.toString());
       }
-    }   
+    };  
+    MultiThreadUtils.tstMultiThread("CasPoolTest",  numberOfThreads,  10, run2isb);
   }
   
   private void getAndRelease(StringBuilder sb, Random r) {
