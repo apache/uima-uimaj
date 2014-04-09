@@ -179,9 +179,15 @@ public abstract class Resource_ImplBase implements Resource {
         }
         if (aAdditionalParams == null) {
             aAdditionalParams = new HashMap<String, Object>();
-        }
-        if (!aAdditionalParams.containsKey(PARAM_RESOURCE_MANAGER)) {
             aAdditionalParams.put(PARAM_RESOURCE_MANAGER, mUimaContextAdmin.getResourceManager());
+        } else {
+          if (!aAdditionalParams.containsKey(PARAM_RESOURCE_MANAGER)) {
+            // copy in case original is shared on multi-threads, or 
+            // is unmodifiable
+            // and to avoid updating passed - in map
+            aAdditionalParams = new HashMap<String, Object>(aAdditionalParams);
+            aAdditionalParams.put(PARAM_RESOURCE_MANAGER, mUimaContextAdmin.getResourceManager());
+          }
         }
         // initializeExternalResources is synchronized
         mUimaContextAdmin.getResourceManager().initializeExternalResources(resMgrCfg,
