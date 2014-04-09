@@ -146,7 +146,8 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
       return false;
     }
 
-    super.initialize(aSpecifier, aAdditionalParams);
+    // copy the additional parameters, since this method will modify them
+    super.initialize(aSpecifier, aAdditionalParams = new HashMap<String, Object>(aAdditionalParams));
 
     // save parameters for later
     mInitParams = aAdditionalParams;

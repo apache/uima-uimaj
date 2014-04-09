@@ -322,6 +322,8 @@ public abstract class UIMAFramework {
     if (aResourceManager != null) {
       if (aAdditionalParams == null) {
         aAdditionalParams = new HashMap<String, Object>();
+      } else {  // copy to avoid modifying the original which might be immutable
+        aAdditionalParams = new HashMap<String, Object>(aAdditionalParams);
       }
       aAdditionalParams.put(Resource.PARAM_RESOURCE_MANAGER, aResourceManager);
     }
@@ -976,6 +978,9 @@ public abstract class UIMAFramework {
     if (aResourceManager != null) {
       if (aAdditionalParams == null) {
         aAdditionalParams = new HashMap<String, Object>();
+      } else {
+        // copy to avoid modifying original, which might be immutable, etc.
+        aAdditionalParams = new HashMap<String, Object>(aAdditionalParams);
       }
       aAdditionalParams.put(Resource.PARAM_RESOURCE_MANAGER, aResourceManager);
     }
