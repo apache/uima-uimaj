@@ -64,6 +64,13 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
   
   private static final Class<PrimitiveAnalysisEngine_impl> CLASS_NAME = PrimitiveAnalysisEngine_impl.class;
  
+  /**
+   * flag for embedders to test to see if they have a 
+   * version of the framework which supports
+   * multi-threaded produceResource 
+   */
+  public static final boolean INIT_THREADSAFE = true;
+      
   private ResultSpecification mCurrentResultSpecification;
   /**
    * result specification derived from the output capabilities of this primitive, used in intersection of languages
