@@ -24,9 +24,8 @@ import java.io.File;
 import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;
+import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngine;
-import org.apache.uima.analysis_engine.ResultSpecification;
-import org.apache.uima.analysis_engine.annotator.JTextAnnotator_ImplBase;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.Feature;
@@ -60,9 +59,9 @@ public class StringSubtypeTest extends TestCase {
 
   private AnalysisEngine ae;
 
-  public static class Annotator extends JTextAnnotator_ImplBase {
+  public static class Annotator extends JCasAnnotator_ImplBase {
 
-    public void process(JCas aJCas, ResultSpecification aResultSpec) {
+    public void process(JCas aJCas) {
       // Does nothing, not used in this test.
     }
 
