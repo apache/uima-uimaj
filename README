@@ -1,5 +1,5 @@
 
-      Apache UIMA (Unstructured Information Management Architecture) v2.5.0 SDK
+      Apache UIMA (Unstructured Information Management Architecture) v2.6.0 SDK
       -------------------------------------------------------------------------
 
 Building from the Source Distribution
@@ -21,16 +21,21 @@ Look for the result here:
 
 For more details, please see http://uima.apache.org/building-uima.html   
 
-What's New in 2.5.0
+What's New in 2.6.0
 -------------------
 
-  This is a mainly a bug fix release, with a few performance improvements.    
+  The UIMA framework has been enhanced to support large memory/ large multi-core machines,
+  with various improvements to synchronization / locking.  Embedders can now run initialization
+  of UIMA components that share a common Resource Manager and/or common UIMA Context, on
+  multiple threads, concurrently.
+  
+  This version of UIMA requires Java version 6 or later.    
     
 Supported Platforms
 --------------------
 
-Apache UIMA requires Java level 1.5; it has been tested with Sun/Oracle Java SDK v5 and v6 amd v7, and IBM Java 6 and 7.
-Running the Eclipse plugin tooling for UIMA requires you start Eclipse using a Java 5 or later, as well.
+Apache UIMA requires Java level 6; it has been tested with Sun/Oracle Java SDK 6, 7, and 8, and IBM Java 6, 7 and 8.
+Running the Eclipse plugin tooling for UIMA requires you start Eclipse using a Java 6 or later, as well.
 The supported platforms are: Windows, Linux, Solaris, AIX and Mac OS X.  
 Other platforms and Java (5+) implementations should work, but have not been significantly tested.
 
