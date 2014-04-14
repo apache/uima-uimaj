@@ -40,7 +40,7 @@ import org.apache.uima.resource.ResourceInitializationException;
  * provide a more intelligent implementation.
  */
 public abstract class FlowController_ImplBase implements FlowController {
-  private FlowControllerContext mContext;
+  private FlowControllerContext mContext = null;
 
   /*
    * (non-Javadoc)

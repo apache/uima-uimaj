@@ -72,14 +72,17 @@ public class FixedFlowController extends CasFlowController_ImplBase {
 
   private static final int ACTION_DROP_IF_NEW_CAS_PRODUCED = 3;
 
-  private List<String> mSequence;
+  // make final to work better in multi-thread case  UIMA-2373
+  final private List<String> mSequence = new ArrayList<String>();
 
   private int mActionAfterCasMultiplier;
 
-  public void initialize(FlowControllerContext aContext) throws ResourceInitializationException {
+  public synchronized void initialize(FlowControllerContext aContext) throws ResourceInitializationException {
+    if (getContext() == aContext) {
+      return;  // only do initialize once per instance of this and same context
+    }
     super.initialize(aContext);
     FlowConstraints flowConstraints = aContext.getAggregateMetadata().getFlowConstraints();
-    mSequence = new ArrayList<String>();
     if (flowConstraints instanceof FixedFlow) {
       String[] sequence = ((FixedFlow) flowConstraints).getFixedFlow();
       for( String key : sequence ) {
