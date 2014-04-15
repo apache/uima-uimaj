@@ -48,27 +48,37 @@ import org.apache.uima.util.impl.CasPoolManagementImpl;
 /**
  * Simple CAS Manager Implementation used in the AnalysisEngine framework. Maintains a pool of 1 CAS
  * for each requestor.
+ * 
+ * The ResourceManager points to one instantiation of this class.
+ * 
+ * An instance of this class might be accessed in parallel on different threads.
  */
 public class CasManager_impl implements CasManager {
   private ResourceManager mResourceManager;
 
-  private List<ProcessingResourceMetaData> mMetaDataList = new ArrayList<ProcessingResourceMetaData>();
+  /**
+   * accumulates the metadata needed for shared CASes for this resource manager
+   * Starts out "empty" when this is created; is added to (but never removed)
+   * Duplicates may be in the list.
+   */
+  private final List<ProcessingResourceMetaData> mMetaDataList = Collections.synchronizedList(new ArrayList<ProcessingResourceMetaData>());
 
-  private Map<String, CasPool> mRequestorToCasPoolMap = Collections.synchronizedMap(new HashMap<String, CasPool>());
+  private final Map<String, CasPool> mRequestorToCasPoolMap = Collections.synchronizedMap(new HashMap<String, CasPool>());
 
-  private Map<CAS, CasPool> mCasToCasPoolMap = Collections.synchronizedMap(new HashMap<CAS, CasPool>());
+  private final Map<CAS, CasPool> mCasToCasPoolMap = Collections.synchronizedMap(new HashMap<CAS, CasPool>());
   
-  private Map<CAS, UimaContext> mCasToUimaContextMap = Collections.synchronizedMap(new HashMap<CAS, UimaContext>());
+  private final Map<CAS, UimaContext> mCasToUimaContextMap = Collections.synchronizedMap(new HashMap<CAS, UimaContext>());
 
-  private CasDefinition mCasDefinition = null;
+  private volatile CasDefinition mCasDefinition = null;  // once goes non-null, stays
   
-  private TypeSystem mCurrentTypeSystem = null;
+  private volatile TypeSystem mCurrentTypeSystem = null; // once set, same identical typesystem object used for subseq. CASes
 
-  private Object mMBeanServer;
+  private volatile Object mMBeanServer;
 
-  private String mMBeanNamePrefix;
+  private volatile String mMBeanNamePrefix;
   
-  private List<CasPoolManagementImpl> casPoolMBeans = new ArrayList<CasPoolManagementImpl>();
+  private final List<CasPoolManagementImpl> casPoolMBeans = 
+      Collections.synchronizedList(new ArrayList<CasPoolManagementImpl>());
 
   public CasManager_impl(ResourceManager aResourceManager) {
     mResourceManager = aResourceManager;
@@ -79,10 +89,13 @@ public class CasManager_impl implements CasManager {
    * 
    * @see org.apache.uima.resource.CasManager#addMetaData(org.apache.uima.resource.metadata.ProcessingResourceMetaData)
    */
-  public void addMetaData(ProcessingResourceMetaData aMetaData) {
+  public synchronized void addMetaData(ProcessingResourceMetaData aMetaData) {
+    if (mCasDefinition != null) {
+      throw new UIMARuntimeException();  // internal error  UIMA-1249
+    }
     mMetaDataList.add(aMetaData);
-    mCasDefinition = null; // mark this stale
-    mCurrentTypeSystem = null; //this too
+//    mCasDefinition = null; // mark this stale
+//    mCurrentTypeSystem = null; //this too
   }
 
   /*
@@ -90,7 +103,7 @@ public class CasManager_impl implements CasManager {
    * 
    * @see org.apache.uima.resource.CasManager#getCasDefinition()
    */
-  public CasDefinition getCasDefinition() throws ResourceInitializationException {
+  public synchronized CasDefinition getCasDefinition() throws ResourceInitializationException {
     if (mCasDefinition == null) {
       mCasDefinition = new CasDefinition(mMetaDataList, mResourceManager);
     }
@@ -190,15 +203,20 @@ public class CasManager_impl implements CasManager {
    * @see org.apache.uima.resource.CasManager#createNewCas(java.util.Properties)
    */
   public CAS createNewCas(Properties aPerformanceTuningSettings) throws ResourceInitializationException {
-    CAS cas;
+
     if (mCurrentTypeSystem != null) {
-      cas = CasCreationUtils.createCas(getCasDefinition(), aPerformanceTuningSettings, mCurrentTypeSystem);      
-    } else
-    {
-      cas = CasCreationUtils.createCas(getCasDefinition(), aPerformanceTuningSettings);
-      mCurrentTypeSystem = cas.getTypeSystem();
+      return CasCreationUtils.createCas(getCasDefinition(), aPerformanceTuningSettings, mCurrentTypeSystem);      
+    } else {
+      synchronized(this) {
+        if (mCurrentTypeSystem != null) { // double check idiom
+          return CasCreationUtils.createCas(getCasDefinition(), aPerformanceTuningSettings, mCurrentTypeSystem);      
+        } else {
+          CAS cas = CasCreationUtils.createCas(getCasDefinition(), aPerformanceTuningSettings);
+          mCurrentTypeSystem = cas.getTypeSystem();
+          return cas;
+        }
+      }
     }    
-    return cas;
   }
 
   /**
@@ -292,6 +310,9 @@ public class CasManager_impl implements CasManager {
   
   /**
    * Registers an MBean for the given CasPool.
+   * 
+   * Never called unless pool is new
+   * 
    * @param aRequestorContextName context name that identifies this CasPool
    * @param pool the CasPool
    */
