@@ -86,6 +86,7 @@ public class FixedFlowController extends CasFlowController_ImplBase {
     if (getContext() == aContext) {
       return;  // only do initialize once per instance of this and same context
     }
+    mSequence.clear();  // not cleared for multiple init calls (perhaps on multiple threads) with the same context
     super.initialize(aContext);
     FlowConstraints flowConstraints = aContext.getAggregateMetadata().getFlowConstraints();
     if (flowConstraints instanceof FixedFlow) {
