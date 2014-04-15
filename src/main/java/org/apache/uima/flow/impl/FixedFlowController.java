@@ -24,6 +24,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.uima.UIMAFramework;
@@ -73,7 +74,11 @@ public class FixedFlowController extends CasFlowController_ImplBase {
   private static final int ACTION_DROP_IF_NEW_CAS_PRODUCED = 3;
 
   // make final to work better in multi-thread case  UIMA-2373
-  final private List<String> mSequence = new ArrayList<String>();
+  // working assumption: 
+  //   Users might run several CASes asynchronously using this FixedFlowController object,
+  //   on different threads. However, users will not re-initialize this with a different 
+  //   flowControllerContext while this object is controlling CASes from the previous Object.
+  final private List<String> mSequence = Collections.synchronizedList(new ArrayList<String>());
 
   private int mActionAfterCasMultiplier;
 
