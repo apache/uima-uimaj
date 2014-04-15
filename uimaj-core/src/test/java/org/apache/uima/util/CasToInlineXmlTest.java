@@ -19,11 +19,14 @@
 package org.apache.uima.util;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 
 import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.impl.XmiCasDeserializer;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.ShortArray;
 import org.apache.uima.jcas.cas.StringArray;
@@ -36,22 +39,60 @@ import org.apache.uima.testTypeSystem_arrays.OfStrings;
 
 
 public class CasToInlineXmlTest extends TestCase {
-  private TypeSystemDescription typeSystem;
 
-  private FsIndexDescription[] indexes;
+  private final String EOL = System.getProperty("line.separator");
 
-  protected void setUp() throws Exception {
+  public void testCAStoString() throws Exception {
+    // create a source CAS by deserializing from XCAS
+    File typeSystemFile1 = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
+    File indexesFile = JUnitExtension.getFile("ExampleCas/testIndexes.xml");
+    
+    TypeSystemDescription typeSystem = UIMAFramework.getXMLParser().parseTypeSystemDescription(
+        new XMLInputSource(typeSystemFile1));
+    FsIndexDescription[] indexes = UIMAFramework.getXMLParser().parseFsIndexCollection(new XMLInputSource(indexesFile)).getFsIndexes();
+
+    CAS cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
+    InputStream serCasStream = new FileInputStream(
+         JUnitExtension.getFile("ExampleCas/simpleCas.xmi"));
+    XmiCasDeserializer.deserialize(serCasStream, cas);
+    serCasStream.close();
+    
+    
+    // Check unformatted output adds whitespace or line breaks
+    CasToInlineXml transformer = new CasToInlineXml();
+    assertTrue(transformer.isFormattedOutput());
+    String formattedXml = transformer.generateXML(cas, null);
+//    System.out.println(formattedXml);
+    assertTrue(formattedXml.contains("?><Document>"+EOL+"    <uima.tcas.DocumentAnnotation"));
+    assertTrue(formattedXml.contains("confidence=\"0.0\">" + EOL
+            + "            <org.apache.uima.testTypeSystem.Owner"));
+    assertTrue(formattedXml.contains("</uima.tcas.DocumentAnnotation>"+EOL+"</Document>"));
+    
+    // Check unformatted output does not add whitespace or line breaks
+    transformer.setFormattedOutput(false);
+    String unformattedXml = transformer.generateXML(cas, null);
+//    System.out.println(unformattedXml);
+    assertTrue(unformattedXml.contains("?><Document><uima.tcas.DocumentAnnotation"));
+    assertTrue(unformattedXml
+            .contains("confidence=\"0.0\"><org.apache.uima.testTypeSystem.Owner"));
+    assertTrue(unformattedXml.contains("</uima.tcas.DocumentAnnotation></Document>"));
+    
+    // Use this line to explore what evidence can be used to detect formatted/unformatted content -
+    // the Eclipse JUnit runner support for failed "equals" assertions comes in handy.
+    // Assert.assertEquals(formattedXml, unformattedXml);
+  }
+  
+  public void testCasToInlineXml() throws Exception {
+    // Jira https://issues.apache.org/jira/browse/UIMA-2406
+    
     File typeSystemFile1 = JUnitExtension.getFile("ExampleCas/testTypeSystem_arrays.xml");
     File indexesFile = JUnitExtension.getFile("ExampleCas/testIndexes_arrays.xml");
 
-    typeSystem = UIMAFramework.getXMLParser().parseTypeSystemDescription(
+    TypeSystemDescription typeSystem = UIMAFramework.getXMLParser().parseTypeSystemDescription(
             new XMLInputSource(typeSystemFile1));
-    indexes = UIMAFramework.getXMLParser().parseFsIndexCollection(new XMLInputSource(indexesFile))
+    FsIndexDescription[] indexes = UIMAFramework.getXMLParser().parseFsIndexCollection(new XMLInputSource(indexesFile))
             .getFsIndexes();
-  }  
 
-  public void testCasToInlineXml() throws Exception {
-    // Jira https://issues.apache.org/jira/browse/UIMA-2406
     CAS srcCas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
     
     JCas jcas = srcCas.getJCas();
@@ -74,10 +115,19 @@ public class CasToInlineXmlTest extends TestCase {
     ss.addToIndexes();
     
     CasToInlineXml c2x = new CasToInlineXml();
-    String result = c2x.generateXML(srcCas);
+    String result = c2x.generateXML(srcCas).trim();
     System.out.println(result);
+    String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Document>" + EOL +
+        "    <uima.tcas.DocumentAnnotation sofa=\"Sofa\" begin=\"0\" end=\"17\" language=\"x-unspecified\">" + EOL +
+        "        <org.apache.uima.testTypeSystem_arrays.OfStrings sofa=\"Sofa\" begin=\"0\" end=\"0\" f1Strings=\"[0s,1s,2s]\"/>" + EOL +
+        "        <org.apache.uima.testTypeSystem_arrays.OfShorts sofa=\"Sofa\" begin=\"0\" end=\"0\" f1Shorts=\"[0,1,2]\"/>1 2 3 4 5 6 7 8 9</uima.tcas.DocumentAnnotation>" + EOL +
+        "</Document>";
+    for (int i = 0; i < result.length(); i++ ) {
+      if (result.charAt(i) != expected.charAt(i)) {
+        System.out.format("Unequal compare at position %,d, char code result = %d, expected = %d%n", i, (int)result.charAt(i), (int)expected.charAt(i));
+        break;
+      }
+    }
+    assertEquals(expected, result.trim());
   }
-
-
-
 }
