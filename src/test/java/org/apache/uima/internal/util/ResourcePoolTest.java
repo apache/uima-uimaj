@@ -98,39 +98,42 @@ public class ResourcePoolTest extends TestCase {
    */
   public void testGetResourceJ() throws Exception {
     try {
-      // ask for resources with timeout of 2 seconds. should respond quickly
-      // until resources are exhausted, then it will pause 2 seconds before
+      // ask for resources with timeout of 1 second. should respond quickly
+      // until resources are exhausted, then it will pause 1 second before
       // returning null
       long startTime = System.currentTimeMillis();
-      Resource foo = pool1.getResource(2000);
+      Resource foo = pool1.getResource(1000);
       Assert.assertNotNull(foo);
-      Assert.assertTrue(System.currentTimeMillis() - startTime < 1000);
+      Assert.assertTrue(System.currentTimeMillis() - startTime < 500);
 
       startTime = System.currentTimeMillis();
-      Resource bar = pool1.getResource(2000);
+      Resource bar = pool1.getResource(1000);
       Assert.assertNotNull(bar);
       Assert.assertTrue(!foo.equals(bar));
-      Assert.assertTrue(System.currentTimeMillis() - startTime < 1000);
+      Assert.assertTrue(System.currentTimeMillis() - startTime < 500);
 
       startTime = System.currentTimeMillis();
-      Resource a = pool1.getResource(2000);
+      Resource a = pool1.getResource(1000);
       Assert.assertNotNull(a);
-      Assert.assertTrue(System.currentTimeMillis() - startTime < 1000);
+      Assert.assertTrue(System.currentTimeMillis() - startTime < 500);
 
       startTime = System.currentTimeMillis();
-      Resource b = pool1.getResource(2000);
+      Resource b = pool1.getResource(1000);
       Assert.assertNull(b);
-      Assert.assertTrue(System.currentTimeMillis() - startTime >= 2000);
+      Assert.assertTrue(System.currentTimeMillis() - startTime >= 1000);
 
-      // Start a thread that will release "foo" in 1 second. Demonstrate that
-      // getResource() will not acquire a resource but getResource(2000) will.
+      // Start a thread that will release "foo" in .2 second. Demonstrate that
+      // getResource() will not acquire a resource but getResource(1000) will.
       Thread releaserThread = new ReleaserThread(foo);
+      exceptionFromReleaserThread[0] = null;
       releaserThread.start();
 
       b = pool1.getResource();
       Assert.assertNull(b);
-      b = pool1.getResource(2000);
+      b = pool1.getResource(1000);
       Assert.assertNotNull(b);
+      releaserThread.join();
+      assertEquals(null, exceptionFromReleaserThread[0]);
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -208,6 +211,8 @@ public class ResourcePoolTest extends TestCase {
   private AnalysisEngineDescription mDesc;
 
   private ResourcePool pool1;
+  
+  private final Exception[] exceptionFromReleaserThread = new Exception[1];
 
   class ReleaserThread extends Thread {
     private Resource r;
@@ -219,11 +224,12 @@ public class ResourcePoolTest extends TestCase {
     public void run() {
       try {
         synchronized (this) {
-          wait(1000);
+          wait(200);
         }
         pool1.releaseResource(r);
       } catch (Exception e) {
-        Assert.fail(e.getMessage());
+        exceptionFromReleaserThread[0] = e;
+        throw new RuntimeException();
       }
     }
   }
