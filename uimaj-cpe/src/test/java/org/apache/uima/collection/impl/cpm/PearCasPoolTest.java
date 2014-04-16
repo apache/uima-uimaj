@@ -201,6 +201,7 @@ public class PearCasPoolTest extends TestCase {
       cpe = UIMAFramework.produceCollectionProcessingEngine(cpeDesc, resourceManager, null);
     } catch (Exception e) {
       e.printStackTrace();
+      assertTrue(false);
     }
 
     return cpe;
