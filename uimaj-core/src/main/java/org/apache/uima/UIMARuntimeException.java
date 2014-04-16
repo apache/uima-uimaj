@@ -136,6 +136,14 @@ public class UIMARuntimeException extends InternationalizedRuntimeException {
   public static final String ILLEGAL_CAS_COPY_TO_SAME_CAS = "illegal_cas_copy_to_same_cas";
   
   /**
+   * Message key for a standard UIMA exception message: "Illegal adding of additional MetaData after
+   * CASes have been defined.  Likely cause is the reuse of a Resource Manager object for a different
+   * pipeline, after it has already been initialized."
+   */
+  public static final String ILLEGAL_ADDING_OF_NEW_META_INFO_AFTER_CAS_DEFINED = "illegal_adding_of_new_meta_info";
+
+  
+  /**
    * Creates a new exception with a null message.
    */
   public UIMARuntimeException() {

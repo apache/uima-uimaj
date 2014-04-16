@@ -40,7 +40,10 @@ import org.apache.uima.resource.CasDefinition;
 import org.apache.uima.resource.CasManager;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
+import org.apache.uima.resource.metadata.FsIndexCollection;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
+import org.apache.uima.resource.metadata.TypePriorities;
+import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.CasPool;
 import org.apache.uima.util.impl.CasPoolManagementImpl;
@@ -60,8 +63,10 @@ public class CasManager_impl implements CasManager {
    * accumulates the metadata needed for shared CASes for this resource manager
    * Starts out "empty" when this is created; is added to (but never removed)
    * Duplicates may be in the list.
+   * 
+   * Threading: This list is always accessed under the class instance lock.
    */
-  private final List<ProcessingResourceMetaData> mMetaDataList = Collections.synchronizedList(new ArrayList<ProcessingResourceMetaData>());
+  private final List<ProcessingResourceMetaData> mMetaDataList = new ArrayList<ProcessingResourceMetaData>();
 
   private final Map<String, CasPool> mRequestorToCasPoolMap = Collections.synchronizedMap(new HashMap<String, CasPool>());
 
@@ -91,11 +96,54 @@ public class CasManager_impl implements CasManager {
    */
   public synchronized void addMetaData(ProcessingResourceMetaData aMetaData) {
     if (mCasDefinition != null) {
-      throw new UIMARuntimeException();  // internal error  UIMA-1249
+      if (containsSameTypeAndIndexInfo(aMetaData)) { //UIMA-1249
+        return;
+      }
+      throw new UIMARuntimeException(UIMARuntimeException.ILLEGAL_ADDING_OF_NEW_META_INFO_AFTER_CAS_DEFINED, new Object[] {});  // internal error  UIMA-1249    
     }
     mMetaDataList.add(aMetaData);
 //    mCasDefinition = null; // mark this stale
 //    mCurrentTypeSystem = null; //this too
+  }
+  
+  /**
+   * This comparison is needed to avoid throwing errors in the use case:
+   *   a) the pipeline has been fully initialized, and one or more CASes have been drawn from this pool
+   *   b) Another instance of an annotator using the same resource manager is initialized.
+   *   
+   * In this case there is no change to the metadata, and we do not want to disturb anything.
+   * 
+   * @param md the metadata to see if its in the list already
+   * @return true if the type system description, the type priority description, and the index collection are
+   * in the list already.
+   */
+  private boolean containsSameTypeAndIndexInfo(ProcessingResourceMetaData md) {
+    final TypeSystemDescription tsd = md.getTypeSystem();
+    final TypePriorities tsp = md.getTypePriorities();
+    final FsIndexCollection ic = md.getFsIndexCollection();
+    
+    for (ProcessingResourceMetaData item : mMetaDataList) {
+      final TypeSystemDescription otsd = item.getTypeSystem();
+      final TypePriorities otsp = item.getTypePriorities();
+      final FsIndexCollection oic = item.getFsIndexCollection();
+      if (equalsWithNulls(tsp, otsp) &&
+          equalsWithNulls(tsd, otsd) &&
+          equalsWithNulls(ic , oic )) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
+  private boolean equalsWithNulls(Object a, Object b) {
+    if (a == null && b == null) {
+      return true;
+    }
+    if (a != null) {
+      return a.equals(b);
+    } else {
+      return b.equals(a);
+    }
   }
 
   /*
