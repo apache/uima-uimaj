@@ -36,12 +36,17 @@ import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_TypeCode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Vector;
+import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Feature;
@@ -61,10 +66,15 @@ import org.apache.uima.resource.ResourceInitializationException;
 /**
  * Type system implementation.
  * 
+ * Threading:  An instance of this object should be thread safe after creation, because multiple threads
+ *   are reading info from it.
+ *  
+ * During creation, only one thread is creating. 
+ * 
  */
 public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   
-  private static int[] INT0 = new int[0];
+  private final static int[] INT0 = new int[0];
 
   private static class ListIterator<T> implements Iterator<T> {
 
@@ -97,11 +107,16 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     }
   }
 
+  private static final int LEAST_TYPE_CODE = 1;
+
+  // private static final int INVALID_TYPE_CODE = 0;
+  private static final int LEAST_FEATURE_CODE = 1;
+
   // static maps ok for now - only built-in mappings stored here
   // which are the same for all type system instances
-  private static Map<String, String> arrayComponentTypeNameMap = new HashMap<String, String>();
+  private final static Map<String, String> arrayComponentTypeNameMap = new HashMap<String, String>();
 
-  private static Map<String, String> arrayTypeComponentNameMap = new HashMap<String, String>();
+  private final static Map<String, String> arrayTypeComponentNameMap = new HashMap<String, String>();
 
   private static final String arrayTypeSuffix = "[]";
 
@@ -134,29 +149,29 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   // that the type system will not be queried often enough to justify
   // the effort.
 
-  private SymbolTable typeNameST; // Symbol table of type names
+  private final SymbolTable typeNameST; // Symbol table of type names
 
   // Symbol table of feature names, containing only one entry per feature,
   // i.e.,
   // its normal form.
-  private SymbolTable featureNameST;
+  private final SymbolTable featureNameST;
 
   // A map from the full space of feature names to feature codes. A feature
   // may
   // be known by many different names (one for each subtype of the type the
   // feature is declared on).
-  private StringToIntMap featureMap;
+  private final StringToIntMap featureMap;
 
-  private List<IntVector> tree; // Collection of IntVectors encoding type tree
+  private final List<IntVector> tree; // Collection of IntVectors encoding type tree
 
-  private List<BitSet> subsumes; // Collection of BitSets for subsumption relation
+  private final List<BitSet> subsumes; // Collection of BitSets for subsumption relation
 
-  private IntVector intro;
+  private final IntVector intro;
 
   // Indicates which type introduces a feature (domain)
-  private IntVector featRange; // Indicates range type of features
+  private final IntVector featRange; // Indicates range type of features
 
-  private ArrayList<IntVector> approp; // For each type, an IntVector of appropriate
+  private final ArrayList<IntVector> approp; // For each type, an IntVector of appropriate
 
   // features
 
@@ -164,10 +179,10 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   private int top;
 
   // An ArrayList (unsynchronized) of TypeImpl objects.
-  private List<Type> types;
+  private final List<Type> types;
 
   // An ArrayList (unsynchronized) of FeatureImpl objects.
-  private List<Feature> features;
+  private final List<Feature> features;
 
   // List of parent types.
   private final IntVector parents;
@@ -191,11 +206,6 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
 
   // Is the type system locked?
   private boolean locked = false;
-
-  private static final int LEAST_TYPE_CODE = 1;
-
-  // private static final int INVALID_TYPE_CODE = 0;
-  private static final int LEAST_FEATURE_CODE = 1;
 
   private int numCommittedTypes = 0;
 
@@ -1586,8 +1596,17 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
    * Type Mapping Objects
    *   used in compressed binary (de)serialization
    * These are in an identity map, key = target type system
+   * 
+   * Threading: this map is used by multiple threads
+   * 
+   * Key = target type system, via a weak reference.
+   * Automatically cleared via WeakHashMap
+   * 
+   * The may itself is not synchronized, because all accesses to it are
+   * from the synchronized getTypeSystemMapper method
    *********************************************************/
-  Map<TypeSystemImpl, CasTypeSystemMapper> typeSystemMappers = new HashMap<TypeSystemImpl, CasTypeSystemMapper>();
+  private final Map<TypeSystemImpl, CasTypeSystemMapper> typeSystemMappers = 
+      new WeakHashMap<TypeSystemImpl, CasTypeSystemMapper>();
   
   synchronized CasTypeSystemMapper getTypeSystemMapper(TypeSystemImpl tgtTs) throws ResourceInitializationException {
     if ((null == tgtTs) || (this == tgtTs)) {
