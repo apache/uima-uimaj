@@ -18,6 +18,8 @@
  */
 package org.apache.uima.cas.impl;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.BitSet;
 
 import junit.framework.TestCase;
@@ -31,6 +33,8 @@ import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.cas.test.AnnotatorInitializer;
 import org.apache.uima.cas.test.CASInitializer;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.resource.metadata.TypeSystemDescription;
+import org.apache.uima.util.CasCreationUtils;
 
 public class CasTypeSystemMapperTst extends TestCase {
   
@@ -41,6 +45,44 @@ public class CasTypeSystemMapperTst extends TestCase {
   protected void tearDown() throws Exception {
     super.tearDown();
   }
+  
+   // to run this test, change the visibility in TypeSystemImpl of typeSystemMappers to public
+//  public void testCasReuseWithDifferentTypeSystems() throws Exception {
+//    // Create a CAS
+//    CAS cas = CasCreationUtils.createCas((TypeSystemDescription) null, null, null);
+//    cas.setDocumentLanguage("latin");
+//    cas.setDocumentText("test");
+//
+//    // Serialize it
+//    ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
+//    Serialization.serializeWithCompression(cas, baos, cas.getTypeSystem());
+//
+//    // Create a new CAS
+//    long min = Long.MAX_VALUE;
+//    long max = 0;
+//    CAS cas2 = CasCreationUtils.createCas((TypeSystemDescription) null, null, null);
+//    for (int i = 0; i < 100000; i++) {
+//      // Simulate us reinitializing the CAS with a new type system.
+//      TypeSystemImpl tgt = new TypeSystemImpl();
+//      for (int t = 0; t < 1000; t++) {
+//        tgt.addType("random" + t, tgt.getTopType());
+//      }
+//      tgt.commit();
+//
+//      // Deserialize into the new type system
+//      ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+//      Serialization.deserializeCAS(cas2, bais, tgt, null);
+//
+//      long cur = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+//      max = Math.max(cur, max);
+//      min = Math.min(cur, min);
+//      if (i % 100 == 0) {
+//        System.out.printf("Cached: %d   Max: %d   Room left: %d   %n",
+//            ((TypeSystemImpl) cas2.getTypeSystem()).typeSystemMappers.size(), max, Runtime.getRuntime().maxMemory()
+//                - max);
+//      }
+//    }
+//  }
 
   public void testCasTypeSystemMapperFull() throws ResourceInitializationException {
     TypeSystemImpl ts1 = createTs(3, 0x1ffff, 0x1ffff);

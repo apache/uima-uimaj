@@ -36,17 +36,13 @@ import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_TypeCode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Vector;
 import java.util.WeakHashMap;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Feature;
@@ -1605,7 +1601,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
    * The may itself is not synchronized, because all accesses to it are
    * from the synchronized getTypeSystemMapper method
    *********************************************************/
-  private final Map<TypeSystemImpl, CasTypeSystemMapper> typeSystemMappers = 
+  public final Map<TypeSystemImpl, CasTypeSystemMapper> typeSystemMappers = 
       new WeakHashMap<TypeSystemImpl, CasTypeSystemMapper>();
   
   synchronized CasTypeSystemMapper getTypeSystemMapper(TypeSystemImpl tgtTs) throws ResourceInitializationException {
@@ -1613,11 +1609,18 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
       return null;  // conventions for no type mapping
     }
     CasTypeSystemMapper m = typeSystemMappers.get(tgtTs);
+    
     if (null == m) {
       m = new CasTypeSystemMapper(this, tgtTs);
       typeSystemMappers.put(tgtTs, m);
     }
-    return (m.isEqual()) ? null : m;
+    
+    if (m.isEqual()) { // if the mapper is for this type system
+      typeSystemMappers.put(tgtTs,  null);
+      return null;
+    }
+    
+    return m;
   }
   
 }

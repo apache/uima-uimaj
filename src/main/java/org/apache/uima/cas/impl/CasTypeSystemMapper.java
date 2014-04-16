@@ -19,6 +19,7 @@
 
 package org.apache.uima.cas.impl;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -28,7 +29,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.uima.cas.Type;
-import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.resource.ResourceInitializationException;
 
 /**
@@ -64,7 +64,9 @@ public class CasTypeSystemMapper {
   private final static boolean[] BOOLEAN0 = new boolean[0];
   
   public final TypeSystemImpl tsSrc;  // source type system
-  public final TypeSystemImpl tsTgt;  // target type system
+  // weak ref to target type system, to allow that object to be gc'd
+  //   which in turn allows a weak map using these as keys to reclaim space
+  public final WeakReference<TypeSystemImpl> tsTgt;
   
   /** 
    * Map from source type codes to target type codes.  
@@ -106,7 +108,7 @@ public class CasTypeSystemMapper {
       throw new RuntimeException("Type Systems must be committed before calling this method");
     }
     this.tsSrc = tsSrc;
-    this.tsTgt = tsTgt;
+    this.tsTgt = new WeakReference<TypeSystemImpl>(tsTgt);
     
     int[] temptSrc2Tgt = null;
     int[] temptTgt2Src = null;
