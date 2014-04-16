@@ -2709,7 +2709,7 @@ public class BinaryCasSerDes6 {
       //       previous delta deserialization)
       final TypeInfo srcTypeInfo = ts.getTypeInfo(tCode);
       final TypeInfo tgtTypeInfo = (isTypeMapping && isIncludedType) ? 
-          typeMapper.tsTgt.getTypeInfo(tgtTypeCode) : 
+          typeMapper.tsTgt.get().getTypeInfo(tgtTypeCode) : 
           srcTypeInfo;
       
       
