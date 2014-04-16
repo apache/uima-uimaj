@@ -50,16 +50,18 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
 
   static final long serialVersionUID = -4773863151055424438L;
   
-  private String mName;
+  private volatile String mName;
 
-  private String mVersion;
+  private volatile String mVersion;
 
-  private String mDescription;
+  private volatile String mDescription;
 
-  private String mVendor;
+  private volatile String mVendor;
 
-  private Import[] mImports = Import.EMPTY_IMPORTS;
+  private volatile Import[] mImports = Import.EMPTY_IMPORTS;
 
+  // not final or volatile because clone() copies a ref to shared value, and we need that value to be a new instance
+  // Threading: all access synchronized except initial creation during cloning
   private List<TypePriorityList> mPriorityLists = new ArrayList<TypePriorityList>();
   
   /**
