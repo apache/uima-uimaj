@@ -63,7 +63,8 @@ public class CasToInlineXmlTest extends TestCase {
     assertTrue(transformer.isFormattedOutput());
     String formattedXml = transformer.generateXML(cas, null);
 //    System.out.println(formattedXml);
-    assertTrue(formattedXml.contains("?><Document>"+EOL+"    <uima.tcas.DocumentAnnotation"));
+    // start compare at <Document> because some impls put a nl in front of it (Linux), others don't (Windows)
+    assertTrue(formattedXml.contains("<Document>"+EOL+"    <uima.tcas.DocumentAnnotation"));
     assertTrue(formattedXml.contains("confidence=\"0.0\">" + EOL
             + "            <org.apache.uima.testTypeSystem.Owner"));
     assertTrue(formattedXml.contains("</uima.tcas.DocumentAnnotation>"+EOL+"</Document>"));
@@ -72,7 +73,7 @@ public class CasToInlineXmlTest extends TestCase {
     transformer.setFormattedOutput(false);
     String unformattedXml = transformer.generateXML(cas, null);
 //    System.out.println(unformattedXml);
-    assertTrue(unformattedXml.contains("?><Document><uima.tcas.DocumentAnnotation"));
+    assertTrue(unformattedXml.contains("<Document><uima.tcas.DocumentAnnotation"));
     assertTrue(unformattedXml
             .contains("confidence=\"0.0\"><org.apache.uima.testTypeSystem.Owner"));
     assertTrue(unformattedXml.contains("</uima.tcas.DocumentAnnotation></Document>"));
@@ -117,7 +118,9 @@ public class CasToInlineXmlTest extends TestCase {
     CasToInlineXml c2x = new CasToInlineXml();
     String result = c2x.generateXML(srcCas).trim();
     System.out.println(result);
-    String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Document>" + EOL +
+    int s = result.indexOf("<Document>");
+    result = result.substring(s);
+    String expected = "<Document>" + EOL +
         "    <uima.tcas.DocumentAnnotation sofa=\"Sofa\" begin=\"0\" end=\"17\" language=\"x-unspecified\">" + EOL +
         "        <org.apache.uima.testTypeSystem_arrays.OfStrings sofa=\"Sofa\" begin=\"0\" end=\"0\" f1Strings=\"[0s,1s,2s]\"/>" + EOL +
         "        <org.apache.uima.testTypeSystem_arrays.OfShorts sofa=\"Sofa\" begin=\"0\" end=\"0\" f1Shorts=\"[0,1,2]\"/>1 2 3 4 5 6 7 8 9</uima.tcas.DocumentAnnotation>" + EOL +
