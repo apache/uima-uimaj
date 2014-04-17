@@ -204,20 +204,20 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
       params.put(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS, Integer.valueOf(3));
       ae.initialize(mAggDesc, params);
       
-      final int NUM_THREADS = 4;
+      final int NUM_THREADS = Runtime.getRuntime().availableProcessors() * 5;
       ProcessThread[] threads = new ProcessThread[NUM_THREADS];
       Random random = new Random();
       for (int repetitions = 0; repetitions < 4; repetitions++) {
         for (int i = 0; i < NUM_THREADS; i++) {
           threads[i] = new ProcessThread(ae);
           threads[i].start();
-          Thread.sleep(random.nextInt(2));  // delay between 0 and 2 milliseconds
+          Thread.sleep(0, random.nextInt(100000));  // delay between 0 and 100 microseconds
         }
 
         // wait for threads to finish and check if they got exceptions
         for (int i = 0; i < NUM_THREADS; i++) {
           try {
-            threads[i].join(10000);
+            threads[i].join(30000);
           } catch (InterruptedException ie) {
             System.err.println("got unexpected Interrupted exception " + ie);
           }
@@ -271,8 +271,8 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
     }
   }
   
-  final int NUM_THREADS = 5;
-  final int NUM_INSTANCES = 3;
+  final int NUM_THREADS = Runtime.getRuntime().availableProcessors() * 5;
+  final int NUM_INSTANCES = (int)(NUM_THREADS * .7);
   
   public void processMany(ResourceSpecifier specifier) throws Exception {
     try {
@@ -293,7 +293,7 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
         // wait for threads to finish and check if they got exceptions
       for (int i = 0; i < NUM_THREADS; i++) {
         try {
-          threads[i].join(10000);
+          threads[i].join(30000);  // increase timeout - Jenkins sometimes is slow
         } catch (InterruptedException ie) {
           System.err.println("got unexpected Interrupted exception " + ie);
         }
@@ -438,6 +438,7 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
     }
 
     public void run() {
+      Random r = new Random();
       try {
 
         // Test each form of the process method. When TestAnnotator executes, it
@@ -452,6 +453,7 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
         mLastTypeSystem = tcas.getTypeSystem();
         tcas.setDocumentText("new test");
         mAE.process(tcas);
+        Thread.sleep(0, r.nextInt(10000));  // 0 to 10 microseconds
         tcas.reset();
 
         // process(CAS,ResultSpecification)
@@ -459,7 +461,9 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
         resultSpec.addResultType("NamedEntity", true);
 
         tcas.setDocumentText("testing...");
+        Thread.sleep(0, r.nextInt(100000));  // 0 to 100 microseconds
         mAE.process(tcas, resultSpec);
+        Thread.sleep(0, r.nextInt(1000));  // 0 to 1 microseconds
         tcas.reset();
 
       } catch (Throwable t) {
@@ -491,10 +495,12 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
 
     public void run() {
       try {
+        
+        Random r = new Random();
 
         // Test each form of the process method. When TestAnnotator executes, it
         // stores in static fields the document text and the ResultSpecification.
-        // We use thse to make sure the information propogates correctly to the 
+        // We use thse to make sure the information propagates correctly to the 
         // annotator. (However, we can't check these until after the threads are
         // finished, as their state is nondeterministic during multithreaded
         // processing.)
@@ -505,6 +511,7 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
           mLastTypeSystem = tcas.getTypeSystem();
           tcas.setDocumentText("new test");
           mAE.process(tcas);
+          Thread.sleep(0, r.nextInt(100000));  // between 0 and 100 microseconds
           tcas.reset();
   
           // process(CAS,ResultSpecification)
@@ -512,7 +519,9 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
           resultSpec.addResultType("NamedEntity", true);
   
           tcas.setDocumentText("testing...");
+          Thread.sleep(0, r.nextInt(1000));  // probably yields, sleep for 1 microsecond
           mAE.process(tcas, resultSpec);
+          Thread.sleep(0, r.nextInt(10000));  // between 0 and 10 microseconds
           tcas.reset();
         }
       } catch (Throwable t) {
