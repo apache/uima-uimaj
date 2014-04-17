@@ -140,6 +140,24 @@ public class GrowingTheCasTest extends TestCase {
       e.printStackTrace();
       assertTrue(false);
     }
+//    try {  // uncomment for memory use profiling
+//      Thread.sleep(10000000);
+//    } catch (InterruptedException e) {
+//      // TODO Auto-generated catch block
+//      e.printStackTrace();
+//    }  // debug
+//    Runtime r = Runtime.getRuntime();
+//    System.out.format("Size of 2 heaps: %,d%n", r.totalMemory() - r.freeMemory());
+//    System.gc();
+//    System.gc();
+//    System.out.format("Size of 2 heaps: %,d after 2 gcs%n", r.totalMemory() - r.freeMemory());
+//    
+//    smallHeapCas = null;
+//    jcas = null;
+//    System.out.format("Size of 0 heaps: %,d%n", r.totalMemory() - r.freeMemory());
+//    System.gc();
+//    System.gc();
+//    System.out.format("Size of 0 heaps: %,d after 2 gcs%n", r.totalMemory() - r.freeMemory());   
   }
 
   public static void main(String[] args) {
