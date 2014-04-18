@@ -136,10 +136,6 @@ public class GrowingTheCasTest extends TestCase {
 	  numberOfSentences == this.smallHeapCas.getAnnotationIndex(Sentence.type).size());
       assertTrue(this.getClass().toString() + ": number of tokens does not match",
 	  numberOfTokens == this.smallHeapCas.getAnnotationIndex(Token.type).size());
-    } catch (AnalysisEngineProcessException e) {
-      e.printStackTrace();
-      assertTrue(false);
-    }
 //    try {  // uncomment for memory use profiling
 //      Thread.sleep(10000000);
 //    } catch (InterruptedException e) {
@@ -151,8 +147,13 @@ public class GrowingTheCasTest extends TestCase {
 //    System.gc();
 //    System.gc();
 //    System.out.format("Size of 2 heaps: %,d after 2 gcs%n", r.totalMemory() - r.freeMemory());
-//    
-//    smallHeapCas = null;
+//
+    } catch (AnalysisEngineProcessException e) {
+      e.printStackTrace();
+      assertTrue(false);
+    } finally {
+      smallHeapCas = null;  // some junit runners hold onto instances of the test class after the test is run
+    }
 //    jcas = null;
 //    System.out.format("Size of 0 heaps: %,d%n", r.totalMemory() - r.freeMemory());
 //    System.gc();

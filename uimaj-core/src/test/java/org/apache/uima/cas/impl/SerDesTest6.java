@@ -29,12 +29,7 @@ import static org.apache.uima.cas.impl.SerDesTest6.Types.Akof2;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -263,6 +258,14 @@ public class SerDesTest6 extends TestCase {
     lfs = new ArrayList<FeatureStructure>();
   }
   
+  public void tearDown() {
+    remoteCas = null;
+    lfs = null;
+    mSrc = null;
+    casSrc = null;
+    alternateTTypeSystems = null;
+  }
+  
 //  void setupTgtTs(String kind) {
 //    CASTestSetup setupTgt = new CASTestSetup(kind);
 //    casTgt = (CASImpl) CASInitializer.initCas(setupTgt);
@@ -286,8 +289,6 @@ public class SerDesTest6 extends TestCase {
     }
   }
 
-  public void tearDown() {
-  }
   
   public void testDocText() throws Exception
   {

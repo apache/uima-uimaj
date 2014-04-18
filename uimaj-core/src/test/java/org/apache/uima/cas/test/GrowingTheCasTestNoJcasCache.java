@@ -157,6 +157,8 @@ public class GrowingTheCasTestNoJcasCache extends TestCase {
     } catch (AnalysisEngineProcessException e) {
       e.printStackTrace();
       assertTrue(false);
+    } finally {
+      smallHeapCas = null;  // some junit runners hold onto instances of test classes after the test finishes
     }
   }
 

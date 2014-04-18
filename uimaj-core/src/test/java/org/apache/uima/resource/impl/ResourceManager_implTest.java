@@ -155,6 +155,10 @@ public class ResourceManager_implTest extends TestCase {
     }
   }
 
+  public void tearDown() {
+    mManager = null;
+  }
+  
   public void testSetDataPath() throws Exception {
     try {
       String path = "c:\\this\\path\\is;for\\windows";

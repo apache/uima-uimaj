@@ -132,6 +132,7 @@ public class JCasTest extends TestCase {
 		this.cas = null;
 		this.ts = null;
 		this.jcas = null;
+		this.endOfSentenceInstance = null;
 	}
 
 	public void testMissingFeatureInCas() throws Exception {
