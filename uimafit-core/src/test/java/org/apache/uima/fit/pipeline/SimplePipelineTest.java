@@ -22,7 +22,9 @@ import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReader;
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
+import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDescription;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -36,9 +38,12 @@ import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.fit.component.JCasCollectionReader_ImplBase;
+import org.apache.uima.fit.component.Resource_ImplBase;
+import org.apache.uima.fit.descriptor.ExternalResource;
 import org.apache.uima.fit.type.Sentence;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Progress;
 import org.junit.Test;
@@ -51,6 +56,9 @@ public class SimplePipelineTest {
 
   public static class Reader extends JCasCollectionReader_ImplBase {
 
+    @ExternalResource(mandatory=false)
+    private static DummySharedResource resource;
+    
     private int size = 1;
 
     private int current = 0;
@@ -80,6 +88,8 @@ public class SimplePipelineTest {
   }
 
   public static class Annotator extends JCasAnnotator_ImplBase {
+    @ExternalResource(mandatory=false)
+    private static DummySharedResource resource;
 
     @Override
     public void process(JCas jCas) throws AnalysisEngineProcessException {
@@ -109,6 +119,9 @@ public class SimplePipelineTest {
 
   }
 
+  public static final class DummySharedResource extends Resource_ImplBase {
+  }
+
   @Test
   public void testWithInstances() throws Exception {
     SimplePipeline.runPipeline(createReader(Reader.class),
@@ -123,5 +136,22 @@ public class SimplePipelineTest {
             createEngineDescription(Annotator.class),
             createEngineDescription(Writer.class));
     assertEquals(Arrays.asList(SENTENCE_TEXT), Writer.SENTENCES);
+  }
+
+  @Test
+  public void testResourceSharing() throws Exception {
+    Reader.resource = null;
+    Annotator.resource = null;
+    
+    ExternalResourceDescription res = createExternalResourceDescription(DummySharedResource.class);
+    SimplePipeline.runPipeline(createReaderDescription(Reader.class, "resource", res),
+            createEngineDescription(Annotator.class, "resource", res));
+    
+    assertNotNull(Reader.resource);
+    assertNotNull(Annotator.resource);
+    assertTrue(Reader.resource == Annotator.resource);
+    
+    Reader.resource = null;
+    Annotator.resource = null;
   }
 }

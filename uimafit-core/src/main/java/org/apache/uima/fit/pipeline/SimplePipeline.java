@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.uima.UIMAException;
+import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -40,6 +41,7 @@ import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.util.CasCreationUtils;
 
@@ -52,10 +54,16 @@ public final class SimplePipeline {
   }
 
   /**
+   * <p>
    * Run the CollectionReader and AnalysisEngines as a pipeline. After processing all CASes provided
    * by the reader, the method calls {@link AnalysisEngine#collectionProcessComplete()
    * collectionProcessComplete()} on the engines and {@link Resource#destroy() destroy()} on all
    * engines.
+   * </p>
+   * <p>
+   * Note that with this method, external resources cannot be shared between the reader and the
+   * analysis engines. They can be shared amongst the analysis engines.
+   * </p>
    * 
    * @param reader
    *          The CollectionReader that loads the documents into the CAS.
@@ -97,10 +105,15 @@ public final class SimplePipeline {
   }
 
   /**
+   * <p>
    * Run the CollectionReader and AnalysisEngines as a pipeline. After processing all CASes provided
    * by the reader, the method calls {@link AnalysisEngine#collectionProcessComplete()
    * collectionProcessComplete()} on the engines, {@link CollectionReader#close() close()} on the
    * reader and {@link Resource#destroy() destroy()} on the reader and all engines.
+   * </p>
+   * <p>
+   * External resources can be shared between the reader and the analysis engines.
+   * </p>
    * 
    * @param readerDesc
    *          The CollectionReader that loads the documents into the CAS.
@@ -115,22 +128,47 @@ public final class SimplePipeline {
    */
   public static void runPipeline(final CollectionReaderDescription readerDesc,
           final AnalysisEngineDescription... descs) throws UIMAException, IOException {
+    ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
+    
     // Create the components
-    final CollectionReader reader = createReader(readerDesc);
+    final CollectionReader reader = UIMAFramework.produceCollectionReader(readerDesc, resMgr, null);
+
+    // Create AAE
+    final AnalysisEngineDescription aaeDesc = createEngineDescription(descs);
+
+    // Instantiate AAE
+    final AnalysisEngine aae = UIMAFramework.produceAnalysisEngine(aaeDesc, resMgr, null);
+
+    // Create CAS from merged metadata
+    final CAS cas = CasCreationUtils.createCas(asList(reader.getMetaData(), aae.getMetaData()));
+    reader.typeSystemInit(cas.getTypeSystem());
 
     try {
-      // Run the pipeline
-      runPipeline(reader, descs);
+      // Process
+      while (reader.hasNext()) {
+        reader.getNext(cas);
+        aae.process(cas);
+        cas.reset();
+      }
+
+      // Signal end of processing
+      aae.collectionProcessComplete();
     } finally {
-      close(reader);
-      destroy(reader);
+      // Destroy
+      aae.destroy();
     }
   }
 
   /**
+   * <p>
    * Provides a simple way to run a pipeline for a given collection reader and sequence of analysis
    * engines. After processing all CASes provided by the reader, the method calls
    * {@link AnalysisEngine#collectionProcessComplete() collectionProcessComplete()} on the engines.
+   * </p>
+   * <p>
+   * External resources can only be shared between the reader and/or the analysis engines if the
+   * reader/engines have been previously instantiated using a shared resource manager.
+   * </p>
    * 
    * @param reader
    *          a collection reader
@@ -162,8 +200,13 @@ public final class SimplePipeline {
   }
 
   /**
+   * <p>
    * Run a sequence of {@link AnalysisEngine analysis engines} over a {@link JCas}. The result of
    * the analysis can be read from the JCas.
+   * </p>
+   * <p>
+   * External resources can be shared between the analysis engines.
+   * </p>
    * 
    * @param aCas
    *          the CAS to process
@@ -194,8 +237,13 @@ public final class SimplePipeline {
   }
 
   /**
+   * <p>
    * Run a sequence of {@link AnalysisEngine analysis engines} over a {@link JCas}. The result of
    * the analysis can be read from the JCas.
+   * </p>
+   * <p>
+   * External resources can be shared between the analysis engines.
+   * </p>
    * 
    * @param jCas
    *          the jCas to process
@@ -212,9 +260,16 @@ public final class SimplePipeline {
   }
 
   /**
+   * <p>
    * Run a sequence of {@link AnalysisEngine analysis engines} over a {@link JCas}. This method does
    * not {@link AnalysisEngine#destroy() destroy} the engines or send them other events like
    * {@link AnalysisEngine#collectionProcessComplete()}. This is left to the caller.
+   * </p>
+   * <p>
+   * External resources can only be shared between the analysis engines if the engines have been
+   * previously instantiated using a shared resource manager.
+   * </p>
+   * 
    * 
    * @param jCas
    *          the jCas to process
@@ -231,9 +286,15 @@ public final class SimplePipeline {
   }
 
   /**
+   * <p>
    * Run a sequence of {@link AnalysisEngine analysis engines} over a {@link CAS}. This method does
    * not {@link AnalysisEngine#destroy() destroy} the engines or send them other events like
    * {@link AnalysisEngine#collectionProcessComplete()}. This is left to the caller.
+   * </p>
+   * <p>
+   * External resources can only be shared between the analysis engines if the engines have been
+   * previously instantiated using a shared resource manager.
+   * </p>
    * 
    * @param cas
    *          the CAS to process
@@ -250,8 +311,13 @@ public final class SimplePipeline {
   }
 
   /**
+   * <p>
    * Iterate through the {@link JCas JCases} processed by the pipeline, allowing to access each one
    * after it has been processed.
+   * </p>
+   * <p>
+   * External resources can be shared between the reader and the analysis engines.
+   * </p>
    * 
    * @param aReader
    *          the collection reader.

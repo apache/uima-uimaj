@@ -21,17 +21,27 @@ package org.apache.uima.fit.pipeline;
 import static org.apache.uima.fit.pipeline.SimplePipeline.*;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
+import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDescription;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.fit.component.JCasCollectionReader_ImplBase;
+import org.apache.uima.fit.component.Resource_ImplBase;
+import org.apache.uima.fit.descriptor.ExternalResource;
+import org.apache.uima.fit.pipeline.SimplePipelineTest.Annotator;
+import org.apache.uima.fit.pipeline.SimplePipelineTest.DummySharedResource;
+import org.apache.uima.fit.pipeline.SimplePipelineTest.Reader;
+import org.apache.uima.fit.pipeline.SimplePipelineTest.Writer;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Progress;
 import org.apache.uima.util.ProgressImpl;
@@ -51,7 +61,32 @@ public class JCasIterableTest {
     assertTrue(GetTextAE.destroyed);
   }
 
+  @Test
+  public void testResourceSharing() throws Exception {
+    ThreeDocsReader.resource = null;
+    GetTextAE.resource = null;
+    
+    ExternalResourceDescription res = createExternalResourceDescription(DummySharedResource.class);
+    for (@SuppressWarnings("unused") JCas jcas : iteratePipeline(
+            createReaderDescription(ThreeDocsReader.class, "resource", res),
+            createEngineDescription(GetTextAE.class, "resource", res))) {
+    }
+    
+    assertNotNull(ThreeDocsReader.resource);
+    assertNotNull(GetTextAE.resource);
+    assertTrue(ThreeDocsReader.resource == GetTextAE.resource);
+    
+    ThreeDocsReader.resource = null;
+    GetTextAE.resource = null;
+  }
+ 
+  public static final class DummySharedResource extends Resource_ImplBase {
+  }
+
   public static final class ThreeDocsReader extends JCasCollectionReader_ImplBase {
+    @ExternalResource(mandatory=false)
+    private static DummySharedResource resource;
+
     private final int N = 3;
     private int n = 0;
     
@@ -71,6 +106,9 @@ public class JCasIterableTest {
   }
   
   public static final class GetTextAE extends JCasAnnotator_ImplBase {
+    @ExternalResource(mandatory=false)
+    private static DummySharedResource resource;
+    
     public static String lastText = null;
     
     public static boolean complete = false;
