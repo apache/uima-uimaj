@@ -62,6 +62,12 @@ public class ResourcePoolTest extends TestCase {
       JUnitExtension.handleException(e);
     }
   }
+  
+  public void tearDown() {
+    mDesc = null;
+    pool1.destroy();
+    pool1 = null;
+  }
 
   /*
    * Test for Resource_impl getResource()

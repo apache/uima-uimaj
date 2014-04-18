@@ -246,6 +246,11 @@ public class TaeDescription_implTest extends TestCase {
     }
   }
 
+  public void tearDown() {
+    primitiveDesc = null;
+    aggregateDesc = null;
+  }
+
   public void testXMLization() throws Exception {
     try {
       // write objects to XML
