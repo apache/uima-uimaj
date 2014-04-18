@@ -1,0 +1,97 @@
+<!--
+	Licensed to the Apache Software Foundation (ASF) under one
+	or more contributor license agreements. See the NOTICE file
+	distributed with this work for additional information
+	regarding copyright ownership. The ASF licenses this file
+	to you under the Apache License, Version 2.0 (the
+	"License"); you may not use this file except in compliance
+	with the License. You may obtain a copy of the License at
+
+	http://www.apache.org/licenses/LICENSE-2.0
+
+	Unless required by applicable law or agreed to in writing,
+	software distributed under the License is distributed on an
+	"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+	KIND, either express or implied. See the License for the
+	specific language governing permissions and limitations
+	under the License.
+-->
+<chapter id="ugr.tools.uimafit.packaging">
+  <title>Building an executable JAR</title>
+  <para>Building an executable JAR including uimaFIT components typically requires extra care. Per
+    convention, uimaFIT expects certain information in specific locations on the classpath, e.g. the
+      <filename>types.txt</filename> file that controls the <link
+      linkend="ugr.tools.uimafit.packaging">automatic type system detection</link> mechanism must
+    reside at <filename>META-INF/org.apache.uima.fit/types.txt</filename>. It often occurs that a
+    project has several dependencies, each supplying its own configuration files at these standard
+    locations. However, this causes a problem with naive approaches to creating an executable
+      <emphasis>fat-jar</emphasis> merging all dependencies into a single JAR file. Without extra
+    care, the files supplied by the different dependencies overwrite each other during the packaging
+    process and only one file <emphasis>wins</emphasis> in the end. As a consequence, the types
+    configured in the other files cannot be detected at runtime. Such a native approach is taken,
+    for example, by the Maven Assembly Plugin.</para>
+  <para>The Maven Shade Plugin provides a convenient alternative for the creation of executable
+    fat-jars, as it provides a mechanism to concatenate the configuration files from different
+    dependencies while creating the fat-jar. To use the Maven Shade Plugin with uimaFIT, use the
+    following configuration section in your POM file and make sure to change the
+      <parameter>mainClass</parameter> as required for your project:</para>
+  <programlisting>&lt;build>
+  &lt;plugins>
+    &lt;plugin>
+      &lt;groupId>org.apache.maven.plugins&lt;/groupId>
+      &lt;artifactId>maven-shade-plugin&lt;/artifactId>
+      &lt;version>2.2&lt;/version>
+      &lt;executions>
+        &lt;execution>
+          &lt;phase>package&lt;/phase>
+          &lt;goals>&lt;goal>shade&lt;/goal>&lt;/goals>
+          &lt;configuration>
+            &lt;transformers>
+              &lt;!-- Set the main class of the executable JAR -->
+              &lt;transformer
+                implementation="org.apache.maven.plugins.shade.\
+                                resource.ManifestResourceTransformer">
+                &lt;mainClass>org.apache.uima.fit.example.Main&lt;/mainClass>
+              &lt;/transformer>
+              &lt;!-- Merge the uimaFIT configuration files -->
+              &lt;transformer
+                implementation="org.apache.maven.plugins.shade.\
+                                resource.AppendingTransformer">
+                &lt;resource>\
+                  META-INF/org.apache.uima.fit/fsindexes.txt\
+                &lt;/resource>
+              &lt;/transformer>
+              &lt;transformer
+                implementation="org.apache.maven.plugins.shade.\
+                                resource.AppendingTransformer">
+                &lt;resource>\
+                  META-INF/org.apache.uima.fit/types.txt\
+                &lt;/resource>
+              &lt;/transformer>
+              &lt;transformer
+                implementation="org.apache.maven.plugins.shade.\
+                                resource.AppendingTransformer">
+                &lt;resource>\
+                  META-INF/org.apache.uima.fit/typepriorities.txt\
+                &lt;/resource>
+              &lt;/transformer>
+            &lt;/transformers>
+          &lt;/configuration>
+        &lt;/execution>
+      &lt;/executions>
+    &lt;/plugin>
+  &lt;/plugins>
+&lt;/build></programlisting>
+  <note>
+    <para>Due to formatting constraints in the PDF version of this manual, the example above uses
+        <code>\</code> to indicate a line continuation. Remove these and join the lines when you
+      copy/paste this example.</para>
+  </note>
+  <note>
+    <para>You might want to consider also merging additional files, such as LICENSE, NOTICE, or
+      DEPENDENCY files,  configuration files for the Java Service Locator API, or  files used by
+      other frameworks that uses similar conventions for configuration file locations. Check the
+      documentation of the Maven Shade Plugin, as different kinds of configuration files require
+      different specialized transformers.</para>
+  </note>
+</chapter>

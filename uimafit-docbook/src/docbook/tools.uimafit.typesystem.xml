@@ -35,6 +35,13 @@
         <filename>org/apache/uima/fit/type/Token.xml</filename>, then the file should have the
       following contents:</para>
     <programlisting>classpath*:org/apache/uima/fit/type/Token.xml</programlisting>
+    <note>
+      <para>Mind that the file <filename>types.txt</filename> is must be located in
+          <filename>META-INF/org.apache.uima.fit</filename> where
+          <filename>org.apache.uima.fit</filename> is the name of a sub-directory inside
+          <filename>META-INF</filename>. <emphasis>We are not using the Java package notation
+          here!</emphasis></para>
+    </note>
     <para>To specify multiple TSDs, add additonal lines to the file. If you have a large number of
       TSDs, you may prefer to add a pattern. Assume that we have a large number of TSDs under
         <filename>org/apache/uima/fit/type</filename>, we can use the following pattern which
@@ -46,12 +53,13 @@
     <para>If it is not possible or inconvenient to add the `types.txt` file, patterns can also be
       specified using the system property
         <parameter>org.apache.uima.fit.type.import_pattern</parameter>. Multiple patterns may be
-      specified separated by semicolon<footnote>
-        <para>The <literal>\</literal> in the example is used as a line-continuation indicator. It
-          and all spaces following it should be ommitted.</para>
-      </footnote>:</para>
+      specified separated by semicolon:</para>
     <programlisting>-Dorg.apache.uima.fit.type.import_pattern=\
   classpath*:org/apache/uima/fit/type/**/*.xml</programlisting>
+    <note>
+      <para>The <literal>\</literal> in the example is used as a line-continuation indicator. It
+        and all spaces following it should be ommitted.</para>
+    </note>
   </section>
   <section>
     <title>Using type auto-detection </title>

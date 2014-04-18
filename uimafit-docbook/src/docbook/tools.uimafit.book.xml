@@ -41,6 +41,8 @@ under the License.
 
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="tools.uimafit.typesystem.xml"/>
 
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="tools.uimafit.packaging.xml"/>
+
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="tools.uimafit.maven.xml"/>
 
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="tools.uimafit.migration.xml"/>
