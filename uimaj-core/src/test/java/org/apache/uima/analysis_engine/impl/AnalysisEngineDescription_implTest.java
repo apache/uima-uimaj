@@ -293,6 +293,11 @@ public class AnalysisEngineDescription_implTest extends TestCase {
     }
   }
 
+  public void tearDown() {
+    primitiveDesc = null;
+    aggregateDesc = null;
+  }
+  
   public void testMulticoreInitialize() throws Exception {
     ResourceManager resourceManager = UIMAFramework.newDefaultResourceManager();
     ConfigurationManager configManager = UIMAFramework.newConfigurationManager();
