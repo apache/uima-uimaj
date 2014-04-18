@@ -228,16 +228,7 @@ public class SerDesTest6 extends TestCase {
 //    seed =  2934127305128325787L;
     random = new Random(seed);
     System.out.format("RandomSeed: %,d%n", seed);
-
-    mSrc = setupTTypeSystem(TwoTypes);
-    casSrc = mSrc.cas;
-    final TypeSystems[] tss = TypeSystems.values();
-    final int nbrAltTs = tss.length;
-    alternateTTypeSystems = new TTypeSystem[nbrAltTs];
-    for (int i = 0; i < nbrAltTs; i++){
-      alternateTTypeSystems[i] = setupTTypeSystem(tss[i]);
-    }
-  }
+   }
   
   public TTypeSystem setupTTypeSystem(TypeSystems kind) {
     if (kind == EqTwoTypes) {
@@ -254,7 +245,14 @@ public class SerDesTest6 extends TestCase {
   }
   
   public void setUp() {
-    casSrc.reset();
+    mSrc = setupTTypeSystem(TwoTypes);
+    casSrc = mSrc.cas;
+    final TypeSystems[] tss = TypeSystems.values();
+    final int nbrAltTs = tss.length;
+    alternateTTypeSystems = new TTypeSystem[nbrAltTs];
+    for (int i = 0; i < nbrAltTs; i++){
+      alternateTTypeSystems[i] = setupTTypeSystem(tss[i]);
+    }
     lfs = new ArrayList<FeatureStructure>();
   }
   
@@ -264,6 +262,7 @@ public class SerDesTest6 extends TestCase {
     mSrc = null;
     casSrc = null;
     alternateTTypeSystems = null;
+    // don't reset random
   }
   
 //  void setupTgtTs(String kind) {
