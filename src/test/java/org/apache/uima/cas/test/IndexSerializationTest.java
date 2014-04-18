@@ -114,6 +114,20 @@ public class IndexSerializationTest extends TestCase {
     assertTrue(annotationType != null);
   }
 
+  public void tearDown() {
+    casMgr = null;
+    cas = null;
+    annotationType = null;
+    wordType = null;
+    separatorType = null;
+    eosType = null;
+    tokenType = null;
+    tokenTypeFeature = null;
+    sentenceType = null;
+    startFeature = null;
+    endFeature = null;
+  }
+  
   // Initialize the first CAS.
   private static CASMgr initCAS() {
     // // Create a CASMgr. Ensures existence of AnnotationFS type.
