@@ -51,6 +51,12 @@ public class IndexRepositoryTest extends TestCase {
     this.indexRep = this.cas.getIndexRepository();
   }
 
+  public void tearDown() {
+    cas = null;
+    typeSystem = null;
+    indexRep = null;
+  }
+  
   public void testDefaultBagIndex() throws Exception {
     // create an instance of a non-annotation type
     Type tokenTypeType = this.typeSystem.getType(CASTestSetup.TOKEN_TYPE_TYPE);

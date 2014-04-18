@@ -127,7 +127,15 @@ public class SofaTest extends TestCase {
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
-
+  }
+  
+  public void tearDown() {
+    casMgr = null;
+    cas = null;
+    annotationType = null;
+    docAnnotationType = null;
+    crossType = null;
+    otherFeat = null;
   }
 
   /**

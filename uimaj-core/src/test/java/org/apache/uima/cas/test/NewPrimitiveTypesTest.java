@@ -194,6 +194,28 @@ public class NewPrimitiveTypesTest extends TestCase {
 
   }
 
+  public void tearDown() {
+    casMgr = null;
+    cas = null;
+    annotationType = null;
+    exampleType = null;
+    floatFeature = null;
+    stringFeature = null;
+    byteFeature = null;
+    booleanFeature = null;
+    shortFeature = null;
+    longFeature = null;
+    doubleFeature = null;
+    intArrayFeature = null;
+    floatArrayFeature = null;
+    stringArrayFeature = null;
+    byteArrayFeature = null;
+    booleanArrayFeature = null;
+    shortArrayFeature = null;
+    longArrayFeature = null;
+    doubleArrayFeature = null;
+  }
+  
   public void testCreateFS() throws Exception {
 
     // create FS
