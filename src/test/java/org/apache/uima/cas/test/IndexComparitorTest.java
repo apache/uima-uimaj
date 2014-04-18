@@ -212,13 +212,6 @@ public class IndexComparitorTest extends TestCase {
     }
   }
 
-  private FeatureStructure createFs(Type type, int i, int j) {
-    FeatureStructure f = cas.createFS(type);
-    f.setIntValue(type.getFeatureByBaseName("used"), i);
-    f.setIntValue(type.getFeatureByBaseName("ignored"), j);
-    return f;
-  }
-
   public void tearDown() {
     fss = null;
     this.cas = null;
@@ -235,6 +228,28 @@ public class IndexComparitorTest extends TestCase {
     type1Sub1Ignored = null;
     type1Sub2Used = null;
     type1Sub2Ignored = null;
+    
+    irm = null;
+    ir = null;
+    sortedType1 = null;
+    sortedType1TypeOrder = null;
+    setType1 = null;
+    bagType1 = null;
+    sortedType1Sub1 = null;
+    setType1Sub1 = null;
+    bagType1Sub1 = null;
+    setType1TypeOrder = null;
+    bagType1TypeOrder = null;
+    sortedType1Sub1TypeOrder = null;
+    setType1Sub1TypeOrder = null;
+    bagType1Sub1TypeOrder = null;
+  }
+
+  private FeatureStructure createFs(Type type, int i, int j) {
+    FeatureStructure f = cas.createFS(type);
+    f.setIntValue(type.getFeatureByBaseName("used"), i);
+    f.setIntValue(type.getFeatureByBaseName("ignored"), j);
+    return f;
   }
 
   public void testCompare() throws Exception {

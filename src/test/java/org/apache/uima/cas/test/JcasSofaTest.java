@@ -110,7 +110,12 @@ public class JcasSofaTest extends TestCase {
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
-
+  }
+  
+  public void tearDown() {
+    casMgr = null;
+    jcas = null;
+    cas = null;
   }
 
   /**
