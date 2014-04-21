@@ -19,8 +19,10 @@
 
 package org.apache.uima.internal.util;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
+import java.lang.management.ManagementFactory;
+
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.resource.ManagementObject;
@@ -41,7 +43,8 @@ public class JmxMBeanAgent {
    *          running under Java 1.5. Earlier versions of Java did not have a platform MBeanServer;
    *          in that case, this method will do nothing.
    */
-  public static void registerMBean(ManagementObject aMBean, Object aMBeanServer) {
+  public static void registerMBean(ManagementObject aMBean, Object aMBeanServerO) {
+    MBeanServer aMBeanServer = (MBeanServer)aMBeanServerO;
     if (!jmxAvailable) // means we couldn't find the required classes and methods
     {
       return;
@@ -63,13 +66,17 @@ public class JmxMBeanAgent {
       // that we are trying to register the same MBean twice (this happens for pools of AEs that
       // all share an identical UimaContext). If that happens, we only register the
       // MBean the first time and just skip the registration each subsequent time.
-      Object mbeanName = objectNameConstructor.newInstance(new Object[] { aMBean
-              .getUniqueMBeanName() });
+//      Object mbeanName = objectNameConstructor.newInstance(new Object[] { aMBean
+//              .getUniqueMBeanName() });
+      ObjectName mbeanName = new ObjectName(aMBean.getUniqueMBeanName());
       // synchronize to prevent multiple threads from initializing same thing UIMA-1247
       synchronized (aMBeanServer) {
-        if (!(((Boolean) isRegistered.invoke(aMBeanServer, new Object[] { mbeanName }))
-                .booleanValue())) {
-          registerMBean.invoke(aMBeanServer, new Object[] { aMBean, mbeanName });
+        if (!(aMBeanServer.isRegistered(mbeanName))) {
+        
+//        if (!(((Boolean) isRegistered.invoke(aMBeanServer, new Object[] { mbeanName }))
+//                .booleanValue())) {
+          aMBeanServer.registerMBean(aMBean, mbeanName);
+//          registerMBean.invoke(aMBeanServer, new Object[] { aMBean, mbeanName });
         }
       }
     } catch (Exception e) {
@@ -91,7 +98,8 @@ public class JmxMBeanAgent {
    *          running under Java 1.5. Earlier versions of Java did not have a platform MBeanServer;
    *          in that case, this method will do nothing.
    */
-  public static void unregisterMBean(ManagementObject aMBean, Object aMBeanServer) {
+  public static void unregisterMBean(ManagementObject aMBean, Object aMBeanServerO) {
+    MBeanServer aMBeanServer = (MBeanServer)aMBeanServerO;
     if (!jmxAvailable) // means we couldn't find the required classes and methods
     {
       return;
@@ -113,10 +121,14 @@ public class JmxMBeanAgent {
       String mbeanName = aMBean.getUniqueMBeanName();
       if (mbeanName != null) // guards against uninitialized AE instances
       {
-        Object objName = objectNameConstructor.newInstance(new Object[] { mbeanName });
-        if (((Boolean) isRegistered.invoke(aMBeanServer, new Object[] { objName })).booleanValue()) {
-          unregisterMBean.invoke(aMBeanServer, new Object[] { objName });
+        ObjectName objName = new ObjectName(mbeanName);
+        if (aMBeanServer.isRegistered(objName)) {
+          aMBeanServer.unregisterMBean(objName);
         }
+//        Object objName = objectNameConstructor.newInstance(new Object[] { mbeanName });
+//        if (((Boolean) isRegistered.invoke(aMBeanServer, new Object[] { objName })).booleanValue()) {
+//          unregisterMBean.invoke(aMBeanServer, new Object[] { objName });
+//        }
       }
     } catch (Exception e) {
       // don't fail catastrophically if we can't unregister. Just log a warning and continue.
@@ -128,55 +140,58 @@ public class JmxMBeanAgent {
   }
 
   /** Class and Method handles for reflection */
-  private static Class mbeanServerClass;
+//  private static Class mbeanServerClass;
+//
+//  private static Class objectNameClass;
 
-  private static Class objectNameClass;
-
-  private static Constructor objectNameConstructor;
-
-  private static Method isRegistered;
-
-  private static Method registerMBean;
-
-  private static Method unregisterMBean;
+//  private static Constructor objectNameConstructor;
+//
+//  private static Method isRegistered;
+//
+//  private static Method registerMBean;
+//
+//  private static Method unregisterMBean;
 
   /**
    * Set to true if we can find the required JMX classes and methods
    */
-  private static boolean jmxAvailable;
+  private static boolean jmxAvailable = true;
 
   /**
-   * The platform MBean server if one is available (Java 1.5 only)
+   * The platform MBean server
+   * This is available since Java 1.5
    */
-  private static Object platformMBeanServer;
+  private static MBeanServer platformMBeanServer;
 
   /** Get class/method handles */
   static {
-    try {
-      mbeanServerClass = Class.forName("javax.management.MBeanServer");
-      objectNameClass = Class.forName("javax.management.ObjectName");
-      objectNameConstructor = objectNameClass.getConstructor(new Class[] { String.class });
-      isRegistered = mbeanServerClass.getMethod("isRegistered", new Class[] { objectNameClass });
-      registerMBean = mbeanServerClass.getMethod("registerMBean", new Class[] { Object.class,
-          objectNameClass });
-      unregisterMBean = mbeanServerClass.getMethod("unregisterMBean",
-              new Class[] { objectNameClass });
-      jmxAvailable = true;
-    } catch (Exception e) {
-      // JMX not available
-      jmxAvailable = false;
-    }
+//    try {
+//      mbeanServerClass = Class.forName("javax.management.MBeanServer");
+//      objectNameClass = Class.forName("javax.management.ObjectName");
+//      objectNameConstructor = objectNameClass.getConstructor(new Class[] { String.class });
+//      isRegistered = mbeanServerClass.getMethod("isRegistered", new Class[] { objectNameClass });
+//      registerMBean = mbeanServerClass.getMethod("registerMBean", new Class[] { Object.class,
+//          objectNameClass });
+//      unregisterMBean = mbeanServerClass.getMethod("unregisterMBean",
+//              new Class[] { objectNameClass });
+//      jmxAvailable = true;
+//    } catch (Exception e) {
+//      // JMX not available
+//      jmxAvailable = false;
+//    }
 
     // try to get platform MBean Server (Java 1.5 only)
-    try {
-      Class managementFactory = Class.forName("java.lang.management.ManagementFactory");
-      Method getPlatformMBeanServer = managementFactory.getMethod("getPlatformMBeanServer",
-              new Class[0]);
-      platformMBeanServer = getPlatformMBeanServer.invoke(null, null);
-    } catch (Exception e) {
-      platformMBeanServer = null;
-    }
+//    try {
+//      Class managementFactory = Class.forName("java.lang.management.ManagementFactory");
+//      Method getPlatformMBeanServer = managementFactory.getMethod("getPlatformMBeanServer",
+//              new Class[0]);
+//      platformMBeanServer = getPlatformMBeanServer.invoke(null, null);
+//    } catch (Exception e) {
+//      platformMBeanServer = null;
+//    }
+    platformMBeanServer = ManagementFactory.getPlatformMBeanServer();
   }
+  
 
   /**
    * resource bundle for log messages
