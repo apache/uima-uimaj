@@ -63,7 +63,7 @@ public class JCasHashMap {
   
   private int sizeWhichTriggersExpansion;
   
-  private final float loadFactor = (float)0.50;
+  private final float loadFactor = (float)0.60;
   
   private final int initialCapacity; 
   
