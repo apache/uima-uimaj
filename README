@@ -27,7 +27,9 @@ What's New in 2.6.0
   The UIMA framework has been enhanced to support large memory/ large multi-core machines,
   with various improvements to synchronization / locking.  Embedders can now run initialization
   of UIMA components that share a common Resource Manager and/or common UIMA Context, on
-  multiple threads, concurrently.
+  multiple threads, concurrently.  Along the way, many subtle bugs were fixed.
+  
+  The complete list of fixes is here: issuesFixed/jira-report.hmtl .
   
   This version of UIMA requires Java version 6 or later.    
     
@@ -37,7 +39,7 @@ Supported Platforms
 Apache UIMA requires Java level 6; it has been tested with Sun/Oracle Java SDK 6, 7, and 8, and IBM Java 6, 7 and 8.
 Running the Eclipse plugin tooling for UIMA requires you start Eclipse using a Java 6 or later, as well.
 The supported platforms are: Windows, Linux, Solaris, AIX and Mac OS X.  
-Other platforms and Java (5+) implementations should work, but have not been significantly tested.
+Other platforms and Java (6+) implementations should work, but have not been significantly tested.
 
 Many of the scripts in the /bin directory invoke Java. They use the value of the environment variable, JAVA_HOME, 
 to locate the Java to use; if it is not set, they invoke "java" expecting to find an appropriate Java in your PATH. 
