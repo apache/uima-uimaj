@@ -48,42 +48,59 @@ public class MultiThreadUtils extends TestCase {
 
     final Throwable[] thrown = new Throwable[1];
     thrown[0] = null;
+    
     for (int r = 0; r < repeats; r++) {
       final int finalR = r;
-      for (int i = 0; i < numberOfThreads; i++) {
-        final int finalI = i;
-        threads[i] = new Thread(new Runnable() {
-          
-          public void run() {
-            // sb is for debugging; it's passed into the runnable which can choose to print it or not
-            StringBuilder sb = new StringBuilder(80);
-            try {
-              sb.append(name).append(", thread ").append(finalI).append(' ');
-              run2isb.call(finalI, finalR, sb);
-            } catch (Throwable e) {
-              System.err.format("%s: Runnable threw exception %s%n", name, e.getMessage());
-              e.printStackTrace(System.err);
-              thrown[0] = e;
-              throw new RuntimeException(e); // silly, just causes thread to end
-            }
-          }} );
-        threads[i].setName(name + " Thread " + i);
-        threads[i].setPriority(Thread.NORM_PRIORITY - 1);
-        threads[i].start();
-      }
+      try {
+        for (int i = 0; i < numberOfThreads; i++) {
+          final int finalI = i;
+          threads[i] = new Thread(new Runnable() {
+            
+            public void run() {
+              // sb is for debugging; it's passed into the runnable which can choose to print it or not
+              StringBuilder sb = new StringBuilder(80);
+              try {
+                sb.append(name).append(", thread ").append(finalI).append(' ');
+                run2isb.call(finalI, finalR, sb);
+              } catch (Throwable e) {
+                System.err.format("%s: Runnable threw exception %s%n", name, e.getMessage());
+                e.printStackTrace(System.err);
+                thrown[0] = e;
+                throw new RuntimeException(e); // silly, just causes thread to end
+              }
+            }} );
+          threads[i].setName(name + " Thread " + i);
+          threads[i].setPriority(Thread.NORM_PRIORITY - 1);
+          threads[i].start();
+        }
       
-      for (int i = 0; i < numberOfThreads; i++) {
-        try {
-          if (thrown[0] != null) {
+        for (int i = 0; i < numberOfThreads; i++) {
+          try {
+            if (thrown[0] != null) {
+              assertTrue(false);
+            }
+            threads[i].join();
+            if (thrown[0] != null) {
+              assertTrue(false);
+            }
+          } catch (InterruptedException e) {
+            e.printStackTrace();
             assertTrue(false);
           }
-          threads[i].join();
-          if (thrown[0] != null) {
-            assertTrue(false);
+        }
+      } finally {
+        // cleanup
+        // interrupt live threads
+        // wait for all threads to terminate
+        for (Thread thread : threads) {
+          if (thread.isAlive()) {
+            thread.interrupt();
           }
-        } catch (InterruptedException e) {
-          e.printStackTrace();
-          assertTrue(false);
+        }
+        for (Thread thread : threads) {
+          if (thread.isAlive()) {
+            thread.join();
+          }
         }
       }
     }   
