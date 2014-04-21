@@ -57,7 +57,7 @@ import org.apache.uima.util.impl.CasPoolManagementImpl;
  * An instance of this class might be accessed in parallel on different threads.
  */
 public class CasManager_impl implements CasManager {
-  private ResourceManager mResourceManager;
+  private final ResourceManager mResourceManager;
 
   /**
    * accumulates the metadata needed for shared CASes for this resource manager
@@ -102,7 +102,7 @@ public class CasManager_impl implements CasManager {
       throw new UIMARuntimeException(UIMARuntimeException.ILLEGAL_ADDING_OF_NEW_META_INFO_AFTER_CAS_DEFINED, new Object[] {});  // internal error  UIMA-1249    
     }
     mMetaDataList.add(aMetaData);
-//    mCasDefinition = null; // mark this stale
+//    mCasDefinition = null; // marka this stale
 //    mCurrentTypeSystem = null; //this too
   }
   
@@ -227,6 +227,7 @@ public class CasManager_impl implements CasManager {
    * Defines a CAS pool using either a UimaContext or the name of a UimaContext.
    * synchronized because it tests, then sets "pool"
    */
+  // this sync seems involved
   private synchronized void defineCasPool(UimaContext aRequestorContext, String aRequestorContextName, int aMinimumSize,
           Properties aPerformanceTuningSettings) throws ResourceInitializationException {
     int poolSize = getCasPoolSize(aRequestorContextName, aMinimumSize);
