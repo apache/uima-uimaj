@@ -126,6 +126,8 @@ public class GrowingTheCasTest extends TestCase {
       e.printStackTrace();
       assertTrue(false);
     }
+    jcas = null;
+    
     this.smallHeapCas.setDocumentText(text);
     try {
 //      long time = System.currentTimeMillis();
