@@ -130,23 +130,25 @@ public class JCasHashMapTest extends TestCase {
   }
   
   public void testGrowth() {
+    double loadfactor = .6;
     JCasHashMap m = new JCasHashMap(64, true); // true = do use cache 
     assertTrue(m.size() == 0);
      
-    fill32(m);
+    int switchpoint = (int)Math.floor(64 * loadfactor);
+    fill(switchpoint, m);
     assertTrue(m.getbitsMask() == 63);
-    m.put(new TOP(addrs[32], null));
+    m.put(new TOP(addrs[switchpoint + 1], null));
     assertTrue(m.getbitsMask() == 127);
     
     m.clear();
     assertTrue(m.getbitsMask() == 127);
 
-    fill32(m);
+    fill(switchpoint, m);
     assertTrue(m.getbitsMask() == 127);
-    m.put(new TOP(addrs[32], null));
+    m.put(new TOP(addrs[switchpoint + 1], null));
     assertTrue(m.getbitsMask() == 127);
 
-    m.clear();  // size is 33, so no shrinkage
+    m.clear();  // size is above switchpoint, so no shrinkage
     assertTrue(m.getbitsMask() == 127);
     m.clear();  // size is 0, so first time shrinkage a possibility
     assertTrue(m.getbitsMask() == 127);  // but we don't shrink on first time
@@ -160,8 +162,8 @@ public class JCasHashMapTest extends TestCase {
     
   }
 
-  private void fill32 (JCasHashMap m) {
-    for (int i = 0; i < 32; i++) {
+  private void fill (int n, JCasHashMap m) {
+    for (int i = 0; i < n; i++) {
       final int key = addrs[i];
       TOP fs = new TOP(key, null);
       m.put(fs);
