@@ -26,13 +26,13 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Random;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.uima.Constants;
+import org.apache.uima.ResourceSpecifierFactory;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -55,9 +55,7 @@ import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.ResourceSpecifier;
-import org.apache.uima.resource.URISpecifier;
 import org.apache.uima.resource.impl.FileResourceSpecifier_impl;
-import org.apache.uima.resource.impl.URISpecifier_impl;
 import org.apache.uima.resource.metadata.AllowedValue;
 import org.apache.uima.resource.metadata.Capability;
 import org.apache.uima.resource.metadata.ConfigurationGroup;
@@ -120,6 +118,7 @@ public class AnalysisEngineDescription_implTest extends TestCase {
   /**
    * @see TestCase#setUp()
    */
+  @Override
   protected void setUp() throws Exception {
     try {
       super.setUp();
@@ -293,6 +292,7 @@ public class AnalysisEngineDescription_implTest extends TestCase {
     }
   }
 
+  @Override
   public void tearDown() {
     primitiveDesc = null;
     aggregateDesc = null;
@@ -319,6 +319,7 @@ public class AnalysisEngineDescription_implTest extends TestCase {
     
     MultiThreadUtils.Run2isb run2isb = new MultiThreadUtils.Run2isb() {
       
+      @Override
       public void call(int i, int r, StringBuilder sb) throws Exception {
         Random random = new Random();
         for (int j = 0; j < 2; j++) {
@@ -336,6 +337,7 @@ public class AnalysisEngineDescription_implTest extends TestCase {
     
     run2isb = new MultiThreadUtils.Run2isb() {
       
+      @Override
       public void call(int i, int r, StringBuilder sb) throws Exception {
         Random random = new Random();
         for (int j = 0; j < 2; j++) {
@@ -641,5 +643,22 @@ public class AnalysisEngineDescription_implTest extends TestCase {
     Assert.assertNotNull(ex.getMessage());
     Assert.assertFalse(ex.getMessage().startsWith("EXCEPTION MESSAGE LOCALIZATION FAILED"));
   }
-  
+
+  public void testNoDelegatesToResolve() throws Exception {
+    ResourceSpecifierFactory f = UIMAFramework.getResourceSpecifierFactory();
+    AnalysisEngineDescription outer = f.createAnalysisEngineDescription();
+    AnalysisEngineDescription inner = f.createAnalysisEngineDescription();
+    outer.getDelegateAnalysisEngineSpecifiersWithImports().put("inner", inner);
+
+    StringWriter outerXml = new StringWriter();
+    outer.toXML(outerXml);
+    
+    // Resolving the imports removes the inner AE description
+    outer.resolveImports(UIMAFramework.newDefaultResourceManager());
+    
+    StringWriter outerXml2 = new StringWriter();
+    outer.toXML(outerXml2);
+
+    Assert.assertEquals(outerXml.toString(), outerXml2.toString());
+  }
 }
