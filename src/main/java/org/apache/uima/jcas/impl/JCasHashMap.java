@@ -226,6 +226,7 @@ public class JCasHashMap {
           if (m.getAddress() == key) {
             // found the previously reserved slot
             table[probeAddr] = value;
+            aggregate_size.incrementAndGet();
             notifyAll();
             if (TUNE) {
               histogram[Math.min(histogram.length - 1, nbrProbes)]++;
@@ -253,7 +254,8 @@ public class JCasHashMap {
         histogram[Math.min(histogram.length - 1, nbrProbes)]++;
         maxProbe = Math.max(maxProbe, nbrProbes);
       }
-      table[probeAddr] = value;   
+      table[probeAddr] = value;
+      aggregate_size.incrementAndGet();
     }
     
 //    private synchronized FeatureStructureImpl putIfAbsent(
@@ -421,7 +423,6 @@ public class JCasHashMap {
     
     SubMap m = subMaps[subMapIndex];
     m.put(key, value, hash >>> concurrencyLevelBits);
-    aggregate_size.incrementAndGet();
   }
   
   public int size() {
