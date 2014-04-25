@@ -56,7 +56,33 @@ import org.apache.uima.jcas.cas.TOP;
  * Strategy: have 1 outer implementation delegating to multiple inner ones
  *   number = concurrency level (a power of 2)
  *   
- *   The hash would use some # of low order bits to address the right inner one. 
+ *   The hash uses some # of low order bits to address the right inner one.
+ *   
+ *  This table is used to hold JCas cover classes for CAS feature structures.  There is one instance associated with each CAS that is using it.
+ * <p> 
+ * The update occurs in the code in JCasGenerated classes, which do:
+ *        a call to get the value of the map for a key
+ *        if that is "null", it creates the new JCas cover object, and does a "put" to add the value.
+ * <p> 
+ * The creation of the new JCas cover object can, in turn, run arbitrary user code, which can result in updates to the JCasHashMap which occur before this original update occurs.
+ * <p>
+ * In a multi-threaded environment, multiple threads can do a "get" for the same Feature Structure instance.  If it's not in the Map, the correct behavior is:
+ * <p>
+ * one of the threads needs to add it
+ * the other threads need to wait for the one thread to finish adding, and then return the object that the one thread added.
+ * <p>
+ * The implementation works as follows:
+ * <p>
+ * 1) The JCasHashMap is split into "n" sub-maps.   The number is the number of cores, but grows more slowly as the # of cores > 16. :
+ *    getReserve and put and clear are synchronized on the sub-maps, using ordinary synchronized keywords; the outer get/put are not synchronized
+ * 1a) The outer size (aggregated from the sub sizes) is kept as an atomic integer, updated only on puts and clear
+ * 2) The number of sub maps is rounded to a power of 2, to allow the low order bits of the hash of the key to be used to pick the map (via masking).
+ * 3) A getReserve that results in not-found returns a null, but adds to the table a special reserved element.
+ * 4) A get that finds a special reserved element knows that some other thread is in the process of adding an entry for that key, so it waits.
+ * 5) A put, if it finds a reserved-for-that-key element, replaces that with the real element, and then does a notifyAll to wake up any threads that were waiting (on this sub-map), and these threads then re-do the get
+ * <p>
+ * All calls are of the getReserved, followed by a put if the getReserved returns null.  I removed the plain "get".  
+ *   
  */
 public class JCasHashMap {
 
