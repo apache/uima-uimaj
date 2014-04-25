@@ -35,7 +35,7 @@ public class MultiThreadUtils extends TestCase {
   public final static int PROCESSORS = Runtime.getRuntime().availableProcessors();
   
   public static interface Run2isb {
-    public void call(int i, int r, StringBuilder sb) throws Exception;
+    public void call(int threadNumber, int repeatNumber, StringBuilder sb) throws Exception;
   }
   
   // needed because
