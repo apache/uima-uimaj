@@ -163,10 +163,11 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
   
   // Cache for Java Bean info lookup
   // Class level cache (static) for introspection - 30x speedup in CDE for large descriptor
+  // holds "filtered" set of Java Bean Info
   private static final transient ConcurrentHashMapWithProducer<Class<? extends MetaDataObject_impl>, MetaDataAttr[]> 
       class2attrsMap =
           new ConcurrentHashMapWithProducer<Class<? extends MetaDataObject_impl>, MetaDataAttr[]>();
-  // holds the additional unfiltered ones      
+  // holds the unfiltered set of Java Bean Info    
   private static final transient ConcurrentHashMapWithProducer<Class<? extends MetaDataObject_impl>, MetaDataAttr[]> 
       class2attrsMapUnfiltered =
           new ConcurrentHashMapWithProducer<Class<? extends MetaDataObject_impl>, MetaDataAttr[]>();
