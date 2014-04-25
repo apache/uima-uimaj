@@ -245,7 +245,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
         String propName = pd.getName();
         Class<?> propClass = pd.getPropertyType();
         // translate primitive types (int, boolean, etc.) to wrapper classes
-        if (propClass.isPrimitive()) {
+        if (null != propClass && propClass.isPrimitive()) {
           propClass = getWrapperClass(propClass);
         }
         MetaDataAttr mda = new MetaDataAttr(propName, pd.getReadMethod(), pd.getWriteMethod(), propClass);
