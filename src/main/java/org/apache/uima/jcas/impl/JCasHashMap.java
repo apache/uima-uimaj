@@ -191,49 +191,53 @@ public class JCasHashMap {
      * @param hash - the hash that was already computed from the key
      * @return - the found fs, or null
      */
-    private synchronized FeatureStructureImpl getReserve(int key, int hash) {
+    private synchronized FeatureStructureImpl getReserve(final int key, final int hash) {
       int nbrProbes = 1;
-      int probeAddr = hash & bitsMask;
-      int probeDelta = 1;
-      FeatureStructureImpl maybe = table[probeAddr];
-      while ((null != maybe)) {
-        if (maybe.getAddress() == key) {
-          while (((TOP)maybe).jcasType == null) {
-            // we hit a reserve marker - there is another thread in the process of creating an instance of this,
-            // so wait for it to finish and then return it
-            try {
-              wait();  // releases the synchronized monitor, otherwise this segment blocked for others while waiting
-            } catch (InterruptedException e) {
-            }
-            maybe = table[probeAddr];
-          }
-          if (TUNE) {
-            histogram[Math.min(histogram.length - 1, nbrProbes)]++;
-            maxProbe = Math.max(maxProbe, nbrProbes);
-          }
-          return maybe;
-        }
-        // is not null, but is wrong key
-        if (TUNE) {
-          nbrProbes++;
-        }
-        probeAddr = bitsMask & (probeAddr + (probeDelta++));
+      int probeAddr;
+      FeatureStructureImpl maybe;
+      retryAfterWait: do {
+        probeAddr = hash & bitsMask;
+        int probeDelta = 1;
         maybe = table[probeAddr];
-      }
-      
-      // maybe is null
-        // reserve this slot to prevent other "getReserved" calls for this same instance from succeeding, 
-        // causing them to wait until this slot gets filled in with a FS value
+        while (null != maybe) {
+          if (maybe.getAddress() == key) {
+            while (((TOP) maybe).jcasType == null) {
+              // we hit a reserve marker - there is another thread in the process of creating an instance of this,
+              // so wait for it to finish and then return it
+              try {
+                wait();  // releases the synchronized monitor, otherwise this segment blocked for others while waiting
+              } catch (InterruptedException e) {
+              }
+              // at this point, the table may have grown
+              // so start over
+              continue retryAfterWait;
+            }
+            if (TUNE) {
+              histogram[Math.min(histogram.length - 1, nbrProbes)]++;
+              maxProbe = Math.max(maxProbe, nbrProbes);
+            }
+            return maybe;
+          }
+          // is not null, but is wrong key
+          if (TUNE) {
+            nbrProbes++;
+          }
+          probeAddr = bitsMask & (probeAddr + (probeDelta++));
+          maybe = table[probeAddr];
+        }
+        break;
+      } while (true);  // must be true to have label of continue used
+      // "maybe" is null
+      // reserve this slot to prevent other "getReserved" calls for this same instance from succeeding,
+      // causing them to wait until this slot gets filled in with a FS value
       table[probeAddr] = new TOP(key, null);  // null indicates its a RESERVE marker
-      
-     
+
       if (TUNE) {
         histogram[Math.min(histogram.length - 1, nbrProbes)]++;
         maxProbe = Math.max(maxProbe, nbrProbes);
       }
-      return maybe;    
+      return maybe;
     }
-
     
     private synchronized void put(int key, FeatureStructureImpl value, int hash) {
       if (size >= sizeWhichTriggersExpansion) {
