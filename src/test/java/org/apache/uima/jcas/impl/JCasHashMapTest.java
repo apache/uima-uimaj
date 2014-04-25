@@ -41,7 +41,7 @@ public class JCasHashMapTest extends TestCase {
     }    
   }
   
-  static final TOP_Type NULL_TOP_TYPE_INSTANCE = new FakeTopType(); 
+  static final TOP_Type FAKE_TOP_TYPE_INSTANCE = new FakeTopType(); 
   static final int SIZE = 20000;  // set > 2 million for cache avoidance timing tests
   static final long SEED = 12345;
   static Random r = new Random(SEED);
@@ -89,7 +89,7 @@ public class JCasHashMapTest extends TestCase {
             final int key = addrs[random.nextInt(SIZE / 16)];
             FeatureStructureImpl fs = m.getReserve(key);
             if (null == fs) {
-              m.put(new TOP(key, NULL_TOP_TYPE_INSTANCE));
+              m.put(new TOP(key, FAKE_TOP_TYPE_INSTANCE));
             }
           }
           try {
@@ -124,7 +124,7 @@ public class JCasHashMapTest extends TestCase {
     final Random r = new Random();
     final JCasHashMap m = new JCasHashMap(200, true); // true = do use cache 
     final int hashKey = 15;
-    final TOP fs = new TOP(hashKey, NULL_TOP_TYPE_INSTANCE);
+    final TOP fs = new TOP(hashKey, FAKE_TOP_TYPE_INSTANCE);
     
     final Thread[] threads = new Thread[numberOfThreads];
     final FeatureStructureImpl[] found = new FeatureStructureImpl[numberOfThreads];
@@ -202,7 +202,7 @@ public class JCasHashMapTest extends TestCase {
     long start = System.currentTimeMillis();
     for (int i = 0; i < n; i++) {
       final int key = addrs[i];
-      TOP fs = new TOP(key, NULL_TOP_TYPE_INSTANCE);
+      TOP fs = new TOP(key, FAKE_TOP_TYPE_INSTANCE);
 //      FeatureStructureImpl v = m.get(fs.getAddress());
 //      if (null == v) {
 //        m.get(7 * i);
@@ -220,7 +220,7 @@ public class JCasHashMapTest extends TestCase {
     
     for (int i = 0; i < n; i++) {
       final int key = addrs[i];
-      TOP fs = new TOP(key, NULL_TOP_TYPE_INSTANCE);
+      TOP fs = new TOP(key, FAKE_TOP_TYPE_INSTANCE);
 //      FeatureStructureImpl v = m.get(fs.getAddress());
 //      if (null == v) {
 //        m.get(7 * i);
@@ -309,7 +309,7 @@ public class JCasHashMapTest extends TestCase {
   private void fill (int n, JCasHashMap m) {
     for (int i = 0; i < n; i++) {
       final int key = addrs[i];
-      TOP fs = new TOP(key, NULL_TOP_TYPE_INSTANCE);
+      TOP fs = new TOP(key, FAKE_TOP_TYPE_INSTANCE);
       m.put(fs);
 //      System.out.format("JCasHashMapTest fill %s%n",  intList(m.getCapacities()));
     }

@@ -81,6 +81,7 @@ public class MultiThreadUtils extends TestCase {
             }
             threads[i].join();
             if (thrown[0] != null) {
+              thrown[0].printStackTrace();
               assertTrue(false);
             }
           } catch (InterruptedException e) {
