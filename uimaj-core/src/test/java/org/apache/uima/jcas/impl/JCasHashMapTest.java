@@ -87,7 +87,7 @@ public class JCasHashMapTest extends TestCase {
         for (int k = 0; k < 4; k++) {
           for (int i = 0; i < SIZE / 4; i++) {
             final int key = addrs[random.nextInt(SIZE / 16)];
-            FeatureStructureImpl fs = m.get(key);
+            FeatureStructureImpl fs = m.getReserve(key);
             if (null == fs) {
               m.put(new TOP(key, NULL_TOP_TYPE_INSTANCE));
             }
@@ -231,8 +231,8 @@ public class JCasHashMapTest extends TestCase {
     
     for (int i = 0; i < n; i++) {
       final int key = addrs[i];
-      TOP fs = (TOP) m.get(key);
-      if (fs == null) {
+      TOP fs = (TOP) m.getReserve(key);
+      if (fs == null) {  // for debugging
         System.out.println("stop");
       }
       assertTrue(null != fs);

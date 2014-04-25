@@ -59,7 +59,11 @@ import org.apache.uima.jcas.cas.TOP;
  *   The hash would use some # of low order bits to address the right inner one. 
  */
 public class JCasHashMap {
-  
+
+  // set to true to collect statistics for tuning
+  // you have to also put a call to jcas.showJfsFromCaddrHistogram() at the end of the run
+  private static final boolean TUNE = true;
+
   private static final int DEFAULT_CONCURRENCY_LEVEL;
   static {
     int cores = Runtime.getRuntime().availableProcessors();
@@ -67,9 +71,6 @@ public class JCasHashMap {
                                 (cores < 33) ? 16 + (cores - 16) / 2 : 
                                                24 + (cores - 24) / 4;
   }
-  // set to true to collect statistics for tuning
-  // you have to also put a call to jcas.showJfsFromCaddrHistogram() at the end of the run
-  private static final boolean TUNE = false;
     
   //These are for tuning measurements
   private int histogram [];
@@ -137,25 +138,25 @@ public class JCasHashMap {
       Arrays.fill(table, null);
     }      
     
-    private synchronized FeatureStructureImpl get(int key, int hash) {
-      int nbrProbes = 1;
-      int probeAddr = hash & bitsMask;
-      int probeDelta = 1;
-      FeatureStructureImpl maybe = table[probeAddr];
-      while ((null != maybe) && (maybe.getAddress() != key)) {
-        if (TUNE) {
-          nbrProbes++;
-        }
-        probeAddr = bitsMask & (probeAddr + (probeDelta++));
-        maybe = table[probeAddr];
-      }  
-
-      if (TUNE) {
-        histogram[Math.min(histogram.length - 1, nbrProbes)]++;
-        maxProbe = Math.max(maxProbe, nbrProbes);
-      }
-      return maybe;    
-    }
+//    private synchronized FeatureStructureImpl get(int key, int hash) {
+//      int nbrProbes = 1;
+//      int probeAddr = hash & bitsMask;
+//      int probeDelta = 1;
+//      FeatureStructureImpl maybe = table[probeAddr];
+//      while ((null != maybe) && (maybe.getAddress() != key)) {
+//        if (TUNE) {
+//          nbrProbes++;
+//        }
+//        probeAddr = bitsMask & (probeAddr + (probeDelta++));
+//        maybe = table[probeAddr];
+//      }  
+//
+//      if (TUNE) {
+//        histogram[Math.min(histogram.length - 1, nbrProbes)]++;
+//        maxProbe = Math.max(maxProbe, nbrProbes);
+//      }
+//      return maybe;    
+//    }
     
     /**
      * Gets a value, but if the value isn't there, it reserves the slot where it will go
@@ -233,7 +234,15 @@ public class JCasHashMap {
             return;
           }
         }
-            
+        
+        // skip if adding the same element to the table
+        // probably never happens, though
+        if (m.getAddress() == key) {
+          if (TUNE) {
+            System.err.format("JCasHashMap found already existing cover instance for key %,d, ignoring put%n", key);
+            throw new RuntimeException(); //to get stack trace
+          }
+        }
         if (TUNE) {
           nbrProbes++;
         }
@@ -366,16 +375,16 @@ public class JCasHashMap {
     aggregate_size.set(0);
   }
 
-  public FeatureStructureImpl get(int key) {
-    if (!this.useCache) {
-      return null;
-    }
-    int hash = hashInt(key);
-    int subMapIndex = hash & concurrencyBitmask;
-    
-    SubMap m = subMaps[subMapIndex];
-    return m.get(key, hash >>> concurrencyLevelBits);    
-  }
+//  public FeatureStructureImpl get(int key) {
+//    if (!this.useCache) {
+//      return null;
+//    }
+//    int hash = hashInt(key);
+//    int subMapIndex = hash & concurrencyBitmask;
+//    
+//    SubMap m = subMaps[subMapIndex];
+//    return m.get(key, hash >>> concurrencyLevelBits);    
+//  }
   
   public FeatureStructureImpl getReserve(int key) {
     if (!this.useCache) {
