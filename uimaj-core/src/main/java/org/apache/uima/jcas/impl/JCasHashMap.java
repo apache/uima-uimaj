@@ -62,7 +62,7 @@ public class JCasHashMap {
 
   // set to true to collect statistics for tuning
   // you have to also put a call to jcas.showJfsFromCaddrHistogram() at the end of the run
-  private static final boolean TUNE = true;
+  private static final boolean TUNE = false;
 
   private static final int DEFAULT_CONCURRENCY_LEVEL;
   static {
