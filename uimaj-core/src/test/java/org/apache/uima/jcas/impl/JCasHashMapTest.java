@@ -168,6 +168,9 @@ public class JCasHashMapTest extends TestCase {
     assertEquals(0, numberWaiting);
     System.out.format("JCasHashMapTest collide,  found = %s%n", intList(found));
     for (FeatureStructureImpl f : found) {
+      if (f != fs) {
+        System.err.format("JCasHashMapTest miscompare fs = %s,  f = %s%n", fs, (f == null) ? "null" : f);
+      }
       assertTrue(f == fs);
     }
   }
