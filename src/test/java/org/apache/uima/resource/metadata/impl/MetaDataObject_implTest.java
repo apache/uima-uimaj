@@ -39,7 +39,6 @@ import org.apache.uima.resource.metadata.MetaDataObject;
 import org.apache.uima.resource.metadata.NameValuePair;
 import org.apache.uima.resource.metadata.impl.MetaDataObject_impl.MetaDataAttr;
 import org.apache.uima.test.junit_extension.JUnitExtension;
-import org.apache.uima.util.NameClassPair;
 import org.apache.uima.util.XMLParser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
