@@ -163,9 +163,14 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
   
   // Cache for Java Bean info lookup
   // Class level cache (static) for introspection - 30x speedup in CDE for large descriptor
-  private static final transient ConcurrentHashMapWithProducer<Class<? extends MetaDataObject_impl>, MetaDataAttr[]> class2attrsMap =
-      new ConcurrentHashMapWithProducer<Class<? extends MetaDataObject_impl>, MetaDataAttr[]>();
-      
+  private static final transient ConcurrentHashMapWithProducer<Class<? extends MetaDataObject_impl>, MetaDataAttr[]> 
+      class2attrsMap =
+          new ConcurrentHashMapWithProducer<Class<? extends MetaDataObject_impl>, MetaDataAttr[]>();
+  // holds the additional unfiltered ones      
+  private static final transient ConcurrentHashMapWithProducer<Class<? extends MetaDataObject_impl>, MetaDataAttr[]> 
+      class2attrsMapUnfiltered =
+          new ConcurrentHashMapWithProducer<Class<? extends MetaDataObject_impl>, MetaDataAttr[]>();
+            
   private transient URL mSourceUrl;
   
   // This is only used if we are capturing comments and ignorable whitespace in the XML
@@ -194,6 +199,21 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
   }
   
   /**
+   * Like getAttributes, but doesn't filter the attributes.  
+   * Design is only for backwards compatibility.  Unfiltered version
+   * used only by getAttributeValue and setAttributeValue
+   * @return an unfiltered array of Attribute objects associated with this class
+   */
+  MetaDataAttr[] getUnfilteredAttributes() {
+    final Class<? extends MetaDataObject_impl> clazz = this.getClass();
+    MetaDataAttr[] attrs = class2attrsMapUnfiltered.get(clazz);
+    if (null == attrs) {
+      getAttributesFromBeans(clazz);
+    }
+    return class2attrsMapUnfiltered.get(clazz);
+  }
+  
+  /**
    * On first call, looks up the information using JavaBeans introspection, but then
    * caches the result for subsequent calls.
    * 
@@ -206,14 +226,29 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     final Class<? extends MetaDataObject_impl> clazz = this.getClass();
     MetaDataAttr[] attrs = class2attrsMap.get(clazz), otherAttrs = null;
     if (null == attrs) {
-      PropertyDescriptor[] pds;
-      try {
-        pds = Introspector.getBeanInfo(clazz, Introspector.IGNORE_ALL_BEANINFO).getPropertyDescriptors();
-      } catch (IntrospectionException e) {
-        throw new UIMARuntimeException(e);
-      }
-      ArrayList<MetaDataAttr> resultList = new ArrayList<MetaDataAttr>(pds.length);
-      for (PropertyDescriptor pd : pds) {
+      getAttributesFromBeans(clazz);
+    }
+    return class2attrsMap.get(clazz);
+  }
+
+  private void getAttributesFromBeans(final Class<? extends MetaDataObject_impl> clazz) {
+    PropertyDescriptor[] pds;
+    try {
+      pds = Introspector.getBeanInfo(clazz, Introspector.IGNORE_ALL_BEANINFO).getPropertyDescriptors();
+    } catch (IntrospectionException e) {
+      throw new UIMARuntimeException(e);
+    }
+    ArrayList<MetaDataAttr> resultList = new ArrayList<MetaDataAttr>(pds.length);
+    ArrayList<MetaDataAttr> resultListUnfiltered = new ArrayList<MetaDataAttr>(pds.length);
+    for (PropertyDescriptor pd : pds) {
+        String propName = pd.getName();
+        Class<?> propClass = pd.getPropertyType();
+        // translate primitive types (int, boolean, etc.) to wrapper classes
+        if (propClass.isPrimitive()) {
+          propClass = getWrapperClass(propClass);
+        }
+        MetaDataAttr mda = new MetaDataAttr(propName, pd.getReadMethod(), pd.getWriteMethod(), propClass);
+        resultListUnfiltered.add(mda);
         // only include properties with read and write methods,
         // and don't include the SourceUrl property, which is for
         // internal bookkeeping and shouldn't affect object equality
@@ -221,22 +256,18 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
         // related to comments and whitespace
         if (pd.getReadMethod() != null && pd.getWriteMethod() != null
                 && !pd.getName().equals(PROP_NAME_SOURCE_URL)
-                && !pd.getName().equals(PROP_NAME_INFOSET)) {
-          String propName = pd.getName();
-          Class<?> propClass = pd.getPropertyType();
-          // translate primitive types (int, boolean, etc.) to wrapper classes
-          if (propClass.isPrimitive()) {
-            propClass = getWrapperClass(propClass);
-          }
-          resultList.add(new MetaDataAttr(propName, pd.getReadMethod(), pd.getWriteMethod(), propClass));
+                && !pd.getName().equals(PROP_NAME_INFOSET)) { 
+          resultList.add(mda);
         }
       }
-      resultList.addAll(getAdditionalAttributes());
-      attrs = resultList.toArray(new MetaDataAttr[resultList.size()]);
-      otherAttrs = class2attrsMap.putIfAbsent(clazz, attrs);
-      attrs = (otherAttrs != null) ? otherAttrs : attrs;
-    }
-    return attrs;
+    resultList.addAll(getAdditionalAttributes());
+    resultListUnfiltered.addAll(getAdditionalAttributes());
+    MetaDataAttr[] attrs = resultList.toArray(new MetaDataAttr[resultList.size()]);
+    MetaDataAttr[] otherAttrs = class2attrsMap.putIfAbsent(clazz, attrs);
+    
+    attrs = resultListUnfiltered.toArray(new MetaDataAttr[resultListUnfiltered.size()]);
+    otherAttrs = class2attrsMapUnfiltered.putIfAbsent(clazz, attrs);
+    attrs = (otherAttrs != null) ? otherAttrs : attrs;
   }
   
   /**
@@ -297,7 +328,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    */
   public Object getAttributeValue(String aName) {
     try {
-      MetaDataAttr[] attrs = getAttributes();
+      MetaDataAttr[] attrs = getUnfilteredAttributes();
       for (MetaDataAttr attr : attrs) {
         if (attr.name.equals(aName)) {
           Method reader = attr.reader;
@@ -361,7 +392,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    */
   public void setAttributeValue(String aName, Object aValue) {
     try {
-      MetaDataAttr[] attrs = getAttributes();
+      MetaDataAttr[] attrs = getUnfilteredAttributes();
       for (MetaDataAttr attr : attrs) {
         if (attr.name.equals(aName)) {
           Method writer = attr.writer;
