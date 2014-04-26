@@ -126,7 +126,10 @@ public class TOP_Type {
 		casImpl = null;
 		lowLevelTypeChecks = false;
 		lowLevelArrayBoundChecks = false;
-		throw new RuntimeException("Internal Error-this constructor should never be called.");
+		useExistingInstance = true;
+		ll_cas = null;
+		// used for test mocking
+//		throw new RuntimeException("Internal Error-this constructor should never be called.");
 	}
 
 	/*

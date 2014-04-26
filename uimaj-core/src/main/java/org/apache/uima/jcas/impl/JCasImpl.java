@@ -1041,7 +1041,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * @see org.apache.uima.jcas.JCas#getJfsFromCaddr(int)
    */
   public TOP getJfsFromCaddr(int casAddr) {
-    return (TOP) sharedView.cAddr2Jfs.get(casAddr);
+    return (TOP) sharedView.cAddr2Jfs.getReserve(casAddr);
   }
 
   public void showJfsFromCaddrHistogram() {
