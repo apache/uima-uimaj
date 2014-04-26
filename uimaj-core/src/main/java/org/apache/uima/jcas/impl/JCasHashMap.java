@@ -204,13 +204,16 @@ public class JCasHashMap {
             while (((TOP) maybe).jcasType == null) {
               // we hit a reserve marker - there is another thread in the process of creating an instance of this,
               // so wait for it to finish and then return it
+              final int sizeNow = size;
               try {
                 wait();  // releases the synchronized monitor, otherwise this segment blocked for others while waiting
               } catch (InterruptedException e) {
               }
-              // at this point, the table may have grown
-              // so start over
-              continue retryAfterWait;
+              if (size != sizeNow) {
+                // at this point, the table may have grown
+                // so start over
+                continue retryAfterWait;
+              }
             }
             if (TUNE) {
               histogram[Math.min(histogram.length - 1, nbrProbes)]++;
