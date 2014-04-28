@@ -56,6 +56,7 @@ import org.apache.uima.fit.descriptor.SofaCapability;
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.fit.factory.ConfigurationParameterFactory.ConfigurationData;
 import org.apache.uima.fit.internal.ReflectionUtil;
+import org.apache.uima.fit.internal.ResourceManagerFactory;
 import org.apache.uima.flow.FlowControllerDescription;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -105,7 +106,7 @@ public final class AnalysisEngineFactory {
   public static AnalysisEngine createEngine(String descriptorName, Object... configurationData)
           throws InvalidXMLException, IOException, ResourceInitializationException {
     AnalysisEngineDescription aed = createEngineDescription(descriptorName, configurationData);
-    return UIMAFramework.produceAnalysisEngine(aed);
+    return UIMAFramework.produceAnalysisEngine(aed, ResourceManagerFactory.newResourceManager(), null);
   }
 
   /**
@@ -201,11 +202,13 @@ public final class AnalysisEngineFactory {
   public static AnalysisEngine createEngine(AnalysisEngineDescription desc,
           Object... configurationData) throws ResourceInitializationException {
     if (configurationData == null || configurationData.length == 0) {
-      return UIMAFramework.produceAnalysisEngine(desc, null, null);
+      return UIMAFramework.produceAnalysisEngine(desc, ResourceManagerFactory.newResourceManager(),
+              null);
     } else {
       AnalysisEngineDescription descClone = (AnalysisEngineDescription) desc.clone();
       ResourceCreationSpecifierFactory.setConfigurationParameters(descClone, configurationData);
-      return UIMAFramework.produceAnalysisEngine(descClone);
+      return UIMAFramework.produceAnalysisEngine(descClone,
+              ResourceManagerFactory.newResourceManager(), null);
     }
   }
 
@@ -767,7 +770,8 @@ public final class AnalysisEngineFactory {
           ResourceInitializationException {
     AnalysisEngineDescription desc = createEngineDescriptionFromPath(descriptorPath,
             configurationData);
-    return UIMAFramework.produceAnalysisEngine(desc);
+    return UIMAFramework.produceAnalysisEngine(desc, ResourceManagerFactory.newResourceManager(),
+            null);
   }
 
   /**

@@ -39,6 +39,7 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.ConfigurationParameterFactory.ConfigurationData;
+import org.apache.uima.fit.internal.ResourceManagerFactory;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceCreationSpecifier;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -77,7 +78,8 @@ public final class CollectionReaderFactory {
           Object... configurationData) throws UIMAException, IOException {
     CollectionReaderDescription desc = createReaderDescriptionFromPath(descriptorPath,
             configurationData);
-    return UIMAFramework.produceCollectionReader(desc);
+    return UIMAFramework.produceCollectionReader(desc, ResourceManagerFactory.newResourceManager(),
+            null);
   }
 
   /**
@@ -164,7 +166,8 @@ public final class CollectionReaderFactory {
     imp.setName(descriptorName);
     URL url = imp.findAbsoluteUrl(UIMAFramework.newDefaultResourceManager());
     ResourceSpecifier specifier = createResourceCreationSpecifier(url, configurationData);
-    return UIMAFramework.produceCollectionReader(specifier);
+    return UIMAFramework.produceCollectionReader(specifier,
+            ResourceManagerFactory.newResourceManager(), null);
   }
 
   /**
@@ -405,7 +408,8 @@ public final class CollectionReaderFactory {
           Object... configurationData) throws ResourceInitializationException {
     CollectionReaderDescription descClone = (CollectionReaderDescription) desc.clone();
     ResourceCreationSpecifierFactory.setConfigurationParameters(descClone, configurationData);
-    return UIMAFramework.produceCollectionReader(descClone);
+    return UIMAFramework.produceCollectionReader(descClone,
+            ResourceManagerFactory.newResourceManager(), null);
   }
 
   /**
