@@ -1060,24 +1060,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
     for (Iterator<Map.Entry<ClassLoader, JCasHashMap>> it = sv.cAddr2JfsByClassLoader.entrySet().iterator(); it.hasNext();) {
       Map.Entry<ClassLoader, JCasHashMap> e = it.next();
       sv.cAddr2Jfs = e.getValue();
-      int hashSize = Math.max(sv.cAddr2Jfs.size(), 32); // not worth dropping
-      // below 32
-      // System.out.println("\n***JCas Resizing Hashtable: size is: " +
-      // hashSize + ", curmax = " +
-      // jcas.prevCaddr2JfsSize);
-      if (hashSize <= (sv.prevCaddr2JfsSize >> 1)) {
-        // System.out.println("JCas Shrinking Hashtable from " +
-        // jcas.prevCaddr2JfsSize);
-        sv.prevCaddr2JfsSize = hashSize;
-        sv.cAddr2Jfs = new JCasHashMap(hashSize, jcas.isUsedCache);
-        sv.cAddr2JfsByClassLoader.put(e.getKey(), sv.cAddr2Jfs);
-      } else {
-        sv.prevCaddr2JfsSize = Math.max(hashSize, sv.prevCaddr2JfsSize);
-        // System.out.println("JCas clearing - keeping same size, new max prev
-        // size = " +
-        // jcas.prevCaddr2JfsSize);
-        sv.cAddr2Jfs.clear();
-      }
+      sv.cAddr2Jfs.clear();  // implements resize as well
       sv.stringArray0L = null;
       sv.floatArray0L = null;
       sv.fsArray0L = null;
