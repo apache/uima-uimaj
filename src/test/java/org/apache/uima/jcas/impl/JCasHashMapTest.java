@@ -30,10 +30,6 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.cas.TOP_Type;
 
-/**
- * 
- *
- */
 public class JCasHashMapTest extends TestCase {
   static private class FakeTopType extends TOP_Type {
     public FakeTopType() {
@@ -48,10 +44,12 @@ public class JCasHashMapTest extends TestCase {
   static private int[] addrs = new int[SIZE];
   static int prev = 0;
   
-  static {   
+  static {  
+    // unique numbers
     for (int i = 0; i < SIZE; i++) { 
       addrs[i] = prev = prev + r.nextInt(14) + 1;
     }
+    // shuffled
     for (int i = SIZE - 1; i >= 1; i--) {
       int ir = r.nextInt(i+1);
       int temp = addrs[i];
@@ -60,6 +58,22 @@ public class JCasHashMapTest extends TestCase {
     }
   }
 
+  
+  public void testBasic() {
+    int p = MultiThreadUtils.PROCESSORS;
+    if (p < 1 || Integer.bitCount(p) != 1) {
+      System.out.println("JCasHashMap  skipping basic, nbr of processors is " + p);
+      return;
+    }
+    JCasHashMap m = new JCasHashMap(32 * MultiThreadUtils.PROCESSORS, true);
+    assertTrue( m.getConcurrencyLevel() == MultiThreadUtils.PROCESSORS );
+    m = new JCasHashMap(31 * MultiThreadUtils.PROCESSORS,  true);
+    assertTrue( m.getConcurrencyLevel() == MultiThreadUtils.PROCESSORS ); // default is 7, but rounded up to 8
+    m = new JCasHashMap(16 * MultiThreadUtils.PROCESSORS,  true);
+    assertTrue( m.getConcurrencyLevel() == (MultiThreadUtils.PROCESSORS / 2) ); 
+    
+  }
+  
   public void testWithPerf()  {
     
     for (int i = 0; i <  5; i++ ) {
@@ -200,7 +214,7 @@ public class JCasHashMapTest extends TestCase {
    
   private void arun(int n) {
     JCasHashMap m = new JCasHashMap(200, true); // true = do use cache 
-    assertTrue(m.size() == 0);
+    assertTrue(m.getApproximateSize() == 0);
        
     long start = System.currentTimeMillis();
     for (int i = 0; i < n; i++) {
@@ -212,6 +226,9 @@ public class JCasHashMapTest extends TestCase {
         m.put(fs);
 //      }
     }
+    
+    assertEquals(m.getApproximateSize(), n);
+    
     System.out.format("time for v1 %,d is %,d ms%n",
         n, System.currentTimeMillis() - start);
     m.showHistogram();
@@ -250,7 +267,7 @@ public class JCasHashMapTest extends TestCase {
     int sub_capacity = 64;
     int agg_capacity = cores * sub_capacity;
     JCasHashMap m = new JCasHashMap(agg_capacity, true); // true = do use cache 
-    assertTrue(m.size() == 0);
+    assertTrue(m.getApproximateSize() == 0);
      
     int switchpoint = (int)Math.floor(agg_capacity * loadfactor);
     fill(switchpoint, m);
