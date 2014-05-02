@@ -130,7 +130,11 @@ public class JCasHashMapCompareTest extends TestCase {
       }
     };  
     long start = System.currentTimeMillis();
-    MultiThreadUtils.tstMultiThread("JCasHashMapTestCompConcur",  numberOfThreads, 10, run2isb);
+    MultiThreadUtils.tstMultiThread("JCasHashMapTestCompConcur",  numberOfThreads, 10, run2isb,
+        new Runnable() {
+          public void run() {
+            m.clear();
+        }});
     System.out.format("JCasCompTest - concur, time = %,f seconds%n", (System.currentTimeMillis() - start) / 1000.f);
     return m.size();
   }
@@ -161,7 +165,11 @@ public class JCasHashMapCompareTest extends TestCase {
       }
     };  
     long start = System.currentTimeMillis();
-    MultiThreadUtils.tstMultiThread("JCasHashMapTestComp0",  numberOfThreads,  10, run2isb);
+    MultiThreadUtils.tstMultiThread("JCasHashMapTestComp0",  numberOfThreads,  10, run2isb,
+        new Runnable() {
+          public void run() {
+            m.clear();
+        }});
     System.out.format("JCasCompTest - custom, time = %,f seconds%n", (System.currentTimeMillis() - start) / 1000.f);
     m.showHistogram();
     return m.getApproximateSize();
