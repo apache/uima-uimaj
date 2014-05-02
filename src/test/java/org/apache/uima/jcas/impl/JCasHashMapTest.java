@@ -20,13 +20,13 @@
 package org.apache.uima.jcas.impl;
 
 import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import junit.framework.TestCase;
 
-import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.FeatureStructureImpl;
 import org.apache.uima.internal.util.MultiThreadUtils;
-import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.cas.TOP_Type;
 
@@ -57,21 +57,22 @@ public class JCasHashMapTest extends TestCase {
       addrs[ir] = temp;
     }
   }
-
   
   public void testBasic() {
-    int p = MultiThreadUtils.PROCESSORS;
+    int p = MultiThreadUtils.PROCESSORS;  
     if (p < 1 || Integer.bitCount(p) != 1) {
       System.out.println("JCasHashMap  skipping basic, nbr of processors is " + p);
       return;
     }
-    JCasHashMap m = new JCasHashMap(32 * MultiThreadUtils.PROCESSORS, true);
-    assertTrue( m.getConcurrencyLevel() == MultiThreadUtils.PROCESSORS );
-    m = new JCasHashMap(31 * MultiThreadUtils.PROCESSORS,  true);
-    assertTrue( m.getConcurrencyLevel() == MultiThreadUtils.PROCESSORS ); // default is 7, but rounded up to 8
-    m = new JCasHashMap(16 * MultiThreadUtils.PROCESSORS,  true);
-    assertTrue( m.getConcurrencyLevel() == (MultiThreadUtils.PROCESSORS / 2) ); 
-    
+    if (Integer.bitCount(p) > 1) {  // if only 1 bit in #, is already a power of 2 
+      p = Integer.highestOneBit(p) << 1;  // round up to next higher power of 2
+    }
+    JCasHashMap m = new JCasHashMap(32 * p, true);
+    assertEquals(p,  m.getConcurrencyLevel());
+    m = new JCasHashMap(31 * p,  true);
+    assertEquals(p, m.getConcurrencyLevel()); // default concurrency level drops to 7, but is then rounded up to 8
+    m = new JCasHashMap(16 * p,  true);
+    assertEquals(((p > 1) ? (p / 2) : p), m.getConcurrencyLevel());    
   }
   
   public void testWithPerf()  {
@@ -91,7 +92,7 @@ public class JCasHashMapTest extends TestCase {
   public void testMultiThread() throws Exception {
     final Random random = new Random();
     int numberOfThreads = MultiThreadUtils.PROCESSORS;    
-    System.out.format("test JCasHashMap with %d threads", numberOfThreads);
+    System.out.format("test JCasHashMap with %d threads%n", numberOfThreads);
     
     final JCasHashMap m = new JCasHashMap(200, true); // true = do use cache 
 
@@ -116,9 +117,62 @@ public class JCasHashMapTest extends TestCase {
 //        System.out.println(sb.toString());
       }
     };  
-    MultiThreadUtils.tstMultiThread("JCasHashMapTest",  numberOfThreads,  10, run2isb);
+    MultiThreadUtils.tstMultiThread("JCasHashMapTest",  numberOfThreads,  10, run2isb,
+        new Runnable() {
+          public void run() {
+            m.clear();
+          }});
   }
 
+  public void testMultiThreadCompare() throws Exception {
+    final Random random = new Random();
+    int numberOfThreads = MultiThreadUtils.PROCESSORS;    
+    System.out.format("test JCasHashMap with compare with %d threads%n", numberOfThreads);
+
+    final ConcurrentMap<Integer, FeatureStructureImpl> check = 
+        new ConcurrentHashMap<Integer, FeatureStructureImpl>(SIZE, .5F, numberOfThreads * 2);
+    final JCasHashMap m = new JCasHashMap(200, true); // true = do use cache 
+
+    MultiThreadUtils.Run2isb run2isb = new MultiThreadUtils.Run2isb() {
+      
+      public void call(int threadNumber, int repeatNumber, StringBuilder sb) {
+        for (int k = 0; k < 4; k++) {
+          for (int i = 0; i < SIZE / 4; i++) {
+            final int key = addrs[random.nextInt(SIZE / 16)];
+            FeatureStructureImpl fs = m.getReserve(key);
+            if (null == fs) {
+              fs = new TOP(key, FAKE_TOP_TYPE_INSTANCE);
+              check.put(key, fs);  // have to do before next, otherwise could be interrupted... 
+              m.put(fs);
+            } else {
+              FeatureStructureImpl fscheck = check.get(key);
+              if (fscheck == null || fscheck != fs) {
+                String msg = String.format("JCasHashMapTest miscompare, repeat=%,d, count=%,d key=%,d"
+                    + ", checkKey=%s JCasHashMapKey=%,d",
+                    k, i, key, (null == fscheck) ? "null" : Integer.toString(fscheck.getAddress()), fs.getAddress());
+                System.err.println(msg);
+                throw new RuntimeException(msg);
+              }
+            }
+          }
+          try {
+            Thread.sleep(0, random.nextInt(1000));
+          } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          }
+        }
+//        System.out.println(sb.toString());
+      }
+    };  
+    MultiThreadUtils.tstMultiThread("JCasHashMapTest",  numberOfThreads,  10, run2isb, 
+        new Runnable() {
+          public void run() {
+            check.clear();
+            m.clear();
+          }
+    });
+  }
   /**
    * Create situation
    *   make a set of indexed fs instances, no JCas
@@ -188,7 +242,7 @@ public class JCasHashMapTest extends TestCase {
       assertTrue(f == fs);
     }
   }
-
+  
 
   
 //  private void arun2(int n) {
