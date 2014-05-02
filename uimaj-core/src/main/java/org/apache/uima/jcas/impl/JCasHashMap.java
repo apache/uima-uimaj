@@ -336,6 +336,12 @@ public class JCasHashMap {
           if (localTable != table) { // redo search from top, because table resized
             resetProbeInfo(probeInfo);
           }
+          // re acquire the FeatureStructure m, because another thread could change it before the lock got acquired
+          m = localTable[probeInfo[PROBE_ADDR_INDEX]];
+          if (isReal(m)) {
+            return m;  // another thread snuck in before the lock and switched this
+          }
+          
           // note: localTable not used from this point, unless reset
           
           if (isReal(m = find(key, hash, probeInfo))) {
