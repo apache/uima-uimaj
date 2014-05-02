@@ -267,8 +267,6 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
      * respect to. A simple deref uses the same cas ref the original object had.
      * 
      */
-    private int prevCaddr2JfsSize = INITIAL_HASHMAP_SIZE;
-
     private JCasHashMap cAddr2Jfs;
 
     private final Map<ClassLoader, JCasHashMap> cAddr2JfsByClassLoader = new HashMap<ClassLoader, JCasHashMap>();
@@ -290,11 +288,15 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
     public ClassLoader currentClassLoader = null;
 
     private JCasSharedView(CASImpl aCAS, boolean useJcasCache) {
-      this.cAddr2Jfs = new JCasHashMap(INITIAL_HASHMAP_SIZE, useJcasCache);
-      cAddr2JfsByClassLoader.put(aCAS.getJCasClassLoader(), cAddr2Jfs);
-      currentClassLoader = aCAS.getJCasClassLoader();
+      setupJCasHashMap(aCAS.getJCasClassLoader(), useJcasCache, aCAS.getHeap().getInitialSize() / 16);
     }
     
+    private void setupJCasHashMap(ClassLoader cl, boolean isUsedCache, int initialSize) {
+      int size = Math.max(INITIAL_HASHMAP_SIZE, initialSize); 
+      cAddr2Jfs = new JCasHashMap(size, isUsedCache);
+      cAddr2JfsByClassLoader.put(cl, cAddr2Jfs);
+      currentClassLoader = cl;    
+    }
   }
 
   // *******************
@@ -519,12 +521,14 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
     final JCasSharedView sv = this.sharedView;
     sv.cAddr2Jfs = (JCasHashMap) sv.cAddr2JfsByClassLoader.get(cl);
     if (null == sv.cAddr2Jfs) {
-      sv.cAddr2Jfs = new JCasHashMap(INITIAL_HASHMAP_SIZE, this.isUsedCache);
-      sv.cAddr2JfsByClassLoader.put(cl, sv.cAddr2Jfs);
+      // initial size low because this is the use case where a Pear isolation is happening, 
+      //   it is more likely that the PEAR is only doing a subset of the JCas things
+      sv.setupJCasHashMap(cl, isUsedCache, casImpl.getHeap().getInitialSize() / 1024);
+    } else {
+      sv.currentClassLoader = cl;
     }
-    sv.currentClassLoader = cl;
   }
-
+  
   /**
    * There may be several type systems with different defined types loaded and operating at the same
    * time (in different CASes) There is an instance of the loaded JCas Classes for each Type System

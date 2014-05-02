@@ -117,9 +117,9 @@ public class JCasHashMap {
   
   static {
     int cores = Runtime.getRuntime().availableProcessors();
-    DEFAULT_CONCURRENCY_LEVEL = (cores < 17) ? cores :
-                                (cores < 33) ? 16 + (cores - 16) / 2 : 
-                                               24 + (cores - 24) / 4;
+    DEFAULT_CONCURRENCY_LEVEL = (cores < 17) ? cores / 2 :
+                                (cores < 33) ? 8 + (cores - 16) / 4 : 
+                                               12 + (cores - 24) / 8;
   }
     
   private static class ReserveTopType extends TOP_Type {
@@ -239,6 +239,12 @@ public class JCasHashMap {
      
     /**
      * Can be called under lock or not.
+     * It gets a ref to the current value of table, and then searches that int array.
+     *   If, during the search, the table is resized, it continues using the
+     *   ** before the resize ** int array referenced by localTable 
+     *     The answer will only be OK if the key is found for a real value.  
+     *     Results that yield null or Reserved slots must be re-searched, 
+     *     under a lock (caller needs to do this).
      * @param key -
      * @param hash -
      * @param probeInfo - used to get/receive multiple int values;
@@ -261,6 +267,8 @@ public class JCasHashMap {
         if (m.getAddress() == key) {
           setProbeInfo(probeInfo, probeAddr, probeDelta);
           if (TUNE) {
+            
+            /* LOCK if not already, to update stats */
             final boolean needUnlock;
             if (!lock.isHeldByCurrentThread()) {
               lock.lock();
@@ -268,6 +276,7 @@ public class JCasHashMap {
             } else {
               needUnlock = false;
             }
+            
             try {
               histogram[nbrProbes] += 1;
               if (maxProbe < nbrProbes) {
@@ -313,12 +322,13 @@ public class JCasHashMap {
     private FeatureStructureImpl getReserve(final int key, final int hash) {
 
       boolean isLocked = false;
-      int[] probeInfo = resetProbeInfo(new int[2]);
+      int[] probeInfo = new int[2];
       try {
  
      retry:
         while (true) { // loop back point after locking against updates, to re-traverse the bucket chain from the beginning
-          FeatureStructureImpl m;
+          probeInfo = resetProbeInfo(probeInfo);
+          final FeatureStructureImpl m;
           final FeatureStructureImpl[] localTable = table;
           
           if (isReal(m = find(key, hash, probeInfo))) {
@@ -328,46 +338,56 @@ public class JCasHashMap {
           // is reserve or null. Redo or continue search under lock
           // need to do this for reserve-case because otherwise, could 
           //   wait, but notify could come before wait - hence, wait forever
-          lock.lock();
-          isLocked = true;
+          if (!isLocked) {
+            lock.lock();
+            isLocked = true;
+          }
           /*****************
            *    LOCKED     *
            *****************/
-          if (localTable != table) { // redo search from top, because table resized
+          if (localTable != table) {
+            // redo search from top, because table resized
             resetProbeInfo(probeInfo);
           }
-          // re acquire the FeatureStructure m, because another thread could change it before the lock got acquired
-          m = localTable[probeInfo[PROBE_ADDR_INDEX]];
-          if (isReal(m)) {
-            return m;  // another thread snuck in before the lock and switched this
-          }
+//          // re acquire the FeatureStructure m, because another thread could change it before the lock got acquired
+//          final FeatureStructureImpl m2 = localTable[probeInfo[PROBE_ADDR_INDEX]];
+//          if (isReal(m2)) {
+//            return m2;  // another thread snuck in before the lock and switched this
+//          }
           
           // note: localTable not used from this point, unless reset
-          
-          if (isReal(m = find(key, hash, probeInfo))) {
-            return m;  // fast path for found item       
+          // note: this "find" either finds from the top (if size changed) or finds from current spot.
+          final FeatureStructureImpl m2 = find(key, hash, probeInfo);
+          if (isReal(m2)) {
+            return m2;  // fast path for found item       
           }
           
-          while (isReserve(m)) {
+          while (isReserve(m2)) {
             final FeatureStructureImpl[] localTable2 = table;  // to see if table gets resized
             // can't wait on reserved item because would need to do lock.unlock() followed by wait, but
             //   inbetween these, another thread could already do the notify.
             try {
+              /**********
+               *  WAIT  *
+               **********/
               lockCondition.await();  // wait on object that needs to be unlocked
             } catch (InterruptedException e) {
             }
 
+            // at this point, the lock was released, and re-aquired
             if (localTable2 != table) { // table was resized
-              resetProbeInfo(probeInfo);       
-              continue retry;
+               continue retry;
             }
-            m = localTable2[probeInfo[PROBE_ADDR_INDEX]];
-            if (isReserve(m)) {
+            final FeatureStructureImpl m3 = localTable2[probeInfo[PROBE_ADDR_INDEX]];
+            if (isReserve(m3)) {
               continue;  // case = interruptedexception && no resize && not changed to real, retry
             }
-            return m; // return real item
+            return m3; // return real item
           }
-      
+          
+          /*************
+           *  RESERVE  *
+           *************/
           // is null. Reserve this slot to prevent other "getReserved" calls for this same instance from succeeding,
           // causing them to wait until this slot gets filled in with a FS value
           // Use table, not localTable, because resize may have occurred
@@ -388,16 +408,16 @@ public class JCasHashMap {
       lock.lock();
       try {
         final int[] probeInfo = resetProbeInfo(new int[2]);
-        FeatureStructureImpl m = find(key, hash, probeInfo);
+        FeatureStructureImpl prevValue = find(key, hash, probeInfo);
         table[probeInfo[PROBE_ADDR_INDEX]] = value;
-        if (isReserve(m)) {
+        if (isReserve(prevValue)) {
           lockCondition.signalAll();
           // dont update size - was updated when reserve was added
           return null;
-        } else if (m == null) {
-            incrementSize();  // otherwise, replacing an existing item, don't update size
-        }
-        return m;
+        } else if (prevValue == null) {
+            incrementSize();  // otherwise, adding a new value
+        } // else updating an existing value - don't increment the size
+        return prevValue;
       } finally {
         lock.unlock();
       }

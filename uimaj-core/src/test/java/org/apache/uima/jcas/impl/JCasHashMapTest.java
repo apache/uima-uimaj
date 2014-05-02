@@ -67,12 +67,12 @@ public class JCasHashMapTest extends TestCase {
     if (Integer.bitCount(p) > 1) {  // if only 1 bit in #, is already a power of 2 
       p = Integer.highestOneBit(p) << 1;  // round up to next higher power of 2
     }
-    JCasHashMap m = new JCasHashMap(32 * p, true);
-    assertEquals(p,  m.getConcurrencyLevel());
-    m = new JCasHashMap(31 * p,  true);
-    assertEquals(p, m.getConcurrencyLevel()); // default concurrency level drops to 7, but is then rounded up to 8
-    m = new JCasHashMap(16 * p,  true);
-    assertEquals(((p > 1) ? (p / 2) : p), m.getConcurrencyLevel());    
+    JCasHashMap m = new JCasHashMap(16 * p, true);
+    assertEquals(p / 2,  m.getConcurrencyLevel());
+    m = new JCasHashMap(15 * p,  true);
+    assertEquals(p / 2, m.getConcurrencyLevel()); // default concurrency level drops to 7, but is then rounded up to 8
+    m = new JCasHashMap(8 * p,  true);
+    assertEquals(((p > 3) ? (p / 4) : 1), m.getConcurrencyLevel());    
   }
   
   public void testWithPerf()  {
@@ -142,7 +142,7 @@ public class JCasHashMapTest extends TestCase {
             FeatureStructureImpl fs = m.getReserve(key);
             if (null == fs) {
               fs = new TOP(key, FAKE_TOP_TYPE_INSTANCE);
-              check.put(key, fs);  // have to do before next, otherwise could be interrupted... 
+              check.put(key, fs);  
               m.put(fs);
             } else {
               FeatureStructureImpl fscheck = check.get(key);
@@ -319,7 +319,10 @@ public class JCasHashMapTest extends TestCase {
     int cores = Runtime.getRuntime().availableProcessors();
     double loadfactor = .6;
     int sub_capacity = 64;
-    int agg_capacity = cores * sub_capacity;
+    int subs = (cores < 17) ? cores / 2 :
+               (cores < 33) ? 8 + (cores - 16) / 4 : 
+                             12 + (cores - 24) / 8;
+    int agg_capacity = subs * sub_capacity;
     JCasHashMap m = new JCasHashMap(agg_capacity, true); // true = do use cache 
     assertTrue(m.getApproximateSize() == 0);
      
