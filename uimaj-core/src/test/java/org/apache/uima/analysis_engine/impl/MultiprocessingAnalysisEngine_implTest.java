@@ -204,7 +204,7 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
       params.put(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS, Integer.valueOf(3));
       ae.initialize(mAggDesc, params);
       
-      final int NUM_THREADS = Runtime.getRuntime().availableProcessors() * 5;
+      final int NUM_THREADS = Math.min(50, Runtime.getRuntime().availableProcessors() * 5);
       ProcessThread[] threads = new ProcessThread[NUM_THREADS];
       Random random = new Random();
       for (int repetitions = 0; repetitions < 4; repetitions++) {
@@ -271,7 +271,7 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
     }
   }
   
-  final int NUM_THREADS = Runtime.getRuntime().availableProcessors() * 5;
+  final int NUM_THREADS = Math.min(50, Runtime.getRuntime().availableProcessors() * 5);
   final int NUM_INSTANCES = (int)(NUM_THREADS * .7);
   
   public void processMany(ResourceSpecifier specifier) throws Exception {
