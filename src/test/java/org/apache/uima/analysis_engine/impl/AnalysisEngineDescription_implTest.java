@@ -332,7 +332,7 @@ public class AnalysisEngineDescription_implTest extends TestCase {
         }
       }
     };  
-    MultiThreadUtils.tstMultiThread("MultiCoreInitialize",  numberOfThreads,  100, run2isb);
+    MultiThreadUtils.tstMultiThread("MultiCoreInitialize",  numberOfThreads,  100, run2isb, MultiThreadUtils.emptyReset);
     assertTrue(!aes[0].equals(aes[1]));
     
     run2isb = new MultiThreadUtils.Run2isb() {
@@ -350,7 +350,7 @@ public class AnalysisEngineDescription_implTest extends TestCase {
         }
       }
     };
-    MultiThreadUtils.tstMultiThread("MultiCoreInitialize",  numberOfThreads,  100, run2isb);
+    MultiThreadUtils.tstMultiThread("MultiCoreInitialize",  numberOfThreads,  100, run2isb, MultiThreadUtils.emptyReset);
     assertTrue(!aes[0].equals(aes[1]));
 
     

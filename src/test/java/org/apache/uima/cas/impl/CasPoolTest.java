@@ -77,10 +77,10 @@ public class CasPoolTest extends TestCase {
   }
   
   public void testMultiThread() throws Exception {
-    Properties p = new Properties();
+    final Properties p = new Properties();
     p.put(UIMAFramework.CAS_INITIAL_HEAP_SIZE,  200);   
     int numberOfThreads = MultiThreadUtils.PROCESSORS * 10;    
-    int casPoolSize = numberOfThreads / 3 ;
+    final int casPoolSize = numberOfThreads / 3 ;
     System.out.format("test multicore iterator with %d threads and %d CASes",
         numberOfThreads, casPoolSize);
     casManager.defineCasPool("id",  casPoolSize, p);
@@ -95,7 +95,21 @@ public class CasPoolTest extends TestCase {
 //        System.out.println(sb.toString());
       }
     };  
-    MultiThreadUtils.tstMultiThread("CasPoolTest",  numberOfThreads,  10, run2isb);
+    MultiThreadUtils.tstMultiThread("CasPoolTest",  numberOfThreads,  10, run2isb,
+        new Runnable() {
+          public void run() {
+            try {
+              analysisEngine = UIMAFramework.produceAnalysisEngine(aed);
+            } catch (ResourceInitializationException e) {
+              throw new RuntimeException(e);
+            }
+            casManager = ((UimaContext_ImplBase)analysisEngine.getUimaContext()).getResourceManager().getCasManager();
+            try {
+              casManager.defineCasPool("id",  casPoolSize, p);
+            } catch (ResourceInitializationException e) {
+              throw new RuntimeException(e);
+            }
+        }});
   }
   
   private void getAndRelease(StringBuilder sb, Random r) {
