@@ -236,7 +236,7 @@ public class IteratorTest extends TestCase {
     final FSIndex<FeatureStructure> sortedIndex = this.cas.getIndexRepository().getIndex(
         CASTestSetup.ANNOT_SORT_INDEX);
   
-    int numberOfCores = Runtime.getRuntime().availableProcessors() * 5;
+    int numberOfCores = Math.min(50, Runtime.getRuntime().availableProcessors() * 5);
     
     System.out.println("test multicore iterator with " + numberOfCores + " threads");
     Thread[] threads = new Thread[numberOfCores];

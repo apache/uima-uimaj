@@ -311,7 +311,7 @@ public class AnalysisEngineDescription_implTest extends TestCase {
     p.put(Resource.PARAM_CONFIG_MANAGER, configManager);
     p.put(Resource.PARAM_RESOURCE_MANAGER,  UIMAFramework.newDefaultResourceManager());
     p.put(Resource.PARAM_UIMA_CONTEXT, uimaContext);
-    int numberOfThreads = MultiThreadUtils.PROCESSORS * 5; 
+    int numberOfThreads = Math.min(50, MultiThreadUtils.PROCESSORS * 5); 
     final AnalysisEngine[] aes = new AnalysisEngine[numberOfThreads];
     System.out.format("test multicore initialize with %d threads%n",
         numberOfThreads);

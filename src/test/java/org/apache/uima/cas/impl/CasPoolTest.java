@@ -79,7 +79,7 @@ public class CasPoolTest extends TestCase {
   public void testMultiThread() throws Exception {
     final Properties p = new Properties();
     p.put(UIMAFramework.CAS_INITIAL_HEAP_SIZE,  200);   
-    int numberOfThreads = MultiThreadUtils.PROCESSORS * 10;    
+    int numberOfThreads = Math.min(50, MultiThreadUtils.PROCESSORS * 10);    
     final int casPoolSize = numberOfThreads / 3 ;
     System.out.format("test multicore iterator with %d threads and %d CASes",
         numberOfThreads, casPoolSize);
