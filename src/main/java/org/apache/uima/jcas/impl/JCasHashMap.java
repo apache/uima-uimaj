@@ -165,6 +165,9 @@ public class JCasHashMap {
   
   private final int subMapInitialCapacity;
 
+  // optimization for concurrency level 1
+  private final SubMap oneSubmap;
+
   private class SubMap {
 
     //These are for tuning measurements
@@ -473,27 +476,42 @@ public class JCasHashMap {
             DEFAULT_CONCURRENCY_LEVEL);
   }
   
+  private int nextHigherPowerOf2(int i) {
+    return (i < 1) ? 1 : Integer.highestOneBit(i) << ( (Integer.bitCount(i) == 1 ? 0 : 1));
+  }
+  
   JCasHashMap(int capacity, boolean doUseCache, int aConcurrencyLevel) {
     this.useCache = doUseCache;
-    concurrencyLevel = (aConcurrencyLevel > 1) ? 
-        Integer.highestOneBit(1 + aConcurrencyLevel) :  // 1 to 128
-        1;
+    // for 0, 1
+    // for 1, 1
+    // for 2, 2
+    // for 3, 4
+    // for 4, 4
+    if (aConcurrencyLevel < 1|| capacity < 1) {
+      throw new RuntimeException(String.format("capacity %d and concurrencyLevel %d must be > 0", capacity, aConcurrencyLevel));
+    }
+    concurrencyLevel = nextHigherPowerOf2(aConcurrencyLevel);
     concurrencyBitmask = concurrencyLevel - 1;
+    // for clvl=1, lvlbits = 0,  
+    // for clvl=2  lvlbits = 1;
+    // for clvl=4, lvlbits = 2;
     concurrencyLevelBits = Integer.numberOfTrailingZeros(concurrencyLevel); 
-    capacity = Integer.highestOneBit(1 + Math.max(31, Math.max(concurrencyLevel, capacity)));
-    // initialSize = 2, bits = 1, 2
-    // initialSize = 3, bits = 2, 4
-    // initialSize = 4, bits = 2, 4
-    // initialSize = 5, bits = 3, 8
-    // initialSize = 6, bits = 3
-    // initialSize = 7, bits = 3
-    // initialSize = 8, bits = 3
+    
+    // capacity is the greater of the passed in capacity, rounded up to a power of 2, or 32.
+    capacity = Math.max(32,  nextHigherPowerOf2(capacity));
+    // if capacity / concurrencyLevel <32, increase capacity
+    if ((capacity / concurrencyLevel) < 32) {
+      capacity = 32 * concurrencyLevel;
+    }
+    
     initialCapacity = capacity;
+    
     subMaps = new SubMap[concurrencyLevel];
-    subMapInitialCapacity = initialCapacity / concurrencyLevel;  // always 2 or more
+    subMapInitialCapacity = initialCapacity / concurrencyLevel;  // always 32 or more
     for (int i = 0; i < concurrencyLevel; i++) {
       subMaps[i] = (new SubMap()).newTable(subMapInitialCapacity);
     }
+    oneSubmap = concurrencyLevel == 1 ? subMaps[0] : null;
   }
       
   // cleared when cas reset
@@ -510,7 +528,7 @@ public class JCasHashMap {
   }
   
   private SubMap getSubMap(int hash) {
-    return subMaps[hash & concurrencyBitmask];
+    return (null != oneSubmap) ? oneSubmap : subMaps[hash & concurrencyBitmask];
   }
   
   public FeatureStructureImpl getReserve(int key) {
