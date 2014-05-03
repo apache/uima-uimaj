@@ -110,16 +110,29 @@ public class JCasHashMap {
   // you have to also put a call to jcas.showJfsFromCaddrHistogram() at the end of the run
   private static final boolean TUNE = false;
 
-  private static final int DEFAULT_CONCURRENCY_LEVEL;
+  /** 
+   * must be a power of 2, > 0 
+   * public for testing
+   */
+  public static final int DEFAULT_CONCURRENCY_LEVEL;
       
   private static final int PROBE_ADDR_INDEX = 0;
   private static final int PROBE_DELTA_INDEX = 1;
   
+  private static int nextHigherPowerOf2(int i) {
+    return (i < 1) ? 1 : Integer.highestOneBit(i) << ( (Integer.bitCount(i) == 1 ? 0 : 1));
+  }
+
   static {
     int cores = Runtime.getRuntime().availableProcessors();
-    DEFAULT_CONCURRENCY_LEVEL = (cores < 17) ? cores / 2 :
-                                (cores < 33) ? 8 + (cores - 16) / 4 : 
-                                               12 + (cores - 24) / 8;
+    // cores:lvl   0:1  1:1  2:2  3-15:4  16-31:8  32-63:16  else 32  
+    DEFAULT_CONCURRENCY_LEVEL = 
+        (cores <= 1)  ? 1 :
+        (cores == 2)  ? 2 :
+        (cores <= 15) ? 4 :
+        (cores <= 31) ? 8 :
+        (cores <= 63) ? 16 :
+                        32;    
   }
     
   private static class ReserveTopType extends TOP_Type {
@@ -472,21 +485,14 @@ public class JCasHashMap {
     //   concurrency = capacity / 32
     this(capacity, doUseCache,
         ((capacity / DEFAULT_CONCURRENCY_LEVEL) < 32) ?
-            Math.max(1, capacity / 32) :
+            nextHigherPowerOf2(
+                Math.max(1, capacity / 32)) :
             DEFAULT_CONCURRENCY_LEVEL);
-  }
-  
-  private int nextHigherPowerOf2(int i) {
-    return (i < 1) ? 1 : Integer.highestOneBit(i) << ( (Integer.bitCount(i) == 1 ? 0 : 1));
   }
   
   JCasHashMap(int capacity, boolean doUseCache, int aConcurrencyLevel) {
     this.useCache = doUseCache;
-    // for 0, 1
-    // for 1, 1
-    // for 2, 2
-    // for 3, 4
-    // for 4, 4
+
     if (aConcurrencyLevel < 1|| capacity < 1) {
       throw new RuntimeException(String.format("capacity %d and concurrencyLevel %d must be > 0", capacity, aConcurrencyLevel));
     }
@@ -585,6 +591,14 @@ public class JCasHashMap {
       r[i++] = subMap.table.length;
     }
     return r;
+  }
+  
+  int getCapacity() {
+    int r = 0;
+    for (SubMap subMap : subMaps) {
+      r += subMap.table.length;
+    }
+    return r;    
   }
   
   //test case use

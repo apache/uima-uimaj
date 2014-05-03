@@ -20,17 +20,16 @@ package org.apache.uima.jcas.impl;
 
 import java.util.HashSet;
 import java.util.Map.Entry;
-import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
+import junit.framework.TestCase;
 
 import org.apache.uima.cas.impl.FeatureStructureImpl;
 import org.apache.uima.internal.util.MultiThreadUtils;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.cas.TOP_Type;
-
-import junit.framework.TestCase;
 
 /**
  * Run this as a single test with yourkit, and look at the retained storage for both maps.
@@ -52,8 +51,8 @@ public class JCasHashMapCompareTest extends TestCase {
   private static int sizeOfTest = 1024 * 8;  
 //  private static final int SIZEm1 = SIZE - 1;
   private static final TOP_Type FAKE_TOP_TYPE_INSTANCE = new FakeTopType(); 
-  private JCasHashMap jhm;
-  private ConcurrentMap<Integer, FeatureStructureImpl> chm;
+//  private JCasHashMap jhm;
+  private ConcurrentMap<Integer, FeatureStructureImpl> concurrentMap;
 
   
   public void testComp() throws Exception {
@@ -69,12 +68,10 @@ public class JCasHashMapCompareTest extends TestCase {
 //    stats("custom", runCustom(numberOfThreads));  // not accurate, use yourkit retained size instead
 //    stats("concur", runConCur(numberOfThreads));
     Set<Integer> ints = new HashSet<Integer>();
-    int i = 0;
-    for (Entry<Integer, FeatureStructureImpl> e : chm.entrySet()) {
+    for (Entry<Integer, FeatureStructureImpl> e : concurrentMap.entrySet()) {
       assertFalse(ints.contains(Integer.valueOf(e.getKey())));
       assertEquals(e.getValue().getAddress(), (int)(e.getKey()));
       ints.add(e.getKey());
-      i ++;
     }
     
 //    System.out.println("Found " + i);
@@ -82,20 +79,22 @@ public class JCasHashMapCompareTest extends TestCase {
     // launch yourkit profiler and look at retained sizes for both
 //    Thread.sleep(1000000);
   }
-
-  private static Object waiter = new Object();
   
   private int runConCur(int numberOfThreads) throws Exception {
     final ConcurrentMap<Integer, FeatureStructureImpl> m = 
         new ConcurrentHashMap<Integer, FeatureStructureImpl>(200, 0.75F, numberOfThreads);
-    chm = m;
+    concurrentMap = m;
+    final Object[] waiters = new Object[16];
+    for (int i = 0; i < 16; i++) {
+      waiters[i] = new Object();
+    }
     MultiThreadUtils.Run2isb run2isb= new MultiThreadUtils.Run2isb() {
       
       public void call(int threadNumber, int repeatNumber, StringBuilder sb) {
 //        int founds = 0, puts = 0;
         for (int i = 0; i < sizeOfTest*threadNumber; i++) {
-          final int key = hash(i, threadNumber
-              ) / 2;
+          final int key = hash(i, threadNumber) / 2;
+          final Object waiter = waiters[key & 15];
           FeatureStructureImpl fs = m.putIfAbsent(key, new TOP(key, JCasHashMap.RESERVE_TOP_TYPE_INSTANCE));
           while (fs != null && ((TOP)fs).jcasType == JCasHashMap.RESERVE_TOP_TYPE_INSTANCE) {
             // someone else reserved this
@@ -141,7 +140,6 @@ public class JCasHashMapCompareTest extends TestCase {
   
   private int runCustom(int numberOfThreads) throws Exception {
     final JCasHashMap m = new JCasHashMap(256, true); // true = do use cache
-    jhm = m;
 
     MultiThreadUtils.Run2isb run2isb= new MultiThreadUtils.Run2isb() {
       
@@ -176,16 +174,16 @@ public class JCasHashMapCompareTest extends TestCase {
   }
   
   // not accurate, use yourkit retained size instead
-  private void stats(String m, int size) {
-    for (int i = 0; i < 2; i++) {
-      System.gc();
-    }
-    Runtime r = Runtime.getRuntime();
-    long free =r.freeMemory();
-    long total = r.totalMemory();
-    System.out.format("JCasHashMapComp %s used = %,d  size = %,d%n",
-        m, total - free, size);
-  }
+//  private void stats(String m, int size) {
+//    for (int i = 0; i < 2; i++) {
+//      System.gc();
+//    }
+//    Runtime r = Runtime.getRuntime();
+//    long free =r.freeMemory();
+//    long total = r.totalMemory();
+//    System.out.format("JCasHashMapComp %s used = %,d  size = %,d%n",
+//        m, total - free, size);
+//  }
 
   private int hash(int i, int threadNumber) {    
     return (int)(((
