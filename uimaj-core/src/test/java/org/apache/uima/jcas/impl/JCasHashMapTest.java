@@ -59,20 +59,21 @@ public class JCasHashMapTest extends TestCase {
   }
   
   public void testBasic() {
-    int p = MultiThreadUtils.PROCESSORS;  
-    if (p < 1 || Integer.bitCount(p) != 1) {
-      System.out.println("JCasHashMap  skipping basic, nbr of processors is " + p);
+    int cores = MultiThreadUtils.PROCESSORS;  
+    int subMaps = (cores < 17) ? cores / 2 :
+      (cores < 33) ? 8 + (cores - 16) / 4 : 
+                    12 + (cores - 24) / 8;
+    if (subMaps < 1) {
+      System.out.println("JCasHashMap  skipping basic, nbr of processors is " + cores);
       return;
     }
-    if (Integer.bitCount(p) > 1) {  // if only 1 bit in #, is already a power of 2 
-      p = Integer.highestOneBit(p) << 1;  // round up to next higher power of 2
-    }
-    JCasHashMap m = new JCasHashMap(16 * p, true);
-    assertEquals(p / 2,  m.getConcurrencyLevel());
-    m = new JCasHashMap(15 * p,  true);
-    assertEquals(p / 2, m.getConcurrencyLevel()); // default concurrency level drops to 7, but is then rounded up to 8
-    m = new JCasHashMap(8 * p,  true);
-    assertEquals(((p > 3) ? (p / 4) : 1), m.getConcurrencyLevel());    
+    subMaps = (subMaps < 1) ? 1 : Integer.highestOneBit(subMaps) << ( (Integer.bitCount(subMaps) == 1 ? 0 : 1));
+    JCasHashMap m = new JCasHashMap(32 * subMaps, true);
+    assertEquals(subMaps,  m.getConcurrencyLevel());
+    m = new JCasHashMap(31 * subMaps,  true);
+    assertEquals(subMaps, m.getConcurrencyLevel()); // default concurrency level drops by 1, but is then rounded up to 8
+    m = new JCasHashMap(16 * subMaps,  true);
+    assertEquals(subMaps / 2, m.getConcurrencyLevel());    
   }
   
   public void testWithPerf()  {
