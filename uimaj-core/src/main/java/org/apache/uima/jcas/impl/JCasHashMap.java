@@ -110,16 +110,29 @@ public class JCasHashMap {
   // you have to also put a call to jcas.showJfsFromCaddrHistogram() at the end of the run
   private static final boolean TUNE = false;
 
-  private static final int DEFAULT_CONCURRENCY_LEVEL;
+  /** 
+   * must be a power of 2, > 0 
+   * public for testing
+   */
+  public static final int DEFAULT_CONCURRENCY_LEVEL;
       
   private static final int PROBE_ADDR_INDEX = 0;
   private static final int PROBE_DELTA_INDEX = 1;
   
+  private static int nextHigherPowerOf2(int i) {
+    return (i < 1) ? 1 : Integer.highestOneBit(i) << ( (Integer.bitCount(i) == 1 ? 0 : 1));
+  }
+
   static {
     int cores = Runtime.getRuntime().availableProcessors();
-    DEFAULT_CONCURRENCY_LEVEL = (cores < 17) ? cores :
-                                (cores < 33) ? 16 + (cores - 16) / 2 : 
-                                               24 + (cores - 24) / 4;
+    // cores:lvl   0:1  1:1  2:2  3-15:4  16-31:8  32-63:16  else 32  
+    DEFAULT_CONCURRENCY_LEVEL = 
+        (cores <= 1)  ? 1 :
+        (cores == 2)  ? 2 :
+        (cores <= 15) ? 4 :
+        (cores <= 31) ? 8 :
+        (cores <= 63) ? 16 :
+                        32;    
   }
     
   private static class ReserveTopType extends TOP_Type {
@@ -164,6 +177,9 @@ public class JCasHashMap {
   private final SubMap[] subMaps;
   
   private final int subMapInitialCapacity;
+
+  // optimization for concurrency level 1
+  private final SubMap oneSubmap;
 
   private class SubMap {
 
@@ -239,6 +255,12 @@ public class JCasHashMap {
      
     /**
      * Can be called under lock or not.
+     * It gets a ref to the current value of table, and then searches that int array.
+     *   If, during the search, the table is resized, it continues using the
+     *   ** before the resize ** int array referenced by localTable 
+     *     The answer will only be OK if the key is found for a real value.  
+     *     Results that yield null or Reserved slots must be re-searched, 
+     *     under a lock (caller needs to do this).
      * @param key -
      * @param hash -
      * @param probeInfo - used to get/receive multiple int values;
@@ -261,6 +283,8 @@ public class JCasHashMap {
         if (m.getAddress() == key) {
           setProbeInfo(probeInfo, probeAddr, probeDelta);
           if (TUNE) {
+            
+            /* LOCK if not already, to update stats */
             final boolean needUnlock;
             if (!lock.isHeldByCurrentThread()) {
               lock.lock();
@@ -268,6 +292,7 @@ public class JCasHashMap {
             } else {
               needUnlock = false;
             }
+            
             try {
               histogram[nbrProbes] += 1;
               if (maxProbe < nbrProbes) {
@@ -313,12 +338,13 @@ public class JCasHashMap {
     private FeatureStructureImpl getReserve(final int key, final int hash) {
 
       boolean isLocked = false;
-      int[] probeInfo = resetProbeInfo(new int[2]);
+      int[] probeInfo = new int[2];
       try {
  
      retry:
         while (true) { // loop back point after locking against updates, to re-traverse the bucket chain from the beginning
-          FeatureStructureImpl m;
+          probeInfo = resetProbeInfo(probeInfo);
+          final FeatureStructureImpl m;
           final FeatureStructureImpl[] localTable = table;
           
           if (isReal(m = find(key, hash, probeInfo))) {
@@ -328,40 +354,56 @@ public class JCasHashMap {
           // is reserve or null. Redo or continue search under lock
           // need to do this for reserve-case because otherwise, could 
           //   wait, but notify could come before wait - hence, wait forever
-          lock.lock();
-          isLocked = true;
+          if (!isLocked) {
+            lock.lock();
+            isLocked = true;
+          }
           /*****************
            *    LOCKED     *
            *****************/
-          if (localTable != table) { // redo search from top, because table resized
+          if (localTable != table) {
+            // redo search from top, because table resized
             resetProbeInfo(probeInfo);
           }
-          // note: localTable not used from this point, unless reset
+//          // re acquire the FeatureStructure m, because another thread could change it before the lock got acquired
+//          final FeatureStructureImpl m2 = localTable[probeInfo[PROBE_ADDR_INDEX]];
+//          if (isReal(m2)) {
+//            return m2;  // another thread snuck in before the lock and switched this
+//          }
           
-          if (isReal(m = find(key, hash, probeInfo))) {
-            return m;  // fast path for found item       
+          // note: localTable not used from this point, unless reset
+          // note: this "find" either finds from the top (if size changed) or finds from current spot.
+          final FeatureStructureImpl m2 = find(key, hash, probeInfo);
+          if (isReal(m2)) {
+            return m2;  // fast path for found item       
           }
           
-          while (isReserve(m)) {
+          while (isReserve(m2)) {
             final FeatureStructureImpl[] localTable2 = table;  // to see if table gets resized
             // can't wait on reserved item because would need to do lock.unlock() followed by wait, but
             //   inbetween these, another thread could already do the notify.
             try {
+              /**********
+               *  WAIT  *
+               **********/
               lockCondition.await();  // wait on object that needs to be unlocked
             } catch (InterruptedException e) {
             }
 
+            // at this point, the lock was released, and re-aquired
             if (localTable2 != table) { // table was resized
-              resetProbeInfo(probeInfo);       
-              continue retry;
+               continue retry;
             }
-            m = localTable2[probeInfo[PROBE_ADDR_INDEX]];
-            if (isReserve(m)) {
+            final FeatureStructureImpl m3 = localTable2[probeInfo[PROBE_ADDR_INDEX]];
+            if (isReserve(m3)) {
               continue;  // case = interruptedexception && no resize && not changed to real, retry
             }
-            return m; // return real item
+            return m3; // return real item
           }
-      
+          
+          /*************
+           *  RESERVE  *
+           *************/
           // is null. Reserve this slot to prevent other "getReserved" calls for this same instance from succeeding,
           // causing them to wait until this slot gets filled in with a FS value
           // Use table, not localTable, because resize may have occurred
@@ -382,16 +424,16 @@ public class JCasHashMap {
       lock.lock();
       try {
         final int[] probeInfo = resetProbeInfo(new int[2]);
-        FeatureStructureImpl m = find(key, hash, probeInfo);
+        FeatureStructureImpl prevValue = find(key, hash, probeInfo);
         table[probeInfo[PROBE_ADDR_INDEX]] = value;
-        if (isReserve(m)) {
+        if (isReserve(prevValue)) {
           lockCondition.signalAll();
           // dont update size - was updated when reserve was added
           return null;
-        } else if (m == null) {
-            incrementSize();  // otherwise, replacing an existing item, don't update size
-        }
-        return m;
+        } else if (prevValue == null) {
+            incrementSize();  // otherwise, adding a new value
+        } // else updating an existing value - don't increment the size
+        return prevValue;
       } finally {
         lock.unlock();
       }
@@ -443,31 +485,39 @@ public class JCasHashMap {
     //   concurrency = capacity / 32
     this(capacity, doUseCache,
         ((capacity / DEFAULT_CONCURRENCY_LEVEL) < 32) ?
-            Math.max(1, capacity / 32) :
+            nextHigherPowerOf2(
+                Math.max(1, capacity / 32)) :
             DEFAULT_CONCURRENCY_LEVEL);
   }
   
   JCasHashMap(int capacity, boolean doUseCache, int aConcurrencyLevel) {
     this.useCache = doUseCache;
-    concurrencyLevel = (aConcurrencyLevel > 1) ? 
-        Integer.highestOneBit(1 + aConcurrencyLevel) :  // 1 to 128
-        1;
+
+    if (aConcurrencyLevel < 1|| capacity < 1) {
+      throw new RuntimeException(String.format("capacity %d and concurrencyLevel %d must be > 0", capacity, aConcurrencyLevel));
+    }
+    concurrencyLevel = nextHigherPowerOf2(aConcurrencyLevel);
     concurrencyBitmask = concurrencyLevel - 1;
+    // for clvl=1, lvlbits = 0,  
+    // for clvl=2  lvlbits = 1;
+    // for clvl=4, lvlbits = 2;
     concurrencyLevelBits = Integer.numberOfTrailingZeros(concurrencyLevel); 
-    capacity = Integer.highestOneBit(1 + Math.max(31, Math.max(concurrencyLevel, capacity)));
-    // initialSize = 2, bits = 1, 2
-    // initialSize = 3, bits = 2, 4
-    // initialSize = 4, bits = 2, 4
-    // initialSize = 5, bits = 3, 8
-    // initialSize = 6, bits = 3
-    // initialSize = 7, bits = 3
-    // initialSize = 8, bits = 3
+    
+    // capacity is the greater of the passed in capacity, rounded up to a power of 2, or 32.
+    capacity = Math.max(32,  nextHigherPowerOf2(capacity));
+    // if capacity / concurrencyLevel <32, increase capacity
+    if ((capacity / concurrencyLevel) < 32) {
+      capacity = 32 * concurrencyLevel;
+    }
+    
     initialCapacity = capacity;
+    
     subMaps = new SubMap[concurrencyLevel];
-    subMapInitialCapacity = initialCapacity / concurrencyLevel;  // always 2 or more
+    subMapInitialCapacity = initialCapacity / concurrencyLevel;  // always 32 or more
     for (int i = 0; i < concurrencyLevel; i++) {
       subMaps[i] = (new SubMap()).newTable(subMapInitialCapacity);
     }
+    oneSubmap = concurrencyLevel == 1 ? subMaps[0] : null;
   }
       
   // cleared when cas reset
@@ -484,7 +534,7 @@ public class JCasHashMap {
   }
   
   private SubMap getSubMap(int hash) {
-    return subMaps[hash & concurrencyBitmask];
+    return (null != oneSubmap) ? oneSubmap : subMaps[hash & concurrencyBitmask];
   }
   
   public FeatureStructureImpl getReserve(int key) {
@@ -541,6 +591,14 @@ public class JCasHashMap {
       r[i++] = subMap.table.length;
     }
     return r;
+  }
+  
+  int getCapacity() {
+    int r = 0;
+    for (SubMap subMap : subMaps) {
+      r += subMap.table.length;
+    }
+    return r;    
   }
   
   //test case use

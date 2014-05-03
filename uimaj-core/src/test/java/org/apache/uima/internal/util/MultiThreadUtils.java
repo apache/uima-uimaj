@@ -38,18 +38,26 @@ public class MultiThreadUtils extends TestCase {
     public void call(int threadNumber, int repeatNumber, StringBuilder sb) throws Exception;
   }
   
+  public static Runnable emptyReset = new Runnable() {public void run() {}};
+  
   // needed because
   //   this class extends TestCase (in order to have access to assertTrue, etc
   //   this causes the junit runner to warn if there are no "test"s in this class
   public void testDummy() {}
   
-  public static void tstMultiThread(final String name, int numberOfThreads, int repeats, final Run2isb run2isb) throws Exception {
+  public static void tstMultiThread(
+      final String name, 
+      int numberOfThreads, 
+      int repeats, 
+      final Run2isb run2isb, 
+      final Runnable beforeRepeat) throws Exception {
     Thread[] threads = new Thread[numberOfThreads];
 
     final Throwable[] thrown = new Throwable[1];
     thrown[0] = null;
     
     for (int r = 0; r < repeats; r++) {
+      beforeRepeat.run();
       final int finalR = r;
       try {
         for (int i = 0; i < numberOfThreads; i++) {

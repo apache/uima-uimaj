@@ -255,5 +255,10 @@ public final class Heap {
   	  grow();
   	}
     this.pos += len;
+  }
+
+  // used by JCas to default the size the JCasHashMap
+  public int getInitialSize() {
+    return initialSize;
   }	  
 }

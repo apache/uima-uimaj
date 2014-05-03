@@ -311,7 +311,7 @@ public class AnalysisEngineDescription_implTest extends TestCase {
     p.put(Resource.PARAM_CONFIG_MANAGER, configManager);
     p.put(Resource.PARAM_RESOURCE_MANAGER,  UIMAFramework.newDefaultResourceManager());
     p.put(Resource.PARAM_UIMA_CONTEXT, uimaContext);
-    int numberOfThreads = MultiThreadUtils.PROCESSORS * 5; 
+    int numberOfThreads = Math.min(50, MultiThreadUtils.PROCESSORS * 5); 
     final AnalysisEngine[] aes = new AnalysisEngine[numberOfThreads];
     System.out.format("test multicore initialize with %d threads%n",
         numberOfThreads);
@@ -332,7 +332,7 @@ public class AnalysisEngineDescription_implTest extends TestCase {
         }
       }
     };  
-    MultiThreadUtils.tstMultiThread("MultiCoreInitialize",  numberOfThreads,  100, run2isb);
+    MultiThreadUtils.tstMultiThread("MultiCoreInitialize",  numberOfThreads,  100, run2isb, MultiThreadUtils.emptyReset);
     assertTrue(!aes[0].equals(aes[1]));
     
     run2isb = new MultiThreadUtils.Run2isb() {
@@ -350,7 +350,7 @@ public class AnalysisEngineDescription_implTest extends TestCase {
         }
       }
     };
-    MultiThreadUtils.tstMultiThread("MultiCoreInitialize",  numberOfThreads,  100, run2isb);
+    MultiThreadUtils.tstMultiThread("MultiCoreInitialize",  numberOfThreads,  100, run2isb, MultiThreadUtils.emptyReset);
     assertTrue(!aes[0].equals(aes[1]));
 
     
