@@ -19,24 +19,30 @@
 
 package org.apache.uima.cas_data.impl;
 
-import java.util.HashMap;
+import static junit.framework.Assert.assertTrue;
+
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 import junit.framework.Assert;
 
 import org.apache.uima.cas.ArrayFS;
+import org.apache.uima.cas.BooleanArrayFS;
+import org.apache.uima.cas.ByteArrayFS;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.CommonArrayFS;
+import org.apache.uima.cas.DoubleArrayFS;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.FloatArrayFS;
 import org.apache.uima.cas.IntArrayFS;
+import org.apache.uima.cas.LongArrayFS;
+import org.apache.uima.cas.ShortArrayFS;
 import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.Type;
-import org.apache.uima.cas.impl.CASImpl;
-import org.apache.uima.cas.text.AnnotationFS;
 
 /**
  * A non-perfect CAS equality checker for JUnit.
@@ -69,7 +75,7 @@ public class CasComparer {
   }
 
   public static void assertEqualViews(CAS c1, CAS c2) {
-    Map<FeatureStructure, FeatureStructure> visited = new HashMap<FeatureStructure, FeatureStructure>();
+    Set<FeatureStructure> visited = new HashSet<FeatureStructure>();
     
     FSIterator<FeatureStructure> it1 = c1.getIndexRepository().getAllIndexedFS(c1.getTypeSystem().getTopType());
     FSIterator<FeatureStructure> it2 = c2.getIndexRepository().getAllIndexedFS(c2.getTypeSystem().getTopType());
@@ -86,24 +92,27 @@ public class CasComparer {
   }
 
   public static void assertEquals(FeatureStructure fs1, FeatureStructure fs2) {
-    assertEquals(fs1, fs2, new HashMap<FeatureStructure, FeatureStructure>());
+    assertEquals(fs1, fs2, new HashSet<FeatureStructure>());
   }
 
-  public static void assertEquals(FeatureStructure fs1, FeatureStructure fs2, Map<FeatureStructure, FeatureStructure> visited) {
+  public static void assertEquals(FeatureStructure fs1, FeatureStructure fs2, Set<FeatureStructure> visited) {
     if (fs1 == null) {
       Assert.assertNull(fs2);
       return;
     } else {
       Assert.assertNotNull(fs2);
     }
-
-    if (visited.containsKey(fs1)) {
+    
+    if (!visited.add(fs1)) {  // true if item already in the set
       return;
     }
-    visited.put(fs1, fs1);
 
     // System.out.println("Comparing " + fs1.getType().getName());
     Assert.assertEquals(fs1.getType().getName(), fs2.getType().getName());
+    
+    if (fs1 instanceof SofaFS) {
+      return;
+    }
 
     List<Feature> features1 = fs1.getType().getFeatures();
     List<Feature> features2 = fs2.getType().getFeatures();
@@ -119,70 +128,106 @@ public class CasComparer {
 
       if (fs1.getCAS().getTypeSystem().subsumes(
               fs1.getCAS().getTypeSystem().getType(CAS.TYPE_NAME_STRING), rangeType1)) {
-        Assert.assertEquals(fs1.getStringValue(feat1), fs2.getStringValue(feat2));
+        assertEqualsNullIsEmpty(fs1.getStringValue(feat1), fs2.getStringValue(feat2));
+      } else if (compareArrayFSs(rangeTypeName, fs1, feat1, fs2, feat2, visited)) {
+        continue;
       } else if (CAS.TYPE_NAME_INTEGER.equals(rangeTypeName)) {
         Assert.assertEquals(fs1.getIntValue(feat1), fs2.getIntValue(feat2));
       } else if (CAS.TYPE_NAME_FLOAT.equals(rangeTypeName)) {
-        Assert.assertEquals(fs1.getFloatValue(feat1), fs2.getFloatValue(feat2), 0);
-      } else if (CAS.TYPE_NAME_STRING_ARRAY.equals(rangeTypeName)) {
-        StringArrayFS arrayFS1 = (StringArrayFS) fs1.getFeatureValue(feat1);
-        StringArrayFS arrayFS2 = (StringArrayFS) fs2.getFeatureValue(feat2);
-        if ((arrayFS1 == null) && (arrayFS2 == null)) {
-          // ok
-        } else {
-          Assert.assertEquals(arrayFS1.size(), arrayFS2.size());
-          for (int j = 0; j < arrayFS1.size(); j++) {
-            // Temporary workaround for UIMA-2490 - null and "" string values
-            String s1 = arrayFS1.get(j);
-            String s2 = arrayFS2.get(j);
-            if ((s1 == null) && (s2 != null) && (s2.length() == 0)) {
-              continue;
-            }
-            if ((s2 == null) && (s1 != null) && (s1.length() == 0)) {
-              continue;
-            }
-            Assert.assertEquals(arrayFS1.get(j), arrayFS2.get(j));
-          }
-        }
-      } else if (CAS.TYPE_NAME_INTEGER_ARRAY.equals(rangeTypeName)) {
-        IntArrayFS arrayFS1 = (IntArrayFS) fs1.getFeatureValue(feat1);
-        IntArrayFS arrayFS2 = (IntArrayFS) fs2.getFeatureValue(feat2);
-        if ((arrayFS1 == null) && (arrayFS2 == null)) {
-          // ok
-        } else {
-          Assert.assertEquals(arrayFS1.size(), arrayFS2.size());
-          for (int j = 0; j < arrayFS1.size(); j++) {
-            Assert.assertEquals(arrayFS1.get(j), arrayFS2.get(j));
-          }
-        }
-      } else if (CAS.TYPE_NAME_FLOAT_ARRAY.equals(rangeTypeName)) {
-        FloatArrayFS arrayFS1 = (FloatArrayFS) fs1.getFeatureValue(feat1);
-        FloatArrayFS arrayFS2 = (FloatArrayFS) fs2.getFeatureValue(feat2);
-        if ((arrayFS1 == null) && (arrayFS2 == null)) {
-          // ok
-        } else {
-          Assert.assertEquals(arrayFS1.size(), arrayFS2.size());
-          for (int j = 0; j < arrayFS1.size(); j++) {
-            Assert.assertEquals(arrayFS1.get(j), arrayFS2.get(j), 0);
-          }
-        }
-      } else if (CAS.TYPE_NAME_FS_ARRAY.equals(rangeTypeName)) {
-        ArrayFS arrayFS1 = (ArrayFS) fs1.getFeatureValue(feat1);
-        ArrayFS arrayFS2 = (ArrayFS) fs2.getFeatureValue(feat2);
-        if ((arrayFS1 == null) && (arrayFS2 == null)) {
-          // ok
-        } else {
-          Assert.assertEquals(arrayFS1.size(), arrayFS2.size());
-          for (int j = 0; j < arrayFS1.size(); j++) {
-            assertEquals(arrayFS1.get(j), arrayFS2.get(j), visited);
-          }
-        }
-      } else // single feature value
-      {
+        Assert.assertEquals(fs1.getFloatValue(feat1), fs2.getFloatValue(feat2), 0);        
+      } else if (CAS.TYPE_NAME_BYTE.equals(rangeTypeName)) {
+        Assert.assertEquals(fs1.getByteValue(feat1), fs2.getByteValue(feat2));
+      } else if (CAS.TYPE_NAME_SHORT.equals(rangeTypeName)) {
+        Assert.assertEquals(fs1.getShortValue(feat1), fs2.getShortValue(feat2));
+      } else if (CAS.TYPE_NAME_LONG.equals(rangeTypeName)) {
+        Assert.assertEquals(fs1.getLongValue(feat1), fs2.getLongValue(feat2));
+      } else if (CAS.TYPE_NAME_DOUBLE.equals(rangeTypeName)) {
+        Assert.assertEquals(fs1.getDoubleValue(feat1), fs2.getDoubleValue(feat2));
+      } else { // single feature value
         FeatureStructure fsVal1 = fs1.getFeatureValue(feat1);
         FeatureStructure fsVal2 = fs2.getFeatureValue(feat2);
         assertEquals(fsVal1, fsVal2, visited);
       }
     }
   }
+  
+  // returns true if the items were arrays
+  public static boolean compareArrayFSs(String rangeTypeName, FeatureStructure arrayFS1fs, Feature feat1, FeatureStructure arrayFS2fs, Feature feat2, Set<FeatureStructure> visited) {
+    
+    if (CAS.TYPE_NAME_STRING_ARRAY.equals(rangeTypeName) ||
+        CAS.TYPE_NAME_SHORT_ARRAY.equals(rangeTypeName) ||
+        CAS.TYPE_NAME_LONG_ARRAY.equals(rangeTypeName) ||
+        CAS.TYPE_NAME_INTEGER_ARRAY.equals(rangeTypeName) ||
+        CAS.TYPE_NAME_FLOAT_ARRAY.equals(rangeTypeName) ||
+        CAS.TYPE_NAME_DOUBLE_ARRAY.equals(rangeTypeName) ||
+        CAS.TYPE_NAME_BYTE_ARRAY.equals(rangeTypeName) ||
+        CAS.TYPE_NAME_BOOLEAN_ARRAY.equals(rangeTypeName) ||
+        CAS.TYPE_NAME_FS_ARRAY.equals(rangeTypeName)) {
+
+      CommonArrayFS arrayFS1 = (CommonArrayFS)arrayFS1fs.getFeatureValue(feat1);
+      CommonArrayFS arrayFS2 = (CommonArrayFS)arrayFS2fs.getFeatureValue(feat2);
+      
+      if ((arrayFS1 == null) && (arrayFS2 == null)) {
+        return true; // is ok
+      } else if (arrayFS1 != null && arrayFS2 != null) {        
+        
+        Assert.assertEquals(arrayFS1.size(), arrayFS2.size());
+        
+        for (int j = 0; j < arrayFS1.size(); j++) {
+          if (arrayFS1      instanceof ArrayFS) {
+              Assert.assertTrue(arrayFS2 instanceof ArrayFS);
+              assertEquals(((ArrayFS)arrayFS1).get(j), ((ArrayFS)arrayFS2).get(j), visited);
+          } else if (arrayFS1 instanceof BooleanArrayFS) {
+              assertTrue(arrayFS2 instanceof BooleanArrayFS);
+              Assert.assertEquals(((BooleanArrayFS)arrayFS1).get(j), ((BooleanArrayFS)arrayFS2).get(j));
+          } else if (arrayFS1 instanceof ByteArrayFS) {
+            assertTrue(arrayFS2 instanceof ByteArrayFS);
+            Assert.assertEquals(((ByteArrayFS)arrayFS1).get(j), ((ByteArrayFS)arrayFS2).get(j));
+          } else if (arrayFS1 instanceof DoubleArrayFS) {
+            assertTrue(arrayFS2 instanceof DoubleArrayFS);
+            Assert.assertEquals(((DoubleArrayFS)arrayFS1).get(j), ((DoubleArrayFS)arrayFS2).get(j));
+          } else if (arrayFS1 instanceof FloatArrayFS) {
+            assertTrue(arrayFS2 instanceof FloatArrayFS);
+            Assert.assertEquals(((FloatArrayFS)arrayFS1).get(j), ((FloatArrayFS)arrayFS2).get(j));
+          } else if (arrayFS1 instanceof IntArrayFS) {
+            assertTrue(arrayFS2 instanceof IntArrayFS);
+            Assert.assertEquals(((IntArrayFS)arrayFS1).get(j), ((IntArrayFS)arrayFS2).get(j));
+          } else if (arrayFS1 instanceof LongArrayFS) {
+            assertTrue(arrayFS2 instanceof LongArrayFS);
+            Assert.assertEquals(((LongArrayFS)arrayFS1).get(j), ((LongArrayFS)arrayFS2).get(j));
+          } else if (arrayFS1 instanceof ShortArrayFS) {
+            assertTrue(arrayFS2 instanceof ShortArrayFS);
+            Assert.assertEquals(((ShortArrayFS)arrayFS1).get(j), ((ShortArrayFS)arrayFS2).get(j));
+          } else if (arrayFS1 instanceof StringArrayFS) {
+            assertTrue(arrayFS2 instanceof StringArrayFS);
+            // Temporary workaround for UIMA-2490 - null and "" string values
+            assertEqualsNullIsEmpty(((StringArrayFS)arrayFS1).get(j), ((StringArrayFS)arrayFS2).get(j));
+          }
+        }
+      } else {
+        assertTrue(String.format("One array was null, the other not-null%n  array1=%s%n  array2=%s%n",
+                                 arrayFS1fs, arrayFS2fs),
+                   false);
+      }
+      return true;
+    }
+    return false;
+  }
+    
+  public static void assertEqualsNullIsEmpty(String s1, String s2) {
+    // override the Assert.assertEquals for strings to make null and "" be equal
+    if (((s1 == null) && (s2 != null) && (s2.length() == 0)) || 
+        ((s2 == null) && (s1 != null) && (s1.length() == 0))) {
+      return;
+    }
+    if ((s1 != null) && (s2 != null)) {
+      Assert.assertEquals(s1, s2);
+      return;
+    }
+    if ((s1 == null) && (s2 == null)) {
+      return;
+    }
+    assertTrue(String.format("one string value was null,  the other not%n  s1=%s%n  s2=%s%n", s1, s2), false);
+  }
+
 }
