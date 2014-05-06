@@ -110,30 +110,40 @@ public class JCasHashMap {
   // you have to also put a call to jcas.showJfsFromCaddrHistogram() at the end of the run
   private static final boolean TUNE = false;
 
-  /** 
-   * must be a power of 2, > 0 
-   * public for testing
-   */
-  public static final int DEFAULT_CONCURRENCY_LEVEL;
-      
-  private static final int PROBE_ADDR_INDEX = 0;
-  private static final int PROBE_DELTA_INDEX = 1;
-  
-  private static int nextHigherPowerOf2(int i) {
+  static int nextHigherPowerOf2(int i) {
     return (i < 1) ? 1 : Integer.highestOneBit(i) << ( (Integer.bitCount(i) == 1 ? 0 : 1));
   }
 
+  /** 
+   * must be a power of 2, > 0 
+   * package private for testing
+   * 
+   * not final to allow test case to reset it
+   */
+  static int DEFAULT_CONCURRENCY_LEVEL;
+  
   static {
     int cores = Runtime.getRuntime().availableProcessors();
     // cores:lvl   0:1  1:1  2:2  3-15:4  16-31:8  32-63:16  else 32  
     DEFAULT_CONCURRENCY_LEVEL = 
         (cores <= 1)  ? 1 :
-        (cores == 2)  ? 2 :
-        (cores <= 15) ? 4 :
-        (cores <= 31) ? 8 :
-        (cores <= 63) ? 16 :
-                        32;    
+        (cores <= 4)  ? 2 :  // assumption: cores used for other work, too
+        (cores <= 32) ? 4 :
+        (cores <= 128) ? 8 :
+                        16;   // emprical guesswork, not scientifically set    
   }
+
+  static int getDEFAULT_CONCURRENCY_LEVEL() {
+    return DEFAULT_CONCURRENCY_LEVEL;
+  }
+  
+  static void setDEFAULT_CONCURRENCY_LEVEL(int dEFAULT_CONCURRENCY_LEVEL) {
+    DEFAULT_CONCURRENCY_LEVEL = nextHigherPowerOf2(dEFAULT_CONCURRENCY_LEVEL);
+//    System.out.println("JCasHashMap setting concurrency level to " + DEFAULT_CONCURRENCY_LEVEL);
+  }
+
+  private static final int PROBE_ADDR_INDEX = 0;
+  private static final int PROBE_DELTA_INDEX = 1;
     
   private static class ReserveTopType extends TOP_Type {
     public ReserveTopType() {
@@ -141,8 +151,9 @@ public class JCasHashMap {
     }
   }
   
-  // public for test case use
-  public static final TOP_Type RESERVE_TOP_TYPE_INSTANCE = new ReserveTopType(); 
+  // package private for test case use
+  static final TOP_Type RESERVE_TOP_TYPE_INSTANCE = new ReserveTopType(); 
+  
   private static boolean isReserve(FeatureStructureImpl m) {
     return m != null && ((TOP)m).jcasType == RESERVE_TOP_TYPE_INSTANCE;
   }
