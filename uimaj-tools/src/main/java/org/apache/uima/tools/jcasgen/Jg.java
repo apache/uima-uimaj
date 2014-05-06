@@ -150,28 +150,25 @@ public class Jg {
         continue;
       }
       String typeName = type.getName();
-      List fs = type.getFeatures();
-      List features = new ArrayList(fs.size());
-      if (null != fs) {
-        for (int i = 0; i < fs.size(); i++) {
-          Feature f = (Feature) fs.get(i);
-          String fName = f.getName();
-          String fTypeName = fName.substring(0, fName.indexOf(':'));
-          if (typeName.equals(fTypeName))
-            features.add(f);
-        }
-        FeatureDescription[] fds = new FeatureDescription[features.size()];
-        for (int i = 0; i < features.size(); i++) {
-          FeatureDescription fd = UIMAFramework.getResourceSpecifierFactory()
-                  .createFeatureDescription();
-          Feature f = (Feature) features.get(i);
-          fd.setName(f.getShortName());
-          fd.setRangeTypeName(f.getRange().getName());
-          fds[i] = fd;
-        }
-        extendableBuiltInTypes.put(typeName, fds);
-      } else
-        extendableBuiltInTypes.put(typeName, emptyFds);
+      List<Feature> fs = type.getFeatures();
+      List<Feature> features = new ArrayList<Feature>(fs.size());
+      for (int i = 0; i < fs.size(); i++) {
+        Feature f = fs.get(i);
+        String fName = f.getName();
+        String fTypeName = fName.substring(0, fName.indexOf(':'));
+        if (typeName.equals(fTypeName))
+          features.add(f);
+      }
+      FeatureDescription[] fds = new FeatureDescription[features.size()];
+      for (int i = 0; i < features.size(); i++) {
+        FeatureDescription fd = UIMAFramework.getResourceSpecifierFactory()
+                .createFeatureDescription();
+        Feature f = (Feature) features.get(i);
+        fd.setName(f.getShortName());
+        fd.setRangeTypeName(f.getRange().getName());
+        fds[i] = fd;
+      }
+      extendableBuiltInTypes.put(typeName, fds);
     }
   }
 
