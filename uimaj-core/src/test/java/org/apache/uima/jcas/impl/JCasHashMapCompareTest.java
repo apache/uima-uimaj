@@ -56,15 +56,16 @@ public class JCasHashMapCompareTest extends TestCase {
 
   
   public void testComp() throws Exception {
-    Thread.sleep(0000);
-    int numberOfThreads =  MultiThreadUtils.PROCESSORS;    
+    Thread.sleep(0000);  // set non-zero to delay so you can get yourkit tooling hooked up, if using yourkit
+    int numberOfThreads =  MultiThreadUtils.PROCESSORS; 
+    numberOfThreads = Math.min(8, JCasHashMap.nextHigherPowerOf2(numberOfThreads));  // avoid too big slowdown on giant machines.
     System.out.format("test JCasHashMapComp with %d threads%n", numberOfThreads);
     runCustom(numberOfThreads);
     runConCur(numberOfThreads);
-    runCustom(numberOfThreads);
-    runConCur(numberOfThreads);
-    runCustom(numberOfThreads);
-    runConCur(numberOfThreads);
+    runCustom(numberOfThreads*2);
+    runConCur(numberOfThreads*2);
+    runCustom(numberOfThreads*4);
+    runConCur(numberOfThreads*4);
 //    stats("custom", runCustom(numberOfThreads));  // not accurate, use yourkit retained size instead
 //    stats("concur", runConCur(numberOfThreads));
     Set<Integer> ints = new HashSet<Integer>();
@@ -84,8 +85,10 @@ public class JCasHashMapCompareTest extends TestCase {
     final ConcurrentMap<Integer, FeatureStructureImpl> m = 
         new ConcurrentHashMap<Integer, FeatureStructureImpl>(200, 0.75F, numberOfThreads);
     concurrentMap = m;
-    final Object[] waiters = new Object[16];
-    for (int i = 0; i < 16; i++) {
+    
+    final int numberOfWaiters = numberOfThreads*2;
+    final Object[] waiters = new Object[numberOfWaiters];
+    for (int i = 0; i < numberOfWaiters; i++) {
       waiters[i] = new Object();
     }
     MultiThreadUtils.Run2isb run2isb= new MultiThreadUtils.Run2isb() {
@@ -94,7 +97,7 @@ public class JCasHashMapCompareTest extends TestCase {
 //        int founds = 0, puts = 0;
         for (int i = 0; i < sizeOfTest*threadNumber; i++) {
           final int key = hash(i, threadNumber) / 2;
-          final Object waiter = waiters[key & 15];
+          final Object waiter = waiters[key & (numberOfWaiters - 1)];
           FeatureStructureImpl fs = m.putIfAbsent(key, new TOP(key, JCasHashMap.RESERVE_TOP_TYPE_INSTANCE));
           while (fs != null && ((TOP)fs).jcasType == JCasHashMap.RESERVE_TOP_TYPE_INSTANCE) {
             // someone else reserved this
@@ -134,7 +137,7 @@ public class JCasHashMapCompareTest extends TestCase {
           public void run() {
             m.clear();
         }});
-    System.out.format("JCasCompTest - concur, time = %,f seconds%n", (System.currentTimeMillis() - start) / 1000.f);
+    System.out.format("JCasCompTest - concur, threads = %d, time = %,f seconds%n", numberOfThreads, (System.currentTimeMillis() - start) / 1000.f);
     return m.size();
   }
   
@@ -168,7 +171,7 @@ public class JCasHashMapCompareTest extends TestCase {
           public void run() {
             m.clear();
         }});
-    System.out.format("JCasCompTest - custom, time = %,f seconds%n", (System.currentTimeMillis() - start) / 1000.f);
+    System.out.format("JCasCompTest - custom, threads = %d, time = %,f seconds%n", numberOfThreads, (System.currentTimeMillis() - start) / 1000.f);
     m.showHistogram();
     return m.getApproximateSize();
   }

@@ -60,25 +60,23 @@ public class JCasHashMapTest extends TestCase {
    
   public void testBasic() {
     JCasHashMap m;
-    int defaultLevel = JCasHashMap.DEFAULT_CONCURRENCY_LEVEL;
-    if (defaultLevel < 2) {
-      System.out.println("JCasHashMap  skipping basic, nbr of processors is " + Runtime.getRuntime().availableProcessors());
-      return;
+
+    for (int i = 1; i <= 128; i *= 2) {
+      JCasHashMap.setDEFAULT_CONCURRENCY_LEVEL(i);
+      // test default concurrency level adjusted down 
+      m = new JCasHashMap(32 * i, true);
+      assertEquals( i, m.getConcurrencyLevel());
+      m = new JCasHashMap(16 * i, true);
+      assertEquals(Math.max(1, i / 2), m.getConcurrencyLevel());
+      
+      //test capacity adjusted up
+      m = new JCasHashMap(32 * i, true, i);
+      assertEquals( 32 * i, m.getCapacity());
+      m = new JCasHashMap(31 * i, true, i);
+      assertEquals( 32 * i, m.getCapacity());
+      m = new JCasHashMap(16 * i, true, i);
+      assertEquals( 32 * i, m.getCapacity());
     }
-    
-    // test default concurrency level adjusted down 
-    m = new JCasHashMap(32 * defaultLevel, true);
-    assertEquals( defaultLevel, m.getConcurrencyLevel());
-    m = new JCasHashMap(16 * defaultLevel, true);
-    assertEquals(Math.max(1, defaultLevel / 2), m.getConcurrencyLevel());
-    
-    //test capacity adjusted up
-    m = new JCasHashMap(32 * defaultLevel, true, defaultLevel);
-    assertEquals( 32 * defaultLevel, m.getCapacity());
-    m = new JCasHashMap(31 * defaultLevel, true, defaultLevel);
-    assertEquals( 32 * defaultLevel, m.getCapacity());
-    m = new JCasHashMap(16 * defaultLevel, true, defaultLevel);
-    assertEquals( 32 * defaultLevel, m.getCapacity());    
   }
   
   public void testWithPerf()  {
@@ -98,86 +96,93 @@ public class JCasHashMapTest extends TestCase {
   public void testMultiThread() throws Exception {
     final Random random = new Random();
     int numberOfThreads = MultiThreadUtils.PROCESSORS;    
-    System.out.format("test JCasHashMap with %d threads%n", numberOfThreads);
-    
-    final JCasHashMap m = new JCasHashMap(200, true); // true = do use cache 
+    System.out.format("test JCasHashMap with up to %d threads%n", numberOfThreads);
 
-    MultiThreadUtils.Run2isb run2isb = new MultiThreadUtils.Run2isb() {
-      
-      public void call(int threadNumber, int repeatNumber, StringBuilder sb) {
-        for (int k = 0; k < 4; k++) {
-          for (int i = 0; i < SIZE / 4; i++) {
-            final int key = addrs[random.nextInt(SIZE / 16)];
-            FeatureStructureImpl fs = m.getReserve(key);
-            if (null == fs) {
-              m.put(new TOP(key, FAKE_TOP_TYPE_INSTANCE));
+    
+    for (int th = 2; th <= numberOfThreads; th *=2) {
+      JCasHashMap.setDEFAULT_CONCURRENCY_LEVEL(th);
+      final JCasHashMap m = new JCasHashMap(200, true); // true = do use cache   
+      MultiThreadUtils.Run2isb run2isb = new MultiThreadUtils.Run2isb() {
+        
+        public void call(int threadNumber, int repeatNumber, StringBuilder sb) {
+          for (int k = 0; k < 4; k++) {
+            for (int i = 0; i < SIZE / 4; i++) {
+              final int key = addrs[random.nextInt(SIZE / 16)];
+              FeatureStructureImpl fs = m.getReserve(key);
+              if (null == fs) {
+                m.put(new TOP(key, FAKE_TOP_TYPE_INSTANCE));
+              }
+            }
+            try {
+              Thread.sleep(0, random.nextInt(1000));
+            } catch (InterruptedException e) {
+              // TODO Auto-generated catch block
+              e.printStackTrace();
             }
           }
-          try {
-            Thread.sleep(0, random.nextInt(1000));
-          } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-          }
+  //        System.out.println(sb.toString());
         }
-//        System.out.println(sb.toString());
-      }
-    };  
-    MultiThreadUtils.tstMultiThread("JCasHashMapTest",  numberOfThreads,  10, run2isb,
-        new Runnable() {
-          public void run() {
-            m.clear();
-          }});
+      };  
+      MultiThreadUtils.tstMultiThread("JCasHashMapTest",  numberOfThreads,  10, run2isb,
+          new Runnable() {
+            public void run() {
+              m.clear();
+            }});
+    }
   }
 
   public void testMultiThreadCompare() throws Exception {
     final Random random = new Random();
     int numberOfThreads = MultiThreadUtils.PROCESSORS;    
-    System.out.format("test JCasHashMap with compare with %d threads%n", numberOfThreads);
+    System.out.format("test JCasHashMap with compare with up to %d threads%n", numberOfThreads);
 
     final ConcurrentMap<Integer, FeatureStructureImpl> check = 
         new ConcurrentHashMap<Integer, FeatureStructureImpl>(SIZE, .5F, numberOfThreads * 2);
-    final JCasHashMap m = new JCasHashMap(200, true); // true = do use cache 
-
-    MultiThreadUtils.Run2isb run2isb = new MultiThreadUtils.Run2isb() {
-      
-      public void call(int threadNumber, int repeatNumber, StringBuilder sb) {
-        for (int k = 0; k < 4; k++) {
-          for (int i = 0; i < SIZE / 4; i++) {
-            final int key = addrs[random.nextInt(SIZE / 16)];
-            FeatureStructureImpl fs = m.getReserve(key);
-            if (null == fs) {
-              fs = new TOP(key, FAKE_TOP_TYPE_INSTANCE);
-              check.put(key, fs);  
-              m.put(fs);
-            } else {
-              FeatureStructureImpl fscheck = check.get(key);
-              if (fscheck == null || fscheck != fs) {
-                String msg = String.format("JCasHashMapTest miscompare, repeat=%,d, count=%,d key=%,d"
-                    + ", checkKey=%s JCasHashMapKey=%,d",
-                    k, i, key, (null == fscheck) ? "null" : Integer.toString(fscheck.getAddress()), fs.getAddress());
-                System.err.println(msg);
-                throw new RuntimeException(msg);
+    
+    for (int th = 2; th <= numberOfThreads; th *= 2) {
+      JCasHashMap.setDEFAULT_CONCURRENCY_LEVEL(th);
+      final JCasHashMap m = new JCasHashMap(200, true); // true = do use cache 
+  
+      MultiThreadUtils.Run2isb run2isb = new MultiThreadUtils.Run2isb() {
+        
+        public void call(int threadNumber, int repeatNumber, StringBuilder sb) {
+          for (int k = 0; k < 4; k++) {
+            for (int i = 0; i < SIZE / 4; i++) {
+              final int key = addrs[random.nextInt(SIZE / 16)];
+              FeatureStructureImpl fs = m.getReserve(key);
+              if (null == fs) {
+                fs = new TOP(key, FAKE_TOP_TYPE_INSTANCE);
+                check.put(key, fs);  
+                m.put(fs);
+              } else {
+                FeatureStructureImpl fscheck = check.get(key);
+                if (fscheck == null || fscheck != fs) {
+                  String msg = String.format("JCasHashMapTest miscompare, repeat=%,d, count=%,d key=%,d"
+                      + ", checkKey=%s JCasHashMapKey=%,d",
+                      k, i, key, (null == fscheck) ? "null" : Integer.toString(fscheck.getAddress()), fs.getAddress());
+                  System.err.println(msg);
+                  throw new RuntimeException(msg);
+                }
               }
             }
+            try {
+              Thread.sleep(0, random.nextInt(1000));
+            } catch (InterruptedException e) {
+              // TODO Auto-generated catch block
+              e.printStackTrace();
+            }
           }
-          try {
-            Thread.sleep(0, random.nextInt(1000));
-          } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-          }
+  //        System.out.println(sb.toString());
         }
-//        System.out.println(sb.toString());
-      }
-    };  
-    MultiThreadUtils.tstMultiThread("JCasHashMapTest",  numberOfThreads,  10, run2isb, 
-        new Runnable() {
-          public void run() {
-            check.clear();
-            m.clear();
-          }
-    });
+      };  
+      MultiThreadUtils.tstMultiThread("JCasHashMapTest",  numberOfThreads,  10, run2isb, 
+          new Runnable() {
+            public void run() {
+              check.clear();
+              m.clear();
+            }
+      });
+    }
   }
   /**
    * Create situation
@@ -194,58 +199,62 @@ public class JCasHashMapTest extends TestCase {
     if (numberOfThreads < 2) {
       return;
     }
-    System.out.format("test JCasHashMap collide with %d threads", numberOfThreads);
+    System.out.format("test JCasHashMap collide with up to %d threads", numberOfThreads);
     final Random r = new Random();
-    final JCasHashMap m = new JCasHashMap(200, true); // true = do use cache 
     final int hashKey = 15;
     final TOP fs = new TOP(hashKey, FAKE_TOP_TYPE_INSTANCE);
-    
-    final Thread[] threads = new Thread[numberOfThreads];
-    final FeatureStructureImpl[] found = new FeatureStructureImpl[numberOfThreads];
-    
-    for (int i = 0; i < numberOfThreads; i++) {
-      final int finalI = i;
-      threads[i] = new Thread(new Runnable() {
-        public void run() {
-          try {
-            Thread.sleep(r.nextInt(5));
-          } catch (InterruptedException e) {
+
+    for (int th = 2; th <= numberOfThreads; th *= 2) {
+      JCasHashMap.setDEFAULT_CONCURRENCY_LEVEL(th);
+      final JCasHashMap m = new JCasHashMap(200, true); // true = do use cache 
+  
+      final Thread[] threads = new Thread[numberOfThreads];
+      final FeatureStructureImpl[] found = new FeatureStructureImpl[numberOfThreads];
+      
+      for (int i = 0; i < numberOfThreads; i++) {
+        final int finalI = i;
+        threads[i] = new Thread(new Runnable() {
+          public void run() {
+            try {
+              Thread.sleep(r.nextInt(5));
+            } catch (InterruptedException e) {
+            }
+             found[finalI] = m.getReserve(hashKey);
           }
-           found[finalI] = m.getReserve(hashKey);
+        });
+        threads[i].start();
+      }
+      Thread.sleep(100); 
+      // verify that one thread finished, others are waiting
+      int numberWaiting = 0;
+      int threadFinished = -1;
+      for (int i = 0; i < numberOfThreads; i++) {
+        if (threads[i].isAlive()) {
+          numberWaiting ++;
+        } else {
+          threadFinished = i;
         }
-      });
-      threads[i].start();
-    }
-    Thread.sleep(100); 
-    // verify that one thread finished, others are waiting
-    int numberWaiting = 0;
-    int threadFinished = -1;
-    for (int i = 0; i < numberOfThreads; i++) {
-      if (threads[i].isAlive()) {
-        numberWaiting ++;
-      } else {
-        threadFinished = i;
       }
-    }
-    
-    assertEquals(numberOfThreads - 1, numberWaiting);
-    m.put(fs);
-    found[threadFinished] = fs;
-    Thread.sleep(10);  
-    
-    numberWaiting = 0;
-    for (int i = 0; i < numberOfThreads; i++) {
-      if (threads[i].isAlive()) {
-        numberWaiting ++;
+      
+      assertEquals(numberOfThreads - 1, numberWaiting);
+      m.put(fs);
+      found[threadFinished] = fs;
+      Thread.sleep(10);  
+      
+      numberWaiting = 0;
+      for (int i = 0; i < numberOfThreads; i++) {
+        if (threads[i].isAlive()) {
+          numberWaiting ++;
+        }
       }
-    }
-    assertEquals(0, numberWaiting);
-    System.out.format("JCasHashMapTest collide,  found = %s%n", intList(found));
-    for (FeatureStructureImpl f : found) {
-      if (f != fs) {
-        System.err.format("JCasHashMapTest miscompare fs = %s,  f = %s%n", fs, (f == null) ? "null" : f);
+      assertEquals(0, numberWaiting);
+//      System.out.format("JCasHashMapTest collide,  found = %s%n", intList(found));
+      for (FeatureStructureImpl f : found) {
+        if (f != fs) {
+          System.err.format("JCasHashMapTest miscompare fs = %s,  f = %s%n", fs, (f == null) ? "null" : f);
+        }
+        assertTrue(f == fs);
       }
-      assertTrue(f == fs);
     }
   }
   
@@ -322,54 +331,69 @@ public class JCasHashMapTest extends TestCase {
   
   public void testGrowth() {
     System.out.println("JCasHashMapTest growth");
-    int cores = Runtime.getRuntime().availableProcessors();
-    double loadfactor = .6;
-    int sub_capacity = 64;
-    int subs = (cores < 17) ? cores / 2 :
-               (cores < 33) ? 8 + (cores - 16) / 4 : 
-                             12 + (cores - 24) / 8;
-    int agg_capacity = subs * sub_capacity;
-    JCasHashMap m = new JCasHashMap(agg_capacity, true); // true = do use cache 
-    assertTrue(m.getApproximateSize() == 0);
-     
-    int switchpoint = (int)Math.floor(agg_capacity * loadfactor);
-    fill(switchpoint, m);
-    assertTrue(checkSubsCapacity(m, 64, 128));
-    System.out.println("JCasHashMapTest growth - adding 1 past switchpoint");
-    m.put(new TOP(addrs[switchpoint + 1], null));
-    assertTrue(checkSubsCapacity(m, 64, 128));
-    
-    m.clear();
-    assertTrue(checkSubsCapacity(m, 64, 128));
-
-
-    fill(switchpoint, m);
-    assertTrue(checkSubsCapacity(m, 64, 128));
-    m.put(new TOP(addrs[switchpoint + 1], null));
-    assertTrue(checkSubsCapacity(m, 64, 128));
-
-    m.clear();  // size is above switchpoint, so no shrinkage
-    assertTrue(checkSubsCapacity(m, 64, 128));
-    m.clear();  // size is 0, so first time shrinkage a possibility
-    assertTrue(checkSubsCapacity(m, 64, 128)); // but we don't shrink on first time
-    m.clear(); 
-    assertTrue(checkSubsCapacity(m, 64, 64));  // but we do on second time
-    m.clear(); 
-    assertTrue(checkSubsCapacity(m, 64, 64));
-    m.clear(); 
-    assertTrue(checkSubsCapacity(m, 64, 64));  // don't shrink below minimum
+    for (int th = 2; th <= 128; th *= 2) {
+      JCasHashMap.setDEFAULT_CONCURRENCY_LEVEL(th);
+      double loadfactor = .6;  // from JCasHashMap impl
+      int sub_capacity = 32;   // from JCasHashMap impl
+      int subs = th;
+      int agg_capacity = subs * sub_capacity;
+      JCasHashMap m = new JCasHashMap(agg_capacity, true); // true = do use cache 
+      assertEquals(0, m.getApproximateSize());
+      assertEquals(agg_capacity, m.getCapacity());
+       
+      int switchpoint = (int)Math.floor(agg_capacity * loadfactor);
+      fill(switchpoint, m);
+      System.out.print("JCasHashMapTest: after fill to switch point: ");
+      assertTrue(checkSubsCapacity(m, sub_capacity));
+      System.out.print("JCasHashMapTest: after 1 past switch point:  ");
+      m.put(new TOP(addrs[switchpoint + 1], null));
+      assertTrue(checkSubsCapacity(m, sub_capacity));
+      
+      m.clear();
+      System.out.print("JCasHashMapTest: after clear:                ");
+      assertTrue(checkSubsCapacity(m, sub_capacity));
+  
+  
+      fill(switchpoint, m);
+      System.out.print("JCasHashMapTest: after fill to switch point: ");
+      assertTrue(checkSubsCapacity(m, sub_capacity));
+      m.put(new TOP(addrs[switchpoint + 1], null));
+      System.out.print("JCasHashMapTest: after 1 past switch point:  ");
+      assertTrue(checkSubsCapacity(m, sub_capacity));
+  
+      m.clear();  // size is above switchpoint, so no shrinkage
+      System.out.print("JCasHashMapTest: after clear (size above sp: ");
+      assertTrue(checkSubsCapacity(m, sub_capacity));
+      m.clear();  // size is 0, so first time shrinkage a possibility
+      System.out.print("JCasHashMapTest: clear (size below sp:       ");
+      assertTrue(checkSubsCapacity(m, sub_capacity)); // but we don't shrink on first time
+      m.clear(); 
+      System.out.print("JCasHashMapTest: clear (size below 2nd time: ");
+      assertTrue(checkSubsCapacity(m, sub_capacity, sub_capacity));  // but we do on second time
+//      m.clear(); 
+//      System.out.print("JCasHashMapTest: clear (size below 3rd time: ");
+//      assertTrue(checkSubsCapacity(m, sub_capacity, sub_capacity));
+//      m.clear(); 
+//      System.out.print("JCasHashMapTest: clear (size below 4th time: ");
+//      assertTrue(checkSubsCapacity(m, sub_capacity, sub_capacity));  // don't shrink below minimum
+    }
   }
 
+  private boolean checkSubsCapacity(JCasHashMap m, int v) {
+    return checkSubsCapacity(m, v, v * 2);
+  }
+  
+  // check: the subMaps should be mostly of size v, but some might be of size v*2.
   private boolean checkSubsCapacity(JCasHashMap m, int v, int v2) {
     int[] caps = m.getCapacities();
     for (int i : caps) {
       if (i == v || i == v2 ) {
         continue;
       }
-      System.err.format("JCasHashMapTest: expected %d or %d, but got %s%n", v, v2, intList(caps));
+      System.err.format("expected %d or %d, but got %s%n", v, v2, intList(caps));
       return false;
     }
-    System.out.format("JCasHashMapTest: capacities are: %s%n", intList(caps));
+    System.out.format("%s%n", intListPm(caps, v));
     return true;
   }
   
@@ -377,6 +401,14 @@ public class JCasHashMapTest extends TestCase {
     StringBuilder sb = new StringBuilder();
     for (int i : a) {
       sb.append(i).append(", ");
+    }
+    return sb.toString();
+  }
+  
+  private String intListPm(int[] a, int smaller) {
+    StringBuilder sb = new StringBuilder(a.length);
+    for (int i : a) {
+      sb.append(i == smaller ? '.' : '+');
     }
     return sb.toString();
   }
