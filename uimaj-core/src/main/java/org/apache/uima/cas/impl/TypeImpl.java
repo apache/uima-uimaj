@@ -202,6 +202,9 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
     return getFeatureByBaseName(featureName);
   }
 
+  /**
+   * guaranteed to be non-null, but might be empty list
+   */
   public List<Feature> getFeatures() {
     int[] feats = this.ts.ll_getAppropriateFeatures(this.code);
     List<Feature> list = new ArrayList<Feature>(feats.length);
