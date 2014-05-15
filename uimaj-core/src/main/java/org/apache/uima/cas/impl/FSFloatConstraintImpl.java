@@ -159,11 +159,11 @@ class FSFloatConstraintImpl implements FSFloatConstraint {
     buf.append("( ");
     for (int i = 0; i < this.codes.size(); i++) {
       buf.append(toString(this.codes.get(i)));
-      buf.append(" ");
+      buf.append(' ');
       buf.append(((Float) this.values.get(i)).toString());
-      buf.append(" ");
+      buf.append(' ');
     }
-    buf.append(")");
+    buf.append(')');
     return buf.toString();
   }
 

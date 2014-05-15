@@ -69,7 +69,7 @@ class FSStringConstraintImpl implements FSStringConstraint {
           buf.append(c);
       }
     }
-    buf.append("\"");
+    buf.append('"');
     return buf.toString();
   }
 

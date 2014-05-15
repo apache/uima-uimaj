@@ -565,7 +565,7 @@ class IntRBTNode {
       System.out.print(' ');
     }
     System.out.print(this.key);
-    System.out.print(":");
+    System.out.print(':');
     if (this.color == RED) {
       System.out.println("red");
     } else {

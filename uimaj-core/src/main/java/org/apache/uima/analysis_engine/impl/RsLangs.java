@@ -77,7 +77,7 @@ public class RsLangs {
     }
     builder.append(", isShared=");
     builder.append(isShared);
-    builder.append("]");
+    builder.append(']');
     return builder.toString();
   }
 

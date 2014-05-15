@@ -127,10 +127,7 @@ public class Level {
    * @return boolean true if the message level is less than OFF
    */
   public boolean isOn() {
-    if (level < OFF_INT)
-      return true;
-    else
-      return false;
+    return level < OFF_INT;
   }
 
   /**

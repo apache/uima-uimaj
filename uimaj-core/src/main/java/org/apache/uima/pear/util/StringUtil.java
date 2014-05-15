@@ -226,7 +226,7 @@ public class StringUtil {
     for (int i = 0; i < chars2escape.length; i++) {
       escBuff.setLength(0);
       repBuff.setLength(0);
-      escBuff.append("\\");
+      escBuff.append('\\');
       escBuff.append(chars2escape[i]);
       repBuff.append("\\\\");
       repBuff.append(escBuff);

@@ -115,7 +115,7 @@ public class PrimitiveArrayFSImpl extends FeatureStructureImpl implements Primit
     if (getId() != null) {
       buf.append("ID = ").append(getId()).append('\n');
     }
-    buf.append("[");
+    buf.append('[');
     for (int i = 0; i < strArray.length; i++) {
       buf.append(strArray[i]);
       if (i < strArray.length - 1) {

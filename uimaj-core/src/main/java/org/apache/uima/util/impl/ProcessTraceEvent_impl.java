@@ -215,12 +215,12 @@ public class ProcessTraceEvent_impl implements ProcessTraceEvent {
     final DecimalFormat pctFmt = new DecimalFormat("##.##%");
 
     writeTabs(aIndentLevel, aBuf);
-    aBuf.append("Component Name: ").append(getComponentName()).append("\n");
+    aBuf.append("Component Name: ").append(getComponentName()).append('\n');
     writeTabs(aIndentLevel, aBuf);
-    aBuf.append("Event Type: ").append(getType()).append("\n");
+    aBuf.append("Event Type: ").append(getType()).append('\n');
     if (getDescription() != null && getDescription().length() > 0) {
       writeTabs(aIndentLevel, aBuf);
-      aBuf.append("Description: ").append(getDescription()).append("\n");
+      aBuf.append("Description: ").append(getDescription()).append('\n');
     }
 
     int duration = getDuration();
@@ -237,17 +237,17 @@ public class ProcessTraceEvent_impl implements ProcessTraceEvent {
 
     if (getResultMessage() != null && getResultMessage().length() > 0) {
       writeTabs(aIndentLevel, aBuf);
-      aBuf.append("Result: ").append(getResultMessage()).append("\n");
+      aBuf.append("Result: ").append(getResultMessage()).append('\n');
     }
 
     List<ProcessTraceEvent> subEvents = getSubEvents();
     if (!subEvents.isEmpty()) {
       writeTabs(aIndentLevel, aBuf);
-      aBuf.append("Sub-events:").append("\n");
+      aBuf.append("Sub-events:").append('\n');
 
       for (ProcessTraceEvent evt : subEvents) {
         evt.toString(aBuf, aIndentLevel + 1, aTotalTime);
-        aBuf.append("\n");
+        aBuf.append('\n');
       }
     }
   }

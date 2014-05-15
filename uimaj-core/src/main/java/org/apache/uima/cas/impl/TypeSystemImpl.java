@@ -1111,7 +1111,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
    * @see org.apache.uima.cas.admin.TypeSystemMgr#commit()
    */
   public void commit() {
-    if (this.locked == true) {
+    if (this.locked) {
       return; // might be called multiple times, but only need to do once
     }
     this.locked = true;

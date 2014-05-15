@@ -482,7 +482,7 @@ public abstract class FeatureStructureImpl implements FeatureStructure, Cloneabl
 		if (s != null) {
 			buf.append(" \"" + s + "\"");
 		}
-		buf.append("\n");
+		buf.append('\n');
 		CommonAuxArrayFSImpl arrayFS = null;
 		LowLevelTypeSystem llts = this.getCASImpl().ll_getTypeSystem();
 		final int typeClass = this.getCASImpl().ll_getTypeClass(llts.ll_getCodeForType(this.getType()));

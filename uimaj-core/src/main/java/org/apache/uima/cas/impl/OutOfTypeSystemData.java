@@ -65,14 +65,14 @@ public class OutOfTypeSystemData {
     buf.append("FeatureStructures\n-----------------\n");
     
     for (FSData fs : fsList) {
-      buf.append(fs.toString()).append("\n");
+      buf.append(fs.toString()).append('\n');
     }
     buf.append("\nFeatures\n-----------------\n");
     for (Map.Entry<Integer, List<String[]>> entry : extraFeatureValues.entrySet()) {
       Integer id = entry.getKey();
       buf.append(id).append(": ");
       for (String[] attr : entry.getValue()) {
-        buf.append(attr[0]).append("=").append(attr[1]).append('\n');
+        buf.append(attr[0]).append('=').append(attr[1]).append('\n');
       }
     }
     return buf.toString();

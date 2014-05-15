@@ -786,7 +786,7 @@ public class IntArrayRBTcommon {
     if (this.color[node] == black) {
       buf.append(" BLACK");
     }
-    buf.append("\n");
+    buf.append('\n');
     printKeys(getLeft(node), offset + 2, buf);
     printKeys(getRight(node), offset + 2, buf);
   }

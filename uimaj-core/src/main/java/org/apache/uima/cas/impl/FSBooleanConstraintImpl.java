@@ -55,7 +55,7 @@ public class FSBooleanConstraintImpl implements FSBooleanConstraint {
     StringBuffer buf = new StringBuffer();
     buf.append("= \"");
     buf.append(this.condition);
-    buf.append("\"");
+    buf.append('"');
     return buf.toString();
 }
   

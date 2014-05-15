@@ -40,7 +40,7 @@ public class StringUtils {
    */
   public static final void printSpaces(int n, StringBuffer buf) {
     for (int i = 0; i < n; i++) {
-      buf.append(" ");
+      buf.append(' ');
     }
   }
 

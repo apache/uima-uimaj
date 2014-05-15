@@ -94,9 +94,9 @@ class FSTypeConstraintImpl implements FSTypeConstraint {
 				buf.append("| ");
 			}
 			buf.append(name);
-			buf.append(" ");
+			buf.append(' ');
 		}
-		buf.append(")");
+		buf.append(')');
 		return buf.toString();
 	}
 
