@@ -719,7 +719,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
       StringBuffer msg = new StringBuffer(100);
       for (Exception f : sv.errorSet) {
         msg.append(f.getMessage());
-        msg.append("\n");
+        msg.append('\n');
       }
       CASException e = new CASException(CASException.JCAS_INIT_ERROR,
           new String[] { msg.toString() });

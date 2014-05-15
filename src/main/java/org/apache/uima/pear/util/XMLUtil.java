@@ -358,7 +358,7 @@ public class XMLUtil {
    */
   public static void printError(String type, SAXParseException ex) {
 
-    System.err.print("[");
+    System.err.print('[');
     System.err.print(type);
     System.err.print("] ");
 

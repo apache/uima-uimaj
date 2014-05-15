@@ -808,17 +808,17 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 		}
 		result.append(this.featureName);
 		if (this.isArrayOrList) {
-			result.append("[");
+			result.append('[');
 			if (!this.isBracketsOnly && this.arrayIndex >= 0) {
 				result.append(this.arrayIndex);
 			}
 			if (this.arrayIndex == LAST_ARRAY_ENTRY) {
 				result.append(LAST_ARRAY_ENTRY_MARKER);
 			}
-			result.append("]");
+			result.append(']');
 		}
 		if (this.childPath != null) {
-			result.append("/");
+			result.append('/');
 			result.append(this.childPath.toString());
 		}
 		return result.toString();

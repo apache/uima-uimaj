@@ -164,7 +164,7 @@ public class CasPoolTest extends TestCase {
       RootUimaContext_impl rootContext = new RootUimaContext_impl();
       ChildUimaContext_impl context = new ChildUimaContext_impl(rootContext, "abc", Collections.singletonMap(CAS.NAME_DEFAULT_SOFA, "mappedName"));
       c1.setCurrentComponentInfo(context.getComponentInfo());
-      casManager.releaseCas(c1);;
+      casManager.releaseCas(c1);
 
     } catch (Exception e) {
       JUnitExtension.handleException(e);

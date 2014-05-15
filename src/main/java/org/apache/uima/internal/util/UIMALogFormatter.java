@@ -69,7 +69,7 @@ public class UIMALogFormatter extends Formatter {
 
     // append source method if logrb() was used
     if (record.getSourceMethodName() != null) {
-      buffer.append(".");
+      buffer.append('.');
       buffer.append(record.getSourceMethodName());
     }
 

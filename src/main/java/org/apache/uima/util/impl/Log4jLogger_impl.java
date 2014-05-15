@@ -469,9 +469,9 @@ public class Log4jLogger_impl implements Logger {
       if (lineNumber > 0) {
          StringBuffer buffer = new StringBuffer(25);
          buffer.append(sourceMethod);
-         buffer.append("(");
+         buffer.append('(');
          buffer.append(lineNumber);
-         buffer.append(")");
+         buffer.append(')');
          sourceMethod = buffer.toString();
       }
 

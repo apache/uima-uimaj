@@ -84,7 +84,7 @@ public class ProgressImpl implements Progress, Cloneable {
     if (getTotal() >= 0) {
       buf.append(" of ").append(getTotal());
     }
-    buf.append(" ").append(getUnit());
+    buf.append(' ').append(getUnit());
     if (isApproximate()) {
       buf.append(" (approximate)");
     }

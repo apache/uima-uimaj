@@ -347,7 +347,7 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
     if (getDefaultGroupName() != null) {
       buf.append("defaultGroup = \"");
       buf.append(getDefaultGroupName());
-      buf.append("\"");
+      buf.append('"');
     }
     if (getSearchStrategy() != null) {
       if (buf.length() > 0) {
@@ -355,7 +355,7 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
       }
       buf.append("searchStrategy = \"");
       buf.append(getSearchStrategy());
-      buf.append("\"");
+      buf.append('"');
     }
     return buf.toString();
   }

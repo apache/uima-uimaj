@@ -551,7 +551,7 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("org.apache.uima.analysis_engine.impl.ResultSpecification_impl:\n");
-    sb.append("  needsCompilation = ").append(needsCompilation).append("\n");
+    sb.append("  needsCompilation = ").append(needsCompilation).append('\n');
 //    sb.append("lang2int = ").append(lang2int).append("\n");
 //    sb.append("name2tof_langs = ").append(name2tof_langs).append("\n");
 //    sb.append("withSubtypesName2tof_langs = ").append(withSubtypesName2tof_langs).append("\n");
@@ -570,10 +570,10 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
         Entry<String, RsLangs> e = (Entry<String, RsLangs>) o;
         String k = e.getKey();
         k = k + "        ".substring(k.length()%8);
-        sb.append(" key: ").append(k).append("  value: ").append(e.getValue()).append("\n");
+        sb.append(" key: ").append(k).append("  value: ").append(e.getValue()).append('\n');
       }
     }
-    sb.append("\n\nmTypeSystem = ").append(mTypeSystem).append("\n");
+    sb.append("\n\nmTypeSystem = ").append(mTypeSystem).append('\n');
     return sb.toString();
   }
 

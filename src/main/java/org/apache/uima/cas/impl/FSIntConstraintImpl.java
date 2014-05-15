@@ -158,11 +158,11 @@ class FSIntConstraintImpl implements FSIntConstraint {
     buf.append("( ");
     for (int i = 0; i < this.codes.size(); i++) {
       buf.append(FSFloatConstraintImpl.toString(this.codes.get(i)));
-      buf.append(" ");
+      buf.append(' ');
       buf.append(Integer.toString(this.values.get(i)));
-      buf.append(" ");
+      buf.append(' ');
     }
-    buf.append(")");
+    buf.append(')');
     return buf.toString();
   }
 

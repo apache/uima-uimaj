@@ -576,12 +576,12 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
         Object[] array = (Object[]) val;
         buf.append("Array{");
         for (int j = 0; j < array.length; j++) {
-          buf.append(j).append(": ").append(array[j].toString()).append("\n");
+          buf.append(j).append(": ").append(array[j].toString()).append('\n');
         }
         buf.append("}\n");
       } else
         buf.append(val.toString());
-      buf.append("\n");
+      buf.append('\n');
     }
     return buf.toString();
   }
@@ -1614,7 +1614,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
   private void maybeOutputCoIwBeforeStart(ContentHandler contentHandler, Node node) throws SAXException {
     int indent = 0;
     if (contentHandler instanceof CharacterValidatingContentHandler) {
-      indent = ((CharacterValidatingContentHandler) contentHandler).getIndent();;
+      indent = ((CharacterValidatingContentHandler) contentHandler).getIndent();
     }
    
     if (null == node) {

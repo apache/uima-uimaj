@@ -438,14 +438,14 @@ public class IntVector implements Serializable {
 
   public String toString() {
     StringBuffer buf = new StringBuffer();
-    buf.append("[");
+    buf.append('[');
     for (int i = 0; i < this.pos; i++) {
       if (i > 0) {
         buf.append(", ");
       }
       buf.append(this.array[i]);
     }
-    buf.append("]");
+    buf.append(']');
     return buf.toString();
   }
 

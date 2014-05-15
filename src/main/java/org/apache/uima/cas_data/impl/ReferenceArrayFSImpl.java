@@ -59,7 +59,7 @@ public class ReferenceArrayFSImpl extends FeatureStructureImpl implements Refere
     if (getId() != null) {
       buf.append("ID = ").append(getId()).append('\n');
     }
-    buf.append("[");
+    buf.append('[');
     int size = size();
     for (int i = 0; i < size; i++) {
       buf.append(mIdRefs[i]);

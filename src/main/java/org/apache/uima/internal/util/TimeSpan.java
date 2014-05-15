@@ -314,58 +314,58 @@ public class TimeSpan {
     boolean started = false;
     if (this.years > 0) {
       buf.append(this.years);
-      buf.append(" ");
+      buf.append(' ');
       buf.append(yearsString);
       started = true;
     }
     if (started || this.days > 0) {
       if (started) {
-        buf.append(" ");
+        buf.append(' ');
       }
       buf.append(this.days);
-      buf.append(" ");
+      buf.append(' ');
       buf.append(daysString);
       started = true;
     }
     if (started || this.hours > 0) {
       if (started) {
-        buf.append(" ");
+        buf.append(' ');
       }
       buf.append(this.hours);
-      buf.append(" ");
+      buf.append(' ');
       buf.append(hoursString);
       started = true;
     }
     if (started || this.minutes > 0) {
       if (started) {
-        buf.append(" ");
+        buf.append(' ');
       }
       buf.append(this.minutes);
-      buf.append(" ");
+      buf.append(' ');
       buf.append(minutesString);
       started = true;
     }
     if (started || this.seconds > 0) {
       if (started) {
-        buf.append(" ");
+        buf.append(' ');
       }
       buf.append(this.seconds);
       started = true;
     }
     if (started) {
-      buf.append(".");
+      buf.append('.');
       if (this.milliseconds < 100) {
-        buf.append("0");
+        buf.append('0');
         if (this.milliseconds < 10) {
-          buf.append("0");
+          buf.append('0');
         }
       }
       buf.append(this.milliseconds);
-      buf.append(" ");
+      buf.append(' ');
       buf.append(secondsString);
     } else {
       buf.append(this.milliseconds);
-      buf.append(" ");
+      buf.append(' ');
       buf.append(msString);
     }
     return buf.toString();

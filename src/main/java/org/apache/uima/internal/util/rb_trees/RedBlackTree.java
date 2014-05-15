@@ -330,14 +330,14 @@ public class RedBlackTree<T> implements Iterable<T> {
     System.out.println("");
 
     int[] a = tree.keySet();
-    System.out.print("[");
+    System.out.print('[');
     for (int i = 0; i < a.length; i++) {
       if (i != 0) {
-        System.out.print(",");
+        System.out.print(',');
       }
       System.out.print(a[i]);
     }
-    System.out.println("]");
+    System.out.println(']');
 
     tree.remove(1);
     tree.printKeys();
@@ -366,14 +366,14 @@ public class RedBlackTree<T> implements Iterable<T> {
     // tree.root.printElements(0);
 
     a = tree.keySet();
-    System.out.print("[");
+    System.out.print('[');
     for (int i = 0; i < a.length; i++) {
       if (i != 0) {
-        System.out.print(",");
+        System.out.print(',');
       }
       System.out.print(a[i]);
     }
-    System.out.println("]");
+    System.out.println(']');
 
     return;
   }
