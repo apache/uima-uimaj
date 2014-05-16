@@ -136,7 +136,11 @@ public class ResourcePoolTest extends TestCase {
 
       b = pool1.getResource();
       Assert.assertNull(b);
-      b = pool1.getResource(1000);
+      b = pool1.getResource(5000);  // wait up to 5 seconds in case machine is sluggish :-(
+      // observe occasional failures - it appears the test machine gets pre-empted for several seconds
+      // and the .2 second delay to release the resource didn't actually get that thread started before
+      // the checking thread timed out. 
+      // Changing the time the main thread waits for the release from 1 sec to 5 secs to reduce spurious failures.
       Assert.assertNotNull(b);
       releaserThread.join();
       assertEquals(null, exceptionFromReleaserThread[0]);
