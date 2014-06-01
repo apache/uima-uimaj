@@ -200,6 +200,9 @@ public class EnhanceMojo extends AbstractMojo {
     // Remember the names of all examined components, whether processed or not.
     List<String> examinedComponents = new ArrayList<String>();
 
+    int countAlreadyEnhanced = 0;
+    int countEnhanced = 0;
+    
     for (String file : files) {
       String clazzName = Util.getClassName(project, file);
 
@@ -210,7 +213,8 @@ public class EnhanceMojo extends AbstractMojo {
 
         // Do not process a class twice
         if (clazz.isAnnotationPresent(EnhancedClassFile.class)) {
-          getLog().info("Class [" + clazzName + "] already enhanced");
+          countAlreadyEnhanced++;
+          getLog().debug("Class [" + clazzName + "] already enhanced");
           // Remember that class was examined
           examinedComponents.add(clazzName);
           continue;
@@ -245,7 +249,8 @@ public class EnhanceMojo extends AbstractMojo {
 
       // Try to extract parameter descriptions from JavaDoc in source file
       if (sourceFile != null) {
-        getLog().info("Enhancing class [" + clazzName + "]");
+        countEnhanced++;
+        getLog().debug("Enhancing class [" + clazzName + "]");
 
         // Parse source file so we can extract the JavaDoc
         JavaSource ast = parseSource(sourceFile);
@@ -264,13 +269,13 @@ public class EnhanceMojo extends AbstractMojo {
 
       try {
         if (ctClazz.isModified()) {
-          getLog().info("Writing enhanced class [" + clazzName + "]");
+          getLog().debug("Writing enhanced class [" + clazzName + "]");
           // Trying to work around UIMA-2611, see
           // http://stackoverflow.com/questions/13797919/javassist-add-method-and-invoke
           ctClazz.toBytecode();
           ctClazz.writeFile(project.getBuild().getOutputDirectory());
         } else {
-          getLog().info("No changes to class [" + clazzName + "]");
+          getLog().debug("No changes to class [" + clazzName + "]");
         }
       } catch (IOException e) {
         throw new MojoExecutionException("Enhanced class [" + clazzName + "] cannot be written: "
@@ -280,6 +285,10 @@ public class EnhanceMojo extends AbstractMojo {
                 + ExceptionUtils.getRootCauseMessage(e), e);
       }
     }
+    
+    getLog().info(
+            "Enhanced " + countEnhanced + " class" + (countEnhanced != 1 ? "es" : "") + " ("
+                    + countAlreadyEnhanced + " already enhanced).");
 
     if (generateMissingMetaDataReport) {
       // Remove any classes from the report that are no longer part of the build
@@ -396,13 +405,13 @@ public class EnhanceMojo extends AbstractMojo {
     if (isEmpty || isDefault || aOverride) {
       if (aNewValue != null) {
         aAnnotation.addMemberValue(aName, new StringMemberValue(aNewValue, aConstPool));
-        getLog().info("Enhanced component meta data [" + aName + "]");
+        getLog().debug("Enhanced component meta data [" + aName + "]");
       } else {
-        getLog().info("No meta data [" + aName + "] found");
+        getLog().debug("No meta data [" + aName + "] found");
         aReportData.put(aClazz.getName(), "No meta data [" + aName + "] found");
       }
     } else {
-      getLog().info("Not overwriting component meta data [" + aName + "]");
+      getLog().debug("Not overwriting component meta data [" + aName + "]");
     }
   }
 
@@ -458,7 +467,7 @@ public class EnhanceMojo extends AbstractMojo {
 
       if (pdesc == null) {
         String msg = "No description found for " + type + " [" + pname + "]";
-        getLog().info(msg);
+        getLog().debug(msg);
         aReportData.put(aClazz.getName(), msg);
         continue;
       }
@@ -484,13 +493,13 @@ public class EnhanceMojo extends AbstractMojo {
               if (a.getMemberValue("description") == null) {
                 a.addMemberValue("description", new StringMemberValue(pdesc, aCtClazz
                         .getClassFile().getConstPool()));
-                getLog().info("Enhanced description of " + type + " [" + pname + "]");
+                getLog().debug("Enhanced description of " + type + " [" + pname + "]");
                 // Replace updated annotation
                 annoAttr.addAnnotation(a);
               } else {
                 // Extract configuration parameter information from the uimaFIT annotation
                 // We only want to override if the description is not set yet.
-                getLog().info("Not overwriting description of " + type + " [" + pname + "] ");
+                getLog().debug("Not overwriting description of " + type + " [" + pname + "] ");
               }
             }
           }

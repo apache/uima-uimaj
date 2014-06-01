@@ -91,6 +91,7 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
     // List of components that is later written to META-INF/org.apache.uima.fit/components.txt
     StringBuilder componentsManifest = new StringBuilder();
 
+    int countGenerated = 0;
     for (String file : files) {
       String base = file.substring(0, file.length() - 6);
       String clazzPath = base.substring(project.getBuild().getOutputDirectory().length() + 1);
@@ -133,6 +134,9 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
       }
     }
     
+    getLog().info(
+            "Generated " + countGenerated + " descriptor" + (countGenerated != 1 ? "s." : "."));
+    
     // Write META-INF/org.apache.uima.fit/components.txt unless skipped and unless there are no
     // components
     if (!skipComponentsManifest && componentsManifest.length() > 0) {
@@ -154,7 +158,7 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
     OutputStream os = null;
     try {
       File out = new File(aFilename);
-      getLog().info("Writing descriptor to: " + out);
+      getLog().debug("Writing descriptor to: " + out);
       os = new FileOutputStream(out);
       aDesc.toXML(os);
     } finally {
