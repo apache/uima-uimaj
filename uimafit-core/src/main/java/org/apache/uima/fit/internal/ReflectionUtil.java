@@ -142,7 +142,8 @@ public final class ReflectionUtil {
   public static boolean isAnnotationPresent(AccessibleObject aObject,
           Class<? extends Annotation> aAnnotationClass) {
     // First check if the desired annotation is present
-    if (aObject.isAnnotationPresent(aAnnotationClass)) {
+    // UIMA-3853 workaround for IBM Java 8 beta 3
+    if (aObject.getAnnotation(aAnnotationClass) != null) {
       return true;
     }
     
@@ -163,7 +164,8 @@ public final class ReflectionUtil {
   public static boolean isAnnotationPresent(Class<?> aObject,
           Class<? extends Annotation> aAnnotationClass) {
     // First check if the desired annotation is present
-    if (aObject.isAnnotationPresent(aAnnotationClass)) {
+    // UIMA-3853 workaround for IBM Java 8 beta 3
+    if (aObject.getAnnotation(aAnnotationClass) != null) {
       return true;
     }
     

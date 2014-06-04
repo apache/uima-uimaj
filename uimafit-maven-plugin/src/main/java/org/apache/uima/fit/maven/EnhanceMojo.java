@@ -212,7 +212,8 @@ public class EnhanceMojo extends AbstractMojo {
         clazz = componentLoader.loadClass(clazzName);
 
         // Do not process a class twice
-        if (clazz.isAnnotationPresent(EnhancedClassFile.class)) {
+        // UIMA-3853 workaround for IBM Java 8 beta 3
+        if (clazz.getAnnotation(EnhancedClassFile.class) != null) {
           countAlreadyEnhanced++;
           getLog().debug("Class [" + clazzName + "] already enhanced");
           // Remember that class was examined

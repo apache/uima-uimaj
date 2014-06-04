@@ -59,7 +59,8 @@ public class LegacySupportPluginImpl implements LegacySupportPlugin {
           Class<? extends Annotation> aAnnotationClass) {
     Class<? extends Annotation> legacyType = getLegacyType(aAnnotationClass);
     if (legacyType != null) {
-      return aObject.isAnnotationPresent(legacyType);
+      // UIMA-3853 workaround for IBM Java 8 beta 3
+      return aObject.getAnnotation(legacyType) != null;
     }
     else {
       return false;
@@ -70,7 +71,8 @@ public class LegacySupportPluginImpl implements LegacySupportPlugin {
           Class<? extends Annotation> aAnnotationClass) {
     Class<? extends Annotation> legacyType = getLegacyType(aAnnotationClass);
     if (legacyType != null) {
-      return aObject.isAnnotationPresent(legacyType);
+      // UIMA-3853 workaround for IBM Java 8 beta 3
+      return aObject.getAnnotation(legacyType) != null;
     }
     else {
       return false;
