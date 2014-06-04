@@ -1,5 +1,5 @@
 
-      Apache uimaFIT (TM) v2.0.0
+      Apache uimaFIT (TM) v2.1.0
       --------------------------
 
 
@@ -16,7 +16,8 @@ following list highlights some of the features uimaFIT provides:
 
  * Factories: simplify instantiating UIMA components programmatically without descriptor files.  
    For example, to instantiate an AnalysisEngine a call like this could be made: 
-   AnalysisEngineFactory.createPrimitive(MyAEImpl.class, myTypeSystem, paramName, paramValue)
+   
+     AnalysisEngineFactory.createEngine(MyAEImpl.class, myTypeSystem, paramName, paramValue, ...)
 
  * Injection: handles the binding of configuration parameter values to the corresponding member
    variables in the analysis engines and handles the binding of external resources. For example,
@@ -36,26 +37,27 @@ following list highlights some of the features uimaFIT provides:
      SimplePipeline.runPipeline(reader, ae1, ..., aeN, consumer1, ... consumerN)
 
 
-What's New in 2.0.0
+What's New in 2.1.0
 -------------------
 
-uimaFIT 2.0.0 is the first Apache release. The migration to Apache has been used to address several
-incompatible changes since 1.x.x. Please refer to the Migration Guide section in the reference
-manual for further details.
+uimaFIT 2.1.0 is a bugfix release to uimaFIT 2.0.0. The reason that the minor version was increased
+instead of the bugfix version is, that uima 2.1.0 requires Java 6 and uses UIMA 2.6.0. Otherwise,
+this version should serve as a drop-in replacement for uimaFIT 2.0.0.
 
 A full list of issues addressed in this release can be found on the Apache issue tracker:
 
-  https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12310570&version=12323969
+  https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12310570&version=12324978
 
 Supported Platforms
 -------------------
-uimaFIT requires Java 1.5 or higher, UIMA 2.4.2 or higher, and the Spring Framework 3.1.2 or higher.
+
+uimaFIT requires Java 1.6 or higher, UIMA 2.6.0 or higher, and the Spring Framework 3.1.2 or higher.
 
 
 Availability
 ------------
 
-uimaFIT is licensed with Apache Software License 2.0 and is available from the Apache UIMA project:
+uimaFIT is licensed under the Apache License 2.0 and is available from the Apache UIMA project:
 
 http://uima.apache.org
 http://svn.apache.org/repos/asf/uima/uimafit
@@ -66,7 +68,7 @@ add uimaFIT as a dependency to your pom.xml file with the following:
 <dependency>
   <groupId>org.apache.uima</groupId>
   <artifactId>uimafit-core</artifactId>
-  <version>2.0.0</version>
+  <version>2.1.0</version>
 </dependency>
 
 
@@ -77,9 +79,9 @@ uimafit-core           - the main uimaFIT module
 uimafit-cpe            - support for the Collection Processing Engine (multi-threaded pipelines)
 uimafit-maven          - a Maven plugin to automatically enhance UIMA components with uimaFIT
                          metadata and to generate XML descriptors for uimaFIT-enabled components.
-uimafit-legacy-support - allows uimaFIT 2.0.0 to use uimaFIT 1.4.x meta data like Java annotations
+uimafit-legacy-support - allows uimaFIT 2.x.0 to use uimaFIT 1.4.x meta data like Java annotations
                          and META-INF/org.uimafit/types.txt files. Pipelines mixing uimaFIT 1.4.x
-                         and 2.x componens MUST be created using the 2.x factories, because the
+                         and 2.x components MUST be created using the 2.x factories, because the
                          1.4.x factories will NOT understand how to handle uimaFIT 2.x components
                          or auto-configuration.
 uimafit-spring         - an experimental module serving as a proof-of-concept for the integration of
@@ -88,7 +90,7 @@ uimafit-spring         - an experimental module serving as a proof-of-concept fo
                          passes all components created by UIMA through Spring to provide for the 
                          wiring of Spring context dependencies. This module is made available for 
                          the adventurous but currently not considered stable, finished, or even a 
-                         proper part of the ackage. E.g. it is not included in the binary 
+                         proper part of the package. E.g. it is not included in the binary 
                          distribution package. 
 
 

@@ -20,7 +20,6 @@
 	</properties>
     <!--
       - Only required while uimaFIT depends on unreleased versions of UIMA.
-      -->
 	<repositories>
 		<repository>
 			<id>apache.snapshots</id>
@@ -30,18 +29,7 @@
 				<enabled>false</enabled>
 			</releases>
 		</repository>
-		<!--
-		<repository>
-			<id>apache.rc</id>
-			<name>UIMA 2.6.0 release candidate</name>
-			<url>https://repository.apache.org/content/repositories/orgapacheuima-1017/</url>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-		</repository>
-		-->
 	</repositories>
-
 	<pluginRepositories>
 		<pluginRepository>
 			<id>apache.snapshots.plugins</id>
@@ -57,24 +45,9 @@
 				<updatePolicy>never</updatePolicy>
 			</snapshots>
 		</pluginRepository>
-		<!--
-		<pluginRepository>
-			<id>apache.rc.plugins</id>
-			<name>UIMA 2.6.0 release candidate - Maven plugins</name>
-			<url>https://repository.apache.org/content/repositories/orgapacheuima-1017/</url>
-			<layout>default</layout>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-				<checksumPolicy>fail</checksumPolicy>
-				<updatePolicy>never</updatePolicy>
-			</snapshots>
-		</pluginRepository>
-		-->
 	</pluginRepositories>
-	
+	-->
+
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
