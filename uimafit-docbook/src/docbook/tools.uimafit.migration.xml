@@ -20,109 +20,117 @@
   <title>Migration Guide</title>
   <para>This section provides helpful information on incompatible chanes between versions.</para>
   <section>
+    <title>Version 2.0.0 to 2.1.0</title>
+    <formalpara>
+      <title>Version requirements</title>
+      <para>Depends on UIMA 2.6.0 and Java 6.</para>
+    </formalpara>
+    <formalpara>
+      <title>AnnotationFactory.createAnnotation()</title>
+      <para>No longer throws <literal>UIMAExcption</literal>. If this exception was cought, some
+        IDEs may complete here after upgrading to uimaFIT 2.1.0. </para>
+    </formalpara>
+  </section>
+  <section>
     <title>Version 1.4.0 to 2.0.0</title>
-    <section>
-      <title>Changes</title>
-      <formalpara>
-        <title>Backwards compatibility</title>
-        <para>Compatibility with legacy annotation is provided by the Legacy
-            support module.</para>
-      </formalpara>
-      <formalpara>
-        <title>Change of Maven groupId and artifactId</title>
-        <para>The Maven group ID has changed from <literal>org.uimafit</literal> to
-            <literal>org.apache.uima</literal>.</para>
-      </formalpara>
-      <para>The artifact ID of the main uimaFIT artifact has been changed from
-          <literal>uimafit</literal> to <literal>uimafit-core</literal>.</para>
-      <formalpara>
-        <title>Change of package names</title>
-        <para>The base package has been renamed from <literal>org.uimafit</literal> to
-            <literal>org.apache.uima.fit</literal>. A global search/replace on Java files with for
-          lines starting with <literal>import org.uimafit</literal> and replacing that with
-            <literal>import org.apache.uima.fit</literal> should work.</para>
-      </formalpara>
-      <formalpara>
-        <title>Version requirements</title>
-        <para>Depends on UIMA 2.4.2.</para>
-      </formalpara>
-      <formalpara>
-        <title>@ConfigurationParameter</title>
-        <para>The default value for the mandatory attribute now is <literal>true</literal>. The
-          default name of configuration parameters is now the name of the annotated field only. The
-          classname is no longer prefixed. The method
-            <code>ConfigurationParameterFactory.createConfigurationParameterName()</code> that was
-          used to generate the prefixed name has been removed.</para>
-      </formalpara>
-      <formalpara>
-        <title>Type detection: META-INF/org.uimafit folder</title>
-        <para>The <literal>META-INF/org.uimafit</literal> was renamed to
-            <literal>META-INF/org.apache.uima.fit</literal>.</para>
-      </formalpara>
-      <formalpara>
-        <title>JCasUtil</title>
-        <para>The deprecated <code>JCasUtil.iterate()</code> methods have been removed.
-            <code>JCasUtil.select()</code> should be used instead.</para>
-      </formalpara>
-      <formalpara>
-        <title>AnalysisEngineFactory</title>
-        <para>All <literal>createAggregateXXX</literal> and <literal>createPrimitiveXXX</literal>
-          methods have been renamed to <literal>createEngineXXX</literal>. The old names are
-          deprecated and will be removed in future versions.</para>
-      </formalpara>
-      <para>All <literal>createAnalysisEngineXXX</literal> methods have been renamed to
-          <literal>createEngineXXX</literal>. The old names are deprecated and will be removed in
-        future versions.</para>
-      <formalpara>
-        <title>CollectionReaderFactory</title>
-        <para>All <literal>createDescriptionXXX</literal> methods have been renamed to
-            <literal>createReaderDescriptionXXX</literal>. The old names are deprecated and will be
-          removed in future versions.</para>
-      </formalpara>
-      <para>All <literal>createCollectionReaderXXX</literal> methods have been renamed to
-          <literal>createReaderXXX</literal>. The old names are deprecated and will be removed in
-        future versions.</para>
-      <formalpara>
-        <title>JCasIterable</title>
-        <para><code>JCasIterable</code> now only accepts reader and engine descriptions (no
-          instances) and no longer implements the <code>Iterator</code> interface. Instead, new
-            <code>JCasIterator</code> has been added, which replaces <code>JCasIterable</code> in
-          that respect.</para>
-      </formalpara>
-      <formalpara>
-        <title>CasDumpWriter</title>
-        <para><literal>org.uimafit.component.xwriter.CASDumpWriter</literal> has been renamed to
-            <literal>org.apache.uima.fit.component.CasDumpWriter</literal>.</para>
-      </formalpara>
-      <formalpara>
-        <title>CpePipeline</title>
-        <para><literal>CpePipeline</literal> has been moved to a separate module with the artifact
-          ID <literal>uimafit-cpe</literal> to reduce the dependencies incurred by the main uimaFIT
-          artifact.</para>
-      </formalpara>
-      <formalpara>
-        <title>XWriter removed</title>
-        <para>The <literal>XWriter</literal> and associated file namers have been removed as they
-          were much more complex then acutally needed. As an alternative,
-            <literal>CasIOUtil</literal> has been introduced providing several convenience methods
-          to read/write JCas/CAS data. </para>
-      </formalpara>
-      <formalpara>
-        <title>JCasFactory</title>
-        <para>Methods only loading JCas data have been removed from <literal>JCasFactory</literal>.
-          The new methods in <literal>CasIOUtil</literal> can be used instead.</para>
-      </formalpara>
-    </section>
-    <section>
-      <title>Legacy support module</title>
-      <para>The compatibility layer should allow you to migrate to uimaFIT 2.0.0 without breaking
-        anything. You should then be able to gradually change the codebase to be compatible with
-        uimaFIT 2.0.0. As far as my tests go, uimaFIT 1.x and 2.0.0 can coexist peacefully on the
-        classpath (and indeed both need to be on the classpath in order to use the legacy support
-        module).</para>
-      <para>To enable the legacy support, make sure that you have a dependency on uimaFIT 1.x and
-        then just add a dependency on the legacy module:</para>
-      <programlisting>&lt;dependency>
+    <formalpara>
+      <title>Version requirements</title>
+      <para>Depends on UIMA 2.4.2.</para>
+    </formalpara>
+    <formalpara>
+      <title>Backwards compatibility</title>
+      <para>Compatibility with legacy annotation is provided by the Legacy support module.</para>
+    </formalpara>
+    <formalpara>
+      <title>Change of Maven groupId and artifactId</title>
+      <para>The Maven group ID has changed from <literal>org.uimafit</literal> to
+          <literal>org.apache.uima</literal>.</para>
+    </formalpara>
+    <para>The artifact ID of the main uimaFIT artifact has been changed from
+        <literal>uimafit</literal> to <literal>uimafit-core</literal>.</para>
+    <formalpara>
+      <title>Change of package names</title>
+      <para>The base package has been renamed from <literal>org.uimafit</literal> to
+          <literal>org.apache.uima.fit</literal>. A global search/replace on Java files with for
+        lines starting with <literal>import org.uimafit</literal> and replacing that with
+          <literal>import org.apache.uima.fit</literal> should work.</para>
+    </formalpara>
+    <formalpara>
+      <title>@ConfigurationParameter</title>
+      <para>The default value for the mandatory attribute now is <literal>true</literal>. The
+        default name of configuration parameters is now the name of the annotated field only. The
+        classname is no longer prefixed. The method
+          <code>ConfigurationParameterFactory.createConfigurationParameterName()</code> that was
+        used to generate the prefixed name has been removed.</para>
+    </formalpara>
+    <formalpara>
+      <title>Type detection: META-INF/org.uimafit folder</title>
+      <para>The <literal>META-INF/org.uimafit</literal> was renamed to
+          <literal>META-INF/org.apache.uima.fit</literal>.</para>
+    </formalpara>
+    <formalpara>
+      <title>JCasUtil</title>
+      <para>The deprecated <code>JCasUtil.iterate()</code> methods have been removed.
+          <code>JCasUtil.select()</code> should be used instead.</para>
+    </formalpara>
+    <formalpara>
+      <title>AnalysisEngineFactory</title>
+      <para>All <literal>createAggregateXXX</literal> and <literal>createPrimitiveXXX</literal>
+        methods have been renamed to <literal>createEngineXXX</literal>. The old names are
+        deprecated and will be removed in future versions.</para>
+    </formalpara>
+    <para>All <literal>createAnalysisEngineXXX</literal> methods have been renamed to
+        <literal>createEngineXXX</literal>. The old names are deprecated and will be removed in
+      future versions.</para>
+    <formalpara>
+      <title>CollectionReaderFactory</title>
+      <para>All <literal>createDescriptionXXX</literal> methods have been renamed to
+          <literal>createReaderDescriptionXXX</literal>. The old names are deprecated and will be
+        removed in future versions.</para>
+    </formalpara>
+    <para>All <literal>createCollectionReaderXXX</literal> methods have been renamed to
+        <literal>createReaderXXX</literal>. The old names are deprecated and will be removed in
+      future versions.</para>
+    <formalpara>
+      <title>JCasIterable</title>
+      <para><code>JCasIterable</code> now only accepts reader and engine descriptions (no instances)
+        and no longer implements the <code>Iterator</code> interface. Instead, new
+          <code>JCasIterator</code> has been added, which replaces <code>JCasIterable</code> in that
+        respect.</para>
+    </formalpara>
+    <formalpara>
+      <title>CasDumpWriter</title>
+      <para><literal>org.uimafit.component.xwriter.CASDumpWriter</literal> has been renamed to
+          <literal>org.apache.uima.fit.component.CasDumpWriter</literal>.</para>
+    </formalpara>
+    <formalpara>
+      <title>CpePipeline</title>
+      <para><literal>CpePipeline</literal> has been moved to a separate module with the artifact ID
+          <literal>uimafit-cpe</literal> to reduce the dependencies incurred by the main uimaFIT
+        artifact.</para>
+    </formalpara>
+    <formalpara>
+      <title>XWriter removed</title>
+      <para>The <literal>XWriter</literal> and associated file namers have been removed as they were
+        much more complex then acutally needed. As an alternative, <literal>CasIOUtil</literal> has
+        been introduced providing several convenience methods to read/write JCas/CAS data. </para>
+    </formalpara>
+    <formalpara>
+      <title>JCasFactory</title>
+      <para>Methods only loading JCas data have been removed from <literal>JCasFactory</literal>.
+        The new methods in <literal>CasIOUtil</literal> can be used instead.</para>
+    </formalpara>
+  </section>
+  <section>
+    <title>Legacy support module</title>
+    <para>The compatibility layer should allow you to migrate to uimaFIT <?eval ${project.version}?> without breaking
+      anything. You should then be able to gradually change the codebase to be compatible with
+      uimaFIT <?eval ${project.version}?>. As far as my tests go, uimaFIT 1.x and <?eval ${project.version}?> can coexist peacefully on the
+      classpath (and indeed both need to be on the classpath in order to use the legacy support
+      module).</para>
+    <para>To enable the legacy support, make sure that you have a dependency on uimaFIT 1.x and then
+      just add a dependency on the legacy module:</para>
+    <programlisting>&lt;dependency>
   &lt;groupId>org.uimafit&lt;/groupId>
   &lt;artifactId>uimafit&lt;/artifactId>
   &lt;version>1.4.0&lt;/version>
@@ -132,8 +140,7 @@
   &lt;artifactId>uimafit-legacy-support&lt;/artifactId>
   &lt;version><?eval ${project.version}?>&lt;/version>
 &lt;/dependency></programlisting>
-      <para>uimaFIT 2.x automatically detects the presence of the legacy module and uses it - no
-        additional configuration is necessary.</para>
-    </section>
+    <para>uimaFIT <?eval ${project.version}?> automatically detects the presence of the legacy module and uses it - no
+      additional configuration is necessary.</para>
   </section>
 </chapter>
