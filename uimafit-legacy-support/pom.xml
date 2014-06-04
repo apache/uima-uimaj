@@ -26,12 +26,12 @@
 		<relativePath>../uimafit-parent</relativePath>
 	</parent>
 	<artifactId>uimafit-legacy-support</artifactId>
-	<name>uimaFIT - Legacy uimaFIT support</name>
+	<name>Apache UIMA uimaFIT - Legacy uimaFIT support</name>
 	<description>Adds support for uimaFIT 1.x annotations.</description>
 	<url>${uimaWebsiteUrl}</url>
 	<licenses>
 		<license>
-			<name>The Apache Software License, Version 2.0</name>
+			<name>Apache License, Version 2.0</name>
 			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
 			<distribution>repo</distribution>
 		</license>

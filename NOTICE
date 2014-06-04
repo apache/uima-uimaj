@@ -1,5 +1,5 @@
 Apache UIMA uimaFIT
-Copyright 2013 The Apache Software Foundation
+Copyright 2013-2014 The Apache Software Foundation
 
 Copyright 2009-2012 Regents of the University of Colorado.
 All rights reserved.
@@ -7,3 +7,14 @@ All rights reserved.
 Copyright 2009-2012 Ubiquitous Knowledge Processing (UKP) Lab.
 Technische Universität Darmstadt.
 All rights reserved.
+
+
+AnnotationLiteral.java
+
+Licensed under the Apache License, Version 2.0.
+File was copied from the javax.enterprise cdi-api version 1.0.
+
+JBoss, Home of Professional Open Source
+Copyright 2008, Red Hat Middleware LLC, and individual contributors
+by the @authors tag. See the copyright.txt in the distribution for a
+full listing of individual contributors.

@@ -59,17 +59,17 @@ Availability
 
 uimaFIT is licensed under the Apache License 2.0 and is available from the Apache UIMA project:
 
-http://uima.apache.org
-http://svn.apache.org/repos/asf/uima/uimafit
+  http://uima.apache.org
+  http://svn.apache.org/repos/asf/uima/uimafit
 
 uimaFIT is available via Maven Central. If you use Maven for your build environment, then you can
 add uimaFIT as a dependency to your pom.xml file with the following:
 
-<dependency>
-  <groupId>org.apache.uima</groupId>
-  <artifactId>uimafit-core</artifactId>
-  <version>2.1.0</version>
-</dependency>
+  <dependency>
+    <groupId>org.apache.uima</groupId>
+    <artifactId>uimafit-core</artifactId>
+    <version>2.1.0</version>
+  </dependency>
 
 
 Modules

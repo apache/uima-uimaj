@@ -26,11 +26,11 @@
 		<relativePath>../uimafit-parent</relativePath>
 	</parent>
 	<artifactId>uimafit-maven-plugin</artifactId>
-	<name>uimaFIT - Maven Plugin</name>
+	<name>Apache UIMA uimaFIT - Maven Plugin</name>
 	<packaging>maven-plugin</packaging>
 	<licenses>
 		<license>
-			<name>The Apache Software License, Version 2.0</name>
+			<name>Apache License, Version 2.0</name>
 			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
 			<distribution>repo</distribution>
 		</license>
