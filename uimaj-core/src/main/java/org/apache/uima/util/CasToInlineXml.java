@@ -246,7 +246,7 @@ public class CasToInlineXml {
    * @param aFilter
    *          constraint that determines which annotations are included in the output. If null (or
    *          ommitted), all annotations are included.
-   * @ return the inline form
+   * @return the inline form
    */
   public String generateXML(CAS aCAS, FSMatchConstraint aFilter) throws CASException {
     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
