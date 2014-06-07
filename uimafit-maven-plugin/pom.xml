@@ -124,7 +124,8 @@
 				<artifactId>maven-plugin-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>generated-helpmojo</id>
+						<id>help-goal</id>
+						<phase>process-classes</phase>
 						<goals>
 							<goal>helpmojo</goal>
 						</goals>
