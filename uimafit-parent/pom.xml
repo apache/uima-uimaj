@@ -15,8 +15,6 @@
 	<properties>
 		<spring.version>3.1.2.RELEASE</spring.version>
 		<uima.version>2.6.0</uima.version>
-		<maven.compiler.source>1.6</maven.compiler.source>
-		<maven.compiler.target>1.6</maven.compiler.target>
 	</properties>
     <!--
       - Only required while uimaFIT depends on unreleased versions of UIMA.
@@ -179,21 +177,6 @@
 					<artifactId>jcasgen-maven-plugin</artifactId>
 					<version>${uima.version}</version>
 				</plugin>
-				<plugin>
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>cobertura-maven-plugin</artifactId>
-					<version>2.6</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-pmd-plugin</artifactId>
-					<version>3.1</version>
-				</plugin>
-				<plugin>
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>findbugs-maven-plugin</artifactId>
-					<version>2.5.3</version>
-				</plugin>
 				<!--This plugin's configuration is used to store Eclipse m2e settings
 					only. It has no influence on the Maven build itself. -->
 				<plugin>
@@ -236,108 +219,4 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-
-	<profiles>
-		<profile>
-			<id>findbugs</id>
-			<build>
-				<pluginManagement>
-					<plugins>
-						<plugin>
-							<groupId>org.codehaus.mojo</groupId>
-							<artifactId>findbugs-maven-plugin</artifactId>
-							<executions>
-								<execution>
-									<phase>package</phase>
-									<goals>
-										<goal>findbugs</goal>
-									</goals>
-								</execution>
-							</executions>
-						</plugin>
-					</plugins>
-				</pluginManagement>
-				<plugins>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>findbugs-maven-plugin</artifactId>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<profile>
-			<id>cobertura</id>
-			<!--  
-			<dependencies>
-				<dependency>
-					<groupId>net.sourceforge.cobertura</groupId>
-					<artifactId>cobertura</artifactId>
-					<version>1.9.4.1</version>
-					<scope>test</scope>
-				</dependency>
-			</dependencies>
-			-->
-			<build>
-				<pluginManagement>
-					<plugins>
-						<plugin>
-							<groupId>org.codehaus.mojo</groupId>
-							<artifactId>cobertura-maven-plugin</artifactId>
-							<configuration>
-								<formats>
-									<format>xml</format>
-								</formats>
-							</configuration>
-							<executions>
-								<execution>
-									<phase>package</phase>
-									<goals>
-										<goal>cobertura</goal>
-									</goals>
-								</execution>
-							</executions>
-						</plugin>
-					</plugins>
-				</pluginManagement>
-				<plugins>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>cobertura-maven-plugin</artifactId>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<profile>
-			<id>pmd</id>
-			<build>
-				<pluginManagement>
-					<plugins>
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-pmd-plugin</artifactId>
-							<executions>
-								<execution>
-									<phase>package</phase>
-									<goals>
-										<goal>cpd</goal>
-										<goal>pmd</goal>
-									</goals>
-								</execution>
-							</executions>
-							<configuration>
-								<targetJdk>${java.target}</targetJdk>
-								<linkXRef>false</linkXRef>
-							</configuration>
-						</plugin>
-					</plugins>
-				</pluginManagement>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-pmd-plugin</artifactId>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
 </project>
