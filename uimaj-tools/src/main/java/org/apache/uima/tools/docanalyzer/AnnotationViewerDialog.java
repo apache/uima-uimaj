@@ -442,7 +442,9 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
         }
         // generate inline XML
         File inlineXmlFile = new File(viewerDirectory, "inline.xml");
-        String xmlAnnotations = new CasToInlineXml().generateXML(defaultView);
+        CasToInlineXml casToInlineXml = new CasToInlineXml();
+        casToInlineXml.setFormattedOutput(false);
+        String xmlAnnotations = casToInlineXml.generateXML(defaultView);
         FileOutputStream outStream = new FileOutputStream(inlineXmlFile);
         outStream.write(xmlAnnotations.getBytes("UTF-8"));
         outStream.close();
