@@ -23,13 +23,17 @@
  */
 var holdInfoFrame = false;
 
-
 /*
  * Initializes the annotation viewer
  */
 function init()
 {
-  clearInfoFrame();
+	var doc = parent.frames["infoFrame"].document;
+    doc.open();
+    //write stylesheet reference
+    doc.write('<link rel="StyleSheet" href="annotations.css" type="text/css" media="screen">');
+    //write "Annotations" heading
+    doc.write("<h2>Annotations</h2><br>");
 }
 
 
@@ -42,11 +46,13 @@ function clearInfoFrame()
   {
     var doc = parent.frames["infoFrame"].document;
     //clear info frame
-    doc.close();
-    doc.open();
-    //write stylesheet reference
-    doc.write('<link rel="StyleSheet" href="annotations.css" type="text/css" media="screen">');
-    //write "Annotations" heading
+    
+    var node = doc.getElementsByTagName("body")[0];
+    // remove all the entries in the <body> tag
+    while (node.firstChild) {
+    	node.removeChild(node.firstChild);
+    }
+    //write back the "Annotations" heading
     doc.write("<h2>Annotations</h2><br>");
   }
 }  
