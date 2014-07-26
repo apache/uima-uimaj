@@ -34,6 +34,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
@@ -44,6 +45,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.uima.ResourceSpecifierFactory;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -65,6 +67,7 @@ import org.apache.uima.resource.ResourceAccessException;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.SharedResourceObject;
 import org.apache.uima.util.CasCreationUtils;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.mock.jndi.SimpleNamingContextBuilder;
@@ -90,6 +93,57 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
     builder.activate();
   }
 
+  /**
+   * This is a test for a regression introduced in the UIMA SDK 2.6.0 RC 1 and which worked in UIMA SDK 2.5.0.
+   * <ul>
+   * <li>Add a full delegate description to an AAE.</li>
+   * <li>Serialize to XML: delegate description is serialized.</li>
+   * <li>Call resolveImports()</li>
+   * <li>Serialize to XML: delegate description is no longer serialized.</li>
+   * </ul>
+   * 
+   * @see <a href="https://issues.apache.org/jira/browse/UIMA-3776">UIMA-3776</a>
+   */
+  @Test
+  public void testNoDelegatesToResolve() throws Exception {
+    ResourceSpecifierFactory f = UIMAFramework.getResourceSpecifierFactory();
+    AnalysisEngineDescription outer = f.createAnalysisEngineDescription();
+    AnalysisEngineDescription inner = f.createAnalysisEngineDescription();
+    outer.getDelegateAnalysisEngineSpecifiersWithImports().put("inner", inner);
+
+    StringWriter outerXml = new StringWriter();
+    outer.toXML(outerXml);
+    
+    // Resolving the imports removes the inner AE description
+    outer.resolveImports(UIMAFramework.newDefaultResourceManager());
+    
+    StringWriter outerXml2 = new StringWriter();
+    outer.toXML(outerXml2);
+
+    Assert.assertEquals(outerXml.toString(), outerXml2.toString());
+  }
+  
+  /**
+   * Illustrate two different paths of accessing a resource instance.
+   * 
+   * @see <a href="http://markmail.org/thread/tdd24gdbtoa3hje2">Apache UIMA user mailing list</a>
+   */
+  @Test
+  public void testAccessResourceFromAE() throws Exception {
+    AnalysisEngine ae = createEngine(
+            DummyAE3.class,
+            DummyAE3.RES_KEY_1, createExternalResourceDescription(
+                    "lala", AnnotatedResource.class,
+                    AnnotatedResource.PARAM_VALUE, "1"));
+
+    // Two difference paths to access the resource
+    Object resourceInstance1 = ae.getUimaContext().getResourceObject(DummyAE3.RES_KEY_1);
+    Object resourceInstance2 = ae.getResourceManager().getResource(
+            ae.getUimaContextAdmin().getQualifiedContextName() + DummyAE3.RES_KEY_1);
+    
+    assertEquals(resourceInstance1, resourceInstance2);
+  }
+  
   @Test
   public void testScanBind() throws Exception {
     // Create analysis enginge description
@@ -424,6 +478,18 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
     }
   }
 
+  public static class DummyAE3 extends JCasAnnotator_ImplBase {
+    static final String RES_KEY_1 = "Key1";
+    @ExternalResource(key = RES_KEY_1)
+    AnnotatedResource configRes1;
+
+    @Override
+    public void process(JCas aJCas) throws AnalysisEngineProcessException {
+      assertNotNull(configRes1);
+      assertEquals("1", configRes1.getValue());
+    }
+  }
+  
   public static final class MultiValuedResourceAE extends org.apache.uima.fit.component.JCasAnnotator_ImplBase {
     static final String RES_RESOURCE_ARRAY = "resourceArray";
     @ExternalResource(key = RES_RESOURCE_ARRAY)
