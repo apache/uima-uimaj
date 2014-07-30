@@ -178,11 +178,37 @@ public class XMLSerializer {
     
     public int nextIndent() {
       indent += indentDelta;
+//    StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+//    
+//    System.out.format("++++++++ %3d %26s %4d <- %26s %4d <- %26s %4d <- %26s %4d%n",
+//        indent, 
+//        stackTraceElements[3].getMethodName(), 
+//        stackTraceElements[3].getLineNumber(),
+//        stackTraceElements[4].getMethodName(), 
+//        stackTraceElements[4].getLineNumber(),
+//        stackTraceElements[5].getMethodName(), 
+//        stackTraceElements[5].getLineNumber(), 
+//        stackTraceElements[6].getMethodName(), 
+//        stackTraceElements[6].getLineNumber());
       return indent;
     }
 
     public int prevIndent() {
       indent -= indentDelta;
+//      if (indent < 0) {
+//        indent = 0;
+//      }
+//      StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+//      System.out.format("-------- %3d %26s %4d <- %26s %4d <- %26s %4d <- %26s %4d%n",
+//          indent, 
+//          stackTraceElements[3].getMethodName(), 
+//          stackTraceElements[3].getLineNumber(),
+//          stackTraceElements[4].getMethodName(), 
+//          stackTraceElements[4].getLineNumber(),
+//          stackTraceElements[5].getMethodName(), 
+//          stackTraceElements[5].getLineNumber(), 
+//          stackTraceElements[6].getMethodName(), 
+//          stackTraceElements[6].getLineNumber());
       return indent;
     }
     
