@@ -257,6 +257,9 @@ public final class JCasUtil {
    * Get a list of annotations of the given annotation type constrained by a 'covering' annotation.
    * Iterates over all annotations of the given type to find the covered annotations. Does not use
    * subiterators.
+   * <p>
+   * The covering annotation is never returned itself, even if it is of the queried-for type or a
+   * subtype of that type.
    * 
    * @param <T>
    *          the JCas type.
@@ -278,6 +281,9 @@ public final class JCasUtil {
    * Get a list of annotations of the given annotation type constrained by a 'covering' annotation.
    * Iterates over all annotations of the given type to find the covered annotations. Does not use
    * subiterators.
+   * <p>
+   * The covering annotation is never returned itself, even if it is of the queried-for type or a
+   * subtype of that type.
    * 
    * @param <T>
    *          the JCas type.

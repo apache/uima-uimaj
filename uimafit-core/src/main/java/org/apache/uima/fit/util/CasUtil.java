@@ -379,7 +379,10 @@ public final class CasUtil {
    * Get a list of annotations of the given annotation type constraint by a certain annotation.
    * Iterates over all annotations of the given type to find the covered annotations. Does not use
    * subiterators and does not respect type prioritites. Was adapted from {@link Subiterator}. Uses
-   * the same approach except that type priorities are ignored.
+   * the same approach except that type priorities are ignored. 
+   * <p>
+   * The covering annotation is never returned itself, even if it is of the queried-for type or a
+   * subtype of that type.
    * 
    * @param type
    *          a UIMA type.
@@ -398,6 +401,9 @@ public final class CasUtil {
    * Iterates over all annotations of the given type to find the covered annotations. Does not use
    * subiterators and does not respect type prioritites. Was adapted from {@link Subiterator}. Uses
    * the same approach except that type priorities are ignored.
+   * <p>
+   * The covering annotation is never returned itself, even if it is of the queried-for type or a
+   * subtype of that type.
    * 
    * @param cas
    *          a CAS.
