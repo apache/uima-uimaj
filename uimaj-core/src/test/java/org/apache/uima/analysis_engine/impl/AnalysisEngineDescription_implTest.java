@@ -319,7 +319,6 @@ public class AnalysisEngineDescription_implTest extends TestCase {
     
     MultiThreadUtils.Run2isb run2isb = new MultiThreadUtils.Run2isb() {
       
-      @Override
       public void call(int i, int r, StringBuilder sb) throws Exception {
         Random random = new Random();
         for (int j = 0; j < 2; j++) {
@@ -337,7 +336,6 @@ public class AnalysisEngineDescription_implTest extends TestCase {
     
     run2isb = new MultiThreadUtils.Run2isb() {
       
-      @Override
       public void call(int i, int r, StringBuilder sb) throws Exception {
         Random random = new Random();
         for (int j = 0; j < 2; j++) {
