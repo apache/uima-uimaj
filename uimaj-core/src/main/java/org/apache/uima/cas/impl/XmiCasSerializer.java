@@ -80,25 +80,8 @@ public class XmiCasSerializer {
   private static final char [] URIPFX = new char[] {'h','t','t','p',':','/','/','/'};
   
   private static final char [] URISFX = new char[] {'.','e','c','o','r','e'};
-
-
-  // number of children of current element
-  private int numChildren;
-
-  /**
-   * Gets the number of children of the current element. This is guaranteed to be set correctly at
-   * the time when startElement is called. Needed for streaming Vinci serialization.
-   * <p>
-   * NOTE: this method will not work if there are simultaneously executing calls to
-   * XmiCasSerializer.serialize. Use it only with a dedicated XmiCasSerializer instance that is not
-   * shared between threads.
-   * 
-   * @return the number of children of the current element
-   */
-  public int getNumChildren() {
-    return numChildren;
-  }
-
+  
+  private static final String CDATA_TYPE = "CDATA";
 
   public static final String XMLNS_NS_URI = "http://www.w3.org/2000/xmlns/";
 
@@ -242,7 +225,7 @@ public class XmiCasSerializer {
   public void serialize(CAS cas, ContentHandler contentHandler, ErrorHandler errorHandler)
           throws SAXException {
     contentHandler.startDocument();
-    XmiCasDocSerializer ser = new XmiCasDocSerializer(contentHandler, errorHandler, ((CASImpl) cas)
+    CasDocSerializer ser = new CasDocSerializer(contentHandler, errorHandler, ((CASImpl) cas)
             .getBaseCAS(), null, null);
     ser.serialize();
     contentHandler.endDocument();
@@ -266,7 +249,7 @@ public class XmiCasSerializer {
   public void serialize(CAS cas, ContentHandler contentHandler, ErrorHandler errorHandler,
           XmiSerializationSharedData sharedData) throws SAXException {
     contentHandler.startDocument();
-    XmiCasDocSerializer ser = new XmiCasDocSerializer(contentHandler, errorHandler, ((CASImpl) cas)
+    CasDocSerializer ser = new CasDocSerializer(contentHandler, errorHandler, ((CASImpl) cas)
             .getBaseCAS(), sharedData, (MarkerImpl) null);
     ser.serialize();
     contentHandler.endDocument();
@@ -295,7 +278,7 @@ public class XmiCasSerializer {
           XmiSerializationSharedData sharedData, Marker marker) throws SAXException {
 	  
     contentHandler.startDocument();
-    XmiCasDocSerializer ser = new XmiCasDocSerializer(contentHandler, errorHandler, ((CASImpl) cas)
+    CasDocSerializer ser = new CasDocSerializer(contentHandler, errorHandler, ((CASImpl) cas)
             .getBaseCAS(), sharedData, (MarkerImpl) marker);
     ser.serialize();
     contentHandler.endDocument();
@@ -403,7 +386,8 @@ public class XmiCasSerializer {
    * 
    * 
    */
-  private class XmiCasDocSerializer {
+  // package private to let test case have access
+  class CasDocSerializer {
 
     // Where the output goes.
     private ContentHandler ch;
@@ -432,8 +416,6 @@ public class XmiCasSerializer {
     private final AttributesImpl emptyAttrs = new AttributesImpl();
 
     private AttributesImpl workAttrs = new AttributesImpl();
-
-    private static final String cdataType = "CDATA";
 
     // For debug statistics.
     private int fsCount = 0;
@@ -476,7 +458,24 @@ public class XmiCasSerializer {
      */
     boolean isDelta;
     
-    private XmiCasDocSerializer(ContentHandler ch, ErrorHandler eh, CASImpl cas,
+    // number of children of current element
+    private int numChildren;
+
+    /**
+     * Gets the number of children of the current element. This is guaranteed to be set correctly at
+     * the time when startElement is called. Needed for streaming Vinci serialization.
+     * <p>
+     * NOTE: this method will not work if there are simultaneously executing calls to
+     * XmiCasSerializer.serialize. Use it only with a dedicated XmiCasSerializer instance that is not
+     * shared between threads.
+     * 
+     * @return the number of children of the current element
+     */
+    public int getNumChildren() {
+      return numChildren;
+    }
+    
+    private CasDocSerializer(ContentHandler ch, ErrorHandler eh, CASImpl cas,
             XmiSerializationSharedData sharedData, MarkerImpl marker) {
       super();
       this.ch = ch;
@@ -1278,12 +1277,12 @@ public class XmiCasSerializer {
     
     private void addAttribute(AttributesImpl attrs, String attrName, String attrValue) {
       final int index = attrName.lastIndexOf(':') + 1;
-      attrs.addAttribute("", attrName.substring(index), attrName, cdataType, attrValue);
+      attrs.addAttribute("", attrName.substring(index), attrName, CDATA_TYPE, attrValue);
     }
 
     private void startElement(XmlElementName name, Attributes attrs, int aNumChildren)
             throws SAXException {
-      XmiCasSerializer.this.numChildren = aNumChildren;
+      numChildren = aNumChildren;
       // don't include NS URI here. That causes XMI serializer to
       // include the xmlns attribute in every element. Instead we
       // explicitly added these attributes to the root element.
@@ -1648,5 +1647,12 @@ public class XmiCasSerializer {
       }
     } 
   }
+  
+  // for testing
+  public CasDocSerializer getTestCasDocSerializer(ContentHandler ch, CASImpl cas) {
+    return new CasDocSerializer(ch, null, cas, null, null);
+  }  
+  
+
 
 }
