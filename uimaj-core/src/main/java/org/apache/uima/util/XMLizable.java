@@ -19,6 +19,7 @@
 
 package org.apache.uima.util;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
@@ -30,7 +31,7 @@ import org.xml.sax.SAXException;
 /**
  * An interface to be implemented by UIMA classes that can be written to and parsed from XML.
  * Classes must implement this interface in order for the UIMA {@link XMLParser} to generate them
- * from XML documents. XMLizble classes also must define a zero-argument constructor. When
+ * from XML documents. XMLizable classes also must define a zero-argument constructor. When
  * constructing an object, the <code>XMLParser</code> will first create it using the zero-argument
  * constructor and then call {@link #buildFromXMLElement(Element,XMLParser)}.
  * 
@@ -128,4 +129,36 @@ public interface XMLizable {
    */
   public void buildFromXMLElement(Element aElement, XMLParser aParser,
           XMLParser.ParsingOptions aOptions) throws InvalidXMLException;
+  
+  /**
+   * Writes this object's JSON representation as a string. Note that if you want to write the JSON to
+   * a file or to a byte stream, it is highly recommended that you use {@link #toJSON(OutputStream)} 
+   * instead, as it ensures that output is written in UTF-8 encoding, which is the default encoding 
+   * that should be used for XML files.
+   * <p>
+   * 
+   * @param aWriter
+   *          a Writer to which the JSON string will be written
+   * @throws IOException 
+   */
+  public void toJSON(Writer aWriter) throws SAXException;
+  public void toJSON(Writer aWriter, boolean isFormattedOutput) throws SAXException;
+  /**
+   * Writes this object's JSON representation as a string in UTF-8 encoding.
+   * 
+   * @param aOutputStream
+   *          an OutputStream to which the JSON string will be written, in UTF-8 encoding.
+   */
+  public void toJSON(OutputStream aOutputStream) throws SAXException;
+  public void toJSON(OutputStream aOutputStream, boolean isFormattedOutput) throws SAXException;
+
+  /**
+   * Writes this object's JSON representation as a string in UTF-8 encoding.
+   * 
+   * @param aOutputStream
+   *          an OutputStream to which the JSON string will be written, in UTF-8 encoding.
+   */
+  public void toJSON(File file) throws SAXException;
+  public void toJSON(File file, boolean isFormattedOutput) throws SAXException;
+
 }
