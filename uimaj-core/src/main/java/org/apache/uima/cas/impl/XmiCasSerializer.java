@@ -99,6 +99,304 @@ public class XmiCasSerializer {
     return numChildren;
   }
 
+
+  public static final String XMLNS_NS_URI = "http://www.w3.org/2000/xmlns/";
+
+  public static final String XMI_NS_URI = "http://www.omg.org/XMI";
+
+  public static final String XSI_NS_URI = "http://www.w3.org/2001/XMLSchema-instance";
+
+  public static final String XMI_NS_PREFIX = "xmi";
+
+  public static final String XMI_TAG_LOCAL_NAME = "XMI";
+
+  public static final String XMI_TAG_QNAME = "xmi:XMI";
+
+  public static final XmlElementName XMI_TAG = new XmlElementName(XMI_NS_URI, XMI_TAG_LOCAL_NAME,
+          XMI_TAG_QNAME);
+
+  public static final String INDEXED_ATTR_NAME = "_indexed";
+
+  public static final String ID_ATTR_NAME = "xmi:id";
+
+  public static final String XMI_VERSION_LOCAL_NAME = "version";
+
+  public static final String XMI_VERSION_QNAME = "xmi:version";
+
+  public static final String XMI_VERSION_VALUE = "2.0";
+
+  /** Namespace URI to use for UIMA types that have no namespace (the "default pacakge" in Java) */
+  public static final String DEFAULT_NAMESPACE_URI = "http:///uima/noNamespace.ecore";
+
+  private TypeSystemImpl filterTypeSystem;
+
+  // UIMA logger, to which we may write warnings
+  private Logger logger;
+
+  private Map<String, String> nsUriToSchemaLocationMap = null;
+
+  /**
+   * Creates a new XmiCasSerializer.
+   * 
+   * @param ts
+   *          the TypeSystem of CASes that will be serialized. If any CAS that is later passed to
+   *          the <code>serialize</code> method that contains types and features that are not in
+   *          this typesystem, the serialization will not contain instances of those types or values
+   *          for those features. So this can be used to filter the results of serialization.
+   * @param nsUriToSchemaLocationMap
+   *          Map if supplied, this map is used to generate a "schemaLocation" attribute in the XMI
+   *          output. This argument must be a map from namespace URIs to the schema location for
+   *          that namespace URI.
+   */
+  public XmiCasSerializer(TypeSystem ts, Map<String, String> nsUriToSchemaLocationMap) {
+    super();
+    // System.out.println("Creating serializer for type system.");
+    this.filterTypeSystem = (TypeSystemImpl) ts;
+    this.nsUriToSchemaLocationMap = nsUriToSchemaLocationMap;
+    this.logger = UIMAFramework.getLogger(XmiCasSerializer.class);
+  }
+
+  /**
+   * Creates a new XmiCasSerializer.
+   * 
+   * @param ts
+   *          the TypeSystem of CASes that will be serialized. If any CAS that is later passed to
+   *          the <code>serialize</code> method that contains types and features that are not in
+   *          this typesystem, the serialization will not contain instances of those types or values
+   *          for those features. So this can be used to filter the results of serialization.
+   *          A null value indicates that all types and features  will be serialized.
+   */
+  public XmiCasSerializer(TypeSystem ts) {
+    this(ts, (Map) null);
+  }
+
+  /**
+   * Creates a new XmiCasSerializer.
+   * 
+   * @param ts
+   *          the TypeSystem of CASes that will be serialized. If any CAS that is later passed to
+   *          the <code>serialize</code> method that contains types and features that are not in
+   *          this typesystem, the serialization will not contain instances of those types or values
+   *          for those features. So this can be used to filter the results of serialization.
+   * @param uimaContext
+   *          not used
+   * @param nsUriToSchemaLocationMap
+   *          Map if supplied, this map is used to generate a "schemaLocation" attribute in the XMI
+   *          output. This argument must be a map from namespace URIs to the schema location for
+   *          that namespace URI.
+   * 
+   * @deprecated Use {@link #XmiCasSerializer(TypeSystem, Map)} instead. The UimaContext reference
+   *             is never used by this implementation.
+   */
+  @Deprecated
+  public XmiCasSerializer(TypeSystem ts, UimaContext uimaContext, Map<String, String> nsUriToSchemaLocationMap) {
+    this(ts, nsUriToSchemaLocationMap);
+  }
+
+  /**
+   * Creates a new XmiCasSerializer.
+   * 
+   * @param ts
+   *          the TypeSystem of CASes that will be serialized. If any CAS that is later passed to
+   *          the <code>serialize</code> method that contains types and features that are not in
+   *          this typesystem, the serialization will not contain instances of those types or values
+   *          for those features. So this can be used to filter the results of serialization.
+   * @param uimaContext
+   *          not used
+   * 
+   * @deprecated Use {@link #XmiCasSerializer(TypeSystem)} instead. The UimaContext reference is
+   *             never used by this implementation.
+   */
+  @Deprecated
+  public XmiCasSerializer(TypeSystem ts, UimaContext uimaContext) {
+    this(ts);
+  }
+
+  /**
+   * Write the CAS data to a SAX content handler.
+   * 
+   * @param cas
+   *          The CAS to be serialized.
+   * @param contentHandler
+   *          The SAX content handler the data is written to. should be inserted into the XCAS
+   *          output
+   * 
+   * @throws SAXException if there was a SAX exception
+   */
+  public void serialize(CAS cas, ContentHandler contentHandler) throws SAXException {
+    this.serialize(cas, contentHandler, null);
+  }
+
+  /**
+   * Write the CAS data to a SAX content handler.
+   * 
+   * @param cas
+   *          The CAS to be serialized.
+   * @param contentHandler
+   *          The SAX content handler the data is written to. should be inserted into the XCAS
+   *          output
+   * @param errorHandler the SAX Error Handler to use
+   * 
+   * @throws SAXException if there was a SAX exception
+   */
+  public void serialize(CAS cas, ContentHandler contentHandler, ErrorHandler errorHandler)
+          throws SAXException {
+    contentHandler.startDocument();
+    XmiCasDocSerializer ser = new XmiCasDocSerializer(contentHandler, errorHandler, ((CASImpl) cas)
+            .getBaseCAS(), null, null);
+    ser.serialize();
+    contentHandler.endDocument();
+  }
+
+  /**
+   * Write the CAS data to a SAX content handler.
+   * 
+   * @param cas
+   *          The CAS to be serialized.
+   * @param contentHandler
+   *          The SAX content handler the data is written to. should be inserted into the XCAS
+   *          output
+   * @param sharedData
+   *          data structure used to allow the XmiCasSerializer and XmiCasDeserializer to share
+   *          information.
+   * @param errorHandler the SAX Error Handler to use
+   * 
+   * @throws SAXException if there was a SAX exception
+   */
+  public void serialize(CAS cas, ContentHandler contentHandler, ErrorHandler errorHandler,
+          XmiSerializationSharedData sharedData) throws SAXException {
+    contentHandler.startDocument();
+    XmiCasDocSerializer ser = new XmiCasDocSerializer(contentHandler, errorHandler, ((CASImpl) cas)
+            .getBaseCAS(), sharedData, (MarkerImpl) null);
+    ser.serialize();
+    contentHandler.endDocument();
+  }  
+  
+  /**
+   * Write the CAS data to a SAX content handler.
+   * 
+   * @param cas
+   *          The CAS to be serialized.
+   * @param contentHandler
+   *          The SAX content handler the data is written to. should be inserted into the XCAS
+   *          output
+   * @param errorHandler the SAX Error Handler to use
+   * @param sharedData
+   *          data structure used to allow the XmiCasSerializer and XmiCasDeserializer to share
+   *          information.
+   * @param marker
+   * 	      an object used to filter the FSs and Views to determine if these were created after
+   *          the mark was set. Used to serialize a Delta CAS consisting of only new FSs and views and
+   *          preexisting FSs and Views that have been modified.
+   *          
+   * @throws SAXException if there was a SAX exception
+   */
+  public void serialize(CAS cas, ContentHandler contentHandler, ErrorHandler errorHandler,
+          XmiSerializationSharedData sharedData, Marker marker) throws SAXException {
+	  
+    contentHandler.startDocument();
+    XmiCasDocSerializer ser = new XmiCasDocSerializer(contentHandler, errorHandler, ((CASImpl) cas)
+            .getBaseCAS(), sharedData, (MarkerImpl) marker);
+    ser.serialize();
+    contentHandler.endDocument();
+  }
+
+  /**
+   * Serializes a CAS to an XMI stream.
+   * 
+   * @param aCAS
+   *          CAS to serialize.
+   * @param aStream
+   *          output stream to which to write the XMI document
+   * 
+   * @throws SAXException
+   *           if a problem occurs during XMI serialization
+   */
+  public static void serialize(CAS aCAS, OutputStream aStream) throws SAXException {
+    serialize(aCAS, null, aStream, false, null);
+  }
+
+  /**
+   * Serializes a CAS to an XMI stream. Allows a TypeSystem to be specified, to which the produced
+   * XMI will conform. Any types or features not in the target type system will not be serialized.
+   * 
+   * @param aCAS
+   *          CAS to serialize.
+   * @param aTargetTypeSystem
+   *          type system to which the produced XMI will conform. Any types or features not in the
+   *          target type system will not be serialized.  A null value indicates that all types and features
+   *          will be serialized.
+   * @param aStream
+   *          output stream to which to write the XMI document
+   * 
+   * @throws SAXException
+   *           if a problem occurs during XMI serialization
+   */
+  public static void serialize(CAS aCAS, TypeSystem aTargetTypeSystem, OutputStream aStream)
+          throws SAXException {
+    serialize(aCAS, aTargetTypeSystem, aStream, false, null);
+  }
+  
+  /**
+   * Serializes a CAS to an XMI stream.  This version of this method allows many options to be configured.
+   * 
+   * @param aCAS
+   *          CAS to serialize.
+   * @param aTargetTypeSystem
+   *          type system to which the produced XMI will conform. Any types or features not in the
+   *          target type system will not be serialized.  A null value indicates that all types and features
+   *          will be serialized.
+   * @param aStream
+   *          output stream to which to write the XMI document
+   * @param aPrettyPrint
+   *          if true the XML output will be formatted with newlines and indenting.  If false it will be unformatted.
+   * @param aSharedData
+   *          an optional container for data that is shared between the {@link XmiCasSerializer} and the {@link XmiCasDeserializer}.
+   *          See the JavaDocs for {@link XmiSerializationSharedData} for details.
+   * 
+   * @throws SAXException
+   *           if a problem occurs during XMI serialization
+   */
+  public static void serialize(CAS aCAS, TypeSystem aTargetTypeSystem, OutputStream aStream, boolean aPrettyPrint, 
+          XmiSerializationSharedData aSharedData)
+          throws SAXException {
+    XmiCasSerializer xmiCasSerializer = new XmiCasSerializer(aTargetTypeSystem);
+    XMLSerializer sax2xml = new XMLSerializer(aStream, aPrettyPrint);
+    xmiCasSerializer.serialize(aCAS, sax2xml.getContentHandler(), null, aSharedData, null);
+  }  
+  
+  /**
+   * Serializes a Delta CAS to an XMI stream.  This version of this method allows many options to be configured.
+   *     
+   *    
+   * @param aCAS
+   *          CAS to serialize.
+   * @param aTargetTypeSystem
+   *          type system to which the produced XMI will conform. Any types or features not in the
+   *          target type system will not be serialized.  A null value indicates that all types and features
+   *          will be serialized.
+   * @param aStream
+   *          output stream to which to write the XMI document
+   * @param aPrettyPrint
+   *          if true the XML output will be formatted with newlines and indenting.  If false it will be unformatted.
+   * @param aSharedData
+   *          an optional container for data that is shared between the {@link XmiCasSerializer} and the {@link XmiCasDeserializer}.
+   *          See the JavaDocs for {@link XmiSerializationSharedData} for details.
+   * @param aMarker
+   *  	      an optional object that is used to filter and serialize a Delta CAS containing only
+   *          those FSs and Views created after Marker was set and preexisting FSs and views that were modified.
+   *          See the JavaDocs for {@link Marker} for details.
+   * @throws SAXException
+   *           if a problem occurs during XMI serialization
+   */
+  public static void serialize(CAS aCAS, TypeSystem aTargetTypeSystem, OutputStream aStream, boolean aPrettyPrint, 
+          XmiSerializationSharedData aSharedData, Marker aMarker)
+          throws SAXException {
+    XmiCasSerializer xmiCasSerializer = new XmiCasSerializer(aTargetTypeSystem);
+    XMLSerializer sax2xml = new XMLSerializer(aStream, aPrettyPrint);
+    xmiCasSerializer.serialize(aCAS, sax2xml.getContentHandler(), null, aSharedData, aMarker);
+  }  
+  
   /**
    * Use an inner class to hold the data for serializing a CAS. Each call to serialize() creates its
    * own instance.
@@ -1351,300 +1649,4 @@ public class XmiCasSerializer {
     } 
   }
 
-  public static final String XMLNS_NS_URI = "http://www.w3.org/2000/xmlns/";
-
-  public static final String XMI_NS_URI = "http://www.omg.org/XMI";
-
-  public static final String XSI_NS_URI = "http://www.w3.org/2001/XMLSchema-instance";
-
-  public static final String XMI_NS_PREFIX = "xmi";
-
-  public static final String XMI_TAG_LOCAL_NAME = "XMI";
-
-  public static final String XMI_TAG_QNAME = "xmi:XMI";
-
-  public static final XmlElementName XMI_TAG = new XmlElementName(XMI_NS_URI, XMI_TAG_LOCAL_NAME,
-          XMI_TAG_QNAME);
-
-  public static final String INDEXED_ATTR_NAME = "_indexed";
-
-  public static final String ID_ATTR_NAME = "xmi:id";
-
-  public static final String XMI_VERSION_LOCAL_NAME = "version";
-
-  public static final String XMI_VERSION_QNAME = "xmi:version";
-
-  public static final String XMI_VERSION_VALUE = "2.0";
-
-  /** Namespace URI to use for UIMA types that have no namespace (the "default pacakge" in Java) */
-  public static final String DEFAULT_NAMESPACE_URI = "http:///uima/noNamespace.ecore";
-
-  private TypeSystemImpl filterTypeSystem;
-
-  // UIMA logger, to which we may write warnings
-  private Logger logger;
-
-  private Map<String, String> nsUriToSchemaLocationMap = null;
-
-  /**
-   * Creates a new XmiCasSerializer.
-   * 
-   * @param ts
-   *          the TypeSystem of CASes that will be serialized. If any CAS that is later passed to
-   *          the <code>serialize</code> method that contains types and features that are not in
-   *          this typesystem, the serialization will not contain instances of those types or values
-   *          for those features. So this can be used to filter the results of serialization.
-   * @param nsUriToSchemaLocationMap
-   *          Map if supplied, this map is used to generate a "schemaLocation" attribute in the XMI
-   *          output. This argument must be a map from namespace URIs to the schema location for
-   *          that namespace URI.
-   */
-  public XmiCasSerializer(TypeSystem ts, Map<String, String> nsUriToSchemaLocationMap) {
-    super();
-    // System.out.println("Creating serializer for type system.");
-    this.filterTypeSystem = (TypeSystemImpl) ts;
-    this.nsUriToSchemaLocationMap = nsUriToSchemaLocationMap;
-    this.logger = UIMAFramework.getLogger(XmiCasSerializer.class);
-  }
-
-  /**
-   * Creates a new XmiCasSerializer.
-   * 
-   * @param ts
-   *          the TypeSystem of CASes that will be serialized. If any CAS that is later passed to
-   *          the <code>serialize</code> method that contains types and features that are not in
-   *          this typesystem, the serialization will not contain instances of those types or values
-   *          for those features. So this can be used to filter the results of serialization.
-   *          A null value indicates that all types and features  will be serialized.
-   */
-  public XmiCasSerializer(TypeSystem ts) {
-    this(ts, (Map) null);
-  }
-
-  /**
-   * Creates a new XmiCasSerializer.
-   * 
-   * @param ts
-   *          the TypeSystem of CASes that will be serialized. If any CAS that is later passed to
-   *          the <code>serialize</code> method that contains types and features that are not in
-   *          this typesystem, the serialization will not contain instances of those types or values
-   *          for those features. So this can be used to filter the results of serialization.
-   * @param uimaContext
-   *          not used
-   * @param nsUriToSchemaLocationMap
-   *          Map if supplied, this map is used to generate a "schemaLocation" attribute in the XMI
-   *          output. This argument must be a map from namespace URIs to the schema location for
-   *          that namespace URI.
-   * 
-   * @deprecated Use {@link #XmiCasSerializer(TypeSystem, Map)} instead. The UimaContext reference
-   *             is never used by this implementation.
-   */
-  @Deprecated
-  public XmiCasSerializer(TypeSystem ts, UimaContext uimaContext, Map<String, String> nsUriToSchemaLocationMap) {
-    this(ts, nsUriToSchemaLocationMap);
-  }
-
-  /**
-   * Creates a new XmiCasSerializer.
-   * 
-   * @param ts
-   *          the TypeSystem of CASes that will be serialized. If any CAS that is later passed to
-   *          the <code>serialize</code> method that contains types and features that are not in
-   *          this typesystem, the serialization will not contain instances of those types or values
-   *          for those features. So this can be used to filter the results of serialization.
-   * @param uimaContext
-   *          not used
-   * 
-   * @deprecated Use {@link #XmiCasSerializer(TypeSystem)} instead. The UimaContext reference is
-   *             never used by this implementation.
-   */
-  @Deprecated
-  public XmiCasSerializer(TypeSystem ts, UimaContext uimaContext) {
-    this(ts);
-  }
-
-  /**
-   * Write the CAS data to a SAX content handler.
-   * 
-   * @param cas
-   *          The CAS to be serialized.
-   * @param contentHandler
-   *          The SAX content handler the data is written to. should be inserted into the XCAS
-   *          output
-   * 
-   * @throws SAXException if there was a SAX exception
-   */
-  public void serialize(CAS cas, ContentHandler contentHandler) throws SAXException {
-    this.serialize(cas, contentHandler, null);
-  }
-
-  /**
-   * Write the CAS data to a SAX content handler.
-   * 
-   * @param cas
-   *          The CAS to be serialized.
-   * @param contentHandler
-   *          The SAX content handler the data is written to. should be inserted into the XCAS
-   *          output
-   * @param errorHandler the SAX Error Handler to use
-   * 
-   * @throws SAXException if there was a SAX exception
-   */
-  public void serialize(CAS cas, ContentHandler contentHandler, ErrorHandler errorHandler)
-          throws SAXException {
-    contentHandler.startDocument();
-    XmiCasDocSerializer ser = new XmiCasDocSerializer(contentHandler, errorHandler, ((CASImpl) cas)
-            .getBaseCAS(), null, null);
-    ser.serialize();
-    contentHandler.endDocument();
-  }
-
-  /**
-   * Write the CAS data to a SAX content handler.
-   * 
-   * @param cas
-   *          The CAS to be serialized.
-   * @param contentHandler
-   *          The SAX content handler the data is written to. should be inserted into the XCAS
-   *          output
-   * @param sharedData
-   *          data structure used to allow the XmiCasSerializer and XmiCasDeserializer to share
-   *          information.
-   * @param errorHandler the SAX Error Handler to use
-   * 
-   * @throws SAXException if there was a SAX exception
-   */
-  public void serialize(CAS cas, ContentHandler contentHandler, ErrorHandler errorHandler,
-          XmiSerializationSharedData sharedData) throws SAXException {
-    contentHandler.startDocument();
-    XmiCasDocSerializer ser = new XmiCasDocSerializer(contentHandler, errorHandler, ((CASImpl) cas)
-            .getBaseCAS(), sharedData, (MarkerImpl) null);
-    ser.serialize();
-    contentHandler.endDocument();
-  }  
-  
-  /**
-   * Write the CAS data to a SAX content handler.
-   * 
-   * @param cas
-   *          The CAS to be serialized.
-   * @param contentHandler
-   *          The SAX content handler the data is written to. should be inserted into the XCAS
-   *          output
-   * @param errorHandler the SAX Error Handler to use
-   * @param sharedData
-   *          data structure used to allow the XmiCasSerializer and XmiCasDeserializer to share
-   *          information.
-   * @param marker
-   * 	      an object used to filter the FSs and Views to determine if these were created after
-   *          the mark was set. Used to serialize a Delta CAS consisting of only new FSs and views and
-   *          preexisting FSs and Views that have been modified.
-   *          
-   * @throws SAXException if there was a SAX exception
-   */
-  public void serialize(CAS cas, ContentHandler contentHandler, ErrorHandler errorHandler,
-          XmiSerializationSharedData sharedData, Marker marker) throws SAXException {
-	  
-    contentHandler.startDocument();
-    XmiCasDocSerializer ser = new XmiCasDocSerializer(contentHandler, errorHandler, ((CASImpl) cas)
-            .getBaseCAS(), sharedData, (MarkerImpl) marker);
-    ser.serialize();
-    contentHandler.endDocument();
-  }
-
-  /**
-   * Serializes a CAS to an XMI stream.
-   * 
-   * @param aCAS
-   *          CAS to serialize.
-   * @param aStream
-   *          output stream to which to write the XMI document
-   * 
-   * @throws SAXException
-   *           if a problem occurs during XMI serialization
-   */
-  public static void serialize(CAS aCAS, OutputStream aStream) throws SAXException {
-    serialize(aCAS, null, aStream, false, null);
-  }
-
-  /**
-   * Serializes a CAS to an XMI stream. Allows a TypeSystem to be specified, to which the produced
-   * XMI will conform. Any types or features not in the target type system will not be serialized.
-   * 
-   * @param aCAS
-   *          CAS to serialize.
-   * @param aTargetTypeSystem
-   *          type system to which the produced XMI will conform. Any types or features not in the
-   *          target type system will not be serialized.  A null value indicates that all types and features
-   *          will be serialized.
-   * @param aStream
-   *          output stream to which to write the XMI document
-   * 
-   * @throws SAXException
-   *           if a problem occurs during XMI serialization
-   */
-  public static void serialize(CAS aCAS, TypeSystem aTargetTypeSystem, OutputStream aStream)
-          throws SAXException {
-    serialize(aCAS, aTargetTypeSystem, aStream, false, null);
-  }
-  
-  /**
-   * Serializes a CAS to an XMI stream.  This version of this method allows many options to be configured.
-   * 
-   * @param aCAS
-   *          CAS to serialize.
-   * @param aTargetTypeSystem
-   *          type system to which the produced XMI will conform. Any types or features not in the
-   *          target type system will not be serialized.  A null value indicates that all types and features
-   *          will be serialized.
-   * @param aStream
-   *          output stream to which to write the XMI document
-   * @param aPrettyPrint
-   *          if true the XML output will be formatted with newlines and indenting.  If false it will be unformatted.
-   * @param aSharedData
-   *          an optional container for data that is shared between the {@link XmiCasSerializer} and the {@link XmiCasDeserializer}.
-   *          See the JavaDocs for {@link XmiSerializationSharedData} for details.
-   * 
-   * @throws SAXException
-   *           if a problem occurs during XMI serialization
-   */
-  public static void serialize(CAS aCAS, TypeSystem aTargetTypeSystem, OutputStream aStream, boolean aPrettyPrint, 
-          XmiSerializationSharedData aSharedData)
-          throws SAXException {
-    XmiCasSerializer xmiCasSerializer = new XmiCasSerializer(aTargetTypeSystem);
-    XMLSerializer sax2xml = new XMLSerializer(aStream, aPrettyPrint);
-    xmiCasSerializer.serialize(aCAS, sax2xml.getContentHandler(), null, aSharedData, null);
-  }  
-  
-  /**
-   * Serializes a Delta CAS to an XMI stream.  This version of this method allows many options to be configured.
-   *     
-   *    
-   * @param aCAS
-   *          CAS to serialize.
-   * @param aTargetTypeSystem
-   *          type system to which the produced XMI will conform. Any types or features not in the
-   *          target type system will not be serialized.  A null value indicates that all types and features
-   *          will be serialized.
-   * @param aStream
-   *          output stream to which to write the XMI document
-   * @param aPrettyPrint
-   *          if true the XML output will be formatted with newlines and indenting.  If false it will be unformatted.
-   * @param aSharedData
-   *          an optional container for data that is shared between the {@link XmiCasSerializer} and the {@link XmiCasDeserializer}.
-   *          See the JavaDocs for {@link XmiSerializationSharedData} for details.
-   * @param aMarker
-   *  	      an optional object that is used to filter and serialize a Delta CAS containing only
-   *          those FSs and Views created after Marker was set and preexisting FSs and views that were modified.
-   *          See the JavaDocs for {@link Marker} for details.
-   * @throws SAXException
-   *           if a problem occurs during XMI serialization
-   */
-  public static void serialize(CAS aCAS, TypeSystem aTargetTypeSystem, OutputStream aStream, boolean aPrettyPrint, 
-          XmiSerializationSharedData aSharedData, Marker aMarker)
-          throws SAXException {
-    XmiCasSerializer xmiCasSerializer = new XmiCasSerializer(aTargetTypeSystem);
-    XMLSerializer sax2xml = new XMLSerializer(aStream, aPrettyPrint);
-    xmiCasSerializer.serialize(aCAS, sax2xml.getContentHandler(), null, aSharedData, aMarker);
-  }  
 }
