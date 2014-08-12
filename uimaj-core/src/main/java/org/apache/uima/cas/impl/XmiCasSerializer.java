@@ -1762,6 +1762,13 @@ public class XmiCasSerializer {
       shortName = getUniqueString(shortName);
 
       // determine what namespace prefix to use
+      String prefix = getNameSpacePrefix(uimaTypeName, nsUri, lastDotIndex);
+
+      return new XmlElementName(nsUri, shortName, getUniqueString(prefix + ':' + shortName));
+    }
+
+    private String getNameSpacePrefix(String uimaTypeName, String nsUri, int lastDotIndex) {
+      // determine what namespace prefix to use
       String prefix = (String) nsUriToPrefixMap.get(nsUri);
       if (prefix == null) {
         if (lastDotIndex != -1) { // have namespace 
@@ -1782,8 +1789,7 @@ public class XmiCasSerializer {
         nsUriToPrefixMap.put(nsUri, prefix);
         nsPrefixesUsed.add(prefix);
       }
-
-      return new XmlElementName(nsUri, shortName, getUniqueString(prefix + ':' + shortName));
+      return prefix;
     }
 
     /*
@@ -1812,7 +1818,7 @@ public class XmiCasSerializer {
         OotsElementData oed = it.next();
         workAttrs.clear();
         // Add ID attribute
-        addAttribute(workAttrs, ID_ATTR_NAME.getValue(), oed.xmiId);
+        addAttribute(workAttrs, idAttrName.getValue(), oed.xmiId);
 
         // Add other attributes
         Iterator<XmlAttribute> attrIt = oed.attributes.iterator();
