@@ -1784,7 +1784,7 @@ public class XmiCasDeserializerTest extends TestCase {
     
     // call serializer with a ContentHandler that checks numChildren
     XmiCasSerializer xmiSer = new XmiCasSerializer(cas.getTypeSystem());
-    GetNumChildrenTestHandler handler = new GetNumChildrenTestHandler(xmiSer, (CASImpl) cas);
+    GetNumChildrenTestHandler handler = new GetNumChildrenTestHandler(xmiSer, (CASImpl)cas);
     xmiSer.serialize(cas, handler, handler.tcds);
   }
 
@@ -1865,7 +1865,7 @@ public class XmiCasDeserializerTest extends TestCase {
   static class GetNumChildrenTestHandler extends DefaultHandler {
     XmiCasSerializer xmiSer;
     Stack<Integer> childCountStack = new Stack<Integer>();
-    private CasDocSerializer tcds;
+    private CasDocSerializer tcds; 
     
     GetNumChildrenTestHandler(XmiCasSerializer xmiSer, CASImpl cas) {
       this.xmiSer = xmiSer;
