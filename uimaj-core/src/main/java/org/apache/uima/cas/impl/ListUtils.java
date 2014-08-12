@@ -86,6 +86,8 @@ public class ListUtils {
 
   private ErrorHandler eh;
 
+  private boolean foundCycle;
+
   /**
    * Creates a new ListUtils object.
    * 
@@ -145,23 +147,27 @@ public class ListUtils {
   }
 
   public int getLength(int type, int addr) {
-	int neListType = -1;
-	int tailFeat = -1;
-	if (isIntListType(type)) {
-	  neListType = neIntListType;
-	  tailFeat = intTailFeat;
-	} else if ( isFloatListType(type)) {
-	  neListType = neFloatListType;
-	  tailFeat = floatTailFeat;
-	} else if (isStringListType(type)) {
-      neListType = neStringListType;
-	  tailFeat = stringTailFeat;
-	} else if (isFsListType(type)) {
-	  neListType = neFsListType;
-	  tailFeat = fsTailFeat;
-	}
+    int neListType = -1;
+    int tailFeat = -1;
+    if (isIntListType(type)) {
+      neListType = neIntListType;
+      tailFeat = intTailFeat;
+    } else if ( isFloatListType(type)) {
+      neListType = neFloatListType;
+      tailFeat = floatTailFeat;
+    } else if (isStringListType(type)) {
+        neListType = neStringListType;
+      tailFeat = stringTailFeat;
+    } else if (isFsListType(type)) {
+      neListType = neFsListType;
+      tailFeat = fsTailFeat;
+    }
+    return getLength(type, addr, neListType, tailFeat);    
+  }
+  
+  public int getLength(int type, int addr, int neListType, int tailFeat) {
 	IntRedBlackTree visited = new IntRedBlackTree();
-	boolean foundCycle = false;
+	foundCycle = false;
 	// first count length of list so we can allocate array
 	int length = 0;
 	int curNode = addr;
@@ -175,28 +181,68 @@ public class ListUtils {
 	}
 	return length;
   }
-  
-  public String[] intListToStringArray(int addr) throws SAXException {
-    IntRedBlackTree visited = new IntRedBlackTree();
-    boolean foundCycle = false;
-    // first count length of list so we can allocate array
-    int length = 0;
-    int curNode = addr;
-    while (cas.getHeapValue(curNode) == neIntListType) {
-      if (!visited.put(curNode, curNode)) {
-        foundCycle = true;
-        break;
-      }
-      length++;
-      curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(intTailFeat));
+ 
+  public String[] anyListToStringArray(int curNode, XmiSerializationSharedData sharedData) throws SAXException {
+    final int type = cas.getHeapValue(curNode);
+    int headFeat = -1, tailFeat = -1, neListType = -1;
+    
+    if (isIntListType(type)) {
+      neListType = neIntListType;
+      headFeat = intHeadFeat;
+      tailFeat = intTailFeat;
+    } else if ( isFloatListType(type)) {
+      neListType = neFloatListType;
+      headFeat = floatHeadFeat;
+      tailFeat = floatTailFeat;
+    } else if (isStringListType(type)) {
+      neListType = neStringListType;
+      headFeat = stringHeadFeat;
+      tailFeat = stringTailFeat;
+    } else if (isFsListType(type)) {
+      neListType = neFsListType;
+      headFeat = fsHeadFeat;
+      tailFeat = fsTailFeat;
     }
 
+
+    int length = getLength(type, curNode, neListType, tailFeat);
     String[] array = new String[length];
 
     // now populate list
-    curNode = addr;
+//    curNode = addr;
     for (int i = 0; i < length; i++) {
-      array[i] = Integer.toString(cas.getHeapValue(curNode + cas.getFeatureOffset(intHeadFeat)));
+      final int val = cas.getHeapValue(curNode + cas.getFeatureOffset(headFeat));
+      
+      if (neListType == neIntListType) {
+        array[i] = Integer.toString(val);
+      } else if (neListType == neFloatListType) {
+        array[i] = Float.toString(val);
+      } else if (neListType == neStringListType) {
+        array[i] = cas.getStringForCode(val);
+      } else if (neListType == neFsListType) {
+        if (val == 0) {
+          //null value in list.  Represent with "0".
+          array[i] = "0";
+          // However, this may be null because the element was originally a reference to an 
+          // out-of-typesystem FS, so chck the XmiSerializationSharedData
+          if (sharedData != null) {
+            OotsElementData oed = sharedData.getOutOfTypeSystemFeatures(curNode);
+            if (oed != null) {
+              assert oed.attributes.size() == 1; //only the head feature can possibly be here
+              XmlAttribute attr = (XmlAttribute)oed.attributes.get(0);
+              assert CAS.FEATURE_BASE_NAME_HEAD.equals(attr.name);
+              array[i] = attr.value;
+            }
+          }        
+        }
+        else {
+          if (sharedData != null) {
+            array[i] = (val == 0) ? "0" : sharedData.getXmiId(val);  // changed from null 8/2014 mis
+          } else {
+            array[i] = Integer.toString(val);
+          }
+        }
+      }
       curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(intTailFeat));
     }
     if (foundCycle) {
@@ -206,140 +252,17 @@ public class ListUtils {
     return array;
   }
 
-  public String[] floatListToStringArray(int addr) throws SAXException {
-    boolean foundCycle = false;
-    IntRedBlackTree visited = new IntRedBlackTree();
-    // first count length of list so we can allocate array
-    int length = 0;
-    int curNode = addr;
-    while (cas.getHeapValue(curNode) == neFloatListType) {
-      if (!visited.put(curNode, curNode)) {
-        foundCycle = true;
-        break;
-      }
-      length++;
-      curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(floatTailFeat));
-    }
-
-    String[] array = new String[length];
-
-    // now populate list
-    curNode = addr;
-    for (int i = 0; i < length; i++) {
-      array[i] = Float.toString(CASImpl.int2float(cas.getHeapValue(curNode
-              + cas.getFeatureOffset(floatHeadFeat))));
-      curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(floatTailFeat));
-    }
-    if (foundCycle) {
-      reportWarning("Found a cycle in a FloatList.  List truncated to "
-              + Arrays.asList(array).toString() + ".");
-    }
-    return array;
-  }
-
-  public String[] stringListToStringArray(int addr) throws SAXException {
-    boolean foundCycle = false;
-    IntRedBlackTree visited = new IntRedBlackTree();
-    // first count length of list so we can allocate array
-    int length = 0;
-    int curNode = addr;
-    while (cas.getHeapValue(curNode) == neStringListType) {
-      if (!visited.put(curNode, curNode)) {
-        foundCycle = true;
-        break;
-      }
-      length++;
-      curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(stringTailFeat));
-    }
-
-    String[] array = new String[length];
-
-    // now populate list
-    curNode = addr;
-    for (int i = 0; i < length; i++) {
-      array[i] = cas.getStringForCode(cas.getHeapValue(curNode
-              + cas.getFeatureOffset(stringHeadFeat)));
-      curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(stringTailFeat));
-    }
-    if (foundCycle) {
-      reportWarning("Found a cycle in a StringList.  List truncated to "
-              + Arrays.asList(array).toString() + ".");
-    }
-    return array;
-  }
-
-  public String[] fsListToXmiIdStringArray(int addr, XmiSerializationSharedData sharedData)
-          throws SAXException {
-    boolean foundCycle = false;
-    IntRedBlackTree visited = new IntRedBlackTree();
-    // first count length of list so we can allocate array
-    int length = 0;
-    int curNode = addr;
-    while (cas.getHeapValue(curNode) == neFsListType) {
-      if (!visited.put(curNode, curNode)) {
-        foundCycle = true;
-        break;
-      }
-      length++;
-      curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(fsTailFeat));
-    }
-
-    String[] strArray = new String[length];
-
-    // now populate list
-    curNode = addr;
-    for (int i = 0; i < length; i++) {
-      int heapVal = cas.getHeapValue(curNode + cas.getFeatureOffset(fsHeadFeat));
-      if (heapVal == 0) {
-        //null value in list.  Represent with "0".
-        strArray[i] = "0";
-        // However, this may be null because the element was originally a reference to an 
-        // out-of-typesystem FS, so chck the XmiSerializationSharedData
-        if (sharedData != null) {
-          OotsElementData oed = sharedData.getOutOfTypeSystemFeatures(curNode);
-          if (oed != null) {
-            assert oed.attributes.size() == 1; //only the head feature can possibly be here
-            XmlAttribute attr = (XmlAttribute)oed.attributes.get(0);
-            assert CAS.FEATURE_BASE_NAME_HEAD.equals(attr.name);
-            strArray[i] = attr.value;
-          }
-        }        
-      }
-      else {
-        if (sharedData != null) {
-          strArray[i] = heapVal == 0 ? null : sharedData.getXmiId(heapVal);
-        } else {
-          strArray[i] = Integer.toString(heapVal);
-        }
-      }
-      curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(fsTailFeat));
-    }
-    if (foundCycle) {
-      reportWarning("Found a cycle in an FSList.  List truncated to "
-              + Arrays.asList(strArray).toString() + ".");
-    }
-    return strArray;
-  }
-
-  public int[] fsListToAddressArray(int addr) throws SAXException {
-    boolean foundCycle = false;
-    IntRedBlackTree visited = new IntRedBlackTree();
-    // first count length of list so we can allocate array
-    int length = 0;
-    int curNode = addr;
-    while (cas.getHeapValue(curNode) == neFsListType) {
-      if (!visited.put(curNode, curNode)) {
-        foundCycle = true;
-        break;
-      }
-      length++;
-      curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(fsTailFeat));
-    }
-
+  public int[] fsListToAddressArray(int curNode) throws SAXException {
+    final int type = cas.getHeapValue(curNode);
+    int headFeat = fsHeadFeat;
+    int tailFeat = fsTailFeat;
+    int neListType = neFsListType;
+    
+    int length = getLength(type, curNode, neListType, tailFeat);
+    
     int[] array = new int[length];
 
     // now populate list
-    curNode = addr;
     for (int i = 0; i < length; i++) {
       array[i] = cas.getHeapValue(curNode + cas.getFeatureOffset(fsHeadFeat));
       curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(fsTailFeat));
