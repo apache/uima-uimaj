@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -62,18 +63,69 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.AttributesImpl;
 
+import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.io.SerializedString;
 
 /**
- * XMI CAS serializer. Used to write out a CAS in an XML Metadata Interchange (XMI) format. Create a
- * serializer from a type system, then encode individual CASes by writing to a SAX content handler.
- * This class is thread safe.
+ * CAS serializer for XMI and JSON formats.
+ * Writes a CAS in an XML Metadata Interchange (XMI) format, or in one of several JSON formats.
+ *   
+ * Note that some CAS structures, for instance, a List structure which has shared objects, 
+ * will not be faithfully serialized by these serialization methods 
+ * (because Lists are represented as an XMI formatted sequence or by JSON arrays, and shared 
+ * substructure is lost).  If you need a completely faithful serialization, please use one of the
+ * binary serialization methods. 
+ * 
+ * To use, 
+ *   - create a serializer instance, 
+ *   - optionally) configure the instance, and then 
+ *   - call serialize on the instance, optionally passing in additional parameters.
+ *   
+ * After the 1st 2 steps, the serializer instance may be used for multiple calls (on multiple threads) to
+ * the 3rd serialize step, if all calls use the same configuration.
+ * 
+ * There are "convenience" static serialize methods that do these three steps for common configurations.
+ * 
+ * Parameters can be configured in the XmiCasSerializer instance (I), and/or as part of the serialize(S) call.
+ * 
+ * The parameters that can be configured are:
+ * <ul>
+ *   <li>(S) The CAS to serialize
+ *   <li>(I,S) whether to use Json or XMI/XML output
+ *   <li>(S) where to put the output - an OutputStream</li>
+ *   <li>(I,S) a type system - (default null) if supplied, it is used to "filter" types and features that are serialized.  If provided, only 
+ *   those that exist in the passed in type system are included in the serialization</li>
+ *   <li>(I,S) a flag for prettyprinting - default false (no prettyprinting)</li>
+ *   <li>(I) (for XMI) (optional) If supplied, a map used to generate a "schemaLocation" attribute in the XMI
+ *          output. This argument must be a map from namespace URIs to the schema location for
+ *          that namespace URI.
+ *   <li>(S) (for XMI) (optional) if supplied XmiSerializationSharedData representing FeatureStructures
+ *       that were set aside when deserializing, and are to be "merged" back in when serializing
+ *   <li>(S) a Marker (default: null) if supplied, where the separation between "new" and previously
+ *       exisiting FeatureStructures are in the CAS; causes "delta" serialization, where only the 
+ *       new and changed FeatureStructures are serailized.
+ * </ul>
+ * 
+ * For Json serialization, additional configuration from the Jackson implementation can be configured
+ * on 2 associated Jackson instances:  
+ *   - JsonFactory 
+ *   - JsonGenerator
+ * using the standard Jackson methods on the associated JsonFactory instance; 
+ * see the Jackson JsonFactory javadocs for details.
+ * 
+ * These 2 Jackson objects are settable/accessible from an instance of this class (XmiCasSerializer).
+ * 
+ * Once the XmiCasSerializer instance is configured, the serialize method is called
+ * to serialized a CAS to an output.
+ * 
+ * Instances of this class must be used on only one thread while configuration is being done;
+ * afterwards, multiple threads may use the configured instance, to call serialize.
  */
 public class XmiCasSerializer {
   // Special "type class" codes for list types. The LowLevelCAS.ll_getTypeClass() method
   // returns type classes for primitives and arrays, but not lists (which are just ordinary FS types
-  // as far as the CAS is concerned). The XMI serialization treats lists specially, however, and
+  // as far as the CAS is concerned). The serialization treats lists specially, however, and
   // so needs its own type codes for these.
   public static final int TYPE_CLASS_INTLIST = 101;
 
@@ -86,6 +138,12 @@ public class XmiCasSerializer {
   private static final char [] URIPFX = new char[] {'h','t','t','p',':','/','/','/'};
   
   private static final char [] URISFX = new char[] {'.','e','c','o','r','e'};
+  
+  private static final char [] URI_JSON_NS_SFX = new char[] {'.','n','a','m','e','_','s','p','a','c','e'};
+
+  private static final SerializedString FEATURE_REFS_NAME = new SerializedString("_featureRefs");
+  
+  private static final SerializedString SUPER_TYPES_NAME = new SerializedString("_superTypes");
   
   private static final String CDATA_TYPE = "CDATA";
 
@@ -100,6 +158,14 @@ public class XmiCasSerializer {
   public static final String XMI_TAG_LOCAL_NAME = "XMI";
 
   public static final String XMI_TAG_QNAME = "xmi:XMI";
+
+  private static final SerializedString ZERO = new SerializedString("0");
+  
+  private static final SerializedString JSON_CONTEXT_TAG_LOCAL_NAME = new SerializedString("@context");
+  
+  private static final SerializedString JSON_CAS_FEATURE_STRUCTURES = new SerializedString("_cas_feature_structures");
+  
+  private static final SerializedString JSON_CAS_VIEWS = new SerializedString("_cas_views");
 
   public static final XmlElementName XMI_TAG = new XmlElementName(XMI_NS_URI, XMI_TAG_LOCAL_NAME,
           XMI_TAG_QNAME);
@@ -119,12 +185,76 @@ public class XmiCasSerializer {
   /** Namespace URI to use for UIMA types that have no namespace (the "default pacakge" in Java) */
   public static final String DEFAULT_NAMESPACE_URI = "http:///uima/noNamespace.ecore";
 
+  private static int PP_LINE_LENGTH = 120;
+  private static int PP_ELEMENTS = 30;  // number of elements to do before nl
+
+  private static String[] EMPTY_STRING_ARRAY = new String[0];
+  
+  private final static Comparator<TypeImpl> COMPARATOR_SHORT_TYPENAME = new Comparator<TypeImpl>() {
+    public int compare(TypeImpl object1, TypeImpl object2) {
+      return object1.getShortName().compareTo(object2.getShortName());
+    }
+  };
+  
+
+  /**
+   *  This enum describes the kinds of JSON formats used for serializing Feature Structures
+   *    ById:  { "123" : { "type-name" : { feat : value, ... } 
+   *             where 123 is the "ID", and type-name is the name of the type of the feature structure
+   *    ByType:  { "type-name" : [ { "@id" : 123, feat : value ... }, ... ]
+   *             all feature structures of a particular type are collected together, and 
+   *             partially sorted (annotation subtypes are sorted in the normal begin-end order of the
+   *             default annotation index)
+   */
+  public enum JsonCasFormat {
+    ById,   // outputs each FS as "nnn" : { "type " : {  features : values ... }}
+    ByType, // outputs each FS as "type" : [ { "@id" : "nnn", features : values ... } ]
+  }
+  
+  /**
+   * The serialization can optionally include context information in addition to the feature structures.
+   * 
+   * This context information is specified, per used-type.
+   * 
+   * It can be further subdivided into 3 parts:
+   *   1) what their super types are.  This is needed in case the receiver needs to iterate over
+   *      a supertype (and all of its subtypes), e.g. an interator over all "Annotations".
+   *   2) which of their features are references to other feature structures.  This is needed
+   *      if the receiver wants to construct "graphs" of feature structures, with arbitrary links, back-links, cycles, etc.
+   *   3) whether or not to include the map from short type names to their fully qualified equivalents.
+   *
+   */
+  public enum JsonContextFormat {
+    omitContext,        includeContext,
+    omitSupertypes,     includeSuperTypes,
+    omitFeatureRefs,    includeFeatureRefs,
+    omitExpandedTypeNames, includeExpandedTypeNames,
+  }
+  
   private TypeSystemImpl filterTypeSystem;
+
+  private MarkerImpl marker;
+  
+  private ErrorHandler eh = null;
 
   // UIMA logger, to which we may write warnings
   private Logger logger;
 
   private Map<String, String> nsUriToSchemaLocationMap = null;
+  
+  private boolean isFormattedOutput;
+  
+  private JsonFactory jsonFactory = null;
+
+  private boolean isJsonByType = false;
+  private boolean isJsonById = true;     // default serialization style
+  
+  private boolean isWithContext = true;
+  private boolean isWithSupertypes = true;
+  private boolean isWithFeatureRefs = true;
+  private boolean isWithExpandedTypeNames = true;
+  private boolean isWithViews = true;
+  private boolean isWithContextOrViews;   // derived from others in top serialize() method
   
   /***********************************************
    *         C O N S T R U C T O R S             *  
@@ -158,9 +288,27 @@ public class XmiCasSerializer {
    *          that namespace URI.
    */
   public XmiCasSerializer(TypeSystem ts, Map<String, String> nsUriToSchemaLocationMap) {
+    this(ts, nsUriToSchemaLocationMap, false);
+  }
+
+  /**
+   * Creates a new XmiCasSerializer
+   * @param ts
+   *          An optional typeSystem (or null) to filter the types that will be serialized. If any CAS that is later passed to
+   *          the <code>serialize</code> method that contains types and features that are not in
+   *          this typesystem, the serialization will not contain instances of those types or values
+   *          for those features. So this can be used to filter the results of serialization.
+   * @param nsUriToSchemaLocationMap
+   *          Map if supplied, this map is used to generate a "schemaLocation" attribute in the XMI
+   *          output. This argument must be a map from namespace URIs to the schema location for
+   *          that namespace URI.
+   * @param isFormattedOutput true makes serialization pretty print
+   */
+  public XmiCasSerializer(TypeSystem ts, Map<String, String> nsUriToSchemaLocationMap, boolean isFormattedOutput) {
     this.filterTypeSystem = (TypeSystemImpl) ts;
     this.nsUriToSchemaLocationMap = nsUriToSchemaLocationMap;
     this.logger = UIMAFramework.getLogger(XmiCasSerializer.class);
+    this.isFormattedOutput = isFormattedOutput;
   }
 
   /**
@@ -269,9 +417,7 @@ public class XmiCasSerializer {
   public static void serialize(CAS aCAS, TypeSystem aTargetTypeSystem, OutputStream aStream, boolean aPrettyPrint, 
           XmiSerializationSharedData aSharedData)
           throws SAXException {
-    XmiCasSerializer xmiCasSerializer = new XmiCasSerializer(aTargetTypeSystem);
-    XMLSerializer sax2xml = new XMLSerializer(aStream, aPrettyPrint);
-    xmiCasSerializer.serialize(aCAS, sax2xml.getContentHandler(), null, aSharedData, null);
+    serialize(aCAS, aTargetTypeSystem, aStream, aPrettyPrint, aSharedData, null);
   }  
   
   /**
@@ -306,6 +452,14 @@ public class XmiCasSerializer {
     xmiCasSerializer.serialize(aCAS, sax2xml.getContentHandler(), null, aSharedData, aMarker);
   }  
 
+  /***************************************************
+   *       non-static XMI Serializer methods         * 
+   *  To use: first make an instance of this class
+   *    and set any configuration info needed
+   *  Then call these methods
+   *  
+   *  The serialize calls are thread-safe
+   ***************************************************/
   
   /**
    * Write the CAS data to a SAX content handler.
@@ -336,11 +490,7 @@ public class XmiCasSerializer {
    */
   public void serialize(CAS cas, ContentHandler contentHandler, ErrorHandler errorHandler)
           throws SAXException {
-    contentHandler.startDocument();
-    CasDocSerializer ser = new CasDocSerializer(contentHandler, errorHandler, ((CASImpl) cas)
-            .getBaseCAS(), null, null);
-    ser.serialize();
-    contentHandler.endDocument();
+    serialize(cas, contentHandler, errorHandler, null, null);
   }
 
   /**
@@ -360,11 +510,7 @@ public class XmiCasSerializer {
    */
   public void serialize(CAS cas, ContentHandler contentHandler, ErrorHandler errorHandler,
           XmiSerializationSharedData sharedData) throws SAXException {
-    contentHandler.startDocument();
-    CasDocSerializer ser = new CasDocSerializer(contentHandler, errorHandler, ((CASImpl) cas)
-            .getBaseCAS(), sharedData, (MarkerImpl) null);
-    ser.serialize();
-    contentHandler.endDocument();
+    serialize(cas, contentHandler, errorHandler, sharedData, null);
   }  
   
   /**
