@@ -728,6 +728,13 @@ public class XmiCasSerializer {
      * @throws SAXException 
      */
     private void serialize() throws SAXException {
+      if (isJson) {
+        if (isWithContext && !isWithSupertypes && !isWithFeatureRefs && !isWithExpandedTypeNames) {
+          isWithContext = false;
+        }
+        isWithContextOrViews = isWithContext || isWithViews;
+      }
+      
       // populate nsUriToPrefixMap and xmiTypeNames structures based on CAS 
       // type system, and out of typesystem data if any
       initTypeAndNamespaceMappings();
@@ -750,8 +757,7 @@ public class XmiCasSerializer {
       } else {
     	int numViews = cas.getBaseSofaCount();
         for (int sofaNum = 1; sofaNum <= numViews; sofaNum++) {
-            FSIndexRepositoryImpl loopIR = (FSIndexRepositoryImpl) cas.getBaseCAS()
-                    .getSofaIndexRepository(sofaNum);
+          FSIndexRepositoryImpl loopIR = (FSIndexRepositoryImpl) cas.getBaseCAS().getSofaIndexRepository(sofaNum);
             if (loopIR != null && loopIR.isModified()) {
             	iElementCount++;
             }
@@ -1021,25 +1027,56 @@ public class XmiCasSerializer {
       }
     }
 
+    private int enqueueCommon(int addr) {
+      if (isVisited(addr)) {
+        return -1;
+      }
+      if (isDelta) {
+        if (!marker.isNew(addr) && !marker.isModified(addr)) {
+          return -1;
+        }
+      }
+      
+      final int typeCode = cas.getHeapValue(addr);
+
+      if (isFiltering) {
+        String typeName = tsi.ll_getTypeForCode(typeCode).getName();
+        if (filterTypeSystem.getType(typeName) == null) {
+          return -1; // this type is not in the target type system
+        }
+      }
+      boolean alreadySet = typeUsed.get(typeCode);
+      if (!alreadySet) {
+        typeUsed.set(typeCode);
+
+        String typeName = tsi.ll_getTypeForCode(typeCode).getName();
+        XmlElementName newXel = uimaTypeName2XmiElementName(typeName);
+
+        if (!needNameSpaces) {
+          XmlElementName xel    = usedTypeName2XmlElementName.get(typeName);
+          if (xel != null) {
+            if (!xel.nsUri.equals(newXel.nsUri)) {
+              needNameSpaces = true;
+              usedTypeName2XmlElementName.clear();  // not needed anymore
+            }
+          } else {
+            usedTypeName2XmlElementName.put(typeName, newXel);
+          }
+        }        
+        xmiTypeNames[typeCode] = newXel;
+      }
+        
+      visited.put(addr, addr);
+      return typeCode;
+    }
     /*
      * Enqueues an indexed FS. Does NOT enqueue features at this point.
      */
     private void enqueueIndexedFs(int addr) {
-      if (isVisited(addr)) {
+      int typeCode = enqueueCommon(addr);
+      if (typeCode == -1) {
         return;
       }
-      if (isDelta) {
-    	if (!marker.isNew(addr) && !marker.isModified(addr)) {
-    	  return;
-    	}
-      }
-      if (isFiltering) {
-        String typeName = cas.getTypeSystemImpl().ll_getTypeForCode(cas.getHeapValue(addr)).getName();
-        if (filterTypeSystem.getType(typeName) == null) {
-          return; // this type is not in the target type system
-        }
-      }
-      visited.put(addr, addr);
       indexedFSs.add(addr);
     }
 
@@ -1050,22 +1087,10 @@ public class XmiCasSerializer {
      *          The FS address.
      */
     private void enqueue(int addr) throws SAXException {
-      if (isVisited(addr)) {
+      int typeCode = enqueueCommon(addr);
+      if (typeCode == -1) {
         return;
       }
-      if (isDelta) {
-    	  if (!marker.isNew(addr) && !marker.isModified(addr)) {
-    		  return;
-    	  }
-      }
-      int typeCode = cas.getHeapValue(addr);
-      if (isFiltering) {
-        String typeName = cas.getTypeSystemImpl().ll_getTypeForCode(typeCode).getName();
-        if (filterTypeSystem.getType(typeName) == null) {
-          return; // this type is not in the target type system
-        }
-      }
-      visited.put(addr, addr);
       queue.push(addr);
       enqueueFeatures(addr, typeCode);
 
@@ -1073,6 +1098,44 @@ public class XmiCasSerializer {
       if (cas.isFSArrayType(typeCode)) { //TODO: won't get parameterized arrays??
         enqueueFSArrayElements(addr);
       }
+    }
+
+    /**
+     * @param featCode the feature code
+     * @param fsClass the class of the feature
+     * @return true if the serialization is being done by having the value of this feature be a reference id
+     *              or (in the case of embedded collections, where the collection items are feature references
+     */
+    private boolean isRefToFS(int typeCode, int featCode, int fsClass) {
+      final boolean insideListNode = listUtils.isListType(typeCode);
+      switch (fsClass) {
+        case LowLevelCAS.TYPE_CLASS_FS: 
+        case LowLevelCAS.TYPE_CLASS_FSARRAY: 
+        case TYPE_CLASS_FSLIST: {
+          return true;
+        }
+        case LowLevelCAS.TYPE_CLASS_INTARRAY:
+        case LowLevelCAS.TYPE_CLASS_FLOATARRAY:
+        case LowLevelCAS.TYPE_CLASS_STRINGARRAY:
+        case LowLevelCAS.TYPE_CLASS_BOOLEANARRAY:
+        case LowLevelCAS.TYPE_CLASS_BYTEARRAY:
+        case LowLevelCAS.TYPE_CLASS_SHORTARRAY:
+        case LowLevelCAS.TYPE_CLASS_LONGARRAY:
+        case LowLevelCAS.TYPE_CLASS_DOUBLEARRAY: {
+          // we have refs only if the feature has
+          // multipleReferencesAllowed = true
+          return tsi.ll_getFeatureForCode(featCode).isMultipleReferencesAllowed();
+        }
+        case TYPE_CLASS_INTLIST:
+        case TYPE_CLASS_FLOATLIST:
+        case TYPE_CLASS_STRINGLIST: {
+          // we only have refs to lists as first-class objects if the feature has
+          // multipleReferencesAllowed = true
+          // OR if we're already inside a list node (this handles the tail feature correctly)
+          return tsi.ll_getFeatureForCode(featCode).isMultipleReferencesAllowed() || insideListNode; 
+        }
+      }
+      return false;
     }
 
     /**
@@ -1087,12 +1150,12 @@ public class XmiCasSerializer {
      */
     private void enqueueFeatures(int addr, int typeCode) throws SAXException {
       boolean insideListNode = listUtils.isListType(typeCode);
-      int[] feats = cas.getTypeSystemImpl().ll_getAppropriateFeatures(typeCode);
+      int[] feats = tsi.ll_getAppropriateFeatures(typeCode);
       int featAddr, featVal, fsClass;
       for (int i = 0; i < feats.length; i++) {
         if (isFiltering) {
           // skip features that aren't in the target type system
-          String fullFeatName = cas.getTypeSystemImpl().ll_getFeatureForCode(feats[i]).getName();
+          String fullFeatName = tsi.ll_getFeatureForCode(feats[i]).getName();
           if (filterTypeSystem.getFeatureByFullName(fullFeatName) == null) {
             continue;
           }
@@ -1104,7 +1167,7 @@ public class XmiCasSerializer {
         }
 
         // enqueue behavior depends on range type of feature
-        fsClass = classifyType(cas.getTypeSystemImpl().range(feats[i]));
+        fsClass = classifyType(tsi.range(feats[i]));
         switch (fsClass) {
           case LowLevelCAS.TYPE_CLASS_FS: {
             enqueue(featVal);
@@ -1121,7 +1184,7 @@ public class XmiCasSerializer {
           case LowLevelCAS.TYPE_CLASS_FSARRAY: {
             // we only enqueue arrays as first-class objects if the feature has
             // multipleReferencesAllowed = true
-            if (cas.getTypeSystemImpl().ll_getFeatureForCode(feats[i]).isMultipleReferencesAllowed()) {
+            if (tsi.ll_getFeatureForCode(feats[i]).isMultipleReferencesAllowed()) {
               enqueue(featVal);
             } else if (fsClass == LowLevelCAS.TYPE_CLASS_FSARRAY) {
               // but we do need to enqueue any FSs reachable from an FSArray
@@ -1136,7 +1199,7 @@ public class XmiCasSerializer {
             // we only enqueue lists as first-class objects if the feature has
             // multipleReferencesAllowed = true
             // OR if we're already inside a list node (this handles the tail feature correctly)
-            if (cas.getTypeSystemImpl().ll_getFeatureForCode(feats[i]).isMultipleReferencesAllowed() || insideListNode) {
+            if (tsi.ll_getFeatureForCode(feats[i]).isMultipleReferencesAllowed() || insideListNode) {
               enqueue(featVal);
             } else if (fsClass == TYPE_CLASS_FSLIST) {
               // also, we need to enqueue any FSs reachable from an FSList
@@ -1145,7 +1208,7 @@ public class XmiCasSerializer {
             break;
           }
         }
-      }
+      }  // end of loop over all features
     }
 
     /**
@@ -1203,6 +1266,75 @@ public class XmiCasSerializer {
       }
     }
 
+    private void encodeAllFss(Integer[] allFss) throws SAXException {
+      lastEncodedTypeCode = -1;
+      for (Integer i : allFss) {
+        encodeFS(i);
+      }
+      if (lastEncodedTypeCode != -1) {
+        jgWriteEndArray();
+      }
+    }
+
+    private Integer[] collectAllFeatureStructures() {
+      final int indexedSize = indexedFSs.size();
+      int rLen = indexedSize + queue.size();
+      Integer[] r = new Integer[rLen];
+      int i = 0;
+      for (; i < indexedSize; i++) {
+        r[i] = indexedFSs.get(i);
+      }
+      while (!queue.empty()) {
+        r[i++] = queue.pop(); 
+      }
+      return r;
+    }
+    
+    private int compareInts(int i1, int i2) {
+      return (i1 == i2) ? 0 :
+             (i1 >  i2) ? 1 : -1;
+    }
+    
+    private int compareFeat(int o1, int o2, int featCode) {
+      return compareFeat(o1, o2, featCode, false);
+    }
+    
+    private int compareFeat(int o1, int o2, int featCode, boolean reverse) {
+      final int f1 = cas.ll_getIntValue(o1, tsi.annotSofaFeatCode);
+      final int f2 = cas.ll_getIntValue(o2, tsi.annotSofaFeatCode);
+      return reverse ? compareInts(f2, f1) : compareInts(f1, f2);
+    }
+    
+    private final Comparator<Integer> sortFssByType = 
+        new Comparator<Integer>() {
+          public int compare(Integer o1, Integer o2) {
+            final int typeCode1 = cas.getHeapValue(o1);
+            final int typeCode2 = cas.getHeapValue(o2);
+            int c = compareInts(typeCode1, typeCode2);
+            if (c != 0) {
+              return c;
+            }
+            final boolean hasSofa = tsi.subsumes(tsi.annotBaseTypeCode, typeCode1);
+            if (hasSofa) {
+              c = compareFeat(o1, o2, tsi.annotSofaFeatCode);
+              if (c != 0) {
+                return c;
+              }
+              final boolean isAnnot = tsi.subsumes(tsi.annotTypeCode, typeCode1);
+              if (isAnnot) {
+                c = compareFeat(o1, o2, tsi.startFeatCode);
+                return (c != 0) ? c : compareFeat(o1, o2, tsi.endFeatCode, true);
+              }
+            }
+            // not sofa nor annotation
+            return compareInts(o1, o2);  // return in @id order
+          }
+      };
+      
+    private SerializedString getSerializedTypeName(XmlElementName xe) {
+      return getSerializedString(needNameSpaces ? xe.qName : xe.localName);
+    }
+
     /**
      * Encode an individual FS.
      * 
@@ -1212,17 +1344,16 @@ public class XmiCasSerializer {
      */
     private void encodeFS(int addr) throws SAXException {
 //      ++fsCount;
+      int typeCode = cas.getHeapValue(addr);
+      // generate the XMI name for the type (uses a precomputed array so we don't
+      // recompute the same name multiple times).
+      XmlElementName xmlElementName = xmiTypeNames[typeCode];
       workAttrs.clear();
 
       // Add ID attribute. We do this for every FS, since otherwise we would
       // have to do a complete traversal of the heap to find out which FSs is
       // actually referenced.
-      addAttribute(workAttrs, ID_ATTR_NAME.getValue(), getXmiId(addr));
-
-      // generate the XMI name for the type (uses a precomputed array so we don't
-      // recompute the same name multiple times).
-      int typeCode = cas.getHeapValue(addr);
-      XmlElementName xmlElementName = xmiTypeNames[typeCode];
+      addAttribute(workAttrs, idAttrName.getValue(), getXmiId(addr));
 
       // Call special code according to the type of the FS (special treatment
       // for arrays and lists).
@@ -1286,7 +1417,7 @@ public class XmiCasSerializer {
       }
       if (isFiltering) // return as null any references to types not in target TS
       {
-        String typeName = cas.getTypeSystemImpl().ll_getTypeForCode(cas.getHeapValue(addr)).getName();
+        String typeName = tsi.ll_getTypeForCode(cas.getHeapValue(addr)).getName();
         if (filterTypeSystem.getType(typeName) == null) {
           return null;
         }
@@ -1298,6 +1429,26 @@ public class XmiCasSerializer {
       } else {
         return this.sharedData.getXmiId(addr);
       }
+    }
+
+    private int getXmiIdAsNumber(int addr) {
+      if (addr == CASImpl.NULL) {
+        return 0;
+      }
+      if (isFiltering) // return as null any references to types not in target TS
+      {
+        String typeName = tsi.ll_getTypeForCode(cas.getHeapValue(addr)).getName();
+        if (filterTypeSystem.getType(typeName) == null) {
+          return 0;
+        }
+
+      }
+      if (this.sharedData == null) {
+        // in the absence of outside information, just use the FS address
+        return addr;
+      } else {
+        return Integer.parseInt(this.sharedData.getXmiId(addr));
+      }   
     }
 
     /**
@@ -1339,7 +1490,7 @@ public class XmiCasSerializer {
             throws SAXException {
       List<XmlElementNameAndContents> childElements = new ArrayList<XmlElementNameAndContents>();
       int heapValue = cas.getHeapValue(addr);
-      int[] feats = cas.getTypeSystemImpl().ll_getAppropriateFeatures(heapValue);
+      int[] feats = tsi.ll_getAppropriateFeatures(heapValue);
       int featAddr, featVal, fsClass;
       String featName, attrValue;
       // boolean isSofa = false;
@@ -1351,7 +1502,7 @@ public class XmiCasSerializer {
       for (int i = 0; i < feats.length; i++) {
         if (isFiltering) {
           // skip features that aren't in the target type system
-          String fullFeatName = cas.getTypeSystemImpl().ll_getFeatureForCode(feats[i]).getName();
+          String fullFeatName = tsi.ll_getFeatureForCode(feats[i]).getName();
           if (filterTypeSystem.getFeatureByFullName(fullFeatName) == null) {
             continue;
           }
@@ -1359,8 +1510,8 @@ public class XmiCasSerializer {
 
         featAddr = addr + cas.getFeatureOffset(feats[i]);
         featVal = cas.getHeapValue(featAddr);
-        featName = cas.getTypeSystemImpl().ll_getFeatureForCode(feats[i]).getShortName();
-        fsClass = classifyType(cas.getTypeSystemImpl().range(feats[i]));
+        featName = tsi.ll_getFeatureForCode(feats[i]).getShortName();
+        fsClass = classifyType(tsi.range(feats[i]));
         switch (fsClass) {
           case LowLevelCAS.TYPE_CLASS_INT:
           case LowLevelCAS.TYPE_CLASS_FLOAT:
@@ -1391,7 +1542,7 @@ public class XmiCasSerializer {
           case LowLevelCAS.TYPE_CLASS_FSARRAY: {
             // If the feature has multipleReferencesAllowed = true, serialize as any other FS.
             // If false, serialize as a multi-valued property.
-            if (cas.getTypeSystemImpl().ll_getFeatureForCode(feats[i]).isMultipleReferencesAllowed()) {
+            if (tsi.ll_getFeatureForCode(feats[i]).isMultipleReferencesAllowed()) {
               attrValue = getXmiId(featVal);
             } else {
               attrValue = arrayToString(featVal, fsClass);
@@ -1403,7 +1554,7 @@ public class XmiCasSerializer {
           case LowLevelCAS.TYPE_CLASS_STRINGARRAY: {
             // If the feature has multipleReferencesAllowed = true, serialize as any other FS.
             // If false, serialize as a multi-valued property.
-            if (cas.getTypeSystemImpl().ll_getFeatureForCode(feats[i]).isMultipleReferencesAllowed()) {
+            if (tsi.ll_getFeatureForCode(feats[i]).isMultipleReferencesAllowed()) {
               attrValue = getXmiId(featVal);
             } else {
               stringArrayToElementList(featName, featVal, childElements);
@@ -1418,7 +1569,7 @@ public class XmiCasSerializer {
             // If the feature has multipleReferencesAllowed = true OR if we're already
             // inside another list node (i.e. this is the "tail" feature), serialize as a normal FS.
             // Otherwise, serialize as a multi-valued property.
-            if (cas.getTypeSystemImpl().ll_getFeatureForCode(feats[i]).isMultipleReferencesAllowed() || insideListNode) {
+            if (tsi.ll_getFeatureForCode(feats[i]).isMultipleReferencesAllowed() || insideListNode) {
               attrValue = getXmiId(featVal);
             } else {
               attrValue = listToString(featVal, fsClass);
@@ -1428,7 +1579,7 @@ public class XmiCasSerializer {
             // special case for StringLists, which stored values as child elements rather
             // than attributes.
           case TYPE_CLASS_STRINGLIST: {
-            if (cas.getTypeSystemImpl().ll_getFeatureForCode(feats[i]).isMultipleReferencesAllowed() || insideListNode) {
+            if (tsi.ll_getFeatureForCode(feats[i]).isMultipleReferencesAllowed() || insideListNode) {
               attrValue = getXmiId(featVal);
             } else {
               // it is not safe to use a space-separated attribute, which would
@@ -1492,7 +1643,11 @@ public class XmiCasSerializer {
     }
 
     private void endElement(XmlElementName name) throws SAXException {
+      if (name == null) {
+        ch.endElement(null, null, null);
+      } else {
       ch.endElement(name.nsUri, name.localName, name.qName);
+      }
     }
 
     private void stringArrayToElementList(String featName, int addr, List<? super XmlElementNameAndContents> resultList)
@@ -1596,6 +1751,9 @@ public class XmiCasSerializer {
             break;
           case LowLevelCAS.TYPE_CLASS_DOUBLEARRAY:
             fs = new DoubleArrayFSImpl(addr, cas);
+            break;
+          case LowLevelCAS.TYPE_CLASS_BYTEARRAY:
+            fs = new ByteArrayFSImpl(addr, cas);
             break;
           default: {
             fs = null;
@@ -1708,20 +1866,22 @@ public class XmiCasSerializer {
         Iterator<OotsElementData> ootsIter = this.sharedData.getOutOfTypeSystemElements().iterator();
         while (ootsIter.hasNext()) {
           OotsElementData oed = ootsIter.next();
-          String nsUri = oed.elementName.nsUri;
-          String qname = oed.elementName.qName;
-          String localName = oed.elementName.localName;
-          String prefix = qname.substring(0, qname.indexOf(localName)-1);
+          String nsUri = oed.elementName.nsUri;                           //  http://... etc
+          String qname = oed.elementName.qName;                           //    xxx:yyy
+          String localName = oed.elementName.localName;                   //        yyy
+          String prefix = qname.substring(0, qname.indexOf(localName)-1); // xxx
           nsUriToPrefixMap.put(nsUri, prefix);
           nsPrefixesUsed.add(prefix);
         }
       }
-      
-      Iterator<Type> it = cas.getTypeSystemImpl().getTypeIterator();
+      /*
+       * Convert x.y.z.TypeName to prefix-uri, TypeName, and ns:TypeName
+       */
+      Iterator<Type> it = tsi.getTypeIterator();
       while (it.hasNext()) {
         TypeImpl t = (TypeImpl) it.next();
+        // this also populates the nsUriToPrefix map
         xmiTypeNames[t.getCode()] = uimaTypeName2XmiElementName(t.getName());
-        // this also populats the nsUriToPrefix map
       }
     }
     
