@@ -53,6 +53,7 @@ import org.apache.uima.cas.Marker;
 import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.cas.impl.XmiCasSerializer.CasDocSerializer;
 import org.apache.uima.cas.impl.XmiSerializationSharedData.OotsElementData;
 import org.apache.uima.cas.impl.XmiSerializationSharedData.XmiArrayElement;
 import org.apache.uima.cas.text.AnnotationFS;
@@ -1783,8 +1784,8 @@ public class XmiCasDeserializerTest extends TestCase {
     
     // call serializer with a ContentHandler that checks numChildren
     XmiCasSerializer xmiSer = new XmiCasSerializer(cas.getTypeSystem());
-    GetNumChildrenTestHandler handler = new GetNumChildrenTestHandler(xmiSer);
-    xmiSer.serialize(cas, handler);
+    GetNumChildrenTestHandler handler = new GetNumChildrenTestHandler(xmiSer, (CASImpl)cas);
+    xmiSer.serialize(cas, handler, handler.tcds);
   }
 
   /** Utility method for serializing a CAS to an XMI String 
@@ -1864,9 +1865,11 @@ public class XmiCasDeserializerTest extends TestCase {
   static class GetNumChildrenTestHandler extends DefaultHandler {
     XmiCasSerializer xmiSer;
     Stack<Integer> childCountStack = new Stack<Integer>();
+    private CasDocSerializer tcds; 
     
-    GetNumChildrenTestHandler(XmiCasSerializer xmiSer) {
+    GetNumChildrenTestHandler(XmiCasSerializer xmiSer, CASImpl cas) {
       this.xmiSer = xmiSer;
+      tcds = xmiSer.getTestCasDocSerializer(this, cas);
       childCountStack.push(Integer.valueOf(1));
     }
 
@@ -1876,7 +1879,7 @@ public class XmiCasDeserializerTest extends TestCase {
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
       // TODO Auto-generated method stub
       super.startElement(uri, localName, qName, attributes);
-      childCountStack.push(Integer.valueOf(xmiSer.getNumChildren()));
+      childCountStack.push(Integer.valueOf(tcds.getNumChildren()));
     }
 
     /* (non-Javadoc)
