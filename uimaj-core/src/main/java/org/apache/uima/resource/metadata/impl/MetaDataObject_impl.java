@@ -43,9 +43,11 @@ import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.UIMA_IllegalArgumentException;
 import org.apache.uima.UIMA_UnsupportedOperationException;
 import org.apache.uima.internal.util.XMLUtils;
+import org.apache.uima.resource.metadata.AllowedValue;
 import org.apache.uima.resource.metadata.MetaDataObject;
 import org.apache.uima.util.ConcurrentHashMapWithProducer;
 import org.apache.uima.util.InvalidXMLException;
+import org.apache.uima.util.JsonContentHandlerJacksonWrapper;
 import org.apache.uima.util.NameClassPair;
 import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.XMLSerializer;
@@ -64,6 +66,10 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.helpers.AttributesImpl;
+
+import com.fasterxml.jackson.core.JsonEncoding;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
 
 /**
  * Abstract base class for all MetaDataObjects in the reference implementation. Provides basic
@@ -94,14 +100,14 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public abstract class MetaDataObject_impl implements MetaDataObject {
 
-  static final long serialVersionUID = 5876728533863334480L;
+  static final long               serialVersionUID     = 5876728533863334480L;
 
-  private static String PROP_NAME_SOURCE_URL = "sourceUrl";
-  private static String PROP_NAME_INFOSET = "infoset";
+  private static String           PROP_NAME_SOURCE_URL = "sourceUrl";
+  private static String           PROP_NAME_INFOSET    = "infoset";
 
-  // note: AttributesImpl is just a "getter" for attributes, has no setter methods, 
-  // see javadocs for Attributes (sax) 
-  private static final Attributes EMPTY_ATTRIBUTES = new AttributesImpl();
+  // note: AttributesImpl is just a "getter" for attributes, has no setter methods,
+  // see javadocs for Attributes (sax)
+  private static final Attributes EMPTY_ATTRIBUTES     = new AttributesImpl();
 
   /*
    * Cache for Java Bean lookup
@@ -113,7 +119,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    *     the writer (a Method)
    *     the java Class of the data type of this attribute <converted to a wrapper class for primitives>
    */
-  
+
   public static class MetaDataAttr {
     @Override
     public int hashCode() {
@@ -149,8 +155,8 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     final String name;
     final Method reader;
     final Method writer;
-    final Class clazz;
-    
+    final Class  clazz;
+
     public MetaDataAttr(String name, Method reader, Method writer, Class clazz) {
       this.name = name;
       this.reader = reader;
@@ -158,25 +164,25 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
       this.clazz = clazz;
     }
   }
-    
+
   private static final List<MetaDataAttr> EMPTY_ATTRIBUTE_LIST = new ArrayList<MetaDataObject_impl.MetaDataAttr>(0);
-  
+
   // Cache for Java Bean info lookup
   // Class level cache (static) for introspection - 30x speedup in CDE for large descriptor
   // holds "filtered" set of Java Bean Info
   private static final transient ConcurrentHashMapWithProducer<Class<? extends MetaDataObject_impl>, MetaDataAttr[]> 
       class2attrsMap =
           new ConcurrentHashMapWithProducer<Class<? extends MetaDataObject_impl>, MetaDataAttr[]>();
-  // holds the unfiltered set of Java Bean Info    
+  // holds the unfiltered set of Java Bean Info
   private static final transient ConcurrentHashMapWithProducer<Class<? extends MetaDataObject_impl>, MetaDataAttr[]> 
       class2attrsMapUnfiltered =
           new ConcurrentHashMapWithProducer<Class<? extends MetaDataObject_impl>, MetaDataAttr[]>();
-            
-  private transient URL mSourceUrl;
-  
+
+  private transient URL                                                                                              mSourceUrl;
+
   // This is only used if we are capturing comments and ignorable whitespace in the XML
   private transient Node infoset = null; // by default, set to null
-  
+
   public void setInfoset(Node infoset) {
     this.infoset = infoset;
   }
@@ -198,7 +204,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
   public List<MetaDataAttr> getAdditionalAttributes() {
     return EMPTY_ATTRIBUTE_LIST;
   }
-  
+
   /**
    * Like getAttributes, but doesn't filter the attributes.  
    * Design is only for backwards compatibility.  Unfiltered version
@@ -213,7 +219,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     }
     return class2attrsMapUnfiltered.get(clazz);
   }
-  
+
   /**
    * On first call, looks up the information using JavaBeans introspection, but then
    * caches the result for subsequent calls.
@@ -221,11 +227,11 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * Any class which wants to add additional parameters needs to implement / override
    * getAdditionalParameters.
    * @return an array of Attribute objects associated with this class
-   * @throws  
+   * @throws
    */
   MetaDataAttr[] getAttributes() {
     final Class<? extends MetaDataObject_impl> clazz = this.getClass();
-    MetaDataAttr[] attrs = class2attrsMap.get(clazz), otherAttrs = null;
+    MetaDataAttr[] attrs = class2attrsMap.get(clazz);
     if (null == attrs) {
       getAttributesFromBeans(clazz);
     }
@@ -242,35 +248,35 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     ArrayList<MetaDataAttr> resultList = new ArrayList<MetaDataAttr>(pds.length);
     ArrayList<MetaDataAttr> resultListUnfiltered = new ArrayList<MetaDataAttr>(pds.length);
     for (PropertyDescriptor pd : pds) {
-        String propName = pd.getName();
-        Class<?> propClass = pd.getPropertyType();
-        // translate primitive types (int, boolean, etc.) to wrapper classes
-        if (null != propClass && propClass.isPrimitive()) {
-          propClass = getWrapperClass(propClass);
-        }
-        MetaDataAttr mda = new MetaDataAttr(propName, pd.getReadMethod(), pd.getWriteMethod(), propClass);
-        resultListUnfiltered.add(mda);
-        // only include properties with read and write methods,
-        // and don't include the SourceUrl property, which is for
-        // internal bookkeeping and shouldn't affect object equality
-        // and don't include infoset, which is for internal bookkeeping
-        // related to comments and whitespace
+      String propName = pd.getName();
+      Class<?> propClass = pd.getPropertyType();
+      // translate primitive types (int, boolean, etc.) to wrapper classes
+      if (null != propClass && propClass.isPrimitive()) {
+        propClass = getWrapperClass(propClass);
+      }
+      MetaDataAttr mda = new MetaDataAttr(propName, pd.getReadMethod(), pd.getWriteMethod(), propClass);
+      resultListUnfiltered.add(mda);
+      // only include properties with read and write methods,
+      // and don't include the SourceUrl property, which is for
+      // internal bookkeeping and shouldn't affect object equality
+      // and don't include infoset, which is for internal bookkeeping
+      // related to comments and whitespace
         if (pd.getReadMethod() != null && pd.getWriteMethod() != null
                 && !pd.getName().equals(PROP_NAME_SOURCE_URL)
-                && !pd.getName().equals(PROP_NAME_INFOSET)) { 
-          resultList.add(mda);
-        }
+                && !pd.getName().equals(PROP_NAME_INFOSET)) {
+        resultList.add(mda);
       }
+    }
     resultList.addAll(getAdditionalAttributes());
     resultListUnfiltered.addAll(getAdditionalAttributes());
     MetaDataAttr[] attrs = resultList.toArray(new MetaDataAttr[resultList.size()]);
     MetaDataAttr[] otherAttrs = class2attrsMap.putIfAbsent(clazz, attrs);
-    
+
     attrs = resultListUnfiltered.toArray(new MetaDataAttr[resultListUnfiltered.size()]);
     otherAttrs = class2attrsMapUnfiltered.putIfAbsent(clazz, attrs);
     attrs = (otherAttrs != null) ? otherAttrs : attrs;
   }
-  
+
   /**
    * Returns a list of <code>NameClassPair</code> objects indicating the attributes of this object
    * and the String names of the Classes of the attributes' values. 
@@ -284,7 +290,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    */
   @Deprecated
   public List<NameClassPair> listAttributes() {
-    
+
     try {
       PropertyDescriptor[] props = getPropertyDescriptors();
       List<NameClassPair> resultList = new ArrayList<NameClassPair>(props.length);
@@ -323,7 +329,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     }
     return null;
   }
-  
+
   /**
    * @see org.apache.uima.resource.metadata.MetaDataObject#getAttributeValue(String)
    */
@@ -358,7 +364,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     MetaDataAttr[] attrList = getAttributes();
     for (MetaDataAttr attr : attrList) {
       if (attr.name.equals(aName)) {
-        return attr.clazz; 
+        return attr.clazz;
       }
     }
     return null;
@@ -387,7 +393,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
       }
     }
   }
-  
+
   /**
    * @see org.apache.uima.resource.metadata.MetaDataObject#setAttributeValue(String, Object)
    */
@@ -537,7 +543,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     // now clone all values that are MetaDataObjects
     MetaDataAttr[] attrs = getAttributes();
     for (MetaDataAttr attr : attrs) {
-//      String attrName = ncp.name;
+      // String attrName = ncp.name;
       Object val = getAttributeValue(attr);
       if (val instanceof MetaDataObject) {
         Object clonedVal = ((MetaDataObject) val).clone();
@@ -601,7 +607,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     }
     MetaDataObject_impl mdo = (MetaDataObject_impl) aObj;
     // get the attributes (and classes) for the two objects
-    
+
     MetaDataAttr[] theseAttrs = this.getAttributes();
     MetaDataAttr[] thoseAttrs = mdo.getAttributes();
     // attribute lists must be same length
@@ -625,14 +631,14 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     // if we get this far, objects are equal
     return true;
   }
-  
+
   /**
    * Compare 2 values for equality.  
    * Reason val1.equals(val2) is not used:
    *   If val1 is of type Object[], the equal test is object identity equality, not
    *      element by element identity.
    *   So we use Arrays.equals or deepEquals instead.
-   *   
+   * 
    * @param val1
    * @param val2
    * @return true if equal
@@ -641,7 +647,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     if (val1 == null) {
       return val2 == null;
     }
-    
+
     if (val1.getClass().isArray()) {
       if (val2.getClass() != val1.getClass()) {
         return false;
@@ -658,21 +664,21 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
       if (val1 instanceof byte[])    return Arrays.equals((byte[])val1,    (byte[])val2);
       if (val1 instanceof short[])   return Arrays.equals((short[])val1,   (short[])val2);
       if (val1 instanceof long[])    return Arrays.equals((long[])val1,    (long[])val2);
-                                     return Arrays.equals((char[])val1,    (char[])val2);
+      return Arrays.equals((char[]) val1, (char[]) val2);
     }
-    
-    if (val1 instanceof Map) {// only need this to handle Maps w/ array vals 
+
+    if (val1 instanceof Map) {// only need this to handle Maps w/ array vals
       if (!(val2 instanceof Map)) {
         return false;
       }
-      if (((Map)val1).size() != ((Map)val2).size()) {
+      if (((Map) val1).size() != ((Map) val2).size()) {
         return false;
       }
-      
+
       if (val1.getClass() != val2.getClass()) {
         return false;
       }
-      
+
       Set entrySet1 = ((Map) val1).entrySet();
       Iterator it = entrySet1.iterator();
       while (it.hasNext()) {
@@ -684,7 +690,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
         }
       }
       // for Map values, get here if all values in the map are equal
-      return true;    
+      return true;
     }
     // not an instance of Map
     return val1.equals(val2);
@@ -708,7 +714,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
         if (val instanceof Object[]) {
           hashCode += Arrays.hashCode((Object[]) val);
         } else if (val instanceof Map) {// only need to do this to handle Maps w/ array vals
-             // note doesn't handle maps whose values are maps.  
+          // note doesn't handle maps whose values are maps.
           Set<Map.Entry> entrySet = ((Map) val).entrySet();
           for (Map.Entry entry : entrySet) {
             hashCode += entry.getKey().hashCode();
@@ -746,15 +752,16 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
   public void toXML(OutputStream aOutputStream) throws SAXException, IOException {
     toXML(new XMLSerializer(aOutputStream));
   }
-  
+
   private void toXML(XMLSerializer sax2xml) throws SAXException, IOException {
     ContentHandler contentHandler = sax2xml.getContentHandler();
     contentHandler.startDocument();
     toXML(contentHandler, true);  // no reason to create a new content handler
-    contentHandler.endDocument();    
+    contentHandler.endDocument();
   }
 
   /**
+   * This is called internally, also for JSon serialization
    * @see org.apache.uima.util.XMLizable#toXML(ContentHandler)
    */
   public void toXML(ContentHandler aContentHandler) throws SAXException {
@@ -763,20 +770,25 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
 
   /**
    * @see org.apache.uima.util.XMLizable#toXML(org.xml.sax.ContentHandler, boolean)
+   * 
+   * This is called internally, also for JSon serialization
    */
   public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute)
           throws SAXException {
     XmlizationInfo inf = getXmlizationInfo();
-    
+    final boolean isJson = aContentHandler instanceof JsonContentHandlerJacksonWrapper;
+
     // write the element's start tag
     // get attributes (can be provided by subclasses)
     AttributesImpl attrs = getXMLAttributes();
     // add default namespace attr if desired
-    if (aWriteDefaultNamespaceAttribute) {
+    if ((!isJson) && aWriteDefaultNamespaceAttribute) {
       if (inf.namespace != null) {
         attrs.addAttribute("", "xmlns", "xmlns", null, inf.namespace);
       }
     }
+    
+    final JsonContentHandlerJacksonWrapper jch = isJson ? (JsonContentHandlerJacksonWrapper) aContentHandler : null;
 
     // start element
     outputStartElement(aContentHandler, infoset, inf.namespace, inf.elementTagName, inf.elementTagName, attrs);
@@ -788,8 +800,17 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     }
     // write child elements
     try {
+      boolean insertNl = false;
+      if (isJson && jch.isFormattedOutput()) {
+        if (inf.propertyInfo.length > 1 && hasXMLizable(inf.propertyInfo)) {
+          insertNl = true;
+        }
+      }
       for (int i = 0; i < inf.propertyInfo.length; i++) {
         PropertyXmlInfo propInf = inf.propertyInfo[i];
+        if (isJson && insertNl) {
+          jch.writeNlJustBeforeNext();
+        }
         writePropertyAsElement(propInf, inf.namespace, aContentHandler);
       }
     } finally {
@@ -797,9 +818,19 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
         cc.lastOutputNodeClearLevel();
       }
     }
-     
+
     // end element
     outputEndElement(aContentHandler, infoset, inf.namespace, inf.elementTagName, inf.elementTagName);
+  }
+  
+  private boolean hasXMLizable(PropertyXmlInfo[] ia) {
+    for (PropertyXmlInfo pi : ia) {
+      Object val = getAttributeValue(pi.propertyName);
+      if (val != null && val instanceof XMLizable) {
+        return true;        
+      }
+    }
+    return false;
   }
 
   /**
@@ -839,6 +870,10 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     return null;
   }
 
+  private boolean valueIsNullOrEmptyArray(Object val) {
+    return (val == null) || (val.getClass().isArray() && ((Object[]) val).length == 0);
+  }
+
   /**
    * Utility method used to write a property out as an XML element.
    * 
@@ -854,26 +889,30 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
           ContentHandler aContentHandler) throws SAXException {
     // get value of property
     Object val = getAttributeValue(aPropInfo.propertyName);
-
+    final boolean isJson = aContentHandler instanceof JsonContentHandlerJacksonWrapper;
+    final JsonContentHandlerJacksonWrapper jch = isJson ? (JsonContentHandlerJacksonWrapper) aContentHandler : null;
+    final JsonGenerator jg = isJson ? jch.getJsonGenerator() : null;
     // if null or empty array, check to see if we're supposed to omit it
-    if (aPropInfo.omitIfNull
-            && (val == null || (val.getClass().isArray() && ((Object[]) val).length == 0)))
+    if ((aPropInfo.omitIfNull || isJson) && valueIsNullOrEmptyArray(val)) {
       return;
+    }
 
     // if XML element name was supplied, write a tag
-    String elementName = aPropInfo.xmlElementName; 
+    String elementName = aPropInfo.xmlElementName;
     CharacterValidatingContentHandler cc = maybeGetCharacterValidatingContentHandler(aContentHandler);
     Node elementNode = null;
 
     if (null != elementName) { // can be null in this case:
-        //               <fixedFlow>       <== after outputting this,
-        //                                     there is no <array> conntaining:
-        //                  <node>A</node>  
-        //                  <node>B</node>
-  
+      // <fixedFlow> <== after outputting this,
+      // there is no <array> conntaining:
+      // <node>A</node>
+      // <node>B</node>
+
       elementNode = findMatchingSubElement(aContentHandler, aPropInfo.xmlElementName);
-      outputStartElement(aContentHandler, elementNode, aNamespace, aPropInfo.xmlElementName, aPropInfo.xmlElementName,
-                EMPTY_ATTRIBUTES);
+      if (!isJson) {
+        outputStartElement(aContentHandler, elementNode, aNamespace, aPropInfo.xmlElementName,
+            aPropInfo.xmlElementName, EMPTY_ATTRIBUTES);
+      }
       if (cc != null) {
         cc.lastOutputNodeAddLevel();
       }
@@ -882,31 +921,41 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     Class propClass = getAttributeClass(aPropInfo.propertyName);
 
     try {
-    // if value is null then write nothing
-    if (val != null) {
-      // if value is an array then we have to treat that specially
-      if (val.getClass().isArray()) {
+      // if value is null then write nothing
+      if (val != null) {
+        
+        if (isJson) { // done here, if val is null, field and value are skipped
+          jg.writeFieldName(aPropInfo.xmlElementName);
+        }
+        // if value is an array then we have to treat that specially
+        if (val.getClass().isArray()) {
         writeArrayPropertyAsElement(aPropInfo.propertyName, propClass, val,
                 aPropInfo.arrayElementTagName, aNamespace, aContentHandler);
-      } else {
-        // if value is an XMLizable object, call its toXML method
-        if (val instanceof XMLizable) {
-          ((XMLizable) val).toXML(aContentHandler);
-        }
-        // else, if property's class is java.lang.Object, attempt to write
-        // it as a primitive
-        else if (propClass == Object.class) {
-          writePrimitiveValue(val, aContentHandler);
         } else {
-          // assume attribute's class is known (e.g. String, Integer), so it
-          // is not necessary to write the class name to the XML. Just write
-          // the string representation of the object
-          // XMLUtils.writeNormalizedString(val.toString(), aWriter, true);
-          String valStr = val.toString();
-          aContentHandler.characters(valStr.toCharArray(), 0, valStr.length());
+        // if value is an XMLizable object, call its toXML method
+          if (val instanceof XMLizable) {
+            ((XMLizable) val).toXML(aContentHandler);
+          }
+          // else, if property's class is java.lang.Object, attempt to write
+          // it as a primitive
+          else if (propClass == Object.class) {
+            writePrimitiveValue(val, aContentHandler);
+          } else {
+            // assume attribute's class is known (e.g. String, Integer), so it
+            // is not necessary to write the class name to the XML. Just write
+            // the string representation of the object
+            // XMLUtils.writeNormalizedString(val.toString(), aWriter, true);
+            String valStr = val.toString();
+            if (isJson) {
+              writePrimitiveJsonValue(val, jg);
+            } else {
+              aContentHandler.characters(valStr.toCharArray(), 0, valStr.length());
+            }
+          }
         }
       }
-    }
+    } catch (IOException e) {
+      throw new SAXException(e);
     } finally {
       if (null != elementName) {
         if (cc != null) {
@@ -916,7 +965,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     }
 
     // if XML element name was supplied, end the element that we started
-    if (null != elementName) {
+    if (null != elementName && !isJson) {
       outputEndElement(aContentHandler, elementNode, aNamespace, aPropInfo.xmlElementName, aPropInfo.xmlElementName);
     }
   }
@@ -944,12 +993,18 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
           throws SAXException {
     CharacterValidatingContentHandler cc = maybeGetCharacterValidatingContentHandler(aContentHandler);
 
+    final boolean isJson = aContentHandler instanceof JsonContentHandlerJacksonWrapper;
+    final JsonContentHandlerJacksonWrapper jch = isJson ? (JsonContentHandlerJacksonWrapper) aContentHandler : null;
+    final JsonGenerator jg = isJson ? jch.getJsonGenerator() : null;
+
     // if aPropClass is generic Object, reader won't know whether to expect
     // an array, so we tell it be writing an "array" element here.
     Node arraySubElement = findMatchingSubElement(aContentHandler, "array");
-    
-    if (aPropClass == Object.class) {  // skip writting <array> unless the property class (of objects in the array) is "Object"
-                                       // skipped e.g. in <fixedFlow> values, where aPropClass is String
+
+    if (aPropClass == Object.class && !isJson) {  // skip writing <array> unless the property class
+      // (of objects in the array) is "Object"
+      // skipped e.g. in <fixedFlow> values, where aPropClass is String
+      // skipped also if isJson
       outputStartElement(aContentHandler, arraySubElement, aNamespace, "array", "array", EMPTY_ATTRIBUTES);
       if (null != cc) {
         cc.lastOutputNodeAddLevel();
@@ -960,33 +1015,68 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     // nested arrays here
     int len = ((Object[]) aValue).length;
     try {
+      boolean insertNlInArray = false;
+      if (isJson) {
+        if (len > 1) {
+          Object firstElement = Array.get(aValue, 0);
+          if (!(firstElement instanceof AllowedValue) && (firstElement instanceof XMLizable)) {
+            insertNlInArray = true;
+          }
+        }
+        jg.writeStartArray();
+      }
+      if (insertNlInArray) {
+        jch.writeNlJustBeforeNext();
+      }
       for (int i = 0; i < len; i++) {
         Object curElem = Array.get(aValue, i);
         Node matchingArrayElement = findMatchingSubElement(aContentHandler, aArrayElementTagName);
-        
+
         // if a particular array element tag has been specified, write it
-        outputStartElement(aContentHandler, matchingArrayElement, aNamespace, aArrayElementTagName, aArrayElementTagName,
-                  EMPTY_ATTRIBUTES);
-  
-        // if attribute's value is an XMLizable object, call its toXML method
-        if (curElem instanceof XMLizable) {
+        if (!isJson) {  // JSON writes arrays using [], so don't add extra array elements
+          outputStartElement(aContentHandler, matchingArrayElement, aNamespace, aArrayElementTagName,
+              aArrayElementTagName, EMPTY_ATTRIBUTES);
+        }
+        if (isJson && curElem instanceof AllowedValue) {
+          String valStr = ((AllowedValue) curElem).getString();
+          if (isJson) {
+            jg.writeString(valStr);
+          } else {
+            aContentHandler.characters(valStr.toCharArray(), 0, valStr.length());
+          }
+        } else if (curElem instanceof XMLizable) { // if attribute's value is an XMLizable object, call its toXML method
+          if (isJson) {
+            jch.writeNlJustBeforeNext();
+          }
           ((XMLizable) curElem).toXML(aContentHandler);
         }
         // else, attempt to write it as a primitive
         else {
-          if (aArrayElementTagName == null) {
-            // need to include the type, e.g. <string>
-            writePrimitiveValue(curElem, aContentHandler);
+          if (isJson) {
+            writePrimitiveJsonValue(curElem, jg);
           } else {
-            // don't include the type - just write the value
-            String valStr = curElem.toString();
-            aContentHandler.characters(valStr.toCharArray(), 0, valStr.length());
+            if (aArrayElementTagName == null) {
+              // need to include the type, e.g. <string>
+              writePrimitiveValue(curElem, aContentHandler);
+            } else {
+              // don't include the type - just write the value
+              String valStr = curElem.toString();
+              aContentHandler.characters(valStr.toCharArray(), 0, valStr.length());
+            }
           }
         }
-  
+
         // if we started an element, end it
-        outputEndElement(aContentHandler, matchingArrayElement, aNamespace, aArrayElementTagName, aArrayElementTagName);
+        if (!isJson) {
+          outputEndElement(aContentHandler, matchingArrayElement, aNamespace, aArrayElementTagName,
+              aArrayElementTagName);
+        }
       }
+      if (isJson) {
+        jg.writeEndArray();
+      }
+    } catch (IOException e) {
+      throw new SAXException(e);
     } finally {
       if (aPropClass == Object.class) {
         if (null != cc) {
@@ -1030,7 +1120,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     @SuppressWarnings("unchecked")
     Map<String, Object> theMap = (Map<String, Object>) getAttributeValue(aPropName);
     Node matchingNode = findMatchingSubElement(aContentHandler, aXmlElementName);
-   
+
     // if map is empty handle appropriately
     if (theMap == null || theMap.isEmpty()) {
       if (!aOmitIfNull && aXmlElementName != null) {
@@ -1039,23 +1129,23 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
       }
     } else {
       // write start tag for attribute if desired
-      outputStartElement(aContentHandler, matchingNode, aNamespace, aXmlElementName, aXmlElementName, EMPTY_ATTRIBUTES);        
+      outputStartElement(aContentHandler, matchingNode, aNamespace, aXmlElementName, aXmlElementName, EMPTY_ATTRIBUTES);
 
       CharacterValidatingContentHandler cc = maybeGetCharacterValidatingContentHandler(aContentHandler);
       if (null != cc) {
         cc.lastOutputNodeAddLevel();
-      } 
+      }
       try {
         // iterate over entries in the Map
         for (Map.Entry<String, Object> curEntry : theMap.entrySet()) {
           String key = curEntry.getKey();
-  
+
           // write a tag for the value, with a "key" attribute
           AttributesImpl attrs = new AttributesImpl();
           attrs.addAttribute("", aKeyXmlAttribute, aKeyXmlAttribute, null, key); // are these nulls OK?
           Node innerMatchingNode = findMatchingSubElement(aContentHandler, aValueTagName);
-          outputStartElement(aContentHandler, innerMatchingNode, aNamespace, aValueTagName, aValueTagName, attrs);      
- 
+          outputStartElement(aContentHandler, innerMatchingNode, aNamespace, aValueTagName, aValueTagName, attrs);
+
           // write the value (must be XMLizable or an array of XMLizable)
           Object val = curEntry.getValue();
           if (val.getClass().isArray()) {
@@ -1069,14 +1159,14 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
               cc.lastOutputNodeAddLevel();
             }
             try {
-            ((XMLizable) val).toXML(aContentHandler);
+              ((XMLizable) val).toXML(aContentHandler);
             } finally {
               if (null != cc) {
                 cc.lastOutputNodeClearLevel();
               }
             }
           }
-  
+
           // write end tag for the value
           outputEndElement(aContentHandler, innerMatchingNode, aNamespace, aValueTagName, aValueTagName);
         }
@@ -1137,7 +1227,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     if (aOptions.preserveComments) {
       infoset = aElement;
     }
-    
+
     // get child elements, each of which represents a property
     List<String> foundProperties = new ArrayList<String>();
     NodeList childNodes = aElement.getChildNodes();
@@ -1274,7 +1364,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
               // must have a constructor that takes a String parameter
               if (primitiveElementStringConstructor == null) {
                 primitiveElementStringConstructor = aPropClass.getComponentType().getConstructor(
-                        new Class[] { String.class });
+                    new Class[] { String.class });
               }
               // construct the object and add to list
               valueList.add(primitiveElementStringConstructor
@@ -1347,7 +1437,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    *           if no acceptable object is described by aElement
    */
   protected void readUnknownPropertyValueFromXMLElement(Element aElement, XMLParser aParser,
-          XMLParser.ParsingOptions aOptions, List<String> aKnownPropertyNames) throws InvalidXMLException {
+      XMLParser.ParsingOptions aOptions, List<String> aKnownPropertyNames) throws InvalidXMLException {
     boolean success = false;
     try {
       Object valueObj = aParser.buildObjectOrPrimitive(aElement, aOptions);
@@ -1505,6 +1595,31 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     else
       return aPrimitiveType;
   }
+  
+  private void writePrimitiveJsonValue(Object val, JsonGenerator jg) throws SAXException {
+    try {
+    if (val instanceof Boolean)
+      jg.writeBoolean((Boolean) val);
+    else if (val instanceof Integer)
+      jg.writeNumber((Integer) val);
+    else if (val instanceof Long)
+      jg.writeNumber((Long) val);
+    else if (val instanceof Short)
+      jg.writeNumber((Short) val);
+    else if (val instanceof Byte)
+      jg.writeNumber((Byte) val);
+    else if (val instanceof Float)
+      jg.writeNumber((Float) val);
+    else if (val instanceof Double)
+      jg.writeNumber((Double) val);
+    else if (val instanceof String)
+      jg.writeString((String) val);
+    else
+      throw new RuntimeException("unhandled value type");
+    } catch (IOException e) {
+      throw new SAXException(e);
+    }
+  }
 
   /**
    * Utility method that introspects this bean and returns a list of <code>PropertyDescriptor</code>s
@@ -1524,12 +1639,11 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * @deprecated - use getAttributes instead
    */
   @Deprecated
-  // never called, we hope.  No longer caches anything.  
-  protected PropertyDescriptor[] getPropertyDescriptors() throws IntrospectionException {    
+  // never called, we hope. No longer caches anything.
+  protected PropertyDescriptor[] getPropertyDescriptors() throws IntrospectionException {
     return Introspector.getBeanInfo(this.getClass(), Introspector.IGNORE_ALL_BEANINFO).getPropertyDescriptors();
   }
 
-  
   /**
    * Heuristics for comment and whitespace processing
    * 
@@ -1542,42 +1656,42 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    *   <!-- unusual case, following final one at a level -->
    * </a>  <!-- same line -->
    *   <!-- at bottom -->
-   *
+   * 
    * Each element has 2 calls: 
    *     startElement, endElement
    *   Surround these with:
    *     maybeOutputCommentsBefore
-   *     maybeOutputCommentsAfter  
-   *   
+   * maybeOutputCommentsAfter
+   * 
    * Detect top level (by fact that parent is null), and for top level:
    *   collect all above -%gt; output before startelement  
    *     BUT, note that the sax parser doesn't do callbacks for text (blank lines) before the
    *       start element, so all we can collect are the comment lines.
    *   collect all below -%gt; output after endelement
-   *   
+   * 
    * For normal element node, "start":
    *   --> output before element
    *     collect all prev white space siblings up to the one that contains the first newline 
    *         because the prev white space siblings before and including that one will
    *         have been outputted as part of the previous start or end tag's "after element" processing
-   *         
+   * 
    *       if no nl assume comments go with previous element, and skip here
    *       (stop looking if get null for getPreviousSibling())
    *       (stop looking if get other than comment or ignorable whitespace)
    *         (ignorable whitespace not always distinguishable from text that is whitespace?)
-   *         
+   * 
    *   --> output after element:
    *     if children:    eg:  <start> <!-- cmt --> 
    *       collect all up to and including first nl before first Element child
    *         (stop at first Element node; if no nl, then the source had multiple elements on one line:
-   *            associate the comments and whitespace with previous (and output them).
-   *          
+   * associate the comments and whitespace with previous (and output them).
+   * 
    *     if no children: - means it's written 
    *          <xxx/> or 
    *          <xxx></xxx>  
    *              Note:  <xxx>   something  </xxx> not possible, because then it would have some text children
    *       output nothing - after comments will be done following endElement call
-   *       
+   * 
    * For normal element node, "end":
    *   --> output before element
    *       collect all after last child Element; skip all up to first nl (assume before that, the comment goes with last child node)
@@ -1585,7 +1699,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    *         assume comments go with previous element, and skip here
    *       (stop looking if get null for getNextSibling())
    *       (stop looking if get Element)
-   *       
+   * 
    *     if no element children - output nothing  
    *   --> output after element    
    *       if this element has no successor sibling elements
@@ -1593,34 +1707,36 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    *       else  
    *         collect all up to and including first nl from getNextSibling().
    *           (stop at first Element)
-   *           
+   * 
    * For implied element nodes (no Java model object corresponding)
    * We have only the "parent" node, and the element name.  Try to do matching on the element name
    * In this case, we always are working with the children in the Dom infoset; we have a last-outputted reference
    *   Scan from last-outputted, to find element match, and then use that element as the "root".       
-   *    
+   * 
    */
   private static final char[] blanks = new char[80];
   static {Arrays.fill(blanks, ' ');}
-  private void outputIndent(int indent, ContentHandler contentHandler) throws SAXException {
+  private static void outputIndent(int indent, ContentHandler contentHandler) throws SAXException {
     contentHandler.ignorableWhitespace(blanks, 0, Math.min(80, indent));
   }
-  
+
   /**
    * CoIw = Comment or IgnorableWhitespace
    * 
    */
-  
+
   private void maybeOutputCoIwBeforeStart(ContentHandler contentHandler, Node node) throws SAXException {
     int indent = 0;
-    if (contentHandler instanceof CharacterValidatingContentHandler) {
-      indent = ((CharacterValidatingContentHandler) contentHandler).getIndent();
+    CharacterValidatingContentHandler cvch = (contentHandler instanceof CharacterValidatingContentHandler) ? (CharacterValidatingContentHandler) contentHandler
+        : null;
+    if (null != cvch) {
+      indent = cvch.getIndent();
+
     }
-   
+
     if (null == node) {
-      if (contentHandler instanceof CharacterValidatingContentHandler) {
-        CharacterValidatingContentHandler cvch = (CharacterValidatingContentHandler)contentHandler;
-        if (!cvch.prevNL) { 
+      if (null != cvch) {
+        if (!cvch.prevNL) {
           outputNL(contentHandler);
           outputIndent(indent, contentHandler);
         }
@@ -1628,17 +1744,17 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
       return;
     }
     if (node.getParentNode() instanceof Document) {
-       
-       // Special handling for top node:
-       //   The SAX parser doesn't do callbacks for whitespace that come before the top node.
-       //   It does do callbacks for comments, though.
-          
-       //   For this case, we do (one time) insert of "nl" as follows:
-       //     1 nl before top element
-       //     1 nl before each preceeding comment
-       
+
+      // Special handling for top node:
+      // The SAX parser doesn't do callbacks for whitespace that come before the top node.
+      // It does do callbacks for comments, though.
+
+      // For this case, we do (one time) insert of "nl" as follows:
+      // 1 nl before top element
+      // 1 nl before each preceeding comment
+
       outputNL(contentHandler);
-      
+
       for (Node c = node.getParentNode().getFirstChild(); c != node; c = c.getNextSibling()) {
         if (c instanceof Comment) {
           outputCoIw(contentHandler, c);
@@ -1651,39 +1767,42 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
       outputCoIw(contentHandler, p);
     }
   }
- 
+
   private void maybeOutputCoIwAfterStart(ContentHandler contentHandler, Node node) throws SAXException {
-    if (contentHandler instanceof CharacterValidatingContentHandler) {
-      ((CharacterValidatingContentHandler)contentHandler).nextIndent();
+    CharacterValidatingContentHandler cvch = (contentHandler instanceof CharacterValidatingContentHandler) ? (CharacterValidatingContentHandler) contentHandler
+        : null;
+    boolean isJson = contentHandler instanceof JsonContentHandlerJacksonWrapper;
+    if (null != cvch && !isJson) {
+      cvch.nextIndent();
     }
     if (null == node || (!hasElementChildNode(node))) {
-      if (contentHandler instanceof CharacterValidatingContentHandler) {
-        ((CharacterValidatingContentHandler)contentHandler).prevNL = false;
+      if (null != cvch) {
+        cvch.prevNL = false;
       }
       return;
     }
 
     outputCoIwAfterElement(node.getFirstChild(), contentHandler);
   }
-  
+
   /**
    * Output comments and ignorable whitespace after an element.
    * Comments following an element can either be grouped with the preceeding element or with the following one.
    *   e.g.    <element>   <!--comment 1-->
    *             <!--comment 2-->
    *             <!--comment 3-->
-   *             <subelement>
-   *             
+   * <subelement>
+   * 
    *   We arbitrarily group comment 1 with the element, and comment 2 and 3 with the subelement.
    *   This is for purposes of when they get processed and put out.
    *   This also affects what happens when new elements are "inserted" by an editor.
-   *   
+   * 
    * This routine outputs only the whitespace and comment on the same line (e.g., 
    * it stops after outputting the ignorable whitespace that contains a nl.)
    * If find text which is not whitespace, don't output anything.
    *   Use case: 
-   *      <someElement>  some text
-   *         
+   * <someElement> some text
+   * 
    * @param startNode - the node corresponding to the start or end element just outputted
    * @param contentHandler the content handler
    * @throws DOMException passthru
@@ -1697,22 +1816,22 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
       for (Node n = startNode;
                 (n != null) && 
                 ((n instanceof Comment) || (n instanceof Text));  // keep going as long as have non-Element nodes
-                n = n.getNextSibling()) {
+      n = n.getNextSibling()) {
         if ((n instanceof Text) && !isWhitespaceText(n)) {
-          return;  // catch case <someElement>   some text
+          return;  // catch case <someElement> some text
         }
         lastNode = n;
       }
       if (null == lastNode) {
         return;
       }
-      for (Node n = startNode;; n = n.getNextSibling()) { 
+      for (Node n = startNode;; n = n.getNextSibling()) {
         outputCoIw(contentHandler, n);
-        if (hasNewline(n)) {          
+        if (hasNewline(n)) {
           if (contentHandler instanceof CharacterValidatingContentHandler) {
             ((CharacterValidatingContentHandler) contentHandler).prevNL = true;
           }
-          return;  // return after outputting up to and including 1st new line 
+          return;  // return after outputting up to and including 1st new line
         }
         if (n == lastNode) {
           return;
@@ -1723,24 +1842,26 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
       ((CharacterValidatingContentHandler) contentHandler).prevNL = false;
     }
   }
-  
+
   private void maybeOutputCoIwBeforeEnd(ContentHandler contentHandler, Node node) throws SAXException {
     int indent = 0;
-    if (contentHandler instanceof CharacterValidatingContentHandler) {
-      indent = ((CharacterValidatingContentHandler) contentHandler).prevIndent();
+    CharacterValidatingContentHandler cvch = (contentHandler instanceof CharacterValidatingContentHandler) ? (CharacterValidatingContentHandler) contentHandler
+        : null;
+    boolean isJson = contentHandler instanceof JsonContentHandlerJacksonWrapper;
+    if (cvch != null) {
+      indent = cvch.prevIndent();
     }
-    
+
     if (null == node || (!hasElementChildNode(node))) {
-      if (null == node && contentHandler instanceof CharacterValidatingContentHandler) {
-        CharacterValidatingContentHandler cvch = (CharacterValidatingContentHandler)contentHandler;
-        if (cvch.prevWasEndElement) { 
+      if (null == node && cvch != null) {
+        if (cvch.prevWasEndElement && !isJson) {
           outputNL(contentHandler);
           outputIndent(indent, contentHandler);
-        } 
+        }
       }
       return;
     }
-    
+
     Node n = node.getLastChild();
     Node np = null;
     boolean newlineFound = false;
@@ -1757,7 +1878,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
       outputCoIw(contentHandler, o);
     }
   }
-  
+
   private void maybeOutputCoIwAfterEnd(ContentHandler contentHandler, Node node) throws SAXException {
     if (null == node) {
       return;
@@ -1782,7 +1903,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     }
     Node lastOutput = cc.getLastOutputNode();
     Node n = null;
-    
+
     if (lastOutput == null) {
       lastOutput = cc.getLastOutputNodePrevLevel();
       if (lastOutput == null) {
@@ -1801,7 +1922,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     }
     return null;
   }
-  
+
   /**
    * Scan backwards from argument node, continuing until get something other than
    * comment or ignorable whitespace.
@@ -1826,11 +1947,11 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     }
     return skipUpToFirstAfterNL(p);
   }
-  
+
   /**
    * Skip nodes going forwards until find one with a nl, then return the one following
    * @param n must not be null, and there must be a NL in the siblings
-   * @return node following the one with a new line 
+   * @return node following the one with a new line
    */
   private Node skipUpToFirstAfterNL(Node n) {
     while (!hasNewline(n)) {
@@ -1838,7 +1959,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     }
     return n.getNextSibling();
   }
-  
+
   private boolean hasNewline(Node n) {
     if (n instanceof Comment) {
       return false;
@@ -1846,7 +1967,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     CharacterData c = (CharacterData) n;
     return (-1) != c.getData().indexOf('\n');
   }
-    
+
   private boolean hasElementChildNode(Node n) {
     for (Node c = n.getFirstChild(); (c != null); c = c.getNextSibling()) {
       if (c instanceof Element) {
@@ -1857,24 +1978,24 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
   }
 
   static private String lineEnd = System.getProperty("line.separator");
-  
+
   /*
    * If necessary replace any internal new-lines with the platform's line separator
    */
   private void outputCoIw(ContentHandler contentHandler, Node p) throws DOMException, SAXException {
     if (p instanceof Comment) {
-      String cmt = ((Comment)p).getData();
+      String cmt = ((Comment) p).getData();
       if (!lineEnd.equals("\n")) {
         cmt = cmt.replace("\n", lineEnd);
       }
-      ((LexicalHandler)contentHandler).comment(cmt.toCharArray(), 0, cmt.length());
+      ((LexicalHandler) contentHandler).comment(cmt.toCharArray(), 0, cmt.length());
     } else {
       String s = p.getTextContent();
-      contentHandler.characters(s.toCharArray(), 0, s.length());    
+      contentHandler.characters(s.toCharArray(), 0, s.length());
     }
-    
+
   }
-  
+
   /**
    * Dom parsers if not operating in validating mode can't distinguish between
    * ignorable white space and non-ignorable white space.
@@ -1888,7 +2009,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
   private boolean isCoIw(Node n) {
     return (n != null) && ((n instanceof Comment) || isWhitespaceText(n));
   }
-  
+
   private boolean isWhitespaceText(Node n) {
     if (!(n instanceof Text)) {
       return false;
@@ -1902,7 +2023,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     }
     return true;
   }
-  
+
   protected void outputStartElement(ContentHandler aContentHandler, 
                                   Node node, 
                                   String aNamespace, 
@@ -1910,23 +2031,23 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
                                   String qname, 
                                   Attributes attributes) throws SAXException {
     if (null == localname) {  // happens for <flowConstraints>
-                              //               <fixedFlow>       <== after outputting this,
-                              //                                     called writePropertyAsElement
-                              //                                     But there is no <array>...
-                              //                  <node>A</node>  
-                              //                  <node>B</node>
+                             // <fixedFlow> <== after outputting this,
+                             // called writePropertyAsElement
+                             // But there is no <array>...
+                             // <node>A</node>
+                             // <node>B</node>
       return;
     }
     maybeOutputCoIwBeforeStart(aContentHandler, node);
     aContentHandler.startElement(aNamespace, localname, qname, attributes);
     maybeOutputCoIwAfterStart(aContentHandler, node);
   }
-  
+
   protected void outputEndElement(ContentHandler aContentHandler, 
                                 Node node,
                                 String aNamespace, 
                                 String localname, 
-                                String qname) throws SAXException {
+      String qname) throws SAXException {
     if (null == localname) {
       return;
     }
@@ -1934,27 +2055,27 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     aContentHandler.endElement(aNamespace, localname, qname);
     maybeOutputCoIwAfterEnd(aContentHandler, node);
   }
-  
-  private static final char[] nlca = new char[] {'\n'};
-  
+
+  private static final char[] nlca = new char[] { '\n' };
+
   private void outputNL(ContentHandler contentHandler) throws SAXException {
-    contentHandler.ignorableWhitespace(nlca, 0, 1); 
+    contentHandler.ignorableWhitespace(nlca, 0, 1);
     if (contentHandler instanceof CharacterValidatingContentHandler) {
       ((CharacterValidatingContentHandler) contentHandler).prevNL = true;
     }
   }
 
   // skip forward over any attribute nodes
-//  private Node skipAttrNodes(Node node) {
-//    while (node.getNodeType() == Node.ATTRIBUTE_NODE) {
-//      Node next = node.getNextSibling();
-//      if (next == null) {
-//        return node;  // return last good node if only attribute nodes
-//      }
-//      node = next;
-//    }
-//    return node;
-//  }
+  // private Node skipAttrNodes(Node node) {
+  // while (node.getNodeType() == Node.ATTRIBUTE_NODE) {
+  // Node next = node.getNextSibling();
+  // if (next == null) {
+  // return node; // return last good node if only attribute nodes
+  // }
+  // node = next;
+  // }
+  // return node;
+  // }
   // This next method moved here from XMLUtils, but left there because it's public.
   // The version here handles comments and ignorablewhitespace
   /**
@@ -1965,8 +2086,10 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * lowercase, e.g. "string","integer", "boolean" and <code>string value</code> is the result of
    * <code>Object.toString()</code>.
    * <p>
-   * This is intended to be used for Java Strings and wrappers for primitive value classes (e.g.
-   * Integer, Boolean).
+   * This is intended to be used for Java Strings and wrappers for primitive value classes (e.g. Integer, Boolean).
+   * 
+   * For JSON, the value is output as {  java-class name : value } unless the value is just a string, in which case 
+   *   we output just the string
    * 
    * @param aObj
    *          the object to write
@@ -1978,29 +2101,173 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    */
   private void writePrimitiveValue(Object aObj, ContentHandler aContentHandler)
       throws SAXException {
-//    final Attributes EMPTY_ATTRIBUTES = new AttributesImpl();
+    // final Attributes EMPTY_ATTRIBUTES = new AttributesImpl();
+    final boolean isJson = aContentHandler instanceof JsonContentHandlerJacksonWrapper;
+    final JsonContentHandlerJacksonWrapper jch = isJson ? (JsonContentHandlerJacksonWrapper) aContentHandler : null;
+    final JsonGenerator jg = isJson ? jch.getJsonGenerator() : null;
 
     String className = aObj.getClass().getName();
     int lastDotIndex = className.lastIndexOf(".");
     if (lastDotIndex > -1)
       className = className.substring(lastDotIndex + 1).toLowerCase();
-
     Node node = findMatchingSubElement(aContentHandler, className);
-    outputStartElement(aContentHandler, node, null, className, className, EMPTY_ATTRIBUTES);
-//    aContentHandler.startElement(null, className, className, EMPTY_ATTRIBUTES);
+    if (!isJson || !(aObj instanceof String)) {
+      outputStartElement(aContentHandler, node, null, className, className, EMPTY_ATTRIBUTES);
+    }
+    // aContentHandler.startElement(null, className, className, EMPTY_ATTRIBUTES);
     String valStr = aObj.toString();
-    aContentHandler.characters(valStr.toCharArray(), 0, valStr.length());
+    if (isJson) {
+      try {
+        jg.writeString(valStr);
+      } catch (IOException e) {
+        throw new SAXException(e);
+      }
+    } else {
+      aContentHandler.characters(valStr.toCharArray(), 0, valStr.length());
+    }
     outputEndElement(aContentHandler, node, null, className, className);
-//    aContentHandler.endElement(null, className, className);
+    // aContentHandler.endElement(null, className, className);
   }
-  
+
   // https://issues.apache.org/jira/browse/UIMA-3477
   private CharacterValidatingContentHandler maybeGetCharacterValidatingContentHandler(ContentHandler contentHandler) {
-    CharacterValidatingContentHandler cc = null;
-    try {
-      cc = (CharacterValidatingContentHandler) contentHandler;
-    } catch (ClassCastException e) {
-    }
-    return cc;
+    return (contentHandler instanceof CharacterValidatingContentHandler) ? 
+        (CharacterValidatingContentHandler)contentHandler : null;
   }
+
+  /*****************************************
+   * JSON support *
+   * 
+   * The main API takes a JsonContentHandlerJacksonWrapper instance
+   * 
+   * The other APIs take combinations of - the output(Writer, File, or OutputStream) - the prettyprint flag
+   * 
+   * @throws IOException
+   * 
+   * ***************************************/
+
+  public void toJSON(Writer aWriter) throws SAXException {
+    toJSON(aWriter, false);
+  }
+
+  public void toJSON(Writer aWriter, boolean isFormattedOutput) throws SAXException {
+    try {
+      JsonGenerator jg = new JsonFactory().createGenerator(aWriter);
+      toJSON(jg, isFormattedOutput);
+    } catch (IOException e) {
+      throw new SAXException(e);
+    }
+
+  }
+
+  public void toJSON(JsonGenerator jg, boolean isFormattedOutput) throws SAXException {
+    JsonContentHandlerJacksonWrapper jch = new JsonContentHandlerJacksonWrapper(jg, isFormattedOutput);
+    jch.withoutNl();
+    toXML(jch);
+    try {
+      jg.flush();
+    } catch (IOException e) {
+      throw new SAXException(e);
+    }
+  }
+
+  /**
+   * Writes out this object's JSON representation.
+   * 
+   * @param aOutputStream
+   *          an OutputStream to which the XML string will be written
+   * @throws SAXException 
+   */
+  public void toJSON(OutputStream aOutputStream) throws SAXException {
+    toJSON(aOutputStream, false);
+  }
+
+  public void toJSON(OutputStream aOutputStream, boolean isFormattedOutput) throws SAXException {
+    try {
+      JsonGenerator jg = new JsonFactory().createGenerator(aOutputStream);
+      toJSON(jg, isFormattedOutput);
+    } catch (IOException e) {
+      throw new SAXException(e);
+    }
+  }
+
+  public void toJSON(File file) throws SAXException {
+    toJSON(file, false);
+  }
+
+  public void toJSON(File file, boolean isFormattedOutput) throws SAXException {
+    try {
+      JsonGenerator jg = new JsonFactory().createGenerator(file, JsonEncoding.UTF8);
+      toJSON(jg, isFormattedOutput);
+      jg.close();
+    } catch (IOException e) {
+      throw new SAXException(e);
+    }
+  }
+
+//  public void toJSON(ContentHandler aCh) throws SAXException {
+//    XmlizationInfo inf = getXmlizationInfo();
+//    final boolean isJson = aCh instanceof JsonContentHandlerJacksonWrapper;
+//    final JsonContentHandlerJacksonWrapper jch = isJson ? (JsonContentHandlerJacksonWrapper) aCh : null;
+//    final JsonGenerator jg = isJson ? jch.getJsonGenerator() : null;
+//
+//
+//    // write the element's start tag
+//    // get attributes (can be provided by subclasses)
+//    AttributesImpl attrs = getXMLAttributes();
+//
+//    if (valueIsEmpty(inf, attrs)) {
+//      return;
+//    }
+//
+//    // start element
+//
+//    try {
+//      outputStartElement(aCh, infoset, inf.namespace, inf.elementTagName, inf.elementTagName, attrs);
+//    } catch (SAXException e) {
+//      throw new RuntimeException(e);   // should never happen
+//    }
+//
+//    // write child elements
+//    try {
+//      if (isJson) {
+//        if (inf.propertyInfo.length > 1) {
+//          jch.writeNlJustBeforeNext();
+//        }
+//      }
+//      for (int i = 0; i < inf.propertyInfo.length; i++) {
+//        PropertyXmlInfo propInf = inf.propertyInfo[i];
+//        writePropertyAsElement(propInf, inf.namespace, aCh);
+//      }
+//    } catch (SAXException e) {
+//      throw new RuntimeException(e);  // should never happen
+//    }
+//
+//    // end element
+//    outputEndElement(jch, infoset, inf.namespace, inf.elementTagName, inf.elementTagName);
+//  }
+
+//  private boolean valueIsEmpty(XmlizationInfo inf, AttributesImpl attrs) {
+//    for (PropertyXmlInfo propInf : inf.propertyInfo) {
+//      Object val = getAttributeValue(propInf.propertyName);
+//      if (!valueIsNullOrEmptyArray(val)) {
+//        return false;
+//      }
+//    }
+//    for (int i = 0; i < attrs.getLength(); i++) {
+//      String val = attrs.getValue(i);
+//      if (val != null && (!val.equals(""))) {
+//        return false;
+//      }
+//    }
+//    return true;
+//  }
+
+  // private String maybeMakeJsonString(Object aObj, boolean isJson) {
+  // if (isJson && aObj instanceof String) {
+  // return JSONSerializer.makeQuotedString((String) aObj);
+  // }
+  // return aObj.toString();
+  // }
+
 }
