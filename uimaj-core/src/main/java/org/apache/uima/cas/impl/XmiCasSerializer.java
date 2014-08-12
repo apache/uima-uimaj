@@ -895,6 +895,7 @@ public class XmiCasSerializer {
     /**
      * Writes a special instance of dummy type uima.cas.NULL, having xmi:id=0. This is needed to
      * represent nulls in multi-valued references, which aren't natively supported in Ecore.
+     * @throws SAXException 
      * 
      */
     private void writeNullObject() throws SAXException {
@@ -909,10 +910,17 @@ public class XmiCasSerializer {
       Iterator<Map.Entry<String, String>> it = nsUriToPrefixMap.entrySet().iterator();
       while (it.hasNext()) {
         Map.Entry<String, String> entry = it.next();
+        
+           // key = e.g.  http:///....
+           // value = e.g.   "xmi" or last name part (plus int to disambiguate)
         String nsUri = entry.getKey();
         String prefix = entry.getValue();
         // write attribute
-        workAttrs.addAttribute(XMLNS_NS_URI, prefix, "xmlns:" + prefix, "CDATA", nsUri);
+        workAttrs.addAttribute(XMLNS_NS_URI, 
+                               prefix, 
+                               "xmlns:" + prefix, 
+                               "CDATA", 
+                               nsUri);  
         ch.startPrefixMapping(prefix, nsUri);
       }
       // also add schemaLocation if specified
@@ -1453,6 +1461,7 @@ public class XmiCasSerializer {
 
     /**
      * Generate startElement, characters, and endElement SAX events.
+     * Only for StringArray and StringList kinds of things
      * 
      * @param elements
      *          a list of XmlElementNameAndContents objects representing the elements to generate
@@ -1639,7 +1648,11 @@ public class XmiCasSerializer {
       // don't include NS URI here. That causes XMI serializer to
       // include the xmlns attribute in every element. Instead we
       // explicitly added these attributes to the root element.
-      ch.startElement(""/* name.nsUri */, name.localName, name.qName, attrs);
+      ch.startElement(
+          ""/* name.nsUri */, 
+          (null == name) ? null : name.localName, 
+          (null == name) ? null : needNameSpaces ? name.qName : name.localName, 
+          attrs);
     }
 
     private void endElement(XmlElementName name) throws SAXException {
@@ -1853,11 +1866,13 @@ public class XmiCasSerializer {
     }
 
     /**
+     * For XMI only, not JSON
      * Populates nsUriToPrefixMap and xmiTypeNames structures based on CAS type system.
      */
     private void initTypeAndNamespaceMappings() {
+      
+      xmiTypeNames = new XmlElementName[tsi.getLargestTypeCode() + 1];
       nsUriToPrefixMap.put(XMI_NS_URI, XMI_NS_PREFIX);
-      xmiTypeNames = new XmlElementName[cas.getTypeSystemImpl().getLargestTypeCode() + 1];
 
       //Add any namespace prefix mappings used by out of type system data.
       //Need to do this before the in-typesystem namespaces so that the prefix
