@@ -139,7 +139,7 @@ public class XmiCasSerializer {
   private static final char [] URIPFX = new char[] {'h','t','t','p',':','/','/','/'};
   
   private static final char [] URISFX = new char[] {'.','e','c','o','r','e'};
-  
+
   private static final char [] URI_JSON_NS_SFX = new char[] {'.','n','a','m','e','_','s','p','a','c','e'};
 
   private static final SerializedString FEATURE_REFS_NAME = new SerializedString("_featureRefs");
@@ -159,7 +159,7 @@ public class XmiCasSerializer {
   public static final String XMI_TAG_LOCAL_NAME = "XMI";
 
   public static final String XMI_TAG_QNAME = "xmi:XMI";
-
+  
   private static final SerializedString JSON_CONTEXT_TAG_LOCAL_NAME = new SerializedString("@context");
   
   private static final SerializedString JSON_CAS_FEATURE_STRUCTURES = new SerializedString("_cas_feature_structures");
@@ -168,11 +168,11 @@ public class XmiCasSerializer {
 
   public static final XmlElementName XMI_TAG = new XmlElementName(XMI_NS_URI, XMI_TAG_LOCAL_NAME,
           XMI_TAG_QNAME);
-
+  
   public static final SerializedString ID_ATTR_NAME = new SerializedString("xmi:id");
   
   private static final SerializedString JSON_ID_ATTR_NAME = new SerializedString("@id");
-
+  
   private static final SerializedString JSON_ARRAY_ELEMENTS_ATTR_NAME = new SerializedString("_elements");
 
   public static final String XMI_VERSION_LOCAL_NAME = "version";
@@ -183,7 +183,7 @@ public class XmiCasSerializer {
 
   /** Namespace URI to use for UIMA types that have no namespace (the "default pacakge" in Java) */
   public static final String DEFAULT_NAMESPACE_URI = "http:///uima/noNamespace.ecore";
-
+  
   private static int PP_LINE_LENGTH = 120;
   private static int PP_ELEMENTS = 30;  // number of elements to do before nl
 
@@ -231,7 +231,7 @@ public class XmiCasSerializer {
   }
   
   private TypeSystemImpl filterTypeSystem;
-
+  
   private MarkerImpl marker;
   
   private ErrorHandler eh = null;
@@ -240,7 +240,7 @@ public class XmiCasSerializer {
   private Logger logger;
 
   private Map<String, String> nsUriToSchemaLocationMap = null;
-  
+
   private boolean isFormattedOutput;
   
   private JsonFactory jsonFactory = null;
@@ -286,6 +286,7 @@ public class XmiCasSerializer {
    *          output. This argument must be a map from namespace URIs to the schema location for
    *          that namespace URI.
    */
+  
   public XmiCasSerializer(TypeSystem ts, Map<String, String> nsUriToSchemaLocationMap) {
     this(ts, nsUriToSchemaLocationMap, false);
   }
@@ -437,7 +438,7 @@ public class XmiCasSerializer {
    *          an optional container for data that is shared between the {@link XmiCasSerializer} and the {@link XmiCasDeserializer}.
    *          See the JavaDocs for {@link XmiSerializationSharedData} for details.
    * @param aMarker
-   *  	      an optional object that is used to filter and serialize a Delta CAS containing only
+   *          an optional object that is used to filter and serialize a Delta CAS containing only
    *          those FSs and Views created after Marker was set and preexisting FSs and views that were modified.
    *          See the JavaDocs for {@link Marker} for details.
    * @throws SAXException
@@ -449,8 +450,8 @@ public class XmiCasSerializer {
     XmiCasSerializer xmiCasSerializer = new XmiCasSerializer(aTargetTypeSystem);
     XMLSerializer sax2xml = new XMLSerializer(aStream, aPrettyPrint);
     xmiCasSerializer.serialize(aCAS, sax2xml.getContentHandler(), null, aSharedData, aMarker);
-  }  
-
+  } 
+  
   /***************************************************
    *       non-static XMI Serializer methods         * 
    *  To use: first make an instance of this class
@@ -525,7 +526,7 @@ public class XmiCasSerializer {
    *          data structure used to allow the XmiCasSerializer and XmiCasDeserializer to share
    *          information.
    * @param marker
-   * 	      an object used to filter the FSs and Views to determine if these were created after
+   *        an object used to filter the FSs and Views to determine if these were created after
    *          the mark was set. Used to serialize a Delta CAS consisting of only new FSs and views and
    *          preexisting FSs and Views that have been modified.
    *          
@@ -533,11 +534,11 @@ public class XmiCasSerializer {
    */
   public void serialize(CAS cas, ContentHandler contentHandler, ErrorHandler errorHandler,
           XmiSerializationSharedData sharedData, Marker marker) throws SAXException {
-	  
+    
     contentHandler.startDocument();
     CasDocSerializer ser = new CasDocSerializer(contentHandler, errorHandler, ((CASImpl) cas)
             .getBaseCAS(), sharedData, (MarkerImpl) marker);
-    ser.serialize();
+    ser.serialize();  
     contentHandler.endDocument();
   }
   
@@ -823,7 +824,7 @@ public class XmiCasSerializer {
 
     // The CAS we're serializing.
     private final  CASImpl cas;
-
+    
     private final TypeSystemImpl tsi;
 
     // Any FS reference we've touched goes in here.
@@ -858,13 +859,13 @@ public class XmiCasSerializer {
     private final XmiSerializationSharedData sharedData;
 
     private XmlElementName[] xmiTypeNames; // array, indexed by type code, giving XMI names for each type
-
+    
     private final BitSet typeUsed;
-
+    
     private boolean needNameSpaces = true; // may be false for JSON only
 
     private final Map<String, String> nsUriToPrefixMap = new HashMap<String, String>();
-    
+       
     // lives just for one serialize call
     private final Map<String, String> uniqueStrings = new HashMap<String, String>();
     
@@ -903,7 +904,6 @@ public class XmiCasSerializer {
     
     // number of children of current element
     private int numChildren;
-
     /**
      * Gets the number of children of the current element. This is guaranteed to be set correctly at
      * the time when startElement is called. Needed for streaming Vinci serialization.
@@ -919,7 +919,7 @@ public class XmiCasSerializer {
     public int getNumChildren() {
       return numChildren;
     }
-    
+
     private final ErrorHandler eh;
 
     private int lastEncodedTypeCode;
@@ -949,8 +949,8 @@ public class XmiCasSerializer {
       this.isFiltering = filterTypeSystem != null && filterTypeSystem != tsi;
       this.marker = marker;
       if (marker != null && !marker.isValid()) {
-    	  CASRuntimeException exception = new CASRuntimeException(
-    	        CASRuntimeException.INVALID_MARKER, new String[] { "Invalid Marker." });
+  	    CASRuntimeException exception = new CASRuntimeException(
+  	        CASRuntimeException.INVALID_MARKER, new String[] { "Invalid Marker." });
     	  throw exception;
       }
       isDelta = marker != null;
@@ -963,7 +963,7 @@ public class XmiCasSerializer {
       jsonRecordedSuperTypes = (isJson) ? new HashSet<Type>() : null;
       jg = isJson ? jch.getJsonGenerator() : null;
     }
-
+        
     // TODO: internationalize
     private void reportWarning(String message) throws SAXException {
       logger.log(Level.WARNING, message);
@@ -998,11 +998,11 @@ public class XmiCasSerializer {
       // populate nsUriToPrefixMap and xmiTypeNames structures based on CAS 
       // type system, and out of typesystem data if any
       if (!isJson) {
-      initTypeAndNamespaceMappings();
+        initTypeAndNamespaceMappings();
       } else {
         initXmiTypeNames();
       }
-
+      
       int iElementCount = 1; // start at 1 to account for special NULL object
 
       enqueueIncoming(); //make sure we enqueue every FS that was deserialized into this CAS
@@ -1014,18 +1014,18 @@ public class XmiCasSerializer {
 
       FSIndex<FeatureStructure> sofaIndex = cas.getBaseCAS().indexRepository.getIndex(CAS.SOFA_INDEX_NAME);
       if (!isDelta) {
-    	iElementCount += (sofaIndex.size()); // one View element per sofa
-    	if (this.sharedData != null) {
-    	  iElementCount += this.sharedData.getOutOfTypeSystemElements().size();
-    	}
+      	iElementCount += (sofaIndex.size()); // one View element per sofa
+      	if (this.sharedData != null) {
+      	  iElementCount += this.sharedData.getOutOfTypeSystemElements().size();
+      	}
       } else {
-    	int numViews = cas.getBaseSofaCount();
+        int numViews = cas.getBaseSofaCount();
         for (int sofaNum = 1; sofaNum <= numViews; sofaNum++) {
           FSIndexRepositoryImpl loopIR = (FSIndexRepositoryImpl) cas.getBaseCAS().getSofaIndexRepository(sofaNum);
-            if (loopIR != null && loopIR.isModified()) {
-            	iElementCount++;
-            }
-         }
+          if (loopIR != null && loopIR.isModified()) {
+            iElementCount++;
+          }
+        }
       }
 
       if (isJson) {
@@ -1055,26 +1055,25 @@ public class XmiCasSerializer {
         }
         
       } else {
-      workAttrs.clear();
-      computeNamespaceDeclarationAttrs(workAttrs);
-      workAttrs.addAttribute(XMI_NS_URI, XMI_VERSION_LOCAL_NAME, XMI_VERSION_QNAME, "CDATA",
-              XMI_VERSION_VALUE);
-
-      startElement(XMI_TAG, workAttrs, iElementCount);
-      writeNullObject(); // encodes 1 element
-      encodeIndexed(); // encodes indexedFSs.size() element
-      encodeQueued(); // encodes queue.size() elements
-      if (!isDelta) {
-    	serializeOutOfTypeSystemElements(); //encodes sharedData.getOutOfTypeSystemElements().size() elements
+        workAttrs.clear();
+        computeNamespaceDeclarationAttrs(workAttrs);
+        workAttrs.addAttribute(XMI_NS_URI, XMI_VERSION_LOCAL_NAME, XMI_VERSION_QNAME, "CDATA",
+            XMI_VERSION_VALUE);
+        startElement(XMI_TAG, workAttrs, iElementCount);
+        writeNullObject(); // encodes 1 element
+        encodeIndexed(); // encodes indexedFSs.size() element
+        encodeQueued(); // encodes queue.size() elements
+        if (!isDelta) {
+      	  serializeOutOfTypeSystemElements(); //encodes sharedData.getOutOfTypeSystemElements().size() elements
+        }
       }
-    }
-    if (isWithViews) {
-      if (isJson) {
-        jch.writeNlJustBeforeNext();
-        jgWriteFieldName(JSON_CAS_VIEWS);
-        jgWriteStartObject();        
-      }
-      writeViews(); // encodes cas.sofaCount + 1 elements
+      if (isWithViews) {
+        if (isJson) {
+          jch.writeNlJustBeforeNext();
+          jgWriteFieldName(JSON_CAS_VIEWS);
+          jgWriteStartObject();        
+        }
+        writeViews(); // encodes cas.sofaCount + 1 elements
         if (isJson) {
           jgWriteEndObject();  // and end of views property
         }
@@ -1086,9 +1085,9 @@ public class XmiCasSerializer {
         }
         jgFlush();
       } else {
-      endElement(XMI_TAG);
-      endPrefixMappings();
-    }
+        endElement(XMI_TAG);
+        endPrefixMappings();
+      }
     }
 
     private void writeViews() throws SAXException {
@@ -1136,7 +1135,7 @@ public class XmiCasSerializer {
       if (this.sharedData != null) {
         List<String> ootsMembers = this.sharedData.getOutOfTypeSystemViewMembers(sofaXmiId);
         writeViewMembers(membersString, ootsMembers, isPastFirstElement);
-          }
+      }
       if (isJson) {
         jgWriteEndArray();
       } else if (membersString.length() > 0) {
@@ -1148,11 +1147,11 @@ public class XmiCasSerializer {
             membersString.toString());
 
 //      addAttribute(workAttrs, "members", membersString.substring(0, membersString.length() - 1));
-      if (membersString.length() > 0) {
-      XmlElementName elemName = uimaTypeName2XmiElementName("uima.cas.View");
-      startElement(elemName, workAttrs, 0);
-      endElement(elemName);
-    }
+        if (membersString.length() > 0) {
+          XmlElementName elemName = uimaTypeName2XmiElementName("uima.cas.View");
+          startElement(elemName, workAttrs, 0);
+          endElement(elemName);
+        }
       }
     }
     
@@ -1174,7 +1173,7 @@ public class XmiCasSerializer {
         } else {
           String xmiId = getXmiId(members[i]);
           if (xmiId != null) { // to catch filtered FS
-    
+           
             if (isPastFirstElement) {
               sb.append(isJson ? (isFormattedOutput ? ", " : ",") : " ");
             } else {
@@ -1185,12 +1184,12 @@ public class XmiCasSerializer {
               sb.append(JsonContentHandlerJacksonWrapper.SYSTEM_LINE_FEED);
               nextBreak += PP_LINE_LENGTH; 
             }
-        }
           }
-        }        
-      return isPastFirstElement;
         }
-        
+      }
+      return isPastFirstElement;
+    }
+    
     /**
      * version for out-of-type-system data being merged back in
      * not currently supported for JSON
@@ -1208,18 +1207,18 @@ public class XmiCasSerializer {
             isPastFirstElement = true;
           }
           sb.append(member);
-          }
-        }        
-      return sb;
         }
-        
+      }
+      return sb;
+    }
+    
     private void writeViewForDeltas(String kind, int[] deltaMembers) throws SAXException {
       StringBuilder sb = isJson ? null : new StringBuilder();
       writeViewMembers(sb, deltaMembers);    
       if ((!isJson) && sb.length() > 0) {
         addAttribute(workAttrs, kind, sb.toString());
-          }
-        }        
+      }
+    }
        
     private void writeView(String sofaXmiId, int[] added, int[] deleted, int[] reindexed) throws SAXException {
         workAttrs.clear();
@@ -1248,7 +1247,7 @@ public class XmiCasSerializer {
       startElement(elemName, workAttrs, 0);
       endElement(elemName);
     }
-
+   
     /**
      * Adds the ", _featureRefs" : [ "featName1", "featName2"] 
      * to the string builder for features that are being serialized
@@ -1436,6 +1435,7 @@ public class XmiCasSerializer {
            // value = e.g.   "xmi" or last name part (plus int to disambiguate)
         String nsUri = entry.getKey();
         String prefix = entry.getValue();
+        
         // write attribute
         workAttrs.addAttribute(XMLNS_NS_URI, 
                                prefix, 
@@ -1459,6 +1459,7 @@ public class XmiCasSerializer {
         }
         workAttrs.addAttribute(XSI_NS_URI, "xsi", "xsi:schemaLocation", "CDATA", buf.toString());
       }
+      
     }
     
     private void endPrefixMappings() throws SAXException {
@@ -1597,7 +1598,7 @@ public class XmiCasSerializer {
         
       visited.put(addr, addr);
       return typeCode;
-    }
+    }    
     /*
      * Enqueues an indexed FS. Does NOT enqueue features at this point.
      */
@@ -1618,17 +1619,16 @@ public class XmiCasSerializer {
     private void enqueue(int addr) throws SAXException {
       int typeCode = enqueueCommon(addr);
       if (typeCode == -1) {
-        return;
+        return;  
       }
       queue.push(addr);
       enqueueFeatures(addr, typeCode);
-
       // Also, for FSArrays enqueue the elements
       if (cas.isFSArrayType(typeCode)) { //TODO: won't get parameterized arrays??
         enqueueFSArrayElements(addr);
       }
     }
-
+    
     /**
      * @param featCode the feature code
      * @param fsClass the class of the feature
@@ -1794,7 +1794,7 @@ public class XmiCasSerializer {
         encodeFS(addr);
       }
     }
-
+    
     private void encodeAllFss(Integer[] allFss) throws SAXException {
       lastEncodedTypeCode = -1;
       for (Integer i : allFss) {
@@ -1911,7 +1911,7 @@ public class XmiCasSerializer {
           jgWriteNumber(addr);
         }
       } else {
-      addAttribute(workAttrs, idAttrName.getValue(), getXmiId(addr));
+        addAttribute(workAttrs, idAttrName.getValue(), getXmiId(addr));
       }
 
       // Call special code according to the type of the FS (special treatment
@@ -1988,7 +1988,7 @@ public class XmiCasSerializer {
         return this.sharedData.getXmiId(addr);
       }
     }
-
+    
     private int getXmiIdAsNumber(int addr) {
       if (addr == CASImpl.NULL) {
         return 0;
@@ -2028,15 +2028,15 @@ public class XmiCasSerializer {
         if (isJson) {
           jgWriteString(elem.contents);   // writes null values as JSON null        
         } else {
-        if (elem.contents != null) {
-          startElement(elem.name, emptyAttrs, 1);
-          addText(elem.contents);
-        } else {
-          startElement(elem.name, emptyAttrs, 0);
+          if (elem.contents != null) {
+            startElement(elem.name, emptyAttrs, 1);
+            addText(elem.contents);
+          } else {
+            startElement(elem.name, emptyAttrs, 0);
+          }
+          endElement(elem.name);
         }
-        endElement(elem.name);
       }
-    }
     }
 
     /**
@@ -2224,6 +2224,7 @@ public class XmiCasSerializer {
       attrs.addAttribute("", attrName.substring(index), attrName, type, attrValue);
     }
 
+        
     private void startElement(XmlElementName name, Attributes attrs, int aNumChildren)
             throws SAXException {
       numChildren = aNumChildren;
@@ -2241,7 +2242,7 @@ public class XmiCasSerializer {
       if (name == null) {
         ch.endElement(null, null, null);
       } else {
-      ch.endElement(name.nsUri, name.localName, name.qName);
+        ch.endElement(name.nsUri, name.localName, name.qName);
       }
     }
 
@@ -2311,7 +2312,7 @@ public class XmiCasSerializer {
         }
         return buf.toString();
       } else if (arrayType == LowLevelCAS.TYPE_CLASS_BYTEARRAY && !isJson) {
-        // special case for byte arrays: serialize as hex digits
+        // special case for byte arrays: serialize as hex digits 
         ByteArrayFS byteArrayFS = new ByteArrayFSImpl(addr, cas);
         int len = byteArrayFS.size();
         for (int i = 0; i < len; i++) {
@@ -2369,8 +2370,8 @@ public class XmiCasSerializer {
           if (isJson && arrayType == LowLevelCAS.TYPE_CLASS_STRINGARRAY) {
             buf.append('"').append(fsvalues[i]).append('"');
           } else {
-          buf.append(fsvalues[i]);
-        }
+            buf.append(fsvalues[i]);
+          }
         }
         return buf.toString();
       }
@@ -2469,6 +2470,7 @@ public class XmiCasSerializer {
       //Add any namespace prefix mappings used by out of type system data.
       //Need to do this before the in-typesystem namespaces so that the prefix
       //used here are reserved and won't be reused for any in-typesystem namespaces.
+           
       if (this.sharedData != null) {
         Iterator<OotsElementData> ootsIter = this.sharedData.getOutOfTypeSystemElements().iterator();
         while (ootsIter.hasNext()) {
@@ -2491,7 +2493,7 @@ public class XmiCasSerializer {
         xmiTypeNames[t.getCode()] = uimaTypeName2XmiElementName(t.getName());
       }
     }
-    
+
     /**
      * Converts a UIMA-style dotted type name to the element name that should be used in the XMI
      * serialization. The XMI element name consists of three parts - the Namespace URI, the Local
@@ -2563,7 +2565,6 @@ public class XmiCasSerializer {
       }
       return prefix;
     }
-
     /*
      *  convert to shared string, without interning, reduce GCs
      */
@@ -2625,7 +2626,7 @@ public class XmiCasSerializer {
         
         endElement(oed.elementName);
       }
-    } 
+    }
     
     /*********************************
      *   JSON Jackson generator calls
@@ -2639,9 +2640,9 @@ public class XmiCasSerializer {
         jg.writeStartObject();
       } catch (IOException e) {
         throw new SAXException(e);
-  }
+      }
     }
-  
+
     private void jgWriteEndObject() throws SAXException {
       try {
         jg.writeEndObject();
@@ -2738,6 +2739,5 @@ public class XmiCasSerializer {
     return new CasDocSerializer(ch, null, cas, null, null);
   }  
   
-
 
 }
