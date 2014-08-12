@@ -1785,7 +1785,7 @@ public class XmiCasDeserializerTest extends TestCase {
     // call serializer with a ContentHandler that checks numChildren
     XmiCasSerializer xmiSer = new XmiCasSerializer(cas.getTypeSystem());
     GetNumChildrenTestHandler handler = new GetNumChildrenTestHandler(xmiSer, (CASImpl) cas);
-    xmiSer.serialize(cas, handler);
+    xmiSer.serialize(cas, handler, handler.tcds);
   }
 
   /** Utility method for serializing a CAS to an XMI String 

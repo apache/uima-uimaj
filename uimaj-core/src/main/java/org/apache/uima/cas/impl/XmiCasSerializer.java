@@ -22,6 +22,7 @@ package org.apache.uima.cas.impl;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -41,6 +42,7 @@ import org.apache.uima.cas.Marker;
 import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.cas.impl.XmiCasSerializer.CasDocSerializer;
 import org.apache.uima.cas.impl.XmiSerializationSharedData.OotsElementData;
 import org.apache.uima.cas.impl.XmiSerializationSharedData.XmiArrayElement;
 import org.apache.uima.internal.util.IntStack;
@@ -49,6 +51,7 @@ import org.apache.uima.internal.util.XmlAttribute;
 import org.apache.uima.internal.util.XmlElementName;
 import org.apache.uima.internal.util.XmlElementNameAndContents;
 import org.apache.uima.internal.util.rb_trees.IntRedBlackTree;
+import org.apache.uima.util.JsonContentHandlerJacksonWrapper;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
 import org.apache.uima.util.XMLSerializer;
@@ -58,6 +61,9 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.AttributesImpl;
+
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.io.SerializedString;
 
 /**
  * XMI CAS serializer. Used to write out a CAS in an XML Metadata Interchange (XMI) format. Create a
@@ -98,9 +104,11 @@ public class XmiCasSerializer {
   public static final XmlElementName XMI_TAG = new XmlElementName(XMI_NS_URI, XMI_TAG_LOCAL_NAME,
           XMI_TAG_QNAME);
 
-  public static final String INDEXED_ATTR_NAME = "_indexed";
+  public static final SerializedString ID_ATTR_NAME = new SerializedString("xmi:id");
+  
+  private static final SerializedString JSON_ID_ATTR_NAME = new SerializedString("@id");
 
-  public static final String ID_ATTR_NAME = "xmi:id";
+  private static final SerializedString JSON_ARRAY_ELEMENTS_ATTR_NAME = new SerializedString("_elements");
 
   public static final String XMI_VERSION_LOCAL_NAME = "version";
 
@@ -311,7 +319,7 @@ public class XmiCasSerializer {
    * @throws SAXException if there was a SAX exception
    */
   public void serialize(CAS cas, ContentHandler contentHandler) throws SAXException {
-    this.serialize(cas, contentHandler, null);
+    this.serialize(cas, contentHandler, (ErrorHandler) null);
   }
 
   /**
@@ -388,32 +396,38 @@ public class XmiCasSerializer {
     contentHandler.endDocument();
   }
   
+  // this method just for testing - uses existing content handler and casdocserializer instance
+  void serialize(CAS cas, ContentHandler contentHandler, CasDocSerializer ser) throws SAXException {
+    contentHandler.startDocument();
+    ser.serialize();
+    contentHandler.endDocument();
+  }
+  
   /**
    * Use an inner class to hold the data for serializing a CAS. Each call to serialize() creates its
    * own instance.
    * 
+   * package private to allow a test case to access
    * 
    */
-  // package private to let test case have access
   class CasDocSerializer {
 
     // Where the output goes.
-    private ContentHandler ch;
-
-    // optional error handler, mainly so we can send warnings
-    private ErrorHandler eh = null;
+    private final ContentHandler ch;
 
     // The CAS we're serializing.
-    private CASImpl cas;
+    private final  CASImpl cas;
+
+    private final TypeSystemImpl tsi;
 
     // Any FS reference we've touched goes in here.
-    private IntRedBlackTree visited;
+    private final IntRedBlackTree visited;
 
     // All FSs that are in an index somewhere.
-    private IntVector indexedFSs;
+    private final IntVector indexedFSs;
 
     // The current queue for FSs to write out.
-    private IntStack queue;
+    private final IntStack queue;
 
     // SofaFS type
     // private int sofaTypeCode;
@@ -423,40 +437,43 @@ public class XmiCasSerializer {
 
     private final AttributesImpl emptyAttrs = new AttributesImpl();
 
-    private AttributesImpl workAttrs = new AttributesImpl();
+    private final AttributesImpl workAttrs = new AttributesImpl();
+
 
     // For debug statistics.
-    private int fsCount = 0;
+//    private int fsCount = 0;
 
     // utilities for dealing with CAS list types
-    private ListUtils listUtils;
+    private final ListUtils listUtils;
 
     // holds the addresses of Array and List FSs that we have encountered
-    private IntRedBlackTree arrayAndListFSs;
+    private final IntRedBlackTree arrayAndListFSs;
 
-    private XmiSerializationSharedData sharedData;
+    private final XmiSerializationSharedData sharedData;
 
-    private XmlElementName[] xmiTypeNames; // array, indexed by type code, giving XMI names for
+    private XmlElementName[] xmiTypeNames; // array, indexed by type code, giving XMI names for each type
 
-    // each type
+    private final BitSet typeUsed;
 
-    private Map<String, String> nsUriToPrefixMap = new HashMap<String, String>();
+    private boolean needNameSpaces = true; // may be false for JSON only
+
+    private final Map<String, String> nsUriToPrefixMap = new HashMap<String, String>();
     
     // lives just for one serialize call
-    private Map<String, String> uniqueStrings = new HashMap<String, String>();
+    private final Map<String, String> uniqueStrings = new HashMap<String, String>();
     
-    private Set<String> nsPrefixesUsed = new HashSet<String>();
+    private final Set<String> nsPrefixesUsed = new HashSet<String>();
     
     /**
      * Used to tell if a FS was created before or after mark.
      */
-    private MarkerImpl marker;
+    private final MarkerImpl marker;
 
     /**
      * Whether the serializer needs to check for filtered-out types/features. Set to true if type
      * system of CAS does not match type system that was passed to constructor of serializer.
      */
-    boolean isFiltering;
+    private final boolean isFiltering;
 
     /**
      * Whether the serializer needs to serialize only the deltas, that is, new FSs created after
@@ -464,7 +481,19 @@ public class XmiCasSerializer {
      * modified. Set to true if Marker object is not null and CASImpl object of this serialize
      * matches the CASImpl in Marker object.
      */
-    boolean isDelta;
+    private final boolean isDelta;
+    
+    private final boolean isJson;
+
+    private final JsonContentHandlerJacksonWrapper jch;
+    
+    private final JsonGenerator jg;
+
+    private final SerializedString idAttrName;
+
+    private final Set<Type> jsonRecordedSuperTypes;
+
+    private TypeImpl[] sortedUsedTypes;
     
     // number of children of current element
     private int numChildren;
@@ -477,38 +506,56 @@ public class XmiCasSerializer {
      * XmiCasSerializer.serialize. Use it only with a dedicated XmiCasSerializer instance that is not
      * shared between threads.
      * 
+     * Doesn't appear to be used (August 2014) except in test case
+     * 
      * @return the number of children of the current element
      */
     public int getNumChildren() {
       return numChildren;
     }
     
+    private final ErrorHandler eh;
+
+    private int lastEncodedTypeCode;
+    
+    public final Map<String, XmlElementName> usedTypeName2XmlElementName;
+    
+    private final Map<String, SerializedString> serializedStrings;
+
+    /***********************************************
+     *         C O N S T R U C T O R               *  
+     ***********************************************/    
     private CasDocSerializer(ContentHandler ch, ErrorHandler eh, CASImpl cas,
             XmiSerializationSharedData sharedData, MarkerImpl marker) {
       super();
       this.ch = ch;
       this.eh = eh;
       this.cas = cas;
+      this.tsi = cas.getTypeSystemImpl();
       this.visited = new IntRedBlackTree();
       this.queue = new IntStack();
       this.indexedFSs = new IntVector();
-      // this.sofaTypeCode = cas.getTypeSystemImpl().getTypeCode(CAS.TYPE_NAME_SOFA);
-      // this.annotationTypeCode = cas.getTypeSystemImpl().getTypeCode(CAS.TYPE_NAME_ANNOTATION);
+      // this.sofaTypeCode = tsi.getTypeCode(CAS.TYPE_NAME_SOFA);
+      // this.annotationTypeCode = tsi.getTypeCode(CAS.TYPE_NAME_ANNOTATION);
       this.listUtils = new ListUtils(cas, logger, eh);
       this.arrayAndListFSs = new IntRedBlackTree();
       this.sharedData = sharedData;
-      this.isFiltering = filterTypeSystem != null && filterTypeSystem != cas.getTypeSystemImpl();
-      if (marker != null ) {
-      	if (marker.isValid())
-          this.marker = marker;
-        else {
-    	    CASRuntimeException exception = new CASRuntimeException(
-    	          CASRuntimeException.INVALID_MARKER, new String[] { "Invalid Marker." });
-    	    throw exception;
-        }
+      this.isFiltering = filterTypeSystem != null && filterTypeSystem != tsi;
+      this.marker = marker;
+      if (marker != null && !marker.isValid()) {
+    	  CASRuntimeException exception = new CASRuntimeException(
+    	        CASRuntimeException.INVALID_MARKER, new String[] { "Invalid Marker." });
+    	  throw exception;
       }
-      this.isDelta = false;
-      if (this.marker != null) this.isDelta = true;
+      isDelta = marker != null;
+      usedTypeName2XmlElementName = new HashMap<String, XmlElementName>(tsi.getNumberOfTypes());
+      isJson = ch instanceof JsonContentHandlerJacksonWrapper;
+      serializedStrings = isJson ? new HashMap<String, SerializedString>() : null;
+      jch = isJson ? (JsonContentHandlerJacksonWrapper) ch : null;
+      idAttrName = isJson ? JSON_ID_ATTR_NAME : ID_ATTR_NAME;
+      typeUsed = new BitSet();
+      jsonRecordedSuperTypes = (isJson) ? new HashSet<Type>() : null;
+      jg = isJson ? jch.getJsonGenerator() : null;
     }
 
     // TODO: internationalize
@@ -532,6 +579,7 @@ public class XmiCasSerializer {
 
     /**
      * Starts serialization
+     * @throws SAXException 
      */
     private void serialize() throws SAXException {
       // populate nsUriToPrefixMap and xmiTypeNames structures based on CAS 
@@ -699,7 +747,7 @@ public class XmiCasSerializer {
      */
     private void writeNullObject() throws SAXException {
       workAttrs.clear();
-      addAttribute(workAttrs, ID_ATTR_NAME, "0");
+      addAttribute(workAttrs, ID_ATTR_NAME.getValue(), "0");
       XmlElementName elemName = uimaTypeName2XmiElementName("uima.cas.NULL");
       startElement(elemName, workAttrs, 0);
       endElement(elemName);
@@ -1017,13 +1065,13 @@ public class XmiCasSerializer {
      * @throws SAXException passthru
      */
     private void encodeFS(int addr) throws SAXException {
-      ++fsCount;
+//      ++fsCount;
       workAttrs.clear();
 
       // Add ID attribute. We do this for every FS, since otherwise we would
       // have to do a complete traversal of the heap to find out which FSs is
       // actually referenced.
-      addAttribute(workAttrs, ID_ATTR_NAME, getXmiId(addr));
+      addAttribute(workAttrs, ID_ATTR_NAME.getValue(), getXmiId(addr));
 
       // generate the XMI name for the type (uses a precomputed array so we don't
       // recompute the same name multiple times).
@@ -1618,7 +1666,7 @@ public class XmiCasSerializer {
         OotsElementData oed = it.next();
         workAttrs.clear();
         // Add ID attribute
-        addAttribute(workAttrs, ID_ATTR_NAME, oed.xmiId);
+        addAttribute(workAttrs, ID_ATTR_NAME.getValue(), oed.xmiId);
 
         // Add other attributes
         Iterator<XmlAttribute> attrIt = oed.attributes.iterator();
@@ -1635,7 +1683,7 @@ public class XmiCasSerializer {
         while (childElemIt.hasNext()) {
           XmlElementNameAndContents child = childElemIt.next();
           workAttrs.clear();
-          Iterator attrIter = child.attributes.iterator();
+          Iterator<XmlAttribute> attrIter = child.attributes.iterator();
           while (attrIter.hasNext()) {
             XmlAttribute attr =(XmlAttribute)attrIter.next();
             addAttribute(workAttrs, attr.name, attr.value);
@@ -1654,8 +1702,113 @@ public class XmiCasSerializer {
         endElement(oed.elementName);
       }
     } 
+    
+    /*********************************
+     *   JSON Jackson generator calls
+     *   that convert IOException to
+     *   SAXExceptions
+     * @throws SAXException wraps IOException
+     *********************************/
+    
+    private void jgWriteStartObject() throws SAXException {
+      try {
+        jg.writeStartObject();
+      } catch (IOException e) {
+        throw new SAXException(e);
   }
+    }
   
+    private void jgWriteEndObject() throws SAXException {
+      try {
+        jg.writeEndObject();
+      } catch (IOException e) {
+        throw new SAXException(e);
+      }
+    }
+    
+    private void jgWriteFieldName(SerializedString s) throws SAXException {
+      try {
+        jg.writeFieldName(s);
+      } catch (IOException e) {
+        throw new SAXException(e);
+      }
+    }
+
+    private void jgWriteFieldName(String s) throws SAXException {
+      try {
+        jg.writeFieldName(s);
+      } catch (IOException e) {
+        throw new SAXException(e);
+      }
+    }
+
+    private void jgWriteString(String s) throws SAXException {
+      try {
+        jg.writeString(s);
+      } catch (IOException e) {
+        throw new SAXException(e);
+      }
+    }
+
+    private void jgWriteString(SerializedString s) throws SAXException {
+      try {
+        jg.writeString(s);
+      } catch (IOException e) {
+        throw new SAXException(e);
+      }
+    }
+    
+    private void jgWriteNumber(int n) throws SAXException {
+      try {
+        jg.writeNumber(n);
+      } catch (IOException e) {
+        throw new SAXException(e);
+      }
+    }
+    
+    private void jgWriteArrayFieldStart(String fieldName) throws SAXException {
+      try {
+        jg.writeArrayFieldStart(fieldName);
+      } catch (IOException e) {
+        throw new SAXException(e);
+      }
+    }
+ 
+    private void jgWriteStartArray() throws SAXException {
+      try {
+        jg.writeStartArray();
+      } catch (IOException e) {
+        throw new SAXException(e);
+      }
+    }
+
+    private void jgWriteEndArray() throws SAXException {
+      try {
+        jg.writeEndArray();
+      } catch (IOException e) {
+        throw new SAXException(e);
+      }
+    }
+    
+    private void jgFlush() throws SAXException {
+      try {
+        jg.flush();
+      } catch (IOException e) {
+        throw new SAXException(e);
+      }
+    }
+
+    private SerializedString getSerializedString(String s) {
+      SerializedString ss = serializedStrings.get(s);
+      if (ss == null) {
+        ss = new SerializedString(s);
+        serializedStrings.put(s, ss);
+      }
+      return ss;
+    }
+    
+  }
+
   // for testing
   public CasDocSerializer getTestCasDocSerializer(ContentHandler ch, CASImpl cas) {
     return new CasDocSerializer(ch, null, cas, null, null);
