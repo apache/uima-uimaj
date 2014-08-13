@@ -997,10 +997,10 @@ public class XmiCasSerializer {
       
       // populate nsUriToPrefixMap and xmiTypeNames structures based on CAS 
       // type system, and out of typesystem data if any
-      if (!isJson) {
-        initTypeAndNamespaceMappings();
+      if (isJson) {
+        xmiTypeNames = new XmlElementName[tsi.getLargestTypeCode() + 1];
       } else {
-        initXmiTypeNames();
+        initTypeAndNamespaceMappings();
       }
       
       int iElementCount = 1; // start at 1 to account for special NULL object
@@ -2451,12 +2451,6 @@ public class XmiCasSerializer {
       }
       return cas.ll_getTypeClass(type);
     }
-
-    // for Json, need this before enqueing, over all possible types
-    private void initXmiTypeNames() {
-      xmiTypeNames = new XmlElementName[tsi.getLargestTypeCode() + 1];
-    }
-    
 
     /**
      * For XMI only, not JSON
