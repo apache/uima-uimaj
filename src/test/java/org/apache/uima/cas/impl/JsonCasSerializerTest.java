@@ -7,6 +7,7 @@ import java.io.StringWriter;
 import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;
+import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.XmiCasSerializer.JsonContextFormat;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
@@ -77,11 +78,13 @@ public class JsonCasSerializerTest extends TestCase {
     String r = serialize();
     assertEquals(getExpected("top.txt"), r);
     cas.reset();
+    
     cas = (CASImpl) cas.createView("basicView");
     cas.addFsToIndexes(cas.createFS(annotationType));
     r = serialize();
     assertEquals(getExpected("topWithNamedView.txt"), r);
     cas.reset();
+    
     cas = (CASImpl) cas.getCurrentView(); // default view
     cas.addFsToIndexes(cas.createFS(annotationType));
     r = serialize();
@@ -100,6 +103,42 @@ public class JsonCasSerializerTest extends TestCase {
     r = serialize();
     assertEquals(getExpected("topNoContextNoViews.txt"), r);
     
+    cas.reset();
+    xcs.setJsonContext(JsonContextFormat.includeExpandedTypeNames);
+    cas.addFsToIndexes(cas.createFS(topType));
+    r = serialize();
+    assertEquals(getExpected("topExpandedNamesNoViews.txt"), r);
+
+    cas.reset();
+    xcs.setJsonContext(JsonContextFormat.omitExpandedTypeNames);
+    cas.addFsToIndexes(cas.createFS(topType));
+    r = serialize();
+    assertEquals(getExpected("topNoContextNoViews.txt"), r);
+
+    cas.reset();
+    xcs.setJsonContext(JsonContextFormat.includeFeatureRefs);
+    xcs.setJsonContext(JsonContextFormat.includeSuperTypes);
+    cas.addFsToIndexes(cas.createFS(topType));
+    r = serialize();
+    assertEquals(getExpected("topFeatRefsSupertypesNoViews.txt"), r);
+  }
+  
+  public void testNameSpaceCollision() throws Exception {
+    setupTypeSystem("nameSpaceNeeded.xml");
+    Type t1 = tsi.getType("org.apache.uima.test.Token");
+    Type t2 = tsi.getType("org.apache.uimax.test.Token");
+    Type t3 = tsi.getType("org.apache.uima.test2.Token");
+    cas = (CASImpl)cas.getCurrentView();
+    
+    cas.addFsToIndexes(cas.createFS(t1));
+    cas.addFsToIndexes(cas.createFS(t2));
+    
+    String r = serialize();
+    assertEquals(getExpected("nameSpaceCollision.txt"), r);
+    
+    cas.addFsToIndexes(cas.createFS(t3));
+    r = serialize();
+    assertEquals(getExpected("nameSpaceCollision2.txt"), r);
   }
   
   

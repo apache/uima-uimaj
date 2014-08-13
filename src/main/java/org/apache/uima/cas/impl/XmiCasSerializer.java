@@ -776,18 +776,41 @@ public class XmiCasSerializer {
   /**
    * sets which Json context format to use when serializing
    * @param format the format to use for the serialization
+   *   Specifying the context flag also specifies all 3 subflags
+   *   Specifying one of the subflags as true sets the context flag if it isn't on already
    * @return the original instance, possibly updated
    */
   public XmiCasSerializer setJsonContext(JsonContextFormat format) {
     switch (format) {
-    case omitContext: isWithContext = false; break;
-    case includeContext: isWithContext = true;  break;
-    case omitSupertypes: isWithSupertypes = false; break;
-    case includeSuperTypes: isWithSupertypes = true; break;
-    case omitFeatureRefs: isWithFeatureRefs = false; break;
-    case includeFeatureRefs: isWithFeatureRefs = true; break;
-    case omitExpandedTypeNames: isWithExpandedTypeNames = false; break;
-    case includeExpandedTypeNames: isWithExpandedTypeNames = true; break;                             
+    case omitContext: 
+      isWithContext = false;            
+      isWithSupertypes = false;                                                  
+      isWithFeatureRefs = false;
+      isWithExpandedTypeNames = false; break;
+    case includeContext: 
+      isWithContext = true;
+      isWithSupertypes = true;
+      isWithFeatureRefs = true;
+      isWithExpandedTypeNames = true; break;
+                                                        
+    case omitSupertypes: 
+      isWithSupertypes = false; break;
+    case includeSuperTypes: 
+      isWithSupertypes = true; 
+      isWithContext = true; break;
+      
+    
+    case omitFeatureRefs: 
+      isWithFeatureRefs = false; break;
+    case includeFeatureRefs: 
+      isWithFeatureRefs = true;
+      isWithContext = true; break;
+      
+    case omitExpandedTypeNames:
+      isWithExpandedTypeNames = false; break;
+    case includeExpandedTypeNames: 
+      isWithExpandedTypeNames = true; 
+      isWithContext = true; break;                             
     }
     return this;
   }
@@ -1581,14 +1604,14 @@ public class XmiCasSerializer {
         XmlElementName newXel = uimaTypeName2XmiElementName(typeName);
 
         if (!needNameSpaces) {
-          XmlElementName xel    = usedTypeName2XmlElementName.get(typeName);
+          XmlElementName xel    = usedTypeName2XmlElementName.get(newXel.localName);
           if (xel != null) {
             if (!xel.nsUri.equals(newXel.nsUri)) {
               needNameSpaces = true;
               usedTypeName2XmlElementName.clear();  // not needed anymore
             }
           } else {
-            usedTypeName2XmlElementName.put(typeName, newXel);
+            usedTypeName2XmlElementName.put(newXel.localName, newXel);
           }
         }        
         xmiTypeNames[typeCode] = newXel;
