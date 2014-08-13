@@ -1,0 +1,1 @@
+{"@context":{"TOP":{"@id":"uima.cas.TOP","_superTypes":[]}},"_cas_feature_structures":{"1":{"TOP":{}}},"_cas_views":{"0":[1]}}
