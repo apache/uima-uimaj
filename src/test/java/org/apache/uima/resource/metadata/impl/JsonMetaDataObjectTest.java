@@ -11,7 +11,7 @@ public class JsonMetaDataObjectTest extends TestCase {
   protected void tearDown() throws Exception {
     super.tearDown();
   }
-
+  
   public void testToJSONWriter() {
   }
 

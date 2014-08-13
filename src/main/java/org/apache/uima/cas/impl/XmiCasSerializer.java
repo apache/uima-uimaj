@@ -1039,8 +1039,8 @@ public class XmiCasSerializer {
         if (isWithContextOrViews) {
           jch.writeNlJustBeforeNext();       
           jgWriteFieldName(JSON_CAS_FEATURE_STRUCTURES);
-          jgWriteStartObject();
         }
+        jgWriteStartObject();
         
         if (isJsonById) {
           encodeIndexed();
@@ -1050,10 +1050,8 @@ public class XmiCasSerializer {
           Arrays.sort(allFss, sortFssByType);
           encodeAllFss(allFss);
         }
-        if (isWithContextOrViews) {
-          jgWriteEndObject();
-        }
-        
+        jgWriteEndObject();
+
       } else {
         workAttrs.clear();
         computeNamespaceDeclarationAttrs(workAttrs);
