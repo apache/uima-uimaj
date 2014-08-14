@@ -7,7 +7,10 @@ import java.io.StringWriter;
 import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;
+import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
+import org.apache.uima.cas.impl.XmiCasSerializer.JsonCasFormat;
 import org.apache.uima.cas.impl.XmiCasSerializer.JsonContextFormat;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
@@ -29,6 +32,7 @@ public class JsonCasSerializerTest extends TestCase {
   private XmiCasSerializer xcs;
   private String expectedResults;
   private TypeImpl annotationType;
+  private TypeImpl allTypesType;
   
   protected void setUp() throws Exception {
     super.setUp();
@@ -139,6 +143,76 @@ public class JsonCasSerializerTest extends TestCase {
     cas.addFsToIndexes(cas.createFS(t3));
     r = serialize();
     assertEquals(getExpected("nameSpaceCollision2.txt"), r);
+    
+    xcs.setPrettyPrint(true);
+    r = serialize();
+    assertEquals(getExpected("nameSpaceCollision2pp.txt"), r);
+    
+  }
+  
+  public void testAllValues() throws Exception {
+    setupTypeSystem("allTypes.xml");
+    setAllValues();
+
+    xcs.setPrettyPrint(true);
+    String r = serialize();
+    assertEquals(getExpected("allValues.txt"), r);
+
+    xcs.setJsonFormat(JsonCasFormat.ByType);
+    r = serialize();
+    assertEquals(getExpected("allValuesByType.txt"), r);
+  }
+  
+  private FeatureStructure setAllValues() {
+    
+    FeatureStructure fs = cas.createFS(allTypesType);
+    cas.addFsToIndexes(fs);
+
+    FeatureStructure fs2 = cas.createFS(allTypesType);
+    
+    fs.setBooleanValue(allTypesType.getFeatureByBaseName("aBoolean"), true);
+    fs.setByteValue   (allTypesType.getFeatureByBaseName("aByte"), (byte) -117);
+    fs.setShortValue  (allTypesType.getFeatureByBaseName("aShort"), (short) -112);
+    fs.setIntValue    (allTypesType.getFeatureByBaseName("aInteger"),  0);
+    fs.setLongValue   (allTypesType.getFeatureByBaseName("aLong"),  1234);
+    fs.setFloatValue  (allTypesType.getFeatureByBaseName("aFloat"),  1.3F);
+    fs.setDoubleValue (allTypesType.getFeatureByBaseName("aDouble"),  2.6);
+    fs.setStringValue (allTypesType.getFeatureByBaseName("aString"),  "some \"String\"");
+    fs.setFeatureValue(allTypesType.getFeatureByBaseName("aFS"),  fs2);
+    
+    FeatureStructure fsAboolean = cas.createBooleanArrayFS(1);
+    FeatureStructure fsAbyte    = cas.createByteArrayFS(2);
+    FeatureStructure fsAshort   = cas.createShortArrayFS(0);
+    FeatureStructure fsAstring  = cas.createStringArrayFS(1);
+    
+    FeatureStructure fsMrAboolean = cas.createBooleanArrayFS(1);
+    FeatureStructure fsMrAbyte    = cas.createByteArrayFS(2);
+    FeatureStructure fsMrAshort   = cas.createShortArrayFS(0);
+    FeatureStructure fsMrAstring  = cas.createStringArrayFS(1);
+    
+    fs.setFeatureValue (allTypesType.getFeatureByBaseName("aArrayBoolean"),  fsAboolean);
+    fs.setFeatureValue (allTypesType.getFeatureByBaseName("aArrayByte"),     fsAbyte);
+    fs.setFeatureValue (allTypesType.getFeatureByBaseName("aArrayShort"),    fsAshort);
+    fs.setFeatureValue (allTypesType.getFeatureByBaseName("aArrayString"),   fsAstring);
+    
+    fs.setFeatureValue (allTypesType.getFeatureByBaseName("aArrayMrBoolean"),  fsMrAboolean);
+    fs.setFeatureValue (allTypesType.getFeatureByBaseName("aArrayMrByte"),     fsMrAbyte);
+    fs.setFeatureValue (allTypesType.getFeatureByBaseName("aArrayMrShort"),    fsMrAshort);
+    fs.setFeatureValue (allTypesType.getFeatureByBaseName("aArrayMrString"),   fsMrAstring);
+
+    
+    FeatureStructure fsLinteger0 = cas.createFS(tsi.getType(CAS.TYPE_NAME_EMPTY_INTEGER_LIST));
+    
+    FeatureStructure fsLstring0  = cas.createFS(tsi.getType(CAS.TYPE_NAME_NON_EMPTY_STRING_LIST));
+    FeatureStructure fsLstring1  = cas.createFS(tsi.getType(CAS.TYPE_NAME_EMPTY_STRING_LIST));
+    fsLstring0.setFeatureValue (tsi.getFeatureByFullName(CAS.TYPE_NAME_NON_EMPTY_STRING_LIST + ":tail"), fsLstring1);
+    
+    FeatureStructure fsLfs0  = cas.createFS(tsi.getType(CAS.TYPE_NAME_NON_EMPTY_FS_LIST));
+    FeatureStructure fsLfs1  = cas.createFS(tsi.getType(CAS.TYPE_NAME_EMPTY_FS_LIST));
+    fsLfs0.setFeatureValue (tsi.getFeatureByFullName(CAS.TYPE_NAME_NON_EMPTY_FS_LIST + ":tail"), fsLfs1);
+    
+    cas.addFsToIndexes(fs);
+    return fs;
   }
   
   
@@ -149,6 +223,7 @@ public class JsonCasSerializerTest extends TestCase {
     tsi = cas.getTypeSystemImpl();
     topType = (TypeImpl) tsi.getTopType();
     annotationType = tsi.annotType; 
+    allTypesType = (TypeImpl) tsi.getType("org.apache.uima.test.AllTypes");
   }
   
   private String getExpected(String expectedResultsName) throws IOException {
@@ -158,7 +233,12 @@ public class JsonCasSerializerTest extends TestCase {
   
   private String serialize() throws SAXException {    
     StringWriter sw = new StringWriter();
+    try {
     xcs.serializeJson(cas, sw);
+    } catch (SAXException e) {
+      System.err.format("Exception occurred. The string produced so far was: %n%s%n", sw.toString());
+      throw e;
+    }
     return sw.toString();
   }
   

@@ -15,10 +15,15 @@
     <vendor/>
   <types>
     <typeDescription>
-      <name>org.apache.uima.test.SubTypeAnnotation</name>
+      <name>org.apache.uima.test.AllTypes</name>
       <description/>
       <supertypeName>uima.tcas.Annotation</supertypeName>
       <features>
+        <featureDescription>
+          <name>aBoolean</name>
+          <description/>
+          <rangeTypeName>uima.cas.Boolean</rangeTypeName>
+        </featureDescription>
         <featureDescription>
           <name>aByte</name>
           <description/>

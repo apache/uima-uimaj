@@ -253,7 +253,9 @@ public class XmiCasSerializer {
   private boolean isWithFeatureRefs = true;
   private boolean isWithExpandedTypeNames = true;
   private boolean isWithViews = true;
+  private boolean isOmitDefaultValues = true;
   private boolean isWithContextOrViews;   // derived from others in top serialize() method
+  
   
   /***********************************************
    *         C O N S T R U C T O R S             *  
@@ -696,13 +698,9 @@ public class XmiCasSerializer {
    * @throws SAXException if there was an IOException (which is wrapped as a SAXException)
    */
   public void serializeJson(CAS cas, JsonContentHandlerJacksonWrapper jch) throws SAXException {
-    try {
       CasDocSerializer cds = new CasDocSerializer(jch, eh, ((CASImpl) cas).getBaseCAS(), null, marker);
       cds.needNameSpaces = false;  
       cds.serialize();
-    } catch (SAXException e) {
-      throw new RuntimeException(e);  // should never happen with JSON serialization
-    }  
   }
   
   /**
@@ -833,6 +831,11 @@ public class XmiCasSerializer {
     return this;
   }
   
+  public XmiCasSerializer setOmitDefaultValues(boolean omitDefaultValues) {
+    isOmitDefaultValues = omitDefaultValues;
+    return this;
+  }
+  
   /**
    * Use an inner class to hold the data for serializing a CAS. Each call to serialize() creates its
    * own instance.
@@ -914,6 +917,8 @@ public class XmiCasSerializer {
     private final boolean isDelta;
     
     private final boolean isJson;
+    
+    private final boolean isOmitDefaultValues;
 
     private final JsonContentHandlerJacksonWrapper jch;
     
@@ -951,12 +956,42 @@ public class XmiCasSerializer {
     
     private final Map<String, SerializedString> serializedStrings;
 
+    private TypeSystemImpl filterTypeSystem;
+
+    private final boolean isFormattedOutput;
+
+    private final boolean isJsonById;
+
+    private final boolean isJsonByType;
+
+    private       boolean isWithContext;
+
+    private final boolean isWithExpandedTypeNames;
+
+    private final boolean isWithFeatureRefs;
+
+    private final boolean isWithSupertypes;
+
+    private final boolean isWithViews;
+
     /***********************************************
      *         C O N S T R U C T O R               *  
      ***********************************************/    
     private CasDocSerializer(ContentHandler ch, ErrorHandler eh, CASImpl cas,
             XmiSerializationSharedData sharedData, MarkerImpl marker) {
       super();
+      // copy outer class values into final inner ones, to keep the outer thread-safe
+      this.filterTypeSystem = XmiCasSerializer.this.filterTypeSystem; 
+      this.isFormattedOutput = XmiCasSerializer.this.isFormattedOutput; 
+      this.isJsonById = XmiCasSerializer.this.isJsonById; 
+      this.isJsonByType = XmiCasSerializer.this.isJsonByType; 
+      this.isOmitDefaultValues = XmiCasSerializer.this.isOmitDefaultValues; 
+      this.isWithContext = XmiCasSerializer.this.isWithContext; 
+      this.isWithExpandedTypeNames = XmiCasSerializer.this.isWithExpandedTypeNames; 
+      this.isWithFeatureRefs = XmiCasSerializer.this.isWithFeatureRefs; 
+      this.isWithSupertypes = XmiCasSerializer.this.isWithSupertypes; 
+      this.isWithViews = XmiCasSerializer.this.isWithViews; 
+
       this.ch = ch;
       this.eh = eh;
       this.cas = cas;
@@ -1011,6 +1046,7 @@ public class XmiCasSerializer {
      * @throws SAXException 
      */
     private void serialize() throws SAXException {
+      try {
       if (isJson) {
         if (isWithContext && !isWithSupertypes && !isWithFeatureRefs && !isWithExpandedTypeNames) {
           isWithContext = false;
@@ -1063,6 +1099,7 @@ public class XmiCasSerializer {
           jch.writeNlJustBeforeNext();       
           jgWriteFieldName(JSON_CAS_FEATURE_STRUCTURES);
         }
+        
         jgWriteStartObject();
         
         if (isJsonById) {
@@ -1108,6 +1145,12 @@ public class XmiCasSerializer {
       } else {
         endElement(XMI_TAG);
         endPrefixMappings();
+      }
+      } catch (SAXException e) {
+        if (isJson) {
+          jgFlush(); // make debugging failures easier by allowing a look at what got done so far
+        }
+        throw e;
       }
     }
 
@@ -1915,6 +1958,8 @@ public class XmiCasSerializer {
         if (isJsonById) {
           jch.writeNlJustBeforeNext();
           jgWriteFieldName(Integer.toString(addr));
+          jgWriteStartObject();
+          jgWriteFieldName(getSerializedTypeName(xmlElementName));
         } else {                                     // fs's as arrays under typeName
           if (typeCode != lastEncodedTypeCode) {
             if (lastEncodedTypeCode != -1) {
@@ -1944,15 +1989,29 @@ public class XmiCasSerializer {
         case TYPE_CLASS_FLOATLIST:
         case TYPE_CLASS_STRINGLIST:
         case TYPE_CLASS_FSLIST: {
+          if (isJson) {
+            if (typeClass == LowLevelCAS.TYPE_CLASS_FS) {
+              if (isJsonById) {
+                jgWriteStartObject();
+              }
+              jsonWriteFeatures(addr, typeCode);
+            } else {   // for Json Lists
+              if (isJsonByType) {
+                jgWriteFieldName(JSON_ARRAY_ELEMENTS_ATTR_NAME);
+              }
+              writeJsonListValues(addr, typeClass);
+            }
+          } else {
 
-          // encode features. this populates the attributes (workAttrs). It also
-          // populates the child elements list with features that are to be encoded
-          // as child elements (currently required for string arrays).
-          List<XmlElementNameAndContents> childElements = encodeFeatures(addr, workAttrs,
-                  (typeClass != LowLevelCAS.TYPE_CLASS_FS));
-          startElement(isJsonByType ? null : xmlElementName, workAttrs, childElements.size());
-          sendElementEvents(childElements);
-          endElement(isJsonByType ? null : xmlElementName);
+            // encode features. this populates the attributes (workAttrs). It also
+            // populates the child elements list with features that are to be encoded
+            // as child elements (currently required for string arrays).
+            List<XmlElementNameAndContents> childElements = encodeFeatures(addr, workAttrs,
+                    (typeClass != LowLevelCAS.TYPE_CLASS_FS));
+            startElement(xmlElementName, workAttrs, childElements.size());
+            sendElementEvents(childElements);
+            endElement(xmlElementName);
+          }
           break;
         }
         case LowLevelCAS.TYPE_CLASS_FSARRAY:
@@ -1963,22 +2022,43 @@ public class XmiCasSerializer {
         case LowLevelCAS.TYPE_CLASS_SHORTARRAY:
         case LowLevelCAS.TYPE_CLASS_LONGARRAY:
         case LowLevelCAS.TYPE_CLASS_DOUBLEARRAY: {
-          workAttrs.addAttribute("", "", "elements", isJson ? "array" : "CDATA", arrayToString(addr, typeClass));
-          startElement(isJsonByType ? null : xmlElementName, workAttrs, 0);
-          endElement(isJsonByType ? null : xmlElementName);
+          if (isJson) {
+            if (isJsonByType) {
+              jgWriteFieldName(JSON_ARRAY_ELEMENTS_ATTR_NAME);
+            }
+            writeJsonArrayValues(addr, typeClass);
+          } else {
+            workAttrs.addAttribute("", "", "elements", "CDATA", arrayToString(addr, typeClass));
+            startElement(xmlElementName, workAttrs, 0);
+            endElement(xmlElementName);
+          }
           break;
         }
         case LowLevelCAS.TYPE_CLASS_STRINGARRAY: {
-          // string arrays are encoded as elements, in case they contain whitespace
-          List<XmlElementNameAndContents> childElements = new ArrayList<XmlElementNameAndContents>();
-          stringArrayToElementList("elements", addr, childElements);
-          startElement(isJsonByType ? null : xmlElementName, workAttrs, childElements.size());
-          sendElementEvents(childElements);
-          endElement(isJsonByType ? null : xmlElementName);
+          if (isJson) {
+            if (isJsonByType) {
+              jgWriteFieldName(JSON_ARRAY_ELEMENTS_ATTR_NAME);
+            }
+            writeJsonArrayValues(addr, typeClass);
+          } else {
+            // string arrays are encoded as elements, in case they contain whitespace
+            List<XmlElementNameAndContents> childElements = new ArrayList<XmlElementNameAndContents>();
+            stringArrayToElementList("elements", addr, childElements);
+            startElement(xmlElementName, workAttrs, childElements.size());
+            sendElementEvents(childElements);
+            endElement(xmlElementName);
+          }
           break;
         }
         default: {
           throw new SAXException("Error classifying FS type.");
+        }
+      }
+    
+      if (isJson) {
+        jgWriteEndObject();
+        if (isJsonById && typeClass == LowLevelCAS.TYPE_CLASS_FS) {  // skip for arrays and lists
+          jgWriteEndObject();
         }
       }
     }
@@ -2033,6 +2113,7 @@ public class XmiCasSerializer {
     /**
      * Generate startElement, characters, and endElement SAX events.
      * Only for StringArray and StringList kinds of things
+     * Only called for XMI (not JSON)
      * 
      * @param elements
      *          a list of XmlElementNameAndContents objects representing the elements to generate
@@ -2040,8 +2121,9 @@ public class XmiCasSerializer {
      */
     private void sendElementEvents(List<? extends XmlElementNameAndContents> elements) throws SAXException {
       Iterator<? extends XmlElementNameAndContents> childIter = elements.iterator();
-      if (isJson && childIter.hasNext()) {
-        jgWriteFieldName(JSON_ARRAY_ELEMENTS_ATTR_NAME);
+      final boolean isNotEmpty = childIter.hasNext();
+      if (isJson && isNotEmpty) {
+        // for non-empty arrays, write [   ....  ]
         jgWriteStartArray();
       }
       while (childIter.hasNext()) {
@@ -2058,8 +2140,101 @@ public class XmiCasSerializer {
           endElement(elem.name);
         }
       }
+      
+      if (isJson && isNotEmpty) {
+        jgWriteEndArray();
+      }
     }
+    
+    private void jsonWriteFeatures(int addr, int typeCode) throws SAXException {
+      final int[] feats = tsi.ll_getAppropriateFeatures(typeCode);
+      
+      for (int i = 0; i < feats.length; i++) {
+        final int featCode = feats[i];
 
+        if (isFiltering) {
+          // skip features that aren't in the target type system
+          String fullFeatName = tsi.ll_getFeatureForCode(featCode).getName();
+          if (filterTypeSystem.getFeatureByFullName(fullFeatName) == null) {
+            continue;
+          }
+        }
+        
+        final String featName = tsi.ll_getFeatureForCode(featCode).getShortName();
+        final int featAddr = addr + cas.getFeatureOffset(feats[i]);
+        final int featValRaw = cas.getHeapValue(featAddr);
+        
+        final int fsClass = classifyType(tsi.range(featCode));
+        
+        switch (fsClass) {
+        case LowLevelCAS.TYPE_CLASS_BYTE:
+        case LowLevelCAS.TYPE_CLASS_SHORT:  
+        case LowLevelCAS.TYPE_CLASS_INT:
+        case LowLevelCAS.TYPE_CLASS_LONG:
+        case LowLevelCAS.TYPE_CLASS_FLOAT:
+        case LowLevelCAS.TYPE_CLASS_DOUBLE:
+        case LowLevelCAS.TYPE_CLASS_BOOLEAN:
+  
+          jgWriteFieldName(getSerializedString(featName));
+          
+          if (fsClass == LowLevelCAS.TYPE_CLASS_BYTE ||
+              fsClass == LowLevelCAS.TYPE_CLASS_SHORT ||
+              fsClass == LowLevelCAS.TYPE_CLASS_INT) {
+            jgWriteNumber(featValRaw);
+          } else if (fsClass == LowLevelCAS.TYPE_CLASS_LONG) {
+            jgWriteNumber(cas.ll_getLongValue(featValRaw));
+          } else if (fsClass == LowLevelCAS.TYPE_CLASS_FLOAT) {
+            jgWriteNumber(CASImpl.int2float(featValRaw));
+          } else if (fsClass == LowLevelCAS.TYPE_CLASS_DOUBLE) {
+            jgWriteNumber(cas.ll_getDoubleValue(addr, featCode));
+          } else {
+            jgWriteBoolean(cas.ll_getBooleanValue(addr, featCode));
+          }
+          break; 
+          
+        // all other fields (String, arrays, lists, fsRefs) can be null and are omitted if so  
+        default: 
+          if (featValRaw != CASImpl.NULL) {
+          
+            jgWriteFieldName(getSerializedString(featName));
+            
+            if (fsClass == LowLevelCAS.TYPE_CLASS_INTARRAY ||
+                fsClass == LowLevelCAS.TYPE_CLASS_FLOATARRAY ||
+                fsClass == LowLevelCAS.TYPE_CLASS_BOOLEANARRAY ||
+                fsClass == LowLevelCAS.TYPE_CLASS_BYTEARRAY ||
+                fsClass == LowLevelCAS.TYPE_CLASS_SHORTARRAY ||
+                fsClass == LowLevelCAS.TYPE_CLASS_LONGARRAY ||
+                fsClass == LowLevelCAS.TYPE_CLASS_DOUBLEARRAY ||
+                fsClass == LowLevelCAS.TYPE_CLASS_STRINGARRAY ||
+                fsClass == LowLevelCAS.TYPE_CLASS_FSARRAY) {
+              
+              if (tsi.ll_getFeatureForCode(featCode).isMultipleReferencesAllowed()) {
+                jgWriteNumber(featValRaw);
+              } else {
+                writeJsonArrayValues(featValRaw, fsClass);
+              }
+              
+            } else if (fsClass == TYPE_CLASS_INTLIST ||
+                       fsClass == TYPE_CLASS_FLOATLIST ||
+                       fsClass == TYPE_CLASS_STRINGLIST ||
+                       fsClass == TYPE_CLASS_FSLIST) {
+
+              if (tsi.ll_getFeatureForCode(featCode).isMultipleReferencesAllowed()) {
+                jgWriteNumber(featValRaw);
+              } else {
+                writeJsonListValues(featValRaw, fsClass);
+              }
+            } else if (fsClass == LowLevelCAS.TYPE_CLASS_STRING) {
+              jgWriteString(cas.getStringForCode(featValRaw));
+            } else {  // is fsRef
+              jgWriteNumber(featValRaw);
+            }
+          }  // end of default case
+          break;
+        }  // end of switch
+      } // end of loop over all features
+    }
+    
     /**
      * Encode features of a regular (non-array) FS.
      * 
@@ -2288,6 +2463,106 @@ public class XmiCasSerializer {
       }
     }
 
+    // writes a set of values in a JSON array
+    // or null if the reference to the UIMA array is actually null
+    // 0 length arrays are written as [] 
+    private void writeJsonArrayValues(int addr, int arrayType) throws SAXException {
+      if (addr == CASImpl.NULL) {
+        jgWriteNull();
+        return;
+      }
+      
+      final int size = cas.ll_getArraySize(addr);
+      if (size > 0 && !arrayAndListFSs.put(addr, addr)) {
+        reportWarning("Warning: multiple references to an array.  Reference identity will not be preserved in XMI.");
+      }
+
+      jgWriteStartArray();
+      int pos = cas.getArrayStartAddress(addr);
+      final int endPos = pos + size;
+      if (arrayType == LowLevelCAS.TYPE_CLASS_FSARRAY) {
+        for (; pos < endPos; pos++) {
+          int heapValue = cas.getHeapValue(pos);
+          if (heapValue != CASImpl.NULL && isFiltering) { // return as null any references to types not in target TS
+            String typeName = tsi.ll_getTypeForCode(cas.getHeapValue(addr)).getName();
+            if (filterTypeSystem.getType(typeName) == null) {
+              heapValue = CASImpl.NULL;
+            }
+          }
+          if (heapValue == CASImpl.NULL) {
+            jgWriteNull();
+          } else {
+            jgWriteNumber(heapValue);
+          }
+        }
+      } else {
+        for (int i = 0; i < size; i++) {
+          if (arrayType == LowLevelCAS.TYPE_CLASS_BOOLEANARRAY) {
+            jgWriteBoolean(cas.ll_getBooleanArrayValue(addr, i));
+          } else if (arrayType == LowLevelCAS.TYPE_CLASS_STRINGARRAY) {
+            jgWriteString(cas.ll_getStringArrayValue(addr, i));
+          } else if (arrayType == LowLevelCAS.TYPE_CLASS_BYTEARRAY) {
+            jgWriteNumber(cas.ll_getByteArrayValue(addr, i));
+          } else if (arrayType == LowLevelCAS.TYPE_CLASS_SHORTARRAY) {
+            jgWriteNumber(cas.ll_getShortArrayValue(addr, i));
+          } else if (arrayType == LowLevelCAS.TYPE_CLASS_INTARRAY) {
+            jgWriteNumber(cas.ll_getIntArrayValue(addr, i));
+          } else if (arrayType == LowLevelCAS.TYPE_CLASS_LONGARRAY) {
+            jgWriteNumber(cas.ll_getLongArrayValue(addr, i));
+          } else if (arrayType == LowLevelCAS.TYPE_CLASS_FLOATARRAY) {
+            jgWriteNumber(cas.ll_getFloatArrayValue(addr, i));
+          } else {
+            jgWriteNumber(cas.ll_getDoubleArrayValue(addr, i));
+          }
+        }
+      }
+      jgWriteEndArray();
+    }
+    
+    // a null ref is written as null
+    // an empty list is written as []
+    private void writeJsonListValues(int curNode, int listType) throws SAXException {
+      if (curNode == CASImpl.NULL) {
+        jgWriteNull();
+        return;
+      }
+      
+      int headFeat = listUtils.getHeadFeatCode(listType);
+      int tailFeat = listUtils.getTailFeatCode(listType);
+      int neListType = listUtils.getNeListType(listType);
+      
+      IntRedBlackTree visited = new IntRedBlackTree();
+      boolean foundCycle = false;
+      
+      jgWriteStartArray();
+      while (curNode != CASImpl.NULL) { 
+       
+        foundCycle |= !visited.put(curNode, curNode);
+        
+        final int curNodeType = cas.getHeapValue(curNode);
+        if (curNodeType != neListType) {
+          break;  // would be the end element
+        }
+        
+        final int val = cas.getHeapValue(curNode + cas.getFeatureOffset(headFeat));
+
+        if (curNodeType == listUtils.neStringListType) {
+          jgWriteString(cas.getStringForCode(val));
+        } else {
+          jgWriteNumber((curNodeType == listUtils.neFloatListType) ? CASImpl.int2float(val) : val);
+        }
+
+        curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(tailFeat));
+      }
+      jgWriteEndArray();
+    
+      if (foundCycle) {
+        // next will issue error message with the partial array
+        listUtils.anyListToStringArray(curNode, null);
+      }
+    }
+    
+    // only called for XMI.  For Json, see writeJsonArrayValues
     private String arrayToString(int addr, int arrayType) throws SAXException {
       if (addr == CASImpl.NULL) {
         return null;
@@ -2424,7 +2699,11 @@ public class XmiCasSerializer {
         String v = array[j];
         if (isJson) {
           if (arrayType == TYPE_CLASS_STRINGLIST) {
-            buf.append('"').append(v).append('"');
+            if (v == null) {
+              buf.append("null");
+            } else {
+              buf.append('"').append(v).append('"');
+            }
           } else if ("NaN".equals(v) ||
                      "Infinity".equals(v) ||
                      "-Infinity".equals(v)) {
@@ -2684,7 +2963,11 @@ public class XmiCasSerializer {
 
     private void jgWriteString(String s) throws SAXException {
       try {
-        jg.writeString(s);
+        if (s == null) {
+          jg.writeNull();
+        } else {
+          jg.writeString(s);
+        }
       } catch (IOException e) {
         throw new SAXException(e);
       }
@@ -2705,7 +2988,39 @@ public class XmiCasSerializer {
         throw new SAXException(e);
       }
     }
-    
+ 
+    private void jgWriteNumber(long n) throws SAXException {
+      try {
+        jg.writeNumber(n);
+      } catch (IOException e) {
+        throw new SAXException(e);
+      }
+    }
+
+    private void jgWriteNumber(float n) throws SAXException {
+      try {
+        jg.writeNumber(n);
+      } catch (IOException e) {
+        throw new SAXException(e);
+      }
+    }
+
+    private void jgWriteNumber(double n) throws SAXException {
+      try {
+        jg.writeNumber(n);
+      } catch (IOException e) {
+        throw new SAXException(e);
+      }
+    }
+
+    private void jgWriteNumber(byte n) throws SAXException {
+      try {
+        jg.writeNumber(n);
+      } catch (IOException e) {
+        throw new SAXException(e);
+      }
+    }
+
     private void jgWriteArrayFieldStart(String fieldName) throws SAXException {
       try {
         jg.writeArrayFieldStart(fieldName);
@@ -2730,6 +3045,22 @@ public class XmiCasSerializer {
       }
     }
     
+    private void jgWriteNull() throws SAXException {
+      try {
+        jg.writeNull();
+      } catch (IOException e) {
+        throw new SAXException(e);
+      }
+    }
+    
+    private void jgWriteBoolean(boolean state) throws SAXException {
+      try {
+        jg.writeBoolean(state);
+      } catch (IOException e) {
+        throw new SAXException(e);
+      }
+    }
+
     private void jgFlush() throws SAXException {
       try {
         jg.flush();
