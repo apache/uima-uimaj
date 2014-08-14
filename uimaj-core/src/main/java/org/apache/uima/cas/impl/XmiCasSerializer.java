@@ -2174,20 +2174,38 @@ public class XmiCasSerializer {
         case LowLevelCAS.TYPE_CLASS_FLOAT:
         case LowLevelCAS.TYPE_CLASS_DOUBLE:
         case LowLevelCAS.TYPE_CLASS_BOOLEAN:
-  
-          jgWriteFieldName(getSerializedString(featName));
-          
+            
           if (fsClass == LowLevelCAS.TYPE_CLASS_BYTE ||
               fsClass == LowLevelCAS.TYPE_CLASS_SHORT ||
               fsClass == LowLevelCAS.TYPE_CLASS_INT) {
+
+            if (featValRaw == 0 && isOmitDefaultValues) continue;
+            jgWriteFieldName(getSerializedString(featName));
             jgWriteNumber(featValRaw);
+         
           } else if (fsClass == LowLevelCAS.TYPE_CLASS_LONG) {
-            jgWriteNumber(cas.ll_getLongValue(featValRaw));
+            
+            final long longVal = cas.ll_getLongValue(featValRaw);
+            if (longVal == 0L && isOmitDefaultValues) continue;
+            jgWriteFieldName(getSerializedString(featName));
+            jgWriteNumber(longVal);
+         
           } else if (fsClass == LowLevelCAS.TYPE_CLASS_FLOAT) {
-            jgWriteNumber(CASImpl.int2float(featValRaw));
+            
+            final float floatVal = CASImpl.int2float(featValRaw);
+            if (floatVal == 0.F && isOmitDefaultValues) continue;
+            jgWriteFieldName(getSerializedString(featName));
+            jgWriteNumber(floatVal);
+         
           } else if (fsClass == LowLevelCAS.TYPE_CLASS_DOUBLE) {
-            jgWriteNumber(cas.ll_getDoubleValue(addr, featCode));
+            
+            final double doubleVal = cas.ll_getDoubleValue(addr, featCode);
+            if (doubleVal == 0L && isOmitDefaultValues) continue;
+            jgWriteFieldName(getSerializedString(featName));
+            jgWriteNumber(doubleVal);
+
           } else {
+            jgWriteFieldName(getSerializedString(featName));
             jgWriteBoolean(cas.ll_getBooleanValue(addr, featCode));
           }
           break; 
