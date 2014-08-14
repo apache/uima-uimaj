@@ -1,0 +1,31 @@
+{"@context" : {
+    "AllTypes" : {
+      "@id" : "org.apache.uima.test.AllTypes", 
+      "_featureRefs" : ["sofa",  "aFS",  "aArrayMrBoolean",  "aArrayMrByte",  "aArrayMrShort",  "aArrayMrString",  "aListMrInteger",  "aListMrString",  "aListFs",  "aListMrFs" ], 
+      "_superTypes" : ["uima.tcas.Annotation",  "uima.cas.AnnotationBase",  "uima.cas.TOP" ] }, 
+    "BooleanArray" : {
+      "@id" : "uima.cas.BooleanArray", 
+      "_superTypes" : ["uima.cas.FSArray",  "uima.cas.ArrayBase",  "uima.cas.TOP" ] }, 
+    "ByteArray" : {
+      "@id" : "uima.cas.ByteArray", 
+      "_superTypes" : ["uima.cas.FSArray" ] }, 
+    "ShortArray" : {
+      "@id" : "uima.cas.ShortArray", 
+      "_superTypes" : ["uima.cas.FSArray" ] }, 
+    "Sofa" : {
+      "@id" : "uima.cas.Sofa", 
+      "_featureRefs" : ["sofaArray" ], 
+      "_superTypes" : ["uima.cas.TOP" ] }, 
+    "StringArray" : {
+      "@id" : "uima.cas.StringArray", 
+      "_superTypes" : ["uima.cas.FSArray" ] } }, 
+  "_cas_feature_structures" : {
+    "28" : {"Sofa" : {"sofaNum" : 1,  "sofaID" : "_InitialView" } }, 
+    "1" : {"AllTypes" : {"sofa" : 28,  "begin" : 0,  "end" : 0,  "aBoolean" : true,  "aByte" : -117,  "aShort" : -112,  "aInteger" : 0,  "aLong" : 1234,  "aFloat" : 1.3,  "aDouble" : 2.6,  "aString" : "some \"String\"",  "aFS" : 35,  "aArrayBoolean" : [false ],  "aArrayMrBoolean" : 74,  "aArrayMrByte" : 77,  "aArrayByte" : [0,  0 ],  "aArrayShort" : [ ],  "aArrayMrShort" : 80,  "aArrayString" : [null ],  "aArrayMrString" : 83 } }, 
+    "83" : {"StringArray" : [null ] }, 
+    "80" : {"ShortArray" : [ ] }, 
+    "77" : {"ByteArray" : [0,  0 ] }, 
+    "74" : {"BooleanArray" : [false ] }, 
+    "35" : {"AllTypes" : {"sofa" : 28,  "begin" : 0,  "end" : 0,  "aBoolean" : false,  "aByte" : 0,  "aShort" : 0,  "aInteger" : 0,  "aLong" : 0,  "aFloat" : 0.0,  "aDouble" : 0.0 } } }, 
+  "_cas_views" : {
+    "28" : [1 ] } }

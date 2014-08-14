@@ -30,6 +30,7 @@ import org.apache.uima.internal.util.XmlAttribute;
 import org.apache.uima.internal.util.rb_trees.IntRedBlackTree;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
+import org.omg.CosNaming.IstringHelper;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -50,13 +51,14 @@ public class ListUtils {
 
   private int fsListType;
 
-  private int neIntListType;
+  // package private to allow ref from XmiCasSerializer
+   int neIntListType;
 
-  private int neFloatListType;
+   int neFloatListType;
 
-  private int neStringListType;
+   int neStringListType;
 
-  private int neFsListType;
+   int neFsListType;
 
   private int eIntListType;
 
@@ -124,6 +126,33 @@ public class ListUtils {
     this.stringTailFeat = ts.ll_getCodeForFeatureName(CAS.FEATURE_FULL_NAME_STRING_LIST_TAIL);
     this.fsTailFeat = ts.ll_getCodeForFeatureName(CAS.FEATURE_FULL_NAME_FS_LIST_TAIL);
   }
+  
+  public int getHeadFeatCode(int type) {
+    return 
+        (isIntListType(type))    ? intHeadFeat :
+        (isFloatListType(type))  ? floatHeadFeat :
+        (isStringListType(type)) ? stringHeadFeat :
+        (isFsListType(type))     ? fsHeadFeat :
+          -1;    
+  }
+
+  public int getTailFeatCode(int type) {
+    return 
+        (isIntListType(type))    ? intTailFeat :
+        (isFloatListType(type))  ? floatTailFeat :
+        (isStringListType(type)) ? stringTailFeat :
+        (isFsListType(type))     ? fsTailFeat :
+          -1;    
+  }
+  
+  public int getNeListType(int type) {
+    return 
+        (isIntListType(type))    ? neIntListType :
+        (isFloatListType(type))  ? neFloatListType :
+        (isStringListType(type)) ? neStringListType :
+        (isFsListType(type))     ? neFsListType :
+          -1;
+  }
 
   public boolean isIntListType(int type) {
     return (type == this.intListType || type == this.neIntListType || type == this.eIntListType);
@@ -147,21 +176,8 @@ public class ListUtils {
   }
 
   public int getLength(int type, int addr) {
-    int neListType = -1;
-    int tailFeat = -1;
-    if (isIntListType(type)) {
-      neListType = neIntListType;
-      tailFeat = intTailFeat;
-    } else if ( isFloatListType(type)) {
-      neListType = neFloatListType;
-      tailFeat = floatTailFeat;
-    } else if (isStringListType(type)) {
-        neListType = neStringListType;
-      tailFeat = stringTailFeat;
-    } else if (isFsListType(type)) {
-      neListType = neFsListType;
-      tailFeat = fsTailFeat;
-    }
+    int neListType = getNeListType(type);
+    int tailFeat = getTailFeatCode(type);
     return getLength(type, addr, neListType, tailFeat);    
   }
   
@@ -181,29 +197,12 @@ public class ListUtils {
 	}
 	return length;
   }
- 
+   
   public String[] anyListToStringArray(int curNode, XmiSerializationSharedData sharedData) throws SAXException {
     final int type = cas.getHeapValue(curNode);
-    int headFeat = -1, tailFeat = -1, neListType = -1;
-    
-    if (isIntListType(type)) {
-      neListType = neIntListType;
-      headFeat = intHeadFeat;
-      tailFeat = intTailFeat;
-    } else if ( isFloatListType(type)) {
-      neListType = neFloatListType;
-      headFeat = floatHeadFeat;
-      tailFeat = floatTailFeat;
-    } else if (isStringListType(type)) {
-      neListType = neStringListType;
-      headFeat = stringHeadFeat;
-      tailFeat = stringTailFeat;
-    } else if (isFsListType(type)) {
-      neListType = neFsListType;
-      headFeat = fsHeadFeat;
-      tailFeat = fsTailFeat;
-    }
-
+    int headFeat = getHeadFeatCode(type);
+    int tailFeat = getTailFeatCode(type);
+    int neListType = getNeListType(type);
 
     int length = getLength(type, curNode, neListType, tailFeat);
     String[] array = new String[length];
@@ -243,22 +242,20 @@ public class ListUtils {
           }
         }
       }
-      curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(intTailFeat));
+      curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(tailFeat));
     }
     if (foundCycle) {
-      reportWarning("Found a cycle in an IntegerList.  List truncated to "
+      reportWarning("Found a cycle in a UIMA List; list truncated to "
               + Arrays.asList(array).toString());
     }
     return array;
   }
 
+  //called for enquing 
   public int[] fsListToAddressArray(int curNode) throws SAXException {
     final int type = cas.getHeapValue(curNode);
-    int headFeat = fsHeadFeat;
-    int tailFeat = fsTailFeat;
-    int neListType = neFsListType;
     
-    int length = getLength(type, curNode, neListType, tailFeat);
+    int length = getLength(type, curNode, neFsListType, fsTailFeat);
     
     int[] array = new int[length];
 
