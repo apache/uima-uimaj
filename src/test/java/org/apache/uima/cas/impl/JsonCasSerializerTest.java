@@ -86,13 +86,13 @@ public class JsonCasSerializerTest extends TestCase {
     cas = (CASImpl) cas.createView("basicView");
     cas.addFsToIndexes(cas.createFS(annotationType));
     r = serialize();
-    assertEquals(getExpected("topWithNamedView.txt"), r);
+    assertEquals(getExpected("topWithNamedViewOmits.txt"), r);
     cas.reset();
     
     cas = (CASImpl) cas.getCurrentView(); // default view
     cas.addFsToIndexes(cas.createFS(annotationType));
     r = serialize();
-    assertEquals(getExpected("topWithDefaultView.txt"), r);
+    assertEquals(getExpected("topWithDefaultViewOmits.txt"), r);
     
     cas.reset();
     xcs.setJsonContext(JsonContextFormat.omitContext);
@@ -138,13 +138,25 @@ public class JsonCasSerializerTest extends TestCase {
     cas.addFsToIndexes(cas.createFS(t2));
     
     String r = serialize();
+    assertEquals(getExpected("nameSpaceCollisionOmits.txt"), r);
+    
+    xcs.setOmitDefaultValues(false);
+    r = serialize();
     assertEquals(getExpected("nameSpaceCollision.txt"), r);
     
     cas.addFsToIndexes(cas.createFS(t3));
     r = serialize();
     assertEquals(getExpected("nameSpaceCollision2.txt"), r);
-    
+
+    xcs.setOmitDefaultValues(true);
+    r = serialize();
+    assertEquals(getExpected("nameSpaceCollision2Omits.txt"), r);
+
     xcs.setPrettyPrint(true);
+    r = serialize();
+    assertEquals(getExpected("nameSpaceCollision2ppOmits.txt"), r);
+
+    xcs.setOmitDefaultValues(false);
     r = serialize();
     assertEquals(getExpected("nameSpaceCollision2pp.txt"), r);
     
@@ -156,11 +168,20 @@ public class JsonCasSerializerTest extends TestCase {
 
     xcs.setPrettyPrint(true);
     String r = serialize();
-    assertEquals(getExpected("allValues.txt"), r);
+    assertEquals(getExpected("allValuesOmits.txt"), r);
 
     xcs.setJsonFormat(JsonCasFormat.ByType);
     r = serialize();
+    assertEquals(getExpected("allValuesByTypeOmits.txt"), r);
+    
+    xcs.setOmitDefaultValues(false);
+    r = serialize();
     assertEquals(getExpected("allValuesByType.txt"), r);
+    
+    xcs.setJsonFormat(JsonCasFormat.ById);
+    r = serialize();
+    assertEquals(getExpected("allValues.txt"), r);
+    
   }
   
   private FeatureStructure setAllValues() {
