@@ -1,6 +1,7 @@
 package org.apache.uima.cas.impl;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 
@@ -9,6 +10,7 @@ import junit.framework.TestCase;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.Marker;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.XmiCasSerializer.JsonCasFormat;
 import org.apache.uima.cas.impl.XmiCasSerializer.JsonContextFormat;
@@ -23,6 +25,11 @@ import org.apache.uima.util.XMLParser;
 import org.xml.sax.SAXException;
 
 public class JsonCasSerializerTest extends TestCase {
+  
+  private static final boolean GENERATE_EXPECTED = true;
+//  private static final String generateDir = "src/test/resources/CasSerialization/expected/";
+  private static final String generateDir = "src/test/resources/CasSerialization/newExpected/";
+
 
   private XMLParser parser = UIMAFramework.getXMLParser();
   private TypeSystemDescription tsd;
@@ -63,7 +70,6 @@ public class JsonCasSerializerTest extends TestCase {
    *             (without both context and views), byId/byType, errorHandler/noErrorHandler,
    *             JsonFactory/noJsonFactory, 
    *             typeFiltering
-   * @throws SAXException 
    *     @context: expanded-names, supertypes, fsrefs
    *   configuring using Jackson: JsonFactory, JsonGenerator
    *   views: 0, 1 or 2 views
@@ -80,51 +86,51 @@ public class JsonCasSerializerTest extends TestCase {
     setupTypeSystem("nameSpaceNeeded.xml");
     cas.addFsToIndexes(cas.createFS(topType));
     String r = serialize();
-    assertEquals(getExpected("top.txt"), r);
+    assertEquals(getExpected("top.txt", r), r);
     cas.reset();
     
     cas = (CASImpl) cas.createView("basicView");
     cas.addFsToIndexes(cas.createFS(annotationType));
     r = serialize();
-    assertEquals(getExpected("topWithNamedViewOmits.txt"), r);
+    assertEquals(getExpected("topWithNamedViewOmits.txt", r), r);
     cas.reset();
     
     cas = (CASImpl) cas.getCurrentView(); // default view
     cas.addFsToIndexes(cas.createFS(annotationType));
     r = serialize();
-    assertEquals(getExpected("topWithDefaultViewOmits.txt"), r);
+    assertEquals(getExpected("topWithDefaultViewOmits.txt", r), r);
     
     cas.reset();
     xcs.setJsonContext(JsonContextFormat.omitContext);
     cas.addFsToIndexes(cas.createFS(topType));
     r = serialize();
-    assertEquals(getExpected("topNoContext.txt"), r);
+    assertEquals(getExpected("topNoContext.txt", r), r);
     
     cas.reset();
     xcs.setJsonContext(JsonContextFormat.omitContext);
     xcs.setCasViews(false);
     cas.addFsToIndexes(cas.createFS(topType));
     r = serialize();
-    assertEquals(getExpected("topNoContextNoViews.txt"), r);
+    assertEquals(getExpected("topNoContextNoViews.txt", r), r);
     
     cas.reset();
     xcs.setJsonContext(JsonContextFormat.includeExpandedTypeNames);
     cas.addFsToIndexes(cas.createFS(topType));
     r = serialize();
-    assertEquals(getExpected("topExpandedNamesNoViews.txt"), r);
+    assertEquals(getExpected("topExpandedNamesNoViews.txt", r), r);
 
     cas.reset();
     xcs.setJsonContext(JsonContextFormat.omitExpandedTypeNames);
     cas.addFsToIndexes(cas.createFS(topType));
     r = serialize();
-    assertEquals(getExpected("topNoContextNoViews.txt"), r);
+    assertEquals(getExpected("topNoContextNoViews.txt", r), r);
 
     cas.reset();
     xcs.setJsonContext(JsonContextFormat.includeFeatureRefs);
     xcs.setJsonContext(JsonContextFormat.includeSuperTypes);
     cas.addFsToIndexes(cas.createFS(topType));
     r = serialize();
-    assertEquals(getExpected("topFeatRefsSupertypesNoViews.txt"), r);
+    assertEquals(getExpected("topFeatRefsSupertypesNoViews.txt", r), r);
   }
   
   public void testNameSpaceCollision() throws Exception {
@@ -138,80 +144,110 @@ public class JsonCasSerializerTest extends TestCase {
     cas.addFsToIndexes(cas.createFS(t2));
     
     String r = serialize();
-    assertEquals(getExpected("nameSpaceCollisionOmits.txt"), r);
+    assertEquals(getExpected("nameSpaceCollisionOmits.txt", r), r);
     
     xcs.setOmitDefaultValues(false);
     r = serialize();
-    assertEquals(getExpected("nameSpaceCollision.txt"), r);
+    assertEquals(getExpected("nameSpaceCollision.txt", r), r);
     
     cas.addFsToIndexes(cas.createFS(t3));
     r = serialize();
-    assertEquals(getExpected("nameSpaceCollision2.txt"), r);
+    assertEquals(getExpected("nameSpaceCollision2.txt", r), r);
 
     xcs.setOmitDefaultValues(true);
     r = serialize();
-    assertEquals(getExpected("nameSpaceCollision2Omits.txt"), r);
+    assertEquals(getExpected("nameSpaceCollision2Omits.txt", r), r);
 
     xcs.setPrettyPrint(true);
     r = serialize();
-    assertEquals(getExpected("nameSpaceCollision2ppOmits.txt"), r);
+    assertEquals(getExpected("nameSpaceCollision2ppOmits.txt", r), r);
 
     xcs.setOmitDefaultValues(false);
     r = serialize();
-    assertEquals(getExpected("nameSpaceCollision2pp.txt"), r);
+    assertEquals(getExpected("nameSpaceCollision2pp.txt", r), r);
     
   }
   
   public void testAllValues() throws Exception {
     setupTypeSystem("allTypes.xml");
-    setAllValues();
+    setAllValues(0);
 
     xcs.setPrettyPrint(true);
     String r = serialize();
-    assertEquals(getExpected("allValuesOmits.txt"), r);
+    assertEquals(getExpected("allValuesOmits.txt", r), r);
 
-    xcs.setJsonFormat(JsonCasFormat.ByType);
+    xcs.setJsonCasFormat(JsonCasFormat.BY_TYPE_BY_ID);
     r = serialize();
-    assertEquals(getExpected("allValuesByTypeOmits.txt"), r);
+    assertEquals(getExpected("allValuesByTypeOmits.txt", r), r);
     
     xcs.setOmitDefaultValues(false);
     r = serialize();
-    assertEquals(getExpected("allValuesByType.txt"), r);
+    assertEquals(getExpected("allValuesByType.txt", r), r);
     
-    xcs.setJsonFormat(JsonCasFormat.ById);
+    xcs.setJsonCasFormat(JsonCasFormat.BY_ID_EMBED_TYPE);
     r = serialize();
-    assertEquals(getExpected("allValues.txt"), r);
+    assertEquals(getExpected("allValues.txt", r), r);
     
   }
   
-  private FeatureStructure setAllValues() {
+  public void testMultipleViews() throws Exception {
+    setupTypeSystem("allTypes.xml");
+    setAllValues(1);
+    cas = (CASImpl) cas.createView("View2");
+    setAllValues(0);
+
+    xcs.setPrettyPrint(true);
+    String r = serialize();
+    assertEquals(getExpected("multipleViews.txt", r), r);
+        
+  }
+  
+  public void testDelta() throws Exception {
+    setupTypeSystem("allTypes.xml");
     
+    setAllValues(0);
+    Marker marker = cas.createMarker();
+    setAllValues(1);
+    
+    xcs.setPrettyPrint(true);
+    String r = serialize();
+    assertEquals(getExpected("delta.txt", r), r);
+    
+    xcs.setDeltaCas(marker);
+    r = serialize();
+    assertEquals(getExpected("delta2.txt", r), r);
+    
+  }
+  
+  private FeatureStructure setAllValues(int v) {
+    boolean s1 = v == 0;
+    boolean s2 = v == 1;
     FeatureStructure fs = cas.createFS(allTypesType);
     cas.addFsToIndexes(fs);
 
     FeatureStructure fs2 = cas.createFS(allTypesType);
     
-    fs.setBooleanValue(allTypesType.getFeatureByBaseName("aBoolean"), true);
-    fs.setByteValue   (allTypesType.getFeatureByBaseName("aByte"), (byte) -117);
-    fs.setShortValue  (allTypesType.getFeatureByBaseName("aShort"), (short) -112);
-    fs.setIntValue    (allTypesType.getFeatureByBaseName("aInteger"),  0);
-    fs.setLongValue   (allTypesType.getFeatureByBaseName("aLong"),  1234);
-    fs.setFloatValue  (allTypesType.getFeatureByBaseName("aFloat"),  1.3F);
-    fs.setDoubleValue (allTypesType.getFeatureByBaseName("aDouble"),  2.6);
+    fs.setBooleanValue(allTypesType.getFeatureByBaseName("aBoolean"), s1 ? true : false);
+    fs.setByteValue   (allTypesType.getFeatureByBaseName("aByte"), s1 ? (byte) -117 : (byte) 0);
+    fs.setShortValue  (allTypesType.getFeatureByBaseName("aShort"), s1 ? (short) -112 : (short) 0);
+    fs.setIntValue    (allTypesType.getFeatureByBaseName("aInteger"), s1 ? 0 : 1);
+    fs.setLongValue   (allTypesType.getFeatureByBaseName("aLong"), s2 ? 4321 : 1234);
+    fs.setFloatValue  (allTypesType.getFeatureByBaseName("aFloat"), s1 ?  1.3F : Float.NaN);
+    fs.setDoubleValue (allTypesType.getFeatureByBaseName("aDouble"), s2 ? Float.NEGATIVE_INFINITY : 2.6);
     fs.setStringValue (allTypesType.getFeatureByBaseName("aString"),  "some \"String\"");
     fs.setFeatureValue(allTypesType.getFeatureByBaseName("aFS"),  fs2);
     
-    FeatureStructure fsAboolean = cas.createBooleanArrayFS(1);
-    FeatureStructure fsAbyte    = cas.createByteArrayFS(2);
-    FeatureStructure fsAshort   = cas.createShortArrayFS(0);
-    FeatureStructure fsAstring  = cas.createStringArrayFS(1);
+    FeatureStructure fsAboolean = cas.createBooleanArrayFS(s1 ? 1 : 0);
+    FeatureStructure fsAbyte    = cas.createByteArrayFS(s1 ? 2 : 0);
+    FeatureStructure fsAshort   = cas.createShortArrayFS(s2 ? 2 : 0);
+    FeatureStructure fsAstring  = cas.createStringArrayFS(s1 ? 1 : 0);
     
     FeatureStructure fsMrAboolean = cas.createBooleanArrayFS(1);
     FeatureStructure fsMrAbyte    = cas.createByteArrayFS(2);
     FeatureStructure fsMrAshort   = cas.createShortArrayFS(0);
     FeatureStructure fsMrAstring  = cas.createStringArrayFS(1);
     
-    fs.setFeatureValue (allTypesType.getFeatureByBaseName("aArrayBoolean"),  fsAboolean);
+    fs.setFeatureValue (allTypesType.getFeatureByBaseName("aArrayBoolean"), fsAboolean);
     fs.setFeatureValue (allTypesType.getFeatureByBaseName("aArrayByte"),     fsAbyte);
     fs.setFeatureValue (allTypesType.getFeatureByBaseName("aArrayShort"),    fsAshort);
     fs.setFeatureValue (allTypesType.getFeatureByBaseName("aArrayString"),   fsAstring);
@@ -226,16 +262,22 @@ public class JsonCasSerializerTest extends TestCase {
     
     FeatureStructure fsLstring0  = cas.createFS(tsi.getType(CAS.TYPE_NAME_NON_EMPTY_STRING_LIST));
     FeatureStructure fsLstring1  = cas.createFS(tsi.getType(CAS.TYPE_NAME_EMPTY_STRING_LIST));
+    fsLstring0.setStringValue (tsi.getFeatureByFullName(CAS.TYPE_NAME_NON_EMPTY_STRING_LIST + ":head"), "testStr");
     fsLstring0.setFeatureValue (tsi.getFeatureByFullName(CAS.TYPE_NAME_NON_EMPTY_STRING_LIST + ":tail"), fsLstring1);
+    
     
     FeatureStructure fsLfs0  = cas.createFS(tsi.getType(CAS.TYPE_NAME_NON_EMPTY_FS_LIST));
     FeatureStructure fsLfs1  = cas.createFS(tsi.getType(CAS.TYPE_NAME_EMPTY_FS_LIST));
     fsLfs0.setFeatureValue (tsi.getFeatureByFullName(CAS.TYPE_NAME_NON_EMPTY_FS_LIST + ":tail"), fsLfs1);
     
+    fs.setFeatureValue (allTypesType.getFeatureByBaseName("aListInteger"), fsLinteger0);
+    fs.setFeatureValue (allTypesType.getFeatureByBaseName("aListString"), fsLstring0);
+    fs.setFeatureValue (allTypesType.getFeatureByBaseName("aListFs"), fsLfs0);
+    
     cas.addFsToIndexes(fs);
     return fs;
   }
-  
+   
   
   private void setupTypeSystem(String tsdName) throws InvalidXMLException, IOException, ResourceInitializationException {
     File tsdFile = JUnitExtension.getFile("CasSerialization/desc/" + tsdName);
@@ -247,16 +289,26 @@ public class JsonCasSerializerTest extends TestCase {
     allTypesType = (TypeImpl) tsi.getType("org.apache.uima.test.AllTypes");
   }
   
-  private String getExpected(String expectedResultsName) throws IOException {
+  private String getExpected(String expectedResultsName, String r) throws IOException {
+    if (GENERATE_EXPECTED) {
+      File d = new File (generateDir);
+      d.mkdirs();
+      File file = new File (generateDir + expectedResultsName);
+      FileWriter writer = new FileWriter(file);
+      writer.write(r);
+      writer.close();
+      return r;
+    } else {
     File expectedResultsFile = JUnitExtension.getFile("CasSerialization/expected/" + expectedResultsName);
     return expectedResults = FileUtils.file2String(expectedResultsFile, "utf-8");
+    }
   }
   
-  private String serialize() throws SAXException {    
+  private String serialize() throws Exception {    
     StringWriter sw = new StringWriter();
     try {
     xcs.serializeJson(cas, sw);
-    } catch (SAXException e) {
+    } catch (Exception e) {
       System.err.format("Exception occurred. The string produced so far was: %n%s%n", sw.toString());
       throw e;
     }
