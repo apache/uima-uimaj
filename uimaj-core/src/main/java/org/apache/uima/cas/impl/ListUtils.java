@@ -30,7 +30,6 @@ import org.apache.uima.internal.util.XmlAttribute;
 import org.apache.uima.internal.util.rb_trees.IntRedBlackTree;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
-import org.omg.CosNaming.IstringHelper;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -274,7 +273,7 @@ public class ListUtils {
     int first = cas.ll_createFS(eIntListType);
     ListIterator<String> iter = stringValues.listIterator(stringValues.size());
     while (iter.hasPrevious()) {
-      int value = Integer.parseInt((String) iter.previous());
+      int value = Integer.parseInt(iter.previous());
       int node = cas.ll_createFS(neIntListType);
       cas.setFeatureValue(node, intHeadFeat, value);
       cas.setFeatureValue(node, intTailFeat, first);
@@ -287,7 +286,7 @@ public class ListUtils {
     int first = cas.ll_createFS(eFloatListType);
     ListIterator<String> iter = stringValues.listIterator(stringValues.size());
     while (iter.hasPrevious()) {
-      float value = Float.parseFloat((String) iter.previous());
+      float value = Float.parseFloat(iter.previous());
       int node = cas.ll_createFS(neFloatListType);
       cas.setFeatureValue(node, floatHeadFeat, CASImpl.float2int(value));
       cas.setFeatureValue(node, floatTailFeat, first);
@@ -313,7 +312,7 @@ public class ListUtils {
     int first = cas.ll_createFS(eFsListType);
     ListIterator<String> iter = stringValues.listIterator(stringValues.size());
     while (iter.hasPrevious()) {
-      int value = Integer.parseInt((String) iter.previous());
+      int value = Integer.parseInt(iter.previous());
       int node = cas.ll_createFS(neFsListType);
       fsAddresses.add(node);
       cas.setFeatureValue(node, fsHeadFeat, value);
@@ -352,7 +351,7 @@ public class ListUtils {
   	  	//check that first is eintlisttype
   	  	while (i < stringValues.size()) {
   	  	  int newNode = cas.ll_createFS(neIntListType);
-  	  	  int value = Integer.parseInt((String) stringValues.get(i++));
+  	  	  int value = Integer.parseInt(stringValues.get(i++));
   	      cas.setFeatureValue(newNode,intHeadFeat, value);
   	      cas.setFeatureValue(newNode, intTailFeat, emptyListFs);
   	      cas.setFeatureValue(prevNode, intTailFeat, newNode);
@@ -365,7 +364,7 @@ public class ListUtils {
   		  	           foundCycle = true;
   		  	           break;
   		  }
-  		  float value = Integer.parseInt((String) stringValues.get(i++));
+  		  float value = Integer.parseInt(stringValues.get(i++));
   		  cas.setFeatureValue(curNode,intHeadFeat, value);
   		  curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(intTailFeat));
   		}	
@@ -387,7 +386,7 @@ public class ListUtils {
            foundCycle = true;
            break;
         }
-        int value = Integer.parseInt((String) stringValues.get(i++));
+        int value = Integer.parseInt(stringValues.get(i++));
         cas.setFeatureValue(curNode,intHeadFeat, value );
         curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(intTailFeat));
       }
@@ -427,7 +426,7 @@ public class ListUtils {
 	  	//check that first is efloatlisttype
 	  	while (i < stringValues.size()) {
 	  	  int newNode = cas.ll_createFS(neFloatListType);
-	  	  float value = Float.parseFloat((String) stringValues.get(i++));
+	  	  float value = Float.parseFloat(stringValues.get(i++));
 	      cas.setFeatureValue(newNode,floatHeadFeat, value);
 	      cas.setFeatureValue(newNode, floatTailFeat, emptyListFs);
 	      cas.setFeatureValue(prevNode, floatTailFeat, newNode);
@@ -440,7 +439,7 @@ public class ListUtils {
 		  	           foundCycle = true;
 		  	           break;
 		  }
-		  float value = Float.parseFloat((String) stringValues.get(i++));
+		  float value = Float.parseFloat(stringValues.get(i++));
 		  cas.setFeatureValue(curNode,floatHeadFeat, value);
 		  curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(floatTailFeat));
 		}	
@@ -462,7 +461,7 @@ public class ListUtils {
            foundCycle = true;
            break;
         }
-        float value = Float.parseFloat((String) stringValues.get(i++));
+        float value = Float.parseFloat(stringValues.get(i++));
         cas.setFeatureValue(curNode,floatHeadFeat,  CASImpl.float2int(value));
         curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(floatTailFeat));
       }
@@ -504,7 +503,7 @@ public class ListUtils {
   	    //check that first is estringlisttype
   	    while (i < stringValues.size()) {
   	      int newNode = cas.ll_createFS(neFsListType);
-  	      int value = Integer.parseInt((String) stringValues.get(i++));
+  	      int value = Integer.parseInt(stringValues.get(i++));
           cas.setFeatureValue(newNode,fsHeadFeat, value);
           fsAddresses.add(newNode);
           cas.setFeatureValue(newNode, fsTailFeat, emptyListFs);
@@ -518,7 +517,7 @@ public class ListUtils {
    		    foundCycle = true;
    		    break;
    		  }
-   	      int value = Integer.parseInt((String) stringValues.get(i++));
+   	      int value = Integer.parseInt(stringValues.get(i++));
 	      fsAddresses.add(curNode);
           cas.setFeatureValue(curNode,fsHeadFeat, value);
    		  curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(fsTailFeat));
@@ -541,7 +540,7 @@ public class ListUtils {
            foundCycle = true;
            break;
         }
-        int value = Integer.parseInt((String) stringValues.get(i++));
+        int value = Integer.parseInt(stringValues.get(i++));
         cas.setFeatureValue(curNode,fsHeadFeat, value);
         fsAddresses.add(curNode);
         curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(fsTailFeat));
@@ -583,7 +582,7 @@ public class ListUtils {
 	   int emptyListFs = curNode; 
 	   while (i < stringValues.size()) {
 	     int newNode = cas.ll_createFS(neStringListType);
-	     String value = (String) stringValues.get(i++);
+	     String value = stringValues.get(i++);
 	     cas.setFeatureValue(newNode, stringHeadFeat, cas.addString(value));
 	     cas.setFeatureValue(newNode, stringTailFeat, emptyListFs);
 	     cas.setFeatureValue(prevNode,stringTailFeat, newNode);

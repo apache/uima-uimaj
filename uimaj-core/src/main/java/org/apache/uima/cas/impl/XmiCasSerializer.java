@@ -1398,7 +1398,7 @@ public class XmiCasSerializer {
         jgWriteString(parent.getName());
         if (!jsonRecordedSuperTypes.add(parent)) {
           break;  // if this item already output
-        };
+        }
       }
       jgWriteEndArray();
     }
@@ -2405,7 +2405,7 @@ public class XmiCasSerializer {
           //attributes
           Iterator<XmlAttribute> attrIter = oed.attributes.iterator();
           while (attrIter.hasNext()) {
-            XmlAttribute attr = (XmlAttribute)attrIter.next();
+            XmlAttribute attr = attrIter.next();
             addAttribute(workAttrs, attr.name, attr.value);
           }
           //child elements
@@ -2713,7 +2713,7 @@ public class XmiCasSerializer {
         String v = array[j];
         buf.append(v);
         if (j < array.length - 1) {
-          buf.append(" ");
+          buf.append(' ');
         }
       }
       return buf.toString();
@@ -2888,7 +2888,7 @@ public class XmiCasSerializer {
         // Add other attributes
         Iterator<XmlAttribute> attrIt = oed.attributes.iterator();
         while (attrIt.hasNext()) {
-          XmlAttribute attr = (XmlAttribute) attrIt.next();
+          XmlAttribute attr = attrIt.next();
           addAttribute(workAttrs, attr.name, attr.value);
         }
         
@@ -2902,7 +2902,7 @@ public class XmiCasSerializer {
           workAttrs.clear();
           Iterator<XmlAttribute> attrIter = child.attributes.iterator();
           while (attrIter.hasNext()) {
-            XmlAttribute attr =(XmlAttribute)attrIter.next();
+            XmlAttribute attr =attrIter.next();
             addAttribute(workAttrs, attr.name, attr.value);
           }
           
