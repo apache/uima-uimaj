@@ -287,12 +287,7 @@ public class JsonContentHandlerJacksonWrapper implements ContentHandler  {
               jg.writeBooleanField(prefix, val.equals("true"));
               continue;
             } 
-            
-            if ("decimal".equals(attType) && val.equals("NAN")) {
-              jg.writeStringField(prefix,  val);
-              continue;
-            }
-            
+                        
             jg.writeFieldName(prefix);
             jg.writeRawValue(val);     
           }
