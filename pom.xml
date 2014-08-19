@@ -61,7 +61,7 @@
 
   <properties>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
-    <jiraVersion>2.6.0SDK</jiraVersion>   
+    <jiraVersion>2.6.1SDK</jiraVersion>   
     <assemblyFinalName>uimaj-${project.version}</assemblyFinalName>  
     <postNoticeText>${ibmNoticeText}</postNoticeText>    
   </properties>
