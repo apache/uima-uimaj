@@ -26,7 +26,7 @@ import org.xml.sax.SAXException;
 
 public class JsonCasSerializerTest extends TestCase {
   
-  private static final boolean GENERATE_EXPECTED = true;
+  private static final boolean GENERATE_EXPECTED = false;
 //  private static final String generateDir = "src/test/resources/CasSerialization/expected/";
   private static final String generateDir = "src/test/resources/CasSerialization/newExpected/";
 
@@ -176,7 +176,7 @@ public class JsonCasSerializerTest extends TestCase {
     String r = serialize();
     assertEquals(getExpected("allValuesOmits.txt", r), r);
 
-    xcs.setJsonCasFormat(JsonCasFormat.BY_TYPE_BY_ID);
+    xcs.setJsonCasFormat(JsonCasFormat.BY_TYPE_EMBED_ID);
     r = serialize();
     assertEquals(getExpected("allValuesByTypeOmits.txt", r), r);
     

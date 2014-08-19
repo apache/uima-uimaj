@@ -203,14 +203,14 @@ public class XmiCasSerializer {
   /**
    *  This enum describes the kinds of JSON formats used for serializing Feature Structures
    *  
-   *    BY_ID_EMBED_TYPE: (single map)  
+   *    BY_ID_EMBED_TYPE:   
    *      { "123" : { "@type" : "type-name", feat : value, ... } 
    *             where 123 is the "ID", and type-name is the name of the type of the feature structure
-   *    BY_TYPE_BY_ID: (double map) 
-   *      { "type-name" : { "123" : { feat : value ... }, 
-   *                        "456" : { feat : value ... }
+   *    BY_TYPE_EMBED_ID:  
+   *      { "type-name" : [ { "@id" : 123, feat : value ... }, 
+   *                        { "@id" : 456, feat : value ... }
    *                        ...
-   *                      }, 
+   *                      ], 
    *        ...
    *      }
    *             all feature structures of a particular type are collected together, and 
@@ -218,8 +218,8 @@ public class XmiCasSerializer {
    *             default annotation index)
    */
   public enum JsonCasFormat {
-    BY_ID_EMBED_TYPE,    // outputs each FS as "nnn"  : { "type" : { features : values ... }}
-    BY_TYPE_BY_ID,    // outputs each FS as "type" : { "nnn"  : { features : values ... }}
+    BY_ID_EMBED_TYPE,    // outputs each FS as "nnn"  : { "@type" : "foo", features : values ... }
+    BY_TYPE_EMBED_ID,    // outputs each FS as "type" : { "@id" : 123, features : values ... }
   }
   
   /**
@@ -1098,7 +1098,7 @@ public class XmiCasSerializer {
           
           jgWriteStartObject();  // either outer object, or object of JSON_CAS_FEATURE_STRUCTURES
           
-          if (jsonCasFormat == JsonCasFormat.BY_TYPE_BY_ID) { 
+          if (jsonCasFormat == JsonCasFormat.BY_TYPE_EMBED_ID) { 
             Integer[] allFss = collectAllFeatureStructures();
             Arrays.sort(allFss, sortFssByType);
             encodeAllFss(allFss);
@@ -1881,7 +1881,7 @@ public class XmiCasSerializer {
         encodeFS(i);
       }
       if (lastEncodedTypeCode != -1) {
-        jgWriteEndObject();
+        jgWriteEndArray();
       }
     }
 
@@ -1946,11 +1946,11 @@ public class XmiCasSerializer {
      * 
      * Json has 2 encodings   
      *  For type:
-     *  "typeName" : { 
-     *      "nnnn" : { feat : value .... },
-     *      "mmmm" : { feat : value .... },
-     *      ...
-     *    } 
+     *  "typeName" : [ { "@id" : 123,  feat : value .... },
+     *                 { "@id" : 456,  feat : value .... },
+     *                 ...
+     *               ],
+     *      ... 
      *        
      *  For id:
      *  "nnnn" : {"@type" : typeName ; feat : value ...}
@@ -1984,17 +1984,18 @@ public class XmiCasSerializer {
         } else { // fs's as arrays under typeName
           if (typeCode != lastEncodedTypeCode) {
             if (lastEncodedTypeCode != -1) {
-              // close off previous object
-              jgWriteEndObject();
+              // close off previous Array
+              jgWriteEndArray();
             }
             lastEncodedTypeCode = typeCode;
             jch.writeNlJustBeforeNext();
             jgWriteFieldName(getSerializedTypeName(xmlElementName));
-            jgWriteStartObject();
+            jgWriteStartArray();
           }
           jch.writeNlJustBeforeNext();
-          jgWriteFieldName(addr);
           jgWriteStartObject();  // start of feat : value
+          jgWriteFieldName(JSON_ID_ATTR_NAME);
+          jgWriteNumber(addr);
         }
       } else {
         addAttribute(workAttrs, idAttrName.getValue(), getXmiId(addr));
