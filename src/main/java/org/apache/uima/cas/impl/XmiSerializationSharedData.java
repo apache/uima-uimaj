@@ -121,7 +121,7 @@ public class XmiSerializationSharedData {
 
   String getXmiId(int fsAddr) {
     // see if we already have a mapping
-    String xmiId = (String) fsAddrToXmiIdMap.get(fsAddr);
+    String xmiId = fsAddrToXmiIdMap.get(fsAddr);
     if (xmiId != null) {
       return xmiId;
     } else // no mapping for this FS. Generate a unique ID

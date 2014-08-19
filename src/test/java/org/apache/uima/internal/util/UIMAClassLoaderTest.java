@@ -66,7 +66,7 @@ public class UIMAClassLoaderTest extends TestCase {
     if (UIMAClassLoader.SUPPORTS_PARALLEL_LOADING) {
       //assertTrue(cl != cl.getClassLoadingLock("Aclass"));
       Class classOfLoader = cl.getClass().getSuperclass();
-      while (classOfLoader.getName() != "java.lang.ClassLoader") {
+      while (!(classOfLoader.getName().equals("java.lang.ClassLoader"))) {
         classOfLoader = classOfLoader.getSuperclass(); 
       }
       Method m = classOfLoader.getDeclaredMethod("getClassLoadingLock", String.class);
