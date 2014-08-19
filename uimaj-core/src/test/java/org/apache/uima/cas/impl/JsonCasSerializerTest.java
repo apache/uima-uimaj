@@ -22,7 +22,6 @@ import org.apache.uima.util.FileUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
-import org.xml.sax.SAXException;
 
 public class JsonCasSerializerTest extends TestCase {
   
@@ -37,7 +36,6 @@ public class JsonCasSerializerTest extends TestCase {
   private TypeSystemImpl tsi;
   private TypeImpl topType;
   private XmiCasSerializer xcs;
-  private String expectedResults;
   private TypeImpl annotationType;
   private TypeImpl allTypesType;
   
@@ -300,7 +298,7 @@ public class JsonCasSerializerTest extends TestCase {
       return r;
     } else {
     File expectedResultsFile = JUnitExtension.getFile("CasSerialization/expected/" + expectedResultsName);
-    return expectedResults = FileUtils.file2String(expectedResultsFile, "utf-8");
+    return FileUtils.file2String(expectedResultsFile, "utf-8");
     }
   }
   
