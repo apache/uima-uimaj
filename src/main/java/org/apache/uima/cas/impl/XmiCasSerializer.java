@@ -1904,14 +1904,11 @@ public class XmiCasSerializer {
              (i1 >  i2) ? 1 : -1;
     }
     
-    private int compareFeat(int o1, int o2, int featCode) {
-      return compareFeat(o1, o2, featCode, false);
-    }
     
-    private int compareFeat(int o1, int o2, int featCode, boolean reverse) {
+    private int compareFeat(int o1, int o2, int featCode) {
       final int f1 = cas.ll_getIntValue(o1, tsi.annotSofaFeatCode);
       final int f2 = cas.ll_getIntValue(o2, tsi.annotSofaFeatCode);
-      return reverse ? compareInts(f2, f1) : compareInts(f1, f2);
+      return compareInts(f1, f2);
     }
     
     private final Comparator<Integer> sortFssByType = 
@@ -1932,7 +1929,7 @@ public class XmiCasSerializer {
               final boolean isAnnot = tsi.subsumes(tsi.annotTypeCode, typeCode1);
               if (isAnnot) {
                 c = compareFeat(o1, o2, tsi.startFeatCode);
-                return (c != 0) ? c : compareFeat(o1, o2, tsi.endFeatCode, true);
+                return (c != 0) ? c : compareFeat(o2, o1, tsi.endFeatCode);  // reverse order
               }
             }
             // not sofa nor annotation

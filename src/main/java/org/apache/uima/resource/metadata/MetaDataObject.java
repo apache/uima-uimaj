@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.apache.uima.UIMA_IllegalArgumentException;
 import org.apache.uima.UIMA_UnsupportedOperationException;
+import org.apache.uima.util.JSONizable;
 import org.apache.uima.util.NameClassPair;
 import org.apache.uima.util.XMLizable;
 
@@ -43,7 +44,7 @@ import org.apache.uima.util.XMLizable;
  * 
  * 
  */
-public interface MetaDataObject extends Cloneable, java.io.Serializable, XMLizable {
+public interface MetaDataObject extends Cloneable, java.io.Serializable, XMLizable, JSONizable {
 
   /**
    * Retrieves all attributes on this <code>MetaDataObject</code>.
