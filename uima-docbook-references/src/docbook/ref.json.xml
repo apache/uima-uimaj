@@ -64,11 +64,12 @@ under the License.
     which features ought to be considered to be references to other FeatureStructure instances (even though they
     appear as JSON numbers).</para>
     
-    <para>CAS JSON serialization consists of 3 parts: a context, the set of Feature Structures, and a list, by View, of
-    the IDs of Feature Structures that were added to the indexes.  The context and index information are optional, and
-    the serializer can be configured to omit them, for simple cases where that information isn't needed.</para>
+    <para>CAS JSON serialization consists of 3 parts: an optional context, the set of Feature Structures, and an optional 
+    list (by View) of
+    the IDs of Feature Structures that were added to the indexes.  The serializer can be configured to omit
+    the optional sections for simple cases where that information isn't needed.</para>
     
-    <para>The context is, in turn, has entries for each used type.  The entries are of 3 kinds, 
+    <para>The context section has entries for each used type.  The entries are of 3 kinds, 
     each of which can be omitted.  These are the name extension information 
     that maps short type names to their fully qualified names, 
     the specification of which features of a type are references to other Feature Structures, and the supertypes 
@@ -79,12 +80,36 @@ under the License.
     where the key is the id (a number) of the Feature Structure, and the value is a map of all the features, plus
     one additional "@type" feature which specifies the type.  This format enables efficient access to FSs by their ID.</para>
     
+    <para>It looks like this:</para>
+    
+    <programlisting>   
+   BY_ID_EMBED_TYPE:   
+
+{ "123" : { "@type" : "foo", feat : value ... },    
+  "456" : { "@type" : "foo", feat : value ... },
+   ...
+}</programlisting>
+    
+    
     <para>The second format is organized by types.  It's a map, whose key is the type, and the value is a sorted
     array of instances of that type.  The sort is fixed, and first groups things together by View, 
     and then, for subtypes of uima.tcas.Annotation, it sorts by the begin feature (ascending) and then by 
     the end feature (descending).  This form allows for simple iteration over a single type (not including 
     its subtypes).  An additional system-supplied feature, "@id", supplies the ID of this feature
     structure (so it can be referenced by other features of other FSs).</para>
+
+    <para>It looks like this:</para>
+    
+        <programlisting>
+BY_TYPE_EMBED_ID: 
+
+{ "type-name" : [ { "@id" : 123, feat : value ... },    
+                  { "@id" : 456, feat : value ... }
+                      ...
+                ], 
+   ...
+}</programlisting>
+    
         
     <para>Similar to XMI serialization, Arrays and Lists of objects which are the values of a feature,
     are embedded using the JSON array notation, either
@@ -239,6 +264,35 @@ under the License.
     
     <para>The resulting JSON serialization is just a straight-forward serialization of the typeDescription object,
     having the same fields as the XML serialization of it.</para>
+    
+    <para>Here's what a small TypeSystem description looks like, serialized:</para>
+    
+    <programlisting>
+{"typeSystemDescription" : 
+  {"name" : "casTestCaseTypesystem",  
+   "description" : "Type system description for CAS test cases.",  
+   "version" : "1.0",  
+   "vendor" : "Apache Software Foundation",  
+   "types" : [
+     {"typeDescription" : 
+       {"name" : "Token",  
+        "description" : "",  
+         "supertypeName" : "uima.tcas.Annotation",  
+         "features" : [
+           {"featureDescription" : 
+             {"name" : "type",  
+              "description" : "",  
+              "rangeTypeName" : 
+              "TokenType" } }, 
+           {"featureDescription" : 
+             {"name" : "tokenFloatFeat",  
+              "description" : "",  
+              "rangeTypeName" : "uima.cas.Float" } } ] } }, 
+     {"typeDescription" : 
+       {"name" : "TokenType",  
+        "description" : "",  
+        "supertypeName" : "uima.cas.TOP" } } ] } }
+    </programlisting>
   </section>
   <!--   
   <section id="ugr.ref.json.use-cases">
