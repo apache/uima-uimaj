@@ -33,4 +33,5 @@ under the License.
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="ref.pear.xml"/>
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="ref.xmi.xml"/>
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="ref.compress.xml"/>
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="ref.json.xml"/>
 </book>

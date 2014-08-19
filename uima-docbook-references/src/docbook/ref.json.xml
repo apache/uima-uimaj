@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"[
+<!ENTITY imgroot "images/references/ref.json/">
+<!ENTITY tp "ugr.ref.json.">
+<!ENTITY % uimaents SYSTEM "../../target/docbook-shared/entities.ent" >  
+%uimaents;
+]>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<chapter id="ugr.ref.json">
+  <title>Serializing CASs and TypeSystems as JSON objects</title>
+
+  <section id="ugr.ref.json.overview">
+    <title>JSON serialization support overview</title>
+     
+    <para>Applications are moving to the "cloud", and new applications are being rapidly developed that are hooking
+    things up using various mashup techniques.  New standards and conventions are emerging to support this kind
+    of application development, such as REST services.  
+    JSON is now a popular way for services to communicate; 
+    its popularity is rising while XML is falling.</para>
+    
+    <para>Starting with version 2.6.1, JSON style serialization for CASs and TypeSystems is supported.
+    The exact format is configurable in several aspects.  
+    </para>
+  
+  <section id="ug.ref.json.cas">
+    <title>JSON CAS Serialization</title>
+    
+    <para>CASs primarily consist of collections of Feature Structures (FSs).  To support the kinds of things
+    users do with FSs, the serialized form may need to include information enabling:</para>
+    
+    <itemizedlist>
+      <listitem>
+        <para>fields in a FS to reference other FSs</para>
+      </listitem>
+      <listitem>
+        <para>an approach for usefully abbreviating long type names while avoiding collisions, similar to XML namespaces</para>
+      </listitem>
+      <listitem>
+        <para>enough of the UIMA type hierarchy to allow the common operation of iterating over a type + all of its subtypes</para>
+      </listitem>
+    </itemizedlist>
+    
+    <para>Simple JSON serialization does not have a convention for supporting these, but many extensions do.
+    We follow some of the concepts in the JSON-LD (linked data) standard, in providing (optional) 
+    additional information for name-spaces, for identifying supertype chains of UIMA types, and for specifying 
+    which features ought to be considered to be references to other FeatureStructure instances (even though they
+    appear as JSON numbers).</para>
+    
+    <para>CAS JSON serialization consists of 3 parts: a context, the set of Feature Structures, and a list, by View, of
+    the IDs of Feature Structures that were added to the indexes.  The context and index information are optional, and
+    the serializer can be configured to omit them, for simple cases where that information isn't needed.</para>
+    
+    <para>The context is, in turn, has entries for each used type.  The entries are of 3 kinds, 
+    each of which can be omitted.  These are the name extension information 
+    that maps short type names to their fully qualified names, 
+    the specification of which features of a type are references to other Feature Structures, and the supertypes 
+    for each Type.  The supertype list for a type is truncated, as soon as it references a type whose supertypes have already been
+    given (to reduce serialization space).</para>
+    
+    <para>Feature Structures are represented in one of two formats.  The first format (the default) is as a JSON map
+    where the key is the id (a number) of the Feature Structure, and the value is a map of all the features, plus
+    one additional "@type" feature which specifies the type.  This format enables efficient access to FSs by their ID.</para>
+    
+    <para>The second format is organized by types.  It's a map, whose key is the type, and the value is a sorted
+    array of instances of that type.  The sort is fixed, and first groups things together by View, 
+    and then, for subtypes of uima.tcas.Annotation, it sorts by the begin feature (ascending) and then by 
+    the end feature (descending).  This form allows for simple iteration over a single type (not including 
+    its subtypes).  An additional system-supplied feature, "@id", supplies the ID of this feature
+    structure (so it can be referenced by other features of other FSs).</para>
+        
+    <para>Similar to XMI serialization, Arrays and Lists of objects which are the values of a feature,
+    are embedded using the JSON array notation, either
+    as a feature value, or as a separate object (depending on the setting of the multiple-references-allowed flag in 
+    the feature description).  Like XMI serialization, there is no support for arbitrarily linked complex list structures
+    created using the built-in list types;
+    if the list structure has any back references, the serialization truncates at the point the back reference is detected.
+    If an application requires complex linked structures, they can be built using custom-defined
+    list types; these will be serialized faithfully.</para>
+    
+    <para>Type names in the serialization are represented by their short-forms.  The short-form is just the last
+    segment (following the last period (.) in the type name), unless there are 2 (or more) different types with the same
+    last segment name.  In that case, a name-space prefix is assigned, and the name is written "prefix:last-segment".
+    </para>
+    
+    <para>The name-expansion part of the context gives a mapping from the short-form (either type or prefix:type) 
+    to the fully qualified type name.</para>
+    
+    <para>JSON serialization also supports several additional features, including:</para>
+    <itemizedlist>
+      <listitem>
+        <para>Delta CAS: only serializes changes since the mark was set</para>
+      </listitem>
+      <listitem>
+        <para>Type and feature filtering: only types and features that exist in a specified type system description 
+        are serialized.</para>
+      </listitem>
+      <listitem>
+        <para>An ErrorHandler; this will be called in various error situations.</para>
+      </listitem>
+      <listitem>
+        <para>A switch to control omitting of features that have default values (default is to omit these).</para>
+      </listitem>
+      <listitem>
+        <para>a pretty printing flag (default is not to do pretty-printing)</para>
+      </listitem>
+    </itemizedlist>
+        
+    <para>Here's a summary of the sections of the CAS JSON serialization.</para>
+    <itemizedlist>
+      <listitem>
+        <para>(optional) A @context section, modeled after JSON-LD.  This has entries for each type that is serialized:</para>
+        <itemizedlist>
+          <listitem>
+            <para>(optional) name expansion.  This provides the full name for UIMA types that correspond to the shorter type names
+            used in the body of the serialization.</para>
+          </listitem>
+          <listitem>
+            <para>(optional) feature references: This identifies which features are to be interpreted as references to other 
+            feature structure instances.</para>
+          </listitem>
+          <listitem>
+            <para>(optional) supertypes: this provides information that can be used by the receiver to contruct the inheritance
+            tree used by the serialized types.  It can enable iterating over all instances of some type, including 
+            all of its subtypes.</para>
+          </listitem>
+        </itemizedlist>
+      </listitem>
+      <listitem>
+        <para>For each view in the CAS, the list of feature structures that were added to the index, or, for deltaCas
+        serialization (where only the changes are being serialized) which feature structures were indexed or 
+        removed from the index.  These are in one of two formats</para>
+        <itemizedlist>
+          <listitem>
+            <para>BY_ID_EMBED_TYPE: this is a map, the key is the ID, and the short-typename is added to the set of
+            features, under the feature name @type.</para>
+          </listitem>
+          <listitem>
+            <para>BY_TYPE_EMBED_ID: this is a map, the key is the short-typename, and the ID is added to the set of
+            features, under the feature name @id.</para>
+          </listitem>
+        </itemizedlist>
+      </listitem>
+      <listitem>
+        <para>(optional) an @index section.  This contains for each view, an array of IDs that were added to the index.  For
+        delta-cas serialization (where only changes are being serialized), this array is replaced with a map 
+        of 3 keys:  added-members, deleted-members, and reindexed-members, the values of which are arrays of IDs.</para>
+      </listitem>
+    </itemizedlist>
+    
+  </section>
+
+  
+  <section id="ugr.ref.json.usage">
+    <title>Using JSON CAS serialization</title>
+    
+    <para>The support is built on top of the existing UIMA XMI support, and makes use of the Jackson JSON serialization
+    package.  We follow the conventions of Jackson for configuring.</para>
+    
+    <para>The serialization code is part of the XmiCasSerializer class, and shares that class's concepts 
+    and implementation code of serializing out "reachable" Feature Structures.</para>
+    
+    <para>Although there are some static short-cut methods for common use cases, the basic operations needed
+    to serailialize a CAS as JSON are:</para>
+    
+    <itemizedlist>
+      <listitem>
+        <para>Make an instance of the XmiSerializer class.  This will serve to collect configuration information.</para>
+      </listitem>
+      <listitem>
+        <para>Do any additional configuration needed.  See the Javadocs for details.  The following objects can be configured:</para>
+        <itemizedlist spacing="compact">
+          <listitem>
+            <para>The XmiCasSerializer object: you can specify the kind of JSON formatting, what to serialize,
+            whether or not delta serialization is wanted, prettyprinting, and more.</para>
+          </listitem>
+          <listitem>
+            <para>The underlying JsonFactory from Jackson.</para>
+          </listitem>
+          <listitem>
+            <para>The underlying JsonGenerator from Jackson.</para>
+          </listitem>
+        </itemizedlist>
+      </listitem>
+      <listitem>
+        <para>Once all the configuration is done, the serialize(...) call is done in this class, which will create a one-time-use
+        inner class where the actual serialization is done.  The serialize(...) method is thread-safe, in that the same 
+        XmiCasSerializer instance (after it has been configured) can kick off multiple serializations 
+        on different threads at the same time.</para>
+        <para>The serialize call follows the Jackson conventions, taking one of 3 specifications of where to serialize to:
+        a Writer, an OutputStream, or a File.</para>
+      </listitem>
+    </itemizedlist>
+    
+    <para>Because the JSON support is built on the XmiCasSerializer class, the underlying exceptions which could occur
+    as IOExceptions are wrapped into SAXExceptions, even though no SAX processing is being done.</para>
+
+    <para>The XmiCasSerializer class has some static convenience methods for JSON serialization, for the
+    most common configuration cases; please see the Javadocs for details.</para>
+
+  </section>
+
+  <section id="ugr.ref.json.configuration">
+    <title>JSON CAS Serialization - Common Configuration</title>
+    
+    <para>See the Javadocs for the class XmiCasSerialization for a description of the available configurations.</para>
+        
+    <para>The configuration methods generally return the instance, so they can be chained together.
+    For example, if xcs is an instance of the XmiCasSerializer, you can write
+    <code>xcs.setPrettyPrint(true).setOmitDefaultvalues(true);</code></para>
+        
+  </section>  
+
+  </section>
+  
+  <section>
+    <title>TypeSystem Serialization</title>
+    
+    <para>TypeSystems can be serialized by the toJSON methods defined in JSONizable interface, a super interface of the
+    TypeSystemDescription interface.  The toJSON methods take a Writer, File or OutputStream parameter, and 
+    an optional prettyprint flag (default is no prettyprinting).</para>
+    
+    <para>The resulting JSON serialization is just a straight-forward serialization of the typeDescription object,
+    having the same fields as the XML serialization of it.</para>
+  </section>
+  <!--   
+  <section id="ugr.ref.json.use-cases">
+    <title>Use Case cookbook</title>
+    
+    <para>
+    Here are some use cases, together with a suggested approach and example of how to use the APIs.
+    </para>
+    
+    <para>
+      <emphasis role="strong">Save a CAS to an output stream, using form 4 (no type system filtering):</emphasis>
+    </para>
+          <programlisting>// set up an output stream.  In this example, an internal byte array.
+ByteArrayOutputStream baos = new ByteArrayOutputStream(OUT_BFR_INIT_SZ);
+Serialization.serializeWithCompression(casSrc, baos);
+</programlisting>
+ 
+      <para><emphasis role="strong">Deserialize from a stream into an existing CAS:</emphasis></para>
+      <programlisting>// assume the stream is a byte array input stream
+// For example, one could be created 
+//   from the above ByteArrayOutputStream as follows:
+ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+// Deserialize into a cas having the identical type system
+Serialization.deserializeCAS(cas, bais);
+</programlisting>
+
+<para>Note that the <code>deserializeCAS(cas, inputStream)</code> method is a general way to
+deserialize into a CAS from an inputStream for all forms of binary serialized data
+(with exceptions as noted above).
+The method reads a common header, and based on what it finds, selects the appropriate
+deserialization routine.</para>
+
+<note><para>The <code>deserialization</code> method with just 2 arguments method doesn't support type filtering, or
+delta cas deserializating for form 6. To do those, see example below. 
+</para>
+</note>
+
+<para><emphasis role="strong">Serialize to an output stream, filtering out some types and/or features:</emphasis>
+</para>
+<para>
+To do this, an additional input specifying the Type System of the target must
+be supplied; this Type System should be a subset of the source CAS's.
+The <code>out</code> parameter may be an OutputStream, a DataOutputStream, or a File.
+</para>
+
+<programlisting>// set up an output stream.  In this example, an internal byte array.
+ByteArrayOutputStream baos = new ByteArrayOutputStream(OUT_BFR_INIT_SZ);
+Serialization.serializeWithCompression(cas, out, tgtTypeSystem);
+</programlisting>
+
+<para><emphasis role="strong">Deserialize with type filtering:</emphasis></para>
+<para>The reuseInfo should be null unless 
+deserializing a delta CAS, in which case, it must be the reuse info captured when 
+the original CAS was serialized out. 
+If the target type system is identical to the one in the CAS, you may pass null for it.
+If a delta cas is not being received, you must pass null for the reuseInfo.
+</para>
+<programlisting>ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+Serialization.deserializeCAS(cas, bais, tgtTypeSystem, reuseInfo);
+</programlisting> 
+</section>
+  -->
+
+</chapter>
