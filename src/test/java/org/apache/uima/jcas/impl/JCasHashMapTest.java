@@ -199,61 +199,74 @@ public class JCasHashMapTest extends TestCase {
     if (numberOfThreads < 2) {
       return;
     }
-    System.out.format("test JCasHashMap collide with up to %d threads", numberOfThreads);
-    final Random r = new Random();
-    final int hashKey = 15;
-    final TOP fs = new TOP(hashKey, FAKE_TOP_TYPE_INSTANCE);
+    System.out.format("test JCasHashMap collide with up to %d threads%n", numberOfThreads);
 
-    for (int th = 2; th <= numberOfThreads; th *= 2) {
-      JCasHashMap.setDEFAULT_CONCURRENCY_LEVEL(th);
-      final JCasHashMap m = new JCasHashMap(200, true); // true = do use cache 
+    Thread thisThread = Thread.currentThread();
+    final int subThreadPriority = thisThread.getPriority();
+    thisThread.setPriority(subThreadPriority - 1);  
+
+    for (int loopCount = 0; loopCount < 10; loopCount ++) {
+      System.out.println("  JCasHashMap collide loop count is " + loopCount);
+      final Random r = new Random();
+      final int hashKey = 15;
+      final TOP fs = new TOP(hashKey, FAKE_TOP_TYPE_INSTANCE);
   
-      final Thread[] threads = new Thread[numberOfThreads];
-      final FeatureStructureImpl[] found = new FeatureStructureImpl[numberOfThreads];
-      
-      for (int i = 0; i < numberOfThreads; i++) {
-        final int finalI = i;
-        threads[i] = new Thread(new Runnable() {
-          public void run() {
-            try {
-              Thread.sleep(r.nextInt(5));
-            } catch (InterruptedException e) {
+      for (int th = 2; th <= numberOfThreads; th *= 2) {
+        JCasHashMap.setDEFAULT_CONCURRENCY_LEVEL(th);
+        final JCasHashMap m = new JCasHashMap(200, true); // true = do use cache 
+    
+        final Thread[] threads = new Thread[numberOfThreads];
+        final FeatureStructureImpl[] found = new FeatureStructureImpl[numberOfThreads];
+        
+        for (int i = 0; i < numberOfThreads; i++) {
+          final int finalI = i;
+          threads[i] = new Thread(new Runnable() {
+            public void run() {
+              try {
+                Thread.sleep(r.nextInt(5));
+              } catch (InterruptedException e) {
+              }
+               found[finalI] = m.getReserve(hashKey);
             }
-             found[finalI] = m.getReserve(hashKey);
+          });
+          threads[i].setPriority(subThreadPriority);
+          threads[i].start();
+        }
+        Thread.sleep(20); 
+        // verify that one thread finished, others are waiting
+        int numberWaiting = 0;
+        int threadFinished = -1;
+        for (int i = 0; i < numberOfThreads; i++) {
+          if (threads[i].isAlive()) {
+            numberWaiting ++;
+          } else {
+            threadFinished = i;
           }
-        });
-        threads[i].start();
-      }
-      Thread.sleep(100); 
-      // verify that one thread finished, others are waiting
-      int numberWaiting = 0;
-      int threadFinished = -1;
-      for (int i = 0; i < numberOfThreads; i++) {
-        if (threads[i].isAlive()) {
-          numberWaiting ++;
-        } else {
-          threadFinished = i;
         }
-      }
-      
-      assertEquals(numberOfThreads - 1, numberWaiting);
-      m.put(fs);
-      found[threadFinished] = fs;
-      Thread.sleep(10);  
-      
-      numberWaiting = 0;
-      for (int i = 0; i < numberOfThreads; i++) {
-        if (threads[i].isAlive()) {
-          numberWaiting ++;
+        
+        assertEquals(numberOfThreads - 1, numberWaiting);
+        m.put(fs);
+        found[threadFinished] = fs;
+        
+        // Attempt to insure we let the threads under test run in preference to this one       
+        Thread.sleep(20);   // imprecise.  Intent is to allow other thread that was waiting, to run
+                            // before this thread resumes.  Depends on thread priorities, but
+                            // multiple threads could be running at the same time.
+        
+        numberWaiting = 0;
+        for (int i = 0; i < numberOfThreads; i++) {
+          if (threads[i].isAlive()) {
+            numberWaiting ++;
+          }
         }
-      }
-      assertEquals(0, numberWaiting);
-//      System.out.format("JCasHashMapTest collide,  found = %s%n", intList(found));
-      for (FeatureStructureImpl f : found) {
-        if (f != fs) {
-          System.err.format("JCasHashMapTest miscompare fs = %s,  f = %s%n", fs, (f == null) ? "null" : f);
+        assertEquals(0, numberWaiting);
+  //      System.out.format("JCasHashMapTest collide,  found = %s%n", intList(found));
+        for (FeatureStructureImpl f : found) {
+          if (f != fs) {
+            System.err.format("JCasHashMapTest miscompare fs = %s,  f = %s%n", fs, (f == null) ? "null" : f);
+          }
+          assertTrue(f == fs);
         }
-        assertTrue(f == fs);
       }
     }
   }
