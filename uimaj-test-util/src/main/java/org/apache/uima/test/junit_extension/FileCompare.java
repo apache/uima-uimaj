@@ -166,6 +166,20 @@ public class FileCompare {
         }
       }
     }
+    
+    // eof on in1
+    in2byte = in2.read();
+    while (in2byte != -1) {
+      // read bytes until byte is no whitespace or blank
+      while ((Character.isWhitespace((char) in2byte)) || (in2byte == ' ') || (in2byte == '\n')
+              || (in2byte == '\r')) {
+        // if byte is whitespace or blank read next byte
+        in2byte = in2.read();
+      }
+      if (in2byte != -1) {
+        return false;  // in2 had more non-whitespace chars after in1 end of file
+      }
+    }
     return true;
   }
   
