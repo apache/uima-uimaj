@@ -84,51 +84,51 @@ public class JsonCasSerializerTest extends TestCase {
     setupTypeSystem("nameSpaceNeeded.xml");
     cas.addFsToIndexes(cas.createFS(topType));
     String r = serialize();
-    assertEquals(getExpected("top.txt", r), r);
+    compareWithExpected("top.txt", r);
     cas.reset();
     
     cas = (CASImpl) cas.createView("basicView");
     cas.addFsToIndexes(cas.createFS(annotationType));
     r = serialize();
-    assertEquals(getExpected("topWithNamedViewOmits.txt", r), r);
+    compareWithExpected("topWithNamedViewOmits.txt", r);
     cas.reset();
     
     cas = (CASImpl) cas.getCurrentView(); // default view
     cas.addFsToIndexes(cas.createFS(annotationType));
     r = serialize();
-    assertEquals(getExpected("topWithDefaultViewOmits.txt", r), r);
+    compareWithExpected("topWithDefaultViewOmits.txt", r);
     
     cas.reset();
     xcs.setJsonContext(JsonContextFormat.omitContext);
     cas.addFsToIndexes(cas.createFS(topType));
     r = serialize();
-    assertEquals(getExpected("topNoContext.txt", r), r);
+    compareWithExpected("topNoContext.txt", r);
     
     cas.reset();
     xcs.setJsonContext(JsonContextFormat.omitContext);
     xcs.setCasViews(false);
     cas.addFsToIndexes(cas.createFS(topType));
     r = serialize();
-    assertEquals(getExpected("topNoContextNoViews.txt", r), r);
+    compareWithExpected("topNoContextNoViews.txt", r);
     
     cas.reset();
     xcs.setJsonContext(JsonContextFormat.includeExpandedTypeNames);
     cas.addFsToIndexes(cas.createFS(topType));
     r = serialize();
-    assertEquals(getExpected("topExpandedNamesNoViews.txt", r), r);
+    compareWithExpected("topExpandedNamesNoViews.txt", r);
 
     cas.reset();
     xcs.setJsonContext(JsonContextFormat.omitExpandedTypeNames);
     cas.addFsToIndexes(cas.createFS(topType));
     r = serialize();
-    assertEquals(getExpected("topNoContextNoViews.txt", r), r);
+    compareWithExpected("topNoContextNoViews.txt", r);
 
     cas.reset();
     xcs.setJsonContext(JsonContextFormat.includeFeatureRefs);
     xcs.setJsonContext(JsonContextFormat.includeSuperTypes);
     cas.addFsToIndexes(cas.createFS(topType));
     r = serialize();
-    assertEquals(getExpected("topFeatRefsSupertypesNoViews.txt", r), r);
+    compareWithExpected("topFeatRefsSupertypesNoViews.txt", r);
   }
   
   public void testNameSpaceCollision() throws Exception {
@@ -142,27 +142,27 @@ public class JsonCasSerializerTest extends TestCase {
     cas.addFsToIndexes(cas.createFS(t2));
     
     String r = serialize();
-    assertEquals(getExpected("nameSpaceCollisionOmits.txt", r), r);
+    compareWithExpected("nameSpaceCollisionOmits.txt", r);
     
     xcs.setOmitDefaultValues(false);
     r = serialize();
-    assertEquals(getExpected("nameSpaceCollision.txt", r), r);
+    compareWithExpected("nameSpaceCollision.txt", r);
     
     cas.addFsToIndexes(cas.createFS(t3));
     r = serialize();
-    assertEquals(getExpected("nameSpaceCollision2.txt", r), r);
+    compareWithExpected("nameSpaceCollision2.txt", r);
 
     xcs.setOmitDefaultValues(true);
     r = serialize();
-    assertEquals(getExpected("nameSpaceCollision2Omits.txt", r), r);
+    compareWithExpected("nameSpaceCollision2Omits.txt", r);
 
     xcs.setPrettyPrint(true);
     r = serialize();
-    assertEquals(getExpected("nameSpaceCollision2ppOmits.txt", r), r);
+    compareWithExpected("nameSpaceCollision2ppOmits.txt", r);
 
     xcs.setOmitDefaultValues(false);
     r = serialize();
-    assertEquals(getExpected("nameSpaceCollision2pp.txt", r), r);
+    compareWithExpected("nameSpaceCollision2pp.txt", r);
     
   }
   
@@ -172,19 +172,19 @@ public class JsonCasSerializerTest extends TestCase {
 
     xcs.setPrettyPrint(true);
     String r = serialize();
-    assertEquals(getExpected("allValuesOmits.txt", r), r);
+    compareWithExpected("allValuesOmits.txt", r);
 
     xcs.setJsonCasFormat(JsonCasFormat.BY_TYPE_EMBED_ID);
     r = serialize();
-    assertEquals(getExpected("allValuesByTypeOmits.txt", r), r);
+    compareWithExpected("allValuesByTypeOmits.txt", r);
     
     xcs.setOmitDefaultValues(false);
     r = serialize();
-    assertEquals(getExpected("allValuesByType.txt", r), r);
+    compareWithExpected("allValuesByType.txt", r);
     
     xcs.setJsonCasFormat(JsonCasFormat.BY_ID_EMBED_TYPE);
     r = serialize();
-    assertEquals(getExpected("allValues.txt", r), r);
+    compareWithExpected("allValues.txt", r);
     
   }
   
@@ -196,7 +196,7 @@ public class JsonCasSerializerTest extends TestCase {
 
     xcs.setPrettyPrint(true);
     String r = serialize();
-    assertEquals(getExpected("multipleViews.txt", r), r);
+    compareWithExpected("multipleViews.txt", r);
         
   }
   
@@ -209,11 +209,11 @@ public class JsonCasSerializerTest extends TestCase {
     
     xcs.setPrettyPrint(true);
     String r = serialize();
-    assertEquals(getExpected("delta.txt", r), r);
+    compareWithExpected("delta.txt", r);
     
     xcs.setDeltaCas(marker);
     r = serialize();
-    assertEquals(getExpected("delta2.txt", r), r);
+    compareWithExpected("delta2.txt", r);
     
   }
   
@@ -302,6 +302,16 @@ public class JsonCasSerializerTest extends TestCase {
     }
   }
   
+  private void compareWithExpected (String expectedResultsName, String r) throws IOException {
+    r = canonicalizeNewLines(r);
+    String expected = getExpected(expectedResultsName, r);
+    assertEquals(canonicalizeNewLines(expected), r);
+  }
+  
+  private String canonicalizeNewLines(String r) {
+    return  r.replace("\n\r", "\n").replace("\r\n", "\n").replace('\r',  '\n');
+  }
+  
   private String serialize() throws Exception {    
     StringWriter sw = new StringWriter();
     try {
@@ -312,8 +322,8 @@ public class JsonCasSerializerTest extends TestCase {
     }
     return sw.toString();
   }
-  
-  public void testJsonSerializeCASObject() {
+    
+    public void testJsonSerializeCASObject() {
   }
 
   public void testJsonSerializeCASTypeSystemObject() {
