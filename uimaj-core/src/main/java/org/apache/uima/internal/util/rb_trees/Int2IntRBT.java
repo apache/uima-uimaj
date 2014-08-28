@@ -179,7 +179,7 @@ public class Int2IntRBT extends IntArrayRBTcommon {
 
   }
   
-  private int[] values;
+  protected int[] values;
   
   private int getValue(int node) {
     return values[node];
@@ -385,7 +385,7 @@ public class Int2IntRBT extends IntArrayRBTcommon {
    *   Tries to shorten the search path, conditionally
    */
   
-  private int findKeyFast(final int k) {
+  protected int findKeyFast(final int k) {
     final int node;
     if (lastNodeGotten == NIL) {
       node = findKey(k);
