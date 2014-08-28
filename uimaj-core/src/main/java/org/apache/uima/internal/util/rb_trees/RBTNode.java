@@ -22,6 +22,7 @@ package org.apache.uima.internal.util.rb_trees;
 import org.apache.uima.internal.util.BinaryTree;
 
 /**
+ * Node used in RedBlackTree, holds int Object pairs and links
  * Red-Black Tree node. Not for public use. Use the interface in RedBlackTree instead. This should
  * probably be an internal class to RedBlackTree, but it's easier to read in a seperate file. See
  * comments in RedBlackTree.

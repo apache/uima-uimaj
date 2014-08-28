@@ -29,6 +29,10 @@ import org.apache.uima.internal.util.IntListIterator;
 import org.apache.uima.internal.util.IntPointerIterator;
 
 /**
+ * A set (not a map) of ints.
+ * 
+ * uses IntArrayRBTcommon
+ * 
  * Red-black tree implementation based on integer arrays. Preliminary performance measurements on
  * j2se 1.4 indicate that the performance improvement as opposed to an object-based implementation
  * are miniscule. This seems to indicate a much improved object creation handling in this vm.

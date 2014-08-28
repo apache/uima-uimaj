@@ -22,6 +22,7 @@ package org.apache.uima.internal.util.rb_trees;
 import java.util.NoSuchElementException;
 
 // The following is only imported to trick javadoc.
+// Not used (except for some static constants  8/2014
 
 /**
  * Helper class to read array-based binary search trees with integers as keys and values. No write

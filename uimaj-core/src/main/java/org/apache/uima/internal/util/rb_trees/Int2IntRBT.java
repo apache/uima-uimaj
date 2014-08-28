@@ -25,6 +25,10 @@ import org.apache.uima.internal.util.IntKeyValueIterator;
 import org.apache.uima.internal.util.IntListIterator;
 
 /**
+ * A map<int, int>
+ * 
+ * uses IntArrayRBTcommon
+ * 
  * Int to Int Map, based on IntArrayRBT, used in no-duplicates mode
  * 
  * Implements Map - like interface:
@@ -395,8 +399,6 @@ public class Int2IntRBT extends IntArrayRBTcommon {
     }
     return node;
   }
-  
- 
   
   
   private int findKeyFromLast(final int k) {

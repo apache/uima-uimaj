@@ -24,6 +24,8 @@ import java.util.Iterator;
 import org.apache.uima.internal.util.BinaryTree;
 
 /**
+ * Map from int to T (Object)
+ * 
  * An implementation of Red-Black Trees. This implementation follows quite closely the algorithms
  * described in Cormen, Leiserson and Rivest (1990): "Introduction to Algorithms" (henceforth CLR).
  * The main difference between our implementation and CLR is that our implementation does not allow
