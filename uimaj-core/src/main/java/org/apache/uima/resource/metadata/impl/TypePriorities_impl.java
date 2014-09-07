@@ -308,10 +308,9 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
   public Object clone() {
     TypePriorities_impl clone = (TypePriorities_impl) super.clone();
     clone.mPriorityLists = new ArrayList<TypePriorityList>();
-    synchronized (mPriorityLists) { // saw concurrent mod exceptions while iterating on this 3/2014
-      Iterator<TypePriorityList> priListIter = mPriorityLists.iterator();
-      while (priListIter.hasNext()) {
-        TypePriorityList priList = priListIter.next();
+    final List<TypePriorityList> origPriorityLists = mPriorityLists;
+    synchronized (origPriorityLists) { // saw concurrent mod exceptions while iterating on this 3/2014
+      for (TypePriorityList priList : origPriorityLists) {
         clone.addPriorityList((TypePriorityList) priList.clone());
       }
     }
