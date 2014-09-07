@@ -577,7 +577,7 @@ public class JCasHashMap {
   private static final int C2 = 0x1b873593;
   private static final int seed = 0x39c2ab57;  // arbitrary bunch of bits
 
-  public int hashInt(int k1) {
+  public static int hashInt(int k1) {
     k1 *= C1;
     k1 = Integer.rotateLeft(k1, 15);
     k1 *= C2;
