@@ -20,18 +20,18 @@
 package org.apache.uima.cas.impl;
 
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
+import org.apache.uima.internal.util.Int2IntHashMap;
+import org.apache.uima.internal.util.IntListIterator;
 import org.apache.uima.internal.util.XmlAttribute;
 import org.apache.uima.internal.util.XmlElementName;
 import org.apache.uima.internal.util.XmlElementNameAndContents;
-import org.apache.uima.internal.util.rb_trees.RedBlackTree;
 
 /**
  * A container for data that is shared between the {@link XmiCasSerializer} and the {@link XmiCasDeserializer}.
@@ -61,7 +61,7 @@ public class XmiSerializationSharedData {
    * getXmiId() method, which is done to ensure a consistent ID for each FS 
    * address across multiple serializations.
    */
-  private RedBlackTree<String> fsAddrToXmiIdMap = new RedBlackTree<String>();
+  private Int2IntHashMap fsAddrToXmiIdMap = new Int2IntHashMap();
   
   /** 
    * A map from xmi:id to FeatureStructure address.  This is populated whenever
@@ -69,7 +69,7 @@ public class XmiSerializationSharedData {
    * getFsAddrForXmiId() method, necessary to support merging multiple XMI
    * CASes into the same CAS object.
    **/
-  private RedBlackTree<Integer> xmiIdToFsAddrMap = new RedBlackTree<Integer>();
+  private Int2IntHashMap xmiIdToFsAddrMap = new Int2IntHashMap();
   
   /**
    * List of OotsElementData objects, each of which captures information about
@@ -107,33 +107,31 @@ public class XmiSerializationSharedData {
    * FS address of the encompassing FS which has a feature whose value is this multi-valued FS.
    * Used when deserializing a Delta CAS to find and serialize the encompassing FS when 
    * the non-shared array/list FS is modified. 
-   * @param fsAddr
-   * @param xmiId
    */
-  RedBlackTree<Integer> nonsharedfeatureIdToFSId = new RedBlackTree<Integer>();
+  Int2IntHashMap nonsharedfeatureIdToFSId = new Int2IntHashMap();
 
   void addIdMapping(int fsAddr, int xmiId) {
-    fsAddrToXmiIdMap.put(fsAddr, Integer.toString(xmiId));
+    fsAddrToXmiIdMap.put(fsAddr, xmiId);
     xmiIdToFsAddrMap.put(xmiId, fsAddr);
     if (xmiId > maxXmiId)
       maxXmiId = xmiId;
   }
 
   String getXmiId(int fsAddr) {
-    // see if we already have a mapping
-    String xmiId = fsAddrToXmiIdMap.get(fsAddr);
-    if (xmiId != null) {
-      return xmiId;
-    } else // no mapping for this FS. Generate a unique ID
-    {
-      // to be sure we get a unique Id, increment maxXmiId and use that
-      String idStr = Integer.toString(++maxXmiId);
-      fsAddrToXmiIdMap.put(fsAddr, idStr);
-      xmiIdToFsAddrMap.put(maxXmiId, Integer.valueOf(fsAddr));
-      return idStr;
-    }
+    return Integer.toString(getXmiIdAsInt(fsAddr));
   }
 
+  int getXmiIdAsInt(int fsAddr) {
+    // see if we already have a mapping
+    int xmiId = fsAddrToXmiIdMap.get(fsAddr);
+    if (xmiId == 0) {
+      // to be sure we get a unique Id, increment maxXmiId and use that
+      xmiId = ++maxXmiId;
+      fsAddrToXmiIdMap.put(fsAddr, xmiId);
+      xmiIdToFsAddrMap.put(xmiId, fsAddr);
+    }
+    return xmiId;
+  }
   
   /**
    * Gets the maximum xmi:id that has been generated or read so far.
@@ -272,7 +270,7 @@ public class XmiSerializationSharedData {
    * @return an array containing all the FS addresses
    */
   public int[] getAllFsAddressesInIdMap() {
-    return fsAddrToXmiIdMap.keySet();
+    return fsAddrToXmiIdMap.getSortedKeys();
   }  
   
   /**
@@ -284,6 +282,10 @@ public class XmiSerializationSharedData {
    */
   public List<XmiArrayElement> getOutOfTypeSystemArrayElements(int addr) {
     return this.ootsArrayElements.get(Integer.valueOf(addr));
+  }
+  
+  public boolean hasOutOfTypeSystemArrayElements() {
+    return ootsArrayElements != null && ootsArrayElements.size() > 0;
   }
   
 
@@ -311,7 +313,7 @@ public class XmiSerializationSharedData {
    * @param fsAddr - fs address of encompassing featurestructure
    */
   public void addNonsharedRefToFSMapping(int nonsharedFSAddr, int fsAddr) {
-	this.nonsharedfeatureIdToFSId.put(nonsharedFSAddr, Integer.valueOf(fsAddr));
+	this.nonsharedfeatureIdToFSId.put(nonsharedFSAddr, fsAddr);
   }
   
   /**
@@ -319,7 +321,7 @@ public class XmiSerializationSharedData {
    * @return the non-shared featureId to FS Id key set
    */
   public int[] getNonsharedMulitValuedFSs() {
-    return this.nonsharedfeatureIdToFSId.keySet();
+    return this.nonsharedfeatureIdToFSId.getSortedKeys();
   }
   
   /**
@@ -328,21 +330,22 @@ public class XmiSerializationSharedData {
    * @return the int handle to the encompassing FS or -1 if not found
    */
   public int getEncompassingFS(int nonsharedFS) {
-	Integer addr = (Integer) this.nonsharedfeatureIdToFSId.get(nonsharedFS);
-	return addr == null ? -1 : addr.intValue();
+	int addr = nonsharedfeatureIdToFSId.get(nonsharedFS);
+	return addr == 0 ? -1 : addr;
   }
   
   /**
    * For debugging purposes only.
    */
   void checkForDups() {
-    Set<String> ids = new HashSet<String>();
-    Iterator<String> iter = fsAddrToXmiIdMap.iterator();
+    BitSet ids = new BitSet();
+    IntListIterator iter = fsAddrToXmiIdMap.keyIterator();
     while (iter.hasNext()) {
-      String xmiId = (String) iter.next();
-      if (!ids.add(xmiId)) {
+      int xmiId = iter.next();
+      if (ids.get(xmiId)) {
         throw new RuntimeException("Duplicate ID " + xmiId + "!");
       }
+      ids.set(xmiId);
     }
   }
 
@@ -351,7 +354,7 @@ public class XmiSerializationSharedData {
    */
   public String toString() {
     StringBuffer buf = new StringBuffer();
-    int[] keys = fsAddrToXmiIdMap.keySet();
+    int[] keys = fsAddrToXmiIdMap.getSortedKeys();
     for (int i = 0; i < keys.length; i++) {
       buf.append(keys[i]).append(": ").append(fsAddrToXmiIdMap.get(keys[i])).append('\n');
     }
