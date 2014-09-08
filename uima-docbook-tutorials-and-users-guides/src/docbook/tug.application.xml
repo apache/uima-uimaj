@@ -507,7 +507,7 @@ ae.destroy();</programlisting></para>
                called XCAS.</para>
           </listitem>
           <listitem>
-            <para>JSON formats: This is intended for exposing results in the CAS as JSON objects for use by 
+            <para>JSON formats (as of version 2.6.1): This is intended for exposing results in the CAS as JSON objects for use by 
             web applications.  See <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.json.overview"/>.
             For JSON, only serialization is supported.</para>
           </listitem>
