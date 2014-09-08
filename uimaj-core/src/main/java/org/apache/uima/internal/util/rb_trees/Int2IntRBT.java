@@ -231,6 +231,11 @@ public class Int2IntRBT extends IntArrayRBTcommon {
     flush();
   }
 
+  public void flush() {
+    super.flush();
+    lastNodeGotten = NIL;
+  }
+  
   protected void ensureCapacity(int requiredSize) {
     super.ensureCapacity(requiredSize);
     this.values = ensureArrayCapacity(this.values, requiredSize);
