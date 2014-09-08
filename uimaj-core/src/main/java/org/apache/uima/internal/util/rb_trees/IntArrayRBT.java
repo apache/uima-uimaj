@@ -538,7 +538,10 @@ public class IntArrayRBT extends IntArrayRBTcommon {
     return true;
   }
 
-
+  public void clear() {
+    flush();
+  }
+  
   /**
    * Method iterator.
    * 
