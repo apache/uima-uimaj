@@ -15,10 +15,10 @@
       "@id" : "org.apache.uimax.test.Token", 
       "@featureRefs" : ["sofa" ], 
       "@superTypes" : ["uima.tcas.Annotation" ] } }, 
-  "@cas_feature_structures" : {
-    "5" : {"@type" : "cas:Sofa",  "sofaNum" : 1,  "sofaID" : "_InitialView" }, 
-    "1" : {"@type" : "test:Token",  "sofa" : 5 }, 
-    "12" : {"@type" : "test2:Token",  "sofa" : 5 }, 
-    "16" : {"@type" : "test22:Token",  "sofa" : 5 } }, 
+  "@cas_feature_structures" : [
+    {"@id" : 5,  "@type" : "cas:Sofa",  "sofaNum" : 1,  "sofaID" : "_InitialView" }, 
+    {"@id" : 1,  "@type" : "test:Token",  "sofa" : 5 }, 
+    {"@id" : 12,  "@type" : "test2:Token",  "sofa" : 5 }, 
+    {"@id" : 16,  "@type" : "test22:Token",  "sofa" : 5 } ], 
   "@cas_views" : {
     "5" : [1,  12,  16 ] } }

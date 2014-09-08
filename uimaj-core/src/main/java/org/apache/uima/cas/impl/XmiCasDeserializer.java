@@ -922,10 +922,10 @@ public class XmiCasDeserializer {
         }
           // For list types, we do the same as for array types UNLESS we're dealing with
           // the tail feature of another list node. In that case we do the usual FS deserialization.
-        case XmiCasSerializer.TYPE_CLASS_INTLIST:
-        case XmiCasSerializer.TYPE_CLASS_FLOATLIST:
-        case XmiCasSerializer.TYPE_CLASS_STRINGLIST:
-        case XmiCasSerializer.TYPE_CLASS_FSLIST: {
+        case CasSerializerSupport.TYPE_CLASS_INTLIST:
+        case CasSerializerSupport.TYPE_CLASS_FLOATLIST:
+        case CasSerializerSupport.TYPE_CLASS_STRINGLIST:
+        case CasSerializerSupport.TYPE_CLASS_FSLIST: {
           if (ts.ll_getFeatureForCode(featCode).isMultipleReferencesAllowed()) {
             // do the usual FS deserialization
             try {
@@ -1026,7 +1026,7 @@ public class XmiCasDeserializer {
           break;
         }
         */
-        case XmiCasSerializer.TYPE_CLASS_INTLIST: {
+        case CasSerializerSupport.TYPE_CLASS_INTLIST: {
           int listFS = casBeingFilled.getFeatureValue(addr, featCode);
           if (listFS == 0) {
             listFS = listUtils.createIntList(featVals);
@@ -1040,7 +1040,7 @@ public class XmiCasDeserializer {
           }
           break;
         }
-        case XmiCasSerializer.TYPE_CLASS_FLOATLIST: {
+        case CasSerializerSupport.TYPE_CLASS_FLOATLIST: {
           int listFS = casBeingFilled.getFeatureValue(addr, featCode);
           if (listFS == 0) {
             listFS = listUtils.createFloatList(featVals);
@@ -1054,7 +1054,7 @@ public class XmiCasDeserializer {
           }
           break;
         }
-        case XmiCasSerializer.TYPE_CLASS_STRINGLIST: {
+        case CasSerializerSupport.TYPE_CLASS_STRINGLIST: {
           int listFS = casBeingFilled.getFeatureValue(addr, featCode);
           if (listFS == 0) {
             listFS = listUtils.createStringList(featVals);
@@ -1068,7 +1068,7 @@ public class XmiCasDeserializer {
           }
           break;
         }
-        case XmiCasSerializer.TYPE_CLASS_FSLIST: {
+        case CasSerializerSupport.TYPE_CLASS_FSLIST: {
           // this call, in addition to creating the list in the CAS, also
           // adds each list node ID to the fsListNodesFromMultivaluedProperties list.
           // We need this so we can go back through later and reset the addresses of the
@@ -1117,23 +1117,23 @@ public class XmiCasDeserializer {
     private int createArray(int arrayType, List<String> values, int xmiId, int addr) {
       int casArray = -1; 
       if (addr > 0) { //non-shared preexisting
-	    if (values.size() == casBeingFilled.getLowLevelCAS().ll_getArraySize(addr)) {
-		  casArray = addr;
-		  updateExistingArray(arrayType, values, casArray);
-	    } else {
-		  casArray = createNewArray(arrayType, values);
-	    }
+  	    if (values.size() == casBeingFilled.getLowLevelCAS().ll_getArraySize(addr)) {
+  	      casArray = addr;
+  	      updateExistingArray(arrayType, values, casArray);
+  	    } else {
+  	      casArray = createNewArray(arrayType, values);
+  	    }
       }  else  if (xmiId == -1) { //non-shared new
     	  casArray = createNewArray(arrayType, values);
       }  else if (isNewFS(xmiId)) {  //shared new
-    	  casArray = createNewArray(arrayType,values);
+    	  casArray = createNewArray(arrayType, values);
       }  else { //shared preexisting
     	  casArray = getFsAddrForXmiId(xmiId);
     	  if (values.size() == casBeingFilled.getLowLevelCAS().ll_getArraySize(casArray)) {
       		updateExistingArray(arrayType, values, casArray);
-      	  } else {
+      	} else {
       		casArray = createNewArray(arrayType, values);
-      	  }
+      	}
       }
 
       deserializedFsAddrs.add(casArray);
@@ -1607,16 +1607,16 @@ public class XmiCasDeserializer {
     private final int classifyType(int type) {
       // For most most types
       if (listUtils.isIntListType(type)) {
-        return XmiCasSerializer.TYPE_CLASS_INTLIST;
+        return CasSerializerSupport.TYPE_CLASS_INTLIST;
       }
       if (listUtils.isFloatListType(type)) {
-        return XmiCasSerializer.TYPE_CLASS_FLOATLIST;
+        return CasSerializerSupport.TYPE_CLASS_FLOATLIST;
       }
       if (listUtils.isStringListType(type)) {
-        return XmiCasSerializer.TYPE_CLASS_STRINGLIST;
+        return CasSerializerSupport.TYPE_CLASS_STRINGLIST;
       }
       if (listUtils.isFsListType(type)) {
-        return XmiCasSerializer.TYPE_CLASS_FSLIST;
+        return CasSerializerSupport.TYPE_CLASS_FSLIST;
       }
       return casBeingFilled.ll_getTypeClass(type);
     }

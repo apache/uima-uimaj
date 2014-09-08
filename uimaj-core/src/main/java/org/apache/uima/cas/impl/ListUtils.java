@@ -19,15 +19,17 @@
 
 package org.apache.uima.cas.impl;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.impl.XmiSerializationSharedData.OotsElementData;
+import org.apache.uima.internal.util.IntHashSet;
 import org.apache.uima.internal.util.IntVector;
+import org.apache.uima.internal.util.PositiveIntSet;
 import org.apache.uima.internal.util.XmlAttribute;
-import org.apache.uima.internal.util.rb_trees.IntRedBlackTree;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
 import org.xml.sax.ErrorHandler;
@@ -39,6 +41,8 @@ import org.xml.sax.SAXParseException;
  * 
  */
 public class ListUtils {
+  private static final List<String> EMPTY_LIST_STRING = Collections.emptyList();
+
   CASImpl cas;
 
   // list type and feature codes
@@ -79,7 +83,7 @@ public class ListUtils {
 
   private int stringTailFeat;
 
-  private int fsHeadFeat;
+  int fsHeadFeat;
 
   private int fsTailFeat;
 
@@ -152,6 +156,16 @@ public class ListUtils {
         (isFsListType(type))     ? neFsListType :
           -1;
   }
+  
+  public int getEListType(int type) {
+    return 
+        (isIntListType(type))    ? eIntListType :
+        (isFloatListType(type))  ? eFloatListType :
+        (isStringListType(type)) ? eStringListType :
+        (isFsListType(type))     ? eFsListType :
+          -1;
+  }
+
 
   public boolean isIntListType(int type) {
     return (type == this.intListType || type == this.neIntListType || type == this.eIntListType);
@@ -181,73 +195,105 @@ public class ListUtils {
   }
   
   public int getLength(int type, int addr, int neListType, int tailFeat) {
-	IntRedBlackTree visited = new IntRedBlackTree();
-	foundCycle = false;
-	// first count length of list so we can allocate array
-	int length = 0;
-	int curNode = addr;
-	while (cas.getHeapValue(curNode) == neListType) {
-	  if (!visited.put(curNode, curNode)) {
-	    foundCycle = true;
-	    break;
-	  }
-	  length++;
-	  curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(tailFeat));
-	}
-	return length;
+    PositiveIntSet visited = new PositiveIntSet();
+  	foundCycle = false;
+  	// first count length of list so we can allocate array
+  	int length = 0;
+  	int curNode = addr;
+  	while (cas.getHeapValue(curNode) == neListType) {
+  	  if (!visited.add(curNode)) {
+  	    foundCycle = true;
+  	    break;
+  	  }
+  	  length++;
+  	  curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(tailFeat));
+  	}
+  	return length;
   }
-   
-  public String[] anyListToStringArray(int curNode, XmiSerializationSharedData sharedData) throws SAXException {
+
+  static abstract class ListOutput {
+    abstract void append(String item);
+  }
+  
+  public void anyListToOutput(
+      int curNode, 
+      XmiSerializationSharedData sharedData, 
+      CasSerializerSupport.CasDocSerializer cds,
+      ListOutput out) {
+    if (curNode == CASImpl.NULL) {
+      return;
+    }
+
     final int type = cas.getHeapValue(curNode);
-    int headFeat = getHeadFeatCode(type);
-    int tailFeat = getTailFeatCode(type);
-    int neListType = getNeListType(type);
+    final int headFeat = getHeadFeatCode(type);
+    final int tailFeat = getTailFeatCode(type);
+    final int neListType = getNeListType(type);
 
-    int length = getLength(type, curNode, neListType, tailFeat);
-    String[] array = new String[length];
-
-    // now populate list
-//    curNode = addr;
-    for (int i = 0; i < length; i++) {
+    while (curNode != CASImpl.NULL) {
+      final int curNodeType = cas.getHeapValue(curNode);
+      if (curNodeType != neListType) { // if not "non-empty"
+        break;  // would be the end element.  a 0 is also treated as an end element
+      }
+      
       final int val = cas.getHeapValue(curNode + cas.getFeatureOffset(headFeat));
       
-      if (neListType == neIntListType) {
-        array[i] = Integer.toString(val);
-      } else if (neListType == neFloatListType) {
-        array[i] = Float.toString(val);
-      } else if (neListType == neStringListType) {
-        array[i] = cas.getStringForCode(val);
-      } else if (neListType == neFsListType) {
+      if (curNodeType == neStringListType) {
+        out.append(cas.getStringForCode(val));
+      }
+      if (curNodeType == neIntListType) {
+        out.append(Integer.toString(val));
+
+      } else if (curNodeType == neFloatListType) {
+        out.append(Float.toString(CASImpl.int2float(val)));
+
+      } else if (curNodeType == neFsListType) {
         if (val == 0) {
-          //null value in list.  Represent with "0".
-          array[i] = "0";
-          // However, this may be null because the element was originally a reference to an 
-          // out-of-typesystem FS, so chck the XmiSerializationSharedData
           if (sharedData != null) {
             OotsElementData oed = sharedData.getOutOfTypeSystemFeatures(curNode);
             if (oed != null) {
               assert oed.attributes.size() == 1; //only the head feature can possibly be here
               XmlAttribute attr = (XmlAttribute)oed.attributes.get(0);
               assert CAS.FEATURE_BASE_NAME_HEAD.equals(attr.name);
-              array[i] = attr.value;
+              out.append(attr.value);
+            } else {
+              out.append("0");
             }
-          }        
-        }
-        else {
-          if (sharedData != null) {
-            array[i] = (val == 0) ? "0" : sharedData.getXmiId(val);  // changed from null 8/2014 mis
           } else {
-            array[i] = Integer.toString(val);
+            out.append("0");
           }
+        } else if (sharedData != null) {
+          out.append(sharedData.getXmiId(val));
+        } else {
+          out.append(Integer.toString(val));
         }
-      }
+      } // end of Fs List type
+      
       curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(tailFeat));
+    } // end of while loop
+  } 
+  
+  public String[] anyListToStringArray(
+      int curNode, 
+      XmiSerializationSharedData sharedData) throws SAXException {
+    List<String> r = anyListToStringList(curNode, sharedData, null);
+    return r.toArray(new String[r.size()]);
+  }
+  
+  public List<String> anyListToStringList(
+      int curNode, 
+      XmiSerializationSharedData sharedData, 
+      CasSerializerSupport.CasDocSerializer cds) {
+    if (curNode == CASImpl.NULL) {
+      return EMPTY_LIST_STRING;
     }
-    if (foundCycle) {
-      reportWarning("Found a cycle in a UIMA List; list truncated to "
-              + Arrays.asList(array).toString());
-    }
-    return array;
+    final List<String> list = new ArrayList<String>();
+    anyListToOutput(curNode, sharedData, cds, new ListOutput() {
+      @Override
+      void append(String item) {
+        list.add(item);
+      }
+    });
+    return list;
   }
 
   //called for enquing 
@@ -327,7 +373,7 @@ public class ListUtils {
     int currLength = this.getLength(this.neIntListType, addr);
     int curNode = addr;
     int prevNode = 0;
-    IntRedBlackTree visited = new IntRedBlackTree();
+    PositiveIntSet visited = new PositiveIntSet();
     boolean foundCycle = false;
     int i =0;
     
@@ -336,7 +382,7 @@ public class ListUtils {
 	   
     if (currLength < stringValues.size()) {
   	  while (cas.getHeapValue(curNode) == neIntListType) {
-  	  	if (!visited.put(curNode, curNode)) {
+  	  	if (!visited.add(curNode)) {
   	  	           foundCycle = true;
   	  	           break;
   	  	}
@@ -360,7 +406,7 @@ public class ListUtils {
   	  }
   	} else if (currLength > stringValues.size()) {
   		while (cas.getHeapValue(curNode) == neIntListType && i < stringValues.size()) {
-  		  if (!visited.put(curNode, curNode)) {
+  		  if (!visited.add(curNode)) {
   		  	           foundCycle = true;
   		  	           break;
   		  }
@@ -371,7 +417,7 @@ public class ListUtils {
   		int finalNode = curNode;
         //loop till we get a FS that is of type eStringListType
         while (cas.getHeapValue(curNode) == neIntListType) {
-    	  if (!visited.put(curNode, curNode)) {
+    	  if (!visited.add(curNode)) {
     	    foundCycle = true;
     	    break;
     	    //TODO throw exc
@@ -382,7 +428,7 @@ public class ListUtils {
         cas.setFeatureValue(finalNode, intTailFeat, curNode);   
     } else {
       while (cas.getHeapValue(curNode) == neIntListType) {
-        if (!visited.put(curNode, curNode)) {
+        if (!visited.add(curNode)) {
            foundCycle = true;
            break;
         }
@@ -403,7 +449,7 @@ public class ListUtils {
     int currLength = this.getLength(this.neFloatListType, addr);
     int curNode = addr;
     int prevNode = 0;
-    IntRedBlackTree visited = new IntRedBlackTree();
+    PositiveIntSet visited = new PositiveIntSet();
     boolean foundCycle = false;
     int i =0;
     
@@ -411,7 +457,7 @@ public class ListUtils {
 	//   first = createFloatList(stringValues);
 	if (currLength < stringValues.size()) {
 	  while (cas.getHeapValue(curNode) == neFloatListType) {
-	  	if (!visited.put(curNode, curNode)) {
+	  	if (!visited.add(curNode)) {
 	  	           foundCycle = true;
 	  	           break;
 	  	}
@@ -435,7 +481,7 @@ public class ListUtils {
 	  }
 	} else if (currLength > stringValues.size()) {
 		while (cas.getHeapValue(curNode) == neFloatListType && i < stringValues.size()) {
-		  if (!visited.put(curNode, curNode)) {
+		  if (!visited.add(curNode)) {
 		  	           foundCycle = true;
 		  	           break;
 		  }
@@ -446,7 +492,7 @@ public class ListUtils {
 		int finalNode = curNode;
         //loop till we get a FS that is of type eStringListType
         while (cas.getHeapValue(curNode) == neFloatListType) {
-  	      if (!visited.put(curNode, curNode)) {
+  	      if (!visited.add(curNode)) {
   	        foundCycle = true;
   	        break;
   	      //TODO throw exc
@@ -457,7 +503,7 @@ public class ListUtils {
       	cas.setFeatureValue(finalNode, floatTailFeat, curNode);
     } else {
       while (cas.getHeapValue(curNode) == neFloatListType) {
-        if (!visited.put(curNode, curNode)) {
+        if (!visited.add(curNode)) {
            foundCycle = true;
            break;
         }
@@ -478,7 +524,7 @@ public class ListUtils {
     int first = addr;
     int currLength = this.getLength(this.neFsListType, addr);
     boolean foundCycle = false;
-    IntRedBlackTree visited = new IntRedBlackTree();
+    PositiveIntSet visited = new PositiveIntSet();
     int curNode = addr;
     int prevNode = 0;
     
@@ -487,7 +533,7 @@ public class ListUtils {
     int i=0;
     if (currLength < stringValues.size() ) {    
   	  while (cas.getHeapValue(curNode) == neFsListType) {
-  	    if (!visited.put(curNode, curNode)) {
+  	    if (!visited.add(curNode)) {
   	           foundCycle = true;
   	           break;
   	    }
@@ -513,7 +559,7 @@ public class ListUtils {
   	  }
     } else if (currLength > stringValues.size()) {	
         while (cas.getHeapValue(curNode) == neFsListType && i < stringValues.size()) {
-   	      if (!visited.put(curNode, curNode)) {
+   	      if (!visited.add(curNode)) {
    		    foundCycle = true;
    		    break;
    		  }
@@ -525,7 +571,7 @@ public class ListUtils {
         int finalNode = curNode;
         //loop till we get a FS that is of type eStringListType
         while (cas.getHeapValue(curNode) == neFsListType) {
-  	      if (!visited.put(curNode, curNode)) {
+  	      if (!visited.add(curNode)) {
   	        foundCycle = true;
   	        break;
   	      //TODO throw exc
@@ -536,7 +582,7 @@ public class ListUtils {
       	cas.setFeatureValue(finalNode, fsTailFeat, curNode);
     } else {
       while (cas.getHeapValue(curNode) == neFsListType) {
-        if (!visited.put(curNode, curNode)) {
+        if (!visited.add(curNode)) {
            foundCycle = true;
            break;
         }
@@ -556,7 +602,7 @@ public class ListUtils {
   public int updateStringList(int addr, List<String> stringValues) throws SAXException   {
     int first = addr;
     boolean foundCycle = false;
-    IntRedBlackTree visited = new IntRedBlackTree();
+    PositiveIntSet visited = new PositiveIntSet();
     int curNode = addr;
     int prevNode = 0;
     int currLength = this.getLength(this.neStringListType, addr);
@@ -564,7 +610,7 @@ public class ListUtils {
     if (currLength < stringValues.size() ) {    
       int i =0;
 	  while (cas.getHeapValue(curNode) == neStringListType) {
-	    if (!visited.put(curNode, curNode)) {
+	    if (!visited.add(curNode)) {
 	           foundCycle = true;
 	           break;
 	    }
@@ -592,7 +638,7 @@ public class ListUtils {
     } else if (currLength > stringValues.size()) {
       int i=0;	
       while (cas.getHeapValue(curNode) == neStringListType && i < stringValues.size()) {
- 	    if (!visited.put(curNode, curNode)) {
+ 	    if (!visited.add(curNode)) {
  		           foundCycle = true;
  		           break;
  		}
@@ -606,7 +652,7 @@ public class ListUtils {
       } 
       int finalNode = curNode;
       while (cas.getHeapValue(curNode) == neStringListType) {
-	    if (!visited.put(curNode, curNode)) {
+	    if (!visited.add(curNode)) {
 	      foundCycle = true;
 	      break;
 	      //TODO throw exc
@@ -617,7 +663,7 @@ public class ListUtils {
     } else {
       int i =0;
       while (cas.getHeapValue(curNode) == neStringListType) {
-        if (!visited.put(curNode, curNode)) {
+        if (!visited.add(curNode)) {
            foundCycle = true;
            break;
         }

@@ -21,17 +21,17 @@
       "@superTypes" : ["uima.cas.FSArray" ] } }, 
   "@cas_feature_structures" : {
     "StringArray" : [
-      {"@id" : 83,  "@collection" : [null ] } ], 
+      {"@id" : 83,  "@type" : "StringArray",  "@collection" : [null ] } ], 
     "BooleanArray" : [
-      {"@id" : 74,  "@collection" : [false ] } ], 
+      {"@id" : 74,  "@type" : "BooleanArray",  "@collection" : [false ] } ], 
     "ByteArray" : [
-      {"@id" : 77,  "@collection" : [0,  0 ] } ], 
+      {"@id" : 77,  "@type" : "ByteArray",  "@collection" : ["AAA=" ] } ], 
     "ShortArray" : [
-      {"@id" : 80,  "@collection" : [ ] } ], 
+      {"@id" : 80,  "@type" : "ShortArray",  "@collection" : [ ] } ], 
     "Sofa" : [
-      {"@id" : 28,  "sofaNum" : 1,  "sofaID" : "_InitialView" } ], 
+      {"@id" : 28,  "@type" : "Sofa",  "sofaNum" : 1,  "sofaID" : "_InitialView" } ], 
     "AllTypes" : [
-      {"@id" : 1,  "sofa" : 28,  "aBoolean" : true,  "aByte" : -117,  "aShort" : -112,  "aLong" : 1234,  "aFloat" : 1.3,  "aDouble" : 2.6,  "aString" : "some \"String\"",  "aFS" : 35,  "aArrayBoolean" : [false ],  "aArrayMrBoolean" : 74,  "aArrayMrByte" : 77,  "aArrayByte" : [0,  0 ],  "aArrayShort" : [ ],  "aArrayMrShort" : 80,  "aArrayString" : [null ],  "aArrayMrString" : 83,  "aListInteger" : [ ],  "aListString" : ["testStr" ],  "aListFs" : [0 ] }, 
-      {"@id" : 35,  "sofa" : 28,  "aBoolean" : false } ] }, 
+      {"@id" : 1,  "@type" : "AllTypes",  "sofa" : 28,  "aBoolean" : true,  "aByte" : -117,  "aShort" : -112,  "aLong" : 1234,  "aFloat" : 1.3,  "aDouble" : 2.6,  "aString" : "some \"String\"",  "aFS" : 35,  "aArrayBoolean" : [false ],  "aArrayMrBoolean" : 74,  "aArrayMrByte" : 77,  "aArrayByte" : ["AAA=" ],  "aArrayShort" : [ ],  "aArrayMrShort" : 80,  "aArrayString" : [null ],  "aArrayMrString" : 83,  "aListInteger" : [ ],  "aListString" : ["testStr" ],  "aListFs" : [0 ] }, 
+      {"@id" : 35,  "@type" : "AllTypes",  "sofa" : 28,  "aBoolean" : false } ] }, 
   "@cas_views" : {
     "28" : [1 ] } }

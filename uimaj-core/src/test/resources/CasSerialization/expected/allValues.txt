@@ -20,12 +20,12 @@
       "@id" : "uima.cas.StringArray", 
       "@superTypes" : ["uima.cas.FSArray" ] } }, 
   "@cas_feature_structures" : {
-    "28" : {"@type" : "Sofa",  "sofaNum" : 1,  "sofaID" : "_InitialView" }, 
-    "1" : {"@type" : "AllTypes",  "sofa" : 28,  "begin" : 0,  "end" : 0,  "aBoolean" : true,  "aByte" : -117,  "aShort" : -112,  "aInteger" : 0,  "aLong" : 1234,  "aFloat" : 1.3,  "aDouble" : 2.6,  "aString" : "some \"String\"",  "aFS" : 35,  "aArrayBoolean" : [false ],  "aArrayMrBoolean" : 74,  "aArrayMrByte" : 77,  "aArrayByte" : [0,  0 ],  "aArrayShort" : [ ],  "aArrayMrShort" : 80,  "aArrayString" : [null ],  "aArrayMrString" : 83,  "aListInteger" : [ ],  "aListString" : ["testStr" ],  "aListFs" : [0 ] }, 
-    "83" : {"@type" : "StringArray",  "@collection" : [null ] }, 
-    "80" : {"@type" : "ShortArray",  "@collection" : [ ] }, 
-    "77" : {"@type" : "ByteArray",  "@collection" : [0,  0 ] }, 
-    "74" : {"@type" : "BooleanArray",  "@collection" : [false ] }, 
-    "35" : {"@type" : "AllTypes",  "sofa" : 28,  "begin" : 0,  "end" : 0,  "aBoolean" : false,  "aByte" : 0,  "aShort" : 0,  "aInteger" : 0,  "aLong" : 0,  "aFloat" : 0.0,  "aDouble" : 0.0 } }, 
+    "28" : {"@id" : 28,  "@type" : "Sofa",  "sofaNum" : 1,  "sofaID" : "_InitialView" }, 
+    "1" : {"@id" : 1,  "@type" : "AllTypes",  "sofa" : 28,  "begin" : 0,  "end" : 0,  "aBoolean" : true,  "aByte" : -117,  "aShort" : -112,  "aInteger" : 0,  "aLong" : 1234,  "aFloat" : 1.3,  "aDouble" : 2.6,  "aString" : "some \"String\"",  "aFS" : 35,  "aArrayBoolean" : [false ],  "aArrayMrBoolean" : 74,  "aArrayMrByte" : 77,  "aArrayByte" : ["AAA=" ],  "aArrayShort" : [ ],  "aArrayMrShort" : 80,  "aArrayString" : [null ],  "aArrayMrString" : 83,  "aListInteger" : [ ],  "aListString" : ["testStr" ],  "aListFs" : [0 ] }, 
+    "35" : {"@id" : 35,  "@type" : "AllTypes",  "sofa" : 28,  "begin" : 0,  "end" : 0,  "aBoolean" : false,  "aByte" : 0,  "aShort" : 0,  "aInteger" : 0,  "aLong" : 0,  "aFloat" : 0.0,  "aDouble" : 0.0 }, 
+    "74" : {"@id" : 74,  "@type" : "BooleanArray",  "@collection" : [false ] }, 
+    "77" : {"@id" : 77,  "@type" : "ByteArray",  "@collection" : ["AAA=" ] }, 
+    "80" : {"@id" : 80,  "@type" : "ShortArray",  "@collection" : [ ] }, 
+    "83" : {"@id" : 83,  "@type" : "StringArray",  "@collection" : [null ] } }, 
   "@cas_views" : {
     "28" : [1 ] } }

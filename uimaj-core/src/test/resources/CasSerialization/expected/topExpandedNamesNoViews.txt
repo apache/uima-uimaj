@@ -1,1 +1,1 @@
-{"@context":{"TOP":{"@id":"uima.cas.TOP"}},"@cas_feature_structures":{"1":{"@type":"TOP"}}}
+{"@context":{"TOP":{"@id":"uima.cas.TOP"}},"@cas_feature_structures":[{"@id":1,"@type":"TOP"}]}

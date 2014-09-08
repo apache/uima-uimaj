@@ -12,8 +12,8 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Marker;
 import org.apache.uima.cas.Type;
-import org.apache.uima.cas.impl.XmiCasSerializer.JsonCasFormat;
-import org.apache.uima.cas.impl.XmiCasSerializer.JsonContextFormat;
+import org.apache.uima.cas.impl.JsonCasSerializer.JsonCasFormat;
+import org.apache.uima.cas.impl.JsonCasSerializer.JsonContextFormat;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.test.junit_extension.JUnitExtension;
@@ -24,6 +24,20 @@ import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
 
 public class JsonCasSerializerTest extends TestCase {
+  /*********************************************************************
+   *    I N S T R U C T I O N S                                        *
+   *    for regenerating the expected:                                 *
+   *                                                                   *
+   *    a) set GENERATE_EXPECTED = true;                               *
+   *    b) use the generateDir which generates into the newExpected dir*
+   *    c) compare to see if OK                                        *
+   *    d) change the destination to the real expected dir and rerun   *
+   *    e) change the GENERATE_EXPECTED back to false, and the         *
+   *              generateDir back to newExpected                      *
+   *                                                                   *
+   *    Testing for proper format:                                     *
+   *      can use http://www.jsoneditoronline.org/                     *          
+   *********************************************************************/
   
   private static final boolean GENERATE_EXPECTED = false;
 //  private static final String generateDir = "src/test/resources/CasSerialization/expected/";
@@ -35,13 +49,13 @@ public class JsonCasSerializerTest extends TestCase {
   private CASImpl cas;
   private TypeSystemImpl tsi;
   private TypeImpl topType;
-  private XmiCasSerializer xcs;
+  private JsonCasSerializer jcs;
   private TypeImpl annotationType;
   private TypeImpl allTypesType;
   
   protected void setUp() throws Exception {
     super.setUp();
-    xcs = new XmiCasSerializer(null);
+    jcs = new JsonCasSerializer();
   }
 
   protected void tearDown() throws Exception {
@@ -99,33 +113,33 @@ public class JsonCasSerializerTest extends TestCase {
     compareWithExpected("topWithDefaultViewOmits.txt", r);
     
     cas.reset();
-    xcs.setJsonContext(JsonContextFormat.omitContext);
+    jcs.setJsonContext(JsonContextFormat.omitContext);
     cas.addFsToIndexes(cas.createFS(topType));
     r = serialize();
     compareWithExpected("topNoContext.txt", r);
     
     cas.reset();
-    xcs.setJsonContext(JsonContextFormat.omitContext);
-    xcs.setCasViews(false);
+    jcs.setJsonContext(JsonContextFormat.omitContext);
+    jcs.setCasViews(false);
     cas.addFsToIndexes(cas.createFS(topType));
     r = serialize();
     compareWithExpected("topNoContextNoViews.txt", r);
     
     cas.reset();
-    xcs.setJsonContext(JsonContextFormat.includeExpandedTypeNames);
+    jcs.setJsonContext(JsonContextFormat.includeExpandedTypeNames);
     cas.addFsToIndexes(cas.createFS(topType));
     r = serialize();
     compareWithExpected("topExpandedNamesNoViews.txt", r);
 
     cas.reset();
-    xcs.setJsonContext(JsonContextFormat.omitExpandedTypeNames);
+    jcs.setJsonContext(JsonContextFormat.omitExpandedTypeNames);
     cas.addFsToIndexes(cas.createFS(topType));
     r = serialize();
     compareWithExpected("topNoContextNoViews.txt", r);
 
     cas.reset();
-    xcs.setJsonContext(JsonContextFormat.includeFeatureRefs);
-    xcs.setJsonContext(JsonContextFormat.includeSuperTypes);
+    jcs.setJsonContext(JsonContextFormat.includeFeatureRefs);
+    jcs.setJsonContext(JsonContextFormat.includeSuperTypes);
     cas.addFsToIndexes(cas.createFS(topType));
     r = serialize();
     compareWithExpected("topFeatRefsSupertypesNoViews.txt", r);
@@ -144,7 +158,7 @@ public class JsonCasSerializerTest extends TestCase {
     String r = serialize();
     compareWithExpected("nameSpaceCollisionOmits.txt", r);
     
-    xcs.setOmitDefaultValues(false);
+    jcs.setOmitDefaultValues(false);
     r = serialize();
     compareWithExpected("nameSpaceCollision.txt", r);
     
@@ -152,15 +166,15 @@ public class JsonCasSerializerTest extends TestCase {
     r = serialize();
     compareWithExpected("nameSpaceCollision2.txt", r);
 
-    xcs.setOmitDefaultValues(true);
+    jcs.setOmitDefaultValues(true);
     r = serialize();
     compareWithExpected("nameSpaceCollision2Omits.txt", r);
 
-    xcs.setPrettyPrint(true);
+    jcs.setPrettyPrint(true);
     r = serialize();
     compareWithExpected("nameSpaceCollision2ppOmits.txt", r);
 
-    xcs.setOmitDefaultValues(false);
+    jcs.setOmitDefaultValues(false);
     r = serialize();
     compareWithExpected("nameSpaceCollision2pp.txt", r);
     
@@ -170,22 +184,35 @@ public class JsonCasSerializerTest extends TestCase {
     setupTypeSystem("allTypes.xml");
     setAllValues(0);
 
-    xcs.setPrettyPrint(true);
+    jcs.setPrettyPrint(true);
     String r = serialize();
     compareWithExpected("allValuesOmits.txt", r);
 
-    xcs.setJsonCasFormat(JsonCasFormat.BY_TYPE_EMBED_ID);
+    jcs.jsonCasFormatEnable(JsonCasFormat.INDEX_TYPE);
     r = serialize();
     compareWithExpected("allValuesByTypeOmits.txt", r);
     
-    xcs.setOmitDefaultValues(false);
+    jcs.setOmitDefaultValues(false);
     r = serialize();
     compareWithExpected("allValuesByType.txt", r);
     
-    xcs.setJsonCasFormat(JsonCasFormat.BY_ID_EMBED_TYPE);
+    jcs.jsonCasFormatEnable(JsonCasFormat.INDEX_ID);
     r = serialize();
     compareWithExpected("allValues.txt", r);
     
+    jcs.jsonCasFormatEnable(JsonCasFormat.OMIT_ID);
+    r = serialize();
+    compareWithExpected("allValuesNoIDs.txt", r);
+
+    jcs.jsonCasFormatDisable(JsonCasFormat.OMIT_ID);
+    jcs.jsonCasFormatEnable(JsonCasFormat.OMIT_TYPE);    
+    r = serialize();
+    compareWithExpected("allValuesNoTypes.txt", r);
+
+    jcs.jsonCasFormatEnable(JsonCasFormat.OMIT_ID);
+    r = serialize();
+    compareWithExpected("allValuesNoIDNoTypes.txt", r);
+
   }
   
   public void testMultipleViews() throws Exception {
@@ -194,7 +221,7 @@ public class JsonCasSerializerTest extends TestCase {
     cas = (CASImpl) cas.createView("View2");
     setAllValues(0);
 
-    xcs.setPrettyPrint(true);
+    jcs.setPrettyPrint(true);
     String r = serialize();
     compareWithExpected("multipleViews.txt", r);
         
@@ -207,11 +234,11 @@ public class JsonCasSerializerTest extends TestCase {
     Marker marker = cas.createMarker();
     setAllValues(1);
     
-    xcs.setPrettyPrint(true);
+    jcs.setPrettyPrint(true);
     String r = serialize();
     compareWithExpected("delta.txt", r);
     
-    xcs.setDeltaCas(marker);
+    jcs.setDeltaCas(marker);
     r = serialize();
     compareWithExpected("delta2.txt", r);
     
@@ -315,7 +342,7 @@ public class JsonCasSerializerTest extends TestCase {
   private String serialize() throws Exception {    
     StringWriter sw = new StringWriter();
     try {
-    xcs.serializeJson(cas, sw);
+    jcs.serialize(cas, sw);
     } catch (Exception e) {
       System.err.format("Exception occurred. The string produced so far was: %n%s%n", sw.toString());
       throw e;
@@ -323,22 +350,4 @@ public class JsonCasSerializerTest extends TestCase {
     return sw.toString();
   }
     
-    public void testJsonSerializeCASObject() {
-  }
-
-  public void testJsonSerializeCASTypeSystemObject() {
-  }
-
-  public void testJsonSerializeCASTypeSystemObjectBooleanMarker() {
-  }
-
-  public void testJsonSerializeCASContentHandlerErrorHandlerMarker() {
-  }
-
-  public void testSerializeJsonCASObject() {
-  }
-
-  public void testSerializeJsonCASJsonContentHandlerJacksonWrapper() {
-  }
-
 }
