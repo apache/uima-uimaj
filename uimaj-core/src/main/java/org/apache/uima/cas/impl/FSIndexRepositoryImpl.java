@@ -20,7 +20,6 @@
 package org.apache.uima.cas.impl;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.BitSet;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
@@ -48,7 +47,6 @@ import org.apache.uima.internal.util.IntComparator;
 import org.apache.uima.internal.util.IntPointerIterator;
 import org.apache.uima.internal.util.IntSet;
 import org.apache.uima.internal.util.IntVector;
-import org.apache.uima.internal.util.SortedIntSet;
 
 public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelIndexRepository {
 
