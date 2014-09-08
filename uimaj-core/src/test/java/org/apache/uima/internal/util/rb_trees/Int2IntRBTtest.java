@@ -52,7 +52,7 @@ public class Int2IntRBTtest extends TestCase {
     i = 0;
     for (IntKeyValueIterator it = ia.keyValueIterator(); it.isValid(); it.inc()) {
       r[i++] = it.getValue();  
-      System.out.format("key: %d   value: %d%n", it.get(), it.getValue());
+//      System.out.format("key: %d   value: %d%n", it.get(), it.getValue());
     }
     assertTrue(Arrays.equals(r, new Integer[] {2, 4, 6, 8, 10, 12, 14, null} ));
     
