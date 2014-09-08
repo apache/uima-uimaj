@@ -32,7 +32,7 @@
     <groupId>org.apache.uima</groupId>
     <artifactId>parent-pom</artifactId>
     <relativePath />
-    <version>10-SNAPSHOT</version>
+    <version>10</version>
   </parent>
 
   <groupId>org.apache.uima</groupId>
