@@ -43,7 +43,7 @@ public interface JSONizable {
    * 
    * @param aWriter
    *          a Writer to which the JSON string will be written
-   * @throws SAXException 
+   * @throws SAXException -
    */
   public void toJSON(Writer aWriter) throws SAXException;
   
@@ -54,7 +54,7 @@ public interface JSONizable {
    * @param aWriter
    *          a Writer to which the JSON string will be written
    * @param isFormattedOutput set to true for prettyprinting, default is false
-   * @throws SAXException 
+   * @throws SAXException -
    */
   public void toJSON(Writer aWriter, boolean isFormattedOutput) throws SAXException;
 
@@ -63,7 +63,7 @@ public interface JSONizable {
    * 
    * @param aOutputStream
    *          an OutputStream to which the JSON string will be written, in UTF-8 encoding.
-   * @throws SAXException 
+   * @throws SAXException -
    */
   public void toJSON(OutputStream aOutputStream) throws SAXException;
 
@@ -73,7 +73,7 @@ public interface JSONizable {
    * @param aOutputStream
    *          an OutputStream to which the JSON string will be written, in UTF-8 encoding.
    * @param isFormattedOutput set to true for prettyprinting, default is false
-   * @throws SAXException 
+   * @throws SAXException -
    */
 public void toJSON(OutputStream aOutputStream, boolean isFormattedOutput) throws SAXException;
 
@@ -82,7 +82,7 @@ public void toJSON(OutputStream aOutputStream, boolean isFormattedOutput) throws
    * 
    * @param file
    *          a file to which the JSON string will be written, in UTF-8 encoding.
-   * @throws SAXException 
+   * @throws SAXException -
    */
   public void toJSON(File file) throws SAXException;
 
@@ -92,7 +92,7 @@ public void toJSON(OutputStream aOutputStream, boolean isFormattedOutput) throws
    * @param file
    *          a file to which the JSON string will be written, in UTF-8 encoding.
    * @param isFormattedOutput set to true for prettyprinting, default is false
-   * @throws SAXException 
+   * @throws SAXException -
    */
   public void toJSON(File file, boolean isFormattedOutput) throws SAXException;
 

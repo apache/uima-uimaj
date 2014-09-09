@@ -25,7 +25,7 @@ import java.util.NoSuchElementException;
 import org.apache.uima.jcas.impl.JCasHashMap;
 
 /**
- * A map<int, int>
+ * A map&lt;int, int&gt;
  * 
  * based on JCasHashMap, but without the multi-threading support
  * 

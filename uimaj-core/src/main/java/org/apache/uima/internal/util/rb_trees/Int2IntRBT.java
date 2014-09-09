@@ -25,7 +25,7 @@ import org.apache.uima.internal.util.IntKeyValueIterator;
 import org.apache.uima.internal.util.IntListIterator;
 
 /**
- * A map<int, int>
+ * A map&lt;int, int&gt;
  * 
  * uses IntArrayRBTcommon
  * 

@@ -21,7 +21,7 @@ package org.apache.uima.internal.util.rb_trees;
 
 
 /**
- * map<int, int> uses separate objects (IntRBTNode) as nodes  
+ * map&lt;int, int%gt; uses separate objects (IntRBTNode) as nodes  
  * 
  * See the {@link org.apache.uima.internal.util.rb_trees.RedBlackTree RedBlackTree} class. This is a
  * specialized instance with ints as elements.

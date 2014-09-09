@@ -132,7 +132,8 @@ public class JsonContentHandlerJacksonWrapper implements ContentHandler  {
    * Makes a Json content handler, using a specified JsonFactory instance that can 
    *   be configured according to the Jackson implementation.
    * The resulting content handler will send its output to the specified destination
-   * @param destination - can be a File, an OutputStream, or a Writer
+   * @param jsonFactory -
+   * @param o - where the output goes
    * @throws SAXException wrapping an IOException
    */
   public JsonContentHandlerJacksonWrapper(JsonFactory jsonFactory, Object o) throws SAXException {
@@ -143,7 +144,8 @@ public class JsonContentHandlerJacksonWrapper implements ContentHandler  {
    * Makes a Json content handler, and
    *   specifies a prettyprinting boolean flag (default is no prettyprinting).
    * The resulting content handler will send its output to the specified destination
-   * @param destination - can be a File, an OutputStream, or a Writer
+   * @param o - where the output goes
+   * @param isFormattedOutput -
    * @throws SAXException wrapping an IOException
    */
   public JsonContentHandlerJacksonWrapper(Object o, boolean isFormattedOutput) throws SAXException {
@@ -155,7 +157,9 @@ public class JsonContentHandlerJacksonWrapper implements ContentHandler  {
    *   be configured according to the Jackson implementation, and
    *   specifies a prettyprinting boolean flag (default is no prettyprinting).
    * The resulting content handler will send its output to the specified destination
-   * @param destination - can be a File, an OutputStream, or a Writer
+   * @param jsonFactory -
+   * @param o where the output goes
+   * @param isFormattedOutput - true for pretty printing
    * @throws SAXException wrapping an IOException
    */
   public JsonContentHandlerJacksonWrapper(JsonFactory jsonFactory, Object o, boolean isFormattedOutput) throws SAXException {
