@@ -27,7 +27,7 @@ import java.util.NoSuchElementException;
  * A set of non-zero positive ints.  
  *   
  * This is better (size) than IntHashSet unless
- *   the expected max int to be contained is > size of the set * 100
+ *   the expected max int to be contained is &gt; size of the set * 100
  *   or you need to store negative ints
  *   
  * This impl is for use in a single thread case only
@@ -74,6 +74,14 @@ public class IntBitSet {
    */
   public int getSpaceUsed() {
     return set.length() >> 5;
+  }
+  
+  /**
+   * 
+   * @return largest int stored plus 1, or 0 if no ints in table
+   */
+  public int getLargestIntP1() {
+    return set.length();
   }
   
   private class IntBitSetIterator implements IntListIterator {

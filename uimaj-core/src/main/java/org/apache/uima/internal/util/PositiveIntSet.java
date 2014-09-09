@@ -32,6 +32,9 @@ import java.util.NoSuchElementException;
  */
 public class PositiveIntSet {
   
+  // number of words a inthashset has to be better than intbitset to cause switch
+  private static final int HYSTERESIS = 4;
+
   IntBitSet intBitSet;
   
   IntHashSet intHashSet;
@@ -208,32 +211,56 @@ public class PositiveIntSet {
    */
   
   private void maybeSwitchRepresentation(int key) {
+    
     if (isBitSet) {
-      int bitSetSpace = Math.max(intBitSet.getSpaceUsed(), key >> 5);
-      if (bitSetSpace < 32768 || key < bitSetSpace) {
+      /********************
+       *    Bit Set 
+       ********************/
+      final int maxKeyP1 = intBitSet.getLargestIntP1(); // p1 = plus 1
+      if (key < maxKeyP1) {
         return;
       }
+      // space used in words (32 bit words)
+      int bitSetSpace = 1 + (Math.max((maxKeyP1 - 1), key) >> 5);  // space in words
+      // keep bit set unless key would grow it beyond 
+//      if (bitSetSpace < 16 || key < bitSetSpace) {
+//        return;
+//      }
       
-      // maybe switch to hashmap
+      // maybe switch to IntHashSet
       final int size = size();
-      long hashmapSize = (size << 4) - (size <<2);  // size * 12
-      if (bitSetSpace - hashmapSize > Math.max(32768,  hashmapSize >> 1) ) {
+      // space used in words (32 bit words)
+      long hashsetSpace = (size << 1) + size;  // size * 3 , 1.5 - 3 words per entry in IntHashSet
+      // switch if hashmap space plus hysteresis would be < bitmap space
+      if (hashsetSpace < (bitSetSpace - HYSTERESIS)) {
         switchToHashSet(size);
       }
       return;    
     } 
     
-    // is hashset
+    /********************
+     *    Hash Set 
+     ********************/
+    // maybe switch to IntBitSet
     final int size = size();
-    long hashmapSize = (size << 4) - (size <<2);  // size * 12
-    if (hashmapSize < 4096) {
-      return;
-    }
+    // space used in words (32 bit words)
+    long hashsetSpace = (size << 1) + size;  // size * 3 , 1.5 - 3 words per entry in IntHashSet
+    
     final int maxInt = intHashSet.getMostPositive();
-    final int bitSetSpace = maxInt >>  5;
-    if (hashmapSize - bitSetSpace > Math.max(32768,  bitSetSpace >> 2 )) {
+    final int bitSetSpace = bitSetSpace(maxInt);
+ 
+    if (bitSetSpace < (hashsetSpace - HYSTERESIS)) {
       switchToBitSet(maxInt);
     }  
+  }
+  
+  private int bitSetSpace(int maxInt) {
+    // 0 - 31 : 1;  32-63: 2
+    return 1 + (maxInt >> 5);
+  }
+  
+  private int hashSetSpace(int size) {
+    return (size << 1) + size;  // size * 3
   }
   
   private void switchToHashSet(int size) {

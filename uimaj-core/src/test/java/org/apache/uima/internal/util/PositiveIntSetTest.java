@@ -36,14 +36,24 @@ public class PositiveIntSetTest extends TestCase {
 
   public void testBasic() {
     PositiveIntSet s = new PositiveIntSet();
-    s.add(1500000);
+    s.add(128);
     assertFalse(s.isBitSet);
-    s = new PositiveIntSet();
-    s.add(64000);
-    assertTrue(s.isBitSet);
-    s = new PositiveIntSet();
-    s.add(32000);
-    assertTrue(s.isBitSet);
+    
+    for (int i = 1; i < 10; i++) {
+      s.add(i);
+      assertTrue("i is " + i, (i < 4) ? (!s.isBitSet) : s.isBitSet);
+    }
+    
+    for (int i = 10; i < 10000; i = i <<1) {
+      s.add(i);  // switches to hash set when i = 2560. == 1010 0000 0000  (>>5 = 101 0000 = 80 (decimal)
+                 // hash set size for 19 entries = 19 * 3 = 57
+                 // bit set size for 2560 = 80 words
+                 // bit set size for prev i (1280 dec) = 101 0000 0000 (>>5 = 10 1000) = 40 words
+//      if (!s.isBitSet) {
+//        System.out.println("# of entries is " + s.size());
+//      }
+      assertTrue((i < 2560) ? s.isBitSet : !s.isBitSet);
+    }
   }
   
   public void testiterators() {
