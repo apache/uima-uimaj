@@ -243,18 +243,16 @@ public class Int2IntHashMap {
   }
 
   private void incrementSize() {
-   if (size >= sizeWhichTriggersExpansion) {
-     increaseTableCapacity();
-   }
-   size++;
+    if (size >= sizeWhichTriggersExpansion) {
+      increaseTableCapacity();
+    }
+    size++;
   }
 
   private void increaseTableCapacity() {
     final int [] oldKeys = keys;
     final int [] oldValues = values;
     final int oldCapacity = oldKeys.length;
-    final int oldSize = size;
-    size = 0;  // will be filling it
     int newCapacity = 2 * oldCapacity;
     
     if (TUNE) {
@@ -264,11 +262,10 @@ public class Int2IntHashMap {
     int vi = 0;
     for (int key : oldKeys) {
       if (key != 0) {
-        put(key, oldValues[vi]);
+        putInner(key, oldValues[vi]);
       }
       vi++;
     }
-    assert(oldSize == size);
   }
   
   // called by clear
@@ -371,6 +368,13 @@ public class Int2IntHashMap {
      incrementSize();
    }
    return prevValue;
+ }
+ 
+ public void putInner(int key, int value) {
+   final int i = find(key);
+   assert(keys[i] == 0);
+   keys[i] = key;
+   values[i] = value;
  }
   
  public int size() {

@@ -86,7 +86,7 @@ public class IntHashSet {
   }
 
   private void incrementSize() {
-   if (size >= sizeWhichTriggersExpansion) {
+    if (size >= sizeWhichTriggersExpansion) {
      increaseTableCapacity();
    }
    size++;
@@ -95,9 +95,7 @@ public class IntHashSet {
   private void increaseTableCapacity() {
     final int [] oldKeys = keys;
     final int oldCapacity = oldKeys.length;
-    final int oldSize = size;
     int newCapacity = 2 * oldCapacity;
-    size = 0;
     
     if (TUNE) {
       System.out.println("Capacity increasing from " + oldCapacity + " to " + newCapacity);
@@ -105,10 +103,9 @@ public class IntHashSet {
     newTableKeepSize(newCapacity);
     for (int key : oldKeys) {
       if (key != 0) {
-        add(key);
+        addInner(key);
       }
     }
-    assert(size == oldSize);
   }
   
   // called by clear
@@ -217,6 +214,17 @@ public class IntHashSet {
     }
     return false;
   }
+  
+  /**
+   * 
+   * @param key
+   */
+  private void addInner(int key) {
+    final int i = find(key);
+    assert(keys[i] == 0);
+    keys[i] = key;
+  }
+
 
   public int size() {
     return size;
