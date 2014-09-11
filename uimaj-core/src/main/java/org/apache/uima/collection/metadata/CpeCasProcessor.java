@@ -335,7 +335,7 @@ public interface CpeCasProcessor extends MetaDataObject {
   public CpeSofaMappings getSofaNameMappings();
 
   /**
-   * @param mappings
+   * @param mappings -
    */
   public void setSofaNameMappings(CpeSofaMappings mappings);
 

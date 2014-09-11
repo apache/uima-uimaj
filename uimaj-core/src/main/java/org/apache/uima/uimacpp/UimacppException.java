@@ -99,6 +99,7 @@ public class UimacppException extends Exception {
 
   /**
    * get the embedded exception, if any.
+   * @return the embedded exception
    */
   public Exception getEmbeddedException() {
     return detail;

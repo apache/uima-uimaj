@@ -224,6 +224,7 @@ public class UimacppEngine {
   /**
    * create a TAF engine with a config file
    * @param configFile the configuration file used for initialization
+   * @return a UimacppEngine
    * @throws UimacppException pass thru
    */
   public static UimacppEngine createJTafTAE(String configFile) throws UimacppException {
@@ -490,6 +491,7 @@ public class UimacppEngine {
 
   /**
    * helper function to get the TAF JNI version.
+   * @return Taf JNI Version
    * @throws UimacppException wraps any exception
    */
   public static String getTafJNIVersion() throws UimacppException {

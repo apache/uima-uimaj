@@ -100,8 +100,8 @@ public interface FeatureValuePath {
    * leaf snippet is <code>COVERED_TEXT</code>, returns the covered text of
    * <code>currentFS</code>.
    * 
-   * @param currentFS
-   * @param cas
+   * @param currentFS -
+   * @param cas -
    * @return A string representation of the leaf value.
    */
   public String evaluateAsString(int currentFS, LowLevelCAS cas);

@@ -27,7 +27,7 @@ package org.apache.uima.cas;
 public interface Marker {
 
  /**
-  * @param fs 
+  * @param fs -
   * @return true if a <code>FeatureStructure</code> was created after the mark represented by this <code>Marker</code> object. 
   */
  boolean isNew(FeatureStructure fs);
@@ -35,7 +35,7 @@ public interface Marker {
  /**
   * Test if a FeatureStructure in a CAS represented by this <code>Marker</code> existed before the mark was set, and has been modified.
   * isModified(fs) == true implies that isNew(fs) == false.
-  * @param fs
+  * @param fs -
   * @return true if a  <code>FeatureStructure</code> that existed prior to the mark being set has been modified
   */
  boolean isModified(FeatureStructure fs);

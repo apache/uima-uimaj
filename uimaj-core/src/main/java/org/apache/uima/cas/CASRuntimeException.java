@@ -31,7 +31,7 @@ public class CASRuntimeException extends UIMARuntimeException {
 	/** Can''t create FS of type "{0}" with this method. */
 	public static final String NON_CREATABLE_TYPE = "NON_CREATABLE_TYPE";
 
-	/** Array size must be >= 0. */
+	/** Array size must be &gt;= 0. */
 	public static final String ILLEGAL_ARRAY_SIZE = "ILLEGAL_ARRAY_SIZE";
 
 	/** Expected value of type "{0}", but found "{1}". */

@@ -44,7 +44,7 @@ public interface OutputQueue extends MetaDataObject {
   /**
    * Define the time (in ms) to wait for a new message
    * 
-   * @param i
+   * @param i the time (in ms) to wait for a new message
    */
   public void setDequeueTimeout(int i);
 

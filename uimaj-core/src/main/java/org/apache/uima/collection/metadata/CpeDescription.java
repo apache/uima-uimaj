@@ -34,9 +34,6 @@ import org.apache.uima.util.XMLInputSource;
  * {@link org.apache.uima.collection.impl.metadata.cpe.CpeDescriptorFactory#produceDescriptor()}. A
  * CPE instance can then be created by calling
  * {@link org.apache.uima.UIMAFramework#produceCollectionProcessingEngine(CpeDescription)}.
- * <p>
- * 
- * 
  */
 public interface CpeDescription extends MetaDataObject {
 
@@ -91,7 +88,7 @@ public interface CpeDescription extends MetaDataObject {
   /**
    * Returns a {@link org.apache.uima.collection.metadata.CpeCasProcessors} instance containing
    * processing pipeline spec. This includes:
-   * <p>
+   * 
    * <ul>
    * <li> the size of the InputQueue
    * <li> the size of the OutputQueue

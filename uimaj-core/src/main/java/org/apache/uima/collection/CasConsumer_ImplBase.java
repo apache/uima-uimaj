@@ -52,7 +52,6 @@ public abstract class CasConsumer_ImplBase extends ConfigurableResource_ImplBase
    * method; instead they should override the zero-argument {@link #initialize()} method and access
    * metadata via the {@link #getProcessingResourceMetaData()} method. This method is non-final only
    * for legacy reasons.
-   * <p>
    * 
    * @see org.apache.uima.resource.Resource#initialize(org.apache.uima.resource.ResourceSpecifier,
    *      java.util.Map)

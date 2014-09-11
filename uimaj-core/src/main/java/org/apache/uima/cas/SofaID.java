@@ -33,7 +33,7 @@ public interface SofaID {
   /**
    * Set the Sofa ID of a Sofa FS in the CAS.
    * 
-   * @param aSofaID
+   * @param aSofaID -
    */
   public void setSofaID(String aSofaID);
 
@@ -48,7 +48,7 @@ public interface SofaID {
    * Set the component Sofa name that was used to obtain this SofaID by calling
    * {@link org.apache.uima.UimaContext#mapToSofaID UimaContext.mapToSofaID()}.
    * 
-   * @param aSofaName
+   * @param aSofaName -
    */
   public void setComponentSofaName(String aSofaName);
 

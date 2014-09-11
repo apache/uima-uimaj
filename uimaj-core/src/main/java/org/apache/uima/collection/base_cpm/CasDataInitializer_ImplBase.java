@@ -49,7 +49,6 @@ public abstract class CasDataInitializer_ImplBase extends ConfigurableResource_I
    * method; instead they should override the zero-argument {@link #initialize()} method and access
    * metadata via the {@link #getProcessingResourceMetaData()} method. This method is non-final only
    * for legacy reasons.
-   * <p>
    * 
    * @see org.apache.uima.resource.Resource#initialize(org.apache.uima.resource.ResourceSpecifier,
    *      java.util.Map)
@@ -81,6 +80,7 @@ public abstract class CasDataInitializer_ImplBase extends ConfigurableResource_I
 
   /**
    * @see org.apache.uima.collection.base_cpm.CasProcessor#getProcessingResourceMetaData()
+   * @return -
    */
   public ProcessingResourceMetaData getProcessingResourceMetaData() {
     return (ProcessingResourceMetaData) getMetaData();

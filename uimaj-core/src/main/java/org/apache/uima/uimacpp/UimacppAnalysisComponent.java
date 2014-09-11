@@ -174,6 +174,7 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
    * @see org.apache.uima.analysis_component.CasAnnotator_ImplBase#typeSystemInit(TypeSystem)
    * @param ts TypeSystem to use in the initialization
    * @throws AnnotatorConfigurationException pass thru
+   * @throws AnnotatorInitializationException pass thru
    */
   public void typeSystemInit(TypeSystem ts) throws AnnotatorConfigurationException,
           AnnotatorInitializationException {

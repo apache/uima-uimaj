@@ -561,6 +561,7 @@ public interface CAS extends AbstractCas {
    * Get the JCas for this CAS.
    * 
    * @return The JCas for this CAS.
+   * @throws CASException -
    */
   JCas getJCas() throws CASException;
 
@@ -576,6 +577,7 @@ public interface CAS extends AbstractCas {
   /**
    * Get sofaFS for given Subject of Analysis ID.
    * 
+   * @param sofaID -
    * @return The sofaFS.
    * 
    * @deprecated As of v2.0, use {#getView(String)}. From the view you can access the Sofa data, or
@@ -619,6 +621,7 @@ public interface CAS extends AbstractCas {
    *          a Sofa feature structure in this CAS.
    * 
    * @return The JCas view for the given Sofa.
+   * @throws CASException -
    */
   JCas getJCas(SofaFS aSofa) throws CASException;
 
@@ -630,7 +633,7 @@ public interface CAS extends AbstractCas {
    *          the ID of a Sofa defined in this CAS
    * 
    * @return The view for the Sofa with ID <code>aSofaID</code>.
-   * @throws CASRuntimeException
+   * @throws CASException
    *           if no Sofa with the given ID exists in this CAS
    * 
    * @deprecated As of v2.0, use {@link #getView(String)} followed by {@link #getJCas()}.
@@ -768,6 +771,8 @@ public interface CAS extends AbstractCas {
   /**
    * Create a Subject of Analysis. The new sofaFS is automatically added to the SofaIndex.
    * 
+   * @param sofaID -
+   * @param mimeType -
    * @return The sofaFS.
    * 
    * @deprecated As of v2.0, use {@link #createView(String)} instead.
@@ -790,6 +795,7 @@ public interface CAS extends AbstractCas {
    *          The input iterator.
    * @param cons
    *          The constraint specifying what structures should be returned.
+   * @param <T> - the type of the Feature Structure
    * @return An iterator over FSs.
    */
   <T extends FeatureStructure> FSIterator<T> createFilteredIterator(FSIterator<T> it, FSMatchConstraint cons);
@@ -823,6 +829,7 @@ public interface CAS extends AbstractCas {
    * 
    * @param it
    *          The <code>FSListIterator</code> to be wrapped.
+   * @param <T> The type of FeatureStructure
    * @return An equivalent <code>ListIterator</code>.
    */
   <T extends FeatureStructure> ListIterator<T> fs2listIterator(FSIterator<T> it);
@@ -906,7 +913,7 @@ public interface CAS extends AbstractCas {
    * Sets the language for this document. This value sets the language feature of the special
    * instance of DocumentAnnotation associated with this CAS.
    * 
-   * @param languageCode
+   * @param languageCode -
    * @throws CASRuntimeException passthru
    */
   void setDocumentLanguage(String languageCode) throws CASRuntimeException;

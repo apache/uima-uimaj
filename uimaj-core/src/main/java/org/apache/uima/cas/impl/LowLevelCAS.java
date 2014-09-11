@@ -54,9 +54,8 @@ import org.apache.uima.cas.FeatureStructure;
  * checking on. We strongly encourage you to use those versions during development, they may save
  * you a lot of time. One way you can use the type checking switch is by having a constant
  * 
- * <p>
- * 
  * <pre>
+ * 
  * static final boolean DO_TYPE_CHECK = true;
  * </pre>
  * 

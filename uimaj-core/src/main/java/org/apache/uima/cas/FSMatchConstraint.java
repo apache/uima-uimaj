@@ -43,6 +43,7 @@ public interface FSMatchConstraint extends FSConstraint, Serializable {
    * 
    * @param fs
    *          The feature structure we want to match.
+   * @return -
    */
   boolean match(FeatureStructure fs);
 

@@ -87,6 +87,8 @@ public class Sofa_Type extends TOP_Type {
   /**
    * initialize variables to correspond with Cas Type and Features
    * 
+   * @param jcas the JCas
+   * @param casType the Sofa Type Instance
    * @generated
    */
   public Sofa_Type(JCas jcas, Type casType) {

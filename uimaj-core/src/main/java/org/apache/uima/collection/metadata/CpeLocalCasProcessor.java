@@ -34,6 +34,7 @@ public interface CpeLocalCasProcessor extends CpeCasProcessor {
    * Returns true if the local Cas Processor is a java program
    * 
    * @return true if java program, false otherwise
+   * @throws CpeDescriptorException -
    */
   public boolean isJava() throws CpeDescriptorException;
 
@@ -42,6 +43,7 @@ public interface CpeLocalCasProcessor extends CpeCasProcessor {
    * 
    * @param aJava -
    *          true if java, false otherwise
+   * @throws CpeDescriptorException -
    */
   public void setIsJava(boolean aJava) throws CpeDescriptorException;
 

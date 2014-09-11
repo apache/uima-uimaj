@@ -30,12 +30,12 @@ public interface CpeSofaMapping extends MetaDataObject {
   public String getCpeSofaName();
 
   /**
-   * @param string
+   * @param string -
    */
   public void setComponentSofaName(String string);
 
   /**
-   * @param string
+   * @param string -
    */
   public void setCpeSofaName(String string);
 

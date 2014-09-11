@@ -41,7 +41,7 @@ public abstract class AbstractCas_ImplBase implements AbstractCas {
    * when a CAS instance is created. This handle is used to implement the release() method by
    * returning the CAS to its CasOwner.
    * 
-   * @param aCasOwner
+   * @param aCasOwner -
    */
   public void setOwner(CasOwner aCasOwner) {
     mOwner = aCasOwner;

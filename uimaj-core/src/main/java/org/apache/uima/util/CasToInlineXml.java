@@ -82,6 +82,7 @@ public class CasToInlineXml {
    * Formats a CAS as a String.
    * @param aCAS the cas to format as an xml string
    * @return the XML representation of the CAS
+   * @throws CASException -
    */
   public String format(CAS aCAS) throws CASException {
     return generateXML(aCAS, null);
@@ -104,6 +105,7 @@ public class CasToInlineXml {
    * @param aCAS
    *          CAS to generate from
    * @return the inline XML version of the CAS
+   * @throws CASException -
    */
   public String generateXML(CAS aCAS) throws CASException {
     return generateXML(aCAS, null);
@@ -118,7 +120,7 @@ public class CasToInlineXml {
    *          constraint that determines which annotations are included in the output. If null (or
    *          omitted), all annotations are included.
    * @param aHandler the content handler to use
-   * @throws CASException
+   * @throws CASException -
    */
   public void generateXML(CAS aCAS, FSMatchConstraint aFilter, ContentHandler aHandler) throws CASException {
 
@@ -246,6 +248,7 @@ public class CasToInlineXml {
    * @param aFilter
    *          constraint that determines which annotations are included in the output. If null (or
    *          ommitted), all annotations are included.
+   * @throws CASException -
    * @return the inline form
    */
   public String generateXML(CAS aCAS, FSMatchConstraint aFilter) throws CASException {

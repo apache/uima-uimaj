@@ -66,6 +66,8 @@ public class Sofa extends TOP implements SofaFS {
    * Internal - constructor used by generator
    * 
    * @generated
+   * @param addr the address
+   * @param type the type
    */
 	public Sofa(int addr, TOP_Type type) {
 		super(addr, type);
@@ -106,6 +108,7 @@ public class Sofa extends TOP implements SofaFS {
    * getter for sofaNum - gets
    * 
    * @generated
+   * @return the sofa number
    */
 	public int getSofaNum() {
 		if (Sofa_Type.featOkTst && ((Sofa_Type) jcasType).casFeat_sofaNum == null)
@@ -134,6 +137,7 @@ public class Sofa extends TOP implements SofaFS {
    * getter for mimeType - gets
    * 
    * @generated
+   * @return the mime type
    */
 	public String getMimeType() {
 		if (Sofa_Type.featOkTst && ((Sofa_Type) jcasType).casFeat_mimeType == null)
