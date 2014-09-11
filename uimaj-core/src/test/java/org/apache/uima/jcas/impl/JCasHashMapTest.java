@@ -247,19 +247,28 @@ public class JCasHashMapTest extends TestCase {
         assertEquals(numberOfThreads - 1, numberWaiting);
         m.put(fs);
         found[threadFinished] = fs;
-        
-        // Attempt to insure we let the threads under test run in preference to this one       
-        Thread.sleep(20);   // imprecise.  Intent is to allow other thread that was waiting, to run
-                            // before this thread resumes.  Depends on thread priorities, but
-                            // multiple threads could be running at the same time.
-        
-        numberWaiting = 0;
-        for (int i = 0; i < numberOfThreads; i++) {
-          if (threads[i].isAlive()) {
-            numberWaiting ++;
+   
+        // loop a few times to give enough time for the other threads to finish.
+        long startOfWait = System.currentTimeMillis();
+        while (System.currentTimeMillis() - startOfWait < 30000) { // wait up to 30 seconds in case of machine stall
+                  
+          // Attempt to insure we let the threads under test run in preference to this one       
+          Thread.sleep(20);   // imprecise.  Intent is to allow other thread that was waiting, to run
+                              // before this thread resumes.  Depends on thread priorities, but
+                              // multiple threads could be running at the same time.
+          
+          numberWaiting = 0;
+          for (int i = 0; i < numberOfThreads; i++) {
+            if (threads[i].isAlive()) {
+              numberWaiting ++;
+            }
+          }
+          if (numberWaiting == 0) {
+            break;
           }
         }
-        assertEquals(0, numberWaiting);
+        
+        assertEquals(0, numberWaiting);  // if not 0 by now, something is likely wrong, or machine stalled more than 30 seconds
   //      System.out.format("JCasHashMapTest collide,  found = %s%n", intList(found));
         for (FeatureStructureImpl f : found) {
           if (f != fs) {
