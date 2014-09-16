@@ -660,6 +660,11 @@ public class ResourceManager_impl implements ResourceManager {
    * @see org.apache.uima.resource.ResourceManager#getCasManager()
    */
   public CasManager getCasManager() {
+    //Optimization for case where mCasManager already created
+    // Some sync contention was observed - this makes it less.  UIMA-4012
+    if(mCasManager != null) {
+      return mCasManager;
+    }
     synchronized(casManagerMonitor) {
       if (mCasManager == null) {
         mCasManager = new CasManager_impl(this);
