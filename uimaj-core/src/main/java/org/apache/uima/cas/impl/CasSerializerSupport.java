@@ -207,8 +207,12 @@ class CasSerializerSupport {
     
     abstract protected void initializeNamespaces();
         
-    abstract protected boolean checkForNameCollision(XmlElementName xmlElementName);
+    abstract protected void checkForNameCollision(XmlElementName xmlElementName);
         
+    abstract protected void addNameSpace(XmlElementName xmlElementName);  
+
+    abstract protected XmlElementName uimaTypeName2XmiElementName(String typeName);
+
     abstract protected void writeFeatureStructures(int elementCount) throws Exception;
     
     abstract protected void writeViews() throws Exception;
@@ -228,8 +232,6 @@ class CasSerializerSupport {
     abstract protected void writeEndOfIndividualFs() throws Exception;  
     
     abstract protected void writeEndOfSerialization() throws Exception;
-    
-    abstract protected XmlElementName uimaTypeName2XmiElementName(String typeName);
   }
   
   /**
@@ -267,7 +269,7 @@ class CasSerializerSupport {
     XmlElementName[] typeCode2namespaceNames; // array, indexed by type code, giving XMI names for each type
     
     private final BitSet typeUsed;  // identifies types being serialized, a subset of all possible types
-    
+        
     boolean needNameSpaces = true; // may be false; currently for JSON only
 
     /**
@@ -581,7 +583,6 @@ class CasSerializerSupport {
             return -1;
           }
         }
-
       
         if (isFiltering) {
           String typeName = tsi.ll_getTypeForCode(typeCode).getName();
@@ -591,7 +592,9 @@ class CasSerializerSupport {
         }
       }
       
-      // We set visited only if we're going to enqueue this.  This handles the use case:
+      // We set visited only if we're going to enqueue this.
+      //   (In other words, please don't move this up in this method)
+      //   This handles the use case:
       //   delta cas; element is not modified, but at some later point, we determine
       //   an embedded feature value (array or list) is modified, which requires we serialize out this
       //   fs as if it was modified.
@@ -607,7 +610,7 @@ class CasSerializerSupport {
         XmlElementName newXel = csss.uimaTypeName2XmiElementName(typeName);
 
         if (!needNameSpaces) {
-          needNameSpaces = csss.checkForNameCollision(newXel);
+          csss.checkForNameCollision(newXel);
         }        
         typeCode2namespaceNames[typeCode] = newXel;
       }  
@@ -1013,6 +1016,7 @@ class CasSerializerSupport {
           prefix = "noNamespace"; // is correct for older XMI standard too
         }
         // make sure this prefix hasn't already been used for some other namespace
+        // including out-of-type-system types (for XmiCasSerializer)
         if (nsPrefixesUsed.contains(prefix)) {
           String basePrefix = prefix;
           int num = 2;

@@ -138,7 +138,7 @@ public class JsonCasSerializerTest extends TestCase {
     compareWithExpected("topNoContextNoViews.txt", r);
 
     cas.reset();
-    jcs.setJsonContext(JsonContextFormat.includeFeatureRefs);
+    jcs.setJsonContext(JsonContextFormat.includeFeatureContext);
     jcs.setJsonContext(JsonContextFormat.includeSuperTypes);
     cas.addFsToIndexes(cas.createFS(topType));
     r = serialize();

@@ -1207,10 +1207,12 @@ public class XmiCasSerializer {
       ch.characters(text.toCharArray(), 0, text.length());
     }
     
-    protected boolean checkForNameCollision(XmlElementName xmlElementName) {
-      return true;  // xmi always does namespaces
-    }
-    
+    @Override
+    protected void checkForNameCollision(XmlElementName xmlElementName) {}
+
+    @Override
+    protected void addNameSpace(XmlElementName xmlElementName) {};
+
     protected void writeFsStart(int addr, int typeCode /* ignored */) {
       workAttrs.clear();
       addAttribute(workAttrs, ID_ATTR_NAME, cds.getXmiId(addr));
@@ -1261,7 +1263,7 @@ public class XmiCasSerializer {
       return new XmlElementName(nsUri, shortName, cds.getUniqueString(prefix + ':' + shortName));
     }
 
-    protected void writeEndOfIndividualFs() {};
+    protected void writeEndOfIndividualFs() {}
   }
         
 //  // for testing

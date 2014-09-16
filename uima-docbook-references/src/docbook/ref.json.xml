@@ -207,8 +207,9 @@ BY_TYPE_EMBED_ID:
             used in the body of the serialization.</para>
           </listitem>
           <listitem>
-            <para>(optional) feature references: This identifies which features are to be interpreted as references to other 
-            feature structure instances.</para>
+            <para>(optional) feature context: This identifies which features are to be interpreted as references to other 
+            feature structure instances, and/or which features are encoded as binary using base64 encoding 
+            (per JSON/Jackson standard convention).</para>
           </listitem>
           <listitem>
             <para>(optional) supertypes: this provides information that can be used by the receiver to contruct the inheritance

@@ -30,9 +30,9 @@ public class XmlElementName {
     this.qName = qName;
   }
 
-  public String nsUri;
+  public String nsUri;  // the URI for the type name, or (JSON) the fully-qualified type name
 
-  public String localName;
+  public String localName;  // the type name without any package prefix
 
-  public String qName;
+  public String qName;  // the type name with its namespace, written as name_space_name:short_type_name
 }
