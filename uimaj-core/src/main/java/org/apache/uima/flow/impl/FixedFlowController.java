@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMARuntimeException;
@@ -75,10 +76,21 @@ public class FixedFlowController extends CasFlowController_ImplBase {
 
   // make final to work better in multi-thread case  UIMA-2373
   // working assumption: 
+  //   A single instance of this class may be used on multiple replications of a UIMA pipeline.
+  //     In this case, the initialization would be done once (because the same context object is passed for the replicas).
+  //   The mSequence is read-only after being set up
+  //     -- except for the calls to addAnalysisEngines or removeAnalysisEngines.
+  //        But these are intended for maybe in the future supporting dynamically adding/removing annotators from
+  //        aggregates - but are not supported as of 2014.
+  //   
   //   Users might run several CASes asynchronously using this FixedFlowController object,
   //   on different threads. However, users will not re-initialize this with a different 
   //   flowControllerContext while this object is controlling CASes from the previous Object.
-  final private List<String> mSequence = Collections.synchronizedList(new ArrayList<String>());
+  // When this was a synchronized list, some contention observed between the "reads", which can be eliminated by
+  //   swtiching this to a copy-on-write kind of final list.
+  //      -- this has the added "benefit" (maybe eventually) of having better semantics for letting existing
+  //         Flow objects continue to use the "old" settings, and only the new ones picking up the new ones.
+  final private List<String> mSequence = new CopyOnWriteArrayList<String>();  //UIMA-4013
 
   private int mActionAfterCasMultiplier;
 
@@ -91,13 +103,15 @@ public class FixedFlowController extends CasFlowController_ImplBase {
     FlowConstraints flowConstraints = aContext.getAggregateMetadata().getFlowConstraints();
     if (flowConstraints instanceof FixedFlow) {
       String[] sequence = ((FixedFlow) flowConstraints).getFixedFlow();
+      ArrayList<String> keysToAdd = new ArrayList<String>(sequence.length);
       for( String key : sequence ) {
     	  if( !aContext.getAnalysisEngineMetaDataMap().containsKey(key) )
     		  throw new ResourceInitializationException(ResourceInitializationException.FLOW_CONTROLLER_MISSING_DELEGATE,
                   new Object[]{this.getClass().getName(), key, aContext.getAggregateMetadata().getSourceUrlString()});
-    	  mSequence.add(key);
+        keysToAdd.add(key);
       }
-    } else {
+      mSequence.addAll(keysToAdd);
+   } else {
       throw new ResourceInitializationException(ResourceInitializationException.FLOW_CONTROLLER_REQUIRES_FLOW_CONSTRAINTS,
               new Object[]{this.getClass().getName(), "fixedFlow", aContext.getAggregateMetadata().getSourceUrlString()});
     }
