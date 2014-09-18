@@ -2121,7 +2121,10 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     } else {
       aContentHandler.characters(valStr.toCharArray(), 0, valStr.length());
     }
-    outputEndElement(aContentHandler, node, null, className, className);
+    // only do end element if did start one, e.g. always unless doing a json string
+    if (! (isJson && (aObj instanceof String))) {
+      outputEndElement(aContentHandler, node, null, className, className);
+    }
     // aContentHandler.endElement(null, className, className);
   }
 
