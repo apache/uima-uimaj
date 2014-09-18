@@ -1039,11 +1039,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
         }
         if (isJson && curElem instanceof AllowedValue) {
           String valStr = ((AllowedValue) curElem).getString();
-          if (isJson) {
-            jg.writeString(valStr);
-          } else {
-            aContentHandler.characters(valStr.toCharArray(), 0, valStr.length());
-          }
+          jg.writeString(valStr);
         } else if (curElem instanceof XMLizable) { // if attribute's value is an XMLizable object, call its toXML method
           if (isJson) {
             jch.writeNlJustBeforeNext();
