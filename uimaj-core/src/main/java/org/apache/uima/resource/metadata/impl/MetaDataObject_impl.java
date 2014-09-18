@@ -1015,8 +1015,8 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     // nested arrays here
     int len = ((Object[]) aValue).length;
     try {
-      boolean insertNlInArray = false;
       if (isJson) {
+        boolean insertNlInArray = false;
         if (len > 1) {
           Object firstElement = Array.get(aValue, 0);
           if (!(firstElement instanceof AllowedValue) && (firstElement instanceof XMLizable)) {
@@ -1024,9 +1024,9 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
           }
         }
         jg.writeStartArray();
-      }
-      if (insertNlInArray) {
-        jch.writeNlJustBeforeNext();
+        if (insertNlInArray) {
+          jch.writeNlJustBeforeNext();
+        }
       }
       for (int i = 0; i < len; i++) {
         Object curElem = Array.get(aValue, i);
