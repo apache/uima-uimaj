@@ -191,7 +191,7 @@ public class MetaDataObject_implTest extends TestCase {
   /**
    * Tests the {@link MetaDataObject#toXML(Writer)} and
    * {@link MetaDataObject#buildFromXMLElement(Element,XMLParser)} methods. These also sufficiently
-   * excercise the {@link MetaDataObject#getAttributeValue(String)} and
+   * exercise the {@link MetaDataObject#getAttributeValue(String)} and
    * {@link MetaDataObject#setAttributeValue(String,Object)} methods.
    */
   public void testXMLization() throws Exception {
