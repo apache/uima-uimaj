@@ -304,7 +304,7 @@ public class JsonContentHandlerJacksonWrapper implements ContentHandler  {
 
   
   /* *****************************
-   * unused methods to make this 
+   * mostly unused methods to make this 
    * a ContentHandler
    *******************************/
   private void unsupported() { throw new UnsupportedOperationException();} 
