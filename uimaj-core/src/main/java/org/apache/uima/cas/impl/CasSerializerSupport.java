@@ -25,7 +25,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -35,9 +34,6 @@ import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Marker;
-import org.apache.uima.cas.impl.XmiSerializationSharedData.OotsElementData;
-import org.apache.uima.internal.util.IntBitSet;
-import org.apache.uima.internal.util.IntHashSet;
 import org.apache.uima.internal.util.IntStack;
 import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.internal.util.PositiveIntSet;
@@ -1053,7 +1049,7 @@ class CasSerializerSupport {
       
       String r = (nsUri.startsWith(XmiCasSerializer.DEFAULT_NAMESPACE_URI)) ? 
           "" :
-          nsUri.substring(XmiCasSerializer.URIPFX.length, nsUri.length() - sfx);
+          nsUri.substring(pfx, nsUri.length() - sfx);
       r = r.replace('/', '.');
       
       return r + xe.localName;
