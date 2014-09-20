@@ -2283,142 +2283,150 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     if (ts.areBuiltInTypesSetup) {
       return;
     }
-    ts.areBuiltInTypesSetup = true;
-
-    // W A R N I N G (July 2007)
-
-    // C++ code has "hard-wired" the type code numbers for the
-    // built-in types, so you cannot change the order of the types
-    // Also, the complete serialization depends on the type-code numbers
-    // for the client and the server for the built-in types being
-    // the same.
-
-    // The initialization code for types cannot depend on the type system
-    // having already been set up, because, obviously, it isn't set up (yet).
-
-    // It is important to add types in a particular order and to set
-    // ts.xxx<type-name> and ts.xxx<type-name>code values so they are
-    // set before they're used. Some of the add-type logic is written
-    // to depend on the built-in types already having these values set.
-    // For example: addType ( ARRAY_BASE ) calls, eventually,
-    // ts.ll_isPrimitiveType -> ll_isRefType ->ll_getTypeClass -> ll_subsumes
-    // and along the way these are testing / comparing against type codes
-    // for built-in types which need to have been set.
-
-    // Create top type.
-    Type top = ts.addTopType(CAS.TYPE_NAME_TOP);
-    // Add basic data types.
-    Type intT = ts.addType(CAS.TYPE_NAME_INTEGER, top);
-    Type floatT = ts.addType(CAS.TYPE_NAME_FLOAT, top);
-    Type stringT = ts.addType(CAS.TYPE_NAME_STRING, top);
-    // Add arrays.
-    Type array = ts.addType(CAS.TYPE_NAME_ARRAY_BASE, top);
-    ts.arrayBaseType = (TypeImpl) array; // do here - used in next
-    ts.arrayBaseTypeCode = ts.arrayBaseType.getCode();
-    TypeImpl fsArray = (TypeImpl) ts.addType(CAS.TYPE_NAME_FS_ARRAY, array);
-    ts.fsArrayType = fsArray; // do here - used in next
-    ts.fsArrayTypeCode = fsArray.getCode();
-    TypeImpl floatArray = (TypeImpl) ts.addType(CAS.TYPE_NAME_FLOAT_ARRAY, array);
-    TypeImpl intArray = (TypeImpl) ts.addType(CAS.TYPE_NAME_INTEGER_ARRAY, array);
-    TypeImpl stringArray = (TypeImpl) ts.addType(CAS.TYPE_NAME_STRING_ARRAY, array);
-    // Add lists.
-    Type list = ts.addType(CAS.TYPE_NAME_LIST_BASE, top);
-    // FS lists.
-    Type fsList = ts.addType(CAS.TYPE_NAME_FS_LIST, list);
-    Type fsEList = ts.addType(CAS.TYPE_NAME_EMPTY_FS_LIST, fsList);
-    Type fsNeList = ts.addType(CAS.TYPE_NAME_NON_EMPTY_FS_LIST, fsList);
-    ts.addFeature(CAS.FEATURE_BASE_NAME_HEAD, fsNeList, top, true);
-    ts.addFeature(CAS.FEATURE_BASE_NAME_TAIL, fsNeList, fsList, true);
-    // Float lists.
-    Type floatList = ts.addType(CAS.TYPE_NAME_FLOAT_LIST, list);
-    Type floatEList = ts.addType(CAS.TYPE_NAME_EMPTY_FLOAT_LIST, floatList);
-    Type floatNeList = ts.addType(CAS.TYPE_NAME_NON_EMPTY_FLOAT_LIST, floatList);
-    ts.addFeature(CAS.FEATURE_BASE_NAME_HEAD, floatNeList, floatT, false);
-    ts.addFeature(CAS.FEATURE_BASE_NAME_TAIL, floatNeList, floatList, true);
-    // Integer lists.
-    Type intList = ts.addType(CAS.TYPE_NAME_INTEGER_LIST, list);
-    Type intEList = ts.addType(CAS.TYPE_NAME_EMPTY_INTEGER_LIST, intList);
-    Type intNeList = ts.addType(CAS.TYPE_NAME_NON_EMPTY_INTEGER_LIST, intList);
-    ts.addFeature(CAS.FEATURE_BASE_NAME_HEAD, intNeList, intT, false);
-    ts.addFeature(CAS.FEATURE_BASE_NAME_TAIL, intNeList, intList, true);
-    // String lists.
-    Type stringList = ts.addType(CAS.TYPE_NAME_STRING_LIST, list);
-    Type stringEList = ts.addType(CAS.TYPE_NAME_EMPTY_STRING_LIST, stringList);
-    Type stringNeList = ts.addType(CAS.TYPE_NAME_NON_EMPTY_STRING_LIST, stringList);
-    ts.addFeature(CAS.FEATURE_BASE_NAME_HEAD, stringNeList, stringT, false);
-    ts.addFeature(CAS.FEATURE_BASE_NAME_TAIL, stringNeList, stringList, true);
-
-    Type booleanT = ts.addType(CAS.TYPE_NAME_BOOLEAN, top);
-    Type byteT = ts.addType(CAS.TYPE_NAME_BYTE, top);
-    Type shortT = ts.addType(CAS.TYPE_NAME_SHORT, top);
-    Type longT = ts.addType(CAS.TYPE_NAME_LONG, top);
-    Type doubleT = ts.addType(CAS.TYPE_NAME_DOUBLE, top);
-
-    // array type initialization must follow the component type it's based on
-    TypeImpl booleanArray = (TypeImpl) ts.addType(CAS.TYPE_NAME_BOOLEAN_ARRAY, array);
-    TypeImpl byteArray = (TypeImpl) ts.addType(CAS.TYPE_NAME_BYTE_ARRAY, array);
-    TypeImpl shortArray = (TypeImpl) ts.addType(CAS.TYPE_NAME_SHORT_ARRAY, array);
-    TypeImpl longArray = (TypeImpl) ts.addType(CAS.TYPE_NAME_LONG_ARRAY, array);
-    TypeImpl doubleArray = (TypeImpl) ts.addType(CAS.TYPE_NAME_DOUBLE_ARRAY, array);
-
-    // Sofa Stuff
-    Type sofa = ts.addType(CAS.TYPE_NAME_SOFA, top);
-    ts.addFeature(CAS.FEATURE_BASE_NAME_SOFANUM, sofa, intT, false);
-    ts.addFeature(CAS.FEATURE_BASE_NAME_SOFAID, sofa, stringT, false);
-    ts.addFeature(CAS.FEATURE_BASE_NAME_SOFAMIME, sofa, stringT, false);
-    // Type localSofa = ts.addType(CAS.TYPE_NAME_LOCALSOFA, sofa);
-    ts.addFeature(CAS.FEATURE_BASE_NAME_SOFAARRAY, sofa, top, true);
-    ts.addFeature(CAS.FEATURE_BASE_NAME_SOFASTRING, sofa, stringT, false);
-    // Type remoteSofa = ts.addType(CAS.TYPE_NAME_REMOTESOFA, sofa);
-    ts.addFeature(CAS.FEATURE_BASE_NAME_SOFAURI, sofa, stringT, false);
-
-    // Annotations
-    Type annotBaseType = ts.addType(CAS.TYPE_NAME_ANNOTATION_BASE, top);
-    ts.addFeature(CAS.FEATURE_BASE_NAME_SOFA, annotBaseType, sofa, false);
-    Type annotType = ts.addType(CAS.TYPE_NAME_ANNOTATION, annotBaseType);
-    ts.addFeature(CAS.FEATURE_BASE_NAME_BEGIN, annotType, intT, false);
-    ts.addFeature(CAS.FEATURE_BASE_NAME_END, annotType, intT, false);
-    Type docType = ts.addType(CAS.TYPE_NAME_DOCUMENT_ANNOTATION, annotType);
-    ts.addFeature(CAS.FEATURE_BASE_NAME_LANGUAGE, docType, stringT, false);
-
-    // Lock individual types.
-    setTypeFinal(intT);
-    setTypeFinal(floatT);
-    setTypeFinal(stringT);
-    ((TypeImpl) top).setFeatureFinal();
-    setTypeFinal(array);
-    setTypeFinal(fsArray);
-    setTypeFinal(intArray);
-    setTypeFinal(floatArray);
-    setTypeFinal(stringArray);
-    setTypeFinal(sofa);
-
-    setTypeFinal(byteT);
-    setTypeFinal(booleanT);
-    setTypeFinal(shortT);
-    setTypeFinal(longT);
-    setTypeFinal(doubleT);
-    setTypeFinal(booleanArray);
-    setTypeFinal(byteArray);
-    setTypeFinal(shortArray);
-    setTypeFinal(longArray);
-    setTypeFinal(doubleArray);
-
-    ((TypeImpl) list).setFeatureFinal();
-    ((TypeImpl) fsList).setFeatureFinal();
-    ((TypeImpl) fsEList).setFeatureFinal();
-    ((TypeImpl) fsNeList).setFeatureFinal();
-    ((TypeImpl) floatList).setFeatureFinal();
-    ((TypeImpl) floatEList).setFeatureFinal();
-    ((TypeImpl) floatNeList).setFeatureFinal();
-    ((TypeImpl) intList).setFeatureFinal();
-    ((TypeImpl) intEList).setFeatureFinal();
-    ((TypeImpl) intNeList).setFeatureFinal();
-    ((TypeImpl) stringList).setFeatureFinal();
-    ((TypeImpl) stringEList).setFeatureFinal();
-    ((TypeImpl) stringNeList).setFeatureFinal();
-    ((TypeImpl) annotType).setFeatureFinal();
-    ((TypeImpl) annotBaseType).setFeatureFinal();
+    synchronized (ts) {
+      if (ts.areBuiltInTypesSetup) {
+        return;
+      }
+  
+      // W A R N I N G (July 2007)
+  
+      // C++ code has "hard-wired" the type code numbers for the
+      // built-in types, so you cannot change the order of the types
+      // Also, the complete serialization depends on the type-code numbers
+      // for the client and the server for the built-in types being
+      // the same.
+  
+      // The initialization code for types cannot depend on the type system
+      // having already been set up, because, obviously, it isn't set up (yet).
+  
+      // It is important to add types in a particular order and to set
+      // ts.xxx<type-name> and ts.xxx<type-name>code values so they are
+      // set before they're used. Some of the add-type logic is written
+      // to depend on the built-in types already having these values set.
+      // For example: addType ( ARRAY_BASE ) calls, eventually,
+      // ts.ll_isPrimitiveType -> ll_isRefType ->ll_getTypeClass -> ll_subsumes
+      // and along the way these are testing / comparing against type codes
+      // for built-in types which need to have been set.
+  
+      // Create top type.
+      Type top = ts.addTopType(CAS.TYPE_NAME_TOP);
+      // Add basic data types.
+      Type intT = ts.addType(CAS.TYPE_NAME_INTEGER, top);
+      Type floatT = ts.addType(CAS.TYPE_NAME_FLOAT, top);
+      Type stringT = ts.addType(CAS.TYPE_NAME_STRING, top);
+      // Add arrays.
+      Type array = ts.addType(CAS.TYPE_NAME_ARRAY_BASE, top);
+      ts.arrayBaseType = (TypeImpl) array; // do here - used in next
+      ts.arrayBaseTypeCode = ts.arrayBaseType.getCode();
+      TypeImpl fsArray = (TypeImpl) ts.addType(CAS.TYPE_NAME_FS_ARRAY, array);
+      ts.fsArrayType = fsArray; // do here - used in next
+      ts.fsArrayTypeCode = fsArray.getCode();
+      TypeImpl floatArray = (TypeImpl) ts.addType(CAS.TYPE_NAME_FLOAT_ARRAY, array);
+      TypeImpl intArray = (TypeImpl) ts.addType(CAS.TYPE_NAME_INTEGER_ARRAY, array);
+      TypeImpl stringArray = (TypeImpl) ts.addType(CAS.TYPE_NAME_STRING_ARRAY, array);
+      // Add lists.
+      Type list = ts.addType(CAS.TYPE_NAME_LIST_BASE, top);
+      // FS lists.
+      Type fsList = ts.addType(CAS.TYPE_NAME_FS_LIST, list);
+      Type fsEList = ts.addType(CAS.TYPE_NAME_EMPTY_FS_LIST, fsList);
+      Type fsNeList = ts.addType(CAS.TYPE_NAME_NON_EMPTY_FS_LIST, fsList);
+      ts.addFeature(CAS.FEATURE_BASE_NAME_HEAD, fsNeList, top, true);
+      ts.addFeature(CAS.FEATURE_BASE_NAME_TAIL, fsNeList, fsList, true);
+      // Float lists.
+      Type floatList = ts.addType(CAS.TYPE_NAME_FLOAT_LIST, list);
+      Type floatEList = ts.addType(CAS.TYPE_NAME_EMPTY_FLOAT_LIST, floatList);
+      Type floatNeList = ts.addType(CAS.TYPE_NAME_NON_EMPTY_FLOAT_LIST, floatList);
+      ts.addFeature(CAS.FEATURE_BASE_NAME_HEAD, floatNeList, floatT, false);
+      ts.addFeature(CAS.FEATURE_BASE_NAME_TAIL, floatNeList, floatList, true);
+      // Integer lists.
+      Type intList = ts.addType(CAS.TYPE_NAME_INTEGER_LIST, list);
+      Type intEList = ts.addType(CAS.TYPE_NAME_EMPTY_INTEGER_LIST, intList);
+      Type intNeList = ts.addType(CAS.TYPE_NAME_NON_EMPTY_INTEGER_LIST, intList);
+      ts.addFeature(CAS.FEATURE_BASE_NAME_HEAD, intNeList, intT, false);
+      ts.addFeature(CAS.FEATURE_BASE_NAME_TAIL, intNeList, intList, true);
+      // String lists.
+      Type stringList = ts.addType(CAS.TYPE_NAME_STRING_LIST, list);
+      Type stringEList = ts.addType(CAS.TYPE_NAME_EMPTY_STRING_LIST, stringList);
+      Type stringNeList = ts.addType(CAS.TYPE_NAME_NON_EMPTY_STRING_LIST, stringList);
+      ts.addFeature(CAS.FEATURE_BASE_NAME_HEAD, stringNeList, stringT, false);
+      ts.addFeature(CAS.FEATURE_BASE_NAME_TAIL, stringNeList, stringList, true);
+  
+      Type booleanT = ts.addType(CAS.TYPE_NAME_BOOLEAN, top);
+      Type byteT = ts.addType(CAS.TYPE_NAME_BYTE, top);
+      Type shortT = ts.addType(CAS.TYPE_NAME_SHORT, top);
+      Type longT = ts.addType(CAS.TYPE_NAME_LONG, top);
+      Type doubleT = ts.addType(CAS.TYPE_NAME_DOUBLE, top);
+  
+      // array type initialization must follow the component type it's based on
+      TypeImpl booleanArray = (TypeImpl) ts.addType(CAS.TYPE_NAME_BOOLEAN_ARRAY, array);
+      TypeImpl byteArray = (TypeImpl) ts.addType(CAS.TYPE_NAME_BYTE_ARRAY, array);
+      TypeImpl shortArray = (TypeImpl) ts.addType(CAS.TYPE_NAME_SHORT_ARRAY, array);
+      TypeImpl longArray = (TypeImpl) ts.addType(CAS.TYPE_NAME_LONG_ARRAY, array);
+      TypeImpl doubleArray = (TypeImpl) ts.addType(CAS.TYPE_NAME_DOUBLE_ARRAY, array);
+  
+      // Sofa Stuff
+      Type sofa = ts.addType(CAS.TYPE_NAME_SOFA, top);
+      ts.addFeature(CAS.FEATURE_BASE_NAME_SOFANUM, sofa, intT, false);
+      ts.addFeature(CAS.FEATURE_BASE_NAME_SOFAID, sofa, stringT, false);
+      ts.addFeature(CAS.FEATURE_BASE_NAME_SOFAMIME, sofa, stringT, false);
+      // Type localSofa = ts.addType(CAS.TYPE_NAME_LOCALSOFA, sofa);
+      ts.addFeature(CAS.FEATURE_BASE_NAME_SOFAARRAY, sofa, top, true);
+      ts.addFeature(CAS.FEATURE_BASE_NAME_SOFASTRING, sofa, stringT, false);
+      // Type remoteSofa = ts.addType(CAS.TYPE_NAME_REMOTESOFA, sofa);
+      ts.addFeature(CAS.FEATURE_BASE_NAME_SOFAURI, sofa, stringT, false);
+  
+      // Annotations
+      Type annotBaseType = ts.addType(CAS.TYPE_NAME_ANNOTATION_BASE, top);
+      ts.addFeature(CAS.FEATURE_BASE_NAME_SOFA, annotBaseType, sofa, false);
+      Type annotType = ts.addType(CAS.TYPE_NAME_ANNOTATION, annotBaseType);
+      ts.addFeature(CAS.FEATURE_BASE_NAME_BEGIN, annotType, intT, false);
+      ts.addFeature(CAS.FEATURE_BASE_NAME_END, annotType, intT, false);
+      Type docType = ts.addType(CAS.TYPE_NAME_DOCUMENT_ANNOTATION, annotType);
+      ts.addFeature(CAS.FEATURE_BASE_NAME_LANGUAGE, docType, stringT, false);
+  
+      // Lock individual types.
+      setTypeFinal(intT);
+      setTypeFinal(floatT);
+      setTypeFinal(stringT);
+      ((TypeImpl) top).setFeatureFinal();
+      setTypeFinal(array);
+      setTypeFinal(fsArray);
+      setTypeFinal(intArray);
+      setTypeFinal(floatArray);
+      setTypeFinal(stringArray);
+      setTypeFinal(sofa);
+  
+      setTypeFinal(byteT);
+      setTypeFinal(booleanT);
+      setTypeFinal(shortT);
+      setTypeFinal(longT);
+      setTypeFinal(doubleT);
+      setTypeFinal(booleanArray);
+      setTypeFinal(byteArray);
+      setTypeFinal(shortArray);
+      setTypeFinal(longArray);
+      setTypeFinal(doubleArray);
+  
+      ((TypeImpl) list).setFeatureFinal();
+      ((TypeImpl) fsList).setFeatureFinal();
+      ((TypeImpl) fsEList).setFeatureFinal();
+      ((TypeImpl) fsNeList).setFeatureFinal();
+      ((TypeImpl) floatList).setFeatureFinal();
+      ((TypeImpl) floatEList).setFeatureFinal();
+      ((TypeImpl) floatNeList).setFeatureFinal();
+      ((TypeImpl) intList).setFeatureFinal();
+      ((TypeImpl) intEList).setFeatureFinal();
+      ((TypeImpl) intNeList).setFeatureFinal();
+      ((TypeImpl) stringList).setFeatureFinal();
+      ((TypeImpl) stringEList).setFeatureFinal();
+      ((TypeImpl) stringNeList).setFeatureFinal();
+      ((TypeImpl) annotType).setFeatureFinal();
+      ((TypeImpl) annotBaseType).setFeatureFinal();
+      // because this is volatile, there's a memory barrier that insures
+      // the things before happen before other reads 
+      // see http://stackoverflow.com/questions/13688697/is-a-write-to-a-volatile-a-memory-barrier-in-java
+      ts.areBuiltInTypesSetup = true;
+    } // end of sync block
   }
 
   private static void setTypeFinal(Type type) {

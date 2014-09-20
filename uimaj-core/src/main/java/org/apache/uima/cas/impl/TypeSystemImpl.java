@@ -215,7 +215,9 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   // set up lazily
   TypeInfo[] typeInfoArray;
 
-  boolean areBuiltInTypesSetup = false;
+  // saw evidence that in some cases the setup is called on the same instance on two threads
+  // must be volatile to force the right memory barriers
+  volatile boolean areBuiltInTypesSetup = false;
 
   TypeImpl intType;
 
