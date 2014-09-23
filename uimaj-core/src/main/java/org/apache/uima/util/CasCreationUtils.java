@@ -683,7 +683,7 @@ public class CasCreationUtils {
       TypeDescription[] types = aTypeSystem.getTypes();
       if (types != null) {
         // add all Types first (so that we can handle forward references) - note
-        // that it isn't guarnanteed that a supertype will occur in the Types list
+        // that it isn't guaranteed that a supertype will occur in the Types list
         // before its subtype.
 
         // Build a linked list of type descriptions. We will make multiple passes
