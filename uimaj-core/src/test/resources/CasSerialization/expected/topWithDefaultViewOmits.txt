@@ -1,1 +1,0 @@
-{"@context":{"Annotation":{"@id":"uima.tcas.Annotation","@featureRefs":["sofa"],"@superTypes":["uima.cas.AnnotationBase","uima.cas.TOP"]},"Sofa":{"@id":"uima.cas.Sofa","@featureRefs":["sofaArray"],"@superTypes":["uima.cas.TOP"]}},"@cas_feature_structures":[{"@id":5,"@type":"Sofa","sofaNum":1,"sofaID":"_InitialView"},{"@id":1,"@type":"Annotation","sofa":5}],"@cas_views":{"5":[1]}}
