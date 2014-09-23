@@ -289,16 +289,16 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
    * @see MetaDataObject_impl#writePropertyAsElement(org.apache.uima.resource.metadata.impl.PropertyXmlInfo,
    *      java.lang.String, org.xml.sax.ContentHandler)
    */
-  protected void writePropertyAsElement(PropertyXmlInfo aPropInfo, String aNamespace,
-          ContentHandler aContentHandler) throws SAXException {
+  @Override
+  protected void writePropertyAsElement(PropertyXmlInfo aPropInfo, String aNamespace) throws SAXException {
     if ("priorityLists".equals(aPropInfo.propertyName)) {
       // call writeArrayPropertyAsElement directly, which will not generate the
       // <priorityLists> tag
       writeArrayPropertyAsElement(aPropInfo.propertyName, TypePriorityList[].class,
-              getPriorityLists(), null, aNamespace, aContentHandler);
+              getPriorityLists(), null, aNamespace);
     } else // normal handling
     {
-      super.writePropertyAsElement(aPropInfo, aNamespace, aContentHandler);
+      super.writePropertyAsElement(aPropInfo, aNamespace);
     }
   }
 

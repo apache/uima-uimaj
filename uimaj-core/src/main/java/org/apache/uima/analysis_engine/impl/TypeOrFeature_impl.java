@@ -117,39 +117,55 @@ public class TypeOrFeature_impl extends MetaDataObject_impl implements TypeOrFea
    */
   public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute)
           throws SAXException {
+    if (null == serialContext.get()) {
+      getSerialContext(aContentHandler);  
+      try {
+        toXMLinner(aWriteDefaultNamespaceAttribute);
+      } finally {
+        serialContext.remove();
+      }
+    } else {
+      toXMLinner(aWriteDefaultNamespaceAttribute);
+    }
+  }
+    
+  public void toXMLinner(boolean aWriteDefaultNamespaceAttribute)
+      throws SAXException {    
+    SerialContext sc = serialContext.get();
+    Serializer serializer = sc.serializer;
     
     String namespace = getXmlizationInfo().namespace;
 
     if (isType()) {
       // tag is "type"
-      Node node = findMatchingSubElement(aContentHandler, "type");
+      Node node = serializer.findMatchingSubElement("type");
 
       // if allAnnotatorFeatures is true, write that as an attribute
       if (isAllAnnotatorFeatures()) {
         AttributesImpl attrs = new AttributesImpl();
         attrs.addAttribute("", "allAnnotatorFeatures", "allAnnotatorFeatures", null, "true");
-        outputStartElement(aContentHandler, node, namespace, "type", "type", attrs);
+        serializer.outputStartElement(node, namespace, "type", "type", attrs);
 //        aContentHandler.startElement(getXmlizationInfo().namespace, "type", "type", attrs);
       } else {
-        outputStartElement(aContentHandler, node, namespace, "type", "type", new AttributesImpl());
+        serializer.outputStartElement(node, namespace, "type", "type", new AttributesImpl());
 //        aContentHandler.startElement(getXmlizationInfo().namespace, "type", "type",
 //                new AttributesImpl());
       }
       // write type name here
-      aContentHandler.characters(getName().toCharArray(), 0, getName().length());
+      serializer.writeSimpleValue(getName());
 
-      outputEndElement(aContentHandler, node, namespace, "type", "type");
+      serializer.outputEndElement(node, namespace, "type", "type");
 //      aContentHandler.endElement(getXmlizationInfo().namespace, "type", "type");
     } else // feature
     {
-      Node node = findMatchingSubElement(aContentHandler, "feature");
-      outputStartElement(aContentHandler, node, namespace, "feature", "feature",
+      Node node = serializer.findMatchingSubElement("feature");
+      serializer.outputStartElement(node, namespace, "feature", "feature",
           new AttributesImpl());
 //      aContentHandler.startElement(getXmlizationInfo().namespace, "feature", "feature",
 //              new AttributesImpl());
 
-      aContentHandler.characters(getName().toCharArray(), 0, getName().length());
-      outputEndElement(aContentHandler, node, namespace, "feature", "feature");
+      serializer.writeSimpleValue(getName());
+      serializer.outputEndElement(node, namespace, "feature", "feature");
 //      aContentHandler.endElement(getXmlizationInfo().namespace, "feature", "feature");
     }
   }

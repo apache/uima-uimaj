@@ -392,10 +392,10 @@ public class XmiSerializationSharedData {
    * Data structure holding the index and the xmi:id of an array or list element that
    * is a reference to an out-of-typesystem FS.
    */
-  static class XmiArrayElement {
-    int index;
+  public static class XmiArrayElement {
+    public int index;
 
-    String xmiId;
+    public String xmiId;
 
     XmiArrayElement(int index, String xmiId) {
       this.index = index;

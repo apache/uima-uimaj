@@ -53,14 +53,14 @@ public class ListUtils {
 
   private int fsListType;
 
-  // package private to allow ref from XmiCasSerializer
-   int neIntListType;
+  
+  public int neIntListType;
 
-   int neFloatListType;
+  public int neFloatListType;
 
-   int neStringListType;
+  public int neStringListType;
 
-   int neFsListType;
+  public  int neFsListType;
 
   private int eIntListType;
 

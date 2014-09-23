@@ -98,22 +98,22 @@ import org.xml.sax.SAXException;
  *                      
  */
 
-class CasSerializerSupport {
+public class CasSerializerSupport {
    
   // Special "type class" codes for list types. The LowLevelCAS.ll_getTypeClass() method
   // returns type classes for primitives and arrays, but not lists (which are just ordinary FS types
   // as far as the CAS is concerned). The serialization treats lists specially, however, and
   // so needs its own type codes for these.
-  static final int TYPE_CLASS_INTLIST = 101;
+  public static final int TYPE_CLASS_INTLIST = 101;
 
-  static final int TYPE_CLASS_FLOATLIST = 102;
+  public static final int TYPE_CLASS_FLOATLIST = 102;
 
-  static final int TYPE_CLASS_STRINGLIST = 103;
+  public static final int TYPE_CLASS_STRINGLIST = 103;
 
-  static final int TYPE_CLASS_FSLIST = 104;
+  public static final int TYPE_CLASS_FSLIST = 104;
     
-  static int PP_LINE_LENGTH = 120;
-  static int PP_ELEMENTS = 30;  // number of elements to do before nl
+  public static int PP_LINE_LENGTH = 120;
+  public static int PP_ELEMENTS = 30;  // number of elements to do before nl
   
   final static Comparator<TypeImpl> COMPARATOR_SHORT_TYPENAME = new Comparator<TypeImpl>() {
     public int compare(TypeImpl object1, TypeImpl object2) {
@@ -130,7 +130,7 @@ class CasSerializerSupport {
   // UIMA logger, to which we may write warnings
   Logger logger;
 
-  boolean isFormattedOutput;  // true for pretty printing
+  public boolean isFormattedOutput;  // true for pretty printing
      
   /***********************************************
    *         C O N S T R U C T O R S             *  
@@ -199,7 +199,7 @@ class CasSerializerSupport {
    * Separate implementations for JSON and Xmi
    *
    ***********************************************/
-  static abstract class CasSerializerSupportSerialize {
+  public static abstract class CasSerializerSupportSerialize {
     
     abstract protected void initializeNamespaces();
         
@@ -237,59 +237,59 @@ class CasSerializerSupport {
    * package private to allow a test case to access
    * not static to share the logger and the initializing values (could be changed) 
    */
-  class CasDocSerializer {
+  public class CasDocSerializer {
 
     // The CAS we're serializing.
-    final  CASImpl cas;
+    public final  CASImpl cas;
     
-    final TypeSystemImpl tsi;
+    public final TypeSystemImpl tsi;
 
     /** 
      * set of FSs that have been enqueued to be serialized
      *  Computed during "enqueue" phase, prior to encoding
      *  Used to prevent duplicate enqueuing
      */    
-    final PositiveIntSet visited;  
+    public final PositiveIntSet visited;  
 
-    final XmiSerializationSharedData sharedData;
+    public final XmiSerializationSharedData sharedData;
     
     // All FSs that are in an index somewhere.
-    final IntVector indexedFSs;
+    public final IntVector indexedFSs;
 
     // The current queue for FSs to write out.
     private final IntStack queue;
 
     // utilities for dealing with CAS list types
-    final ListUtils listUtils;
+    public final ListUtils listUtils;
         
-    XmlElementName[] typeCode2namespaceNames; // array, indexed by type code, giving XMI names for each type
+    public XmlElementName[] typeCode2namespaceNames; // array, indexed by type code, giving XMI names for each type
     
     private final BitSet typeUsed;  // identifies types being serialized, a subset of all possible types
         
-    boolean needNameSpaces = true; // may be false; currently for JSON only
+    public boolean needNameSpaces = true; // may be false; currently for JSON only
 
     /**
      * map from a namespace expanded form to the namespace prefix, to identify potential collisions when
      *   generating a namespace string
      */
-    final Map<String, String> nsUriToPrefixMap = new HashMap<String, String>();
+    public final Map<String, String> nsUriToPrefixMap = new HashMap<String, String>();
            
     /**
      * the set of all namespace prefixes used, to disallow some if they are 
      *   in use already in set-aside data (xmi serialization) being merged back in
      */
-    final Set<String> nsPrefixesUsed = new HashSet<String>();
+    public final Set<String> nsPrefixesUsed = new HashSet<String>();
     
     /**
      * Used to tell if a FS was created before or after mark.
      */
-    final MarkerImpl marker;
+    public final MarkerImpl marker;
 
     /**
      * Whether the serializer needs to check for filtered-out types/features. Set to true if type
      * system of CAS does not match type system that was passed to constructor of serializer.
      */
-    final boolean isFiltering;
+    public final boolean isFiltering;
 
     /**
      * Whether the serializer needs to serialize only the deltas, that is, new FSs created after
@@ -297,25 +297,25 @@ class CasSerializerSupport {
      * modified. Set to true if Marker object is not null and CASImpl object of this serialize
      * matches the CASImpl in Marker object.
      */
-    final boolean isDelta;
+    public final boolean isDelta;
     
     private TypeImpl[] sortedUsedTypes;
     
     private final ErrorHandler eh;
     
-    TypeSystemImpl filterTypeSystem;
+    public TypeSystemImpl filterTypeSystem;
     
     // map to reduce string usage by reusing equal string representations; lives just for one serialize call
     private final Map<String, String> uniqueStrings = new HashMap<String, String>();
 
-    final boolean isFormattedOutput;
+    public final boolean isFormattedOutput;
     
     private final CasSerializerSupportSerialize csss;
 
     /***********************************************
      *         C O N S T R U C T O R               *  
      ***********************************************/    
-    CasDocSerializer(ContentHandler ch, CASImpl cas, XmiSerializationSharedData sharedData, CasSerializerSupportSerialize csss) {
+    public CasDocSerializer(ContentHandler ch, CASImpl cas, XmiSerializationSharedData sharedData, CasSerializerSupportSerialize csss) {
       this.cas = cas;
       this.csss = csss;
       this.sharedData = sharedData;
@@ -354,7 +354,7 @@ class CasSerializerSupport {
      * Starts serialization
      * @throws Exception 
      */
-    void serialize() throws Exception {    
+    public void serialize() throws Exception {    
       typeCode2namespaceNames = new XmlElementName[tsi.getLargestTypeCode() + 1];
       
       csss.initializeNamespaces();
@@ -389,7 +389,7 @@ class CasSerializerSupport {
       csss.writeEndOfSerialization();
     }
 
-    void writeViewsCommons() throws Exception {
+    public void writeViewsCommons() throws Exception {
       // Get indexes for each SofaFS in the CAS
       int numViews = cas.getBaseSofaCount();
       FeatureStructureImpl sofa = null;
@@ -421,7 +421,7 @@ class CasSerializerSupport {
     }                 
     
     // sort is by shortname of type
-    TypeImpl[] getSortedUsedTypes() {
+    public TypeImpl[] getSortedUsedTypes() {
       if (null == sortedUsedTypes) {
         sortedUsedTypes = new TypeImpl[typeUsed.cardinality()];
         int i = 0;
@@ -783,7 +783,7 @@ class CasSerializerSupport {
     /*
      * Encode the indexed FS in the queue.
      */
-    void encodeIndexed() throws Exception {
+    public void encodeIndexed() throws Exception {
       final int max = indexedFSs.size();
       for (int i = 0; i < max; i++) {
         encodeFS(indexedFSs.get(i));
@@ -800,7 +800,7 @@ class CasSerializerSupport {
      *   items are also in the queue as items, but
      *   later).  The isWritten test prevents dupl writes
      */
-    void encodeQueued() throws Exception {
+    public void encodeQueued() throws Exception {
       final int len = queue.size();
       for (int i = 0; i < len; i++) {
         encodeFS(queue.get(i));
@@ -808,7 +808,7 @@ class CasSerializerSupport {
     }
     
 
-    Integer[] collectAllFeatureStructures() {
+    public Integer[] collectAllFeatureStructures() {
       final int indexedSize = indexedFSs.size();
       final int qSize = queue.size();
       final int rLen = indexedSize + queue.size();
@@ -835,7 +835,7 @@ class CasSerializerSupport {
       return compareInts(f1, f2);
     }
     
-    final Comparator<Integer> sortFssByType = 
+    public final Comparator<Integer> sortFssByType = 
         new Comparator<Integer>() {
           public int compare(Integer o1, Integer o2) {
             final int typeCode1 = cas.getHeapValue(o1);
@@ -883,7 +883,7 @@ class CasSerializerSupport {
      *          The address to be encoded.
      * @throws SAXException passthru
      */
-    void encodeFS(int addr) throws Exception {
+    public void encodeFS(int addr) throws Exception {
 
       final int typeCode = cas.getHeapValue(addr);
 
@@ -948,7 +948,7 @@ class CasSerializerSupport {
      *          the type to classify
      * @return one of the TYPE_CLASS codes defined on {@link LowLevelCAS} or on this interface.
      */
-    final int classifyType(int type) {
+    public final int classifyType(int type) {
       // For most most types
       if (listUtils.isIntListType(type)) {
         return TYPE_CLASS_INTLIST;
@@ -976,12 +976,12 @@ class CasSerializerSupport {
      *          address of FS
      * @return XMI ID. If addr == CASImpl.NULL, returns null
      */
-    String getXmiId(int addr) {
+    public String getXmiId(int addr) {
       int v = getXmiIdAsInt(addr);
       return (v == 0) ? null : Integer.toString(v);
     }
     
-    int getXmiIdAsInt(int addr) {
+    public int getXmiIdAsInt(int addr) {
       if (addr == CASImpl.NULL) {
         return 0;
       }
@@ -1001,7 +1001,7 @@ class CasSerializerSupport {
       
     }
 
-    String getNameSpacePrefix(String uimaTypeName, String nsUri, int lastDotIndex) {
+    public String getNameSpacePrefix(String uimaTypeName, String nsUri, int lastDotIndex) {
       // determine what namespace prefix to use
       String prefix = (String) nsUriToPrefixMap.get(nsUri);
       if (prefix == null) {
@@ -1029,7 +1029,7 @@ class CasSerializerSupport {
     /*
      *  convert to shared string, without interning, reduce GCs
      */
-    String getUniqueString(String s) { 
+    public String getUniqueString(String s) { 
       String u = uniqueStrings.get(s);
       if (null == u) {
         u = s;

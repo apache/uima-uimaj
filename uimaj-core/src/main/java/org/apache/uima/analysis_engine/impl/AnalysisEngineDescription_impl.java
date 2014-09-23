@@ -883,8 +883,8 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#writePropertyAsElement(PropertyXmlInfo,String,ContentHandler)
    */
   @Override
-  protected void writePropertyAsElement(PropertyXmlInfo aPropInfo, String aNamespace,
-          ContentHandler aContentHandler) throws SAXException {
+  protected void writePropertyAsElement(PropertyXmlInfo aPropInfo, String aNamespace) throws SAXException {
+
     if (PROP_DELEGATE_ANALYSIS_ENGINE_SPECIFIERS_WITH_IMPORTS.equals(aPropInfo.propertyName)) {
       // special logic here -- if imports have been resolved, then we want
       // to write
@@ -898,10 +898,10 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
         propName = PROP_DELEGATE_ANALYSIS_ENGINE_SPECIFIERS_WITH_IMPORTS;
       }
       writeMapPropertyToXml(propName, ELEM_DELEGATE_ANALYSIS_ENGINE_SPECIFIERS, "key",
-              "delegateAnalysisEngine", aPropInfo.omitIfNull, aNamespace, aContentHandler);
+              "delegateAnalysisEngine", aPropInfo.omitIfNull, aNamespace);
     } else {
       // for all other attributes, use the default superclass behavior
-      super.writePropertyAsElement(aPropInfo, aNamespace, aContentHandler);
+      super.writePropertyAsElement(aPropInfo, aNamespace);
     }
   }
 
@@ -928,6 +928,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
   /**
    * Overridden to set default operational properties if they are not specified in descriptor.
    */
+  @Override
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
           throws InvalidXMLException {
     super.buildFromXMLElement(aElement, aParser, aOptions);

@@ -360,12 +360,12 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#writePropertyAsElement(org.apache.uima.resource.metadata.impl.PropertyXmlInfo,
    *      java.lang.String, org.xml.sax.ContentHandler)
    */
-  protected void writePropertyAsElement(PropertyXmlInfo aPropInfo, String aNamespace,
-          ContentHandler aContentHandler) throws SAXException {
+  @Override
+  protected void writePropertyAsElement(PropertyXmlInfo aPropInfo, String aNamespace) throws SAXException {
     // Prevent the import property from being written to XML - it exists only so old-style XML
     // can be read.
     if (!"import".equals(aPropInfo.propertyName)) {
-      super.writePropertyAsElement(aPropInfo, aNamespace, aContentHandler);
+      super.writePropertyAsElement(aPropInfo, aNamespace);
     }
   }
 

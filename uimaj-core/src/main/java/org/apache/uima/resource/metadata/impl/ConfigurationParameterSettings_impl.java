@@ -66,7 +66,7 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
 
   /**
    * Settings for parameters in groups. This HashMap has <code>String</code> keys (the group name)
-   * and <code>NameValuePair[]</code> values (the parmeter names and their values).
+   * and <code>NameValuePair[]</code> values (the parameter names and their values).
    */
   private Map<String, NameValuePair[]> mSettingsForGroups = new HashMap<String, NameValuePair[]>();
 
@@ -297,7 +297,6 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
     NameValuePair[] nvpArr = new NameValuePair[nvps.size()];
     nvps.toArray(nvpArr);
     setParameterSettings(nvpArr);
-
   }
 
   /**
@@ -306,13 +305,13 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
    * 
    * @see MetaDataObject_impl#writePropertyAsElement(PropertyXmlInfo, String, ContentHandler)
    */
-  protected void writePropertyAsElement(PropertyXmlInfo aPropInfo, String aNamespace,
-          ContentHandler aContentHandler) throws SAXException {
+  @Override
+  protected void writePropertyAsElement(PropertyXmlInfo aPropInfo, String aNamespace) throws SAXException {
     if ("settingsForGroups".equals(aPropInfo.propertyName)) {
       this.writeMapPropertyToXml("settingsForGroups", null, "name", "settingsForGroup", true,
-              aNamespace, aContentHandler);
+              aNamespace);
     } else {
-      super.writePropertyAsElement(aPropInfo, aNamespace, aContentHandler);
+      super.writePropertyAsElement(aPropInfo, aNamespace);
     }
   }
 

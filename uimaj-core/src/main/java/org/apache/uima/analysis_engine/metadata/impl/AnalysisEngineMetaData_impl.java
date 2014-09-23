@@ -185,12 +185,12 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl implement
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#writePropertyAsElement(org.apache.uima.resource.metadata.impl.PropertyXmlInfo,
    *      java.lang.String, org.xml.sax.ContentHandler)
    */
-  protected void writePropertyAsElement(PropertyXmlInfo aPropInfo, String aNamespace,
-          ContentHandler aContentHandler) throws SAXException {
+  @Override
+  protected void writePropertyAsElement(PropertyXmlInfo aPropInfo, String aNamespace) throws SAXException {
     // Prevent the fsIndexes property from being written to XML - it exists only so old-style XML
     // can be read.
     if (!"fsIndexes".equals(aPropInfo.propertyName)) {
-      super.writePropertyAsElement(aPropInfo, aNamespace, aContentHandler);
+      super.writePropertyAsElement(aPropInfo, aNamespace);
     }
   }
 
@@ -308,9 +308,11 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl implement
     PropertyXmlInfo[] newProperties = new PropertyXmlInfo[] {
         new PropertyXmlInfo("flowConstraints"), new PropertyXmlInfo("typeSystem", null),
         new PropertyXmlInfo("typePriorities", null),
-        new PropertyXmlInfo("fsIndexCollection", null), new PropertyXmlInfo("fsIndexes"),
+        new PropertyXmlInfo("fsIndexCollection", null), 
+        new PropertyXmlInfo("fsIndexes"),
         new PropertyXmlInfo("capabilities", false),
-        new PropertyXmlInfo("operationalProperties", null), new PropertyXmlInfo("casInterface") };
+        new PropertyXmlInfo("operationalProperties", null), 
+        new PropertyXmlInfo("casInterface") };
 
     XMLIZATION_INFO.propertyInfo = new PropertyXmlInfo[superclassInfo.propertyInfo.length
             + newProperties.length];

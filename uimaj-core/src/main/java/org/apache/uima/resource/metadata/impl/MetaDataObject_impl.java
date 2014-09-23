@@ -34,6 +34,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -47,29 +48,18 @@ import org.apache.uima.resource.metadata.AllowedValue;
 import org.apache.uima.resource.metadata.MetaDataObject;
 import org.apache.uima.util.ConcurrentHashMapWithProducer;
 import org.apache.uima.util.InvalidXMLException;
-import org.apache.uima.util.JsonContentHandlerJacksonWrapper;
 import org.apache.uima.util.NameClassPair;
 import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.XMLSerializer;
 import org.apache.uima.util.XMLSerializer.CharacterValidatingContentHandler;
 import org.apache.uima.util.XMLizable;
-import org.w3c.dom.CharacterData;
-import org.w3c.dom.Comment;
-import org.w3c.dom.DOMException;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
-import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.helpers.AttributesImpl;
-
-import com.fasterxml.jackson.core.JsonEncoding;
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerator;
 
 /**
  * Abstract base class for all MetaDataObjects in the reference implementation. Provides basic
@@ -107,7 +97,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
 
   // note: AttributesImpl is just a "getter" for attributes, has no setter methods,
   // see javadocs for Attributes (sax)
-  private static final Attributes EMPTY_ATTRIBUTES     = new AttributesImpl();
+  private static final Attributes EMPTY_ATTRIBUTES = new AttributesImpl();
 
   /*
    * Cache for Java Bean lookup
@@ -165,7 +155,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     }
   }
 
-  private static final List<MetaDataAttr> EMPTY_ATTRIBUTE_LIST = new ArrayList<MetaDataObject_impl.MetaDataAttr>(0);
+  private static final List<MetaDataAttr> EMPTY_ATTRIBUTE_LIST = Collections.emptyList();
 
   // Cache for Java Bean info lookup
   // Class level cache (static) for introspection - 30x speedup in CDE for large descriptor
@@ -178,7 +168,76 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
       class2attrsMapUnfiltered =
           new ConcurrentHashMapWithProducer<Class<? extends MetaDataObject_impl>, MetaDataAttr[]>();
 
-  private transient URL                                                                                              mSourceUrl;
+  /**
+   * methods used for serializing
+   *
+   */
+  public interface Serializer {
+    void outputStartElement(Node node,
+             String nameSpace, String localName, String qname, Attributes attributes) throws SAXException;
+    void outputEndElement(Node node, String aNamespace,
+        String localname, String qname) throws SAXException;
+
+    void outputStartElementForArrayElement(Node node,
+        String nameSpace, String localName, String qname, Attributes attributes) throws SAXException;
+    void outputEndElementForArrayElement(Node node, String aNamespace,
+        String localname, String qname) throws SAXException;
+    
+    void insertNl();
+    boolean shouldBeSkipped(PropertyXmlInfo propInfo, Object val, MetaDataObject_impl mdo);
+    boolean startElementProperty();
+
+    void deleteNodeStore();
+    boolean indentChildElements(XmlizationInfo info, MetaDataObject_impl mdo);
+    void saveAndAddNodeStore(Node infoset);
+    void addNodeStore();
+    
+    void writeDelayedStart(String name) throws SAXException;
+
+    void writeSimpleValue(Object val) throws SAXException;
+    void writeSimpleValueWithTag(String className, Object value, Node node) throws SAXException;
+    
+    boolean shouldEncloseInArrayElement(Class propClass);
+    boolean isArrayHasIndentableElements(Object array);
+    
+    void maybeStartArraySymbol() throws SAXException;
+    void maybeEndArraySymbol() throws SAXException;
+
+    Node findMatchingSubElement(String elementName);
+  }
+   
+  /**
+   * Information, kept globally (by thread) for one serialization
+   *   Inherited by some custom impls, e.g. TypeOrFeature_impl
+   */
+  public static class SerialContext {
+    
+    final public  ContentHandler ch;
+    final public Serializer serializer;
+    public SerialContext(ContentHandler ch, Serializer serializer) {
+      this.ch = ch;
+      this.serializer = serializer;
+    }
+  }
+  
+  /**
+   * Keeps the serialContext by thread
+   *   set when starting to serialize
+   *   cleared at the end (in finally clause) to prevent memory leaks
+   *   Inherited by some custom impls, e.g. TypeOrFeature_impl
+  */
+  public static final ThreadLocal<SerialContext> serialContext = new ThreadLocal<SerialContext>();
+  
+  public static SerialContext getSerialContext(ContentHandler ch) {
+    SerialContext sc = serialContext.get();
+    if (null == serialContext.get()) {
+      sc = new SerialContext(ch, getSerializerFromContentHandler(ch));
+      serialContext.set(sc);
+    }
+    return sc;
+  }
+  
+  private transient URL mSourceUrl;
 
   // This is only used if we are capturing comments and ignorable whitespace in the XML
   private transient Node infoset = null; // by default, set to null
@@ -772,67 +831,63 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * @see org.apache.uima.util.XMLizable#toXML(org.xml.sax.ContentHandler, boolean)
    * 
    * This is called internally, also for JSon serialization
+   * If this is the first call to serialize, create a serialContext (and clean up afterwards)
+   * Other callers (e.g. JSON) must set the serialContext first before calling
    */
   public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute)
           throws SAXException {
+    if (null == serialContext.get()) {
+      getSerialContext(aContentHandler);  
+      try {
+        toXMLcommon(aWriteDefaultNamespaceAttribute);
+      } finally {
+        serialContext.remove();
+      }
+    } else {
+      toXMLcommon(aWriteDefaultNamespaceAttribute);
+    }
+  }
+    
+  private static Serializer getSerializerFromContentHandler(ContentHandler aContentHandler) {
+    return (aContentHandler instanceof CharacterValidatingContentHandler) ? 
+        new MetaDataObjectSerializer_indent((CharacterValidatingContentHandler) aContentHandler) : 
+        new MetaDataObjectSerializer_plain(aContentHandler);
+  }
+    
+  private void toXMLcommon(boolean aWriteDefaultNamespaceAttribute) 
+      throws SAXException {    
     XmlizationInfo inf = getXmlizationInfo();
-    final boolean isJson = aContentHandler instanceof JsonContentHandlerJacksonWrapper;
-
+    final Serializer serializer = serialContext.get().serializer;
+    
     // write the element's start tag
     // get attributes (can be provided by subclasses)
     AttributesImpl attrs = getXMLAttributes();
-    // add default namespace attr if desired
-    if ((!isJson) && aWriteDefaultNamespaceAttribute) {
-      if (inf.namespace != null) {
-        attrs.addAttribute("", "xmlns", "xmlns", null, inf.namespace);
-      }
+    
+    if (aWriteDefaultNamespaceAttribute && inf.namespace != null) {
+      attrs.addAttribute("", "xmlns", "xmlns", null, inf.namespace);
     }
     
-    final JsonContentHandlerJacksonWrapper jch = isJson ? (JsonContentHandlerJacksonWrapper) aContentHandler : null;
-
     // start element
-    outputStartElement(aContentHandler, infoset, inf.namespace, inf.elementTagName, inf.elementTagName, attrs);
-    CharacterValidatingContentHandler cc = maybeGetCharacterValidatingContentHandler(aContentHandler);
-    // https://issues.apache.org/jira/browse/UIMA-3477
-    if (cc != null) {
-      cc.setLastOutputNode(infoset);
-      cc.lastOutputNodeAddLevel();
-    }
+    serializer.outputStartElement(infoset, inf.namespace, inf.elementTagName, inf.elementTagName, attrs);
+    serializer.saveAndAddNodeStore(infoset);     // https://issues.apache.org/jira/browse/UIMA-3477
+
     // write child elements
     try {
-      boolean insertNl = false;
-      if (isJson && jch.isFormattedOutput()) {
-        if (inf.propertyInfo.length > 1 && hasXMLizable(inf.propertyInfo)) {
-          insertNl = true;
+      final boolean insertNl = serializer.indentChildElements(inf, this);
+      for (PropertyXmlInfo propInf : inf.propertyInfo) {
+        if (insertNl) {
+          serializer.insertNl();
         }
-      }
-      for (int i = 0; i < inf.propertyInfo.length; i++) {
-        PropertyXmlInfo propInf = inf.propertyInfo[i];
-        if (isJson && insertNl) {
-          jch.writeNlJustBeforeNext();
-        }
-        writePropertyAsElement(propInf, inf.namespace, aContentHandler);
+        writePropertyAsElement(propInf, inf.namespace);
       }
     } finally {
-      if (cc != null) {
-        cc.lastOutputNodeClearLevel();
-      }
+      serializer.deleteNodeStore();
     }
-
+    
     // end element
-    outputEndElement(aContentHandler, infoset, inf.namespace, inf.elementTagName, inf.elementTagName);
+    serializer.outputEndElement(infoset, inf.namespace, inf.elementTagName, inf.elementTagName);
   }
   
-  private boolean hasXMLizable(PropertyXmlInfo[] ia) {
-    for (PropertyXmlInfo pi : ia) {
-      Object val = getAttributeValue(pi.propertyName);
-      if (val != null && val instanceof XMLizable) {
-        return true;        
-      }
-    }
-    return false;
-  }
-
   /**
    * Called by the {@link #toXML(ContentHandler, boolean)} method to get the XML attributes that will be
    * written as part of the element's tag. By default this method returns an empty Attributes
@@ -870,7 +925,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     return null;
   }
 
-  private boolean valueIsNullOrEmptyArray(Object val) {
+  public boolean valueIsNullOrEmptyArray(Object val) {
     return (val == null) || (val.getClass().isArray() && ((Object[]) val).length == 0);
   }
 
@@ -885,21 +940,18 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    *          content handler to which this object will send events that describe its XML
    *          representation
    */
-  protected void writePropertyAsElement(PropertyXmlInfo aPropInfo, String aNamespace,
-          ContentHandler aContentHandler) throws SAXException {
+  protected void writePropertyAsElement(PropertyXmlInfo aPropInfo, String aNamespace) throws SAXException {
+    final SerialContext sc = serialContext.get();
+    final Serializer serializer = sc.serializer;
     // get value of property
     Object val = getAttributeValue(aPropInfo.propertyName);
-    final boolean isJson = aContentHandler instanceof JsonContentHandlerJacksonWrapper;
-    final JsonContentHandlerJacksonWrapper jch = isJson ? (JsonContentHandlerJacksonWrapper) aContentHandler : null;
-    final JsonGenerator jg = isJson ? jch.getJsonGenerator() : null;
     // if null or empty array, check to see if we're supposed to omit it
-    if ((aPropInfo.omitIfNull || isJson) && valueIsNullOrEmptyArray(val)) {
+    if (serializer.shouldBeSkipped(aPropInfo, val, this)) {
       return;
     }
 
     // if XML element name was supplied, write a tag
-    String elementName = aPropInfo.xmlElementName;
-    CharacterValidatingContentHandler cc = maybeGetCharacterValidatingContentHandler(aContentHandler);
+    final String elementName = aPropInfo.xmlElementName;
     Node elementNode = null;
 
     if (null != elementName) { // can be null in this case:
@@ -908,65 +960,55 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
       // <node>A</node>
       // <node>B</node>
 
-      elementNode = findMatchingSubElement(aContentHandler, aPropInfo.xmlElementName);
-      if (!isJson) {
-        outputStartElement(aContentHandler, elementNode, aNamespace, aPropInfo.xmlElementName,
-            aPropInfo.xmlElementName, EMPTY_ATTRIBUTES);
+//      elementNode = findMatchingSubElement(aContentHandler, aPropInfo.xmlElementName);
+      elementNode = getMatchingNode(sc, aPropInfo.xmlElementName);
+      if (serializer.startElementProperty()) {  // skip for JSON
+        serializer.outputStartElement(elementNode, aNamespace, aPropInfo.xmlElementName, aPropInfo.xmlElementName, EMPTY_ATTRIBUTES);
       }
-      if (cc != null) {
-        cc.lastOutputNodeAddLevel();
-      }
+      serializer.addNodeStore();
     }
+    
     // get class of property
     Class propClass = getAttributeClass(aPropInfo.propertyName);
 
     try {
-      // if value is null then write nothing
-      if (val != null) {
-        
-        if (isJson) { // done here, if val is null, field and value are skipped
-          jg.writeFieldName(aPropInfo.xmlElementName);
-        }
-        // if value is an array then we have to treat that specially
-        if (val.getClass().isArray()) {
-        writeArrayPropertyAsElement(aPropInfo.propertyName, propClass, val,
-                aPropInfo.arrayElementTagName, aNamespace, aContentHandler);
-        } else {
-        // if value is an XMLizable object, call its toXML method
-          if (val instanceof XMLizable) {
-            ((XMLizable) val).toXML(aContentHandler);
-          }
-          // else, if property's class is java.lang.Object, attempt to write
-          // it as a primitive
-          else if (propClass == Object.class) {
-            writePrimitiveValue(val, aContentHandler);
-          } else {
-            // assume attribute's class is known (e.g. String, Integer), so it
-            // is not necessary to write the class name to the XML. Just write
-            // the string representation of the object
-            // XMLUtils.writeNormalizedString(val.toString(), aWriter, true);
-            String valStr = val.toString();
-            if (isJson) {
-              writePrimitiveJsonValue(val, jg);
-            } else {
-              aContentHandler.characters(valStr.toCharArray(), 0, valStr.length());
-            }
-          }
-        }
+    // if value is null then write nothing
+    if (val != null) {
+      if (aPropInfo.xmlElementName != null) {
+        serializer.writeDelayedStart(aPropInfo.xmlElementName);
       }
-    } catch (IOException e) {
-      throw new SAXException(e);
-    } finally {
-      if (null != elementName) {
-        if (cc != null) {
-          cc.lastOutputNodeClearLevel();
+      
+      // if value is an array then we have to treat that specially
+      if (val.getClass().isArray()) {
+      writeArrayPropertyAsElement(aPropInfo.propertyName, propClass, val,
+              aPropInfo.arrayElementTagName, aNamespace);
+      } else {
+      // if value is an XMLizable object, call its toXML method
+        if (val instanceof XMLizable) {
+          ((XMLizable) val).toXML(sc.ch);
+        }
+        // else, if property's class is java.lang.Object, attempt to write
+        // it as a primitive
+        else if (propClass == Object.class) {
+          writePrimitiveValue(val);
+        } else {
+          // assume attribute's class is known (e.g. String, Integer), so it
+          // is not necessary to write the class name to the XML. Just write
+          // the string representation of the object
+          // XMLUtils.writeNormalizedString(val.toString(), aWriter, true);
+          
+          serializer.writeSimpleValue(val);
         }
       }
     }
-
-    // if XML element name was supplied, end the element that we started
-    if (null != elementName && !isJson) {
-      outputEndElement(aContentHandler, elementNode, aNamespace, aPropInfo.xmlElementName, aPropInfo.xmlElementName);
+    } finally {
+      if (null != elementName) {
+        serializer.deleteNodeStore();
+        // if XML element name was supplied, end the element that we started
+        if (serializer.startElementProperty()) {  // skip for JSON
+          serializer.outputEndElement(elementNode, aNamespace, aPropInfo.xmlElementName, aPropInfo.xmlElementName);
+        }
+      }
     }
   }
 
@@ -989,102 +1031,61 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    *          representation
    */
   protected void writeArrayPropertyAsElement(String aPropName, Class aPropClass, Object aValue,
-          String aArrayElementTagName, String aNamespace, ContentHandler aContentHandler)
+          String aArrayElementTagName, String aNamespace)
           throws SAXException {
-    CharacterValidatingContentHandler cc = maybeGetCharacterValidatingContentHandler(aContentHandler);
-
-    final boolean isJson = aContentHandler instanceof JsonContentHandlerJacksonWrapper;
-    final JsonContentHandlerJacksonWrapper jch = isJson ? (JsonContentHandlerJacksonWrapper) aContentHandler : null;
-    final JsonGenerator jg = isJson ? jch.getJsonGenerator() : null;
+    final SerialContext sc = serialContext.get();
+    final Serializer serializer = sc.serializer;
 
     // if aPropClass is generic Object, reader won't know whether to expect
     // an array, so we tell it be writing an "array" element here.
-    Node arraySubElement = findMatchingSubElement(aContentHandler, "array");
-
-    if (aPropClass == Object.class && !isJson) {  // skip writing <array> unless the property class
-      // (of objects in the array) is "Object"
-      // skipped e.g. in <fixedFlow> values, where aPropClass is String
-      // skipped also if isJson
-      outputStartElement(aContentHandler, arraySubElement, aNamespace, "array", "array", EMPTY_ATTRIBUTES);
-      if (null != cc) {
-        cc.lastOutputNodeAddLevel();
-      }
+    
+    Node arraySubElement = null;
+    if (serializer.shouldEncloseInArrayElement(aPropClass)) {
+      arraySubElement = getMatchingNode(sc, "array");
+      serializer.outputStartElement(arraySubElement, aNamespace, "array", "array", EMPTY_ATTRIBUTES);
+      serializer.addNodeStore();      
     }
-
-    // iterate through elements of the array (at this point we don't allow
-    // nested arrays here
-    int len = ((Object[]) aValue).length;
+    
     try {
-      if (isJson) {
-        boolean insertNlInArray = false;
-        if (len > 1) {
-          Object firstElement = Array.get(aValue, 0);
-          if (!(firstElement instanceof AllowedValue) && (firstElement instanceof XMLizable)) {
-            insertNlInArray = true;
-          }
-        }
-        jg.writeStartArray();
-        if (insertNlInArray) {
-          jch.writeNlJustBeforeNext();
-        }
+      // iterate through elements of the array (at this point we don't allow
+      // nested arrays here
+      serializer.maybeStartArraySymbol();  // for JSON      
+      if (serializer.isArrayHasIndentableElements(aValue)) {
+        serializer.insertNl();  // for JSON
       }
-      for (int i = 0; i < len; i++) {
-        Object curElem = Array.get(aValue, i);
-        Node matchingArrayElement = findMatchingSubElement(aContentHandler, aArrayElementTagName);
-
+      
+      for (final Object curElem : ((Object[]) aValue)) {
+        Node matchingArrayElement = getMatchingNode(sc, aArrayElementTagName);
+        
         // if a particular array element tag has been specified, write it
-        if (!isJson) {  // JSON writes arrays using [], so don't add extra array elements
-          outputStartElement(aContentHandler, matchingArrayElement, aNamespace, aArrayElementTagName,
-              aArrayElementTagName, EMPTY_ATTRIBUTES);
+        //   (skipped if JSON)
+        serializer.outputStartElementForArrayElement(matchingArrayElement, aNamespace, aArrayElementTagName,
+            aArrayElementTagName, EMPTY_ATTRIBUTES);
+        
+        if (curElem instanceof AllowedValue) {
+          ((XMLizable)curElem).toXML(sc.ch);
+        } else if (curElem instanceof XMLizable) {
+          // if attribute's value is an XMLizable object, call its toXML method
+          serializer.insertNl();
+          ((XMLizable) curElem).toXML(sc.ch);
+  
+        } else if (aArrayElementTagName == null) {    // else, attempt to write it as a primitive
+          writePrimitiveValue(curElem);               // write <tag>value</tag> or {"tag" : "value"}
+        } else {                          
+          serializer.writeSimpleValue(curElem);          // don't include the type - just write the value
         }
-        if (isJson && curElem instanceof AllowedValue) {
-          String valStr = ((AllowedValue) curElem).getString();
-          jg.writeString(valStr);
-        } else if (curElem instanceof XMLizable) { // if attribute's value is an XMLizable object, call its toXML method
-          if (isJson) {
-            jch.writeNlJustBeforeNext();
-          }
-          ((XMLizable) curElem).toXML(aContentHandler);
-        }
-        // else, attempt to write it as a primitive
-        else {
-          if (isJson) {
-            writePrimitiveJsonValue(curElem, jg);
-          } else {
-            if (aArrayElementTagName == null) {
-              // need to include the type, e.g. <string>
-              writePrimitiveValue(curElem, aContentHandler);
-            } else {
-              // don't include the type - just write the value
-              String valStr = curElem.toString();
-              aContentHandler.characters(valStr.toCharArray(), 0, valStr.length());
-            }
-          }
-        }
-
-        // if we started an element, end it
-        if (!isJson) {
-          outputEndElement(aContentHandler, matchingArrayElement, aNamespace, aArrayElementTagName,
-              aArrayElementTagName);
-        }
-      }
-      if (isJson) {
-        jg.writeEndArray();
-      }
-    } catch (IOException e) {
-      throw new SAXException(e);
+        
+        serializer.outputEndElementForArrayElement(matchingArrayElement, 
+            aNamespace, aArrayElementTagName, aArrayElementTagName);
+      } // end of for loop over all elements of array
+      
+      serializer.maybeEndArraySymbol(); // for JSON
     } finally {
-      if (aPropClass == Object.class) {
-        if (null != cc) {
-          cc.lastOutputNodeClearLevel();
-        }
+      if (serializer.shouldEncloseInArrayElement(aPropClass)) {
+        serializer.deleteNodeStore(); 
+        serializer.outputEndElement(arraySubElement, aNamespace, "array", "array");
       }
-    }
-
-    // if we started an "Array" element, end it
-    if (aPropClass == Object.class) {
-      outputEndElement(aContentHandler, arraySubElement, aNamespace, "array", "array");
-    }
+    }    
   }
 
   /**
@@ -1108,29 +1109,27 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    *          ContentHandler to which this object will send events describing its XML representation
    * @throws SAXException  passthru       
    */
-
   protected void writeMapPropertyToXml(String aPropName, String aXmlElementName,
-          String aKeyXmlAttribute, String aValueTagName, boolean aOmitIfNull, String aNamespace,
-          ContentHandler aContentHandler) throws SAXException {
+          String aKeyXmlAttribute, String aValueTagName, boolean aOmitIfNull, String aNamespace) 
+              throws SAXException {
+    final SerialContext sc = serialContext.get();
+    final Serializer serializer = sc.serializer;
     // get map
     @SuppressWarnings("unchecked")
     Map<String, Object> theMap = (Map<String, Object>) getAttributeValue(aPropName);
-    Node matchingNode = findMatchingSubElement(aContentHandler, aXmlElementName);
+    Node matchingNode = getMatchingNode(sc, aXmlElementName);
 
     // if map is empty handle appropriately
     if (theMap == null || theMap.isEmpty()) {
       if (!aOmitIfNull && aXmlElementName != null) {
-        outputStartElement(aContentHandler, matchingNode, aNamespace, aXmlElementName, aXmlElementName, EMPTY_ATTRIBUTES);        
-        outputEndElement(aContentHandler, matchingNode, aNamespace, aXmlElementName, aXmlElementName);
+        serializer.outputStartElement(matchingNode, aNamespace, aXmlElementName, aXmlElementName, EMPTY_ATTRIBUTES);        
+        serializer.outputEndElement(matchingNode, aNamespace, aXmlElementName, aXmlElementName);
       }
-    } else {
+    } else {  // map is not empty
       // write start tag for attribute if desired
-      outputStartElement(aContentHandler, matchingNode, aNamespace, aXmlElementName, aXmlElementName, EMPTY_ATTRIBUTES);
+      serializer.outputStartElement(matchingNode, aNamespace, aXmlElementName, aXmlElementName, EMPTY_ATTRIBUTES);
+      serializer.addNodeStore();
 
-      CharacterValidatingContentHandler cc = maybeGetCharacterValidatingContentHandler(aContentHandler);
-      if (null != cc) {
-        cc.lastOutputNodeAddLevel();
-      }
       try {
         // iterate over entries in the Map
         for (Map.Entry<String, Object> curEntry : theMap.entrySet()) {
@@ -1139,8 +1138,8 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
           // write a tag for the value, with a "key" attribute
           AttributesImpl attrs = new AttributesImpl();
           attrs.addAttribute("", aKeyXmlAttribute, aKeyXmlAttribute, null, key); // are these nulls OK?
-          Node innerMatchingNode = findMatchingSubElement(aContentHandler, aValueTagName);
-          outputStartElement(aContentHandler, innerMatchingNode, aNamespace, aValueTagName, aValueTagName, attrs);
+          Node innerMatchingNode = getMatchingNode(sc, aValueTagName);
+          serializer.outputStartElement(innerMatchingNode, aNamespace, aValueTagName, aValueTagName, attrs);
 
           // write the value (must be XMLizable or an array of XMLizable)
           Object val = curEntry.getValue();
@@ -1148,32 +1147,25 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
             Object[] arr = (Object[]) val;
             for (int j = 0; j < arr.length; j++) {
               XMLizable elem = (XMLizable) arr[j];
-              elem.toXML(aContentHandler);
+              elem.toXML(sc.ch);
             }
           } else {
-            if (null != cc) {
-              cc.lastOutputNodeAddLevel();
-            }
+            serializer.addNodeStore();
             try {
-              ((XMLizable) val).toXML(aContentHandler);
+              ((XMLizable) val).toXML(sc.ch);
             } finally {
-              if (null != cc) {
-                cc.lastOutputNodeClearLevel();
-              }
+              serializer.deleteNodeStore();
             }
           }
 
           // write end tag for the value
-          outputEndElement(aContentHandler, innerMatchingNode, aNamespace, aValueTagName, aValueTagName);
+          serializer.outputEndElement(innerMatchingNode, aNamespace, aValueTagName, aValueTagName);
         }
       } finally {
-        if (null != cc) {
-          cc.lastOutputNodeClearLevel();
-        }
+        serializer.deleteNodeStore();
+        // if we wrote start tag for attribute, now write end tag
+        serializer.outputEndElement(matchingNode, aNamespace, aXmlElementName, aXmlElementName);
       }
-
-      // if we wrote start tag for attribute, now write end tag
-      outputEndElement(aContentHandler, matchingNode, aNamespace, aXmlElementName, aXmlElementName);
     }
   }
 
@@ -1571,7 +1563,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    *     <code>PrimitiveType</code>.  If <code>aPrimitiveType</code> is not
    *     a primitive type, it is itself returned.
    */
-  protected Class getWrapperClass(Class aPrimitiveType) {
+  protected static Class getWrapperClass(Class aPrimitiveType) {
     if (Integer.TYPE.equals(aPrimitiveType))
       return Integer.class;
     else if (Short.TYPE.equals(aPrimitiveType))
@@ -1592,30 +1584,6 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
       return aPrimitiveType;
   }
   
-  private void writePrimitiveJsonValue(Object val, JsonGenerator jg) throws SAXException {
-    try {
-    if (val instanceof Boolean)
-      jg.writeBoolean((Boolean) val);
-    else if (val instanceof Integer)
-      jg.writeNumber((Integer) val);
-    else if (val instanceof Long)
-      jg.writeNumber((Long) val);
-    else if (val instanceof Short)
-      jg.writeNumber((Short) val);
-    else if (val instanceof Byte)
-      jg.writeNumber((Byte) val);
-    else if (val instanceof Float)
-      jg.writeNumber((Float) val);
-    else if (val instanceof Double)
-      jg.writeNumber((Double) val);
-    else if (val instanceof String)
-      jg.writeString((String) val);
-    else
-      throw new RuntimeException("unhandled value type");
-    } catch (IOException e) {
-      throw new SAXException(e);
-    }
-  }
 
   /**
    * Utility method that introspects this bean and returns a list of <code>PropertyDescriptor</code>s
@@ -1640,438 +1608,6 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     return Introspector.getBeanInfo(this.getClass(), Introspector.IGNORE_ALL_BEANINFO).getPropertyDescriptors();
   }
 
-  /**
-   * Heuristics for comment and whitespace processing
-   * 
-   * Example:
-   *    <!-- at top -->
-   * <a>   <!-- same line -->
-   *   <b/>
-   *   <d> <!-- cmt --> <e/> </d>
-   *   <c/>  <!-- same line -->
-   *   <!-- unusual case, following final one at a level -->
-   * </a>  <!-- same line -->
-   *   <!-- at bottom -->
-   * 
-   * Each element has 2 calls: 
-   *     startElement, endElement
-   *   Surround these with:
-   *     maybeOutputCommentsBefore
-   * maybeOutputCommentsAfter
-   * 
-   * Detect top level (by fact that parent is null), and for top level:
-   *   collect all above -%gt; output before startelement  
-   *     BUT, note that the sax parser doesn't do callbacks for text (blank lines) before the
-   *       start element, so all we can collect are the comment lines.
-   *   collect all below -%gt; output after endelement
-   * 
-   * For normal element node, "start":
-   *   --> output before element
-   *     collect all prev white space siblings up to the one that contains the first newline 
-   *         because the prev white space siblings before and including that one will
-   *         have been outputted as part of the previous start or end tag's "after element" processing
-   * 
-   *       if no nl assume comments go with previous element, and skip here
-   *       (stop looking if get null for getPreviousSibling())
-   *       (stop looking if get other than comment or ignorable whitespace)
-   *         (ignorable whitespace not always distinguishable from text that is whitespace?)
-   * 
-   *   --> output after element:
-   *     if children:    eg:  <start> <!-- cmt --> 
-   *       collect all up to and including first nl before first Element child
-   *         (stop at first Element node; if no nl, then the source had multiple elements on one line:
-   * associate the comments and whitespace with previous (and output them).
-   * 
-   *     if no children: - means it's written 
-   *          <xxx/> or 
-   *          <xxx></xxx>  
-   *              Note:  <xxx>   something  </xxx> not possible, because then it would have some text children
-   *       output nothing - after comments will be done following endElement call
-   * 
-   * For normal element node, "end":
-   *   --> output before element
-   *       collect all after last child Element; skip all up to first nl (assume before that, the comment goes with last child node)
-   *       if no nl (e.g.   </lastChild> <!--  cmt -->  </elementBeingEnded> )
-   *         assume comments go with previous element, and skip here
-   *       (stop looking if get null for getNextSibling())
-   *       (stop looking if get Element)
-   * 
-   *     if no element children - output nothing  
-   *   --> output after element    
-   *       if this element has no successor sibling elements
-   *         collect all up to the null
-   *       else  
-   *         collect all up to and including first nl from getNextSibling().
-   *           (stop at first Element)
-   * 
-   * For implied element nodes (no Java model object corresponding)
-   * We have only the "parent" node, and the element name.  Try to do matching on the element name
-   * In this case, we always are working with the children in the Dom infoset; we have a last-outputted reference
-   *   Scan from last-outputted, to find element match, and then use that element as the "root".       
-   * 
-   */
-  private static final char[] blanks = new char[80];
-  static {Arrays.fill(blanks, ' ');}
-  private static void outputIndent(int indent, ContentHandler contentHandler) throws SAXException {
-    contentHandler.ignorableWhitespace(blanks, 0, Math.min(80, indent));
-  }
-
-  /**
-   * CoIw = Comment or IgnorableWhitespace
-   * 
-   */
-
-  private void maybeOutputCoIwBeforeStart(ContentHandler contentHandler, Node node) throws SAXException {
-    int indent = 0;
-    CharacterValidatingContentHandler cvch = (contentHandler instanceof CharacterValidatingContentHandler) ? (CharacterValidatingContentHandler) contentHandler
-        : null;
-    if (null != cvch) {
-      indent = cvch.getIndent();
-
-    }
-
-    if (null == node) {
-      if (null != cvch) {
-        if (!cvch.prevNL) {
-          outputNL(contentHandler);
-          outputIndent(indent, contentHandler);
-        }
-      }
-      return;
-    }
-    if (node.getParentNode() instanceof Document) {
-
-      // Special handling for top node:
-      // The SAX parser doesn't do callbacks for whitespace that come before the top node.
-      // It does do callbacks for comments, though.
-
-      // For this case, we do (one time) insert of "nl" as follows:
-      // 1 nl before top element
-      // 1 nl before each preceeding comment
-
-      outputNL(contentHandler);
-
-      for (Node c = node.getParentNode().getFirstChild(); c != node; c = c.getNextSibling()) {
-        if (c instanceof Comment) {
-          outputCoIw(contentHandler, c);
-          outputNL(contentHandler);
-        }
-      }
-      return;
-    }
-    for (Node p = getFirstPrevCoIw(node); p != node; p = p.getNextSibling()) {
-      outputCoIw(contentHandler, p);
-    }
-  }
-
-  private void maybeOutputCoIwAfterStart(ContentHandler contentHandler, Node node) throws SAXException {
-    CharacterValidatingContentHandler cvch = (contentHandler instanceof CharacterValidatingContentHandler) ? (CharacterValidatingContentHandler) contentHandler
-        : null;
-    boolean isJson = contentHandler instanceof JsonContentHandlerJacksonWrapper;
-    if (null != cvch && !isJson) {
-      cvch.nextIndent();
-    }
-    if (null == node || (!hasElementChildNode(node))) {
-      if (null != cvch) {
-        cvch.prevNL = false;
-      }
-      return;
-    }
-
-    outputCoIwAfterElement(node.getFirstChild(), contentHandler);
-  }
-
-  /**
-   * Output comments and ignorable whitespace after an element.
-   * Comments following an element can either be grouped with the preceeding element or with the following one.
-   *   e.g.    <element>   <!--comment 1-->
-   *             <!--comment 2-->
-   *             <!--comment 3-->
-   * <subelement>
-   * 
-   *   We arbitrarily group comment 1 with the element, and comment 2 and 3 with the subelement.
-   *   This is for purposes of when they get processed and put out.
-   *   This also affects what happens when new elements are "inserted" by an editor.
-   * 
-   * This routine outputs only the whitespace and comment on the same line (e.g., 
-   * it stops after outputting the ignorable whitespace that contains a nl.)
-   * If find text which is not whitespace, don't output anything.
-   *   Use case: 
-   * <someElement> some text
-   * 
-   * @param startNode - the node corresponding to the start or end element just outputted
-   * @param contentHandler the content handler
-   * @throws DOMException passthru
-   * @throws SAXException passthru
-   */
-  private void outputCoIwAfterElement(Node startNode, ContentHandler contentHandler) throws DOMException, SAXException {
-    if (null != startNode) {
-      // scan for last node to output
-      // we do this first so we output nothing if have non-blank text somewhere
-      Node lastNode = null;
-      for (Node n = startNode;
-                (n != null) && 
-                ((n instanceof Comment) || (n instanceof Text));  // keep going as long as have non-Element nodes
-      n = n.getNextSibling()) {
-        if ((n instanceof Text) && !isWhitespaceText(n)) {
-          return;  // catch case <someElement> some text
-        }
-        lastNode = n;
-      }
-      if (null == lastNode) {
-        return;
-      }
-      for (Node n = startNode;; n = n.getNextSibling()) {
-        outputCoIw(contentHandler, n);
-        if (hasNewline(n)) {
-          if (contentHandler instanceof CharacterValidatingContentHandler) {
-            ((CharacterValidatingContentHandler) contentHandler).prevNL = true;
-          }
-          return;  // return after outputting up to and including 1st new line
-        }
-        if (n == lastNode) {
-          return;
-        }
-      }
-    }
-    if (contentHandler instanceof CharacterValidatingContentHandler) {
-      ((CharacterValidatingContentHandler) contentHandler).prevNL = false;
-    }
-  }
-
-  private void maybeOutputCoIwBeforeEnd(ContentHandler contentHandler, Node node) throws SAXException {
-    int indent = 0;
-    CharacterValidatingContentHandler cvch = (contentHandler instanceof CharacterValidatingContentHandler) ? (CharacterValidatingContentHandler) contentHandler
-        : null;
-    boolean isJson = contentHandler instanceof JsonContentHandlerJacksonWrapper;
-    if (cvch != null) {
-      indent = cvch.prevIndent();
-    }
-
-    if (null == node || (!hasElementChildNode(node))) {
-      if (null == node && cvch != null) {
-        if (cvch.prevWasEndElement && !isJson) {
-          outputNL(contentHandler);
-          outputIndent(indent, contentHandler);
-        }
-      }
-      return;
-    }
-
-    Node n = node.getLastChild();
-    Node np = null;
-    boolean newlineFound = false;
-    for (Node p = n; p != null && !(p instanceof Element) && (p.getNodeType() != Node.ATTRIBUTE_NODE); p = p.getPreviousSibling()) {
-      if (hasNewline(p)) {
-        newlineFound = true;
-      }
-      np = p;
-    }
-    if (!newlineFound) {
-      return;
-    }
-    for (Node o = skipUpToFirstAfterNL(np); o != null; o = o.getNextSibling()) {
-      outputCoIw(contentHandler, o);
-    }
-  }
-
-  private void maybeOutputCoIwAfterEnd(ContentHandler contentHandler, Node node) throws SAXException {
-    if (null == node) {
-      return;
-    }
-    outputCoIwAfterElement(node.getNextSibling(), contentHandler);
-  }
-
-  /**
-   * Scan from last output node the child nodes, looking for a matching element.
-   * Side effect if found - set lastoutput node to the found one.
-   * @param contentHandler
-   * @param elementName
-   * @return null (if no match) or matching node
-   */
-  protected Node findMatchingSubElement(ContentHandler contentHandler, String elementName) {
-    if (null == infoset || null == elementName) {
-      return null;
-    }
-    CharacterValidatingContentHandler cc = maybeGetCharacterValidatingContentHandler(contentHandler);
-    if (null == cc) {
-      return null;
-    }
-    Node lastOutput = cc.getLastOutputNode();
-    Node n = null;
-
-    if (lastOutput == null) {
-      lastOutput = cc.getLastOutputNodePrevLevel();
-      if (lastOutput == null) {
-        return null;
-      }
-      n = lastOutput.getFirstChild();
-    } else {
-      n = lastOutput.getNextSibling();
-    }
-    for (; n != null; n = n.getNextSibling()) {
-      if ((n instanceof Element) && 
-          elementName.equals(((Element)n).getTagName())) {
-        cc.setLastOutputNode(n);
-        return n;
-      }
-    }
-    return null;
-  }
-
-  /**
-   * Scan backwards from argument node, continuing until get something other than
-   * comment or ignorable whitespace.
-   * Return the first node after a nl 
-   *   If no nl found, return original node
-   * 
-   * NOTE: never called with original == the top node
-   * @param r - guaranteed non-null
-   * @return first node after a new line
-   */
-  private Node getFirstPrevCoIw(Node original) {
-    boolean newlineFound = false;
-    Node p = original; // tracks one behind r
-    for (Node r = p.getPreviousSibling(); isCoIw(r); r = r.getPreviousSibling()) {
-      if (hasNewline(r)) {
-        newlineFound = true;
-      }
-      p = r;
-    }
-    if (!newlineFound) {
-      return original;
-    }
-    return skipUpToFirstAfterNL(p);
-  }
-
-  /**
-   * Skip nodes going forwards until find one with a nl, then return the one following
-   * @param n must not be null, and there must be a NL in the siblings
-   * @return node following the one with a new line
-   */
-  private Node skipUpToFirstAfterNL(Node n) {
-    while (!hasNewline(n)) {
-      n = n.getNextSibling();
-    }
-    return n.getNextSibling();
-  }
-
-  private boolean hasNewline(Node n) {
-    if (n instanceof Comment) {
-      return false;
-    }
-    CharacterData c = (CharacterData) n;
-    return (-1) != c.getData().indexOf('\n');
-  }
-
-  private boolean hasElementChildNode(Node n) {
-    for (Node c = n.getFirstChild(); (c != null); c = c.getNextSibling()) {
-      if (c instanceof Element) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  static private String lineEnd = System.getProperty("line.separator");
-
-  /*
-   * If necessary replace any internal new-lines with the platform's line separator
-   */
-  private void outputCoIw(ContentHandler contentHandler, Node p) throws DOMException, SAXException {
-    if (p instanceof Comment) {
-      String cmt = ((Comment) p).getData();
-      if (!lineEnd.equals("\n")) {
-        cmt = cmt.replace("\n", lineEnd);
-      }
-      ((LexicalHandler) contentHandler).comment(cmt.toCharArray(), 0, cmt.length());
-    } else {
-      String s = p.getTextContent();
-      contentHandler.characters(s.toCharArray(), 0, s.length());
-    }
-
-  }
-
-  /**
-   * Dom parsers if not operating in validating mode can't distinguish between
-   * ignorable white space and non-ignorable white space.
-   * 
-   * So we use a heuristic instead - we see if the text is whitespace only, and if so,
-   * we consider it to be ignorable white space.
-   * 
-   * @param n
-   * @return true if node is a comment or is ignorable whitespace (approximately)
-   */
-  private boolean isCoIw(Node n) {
-    return (n != null) && ((n instanceof Comment) || isWhitespaceText(n));
-  }
-
-  private boolean isWhitespaceText(Node n) {
-    if (!(n instanceof Text)) {
-      return false;
-    }
-    Text t = (Text) n;
-    String s = t.getData();
-    for (int i = 0; i < s.length(); i++) {
-      if (!Character.isWhitespace(s.charAt(i))) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  protected void outputStartElement(ContentHandler aContentHandler, 
-                                  Node node, 
-                                  String aNamespace, 
-                                  String localname, 
-                                  String qname, 
-                                  Attributes attributes) throws SAXException {
-    if (null == localname) {  // happens for <flowConstraints>
-                             // <fixedFlow> <== after outputting this,
-                             // called writePropertyAsElement
-                             // But there is no <array>...
-                             // <node>A</node>
-                             // <node>B</node>
-      return;
-    }
-    maybeOutputCoIwBeforeStart(aContentHandler, node);
-    aContentHandler.startElement(aNamespace, localname, qname, attributes);
-    maybeOutputCoIwAfterStart(aContentHandler, node);
-  }
-
-  protected void outputEndElement(ContentHandler aContentHandler, 
-                                Node node,
-                                String aNamespace, 
-                                String localname, 
-      String qname) throws SAXException {
-    if (null == localname) {
-      return;
-    }
-    maybeOutputCoIwBeforeEnd(aContentHandler, node);
-    aContentHandler.endElement(aNamespace, localname, qname);
-    maybeOutputCoIwAfterEnd(aContentHandler, node);
-  }
-
-  private static final char[] nlca = new char[] { '\n' };
-
-  private void outputNL(ContentHandler contentHandler) throws SAXException {
-    contentHandler.ignorableWhitespace(nlca, 0, 1);
-    if (contentHandler instanceof CharacterValidatingContentHandler) {
-      ((CharacterValidatingContentHandler) contentHandler).prevNL = true;
-    }
-  }
-
-  // skip forward over any attribute nodes
-  // private Node skipAttrNodes(Node node) {
-  // while (node.getNodeType() == Node.ATTRIBUTE_NODE) {
-  // Node next = node.getNextSibling();
-  // if (next == null) {
-  // return node; // return last good node if only attribute nodes
-  // }
-  // node = next;
-  // }
-  // return node;
-  // }
   // This next method moved here from XMLUtils, but left there because it's public.
   // The version here handles comments and ignorablewhitespace
   /**
@@ -2095,114 +1631,94 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * @throws SAXException
    *           if the ContentHandler throws an exception
    */
-  private void writePrimitiveValue(Object aObj, ContentHandler aContentHandler)
+  private void writePrimitiveValue(Object aObj)
       throws SAXException {
     // final Attributes EMPTY_ATTRIBUTES = new AttributesImpl();
-    final boolean isJson = aContentHandler instanceof JsonContentHandlerJacksonWrapper;
-    final JsonContentHandlerJacksonWrapper jch = isJson ? (JsonContentHandlerJacksonWrapper) aContentHandler : null;
-    final JsonGenerator jg = isJson ? jch.getJsonGenerator() : null;
+    final SerialContext sc = serialContext.get();
+    final Serializer serializer = sc.serializer;
 
     String className = aObj.getClass().getName();
     int lastDotIndex = className.lastIndexOf(".");
     if (lastDotIndex > -1)
-      className = className.substring(lastDotIndex + 1).toLowerCase();
-    Node node = findMatchingSubElement(aContentHandler, className);
-    if (!isJson || !(aObj instanceof String)) {
-      outputStartElement(aContentHandler, node, null, className, className, EMPTY_ATTRIBUTES);
-    }
-    // aContentHandler.startElement(null, className, className, EMPTY_ATTRIBUTES);
-    String valStr = aObj.toString();
-    if (isJson) {
-      try {
-        jg.writeString(valStr);
-      } catch (IOException e) {
-        throw new SAXException(e);
-      }
-    } else {
-      aContentHandler.characters(valStr.toCharArray(), 0, valStr.length());
-    }
-    // only do end element if did start one, e.g. always unless doing a json string
-    if (! (isJson && (aObj instanceof String))) {
-      outputEndElement(aContentHandler, node, null, className, className);
-    }
-    // aContentHandler.endElement(null, className, className);
+      className = className.substring(lastDotIndex + 1).toLowerCase();    
+    Node node = getMatchingNode(sc, className);
+    
+    serializer.writeSimpleValueWithTag(className, aObj, node);
   }
 
-  // https://issues.apache.org/jira/browse/UIMA-3477
-  private CharacterValidatingContentHandler maybeGetCharacterValidatingContentHandler(ContentHandler contentHandler) {
-    return (contentHandler instanceof CharacterValidatingContentHandler) ? 
-        (CharacterValidatingContentHandler)contentHandler : null;
+  protected Node getMatchingNode(SerialContext serialContext, String name) {
+    return (infoset == null) ? null : serialContext.serializer.findMatchingSubElement(name);
   }
-
-  /*****************************************
-   * JSON support *
-   * 
-   * The main API takes a JsonContentHandlerJacksonWrapper instance
-   * 
-   * The other APIs take combinations of - the output(Writer, File, or OutputStream) - the prettyprint flag
-   * 
-   * @throws IOException
-   * 
-   * ***************************************/
-
-  public void toJSON(Writer aWriter) throws SAXException {
-    toJSON(aWriter, false);
-  }
-
-  public void toJSON(Writer aWriter, boolean isFormattedOutput) throws SAXException {
-    try {
-      JsonGenerator jg = new JsonFactory().createGenerator(aWriter);
-      toJSON(jg, isFormattedOutput);
-    } catch (IOException e) {
-      throw new SAXException(e);
-    }
-
-  }
-
-  public void toJSON(JsonGenerator jg, boolean isFormattedOutput) throws SAXException {
-    JsonContentHandlerJacksonWrapper jch = new JsonContentHandlerJacksonWrapper(jg, isFormattedOutput);
-    jch.withoutNl();
-    toXML(jch);
-    try {
-      jg.flush();
-    } catch (IOException e) {
-      throw new SAXException(e);
-    }
-  }
-
-  /**
-   * Writes out this object's JSON representation.
-   * 
-   * @param aOutputStream
-   *          an OutputStream to which the XML string will be written
-   * @throws SAXException 
-   */
-  public void toJSON(OutputStream aOutputStream) throws SAXException {
-    toJSON(aOutputStream, false);
-  }
-
-  public void toJSON(OutputStream aOutputStream, boolean isFormattedOutput) throws SAXException {
-    try {
-      JsonGenerator jg = new JsonFactory().createGenerator(aOutputStream);
-      toJSON(jg, isFormattedOutput);
-    } catch (IOException e) {
-      throw new SAXException(e);
-    }
-  }
-
-  public void toJSON(File file) throws SAXException {
-    toJSON(file, false);
-  }
-
-  public void toJSON(File file, boolean isFormattedOutput) throws SAXException {
-    try {
-      JsonGenerator jg = new JsonFactory().createGenerator(file, JsonEncoding.UTF8);
-      toJSON(jg, isFormattedOutput);
-      jg.close();
-    } catch (IOException e) {
-      throw new SAXException(e);
-    }
-  }
+  
+//  /*****************************************
+//   * JSON support *
+//   * 
+//   * The main API takes a JsonContentHandlerJacksonWrapper instance
+//   * 
+//   * The other APIs take combinations of - the output(Writer, File, or OutputStream) - the prettyprint flag
+//   * 
+//   * @throws IOException
+//   * 
+//   * ***************************************/
+//
+//  public void toJSON(Writer aWriter) throws SAXException {
+//    toJSON(aWriter, false);
+//  }
+//
+//  public void toJSON(Writer aWriter, boolean isFormattedOutput) throws SAXException {
+//    try {
+//      JsonGenerator jg = new JsonFactory().createGenerator(aWriter);
+//      toJSON(jg, isFormattedOutput);
+//    } catch (IOException e) {
+//      throw new SAXException(e);
+//    }
+//
+//  }
+//
+//  public void toJSON(JsonGenerator jg, boolean isFormattedOutput) throws SAXException {
+//    JsonContentHandlerJacksonWrapper jch = new JsonContentHandlerJacksonWrapper(jg, isFormattedOutput);
+//    jch.withoutNl();
+//    toXML(jch);
+//    try {
+//      jg.flush();
+//    } catch (IOException e) {
+//      throw new SAXException(e);
+//    }
+//  }
+//
+//  /**
+//   * Writes out this object's JSON representation.
+//   * 
+//   * @param aOutputStream
+//   *          an OutputStream to which the XML string will be written
+//   * @throws SAXException 
+//   */
+//  public void toJSON(OutputStream aOutputStream) throws SAXException {
+//    toJSON(aOutputStream, false);
+//  }
+//
+//  public void toJSON(OutputStream aOutputStream, boolean isFormattedOutput) throws SAXException {
+//    try {
+//      JsonGenerator jg = new JsonFactory().createGenerator(aOutputStream);
+//      toJSON(jg, isFormattedOutput);
+//    } catch (IOException e) {
+//      throw new SAXException(e);
+//    }
+//  }
+//
+//  public void toJSON(File file) throws SAXException {
+//    toJSON(file, false);
+//  }
+//
+//  public void toJSON(File file, boolean isFormattedOutput) throws SAXException {
+//    try {
+//      JsonGenerator jg = new JsonFactory().createGenerator(file, JsonEncoding.UTF8);
+//      toJSON(jg, isFormattedOutput);
+//      jg.close();
+//    } catch (IOException e) {
+//      throw new SAXException(e);
+//    }
+//  }
 
 //  public void toJSON(ContentHandler aCh) throws SAXException {
 //    XmlizationInfo inf = getXmlizationInfo();

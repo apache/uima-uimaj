@@ -21,6 +21,8 @@ package org.apache.uima.resource.metadata.impl;
 
 import org.apache.uima.internal.util.XMLUtils;
 import org.apache.uima.resource.metadata.FsIndexKeyDescription;
+import org.apache.uima.resource.metadata.impl.MetaDataObject_impl.SerialContext;
+import org.apache.uima.resource.metadata.impl.MetaDataObject_impl.Serializer;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLParser;
 import org.w3c.dom.Element;
@@ -97,17 +99,20 @@ public class FsIndexKeyDescription_impl extends MetaDataObject_impl implements
    * 
    * @see MetaDataObject_impl#writePropertyAsElement(PropertyXmlInfo, String, ContentHandler)
    */
-  protected void writePropertyAsElement(PropertyXmlInfo aPropInfo, String aNamespace,
-          ContentHandler aContentHandler) throws SAXException {
+  @Override
+  protected void writePropertyAsElement(PropertyXmlInfo aPropInfo, String aNamespace) throws SAXException {
+    final SerialContext sc = serialContext.get();
+    final Serializer serializer = sc.serializer;
+
     String namespace = getXmlizationInfo().namespace;
-    Node node = findMatchingSubElement(aContentHandler, "type");
+    Node node = serializer.findMatchingSubElement("type");
     if ("typePriority".equals(aPropInfo.propertyName)) {
       // if property is true, just write an empty tag, if false omit
       if (isTypePriority()) {
-        outputStartElement(aContentHandler, node, namespace, "typePriority", "typePriority", new AttributesImpl());
+        serializer.outputStartElement(node, namespace, "typePriority", "typePriority", new AttributesImpl());
 //        aContentHandler.startElement(getXmlizationInfo().namespace, "typePriority", "typePriority",
 //                new AttributesImpl());
-        outputEndElement(aContentHandler, node, namespace, "typePriority", "typePriority");
+        serializer.outputEndElement(node, namespace, "typePriority", "typePriority");
 //        aContentHandler.endElement(getXmlizationInfo().namespace, "typePriority", "typePriority");
       }
     } else if (!isTypePriority()) // don't write other properties for a type priority key
@@ -116,19 +121,18 @@ public class FsIndexKeyDescription_impl extends MetaDataObject_impl implements
         // This property has an interger-encoded value which is written to XML
         // as a more user-friendly string.
 
-        outputStartElement(aContentHandler, node, namespace, "comparator", "comparator", new AttributesImpl());
+        serializer.outputStartElement(node, namespace, "comparator", "comparator", new AttributesImpl());
 //        aContentHandler.startElement(getXmlizationInfo().namespace, "comparator", "comparator",
 //                new AttributesImpl());
 
         // write value as string
         String str = COMPARATOR_STRINGS[getComparator()];
-        aContentHandler.characters(str.toCharArray(), 0, str.length());
-
-        outputEndElement(aContentHandler, node, namespace, "comparator", "comparator");
+        serializer.writeSimpleValue(str);
+        serializer.outputEndElement(node, namespace, "comparator", "comparator");
 //        aContentHandler.endElement(getXmlizationInfo().namespace, "comparator", "comparator");
       } else {
         // for all other attributes, use the default superclass behavior
-        super.writePropertyAsElement(aPropInfo, aNamespace, aContentHandler);
+        super.writePropertyAsElement(aPropInfo, aNamespace);
       }
     }
   }

@@ -40,7 +40,6 @@ import org.apache.uima.cas.impl.XmiSerializationSharedData.XmiArrayElement;
 import org.apache.uima.internal.util.XmlAttribute;
 import org.apache.uima.internal.util.XmlElementName;
 import org.apache.uima.internal.util.XmlElementNameAndContents;
-import org.apache.uima.util.JsonContentHandlerJacksonWrapper;
 import org.apache.uima.util.XMLSerializer;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
@@ -120,6 +119,12 @@ public class XmiCasSerializer {
   /** Namespace URI to use for UIMA types that have no namespace (the "default pacakge" in Java) */
   public static final String DEFAULT_NAMESPACE_URI = "http:///uima/noNamespace.ecore"; 
   
+  public final static String SYSTEM_LINE_FEED;
+  static {
+      String lf = System.getProperty("line.separator");
+      SYSTEM_LINE_FEED = (lf == null) ? "\n" : lf;
+  }
+
   private final CasSerializerSupport css = new CasSerializerSupport();
   
   private Map<String, String> nsUriToSchemaLocationMap = null;
@@ -632,7 +637,7 @@ public class XmiCasSerializer {
           }
           sb.append(xmiId);
           if (cds.isFormattedOutput && (sb.length() > nextBreak)) {
-            sb.append(JsonContentHandlerJacksonWrapper.SYSTEM_LINE_FEED);
+            sb.append(SYSTEM_LINE_FEED);
             nextBreak += CasSerializerSupport.PP_LINE_LENGTH; 
           }
         }
