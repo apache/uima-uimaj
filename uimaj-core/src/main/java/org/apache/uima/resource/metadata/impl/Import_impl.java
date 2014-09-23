@@ -144,13 +144,31 @@ public class Import_impl extends MetaDataObject_impl implements Import {
     }
   }
 
+  
   /**
    * Overridden to provide custom XML representation.
    * 
    * @see org.apache.uima.util.XMLizable#toXML(ContentHandler)
    */
-  public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute)
+  
+  public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute) throws SAXException {
+    if (null == serialContext.get()) {
+      getSerialContext(aContentHandler);  
+      try {
+        toXMLinner(aWriteDefaultNamespaceAttribute);
+      } finally {
+        serialContext.remove();
+      }
+    } else {
+      toXMLinner(aWriteDefaultNamespaceAttribute);
+    }
+  }
+  
+  private void toXMLinner(boolean aWriteDefaultNamespaceAttribute)
           throws SAXException {
+    SerialContext sc = serialContext.get();
+    Serializer serializer = sc.serializer;   
+    
     String namespace = getXmlizationInfo().namespace;
     AttributesImpl attrs = new AttributesImpl();
     if (getName() != null) {
@@ -159,10 +177,10 @@ public class Import_impl extends MetaDataObject_impl implements Import {
     if (getLocation() != null) {
       attrs.addAttribute("", "location", "location", null, getLocation());
     }
-    Node node = findMatchingSubElement(aContentHandler, "import");
-    outputStartElement(aContentHandler, node, namespace, "import", "import", attrs);
+    Node node = serializer.findMatchingSubElement("import");
+    serializer.outputStartElement(node, namespace, "import", "import", attrs);
 //    aContentHandler.startElement(getXmlizationInfo().namespace, "import", "import", attrs);
-    outputEndElement(aContentHandler, node, namespace, "import", "import");
+    serializer.outputEndElement(node, namespace, "import", "import");
 //    aContentHandler.endElement(getXmlizationInfo().namespace, "import", "import");
   }
 
