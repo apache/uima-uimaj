@@ -25,7 +25,7 @@ specific language governing permissions and limitations
 under the License.
 -->
 <chapter id="ugr.ref.json">
-  <title>Serializing CASs and TypeSystems as JSON objects</title>
+  <title>Serializing CASs and UIMA Descriptions JSON objects</title>
 
   <section id="ugr.ref.json.overview">
     <title>JSON serialization support overview</title>
@@ -36,22 +36,24 @@ under the License.
     JSON is now a popular way for services to communicate; 
     its popularity is rising while XML is falling.</para>
     
-    <para>Starting with version 2.6.1, JSON style serialization for CASs and TypeSystems is supported.
-    The exact format is configurable in several aspects.  The support is built on top of Jackson JSON generation library.
-    Serialization is supported for CASs and also for Type System descriptions.   
+    <para>Starting with version 2.6.1, JSON style serialization for CASs and UIMA descriptions is supported via an
+    optional add-on, <code>uimaj-json</code>. 
+    The exact format of the serialization is configurable in several aspects.  
+    The implementation is built on top of the Jackson JSON generation library.
+    Serialization is supported for CASs and also for UIMA descriptions.   
     </para>
-    
-    
-  
+  </section>
+     
   <section id="ug.ref.json.cas">
     <title>JSON CAS Serialization</title>
     
     <para>CASs primarily consist of collections of Feature Structures (FSs).  To support the kinds of things
-    users do with FSs, the serialized form may need to include additional information enabling:</para>
+    users do with FSs, the serialized form may need to include additional information beyond the FSs, enabling:</para>
     
     <itemizedlist>
       <listitem>
-        <para>having a way to identify which fields in a FS should be treated as references to other FSs</para>
+        <para>having a way to identify which fields in a FS should be treated as references to other FSs, or
+        as representing serialized binary data from UIMA byte arrays</para>
       </listitem>
       <listitem>
         <para>something like XML namespaces to allow the use of short names in the serialization but handle name
@@ -66,25 +68,107 @@ under the License.
     <para>Simple JSON serialization does not have a convention for supporting these, but many extensions do.
     We follow some of the concepts in the JSON-LD (linked data) standard, in providing (optional) 
     additional information for these three things: name-spaces, for identifying supertype chains of UIMA types, 
-    and for specifying 
-    which features ought to be considered to be references to other FeatureStructure instances (even though they
-    are encoded as JSON numbers).</para>
+    and for specifying how to interpret certain values as references to other FeatureStructure instances,
+    or as binary data in byte arrays.</para>
     
-    <para>CAS JSON serialization consists of 3 parts: an optional context, the set of Feature Structures, and an optional 
-    list (by View) of
-    the IDs of Feature Structures that were added to the indexes.  The serializer can be configured to omit
-    the optional sections for simple cases where that information isn't needed.</para>
+    <section id="ug.ref.json.cas.bigpic">
+      <title>The Big Picture</title>
+
+	    <para>CAS JSON serialization consists of 3 parts: an optional context, the set of Feature Structures, and an optional 
+	    list (by View) of
+	    the IDs of Feature Structures that were added to the indexes.  The serializer can be configured to omit
+	    the optional sections for simple cases where that information isn't needed.</para>
+	    
+	    <figure id="ug.ref.json.fig.bigpic">
+	      <title>The major sections of JSON serialization</title>
+		    <mediaobject>
+	        <imageobject>
+	          <imagedata width="3.5in" format="PNG" fileref="&imgroot;big_picture2.png"/>
+	        </imageobject>
+	        <textobject><phrase>The big picture showing the 3 parts of serialization, with 2 being optional.</phrase>
+	        </textobject>
+	      </mediaobject>
+      </figure>
+	       
+    <para>CAS JSON serialization consists of 3 parts:</para>
+    <itemizedlist spacing="compact">
+      <listitem><para>(optional) @context</para></listitem>
+      <listitem><para>the Feature Structures</para></listitem>
+      <listitem><para>(optional) which FSs were previously indexed (by view)</para></listitem>
+    </itemizedlist> 
+
+    <para>The serializer can be configured to omit
+    the optional sections for cases where that information isn't needed.  For instance, in most cases,
+    the information on what FSs were previously indexed, is probably not too useful and would often be omitted.</para>
+    </section>
     
-    <para>The context section has entries for each used type.  The entries are of 3 kinds, 
-    each of which can be omitted.  These are the name extension information 
-    that maps short type names to their fully qualified names, 
-    the specification of which features of a type are references to other Feature Structures, and the supertypes 
-    for each Type.  The supertype list for a type is truncated, as soon as it references a type whose supertypes have already been
-    given (to reduce serialization space).</para>
+    <section id="ug.ref.json.cas.context">
+      <title>The @context section</title>
+          <para>The context section has entries for each used type.  The entries are of 3 kinds, 
+			    each of which can be omitted.  These are the name extension information 
+			    that maps short type names to their fully qualified names, 
+			    the specification of which features of a type are references to other Feature Structures, and the supertypes 
+			    for each Type.  The supertype list for a type is truncated, as soon as it references a type whose supertypes have already been
+			    given (to reduce serialization space).</para>
+			    
+			    <para>Here's an example:</para>
+          <programlisting>"@context" : {
+    "A_Typical_User_Type" : {
+      "@id" : "org.apache.uima.test.A_Typical_User_Type", 
+      "@featureRefs" : ["sofa",  "aFS"], 
+      "@featureByteArrays" : ["aArrayByte" ], 
+      "@superTypes" : ["uima.tcas.Annotation",  
+                       "uima.cas.AnnotationBase",  
+                       "uima.cas.TOP" ] }, 
+    "Sofa" : {
+      "@id" : "uima.cas.Sofa", 
+      "@featureRefs" : ["sofaArray" ], 
+      "@superTypes" : ["uima.cas.TOP" ] } 
+             }</programlisting>
+      <para>The key (e.g. "Sofa", "A_Typical_User_Type") is the "short" name for the type used in the serialization.  
+      It is either just
+      the last segment of the full type name (e.g. for the type x.y.z.TypeName, it's TypeName), or, 
+      if there is a requirement for namespaces because the names would collide if just the last segment
+      was used (example:  some.package.cname.Foo,  and some.other.package.cname.Foo), then the key is made up of
+      the next-to-last segment, with an optional suffixed incrementing integer in case of collisions on that name,
+      a colon (:) and then the last name.  In this example, since the next to last segment of both names is
+      "cname", one namespace name would be "cname", and the other would be "cname1".  The keys in this case would be
+      cname:Foo and cname1:Foo.</para>
+      
+      <para>The value of the @id is the fully qualified name of the type.</para>
+      
+      <para>The @featureRefs and @featureByteArrays are list of features that have non-standard meaning
+      when deserailized.  @featureRefs features are deserialized as numbers, but they are to be
+      interpreted as references to another Feature Structure whose @id is the same number.
+      @featureByteArrays are deserialized as strings, but these strings are to be decoded into
+      binary byte arrays using the Base64 encoding (the one used by Jackson to serialize binary data).</para>
+      
+      <para>@supertypes are a list of the type's supertypes, in the natural nearest to farthest order.
+      The list is truncated as soon as a type is mentioned which already (in a previous @supertypes)
+      has had its supertypes enumerated.</para>
+      
+      <section id="ug.ref.json.cas.context.omit">
+          <title>Omitting parts of the @context section</title>
+          <para>Normally, if the @context is included in the serialization, the 3 subparts
+          (the expanded name, the special features and the supertype information)
+          are all included.  But it is possible to selectively omit any of these, when
+          configuring the JSON serializer.  Here's an example:</para>
+          
+          <programlisting>// make a new instance to hold the configuration          
+JsonCasSerializer jcs = new JsonCasSerializer();  
+// the default is to include all three subkinds of @context information
+// Omit the expanded type names information
+jcs.setJsonContext(JsonContextFormat.omitExpandedTypeNames);</programlisting>
+      </section>
+      
+    </section>  <!-- of context -->
     
+    <section id="ug.ref.json.cas.featurestructures">
+      <title>Serializing Feature Structures</title>
+      
     <para>Feature Structures themselves are represented as a JSON object consisting of field - value pairs, where the 
     fields correspond to UIMA Features, and the values are primitives, or references to other FSs, 
-    and, for UIMA Lists and Array features which are marked with multipleReferencesAllowed=false, 
+    and, for UIMA Lists and Array features which are marked with <code>multipleReferencesAllowed</code> = false, 
     a JSON array structure holding the values of the Array or List.</para>
     
     <para>Primitive boolean values are represented by JSON true and false literals. References to other Feature
@@ -92,91 +176,138 @@ under the License.
     FS.  These @ids are treated in the same manner as the xmi:ids of XMI Serialization.</para>
     
     <para>Besides the feature values defined for a Feature Structure, there are 2 additional special features
-    serialized:  @id and @type.  The @id is the id of the FS; the @type is the type name.  Type names are normally
-    represented as their last segment (without the package prefix), unless there is a collision among the things being
-    serialized, in which case, they are serialized as name-space-name:type-name, where this combination is defined in the
+    serialized:  @id and @type.  The @id is the id of the FS; the @type is the type name.  Type names are 
+    represented as their short names (the last segment, or, if there is a collision where multiple different
+    types have the same last segment name, by the namespace name, followed by a colon, and then the short name;
+    for example, <code>name-space-name:short-type-name</code>.
+    The name-space + short-type-name combination is associated in the
     @context with an expansion to the fully qualified UIMA type name.</para>
     
-    <para>Both of these special features can be omitted for simplicity (via a configuration), if they're not needed.</para>
+    <para>Either or both of the special features, @type and @id, can be omitted for simplicity (via a configuration), 
+    if they're not wanted.</para>
     
     <para>Following the conventions established in XMI serialization, features of the following types having null values
     are omitted</para>
-    <itemizedlist>
+    <itemizedlist spacing="compact">
       <listitem>
         <para>Feature Structure References</para>
       </listitem>
       <listitem>
-        <para>Strings (null, not "" (empty))</para>
+        <para>Strings (null, not "" (a 0-length String))</para>
       </listitem>
             <listitem>
         <para>Arrays and Lists</para>
       </listitem>
     </itemizedlist>
     
-    <para>Note that inside arrays or lists of Feature Structure references, a null reference is coded as the number 0.</para>
+    <note><para>Note that inside arrays or lists of Feature Structure references which are being serialized
+    using embedded representations, a null reference is coded as the number 0.</para></note>
     
     <para>Configuring the serializer with <code>setOmitDefaultValues(true)</code> (which is also the default) causes
     additional primitive features (byte/short/int/long/float/double) to be omitted, when their values are 0 or 0.0</para>
+        
+    <section id="ug.ref.json.cas.featurestructures.collections">
+      <title>Representing the Collection of Feature Structures</title>
     
-    <para>Feature Structures can be serialized as indexed maps, with the key being either the @id or the @type (but not both).
-    When serialized in this manner, the key can be used in many languages that read this JSON as a key to access the
-    associated Feature Structure representation.  If indexed over @id, there's just one unique FS per @id.  
-    If indexed over @type, there are potentially many FSs per Type; these are represented as a JSON array of 
-    FSs.  The items in the array are sorted by View, and then in the same order that a UIMA Annotation Index would sort things (for 
-    types which are subtypes of uima.tcas.Annotation).  This form allows for simple iteration over a single type (not including 
-    its subtypes).</para>
-    
-    <para>The various formats look like these:</para>
-    
-    <programlisting>   
-   INDEX_ID:   
+    <para>The collection of FSs being serialized is by default represented as a JSON array (order not specified).
+    The collection can also be represented by a JSON object, a structure having keys and values.  In this 
+    representation, the deserialization typically creates a hash map structure, with the keys being the keys of the 
+    map.  Using this, FSs can be serialized as indexed maps, with the key being either the @id or the @type (but not both).
+    </para>
 
- { "123" : { "@id" : 123, "@type" : "type-name", feat : value, ... }    
-   "456" : { "@id" : 456, "@type" : "foo", feat : value ... },
-   ...
- }
- 
- 
-  </programlisting>
+    <figure>
+      <title>Alternatives for the Feature Structure Collection</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata width="5.5in" format="PNG" fileref="&imgroot;FScollections.png"/>
+          </imageobject>
+          <textobject><phrase>Shows the 3 alternatives for Feature Structure Collections</phrase>
+          </textobject>
+        </mediaobject>
+      
+    </figure>
+
+    <para>If indexed over @id, there's just one unique FS associated to the key, per @id.</para>
     
-    
-    <para>The second format is organized by types.  It's a map, whose key is the type, and the value is a sorted
-    array of instances of that type.  The sort is fixed, and first groups things together by View, 
+    <para>  
+    If indexed over @type, there are potentially many FSs per Type; these are represented as a JSON array of 
+    FSs.  
+    The sort is fixed, and first groups things together by View, 
     and then, for subtypes of uima.tcas.Annotation, it sorts by the begin feature (ascending) and then by 
     the end feature (descending).  This form allows for simple iteration over a single type (not including 
-    its subtypes).  An additional system-supplied feature, "@id", supplies the ID of this feature
-    structure (so it can be referenced by other features of other FSs).</para>
-
-    <para>It looks like this:</para>
-    
-        <programlisting>
-BY_TYPE_EMBED_ID: 
-
-{ "type-name" : [ { "@id" : 123, feat : value ... },    
-                  { "@id" : 456, feat : value ... }
-                      ...
-                ], 
-   ...
-}</programlisting>
-    
+    its subtypes).</para>
         
+    </section>  <!-- of representing the collection of FSs -->
+        
+    <section id="ug.ref.json.cas.featurestructures.embeddedArraysLists">
+      <title>Embedded Arrays and Lists</title>
+      
     <para>Similar to XMI serialization, Arrays and Lists of objects which are the values of a feature,
     are embedded using the JSON array notation, either
-    as a feature value, or as a separate object (depending on the setting of the multiple-references-allowed flag in 
-    the feature description).  Like XMI serialization, there is no support for arbitrarily linked complex list structures
-    created using the built-in list types;
-    if the list structure has any back references, the serialization truncates at the point the back reference is detected.
-    If an application requires complex linked structures, they can be built using custom-defined
-    list types; these will be serialized faithfully.</para>
+    as an embedded feature value, or as a separate object 
+    (depending on the setting of the <code>multipleReferencesAllowed</code> flag in 
+    the feature description). 
+    </para> 
+
+    <itemizedlist spacing="compact">
+      <listitem><para><code>multipleReferencesAllowed</code> false &rarr; use the embedded style</para></listitem>
+      <listitem><para><code>multipleReferencesAllowed</code> true &rarr; use separate objects</para></listitem>
+    </itemizedlist>
     
-    <para>Type names in the serialization are represented by their short-forms.  The short-form is just the last
-    segment (following the last period (.) in the type name), unless there are 2 (or more) different types with the same
-    last segment name.  In that case, a name-space prefix is assigned, and the name is written "prefix:last-segment".
+    <para> Like XMI serialization, if a feature referencing a UIMA built-in list is marked 
+    multple-references-allowed = false (thus signalling the embedded style), then if any element in the list
+    has multiple references, for example, if the list has back-references, loops, etc., a message is written
+    when serializing this and the serialization of the list is truncated at the point where the multiple reference
+    occurs.  You may serialize arbitrarily linked complex list structures created using the built-in list types if
+    you specify <code>multipleReferencesAllowed</code> = true.
     </para>
     
-    <para>The name-expansion part of the context gives a mapping from the short-form (either type or prefix:type) 
-    to the fully qualified type name.</para>
+    <para>Embedded list or array values are both serialized using the JSON array notation; as a result, you cannot
+    tell if the original form was an array or a list.</para>
+    </section>  <!-- end of embedded -->
     
+    </section> <!-- end of feature structure serialization detail -->
+
+    <section id="ug.ref.json.cas.casviews">
+      <title>CAS Views</title>
+      <para>The last section in a JSON CAS serialization is the @cas_views.  
+      This contains for each view, an array of IDs of FSs that the serializing application added to its indexes.  
+        These arrays are stored in a map, with the key being the @id for the Sofa FS associated with the view, or
+        "0" for the edge case where no Sofa has (yet) been created for the initial view (this is an edge case that
+        normally will not occur). For
+        delta-cas serialization (where only changes are being serialized), this array is replaced with a map 
+        of 3 keys:  "added-members", "deleted-members", and "reindexed-members", 
+        the values of which are arrays of IDs of FSs which were added, removed, or reindexed by the application
+        doing the serializing.</para>
+        
+      <para>In some cases, the receiving application may only want to index FSs 
+      that the serializing application had indexed, but otherwise, this information is not of much use 
+      to that application, as that application would likely have its own indexing needs.  .</para>
+    
+    </section> <!-- end of cas views -->
+    
+    <section id="ug.ref.json.cas.xmidiff">
+      <title>Differences with XMI serialization</title>
+      
+      <para>JSON serialization shares the same implementation core with XMI serialization,
+      except of course for serializing in JSON formats vs XMI/XML formats.
+      One area where it differs is in the treatment of so-called out-of-type-system data.</para>
+      
+      <para>XMI deserialization can be specified with a "lenient" flag, which allows the incoming data to 
+    include types and features which are not present in the type system being deserialized into. These 
+    data are called "out-of-type-system" data (oots).  The XMI serialization merges the oots data back into the
+    the output serialization (if not doing a delta-cas serialization), thus preserving types and features in the
+    serialization it doesn't have definitions for.</para>
+    
+    <para>
+    JSON serialization doesn't support this, mainly because there's no type information available for the 
+    oots data, and the JSON @context information for these types can't be generated.</para>
+      
+    </section>    
+    
+    <section id="ug.ref.json.cas.features">
+      <title>Additional JSON CAS Serialization features</title>
+
     <para>JSON serialization also supports several additional features, including:</para>
     <itemizedlist>
       <listitem>
@@ -187,7 +318,8 @@ BY_TYPE_EMBED_ID:
         are serialized.</para>
       </listitem>
       <listitem>
-        <para>An ErrorHandler; this will be called in various error situations.</para>
+        <para>An ErrorHandler; this will be called in various error situations, including when 
+        serializing an array or list value for a feature marked <code>multipleReferencesAllowed = false</code>.</para>
       </listitem>
       <listitem>
         <para>A switch to control omitting of features that have default values (default is to omit these).</para>
@@ -196,58 +328,6 @@ BY_TYPE_EMBED_ID:
         <para>a pretty printing flag (default is not to do pretty-printing)</para>
       </listitem>
     </itemizedlist>
-        
-    <para>Here's a summary of the sections of the CAS JSON serialization.</para>
-    <itemizedlist>
-      <listitem>
-        <para>(optional) A @context section, modeled after JSON-LD.  This has entries for each type that is serialized:</para>
-        <itemizedlist>
-          <listitem>
-            <para>(optional) name expansion.  This provides the full name for UIMA types that correspond to the shorter type names
-            used in the body of the serialization.</para>
-          </listitem>
-          <listitem>
-            <para>(optional) feature context: This identifies which features are to be interpreted as references to other 
-            feature structure instances, and/or which features are encoded as binary using base64 encoding 
-            (per JSON/Jackson standard convention).</para>
-          </listitem>
-          <listitem>
-            <para>(optional) supertypes: this provides information that can be used by the receiver to contruct the inheritance
-            tree used by the serialized types.  It can enable iterating over all instances of some type, including 
-            all of its subtypes.</para>
-          </listitem>
-        </itemizedlist>
-      </listitem>
-      <listitem>
-        <para>@cas_feature_structures: For each view in the CAS, the list of feature structures that were added to the index, or, for deltaCas
-        serialization (where only the changes are being serialized) which feature structures were indexed or 
-        removed from the index.  The formats can include @id and @type extra features, and can optionally
-        be serialized as JSON maps for either one of the @id or @type features.</para>
-        
-        
-        <itemizedlist>
-          <listitem>
-            <para>INDEX_ID: this is a map, the key is the ID</para>
-          </listitem>
-          <listitem>
-            <para>INDEX_TYPE: this is a map, the key is the short-typename</para>
-          </listitem>
-        </itemizedlist>
-      </listitem>
-      <listitem>
-        <para>(optional) an @cas_views section.  This contains for each view, an array of IDs that were added to the index.  
-        These arrays are stored in a map, with the key being the @id for the Sofa FS associated with the view, or
-        "0" for the edge case where no Sofa has (yet) been created for a view. For
-        delta-cas serialization (where only changes are being serialized), this array is replaced with a map 
-        of 3 keys:  "added-members", "deleted-members", and "reindexed-members", the values of which are arrays of IDs.</para>
-      </listitem>
-    </itemizedlist>
-    
-    <para>XMI deserialization can be specified with a "lenient" flag, which allows the incoming data to 
-    include types and features which are not present in the type system being deserialized into. These 
-    data are called "out-of-type-system" data (oots).  The XMI serialization merges back the oots data.
-    JSON serialization doesn't support this, mainly because there's no type information available for the 
-    oots data, and the JSON @context information for these types can't be generated.</para>
   </section>
 
   
@@ -257,7 +337,7 @@ BY_TYPE_EMBED_ID:
     <para>The support is built on top the Jackson JSON serialization
     package.  We follow the conventions of Jackson for configuring.</para>
     
-    <para>The serialization API is in JsonCasSerializer class.</para>
+    <para>The serialization APIs are in the JsonCasSerializer class.</para>
     
     <para>Although there are some static short-cut methods for common use cases, the basic operations needed
     to serailialize a CAS as JSON are:</para>
@@ -267,17 +347,21 @@ BY_TYPE_EMBED_ID:
         <para>Make an instance of the JsonCasSerializer class.  This will serve to collect configuration information.</para>
       </listitem>
       <listitem>
-        <para>Do any additional configuration needed.  See the Javadocs for details.  The following objects can be configured:</para>
+        <para>Do any additional configuration needed.  See the Javadocs for details.  
+        The following objects can be configured:</para>
         <itemizedlist spacing="compact">
           <listitem>
-            <para>The JsonCasSerializer object: you can specify the kind of JSON formatting, what to serialize,
+            <para>The JsonCasSerializer object: here you can specify the kind of JSON formatting, what to serialize,
             whether or not delta serialization is wanted, prettyprinting, and more.</para>
           </listitem>
           <listitem>
-            <para>The underlying JsonFactory from Jackson.  Normally, you won't need to configure this.</para>
+            <para>The underlying JsonFactory object from Jackson.  Normally, you won't need to configure this.
+            If you do, you can create your own instance of this object and configure it and use it in the
+            serialization.</para>
           </listitem>
           <listitem>
-            <para>The underlying JsonGenerator from Jackson. Normally, you won't need to configure this.</para>
+            <para>The underlying JsonGenerator from Jackson. Normally, you won't need to configure this.
+            If you do, you can get the instance the serializer will be using and configure that.</para>
           </listitem>
         </itemizedlist>
       </listitem>
@@ -285,46 +369,56 @@ BY_TYPE_EMBED_ID:
         <para>Once all the configuration is done, the serialize(...) call is done in this class, 
         which will create a one-time-use
         inner class where the actual serialization is done.  The serialize(...) method is thread-safe, in that the same 
-        JsonCasSerializer instance (after it has been configured) can kick off multiple serializations 
+        JsonCasSerializer instance (after it has been configured) can kick off multiple 
+        (identically configured) serializations 
         on different threads at the same time.</para>
         <para>The serialize call follows the Jackson conventions, taking one of 3 specifications of where to serialize to:
         a Writer, an OutputStream, or a File.</para>
       </listitem>
     </itemizedlist>
     
+    <para>Here's an example:</para>
+    <programlisting>JsonCasSerializer jcs = new JsonCasSerializer();
+                          // do some configuration
+jcs.setPrettyPrint(true); // just for testing
+                         
+StringWriter sw = new StringWriter();
+                          // serialize into sw
+jcs.serialize(cas, sw);
+                          // result is in sw</programlisting>
+    
     <para>The JsonCasSerializer class also has some static convenience methods for JSON serialization, for the
-    most common configuration cases; please see the Javadocs for details. These are named jasonSerialize, to 
+    most common configuration cases; please see the Javadocs for details. These are named jsonSerialize, to 
     distinguish them from the non-static serialize methods.</para>
 
-  </section>
+    <para>Many of the common configuration methods generally return the instance, so they can be chained together.
+    For example, if jcs is an instance of the JsonCasSerializer, you can write
+    <code>jcs.setPrettyPrint(true).setOmitDefaultvalues(false);</code> to set both of these.</para>
 
-  <section id="ugr.ref.json.configuration">
-    <title>JSON CAS Serialization - Common Configuration</title>
-    
-    <para>See the Javadocs for the class XmiCasSerialization for a description of the available configurations.</para>
-        
-    <para>The configuration methods generally return the instance, so they can be chained together.
-    For example, if xcs is an instance of the XmiCasSerializer, you can write
-    <code>xcs.setPrettyPrint(true).setOmitDefaultvalues(true);</code></para>
-        
-  </section>  
+  </section> <!--  of configuring  -->
 
-  </section>
+  </section> <!--  of JSON Cas Serialization -->
   
-  <section>
-    <title>TypeSystem Serialization</title>
+  <section id="ugr.ref.json.descriptionserialization">
+    <title>JSON serialization for UIMA descriptors</title>
     
-    <para>TypeSystems can be serialized by the toJSON methods defined in JSONizable interface, a super interface of the
-    TypeSystemDescription interface.  The toJSON methods take a Writer, File or OutputStream parameter, and 
+    <para>UIMA descriptors are XML descriptors; when they are used within UIMA, there is an internal form known
+    as UIMA <emphasis>description</emphasis>s; these can be serialized out as XML using a toXML method.  
+    JSON support adds the ability to serialize these a JSON objects, as well.  It may be of use, for example,
+    to have the full type system description for a UIMA pipeline available in JSON notation.
+    </para>
+    
+    <para>The class JsonMetaDataSerializer defines a set of static methods that serialize UIMA description objects
+    using a toJson method that takes as an argument the description object to be serialized, and the standard
+    set of serialiization targets that Jackson supports (File, Writer, or OutputStream).  There is also
     an optional prettyprint flag (default is no prettyprinting).</para>
     
-    <para>The resulting JSON serialization is just a straight-forward serialization of the typeDescription object,
+    <para>The resulting JSON serialization is just a straight-forward serialization of the description object,
     having the same fields as the XML serialization of it.</para>
     
     <para>Here's what a small TypeSystem description looks like, serialized:</para>
     
-    <programlisting>
-{"typeSystemDescription" : 
+    <programlisting>{"typeSystemDescription" : 
   {"name" : "casTestCaseTypesystem",  
    "description" : "Type system description for CAS test cases.",  
    "version" : "1.0",  
@@ -347,8 +441,31 @@ BY_TYPE_EMBED_ID:
      {"typeDescription" : 
        {"name" : "TokenType",  
         "description" : "",  
-        "supertypeName" : "uima.cas.TOP" } } ] } }
-    </programlisting>
+        "supertypeName" : "uima.cas.TOP" } } ] } }</programlisting>
+        
+    <para>Here's a sample of code to serialize a UIMA description object held in the variable <code>tsd</code>:</para>
+    
+    <programlisting>
+StringWriter sw = new StringWriter();
+                  // no prettyprinting             
+JsonMetaDataSerializer.toJSON(tsd, sw);
+
+sw = new StringWriter();    
+                  // prettyprinting             
+JsonMetaDataSerializer.toJSON(tsd, sw, true);
+                  // result in sw</programlisting>
+  </section>
+  
+  <section id="ugr.ref.json.using">
+    <title>Using JSON serializations</title>
+    
+    <para>The implementation packages the JSON support separately from the main uimaj distribution, because
+    the JSON support has a dependency on a Jackson library, jackson-core.  The code for the UIMA support is in
+    a separate add-on project, part of UIMA addons, under the name uimaj-json.  You can download the binary
+    distribution for this, or if you're using Maven, you can include a dependency on the
+    <code>uima.apache.org:uimaj-json</code>
+    artifact.  This will transitively include the <code>jackson-core</code> artifact.
+    The binary distribution includes both Jars.</para>
   </section>
   <!--   
   <section id="ugr.ref.json.use-cases">
@@ -411,5 +528,4 @@ Serialization.deserializeCAS(cas, bais, tgtTypeSystem, reuseInfo);
 </programlisting> 
 </section>
   -->
-
 </chapter>
