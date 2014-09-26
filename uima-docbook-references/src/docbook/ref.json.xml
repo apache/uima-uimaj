@@ -40,7 +40,7 @@ under the License.
     optional add-on, <code>uimaj-json</code>. 
     The exact format of the serialization is configurable in several aspects.  
     The implementation is built on top of the Jackson JSON generation library.
-    Serialization is supported for CASs and also for UIMA descriptions.   
+    Serialization is supported for CASs and also for UIMA description objects.   
     </para>
   </section>
      
@@ -262,8 +262,8 @@ jcs.setJsonContext(JsonContextFormat.omitExpandedTypeNames);</programlisting>
     you specify <code>multipleReferencesAllowed</code> = true.
     </para>
     
-    <para>Embedded list or array values are both serialized using the JSON array notation; as a result, you cannot
-    tell if the original form was an array or a list.</para>
+    <para>Embedded list or array values are both serialized using the JSON array notation; as a result, these
+    alternative representations are not distinguised in the JSON serialization.</para>
     </section>  <!-- end of embedded -->
     
     </section> <!-- end of feature structure serialization detail -->
@@ -456,17 +456,6 @@ JsonMetaDataSerializer.toJSON(tsd, sw, true);
                   // result in sw</programlisting>
   </section>
   
-  <section id="ugr.ref.json.using">
-    <title>Using JSON serializations</title>
-    
-    <para>The implementation packages the JSON support separately from the main uimaj distribution, because
-    the JSON support has a dependency on a Jackson library, jackson-core.  The code for the UIMA support is in
-    a separate add-on project, part of UIMA addons, under the name uimaj-json.  You can download the binary
-    distribution for this, or if you're using Maven, you can include a dependency on the
-    <code>uima.apache.org:uimaj-json</code>
-    artifact.  This will transitively include the <code>jackson-core</code> artifact.
-    The binary distribution includes both Jars.</para>
-  </section>
   <!--   
   <section id="ugr.ref.json.use-cases">
     <title>Use Case cookbook</title>

@@ -139,7 +139,29 @@ under the License.
       <fileMode>644</fileMode> 
       <directoryMode>755</directoryMode>        
     </dependencySet>
-    
+    <dependencySet>
+      <includes>
+        <include>org.apache.uima:uimaj-json</include>
+      </includes>
+      <unpack>false</unpack>
+      <scope>runtime</scope>
+      <outputFileNameMapping>uimaj-json.jar</outputFileNameMapping>
+      <outputDirectory>lib</outputDirectory>
+      <useProjectArtifact>false</useProjectArtifact>
+      <fileMode>644</fileMode> 
+      <directoryMode>755</directoryMode>        
+    </dependencySet>
+    <dependencySet>
+      <includes>
+        <include>com.fasterxml.jackson.core:jackson-core</include>
+      </includes>
+      <unpack>false</unpack>
+      <scope>runtime</scope>
+      <outputDirectory>lib</outputDirectory>
+      <useProjectArtifact>false</useProjectArtifact>
+      <fileMode>644</fileMode> 
+      <directoryMode>755</directoryMode>        
+    </dependencySet>
     
     <!-- Copy each eclipse plugin into the /eclipsePlugins dir of the distribution -->
     <dependencySet>
@@ -185,15 +207,7 @@ under the License.
       <fileMode>644</fileMode>
       <directoryMode>755</directoryMode>        
     </fileSet>
-    
-    <!-- copy bin distr license and notice -->
-    <fileSet>
-      <directory>src/main/readme</directory>
-      <outputDirectory></outputDirectory>
-      <fileMode>644</fileMode>
-      <directoryMode>755</directoryMode>      
-    </fileSet>
-    
+           
     <!-- copy standard top level files -->        
     <fileSet>
       <directory>.</directory>
@@ -283,6 +297,18 @@ under the License.
   </fileSets>
  
   <files>
+    <!-- copy bin distr license and notice -->
+    <file>
+      <source>src/main/readme/LICENSE</source>
+      <outputDirectory></outputDirectory>
+      <fileMode>644</fileMode>
+    </file>
+    <file> 
+      <source>src/main/readme/NOTICE</source>
+      <outputDirectory></outputDirectory>
+      <fileMode>644</fileMode>    
+    </file>
+  
     <file>
       <source>uimaj-examples/src/main/eclipseProject/project</source>
       <outputDirectory>examples</outputDirectory>

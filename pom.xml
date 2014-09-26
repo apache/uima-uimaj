@@ -62,7 +62,8 @@
   <properties>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
     <jiraVersion>2.6.1SDK</jiraVersion>   
-    <assemblyFinalName>uimaj-${project.version}</assemblyFinalName>  
+    <assemblyFinalName>uimaj-${project.version}</assemblyFinalName> 
+    <assemblyBinDescriptor>src/main/assembly/bin-without-jackson.xml</assemblyBinDescriptor> 
     <postNoticeText>${ibmNoticeText}</postNoticeText>    
   </properties>
 
@@ -153,6 +154,11 @@
       <artifactId>uimaj-ep-launcher</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-json</artifactId>
+      <version>${project.version}</version>
+    </dependency>    
   </dependencies>
 
   
@@ -183,20 +189,13 @@
               <goal>javadoc</goal>
             </goals>
             <configuration>
-              <!-- fix java api links because Oracle bought Sun -->
-              <javaApiLinks>
-                <property>
-                  <name>api_1.5</name>
-                  <value>http://download.oracle.com/javase/1.5.0/docs/api/</value>
-                </property>
-              </javaApiLinks>
               <groups>
                 <group>
                   <title>Packages</title>
                   <packages>*</packages>
                 </group>
               </groups>
-              <sourcepath>uimaj-core/src/main/java;uimaj-document-annotation/src/main/java</sourcepath>
+              <sourcepath>uimaj-core/src/main/java;uimaj-json/src/main/java;uimaj-document-annotation/src/main/java</sourcepath>
               <excludePackageNames>*.internal.*:*.impl.*</excludePackageNames>
               <!-- add a few classes in impl packages that are directly used by user code -->
               <additionalparam>
@@ -212,6 +211,13 @@
               </additionalparam>
               <doctitle>Apache UIMA Java SDK ${project.version} User-Level API Documentation</doctitle>
               <windowtitle>Apache UIMA Java SDK ${project.version} User-Level API Documentation</windowtitle>
+              <additionalDependencies>
+							  <additionalDependency>
+							    <groupId>com.fasterxml.jackson.core</groupId>
+						      <artifactId>jackson-core</artifactId>
+						      <version>2.4.2</version>
+							  </additionalDependency>
+							</additionalDependencies>
             </configuration>
           </execution>
         </executions>
@@ -256,11 +262,28 @@
                   <exclude>uimaj-jet-expander/**</exclude>
                   <exclude>uimaj-bootstrap/**</exclude>
                   <exclude>uimaj-internal-tools/**</exclude>
+                  <exclude>uimaj-json/**</exclude>
+                  <exclude>src/main/readme/NOTICE-without-jackson</exclude>
                </excludes>
               </configuration>
             </execution>
           </executions>
       </plugin>
+    
+      <plugin> 
+        <artifactId>maven-assembly-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>uima-distr</id>
+                <configuration>
+                  <descriptors>
+                    <descriptor>${assemblyBinDescriptor}</descriptor>
+                  </descriptors>
+                </configuration>              
+              </execution>
+            </executions>
+          </plugin>
+    
     </plugins>
   </build>
 
@@ -285,6 +308,19 @@
           </plugin>
         </plugins>     
       </build>
+    </profile>
+    
+    <profile>
+      <id>json-support</id>
+      <activation>
+        <file><exists>pom.xml</exists></file>  <!-- active by default, turn off via command line -P!json-support  -->
+      </activation>
+      <properties>
+        <assemblyBinDescriptor>src/main/assembly/bin.xml</assemblyBinDescriptor>  
+      </properties>
+      <modules>
+        <module>uimaj-json</module>
+      </modules>
     </profile>
   </profiles>    
     
