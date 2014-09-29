@@ -385,63 +385,63 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   final void initTypeVariables() {
     // Type objects.
     // this.ts.topType = (TypeImpl) this.ts.getTopType(); // never used
-    this.intType = (TypeImpl) getType(CAS.TYPE_NAME_INTEGER);
-    this.stringType = (TypeImpl) getType(CAS.TYPE_NAME_STRING);
-    this.floatType = (TypeImpl) getType(CAS.TYPE_NAME_FLOAT);
-    this.arrayBaseType = (TypeImpl) getType(CAS.TYPE_NAME_ARRAY_BASE);
-    this.intArrayType = (TypeImpl) getType(CAS.TYPE_NAME_INTEGER_ARRAY);
-    this.floatArrayType = (TypeImpl) getType(CAS.TYPE_NAME_FLOAT_ARRAY);
-    this.stringArrayType = (TypeImpl) getType(CAS.TYPE_NAME_STRING_ARRAY);
-    this.fsArrayType = (TypeImpl) getType(CAS.TYPE_NAME_FS_ARRAY);
-    this.sofaType = (TypeImpl) getType(CAS.TYPE_NAME_SOFA);
-    this.annotType = (TypeImpl) getType(CAS.TYPE_NAME_ANNOTATION);
+//    this.intType = (TypeImpl) getType(CAS.TYPE_NAME_INTEGER);
+//    this.stringType = (TypeImpl) getType(CAS.TYPE_NAME_STRING);
+//    this.floatType = (TypeImpl) getType(CAS.TYPE_NAME_FLOAT);
+//    this.arrayBaseType = (TypeImpl) getType(CAS.TYPE_NAME_ARRAY_BASE);
+//    this.intArrayType = (TypeImpl) getType(CAS.TYPE_NAME_INTEGER_ARRAY);
+//    this.floatArrayType = (TypeImpl) getType(CAS.TYPE_NAME_FLOAT_ARRAY);
+//    this.stringArrayType = (TypeImpl) getType(CAS.TYPE_NAME_STRING_ARRAY);
+//    this.fsArrayType = (TypeImpl) getType(CAS.TYPE_NAME_FS_ARRAY);
+//    this.sofaType = (TypeImpl) getType(CAS.TYPE_NAME_SOFA);
+//    this.annotType = (TypeImpl) getType(CAS.TYPE_NAME_ANNOTATION);
     this.sofaNum = (FeatureImpl) getFeatureByFullName(CAS.FEATURE_FULL_NAME_SOFANUM);
     this.annotBaseType = (TypeImpl) getType(CAS.TYPE_NAME_ANNOTATION_BASE);
     this.startFeat = (FeatureImpl) getFeatureByFullName(CAS.FEATURE_FULL_NAME_BEGIN);
     this.endFeat = (FeatureImpl) getFeatureByFullName(CAS.FEATURE_FULL_NAME_END);
     this.langFeat = (FeatureImpl) getFeatureByFullName(CAS.FEATURE_FULL_NAME_LANGUAGE);
-    this.docType = (TypeImpl) getType(CAS.TYPE_NAME_DOCUMENT_ANNOTATION);
+//    this.docType = (TypeImpl) getType(CAS.TYPE_NAME_DOCUMENT_ANNOTATION);
 
-    this.byteType = (TypeImpl) getType(CAS.TYPE_NAME_BYTE);
-    this.byteArrayType = (TypeImpl) getType(CAS.TYPE_NAME_BYTE_ARRAY);
-    this.booleanType = (TypeImpl) getType(CAS.TYPE_NAME_BOOLEAN);
-    this.booleanArrayType = (TypeImpl) getType(CAS.TYPE_NAME_BOOLEAN_ARRAY);
-    this.shortType = (TypeImpl) getType(CAS.TYPE_NAME_SHORT);
-    this.shortArrayType = (TypeImpl) getType(CAS.TYPE_NAME_SHORT_ARRAY);
-    this.longType = (TypeImpl) getType(CAS.TYPE_NAME_LONG);
-    this.longArrayType = (TypeImpl) getType(CAS.TYPE_NAME_LONG_ARRAY);
-    this.doubleType = (TypeImpl) getType(CAS.TYPE_NAME_DOUBLE);
-    this.doubleArrayType = (TypeImpl) getType(CAS.TYPE_NAME_DOUBLE_ARRAY);
+//    this.byteType = (TypeImpl) getType(CAS.TYPE_NAME_BYTE);
+//    this.byteArrayType = (TypeImpl) getType(CAS.TYPE_NAME_BYTE_ARRAY);
+//    this.booleanType = (TypeImpl) getType(CAS.TYPE_NAME_BOOLEAN);
+//    this.booleanArrayType = (TypeImpl) getType(CAS.TYPE_NAME_BOOLEAN_ARRAY);
+//    this.shortType = (TypeImpl) getType(CAS.TYPE_NAME_SHORT);
+//    this.shortArrayType = (TypeImpl) getType(CAS.TYPE_NAME_SHORT_ARRAY);
+//    this.longType = (TypeImpl) getType(CAS.TYPE_NAME_LONG);
+//    this.longArrayType = (TypeImpl) getType(CAS.TYPE_NAME_LONG_ARRAY);
+//    this.doubleType = (TypeImpl) getType(CAS.TYPE_NAME_DOUBLE);
+//    this.doubleArrayType = (TypeImpl) getType(CAS.TYPE_NAME_DOUBLE_ARRAY);
 
     // Type codes.
     initTypeCodeVars();
   }
 
   private final void initTypeCodeVars() {
-    this.intTypeCode = this.intType.getCode();
-    this.stringTypeCode = this.stringType.getCode();
-    this.floatTypeCode = this.floatType.getCode();
+//    this.intTypeCode = this.intType.getCode();
+//    this.stringTypeCode = this.stringType.getCode();
+//    this.floatTypeCode = this.floatType.getCode();
     // this.arrayBaseTypeCode = arrayBaseType.getCode();
-    this.intArrayTypeCode = this.intArrayType.getCode();
-    this.floatArrayTypeCode = this.floatArrayType.getCode();
-    this.stringArrayTypeCode = this.stringArrayType.getCode();
-    this.fsArrayTypeCode = this.fsArrayType.getCode();
-    this.sofaTypeCode = this.sofaType.getCode();
-    this.annotTypeCode = this.annotType.getCode();
-    this.annotBaseTypeCode = this.annotBaseType.getCode();
+//    this.intArrayTypeCode = this.intArrayType.getCode();
+//    this.floatArrayTypeCode = this.floatArrayType.getCode();
+//    this.stringArrayTypeCode = this.stringArrayType.getCode();
+//    this.fsArrayTypeCode = this.fsArrayType.getCode();
+//    this.sofaTypeCode = this.sofaType.getCode();
+//    this.annotTypeCode = this.annotType.getCode();
+//    this.annotBaseTypeCode = this.annotBaseType.getCode();
 
-    this.byteArrayTypeCode = this.byteArrayType.getCode();
-    this.byteTypeCode = this.byteType.getCode();
-    this.booleanTypeCode = this.booleanType.getCode();
-    this.booleanArrayTypeCode = this.booleanArrayType.getCode();
-    this.shortTypeCode = this.shortType.getCode();
-    this.shortArrayTypeCode = this.shortArrayType.getCode();
-    this.longTypeCode = this.longType.getCode();
-    this.longArrayTypeCode = this.longArrayType.getCode();
-    this.doubleTypeCode = this.doubleType.getCode();
-    this.doubleArrayTypeCode = this.doubleArrayType.getCode();
+//    this.byteArrayTypeCode = this.byteArrayType.getCode();
+//    this.byteTypeCode = this.byteType.getCode();
+//    this.booleanTypeCode = this.booleanType.getCode();
+//    this.booleanArrayTypeCode = this.booleanArrayType.getCode();
+//    this.shortTypeCode = this.shortType.getCode();
+//    this.shortArrayTypeCode = this.shortArrayType.getCode();
+//    this.longTypeCode = this.longType.getCode();
+//    this.longArrayTypeCode = this.longArrayType.getCode();
+//    this.doubleTypeCode = this.doubleType.getCode();
+//    this.doubleArrayTypeCode = this.doubleArrayType.getCode();
 
-    this.arrayBaseTypeCode = this.arrayBaseType.getCode();
+//    this.arrayBaseTypeCode = this.arrayBaseType.getCode();
 
     final Type sofaT = this.sofaType;
     this.sofaNumFeatCode = ll_getCodeForFeature(sofaT

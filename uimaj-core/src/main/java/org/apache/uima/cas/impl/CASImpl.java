@@ -2312,38 +2312,59 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       Type top = ts.addTopType(CAS.TYPE_NAME_TOP);
       // Add basic data types.
       Type intT = ts.addType(CAS.TYPE_NAME_INTEGER, top);
+      ts.intType = (TypeImpl) intT;
+      ts.intTypeCode = ts.intType.getCode();
+      
       Type floatT = ts.addType(CAS.TYPE_NAME_FLOAT, top);
+      ts.floatType = (TypeImpl) floatT;
+      ts.floatTypeCode = ts.floatType.getCode();
+      
       Type stringT = ts.addType(CAS.TYPE_NAME_STRING, top);
+      ts.stringType = (TypeImpl) stringT;
+      ts.stringTypeCode = ts.stringType.getCode();
+      
+      
       // Add arrays.
       Type array = ts.addType(CAS.TYPE_NAME_ARRAY_BASE, top);
       ts.arrayBaseType = (TypeImpl) array; // do here - used in next
       ts.arrayBaseTypeCode = ts.arrayBaseType.getCode();
-      TypeImpl fsArray = (TypeImpl) ts.addType(CAS.TYPE_NAME_FS_ARRAY, array);
-      ts.fsArrayType = fsArray; // do here - used in next
+      
+      TypeImpl fsArray = ts.fsArrayType = (TypeImpl) ts.addType(CAS.TYPE_NAME_FS_ARRAY, array);
       ts.fsArrayTypeCode = fsArray.getCode();
-      TypeImpl floatArray = (TypeImpl) ts.addType(CAS.TYPE_NAME_FLOAT_ARRAY, array);
-      TypeImpl intArray = (TypeImpl) ts.addType(CAS.TYPE_NAME_INTEGER_ARRAY, array);
-      TypeImpl stringArray = (TypeImpl) ts.addType(CAS.TYPE_NAME_STRING_ARRAY, array);
+      
+      TypeImpl floatArray = ts.floatArrayType = (TypeImpl) ts.addType(CAS.TYPE_NAME_FLOAT_ARRAY, array);
+      ts.floatArrayTypeCode = floatArray.getCode();
+      
+      TypeImpl intArray = ts.intArrayType = (TypeImpl) ts.addType(CAS.TYPE_NAME_INTEGER_ARRAY, array);
+      ts.intArrayTypeCode = intArray.getCode();
+      
+      TypeImpl stringArray = ts.stringArrayType = (TypeImpl) ts.addType(CAS.TYPE_NAME_STRING_ARRAY, array);
+      ts.stringArrayTypeCode = stringArray.getCode();
+      
       // Add lists.
       Type list = ts.addType(CAS.TYPE_NAME_LIST_BASE, top);
+      
       // FS lists.
       Type fsList = ts.addType(CAS.TYPE_NAME_FS_LIST, list);
       Type fsEList = ts.addType(CAS.TYPE_NAME_EMPTY_FS_LIST, fsList);
       Type fsNeList = ts.addType(CAS.TYPE_NAME_NON_EMPTY_FS_LIST, fsList);
       ts.addFeature(CAS.FEATURE_BASE_NAME_HEAD, fsNeList, top, true);
       ts.addFeature(CAS.FEATURE_BASE_NAME_TAIL, fsNeList, fsList, true);
+      
       // Float lists.
       Type floatList = ts.addType(CAS.TYPE_NAME_FLOAT_LIST, list);
       Type floatEList = ts.addType(CAS.TYPE_NAME_EMPTY_FLOAT_LIST, floatList);
       Type floatNeList = ts.addType(CAS.TYPE_NAME_NON_EMPTY_FLOAT_LIST, floatList);
       ts.addFeature(CAS.FEATURE_BASE_NAME_HEAD, floatNeList, floatT, false);
       ts.addFeature(CAS.FEATURE_BASE_NAME_TAIL, floatNeList, floatList, true);
+      
       // Integer lists.
       Type intList = ts.addType(CAS.TYPE_NAME_INTEGER_LIST, list);
       Type intEList = ts.addType(CAS.TYPE_NAME_EMPTY_INTEGER_LIST, intList);
       Type intNeList = ts.addType(CAS.TYPE_NAME_NON_EMPTY_INTEGER_LIST, intList);
       ts.addFeature(CAS.FEATURE_BASE_NAME_HEAD, intNeList, intT, false);
       ts.addFeature(CAS.FEATURE_BASE_NAME_TAIL, intNeList, intList, true);
+      
       // String lists.
       Type stringList = ts.addType(CAS.TYPE_NAME_STRING_LIST, list);
       Type stringEList = ts.addType(CAS.TYPE_NAME_EMPTY_STRING_LIST, stringList);
@@ -2352,20 +2373,46 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       ts.addFeature(CAS.FEATURE_BASE_NAME_TAIL, stringNeList, stringList, true);
   
       Type booleanT = ts.addType(CAS.TYPE_NAME_BOOLEAN, top);
+      ts.booleanType = (TypeImpl) booleanT;
+      ts.booleanTypeCode = ts.booleanType.getCode();
+      
       Type byteT = ts.addType(CAS.TYPE_NAME_BYTE, top);
+      ts.byteType = (TypeImpl) byteT;
+      ts.byteTypeCode = ts.byteType.getCode();
+      
       Type shortT = ts.addType(CAS.TYPE_NAME_SHORT, top);
+      ts.shortType = (TypeImpl) shortT;
+      ts.shortTypeCode = ts.shortType.getCode();
+      
       Type longT = ts.addType(CAS.TYPE_NAME_LONG, top);
+      ts.longType = (TypeImpl) longT;
+      ts.longTypeCode = ts.longType.getCode();
+      
       Type doubleT = ts.addType(CAS.TYPE_NAME_DOUBLE, top);
+      ts.doubleType = (TypeImpl) doubleT;
+      ts.doubleTypeCode = ts.doubleType.getCode();
   
       // array type initialization must follow the component type it's based on
-      TypeImpl booleanArray = (TypeImpl) ts.addType(CAS.TYPE_NAME_BOOLEAN_ARRAY, array);
-      TypeImpl byteArray = (TypeImpl) ts.addType(CAS.TYPE_NAME_BYTE_ARRAY, array);
-      TypeImpl shortArray = (TypeImpl) ts.addType(CAS.TYPE_NAME_SHORT_ARRAY, array);
-      TypeImpl longArray = (TypeImpl) ts.addType(CAS.TYPE_NAME_LONG_ARRAY, array);
-      TypeImpl doubleArray = (TypeImpl) ts.addType(CAS.TYPE_NAME_DOUBLE_ARRAY, array);
+      TypeImpl booleanArray = ts.booleanArrayType = (TypeImpl) ts.addType(CAS.TYPE_NAME_BOOLEAN_ARRAY, array);
+      ts.booleanArrayTypeCode = booleanArray.getCode();
+      
+      TypeImpl byteArray = ts.byteArrayType = (TypeImpl) ts.addType(CAS.TYPE_NAME_BYTE_ARRAY, array);
+      ts.byteArrayTypeCode = byteArray.getCode();
+      
+      TypeImpl shortArray = ts.shortArrayType = (TypeImpl) ts.addType(CAS.TYPE_NAME_SHORT_ARRAY, array);
+      ts.shortArrayTypeCode = shortArray.getCode();
+      
+      TypeImpl longArray = ts.longArrayType = (TypeImpl) ts.addType(CAS.TYPE_NAME_LONG_ARRAY, array);
+      ts.longArrayTypeCode = longArray.getCode();
+      
+      TypeImpl doubleArray = ts.doubleArrayType = (TypeImpl) ts.addType(CAS.TYPE_NAME_DOUBLE_ARRAY, array);
+      ts.doubleArrayTypeCode = doubleArray.getCode();
   
       // Sofa Stuff
       Type sofa = ts.addType(CAS.TYPE_NAME_SOFA, top);
+      ts.sofaType = (TypeImpl) sofa;
+      ts.sofaTypeCode = ts.sofaType.getCode();
+      
       ts.addFeature(CAS.FEATURE_BASE_NAME_SOFANUM, sofa, intT, false);
       ts.addFeature(CAS.FEATURE_BASE_NAME_SOFAID, sofa, stringT, false);
       ts.addFeature(CAS.FEATURE_BASE_NAME_SOFAMIME, sofa, stringT, false);
@@ -2377,11 +2424,21 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   
       // Annotations
       Type annotBaseType = ts.addType(CAS.TYPE_NAME_ANNOTATION_BASE, top);
+      ts.annotBaseType = (TypeImpl) annotBaseType;
+      ts.annotBaseTypeCode = ts.annotBaseType.getCode();
+      
       ts.addFeature(CAS.FEATURE_BASE_NAME_SOFA, annotBaseType, sofa, false);
+      
       Type annotType = ts.addType(CAS.TYPE_NAME_ANNOTATION, annotBaseType);
+      ts.annotType = (TypeImpl) annotType;
+      ts.annotTypeCode = ts.annotType.getCode();
+      
       ts.addFeature(CAS.FEATURE_BASE_NAME_BEGIN, annotType, intT, false);
       ts.addFeature(CAS.FEATURE_BASE_NAME_END, annotType, intT, false);
+      
       Type docType = ts.addType(CAS.TYPE_NAME_DOCUMENT_ANNOTATION, annotType);
+      ts.docType = (TypeImpl) docType;
+      
       ts.addFeature(CAS.FEATURE_BASE_NAME_LANGUAGE, docType, stringT, false);
   
       // Lock individual types.

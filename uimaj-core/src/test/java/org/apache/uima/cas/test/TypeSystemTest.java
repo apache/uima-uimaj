@@ -316,6 +316,13 @@ public class TypeSystemTest extends TestCase {
     this.ts = null;
   }
 
+  public void testSuperTypeBuiltIn() {
+    CAS cas = CASInitializer.initCas(new SetupTest());
+    TypeSystem ts = cas.getTypeSystem();
+    Type stringArray = ts.getType("uima.cas.StringArray");
+    assertEquals("uima.cas.ArrayBase", ts.getParent(stringArray).getName());
+  }
+  
   public void testNameChecking() {
     CAS tcas = CASInitializer.initCas(new SetupTest());
     assertTrue(tcas != null);
