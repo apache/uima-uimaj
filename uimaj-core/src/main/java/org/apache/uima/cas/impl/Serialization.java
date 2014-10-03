@@ -39,7 +39,7 @@ import org.apache.uima.resource.ResourceInitializationException;
  * In spite of its name, it has static methods for both serializing and deserializing CASes.
  * 
  * It has 2 styles of Serialization / Deserialization 
- *   - one which makes use of variouscustom binary serialization methods, and
+ *   - one which makes use of various custom binary serialization methods, and
  *   - one which just converts CAS and related objects into other objects which
  *     in turn are serializable by normal Java Object serialization.
  *      
