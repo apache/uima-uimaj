@@ -409,10 +409,7 @@ public class XmiCasSerializer {
     if (errorHandler != null) {
       css.setErrorHandler(errorHandler);
     }
-    if (marker != null) {
-      css.setDeltaCas(marker);
-    }
-    XmiDocSerializer ser = new XmiDocSerializer(contentHandler, ((CASImpl) cas).getBaseCAS(), sharedData);
+    XmiDocSerializer ser = new XmiDocSerializer(contentHandler, ((CASImpl) cas).getBaseCAS(), sharedData, (MarkerImpl) marker);
     try {
       ser.cds.serialize();
     } catch (Exception e) {
@@ -457,15 +454,17 @@ public class XmiCasSerializer {
     return this;
   }
   
-  /**
-   * set the Marker to specify delta cas serialization
-   * @param m - the marker
-   * @return the original instance, possibly updated
-   */
-  public XmiCasSerializer setDeltaCas(Marker m) {
-    css.setDeltaCas(m);
-    return this;
-  }
+
+  // not done here, done on serialize call, because typically changes for each call
+//  /**
+//   * set the Marker to specify delta cas serialization
+//   * @param m - the marker
+//   * @return the original instance, possibly updated
+//   */
+//  public XmiCasSerializer setDeltaCas(Marker m) {
+//    css.setDeltaCas(m);
+//    return this;
+//  }
   
   /**
    * set an error handler to receive information about errors
@@ -506,11 +505,12 @@ public class XmiCasSerializer {
 //      return numChildren;
 //    }
     
-    private XmiDocSerializer(ContentHandler ch, CASImpl cas, XmiSerializationSharedData sharedData) {
-      cds = css.new CasDocSerializer(ch, cas, sharedData, this);
+    private XmiDocSerializer(ContentHandler ch, CASImpl cas, XmiSerializationSharedData sharedData, MarkerImpl marker) {
+      cds = css.new CasDocSerializer(ch, cas, sharedData, marker, this);
       this.ch = ch;
     }
     
+    @Override
     protected void initializeNamespaces() {
       /**
        * Populates nsUriToPrefixMap and typeCode2namespaceNames structures based on CAS type system.
@@ -546,6 +546,7 @@ public class XmiCasSerializer {
       }
     }
     
+    @Override
     protected void writeFeatureStructures(int iElementCount) throws Exception {
       workAttrs.clear();
       computeNamespaceDeclarationAttrs(workAttrs);
@@ -561,15 +562,18 @@ public class XmiCasSerializer {
 
     }
     
+    @Override
     protected void writeViews() throws Exception {
       cds.writeViewsCommons();  
     }
     
+    @Override
     protected void writeEndOfSerialization() throws SAXException {
       endElement(XMI_TAG);
       endPrefixMappings();    
     }
     
+    @Override
     protected void writeView(int sofaAddr, int[] members) throws Exception {
       workAttrs.clear();
       // this call should never generate a new XmiId, it should just retrieve the existing one for the sofa
@@ -653,6 +657,7 @@ public class XmiCasSerializer {
       }
     }
 
+    @Override
     protected void writeView(int sofaAddr, int[] added, int[] deleted, int[] reindexed) throws SAXException {
       String sofaXmiId = cds.getXmiId(sofaAddr);
       workAttrs.clear();
@@ -682,10 +687,12 @@ public class XmiCasSerializer {
       endElement(elemName);
     }        
 
+    @Override
     protected void writeFs(int addr, int typeCode) throws SAXException {
       writeFsOrLists(addr, typeCode, false);
     }
 
+    @Override
     protected void writeListsAsIndividualFSs(int addr, int typeCode) throws SAXException {
       writeFsOrLists(addr, typeCode, true);
     }
@@ -701,6 +708,7 @@ public class XmiCasSerializer {
       endElement(xmlElementName);
     }
   
+    @Override
     protected void writeArrays(int addr, int typeCode, int typeClass) throws SAXException {
       XmlElementName xmlElementName = cds.typeCode2namespaceNames[typeCode];
       
@@ -892,7 +900,7 @@ public class XmiCasSerializer {
         case LowLevelCAS.TYPE_CLASS_LONGARRAY:
         case LowLevelCAS.TYPE_CLASS_DOUBLEARRAY:
         case LowLevelCAS.TYPE_CLASS_FSARRAY: 
-          if (cds.tsi.ll_getFeatureForCode(featCode).isMultipleReferencesAllowed()) {
+          if (cds.isStaticMultiRef(featCode)) {
             attrValue = cds.getXmiId(featValRaw);
           } else {
             attrValue = arrayToString(featValRaw, featureValueClass);
@@ -902,7 +910,7 @@ public class XmiCasSerializer {
           // special case for StringArrays, which stored values as child elements rather
           // than attributes.
         case LowLevelCAS.TYPE_CLASS_STRINGARRAY: 
-          if (cds.tsi.ll_getFeatureForCode(featCode).isMultipleReferencesAllowed()) {
+          if (cds.isStaticMultiRef(featCode)) {
             attrValue = cds.getXmiId(featValRaw);
           } else {
             stringArrayToElementList(featName, featValRaw, childElements);
@@ -914,11 +922,11 @@ public class XmiCasSerializer {
         case CasSerializerSupport.TYPE_CLASS_INTLIST:
         case CasSerializerSupport.TYPE_CLASS_FLOATLIST:
         case CasSerializerSupport.TYPE_CLASS_FSLIST: 
-          if (insideListNode || cds.tsi.ll_getFeatureForCode(featCode).isMultipleReferencesAllowed()) {
+          if (insideListNode || cds.isStaticMultiRef(featCode)) {
             // If the feature has multipleReferencesAllowed = true OR if we're already
             // inside another list node (i.e. this is the "tail" feature), serialize as a normal FS.
             // Otherwise, serialize as a multi-valued property.
-//            if (cds.tsi.ll_getFeatureForCode(feats[i]).isMultipleReferencesAllowed() ||
+//            if (cds.isStaticMultRef(feats[i]) ||
 //                cds.embeddingNotAllowed.contains(featVal) ||
 //                insideListNode) {
             attrValue = cds.getXmiId(featValRaw);
@@ -930,7 +938,7 @@ public class XmiCasSerializer {
           // special case for StringLists, which stored values as child elements rather
           // than attributes.
         case CasSerializerSupport.TYPE_CLASS_STRINGLIST: 
-          if (insideListNode || cds.tsi.ll_getFeatureForCode(featCode).isMultipleReferencesAllowed()) {
+          if (insideListNode || cds.isStaticMultiRef(featCode)) {
             attrValue = cds.getXmiId(featValRaw);
           } else {
             // it is not safe to use a space-separated attribute, which would
@@ -1218,6 +1226,7 @@ public class XmiCasSerializer {
     @Override
     protected void addNameSpace(XmlElementName xmlElementName) {};
 
+    @Override
     protected void writeFsStart(int addr, int typeCode /* ignored */) {
       workAttrs.clear();
       addAttribute(workAttrs, ID_ATTR_NAME, cds.getXmiId(addr));
@@ -1235,6 +1244,7 @@ public class XmiCasSerializer {
      *          a UIMA-style dotted type name
      * @return a data structure holding the three components of the XML element name
      */
+    @Override
     protected XmlElementName uimaTypeName2XmiElementName(String uimaTypeName) {
       // split uima type name into namespace and short name
       String shortName, nsUri;
@@ -1268,6 +1278,7 @@ public class XmiCasSerializer {
       return new XmlElementName(nsUri, shortName, cds.getUniqueString(prefix + ':' + shortName));
     }
 
+    @Override
     protected void writeEndOfIndividualFs() {}
   }
         
