@@ -194,7 +194,7 @@ public class ListUtils {
   }
   
   public int getLength(int type, int addr, int neListType, int tailFeat) {
-    IntHashSet visited = new IntHashSet();
+    final IntHashSet visited = new IntHashSet();
   	foundCycle = false;
   	// first count length of list so we can allocate array
   	int length = 0;
@@ -214,6 +214,14 @@ public class ListUtils {
     abstract void append(String item);
   }
   
+  /**
+   * Go thru a list, calling the ListOutput append method to append strings (to arrays, or string buffers)
+   * Stop at the end node, or a null, or a loop (no error reported here)
+   * @param curNode
+   * @param sharedData
+   * @param cds
+   * @param out
+   */
   public void anyListToOutput(
       int curNode, 
       XmiSerializationSharedData sharedData, 
@@ -227,11 +235,16 @@ public class ListUtils {
     final int headFeat = getHeadFeatCode(type);
     final int tailFeat = getTailFeatCode(type);
     final int neListType = getNeListType(type);
+    final IntHashSet visited = new IntHashSet();
 
     while (curNode != CASImpl.NULL) {
       final int curNodeType = cas.getHeapValue(curNode);
       if (curNodeType != neListType) { // if not "non-empty"
         break;  // would be the end element.  a 0 is also treated as an end element
+      }
+      
+      if (!visited.add(curNode)) {
+        break;  // hit loop
       }
       
       final int val = cas.getHeapValue(curNode + cas.getFeatureOffset(headFeat));
@@ -295,7 +308,7 @@ public class ListUtils {
     return list;
   }
 
-  //called for enquing 
+  //called for enqueueing 
   public int[] fsListToAddressArray(int curNode) throws SAXException {
     final int type = cas.getHeapValue(curNode);
     
@@ -372,7 +385,7 @@ public class ListUtils {
     int currLength = this.getLength(this.neIntListType, addr);
     int curNode = addr;
     int prevNode = 0;
-    IntHashSet visited = new IntHashSet();
+    final IntHashSet visited = new IntHashSet();
     boolean foundCycle = false;
     int i =0;
     
@@ -448,7 +461,7 @@ public class ListUtils {
     int currLength = this.getLength(this.neFloatListType, addr);
     int curNode = addr;
     int prevNode = 0;
-    IntHashSet visited = new IntHashSet();
+    final IntHashSet visited = new IntHashSet();
     boolean foundCycle = false;
     int i =0;
     
@@ -523,7 +536,7 @@ public class ListUtils {
     int first = addr;
     int currLength = this.getLength(this.neFsListType, addr);
     boolean foundCycle = false;
-    IntHashSet visited = new IntHashSet();
+    final IntHashSet visited = new IntHashSet();
     int curNode = addr;
     int prevNode = 0;
     
@@ -601,7 +614,7 @@ public class ListUtils {
   public int updateStringList(int addr, List<String> stringValues) throws SAXException   {
     int first = addr;
     boolean foundCycle = false;
-    IntHashSet visited = new IntHashSet();
+    final IntHashSet visited = new IntHashSet();
     int curNode = addr;
     int prevNode = 0;
     int currLength = this.getLength(this.neStringListType, addr);
