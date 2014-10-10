@@ -91,6 +91,8 @@ public class IntHashSet {
    }
    size++;
   }
+  
+  
 
   private void increaseTableCapacity() {
     final int [] oldKeys = keys;
@@ -216,7 +218,7 @@ public class IntHashSet {
   }
   
   /**
-   * 
+   * used for increasing table size
    * @param key
    */
   private void addInner(int key) {
@@ -225,6 +227,20 @@ public class IntHashSet {
     keys[i] = key;
   }
 
+  /**
+   * 
+   * @param key -
+   * @return true if the key was present
+   */
+  public boolean remove(int key) {
+    final int i = find(key);
+    if (keys[i] != 0) {
+      keys[i] = 0;
+      size--;
+      return true;
+    }
+    return false;
+  }
 
   public int size() {
     return size;

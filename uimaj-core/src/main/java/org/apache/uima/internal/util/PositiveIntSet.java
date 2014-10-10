@@ -149,6 +149,15 @@ public class PositiveIntSet {
       add(i);
     }
   }
+  
+  public boolean remove(int key) {
+    if (isBitSet) {
+      return intBitSet.remove(key);
+    } else {
+      return intHashSet.remove(key);
+    }
+    
+  }
 
   public int size() {
     if (isBitSet) {
@@ -257,10 +266,6 @@ public class PositiveIntSet {
   private int bitSetSpace(int maxInt) {
     // 0 - 31 : 1;  32-63: 2
     return 1 + (maxInt >> 5);
-  }
-  
-  private int hashSetSpace(int size) {
-    return (size << 1) + size;  // size * 3
   }
   
   private void switchToHashSet(int size) {

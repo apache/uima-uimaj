@@ -63,6 +63,17 @@ public class IntBitSet {
     set.set(key);;
     return prev == false;
   }
+  
+  /**
+   * 
+   * @param key -
+   * @return true if this key was removed, false if not present
+   */
+  public boolean remove(int key) {
+    final boolean prev = set.get(key);
+    set.clear(key);
+    return prev;
+  }
 
   public int size() {
     return set.cardinality();
