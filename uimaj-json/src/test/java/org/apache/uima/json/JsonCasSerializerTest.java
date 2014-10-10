@@ -28,13 +28,17 @@ import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FeatureStructure;
-import org.apache.uima.cas.Marker;
 import org.apache.uima.cas.Type;
+import org.apache.uima.cas.admin.CASFactory;
+import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
-import org.apache.uima.json.JsonCasSerializer.JsonCasFormat;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.cas.IntegerList;
+import org.apache.uima.jcas.cas.NonEmptyIntegerList;
 import org.apache.uima.json.JsonCasSerializer.JsonContextFormat;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
@@ -69,12 +73,15 @@ public class JsonCasSerializerTest extends TestCase {
   private XMLParser parser = UIMAFramework.getXMLParser();
   private TypeSystemDescription tsd;
   private CASImpl cas;
+  private JCas jcas;
   private TypeSystemImpl tsi;
   private TypeImpl topType;
   private JsonCasSerializer jcs;
   private TypeImpl annotationType;
   private TypeImpl allTypesType;
-  
+  private TypeImpl tokenType;
+  private TypeImpl emptyIntListType;
+ 
   protected void setUp() throws Exception {
     super.setUp();
     jcs = new JsonCasSerializer();
@@ -100,28 +107,59 @@ public class JsonCasSerializerTest extends TestCase {
    *   lists with/without shared internal structure
    *   
    * Try all variants 
-   *   boolean:  prettyprint, marker/delta, @context, views, 
-   *             (without both context and views), byId/byType, errorHandler/noErrorHandler,
+   *   boolean:  prettyprint, @context,  
+   *             (without both context and views), errorHandler/noErrorHandler,
    *             JsonFactory/noJsonFactory, 
-   *             typeFiltering
-   *     @context: expanded-names, supertypes, fsrefs
+   *             typeFiltering,
+   *             dynamic / static embedding
+   *     @context: expanded-names, subtypes
    *   configuring using Jackson: JsonFactory, JsonGenerator
    *   views: 0, 1 or 2 views
-   *   for delta: 0 / non-0 modifications   
-   *                          above the line
-   *                          below the line
-   *                        mods with/without indexing update
    *   namespaces: with/without collision
+   *   
+   *   omission of unused types
+   *   
+   *   omission of not-reachable data
+   *   
+   *   lists that loop
+   *   lists that start as different ones, then merge
+   *      both with dynamic and static embedding
    *   
    *   File, Writer, OutputStream
    */
 
   public void testBasic() throws Exception {
+    
+    // test omits: context, subtypes, and expanded names
+    // also test including / excluding type-name-reference  
+    
     setupTypeSystem("nameSpaceNeeded.xml");
+    String r = serialize();  // empty cas
+    compareWithExpected("emptyCAS.txt", r);
+    
     cas.addFsToIndexes(cas.createFS(topType));
-    String r = serialize();
-    compareWithExpected("top.txt", r);
-    cas.reset();
+    cas.addFsToIndexes(cas.createFS(tokenType));
+    r = serialize();
+    compareWithExpected("topAndTokenOnly.txt", r);
+
+    
+    // same thing, omitting context
+    jcs.setJsonContext(JsonContextFormat.omitContext);
+    r = serialize();
+    compareWithExpected("topAndTokenOnlyNoContext.txt", r);
+    
+    jcs = new JsonCasSerializer();
+    jcs.setJsonContext(JsonContextFormat.omitExpandedTypeNames);
+    r = serialize();
+    compareWithExpected("topAndTokenOnlyNoExpandedTypeNames.txt", r);
+    
+    jcs = new JsonCasSerializer();
+    jcs.setJsonContext(JsonContextFormat.omitSubtypes);
+    r = serialize();
+    compareWithExpected("topAndTokenOnlyNoSubtypes.txt", r);
+    
+    
+    
     
     cas = (CASImpl) cas.createView("basicView");
     cas.addFsToIndexes(cas.createFS(annotationType));
@@ -139,16 +177,10 @@ public class JsonCasSerializerTest extends TestCase {
     cas.addFsToIndexes(cas.createFS(topType));
     r = serialize();
     compareWithExpected("topNoContext.txt", r);
-    
+        
     cas.reset();
-    jcs.setJsonContext(JsonContextFormat.omitContext);
-    jcs.setCasViews(false);
-    cas.addFsToIndexes(cas.createFS(topType));
-    r = serialize();
-    compareWithExpected("topNoContextNoViews.txt", r);
-    
-    cas.reset();
-    jcs.setJsonContext(JsonContextFormat.includeExpandedTypeNames);
+    jcs = new JsonCasSerializer();
+    jcs.setTypeSystemReference("A URI to TypeSystem");
     cas.addFsToIndexes(cas.createFS(topType));
     r = serialize();
     compareWithExpected("topExpandedNamesNoViews.txt", r);
@@ -157,14 +189,8 @@ public class JsonCasSerializerTest extends TestCase {
     jcs.setJsonContext(JsonContextFormat.omitExpandedTypeNames);
     cas.addFsToIndexes(cas.createFS(topType));
     r = serialize();
-    compareWithExpected("topNoContextNoViews.txt", r);
+    compareWithExpected("topNoExpandedTypeNames.txt", r);
 
-    cas.reset();
-    jcs.setJsonContext(JsonContextFormat.includeFeatureContext);
-    jcs.setJsonContext(JsonContextFormat.includeSuperTypes);
-    cas.addFsToIndexes(cas.createFS(topType));
-    r = serialize();
-    compareWithExpected("topFeatRefsSupertypesNoViews.txt", r);
   }
   
   public void testNameSpaceCollision() throws Exception {
@@ -176,6 +202,7 @@ public class JsonCasSerializerTest extends TestCase {
     
     cas.addFsToIndexes(cas.createFS(t1));
     cas.addFsToIndexes(cas.createFS(t2));
+    cas.addFsToIndexes(cas.createFS(t3));
     
     String r = serialize();
     compareWithExpected("nameSpaceCollisionOmits.txt", r);
@@ -200,6 +227,28 @@ public class JsonCasSerializerTest extends TestCase {
     r = serialize();
     compareWithExpected("nameSpaceCollision2pp.txt", r);
     
+    // filtering 
+    TypeSystemMgr tsMgr = CASFactory.createTypeSystem();
+    Type a2t = tsMgr.getType(CAS.TYPE_NAME_ANNOTATION);
+    // filter out the 2 types causing namespaces to be needed.
+    tsMgr.addType("org.apache.uima.test.Token", a2t);
+    tsMgr.commit();
+    jcs = new JsonCasSerializer();
+    jcs.setFilterTypes((TypeSystemImpl) tsMgr);
+    r = serialize();
+    compareWithExpected("nameSpaceNoCollsionFiltered.txt", r);
+    
+    // filter, but not enough - should have 1 collison
+    tsMgr = CASFactory.createTypeSystem();
+    a2t = tsMgr.getType(CAS.TYPE_NAME_ANNOTATION);
+    // filter out the 2 types causing namespaces to be needed.
+    tsMgr.addType("org.apache.uima.test.Token", a2t);
+    tsMgr.addType("org.apache.uimax.test.Token", a2t);
+    tsMgr.commit();
+    jcs.setFilterTypes((TypeSystemImpl) tsMgr);
+    r = serialize();
+    compareWithExpected("nameSpaceCollsionFiltered.txt", r);    
+    
   }
   
   public void testAllValues() throws Exception {
@@ -209,32 +258,15 @@ public class JsonCasSerializerTest extends TestCase {
     jcs.setPrettyPrint(true);
     String r = serialize();
     compareWithExpected("allValuesOmits.txt", r);
-
-    jcs.jsonCasFormatAdd(JsonCasFormat.INDEX_TYPE);
-    r = serialize();
-    compareWithExpected("allValuesByTypeOmits.txt", r);
     
     jcs.setOmitDefaultValues(false);
     r = serialize();
-    compareWithExpected("allValuesByType.txt", r);
+    compareWithExpected("allValuesNoOmits.txt", r);
     
-    jcs.jsonCasFormatAdd(JsonCasFormat.INDEX_ID);
+    jcs.setStaticEmbedding();
     r = serialize();
-    compareWithExpected("allValues.txt", r);
+    compareWithExpected("allValuesStaticNoOmits.txt", r);
     
-    jcs.jsonCasFormatAdd(JsonCasFormat.OMIT_ID);
-    r = serialize();
-    compareWithExpected("allValuesNoIDs.txt", r);
-
-    jcs.jsonCasFormatRemove(JsonCasFormat.OMIT_ID);
-    jcs.jsonCasFormatAdd(JsonCasFormat.OMIT_TYPE);    
-    r = serialize();
-    compareWithExpected("allValuesNoTypes.txt", r);
-
-    jcs.jsonCasFormatAdd(JsonCasFormat.OMIT_ID);
-    r = serialize();
-    compareWithExpected("allValuesNoIDNoTypes.txt", r);
-
   }
   
   public void testMultipleViews() throws Exception {
@@ -248,23 +280,57 @@ public class JsonCasSerializerTest extends TestCase {
     compareWithExpected("multipleViews.txt", r);
         
   }
-  
-  public void testDelta() throws Exception {
+  public void testDynamicLists() throws Exception {
     setupTypeSystem("allTypes.xml");
     
-    setAllValues(0);
-    Marker marker = cas.createMarker();
-    setAllValues(1);
+    FeatureStructure[] fss = new FeatureStructure[20];
+    fss[0] = emptyIntList();
+    fss[1] = intList(33, fss[0]);   // value 33, linked to 0
+    fss[2] = intList(22, fss[1]);   
+    fss[3] = intList(11, fss[2]);
     
+    fss[4] = intList(110, fss[2]);  // joins at 2
+    
+    jcas.addFsToIndexes(fss[3]);;
+    jcas.addFsToIndexes(fss[4]);
+   
     jcs.setPrettyPrint(true);
     String r = serialize();
-    compareWithExpected("delta.txt", r);
+    compareWithExpected("twoListMerge.txt", r);
     
-    jcs.setDeltaCas(marker);
+    jcs.setStaticEmbedding();
     r = serialize();
-    compareWithExpected("delta2.txt", r);
+    compareWithExpected("twoListMergeStatic.txt", r);
     
   }
+
+  private FeatureStructure emptyIntList() {
+    return cas.createFS(emptyIntListType);
+  }
+  
+  private FeatureStructure intList(int v, FeatureStructure next) {
+    NonEmptyIntegerList fs = new NonEmptyIntegerList(jcas);
+    fs.setHead(v);
+    fs.setTail((IntegerList) next);
+    return fs;
+  }
+  
+//  public void testDelta() throws Exception {
+//    setupTypeSystem("allTypes.xml");
+//    
+//    setAllValues(0);
+//    Marker marker = cas.createMarker();
+//    setAllValues(1);
+//    
+//    jcs.setPrettyPrint(true);
+//    String r = serialize();
+//    compareWithExpected("delta.txt", r);
+//    
+//    jcs.setDeltaCas(marker);
+//    r = serialize();
+//    compareWithExpected("delta2.txt", r);
+//    
+//  }
   
   private FeatureStructure setAllValues(int v) {
     boolean s1 = v == 0;
@@ -326,14 +392,21 @@ public class JsonCasSerializerTest extends TestCase {
   }
    
   
-  private void setupTypeSystem(String tsdName) throws InvalidXMLException, IOException, ResourceInitializationException {
+  private void setupTypeSystem(String tsdName) throws InvalidXMLException, IOException, ResourceInitializationException, CASException {
     File tsdFile = JUnitExtension.getFile("CasSerialization/desc/" + tsdName);
     tsd = parser.parseTypeSystemDescription(new XMLInputSource(tsdFile));
     cas = (CASImpl) CasCreationUtils.createCas(tsd, null, null);
+    jcas = cas.getJCas();
     tsi = cas.getTypeSystemImpl();
     topType = (TypeImpl) tsi.getTopType();
     annotationType = (TypeImpl) tsi.getType("uima.tcas.Annotation"); 
     allTypesType = (TypeImpl) tsi.getType("org.apache.uima.test.AllTypes");
+    tokenType = (TypeImpl) tsi.getType("org.apache.uima.test.Token");
+    emptyIntListType = (TypeImpl) tsi.getType("uima.cas.EmptyIntegerList");
+//    nonEmptyIntListType = (TypeImpl) tsi.getType("uima.cas.NonEmptyIntegerList");
+//    emptyFSListType = (TypeImpl) tsi.getType("uima.cas.EmptyFSList");
+//    nonEmptyFSListType = (TypeImpl) tsi.getType("uima.cas.NonEmptyFSList");
+    
   }
   
   private String getExpected(String expectedResultsName, String r) throws IOException {

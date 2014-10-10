@@ -1,0 +1,31 @@
+{"@context" : {
+    "@types" : {
+      "AllTypes" : {"@id" : "org.apache.uima.test.AllTypes", 
+        "@feature_types" : {"sofa" : "@ref",  "aFS" : "@ref",  "aArrayBoolean" : "@array",  "aArrayMrBoolean" : "@array",  "aArrayMrByte" : "@byte_array",  "aArrayByte" : "@byte_array",  "aArrayShort" : "@array",  "aArrayMrShort" : "@array",  "aArrayString" : "@array",  "aArrayMrString" : "@array",  "aListInteger" : "@array",  "aListMrInteger" : "@array",  "aListString" : "@array",  "aListMrString" : "@array",  "aListFs" : "@ref",  "aListMrFs" : "@ref" } }, 
+      "BooleanArray" : {"@id" : "uima.cas.BooleanArray" }, 
+      "ByteArray" : {"@id" : "uima.cas.ByteArray" }, 
+      "ShortArray" : {"@id" : "uima.cas.ShortArray" }, 
+      "Sofa" : {"@id" : "uima.cas.Sofa", 
+        "@feature_types" : {"sofaArray" : "@ref" } }, 
+      "StringArray" : {"@id" : "uima.cas.StringArray" }, 
+      "Annotation" : {"@id" : "uima.tcas.Annotation", 
+        "@feature_types" : {"sofa" : "@ref" }, 
+        "@subtypes" : ["AllTypes" ] }, 
+      "AnnotationBase" : {"@id" : "uima.cas.AnnotationBase", 
+        "@feature_types" : {"sofa" : "@ref" }, 
+        "@subtypes" : ["Annotation" ] }, 
+      "TOP" : {"@id" : "uima.cas.TOP", 
+        "@subtypes" : ["AnnotationBase",  "ArrayBase",  "Sofa" ] }, 
+      "ArrayBase" : {"@id" : "uima.cas.ArrayBase", 
+        "@subtypes" : ["BooleanArray",  "ByteArray",  "ShortArray",  "StringArray" ] } } }, 
+  "@views" : {
+    "28" : {
+      "AllTypes" : [
+        {"sofa" : 28,  "begin" : 0,  "end" : 0,  "aBoolean" : true,  "aByte" : -117,  "aShort" : -112,  "aInteger" : 0,  "aLong" : 1234,  "aFloat" : 1.3,  "aDouble" : 2.6,  "aString" : "some \"String\"",  "aFS" : 35,  "aArrayBoolean" : [false ],  "aArrayMrBoolean" : 74,  "aArrayMrByte" : 77,  "aArrayByte" : "AAA=",  "aArrayShort" : [ ],  "aArrayMrShort" : 80,  "aArrayString" : [null ],  "aArrayMrString" : 83,  "aListInteger" : [ ],  "aListString" : ["testStr" ],  "aListFs" : [0 ] } ] } }, 
+  "@referenced_fss" : {
+    "28" : {"@type" : "Sofa",  "sofaNum" : 1,  "sofaID" : "_InitialView" }, 
+    "35" : {"@type" : "AllTypes",  "sofa" : 28,  "begin" : 0,  "end" : 0,  "aBoolean" : false,  "aByte" : 0,  "aShort" : 0,  "aInteger" : 0,  "aLong" : 0,  "aFloat" : 0.0,  "aDouble" : 0.0 }, 
+    "74" : {"@type" : "BooleanArray",  "@collection" : [false ] }, 
+    "77" : {"@type" : "ByteArray",  "@collection" : "AAA=" }, 
+    "80" : {"@type" : "ShortArray",  "@collection" : [ ] }, 
+    "83" : {"@type" : "StringArray",  "@collection" : [null ] } } }

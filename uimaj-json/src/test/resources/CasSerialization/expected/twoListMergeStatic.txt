@@ -1,0 +1,20 @@
+{"@context" : {
+    "@types" : {
+      "EmptyIntegerList" : {"@id" : "uima.cas.EmptyIntegerList" }, 
+      "NonEmptyIntegerList" : {"@id" : "uima.cas.NonEmptyIntegerList", 
+        "@feature_types" : {"tail" : "@array" } }, 
+      "IntegerList" : {"@id" : "uima.cas.IntegerList", 
+        "@subtypes" : ["EmptyIntegerList",  "NonEmptyIntegerList" ] }, 
+      "ListBase" : {"@id" : "uima.cas.ListBase", 
+        "@subtypes" : ["IntegerList" ] }, 
+      "TOP" : {"@id" : "uima.cas.TOP", 
+        "@subtypes" : ["ListBase" ] } } }, 
+  "@views" : {
+    "0" : {
+      "NonEmptyIntegerList" : [
+        {"head" : 11,  "tail" : 5 }, 
+        {"head" : 110,  "tail" : 5 } ] } }, 
+  "@referenced_fss" : {
+    "5" : {"@type" : "NonEmptyIntegerList",  "head" : 22,  "tail" : 2 }, 
+    "2" : {"@type" : "NonEmptyIntegerList",  "head" : 33,  "tail" : 1 }, 
+    "1" : {"@type" : "EmptyIntegerList" } } }
