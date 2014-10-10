@@ -151,8 +151,8 @@ public class XmiSerializationSharedData {
    *   xmi:id, -1 if none.
    */
   public int getFsAddrForXmiId(int xmiId) {
-    Integer addr = (Integer)xmiIdToFsAddrMap.get(xmiId);
-    return addr == null ? -1 : addr.intValue();
+    final int addr = xmiIdToFsAddrMap.get(xmiId);
+    return addr == 0 ? -1 : addr;
   }
   
   /** 
