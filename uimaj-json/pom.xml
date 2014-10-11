@@ -23,7 +23,7 @@
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
     <version>2.6.1-SNAPSHOT</version>
-    <relativePath/>  <!-- get rid of warning, no relative path possible -->
+    <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
   <artifactId>uimaj-json</artifactId>
   <name>Apache UIMA Base: ${project.artifactId}: JSON</name>
