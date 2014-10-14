@@ -19,6 +19,7 @@
 
 package org.apache.uima.json;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -36,7 +37,9 @@ import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
+import org.apache.uima.cas.impl.XmiCasSerializer;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.cas.ByteArray;
 import org.apache.uima.jcas.cas.IntegerList;
 import org.apache.uima.jcas.cas.NonEmptyIntegerList;
 import org.apache.uima.json.JsonCasSerializer.JsonContextFormat;
@@ -48,6 +51,7 @@ import org.apache.uima.util.FileUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
+import org.apache.uima.util.XMLSerializer;
 
 public class JsonCasSerializerTest extends TestCase {
   /*********************************************************************
@@ -76,15 +80,16 @@ public class JsonCasSerializerTest extends TestCase {
   private JCas jcas;
   private TypeSystemImpl tsi;
   private TypeImpl topType;
-  private JsonCasSerializer jcs;
+  protected JsonCasSerializer jcs;
   private TypeImpl annotationType;
   private TypeImpl allTypesType;
   private TypeImpl tokenType;
   private TypeImpl emptyIntListType;
+  protected boolean doJson;
  
   protected void setUp() throws Exception {
-    super.setUp();
     jcs = new JsonCasSerializer();
+    doJson = true;
   }
 
   protected void tearDown() throws Exception {
@@ -254,7 +259,6 @@ public class JsonCasSerializerTest extends TestCase {
   public void testAllValues() throws Exception {
     setupTypeSystem("allTypes.xml");
     setAllValues(0);
-
     jcs.setPrettyPrint(true);
     String r = serialize();
     compareWithExpected("allValuesOmits.txt", r);
@@ -301,6 +305,22 @@ public class JsonCasSerializerTest extends TestCase {
     jcs.setStaticEmbedding();
     r = serialize();
     compareWithExpected("twoListMergeStatic.txt", r);
+   
+    cas.reset();
+    jcs = new JsonCasSerializer();
+    jcs.setPrettyPrint(true);
+    fss[0] = emptyIntList();
+    fss[1] = intList(33, fss[0]);   // value 33, linked to 0
+    fss[2] = intList(22, fss[1]);   
+    fss[3] = intList(11, fss[2]);
+
+    cas.addFsToIndexes(fss[3]);
+    r = serialize();
+    compareWithExpected("indexedSingleList.txt", r);
+    
+    jcs.setStaticEmbedding();
+    r = serialize();
+    compareWithExpected("indexedSingleListStatic.txt", r);
     
   }
 
@@ -332,7 +352,8 @@ public class JsonCasSerializerTest extends TestCase {
 //    
 //  }
   
-  private FeatureStructure setAllValues(int v) {
+  private FeatureStructure setAllValues(int v) throws CASException {
+    JCas jcas = cas.getJCas();
     boolean s1 = v == 0;
     boolean s2 = v == 1;
     FeatureStructure fs = cas.createFS(allTypesType);
@@ -351,7 +372,11 @@ public class JsonCasSerializerTest extends TestCase {
     fs.setFeatureValue(allTypesType.getFeatureByBaseName("aFS"),  fs2);
     
     FeatureStructure fsAboolean = cas.createBooleanArrayFS(s1 ? 1 : 0);
-    FeatureStructure fsAbyte    = cas.createByteArrayFS(s1 ? 2 : 0);
+    ByteArray fsAbyte    = new ByteArray(jcas, s1 ? 2 : 0);
+    if (s1) {
+      fsAbyte.set(0, (byte) 15);
+      fsAbyte.set(1,  (byte) 0xee);
+    }
     FeatureStructure fsAshort   = cas.createShortArrayFS(s2 ? 2 : 0);
     FeatureStructure fsAstring  = cas.createStringArrayFS(s1 ? 1 : 0);
     
@@ -410,16 +435,21 @@ public class JsonCasSerializerTest extends TestCase {
   }
   
   private String getExpected(String expectedResultsName, String r) throws IOException {
+    if (!doJson) {
+      expectedResultsName = expectedResultsName.replace(".txt", ".xml");
+    }
+
     if (GENERATE_EXPECTED) {
-      File d = new File (generateDir);
+      String generateDirPlus = generateDir + ((doJson) ? "json/" : "xmi/"); 
+      File d = new File (generateDirPlus);
       d.mkdirs();
-      File file = new File (generateDir + expectedResultsName);
+      File file = new File (generateDirPlus  + expectedResultsName);
       FileWriter writer = new FileWriter(file);
       writer.write(r);
       writer.close();
       return r;
     } else {
-    File expectedResultsFile = JUnitExtension.getFile("CasSerialization/expected/" + expectedResultsName);
+    File expectedResultsFile = JUnitExtension.getFile("CasSerialization/expected/" + ((doJson) ? "json/" : "xmi/") + expectedResultsName);
     return FileUtils.file2String(expectedResultsFile, "utf-8");
     }
   }
@@ -435,14 +465,26 @@ public class JsonCasSerializerTest extends TestCase {
   }
   
   private String serialize() throws Exception {    
-    StringWriter sw = new StringWriter();
+    StringWriter sw = null;
+    ByteArrayOutputStream baos = null;
     try {
-    jcs.serialize(cas, sw);
+      if (doJson) {
+        sw = new StringWriter();
+        jcs.serialize(cas, sw);
+        return sw.toString();
+      } else {
+        XmiCasSerializer xcs = new XmiCasSerializer(jcs.getCss().getFilterTypes());
+        baos = new ByteArrayOutputStream();
+        
+        XMLSerializer sax2xml = new XMLSerializer(baos, jcs.getCss().isFormattedOutput);
+        xcs.serialize(cas, sax2xml.getContentHandler(), null);
+        return baos.toString("UTF-8");
+      }
     } catch (Exception e) {
-      System.err.format("Exception occurred. The string produced so far was: %n%s%n", sw.toString());
+      System.err.format("Exception occurred. The string produced so far was: %n%s%n",
+          (sw == null) ? baos.toString("UTF-8") : sw.toString());
       throw e;
     }
-    return sw.toString();
   }
     
 }

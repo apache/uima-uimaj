@@ -41,7 +41,7 @@
     "94" : {
       "AllTypes" : [
         {"sofa" : 94,  "aBoolean" : true,  "aByte" : -117,  "aShort" : -112,  "aLong" : 1234,  "aFloat" : 1.3,  "aDouble" : 2.6,  "aString" : "some \"String\"", 
-          "aFS" : {"@type" : "AllTypes",  "sofa" : 94,  "aBoolean" : false },  "aArrayBoolean" : [false ],  "aArrayMrBoolean" : [false ],  "aArrayMrByte" : "AAA=",  "aArrayByte" : "AAA=",  "aArrayShort" : [ ],  "aArrayMrShort" : [ ],  "aArrayString" : [null ],  "aArrayMrString" : [null ],  "aListInteger" : [ ],  "aListString" : ["testStr" ],  "aListFs" : [0 ] } ] } }, 
+          "aFS" : {"@type" : "AllTypes",  "sofa" : 94,  "aBoolean" : false },  "aArrayBoolean" : [false ],  "aArrayMrBoolean" : [false ],  "aArrayMrByte" : "AAA=",  "aArrayByte" : "D+4=",  "aArrayShort" : [ ],  "aArrayMrShort" : [ ],  "aArrayString" : [null ],  "aArrayMrString" : [null ],  "aListInteger" : [ ],  "aListString" : ["testStr" ],  "aListFs" : [0 ] } ] } }, 
   "@referenced_fss" : {
     "28" : {"@type" : "Sofa",  "sofaNum" : 1,  "sofaID" : "_InitialView" }, 
     "94" : {"@type" : "Sofa",  "sofaNum" : 2,  "sofaID" : "View2" } } }

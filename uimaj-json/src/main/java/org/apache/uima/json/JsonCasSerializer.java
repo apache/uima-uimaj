@@ -152,6 +152,11 @@ public class JsonCasSerializer {
   }
   
   private final CasSerializerSupport css = new CasSerializerSupport();
+  
+  // for testing
+  CasSerializerSupport getCss() {
+    return css;
+  }
 
   private JsonFactory jsonFactory = null;
 
@@ -417,7 +422,7 @@ public class JsonCasSerializer {
     return this;
   }
   
-  private class MapType2Subtypes extends RedBlackTree<IntVector> {
+  private static class MapType2Subtypes extends RedBlackTree<IntVector> {
     /**
      * 
      * @param type main type
