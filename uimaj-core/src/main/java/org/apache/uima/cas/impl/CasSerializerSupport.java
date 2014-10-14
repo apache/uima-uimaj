@@ -163,6 +163,11 @@ public class CasSerializerSupport {
     return this;
   }
   
+  // for testing
+  public TypeSystemImpl getFilterTypes() {
+    return filterTypeSystem;
+  }
+  
      // not done here, done on serialize call, different (typically) for each call
 //  /**
 //   * set the Marker to specify delta cas serialization
