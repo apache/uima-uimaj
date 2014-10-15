@@ -52,6 +52,8 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.XMLSerializer;
+import org.custommonkey.xmlunit.XMLAssert;
+import org.xml.sax.SAXException;
 
 public class JsonCasSerializerTest extends TestCase {
   /*********************************************************************
@@ -454,10 +456,15 @@ public class JsonCasSerializerTest extends TestCase {
     }
   }
   
-  private void compareWithExpected (String expectedResultsName, String r) throws IOException {
+  private void compareWithExpected (String expectedResultsName, String r) throws IOException, SAXException {
     r = canonicalizeNewLines(r);
     String expected = getExpected(expectedResultsName, r);
-    assertEquals(canonicalizeNewLines(expected), r);
+    String ce = canonicalizeNewLines(expected);
+    if (doJson) {
+      assertEquals(ce, r);
+    } else {
+      XMLAssert.assertXMLEqual(ce, r);
+    }
   }
   
   private String canonicalizeNewLines(String r) {
