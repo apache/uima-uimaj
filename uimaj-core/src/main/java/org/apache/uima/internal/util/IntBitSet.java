@@ -20,7 +20,6 @@
 package org.apache.uima.internal.util;
 
 import java.util.BitSet;
-import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
@@ -35,10 +34,10 @@ import java.util.NoSuchElementException;
  */
 public class IntBitSet {
     
-  private BitSet set;
+  private final BitSet set;
   
   public IntBitSet() {
-    this(16);
+    this(16);  
   }
   
   public IntBitSet(int initialCapacity) {
