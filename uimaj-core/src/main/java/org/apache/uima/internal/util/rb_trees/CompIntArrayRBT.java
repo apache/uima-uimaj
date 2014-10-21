@@ -22,7 +22,7 @@ package org.apache.uima.internal.util.rb_trees;
 import org.apache.uima.internal.util.IntComparator;
 
 /**
- * Class comment for CompIntArrayRBT.java goes here.
+ * Used for UIMA Set indexes
  * 
  * 
  */

@@ -29,9 +29,11 @@ import org.apache.uima.internal.util.IntPointerIterator;
 import org.apache.uima.internal.util.rb_trees.CompIntArrayRBT;
 
 /**
+ * Used for UIMA FS Set Indexes 
+ * 
+ * Uses CompIntArrayRBT red black tree to hold items
+ * 
  * Same as FSRBTIndex, but duplicates are not inserted.
- * 
- * 
  */
 class FSRBTSetIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T> {
 

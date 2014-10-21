@@ -29,6 +29,10 @@ import org.apache.uima.internal.util.IntComparator;
 import org.apache.uima.internal.util.IntPointerIterator;
 import org.apache.uima.internal.util.IntVector;
 
+/**
+ * Used for UIMA FS Bag Indexes
+ * Uses IntVector to hold values of FSs
+ */
 public class FSBagIndex extends FSLeafIndexImpl {
 
   private class IntVectorIterator implements ComparableIntPointerIterator, LowLevelIterator {

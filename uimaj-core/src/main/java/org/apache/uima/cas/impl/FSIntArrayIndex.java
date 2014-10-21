@@ -31,6 +31,7 @@ import org.apache.uima.internal.util.IntVector;
 
 /**
  * Used for sorted indexes only
+ * Uses IntVector (sorted) as the index (of FSs)
  * @param <T> -
  */
 public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T> {

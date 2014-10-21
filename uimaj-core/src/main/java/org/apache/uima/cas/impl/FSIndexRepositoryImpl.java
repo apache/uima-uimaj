@@ -187,7 +187,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       return size;
     }
 
-  }
+  }  // end of class definition for IndexIteratorCachePair
 
   IntPointerIterator createPointerIterator(IndexIteratorCachePair iicp) {
     iicp.createIndexIteratorCache();
@@ -677,7 +677,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       return this.iicp.index;
     }
 
-  }
+  }  // end of class PointerIterator
 
   /**
    * The iterator implementation for indexes. Tricky because the iterator needs to be able to move
@@ -809,7 +809,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       return this.iicp.index;
     }
 
-  }
+  }  // end of LeafPointerIterator
 
   private class IndexImpl<T extends FeatureStructure> implements FSIndex<T>, FSIndexImpl {
 
@@ -1219,7 +1219,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   private IndexIteratorCachePair addNewIndexRec(FSIndexComparator comparator, int indexType) {
     final IndexIteratorCachePair iicp = this.addNewIndex(comparator, indexType);
     if (indexType == FSIndex.DEFAULT_BAG_INDEX) {
-      // In this special case, we do not add indeces for subtypes.
+      // In this special case, we do not add indices for subtypes.
       return iicp;
     }
     final Type superType = comparator.getType();
