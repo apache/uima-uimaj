@@ -206,6 +206,15 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   }
 
   /**
+   * The next two classes (PointerIterator, and LeafPointerIterator) 
+   * implement iterators for particular indexes.
+   * 
+   * This class handles the concepts involved with iterating over a type and
+   * all of its subtypes
+   * 
+   * The LeafPointerIterator handles just iterating over a particular type or subtype
+   * (the one that this class picks).
+   * 
    * The iterator implementation for indexes. Tricky because the iterator needs to be able to move
    * backwards as well as forwards.
    */
@@ -680,6 +689,15 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   }  // end of class PointerIterator
 
   /**
+   * This class and the previous one (PointerIterator, and LeafPointerIterator) 
+   * implement iterators for particular indexes.
+   * 
+   * The previous class (PointerIterator) handles the concepts involved with iterating over a type and
+   * all of its subtypes
+   * 
+   * This class handles just iterating over a particular type or subtype
+   * (the one that the previous class picks).
+
    * The iterator implementation for indexes. Tricky because the iterator needs to be able to move
    * backwards as well as forwards.
    */
@@ -811,6 +829,11 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 
   }  // end of LeafPointerIterator
 
+  /**
+   * Implementation of a particular index for a particular Type (and its subtypes)
+   *
+   * @param <T> - the particular type (and it subtypes) this particular index is associated with
+   */
   private class IndexImpl<T extends FeatureStructure> implements FSIndex<T>, FSIndexImpl {
 
     private final IndexIteratorCachePair iicp;
@@ -921,7 +944,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       return new LLUnambiguousIteratorImpl(this.ll_iterator(), this.iicp.index.lowLevelCAS);
     }
 
-  }
+  }  // end of class IndexImpl
 
   // private class AnnotIndexImpl
   // extends IndexImpl
