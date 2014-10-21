@@ -46,7 +46,7 @@ public class IntBitSet {
   }
   
   public void clear() {
-    set.clear();
+    set.clear();    
   }
    
   public boolean contains(int key) {
@@ -81,10 +81,10 @@ public class IntBitSet {
    
   /**
    * 
-   * @return space used in bytes
+   * @return space used in 32 bit words
    */
   public int getSpaceUsed() {
-    return set.length() >> 5;
+    return set.length() >> 5;  // divide by 32
   }
   
   /**
